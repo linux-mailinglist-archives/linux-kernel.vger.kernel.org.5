@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-54988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93EEC84B5ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:05:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3431584B5EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:05:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7CD91C22D39
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:05:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94ABA1F26C01
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36148130E30;
-	Tue,  6 Feb 2024 13:05:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FFCD13172E;
+	Tue,  6 Feb 2024 13:05:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ULo7yfc5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lGSn1DpT"
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A180912FF76;
-	Tue,  6 Feb 2024 13:05:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7AFE130AFC;
+	Tue,  6 Feb 2024 13:05:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707224717; cv=none; b=TMgxWwzOIZP2V5BelNZzCFKhArzdoYKmKlHU4BeUcOJk3lhUMHdWMtd3lbzLpW+o5oOZOefVk7AVdAw3rO/dgEm3TBc+YWP5ZtfJLNwoYMw1rNV/qXtoyS9Rab4ok2QxnPqlqZwqDHsANTVuna8OtsnWjgq0j+F716zmxhR0Vko=
+	t=1707224719; cv=none; b=slZe4I6LALdCB19dVG0VoB6LzA6Jvn531rAa+x43yXhySk/VWklkkIHhOSEbNZyC7aei2k/mWivThpLPmOhDDqF8VmW/W7XMTJ9fcAc+2pHziF7qwIbhP1IHbvZG/TWEmx1gSoc6xX69WJ67gYoXwvmx0eUSnYzTUr1lIb+WiiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707224717; c=relaxed/simple;
-	bh=Vp/4na1V53+tI1gIgDhwPwLFjOKMhZJaYVMauAvjYOs=;
+	s=arc-20240116; t=1707224719; c=relaxed/simple;
+	bh=dc2O85R1+54lcZQTbhpdideOJEc3GjHDCDPyDd2m00A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=q3jCICdMpCcgjj2dcYcLJ1g/Hdysy/wfown9WY5L1u9VGw7PMcN+XFj9ZB8XcZ0/qtwT33UEGcuy0/VUUJ1Y4Qgo1QRiGSridI5wQeA83D4skbs1kPQhjAm5uFMCyf5Lx+CbW/bmOswQSvh2ikXfn5zjaMbaOZU7DLB98mydtzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ULo7yfc5; arc=none smtp.client-ip=134.134.136.20
+	 MIME-Version; b=LE8IYB6T1SPHiUUHR2cWL3Z4B65hxuNfYX9oizjcDK7v+QvAeLfu8eK9k6+6R8AdaIJwcNSx6RM5ofeqflxIFlkPXE1VngvHs9nYzFtiWOg43QTO8weAn5FA5bdbygy482ua9DAcxGrbvkjeTwcOgLcj4Ah/FvcZLuuRC2Q6Lp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lGSn1DpT; arc=none smtp.client-ip=134.134.136.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707224715; x=1738760715;
+  t=1707224717; x=1738760717;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Vp/4na1V53+tI1gIgDhwPwLFjOKMhZJaYVMauAvjYOs=;
-  b=ULo7yfc5CnMvo7SflT4Es/1fovix3kpUn3tW3YLoWil8NvKwW1VxJre9
-   nvOWG+kmRaJOClvHi+8EV2pVB/Lupym6R69mpqLJNXDa2r6LF92BOtpvt
-   QS/zS5Z55W6NZAhiywG/hJOs76LsuNUxR/WjScckvf969hos7ZzZ3ndlk
-   PvyRm22p3z2XOqofvBzSCWuPC2EhDC4uUu5L5M2ZHH86oEqlJGKVTUlKM
-   shUg0sn6Jl19Qd5Hywih76EAyKBNwMgTSYgi5b05DfKFcbmiNcZ0XPoAI
-   bbsAOkty2KeMWifMLvsjnOE1VWrAYLMnhoN4T9iWlJcsxZu9KczI/cIVu
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="395161867"
+  bh=dc2O85R1+54lcZQTbhpdideOJEc3GjHDCDPyDd2m00A=;
+  b=lGSn1DpT0a7XHH7001oB/ys3DBjRD1lEUNxhGb3FFokw2Ydkz8xTvnHc
+   i2xzTkALJRvImf3t4pAz2X8gTNLWk0ANvWhyBGy7Ee9k+IiyipbHCavlM
+   E8Q2D60COgPKvQVyr/ALeu9MPX+ZfbtzWVrJY0+Yf8CpcjP5loe+W+DMm
+   RaNGdC89iQ5LTZeFW86oPaLGCpIaNQe+0+dSBmEXJJEiTuyceCeu+Eb+6
+   7cr5vJG0hBPCDPxOZ8U/LwCMgs8DWQKjSOyBIpGIcDmUHAx0jJ4KfN3CU
+   /iLf7FQSGpGtaV/FKm/AHKt5ZqYxk52OSKKf4O5OsCeqevZhFzyCRLEKs
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="395161873"
 X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="395161867"
+   d="scan'208";a="395161873"
 Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 05:05:14 -0800
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 05:05:17 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="999419"
+   d="scan'208";a="999425"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.42.101])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 05:05:12 -0800
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 05:05:15 -0800
 From: Adrian Hunter <adrian.hunter@intel.com>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc: Jiri Olsa <jolsa@kernel.org>,
@@ -61,9 +61,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Like Xu <like.xu.linux@gmail.com>,
 	linux-kernel@vger.kernel.org,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH V2 1/2] perf tools: Make it possible to see perf's kernel and module memory mappings
-Date: Tue,  6 Feb 2024 15:04:57 +0200
-Message-Id: <20240206130458.8867-2-adrian.hunter@intel.com>
+Subject: [PATCH V2 2/2] perf symbols: Slightly improve module file executable section mappings
+Date: Tue,  6 Feb 2024 15:04:58 +0200
+Message-Id: <20240206130458.8867-3-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240206130458.8867-1-adrian.hunter@intel.com>
 References: <20240206130458.8867-1-adrian.hunter@intel.com>
@@ -76,185 +76,169 @@ MIME-Version: 1.0
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
 
-Dump kmaps if using 'perf --debug kmaps' or verbose > 2 (e.g. -vvv) for
-tools 'perf script' and 'perf report' if there is no browser.
+Currently perf does not record module section addresses except for
+the .text section. In general that means perf cannot get module section
+mappings correct (except for .text) when loading symbols from a kernel
+module file. (Note using --kcore does not have this issue)
 
-Example:
+Improve that situation slightly by identifying executable sections that
+use the same mapping as the .text section. That happens when an
+executable section comes directly after the .text section, both in memory
+and on file, something that can be determined by following the same layout
+rules used by the kernel, refer kernel layout_sections(). Note whether
+that happens is somewhat arbitrary, so this is not a final solution.
 
-  $ perf --debug kmaps script 2>&1 >/dev/null | grep kvm.intel
-  build id event received for /lib/modules/6.7.2-local/kernel/arch/x86/kvm/kvm-intel.ko: 0691d75e10e72ebbbd45a44c59f6d00a5604badf [20]
-  Map: 0-3a3 4f5d8 [kvm_intel].modinfo
-  Map: 0-5240 5f280 [kvm_intel]__versions
-  Map: 0-30 64 [kvm_intel].note.Linux
-  Map: 0-14 644c0 [kvm_intel].orc_header
-  Map: 0-5297 43680 [kvm_intel].rodata
-  Map: 0-5bee 3b837 [kvm_intel].text.unlikely
+Example from tracing a virtual machine process:
+
+ Before:
+
+  $ perf script | grep unknown
+         CPU 0/KVM    1718   203.511270:     318341 cpu-cycles:P:  ffffffffc13e8a70 [unknown] (/lib/modules/6.7.2-local/kernel/arch/x86/kvm/kvm-intel.ko)
+  $ perf script -vvv 2>&1 >/dev/null | grep kvm.intel | grep 'noinstr.text\|ffff'
   Map: 0-7e0 41430 [kvm_intel].noinstr.text
-  Map: 0-2080 713c0 [kvm_intel].bss
-  Map: 0-26 705c8 [kvm_intel].data..read_mostly
-  Map: 0-5888 6a4c0 [kvm_intel].data
-  Map: 0-22 70220 [kvm_intel].data.once
-  Map: 0-40 705f0 [kvm_intel].data..percpu
-  Map: 0-1685 41d20 [kvm_intel].init.text
-  Map: 0-4b8 6fd60 [kvm_intel].init.data
-  Map: 0-380 70248 [kvm_intel]__dyndbg
-  Map: 0-8 70218 [kvm_intel].exit.data
-  Map: 0-438 4f980 [kvm_intel]__param
-  Map: 0-5f5 4ca0f [kvm_intel].rodata.str1.1
-  Map: 0-3657 493b8 [kvm_intel].rodata.str1.8
-  Map: 0-e0 70640 [kvm_intel].data..ro_after_init
-  Map: 0-500 70ec0 [kvm_intel].gnu.linkonce.this_module
   Map: ffffffffc13a7000-ffffffffc1421000 a0 /lib/modules/6.7.2-local/kernel/arch/x86/kvm/kvm-intel.ko
 
-The example above shows how the module section mappings are all wrong
-except for the main .text mapping at 0xffffffffc13a7000.
+ After:
 
+  $ perf script | grep 203.511270
+         CPU 0/KVM    1718   203.511270:     318341 cpu-cycles:P:  ffffffffc13e8a70 vmx_vmexit+0x0 (/lib/modules/6.7.2-local/kernel/arch/x86/kvm/kvm-intel.ko)
+  $ perf script -vvv 2>&1 >/dev/null | grep kvm.intel | grep 'noinstr.text\|ffff'
+  Map: ffffffffc13a7000-ffffffffc1421000 a0 /lib/modules/6.7.2-local/kernel/arch/x86/kvm/kvm-intel.ko
+
+Reported-by: Like Xu <like.xu.linux@gmail.com>
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
+ tools/perf/util/symbol-elf.c | 75 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 73 insertions(+), 2 deletions(-)
 
-
-Changes in V2:
-    - add dump to perf report (if no browser) as well as perf script
-    - add 'perf --debug kmaps' option also to dump kmaps
-
-
- tools/perf/Documentation/perf.txt |  2 ++
- tools/perf/builtin-report.c       |  2 ++
- tools/perf/builtin-script.c       |  3 +++
- tools/perf/util/debug.c           |  3 +++
- tools/perf/util/debug.h           |  1 +
- tools/perf/util/python.c          |  1 +
- tools/perf/util/session.c         | 11 +++++++++++
- tools/perf/util/session.h         |  2 ++
- 8 files changed, 25 insertions(+)
-
-diff --git a/tools/perf/Documentation/perf.txt b/tools/perf/Documentation/perf.txt
-index ba3df49c169d..feb954a18150 100644
---- a/tools/perf/Documentation/perf.txt
-+++ b/tools/perf/Documentation/perf.txt
-@@ -63,6 +63,8 @@ OPTIONS
-                              in browser mode
-           perf-event-open  - Print perf_event_open() arguments and
-                              return value
-+          kmaps            - Print kernel and module maps (perf script
-+                             and perf report without browser)
+diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+index 9e7eeaf616b8..98bf0881aaf6 100644
+--- a/tools/perf/util/symbol-elf.c
++++ b/tools/perf/util/symbol-elf.c
+@@ -23,6 +23,7 @@
+ #include <linux/ctype.h>
+ #include <linux/kernel.h>
+ #include <linux/zalloc.h>
++#include <linux/string.h>
+ #include <symbol/kallsyms.h>
+ #include <internal/lib.h>
  
- DESCRIPTION
- -----------
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index 9cb1da2dc0c0..609ccc5cc362 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -1731,6 +1731,8 @@ int cmd_report(int argc, const char **argv)
- 	} else
- 		ret = 0;
- 
-+	if (!use_browser && (verbose > 2 || debug_kmaps))
-+		perf_session__dump_kmaps(session);
- error:
- 	if (report.ptime_range) {
- 		itrace_synth_opts__clear_time_range(&itrace_synth_opts);
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index b1f57401ff23..25c42ad3d120 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -4366,6 +4366,9 @@ int cmd_script(int argc, const char **argv)
- 
- 	flush_scripting();
- 
-+	if (verbose > 2 || debug_kmaps)
-+		perf_session__dump_kmaps(session);
-+
- out_delete:
- 	if (script.ptime_range) {
- 		itrace_synth_opts__clear_time_range(&itrace_synth_opts);
-diff --git a/tools/perf/util/debug.c b/tools/perf/util/debug.c
-index 88378c4c5dd9..f21661aab1b6 100644
---- a/tools/perf/util/debug.c
-+++ b/tools/perf/util/debug.c
-@@ -33,6 +33,7 @@
- #endif
- 
- int verbose;
-+int debug_kmaps;
- int debug_peo_args;
- bool dump_trace = false, quiet = false;
- int debug_ordered_events;
-@@ -221,6 +222,7 @@ static struct sublevel_option debug_opts[] = {
- 	{ .name = "stderr",		.value_ptr = &redirect_to_stderr},
- 	{ .name = "data-convert",	.value_ptr = &debug_data_convert },
- 	{ .name = "perf-event-open",	.value_ptr = &debug_peo_args },
-+	{ .name = "kmaps",		.value_ptr = &debug_kmaps },
- 	{ .name = NULL, }
- };
- 
-@@ -259,6 +261,7 @@ int perf_quiet_option(void)
- 	/* For debug variables that are used as bool types, set to 0. */
- 	redirect_to_stderr = 0;
- 	debug_peo_args = 0;
-+	debug_kmaps = 0;
- 
- 	return 0;
- }
-diff --git a/tools/perf/util/debug.h b/tools/perf/util/debug.h
-index f99468a7f681..4664f6e9b027 100644
---- a/tools/perf/util/debug.h
-+++ b/tools/perf/util/debug.h
-@@ -9,6 +9,7 @@
- #include <linux/compiler.h>
- 
- extern int verbose;
-+extern int debug_kmaps;
- extern int debug_peo_args;
- extern bool quiet, dump_trace;
- extern int debug_ordered_events;
-diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
-index 8761f51b5c7c..075c0f79b1b9 100644
---- a/tools/perf/util/python.c
-+++ b/tools/perf/util/python.c
-@@ -181,6 +181,7 @@ int perf_bpf_filter__destroy(struct evsel *evsel __maybe_unused)
-  * implementing 'verbose' and 'eprintf'.
-  */
- int verbose;
-+int debug_kmaps;
- int debug_peo_args;
- 
- int eprintf(int level, int var, const char *fmt, ...);
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 1e9aa8ed15b6..d62a2fdd81d6 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -2704,6 +2704,17 @@ size_t perf_session__fprintf(struct perf_session *session, FILE *fp)
- 	return machine__fprintf(&session->machines.host, fp);
+@@ -1329,6 +1330,58 @@ int symsrc__init(struct symsrc *ss, struct dso *dso, const char *name,
+ 	return -1;
  }
  
-+void perf_session__dump_kmaps(struct perf_session *session)
++static bool is_exe_text(int flags)
 +{
-+	int save_verbose = verbose;
-+
-+	fflush(stdout);
-+	fprintf(stderr, "Kernel and module maps:\n");
-+	verbose = 0; /* Suppress verbose to print a summary only */
-+	maps__fprintf(machine__kernel_maps(&session->machines.host), stderr);
-+	verbose = save_verbose;
++	return (flags & (SHF_ALLOC | SHF_EXECINSTR)) == (SHF_ALLOC | SHF_EXECINSTR);
 +}
 +
- struct evsel *perf_session__find_first_evtype(struct perf_session *session,
- 					      unsigned int type)
- {
-diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
-index ee3715e8563b..5064c6ec11e7 100644
---- a/tools/perf/util/session.h
-+++ b/tools/perf/util/session.h
-@@ -133,6 +133,8 @@ size_t perf_session__fprintf_dsos_buildid(struct perf_session *session, FILE *fp
- size_t perf_session__fprintf_nr_events(struct perf_session *session, FILE *fp,
- 				       bool skip_empty);
- 
-+void perf_session__dump_kmaps(struct perf_session *session);
++/*
++ * Some executable module sections like .noinstr.text might be laid out with
++ * .text so they can use the same mapping (memory address to file offset).
++ * Check if that is the case. Refer to kernel layout_sections(). Return the
++ * maximum offset.
++ */
++static u64 max_text_section(Elf *elf, GElf_Ehdr *ehdr)
++{
++	Elf_Scn *sec = NULL;
++	GElf_Shdr shdr;
++	u64 offs = 0;
 +
- struct evsel *perf_session__find_first_evtype(struct perf_session *session,
- 					    unsigned int type);
++	/* Doesn't work for some arch */
++	if (ehdr->e_machine == EM_PARISC ||
++	    ehdr->e_machine == EM_ALPHA)
++		return 0;
++
++	/* ELF is corrupted/truncated, avoid calling elf_strptr. */
++	if (!elf_rawdata(elf_getscn(elf, ehdr->e_shstrndx), NULL))
++		return 0;
++
++	while ((sec = elf_nextscn(elf, sec)) != NULL) {
++		char *sec_name;
++
++		if (!gelf_getshdr(sec, &shdr))
++			break;
++
++		if (!is_exe_text(shdr.sh_flags))
++			continue;
++
++		/* .init and .exit sections are not placed with .text */
++		sec_name = elf_strptr(elf, ehdr->e_shstrndx, shdr.sh_name);
++		if (!sec_name ||
++		    strstarts(sec_name, ".init") ||
++		    strstarts(sec_name, ".exit"))
++			break;
++
++		/* Must be next to previous, assumes .text is first */
++		if (offs && PERF_ALIGN(offs, shdr.sh_addralign ?: 1) != shdr.sh_offset)
++			break;
++
++		offs = shdr.sh_offset + shdr.sh_size;
++	}
++
++	return offs;
++}
++
+ /**
+  * ref_reloc_sym_not_found - has kernel relocation symbol been found.
+  * @kmap: kernel maps and relocation reference symbol
+@@ -1368,7 +1421,8 @@ static int dso__process_kernel_symbol(struct dso *dso, struct map *map,
+ 				      struct maps *kmaps, struct kmap *kmap,
+ 				      struct dso **curr_dsop, struct map **curr_mapp,
+ 				      const char *section_name,
+-				      bool adjust_kernel_syms, bool kmodule, bool *remap_kernel)
++				      bool adjust_kernel_syms, bool kmodule, bool *remap_kernel,
++				      u64 max_text_sh_offset)
+ {
+ 	struct dso *curr_dso = *curr_dsop;
+ 	struct map *curr_map;
+@@ -1425,6 +1479,17 @@ static int dso__process_kernel_symbol(struct dso *dso, struct map *map,
+ 	if (!kmap)
+ 		return 0;
  
++	/*
++	 * perf does not record module section addresses except for .text, but
++	 * some sections can use the same mapping as .text.
++	 */
++	if (kmodule && adjust_kernel_syms && is_exe_text(shdr->sh_flags) &&
++	    shdr->sh_offset <= max_text_sh_offset) {
++		*curr_mapp = map;
++		*curr_dsop = dso;
++		return 0;
++	}
++
+ 	snprintf(dso_name, sizeof(dso_name), "%s%s", dso->short_name, section_name);
+ 
+ 	curr_map = maps__find_by_name(kmaps, dso_name);
+@@ -1499,6 +1564,7 @@ dso__load_sym_internal(struct dso *dso, struct map *map, struct symsrc *syms_ss,
+ 	Elf *elf;
+ 	int nr = 0;
+ 	bool remap_kernel = false, adjust_kernel_syms = false;
++	u64 max_text_sh_offset = 0;
+ 
+ 	if (kmap && !kmaps)
+ 		return -1;
+@@ -1586,6 +1652,10 @@ dso__load_sym_internal(struct dso *dso, struct map *map, struct symsrc *syms_ss,
+ 		remap_kernel = true;
+ 		adjust_kernel_syms = dso->adjust_symbols;
+ 	}
++
++	if (kmodule && adjust_kernel_syms)
++		max_text_sh_offset = max_text_section(runtime_ss->elf, &runtime_ss->ehdr);
++
+ 	elf_symtab__for_each_symbol(syms, nr_syms, idx, sym) {
+ 		struct symbol *f;
+ 		const char *elf_name = elf_sym__name(&sym, symstrs);
+@@ -1675,7 +1745,8 @@ dso__load_sym_internal(struct dso *dso, struct map *map, struct symsrc *syms_ss,
+ 
+ 		if (dso->kernel) {
+ 			if (dso__process_kernel_symbol(dso, map, &sym, &shdr, kmaps, kmap, &curr_dso, &curr_map,
+-						       section_name, adjust_kernel_syms, kmodule, &remap_kernel))
++						       section_name, adjust_kernel_syms, kmodule,
++						       &remap_kernel, max_text_sh_offset))
+ 				goto out_elf_end;
+ 		} else if ((used_opd && runtime_ss->adjust_symbols) ||
+ 			   (!used_opd && syms_ss->adjust_symbols)) {
 -- 
 2.34.1
 
