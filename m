@@ -1,182 +1,149 @@
-Return-Path: <linux-kernel+bounces-55624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6633084BF28
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:23:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 786E784BF2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:25:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFCBD1F24E28
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:23:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B7111F252F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:25:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C801C1B953;
-	Tue,  6 Feb 2024 21:23:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E391B95B;
+	Tue,  6 Feb 2024 21:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nREWfIz0"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kg7PyCXe"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3176D1B949
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 21:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C11D21B94C;
+	Tue,  6 Feb 2024 21:25:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707254583; cv=none; b=kuJ5XV0V4UhFESSEzKFTzwMN8KF7GwYtcTkfrlxL0/geh5uG+suJMoww820FJsoLykAIJBeI2Prib2IAzucjoiB8b0dQQNj2/bbvTNMZRhLNA6NQ27CeBWWZjPzoAakG7xobRxdFJjJUIJVGcT2Lrp1k1HZ/jTR7p3VhHVzPobU=
+	t=1707254734; cv=none; b=pj+W58G/nTpUVqyffG0xUo9Dk/h3QWlvmIAWQEi7FrDqv+2jjFMxtt3+R4e5uzB+fdk7/ht3dGmFMpHVRqor5gMgTBqA2/9ic+G01Q7flT0daWWXWD74ZcUMYEI78EBqC98tyEH4iXvfVTIQRo75btYBEo4PvLy6HOTStRX3NgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707254583; c=relaxed/simple;
-	bh=mFw5pANaM+E7fTa/QIBb7DTO8TWgq8m2d82tmMq2mYE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mLCiMceVFt4uMVwWS1QzSqe0I5dDCYpP0Yn/D82Z0Cz0zamMChprAaUOowUINyWf8JtoT9LRK0obEtPycfyJUGTQ/8bZOdYzRxSea1JotSo66Vx9mdKl+95JYUK5vmL19rVjexpaFe29ap7kKN6CDybA7yIGZ+oA5G7vv9BYdAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nREWfIz0; arc=none smtp.client-ip=198.175.65.11
+	s=arc-20240116; t=1707254734; c=relaxed/simple;
+	bh=Syy1MLZwGxTTCjGzcJtKt49dnx/gi9kybwgAMuY3iWo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Q4kjKJBMhpxmNxD9kc6FRTJUvBeQTZapg416o3GU8vObFDQXwD41Fk6tFbK9oqiF4ZNoysLmuMr+1VpPZz7egygREQjLe5Sl+zuockzfqp/lLXzmNtG7Sj2sHIWGL+HPKBVR1vL9D3o61PBGsKXEe0EuMOD/ugbP9sXgT0ElZDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kg7PyCXe; arc=none smtp.client-ip=198.175.65.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707254581; x=1738790581;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mFw5pANaM+E7fTa/QIBb7DTO8TWgq8m2d82tmMq2mYE=;
-  b=nREWfIz0FgacRx3NRRxpVSAWU/IfuBzmX/d+dzUZAhYYbveb3xyW+Oti
-   PljFxNtXdbouRfN7IXBeNHrQ+KdKOIZySPbhuaoOSjn6MYnPUzyDsODQX
-   9HGzdJ5uejR7/1W3aVOGpGEZlnSh3pY8qg3/B5gnhhl/CyYKdYJcO4AmH
-   XYzvX+8M1K7xcsrmFcrIVNSfcLbs+kbSha427N4h7t7Lgs41LDQwtViBz
-   rXjUVz0iCyDyJ3yR4UtIa0mQdveUdNcVLyNxX/WCRzdn29us/ML55QaUh
-   xJj3PXsWyEMEXZEco/GqUPgTiw+F6MT9ZT33sYALuYOeLhPdoMKo9rod+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="11432279"
+  t=1707254732; x=1738790732;
+  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=Syy1MLZwGxTTCjGzcJtKt49dnx/gi9kybwgAMuY3iWo=;
+  b=kg7PyCXe/255fWSgoAtewt12SeuRM/EOtLRCZLnwh44YWYlzTJO0nCMv
+   5MneCe4TLBFT4QelaAkjeeuEKSO5fuWZze0OYsxwhucUVoXY/YF3g3G9C
+   8GCKmv5SeLlQWjgD9AO73Tp4jGTBzhgQ+RB28PTp3YQS3j0qRnvfFL7hG
+   2Uzwhbrlz8eIQu7HLjLKTMN7ALM0Y7YJQyH8slpMjmDH8asq5RNLsR9vw
+   hjNw9lOapEXFV5p2SlCkA+WpaMtoc9fmChFLYcXAa6ly98dZLztlvAgep
+   AlkIa+zDK/ryYRZWilW78z8jGiAV3CskJDcnRflC99zmyZ2TY1rsFcxt3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="11432748"
 X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
-   d="scan'208";a="11432279"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 13:23:00 -0800
+   d="scan'208";a="11432748"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 13:25:30 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="909765130"
 X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
-   d="scan'208";a="909765130"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 13:22:59 -0800
-Date: Tue, 6 Feb 2024 13:24:18 -0800
-From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To: kuiliang Shi <seakeel@gmail.com>
-Cc: Valentin Schneider <vschneid@redhat.com>, alexs@kernel.org,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	linux-kernel@vger.kernel.org, sshegde@linux.ibm.com
-Subject: Re: [PATCH v3 1/4] sched/fair: add SD_CLUSTER in comments
-Message-ID: <20240206212418.GA19695@ranerica-svr.sc.intel.com>
-References: <20240201115447.522627-1-alexs@kernel.org>
- <xhsmhzfwjgcvf.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <20240206024633.GD17602@ranerica-svr.sc.intel.com>
- <b19487fe-cc9b-412d-8b70-c0be6ad224ae@gmail.com>
+   d="scan'208";a="5765875"
+Received: from linux.intel.com ([10.54.29.200])
+  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 13:25:30 -0800
+Received: from dbhadrax-mobl5.amr.corp.intel.com (unknown [10.255.229.168])
+	by linux.intel.com (Postfix) with ESMTP id AFF27580DB9;
+	Tue,  6 Feb 2024 13:25:29 -0800 (PST)
+Message-ID: <9cfc65c594deef33f24b60a66b7c78c742da7203.camel@linux.intel.com>
+Subject: Re: [PATCH v2] PCI: vmd: Enable PCI PM's L1 substates of remapped
+ PCIe Root Port and NVMe
+From: "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To: Bjorn Helgaas <helgaas@kernel.org>, puranjay12@gmail.com
+Cc: Jian-Hong Pan <jhp@endlessos.org>, Johan Hovold <johan@kernel.org>, Mika
+ Westerberg <mika.westerberg@linux.intel.com>, Damien Le Moal
+ <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, Nirmal Patel
+ <nirmal.patel@linux.intel.com>, Jonathan Derrick
+ <jonathan.derrick@linux.dev>, linux-pci@vger.kernel.org,
+ linux-kernel@vger.kernel.org,  linux@endlessos.org
+Date: Tue, 06 Feb 2024 13:25:29 -0800
+In-Reply-To: <02938148545933dc9865ddbc5551e3e8a579d57e.camel@linux.intel.com>
+References: <20240205224215.GA829734@bhelgaas>
+	 <02938148545933dc9865ddbc5551e3e8a579d57e.camel@linux.intel.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b19487fe-cc9b-412d-8b70-c0be6ad224ae@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 
-On Tue, Feb 06, 2024 at 04:56:02PM +0800, kuiliang Shi wrote:
-> 
-> 
-> On 2/6/24 10:46 AM, Ricardo Neri wrote:
-> > On Fri, Feb 02, 2024 at 03:27:32PM +0100, Valentin Schneider wrote:
-> >>
-> >> Subject nit: the prefix should be sched/topology
-> >>
-> >> On 01/02/24 19:54, alexs@kernel.org wrote:
-> >>> From: Alex Shi <alexs@kernel.org>
-> >>>
-> >>> The description of SD_CLUSTER is missing. Add it.
-> >>>
-> >>> Signed-off-by: Alex Shi <alexs@kernel.org>
-> >>> To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> >>> To: Valentin Schneider <vschneid@redhat.com>
-> >>> To: Vincent Guittot <vincent.guittot@linaro.org>
-> >>> To: Juri Lelli <juri.lelli@redhat.com>
-> >>> To: Peter Zijlstra <peterz@infradead.org>
-> >>> To: Ingo Molnar <mingo@redhat.com>
-> >>> ---
-> >>>  kernel/sched/topology.c | 1 +
-> >>>  1 file changed, 1 insertion(+)
-> >>>
-> >>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> >>> index 10d1391e7416..8b45f16a1890 100644
-> >>> --- a/kernel/sched/topology.c
-> >>> +++ b/kernel/sched/topology.c
-> >>> @@ -1554,6 +1554,7 @@ static struct cpumask		***sched_domains_numa_masks;
-> >>>   * function:
-> >>>   *
-> >>>   *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
-> >>> + *   SD_CLUSTER             - describes CPU Cluster topologies
-> >>
-> >> So I know this is the naming we've gone for the "Cluster" naming, but this
-> >> comment isn't really explaining anything.
-> >>
-> >> include/linux/sched/sd_flags.h has a bit more info already:
-> >>  * Domain members share CPU cluster (LLC tags or L2 cache)
-> > 
-> > I also thought of this, but I didn't want to suggest to repeat in topolog.c
-> > what is described in sd_flags.h.
-> > 
-> > Maybe it is better to remove the descriptions of all flags here and instead
-> > direct the reader to sd_flags.h?
-> 
-> yes, good idea for getting their meaning directly from the header file. 
-> So is it fine for next sending?
+Adding Puranjay
 
-Some tweaks below.
+On Mon, 2024-02-05 at 15:05 -0800, David E. Box wrote:
+> On Mon, 2024-02-05 at 16:42 -0600, Bjorn Helgaas wrote:
+> > On Mon, Feb 05, 2024 at 11:37:16AM -0800, David E. Box wrote:
+> > > On Fri, 2024-02-02 at 18:05 -0600, Bjorn Helgaas wrote:
+> > > > On Fri, Feb 02, 2024 at 03:11:12PM +0800, Jian-Hong Pan wrote:
+> > > ...
+> >=20
+> > > > > @@ -775,6 +773,14 @@ static int vmd_pm_enable_quirk(struct pci_de=
+v
+> > > > > *pdev,
+> > > > > void *userdata)
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pci_write_config_=
+dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT,
+> > > > > ltr_reg);
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pci_info(pdev, "V=
+MD: Default LTR value set by driver\n");
+> > > >=20
+> > > > You're not changing this part, and I don't understand exactly how L=
+TR
+> > > > works, but it makes me a little bit queasy to read "set the LTR val=
+ue
+> > > > to the maximum required to allow the deepest power management
+> > > > savings" and then we set the max snoop values to a fixed constant.
+> > > >=20
+> > > > I don't think the goal is to "allow the deepest power savings"; I
+> > > > think it's to enable L1.2 *when the device has enough buffering to
+> > > > absorb L1.2 entry/exit latencies*.
+> > > >=20
+> > > > The spec (PCIe r6.0, sec 7.8.2.2) says "Software should set this to
+> > > > the platform's maximum supported latency or less," so it seems like
+> > > > that value must be platform-dependent, not fixed.
+> > > >=20
+> > > > And I assume the "_DSM for Latency Tolerance Reporting" is part of =
+the
+> > > > way to get those platform-dependent values, but Linux doesn't actua=
+lly
+> > > > use that yet.
+> > >=20
+> > > This may indeed be the best way but we need to double check with our
+> > > BIOS folks.=C2=A0 AFAIK BIOS writes the LTR values directly so there
+> > > hasn't been a need to use this _DSM. But under VMD the ports are
+> > > hidden from BIOS which is why we added it here. I've brought up the
+> > > question internally to find out how Windows handles the DSM and to
+> > > get a recommendation from our firmware leads.
+> >=20
+> > We want Linux to be able to program LTR itself, don't we?=C2=A0 We
+> > shouldn't have to rely on firmware to do it.=C2=A0 If Linux can't do
+> > it, hot-added devices aren't going to be able to use L1.2, right?
+>=20
+> Agreed. We just want to make sure we are not conflicting with what BIOS m=
+ay be
+> doing.
 
-> 
->     sched/fair: remove duplicate comments for SD_ flags
+So the feedback is to run the _DSM and just overwrite any BIOS values. Look=
+ing
+up the _DSM I saw there was an attempt to upstream this 4 years ago [1]. I'=
+m not
+sure why the effort stalled but we can pick up this work again.
 
-      sched/topology: Remove duplicate descriptions from TOPOLOGY_SD_FLAGS
->     
->     Originally, it missed SD_CLUSTER flag description, but comparing to copy
->     the flags meaning from sd_flags.h, reader is better to get info from
->     there.
-
-      These flags are already documented in include/linux/sched/sd_flags.h.
-
-      Keep the comment on SD_ASYM_PACKING as it is a special case.
->     
->     Keep SD_ASYM_PACKING unchange for a point from another way.
->     
->     Signed-off-by: Alex Shi <alexs@kernel.org>
->     To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
->     To: Valentin Schneider <vschneid@redhat.com>
->     To: Vincent Guittot <vincent.guittot@linaro.org>
->     To: Juri Lelli <juri.lelli@redhat.com>
->     To: Peter Zijlstra <peterz@infradead.org>
->     To: Ingo Molnar <mingo@redhat.com>
-> 
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 10d1391e7416..96a24bf954ad 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -1551,11 +1551,7 @@ static struct cpumask            ***sched_domains_numa_masks;
->   *
->   * These flags are purely descriptive of the topology and do not prescribe
->   * behaviour. Behaviour is artificial and mapped in the below sd_init()
-> - * function:
-> - *
-> - *   SD_SHARE_CPUCAPACITY   - describes SMT topologies
-> - *   SD_SHARE_PKG_RESOURCES - describes shared caches
-> - *   SD_NUMA                - describes NUMA topologies
-
-Maybe only remove the descriptions but keep the enumeration?
-
-> + * function, for details in include/linux/sched/sd_flags.h:
-
-      function. For details, see include/linux/sched/sd_flags.h.
-
-
+https://patchwork.kernel.org/project/linux-pci/patch/20201015080311.7811-1-=
+puranjay12@gmail.com/
 
