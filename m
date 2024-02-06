@@ -1,658 +1,264 @@
-Return-Path: <linux-kernel+bounces-54142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5BCF84AB6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:10:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A0DF84AB79
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7CF31C23748
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:10:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCA56B20E79
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:18:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0A988C1E;
-	Tue,  6 Feb 2024 01:10:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NhIySEU6"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 139056FB8
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 01:09:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 711DF15A4;
+	Tue,  6 Feb 2024 01:18:15 +0000 (UTC)
+Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA9D310F4
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 01:18:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.10.64.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707181801; cv=none; b=lpvCS585voq80RSVnjtPaXhhcflurri9cCKo2N6dnTDpYtPi+TIZDADMDAt4maihA+OmOIc+R+b8N/YPpZBNxJwRPAaKu64057IG+h8o6nsk7uT4fcTPv0DL+O4f5Yvz+GJ2TaYeUPZJ4p7dStho1TYyd9H0MPvlDiA7/1xgyw4=
+	t=1707182294; cv=none; b=qPg4Kv1O5ycRzmVoTIFu2KNVnrXGxSue6YyHOBvCBtg69b+msjJ5QaoY+Fc7lEc1/56TvCUpAtiUhSrcO9qiHtn61oznDVrUJRCRMzNSKTQadpfMwcFzM4NNpXOONybKB2n1fDi9gfmvbgVxii0YuITlHc4RMXszeUnCSavzea4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707181801; c=relaxed/simple;
-	bh=et1bk2HClvxxx+KlnYCYoJxbCpB22sDtDyEdKKTZUY0=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=My0W1q/xDVgH5sCDDxk3pk2VubnZ+TgDDVWO7HR1CnLdtz2mwXK7xd8gTB9pMEQPRgRb6LlLWQdKlVrgpqi1E2jn8lF351+Go9b73zQaNpaKVVcJWd73VcYvW3oYx6w+my6qEhzQOrusfDzCi2fN5i/BgAY60O3rs9aMmxwe9G0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--lokeshgidra.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NhIySEU6; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--lokeshgidra.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6cd00633dso510349276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 17:09:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707181798; x=1707786598; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nOqm5rsZhzJMvjR9+dAhD+eAWB3F8dZk7DoU+bZxnlo=;
-        b=NhIySEU6evwVfhRcDqh/yRLLNAQ444JW1YiT7baNb/pe4a21Q6ByNwLRV/8eevtFzH
-         GRjodO6oCUkEaOqErqczmia7dipf7mIAXhZ6E91CLb5My67MH02/Ul5CBwFKXlE7uy0R
-         Z1dydJqE7Qd0yniNv839F10PC3Jem3Jy5hAsPMR0F8DpTx1jpdb4EOLZkSF1TqCBBlJS
-         g9a0EC56QyDWRqmNaHFdXfwvrTchjagyE0YVOOxErqK3TQZ/SQmCowTEVpZMJ0DL/kuP
-         Dmgxyo/HGepJLMlfqBV2Hw14Dw+F25L9mTQAlHyOEAkL7+fbgX8SBxjiJymiHG1t2dIS
-         kj0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707181798; x=1707786598;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nOqm5rsZhzJMvjR9+dAhD+eAWB3F8dZk7DoU+bZxnlo=;
-        b=PIDstnp3+pvIn3f5lXJmkpHoz97Fn9btOxbSwPtyXvOnjl7zhew+zwNYnUmec1CtmX
-         aulkkS/HVWRibRUEb16fzKowpK4C7ktCDLNrVwPA6xy0sbRkzccOoRSXfHs931wVElDw
-         43PxMd+2UmEcAZ3cBlI2qrPwIeI8c+8JDcpU+PtoFlslxgzA5wOVgmeDy0aiW/IUV9H+
-         9FAoT16quBVwsXMKmSums9z63Qt3f6DRyqALFsfRzpX9vmIRmfkuQ633wD8xdx6Vv0Ue
-         xQ/k8trGFQR+VD3mKbXxGhWhSHqZyXIJQKzMcGtfKnw7LmHt/KQ/E40EXGF9WGzGfdJW
-         qm/g==
-X-Gm-Message-State: AOJu0YwNBFlKHAYFLQLOeqN5BV36lbSCAVET47XrNfSF4RlFkIwOk4lj
-	LS5UHKeZ9w5QXys/If/XA+lRCRjw8Mgsl66zplSRiNA3l9sI58jOa8+Xg6hrn/9urUGDKQHo2fX
-	FMEMkrY2KeNNWd18sNEn9kA==
-X-Google-Smtp-Source: AGHT+IFYxfY6Ge56ali6DMQRIXX2ISa1rBsLQcS+PmAp5ZBB9lJ2RO73M/vP9jb/DuDtls5ONW17Z8++ijURLhrH/Q==
-X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:713:bb2c:e0e8:becb])
- (user=lokeshgidra job=sendgmr) by 2002:a05:6902:1b06:b0:dc2:3247:89d5 with
- SMTP id eh6-20020a0569021b0600b00dc2324789d5mr7221ybb.4.1707181798107; Mon,
- 05 Feb 2024 17:09:58 -0800 (PST)
-Date: Mon,  5 Feb 2024 17:09:19 -0800
-In-Reply-To: <20240206010919.1109005-1-lokeshgidra@google.com>
+	s=arc-20240116; t=1707182294; c=relaxed/simple;
+	bh=1OAsjmGWHUQHaPAdnmgD2EvriyaiRbFvOT6jgGrn8SE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Mime-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jv9iSFNsK5UPFnJRSYw09ONXHTkQIMLXdKO21y1ZW1uzHAdmvtveBkwfu27u1XEoCa/wnw0w5yvNSErCrL1AsthkiV7QpL8A6jigLwTBv55N1nQlzNNB38ZEPoWjeEarLbVMPHLoD/SZyWwjM1dEY0pU1V/f7tZCXFsx/2+qXOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com; spf=pass smtp.mailfrom=wind.enjellic.com; arc=none smtp.client-ip=76.10.64.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wind.enjellic.com
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+	by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 4161CmKi029258;
+	Mon, 5 Feb 2024 19:12:48 -0600
+Received: (from greg@localhost)
+	by wind.enjellic.com (8.15.2/8.15.2/Submit) id 4161ClJZ029257;
+	Mon, 5 Feb 2024 19:12:47 -0600
+Date: Mon, 5 Feb 2024 19:12:47 -0600
+From: "Dr. Greg" <greg@enjellic.com>
+To: "Reshetova, Elena" <elena.reshetova@intel.com>
+Cc: "Daniel P. Berrang??" <berrange@redhat.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
+Message-ID: <20240206011247.GA29224@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20240130083007.1876787-1-kirill.shutemov@linux.intel.com> <20240130083007.1876787-2-kirill.shutemov@linux.intel.com> <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com> <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com> <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com> <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com> <Zbk6h0ogqeInLa_1@redhat.com> <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240206010919.1109005-1-lokeshgidra@google.com>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Message-ID: <20240206010919.1109005-4-lokeshgidra@google.com>
-Subject: [PATCH v3 3/3] userfaultfd: use per-vma locks in userfaultfd operations
-From: Lokesh Gidra <lokeshgidra@google.com>
-To: akpm@linux-foundation.org
-Cc: lokeshgidra@google.com, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, selinux@vger.kernel.org, surenb@google.com, 
-	kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com, 
-	david@redhat.com, axelrasmussen@google.com, bgeffon@google.com, 
-	willy@infradead.org, jannh@google.com, kaleshsingh@google.com, 
-	ngeoffray@google.com, timmurray@google.com, rppt@kernel.org, 
-	Liam.Howlett@oracle.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Mon, 05 Feb 2024 19:12:48 -0600 (CST)
 
-All userfaultfd operations, except write-protect, opportunistically use
-per-vma locks to lock vmas. On failure, attempt again inside mmap_lock
-critical section.
+On Wed, Jan 31, 2024 at 08:16:56AM +0000, Reshetova, Elena wrote:
 
-Write-protect operation requires mmap_lock as it iterates over multiple
-vmas.
+Good evening, I hope the week has started well for everyone.
 
-Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
----
- fs/userfaultfd.c              |  13 +-
- include/linux/mm.h            |  16 +++
- include/linux/userfaultfd_k.h |   5 +-
- mm/memory.c                   |  48 +++++++
- mm/userfaultfd.c              | 242 +++++++++++++++++++++-------------
- 5 files changed, 222 insertions(+), 102 deletions(-)
+> > On Tue, Jan 30, 2024 at 06:49:15PM +0100, Jason A. Donenfeld wrote:
+> > > On Tue, Jan 30, 2024 at 6:32???PM Dave Hansen <dave.hansen@intel.com> wrote:
+> > > >
+> > > > On 1/30/24 05:45, Reshetova, Elena wrote:
+> > > > >> You're the Intel employee so you can find out about this with much
+> > > > >> more assurance than me, but I understand the sentence above to be _way
+> > > > >> more_ true for RDRAND than for RDSEED. If your informed opinion is,
+> > > > >> "RDRAND failing can only be due to totally broken hardware"
+> > > > > No, this is not the case per Intel SDM. I think we can live under a simple
+> > > > > assumption that both of these instructions can fail not just due to broken
+> > > > > HW, but also due to enough pressure put into the whole DRBG construction
+> > > > > that supplies random numbers via RDRAND/RDSEED.
+> > > >
+> > > > I don't think the SDM is the right thing to look at for guidance here.
+> > > >
+> > > > Despite the SDM allowing it, we (software) need RDRAND/RDSEED failures
+> > > > to be exceedingly rare by design.  If they're not, we're going to get
+> > > > our trusty torches and pitchforks and go after the folks who built the
+> > > > broken hardware.
+> > > >
+> > > > Repeat after me:
+> > > >
+> > > >         Regular RDRAND/RDSEED failures only occur on broken hardware
+> > > >
+> > > > If it's nice hardware that's gone bad, then we WARN() and try to make
+> > > > the best of it.  If it turns out that WARN() was because of a broken
+> > > > hardware _design_ then we go sharpen the pitchforks.
+> > > >
+> > > > Anybody disagree?
+> > >
+> > > Yes, I disagree. I made a trivial test that shows RDSEED breaks easily
+> > > in a busy loop. So at the very least, your statement holds true only
+> > > for RDRAND.
+> > >
+> > > But, anyway, if the statement "RDRAND failures only occur on broken
+> > > hardware" is true, then a WARN() in the failure path there presents no
+> > > DoS potential of any kind, and so that's a straightforward conclusion
+> > > to this discussion. However, that really hinges on  "RDRAND failures
+> > > only occur on broken hardware" being a true statement.
+> > 
+> > There's a useful comment here from an Intel engineer
+> > 
+> > https://web.archive.org/web/20190219074642/https://software.intel.com/en-
+> > us/blogs/2012/11/17/the-difference-between-rdrand-and-rdseed
+> > 
+> >   "RDRAND is, indeed, faster than RDSEED because it comes
+> >    from a hardware-based pseudorandom number generator.
+> >    One seed value (effectively, the output from one RDSEED
+> >    command) can provide up to 511 128-bit random values
+> >    before forcing a reseed"
+> > 
+> > We know we can exhaust RDSEED directly pretty trivially. Making your
+> > test program run in parallel across 20 cpus, I got a mere 3% success
+> > rate from RDSEED.
+> > 
+> > If RDRAND is reseeding every 511 values, RDRAND output would have
+> > to be consumed significantly faster than RDSEED in order that the
+> > reseed will happen frequently enough to exhaust the seeds.
+> > 
+> > This looks pretty hard, but maybe with a large enough CPU count
+> > this will be possible in extreme load ?
+> > 
+> > So I'm not convinced we can blindly wave away RDRAND failures as
+> > guaranteed to mean broken hardware.
 
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index c00a021bcce4..60dcfafdc11a 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -2005,17 +2005,8 @@ static int userfaultfd_move(struct userfaultfd_ctx *ctx,
- 		return -EINVAL;
- 
- 	if (mmget_not_zero(mm)) {
--		mmap_read_lock(mm);
--
--		/* Re-check after taking map_changing_lock */
--		down_read(&ctx->map_changing_lock);
--		if (likely(!atomic_read(&ctx->mmap_changing)))
--			ret = move_pages(ctx, mm, uffdio_move.dst, uffdio_move.src,
--					 uffdio_move.len, uffdio_move.mode);
--		else
--			ret = -EAGAIN;
--		up_read(&ctx->map_changing_lock);
--		mmap_read_unlock(mm);
-+		ret = move_pages(ctx, uffdio_move.dst, uffdio_move.src,
-+				 uffdio_move.len, uffdio_move.mode);
- 		mmput(mm);
- 	} else {
- 		return -ESRCH;
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 0d1f98ab0c72..e69dfe2edcce 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -753,6 +753,11 @@ static inline void release_fault_lock(struct vm_fault *vmf)
- 		mmap_read_unlock(vmf->vma->vm_mm);
- }
- 
-+static inline void unlock_vma(struct mm_struct *mm, struct vm_area_struct *vma)
-+{
-+	vma_end_read(vma);
-+}
-+
- static inline void assert_fault_locked(struct vm_fault *vmf)
- {
- 	if (vmf->flags & FAULT_FLAG_VMA_LOCK)
-@@ -774,6 +779,9 @@ static inline void vma_assert_write_locked(struct vm_area_struct *vma)
- 		{ mmap_assert_write_locked(vma->vm_mm); }
- static inline void vma_mark_detached(struct vm_area_struct *vma,
- 				     bool detached) {}
-+static inline void vma_acquire_read_lock(struct vm_area_struct *vma) {
-+	mmap_assert_locked(vma->vm_mm);
-+}
- 
- static inline struct vm_area_struct *lock_vma_under_rcu(struct mm_struct *mm,
- 		unsigned long address)
-@@ -786,6 +794,11 @@ static inline void release_fault_lock(struct vm_fault *vmf)
- 	mmap_read_unlock(vmf->vma->vm_mm);
- }
- 
-+static inline void unlock_vma(struct mm_struct *mm, struct vm_area_struct *vma)
-+{
-+	mmap_read_unlock(mm);
-+}
-+
- static inline void assert_fault_locked(struct vm_fault *vmf)
- {
- 	mmap_assert_locked(vmf->vma->vm_mm);
-@@ -794,6 +807,9 @@ static inline void assert_fault_locked(struct vm_fault *vmf)
- #endif /* CONFIG_PER_VMA_LOCK */
- 
- extern const struct vm_operations_struct vma_dummy_vm_ops;
-+extern struct vm_area_struct *lock_vma(struct mm_struct *mm,
-+				       unsigned long address,
-+				       bool prepare_anon);
- 
- /*
-  * WARNING: vma_init does not initialize vma->vm_lock.
-diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
-index 3210c3552976..05d59f74fc88 100644
---- a/include/linux/userfaultfd_k.h
-+++ b/include/linux/userfaultfd_k.h
-@@ -138,9 +138,8 @@ extern long uffd_wp_range(struct vm_area_struct *vma,
- /* move_pages */
- void double_pt_lock(spinlock_t *ptl1, spinlock_t *ptl2);
- void double_pt_unlock(spinlock_t *ptl1, spinlock_t *ptl2);
--ssize_t move_pages(struct userfaultfd_ctx *ctx, struct mm_struct *mm,
--		   unsigned long dst_start, unsigned long src_start,
--		   unsigned long len, __u64 flags);
-+ssize_t move_pages(struct userfaultfd_ctx *ctx, unsigned long dst_start,
-+		   unsigned long src_start, unsigned long len, __u64 flags);
- int move_pages_huge_pmd(struct mm_struct *mm, pmd_t *dst_pmd, pmd_t *src_pmd, pmd_t dst_pmdval,
- 			struct vm_area_struct *dst_vma,
- 			struct vm_area_struct *src_vma,
-diff --git a/mm/memory.c b/mm/memory.c
-index b05fd28dbce1..393ab3b0d6f3 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -5760,8 +5760,56 @@ struct vm_area_struct *lock_vma_under_rcu(struct mm_struct *mm,
- 	count_vm_vma_lock_event(VMA_LOCK_ABORT);
- 	return NULL;
- }
-+
-+static void vma_acquire_read_lock(struct vm_area_struct *vma)
-+{
-+	/*
-+	 * We cannot use vma_start_read() as it may fail due to false locked
-+	 * (see comment in vma_start_read()). We can avoid that by directly
-+	 * locking vm_lock under mmap_lock, which guarantees that nobody could
-+	 * have locked the vma for write (vma_start_write()).
-+	 */
-+	mmap_assert_locked(vma->vm_mm);
-+	down_read(&vma->vm_lock->lock);
-+}
- #endif /* CONFIG_PER_VMA_LOCK */
- 
-+/*
-+ * lock_vma() - Lookup and lock VMA corresponding to @address.
-+ * @prepare_anon: If true, then prepare the VMA (if anonymous) with anon_vma.
-+ *
-+ * Should be called without holding mmap_lock. VMA should be unlocked after use
-+ * with unlock_vma().
-+ *
-+ * Return: A locked VMA containing @address, NULL of no VMA is found, or
-+ * -ENOMEM if anon_vma couldn't be allocated.
-+ */
-+struct vm_area_struct *lock_vma(struct mm_struct *mm,
-+				unsigned long address,
-+				bool prepare_anon)
-+{
-+	struct vm_area_struct *vma;
-+
-+	vma = lock_vma_under_rcu(mm, address);
-+
-+	if (vma)
-+		return vma;
-+
-+	mmap_read_lock(mm);
-+	vma = vma_lookup(mm, address);
-+	if (vma) {
-+		if (prepare_anon && vma_is_anonymous(vma) &&
-+		    anon_vma_prepare(vma))
-+			vma = ERR_PTR(-ENOMEM);
-+		else
-+			vma_acquire_read_lock(vma);
-+	}
-+
-+	if (IS_ENABLED(CONFIG_PER_VMA_LOCK) || !vma || PTR_ERR(vma) == -ENOMEM)
-+		mmap_read_unlock(mm);
-+	return vma;
-+}
-+
- #ifndef __PAGETABLE_P4D_FOLDED
- /*
-  * Allocate p4d page table.
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index 74aad0831e40..64e22e467e4f 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -19,20 +19,25 @@
- #include <asm/tlb.h>
- #include "internal.h"
- 
--static __always_inline
--struct vm_area_struct *find_dst_vma(struct mm_struct *dst_mm,
--				    unsigned long dst_start,
--				    unsigned long len)
-+/* Search for VMA and make sure it is valid. */
-+static struct vm_area_struct *find_and_lock_dst_vma(struct mm_struct *dst_mm,
-+						    unsigned long dst_start,
-+						    unsigned long len)
- {
--	/*
--	 * Make sure that the dst range is both valid and fully within a
--	 * single existing vma.
--	 */
- 	struct vm_area_struct *dst_vma;
- 
--	dst_vma = find_vma(dst_mm, dst_start);
--	if (!range_in_vma(dst_vma, dst_start, dst_start + len))
--		return NULL;
-+	/* Ensure anon_vma is assigned for anonymous vma */
-+	dst_vma = lock_vma(dst_mm, dst_start, true);
-+
-+	if (!dst_vma)
-+		return ERR_PTR(-ENOENT);
-+
-+	if (PTR_ERR(dst_vma) == -ENOMEM)
-+		return dst_vma;
-+
-+	/* Make sure that the dst range is fully within dst_vma. */
-+	if (dst_start + len > dst_vma->vm_end)
-+		goto out_unlock;
- 
- 	/*
- 	 * Check the vma is registered in uffd, this is required to
-@@ -40,9 +45,12 @@ struct vm_area_struct *find_dst_vma(struct mm_struct *dst_mm,
- 	 * time.
- 	 */
- 	if (!dst_vma->vm_userfaultfd_ctx.ctx)
--		return NULL;
-+		goto out_unlock;
- 
- 	return dst_vma;
-+out_unlock:
-+	unlock_vma(dst_mm, dst_vma);
-+	return ERR_PTR(-ENOENT);
- }
- 
- /* Check if dst_addr is outside of file's size. Must be called with ptl held. */
-@@ -350,7 +358,8 @@ static pmd_t *mm_alloc_pmd(struct mm_struct *mm, unsigned long address)
- #ifdef CONFIG_HUGETLB_PAGE
- /*
-  * mfill_atomic processing for HUGETLB vmas.  Note that this routine is
-- * called with mmap_lock held, it will release mmap_lock before returning.
-+ * called with either vma-lock or mmap_lock held, it will release the lock
-+ * before returning.
-  */
- static __always_inline ssize_t mfill_atomic_hugetlb(
- 					      struct userfaultfd_ctx *ctx,
-@@ -361,7 +370,6 @@ static __always_inline ssize_t mfill_atomic_hugetlb(
- 					      uffd_flags_t flags)
- {
- 	struct mm_struct *dst_mm = dst_vma->vm_mm;
--	int vm_shared = dst_vma->vm_flags & VM_SHARED;
- 	ssize_t err;
- 	pte_t *dst_pte;
- 	unsigned long src_addr, dst_addr;
-@@ -380,7 +388,7 @@ static __always_inline ssize_t mfill_atomic_hugetlb(
- 	 */
- 	if (uffd_flags_mode_is(flags, MFILL_ATOMIC_ZEROPAGE)) {
- 		up_read(&ctx->map_changing_lock);
--		mmap_read_unlock(dst_mm);
-+		unlock_vma(dst_mm, dst_vma);
- 		return -EINVAL;
- 	}
- 
-@@ -403,24 +411,28 @@ static __always_inline ssize_t mfill_atomic_hugetlb(
- 	 * retry, dst_vma will be set to NULL and we must lookup again.
- 	 */
- 	if (!dst_vma) {
-+		dst_vma = find_and_lock_dst_vma(dst_mm, dst_start, len);
-+		if (IS_ERR(dst_vma)) {
-+			err = PTR_ERR(dst_vma);
-+			goto out;
-+		}
-+
- 		err = -ENOENT;
--		dst_vma = find_dst_vma(dst_mm, dst_start, len);
--		if (!dst_vma || !is_vm_hugetlb_page(dst_vma))
--			goto out_unlock;
-+		if (!is_vm_hugetlb_page(dst_vma))
-+			goto out_unlock_vma;
- 
- 		err = -EINVAL;
- 		if (vma_hpagesize != vma_kernel_pagesize(dst_vma))
--			goto out_unlock;
-+			goto out_unlock_vma;
- 
--		vm_shared = dst_vma->vm_flags & VM_SHARED;
--	}
--
--	/*
--	 * If not shared, ensure the dst_vma has a anon_vma.
--	 */
--	err = -ENOMEM;
--	if (!vm_shared) {
--		if (unlikely(anon_vma_prepare(dst_vma)))
-+		/*
-+		 * If memory mappings are changing because of non-cooperative
-+		 * operation (e.g. mremap) running in parallel, bail out and
-+		 * request the user to retry later
-+		 */
-+		down_read(&ctx->map_changing_lock);
-+		err = -EAGAIN;
-+		if (atomic_read(&ctx->mmap_changing))
- 			goto out_unlock;
- 	}
- 
-@@ -465,7 +477,7 @@ static __always_inline ssize_t mfill_atomic_hugetlb(
- 
- 		if (unlikely(err == -ENOENT)) {
- 			up_read(&ctx->map_changing_lock);
--			mmap_read_unlock(dst_mm);
-+			unlock_vma(dst_mm, dst_vma);
- 			BUG_ON(!folio);
- 
- 			err = copy_folio_from_user(folio,
-@@ -474,17 +486,6 @@ static __always_inline ssize_t mfill_atomic_hugetlb(
- 				err = -EFAULT;
- 				goto out;
- 			}
--			mmap_read_lock(dst_mm);
--			down_read(&ctx->map_changing_lock);
--			/*
--			 * If memory mappings are changing because of non-cooperative
--			 * operation (e.g. mremap) running in parallel, bail out and
--			 * request the user to retry later
--			 */
--			if (atomic_read(&ctx->mmap_changing)) {
--				err = -EAGAIN;
--				break;
--			}
- 
- 			dst_vma = NULL;
- 			goto retry;
-@@ -505,7 +506,8 @@ static __always_inline ssize_t mfill_atomic_hugetlb(
- 
- out_unlock:
- 	up_read(&ctx->map_changing_lock);
--	mmap_read_unlock(dst_mm);
-+out_unlock_vma:
-+	unlock_vma(dst_mm, dst_vma);
- out:
- 	if (folio)
- 		folio_put(folio);
-@@ -597,7 +599,15 @@ static __always_inline ssize_t mfill_atomic(struct userfaultfd_ctx *ctx,
- 	copied = 0;
- 	folio = NULL;
- retry:
--	mmap_read_lock(dst_mm);
-+	/*
-+	 * Make sure the vma is not shared, that the dst range is
-+	 * both valid and fully within a single existing vma.
-+	 */
-+	dst_vma = find_and_lock_dst_vma(dst_mm, dst_start, len);
-+	if (IS_ERR(dst_vma)) {
-+		err = PTR_ERR(dst_vma);
-+		goto out;
-+	}
- 
- 	/*
- 	 * If memory mappings are changing because of non-cooperative
-@@ -609,15 +619,6 @@ static __always_inline ssize_t mfill_atomic(struct userfaultfd_ctx *ctx,
- 	if (atomic_read(&ctx->mmap_changing))
- 		goto out_unlock;
- 
--	/*
--	 * Make sure the vma is not shared, that the dst range is
--	 * both valid and fully within a single existing vma.
--	 */
--	err = -ENOENT;
--	dst_vma = find_dst_vma(dst_mm, dst_start, len);
--	if (!dst_vma)
--		goto out_unlock;
--
- 	err = -EINVAL;
- 	/*
- 	 * shmem_zero_setup is invoked in mmap for MAP_ANONYMOUS|MAP_SHARED but
-@@ -647,16 +648,6 @@ static __always_inline ssize_t mfill_atomic(struct userfaultfd_ctx *ctx,
- 	    uffd_flags_mode_is(flags, MFILL_ATOMIC_CONTINUE))
- 		goto out_unlock;
- 
--	/*
--	 * Ensure the dst_vma has a anon_vma or this page
--	 * would get a NULL anon_vma when moved in the
--	 * dst_vma.
--	 */
--	err = -ENOMEM;
--	if (!(dst_vma->vm_flags & VM_SHARED) &&
--	    unlikely(anon_vma_prepare(dst_vma)))
--		goto out_unlock;
--
- 	while (src_addr < src_start + len) {
- 		pmd_t dst_pmdval;
- 
-@@ -699,7 +690,8 @@ static __always_inline ssize_t mfill_atomic(struct userfaultfd_ctx *ctx,
- 			void *kaddr;
- 
- 			up_read(&ctx->map_changing_lock);
--			mmap_read_unlock(dst_mm);
-+			unlock_vma(dst_mm, dst_vma);
-+
- 			BUG_ON(!folio);
- 
- 			kaddr = kmap_local_folio(folio, 0);
-@@ -730,7 +722,7 @@ static __always_inline ssize_t mfill_atomic(struct userfaultfd_ctx *ctx,
- 
- out_unlock:
- 	up_read(&ctx->map_changing_lock);
--	mmap_read_unlock(dst_mm);
-+	unlock_vma(dst_mm, dst_vma);
- out:
- 	if (folio)
- 		folio_put(folio);
-@@ -1267,16 +1259,82 @@ static int validate_move_areas(struct userfaultfd_ctx *ctx,
- 	if (!vma_is_anonymous(src_vma) || !vma_is_anonymous(dst_vma))
- 		return -EINVAL;
- 
--	/*
--	 * Ensure the dst_vma has a anon_vma or this page
--	 * would get a NULL anon_vma when moved in the
--	 * dst_vma.
--	 */
--	if (unlikely(anon_vma_prepare(dst_vma)))
--		return -ENOMEM;
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PER_VMA_LOCK
-+static int find_and_lock_move_vmas(struct mm_struct *mm,
-+				   unsigned long dst_start,
-+				   unsigned long src_start,
-+				   struct vm_area_struct **dst_vmap,
-+				   struct vm_area_struct **src_vmap)
-+{
-+	int err;
-+
-+	/* There is no need to prepare anon_vma for src_vma */
-+	*src_vmap = lock_vma(mm, src_start, false);
-+	if (!*src_vmap)
-+		return -ENOENT;
-+
-+	/* Ensure anon_vma is assigned for anonymous vma */
-+	*dst_vmap = lock_vma(mm, dst_start, true);
-+	err = -ENOENT;
-+	if (!*dst_vmap)
-+		goto out_unlock;
-+
-+	err = -ENOMEM;
-+	if (PTR_ERR(*dst_vmap) == -ENOMEM)
-+		goto out_unlock;
- 
- 	return 0;
-+out_unlock:
-+	unlock_vma(mm, *src_vmap);
-+	return err;
-+}
-+
-+static void unlock_move_vmas(struct mm_struct *mm,
-+			     struct vm_area_struct *dst_vma,
-+			     struct vm_area_struct *src_vma)
-+{
-+	unlock_vma(mm, dst_vma);
-+	unlock_vma(mm, src_vma);
- }
-+#else
-+static int find_and_lock_move_vmas(struct mm_struct *mm,
-+				   unsigned long dst_start,
-+				   unsigned long src_start,
-+				   struct vm_area_struct **dst_vmap,
-+				   struct vm_area_struct **src_vmap)
-+{
-+	int err = -ENOENT;
-+	mmap_read_lock(mm);
-+
-+	*src_vmap = vma_lookup(mm, src_start);
-+	if (!*src_vmap)
-+		goto out_unlock;
-+
-+	*dst_vmap = vma_lookup(mm, dst_start);
-+	if (!*dst_vmap)
-+		goto out_unlock;
-+
-+	/* Ensure anon_vma is assigned */
-+	err = -ENOMEM;
-+	if (vma_is_anonymous(*dst_vmap) && !anon_vma_prepare(*dst_vmap))
-+		goto out_unlock;
-+
-+	return 0;
-+out_unlock:
-+	mmap_read_unlock(mm);
-+	return err;
-+}
-+
-+static void unlock_move_vmas(struct mm_struct *mm,
-+			     struct vm_area_struct *dst_vma,
-+			     struct vm_area_struct *src_vma)
-+{
-+	mmap_read_unlock(mm);
-+}
-+#endif
- 
- /**
-  * move_pages - move arbitrary anonymous pages of an existing vma
-@@ -1287,8 +1345,6 @@ static int validate_move_areas(struct userfaultfd_ctx *ctx,
-  * @len: length of the virtual memory range
-  * @mode: flags from uffdio_move.mode
-  *
-- * Must be called with mmap_lock held for read.
-- *
-  * move_pages() remaps arbitrary anonymous pages atomically in zero
-  * copy. It only works on non shared anonymous pages because those can
-  * be relocated without generating non linear anon_vmas in the rmap
-@@ -1355,10 +1411,10 @@ static int validate_move_areas(struct userfaultfd_ctx *ctx,
-  * could be obtained. This is the only additional complexity added to
-  * the rmap code to provide this anonymous page remapping functionality.
-  */
--ssize_t move_pages(struct userfaultfd_ctx *ctx, struct mm_struct *mm,
--		   unsigned long dst_start, unsigned long src_start,
--		   unsigned long len, __u64 mode)
-+ssize_t move_pages(struct userfaultfd_ctx *ctx, unsigned long dst_start,
-+		   unsigned long src_start, unsigned long len, __u64 mode)
- {
-+	struct mm_struct *mm = ctx->mm;
- 	struct vm_area_struct *src_vma, *dst_vma;
- 	unsigned long src_addr, dst_addr;
- 	pmd_t *src_pmd, *dst_pmd;
-@@ -1376,28 +1432,35 @@ ssize_t move_pages(struct userfaultfd_ctx *ctx, struct mm_struct *mm,
- 	    WARN_ON_ONCE(dst_start + len <= dst_start))
- 		goto out;
- 
-+	err = find_and_lock_move_vmas(mm, dst_start, src_start,
-+				      &dst_vma, &src_vma);
-+	if (err)
-+		goto out;
-+
-+	/* Re-check after taking map_changing_lock */
-+	down_read(&ctx->map_changing_lock);
-+	if (likely(atomic_read(&ctx->mmap_changing))) {
-+		err = -EAGAIN;
-+		goto out_unlock;
-+	}
- 	/*
- 	 * Make sure the vma is not shared, that the src and dst remap
- 	 * ranges are both valid and fully within a single existing
- 	 * vma.
- 	 */
--	src_vma = find_vma(mm, src_start);
--	if (!src_vma || (src_vma->vm_flags & VM_SHARED))
--		goto out;
--	if (src_start < src_vma->vm_start ||
--	    src_start + len > src_vma->vm_end)
--		goto out;
-+	if (src_vma->vm_flags & VM_SHARED)
-+		goto out_unlock;
-+	if (src_start + len > src_vma->vm_end)
-+		goto out_unlock;
- 
--	dst_vma = find_vma(mm, dst_start);
--	if (!dst_vma || (dst_vma->vm_flags & VM_SHARED))
--		goto out;
--	if (dst_start < dst_vma->vm_start ||
--	    dst_start + len > dst_vma->vm_end)
--		goto out;
-+	if (dst_vma->vm_flags & VM_SHARED)
-+		goto out_unlock;
-+	if (dst_start + len > dst_vma->vm_end)
-+		goto out_unlock;
- 
- 	err = validate_move_areas(ctx, src_vma, dst_vma);
- 	if (err)
--		goto out;
-+		goto out_unlock;
- 
- 	for (src_addr = src_start, dst_addr = dst_start;
- 	     src_addr < src_start + len;) {
-@@ -1514,6 +1577,9 @@ ssize_t move_pages(struct userfaultfd_ctx *ctx, struct mm_struct *mm,
- 		moved += step_size;
- 	}
- 
-+out_unlock:
-+	up_read(&ctx->map_changing_lock);
-+	unlock_move_vmas(mm, dst_vma, src_vma);
- out:
- 	VM_WARN_ON(moved < 0);
- 	VM_WARN_ON(err > 0);
--- 
-2.43.0.594.gd9cf4e227d-goog
+> This matches both my understanding (I do have cryptography
+> background and understanding how cryptographic RNGs work) and
+> official public docs that Intel published on this matter.  Given
+> that the physical entropy source is limited anyhow, and by giving
+> enough pressure on the whole construction you should be able to make
+> RDRAND fail because if the intermediate AES-CBC MAC extractor/
+> conditioner is not getting its min entropy input rate, it wont
+> produce a proper seed for AES CTR DRBG.  Of course exact
+> details/numbers can wary between different generations of Intel DRNG
+> implementation, and the platforms where it is running on, so be
+> careful to sticking to concrete numbers.
 
+In the spirit of that philosophy we proffer the response below.
+
+> That said, I have taken an AR to follow up internally on what can be
+> done to improve our situation with RDRAND/RDSEED. But I would still
+> like to finish the discussion on what people think should be done in
+> the meanwhile keeping in mind that the problem is not intel
+> specific, despite us intel people bringing it for public discussion
+> first. The old saying is still here: "Please don't shoot the
+> messenger" )) We are actually trying to be open about these things
+> and create a public discussion.
+
+Actually, I now believe there is clear evidence that the problem is
+indeed Intel specific.  In light of our testing, it will be
+interesting to see what your 'AR' returns with respect to an official
+response from Intel engineering on this issue.
+
+One of the very bright young engineers collaborating on Quixote, who
+has been following this conversation, took it upon himself to do some
+very methodical engineering analysis on this issue.  I'm the messenger
+but this is very much his work product.
+
+Executive summary is as follows:
+
+- No RDRAND depletion failures were observable with either the Intel
+  or AMD hardware that was load tested.
+
+- RDSEED depletion is an Intel specific issue, AMD's RDSEED
+  implementation could not be provoked into failure.
+
+- AMD's RDRAND/RDSEED implementation is significantly slower than
+  Intel's.
+
+Here are the engineer's lab notes verbatim:
+
+---------------------------------------------------------------------------
+I tested both the single-threaded and OMP-multithreaded versions of
+the RDSEED/RDRAND depletion loop on each of the machines below.
+
+AMD: 2X AMD EPYC 7713 (Milan) 64-Core Processor @ 2.0 GHz, 128
+physical cores total
+
+Intel: 2X Intel Xeon Gold 6140 (Skylake) 18-Core Processor @ 2.3 GHz,
+36 physical cores total
+
+Single-threaded results:
+
+Test case: 1,000,000 iterations each for RDRAND and RDSEED, n=100
+tests, single-threaded.
+
+AMD: 100% success rate for both RDRAND and RDSEED for all tests,
+runtime 0.909-1.055s (min-max).
+
+Intel: 100% success rate for RDRAND for all tests, 20.01-20.12%
+(min-max) success rate for RSEED, runtime 0.256-0.281s (min-max)
+
+OMP multithreaded results:
+
+Test case: 1,000,000 iterations per thread, for both RDRAND and
+RDSEED, n=100 tests, OMP multithreaded with OMP_NUM_THREADS=<total
+physical cores> (i.e. 128 for AMD and 36 for Intel)
+
+AMD: 100% success rate for both RDRAND and RDSEED for all tests,
+runtime 47.229-47.603s (min-max).
+
+Intel: 100% success rate for RDRAND for all tests, 1.77-5.62%
+(min-max) success rate for RSEED, runtime 0.562-0.595s (min-max)
+
+CONCLUSION
+
+RDSEED failure was reproducibly induced on the Intel Skylake platform,
+for both single- and multithreaded tests, whereas RDSEED failure could
+not be induced on the AMD platform for either test. RDRAND did not
+fail on either platform for either test.
+
+AMD execution time was roughly 4x slower than Intel (1s vs 0.25s) for
+the single-threaded test, and almost 100x slower than Intel (47s vs
+0.5s) for the multithreaded test. The difference in clock rates (2.0
+GHz for AMD vs 2.3 GHz for Intel) is not sufficient to explain these
+runtime differences. So it seems likely that AMD is gating the rate at
+which a new RDSEED value can be requested.
+---------------------------------------------------------------------------
+
+Speaking now with my voice:
+
+Unless additional information shows up, despite our collective
+handwringing, as long as the RDRAND instruction is used as the
+cryptographic primitive, there appears to be little likelihood of a
+DOS randomness attack against a TDX based CoCo virtual machine.
+
+While it is highly unlikely we will ever get an 'official' readout on
+this issue, I suspect there is a high probability that Intel
+engineering favored performance with their RDSEED/RDRAND
+implementation.
+
+AMD 'appears', and without engineering feedback from AMD I would
+emphasize the notion of 'appears', to have embraced the principal of
+taking steps to eliminate the possibility of a socket based adversary
+attack against their RNG infrastructure.
+
+> Elena.
+
+Hopefully the above is useful for everyone interested in this issue.
+
+Once again, a thank you to our version of 'Sancho' for his legwork on
+this, who has also read Cervantes at length... :-)
+
+Have a good remainder of the week.
+
+As always,
+Dr. Greg
+
+The Quixote Project - Flailing at the Travails of Cybersecurity
+              https://github.com/Quixote-Project
 
