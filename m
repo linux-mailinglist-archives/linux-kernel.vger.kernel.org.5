@@ -1,141 +1,197 @@
-Return-Path: <linux-kernel+bounces-54763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1886A84B367
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:25:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A3EB84B370
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:27:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C2C51C2308C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:25:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E68D1F23C7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E640C12D148;
-	Tue,  6 Feb 2024 11:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19C56FD2;
+	Tue,  6 Feb 2024 11:27:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Eov0V6IC"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="x+6+Pol1"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1FDC12E1DC
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 11:24:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9DAE12B14E
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 11:27:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707218694; cv=none; b=kcnHchf1oAU6wqfNgsNGXrH/V0BDkIKQiJaqUTMH6rhHpWHMyV3XaIeydZ5NtLYJqOYR97NwbAhOc9oJfgTjYkncVwBtjh54V5l3g9+ezDm5jWpE8Clx4vXwPZjyUw5v82rAaaCDajlwUKjxvCB3MioPH+azyLODW0EvvCNr000=
+	t=1707218856; cv=none; b=XllLt1xTUr/obknr/UJnXq7NjCusU+Ie+XHyFXNsgRPkPtRBdPG8lWv5ymc5Jgtwe6enhmzCtM4pV9GMaFX53QInR0YCW2isKJp3U+Bxftkal1VHzOta0LGiCDlMh1DMdUrj3jgQ4/4E1QwJpbUTFBVb+PP97+zCEuOdKKXdiUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707218694; c=relaxed/simple;
-	bh=KJDD0UdxR2Cvfde9iNwq5yVfSHv/ixq+s6XQ8Zuq8Do=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
-	 In-Reply-To:Content-Type; b=BzX8LM122C3K9Td57xlkR8J+rDdR41+eJRXDGivqGbdul/x+S0JLKkjlmn8E9UNxMtDS/BTaoG57OIhVisRNmcADd5qkTrSzI9onMxy96dzooXpp4xOJvyuZRGxhUFtjLuvrdkg+B3XbqKYWBgFZEaOmGTI7tW9o7UiW7v6F814=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Eov0V6IC; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707218692; x=1738754692;
-  h=message-id:date:mime-version:to:cc:references:from:
-   subject:in-reply-to:content-transfer-encoding;
-  bh=KJDD0UdxR2Cvfde9iNwq5yVfSHv/ixq+s6XQ8Zuq8Do=;
-  b=Eov0V6ICXutdzGG+O2zAMy4hUjfTpnuiPYFiy0NxecN6SayuElgqzhHR
-   HueDJ40NJVIB0TUZUmHwJswtNbJV4o+2dpfm3OcydkjUm7KmID3C8Y9rI
-   ihc82sN/ejn4RbMbfLxh961JYS55Uw9xUNCKNplF5CgX0QiavQabnTCiX
-   J+7ChgecenNHyME68NG8n0JuUCraYolZfBwu90h83FGhNle6Vcsrq3PCi
-   qkSjN5/d5h7EnpuRCcLdwHif5yN6oM7p487hEgkhQ61s/Mhi+oNA01xPw
-   V7/YjP4FVXvWAa1nQJBhsPtPmxyb3ihr18HwalGAa2tnsfKvmfRquFP6U
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="613446"
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="613446"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 03:24:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="824164642"
-X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
-   d="scan'208";a="824164642"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
-  by orsmga001.jf.intel.com with ESMTP; 06 Feb 2024 03:24:49 -0800
-Message-ID: <e7b96819-edf7-1f9f-7b01-e2e805c99b33@linux.intel.com>
-Date: Tue, 6 Feb 2024 13:26:24 +0200
+	s=arc-20240116; t=1707218856; c=relaxed/simple;
+	bh=gXN7kMUWDno01YMrPfKX1MLl3Rs+yrfkwTb+tydc39A=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=TBQInSpVCpREmYs7zwNdXyRSU8TMjTsgmatz7o0IuUpMuqHHFv9i1izTXHnI3grwQxWiNTOrHb0ON9aOYZ726znJNfx3jJTXUJpTVmqIfmoTFlYNvNuk0dhIrKLt6kt4mGW2F5zmsX4RTbI8oawBK9KqC/bdJ2L2zGyRUd76mZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=x+6+Pol1; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40fe282b8adso3916555e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 03:27:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707218853; x=1707823653; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=YL20oyCUSOrX5NeAsflMjElvQDqC4Fvyflz7/WjWFXQ=;
+        b=x+6+Pol1cUkKgrS7wu2gnt6qw/VtNMg/UFj6Nmtzug4UKnpVRs1IFfwWiqX47YECmG
+         ghqUO+RBd4HtFD0W/HL41814oU0xxUe6sPqxqvQiZyhQMpMKH3NmN+3NRxP1kQq32ddA
+         QenSqvcYqsDfKRYIeSFqGCArdb/HXh2u6DNfxh27R5TAVkhgiZyMhmN/i/BOzRqobjQJ
+         qlvvCe68Msr7Gc8n7xFAOm91zxR20/B0SxKcnKaWYgpse0lH60Z+qz7IwpWbWdCUl2jM
+         grIj02eGnF169aKh8OypgC3BQjEzqgBcHG/kY0sHTb8/OkPiL6SiugBVGAUG8/wQBKKZ
+         jrow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707218853; x=1707823653;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YL20oyCUSOrX5NeAsflMjElvQDqC4Fvyflz7/WjWFXQ=;
+        b=drLWUrb0UNWLXjQZawivN8/p8spZXcvFZLLbtUKfuAekwxbH5j4870lWbaAqGrgtxb
+         zrvdO0V2BxAOY8DQi1lTtcIMIlRud3qcIZz0JQnr+Q3gwnqtBDJaayRFIwljy/Jlh/Dh
+         zC0wDSziSuIHgdopCV0houwC79+T6dscotp43hAdr8QfPZw7ny6G2woCVK5y1scxNdxU
+         k7Q1MakYyJWJE5Z9nxg5asTDBNKmKpMnBKM8V+AvmE+EWBXmQhMRwNYuOAikCyS5awIj
+         FtFOOhAxwaLUtHKzJxAro6whbzUox7RaXTkRzzrOW3B1S3F/ZpXnn2HvHMQtOu8qGVeH
+         IIcA==
+X-Gm-Message-State: AOJu0YyGAgqipmD2EIuBLshfeCXnvwCo/sMg4Vyxj1HMDcnbx54nS/g3
+	6FRJoTv3sPSLkWPVfcM8kahdZDXeThOY6wadBuyEN0NRGT7Bqn59wXkwKJazetM=
+X-Google-Smtp-Source: AGHT+IHNSb5WfPqOjTv3r0jZq5uDqSROjhUbSTnfm4dksEHIOS8qo/yoZ/TBbIJtsJjNvTyq+FEY8A==
+X-Received: by 2002:a05:600c:12c2:b0:40e:55ca:5a48 with SMTP id v2-20020a05600c12c200b0040e55ca5a48mr2016841wmd.16.1707218853181;
+        Tue, 06 Feb 2024 03:27:33 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCV5ek4Ikf2wgrRNKkJUghWAgoIpRRJ0Mud9KPtDl9F+gnZzKCLCabu6rBlm7qgvf/tmbazcR/Mv/11crA/K7BqnKxw9shHu7ekYKEel1rTvSqbGWrYu/A0EfD2eV0UYG88RoB+iZigOpRcXaebCX952XrTIuwLuTvXVXzG9CeRgquFVOAqGB6HOFJXkyfBforc+Y/oiAgZRA7a6qh4Njjzpgmk6PI8M40vGdY+LYsndupbELQjeMbrWAvBUdsO89D1vdiFhb0z+nsGzD/8T+MAAQlBf50UPPU2pveihfSqBx9WMmPI5et4anJKp/D4=
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id f17-20020a05600c4e9100b0040ec66021a7sm1695964wmq.1.2024.02.06.03.27.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 03:27:32 -0800 (PST)
+Message-ID: <0e44a868-0f2f-449d-9520-2ee34dc0ef93@linaro.org>
+Date: Tue, 6 Feb 2024 12:27:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: mfd: Update pattern property case
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Naresh Solanki <naresh.solanki@9elements.com>
+Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Patrick Rudolph <patrick.rudolph@9elements.com>, mazziesaccount@gmail.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240205110244.676779-1-naresh.solanki@9elements.com>
+ <8714b420-58b9-4d5b-a489-31670c8d325f@linaro.org>
+ <CABqG17jfHpi5oDt+=E925Fp6DN2OftmDEjpmvb5=3nxMt+d2iw@mail.gmail.com>
+ <47d66b4a-5608-4fc9-88bc-911f74d62819@linaro.org>
+ <CABqG17gS6kdXKdVOc-CFEQp_BGJBANdCmEhUvQ1t=Tx=vw-9pg@mail.gmail.com>
+ <803fd797-50d7-42a6-8723-6d001f80f7bf@linaro.org>
 Content-Language: en-US
-To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
- "Christian A. Ehrhardt" <lk@c--e.de>, niklas.neronin@linux.intel.com
-Cc: Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
- linux-netdev@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-References: <CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com>
- <Zb6D/5R8nNrxveAP@cae.in-ulm.de> <Zb/30qOGYAH4j6Mn@cae.in-ulm.de>
- <CABXGCsPu73D+JS9dpvzX78RktK2VOv_xT8vvuVaQ=B6zs2dMNQ@mail.gmail.com>
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: =?UTF-8?Q?Re=3a_This_is_the_fourth_time_I=e2=80=99ve_tried_to_find_?=
- =?UTF-8?Q?what_led_to_the_regression_of_outgoing_network_speed_and_each_tim?=
- =?UTF-8?Q?e_I_find_the_merge_commit_8c94ccc7cd691472461448f98e2372c75849406?=
- =?UTF-8?Q?c?=
-In-Reply-To: <CABXGCsPu73D+JS9dpvzX78RktK2VOv_xT8vvuVaQ=B6zs2dMNQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <803fd797-50d7-42a6-8723-6d001f80f7bf@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 5.2.2024 23.08, Mikhail Gavrilov wrote:
-> On Mon, Feb 5, 2024 at 1:47 AM Christian A. Ehrhardt <lk@c--e.de> wrote:
+On 06/02/2024 12:11, Krzysztof Kozlowski wrote:
+> On 06/02/2024 12:07, Naresh Solanki wrote:
+>> Hi Krzysztof,
+>>
+>>
+>> On Tue, 6 Feb 2024 at 13:06, Krzysztof Kozlowski
+>> <krzysztof.kozlowski@linaro.org> wrote:
+>>>
+>>> On 05/02/2024 15:00, Naresh Solanki wrote:
+>>>> Hi Krzysztof,
+>>>>
+>>>>
+>>>> On Mon, 5 Feb 2024 at 18:38, Krzysztof Kozlowski
+>>>> <krzysztof.kozlowski@linaro.org> wrote:
+>>>>>
+>>>>> On 05/02/2024 12:02, Naresh Solanki wrote:
+>>>>>> Driver expects regulator child node in upper case.
+>>>>>> Hence align with the same.
+>>>>>
+>>>>> Did the driver have DT support before? I think no, so why aligning that
+>>>>> way? I would argue that driver should be aligned with bindings, the
+>>>>> moment you add DT for the first time.
+>>>> Yes the driver has DT support already.
+>>>> This patch is to align with driver:
+>>>> https://github.com/torvalds/linux/blob/master/drivers/regulator/max5970-regulator.c#L381
+>>>
+>>> That's not support for DT, but just naming regulators.
+>> I'm not sure if I get your perspective right & please correct me if I'm wrong,
+>> I'm just trying to adjust the dt binding of max5970 because found
+>> errors related to
+>> regulator child node SW0/SW1.
+>> Regulator driver expects to have regulators child nodes as SW0/1(upper case)
+>> But dt binding expects it to be lower case.
+>> Thus there is misalignment & due to which, when running CHECK_DTBS for my
+>> mainboard DTS, I see some errors.
 > 
-> Thanks for real help.
-> Now I spotted a really bad commit.
+> I understood that, no need to clarify, it is kind of obvious. I still
+> claim the same: When the binding was added? Mid 2023. When the driver
+> was added? Much earlier. So someone posted driver bypassing DT
+> documentation and review and now you claim we need to accept the driver
+> choice. Do you think this is correct process?
 > 
-> 57e153dfd0e7a080373fe5853c5609443d97fa5a is the first bad commit
-> commit 57e153dfd0e7a080373fe5853c5609443d97fa5a
-> Author: Niklas Neronin <niklas.neronin@linux.intel.com>
-> Date:   Fri Dec 1 17:06:40 2023 +0200
-> 
->      xhci: add handler for only one interrupt line
-> 
->      Current xHCI driver only supports one "interrupter", meaning we will
->      only use one MSI/MSI-X interrupt line. Thus, add handler only to the
->      first interrupt line.
-> 
->      Signed-off-by: Niklas Neronin <niklas.neronin@linux.intel.com>
->      Co-developed-by: Mathias Nyman <mathias.nyman@linux.intel.com>
->      Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
->      Link: https://lore.kernel.org/r/20231201150647.1307406-13-mathias.nyman@linux.intel.com
->      Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
->   drivers/usb/host/xhci-pci.c | 35 ++++++++++-------------------------
->   1 file changed, 10 insertions(+), 25 deletions(-)
-> 
-> Niklas, Mathias I spotted decreased network speed on sending when
-> transferring files via sftp between my workstations in the local
-> network.
-> And bisection of issue leads me to this commit.
-> My motherboard is MPG-B650I-EDGE-WIFI looks like it is related to the
-> mentioned commit.
-> https://www.msi.com/Motherboard/MPG-B650I-EDGE-WIFI
-> 
+> If so, what stops people from sending all the driver changes without DT
+> and documenting whatever they had post-factum?
 
-This seems odd, not sure how this usb host change would impact your network speed.
+I would like to add that OF probing for MFD driver was added the same
+time as bindings, so that's the time when OF was added. Therefore you
+cannot use excuse "there is ABI", because your commits added both OF
+support and non-matching documentation.
 
-Could you try reverting that patch from 6.8-rc1 and see if it helps?
+My stance is: fix the driver, not the binding.
 
-There are some other patches on top of it that needs to be reverted first.
-These should be enough:
+Best regards,
+Krzysztof
 
-36b24ebf9a04 xhci: minor coding style cleanup in 'xhci_try_enable_msi()
-9831960df237 xhci: rework 'xhci_try_enable_msi()' MSI and MSI-X setup code
-dfbf4441f2d3 xhci: change 'msix_count' to encompass MSI or MSI-X vectors
-a795f708b284 xhci: refactor static MSI function
-74554e9c2276 xhci: refactor static MSI-X function
-f977f4c9301c xhci: add handler for only one interrupt line
-
-That patch changes how we request MSI/MSI-X interrupt(s) for xhci.
-
-Is there any change is /proc/interrupts between a good and bad case?
-Such as xhci_hcd using MSI-X instead of MSI, or eth0 and xhci_hcd
-interrupting on the same CPU?
-
-Thanks
-Mathias
 
