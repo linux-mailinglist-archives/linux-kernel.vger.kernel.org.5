@@ -1,236 +1,193 @@
-Return-Path: <linux-kernel+bounces-55622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2168284BF22
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:18:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBC5B84BF24
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:19:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91548B24BAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:18:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0EAF1C22B9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:19:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02FFD1BF34;
-	Tue,  6 Feb 2024 21:18:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="igmnL6QU"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E0341B953;
+	Tue,  6 Feb 2024 21:19:19 +0000 (UTC)
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD361BF24
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 21:17:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED271B949;
+	Tue,  6 Feb 2024 21:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707254280; cv=none; b=m/F7h76/GBHcV9HrqJtPi31V1CIzGLTanmyLUfvurvFFUp3y00kkx2NofYXvSfqANS12/ttbAvi/Wu2NSPn7LximeIn7TwyxxpsiniXJXZdRsL0MnH7uGD5hkl3nJfjECKQsqCRdELnQBEmmebVlLashvXjkBLPAM6nSvdChhQA=
+	t=1707254358; cv=none; b=A2cZDqVaTSdOQJb+8oxSSxYcS5LSjuGLhocb+KK2VREMpYiS/JVVk2UBBsTMHfH9CSWsGyi/G7o7iYA12oG2Bhu/Y1vYAJ9txGjoQxXN2ze6EwEWBjcOrFvrbZJ+QK+68R+Anpg+dU+3vOvH4rl4PgzA/CBubyGMpY4xl7kTngQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707254280; c=relaxed/simple;
-	bh=rDP/uvYFNR1ylgdVVfDWbmdIwIvKvPalMs99rEP2vmc=;
+	s=arc-20240116; t=1707254358; c=relaxed/simple;
+	bh=JERqMQ96ksA+8SNr6Sb2aF7oJ+HCIrtvFbhpArvNsPM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DC/S1IVQcW/wlG+hBeFpa6nZJnidKuh2sMr2mOZf3LgAof/LcblRHU1XbopEvifGy+xvLgMO7NRMn7rHFTWiudaK+rhGz/57t9ZsYGvF3OFtImGLtOR+9ueTl+oCGH4CfbsAjYgtGlQxS8PRfyspJLQcpPT1H2yLwe5k4WYsYwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=igmnL6QU; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a271a28aeb4so845777966b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 13:17:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1707254275; x=1707859075; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1qfP1+TruJwtkPM3sgZDskiPx+MC9S8wIWMurDQtM4U=;
-        b=igmnL6QUIhmJ3VeIv0W+ygzDtbJFcNJy/Ad8uXi5cT07niNlXkoivXAtW9p1qo107e
-         n+iPL5ZjOE1BTpmDUMpjzdGBEp9adItzopqTAzmKH/eCt4ulYc+Q7nJiONExVKKl572P
-         6bDVJapd/z3lKa+hT6UzZEnasQQRViWhy7gEpsYfKjBCx+AtjU71HPJnpRKf0Fyypzd9
-         v9pFjzbFyBEc45vrSK3UEJdacgfS9u/7H4l0v+dYHRjikjDLhKmARi0TlGInDVocY74O
-         9/EPqfgSrXgNHUVA2l62+mZtN6nVCjBwUGKOJREVno1vC+8rUhxubFjKTMCwXlFlW36q
-         Os0A==
+	 To:Cc:Content-Type; b=rzjeIB0oki/CcNiKNT4yDd0NTEemudg0+XNKm4Xphb6YKGCPktqdct9uh4hOA2WMdzOyS+1MI6VBWkcaCuqhiSkb09rORROPcOP/ZhHxpmizmLVB86Mu33afqkL/mPRZFHLqK34Mu5/q6Pw9XZ+WLqJg/gJHl3qGQreVu808iaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e05d958b61so727809b3a.2;
+        Tue, 06 Feb 2024 13:19:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707254275; x=1707859075;
+        d=1e100.net; s=20230601; t=1707254356; x=1707859156;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1qfP1+TruJwtkPM3sgZDskiPx+MC9S8wIWMurDQtM4U=;
-        b=iMtp1UsKdUeaeCVrFBsAUHcfWm3tCoYfsg7pmMlxaYNhAy9YISMc27Ssd9OvPfhA4h
-         z31PQR4gLQKHVQlRYRJX3Cgrb/ctJSgkI3IG8FVVzTDyI+5ktk7uqVIsmXK2Mh/KxSr/
-         q9sjtKID0rUj0gV0CyBShpvwtlAZitw/G3qC8jJx5Shg3moNmw0UIoyczVFwDTiKMoaW
-         ed+8YgmP4YzfdfViLewSj8LjmL3od+OcrJwuOaMH5/D1EVXa8ZMcnBpidkeVlVeMpLjq
-         ax5wxl2+iaYuAmqmzSYV5oyo0oBcQhT4/j87Cp+nhaJV7jCXV5R38LwTm1NvBBRIjrUG
-         KPGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUmUvSvHH99O+ogwKKG5rME3gEHuZZif8P9bhaSB4stLXZ3HTZHeAOhowDsxWF/eC6MbTQ6IdeqNDJqBulc+8iW90lLWsw6DDpIwG97
-X-Gm-Message-State: AOJu0YwCkjr4AtJWHf2MgxN50Nrjs5AaKqx6AC6ERO5B+7GhgG0HbgaN
-	FhNNSSk6aXV7YcnzqJ3mqnGRgNmOw5+9flD8RX03fKJWpjmZJ4RgispsymuZRXkw1CtvN3JVoGE
-	wEV8ucvvFbyt2BOa+1ZDFpz0iE/Xk30bhiTk7I5LVkkSQvJLzXzA=
-X-Google-Smtp-Source: AGHT+IFr5NmvcuIq34icz9u9x1LZK2ptayB0qUPTvToNGtcbZjTpPFn6lJ83eGqiuHxai0TJpi5xcH0aCutsUi+RdqI=
-X-Received: by 2002:a17:906:3d3:b0:a36:95cd:5e5f with SMTP id
- c19-20020a17090603d300b00a3695cd5e5fmr2844084eja.62.1707254275596; Tue, 06
- Feb 2024 13:17:55 -0800 (PST)
+        bh=12Qx9B0ZnSFBsqRDrOP1gg0dYTMVEEBnv/fg/4P2Dug=;
+        b=gE3iXnCZ6j1GIq16Q6Ax+iwcWvVAMKbnRP+UIjeYu4EAFfc9wABWD/F/doMyCcXudN
+         etT4Uu2WOpnJV+BfD1HB2b3EOS4EAed0C36rBNLNWNohIfy2nrAyG5lnMMlaPTN6QLnb
+         9bvfswjNo1JP0WKqj3EihiqmifYCWqtPBBXL1oJbj/kuzqSawXddEvcJmy8L3d59vOv+
+         2Ss2JlEEOkK5OoaWKF9QbtMclyF0YRjF5LPOumrwai8FQYEi92aumh++1YI1CduSsdsi
+         ai/nEYFvAS4WabgZe6jQWJwmPHaf24LMKUhszAecKhT7B4jifvTR6aoR/WkNDEHcGS+h
+         ui+A==
+X-Gm-Message-State: AOJu0Ywy4IL/HYEVA6LviznGQ0Ulr77KDR+wKtcFt+LaQsDyoEaI905W
+	EmS0BHxzl6ajhmvjQyIQl4Zz8U6IrPgvsQvE6rq8pMJYT3fHNzmFY/1bmqXBDJsuhK/2g1xg3+U
+	pFI416Lo/GhDfLvq5U8Ae1msT4+o=
+X-Google-Smtp-Source: AGHT+IEe9lCvb+yV4P8niK2REAzqF734Mpq5zUhD0bIadcPA/gp1AVaf31fRBdBA7kSzNXn/ebfFVwVt9G0TgyRK9Rg=
+X-Received: by 2002:a05:6a00:4e4e:b0:6e0:4b8f:f585 with SMTP id
+ gu14-20020a056a004e4e00b006e04b8ff585mr718484pfb.7.1707254356244; Tue, 06 Feb
+ 2024 13:19:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202135030.42265-1-csd4492@csd.uoc.gr> <CAHVXubioUY=vvQrLrcb+5aWav5WUdpJ3i0fCKP_xx0ASU30g=A@mail.gmail.com>
-In-Reply-To: <CAHVXubioUY=vvQrLrcb+5aWav5WUdpJ3i0fCKP_xx0ASU30g=A@mail.gmail.com>
-From: Alexandre Ghiti <alexghiti@rivosinc.com>
-Date: Tue, 6 Feb 2024 22:17:44 +0100
-Message-ID: <CAHVXubjanrxkDrNTZMrPtmewjqyf3L4_TTtqXhjGV+k+qkynmA@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] sparsemem: warn on out-of-bounds initialization
-To: Dimitris Vlachos <csd4492@csd.uoc.gr>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	clameter@sgi.com, akpm@linux-foundation.org, rppt@kernel.org, arnd@arndb.de, 
-	paul.walmsley@sifive.com, palmer@dabbelt.com, mick@ics.forth.gr
+References: <20231216072830.1009339-1-namhyung@kernel.org> <ae648bc4-b32c-4b15-8dfc-9dbd481bb927@linux.intel.com>
+ <CAM9d7cgVHHAA0ZHaTYNx9Lmw0+hJJu_EfQRnX8K3AtLCVMznOw@mail.gmail.com>
+In-Reply-To: <CAM9d7cgVHHAA0ZHaTYNx9Lmw0+hJJu_EfQRnX8K3AtLCVMznOw@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 6 Feb 2024 13:19:05 -0800
+Message-ID: <CAM9d7cjHJ2FYU-P0B2LA=vX1WUCOwCqC1j4LGFWMYDLFRKPCnA@mail.gmail.com>
+Subject: Re: [PATCH] perf/x86: Fix out of range data
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Stephane Eranian <eranian@google.com>, stable@vger.kernel.org, 
+	"Liang, Kan" <kan.liang@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Dimitris,
+Ping!
 
-On Fri, Feb 2, 2024 at 2:59=E2=80=AFPM Alexandre Ghiti <alexghiti@rivosinc.=
+On Tue, Jan 9, 2024 at 1:28=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
+>
+> Hello,
+>
+> On Sat, Dec 16, 2023 at 4:42=E2=80=AFAM Liang, Kan <kan.liang@linux.intel=
 com> wrote:
+> >
+> >
+> >
+> > On 2023-12-16 2:28 a.m., Namhyung Kim wrote:
+> > > On x86 each cpu_hw_events maintains a table for counter assignment bu=
+t
+> > > it missed to update one for the deleted event in x86_pmu_del().  This
+> > > can make perf_clear_dirty_counters() reset used counter if it's calle=
+d
+> > > before event scheduling or enabling.  Then it would return out of ran=
+ge
+> > > data which doesn't make sense.
+> > >
+> > > The following code can reproduce the problem.
+> > >
+> > >   $ cat repro.c
+> > >   #include <pthread.h>
+> > >   #include <stdio.h>
+> > >   #include <stdlib.h>
+> > >   #include <unistd.h>
+> > >   #include <linux/perf_event.h>
+> > >   #include <sys/ioctl.h>
+> > >   #include <sys/mman.h>
+> > >   #include <sys/syscall.h>
+> > >
+> > >   struct perf_event_attr attr =3D {
+> > >       .type =3D PERF_TYPE_HARDWARE,
+> > >       .config =3D PERF_COUNT_HW_CPU_CYCLES,
+> > >       .disabled =3D 1,
+> > >   };
+> > >
+> > >   void *worker(void *arg)
+> > >   {
+> > >       int cpu =3D (long)arg;
+> > >       int fd1 =3D syscall(SYS_perf_event_open, &attr, -1, cpu, -1, 0)=
+;
+> > >       int fd2 =3D syscall(SYS_perf_event_open, &attr, -1, cpu, -1, 0)=
+;
+> > >       void *p;
+> > >
+> > >       do {
+> > >               ioctl(fd1, PERF_EVENT_IOC_ENABLE, 0);
+> > >               p =3D mmap(NULL, 4096, PROT_READ, MAP_SHARED, fd1, 0);
+> > >               ioctl(fd2, PERF_EVENT_IOC_ENABLE, 0);
+> > >
+> > >               ioctl(fd2, PERF_EVENT_IOC_DISABLE, 0);
+> > >               munmap(p, 4096);
+> > >               ioctl(fd1, PERF_EVENT_IOC_DISABLE, 0);
+> > >       } while (1);
+> > >
+> > >       return NULL;
+> > >   }
+> > >
+> > >   int main(void)
+> > >   {
+> > >       int i;
+> > >       int n =3D sysconf(_SC_NPROCESSORS_ONLN);
+> > >       pthread_t *th =3D calloc(n, sizeof(*th));
+> > >
+> > >       for (i =3D 0; i < n; i++)
+> > >               pthread_create(&th[i], NULL, worker, (void *)(long)i);
+> > >       for (i =3D 0; i < n; i++)
+> > >               pthread_join(th[i], NULL);
+> > >
+> > >       free(th);
+> > >       return 0;
+> > >   }
+> > >
+> > > And you can see the out of range data using perf stat like this.
+> > > Probably it'd be easier to see on a large machine.
+> > >
+> > >   $ gcc -o repro repro.c -pthread
+> > >   $ ./repro &
+> > >   $ sudo perf stat -A -I 1000 2>&1 | awk '{ if (length($3) > 15) prin=
+t }'
+> > >        1.001028462 CPU6   196,719,295,683,763      cycles            =
+               # 194290.996 GHz                       (71.54%)
+> > >        1.001028462 CPU3   396,077,485,787,730      branch-misses     =
+               # 15804359784.80% of all branches      (71.07%)
+> > >        1.001028462 CPU17  197,608,350,727,877      branch-misses     =
+               # 14594186554.56% of all branches      (71.22%)
+> > >        2.020064073 CPU4   198,372,472,612,140      cycles            =
+               # 194681.113 GHz                       (70.95%)
+> > >        2.020064073 CPU6   199,419,277,896,696      cycles            =
+               # 195720.007 GHz                       (70.57%)
+> > >        2.020064073 CPU20  198,147,174,025,639      cycles            =
+               # 194474.654 GHz                       (71.03%)
+> > >        2.020064073 CPU20  198,421,240,580,145      stalled-cycles-fro=
+ntend          #  100.14% frontend cycles idle        (70.93%)
+> > >        3.037443155 CPU4   197,382,689,923,416      cycles            =
+               # 194043.065 GHz                       (71.30%)
+> > >        3.037443155 CPU20  196,324,797,879,414      cycles            =
+               # 193003.773 GHz                       (71.69%)
+> > >        3.037443155 CPU5   197,679,956,608,205      stalled-cycles-bac=
+kend           # 1315606428.66% backend cycles idle   (71.19%)
+> > >        3.037443155 CPU5   198,571,860,474,851      instructions      =
+               # 13215422.58  insn per cycle
+> > >
+> > > It should move the contents in the cpuc->assign as well.
+> >
+> > Yes, the patch looks good to me.
+> >
+> > Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
 >
-> Hi Dimitris,
+> Thanks for your review, Kan.
 >
-> On Fri, Feb 2, 2024 at 2:50=E2=80=AFPM Dimitris Vlachos <csd4492@csd.uoc.=
-gr> wrote:
-> >
-> > From: Dimitris Vlachos <dvlachos@ics.forth.gr>
-> >
-> > Hello all
-> >
-> > I am sending this email with regards to a bug that I discovered in the =
-Sparse Memory Model configuration and more specifically, the Virtual Memory=
- Map optimization. Moreover, I would like to inquire about possible ways of=
- fixing it.
-> >
-> > I work as a pre-graduate research assistant at ICS-FORTH in the Compute=
-r Architecture and VLSI Systems laboratory.
-> > We were running some tests in our prototype hardware (RISC-V), where we=
- noticed that the Kernel crashes early in the boot process with the followi=
-ng setup:
-> >
-> > We are using the default Kconfig configurations (defconfig) that includ=
-es Sparse Memory + Virtual Memory Map.
-> > The DRAM base address of our system is : 0x800000000000
-> > A 3-level page table is used (Sv39).
-> >
-> > When the vmemmap optimization is enabled the macro pfn_to_page() is cal=
-led, which offsets the vmemmap with the pfn argument to acquire a struct pa=
-ge pointer.
-> >
-> > As our DRAM starts at 0x800000000000, the initial pfn will be 0x8000000=
-00000 divided by PAGE_SIZE. The calculation result will be:
-> > 0xffffffcf00000000 (vmemmap start) +  (0x800000000 (pfn) * 64 (sizeof(s=
-truct page))
-> >
-> > This causes an overflow as the number is very large, the resulting addr=
-ess is 0x1c700000000 which is not a valid Sv39 address (all bits above bit =
-38 should be set) and does not belong to the kernel=E2=80=99s virtual addre=
-ss space.
-> >
-> > The same will happen with all valid pfns as the memory is being initial=
-ized. When the Kernel will try to access a page using pfn_to_page, a page f=
-ault will occur crashing the system.
-> > It should be noted that when the vmemmap is disabled the system boots n=
-ormally.
-> >
-> > However, I would like to emphasize another important detail. When the D=
-RAM base is small enough to avoid an overflow, the virtual memory map mappi=
-ngs will be initialized out of bounds with regard to the vmemmap address sp=
-ace which is 4GiB in Sv39.
-> > The system will not crash, but the address space used for this purpose =
-will be outside of the designated range.
-> >
-> > Everything mentioned above holds true when Sv48 is used as well. Given =
-a high enough DRAM base the system will either crash or perform false initi=
-alizations. Given the fact that virtual memory map is not only used by RISC=
--V systems, this could be an issue for other architectures as well.
-> >
-> > The kernel already contains mminit_validate_memmodel_limits() that chec=
-ks memory limits.
-> > However, it only checks physical memory ranges. I added a few checks, p=
-rovided that virtual memory map is enabled, to determine whether offset sta=
-rt and offset end fall inside the range of virtual memory map. Otherwise, a=
- warning will be printed.
-> >
-> > Finally, I would like to ask you for any information/advice that could =
-help me fix/prevent the issues that I mentioned (if it=E2=80=99s possible) =
-or recover from them at runtime by disabling the optimization and reverting=
- back to the non-vmemmap mappings.
-> >
-> > Thank you in advance.
-> > Best regards,
-> > Dimitris Vlachos
-> > ---
-> >  mm/sparse.c | 20 ++++++++++++++++++++
-> >  1 file changed, 20 insertions(+)
-> >
-> > diff --git a/mm/sparse.c b/mm/sparse.c
-> > index 338cf946d..33b57758e 100644
-> > --- a/mm/sparse.c
-> > +++ b/mm/sparse.c
-> > @@ -149,6 +149,26 @@ static void __meminit mminit_validate_memmodel_lim=
-its(unsigned long *start_pfn,
-> >                 WARN_ON_ONCE(1);
-> >                 *end_pfn =3D max_sparsemem_pfn;
-> >         }
-> > +
-> > +       /*check vmemmap limits*/
-> > +       #ifdef CONFIG_SPARSEMEM_VMEMMAP
-> > +
-> > +       unsigned long vmemmap_offset_start =3D (unsigned long) pfn_to_p=
-age(*start_pfn);
-> > +       unsigned long vmemmap_offset_end   =3D (unsigned long) pfn_to_p=
-age(*end_pfn);
-> > +
-> > +       if (vmemmap_offset_start < VMEMMAP_START) {
-> > +               mminit_dprintk(MMINIT_WARNING, "pfnvalidation",
-> > +                       "Start of range %lu -> %lu exceeds bounds of SP=
-ARSEMEM virtual memory map address range %lu -> %lu\n",
-> > +                       vmemmap_offset_start, vmemmap_offset_end, VMEMM=
-AP_START,VMEMMAP_END);
-> > +               WARN_ON_ONCE(1);
-> > +
-> > +       } else if (vmemmap_offset_end > VMEMMAP_END ) {
-> > +               mminit_dprintk(MMINIT_WARNING, "pfnvalidation",
-> > +                       "End of range %lu -> %lu exceeds bounds of SPAR=
-SEMEM virtual memory map address range %lu -> %lu\n",
-> > +                       vmemmap_offset_start, vmemmap_offset_end, VMEMM=
-AP_START,VMEMMAP_END);
-> > +               WARN_ON_ONCE(1);
-> > +       }
-> > +       #endif
-> >  }
-> >
-> >  /*
-> > --
-> > 2.39.2
-> >
+> Ingo, Peter, can you please pick this up?
 >
-> Since struct pages are only available for memory,  we could offset
-> vmemmap so that VMEMMAP_START actually points to the first pfn?
-
-> Hello Alexandre,
-> My first thought was to use a "better" offset for vmemmap as well.Since p=
-fn is essential for pfn_to_page and page_to_pfn i think that maybe we could=
- get a smaller number out of pfn to offset the vmemmap and ensure that it's=
-  bounds are respected for pfn_to_page operation.
-> If we use only a part of the pfn for the offset we could get the  pfn fro=
-m page_to_pfn by adding PAGE-VMEMMAP_START
-> to the DRAM base/PAGE_SIZE which is the first pfn.
-
-Let's keep the discussion here.
-
-IIUC you propose to change pfn_to_page()/page_to_pfn() but what I
-proposed was to directly offset vmemmap like this:
-
-#define vmemmap         ((struct page *)VMEMMAP_START - phys_ram_base
->> PAGE_SHIFT)
-
-So that the first page in vmemmap corresponds to the first page of
-physical memory, that avoids the burden of changing the conversion
-macros, WDYT?
-
-Thanks,
-
-Alex
+> Thanks,
+> Namhyung
 
