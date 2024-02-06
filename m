@@ -1,175 +1,120 @@
-Return-Path: <linux-kernel+bounces-55222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC00584B94B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:23:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F87784B94D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:23:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64E2829134D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:23:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C5CA283641
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:23:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E09136670;
-	Tue,  6 Feb 2024 15:14:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C6271339A7;
+	Tue,  6 Feb 2024 15:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u4p6i6QU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="AX0jZkDe"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C21B7132C3A;
-	Tue,  6 Feb 2024 15:14:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 443E6A59
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:15:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707232456; cv=none; b=rHLCQvhxsdGJSicx9ijvNNi5Ar9ERCrF/GnmaeLI6JmXGraFCpY+Xj5vREhPT7CHHuujP3vjKZXvEStPKh7eo14efuasu+wOPN99oyxaQCcEWhzXyB52Ul+r5ebX4TL0eCz5N89BAguo361m9ShrpZK3miLyXVeqgI6GsA24DT8=
+	t=1707232533; cv=none; b=luwserlvKw/qwDMW5qHNzQyM+JRRLTF0ZnJ0WVOW5gZB5udT8E79zJADUkkp++UbMul5zlHZdbjJzsWCN/VWysBc6l7nU+EFPaIchZsLAEdzsYTBgrEr5SI2m/3OPhGxzyUcfAdY9wt1WezQaQqM5G0P7g8EGuSVifGeMuetA10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707232456; c=relaxed/simple;
-	bh=8t7YVZmoVUR7dCk/2nFP4SmQbrkuMwJVZH30PnGw0sc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RqczFtWVWjYdsgC5HXyEqfuU+GZ+NprY+5a1lgnYmzsjETEAVI13Yb5sFEgFql2wEhMw9AK2k7mzNTh3Fgrp+sryuE6El7ALc/rqWEbD6QQYWWBO9976v2TTYwm8LSx4FgBvG9UwHs46TYx/tXkLHPkZUmzt02ao0LBT3MDSAfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u4p6i6QU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 887CEC433C7;
-	Tue,  6 Feb 2024 15:14:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707232456;
-	bh=8t7YVZmoVUR7dCk/2nFP4SmQbrkuMwJVZH30PnGw0sc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=u4p6i6QUvB1lmToWncDmKrM6GaNvi/jEZ/g+nhNx5D/L2J/hZDX24E165LUBcvK7b
-	 SuLgtaQOhtHCEFucuFRU/AcvJX9LnLf8Gmy8CgHXhfwiTyFnUt0TuTVVFSQYS4P4+5
-	 j+tePW7xuLh/z+zRLINZ5ABrYo6cBj3XJAmS8M09yGZ/PZn+AJUg6xbIitupolq5iz
-	 RimZa7DqIYXUxaDpdO19uwrpgJ3aJRsTIvQ2ySxZFoNvI9gDhS/KMhWO402qVfPGB/
-	 Gp7rduXQy/5pqORw3eVvt2GswExfdtoOubIk9oD+NwQZzvXfN8uLGUQWqwZs3rB+4p
-	 SARF3quPrel1w==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v7 36/36] Documentation: probes: Update fprobe on function-graph tracer
-Date: Wed,  7 Feb 2024 00:14:10 +0900
-Message-Id: <170723245029.502590.2313180068078569074.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170723204881.502590.11906735097521170661.stgit@devnote2>
-References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1707232533; c=relaxed/simple;
+	bh=inWx0OPLvr2OQjTcBlOb7olL8AjhKIRK7jtiD3HZZZ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QuO4DwaEmrKWrJTgoMlJrZW22pp90AnwJTYj9fcwNGwd8qVFkckGVyWUA3LTAhdNhg7lIAae1HJGUzpkaQVpq9GTjXd1FyhVCH4C/zdraKCVN1JvCS6byW62sWwx0gHM6YXTie9w6Da6Fml6EEK+QDj9sDaAVgWAth2EZF7RzJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=AX0jZkDe; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55fbbfbc0f5so1287315a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 07:15:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1707232528; x=1707837328; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4gBnKK77AV0+CN8NcnVmcSVbE7VVIsZ5+lIFHAO1uLY=;
+        b=AX0jZkDeiHdbPo/VBNLzJ4JQEOyX3wgwzGVCi5MH/1G72gEoipby07dluMF6SpF670
+         nsr7JUlPLvRM0pS+WZJ5CRyfRdK9e0U6ThqC7pSFyilpRzVu8/+CtjCJhwuLBTXFEUVW
+         jRAI83uNOrivnAzi87fAhGB555LqnJpTz08RIPOqxZ/xeKxaUbpxsane9mt4cgwfuUui
+         AIv9GgXlRPp9naVQ3S/5C+FQIrVk8aK7Mw+0i7fZdyk2Cc2MWr7ir6LcuPqoGq37dQ3+
+         cJ7MFR2OVIq7taWsEBqaMfT0QiVqjH6t1+s6zu5CnOTNmy+lnh2n/lXeuqBBykXyEzoo
+         Q6OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707232528; x=1707837328;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4gBnKK77AV0+CN8NcnVmcSVbE7VVIsZ5+lIFHAO1uLY=;
+        b=ObXtsEQoTZPYh9Irr730R7YU/ZHy46hW+MlgWDkRkIqQ3sSR0wR4SnMKGHPDyT4fB2
+         d/c0dRGmPXggzS4brMMsw2m0lqUKMPONdFtsgdbWT9u2TZWHOLI0FR+A/g9heL47rrJL
+         DReegHzir9gP/8XOiONrAi4vXFX6Y10klyFzlDNH8f5Bg5cCBlgMmfpimLcyLmV0bfva
+         KTOkFa0bq1cCi1JIqCUK+yd4XfI7cASeQoO/PGPdKlsvIAhJebyuQ0rDSMODbvONxraa
+         Unwc5PVG+Vl9M9jGg6Wtkpbcm5U6ilDGPtYxJTMul4t7N8NNMa/Nh9io0iO8Bl6c8+7z
+         jSLg==
+X-Gm-Message-State: AOJu0Yz1Km+9/HV332YeCzczE3cCRWbayjHuq6siwYYviGGaxLBHmvwx
+	uTZU0G3yNaxxp4p2zGsiw3JkJeZ6NZYSiGIryjrHHKG7KyGireS6sS+g4O7ZJWU=
+X-Google-Smtp-Source: AGHT+IFQnaKZqeh5Rj4xqEMX0k6pttBa4Vu1n4Z0CI4CRMpqbmsUFuB5tmsthzYeBD6KzApNV8jfhw==
+X-Received: by 2002:a17:906:7c4d:b0:a23:7633:59ae with SMTP id g13-20020a1709067c4d00b00a23763359aemr3112272ejp.9.1707232528329;
+        Tue, 06 Feb 2024 07:15:28 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUg9wW+S7ycBthefkD2WByjBb+beZRpaMOnm58bFhiH+rMC4v4yIEFIixiiBRuvnLUWNHASoKCQ6koWvzr7wDfLACo/vhOqMf4D8E1dgCAwJywxwIBuWzPU0xOQNd8z9gAwuxqpRKpioQ0c0XXpwyu3Hy4rGpvg8oj19AFfLGP6XEg69HNLGGa+6/bE6BwM9hGKRFzC0qvOT4E6VqQYUu7Fi7mJ3qGP8w==
+Received: from localhost ([2a02:8071:6401:180:f8f5:527f:9670:eba8])
+        by smtp.gmail.com with ESMTPSA id rg14-20020a1709076b8e00b00a382ba97f95sm765703ejc.143.2024.02.06.07.15.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 07:15:28 -0800 (PST)
+Date: Tue, 6 Feb 2024 16:15:23 +0100
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: akpm@linux-foundation.org, chengming.zhou@linux.dev,
+	yosryahmed@google.com, linux-mm@kvack.org, kernel-team@meta.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/swap_state: update zswap LRU's protection range with
+ the folio locked
+Message-ID: <20240206151523.GB54958@cmpxchg.org>
+References: <20240205232442.3240571-1-nphamcs@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205232442.3240571-1-nphamcs@gmail.com>
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Mon, Feb 05, 2024 at 03:24:42PM -0800, Nhat Pham wrote:
+> Move the zswap LRU protection range update above the swap_read_folio()
+> call, and only when a new page is allocated. This is the case where
+> (z)swapin could happen, which is a signal that the zswap shrinker should
+> be more conservative with its reclaiming action.
+> 
+> It also prevents a race, in which folio migration can clear the
+> memcg_data of the now unlocked folio, resulting in a warning in the
+> inlined folio_lruvec() call.
 
-Update fprobe documentation for the new fprobe on function-graph
-tracer. This includes some bahvior changes and pt_regs to
-ftrace_regs interface change.
+The warning is the most probable outcome, and it will cause the update
+to go against the root cgroup which is safe at least.
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v2:
-  - Update @fregs parameter explanation.
----
- Documentation/trace/fprobe.rst |   42 ++++++++++++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 15 deletions(-)
+But AFAICS there is no ordering guarantee to rule out a UAF if the
+lookup succeeds but the memcg and lruvec get freed before the update.
 
-diff --git a/Documentation/trace/fprobe.rst b/Documentation/trace/fprobe.rst
-index 196f52386aaa..f58bdc64504f 100644
---- a/Documentation/trace/fprobe.rst
-+++ b/Documentation/trace/fprobe.rst
-@@ -9,9 +9,10 @@ Fprobe - Function entry/exit probe
- Introduction
- ============
- 
--Fprobe is a function entry/exit probe mechanism based on ftrace.
--Instead of using ftrace full feature, if you only want to attach callbacks
--on function entry and exit, similar to the kprobes and kretprobes, you can
-+Fprobe is a function entry/exit probe mechanism based on the function-graph
-+tracer.
-+Instead of tracing all functions, if you want to attach callbacks on specific
-+function entry and exit, similar to the kprobes and kretprobes, you can
- use fprobe. Compared with kprobes and kretprobes, fprobe gives faster
- instrumentation for multiple functions with single handler. This document
- describes how to use fprobe.
-@@ -91,12 +92,14 @@ The prototype of the entry/exit callback function are as follows:
- 
- .. code-block:: c
- 
-- int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
- 
-- void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
- 
--Note that the @entry_ip is saved at function entry and passed to exit handler.
--If the entry callback function returns !0, the corresponding exit callback will be cancelled.
-+Note that the @entry_ip is saved at function entry and passed to exit
-+handler.
-+If the entry callback function returns !0, the corresponding exit callback
-+will be cancelled.
- 
- @fp
-         This is the address of `fprobe` data structure related to this handler.
-@@ -112,12 +115,10 @@ If the entry callback function returns !0, the corresponding exit callback will
-         This is the return address that the traced function will return to,
-         somewhere in the caller. This can be used at both entry and exit.
- 
--@regs
--        This is the `pt_regs` data structure at the entry and exit. Note that
--        the instruction pointer of @regs may be different from the @entry_ip
--        in the entry_handler. If you need traced instruction pointer, you need
--        to use @entry_ip. On the other hand, in the exit_handler, the instruction
--        pointer of @regs is set to the current return address.
-+@fregs
-+        This is the `ftrace_regs` data structure at the entry and exit. This
-+        includes the function parameters, or the return values. So user can
-+        access thos values via appropriate `ftrace_regs_*` APIs.
- 
- @entry_data
-         This is a local storage to share the data between entry and exit handlers.
-@@ -125,6 +126,17 @@ If the entry callback function returns !0, the corresponding exit callback will
-         and `entry_data_size` field when registering the fprobe, the storage is
-         allocated and passed to both `entry_handler` and `exit_handler`.
- 
-+Entry data size and exit handlers on the same function
-+======================================================
-+
-+Since the entry data is passed via per-task stack and it is has limited size,
-+the entry data size per probe is limited to `15 * sizeof(long)`. You also need
-+to take care that the different fprobes are probing on the same function, this
-+limit becomes smaller. The entry data size is aligned to `sizeof(long)` and
-+each fprobe which has exit handler uses a `sizeof(long)` space on the stack,
-+you should keep the number of fprobes on the same function as small as
-+possible.
-+
- Share the callbacks with kprobes
- ================================
- 
-@@ -165,8 +177,8 @@ This counter counts up when;
-  - fprobe fails to take ftrace_recursion lock. This usually means that a function
-    which is traced by other ftrace users is called from the entry_handler.
- 
-- - fprobe fails to setup the function exit because of the shortage of rethook
--   (the shadow stack for hooking the function return.)
-+ - fprobe fails to setup the function exit because of failing to allocate the
-+   data buffer from the per-task shadow stack.
- 
- The `fprobe::nmissed` field counts up in both cases. Therefore, the former
- skips both of entry and exit callback and the latter skips the exit
+I think that part should be more prominent in the changelog. It's more
+important than the first paragraph. Consider somebody scrolling
+through the git log and trying to decide whether to backport or not;
+it's helpful to describe the bug and its impact first thing, then put
+the explanation of the fix after.
 
+> Reported-by: syzbot+17a611d10af7d18a7092@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/000000000000ae47f90610803260@google.com/
+> Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure")
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+
+Would it make sense to add
+
+	VM_WARN_ON_ONCE(!folio_test_locked(folio));
+
+to zswap_folio_swapin() as well?
 
