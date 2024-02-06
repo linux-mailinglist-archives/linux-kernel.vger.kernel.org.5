@@ -1,86 +1,175 @@
-Return-Path: <linux-kernel+bounces-55406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22F6084BC4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:40:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A61884BC59
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:41:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE94C28A49F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:40:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A90AF1F258F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:41:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CECEC16431;
-	Tue,  6 Feb 2024 17:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ECE717BCF;
+	Tue,  6 Feb 2024 17:39:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="lciMhFVw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Iq0S1O89"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09BA1426B
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 17:38:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F44217984
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 17:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707241139; cv=none; b=NnkZRwTvFmzPotUdmq4A70Ei4kaojBNXXuwS6T9XF5P9iNOEpyzhFWtd2ab/L/VyTJJBYKzyJDomgrxUNbZ9eQUbkz3xSyA0baN22SQCPukf/n57sT1KiTXAtW+I03Lh4GIGJWi9ky3NV5Uqbf+dAejs8AA0WZ60t9zR5zf7h5w=
+	t=1707241193; cv=none; b=PqHNqfCFFormE4OJLfxKaKaknh75U95QLZlzqt4YrTV+VRQ58JvTwe3JGJ8xRjI7FX9syi4EAbSjmEKi/SxWJ82Akub+42EOGjpp3RmDIuaP1s3tjqk+Nh9vHgURe+eG9GmJ35niR9vIC3YJ87INHlspyORxrmR+RECe8ATo8Ac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707241139; c=relaxed/simple;
-	bh=rb8APAK/NFsWkjSw2CEJHSFqUkeP73aN71SPR67A7Ck=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=GXGfetu46r7FTApI72lorztrUocnUVt1lCf3sKznolJLB49nI2yEC2TuhtG9Enegj5ppyenbYoEKKMARELsQBt4cjw4qT1HKp2zFTKfsvtSewkjFV1BEDgkE4ejGd8aKTNJbotPzoXqGvYAAE7M/vq8UTOnL9HscdsyKdxZQJnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=lciMhFVw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 244A1C433F1;
-	Tue,  6 Feb 2024 17:38:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1707241138;
-	bh=rb8APAK/NFsWkjSw2CEJHSFqUkeP73aN71SPR67A7Ck=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lciMhFVwD8spj2zXqwGFIForrObq2F8BJkxbrdxDdYKg1fqbP5VAtqDJQUwue4+18
-	 DItyjrNq9uxFdW2im98TsjO377IO4W5VqyMC915WTZkqw+Bcft2n+PVPZvdbs5uY3o
-	 Qv7TvTU/TNfcgzvgW8xsYVdhfUp+yQrigOvQyjRk=
-Date: Tue, 6 Feb 2024 09:38:57 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: linux-mm@kvack.org, alexandru.elisei@arm.com,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/cma: Add sysfs file 'release_pages_success'
-Message-Id: <20240206093857.d834af4f96d643c53e29e02d@linux-foundation.org>
-In-Reply-To: <20240206045731.472759-1-anshuman.khandual@arm.com>
-References: <20240206045731.472759-1-anshuman.khandual@arm.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707241193; c=relaxed/simple;
+	bh=kGZuyujQSSpKDsAqhvgihpAhgWWTrSHGvIIAvUQoGOQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZQ9Nfs2t64GlXlBsCV5qA/1vCZVkluLE45henNG/L5XrGXapPM4kbdmIKDOwrHbRB81Efhkztq/LeMgfk4pFnVM3UTd6EGXSb7FSsS3bopMomeyM3gvJoYWwpT82SND09xfZdcyOthjy8sFQiQlZnWp5RDYQ+vjv9NpixiDj4jw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Iq0S1O89; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707241191;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=qxND/0mZm42XCHvHVamaG/IBrDPXcu6uEcDyFY4xk/M=;
+	b=Iq0S1O89xfdklz2o/b8n9xr32cokT/O53lIuoklhGr58FxS/cqY4fXXOE3+fidX+BBT2Wb
+	e79yn7N3ZQ/YmvuLkbYOxeD3VtB+X2LQb1bzG+eQp57U94FfssCxO3y0reYrDRLpz9dhsu
+	ZRmEAGpl0Fj42Q0wG6uGMVR+U60E4K8=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-75-y-6ALdsPOPquZcBcqHR_VQ-1; Tue,
+ 06 Feb 2024 12:39:47 -0500
+X-MC-Unique: y-6ALdsPOPquZcBcqHR_VQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8AD7829AC002;
+	Tue,  6 Feb 2024 17:39:46 +0000 (UTC)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.193.2])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 09A752026D06;
+	Tue,  6 Feb 2024 17:39:39 +0000 (UTC)
+From: Valentin Schneider <vschneid@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	x86@kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Jason Baron <jbaron@akamai.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Feng Tang <feng.tang@intel.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Mike Rapoport (IBM)" <rppt@kernel.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	David Hildenbrand <david@redhat.com>,
+	"ndesaulniers@google.com" <ndesaulniers@google.com>,
+	Michael Kelley <mikelley@microsoft.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Subject: [PATCH v2 0/5] jump_label: Fix __ro_after_init keys for modules & annotate some keys
+Date: Tue,  6 Feb 2024 18:39:06 +0100
+Message-ID: <20240206173911.4131670-1-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Tue,  6 Feb 2024 10:27:31 +0530 Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+Hi folks,
 
-> This adds the following new sysfs file tracking the number of successfully
-> released pages from a given CMA heap area. Also like before - this will be
-> available via CONFIG_CMA_SYSFS, and help in determining active CMA pages
-> available on the system.
+This series fixes __ro_after_init keys used in modules (courtesy of PeterZ) and
+flags more keys as __ro_after_init. Further context for why I'm looking into
+this here: http://lore.kernel.org/r/20230720163056.2564824-1-vschneid@redhat.com
 
-"like before" is mysterious.  Is this referring to some other patch? 
-To existing code?  Please be explicit and complete.
+Compile & boot tested for x86_64_defconfig and i386_defconfig.
 
-> /sys/kernel/mm/cma/<cma-heap-area>/release_pages_success
-> 
-> It adds an element 'nr_pages_released' (with CONFIG_CMA_SYSFS config) into
-> 'struct cma' which gets updated during cma_release().
 
-The changelog doesn't explain why Linux needs this feature.  The value
-to our users.  Perhaps that info is buried in the link which is buried
-below the ^---$, but as this is the most important part of a changelog,
-it really should be spelled out here, completely and carefully please.
+@Peter, regarding making __use_tsc x86_32, I hit a few snags.
 
-> ---
-> This patch applies on v6.8-rc3
-> 
-> Some earlier relevant discussions regarding arm64 MTE dynamic tag storage
-> in this regard can be found here.
-> 
-> https://lore.kernel.org/all/ZbpKyNVHfhf1-AAv@raptor/
+Currently, for the static key to be enabled, we (mostly) need:
+o X86_FEATURE_TSC is in CPUID
+o determine_cpu_tsc_frequencies passes
+
+All X86_64 systems have a TSC, so the CPUID feature is a given there.
+
+Calibrating the TSC can end up depending on different things:
+o CPUID accepting 0x16 as eax input (cf. cpu_khz_from_cpuid())
+o MSR_FSB_FREQ being available (cf. cpu_khz_from_msr())
+o pit_hpet_ptimer_calibrate_cpu() doesn't mess up
+
+I couldn't find any guarantees for X86_64 on having the processor frequency
+information CPUID leaf, nor for the FSB_FREQ MSR (both tsc_msr_cpu_ids and
+the SDM seem to point at only a handful of models).
+
+pit_hpet_ptimer_calibrate_cpu() relies on having either HPET or the ACPI PM
+timer, the latter being widely available, though X86_PM_TIMER can be
+disabled via EXPERT.
+
+The question here is: are there any guarantees that at least one of these
+can be relied upon for x86_64?
+
+And with all of that, there is still the "apicpmtimer" cmdline option which
+currently invokes notsc_setup() on x86_64. The justification I found for it was
+in 0c3749c41f5e ("[PATCH] x86_64: Calibrate APIC timer using PM timer"):
+
+  """
+  On some broken motherboards (at least one NForce3 based AMD64 laptop)
+  the PIT timer runs at a incorrect frequency.  This patch adds a new
+  option "apicpmtimer" that allows to use the APIC timer and calibrate it
+  using the PMTimer.
+  """
+
+Revisions
+=========
+
+v1 -> v2
+++++++++
+
+- Collected tags (Josh, Sean)
+- Fixed CONFIG_JUMP_LABEL=n compile fail (lkp)
+
+Cheers,
+Valentin
+
+Peter Zijlstra (1):
+  jump_label,module: Don't alloc static_key_mod for __ro_after_init keys
+
+Valentin Schneider (4):
+  context_tracking: Make context_tracking_key __ro_after_init
+  x86/kvm: Make kvm_async_pf_enabled __ro_after_init
+  x86/speculation: Make mds_user_clear __ro_after_init
+  x86/tsc: Make __use_tsc __ro_after_init
+
+ arch/x86/kernel/cpu/bugs.c     |  2 +-
+ arch/x86/kernel/kvm.c          |  2 +-
+ arch/x86/kernel/tsc.c          |  2 +-
+ include/asm-generic/sections.h |  5 ++++
+ include/linux/jump_label.h     |  3 +++
+ init/main.c                    |  1 +
+ kernel/context_tracking.c      |  2 +-
+ kernel/jump_label.c            | 49 ++++++++++++++++++++++++++++++++++
+ 8 files changed, 62 insertions(+), 4 deletions(-)
+
+--
+2.43.0
+
 
