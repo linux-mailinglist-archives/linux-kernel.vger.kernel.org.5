@@ -1,170 +1,252 @@
-Return-Path: <linux-kernel+bounces-54815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9674584B405
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:57:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DF3B84B406
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:57:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B3BD2874E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:57:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 446291C21DA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:57:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF13131E2F;
-	Tue,  6 Feb 2024 11:35:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E37912F39C;
+	Tue,  6 Feb 2024 11:37:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="j2h3juMt"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eLHQspeY";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="LcPobtoo"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 631D1131734
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 11:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B16612EBD4
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 11:36:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707219313; cv=none; b=gqhzMBDOF7nKMs946nIwbcQe+tF2YiBY+Eh4+G1MPPGmG9iDUXELzw82puzIxcma4YzYpJACcpZ99Ly/LERy9XSxBHtY1ce3CacGqxQvJb2nUiNDQ/Mc9HklHie1nt1lQcDm2fzgChHhmzvTst6r6MZLCcYFZeX6a8Y/mVhdRM4=
+	t=1707219421; cv=none; b=luS8Z2yK3tk5rH86SNuONDf2lo++76PM1g4htoI4gLqNlp2GJdYfjZGvwDt5IJ2FJMvmRXDQzSrBWCgENydlhdoopdXET5AUT+FdBehpjYnCAFCy/VBI44NtWmz0FfuazROqvirGac84l/GTLJ/8HBZpFJM89USNWeRe3b0ryMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707219313; c=relaxed/simple;
-	bh=lMuVwqT6Yqxx65gjRWAsF+EhieMFDPtXh3GlqRjPYKo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ctg/Zr/crAW0JmwipKIXlHwWZO9EcXomamksKYVlCrTh60heagZFqY4GjnFMNzArnrudc2r9CAMUjGc3Hlq++L0yNJvpcsIWQINjULkyBShhgEWCQTFDCVyl5X8XfnxolpSxEkCXCSef53+sgwUR27Ng9mK758N9DHE3SUz4qSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=j2h3juMt; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-60406f4e1d0so48321747b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 03:35:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1707219310; x=1707824110; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ipIFPiuOZlL03JscPcnqfUuXdCqKvtPZ/moGeh3312s=;
-        b=j2h3juMtbfaN4OcIC4NdUaksHDKjKc/FjNqyJn1K5ppCDX+tjixVO8y+kuq4LVMvmu
-         SQ5IJLP03itlEPuKIhS4k2ZUsg6CKt1H3XuiRbJyLyG9X2n5RA/bTB7aV6yLDez24ZFN
-         J404lG1Zwlon5I+XgAnEmRCLM26wB2gu7Gpv4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707219310; x=1707824110;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ipIFPiuOZlL03JscPcnqfUuXdCqKvtPZ/moGeh3312s=;
-        b=k5fNqnWnDHDQguIzCFTZnLXJ/diYUmEXhKkWf0BugGpA67o85goTuUETc2qZ0+F51h
-         GfSQqAn2txP+LrJvy2clg2BCPdXY2uOdvQ/2VLqA+SMEpUMuXphwH3zQ5dSUFHdaiO/q
-         s52L+KiRmltdPgVgKryJTiIC0bgD2tsa+FZp5VcfADXXMJhYhgcDFuADAy0Ryh/FhNzE
-         +qdKkTknf89Kmk1Mnl40+wXN6XGXHKoJJQzMFzvYkofLsCOOCTClxcn0le3lRj3cibfz
-         aJrN4JzYWnRuZrcXrGniB8wxk69fT+XVfbuVnEbnIZSBg3x8FqQzEkXyikK8CnvyIM5Y
-         dDzA==
-X-Gm-Message-State: AOJu0YzLdONgJ3DEOSJKDG3Ga1ZlluTmqyDx3rzOnmjcZBKna0M75mXZ
-	wsleVu+Jzt6cn42TePDdijU4PrVDh8QZ88nLuyiSFpyhva+YeE1M2V3Juz2damYMSV9/wdWBsrv
-	jsb3oTY5Kq6rpCpGl6AmyGBq/qOpqiZlS+Nu6TQ==
-X-Google-Smtp-Source: AGHT+IFs9N+MMWXICUW8m7zjdBDfxfxKrJHf8SDeiP+oYRkgDorOT5XmQOl5gAjCH+qk4NmEovj7aTrJBhpDMGxfG60=
-X-Received: by 2002:a25:824f:0:b0:dbd:b081:9663 with SMTP id
- d15-20020a25824f000000b00dbdb0819663mr1120369ybn.41.1707219310352; Tue, 06
- Feb 2024 03:35:10 -0800 (PST)
+	s=arc-20240116; t=1707219421; c=relaxed/simple;
+	bh=nuX8VwufMArHL/xtXrdMzAEad9FC7VWLWX4HnFG9BCg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Rc0F90LJwB34Vje6PogFHSFAdwf8z3h2vZ/79XpZ4+xAJj+9FH5/Qgnn/M0KliNj8GfFuTg/kx0dUBVaXLtmVSrf5TyNOq5EJPyPcOGioYAdIKN61+aGmVg8pKsJr+z8TJaooipHjpdU3CQkWjWpaaGXKGOEw1MA0M8e88j0rdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=eLHQspeY; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=LcPobtoo; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707219416;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UXn+hR5gGzIbm0kADPt5i6gi2/Mf3CVPLIC5BHCxOuU=;
+	b=eLHQspeYQLXBQkUXOH+C/3Gkv49XukU9dCFGL4k06My6Qg8jN0SKUcpuA+TClztRC4lhPL
+	nU+C6hN/3pVFdeUmCfjPZP+8hlFkjuve61CewyzqvtYW1CFSOvF9o0Wu8yPl0o+37A/yN5
+	CvDVyRv1CBb/4V4J+CEWQhjw1UxKf2pBLvyLmT8OiW6gk8VoH08e97qQ7sxrjETr63Fb3v
+	E5ab/7s0M9SILkHYVvzcfegLleJMbC3SiBjf+vyMYaCA2NYPOqQ1m8jpi8EY9h1N09fBjt
+	ppz/uxv511sFfE7LH65Lq8t4c4rSAoVGgD3NKJbQmK0FYoo8GOOo5wNZJgm2Sg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707219416;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UXn+hR5gGzIbm0kADPt5i6gi2/Mf3CVPLIC5BHCxOuU=;
+	b=LcPobtooW6jnaSfxlfqQzbwBvgoxG/NGwdAowIzgc4FtqyJ7LJAELk9FWjB+9sUlOiBx9d
+	N88UKb90VY6bngDA==
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+ John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Eric Dumazet <edumazet@google.com>, "Rafael J . Wysocki"
+ <rafael.j.wysocki@intel.com>, Arjan van de Ven <arjan@infradead.org>,
+ "Paul E . McKenney" <paulmck@kernel.org>, Rik van Riel <riel@surriel.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Sebastian Siewior
+ <bigeasy@linutronix.de>, Giovanni Gherdovich <ggherdovich@suse.cz>, Lukasz
+ Luba <lukasz.luba@arm.com>, "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@intel.com>, K Prateek Nayak
+ <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
+In-Reply-To: <ZcAQZ8-gbEYaQflu@pavilion.home>
+References: <20240115143743.27827-1-anna-maria@linutronix.de>
+ <20240115143743.27827-19-anna-maria@linutronix.de>
+ <ZcAQZ8-gbEYaQflu@pavilion.home>
+Date: Tue, 06 Feb 2024 12:36:55 +0100
+Message-ID: <87eddp3ju0.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206115956.4570e9b1@canb.auug.org.au> <20240206120643.1d30764c@canb.auug.org.au>
- <fe0b21360178348543e662e9d620af9c@kernel.org>
-In-Reply-To: <fe0b21360178348543e662e9d620af9c@kernel.org>
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Date: Tue, 6 Feb 2024 12:34:59 +0100
-Message-ID: <CABGWkvpuukHq_qcdjAyczaSxVyG_dUda0SATuS9VoSzmQgdjPA@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the drm-misc tree with Linus' tree
-To: Michael Walle <mwalle@kernel.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Daniel Vetter <daniel.vetter@ffwll.ch>, 
-	Intel Graphics <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>, 
-	Inki Dae <inki.dae@samsung.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>, 
-	Michael Trimarchi <michael@amarulasolutions.com>, Robert Foss <rfoss@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi Michael,
+Frederic Weisbecker <frederic@kernel.org> writes:
 
-On Tue, Feb 6, 2024 at 12:29=E2=80=AFPM Michael Walle <mwalle@kernel.org> w=
-rote:
+> Le Mon, Jan 15, 2024 at 03:37:41PM +0100, Anna-Maria Behnsen a =C3=A9crit=
+ :
+>> +/*
+>> + * Returns true, if there is nothing to be propagated to the next level
+>> + *
+>> + * @data->firstexp is set to expiry of first gobal event of the (top le=
+vel of
+>> + * the) hierarchy, but only when hierarchy is completely idle.
+>> + *
+>> + * This is the only place where the group event expiry value is set.
+>> + */
+>> +static
+>> +bool tmigr_update_events(struct tmigr_group *group, struct tmigr_group =
+*child,
+>> +			 struct tmigr_walk *data, union tmigr_state childstate,
+>> +			 union tmigr_state groupstate)
+>> +{
+>> +	struct tmigr_event *evt, *first_childevt;
+>> +	bool walk_done, remote =3D data->remote;
+>> +	bool leftmost_change =3D false;
+>> +	u64 nextexp;
+>> +
+>> +	if (child) {
+>> +		raw_spin_lock(&child->lock);
+>> +		raw_spin_lock_nested(&group->lock, SINGLE_DEPTH_NESTING);
+>> +
+>> +		if (childstate.active) {
+>> +			walk_done =3D true;
+>> +			goto unlock;
+>> +		}
+>> +
+>> +		first_childevt =3D tmigr_next_groupevt(child);
+>> +		nextexp =3D child->next_expiry;
+>> +		evt =3D &child->groupevt;
+>> +	} else {
+>> +		nextexp =3D data->nextexp;
+>> +
+>> +		first_childevt =3D evt =3D data->evt;
+>> +
+>> +		/*
+>> +		 * Walking the hierarchy is required in any case when a
+>> +		 * remote expiry was done before. This ensures to not lose
+>> +		 * already queued events in non active groups (see section
+>> +		 * "Required event and timerqueue update after a remote
+>> +		 * expiry" in the documentation at the top).
+>> +		 *
+>> +		 * The two call sites which are executed without a remote expiry
+>> +		 * before, are not prevented from propagating changes through
+>> +		 * the hierarchy by the return:
+>> +		 *  - When entering this path by tmigr_new_timer(), @evt->ignore
+>> +		 *    is never set.
+>> +		 *  - tmigr_inactive_up() takes care of the propagation by
+>> +		 *    itself and ignores the return value. But an immediate
+>> +		 *    return is required because nothing has to be done in this
+>> +		 *    level as the event could be ignored.
+>> +		 */
+>> +		if (evt->ignore && !remote)
+>> +			return true;
+>> +
+>> +		raw_spin_lock(&group->lock);
+>> +	}
+>> +
+>> +	if (nextexp =3D=3D KTIME_MAX) {
+>> +		evt->ignore =3D true;
+>> +
+>> +		/*
+>> +		 * When the next child event could be ignored (nextexp is
+>> +		 * KTIME_MAX) and there was no remote timer handling before or
+>> +		 * the group is already active, there is no need to walk the
+>> +		 * hierarchy even if there is a parent group.
+>> +		 *
+>> +		 * The other way round: even if the event could be ignored, but
+>> +		 * if a remote timer handling was executed before and the group
+>> +		 * is not active, walking the hierarchy is required to not miss
+>> +		 * an enqueued timer in the non active group. The enqueued timer
+>> +		 * of the group needs to be propagated to a higher level to
+>> +		 * ensure it is handled.
+>> +		 */
+>> +		if (!remote || groupstate.active) {
+>> +			walk_done =3D true;
+>> +			goto unlock;
 >
-> Hi Stephen and all,
+> So if the current tmc going inactive was the migrator for the whole hiera=
+rchy
+> and it is reaching here the top-level, this assumes that if none of this =
+tmc's
+> groups have a timer, then it can just return. But what if the top level h=
+as
+> timers from other children? Who is going to handle them then?
 >
-> >> Today's linux-next merge of the drm-misc tree got a conflict in:
-> >>
-> >>   drivers/gpu/drm/bridge/samsung-dsim.c
-> >>
-> >> between commit:
-> >>
-> >>   ff3d5d04db07 ("drm: bridge: samsung-dsim: Don't use
-> >> FORCE_STOP_STATE")
-> >>
-> >> from Linus' tree and commit:
-> >>
-> >>   b2fe2292624a ("drm: bridge: samsung-dsim: enter display mode in the
-> >> enable() callback")
-> >>
-> >> from the drm-misc tree.
-> >>
-> >> I fixed it up (see below, please check) and can carry the fix as
-> >> necessary. This is now fixed as far as linux-next is concerned, but
-> >> any
-> >> non trivial conflicts should be mentioned to your upstream maintainer
-> >> when your tree is submitted for merging.  You may also want to
-> >> consider
-> >> cooperating with the maintainer of the conflicting tree to minimise
-> >> any
-> >> particularly complex conflicts.
-> >
-> > I changed my mind and just used the latter version of this file.
+> Should this be "goto check_toplvl" instead?
 >
-> Bug wise, this is the wrong solution. Because it will reintroduce the
-> faulty FORCE_STOP_STATE. Also keep in mind, my fixes commit is/was
-> already
-> backported to the stable series.
->
-> See also the discussion at [1]. Unfortunately, there was no conculusion
-> yet.
-> I think [2] is the proper resolution, at least for the commit
-> b2fe2292624a
-> ("drm: bridge: samsung-dsim: enter display mode in the enable()
-> callback")
-> I'm not sure in what state the drm-misc tree is.
->
-> -michael
->
-> [1]
-> https://lore.kernel.org/dri-devel/CAPM=3D9tytMB9frxNeD08hu1qsusY=3DwEE3bJ=
-OFmUgA1rSpabwDpg@mail.gmail.com/
-> [2]
-> https://lore.kernel.org/dri-devel/31e1a38a1d012a32d6f7bc8372b6360e@kernel=
-org/
 
+Simply replacing this goto will not work. Then we chould end up with a
+'data->firstexp' set even if we do not want to have it (when remote is
+not set).
 
-Unfortunately, in this recent period, I have been very busy and have
-not been able to run tests on this matter.
-As soon as I am able to do so, I will.
+There is another issue in here. When the event could be ignored and it
+is propagated because of e.g. remote timer handling, then the timerqueue
+dance is done nevertheless. It's not a big problem (as the ignore flag
+is set and event is removed of queue when revisting the timer queue),
+but its obviously more work than it is required to have.
 
-Thanks and regards,
-Dario
+Thanks
 
---=20
-
-Dario Binacchi
-
-Senior Embedded Linux Developer
-
-dario.binacchi@amarulasolutions.com
-
-__________________________________
-
-
-Amarula Solutions SRL
-
-Via Le Canevare 30, 31100 Treviso, Veneto, IT
-
-T. +39 042 243 5310
-info@amarulasolutions.com
-
-www.amarulasolutions.com
+>> +		}
+>> +	} else {
+>> +		/*
+>> +		 * An update of @evt->cpu and @evt->ignore flag is required only
+>> +		 * when @child is set (the child is equal or higher than lvl0),
+>> +		 * but it doesn't matter if it is written once more to the per
+>> +		 * CPU event; make the update unconditional.
+>> +		 */
+>> +		evt->cpu =3D first_childevt->cpu;
+>> +		evt->ignore =3D false;
+>> +	}
+>> +
+>> +	walk_done =3D !group->parent;
+>> +
+>> +	/*
+>> +	 * If the child event is already queued in the group, remove it from t=
+he
+>> +	 * queue when the expiry time changed only.
+>> +	 */
+>> +	if (timerqueue_node_queued(&evt->nextevt)) {
+>> +		if (evt->nextevt.expires =3D=3D nextexp)
+>> +			goto check_toplvl;
+>> +
+>> +		leftmost_change =3D timerqueue_getnext(&group->events) =3D=3D &evt->n=
+extevt;
+>> +		if (!timerqueue_del(&group->events, &evt->nextevt))
+>> +			WRITE_ONCE(group->next_expiry, KTIME_MAX);
+>> +	}
+>> +
+>> +	evt->nextevt.expires =3D nextexp;
+>> +
+>> +	if (timerqueue_add(&group->events, &evt->nextevt)) {
+>> +		leftmost_change =3D true;
+>> +		WRITE_ONCE(group->next_expiry, nextexp);
+>> +	}
+>> +
+>> +check_toplvl:
+>> +	if (walk_done && (groupstate.migrator =3D=3D TMIGR_NONE)) {
+>> +		/*
+>> +		 * Nothing to do when first event didn't changed and update was
+>> +		 * done during remote timer handling.
+>> +		 */
+>> +		if (remote && !leftmost_change)
+>> +			goto unlock;
+>> +		/*
+>> +		 * The top level group is idle and it has to be ensured the
+>> +		 * global timers are handled in time. (This could be optimized
+>> +		 * by keeping track of the last global scheduled event and only
+>> +		 * arming it on the CPU if the new event is earlier. Not sure if
+>> +		 * its worth the complexity.)
+>> +		 */
+>> +		data->firstexp =3D tmigr_next_groupevt_expires(group);
+>> +	}
+>> +
+>> +unlock:
+>> +	raw_spin_unlock(&group->lock);
+>> +
+>> +	if (child)
+>> +		raw_spin_unlock(&child->lock);
+>> +
+>> +	return walk_done;
+>> +}
 
