@@ -1,89 +1,90 @@
-Return-Path: <linux-kernel+bounces-55255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC71484B9C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:37:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FBFA84B9CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:38:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9874E28EC31
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:37:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C32171C22EDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:38:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 597D313341D;
-	Tue,  6 Feb 2024 15:37:07 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2385133996;
+	Tue,  6 Feb 2024 15:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MeC0/nmp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858B612E1D8
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E85BD12E1D8;
+	Tue,  6 Feb 2024 15:38:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707233826; cv=none; b=GBR7upiuYznbeI8dFe7RMBUPjpMDFiURHp1Qbr87VfkmjyOzvAkXHRJZzKjO67lnhPXV6z+N3gylxjC5BzhXlg9pprfDwM/5FlJkLPhXjLGTwlUy1CtZ43li5Skd/WCcmWdPmIovdLGmW3wTGFJu/urSIU9x+tbORWjyMthvCEo=
+	t=1707233882; cv=none; b=L0pf7IqIZTVxRQEnyfe8oVZbqZVrP+nVaX+tkKsJHmlZHJiN+cnyja0YGriSeG9bT7GN9zmuVJCqokWBl8rRStrTFrNQuT9NmjlDWWeqWHxh9aji1/6LhOzdTPrd10D0nr7XfFomSETeX7tsZ5RTFEJHei3Tj+Pv1rFE+GQeqLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707233826; c=relaxed/simple;
-	bh=Ng0b8wSoWNJFRHttU84cSbnmcIDm3gePN8ehYp9NBus=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=TGqnxTHB/Lcj/03RPRfim9I8Zj2ZQhQW9HIt4sNAkUvtZ8R5sHD+fj45hmVwZ15trxxSBu9dUtL6EgvOCbW88qICnSdhigwzA+soGeyDLwtKAeccxalycu6BVVHj34MNfX2sneASIfDT03+EzOr0JmmDTt/secjWrsonM6Ee6I8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-360c3346ecbso39715385ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 07:37:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707233824; x=1707838624;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V9nOob/8JifL/CSthC7q1oZwu7tQRQ1QA5+fvwsmZ/E=;
-        b=oL0geiMs/rrbzpLDXhlrp6YMFolpKBA7M0aG8yQCiw7dWYOddQNeIwLPS5ktnPmh8n
-         nMTiv5meBDLA3+/R9QMnM2OJY0eBhZYGJ7ne6mX4U+CgzBThiaj2Zw3e4VqKpz5Y2Zg5
-         9hKA+QD96HFHwrlLTGWdSNnERjbyuPVPFRHfBi4CjMSPbhJwGZ5KEjvoxBcBoPioc3Zv
-         HR1gxJi2BcubKCH+iuqk52EQSttJ37FYnQAPC7n2QATKMT9B826NnCuHyzlixZi3kLGa
-         p9A0xviTpd++KC1vwqU1LNgPflP9ozpyp5Ig6WM5BSfzN0ESNglU9DQXwzxDrTaHmROl
-         YYzw==
-X-Gm-Message-State: AOJu0Yz57ebLqmwPn0wVffXHFHfS6Fr5ajUaspmxaOsD4799fWrU+/UN
-	nI87hsKkotgvgACCuO3fpRkVjpB1yFlTQLJqJzDhRbKG45OGK99bX5gJbn/GerW5VLRv4vJ1Yah
-	z2uDWY6i58iyUCFXluRJRjg/r+5jONKdk4noRMY9Rhk4OYwAUG6M9rpw=
-X-Google-Smtp-Source: AGHT+IGMAEXhLsUrLC+UOgJ/3kd9L8ybPrpo4qLvWoPKvOnQRK4VP10cyMDFP4krNfsGgDUPMBSSioNv39wNBjJHiR7dBzS4e9Pa
+	s=arc-20240116; t=1707233882; c=relaxed/simple;
+	bh=GS8UEbSCgKgB/gRexnGVpyWM7USUW2+rfEyDI5KxFn4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aKLm59GU8SdbTf3YMKNINZjHWhgTThmPPAisGqJx1tE+tp7w3SXcmbn2Q6kEjm1JhD/Ws/76GY+CjQx7C5L0jgI7x1rLDR98qxUx9eGq4jt1cVngQOI4WH8gmw4TSNqKQ/GqaeqYd+2xPAvQGgzN+TsNAmlEspufas8ogxuctvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MeC0/nmp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70DB0C433F1;
+	Tue,  6 Feb 2024 15:38:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707233881;
+	bh=GS8UEbSCgKgB/gRexnGVpyWM7USUW2+rfEyDI5KxFn4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=MeC0/nmpBcpRMXw4qehV9ITDmznAf7JstSxhzuhPvmSPmjuZdqbsqo9BNmRWeWoWd
+	 o6eg1wrNN0GLFHvCP4CrxHM1IUwHDsbtV2bixepEFmxUcEkfWDFOuQWczE7xxRSG3e
+	 fkjZ9WfXNGazSJn3AhGHp8LkWiNAfqf0MISuAAroSLY8+e2CMIL38rjyPOIA1Hr4af
+	 I/WAm6tx7tx/or2mxg+UxmdYJA41uax1G65P1WiukM+x0qx0inmSelMJJaw8HwkCgk
+	 pf5HGsj/y9OPoA+7/Isz2zUwgz2b/aQ3J1pOh51tJl+5J6UnLmIkqdM6dBb6L22Lkb
+	 A9JQU7chc1uxw==
+Date: Tue, 6 Feb 2024 07:37:59 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Michal Swiatkowski
+ <michal.swiatkowski@linux.intel.com>, Marcin Szycik
+ <marcin.szycik@linux.intel.com>, Wojciech Drewek
+ <wojciech.drewek@intel.com>, Yury Norov <yury.norov@gmail.com>, Andy
+ Shevchenko <andy@kernel.org>, "Rasmus Villemoes"
+ <linux@rasmusvillemoes.dk>, Alexander Potapenko <glider@google.com>, Jiri
+ Pirko <jiri@resnulli.us>, Ido Schimmel <idosch@nvidia.com>, Przemek Kitszel
+ <przemyslaw.kitszel@intel.com>, "Simon Horman" <horms@kernel.org>,
+ <linux-btrfs@vger.kernel.org>, <dm-devel@redhat.com>,
+ <ntfs3@lists.linux.dev>, <linux-s390@vger.kernel.org>,
+ <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v5 00/21] ice: add PFCP filter support
+Message-ID: <20240206073759.4d948d1e@kernel.org>
+In-Reply-To: <c90e7c78-47e9-46d0-a4e5-cb4aca737d11@intel.com>
+References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
+	<c90e7c78-47e9-46d0-a4e5-cb4aca737d11@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1545:b0:363:c2fe:bb3d with SMTP id
- j5-20020a056e02154500b00363c2febb3dmr210132ilu.1.1707233824729; Tue, 06 Feb
- 2024 07:37:04 -0800 (PST)
-Date: Tue, 06 Feb 2024 07:37:04 -0800
-In-Reply-To: <20240206045254.711-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000abf10f0610b859b4@google.com>
-Subject: Re: [syzbot] [ceph?] [fs?] INFO: task hung in ceph_mdsc_pre_umount
-From: syzbot <syzbot+4bbc13a207327f82b3b0@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On Tue, 6 Feb 2024 13:46:44 +0100 Alexander Lobakin wrote:
+> > Add support for creating PFCP filters in switchdev mode. Add pfcp module
+> > that allows to create a PFCP-type netdev. The netdev then can be passed to
+> > tc when creating a filter to indicate that PFCP filter should be created.  
+> 
+> I believe folks agreed that bitmap_{read,write}() should stay inline,
+> ping then?
 
-syzbot tried to test the proposed patch but the build/boot failed:
+It's probably fine, IMHO. I mean, I think we agree that the rarely used
+inlines should not sit in a header included by half of the kernel (not
+an exaggeration). But IMHO a better fix would be to move out whatever
+cpumask.h xarray.h and other common headers depend on to a cut-down
+version rather than making your helpers not inline.
 
-failed to apply patch:
-checking file kernel/workqueue.c
-Hunk #1 FAILED at 1999.
-Hunk #2 FAILED at 2016.
-2 out of 2 hunks FAILED
-
-
-
-Tested on:
-
-commit:         ac139fc7 Add linux-next specific files for 20240206
-git tree:       linux-next
-kernel config:  https://syzkaller.appspot.com/x/.config?x=428086ff1c010d9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=4bbc13a207327f82b3b0
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=10e9713fe80000
-
+So I think all we need for now is for people to ack the respective
+patches? Looks like cio and ntfs and missing acks, so are some of 
+the bitops core patches.
 
