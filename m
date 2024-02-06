@@ -1,92 +1,61 @@
-Return-Path: <linux-kernel+bounces-54148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D1A584AB85
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:24:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7C5B84AB86
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:24:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01EA5287AFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:24:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FDC91C23B8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:24:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 020B0186F;
-	Tue,  6 Feb 2024 01:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9319A139D;
+	Tue,  6 Feb 2024 01:24:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="j2uWgFRB";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BLB9xptA";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="j2uWgFRB";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BLB9xptA"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hlftpUEt"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF871367;
-	Tue,  6 Feb 2024 01:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175BF1113
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 01:24:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707182632; cv=none; b=PSPqtbjappFA9Tt9nGv8Xk+lE9xH/TmTuaARTOBpXNnIjTgczLPCoaKW6EB3y+OSFg3LxkEVU//eqYI+Qd9ymsGdYauBLenMvop+25CbdHTAy+45NjdE8Qx6BssZPyOaOKnVISmUJdULKtuAOWcxz4FRoArB89gseA211bShoRM=
+	t=1707182653; cv=none; b=aiBBJqZrJ1nDA3OCpjrmItmyB2WR1b9GWHkkPFXWU2L8RO8eYiNeXIRDn2KL+nAfZzyzVy3kk30RZ8/FAlWHg0hHtDVNwKJ5II9u05nlYPas9ev3pPMpXvufF9j0fAXjl9UUPMe71u7vjOit0qEID7qKN6eHm/ZPwto4J8LMhxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707182632; c=relaxed/simple;
-	bh=1ubqfGFiV9WTKil/Wx37SVzwQ8BHKrAzW1eSpYyA7B8=;
+	s=arc-20240116; t=1707182653; c=relaxed/simple;
+	bh=VXzOZc4vStdTE6t2Oi4yAIKYdKGrqAEWrs21RG9yHiM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kDoIvLIWwFeDghf28sk0SQc8cbS/a+WZQ9vBOO3zE5qmn4eNhhFoNbGnULP+sZMB+Gt+Z00lKPfX8TjIYDmeHn8V4ZMfoHCAACb4K3jhb9Zw70Vi2egLGUxt9cJDHakUdi6XfmjwbVuqhRkMnBNFG/Tdgg+JzY3ipgyvIyW/l5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=j2uWgFRB; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BLB9xptA; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=j2uWgFRB; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BLB9xptA; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	 In-Reply-To:Content-Type; b=efDPa4g4EaEmOW2VUbipWG9X3tVnDj+Ll0pr1BAwWIuzywYL3jnmRAGicMaLzmiFIjialshSwK9ILhejRKik2pFySG5vM5BOxkkDlWBCIeRtTluod2rG12Jjjpn1k54jU3nQKwJ6uFl0JV6uOhExQUtZ/vVSijxcaqfLWWAbHs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hlftpUEt; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707182650;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OobGLijtb3dnc1pP7/J4GgG3dmB8XmvivQA2oHRpQrc=;
+	b=hlftpUEtEQ420T8ugvC1stuF3X5EJwMns0nIXAM+3hXT12eH5qANPa+awIPU5nNnCm7Uuo
+	GQoZ+HRwKhxGdkS/RmDhLINpSnulcQckfK6gjSiLwcODRDVZlRIyo15lf4KEtfAGU0KVNx
+	mgs29V6HdtfHTVb636upDmGzd9pvOiM=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-529-VjKfTTdyNK-gY-nlkk_w_A-1; Mon,
+ 05 Feb 2024 20:24:07 -0500
+X-MC-Unique: VjKfTTdyNK-gY-nlkk_w_A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8EEE01FB58;
-	Tue,  6 Feb 2024 01:23:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707182627; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6rW0G9gt7ir2VvM0GiL0nnA+OWvb2ivQWWi+qfcZ2P4=;
-	b=j2uWgFRB4DbaOB5hpl15zCuvPRIVqSp+SUV+P9mwGh0WMsitJkWton6rRnH0v3ggBn+SRa
-	/8bwwmdl4qO6q38Lu6Rf54+FCepsgwBnFzFi53Q4Lnwile1dxgJpcztz+RayhukWYzHLvo
-	UOPgfrtY6fMkPVGFim2x5TEUx0Ngnjs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707182627;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6rW0G9gt7ir2VvM0GiL0nnA+OWvb2ivQWWi+qfcZ2P4=;
-	b=BLB9xptAhDourhZr65Yzo7WCNS83d2fCmDYxrjfs4E81IjRq+ixBVv9i+91Am+shOzxRVj
-	UpFmebI05hWw7qBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707182627; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6rW0G9gt7ir2VvM0GiL0nnA+OWvb2ivQWWi+qfcZ2P4=;
-	b=j2uWgFRB4DbaOB5hpl15zCuvPRIVqSp+SUV+P9mwGh0WMsitJkWton6rRnH0v3ggBn+SRa
-	/8bwwmdl4qO6q38Lu6Rf54+FCepsgwBnFzFi53Q4Lnwile1dxgJpcztz+RayhukWYzHLvo
-	UOPgfrtY6fMkPVGFim2x5TEUx0Ngnjs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707182627;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6rW0G9gt7ir2VvM0GiL0nnA+OWvb2ivQWWi+qfcZ2P4=;
-	b=BLB9xptAhDourhZr65Yzo7WCNS83d2fCmDYxrjfs4E81IjRq+ixBVv9i+91Am+shOzxRVj
-	UpFmebI05hWw7qBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2839C132DD;
-	Tue,  6 Feb 2024 01:23:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9yloNSGKwWWpBAAAD6G6ig
-	(envelope-from <hare@suse.de>); Tue, 06 Feb 2024 01:23:45 +0000
-Message-ID: <ad231c28-c451-4b1d-9d96-c0245d77da28@suse.de>
-Date: Tue, 6 Feb 2024 10:23:43 +0900
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 33FB83C29A63;
+	Tue,  6 Feb 2024 01:24:07 +0000 (UTC)
+Received: from [10.22.17.212] (unknown [10.22.17.212])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id C40382026D66;
+	Tue,  6 Feb 2024 01:24:06 +0000 (UTC)
+Message-ID: <35ec9009-52eb-40aa-bf7a-db7a451d3652@redhat.com>
+Date: Mon, 5 Feb 2024 20:24:06 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,73 +63,43 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] fnic: move fnic_fnic_flush_tx() to a work queue
+Subject: Re: [PATCH-wq v3 0/4] workqueue: Enable unbound cpumask update on
+ ordered workqueues
 Content-Language: en-US
-To: Lee Duncan <leeman.duncan@gmail.com>, linux-scsi@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Lee Duncan <lduncan@suse.com>
-References: <cover.1706632031.git.lduncan@suse.com>
- <9c51ef07a04413fb2f2bd20f1534f96e004e4e59.1706632031.git.lduncan@suse.com>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <9c51ef07a04413fb2f2bd20f1534f96e004e4e59.1706632031.git.lduncan@suse.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
+ Juri Lelli <juri.lelli@redhat.com>, Cestmir Kalina <ckalina@redhat.com>,
+ Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
+ Costa Shulyupin <cshulyup@redhat.com>
+References: <20240205194602.871505-1-longman@redhat.com>
+ <ZcE8pUuHfa7gVZs6@slm.duckdns.org> <ZcF3qmion7H6qyYY@slm.duckdns.org>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ZcF3qmion7H6qyYY@slm.duckdns.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -4.29
-X-Spamd-Result: default: False [-4.29 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TO_DN_SOME(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On 1/31/24 00:42, Lee Duncan wrote:
-> From: Hannes Reinecke <hare@suse.de>
-> 
-> Rather than call 'fnic_flush_tx()' from interrupt context we should
-> be moving it onto a work queue to avoid any locking issues.
-> 
-> Signed-off-by: Hannes Reinecke <hare@suse.de>
-> Signed-off-by: Lee Duncan <lduncan@suse.com>
-> ---
->   drivers/scsi/fnic/fnic.h      | 3 ++-
->   drivers/scsi/fnic/fnic_fcs.c  | 3 ++-
->   drivers/scsi/fnic/fnic_main.c | 1 +
->   drivers/scsi/fnic/fnic_scsi.c | 4 ++--
->   4 files changed, 7 insertions(+), 4 deletions(-)
-> 
-Can you please add the 'fixes' tag to this one, too?
-Just the first patch doesn't fix anything, one really would
-need to apply both to get the issue fixed.
 
-And, of course, fix the kbuild robot warning :-)
+On 2/5/24 19:04, Tejun Heo wrote:
+> On Mon, Feb 05, 2024 at 09:53:09AM -1000, Tejun Heo wrote:
+>> On Mon, Feb 05, 2024 at 02:45:58PM -0500, Waiman Long wrote:
+>>>   v3:
+>>>    - [v2] https://lore.kernel.org/lkml/20240203154334.791910-1-longman@redhat.com/
+>>>    - Drop patch 1 as it has been merged into the for-6.9 branch.
+>>>    - Use rcu_access_pointer() to access wq->dfl_pwq.
+>>>    - Use RCU protection instead of acquiring wq->mutex in
+>>>      apply_wqattrs_cleanup().
+>> Looks like we raced each other. I'll wait for v4.
+> BTW, please don't bother to handle __WQ_ORDERED being cleared. We are very
+> close to removing the implicit ORDERED promotion, so we should be able to
+> apply the patch to remove the distinction between explicitly and implicitly
+> ordered workqueues.
 
-Cheers,
+BTW, the workqueue.c file in your latest for-6.9 branch still has a 
+reference to __WQ_ORDERED_EXPLICIT in workqueue_apply_unbound_cpumask(). 
+Will that break compilation?
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), GF: Ivo Totev, Andrew McDonald,
-Werner Knoblich
+Regards,
+Longman
 
 
