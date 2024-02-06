@@ -1,139 +1,85 @@
-Return-Path: <linux-kernel+bounces-54182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90C2B84AC02
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:09:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B85E84AC08
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:10:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B59671C23550
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:09:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A0052871FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380335732C;
-	Tue,  6 Feb 2024 02:09:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41FD856B81;
+	Tue,  6 Feb 2024 02:09:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="b+KMj6tv"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="d3QE4/02"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78EBA56B6F;
-	Tue,  6 Feb 2024 02:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B6785677B;
+	Tue,  6 Feb 2024 02:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707185358; cv=none; b=E7PEzjVEZxWqzIHGlJ7z4Na+iQX7i8W99HKf7Su6+Mi6X7v0F3QzWHRZl3DFV8/M82VMIQter1OaQqFNxhyRkwI9MVVmFFoMHvJll2QaRqWktz79YKJv368I7gGhrVHY06aRlpznxQK3BF7Q+jgP9oKaEhJidVe4r9/hXO1i8Ng=
+	t=1707185370; cv=none; b=qi1tpbIV01C0k6EBJCUtpP5ZO9xor7KgEmfWY5ESAgB1O/hb5Ie4S9z1F2RYbrUOioLg6YAP3IBk91tT5rEWMkV+utY0Ad8DyPgBnvdC9t1agi6q0o9x9KheN4G0O0UG5EsDyHTxcTqcBSQcgTzhKQCcI4JbagFxduQ+VxkDuLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707185358; c=relaxed/simple;
-	bh=WYfoRPya76Tqck0ScDgB0y5w0roJ0OYNP1LTT+2qcEk=;
+	s=arc-20240116; t=1707185370; c=relaxed/simple;
+	bh=r6WVirw61VF2FLzNXp4ynWhB/irgRPURWFlNX5Kp8v0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JeHGi5PkP5aBV4JD0Kmh/1Gmst9kmQ2fRsukbqwjuNpgEyp7RogdrwtIfOvTuRdrwHH175kx2jFIXfCvTML7bcW/xYA6k+K17lVx6pZ+DK/N07YfD5MCMpAVyafzxXHUPk465qrTImGkkJgSIoeIM9leUAJv3wGldj3E1pUyh3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=b+KMj6tv; arc=none smtp.client-ip=205.220.177.32
+	 MIME-Version:Content-Type; b=ClE/LK+VH1va9S6ne3sJqDKhpMVSxQYj1SLevu2Pxw/z59HE5k1FqAMTPAIsEudkCSbVFlHVgWSOX8xbv8pa40Li0wyntRqWPh78h1d+MaiPtwuiUmPHIpi+2RJCOe/en9t/Aj/KxkkguIp4Nd37Yhb/xEdE7xznONCX/BIDaVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=d3QE4/02; arc=none smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4161EYUn020918;
-	Tue, 6 Feb 2024 02:08:04 GMT
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4161EQcu002420;
+	Tue, 6 Feb 2024 02:09:09 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type : content-transfer-encoding; s=corp-2023-11-20;
- bh=TNBqmrMN0GKiz0meyol2MTt7jK7ZOMX41ADnOQ7L/UU=;
- b=b+KMj6tvO4efzEbKZhSG/xzlHnsPmbgMlBfcTWawkZTnAIffaQla4J5cVDofspUuJqWS
- /o00HHnk0n3gN9qp3mx/3E4gJC1I52m2sdoqn6JFMG+i8UwxEXr0NcQnIWxdhEFBJn+E
- /x8af1pQLtk1k1AM1L7u822p8aQ15VNJPSq8MPE9D4515Gx5HixPyTgAvA3/EgoqxoHI
- QgW4sF8UUf5WKq6QgWwluTQ92vNZ9x/szjLyibVmDwZBAu8ox17jHGO02Dm+ih1uUcH6
- DGK4SsClE47m3SK3AzW4xYXw6GyPWvrQpLAswBi0lOq+tWmzWKU14KToHTtMKtqix0Tu 5w== 
+ bh=zDHvNKH6z8IMSD7KKDrzVdYMtSlJj+y0Dfbg3H1Ui5w=;
+ b=d3QE4/02LAU9sFFyfRpfnIeSn2Z4jCU+SEW5sVGoMaS2S14c2BV1WXQMFpOIALTGCVTk
+ oq/vfqxeRi+cPMBc7VErTcRtrXyBhO6bDr9XhZwedQw7Hmy7/qQ962WoPogQtmLX4LZQ
+ NxTK9McCAqnX6q/R6xDa7jyiTObPzlGMipjryhwQQAKz3xVfEzgTuVw5jQ0ebsUjCeUh
+ xQPJjcV67tqn8ysj7FYuigHbyvilj50ilMZ6r2HLXnPuYm/sp+HwbrDus9qumxhE8YRd
+ DM8G5HxYpPjCLI6bbMIu08qGYjDvcRflpPUXHSF8MAGQVZCJJ7ckIwxOiioA3TRCXdBX lw== 
 Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w1bwengt7-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w1cdcwkm5-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 06 Feb 2024 02:08:03 +0000
+	Tue, 06 Feb 2024 02:09:08 +0000
 Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 4160ucci039478;
-	Tue, 6 Feb 2024 02:08:02 GMT
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 4160rGUc039547;
+	Tue, 6 Feb 2024 02:09:08 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w1bx6cdtw-1
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w1bx6cefx-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 06 Feb 2024 02:08:02 +0000
+	Tue, 06 Feb 2024 02:09:08 +0000
 Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41627qHJ034652;
-	Tue, 6 Feb 2024 02:08:01 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 416297CI038970;
+	Tue, 6 Feb 2024 02:09:07 GMT
 Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3w1bx6cdrb-2;
-	Tue, 06 Feb 2024 02:08:01 +0000
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3w1bx6cef6-1;
+	Tue, 06 Feb 2024 02:09:07 +0000
 From: "Martin K. Petersen" <martin.petersen@oracle.com>
-To: linux-kernel@vger.kernel.org, Li Zhijian <lizhijian@fujitsu.com>
-Cc: "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alistar Popple <alistair@popple.id.au>,
-        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        =?UTF-8?q?Bruno=20Pr=C3=A9mont?= <bonbons@linux-vserver.org>,
-        Chandrakanth patil <chandrakanth.patil@broadcom.com>,
-        Christian Gromm <christian.gromm@microchip.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>, cocci@inria.fr,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Don Brace <don.brace@microchip.com>, dri-devel@lists.freedesktop.org,
-        Eddie James <eajames@linux.ibm.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Hannes Reinecke <hare@kernel.org>, Hannes Reinecke <hare@suse.de>,
-        Hans de Goede <hdegoede@redhat.com>, Helge Deller <deller@gmx.de>,
-        HighPoint Linux Team <linux@highpoint-tech.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ian Rogers <irogers@google.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jack Wang <jinpu.wang@cloud.ionos.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+To: Alim Akhtar <alim.akhtar@samsung.com>, Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        James Morse <james.morse@arm.com>, Jeremy Kerr <jk@ozlabs.org>,
-        Jiri Kosina <jikos@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Joel Stanley <joel@jms.id.au>, Jonathan Cameron <jic23@kernel.org>,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linux-fsi@lists.ozlabs.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-scsi@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        megaraidlinux.pdl@broadcom.com, Michael Cyr <mikecyr@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Januszewski <spock@gentoo.org>,
-        MPT-FusionLinux.pdl@broadcom.com, Namhyung Kim <namhyung@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, netdev@vger.kernel.org,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Nilesh Javali <njavali@marvell.com>,
-        Parthiban Veerasooran <parthiban.veerasooran@microchip.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        platform-driver-x86@vger.kernel.org,
-        Richard Cochran <richardcochran@gmail.com>,
-        Robert Richter <rric@kernel.org>, Russell King <linux@armlinux.org.uk>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Satish Kharat <satishkh@cisco.com>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Stefan Achatz <erazor_de@users.sourceforge.net>,
-        storagedev@microchip.com, Stuart Yoder <stuyoder@gmail.com>,
-        Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>, target-devel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Vadim Pasternak <vadimp@nvidia.com>, x86@kernel.org
-Subject: Re: (subset) [PATCH 00/42] Fix coccicheck warnings
-Date: Mon,  5 Feb 2024 21:07:38 -0500
-Message-ID: <170715263710.945763.16540743989774199712.b4-ty@oracle.com>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+        alice.chao@mediatek.com
+Cc: "Martin K . Petersen" <martin.petersen@oracle.com>,
+        wsd_upstream@mediatek.com, stanley.chu@mediatek.com,
+        peter.wang@mediatek.com, powen.kao@mediatek.com,
+        naomi.chu@mediatek.com, cc.chou@mediatek.com, tun-yu.yu@mediatek.com,
+        chun-hung.wu@mediatek.com, casper.li@mediatek.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v1 1/1] ufs: core: fix shift issue in ufshcd_clear_cmd
+Date: Mon,  5 Feb 2024 21:08:55 -0500
+Message-ID: <170718504180.1101069.12960133692209922791.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20240116041129.3937800-1-lizhijian@fujitsu.com>
-References: <20240116041129.3937800-1-lizhijian@fujitsu.com>
+In-Reply-To: <20240205104905.24929-1-alice.chao@mediatek.com>
+References: <20240205104905.24929-1-alice.chao@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -148,40 +94,60 @@ X-Proofpoint-Virus-Version: vendor=baseguard
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 phishscore=0
  spamscore=0 adultscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402060013
-X-Proofpoint-ORIG-GUID: pTT_U64MvKVXcaNppMcpJ2F1AhkrIKYI
-X-Proofpoint-GUID: pTT_U64MvKVXcaNppMcpJ2F1AhkrIKYI
+ definitions=main-2402060014
+X-Proofpoint-GUID: glV5wqreaqgNxcm7upHbcuFGcUYdzy6r
+X-Proofpoint-ORIG-GUID: glV5wqreaqgNxcm7upHbcuFGcUYdzy6r
 
-On Tue, 16 Jan 2024 12:10:47 +0800, Li Zhijian wrote:
+On Mon, 05 Feb 2024 18:49:04 +0800, alice.chao@mediatek.com wrote:
 
-> make coccicheck COCCI=$PWD/scripts/coccinelle/api/device_attr_show.cocci`
-> complians some warnnings as following[1]:
+> When task_tag > 32 (in mcq mode), 1U << task_tag will out of bound
+> for u32 mask. Fix this bug to prevent SHIFT_ISSUE (Bitwise shifts
+> that are out of bounds for their data type).
 > 
-> Not sure if someone had tried these fixes, feel free to ignore this
-> patch set if we have come to a *NOT-FIX* conclusion before :)
-> 
-> This patch set also fix a few snprintf() beside coccicheck reported.
-> For example, some thing like
-> xxx_show() {
-> 	rc = snprintf();
-> ...
-> 	return rc;
-> }
+> [name:debug_monitors&]Unexpected kernel BRK exception at EL1
+> [name:traps&]Internal error: BRK handler: 00000000f2005514 [#1] PREEMPT SMP
+> [name:mediatek_cpufreq_hw&]cpufreq stop DVFS log done
+> [name:mrdump&]Kernel Offset: 0x1ba5800000 from 0xffffffc008000000
+> [name:mrdump&]PHYS_OFFSET: 0x80000000
+> [name:mrdump&]pstate: 22400005 (nzCv daif +PAN -UAO)
+> [name:mrdump&]pc : [0xffffffdbaf52bb2c] ufshcd_clear_cmd+0x280/0x288
+> [name:mrdump&]lr : [0xffffffdbaf52a774] ufshcd_wait_for_dev_cmd+0x3e4/0x82c
+> [name:mrdump&]sp : ffffffc0081471b0
+> <snip>
+> Workqueue: ufs_eh_wq_0 ufshcd_err_handler
+> Call trace:
+>  dump_backtrace+0xf8/0x144
+>  show_stack+0x18/0x24
+>  dump_stack_lvl+0x78/0x9c
+>  dump_stack+0x18/0x44
+>  mrdump_common_die+0x254/0x480 [mrdump]
+>  ipanic_die+0x20/0x30 [mrdump]
+>  notify_die+0x15c/0x204
+>  die+0x10c/0x5f8
+>  arm64_notify_die+0x74/0x13c
+>  do_debug_exception+0x164/0x26c
+>  el1_dbg+0x64/0x80
+>  el1h_64_sync_handler+0x3c/0x90
+>  el1h_64_sync+0x68/0x6c
+>  ufshcd_clear_cmd+0x280/0x288
+>  ufshcd_wait_for_dev_cmd+0x3e4/0x82c
+>  ufshcd_exec_dev_cmd+0x5bc/0x9ac
+>  ufshcd_verify_dev_init+0x84/0x1c8
+>  ufshcd_probe_hba+0x724/0x1ce0
+>  ufshcd_host_reset_and_restore+0x260/0x574
+>  ufshcd_reset_and_restore+0x138/0xbd0
+>  ufshcd_err_handler+0x1218/0x2f28
+>  process_one_work+0x5fc/0x1140
+>  worker_thread+0x7d8/0xe20
+>  kthread+0x25c/0x468
+>  ret_from_fork+0x10/0x20
 > 
 > [...]
 
-Applied to 6.9/scsi-queue, thanks!
+Applied to 6.8/scsi-fixes, thanks!
 
-[22/42] drivers/scsi/fnic: Convert snprintf to sysfs_emit
-        https://git.kernel.org/mkp/scsi/c/1ad717c92925
-[25/42] drivers/scsi/ibmvscsi: Convert snprintf to sysfs_emit
-        https://git.kernel.org/mkp/scsi/c/29ff822f466e
-[26/42] drivers/scsi/ibmvscsi_tgt: Convert snprintf to sysfs_emit
-        https://git.kernel.org/mkp/scsi/c/01105c23de42
-[27/42] drivers/scsi/isci: Convert snprintf to sysfs_emit
-        https://git.kernel.org/mkp/scsi/c/5fbf37e53091
-[34/42] drivers/scsi/pm8001: Convert snprintf to sysfs_emit
-        https://git.kernel.org/mkp/scsi/c/8179041f801d
+[1/1] ufs: core: fix shift issue in ufshcd_clear_cmd
+      https://git.kernel.org/mkp/scsi/c/b513d30d59bb
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
