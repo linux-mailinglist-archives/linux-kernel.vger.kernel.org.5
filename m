@@ -1,173 +1,207 @@
-Return-Path: <linux-kernel+bounces-55501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3180B84BD73
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:52:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE20884BD82
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:54:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD11C290021
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:52:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFFFE1C256E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82FB017984;
-	Tue,  6 Feb 2024 18:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 451E2171AB;
+	Tue,  6 Feb 2024 18:53:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="k30q1wW2"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O/Qosa+5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137F114273
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 18:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6CF13ADC;
+	Tue,  6 Feb 2024 18:53:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707245512; cv=none; b=WdV6m21bHKxJSbn7Jg3BaVr+nKonJSp0UmWi6GcfTfp87+zmJa8c/SHXIfPNLLjidnPd1b+UiUfcftKuhbLuvkD+hSJxkkF/8kJBLWEp99CuUqALLJMM8TElmnGtNUpu0+EPzJdseNk/BLP+fn7NqcaoY/fWUKPzMgmPP2Y/2lo=
+	t=1707245583; cv=none; b=Ec1HX9KCjTJa34peIy5hVXfsqYImIf1JC93e8+GzQsPZAthYAyj5k4rMMQjavF9f/AvyMsINJYB87T2HxctK5KkwKIDYG7rID9DfxlRh1B1wOext6hZoSVO7OeS2N2j/O5Nqai+6RP5rQy6PMoXIRYdUlYgA8CpD0tatGgwG6Lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707245512; c=relaxed/simple;
-	bh=LslDXJksTahobFcvGlV1BM41nSqQMb1KO9O/kxAu3CQ=;
+	s=arc-20240116; t=1707245583; c=relaxed/simple;
+	bh=SG3kh9GfzzT+XgLFlhGrW0bYQFDPElr02XcGaKdWcjI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BXVfky4EE08vGTML88XvV6++ohrge8UgeoM+/MN591eqZmvmYMRIjw/LLtWnynIlih0dtAgSTyMy18Whx0591BUIKTpn6xnp0HXkd8piqbbYLvyeEHyFD5txSXup0b2Rtsu+g0r3XDyvRgz71j1i27FhjScW+pyzF6AZW8ftQYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=k30q1wW2; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a26f73732c5so846177466b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 10:51:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1707245507; x=1707850307; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=621piEzSXJxB1zy3OuwwYQSE5VTqKJoLX8Sk8RtyImg=;
-        b=k30q1wW2Zq2slwupivqW1cG41cbWZUiwmszkBDq47HboB/I2jHdaCIi5RhFLSHL8/0
-         SajlBpdhR+Uw0tT2m43X2228VzfS6yVJIfYYG+ZsnlTSJFD0yG5xHU9jzkUaQQ2S/I/Y
-         eqHAY/E4MTpF7CPW+8d0MbIT1lvwD8P+eNI0PJw1KO5Ht2+PrwTWThhax5oUN5xl75ue
-         5EHN3jked36w4nRFUKqGGAr6FwxYTf5ggx53d3NVX9IZyc104tyfXT+E5C2Hpho2lpT7
-         uC3eUn5MVUm50pC8u8uJ3rylW6CB5vOadpjpdxJAhcxaYCg37j/iJdz1X2qo0x2UlIgA
-         yJHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707245507; x=1707850307;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=621piEzSXJxB1zy3OuwwYQSE5VTqKJoLX8Sk8RtyImg=;
-        b=I/XyQNUiuVWZflC7hoareAf1/Zp6OAzXSVgAVtXJ+6kEznB34Vy/XAWRXIjkg8TcRM
-         SfMd1AVHH6lT6CqyuYd+UNyaG0jbCBfPsD6PalkmE9pUxr52F5DMMqT4veuuj3G1Zejd
-         xzxTW8Tq7OlNQcwcgllM7aYOqT/qYBR44n9IdtdOhFevu27INToN+37KaaD0ILDrRgzZ
-         pGvcFmVjTf35ZKEA2Px2ch7dB6vsgsI5+MEq6qtllkXHQt4RIGxD91UW+YUugawliMRy
-         TMb4MrwsY0nD+Fk6KJWuODoszMd2A3BQqpIzPzy511ux6uWTI8MJmmmhnE/xGdv56BTx
-         s/oQ==
-X-Gm-Message-State: AOJu0Yyta+wkFqoVrim58A6thnzhI79BSpkufcDizLSI1OWRFTrRewwP
-	hMs7Mc++xefYYtzgjic9zFHi0ovY0Nc11hppeDIpMg6v33Pfvt0dKyBBlMb5etw=
-X-Google-Smtp-Source: AGHT+IFxYTbMcukoiLJjcgtMqQP0qNMxgZcZgHZ9EB6ONAVjWA5ZIv/bY2lcMFyv4EZnoA07trkBcQ==
-X-Received: by 2002:a17:906:f203:b0:a38:4f52:cd01 with SMTP id gt3-20020a170906f20300b00a384f52cd01mr796877ejb.53.1707245507031;
-        Tue, 06 Feb 2024 10:51:47 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXonRSCCIY5Y4O6Xfex2VBrnEbn2ZuvPgDRBBu5e4QaWvVzzQ8xMfROH4BNF5caLsLivrybO1kKOvzFl3rzflZrIs+Vh1AeHerZzHq5UMt/VT+XVkXSqYLpnjJSQ0mLpj6eZbOFG0U3Vh6kpQiPn5hKmPgDX032o1+Y4g2vNIZetwUFDpPkZwmgn0+KATokEp5b/ZFQf1yx02qWOCNmMSPOJdtySva6qg==
-Received: from localhost ([2620:10d:c092:400::5:310])
-        by smtp.gmail.com with ESMTPSA id tj10-20020a170907c24a00b00a354a5d2c39sm1448273ejc.31.2024.02.06.10.51.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 10:51:46 -0800 (PST)
-Date: Tue, 6 Feb 2024 19:51:45 +0100
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, chengming.zhou@linux.dev,
-	yosryahmed@google.com, linux-mm@kvack.org, kernel-team@meta.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/swap_state: update zswap LRU's protection range
- with the folio locked
-Message-ID: <20240206185145.GA97483@cmpxchg.org>
-References: <20240206180855.3987204-1-nphamcs@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qEPBLPIr5pM07nkR/VC+f8Z6avKfyw9O5OddF1ZKawLiCndw4opHhssW8Y7OKn/juxMZWOPqCis+YBIXX7O53K2ypp/9ZaZs/xBvjyeW28bSM8ypC5gRc/MFr2Hen/NFPe+ZTalmbfCJ7kcoV8y0JYhDUKck2IQ5nNc1j/+KG6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O/Qosa+5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE82CC433C7;
+	Tue,  6 Feb 2024 18:53:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707245583;
+	bh=SG3kh9GfzzT+XgLFlhGrW0bYQFDPElr02XcGaKdWcjI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O/Qosa+5Vi6kIyyC1irVymZ6lfjGwkRXtWi0QZ91zUyz1Fgzbb2lOws7sZSxDYF6h
+	 TFh2NGSV4E3kPsnMeuJl3fAKNVzgtSosvjYw3sMkTyZ2Z+b2VG54vv7Y7QccvUN9gX
+	 Te9eFRhIGNaOcbhh6GniDh8CW1AVBe45boBZNVkGLWBq6baEutywJcBhCAe0xfkaGN
+	 P8ByQGCUKn+R4Fx+LI4+ZDHJaufensjl+OGJ2SJXSgpdNoknWVKdSDvSscWPpK48Fp
+	 pyu0QBftSpPkdljTeY79WslVWTN7Tnce/623Tdd+Vre4B/phqOE/oGwnOfoBxhlQfs
+	 0ciChUTImYUQw==
+Date: Tue, 6 Feb 2024 11:52:59 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Adam Ford <aford173@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, marex@denx.de,
+	alexander.stein@ew.tq-group.com, frieder.schrempf@kontron.de,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Richard Leitner <richard.leitner@skidata.com>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Liu Ying <victor.liu@nxp.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-pm@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH V8 08/12] drm/bridge: imx: add driver for HDMI TX
+ Parallel Video Interface
+Message-ID: <20240206185259.GA2649447@dev-arch.thelio-3990X>
+References: <20240203165307.7806-1-aford173@gmail.com>
+ <20240203165307.7806-9-aford173@gmail.com>
+ <20240206170632.GA2183819@dev-arch.thelio-3990X>
+ <CAHCN7x+Jt8Qfyjxg=TasUgezA3ZDk=6mFZkMyFEwk2Evt-6c5Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240206180855.3987204-1-nphamcs@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHCN7x+Jt8Qfyjxg=TasUgezA3ZDk=6mFZkMyFEwk2Evt-6c5Q@mail.gmail.com>
 
-On Tue, Feb 06, 2024 at 10:08:55AM -0800, Nhat Pham wrote:
-> When a folio is swapped in, the protection size of the corresponding
-> zswap LRU is incremented, so that the zswap shrinker is more
-> conservative with its reclaiming action. This field is embedded within
-> the struct lruvec, so updating it requires looking up the folio's memcg
-> and lruvec. However, currently this lookup can happen after the folio is
-> unlocked, for instance if a new folio is allocated, and
-> swap_read_folio() unlocks the folio before returning. In this scenario,
-> there is no stability guarantee for the binding between a folio and its
-> memcg and lruvec:
+On Tue, Feb 06, 2024 at 12:50:16PM -0600, Adam Ford wrote:
+> On Tue, Feb 6, 2024 at 11:06 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > Hi all,
+> >
+> > On Sat, Feb 03, 2024 at 10:52:48AM -0600, Adam Ford wrote:
+> > > From: Lucas Stach <l.stach@pengutronix.de>
+> > >
+> > > This IP block is found in the HDMI subsystem of the i.MX8MP SoC. It has a
+> > > full timing generator and can switch between different video sources. On
+> > > the i.MX8MP however the only supported source is the LCDIF. The block
+> > > just needs to be powered up and told about the polarity of the video
+> > > sync signals to act in bypass mode.
+> > >
+> > > Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> > > Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com> (v7)
+> > > Tested-by: Marek Vasut <marex@denx.de> (v1)
+> > > Tested-by: Luca Ceresoli <luca.ceresoli@bootlin.com> (v7)
+> > > Tested-by: Richard Leitner <richard.leitner@skidata.com> (v2)
+> > > Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> (v2)
+> > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com> (v3)
+> > > Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> > > Tested-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> > > Tested-by: Fabio Estevam <festevam@gmail.com>
+> > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> >
+> > <snip>
+> >
+> > > diff --git a/drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c b/drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c
+> > > new file mode 100644
+> > > index 000000000000..a76b7669fe8a
+> > > --- /dev/null
+> > > +++ b/drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c
+> > ...
+> > > +static void imx8mp_hdmi_pvi_bridge_enable(struct drm_bridge *bridge,
+> > > +                                       struct drm_bridge_state *bridge_state)
+> > > +{
+> > > +     struct drm_atomic_state *state = bridge_state->base.state;
+> > > +     struct imx8mp_hdmi_pvi *pvi = to_imx8mp_hdmi_pvi(bridge);
+> > > +     struct drm_connector_state *conn_state;
+> > > +     const struct drm_display_mode *mode;
+> > > +     struct drm_crtc_state *crtc_state;
+> > > +     struct drm_connector *connector;
+> > > +     u32 bus_flags, val;
+> > > +
+> > > +     connector = drm_atomic_get_new_connector_for_encoder(state, bridge->encoder);
+> > > +     conn_state = drm_atomic_get_new_connector_state(state, connector);
+> > > +     crtc_state = drm_atomic_get_new_crtc_state(state, conn_state->crtc);
+> > > +
+> > > +     if (WARN_ON(pm_runtime_resume_and_get(pvi->dev)))
+> > > +             return;
+> > > +
+> > > +     mode = &crtc_state->adjusted_mode;
+> > > +
+> > > +     val = FIELD_PREP(PVI_CTRL_MODE_MASK, PVI_CTRL_MODE_LCDIF) | PVI_CTRL_EN;
+> > > +
+> > > +     if (mode->flags & DRM_MODE_FLAG_PVSYNC)
+> > > +             val |= PVI_CTRL_OP_VSYNC_POL | PVI_CTRL_INP_VSYNC_POL;
+> > > +
+> > > +     if (mode->flags & DRM_MODE_FLAG_PHSYNC)
+> > > +             val |= PVI_CTRL_OP_HSYNC_POL | PVI_CTRL_INP_HSYNC_POL;
+> > > +
+> > > +     if (pvi->next_bridge->timings)
+> > > +             bus_flags = pvi->next_bridge->timings->input_bus_flags;
+> > > +     else if (bridge_state)
+> > > +             bus_flags = bridge_state->input_bus_cfg.flags;
+> > > +
+> > > +     if (bus_flags & DRM_BUS_FLAG_DE_HIGH)
+> > > +             val |= PVI_CTRL_OP_DE_POL | PVI_CTRL_INP_DE_POL;
+> > > +
+> > > +     writel(val, pvi->regs + HTX_PVI_CTRL);
+> > > +}
+> >
+> > Apologies if this has already been reported or fixed, I searched lore
+> > and did not find anything. Clang warns (or errors with CONFIG_WERROR=y)
+> > for this function:
+> >
+> >   drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c:81:11: error: variable 'bus_flags' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
+> >      81 |         else if (bridge_state)
+> >         |                  ^~~~~~~~~~~~
+> >   drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c:84:6: note: uninitialized use occurs here
+> >      84 |         if (bus_flags & DRM_BUS_FLAG_DE_HIGH)
+> >         |             ^~~~~~~~~
+> >   drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c:81:7: note: remove the 'if' if its condition is always true
+> >      81 |         else if (bridge_state)
+> >         |              ^~~~~~~~~~~~~~~~~
+> >      82 |                 bus_flags = bridge_state->input_bus_cfg.flags;
+> >   drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c:60:15: note: initialize the variable 'bus_flags' to silence this warning
+> >      60 |         u32 bus_flags, val;
+> >         |                      ^
+> >         |                       = 0
+> >   1 error generated.
+> >
+> > This seems legitimate. If bridge_state can be NULL, should bus_flags be
+> > initialized to zero like it suggests or should that 'else if' be turned
+> > into a plain 'else'? I am happy to send a patch with that guidance.
 > 
-> * A folio's memcg and lruvec can be freed between the lookup and the
->   update, leading to a UAF.
-> * Folio migration can clear the now-unlocked folio's memcg_data, which
->   directs the zswap LRU protection size update towards the root memcg
->   instead of the original memcg. This was recently picked up by the
->   syzbot thanks to a warning in the inlined folio_lruvec() call.
+> I don't think we can turn the else-if into a blind else, because in
+> order to make bus_flags point to bridge_state->input_bus_cfg.flags,
+> bridge_state must not be NULL, but we could add an additional else to
+> set bus_flags to 0, but I think the simplest thing to do would be to
+> set bus_flags = 0 at the initialization on line 60 as it suggests.
 > 
-> Move the zswap LRU protection range update above the swap_read_folio()
-> call, and only when a new page is allocated, to prevent this.
+> If you agree, I can submit a patch later tonight.  I need to fix
+> another issue found by the build-bot [1]  to make line 113 return NULL
+> instead of 0 anyway.  I figured I could just fix them both at the same
+> time.
 > 
-> Reported-by: syzbot+17a611d10af7d18a7092@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/000000000000ae47f90610803260@google.com/
-> Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure")
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> [1] - https://lore.kernel.org/oe-kbuild-all/202402062134.a6CqAt3s-lkp@intel.com/
 
-Looks great, thanks for updating it!
+Seems reasonable to me, thanks!
 
-One more thing I just realized:
-
-> ---
->  mm/swap_state.c | 10 ++++++----
->  mm/zswap.c      |  1 +
->  2 files changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index e671266ad772..7255c01a1e4e 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -680,9 +680,10 @@ struct folio *swap_cluster_readahead(swp_entry_t entry, gfp_t gfp_mask,
->  	/* The page was likely read above, so no need for plugging here */
->  	folio = __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
->  					&page_allocated, false);
-> -	if (unlikely(page_allocated))
-> +	if (unlikely(page_allocated)) {
-> +		zswap_folio_swapin(folio);
->  		swap_read_folio(folio, false, NULL);
-> -	zswap_folio_swapin(folio);
-> +	}
->  	return folio;
->  }
->  
-> @@ -855,9 +856,10 @@ static struct folio *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
->  	/* The folio was likely read above, so no need for plugging here */
->  	folio = __read_swap_cache_async(targ_entry, gfp_mask, mpol, targ_ilx,
->  					&page_allocated, false);
-> -	if (unlikely(page_allocated))
-> +	if (unlikely(page_allocated)) {
-> +		zswap_folio_swapin(folio);
->  		swap_read_folio(folio, false, NULL);
-> -	zswap_folio_swapin(folio);
-> +	}
->  	return folio;
->  }
->  
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 4aea03285532..8c548f73d52e 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -827,6 +827,7 @@ void zswap_folio_swapin(struct folio *folio)
->  	struct lruvec *lruvec;
->  
->  	if (folio) {
-> +		VM_WARN_ON_ONCE(!folio_test_locked(folio));
->  		lruvec = folio_lruvec(folio);
->  		atomic_long_inc(&lruvec->zswap_lruvec_state.nr_zswap_protected);
->  	}
-
-The NULL check is now also no longer necessary.
-
-It used to be called unconditionally, even if
-__read_swap_cache_async() failed and returned NULL.
-
-However, page_allocated == true implies success. That newly allocated
-and locked folio is always returned.
+Nathan
 
