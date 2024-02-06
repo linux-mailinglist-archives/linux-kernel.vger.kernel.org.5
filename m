@@ -1,167 +1,168 @@
-Return-Path: <linux-kernel+bounces-54836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91AA384B440
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:04:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 526EF84B441
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:04:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FF18288D6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:04:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1F45B24E81
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:04:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C64135A47;
-	Tue,  6 Feb 2024 11:49:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0194E135A69;
+	Tue,  6 Feb 2024 11:50:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="SbJYzPp2"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2082.outbound.protection.outlook.com [40.107.101.82])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h1SKcg6/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B4F6DCF7;
-	Tue,  6 Feb 2024 11:49:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.82
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707220161; cv=fail; b=Oto3bTIxuBnAFJKy7kXrF1JqHyOmX7eut5hcWp50riC58QOrESWdsf8McCNm+wGRBfIssRdobuimu5dZpj41rNrUZ5lB+/9xiBvj2x07/2lh1sVCYHnjXG2VbXJ52TvF59eHjoYr6fyKI28+EPyu90EnDu9w4cccovpXIccV6AA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707220161; c=relaxed/simple;
-	bh=OoDJ8yMQHJcg25QloJTbWWQ1elVKmK4prq6g1nkpF2U=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Epv0cKCUcpT+z3ZvyLZx0GSUbUXlUlJGvX5+sE3gBQfaGDcukXhrdEaI352yPAHsl2p1dBu4X1xCd3Hs1FW8r8EFlZd2JT8CubC7Y7S7sl0MYUAtWw0Xsv/GTWE+GDgrUv7Muk9/pbRfGRRn8peIE/yENfJ83xa2s3dCIQj3+yI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=SbJYzPp2; arc=fail smtp.client-ip=40.107.101.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SWHUZmjqX9oAxGzfeGBB6yQOLP1IQ09WqVjiH86siilIWAmLMcFcj40La8OTAPemUiMgScoABvqyS02HsPLMCu1PTxSzQK4uOutSjXWgJHOvpWbQs8QN95VnXh3/W8fGqsB68KXMSTiVD+o9FShnrjaMxFcfd+D82HFRwQWsufBR57ZpP3rr6OHePm2czwCdBEqwp9D1NRfZBPfnmZE0sdDKCZWa459k5h/9ympvkIU4Qy93im+kmeEau9VNYWlWlHOnlTUKOSMU3TdUiGOF5jDWkoSA71wbUMGzkDOaXAEqJjj52x4inM2DzQkpTXs236IPMeIgTsqIFCAsE1kKgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=emTUHxJY0T+TFBlYA2byvT4Ib94x7/1m1l84cDhhjko=;
- b=dCe2R+5aaDOumAgzkkWHCkGLZQj0aqKNZgeT+HIJQlHcdPY5aq6+MPyEMhbzaQkA/seYNLuQvkacO+NB7twuE4o0CyBz44fYns+6C0PPBVGr0t9ArL2fMdK+hJl8m3WG6FVXxWhLWP5cK74c1AI26NypI3SqBW1irrlZyh6oWOsqbE06frQhc65DoTT9F6PL9f77VrkoAgU2xcukBJIo3T+NRpVVeNhx4w7qK+LnoqdDk4urEVynKvowQpaFDaKrClwO7AKT8x4GcPSYsTZYJbLqv9cmP2gF9y6PIxumyNRcqveXGgtCzptX/FpOJGRuZTp1RDfJfuE7hC0FaIqV1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=emTUHxJY0T+TFBlYA2byvT4Ib94x7/1m1l84cDhhjko=;
- b=SbJYzPp2D2iK4AP7Go7M+j+MSY2B02WM8nDwzdAjW7x2FUNR86u7XaX6VWFJgtowDHtmjtSW/AuPREKcUF6zgZci83SaKPaFhNQZTiKAxKuB6rU9oaikj+wcWqPdgyAlSSGFRhhi25HnvX0Kny8FqLfGDxedrjgiOipdWxAkYcCgyywzOXF9bC/z4c8T688UVGARZgW6mwKgQk/6pDL9xjNX8lRQS+/Q531tmjWPe/l6YjFtf5ZwnqggiyBhwlLQq44n09PT+asUj+1IoyKFQUgTBS0tKETgq4G4rqtV78rdZuNFKL2gZEjiE8VfE7cRGjidGlCQ/F+XmKAERPav+g==
-Received: from CH5PR03CA0001.namprd03.prod.outlook.com (2603:10b6:610:1f1::29)
- by SJ2PR12MB7919.namprd12.prod.outlook.com (2603:10b6:a03:4cc::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.8; Tue, 6 Feb
- 2024 11:49:16 +0000
-Received: from CH2PEPF00000099.namprd02.prod.outlook.com
- (2603:10b6:610:1f1:cafe::e5) by CH5PR03CA0001.outlook.office365.com
- (2603:10b6:610:1f1::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36 via Frontend
- Transport; Tue, 6 Feb 2024 11:49:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CH2PEPF00000099.mail.protection.outlook.com (10.167.244.20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7249.19 via Frontend Transport; Tue, 6 Feb 2024 11:49:16 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 6 Feb 2024
- 03:49:04 -0800
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 6 Feb 2024
- 03:49:04 -0800
-Received: from sumitg-l4t.nvidia.com (10.127.8.10) by mail.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Tue, 6 Feb 2024 03:49:01 -0800
-From: Sumit Gupta <sumitg@nvidia.com>
-To: <treding@nvidia.com>, <krzysztof.kozlowski@linaro.org>,
-	<jonathanh@nvidia.com>, <maz@kernel.org>, <mark.rutland@arm.com>,
-	<linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>
-CC: <amhetre@nvidia.com>, <bbasu@nvidia.com>, <sumitg@nvidia.com>
-Subject: [Patch] memory: tegra: Skip SID override from Guest VM
-Date: Tue, 6 Feb 2024 17:18:52 +0530
-Message-ID: <20240206114852.8472-1-sumitg@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-X-NVConfidentiality: public
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6846C135A5C;
+	Tue,  6 Feb 2024 11:50:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707220202; cv=none; b=nAOmutOK180aDA2uvYPYg3LVWnZBH0rHtakxxZKIYi+X/fc2TbggeO9OKlx8CSsl5kohX6wMpNfA281C7UtzN8g2P2gZmEMNj8sGLfvCxQEsqEPQb/63Zw6gi9gsfuSGoul3BAU/96yboZ2ufSerPUHrrMbtwl7nLKb1uxMsKRQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707220202; c=relaxed/simple;
+	bh=JY/ecKxpqcoskN4SO4DbU7pB525Tsjxkek4gM3Dptkg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=U7Bjm9XaWqMdYRYOFPqpF+Lleirdgfb9UrHJ3B0XjUku+wLrJ3c+JBqTW+UxxSnUIzpJ10aNg+FT8NNvi7PBccFHIB6fwSxf/ojGH+mxWte+BzYt263KlXSK9UORX9JhYJQlyEXbWgqjJbA5+LCti3GSs4PXqI7K71kS8Kr0iyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h1SKcg6/; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707220200; x=1738756200;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=JY/ecKxpqcoskN4SO4DbU7pB525Tsjxkek4gM3Dptkg=;
+  b=h1SKcg6/GRaDMl4Wo2NV3MR3c98emlsqaaFEeZ+POr62NQzjM7U3Apz0
+   dTEI0DsQSai2CupKkpJsdlArybh52a6ywv0nEmAAl1d+Ez48zCL1v/hth
+   5xwCrXT+L1GvR26qaD1M5F3BhOyd7RQjigiv54CFADEc1mJ6ccEyhVSN2
+   wLTt9pyyXIJ+xjNKN4hjJVc7c6NptPYimEdUL3Som2ahI0Qfr8ygST6cN
+   aKC33sff5NtKxONbHnCANwK81E3QXutSM0wq0czt9fxNvPPUdqZazJ05e
+   ColPQlj+u+UyKKgTqwYnaAL52vO0nW22R9j+5UFnPiLBUgw0Lkxme/+KO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11375334"
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="11375334"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 03:49:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="1232790"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.42.101])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 03:49:50 -0800
+Message-ID: <bd5ed9b2-cbb7-4b8b-b7b8-5db2eff75f17@intel.com>
+Date: Tue, 6 Feb 2024 13:49:45 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF00000099:EE_|SJ2PR12MB7919:EE_
-X-MS-Office365-Filtering-Correlation-Id: bf71aefd-7208-4bc4-6a52-08dc2709a569
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ggXTJdQgKpZS1qOOIJkmdDuMOMvRihPyxnVyS+qvJTaG9UIFwZ9BBj4X1Xn99yCILAyghzpxTE1gfS9qqYfC1dfau1g1V6Zb/n527EpCZeRtMleS79sHnaP5JtNVI0s/Zj4YhQRkio9W5/MjQPLoOqyalu8rxfPpCgfr4z4vkb0+Yuqx8CAI2aEmlgyE7e9buP5AsPMjrwOS/oVwsk5V3UnSFCIAAOmfJlJt7Sj2xBsw5PDd6zXnCsDk5GhXfXCdgggtSJIQ5l33ZYImHpKA/OeZgiUWGQybsNy2k80ZfwCMscLeIBIBP/oMhaFthFNdR2RhbbQxM+OW28FRNDazx85U0G5UvZVrpBk+yLOi90mh2zRDpUPt1D9EGnepTZD7DmMNBE4kFLBHklETHDbZbFg9nt9/Lvw5rrOC0m31zR0wxQpPO1XvXBDSoOB7FTN4ezPpzbjuDWkTqejApHBUbk4g4I4xHlAHi2AGEKSB5vq2e/GdhJHney8asMAkseMTmcC/9MnyJoGimzXw10I1UHar9MhU3hxG9lsAaw6HqGTfGIbnGbUMRV3M1GXrQTz5xnOUQyfm6uOuEFwDeCBhmkW/NRKWS09wg8U1o04gMqNFEiOZyVxV/GIGOm9DB34HNuaKnRVe1/w+JT1fuuN1xqTyMm9Vk/Vevm7lwf4dvyQaJnsNQqbEvlMLRLAX1f9FTfMPQ6aqRyqtlLsRBkFyUhBNoZIrI0yX0Vvc8Al+o8rCdi5aJmY2joEJItriYYvXLtKZ4MRlROR3k4aQ2d2xbw==
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(82310400011)(46966006)(40470700004)(36840700001)(40480700001)(1076003)(40460700003)(2616005)(26005)(36860700001)(41300700001)(336012)(356005)(107886003)(478600001)(54906003)(316002)(83380400001)(7696005)(47076005)(6666004)(426003)(7636003)(36756003)(110136005)(2906002)(70206006)(82740400003)(4326008)(8936002)(86362001)(8676002)(5660300002)(70586007)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2024 11:49:16.1543
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf71aefd-7208-4bc4-6a52-08dc2709a569
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CH2PEPF00000099.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7919
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 0/5] perf: script: Intro capstone disasm engine to show
+ instruction trace
+Content-Language: en-US
+To: Changbin Du <changbin.du@huawei.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+ Thomas Richter <tmricht@linux.ibm.com>, changbin.du@gmail.com
+References: <20240206112929.1035548-1-changbin.du@huawei.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20240206112929.1035548-1-changbin.du@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-MC SID register access is restricted for Guest VM.
-So, skip the SID override programming from the Guest VM.
+On 6/02/24 13:29, Changbin Du wrote:
+> This series introduces capstone disassembler engine to print instructions of
+> Intel PT trace, which was printed via the XED tool.
+> 
+> The advantages compared to XED tool:
+>     * Support arm, arm64, x86-32, x86_64, s390 (more could be supported),
+>       xed only for x86_64.
+>     * More friendly to read. Immediate address operands are shown as symbol+offs.
+> 
+> Display raw instructions:
+>     $ sudo perf record --event intel_pt//u -- ls
+>     $ sudo perf script --insn-trace
+>                 perf 17423 [000] 423271.557970005:      7f2d95f16217 __GI___ioctl+0x7 (/lib/x86_64-linux-gnu/libc-2.27.so) insn: 48 3d 01 f0 ff ff
+>                 perf 17423 [000] 423271.557970005:      7f2d95f1621d __GI___ioctl+0xd (/lib/x86_64-linux-gnu/libc-2.27.so) insn: 73 01
+>                 perf 17423 [000] 423271.557970338:      7f2d95f1621f __GI___ioctl+0xf (/lib/x86_64-linux-gnu/libc-2.27.so) insn: c3
+>                 perf 17423 [000] 423271.557970338:      5593ad3346d7 perf_evsel__enable_cpu+0x97 (/work/linux/tools/perf/perf) insn: 85 c0
+>                 perf 17423 [000] 423271.557970338:      5593ad3346d9 perf_evsel__enable_cpu+0x99 (/work/linux/tools/perf/perf) insn: 75 12
+>                 perf 17423 [000] 423271.557970338:      5593ad3346db perf_evsel__enable_cpu+0x9b (/work/linux/tools/perf/perf) insn: 49 8b 84 24 a8 00 00 00
+>                 perf 17423 [000] 423271.557970338:      5593ad3346e3 perf_evsel__enable_cpu+0xa3 (/work/linux/tools/perf/perf) insn: 48 8b 50 20
+> 
+> Display mnemonic instructions:
+>     $ sudo perf script --insn-trace=disasm
+>                 perf 17423 [000] 423271.557970005:      7f2d95f16217 __GI___ioctl+0x7 (/lib/x86_64-linux-gnu/libc-2.27.so)		cmpq $-0xfff, %rax
+>                 perf 17423 [000] 423271.557970005:      7f2d95f1621d __GI___ioctl+0xd (/lib/x86_64-linux-gnu/libc-2.27.so)		jae __GI___ioctl+0x10
+>                 perf 17423 [000] 423271.557970338:      7f2d95f1621f __GI___ioctl+0xf (/lib/x86_64-linux-gnu/libc-2.27.so)		retq
+>                 perf 17423 [000] 423271.557970338:      5593ad3346d7 perf_evsel__enable_cpu+0x97 (/work/linux/tools/perf/perf)		testl %eax, %eax
+>                 perf 17423 [000] 423271.557970338:      5593ad3346d9 perf_evsel__enable_cpu+0x99 (/work/linux/tools/perf/perf)		jne perf_evsel__enable_cpu+0xad
+>                 perf 17423 [000] 423271.557970338:      5593ad3346db perf_evsel__enable_cpu+0x9b (/work/linux/tools/perf/perf)		movq 0xa8(%r12), %rax
+>                 perf 17423 [000] 423271.557970338:      5593ad3346e3 perf_evsel__enable_cpu+0xa3 (/work/linux/tools/perf/perf)		movq 0x20(%rax), %rdx
+>                 perf 17423 [000] 423271.557970338:      5593ad3346e7 perf_evsel__enable_cpu+0xa7 (/work/linux/tools/perf/perf)		cmpl %edx, %ebx
+>                 perf 17423 [000] 423271.557970338:      5593ad3346e9 perf_evsel__enable_cpu+0xa9 (/work/linux/tools/perf/perf)		jl perf_evsel__enable_cpu+0x60
+>                 perf 17423 [000] 423271.557970338:      5593ad3346eb perf_evsel__enable_cpu+0xab (/work/linux/tools/perf/perf)		xorl %eax, %eax
+> 
+> v7:
+>   - remove redundant space for raw instruction.
+>   - rename sample__fprintf_insn() as sample__fprintf_insn_asm() and make it empty if libcapstone is not available.
+> v6:
+>   - make '-F +disasm' fatal if libcapstone is not supported. (Adrian Hunter)
+>   - display with perf version --build-options. (Adrian Hunter)
+>   - exclude libcapstone from make_minimal. (Adrian Hunter)
+> v5:
+>   - fixes and improments suggested by Adrian Hunter
+> v4:
+>   - rename 'insn_disam' to 'disasm' (Adrian Hunter)
+> v3:
+>   - fix s390 detection. (Thomas Richter)
+> v2:
+>   - add a new field 'insn_disam' instead of changing the default output.
+>   - preserve the old --xed option.
+> 
+> Changbin Du (5):
+>   perf: build: introduce the libcapstone
+>   perf: util: use capstone disasm engine to show assembly instructions
+>   perf: script: add field 'disasm' to display mnemonic instructions
+>   perf: script: add raw|disasm arguments to --insn-trace option
+>   perf: script: prefer capstone to XED
+> 
+>  tools/build/Makefile.feature               |   2 +
+>  tools/build/feature/Makefile               |   4 +
+>  tools/build/feature/test-all.c             |   4 +
+>  tools/build/feature/test-libcapstone.c     |  11 ++
+>  tools/perf/Documentation/perf-intel-pt.txt |  14 ++-
+>  tools/perf/Documentation/perf-script.txt   |  20 +--
+>  tools/perf/Makefile.config                 |  21 ++++
+>  tools/perf/Makefile.perf                   |   3 +
+>  tools/perf/builtin-script.c                |  45 +++++--
+>  tools/perf/builtin-version.c               |   1 +
+>  tools/perf/tests/make                      |   4 +-
+>  tools/perf/ui/browsers/res_sample.c        |   2 +-
+>  tools/perf/ui/browsers/scripts.c           |   2 +-
+>  tools/perf/util/Build                      |   1 +
+>  tools/perf/util/print_insn.c               | 135 +++++++++++++++++++++
+>  tools/perf/util/print_insn.h               |  16 +++
+>  16 files changed, 258 insertions(+), 27 deletions(-)
+>  create mode 100644 tools/build/feature/test-libcapstone.c
+>  create mode 100644 tools/perf/util/print_insn.c
+>  create mode 100644 tools/perf/util/print_insn.h
+> 
 
-Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
----
- drivers/memory/tegra/tegra186.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+For whole patch set:
 
-diff --git a/drivers/memory/tegra/tegra186.c b/drivers/memory/tegra/tegra186.c
-index 1b3183951bfe..df441896b69d 100644
---- a/drivers/memory/tegra/tegra186.c
-+++ b/drivers/memory/tegra/tegra186.c
-@@ -10,6 +10,7 @@
- #include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
-+#include <asm/virt.h>
- 
- #include <soc/tegra/mc.h>
- 
-@@ -118,6 +119,11 @@ static int tegra186_mc_probe_device(struct tegra_mc *mc, struct device *dev)
- 	unsigned int i, index = 0;
- 	u32 sid;
- 
-+	if (!is_kernel_in_hyp_mode()) {
-+		dev_dbg(mc->dev, "Register access not allowed\n");
-+		return 0;
-+	}
-+
- 	if (!tegra_dev_iommu_get_stream_id(dev, &sid))
- 		return 0;
- 
-@@ -146,6 +152,11 @@ static int tegra186_mc_resume(struct tegra_mc *mc)
- #if IS_ENABLED(CONFIG_IOMMU_API)
- 	unsigned int i;
- 
-+	if (!is_kernel_in_hyp_mode()) {
-+		dev_dbg(mc->dev, "Register access not allowed\n");
-+		return 0;
-+	}
-+
- 	for (i = 0; i < mc->soc->num_clients; i++) {
- 		const struct tegra_mc_client *client = &mc->soc->clients[i];
- 
--- 
-2.17.1
+Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
 
 
