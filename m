@@ -1,194 +1,224 @@
-Return-Path: <linux-kernel+bounces-54943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BEE384B53B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:32:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17E6884B53E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:33:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2AA31F21418
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:32:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 917631F25EAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:33:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92DF4133286;
-	Tue,  6 Feb 2024 12:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1996C1332B0;
+	Tue,  6 Feb 2024 12:19:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="l1+a2SIR"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A9UWKuJp"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7FFB132C25;
-	Tue,  6 Feb 2024 12:18:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83FAF1332A6;
+	Tue,  6 Feb 2024 12:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707221918; cv=none; b=A5R6k2nCZSHduDO7U7uEu1TNcYZYbnqn+PTnetRgnBcg8djv9/WG01EAPtyflHK8tc2XBWKImXEVEdt9PhpmSYb6GWPkw9Vr2De+esmVu107KaF5juewafJhVCVKhnm3HMLDZOMLGOw8P//zY6eWzF73NScpE66mPeWjeZ1azlI=
+	t=1707221964; cv=none; b=Hjj71MGLnKZTNjAUPNQIaK6gdfW0Ap5DtY+YYANz+HAVuaZ3vIS22jACO7AmEnGDCJ+nGmG6GFz+BFY2PcMTaqzH/V3h7OrWEapOGSkJtYAcAplS4C2dEBPbyB3vHKp4tmKmXMtXNrkaBQNs+JuaJMa+knsg6uR99a+kKlSwjEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707221918; c=relaxed/simple;
-	bh=Tn8WnY+a+ept61qhjcmZvxSEPFge8/SObTTCDWxJS7g=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=iAvYu3iEFvLAhKiwRzkdSpMZuK36OW9P8j6dYBmSkK37iR8u6BcWYlb3dA2GvyRDGPT5uPDwXjAeBU7ifBJP/z236BPMHa/e6yI09WDukF/t/FfhVVucsCgj5ouAKhRG0hnRP3p5jLPITN8FB4aVr3qYB2uGk61WcnXCVzpxaZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=l1+a2SIR; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 416BtAUJ022474;
-	Tue, 6 Feb 2024 12:18:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=J0YDXL0DMuZx6qRUUagB7lMLHl0D1nro9nj04PRHnTw=;
- b=l1+a2SIRg5PF4zDhqgXL9qLL/CahK7oNE6lSCOLCeyP8ZBo/1PhrWcNquUdgrjuzue9d
- c/cXX+TCvKQq59XIkl8go5kDa3zo2ifNdk++37Br4OQJ8Y56gdxSFLaWBtuPvTbuHtrx
- JBU5FPGXbqUYMAqJM21ug+/kPVUr2YIxksEkVx+9KkTHxrPDSwFgUXHMWzKsNbnbVFvI
- y3xK4uELaBM1cmNW6Fz+I7jHDTCVDLku0BVhBqc+W4aUDuwGSWkvnAfxfrR30pHJkJ7F
- PSc6w4oUotwRPDhbuyy6V8Dnfny190MEu8p7XKHgE23MFxde6CuufAb0u49halqZgsVR kg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w3mafrqqy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 12:18:31 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 416BtShm024011;
-	Tue, 6 Feb 2024 12:18:31 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w3mafrqq1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 12:18:31 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 416BXUwl019991;
-	Tue, 6 Feb 2024 12:18:29 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w1ytsy53u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 12:18:29 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 416CIRTf28115506
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 6 Feb 2024 12:18:27 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 031232009F;
-	Tue,  6 Feb 2024 12:18:27 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 88BB5200A1;
-	Tue,  6 Feb 2024 12:18:26 +0000 (GMT)
-Received: from [9.152.224.145] (unknown [9.152.224.145])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  6 Feb 2024 12:18:26 +0000 (GMT)
-Message-ID: <83b9d600-339c-4c9f-860d-ab4539a0ae6b@linux.ibm.com>
-Date: Tue, 6 Feb 2024 13:18:26 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 00/15] net/smc: implement loopback-ism used by
- SMC-D
-To: Wen Gu <guwen@linux.alibaba.com>, wenjia@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
-        tonylu@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240111120036.109903-1-guwen@linux.alibaba.com>
-Content-Language: en-US
-From: Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <20240111120036.109903-1-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9Oq93biWMDhGTymW9bQMJeO9SqpPP0os
-X-Proofpoint-ORIG-GUID: zrdy_-uaFOs7-O2Gw8JOKcJKPynszSJC
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1707221964; c=relaxed/simple;
+	bh=vOPlbom+hZu2FqS78/OBAPTU/ql3MwKYrdqCAkJSiKU=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=tiK5G1ylD15/VH2fpGmPpbujRRZjugO3Vj18byhu8R0AMxktqAzxUpLJfEBJBIr58qCCGCSeIhENb0IP2G7D7cGF4z/ZK5V5WkcW1D1CPF5IijoHRhotMX/qYYz+GRPox3tImbcu/GMX5ezmriRbnc4o8SVEUmZImCBQyfUipcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A9UWKuJp; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707221963; x=1738757963;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=vOPlbom+hZu2FqS78/OBAPTU/ql3MwKYrdqCAkJSiKU=;
+  b=A9UWKuJpf0ja4NyaMtw8XyX4PiNzwv3v+pmFAPqjVVxKGm9sr0PeDo3l
+   Dy0RL3IMfO57ofY02CT6KLcPKJNR6z5hBGcwd4cizz4cbiwW8aiC8o6EV
+   mWlWlpJVonIb7RvjiyrZZeiv1wf6abc1topycwZ0fClpxiiQT/gL2ErjJ
+   R/6KXTDGr7Glvo3m+oJfjy33V3TwwnbtpQEPH7RxqM38CgHGDkOkbeefP
+   VUdtQbjbPCAhHjRS20uE0FmY1mNjBYQ/Ntww+z+rKHZk5/U94Lk1BTN43
+   n/k1/Ka5WkPC8aHIyEw4wN59TzhiaCPsMixWzXpCHKb8JgzlP+o9JyuWO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="631608"
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="631608"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 04:19:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="31826258"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.36.139])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 04:19:18 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 6 Feb 2024 14:19:13 +0200 (EET)
+To: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+cc: linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+    Bjorn Helgaas <bhelgaas@google.com>, 
+    Mahesh J Salgaonkar <mahesh@linux.ibm.com>, Lukas Wunner <lukas@wunner.de>, 
+    Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH v7] PCI/DPC: Ignore Surprise Down error on hot removal
+In-Reply-To: <20240205190321.103164-1-Smita.KoralahalliChannabasappa@amd.com>
+Message-ID: <881a8ba0-729f-7d36-d696-4fa80b1b03c2@linux.intel.com>
+References: <20240205190321.103164-1-Smita.KoralahalliChannabasappa@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-06_05,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- bulkscore=0 adultscore=0 impostorscore=0 clxscore=1015 malwarescore=0
- mlxlogscore=999 suspectscore=0 phishscore=0 lowpriorityscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402060087
+Content-Type: text/plain; charset=US-ASCII
 
+On Mon, 5 Feb 2024, Smita Koralahalli wrote:
 
-
-On 11.01.24 13:00, Wen Gu wrote:
-> This patch set acts as the second part of the new version of [1] (The first
-> part can be referred from [2]), the updated things of this version are listed
-> at the end.
+> According to PCIe r6.0 sec 6.7.6 [1], async removal with DPC may result in
+> surprise down error. This error is expected and is just a side-effect of
+> async remove.
 > 
-> # Background
+> Ignore surprise down error generated as a side-effect of async remove.
+> Typically, this error is benign as the pciehp handler invoked by PDC
+> or/and DLLSC alongside DPC, de-enumerates and brings down the device
+> appropriately. But the error messages might confuse users. Get rid of
+> these irritating log messages with a 1s delay while pciehp waits for
+> dpc recovery.
 > 
-> SMC-D is now used in IBM z with ISM function to optimize network interconnect
-> for intra-CPC communications. Inspired by this, we try to make SMC-D available
-> on the non-s390 architecture through a software-implemented virtual ISM device,
-> that is the loopback-ism device here, to accelerate inter-process or
-> inter-containers communication within the same OS instance.
+> The implementation is as follows: On an async remove a DPC is triggered
+> along with a Presence Detect State change and/or DLL State Change.
+> Determine it's an async remove by checking for DPC Trigger Status in DPC
+> Status Register and Surprise Down Error Status in AER Uncorrected Error
+> Status to be non-zero. If true, treat the DPC event as a side-effect of
+> async remove, clear the error status registers and continue with hot-plug
+> tear down routines. If not, follow the existing routine to handle AER and
+> DPC errors.
+> 
+> Please note that, masking Surprise Down Errors was explored as an
+> alternative approach, but left due to the odd behavior that masking only
+> avoids the interrupt, but still records an error per PCIe r6.0.1 Section
+> 6.2.3.2.2. That stale error is going to be reported the next time some
+> error other than Surprise Down is handled.
+> 
+> Dmesg before:
+> 
+>   pcieport 0000:00:01.4: DPC: containment event, status:0x1f01 source:0x0000
+>   pcieport 0000:00:01.4: DPC: unmasked uncorrectable error detected
+>   pcieport 0000:00:01.4: PCIe Bus Error: severity=Uncorrected (Fatal), type=Transaction Layer, (Receiver ID)
+>   pcieport 0000:00:01.4:   device [1022:14ab] error status/mask=00000020/04004000
+>   pcieport 0000:00:01.4:    [ 5] SDES (First)
+>   nvme nvme2: frozen state error detected, reset controller
+>   pcieport 0000:00:01.4: DPC: Data Link Layer Link Active not set in 1000 msec
+>   pcieport 0000:00:01.4: AER: subordinate device reset failed
+>   pcieport 0000:00:01.4: AER: device recovery failed
+>   pcieport 0000:00:01.4: pciehp: Slot(16): Link Down
+>   nvme2n1: detected capacity change from 1953525168 to 0
+>   pci 0000:04:00.0: Removing from iommu group 49
+> 
+> Dmesg after:
+> 
+>  pcieport 0000:00:01.4: pciehp: Slot(16): Link Down
+>  nvme1n1: detected capacity change from 1953525168 to 0
+>  pci 0000:04:00.0: Removing from iommu group 37
+> 
+> [1] PCI Express Base Specification Revision 6.0, Dec 16 2021.
+>     https://members.pcisig.com/wg/PCI-SIG/document/16609
+> 
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+> Reviewed-by: Lukas Wunner <lukas@wunner.de>
+> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+> v2:
+> 	Indentation is taken care. (Bjorn)
+> 	Unrelevant dmesg logs are removed. (Bjorn)
+> 	Rephrased commit message, to be clear on native vs FW-First
+> 	handling. (Bjorn and Sathyanarayanan)
+> 	Prefix changed from pciehp_ to dpc_. (Lukas)
+> 	Clearing ARI and AtomicOp Requester are performed as a part of
+> 	(de-)enumeration in pciehp_unconfigure_device(). (Lukas)
+> 	Changed to clearing all optional capabilities in DEVCTL2.
+> 	OS-First -> native. (Sathyanarayanan)
+> 
+> v3:
+> 	Added error message when root port become inactive.
+> 	Modified commit description to add more details.
+> 	Rearranged code comments and function calls with no functional
+> 	change.
+> 	Additional check for is_hotplug_bridge.
+> 	dpc_completed_waitqueue to wakeup pciehp handler.
+> 	Cleared only Fatal error detected in DEVSTA.
+> 
+> v4:
+> 	Made read+write conditional on "if (pdev->dpc_rp_extensions)"
+> 	for DPC_RP_PIO_STATUS.
+> 	Wrapped to 80 chars.
+> 	Code comment for clearing PCI_STATUS and PCI_EXP_DEVSTA.
+> 	Added pcie_wait_for_link() check.
+> 	Removed error message for root port inactive as the message
+> 	already existed.
+> 	Check for is_hotplug_bridge before registers read.
+> 	Section 6.7.6 of the PCIe Base Spec 6.0 -> PCIe r6.0 sec 6.7.6.
+> 	Made code comment more meaningful.
+> 
+> v5:
+> 	$SUBJECT correction.
+> 	Added "Reviewed-by" tag.
+> 	No code changes. Re-spin on latest base to get Bjorn's
+> 	attention.
+> 
+> v6:
+> 	Change to write 1's to clear error. (Sathyanarayanan)
+> 
+> v7:
+> 	No changes. Rebasing on pci main branch as per Bjorn comments.
+> ---
+>  drivers/pci/pcie/dpc.c | 67 ++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+> 
+
+> +static bool dpc_is_surprise_removal(struct pci_dev *pdev)
+> +{
+> +	u16 status;
+> +
+> +	if (!pdev->is_hotplug_bridge)
+> +		return false;
+> +
+> +	pci_read_config_word(pdev, pdev->aer_cap + PCI_ERR_UNCOR_STATUS,
+> +			     &status);
+> +
+
+> +	if (!(status & PCI_ERR_UNC_SURPDN))
+> +		return false;
+> +
+> +	return true;
+
+It would be simpler to just state and also easier to understand:
+
+	return status & PCI_ERR_UNC_SURPDN;
+
+C rules will handle the conversion to bool.
+
+> +}
+> +
+>  static irqreturn_t dpc_handler(int irq, void *context)
+>  {
+>  	struct pci_dev *pdev = context;
+>  
+> +	/*
+> +	 * According to PCIe r6.0 sec 6.7.6, errors are an expected side effect
+> +	 * of async removal and should be ignored by software.
+> +	 */
+> +	if (dpc_is_surprise_removal(pdev)) {
+> +		dpc_handle_surprise_removal(pdev);
+> +		return IRQ_HANDLED;
+> +	}
+> +
+>  	dpc_process_error(pdev);
+>  
+>  	/* We configure DPC so it only triggers on ERR_FATAL */
 
 
-Hello Wen Gu,
+-- 
+ i.
 
-thank you very much for this patchset. I have been looking at it a bit.
-I installed in on a testserver, but did not yet excercise the loopback-ism device.
-I want to continue investigations, but daily work interferes, so I thought I
-send you some comments now. So this is not at all a code review, but some 
-thoughts and observations about the general concept.
-
-
-In [1] there was a discussion about an abstraction layer between smc-d and the
-ism devices. 
-I am not sure what you are proposing now, is it an smc-d feature or independent of smc?
-In 3/15 you say it is part of the SMC module, but then it has its own device entry.
-Didn't you want to use it for other things as well? Or is it an SMC-D only feature?
-Is it a device (Config help: "kind of virtual device")? Or an SMC-D feature?
-
-Will we have a class of ism devices (s390 ism, ism-loopback, virtio-ism)
-That share common properties (internal API?)
-and smc-d will work with any of those?
-But they all can exist without smc ?! BTW: This is what we want for s390-ism.
-The client-registration interface [2] is currently the way to achieve this. 
-But maybe we need a more general concept?
-
-Maybe first a preparation patchset that introduces a class/ism
-Together with an improved API?
-In case you want to use ISM devices for other purposes as well..
-But then the whole picture of ism-loopback in one patchset (RFC?) 
-has its benefits as well.
-
-
-Other points that I noticed:
-
-Naming: smc loopback, ism-loopback, loopback-ism ?
-
-config: why not tristate? Why under net/smc?
-
-/sys/devices/virtual/smc  does not initially show up in my installation!!!
-root@t35lp50:/sys/devices/virtual/> ls
-3270/  bdi/  block/  graphics/  iommu/  mem/  memory_tiering/  misc/  net/  tty/  vc/  vtconsole/  workqueue/
-root@t35lp50:/sys/devices/virtual/> ls smc/loopback-ism
-active  dmb_copy  dmbs_cnt  dmb_type  subsystem@  uevent  xfer_bytes
-root@t35lp50:/sys/devices/virtual/> ls
-3270/  bdi/  block/  graphics/  iommu/  mem/  memory_tiering/  misc/  net/  smc/  tty/  vc/  vtconsole/  workqueue/
-Is that normal behaviour?
-
-You introduced a class/smc
-Maybe class/ism would be better?
-The other smc interfaces do not show up in class/smc!! Not so good
-
-Why doesn't it show in smc_rnics?
-(Maybe some deficiency of smc_rnics?)
-
-But then it shows in other smc-tools:
-root@t35lp50:/sys/> smcd device
-FID  Type  PCI-ID        PCHID  InUse  #LGs  PNET-ID
-0000 0     loopback-ism  ffff   No        0
-0029 ISM   0000:00:00.0  07c1   No        0  NET1
-Nice!
-
-Kind regards
-Sandy
-
-
-[1] https://lore.kernel.org/lkml/e3819550-7b10-4f9c-7347-dcf1f97b8e6b@linux.alibaba.com/
-[2] 89e7d2ba61b7 ("net/ism: Add new API for client registration")
 
