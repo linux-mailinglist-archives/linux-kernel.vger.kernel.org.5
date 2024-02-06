@@ -1,163 +1,108 @@
-Return-Path: <linux-kernel+bounces-54785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E356A84B3AF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:40:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5774A84B3D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:46:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F657285170
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:40:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D248CB21EF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:46:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57D081332BB;
-	Tue,  6 Feb 2024 11:32:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pSLNGsH7"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F9A51353F8;
+	Tue,  6 Feb 2024 11:33:34 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D78133406;
-	Tue,  6 Feb 2024 11:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BFA2133996;
+	Tue,  6 Feb 2024 11:33:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707219162; cv=none; b=noyOFS68lyjA+uY8tW+VTmk3n/0/16BPDr/GV9BoEgM65WITZJxV56A29Q+/eUVYYBMKGHyV1DeTtucfOtLVa/pm6oee14Oep81teBTP0VR4UAymYoaSRHhqMqivcpA2grtVAB7WkKri7WTGj3rDM3o7ZhcvT4s3DJi4lsGZHp4=
+	t=1707219211; cv=none; b=XxSnr0bpili+3m3l2kYGdd/SBb5v06Q1/5JcFNyj/EGHk/6/U4XTkqkLINLoD+7Qhul4A4nluRugVbe9WYHQbBybbzXtzQVmfmnbLRCQ4WZdm0s2ViHLYQgZH4laPxJO+TUViYJXoYJ6UM8XT8mJFU/idmnHDXjM62NUPpDFIHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707219162; c=relaxed/simple;
-	bh=N79rJzM8GDHrhhzgeLlRgFnL/Nib/s4RpPCU7DyNa60=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SS2sGhOQ/NTX2qILGkk2goyMIs2kiNAQRq61xhiytIsaAtdPsY45FIe2AUOPEtutCy0EWvkfVE6WWhONxblo0Dt85oVk/pcVXAaHw6GLdYMtokyiS3X7EtWvR5C1wCpzERwOOIW9Qd0GgM9yXz08Jmu8QY6P4ycKznn9h99WGSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pSLNGsH7; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 416Acmo8007922;
-	Tue, 6 Feb 2024 11:32:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=E4k5345QOidUYeqmeDW+O1v6o7xV0leCEXUtllXhijA=; b=pS
-	LNGsH7vo3ArMM++M+RdRPjHKGYm5w3mrr9+fkOquxqDP6N4SPmOkCMr65idgmOsY
-	QQcXEHRmBhrH/EziRjTa7egrPrLgnwPMPfccwgz0Lv3PlDEvECxN5EYobIyObQff
-	N9fQ8oJ3Xck5JTrKYPHSr/IMgIRtn5aNnDN2o+uHM/QcqaDiGlieu1URwnkhS29I
-	hCIaLsmdOgjnOcOdpebUfWWEpSH37fzSuof2XrgwEd6l8apVrITei3QduDZATJsO
-	v2UwtMU1iGNCflc9H/jcnR/aPrbnojVvQq22PEcKzd6dCafOgMv/S3c5P9g4cwvy
-	nnAjgoXP8BleZDO1MnDg==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3k6g83km-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 11:32:37 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 416BWaZb025091
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 6 Feb 2024 11:32:36 GMT
-Received: from hu-jkona-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 6 Feb 2024 03:32:31 -0800
-From: Jagadeesh Kona <quic_jkona@quicinc.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        Taniya Das
-	<quic_tdas@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Imran Shaik <quic_imrashai@quicinc.com>,
-        "Ajit Pandey" <quic_ajipan@quicinc.com>,
-        Jagadeesh Kona
-	<quic_jkona@quicinc.com>
-Subject: [PATCH 5/5] arm64: dts: qcom: sm8650: Add video and camera clock controllers
-Date: Tue, 6 Feb 2024 17:01:45 +0530
-Message-ID: <20240206113145.31096-6-quic_jkona@quicinc.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240206113145.31096-1-quic_jkona@quicinc.com>
-References: <20240206113145.31096-1-quic_jkona@quicinc.com>
+	s=arc-20240116; t=1707219211; c=relaxed/simple;
+	bh=YUUc7FFaa9HA/Wrq9PqkW6ZnyUXTUbapztqNh4bOejI=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=mAGs714cPzI7rFtDmRGajJ7gEuRkb0YCPXnRzMO1kFBwG0+CERhYAIfz11LlEf752stk98h1tn8rtIAgUsbm4MZyvSXh12DySgLW5di0Mx3QTmrdRfCInXeMIywWI/LfdgDZeGToFJnbTZ0Ig++RqCNfbvDooyduIedqOIN8HMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49120C32788;
+	Tue,  6 Feb 2024 11:33:30 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.97)
+	(envelope-from <rostedt@rostedt.homelinux.com>)
+	id 1rXJiA-00000006aGP-0r6z;
+	Tue, 06 Feb 2024 06:33:58 -0500
+Message-ID: <20240206113158.822006147@rostedt.homelinux.com>
+User-Agent: quilt/0.67
+Date: Tue, 06 Feb 2024 06:31:58 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Sasha Levin <sashal@kernel.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [v6.7][PATCH v2 00/23] eventfs: Linus's updates for 6.7
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ec4kAiHTRhS6zVDVLaZe2SuL7F8hvsPy
-X-Proofpoint-GUID: ec4kAiHTRhS6zVDVLaZe2SuL7F8hvsPy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-06_04,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 priorityscore=1501 clxscore=1015
- impostorscore=0 mlxscore=0 bulkscore=0 adultscore=0 spamscore=0
- suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401310000 definitions=main-2402060081
 
-Add device nodes for video and camera clock controllers on Qualcomm
-SM8650 platform.
 
-Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sm8650.dtsi | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+This is a backport of all the work that lead up to the work that Linus made
+on eventfs. I trust Linus's version more so than the versions in 6.6 and
+6.7. There may be plenty of hidden issues due to the design.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-index c455ca4e6475..0469dd6e119c 100644
---- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-@@ -4,6 +4,8 @@
-  */
- 
- #include <dt-bindings/clock/qcom,rpmh.h>
-+#include <dt-bindings/clock/qcom,sm8450-videocc.h>
-+#include <dt-bindings/clock/qcom,sm8650-camcc.h>
- #include <dt-bindings/clock/qcom,sm8650-dispcc.h>
- #include <dt-bindings/clock/qcom,sm8650-gcc.h>
- #include <dt-bindings/clock/qcom,sm8650-gpucc.h>
-@@ -3100,6 +3102,32 @@ opp-202000000 {
- 			};
- 		};
- 
-+		videocc: clock-controller@aaf0000 {
-+			compatible = "qcom,sm8650-videocc";
-+			reg = <0 0x0aaf0000 0 0x10000>;
-+			clocks = <&bi_tcxo_div2>,
-+				 <&gcc GCC_VIDEO_AHB_CLK>;
-+			power-domains = <&rpmhpd RPMHPD_MMCX>;
-+			required-opps = <&rpmhpd_opp_low_svs>;
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+			#power-domain-cells = <1>;
-+		};
-+
-+		camcc: clock-controller@ade0000 {
-+			compatible = "qcom,sm8650-camcc";
-+			reg = <0 0x0ade0000 0 0x20000>;
-+			clocks = <&gcc GCC_CAMERA_AHB_CLK>,
-+				 <&bi_tcxo_div2>,
-+				 <&bi_tcxo_ao_div2>,
-+				 <&sleep_clk>;
-+			power-domains = <&rpmhpd RPMHPD_MMCX>;
-+			required-opps = <&rpmhpd_opp_low_svs>;
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+			#power-domain-cells = <1>;
-+		};
-+
- 		mdss: display-subsystem@ae00000 {
- 			compatible = "qcom,sm8650-mdss";
- 			reg = <0 0x0ae00000 0 0x1000>;
--- 
-2.43.0
+This is the update for 6.7. It includes Linus's updates as well as all the
+patches leading up to them.
 
+I ran these through my full test suite that I use before sending anyting to
+Linus, althouh I did not run my "bisect" test that walks through the
+patches. The tests were just run on the end result. I'm currently running my
+6.6 version through my tests.
+
+This was created with the following command against v6.7.3:
+
+git log --reverse --no-merges --pretty=oneline v6.7..origin/master fs/tracefs/ | cut -d' ' -f1 |
+   while read a; do if ! git cherry-pick -x $a; then break; fi ; done
+
+Which adds -x to the cherry pick to add the upstream commit SHAs.
+
+
+Erick Archer (1):
+      eventfs: Use kcalloc() instead of kzalloc()
+
+Linus Torvalds (7):
+      tracefs: remove stale 'update_gid' code
+      eventfs: Initialize the tracefs inode properly
+      tracefs: Avoid using the ei->dentry pointer unnecessarily
+      tracefs: dentry lookup crapectomy
+      eventfs: Remove unused d_parent pointer field
+      eventfs: Clean up dentry ops and add revalidate function
+      eventfs: Get rid of dentry pointers without refcounts
+
+Steven Rostedt (Google) (15):
+      eventfs: Remove "lookup" parameter from create_dir/file_dentry()
+      eventfs: Stop using dcache_readdir() for getdents()
+      tracefs/eventfs: Use root and instance inodes as default ownership
+      eventfs: Have eventfs_iterate() stop immediately if ei->is_freed is set
+      eventfs: Do ctx->pos update for all iterations in eventfs_iterate()
+      eventfs: Read ei->entries before ei->children in eventfs_iterate()
+      eventfs: Shortcut eventfs_iterate() by skipping entries already read
+      eventfs: Have the inodes all for files and directories all be the same
+      eventfs: Do not create dentries nor inodes in iterate_shared
+      eventfs: Save directory inodes in the eventfs_inode structure
+      tracefs: Zero out the tracefs_inode when allocating it
+      eventfs: Warn if an eventfs_inode is freed without is_freed being set
+      eventfs: Restructure eventfs_inode structure to be more condensed
+      eventfs: Remove fsnotify*() functions from lookup()
+      eventfs: Keep all directory links at 1
+
+----
+ fs/tracefs/event_inode.c | 905 ++++++++++++++++-------------------------------
+ fs/tracefs/inode.c       | 286 +++++++--------
+ fs/tracefs/internal.h    |  48 ++-
+ 3 files changed, 451 insertions(+), 788 deletions(-)
 
