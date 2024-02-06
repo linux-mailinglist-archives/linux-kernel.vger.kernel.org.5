@@ -1,208 +1,174 @@
-Return-Path: <linux-kernel+bounces-54198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5292384AC24
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:21:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFD3684AC23
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:21:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B3522872FE
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4158F1F24605
 	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:21:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8DD357336;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838675732C;
 	Tue,  6 Feb 2024 02:21:21 +0000 (UTC)
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WuA5eNF+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB2D56B8F;
-	Tue,  6 Feb 2024 02:21:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4ADB57300;
+	Tue,  6 Feb 2024 02:21:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707186081; cv=none; b=N+dc/V/GI4MdC1cCYuTr5dihcleS3/9J0/E5883zVmNrwrUTlTn0x6js0ID03aqWiOSOqu6YZHw3ZB7nIldXA79emLDJdrbFVNVgg/wAShY2AhZsFl/o+DVgwL5uow1oLVSWsi4JGUiCFqtiSth57o3bf7nT2hJtvfgbNB6BeSM=
+	t=1707186080; cv=none; b=myN+R+rmimOxVbaOHf22akHbZ2yP8oVudiKUfJznnSAKlelMcSKLA7pM+XU+l6qaEJmsFVd3RllmsF5sCAH3jCbQ+I9n9OdeuBMwYmjZXIHKbBbbnj9dn07Ac8QKffPUJD049oFUHD9hX3+WsHSd8UGMY3ngkk3DyJTlEnGDrOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707186081; c=relaxed/simple;
-	bh=RElkcGIX1JnV58ilDMaRWG242S1+SDXgDW8vkxla7EU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RamX+dj8QGM5mF43rA/jFDXwoj4q+kxZ6t3eNULwT0vai1jC2u9guitS9uZXF1mhRVeJsNjNudvgfb45E4Do5WIsLl04I4s7ognNyIAe5lPaoeUQpMO8pd02YvqZOkKwPmrQjOuyRO8/VfUwoXeJyotWLOLoIxaJOz11GwaMhh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2967682b29aso1378974a91.2;
-        Mon, 05 Feb 2024 18:21:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707186079; x=1707790879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uCgV+C17HfH/BTi7HeGrLKXd5D1dF0W0dp4NG3kQMsU=;
-        b=uTZ64shCGQeyh18CYr7zAl1KULqngZ2dHGGaXnN2cTQV93zTSigwY2pi9yi6tcPaI+
-         lhbV1gwTqFJpnKtLfbl4gBPkwyXmUlrHyLfSZlvIbkDdHulhb8y4o7bmDtw+tk5Cr5A1
-         v/RenmMuUfYso9o/jLOGw3yrPcYw5OfgO3gfQuTWKd0Imft/PllP6jU0+YfyZ9+lcCpN
-         WXf6GzKcb7V5mm1vjYroEqa5aM/RNMBjix8BpslVaUKhbXmDOQw6r88m295dprKclTEu
-         1vTkkrHlD0N1p9i15Uu+ynR6v6ilFKAvKR4hgNNjhQ+NGf6khiTrvO/ymXtv6666JChK
-         JcNw==
-X-Gm-Message-State: AOJu0YyK3ZD4OXW0JozrxUsFYI1f2ZbzF4puupVBiUDo9Xy++r8S6nsC
-	Q61HAC7h1caKVdyRWY88fvOZjAykNEwnWL+4wdaQoakOBkzQFVt6Il9bayIKbC/7U8waDkPNsTN
-	pEyHa5Qh34QmEUV+OIwJ/DeEC4KM=
-X-Google-Smtp-Source: AGHT+IH7LYdqP0z/h8TQBGFlI0FE+HcTmiaF2MC3p3+8MiBfqg0Nta3Eb0DRPRUKuoWhTT/jbuVXjhVWNcJOxCIadlQ=
-X-Received: by 2002:a17:90b:888:b0:296:2f91:4121 with SMTP id
- bj8-20020a17090b088800b002962f914121mr1260671pjb.12.1707186078354; Mon, 05
- Feb 2024 18:21:18 -0800 (PST)
+	s=arc-20240116; t=1707186080; c=relaxed/simple;
+	bh=YqaP2sUi86aQgnoYv0irulc1gLJ/5wSXYz+6MP0M6Vk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=fHZXT/dD687X9lUGDJkvMyi0MJsIXaKcMXGasC9+nl+JRBdXsC3NGrO+6TopIUJ6WAOlBwfV8zCI6kPqvdqJLaSkW4aMpc4x4TAnp9vJtVYyy1oZ4QWPWzGuIFmNh//akSVfA3X8SGqFagKREy0+qEsNoAbl3+H9zCjvu6AbJoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WuA5eNF+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 238BAC43390;
+	Tue,  6 Feb 2024 02:21:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707186080;
+	bh=YqaP2sUi86aQgnoYv0irulc1gLJ/5wSXYz+6MP0M6Vk=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=WuA5eNF+MA7MNN4gz2rYsMCMlD3St9eZXDnan5UzMInnODPVcPsHku+cz4KXqH3kf
+	 TG6xhpbhZ/+0JPRc6UIBI/+qqI/2GT6TMI1V87psbSTb24eE5IiEW5IaBHq+42KsPt
+	 RvFXFB3q02LUtEgvaICWTeRhEGYOmStSi0Cfae3Cqd4IQxOv2t2l6n97BdZI//+ppf
+	 n20KMtS5muxtWZ0jPs3Xo/ToBM6nbyK4FnVXvmdl8+3rIT+n525faGyV/C7Xt9guKs
+	 9jgB8UIQxWj+X/Vs19pxV99k001UH4GlaNtA69VRSqBE+fUF3gm/CDlIfmrwazB+HV
+	 p18OXFBIpeEPQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B12EC48260;
+	Tue,  6 Feb 2024 02:21:20 +0000 (UTC)
+From: Hui Liu via B4 Relay <devnull+quic_huliu.quicinc.com@kernel.org>
+Date: Tue, 06 Feb 2024 10:21:13 +0800
+Subject: [PATCH] arm64: dts: qcom: qcm6490-idp: Add configurations for
+ gpio-keys
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202110130.3553-1-adrian.hunter@intel.com>
- <20240202110130.3553-2-adrian.hunter@intel.com> <CAM9d7cipqHheaZOj9Qr56COjjdU2Qk1pLtUzkjZxtq4g3irLww@mail.gmail.com>
- <CA+JHD91GR=Jry_=Es4m+JnySjMoKrfajW40ZHq+eYFaF9Vsngg@mail.gmail.com> <4983cc09-20ad-450b-8eba-219f75a5fab2@intel.com>
-In-Reply-To: <4983cc09-20ad-450b-8eba-219f75a5fab2@intel.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Mon, 5 Feb 2024 18:21:07 -0800
-Message-ID: <CAM9d7chXSvhej4Evaq1gS_g-zPd0jOVBQDh3UmKAaE2UvP7-Hw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf script: Make it possible to see perf's kernel
- and module memory mappings
-To: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Like Xu <like.xu.linux@gmail.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	linux-perf-users <linux-perf-users@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240206-gpio-keys-v1-1-7683799daf8d@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAJmXwWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDIwMz3fSCzHzd7NTKYl1DY4ukpBQLUwMjSwsloPqCotS0zAqwWdGxtbU
+ AgwS/EVsAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Hui Liu <quic_huliu@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707186079; l=2004;
+ i=quic_huliu@quicinc.com; s=20230823; h=from:subject:message-id;
+ bh=lvOnmsAUNOMzpmFklkrkm1uAXyOcYWnM0tUChPIUfy4=;
+ b=Mr7rYRZPB2Z85vFiulk2wuzYyyb/Tj0QCPYNqaSSMGR6qa2Wn3Kma7VIyJPvdKMc1oo0w+K3P
+ IjPWXhabhOACyXRNwElY+0BUl5XCANQZEbwPARiKNujBkQERcMtKbaT
+X-Developer-Key: i=quic_huliu@quicinc.com; a=ed25519;
+ pk=1z+A50UnTuKe/FdQv2c0W3ajDsJOYddwIHo2iivhTTA=
+X-Endpoint-Received:
+ by B4 Relay for quic_huliu@quicinc.com/20230823 with auth_id=80
+X-Original-From: Hui Liu <quic_huliu@quicinc.com>
+Reply-To: <quic_huliu@quicinc.com>
 
-On Sun, Feb 4, 2024 at 11:08=E2=80=AFPM Adrian Hunter <adrian.hunter@intel.=
-com> wrote:
->
-> On 3/02/24 03:56, Arnaldo Carvalho de Melo wrote:
-> >
-> >
-> > On Fri, Feb 2, 2024, 10:50 PM Namhyung Kim <namhyung@kernel.org <mailto=
-:namhyung@kernel.org>> wrote:
-> >
-> >     On Fri, Feb 2, 2024 at 3:01=E2=80=AFAM Adrian Hunter <adrian.hunter=
-@intel.com <mailto:adrian.hunter@intel.com>> wrote:
-> >     >
-> >     > Dump kmaps if verbose > 2.
-> >
-> >     Maybe we can add '--debug kmap' option rather than using an
-> >     arbitrary verbose level.
->
-> That is a global option but would only work for tools that are
-> explicitly programmed to do the dump.  Could just do perf script
-> and perf report?
+From: Hui Liu <quic_huliu@quicinc.com>
 
-I don't care.. actually `--debug perf-event-open` would work with
-commands that call the syscall only.  But I'm fine either way.
+Add configurations for gpio-keys to enable pon_key and pon_resin
+key.
 
->
-> >
-> >
-> > I think we have 'perf report --mmap', no?
->
-> Only shows user space maps.  Could add 'perf report --kmaps'?
+Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+---
+ arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 43 ++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-That'd work too.  It's up to you.
+diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+index acf145d1d97c..4199ebf667af 100644
+--- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
++++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+@@ -9,6 +9,7 @@
+ #define PM7250B_SID 8
+ #define PM7250B_SID1 9
+ 
++#include <dt-bindings/input/linux-event-codes.h>
+ #include <dt-bindings/leds/common.h>
+ #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+ #include "sc7280.dtsi"
+@@ -39,6 +40,24 @@ chosen {
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
++	gpio-keys {
++		compatible = "gpio-keys";
++		label = "gpio-keys";
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&key_vol_up_default>;
++
++		key-volume-up {
++			label = "volume_up";
++			gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
++			linux,input-type = <1>;
++			linux,code = <KEY_VOLUMEUP>;
++			wakeup-source;
++			debounce-interval = <15>;
++			linux,can-disable;
++		};
++	};
++
+ 	reserved-memory {
+ 		xbl_mem: xbl@80700000 {
+ 			reg = <0x0 0x80700000 0x0 0x100000>;
+@@ -421,6 +440,17 @@ vreg_bob_3p296: bob {
+ 	};
+ };
+ 
++&pm7325_gpios {
++	key_vol_up_default: key-vol-up-state {
++		pins = "gpio6";
++		function = "normal";
++		input-enable;
++		bias-pull-up;
++		power-source = <0>;
++		qcom,drive-strength = <3>;
++	};
++};
++
+ &pm8350c_pwm {
+ 	status = "okay";
+ 
+@@ -448,6 +478,19 @@ led@3 {
+ 	};
+ };
+ 
++&pmk8350_pon {
++	status = "okay";
++};
++
++&pon_pwrkey {
++	status = "okay";
++};
++
++&pon_resin {
++	linux,code = <KEY_VOLUMEDOWN>;
++	status = "okay";
++};
++
+ &qupv3_id_0 {
+ 	status = "okay";
+ };
 
-Thanks,
-Namhyung
+---
+base-commit: 23e11d0318521e8693459b0e4d23aec614b3b68b
+change-id: 20240206-gpio-keys-138bbd850298
 
+Best regards,
+-- 
+Hui Liu <quic_huliu@quicinc.com>
 
->
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/tools/perf/Documentation/perf-report.txt#n542 <https://git.kernel.org/pub/=
-scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/Documentation/perf-=
-report.txt#n542>
-> >
-> > - Arnaldo
-> >
-> > Sent from smartphone
-> >
-> >
-> >     Thanks,
-> >     Namhyung
-> >
-> >     >
-> >     > Example:
-> >     >
-> >     >   $ perf script -vvv 2>&1 >/dev/null | grep kvm.intel
-> >     >   build id event received for /lib/modules/6.7.2-local/kernel/arc=
-h/x86/kvm/kvm-intel.ko: 0691d75e10e72ebbbd45a44c59f6d00a5604badf [20]
-> >     >   Map: 0-3a3 4f5d8 [kvm_intel].modinfo
-> >     >   Map: 0-5240 5f280 [kvm_intel]__versions
-> >     >   Map: 0-30 64 [kvm_intel].note.Linux
-> >     >   Map: 0-14 644c0 [kvm_intel].orc_header
-> >     >   Map: 0-5297 43680 [kvm_intel].rodata
-> >     >   Map: 0-5bee 3b837 [kvm_intel].text.unlikely
-> >     >   Map: 0-7e0 41430 [kvm_intel].noinstr.text
-> >     >   Map: 0-2080 713c0 [kvm_intel].bss
-> >     >   Map: 0-26 705c8 [kvm_intel].data..read_mostly
-> >     >   Map: 0-5888 6a4c0 [kvm_intel].data
-> >     >   Map: 0-22 70220 [kvm_intel].data.once
-> >     >   Map: 0-40 705f0 [kvm_intel].data..percpu
-> >     >   Map: 0-1685 41d20 [kvm_intel].init.text
-> >     >   Map: 0-4b8 6fd60 [kvm_intel].init.data
-> >     >   Map: 0-380 70248 [kvm_intel]__dyndbg
-> >     >   Map: 0-8 70218 [kvm_intel].exit.data
-> >     >   Map: 0-438 4f980 [kvm_intel]__param
-> >     >   Map: 0-5f5 4ca0f [kvm_intel].rodata.str1.1
-> >     >   Map: 0-3657 493b8 [kvm_intel].rodata.str1.8
-> >     >   Map: 0-e0 70640 [kvm_intel].data..ro_after_init
-> >     >   Map: 0-500 70ec0 [kvm_intel].gnu.linkonce.this_module
-> >     >   Map: ffffffffc13a7000-ffffffffc1421000 a0 /lib/modules/6.7.2-lo=
-cal/kernel/arch/x86/kvm/kvm-intel.ko
-> >     >
-> >     > The example above shows how the module section mappings are all w=
-rong
-> >     > except for the main .text mapping at 0xffffffffc13a7000.
-> >     >
-> >     > Signed-off-by: Adrian Hunter <adrian.hunter@intel.com <mailto:adr=
-ian.hunter@intel.com>>
-> >     > ---
-> >     >  tools/perf/builtin-script.c | 13 +++++++++++++
-> >     >  1 file changed, 13 insertions(+)
-> >     >
-> >     > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-scr=
-ipt.c
-> >     > index b1f57401ff23..e764b319ef59 100644
-> >     > --- a/tools/perf/builtin-script.c
-> >     > +++ b/tools/perf/builtin-script.c
-> >     > @@ -3806,6 +3806,16 @@ static int parse_callret_trace(const struc=
-t option *opt __maybe_unused,
-> >     >         return 0;
-> >     >  }
-> >     >
-> >     > +static void dump_kmaps(struct perf_session *session)
-> >     > +{
-> >     > +       int save_verbose =3D verbose;
-> >     > +
-> >     > +       pr_debug("Kernel and module maps:\n");
-> >     > +       verbose =3D 0; /* Suppress verbose to print a summary onl=
-y */
-> >     > +       maps__fprintf(machine__kernel_maps(&session->machines.hos=
-t), stderr);
-> >     > +       verbose =3D save_verbose;
-> >     > +}
-> >     > +
-> >     >  int cmd_script(int argc, const char **argv)
-> >     >  {
-> >     >         bool show_full_info =3D false;
-> >     > @@ -4366,6 +4376,9 @@ int cmd_script(int argc, const char **argv)
-> >     >
-> >     >         flush_scripting();
-> >     >
-> >     > +       if (verbose > 2)
-> >     > +               dump_kmaps(session);
-> >     > +
-> >     >  out_delete:
-> >     >         if (script.ptime_range) {
-> >     >                 itrace_synth_opts__clear_time_range(&itrace_synth=
-_opts);
-> >     > --
-> >     > 2.34.1
-> >     >
-> >
->
 
