@@ -1,119 +1,196 @@
-Return-Path: <linux-kernel+bounces-55734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7590584C0F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:36:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14B9084C0F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:39:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92158286898
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:36:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F42361C214DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3061CABD;
-	Tue,  6 Feb 2024 23:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE39C1C6A8;
+	Tue,  6 Feb 2024 23:38:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xY2jbs2a"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="c77fCKQo";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="M1y/xNYf"
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8961CD1E
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 23:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6300D1CD1E
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 23:38:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707262574; cv=none; b=mOIzESsbigcfXOwQ68r/hCsN0463q8tpZizGj6dWvmAhKEn937UE7NoQwmY2i855YR5XqLOBwfubpZ9uMHzX+bo/BGFnKe6hdCKkDYrB7gUI/61TYon2nq//+Gqty6ZOgXdk9Bm8mpUL7cwCMltDevZxobbqjEYaPVzHBh4oKdw=
+	t=1707262732; cv=none; b=S/B1Ll9G+3t8VfSl2Z6R4hMblPepjjHTYTVl1iRECibZUq+NiDuZ+l9f+3P/1qveoNTXg02PBBiqNeTb3mZJNHCWo6ERGVu3WMYiLNihdwKMUIrYEkOOduprGnO7yr7GWwf6tEtDj2DSAn+1Gc/MxbbZhbSGclUsukqy6emnJcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707262574; c=relaxed/simple;
-	bh=bT8iSDQ7VIIkJ0SalPInfLv65CJM5qhL0227zSPb0uw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NTcB4qUJyAnsAQvy8N+OhvdGycGMzw8pZGw8QR3p9bZPlv7mnW5wPT2tml0oCoLmq7zydjSId37olNKN1NwgE6vXeTQlysto7DXk8BSvildDVCkosgpM9nE4TQNXGl+TWUTJKkCzxl/lVWqDCTVCgKCBF0iu1+F+OyPSCPzeMZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xY2jbs2a; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d93b982761so98905ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 15:36:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707262572; x=1707867372; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0xi1hqRLQYsZ7IksfZ2m5n0Ha2D4yNJBsDeETYfat3Y=;
-        b=xY2jbs2awvqTI+zdITKVPR3nf/vmnNUtySSS9btOdLoqnNKM3d1fQBVDcAnNDRKhnz
-         r5549pmIACd2nT8vimA1KTLW6iPC2FDGz8QCE744rVCDDc4EbhZfnjipjOp4AMF67IoQ
-         ymgMUpcsp17e4rj+qYPE6ZHI26EnG3Ld1xceSPiFoxISkSSaTygRlcVClV0cliTHvmOk
-         1u/dkrRTGow/kq5s0WJsJ3wwsf9hYwIWHgs9/NKWBaR0ck+dYNoHtUiyQ+Hjf0dNoAXm
-         GVvKPMAhh/jM8YxrsXD948YWP+Fpkd7ONKoopq94+GyW75VwoO7RiVdiN8+9Rd7vLWXF
-         6oAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707262572; x=1707867372;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0xi1hqRLQYsZ7IksfZ2m5n0Ha2D4yNJBsDeETYfat3Y=;
-        b=WO5PZYyJCxcU6REg6OWS1R1H1HKqWuCaFz6GZnuAQmkI36bM04RjFReuCxP2n2OEcf
-         R6YCMQtQMQGZBr75QUsVGQbWwm8FFklXKFKGxCp/ZFRQoFZbB/+ouiZltIVaBLy8he4g
-         0jvIwl/VcMjDhqyeeiQeSNe+YBQOItz9KiaVjHELLRy6wj3us7JlGB7khHI6W5T4IGu3
-         Pv+FF7DX8MZger3dm3Nm7aCqF8/30Hez/ZXeA62QVnZbE65dAEMhexWKSw95kfRh0Cfp
-         pKZ8jt9oHpRF6b9nqaKKqDxaekBuDsSnchh9qEz6x3Xwkbm8dZARZLEMfxXe458RC0P0
-         dS6A==
-X-Gm-Message-State: AOJu0YxZiGErzpG3rau+a9s3S8riyDr5AW81BA4sYgD3tNfdzix5OW/h
-	Bg5BGPXaaSn7Ucvn29LQG9tFMlgQdnDGvOE2dscutAd8Xvwc4ZyVTxdpFY1XJ0L0MYZ+fn0oLuK
-	U8Gw96zAm/x59WHwMY0UgP6q8f+u394cFsvZw
-X-Google-Smtp-Source: AGHT+IHUaiRg0gv0A4PhdoXFVOz9ohKuZkpJ/MI21N+l3SsCRsghs2NzEr8ElhMb20dBHkuxfNLL5As+po3JgE65Kfg=
-X-Received: by 2002:a17:902:db06:b0:1d8:d225:699d with SMTP id
- m6-20020a170902db0600b001d8d225699dmr1428plx.16.1707262571902; Tue, 06 Feb
- 2024 15:36:11 -0800 (PST)
+	s=arc-20240116; t=1707262732; c=relaxed/simple;
+	bh=IArY5DTzdDPSUUvQK2In8+RZfOdkVtvngCCKmJ9Q4Wk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FbsHTIZMsKR1wh8rsLiq5X1hbBMfrzI7H7VToIPRlMr/OXr9SUbfgUysEPb5UcjLfd0jzonPyb/p9ZPk1JmnJpH0icKYumVpJthr6yLwU0XLJOJu5kqv2D9tWZdTnWOX/FyBRavTkhH/C1vLF2tJA41+z5MPZFNgvzDdDFhOm6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=c77fCKQo; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=M1y/xNYf; arc=none smtp.client-ip=64.147.123.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id 34F7D32003D3;
+	Tue,  6 Feb 2024 18:38:48 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 06 Feb 2024 18:38:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1707262727; x=
+	1707349127; bh=9lnv92XPZMe9+5e06+LHKt+jj5D0C7RYADZtxhimSCw=; b=c
+	77fCKQoDO0iyjhxwOwyJq0VZOoWwbg8IqQJ9D8vfcIDVtlMf/h5OTAeautVvRNvq
+	swlOg1E2zJeNTtDhxsOnJ2JtDn4ngS1B/DqWmwFAJQOL7Hk5NWObjGvFLpAyb97b
+	ZFjwpLvzPJd2bH4PvepaYU9AU9vFsuEursWeoZeYt2TwdU8lJLWVAHr7Oz8psHGP
+	QodM8O+HDZwmFrSK/GNAwdpmsPP4ZLJjblLa8ctHn1i1NUiAyl8ddZBtyQagNmYD
+	G52vOZcPgVa7H8BM63xBfaLKADT7n7UwLGiKE/mW+uTj0aRuA93J1frKQ6fR+odN
+	XrpLW9ndZpQENCwox00Yg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707262727; x=1707349127; bh=9lnv92XPZMe9+5e06+LHKt+jj5D0
+	C7RYADZtxhimSCw=; b=M1y/xNYfryX50WqA4OmrgnB5g5HY9GlW7pUAYBsCCGXu
+	hPif8c9EtT0FMbAGBNmnqsf12qKhGPJLb/SvdeRFNpa4WLCE3YfcBxNW77OzTJD4
+	IWrH8fslGe4x39EYeXs/+6cM1qbjUMinfEJPn47/IdkFbf7DZn6Z157aoA03K79K
+	dpVr3HNyNSMx+n+c7Urn4dt/8MUZAqbpT9TCWMv+CtGc+S6WFMNU+UPM3kiTDCLq
+	1kDL5vfp1D47DfqZgw5TUaDqYr5EQhYGVuq2eVU+ImAQOq05TTC4IXLcBFjA8lke
+	L+jWuLDxffedu0K1rix9tCYG3MmCs/8i9RLUU39amw==
+X-ME-Sender: <xms:B8PCZdJpr2yMKKcqsntMgiZnjcn92Kt1CLL2o6RbTYw3sUUGzILzlA>
+    <xme:B8PCZZLWUNEhiLoz7UzyQMnsZxCZOX5bmP1hrC8mMvJN1IJ2vOhY1G1kURtMHc0gy
+    zwNWQqrSsNHOpudsbY>
+X-ME-Received: <xmr:B8PCZVvgKiL3GvMXwteLB4vtAq7TnEDUhHC2x656S0E-2cK6aPNJdb-5j1JlWYtSqMDZPxocLUv4FRU07fEPrklcyN1R_6o1FY4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtddugdduvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenog
+    fuuhhsphgvtghtffhomhgrihhnucdlgeelmdenucfjughrpeffhffvvefukfhfgggtuggj
+    sehttdertddttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqd
+    htrghkrghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeej
+    hffhgeeutefhfeeugfeggeduhfekffduhffhheekhfdtveefhfejjefftdfgjeenucffoh
+    hmrghinhepshhouhhrtggvfhhorhhgvgdrnhgvthenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttg
+    hhihdrjhhp
+X-ME-Proxy: <xmx:B8PCZea0mhQFALGGu4uA1fQfGUV5SwliAjpywnC6USlnjm1oAOHsOQ>
+    <xmx:B8PCZUZusTh6ZgVOzn74lH1mHhlELeuP-l-9X-hNywPghVvx9xUdpA>
+    <xmx:B8PCZSB0DWrDVft2cRIgPnsytTk_hx6AMOxqmFbBMWZSb_k5jyyC1Q>
+    <xmx:B8PCZfw24dhyiWCGA5McGUGNdux47HfQg5pVBTUIFh9MHSA1qekRuQ>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 6 Feb 2024 18:38:46 -0500 (EST)
+Date: Wed, 7 Feb 2024 08:38:44 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Adam Goldman <adamg@pobox.com>
+Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] firewire: core: send bus reset promptly on gap count
+ error
+Message-ID: <20240206233844.GA143470@workstation.local>
+Mail-Followup-To: Adam Goldman <adamg@pobox.com>,
+	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <ZcBwSuyYtPEqwk8Y@iguana.24-8.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-10-namhyung@kernel.org>
- <CAP-5=fWhHb8iomEQ_rhwC50kGhPEVbDZv6X6riY_3pr787bhAQ@mail.gmail.com> <CAM9d7cg4Apu0OhDrn2uPzRnzV24-vK=L-yR04=2eGR=n_YngTA@mail.gmail.com>
-In-Reply-To: <CAM9d7cg4Apu0OhDrn2uPzRnzV24-vK=L-yR04=2eGR=n_YngTA@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 6 Feb 2024 15:36:00 -0800
-Message-ID: <CAP-5=fVPfSBGi1DrNkv3Moug_HyPZdEyab6X6sDyg=1-F2NAWw@mail.gmail.com>
-Subject: Re: [PATCH 09/14] perf annotate-data: Handle call instructions
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
-	linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcBwSuyYtPEqwk8Y@iguana.24-8.net>
 
-On Tue, Feb 6, 2024 at 3:17=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> On Fri, Feb 2, 2024 at 7:09=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
-> >
-> > On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
-g> wrote:
-> > >
-> > > When updating instruction states, the call instruction should play a
-> > > role since it can change the register states.  For simplicity, mark s=
-ome
-> > > registers as scratch registers (should be arch-dependent), and
-> > > invalidate them all after a function call.
-> >
-> > nit: Volatile or caller-save would be a more conventional name than scr=
-atch.
->
-> 'volatile' is a keyword and 'caller_saved' seems somewhat verbose.
-> Maybe 'temporary'?
+Hi,
 
-Sgtm, perhaps temp for brevity and the documentation to call them caller sa=
-ve?
+Thanks for the patch. I applied it to for-linus branch and will send it
+for v6.8-rc4 in this week. Thanks for your long patience in the review
+process.
 
-Thanks,
-Ian
+On Sun, Feb 04, 2024 at 09:21:14PM -0800, Adam Goldman wrote:
+> If we are bus manager and the bus has inconsistent gap counts, send a 
+> bus reset immediately instead of trying to read the root node's config 
+> ROM first. Otherwise, we could spend a lot of time trying to read the 
+> config ROM but never succeeding.
+> 
+> This eliminates a 50+ second delay before the FireWire bus is usable after 
+> a newly connected device is powered on in certain circumstances.
+> 
+> The delay occurs if a gap count inconsistency occurs, we are not the root 
+> node, and we become bus manager. One scenario that causes this is with a TI 
+> XIO2213B OHCI, the first time a Sony DSR-25 is powered on after being 
+> connected to the FireWire cable. In this configuration, the Linux box will 
+> not receive the initial PHY configuration packet sent by the DSR-25 as IRM, 
+> resulting in the DSR-25 having a gap count of 44 while the Linux box has a 
+> gap count of 63.
+> 
+> FireWire devices have a gap count parameter, which is set to 63 on power-up 
+> and can be changed with a PHY configuration packet. This determines the 
+> duration of the subaction and arbitration gaps. For reliable communication, 
+> all nodes on a FireWire bus must have the same gap count.
+> 
+> A node may have zero or more of the following roles: root node, bus manager 
+> (BM), isochronous resource manager (IRM), and cycle master. Unless a root 
+> node was forced with a PHY configuration packet, any node might become root 
+> node after a bus reset. Only the root node can become cycle master. If the 
+> root node is not cycle master capable, the BM or IRM should force a change 
+> of root node.
+> 
+> After a bus reset, each node sends a self-ID packet, which contains its 
+> current gap count. A single bus reset does not change the gap count, but 
+> two bus resets in a row will set the gap count to 63. Because a consistent 
+> gap count is required for reliable communication, IEEE 1394a-2000 requires 
+> that the bus manager generate a bus reset if it detects that the gap count 
+> is inconsistent.
+> 
+> When the gap count is inconsistent, build_tree() will notice this after the 
+> self identification process. It will set card->gap_count to the invalid 
+> value 0. If we become bus master, this will force bm_work() to send a bus 
+> reset when it performs gap count optimization.
+> 
+> After a bus reset, there is no bus manager. We will almost always try to 
+> become bus manager. Once we become bus manager, we will first determine 
+> whether the root node is cycle master capable. Then, we will determine if 
+> the gap count should be changed. If either the root node or the gap count 
+> should be changed, we will generate a bus reset.
+> 
+> To determine if the root node is cycle master capable, we read its 
+> configuration ROM. bm_work() will wait until we have finished trying to 
+> read the configuration ROM.
+> 
+> However, an inconsistent gap count can make this take a long time. 
+> read_config_rom() will read the first few quadlets from the config ROM. Due 
+> to the gap count inconsistency, eventually one of the reads will time out. 
+> When read_config_rom() fails, fw_device_init() calls it again until 
+> MAX_RETRIES is reached. This takes 50+ seconds.
+> 
+> Once we give up trying to read the configuration ROM, bm_work() will wake 
+> up, assume that the root node is not cycle master capable, and do a bus 
+> reset. Hopefully, this will resolve the gap count inconsistency.
+> 
+> This change makes bm_work() check for an inconsistent gap count before 
+> waiting for the root node's configuration ROM. If the gap count is 
+> inconsistent, bm_work() will immediately do a bus reset. This eliminates 
+> the 50+ second delay and rapidly brings the bus to a working state.
+> 
+> I considered that if the gap count is inconsistent, a PHY configuration 
+> packet might not be successful, so it could be desirable to skip the PHY 
+> configuration packet before the bus reset in this case. However, IEEE 
+> 1394a-2000 and IEEE 1394-2008 say that the bus manager may transmit a PHY 
+> configuration packet before a bus reset when correcting a gap count error. 
+> Since the standard endorses this, I decided it's safe to retain the PHY 
+> configuration packet transmission.
+> 
+> Normally, after a topology change, we will reset the bus a maximum of 5 
+> times to change the root node and perform gap count optimization. However, 
+> if there is a gap count inconsistency, we must always generate a bus reset. 
+> Otherwise the gap count inconsistency will persist and communication will 
+> be unreliable. For that reason, if there is a gap count inconstency, we 
+> generate a bus reset even if we already reached the 5 reset limit.
+> 
+> Signed-off-by: Adam Goldman <adamg@pobox.com>
+> Link: https://sourceforge.net/p/linux1394/mailman/message/58727806/
+> ---
 
-> Thanks,
-> Namhyung
+
+Takashi Sakamoto
 
