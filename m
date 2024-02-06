@@ -1,94 +1,95 @@
-Return-Path: <linux-kernel+bounces-55723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAB5A84C0CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:21:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3775884C0D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:24:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EE00B25B66
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:21:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8B47285A47
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 23:24:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122481CAB3;
-	Tue,  6 Feb 2024 23:21:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ur6PL279"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ABA71CD2F;
+	Tue,  6 Feb 2024 23:24:08 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E0BB1CD19;
-	Tue,  6 Feb 2024 23:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D412C1C6A8
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 23:24:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707261690; cv=none; b=iY/ji/7VPiwVMNhRtiGrKErbIQ+saOSuPQMmOTGjAxvElRlngqIy324BqjTF189+Jl9dQLAW6BppaSoqObaMp9p4i0ebmZzrWw0ZAhhGRNxtyAR+acDkMRebjCUikL+IWpXAN0NEH0kuywKwKefVa8ayHFuTFy07y5o1/KWRYnc=
+	t=1707261847; cv=none; b=utPH38L5Nq6rlVFO2ksJs+KSboQlAyHRjM9QBlecWj92wDMrcJBQBurd0u7GkuvGQHkimWsiNKb7/kdJMOE3FkokOvVPVV11Ww3Wmr246g1JALcSsCu2tt29fiDYp/p3m8clfhd3yn+stcC8FVqsxpd7Q9ZWNpZIgW3mYxqRbfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707261690; c=relaxed/simple;
-	bh=ithrnW7mrAUwgzefWAlkisiO97xAaMWaVn7JYX2tYuQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DQEVGDydl8JVJs0iRbhhaDhTxkjqj5ef+6pkZqCT9GqRuDu2MI6ePpIe+bzGGt/V1g9CaOR6pXn/qPVyQvGTdjzu0zp2l1ER71uom+YYPc4jnF6RgCZ4CBjHy71iv4XGi88FHqfLooQ5OqQT9grtv2/HiR+xfBtPBnT2rcO0ffI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ur6PL279; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69075C433F1;
-	Tue,  6 Feb 2024 23:21:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707261689;
-	bh=ithrnW7mrAUwgzefWAlkisiO97xAaMWaVn7JYX2tYuQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ur6PL279EzOqkACouJUT1+NEejB6pR2/B+UmPX4aDMUq0B4xftyGUNy1qtB/ApPJR
-	 +s/NKRjyqDDkteKaEqKfLDes9+B7Jtyam6MLKm7HU3nyMNmXId5kZZmHOKqf/6hwUD
-	 qXXlRAnRKZvFjrxcQRB2Jj62sX6RkEacqKVJ861BgLomPDLXTyTGCRt2ttST0JxnOk
-	 VbGXS7Eu14TyShXSGKXQ1m9l3nCOaGejscWqBIyOvOMQgAmiHuKVzK2uulDjedYQx4
-	 G+367LOoCM7u2epKasAl1X6/XXmMgsiY2ZMzWqispNj0tbjfBjBRfttWCMYsoVzz6d
-	 G7krIZuvpjvWQ==
-Date: Wed, 7 Feb 2024 00:21:27 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Ingo Molnar <mingo@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>, linux-kernel@vger.kernel.org,
-	linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 3/5] s390/vtime: remove unused
- __ARCH_HAS_VTIME_TASK_SWITCH leftover
-Message-ID: <ZcK-992HhIrSHOK6@localhost.localdomain>
-References: <cover.1706470223.git.agordeev@linux.ibm.com>
- <b3623605ba5c1d386d8f59e17c930ca2c3cca07c.1706470223.git.agordeev@linux.ibm.com>
+	s=arc-20240116; t=1707261847; c=relaxed/simple;
+	bh=avaOUcgWWADF6KLGwzoW9QsC+X9ueBhEDEJuX1SutnY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=YEdDfY44y7Q4IyTQZEGgDPwi1A96EXkWDYb6ms0Ho7mjZqZecQbDh9EXygjWXwVYXQ/v0qE7zz5EyAXis7LgvbPh4zoF8Un05FwKeK0F/Ef5ebJ1r9viQykQynjZOIXeDYpoHeOa6402hI42sk8EmJc475V1HUjPBeq+jYgD6qY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-363c88eff5aso142125ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 15:24:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707261845; x=1707866645;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dyU9aBXxURAl9A5KuV1JqmHm0E55rA4SNAlAUuaADxs=;
+        b=fDUzzl4iScZ/JnpohSkt/+lVIrbjv61lJwO9MdwFt1FTmWeJe8NJKsbTozJ2ONHOvj
+         v+qq3qFE7jpgnUDBuHkvDfTcJHPqFZFxaJAKE2mCqxvynIey4E9AdeMAKnqbZocKzc9y
+         y16qUt+68KHsxAtZJvsfcNCj5N/JZU/IrRpOI4I2T6Y602DVdOei6lnwV6G6CAoQ2WoJ
+         z21LDnE3matYZ+JVTIYMWDKpwXj5P1/jjnDm4qXfid0RB273yXe+o+vYDpMad70Ulit1
+         /VrWUYgPdg0Qngd0VFfUzy9TW2vuWBF5KjwCUD/Vxaeo/vDagPsAy3SMFKwFG7Cm5pB3
+         wAmw==
+X-Forwarded-Encrypted: i=1; AJvYcCX5Vo3XrkzBX3rlvVJyMsxyGpZZGuSPEDDYlxxB0Zlu3Yv0WQBFJtlTJ5kZbdUsjx8i9XT2BcJxfVju9av32byFaqUngeG9riF5aq2C
+X-Gm-Message-State: AOJu0YxrZFNspUIcAKaFnBttJiDjFzrK4u4W6Z+9lWkTgm1ePHVvPanc
+	QRygD5AlofoDusiASXSBRcXvKj3CoVsc1uiffF/v+F7W5yQ1S+a3clXz/Y9uj9W3QV8Ag2gI6zf
+	qKY+Bo73mDUsfTVtkTkTwZe+2XfbtPhFkL0lZW4VS1YUKhl0hC3MUp3U=
+X-Google-Smtp-Source: AGHT+IGSXSHoJP49btDMUUbQR8POUN20RhhYPv9Heu/t1qcOYXiDcq7JQgRofse+fmN8ylccOMewqdmAQJFGKKPWHm8kVCz6GLrK
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b3623605ba5c1d386d8f59e17c930ca2c3cca07c.1706470223.git.agordeev@linux.ibm.com>
+X-Received: by 2002:a05:6e02:1d9e:b0:363:ca65:7d12 with SMTP id
+ h30-20020a056e021d9e00b00363ca657d12mr207768ila.6.1707261845064; Tue, 06 Feb
+ 2024 15:24:05 -0800 (PST)
+Date: Tue, 06 Feb 2024 15:24:05 -0800
+In-Reply-To: <0000000000009655270610aafce1@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d053f20610bedf3b@google.com>
+Subject: Re: [syzbot] [netfilter?] WARNING: suspicious RCU usage in hash_netportnet6_destroy
+From: syzbot <syzbot+bcd44ebc3cd2db18f26c@syzkaller.appspotmail.com>
+To: 00107082@163.com, coreteam@netfilter.org, davem@davemloft.net, 
+	edumazet@google.com, fw@strlen.de, justinstitt@google.com, 
+	kadlec@netfilter.org, kuba@kernel.org, kuniyu@amazon.com, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	netfilter-devel@vger.kernel.org, pabeni@redhat.com, pablo@netfilter.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Le Sun, Jan 28, 2024 at 08:58:52PM +0100, Alexander Gordeev a écrit :
-> __ARCH_HAS_VTIME_TASK_SWITCH macro is not used anymore.
-> 
-> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+syzbot has bisected this issue to:
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+commit 97f7cf1cd80eeed3b7c808b7c12463295c751001
+Author: Jozsef Kadlecsik <kadlec@netfilter.org>
+Date:   Mon Jan 29 09:57:01 2024 +0000
 
+    netfilter: ipset: fix performance regression in swap operation
 
-> ---
->  arch/s390/include/asm/vtime.h | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/vtime.h b/arch/s390/include/asm/vtime.h
-> index fe17e448c0c5..561c91c1a87c 100644
-> --- a/arch/s390/include/asm/vtime.h
-> +++ b/arch/s390/include/asm/vtime.h
-> @@ -2,8 +2,6 @@
->  #ifndef _S390_VTIME_H
->  #define _S390_VTIME_H
->  
-> -#define __ARCH_HAS_VTIME_TASK_SWITCH
-> -
->  static inline void update_timer_sys(void)
->  {
->  	S390_lowcore.system_timer += S390_lowcore.last_update_timer - S390_lowcore.exit_timer;
-> -- 
-> 2.40.1
-> 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15790a38180000
+start commit:   021533194476 Kconfig: Disable -Wstringop-overflow for GCC ..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17790a38180000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13790a38180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f204e0b6490f4419
+dashboard link: https://syzkaller.appspot.com/bug?extid=bcd44ebc3cd2db18f26c
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16329057e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15b8fe7be80000
+
+Reported-by: syzbot+bcd44ebc3cd2db18f26c@syzkaller.appspotmail.com
+Fixes: 97f7cf1cd80e ("netfilter: ipset: fix performance regression in swap operation")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
