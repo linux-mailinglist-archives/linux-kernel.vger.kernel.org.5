@@ -1,282 +1,136 @@
-Return-Path: <linux-kernel+bounces-54955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D610A84B55C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:36:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8902B84B55E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:36:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0525F1C24ECC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:36:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B50EE1C2507B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:36:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C5D7130E2F;
-	Tue,  6 Feb 2024 12:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AECB2131725;
+	Tue,  6 Feb 2024 12:31:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BfpTuINo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="W73jhNOc"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E08130E23;
-	Tue,  6 Feb 2024 12:30:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05021130E48;
+	Tue,  6 Feb 2024 12:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707222640; cv=none; b=J1hGiRh10dlmHYPB0seacAsV+HZVwUP0dA9v5IFUXIbh/K0jOtT6aIZq8yZaMGZhX/ec7AYaDOffo0oHcHZ/d1ZU+Y8jjpaU09L4V6ihf1Dn7oBh02A0JI6bOPYUTTK4KHCQWvQVnReqP+wOYBBQtV04K7eKUpOuTEvQIbwgDQE=
+	t=1707222715; cv=none; b=qjKZZ8BYcRiRFOCABd3EZX9GawyRj7TxlzXZkFXC0Esq9JDBWDtptZBsAqpSU2YzcsVEdt55ET1oUTZCeH2bWB+1UGvMvIFI4CDBkp7V2O3MdBMOOuEzxRh1Em+HamsVh0yg+FXg4ScFx2rCSQQ7yKHozEu9L196uL4CRW+taGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707222640; c=relaxed/simple;
-	bh=fp1krD3CaAX4x2R0HgH+ZVyeqsHf+DF1fQf+NS8L+6k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iLeBPPmVN2yRvmVjWMZaK95xRBjfilZsHbXHlz9jvf6MHEoQbnxWxmAjp0jDPxTppYGF/EuGVdSgd2QIiQ6Ka+nLVxsMMf1is+o7R+LumReYrsmtCGgHS8B+Dno8kau6tEYXyfLmSLWXaA8OiuCb8DS/3YxgidYHFaifYQW4USw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BfpTuINo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33804C433F1;
-	Tue,  6 Feb 2024 12:30:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707222640;
-	bh=fp1krD3CaAX4x2R0HgH+ZVyeqsHf+DF1fQf+NS8L+6k=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=BfpTuINoWOuQyDXML2TvvJwR+5x1M7SkTgQSROHDUBsKozouvEWPTc03lCQKuwlWF
-	 bwVy8AkblYUlBTSFA3uxECXQU8YtLUQj13WFww2stAKPSmaRj41YoW8p8rTgKhRriG
-	 PlJqD6mcK64mH4q3d7o74JXhnt+36FMTg01ehGjzrmnsHplIqrtcNqtyNithYU8eJq
-	 6AbiaxOrFQpETdDe/KaZny7toa0GBQ4JVMpMePFasGPlIq61onaGcp0RAdH9puYpJi
-	 HwtjjFt1nqchiDoT7/zpwsesfm8CVffefWe4bFTQpWtp14J85U5WVrl4zEcmP7K/dy
-	 D1QJjPR/ELx0g==
-Message-ID: <77f7b127-e609-45e3-90aa-67aa7838ce6b@kernel.org>
-Date: Tue, 6 Feb 2024 14:30:33 +0200
+	s=arc-20240116; t=1707222715; c=relaxed/simple;
+	bh=lKFmIHEUO+dJrK7RCAPNBhE2qNe6Nhep6pxKGWFpkfo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=J3EWWZC4+4GEcFCz6CxbOypvRX4TF9cZd+AeTk5NaKQPeUMv9aZ+InEeohyr4znuYVcEqm70dHPx342+xswJLRS7vm44NS6NTs2Kq1cBzXDo9fAg5HJRgdeYlmjpq3v/Sor6reBCtHhrU2uU/LQXGfQZSJG4aRCAyRraWkgakmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=W73jhNOc; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1707222713; x=1738758713;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lKFmIHEUO+dJrK7RCAPNBhE2qNe6Nhep6pxKGWFpkfo=;
+  b=W73jhNOc8459Y2bJC/7CrDini+cNR1rcWAuv5NDes62zODzb37e4mL8I
+   Rvt/k7S2rEh7htSOvlwaVp5p6Y9X0RqiOEea3aNbxAs8pT6Fe1KitwI/b
+   tXG5yqMNL0YBdbF+4WheWWmcd+H9rmTO7Y0JuHislh2YZ9sg9aBveTLAK
+   IyTQNZC2IG/J5m86jXpH9bUUOhC3MkS+JH6d0XFapdFkTVZOMPfAethVU
+   lhs8vN/h04yYBMdLcO2C6Xi0A3KEjDOjIm0p2C5OiKEjT/muditudC5in
+   o85Cmio0ekoaCZ6sJzqZTzNAQxEgkT4P4ujgA7czk1E0l48Kt75c/Z/bR
+   Q==;
+X-CSE-ConnectionGUID: VSc2D1OUSp6Kb5lb+VdjZg==
+X-CSE-MsgGUID: DPYhfQf4SVCc0h/wLVDLSg==
+X-IronPort-AV: E=Sophos;i="6.05,247,1701154800"; 
+   d="scan'208";a="16349947"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Feb 2024 05:31:52 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 6 Feb 2024 05:31:21 -0700
+Received: from DEN-DL-M31836.microsemi.net (10.10.85.11) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Tue, 6 Feb 2024 05:31:19 -0700
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <UNGLinuxDriver@microchip.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Horatiu Vultur
+	<horatiu.vultur@microchip.com>, Michal Swiatkowski
+	<michal.swiatkowski@linux.intel.com>
+Subject: [PATCH net v2] lan966x: Fix crash when adding interface under a lag
+Date: Tue, 6 Feb 2024 13:30:54 +0100
+Message-ID: <20240206123054.3052966-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/3] arm64: dts: ti: k3-am62p: add the USB sub-system
-Content-Language: en-US
-To: Andrew Davis <afd@ti.com>, nm@ti.com, vigneshr@ti.com
-Cc: kristo@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, srk@ti.com, r-gunasekaran@ti.com, b-liu@ti.com,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240205135908.54656-1-rogerq@kernel.org>
- <20240205135908.54656-4-rogerq@kernel.org>
- <45a0ed98-8dd2-4c5b-8e89-40c70e3fe831@ti.com>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <45a0ed98-8dd2-4c5b-8e89-40c70e3fe831@ti.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
+There is a crash when adding one of the lan966x interfaces under a lag
+interface. The issue can be reproduced like this:
+ip link add name bond0 type bond miimon 100 mode balance-xor
+ip link set dev eth0 master bond0
 
+The reason is because when adding a interface under the lag it would go
+through all the ports and try to figure out which other ports are under
+that lag interface. And the issue is that lan966x can have ports that are
+NULL pointer as they are not probed. So then iterating over these ports
+it would just crash as they are NULL pointers.
+The fix consists in actually checking for NULL pointers before accessing
+something from the ports. Like we do in other places.
 
-On 05/02/2024 19:34, Andrew Davis wrote:
-> On 2/5/24 7:59 AM, Roger Quadros wrote:
->> There are two USB instances available on the am62p5 starter kit. Include
->> and enable them for use on the board.
->>
->> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->> ---
->>
->> Notes:
->>      Changelog:
->>           v4 - no change
->>           v3 - no change
->>      https://lore.kernel.org/all/20240201120332.4811-4-rogerq@kernel.org/
->>           v2:
->>      - added USB PHY CTRL node changes here
->>      - changed USB wrapper node names to usb@
->>      - changed Type-C chip node name to usb-power-control@
->>
->>   arch/arm64/boot/dts/ti/k3-am62p-main.dtsi   | 46 ++++++++++++++
->>   arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi | 10 +++
->>   arch/arm64/boot/dts/ti/k3-am62p5-sk.dts     | 67 +++++++++++++++++++++
->>   3 files changed, 123 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
->> index 4c51bae06b57..17d28390d587 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
->> @@ -560,6 +560,52 @@ sdhci2: mmc@fa20000 {
->>           status = "disabled";
->>       };
->>   +    usbss0: usb@f900000 {
->> +        compatible = "ti,am62-usb";
->> +        reg = <0x00 0x0f900000 0x00 0x800>;
->> +        clocks = <&k3_clks 161 3>;
->> +        clock-names = "ref";
->> +        ti,syscon-phy-pll-refclk = <&usb0_phy_ctrl 0x0>;
->> +        #address-cells = <2>;
->> +        #size-cells = <2>;
->> +        power-domains = <&k3_pds 178 TI_SCI_PD_EXCLUSIVE>;
->> +        ranges;
->> +        status = "disabled";
->> +
->> +        usb0: usb@31000000 {
->> +            compatible = "snps,dwc3";
->> +            reg = <0x00 0x31000000 0x00 0x50000>;
->> +            interrupts = <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>, /* irq.0 */
->> +            <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>; /* irq.0 */
->> +            interrupt-names = "host", "peripheral";
->> +            maximum-speed = "high-speed";
->> +            dr_mode = "otg";
->> +        };
->> +    };
->> +
->> +    usbss1: usb@f910000 {
->> +        compatible = "ti,am62-usb";
->> +        reg = <0x00 0x0f910000 0x00 0x800>;
->> +        clocks = <&k3_clks 162 3>;
->> +        clock-names = "ref";
->> +        ti,syscon-phy-pll-refclk = <&usb1_phy_ctrl 0x0>;
->> +        #address-cells = <2>;
->> +        #size-cells = <2>;
->> +        power-domains = <&k3_pds 179 TI_SCI_PD_EXCLUSIVE>;
->> +        ranges;
->> +        status = "disabled";
->> +
->> +        usb1: usb@31100000 {
->> +            compatible = "snps,dwc3";
->> +            reg = <0x00 0x31100000 0x00 0x50000>;
->> +            interrupts = <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>, /* irq.0 */
->> +            <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>; /* irq.0 */
->> +            interrupt-names = "host", "peripheral";
->> +            maximum-speed = "high-speed";
->> +            dr_mode = "otg";
->> +        };
->> +    };
->> +
->>       fss: bus@fc00000 {
->>           compatible = "simple-bus";
->>           reg = <0x00 0x0fc00000 0x00 0x70000>;
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
->> index 19f42b39394e..00dd38b02a52 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
->> @@ -18,6 +18,16 @@ chipid: chipid@14 {
->>               reg = <0x14 0x4>;
->>               bootph-all;
->>           };
->> +
->> +        usb0_phy_ctrl: syscon@4008 {
->> +            compatible = "ti,am62-usb-phy-ctrl", "syscon";
->> +            reg = <0x4008 0x4>;
->> +        };
->> +
->> +        usb1_phy_ctrl: syscon@4018 {
->> +            compatible = "ti,am62-usb-phy-ctrl", "syscon";
->> +            reg = <0x4018 0x4>;
->> +        };
->>       };
->>         wkup_uart0: serial@2b300000 {
->> diff --git a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
->> index 1773c05f752c..80be56c0a4e0 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
->> @@ -27,6 +27,8 @@ aliases {
->>           spi0 = &ospi0;
->>           ethernet0 = &cpsw_port1;
->>           ethernet1 = &cpsw_port2;
->> +        usb0 = &usb0;
->> +        usb1 = &usb1;
->>       };
->>         chosen {
->> @@ -297,6 +299,12 @@ AM62PX_IOPAD(0x01b0, PIN_OUTPUT, 2) /* (G20) MCASP0_ACLKR.UART1_TXD */
->>           bootph-all;
->>       };
->>   +    main_usb1_pins_default: main-usb1-default-pins {
->> +        pinctrl-single,pins = <
->> +            AM62PX_IOPAD(0x0258, PIN_INPUT, 0) /* (G21) USB1_DRVVBUS */
->> +        >;
->> +    };
->> +
->>       main_wlirq_pins_default: main-wlirq-default-pins {
->>           pinctrl-single,pins = <
->>               AM62PX_IOPAD(0x0128, PIN_INPUT, 7) /* (K25) MMC2_SDWP.GPIO0_72 */
->> @@ -340,6 +348,36 @@ AM62PX_IOPAD(0x0124, PIN_INPUT, 7) /* (J25) MMC2_SDCD.GPIO0_71 */
->>       };
->>   };
->>   +&main_i2c0 {
->> +    status = "okay";
->> +    pinctrl-names = "default";
->> +    pinctrl-0 = <&main_i2c0_pins_default>;
->> +    clock-frequency = <400000>;
->> +
->> +    typec_pd0: usb-power-controller@3f {
->> +        compatible = "ti,tps6598x";
->> +        reg = <0x3f>;
->> +
->> +        connector {
->> +            compatible = "usb-c-connector";
->> +            label = "USB-C";
->> +            self-powered;
->> +            data-role = "dual";
->> +            power-role = "sink";
->> +            ports {
->> +                #address-cells = <1>;
->> +                #size-cells = <0>;
->> +                port@0 {
->> +                    reg = <0>;
->> +                    usb_con_hs: endpoint {
->> +                        remote-endpoint = <&usb0_hs_ep>;
->> +                    };
->> +                };
->> +            };
->> +        };
->> +    };
->> +};
->> +
->>   &main_i2c1 {
->>       status = "okay";
->>       pinctrl-names = "default";
->> @@ -460,6 +498,35 @@ cpsw3g_phy1: ethernet-phy@1 {
->>       };
->>   };
->>   +&usbss0 {
->> +    status = "okay";
->> +    ti,vbus-divider;
->> +};
->> +
->> +&usbss1 {
->> +    status = "okay";
->> +    ti,vbus-divider;
->> +};
->> +
->> +&usb0 {
->> +    usb-role-switch;
->> +    #address-cells = <1>;
->> +    #size-cells = <0>;
->> +
->> +    port@0 {
->> +        reg = <0>;
->> +        usb0_hs_ep: endpoint {
->> +            remote-endpoint = <&usb_con_hs>;
->> +        };
->> +    };
->> +};
->> +
->> +&usb1 {
->> +    dr_mode = "host";
->> +    pinctrl-names = "default";
->> +    pinctrl-0 = <&main_usb1_pins_default>;
-> 
-> I'm not super familiar with USB, but I see this pinmux for the
-> "DRVVBUS" pin is usually added the the parent USB subsystem node (usbss).
-> Does this pin belong to the subsystem or the specific USB instance?
-> 
-There is only 1 USB instance per USB sub-system.
-The "DRVVBUS" pin is a control signal to enable the VBUS regulator
-while in host mode.
+Fixes: cabc9d49333d ("net: lan966x: Add lag support for lan966x")
+Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+---
+v1->v2:
+- replace lan966x->ports[lag]->bond with port->bond as it is the same
+  and easier to follow
+---
+ drivers/net/ethernet/microchip/lan966x/lan966x_lag.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Just probing the usbss1 driver has no use of "DRVVBUS".
-I think usb1 is the right place as it is used there.
-
-> Andrew
-> 
->> +};
->> +
->>   &mcasp1 {
->>       status = "okay";
->>       #sound-dai-cells = <0>;
-
+diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_lag.c b/drivers/net/ethernet/microchip/lan966x/lan966x_lag.c
+index 41fa2523d91d3..5f2cd9a8cf8fb 100644
+--- a/drivers/net/ethernet/microchip/lan966x/lan966x_lag.c
++++ b/drivers/net/ethernet/microchip/lan966x/lan966x_lag.c
+@@ -37,19 +37,24 @@ static void lan966x_lag_set_aggr_pgids(struct lan966x *lan966x)
+ 
+ 	/* Now, set PGIDs for each active LAG */
+ 	for (lag = 0; lag < lan966x->num_phys_ports; ++lag) {
+-		struct net_device *bond = lan966x->ports[lag]->bond;
++		struct lan966x_port *port = lan966x->ports[lag];
+ 		int num_active_ports = 0;
++		struct net_device *bond;
+ 		unsigned long bond_mask;
+ 		u8 aggr_idx[16];
+ 
+-		if (!bond || (visited & BIT(lag)))
++		if (!port || !port->bond || (visited & BIT(lag)))
+ 			continue;
+ 
++		bond = port->bond;
+ 		bond_mask = lan966x_lag_get_mask(lan966x, bond);
+ 
+ 		for_each_set_bit(p, &bond_mask, lan966x->num_phys_ports) {
+ 			struct lan966x_port *port = lan966x->ports[p];
+ 
++			if (!port)
++				continue;
++
+ 			lan_wr(ANA_PGID_PGID_SET(bond_mask),
+ 			       lan966x, ANA_PGID(p));
+ 			if (port->lag_tx_active)
 -- 
-cheers,
--roger
+2.34.1
+
 
