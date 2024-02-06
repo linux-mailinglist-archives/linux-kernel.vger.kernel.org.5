@@ -1,147 +1,185 @@
-Return-Path: <linux-kernel+bounces-55617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A05484BF09
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:08:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BADAC84BF0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 22:11:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E73ED1C23B77
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:08:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DA9B283627
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:11:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEBEC1B956;
-	Tue,  6 Feb 2024 21:08:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BA471B94A;
+	Tue,  6 Feb 2024 21:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ptsah1Cv"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JOAIBZD+"
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B3B1B946
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 21:08:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C031B942;
+	Tue,  6 Feb 2024 21:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707253729; cv=none; b=TYOI7Ns7rQS7EmBrUlRm4vOl5JgN20bDlfz8cvUYgbvoRMrcHbZepzJlQEW9JCDkVvm4uk8MPXTmeKxy7sCi8amG/mAOlDM8PmyIFnKgAicn8MD4gRocTABH9hNKmpQNwHi1cYTCOvTxIAwDHf2UshJsrCwBX0axdZzcEFYjcqU=
+	t=1707253857; cv=none; b=YjzoRWgywyt0wrleupCxul7bgvdXug+0wqyWpzkN8w9CjmKXSqHOFJb58bQ4z2sNekyYUB6XZw8sozxcz+jRRKv+blci5v3/L7yxqmcszK+xU2lhIdlRZe2Qvm9dmgLSJ500i7ETxyyc366AKQdlixqI4xSXSbuiq9KgIwpmCLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707253729; c=relaxed/simple;
-	bh=zgAS7eEojvB4l1dUuynzszfleLxH1o1uHdUEOuRKM+Q=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=nmllUWKfBz8DATg7YwPZHaNlJLM+qJwPcNwKzTQtmabzzTfKD2ZOXbZcPvcG6DZf1LbGDsHwG54zBxy5O/vyMW2mH64pARhlWewTSt7VE5YTSYabYZsQhprP0LGDdXAKVx4aeQthZu0W0XMdosyNBB75V79UszFvEWKJz9RcypU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ptsah1Cv; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6040ffa60ddso121771757b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 13:08:48 -0800 (PST)
+	s=arc-20240116; t=1707253857; c=relaxed/simple;
+	bh=MwlTw10rPAhB4gGj/ejIVT9F0dRB9CnZoireiK4aYIw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ayPpRu3ifU1IZKgnQl9lBdo7H5uribWFXVefrhJ2+/6dGVuGbN8NcINs0ZAq0Q6OKqGjOsHzocoMoDeYLR6b5pQaZE/ySHXsCCp3+Eu6I+/N1wJ4x9VodPdCPwYI6dohY2IGx7CPZlCFV1PnSfhcL4US6vWRQHkAaZYSqz5DwRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JOAIBZD+; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60484b96cd7so5331997b3.2;
+        Tue, 06 Feb 2024 13:10:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707253727; x=1707858527; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jgnL0Q5rTfFWXEVUOgZf2CAS8hpKNN7Sgg+AvUluPpQ=;
-        b=ptsah1CvrUng+wtUau/vwqn94IsZZM105D5odxW3N5hAU/MlhjXUvviAriFSXjg/6r
-         8+VeutkvE0KEninyKCWA6b13hT0jBGniBnCsjJ/c3PoFgxrRZUYaYEpXZhKdE6mUXTFL
-         4GM6fZAt/kkPV+m4yCFPgsoZwEeeRP91b++6o3Pb79h8uhR5Lzsdj5V0Ns38SSTSlOUI
-         PR5yshL6MAU+Pq3cX6055zw9i5zdq6WaSY8o/T0/LEPLCrHpnwn/zlneTRlNKGpIdwsr
-         HiiFRaoXCX3fc4m7sMthtziraezMXzCBITjAOxXXIFkP9Ax9QtUJRHYXQphzYANYvAXG
-         c9+A==
+        d=gmail.com; s=20230601; t=1707253855; x=1707858655; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SO1bsPmumajuKPIDkj+daq+YcseSKA2zflG+/ZF7sf0=;
+        b=JOAIBZD+8Con3xj7qyYFEsyX6TCl0LuMVfaspXUuT7/oo+0TTQnkO69iTkt20vOnz3
+         kAe0xN1oTKTTE1KQmULyHKug5+vIPseXo8rT4mus/REa+YM7xvPeeVE3tpQ/keGOxR5o
+         v1hwrkHGr6sjCy00Edh7pPf+gw4ot0Xf+MIes6KZiqT+W8J98iAUYNW20TqRYxrJNXeC
+         2NXKKHA31gyaDCq45k+mSs2MFgfeH2EQm0PQM70+pHq8BYUTScClcu/bEITen2nH64hn
+         l9VsE6k+CaiOFOnM/NVgdfUHFG8sE4WBTU2Vc2Ig1G3HRdK/bluc9/ofwuGsKJsYcMyO
+         NBuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707253727; x=1707858527;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jgnL0Q5rTfFWXEVUOgZf2CAS8hpKNN7Sgg+AvUluPpQ=;
-        b=knIJgOhbmAftXn8FnQDUdKPokUpZca+RZvlpcRyHFWq4kHmo1nUXBmdgAuBSKODu+D
-         Od9l1/jHTQhR6V6mTI1GcB1cdXbc2VGV9Gr8avJj9g05PHjymAA3tyegI/Kvd6beWWYL
-         EYPZAIrwlSWmdx2HuOCfSa6L+A80tmbUf962bHytzF3BAPzCnThrZWsBmDFfddK4R2hJ
-         QJhEKQMLFpYqgSpLNGtE4SgtUd0NAJLLgMgAyQCWmi1Z7BFFwSv2Rs7wzS5jD+amKxNt
-         02fkmJaUQHMjfpKSSFWYwk09SKAmhcawZNSd1qViep21u3OfHR1xVGnMjVeBYruFP/sz
-         OsOA==
-X-Gm-Message-State: AOJu0YyewU0KQJlRvip2RHyEDXGEijNJAZZQVPG2JA0taDNK6tXyp4sV
-	1VLvTxlSPEI4jDJyPXOrkO3ZtqqiYtWfB+G/WSaS3AFXkCcrWP2V4vxDwCqzMqSRDXel/Lem/vv
-	eqg==
-X-Google-Smtp-Source: AGHT+IHsQBjp6ilaiBbfbQpKFm/RSNkoDuvhzxvLO3wHQwgXXBD5flGG40KhtkrgYZsgXjL9FlPKO9Xe/78=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:98f:b0:dc2:4d91:fb4b with SMTP id
- bv15-20020a056902098f00b00dc24d91fb4bmr725206ybb.9.1707253727335; Tue, 06 Feb
- 2024 13:08:47 -0800 (PST)
-Date: Tue, 6 Feb 2024 13:08:45 -0800
-In-Reply-To: <ZcKKwSi7FdbSnexE@google.com>
+        d=1e100.net; s=20230601; t=1707253855; x=1707858655;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SO1bsPmumajuKPIDkj+daq+YcseSKA2zflG+/ZF7sf0=;
+        b=WLziR96sZiwMdmPnAcCWMNlKDD5PJp9sc48EJiSezQC03xpaOJDa4Bo5Lnwi/qdYeA
+         LiOR1q4JjqxEMguFSGX5zpC1EZxiVT7iLz1z7ulldy+lcmXiaJq7ZvemX7u7HlY9/6eR
+         7GLpktTKd8nBcLWumnrIyRqSnWny5BVqD7AFuJhxrI9xvRDGEADyakjOwjEi8E1V6wtl
+         dtLAtBTEF2jtxKro50oKd/qJhe35Qh/CY0LkvQ3LVW+QUMHhoFZzOQEXzSfYCpnvVIlE
+         r65nkf1d0dBBi71O1Rs6qUsJvnxcnXzjV2yRMutQOm4SKa1SyMIncRbUMB1NTR34qcBu
+         3TpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWL9AbBtYnnWYo8BN0AGxJJ47xiZj1cRurM1bescMEa9nKiKSM+Z7nT8FBuUbDMSZDOt/87/qnsa94s28yrusbEGTX1tf4yUCGpGKJTyIrEih32X35BgwxUS1sY3+vxktOFDHpp25c1yfmcJKekV3w=
+X-Gm-Message-State: AOJu0YyJ7KmGn4WEwV7QFPjWNBvOr/9tKJdBb2chiXBVHyV4tYpEtVfk
+	u3v86PisnjTlAeR64ktNzQDucb6EYf+D7HnsnsJ+29Kk3UeIyzh+LcPaC5k3BudyirsLH7T1bwj
+	Sa/32x41IlKXb2ojlXjQRYPcVyLN8aJOOc5Q=
+X-Google-Smtp-Source: AGHT+IHPzYUv7iG2mfe+GTxvQSrf4VQlKX9EmjPIaOqM80iPhazir8BocNTo5U/vWuLLZdWiljVwO39KLm8tqsnwS9k=
+X-Received: by 2002:a0d:dd51:0:b0:5ec:aaf8:39bd with SMTP id
+ g78-20020a0ddd51000000b005ecaaf839bdmr2990858ywe.36.1707253854582; Tue, 06
+ Feb 2024 13:10:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231206032054.55070-1-likexu@tencent.com> <ZcKKwSi7FdbSnexE@google.com>
-Message-ID: <ZcKf3RvyoVJ77sUQ@google.com>
-Subject: Re: [PATCH v2] KVM: x86/intr: Explicitly check NMI from guest to
- eliminate false positives
-From: Sean Christopherson <seanjc@google.com>
-To: Like Xu <like.xu.linux@gmail.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Andi Kleen <ak@linux.intel.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20231205105030.8698-14-xin3.li@intel.com> <170673569232.398.15041548048531772130.tip-bot2@tip-bot2>
+ <2A59D51B-0AA0-4DFC-9957-67CC0C9E37B3@zytor.com> <8f260a93-08f3-48af-81e5-8ee53246e262@zytor.com>
+ <D64A7458-15DD-4B92-975A-9E4ABD96CAE2@zytor.com>
+In-Reply-To: <D64A7458-15DD-4B92-975A-9E4ABD96CAE2@zytor.com>
+From: "H.J. Lu" <hjl.tools@gmail.com>
+Date: Tue, 6 Feb 2024 13:10:18 -0800
+Message-ID: <CAMe9rOog8r_qR1PBb-W3G+ma5zUX+YDeR3QnuE-xU3mL_=ywSg@mail.gmail.com>
+Subject: Re: [tip: x86/fred] x86/ptrace: Cleanup the definition of the pt_regs structure
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Xin Li <xin@zytor.com>, linux-kernel@vger.kernel.org, 
+	tip-bot2 for Xin Li <tip-bot2@linutronix.de>, linux-tip-commits@vger.kernel.org, 
+	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Shan Kang <shan.kang@intel.com>, 
+	x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 06, 2024, Sean Christopherson wrote:
-> +Oliver
-> 
-> On Wed, Dec 06, 2023, Like Xu wrote:
-> > Note that when vm-exit is indeed triggered by PMI and before HANDLING_NMI
-> > is cleared, it's also still possible that another PMI is generated on host.
-> > Also for perf/core timer mode, the false positives are still possible since
-> > that non-NMI sources of interrupts are not always being used by perf/core.
-> > In both cases above, perf/core should correctly distinguish between real
-> > RIP sources or even need to generate two samples, belonging to host and
-> > guest separately, but that's perf/core's story for interested warriors.
-> 
-> Oliver has a patch[*] that he promised he would send "soon" (wink wink) to
-> properly fix events that are configured to exclude the guest.  Unless someone
-> objects, I'm going to tweak the last part of the changelog to be:
-> 
->     Note that when VM-exit is indeed triggered by PMI and before HANDLING_NMI
->     is cleared, it's also still possible that another PMI is generated on host.
->     Also for perf/core timer mode, the false positives are still possible since
->     that non-NMI sources of interrupts are not always being used by perf/core.
->     
->     For events that are host-only, perf/core can and should eliminate false
->     positives by checking event->attr.exclude_guest, i.e. events that are
->     configured to exclude KVM guests should never fire in the guest.
->     
->     Events that are configured to count host and guest are trickier, perhaps
->     impossible to handle with 100% accuracy?  And regardless of what accuracy
->     is provided by perf/core, improving KVM's accuracy is cheap and easy, with
->     no real downsides.
+On Tue, Feb 6, 2024 at 12:45=E2=80=AFPM H. Peter Anvin <hpa@zytor.com> wrot=
+e:
+>
+> On February 6, 2024 11:04:13 AM PST, Xin Li <xin@zytor.com> wrote:
+> >On 2/3/2024 3:52 PM, H. Peter Anvin wrote:
+> >> On January 31, 2024 1:14:52 PM PST, tip-bot2 for Xin Li <tip-bot2@linu=
+tronix.de> wrote:
+> >>> The following commit has been merged into the x86/fred branch of tip:
+> >>>
+> >>> Commit-ID:     ee63291aa8287cb7ded767d340155fe8681fc075
+> >>> Gitweb:        https://git.kernel.org/tip/ee63291aa8287cb7ded767d3401=
+55fe8681fc075
+> >>> Author:        Xin Li <xin3.li@intel.com>
+> >>> AuthorDate:    Tue, 05 Dec 2023 02:50:02 -08:00
+> >>> Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+> >>> CommitterDate: Wed, 31 Jan 2024 22:01:13 +01:00
+> >>>
+> >>> x86/ptrace: Cleanup the definition of the pt_regs structure
+> >>>
+> >>> struct pt_regs is hard to read because the member or section related
+> >>> comments are not aligned with the members.
+> >>>
+> >>> The 'cs' and 'ss' members of pt_regs are type of 'unsigned long' whil=
+e
+> >>> in reality they are only 16-bit wide. This works so far as the
+> >>> remaining space is unused, but FRED will use the remaining bits for
+> >>> other purposes.
+> >>>
+> >>> To prepare for FRED:
+> >>>
+> >>>   - Cleanup the formatting
+> >>>   - Convert 'cs' and 'ss' to u16 and embed them into an union
+> >>>     with a u64
+> >>>   - Fixup the related printk() format strings
+> >>>
+> >>> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> >>> Originally-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+> >>> Signed-off-by: Xin Li <xin3.li@intel.com>
+> >>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> >>> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+> >>> Tested-by: Shan Kang <shan.kang@intel.com>
+> >>> Link: https://lore.kernel.org/r/20231205105030.8698-14-xin3.li@intel.=
+com
+> >
+> >[...]
+> >
+> >>> diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_6=
+4.c
+> >>> index 33b2687..0f78b58 100644
+> >>> --- a/arch/x86/kernel/process_64.c
+> >>> +++ b/arch/x86/kernel/process_64.c
+> >>> @@ -117,7 +117,7 @@ void __show_regs(struct pt_regs *regs, enum show_=
+regs_mode mode,
+> >>>
+> >>>     printk("%sFS:  %016lx(%04x) GS:%016lx(%04x) knlGS:%016lx\n",
+> >>>            log_lvl, fs, fsindex, gs, gsindex, shadowgs);
+> >>> -   printk("%sCS:  %04lx DS: %04x ES: %04x CR0: %016lx\n",
+> >>> +   printk("%sCS:  %04x DS: %04x ES: %04x CR0: %016lx\n",
+> >>>             log_lvl, regs->cs, ds, es, cr0);
+> >>>     printk("%sCR2: %016lx CR3: %016lx CR4: %016lx\n",
+> >>>             log_lvl, cr2, cr3, cr4);
+> >>
+> >> Incidentally, the comment about callee-saved registers is long since b=
+oth obsolete and is now outright wrong.
+> >>
+> >> The next version of gcc (14 I think) will have an attribute to turn of=
+f saving registers which we can use for top-level C functions.
 
-Never mind, this causes KUT's pmu_pebs test to fail:
+__attribute__((no_callee_saved_registers))) has been added to GCC 14.
 
-  FAIL: Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x1): Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x2): Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x4): Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x1f000008): Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: GP counter 0 (0xfffffffffffe): No OVF irq, none PEBS records.
-  FAIL: Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x1): GP counter 0 (0xfffffffffffe): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x1): Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x2): GP counter 0 (0xfffffffffffe): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x2): Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x4): GP counter 0 (0xfffffffffffe): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x4): Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x1f000008): GP counter 0 (0xfffffffffffe): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x1f000008): Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x1): Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x2): Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x4): Multiple (0x700000055): No OVF irq, none PEBS records.
-  FAIL: Adaptive (0x1f000008): Multiple (0x700000055): No OVF irq, none PEBS records.
+> >
+> >Forgive my ignorance, do we have an official definition for "top-level C=
+ functions"?
+> >
+> >Thanks!
+> >    Xin
+> >
+>
+> (Adding H.J., who did the gcc implementation of __attribute__((no_callee_=
+saved_registers))).
+>
+> The top level C functions are the ones whose stack frame are immediately =
+below the exception/syscall frame, i.e. the C function called from the entr=
+y assembly code and functions tailcalled from those (unless they set up a s=
+tack frame for things like memory structures passed to the called function.=
+)
+>
+> Note that the implementation should properly handle the case when calling=
+ these functions from C (accidentally, or because it is a rare case that ca=
+n be validly pessimized.)
 
-It might be a test bug, but I have neither the time nor the inclination to
-investigate.
+GCC 14 should handle it properly.  If not, please open a GCC bug.
 
 
-Like,
-
-If you want any chance of your patches going anywhere but my trash folder, you
-need to change your upstream workflow to actually run tests.  I would give most
-people the benefit of the doubt, e.g. assume they didn't have the requisite
-hardware, or didn't realize which tests would be relevant/important.  But this
-is a recurring problem, and you have been warned, multiple times.
+--=20
+H.J.
 
