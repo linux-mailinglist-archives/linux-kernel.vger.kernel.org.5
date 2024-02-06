@@ -1,138 +1,133 @@
-Return-Path: <linux-kernel+bounces-54663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CAD984B22F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:13:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEF2D84B234
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:13:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FCD21C23D24
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:13:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67E672838CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:13:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E1712EBE3;
-	Tue,  6 Feb 2024 10:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93DA812E1EE;
+	Tue,  6 Feb 2024 10:13:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="N+4pxnhs"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BI/CKhos"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EB2B12EBCE
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 10:13:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBE012EBF3;
+	Tue,  6 Feb 2024 10:13:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707214384; cv=none; b=jNGsfteYtXhDS1ID3pvFK83OFOBQbf//QJwPD1R0p8el2bukkyKHNWXlOvo25Zt6CGp2oPkr314SNF2HhumMsa8L+sHQ8YC47NzGmgEmOwWO4Y7dndzzGrbGTB5De7HvKJ26NiLTfF44JDeVdH5BU4bn8oD41TCdqOgmdMZ4Fr4=
+	t=1707214389; cv=none; b=Al/mBOcCrFtcRO2Yn7ankCcVyKa2M2cnA3TFRcTxgRn462QAJLEFKEefUylzoPopF85WLe59wpo3MQRYSer72UIMvh8amDZ89dq3cJ7ksVPqHnF4QRz1Ao3YJOoKonRHWsrhsIeU4yZtKCUiGBQGJ2H+j8/SR3EYYaBOQEdjFNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707214384; c=relaxed/simple;
-	bh=v4XVMsXqCjDb4FoYvAxW909zIoiT+8uQw/E9lIX5SpI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lJh7QubKxLGAYbXLN6Yp8lQ7s9E9GwppVvez4J2ZwIzFTrnqNQU0LPnIYsY+aXH0btRb8KwWsA0X160uxI8fqYIkwjtsIpOtr8LbPtKAHdsvpytpnDYw9H1D293N08WjyLizzVCaXiQ8G2Q124sevg1F2ljYDAOlN4elzI0WXQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=N+4pxnhs; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a30f7c9574eso721836866b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 02:13:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1707214380; x=1707819180; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rIfhGveLVdv928TlKPqq3OWj/gTbC/K8X3iijI8040k=;
-        b=N+4pxnhsWKrQX1waQoGYgs2XFBroVjxXLg/uvgoN/9F5N+Q/hXJcSpckAxziQxv2pm
-         ds5JEW2PfMrTTMIc8pRhg7afwGfJfRCDsZ+lZm4hjWUQyWuLOTA/JBkqHUmEUqx86AnJ
-         jmlmR+MGnkooEvdDEw+jQ4hROJF4UZTOYAW2+wzebIv1phbOCyWtxjoeQQ/M5gjq5pYG
-         /2dD5TLMEBtYM7ZSsy9dHQWKU29cDgjGcDudAz35hyoRkuZ/gsNnZysODX0dpngTMMK1
-         atcmyMUxWx+Azq1HaWoiPt4JMngTBWDq2wRjaDb2XrnXZ4Q9puQFivE5YqmbfcU/ddDH
-         XgWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707214380; x=1707819180;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rIfhGveLVdv928TlKPqq3OWj/gTbC/K8X3iijI8040k=;
-        b=OIacs4nWeQhpOH0KacM5p3N4MvnmkdkYPj9FgbQlB+nyjua10tk641NfFgBBsxbdRh
-         1dv5g2pRZQGanKCAO4xqFcMao77kGT8l8H9IrL3Flgjq1jP7QkFLFiJS00I5t7JAKqJ6
-         i7PS+ytckr3kSqzY8BdI4sAmSsQgS3wBab1ylCPo7iAUZUX9Gat+4sADEGm6F6fBCDt2
-         +8+vij64FO7QbiVk39X0PgSHv417jXU2wi0Y8hLJ8LSzbGMjLUT6jUIDpB29m6X0/s9j
-         gSMRqXatsAYmoyEtpu66hbeqSdAw9LVlhJQxpRPDokzIk6xnSC+OTfE9pyUOejSaOj7k
-         9E7w==
-X-Forwarded-Encrypted: i=1; AJvYcCVP74rMnkksvIlrM3cXBg+PN3reNmlfa0dU87ii1/fF90sVB2tAzAqSQkdqbA64vBn/5U0ELBpKzafxUh1TZKzC0pRGQyOgJH+RE+3C
-X-Gm-Message-State: AOJu0Yy0Ni3sCEn/XmxG1/2P1p0raPtUAN2C0FMTiYyKvCD1FYhq1Vdc
-	LGTf01OYRuUat2v0YtaNT+XhX6A4CLRkaAHVwSWCU55dX3qBGzYo1L/BEQcrlK8=
-X-Google-Smtp-Source: AGHT+IGHiczDYT0Fj3srrsFORzXQif6ghHUW7eFeyAMs4WpqfygdfzWKB4GaNfaWpBQKbMRq+dqelg==
-X-Received: by 2002:a17:906:74b:b0:a36:569a:1bd8 with SMTP id z11-20020a170906074b00b00a36569a1bd8mr1431283ejb.28.1707214379843;
-        Tue, 06 Feb 2024 02:12:59 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCX75Jh68E1OukAAD//0AvSGpnbb7nG9pOLBb1WgUQqZkztpu2sL0ZYc9UnVyYwOptTAvXTzClFdV6N/jWGqJcDkTJFvgtYe1Rfx7EC2RiZaBY9mJ542u+s6EWYQxWShhpm3atQmjsyT4Bx+lJ4U7E4UgVAkrg8yQsFufHLgQzdyKecTn6eojXQ0YIhSo4gWjAThIWJJ7K4inTLleMoFLsu6ftx/msKGz6Ie4BhmOjB9FBw=
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id e23-20020a17090681d700b00a3717f96e6esm977330ejx.171.2024.02.06.02.12.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 02:12:59 -0800 (PST)
-Date: Tue, 6 Feb 2024 11:12:57 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: Douglas Anderson <dianders@chromium.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Li Zhe <lizhe.67@bytedance.com>, Pingfan Liu <kernelfans@gmail.com>,
-	John Ogness <john.ogness@linutronix.de>,
-	Lecopzer Chen <lecopzer.chen@mediatek.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] watchdog: Better handling of concurrent lockups
-Message-ID: <ZcIGKU8sxti38Kok@alley>
-References: <20231220211640.2023645-1-dianders@chromium.org>
+	s=arc-20240116; t=1707214389; c=relaxed/simple;
+	bh=kqMo2mkEaV1uSbwgI1g5KgAxopmIWmq8uQN0eHbaI8w=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
+	 References:In-Reply-To; b=omxOCiFTQqLL+VCokffkhp7Bpjt4JK15xVtflO4y2NOh27xOMYWYAyIkV0gHX1OHexoP3B2UofriRAWVvFwxF0MtBbcAzPW7o8efE0fnHinEsH9T1+4rscg92C4Gob2+HstwALKZ9lHXkIbwFV06nQcVtXQ/u6B3x9y0aRAWGWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BI/CKhos; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A5B5D40013;
+	Tue,  6 Feb 2024 10:13:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707214384;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wYHYy9wM/XJWCBvUKP+eSh79QSZHlIijB5K8Zu/UezQ=;
+	b=BI/CKhosTgEXVhWpl9iV4qjDtB08F2u86pXekaGVKk/DX5TY/qjmViVpsZYKTnUacdHRFs
+	V0b227hFwI1b/xXybq7zJnTda5BsN83Rg6VZHfj8VyQn4rNaxTsih/FclM6YwQlSjQsXuJ
+	3Jcwn8nQiqonmxlq3sDevEAxVf9g9Zh32F0DK4XSB13EyXJWLL0KmC+/G4LoQswtO6DWeS
+	PReLv+IivCNS0ImjtBh2p0rK6N1p4ifPfpNLmFuTIMaT/T+JzACQa03UrMcp+R271jlBc5
+	wSXx2Vt+8kDG2YeULq2yKE6jO+pMeRPIBUfBOefZWFYTbOEvJIHBESvKeREZ4g==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220211640.2023645-1-dianders@chromium.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 06 Feb 2024 11:13:03 +0100
+Message-Id: <CYXWZOJ7KLIC.27XVZMBQASH9O@bootlin.com>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v4 04/18] dt-bindings: clock: mobileye,eyeq5-clk: add
+ bindings
+Cc: "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
+ <linux-mips@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Thomas
+ Petazzoni" <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>, <linux-gpio@vger.kernel.org>
+To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Gregory
+ CLEMENT" <gregory.clement@bootlin.com>, "Michael Turquette"
+ <mturquette@baylibre.com>, "Stephen Boyd" <sboyd@kernel.org>, "Rob Herring"
+ <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>, "Linus Walleij"
+ <linus.walleij@linaro.org>, =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?=
+ <rafal@milecki.pl>, "Philipp Zabel" <p.zabel@pengutronix.de>
+X-Mailer: aerc 0.15.2
+References: <20240131-mbly-clk-v4-0-bcd00510d6a0@bootlin.com>
+ <20240131-mbly-clk-v4-4-bcd00510d6a0@bootlin.com>
+ <f6e5b748-17c4-4de1-be42-f79155be21cb@linaro.org>
+ <CYTOEGEI34JQ.36CF09LNJFQHS@bootlin.com>
+ <4e9ce766-602f-4b75-8c25-48da4d22051e@linaro.org>
+In-Reply-To: <4e9ce766-602f-4b75-8c25-48da4d22051e@linaro.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hi,
+Hello,
 
-On Wed 2023-12-20 13:15:33, Douglas Anderson wrote:
-> 
-> When we get multiple lockups at roughly the same time, the output in
-> the kernel logs can be very confusing since the reports about the
-> lockups end up interleaved in the logs. There is some code in the
-> kernel to try to handle this but it wasn't that complete.
-> 
-> Li Zhe recently made this a bit better for softlockups (specifically
-> for the case where `kernel.softlockup_all_cpu_backtrace` is not set)
-> in commit 9d02330abd3e ("softlockup: serialized softlockup's log"),
-> but that only handled softlockup reports. Hardlockup reports still had
-> similar issues.
-> 
-> This series also has a small fix to avoid dumping all stacks a second
-> time in the case of a panic. This is a bit unrelated to the
-> interleaving fixes but it does also improve the clarity of lockup
-> reports.
+On Thu Feb 1, 2024 at 12:00 PM CET, Krzysztof Kozlowski wrote:
+> On 01/02/2024 11:38, Th=C3=A9o Lebrun wrote:
+> > Hello,
+> >=20
+> > On Thu Feb 1, 2024 at 9:58 AM CET, Krzysztof Kozlowski wrote:
+> >> On 31/01/2024 17:26, Th=C3=A9o Lebrun wrote:
+> >>> Add DT schema bindings for the EyeQ5 clock controller driver.
+> >>>
+> >>> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> >>> ---
+> >>
+> >> No changelog, tags ignored, I scrolled through first two pages of cove=
+r
+> >> letter and also no changelog.
+> >=20
+> > In this case we fit into the "If a tag was not added on purpose". Sorry
+> > the changelog was not explicit enough. In my mind it fits into the
+> > first bullet point of the cover letter changelog:
+> >=20
+> >> - Have the three drivers access MMIO directly rather than through the
+> >>   syscon & regmap.
+>
+> ... which I might not even connect to binding patches. I see only one
+> entry regarding bindings in your changelog, so I find it not much
+> informative.
+>
+> For the future, please state that you ignore tags for given reason.
+>
+> >=20
+> > That change means important changes to the dt-bindings to adapt to this
+> > new behavior. In particular we now have reg and reg-names properties
+> > that got added and made required.
+> >=20
+> > I wanted to have your review on that and did not want to tag the patch
+> > as already reviewed.
+>
+> Makes sense, but how can I know it? Other people often ignore the tags,
+> so safe assumption is that it happened here as well.
 
-Just for record. This patchset has finally got on top of my queue
-(after Christmas and a sick leave). And it looks good from my POV.
+I'm prepping a new revision. Should I be taking your previous
+Reviewed-By tags in? You sent them for the previous revision, do the
+changes in this V4 look good to you?
 
-I was slightly afraid to use printk_cpu_sync_get_irqsave() on more
-locations. It has to be used with care to avoid deadlock.
+Thanks Krzysztof,
 
-But the patchset looks good. It takes the lock only around code
-proceed on the same CPU. And it always releases the lock before
-triggering backtrace on another CPU.
-
-
-Idea:
-
-I have just got an idea how to make printk_cpu_sync_get_irqsave()
-less error prone for deadlock on the panic() CPU. The idea is
-to ignore the lock or give up locking after a timeout on
-the panic CPU.
-
-AFAIK, the lock is currently used only to serialize related
-printk() calls. The only risk is that some messages might be
-interleaved when it is ignored.
-
-I am not sure if this is a good idea though. It might create
-another risk when the lock gets used to serialize more
-things in the future and a race might create a real problem.
-
-Best Regards,
-Petr
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
