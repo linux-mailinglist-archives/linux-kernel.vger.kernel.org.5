@@ -1,211 +1,167 @@
-Return-Path: <linux-kernel+bounces-54949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05F0984B54A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:34:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A13784B54E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:34:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A873B284555
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:34:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 009E528302C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:34:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E5A134CC5;
-	Tue,  6 Feb 2024 12:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47EDD1350C4;
+	Tue,  6 Feb 2024 12:29:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OxSz+EmG"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xVwxyley";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gmpDayKH";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jkYDM+nz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="30hSAi4b"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90A0A134CC0;
-	Tue,  6 Feb 2024 12:28:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DE2134CEA;
+	Tue,  6 Feb 2024 12:28:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707222536; cv=none; b=RyLJGvVfWs4jLTFeZnqn4E4S60kGTliV1EotPLWoPRNqZ+NmekvNG/tZyH2u0E5RnO6QPyK+EmRQXZYO1iY+wp3O/xZ6/CNLQmkhsLPpo4AouBLvPp9aHfKUYv26E7CZ4vwf+frldTouZgMKohFPGQvUkJVL8b3deutLWxZwGXM=
+	t=1707222541; cv=none; b=e/ZnRvzDP54TNP/YbQDIrQGpXcvZwZXnEGt1dnAnRciWVJXX5vD98CK0+u/GLpx/H5/tbOpCzYmBJ76aChS71es1gCu1n48ljnmhsFaexujh7cYPdubRjhW4gLgcUYvQuOpOW7HU0NcTu7QiW45h2uCvrMBXhHPtaRwXxXFNw0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707222536; c=relaxed/simple;
-	bh=gXljQFI0I8iiLMgCyBE2xW7OD3QUmvcs+XTuIaUYAgI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cj+ZQCdQu2ixkG35pDorfX2aFcugtyQr0LHjhaaQZvYVtIiT08wJp9niWTZib/hhIWnYL4NZz169yPa/rpeZupWCZnOTTN3/vmwQPZm1HcpjsStYy9LdkDZMAiMig0LC57nzmacdWqx+wmD8ic+GwukHyBeQwyUn5C5sHdbhZ4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OxSz+EmG; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41692XOv025683;
-	Tue, 6 Feb 2024 12:28:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=/PPwmVW37d4csbKfWKzToS6ZXkyr+LGxcudMnsG90xs=; b=Ox
-	Sz+EmGM813c2sp3oQpOnFv4G/v8NgKUDgVc2W4j2te0xwFbLsSFqhDHBcmOSgXdW
-	nsDemccOjx60L8V/d4rjEhpz4gjbjVwXq8X0WPMbTMHsgFzlHAKvFsa4+hFUMNKP
-	iZPW5wuZqIF2M3MTFHCaZU17wQ8va50TcmfVQo29egyJHlRUl+7mvZHEC/JkWWVk
-	jIMvU5ZnjbnOG9q3koNGFAGbXDiYcWqJBW/gKqtYrZeTH8BGohZHSVASyRXnM2YE
-	Mo2VtAYrE6G1poN5mAOZBEFtrLO9+qjKH+ZdyQjDk1I7REi/2ufnjiMZqvxRcGmg
-	ugtDLJ3UOmWmFrT2cfiQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3hsercjy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 12:28:50 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 416CSn4d030834
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 6 Feb 2024 12:28:49 GMT
-Received: from [10.216.27.68] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 6 Feb
- 2024 04:28:45 -0800
-Message-ID: <0470a930-d629-4467-b619-58d3e76f59a7@quicinc.com>
-Date: Tue, 6 Feb 2024 17:58:42 +0530
+	s=arc-20240116; t=1707222541; c=relaxed/simple;
+	bh=VBjZ4iAnpOC5YshUblel7Q7ms9brJlgx8tDTc5vjioo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rKwm9CDiAO64Xamfuwa16abTBMGIGSWCYqeDBtLwJTPOXa04wpYmwN0OZDFgiU5qWr/wzViKdzycc6pirnYbL226dMATSZ6ft/ntlHBTRT5cERIQW0DYtOr3tl5YSF3ziCuH5oidL/LFnZfQ6KJM6MWf68kM+RHPJeLBPZFA/7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xVwxyley; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gmpDayKH; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jkYDM+nz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=30hSAi4b; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D9E2521FF4;
+	Tue,  6 Feb 2024 12:28:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707222538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=97XujLeKB/pzSnxqeV5jx2ZlV1MqcFgYnkGqFctpKng=;
+	b=xVwxyleyVo1Yr5goTDT5pTdCj7Fch+5PsTkM6MeYIoCGtkdZzZHUOBDFEMmK9E718SQmYC
+	ptOO0FLXjhbrIMvT6A2W/ZxhKccQ70pkYAummk5hjfiAcM4XSGuTy3X+lEzPqlvPL8uxEU
+	0yFvzOlTJyEu/ZspQEffR8G/BXpr0to=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707222538;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=97XujLeKB/pzSnxqeV5jx2ZlV1MqcFgYnkGqFctpKng=;
+	b=gmpDayKH/P05ZNAs6pYJ/W7/Ez+gHadWsOIQaGMIdngQwGRR90eDvRSAlqmz4wDXZqB8PQ
+	Tl78H5UF8BYj+DCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707222537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=97XujLeKB/pzSnxqeV5jx2ZlV1MqcFgYnkGqFctpKng=;
+	b=jkYDM+nzzguoj/27Jwngnu7L5Oa5WG7vQ3ETb8RKiCBza5CiMvw/u3+kpx1QVb734dJwyP
+	eQsSbiqHmneO9SNLmY0YjAXzZ69OENzUp7Rwkb1mT5emxyfWekeJH/NV0O8BXVyEDpm6rR
+	48gd4WCNV2pQVLxucVhvhHNI45/en6M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707222537;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=97XujLeKB/pzSnxqeV5jx2ZlV1MqcFgYnkGqFctpKng=;
+	b=30hSAi4bhWv7QWAy6tnPo3DAVBDkUPStsrRiyu3OIJXGRL3FproexVoXpVWKOhF5mOVvfg
+	NUzUAWdeOi84vPDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C343D139D8;
+	Tue,  6 Feb 2024 12:28:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id nMepLwkmwmXnKAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 06 Feb 2024 12:28:57 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 5886AA0809; Tue,  6 Feb 2024 13:28:57 +0100 (CET)
+Date: Tue, 6 Feb 2024 13:28:57 +0100
+From: Jan Kara <jack@suse.cz>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: Jan Kara <jack@suse.cz>, linux-block <linux-block@vger.kernel.org>,
+	Linux-Next Mailing List <linux-next@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Linux Regressions <regressions@lists.linux.dev>,
+	linux-fsdevel@vger.kernel.org, lkft-triage@lists.linaro.org,
+	Arnd Bergmann <arnd@arndb.de>,
+	Christian Brauner <brauner@kernel.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: next: /dev/root: Can't open blockdev
+Message-ID: <20240206122857.svm2ptz2hsvk4sco@quack3>
+References: <CA+G9fYttTwsbFuVq10igbSvP5xC6bf_XijM=mpUqrJV=uvUirQ@mail.gmail.com>
+ <20240206101529.orwe3ofwwcaghqvz@quack3>
+ <CA+G9fYup=QzTAhV2Bh_p8tujUGYNzGYKBHXkcW7jhhG6QFUo_g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: sa8295p: Enable tertiary controller
- and its 4 USB ports
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>
-References: <20240206114745.1388491-1-quic_kriskura@quicinc.com>
- <20240206114745.1388491-3-quic_kriskura@quicinc.com>
- <CAA8EJpoed-hu4hPXAcwQxmJAaNRwJ2y5q9qybWaPP8bdMnz_oA@mail.gmail.com>
-Content-Language: en-US
-From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <CAA8EJpoed-hu4hPXAcwQxmJAaNRwJ2y5q9qybWaPP8bdMnz_oA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: UuyQdtT6YBsbHLNGYOR3QtMBfTyjAqf9
-X-Proofpoint-GUID: UuyQdtT6YBsbHLNGYOR3QtMBfTyjAqf9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-06_06,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 mlxlogscore=893 mlxscore=0 impostorscore=0 bulkscore=0
- phishscore=0 clxscore=1015 spamscore=0 priorityscore=1501 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402060087
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYup=QzTAhV2Bh_p8tujUGYNzGYKBHXkcW7jhhG6QFUo_g@mail.gmail.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [0.40 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[linaro.org:email,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[36.26%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: 0.40
 
-
-
-On 2/6/2024 5:43 PM, Dmitry Baryshkov wrote:
-> On Tue, 6 Feb 2024 at 14:03, Krishna Kurapati <quic_kriskura@quicinc.com> wrote:
->>
->> Enable tertiary controller for SA8295P (based on SC8280XP).
->> Add pinctrl support for usb ports to provide VBUS to connected peripherals.
+On Tue 06-02-24 15:53:34, Naresh Kamboju wrote:
+> On Tue, 6 Feb 2024 at 15:45, Jan Kara <jack@suse.cz> wrote:
+> >
+> > On Tue 06-02-24 14:41:17, Naresh Kamboju wrote:
+> > > All qemu's mount rootfs failed on Linux next-20230206 tag due to the following
+> > > kernel crash.
+> > >
+> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > >
+> > > Crash log:
+> > > ---------
+> > > <3>[    3.257960] /dev/root: Can't open blockdev
+> > > <4>[    3.258940] VFS: Cannot open root device "/dev/sda" or
+> > > unknown-block(8,0): error -16
+> >
+> > Uhuh, -16 is EBUSY so it seems Christian's block device opening changes are
+> > suspect? Do you have some sample kconfig available somewhere?
 > 
-> These are not just pinctrl entries. They hide VBUS regulators. Please
-> implement them properly as corresponding vbus regulators.
-> 
+> All build information is in this url,
+> https://storage.tuxsuite.com/public/linaro/lkft/builds/2byqguFVp7MYAEjKo6nJGba2FcP/
 
-Hi Dmitry. Apologies, can you elaborate on your comment. I thought this 
-implementation was fine as Konrad reviewed it in v13 [1]. I removed his 
-RB tag as I made one change of dropping "_state" in labels.
+Thanks! So for record the config has:
 
-[1]: 
-https://lore.kernel.org/all/7141c2dd-9dcd-4186-ba83-829fe925e464@linaro.org/
+CONFIG_BLK_DEV_WRITE_MOUNTED=y
 
-Regards,
-Krishna,
+So we are not hitting any weird corner case with blocking writes to mounted
+filesystems. It must be something else.
 
->>
->> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/sa8295p-adp.dts | 49 ++++++++++++++++++++++++
->>   1 file changed, 49 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sa8295p-adp.dts b/arch/arm64/boot/dts/qcom/sa8295p-adp.dts
->> index fd253942e5e5..6da444042f82 100644
->> --- a/arch/arm64/boot/dts/qcom/sa8295p-adp.dts
->> +++ b/arch/arm64/boot/dts/qcom/sa8295p-adp.dts
->> @@ -9,6 +9,7 @@
->>   #include <dt-bindings/gpio/gpio.h>
->>   #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->>   #include <dt-bindings/spmi/spmi.h>
->> +#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->>
->>   #include "sa8540p.dtsi"
->>   #include "sa8540p-pmics.dtsi"
->> @@ -584,6 +585,16 @@ &usb_1_qmpphy {
->>          status = "okay";
->>   };
->>
->> +&usb_2 {
->> +       pinctrl-0 = <&usb2_en>,
->> +                   <&usb3_en>,
->> +                   <&usb4_en>,
->> +                   <&usb5_en>;
->> +       pinctrl-names = "default";
->> +
->> +       status = "okay";
->> +};
->> +
->>   &usb_2_hsphy0 {
->>          vdda-pll-supply = <&vreg_l5a>;
->>          vdda18-supply = <&vreg_l7g>;
->> @@ -636,6 +647,44 @@ &xo_board_clk {
->>
->>   /* PINCTRL */
->>
->> +&pmm8540c_gpios {
->> +       usb2_en: usb2-en-state {
->> +               pins = "gpio9";
->> +               function = "normal";
->> +               qcom,drive-strength = <PMIC_GPIO_STRENGTH_HIGH>;
->> +               output-high;
->> +               power-source = <0>;
->> +       };
->> +};
->> +
->> +&pmm8540e_gpios {
->> +       usb3_en: usb3-en-state {
->> +               pins = "gpio5";
->> +               function = "normal";
->> +               qcom,drive-strength = <PMIC_GPIO_STRENGTH_HIGH>;
->> +               output-high;
->> +               power-source = <0>;
->> +       };
->> +};
->> +
->> +&pmm8540g_gpios {
->> +       usb4_en: usb4-en-state {
->> +               pins = "gpio5";
->> +               function = "normal";
->> +               qcom,drive-strength = <PMIC_GPIO_STRENGTH_HIGH>;
->> +               output-high;
->> +               power-source = <0>;
->> +       };
->> +
->> +       usb5_en: usb5-en-state {
->> +               pins = "gpio9";
->> +               function = "normal";
->> +               qcom,drive-strength = <PMIC_GPIO_STRENGTH_HIGH>;
->> +               output-high;
->> +               power-source = <0>;
->> +       };
->> +};
->> +
->>   &tlmm {
->>          pcie2a_default: pcie2a-default-state {
->>                  clkreq-n-pins {
->> --
->> 2.34.1
->>
->>
-> 
-> 
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
