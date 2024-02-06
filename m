@@ -1,226 +1,380 @@
-Return-Path: <linux-kernel+bounces-55418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D28A84BC71
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:44:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDD5984BC74
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:45:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C9B91F27B50
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:44:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53C301F27B7F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:45:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75DADD51C;
-	Tue,  6 Feb 2024 17:44:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4267D11CAF;
+	Tue,  6 Feb 2024 17:44:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eOGuGqwt"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DcOPrSkJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECBC1C133;
-	Tue,  6 Feb 2024 17:44:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04875DDAB;
+	Tue,  6 Feb 2024 17:44:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707241478; cv=none; b=lqPYWkFQVRYbK+KTLGwQf6aLoFP9fy68enwcPO+ilmPMeuKd7gujpOEAWNSH4IRkt7Ss1fBYlvOsiEiBzOM1hg+pz18TlrVPgU8y01B1yivBhWYUUx86xM32v5K/XnHusLnijozwdMJqPPWSd71W8HBcK+bN1jVqLKrLVx3jxLw=
+	t=1707241481; cv=none; b=Dr99UXHMEdBfIUpbYpCul6NL+QoUmUcx3e8+9qWYVdaThRZFWnJTnCkTjQIZFT8g8B40dam5KpovAgegTDu2BRKxyAtuPzhsbfYUZcHvSAlg6LOQlHqRSVEASUpDaJ92DWin73M5QFhQdAOYrOfgEmJSyHH+o1pfpVyy2AWqUII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707241478; c=relaxed/simple;
-	bh=uQofYe6KozZfY0E7cusw4h+1hkUt1Xu77DatPoBkW24=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Z7S0RlA9ib6JDKngsLrK3Nasao77dJ7BVeLVYP5mumu/qumgHTbmtsPYbo4q3sSJ2CMdm5TWYnIcklQJ/n2C/qw9rKoQrGqliLyIWtfzolAdIHwbf4fY3PhrAu0wz0qneE0rA5VkfKVR26bpjoNdcsqQ5IZIGm6/pDJUp2Cnafg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eOGuGqwt; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33b1d7f7366so3131027f8f.0;
-        Tue, 06 Feb 2024 09:44:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707241475; x=1707846275; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9t4eRXqQzvNfu/98QWiAgJdjJHSNxLreUnAsT7Bnw7I=;
-        b=eOGuGqwtQgm25Zcjfrb/z2Tg+skRnkZnreZoXku+Sd4AXE6as34eDoYEMlSuLpZWGo
-         IDLYiVzvOsEwHYuM4rxP/DTik8NZJZsq4D19oZ9a1MYkuueLQISJ2t2MQGK9j8vXPEaN
-         unfugcrGuV3CZAukDXcC/+IPj6LsM4+eY5O/GJIXZmB+UPKin8cUEr7gFJiQAqVC04EB
-         Kf4q27weFOBlO3sVAebVAWGCmEbjAE7lNXNYqDJ+ijqXlhuwYu/ma2OB6SR9oyx4dwoZ
-         TQMlIAcfOqkAvFPvitX18Z7joxxgIA2dK1n568W/DkPv/DfLT8u0geXaRhKCiuylfN80
-         IMEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707241475; x=1707846275;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9t4eRXqQzvNfu/98QWiAgJdjJHSNxLreUnAsT7Bnw7I=;
-        b=YtP1Z14wTBNNlKu2kALszL6t0OH/FesU8/ornmsRJzfgDlx7uEsXP+O/I0soOdijwq
-         B2QWG+8RaU7y560i0f8UmKC6a35un+czsxJ4qwZLxnfkqUylUIgyn3YhZ9FnxAmI41TB
-         rCL50H74L5I1ffVeKJ9OqIlJyKZEM2Y2Ad1zLLpQVSzv3t2e0vFx5N3sWZo1Z3b9fWGX
-         lFw9aE+p0HZYCBBCkewL/G7dy3oZOXt1DRytVVA3pIOvLM41CVY3eiwkrKpA9jVpNGEU
-         KmLf8/vP39qSU2aXj/1+7ZG5MA2fCIviunxpgN/exOHQRTpnIKD68i9ncOw/YjFnK8ee
-         tiCQ==
-X-Gm-Message-State: AOJu0YwDhhikxI9UYeAIFc/sxaXUfp8Ic8F6AWWJyVFwjr8zYslwKo6D
-	mov/I/Px11CRWNE0mrAreAE9Ld3ffMIit31nCmMWr2TpM35m5mwB
-X-Google-Smtp-Source: AGHT+IF1lpIFhtZgzKWW6d/q831mG+OpyLzRSJ+x7f9PpC4Ax09tVNR/VhUDDcXc/dOAuLQ7nXPoXQ==
-X-Received: by 2002:adf:f551:0:b0:33b:232f:63f7 with SMTP id j17-20020adff551000000b0033b232f63f7mr1878813wrp.31.1707241475073;
-        Tue, 06 Feb 2024 09:44:35 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCV2DypM6qI/Z832xi9QRDqWoQqPSTkHy+i8RGjG++zwuixmvADhnUsdCaRHqQHOvmF5uGxzDjlB0z8Wdx0EGu4a6VMYHl/G4S0LwTUm+IoTcISKtm5rSHcdlhUaFO7eTg28wUKXr/wIsq4ZreujpJtefRmwac18lB+XYTOdMpfjGYdz74pvUnJEBewCxOIwm3+KGF5eYpT2h4KN5lRmzfeOzqBkcQKedgEx8A83GYOk/+h5ajdUcqJIVQINPliwFX9FOSDlzH1LqZRWxYPmz/u2X9cI3nJA4kpafVgEU6ecRrkiRPdaHHLr0yPNxRpv0zZjX/nsA/4C02U0QK5jo98esbPEPvGda3cD6cWmhYyKOos0JpLETIclyG/oxE3YDXN75btyjGXuEiKvSyada4xu+ycGnvXnFes3Dp+lVVafA3GDDK0fsbLYrCf6lUXj8Dp6MhqDRAlFRgy7m1VboGHLhheAFH+RHvz1SUQFo+MKg2s75824X5zBU4quACJNj3+n8PsAwDjyRyCnr+C8QTNcrHXLwtrrowqQgOyerem1HCTlXiGRmIIAwuL3yfAfFZq1mh+eyDtiO33faydFVxXEIP7ZM98U+xGCiA0AYTWVAE/0r2HCpUBpA/CT1mSXYecahhcUq4fkxBzdEgYMaX0k+LkEVY6mwg129kyEDpnwolSkS4V4ev8ZXopp2cHTPmhqibJleCdfoHRaZ/V7N9t3ncg3Ek1ot6/EFHpQpRtqnnHe8yQlzJ512hU3fgwXrjTrTaSxRQYbl0DYc4pY4hw=
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id k18-20020a5d6292000000b0033b13922263sm2568357wru.60.2024.02.06.09.44.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 09:44:34 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Frank Oltmanns <frank@oltmanns.dev>
-Cc: Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>,
- Guido =?ISO-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
- Purism Kernel Team <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org
-Subject:
- Re: [PATCH v2 1/6] clk: sunxi-ng: nkm: Support constraints on m/n ratio and
- parent rate
-Date: Tue, 06 Feb 2024 18:44:33 +0100
-Message-ID: <2172947.irdbgypaU6@jernej-laptop>
-In-Reply-To: <87il32ztp8.fsf@oltmanns.dev>
-References:
- <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
- <2717565.mvXUDI8C0e@jernej-laptop> <87il32ztp8.fsf@oltmanns.dev>
+	s=arc-20240116; t=1707241481; c=relaxed/simple;
+	bh=OfQbt0kQMZgEbIiGYTt8I4ZwCLBB6uOLE7LSVE5r58M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nm1jGHggUyRw/B3eQ+0lbmC0LzZxvOkIXNTRFalB+0jggYG9W0elFY0v9uxnEuCJVl/hsvFEdNnIHO1R1JhHq4RHDniUziBx7Kh9BE7Pazq6Rn7rKn125uYQehnFaX5ZaBTH8IizvBs2ZHwY1CK8OuCDAdLn2yWbfvVk9dCIWPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DcOPrSkJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AB3BC43143;
+	Tue,  6 Feb 2024 17:44:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707241480;
+	bh=OfQbt0kQMZgEbIiGYTt8I4ZwCLBB6uOLE7LSVE5r58M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DcOPrSkJZ93gLr7fFt3NzEk7gk6mF51W+hy9x5mXGNKtnHEZ8McGCOOzgDOU3VwiX
+	 h2LfYl9a48jlyQN+4RomJ4xljf6wG2OwYZGDTXzk+tubOget4ajMLH/THmYJIvYTy0
+	 yKP0PWDl9reym9UNwnfHOrKvwtw1com8erv55D0jEZ1dYjISIjKGYUKopGtTvfQ7FN
+	 qiPsZo5dOl0xnmcNo6hpb5xz7/uBq792fOTCQgsVW52/Sar9LnSd2+6b3FFXufeEzz
+	 5n/yU8KVPMhy0lRNdBPVTgGdPoLGSS+aQxoTne+X6JSPAz3ZaZlophUWtLFdmQSJNI
+	 v591BlPYsKFWg==
+Received: by pali.im (Postfix)
+	id 47C68588; Tue,  6 Feb 2024 18:44:37 +0100 (CET)
+Date: Tue, 6 Feb 2024 18:44:37 +0100
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To: Chris Morgan <macroalpha82@gmail.com>
+Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+	linux-input@vger.kernel.org,
+	Bluez mailing list <linux-bluetooth@vger.kernel.org>,
+	Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Andrey Smirnov <andrew.smirnov@gmail.com>,
+	Kirill Smelkov <kirr@nexedi.com>
+Subject: Re: [PATCH] Input: uinput - Add UI_SET_UNIQ ioctl handler
+Message-ID: <20240206174437.6pwhaha4loswkih4@pali>
+References: <20191203191112.GJ50317@dtor-ws>
+ <20191205105206.slibwytrcteicx6y@pali>
+ <CANFp7mXyaqoMDBs4m_Dfm9+4U88g9WoJVcV1g_4KM4xzFhiGXQ@mail.gmail.com>
+ <20191206091114.kh255jrmerruumnq@pali>
+ <20191206174048.GQ50317@dtor-ws>
+ <20191218110224.44vcgdxh3j4bn7rw@pali>
+ <20191218112659.crabhqkbcnxd6fo6@pali>
+ <20200322154734.mquwgzc63nzddiy5@pali>
+ <CABBYNZ+E3knrqWpNDKfX9qQOrrh=VLUSQAgUB=kXgK7=jwgQ9w@mail.gmail.com>
+ <65c2699a.4a0a0220.5cd9c.2ff7@mx.google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <65c2699a.4a0a0220.5cd9c.2ff7@mx.google.com>
+User-Agent: NeoMutt/20180716
 
-Dne ponedeljek, 05. februar 2024 ob 18:50:27 CET je Frank Oltmanns napisal(=
-a):
-> Hi Jernej,
->=20
-> On 2024-02-05 at 18:45:27 +0100, Jernej =C5=A0krabec <jernej.skrabec@gmai=
-l.com> wrote:
-> > Dne ponedeljek, 05. februar 2024 ob 16:22:24 CET je Frank Oltmanns napi=
-sal(a):
-> >> The Allwinner A64 manual lists the following constraints for the
-> >> PLL-MIPI clock:
-> >>  - M/N <=3D 3
-> >>  - (PLL_VIDEO0)/M >=3D 24MHz
-> >>
-> >> The PLL-MIPI clock is implemented as ccu_nkm. Therefore, add support f=
-or
-> >> these constraints.
-> >>
-> >> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
-> >
-> > Haven't we discussed that this patch is unnecessary because same effect=
- can
-> > be reached by limiting minimum frequency?
->=20
-> The patch for ccu_nm was unnecessary:
-> https://lore.kernel.org/all/87jzoug2jz.fsf@oltmanns.dev/
->=20
-> Unfortunately, we still need this one.
+On Tuesday 06 February 2024 11:17:12 Chris Morgan wrote:
+> On Mon, Jun 13, 2022 at 02:36:18PM -0700, Luiz Augusto von Dentz wrote:
+> > Hi,
+> > 
+> > On Sun, Mar 22, 2020 at 8:47 AM Pali Rohár <pali.rohar@gmail.com> wrote:
+> > >
+> > > On Wednesday 18 December 2019 12:26:59 Pali Rohár wrote:
+> > > > On Wednesday 18 December 2019 12:02:24 Pali Rohár wrote:
+> > > > > On Friday 06 December 2019 09:40:48 Dmitry Torokhov wrote:
+> > > > > > On Fri, Dec 06, 2019 at 10:11:14AM +0100, Pali Rohár wrote:
+> > > > > > > On Thursday 05 December 2019 12:03:05 Abhishek Pandit-Subedi wrote:
+> > > > > > > > On Thu, Dec 5, 2019 at 2:52 AM Pali Rohár <pali.rohar@gmail.com> wrote:
+> > > > > > > > >
+> > > > > > > > > On Tuesday 03 December 2019 11:11:12 Dmitry Torokhov wrote:
+> > > > > > > > > > On Tue, Dec 03, 2019 at 06:38:21PM +0100, Pali Rohár wrote:
+> > > > > > > > > > > On Tuesday 03 December 2019 00:09:47 Pali Rohár wrote:
+> > > > > > > > > > >
+> > > > > > > > > > > Hi Dmitry!
+> > > > > > > > > > >
+> > > > > > > > > > > I was looking again at those _IOW defines for ioctl calls and I have
+> > > > > > > > > > > another argument why not specify 'char *' in _IOW:
+> > > > > > > > > > >
+> > > > > > > > > > > All ioctls in _IOW() specify as a third macro argument type which is
+> > > > > > > > > > > passed as pointer to the third argument for ioctl() syscall.
+> > > > > > > > > > >
+> > > > > > > > > > > So e.g.:
+> > > > > > > > > > >
+> > > > > > > > > > >   #define EVIOCSCLOCKID _IOW('E', 0xa0, int)
+> > > > > > > > > > >
+> > > > > > > > > > > is called from userspace as:
+> > > > > > > > > > >
+> > > > > > > > > > >   int val;
+> > > > > > > > > > >   ioctl(fd, EVIOCSCLOCKID, &val);
+> > > > > > > > > > >
+> > > > > > > > > > > Or
+> > > > > > > > > > >
+> > > > > > > > > > >   #define EVIOCSMASK _IOW('E', 0x93, struct input_mask)
+> > > > > > > > > > >
+> > > > > > > > > > > is called as:
+> > > > > > > > > > >
+> > > > > > > > > > >   struct input_mask val;
+> > > > > > > > > > >   ioctl(fd, EVIOCSMASK, &val);
+> > > > > > > > > > >
+> > > > > > > > > > > So basically third argument for _IOW specify size of byte buffer passed
+> > > > > > > > > > > as third argument for ioctl(). In _IOW is not specified pointer to
+> > > > > > > > > > > struct input_mask, but struct input_mask itself.
+> > > > > > > > > > >
+> > > > > > > > > > > And in case you define
+> > > > > > > > > > >
+> > > > > > > > > > >   #define MY_NEW_IOCTL _IOW(UINPUT_IOCTL_BASE, 200, char*)
+> > > > > > > > > > >
+> > > > > > > > > > > then you by above usage you should pass data as:
+> > > > > > > > > > >
+> > > > > > > > > > >   char *val = "DATA";
+> > > > > > > > > > >   ioctl(fd, MY_NEW_IOCTL, &val);
+> > > > > > > > > > >
+> > > > > > > > > > > Which is not same as just:
+> > > > > > > > > > >
+> > > > > > > > > > >   ioctl(fd, MY_NEW_IOCTL, "DATA");
+> > > > > > > > > > >
+> > > > > > > > > > > As in former case you passed pointer to pointer to data and in later
+> > > > > > > > > > > case you passed only pointer to data.
+> > > > > > > > > > >
+> > > > > > > > > > > It just mean that UI_SET_PHYS is already defined inconsistently which is
+> > > > > > > > > > > also reason why compat ioctl for it was introduced.
+> > > > > > > > > >
+> > > > > > > > > > Yes, you are right. UI_SET_PHYS is messed up. I guess the question is
+> > > > > > > > > > what to do with all of this...
+> > > > > > > > > >
+> > > > > > > > > > Maybe we should define
+> > > > > > > > > >
+> > > > > > > > > > #define UI_SET_PHYS_STR(len)  _IOC(_IOC_WRITE, UINPUT_IOCTL_BASE, 111, len)
+> > > > > > > > > > #define UI_SET_UNIQ_STR(len)  _IOC(_IOC_WRITE, UINPUT_IOCTL_BASE, 112, len)
+> > > > > > > > >
+> > > > > > > > > I'm not sure if this is ideal. Normally in C strings are nul-termined,
+> > > > > > > > > so functions/macros do not take buffer length.
+> > > > > > > > Except strncpy, strndup, snprintf, etc. all expect a buffer length. At
+> > > > > > >
+> > > > > > > This is something different as for these functions you pass buffer and
+> > > > > > > length of buffer which is used in write mode -- not for read mode.
+> > > > > > >
+> > > > > > > > the user to kernel boundary of ioctl, I think we should require size
+> > > > > > > > of the user buffer regardless of the data type.
+> > > > > > > >
+> > > > > > > > > _STR therefore in names looks inconsistent.
+> > > > > > > > The _STR suffix is odd (what to name UI_SET_PHYS_STR then??) but
+> > > > > > > > requiring the length seems to be common across various ioctls.
+> > > > > > > > * input.h requires a length when requesting the phys and uniq
+> > > > > > > > (https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/input.h#n138)
+> > > > > > > > * Same with HIDRAW when setting and getting features:
+> > > > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/hidraw.h#n40,
+> > > > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/samples/hidraw/hid-example.c#n88
+> > > > > > >
+> > > > > > > All these ioctls where is passed length are in opposite direction
+> > > > > > > (_IOC_READ) as our PHYS and UNIQ (_IOC_WRITE).
+> > > > > > >
+> > > > > > > I fully agree that when you need to read something from kernel
+> > > > > > > (_IOC_READ) and then writing it to userspace, you need to specify length
+> > > > > > > of userspace buffer. Exactly same as with userspace functions like
+> > > > > > > memcpy, snprintf, etc... as you pointed. Otherwise you get buffer
+> > > > > > > overflow as callee does not know length of buffer.
+> > > > > > >
+> > > > > > > But here we we have there quite different problem, we need to write
+> > > > > > > something to kernel from userspace (_IOC_WRITE) and we are passing
+> > > > > > > nul-term string. So in this case specifying size is not required as it
+> > > > > > > is implicitly specified as part of passed string.
+> > > > > >
+> > > > > > With the new IOCTL definitions it does not need to be a NULL-terminated
+> > > > > > string. It can be a buffer of characters with given length, and kernel
+> > > > > > will NULL-terminate as this it what it wants, not what the caller has to
+> > > > > > give.
+> > > > >
+> > > > > Hi Dmitry! I was thinking more about this problem and I will propose
+> > > > > alternative solution, but first with details...
+> > > > >
+> > > > > I think that we should use NULL terminated strings. Or better disallow
+> > > > > NULL byte inside string. Reason: all userspace application expects that
+> > > > > input device name would be NULL terminated which implies that in the
+> > > > > middle of name cannot be NULL byte.
+> > > > >
+> > > > > So this must apply also for new PHYS / UNIQ ioctl API. If we want in our
+> > > > > ioctl API to use buffer + size (with upper bound limit for size) instead
+> > > > > of passing NULL term string (with upper bound limit for string size)
+> > > > > then kernel have to add a leading NULL byte to string, plus check that
+> > > > > in the buffer there is no NULL byte. I guess this a very little
+> > > > > complicate code, but nothing which is problematic.
+> > > > >
+> > > > > And on the userspace part. Now when userspace want to pass constant
+> > > > > string for device name, it just call
+> > > > >
+> > > > >   ioctl(fd, UI_SET_PHYS, "my name of device");
+> > > > >
+> > > > > After adding a new ioctl with buffer + size API, userspace would have to
+> > > > > call:
+> > > > >
+> > > > >   ioctl(fd, UI_SET_PHYS_STR(strlen("my name of device")), "my name of device");
+> > > > >
+> > > > > which looks strange, so programmers would had to move device name into
+> > > > > new variable:
+> > > > >
+> > > > >   const char *name = "my name of device";
+> > > > >   ioctl(fd, UI_SET_PHYS_STR(strlen(name)), name);
+> > > > >
+> > > > > For me the old ioctl API looks easier to use (no need for strlen() or
+> > > > > extra variable), but this is just my preference of usage -- as it is
+> > > > > simpler for me. Maybe you would have different opinion...
+> > > > >
+> > > > > And now question: Why we have uinput_compat_ioctl()? It is there only
+> > > > > because size part of IOCTL number is different on 32bit and 64bit
+> > > > > systems. As we know size part of UI_SET_PHYS is wrong and does not make
+> > > > > sense...
+> > > > >
+> > > > > Would not it be better to change size of UI_SET_PHYS to just zero and
+> > > > > then when matching ioctl number just ignore size for this UI_SET_PHYS
+> > > > > ioctl? Same for UI_BEGIN_FF_UPLOAD_COMPAT and UI_END_FF_UPLOAD_COMPAT
+> > > > > added in: https://git.kernel.org/tip/tip/c/7c7da40
+> > > > >
+> > > > > And we would not have to deal with uinput_compat_ioctl() at all.
+> > > >
+> > > > Below is example how change for removing UI_SET_PHYS_COMPAT may look
+> > > > like. As header file is not changed and UI_SET_PHYS accepts any size
+> > > > argument, it therefore accept also 32bit and 64bit integer. So no
+> > > > existing 32bit applications which use UI_SET_PHYS on 64bit kernel would
+> > > > not be broken...
+> > > >
+> > > > Is not this better change then introducing a new UI_SET_PHYS_STR ioctl
+> > > > number? Because introduction of new IOCTL number has one big
+> > > > disadvantage: Userspace applications needs to support fallback to old
+> > > > number as older versions of kernels would be in use for a long time. And
+> > > > because kernel does not have to remove old IOCTL number for backward
+> > > > compatibility there is basically no need for userspace application to
+> > > > user new UI_SET_PHYS_STR IOCTL number...
+> > >
+> > > Hello! I would like to remind this discussion as problem around a new
+> > > UI_SET_UNIQ ioctl is not solved yet and uniq property is really useful
+> > > for e.g. bluetooth (uinput) devices.
+> > >
+> > > Dmitry, when you have a time, could you please look at this discussion
+> > > and decide how to go ahead?
+> > 
+> > Have we decided not to move further with these changes? I actually
+> > have a bug in BlueZ related to it since right now we are inconsistent
+> > with respect to how we handle uhid vs uinput:
+> > 
+> > https://github.com/bluez/bluez/issues/352
+> > 
+> > > > diff --git a/drivers/input/misc/uinput.c b/drivers/input/misc/uinput.c
+> > > > index fd253781b..b645210d5 100644
+> > > > --- a/drivers/input/misc/uinput.c
+> > > > +++ b/drivers/input/misc/uinput.c
+> > > > @@ -915,22 +915,6 @@ static long uinput_ioctl_handler(struct file *file, unsigned int cmd,
+> > > >               retval = uinput_set_bit(arg, propbit, INPUT_PROP_MAX);
+> > > >               goto out;
+> > > >
+> > > > -     case UI_SET_PHYS:
+> > > > -             if (udev->state == UIST_CREATED) {
+> > > > -                     retval = -EINVAL;
+> > > > -                     goto out;
+> > > > -             }
+> > > > -
+> > > > -             phys = strndup_user(p, 1024);
+> > > > -             if (IS_ERR(phys)) {
+> > > > -                     retval = PTR_ERR(phys);
+> > > > -                     goto out;
+> > > > -             }
+> > > > -
+> > > > -             kfree(udev->dev->phys);
+> > > > -             udev->dev->phys = phys;
+> > > > -             goto out;
+> > > > -
+> > > >       case UI_BEGIN_FF_UPLOAD:
+> > > >               retval = uinput_ff_upload_from_user(p, &ff_up);
+> > > >               if (retval)
+> > > > @@ -1023,6 +1007,22 @@ static long uinput_ioctl_handler(struct file *file, unsigned int cmd,
+> > > >       case UI_ABS_SETUP & ~IOCSIZE_MASK:
+> > > >               retval = uinput_abs_setup(udev, p, size);
+> > > >               goto out;
+> > > > +
+> > > > +     case UI_SET_PHYS & ~IOCSIZE_MASK:
+> > > > +             if (udev->state == UIST_CREATED) {
+> > > > +                     retval = -EINVAL;
+> > > > +                     goto out;
+> > > > +             }
+> > > > +
+> > > > +             phys = strndup_user(p, 1024);
+> > > > +             if (IS_ERR(phys)) {
+> > > > +                     retval = PTR_ERR(phys);
+> > > > +                     goto out;
+> > > > +             }
+> > > > +
+> > > > +             kfree(udev->dev->phys);
+> > > > +             udev->dev->phys = phys;
+> > > > +             goto out;
+> > > >       }
+> > > >
+> > > >       retval = -EINVAL;
+> > > > @@ -1042,8 +1042,6 @@ static long uinput_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> > > >   * These IOCTLs change their size and thus their numbers between
+> > > >   * 32 and 64 bits.
+> > > >   */
+> > > > -#define UI_SET_PHYS_COMPAT           \
+> > > > -     _IOW(UINPUT_IOCTL_BASE, 108, compat_uptr_t)
+> > > >  #define UI_BEGIN_FF_UPLOAD_COMPAT    \
+> > > >       _IOWR(UINPUT_IOCTL_BASE, 200, struct uinput_ff_upload_compat)
+> > > >  #define UI_END_FF_UPLOAD_COMPAT              \
+> > > > @@ -1053,9 +1051,6 @@ static long uinput_compat_ioctl(struct file *file,
+> > > >                               unsigned int cmd, unsigned long arg)
+> > > >  {
+> > > >       switch (cmd) {
+> > > > -     case UI_SET_PHYS_COMPAT:
+> > > > -             cmd = UI_SET_PHYS;
+> > > > -             break;
+> > > >       case UI_BEGIN_FF_UPLOAD_COMPAT:
+> > > >               cmd = UI_BEGIN_FF_UPLOAD;
+> > > >               break;
+> > > > diff --git a/include/uapi/linux/uinput.h b/include/uapi/linux/uinput.h
+> > > > index c9e677e3a..6bda2a142 100644
+> > > > --- a/include/uapi/linux/uinput.h
+> > > > +++ b/include/uapi/linux/uinput.h
+> > > > @@ -142,6 +142,8 @@ struct uinput_abs_setup {
+> > > >  #define UI_SET_LEDBIT                _IOW(UINPUT_IOCTL_BASE, 105, int)
+> > > >  #define UI_SET_SNDBIT                _IOW(UINPUT_IOCTL_BASE, 106, int)
+> > > >  #define UI_SET_FFBIT         _IOW(UINPUT_IOCTL_BASE, 107, int)
+> > > > +/* Argument is nul-term string and for backward compatibility is there
+> > > > + * specified char*, but size argument (char *) is ignored by this ioctl */
+> > > >  #define UI_SET_PHYS          _IOW(UINPUT_IOCTL_BASE, 108, char*)
+> > > >  #define UI_SET_SWBIT         _IOW(UINPUT_IOCTL_BASE, 109, int)
+> > > >  #define UI_SET_PROPBIT               _IOW(UINPUT_IOCTL_BASE, 110, int)
+> > > >
+> > > >
+> > >
+> > > --
+> > > Pali Rohár
+> > > pali.rohar@gmail.com
+> > 
+> > 
+> > 
+> > -- 
+> > Luiz Augusto von Dentz
+> 
+> Hate to dig a post up from the dead, but I have a use case for this
+> ioctl just like the bluez team and would like to see if I can help
+> push it across the finish line.
+> 
+> Unlike this patch series mimicking what is done with the UI_SET_PHYS
+> ioctl, I'd like to simply have a fixed size of 64 characters allowed.
+> I'm choosing 64 because that's the same size as the uniq value in the
+> hid_device struct (specifically it's set as `char uniq[64]`).
+> 
+> Would such a specific limit be acceptable, and if so it shouldn't have
+> all the messy compatible bits like the proposed method here, would it?
+> 
+> Thank you,
+> Chris
 
-Ok, then:
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-
-Best regards,
-Jernej
-
->=20
-> Best regards,
->   Frank
->=20
-> >
-> > Best regards,
-> > Jernej
-> >
-> >> ---
-> >>  drivers/clk/sunxi-ng/ccu_nkm.c | 21 +++++++++++++++++++++
-> >>  drivers/clk/sunxi-ng/ccu_nkm.h |  2 ++
-> >>  2 files changed, 23 insertions(+)
-> >>
-> >> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu=
-_nkm.c
-> >> index 853f84398e2b..1168d894d636 100644
-> >> --- a/drivers/clk/sunxi-ng/ccu_nkm.c
-> >> +++ b/drivers/clk/sunxi-ng/ccu_nkm.c
-> >> @@ -16,6 +16,20 @@ struct _ccu_nkm {
-> >>  	unsigned long	m, min_m, max_m;
-> >>  };
-> >>
-> >> +static bool ccu_nkm_is_valid_rate(struct ccu_common *common, unsigned=
- long parent,
-> >> +				  unsigned long n, unsigned long m)
-> >> +{
-> >> +	struct ccu_nkm *nkm =3D container_of(common, struct ccu_nkm, common);
-> >> +
-> >> +	if (nkm->max_m_n_ratio && (m > nkm->max_m_n_ratio * n))
-> >> +		return false;
-> >> +
-> >> +	if (nkm->min_parent_m_ratio && (parent < nkm->min_parent_m_ratio * m=
-))
-> >> +		return false;
-> >> +
-> >> +	return true;
-> >> +}
-> >> +
-> >>  static unsigned long ccu_nkm_find_best_with_parent_adj(struct ccu_com=
-mon *common,
-> >>  						       struct clk_hw *parent_hw,
-> >>  						       unsigned long *parent, unsigned long rate,
-> >> @@ -31,6 +45,10 @@ static unsigned long ccu_nkm_find_best_with_parent_=
-adj(struct ccu_common *common
-> >>  				unsigned long tmp_rate, tmp_parent;
-> >>
-> >>  				tmp_parent =3D clk_hw_round_rate(parent_hw, rate * _m / (_n * _k)=
-);
-> >> +
-> >> +				if (!ccu_nkm_is_valid_rate(common, tmp_parent, _n, _m))
-> >> +					continue;
-> >> +
-> >>  				tmp_rate =3D tmp_parent * _n * _k / _m;
-> >>
-> >>  				if (ccu_is_better_rate(common, rate, tmp_rate, best_rate) ||
-> >> @@ -64,6 +82,9 @@ static unsigned long ccu_nkm_find_best(unsigned long=
- parent, unsigned long rate,
-> >>  	for (_k =3D nkm->min_k; _k <=3D nkm->max_k; _k++) {
-> >>  		for (_n =3D nkm->min_n; _n <=3D nkm->max_n; _n++) {
-> >>  			for (_m =3D nkm->min_m; _m <=3D nkm->max_m; _m++) {
-> >> +				if (!ccu_nkm_is_valid_rate(common, parent, _n, _m))
-> >> +					continue;
-> >> +
-> >>  				unsigned long tmp_rate;
-> >>
-> >>  				tmp_rate =3D parent * _n * _k / _m;
-> >> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.h b/drivers/clk/sunxi-ng/ccu=
-_nkm.h
-> >> index 6601defb3f38..c409212ee40e 100644
-> >> --- a/drivers/clk/sunxi-ng/ccu_nkm.h
-> >> +++ b/drivers/clk/sunxi-ng/ccu_nkm.h
-> >> @@ -27,6 +27,8 @@ struct ccu_nkm {
-> >>  	struct ccu_mux_internal	mux;
-> >>
-> >>  	unsigned int		fixed_post_div;
-> >> +	unsigned long		max_m_n_ratio;
-> >> +	unsigned long		min_parent_m_ratio;
-> >>
-> >>  	struct ccu_common	common;
-> >>  };
-> >>
-> >>
->=20
-
-
-
-
+In email <20191218112659.crabhqkbcnxd6fo6@pali> (quoted above) I sent a
+patch proposal for this issue. But nobody reacted for it yet.
 
