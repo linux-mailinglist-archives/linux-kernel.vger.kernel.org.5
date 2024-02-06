@@ -1,198 +1,118 @@
-Return-Path: <linux-kernel+bounces-54558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0545584B0AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:04:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D9A984B0AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:04:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 847531F24693
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:04:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F79B281A1E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:04:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35BBF12E1E9;
-	Tue,  6 Feb 2024 09:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87357130AED;
+	Tue,  6 Feb 2024 09:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hFk7mKE0"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BOpuCh4h"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7940C12E1D5;
-	Tue,  6 Feb 2024 09:01:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 564B612E1FF
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:01:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707210083; cv=none; b=cnudVqr6I/M1IQU1J9CHK67dEWdotbHHteTQ3s9pEA5ojmXJQWlF/vScwwRSHh8fFmmjAFBrRBgRsTaFEzfSk+KVnJh6X7TemL6Lh7StT1tCJG4VC+h59MNI78YnxSLzK+xP+yn6ZAeryiHZM2HIpNhsLOPFK8tNL16D2DQvMSE=
+	t=1707210087; cv=none; b=BiN8G3k3fdCudq5oIc3g1q1m5krGNcmVKaD6kNHfF2v1kEGwMsHhmL9Mmv+BndUL/tssS8ZeGMdaMMnZHzXt2rg+4K8SrRnJ+POVazjecrrHj1Qwsazy1iBwyposKADqaGqBH0fiSdUmB7Jw0Pnbr7IYsxAs89XU4pkTdy0NGaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707210083; c=relaxed/simple;
-	bh=2SDrB5JaxZL2HWqNxRD4Yrm8ISnPJv7zByBg6OlxiLw=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=t9uYNBj0BzOUMrCBEBgrIOBNUezuzfoYROsZpW6NOxb+Y/NTuk2qADByOBc+mvRK+r+ViUF5cn7JeHyJPEMQ2NQj7uSxG4Ht2Mxa+Dsn3LvkF4KPVhbY8e5gJYdZWonr5VORM3XPSHbbRaFajfHiYnpZ4Vwmmj5VPe9urPMr/0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hFk7mKE0; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707210082; x=1738746082;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=2SDrB5JaxZL2HWqNxRD4Yrm8ISnPJv7zByBg6OlxiLw=;
-  b=hFk7mKE0vML25hqsIJEG0rR0Z7wp21/S6g/M/MLwf/GP8rdKGu2hinU3
-   ifIjet8QHKTgy08cEjMAieDGKnAFarVOzRY6sWCyIuFV+EISWbACFds2+
-   EkuvEgyCACWq+x/iJ7a3ffCTwHN4xGLZjtbcLFa+6KAk2Dc4zjVJMPWmc
-   gINT82UIcBNOpzLKUrEiB+247OtWJogEbOK3CEUF4zVZg6+q+DWLRn12y
-   BDEkPBqC4MTxPm4INWMEZywPoU9ZeMBs8PIWxUtnLCJSgMaxfZI3b2lL+
-   MIIqIa3XpiKm+6Ek1dLicF/fuYNj8s+q2yr/oMk5/qWLqe3vjRYcJjcHW
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11289535"
-X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
-   d="scan'208";a="11289535"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 01:01:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
-   d="scan'208";a="966340"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.36.139])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 01:01:17 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 6 Feb 2024 11:01:13 +0200 (EET)
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc: Hans de Goede <hdegoede@redhat.com>, naveenkrishna.chatradhi@amd.com, 
-    LKML <linux-kernel@vger.kernel.org>, Carlos Bilbao <carlos.bilbao@amd.com>, 
-    platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v2] platform/x86/amd/hsmp: switch to use
- device_add_groups()
-In-Reply-To: <2024020540-siesta-palm-03cd@gregkh>
-Message-ID: <3522e43e-a54c-0ac1-e4b8-beea9b7e0bd0@linux.intel.com>
-References: <2024020145-junior-outnumber-3e76@gregkh> <07010c54-2e44-463b-9a9b-95697fd30ffd@redhat.com> <2024020243-blinks-pantomime-c51e@gregkh> <06e92b87-4d48-4519-b1db-6d7605bf3962@redhat.com> <e8605fd7-1ffc-00ff-ec3b-e125085d4e92@linux.intel.com>
- <2024020540-siesta-palm-03cd@gregkh>
+	s=arc-20240116; t=1707210087; c=relaxed/simple;
+	bh=quQ5u1nidg/xTSCc4eiJEK0LTpVOsRry+rj1E2LYKsw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lc4jzBvC54P9Lem1RumhkCRGFxrjcalGXN4BXKIBVpNO5nKmhYa74jFE3kJKyA0hKCV0EjbkDYQjl0R5yetbshLKyLy8L3eRaBbcDt+wgLwK0mS4By3da+9txfMft/FDjcLoxSa16VSF/UYfqx7Q/z26X73DrTx13cCb7rLrqQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BOpuCh4h; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a38291dbe65so35342166b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 01:01:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1707210083; x=1707814883; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YDXZa34a8Tn2GI/Io/UPgHGAi1ZYTZqfLaqpPxg+uZ0=;
+        b=BOpuCh4hc1OhNJsF+tUB4//wJ7JRP7+hfZCOIYnwx0AkYzIP9U4xi/9M5KzDW9cibF
+         UXKFocUkY+URFGzVxS7AUR0+MHiFRjDMzqKQYRRkhgX2xQKJAfeqi1vRhyM+QKq3ny4C
+         iomoXvSYu8L3AN+716am/Tdeyp2rd1gliuQZLS+nOmwa/nvvtRb5ejLNfK0ywHQLZQMv
+         WpxcpbeT+BdQZecqVJeeqGD92l1tcx6OO5DpJeGPx2EciqxwDz4yHcTHxvlu3mFOFVaS
+         mxtaLnfHuAYoOxvZqtZpV3TAilZkOXfRWZJM2tsLPsUbTDpt7M2FgGUAfxB2YXzwMgaP
+         f3Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707210083; x=1707814883;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YDXZa34a8Tn2GI/Io/UPgHGAi1ZYTZqfLaqpPxg+uZ0=;
+        b=KCKDMbevxQondVO3zDx6Eb7m5qBSl+cecogaUSHy3fMtY6VjEValaQKd7zVl69t3Bf
+         e291B3ath95ADZcSOCt04iw+t6YhbGu5xAnAsmmLfP7si4NkutszQix/F5+Y9ZNUhU99
+         60V7wVnQ5l4h00sitWirbG1oKSvpvicPNBgbNmiBFQnzAi0s5dYfbcgjwBiA45cd0wFk
+         OyUbzsYzkGEweTYxefW5FBguI037tsOm56QBIp2uSNPcela/x/fL9PHFvNU9/pLX5M24
+         oaICv6+oA3y9Iff+ftkL9UUmvzCWQ7PYq4/0Y0k6dWAnnb+5U1wBOuErLMXqSIpESHEJ
+         suOQ==
+X-Gm-Message-State: AOJu0YzlUCVbAc8ngc2iEeOEtHwAfwqq2bCmc1fhiDwdqwKoF0KraRLi
+	mwxbetzozow19WgeT7xFezp+VPwuj09bR+d/ON+d4Lfm3fYxX2SG2t9c/KnYWZ4=
+X-Google-Smtp-Source: AGHT+IG9JUi+5IktGIG5tqEgZJOoZGAq/7lRMLCLehPiOVpCvTdNDxomqWr0Mcyzdk8qlnsNfyT4VQ==
+X-Received: by 2002:a17:907:9255:b0:a37:e980:5945 with SMTP id kb21-20020a170907925500b00a37e9805945mr743785ejb.60.1707210083598;
+        Tue, 06 Feb 2024 01:01:23 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWW7hqxsoaL16/Gy6fn4z3Q/EAd8zG+9r0X20HuS+qff/+Sh4p87Fev7M6WUDgf3HiORSSYTamMBkwYmrmlMI+9YIUjcTu59io0D0UjPO1nmbVO3D8N8zxCNxcp9gAi2uYhIR0SHT7q2OjezrtjVzeq6Vj4GAcQT7TyT+P8Ue1P1Gi0DIkeThM6lUnlGz4FYGqGj4WdRJxPW3G5YWTQxmSq0pt6SPRPrqrVMDMxmK3OoCvSliEQzUz+oqMon8uHvF4z2eL/6/BazQM8zb+iIf2zvklEC459KRExvuZQaznMM98b6vcJZaBxJfG+L1GsINR9RUzz7mtWXKUzq5F66Uk4wr775eWGZrmCsZOugj4xyJfm+hH3bo/fYszBd9vEAgfByKetlvQD5Jh3fq4491VJMN+flnJYXL6jIrQnvpFsKmB2VhSWkaSktej6XVkHBuGNuNlFC9yKpI5fxjNGPoTWIssZMFnt0mG/nnGbGUrthmioM1K969W8dJoaAd+ff8bPOhpulyO2jKpQh6Eu/5aR7Hu00TM5HPlwPbU1RSFCZ0M7kBpN8dVKROvjdUgUE7Y4jnny66lTPEsoeKLmWppYZzM7+wYwjj/6Y6EBfZX4bbLEKkRZbOqbmIwj/p5bunlLFPn0jNGPFsjCIKnYJs0yyCiYZqyMDjVEpm+t+LI6HYZCJU9k5s6k9lwOfgADd6huDdu/meuSBjmxNgtLFxdOrHMkfRutPf3VEWsfsakcaQA2iJj0HEXNpa1AG//0b1sIZFfI
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id bl24-20020a170906c25800b00a376758a0e9sm896042ejb.81.2024.02.06.01.01.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 01:01:23 -0800 (PST)
+Date: Tue, 6 Feb 2024 10:01:21 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Yoann Congal <yoann.congal@smile.fr>
+Cc: linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	x86@kernel.org,
+	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+	Borislav Petkov <bp@alien8.de>, Darren Hart <dvhart@infradead.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Subject: Re: [PATCH v4 2/3] printk: Change type of CONFIG_BASE_SMALL to bool
+Message-ID: <ZcH1YewEqWsjTaMJ@alley>
+References: <20240206001333.1710070-1-yoann.congal@smile.fr>
+ <20240206001333.1710070-3-yoann.congal@smile.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-1903269187-1707209279=:1141"
-Content-ID: <21a85ceb-6a8f-fc9f-b2e0-de572ce81811@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240206001333.1710070-3-yoann.congal@smile.fr>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Tue 2024-02-06 01:13:32, Yoann Congal wrote:
+> CONFIG_BASE_SMALL is currently a type int but is only used as a boolean.
+> 
+> So, change its type to bool and adapt all usages:
+> CONFIG_BASE_SMALL == 0 becomes !IS_ENABLED(CONFIG_BASE_SMALL) and
+> CONFIG_BASE_SMALL != 0 becomes  IS_ENABLED(CONFIG_BASE_SMALL).
+> 
+> Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
 
---8323328-1903269187-1707209279=:1141
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <a1d6fb3c-5406-0c11-1250-74927851f899@linux.intel.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-On Mon, 5 Feb 2024, Greg Kroah-Hartman wrote:
-
-> On Mon, Feb 05, 2024 at 12:27:24PM +0200, Ilpo J=E4rvinen wrote:
-> > On Fri, 2 Feb 2024, Hans de Goede wrote:
-> > > On 2/2/24 16:32, Greg Kroah-Hartman wrote:
-> > > > On Fri, Feb 02, 2024 at 08:49:39AM +0100, Hans de Goede wrote:
-> > > >> Hi Greg,
-> > > >>
-> > > >> On 2/2/24 03:44, Greg Kroah-Hartman wrote:
-> > > >>> The use of devm_*() functions works properly for when the device
-> > > >>> structure itself is dynamic, but the hsmp driver is attempting to=
- have a
-> > > >>> local, static, struct device and then calls devm_() functions att=
-aching
-> > > >>> memory to the device that will never be freed.
-> > > >>
-> > > >> As I mentioned in my reply to v1, this is not correct.
-> > > >>
-> > > >> There is a global data struct, but that holds a struct device
-> > > >> pointer, not the device struct.
-> > > >=20
-> > > > Ooops, I misread that:
-> > > > =09static struct hsmp_plat_device plat_dev;
-> > > > was not the actual device struct anymore.
-> > > >=20
-> > > >> The device itself is created with platform_device_alloc() +
-> > > >> platform_device_add() from module-init and it is removed
-> > > >> on module-exit by calling platform_device_unregister()
-> > > >=20
-> > > > Ok, much better.
-> > > >=20
-> > > >> So AFAICT this should keep using the devm_ variant to properly
-> > > >> cleanup the sysfs attributes.
-> > > >=20
-> > > > This devm_ variant is odd, and should never have been created as th=
-e
-> > > > sysfs core always cleans up the sysfs attributes when a device is
-> > > > removed, there is no need for it (i.e. they do the same thing.)
-> > > >=20
-> > > > That's why I want to get rid of it, it's pointless :)
-> > > >=20
-> > > >> But what this really needs is to be converted to using
-> > > >> amd_hsmp_driver.driver.dev_groups rather then manually
-> > > >> calling devm_device_add_groups() I have already asked
-> > > >> Suma Hegde (AMD) to take a look at this.
-> > > >=20
-> > > > The initial issue I saw with this is that these attributes are bein=
-g
-> > > > created dynamically, so using dev_groups can be a bit harder.  The =
-code
-> > > > paths here are twisty and not obvious as it seems to want to suppor=
-t
-> > > > devices of multiple types in the same codebase at the same time.
-> > > >=20
-> > > > But yes, using dev_groups is ideal, and if that happens, I'm happy.
-> > > > It's just that there are now only 2 in-kernel users of
-> > > > devm_device_add_groups() and I have a patch series to get rid of th=
-e
-> > > > other one, and so this would be the last, hence my attention to thi=
-s.
-> > > >=20
-> > > > Again, moving from devm_device_add_groups() to device_add_groups() =
-is a
-> > > > no-op from a functional standpoint, so this should be fine.
-> > >=20
-> > > Ok, I was not aware that the core automatically cleans up
-> > > all the attributes anyways.
-> > >=20
-> > > In that case this fine with me and I agree with merging this
-> > > so that you can entirely remove the  devm_ variant:
-> > >=20
-> > > Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> >=20
-> > Greg,
-> >=20
-> > Does this same stuff apply to devm_device_add_group() which was added=
-=20
-> > along the ACPI changes?
->=20
-> Probably, I haven't looked at that yet.
->
-> > And the changelog is quite misleading as is, it should be changed to=20
-> > match the real motivation.
->=20
-> "Motivation" isn't always needed in a changelog text, I was trying to
-> describe why this specific instance was not needed, not the overall
-> pointlessness of the function :)
->=20
-> I got the text wrong about this being a static variable (but one is
-> still in there, so it's confusing.)
-
-Yes, I mainly meant the not-dynamic part is no longer true so I don't want=
-=20
-to apply it as is and you likely want to extend the patch to include the=20
-newly introduced devm_device_add_group() call conversion.
-
-> I'll be glad to reword this if needed to just say "This function is
-> pointless, does nothing, and is about to be removed from the kernel so
-> stop using it", or something along those lines...
-
-Given that it wasn't obvious to either me nor Hans, it would have been=20
-useful to mention it. The current wording had a different undertone so
-after the driver got changed it looked as if the patch become obsolete.
-=2E..But that turned out was not the case because of motivation outside of
-the one given in the commit message, so yes, if we look this from a
-reviewer perspective, it would be useful information to tell the function=
-=20
-is pointless and does nothing useful on top of the other function.
-
-
---=20
- i.
---8323328-1903269187-1707209279=:1141--
+Best Regards,
+Petr
 
