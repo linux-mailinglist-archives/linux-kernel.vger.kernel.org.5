@@ -1,162 +1,115 @@
-Return-Path: <linux-kernel+bounces-55438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C581284BCB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:09:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2E5484BCB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:09:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BC3E284A35
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:09:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 688411F27592
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592801095A;
-	Tue,  6 Feb 2024 18:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95644DF71;
+	Tue,  6 Feb 2024 18:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YrjHuDDO"
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="Plphh40t";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="F5y8dXUx"
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C565DF5A
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 18:08:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B96B1134A5;
+	Tue,  6 Feb 2024 18:09:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707242939; cv=none; b=o1ayYBWFq1CADTn5XIB8DwnGcuL19Vqx1CDvWv79FGl5AaV/7xmQ2U+O+BJFktWBd/7P5nDOuf+j4E0oAfzO2O/Ft2c+MBMV4LKTaG0IpiZonXDRqinvsd9dDnMAQfiBag97oGJq+7NNBijTmRBhg2jQbmZV4Cn75FJ+xR0BjNE=
+	t=1707242979; cv=none; b=elk/DYAOfDUrSA18RO9Sr1Y9ovlZe7+Qrf6CwOLmUqY6M+kGTo+7jf1t4bgekCvXP8AJWQsIuVjmKMeshPFvrotYsIWBPQ87d1zBHPvclutxuXLkUdLWDhcJgGQBH4ByZsJVeRS5wlVJrlAPxLPdJOZnyKnNpzlIuefJKsxucDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707242939; c=relaxed/simple;
-	bh=vLJFxU6b1pO+fC/tdopN/qTyNi4/3U8xVhcMlyIaSOA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tUdD3ojTk7lLNeMjMTrHdxbh4xa3TfK7Mum7Pfy55xTyw1CsDrMyIfLVs+Et1FhFspAdYItoCdlO+mvl0Ac6qv44rXBSM38eKLY/s4frC7lBkihlcu4sdJl2KT4R152+8qA+QUlCjJ0NnvrkMK/wpyQX0AUPK6PPmq86mNHjtHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YrjHuDDO; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7810827e54eso353532385a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 10:08:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707242937; x=1707847737; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GVfn3yVJysCN6urYRnVBYjglKBmxv1NsB7G+hjAd4ic=;
-        b=YrjHuDDORwCij76vS0FoGOjoDGtZHKF9yKZI4HMgMKxsG901CXryhcsHJuFVXdTgAf
-         WISIf3VnHYOCP6KaEM0F+My0uMX6KX1EZZu6HDNaXh96A2so+o5svMzQ65y9CImSviFZ
-         YjzOQh2IeEUe9RWw+m457S+HsJg49iwfnNz3PP6X96DhGWyGduWD8+t79cubcyO7wtq0
-         ixObR0oUGrccMKAgNzw8mfIOBj4hoR7AmCgQV+o4fCu+kYHiN5eFrw+ykDYoz8rhMNO/
-         4ht4jjBq10DrC9Whg8oncgAqvbdgtdSZFV1T04dDWO6cvcA3fybY/J1EAS6FcpnRIK+W
-         FeCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707242937; x=1707847737;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GVfn3yVJysCN6urYRnVBYjglKBmxv1NsB7G+hjAd4ic=;
-        b=rt64TTQmJu3xxnQjSQ+AGyeeqa9LDAGpVOYAZHxdbL2sdwdsP4BZsdqFccmcHoAEZg
-         4aNdO6f/PnmJQNBG9Bb6PIUORPRWsDHHdyiElYKRzpTXmIsCohxeaMLwnQ4X8sec/N2f
-         CZ6gKW/M7TF5AS4IqlMsQJ4OSPgqlogZYxI75qTwxmW9/P8Nw/HzRTGkbyq7C4ImW9SB
-         PifiMp5K848hkh7vEpeaPJNxUd9rvfG6jarj4puFZVJ9clQi3O6RVxp5z/HHa8eBK4Gw
-         R+5QPcSJRtEuHnX+PrGCxb+SWg3LFOQXDWa7scFMbT8ejr3g2TmZY1i53DXqVqzz+MV/
-         VE2A==
-X-Gm-Message-State: AOJu0Yy1WT+O6pveqb5MYOG7Bdiik9IhOKMogDajCoN1HPMZ13pLVSX1
-	Crtrrn2DFThSQ8XbUvoBqoCkcQa/IsVSF784lDzGeTwukp8jeQEJ
-X-Google-Smtp-Source: AGHT+IGL0WmHhYtgOpTaS5LrzQhDiax3sgFnCfWdJYij4bZqe7hOr9v4rEs98j5t0MqBd4pusEJz9w==
-X-Received: by 2002:a05:620a:3956:b0:785:53ab:9d07 with SMTP id qs22-20020a05620a395600b0078553ab9d07mr3821813qkn.58.1707242936748;
-        Tue, 06 Feb 2024 10:08:56 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUTBdxwgDZtkc1xm7cEiIvYQT4+U0qYkwHHctgvx4pBrsQfWSjOeJFE6Wbqq0vXR1VQsv3NGmsx2sqLqPoNjG/rAbIKCvCHqDmwUEPByImfRkpiDb5KA17tvpFTxAKFvEzFEIlLbM8SYRN/3G0a9sjIw7hAR97MTUyuvjqaAO9vO6NurtQOIbPt/T4S0a+NvXBiMkqJypU4uNjY8qrt8SBygS/0tR2BbA==
-Received: from localhost (fwdproxy-nao-002.fbsv.net. [2a03:2880:23ff:2::face:b00c])
-        by smtp.gmail.com with ESMTPSA id q27-20020a05620a0c9b00b00783ddf9b9d5sm1118937qki.91.2024.02.06.10.08.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 10:08:56 -0800 (PST)
-From: Nhat Pham <nphamcs@gmail.com>
-To: akpm@linux-foundation.org
-Cc: hannes@cmpxchg.org,
-	chengming.zhou@linux.dev,
-	yosryahmed@google.com,
-	linux-mm@kvack.org,
-	kernel-team@meta.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mm/swap_state: update zswap LRU's protection range with the folio locked
-Date: Tue,  6 Feb 2024 10:08:55 -0800
-Message-Id: <20240206180855.3987204-1-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1707242979; c=relaxed/simple;
+	bh=Lkzj1Ayc+R4RiqSI0SS6Fu/wooUtrvulT1004AeJ7Ag=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ob5D8W8hUJFX1uq6oRCP4f2zZc9RQ/u9dVb0FNadiXLIA0kSDBV7I1p6MdpwJLVWQxsQKSqvXdVCqrqxVTwnMXmN8CWjQeAJw2Zo0ck/cYQnApeX2XHl5qJjfJjiESDf3/txxff7kMVoav+Um5QWiaFIwcMo0TT8qGqAdaSwkhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=Plphh40t; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=F5y8dXUx; arc=none smtp.client-ip=66.111.4.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id 9500D5C01F0;
+	Tue,  6 Feb 2024 13:09:36 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 06 Feb 2024 13:09:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1707242976; x=1707329376; bh=DB8DBh1GEy
+	XCan3X4jjSpE9brtS6cbZs50FHQuPtbpc=; b=Plphh40tfqSto1OziocEInZ/vR
+	QGd3hq3SQij4/SMfcurwsPyR2E7qj8796xDg1dn4TtpIgRdyhPAUquQ5MqMgRe2h
+	XA6hAgZH1RObcm6A3hlHoC2Y3/ReFrnQVnKBm6Ai+nJaS01hwMLRTmHLfchwdZgP
+	lCtZ5WxsKlgOlhlVv4y4U2+PR8wGpwm7Au40tjcQRZd7375mbOGIkrBxOcz4aD1f
+	sLzUfollZfjEy0N6NElyMW34dVkKjpiuKqoWUwk3TCEKi2feEW2EtGloRwK+j+fc
+	4c3uUJZ1XMr1zOdKctJMZrzxRyg8ztSslXLUpnwtmLYL2QV1pBrt5L8EQfZg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707242976; x=1707329376; bh=DB8DBh1GEyXCan3X4jjSpE9brtS6
+	cbZs50FHQuPtbpc=; b=F5y8dXUxDhfEIRxpnPgFsbIZ+30DW0hj8eeB6QjRltRD
+	d8z4yt8NRwG/7O/8aadXfGEmStivn8AEKSXKCGhiexDvswKpEbKblFWcA4Roz8AR
+	9PUbd7cGMhi9KpD1dJ46/OJOwMjkGHuR6JUBmWhDYuyoX+3B+VZ2TmHObe374XqW
+	bjkRpqhkoFV/OluSyk19qymTL/FuWRjaYBZEh0ZF9x1yhle+IkkJp0fl5znD/C36
+	hesOU60ClAKvs2zcwMl4w8lWGFhzKG0gBIzTRqssFn/9g5LeCUh65r8r6V+gaTtt
+	/woOW7bquWXbvvavkEL3VD2iQSysBD8wq9Ldg5EMug==
+X-ME-Sender: <xms:4HXCZVVdeciLSJq9KB1uNeMsgQ4ORMBYJ11zWg_ID1Mj2hNjfPUu-w>
+    <xme:4HXCZVk32W3I4z6ZcYJucZFrNLv53BfLpBzaZUKFyHfZAkcAMaDkHMaNDoow38j6a
+    lvBDnyGhBBiu8EXelw>
+X-ME-Received: <xmr:4HXCZRbfohjaTLqMMX4-tVzdwPq7ciDQgPCCDwKaheOxyllQYtGS5sCm35FwNrncDUdJcJa9Hw-lefTgltYj2aKxe_cv>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtddtgdejlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
+    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
+    htthgvrhhnpeeutedttefgjeefffehffffkeejueevieefudelgeejuddtfeffteeklefh
+    leelteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hthigthhhosehthigthhhordhpihiiiigr
+X-ME-Proxy: <xmx:4HXCZYUs8tLLk3bMCYPIZbmLigHd-_Q9tiDdlqvFVHSbMWSAj3yHdA>
+    <xmx:4HXCZfk2_AF_TtAh1od3Ul9_lCCAHcoKFJAIcmAC_oyAloyWBYWjAg>
+    <xmx:4HXCZVe6OY46kMsFo9j8LeTd_QEI6VPa3OeQ6QwkoVPor7MH8ACBig>
+    <xmx:4HXCZasGNvMLqa4__5XAfRKB4_u7uYSsMC90X3O-8omF8XcipvdHZw>
+Feedback-ID: i21f147d5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 6 Feb 2024 13:09:35 -0500 (EST)
+Date: Tue, 6 Feb 2024 11:09:34 -0700
+From: Tycho Andersen <tycho@tycho.pizza>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
+	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	Tycho Andersen <tandersen@netflix.com>
+Subject: Re: [PATCH] pidfd: getfd should always report ESRCH if a task is
+ exiting
+Message-ID: <ZcJ13uLxD6rTqqZZ@tycho.pizza>
+References: <20240206164308.62620-1-tycho@tycho.pizza>
+ <20240206173722.GA3593@redhat.com>
+ <20240206180607.GB3593@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240206180607.GB3593@redhat.com>
 
-When a folio is swapped in, the protection size of the corresponding
-zswap LRU is incremented, so that the zswap shrinker is more
-conservative with its reclaiming action. This field is embedded within
-the struct lruvec, so updating it requires looking up the folio's memcg
-and lruvec. However, currently this lookup can happen after the folio is
-unlocked, for instance if a new folio is allocated, and
-swap_read_folio() unlocks the folio before returning. In this scenario,
-there is no stability guarantee for the binding between a folio and its
-memcg and lruvec:
+On Tue, Feb 06, 2024 at 07:06:07PM +0100, Oleg Nesterov wrote:
+> Or we can check task->files != NULL rather than PF_EXITING.
+> 
+> To me this looks even better, but looks more confusing without a comment.
+> OTOH, imo this needs a comment anyway ;)
 
-* A folio's memcg and lruvec can be freed between the lookup and the
-  update, leading to a UAF.
-* Folio migration can clear the now-unlocked folio's memcg_data, which
-  directs the zswap LRU protection size update towards the root memcg
-  instead of the original memcg. This was recently picked up by the
-  syzbot thanks to a warning in the inlined folio_lruvec() call.
+I thought about this, but I didn't really understand the null check in
+exit_files(); if it can really be called more than once, are there
+other cases where task->files == NULL that we really should report
+EBADF?
 
-Move the zswap LRU protection range update above the swap_read_folio()
-call, and only when a new page is allocated, to prevent this.
-
-Reported-by: syzbot+17a611d10af7d18a7092@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/000000000000ae47f90610803260@google.com/
-Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure")
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- mm/swap_state.c | 10 ++++++----
- mm/zswap.c      |  1 +
- 2 files changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index e671266ad772..7255c01a1e4e 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -680,9 +680,10 @@ struct folio *swap_cluster_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 	/* The page was likely read above, so no need for plugging here */
- 	folio = __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
- 					&page_allocated, false);
--	if (unlikely(page_allocated))
-+	if (unlikely(page_allocated)) {
-+		zswap_folio_swapin(folio);
- 		swap_read_folio(folio, false, NULL);
--	zswap_folio_swapin(folio);
-+	}
- 	return folio;
- }
- 
-@@ -855,9 +856,10 @@ static struct folio *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
- 	/* The folio was likely read above, so no need for plugging here */
- 	folio = __read_swap_cache_async(targ_entry, gfp_mask, mpol, targ_ilx,
- 					&page_allocated, false);
--	if (unlikely(page_allocated))
-+	if (unlikely(page_allocated)) {
-+		zswap_folio_swapin(folio);
- 		swap_read_folio(folio, false, NULL);
--	zswap_folio_swapin(folio);
-+	}
- 	return folio;
- }
- 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 4aea03285532..8c548f73d52e 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -827,6 +827,7 @@ void zswap_folio_swapin(struct folio *folio)
- 	struct lruvec *lruvec;
- 
- 	if (folio) {
-+		VM_WARN_ON_ONCE(!folio_test_locked(folio));
- 		lruvec = folio_lruvec(folio);
- 		atomic_long_inc(&lruvec->zswap_lruvec_state.nr_zswap_protected);
- 	}
-
-base-commit: 91f3daa1765ee4e0c89987dc25f72c40f07af34d
--- 
-2.39.3
+Tycho
 
