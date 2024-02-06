@@ -1,65 +1,86 @@
-Return-Path: <linux-kernel+bounces-55369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FD4884BBD5
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:27:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60F8D84BBD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:28:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 890B5B2236D
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:27:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85AE91C211A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E66EB67E;
-	Tue,  6 Feb 2024 17:27:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A394134C6;
+	Tue,  6 Feb 2024 17:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="V5RRNA1w"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="M/U57joK"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1CD134A5;
-	Tue,  6 Feb 2024 17:26:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82FAC134BC
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 17:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707240422; cv=none; b=eS+wffU6lmgWKQD6UI1EbhmfzaMV7WqME/y0KPm5FQWhie4sVOBsQGCogUsQKvlXjaDS1Xtdf8BMxuFYX5Xe/sdegFsuVy8UjxgyDyEb0g18+9XWP9yI/S4BCb6GKr8VTsi4E+1xlmNQX6n2eEUycioxGNCjriqbq2FKKV0L/J4=
+	t=1707240446; cv=none; b=UFEQmZd1sMPp7smf+iIgUAt0KOAQGeZVECpsmcBFF+0WH3oL5GT0tZzB7yR3U4RCOr8+uF9EZgIhPcrB++pro1PhaYkH7KKUfQ6zp8cIlYRyq+NZg0iCmmALAs1kRQEXK1KgrWeqp52RAasGdDFOuwDKQD0l6Y36F3lgGu8X75w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707240422; c=relaxed/simple;
-	bh=ONj84obzGHgSf5EfHx5xWbTOV5/Wriz2WUB7G2FJQks=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A97YcjCV/Jbbkku4oCEsxofa+JtWoXuDaiOEdwW6wxDFhcgj7civpIT2UtIAK8MPX5MJxqrYqtOyC1NuFGyqDQsoKxNjEoBMH/LyZx5l/oeMd3sTKKp6yzZlh66IyqVQ1XMmLLOBjIxIHIMdUGGRc3rL9LP0R3MZGsiVQVNknLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=V5RRNA1w; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id C5CF122A99;
-	Tue,  6 Feb 2024 18:26:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1707240410;
-	bh=i7mFMnNUf+KOmmvfoXruWWwgYzvxTV6MhK3aSRKty6s=; h=From:To:Subject;
-	b=V5RRNA1wB+5ieD7QeTPac0mPyaLkvJiSaAioJ8HR4dpYvysnAE3HJgINPceNz2FJG
-	 L97F9h0i8QVTmJEZZkeiqgkLxHJOlvkSLz5n736J7BBQXRhimX7D222dmW6UT8q7P3
-	 pjGn8sfYSlRsL7VS0iLXvVEdOeOwMBQuoQnSeb4uXhgBrlYe7gr3weNIw36E9y5+nL
-	 3D5pqMy9eQW4BE4f0IWfZJrr2Fu9uGwlbuve8sk7FHd0vS44ws/YerME7XvZl1QvM5
-	 tk8jzariLAFVzR8nOtn5hpFBiPNTU07L6f99dhx2NM8V7pzz5x11WUFNDF3pdUqjZL
-	 keppLIrANlmxg==
-Date: Tue, 6 Feb 2024 18:26:45 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Francesco Dolcini <francesco@dolcini.it>,
-	linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] net: phy: micrel: reset KSZ9x31 when resuming
-Message-ID: <20240206172645.GA24848@francesco-nb>
-References: <20240109205223.40219-1-wsa+renesas@sang-engineering.com>
- <20240109232838.GA3626@francesco-nb>
- <ZafXQS1_4fHpEzL0@ninjato>
+	s=arc-20240116; t=1707240446; c=relaxed/simple;
+	bh=z3SvTIWCBj3dDHZAf/+OxWygHM3oDaa1MoxvXSwg+sw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VR8ErcP5tGFUrsXYNmi7bIN6KXU5yw+B/6E6vDz9hYFBKFWJ8hPw2whjMCcbJFVfKrxKdvIFXiGXmMW6D1/dznVj64ignl6587o0nC8XQUcNWVt49vI1g3Ql6imQvd+RMfDAiXGlQxOuBGf8M9AAHIv6+RVjE3f3RJTFn4xAVvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=M/U57joK; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so713212966b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 09:27:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1707240441; x=1707845241; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=P/HHEhgM2zyiBgcEROBuZtDDunDwNkAdKGtbKx2KyjY=;
+        b=M/U57joKUZxQWqWlL4tQfIBnSNUGe0clXVceCFhNtlI7s0xqOTEkx/hqrWyKvAnjJB
+         UGL29wXdeWTnT9liXEH18lFA9/jxXFgmTamP0coOxp72vXRiJAostZSeFuVwuWd2a6/D
+         5csFlL4gbRc0RtmoCiGJM2jZMkmZVPx464QEzH8ImSfqNuKI8AUHh3UGpWeofs8GZiS+
+         VeHi12LpnjUnHNSXx/c/+lTpvgCdmvzUYeLKPpEl3foptoYGbRyW18JB/W1rqL2Faodn
+         JWGQSOYIvZC6WEab/ssNHmHs1cdv2EpWbf0gJmQEG/oyIZVv5SqI4M3Bq7+JXXj/37KB
+         J8rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707240441; x=1707845241;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P/HHEhgM2zyiBgcEROBuZtDDunDwNkAdKGtbKx2KyjY=;
+        b=HWX6R/VSMEIIPosVNfxmv3YoowNbkKzhBmc2sgqyuI+ISXCwnkBNvEmzYilIhmKHjQ
+         ZcwAEW3KW7wTIG3s5f+8CNzMAbVKJtgDN8JWLJiCpcR2gVZZUJk0XULDOrm5aXNHJDe+
+         bLpip6+UO7mvz2W8pRcZfx4XJ2BdghtkfUvYaks/SXR1HEyDTbeYxSjRjuxJaZUQfZlT
+         YEp8Q/+YGvpBJdoz6epXBSICMpixO2nJU/sC0XWRB9vXMah513hWFT6ng8NuTfIo+0dT
+         nytLoo5/kEqOs6VWyyV7/R9BG1sPSI+jRQhkeDeExQwWmLUS4/OFVRgHEYtpcfqGbmep
+         SsSQ==
+X-Gm-Message-State: AOJu0YyEjKVAgQTP9O5ivMjjntX2mzO5Og8ON56DHKxi6DVhRdLPlmcT
+	xcUvsbVJw1pphagSIEaG0B+Wz8kWL5J5/9OvrV4XpYSHK/t0Us4C+ijSXBi9+Zw=
+X-Google-Smtp-Source: AGHT+IGfVu/ZBOOxuOcGwmvBZ4iF9m3PcOLU1nxdvt6/JYZGoYtRfUr7B+duPImLoW2eHhAmAajKpA==
+X-Received: by 2002:a17:906:f755:b0:a35:b73b:e626 with SMTP id jp21-20020a170906f75500b00a35b73be626mr1925264ejb.73.1707240441397;
+        Tue, 06 Feb 2024 09:27:21 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU5bVdrZFCXJBGCILai2TbcoVqgbrrHESlvvF0YiYv4UEPI+9HgpbkPRoFDDyuNITy/SbqZdnC8Z3dAdj3KspcR2pT5+JkVt+o5XJrd96BagA2MKF1lG3UhYqOXCV+lsMP/6ge+AThUduWXBke9vEMe5dk0FH/mK8CKot2UaZCWDZg0dNi3//MJHS88G1c=
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id e9-20020a170906248900b00a3687cde34asm1370309ejb.5.2024.02.06.09.27.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 09:27:21 -0800 (PST)
+Date: Tue, 6 Feb 2024 18:27:19 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Mukesh Ojha <quic_mojha@quicinc.com>
+Subject: Re: [PATCH printk v3 04/14] printk: ringbuffer: Do not skip
+ non-finalized records with prb_next_seq()
+Message-ID: <ZcJr931mCz-JdoJh@alley>
+References: <20231214214201.499426-1-john.ogness@linutronix.de>
+ <20231214214201.499426-5-john.ogness@linutronix.de>
+ <ZaF_eJ_BCddZl5z1@alley>
+ <874jfeg69z.fsf@jogness.linutronix.de>
+ <ZaVkqJ-KMRp9mbLR@alley>
+ <871q9rp2lx.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,45 +89,216 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZafXQS1_4fHpEzL0@ninjato>
+In-Reply-To: <871q9rp2lx.fsf@jogness.linutronix.de>
 
-On Wed, Jan 17, 2024 at 02:33:53PM +0100, Wolfram Sang wrote:
-> > > +static int ksz9x31_resume(struct phy_device *phydev)
-> > > +{
-> > > +	phy_device_reset(phydev, 1);
-> > > +	phy_device_reset(phydev, 0);
-> > 
-> > Is something like that fine?
-> > Don't we need to reconfigure the ethernet phy completely on resume
-> > if we do reset it? kszphy_config_reset() is taking care of something,
-> > but I think that the phy being reset on resume is not handled
-> > correctly.
+On Mon 2024-02-05 12:39:30, John Ogness wrote:
+> On 2024-01-15, Petr Mladek <pmladek@suse.com> wrote:
+> >> The acquire is with @last_finalized_seq. So the release must also be
+> >> with @last_finalized_seq. The important thing is that the CPU that
+> >> updates @last_finalized_seq has actually read the corresponding
+> >> record beforehand. That is exactly what desc_update_last_finalized()
+> >> does.
+> >
+> > I probably did not describe it well. The CPU updating
+> > @last_finalized_seq does the right thing. I was not sure about the CPU
+> > which reads @last_finalized_seq via prb_next_seq().
+> >
+> > To make it more clear:
+> >
+> > u64 prb_next_seq(struct printk_ringbuffer *rb)
+> > {
+> > 	u64 seq;
+> >
+> > 	seq = desc_last_finalized_seq(rb);
+> > 	      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > 	      |
+> > 	      `-> This includes atomic_long_read_acquire(last_finalized_seq)
+> >
+> >
+> > 	if (seq != 0)
+> > 		seq++;
+> >
+> > 	while (_prb_read_valid(rb, &seq, NULL, NULL))
+> > 		seq++;
+> >
+> > 	return seq;
+> > }
+> >
+> > But where is the atomic_long_read_release(last_finalized_seq) in
+> > this code path?
 > 
-> If the interface is up before suspending, then suspend will assert the
-> reset-line. If the interface is disabled before suspending, then close
-> will assert the reset line. Deassertion will happen on resume/open.
+> read_release? The counterpart of this load_acquire is a
+> store_release. For example:
 > 
-> So, unless I am overlooking something, my code does not really add
-> something new. It only makes sure that the reset line always gets
-> asserted before deasserting. Because in the case that the interface has
-> never been up before, there is no instance which could assert reset. Or,
-> at least, I could not find one.
+> CPU0                     CPU1
+> ====                     ====
+> load(varA)
+> store_release(varB)      load_acquire(varB)
+>                          load(varA)
 > 
-> Makes sense? Tests work fine here, at least.
+> If CPU1 reads the value in varB that CPU0 stored, then it is guaranteed
+> that CPU1 will read the value (or a later value) in varA that CPU0 read.
+> 
+> Translating the above example to this particular patch, we have:
+> 
+> CPU0: desc_update_last_finalized()       CPU1: prb_next_seq()
+> ====                                     ====
+> _prb_read_valid(seq)
+> cmpxchg_release(last_finalized_seq,seq)  seq=read_acquire(last_finalized_seq)
+>                                          _prb_read_valid(seq)
 
-What I do not know, is what happen to any configuration that was done to
-the phy before.
+I think that I was confused because I had acquire/release mentally
+connected with lock/unlock. Where the lock/unlock surrounds some
+critical code section. I think that it is actually the most common
+usecase.
 
-What if you have disabled gigabit ethernet from auto negotiation before
-suspend, it will be enabled again after the phy get out of reset.
+Our usage is not typical from my POV. There are two aspects:
 
-Is the ethernet phy subsystem taking care of this? Ensuring that this
-configuration is restored into the phy?
+   1. They do not surround a critical section, at least not
+      an obvious one.
 
-I was starting to debug something around this a few days ago, with the
-difference that in that case the reset was asserted/de-asserted by the
-hardware and the end results was not really the expected one ...
+   2. In my mental code, this patch patch uses the release
+      before the acquire. When I think about this code,
+      than I first imagine the write path (using release)
+      and then the reader (using acquire).
 
-Francesco
+I think that this code (mis)uses the acquire/release
+semantic just for optimized memory barriers.
 
+It might be worth a note that this is not a typical acquire/release
+scenario.
+
+> > IMHO, the barrier provided by the acquire() is _important_ to make
+> > sure that _prb_read_valid() would see the valid descriptor.
+> 
+> Correct.
+> 
+> > Now, I think that the related read_release(seq) is hidden in:
+> >
+> > static int prb_read(struct printk_ringbuffer *rb, u64 seq,
+> > 		    struct printk_record *r, unsigned int *line_count)
+> > {
+> > 	/* Get a local copy of the correct descriptor (if available). */
+> > 	err = desc_read_finalized_seq(desc_ring, id, seq, &desc);
+> >
+> > 	/* If requested, copy meta data. */
+> > 	if (r->info)
+> > 		memcpy(r->info, info, sizeof(*(r->info)));
+> >
+> > 	/* Copy text data. If it fails, this is a data-less record. */
+> > 	if (!copy_data(&rb->text_data_ring, &desc.text_blk_lpos, info->text_len,
+> > 		       r->text_buf, r->text_buf_size, line_count)) {
+> > 		return -ENOENT;
+> > 	}
+> >
+> > 	/* Ensure the record is still finalized and has the same @seq. */
+> > 	return desc_read_finalized_seq(desc_ring, id, seq, &desc);
+> > 	       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > 	       |
+> > 	       `-> This includes a memory barrier /* LMM(desc_read:A) */
+> > 		   which makes sure that the data are read before
+> > 		   the desc/data could be reused.
+> > }
+> >
+> > I consider this /* LMM(desc_read:A) */ as a counter part for that
+> > acquire() in prb_next_seq().
+> 
+> desc_read:A is not a memory barrier. It only marks the load of the
+> descriptor state.
+
+I see. The real read barriers are desc_read:B and desc_read:D
+
+> This is a significant load because prb_next_seq() must
+> see at least the descriptor state that desc_update_last_finalized() saw.
+> 
+> The memory barrier comments in desc_update_last_finalized() state:
+> 
+>     * If desc_last_finalized_seq:A reads from
+>     * desc_update_last_finalized:A, then desc_read:A reads from
+>     * _prb_commit:B.
+> 
+> This is referring to a slightly different situation than the example I
+> used above because it is referencing where the descriptor state was
+> stored (_prb_commit:B). The same general picture is valid:
+> 
+> CPU0                              CPU1
+> ====                              ====
+> _prb_commit:B
+> desc_update_last_finalized:A      desc_last_finalized_seq:A
+>                                   desc_read:A
+> 
+> desc_read:A is loding the descriptor state that _prb_commit:B stored.
+> 
+> The extra note in the comment clarifies that _prb_commit:B could also be
+> denoted as desc_read:A because desc_update_last_finalized() performs a
+> read (i.e. must have seen) _prb_commit:B.
+> 
+>     * Note: _prb_commit:B and desc_update_last_finalized:A can be
+>     *       different CPUs. However, the desc_update_last_finalized:A
+>     *       CPU (which performs the release) must have previously seen
+>     *       _prb_commit:B.
+> 
+> Normally the CPU committing the record will also update
+> last_finalized_seq. But it is possible that another CPU updates
+> last_finalized_seq before the committing CPU because it already sees the
+> finalized record. In that case the complete (maximally complex) picture
+> looks like this.
+> 
+> CPU0            CPU1                           CPU2
+> ====            ====                           ====
+> _prb_commit:B   desc_read:A
+>                 desc_update_last_finalized:A   desc_last_finalized_seq:A
+>                                                desc_read:A
+>
+> Any memory barriers in _prb_commit() or desc_read() are irrelevant for
+> guaranteeing that a CPU reading a sequence value from
+> desc_last_finalized_seq() will always be able to read that record.
+
+I believe that they are relevant exactly because 3 CPUs might be
+involved here. I believe that
+
+  + _prb_commit:B makes sure that CPU0 stores all data before
+    setting the state as finalized.
+
+  + desc_read:B makes sure that CPU1 will see all data written
+    when it reads the finalized state.
+
+  + desc_update_last_finalized:A makes sure that saw the record
+    with the given seq in finalized state.
+
+  + desc_last_finalized_seq:A makes sure that it sees the record
+    associated with "last_finalized_seq" in the finalized state.
+
+This is why the "Note:" is very important. And maybe desc_read:B
+or desc_read:D should be mentioned in the note as well.
+
+Also all these dependencies are really hard to follow. This
+is why I suggested to add another note in the 9th patch,
+see https://lore.kernel.org/all/ZbowlkOVWiSgCxNX@alley/
+
+Or maybe we should document that pr_read() and _prb_read_valid()
+provides these guarantees and just reference it here.
+
+By another words. IMHO, the current "Note:" tries to
+prove that _prb_read_valid() guarantees that all data
+can be read when it sees the finalized state. IMHO,
+we should document this above these functions and
+just reference it here.
+
+The current comments for desc_update_last_finalized:A
+and prb_next_reserve_seq:A are really hard to follow
+because they both try to explain these transitional
+guarantees between prb_commit() and prb_read() APIs.
+The comments mention many barriers even though the guarantees
+should be there by design and should be mentioned
+in the prb_read() API.
+
+My motivation is that it took me long time to understand this.
+And I am still not sure if I understand it correctly.
+IMHO, it might be better to describe some guarantees of
+upper level API so that we do not need to look at
+the low level barriers again and again.
+
+Best Regards,
+Petr
 
