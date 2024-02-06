@@ -1,230 +1,187 @@
-Return-Path: <linux-kernel+bounces-54978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A984184B5CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:00:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80AA784B5D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:01:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E2271F265AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:00:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3876428A7E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9596A12FF72;
-	Tue,  6 Feb 2024 13:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1116130AC7;
+	Tue,  6 Feb 2024 13:00:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EyqXYk6y"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="URZ0pJGF"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E2912EBEB
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 13:00:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA5812F5B4
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 13:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707224418; cv=none; b=uczHD4u0Lh+W1CDi1KMyUggmOyqKxSI939lyz6EdWQGvyjjArik2+kpaNPZebXs6k73AWScIsYQY40mJ2B8UimKhnumgeYOw3heiPWI6B7m0twc+OEnQGhBNAso6CFOr2u/OoENk50SsbRJN4/Qks1SXwgrb42ZAqCzNgUYRya0=
+	t=1707224445; cv=none; b=oGp7uATtpxffJ97ai2uj9aGLu92yIVT1E6KyOrjhdQ54cOmxz8L2gS3/GX9lKYA/7EAAVqDpQKxj4VYK6FiJ4iIZ7Kj1NryAbD9Dvy4KFwJzEOivXSyk75FbPO4s/Xt72hXD0WvFzhcnYamb/9xu+9d777R0NAaUdSSU8cDPogU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707224418; c=relaxed/simple;
-	bh=abe9E3ueQx9G2fBlwjT7LMFmPpMhp9/GiSVQD4q8kh0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Idn8XcLFXM8p9ebgleljUTmyyFSDWPBu15OKA7aU0Ak/dL//1FXMGiE956dda1F3wWhIeSjluAsbfI2bfYh461PUvQDHl32HpwJjN5yrFm/XWI0HjgDpevM6QznDlTlDgrjsbfMwLAiBKKLIb7UnlJzVQrjwqFXffc9i5kmJPvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EyqXYk6y; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707224416;
-	h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:in-reply-to:in-reply-to:  references:references;
-	bh=cmGxWZhgjlISLF6/RimgbvtGqlUWWkI9oFgV/zY1qL0=;
-	b=EyqXYk6yMaEvdhGp1PjIypZEd/lvO/gPE5/oTHRNUxqNB4HfGcL4t0NmsbVJMk7HX9QhEr
-	8gRfbvGseuDrqAQAYp13WLEvPxIKlAdFGwwQktt+vaIBzdsMDK4INRzzxfBVvzdzA4f6wR
-	A9buZUHP3urx7cmhL+s8K779joKmivM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-320-OMpscAT4PcKefY_O_GnelQ-1; Tue, 06 Feb 2024 08:00:09 -0500
-X-MC-Unique: OMpscAT4PcKefY_O_GnelQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BE4E483B828;
-	Tue,  6 Feb 2024 13:00:07 +0000 (UTC)
-Received: from redhat.com (unknown [10.42.28.53])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 2DFDC1121312;
-	Tue,  6 Feb 2024 13:00:05 +0000 (UTC)
-Date: Tue, 6 Feb 2024 13:00:03 +0000
-From: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
-To: "Dr. Greg" <greg@enjellic.com>
-Cc: "Reshetova, Elena" <elena.reshetova@intel.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	"Hansen, Dave" <dave.hansen@intel.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	"Nakajima, Jun" <jun.nakajima@intel.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	"Kalra, Ashish" <ashish.kalra@amd.com>,
-	Sean Christopherson <seanjc@google.com>,
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
-Message-ID: <ZcItU5FKlIVEEVte@redhat.com>
-Reply-To: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
-References: <20240130083007.1876787-2-kirill.shutemov@linux.intel.com>
- <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com>
- <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com>
- <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com>
- <Zbk6h0ogqeInLa_1@redhat.com>
- <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
- <20240206011247.GA29224@wind.enjellic.com>
- <ZcHoKUElwXGPzrWb@redhat.com>
- <20240206120445.GA1247@wind.enjellic.com>
+	s=arc-20240116; t=1707224445; c=relaxed/simple;
+	bh=1w7no4X/TSio5I2R4KQ+HCwjWlHzizWFvphNMRtKGCc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=okHC4lTvqBMro+mFGR6Ratzl4J0/6A8biqYVG14QqQPjMDt2QyErYjAiaKYrV0dTESwfXD3Ofwf3ex2IAuB3SW+OJF9Y/Mku+1tVmOMP2sWnZLChx8rCiuL8I9c7KZnLbtxBkqXpvZbqIBgVvfO23aDlKyGAuiBin5YjdNoqqNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=URZ0pJGF; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d746ce7d13so45385695ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 05:00:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tweaklogic.com; s=google; t=1707224441; x=1707829241; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U01nK5h+ngo0dhzMF9UCzZZGiTta1rkOWaOLNJZe/+U=;
+        b=URZ0pJGF/hFWwgeJRAEbkVrnGVTor6eW0gHTYA/YhTDL4ZVK+zcz6tGPvvatZWhtP7
+         Taq90wGC/1BVcqXMO8/inoCv64HzyYRIO6RGLwyuMn9N4ck/976pi01CIBYfYSNSkWFN
+         o3jSuRMVXMehy2L8Kt9vj3Z/a0pDF33oAVLnetbpdzJVzPCapUSN5Uy+fauHMWCO44C3
+         vlxn6uYe4oQ6AwN1jv07D15aLgOeKS65XE+X88efG/FkDOFZBlTpI7xHd5k7ZWWDI5/K
+         ADK07Lm5Ub7rdqnAtjbwTLphqw1rJJ2gM78jLv6/CH5IvuVL1u6WjTvB20Rxp2gGjb02
+         x5gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707224441; x=1707829241;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U01nK5h+ngo0dhzMF9UCzZZGiTta1rkOWaOLNJZe/+U=;
+        b=v9p8yJtHb3kbmhTCPFxwVPvJw/Rs+RrqubTmT0TQZ5cHYAtodOZr6owMZLVQOmDeTV
+         HDu8qJMk8gWi65lUSBilC6qknADO5pFjIbDmhsdxNRz0laSWfyrQAwXMVPkVNw5GmLhs
+         jSR9yQLQBRmUS6BtOZ82+xLX2Xpbcpg28wzxsHOSt12HuSSWiAfaFAxQNqkXkr4MUy2P
+         C5F07pZ18gJSnquMCyVQQGtqTOdhxAfpifJvAnqjzIz8Ze8zbPeFnCu1Ycvm0lMyfici
+         QIsRt0KTgWcb4nVSgbtdb59Js8paBXmdwYw34gvbj9pZ71Ggs4ZXjupa9YkeglXxHpTe
+         Heqg==
+X-Gm-Message-State: AOJu0YxNegMfSBUMS0S3rhFTNXuvCbJiZIlU3ZJmVPWjV6p69lQb0pyA
+	hyD41CyR7gMmlytvK+NAbQ+NM/vgtAy2g8YlE2StgdiW8Z9++nXdb3DItRkLvfs=
+X-Google-Smtp-Source: AGHT+IHFgHjBIvvXH43AzashyL+Nkfw1PtmIh93FS/4fpoAw1KGAydkF2t9AxzBQ48m86erUFiwWQw==
+X-Received: by 2002:a17:902:ec82:b0:1d9:bfde:d635 with SMTP id x2-20020a170902ec8200b001d9bfded635mr1840947plg.18.1707224441315;
+        Tue, 06 Feb 2024 05:00:41 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXOJQHJU9Oz3p9XWjTbHw/WyO+Rlhgcc+2HZgEMyidPNmSn/L8tiuqJqiqBpeLN5vT8Zh52uxfXYcGZubDu6QjGS1zwpTJCcXYfF2t3pxu6Xyx327nNCknP7EnMEGqp2cyK9NGDIl2Oxg+WzTifHJabltoTAPoFuSBWlF//1AZH5/sdJsFdn8nDyRJUMUWoLn5shFzGRbBLKGDfr5CxCOmfUhY4U0318peVENbBs0Oy+PnuXtNxUQDpldM3m5B1ZwjuWA7d+ygCvru11CqiEnLYIjJvtdmvJ+oXttAGI08V/cUbfRPfAjT94aayaAMSF5OKNCNYhY9Yd2k9Fv78MHmUsNjHinlrQTEw0mirbq3tfWRacfgh3S1rnZrTJFVW4LmqXRvGzki+BR+dSEzsP+L/Xy3fjedjFuOq63R/u4Umv0AgqUGssqKenP6G0V9q4xPZc/CQZPpIozmjULmTuEH3Zv905PLeQMSOvJ0ziUwe9Udx2WCFVVd6A6d7l6HWolo2AmWfalabNWNwseAghoZCjYX9hQ==
+Received: from localhost.localdomain ([180.150.113.62])
+        by smtp.gmail.com with ESMTPSA id s1-20020a170902ea0100b001d958f8ab2bsm1782167plg.107.2024.02.06.05.00.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 05:00:40 -0800 (PST)
+From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+To: Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matti Vaittinen <mazziesaccount@gmail.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Marek Vasut <marex@denx.de>,
+	Anshul Dalal <anshulusr@gmail.com>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
+	Matt Ranostay <matt@ranostay.sg>,
+	Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/5] Support for Avago APDS9306 Ambient Light Sensor
+Date: Tue,  6 Feb 2024 23:30:12 +1030
+Message-Id: <20240206130017.7839-1-subhajit.ghosh@tweaklogic.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240206120445.GA1247@wind.enjellic.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 06, 2024 at 06:04:45AM -0600, Dr. Greg wrote:
-> On Tue, Feb 06, 2024 at 08:04:57AM +0000, Daniel P. Berrang?? wrote:
-> 
-> Good morning to everyone.
-> 
-> > On Mon, Feb 05, 2024 at 07:12:47PM -0600, Dr. Greg wrote:
-> > > 
-> > > Actually, I now believe there is clear evidence that the problem is
-> > > indeed Intel specific.  In light of our testing, it will be
-> > > interesting to see what your 'AR' returns with respect to an official
-> > > response from Intel engineering on this issue.
-> > > 
-> > > One of the very bright young engineers collaborating on Quixote, who
-> > > has been following this conversation, took it upon himself to do some
-> > > very methodical engineering analysis on this issue.  I'm the messenger
-> > > but this is very much his work product.
-> > > 
-> > > Executive summary is as follows:
-> > > 
-> > > - No RDRAND depletion failures were observable with either the Intel
-> > >   or AMD hardware that was load tested.
-> > > 
-> > > - RDSEED depletion is an Intel specific issue, AMD's RDSEED
-> > >   implementation could not be provoked into failure.
-> 
-> > My colleague ran a multithread parallel stress test program on his
-> > 16core/2HT AMD Ryzen (Zen4 uarch) and saw a 80% failure rate in
-> > RDSEED.
-> 
-> Interesting datapoint, thanks for forwarding it along, so the issue
-> shows up on at least some AMD platforms as well.
-> 
-> On the 18 core/socket Intel Skylake platform, the parallelized
-> depletion test forces RDSEED success rates down to around 2%.  It
-> would appear that your tests suggest that the AMD platform fairs
-> better than the Intel platform.
+Support for Avago APDS9306 Ambient Light Sensor.
 
-Yes, given the speed of the AMD RDRAND/RDSEED ops, compared to my
-Intel test platforms, their DRBG looks better able to keep up with
-the demand for bits.
+Driver support for Avago (Broadcom) APDS9306 Ambient Light Sensor.
+It has two channels - ALS and CLEAR. The ALS (Ambient Light Sensor)
+channel approximates the response of the human-eye providing direct
+read out where the output count is proportional to ambient light levels.
+It is internally temperature compensated and rejects 50Hz and 60Hz flicker
+caused by artificial light sources. Hardware interrupt configuration is
+optional. It is a low power device with 20 bit resolution and has 
+configurable adaptive interrupt mode and interrupt persistence mode.
+The device also features inbuilt hardware gain, multiple integration time
+selection options and sampling frequency selection options.
 
-> Of course, the other variable may be how the parallelized stress test
-> is conducted.  If you would like to share your implementation source
-> we could give it a twirl on the systems we have access to.
+This driver also uses the IIO GTS (Gain Time Scale) Helpers Namespace for 
+Scales, Gains and Integration time implementation.
 
-It is just Jason's earlier test program, but moved into one thread
-for each core....
+Link: https://docs.broadcom.com/doc/AV02-4755EN
 
-$ cat cpurngstress.c
-#include <stdio.h>
-#include <immintrin.h>
-#include <pthread.h>
-#include <unistd.h>
+1 directory, 18 files
 
-/*
- * Gives about 25 seconds walllock time on my Alderlake CPU
- *
- * Probably want to reduce this x10, or possibly even x100
- * on AMD due to much slower ops.
- */
-#define MAX_ITER 10000000
+v5 -> v6:
+ - Changes as per review
+ - Update kernel doc for private data
+ - Change IIO Event Spec definitions
+ - Update guard mutex lock implementation
+ - Add pm_runtime_get()
+ - Update styling
+   Link: https://lore.kernel.org/all/20240204134056.5dc64e8b@jic23-huawei/
+ 
+v5 -> v6 Bindings
+ - Write proper commit messages
+ - Add vdd-supply in a separate commit
+ - Add Interrupt macro in a separate commit
+   Link: https://lore.kernel.org/all/1d0a80a6-dba5-4db8-a7a8-73d4ffe7a37e@linaro.org/
 
-#define MAX_CPUS 4096
+v2 -> v5:
+ - Bumped up the version:
+   RFC->v0->v1->v2->v3 (Earlier scheme)
+   v1->v2->v3->v4->v5 (Scheme after review) (Current scheme)
+   Link: https://lore.kernel.org/all/20231028143631.2545f93e@jic23-huawei/
 
-void *doit(void *f) {
-    unsigned long long rand;
-    unsigned int i, success_rand = 0, success_seed = 0;
+ - Added separate patch to merge schemas for APDS9300 and APDS9906. Added
+   APDS9306 support on top of that.
+   Link: https://lore.kernel.org/lkml/4e785d2e-d310-4592-a75a-13549938dcef@linaro.org/
+   Link: https://lore.kernel.org/lkml/20231028142944.7e210eb6@jic23-huawei/
 
-    for (i = 0; i < MAX_ITER; ++i) {
-        success_seed += !!_rdseed64_step(&rand);
-    }
-    for (i = 0; i < MAX_ITER; ++i) {
-        success_rand += !!_rdrand64_step(&rand);
-    }
+ - Removed scale attribute for Intensity channel:
+   Link: https://lore.kernel.org/all/20231204095108.22f89718@jic23-huawei/
 
-    fprintf(stderr,
-	    "RDRAND: %.2f%%, RDSEED: %.2f%%\n",
-	    success_rand * 100.0 / MAX_ITER,
-	    success_seed * 100.0 / MAX_ITER);
+ - Dropped caching of hardware gain, repeat rate and integration time and
+   updated code as per earlier reviews.
+   Link: https://lore.kernel.org/lkml/20231028142944.7e210eb6@jic23-huawei/
 
-    return NULL;
-}
+ - Added descriptive commit messages
+ - Fixed wrongly formatted commit messages
+ - Added changelog in right positions
 
+ - Link to v2: 
+   https://lore.kernel.org/lkml/20231027074545.6055-3-subhajit.ghosh@tweaklogic.com/
 
-int main(int argc, char *argv[])
-{
-    pthread_t th[MAX_CPUS];
-    int nproc = sysconf(_SC_NPROCESSORS_ONLN);
-    if (nproc > MAX_CPUS) {
-      nproc = MAX_CPUS;
-    }
-    fprintf(stderr, "Stressing RDRAND/RDSEED across %d CPUs\n", nproc);
+v2 -> v5 Bindings:
+ - Removed 'required' for Interrupts and 'oneOf' for compatibility strings
+   as per below reviews:
+   Link: https://lore.kernel.org/lkml/20231028142944.7e210eb6@jic23-huawei/
+   Link: https://lore.kernel.org/lkml/22e9e5e9-d26a-46e9-8986-5062bbfd72ec@linaro.org/
 
-    for (int i = 0 ; i < nproc;i ++) {
-      pthread_create(&th[i], NULL, doit,NULL);
-    }
+ - Implemented changes as per previous reviews:
+   Link: https://lore.kernel.org/lkml/20231028142944.7e210eb6@jic23-huawei/
+   Link: https://lore.kernel.org/lkml/22e9e5e9-d26a-46e9-8986-5062bbfd72ec@linaro.org/
 
-    for (int i = 0 ; i < nproc;i ++) {
-      pthread_join(th[i], NULL);
-    }
+Subhajit Ghosh (5):
+  dt-bindings: iio: light: Merge APDS9300 and APDS9960 schemas
+  dt-bindings: iio: light: adps9300: Add property vdd-supply
+  dt-bindings: iio: light: adps9300: Update interrupt definitions
+  dt-bindings: iio: light: Avago APDS9306
+  iio: light: Add support for APDS9306 Light Sensor
 
-    return 0;
-}
-
-$ gcc -march=native -o cpurngstress cpurngstress.c
+ .../bindings/iio/light/avago,apds9300.yaml    |   20 +-
+ .../bindings/iio/light/avago,apds9960.yaml    |   44 -
+ drivers/iio/light/Kconfig                     |   12 +
+ drivers/iio/light/Makefile                    |    1 +
+ drivers/iio/light/apds9306.c                  | 1335 +++++++++++++++++
+ 5 files changed, 1363 insertions(+), 49 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/iio/light/avago,apds9960.yaml
+ create mode 100644 drivers/iio/light/apds9306.c
 
 
-> If there is the possibility of over-harvesting randomness, why not
-> design the implementations to be clamped at some per core value such
-> as a megabit/second.  In the case of the documented RDSEED generation
-> rates, that would allow the servicing of 3222 cores, if my math at
-> 0530 in the morning is correct.
-> 
-> Would a core need more than 128 kilobytes of randomness, ie. one
-> second of output, to effectively seed a random number generator?
-> 
-> A cynical conclusion would suggest engineering acquiesing to marketing
-> demands... :-)
-
-My assumption is that it was simply easier to not implement a
-rate limiting feature at the CPU level and punt the starvation
-problem to software :-)
-
-With regards,
-Daniel
+base-commit: b555d191561a7f89b8d2108dff687d9bc4284e48
 -- 
-|: https://berrange.com      -o-    https://www.flickr.com/photos/dberrange :|
-|: https://libvirt.org         -o-            https://fstop138.berrange.com :|
-|: https://entangle-photo.org    -o-    https://www.instagram.com/dberrange :|
+2.34.1
 
 
