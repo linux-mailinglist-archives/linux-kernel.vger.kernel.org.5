@@ -1,104 +1,87 @@
-Return-Path: <linux-kernel+bounces-54161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60EB684ABB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:40:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E522A84ABB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:41:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 828561C23091
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:40:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 969641F25AF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 01:41:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E0BC4A12;
-	Tue,  6 Feb 2024 01:40:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB9EF79C5;
+	Tue,  6 Feb 2024 01:41:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yumLhjsQ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AYx/F1CC";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yumLhjsQ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AYx/F1CC"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C7oUbquM"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D01010F4;
-	Tue,  6 Feb 2024 01:40:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB016FB0
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 01:40:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707183604; cv=none; b=iF1HidprYGfAfaXDGBsaENICVO7a2+SjyxSwZny+1L7i7llKfjJ5K/JnNQGP/5qyOM5ilIrBZLj8aQZwLUB7nU82ChQXwoWLIS9Q+J7eA38PqcxEvRRscCvelr37XOr/SGBtXXTmOwU7xwZZFickGek3QwXGhunBsbJnKBLx4Cs=
+	t=1707183660; cv=none; b=u0b1GCJOSiBFq0QpzTt4LFk3YjPGuIjxbQoqU0+zDSdBHCu2kMB7me3YM5io8BdB4f3WUNvy7nb2reo282mhHzJbB1EbnXfMWh/uFm4jNNrCQDnL+RaAzHamCKEjYJx9iYyYV15BvQlZ1ebYFOB354AN3extE4DmYYGn7d9+l2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707183604; c=relaxed/simple;
-	bh=NUhCdytWIdemudVvZdAo75J4H9K6/U8s01PbY/tbFn8=;
+	s=arc-20240116; t=1707183660; c=relaxed/simple;
+	bh=EJX1aSiUsQpUURNR8wGkY2ER/ZLmtFqAVRvSKnMN0zE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nx+dQ4ZF4mi/gBqMihBUPMDHfkI8Y2Gr0kMAIbLK9Hxy6UpOqwdHoaIHunPvqKtO740G8YIVN+/PS9QeJ8tbhodYFybYlVymodh0rgBL0A6r/9w53Kb8TJ+7EhJrluUZV9lEdFNiwOvtq3g4yAHIs4OKmU5RojZylLtfyATtk/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yumLhjsQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AYx/F1CC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yumLhjsQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AYx/F1CC; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 936CB1F383;
-	Tue,  6 Feb 2024 01:40:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707183600;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fzTCSdyEgtc+IhXSe9CfexCQ9Mam0Tb3TrmRo3hIREE=;
-	b=yumLhjsQdmx7zhc1Io3nWwsKM+5OnDCd1zMb5rD64iWlyyj4tNONPZqgVw/rXRt/b17dXO
-	vNPQpfHBo1lMjfG+5s8xml/NwDGlX2s/yYOTDsvktLaJspFlJgjVlzT2cnuaxZiDrJ+1de
-	X4EYvl1McK/vZOHFgH4iTwlD7ep9xd8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707183600;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fzTCSdyEgtc+IhXSe9CfexCQ9Mam0Tb3TrmRo3hIREE=;
-	b=AYx/F1CCr0KwKBZxmKBCFdSbCN18Gm56B92WYOuPi0WPwHm19cQ5g4RXca31Z1EweMjlLf
-	Lx46bqWKcS9st8Dg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707183600;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fzTCSdyEgtc+IhXSe9CfexCQ9Mam0Tb3TrmRo3hIREE=;
-	b=yumLhjsQdmx7zhc1Io3nWwsKM+5OnDCd1zMb5rD64iWlyyj4tNONPZqgVw/rXRt/b17dXO
-	vNPQpfHBo1lMjfG+5s8xml/NwDGlX2s/yYOTDsvktLaJspFlJgjVlzT2cnuaxZiDrJ+1de
-	X4EYvl1McK/vZOHFgH4iTwlD7ep9xd8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707183600;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fzTCSdyEgtc+IhXSe9CfexCQ9Mam0Tb3TrmRo3hIREE=;
-	b=AYx/F1CCr0KwKBZxmKBCFdSbCN18Gm56B92WYOuPi0WPwHm19cQ5g4RXca31Z1EweMjlLf
-	Lx46bqWKcS9st8Dg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 713C2132DD;
-	Tue,  6 Feb 2024 01:40:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8ao2G/CNwWVICwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 06 Feb 2024 01:40:00 +0000
-Date: Tue, 6 Feb 2024 02:39:31 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Dave Chinner <dchinner@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
-	Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH 4/6] fs: FS_IOC_GETSYSFSNAME
-Message-ID: <20240206013931.GK355@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240205200529.546646-1-kent.overstreet@linux.dev>
- <20240205200529.546646-5-kent.overstreet@linux.dev>
- <20240205222732.GO616564@frogsfrogsfrogs>
- <7si54ajkdqbauf2w64xnzfdglkokifgsjptmkxwdhgymxpk353@zf6nfn53manb>
+	 Content-Type:Content-Disposition:In-Reply-To; b=X3/ybvklYRRcF6L5U+DT+JGVIG3dX6EWB2nKnoRqKiDQ5nEOl9QotqCPERZDCHYUK6E91vSAETk1cedPmi8sf8eY8lDf6c18/QEDZw4UUW/TTR/YkG8AB89tBkAMVSKJE2jzHqTzU6hy7qlgNePeA5Lc34H1jal5oswmOJq1ZuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C7oUbquM; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d71cb97937so2887985ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 17:40:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707183658; x=1707788458; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h1FhD7dCGFDGS4AXee8u96jXb8nzsDejoeVMiQf1ZUM=;
+        b=C7oUbquM9slpcVctYqdvlb7dMtR7Wiw7ri1pMYecsyKqW0Yg0N4DVF35Kilf3bVIVm
+         PR0PUEhDncqnnoRd53XkAY8cUFJAQOUMGR3e59ZZ4c3qFvd45SOaKNA1Q9e4vfoRhOYc
+         6QufLP1mLi/+p6WGuS3Oh4Oxta6wOifOFyZZY4KWwP9q1pd/LlDXmP0oHCK3R3oDPTHU
+         KZ3YuRUkKpYSUxH0y4bOpFcSq3nGtsiuepXcIYpwBEXKHjWIEjDl4AblcldgDII/IaLv
+         xwdb7k0+W+LHnxaDA1jkNzOq+Scw6IzBJ606kHARa8GfJdnVl+ogZp7F59A4XNghbiPK
+         vbpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707183658; x=1707788458;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h1FhD7dCGFDGS4AXee8u96jXb8nzsDejoeVMiQf1ZUM=;
+        b=tmEr2uL+u3b3tC6KkKaSyeLgUencDV9KW/9cu1IacShBDT+vBu7M5atde+zR1GdL5s
+         cizT4B1KQIZ04CnbLZwvxVaM8jYZRtBMjTqyjBxDAQtTmd/VYXsCSyy6rm0SlkxE7h8y
+         iHk9AoJJSEVfyoOqmmTfzZpOqNN4EOL1sMzopjPMMOMfKJBIQFMdybXGYHB0SawRqSME
+         cx8MJZ6GV7YYUBcq/k525n1r8g+kJNGuRPKk4E1imBk8490wjOb0Cz8Y/4iquVri0/vk
+         Cjw+OSeL1q2DAmYCUadlaGeYhBD7SUaDIHyDkLvDHj1NNVsmjAW/nbfVXivaqMrBAazh
+         Qjhg==
+X-Gm-Message-State: AOJu0Ywo+mAfAqs0FjcTtO7z/0/uyoPOYdc7JFNKgeysWXSfOP3MQudn
+	NLRDTqE6mqcaSfjNmzfFUr4hXrId8AO5lToOBPVv+JYQ0rO9l52r
+X-Google-Smtp-Source: AGHT+IGXgUadCg+XodhrSr97QMN0VuUJ5GZq8Chw7RBsrowD7hG3rNtCjZIygR4119nHiZUIVlVuXg==
+X-Received: by 2002:a17:902:6b0a:b0:1d9:a589:aa6f with SMTP id o10-20020a1709026b0a00b001d9a589aa6fmr270056plk.67.1707183657611;
+        Mon, 05 Feb 2024 17:40:57 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUGyTutDRkuYEOnlQnvnBFSM5KthUadLICZCHYz6/2ljiEZLidhgmagLOf/SIYuYklXMB2rNJispjrqWiYN0wCzWb+L70SaLqgZ2KusTnKCAmOeYadXO+N/u4stsJGD4kcknKaAFfesK2NsoA2KD1aqjhdTDD3uSTso9oWFKX+znkw4XH7rdDAQwcD8CfPUMFcIfSkAEQsowG2pgqLZQaDPWwmCmad0J9hUCXSjiNGcwWnNcKuGMFEw00fONvwFiUv5cqGhYw==
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id jz5-20020a170903430500b001d8d1bf5b98sm558029plb.54.2024.02.05.17.40.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 17:40:57 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 5 Feb 2024 15:40:56 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
+	Costa Shulyupin <cshulyup@redhat.com>
+Subject: Re: [PATCH-wq v3 0/4] workqueue: Enable unbound cpumask update on
+ ordered workqueues
+Message-ID: <ZcGOKNcqfr2t1NC9@slm.duckdns.org>
+References: <20240205194602.871505-1-longman@redhat.com>
+ <ZcE8pUuHfa7gVZs6@slm.duckdns.org>
+ <ZcF3qmion7H6qyYY@slm.duckdns.org>
+ <35ec9009-52eb-40aa-bf7a-db7a451d3652@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -107,68 +90,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7si54ajkdqbauf2w64xnzfdglkokifgsjptmkxwdhgymxpk353@zf6nfn53manb>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yumLhjsQ;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="AYx/F1CC"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.11 / 50.00];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 MX_GOOD(-0.01)[];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.40)[90.89%]
-X-Spam-Score: -4.11
-X-Rspamd-Queue-Id: 936CB1F383
-X-Spam-Flag: NO
+In-Reply-To: <35ec9009-52eb-40aa-bf7a-db7a451d3652@redhat.com>
 
-On Mon, Feb 05, 2024 at 05:43:37PM -0500, Kent Overstreet wrote:
-> On Mon, Feb 05, 2024 at 02:27:32PM -0800, Darrick J. Wong wrote:
-> > On Mon, Feb 05, 2024 at 03:05:15PM -0500, Kent Overstreet wrote:
-> > > @@ -231,6 +235,7 @@ struct fsxattr {
-> > >  #define FS_IOC_SETFSLABEL		_IOW(0x94, 50, char[FSLABEL_MAX])
-> > >  #define FS_IOC_GETFSUUID		_IOR(0x94, 51, struct fsuuid2)
-> > >  #define FS_IOC_SETFSUUID		_IOW(0x94, 52, struct fsuuid2)
-> > > +#define FS_IOC_GETFSSYSFSNAME		_IOR(0x94, 53, struct fssysfsname)
-> > 
-> > 0x94 is btrfs, don't add things to their "name" space.
+On Mon, Feb 05, 2024 at 08:24:06PM -0500, Waiman Long wrote:
 > 
-> Can we please document this somewhere!?
+> On 2/5/24 19:04, Tejun Heo wrote:
+> > On Mon, Feb 05, 2024 at 09:53:09AM -1000, Tejun Heo wrote:
+> > > On Mon, Feb 05, 2024 at 02:45:58PM -0500, Waiman Long wrote:
+> > > >   v3:
+> > > >    - [v2] https://lore.kernel.org/lkml/20240203154334.791910-1-longman@redhat.com/
+> > > >    - Drop patch 1 as it has been merged into the for-6.9 branch.
+> > > >    - Use rcu_access_pointer() to access wq->dfl_pwq.
+> > > >    - Use RCU protection instead of acquiring wq->mutex in
+> > > >      apply_wqattrs_cleanup().
+> > > Looks like we raced each other. I'll wait for v4.
+> > BTW, please don't bother to handle __WQ_ORDERED being cleared. We are very
+> > close to removing the implicit ORDERED promotion, so we should be able to
+> > apply the patch to remove the distinction between explicitly and implicitly
+> > ordered workqueues.
 > 
-> What, dare I ask, is the "namespace" I should be using?
+> BTW, the workqueue.c file in your latest for-6.9 branch still has a
+> reference to __WQ_ORDERED_EXPLICIT in workqueue_apply_unbound_cpumask().
+> Will that break compilation?
 
-Grep for _IOCTL_MAGIC in include/uapi:
+Right you are. Will post a followup patch.
 
-uapi/linux/aspeed-lpc-ctrl.h:#define __ASPEED_LPC_CTRL_IOCTL_MAGIC 0xb2
-uapi/linux/aspeed-p2a-ctrl.h:#define __ASPEED_P2A_CTRL_IOCTL_MAGIC 0xb3
-uapi/linux/bt-bmc.h:#define __BT_BMC_IOCTL_MAGIC        0xb1
-uapi/linux/btrfs.h:#define BTRFS_IOCTL_MAGIC 0x94
-uapi/linux/f2fs.h:#define F2FS_IOCTL_MAGIC              0xf5
-uapi/linux/ipmi_bmc.h:#define __IPMI_BMC_IOCTL_MAGIC        0xB1
-uapi/linux/pfrut.h:#define PFRUT_IOCTL_MAGIC 0xEE
-uapi/rdma/rdma_user_ioctl.h:#define IB_IOCTL_MAGIC RDMA_IOCTL_MAGIC
-uapi/rdma/rdma_user_ioctl_cmds.h:#define RDMA_IOCTL_MAGIC       0x1b
+Thanks.
 
-The label ioctls inherited the 0x94 namespace for backward
-compatibility but as already said, it's the private namespace of btrfs.
+-- 
+tejun
 
