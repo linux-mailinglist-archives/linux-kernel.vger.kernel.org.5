@@ -1,140 +1,104 @@
-Return-Path: <linux-kernel+bounces-54254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 594AD84ACDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:27:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F61E84ACDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:29:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AFE11C2265A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:27:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8AEE28675B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:29:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B6373180;
-	Tue,  6 Feb 2024 03:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 477DC745CE;
+	Tue,  6 Feb 2024 03:29:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WFrXd+Kc"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TOoi/NnZ"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E58A6EB68
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 03:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373D27319F
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 03:29:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707190026; cv=none; b=BngH4JxpmwIsdp1BaeIXO1vV1duuPG22xoM+aEkPuVvcor1abzVbqRGNLCK/3drTgBJysqwPBrMA7/AgUp3GEAvwocbND7l/gWlx8TmXtIgLOmMWl1wRgX0812iKewD4Akg9L+O71oKn3APXL4gWD+/GUcwVKDgWCvnA2FCO8ws=
+	t=1707190176; cv=none; b=HVBeQwGlVFfrdJFXR69ynkwjCtSM9g7rOhut5WpQTj4j2LcaB2AU/GyJsu32Y0HNnDV/poD8svouxrvqI8DMh3f6/X1IOCsV6wJ8V/5nFh/a/6KNAh6591EiBw6cCRBygK7XIf6lrMrrMngeOqY7t4dWk2+txwhAxTjXJ2biYsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707190026; c=relaxed/simple;
-	bh=Z/8kCrneIaAo61lJzR1eoZAFPuxh04I96DLlFzqiKkQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TGrYeZor7FzCmxObOdd/lo4R/s7D//0OuC01v0LP9eIvsO8nTTrGHSAi+EYHvDIXNheQIgsjhGyWQigGz+FaoKlGo88z2iDtqDtDDCP/Oq0WNFj1yE8Sk0yN+Y7Q/bY3qc//3MQGpOlehw1bB6F8a9aqNVT0WsziFupjutAFexg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WFrXd+Kc; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e054f674b3so413496b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 19:27:05 -0800 (PST)
+	s=arc-20240116; t=1707190176; c=relaxed/simple;
+	bh=K47t6Qn8VX9LZd2vOHxHLV0Ys/CaGLr5+PC1CzGP2TU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=tCEHbEVQthxdgQR9x9qQTOEBv7gfai2XCiW/V6n2jjcG87WXDdtAKCcHXfhCe6xac3wDyMepnmaGN8Ej/qoQzfs+3IxshNvF4gV0MrWr34iY5OZ4O9sTd7yHHQiV4oLWB5p87LPPKkCq4pFI8ahKo8BcpIonBniPCoSxAZWL5N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TOoi/NnZ; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf216080f5so8480598276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 19:29:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707190024; x=1707794824; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EWmE4W0F6JzWR2V7Cfi7Q0WB8ukiHYzdqVQ4h9OXpcs=;
-        b=WFrXd+KcmqB2cYPdWXof0tpZt8P06xdhUzxSAACAgYDqQAn4DNI0CMCRYiK3x6eg04
-         EkdprninHJnu2rwBH/C1aV38Ej9ycny5mKxPN3VdEfriT5BQHE9YdScs7QJbtkVRzTWA
-         /e6h7zJJtWUl7mdZ/bq5wH8+xO5pqz3YP8Gk09eQ0Es2QxFh1PgC7c2Nwq8IrQMboGTW
-         0gFuCUYpmgurxsbny4HhgDCHmxQ68keZfACnFct8XxUFF47BpMKUt0YcIHELAPfSdyNz
-         f2hQClHOgd7G02NrDBQ834EQQ45mlIIa7Rsxfm82PDVKh1BAqqinTwIDw8Tb7zfdMJRP
-         a2kg==
+        d=google.com; s=20230601; t=1707190174; x=1707794974; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Tfd5OhfoKoOciQEBeRQDfj0WyGPDWpvLlZKvDtbwOk=;
+        b=TOoi/NnZH+pUj3KWcAJqUOwBc0c7UoEkwSEdwf66eoWBdZcAhhPN8swGlvwOqxFDkp
+         mzzYCAoip5P/yGQwTlxmz9KRuhSX2trcjL6e4e4f9gPhg44AKcksyuKB6YDPrkQ1k5v7
+         hOtGz9Q0VcgWLJRJj+7SMghr9zd1nI3r0BCfx/DCHMVaYsCbx2TnwZTDtK6kGv/UpUSJ
+         0chnSZ2EaLKri/8e7zGssw0b7/mLd7kqrAF4j2WtYUEaYr1sp8oLs79qbzDtlrlvdfML
+         wXsoENVlptkI5EG6ELh4enZ5KSfX6Z4m/f/89PSHdVcbKk0Ar2OTfA+eIIOteJf5/swi
+         DEVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707190024; x=1707794824;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EWmE4W0F6JzWR2V7Cfi7Q0WB8ukiHYzdqVQ4h9OXpcs=;
-        b=oxrLnWqytnC0V91E1PMU4c2T9fUtkP8/dYXPD5TET8xX7yqVYS05/4fGHkZK5LgWO8
-         2wlsdwv4TTu8UpkyAFWbl4fZSLXJdA7XOHv8ptzBMfAIqKE26CkjI9rKFWPbF9u+yWhr
-         wHmPlgZYZH+Hp31iZy/mPAvI6R7M8ZUxPNhL9INNXDM9yut4ea0tf8t/Qyux1EWqrtgJ
-         2BN1yq49bLcB+ooK5jpvNoo14ZR0p9R0kQ4neoqjy0yMrTGLw36EfT0wuWh3DN7gK5fo
-         K4K3qdndzLVyorV1+BxI3KpFd5pISyu/tX0IP6Z2cN8ltrZPwZ6Wa8rXTaXdlvk+N/vN
-         nViA==
-X-Gm-Message-State: AOJu0YwbiL7okFL5iMOvMJ5c/6Uo+TED+OAIB6AzEOnwlK6IANO0iHpz
-	uexM74DLub7aAuywhiMrkw/cM6FJsd/62Ar1iwEDvUytfYN2UNJu
-X-Google-Smtp-Source: AGHT+IFcLAO3UlSWN5NwuxhRD3zbinWJslbqmyaRKdP55n6E6QCBvshFD0VOa6+HmXyocmdEJv6olA==
-X-Received: by 2002:a05:6a00:1acf:b0:6dd:c7ea:29e with SMTP id f15-20020a056a001acf00b006ddc7ea029emr1709495pfv.12.1707190024482;
-        Mon, 05 Feb 2024 19:27:04 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVOoTZB6QeEbsv+OMvjJIOJR9yNONXJ6Fa3btU7RT25GjtJvKHYD/g7kMHQrmp3NKnj1SzGTJg3zPzz98MjmbnGyyYQqNTjKP0uCCkgGrx2mW8D1APiQCivyRJsioj30os47Nz01o3SGML1y64mrfMzQOPzFNiB+8HzAb9UL1AgPK9i/uRuyGb4nRAtZcnJ
-Received: from cuiyangpei ([43.224.245.227])
-        by smtp.gmail.com with ESMTPSA id t12-20020a62d14c000000b006dfef3ed2d4sm689223pfl.110.2024.02.05.19.27.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 05 Feb 2024 19:27:04 -0800 (PST)
-Date: Tue, 6 Feb 2024 11:26:59 +0800
-From: cuiyangpei <cuiyangpei@gmail.com>
-To: SeongJae Park <sj@kernel.org>
-Cc: akpm@linux-foundation.org, damon@lists.linux.dev, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, xiongping1@xiaomi.com
-Subject: Re: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
-Message-ID: <20240206032659.GA6910@cuiyangpei>
-References: <20240129121316.GA9706@cuiyangpei>
- <20240206025659.203155-1-sj@kernel.org>
+        d=1e100.net; s=20230601; t=1707190174; x=1707794974;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Tfd5OhfoKoOciQEBeRQDfj0WyGPDWpvLlZKvDtbwOk=;
+        b=i8en16wF9VTQ/JSVlPku0NABdySPwtZxXZ8iXADpV5G/6H8QxpLD+YMlDPui6MKD4v
+         eX47nsymDo++kvdHcgUEpSgJy6swt4Qw1vxFrOjMRGotw3YFzsy+BKBSqrIQJCG95dQl
+         JuwtjM0tJskbdYEo2fU2IXxwaSgyObbizsu8frXhslDoJiB8++L3Jij3iYqk3yURoQe2
+         verRdSAuAewB2Cwv56tqTOssZd49mIOpNkjsN9AZhXUUUaDvreDJRWk3bQA6c/erMtPn
+         zS2Tm8vdTa0kzxg9Trl85rDxI/t5cHTjfMESkxzt4T/E7SJfL6HtI5aiyPylSMSXNEiG
+         dggg==
+X-Gm-Message-State: AOJu0Yz6rUcDOz4DxHgL9CEqQ19/d2JWC4FN/htr7lC0kUdOICrvkRJy
+	K5p0YMmVf+o469y+pgXichWTwkUzH608NBh6NvuQk4Hvf+tSw1YXg+lsnbHKMHS9zgH5XN+a0AU
+	86w==
+X-Google-Smtp-Source: AGHT+IFGKs7rwk/xOH6e9m0tOkG5KkbLAalcPqOVjHui+Z6DsE6kZ01uHKZEANcR0800iNMQT8Is5W6Gv14=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:160d:b0:dc2:1f34:fac4 with SMTP id
+ bw13-20020a056902160d00b00dc21f34fac4mr139109ybb.2.1707190174210; Mon, 05 Feb
+ 2024 19:29:34 -0800 (PST)
+Date: Mon, 5 Feb 2024 19:29:32 -0800
+In-Reply-To: <ZRpiXsm7X6BFAU/y@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240206025659.203155-1-sj@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Mime-Version: 1.0
+References: <20230911021637.1941096-1-stevensd@google.com> <ZRZeaP7W5SuereMX@infradead.org>
+ <ZRb2CljPvHlUErwM@google.com> <ZRpiXsm7X6BFAU/y@infradead.org>
+Message-ID: <ZcGnnIJNPG-nGAND@google.com>
+Subject: Re: [PATCH v9 0/6] KVM: allow mapping non-refcounted pages
+From: Sean Christopherson <seanjc@google.com>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: David Stevens <stevensd@chromium.org>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
+	Isaku Yamahata <isaku.yamahata@gmail.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
+	kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Mon, Feb 05, 2024 at 06:56:59PM -0800, SeongJae Park wrote:
-> Hi Cuiyangpei,
+On Sun, Oct 01, 2023, Christoph Hellwig wrote:
+> On Fri, Sep 29, 2023 at 09:06:34AM -0700, Sean Christopherson wrote:
+> > With the cleanups done, playing nice with non-refcounted paged instead of outright
+> > rejecting them is a wash in terms of lines of code, complexity, and ongoing
+> > maintenance cost.
 > 
-> On Mon, 29 Jan 2024 20:13:16 +0800 cuiyangpei <cuiyangpei@gmail.com> wrote:
-> 
-> > On Sun, Jan 28, 2024 at 08:28:04AM -0800, SeongJae Park wrote:
-> > > On Sun, 28 Jan 2024 17:13:00 +0800 cuiyangpei <cuiyangpei@gmail.com> wrote:
-> > > 
-> > > > On Fri, Jan 26, 2024 at 12:04:54AM -0800, SeongJae Park wrote:
-> > > [...]
-> > > > > So, 'update_schemes_tried_regions' command is firstly handled by
-> > > > > 'damon_sysfs_cmd_request_callback()', which is registered as
-> > > > > after_wmarks_check() and after_aggregation() callback.  Hence
-> > > > > 'update_schemes_tried_regions' command is still effectively working in
-> > > > > aggregation interval granularity.  I think this is what you found, right?
-> > > > > 
-> > > > Yes.
-> > > > > If I'm not wrongly understanding your point, I think the concern is valid.  I
-> > > > > think we should make it works in sampling interval granularity.  I will try to
-> > > > > make so.  Would that work for your use case?
-> > > > > 
-> > > > It's much better than working in aggregation interval.
-> > > 
-> > > Thank you for confirming.  I will start working on this.
-> > > 
-> > 
-> > Great, looking forward to seeing the progress.
-> 
-> Just sent a patch[1] for this.
-> 
-> I also updated DAMON user-space tool, damo, to use this improvement[2].  I hope
-> that to help others who using DAMON with their own tool to easily understand
-> how they can get the improvement from this patch.
-> 
-> Also, please feel free to ask any questions and/or help.
-> 
-> [1] https://lore.kernel.org/r/20240206025158.203097-1-sj@kernel.org
-> [2] https://github.com/awslabs/damo/commit/75af3a1c0b3e79cd3207f0f8df5b5ac39f887450
-> 
-> 
-> Thanks,
-> SJ
-> 
-> [...]
+> I tend to strongly disagree with that, though.  We can't just let these
+> non-refcounted pages spread everywhere and instead need to fix their
+> usage.
 
-Hi SeongJae,
+Sorry for the horrifically slow reply.
 
-Thank you for sending the patch. I will verify this feature on the phone and reach out
-if I have any questions or require assistance.
+Is there a middle ground somewhere between allowing this willy nilly, and tainting
+the kernel?  I too would love to get the TTM stuff fixed up, but every time I look
+at that code I am less and less confident that it will happen anytime soon.  It's
+not even clear to me what all code needs to be touched.
 
-Thanks.
+In other words, is there a way we can unblock David and friends, while still
+providing a forcing function of some kind to motivate/heckle the TTM (or whatever
+is making the allocations) to change?
 
