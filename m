@@ -1,159 +1,91 @@
-Return-Path: <linux-kernel+bounces-54592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ED9184B14E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:31:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A330C84B150
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:31:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 414B41F24D75
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:31:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EA81287F96
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E15D12D169;
-	Tue,  6 Feb 2024 09:30:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ELU5qB9A"
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F3AF12D17A;
+	Tue,  6 Feb 2024 09:31:07 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB2AF12D146;
-	Tue,  6 Feb 2024 09:30:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A82F12D777
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707211843; cv=none; b=JQZ4RSzm51YDYVaT665gfKu2RpSfRiSjDSH4BcfZXunnyZxMqNH/pNJT3Uum3h+KvbKMEbkWn+PT/eB0CmpUi9szdIkt47mQeiRLpDsWuTaxO9KQ8Jk8OiTd93VXerpSjp5Q+xqnVHTre4NXb3L7O0wFjZnroifKpAs/9+aYkWg=
+	t=1707211866; cv=none; b=fhxuQ5qUFOGR/EQbkGiUmr9/HgNNLsKDYGQyimPbBNYCMVnoZTCvGxGfevfeAQDYYBqhTdFCHBOtOOUHaGbRKPwXdFyisF9kS5887fqxdZEzYcPB3SW1rxRmL5Oq4a+CJVFCZK+xvNpLbrjFWxGXxxjq7+28ErMat8xQ7iPiVO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707211843; c=relaxed/simple;
-	bh=jlGj9Uu6Tk9w2AFXs0V9xd4N6n7LGYzGry6z71IofEk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iBUws/bFDOoIyUL+NcqXPdqkiVL8vC6Uf68xFu3DKe/2Fksw7Wy4uGg8niPNbub0+Dh88liofH/wWEesS45Bhz7ZiU/zPbkXgixEgl29nKNu2ojKiHV02cJWBtlPG4XwjmxX7xyzx4pT5J8bxjPDK4em5u0bSQ3KDvawXuUys7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ELU5qB9A; arc=none smtp.client-ip=209.85.221.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4c035b3203dso552355e0c.2;
-        Tue, 06 Feb 2024 01:30:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707211840; x=1707816640; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dJknXdok6CD7ygpMK4/zXVds+SczZy7OrsvIqJVHeK0=;
-        b=ELU5qB9A6E1sODf4Ki7DxtqpIGZJF1w+1ZZNOv/NfZQPMvrN75/XAY54/Cducp8H6a
-         gcv06i4xqXyTejD/WqikPcu7eQHTZ9W3JA/akCabDh0WYhQty969Q527G8DtiLev+w2L
-         20L0VzY/m9YyJ1mizflTJw76lJtpbKzzfLIKzHxFjFab+MA2+ms9+iiB3Lsgk+rSv4aS
-         O572VR47K6Gk1AKeVKp/jWwT9wJGnARJ4xfwSqv+H7P0YY/EO1Dr22To1fhBjO5GmMaX
-         KZXdyW5W3BeTedvgHTrjqLH+2zQLRFPUHH2dcP6nAlxvwh8RCvwDnI3IsdcJiefPhK6V
-         Ov+Q==
+	s=arc-20240116; t=1707211866; c=relaxed/simple;
+	bh=xFF7DkeUffKYwvbOmRdOo6ss8mPv0mpUT3ui1ov0Llo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=ZUv4qkEqL0aoAGa7UJHSzF2xwaQfAN3U0mTNLELOWG6xeMFMhtgkJG4jWzrhlmoI3bzrQAVj2WzoHTgTwQ26m2g42s642eFi6ua5OG39NR78qjq58NUgBnY/ScS2wwUr5UC/m24VD9W4Il4dn7hrN6xClULbyEOKjpn55aYx7Nw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-363c06d9845so21159335ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 01:31:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707211840; x=1707816640;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dJknXdok6CD7ygpMK4/zXVds+SczZy7OrsvIqJVHeK0=;
-        b=TRgeFVpvsx8nZRSoL969A3TgXP1mfrBE1lMthAclFmA8532dBjDHcw5ZMbs9IeHwqI
-         yQCaH2rYn31NNzqHlPjdS+MZNxSjjQ44G17ry5j6qphxdDFPR2Y7atv+RRJkdaRsnbS1
-         s+4egN8lcD5s/ld0iTOhxYcY30cMay7QP2N5YpgbwkVTIt7TAdgOpYbmpCmmBL90TBPY
-         JBMrNrjUI1lmLkcGLdLyAr5FwvvEh0RuTQ6abCsCO7cvbWW3Tiks7zlQFu5Rpvb2Xufx
-         LJMg3MUFvKwfJlA1kxyXMkDSol8jh09EutrxZa8lY3DG0vIdtHEtKBHlLu+exyn3WMEs
-         y3PA==
-X-Gm-Message-State: AOJu0Ywc3wL8SgW/5eYj0j5SgK69KG6zrWffelI9HFk66zp/EC4onx+R
-	b2BjSJq51SE2bU26NRDci6fr1oMfDd1DJYXJNbXLTakHuWXOKD6hLnNEHqGC1Q+wkPqjMSULgrW
-	gYPu5fcgYKuUX+yCXE3QPEgbepSU=
-X-Google-Smtp-Source: AGHT+IFVYZOTJ8IY2wiZ9RnEH3QZhmUHcyF0uhCeBks0nSnQXki0D+Bvb0lyqduFUWzUGGISvlARx6OrildiuBJAsgo=
-X-Received: by 2002:a05:6122:201a:b0:4c0:2561:75c2 with SMTP id
- l26-20020a056122201a00b004c0256175c2mr1415596vkd.4.1707211840474; Tue, 06 Feb
- 2024 01:30:40 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707211864; x=1707816664;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=H2L1A6fmofMmSXCOvCOTJZEDDig3DubXgKsoiNA5cGI=;
+        b=MyZ1WZmgpnZLf05MhJxBfhnZ/qaEn3PfA/m8GIYBREneFfcuXDHKQK2sDlo9VGY8DG
+         8hx3vLIyQAY9nAK1trVH4bEIvLBBbNRWbUWRiaefjC2bd8q4pHIF5Hm78FU7OSfTS5zM
+         89XmBUfdBGs7ar3nEVHlMgBNTd4P3RBKvDgSKGuD5DzfM7Ow+hhDZMnj92e3Bgs3V8Zq
+         9ZUIx5A2wz65SRBEeQwrUyOTC6oSAAf9ZV1lJEwJ5XF468pYz3XLpYfXhc//PyHap8tV
+         mektdBEY11oSgoHAI/S1FIftWPG0B3l0Cu12FkDXTffvzQOD3qbTLgg7LyVaX7r61tnQ
+         Qr2A==
+X-Gm-Message-State: AOJu0YyWKOjNG3A8DYLB3WzpK1AwzeSXVeb5N89B3fv0PLbQWmHVhxaL
+	b0+NprmTQeT8UQio5TNqtWhZhli4i3IGckqTTGq6LO4uWK2iRgFuLfEvMlT8YTdfbw67Y3lh8q3
+	RUs4IgTUV41T+rqnT55ncNFsmnHl3pD3ff78f1o7vXZLM1FY/UwV9xjw=
+X-Google-Smtp-Source: AGHT+IGkA1pN6H7fqXDGAhmqsBYCD3ZyAqAW9h/Bl5enO4hn8vPkVckgxnIGxdeDch62mxmyUlU4QyaZeKkhfIIKtkA4EcMM5f6E
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103003011.211382-1-v-songbaohua@oppo.com>
- <20240106013021.GA123449@google.com> <CAGsJ_4xp7HFuYbDp3UjMqFKSuz2HJn+5JnJdB-PP_GmucQqOpg@mail.gmail.com>
- <20240115023457.GA1504420@google.com> <CAGsJ_4x6e7=tWVKfauJaGMRmJ3tz7GymKosYcHrxoxEnAHyX6g@mail.gmail.com>
- <20240206015543.GH69174@google.com>
-In-Reply-To: <20240206015543.GH69174@google.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 6 Feb 2024 17:30:29 +0800
-Message-ID: <CAGsJ_4z_de_Tu=q_Y0LxWH1Buva-LT086kfMDL=gdksnMGXVXw@mail.gmail.com>
-Subject: Re: [PATCH] zram: easy the allocation of zcomp_strm's buffers with 2 pages
-To: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: minchan@kernel.org, axboe@kernel.dk, linux-kernel@vger.kernel.org, 
-	linux-block@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>, 
-	Andrew Morton <akpm@linux-foundation.org>
+X-Received: by 2002:a92:cd83:0:b0:363:7bac:528e with SMTP id
+ r3-20020a92cd83000000b003637bac528emr147749ilb.1.1707211864284; Tue, 06 Feb
+ 2024 01:31:04 -0800 (PST)
+Date: Tue, 06 Feb 2024 01:31:04 -0800
+In-Reply-To: <0000000000005a02da05ea31b295@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ba28410610b33cc5@google.com>
+Subject: Re: [syzbot] [jfs?] UBSAN: shift-out-of-bounds in dbSplit
+From: syzbot <syzbot+8c777e17f74c66068ffa@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, ghandatmanas@gmail.com, jack@suse.cz, 
+	jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mushi.shar@gmail.com, shaggy@kernel.org, 
+	syzkaller-bugs@googlegroups.com, syzkaller@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 6, 2024 at 9:55=E2=80=AFAM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
->
-> On (24/01/29 10:46), Barry Song wrote:
-> > On Mon, Jan 15, 2024 at 10:35=E2=80=AFAM Sergey Senozhatsky
-> > <senozhatsky@chromium.org> wrote:
-> > >
-> > > On (24/01/06 15:38), Barry Song wrote:
-> > > > On Sat, Jan 6, 2024 at 9:30=E2=80=AFAM Sergey Senozhatsky
-> > > > <senozhatsky@chromium.org> wrote:
-> > > > >
-> > > > > On (24/01/03 13:30), Barry Song wrote:
-> > > > > > There is no need to keep zcomp_strm's buffers contiguous physic=
-ally.
-> > > > > > And rarely, 1-order allocation can fail while buddy is seriousl=
-y
-> > > > > > fragmented.
-> > > > >
-> [..]
-> > > Okay, makes sense.
-> > > Do you see these problems in real life? I don't recall any reports.
-> >
-> > i don't have problems with the current zram which supports normal pages=
- only.
-> >
-> > but  in our out-of-tree code, we have enhanced zram/zsmalloc to support=
- large
-> > folios compression/decompression, which will make zram work much better
-> > with large anon folios/mTHP things on which Ryan Roberts is working on.
-> >
-> > I mean, a large folio with for example 16 normal pages can be saved as
-> > one object in zram.
-> > In millions of phones, we have deployed this approach and seen huge imp=
-rovement
-> > on compression ratio and cpu consumption decrease. in that case, we
-> > need a larger
-> > per-cpu buffer, and have seen frequent failure on allocation. that
-> > inspired me to send
-> > this patch in advance.
->
-> May I please ask you to resend this patch with updated commit mesasge?
-> E.g. mention cpu offlinig/onlining, etc.
+syzbot suspects this issue was fixed by commit:
 
-I will send v2 to add this information in the commit message. thanks!
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
->
-> [..]
-> > > > > I also wonder whether Android uses HW compression, in which case =
-we
-> > > > > may need to have physically contig pages. Not to mention TLB shoo=
-tdowns
-> > > > > that virt contig pages add to the picture.
-> > > >
-> > > > I don't understand how HW compression and TLB shootdown are related=
- as zRAM
-> > > > is using a traditional comp API.
-> > >
-> > > Oh, those are not related. TLB shootdowns are what now will be added =
-to
-> > > all compressions/decompressions, so it's sort of extra cost.
-> >
-> > i am sorry i still don't understand where the tlb shootdowns come
-> > from. we don't unmap
-> > this per-cpu buffers during compression and decompression, do we ?
-> >
-> > am i missing something?
->
-> No, I guess you are right.
+    fs: Block writes to mounted block devices
 
-Best regards
-Barry
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=110ffd6c180000
+start commit:   708283abf896 Merge tag 'dmaengine-6.6-rc1' of git://git.ke..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=26188a62745981b4
+dashboard link: https://syzkaller.appspot.com/bug?extid=8c777e17f74c66068ffa
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138fb834680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1399c448680000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
