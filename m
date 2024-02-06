@@ -1,248 +1,279 @@
-Return-Path: <linux-kernel+bounces-54706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30A4384B2AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:44:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B74EB84B2A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:44:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC2352890F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:44:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A1F91F25B7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD80C12EBDB;
-	Tue,  6 Feb 2024 10:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A970153387;
+	Tue,  6 Feb 2024 10:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b="U8ZaQNCr";
-	dkim=pass (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b="V5/VRia0"
-Received: from mx0a-0014ca01.pphosted.com (mx0b-0014ca01.pphosted.com [208.86.201.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bqx/HFnG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DdqX2+OR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dMNap4FK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ITzOJ/hM"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A7341EA7F;
-	Tue,  6 Feb 2024 10:44:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=208.86.201.193
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707216246; cv=fail; b=enh75U4JwJ36ilNuRs8mMq7l0TsEJkcmfYNRYGEmqCvlPnRvPbJNQaXjcMACUdbVLXX3Jlw2BxLTp8FwS9S5VU29wptuVkcC/fMv1NQaIQdHGUZ73B60qtvL2jnoSk6dhScKln9p900GEijYVQ0yiYystwhAErAOhGibDOvJ7fc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707216246; c=relaxed/simple;
-	bh=ua9BtmcTgDW9gLY7oM2k7Me0dtA3qvRdLZ/GhvXRyaE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dguXuYnVzK25EdKCuo2JGUIouwvOTTHS6OsWAvZNk724QuFVXYhyb6d4FiErWkHj2nupfCwBHXsuDzRsKtIgdOuzmm5+Q/zB47rhv8NJ4GBVJ5IFVLBjo/ti7gnHdNhUTy9hl3b20dKHGgCaTbUskuk8k4Cc4AiONeleUXSUQc4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cadence.com; spf=pass smtp.mailfrom=cadence.com; dkim=pass (2048-bit key) header.d=cadence.com header.i=@cadence.com header.b=U8ZaQNCr; dkim=pass (1024-bit key) header.d=cadence.com header.i=@cadence.com header.b=V5/VRia0; arc=fail smtp.client-ip=208.86.201.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cadence.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cadence.com
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
-	by mx0b-0014ca01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 416AcBOb004611;
-	Tue, 6 Feb 2024 02:43:55 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=proofpoint; bh=JE/Xmi
-	AYLlwhbiG1xS2J7DsnwbAKuihY6cOknT41MDU=; b=U8ZaQNCrp5hPw2q5hYo92Y
-	BrhbgI749MSj/Aok7+ENnUAfe7kwAeL/AfAdhWcG+FERBPxweAc/M7nOM3uqQZBC
-	RV2uOyPME0c+eW5PTJkaTjSqqejGx0mxcU/7n4p3b/lTf9SmoVDoZi1X8lpKAMlj
-	Jwca7iZw412uRcLS4djJ2IugdYPSkKebRIHe/sRQ5C/xXo0o14eg5VL43ifZX+rO
-	yZq045LLmktuTnGwTRMawmipms/Ux4NJI7ntsiUHO80D/LL2I/dsu0Pi975dpJKT
-	Yb3Q7uxGQkqdK9xn1hBidj2+VW3+Mm+SCXgp6CuJLtE7JLseyAMOguJfwhJuORrg
-	==
-Received: from byapr05cu005.outbound.protection.outlook.com (mail-westusazlp17011010.outbound.protection.outlook.com [40.93.1.10])
-	by mx0b-0014ca01.pphosted.com (PPS) with ESMTPS id 3w3dpqh66y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 02:43:54 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mjUTgJFqfnzenb30tOaFXv+Z6B2ZdTfXGyVqUnF+6bdj+lD3AJc+diNHBKK/1KsArW5PKGq1kQW/+CWkmTzZVPkXJGkhrUzI590niRQpuSPK5WfWzJYE8dlVbyAmeyGlL44ibBk9BWwj+B285xLtDqsh/HCHtFAD3X0aDejTJTxIwZCQVlW4HRDcK0u4zZyOxJn55oD4JP8LanMtXhUG5kdETsDyx8wQB/oPyTbRYe/xnMQ2sP5h6xVi1CmxbbyzCRiKOm2p4RRlfULE1KNVBgWQMSn7iKPY22dHuPrRCitNsP5ucx0is38/HnTzlmYmaFhsPNnkc3X8nK4FhicIBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JE/XmiAYLlwhbiG1xS2J7DsnwbAKuihY6cOknT41MDU=;
- b=PpQkrkYoFmLarGpTd/4sKPX8hLDxYCiK+vrtjm/eZSanM8cRphVpTlrw6Ke5CKskTqd+wnwICNXXKvED5Twi4uiw7qGS34BCkShXSu4/MG878T2zDmypS+0wdO7a0PdY9Y1OhG6v5AxqYAcdNHHLjDq2kf5mNYEjtbHrpttPZ9OWldQb0Mi0ZW+JNlfiAX8L8eyQzudXqVqZIct/Nlsx1F4J4P0vIc3rvjoFnIsDw+MozJB6S8d/A8OwKTsGEER6OaZCcrDOqdb8vwiDOGVrelB0a6XEFL4ynmP6QPYztQCMjbpRoP9SCLZFGXjJtAxdro63RgqDkCZ8FfW9QemRRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 158.140.1.147) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JE/XmiAYLlwhbiG1xS2J7DsnwbAKuihY6cOknT41MDU=;
- b=V5/VRia0p/c2qZNgQ00Xhh+doLcIJXZBqIliS52NvTUXSxMrr9Uc6AUV8q2YwzgGxGNykB0NOWg/6Vmub8yhSXHmtQKiw/VQU+XUDi8G1leGCqR8r/acy0AYn3bIKDN1jfiEuoGDuY7Ch84JRltZMVzJblhs8sdCW2XkoFFali0=
-Received: from BN0PR04CA0118.namprd04.prod.outlook.com (2603:10b6:408:ec::33)
- by BN0PR07MB8941.namprd07.prod.outlook.com (2603:10b6:408:150::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Tue, 6 Feb
- 2024 10:43:52 +0000
-Received: from BN8NAM12FT084.eop-nam12.prod.protection.outlook.com
- (2603:10b6:408:ec:cafe::c2) by BN0PR04CA0118.outlook.office365.com
- (2603:10b6:408:ec::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36 via Frontend
- Transport; Tue, 6 Feb 2024 10:43:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
- smtp.mailfrom=cadence.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
- client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com; pr=C
-Received: from sjmaillnx1.cadence.com (158.140.1.147) by
- BN8NAM12FT084.mail.protection.outlook.com (10.13.183.159) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7270.8 via Frontend Transport; Tue, 6 Feb 2024 10:43:52 +0000
-Received: from maileu5.global.cadence.com (eudvw-maileu5.cadence.com [10.160.110.202])
-	by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 416Ahmaf005285
-	(version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 6 Feb 2024 02:43:50 -0800
-Received: from maileu5.global.cadence.com (10.160.110.202) by
- maileu5.global.cadence.com (10.160.110.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 6 Feb 2024 11:43:36 +0100
-Received: from eu-cn01.cadence.com (10.160.89.184) by
- maileu5.global.cadence.com (10.160.110.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24 via Frontend Transport; Tue, 6 Feb 2024 11:43:36 +0100
-Received: from eu-cn01.cadence.com (localhost.localdomain [127.0.0.1])
-	by eu-cn01.cadence.com (8.14.7/8.14.7) with ESMTP id 416AhaZK055903;
-	Tue, 6 Feb 2024 11:43:36 +0100
-Received: (from pawell@localhost)
-	by eu-cn01.cadence.com (8.14.7/8.14.7/Submit) id 416AhZgN055896;
-	Tue, 6 Feb 2024 11:43:35 +0100
-From: Pawel Laszczak <pawell@cadence.com>
-To: <peter.chen@kernel.org>
-CC: <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <pawell@cadence.com>,
-        <peter.chen@cixtech.com>, <stable@vger.kernel.org>
-Subject: [PATCH] usb: cdnsp: fixed issue with incorrect detecting CDNSP family controllers
-Date: Tue, 6 Feb 2024 11:43:25 +0100
-Message-ID: <20240206104325.55456-1-pawell@cadence.com>
-X-Mailer: git-send-email 2.30.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5031EA7D;
+	Tue,  6 Feb 2024 10:43:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707216220; cv=none; b=LyeckqmWV5yd7GXNXCh353UjzWfUoKE+OCV38g7E7YfrpBVAWy3durIk+AK4gY8ezRhWv80PFJJQuGZSDS9A5Hp+uBjat5PTlR91Rql4zOV+3WfIVWd07/ou7ctdKUeaWh5GAOONYEi4C0ZWempJLFQ/9QEEyagGydUUQLRljKo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707216220; c=relaxed/simple;
+	bh=eLDBoAWHndMbGf27s8TgD2Jw68rJIJDhNz9sDl9B2dc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V9Gu6aBGIfpMwoLxX0Af7yDvzeD3JPZCZg2Q6Iucv3GAJY0A3tHBysixfOQveh/r78AHPK2p+MfW7lPGxyElmB7XMyCBH/SLcJut2CJcBjdZTpZJy1DMm/fZ2d0MuCBedJyzGWG7oq+BAVtWz6D/L7b4mxl3Kl5jqgo8b9ZBUsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bqx/HFnG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DdqX2+OR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dMNap4FK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ITzOJ/hM; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from lion.mk-sys.cz (unknown [10.100.225.114])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E009A220EC;
+	Tue,  6 Feb 2024 10:43:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707216217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e29oyO37i95pTLMkje0Wsv+5pthrbUWw/AkjX6REjE4=;
+	b=bqx/HFnGa6rFB+PJh/7nh88ao1vE8d2/4JQbltclyvqL1JVzOeiuoWz7r2JJb4NK9XGYPq
+	ADXe6qA+gj33RudVy1C+3PbbWajtItxY3DJPnjd+RZSKpItAAm5BfKA892ChLc+JhvvV2l
+	CZs5Nmkqb4MooGGB44+bSI2AGM+QH5M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707216217;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e29oyO37i95pTLMkje0Wsv+5pthrbUWw/AkjX6REjE4=;
+	b=DdqX2+ORP3cG6Wgm8M7yiImK3L28QrCZcuzObqHfThMsvUPcCeLICFTyFdCAhGrpeze5WG
+	uBYtS3P5neXt5fDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707216216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e29oyO37i95pTLMkje0Wsv+5pthrbUWw/AkjX6REjE4=;
+	b=dMNap4FKk/3n47Zg49pbHUVQTGj88ZGC3b6fbWkvwJnmDAyLhm/aNbw/e9rypNAZ27u1kg
+	ft726zjNqRzVjRkAJQv6KSJCAuPsamOrW4YcpTYYBjciRwhyy0Gk4mZHgDOAIJoj1WMdLr
+	cDcou/LeOTYjbWd/1eIHuLq48VsQTuM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707216216;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e29oyO37i95pTLMkje0Wsv+5pthrbUWw/AkjX6REjE4=;
+	b=ITzOJ/hMNM9ANK132FE87xw5jJujEq96OXlg7Av//nN6JH+JmeNW7ygoQ3n7ochGRJAYCn
+	tprx7S7MbvpPk2CA==
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+	id CAD0820147; Tue,  6 Feb 2024 11:43:36 +0100 (CET)
+Date: Tue, 6 Feb 2024 11:43:36 +0100
+From: Michal Kubecek <mkubecek@suse.cz>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Florian Westphal <fw@strlen.de>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, andrea.mattiazzo@suse.com
+Subject: Re: [PATCH net] netfilter: nf_tables: fix pointer math issue in
+ nft_byteorder_eval()
+Message-ID: <20240206104336.ctigqpkunom2ufmn@lion.mk-sys.cz>
+References: <15fdceb5-2de5-4453-98b3-cfa9d486e8da@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-CrossPremisesHeadersFilteredBySendConnector: maileu5.global.cadence.com
-X-OrganizationHeadersPreserved: maileu5.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM12FT084:EE_|BN0PR07MB8941:EE_
-X-MS-Office365-Filtering-Correlation-Id: 56ada39e-653e-4e08-71df-08dc27008296
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	L0ZXwh6//EeCHkPuLnmUn73D9Ku3A310sw28lqMsVul7AuEqwVznDIBlePjo1sfvTk2AWkB2mELc/PeL7eqj9i1bDViyqPQENM0JwpYYz+H/sswaoEM7wfu+aYDtoobCmKC9S+Ze4OmiZUD1hbgvOzq7AU22B7/ChCLfMyw+xVx1EtSt7ZuSMQMHyN11rZkRWqn3apjyPODw53z/nJmXMPsVIGcyWC0GIanOH8FJL4AJ2YUxMiHpbrix2YpaceyBNRBNYx2eBI4jLDJ05jH3qQDsA7rhP+ss+2bWlcl/uExttFc3C/w9slOVh7KHHg4q+8ToN5zAJXFAVpRNFT1C1IPTRRhTpHY3NcgI/m/clW4c7V2dJ39UCAMhozNt+OHPCEE0HRI/ksmlWNTVE4Wef63sS44LcfhVMF4KlA8R7i9hNW/ftNPwqXyqJdUM+XeeYAtx7ZVg5iZY9xH1UXWugtFFQ1XIhVp+U2NJ0tSvZp5arsXVz+ZXOeqmRnDBDH/dEbtTXayJymWlBLdxXK7gFxGBgV0nq8nibA+OI7avVUrPH+vONGVkZk41Ru69FSUpfyrGWKH1lCBVqKrdwK/dDHS9E2AeW2D0505sUzgq5sZpc54kFF5dYbWpD0MQtQX+LtZZlJ58gIgGsvZ+lq16lRiS6js1op1bay4ZWOoqBCHI+8qCgEPMpgJvBTquVQT+86ubsLLos63vlE6fNkrd1SwZfccKydqB427XvzYLabPl0O28cxyQ4YIvhpEKyxfp
-X-Forefront-Antispam-Report: 
-	CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(136003)(346002)(39860400002)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(82310400011)(36840700001)(40470700004)(46966006)(40480700001)(47076005)(40460700003)(82740400003)(7636003)(356005)(83380400001)(36860700001)(86362001)(426003)(336012)(1076003)(2616005)(26005)(478600001)(6666004)(54906003)(316002)(41300700001)(42186006)(70586007)(70206006)(6916009)(4326008)(36756003)(8676002)(2906002)(5660300002)(8936002);DIR:OUT;SFP:1102;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2024 10:43:52.2586
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56ada39e-653e-4e08-71df-08dc27008296
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	BN8NAM12FT084.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR07MB8941
-X-Proofpoint-ORIG-GUID: jMijDfYKa0toQ0DRXf7PmVyN-CPVYb05
-X-Proofpoint-GUID: jMijDfYKa0toQ0DRXf7PmVyN-CPVYb05
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-06_04,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 mlxscore=0
- lowpriorityscore=0 clxscore=1015 impostorscore=0 malwarescore=0
- bulkscore=0 adultscore=0 priorityscore=1501 suspectscore=0 spamscore=0
- mlxlogscore=450 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401310000 definitions=main-2402060075
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vuphuwffpatba3uh"
+Content-Disposition: inline
+In-Reply-To: <15fdceb5-2de5-4453-98b3-cfa9d486e8da@moroto.mountain>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [2.90 / 50.00];
+	 ARC_NA(0.00)[];
+	 BAYES_SPAM(5.10)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~]
+X-Spam-Level: **
+X-Spam-Score: 2.90
+X-Spam-Flag: NO
 
-Cadence have several controllers from 0x000403xx family but current
-driver suuport detecting only one with DID equal 0x0004034E.
-It causes that if someone use different CDNSP controller then driver
-will use incorrect version and register space.
-Patch fix this issue.
 
-cc: <stable@vger.kernel.org>
-Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver")
-Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+--vuphuwffpatba3uh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Nov 03, 2023 at 09:42:51AM +0300, Dan Carpenter wrote:
+> The problem is in nft_byteorder_eval() where we are iterating through a
+> loop and writing to dst[0], dst[1], dst[2] and so on...  On each
+> iteration we are writing 8 bytes.  But dst[] is an array of u32 so each
+> element only has space for 4 bytes.  That means that every iteration
+> overwrites part of the previous element.
+>=20
+> I spotted this bug while reviewing commit caf3ef7468f7 ("netfilter:
+> nf_tables: prevent OOB access in nft_byteorder_eval") which is a related
+> issue.  I think that the reason we have not detected this bug in testing
+> is that most of time we only write one element.
+>=20
+> Fixes: ce1e7989d989 ("netfilter: nft_byteorder: provide 64bit le/be conve=
+rsion")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> ---
+>  include/net/netfilter/nf_tables.h | 4 ++--
+>  net/netfilter/nft_byteorder.c     | 5 +++--
+>  net/netfilter/nft_meta.c          | 2 +-
+>  3 files changed, 6 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf=
+_tables.h
+> index 3bbd13ab1ecf..b157c5cafd14 100644
+> --- a/include/net/netfilter/nf_tables.h
+> +++ b/include/net/netfilter/nf_tables.h
+> @@ -178,9 +178,9 @@ static inline __be32 nft_reg_load_be32(const u32 *sre=
+g)
+>  	return *(__force __be32 *)sreg;
+>  }
+> =20
+> -static inline void nft_reg_store64(u32 *dreg, u64 val)
+> +static inline void nft_reg_store64(u64 *dreg, u64 val)
+>  {
+> -	put_unaligned(val, (u64 *)dreg);
+> +	put_unaligned(val, dreg);
+>  }
+> =20
+>  static inline u64 nft_reg_load64(const u32 *sreg)
+> diff --git a/net/netfilter/nft_byteorder.c b/net/netfilter/nft_byteorder.c
+> index e596d1a842f7..f6e791a68101 100644
+> --- a/net/netfilter/nft_byteorder.c
+> +++ b/net/netfilter/nft_byteorder.c
+> @@ -38,13 +38,14 @@ void nft_byteorder_eval(const struct nft_expr *expr,
+> =20
+>  	switch (priv->size) {
+>  	case 8: {
+> +		u64 *dst64 =3D (void *)dst;
+>  		u64 src64;
+> =20
+>  		switch (priv->op) {
+>  		case NFT_BYTEORDER_NTOH:
+>  			for (i =3D 0; i < priv->len / 8; i++) {
+>  				src64 =3D nft_reg_load64(&src[i]);
+> -				nft_reg_store64(&dst[i],
+> +				nft_reg_store64(&dst64[i],
+>  						be64_to_cpu((__force __be64)src64));
+>  			}
+>  			break;
+> @@ -52,7 +53,7 @@ void nft_byteorder_eval(const struct nft_expr *expr,
+>  			for (i =3D 0; i < priv->len / 8; i++) {
+>  				src64 =3D (__force __u64)
+>  					cpu_to_be64(nft_reg_load64(&src[i]));
+> -				nft_reg_store64(&dst[i], src64);
+> +				nft_reg_store64(&dst64[i], src64);
+>  			}
+>  			break;
+>  		}
+
+I stumbled upon this when the issue got a CVE id (sigh) and I share
+Andrea's (Cc-ed) concern that the fix is incomplete. While the fix,
+commit c301f0981fdd ("netfilter: nf_tables: fix pointer math issue in
+nft_byteorder_eval()") now, fixes the destination side, src is still
+a pointer to u32, i.e. we are reading 64-bit values with relative
+offsets which are multiples of 32 bits.
+
+Shouldn't we fix this as well, e.g. like indicated below?
+
+Michal
+
+---------------------------------------------------------------------------=
 ---
- drivers/usb/cdns3/core.c |  1 -
- drivers/usb/cdns3/drd.c  | 13 +++++++++----
- drivers/usb/cdns3/drd.h  |  6 +++++-
- 3 files changed, 14 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
-index 33548771a0d3..465e9267b49c 100644
---- a/drivers/usb/cdns3/core.c
-+++ b/drivers/usb/cdns3/core.c
-@@ -395,7 +395,6 @@ static int cdns_role_set(struct usb_role_switch *sw, enum usb_role role)
- 	return ret;
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_t=
+ables.h
+index 001226c34621..bb4b83ea2908 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -183,9 +183,9 @@ static inline void nft_reg_store64(u64 *dreg, u64 val)
+ 	put_unaligned(val, dreg);
  }
- 
--
- /**
-  * cdns_wakeup_irq - interrupt handler for wakeup events
-  * @irq: irq number for cdns3/cdnsp core device
-diff --git a/drivers/usb/cdns3/drd.c b/drivers/usb/cdns3/drd.c
-index 04b6d12f2b9a..ee917f1b091c 100644
---- a/drivers/usb/cdns3/drd.c
-+++ b/drivers/usb/cdns3/drd.c
-@@ -156,7 +156,8 @@ bool cdns_is_device(struct cdns *cdns)
-  */
- static void cdns_otg_disable_irq(struct cdns *cdns)
+=20
+-static inline u64 nft_reg_load64(const u32 *sreg)
++static inline u64 nft_reg_load64(const u64 *sreg)
  {
--	writel(0, &cdns->otg_irq_regs->ien);
-+	if (cdns->version)
-+		writel(0, &cdns->otg_irq_regs->ien);
+-	return get_unaligned((u64 *)sreg);
++	return get_unaligned(sreg);
  }
- 
- /**
-@@ -422,15 +423,20 @@ int cdns_drd_init(struct cdns *cdns)
- 
- 		cdns->otg_regs = (void __iomem *)&cdns->otg_v1_regs->cmd;
- 
--		if (readl(&cdns->otg_cdnsp_regs->did) == OTG_CDNSP_DID) {
-+		state = readl(&cdns->otg_cdnsp_regs->did);
-+
-+		if (OTG_CDNSP_CHECK_DID(state)) {
- 			cdns->otg_irq_regs = (struct cdns_otg_irq_regs __iomem *)
- 					      &cdns->otg_cdnsp_regs->ien;
- 			cdns->version  = CDNSP_CONTROLLER_V2;
--		} else {
-+		} else if (OTG_CDNS3_CHECK_DID(state)) {
- 			cdns->otg_irq_regs = (struct cdns_otg_irq_regs __iomem *)
- 					      &cdns->otg_v1_regs->ien;
- 			writel(1, &cdns->otg_v1_regs->simulate);
- 			cdns->version  = CDNS3_CONTROLLER_V1;
-+		} else {
-+			dev_err(cdns->dev, "not supporte DID=0x%08x\n", state);
-+			return -EINVAL;
+=20
+ static inline void nft_data_copy(u32 *dst, const struct nft_data *src,
+diff --git a/net/netfilter/nft_byteorder.c b/net/netfilter/nft_byteorder.c
+index f6e791a68101..2a64c69ed507 100644
+--- a/net/netfilter/nft_byteorder.c
++++ b/net/netfilter/nft_byteorder.c
+@@ -39,21 +39,22 @@ void nft_byteorder_eval(const struct nft_expr *expr,
+ 	switch (priv->size) {
+ 	case 8: {
+ 		u64 *dst64 =3D (void *)dst;
+-		u64 src64;
++		u64 *src64 =3D (void *)src;
++		u64 val64;
+=20
+ 		switch (priv->op) {
+ 		case NFT_BYTEORDER_NTOH:
+ 			for (i =3D 0; i < priv->len / 8; i++) {
+-				src64 =3D nft_reg_load64(&src[i]);
++				val64 =3D nft_reg_load64(&src64[i]);
+ 				nft_reg_store64(&dst64[i],
+-						be64_to_cpu((__force __be64)src64));
++						be64_to_cpu((__force __be64)val64));
+ 			}
+ 			break;
+ 		case NFT_BYTEORDER_HTON:
+ 			for (i =3D 0; i < priv->len / 8; i++) {
+-				src64 =3D (__force __u64)
+-					cpu_to_be64(nft_reg_load64(&src[i]));
+-				nft_reg_store64(&dst64[i], src64);
++				val64 =3D (__force __u64)
++					cpu_to_be64(nft_reg_load64(&src64[i]));
++				nft_reg_store64(&dst64[i], val64);
+ 			}
+ 			break;
  		}
- 
- 		dev_dbg(cdns->dev, "DRD version v1 (ID: %08x, rev: %08x)\n",
-@@ -483,7 +489,6 @@ int cdns_drd_exit(struct cdns *cdns)
- 	return 0;
- }
- 
--
- /* Indicate the cdns3 core was power lost before */
- bool cdns_power_is_lost(struct cdns *cdns)
- {
-diff --git a/drivers/usb/cdns3/drd.h b/drivers/usb/cdns3/drd.h
-index cbdf94f73ed9..d72370c321d3 100644
---- a/drivers/usb/cdns3/drd.h
-+++ b/drivers/usb/cdns3/drd.h
-@@ -79,7 +79,11 @@ struct cdnsp_otg_regs {
- 	__le32 susp_timing_ctrl;
- };
- 
--#define OTG_CDNSP_DID	0x0004034E
-+/* CDNSP driver supports 0x000403xx Cadence USB controller family. */
-+#define OTG_CDNSP_CHECK_DID(did) (((did) & GENMASK(31, 8)) == 0x00040300)
-+
-+/* CDNS3 driver supports 0x000402xx Cadence USB controller family. */
-+#define OTG_CDNS3_CHECK_DID(did) (((did) & GENMASK(31, 8)) == 0x00040200)
- 
- /*
-  * Common registers interface for both CDNS3 and CDNSP version of DRD.
--- 
-2.37.2
+---------------------------------------------------------------------------=
+---
 
+--vuphuwffpatba3uh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAmXCDVMACgkQ538sG/LR
+dpVLYwf/SKJnMxraCQMxRMfJwRCMRFwIdmxy7ROUbMnL2jE+tTYbGSuezhnRDq5v
+nws0SeWQtoztU+s9Uq15xeaBf25S0bAVcJluXL+8rz2cka4Rr/T9C+ZkyoqDg3va
+Nd4f5l6GGSP3HhnQpD5XBH/H1UUyj+I3o1sFsyo7FSTEBD4BvjkMy4qGExuTVNgy
+En42gfsDykiLAQJ+Sopw8uk1A4e6FWSg6mkP9qn+gN328MFTQya/VossxCE9w5fn
+L80MUqY54jsgiNGOtDMGxWOdxk44WYa4CYGmGuRslrAMS476Bu0+Ulsq+d15uGvh
+XTCUggn8Bi7DttIMf2jUoC7y8TsqKw==
+=YriJ
+-----END PGP SIGNATURE-----
+
+--vuphuwffpatba3uh--
 
