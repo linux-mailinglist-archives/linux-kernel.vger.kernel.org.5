@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-55609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39C4284BEEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:50:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39A7484BEF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:52:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC8E6B236DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:50:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9073289ECB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C5A31B94F;
-	Tue,  6 Feb 2024 20:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0AC71B942;
+	Tue,  6 Feb 2024 20:52:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="IJa7jKPm"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="huyQB7Nv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8F191B941;
-	Tue,  6 Feb 2024 20:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4451BDED;
+	Tue,  6 Feb 2024 20:52:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707252621; cv=none; b=RGtl9TWAedizv8K80u1GYLkme6EOzLoYqWXxRUUalf8Bw6A4+P3fIMu5oNEExhPxKNSIzf3QGIGMR3i4DUTpf9rTkfPMDFsP39VgUTca2IeFBh3Ef3Rlf4rK37cu80TBpSD2HhEH8jA3REKYC8XHXgJtHMNUByw9qPi6cMaTQLQ=
+	t=1707252745; cv=none; b=fSRWeILBch8pF/KAgK9MLttnDNaBkDG8xNKbjwFlIdLtOv4u42D+3vddPARrF134rEd3HnclFjCPw6Yp8TdqKciyws9ysqRjLBQmip2FuW5tAxtvLgrOT3HddGmWRpTqWmmYR9BwM4Evp0lcLi9T/SaAaOqFhpKPrPtir9nFw2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707252621; c=relaxed/simple;
-	bh=knWcBAhY/RN4SzvGeW5Z8yXWAL3FGRCJ0j8BoXZiDtA=;
+	s=arc-20240116; t=1707252745; c=relaxed/simple;
+	bh=1FwVNnvMIETmmu3FksPs2T9xVBKZlTMIKKKVkLkI3FU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AvM59xs82q2vvQnG8jT5DS79otpe/Qr3+gpzj5IRyMraQQJ1ZpjQqOuBfQttMm59jOx7Ia3bFMpKYd6jGIjUq911kQP0cqAMAYxQAyS2e1gHHcI5ldC2CJWQ2vQw1SJWMR40pOxymb8X/5b6AjVdZ6ls0NEeM9uWmjGKtDZWb6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=IJa7jKPm; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=5RnTcGMZ9Fnqw/5A9a+zyo/aV++3sTlK5wnBXsTtPOw=; b=IJa7jKPmSatudnLcE2I9lQmSVX
-	8Vu8xXYq3RjnYKu2uZEEBQ8wzQ1h4042wvPQBXqRl/B48nE40rzPdKLNr/ehQvIHhkQlhNx6dXAIL
-	8hRebSMIK8R9YArSx156eelbbNX9XqysDII0YseA+SbK0S8dI8hNz9r4SEWarqyQ5SBApXI6klZye
-	4Z3ShSF3zfvLIYuumrW9Pid54F1O4fTRV1bkwvxNNQeox/nP/rZfl0TNlkQe99Kc1g7XYGChlnBu8
-	eZKlA1sqCeOXN0XNLidQeR1TnGWiqwf8LBFVd/HI6up/XHcUw+9l2h8ZODfYyt4fq/b02B8/WbOBd
-	gGxAayqQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rXSOU-002YDN-0g;
-	Tue, 06 Feb 2024 20:50:14 +0000
-Date: Tue, 6 Feb 2024 20:50:14 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Calvin Owens <jcalvinowens@gmail.com>
-Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [BUG] Infinite loop in cleanup_mnt() task_work on 6.3-rc3
-Message-ID: <20240206205014.GA608142@ZenIV>
-References: <ZcKOGpTXnlmfplGR@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FzGreLEEUYAyD5YqzNSsLuWkAQpb9C+yUS3OWBt6jsppPEdY0/BQ4XomReBVdxdHKXT6956fUnKcUTUJHhxXEXKJfiv+8CVTeHABSiHkKBHeivQXqTKRnz/QcxN0AJHZDujVYlrUTuj3R4wbPNaIKcIxJSpMbAlgpIaw4KNY5og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=huyQB7Nv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C51A6C433C7;
+	Tue,  6 Feb 2024 20:52:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707252744;
+	bh=1FwVNnvMIETmmu3FksPs2T9xVBKZlTMIKKKVkLkI3FU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=huyQB7Nv4eEO9Me+W/DBz9A0Vww3VVQDQ0fydvGFqV8qH/AWFZR0hRUkH0O8+TQ4s
+	 +y1Dy1oKrJ3h+eHQhR8Qa3q6RFQgzwRcJBBtLnONsul5mtCSICH0evikya50VaN8Sn
+	 YiwZUEhVsO65QoAJi03HPhMhSeMMwgAVSPud84YFXYevf1zyNe09+SYC6zBD3o1XYg
+	 ctwVIwRVYrH3bLrYuYRugl95laRR9mfcoDZusG4u6iHSxIra7jQZ1fKdo6F3DbGuBV
+	 CWMkdmxvXLu3k6jBZpmiTz3JNCn5kTdPaTUZfi03X68HDX8GJ6btyOrrao2g7PvJjy
+	 P3oi3ms78iw6A==
+Date: Tue, 6 Feb 2024 20:50:50 +0000
+From: Simon Horman <horms@kernel.org>
+To: Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, UNGLinuxDriver@microchip.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+Subject: Re: [PATCH net v2] lan966x: Fix crash when adding interface under a
+ lag
+Message-ID: <20240206205050.GK1104779@kernel.org>
+References: <20240206123054.3052966-1-horatiu.vultur@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,40 +59,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZcKOGpTXnlmfplGR@gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20240206123054.3052966-1-horatiu.vultur@microchip.com>
 
-On Tue, Feb 06, 2024 at 11:52:58AM -0800, Calvin Owens wrote:
-> Hello all,
+On Tue, Feb 06, 2024 at 01:30:54PM +0100, Horatiu Vultur wrote:
+> There is a crash when adding one of the lan966x interfaces under a lag
+> interface. The issue can be reproduced like this:
+> ip link add name bond0 type bond miimon 100 mode balance-xor
+> ip link set dev eth0 master bond0
 > 
-> A couple times in the past week, my laptop has been wedged by a spinning
-> cleanup_mnt() task_work from an exiting container runtime (bwrap).
+> The reason is because when adding a interface under the lag it would go
+> through all the ports and try to figure out which other ports are under
+> that lag interface. And the issue is that lan966x can have ports that are
+> NULL pointer as they are not probed. So then iterating over these ports
+> it would just crash as they are NULL pointers.
+> The fix consists in actually checking for NULL pointers before accessing
+> something from the ports. Like we do in other places.
 > 
-> The first time it reproduced was while writing to dm-crypt on nvme, so I
-> blew it off as a manifestation of the tasklet corruption. But I hit it
-> again last night on rc3, which contains commit 0a9bab391e33, so that's
-> not it.
-> 
-> I'm sorry to say I have very little to go on. Both times it happened, I
-> was using Nautilus to browse around in some directories, but I've tried
-> monkeying around with that and had no luck reproducing it. The spinning
-> happens late enough in the exit path that /proc/self/ is gutted, so I
-> don't know what the bwrap container was actually doing.
-> 
-> The NMI stacktrace and the kconfig I'm running are below. The spinning
-> task still moves between CPUs. No hung task notifications appear except
-> for random sync() calls happening afterwards from userspace, which all
-> block on super_lock() in iterate_supers(). Trying to ptrace the stuck
-> process hangs also hangs the tracing process forever.
-> 
-> I rebuilt with lockdep this morning, but haven't seen any splats, and
-> haven't hit the bug again.
-> 
-> Please let me know if you see anything specific I can test or try that
-> might help narrow the problem down. Otherwise, I'll keep working on
-> finding a reliable reproducer.
+> Fixes: cabc9d49333d ("net: lan966x: Add lag support for lan966x")
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
 
-Check if git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #fixes
-
-helps.
+Reviewed-by: Simon Horman <horms@kernel.org>
 
