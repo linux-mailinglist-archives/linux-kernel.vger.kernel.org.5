@@ -1,167 +1,173 @@
-Return-Path: <linux-kernel+bounces-54950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A13784B54E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:34:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2266184B550
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:35:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 009E528302C
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:34:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55A941C24E0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47EDD1350C4;
-	Tue,  6 Feb 2024 12:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA15133999;
+	Tue,  6 Feb 2024 12:29:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xVwxyley";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gmpDayKH";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jkYDM+nz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="30hSAi4b"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EB/7Ztmq"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DE2134CEA;
-	Tue,  6 Feb 2024 12:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA8E133986;
+	Tue,  6 Feb 2024 12:29:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707222541; cv=none; b=e/ZnRvzDP54TNP/YbQDIrQGpXcvZwZXnEGt1dnAnRciWVJXX5vD98CK0+u/GLpx/H5/tbOpCzYmBJ76aChS71es1gCu1n48ljnmhsFaexujh7cYPdubRjhW4gLgcUYvQuOpOW7HU0NcTu7QiW45h2uCvrMBXhHPtaRwXxXFNw0Y=
+	t=1707222563; cv=none; b=h3GxhoUA7nzd9pVLFwwaIqJWPKsLDDI401GKJuO8g0Ha+XUaJ17bsgbWba50il9Ji8C+QymleK+HS75VAwx1ku+/75l/iFalznxMXqF8saUzA4t5uLfWozq3MGKNByHVQuzsU+i57dbTDp5gdOqTTywH9xiBqjH9fn9dbUqMQjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707222541; c=relaxed/simple;
-	bh=VBjZ4iAnpOC5YshUblel7Q7ms9brJlgx8tDTc5vjioo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rKwm9CDiAO64Xamfuwa16abTBMGIGSWCYqeDBtLwJTPOXa04wpYmwN0OZDFgiU5qWr/wzViKdzycc6pirnYbL226dMATSZ6ft/ntlHBTRT5cERIQW0DYtOr3tl5YSF3ziCuH5oidL/LFnZfQ6KJM6MWf68kM+RHPJeLBPZFA/7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xVwxyley; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gmpDayKH; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jkYDM+nz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=30hSAi4b; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D9E2521FF4;
-	Tue,  6 Feb 2024 12:28:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707222538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=97XujLeKB/pzSnxqeV5jx2ZlV1MqcFgYnkGqFctpKng=;
-	b=xVwxyleyVo1Yr5goTDT5pTdCj7Fch+5PsTkM6MeYIoCGtkdZzZHUOBDFEMmK9E718SQmYC
-	ptOO0FLXjhbrIMvT6A2W/ZxhKccQ70pkYAummk5hjfiAcM4XSGuTy3X+lEzPqlvPL8uxEU
-	0yFvzOlTJyEu/ZspQEffR8G/BXpr0to=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707222538;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=97XujLeKB/pzSnxqeV5jx2ZlV1MqcFgYnkGqFctpKng=;
-	b=gmpDayKH/P05ZNAs6pYJ/W7/Ez+gHadWsOIQaGMIdngQwGRR90eDvRSAlqmz4wDXZqB8PQ
-	Tl78H5UF8BYj+DCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707222537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=97XujLeKB/pzSnxqeV5jx2ZlV1MqcFgYnkGqFctpKng=;
-	b=jkYDM+nzzguoj/27Jwngnu7L5Oa5WG7vQ3ETb8RKiCBza5CiMvw/u3+kpx1QVb734dJwyP
-	eQsSbiqHmneO9SNLmY0YjAXzZ69OENzUp7Rwkb1mT5emxyfWekeJH/NV0O8BXVyEDpm6rR
-	48gd4WCNV2pQVLxucVhvhHNI45/en6M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707222537;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=97XujLeKB/pzSnxqeV5jx2ZlV1MqcFgYnkGqFctpKng=;
-	b=30hSAi4bhWv7QWAy6tnPo3DAVBDkUPStsrRiyu3OIJXGRL3FproexVoXpVWKOhF5mOVvfg
-	NUzUAWdeOi84vPDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C343D139D8;
-	Tue,  6 Feb 2024 12:28:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id nMepLwkmwmXnKAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 06 Feb 2024 12:28:57 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 5886AA0809; Tue,  6 Feb 2024 13:28:57 +0100 (CET)
-Date: Tue, 6 Feb 2024 13:28:57 +0100
-From: Jan Kara <jack@suse.cz>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: Jan Kara <jack@suse.cz>, linux-block <linux-block@vger.kernel.org>,
-	Linux-Next Mailing List <linux-next@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Linux Regressions <regressions@lists.linux.dev>,
-	linux-fsdevel@vger.kernel.org, lkft-triage@lists.linaro.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Christian Brauner <brauner@kernel.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: next: /dev/root: Can't open blockdev
-Message-ID: <20240206122857.svm2ptz2hsvk4sco@quack3>
-References: <CA+G9fYttTwsbFuVq10igbSvP5xC6bf_XijM=mpUqrJV=uvUirQ@mail.gmail.com>
- <20240206101529.orwe3ofwwcaghqvz@quack3>
- <CA+G9fYup=QzTAhV2Bh_p8tujUGYNzGYKBHXkcW7jhhG6QFUo_g@mail.gmail.com>
+	s=arc-20240116; t=1707222563; c=relaxed/simple;
+	bh=N3tSWxq5d5518zQa7I8VL2vhjsdygSC917jFzsn8AM8=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=ILg7LdaQ2cK9ni/5sKYmFmkm4cMnRJ+/+YQlAIeE2PZ5YphNNcC+nvzQtv9zDl0m7fO/2UYpdVRURSKSVs3bvSVlWbE7V8WXXPmLtzeRLgMOlOAFf/0CkDRMtgpYE6MK2T541Jxy8l5RqbC/LPRcMGZaPKq2uxUEAqE35ZT8IDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EB/7Ztmq; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707222562; x=1738758562;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=N3tSWxq5d5518zQa7I8VL2vhjsdygSC917jFzsn8AM8=;
+  b=EB/7ZtmqYdkc9V+BzpYDef6YRqOrnrsGf1smuYUDYMD1lBoEEWcc8r9C
+   WK6Qf1+yPPMOX1UuE0VlsPhGhuNvd4endf68z1GDNaCBLi94vTojXaf29
+   w9oVzzl1u9MFC17dGT10HF+tr1TIdgqx2FYZNakGYsN6M+I2tbXYFFNbT
+   y/Yype/QjlP7JLBexiYOp6XReuLoIhGdljOIPO+4f1BlytYwziKeOJcRl
+   7tOMxn76CDPWYPW/Nl1c5Qf/jgbWJskNIxipS3ryhJkbOMwMrMjzcODRV
+   jji27u24cPQE0jO4l73JIAgTGyS1gxcc42uTj8G06RRNNf7lEHcZR7rG5
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="18157132"
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="18157132"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 04:29:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="5606667"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.36.139])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 04:29:17 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 6 Feb 2024 14:29:12 +0200 (EET)
+To: Jian-Hong Pan <jhp@endlessos.org>
+cc: Bjorn Helgaas <helgaas@kernel.org>, Johan Hovold <johan@kernel.org>, 
+    Mika Westerberg <mika.westerberg@linux.intel.com>, 
+    David Box <david.e.box@linux.intel.com>, 
+    Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, 
+    Nirmal Patel <nirmal.patel@linux.intel.com>, 
+    Jonathan Derrick <jonathan.derrick@linux.dev>, linux-pci@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>, linux@endlessos.org
+Subject: Re: [PATCH v2] PCI: vmd: Enable PCI PM's L1 substates of remapped
+ PCIe Root Port and NVMe
+In-Reply-To: <20240202071110.8515-3-jhp@endlessos.org>
+Message-ID: <72b9ef46-851b-3555-0a43-8da4d4ab0fad@linux.intel.com>
+References: <20240202071110.8515-3-jhp@endlessos.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYup=QzTAhV2Bh_p8tujUGYNzGYKBHXkcW7jhhG6QFUo_g@mail.gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [0.40 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[linaro.org:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[36.26%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: 0.40
+Content-Type: text/plain; charset=US-ASCII
 
-On Tue 06-02-24 15:53:34, Naresh Kamboju wrote:
-> On Tue, 6 Feb 2024 at 15:45, Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Tue 06-02-24 14:41:17, Naresh Kamboju wrote:
-> > > All qemu's mount rootfs failed on Linux next-20230206 tag due to the following
-> > > kernel crash.
-> > >
-> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > >
-> > > Crash log:
-> > > ---------
-> > > <3>[    3.257960] /dev/root: Can't open blockdev
-> > > <4>[    3.258940] VFS: Cannot open root device "/dev/sda" or
-> > > unknown-block(8,0): error -16
-> >
-> > Uhuh, -16 is EBUSY so it seems Christian's block device opening changes are
-> > suspect? Do you have some sample kconfig available somewhere?
+On Fri, 2 Feb 2024, Jian-Hong Pan wrote:
+
+> The remapped PCIe Root Port and NVMe have PCI PM L1 substates
+> capability, but they are disabled originally:
 > 
-> All build information is in this url,
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2byqguFVp7MYAEjKo6nJGba2FcP/
+> Here is an example on ASUS B1400CEAE:
+> 
+> Capabilities: [900 v1] L1 PM Substates
+>         L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1- L1_PM_Substates+
+>                   PortCommonModeRestoreTime=32us PortTPowerOnTime=10us
+>         L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
+>                    T_CommonMode=0us LTR1.2_Threshold=0ns
+>         L1SubCtl2: T_PwrOn=10us
+> 
+> Power on all of the VMD remapped PCI devices and quirk max snoop LTR
+> before enable PCI-PM L1 PM Substates by following "Section 5.5.4 of PCIe
+> Base Spec Revision 6.0". Then, PCI PM's L1 substates control are
+> initialized & enabled accordingly. Also, update the comments of
+> pci_enable_link_state() and pci_enable_link_state_locked() for
+> kernel-doc, too.
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=218394
+> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+> ---
+> v2:
+>   - Power on the VMD remapped devices with pci_set_power_state_locked()
+>   - Prepare the PCIe LTR parameters before enable L1 Substates
+>   - Add note into the comments of both pci_enable_link_state() and
+>     pci_enable_link_state_locked() for kernel-doc.
+>   - The original patch set can be split as individual patches.
+> 
+>  drivers/pci/controller/vmd.c | 15 ++++++++++-----
+>  drivers/pci/pcie/aspm.c      | 10 ++++++++++
+>  2 files changed, 20 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
+> index 87b7856f375a..66e47a0dbf1a 100644
+> --- a/drivers/pci/controller/vmd.c
+> +++ b/drivers/pci/controller/vmd.c
+> @@ -751,11 +751,9 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
+>  	if (!(features & VMD_FEAT_BIOS_PM_QUIRK))
+>  		return 0;
+>  
+> -	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
+> -
+>  	pos = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_LTR);
+>  	if (!pos)
+> -		return 0;
+> +		goto out_enable_link_state;
+>  
+>  	/*
+>  	 * Skip if the max snoop LTR is non-zero, indicating BIOS has set it
+> @@ -763,7 +761,7 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
+>  	 */
+>  	pci_read_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, &ltr_reg);
+>  	if (!!(ltr_reg & (PCI_LTR_VALUE_MASK | PCI_LTR_SCALE_MASK)))
+> -		return 0;
+> +		goto out_enable_link_state;
+>  
+>  	/*
+>  	 * Set the default values to the maximum required by the platform to
+> @@ -775,6 +773,14 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
+>  	pci_write_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, ltr_reg);
+>  	pci_info(pdev, "VMD: Default LTR value set by driver\n");
+>  
+> +out_enable_link_state:
+> +	/*
+> +	 * Make PCI devices at D0 when enable PCI-PM L1 PM Substates from
+> +	 * Section 5.5.4 of PCIe Base Spec Revision 6.0
 
-Thanks! So for record the config has:
+I don't understand what are you trying to say here? Are there some typos 
+or grammar errors or something entire missing from the comment?
 
-CONFIG_BLK_DEV_WRITE_MOUNTED=y
+> +	 */
+> +	pci_set_power_state_locked(pdev, PCI_D0);
+> +	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -926,7 +932,6 @@ static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
+>  				   dev_get_msi_domain(&vmd->dev->dev));
+>  
+>  	vmd_acpi_begin();
+> -
+>  	pci_scan_child_bus(vmd->bus);
+>  	vmd_domain_reset(vmd);
 
-So we are not hitting any weird corner case with blocking writes to mounted
-filesystems. It must be something else.
+Spurious newline change.
 
-								Honza
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+ i.
+
 
