@@ -1,285 +1,198 @@
-Return-Path: <linux-kernel+bounces-54556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DF8B84B0A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:04:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0545584B0AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:04:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A15131C2253B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:04:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 847531F24693
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:04:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9334D12DD89;
-	Tue,  6 Feb 2024 09:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35BBF12E1E9;
+	Tue,  6 Feb 2024 09:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JHrPMfKb"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hFk7mKE0"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74DC12D148
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7940C12E1D5;
+	Tue,  6 Feb 2024 09:01:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707210069; cv=none; b=Nog2nwgU+xXqxXPVtNZv3toSWr74uORy99q6TMhoaWcW7mr2b+k7ZSJCPB4KyW5Qdg3B1Q1GwXgEXi/sRf/B5IwtjLr+7D2jaB41FGiHTRVWz/CfqjN0iRPbkdQVkyXXn53qku8XgmbfLIjSP4cndfekihg9tFje/AiQo6mWsd4=
+	t=1707210083; cv=none; b=cnudVqr6I/M1IQU1J9CHK67dEWdotbHHteTQ3s9pEA5ojmXJQWlF/vScwwRSHh8fFmmjAFBrRBgRsTaFEzfSk+KVnJh6X7TemL6Lh7StT1tCJG4VC+h59MNI78YnxSLzK+xP+yn6ZAeryiHZM2HIpNhsLOPFK8tNL16D2DQvMSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707210069; c=relaxed/simple;
-	bh=Obp3+iU0NYx3LVy2xs6Xipc0ORb8bkb/WXC4pfh6d94=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=VLy64EvS5Kg7BCPiFhaM3zhuiWwzPpDePTOyV5HrjrAccNMn2hDRTKzkYF24f7pF9tgZY8S9fJLnv+47rpUm5S+qnMrmPMgg2qqKI3J4lOvB/99ZoWSRTCvTdhJoxkzapdC2g9NB0y+VgoJEEvH09uOqC7WyTwuwdoFs3cp39AU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JHrPMfKb; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40fd2f7ef55so1692185e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 01:01:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707210066; x=1707814866; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/dIUJgwnOyWSt0uclCiKcW3R3F0dsn7PgLN2KshxQ3w=;
-        b=JHrPMfKb2dlWty49NwFfInXA2WSqwz8R1tFuHZhvcXFEO264JM87ucrOyU3cpZhodA
-         xlwtyJ4a7dTMFJhDWQYum9ho644ju6dY4WQ7nSQ2qlWfwaX+tJmEYIetqe/YU0EuR79I
-         k4I1ql5nCjjdBtRzFr8nhAXKqgFiN4y0GIFKwMTOCH4pXHOVPfiyNIOJxA/NA7coRH2d
-         2d8A3070ribOqbNd1BXxI+5+4gBWXAKlCmJftTKHxnEQRnBEC6rkdByGXkE7n7dZIEcW
-         wYXCexvhD6E9DhrlJuonRDFHZgY+ZwCepBzqWORfJaVM2FNZTLAUI+KcK8fpsm5PTyWX
-         o5LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707210066; x=1707814866;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/dIUJgwnOyWSt0uclCiKcW3R3F0dsn7PgLN2KshxQ3w=;
-        b=jWnVXfZZTuaQ4IRLcOKXBhVtssMsTuU6D/SmyCQhhYQvGvlmo2+f4QH4u/xPbQ2B6U
-         J7ZQ3zukfDl1JHU9X58skh6UoRzOW9jZ3kLRJVsslxmcMcgLlhaxj1O2EiKlKlX4AwbY
-         X2TmhKILKMTTNAfq9ohzVbu/NkycrYY5YoODSG10poTjmT4XmqM+4sg4YSYRWo8MiqZQ
-         z6a64Rd9pWH/v22ekDwjni4VpSDDJPgRIVtFiiQM7oEM1BJDV9TC7B0zDPLtmCwHNekM
-         WAF58xP3fFaon4s7x/9I7iZJCSWoYONv2y3Jyr2JQvyBrniNekkeSQOL8m/L3EyZ2Dc4
-         Aa+Q==
-X-Gm-Message-State: AOJu0YyUgIzTEv7W8aM8FfkH92ie1e1sMJKNn/4DbcrL5ZyryVVVu++0
-	zDI9D5XSQbhzVNN+hCwtcrH0RczVbh5yuOUkqLoIWffxGJlE6uYG3wLC82WfY60=
-X-Google-Smtp-Source: AGHT+IGmZv5/ZwUXLZBEWIQriNR+L/Vqpbg2i5djqRd6e6lnmwcyprtpMUMQPA9dZ/hJiHJIQ4x8pQ==
-X-Received: by 2002:a05:600c:4f4d:b0:40f:de25:f9a9 with SMTP id m13-20020a05600c4f4d00b0040fde25f9a9mr2756501wmq.15.1707210065859;
-        Tue, 06 Feb 2024 01:01:05 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUP7hpkPQs7XkJMZeboQiQzxcsHpLY+gTBGwCFcvYyYWfB1HXTUMUjZdT3sGA+YwRK7KRZctuePJz8Q8x2E3sy9jf8g8SJfnPfmR5ySJuTCvMoHytOefwnpgh7w5Nve4WKMDPFPRTlzJKB2Z8csbiobrmPe6PTNitRlQLIxmwYxAtGjhySX3d7Y3qATn9a8aYUHt5mkAVmXK3S4Idxell0Hmp+ujPMOTWQlMGSeyX/DIG3rB7OWBNatXmD0tQHIYVN9R83Wfeu4bzR/osbHPvCXCEFitQ+kMlGccXMXb0/6PU+h/Pab5rUGJr6w4vdNkgxaP8M1n43VOFxpBdTjbUArN5G31siq/HVwVlf3wudQLgxMV4tBZ02MSD+z4V7ELMmqHFQqfkka
-Received: from ?IPV6:2a01:e0a:982:cbb0:ba23:8574:fa8:28dd? ([2a01:e0a:982:cbb0:ba23:8574:fa8:28dd])
-        by smtp.gmail.com with ESMTPSA id g14-20020a05600c4ece00b0040fe4b733f4sm930244wmq.26.2024.02.06.01.01.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 01:01:05 -0800 (PST)
-Message-ID: <451adbff-c2b7-4141-990d-73cf869b752f@linaro.org>
-Date: Tue, 6 Feb 2024 10:01:04 +0100
+	s=arc-20240116; t=1707210083; c=relaxed/simple;
+	bh=2SDrB5JaxZL2HWqNxRD4Yrm8ISnPJv7zByBg6OlxiLw=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=t9uYNBj0BzOUMrCBEBgrIOBNUezuzfoYROsZpW6NOxb+Y/NTuk2qADByOBc+mvRK+r+ViUF5cn7JeHyJPEMQ2NQj7uSxG4Ht2Mxa+Dsn3LvkF4KPVhbY8e5gJYdZWonr5VORM3XPSHbbRaFajfHiYnpZ4Vwmmj5VPe9urPMr/0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hFk7mKE0; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707210082; x=1738746082;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=2SDrB5JaxZL2HWqNxRD4Yrm8ISnPJv7zByBg6OlxiLw=;
+  b=hFk7mKE0vML25hqsIJEG0rR0Z7wp21/S6g/M/MLwf/GP8rdKGu2hinU3
+   ifIjet8QHKTgy08cEjMAieDGKnAFarVOzRY6sWCyIuFV+EISWbACFds2+
+   EkuvEgyCACWq+x/iJ7a3ffCTwHN4xGLZjtbcLFa+6KAk2Dc4zjVJMPWmc
+   gINT82UIcBNOpzLKUrEiB+247OtWJogEbOK3CEUF4zVZg6+q+DWLRn12y
+   BDEkPBqC4MTxPm4INWMEZywPoU9ZeMBs8PIWxUtnLCJSgMaxfZI3b2lL+
+   MIIqIa3XpiKm+6Ek1dLicF/fuYNj8s+q2yr/oMk5/qWLqe3vjRYcJjcHW
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11289535"
+X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
+   d="scan'208";a="11289535"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 01:01:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
+   d="scan'208";a="966340"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.36.139])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 01:01:17 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 6 Feb 2024 11:01:13 +0200 (EET)
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc: Hans de Goede <hdegoede@redhat.com>, naveenkrishna.chatradhi@amd.com, 
+    LKML <linux-kernel@vger.kernel.org>, Carlos Bilbao <carlos.bilbao@amd.com>, 
+    platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v2] platform/x86/amd/hsmp: switch to use
+ device_add_groups()
+In-Reply-To: <2024020540-siesta-palm-03cd@gregkh>
+Message-ID: <3522e43e-a54c-0ac1-e4b8-beea9b7e0bd0@linux.intel.com>
+References: <2024020145-junior-outnumber-3e76@gregkh> <07010c54-2e44-463b-9a9b-95697fd30ffd@redhat.com> <2024020243-blinks-pantomime-c51e@gregkh> <06e92b87-4d48-4519-b1db-6d7605bf3962@redhat.com> <e8605fd7-1ffc-00ff-ec3b-e125085d4e92@linux.intel.com>
+ <2024020540-siesta-palm-03cd@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCHv1 5/5] arm64: dts: amlogic: Add cache information to the
- Amlogic A7 SoC
-Content-Language: en-US, fr
-To: Anand Moon <linux.amoon@gmail.com>, Kevin Hilman <khilman@baylibre.com>,
- Jerome Brunet <jbrunet@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240205171930.968-1-linux.amoon@gmail.com>
- <20240205171930.968-6-linux.amoon@gmail.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240205171930.968-6-linux.amoon@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; BOUNDARY="8323328-1903269187-1707209279=:1141"
+Content-ID: <21a85ceb-6a8f-fc9f-b2e0-de572ce81811@linux.intel.com>
 
-On 05/02/2024 18:19, Anand Moon wrote:
-> As per A311D datasheet add missing cache information to the Amlogic A7 SoC.
-> 
-> - Each Cortex-A53 core has 32 KB of instruction cache and
-> 	32 KB of L1 data cache available.
-> - Each Cortex-A73 core has 64 KB of L1 instruction cache and
-> 	64 KB of L1 data cache available.
-> - The little (A53) cluster has 512 KB of unified L2 cache available.
-> - The big (A73) cluster has 1 MB of unified L2 cache available.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Where did you get those numbers ? I can't find them.
+--8323328-1903269187-1707209279=:1141
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <a1d6fb3c-5406-0c11-1250-74927851f899@linux.intel.com>
 
-Neil
+On Mon, 5 Feb 2024, Greg Kroah-Hartman wrote:
 
-> 
-> To improve system performance.
-> 
-> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
-> ---
-> [0] https://dl.khadas.com/products/vim4/datasheet/a311d2_quick_reference_manual_v0.6.pdf
-> [1] https://en.wikipedia.org/wiki/ARM_Cortex-A73
-> [2] https://en.wikipedia.org/wiki/ARM_Cortex-A53
-> ---
->   arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi | 74 +++++++++++++++++++++
->   1 file changed, 74 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
-> index a03c7667d2b6..72dedc40f460 100644
-> --- a/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi
-> @@ -52,6 +52,13 @@ cpu100: cpu@100 {
->   			compatible = "arm,cortex-a53";
->   			reg = <0x0 0x100>;
->   			enable-method = "psci";
-> +			d-cache-line-size = <32>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-sets = <32>;
-> +			i-cache-line-size = <32>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-sets = <32>;
-> +			next-level-cache = <&l2_cache_l>;
->   		};
->   
->   		cpu101: cpu@101{
-> @@ -59,6 +66,13 @@ cpu101: cpu@101{
->   			compatible = "arm,cortex-a53";
->   			reg = <0x0 0x101>;
->   			enable-method = "psci";
-> +			d-cache-line-size = <32>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-sets = <32>;
-> +			i-cache-line-size = <32>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-sets = <32>;
-> +			next-level-cache = <&l2_cache_l>;
->   		};
->   
->   		cpu102: cpu@102 {
-> @@ -66,6 +80,13 @@ cpu102: cpu@102 {
->   			compatible = "arm,cortex-a53";
->   			reg = <0x0 0x102>;
->   			enable-method = "psci";
-> +			d-cache-line-size = <32>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-sets = <32>;
-> +			i-cache-line-size = <32>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-sets = <32>;
-> +			next-level-cache = <&l2_cache_l>;
->   		};
->   
->   		cpu103: cpu@103 {
-> @@ -73,6 +94,13 @@ cpu103: cpu@103 {
->   			compatible = "arm,cortex-a53";
->   			reg = <0x0 0x103>;
->   			enable-method = "psci";
-> +			d-cache-line-size = <32>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-sets = <32>;
-> +			i-cache-line-size = <32>;
-> +			i-cache-size = <0x8000>;
-> +			i-cache-sets = <32>;
-> +			next-level-cache = <&l2_cache_l>;
->   		};
->   
->   		cpu0: cpu@0 {
-> @@ -80,6 +108,13 @@ cpu0: cpu@0 {
->   			compatible = "arm,cortex-a73";
->   			reg = <0x0 0x0>;
->   			enable-method = "psci";
-> +			d-cache-line-size = <64>;
-> +			d-cache-size = <0x10000>;
-> +			d-cache-sets = <64>;
-> +			i-cache-line-size = <64>;
-> +			i-cache-size = <0x10000>;
-> +			i-cache-sets = <64>;
-> +			next-level-cache = <&l2_cache_b>;
->   		};
->   
->   		cpu1: cpu@1 {
-> @@ -87,6 +122,13 @@ cpu1: cpu@1 {
->   			compatible = "arm,cortex-a73";
->   			reg = <0x0 0x1>;
->   			enable-method = "psci";
-> +			d-cache-line-size = <64>;
-> +			d-cache-size = <0x10000>;
-> +			d-cache-sets = <64>;
-> +			i-cache-line-size = <64>;
-> +			i-cache-size = <0x10000>;
-> +			i-cache-sets = <64>;
-> +			next-level-cache = <&l2_cache_b>;
->   		};
->   
->   		cpu2: cpu@2 {
-> @@ -94,6 +136,13 @@ cpu2: cpu@2 {
->   			compatible = "arm,cortex-a73";
->   			reg = <0x0 0x2>;
->   			enable-method = "psci";
-> +			d-cache-line-size = <64>;
-> +			d-cache-size = <0x10000>;
-> +			d-cache-sets = <64>;
-> +			i-cache-line-size = <64>;
-> +			i-cache-size = <0x10000>;
-> +			i-cache-sets = <64>;
-> +			next-level-cache = <&l2_cache_b>;
->   		};
->   
->   		cpu3: cpu@3 {
-> @@ -101,6 +150,31 @@ cpu3: cpu@3 {
->   			compatible = "arm,cortex-a73";
->   			reg = <0x0 0x3>;
->   			enable-method = "psci";
-> +			d-cache-line-size = <64>;
-> +			d-cache-size = <0x10000>;
-> +			d-cache-sets = <64>;
-> +			i-cache-line-size = <64>;
-> +			i-cache-size = <0x10000>;
-> +			i-cache-sets = <64>;
-> +			next-level-cache = <&l2_cache_b>;
-> +		};
-> +
-> +		l2_cache_l: l2-cache-cluster0 {
-> +			compatible = "cache";
-> +			cache-level = <2>;
-> +			cache-unified;
-> +			cache-size = <0x80000>;
-> +			cache-line-size = <64>;
-> +			cache-sets = <512>;
-> +		};
-> +
-> +		l2_cache_b: l2-cache-cluster1 {
-> +			compatible = "cache";
-> +			cache-level = <2>;
-> +			cache-unified;
-> +			cache-size = <0x100000>;
-> +			cache-line-size = <64>;
-> +			cache-sets = <1024>;
->   		};
->   	};
->   
+> On Mon, Feb 05, 2024 at 12:27:24PM +0200, Ilpo J=E4rvinen wrote:
+> > On Fri, 2 Feb 2024, Hans de Goede wrote:
+> > > On 2/2/24 16:32, Greg Kroah-Hartman wrote:
+> > > > On Fri, Feb 02, 2024 at 08:49:39AM +0100, Hans de Goede wrote:
+> > > >> Hi Greg,
+> > > >>
+> > > >> On 2/2/24 03:44, Greg Kroah-Hartman wrote:
+> > > >>> The use of devm_*() functions works properly for when the device
+> > > >>> structure itself is dynamic, but the hsmp driver is attempting to=
+ have a
+> > > >>> local, static, struct device and then calls devm_() functions att=
+aching
+> > > >>> memory to the device that will never be freed.
+> > > >>
+> > > >> As I mentioned in my reply to v1, this is not correct.
+> > > >>
+> > > >> There is a global data struct, but that holds a struct device
+> > > >> pointer, not the device struct.
+> > > >=20
+> > > > Ooops, I misread that:
+> > > > =09static struct hsmp_plat_device plat_dev;
+> > > > was not the actual device struct anymore.
+> > > >=20
+> > > >> The device itself is created with platform_device_alloc() +
+> > > >> platform_device_add() from module-init and it is removed
+> > > >> on module-exit by calling platform_device_unregister()
+> > > >=20
+> > > > Ok, much better.
+> > > >=20
+> > > >> So AFAICT this should keep using the devm_ variant to properly
+> > > >> cleanup the sysfs attributes.
+> > > >=20
+> > > > This devm_ variant is odd, and should never have been created as th=
+e
+> > > > sysfs core always cleans up the sysfs attributes when a device is
+> > > > removed, there is no need for it (i.e. they do the same thing.)
+> > > >=20
+> > > > That's why I want to get rid of it, it's pointless :)
+> > > >=20
+> > > >> But what this really needs is to be converted to using
+> > > >> amd_hsmp_driver.driver.dev_groups rather then manually
+> > > >> calling devm_device_add_groups() I have already asked
+> > > >> Suma Hegde (AMD) to take a look at this.
+> > > >=20
+> > > > The initial issue I saw with this is that these attributes are bein=
+g
+> > > > created dynamically, so using dev_groups can be a bit harder.  The =
+code
+> > > > paths here are twisty and not obvious as it seems to want to suppor=
+t
+> > > > devices of multiple types in the same codebase at the same time.
+> > > >=20
+> > > > But yes, using dev_groups is ideal, and if that happens, I'm happy.
+> > > > It's just that there are now only 2 in-kernel users of
+> > > > devm_device_add_groups() and I have a patch series to get rid of th=
+e
+> > > > other one, and so this would be the last, hence my attention to thi=
+s.
+> > > >=20
+> > > > Again, moving from devm_device_add_groups() to device_add_groups() =
+is a
+> > > > no-op from a functional standpoint, so this should be fine.
+> > >=20
+> > > Ok, I was not aware that the core automatically cleans up
+> > > all the attributes anyways.
+> > >=20
+> > > In that case this fine with me and I agree with merging this
+> > > so that you can entirely remove the  devm_ variant:
+> > >=20
+> > > Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> >=20
+> > Greg,
+> >=20
+> > Does this same stuff apply to devm_device_add_group() which was added=
+=20
+> > along the ACPI changes?
+>=20
+> Probably, I haven't looked at that yet.
+>
+> > And the changelog is quite misleading as is, it should be changed to=20
+> > match the real motivation.
+>=20
+> "Motivation" isn't always needed in a changelog text, I was trying to
+> describe why this specific instance was not needed, not the overall
+> pointlessness of the function :)
+>=20
+> I got the text wrong about this being a static variable (but one is
+> still in there, so it's confusing.)
 
+Yes, I mainly meant the not-dynamic part is no longer true so I don't want=
+=20
+to apply it as is and you likely want to extend the patch to include the=20
+newly introduced devm_device_add_group() call conversion.
+
+> I'll be glad to reword this if needed to just say "This function is
+> pointless, does nothing, and is about to be removed from the kernel so
+> stop using it", or something along those lines...
+
+Given that it wasn't obvious to either me nor Hans, it would have been=20
+useful to mention it. The current wording had a different undertone so
+after the driver got changed it looked as if the patch become obsolete.
+=2E..But that turned out was not the case because of motivation outside of
+the one given in the commit message, so yes, if we look this from a
+reviewer perspective, it would be useful information to tell the function=
+=20
+is pointless and does nothing useful on top of the other function.
+
+
+--=20
+ i.
+--8323328-1903269187-1707209279=:1141--
 
