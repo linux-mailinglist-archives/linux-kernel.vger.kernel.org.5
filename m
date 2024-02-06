@@ -1,244 +1,165 @@
-Return-Path: <linux-kernel+bounces-55147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD12084B87A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7794384B888
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:55:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2C881C242CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:54:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 614AB1C228DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:55:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACE36133426;
-	Tue,  6 Feb 2024 14:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 240BE133294;
+	Tue,  6 Feb 2024 14:54:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EEkmLQNy"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TOj7ThV4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BEDC13247F
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B53B12FF7C;
+	Tue,  6 Feb 2024 14:54:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707231193; cv=none; b=JIJtU+bV+JCuKODOwVKXHR/fZq0C5AYOGqHUrDrwNznstiOOOi9FOwPAmiSGfGAuWe6U6gLyAriXivMWzRvPSpOgDNT7a7QNPQEA61de3D+nm36eLyJOtc6beYFEpS7p0+QKv5rV3rZroNR19pOrnLPB6m+oPg/GhC4Kuil2jDs=
+	t=1707231256; cv=none; b=RtZ2hJ6aB6X1wd6v6uIYn7IAk/62Rr4AORNH1KT3h9Yex5b7t78pO+igkSLKh/L8gkGNodSGZww7TSVlDcLEd4JI2pRgpk+xscpljddM38zzV8OZqZcnVFTcdFilZzbl4w2ii+mhWRnfdvw/mxf6sd2PPKWSMBHbzzrGViWw18w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707231193; c=relaxed/simple;
-	bh=Qrpa+uGtUHpG2JAA82HSPm/TG8ygOkhkTJPlA2/C7bk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cMYw//quCWY2lJDiURi0JQXtzJdbG6p5HJsQ6u0Ultkl0rCfLK7rneW/maSyB425T+9j5VXTPRXvyXoX8O8ekfB77QZyW9lXRDM7S8ERamOTyDjf0VSARhKVwNEmUh9RvXfU7UtsFNtu2wjrYzNUgl35Yj2xPpNIqdDkRpmVS90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EEkmLQNy; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707231191;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ICNu3j0RxsXSNnJAkw6sqT5jyTGFKxvpyFp2l0saKd0=;
-	b=EEkmLQNyAJsBBpjYRg1bvnptm7GYFwvx2fqWf+YSzvm4kRYKCJbI4iydBilSYyuht/rUr3
-	u/pEWjQOTqndDANGXu1WRQRmVf5X+eInOYiEEfjQWlJWdcEnFz4Q0O7ZOuQ1Ev1gKA5CaN
-	OiBr6AQULQZaBIjsP/npih8uXsWKoi4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-167-zB82_cyAMDOOlBX9rRInSA-1; Tue, 06 Feb 2024 09:52:44 -0500
-X-MC-Unique: zB82_cyAMDOOlBX9rRInSA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D5715185A782;
-	Tue,  6 Feb 2024 14:52:43 +0000 (UTC)
-Received: from bfoster (unknown [10.22.32.186])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 6A5E51C060B3;
-	Tue,  6 Feb 2024 14:52:43 +0000 (UTC)
-Date: Tue, 6 Feb 2024 09:54:01 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
-	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/13] writeback: add a writeback iterator
-Message-ID: <ZcJICXOyW7XbiEPp@bfoster>
-References: <20240203071147.862076-1-hch@lst.de>
- <20240203071147.862076-13-hch@lst.de>
- <ZcD/4HNZt1zu2eZF@bfoster>
+	s=arc-20240116; t=1707231256; c=relaxed/simple;
+	bh=FZykc25Fgh62KQdzm9gVnouNp94N7q0i9r9a3bxaxdA=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Qhaw9DMJZiZCNBN+tsa9/gkfVv31zQL9uDf9A58RZmkvqosbTvZ4WY31zg7vcvFb+piwqXvmCM0Zo4wKAjZLe4FfB7NMWd+D3gUFkosd+LBtiR29khIE68Z+HwE+iJmeuIONSqHLOW7MIe4fV7cZh8guVwTWIj5zSCIefApjlnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TOj7ThV4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E799DC433F1;
+	Tue,  6 Feb 2024 14:54:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707231255;
+	bh=FZykc25Fgh62KQdzm9gVnouNp94N7q0i9r9a3bxaxdA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=TOj7ThV4fk/3L3nP95TbiUIzZXXq/Md4A46Nqfcaf11sbfkRO1CYUYRvvlf07WhaJ
+	 vMMxDcdk/yaI0EpwSiWT0Vb0HLeXiEFd1MSTrn28FU3/TpTpxWYTACtOWI8ojUGCuT
+	 6+pugD2r9R+8HKoc+xRTFY+3FGz30hor1Wq9gp3wM2pKQM3eq6NqwZ2T0cHxXwzEPB
+	 e8quUcleAeaktBziCfNzYad/NvLs8uHuIffdXEgmjgxxzDIrHF/aVXyJXjJUNptuz1
+	 UIgquNUXAJM2Q6+YZZI4yHtBFxpPvNECUmURepE+MBq8IdY80XWUH/1z6Fh13s/wXP
+	 3GXEIs93OgDIg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rXMpx-000qjP-L4;
+	Tue, 06 Feb 2024 14:54:13 +0000
+Date: Tue, 06 Feb 2024 14:54:12 +0000
+Message-ID: <86sf2563u3.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: "Thierry Reding" <thierry.reding@gmail.com>
+Cc: "Jon Hunter" <jonathanh@nvidia.com>,
+	"Sumit Gupta" <sumitg@nvidia.com>,
+	<treding@nvidia.com>,
+	<krzysztof.kozlowski@linaro.org>,
+	<mark.rutland@arm.com>,
+	<linux-kernel@vger.kernel.org>,
+	<linux-tegra@vger.kernel.org>,
+	<amhetre@nvidia.com>,
+	<bbasu@nvidia.com>
+Subject: Re: [Patch] memory: tegra: Skip SID override from Guest VM
+In-Reply-To: <CYY1YXL0FWK2.1L5CRNMKUF22J@gmail.com>
+References: <20240206114852.8472-1-sumitg@nvidia.com>
+	<86wmrh6b2n.wl-maz@kernel.org>
+	<252d6094-b2d6-496d-b28f-93507a193ede@nvidia.com>
+	<86v87169g2.wl-maz@kernel.org>
+	<CYY1YXL0FWK2.1L5CRNMKUF22J@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZcD/4HNZt1zu2eZF@bfoster>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: thierry.reding@gmail.com, jonathanh@nvidia.com, sumitg@nvidia.com, treding@nvidia.com, krzysztof.kozlowski@linaro.org, mark.rutland@arm.com, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, amhetre@nvidia.com, bbasu@nvidia.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Mon, Feb 05, 2024 at 10:33:52AM -0500, Brian Foster wrote:
-> On Sat, Feb 03, 2024 at 08:11:46AM +0100, Christoph Hellwig wrote:
-> > Refactor the code left in write_cache_pages into an iterator that the
-> > file system can call to get the next folio for a writeback operation:
-> > 
-> > 	struct folio *folio = NULL;
-> > 
-> > 	while ((folio = writeback_iter(mapping, wbc, folio, &error))) {
-> > 		error = <do per-foli writeback>;
-> > 	}
-> > 
-> > The twist here is that the error value is passed by reference, so that
-> > the iterator can restore it when breaking out of the loop.
-> > 
-> > Handling of the magic AOP_WRITEPAGE_ACTIVATE value stays outside the
-> > iterator and needs is just kept in the write_cache_pages legacy wrapper.
-> > in preparation for eventually killing it off.
-> > 
-> > Heavily based on a for_each* based iterator from Matthew Wilcox.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  include/linux/writeback.h |   4 +
-> >  mm/page-writeback.c       | 192 ++++++++++++++++++++++----------------
-> >  2 files changed, 118 insertions(+), 78 deletions(-)
-> > 
-> ...
-> > diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> > index 3abb053e70580e..5fe4cdb7dbd61a 100644
-> > --- a/mm/page-writeback.c
-> > +++ b/mm/page-writeback.c
-> ...
-> > @@ -2434,69 +2434,68 @@ static struct folio *writeback_get_folio(struct address_space *mapping,
-> >  }
-> >  
-> >  /**
-> ...
-> >   */
-> > -int write_cache_pages(struct address_space *mapping,
-> > -		      struct writeback_control *wbc, writepage_t writepage,
-> > -		      void *data)
-> > +struct folio *writeback_iter(struct address_space *mapping,
-> > +		struct writeback_control *wbc, struct folio *folio, int *error)
-> >  {
-> ...
-> > +	} else {
-> >  		wbc->nr_to_write -= folio_nr_pages(folio);
-> >  
-> > -		if (error == AOP_WRITEPAGE_ACTIVATE) {
-> > -			folio_unlock(folio);
-> > -			error = 0;
-> > -		}
-> > +		WARN_ON_ONCE(*error > 0);
+On Tue, 06 Feb 2024 14:07:10 +0000,
+"Thierry Reding" <thierry.reding@gmail.com> wrote:
 > 
-> Why the warning on writeback error here? It looks like new behavior, but
-> maybe I missed something. Otherwise the factoring LGTM.
+> [1  <text/plain; UTF-8 (quoted-printable)>]
+> On Tue Feb 6, 2024 at 1:53 PM CET, Marc Zyngier wrote:
+> > On Tue, 06 Feb 2024 12:28:27 +0000, Jon Hunter <jonathanh@nvidia.com> wrote:
+> > > On 06/02/2024 12:17, Marc Zyngier wrote:
+> [...]
+> > > > - My own tegra186 HW doesn't have VHE, since it is ARMv8.0, and this
+> > > >    helper will always return 'false'. How could this result in
+> > > >    something that still works? Can I get a free CPU upgrade?
+> > > 
+> > > I thought this API just checks to see if we are in EL2?
+> >
+> > It does. And that's the problem. On ARMv8.0, we run the Linux kernel
+> > at EL1. Tegra186 is ARMv8.0 (Denver + A57). So as written, this change
+> > breaks the very platform it intends to support.
+> 
+> To clarify, the code that accesses these registers is shared across
+> Tegra186 and later chips. Tegra194 and later do support ARMv8.1 VHE.
 
-Err, sorry.. I glossed over the > 0 check and read it as < 0.
-Disregard, this seems reasonable to me as long as we no longer expect
-those AOP returns (which I'm not really clear on either, but anyways..):
+But even on these machines that are VHE-capable, not running at EL2
+doesn't mean we're running as a guest. The user can force the kernel
+to stick to EL1, using a command-line option such as kvm-arm.mode=nvhe
+which will force the kernel to stay at EL1 while deploying KVM at EL2.
 
-Reviewed-by: Brian Foster <bfoster@redhat.com>
+> Granted, if it always returns false on Tegra186 that's not what we
+> want.
 
-> 
-> Brian
-> 
-> >  
-> >  		/*
-> >  		 * For integrity writeback we have to keep going until we have
-> > @@ -2510,33 +2509,70 @@ int write_cache_pages(struct address_space *mapping,
-> >  		 * wbc->nr_to_write or encounter the first error.
-> >  		 */
-> >  		if (wbc->sync_mode == WB_SYNC_ALL) {
-> > -			if (error && !ret)
-> > -				ret = error;
-> > +			if (*error && !wbc->saved_err)
-> > +				wbc->saved_err = *error;
-> >  		} else {
-> > -			if (error || wbc->nr_to_write <= 0)
-> > +			if (*error || wbc->nr_to_write <= 0)
-> >  				goto done;
-> >  		}
-> >  	}
-> >  
-> > -	/*
-> > -	 * For range cyclic writeback we need to remember where we stopped so
-> > -	 * that we can continue there next time we are called.  If  we hit the
-> > -	 * last page and there is more work to be done, wrap back to the start
-> > -	 * of the file.
-> > -	 *
-> > -	 * For non-cyclic writeback we always start looking up at the beginning
-> > -	 * of the file if we are called again, which can only happen due to
-> > -	 * -ENOMEM from the file system.
-> > -	 */
-> > -	folio_batch_release(&wbc->fbatch);
-> > -	if (wbc->range_cyclic)
-> > -		mapping->writeback_index = 0;
-> > -	return ret;
-> > +	folio = writeback_get_folio(mapping, wbc);
-> > +	if (!folio) {
-> > +		/*
-> > +		 * To avoid deadlocks between range_cyclic writeback and callers
-> > +		 * that hold pages in PageWriteback to aggregate I/O until
-> > +		 * the writeback iteration finishes, we do not loop back to the
-> > +		 * start of the file.  Doing so causes a page lock/page
-> > +		 * writeback access order inversion - we should only ever lock
-> > +		 * multiple pages in ascending page->index order, and looping
-> > +		 * back to the start of the file violates that rule and causes
-> > +		 * deadlocks.
-> > +		 */
-> > +		if (wbc->range_cyclic)
-> > +			mapping->writeback_index = 0;
-> > +
-> > +		/*
-> > +		 * Return the first error we encountered (if there was any) to
-> > +		 * the caller.
-> > +		 */
-> > +		*error = wbc->saved_err;
-> > +	}
-> > +	return folio;
-> >  
-> >  done:
-> >  	folio_batch_release(&wbc->fbatch);
-> >  	if (wbc->range_cyclic)
-> >  		mapping->writeback_index = folio->index + folio_nr_pages(folio);
-> > +	return NULL;
-> > +}
-> > +
-> > +/**
-> > + * write_cache_pages - walk the list of dirty pages of the given address space and write all of them.
-> > + * @mapping: address space structure to write
-> > + * @wbc: subtract the number of written pages from *@wbc->nr_to_write
-> > + * @writepage: function called for each page
-> > + * @data: data passed to writepage function
-> > + *
-> > + * Return: %0 on success, negative error code otherwise
-> > + *
-> > + * Note: please use writeback_iter() instead.
-> > + */
-> > +int write_cache_pages(struct address_space *mapping,
-> > +		      struct writeback_control *wbc, writepage_t writepage,
-> > +		      void *data)
-> > +{
-> > +	struct folio *folio = NULL;
-> > +	int error;
-> > +
-> > +	while ((folio = writeback_iter(mapping, wbc, folio, &error))) {
-> > +		error = writepage(folio, wbc, data);
-> > +		if (error == AOP_WRITEPAGE_ACTIVATE) {
-> > +			folio_unlock(folio);
-> > +			error = 0;
-> > +		}
-> > +	}
-> > +
-> >  	return error;
-> >  }
-> >  EXPORT_SYMBOL(write_cache_pages);
-> > -- 
-> > 2.39.2
-> > 
-> > 
-> 
-> 
+I'm glad we agree here.
 
+> > > > - If you assign this device to a VM and that the hypervisor doesn't
+> > > >    correctly virtualise it, then it is a different device and you
+> > > >    should simply advertise it something else. Or even better, fix your
+> > > >    hypervisor.
+> > > 
+> > > Sumit can add some more details on why we don't completely disable the
+> > > device for guest OSs.
+> >
+> > It's not about disabling it. It is about correctly supporting it
+> > (providing full emulation for it), or advertising it as something
+> > different so that SW can handle it differently.
+> 
+> It's really not a different device. It's exactly the same device except
+> that accessing some registers isn't permitted. We also can't easily
+> remove parts of the register region from device tree because these are
+> intermixed with other registers that we do want access to.
+
+But that's the definition of being a different device. It has a
+different programming interface, hence it is different. The fact that
+it is the same HW block mediated by a hypervisor doesn't really change
+that.
+
+> > Poking into the internals of how the kernel is booted for a driver
+> > that isn't tied to the core architecture (because it would need to
+> > access system registers, for example) is not an acceptable outcome.
+> 
+> So what would be the better option? Use a different compatible string to
+> make the driver handle the device differently? Or adding a custom
+> property to the device tree node to mark this as running in a
+> virtualized environment?
+
+A different compatible string would be my preferred option. An extra
+property would work as well. As far as I am concerned, these two
+options are the right way to express the fact that you have something
+that isn't quite like the real thing.
+
+> Perhaps we can reuse the top-level hypervisor node? That seems to only
+> ever have been used for Xen on 32-bit ARM, so not sure if that'd still
+> be appropriate.
+
+I'd shy away from this. You would be deriving properties from a
+hypervisor implementation, instead of expressing those properties
+directly. In my experience, the direct method is always preferable.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
