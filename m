@@ -1,139 +1,148 @@
-Return-Path: <linux-kernel+bounces-54688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A9DF84B281
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:29:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA9F84B282
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:29:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BC111C235D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:29:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E38D31C2369D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0584912E1F9;
-	Tue,  6 Feb 2024 10:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B30DA12EBDE;
+	Tue,  6 Feb 2024 10:29:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gSWhy8p0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WbKK//aI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E0B512E1F1
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 10:29:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02F1312EBCA;
+	Tue,  6 Feb 2024 10:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707215362; cv=none; b=gAjPfTrLRolxtDG0RAusXoDN6y4E0JvhSCi3Dg6HPL8LQeG+g8+33MJulmYTkSEExvJLYIgC2qU/GkdLChd6b8Xbu3fVobhQGLV2B2wnUiDQhO4O5Cqtd7VnyNPyRqiGCGVBaOtqHXJzPuO+MlGEoUzVpo1k/uQpprZlkFgMomM=
+	t=1707215367; cv=none; b=MlxtzpLiopVKFvSz8e2L8sh9HzAZRkRP7EU9O6LyFkBkEraVqDMAlj0Cn5tLpLscdi0zDadhKz4pERR9I2agcRwuY4HFVuR6uo1yq7z6b8rqS90wMptfa+RpXmCiw8UkwFQHK7dTvIB4O3fGKnHlU9/Kh8vDdqSrY3LQ43nKnxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707215362; c=relaxed/simple;
-	bh=qZo0fMDFgva/0AZ58JuIrIfcF7XfwF0vqjw37fr6Aek=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nb7QqLDQ3oqOFshBjDawkHgIguP0f9gt7GQkBYhutmKauQzHoOW7kEHiacCKBt/BvVv1Z0HLGnYYhwKSkm30w1ZtelH1aMWWcvgOJqSASaE7I+VDN51G/1hDKJvGGeCexxSX4URuUfHd/2sX1tbqsiUAZKbJyeSUZ9gGBgDyMts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gSWhy8p0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67CE1C433F1;
-	Tue,  6 Feb 2024 10:29:21 +0000 (UTC)
+	s=arc-20240116; t=1707215367; c=relaxed/simple;
+	bh=yQWyXDnKngD/mW309FyivfmArIxnKAMYY8kh8S/6+VI=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LhSYZLXFdUXGN2n0u5OZp3xKaOsgEgIhJwRpzzjNWLfIiLKhj2diy13WGjoFfKsIJbLWl0hsHReoegIegaxPA00cSw5V4L0USohlqdhEWj1n/ylsMYs1mydgAOxfqsak+kngpIC/aZhSwJiDdyFga4FOiFh8uPOgBXF8kHGHR8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WbKK//aI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6250AC433F1;
+	Tue,  6 Feb 2024 10:29:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707215361;
-	bh=qZo0fMDFgva/0AZ58JuIrIfcF7XfwF0vqjw37fr6Aek=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gSWhy8p0jSa1Xl+mwC35FZP7E93PMJhgY9rkU/iKX+puSZ5pfYXa7VTM3u2Nn9B8s
-	 RCwsl/ROzYUHmep7na7HCD/4HIFM9/COW+kQTMzwJRGDYkzITq3SCcUwaBgtuSIZUv
-	 CJrnNWu9zkycjsV/gRD7Pkf9VyjZ+oc+yOLmehNgufeDUwEhScG2DStKmCoUhpT10R
-	 ivYx35eGbWDX8IdtocQsGMfVoU9c0hp1gOPVIBGCfC1OwN2gyjZ4oueHD3+iAVhs1V
-	 owBU/NL3gzx2Czo/CN0aZGpRwBfyPZAt6XarRUixUWpRfowImdIQueHCcWnJuSybJg
-	 JQ8j6UpsSLINA==
-Date: Tue, 6 Feb 2024 11:29:19 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Arjan van de Ven <arjan@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Giovanni Gherdovich <ggherdovich@suse.cz>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
-Message-ID: <ZcIJ/1p9jbmPP4tF@lothringen>
-References: <20240115143743.27827-1-anna-maria@linutronix.de>
- <20240115143743.27827-19-anna-maria@linutronix.de>
- <ZbuzMeKlCgebhJZ-@localhost.localdomain>
- <87bk90i2ja.fsf@somnus>
- <ZbvYJysR7gnaQiNg@localhost.localdomain>
- <87y1c3lxec.fsf@somnus>
- <87y1bzqbsx.fsf@somnus>
- <ZcFFSgjcDcuz7Swv@pavilion.home>
- <87jznh3o10.fsf@somnus>
+	s=k20201202; t=1707215366;
+	bh=yQWyXDnKngD/mW309FyivfmArIxnKAMYY8kh8S/6+VI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=WbKK//aI6LbFbaL6CNf9KRaD0f70vHAyf/CF4LqcDnLb7IIiAzF4HCGEPTwjx/jaF
+	 YJBo+W6bZyOltfXDXJbyRHgYTZon/v9oszDQXZ00GSw7qtVHyocEvvUeAiw2ynuRqV
+	 EGWVMFYmS8qEmZ9Ynaq/ZVrbJsKy1dmOqoOQu9PMpL6OGKzwhwEYS/EPED00QzRNa/
+	 FYCgqsWWAc7QndDh7l017QY949uz0Tw0AgaM+9zzs2KjYcOEbiYuNwB9J+9IAFjM/e
+	 xsF6GkadbDD7QNzlq8TnT7cGJzcF3yTDcXNuzNPi+gDMxH+uOhMbu4zpw3TuUHlLYN
+	 XMgCNVALA0Ijg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rXIhf-000m2E-Hz;
+	Tue, 06 Feb 2024 10:29:23 +0000
+Date: Tue, 06 Feb 2024 10:29:22 +0000
+Message-ID: <86y1bx6g3h.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Saurav Sachidanand <sauravsc@amazon.com>
+Cc: Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] [RFC] KVM: arm64/vgic: Populate GICR_TYPER with Aff3
+In-Reply-To: <20240205184326.78814-1-sauravsc@amazon.com>
+References: <20240205184326.78814-1-sauravsc@amazon.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87jznh3o10.fsf@somnus>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: sauravsc@amazon.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Tue, Feb 06, 2024 at 11:06:19AM +0100, Anna-Maria Behnsen wrote:
-> Frederic Weisbecker <frederic@kernel.org> writes:
-> 
-> > Le Mon, Feb 05, 2024 at 02:29:34PM +0100, Anna-Maria Behnsen a écrit :
-> >> Anna-Maria Behnsen <anna-maria@linutronix.de> writes:
-> >> 
-> >> > Frederic Weisbecker <frederic@kernel.org> writes:
-> >> >
-> >> >> Le Thu, Feb 01, 2024 at 05:15:37PM +0100, Anna-Maria Behnsen a écrit :
-> >> >>> Frederic Weisbecker <frederic@kernel.org> writes:
-> >> >>> 
-> >> >>> > Le Mon, Jan 15, 2024 at 03:37:41PM +0100, Anna-Maria Behnsen a écrit :
-> >> >>> > Heh, I was about to say that it's impossible that timer_base_is_idle()
-> >> >>> > at this stage but actually if we run in nohz_full...
-> >> >>> >
-> >> >>> > It happens so that nohz_full is deactivated until rcutree_online_cpu()
-> >> >>> > which calls tick_dep_clear() but it's a pure coincidence that might
-> >> >>> > disappear one day. So yes, let's keep it that way.
-> >> >>> 
-> >> >>> I instrumented the code (with NOHZ FULL and NOHZ_IDLE) to make sure the
-> >> >>> timer migration hierarchy state 'idle' is in sync with the timer base
-> >> >>> 'idle'. And this was one part where it was possible that it runs out of
-> >> >>> sync as I remember correctly. But if I understood you correctly, this
-> >> >>> shouldn't happen at the moment?
-> >> >>
-> >> >> Well, it's not supposed to :-)
-> >> >
-> >> > Hmm, let me double check this and run the tests on the instrumented
-> >> > version...
-> >> 
-> >> I added a prinkt() to verify what I think I remember. I was able to see
-> >> the prints. So it seems, that the coincidence that nohz_full is
-> >> deactivated until rcutree_online_cpu() already disappeared.
-> >
-> > Nice, then I guess it can become a WARN_ON.
-> 
-> Either I misunderstood something, or wasn't able to explain what I
-> wanted to say.
-> 
-> I understood, that nohz full is disabled (by coincidence) until
-> rcutree_online_cpu() which comes after the timer migration CPU hotplug
-> AP. This means, that the check whether timer base is idle or not,
-> shouldn't be required in tmigr_cpu_online() to keep cpu idle or mark it
-> active in the hierarchy. But we could keep it in case coincidence
-> disappears. No?
-> 
-> So I added a printk() when timer base is idle in tmigr_cpu_online(). And
-> I was able to see the prints. This means, nohz full is _not_ disabled
-> when executing tmigr_cpu_online(), or am I wrong?
-> 
-> So when I replace the printk() with a WARN_ON() it will definitely
-> trigger. So I'm not sure if this is what you want to have :)
+Hi Saurav,
 
-Yes, silly me, I thought the tick dependency was set on all hotplug
-operations but it's only cpu down. So this piece doesn't need to change
-AFAICT.
+On Mon, 05 Feb 2024 18:43:26 +0000,
+Saurav Sachidanand <sauravsc@amazon.com> wrote:
+> 
+> According to spec, bits [63:56] of the GICR_TYPER register are supposed
+> to contain Affinity level 3 (Aff3) bits of the Processing Element (PE)
+> associated with its GIC redistributor. Linux guests on boot match PEs
+> with their redistributor using all four Affinity level bits from this
+> register.
+
+If you read the spec carefully, you will notice that Aff3 support is
+*optional*, and that it is on purpose that we don't support Aff3: this
+cannot work for 32bit guests.
+
+The other thing is that there is no guarantee that the HW actually
+supports that either: ICH_VTR_EL2.A3V tells you whether the CPU
+interface actually supports it.
+
+> 
+> Currently, vGIC populates GICR_TYPER with just the first three Affinity
+> levels of a vCPU's MPIDR. This works fine for a Linux guest that boots
+> with KVM's default vCPU MPIDR assignment, which also only populates till
+> the first three Affinity levels.
+> 
+> However, a hypervisor can override KVM's default MPIDR assignment by
+> writing directly to a vCPU's MPIDR_EL1 register. If such a hypervisor
+> were to populate Aff3 bits for a VM, a Linux guest booting there would
+> fail to match vCPUs with their vGIC redistributors, since their virtual
+> GICR_TYPER registers would be missing the respective Aff3 bits.
+> 
+> To change that, let's populate GICR_TYPER using Aff3 bits [39:32] from
+> the vCPU's MPIDR.
+> 
+> Signed-off-by: Saurav Sachidanand <sauravsc@amazon.com>
+> ---
+>  arch/arm64/kvm/vgic/vgic-mmio-v3.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> index c15ee1df036a..26bc838ce14c 100644
+> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> @@ -324,6 +324,7 @@ static unsigned long vgic_mmio_read_v3r_typer(struct kvm_vcpu *vcpu,
+>  	u64 value;
+>  
+>  	value = (u64)(mpidr & GENMASK(23, 0)) << 32;
+> +	value |= (u64)((mpidr >> 32) & GENMASK(7, 0)) << 56;
+>  	value |= ((target_vcpu_id & 0xffff) << 8);
+>  
+>  	if (vgic_has_its(vcpu->kvm))
+
+So if you consider the above remarks, this is neither sufficient nor
+guaranteed to work. I'm not opposed to having full Aff3 support (most
+of it is already there), but this needs to be done in a consistent
+way, and consider both the case of 32bit guests (which are not going
+away) and the capabilities of the HW (the current code being rather
+inconsistent in this regard).
+
+If you are willing to work on this, I'll happily review a more
+complete series of patches.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
