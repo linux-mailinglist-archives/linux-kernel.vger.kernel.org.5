@@ -1,153 +1,142 @@
-Return-Path: <linux-kernel+bounces-55015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B3A984B64B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:26:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84D6E84B650
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:27:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9E16B26FF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:26:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2854BB277AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:27:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CF54130E47;
-	Tue,  6 Feb 2024 13:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7807F130E47;
+	Tue,  6 Feb 2024 13:27:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E7EeiG77"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="iYWDzEEn"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D02130AE8;
-	Tue,  6 Feb 2024 13:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3654612FF97
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 13:27:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707225982; cv=none; b=Z5ivhBZaKw63SoIWM5qvTtI4QWQpT6QOhyFsk2m3tbCsMrA6pZRfwT6wCNerrYevl7wWqFrtMxli1e4VQJthOwzriyjClJDb/pGZIblGDh+PQrsd6gsKKeEPZTjuOYDJiQL2ZO3q5HqYZsnIOYUWRkfTy3xwghHyG6jeMNqJJCM=
+	t=1707226036; cv=none; b=Z+XUfnpH+rPD5ReZ4GGAe2iAa8P3uZdikB2aSWmHousNJkjZ/DuN3smZGb1DZZK3WifTtWUY3A+sswv2V2Imz+vYPCsETYXQ6v+l64Trtp4wIBekmoSGGUHnlUEyAfIuYreOnfDaHD+lNTj+lXEmyVxrcW6D1xWgGYlEZih4G0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707225982; c=relaxed/simple;
-	bh=TIFO8gUqQl8VkEe9RY5Z1blMtAjsU3qzRmne20uAnpk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JNIoLPiV5Gyf6L8tx+yehY//yaBEEEvPzg/WyMiFiTtBENMQGat9Xt0LgC4y23qlbcbaxjJm3F29LOiwsNBpTyr60UejiXzSgyHHppbJgSzzVlo4NU2Jwf6YehXFgcF/1epplOQnEnGHWQd+yrcmCaGhWI82aqZK/YeAeSwEmPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E7EeiG77; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B17DC4166A;
-	Tue,  6 Feb 2024 13:26:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707225982;
-	bh=TIFO8gUqQl8VkEe9RY5Z1blMtAjsU3qzRmne20uAnpk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=E7EeiG77Ofh6vxf9juuo6IqjVmfqWbjXrUeDdCP6AHe2FZgtO0FCqyfGmCZhhXpgs
-	 qi0YDrUzhy8cXxysZGgyx7uyip5GuvNfK8Oi21ZQaLumhjpJcdaZB2crrikxvPKJgz
-	 hOPlcWHaTqGJsc+ODjpb2GgM6l9OyQg+H79aQw/Hnw1bQD1q/cuWILI5uMcYPREVmE
-	 /f7eVkohOf96HdMBaI6AEp38fzOvx6vcCCWrVee+Q5WonhwCqGPISvKD/KhfZ7BwZB
-	 stGzqsRtds9y+ywMkSh7gR3Sx6gu3yFP/KXJiiVMJA8jpdXJKG63frKBf28xuQJ2iv
-	 oqhW88P+xREsA==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5114c05806eso1367380e87.1;
-        Tue, 06 Feb 2024 05:26:22 -0800 (PST)
-X-Gm-Message-State: AOJu0YwCXJbvjxta5qUd0RpCyMPmtay5+TNgr/jl9SL/0zZIJVRrtcUj
-	X4WVWpqHqm+SC+EG0fbChPIavKlXU0Q1+qjldrINZanwwjg7oZIHPSXSSPcruDpyp2Rnjd93qRg
-	O7+Nky3qX5SFFvpPVRdy0hksfhl4=
-X-Google-Smtp-Source: AGHT+IEa5QC0ai6rRaO2r0XCAaqM1VhyQj0kTWdttgrBOWUVAsLokpbZFN/c+ZpoGyEexQKQjYcFnhHQr7nN/qROzLE=
-X-Received: by 2002:a05:6512:1091:b0:511:5ca2:2a3f with SMTP id
- j17-20020a056512109100b005115ca22a3fmr1990570lfg.9.1707225980312; Tue, 06 Feb
- 2024 05:26:20 -0800 (PST)
+	s=arc-20240116; t=1707226036; c=relaxed/simple;
+	bh=hQ+QP63TDympmBm6f1787+x8JkcNvVe7bh5SVgAcn5c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oBo8/3iZPyjpWz1O0Ox0wtLt/2fawRVb4JowkpAxHI+YYEK+gLkeOxXfIv3kg8OMEQTb+4zf8cST8QIM9m78zNEPdEvLSlCEarXKS/cfbF5wYBY/aw4gSjocsnnCYOartMhz2BrWmSnn2HR9bO7ZHe/zWHrNILz9zqkCLiWdod0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=iYWDzEEn; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707226033;
+	bh=hQ+QP63TDympmBm6f1787+x8JkcNvVe7bh5SVgAcn5c=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=iYWDzEEnv1nWRcUIeci/q5vSYZZ9aUERduKYgiTOqA/Kd60fzZRLg84hRqzdEewZh
+	 ZFSXZPdOHreGQCVnMMudxUFLJuT/6V+AA7WialF6TuGeV0lUtV5I4f1m0k12ipSrSJ
+	 pzlUIjNbWWX2NDZSwoXRuOZqLwWhQ8Kc90oohMV+Qw8dXBoD/1ZDLkiv1WuR6vBw6y
+	 L63+4nUOmSSH4qTZlG76DWRn81skPu0ZaCKYI2MclYNREMPdHmOjc06yGoWq8UZi93
+	 I+KNZaAEroMP2M5BNfaCtvpHpZuNUQQGoidab5TVMPXbcp1k+dgsoRF2fXCWfbjzdU
+	 i4HRrDMGCssEg==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 69A233782072;
+	Tue,  6 Feb 2024 13:27:12 +0000 (UTC)
+Message-ID: <4fe9947f-b190-4dcc-8d1e-f532e6dcb827@collabora.com>
+Date: Tue, 6 Feb 2024 14:27:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206001333.1710070-1-yoann.congal@smile.fr> <20240206001333.1710070-4-yoann.congal@smile.fr>
-In-Reply-To: <20240206001333.1710070-4-yoann.congal@smile.fr>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Tue, 6 Feb 2024 22:25:43 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARUdHkihZhdw54i1Yx=Ew7vQqmXCF_D6O3r3hMbMFev0g@mail.gmail.com>
-Message-ID: <CAK7LNARUdHkihZhdw54i1Yx=Ew7vQqmXCF_D6O3r3hMbMFev0g@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] printk: Remove redundant CONFIG_BASE_FULL
-To: Yoann Congal <yoann.congal@smile.fr>
-Cc: linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, x86@kernel.org, 
-	=?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
-	Borislav Petkov <bp@alien8.de>, Darren Hart <dvhart@infradead.org>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Davidlohr Bueso <dave@stgolabs.net>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Jiri Slaby <jirislaby@kernel.org>, 
-	John Ogness <john.ogness@linutronix.de>, Josh Triplett <josh@joshtriplett.org>, 
-	Matthew Wilcox <willy@infradead.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Petr Mladek <pmladek@suse.com>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/7] drm/mediatek: dsi: Use GENMASK() for register mask
+ definitions
+Content-Language: en-US
+To: =?UTF-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
+ "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "kernel@collabora.com" <kernel@collabora.com>,
+ "daniel@ffwll.ch" <daniel@ffwll.ch>,
+ "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ "airlied@gmail.com" <airlied@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+References: <20240131113434.241929-1-angelogioacchino.delregno@collabora.com>
+ <20240131113434.241929-2-angelogioacchino.delregno@collabora.com>
+ <082bc4d9efd0746d7ec25eab0b3bf96018e997e5.camel@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <082bc4d9efd0746d7ec25eab0b3bf96018e997e5.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 6, 2024 at 9:13=E2=80=AFAM Yoann Congal <yoann.congal@smile.fr>=
- wrote:
->
-> CONFIG_BASE_FULL is equivalent to !CONFIG_BASE_SMALL and is enabled by
-> default: CONFIG_BASE_SMALL is the special case to take care of.
-> So, remove CONFIG_BASE_FULL and move the config choice to
-> CONFIG_BASE_SMALL (which defaults to 'n')
->
-> Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
-> ---
-> v3->v4:
-> * Split "switch CONFIG_BASE_SMALL to bool" and "Remove the redundant
->   config" (this patch) into two patches
-> * keep CONFIG_BASE_SMALL instead of CONFIG_BASE_FULL
-> ---
->  init/Kconfig | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
->
-> diff --git a/init/Kconfig b/init/Kconfig
-> index d4b16cad98502..4ecf2572d00ee 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1581,11 +1581,11 @@ config PCSPKR_PLATFORM
->           This option allows to disable the internal PC-Speaker
->           support, saving some memory.
->
-> -config BASE_FULL
-> -       default y
-> -       bool "Enable full-sized data structures for core" if EXPERT
-> +config BASE_SMALL
-> +       default n
+Il 06/02/24 09:57, CK Hu (胡俊光) ha scritto:
+> Hi, Angelo:
+> 
+> On Wed, 2024-01-31 at 12:34 +0100, AngeloGioacchino Del Regno wrote:
+>> Change magic numerical masks with usage of the GENMASK() macro
+>> to improve readability.
+>>
+>> While at it, also fix the DSI_PS_SEL mask to include all bits instead
+>> of just a subset of them.
+>>
+>> This commit brings no functional changes.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <
+>> angelogioacchino.delregno@collabora.com>
+>> ---
+>>   drivers/gpu/drm/mediatek/mtk_dsi.c | 45 +++++++++++++++-------------
+>> --
+>>   1 file changed, 23 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c
+>> b/drivers/gpu/drm/mediatek/mtk_dsi.c
+>> index a2fdfc8ddb15..3b7392c03b4d 100644
+>> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+>> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+>> @@ -58,18 +58,18 @@
+>>   
+>>   #define DSI_TXRX_CTRL		0x18
+>>   #define VC_NUM				BIT(1)
+>> -#define LANE_NUM			(0xf << 2)
+>> +#define LANE_NUM			GENMASK(5, 2)
+>>   #define DIS_EOT				BIT(6)
+>>   #define NULL_EN				BIT(7)
+>>   #define TE_FREERUN			BIT(8)
+>>   #define EXT_TE_EN			BIT(9)
+>>   #define EXT_TE_EDGE			BIT(10)
+>> -#define MAX_RTN_SIZE			(0xf << 12)
+>> +#define MAX_RTN_SIZE			GENMASK(15, 12)
+>>   #define HSTX_CKLP_EN			BIT(16)
+>>   
+>>   #define DSI_PSCTRL		0x1c
+>> -#define DSI_PS_WC			0x3fff
+>> -#define DSI_PS_SEL			(3 << 16)
+>> +#define DSI_PS_WC			GENMASK(14, 0)
+>> +#define DSI_PS_SEL			GENMASK(19, 16)
+> 
+> The original definition of DSI_PS_WC/DSI_PS_SEL is correct in MT8173.
+> So both need two definition and let each SoC select its own definition.
+> 
 
+The additional bits are unused on older SoCs and, if set, will be simply ignored;
+if we want to prevent setting bits that don't exist on the old ones, that should
+be done as a later commit introducing SoC capabilities for those and when the new
+capabilities for the new SoCs are introduced anyway.
 
+As of now, this doesn't break anything.
 
-A nit.
-
-Please drop the redundant 'default n' next time
-(as it seems you will have a change to send v5)
-
-
-
-
-
-
-
-> +       bool "Enable smaller-sized data structures for core" if EXPERT
->         help
-> -         Disabling this option reduces the size of miscellaneous core
-> +         Enabling this option reduces the size of miscellaneous core
->           kernel data structures. This saves memory on small machines,
->           but may reduce performance.
->
-> @@ -1940,11 +1940,6 @@ config RT_MUTEXES
->         bool
->         default y if PREEMPT_RT
->
-> -config BASE_SMALL
-> -       bool
-> -       default y if !BASE_FULL
-> -       default n
-> -
->  config MODULE_SIG_FORMAT
->         def_bool n
->         select SYSTEM_DATA_VERIFICATION
-> --
-> 2.39.2
->
+Regards,
+Angelo
 
 
---=20
-Best Regards
-Masahiro Yamada
 
