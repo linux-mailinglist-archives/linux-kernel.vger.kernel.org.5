@@ -1,137 +1,232 @@
-Return-Path: <linux-kernel+bounces-55576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63EC984BE61
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:58:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90EF484BE67
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:06:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 973FE1C21D59
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:58:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10F77B24B7E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB8BB179B2;
-	Tue,  6 Feb 2024 19:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9450C1B7FB;
+	Tue,  6 Feb 2024 20:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="QVf5neav"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9266617745
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 19:58:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U8/nwTvK"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56BFB1AACF
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 20:06:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707249516; cv=none; b=uMcooQiSAQ1dO8HfLcGFMTyzU1jEQwwPpG02iwC76dF6e5NFt+ZHSR8PHdOgC5Psif6HEHvl/8Sk01TGnjFdBnUnN/R9KZEqgIcu/oHXPdI6IFEByl12GoS3pP6qWqLMesVlJTYILyGfn8xWivAxsWwRiIElILgsEsmX/ZhDZ4c=
+	t=1707249996; cv=none; b=rmHxnnz8R8xn0mFY9Zb+bovNrmcgis4bDXHnIhDTBpYmApyMSCDfR5PZywZr1hPIb3FK4zMOBBNyuQiIexfvazhaDkKb/kwjgw2dI1S0FVge6USs8HtD1yzR0NDQTtLJK5gG7LQFxNCpkM9YpI6N5cixtmSZPFLLNM+KoIngIDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707249516; c=relaxed/simple;
-	bh=CSs8R3eAqFpZbozTGGxVMdRi1LPhZmwG0SUML7+4tx4=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=fraxAcukGdWpuc6EbHUVr6rMaSXEbZXtJaUOgKv6cFUAX+NH6UnLL7d8gkvYs6K7ebC1s7NcwP0RDJ3PAYInNXGSG2M2sMfKpiLK7vPkwjLlJTvQRnfFwpqpnmPC+CKoPOih2L754ZE+p/m7igQh8G+LA0dTCn/BEjfnTqtWS1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=QVf5neav; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from rrs24-12-35.corp.microsoft.com (unknown [131.107.8.19])
-	by linux.microsoft.com (Postfix) with ESMTPSA id E764F20B2000;
-	Tue,  6 Feb 2024 11:58:33 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E764F20B2000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1707249514;
-	bh=YiGmA9Lr1a/CDIgqHElD8PPnAN1LFYjN75PS7RDnPho=;
-	h=From:To:Subject:Date:From;
-	b=QVf5neav0galuOadt6P17o8D+jpDq8FW0dD+dOrJecGZiNAcOz3KgLTnX01F6RU9G
-	 Kgt5DG9JP3uEkIGH1aTeUYBiD23JfuLOCzEo5q+slprE1w1TSUoWfrvMQVnGpRPk9Q
-	 XZXfHj/Uf9P1AOnahuIRFutrj/ftsu+Qlsgbah5Y=
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Fuad Tabba <tabba@google.com>,
-	Joey Gouly <joey.gouly@arm.com>,
-	Kristina Martsenko <kristina.martsenko@arm.com>,
-	linux-arm-kernel@lists.infradead.org (moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)),
-	linux-kernel@vger.kernel.org (open list),
-	kvmarm@lists.linux.dev (open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64))
-Subject: [RFC PATCH] KVM: arm64: Override Microsoft Azure Cobalt 100 MIDR value with ARM Neoverse N2
-Date: Tue,  6 Feb 2024 19:58:16 +0000
-Message-Id: <20240206195819.1146693-1-eahariha@linux.microsoft.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707249996; c=relaxed/simple;
+	bh=PlwzN8x3eCddfNLwl0tQFZUsWaNW3CGdFeSD9FE45xU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MR65o67hf0JTwfyyEPrHrUO1+a2J0t6kugtALc5qzS3o5OYDZ5lITTH1tASu/InrQPZPO9e33X5xK4dHqiF22ZuRKDg2nOEDgAfbJwdT9AdiPUeVDKaPEok9evvHu0/dgxqcXhf1P6JEB1msDpREMgZkl8vyTihQ4fm5C4R6kt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U8/nwTvK; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707249993;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i/cd++jXszRXmfjXBwbNRqBwPxegiEkXzkrYtiCv0c8=;
+	b=U8/nwTvKJsfMtqE9DdVM4mDRtMuivNQg2jfo2G/cHpK1RbI1COhuvw/RxuuqPFex5P6eFv
+	vv/X9pdbysl+OBi18aXTPVEjjOjBcA97JyPUdiWTIVUzZRDwHWIk1qnVgW2IJWaDKCXBj4
+	IKaota8H0uM5CBErSTBQ59JJ32ITGTc=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-163-81yFMApzN42ovSBljtKFkQ-1; Tue, 06 Feb 2024 15:06:31 -0500
+X-MC-Unique: 81yFMApzN42ovSBljtKFkQ-1
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-59a8297ee8dso5517464eaf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 12:06:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707249991; x=1707854791;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i/cd++jXszRXmfjXBwbNRqBwPxegiEkXzkrYtiCv0c8=;
+        b=u18ZA3QGYSVHQDHGWwICk8+rK5srX7ggrWH5ELRu+zJ3CR3A1EMa9ClIQOjCqAyv99
+         lKCQK9abon3smWeYEqJ/IyPf7cJqLbfDQPsg+5mB/1n2pHCB7ISWN1cpjsLVDWM33Thv
+         0tfoIJoDzgk0UXjq0QcwATMBXHrbtl5zCUXq7Cj+tHMbpVni4wybwcQlIoydQTr6SCLb
+         OHJZmbB12kUtQfYQwPzf08PzDcTcYipZ0JrYLTzrInuGcOHnBm0LpfqBVDnhimQeKZUR
+         i6WXEAIBoWWnmUw4QoDOdWhtXwzVF/6z40WV/s0ZqdEALBS6Zow1m+C0shcrofFo8bnz
+         RMHA==
+X-Gm-Message-State: AOJu0YzmmHD6B1Yf1QoS5TpXnCGWqHkdX4Gsj9zlcCGwDiXfRbV+h8iL
+	9pVDhF/327E+YLYmcbIL16gmUSOZaPHLTOEX9W0bXywMvts2HZ/ZiZahw7Zmn5jLJ9DpzT54NW5
+	792DCxBM6PtQc8oMtmx3E47BlkYvc+jb/DPt0cJIzTiKjEOQ2iAbpZppUN/mU5g==
+X-Received: by 2002:a4a:8112:0:b0:59c:8b80:fe3e with SMTP id b18-20020a4a8112000000b0059c8b80fe3emr3080590oog.7.1707249991154;
+        Tue, 06 Feb 2024 12:06:31 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFJwnWL1LGz3lFyVKe1dlWAr2U11D5Zjkj6P8Frn4x+0vRY5zeaZeq+tu6iHoegpEk7pc/9Bg==
+X-Received: by 2002:a4a:8112:0:b0:59c:8b80:fe3e with SMTP id b18-20020a4a8112000000b0059c8b80fe3emr3080568oog.7.1707249990851;
+        Tue, 06 Feb 2024 12:06:30 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXTlxv9RzqLCQNh9HJ7dSEM6u9dfW+aPvwY4ta3GiTxq7u4+IR4p/bnaJcGc57IteapASuaQESeyIaa2RM2mFIzrI/znQlTiv6yqgA2ckgbIoRE98/kvZAK5X3Rt9+nXNOjaN4IzNMNTzulBSnALH/JACVxliCZLGNHU9vphCiIsWNRmKyFOFkv83DwTzOsxnD5JdtO8NnVAn5ThS61u6+jU2pzf0aFR3EP/pFLOCckE7lbI2CZdG69P13Byh78UP5WRUa4cze+bTeQXp436I+w7qHOdPcAN6TtjPZIVmvdtq9bl1DL6y0U/4pcUifCDS5AxdynY5yGWWC3zmt3Ex8NSyhauqfLa/BuEd38oeI=
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id h1-20020a4a6f01000000b0059a975f3b8esm433475ooc.33.2024.02.06.12.06.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 12:06:30 -0800 (PST)
+Date: Tue, 6 Feb 2024 13:06:27 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: "Liu, Monk" <Monk.Liu@amd.com>
+Cc: Leon Romanovsky <leon@kernel.org>, "Deng, Emily" <Emily.Deng@amd.com>,
+ "bhelgaas@google.com" <bhelgaas@google.com>, "linux-pci@vger.kernel.org"
+ <linux-pci@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org"
+ <kvm@vger.kernel.org>, "Jiang, Jerry (SW)" <Jerry.Jiang@amd.com>, "Zhang,
+ Andy" <Andy.Zhang@amd.com>, "Chang, HaiJun" <HaiJun.Chang@amd.com>, "Chen,
+ Horace" <Horace.Chen@amd.com>, "Yin, ZhenGuo (Chris)" <ZhenGuo.Yin@amd.com>
+Subject: Re: [PATCH 1/2] PCI: Add VF reset notification to PF's VFIO user
+ mode driver
+Message-ID: <20240206130627.5c10fec7.alex.williamson@redhat.com>
+In-Reply-To: <BL1PR12MB526972B4E7CF6B2C993A2E6984462@BL1PR12MB5269.namprd12.prod.outlook.com>
+References: <20240205071538.2665628-1-Emily.Deng@amd.com>
+	<20240205090438.GB6294@unreal>
+	<BL1PR12MB526972B4E7CF6B2C993A2E6984462@BL1PR12MB5269.namprd12.prod.outlook.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Several workload optimizations and errata depend on validating that the
-optimization or errata are applicable to the particular CPU by checking
-the MIDR_EL1 system register value. With the Microsoft implementer ID
-for Azure Cobalt 100, the value doesn't match and ~20-25% performance
-regression is seen in these workloads. Override the Azure Cobalt 100
-value and replace it with the default ARM Neoverse N2 value that Azure
-Cobalt 100 is based on.
+On Tue, 6 Feb 2024 04:08:18 +0000
+"Liu, Monk" <Monk.Liu@amd.com> wrote:
 
-Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
----
- arch/arm64/include/asm/cputype.h   | 3 ++-
- arch/arm64/include/asm/el2_setup.h | 5 +++++
- arch/arm64/kvm/sys_regs.c          | 9 ++++++++-
- 3 files changed, 15 insertions(+), 2 deletions(-)
+> [AMD Official Use Only - General]
+>=20
+> Hi Leon
+>=20
+> The thing is when qemu reset a VM it calls vfio=E2=80=99s reset ioctl to =
+the
+> given VF device, and in kernel the VFIO-pci module will do the reset
+> to that VF device via its PCI config space register, but
+> unfortunately our VF GPU isnot designed to support those
+> =E2=80=9Creset=E2=80=9D/=E2=80=9Dflr=E2=80=9D commands =E2=80=A6 not supp=
+orted by the VF, (and even many PF
+> cannot handle those commands well)
 
-diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
-index 7c7493cb571f..0450c6c32377 100644
---- a/arch/arm64/include/asm/cputype.h
-+++ b/arch/arm64/include/asm/cputype.h
-@@ -262,7 +262,8 @@ is_midr_in_range_list(u32 midr, struct midr_range const *ranges)
-  */
- static inline u32 __attribute_const__ read_cpuid_id(void)
- {
--	return read_cpuid(MIDR_EL1);
-+	return (read_cpuid(MIDR_EL1) == 0x6D0FD490 ? 0x410FD490 :
-+			read_cpuid(MIDR_EL1));
- }
- 
- static inline u64 __attribute_const__ read_cpuid_mpidr(void)
-diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
-index b7afaa026842..502a14e54a31 100644
---- a/arch/arm64/include/asm/el2_setup.h
-+++ b/arch/arm64/include/asm/el2_setup.h
-@@ -138,6 +138,11 @@
- .macro __init_el2_nvhe_idregs
- 	mrs	x0, midr_el1
- 	mrs	x1, mpidr_el1
-+	ldr	x2, =0x6D0FD490
-+	cmp	x0, x2
-+	bne	.Loverride_cobalt100_\@
-+	ldr	x0, =0x410FD490
-+.Loverride_cobalt100_\@:
- 	msr	vpidr_el2, x0
- 	msr	vmpidr_el2, x1
- .endm
-diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index 30253bd19917..8ea9c7fdabdb 100644
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -3574,7 +3574,14 @@ id_to_sys_reg_desc(struct kvm_vcpu *vcpu, u64 id,
- 		return ((struct sys_reg_desc *)r)->val;			\
- 	}
- 
--FUNCTION_INVARIANT(midr_el1)
-+static u64 get_midr_el1(struct kvm_vcpu *v, const struct sys_reg_desc *r)
-+{
-+	((struct sys_reg_desc *)r)->val = read_sysreg(midr_el1);
-+	if (((struct sys_reg_desc *)r)->val == 0x6D0FD490)
-+		((struct sys_reg_desc *)r)->val == 0x410FD490;
-+	return ((struct sys_reg_desc *)r)->val;
-+}
-+
- FUNCTION_INVARIANT(revidr_el1)
- FUNCTION_INVARIANT(aidr_el1)
- 
--- 
-2.34.1
+PFs are not required to implement FLR, VFs are.
+
+SR-IOV spec, rev. 1.1:
+
+	2.2.2. FLR That Targets a VF
+
+	VFs must support Function Level Reset (FLR).
+
+>=20
+> So the idea we can cook up is to move those Vf=E2=80=99s reset notificati=
+on
+> to our PF driver (which is a user mode driver running on PF=E2=80=99s VFIO
+> arch), and our user mode driver can program HW and do the reset for
+> that VF.
+
+The PF driver being able to arbitrarily reset a VF device provided to
+another userspace process doesn't sound like separate, isolated
+devices.  What else can the PF access?
+
+As noted in my other reply, vf-tokens should not be normalized and
+users of VFs provided by third party userspace PF drivers should
+consider the device no less tainted than if it were provided by an
+out-of-tree kernel driver.
+
+The idea to virtualize FLR on the VF to resolve the hardware defect is a
+good one, but it should be done in the context of a vfio-pci variant
+driver.  Thanks,
+
+Alex
+
+
+> From: Leon Romanovsky <leon@kernel.org>
+> Date: Monday, February 5, 2024 at 17:04
+> To: Deng, Emily <Emily.Deng@amd.com>
+> Cc: bhelgaas@google.com <bhelgaas@google.com>,
+> alex.williamson@redhat.com <alex.williamson@redhat.com>,
+> linux-pci@vger.kernel.org <linux-pci@vger.kernel.org>,
+> linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>,
+> kvm@vger.kernel.org <kvm@vger.kernel.org>, Jiang, Jerry (SW)
+> <Jerry.Jiang@amd.com>, Zhang, Andy <Andy.Zhang@amd.com>, Chang,
+> HaiJun <HaiJun.Chang@amd.com>, Liu, Monk <Monk.Liu@amd.com>, Chen,
+> Horace <Horace.Chen@amd.com>, Yin, ZhenGuo (Chris)
+> <ZhenGuo.Yin@amd.com> Subject: Re: [PATCH 1/2] PCI: Add VF reset
+> notification to PF's VFIO user mode driver On Mon, Feb 05, 2024 at
+> 03:15:37PM +0800, Emily Deng wrote:
+> > VF doesn't have the ability to reset itself completely which will
+> > cause the hardware in unstable state. So notify PF driver when the
+> > VF has been reset to let the PF resets the VF completely, and
+> > remove the VF out of schedule. =20
+>=20
+>=20
+> I'm sorry but this explanation is not different from the previous
+> version. Please provide a better explanation of the problem, why it is
+> needed, which VFs need and can't reset themselves, how and why it
+> worked before e.t.c.
+>=20
+> In addition, please follow kernel submission guidelines, write
+> changelong, add versions, cover letter e.t.c.
+>=20
+> Thanks
+>=20
+> >
+> > How to implement this?
+> > Add the reset callback function in pci_driver
+> >
+> > Implement the callback functin in VFIO_PCI driver.
+> >
+> > Add the VF RESET IRQ for user mode driver to let the user mode
+> > driver know the VF has been reset.
+> >
+> > Signed-off-by: Emily Deng <Emily.Deng@amd.com>
+> > ---
+> >  drivers/pci/pci.c   | 8 ++++++++
+> >  include/linux/pci.h | 1 +
+> >  2 files changed, 9 insertions(+)
+> >
+> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > index 60230da957e0..aca937b05531 100644
+> > --- a/drivers/pci/pci.c
+> > +++ b/drivers/pci/pci.c
+> > @@ -4780,6 +4780,14 @@ EXPORT_SYMBOL_GPL(pcie_flr);
+> >   */
+> >  int pcie_reset_flr(struct pci_dev *dev, bool probe)
+> >  {
+> > +     struct pci_dev *pf_dev;
+> > +
+> > +     if (dev->is_virtfn) {
+> > +             pf_dev =3D dev->physfn;
+> > +             if (pf_dev->driver->sriov_vf_reset_notification)
+> > +
+> > pf_dev->driver->sriov_vf_reset_notification(pf_dev, dev);
+> > +     }
+> > +
+> >        if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
+> >                return -ENOTTY;
+> >
+> > diff --git a/include/linux/pci.h b/include/linux/pci.h
+> > index c69a2cc1f412..4fa31d9b0aa7 100644
+> > --- a/include/linux/pci.h
+> > +++ b/include/linux/pci.h
+> > @@ -926,6 +926,7 @@ struct pci_driver {
+> >        int  (*sriov_configure)(struct pci_dev *dev, int num_vfs);
+> > /* On PF */ int  (*sriov_set_msix_vec_count)(struct pci_dev *vf,
+> > int msix_vec_count); /* On PF */ u32
+> > (*sriov_get_vf_total_msix)(struct pci_dev *pf);
+> > +     void  (*sriov_vf_reset_notification)(struct pci_dev *pf,
+> > struct pci_dev *vf); const struct pci_error_handlers *err_handler;
+> >        const struct attribute_group **groups;
+> >        const struct attribute_group **dev_groups;
+> > --
+> > 2.36.1
+> >
+> > =20
 
 
