@@ -1,101 +1,105 @@
-Return-Path: <linux-kernel+bounces-54883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 562DB84B4C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:16:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4BE884B4A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:14:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D86001F233BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:16:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70DAF286052
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B096137C2A;
-	Tue,  6 Feb 2024 12:09:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A98134CF3;
+	Tue,  6 Feb 2024 12:09:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fu/Luobd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB0B1353E2;
-	Tue,  6 Feb 2024 12:09:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93863134CE1;
+	Tue,  6 Feb 2024 12:09:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707221359; cv=none; b=JPKlCowuhEJYgsDuDfQjSEw7maJkUABSzQIZZFDiHpO3GvBPaOsKkMxunVleiIl+3uTfx90gxp3Wz5hWrtkkzG3thmC831cmhPcZpNt58NmyR82dncJ4Wkpbyo5MhGT7oc5akC6nJHz2TPuhb3/rL0CFQFjVQOGiPV/dWsM+8Ao=
+	t=1707221357; cv=none; b=lxAb1rDD8GfN8MxA1QthOoss7PdmrGiym5gO+P+0CW1+MaoEaW6TovCxwovc/4NScDoFvNHEcVDqMeXaJ13hXJxxaGEko8tCnYqtSHp3QUN6afVmily2IhMZZoTFBkYK5MqO2ewWIZhrqrvKe/CNxAQ9VqfzZLLnnrkOTgY1F5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707221359; c=relaxed/simple;
-	bh=U8O8HbXTyCH85fzphuPj2gzKXQlZuOW81DY3SFrBp6U=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=lMqlO1EERJ/qxICVaJXvGVCP27hy+3GlQu7YsshPtEMkniIa+BFbVgCzpKPX4Pi+2QfNOoBDHvG5p2T7bCycXNPrrzYBGRINvTRpIhqZmwiG+qjbbMQM80UWHtBK9nXcF2JbUR7igd9MVyGZEnGWOqbufFeRuBCNm04pECVyIrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 891EBC4166B;
-	Tue,  6 Feb 2024 12:09:19 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rXKGp-00000006b5q-47OS;
-	Tue, 06 Feb 2024 07:09:47 -0500
-Message-ID: <20240206120947.843106843@rostedt.homelinux.com>
-User-Agent: quilt/0.67
-Date: Tue, 06 Feb 2024 07:09:14 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sasha Levin <sashal@kernel.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Kees Cook <keescook@chromium.org>,
- Nathan Chancellor <nathan@kernel.org>
-Subject: [v6.6][PATCH 09/57] eventfs: Use ERR_CAST() in eventfs_create_events_dir()
-References: <20240206120905.570408983@rostedt.homelinux.com>
+	s=arc-20240116; t=1707221357; c=relaxed/simple;
+	bh=lgnDT6IX8ujr8/X8b2kq1ukegHZdLHErPgmImXn6Cog=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=iIXb8YS5wKtgq5yhsgFyywvfA3Gzfj78R1QBQNhYOWov7Zfo3+mXFfeb+nDYFFqfUwutW/Xnb6eDtu/dKYKQkQyUobsx1Ow77xn8xYLIDTGGUS8IClNQfKFxh8LWI7Omewl5wtesKMoLRsx4RzekcLK5IG7FzkXcP5P2BWp+meo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fu/Luobd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C5A6C433C7;
+	Tue,  6 Feb 2024 12:09:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707221357;
+	bh=lgnDT6IX8ujr8/X8b2kq1ukegHZdLHErPgmImXn6Cog=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Fu/Luobdvz2M8E+75ha/tnKhqTJwCAX+GGDs8FB5MyuX7Tys3j5jIz8mHgfUwAYZJ
+	 Ze48vql7vnc6nQbkeigXafDQpy5wjPnlzD0d9o+pnu3YrJUwtYX3FcaT+IFt/LkZTn
+	 KNJn2PCw6BlgXHwMK6arMqo9njZSR4wQ/FR75LmyBBCQELbQRxEQxsz3v8yQdQloeW
+	 u9ETCHBithWqBxLxILvjvUZG6Jev9+Zf1u3bKtuLYHcJbcGI9fAf7mjTuTVaDBltoG
+	 +ZNGeqKPTrklaZS5tlq2GnJ86oZncbqtMr+X0sXKn/YCWU7vRX6SfGYf/jmmcDTdMK
+	 leLl2NrvGqegg==
+From: Mark Brown <broonie@kernel.org>
+To: Florian Fainelli <florian.fainelli@broadcom.com>, 
+ Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, 
+ David Lechner <dlechner@baylibre.com>
+Cc: Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ linux-spi@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240126220024.3926403-2-dlechner@baylibre.com>
+References: <20240126220024.3926403-2-dlechner@baylibre.com>
+Subject: Re: [PATCH] spi: bcm2835: implement ctlr->max_transfer_size
+Message-Id: <170722135486.992289.5399586153021617257.b4-ty@kernel.org>
+Date: Tue, 06 Feb 2024 12:09:14 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
 
-From: Nathan Chancellor <nathan@kernel.org>
+On Fri, 26 Jan 2024 16:00:23 -0600, David Lechner wrote:
+> The core SPI code will handle splitting transfers if needed as long
+> as ctlr->max_transfer_size is implemented. It does this in
+> __spi_pump_transfer_message() immediately before calling
+> ctlr->prepare_message. So effectively, this change does not
+> alter the behavior of the driver.
+> 
+> Also, several peripheral drivers make use of spi_max_transfer_size(),
+> so this should improve compatibility with those drivers.
+> 
+> [...]
 
-When building with clang and CONFIG_RANDSTRUCT_FULL=y, there is an error
-due to a cast in eventfs_create_events_dir():
+Applied to
 
-  fs/tracefs/event_inode.c:734:10: error: casting from randomized structure pointer type 'struct dentry *' to 'struct eventfs_inode *'
-    734 |                 return (struct eventfs_inode *)dentry;
-        |                        ^
-  1 error generated.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Use the ERR_CAST() function to resolve the error, as it was designed for
-this exact situation (casting an error pointer to another type).
+Thanks!
 
-Link: https://lore.kernel.org/linux-trace-kernel/20231018-ftrace-fix-clang-randstruct-v1-1-338cb214abfb@kernel.org
+[1/1] spi: bcm2835: implement ctlr->max_transfer_size
+      commit: 2733092baa3e8a1f05fd16088808be17c98990b4
 
-Closes: https://github.com/ClangBuiltLinux/linux/issues/1947
-Fixes: 5790b1fb3d67 ("eventfs: Remove eventfs_file and just use eventfs_inode")
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-(cherry picked from commit b8a555dc31e5aa18d976de0bc228006e398a2e7d)
----
- fs/tracefs/event_inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 1ccd100bc565..9f19b6608954 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -731,7 +731,7 @@ struct eventfs_inode *eventfs_create_events_dir(const char *name, struct dentry
- 		return NULL;
- 
- 	if (IS_ERR(dentry))
--		return (struct eventfs_inode *)dentry;
-+		return ERR_CAST(dentry);
- 
- 	ei = kzalloc(sizeof(*ei), GFP_KERNEL);
- 	if (!ei)
--- 
-2.43.0
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 
