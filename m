@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-54862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68DEC84B490
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9385184B491
 	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:11:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 885F21C21410
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:11:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2984EB250E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:11:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332B4130ACB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D8A5130E44;
 	Tue,  6 Feb 2024 12:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="g3CM26vU"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="SHK1PNlO"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88D212FF72
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 12:07:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52D1130AC1
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 12:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707221288; cv=none; b=DDSNzBWpaFufapzSwqpp38PfW8i8X31/OaggWGwADPKORX9EqPfBQ+83JhbCV06kTA0fwo51oGXKCd93y2Q/eY50Sx4GA781B30bjFJ0IBzcgMQ0H9wIM2zbIM5C2R2Z5WZR0IELLg4EtzhjcmnmYWHNjxZzFz7n6o2Eg2HR1tE=
+	t=1707221289; cv=none; b=M/eVbF2Drh43gIUOJE5fzhAwnziKZTQA3bGEzR4c9UgBXIZ8twDKPDqj51sH2edXZCnTkNUfghMomwPsbioL7KFqYa1GCyHAGRGTfAcDjriRLuBsaM7h4xc2mN6s9bDzVFeliWrQnWxctFWJybFR0jfEouB1ri4Uuk+zLUO4+XE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707221288; c=relaxed/simple;
-	bh=nftokbwHEGcg428YJsHo/bzAYhMKQZcbAL+5q5a8yxM=;
+	s=arc-20240116; t=1707221289; c=relaxed/simple;
+	bh=mccYyS90vn45+hq6oaGnHGsB4mCj/z4kAT02aNdMkKA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=s9adouPqZXEd/y8Il1/FX9Sw062Q+dQ7ADeyWVYzbBmSXjy5oGc84rYEtkUYT5qLDGSBMx7xvkFq4z2V7yl8Mupj2aXn3x1LiMZC+GmZYJZhWwuZ1SPy4kzYnqgyhbII+z+UdafhwKNVwz4akZm2+h+2vwf3WE9QhadqMhw+Bf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=g3CM26vU; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version; b=C5Tp94eYomSk4p8CQvKZI4hrIyH+wBxErXu07KerBLDgicI1/votE75i1aQsNVdYIzTUk6QZhC2mFVByZflueQwkXdiHr6x+idaeO+Q8z+6KOcLcTwUTCiKvSvJIyAqveMfpyw2NZHInjyT/zb74W9x50FiUxwXGD3rlwWKQoig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=SHK1PNlO; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707221276;
-	bh=nftokbwHEGcg428YJsHo/bzAYhMKQZcbAL+5q5a8yxM=;
+	s=mail; t=1707221277;
+	bh=mccYyS90vn45+hq6oaGnHGsB4mCj/z4kAT02aNdMkKA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=g3CM26vU6vDrtkIr+laszsm2o4YIs8uCDYQRiS+QxdI4MgcJDHct4qjctYT3+3wMO
-	 G6PwM7/EdH1pJbLJFoAPqQr6JdU6qgaqt7oi1J+CItj5Aw3V6KeY2nApqK0EmWku7B
-	 BWHDoHzhvwl3jQt/DFB1NWw5Ud5VZR9DTQaBMap2JphRQiW1paF3lAHE+nGGa+P1am
-	 R4fQTrzPxPDrZgCXBjjPQDlmouLqr5BWl2UKDD9ngvuJrkScfS2VRwb+4akLo85J3p
-	 WCdl6Dq1DOD6yWTtKcpFNXJAf0hhHah2H/Rk1XVFttU7opbw4hD2cdVEtQTTdehtgp
-	 jV+kUT4+BScqw==
+	b=SHK1PNlOMVl1mXpVM4zFaFL9oQ/LgGbvtTDCS5/yt4hwbtDPOUdEicpGaGzGgVFwO
+	 KdtSHY+MzWrHkV5RPGAB9VoXDDWgELLXzoTMh1q9RA+EbkKFAqbwvElpCNRhSBPmSB
+	 qz/GsWHu64p89/aHJqlXt84muFf5rSVBavjj0o/bXPxb5uJE/+EkeuNrvx2tUI/BJP
+	 CoMukns/Iwp4wuvPKDEIdigpZKT/rC1jO1PgUNp+06rdR/78P3Lo92aXskLrdEav2a
+	 GL8xXRfa2jdrah9w2cKp8rhWspsIV1NmC7HDC1++5TF2+IucLsxI+Axb+k3KCNO1eV
+	 YN0ljG2y1gWxw==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D24D9378207C;
-	Tue,  6 Feb 2024 12:07:55 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D71B83782080;
+	Tue,  6 Feb 2024 12:07:56 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: chunkuang.hu@kernel.org
 Cc: fshao@chromium.org,
@@ -60,9 +60,9 @@ Cc: fshao@chromium.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	kernel@collabora.com
-Subject: [PATCH v4 4/9] drm/mediatek: dsi: Use bitfield macros where useful
-Date: Tue,  6 Feb 2024 13:07:43 +0100
-Message-ID: <20240206120748.136610-5-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v4 5/9] drm/mediatek: dsi: Replace open-coded instance of HZ_PER_MHZ
+Date: Tue,  6 Feb 2024 13:07:44 +0100
+Message-ID: <20240206120748.136610-6-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240206120748.136610-1-angelogioacchino.delregno@collabora.com>
 References: <20240206120748.136610-1-angelogioacchino.delregno@collabora.com>
@@ -74,203 +74,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Instead of open coding bitshifting for various register fields,
-use the bitfield macro FIELD_PREP(): this allows to enhance the
-human readability, decrease likeliness of mistakes (and register
-field overflowing) and also to simplify the code.
-The latter is especially seen in mtk_dsi_rxtx_control(), where
-it was possible to change a switch to a short for loop and to
-also remove the need to check for maximum DSI lanes == 4 thanks
-to the FIELD_PREP macro masking the value.
-
-While at it, also add the missing DA_HS_SYNC bitmask, used in
-mtk_dsi_phy_timconfig().
+In mtk_dsi_phy_timconfig(), we're dividing the `data_rate` variable,
+expressed in Hz to retrieve a value in MHz: instead of open-coding,
+use the HZ_PER_MHZ definition, available in linux/units.h.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- drivers/gpu/drm/mediatek/mtk_dsi.c | 97 ++++++++++++++++--------------
- 1 file changed, 52 insertions(+), 45 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_dsi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index b025886be680..26c221737387 100644
+index 26c221737387..5e383ca00ba8 100644
 --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
 +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -3,6 +3,7 @@
-  * Copyright (c) 2015 MediaTek Inc.
-  */
+@@ -13,6 +13,7 @@
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
+ #include <linux/reset.h>
++#include <linux/units.h>
  
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/component.h>
- #include <linux/iopoll.h>
-@@ -70,16 +71,19 @@
- #define DSI_PSCTRL		0x1c
- #define DSI_PS_WC			GENMASK(14, 0)
- #define DSI_PS_SEL			GENMASK(19, 16)
--#define PACKED_PS_16BIT_RGB565		(0 << 16)
--#define PACKED_PS_18BIT_RGB666		(1 << 16)
--#define LOOSELY_PS_24BIT_RGB666		(2 << 16)
--#define PACKED_PS_24BIT_RGB888		(3 << 16)
-+#define PACKED_PS_16BIT_RGB565		0
-+#define PACKED_PS_18BIT_RGB666		1
-+#define LOOSELY_PS_24BIT_RGB666		2
-+#define PACKED_PS_24BIT_RGB888		3
- 
- #define DSI_VSA_NL		0x20
- #define DSI_VBP_NL		0x24
- #define DSI_VFP_NL		0x28
- #define DSI_VACT_NL		0x2C
-+#define VACT_NL				GENMASK(14, 0)
- #define DSI_SIZE_CON		0x38
-+#define DSI_HEIGHT				GENMASK(30, 16)
-+#define DSI_WIDTH				GENMASK(14, 0)
- #define DSI_HSA_WC		0x50
- #define DSI_HBP_WC		0x54
- #define DSI_HFP_WC		0x58
-@@ -122,6 +126,7 @@
- 
- #define DSI_PHY_TIMECON2	0x118
- #define CONT_DET			GENMASK(7, 0)
-+#define DA_HS_SYNC			GENMASK(15, 8)
- #define CLK_ZERO			GENMASK(23, 16)
- #define CLK_TRAIL			GENMASK(31, 24)
- 
-@@ -253,14 +258,23 @@ static void mtk_dsi_phy_timconfig(struct mtk_dsi *dsi)
- 	timing->clk_hs_zero = timing->clk_hs_trail * 4;
- 	timing->clk_hs_exit = 2 * timing->clk_hs_trail;
- 
--	timcon0 = timing->lpx | timing->da_hs_prepare << 8 |
--		  timing->da_hs_zero << 16 | timing->da_hs_trail << 24;
--	timcon1 = timing->ta_go | timing->ta_sure << 8 |
--		  timing->ta_get << 16 | timing->da_hs_exit << 24;
--	timcon2 = 1 << 8 | timing->clk_hs_zero << 16 |
--		  timing->clk_hs_trail << 24;
--	timcon3 = timing->clk_hs_prepare | timing->clk_hs_post << 8 |
--		  timing->clk_hs_exit << 16;
-+	timcon0 = FIELD_PREP(LPX, timing->lpx) |
-+		  FIELD_PREP(HS_PREP, timing->da_hs_prepare) |
-+		  FIELD_PREP(HS_ZERO, timing->da_hs_zero) |
-+		  FIELD_PREP(HS_TRAIL, timing->da_hs_trail);
-+
-+	timcon1 = FIELD_PREP(TA_GO, timing->ta_go) |
-+		  FIELD_PREP(TA_SURE, timing->ta_sure) |
-+		  FIELD_PREP(TA_GET, timing->ta_get) |
-+		  FIELD_PREP(DA_HS_EXIT, timing->da_hs_exit);
-+
-+	timcon2 = FIELD_PREP(DA_HS_SYNC, 1) |
-+		  FIELD_PREP(CLK_ZERO, timing->clk_hs_zero) |
-+		  FIELD_PREP(CLK_TRAIL, timing->clk_hs_trail);
-+
-+	timcon3 = FIELD_PREP(CLK_HS_PREP, timing->clk_hs_prepare) |
-+		  FIELD_PREP(CLK_HS_POST, timing->clk_hs_post) |
-+		  FIELD_PREP(CLK_HS_EXIT, timing->clk_hs_exit);
- 
- 	writel(timcon0, dsi->regs + DSI_PHY_TIMECON0);
- 	writel(timcon1, dsi->regs + DSI_PHY_TIMECON1);
-@@ -353,69 +367,61 @@ static void mtk_dsi_set_vm_cmd(struct mtk_dsi *dsi)
- 
- static void mtk_dsi_rxtx_control(struct mtk_dsi *dsi)
+ #include <video/mipi_display.h>
+ #include <video/videomode.h>
+@@ -238,7 +239,7 @@ static void mtk_dsi_mask(struct mtk_dsi *dsi, u32 offset, u32 mask, u32 data)
+ static void mtk_dsi_phy_timconfig(struct mtk_dsi *dsi)
  {
--	u32 tmp_reg;
-+	u32 regval, tmp_reg = 0;
-+	u8 i;
+ 	u32 timcon0, timcon1, timcon2, timcon3;
+-	u32 data_rate_mhz = DIV_ROUND_UP(dsi->data_rate, 1000000);
++	u32 data_rate_mhz = DIV_ROUND_UP(dsi->data_rate, HZ_PER_MHZ);
+ 	struct mtk_phy_timing *timing = &dsi->phy_timing;
  
--	switch (dsi->lanes) {
--	case 1:
--		tmp_reg = 1 << 2;
--		break;
--	case 2:
--		tmp_reg = 3 << 2;
--		break;
--	case 3:
--		tmp_reg = 7 << 2;
--		break;
--	case 4:
--		tmp_reg = 0xf << 2;
--		break;
--	default:
--		tmp_reg = 0xf << 2;
--		break;
--	}
-+	/* Number of DSI lanes (max 4 lanes), each bit enables one DSI lane. */
-+	for (i = 0; i < dsi->lanes; i++)
-+		tmp_reg |= BIT(i);
-+
-+	regval = FIELD_PREP(LANE_NUM, tmp_reg);
- 
- 	if (dsi->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS)
--		tmp_reg |= HSTX_CKLP_EN;
-+		regval |= HSTX_CKLP_EN;
- 
- 	if (dsi->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET)
--		tmp_reg |= DIS_EOT;
-+		regval |= DIS_EOT;
- 
--	writel(tmp_reg, dsi->regs + DSI_TXRX_CTRL);
-+	writel(regval, dsi->regs + DSI_TXRX_CTRL);
- }
- 
- static void mtk_dsi_ps_control(struct mtk_dsi *dsi, bool config_vact)
- {
--	struct videomode *vm = &dsi->vm;
--	u32 dsi_buf_bpp, ps_wc;
--	u32 ps_bpp_mode;
-+	u32 dsi_buf_bpp, ps_val, ps_wc, vact_nl;
- 
- 	if (dsi->format == MIPI_DSI_FMT_RGB565)
- 		dsi_buf_bpp = 2;
- 	else
- 		dsi_buf_bpp = 3;
- 
--	ps_wc = vm->hactive * dsi_buf_bpp;
--	ps_bpp_mode = ps_wc;
-+	/* Word count */
-+	ps_wc = FIELD_PREP(DSI_PS_WC, dsi->vm.hactive * dsi_buf_bpp);
-+	ps_val = ps_wc;
- 
-+	/* Pixel Stream type */
- 	switch (dsi->format) {
-+	default:
-+		fallthrough;
- 	case MIPI_DSI_FMT_RGB888:
--		ps_bpp_mode |= PACKED_PS_24BIT_RGB888;
-+		ps_val |= FIELD_PREP(DSI_PS_SEL, PACKED_PS_24BIT_RGB888);
- 		break;
- 	case MIPI_DSI_FMT_RGB666:
--		ps_bpp_mode |= LOOSELY_PS_24BIT_RGB666;
-+		ps_val |= FIELD_PREP(DSI_PS_SEL, LOOSELY_PS_24BIT_RGB666);
- 		break;
- 	case MIPI_DSI_FMT_RGB666_PACKED:
--		ps_bpp_mode |= PACKED_PS_18BIT_RGB666;
-+		ps_val |= FIELD_PREP(DSI_PS_SEL, PACKED_PS_18BIT_RGB666);
- 		break;
- 	case MIPI_DSI_FMT_RGB565:
--		ps_bpp_mode |= PACKED_PS_16BIT_RGB565;
-+		ps_val |= FIELD_PREP(DSI_PS_SEL, PACKED_PS_16BIT_RGB565);
- 		break;
- 	}
- 
- 	if (config_vact) {
--		writel(vm->vactive, dsi->regs + DSI_VACT_NL);
-+		vact_nl = FIELD_PREP(VACT_NL, dsi->vm.vactive);
-+		writel(vact_nl, dsi->regs + DSI_VACT_NL);
- 		writel(ps_wc, dsi->regs + DSI_HSTX_CKL_WC);
- 	}
--	writel(ps_bpp_mode, dsi->regs + DSI_PSCTRL);
-+	writel(ps_val, dsi->regs + DSI_PSCTRL);
- }
- 
- static void mtk_dsi_config_vdo_timing(struct mtk_dsi *dsi)
-@@ -442,7 +448,8 @@ static void mtk_dsi_config_vdo_timing(struct mtk_dsi *dsi)
- 	writel(vm->vactive, dsi->regs + DSI_VACT_NL);
- 
- 	if (dsi->driver_data->has_size_ctl)
--		writel(vm->vactive << 16 | vm->hactive,
-+		writel(FIELD_PREP(DSI_HEIGHT, vm->vactive) |
-+		       FIELD_PREP(DSI_WIDTH, vm->hactive),
- 		       dsi->regs + DSI_SIZE_CON);
- 
- 	horizontal_sync_active_byte = (vm->hsync_len * dsi_tmp_buf_bpp - 10);
+ 	timing->lpx = (60 * data_rate_mhz / (8 * 1000)) + 1;
 -- 
 2.43.0
 
