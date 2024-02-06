@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-54932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69A5C84B521
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:27:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4507A84B51F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:26:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CD021C2440F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:27:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 023532818EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:26:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8202F15147E;
-	Tue,  6 Feb 2024 12:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF0314FFB6;
+	Tue,  6 Feb 2024 12:09:39 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 990B913C1CB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A94B13BEA8;
 	Tue,  6 Feb 2024 12:09:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707221367; cv=none; b=IU8Ae4sisJwWOg1W9b0ri4pi7j/bLs5QjX/1zqQZKp/uOA6dHZYHOV/44UY4TZ6VlTCZK5aQCK3srFQXDmoIPZcvEC9V9TQR67Yg2IRsAv3M25HN0YKFVi/mt9yQPWoJyaXs9x4vaDPTEqJ0njI8XIiPF1DS1qSjiCGfIy3fUzg=
+	t=1707221367; cv=none; b=iDedLZV81DB0aW4gB97tnVwrNINqAd2iy1h7ZdYAIS13AhH8nWrh4Ebty+1gHc5/ou12aK54oHxxwVJ4VOORc/G07hmbEbgUICQ6PPyhVdB8OZZzuRJFAx+ID0YtdYwMjmFaggA+xy1CQBUBN6OJd6EaInD19FS+WhtKYlmWU5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707221367; c=relaxed/simple;
-	bh=ovB9zqm93FTVxxBECSNPxdclrmbXtlerbnuNH1s24zo=;
+	bh=5yqaMUzsL24Xo1kXlS9YCQkGhNmG85TgGVOtLxrgq1g=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=dP0bV3VisWN6AcdQS757tjpt+GNZ8J7Zpy0sjJysZk/gCMmQD0QsiFeiodTbHyvXZw8RXm4KZZbBUx7JIZVH0X+7agN2dBhZvgjeUscSHnYZP13bVo28Cerbgr9E9EGv3oik68eO4vdnWT1pX8zIPBabuQMOoiDkwtbDsnkZm2s=
+	 Content-Type; b=Zww4dqfKknUfiTMIry+SARhCEVqPEwGS08GrtuJX0dUpcBL8GihkBr+BebVe+7/MrOfbCUJOlMBiNATcA35UHWGDWXVsSYtpsmKk4kMCakdy1CBSBRPz3tX2QJu7B/5vxFpjG7G84ac3ln8U4SkvsjZqfvt0zIW0oRZFwxr6iyI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DD28C43601;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32E20C43390;
 	Tue,  6 Feb 2024 12:09:27 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rXKGx-00000006bSq-20U5;
+	id 1rXKGx-00000006bTL-2hfg;
 	Tue, 06 Feb 2024 07:09:55 -0500
-Message-ID: <20240206120955.335266477@rostedt.homelinux.com>
+Message-ID: <20240206120955.500466790@rostedt.homelinux.com>
 User-Agent: quilt/0.67
-Date: Tue, 06 Feb 2024 07:10:00 -0500
+Date: Tue, 06 Feb 2024 07:10:01 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  stable@vger.kernel.org
@@ -46,8 +46,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
  Christian Brauner <brauner@kernel.org>,
  Al Viro <viro@ZenIV.linux.org.uk>,
- Ajay Kaher <ajay.kaher@broadcom.com>
-Subject: [v6.6][PATCH 55/57] eventfs: Restructure eventfs_inode structure to be more condensed
+ Ajay Kaher <ajay.kaher@broadcom.com>,
+ Al Viro <viro@zeniv.linux.org.uk>
+Subject: [v6.6][PATCH 56/57] eventfs: Remove fsnotify*() functions from lookup()
 References: <20240206120905.570408983@rostedt.homelinux.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,12 +60,14 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Some of the eventfs_inode structure has holes in it. Rework the structure
-to be a bit more condensed, and also remove the no longer used llist
-field.
+The dentries and inodes are created when referenced in the lookup code.
+There's no reason to call fsnotify_*() functions when they are created by
+a reference. It doesn't make any sense.
 
-Link: https://lore.kernel.org/linux-trace-kernel/20240201161617.002321438@goodmis.org
+Link: https://lore.kernel.org/linux-trace-kernel/20240201002719.GS2087318@ZenIV/
+Link: https://lore.kernel.org/linux-trace-kernel/20240201161617.166973329@goodmis.org
 
+Cc: stable@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
@@ -72,69 +75,34 @@ Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Christian Brauner <brauner@kernel.org>
 Cc: Al Viro <viro@ZenIV.linux.org.uk>
 Cc: Ajay Kaher <ajay.kaher@broadcom.com>
+Fixes: a376007917776 ("eventfs: Implement functions to create files and dirs when accessed");
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-(cherry picked from commit 264424dfdd5cbd92bc5b5ddf93944929fc877fac)
+(cherry picked from commit 12d823b31fadf47c8f36ecada7abac5f903cac33)
 ---
- fs/tracefs/internal.h | 27 ++++++++++++---------------
- 1 file changed, 12 insertions(+), 15 deletions(-)
+ fs/tracefs/event_inode.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-index 1886f1826cd8..beb3dcd0e434 100644
---- a/fs/tracefs/internal.h
-+++ b/fs/tracefs/internal.h
-@@ -32,40 +32,37 @@ struct eventfs_attr {
- /*
-  * struct eventfs_inode - hold the properties of the eventfs directories.
-  * @list:	link list into the parent directory
-+ * @rcu:	Union with @list for freeing
-+ * @children:	link list into the child eventfs_inode
-  * @entries:	the array of entries representing the files in the directory
-  * @name:	the name of the directory to create
-- * @children:	link list into the child eventfs_inode
-  * @events_dir: the dentry of the events directory
-  * @entry_attrs: Saved mode and ownership of the @d_children
-- * @attr:	Saved mode and ownership of eventfs_inode itself
-  * @data:	The private data to pass to the callbacks
-+ * @attr:	Saved mode and ownership of eventfs_inode itself
-  * @is_freed:	Flag set if the eventfs is on its way to be freed
-  *                Note if is_freed is set, then dentry is corrupted.
-+ * @is_events:	Flag set for only the top level "events" directory
-  * @nr_entries: The number of items in @entries
-+ * @ino:	The saved inode number
-  */
- struct eventfs_inode {
--	struct kref			kref;
--	struct list_head		list;
-+	union {
-+		struct list_head	list;
-+		struct rcu_head		rcu;
-+	};
-+	struct list_head		children;
- 	const struct eventfs_entry	*entries;
- 	const char			*name;
--	struct list_head		children;
- 	struct dentry			*events_dir;
- 	struct eventfs_attr		*entry_attrs;
--	struct eventfs_attr		attr;
- 	void				*data;
-+	struct eventfs_attr		attr;
-+	struct kref			kref;
- 	unsigned int			is_freed:1;
- 	unsigned int			is_events:1;
- 	unsigned int			nr_entries:30;
- 	unsigned int			ino;
--	/*
--	 * Union - used for deletion
--	 * @llist:	for calling dput() if needed after RCU
--	 * @rcu:	eventfs_inode to delete in RCU
--	 */
--	union {
--		struct llist_node	llist;
--		struct rcu_head		rcu;
--	};
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index ca7daee7c811..9e031e5a2713 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -366,7 +366,6 @@ static struct dentry *lookup_file(struct eventfs_inode *parent_ei,
+ 	dentry->d_fsdata = get_ei(parent_ei);
+ 
+ 	d_add(dentry, inode);
+-	fsnotify_create(dentry->d_parent->d_inode, dentry);
+ 	return NULL;
  };
  
- static inline struct tracefs_inode *get_tracefs(const struct inode *inode)
+@@ -408,7 +407,6 @@ static struct dentry *lookup_dir_entry(struct dentry *dentry,
+ 	inc_nlink(inode);
+ 	d_add(dentry, inode);
+ 	inc_nlink(dentry->d_parent->d_inode);
+-	fsnotify_mkdir(dentry->d_parent->d_inode, dentry);
+ 	return NULL;
+ }
+ 
 -- 
 2.43.0
 
