@@ -1,124 +1,113 @@
-Return-Path: <linux-kernel+bounces-55568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2D3984BE37
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:42:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3935384BE3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:43:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F9D02832EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:42:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDD92B22A74
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC0917BC9;
-	Tue,  6 Feb 2024 19:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xrzo3OKO"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84350175BC;
+	Tue,  6 Feb 2024 19:43:50 +0000 (UTC)
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ADE417BA0;
-	Tue,  6 Feb 2024 19:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B3371B270;
+	Tue,  6 Feb 2024 19:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707248550; cv=none; b=q0TbRUiTwN8dtMsLWOenGgM9OJeMXrvgqrOEKCqxAgiMl8s14Kw3vVz3YrTqNkf1VoS5rnwhKZCZHgGG6ZX+mKHYSNENS23phIcFMXdUXmmzg3os43ulg4H3MmtU/U964xu/hfh0waVY1ZQlhLQSvwz/Tl8LjBS4u9sJpyxJ5Dw=
+	t=1707248630; cv=none; b=mdxd0dvrp6zFo57cFPIYTOISFrTfkRsX05Rq0jJXTkc9UTkH1Gd69NFpB+0BzF4rFGSyqB0Ep2f5ICn4rEVxGqGpxh8hJ7oL4nr4P4eEdGjp74mZSyOHgsyLbLEVf5NqUmt/LhKkQlQWr2ss72YQ1v0//l7DH/gx0R7uX30i5rE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707248550; c=relaxed/simple;
-	bh=J0UzCl31wEHiXY4sb/ZjBK1ln7klxa08h7c306ggFVM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=faKXrin38ZBbKcpSLvruPI7aTnQEFTPcT/fPsWvWofv3SkHduO32LlQfWaFIkJUDKv5OJB2/r43DRINfGwMHuqMSsbgD5Da4IPL1Rqc/kDDtWCAprjH1L5Y07ZA6XmmrVRp/EdqCJ6ArkggGjjHqPlF7+fgkf8dYsHoRxFO8bCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xrzo3OKO; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1707248630; c=relaxed/simple;
+	bh=6Lirs0Mnt0IWEIAldTBBLf0MeJqsDrL6eFamlNgJG4Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rdt485AIQ2vy8z2Me2Jdnlv4SMXLTcIozU54g3XutmdDoR32xKQhPY6xWcwvLVrh74b9dDH3B9c2CZ1J0E7OEqB76Z8wrrwe+2UxXm6Gm2tcPE2290F4aXIzbytst5qu46A9SHG6QR1iKuDFy9Wkxr5F3GdM68EJtX+ie4nrR78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51117bfd452so10098354e87.3;
-        Tue, 06 Feb 2024 11:42:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707248546; x=1707853346; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eWGkE/O3QdNQnmc268O5sKVqO5KYwMpumGh7IlwPz/A=;
-        b=Xrzo3OKOyto1cefoc3WxuoBgaWNsXKZKi54iClzGh7qNCskF+aOZOr0bJkXvzvJky5
-         zqpZ6zKGb6cUfOCZHGXgG4np1Ulgek2i4v86qnPfkJfABwVSBVyMoIMhwPRpHnkdHuCi
-         6JS1+nYJQxdaaZofyjqmglJMFpuuuGwWLhQieNahG+2Cug0I2oFQ6AGWcGXW5fJXWMM1
-         rKP/3fN/j7XcgHKpRTPoFlNRfsBTT+iGuFHuhq1OUqPBhGHbf6H6eWllN8hufFJCx+yM
-         4iSuRhlU1lo8fQjF1/Y5fQvCjWNMmHkzSGE4FbGcN0wxUG53SWP7j9RRU2FsiYh8buqr
-         L5Sg==
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-59584f41f1eso1982213eaf.1;
+        Tue, 06 Feb 2024 11:43:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707248546; x=1707853346;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eWGkE/O3QdNQnmc268O5sKVqO5KYwMpumGh7IlwPz/A=;
-        b=b00x4pJHEs0XWQbxIGeoTHdSqYaoPeAy0SFSJNwrz/DRgDKplUc4xmQRTwiLt0XcEJ
-         gTFJi4ieo/E11HB5Hgamhvl6gTiP6VTUvV5XgoEdlAzufVVjYFm0BBzJLv0xB90tr6cU
-         WFWqUHlPrUV9UbPzi0cBI49Xkq86c0qX13FcmlfST/RmEQ4tavDJ3XyqXRrmddIgkBD6
-         IMPwYGbcWu2jIfNViTP6IdpdbS3UEOGbmnzXDA6xYOxZVvlI+CCoc6Sa0OgLWl//Oc7u
-         ws0V2MCha3DAijvCmFLLTlTo4n3kwRx7VAnIqPFF1wIvZ+xOASu6GZ1SO0+16g1gOSym
-         9HgQ==
-X-Gm-Message-State: AOJu0YzW/O4rrWM88qxC8lnNfPNWSV0oTHlFXXbrVZpgcRSpjEhlacWu
-	gH9ejGbghD1HtoqbdDsLw7RYC6sEJIX+o/RbVVtBqIdcUdxkb+tn
-X-Google-Smtp-Source: AGHT+IE7qevWSjL8dZocgLqsAfOGZXBUdZnhZIDLJrbJ5gp+vAPBcJr9RN8VTY1CGdMesP+xRq4odA==
-X-Received: by 2002:ac2:5f8e:0:b0:511:4f00:45b2 with SMTP id r14-20020ac25f8e000000b005114f0045b2mr2029806lfe.25.1707248545910;
-        Tue, 06 Feb 2024 11:42:25 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXUVAWc+6q004yovkdqQYOAJoHZ+Kon+sQNc0F1CW4Y65FY5PoMZqCbf5ehtHMwBb7jV/8xV5gfNxiubKHO9FL/z8DhVg7fQnyPrUFGy/YXvEedjYDCo+R1xM1Df392uLlu/mkXHbw7ylZSGciLWTr/5orAigaXGH9Jezut+c/+HcCJEbeGrdHO6cjc7rED9TBZ+PQ+vE4E3bx9/aAzioi/x3j6oDEmM9N7cDJrLXMmOI4JhwEilWmKr3rzqQq9kydblQBtnoJuoEkH3Ebuk/WY8+ENtn0Ur16IHHV3bfM1OUgZYi9qj493KFhjpw1EGNxgTfmv8Ct0lUOQxPDIgc6DEDZn4ByySzKWioyvMjZINerb/leStX7PdNpgZcDdymgeffyFkcfFLcMuBA6I9T1TsjQkcF+zAEAVg2a+61gZhDD17Qy+
-Received: from rand-ubuntu-development.dl.local (mail.confident.ru. [85.114.29.218])
-        by smtp.gmail.com with ESMTPSA id v20-20020ac25934000000b005115eec02d0sm234324lfi.234.2024.02.06.11.42.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 11:42:25 -0800 (PST)
-From: Rand Deeb <rand.sec96@gmail.com>
-To: Avi Fishman <avifishman70@gmail.com>,
-	Tomer Maimon <tmaimon77@gmail.com>,
-	Tali Perry <tali.perry1@gmail.com>,
-	Patrick Venture <venture@google.com>,
-	Nancy Yuen <yuenn@google.com>,
-	Benjamin Fair <benjaminfair@google.com>,
-	openbmc@lists.ozlabs.org,
-	linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: deeb.rand@confident.ru,
-	lvc-project@linuxtesting.org,
-	voskresenski.stanislav@confident.ru,
-	Rand Deeb <rand.sec96@gmail.com>
-Subject: [PATCH] i2c: Remove redundant comparison in npcm_i2c_reg_slave
-Date: Tue,  6 Feb 2024 22:42:01 +0300
-Message-Id: <20240206194201.10054-1-rand.sec96@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1707248627; x=1707853427;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Lb5wcqeRy+vlaNArKIwVtaEfEgOoKp4cUFbNlHx3fM8=;
+        b=gU1KlcifgxBV+kZ+4bVG83NOw4ew5JxhvUKY/8BDbdXDQq3GJskBJvTK6G1o7YIs9l
+         Y50as5NpKh+aoPpaH7LOmGisAMuIda91z70sxxY2lyXzKkjT1KWxkuU74k+rM8R8JZkR
+         dgi8KYovpmfiB/D1kiA4/5x6dRL34HonXw3+WDqR2Xatg6p12bmU0z4IckAxZkMG2TTH
+         H9h90LaWvacaC5ADwARrM+OWyS9J3sscoZX+Utx7drN7SpHS2k0r5ifz2V4sUV2s1UAr
+         KXIHEN0bH89yKhihGb5dt0Ec15Dlrm/+vlhfvN7Ru0F318qgFKSmIbWaK9mpmNDc2uYz
+         ftlg==
+X-Forwarded-Encrypted: i=1; AJvYcCW4YDb8Ba8QEKuIn320yuPVcLzwKrhnKAhBKNiedg72k+3VYuOnYh9xm20UmO3L4HV+0QYuO2yL1pm38GdXHazjoT7LhauZDOhNP2d7VKRqFMcVHJRtwDMT0cN70HlSayXvYuT1z5bfUg==
+X-Gm-Message-State: AOJu0YxwnpZXVLXl98p5lu7fIrDlBSP044vuIxv8geCAG5y/FjKLXsFZ
+	ge4KH9kbqxsZ0UUnMJq2BvPKv2owkqtjCHNhu+76/OyUh6KzqVXSCNzuX2kPscv3Ua8clPFHvqV
+	Z0MMfjNLFeaz8OLo0ig7CcvnFpqQ=
+X-Google-Smtp-Source: AGHT+IFYpomoi6DqiLfOdnXUy18la5AUhPIE1vXch0R4vJYU9EvwTF3nTdcympXAvGk/V9053cees/3tktHeg9wZtyk=
+X-Received: by 2002:a05:6820:82b:b0:59c:eb7b:c04e with SMTP id
+ bg43-20020a056820082b00b0059ceb7bc04emr2573848oob.1.1707248627613; Tue, 06
+ Feb 2024 11:43:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240201221119.42564-1-mario.limonciello@amd.com>
+ <20240201221119.42564-2-mario.limonciello@amd.com> <CAJZ5v0iw3PLB4W0QNmRCgK2AWxe5A7wxnWSz-Jm--Mb=fnugEw@mail.gmail.com>
+ <c96de797-39c4-4c83-96e2-d4579504e88e@amd.com>
+In-Reply-To: <c96de797-39c4-4c83-96e2-d4579504e88e@amd.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 6 Feb 2024 20:43:36 +0100
+Message-ID: <CAJZ5v0iZTJtMwZLGFovoLbFTP=OG=L6ZLgBbLU2ob5_X6OLB0A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] ACPI: video: Handle fetching EDID that is longer
+ than 256 bytes
+To: Mario Limonciello <mario.limonciello@amd.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, amd-gfx@lists.freedesktop.org, 
+	Alex Deucher <alexander.deucher@amd.com>, Harry Wentland <harry.wentland@amd.com>, 
+	Hans de Goede <hdegoede@redhat.com>, "open list:ACPI" <linux-acpi@vger.kernel.org>, 
+	open list <linux-kernel@vger.kernel.org>, 
+	"open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>, Melissa Wen <mwen@igalia.com>, 
+	Mark Pearson <mpearson-lenovo@squebb.ca>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In the npcm_i2c_reg_slave() function, there was a redundant
-comparison that checked if 'bus->slave' was null immediately after
-assigning it the 'client' value. There were concerns about a
-potential null dereference because of `client->adapter`, but
-according to Wolfram Sang, "we trusted ourselves here" Therefore,
-this comparison is unnecessary.
+On Fri, Feb 2, 2024 at 5:09=E2=80=AFPM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
+>
+> On 2/2/2024 10:07, Rafael J. Wysocki wrote:
+> > On Thu, Feb 1, 2024 at 11:11=E2=80=AFPM Mario Limonciello
+> > <mario.limonciello@amd.com> wrote:
+> >>
+> >> The ACPI specification allows for an EDID to be up to 512 bytes but
+> >> the _DDC EDID fetching code will only try up to 256 bytes.
+> >>
+> >> Modify the code to instead start at 512 bytes and work it's way
+> >> down instead.
+> >>
+> >> As _DDC is now called up to 4 times on a machine debugging messages
+> >> are noisier than necessary.  Decrease from info to debug.
+> >>
+> >> Link: https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/Apx_B_Video_Extens=
+ions/output-device-specific-methods.html#ddc-return-the-edid-for-this-devic=
+e
+> >> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> >
+> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > or I can apply it if that's preferred.
+>
+> Thanks!
+>
+> I think go ahead and apply this one to your -next tree.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Applied now.
 
-Signed-off-by: Rand Deeb <rand.sec96@gmail.com>
----
- drivers/i2c/busses/i2c-npcm7xx.c | 3 ---
- 1 file changed, 3 deletions(-)
+Barring any issues with it, It will get into linux-next in a couple of days=
+.
 
-diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-npcm7xx.c
-index c1b679737240..bdf35b86e559 100644
---- a/drivers/i2c/busses/i2c-npcm7xx.c
-+++ b/drivers/i2c/busses/i2c-npcm7xx.c
-@@ -1247,9 +1247,6 @@ static int npcm_i2c_reg_slave(struct i2c_client *client)
- 
- 	bus->slave = client;
- 
--	if (!bus->slave)
--		return -EINVAL;
--
- 	if (client->flags & I2C_CLIENT_TEN)
- 		return -EAFNOSUPPORT;
- 
--- 
-2.34.1
-
+Thanks!
 
