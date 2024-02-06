@@ -1,205 +1,140 @@
-Return-Path: <linux-kernel+bounces-54636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BA4084B1D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:01:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42D5584B1D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:02:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12E1E2810F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:01:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC0431F23F49
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:02:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF87112D77F;
-	Tue,  6 Feb 2024 10:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8783112DDBB;
+	Tue,  6 Feb 2024 10:01:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="J+oeDK55"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="h+vpCPLE"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7297F12D76D;
-	Tue,  6 Feb 2024 10:01:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D65EB12D76A
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 10:01:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707213671; cv=none; b=sxQgZ/anhhZ8fIQ2jHWN1uubm51RhaRUsqQQdF+5CQmsab5vvt53AKh3XTwGc4HviE2Ctg7/JhrCfDfkGdYQAR30SeBrF71CWZVoylpU/y6WmKPoB1Z7wQ3fw4xCjobWay+uVsrtGQhgaZrQ+pr2cwGJnA3OV0f83zin5RBPlTc=
+	t=1707213716; cv=none; b=N9fhzpqD3V4+QG62t/MmCRA5uObzR0COdAwggPCmTHz0LR5q8irfWzw8/00ehIJWPD5a+RJ2Yys8nQUC4fDzO39XkMmH20dWr6tlaemhfce4iNtTQ4Am9PoD0d2Zf2W8N1D7/PJ9fpDuo6o4yKWUq67zsuUpjspVoFHDKUxd4k8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707213671; c=relaxed/simple;
-	bh=dLeoHdat5+2yokZ57ZMb1U/V1RdRR+uIGAJcxMGtu2w=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=tXMfIgqAv9PCADsR/RFCbEOQZ7U6oya9xcPZ3/cxWRtChTB707i05sqzQe1I1dU/Vx1xniMRhF8fZTpvK/m5vNTw1YjKTjTswx6o3o0NxfPAREfFmChIlzC+r5JbZM8/EukekvnaJtJbwEtOKrvuUezj/cY69xsw8kbBrFBtcBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=J+oeDK55; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3893B240012;
-	Tue,  6 Feb 2024 10:01:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707213661;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7ZyyNB/CZxx9/DUWNjxPsDT3HiAzuHwEEv/w7sNe/Cg=;
-	b=J+oeDK55buHO+8CcYynTWmMMg+qfgizl8HUCfvSWyp4iSLtf04Hrv1xBFwTLYw7usBX6hW
-	bxBKB0AAWZVRQJl0OFoTuTdayGkVo8gonZRhgf6MVdEBDnuAWxJAQv3cF6I7ORwJVnpCga
-	GVbs1PyXfU/2cFsGuhwy4+f0mbQIXImEwfyEeI2Ng7dfIxDJpC8nWXcfyrRyv34ThBp3Yc
-	85Dv1RIAnDczpOLW7kaNqDFy+eYAQuT0ZRkwZuDln+TME8QSuQ05mYXu9aRfVSljWv9jWB
-	WNaxMsrFcVh7GkKRze01RKD61HwtXvIG0ryznNkL5KfgCA4umFyR9BNR0eJtiA==
-From: Louis Chauvet <louis.chauvet@bootlin.com>
-Date: Tue, 06 Feb 2024 11:00:50 +0100
-Subject: [PATCH 2/2] spi: omap2-mcspi: Add support for MULTI-mode
+	s=arc-20240116; t=1707213716; c=relaxed/simple;
+	bh=9vc9GRSK2R2a0IE6kgxEFThcWt1JUujvnbpMYfq17fM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P5VyCkxdZM+woSn/G7+ylq86Eruexj9AVvGTvw1ZApf19zyznJDXQSnVgXnYTTuJVtdE3ASu4yee1bAUeuOsBVSDyyU6GiBRbkWmP/nJwNS3zJr5jRiQ6eA4CtuLd7H89AZRDGqjnigGvBDrfpgEm+DYNxM2HDBwNTyr8fECIlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=h+vpCPLE; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d9bd8fa49eso13393235ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 02:01:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707213714; x=1707818514; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iRhR9jRmXYeiA/qDO4/bNmHTbH+UMMuSM6BsgYcIZAw=;
+        b=h+vpCPLEFoTPPUGp0XBHZnJLPQrk2L3yOFZukJQrwj5Ejhj42aqHzzUiwI7b+FoJGg
+         dTX4Z1JFWzcte+rwtYdOuB99tV6B6q95GICHU4NHDeT8j/YmwcdEo3gyAcsZjzwL32yL
+         NKPyBgQMyBfTvh36fFt/M5QNahPA7iAphs+HM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707213714; x=1707818514;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iRhR9jRmXYeiA/qDO4/bNmHTbH+UMMuSM6BsgYcIZAw=;
+        b=s8SZY21Ccgjt7PIBtc9Hk+VDz/GRRuax1y5/sj7UiIdvgsHAJV4hV2h0iK4dv7tVCn
+         fK90bGzwhvmfJPGD2Y6Ddvb4ajIGe4l81l/onwZeVWjBaqHAZOvuSc8EVg8yKt5Aufu7
+         OIt+dF3iJUuX/DfD6NL6+PQ9MkCZq4Qf39Biic8LN69mDOjkChB4Po+gJQRYmBtAL6m3
+         TY18gsc65Wi5CqwbjItMBHng+qA47v8nKIYDncH8P99RKuvGvir/1OvuO+iHiZxs4PGx
+         lfRwqf1mPbCibayxFdNiE3JX10oHubY/7SVhUA4sVr0fubXIF9EojRs0ECacOFgYYyzG
+         UN2g==
+X-Gm-Message-State: AOJu0YwjtcpcSPNOk1jciapRmcW1Wg8/2NdUA5swHpq1JWBYBUeiBPs3
+	lIky59mnMWfmergbFDiNPAxME0LQHIgggAkXn2+QpkbEC7FDqYvEF0Jcsf0VfA==
+X-Google-Smtp-Source: AGHT+IHWL52WmPm6bNr953sUZX861hGdEh1n7cUglRSPLKTyvnf0g+GZMbpodtXl0TbQgxCD5k7UuQ==
+X-Received: by 2002:a17:902:a3c3:b0:1d9:4d3f:cbf6 with SMTP id q3-20020a170902a3c300b001d94d3fcbf6mr1184238plb.48.1707213714084;
+        Tue, 06 Feb 2024 02:01:54 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUtZ/Q6R13798ruAgfiOliz2pPEk8pHcbZOrpqe+ZlQ1QcA0KXPlNsRmD9cBaPKSx+CPjSCFqYS2QVMPxKhObo25onG72wZnYuzopk3GBTWfgrS7hxKaR53VeYxR3RfiVNyTLL8s4gmOsjoIH1Eo4B+M+myBqn9tFiWIjTQMGRTcnxChejQh+oCVJwDKDDQ1yAsrNj0U/UbHsSA0dW4U/nvhs0CaE1oKtIZfEIoQtzwa5pf4hb4FLuEFn1xH26oNNrG
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id q10-20020a17090311ca00b001d9469967e8sm1455367plh.122.2024.02.06.02.01.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 02:01:53 -0800 (PST)
+Date: Tue, 6 Feb 2024 02:01:53 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc: Kees Cook <kees@kernel.org>, Eric Biggers <ebiggers@kernel.org>,
+	linux-hardening@vger.kernel.org,
+	Mark Rutland <mark.rutland@arm.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] overflow: Introduce add_wrap(), sub_wrap(), and
+ mul_wrap()
+Message-ID: <202402060200.EDE488F8@keescook>
+References: <20240205090854.make.507-kees@kernel.org>
+ <20240205091233.1357377-2-keescook@chromium.org>
+ <20240205202145.GB2220@sol.localdomain>
+ <202402051443.A813E4D@keescook>
+ <20240205231712.GC2220@sol.localdomain>
+ <51025C22-0FEF-4047-BC36-EA7ED7A3BD62@kernel.org>
+ <1ee4bd0f-2a70-4696-bad3-782b5c0887f7@prevas.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240126-spi-omap2-mcspi-multi-mode-v1-2-d143d33f0fe0@bootlin.com>
-References: <20240126-spi-omap2-mcspi-multi-mode-v1-0-d143d33f0fe0@bootlin.com>
-In-Reply-To: <20240126-spi-omap2-mcspi-multi-mode-v1-0-d143d33f0fe0@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- thomas.petazzoni@bootlin.com, Miquel Raynal <miquel.raynal@bootlin.com>, 
- yen-mei.goh@keysight.com, koon-kee.lie@keysight.com, 
- Louis Chauvet <louis.chauvet@bootlin.com>
-X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4015;
- i=louis.chauvet@bootlin.com; h=from:subject:message-id;
- bh=dLeoHdat5+2yokZ57ZMb1U/V1RdRR+uIGAJcxMGtu2w=;
- b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBlwgNc490SgPJdYZBCh8N73jiZS1KgRhcdKvOucQHs
- mmRLqHWJAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZcIDXAAKCRAgrS7GWxAs4rhwD/
- 9jG8LYFgLIO0pYCUnLTGlca5mn6PEjqk+gZKi2JAcQ5/p1YlnV6w3ZSuFqOY+FgNXAPc0voIN/P9T2
- yJztrL12vfJf90d5D4SptCK0Ncmv+bJguUiY9ELbwqa6y67EoecbKnb3kIbGJ1foqbJaq1Qw3gZGtY
- WMF7Mkz2fngaQeAOctrnBT8Fs1y4am7TZ+bhD5ffr/b2v6Fi9vSPPXo6/nVk79OXkt1XYcktDlUvF4
- 3wHCDyeGfjw4E2sdmF3ZLXhC+SsEFbhqJZZ5m/gc3hItN9+pQ08jiYFX1QUjfx1SICnWL1j1Am5Moq
- qm82fjr/iekD3yBIYFYAQUojmR2PmGEXN2ieuwBMcRw1WXPX9bfaWj0wSzV70LNoNd4hmmLxu5C9MF
- KS8ydETXSG4HxoAtbLnLDc0+V+1YQUrIN0W63yX5fg6p1ZJ0NEGJfa8sRloViKKXBoqMqM/rYmVRnI
- i5St0q9kznSlgnBDDV8CR6cyu3EaDTbugGZz/yzoFQGyCALN+RaX7M1ELJMUl/9FiLF7Oo0rj5yJxr
- WA/ZCmfEs8jVNQhWeZwYPMHAgYRJ+762tML1CQBlFqbw3bdFbpAR1xziT3F1YsQL59zMKbPoNP+p60
- 0ZEr008aPriW0QFXDtNRTkFnap9K2598aoRc14UNYKJm4xkIavAj5M7JkNqQ==
-X-Developer-Key: i=louis.chauvet@bootlin.com; a=openpgp;
- fpr=8B7104AE9A272D6693F527F2EC1883F55E0B40A5
-X-GND-Sasl: louis.chauvet@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ee4bd0f-2a70-4696-bad3-782b5c0887f7@prevas.dk>
 
-Introduce support for MULTI-mode in the OMAP2 MCSPI driver. Currently, the
-driver always uses SINGLE mode to handle the chip select (CS). With this
-enhancement, MULTI-mode is enabled for specific messages, allowing for a
-shorter delay between CS enable and the message (some FPGA devices are
-sensitive to this delay).
+On Tue, Feb 06, 2024 at 09:42:26AM +0100, Rasmus Villemoes wrote:
+> On 06/02/2024 00.21, Kees Cook wrote:
+> > 
+> > 
+> > On February 5, 2024 11:17:12 PM GMT, Eric Biggers <ebiggers@kernel.org> wrote:
+> >> On Mon, Feb 05, 2024 at 02:44:14PM -0800, Kees Cook wrote:
+> >>> On Mon, Feb 05, 2024 at 12:21:45PM -0800, Eric Biggers wrote:
+> >>>> On Mon, Feb 05, 2024 at 01:12:30AM -0800, Kees Cook wrote:
+> >>>>> Subject: Re: [PATCH v3 2/3] overflow: Introduce add_wrap(), sub_wrap(), and mul_wrap()
+> >>>>
+> >>>> Maybe these should be called wrapping_add, wrapping_sub, and wrapping_mul?
+> >>>> Those names are more grammatically correct, and Rust chose those names too.
+> >>>
+> >>> Sure, that works for me. What bout the inc_wrap() and dec_wrap() names?
+> >>> I assume wrapping_inc() and wrapping_dec() ?
+> >>>
+> >>
+> >> Yes, though I'm not sure those should exist at all.  Maybe a += b should just
+> >> become a = wrapping_add(a, b), instead of wrapping_inc(a, b)?
+> >> wrapping_inc(a, b) isn't as self-explanatory.  Likewise for wrapping_dec.
+> > 
+> > It was to avoid repeating type information, as it would go from:
+> > 
+> > var_a += var_b;
+> > 
+> > to:
+> > 
+> > var_a = wrapping_add(typeof(var_a), var_a, var_b);
+> > 
+> > Which repeats "var_a" 3 times. :|
+> 
+> Yeah, I think that's a reasonable rationale. I'm fine with the
+> wrapping_* naming, and then the _inc and _dec helpers should follow.
 
-The drawback of multi-mode is that it's not possible to keep the CS
-enabled between each words. Therefore, this patch enables multi-mode only
-for specific messages: the spi_message must contain only spi_transfer of 1
-word (of any size) with cs_change enabled.
+Sounds good.
 
-A new member is introduced in the omap2_mcspi structure to keep track of
-the current used mode.
+> However, I now wonder if those should really also return the new value.
+> Yes, that corresponds to the value of the expression (a += b), but
+> nobody would ever write c = (a += b) or otherwise make use of that
+> value, and the naming doesn't immediately imply whether one should think
+> of ++a or a++.
 
-Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
----
- drivers/spi/spi-omap2-mcspi.c | 57 ++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 51 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/spi/spi-omap2-mcspi.c b/drivers/spi/spi-omap2-mcspi.c
-index fc7f69973334..ab22b1b062f3 100644
---- a/drivers/spi/spi-omap2-mcspi.c
-+++ b/drivers/spi/spi-omap2-mcspi.c
-@@ -133,6 +133,8 @@ struct omap2_mcspi {
- 	unsigned int		pin_dir:1;
- 	size_t			max_xfer_len;
- 	u32			ref_clk_hz;
-+
-+	bool			use_multi_mode;
- };
- 
- struct omap2_mcspi_cs {
-@@ -258,10 +260,15 @@ static void omap2_mcspi_set_cs(struct spi_device *spi, bool enable)
- 
- 		l = mcspi_cached_chconf0(spi);
- 
--		if (enable)
-+		/* Only enable chip select manually if single mode is used */
-+		if (mcspi->use_multi_mode) {
- 			l &= ~OMAP2_MCSPI_CHCONF_FORCE;
--		else
--			l |= OMAP2_MCSPI_CHCONF_FORCE;
-+		} else {
-+			if (enable)
-+				l &= ~OMAP2_MCSPI_CHCONF_FORCE;
-+			else
-+				l |= OMAP2_MCSPI_CHCONF_FORCE;
-+		}
- 
- 		mcspi_write_chconf0(spi, l);
- 
-@@ -285,7 +292,12 @@ static void omap2_mcspi_set_mode(struct spi_controller *ctlr)
- 		l |= (OMAP2_MCSPI_MODULCTRL_MS);
- 	} else {
- 		l &= ~(OMAP2_MCSPI_MODULCTRL_MS);
--		l |= OMAP2_MCSPI_MODULCTRL_SINGLE;
-+
-+		/* Enable single mode if needed */
-+		if (mcspi->use_multi_mode)
-+			l &= ~OMAP2_MCSPI_MODULCTRL_SINGLE;
-+		else
-+			l |= OMAP2_MCSPI_MODULCTRL_SINGLE;
- 	}
- 	mcspi_write_reg(ctlr, OMAP2_MCSPI_MODULCTRL, l);
- 
-@@ -1371,15 +1383,48 @@ static int omap2_mcspi_prepare_message(struct spi_controller *ctlr,
- 	struct omap2_mcspi	*mcspi = spi_controller_get_devdata(ctlr);
- 	struct omap2_mcspi_regs	*ctx = &mcspi->ctx;
- 	struct omap2_mcspi_cs	*cs;
-+	struct spi_transfer	*tr;
-+	u8 bits_per_word;
-+	u32 speed_hz;
- 
--	/* Only a single channel can have the FORCE bit enabled
-+	/*
-+	 * The conditions are strict, it is mandatory to check each transfer of the list to see if
-+	 * multi-mode is applicable.
-+	 */
-+	mcspi->use_multi_mode = true;
-+	list_for_each_entry(tr, &msg->transfers, transfer_list) {
-+		if (!tr->bits_per_word)
-+			bits_per_word = msg->spi->bits_per_word;
-+		else
-+			bits_per_word = tr->bits_per_word;
-+
-+		/* Check if the transfer content is only one word */
-+		if ((bits_per_word < 8 && tr->len > 1) ||
-+		    (bits_per_word >= 8 && tr->len > bits_per_word / 8))
-+			mcspi->use_multi_mode = false;
-+
-+		/* Check if transfer asks to change the CS status after the transfer */
-+		if (!tr->cs_change)
-+			mcspi->use_multi_mode = false;
-+
-+		/* If at least one message is not compatible, switch back to single mode */
-+		if (!mcspi->use_multi_mode)
-+			break;
-+	}
-+
-+	omap2_mcspi_set_mode(master);
-+
-+	/* In single mode only a single channel can have the FORCE bit enabled
- 	 * in its chconf0 register.
- 	 * Scan all channels and disable them except the current one.
- 	 * A FORCE can remain from a last transfer having cs_change enabled
-+	 *
-+	 * In multi mode all FORCE bits must be disabled.
- 	 */
- 	list_for_each_entry(cs, &ctx->cs, node) {
--		if (msg->spi->controller_state == cs)
-+		if (msg->spi->controller_state == cs && !mcspi->use_multi_mode) {
- 			continue;
-+		}
- 
- 		if ((cs->chconf0 & OMAP2_MCSPI_CHCONF_FORCE)) {
- 			cs->chconf0 &= ~OMAP2_MCSPI_CHCONF_FORCE;
+They were designed to return the new value, and the selftests validate
+that. I've updated the kern-doc to reflect this.
 
 -- 
-2.43.0
-
+Kees Cook
 
