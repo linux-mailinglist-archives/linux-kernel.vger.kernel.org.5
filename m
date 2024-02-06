@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-55387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6A7684BC04
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:34:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A34384BC08
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 18:34:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BC6D1F2742F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:34:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CE471C2409C
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF68214A9D;
-	Tue,  6 Feb 2024 17:33:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86D4217579;
+	Tue,  6 Feb 2024 17:33:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mYraO9tY"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V5AgS47d"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B177513FEB;
-	Tue,  6 Feb 2024 17:33:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19761426E;
+	Tue,  6 Feb 2024 17:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707240785; cv=none; b=ru0G1Yz2TbOMVhPJXzy2gt0Ow8X6HDcwLOmWVM2MFP4nEl0CjekZ60KTAVkewFMHHuKn0SNpyRkokogJrAw+HBbANFdVWfxz8lRhAYSWBJJPnPfRTp7q/d++aomHdQPBp8Ay9YU7ieqCobW4DRpKjBMBATZ8CEYCh/yYGwLRPSg=
+	t=1707240787; cv=none; b=TEShTPO67NXizj/s9QnpycaiH0XNn88VoLxiMEm2ltoITrOYELz1ZdmqHItTnSn53BLRBVylX4ONTsAVhQ0mo/yTKc05VDJj65PZuCsXX8KzKLwvBtp//tYcF08fLRpgYwzSeRdb3nsVRBbI3V4+xsg2ENh5xUOtzKuB9oR8b8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707240785; c=relaxed/simple;
-	bh=jyM0CHznvQWMvjL8i2pVQYft4g2oYeiCv4EYtUJLp6A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=g9SKTU9rlzQT26B9rxw0IxccK1XffIc8cvWYsPnVSxJDgm1Yohv79lgiGY5yx2nfydT4/ajjpQq1nk5x7rJ+5vVepPbOalRujxcbkhr17Uzh09bMMIFWxT/DoCyH3t9ItCIqkyW5HnXov+x6e8+DEWx+z0qAjdtmwMeLvcdnoR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mYraO9tY; arc=none smtp.client-ip=209.85.221.41
+	s=arc-20240116; t=1707240787; c=relaxed/simple;
+	bh=GfIE22OybaPa3DRd0WpoTsg7iaxG7t9NSj5FJLsMdVE=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=kOStpf7uQO0WVLdQ4tcDRXvW8hluX0jxFhrkeHf/vJb6r8WSUyDJLJrnxveVR+BJH/NaXl8pIdaLWklkqSWOWgd78ZjLyyPngVJ00ydWzBoiuKogJAnQ1TRF0QJ77LQOyFZ/fPxSiUHoUOiGURLonzzkvEsaHLAI+YT9sjyto0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V5AgS47d; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-337cc8e72f5so4438530f8f.1;
-        Tue, 06 Feb 2024 09:33:03 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40fc52c2ae4so41420745e9.3;
+        Tue, 06 Feb 2024 09:33:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707240782; x=1707845582; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707240784; x=1707845584; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bUmCO360MsO9JwRC/7FCAnzALXs5wMt0yoX0PpFvJIY=;
-        b=mYraO9tYRpBMd77ANgg9cntTtmmEXkE6ZAiJKifnREfcI7SEF/uY0kt70L6H1wHpK8
-         aBNQEa4Mqpx3uNZFIEYpV9xKci1zmYaSFhtj5ZB6n69Uey6wsHNfG+BsDbQyj4y8YP5c
-         UVuMp2/qD3jsKrCbQLQrb4LcP60E6HryB/PLR5LDS8eUF4OtAc1+S0KyoYWaRbRp8HYv
-         oZudVJ9Z8EEvuUaXYAMg4TPl9zX8K4P7cFo12DNievMAZ26w/uFufCwBjAMlMFBWUsVX
-         N5eRREZjEJJPfhqPUZgadVVsVrE8tDoP/Ft9PdCGO1ep5M0eWRkzxmoYFwWlBcNAjyuO
-         md8Q==
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f9ktY0liDe4oFr0FI8er2FX43RIFT8krH3jH7tSCLC8=;
+        b=V5AgS47dE0YQ9VIPCO84Zv+BuymMykVRfWmdmtWMBron0blIuK1QLIo/wXIOUpMmNi
+         J0bHUMJSo+DCgoVKj3fG983WohpGyJ8sm2hqGutp2+7MaUbS6Crk49Yy/ZIvtZ7W68VE
+         oPMQNaT0d84qNG7zc6Z0G7iDwPlRrNxzAeo0y4oicHynb5DdqZzfDAaSTRppmLn4vgak
+         Kv2OYqRNbEiGM+goPXM7MVVOpkGAvY2SdF9Yle/GL3uRYkyG5T9pM2KgaKD2fINiWSGB
+         HplADSrKDSlaHID499mPocNGYNkKSwE2ajfg3qWScDroHMfbgFzVapF9fiMVQquTyOiN
+         XJOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707240782; x=1707845582;
+        d=1e100.net; s=20230601; t=1707240784; x=1707845584;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bUmCO360MsO9JwRC/7FCAnzALXs5wMt0yoX0PpFvJIY=;
-        b=qQj2WAxVV8H4yZyIKCjI2kRma9Vtno/1+7M5uShRWCHq/wjw+HJC1MGY+PhEfqa6fa
-         NQQRtOJSAssZx4LNi0I9DQ+/fB3lO/o8LVuzHON80xRy87K8nCiYKB2znPWu/uCbzRXC
-         S6aEm4a+K1cg/WDMvof3mgtVY1ST/CMDTjaomIqmMgi1RPMVtMIEfudZV+z3Pz3HD0B+
-         uIijIcl/P3cVnVdf9ZQTP/DLlUJ5qbP3R88mfxgVvfStuFSa0r8qyZQRjbmkaPPbwP0J
-         m7+Qg5nkTjbT/820RFlMiMDXlugwnluSaEMYWUPdR40oyWDEIiMeJXXT5HYrRe/zmpD0
-         XXjw==
-X-Gm-Message-State: AOJu0YwQ+7pQaN7zpl1cZlJBHwd4wBa+2Lb/TPJr7ZntGiE2cKrmraQf
-	MWWN/1dMuFjDjzkAvHZkXVGz6yWgigk9j2pX/nRgM/nA4RsI+V3p
-X-Google-Smtp-Source: AGHT+IHQ25b8pHbMCRzU0RlrrHTuPeHh8SPAIjfmfRNSvM9KyJ8xn2r2pkf/PWkfOIY6Pwn3KTDlfQ==
-X-Received: by 2002:a5d:678d:0:b0:33b:1577:a2d1 with SMTP id v13-20020a5d678d000000b0033b1577a2d1mr1401188wru.1.1707240781987;
-        Tue, 06 Feb 2024 09:33:01 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUvkE6eU+hGhupY2V0J0OGIrCKJLP8PAqF8LlWaNyocxW+0ts+d2UlYoavbzeDD6M0V0Abv21nL4RHBl8CbbibEbjleYvacc//1M/yXNMXZZaEh+uKKa3dRYTZsPMx64jiUvHSTmw+utW1MrWy0Ynlc0lHpxOQHTmBydoaoBAoxlc4DyWTknl7w4rQtE+KEENVT8ThbeU4Oe6FrHf680GaJehPXXxksjEf3eWkOps3Stb2kaJR2rlyRTBtgKlJc3/MrtbxYiGeRmFwguWBNI7vBr0KG1OytBVlvz8Wlc6XtzvzzZ0fUBYqg5DPowoj5UuTVAM/ol30VcFzV107IO+Rh600MT3YkH74pMRUX4ZUE/npUcV8/M/Wpr0C5w2yR0Hfa4WSDaJ2caPMLS11CQfJjYWRiWBe3O2AlgP8g5ohp5JjzuZFy3sn7pa6mQ6nfFLBMtP/TnFdq86/NwivcVz6A4WXdA+dJPvZGcN0aPQ9xhQIMVqZ4VkLlx11o57LqjecYqIrQhC7SSUapXS8YEjxhUhyfJnrqlVcMBbqtVIrTVhEcpgbTVGlXGPC+5LElTgIn0Cq6eocUrhnnc6NXIA+zoP9rP/pQfe7aJrcsFWitZFgATqpS/DEvaM2v8hUIi2FTIl2jCrYl78cUmsfcHDhsVgIGfih0t2f4AqLPt3ePEayChUoh7Q==
+        bh=f9ktY0liDe4oFr0FI8er2FX43RIFT8krH3jH7tSCLC8=;
+        b=T/x15cw/S+O0Hs7hdmMZRuu17xekag2VUaO/U33OkZbEr0Z5OFv2Ir+I5qq+Bpg+zg
+         LEYRPr+IRRzWAQ9VU2DYhza5BTKD0G4q7gw8n/omq68hoyFKLN8Uc0uBT2zkNiHoydvQ
+         LPsvWICEuCRnNXd9dg7UigYMGDIS0tOtclomEuNxJMXVCOrj5t1MMJRTH04iytimKYW2
+         zLtwqoHBpjJVrgf1GEh+NJoFH66bH80cdgiQruaWt77ZYGCzPuWHx0Uj49p47vkFFs3C
+         TFzPdX5kzDUzpO1wqmpn3ym6+GoPKH87+uRokJzL0V+/yZMHpLPUqpAv+fh9Kw9pihOV
+         dQDg==
+X-Gm-Message-State: AOJu0YwxscUaB9MpCIuV84WM5JcFOM2+cQ80NvzFkO0xGm1Qqa3+/G6v
+	We11HvEZPPRYXRB4ftnu2YUD1vgdGAFJ4VkYHH4kubVUo/VNyh5Z
+X-Google-Smtp-Source: AGHT+IHZpmejesn7q4hyZCM4EBbl9SG/EdYcekdTtT0D5kFgV21YhwgRZ5wLMSds9vubz+BRczYx+A==
+X-Received: by 2002:a05:600c:354d:b0:40f:d3da:85cf with SMTP id i13-20020a05600c354d00b0040fd3da85cfmr2754650wmq.8.1707240783927;
+        Tue, 06 Feb 2024 09:33:03 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX+MB19xzCAzIriGYNzEELPb3JpNFynCloU7S3gPgqQ8tnwvzzVkYC5N1tCNw6sT/z4XoeekTXsXXcC+AIkRsvx3ubvP5OvPvkYGMn/2KRYrF5bp2NpIH2GjKfQHPIEPdKRu9Nd0dtEIpJVobSRI6kqRepGGw/9hzRxNfhWhFJ4oBxv8N3hw+zSKPWoP4RvDNNZOSKDYL4jR0ccQDC5Z++dscCcMirEA8gL7iKVon73anKMIRKe+ZzNZ8uJvoEA5aLaNvtSiwfPxreC6tqmwyASfSXsO48zNUo4U1l+xsMHCBzVx2ZImphHbb58dWIkR06I0ARWpty91iNWY2j/EMjfVI+IoTnDOY3o3XQeQDuk/MFuabp0YyqEGVLFH1H9EeSNqCKeqJBS0KKsrR92S+/bZuL2dxa3ir9JGyyzPAtsg0GpwCApXLjFwi6gSad8BE7Kup3k/Yi1EOF26UrXItq67fd8Xti4uh4DNw1f3a2Oq5gcAVCDfChcZw0sClaVTFYgR/8VEa9VBEwc7DHdxTQAnCfgPJ8+n79WKZbXVrp4KP7VLJvmWGRi/FBldorwj4YwJssFWoiaNpCHrA/9NIkt7MAJeXOf7/JD4Q4Hr8ambqv2gEy2QW96DOeeExM6aUDJkugQG/z+CMAixpMVqIY4i0Y8OQRFcSWQseN4NKUm3l2fkddRFw==
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id l14-20020a05600c4f0e00b0040fc56712e8sm2621215wmq.17.2024.02.06.09.33.00
+        by smtp.googlemail.com with ESMTPSA id l14-20020a05600c4f0e00b0040fc56712e8sm2621215wmq.17.2024.02.06.09.33.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 09:33:00 -0800 (PST)
+        Tue, 06 Feb 2024 09:33:02 -0800 (PST)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -87,10 +87,9 @@ To: "David S. Miller" <davem@davemloft.net>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org
-Cc: Conor Dooley <conor.dooley@microchip.com>
-Subject: [net-next PATCH v7 05/10] dt-bindings: net: Document Qcom QCA807x PHY package
-Date: Tue,  6 Feb 2024 18:31:08 +0100
-Message-ID: <20240206173115.7654-6-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v7 06/10] net: phy: provide whether link has changed in c37_read_status
+Date: Tue,  6 Feb 2024 18:31:09 +0100
+Message-ID: <20240206173115.7654-7-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240206173115.7654-1-ansuelsmth@gmail.com>
 References: <20240206173115.7654-1-ansuelsmth@gmail.com>
@@ -102,212 +101,106 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Document Qcom QCA807x PHY package.
+Some PHY driver might require additional regs call after
+genphy_c37_read_status() is called.
 
-Qualcomm QCA807X Ethernet PHY is PHY package of 2 or 5
-IEEE 802.3 clause 22 compliant 10BASE-Te, 100BASE-TX and
-1000BASE-T PHY-s.
+Expand genphy_c37_read_status to provide a bool wheather the link has
+changed or not to permit PHY driver to skip additional regs call if
+nothing has changed.
 
-Document the required property to make the PHY package correctly
-configure and work.
+Every user of genphy_c37_read_status() is updated with the new
+additional bool.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- .../devicetree/bindings/net/qcom,qca807x.yaml | 184 ++++++++++++++++++
- 1 file changed, 184 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/qcom,qca807x.yaml
+ drivers/net/phy/broadcom.c    |  3 ++-
+ drivers/net/phy/phy_device.c  | 11 +++++++++--
+ drivers/net/phy/qcom/at803x.c |  3 ++-
+ include/linux/phy.h           |  2 +-
+ 4 files changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/qcom,qca807x.yaml b/Documentation/devicetree/bindings/net/qcom,qca807x.yaml
-new file mode 100644
-index 000000000000..7290024024f5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/qcom,qca807x.yaml
-@@ -0,0 +1,184 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/qcom,qca807x.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm QCA807x Ethernet PHY
-+
-+maintainers:
-+  - Christian Marangi <ansuelsmth@gmail.com>
-+  - Robert Marko <robert.marko@sartura.hr>
-+
-+description: |
-+  Qualcomm QCA8072/5 Ethernet PHY is PHY package of 2 or 5
-+  IEEE 802.3 clause 22 compliant 10BASE-Te, 100BASE-TX and
-+  1000BASE-T PHY-s.
-+
-+  They feature 2 SerDes, one for PSGMII or QSGMII connection with
-+  MAC, while second one is SGMII for connection to MAC or fiber.
-+
-+  Both models have a combo port that supports 1000BASE-X and
-+  100BASE-FX fiber.
-+
-+  Each PHY inside of QCA807x series has 4 digitally controlled
-+  output only pins that natively drive LED-s for up to 2 attached
-+  LEDs. Some vendor also use these 4 output for GPIO usage without
-+  attaching LEDs.
-+
-+  Note that output pins can be set to drive LEDs OR GPIO, mixed
-+  definition are not accepted.
-+
-+$ref: ethernet-phy-package.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - qcom,qca8072-package
-+      - qcom,qca8075-package
-+
-+  qcom,package-mode:
-+    description: |
-+      PHY package can be configured in 3 mode following this table:
-+
-+                    First Serdes mode       Second Serdes mode
-+      Option 1      PSGMII for copper       Disabled
-+                    ports 0-4
-+      Option 2      PSGMII for copper       1000BASE-X / 100BASE-FX
-+                    ports 0-4
-+      Option 3      QSGMII for copper       SGMII for
-+                    ports 0-3               copper port 4
-+
-+      PSGMII mode (option 1 or 2) is configured dynamically based on
-+      the presence of a connected SFP device.
-+    $ref: /schemas/types.yaml#/definitions/string
-+    enum:
-+      - qsgmii
-+      - psgmii
-+    default: psgmii
-+
-+  qcom,tx-drive-strength-milliwatt:
-+    description: set the TX Amplifier value in mv.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [140, 160, 180, 200, 220,
-+           240, 260, 280, 300, 320,
-+           400, 500, 600]
-+    default: 600
-+
-+patternProperties:
-+  ^ethernet-phy@[a-f0-9]+$:
-+    $ref: ethernet-phy.yaml#
-+
-+    properties:
-+      qcom,dac-full-amplitude:
-+        description:
-+          Set Analog MDI driver amplitude to FULL.
-+
-+          With this not defined, amplitude is set to DSP.
-+          (amplitude is adjusted based on cable length)
-+
-+          With this enabled and qcom,dac-full-bias-current
-+          and qcom,dac-disable-bias-current-tweak disabled,
-+          bias current is half.
-+        type: boolean
-+
-+      qcom,dac-full-bias-current:
-+        description:
-+          Set Analog MDI driver bias current to FULL.
-+
-+          With this not defined, bias current is set to DSP.
-+          (bias current is adjusted based on cable length)
-+
-+          Actual bias current might be different with
-+          qcom,dac-disable-bias-current-tweak disabled.
-+        type: boolean
-+
-+      qcom,dac-disable-bias-current-tweak:
-+        description: |
-+          Set Analog MDI driver bias current to disable tweak
-+          to bias current.
-+
-+          With this not defined, bias current tweak are enabled
-+          by default.
-+
-+          With this enabled the following tweak are NOT applied:
-+          - With both FULL amplitude and FULL bias current: bias current
-+            is set to half.
-+          - With only DSP amplitude: bias current is set to half and
-+            is set to 1/4 with cable < 10m.
-+          - With DSP bias current (included both DSP amplitude and
-+            DSP bias current): bias current is half the detected current
-+            with cable < 10m.
-+        type: boolean
-+
-+      gpio-controller: true
-+
-+      '#gpio-cells':
-+        const: 2
-+
-+    if:
-+      required:
-+        - gpio-controller
-+    then:
-+      properties:
-+        leds: false
-+
-+    unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/leds/common.h>
-+
-+    mdio {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        ethernet-phy-package@0 {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            compatible = "qcom,qca8075-package";
-+            reg = <0>;
-+
-+            qcom,package-mode = "qsgmii";
-+
-+            ethernet-phy@0 {
-+                reg = <0>;
-+
-+                leds {
-+                    #address-cells = <1>;
-+                    #size-cells = <0>;
-+
-+                    led@0 {
-+                        reg = <0>;
-+                        color = <LED_COLOR_ID_GREEN>;
-+                        function = LED_FUNCTION_LAN;
-+                        default-state = "keep";
-+                    };
-+                };
-+            };
-+
-+            ethernet-phy@1 {
-+                reg = <1>;
-+            };
-+
-+            ethernet-phy@2 {
-+                reg = <2>;
-+
-+                gpio-controller;
-+                #gpio-cells = <2>;
-+            };
-+
-+            ethernet-phy@3 {
-+                reg = <3>;
-+            };
-+
-+            ethernet-phy@4 {
-+                reg = <4>;
-+            };
-+        };
-+    };
+diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+index 312a8bb35d78..370e4ed45098 100644
+--- a/drivers/net/phy/broadcom.c
++++ b/drivers/net/phy/broadcom.c
+@@ -665,10 +665,11 @@ static int bcm54616s_config_aneg(struct phy_device *phydev)
+ static int bcm54616s_read_status(struct phy_device *phydev)
+ {
+ 	struct bcm54616s_phy_priv *priv = phydev->priv;
++	bool changed;
+ 	int err;
+ 
+ 	if (priv->mode_1000bx_en)
+-		err = genphy_c37_read_status(phydev);
++		err = genphy_c37_read_status(phydev, &changed);
+ 	else
+ 		err = genphy_read_status(phydev);
+ 
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 9014ac3c0fc8..861b09cff3f7 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -2617,12 +2617,15 @@ EXPORT_SYMBOL(genphy_read_status);
+ /**
+  * genphy_c37_read_status - check the link status and update current link state
+  * @phydev: target phy_device struct
++ * @changed: pointer where to store if link changed
+  *
+  * Description: Check the link, then figure out the current state
+  *   by comparing what we advertise with what the link partner
+  *   advertises. This function is for Clause 37 1000Base-X mode.
++ *
++ *   If link has changed, @changed is set to true, false otherwise.
+  */
+-int genphy_c37_read_status(struct phy_device *phydev)
++int genphy_c37_read_status(struct phy_device *phydev, bool *changed)
+ {
+ 	int lpa, err, old_link = phydev->link;
+ 
+@@ -2632,9 +2635,13 @@ int genphy_c37_read_status(struct phy_device *phydev)
+ 		return err;
+ 
+ 	/* why bother the PHY if nothing can have changed */
+-	if (phydev->autoneg == AUTONEG_ENABLE && old_link && phydev->link)
++	if (phydev->autoneg == AUTONEG_ENABLE && old_link && phydev->link) {
++		*changed = false;
+ 		return 0;
++	}
+ 
++	/* Signal link has changed */
++	*changed = true;
+ 	phydev->duplex = DUPLEX_UNKNOWN;
+ 	phydev->pause = 0;
+ 	phydev->asym_pause = 0;
+diff --git a/drivers/net/phy/qcom/at803x.c b/drivers/net/phy/qcom/at803x.c
+index 3e3ee4c1d4bc..4717c59d51d0 100644
+--- a/drivers/net/phy/qcom/at803x.c
++++ b/drivers/net/phy/qcom/at803x.c
+@@ -912,9 +912,10 @@ static int at8031_config_intr(struct phy_device *phydev)
+ static int at8031_read_status(struct phy_device *phydev)
+ {
+ 	struct at803x_priv *priv = phydev->priv;
++	bool changed;
+ 
+ 	if (priv->is_1000basex)
+-		return genphy_c37_read_status(phydev);
++		return genphy_c37_read_status(phydev, &changed);
+ 
+ 	return at803x_read_status(phydev);
+ }
+diff --git a/include/linux/phy.h b/include/linux/phy.h
+index f8ce8a757ed0..e9aaa0dfe675 100644
+--- a/include/linux/phy.h
++++ b/include/linux/phy.h
+@@ -1876,7 +1876,7 @@ int genphy_write_mmd_unsupported(struct phy_device *phdev, int devnum,
+ 
+ /* Clause 37 */
+ int genphy_c37_config_aneg(struct phy_device *phydev);
+-int genphy_c37_read_status(struct phy_device *phydev);
++int genphy_c37_read_status(struct phy_device *phydev, bool *changed);
+ 
+ /* Clause 45 PHY */
+ int genphy_c45_restart_aneg(struct phy_device *phydev);
 -- 
 2.43.0
 
