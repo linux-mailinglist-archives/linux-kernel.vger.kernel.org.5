@@ -1,123 +1,216 @@
-Return-Path: <linux-kernel+bounces-54756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 352AD84B33B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:15:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1440A84B33E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:16:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A3191C20DC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:15:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EB7B288ED1
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:16:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FD6130AE2;
-	Tue,  6 Feb 2024 11:12:53 +0000 (UTC)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA962130AFA;
+	Tue,  6 Feb 2024 11:12:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IOC+Dkv/"
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4006DCF7;
-	Tue,  6 Feb 2024 11:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DAF1130AE3
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 11:12:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707217972; cv=none; b=LBKDR93b+fc0So7EhruAfqw4lHVkzIuOqm61kO49Pu8v24WobqHYTq/9Jfdjd6yYgoyGTejbRMv+yeSzukP3+FDqz1Pqm2sZmNmppdzupM52uN3hWxJUhu/98PHZI9ZMIlZfwlEZ3psikEULm+4sMVsOoJZIIHUjtU9X7ounl6c=
+	t=1707217974; cv=none; b=l0FchjF3A6FAbCXtSNhokfcBklx5oRRUcdlMbJsSb4GuRpBTBcQ0IfhO4DoHe7/eCdIPk4rbhfFPK5JioFQ2NlTUZEGdylUioEwB0y3qd+Vq3FD2kIBhxcrVTTAwoODFgBzVBbAilyO1+lwPz4OIHpUWHSf0SDH4HbV9Feuqb18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707217972; c=relaxed/simple;
-	bh=xLsUrWAF94DFAah13mIxpHx4xGej5buoLWWu3kHIIuA=;
+	s=arc-20240116; t=1707217974; c=relaxed/simple;
+	bh=eWGar3ehc9D3CTd1YwKjKYD86VEg4tR8XJ41GtCC418=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Pgyg27h9Y/MVfRdZO1EDJKMtaDxfkiMkS80/rPivSYM9Rd2tc9MIdT0xnvxJLwg+j9CvxefCLs22rrOu3f1JlfDiknu9ynRtguCo+IXW22iGfiNfk/mBVLD6VGY//Euu6GX//LArCjX5K8HrG8/1DnnvfTwRNWQvVu9RYnst3qQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-60412f65124so50328727b3.3;
-        Tue, 06 Feb 2024 03:12:50 -0800 (PST)
+	 To:Cc:Content-Type; b=BWd21Mw8BycfXr2zT56dbD7R99l5zN434lzGb/IaJtLL5raxGGIDhPhNc30PaWZjygBU0L37zsORsUDaEPjYoQof+Mua50WClQfA7API+zlNQRUtVh49N9lHM0LG0ktQLhbHOvF/QOTapN1DEJEdCwaRcr9MUFdunD48fTEOa8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IOC+Dkv/; arc=none smtp.client-ip=209.85.217.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-4676a37e2c4so1735038137.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 03:12:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707217972; x=1707822772; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QWO9cv59VFMVcgxftdSchJ1bJs3AtyhEa4Wv6ViEgyM=;
+        b=IOC+Dkv/fTKSlBsKwIzuHGcrsUHKC3rqAHAcZU4jYVjjtfo1b4lovUfmV29C+yYHZ1
+         2ZYcz7Scz/auW6yKfbteFvFtDnuqwZ5bwZM70e3wuTfkuUkO/fBZApXnNaX1KCdj6pK6
+         Q1PS36RNfHepWVTKyEIAm6oSnkKE6ydNj+/fJgsk6SCyyG82YRnuSuL9fIOGAzfYlIBb
+         cmL6StHTWQ+6G78Yfko6Um9Xbk5n+EuT8TFLAZZyC1QQgEidtumGFE7KFByDJadsmeP/
+         MNyrmZE06QWzT296KsmouLHBFuLbVfQFowTBTs6DoKjWoxron8M8v6zxMJqZQz4UKP5u
+         T//g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707217969; x=1707822769;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m8fQrZ9bDID7Tr4RFzpi8NTxLyF9LrFzXifM+3Heoz0=;
-        b=ZnW7njt3Qk0NpsL3pOtOhKYH2ShgZmkOarfPvt9p+nMAsuGIgWz0Nn+z2AOZlZ/9DA
-         Bp/q7rfUdAJrswzdgBmk6lCl9oBdWHwAurmqWt6HfAVYXHnwLVJFKArhN40C3BtjBrnE
-         l9LHkwbme2TY4xgnWOJPuJIG+WfkwXtduaocPD/HhEceh64do9jF6QOVKprtdwwJJ0kS
-         2mfj1JIkN1lh4k4Ak+T/Dcl7uftEvfdO7HueCDYVh5g3l2t28hAx5fij2bTPKB9BZmGR
-         poWtS/OcOoeDi4T7cyUa0P8NA7rSLhPCCmOkZ6C6rNS/4NG8j6M8qtf4BHRe2t2Ra5vx
-         jEKw==
-X-Gm-Message-State: AOJu0YwjvTtybBZVZe2DeSKGFzSiLbslncF1QU4S/s7JhvczrglKVnFV
-	KnlaFONgz79TxS1aSKKVx1+o6jg00Z3sKeP+rcito1K+4lWP3/6JntHxrWgXLAo=
-X-Google-Smtp-Source: AGHT+IF6UNKTDJ5HQAXbkqL/RGf2jTZ8oKvmExoMjbYS8CvqOSsyteqaGwKD0a/19JNUuos30y6/ww==
-X-Received: by 2002:a81:ed03:0:b0:5ee:a910:107 with SMTP id k3-20020a81ed03000000b005eea9100107mr1379968ywm.21.1707217969102;
-        Tue, 06 Feb 2024 03:12:49 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVbLaxEdSyUjrxYAZHBYgMUAOsP23xov8DDpMe6UDjv+GmwiMIPDscIrM1DKdCxRBeDcIkDitCL1rnUS7ePeY955OXY8qNllhKLWkratu1KiJ7a6CU4swJSe5E9NHehIse3myF+gfCOPg==
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
-        by smtp.gmail.com with ESMTPSA id p206-20020a8198d7000000b0060480a0e282sm125934ywg.60.2024.02.06.03.12.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 03:12:48 -0800 (PST)
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc6d8f19ab3so5450495276.3;
-        Tue, 06 Feb 2024 03:12:48 -0800 (PST)
-X-Received: by 2002:a5b:991:0:b0:dc2:2654:5139 with SMTP id
- c17-20020a5b0991000000b00dc226545139mr1313669ybq.15.1707217968613; Tue, 06
- Feb 2024 03:12:48 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707217972; x=1707822772;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QWO9cv59VFMVcgxftdSchJ1bJs3AtyhEa4Wv6ViEgyM=;
+        b=meQqr54kjWkHbkhbRLHaOUctnJqdK/uk/sYJyvEUjQqGbwz+CYsj1VhMaILymcfuQc
+         MOGc6l7cUwVbyR80atsexLl+QJXHdTPt8BfPG+2be+KGTICyH0WEDYvmepfYTLWmWDU8
+         ylei5LERKxdVz5ZcdGWpLrHCz1btihgp9YhWhIBvt30w4POGtBPKLQ0MgQ9Mfg5vAAPG
+         ZMhxFWKsKSaPWBnk/rLcWKzVHpHqzo4TNeN8gMMO1lfRpEB9n1mpFjwaUeRburKLenVK
+         z0d7vxs99AvdVi94XlrHNtoBuAT+PMv++BcBegfOOYcwSnCES2oFVNMTzYAktXIWb+gB
+         aUMw==
+X-Gm-Message-State: AOJu0YyyMulV5oMq+WZUXDg7yLb+9KhOFLYAsXsMm5h1/n760NVxSYvd
+	Ghgx/2Pr0NS0kmaILZ6bBIng+86vSKZ6GBrojyo+wwGtvbaVt06wrAWqWQqfrZgPABqJ851MunX
+	GVwqONNQOnHFtlll+9oOc2YIVIGegGCQxrhiZSQ==
+X-Google-Smtp-Source: AGHT+IExt9KbOkFbxjIkwcdrbrIwP17LujEz8x7z/nHeSwCIo+gickjxcPx4b911VpEVokUFSS38lHkDtC7pDORrng4=
+X-Received: by 2002:a05:6102:38cd:b0:46d:49ac:6ec4 with SMTP id
+ k13-20020a05610238cd00b0046d49ac6ec4mr62190vst.19.1707217971860; Tue, 06 Feb
+ 2024 03:12:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206131050.0e86d882@canb.auug.org.au>
-In-Reply-To: <20240206131050.0e86d882@canb.auug.org.au>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 6 Feb 2024 12:12:36 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWjAKbt_bne8Mjpg3N_7R8TcKvAoVV8T4VrwTC2apAr_g@mail.gmail.com>
-Message-ID: <CAMuHMdWjAKbt_bne8Mjpg3N_7R8TcKvAoVV8T4VrwTC2apAr_g@mail.gmail.com>
-Subject: Re: linux-next: build warnings after merge of the block tree
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Jens Axboe <axboe@kernel.dk>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20240131174347.510961-1-jens.wiklander@linaro.org> <20240131174347.510961-4-jens.wiklander@linaro.org>
+In-Reply-To: <20240131174347.510961-4-jens.wiklander@linaro.org>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Tue, 6 Feb 2024 16:42:40 +0530
+Message-ID: <CAFA6WYPATEXUNfYHA1abup=kYBREJq7y=D9d1DdkJCxXqPhgAQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] optee: probe RPMB device using RPMB subsystem
+To: Jens Wiklander <jens.wiklander@linaro.org>
+Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	op-tee@lists.trustedfirmware.org, 
+	Shyam Saini <shyamsaini@linux.microsoft.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
+	Jerome Forissier <jerome.forissier@linaro.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Bart Van Assche <bvanassche@acm.org>, 
+	Randy Dunlap <rdunlap@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 6, 2024 at 3:11=E2=80=AFAM Stephen Rothwell <sfr@canb.auug.org.=
-au> wrote:
-> After merging the block tree, today's linux-next build (arm
-> multi_v7_defconfig) produced these warnings:
+Hi Jens,
+
+On Wed, 31 Jan 2024 at 23:14, Jens Wiklander <jens.wiklander@linaro.org> wrote:
 >
-> In file included from /home/sfr/next/next/include/linux/bits.h:6,
->                  from /home/sfr/next/next/include/linux/bitops.h:6,
->                  from /home/sfr/next/next/include/linux/kernel.h:23,
->                  from /home/sfr/next/next/io_uring/nop.c:2:
-> /home/sfr/next/next/include/vdso/bits.h:7:40: warning: left shift count >=
-=3D width of type [-Wshift-count-overflow]
->     7 | #define BIT(nr)                 (UL(1) << (nr))
->       |                                        ^~
-> /home/sfr/next/next/include/linux/io_uring_types.h:538:35: note: in expan=
-sion of macro 'BIT'
->   538 |         REQ_F_CAN_POLL          =3D BIT(REQ_F_CAN_POLL_BIT),
->       |                                   ^~~
+> Adds support in the OP-TEE drivers (both SMC and FF-A ABIs) to probe and
+> use an RPMB device via the RPBM subsystem instead of passing the RPMB
+> frames via tee-supplicant in user space. A fallback mechanism is kept to
+> route RPMB frames via tee-supplicant if the RPMB subsystem isn't
+> available.
 >
-> (and mny more similar)
+> The OP-TEE RPC ABI is extended to support iterating over all RPMB
+> devices until one is found with the expected RPMB key already
+> programmed.
 >
-> Introduced by commit
+> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> ---
+>  drivers/tee/optee/core.c          |   1 +
+>  drivers/tee/optee/ffa_abi.c       |   2 +
+>  drivers/tee/optee/optee_private.h |   6 +
+>  drivers/tee/optee/optee_rpc_cmd.h |  33 +++++
+>  drivers/tee/optee/rpc.c           | 221 ++++++++++++++++++++++++++++++
+>  drivers/tee/optee/smc_abi.c       |   2 +
+>  6 files changed, 265 insertions(+)
 >
->   d964e8440442 ("io_uring: add io_file_can_poll() helper")
+
+[snip]
+
+>  #endif /*__OPTEE_RPC_CMD_H*/
+> diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+> index e69bc6380683..6fd6f99dafab 100644
+> --- a/drivers/tee/optee/rpc.c
+> +++ b/drivers/tee/optee/rpc.c
+> @@ -7,6 +7,7 @@
 >
-> REQ_F_CAN_POLL_BIT is 32.
+>  #include <linux/delay.h>
+>  #include <linux/i2c.h>
+> +#include <linux/rpmb.h>
+>  #include <linux/slab.h>
+>  #include <linux/tee_drv.h>
+>  #include "optee_private.h"
+> @@ -255,6 +256,217 @@ void optee_rpc_cmd_free_suppl(struct tee_context *ctx, struct tee_shm *shm)
+>         optee_supp_thrd_req(ctx, OPTEE_RPC_CMD_SHM_FREE, 1, &param);
+>  }
+>
+> +static void handle_rpc_func_rpmb_probe_reset(struct tee_context *ctx,
+> +                                            struct optee *optee,
+> +                                            struct optee_msg_arg *arg)
+> +{
+> +       struct tee_param params[1];
+> +
+> +       if (!IS_ENABLED(CONFIG_RPMB)) {
+> +               handle_rpc_supp_cmd(ctx, optee, arg);
+> +               return;
+> +       }
+> +
+> +       if (arg->num_params != ARRAY_SIZE(params) ||
+> +           optee->ops->from_msg_param(optee, params, arg->num_params,
+> +                                      arg->params) ||
+> +           params[0].attr != TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT) {
+> +               arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> +               return;
+> +       }
+> +
+> +       params[0].u.value.a = OPTEE_RPC_SHM_TYPE_KERNEL;
+> +       params[0].u.value.b = 0;
+> +       params[0].u.value.c = 0;
+> +       if (optee->ops->to_msg_param(optee, arg->params,
+> +                                    arg->num_params, params)) {
+> +               arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> +               return;
+> +       }
+> +
+> +       mutex_lock(&optee->rpmb_dev_mutex);
+> +       rpmb_dev_put(optee->rpmb_dev);
+> +       optee->rpmb_dev = NULL;
+> +       mutex_unlock(&optee->rpmb_dev_mutex);
+> +
+> +       arg->ret = TEEC_SUCCESS;
+> +}
+> +
+> +static int rpc_rpmb_match(struct device *dev, const void *data)
+> +{
+> +       return 1;
+> +}
+> +
+> +static void handle_rpc_func_rpmb_probe_next(struct tee_context *ctx,
+> +                                           struct optee *optee,
+> +                                           struct optee_msg_arg *arg)
+> +{
+> +       struct rpmb_dev *start_rdev;
+> +       struct rpmb_dev *rdev;
+> +       struct tee_param params[2];
+> +       void *buf;
+> +
+> +       if (!IS_ENABLED(CONFIG_RPMB)) {
+> +               handle_rpc_supp_cmd(ctx, optee, arg);
+> +               return;
+> +       }
+> +
+> +       if (arg->num_params != ARRAY_SIZE(params) ||
+> +           optee->ops->from_msg_param(optee, params, arg->num_params,
+> +                                      arg->params) ||
+> +           params[0].attr != TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT ||
+> +           params[1].attr != TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT) {
+> +               arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> +               return;
+> +       }
+> +       buf = tee_shm_get_va(params[1].u.memref.shm,
+> +                            params[1].u.memref.shm_offs);
+> +       if (!buf) {
+> +               arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> +               return;
+> +       }
+> +
+> +       mutex_lock(&optee->rpmb_dev_mutex);
+> +       start_rdev = optee->rpmb_dev;
+> +       rdev = rpmb_dev_find_device(NULL, start_rdev, rpc_rpmb_match);
+> +       rpmb_dev_put(start_rdev);
+> +       optee->rpmb_dev = rdev;
+> +       mutex_unlock(&optee->rpmb_dev_mutex);
+> +
+> +       if (!rdev) {
+> +               arg->ret = TEEC_ERROR_ITEM_NOT_FOUND;
 
-All of these BIT() have to be changed to BIT_ULL().
-And let's hope all variables used for storing these flags have been
-changed from unsigned long to u64...
+One of the major comments I have here is regarding how this implicit
+dependency on eMMC driver probe is met here. What if OP-TEE based
+fTPM/EFI client driver probes before eMMC driver?
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+-Sumit
 
