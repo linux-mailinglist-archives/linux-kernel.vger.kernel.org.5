@@ -1,107 +1,140 @@
-Return-Path: <linux-kernel+bounces-55241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C01F84B998
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:30:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DC7C84B99E
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:31:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC9AB1C244A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:30:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 151241F24659
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545D213474D;
-	Tue,  6 Feb 2024 15:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bw+/SwMG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A62E0133410;
+	Tue,  6 Feb 2024 15:31:47 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A6813340B;
-	Tue,  6 Feb 2024 15:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E24061E521;
+	Tue,  6 Feb 2024 15:31:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707233336; cv=none; b=XnTInsFK4oCMYVzatM706hMla0fX9357qNMDEAa1ZX5BNXufakGEH+eVI5zJ8tRIRudiEUeYpbLPnh/1KRqqlMb4OTNztz1wwWnB5NBiLfwNFoJYnd0FM96VtyLB7FZzdZ4rroVhZZjcwxfg/F6in+5/oFoXgFjKDdyCldJfiCE=
+	t=1707233507; cv=none; b=ceDFXZuhcWoVPodn+jaFA/11BUOGmTGJAuMeRTlsFcJwZVo+uG4SrlI+D28qvOTHBJcWyLu86KDu734f2fTpsFFKNXRSYzTibYd/1QbWlUNPl1mFT0Oknb94LLJbhP3ecQY1es6GtZLLYFqH7sGQUe+d6BXvt9Y4pgA7BlOwio4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707233336; c=relaxed/simple;
-	bh=0B6z9WUm+wm4+eEFAQ4LZJYPYRNQYUG56FGmUItdu3o=;
+	s=arc-20240116; t=1707233507; c=relaxed/simple;
+	bh=eWNNp3S32y7S2BKW74Ia47O4cFZtP2WNZ/NhkNZi0Jg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h4s9WgoGOM8LoObUr48TET1Wc4AZzVXGC2oECQsem2y85WWFJbQhM9TG0x8yzsDENa+JPUimhi3ENWMauQ6q0YrAMjV3XDIP0NDmZ3gzUh9m5DXoiYu6zxrzk2Jz1cwc3zoxxld2yXRF0NF/Fwhk41DGIv8hmC5wPQuwWtF/RbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bw+/SwMG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D933C43390;
-	Tue,  6 Feb 2024 15:28:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707233336;
-	bh=0B6z9WUm+wm4+eEFAQ4LZJYPYRNQYUG56FGmUItdu3o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Bw+/SwMGBd/gymwF1Q8uvowF/PY5q9amueMBrr6AWgzxw8gNUezBILKoW9hjAb6b7
-	 Q1uVelvxOpIFr3lGB2h0hPZFJkVaEkdihjUy8C/LhVnfe+5RYlk1d3Dq+c5+usuoJd
-	 OX44ZtAlpxBOjOWDQq29DasuG/GgsXMrf75DiMjhOUPwY7rugtP7sF4sGmRmtvOB/J
-	 saqrqVpX3O71B+XZfzAgSAAlkBzyLSCYM3JTyKIxKgvNe6e0891NmV0Cgubd5IHeRc
-	 12BAF2zXcn8FfzXtLTUt6+b/lOUWlcGn75mTi8sBjO0AS3Ex7yVjq6ZQF/7mhWweRo
-	 e1F7jxU+5pV4Q==
-Date: Tue, 6 Feb 2024 15:28:51 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Mike Looijmans <mike.looijmans@topic.nl>
-Cc: devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jonathan Cameron <jic23@kernel.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=I6O8hnbsL7cnkkUtQDeNlxGt/igZhBmXIKXS9A5A5ZJNE3B69wj00NvJ+Jf1Ewth/h6FymUcIuOWsDB9t/Ijj67pConkoGYapTD+pMsHr0kL20PD9PfCO7bOrY/7zAdw0e2reiKLNWFGPqzK9wbPOO8smMX0BLxcRK9/Y2bk6rk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rXNQ4-0000nG-2R;
+	Tue, 06 Feb 2024 15:31:32 +0000
+Date: Tue, 6 Feb 2024 15:31:21 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: SkyLake Huang <SkyLake.Huang@mediatek.com>,
+	Bc-bocun Chen <bc-bocun.chen@mediatek.com>,
+	Chunfeng Yun <chunfeng.yun@mediatek.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: iio: adc: ti-ads1298: Add bindings
-Message-ID: <20240206-exciting-fructose-4d5878d1422a@spud>
-References: <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.ad72f8ca-a017-42d2-9c07-f17f282264d0@emailsignatures365.codetwo.com>
- <20240206065818.2016910-1-mike.looijmans@topic.nl>
+	Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Qingfang Deng <dqfext@gmail.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: phy: mediatek,mt7988-xfi-tphy: add
+ new bindings
+Message-ID: <ZcJQyaTotW_bCWGU@makrotopia.org>
+References: <3251ac3db1a739e0c18ded0a824edae981c1e2df.1707153425.git.daniel@makrotopia.org>
+ <31d2c56a-5108-4265-a267-6733e1ba328e@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="1ZfiD3AFWwPF5+oU"
-Content-Disposition: inline
-In-Reply-To: <20240206065818.2016910-1-mike.looijmans@topic.nl>
-
-
---1ZfiD3AFWwPF5+oU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <31d2c56a-5108-4265-a267-6733e1ba328e@linaro.org>
 
-On Tue, Feb 06, 2024 at 07:58:17AM +0100, Mike Looijmans wrote:
-> Bindings for the TI ADS1298 medical ADC. This device is
-> typically used for ECG and similar measurements. Supports data
-> acquisition at configurable scale and sampling frequency.
->=20
-> The device has so many options for connecting stuff, at this
-> point the bindings aren't nearly complete but partial bindings
-> are better than no bindings at all.
->=20
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
->=20
-> ---
->=20
-> (no changes since v2)
+Hi Krzysztof,
 
-I think you forgot a tag:
-https://lore.kernel.org/all/20240202-lilly-dart-0968dbcc6b17@spud/
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+On Tue, Feb 06, 2024 at 11:53:55AM +0100, Krzysztof Kozlowski wrote:
+> On 05/02/2024 18:28, Daniel Golle wrote:
+> > Add bindings for the MediaTek XFI Ethernet SerDes T-PHY found in the
+> > MediaTek MT7988 SoC which can operate at various interfaces modes:
+> > 
+> > via USXGMII PCS:
+> >  * USXGMII
+> >  * 10GBase-R
+> >  * 5GBase-R
+> > 
+> > via LynxI SGMII PCS:
+> >  * 2500Base-X
+> >  * 1000Base-X
+> >  * Cisco SGMII (MAC side)
+> > 
+> > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> > ---
+> > v2: unify filename and compatible as requested
+> 
+> Several comments, from me and Rob, were ignored. Please respond to them.
 
-Cheers,
-Conor.
+I'm sorry if I have missed something. I just checked again on
+patchwork, just in case I would have missed an email reply to this or
+any of the preceding posts of this patch as part of the old series
+going to netdev.
 
---1ZfiD3AFWwPF5+oU
-Content-Type: application/pgp-signature; name="signature.asc"
+Comments you have made which I have addressed:
+ - removed $nodename
+ - use compatible as filename
 
------BEGIN PGP SIGNATURE-----
+And the only thing I found that I didn't either fix or reply to is this:
+> Can you explain what is this issue and errata about (except performance)?
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcJQMwAKCRB4tDGHoIJi
-0mmCAP9qs/PmHbrjJ1OIpANRpeDNqUKl7RtjOKLMwNtFyMC+UAD/bGmZy9trKBUx
-0dh+GzXR4DoOp+2DhNkRKx15eYDi/wA=
-=UQO+
------END PGP SIGNATURE-----
+Not overwriting that (undocumented) value in that (undocumented)
+register results in 10GBase-R having performance issues according to a
+commit in MediaTek's SDK, see here:
 
---1ZfiD3AFWwPF5+oU--
+https://git01.mediatek.com/plugins/gitiles/openwrt/feeds/mtk-openwrt-feeds/+/a500d94cd%5E%21/#F0
+
+Maybe Bc or SkyLake of MediaTek (added to Cc) can explain this in more
+detail?
+
+
+What I did miss was Rob's comment at the very bottom of this reply:
+> What is PEXTP?
+
+I can again only answer by referencing to MediaTek's SDK sources:
+
+https://git01.mediatek.com/plugins/gitiles/openwrt/feeds/mtk-openwrt-feeds/+/refs/heads/master/21.02/files/target/linux/mediatek/files-5.4/drivers/net/ethernet/mediatek/mtk_sgmii.c#96
+
+Here this reset is called XFI_PEXTP0_GRST.
+
+I personally find that name confusing (as this PHY has nothing to do with
+_P_ci _EX_press) and have tried to get rid of it where it isn't either part
+of official documentation or already merged drivers (like Sam's clock driver).
+
+If there have been any other issues with this patch which I'm not aware
+of, please point them out to me.
+
+
+Thank you
+
+
+Best regards
+
+
+Daniel
 
