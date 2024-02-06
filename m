@@ -1,77 +1,269 @@
-Return-Path: <linux-kernel+bounces-55563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4F0784BE2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:35:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 303EF84BE2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:38:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0359F1C2337A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:35:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B43AB22E87
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 19:38:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B35B175BD;
-	Tue,  6 Feb 2024 19:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 897E6171A9;
+	Tue,  6 Feb 2024 19:38:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hCmeBxbP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Slrs2rNJ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981A418EB8;
-	Tue,  6 Feb 2024 19:35:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B57CD175B4
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 19:38:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707248124; cv=none; b=KrAPla3tIj9gfDwfdgoux1gUal0qee/j06gmarhoBNuswPkBWHbH9b8RtrUQCpsAkh6+HphVZ01XYOe2XNDcR5iKoNXVAh2uRfTUY0v9/qWOvMRwHKC79J1qS5tS3uTo2jHKnB28lQx+gqbjD0Ko5yTXnH0/xE93in6bgZ8h994=
+	t=1707248318; cv=none; b=U597bcE4FyVXMsYYceUHdtAGR0C+wm2mUgvPnc381DnbxgaovxidAo++WnB+Y6K58dAyyyjVBnXFijF1fN3Gv5b++1LhCpoblUd9UpIUmY6R3ADa5qMlgbmtTdH/HQEWJk+UNhTkFMhPkOXexMK3jgtoIXXmq92gL3WOw46q5Qk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707248124; c=relaxed/simple;
-	bh=VcMUhBJzCMvFkw6yy4caxGpPNtGcOssoN/sMaO6Et8o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ksj3l7jmo9HzMnAy8qu98AffQhckC5Z9i+OocNbruIpsT65niQU/rX0DDDvFEe3KbfEz3KGcGkWkEhMbbOjr6Ll1fAscOcrQwELRoOH65R+8/hDJ4oiHATJLM9kiH9VIreGRGf8psoDBMQewBwglq7yFHa1iilJmgLo6ePNesws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hCmeBxbP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B51FC433C7;
-	Tue,  6 Feb 2024 19:35:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707248124;
-	bh=VcMUhBJzCMvFkw6yy4caxGpPNtGcOssoN/sMaO6Et8o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hCmeBxbPO6Pi2OEha8/Iq9oDSMwM8/oHvWcIriMU8r0FPoK0QhiXbbd3iFlVY282+
-	 6mu74Dai7ldME1f5iwnc1XEwudPuF94OczM+E65CcQ7xoUKAodzXQJJsXtcLCKa/C8
-	 c7q7utY5SJ73VWEEAbD5cDbpl02e4/rzUzic4q5BwQl+1evudU7d88V8C+ye+rcI5H
-	 dHxjeYXUYOgC0kH3ubfT9mQ6brTALotpA0gnhgDVkrxLzeIakZ4Hop9+SFdcEVbiLO
-	 e671Xe32GTj2Srpyyp+kufjR9eYrLHUMqXvGeNM7xShm5qMrLDTeo29NuhEyK3XH1R
-	 r/656eJBgdqaw==
-Date: Tue, 6 Feb 2024 19:35:19 +0000
-From: Simon Horman <horms@kernel.org>
-To: Wen Gu <guwen@linux.alibaba.com>
-Cc: wenjia@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net/smc: change the term virtual ISM to
- Emulated-ISM
-Message-ID: <20240206193519.GI1104779@kernel.org>
-References: <20240205033317.127269-1-guwen@linux.alibaba.com>
+	s=arc-20240116; t=1707248318; c=relaxed/simple;
+	bh=1RKHX581Bljkl+OsLAv6WNsHz+SuqRDwBI74iH/Yddw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ge4o03naNvHYz5f5tGoms7GaPn9HYevojBvDVLe60KQnZDDNK2sKia6CjrAY4Xj1qYXDxX0qeL3nE2XxffyAdxIPmZimUUW0EdkPr/1amGTvlpa51d97i20BADZGvq+rH7BqqLKf2lbddb9s1uQ6ny6N8P+vc/bKA9kgpN42YN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Slrs2rNJ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707248315;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MqPXh+3PVtuj68WUVgRk8x+eLMW85S8wemYEFlZX5vA=;
+	b=Slrs2rNJRTLpWiYR0+gkEOhBtO6mBnMCXJpULDLcvdNicgFGElaDAVBuD7nklj1sCMPwHs
+	NOO5761Gkk4dMW1FTcDGFGjdHmLW7g6kMkrBLtZu74RIn9aKmk3fJebnOahR55FP1NZuh6
+	WhuVrbMdWqCvZ3Z6+zk5hvvTflhriok=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-189-m556owSiO9-iEIg6YEJCPg-1; Tue, 06 Feb 2024 14:38:34 -0500
+X-MC-Unique: m556owSiO9-iEIg6YEJCPg-1
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7bf36117dfbso755710939f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 11:38:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707248313; x=1707853113;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MqPXh+3PVtuj68WUVgRk8x+eLMW85S8wemYEFlZX5vA=;
+        b=EvQt6E6W4+726fg2kAnamLGVIwMszFwFMAYhhGhnxBIlabH+SSH6+blWjoiu+rUPlW
+         hJTvtUcLMF+5dqjhHxV0CK/qcAe5COlqUDkzt7Ka00Hz3QPaMWWIvxgrGOpwVYGEUm8x
+         cE6K1snhSId4jvgRTpe2stlsZcWF/3DRVK75PJXyJh6BjVrJkQZHSguIHgqtZk1LBESp
+         8JI9fu9ccIH6wesZEOvhgTmbvTptHcysH6bZxcxFhpKNGgYA8phuhUk4NwMXeOw8j14b
+         qLStTF/cKg6a/99hlkgC3J3zCXLmpXiJHNQxV1pG8eYvlEOelOi5hrJBGW6AL75kX2yc
+         OU8g==
+X-Gm-Message-State: AOJu0Ywfn03tugL1phbAyLz7Sh4B8RtHPXPL+Sf3kjWsh/3ceow5A5Fm
+	DYSGoCGpX1LESo4ObumlQ4K4IEduGtDwZcBrrRY76a9ElaJuUgBsAYeIGhap7ZsH0vIXofboF8A
+	vox92EEx03hAziNG2yP3+gW2mhIAhl61TLp0aIxkvBXVZEYWfjTE02bfSLdyEgQ==
+X-Received: by 2002:a05:6602:1782:b0:7c3:e96a:5fcb with SMTP id y2-20020a056602178200b007c3e96a5fcbmr4047129iox.7.1707248313339;
+        Tue, 06 Feb 2024 11:38:33 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFlhGLNkgIbQ9dckMCyrfmJqyyWAklye7zcr32FHH/y11OzO2y7kU7slaCk9m5h8YvLHpWZNg==
+X-Received: by 2002:a05:6602:1782:b0:7c3:e96a:5fcb with SMTP id y2-20020a056602178200b007c3e96a5fcbmr4047115iox.7.1707248313038;
+        Tue, 06 Feb 2024 11:38:33 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUklQHg+GFkFMMkX7zIASOCS4WYlYMt6/OK8XEGCMIThxt3GltvUMryfQmnZUfTVugZhONPd0bEifL7tGGwxsrTNjU6UIh8MVllqIbOtyA52qdTjpT24DJjpmQF0dyQIf0sa7mrxRrugORtqAWgjzTZQ56Z2F0+erf99ZilkdIANeFU9Hqf7KrAmsybt9+maJ3A67zNYaNRWu+wpkKVEDrzDoCMdKUHEHPaSf/xCo9j0xCRGsneC7bkpMExZERTqjNd2TKfdbylC/GEjr0AEUZscdZVFByWBYRw5v/P+tSQkw7nX1aWOppish53pwsy9Gx8e1eUjUIiiKlc
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id bs14-20020a056e02240e00b0036381100013sm720530ilb.67.2024.02.06.11.38.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 11:38:32 -0800 (PST)
+Date: Tue, 6 Feb 2024 12:38:30 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: "Liu, Monk" <Monk.Liu@amd.com>
+Cc: "Deng, Emily" <Emily.Deng@amd.com>, "bhelgaas@google.com"
+ <bhelgaas@google.com>, "linux-pci@vger.kernel.org"
+ <linux-pci@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org"
+ <kvm@vger.kernel.org>, "Jiang, Jerry (SW)" <Jerry.Jiang@amd.com>, "Zhang,
+ Andy" <Andy.Zhang@amd.com>, "Chang, HaiJun" <HaiJun.Chang@amd.com>, "Chen,
+ Horace" <Horace.Chen@amd.com>, "Yin, ZhenGuo (Chris)" <ZhenGuo.Yin@amd.com>
+Subject: Re: [PATCH 1/2] PCI: Add VF reset notification to PF's VFIO user
+ mode driver
+Message-ID: <20240206123830.7b330790.alex.williamson@redhat.com>
+In-Reply-To: <BL1PR12MB52695A24DBFFDB9809444D2284462@BL1PR12MB5269.namprd12.prod.outlook.com>
+References: <20240205071538.2665628-1-Emily.Deng@amd.com>
+	<20240205094330.59ca4c0a.alex.williamson@redhat.com>
+	<BL1PR12MB52695A24DBFFDB9809444D2284462@BL1PR12MB5269.namprd12.prod.outlook.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240205033317.127269-1-guwen@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 05, 2024 at 11:33:17AM +0800, Wen Gu wrote:
-> According to latest release of SMCv2.1[1], the term 'virtual ISM' has
-> been changed to 'Emulated-ISM' to avoid the ambiguity of the word
-> 'virtual' in different contexts. So the names or comments in the code
-> need be modified accordingly.
-> 
-> [1] https://www.ibm.com/support/pages/node/7112343
-> 
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+On Tue, 6 Feb 2024 04:03:46 +0000
+"Liu, Monk" <Monk.Liu@amd.com> wrote:
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+> [AMD Official Use Only - General]
+>=20
+> Hi Alex
+>=20
+> Thanks for your comment, I=E2=80=99m still not quite following you.
+>=20
+> >>This can be done by intercepting the userspace access to the VF FLR con=
+fig space region. =20
+>=20
+> Would you mind let us know to do that ?
+
+See basically any of the vfio-pci variant drivers in drivers/vfio/pci/*/
+
+For instance the virtio-vfio-pci driver is emulating a PCI IO BAR in
+config space and accesses through that BAR interact with the in-kernel
+PF driver.
+
+> our scenario is that:
+> 1, vf already pass-throughed to qemu
+> 2, a user mode driver on PF=E2=80=99s vfio arch is running there, and it =
+want
+> to receive VF=E2=80=99s reset request (by Qemu through vfio interface), a=
+nd
+> do some hw/fw sequences to achieve the real Vf reset goal
+>=20
+> >>.  I don't see that facilitating vendors to implement their PF
+> >>drivers in userspace to avoid upstreaming =20
+> is a compelling reason to extend the vfio-pci interface.
+>=20
+> Some background here (our user mode PF driver is not given the
+> purpose to avoid upstream): We don=E2=80=99t see value to upstream a user
+> mode pf driver that only benefit AMD device, as it must be out of
+> kernel-tree so we don=E2=80=99t see where the appropriate repo for it is =
+to
+> upstream to =E2=80=A6 (we cannot make it in Qemu right ? otherwise Qemu w=
+ill
+> be over designed if it knows hw/fw details of vendors)
+
+An in-kernel driver within the mainline kernel is the right place for
+it.  I'm not asking to upstream a user mode driver, you're right that
+there is no repo for that, I'm questioning the motivation for making it
+a user mode PF driver in the first place.
+
+All device drivers are essentially meant to benefit the device vendor,
+but in-kernel drivers also offer a benefit to the community and users of
+those devices for ongoing support and development.
+
+Let me turn the question around, what benefit does it provide this
+PF driver to exist in userspace?
+
+Without having seen it, I'd venture that there's nothing this userspace
+PF driver could do that couldn't also be done via a kernel driver,
+either in-tree or out-of-tree, but the userspace driver avoids the
+upstreaming work of an in-tree driver and the tainting of an
+out-of-tree driver.
+=20
+> Isn=E2=80=99t VFIO arch intentionally to give user mode driver freedom and
+> ability to manipulate the HW ?
+
+VFIO is not intended to provide an alternative means to implement
+kernel drivers.  VFIO is intended to provide secure, isolated access to
+devices for userspace drivers.
+
+What's the isolation relative to the VF if this PF driver needs to be
+involved in reset?  How much VF data does the PF device have access to?
+
+This is the reason that vfio-pci introduced the vf-token barrier with
+SR-IOV support.  The intention of this vf-token is to indicate a gap in
+trust.  Only another userspace process knowing the vf-token configured
+by the PF userspace driver can access the device.  We should not
+normalize vf-tokens.
+
+The requirement of a vf-token for a driver not strictly developed
+alongside the PF userspace driver should effectively be considered a
+tainted device.
+
+Therefore, what does this userspace PF driver offer that isn't better
+reflected using the existing vfio-pci-core code split to implement a
+vfio-pci variant driver, which has no need for the extension proposed
+here?  Thanks,
+
+Alex
+
+> From: Alex Williamson <alex.williamson@redhat.com>
+> Date: Tuesday, February 6, 2024 at 00:43
+> To: Deng, Emily <Emily.Deng@amd.com>
+> Cc: bhelgaas@google.com <bhelgaas@google.com>,
+> linux-pci@vger.kernel.org <linux-pci@vger.kernel.org>,
+> linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>,
+> kvm@vger.kernel.org <kvm@vger.kernel.org>, Jiang, Jerry (SW)
+> <Jerry.Jiang@amd.com>, Zhang, Andy <Andy.Zhang@amd.com>, Chang,
+> HaiJun <HaiJun.Chang@amd.com>, Liu, Monk <Monk.Liu@amd.com>, Chen,
+> Horace <Horace.Chen@amd.com>, Yin, ZhenGuo (Chris)
+> <ZhenGuo.Yin@amd.com> Subject: Re: [PATCH 1/2] PCI: Add VF reset
+> notification to PF's VFIO user mode driver On Mon, 5 Feb 2024
+> 15:15:37 +0800 Emily Deng <Emily.Deng@amd.com> wrote:
+>=20
+> > VF doesn't have the ability to reset itself completely which will
+> > cause the hardware in unstable state. So notify PF driver when the
+> > VF has been reset to let the PF resets the VF completely, and
+> > remove the VF out of schedule.
+> >
+> > How to implement this?
+> > Add the reset callback function in pci_driver
+> >
+> > Implement the callback functin in VFIO_PCI driver.
+> >
+> > Add the VF RESET IRQ for user mode driver to let the user mode
+> > driver know the VF has been reset. =20
+>=20
+> The solution that already exists for this sort of issue is a vfio-pci
+> variant driver for the VF which communicates with an in-kernel PF
+> driver to coordinate the VF FLR with the PF driver.  This can be done
+> by intercepting the userspace access to the VF FLR config space
+> region.
+>=20
+> This solution of involving PCI-core and extending the vfio-pci
+> interface only exists for userspace PF drivers.  I don't see that
+> facilitating vendors to implement their PF drivers in userspace to
+> avoid upstreaming is a compelling reason to extend the vfio-pci
+> interface.  Thanks,
+>=20
+> Alex
+>=20
+> > Signed-off-by: Emily Deng <Emily.Deng@amd.com>
+> > ---
+> >  drivers/pci/pci.c   | 8 ++++++++
+> >  include/linux/pci.h | 1 +
+> >  2 files changed, 9 insertions(+)
+> >
+> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > index 60230da957e0..aca937b05531 100644
+> > --- a/drivers/pci/pci.c
+> > +++ b/drivers/pci/pci.c
+> > @@ -4780,6 +4780,14 @@ EXPORT_SYMBOL_GPL(pcie_flr);
+> >   */
+> >  int pcie_reset_flr(struct pci_dev *dev, bool probe)
+> >  {
+> > +     struct pci_dev *pf_dev;
+> > +
+> > +     if (dev->is_virtfn) {
+> > +             pf_dev =3D dev->physfn;
+> > +             if (pf_dev->driver->sriov_vf_reset_notification)
+> > +
+> > pf_dev->driver->sriov_vf_reset_notification(pf_dev, dev);
+> > +     }
+> > +
+> >        if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
+> >                return -ENOTTY;
+> >
+> > diff --git a/include/linux/pci.h b/include/linux/pci.h
+> > index c69a2cc1f412..4fa31d9b0aa7 100644
+> > --- a/include/linux/pci.h
+> > +++ b/include/linux/pci.h
+> > @@ -926,6 +926,7 @@ struct pci_driver {
+> >        int  (*sriov_configure)(struct pci_dev *dev, int num_vfs);
+> > /* On PF */ int  (*sriov_set_msix_vec_count)(struct pci_dev *vf,
+> > int msix_vec_count); /* On PF */ u32
+> > (*sriov_get_vf_total_msix)(struct pci_dev *pf);
+> > +     void  (*sriov_vf_reset_notification)(struct pci_dev *pf,
+> > struct pci_dev *vf); const struct pci_error_handlers *err_handler;
+> >        const struct attribute_group **groups;
+> >        const struct attribute_group **dev_groups; =20
 
 
