@@ -1,70 +1,71 @@
-Return-Path: <linux-kernel+bounces-54282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6689084AD3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:04:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E0CF84AD40
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 05:04:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 220D8285F68
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:04:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC89C2858D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 04:04:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51183745F8;
-	Tue,  6 Feb 2024 04:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2F0745FC;
+	Tue,  6 Feb 2024 04:04:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OWY7yztv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rpaNt8F1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E030745E0
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 04:04:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2387745E9
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 04:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707192266; cv=none; b=ZvYxGxcoJxeFFm3dDZ4cNwK6c26CKOoryByiZumjCU+1WZH9kV6/GvSDYPGQCz0kSOvxVTA4cdQ1MrwnzOgVvg4iwRBehROWVdxOwPNn0aWlEdgiUf8I0iB3OSJDaUETTfYEAo63GY7OyVdDmHM1pWmZ7YHuD115DQjAKWXm/68=
+	t=1707192281; cv=none; b=cp2O1Vvrr8LfR1SX+VyUL114AmG8BpZqTgkcPqAmomil90pLnYKxaUsfLL1ZC8o0wZ9MyYwdNCFgJIodRuhhgJ2YA0kkk63pgOX92ZyETkBD3A2TYveb346vKhE+uYMd0udaobPIlyqnm1IGuZQJn7YOJ5opxTS+QfUw81mkpmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707192266; c=relaxed/simple;
-	bh=gjYVPn/YFpnMwXejyLvWj4ikLtJDZVwXdB0BNhrwtME=;
+	s=arc-20240116; t=1707192281; c=relaxed/simple;
+	bh=QB4co5VX6LHEF8xcu+WpfHx2D3ls/uMchzpoaBkY2l8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A7xJTWWuDgLKvNWkDzrJOoL55PnxI3B5zNUNoBUNUurzydPhHkSYgTlg6ZCuxfn49s7JVzmGggMOF5UyzTihp1ZE2JzskY/O5f96zOOQKemGY4EGaAYgVjQInL+EjHj24r4oXTve2a6AXnnH/UBlip0Z3ebELFC9aH3B9GeKhW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OWY7yztv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AB28C433C7
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 04:04:26 +0000 (UTC)
+	 To:Cc:Content-Type; b=AEg6glYTOu4WJVCOkJ6ZDYWkLZOffHR+rB03YeqjA8mwhmvGaSIXqK5qZk7m7cP34raousA1hpuyJMuF8aGf5nuyqvAlVisdwBoWFyLRA1RQxnzSqj1svX1xX+UzA6cnVxVsVhlQYARjqBJ6kfweo76+kMpuqH5gSTGhWDZ8kZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rpaNt8F1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B909BC43394
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 04:04:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707192266;
-	bh=gjYVPn/YFpnMwXejyLvWj4ikLtJDZVwXdB0BNhrwtME=;
+	s=k20201202; t=1707192280;
+	bh=QB4co5VX6LHEF8xcu+WpfHx2D3ls/uMchzpoaBkY2l8=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=OWY7yztvDJFlPwyT9ZSGTPPLykqW5deu96VSGAPT+WEERJGQPJbIsM/PGpwBo5osb
-	 wz+xqaCLY3TM498RIH4LWjsi1Oa0T/cixDkHz6ablxypTx3fEdcWY77KPaWtTUoPZe
-	 ZBdsKNoLiadH1wxtjM87kam59rA0gVtcLkIZvrnvG16In9N/K+ARon+8AYsu/LPr40
-	 KaVPmdSUvGJOOU/e5kidg1PtOuolHQCQQ0bFmc491RPPqxmSWuwZNxYwkuSAVa74bR
-	 K8aNq9j0EjqmO9Illm1TNjnNR/2gvIFFFPhBe96lCPHnGh5A+rf368p2kChX3Jj2nq
-	 woX+frtmbjQZw==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-51124d43943so8211073e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 20:04:26 -0800 (PST)
-X-Gm-Message-State: AOJu0Yz5Zd6AcD5mMtEijzV1IZdvuoMYpqD5L9rnhwYDMkTKNeREB2d+
-	UZeuctf1l0hIBtCcqLso9hJKCDW63dB4o1W2dVkan8fUcNpG0uInCy8xu+/NbWe0c1ZaaXfXLcH
-	vUIHxomo+M+/vLTLVR9G91FFZGjI=
-X-Google-Smtp-Source: AGHT+IFGiaxdS+q0jNB1zQEW84GYvpFJAoEuKs2W2qWpgcWKlRM99vTKyrvLhz1uzHwe+YPkBjkkSTclljrhx3Bm4Qc=
-X-Received: by 2002:ac2:5926:0:b0:511:4ff0:5323 with SMTP id
- v6-20020ac25926000000b005114ff05323mr877963lfi.31.1707192264382; Mon, 05 Feb
- 2024 20:04:24 -0800 (PST)
+	b=rpaNt8F1Xj9RQ8YlD4Sl+s0iaaFbObS4cgLH+qOEP3A3ecWIHPTfOPbxWO8RrHY2c
+	 5UcbcWVP63Mkn3CLQE4RBcE5thH4goKA3pZnT691FMhrTMJ2QNIwA4gtRpBbBMGYrC
+	 srcxPFFC1DYS8FBJ7WPiSBsJSlnk3D65JXISAXn//KH++5QDEq4WMkAaSagXjRtgQV
+	 uhObiXeWW3Ia9sywauVCRLX1m5ZPBMUVf18WG0qKWfO/XH3J6oKhJG5/WvHK0U5Fv9
+	 gcylpc+viuCLFf/oFkQ286dek/6krbfnyZqDK/erQG7w7Sebuf5v56u8kz13zVNrtt
+	 WnR9o1oq86qQg==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51124d86022so7966402e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 20:04:40 -0800 (PST)
+X-Gm-Message-State: AOJu0Yy6T4RcJSL4wF0QL8W6IQuPcQVNzPzu7oP5e3htNs7moiyeJAsd
+	llPfgJi9SoRpL9wdC4//NB1YrNG11bhP1FO1dIpaMLd13XYhKvyu1hj/Sb0AQP1aPEgshTzsH7I
+	wAFzcBGWUM7OBT8CWaW47W0UgtuY=
+X-Google-Smtp-Source: AGHT+IHd+d3QCMam+P2PbpL3IPI/u5TV77/KBqWOy6VgPu4ULjUb0IugR+c87/qmZz9O7urGrMG2iUi+AGtOLKI5A0c=
+X-Received: by 2002:a19:f610:0:b0:511:49b4:ed6b with SMTP id
+ x16-20020a19f610000000b0051149b4ed6bmr657707lfe.34.1707192278945; Mon, 05 Feb
+ 2024 20:04:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240204134813.61884-1-masahiroy@kernel.org>
-In-Reply-To: <20240204134813.61884-1-masahiroy@kernel.org>
+References: <20240204134946.62509-1-masahiroy@kernel.org>
+In-Reply-To: <20240204134946.62509-1-masahiroy@kernel.org>
 From: Huacai Chen <chenhuacai@kernel.org>
-Date: Tue, 6 Feb 2024 12:04:16 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6Wfu4-X0zUJgwEpFC9DNCP5BPFQ0Dazo_fWXLpxzqK6w@mail.gmail.com>
-Message-ID: <CAAhV-H6Wfu4-X0zUJgwEpFC9DNCP5BPFQ0Dazo_fWXLpxzqK6w@mail.gmail.com>
-Subject: Re: [PATCH] loongarch: select ARCH_ENABLE_THP_MIGRATION instead of
- redefining it
+Date: Tue, 6 Feb 2024 12:04:31 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5HvqBk0O4M2MVh+qzP39oc22x3RXbwydiN+q_u32xbSA@mail.gmail.com>
+Message-ID: <CAAhV-H5HvqBk0O4M2MVh+qzP39oc22x3RXbwydiN+q_u32xbSA@mail.gmail.com>
+Subject: Re: [PATCH] loongarch: select HAVE_ARCH_SECCOMP to use the common
+ SECCOMP menu
 To: Masahiro Yamada <masahiroy@kernel.org>
 Cc: WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev, 
+	YiFei Zhu <yifeifz2@illinois.edu>, Kees Cook <keescook@chromium.org>, 
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -73,43 +74,59 @@ Queued, thanks.
 
 Huacai
 
-On Sun, Feb 4, 2024 at 9:48=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.or=
+On Sun, Feb 4, 2024 at 9:49=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.or=
 g> wrote:
 >
-> ARCH_ENABLE_THP_MIGRATION is supposed to be selected by arch Kconfig.
+> LoongArch missed the refactoring made by commit 282a181b1a0d ("seccomp:
+> Move config option SECCOMP to arch/Kconfig") because LoongArch was not
+> mainlined at that time.
+>
+> The 'depends on PROC_FS' statement is stale as described in that commit.
+> Select HAVE_ARCH_SECCOMP, and remove the duplicated config entry.
 >
 > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
 >
->  arch/loongarch/Kconfig | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+>  arch/loongarch/Kconfig | 18 +-----------------
+>  1 file changed, 1 insertion(+), 17 deletions(-)
 >
 > diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> index 10959e6c3583..64e9a01c7f36 100644
+> index 64e9a01c7f36..929f68926b34 100644
 > --- a/arch/loongarch/Kconfig
 > +++ b/arch/loongarch/Kconfig
-> @@ -12,6 +12,7 @@ config LOONGARCH
->         select ARCH_DISABLE_KASAN_INLINE
->         select ARCH_ENABLE_MEMORY_HOTPLUG
->         select ARCH_ENABLE_MEMORY_HOTREMOVE
-> +       select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
->         select ARCH_HAS_ACPI_TABLE_UPGRADE      if ACPI
->         select ARCH_HAS_CPU_FINALIZE_INIT
->         select ARCH_HAS_FORTIFY_SOURCE
-> @@ -667,10 +668,6 @@ config ARCH_SPARSEMEM_ENABLE
->           or have huge holes in the physical address space for other reas=
-ons.
->           See <file:Documentation/mm/numa.rst> for more.
+> @@ -100,6 +100,7 @@ config LOONGARCH
+>         select HAVE_ARCH_KFENCE
+>         select HAVE_ARCH_KGDB if PERF_EVENTS
+>         select HAVE_ARCH_MMAP_RND_BITS if MMU
+> +       select HAVE_ARCH_SECCOMP
+>         select HAVE_ARCH_SECCOMP_FILTER
+>         select HAVE_ARCH_TRACEHOOK
+>         select HAVE_ARCH_TRANSPARENT_HUGEPAGE
+> @@ -633,23 +634,6 @@ config RANDOMIZE_BASE_MAX_OFFSET
 >
-> -config ARCH_ENABLE_THP_MIGRATION
-> -       def_bool y
-> -       depends on TRANSPARENT_HUGEPAGE
+>           This is limited by the size of the lower address memory, 256MB.
+>
+> -config SECCOMP
+> -       bool "Enable seccomp to safely compute untrusted bytecode"
+> -       depends on PROC_FS
+> -       default y
+> -       help
+> -         This kernel feature is useful for number crunching applications
+> -         that may need to compute untrusted bytecode during their
+> -         execution. By using pipes or other transports made available to
+> -         the process as file descriptors supporting the read/write
+> -         syscalls, it's possible to isolate those applications in
+> -         their own address space using seccomp. Once seccomp is
+> -         enabled via /proc/<pid>/seccomp, it cannot be disabled
+> -         and the task is only allowed to execute a few safe syscalls
+> -         defined by each seccomp mode.
 > -
->  config ARCH_MEMORY_PROBE
->         def_bool y
->         depends on MEMORY_HOTPLUG
+> -         If unsure, say Y. Only embedded should say N here.
+> -
+>  endmenu
+>
+>  config ARCH_SELECT_MEMORY_MODEL
 > --
 > 2.40.1
->
 >
 
