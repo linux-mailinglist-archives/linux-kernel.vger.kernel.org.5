@@ -1,117 +1,161 @@
-Return-Path: <linux-kernel+bounces-54626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 763D584B1B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:57:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C5D284B1BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:59:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E8CFB2227F
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:57:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 311A51F24B2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 09:59:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD68712DD93;
-	Tue,  6 Feb 2024 09:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DCF312D777;
+	Tue,  6 Feb 2024 09:59:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EG9HtWog"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ExekihOX"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E1212D74D
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:57:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4426C12D76A
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 09:58:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707213453; cv=none; b=Gn46bC1GC3oGfPk1oYqtwasBwqrF8/6HbX0Zsxa8UAOYTJT94yyfHMei8dk6IccA9i6KiIrg1lU4NFl/Uj/zN6pJqUcNEQ00QkbFqKfzUFujXgf9e4L6rJZZStFWtqtyaXZyQNoaUO1oDCeLU8m2uqW7NQjBb6qFL+sqq9JYXO0=
+	t=1707213543; cv=none; b=HoFikEeWalR/zNJD+Jhnbpc1vjdKEDYWLLVVu8vwRKWM83OLdag203Ee6KcblAKBUf54T66PXdyqystHSiBJY3LYzlJCjsxBwT6ci0Hj0wvUlbQ5XUmt8FwWDhm+1KRT4/Oj4dtGfYO+ycEzq2uUaFmO7VN6X4Mp2jMabNiKSVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707213453; c=relaxed/simple;
-	bh=NpPH85owZ20SCl7gPDrD1ciS1nl+zM/WUwZ0z1dCHO0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o7ETltSEOXKURX/4dWrATa9JeozimmedZhHzBOMpYz/YFySUbKWKt75+yhuzgd22aRuZawqYiBmMam4VqiorSiFTcByftNjw/P6H45MGHSHNQjlumauZovUaoaudgOvYtU3isVA/QZON3HuXVKo+CsmB6HLJIL7b88wgXOr748Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EG9HtWog; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-60406da718aso53755967b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 01:57:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707213450; x=1707818250; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Eq2wg0lmtUf7Y9KbMkjM4LSzECZ5og9xajY9d90SZeA=;
-        b=EG9HtWogWkY3LttZ95TAM5ISxGu6ZbqC3fGmwfQAZQbpGGpXmIROgzJZcbqFzGPFlW
-         3yVGcUt6o9UUa/LpB5o/WvUNqhlTLy+rMDzg5WjfJq6bYna/9JxiFxs1xkYeXm98mUB7
-         RjOAI77umQ2omLoLOB+CKee5qFSxJ+ttbbIw6HH9SsneW6ZFTadO8Hdj/cpbZn+MR6Xq
-         jioj6nuk9VvcBNRE8AqPFUyU7eQnDmzeg+FUZGIyKmfevtjbUDG3vGUAQPQ4ZJkhRpWy
-         K9K+tGfvbSdxdWw66XsLf+DBaCaulj16nntdI4RBwt9VergnalW56yj9sU81mpkdOFy3
-         BoJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707213450; x=1707818250;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Eq2wg0lmtUf7Y9KbMkjM4LSzECZ5og9xajY9d90SZeA=;
-        b=Fo0SQ8caXxibgDcSyc6x98mjF09bh3tTiUf4fwnROMty9rC6n9u/qtKPJhWu7b8x8H
-         rddtPWfUavUulqEnbzDf3XwecRHx+rxKevX1hdoXSVI8TnT25c8NqaqpXuwTOTUPWvuP
-         aSBGki8Z5o8D++AD4TB3bMhSn7GCSSrJ6SYR3tec6iWhwRunupApO/Rg18z622UAQe/k
-         v+QIlKZu0DjsKa1SNr72fdnWyQv07lJEUu53Zjm0AXSjy9Yh/y6PD2TBQ/jM6QAR1WCS
-         rBYw2UUvzLaxtrxQ/69txQqbok6NVKrwvblwj5dnMT5wq2gvSqFH5lJ5lerswJj0sRjC
-         W65A==
-X-Gm-Message-State: AOJu0YzysV9xaGeUNLBBN3OSW2gGO3jP0ybVW9cPmYPXjSZZbpSJwKqr
-	8uX+PZP5Wsxvgt0HOltUg1T3wCxShEVm+nw7khZgoNZio1yi0CPco8uq7kPc+OAw+B2DqTiJ+4w
-	EmLga5KNmlOfh9/ui90wWIUHTbkLCbXrLKy1HSg==
-X-Google-Smtp-Source: AGHT+IG5u0RUlCzKGSN5/5B0/qLQhE4mJ3srJl6aZpIRhRrSpKuDOaDOTP0OKh3xCd6YwxwgJxwWKTKO4NRUn/AvJf0=
-X-Received: by 2002:a05:6902:102e:b0:dc6:83c:dce7 with SMTP id
- x14-20020a056902102e00b00dc6083cdce7mr1271773ybt.38.1707213450425; Tue, 06
- Feb 2024 01:57:30 -0800 (PST)
+	s=arc-20240116; t=1707213543; c=relaxed/simple;
+	bh=3NDFAJucASIsh5QzYnkIWuo5iU/VftF+EdgQ++/3YWU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=fAfk4n1k5wvYlxrH999mG1X76fJq4uVVlyuKQ7wBiALZLgoHJSBNqA5ruyxhI9/zt2MjTqddkg+xqFhWCLxUjLIWtmunqK846LPuWKt+V9hnZgc7aRrbbgwiS4HaJKB5zleQpADzT/OD8XkUuoYqMNifqRErrAiuu7bbHCjDZOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ExekihOX; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707213538; x=1738749538;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=3NDFAJucASIsh5QzYnkIWuo5iU/VftF+EdgQ++/3YWU=;
+  b=ExekihOXC+dsmrxIhMvCxGXqFWtWykvJuUHQ5yGcV9wqjq0vXXhB+zHm
+   VSFOMdqCafToqRgU2zsd4e+K8mjTnNxGH111G4NnnqYKJA06NZunlKB0P
+   /VFhnvqb50iUB06fbrRt7EWB8AcZuDF3Ktdejl4ihaZbinV/OmEAzoLgb
+   zGY3z/tXrBXs+8hL7Jqu4+L3BR/d0951lH3ANcC3dT0pWszeJXqqbrNcd
+   Sz4sYSj53yPXnxUY8CDIkcaAaLx8+nupJatqgkVdBQrObaT1kX8xeW+si
+   wepZtqCwzIW+oZfakVBhutSs3rO9TZLKJE9ik8gEHEoRA2umSLaCObNfa
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="600398"
+X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
+   d="scan'208";a="600398"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 01:58:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,246,1701158400"; 
+   d="scan'208";a="32043640"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 06 Feb 2024 01:58:57 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rXIEB-0001Fs-2U;
+	Tue, 06 Feb 2024 09:58:55 +0000
+Date: Tue, 6 Feb 2024 17:58:15 +0800
+From: kernel test robot <lkp@intel.com>
+To: Balsam CHIHI <bchihi@baylibre.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	"Rafael J. Wysocki" <rjw@rjwysocki.net>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: drivers/thermal/mediatek/lvts_thermal.c:520:2-3: Unneeded semicolon
+Message-ID: <202402061757.2OeFfaWP-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206085238.1208256-1-tudor.ambarus@linaro.org> <20240206085238.1208256-3-tudor.ambarus@linaro.org>
-In-Reply-To: <20240206085238.1208256-3-tudor.ambarus@linaro.org>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Tue, 6 Feb 2024 09:57:19 +0000
-Message-ID: <CADrjBPpLB0RJO6xH=0+jvc=EnaNX6eCg2JV2DNkDdFAoS1mJQw@mail.gmail.com>
-Subject: Re: [PATCH 2/4] spi: dt-bindings: samsung: add google,gs101-spi compatible
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: broonie@kernel.org, andi.shyti@kernel.org, semen.protsenko@linaro.org, 
-	krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com, 
-	linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	andre.draszik@linaro.org, kernel-team@android.com, willmcvicker@google.com, 
-	robh+dt@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Tue, 6 Feb 2024 at 08:52, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
->
-> Add "google,gs101-spi" dedicated compatible for representing SPI of
-> Google GS101 SoC.
->
-> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Acked-by: Andi Shyti <andi.shyti@kernel.org>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
+commit: f5f633b18234cecb0e6ee6e5fbb358807dda15c3 thermal/drivers/mediatek: Add the Low Voltage Thermal Sensor driver
+date:   12 months ago
+config: sparc64-randconfig-r064-20240206 (https://download.01.org/0day-ci/archive/20240206/202402061757.2OeFfaWP-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 13.2.0
 
-Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402061757.2OeFfaWP-lkp@intel.com/
 
->  Documentation/devicetree/bindings/spi/samsung,spi.yaml | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/spi/samsung,spi.yaml b/Documentation/devicetree/bindings/spi/samsung,spi.yaml
-> index f71099852653..2f0a0835ecfb 100644
-> --- a/Documentation/devicetree/bindings/spi/samsung,spi.yaml
-> +++ b/Documentation/devicetree/bindings/spi/samsung,spi.yaml
-> @@ -17,6 +17,7 @@ properties:
->    compatible:
->      oneOf:
->        - enum:
-> +          - google,gs101-spi
->            - samsung,s3c2443-spi # for S3C2443, S3C2416 and S3C2450
->            - samsung,s3c6410-spi
->            - samsung,s5pv210-spi # for S5PV210 and S5PC110
-> --
-> 2.43.0.594.gd9cf4e227d-goog
->
+cocci warnings: (new ones prefixed by >>)
+>> drivers/thermal/mediatek/lvts_thermal.c:520:2-3: Unneeded semicolon
+
+vim +520 drivers/thermal/mediatek/lvts_thermal.c
+
+   464	
+   465	static int lvts_sensor_init(struct device *dev, struct lvts_ctrl *lvts_ctrl,
+   466						const struct lvts_ctrl_data *lvts_ctrl_data)
+   467	{
+   468		struct lvts_sensor *lvts_sensor = lvts_ctrl->sensors;
+   469		void __iomem *msr_regs[] = {
+   470			LVTS_MSR0(lvts_ctrl->base),
+   471			LVTS_MSR1(lvts_ctrl->base),
+   472			LVTS_MSR2(lvts_ctrl->base),
+   473			LVTS_MSR3(lvts_ctrl->base)
+   474		};
+   475	
+   476		void __iomem *imm_regs[] = {
+   477			LVTS_IMMD0(lvts_ctrl->base),
+   478			LVTS_IMMD1(lvts_ctrl->base),
+   479			LVTS_IMMD2(lvts_ctrl->base),
+   480			LVTS_IMMD3(lvts_ctrl->base)
+   481		};
+   482	
+   483		int i;
+   484	
+   485		for (i = 0; i < lvts_ctrl_data->num_lvts_sensor; i++) {
+   486	
+   487			int dt_id = lvts_ctrl_data->lvts_sensor[i].dt_id;
+   488	
+   489			/*
+   490			 * At this point, we don't know which id matches which
+   491			 * sensor. Let's set arbitrally the id from the index.
+   492			 */
+   493			lvts_sensor[i].id = i;
+   494	
+   495			/*
+   496			 * The thermal zone registration will set the trip
+   497			 * point interrupt in the thermal controller
+   498			 * register. But this one will be reset in the
+   499			 * initialization after. So we need to post pone the
+   500			 * thermal zone creation after the controller is
+   501			 * setup. For this reason, we store the device tree
+   502			 * node id from the data in the sensor structure
+   503			 */
+   504			lvts_sensor[i].dt_id = dt_id;
+   505	
+   506			/*
+   507			 * We assign the base address of the thermal
+   508			 * controller as a back pointer. So it will be
+   509			 * accessible from the different thermal framework ops
+   510			 * as we pass the lvts_sensor pointer as thermal zone
+   511			 * private data.
+   512			 */
+   513			lvts_sensor[i].base = lvts_ctrl->base;
+   514	
+   515			/*
+   516			 * Each sensor has its own register address to read from.
+   517			 */
+   518			lvts_sensor[i].msr = lvts_ctrl_data->mode == LVTS_MSR_IMMEDIATE_MODE ?
+   519				imm_regs[i] : msr_regs[i];
+ > 520		};
+   521	
+   522		lvts_ctrl->num_lvts_sensor = lvts_ctrl_data->num_lvts_sensor;
+   523	
+   524		return 0;
+   525	}
+   526	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
