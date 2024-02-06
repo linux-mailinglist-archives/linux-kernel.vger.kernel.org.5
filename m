@@ -1,115 +1,142 @@
-Return-Path: <linux-kernel+bounces-55323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14C0B84BB1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:36:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6D2E84BB28
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 17:41:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE1AE1F26072
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:36:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 849B01F26540
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:41:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2ACFD52F;
-	Tue,  6 Feb 2024 16:35:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674746116;
+	Tue,  6 Feb 2024 16:40:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kGkku+lM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="jJTGrxPM"
+Received: from out203-205-221-202.mail.qq.com (out203-205-221-202.mail.qq.com [203.205.221.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBFFC1373;
-	Tue,  6 Feb 2024 16:35:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F26324A08;
+	Tue,  6 Feb 2024 16:40:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707237321; cv=none; b=bHYIhMSpxByHc/cCO6TrXIFVzxJ5JOygRUfCzHSoYOFsth1PTKyALq3olQU+fJwpUMgjEuOxfFqFsjHWpQ1KvvAvr6PHGlbAIz8vRXiGRqSNVcDyIa085Rj60IemuZwLo+Ota6VvGw2K0P5FAr7Mrs6BDCFdw6N4HRdKfI7ngRI=
+	t=1707237653; cv=none; b=TQR4XQJx3dxJ5hfC8Si61oHeh0fyw1f9YcuTPxk4qlAbxArD/Gak2187kf+6oKF1sLe/QMlOISBcesPcsLXA7DQUwxvRr/1MXHjAIp2x+zdJ8PxKgwdTCEJoOVL3NvoZmDVlzshV7q/6wSWLMiaWFrgh+R9EymHg8cUbk7fZBKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707237321; c=relaxed/simple;
-	bh=Pd5hbjeUaw0bXpSMvlmew8SMjBMs2/PcDGfitcRRlrw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rHVkWq4pLXB8E71UiRwD3/eLWZA7tvDTtrDrY7E7CDyihEZtRTXhf1Gw0aPjECKb9JiK4OWSF4+BvqVssiG+ptE4aWLKEmXNq0q6c0vF4O5NoO9ZoValckFnaOm0IXXl6bLfCrbX7SF5ffbRfYtuuLcJmQsFmefsTutmkR9kfDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kGkku+lM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F05FC433F1;
-	Tue,  6 Feb 2024 16:35:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707237321;
-	bh=Pd5hbjeUaw0bXpSMvlmew8SMjBMs2/PcDGfitcRRlrw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kGkku+lMjJ1CIPEJIoX1+Fv3byTzutiXUE2/v9sOQPIeA1z2ozWWBdlFlN1d/U3cl
-	 5gsSV9vGqZMqYOc2q4ppul4FRFV5eD4YQgjiuqmjTKoDDgccyW4RjQrkm9NfNb4aSX
-	 I1je7RWXkXcV3NL4Z2aGdFu2H1IOfZUcPme5Ci5qWNvWbLlHmApVGBco4Dh8ulLohc
-	 DTu7tUFwyxEFzJp+gxyEv5oUTJNZ3c7MXQgZK4YyNSjuNjaF9HbgQ6nscSsnzejYwC
-	 HGeTUSo2lDmKVDUzFWiQk/c2j4T8oZqJtcNZMZT9lNq3xV1Nxei+zSY662HiCEZvJi
-	 bMoqNwKXDSmqQ==
-Date: Tue, 6 Feb 2024 16:35:17 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Matthias Kaehlcke <mka@chromium.org>
-Cc: Javier Carrasco <javier.carrasco@wolfvision.net>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v3 6/7] ASoC: dt-bindings: xmos,xvf3500: add XMOS XVF3500
- voice processor
-Message-ID: <ZcJfxRgysxLWAOIH@finisterre.sirena.org.uk>
-References: <20240206-onboard_xvf3500-v3-0-f85b04116688@wolfvision.net>
- <20240206-onboard_xvf3500-v3-6-f85b04116688@wolfvision.net>
- <ZcJDFi+iIQOWzgYw@finisterre.sirena.org.uk>
- <7b472cb2-6658-446a-ae47-411d08798cca@wolfvision.net>
- <ZcJR0LrwaS5GAf5h@finisterre.sirena.org.uk>
- <ZcJVD4CGhlWRwgfM@google.com>
+	s=arc-20240116; t=1707237653; c=relaxed/simple;
+	bh=1TTnethT9ACWbE+2/u7LuqUNvlepRYWJQLWF5PV4eVo=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=rXAXcGKewsNXlLq6YeFIesywAd2x+MBX4+5YKsFVeCMGFkm0PuaiOMED4gIgcZ192NRp89ozHpUG1mRS/vbniLKlk3ujJ3YM5Xjj3NzDT+gXxciK7PPqTnIFiwHOSZwkd3sqK1eTNSfLiogMtwfQYeBtJvNQi97qxW/32dNpoKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=jJTGrxPM; arc=none smtp.client-ip=203.205.221.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1707237338;
+	bh=nq8N3iJKzTg/aO9s2k31bxowdIKIrZYsvIlCVzu6Hsk=;
+	h=From:To:Cc:Subject:Date;
+	b=jJTGrxPMkWKgIPx/Lt8hzE0b+hk0gRCHObtmBodsyn5bkf/rJeeG0tEishDin6CpU
+	 0BsL+oHt/WwJBjDWUmOeQoDm+/Nk1HbQ2FrIyAcE5enoPDnUKemO7etI9aJZQTAcOp
+	 mNF8GkGva/BL73BWBifepzsVsU8g99II1JPiIUK0=
+Received: from localhost.localdomain ([2409:8962:5b2:1ce9:ee76:89e4:5983:4db0])
+	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+	id 8E113278; Wed, 07 Feb 2024 00:35:33 +0800
+X-QQ-mid: xmsmtpt1707237333tgwzpj2kr
+Message-ID: <tencent_10AAA44731FFFA493F9F5501521F07DD4D0A@qq.com>
+X-QQ-XMAILINFO: NKv2G1wnhDBn0Qeh0KEAELRU5PYymkJtjrJl0x9WPh7uY2FwQzhHGIHIUWLC+F
+	 9FTchisw4zfIsnJod27XT91951dwj1nw8gua0iYpm6z0susMJjdrMtjZZ380LYrjlX+wNkPNlwde
+	 TQTebx3ih0f7TTayCpVB7ENm9xf9Ki0WaEUxp7YRYSjQavgepJwA2JnHxoDAKDgk0eKPZ/JNqv9G
+	 CR7ShxvokbDpzgW+VokAJiZXd1nM8JovPS0kKNJpS5Z4Z/cSi7EhwYBAjH5am2NV3af9BtaCO66W
+	 Qi8N5E6gjB1esSulFhp2DI/hxozXirRN1mItweYx/XMhH+QWPFiiPWeck/wFORWpriUNw0vzYgG5
+	 r5vcQemzDaAZ5bUW5Q0ae1rPpTXxyU+wi+Q1YF8+cB08622la1N3exP8lA+Am6jkBQ5+R8t1/zgt
+	 Yr4eVxROlPP9bimPPbxciyq2/pLLX8xJDKxervzmf9IIq1UDWQV/Kgw0ua9BuDqaldOL8MikkCQw
+	 x8Op2sQfD97ORuELvNyL95EdMAmfz5bKvCEJDeeH8Zh1agCqXhunlmfQbBHi2KjlrEHP7+s1jx+G
+	 08K8b27J2cOqszbAYygspb1E3z+zQW2pNgtcr7k1hvjFAkbvCNN3T9bNd2R4m7jgSkIf9+6mzayT
+	 0TSstqJusKSZ04oc3V6N1kI+4SZ5jhykzHX4wVRoVuxE5RP9hG9Xqa2IwFIv55Dx/7YJKLC5F5l5
+	 im5iVya06TUKbVd44+DkEYyD8mUZV6Hnmha3A9n63ZR5LwTINrg5EMyzzka1kPS/WL2/2N0nAJ1r
+	 g+WjIT6jPeTiVi3Cb0lZPh2AB/Uxad7X3ePSmCd+I6BFX+qOUMyV6N3vm1pYpdG0U+geAvMXAziu
+	 88jC5oa8XQRL+NAUsfUnciGliz+W5x+tP/SzPQ5q5ye2xudAAnriscZhHdUa9qSKypxtQcH/2njb
+	 gq2nVhigbnxNUSH8Rf1JhVyDRTUaVWmy4Kiflf9IarASsirh88Fi9BCsFzAfEgYCfyHn6lzFoWGj
+	 /JgsXFqZAMK1IX9+o6JTAu5hNlXCcHQ0lypBVY3w==
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: wenyang.linux@foxmail.com
+To: Christian Brauner <brauner@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Wen Yang <wenyang.linux@foxmail.com>,
+	Jan Kara <jack@suse.cz>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Matthew Wilcox <willy@infradead.org>,
+	Eric Biggers <ebiggers@google.com>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] eventfd: strictly check the count parameter of eventfd_write to avoid inputting illegal strings
+Date: Wed,  7 Feb 2024 00:35:18 +0800
+X-OQ-MSGID: <20240206163518.3811-1-wenyang.linux@foxmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ZQT/yRHuU/ihg6na"
-Content-Disposition: inline
-In-Reply-To: <ZcJVD4CGhlWRwgfM@google.com>
-X-Cookie: You might have mail.
+Content-Transfer-Encoding: 8bit
 
+From: Wen Yang <wenyang.linux@foxmail.com>
 
---ZQT/yRHuU/ihg6na
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Since eventfd's document has clearly stated: A write(2) call adds
+the 8-byte integer value supplied in its buffer to the counter.
 
-On Tue, Feb 06, 2024 at 03:49:35PM +0000, Matthias Kaehlcke wrote:
+However, in the current implementation, the following code snippet
+did not cause an error:
 
-> Initially the driver targeted a device with a single supply, the name
-> 'vdd' was kept generic since it was expected that other devices would be
-> supported (except for a couple of minor bits the driver is not device
-> specific). Later support for a device with two supplies was added, with
-> the generic name 'vdd2' to support other devices with multiple regulators.
+	char str[16] = "hello world";
+	uint64_t value;
+	ssize_t size;
+	int fd;
 
-It's generally always going to be a problem to add generic names that
-don't reflect the actual hardware names, you still end up needing to
-define the mapping from the real names to the generic names that have
-been define when you end up with the regulators being controllable.
+	fd = eventfd(0, 0);
+	size = write(fd, &str, strlen(str));
+	printf("eventfd: test writing a string, size=%ld\n", size);
+	size = read(fd, &value, sizeof(value));
+	printf("eventfd: test reading as uint64, size=%ld, valus=0x%lX\n",
+	       size, value);
 
-> Using the correct naming would be doable, with the caveat that the old
-> naming still needs to be supported for backwards compatibility.
+	close(fd);
 
-Yes, the existing bindings need to be supported as a legacy/fallback
-thing.
+And its output is:
+eventfd: test writing a string, size=8
+eventfd: test reading as uint64, size=8, valus=0x6F77206F6C6C6568
 
---ZQT/yRHuU/ihg6na
-Content-Type: application/pgp-signature; name="signature.asc"
+By checking whether count is equal to sizeof(ucnt), such errors
+could be detected. It also follows the requirements of the manual.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Eric Biggers <ebiggers@google.com>
+Cc: <linux-fsdevel@vger.kernel.org>
+Cc: <linux-kernel@vger.kernel.org>
+---
+ fs/eventfd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXCX8QACgkQJNaLcl1U
-h9DdNwf9Gyj9Sld7yROz9aRLyvoxIR6qEWLHzv+LnbbvL4odas62FJj65Wxn3aun
-MvYZguIF7TY8NpMlCLoSXQBkhCWECnBSe7ayBjXXW/fVGN6pQKX56bQFzG0K2GEe
-Y31/cQ7J8iAdUHauvZJzihpekgsRZLCS2VOKyff9oxyllFyIjn+S3egZo1C+m82J
-OwE8GBVceOPOzYusyZ5J5mPrR8nEQz+SOy9aThjfY9t3EvppfQqA6zt08fIPw2PZ
-afz9T3F878AdZ2tkPIujPrfbCyI0dDuMRLLn5NfYGY42jqgBjQ/J4nwKstZwTJ5x
-sg27o4dCPT0Z0UqF1o4NK9IKRo5rsw==
-=Hkgg
------END PGP SIGNATURE-----
+diff --git a/fs/eventfd.c b/fs/eventfd.c
+index fc4d81090763..9afdb722fa92 100644
+--- a/fs/eventfd.c
++++ b/fs/eventfd.c
+@@ -251,7 +251,7 @@ static ssize_t eventfd_write(struct file *file, const char __user *buf, size_t c
+ 	ssize_t res;
+ 	__u64 ucnt;
+ 
+-	if (count < sizeof(ucnt))
++	if (count != sizeof(ucnt))
+ 		return -EINVAL;
+ 	if (copy_from_user(&ucnt, buf, sizeof(ucnt)))
+ 		return -EFAULT;
+-- 
+2.25.1
 
---ZQT/yRHuU/ihg6na--
 
