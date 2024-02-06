@@ -1,127 +1,235 @@
-Return-Path: <linux-kernel+bounces-55578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E94A84BE6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:07:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 254D984BE71
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 21:07:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94B9F289058
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:07:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 480261C22642
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 20:07:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6259918AF8;
-	Tue,  6 Feb 2024 20:06:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BF1179AF;
+	Tue,  6 Feb 2024 20:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nj0tB5yY"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="ebFeEHn6"
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25AA617BCE;
-	Tue,  6 Feb 2024 20:06:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 015E717BA0
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 20:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707250001; cv=none; b=W8cz+5Tzjwz5vSQOosJ6u/cEimSGyKTuIt+jrAzt4kQ3oi315y5RpQ7RzOUEYsv9P58FgJ4Qj9SIXsUXfdSydJdx9Djt0S8kvXl/uB1j7RJnawiP8Q7YI/Yb9NtBk2ByLcJWWaVFCW1fNCYR5A6EEyaXMR6YtPoRgwU/u02UNF4=
+	t=1707250035; cv=none; b=TDze6Pw5KwUEGZAlv6NKXjdU2+AAsj41D81WVHxX6Tir1+mlcrWRcOH5VLDFi/ubI/8pRWAgq5J4Gt2vgp/pcKfQoUfbMYMLQJZLQzUr5HK3M5f0VdCN0UPukx+wyrzEl4uWSyBMOE/J1bRyFJyhVNOXMxLl06oV7KCLSJ+QFis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707250001; c=relaxed/simple;
-	bh=VQ0SGIi4z2XyvepZBFYEVNAzFUIqIq3PsOw+G721v/Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=kFCfzf4UNsaqiuDrO5DZjnDUEUai3qDtbYcHHi6r5XCxQuPLw22WlHxZLShknbuKv2XfjC+HjlkShvnKpfssccyGMscuWldD0YwbulBNmZMRlzu4FuitS5VsbLcVYZJOoFbl33yDsScfUkttRysj5jOBCQI62ap44NzgEu+scVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=nj0tB5yY; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 416K0WpP015007;
-	Tue, 6 Feb 2024 20:06:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=H0bBGW7clRKEJWq0+cMgOgOlsVK8a4Po1YyUgny5KLs=; b=nj
-	0tB5yY5YO9GBMbMsHnSk6svOI1x7Gpj1IJr5LYesokyWODku1Yzrxs0ioYDuY3VV
-	afBlHT2Cupw/cx6uieMyjlZNR8XIBy9BO0NKY8e9riF8KYITOqI/YUaS/pRUFdO9
-	jGzrSg0cTOITpNYpsgToO532TniRLTkiDsXJkInjYk+eDN3shfg870mvNTOvgBRn
-	NFks3vI1hMOm0ahdqQrGFd/rnsTHIjxIotXcn8Axfouyg0EYI8qzs45Ia6hoWQIP
-	WKDqqpMw6ZpKn9hHRQoadBZ+jZzTT05OLDupAlkSYy+8B0tkbdI5eCd7Z+76meZC
-	d55dRSKZN0BCKAIstbpA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3ud2r0sg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 20:06:35 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 416K6Yt4015727
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 6 Feb 2024 20:06:34 GMT
-Received: from [10.110.41.143] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 6 Feb
- 2024 12:06:31 -0800
-Message-ID: <79a01e7c-3a88-49cf-b227-804155a65a4b@quicinc.com>
-Date: Tue, 6 Feb 2024 12:06:31 -0800
+	s=arc-20240116; t=1707250035; c=relaxed/simple;
+	bh=jUJ5txeuTrJIO3eaW1kqxV28UKwZzqPZVONJzpB8gbQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aLQK8PYO+2typ4k0gl2aLejWT8egWOEiEZOlJkqYDIYRbRbrww/Zmce+kanTOUe/3QSays/SjbeGS1MX9tZslAuCz881w65u8xJx8FoAXIUvVBukUhuUrv3pZRWgSIEatU8qToMEu2/ApT+vOOoJISyK6e8+oglVkv6B9kaUjkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=ebFeEHn6; arc=none smtp.client-ip=209.85.167.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bda4bd14e2so5254017b6e.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 12:07:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707250031; x=1707854831; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UeBXYxW5TvJCXcyEazsNfsDYcAc2yu/IZuUSf2VlU18=;
+        b=ebFeEHn6KS9npxDv/6LNKnwYM+HgfmYMPVDK1eI3IPNBJcmtw1k2uqt+AeMikdL1MW
+         bhL6yW7Lqxdvq1AZHq/8foRnCt/plVAkJQMpJH2k1lp9I2kf5BgCvTk2U1i+K72Fz3p3
+         X5Xc14ZtsGLtUJEw/T3xi47ldVoYIGE2srj8DPy/QxTZ3ScHaf79jaAXhnXRQUbblnnx
+         vmnJbyqHfXtqEgi7hV8Gq/ks/6UmOXReZbeN0+ZWPMpsDOgdLoX9Od7fWfl3fXzYSnbE
+         OIHJeF3Bu8PJXqOj1c4ww9bh3tIpcH54UX3qqiTgQOli+IMCJyJ6O2n/lrJi6JMkSPXw
+         yH4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707250031; x=1707854831;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UeBXYxW5TvJCXcyEazsNfsDYcAc2yu/IZuUSf2VlU18=;
+        b=VHff28+8A7oGbaXQlA1A58FPKdK5+y85MbUzlFirVjAKzkCMLi4k1GiyTxFhgcq9/A
+         BRxaMdKRKMbortqbMkQmZ2Nk6GpqxfdyS2u7wv9V5LMEss0+H7arw+R5Fe3ZTocvIg0n
+         5batEXE7CuGBEnWRwAkd0OBV8ID24ar+PDnzsg4i6Q4phQFGm2mEaIPvO9JvPDLL01HU
+         KPNPs4Gn0UBk4SFh+t40Ug3xwIyf8hzG9moDZnVCEjr0PorBlUBhgUCj+BFi26y1hWGD
+         8Fs+PFpjM74jQ8A0iYCm1fEgNrIqvfe45CIQrri+0JpI6YSD5LeWGean6qFG/rjGdXb2
+         eX2A==
+X-Gm-Message-State: AOJu0YyGSDOEk9VuLU0t3HIXM5p2EavxVYf47ChwXSNKUQKW3Q0gxB4O
+	ijRLjCJv5bBe0Vtrt/+G2P4mrPxPUK1RcNQPxiLEPOaZhZq0j7PHK0BFheSN4VA=
+X-Google-Smtp-Source: AGHT+IFuObE8RLCSG43YjDz974IG8KvcqthwJ6ZAtRS/7qVGeo9TWZtH9h3WHQTkX8/5LS2tCw/m3g==
+X-Received: by 2002:a05:6808:120a:b0:3bf:d0ee:9873 with SMTP id a10-20020a056808120a00b003bfd0ee9873mr4046929oil.3.1707250030989;
+        Tue, 06 Feb 2024 12:07:10 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUgm87u0rmtYgY+Ov2zo4VlVzmeu0wG5JizNIBPlgh5Bf7BAFdYDvI+RFde/tAq5xWofsF7uOew748xJKgCzQyl+bTcdTLnB7e0eAE6hYKfADHxi57ahCz9mwH/AA26br44wDxgQc5mi8xtPgrNBzf6kFbXrxD+YGw/KvreBaU+fMAeJ+6jpNTBY+Fem+CJiXj+LBqUxrfG6D7nLzodMiwLeaTGbf/i5DGTth1jDk+hpnrdNAShFleA7sf7dbxRq2O/Av1qxzrBPubouWZ9KLojd7++ld+j7gyBE6azUh1Ga7e+83X0TVb6TBBc5IAWmznP0br1WFGiNphDaX27chNx4FCo
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id cg6-20020a056808328600b003beb12430basm421579oib.26.2024.02.06.12.07.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 12:07:10 -0800 (PST)
+From: David Lechner <dlechner@baylibre.com>
+To: linux-spi@vger.kernel.org
+Cc: David Lechner <dlechner@baylibre.com>,
+	Mark Brown <broonie@kernel.org>,
+	Alain Volmat <alain.volmat@foss.st.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: drop gpf arg from __spi_split_transfer_maxsize()
+Date: Tue,  6 Feb 2024 14:06:46 -0600
+Message-ID: <20240206200648.1782234-1-dlechner@baylibre.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/5] arm64: dts: qcom: sm8450: Add mapping to llcc
- Broadcast_AND region
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
-References: <cover.1707202761.git.quic_uchalich@quicinc.com>
- <cf138f258ecbfbcc94717e4914de2f60153e5abb.1707202761.git.quic_uchalich@quicinc.com>
- <1e26c5b3-716b-4f16-bae4-2682667550a5@linaro.org>
-From: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-In-Reply-To: <1e26c5b3-716b-4f16-bae4-2682667550a5@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 2YAAIXSMdXVycn0rLv5z7Xr3R9POA_SH
-X-Proofpoint-GUID: 2YAAIXSMdXVycn0rLv5z7Xr3R9POA_SH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-06_13,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- lowpriorityscore=0 priorityscore=1501 clxscore=1015 bulkscore=0
- malwarescore=0 mlxscore=0 adultscore=0 mlxlogscore=463 impostorscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402060139
+Content-Transfer-Encoding: 8bit
 
-On 2/6/2024 12:35 AM, Krzysztof Kozlowski wrote:
-> On 06/02/2024 08:15, Unnathi Chalicheemala wrote:
->> Mapping Broadcast_AND region for LLCC in SM8450.
-> 
-> Why?
-> 
-> And why your DTS is in the middle of driver changes? Driver cannot
-> depend on DTS - you are now breaking all existing boards and users.
-> 
+The __spi_split_transfer_maxsize() function has a gpf argument to allow
+callers to specify the type of memory allocation that needs to be used.
+However, this function only allocates struct spi_transfer and is not
+intended to be used from atomic contexts so this type should always be
+GFP_KERNEL, so we can just drop the argument.
 
-I was following a similar patch which has DT and driver changes in the
-same patchset:
-https://lore.kernel.org/all/20230314080443.64635-1-manivannan.sadhasivam@linaro.org/
+Some callers of these functions also passed GFP_DMA, but since only
+struct spi_transfer is allocated and not any tx/rx buffers, this is
+not actually necessary and is removed in this commit.
 
-The AND region was added in the IP block in SM8450, but was not added to the DT or
-driver. That is why I included both in the same patchset - if you think the DT
-changes should be separate I can correct it in the next version.
+Signed-off-by: David Lechner <dlechner@baylibre.com>
+---
+ drivers/spi/spi-stm32.c |  4 +---
+ drivers/spi/spi.c       | 22 ++++++++--------------
+ include/linux/spi/spi.h |  6 ++----
+ 3 files changed, 11 insertions(+), 21 deletions(-)
 
-Thanks a lot for taking the time to review Krzysztof.
+diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
+index e61302ef3c21..c32e57bb38bd 100644
+--- a/drivers/spi/spi-stm32.c
++++ b/drivers/spi/spi-stm32.c
+@@ -1170,9 +1170,7 @@ static int stm32_spi_prepare_msg(struct spi_controller *ctrl,
+ 	if (spi->cfg->set_number_of_data) {
+ 		int ret;
+ 
+-		ret = spi_split_transfers_maxwords(ctrl, msg,
+-						   spi->t_size_max,
+-						   GFP_KERNEL | GFP_DMA);
++		ret = spi_split_transfers_maxwords(ctrl, msg, spi->t_size_max);
+ 		if (ret)
+ 			return ret;
+ 	}
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index a8b8474abc74..99ffc179f77d 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1756,7 +1756,7 @@ static int __spi_pump_transfer_message(struct spi_controller *ctlr,
+ 	 */
+ 	if ((msg->spi->mode & SPI_CS_WORD) && (!(ctlr->mode_bits & SPI_CS_WORD) ||
+ 					       spi_is_csgpiod(msg->spi))) {
+-		ret = spi_split_transfers_maxwords(ctlr, msg, 1, GFP_KERNEL);
++		ret = spi_split_transfers_maxwords(ctlr, msg, 1);
+ 		if (ret) {
+ 			msg->status = ret;
+ 			spi_finalize_current_message(ctlr);
+@@ -1771,8 +1771,7 @@ static int __spi_pump_transfer_message(struct spi_controller *ctlr,
+ 		}
+ 	} else {
+ 		ret = spi_split_transfers_maxsize(ctlr, msg,
+-						  spi_max_transfer_size(msg->spi),
+-						  GFP_KERNEL | GFP_DMA);
++						  spi_max_transfer_size(msg->spi));
+ 		if (ret) {
+ 			msg->status = ret;
+ 			spi_finalize_current_message(ctlr);
+@@ -3711,8 +3710,7 @@ static struct spi_replaced_transfers *spi_replace_transfers(
+ static int __spi_split_transfer_maxsize(struct spi_controller *ctlr,
+ 					struct spi_message *msg,
+ 					struct spi_transfer **xferp,
+-					size_t maxsize,
+-					gfp_t gfp)
++					size_t maxsize)
+ {
+ 	struct spi_transfer *xfer = *xferp, *xfers;
+ 	struct spi_replaced_transfers *srt;
+@@ -3723,7 +3721,7 @@ static int __spi_split_transfer_maxsize(struct spi_controller *ctlr,
+ 	count = DIV_ROUND_UP(xfer->len, maxsize);
+ 
+ 	/* Create replacement */
+-	srt = spi_replace_transfers(msg, xfer, 1, count, NULL, 0, gfp);
++	srt = spi_replace_transfers(msg, xfer, 1, count, NULL, 0, GFP_KERNEL);
+ 	if (IS_ERR(srt))
+ 		return PTR_ERR(srt);
+ 	xfers = srt->inserted_transfers;
+@@ -3783,14 +3781,12 @@ static int __spi_split_transfer_maxsize(struct spi_controller *ctlr,
+  * @ctlr:    the @spi_controller for this transfer
+  * @msg:   the @spi_message to transform
+  * @maxsize:  the maximum when to apply this
+- * @gfp: GFP allocation flags
+  *
+  * Return: status of transformation
+  */
+ int spi_split_transfers_maxsize(struct spi_controller *ctlr,
+ 				struct spi_message *msg,
+-				size_t maxsize,
+-				gfp_t gfp)
++				size_t maxsize)
+ {
+ 	struct spi_transfer *xfer;
+ 	int ret;
+@@ -3805,7 +3801,7 @@ int spi_split_transfers_maxsize(struct spi_controller *ctlr,
+ 	list_for_each_entry(xfer, &msg->transfers, transfer_list) {
+ 		if (xfer->len > maxsize) {
+ 			ret = __spi_split_transfer_maxsize(ctlr, msg, &xfer,
+-							   maxsize, gfp);
++							   maxsize);
+ 			if (ret)
+ 				return ret;
+ 		}
+@@ -3823,14 +3819,12 @@ EXPORT_SYMBOL_GPL(spi_split_transfers_maxsize);
+  * @ctlr:     the @spi_controller for this transfer
+  * @msg:      the @spi_message to transform
+  * @maxwords: the number of words to limit each transfer to
+- * @gfp:      GFP allocation flags
+  *
+  * Return: status of transformation
+  */
+ int spi_split_transfers_maxwords(struct spi_controller *ctlr,
+ 				 struct spi_message *msg,
+-				 size_t maxwords,
+-				 gfp_t gfp)
++				 size_t maxwords)
+ {
+ 	struct spi_transfer *xfer;
+ 
+@@ -3848,7 +3842,7 @@ int spi_split_transfers_maxwords(struct spi_controller *ctlr,
+ 		maxsize = maxwords * roundup_pow_of_two(BITS_TO_BYTES(xfer->bits_per_word));
+ 		if (xfer->len > maxsize) {
+ 			ret = __spi_split_transfer_maxsize(ctlr, msg, &xfer,
+-							   maxsize, gfp);
++							   maxsize);
+ 			if (ret)
+ 				return ret;
+ 		}
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 9e3866809a0e..1ec2c07eb711 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -1365,12 +1365,10 @@ struct spi_replaced_transfers {
+ 
+ extern int spi_split_transfers_maxsize(struct spi_controller *ctlr,
+ 				       struct spi_message *msg,
+-				       size_t maxsize,
+-				       gfp_t gfp);
++				       size_t maxsize);
+ extern int spi_split_transfers_maxwords(struct spi_controller *ctlr,
+ 					struct spi_message *msg,
+-					size_t maxwords,
+-					gfp_t gfp);
++					size_t maxwords);
+ 
+ /*---------------------------------------------------------------------------*/
+ 
+-- 
+2.43.0
 
-> 
-> Best regards,
-> Krzysztof
-> 
 
