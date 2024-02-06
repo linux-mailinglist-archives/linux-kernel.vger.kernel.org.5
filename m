@@ -1,352 +1,112 @@
-Return-Path: <linux-kernel+bounces-55188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF10284B8FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:12:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 842BA84B8FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 16:12:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4357128BEB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:12:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DD33289DB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:12:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A4F133294;
-	Tue,  6 Feb 2024 15:09:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CBEB135A57;
+	Tue,  6 Feb 2024 15:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Is1leery"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="ShA3DbGG"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9513A38D;
-	Tue,  6 Feb 2024 15:09:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5455133299
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 15:09:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707232178; cv=none; b=LkbakcQcxH5WbtRZjNIEDTH/1DQnbaN/sCIte08HWYm+3WfYivJp+rFFWGM1n1fBezAtYihdfW6MiQ1AH3L7MgC02cMwaGVfa9tibWm0kOYh2vL96bpXrbgVsKUb5wODslXVy89WiFOSiUUf1JLwwJlxJzeADuoXN9oT7SbNM14=
+	t=1707232183; cv=none; b=fW/XOteZYlAr8rc7k8kjGcaRalASOPPpJVr6LF7LAo9yrWZ8g3bAMbEVSXq3ZJ7DPfqtCTLMGnsunppg0vNYJp1jGnDxvzkc70wcEHO3eW0aS7MOfKgt1a66VQm+FkDz9tckgGPn5KNepEu/XOjVMBl2npCWDlRhkp7UEZiKt3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707232178; c=relaxed/simple;
-	bh=KRFwJgemBKBAZna1O62GVWExZPY7dLVRXMQTuT5NVSk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WaG5iVt121Q752LSUuQUXCnkrsyYKRtXQyv2lCrakLQes6KBReWFsHnCOepWrYM1ve/B3DvDcdG76HVGa+8JvE+kZBW5AgCCovsVn8Qz5QedSO9f4mDql1y30sNDQ2RgAsk9MLGRaxKTRc1Sxdd2KJuTYMwY2H04iWnfv79kDK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Is1leery; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11A2DC433C7;
-	Tue,  6 Feb 2024 15:09:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707232178;
-	bh=KRFwJgemBKBAZna1O62GVWExZPY7dLVRXMQTuT5NVSk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Is1leery1x42ytg7jK1gRwurrtpUqRu4bzxlm7wGXMmk4Kgt7UMfJIpIcU1oE9k8K
-	 NdVW58xU7yKGyvOd/BdOHTjTL23v4SnBICBNreNOXXFJQAQYMc2XhkXPbXtXIeMXqK
-	 FADB9bV+FHyNtKM8BX035eSOWSUNRsqf1MvqYw1K3HpCjpGCPsQdAhhoJsyB2hcSiN
-	 AIOT/DfqKAUDSsWmQpMhrjjDiV7W8Ep3fgReKtJm0lkARjDvIdIu//gpIoNo80qPC/
-	 +O5sgrlRZ1oIEJ1s2I66lhMgvU1wRSVNDun3r9GEjkwmOvBYFZKYw09lkAB0gkQdW+
-	 1Lxtf8K7/MGDQ==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v7 11/36] ftrace: Allow function_graph tracer to be enabled in instances
-Date: Wed,  7 Feb 2024 00:09:32 +0900
-Message-Id: <170723217268.502590.12074936644663843373.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170723204881.502590.11906735097521170661.stgit@devnote2>
-References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1707232183; c=relaxed/simple;
+	bh=0oTgsZorF72M4MtGiHWvVgoALAqOILr1VnSmmmHka+g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hTDiyqnNVMF2OeTTmVL2fBgEwLjiPqkeN90DZyvIAQKQ4IQZKGTgFRvTJ3nJujQ27K79nIfEXybZq5EUkFL1T+/VZuA1rGdv4kYK3+1O/JbWpueyjWi1FkweM/f4lZFz0VEyxFTdK0WfXRERYXLkG0owG7t0LakZm2iec5TSXIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=ShA3DbGG; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d0abdde3easo27781591fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 07:09:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707232179; x=1707836979; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WwVsqoGAIzE5l9Xu7dUQGRgCnLWg+E4gxnq7lDMjVy0=;
+        b=ShA3DbGGq4S9Nf8+tfbTInhSaWp+jrm/qA+ZTQfTB/76b+sATE/CQwg7gVpe2xx62a
+         hWjN5T16+RPZ63l/HlEx+M6KdXSVZjTIBV9MsL+sYPEGzsT2XPRy9rPUo3eeKG/OUvQb
+         sNSsRH7drhNKYcAomG+WyhCTWWg3Y1ciKyoNsK5uTFw7nLnGv7UG2fZwEYlDCuFJl+EW
+         hlOig/sJn0MW6P9/G7y1GkQq4hv6P5/W8NGW0hAcdIF1IDLzKmgLotCPWTsx0wyqIvG/
+         1vTKCRsDgR2JUK5kREBZqrxZVmw2Cmw9gbUutqq/PuKpUJj2gXsC6iF9fSwzQLXHw11Y
+         84nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707232179; x=1707836979;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WwVsqoGAIzE5l9Xu7dUQGRgCnLWg+E4gxnq7lDMjVy0=;
+        b=kXhjucWrkmytHqt1hWWWonJtstsphWCmXDtNUOQtHt+rWgVrRkBKnnyumeow1+yASn
+         Wg3yanSL8cbBPyxuzJFSk7DvGZnRIELjv4q7GAXcVVHj6hX6eXFR3bou1/84qCZk3Op7
+         vetEi7R81TUpIjTKvA0UDLDa5vK12+0Ucxt7wmegu2oPdb1pmtUvIGaTqJfGVnmFd9RB
+         bE435edY+bAUgYxM4BEnucUFYZGX/wEhSKbffdjvGPS8kBIAr8xZpot1bKyTkBKvV9X4
+         oVecNTVcwaNiH2DAyEy4A8BJLJzHZgC3J2D4N/LIu2Y3mVTg/dwjotIR4upPuy1+A75b
+         BI0g==
+X-Gm-Message-State: AOJu0YxjYbt/ikn8NGXDKdnJTvPsJDSFJ7n07uR4rdJC6dz2M8pQjG5X
+	PPPJ8PtOFkqA5kahQnC2WQ+GRN3q2Ek9slRCFS/qzzt2oon0g+eimmx5QCO0bAY=
+X-Google-Smtp-Source: AGHT+IHIK03nqgzi0UIQjD/r5eQ2ej+6ZZNo5AQO8975rLcfk1byiQAQT6jFYjw/zsDV+iNnbg9VtQ==
+X-Received: by 2002:ac2:5147:0:b0:511:3bd4:6a97 with SMTP id q7-20020ac25147000000b005113bd46a97mr2159245lfd.7.1707232178665;
+        Tue, 06 Feb 2024 07:09:38 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVGkNAqTncHn8u9NySFFtDQqD8pscjT/JrKzey5HdYBYNb9Vz4cfuYJr7DavYYjySH0mR6+iOdinYPmM90PzTNIRnozIZN09rANAAbPujFAAY77eZBTuNuh80moOl4xO1aEGGxkyrKIEMMkZbFVyfaXr7OR1pn8OMlHfFW5voh4+4ayQFTuW/ADqVzBD4GFghg/qcCiL2gi/kUGqBklehKOZ/R0xTI5FrR8HuNeBPimYzIU5g8d/5hDTmzeiq89/xIGjYKgh6YadASA8qRf00j4DMprLo64d/4xKv5aE+Dq4INDxNnV4o2jO0kucyFKF46JqsNL7flwfzbEvNHqKstOIlemSLSTf6ClwPVh/JZX2A4VOdYuacC0kjNiGhd2aoIH1RPcw2oej+1wkclZL4mdFWY44actr5ic6g==
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id f14-20020a170906048e00b00a378377030csm1252795eja.41.2024.02.06.07.09.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 07:09:38 -0800 (PST)
+Message-ID: <f5942f06-c4c5-4b5f-bcfb-10b7976d38be@baylibre.com>
+Date: Tue, 6 Feb 2024 16:09:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/9] drm/mediatek: dsi: Use bitfield macros where
+ useful
+Content-Language: en-US
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ chunkuang.hu@kernel.org
+Cc: fshao@chromium.org, p.zabel@pengutronix.de, airlied@gmail.com,
+ daniel@ffwll.ch, matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <20240206120748.136610-1-angelogioacchino.delregno@collabora.com>
+ <20240206120748.136610-5-angelogioacchino.delregno@collabora.com>
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20240206120748.136610-5-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-Now that function graph tracing can handle more than one user, allow it to
-be enabled in the ftrace instances. Note, the filtering of the functions is
-still joined by the top level set_ftrace_filter and friends, as well as the
-graph and nograph files.
+On 06/02/2024 13:07, AngeloGioacchino Del Regno wrote:
+> Instead of open coding bitshifting for various register fields,
+> use the bitfield macro FIELD_PREP(): this allows to enhance the
+> human readability, decrease likeliness of mistakes (and register
+> field overflowing) and also to simplify the code.
+> The latter is especially seen in mtk_dsi_rxtx_control(), where
+> it was possible to change a switch to a short for loop and to
+> also remove the need to check for maximum DSI lanes == 4 thanks
+> to the FIELD_PREP macro masking the value.
+> 
+> While at it, also add the missing DA_HS_SYNC bitmask, used in
+> mtk_dsi_phy_timconfig().
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v2:
-  - Fix to remove set_graph_array() completely.
----
- include/linux/ftrace.h               |    1 +
- kernel/trace/ftrace.c                |    1 +
- kernel/trace/trace.h                 |   13 ++++++-
- kernel/trace/trace_functions.c       |    8 ++++
- kernel/trace/trace_functions_graph.c |   65 +++++++++++++++++++++-------------
- kernel/trace/trace_selftest.c        |    4 +-
- 6 files changed, 64 insertions(+), 28 deletions(-)
-
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index a71870183f1b..17aa123d134e 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -1070,6 +1070,7 @@ extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace, struct fgraph
- struct fgraph_ops {
- 	trace_func_graph_ent_t		entryfunc;
- 	trace_func_graph_ret_t		retfunc;
-+	void				*private;
- 	int				idx;
- };
- 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index b063ab2d2b1f..a720dd7cf290 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -7323,6 +7323,7 @@ __init void ftrace_init_global_array_ops(struct trace_array *tr)
- 	tr->ops = &global_ops;
- 	tr->ops->private = tr;
- 	ftrace_init_trace_array(tr);
-+	init_array_fgraph_ops(tr);
- }
- 
- void ftrace_init_array_ops(struct trace_array *tr, ftrace_func_t func)
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 7d838a32bce5..3b39936c9375 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -396,6 +396,9 @@ struct trace_array {
- 	struct ftrace_ops	*ops;
- 	struct trace_pid_list	__rcu *function_pids;
- 	struct trace_pid_list	__rcu *function_no_pids;
-+#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-+	struct fgraph_ops	*gops;
-+#endif
- #ifdef CONFIG_DYNAMIC_FTRACE
- 	/* All of these are protected by the ftrace_lock */
- 	struct list_head	func_probes;
-@@ -680,7 +683,6 @@ void print_trace_header(struct seq_file *m, struct trace_iterator *iter);
- 
- void trace_graph_return(struct ftrace_graph_ret *trace, struct fgraph_ops *gops);
- int trace_graph_entry(struct ftrace_graph_ent *trace, struct fgraph_ops *gops);
--void set_graph_array(struct trace_array *tr);
- 
- void tracing_start_cmdline_record(void);
- void tracing_stop_cmdline_record(void);
-@@ -891,6 +893,9 @@ extern int __trace_graph_entry(struct trace_array *tr,
- extern void __trace_graph_return(struct trace_array *tr,
- 				 struct ftrace_graph_ret *trace,
- 				 unsigned int trace_ctx);
-+extern void init_array_fgraph_ops(struct trace_array *tr);
-+extern int allocate_fgraph_ops(struct trace_array *tr);
-+extern void free_fgraph_ops(struct trace_array *tr);
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
- extern struct ftrace_hash __rcu *ftrace_graph_hash;
-@@ -1003,6 +1008,12 @@ print_graph_function_flags(struct trace_iterator *iter, u32 flags)
- {
- 	return TRACE_TYPE_UNHANDLED;
- }
-+static inline void init_array_fgraph_ops(struct trace_array *tr) { }
-+static inline int allocate_fgraph_ops(struct trace_array *tr)
-+{
-+	return 0;
-+}
-+static inline void free_fgraph_ops(struct trace_array *tr) { }
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
- 
- extern struct list_head ftrace_pids;
-diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-index 9f1bfbe105e8..8e8da0d0ee52 100644
---- a/kernel/trace/trace_functions.c
-+++ b/kernel/trace/trace_functions.c
-@@ -80,6 +80,7 @@ void ftrace_free_ftrace_ops(struct trace_array *tr)
- int ftrace_create_function_files(struct trace_array *tr,
- 				 struct dentry *parent)
- {
-+	int ret;
- 	/*
- 	 * The top level array uses the "global_ops", and the files are
- 	 * created on boot up.
-@@ -90,6 +91,12 @@ int ftrace_create_function_files(struct trace_array *tr,
- 	if (!tr->ops)
- 		return -EINVAL;
- 
-+	ret = allocate_fgraph_ops(tr);
-+	if (ret) {
-+		kfree(tr->ops);
-+		return ret;
-+	}
-+
- 	ftrace_create_filter_files(tr->ops, parent);
- 
- 	return 0;
-@@ -99,6 +106,7 @@ void ftrace_destroy_function_files(struct trace_array *tr)
- {
- 	ftrace_destroy_filter_files(tr->ops);
- 	ftrace_free_ftrace_ops(tr);
-+	free_fgraph_ops(tr);
- }
- 
- static ftrace_func_t select_trace_function(u32 flags_val)
-diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-index b7b142b65299..9ccc904a7703 100644
---- a/kernel/trace/trace_functions_graph.c
-+++ b/kernel/trace/trace_functions_graph.c
-@@ -83,8 +83,6 @@ static struct tracer_flags tracer_flags = {
- 	.opts = trace_opts
- };
- 
--static struct trace_array *graph_array;
--
- /*
-  * DURATION column is being also used to display IRQ signs,
-  * following values are used by print_graph_irq and others
-@@ -132,7 +130,7 @@ static inline int ftrace_graph_ignore_irqs(void)
- int trace_graph_entry(struct ftrace_graph_ent *trace,
- 		      struct fgraph_ops *gops)
- {
--	struct trace_array *tr = graph_array;
-+	struct trace_array *tr = gops->private;
- 	struct trace_array_cpu *data;
- 	unsigned long flags;
- 	unsigned int trace_ctx;
-@@ -242,7 +240,7 @@ void __trace_graph_return(struct trace_array *tr,
- void trace_graph_return(struct ftrace_graph_ret *trace,
- 			struct fgraph_ops *gops)
- {
--	struct trace_array *tr = graph_array;
-+	struct trace_array *tr = gops->private;
- 	struct trace_array_cpu *data;
- 	unsigned long flags;
- 	unsigned int trace_ctx;
-@@ -268,15 +266,6 @@ void trace_graph_return(struct ftrace_graph_ret *trace,
- 	local_irq_restore(flags);
- }
- 
--void set_graph_array(struct trace_array *tr)
--{
--	graph_array = tr;
--
--	/* Make graph_array visible before we start tracing */
--
--	smp_mb();
--}
--
- static void trace_graph_thresh_return(struct ftrace_graph_ret *trace,
- 				      struct fgraph_ops *gops)
- {
-@@ -294,25 +283,53 @@ static void trace_graph_thresh_return(struct ftrace_graph_ret *trace,
- 		trace_graph_return(trace, gops);
- }
- 
--static struct fgraph_ops funcgraph_thresh_ops = {
--	.entryfunc = &trace_graph_entry,
--	.retfunc = &trace_graph_thresh_return,
--};
--
- static struct fgraph_ops funcgraph_ops = {
- 	.entryfunc = &trace_graph_entry,
- 	.retfunc = &trace_graph_return,
- };
- 
-+int allocate_fgraph_ops(struct trace_array *tr)
-+{
-+	struct fgraph_ops *gops;
-+
-+	gops = kzalloc(sizeof(*gops), GFP_KERNEL);
-+	if (!gops)
-+		return -ENOMEM;
-+
-+	gops->entryfunc = &trace_graph_entry;
-+	gops->retfunc = &trace_graph_return;
-+
-+	tr->gops = gops;
-+	gops->private = tr;
-+	return 0;
-+}
-+
-+void free_fgraph_ops(struct trace_array *tr)
-+{
-+	kfree(tr->gops);
-+}
-+
-+__init void init_array_fgraph_ops(struct trace_array *tr)
-+{
-+	tr->gops = &funcgraph_ops;
-+	funcgraph_ops.private = tr;
-+}
-+
- static int graph_trace_init(struct trace_array *tr)
- {
- 	int ret;
- 
--	set_graph_array(tr);
-+	tr->gops->entryfunc = trace_graph_entry;
-+
- 	if (tracing_thresh)
--		ret = register_ftrace_graph(&funcgraph_thresh_ops);
-+		tr->gops->retfunc = trace_graph_thresh_return;
- 	else
--		ret = register_ftrace_graph(&funcgraph_ops);
-+		tr->gops->retfunc = trace_graph_return;
-+
-+	/* Make gops functions are visible before we start tracing */
-+	smp_mb();
-+
-+	ret = register_ftrace_graph(tr->gops);
- 	if (ret)
- 		return ret;
- 	tracing_start_cmdline_record();
-@@ -323,10 +340,7 @@ static int graph_trace_init(struct trace_array *tr)
- static void graph_trace_reset(struct trace_array *tr)
- {
- 	tracing_stop_cmdline_record();
--	if (tracing_thresh)
--		unregister_ftrace_graph(&funcgraph_thresh_ops);
--	else
--		unregister_ftrace_graph(&funcgraph_ops);
-+	unregister_ftrace_graph(tr->gops);
- }
- 
- static int graph_trace_update_thresh(struct trace_array *tr)
-@@ -1365,6 +1379,7 @@ static struct tracer graph_trace __tracer_data = {
- 	.print_header	= print_graph_headers,
- 	.flags		= &tracer_flags,
- 	.set_flag	= func_graph_set_flag,
-+	.allow_instances = true,
- #ifdef CONFIG_FTRACE_SELFTEST
- 	.selftest	= trace_selftest_startup_function_graph,
- #endif
-diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
-index 914331d8242c..f0758afa2f7d 100644
---- a/kernel/trace/trace_selftest.c
-+++ b/kernel/trace/trace_selftest.c
-@@ -813,7 +813,7 @@ trace_selftest_startup_function_graph(struct tracer *trace,
- 	 * to detect and recover from possible hangs
- 	 */
- 	tracing_reset_online_cpus(&tr->array_buffer);
--	set_graph_array(tr);
-+	fgraph_ops.private = tr;
- 	ret = register_ftrace_graph(&fgraph_ops);
- 	if (ret) {
- 		warn_failed_init_tracer(trace, ret);
-@@ -856,7 +856,7 @@ trace_selftest_startup_function_graph(struct tracer *trace,
- 	cond_resched();
- 
- 	tracing_reset_online_cpus(&tr->array_buffer);
--	set_graph_array(tr);
-+	fgraph_ops.private = tr;
- 
- 	/*
- 	 * Some archs *cough*PowerPC*cough* add characters to the
-
+-- 
+Regards,
+Alexandre
 
