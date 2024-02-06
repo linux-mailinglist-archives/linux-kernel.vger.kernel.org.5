@@ -1,233 +1,104 @@
-Return-Path: <linux-kernel+bounces-54878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2EA284B4B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:14:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2FBA84B4A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 13:13:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76ED21F29229
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:14:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4800D1F2913D
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 12:13:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C641353F7;
-	Tue,  6 Feb 2024 12:09:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65049133291;
+	Tue,  6 Feb 2024 12:09:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rBpEVxGU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3B1E1350CF;
-	Tue,  6 Feb 2024 12:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95EE132C3A;
+	Tue,  6 Feb 2024 12:09:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707221358; cv=none; b=IqPXcFM6TjuHEkGGrqPx4KY/xB0kciUrd688Pm9A673pbS5Hqz/HcUXoI+ka75brScDEeDkF8TDMJo1NzEzvsLd0F8AVvEvYBeoignCb7jTsC7qpCxXb81aB6P++NeVUeV4ValgMmGIvZlD65MJ1o9sU3rXDGaX/0QJhXbdwcAc=
+	t=1707221350; cv=none; b=ryE3xI8W6rZEuoHH7I1w3RU4RB7rQa6KfnDC/E2HAhLKXO9Om50zA0UBpEHKu9GLm+6/jIkkr9MYbAIQYLi2C1mui2qHh43SeUvHJPd+Nmd/iWZFYS5e51Ou1gYvEwb40ecPaZ3Mqjq8AGx3+KvG2y2eS+MaF1GcaO++vf8Ixmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707221358; c=relaxed/simple;
-	bh=zvKShgCK5034Xnelj/XlGEgqizQjwtbUh3c35v08Orw=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=sloQJVkJPIgF3jnOrraMJpKSNDylb9lAXSXjSs8voCjZ8NR+yfsw+4BFgvgjZe6mADfbkwzwoMgQacjF7kYeCedVXL2epCf8Yk1apyOEfuR1zBHVXbXwUt4CNX/QYANKu9Lq5wwV4Jjpmpc/j8d4ySB2nKLpmKwSnG/fyY6fSNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8835FC43601;
-	Tue,  6 Feb 2024 12:09:18 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@rostedt.homelinux.com>)
-	id 1rXKGp-00000006b2t-028k;
-	Tue, 06 Feb 2024 07:09:47 -0500
-Message-ID: <20240206120946.866568635@rostedt.homelinux.com>
-User-Agent: quilt/0.67
-Date: Tue, 06 Feb 2024 07:09:08 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sasha Levin <sashal@kernel.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [v6.6][PATCH 03/57] Revert "eventfs: Use simple_recursive_removal() to clean up dentries"
-References: <20240206120905.570408983@rostedt.homelinux.com>
+	s=arc-20240116; t=1707221350; c=relaxed/simple;
+	bh=4ZVF5lk/addHaP1sMhaPzPoGDFlYeX2aYy74JDMb6iY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Yc9aNokCvcRpkSD4j1+QTk+KaWJ+2CtRgpzV5PVCiBiKHuzOBsygb1VUVEezAPofTiGKOY349mVIpCxMqst+TIzYoVdnKSpj/7CPyinCpDXBj/UQpF+2AkDQE4hnb4XulbpijYjm5RMoMGDG6NNGGlcmVrb14ZSVyzUvmxqnMSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rBpEVxGU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D33D0C433C7;
+	Tue,  6 Feb 2024 12:09:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707221350;
+	bh=4ZVF5lk/addHaP1sMhaPzPoGDFlYeX2aYy74JDMb6iY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=rBpEVxGUXm/c8tfSJELsqw9Jm/d0flbsUKz1zl75kvsJoGhE6Yg77n9hZjICbzMps
+	 toKXAtbLsTTA+4KDppNUzoj4p44EZZ4CntxAdHZVxrfQ7fCxhUXjyfoKv6inswTQZI
+	 tLkTN7JwBNxUEAsNhUcW5swA85gRhjZE4kV/FOQpqDsrmLRolSIyNRB3A5+4vcttcw
+	 z6bytk+sQYOc5kLKWG0+vHch4fbVL4h9mBuqKoZAtZF07U5SyMDec3yVw+a/uCTUQL
+	 m3NfmmQYGAsGLP9BAVtSYpcrYIQz6a+SpGrUiRGqEH/4M1vH74DBSKdGMMj2xTGw3o
+	 LCRdY5BpDbUig==
+From: Mark Brown <broonie@kernel.org>
+To: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ andy.shevchenko@gmail.com
+Cc: Vladimir Oltean <olteanv@gmail.com>, Minjie Du <duminjie@vivo.com>
+In-Reply-To: <20240204203127.1186621-1-andy.shevchenko@gmail.com>
+References: <20240204203127.1186621-1-andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v2 0/2] spi: fsl-dspi: A couple of error handling
+ improvements
+Message-Id: <170722134868.992289.7755960695527262263.b4-ty@kernel.org>
+Date: Tue, 06 Feb 2024 12:09:08 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Sun, 04 Feb 2024 22:29:17 +0200, andy.shevchenko@gmail.com wrote:
+> A couple of error handling improvements here:
+> - unshadowing error code from dmaengine_slave_config()
+> - making error messages uniform
+> 
+> In v2:
+> - split to two patches (Vladimir)
+> - improved commit message in the patch 2 (Vladimir)
+> 
+> [...]
 
-This reverts commit 055907ad2c14838c90d63297f7bab8d180a5d844.
+Applied to
 
-The eventfs was not designed properly and may have some hidden bugs in it.
-Linus rewrote it properly and I trust his version more than this one. Revert
-the backported patches for 6.6 and re-apply all the changes to make it
-equivalent to Linus's version.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- fs/tracefs/event_inode.c | 71 +++++++++++++++++++++-------------------
- 1 file changed, 38 insertions(+), 33 deletions(-)
+Thanks!
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 5fcfb634fec2..7aa92b8ebc51 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -54,10 +54,12 @@ struct eventfs_file {
- 	/*
- 	 * Union - used for deletion
- 	 * @llist:	for calling dput() if needed after RCU
-+	 * @del_list:	list of eventfs_file to delete
- 	 * @rcu:	eventfs_file to delete in RCU
- 	 */
- 	union {
- 		struct llist_node	llist;
-+		struct list_head	del_list;
- 		struct rcu_head		rcu;
- 	};
- 	void				*data;
-@@ -274,6 +276,7 @@ static void free_ef(struct eventfs_file *ef)
-  */
- void eventfs_set_ef_status_free(struct tracefs_inode *ti, struct dentry *dentry)
- {
-+	struct tracefs_inode *ti_parent;
- 	struct eventfs_inode *ei;
- 	struct eventfs_file *ef;
- 
-@@ -294,6 +297,10 @@ void eventfs_set_ef_status_free(struct tracefs_inode *ti, struct dentry *dentry)
- 
- 	mutex_lock(&eventfs_mutex);
- 
-+	ti_parent = get_tracefs(dentry->d_parent->d_inode);
-+	if (!ti_parent || !(ti_parent->flags & TRACEFS_EVENT_INODE))
-+		goto out;
-+
- 	ef = dentry->d_fsdata;
- 	if (!ef)
- 		goto out;
-@@ -866,29 +873,30 @@ static void unhook_dentry(struct dentry *dentry)
- {
- 	if (!dentry)
- 		return;
--	/*
--	 * Need to add a reference to the dentry that is expected by
--	 * simple_recursive_removal(), which will include a dput().
--	 */
--	dget(dentry);
- 
--	/*
--	 * Also add a reference for the dput() in eventfs_workfn().
--	 * That is required as that dput() will free the ei after
--	 * the SRCU grace period is over.
--	 */
-+	/* Keep the dentry from being freed yet (see eventfs_workfn()) */
- 	dget(dentry);
-+
-+	dentry->d_fsdata = NULL;
-+	d_invalidate(dentry);
-+	mutex_lock(&eventfs_mutex);
-+	/* dentry should now have at least a single reference */
-+	WARN_ONCE((int)d_count(dentry) < 1,
-+		  "dentry %px (%s) less than one reference (%d) after invalidate\n",
-+		  dentry, dentry->d_name.name, d_count(dentry));
-+	mutex_unlock(&eventfs_mutex);
- }
- 
- /**
-  * eventfs_remove_rec - remove eventfs dir or file from list
-  * @ef: eventfs_file to be removed.
-+ * @head: to create list of eventfs_file to be deleted
-  * @level: to check recursion depth
-  *
-  * The helper function eventfs_remove_rec() is used to clean up and free the
-  * associated data from eventfs for both of the added functions.
-  */
--static void eventfs_remove_rec(struct eventfs_file *ef, int level)
-+static void eventfs_remove_rec(struct eventfs_file *ef, struct list_head *head, int level)
- {
- 	struct eventfs_file *ef_child;
- 
-@@ -908,16 +916,14 @@ static void eventfs_remove_rec(struct eventfs_file *ef, int level)
- 		/* search for nested folders or files */
- 		list_for_each_entry_srcu(ef_child, &ef->ei->e_top_files, list,
- 					 lockdep_is_held(&eventfs_mutex)) {
--			eventfs_remove_rec(ef_child, level + 1);
-+			eventfs_remove_rec(ef_child, head, level + 1);
- 		}
- 	}
- 
- 	ef->is_freed = 1;
- 
--	unhook_dentry(ef->dentry);
--
- 	list_del_rcu(&ef->list);
--	call_srcu(&eventfs_srcu, &ef->rcu, free_rcu_ef);
-+	list_add_tail(&ef->del_list, head);
- }
- 
- /**
-@@ -928,22 +934,28 @@ static void eventfs_remove_rec(struct eventfs_file *ef, int level)
-  */
- void eventfs_remove(struct eventfs_file *ef)
- {
--	struct dentry *dentry;
-+	struct eventfs_file *tmp;
-+	LIST_HEAD(ef_del_list);
- 
- 	if (!ef)
- 		return;
- 
-+	/*
-+	 * Move the deleted eventfs_inodes onto the ei_del_list
-+	 * which will also set the is_freed value. Note, this has to be
-+	 * done under the eventfs_mutex, but the deletions of
-+	 * the dentries must be done outside the eventfs_mutex.
-+	 * Hence moving them to this temporary list.
-+	 */
- 	mutex_lock(&eventfs_mutex);
--	dentry = ef->dentry;
--	eventfs_remove_rec(ef, 0);
-+	eventfs_remove_rec(ef, &ef_del_list, 0);
- 	mutex_unlock(&eventfs_mutex);
- 
--	/*
--	 * If any of the ei children has a dentry, then the ei itself
--	 * must have a dentry.
--	 */
--	if (dentry)
--		simple_recursive_removal(dentry, NULL);
-+	list_for_each_entry_safe(ef, tmp, &ef_del_list, del_list) {
-+		unhook_dentry(ef->dentry);
-+		list_del(&ef->del_list);
-+		call_srcu(&eventfs_srcu, &ef->rcu, free_rcu_ef);
-+	}
- }
- 
- /**
-@@ -954,8 +966,6 @@ void eventfs_remove(struct eventfs_file *ef)
-  */
- void eventfs_remove_events_dir(struct dentry *dentry)
- {
--	struct eventfs_file *ef_child;
--	struct eventfs_inode *ei;
- 	struct tracefs_inode *ti;
- 
- 	if (!dentry || !dentry->d_inode)
-@@ -965,11 +975,6 @@ void eventfs_remove_events_dir(struct dentry *dentry)
- 	if (!ti || !(ti->flags & TRACEFS_EVENT_INODE))
- 		return;
- 
--	mutex_lock(&eventfs_mutex);
--	ei = ti->private;
--	list_for_each_entry_srcu(ef_child, &ei->e_top_files, list,
--				 lockdep_is_held(&eventfs_mutex)) {
--		eventfs_remove_rec(ef_child, 0);
--	}
--	mutex_unlock(&eventfs_mutex);
-+	d_invalidate(dentry);
-+	dput(dentry);
- }
--- 
-2.43.0
+[1/2] spi: fsl-dspi: Preserve error code returned by dmaengine_slave_config()
+      commit: f156743c526281ddcc19511e9073f8c987506913
+[2/2] spi: fsl-dspi: Unify error messaging in dspi_request_dma()
+      commit: 51b8e79c45d5a42891c6196dcd3f73cbb599940a
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 
