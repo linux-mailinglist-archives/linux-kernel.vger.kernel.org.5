@@ -1,100 +1,93 @@
-Return-Path: <linux-kernel+bounces-54698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 801BA84B290
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:35:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68CE984B297
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 11:38:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31947287AC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:35:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAACC1F253EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 10:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174941EA71;
-	Tue,  6 Feb 2024 10:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB29612B144;
+	Tue,  6 Feb 2024 10:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JmID3Hp2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A701AB810;
-	Tue,  6 Feb 2024 10:35:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="CGQ00tLW"
+Received: from mail-177131.yeah.net (mail-177131.yeah.net [123.58.177.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2CAB58233;
+	Tue,  6 Feb 2024 10:37:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707215715; cv=none; b=ikzkYur0bE/L+hOycmxmtmh1PhQ2KDCKJrPRkrvBLmzK+4zijrLIZhiCtuFeNVkGwuIbfzEp27vcZ1BM0kYLzKR2IvRAoVNtio5LypS0Dze8kbQTJm/x4qkDJEjBaXkkRGM7wP3A97IxHZPB6Vhi/HBUlV8P4Y0BYWI0J7oh/9s=
+	t=1707215847; cv=none; b=Vg54tKt+9QrRtC56cyzPyi/0d/GKyjW658eypfW7Ow1HSPeNa4dXYLuPmOb8NN06PEj9uFReMNGoWkLp3WSVr/GPPT05u1qqtXB7wDmbKbbQeS4uTDsqXhee8PYErVENpM1cjPp8R83EpT/mm+C3iBV27jbBAMNehSJfctIuQcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707215715; c=relaxed/simple;
-	bh=3c5PNyqEGTv1ShH7PDfncWm8E3oj2yIaY/8aKD+F4Hc=;
+	s=arc-20240116; t=1707215847; c=relaxed/simple;
+	bh=w/tN9d7EIu2jSrI12Wh7+oQ5SQST786HYLnVHwynRHc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AoUFshmuY1tqJlB3rT8hLsFvSvR+tnvmobiDNdClZRF3ohuJM1PS+q4LAl73/WTkuCmng1f1QKbw587+ueXywbv3lExP/V53DZqxZVQgCjVSe8q948d89qojaH6RMstrNkBXlTq6iXXXExJwl4dDA86AoQziCpSi12YHLhtYgVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JmID3Hp2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74C97C433C7;
-	Tue,  6 Feb 2024 10:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707215714;
-	bh=3c5PNyqEGTv1ShH7PDfncWm8E3oj2yIaY/8aKD+F4Hc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JmID3Hp2rCViqbulMK+0TZTIic7I+aL8OH7r4vok0IY74BMh4kkpLyw6qUzouGRkw
-	 GrfY5+NqmV6SdLrQI+1XyxinOUwkxrRBQ0qn+YiS5NUyNPLqyqNj1nG0wSs8YwcgVL
-	 DTN/IGYwwLO68yAL+0PBTjXcjF/94nYr4CeGgunpAtia3EUCBe59ACmxsc/s5iK784
-	 TczoddAZCVLMp3JNN8MbfjsGi/KHWe3vBC+y+bNB8NSwEU480sHq008K6ppIhYuwtY
-	 0HkQroYlE0y5nv5y220QIxdtFuTVesUiS5KHVYvBlefWtkgx+mLYF8yy1ccHouE4Sh
-	 WON6q44+gU3kA==
-Date: Tue, 6 Feb 2024 10:35:11 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	thomas.petazzoni@bootlin.com,
-	Miquel Raynal <miquel.raynal@bootlin.com>, yen-mei.goh@keysight.com,
-	koon-kee.lie@keysight.com
-Subject: Re: [PATCH 1/2] Revert "spi: spi-omap2-mcspi.c: Toggle CS after each
- word"
-Message-ID: <ZcILX84KZpGKgpgl@finisterre.sirena.org.uk>
-References: <20240126-spi-omap2-mcspi-multi-mode-v1-0-d143d33f0fe0@bootlin.com>
- <20240126-spi-omap2-mcspi-multi-mode-v1-1-d143d33f0fe0@bootlin.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OPfnItZZJ7kN1asgAfifq/fYyCGh7lIfHDOrJKLNAPIbGMZE8Sc/sKwil7zvHEZveB5mNaTveSGJ2C4O5Xx6CVJk7haIQwL1MzsoUiudrcMBXuFBlhJP2A/ju/NYDXZBypRhHY+n2d0c+5ttDTbHT0tru1kVE5s5zyJMXagDbwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=CGQ00tLW; arc=none smtp.client-ip=123.58.177.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=lk+MQ8SH92shgsFG/IxiegRWkPy95NRGePUeiAe3pG4=;
+	b=CGQ00tLWEIl2sZMfEeT+KNILvnXGZNjR/rhPP7zZeUTbkP/snD3AUz9z7/sGmA
+	bC5rnE5/pF5KAoUdSRj7z0pDGCZ6JAnMpXSGqtWxD5bNdHM0x364H0p7S6qRaDMj
+	3pDVfZzmfPar4pwy5kBxhDZwd29G7kdWmHf3bGSQkE7SU=
+Received: from dragon (unknown [183.213.196.254])
+	by smtp1 (Coremail) with SMTP id ClUQrAB3PCFmC8JlRXf+Ag--.22835S3;
+	Tue, 06 Feb 2024 18:35:19 +0800 (CST)
+Date: Tue, 6 Feb 2024 18:35:17 +0800
+From: Shawn Guo <shawnguo2@yeah.net>
+To: Yannic Moog <y.moog@phytec.de>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Primoz Fiser <primoz.fiser@norik.com>,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	upstream@lists.phytec.de
+Subject: Re: [PATCH RFC for upstream 3/4] arm64: dts:
+ imx8mp-phyboard-pollux-rdk: add etml panel support
+Message-ID: <ZcILZSg7ERGza+1p@dragon>
+References: <20240126-wip-y-moog-phytec-de-upstream-pollux-lvds-v1-0-8ec5b48eec05@phytec.de>
+ <20240126-wip-y-moog-phytec-de-upstream-pollux-lvds-v1-3-8ec5b48eec05@phytec.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="azcLN1ODoDsB9Bpu"
-Content-Disposition: inline
-In-Reply-To: <20240126-spi-omap2-mcspi-multi-mode-v1-1-d143d33f0fe0@bootlin.com>
-X-Cookie: You might have mail.
-
-
---azcLN1ODoDsB9Bpu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240126-wip-y-moog-phytec-de-upstream-pollux-lvds-v1-3-8ec5b48eec05@phytec.de>
+X-CM-TRANSID:ClUQrAB3PCFmC8JlRXf+Ag--.22835S3
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUxCztUUUUU
+X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDwd8ZVnxccILPgAAs-
 
-On Tue, Feb 06, 2024 at 11:00:49AM +0100, Louis Chauvet wrote:
+On Fri, Jan 26, 2024 at 09:57:25AM +0100, Yannic Moog wrote:
+> The imx8mp-phyboard-pollux has on-board lvds interface connections. An
+> edt,etml1010g3dra panel is supported for this interface. Add device tree
+> nodes for backlight and panel.
+> 
+> Signed-off-by: Yannic Moog <y.moog@phytec.de>
 
-> Revert commit 5cbc7ca987fb ("spi: spi-omap2-mcspi.c: Toggle CS after each word")
-> This commit introduced the toggling of CS after each word for the
-> omap2-mcspi controller.
+Applied, thanks!
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
-
---azcLN1ODoDsB9Bpu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXCC18ACgkQJNaLcl1U
-h9CFPgf+Nzd4M6GNRWfxi5aN6tQuav9R23DvP/f+fald06ePtIKSmAE/E+ibjvZ8
-aNKSzYLZtP5jMvadm0s+ySmYZ3Q66OvL5UarJRJo8oiLTt9ULtYvu10xXmLLpvn2
-9sjtYniFp700x53wz/7E+ixz23dBmMoO7nXmP5eHk5LMpW8yr2Ct7qe7CvvbhLGd
-PdZNp3Zeko7BR4xPF2DcSoOEVIBVu16RV3QiMMlVVxdP9gYKx1wv3Uqy4hVR6z3L
-DYqiCbl9wwIQZQIb0mpWh7zCReHxLszElRle48qYgFOwG0zAGGkPzJAA65KicvUZ
-uTGQABpF7+AGuD1Wdq01Z76liRLtkQ==
-=h/jM
------END PGP SIGNATURE-----
-
---azcLN1ODoDsB9Bpu--
 
