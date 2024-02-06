@@ -1,73 +1,47 @@
-Return-Path: <linux-kernel+bounces-54451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 339FD84AF6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:57:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A91484AF71
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 08:58:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0104287654
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:57:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FC821C24341
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 07:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D88B12A157;
-	Tue,  6 Feb 2024 07:57:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC69B12AAC3;
+	Tue,  6 Feb 2024 07:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ms5Or81a"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MWq3E8hy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B5739AD5
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 07:57:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04BF128811;
+	Tue,  6 Feb 2024 07:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707206257; cv=none; b=d0cIHlQRytZvs0IIbLUsS6ooRDCLC6INzfhQCD+B2DTVn0oudFEfLJB0n1Vb0X+Nxa7IKsmO7fRdYIJmNa3XE93jkAYuJ0na3nryrCbJ8b3kKSk7pOC/Henf+0bk0ZFhAXs73NK+mBZLdVuO6alqjI2YrNkzrcws0ZelNOI0eOA=
+	t=1707206320; cv=none; b=HAriFRx3kQi7soApXAT8G1JrLDwedmUOaqFNN83NUWQlIU/y0igfdBaalqHXIWAl/dCf0SCZR53PRdugwar7yWWrCNCGr+qCTBtD45bCdCPcmPnzLpC2+NGK2nxS4DdyBAXq8rFXq0aTcmP7k6rlD9t67eiL+pPiK6cb0VqGM64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707206257; c=relaxed/simple;
-	bh=/2CPX9MHV7Aqeq+uASx+rpnPXl5+291iAjOW7FBC+uo=;
+	s=arc-20240116; t=1707206320; c=relaxed/simple;
+	bh=Q+1Kf/aWsPJExbeirdCIjchd2AduQGkArNWcfMm4/nY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OIBmcOUYICe+G6y6Av9H+tpW4Remu4gck26ihp+MTbuNIm3YftmbTFTEk6OoFZqenxlknlvvuFXbU/JHfeZwFqmVz+3q0kxRFjWFBOdZhm8mdNWLHsRupiTCtqenMKfgaQs+FapU1YUIOvjmpnAwvrdFyGC1lcYSt7rKJ0nk/ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ms5Or81a; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e05d958b61so94825b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 23:57:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707206255; x=1707811055; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OMH9c0uwCwrEo5X/INndbrdXCQ+5aEbq65KlNj4ZY9c=;
-        b=ms5Or81amq+3BDiJBwnnlUCXfzmfHIAmKvB7t7K7hFBQPp+mhA7ngmEMSbgRrjfxcb
-         ROVDYLjztwuQYF9SInQca237srdf1R+XinGRsIG+/sRRMqQdQbZJUfuFXOmu1DWiNwu6
-         2mDvabWH+45iLYsmqCp9/ao/dSqxV6499rbqQ/xMdvNl63ZRLmiwjywmn8FxoC9q96F+
-         IHikzL4hgu90F1EjYlQk6D6BGkhW5KinXQLJB7fseFyijrgzz+9gpfW7Mtk7QOncWDHH
-         t2pECtEhlVIbQveSinqiyf1o/baNXecRvJ6sujq05HmHISdfetBGc04SjjIWysZCYZal
-         ogZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707206255; x=1707811055;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OMH9c0uwCwrEo5X/INndbrdXCQ+5aEbq65KlNj4ZY9c=;
-        b=M5umPK3IdIhb2Xh2MkFeRJsYxSyfaSpOXbLnsdj26y2awvqOvpd5OjyzYrXCh0jdcm
-         Zjgaj6M5iqNL77xAFlNoELPLBdIgWZdSP0htaP8NHlQc58+bZsjlrT0/TVmKYAcg+cjf
-         i8aJKXU6nI5UgDT9jChcNsJBe270XqkUOb2tiRbBq+WkLdLTZSE2/yFuQwmiR1oHH1Fz
-         d/sR3DltNHaLkq7W0kAsOmqvNzDVXVBLXVB6QWz/vqLlWQ4XLmuj7rCD3qwwTdewXDmQ
-         ZMzI9IWvcY9e42E9qFFhKC9onLf/XGDC7P0gRRL2Gdon4JuVZv/ROxhUbay5aEmxyDrG
-         547Q==
-X-Gm-Message-State: AOJu0YxAkbtbPvHV3ti4NdoxnocghBl+IITAJRWFEtwmFUz7UodTBmQl
-	KoKXr3oZlfKnBsCA7YsZ3iHxhIWF1ndUofBZNZylQoZ9cAhp1d5jKhJ+09eIh0Lylg==
-X-Google-Smtp-Source: AGHT+IH8mk1rT8unC6J0EHmXbIiqdTgmGmIG6DrDHffTTJ4V5ffIatzIY+EaidDkWASYz1XavIRqEg==
-X-Received: by 2002:a05:6a20:9388:b0:19c:6cae:508e with SMTP id x8-20020a056a20938800b0019c6cae508emr1097369pzh.36.1707206255263;
-        Mon, 05 Feb 2024 23:57:35 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXL8XKEkyW7II7Yug/oBOsks1U2EoKemErqPsPfSHTTycF7fUKiNBrrBtbLMiARIXJ9vAY9JIxNj2FxjMV909DZdMsgyp1sOTmSnF0SrhS3ZF/PzBogyuBGMPo8qwRLOfrnE+0sIOtrnExdO4QPb4dCouFyKsD8tkX4mVcmUCRJ3WlBq5x4mUizB6/mJfQSXfpodApaahCpbCoAzB/YKTL4KhGZGjGHLFzo0vVl0eN7yFJjCi/GaT2FNj0kJ2YsVktpYHWWoyxMmxdAqcg7WhaniG1aIrFbedjjdH3j0LBaxNARADxs9tGmHcn25ZmVCuKkciQJuGqxt43C5fsn9HjhQvk+pGQZUzor4u0VG9b+EAurdCDea1Q5gi7A4Gk8elvimJverqyn/cn1
-Received: from [192.168.255.10] ([43.132.141.26])
-        by smtp.gmail.com with ESMTPSA id jd9-20020a170903260900b001d8f81ece98sm1200351plb.104.2024.02.05.23.57.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Feb 2024 23:57:34 -0800 (PST)
-Message-ID: <65525b4a-2626-4c8c-ad05-9942a683fe43@gmail.com>
-Date: Tue, 6 Feb 2024 15:57:29 +0800
+	 In-Reply-To:Content-Type; b=Kn24ftenEytcszNVr58QGHyzXq5/3gigenPBB1e1UjRAefaCIIYHKQwiPZSX7abdUdbpo1F0KPOAdQqq+pJD/p93DQx/Y98XldUYDEe8Wp6e3iuTXsrH1Ppd8Tg8PEFYxk++/P52Xrg8sh+3F1KiOkLLnTd3dXKtmM/kuDWwfII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MWq3E8hy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24892C433C7;
+	Tue,  6 Feb 2024 07:58:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707206319;
+	bh=Q+1Kf/aWsPJExbeirdCIjchd2AduQGkArNWcfMm4/nY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=MWq3E8hywyaP2tE5+YdfW5FDKgLaRZozOEc6fs+Ac4TMjDqezTQDmzCAhfNcHbZHQ
+	 +VimOgK8jAyBQzfaf6fZKC8j570xRyXrwOcqHwbLTrgG/GwDCsUyno90lwf+/jcZwf
+	 XulR6QD8kuZ+Sd77Al8dSYD/0uXVym6xX3Mb+ZkYWDw859Bh4wFg33vNRpRX+3lW8v
+	 txd6oc0YmJAqI6z/AU4/UaEe4BZkfkU5UeRb5QdBPCxZ5bzS2d9MHN0zXLVOtx4x+q
+	 8SuE37PcG4umTg+Iwbyy5BVp9sprMsJqywiGJyX+cdSSibA+Pm89+E+Z0RtJoA1vS9
+	 n2/ir1dhgkGjw==
+Message-ID: <81a9d08f-b02e-4251-b779-9d619bc31fdd@kernel.org>
+Date: Tue, 6 Feb 2024 08:58:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,114 +49,105 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] sched/fair: Check the SD_ASYM_PACKING flag in
- sched_use_asym_prio()
+Subject: Re: [PATCH v2 4/5] dt-bindings: usb/ti,am62-usb.yaml: Add PHY2
+ register space
+To: Roger Quadros <rogerq@kernel.org>, Thinh.Nguyen@synopsys.com
+Cc: gregkh@linuxfoundation.org, r-gunasekaran@ti.com, b-liu@ti.com,
+ afd@ti.com, nm@ti.com, srk@ti.com, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+References: <20240205141221.56076-1-rogerq@kernel.org>
+ <20240205141221.56076-5-rogerq@kernel.org>
 Content-Language: en-US
-To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>, alexs@kernel.org
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
- sshegde@linux.ibm.com
-References: <20240201115447.522627-1-alexs@kernel.org>
- <20240201115447.522627-4-alexs@kernel.org>
- <20240205223817.GB17602@ranerica-svr.sc.intel.com>
-From: kuiliang Shi <seakeel@gmail.com>
-In-Reply-To: <20240205223817.GB17602@ranerica-svr.sc.intel.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <20240205141221.56076-5-rogerq@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-
-
-On 2/6/24 6:38 AM, Ricardo Neri wrote:
-> On Thu, Feb 01, 2024 at 07:54:47PM +0800, alexs@kernel.org wrote:
->> From: Alex Shi <alexs@kernel.org>
->>
->> sched_use_asym_prio() checks whether CPU priorities should be used. It
->> makes sense to check for the SD_ASYM_PACKING() inside the function.
->> Since both sched_asym() and sched_group_asym() use sched_use_asym_prio(),
->> remove the now superfluous checks for the flag in various places"
+On 05/02/2024 15:12, Roger Quadros wrote:
+> Add PHY2 register space to DT binding documentation.
 > 
-> s/places"/places./
+> We use minItems: 1 as DT update will come later and we don't
+> want warnings for existing DTs.
 > 
->>
->> Signed-off-by: Alex Shi <alexs@kernel.org>
->> To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
->> To: Ben Segall <bsegall@google.com>
->> To: Steven Rostedt <rostedt@goodmis.org>
->> To: Dietmar Eggemann <dietmar.eggemann@arm.com>
->> To: Valentin Schneider <vschneid@redhat.com>
->> To: Daniel Bristot de Oliveira <bristot@redhat.com>
->> To: Vincent Guittot <vincent.guittot@linaro.org>
->> To: Juri Lelli <juri.lelli@redhat.com>
->> To: Peter Zijlstra <peterz@infradead.org>
->> To: Ingo Molnar <mingo@redhat.com>
->> ---
->>  kernel/sched/fair.c | 15 +++++++--------
->>  1 file changed, 7 insertions(+), 8 deletions(-)
->>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index 44fd5e2ca642..bd32efbea688 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -9741,6 +9741,9 @@ group_type group_classify(unsigned int imbalance_pct,
->>   */
->>  static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
->>  {
->> +	if (!(sd->flags & SD_ASYM_PACKING))
->> +		return false;
->> +
->>  	if (!sched_smt_active())
->>  		return true;
->>  
->> @@ -9940,11 +9943,9 @@ static inline void update_sg_lb_stats(struct lb_env *env,
->>  	sgs->group_weight = group->group_weight;
->>  
->>  	/* Check if dst CPU is idle and preferred to this group */
->> -	if (!local_group && env->sd->flags & SD_ASYM_PACKING &&
->> -	    env->idle != CPU_NOT_IDLE && sgs->sum_h_nr_running &&
->> -	    sched_group_asym(env, sgs, group)) {
->> +	if (!local_group && env->idle != CPU_NOT_IDLE && sgs->sum_h_nr_running &&
->> +			sched_group_asym(env, sgs, group))
+> So far this register space was not required but due to the
+> newly identified Errata i2409 [1] we need to poke this
+> register space.
 > 
-> You should align sched_group_asym() to !local_group.
-
-Thanks for all suggestion. I will take them in next version.
-
+> [1] https://www.ti.com/lit/er/sprz487d/sprz487d.pdf
 > 
->>  		sgs->group_asym_packing = 1;
->> -	}
->>  
->>  	/* Check for loaded SMT group to be balanced to dst CPU */
->>  	if (!local_group && smt_balance(env, sgs, group))
->> @@ -11040,9 +11041,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->>  		 * If balancing between cores, let lower priority CPUs help
->>  		 * SMT cores with more than one busy sibling.
->>  		 */
->> -		if ((env->sd->flags & SD_ASYM_PACKING) &&
->> -		    sched_asym(env->sd, i, env->dst_cpu) &&
->> -		    nr_running == 1)
->> +		if (sched_asym(env->sd, i, env->dst_cpu) && nr_running == 1)
->>  			continue;
->>  
->>  		switch (env->migration_type) {
->> @@ -11138,7 +11137,7 @@ asym_active_balance(struct lb_env *env)
->>  	 * the lower priority @env::dst_cpu help it. Do not follow
->>  	 * CPU priority.
->>  	 */
->> -	return env->idle != CPU_NOT_IDLE && (env->sd->flags & SD_ASYM_PACKING) &&
->> +	return env->idle != CPU_NOT_IDLE &&
->>  	       sched_use_asym_prio(env->sd, env->dst_cpu) &&
->>  	       (sched_asym_prefer(env->dst_cpu, env->src_cpu) ||
-> 
-> Perhaps you can rearrange the spaghetti of conditions to make better use of
-> the full 80-column line.
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+> Cc: Conor Dooley <conor+dt@kernel.org>
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
 
-80-column doesn't work here, will try 100 column.
+Not much improved. Still not tested. :(
 
-Thanks
-Alex
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
+
+Tools like b4 or scripts/get_maintainer.pl provide you proper list of
+people, so fix your workflow. Tools might also fail if you work on some
+ancient tree (don't, instead use mainline), work on fork of kernel
+(don't, instead use mainline) or you ignore some maintainers (really
+don't). Just use b4 and everything should be fine, although remember
+about `b4 prep --auto-to-cc` if you added new patches to the patchset.
+
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling. Performing review on untested code might be
+a waste of time, thus I will skip this patch entirely till you follow
+the process allowing the patch to be tested.
+
+Please kindly resend and include all necessary To/Cc entries.
+
+
+Best regards,
+Krzysztof
+
 
