@@ -1,201 +1,142 @@
-Return-Path: <linux-kernel+bounces-54188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-54189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7CE684AC15
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:14:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B344084AC16
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 03:15:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E08028787A
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:14:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AA3828796A
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 02:15:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B46D356B87;
-	Tue,  6 Feb 2024 02:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="IlRvU4P0"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5696656B72;
+	Tue,  6 Feb 2024 02:15:08 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04C6C56B65
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 02:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A874F57305;
+	Tue,  6 Feb 2024 02:15:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707185670; cv=none; b=YJurUZkBLnhFgIXKu4AKwcViUls08415IH34gU4JtvR/n6kIMKvaIPy+LtSMC9AmKdRGGXtiJN4j4tJJxSMReAkk3Ly8Vm6i66PrMPr5NUrFN8AR0+9M7vv2j5DSchU5ERsmcwFZ0a3LlveR/pEef9qCOSez0K7z8CRlA70Ypps=
+	t=1707185707; cv=none; b=tVPi6P0TbzVA6wYlgSbeib8kTtNkQOIWCKE22GzUaFDsm7QVbmJze+VmJ0PwbCMge3RpLr/SLtNijRVKTmxXhx6r1Znv4QQbEmhfmatcIOYvxWBUA/INq65nhskO+wRMU0coFJ8ruB3nCHr61dzvtnPrmHUTJ2v5TjklMEN+GYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707185670; c=relaxed/simple;
-	bh=o25zqqGgJb+/DuJjbPME/jHUMuD6KdaPfV2xdG2bIQQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Jd58BgePOtX5kutfrJXjERuM0R0oI6Z0S7hqXTj9gsJwmgH982ur3A0U9WUkpjf/4fhHK1QgE0+qlRXj72byNvvsntY1lAuAJxvOG+vEOF6Ln77Kjsh8xMQLqOEju+WS6DzfJmUkCX9q3Joaw8lP7jV5eKshd+e25uHBGYzkXnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=IlRvU4P0; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-603fd31f5c2so937687b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Feb 2024 18:14:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1707185667; x=1707790467; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TVFUfHzouElpgk6csojgEtg0jiRXTk/Brz1iEYU1QIQ=;
-        b=IlRvU4P0yFmjhF68oSMMR9AJj4Iuw/GrVjQCyWvoEcQqF4vygb8qaUF9NigxgWrkhn
-         IQTGMjKbwxOhrHXYq/pCXlnnm6H1oOJ212Lst9Ulfp5nZq4ycuEHT8kWr2xoPUiKwcZl
-         T8WVRrFW9QzooB/r8IXK6hpK3gl36UpYRSb0ylrQPWlNTC43QTAmCvACBKdYusyUOiKZ
-         udS7Nl9XYsrt8sirsSlcGEF7gAZUBg0k8FY06CGadcyG/HYoKkhD/NIXuqZZ5XCk6NSb
-         VCzyNbUJOsIUJhavRdjqRXmwbSJ3DIld2QPWRKljSPBxtlJMvVQxYa+IhZ1E1MElrMjk
-         1tMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707185667; x=1707790467;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TVFUfHzouElpgk6csojgEtg0jiRXTk/Brz1iEYU1QIQ=;
-        b=vBQAWlvNch2PmNXgpmH3AzyC86xdq9uRg85+CnOJuTW0t52wFjmvVjM3ZRePNUXwse
-         2rBfn+ebTodaEYq+wWlAqNJm6KlJhCHhi798nSgVGOGzpXpx+5flQQjqWQ9QrD99Ej4U
-         +7O2AQABsKHs/5omwuRQk2wfYMeJKoonl6O3QSu9qcjITZkWPZznKWGfTGtqQX8THCeA
-         0X5TQDMha19Bu0Sq1a42wvfh2OcmmcgoaPu9lJaUuf4latCiBhPYd9gTZ7fmK/x1PHIq
-         1axKtJ8u9IgvJOVoZ0p2WzgHHxGdGLn3g3CCZz5GfIRuaVXiM2/d+Bd7OMnvX0y5pyTM
-         Suew==
-X-Gm-Message-State: AOJu0YxhRUxDLotGMkMmvZXlTz82jLWklSfWr+kryEPE6wKQws9QGO0T
-	nxPMFX5TdnaARDy5oG3l8H7aeSmzwUWdbWl2odQLCqdsUaxPtHrN4GYKOEzTdr+bmsIz4t3e8Ch
-	snv04TjCno0fdEq4IrAsOLPC/7Yjy+i8jymrJHg==
-X-Google-Smtp-Source: AGHT+IHalCWBoPrTOGrwUPX186ylELseC9bB/PUuUSj1Plms06LKwNv5q6YlTmjKBZkRPZ64RAiuwyU6eEhZflnqY4g=
-X-Received: by 2002:a81:844e:0:b0:604:1d65:b66b with SMTP id
- u75-20020a81844e000000b006041d65b66bmr269588ywf.9.1707185666967; Mon, 05 Feb
- 2024 18:14:26 -0800 (PST)
+	s=arc-20240116; t=1707185707; c=relaxed/simple;
+	bh=YdqS32XCyLYeLaDr49R/Qc+9II3cXWhN9gsA6S3cX1g=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LpWqgvmE6q2+Exs0SUld29E1Rg2DuDvahQOyeRPGM9iWez/VIZZsHIiQx1CDjEWUBF5ID3dTimMA/Wf6KSvFVCVyD+86XMF3CAs1V6U0rLHw0c0bwiwqe0Yg5/vnGFiCdAkcA/Rqh+Cce0fv8jI6y/wLcKqHLWgqfBF9VWT+9DU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TTRdk2mfKz1vssp;
+	Tue,  6 Feb 2024 10:14:34 +0800 (CST)
+Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
+	by mail.maildlp.com (Postfix) with ESMTPS id E29891404F7;
+	Tue,  6 Feb 2024 10:15:01 +0800 (CST)
+Received: from M910t.huawei.com (10.110.54.157) by
+ kwepemd100002.china.huawei.com (7.221.188.184) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.28; Tue, 6 Feb 2024 10:15:00 +0800
+From: Changbin Du <changbin.du@huawei.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>
+CC: Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Namhyung
+ Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter
+	<adrian.hunter@intel.com>, <linux-kernel@vger.kernel.org>,
+	<linux-perf-users@vger.kernel.org>, Andi Kleen <ak@linux.intel.com>, Thomas
+ Richter <tmricht@linux.ibm.com>, <changbin.du@gmail.com>, Changbin Du
+	<changbin.du@huawei.com>
+Subject: [PATCH v6 0/5] perf: script: Intro capstone disasm engine to show instruction trace
+Date: Tue, 6 Feb 2024 10:14:33 +0800
+Message-ID: <20240206021438.768731-1-changbin.du@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202-alice-file-v4-0-fc9c2080663b@google.com> <20240202-alice-file-v4-1-fc9c2080663b@google.com>
-In-Reply-To: <20240202-alice-file-v4-1-fc9c2080663b@google.com>
-From: Trevor Gross <tmgross@umich.edu>
-Date: Mon, 5 Feb 2024 21:14:15 -0500
-Message-ID: <CALNs47vWo1Ae2PJ+80xm1eB057DDsF+SbmVun-UHc9+vzpr7nQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/9] rust: types: add `NotThreadSafe`
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemd100002.china.huawei.com (7.221.188.184)
 
-On Fri, Feb 2, 2024 at 5:56=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> wr=
-ote:
->
-> This introduces a new marker type for types that shouldn't be thread
-> safe. By adding a field of this type to a struct, it becomes non-Send
-> and non-Sync, which means that it cannot be accessed in any way from
-> threads other than the one it was created on.
->
-> This is useful for APIs that require globals such as `current` to remain
-> constant while the value exists.
->
-> We update two existing users in the Kernel to use this helper:
->
->  * `Task::current()` - moving the return type of this value to a
->    different thread would not be safe as you can no longer be guaranteed
->    that the `current` pointer remains valid.
->  * Lock guards. Mutexes and spinlocks should be unlocked on the same
->    thread as where they were locked, so we enforce this using the Send
->    trait.
->
-> There are also additional users in later patches of this patchset. See
-> [1] and [2] for the discussion that led to the introducion of this
+This series introduces capstone disassembler engine to print instructions of
+Intel PT trace, which was printed via the XED tool.
 
-s/introducion/introduction
+The advantages compared to XED tool:
+    * Support arm, arm64, x86-32, x86_64, s390 (more could be supported),
+      xed only for x86_64.
+    * More friendly to read. Immediate address operands are shown as symbol+offs.
 
-> patch.
->
-> Link: https://lore.kernel.org/all/nFDPJFnzE9Q5cqY7FwSMByRH2OAn_BpI4H53NQf=
-WIlN6I2qfmAqnkp2wRqn0XjMO65OyZY4h6P4K2nAGKJpAOSzksYXaiAK_FoH_8QbgBI4=3D@pro=
-ton.me/ [1]
-> Link: https://lore.kernel.org/all/nFDPJFnzE9Q5cqY7FwSMByRH2OAn_BpI4H53NQf=
-WIlN6I2qfmAqnkp2wRqn0XjMO65OyZY4h6P4K2nAGKJpAOSzksYXaiAK_FoH_8QbgBI4=3D@pro=
-ton.me/ [2]
-> Suggested-by: Benno Lossin <benno.lossin@proton.me>
-> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> ---
->  rust/kernel/sync/lock.rs | 15 +++++++++++----
->  rust/kernel/task.rs      | 10 ++++++----
->  rust/kernel/types.rs     | 17 +++++++++++++++++
->  3 files changed, 34 insertions(+), 8 deletions(-)
->
-> diff --git a/rust/kernel/sync/lock.rs b/rust/kernel/sync/lock.rs
-> index 149a5259d431..d08d9d32915a 100644
-> --- a/rust/kernel/sync/lock.rs
-> +++ b/rust/kernel/sync/lock.rs
-> @@ -6,8 +6,15 @@
->  //! spinlocks, raw spinlocks) to be provided with minimal effort.
->
->  use super::LockClassKey;
-> -use crate::{bindings, init::PinInit, pin_init, str::CStr, types::Opaque,=
- types::ScopeGuard};
-> -use core::{cell::UnsafeCell, marker::PhantomData, marker::PhantomPinned}=
-;
-> +use crate::{
-> +    bindings,
-> +    init::PinInit,
-> +    pin_init,
-> +    str::CStr,
-> +    types::ScopeGuard,
-> +    types::{NotThreadSafe, Opaque},
+Display raw instructions:
+    $ sudo perf record --event intel_pt//u -- ls
+    $ sudo perf script --insn-trace
+                perf 17423 [000] 423271.557970005:      7f2d95f16217 __GI___ioctl+0x7 (/lib/x86_64-linux-gnu/libc-2.27.so) insn: 48 3d 01 f0 ff ff
+                perf 17423 [000] 423271.557970005:      7f2d95f1621d __GI___ioctl+0xd (/lib/x86_64-linux-gnu/libc-2.27.so) insn: 73 01
+                perf 17423 [000] 423271.557970338:      7f2d95f1621f __GI___ioctl+0xf (/lib/x86_64-linux-gnu/libc-2.27.so) insn: c3
+                perf 17423 [000] 423271.557970338:      5593ad3346d7 perf_evsel__enable_cpu+0x97 (/work/linux/tools/perf/perf) insn: 85 c0
+                perf 17423 [000] 423271.557970338:      5593ad3346d9 perf_evsel__enable_cpu+0x99 (/work/linux/tools/perf/perf) insn: 75 12
+                perf 17423 [000] 423271.557970338:      5593ad3346db perf_evsel__enable_cpu+0x9b (/work/linux/tools/perf/perf) insn: 49 8b 84 24 a8 00 00 00
+                perf 17423 [000] 423271.557970338:      5593ad3346e3 perf_evsel__enable_cpu+0xa3 (/work/linux/tools/perf/perf) insn: 48 8b 50 20
 
-Formatting nit: ScopeGuard could probably be placed in the same group
-as NotThreadSafe & Opaque
+Display mnemonic instructions:
+    $ sudo perf script --insn-trace=disasm
+                perf 17423 [000] 423271.557970005:      7f2d95f16217 __GI___ioctl+0x7 (/lib/x86_64-linux-gnu/libc-2.27.so)		cmpq $-0xfff, %rax
+                perf 17423 [000] 423271.557970005:      7f2d95f1621d __GI___ioctl+0xd (/lib/x86_64-linux-gnu/libc-2.27.so)		jae __GI___ioctl+0x10
+                perf 17423 [000] 423271.557970338:      7f2d95f1621f __GI___ioctl+0xf (/lib/x86_64-linux-gnu/libc-2.27.so)		retq
+                perf 17423 [000] 423271.557970338:      5593ad3346d7 perf_evsel__enable_cpu+0x97 (/work/linux/tools/perf/perf)		testl %eax, %eax
+                perf 17423 [000] 423271.557970338:      5593ad3346d9 perf_evsel__enable_cpu+0x99 (/work/linux/tools/perf/perf)		jne perf_evsel__enable_cpu+0xad
+                perf 17423 [000] 423271.557970338:      5593ad3346db perf_evsel__enable_cpu+0x9b (/work/linux/tools/perf/perf)		movq 0xa8(%r12), %rax
+                perf 17423 [000] 423271.557970338:      5593ad3346e3 perf_evsel__enable_cpu+0xa3 (/work/linux/tools/perf/perf)		movq 0x20(%rax), %rdx
+                perf 17423 [000] 423271.557970338:      5593ad3346e7 perf_evsel__enable_cpu+0xa7 (/work/linux/tools/perf/perf)		cmpl %edx, %ebx
+                perf 17423 [000] 423271.557970338:      5593ad3346e9 perf_evsel__enable_cpu+0xa9 (/work/linux/tools/perf/perf)		jl perf_evsel__enable_cpu+0x60
+                perf 17423 [000] 423271.557970338:      5593ad3346eb perf_evsel__enable_cpu+0xab (/work/linux/tools/perf/perf)		xorl %eax, %eax
 
-> [...]
-> +
-> +/// Zero-sized type to mark types not [`Send`].
-> +///
-> +/// Add this type as a field to your struct if your type should not be s=
-ent to a different task.
-> +/// Since [`Send`] is an auto trait, adding a single field that is `!Sen=
-d` will ensure that the
-> +/// whole type is `!Send`.
-> +///
-> +/// If a type is `!Send` it is impossible to give control over an instan=
-ce of the type to another
-> +/// task. This is useful when a type stores task-local information for e=
-xample file descriptors.
+v6:
+  - make '-F +disasm' fatal if libcapstone is not supported. (Adrian Hunter)
+  - display with perf version --build-options. (Adrian Hunter)
+  - exclude libcapstone from make_minimal. (Adrian Hunter)
+v5:
+  - fixes and improments suggested by Adrian Hunter
+v4:
+  - rename 'insn_disam' to 'disasm' (Adrian Hunter)
+v3:
+  - fix s390 detection. (Thomas Richter)
+v2:
+  - add a new field 'insn_disam' instead of changing the default output.
+  - preserve the old --xed option.
 
-I initially read this thinking it meant to include this type if your
-struct also had a FD rather than being part of the FD. Maybe
+Changbin Du (5):
+  perf: build: introduce the libcapstone
+  perf: util: use capstone disasm engine to show assembly instructions
+  perf: script: add field 'disasm' to display mnemonic instructions
+  perf: script: add raw|disasm arguments to --insn-trace option
+  perf: script: prefer capstone to XED
 
-    This is useful to include in types that store or reference task-local
-    information. A file descriptor is an example of one such type.
+ tools/build/Makefile.feature               |   2 +
+ tools/build/feature/Makefile               |   4 +
+ tools/build/feature/test-all.c             |   4 +
+ tools/build/feature/test-libcapstone.c     |  11 ++
+ tools/perf/Documentation/perf-intel-pt.txt |  14 ++-
+ tools/perf/Documentation/perf-script.txt   |  20 +--
+ tools/perf/Makefile.config                 |  21 ++++
+ tools/perf/Makefile.perf                   |   3 +
+ tools/perf/builtin-script.c                |  45 +++++--
+ tools/perf/builtin-version.c               |   1 +
+ tools/perf/tests/make                      |   4 +-
+ tools/perf/ui/browsers/res_sample.c        |   2 +-
+ tools/perf/ui/browsers/scripts.c           |   2 +-
+ tools/perf/util/Build                      |   1 +
+ tools/perf/util/print_insn.c               | 134 +++++++++++++++++++++
+ tools/perf/util/print_insn.h               |  16 +++
+ 16 files changed, 257 insertions(+), 27 deletions(-)
+ create mode 100644 tools/build/feature/test-libcapstone.c
+ create mode 100644 tools/perf/util/print_insn.c
+ create mode 100644 tools/perf/util/print_insn.h
 
-> +pub type NotThreadSafe =3D PhantomData<*mut ()>;
-> +
-> +/// Used to construct instances of type [`NotThreadSafe`] similar to how=
- we construct
-> +/// `PhantomData`.
+-- 
+2.25.1
 
-I think it sounds slightly better reworded from personal to passive, i.e.
-
-    ... similar to how `PhantomData` is constructed.
-
-> +/// [`NotThreadSafe`]: type@NotThreadSafe
-> +#[allow(non_upper_case_globals)]
-> +pub const NotThreadSafe: NotThreadSafe =3D PhantomData;
-> --
-> 2.43.0.594.gd9cf4e227d-goog
-
-This looks good, sounds nice to make the intent more clear. Nothing
-that isn't optional, so
-
-Reviewed-by: Trevor Gross <tmgross@umich.edu>
 
