@@ -1,243 +1,182 @@
-Return-Path: <linux-kernel+bounces-55097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 075A684B7AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8083184B7AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 15:21:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81C7A1F274EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:21:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04C001F262FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  6 Feb 2024 14:21:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873C713249E;
-	Tue,  6 Feb 2024 14:21:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8809F132C2C;
+	Tue,  6 Feb 2024 14:21:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="b6ZaAiXl"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FlXAsXjU"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9D14132480
-	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:21:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B15132C0A
+	for <linux-kernel@vger.kernel.org>; Tue,  6 Feb 2024 14:21:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707229275; cv=none; b=iJXLe/jlehXCUsj2XzwzeVLuMUrGed1YJbjUFmDpGAzULztWAY3x9sPWoQlDnCidPe2r6qMRrv/94luNuJEiQsUHbwT0Pq1LRRqF7GJG6NWCKiLSoSYuS0wSGjzfSIpZ5fB0PIMy5e6PkWRu36cYq3Qd0YZ8WVcps0xNP6UJ2TA=
+	t=1707229279; cv=none; b=bPkPqymiXgRh7fAmK4GO8+69y35T91LbwOs3gIGjK1BOSQVwO4p9kxoUOsUn3kaVyYhW5op4Du5CxJmFDeMzBQ4/EUAMhxorCpgZOcnqPDkdKj88AsirCo1+hEOkNemSaVkR2NiJ+edlu5AxHqAMePA797ORVhPlj49h+Mh6lQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707229275; c=relaxed/simple;
-	bh=CUnjCo76/LggIQyrh7hM9viaEWjGMwz5mjjc2J93re8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BJD64DVHNPeyzXMcEG7qZw18W8E6oMxL7kqDR4jzo/5avlt4MuFV1XXTkPyVDZJjCp0JXuIrKarNzkczjUS3KYamD72c++g23mxe6PLnEnMZUTVSfh3C215EmtoMuXo+A7n8V5fA2Qg5boqiqBF3LCvcdm1SiD9Z4DfptOPfLKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=b6ZaAiXl; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40fd3b294beso7038005e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 06:21:13 -0800 (PST)
+	s=arc-20240116; t=1707229279; c=relaxed/simple;
+	bh=LiejjhJldns9/CwXgjLlx7FUsnvu4YOFLFx4q37VyFE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qiM0Sc21Hr9DtLIF9icyd2nsmVnddUhskK9p8+ygeiL3JpI68CgGvN1d3RQEhW0W9eGfHbYFGZaySnxqCKkQRWbRzSkOjeePZA0+jA9WUE8kA5t0ZBDMPeCAb3N6GxaR2geNYYoczuas28EneWWh/gW6K28wN9zt4kzzqk9qwfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FlXAsXjU; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40fc6343bd2so38194075e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 06:21:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1707229272; x=1707834072; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7cH4cinVRUE3M6YMj8iFULuCrqzQIuc0TJaFv9jLZwc=;
-        b=b6ZaAiXl3AxUrRvCcysvmV8Wc8teJaKTglNBOc+/CwDr4QZ5qOGkzu91L4UPQq0cmQ
-         20zRLo4DLIuBKqMUCkaG9TqXu0A/ws50VZrQwd2upIJMNgqHCfCtRK/vXiRC6ixmX4YC
-         fQ35QJuPO8BruD0C8gOR64yHl7aw+zNO6dC/M=
+        d=linaro.org; s=google; t=1707229276; x=1707834076; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jEVHEQG5cx1jR636vp5ThpG19lmZOiX7ZO1B1ztw5qg=;
+        b=FlXAsXjU5V60LX0hIUlwL2S/+N7Fx+teH5f7DLFS+aI0JPcS6ihJ5dWl53FGtUBie1
+         zGF6O2xztYdkf5H1lSOCvC7TV4SAjD4cpC2CBJ9Ju7BrT/+xd8nw9lhqVDKckmrw38xx
+         1neQapXimFsgByb13RcfcsmG49asqZ1VXhcZUW8Wgdzb13ISkV3nIJdNF7UiM2AYnfRb
+         cl229iPkI1mVEiz01oCmk1jsZtcw6FvOkAQ0DLRvwzUdrBhSjNdQn9/hh2e05is5M0dk
+         TmEdxGovwDih+mLVxxttgRZRqfZHiLQKfZgGZzTpCEw0aJ1KkjqEdybQROBPbotV4Wd0
+         K+lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707229272; x=1707834072;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1707229276; x=1707834076;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7cH4cinVRUE3M6YMj8iFULuCrqzQIuc0TJaFv9jLZwc=;
-        b=CSoM1bD5KW/SXGdR0qdjW2Qb8yRJfcu9s3H0HXjMvEVzNk2gmy1kUd7Lc66jUXSS3p
-         kflqGq7QnF62GSCP7ITD3sLB5HOE/BCjuEzJYsGZB1LCrz61+qm2EP4o8NBcTSJ0V0AN
-         9UJ4uw43CaaTBudejE6MnyYervlFZhtQAD8V2L7H7U0DGkMvJNaS7k2Jnlk4W4wZsuEZ
-         GWdfRoOEjqxEcD+2UPbaJLqT5ClposAnjeD60v+J3Bl0DcZKC5XEdkRNAs5LIsf+a4lW
-         GsDppi2wFKk0RfHu4P1QsLWdvI02qcWDIGLwAMnn77PpCtlkq3xxqkOvUPWjcePF10/3
-         M2UQ==
-X-Gm-Message-State: AOJu0Yw83706yIPGj6/kwwHHA+r6yqF4suETh3nCGvgsY1jV+dt82F7i
-	yYWPn6xk2l/sV9ztUWew+xP6lYU0VLXiJ89vpM5KR2IyjFiMtkTYqovaiLqq/ac=
-X-Google-Smtp-Source: AGHT+IGJg0nk0Vq5ScK0sm2/0DnUB3Eu8fRzGY48sYNzv3HCToc0vt80A464uq3LIaKMXGNrCimq4A==
-X-Received: by 2002:a05:600c:198f:b0:40f:bda6:ccc0 with SMTP id t15-20020a05600c198f00b0040fbda6ccc0mr2335730wmq.1.1707229271976;
-        Tue, 06 Feb 2024 06:21:11 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWvfccj3dIELWNuZ5cbWBfo92YLAuBIdF79eWwOGcB5Kom+Uk02ixbChm8cD/5S6PttjMHAhAtdhWg1I0WLwY/bovMBqa01X/ydI4/Ig8k5HRGLyS+eFur1ry+MrZFzkILNN14RV5o+WbX3ny9ACTzkp6SzB/DKi0CNw9mP3CI9F5BsoGXFMAAi4nqqACvjpBEbqd0TcqZjWyPBB5BvINbp8fkWh0gHzpK5KSg90Nc2pMJqW3D6d2i8Tjih2gLR34XcCS6j2WXWqMMgskMN/iNLn+w2B8I1+eBwEzzkbBpCyL8UzYvA35lskW7YS7oE
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id u21-20020a05600c139500b0040e813f1f31sm2212377wmf.25.2024.02.06.06.21.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 06:21:11 -0800 (PST)
-Date: Tue, 6 Feb 2024 15:21:09 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Daniel van Vugt <daniel.van.vugt@canonical.com>
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Helge Deller <deller@gmx.de>, Daniel Vetter <daniel@ffwll.ch>,
-	Jani Nikula <jani.nikula@intel.com>,
-	Danilo Krummrich <dakr@redhat.com>, linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] fbcon: Defer console takeover for splash screens
- to first switch
-Message-ID: <ZcJAVSyH3gRYx3EG@phenom.ffwll.local>
-Mail-Followup-To: Daniel van Vugt <daniel.van.vugt@canonical.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Helge Deller <deller@gmx.de>, Jani Nikula <jani.nikula@intel.com>,
-	Danilo Krummrich <dakr@redhat.com>, linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <f037df4a-8a97-4fcd-b196-43f484b63d8d@amd.com>
- <20240206101100.25536-1-daniel.van.vugt@canonical.com>
- <20240206101100.25536-2-daniel.van.vugt@canonical.com>
+        bh=jEVHEQG5cx1jR636vp5ThpG19lmZOiX7ZO1B1ztw5qg=;
+        b=eeDZwP/xFvgiS3RXrsHHcroS/uBXdkKnBJBxnqXOs8tZhtXB1D8g7Yjm1C12dMYivF
+         TKqzngHSieEY/XeG3IJV/yqR6DOQI5rx7/lvWE1n6R2vw+HWnMPT6ejBg1Xz0umVMoFd
+         +AroPIL84F2muQpc1aQUgIZtw0SLw1K+2/BTfVFgvhDzCL0RYjHjLPTEQ97NcJICp2C+
+         QklWrE+W16JrWTRukFczqR4fQfs2yxcsOmXIvaDTZTaeJHT9OLh0cTsWmBQFsEF1A1BO
+         SFxNqXRhb5amJuv5l21pPEX3X+KnOcLZ4CcjcNTTPotnHEdIEMKczcR8mgCFw+2CDWeK
+         TIeA==
+X-Gm-Message-State: AOJu0YxMTJFIgkq3gn6QizhlgNaRdhCfLBgWtcmdjCqRHXp9O6uH8ieT
+	MON+T0KZGPil/qx6dgzMuarcBWoQ57Qpv4+peI12CY1ectQgXk1bAP8vO4r/V5c=
+X-Google-Smtp-Source: AGHT+IGPshfEwBYwLXXWgXo6v6L8NEAjSjC6TQD/K2/S6Mq7EkLsOS1fm8ey4YLENSjuiUe8VW9hpw==
+X-Received: by 2002:a05:600c:468d:b0:40f:d34d:d4ea with SMTP id p13-20020a05600c468d00b0040fd34dd4eamr2185121wmo.31.1707229276029;
+        Tue, 06 Feb 2024 06:21:16 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUrNneTBvrxnJRYl+lqM/RpXBGxO8LDn2U/Srp5BgyTWe/B3JcUn7MusEerL9dsRVS8AcsucZ0WYGaGH+sg6qf8M/+7PaZpnwp6zJYI1wc9x1v1N5tqFICBbx3HiUMxl4kEf0NVO9kHIZqpLMpVUSLuYqHtX9QbIlU0iTxAZbBL6muIa4Lqwf4U0LroCD0fj1B65j9I/nM0lQmHTHkjdYbyXZ+SCsvWF1w45e8osSPElBLLW6UXLP9gwk88ninfxYcEkdH84UKeiBMoLGjt6vNzL+1nt+XDEWFiCvpcOojqZUsaCrAuWDfks9uJhdmzZK5wyvpJ3FPslS0Igy9CBwGzbXm9N1OPfa891NtEqnZFU37Tr9FGdnwe5x7zAg==
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id fm5-20020a05600c0c0500b0040ef702a338sm2205087wmb.25.2024.02.06.06.21.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 06:21:15 -0800 (PST)
+Message-ID: <004dbeb3-f863-416c-a4e4-18739302ae58@linaro.org>
+Date: Tue, 6 Feb 2024 15:21:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240206101100.25536-2-daniel.van.vugt@canonical.com>
-X-Operating-System: Linux phenom 6.6.11-amd64 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] dt-bindings: usb: typec-tcpci: add tcpci compatible
+ binding
+Content-Language: en-US
+To: Marco Felsch <m.felsch@pengutronix.de>, gregkh@linuxfoundation.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux@roeck-us.net, heikki.krogerus@linux.intel.com
+Cc: linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de
+References: <20240205164316.805408-1-m.felsch@pengutronix.de>
+ <20240205164316.805408-2-m.felsch@pengutronix.de>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240205164316.805408-2-m.felsch@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 06, 2024 at 06:10:51PM +0800, Daniel van Vugt wrote:
-> Until now, deferred console takeover only meant defer until there is
-> output. But that risks stepping on the toes of userspace splash screens,
-> as console messages may appear before the splash screen. So check the
-> command line for the expectation of userspace splash and if present then
-> extend the deferral until after the first switch.
+On 05/02/2024 17:43, Marco Felsch wrote:
+> This binding descripes the generic TCPCI specification [1]. So add the
+
+Typo: describes.
+
+No, this binding describes PTN5110, not generic TCPCI. This is not
+accurate commit description.
+
+> generic binding support since which can be used if an different TCPC is
+> used compatible which is compatible to [1].
+
+Sorry, cannot parse it. Please run it through native speaker, Google
+grammar check, ChatGPT or some other way.
+
 > 
-> V2: Added Kconfig option instead of hard coding "splash".
+> [1] https://www.usb.org/sites/default/files/documents/usb-port_controller_specification_rev2.0_v1.0_0.pdf
 > 
-> Closes: https://bugs.launchpad.net/bugs/1970069
-> Cc: Mario Limonciello <mario.limonciello@amd.com>
-> Signed-off-by: Daniel van Vugt <daniel.van.vugt@canonical.com>
+> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 > ---
->  drivers/video/console/Kconfig    | 13 +++++++++++
->  drivers/video/fbdev/core/fbcon.c | 38 ++++++++++++++++++++++++++++++--
->  2 files changed, 49 insertions(+), 2 deletions(-)
+>  Documentation/devicetree/bindings/usb/nxp,ptn5110.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/video/console/Kconfig b/drivers/video/console/Kconfig
-> index bc31db6ef7..a6e371bfb4 100644
-> --- a/drivers/video/console/Kconfig
-> +++ b/drivers/video/console/Kconfig
-> @@ -138,6 +138,19 @@ config FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
->  	  by the firmware in place, rather then replacing the contents with a
->  	  black screen as soon as fbcon loads.
+> diff --git a/Documentation/devicetree/bindings/usb/nxp,ptn5110.yaml b/Documentation/devicetree/bindings/usb/nxp,ptn5110.yaml
+> index eaedb4cc6b6c..7bd7bbbac9e0 100644
+> --- a/Documentation/devicetree/bindings/usb/nxp,ptn5110.yaml
+> +++ b/Documentation/devicetree/bindings/usb/nxp,ptn5110.yaml
+> @@ -11,7 +11,9 @@ maintainers:
 >  
-> +config FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION
-> +	string "Framebuffer Console Deferred Takeover Condition"
-> +	depends on FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
-> +	default "splash"
-> +	help
-> +	  If enabled this defers further the framebuffer console taking over
-> +	  until the first console switch has occurred. And even then only if
-> +	  text has been output, and only if the specified parameter is found
-> +	  on the command line. This ensures fbcon does not interrupt userspace
-> +	  splash screens such as Plymouth which may be yet to start rendering
-> +	  at the time of the first console output. "splash" is the simplest
-> +	  distro-agnostic condition for this that Plymouth checks for.
+>  properties:
+>    compatible:
+> -    const: nxp,ptn5110
+> +    enum:
+> +      - nxp,ptn5110
+> +      - tcpci
 
-Hm this seems a bit strange since a lot of complexity that no one needs,
-also my impression is that it's rather distro specific how you want this
-to work. So why not just a Kconfig option that lets you choose how much
-you want to delay fbcon setup, with the following options:
+I don't think this is correct. First, this is binding for NXP chip, so
+why generic implementation should be here? I would expect it in its own
+dedicated binding.
 
-- no delay at all
-- dely until first output from the console (which then works for distros
-  which set a log-level to suppress unwanted stuff)
-- delay until first vt-switch. In that case I don't think we also need to
-  delay for first output, since vt switch usually means you'll get first
-  output right away (if it's a vt terminal) or you switch to a different
-  graphical console (which will keep fbcon fully suppressed on the drm
-  side).
+Second, we rarely want generic compatibles. Care to share more details?
+Are all details expected to follow spec, without need of quirks?
 
-I think you could even reuse the existing
-CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER for this, and then just
-compile-time select which kind of notifier to register (well plus the
-check for "splash" on the cmdline for the vt switch one I guess).
+Best regards,
+Krzysztof
 
-Thoughts?
-
-Cheers, Sima
-
-
-> +
->  config STI_CONSOLE
->  	bool "STI text console"
->  	depends on PARISC && HAS_IOMEM
-> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-> index 63af6ab034..98155d2256 100644
-> --- a/drivers/video/fbdev/core/fbcon.c
-> +++ b/drivers/video/fbdev/core/fbcon.c
-> @@ -76,6 +76,7 @@
->  #include <linux/crc32.h> /* For counting font checksums */
->  #include <linux/uaccess.h>
->  #include <asm/irq.h>
-> +#include <asm/cmdline.h>
->  
->  #include "fbcon.h"
->  #include "fb_internal.h"
-> @@ -3358,6 +3359,26 @@ static int fbcon_output_notifier(struct notifier_block *nb,
->  
->  	return NOTIFY_OK;
->  }
-> +
-> +#ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION
-> +static int initial_console;
-> +static struct notifier_block fbcon_switch_nb;
-> +
-> +static int fbcon_switch_notifier(struct notifier_block *nb,
-> +				 unsigned long action, void *data)
-> +{
-> +	struct vc_data *vc = data;
-> +
-> +	WARN_CONSOLE_UNLOCKED();
-> +
-> +	if (vc->vc_num != initial_console) {
-> +		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
-> +		dummycon_register_output_notifier(&fbcon_output_nb);
-> +	}
-> +
-> +	return NOTIFY_OK;
-> +}
-> +#endif
->  #endif
->  
->  static void fbcon_start(void)
-> @@ -3370,7 +3391,16 @@ static void fbcon_start(void)
->  
->  	if (deferred_takeover) {
->  		fbcon_output_nb.notifier_call = fbcon_output_notifier;
-> -		dummycon_register_output_notifier(&fbcon_output_nb);
-> +#ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION
-> +		if (cmdline_find_option_bool(boot_command_line,
-> +		      CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION)) {
-> +			initial_console = fg_console;
-> +			fbcon_switch_nb.notifier_call = fbcon_switch_notifier;
-> +			dummycon_register_switch_notifier(&fbcon_switch_nb);
-> +		} else
-> +#endif
-> +			dummycon_register_output_notifier(&fbcon_output_nb);
-> +
->  		return;
->  	}
->  #endif
-> @@ -3417,8 +3447,12 @@ void __exit fb_console_exit(void)
->  {
->  #ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
->  	console_lock();
-> -	if (deferred_takeover)
-> +	if (deferred_takeover) {
->  		dummycon_unregister_output_notifier(&fbcon_output_nb);
-> +#ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION
-> +		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
-> +#endif
-> +	}
->  	console_unlock();
->  
->  	cancel_work_sync(&fbcon_deferred_takeover_work);
-> -- 
-> 2.43.0
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
 
