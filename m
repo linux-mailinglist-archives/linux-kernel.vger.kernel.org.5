@@ -1,110 +1,126 @@
-Return-Path: <linux-kernel+bounces-57234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF8C684D569
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:08:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 445E784D56E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:09:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39CC72850CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:08:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B662CB22E0E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:09:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4BD137C2F;
-	Wed,  7 Feb 2024 21:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8C5113849B;
+	Wed,  7 Feb 2024 21:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWFJeGWk"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fjHfDvJC"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 474B412BEA4;
-	Wed,  7 Feb 2024 21:32:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB0F137C59;
+	Wed,  7 Feb 2024 21:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341547; cv=none; b=QtfG/LWwh5a9G44xFiYq2EvixZaZcTEZ7wLPmAWqXxpqf3xhufu9km9gT3ARlhmY1X0tJ+S+VPuu7LvPJFrvnBhB8JAqjyTS072Dbl2OjZCQIBZSlFvJ2rGNGIfwc7uR5P+9d1av6/Dophsd+ve+XAFDu1rZIGFauaq+1KE/7xY=
+	t=1707341582; cv=none; b=MHKeU5aOU7DTKHIHPQZLQF0kQ2bQkCqKKWivqIO6DjS/6IH8B+e8Zr92bA/4CQGAEXx1fkrYm7k517e2eS0Qa+Gu1bCi+BAU7/x7YqYDP1Oq1VyAppyNTjs5cN3W+zqqmqP1nFRCNRlx9/YBk1aVwEPB0Hj05bcIUlGJtkIHcbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341547; c=relaxed/simple;
-	bh=9+hKGsDihNv76nJokNTTmBYkhDtrKwveNJLjYVSzZkk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n3ZX+ZkGhe3WnlZpqCuiJaS6ZiaDAr+v1kPxbXJhR281PNO8hFPWam7Hjs8sCVZ23p1xsL6MXZFLUEWudnxvtcV83sDa/GFyDNJoVsd5jD/9wlrXQ4MzkNq99OGk3JxERTY6lEn0zSzYFL76PkbfNLIDShBzSRJaELfRmKvPFIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YWFJeGWk; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	s=arc-20240116; t=1707341582; c=relaxed/simple;
+	bh=BgJr60RLz7YbrRe/F2VbrbzqYVEwhrQILqWUNZqI7sY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PEPqoZfj6KagSS0jqcD4hPUhBVwVQfrLx+IPjUMDrYJ5rD8DgrFDQeDDTPMc3e+vm6tVs0yDvLXlKM9BzzMcqgo8capwEEayJraXwJkZEM4lmop5OOeo/b14o2jSFWmh61RuZ4QRQDGp/TGjefm8O1T3dTLCy0lcCIcUOT0K8oE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fjHfDvJC; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d8aadc624dso9222885ad.0;
-        Wed, 07 Feb 2024 13:32:26 -0800 (PST)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3864258438so53158266b.0;
+        Wed, 07 Feb 2024 13:33:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707341545; x=1707946345; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jY7jlxemTvyAAOoBoDUnhvdei8qq3JR7h5T3KXgL/2E=;
-        b=YWFJeGWkLzNxtOnGj4OgLaHImAC2XqZ8ZcZq8+FZcfxyERqUW0pSi9GVOZw2hwgJt0
-         f+4ElotY09o8tD5NkLhypQH+IMZ0sYs6XYOn/gDqsUFtfBwU5YLx05VyWhBsqaTsuzpS
-         mEG7gudmydEdrhm66oTcVh2xx/eqDCEtjYhqjDp8eklkZLQpWIqvfpPdelC9KYJ96LoS
-         Hm9NYjuqKFL04jamLG7upflY7r86hGkeqzy8JO9yImABh+QUCPUtVb2ch2lgXJ6tEBvO
-         vJUTQiR7+jVRleJTrs9l3n5pCBs/3tRiwWieMj7ecYbxrn5NdIz4ggkwiv3j9iC7oJ3w
-         vo5w==
+        d=gmail.com; s=20230601; t=1707341578; x=1707946378; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ypOGpo3jI1ua7j3ovv/PFLVTfWwn/rZoGHLQKXG/FiQ=;
+        b=fjHfDvJC4kfQXssmpPHJmYxl0M4JHZwyec+LoWc+P+a4ZYE5tknxva7pmA2B1/9hlO
+         lNrUULONVAYQjCqfLQOQm1Li1UhMCJMxR1fuo+bq0ASvB+RhCxSzdOscS7VMy/IBU8XX
+         n+b3QnEGoywbPhK7BpnJPQSHmGns4ZqQ/PQ5tZcObRbMcYPVcm8lEfys+m4PyUIB95Ru
+         EdPTX9yEKKjB9C+E1wl337kqXZdcP6BkEuPwDjhoA/pXi+wh59OWRPyrjNmDZODLemDg
+         Kftj0Q5NmgAArQadZmsOjPy2RTHJ7yMOtQcqBKQ6QvSLnOqmt5XHPZCKqltS0f8ZIXCd
+         fn7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707341545; x=1707946345;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jY7jlxemTvyAAOoBoDUnhvdei8qq3JR7h5T3KXgL/2E=;
-        b=d9lkvQOhu8nT6AsEb45hrANytE10GtSBFiBE0IQ1rwTCc64n9B1pX3QahUNFlUSU6X
-         YCsuQh9KKGEc9/szFP9QLylqmbV/Usiip3DIV/UpQgQcEcDQfkKA8BbbRPmABVo/IByF
-         cuS7PQfwe43stDy4oWaS2oGBPco6WAGbI468WV0x2kjP1UwEACI19s7QQ3tVP1fsfg10
-         6auZZze+Qf2AjLVsEkSx2WnZATRSly/ednFrell37O8iAXCie1RyDx4CI9aaAiLyqdfn
-         ByBpw2CfBAcJqR4L/PDfNphYXq0k12CogPU+x/qLkaObiopVznO30AD+OiDtRIijt10S
-         FcHQ==
-X-Gm-Message-State: AOJu0YyW9qYzZuOzDJ4Et5hE8efNvY4dTS2YvAzOD0OEHD+sLmUyZixj
-	U8j47a9x9CjXGM1cyCE+b0wgnBi9G5Oltr56CDoBMHgC3fCNWJyBVjhsg9Ps
-X-Google-Smtp-Source: AGHT+IGCuS4PrqYfMwhdldpChinQrTWWDGzhOVUIvY1Hq4/uUHrlSTAUtUnhCoznAKenrfSvVSpiWw==
-X-Received: by 2002:a17:902:ecd1:b0:1d9:b739:a5aa with SMTP id a17-20020a170902ecd100b001d9b739a5aamr7894981plh.42.1707341545518;
-        Wed, 07 Feb 2024 13:32:25 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV/QaLoKYQVEUZJ+d4/DtkBarJQM/cmfjbixgE5MqU2ZGTFPHg1L6NNDTMl/ybSe2s96nt7YEFjYmffpSj+k32a6Om/dPFpvxFAtNOECt2YWp0i8tu9zdnsszUz7+psCxSHSaZWNjzAuj9ucA403cKmCKTyw2+2Uz+hepsAKmSjLrCgzQ==
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h9-20020a170902f2c900b001d910f0ac3bsm1945231plc.246.2024.02.07.13.32.24
+        d=1e100.net; s=20230601; t=1707341578; x=1707946378;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ypOGpo3jI1ua7j3ovv/PFLVTfWwn/rZoGHLQKXG/FiQ=;
+        b=YjXOHC6mVUTKSkZ8mBohmz+7S2cXlzrDFK963DRJRx7xv1BnP0fBeechyXv4yLIIlV
+         2GCuqO9OdO9G5BcpYkLI5oHAshG25UmgQRv5jV9l4vx2DUsvx9LMz3UooavDzw+fXLbZ
+         7w4kTrV6NSQZOp3gJpNEBXbKpZ/fdbNcIVkQdbTh4m3WMbAJ/uZB7FkSzDXfr/zyBfTl
+         1CTnSNWR6DD37QIOk8sxOqGAbLYKDudtvLTQPp4o8eNf6c9jKrLfp/izFD5PI9qODr1n
+         o52n656jekVGQydEvg5GZYLlbU58vs+f98DT+C0qfPc2wmakpzEpZoeZusjiZRrmP/zN
+         y0wg==
+X-Forwarded-Encrypted: i=1; AJvYcCUEajus7FCOkWCoppCke97y9tSRFa8UOlzgIjcTvbET00oKevjb2+UUiCG77Zjsf3Qgb6QGptiL1NrskvzxZeYE5KDI9aLWd7BpBf5QJ1BPhYLQPva4HW7Qm+BQZKzDUn0aSrB5o8jyxKtRnMM=
+X-Gm-Message-State: AOJu0YzYBRFoScGl7YVKNW+k6S4YopErZ7yjpNGnPj0QLNdtocipG0CH
+	t45aFDGXAciQ559yjP93TXlQs2oFyNoVbVwNv8axiOU4sWMMysu4sYOpEVA9
+X-Google-Smtp-Source: AGHT+IHNxhZy/enIjBSkZKjiEn/FKmkhjb7XAYp9yO9ifX2+qkE7FarftEjuhu5UpkGn3mrznvlwtg==
+X-Received: by 2002:a17:906:c103:b0:a39:8df1:6c57 with SMTP id do3-20020a170906c10300b00a398df16c57mr601623ejc.28.1707341578071;
+        Wed, 07 Feb 2024 13:32:58 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUOZ+02x45djWY7l+Cr23m+dLvPlYxPqmy4jEoc3n6zzsGK6I/O+2Tz3J/3zc6PSAn44K7lEYIuN6CWlDqIWPku4U+Dd5FbiSjXcAA92632TWzzzNRSBmaujFiFse7JyAIketiBUgrK1SbbCHD1cf4Khod4wIybhduftxghHcs=
+Received: from shift.daheim (p200300d5ff48c600aaa159fffeeb01f1.dip0.t-ipconnect.de. [2003:d5:ff48:c600:aaa1:59ff:feeb:1f1])
+        by smtp.gmail.com with ESMTPSA id w8-20020a17090633c800b00a381a3a7081sm1152618eja.156.2024.02.07.13.32.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 13:32:25 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 7 Feb 2024 13:32:24 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: Jean Delvare <jdelvare@suse.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] hwmon: chipcap2: fix return path in
- cc2_request_alarm_irqs()
-Message-ID: <dcd18c2f-716b-4bc8-8ae9-9aa240a7e5d0@roeck-us.net>
-References: <20240207-chipcap2_init_vars-v1-0-08cafe43e20e@gmail.com>
- <20240207-chipcap2_init_vars-v1-2-08cafe43e20e@gmail.com>
+        Wed, 07 Feb 2024 13:32:57 -0800 (PST)
+Received: from localhost.daheim ([127.0.0.1])
+	by shift.daheim with esmtp (Exim 4.97)
+	(envelope-from <chunkeey@gmail.com>)
+	id 1rXpXN-00000000436-1Zsk;
+	Wed, 07 Feb 2024 22:32:57 +0100
+Message-ID: <41ac1eca-ff9c-4a1c-be53-f37aca8aa178@gmail.com>
+Date: Wed, 7 Feb 2024 22:32:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207-chipcap2_init_vars-v1-2-08cafe43e20e@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] carl9170: Remove redundant assignment to pointer
+ super
+To: Colin Ian King <colin.i.king@gmail.com>, Kalle Valo <kvalo@kernel.org>,
+ linux-wireless@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240207171524.2458418-1-colin.i.king@gmail.com>
+Content-Language: de-DE
+From: Christian Lamparter <chunkeey@gmail.com>
+In-Reply-To: <20240207171524.2458418-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 07, 2024 at 10:17:09PM +0100, Javier Carrasco wrote:
-> The return path can be improved by returning upon first failure. The
-> current implementation would try to register the second interrupt even
-> if the first one failed, which is unnecessary.
+On 2/7/24 18:15, Colin Ian King wrote:
+> The pointer super is being assigned a value that is not being read, it
+> is being re-assigned later. The assignment is redundant and can be
+> removed.
 > 
-> Moreover, if no irqs are available, the return value should be zero
-> (the driver supports the use case with no interrupts). Currently the
-> initial value is unassigned and that may lead to returning an unknown
-> value if stack variables are not automatically set to zero and no irqs
-> were provided.
+> Cleans up clang scan warning:
+> drivers/net/wireless/ath/carl9170/tx.c:192:34: warning: Value stored to
+> 'super' during its initialization is never read [deadcode.DeadStores]
 > 
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Closes: https://lore.kernel.org/linux-hwmon/294e4634-89d4-415e-a723-b208d8770d7c@gmail.com/T/#t
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Acked-by: Christian Lamparter <chunkeey@gmail.com>
 
-Applied.
+> ---
+>   drivers/net/wireless/ath/carl9170/tx.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/carl9170/tx.c b/drivers/net/wireless/ath/carl9170/tx.c
+> index 6bb9aa2bfe65..e902ca80eba7 100644
+> --- a/drivers/net/wireless/ath/carl9170/tx.c
+> +++ b/drivers/net/wireless/ath/carl9170/tx.c
+> @@ -189,7 +189,7 @@ static void carl9170_tx_accounting_free(struct ar9170 *ar, struct sk_buff *skb)
+>   
+>   static int carl9170_alloc_dev_space(struct ar9170 *ar, struct sk_buff *skb)
+>   {
+> -	struct _carl9170_tx_superframe *super = (void *) skb->data;
+> +	struct _carl9170_tx_superframe *super;
+>   	unsigned int chunks;
+>   	int cookie = -1;
+>   
 
-Thanks,
-Guenter
 
