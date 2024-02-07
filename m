@@ -1,63 +1,57 @@
-Return-Path: <linux-kernel+bounces-57095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3720384D3FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:31:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B50BB84D3FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:31:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE5D41F20FCC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:31:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E66E41C21CE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161A813A88A;
-	Wed,  7 Feb 2024 21:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B37413AA2D;
+	Wed,  7 Feb 2024 21:23:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e8OiHkTG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dzam7XG6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FA8313A872;
-	Wed,  7 Feb 2024 21:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8D1113A898;
+	Wed,  7 Feb 2024 21:22:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707340977; cv=none; b=qUaIKEd8bdHzILwwR2GsiUO4RCNZefMkwX5l2VAfBghj5Wkup1RYpheLl5lGQpMiFuD0Yu38PiYA2jJKrGx5TahyVSKX9T8F0HsufoVdFCyDEfRkMxLD/vVdBuonlYwFGxa/c6a+bUgkS9nTDpfm7d50ruzErKKqMciKWlGtbZs=
+	t=1707340979; cv=none; b=nBqPVVwY0SSiexdnNDonFbyJtOhtX60JbZMaOev4+j8DAOpBwp0UhKEMEbRW2YJdU9DFHPyJtzjXORaN9i5VJZj9gIodo8m15iWPOTxwmoS1F+k670ToTDzhBz7GbsKNI2f+QIkjg4qyk8UFpNuDOYe07mGuzzlkcc/OM4yVqiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707340977; c=relaxed/simple;
-	bh=gDRNblByWudPqtmACzfywtYaVP/MXhvcEbDElazg6NU=;
+	s=arc-20240116; t=1707340979; c=relaxed/simple;
+	bh=xgTP9W8lG1bV+HHqB+8kMNTs0bVYzKjOPBJ4jQ6pZLs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N4ADtOSKtI3N/H7nFWE6DFsg92LVX+dVrnK/STBlqQpbuIqxWgQ09AmXo1taHj0U1YNLn73BqymncYI7XVWo703dIU4O1MmClrB+Tu+frUh7Zzge70re2+ClUizdRbXOwb/mkzoItK36BuhekJboVkDHcEq6BBTwOxbtec61ZrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e8OiHkTG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E7ADC433C7;
-	Wed,  7 Feb 2024 21:22:55 +0000 (UTC)
+	 MIME-Version; b=NsJQWWEWtFl6hGx3gl9FvifvqPFA5+qkXgK7ZNdnAqH+eC0Ou7O2v+3eSoORj2GJw3JnAd1LxshbAqxhUEcfNP++MQwy7/MOpPjpuMueSkdhYaIHabM9oj7G6B9fIX7EouizuMIwcHzKMDhDwBc9V2QqSrg4P8zmFBaY+de02Lg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dzam7XG6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E10CC43390;
+	Wed,  7 Feb 2024 21:22:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707340977;
-	bh=gDRNblByWudPqtmACzfywtYaVP/MXhvcEbDElazg6NU=;
+	s=k20201202; t=1707340979;
+	bh=xgTP9W8lG1bV+HHqB+8kMNTs0bVYzKjOPBJ4jQ6pZLs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e8OiHkTGxYsyzchJALLjVnXXpPvteQtYaEC6oqqod8JG+yQd/IJerhKJKjJxJ6Aim
-	 q01oL+OvkHt+tJ/VdUB+lDkz3IEJYh/hfpar0lZrXz35cD6Rq9LPvrD7REWqkmZuH/
-	 7JI11DT3z14khiUhXKjiizxCzBXx/SbmMAsKl7X/nsgXz4LuD4xIecTxwu8YIMLdoQ
-	 1jKRPEfWz9Fc7gln+CZsgvBrQl9mV2YP35c10mjxQl1uYw0Z1Z30UWbZ9naT9XxLar
-	 Cbr3p+Ueyiqu+MxUEET7OAYgB7LjRXTj6AAZMAQyo9joyYf+o7Ut9eoZGD2x+F1i3W
-	 d5LMotLHW09Fw==
+	b=Dzam7XG6nr682N8vU4opvNposkakaeM2ADmv/TDJpGLbJ5O/JHMW7zzmUAEEDfa9B
+	 2kTxyX95pHuECdIvkSthYJpip/mLRjyGvAlQWVdge59aeytrxHqsi2jJRdkfY5AWv0
+	 MH0VjHdBrvz5QRBSnCAKouiJewX9yFgRCg4elbjYmYuZLCpoX6Ekf8+p6OMv1c5rNe
+	 ROsaD4Bcmk2lDDiEjrF7FLghbA3zWvi2hZRF35iM8B7IlD4RC/OH/KucEloK7ofKGm
+	 5qOVzNvYD80Tvjhnjt7bThXnXCu4zMjoUQQIer19RR4XfrYhG4bKTexfl+YyDNVWxP
+	 CWVD/pLWF8yxQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Alexander Tsoy <alexander@tsoy.me>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	simont@opensource.cirrus.com,
-	kuninori.morimoto.gx@renesas.com,
-	dinghao.liu@zju.edu.cn,
-	ckeepax@opensource.cirrus.com,
-	patches@opensource.cirrus.com,
 	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 29/44] ASoC: wm_adsp: Don't overwrite fwf_name with the default
-Date: Wed,  7 Feb 2024 16:20:56 -0500
-Message-ID: <20240207212142.1399-29-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 30/44] ALSA: usb-audio: Ignore clock selector errors for single connection
+Date: Wed,  7 Feb 2024 16:20:57 -0500
+Message-ID: <20240207212142.1399-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212142.1399-1-sashal@kernel.org>
 References: <20240207212142.1399-1-sashal@kernel.org>
@@ -72,100 +66,66 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.4
 Content-Transfer-Encoding: 8bit
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Alexander Tsoy <alexander@tsoy.me>
 
-[ Upstream commit daf3f0f99cde93a066240462b7a87cdfeedc04c0 ]
+[ Upstream commit eaa1b01fe709d6a236a9cec74813e0400601fd23 ]
 
-There's no need to overwrite fwf_name with a kstrdup() of the cs_dsp part
-name. It is trivial to select either fwf_name or cs_dsp.part as the string
-to use when building the filename in wm_adsp_request_firmware_file().
+For devices with multiple clock sources connected to a selector, we need
+to check what a clock selector control request has returned. This is
+needed to ensure that a requested clock source is indeed selected and for
+autoclock feature to work.
 
-This leaves fwf_name entirely owned by the codec driver.
+For devices with single clock source connected, if we get an error there
+is nothing else we can do about it. We can't skip clock selector setup as
+it is required by some devices. So lets just ignore error in this case.
 
-It also avoids problems with freeing the pointer. With the original code
-fwf_name was either a pointer owned by the codec driver, or a kstrdup()
-created by wm_adsp. This meant wm_adsp must free it if it set it, but not
-if the codec driver set it. The code was handling this by using
-devm_kstrdup().
-But there is no absolute requirement that wm_adsp_common_init() must be
-called from probe(), so this was a pseudo-memory leak - each new call to
-wm_adsp_common_init() would allocate another block of memory but these
-would only be freed if the owning codec driver was removed.
+This should fix various buggy Mackie devices:
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Link: https://msgid.link/r/20240129162737.497-3-rf@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+[  649.109785] usb 1-1.3: parse_audio_format_rates_v2v3(): unable to find clock source (clock -32)
+[  649.111946] usb 1-1.3: parse_audio_format_rates_v2v3(): unable to find clock source (clock -32)
+[  649.113822] usb 1-1.3: parse_audio_format_rates_v2v3(): unable to find clock source (clock -32)
+
+There is also interesting info from the Windows documentation [1] (this
+is probably why manufacturers dont't even test this feature):
+
+"The USB Audio 2.0 driver doesn't support clock selection. The driver
+uses the Clock Source Entity, which is selected by default and never
+issues a Clock Selector Control SET CUR request."
+
+Link: https://learn.microsoft.com/en-us/windows-hardware/drivers/audio/usb-2-0-audio-drivers [1]
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=217314
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218175
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218342
+Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+Link: https://lore.kernel.org/r/20240201115308.17838-1-alexander@tsoy.me
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 29 ++++++++++++-----------------
- 1 file changed, 12 insertions(+), 17 deletions(-)
+ sound/usb/clock.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index c01e31175015..9c0accf5e188 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -739,19 +739,25 @@ static int wm_adsp_request_firmware_file(struct wm_adsp *dsp,
- 					 const char *filetype)
- {
- 	struct cs_dsp *cs_dsp = &dsp->cs_dsp;
-+	const char *fwf;
- 	char *s, c;
- 	int ret = 0;
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index 33db334e6556..a676ad093d18 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -328,8 +328,16 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+ 			if (chip->quirk_flags & QUIRK_FLAG_SKIP_CLOCK_SELECTOR)
+ 				return ret;
+ 			err = uac_clock_selector_set_val(chip, entity_id, cur);
+-			if (err < 0)
++			if (err < 0) {
++				if (pins == 1) {
++					usb_audio_dbg(chip,
++						      "%s(): selector returned an error, "
++						      "assuming a firmware bug, id %d, ret %d\n",
++						      __func__, clock_id, err);
++					return ret;
++				}
+ 				return err;
++			}
+ 		}
  
-+	if (dsp->fwf_name)
-+		fwf = dsp->fwf_name;
-+	else
-+		fwf = dsp->cs_dsp.name;
-+
- 	if (system_name && asoc_component_prefix)
- 		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s-%s-%s.%s", dir, dsp->part,
--				      dsp->fwf_name, wm_adsp_fw[dsp->fw].file, system_name,
-+				      fwf, wm_adsp_fw[dsp->fw].file, system_name,
- 				      asoc_component_prefix, filetype);
- 	else if (system_name)
- 		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s-%s.%s", dir, dsp->part,
--				      dsp->fwf_name, wm_adsp_fw[dsp->fw].file, system_name,
-+				      fwf, wm_adsp_fw[dsp->fw].file, system_name,
- 				      filetype);
- 	else
--		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s.%s", dir, dsp->part, dsp->fwf_name,
-+		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s.%s", dir, dsp->part, fwf,
- 				      wm_adsp_fw[dsp->fw].file, filetype);
- 
- 	if (*filename == NULL)
-@@ -863,29 +869,18 @@ static int wm_adsp_request_firmware_files(struct wm_adsp *dsp,
- 	}
- 
- 	adsp_err(dsp, "Failed to request firmware <%s>%s-%s-%s<-%s<%s>>.wmfw\n",
--		 cirrus_dir, dsp->part, dsp->fwf_name, wm_adsp_fw[dsp->fw].file,
--		 system_name, asoc_component_prefix);
-+		 cirrus_dir, dsp->part,
-+		 dsp->fwf_name ? dsp->fwf_name : dsp->cs_dsp.name,
-+		 wm_adsp_fw[dsp->fw].file, system_name, asoc_component_prefix);
- 
- 	return -ENOENT;
- }
- 
- static int wm_adsp_common_init(struct wm_adsp *dsp)
- {
--	char *p;
--
- 	INIT_LIST_HEAD(&dsp->compr_list);
- 	INIT_LIST_HEAD(&dsp->buffer_list);
- 
--	if (!dsp->fwf_name) {
--		p = devm_kstrdup(dsp->cs_dsp.dev, dsp->cs_dsp.name, GFP_KERNEL);
--		if (!p)
--			return -ENOMEM;
--
--		dsp->fwf_name = p;
--		for (; *p != 0; ++p)
--			*p = tolower(*p);
--	}
--
- 	return 0;
- }
- 
+ 		if (!validate || ret > 0 || !chip->autoclock)
 -- 
 2.43.0
 
