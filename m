@@ -1,438 +1,137 @@
-Return-Path: <linux-kernel+bounces-56323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED58784C8B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:32:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F25184C8B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:32:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DBAFB228F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:31:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D141288D2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:32:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8845510788;
-	Wed,  7 Feb 2024 10:31:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="nK74E9dF"
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 905F41427E;
+	Wed,  7 Feb 2024 10:32:08 +0000 (UTC)
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2908214266
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:31:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92FE11426E;
+	Wed,  7 Feb 2024 10:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707301910; cv=none; b=USHmO5HvG0SpnLDsG+6I43lpWPE+kYdqx6ajljn4XIsbDA56EZEEnnxCHE3x8ckrTTPQW7nNd3ii8SCUtU+lPRVDRTTmO3jtmWdE4ErTHk1kZuxc57FfruHV7bSWw6DQhuO9n0tU/nMkxrt9/aFyaXeVCxhm0Jgrzen+yebVyLo=
+	t=1707301928; cv=none; b=h402IQFYays2SVxseuCOBExmdKoWsEUlFa4ca3mvE7j8pGcHemQwmBjTg0/Klw6nRvIWIwmaq0VhvXWV7WOiJ0ULS1pT0QKhp3gTi3ifhCdA0XpsW0DvVF1vYK2LtBqnsZb9q1Qt8lmxwZ9OWibCuTr1zXnvmLd9V99Ui74A3Q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707301910; c=relaxed/simple;
-	bh=PVWoXOnA1/nbNr+rQEqzlHt08VDAFLGXRyhrDNBBl6U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=OsFrIPqNViF0JU3fbh6tX3H1HoJ82+4B0dhNY0IA6OSj1AUg0KDVxz07RS6QPGLYa5DxchAbK8+mqo/IjaZWTZ6j61Ar5ylQQy2u41XaaDKnpG1E97FBGdJ9YWBMKV2yjkKjHJG6vIpU88dFEL5CtcwoUimRruQSQ0CNt0Ug5A0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=nK74E9dF; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240207103145euoutp015039288e7fdfc2bd4f426331fa0835f7~xjgmBseEE2507025070euoutp01T
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:31:45 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240207103145euoutp015039288e7fdfc2bd4f426331fa0835f7~xjgmBseEE2507025070euoutp01T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1707301905;
-	bh=8LAzUIgW1zL1oI/Y5Dux+SHod072J135K8NLuj0Toek=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=nK74E9dFvfZzrQtAZeZBu7xXIP2IIFkXFZ/PeNOBeg6N5R4YYzTVVYg2pzeMfxt0k
-	 5BzANSRddk/ZmKiSvdlh0m693WQEW9b74ZZc/laFFNQMAjHgzYY+kQTbAcZMJGDjX1
-	 LlO1eUMuRYGBO5nPRrHVO3MNRPINjN8zpGdJ4m7Y=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240207103144eucas1p2a8eede5b3a17ac75cd18d5e9c919ab10~xjglwHoeT2839828398eucas1p21;
-	Wed,  7 Feb 2024 10:31:44 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges2new.samsung.com (EUCPMTA) with SMTP id 2C.F2.09814.01C53C56; Wed,  7
-	Feb 2024 10:31:44 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240207103144eucas1p16b601a73ff347d2542f8380b25921491~xjglYjn182474124741eucas1p1J;
-	Wed,  7 Feb 2024 10:31:44 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240207103144eusmtrp1a440aead32b1246489f92a31229f5eab~xjglX5Itp0507405074eusmtrp1X;
-	Wed,  7 Feb 2024 10:31:44 +0000 (GMT)
-X-AuditID: cbfec7f4-727ff70000002656-b9-65c35c1009c7
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id F7.A3.09146.01C53C56; Wed,  7
-	Feb 2024 10:31:44 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240207103143eusmtip2da7dc17b938caad9d40e826aa521b629~xjgkkXwXC1965719657eusmtip2T;
-	Wed,  7 Feb 2024 10:31:43 +0000 (GMT)
-Message-ID: <708a65cc-79ec-44a6-8454-a93d0f3114c3@samsung.com>
-Date: Wed, 7 Feb 2024 11:31:43 +0100
+	s=arc-20240116; t=1707301928; c=relaxed/simple;
+	bh=1XKEolIsIp/5hVeT4bPe0rZg6lLF8aMKSVIINjLWPeg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DILIGOB7seEyhJ7E5y3RVgBIMfildd0d4xodijZEkBs7dED3yhM0O8KRYScIP0F64AjfzV01EMCd0em07/ITZf9o0EMVp24an+QFEaGkqbc13mkfkLjf0AUttQHAgXsZUHfQl9wEkcALeRVMCa0y5TCE4QEcYBDpHcDLOCmHVRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e2b466d213so107965a34.0;
+        Wed, 07 Feb 2024 02:32:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707301925; x=1707906725;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n5+EowyRiZdMJIElOQsxYtkfwJqzskK9PAiJ97COOrw=;
+        b=Cyv7sFy71h2+Y96hOPy1+i0a+zWmVm1nACIXQQzJ5idtV8HttZ+ImM5eTpOKDe0YM4
+         QU1Cxq2DPnD1+uZ6O8oWcMAe0l+NWeiT5vzAbnhXBgCRfy/o7OGnxGcLhniAOWnaBeg6
+         4EzVG1UaMzx4CQKD8kAPZeysNB16pCHJPwHgzqT7usfs3Yv3qjLO+Kk4cAs8/SMg4eNO
+         oqJbZf8mjFe9W+usdz2VYQmrk3qn+OhZhxL74c0+WcH4T5hvHMHAXnWe9Ejwk2CnjP/8
+         xvT+gRRGqCDUEHrW389vNIvrj8f8RjXMZEUqpz6XpB/IysZWEpZcg2FfKnRMTig1Wk4x
+         Li0Q==
+X-Gm-Message-State: AOJu0YzyUR4kKWlf9/o8y7fMY2IWuiEhAMbzOibRgpInMLsx04R9G8Ti
+	vtw0ppSXFV38xhwTfGkW4f31fCb2GvyAOhsF47yoixtlaqqaNdnAynyXDCwvgWyRSKXDs4pDk/g
+	6C1oJGnVDCnKpPfTex6czja4oApE=
+X-Google-Smtp-Source: AGHT+IH1BVO+a12P6PqUM77NbRGVafxf+curnd4kWSdx5YVbXKLueuY1OFk3wJMNbF41fZTMF9J9+svJy82ITSQUpvs=
+X-Received: by 2002:a05:6820:405:b0:59a:bfb:f556 with SMTP id
+ o5-20020a056820040500b0059a0bfbf556mr5255066oou.0.1707301925587; Wed, 07 Feb
+ 2024 02:32:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] PM: sleep: Restore asynchronous device resume
- optimization
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM
-	<linux-pm@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Tejun Heo
-	<tj@kernel.org>, Nathan Chancellor <nathan@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Stanislaw Gruszka
-	<stanislaw.gruszka@linux.intel.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
-	Naohiro.Aota@wdc.com, kernel-team@meta.com
-Content-Language: en-US
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <10423008.nUPlyArG6x@kreacher>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBKsWRmVeSWpSXmKPExsWy7djPc7oCMYdTDfY2mVhMXbubyWLfxTVs
-	Fpd3zWGz+Nx7hNFi4vHNrBbtK5+yWZw5fYnV4uOeDYwWv5YfZbQ4vjbcgctj56y77B6bVnWy
-	edy5tofNY97JQI9zFys8tlxtZ/H4vEnOo/1AN1MARxSXTUpqTmZZapG+XQJXxsRVq9kK2oIr
-	uttfMDUwXnLsYuTkkBAwkXi2ah4biC0ksIJR4vRPgy5GLiD7C6PE1+cdUInPjBLTH4TANMy+
-	+4ENomg5o8Sz61fZIZyPjBK7965m7GLk4OAVsJN48LcMpIFFQEXi0ZEXzCA2r4CgxMmZT1hA
-	bFEBeYn7t2awg9jCAiESr88eZQWZIyKwh1Hi76ErYBuYBbYxSvz6fw3sDGYBcYlbT+Yzgdhs
-	AoYSXW+7wOKcAtoSrRd2QtXIS2x/O4cZpFlCYDKnxKa2rWAXSQi4SGy67ArxgrDEq+Nb2CFs
-	GYnTk3tYIOrbGSUW/L7PBOFMYJRoeH6LEaLKWuLOuV9sIIOYBTQl1u/Shwg7SrQu2cAKMZ9P
-	4sZbQYgb+CQmbZvODBHmlehoE4KoVpOYdXwd3NqDFy4xT2BUmoUULrOQfDkLyTezEPYuYGRZ
-	xSieWlqcm55abJSXWq5XnJhbXJqXrpecn7uJEZi4Tv87/mUH4/JXH/UOMTJxMB5ilOBgVhLh
-	NdtxIFWINyWxsiq1KD++qDQntfgQozQHi5I4r2qKfKqQQHpiSWp2ampBahFMlomDU6qBqUwl
-	T+OUR+wr8fd79vyOeP145gxb7wgTF1Mb0+qMuxNNJxhrf7wU9J/v6MZ8ic1PzvXMjP62T7Dm
-	sGv4pn1LJQLXS65kOvz8/eLHroE7lCrS1CaevOO3fwkvR0BE5bxKK26Oohl2Sj8uM0x0bXW5
-	dkvvWcjP32GvRP5Pcn93TIDnk7vfUf89m0oeplzykly6SqifI9BMSZXHY9HBddcK1XfF/vs3
-	+cxRO8OdWxX23r3y4Nuui4K39wlyCgQopc+6uWf63fj+bWV36zZzWgQV8XQ35IoZmB2PCl3D
-	ad5a+v57b+Lk2f9b9yqLRN6Lal5yd7mp0ePlv6plmN81TBFY9a4hWoJF9KDEpJnr/+hMrFJi
-	Kc5INNRiLipOBAAPTt+vywMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDIsWRmVeSWpSXmKPExsVy+t/xe7oCMYdTDZ7PlLGYunY3k8W+i2vY
-	LC7vmsNm8bn3CKPFxOObWS3aVz5lszhz+hKrxcc9Gxgtfi0/ymhxfG24A5fHzll32T02repk
-	87hzbQ+bx7yTgR7nLlZ4bLnazuLxeZOcR/uBbqYAjig9m6L80pJUhYz84hJbpWhDCyM9Q0sL
-	PSMTSz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jImrVrMVtAVXdLe/YGpgvOTYxcjJISFgIjH7
-	7ge2LkYuDiGBpYwSEzYsZINIyEicnNbACmELS/y51gVV9J5R4kLjesYuRg4OXgE7iQd/y0Bq
-	WARUJB4decEMYvMKCEqcnPmEBcQWFZCXuH9rBjuILSwQIvH67FFWkDkiAnsYJdZcPccE4jAL
-	7GCUuNt3FaxKSEBL4uHrz2CbmQXEJW49mc8EYrMJGEp0ve0Cu45TQFui9cJONogaM4murV2M
-	ELa8xPa3c5gnMArNQnLILCSjZiFpmYWkZQEjyypGkdTS4tz03GJDveLE3OLSvHS95PzcTYzA
-	aN127OfmHYzzXn3UO8TIxMF4iFGCg1lJhNdsx4FUId6UxMqq1KL8+KLSnNTiQ4ymwNCYyCwl
-	mpwPTBd5JfGGZgamhiZmlgamlmbGSuK8ngUdiUIC6YklqdmpqQWpRTB9TBycUg1MB/6wpR8v
-	4bmZOun0seKMW9+cV/Cc51OvjWxiKvMOvrg5doGLlG1J5oNL/O3C7REr9n1+OHVjklqp/aEp
-	RjulJY1Ffx7YxTo1pnR6ybxvX1dw2nUJzqubLrdyns8b8Svenw/nxEi1nF3nJ6G27WT8XoGt
-	E2KuPPGQEe+bcziD5febqIWnW2483z43N+ptiNsEb5P0r9Mud3F8m7464tultlPzvjwXM5z7
-	VjYg9SLD0R9Ts5yad6ZF/87OO73r3VvvG192zzHp12m/y64Rk/dy59vinLQ3uwzLbwT4mU15
-	sHnlgdr9cmdiPJNsdC4uS2r1PXzu1KFfVZFnjpWwK38N0b21NnfvpnrF6PkhVXnXZymxFGck
-	GmoxFxUnAgAyEgOkXwMAAA==
-X-CMS-MailID: 20240207103144eucas1p16b601a73ff347d2542f8380b25921491
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20240207103144eucas1p16b601a73ff347d2542f8380b25921491
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240207103144eucas1p16b601a73ff347d2542f8380b25921491
-References: <10423008.nUPlyArG6x@kreacher>
-	<CGME20240207103144eucas1p16b601a73ff347d2542f8380b25921491@eucas1p1.samsung.com>
+References: <20240117095714.1524808-1-lukasz.luba@arm.com> <5a38043f-6de3-4038-b1d9-314090e7b44e@arm.com>
+In-Reply-To: <5a38043f-6de3-4038-b1d9-314090e7b44e@arm.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 7 Feb 2024 11:31:53 +0100
+Message-ID: <CAJZ5v0i-U+Sqbb4z1oBcafWyDfQB=zO3+kKwa2ckdMh6mjsMkw@mail.gmail.com>
+Subject: Re: [PATCH v7 00/23] Introduce runtime modifiable Energy Model
+To: Lukasz Luba <lukasz.luba@arm.com>
+Cc: rafael@kernel.org, dietmar.eggemann@arm.com, linux-pm@vger.kernel.org, 
+	rui.zhang@intel.com, amit.kucheria@verdurent.com, amit.kachhap@gmail.com, 
+	daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com, 
+	pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io, 
+	linux-kernel@vger.kernel.org, wvw@google.com, xuewen.yan94@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Dear All,
+Hi Lukasz,
 
-On 09.01.2024 17:59, Rafael J. Wysocki wrote:
->   From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wed, Feb 7, 2024 at 10:15=E2=80=AFAM Lukasz Luba <lukasz.luba@arm.com> w=
+rote:
 >
-> Before commit 7839d0078e0d ("PM: sleep: Fix possible deadlocks in core
-> system-wide PM code"), the resume of devices that were allowed to resume
-> asynchronously was scheduled before starting the resume of the other
-> devices, so the former did not have to wait for the latter unless
-> functional dependencies were present.
+> Hi Rafael,
 >
-> Commit 7839d0078e0d removed that optimization in order to address a
-> correctness issue, but it can be restored with the help of a new device
-> power management flag, so do that now.
+> On 1/17/24 09:56, Lukasz Luba wrote:
+> > Hi all,
+> >
+> > This patch set adds a new feature which allows to modify Energy Model (=
+EM)
+> > power values at runtime. It will allow to better reflect power model of
+> > a recent SoCs and silicon. Different characteristics of the power usage
+> > can be leveraged and thus better decisions made during task placement i=
+n EAS.
+> >
 >
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
+> [snip]
+>
+> >
+> >
+> > Lukasz Luba (23):
+> >    PM: EM: Add missing newline for the message log
+> >    PM: EM: Extend em_cpufreq_update_efficiencies() argument list
+> >    PM: EM: Find first CPU active while updating OPP efficiency
+> >    PM: EM: Refactor em_pd_get_efficient_state() to be more flexible
+> >    PM: EM: Introduce em_compute_costs()
+> >    PM: EM: Check if the get_cost() callback is present in
+> >      em_compute_costs()
+> >    PM: EM: Split the allocation and initialization of the EM table
+> >    PM: EM: Introduce runtime modifiable table
+> >    PM: EM: Use runtime modified EM for CPUs energy estimation in EAS
+> >    PM: EM: Add functions for memory allocations for new EM tables
+> >    PM: EM: Introduce em_dev_update_perf_domain() for EM updates
+> >    PM: EM: Add em_perf_state_from_pd() to get performance states table
+> >    PM: EM: Add performance field to struct em_perf_state and optimize
+> >    PM: EM: Support late CPUs booting and capacity adjustment
+> >    PM: EM: Optimize em_cpu_energy() and remove division
+> >    powercap/dtpm_cpu: Use new Energy Model interface to get table
+> >    powercap/dtpm_devfreq: Use new Energy Model interface to get table
+> >    drivers/thermal/cpufreq_cooling: Use new Energy Model interface
+> >    drivers/thermal/devfreq_cooling: Use new Energy Model interface
+> >    PM: EM: Change debugfs configuration to use runtime EM table data
+> >    PM: EM: Remove old table
+> >    PM: EM: Add em_dev_compute_costs()
+> >    Documentation: EM: Update with runtime modification design
+> >
+> >   Documentation/power/energy-model.rst | 183 ++++++++++-
+> >   drivers/powercap/dtpm_cpu.c          |  39 ++-
+> >   drivers/powercap/dtpm_devfreq.c      |  34 +-
+> >   drivers/thermal/cpufreq_cooling.c    |  45 ++-
+> >   drivers/thermal/devfreq_cooling.c    |  49 ++-
+> >   include/linux/energy_model.h         | 165 ++++++----
+> >   kernel/power/energy_model.c          | 472 +++++++++++++++++++++++---=
+-
+> >   7 files changed, 819 insertions(+), 168 deletions(-)
+> >
+>
+> The patch set went through decent review. If you don't have any issues,
+> I will collect the tags and send the v8 which will be re-based on some
+> recent linux next (or please tell me your preferred branch).
 
-This patch finally landed in linux-next some time ago as 3e999770ac1c 
-("PM: sleep: Restore asynchronous device resume optimization"). Recently 
-I found that it causes a non-trivial interaction with commit 
-5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement 
-for unbound workqueues"). Since merge commit 954350a5f8db in linux-next 
-system suspend/resume fails (board doesn't wake up) on my old Samsung 
-Exynos4412-based Odroid-U3 board (ARM 32bit based), which was rock 
-stable for last years.
-
-My further investigations confirmed that the mentioned commits are 
-responsible for this issue. Each of them separately (3e999770ac1c and 
-5797b1c18919) doesn't trigger any problems. Reverting any of them on top 
-of linux-next (with some additional commit due to code dependencies) 
-also fixes/hides the problem.
-
-Let me know if You need more information or tests on the hardware. I'm 
-open to help debugging this issue.
-
-> I said I'd probably do this in 6.9, but then I thought more about it
-> and now I think it would be nice to have 6.8-rc1 without a suspend
-> performance regression and the change is relatively straightforward,
-> so here it goes.
->
-> ---
->   drivers/base/power/main.c |  117 +++++++++++++++++++++++++---------------------
->   include/linux/pm.h        |    1
->   2 files changed, 65 insertions(+), 53 deletions(-)
->
-> Index: linux-pm/include/linux/pm.h
-> ===================================================================
-> --- linux-pm.orig/include/linux/pm.h
-> +++ linux-pm/include/linux/pm.h
-> @@ -681,6 +681,7 @@ struct dev_pm_info {
->   	bool			wakeup_path:1;
->   	bool			syscore:1;
->   	bool			no_pm_callbacks:1;	/* Owned by the PM core */
-> +	bool			in_progress:1;	/* Owned by the PM core */
->   	unsigned int		must_resume:1;	/* Owned by the PM core */
->   	unsigned int		may_skip_resume:1;	/* Set by subsystems */
->   #else
-> Index: linux-pm/drivers/base/power/main.c
-> ===================================================================
-> --- linux-pm.orig/drivers/base/power/main.c
-> +++ linux-pm/drivers/base/power/main.c
-> @@ -579,7 +579,7 @@ bool dev_pm_skip_resume(struct device *d
->   }
->   
->   /**
-> - * __device_resume_noirq - Execute a "noirq resume" callback for given device.
-> + * device_resume_noirq - Execute a "noirq resume" callback for given device.
->    * @dev: Device to handle.
->    * @state: PM transition of the system being carried out.
->    * @async: If true, the device is being resumed asynchronously.
-> @@ -587,7 +587,7 @@ bool dev_pm_skip_resume(struct device *d
->    * The driver of @dev will not receive interrupts while this function is being
->    * executed.
->    */
-> -static void __device_resume_noirq(struct device *dev, pm_message_t state, bool async)
-> +static void device_resume_noirq(struct device *dev, pm_message_t state, bool async)
->   {
->   	pm_callback_t callback = NULL;
->   	const char *info = NULL;
-> @@ -674,16 +674,22 @@ static bool dpm_async_fn(struct device *
->   {
->   	reinit_completion(&dev->power.completion);
->   
-> -	if (!is_async(dev))
-> -		return false;
-> +	if (is_async(dev)) {
-> +		dev->power.in_progress = true;
->   
-> -	get_device(dev);
-> -
-> -	if (async_schedule_dev_nocall(func, dev))
-> -		return true;
-> +		get_device(dev);
->   
-> -	put_device(dev);
-> +		if (async_schedule_dev_nocall(func, dev))
-> +			return true;
->   
-> +		put_device(dev);
-> +	}
-> +	/*
-> +	 * Because async_schedule_dev_nocall() above has returned false or it
-> +	 * has not been called at all, func() is not running and it safe to
-> +	 * update the in_progress flag without additional synchronization.
-> +	 */
-> +	dev->power.in_progress = false;
->   	return false;
->   }
->   
-> @@ -691,18 +697,10 @@ static void async_resume_noirq(void *dat
->   {
->   	struct device *dev = data;
->   
-> -	__device_resume_noirq(dev, pm_transition, true);
-> +	device_resume_noirq(dev, pm_transition, true);
->   	put_device(dev);
->   }
->   
-> -static void device_resume_noirq(struct device *dev)
-> -{
-> -	if (dpm_async_fn(dev, async_resume_noirq))
-> -		return;
-> -
-> -	__device_resume_noirq(dev, pm_transition, false);
-> -}
-> -
->   static void dpm_noirq_resume_devices(pm_message_t state)
->   {
->   	struct device *dev;
-> @@ -712,18 +710,28 @@ static void dpm_noirq_resume_devices(pm_
->   	mutex_lock(&dpm_list_mtx);
->   	pm_transition = state;
->   
-> +	/*
-> +	 * Trigger the resume of "async" devices upfront so they don't have to
-> +	 * wait for the "non-async" ones they don't depend on.
-> +	 */
-> +	list_for_each_entry(dev, &dpm_noirq_list, power.entry)
-> +		dpm_async_fn(dev, async_resume_noirq);
-> +
->   	while (!list_empty(&dpm_noirq_list)) {
->   		dev = to_device(dpm_noirq_list.next);
-> -		get_device(dev);
->   		list_move_tail(&dev->power.entry, &dpm_late_early_list);
->   
-> -		mutex_unlock(&dpm_list_mtx);
-> +		if (!dev->power.in_progress) {
-> +			get_device(dev);
->   
-> -		device_resume_noirq(dev);
-> +			mutex_unlock(&dpm_list_mtx);
->   
-> -		put_device(dev);
-> +			device_resume_noirq(dev, state, false);
-> +
-> +			put_device(dev);
->   
-> -		mutex_lock(&dpm_list_mtx);
-> +			mutex_lock(&dpm_list_mtx);
-> +		}
->   	}
->   	mutex_unlock(&dpm_list_mtx);
->   	async_synchronize_full();
-> @@ -747,14 +755,14 @@ void dpm_resume_noirq(pm_message_t state
->   }
->   
->   /**
-> - * __device_resume_early - Execute an "early resume" callback for given device.
-> + * device_resume_early - Execute an "early resume" callback for given device.
->    * @dev: Device to handle.
->    * @state: PM transition of the system being carried out.
->    * @async: If true, the device is being resumed asynchronously.
->    *
->    * Runtime PM is disabled for @dev while this function is being executed.
->    */
-> -static void __device_resume_early(struct device *dev, pm_message_t state, bool async)
-> +static void device_resume_early(struct device *dev, pm_message_t state, bool async)
->   {
->   	pm_callback_t callback = NULL;
->   	const char *info = NULL;
-> @@ -820,18 +828,10 @@ static void async_resume_early(void *dat
->   {
->   	struct device *dev = data;
->   
-> -	__device_resume_early(dev, pm_transition, true);
-> +	device_resume_early(dev, pm_transition, true);
->   	put_device(dev);
->   }
->   
-> -static void device_resume_early(struct device *dev)
-> -{
-> -	if (dpm_async_fn(dev, async_resume_early))
-> -		return;
-> -
-> -	__device_resume_early(dev, pm_transition, false);
-> -}
-> -
->   /**
->    * dpm_resume_early - Execute "early resume" callbacks for all devices.
->    * @state: PM transition of the system being carried out.
-> @@ -845,18 +845,28 @@ void dpm_resume_early(pm_message_t state
->   	mutex_lock(&dpm_list_mtx);
->   	pm_transition = state;
->   
-> +	/*
-> +	 * Trigger the resume of "async" devices upfront so they don't have to
-> +	 * wait for the "non-async" ones they don't depend on.
-> +	 */
-> +	list_for_each_entry(dev, &dpm_late_early_list, power.entry)
-> +		dpm_async_fn(dev, async_resume_early);
-> +
->   	while (!list_empty(&dpm_late_early_list)) {
->   		dev = to_device(dpm_late_early_list.next);
-> -		get_device(dev);
->   		list_move_tail(&dev->power.entry, &dpm_suspended_list);
->   
-> -		mutex_unlock(&dpm_list_mtx);
-> +		if (!dev->power.in_progress) {
-> +			get_device(dev);
->   
-> -		device_resume_early(dev);
-> +			mutex_unlock(&dpm_list_mtx);
->   
-> -		put_device(dev);
-> +			device_resume_early(dev, state, false);
-> +
-> +			put_device(dev);
->   
-> -		mutex_lock(&dpm_list_mtx);
-> +			mutex_lock(&dpm_list_mtx);
-> +		}
->   	}
->   	mutex_unlock(&dpm_list_mtx);
->   	async_synchronize_full();
-> @@ -876,12 +886,12 @@ void dpm_resume_start(pm_message_t state
->   EXPORT_SYMBOL_GPL(dpm_resume_start);
->   
->   /**
-> - * __device_resume - Execute "resume" callbacks for given device.
-> + * device_resume - Execute "resume" callbacks for given device.
->    * @dev: Device to handle.
->    * @state: PM transition of the system being carried out.
->    * @async: If true, the device is being resumed asynchronously.
->    */
-> -static void __device_resume(struct device *dev, pm_message_t state, bool async)
-> +static void device_resume(struct device *dev, pm_message_t state, bool async)
->   {
->   	pm_callback_t callback = NULL;
->   	const char *info = NULL;
-> @@ -975,18 +985,10 @@ static void async_resume(void *data, asy
->   {
->   	struct device *dev = data;
->   
-> -	__device_resume(dev, pm_transition, true);
-> +	device_resume(dev, pm_transition, true);
->   	put_device(dev);
->   }
->   
-> -static void device_resume(struct device *dev)
-> -{
-> -	if (dpm_async_fn(dev, async_resume))
-> -		return;
-> -
-> -	__device_resume(dev, pm_transition, false);
-> -}
-> -
->   /**
->    * dpm_resume - Execute "resume" callbacks for non-sysdev devices.
->    * @state: PM transition of the system being carried out.
-> @@ -1006,16 +1008,25 @@ void dpm_resume(pm_message_t state)
->   	pm_transition = state;
->   	async_error = 0;
->   
-> +	/*
-> +	 * Trigger the resume of "async" devices upfront so they don't have to
-> +	 * wait for the "non-async" ones they don't depend on.
-> +	 */
-> +	list_for_each_entry(dev, &dpm_suspended_list, power.entry)
-> +		dpm_async_fn(dev, async_resume);
-> +
->   	while (!list_empty(&dpm_suspended_list)) {
->   		dev = to_device(dpm_suspended_list.next);
->   
->   		get_device(dev);
->   
-> -		mutex_unlock(&dpm_list_mtx);
-> +		if (!dev->power.in_progress) {
-> +			mutex_unlock(&dpm_list_mtx);
->   
-> -		device_resume(dev);
-> +			device_resume(dev, state, false);
->   
-> -		mutex_lock(&dpm_list_mtx);
-> +			mutex_lock(&dpm_list_mtx);
-> +		}
->   
->   		if (!list_empty(&dev->power.entry))
->   			list_move_tail(&dev->power.entry, &dpm_prepared_list);
->
->
->
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+Blease base it on 6.8-rc3.
 
