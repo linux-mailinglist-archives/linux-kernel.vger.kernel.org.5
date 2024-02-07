@@ -1,116 +1,128 @@
-Return-Path: <linux-kernel+bounces-57041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D94BE84D326
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:48:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEE3584D334
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:50:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82DD5B25F1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:48:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A34328F518
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:50:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8392C81759;
-	Wed,  7 Feb 2024 20:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="W5QNNRMn"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235D88662E;
+	Wed,  7 Feb 2024 20:50:31 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B68D412881A
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 20:47:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 704548563F;
+	Wed,  7 Feb 2024 20:50:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707338864; cv=none; b=WlZBbkVqTweezQz7xot1k0J/N9YjN1wrHFVFOUPqzhPHZd6swFD6VzFQZWseiwA/k57B88M+8eNFRGk6j6QFaQ4EiNCeRbvU5nwe8Wt7qPmgJO95na8jFl4PCzA/dK9As5r8EUSTC2VdN7wL+kvPQ97U5TvwYE/zdh5Gz7sHrZI=
+	t=1707339030; cv=none; b=mqYuvdKxEtHipNy0yyvLFheAt6FeHb295KwLsAlP+NJllc0gFUpiwFHFyxLLublpA0NKYPukIGi8k9xrTUyupYm/koFMCD/NgxJDro2dDqDSUIdNuR5rEb2OngbGQQ4ZQkC0bxP5Ud09SL1V41X7Y5by5lOmyPi6n3r3D7/yTnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707338864; c=relaxed/simple;
-	bh=jFwA/NtxsFOo56zJu2RwmcNH+793//zqH+c/RYV4s9g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QHgtU5tcg63+mpWnc+pVfhrY2ml3qmQO+d74vyTPl5B7hgJuSjoouTSIhPbKgpb24HciBMJElLeHHsPxscYG2P4AJh5RJmN5OpMiTcND8kZZcNSeZ1PnWp/EHUrAFW4BMrXO44jEoD+iemmPdMVkPdQ707m8E9k+PtAKlxXkM98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=W5QNNRMn reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 355D640E00B2;
-	Wed,  7 Feb 2024 20:47:38 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
-	reason="fail (body has been altered)" header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id TwaAdgGsXQBT; Wed,  7 Feb 2024 20:47:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707338854; bh=Z8aiuw1r4xLDfMnzkrPrgauAKJFimYCWgbGUomsVP9Y=;
-	h=From:To:Cc:Subject:Date:From;
-	b=W5QNNRMnpaRZ920NcKrLqe+gSg/aP+qUkaCHHwnZaVWt/ME9g1IjlMe874wYH1gdM
-	 f0Rvzpq6LOb4NCbVv0uogmm7YelQRbtoZABSSTlUHnR8sRkZniVsdk1dW9qA+keY1X
-	 +gwzhXF+I3QzRVlJovdsaBotES5jR2ny9C7/C/Oh/Tk2uNQqZ5O0fT7/eyMdKwK9nY
-	 q1gK6xRkb4kP4rdKq65KLWHletMUX4tmxEdCm4s7ZDiRDKJEnTNknvmtqK+QdlgbAG
-	 7ihxs1okOYt1TYhmuIy6saDGzuvs8vtEmHYB8cUVH5vn68HOqthtzt72gIlGL4/a0F
-	 lMkUNbgzt65NcUWD0xrz6lpDj9QFfbDEL/T/eCnzk7uPEdJO8UnS9t8MV2RLbkeS7v
-	 jpcttvrQMVt0Utx8BZ2WDB101Axc3iwQo/91jH+dbIJugna2jSO0ImTDimRblH+nCQ
-	 JXMXtjrjGVgg4SREtIptKe4srGgAFK+dDPykyhbla1wIdd4h0Va6BhJvYIQ1XUNP0/
-	 1ih1rUfHXvj2s1pJGw9Av1zjXGxBwHCuBfB3ltYbavIPFGxP5TM8ncgwfjQLxS+Xwp
-	 kS9bPFoDxs/lelqYionEjV56aB9YRFAcRroi5KEDQhc5Z485LyyZ9/w7ifkiZtigzP
-	 Ipr7OAfOvAMbmJVyJzSQOAes=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2773540E0192;
-	Wed,  7 Feb 2024 20:47:30 +0000 (UTC)
-From: Borislav Petkov <bp@alien8.de>
-To: Ashish Kalra <ashish.kalra@amd.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] crypto: ccp - Have it depend on AMD_IOMMU
-Date: Wed,  7 Feb 2024 21:47:21 +0100
-Message-ID: <20240207204721.6189-1-bp@alien8.de>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707339030; c=relaxed/simple;
+	bh=TWvMx84K4Fa8daMtVvMNIksPwUbQuSlfg6JIQVy8JiM=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=j+gbEXWOVYC3vuCz3xgje1aQY0epSm7m0bV/k6dO1rRDXmcKmADrrwD9GekgEJktCw/Eq+TvgCcqJ6QgwFW/6jRJ1ech0dsGCvBuWIg37wVhNL58lOsnQtj9BSEhTWKrLf0FPwLemfJYaL3cgAav5SKoZf6jAmKUJg4II1AoiNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (178.176.76.58) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 7 Feb
+ 2024 23:50:16 +0300
+Subject: Re: [PATCH net-next 4/5] net: ravb: Do not apply RX checksum settings
+ to hardware if the interface is down
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20240207120733.1746920-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240207120733.1746920-5-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <82a95cae-29bc-06c1-0fab-5fa6302b4654@omp.ru>
+Date: Wed, 7 Feb 2024 23:50:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240207120733.1746920-5-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 02/07/2024 20:37:16
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 183286 [Feb 07 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.76.58 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.76.58 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.76.58
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 02/07/2024 20:42:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 2/7/2024 5:40:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
+On 2/7/24 3:07 PM, Claudiu wrote:
 
-sev-dev.c calls code in the AMD IOMMU now but that can't really work if
-latter is not enabled in Kconfig:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Do not apply the RX checksum settings to hardware if the interface is down.
+> In case runtime PM is enabled, and while the interface is down, the IP will
+> be in reset mode (as for some platforms disabling the clocks will switch
+> the IP to reset mode, which will lead to losing registers content) and
 
-  ld: vmlinux.o: in function `__sev_firmware_shutdown.isra.0':
-  sev-dev.c:(.text+0x2501f0e): undefined reference to `amd_iommu_snp_disa=
-ble'
-  ld: vmlinux.o: in function `snp_rmptable_init':
-  sev.c:(.init.text+0x26260): undefined reference to `amd_iommu_snp_en'
-  make[2]: *** [scripts/Makefile.vmlinux:37: vmlinux] Error 1
-  make: *** [Makefile:240: __sub-make] Error 2
+   The register contents? I thought I'd pointed out all of these...
 
-Fix those deps.
+> applying settings in reset mode is not an option. Instead, cache the RX
+> checksum settings and apply them in ravb_open() through ravb_emac_init().
+> This has been solved by introducing pm_runtime_active() check. The device
+> runtime PM usage counter has been incremented to avoid disabling the device
+> clocks while the check is in progress (if any).
+> 
+> Commit prepares for the addition of runtime PM.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Fixes: f366a8dac1b8 ("iommu/amd: Clean up RMP entries for IOMMU pages dur=
-ing SNP shutdown")
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
----
- drivers/crypto/ccp/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-diff --git a/drivers/crypto/ccp/Kconfig b/drivers/crypto/ccp/Kconfig
-index 32268e239bf1..f394e45e11ab 100644
---- a/drivers/crypto/ccp/Kconfig
-+++ b/drivers/crypto/ccp/Kconfig
-@@ -38,7 +38,7 @@ config CRYPTO_DEV_CCP_CRYPTO
- config CRYPTO_DEV_SP_PSP
- 	bool "Platform Security Processor (PSP) device"
- 	default y
--	depends on CRYPTO_DEV_CCP_DD && X86_64
-+	depends on CRYPTO_DEV_CCP_DD && X86_64 && AMD_IOMMU
- 	help
- 	 Provide support for the AMD Platform Security Processor (PSP).
- 	 The PSP is a dedicated processor that provides support for key
---=20
-2.43.0
+   I'm afraid such check now needs to be added to ravb_set_features_gbeth()
+that's populated by Biju Das' checksum patches (which I've already ACKed)...
 
+[...]
+
+MBR, Sergey
 
