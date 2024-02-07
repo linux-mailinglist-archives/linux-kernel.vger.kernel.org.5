@@ -1,110 +1,116 @@
-Return-Path: <linux-kernel+bounces-56332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED89684C8CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AF5184C8CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:40:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DD581F261AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:40:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 756FA1F264AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:40:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFF81D539;
-	Wed,  7 Feb 2024 10:39:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9AA614AB0;
+	Wed,  7 Feb 2024 10:40:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CyVpQ0u3"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="Q0yC2QQi"
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFB51D527
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:39:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495A11429E
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:40:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707302394; cv=none; b=F77an/yX+U230NkgANDy0OZVatd3p+cPZkXhhg9GguZU/4wnznBeVLZeV8CE8zB4DxmntSHCWXM6i+uTm7KprTr3ij1OCGWoG4y70CVNdJP4490JEe0ytH67ZWHlQJs/tWgKdgzGcUUjW/uzotCN+OsNWBc/S+nZlLbgpJc+6wU=
+	t=1707302422; cv=none; b=pwag9JqSBld2SHVnNZ2uGfCWJdd706pQ8ahnBe3i7YFnG/xQq6SHdiHicxDgEX05JKAJEIlMWzhDswzKvOOeOAtwDyGCRE25cHZz82FuG4w86YRehjzBIJxG6B6CvH/femcH0byYA4RS9tcN4KhMsh0nuy5L9vqy+/k9JxcMRaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707302394; c=relaxed/simple;
-	bh=UJHwXXpE/nAuR0fBfVAXevegqGAPMSKwW1mmeyrTcM0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jGvmlEyezC8XAa2kqfY0xHZtqM/5K/NQtjk4M+ds49Alrm+c50GA/M3T4SUCgtdLTcxEGAsq3m0nOJPf9RB22Zp5DtVJOxuSFyqiuLO0Lgzc3v+no6BxMdgCdy67ETtCa0h5id4QIIraYHGrXz3eiEWzrI7cVviMfE5oyG3mlOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CyVpQ0u3; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc6c0dc50dcso320136276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 02:39:52 -0800 (PST)
+	s=arc-20240116; t=1707302422; c=relaxed/simple;
+	bh=I1z13nI231r3jcIoSd+9wnU4+7PcC4+j7mf7kcI3UmI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kxpaW8lr5hgXWy7m3OwJcpIZL+ql4iqm38YjOi6K6g5Jnezaf4sDF7g1n3oPJpwtN17tZZa6D3t95gtcVmnVgrqEnsR0RihgjXVslpluFnW8ygmzTJWCeSaix/KjOBuKJZvDxUpnM2qvyYFIIWANTd+U4KkuxMREorDOJ0H0Tik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=Q0yC2QQi; arc=none smtp.client-ip=209.85.167.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3bfdb5a5a63so210339b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 02:40:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707302391; x=1707907191; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GvY+WSiS1zI1+PqrE+k4bBcggoEtuFvZaH+5w24QDOs=;
-        b=CyVpQ0u358vdfHNU38mldQM7TWeWx6ceOgf4lFBfqiMP3sDpZxEHYDs8JSXztgRVop
-         fnKc3cI2mN5hhgLABCl6k5JzS7uHk/GyTJwgbLpDLSw3ZowpwmnIfm2vSrr9IbDpgu4q
-         WLjJx9gKcjKC9Avn8HX9mGRd+5I7yjcHapuzvpbZbesOpkvasMnJVt1v0veleH7Oh/1I
-         M59lBUfNJTBs+BgUrfIiOOHDoqnvLrozPxnZhST4gb5bAoVTJHhEXmZ08RKM9e0ivY81
-         bTE1c98DOZqsyXs8jWMSWhFK+tlXowKyt8dpuIs2A2bkZgrfavprsS8hmc4kvw5wNzQE
-         Mjog==
+        d=tweaklogic.com; s=google; t=1707302419; x=1707907219; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tHF4yI3nxQnudDPDaoNZ26aT06zX6zXM+gcUq0rdUEM=;
+        b=Q0yC2QQioJ/sWyMl5Z67mmDnV8Ow2XGqH4C/rQJVAU5b6q50IJZ7EHuO8A8BW8XDHQ
+         pXN3Pvb/ziRLCr8HiE+CL2J6oP6HvN2BXbIdcFxR8XA2f+FxMdl+jiaD9tJ1xhTSYHKS
+         Tdm+JZem8oilSrPci7QnwfKaViGTG9INdGxh5yNvhC7JMTIFuLjAGbkqvTcrFgAxHpgT
+         gwGIP3SXXkk9FCcYvoMlR0FvK4OP6dU1sOgQg4aJMV7TD9CL4uE9p/z44y1qAaLwWNiF
+         xAIKAhgZmGAIP0tmVT9apP0SoCXgGi1K7F+gDy6d/kePWXboNFZLLUaScLDFihL20bV+
+         FJ7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707302391; x=1707907191;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GvY+WSiS1zI1+PqrE+k4bBcggoEtuFvZaH+5w24QDOs=;
-        b=o/ayGSCGhSLnun+5MGgUW7PVKoNEWg375J/WeSyfLphEb1DawrCdmGGmGvyJrJsxxQ
-         /Bazipo+4tbANT/QbnUEuG7YKVwuM+7itLLWestWCIOOwZstpIJN3fElWks14GSrk7GA
-         WxyN4FePdZIbe0eq/ZwjKhjDlsdPZ3/+Ran/TtFdfOENLCOION385y/7VUI+LXkVcfyu
-         3UxU8wnd/5lXzZM7BJIQP8glRPuaDmYlh1KmwbWYafl6D0ywt+omd8AF9/P5QaRvACzu
-         qOAPiOkl667vAL3uN9AgzqVTuexgB1BVbCpHMURtyx4rxqHPx8tmckdG9ibzzq6BuqJS
-         Qu9Q==
-X-Gm-Message-State: AOJu0YxOQT2C0w543eDu2AcMWda49TQsWt1utxckS7t1vvbFdAtVVZn/
-	VtxHyMsyO477FLzUu6ZWiXljO34xasLJSQd0UllBn39ISW3QolmhU/K9vzG1Hp9zh/vMb+53b8Z
-	BZNk4D29y4GoIxfcmGJ00aQrh/NF6ep/tEMFYug==
-X-Google-Smtp-Source: AGHT+IFHtFKOIhSveVFD/TROCOxd/QHma4B7KzpMcCU9j8LUGg8Tqu/tNwIMsfwXilDzhbXzrjZZBZEpZ33fvT7mMq4=
-X-Received: by 2002:a25:ab50:0:b0:dc6:f90f:e376 with SMTP id
- u74-20020a25ab50000000b00dc6f90fe376mr3978312ybi.45.1707302391434; Wed, 07
- Feb 2024 02:39:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707302419; x=1707907219;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tHF4yI3nxQnudDPDaoNZ26aT06zX6zXM+gcUq0rdUEM=;
+        b=N8cQ8zvIsM/Lc1EBO7PZcHzIbZRuPlj67cNP1d8UU9B74RXqk/pev4AxkswvSFLPrn
+         YZ8mGQCMuTwlwOnBN+ezYXGQD3MWU0HqSGki43LwSrt9WIO2Criq2Arf4rFE6kgMLMdf
+         lx7HkSAuk27MT4fqSqZD7xbjWg+RgIcW3whM9oNmIcdpngRCoWjq4N9IcyJyn0QEzBhq
+         suB8iigOCY2bXZZYILMTbvo3h5G1EIYphFb0m+vVmw6j6yPGN+lamv8Wcw+19jDmVQU9
+         A2D+QPqbSN/eAeouccApFxaqLTFqaFxeKf5pBzUgcMTqDhbqFwnBWS9UvkE0NX/B9Dkk
+         88Hg==
+X-Forwarded-Encrypted: i=1; AJvYcCXwRIR6p2xUIJrmhaM6D6X3m5dcM2zI9ijwusvoZMu3JQKmpMBgL/0rJFc88ngT8X75Jw4kHMICNpyDyiwd7oG4EponVxW4L0KTj6XM
+X-Gm-Message-State: AOJu0Yx87dcYM7ak64RCksB4Siktqa4CM8WCEiPwBrSXSvcD7o0eF2Wd
+	BvWFwDn25x78swfI+xUMM+cFWQbV4UUzA6wEwgWUuLoXMo//tiM+XRfSpKRMmQU=
+X-Google-Smtp-Source: AGHT+IFC4l6EcZxQ8ikTXeVZfeHf0c8+qAcAhrc/R+QH/sxMYIsjqfw7WsI2OguZcEb5hfx18XDk+Q==
+X-Received: by 2002:a05:6358:703:b0:178:dac3:2b99 with SMTP id e3-20020a056358070300b00178dac32b99mr2724004rwj.1.1707302419121;
+        Wed, 07 Feb 2024 02:40:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWSDDBTm+CxEBpm0emQzLVFZoSDi78Y9k6L13UG6ZMtUoGi0Kk8dAQmbk+ljrVHYD3ujaxiBciZxCCrzrn8UEu03HdseP2Vl9aB0Ae4fU6ik8JjaPPTnfImJmnPJpxgGe4qsFiwxC3L+Oa/NCvc/RFklj7AiNT20pWKOHLQ3qfC7XcissPcG+d+aXPPGhGPhfkVJEjxun3rFGMz5CNAMdcmRvSVAnSvR4ehxMB0D4nyWeXPKjy5c1eANOUMIomYwMGU4kMfFo/zGKX/YPAEFAo/D8yOVTYfDvsY+Y3SIH6MjvuyrV7OAIc35eSP03GlSyb9F+xZORtffgX8jzsggQnycDLZn2j6FX/dLvX2tog9wAdYuquG0stGXwgnmpY3usgZU1SEwUcQw59N0Gpyh2cxqn4ZGSkxRT2Li2CTSUrXrSwI/rY6SYd6rzAsjxhHCmZjk7IjNOBkXV++CbwlqII0jrYQj4LYqJB51Heqhe296gqOMUmp/yClrrEbVoNriA==
+Received: from [192.168.20.11] ([180.150.113.62])
+        by smtp.gmail.com with ESMTPSA id j20-20020a056a00235400b006ddb77d443asm1165968pfj.209.2024.02.07.02.40.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 02:40:18 -0800 (PST)
+Message-ID: <e3a48527-306d-42ce-b168-999c2f2ac3e7@tweaklogic.com>
+Date: Wed, 7 Feb 2024 21:09:57 +1030
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240203-bus_cleanup-gpu-v1-0-1b6ecdb5f941@marliere.net>
- <20240203-bus_cleanup-gpu-v1-1-1b6ecdb5f941@marliere.net> <CAA8EJpqYH3CM8exv68S7KU-CK5r=jM81UPjiW09qOiqrg1ThKg@mail.gmail.com>
- <ZcJKSCbAwm7SYx4v@phenom.ffwll.local>
-In-Reply-To: <ZcJKSCbAwm7SYx4v@phenom.ffwll.local>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 7 Feb 2024 12:39:40 +0200
-Message-ID: <CAA8EJpoiAad1Sgjgt-gxKf4YxEQ8T9LcC=DQQy8vn82KAf5USw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm: display: make dp_aux_bus_type const
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	"Ricardo B. Marliere" <ricardo@marliere.net>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 0/5] Support for Avago APDS9306 Ambient Light Sensor
+To: Conor Dooley <conor@kernel.org>
+Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen
+ <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Matti Vaittinen <mazziesaccount@gmail.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Marek Vasut <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>,
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+ Matt Ranostay <matt@ranostay.sg>,
+ Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240206130017.7839-1-subhajit.ghosh@tweaklogic.com>
+ <20240206-gambling-tricycle-510794e20ca8@spud>
+Content-Language: en-US
+From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <20240206-gambling-tricycle-510794e20ca8@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 6 Feb 2024 at 17:03, Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Sun, Feb 04, 2024 at 10:24:46AM +0100, Dmitry Baryshkov wrote:
-> > On Sat, 3 Feb 2024 at 22:20, Ricardo B. Marliere <ricardo@marliere.net> wrote:
-> > >
-> > > Now that the driver core can properly handle constant struct bus_type,
-> > > move the dp_aux_bus_type variable to be a constant structure as well,
-> > > placing it into read-only memory which can not be modified at runtime.
-> > >
-> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> >
-> > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->
-> Just to make sure this doesn't fall through cracks, I'm assuming you'll
-> push this to drm-misc-next too, right?
+On 7/2/24 01:17, Conor Dooley wrote:
+> On Tue, Feb 06, 2024 at 11:30:12PM +1030, Subhajit Ghosh wrote:
+>>    dt-bindings: iio: light: adps9300: Add property vdd-supply
+>>    dt-bindings: iio: light: adps9300: Update interrupt definitions
+>>    dt-bindings: iio: light: Avago APDS9306
+> 
+> For these 3,
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> 
+> Cheers,
+> Conor.
+Thank you very much Conor.
 
-I was out at FOSDEM, now done.
-
--- 
-With best wishes
-Dmitry
+Regards,
+Subhajit Ghosh
 
