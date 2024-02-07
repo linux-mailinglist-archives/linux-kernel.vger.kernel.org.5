@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-56949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EED4184D1AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:49:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E683B84D1AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:51:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D57E1C259A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:49:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 799CD2830D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8397C136669;
-	Wed,  7 Feb 2024 18:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3635A1386BE;
+	Wed,  7 Feb 2024 18:43:39 +0000 (UTC)
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0DC212B175
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 18:43:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B74F712FB09
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 18:43:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707331412; cv=none; b=nEIbPZsbrV5u0gOg5PHShPyQG2epAU9fHzaNZHBBRKkpQNck2SAGgI7Lv9hC27/NjybvhdiH+cp6jQSnDu8xr1146gzEhekcyEo/gHNL0k21H9j7cJ+F+HGwi4liu76e7P6ShYow1qerp62K7Y+351UUXU8jxpOgLiN/3eY3uEQ=
+	t=1707331414; cv=none; b=CHLXdz347RLmCntva72l7m+u4aluP6Uj9LbvY5YpSgpwg+mveaCSXn7AotP1g6Nl0i5iij/RGJTy4nyuVes/8NlWz+zI9Bn/QZ6vsOzVYoRy1axhToeqYV8van8paMsVSQ2fCxOWyVHVuwDnycHKBOqAwaHTpXBDCQHzSSWUt9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707331412; c=relaxed/simple;
-	bh=XCjKjslPjqHKRPhjAFqin0asrGjQXScMLqttnb/ERUQ=;
+	s=arc-20240116; t=1707331414; c=relaxed/simple;
+	bh=VHrosqJBw/jD2fXLXTk6B7k9ErsOSKDugMqkiDkHpEU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uYEzxWWkKX11tnLIDtNL81lH886I+NpwuwbNFu7AR0AMVvDswTcHoScEuDTuatx/oeXa1DT1TLlvdLxSU6fnWO6JTrr0/WcpyFEX0w2uifZdebFHZv0YLev1lNtn1MWjTIPbdDz0wmhXzZwfXNa7QpP7yXiTAdnuQm+nq6/PoJA=
+	 MIME-Version:Content-Type; b=iGMOvo86a2xEAyqxXWoFwbhv/uzO7hejd/Qz3eo7u+dZkOovpf9VULNlQ9jBlWhq4s9wdpEKQ/kWiuTwy6Weet+ytkWx7NCfVjbHZrsNHM7e+TS0CVOqZI3KE9mSV/D+M7pt9kjXcqfQFEkgaRo7GgzK1KUR+U5xsgim7WLa51Q=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -32,28 +32,29 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rXmtD-00082i-BC; Wed, 07 Feb 2024 19:43:19 +0100
+	id 1rXmtE-00086R-84; Wed, 07 Feb 2024 19:43:20 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rXmtC-0054Yb-Qo; Wed, 07 Feb 2024 19:43:18 +0100
+	id 1rXmtD-0054Yf-Av; Wed, 07 Feb 2024 19:43:19 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rXmtC-00HRth-2Q;
-	Wed, 07 Feb 2024 19:43:18 +0100
+	id 1rXmtD-00HRtl-0o;
+	Wed, 07 Feb 2024 19:43:19 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Mark Brown <broonie@kernel.org>
 Cc: kernel@pengutronix.de,
-	Helge Deller <deller@gmx.de>,
+	Kalle Valo <kvalo@kernel.org>,
+	Dmitry Antipov <dmantipov@yandex.ru>,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
+	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+	libertas-dev@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 28/32] video: fbdev: mmp: Follow renaming of SPI "master" to "controller"
-Date: Wed,  7 Feb 2024 19:40:42 +0100
-Message-ID:  <136f59b6e272e5ff7ec210627c9c3ea27d066d51.1707324794.git.u.kleine-koenig@pengutronix.de>
+Subject: [PATCH v3 29/32] wifi: libertas: Follow renaming of SPI "master" to "controller"
+Date: Wed,  7 Feb 2024 19:40:43 +0100
+Message-ID:  <971429eacddbad4c2f49b783ddd68746c1929ab3.1707324794.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1707324793.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1707324793.git.u.kleine-koenig@pengutronix.de>
@@ -64,7 +65,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2770; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=XCjKjslPjqHKRPhjAFqin0asrGjQXScMLqttnb/ERUQ=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlw87cfCDKPouSdyY/ruXPqXmi502nagTlT3Zz4 C1qUXW8K0GJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZcPO3AAKCRCPgPtYfRL+ TvX3CACqveA/rD7JWSIm5VWKcQuWk6O6yOGgjkNs3so17MGNpc9D3WJa+1Q3Fj9YswI/+mc2cvv lM7DaKL+zFnNP+sKDzyE86BmdsQTMXD9C446LLZJvrtEywze4r0dfh1bSHPB6t3g9TTIXE0E6e+ 5HD/C2dCcF/uquUYSd5burrHstyxfQJ2xooOfYph3zLZ4D/K+8PbcJV5XgEYdwQU2GRE+OOUEfl T/cPQMNlK0VlFMfaAl6UKj8ihO6jBXAyPc4LWnDgVfkKr+4gqogS30viLdt6DlnE9MNmKZB6fEj y2Xqa0X3zEvdPeLNY+ennxVjeiVzVibBGlODr4KPrxuLJAMR
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1219; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=VHrosqJBw/jD2fXLXTk6B7k9ErsOSKDugMqkiDkHpEU=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlw87kvHJm3k99v3JLvxkbz6eOQnEymFaod/Qtw nSZ+2lPOu+JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZcPO5AAKCRCPgPtYfRL+ TkJkB/9MqJcVzo/oH3CtG2kkoGwi4IpSxpVsGFpp+yF3RdDaCtDk2KBdfK+lY8wVJLX/BuAh6Wz 7O7Fa3ZDbhzeyfXQQZUnkIwkUUI52U0ARmrXI2Dnl9JulBCfTlHHQkTXIJ2n/t+oPDY2l4Jwas3 KahFY0rdhvXSpVFe04dC7GMisI8nrlysgeAJ/IVZ4QOib6usVwtOFnbej+ebk1KFo56S/n4bpCm Rk1mJO+McINm/vyOOfSp3XZtBC/xBE9NvCd9BzUVdZTzk5huwSHBKvYcpaQOVl0qA6+ksnYNrXf jITbEf7XGJBSOcVzIlKKS16S229rmir2iZDuUZYLIZZBq4RS
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -79,78 +80,26 @@ compatibility macros were provided.
 To be able to remove these compatibility macros push the renaming into
 this driver.
 
+Acked-by: Kalle Valo <kvalo@kernel.org>
 Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/video/fbdev/mmp/hw/mmp_spi.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ drivers/net/wireless/marvell/libertas/if_spi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/mmp/hw/mmp_spi.c b/drivers/video/fbdev/mmp/hw/mmp_spi.c
-index 0f8f0312a7c4..cf23650d7f0b 100644
---- a/drivers/video/fbdev/mmp/hw/mmp_spi.c
-+++ b/drivers/video/fbdev/mmp/hw/mmp_spi.c
-@@ -32,7 +32,7 @@ static inline int lcd_spi_write(struct spi_device *spi, u32 data)
- 	int timeout = 100000, isr, ret = 0;
- 	u32 tmp;
- 	void __iomem *reg_base = (void __iomem *)
--		*(void **)spi_master_get_devdata(spi->master);
-+		*(void **) spi_controller_get_devdata(spi->controller);
- 
- 	/* clear ISR */
- 	writel_relaxed(~SPI_IRQ_MASK, reg_base + SPU_IRQ_ISR);
-@@ -81,7 +81,7 @@ static inline int lcd_spi_write(struct spi_device *spi, u32 data)
- static int lcd_spi_setup(struct spi_device *spi)
- {
- 	void __iomem *reg_base = (void __iomem *)
--		*(void **)spi_master_get_devdata(spi->master);
-+		*(void **) spi_controller_get_devdata(spi->controller);
- 	u32 tmp;
- 
- 	tmp = CFG_SCLKCNT(16) |
-@@ -136,32 +136,32 @@ static int lcd_spi_one_transfer(struct spi_device *spi, struct spi_message *m)
- 
- int lcd_spi_register(struct mmphw_ctrl *ctrl)
- {
--	struct spi_master *master;
-+	struct spi_controller *ctlr;
- 	void **p_regbase;
- 	int err;
- 
--	master = spi_alloc_master(ctrl->dev, sizeof(void *));
--	if (!master) {
-+	ctlr = spi_alloc_master(ctrl->dev, sizeof(void *));
-+	if (!ctlr) {
- 		dev_err(ctrl->dev, "unable to allocate SPI master\n");
- 		return -ENOMEM;
- 	}
--	p_regbase = spi_master_get_devdata(master);
-+	p_regbase = spi_controller_get_devdata(ctlr);
- 	*p_regbase = (void __force *)ctrl->reg_base;
- 
- 	/* set bus num to 5 to avoid conflict with other spi hosts */
--	master->bus_num = 5;
--	master->num_chipselect = 1;
--	master->setup = lcd_spi_setup;
--	master->transfer = lcd_spi_one_transfer;
-+	ctlr->bus_num = 5;
-+	ctlr->num_chipselect = 1;
-+	ctlr->setup = lcd_spi_setup;
-+	ctlr->transfer = lcd_spi_one_transfer;
- 
--	err = spi_register_master(master);
-+	err = spi_register_controller(ctlr);
- 	if (err < 0) {
- 		dev_err(ctrl->dev, "unable to register SPI master\n");
--		spi_master_put(master);
-+		spi_controller_put(ctlr);
- 		return err;
- 	}
- 
--	dev_info(&master->dev, "registered\n");
-+	dev_info(&ctlr->dev, "registered\n");
- 
- 	return 0;
- }
+diff --git a/drivers/net/wireless/marvell/libertas/if_spi.c b/drivers/net/wireless/marvell/libertas/if_spi.c
+index 8690b0114e23..b722a6587fd3 100644
+--- a/drivers/net/wireless/marvell/libertas/if_spi.c
++++ b/drivers/net/wireless/marvell/libertas/if_spi.c
+@@ -1052,7 +1052,7 @@ static int if_spi_init_card(struct if_spi_card *card)
+ 				"attached to SPI bus_num %d, chip_select %d. "
+ 				"spi->max_speed_hz=%d\n",
+ 				card->card_id, card->card_rev,
+-				card->spi->master->bus_num,
++				card->spi->controller->bus_num,
+ 				spi_get_chipselect(card->spi, 0),
+ 				card->spi->max_speed_hz);
+ 		err = if_spi_prog_helper_firmware(card, helper);
 -- 
 2.43.0
 
