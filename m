@@ -1,124 +1,123 @@
-Return-Path: <linux-kernel+bounces-57059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFFC384D388
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:16:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F90984D38E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:17:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70C341F24518
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:16:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F9DEB21738
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:17:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E42F128373;
-	Wed,  7 Feb 2024 21:16:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51405128360;
+	Wed,  7 Feb 2024 21:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="Q/YldqDE"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZZ7DJ1jh"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F91127B53
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 21:16:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDCDF127B64;
+	Wed,  7 Feb 2024 21:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707340586; cv=none; b=BCWYAj0t+PtOi+vVYxVq8CnNgZKVtMWvUF764tvy/mKgmB453u0UgzMmQ9PslRkY6Y/2taKqEwIdkQ7Ko9XxxTgRiA1r+J6/Oys6dr2mY6xF/PXykBcYiWI3M7baiepJOC8axmAPdJe146GD/WpWfVGshhTa4ySnC728rAhZkgY=
+	t=1707340633; cv=none; b=DCelRtxFuxrzd9ll40gaxkaUQsALT80+irRnyDWCVpi8DStsPm14wsOIl6TXp3DyWb/tqRD0HLaPzwjBj6sGOg4nCPGdyyW61yGQg8XbmQXozZviGcIt4FIUq6i2JrxyEAOkz4FEkypibfQCkX/R6E3e7pPcC+nsKDh/gCsVjUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707340586; c=relaxed/simple;
-	bh=w+fIBjPrK/nT6xuFbVQ1juBBDVb1ZDo31jplpYMA5n4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e+iDkaSAtbIHV69TwBE5KJ5/OFGXetlPBxVwE72GqPj9v6IBdQgT/T2rL9GTcfbUHimQMMXfl3xNNBr9ZO9BcXdefQB95Bjk8OQUE6IPOFUJFYVbBwNJc9Ae9peTYKlqp7pb+Dh22ZIXfuad51Acq17xOcMkuI1tzVUAdb/slLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=Q/YldqDE; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso817956a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 13:16:24 -0800 (PST)
+	s=arc-20240116; t=1707340633; c=relaxed/simple;
+	bh=K6vokJcR7HWb+RwnRjZ2DzN5s4WTL1Gy/n0b51sgHqQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=kq+SML3SEiLkLRIJg8lQBfd2+z9EUoYONuT4sCm/o6j8ml/gaQKEMrMjwBxK+MxabyLxKHnIMvPwUnVAnf2yY8nITtxXRcFrkJy3aAmeuXg+h5b9RPUxziOLyrSHRlWaD7DIwrzTUEw7Y8djcJjEfc2zVGBRcM3H5FDO2SQ0cf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZZ7DJ1jh; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-511689ef2b3so950013e87.2;
+        Wed, 07 Feb 2024 13:17:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707340584; x=1707945384; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Gqlkqgjh5mviyHn6MD8miUxLgv9IqeBU6I07NHmQEg=;
-        b=Q/YldqDEbY/bCM6JheFI9FpScrpdO78vVb50ro+eZbfSXo1YK7LE1RsrUMnMNTko8U
-         6m/Fz3A+JXA1Y4+YYuYdA7eQ9krWvg32mPwmMpWimR6Uy6n7vX4TPkdWkdILIw93Au5s
-         oSEzh5j28cdFrPI8PQR3934x//JWqcbLxe9MJTtCt4zKAHQrksVBUEYizrWWqJu5HQ6w
-         6eY4Wu1ggECX3O0Yg6RTHK9XE4y+7serA+adPVf5A+vsUb5FeDmSLdHuvKNyZBAwnxE/
-         Dfz4Tf4rlRUD9OwRnOWdNxzxg1n2hr3N1FUdexSIdprGmzT3fgD0Y0WSoJgp+03WdMwh
-         tDcw==
+        d=gmail.com; s=20230601; t=1707340630; x=1707945430; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6qVBalHq5WWv0zl7Pnbpf8WpyjeHoC2AZj28LtTs8xs=;
+        b=ZZ7DJ1jhg7MM5YvEYGFA8Z1QjzbjRJrjzz9HWD5x3f+/O/gLF5LwwYquGTgFxy9WPN
+         1xYOphkvf67snsJCHD0M7pvPY/FW7mEYmvtR6dOdzyzB9ioB9hKCiBv8NHSiheDvtiPf
+         UPJydffOK12FVSbu156w/VN1WbvFzcZq8be43pZlFiSJKr1Nn/AZwkOG3rC2IJTXYQcD
+         SB5EVhRGkA+zSbZO4hxsQMMxJz7z4nNlbDknMRVXEcIVAfrWeMDO6ZXQIBlttaQ+tXSM
+         +912ngatV8X0ZNwpAkg15WvSrMsoFLejU2We/OJufxOePE/NLYOXiMsA277KiEzhuxcN
+         vFVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707340584; x=1707945384;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Gqlkqgjh5mviyHn6MD8miUxLgv9IqeBU6I07NHmQEg=;
-        b=cbb5EgIPXdFJtMOns7+iVRE/9I2Z3p5o3sMd6DhioZ+1HMWehEXXpdhtSWlCg2hOUR
-         DRkp3n5sbObhtc1e1eBRpLtxDVvTcOl17V7nivaqGysNHZrmSeOXbYh74PZLcqsLlae9
-         SLI8pm+f0hna559TtMH5qr6gh70Gn7sGy4a4s0u+4Ay/rdAmhCvYM6cGdP0YGysgPlLf
-         gnKs3ekA1uV/KpVo4ZdBxQqVNOAP291bOoCRGYB1mArIEgFWxk5bXerl39pA1HZg+KB8
-         fxm1mZl03x/RGjPTijMU49UfirITAmMNePuTrkDFvg9m3fyKX3vv8bT6bQ+WMTQeXy22
-         91hw==
-X-Gm-Message-State: AOJu0YxiKNdLleLeWCz9nTd0pJ8RxQLdZidqZm6RrHMmJWF4IjkIJjcZ
-	117AcDPjBlgFIDxbfOXVepvddxZyrG1ZqPuqgYd15vKEBF3PeWkE4+/obDMZD00=
-X-Google-Smtp-Source: AGHT+IFePLqKUcwz7TT7inMgRHMqSnOOGtNeTkWD1Yt+i5WWwKtaMmhtffaSfHUiH8/oQpO8GTuxKQ==
-X-Received: by 2002:a05:6a20:3d0e:b0:19c:6a9c:2c76 with SMTP id y14-20020a056a203d0e00b0019c6a9c2c76mr7209700pzi.10.1707340584431;
-        Wed, 07 Feb 2024 13:16:24 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXb2OVOLLZHdGwuFn/U1Iyk1hXgiAvRmYL2Qd14d66VH8Ss+iP7b5sf0SgSU2ALeeGHpJkdpcAkeIXxqTtjEjZpwCfOPpqGAjuntcTs7iAcihTMjkRvZri8Qz2SNCEz518PVL3NyHcV2A8zvlPGCwzsblGKk908BMoVuCN+F9U0XAD/qDuOY/EXM1hf2sq1h6Wcqv8WBreHLeE6hxRbP0FuBLlS4Fdpyck5eKhRIbulRlLcS6uVl5CTj6/PPdY1CHCHHlf4eQV05tEmN8k3gSnVZ/+CpI51QcvjTCk8fnE7OpkZPz987nPyFjCh5z1D2KbLQxU3SK2D4DW9Dc5XWKPhjPDfebnXv7knUHwCH9VSHILvVjYdEQfDRFp4Dv8phRq0zgRTFp+1T1DMGaW7Fml3ZAemDTjV6CNpe6ugeMguOg==
-Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
-        by smtp.gmail.com with ESMTPSA id d20-20020a170903209400b001d8f111804asm1911449plc.113.2024.02.07.13.16.23
+        d=1e100.net; s=20230601; t=1707340630; x=1707945430;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6qVBalHq5WWv0zl7Pnbpf8WpyjeHoC2AZj28LtTs8xs=;
+        b=NRGlGqbdzyvnMOXRzcTaIy4vtiAetFKOdbNg8pyA4NYChDiWBwVmZpx4DVrY/JUGNZ
+         HPHxyACS+fePNm3wcYjAquD3g/n34q6nGy6tMK+JQ9J19acRDDZQdONzqVLcd8DDpwwo
+         KmPOeMq3dTkzME7Qc0ul6xAwWdCWXH0b+lCHaX2fz/Wfmj39j/xkgipYy3HJZsCcO2sU
+         O0xul7oL0OqWbyuWy6mVPfz44mTG25LwKnBi9Ly6Wn8LjPBsXCtkPgUPfmrsFmKSJYHN
+         vy+UBGB9+phu96dTXq+e5dodTAebace9ONDDD3Hry8UdFPH2FPol/g+jA/YCQEmQIoeV
+         Xykg==
+X-Forwarded-Encrypted: i=1; AJvYcCWDSBbmFZF3t/vDoEDTEikCS66rpAXnAa17Fr565ysZU8i+g1OONInBsTdYP8SjlsYAHQ246pGxmVaDPUJMvsRsCGz2YthScTQUPCWC
+X-Gm-Message-State: AOJu0Yx2eMuo++vpeSYg4Q1SOZRwRqae88nwCJ/xRUz7Vf/YqP1cmFV2
+	Y+k6xj4gMEW18odIhevSJUIPfPeRgEvqsvG58Vf/zgYg1SIcwspq3CZMe/OMfXdvEg==
+X-Google-Smtp-Source: AGHT+IE4oyVtMIDzWaS5YN8nmvGDfjDvMSwCasc+WjLB1/AGLmtiRdfL0zGzukbz5MihmcijNVK6WQ==
+X-Received: by 2002:a05:6512:522:b0:511:4e85:5b2e with SMTP id o2-20020a056512052200b005114e855b2emr4662453lfc.24.1707340629649;
+        Wed, 07 Feb 2024 13:17:09 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV0FU6famsTtlnQ9SgOOMH1EKPKXLEbrHfZKGP2FK5g+eMg87dJLog2YfXp2lUcb6IJ+Zm6m0kwfUqvS8Ox1Tg243t3kX8Tt5PgmsbNDK4A21I83a6jJz3tZlW9sSlhZFJlltduKquctF8rY0Dtr1NonAlt+Mp2xzVb0U522X3wM0Bhu0LlD3SAOvcGmmF3oInCPCmAfo4y7DtR
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-3314-d4ec-5095-daa3.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:3314:d4ec:5095:daa3])
+        by smtp.gmail.com with ESMTPSA id h3-20020a0564020e8300b00560622cd10fsm98362eda.68.2024.02.07.13.17.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 13:16:24 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rXpHJ-003R7L-1Z;
-	Thu, 08 Feb 2024 08:16:21 +1100
-Date: Thu, 8 Feb 2024 08:16:21 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: syzbot <syzbot+9d0b0d54a8bd799f6ae4@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, chandan.babu@oracle.com,
-	dchinner@redhat.com, djwong@kernel.org, ebiggers@kernel.org,
-	hch@lst.de, jack@suse.cz, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	sandeen@sandeen.net, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [xfs?] WARNING: Reset corrupted AGFL on AG NUM. NUM
- blocks leaked. Please unmount and run xfs_repair.
-Message-ID: <ZcPzJWwhd++wGtd8@dread.disaster.area>
-References: <000000000000ffcb2e05fe9a445c@google.com>
- <00000000000053ecb50610bfb6f0@google.com>
+        Wed, 07 Feb 2024 13:17:09 -0800 (PST)
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: [PATCH 0/2] hwmon: chipcap2: fix uninitialized symbols
+Date: Wed, 07 Feb 2024 22:17:07 +0100
+Message-Id: <20240207-chipcap2_init_vars-v1-0-08cafe43e20e@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000053ecb50610bfb6f0@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFPzw2UC/x3MQQqAIBBA0avErBPMBKurRIjaWLMx0ZAgvHvS8
+ i3+fyFjIsywdC8kLJTpCg1D34E7TTiQ0d4MggvJBVfMnRSdiUJToFsXkzKz4+wnZ6TiFqGFMaG
+ n55+uW60fOya29WQAAAA=
+To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, 
+ Dan Carpenter <dan.carpenter@linaro.org>
+Cc: linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.13-dev-0434a
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707340628; l=1025;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=K6vokJcR7HWb+RwnRjZ2DzN5s4WTL1Gy/n0b51sgHqQ=;
+ b=Q/e4WrTzNsDXrMGjuGwccn30CNkm0oXw1Oi3B0W4K2hOc3yV/nlEA+FS+ypDy6itTG0o6HW8W
+ /gVuOErPvcrCqptQlXNZYbctVD8/MxcwA+Qa+A5cC3QbLg5D4aFTsjO
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 
-On Tue, Feb 06, 2024 at 04:24:04PM -0800, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1110ad7be80000
-> start commit:   40f71e7cd3c6 Merge tag 'net-6.4-rc7' of git://git.kernel.o..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=7ff8f87c7ab0e04e
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9d0b0d54a8bd799f6ae4
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16ab4537280000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=148326ef280000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
-> 
-> #syz fix: fs: Block writes to mounted block devices
+Two static checker warnings have been found with Smatch[1] when checking
+the chipcap2 driver. Two variables might be used uninitialized under
+certain circumstances (explained in the commit messages).
 
-Hahahahahaha!
+This series fixes the two warnings and optimizes the error paths involved.
 
-syzbot, you're drunk. Go home.
+The fixes have been tested with Smatch (including cross function database),
+and the bugs could not be reproduced anymore.
 
--Dave
+[1] https://lore.kernel.org/linux-hwmon/294e4634-89d4-415e-a723-b208d8770d7c@gmail.com/T/#t
+
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+---
+Javier Carrasco (2):
+      hwmon: chipcap2: fix uninitialized variable in cc2_get_reg_val()
+      hwmon: chipcap2: fix return path in cc2_request_alarm_irqs()
+
+ drivers/hwmon/chipcap2.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+---
+base-commit: 65f976a4299c5de2d2c9162c0337f95b7447243d
+change-id: 20240207-chipcap2_init_vars-b39f8ca470be
+
+Best regards,
 -- 
-Dave Chinner
-david@fromorbit.com
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+
 
