@@ -1,63 +1,58 @@
-Return-Path: <linux-kernel+bounces-57121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3F9284D43B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:38:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EDA684D43E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:38:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D1202865CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:38:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49922286B15
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:38:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED8014A0A7;
-	Wed,  7 Feb 2024 21:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04B0F8595B;
+	Wed,  7 Feb 2024 21:24:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S8ni/tPo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LcOs5n8E"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E75331272BC;
-	Wed,  7 Feb 2024 21:23:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2860312E1FE;
+	Wed,  7 Feb 2024 21:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341040; cv=none; b=PCmG54BBC5sqYmY/VW/6hncEZsZmRtyIQO4Qln5gTV/aj29gc9KmDBUxgH22strQDnmGUiSyOSk4I/ALPtluoexUdiJnGIC6d0lv7LkVdHO2kB8/aZD441KokT/PqH4lCqujO+Ean1WdSD16R28h9AiNjbMnSCbUoEn4VjJjkiI=
+	t=1707341041; cv=none; b=meUq0+xym3fFcvqsQf27CoGgjoBezhA+KAotqXmUkq9ncz962GVTQyGKcBHcl+yDoGUxiFk2BXn2XO6vcXm3+G4Oh0lFgV2wVcEhH7w6qQTWqecfWWBYUjyUra/nL/tdktXTIIli245jp5K+y6e2FZPQNH64/VfNjm9QdRyFGlA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341040; c=relaxed/simple;
-	bh=N5V2nVbrJQTw4/4WWF2aUk4OcKbWlNp0VXU/eTyPBto=;
+	s=arc-20240116; t=1707341041; c=relaxed/simple;
+	bh=8u/nd32w1/51YWuzY0CKu99RPZGadDx3B7M3o4cGG4o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UWgMk0dR4Fru0IxI5O726DZcc9cgr8QtDbS6n0b343bikfo8iueOuBDvnxQiZ/282yKucPC1QWNnGhwaRGQdYvzfKZamwhffhDcea/AtiA1T5KeC+49gKBhYu9cTy81KRoQgO9AdCVZwBb1o9JlGypVrH3VmPiHuATHoOB+ZDlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S8ni/tPo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADBCDC43390;
-	Wed,  7 Feb 2024 21:23:57 +0000 (UTC)
+	 MIME-Version; b=IA8ZmbQfL8LYlRs4SuN+gQfoMkGslebGhZgmFYVl465xlq6/Zu+8e6EdQNpKapzfEdIIjg/FMVXc6aMY3UGdRR8gdCXhwTmN/m313/eAu4bsjgKtGgN8CwlhR1bGLrtb9dUmvM1EIZY201kWureHCK6MmtL7ZfLEVxvuULyHU/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LcOs5n8E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD4C5C43394;
+	Wed,  7 Feb 2024 21:23:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341039;
-	bh=N5V2nVbrJQTw4/4WWF2aUk4OcKbWlNp0VXU/eTyPBto=;
+	s=k20201202; t=1707341041;
+	bh=8u/nd32w1/51YWuzY0CKu99RPZGadDx3B7M3o4cGG4o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=S8ni/tPoAwhbJ32VYoG/dIB3CcQzaI7zhuPleo2fr1zAr/Ra01PGisq5a+tMh4X6z
-	 DZGH9j1SBeSb+lVk2k8Mwy0pwlk9Z4hdVC5IXIpyriLRJIRJzz8cO41E8P8gnkhtkf
-	 ALIMmMgF/911avjgMVcGM5A3wtbQxNqD4d/W6hTo9jqHjMHNBPeM4LcrFLjhlGWuvi
-	 BiNBrZvxlLEADg+j55yIIWFYzrJEIuWbC1664JhoJHe/0XmBRGyc6IH1u0Ve/JrFfp
-	 QAjHyLnm+ap1FvzQv5yeBVKFAz75wNq/tqHhEcWVFcEKpO8HW5vKUTgmutaarL7M8g
-	 7fSVns5fz6hVw==
+	b=LcOs5n8ENptYrn1tEJ6Y+6/GPqBFkjIWEZ0MhOPyR9rMugrApJGqEotdPjO4uW591
+	 NNtTerzPsWqrKPYY6ey3SrLFQJ5dyKhAqn75yTqlyUt+NyTnK6k9ViIhRZLR9uaeXu
+	 0SH5WqIQVnPqkYe7ZNsPi06vJ6AVjyjK0W1ODyO2LvkRu2H7JslVIxkkFDdpXFi06w
+	 UzIvB/vC3uVT4W6PTNA2STrUwFB105M2gb61EEH2VBdGqaV/gltCJ1noSr+c3Xtwge
+	 lFC9hOpC+ZSPsbClkSqHkQGV49BCdVX4FpkB9UwDIP1dAQQR+zmSEFZ5tBWGGP2tw2
+	 WXTyECan6MBtw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Rui Salvaterra <rsalvaterra@gmail.com>,
-	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Kunwu Chan <chentao@kylinos.cn>,
+	Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+	Jiri Kosina <jkosina@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
-	perex@perex.cz,
-	tiwai@suse.com,
-	kai.vehmanen@linux.intel.com,
-	pierre-louis.bossart@linux.intel.com,
-	maarten.lankhorst@linux.intel.com,
-	siyanteng@loongson.cn,
-	jasontao@glenfly.com,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 11/38] ALSA: hda: Increase default bdl_pos_adj for Apollo Lake
-Date: Wed,  7 Feb 2024 16:22:57 -0500
-Message-ID: <20240207212337.2351-11-sashal@kernel.org>
+	jikos@kernel.org,
+	benjamin.tissoires@redhat.com,
+	linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 12/38] HID: nvidia-shield: Add missing null pointer checks to LED initialization
+Date: Wed,  7 Feb 2024 16:22:58 -0500
+Message-ID: <20240207212337.2351-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212337.2351-1-sashal@kernel.org>
 References: <20240207212337.2351-1-sashal@kernel.org>
@@ -67,48 +62,50 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.16
 Content-Transfer-Encoding: 8bit
 
-From: Rui Salvaterra <rsalvaterra@gmail.com>
+From: Kunwu Chan <chentao@kylinos.cn>
 
-[ Upstream commit 56beedc88405fd8022edfd1c2e63d1bc6c95efcb ]
+[ Upstream commit b6eda11c44dc89a681e1c105f0f4660e69b1e183 ]
 
-Apollo Lake seems to also suffer from IRQ timing issues. After being up for ~4
-minutes, a Pentium N4200 system ends up falling back to workqueue-based IRQ
-handling:
+devm_kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure. Ensure the allocation was successful
+by checking the pointer validity.
 
-[  208.019906] snd_hda_intel 0000:00:0e.0: IRQ timing workaround is activated
-for card #0. Suggest a bigger bdl_pos_adj.
-
-Unfortunately, the Baytrail and Braswell workaround value of 32 samples isn't
-enough to fix the issue here. Default to 64 samples.
-
-Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
-Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Link: https://lore.kernel.org/r/20240122114512.55808-3-rsalvaterra@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+[jkosina@suse.com: tweak changelog a bit]
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Reviewed-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hid/hid-nvidia-shield.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 4a9772ebdf8d..4f2f36658a12 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1738,6 +1738,8 @@ static int default_bdl_pos_adj(struct azx *chip)
- 		case PCI_DEVICE_ID_INTEL_HDA_BYT:
- 		case PCI_DEVICE_ID_INTEL_HDA_BSW:
- 			return 32;
-+		case PCI_DEVICE_ID_INTEL_HDA_APL:
-+			return 64;
- 		}
- 	}
+diff --git a/drivers/hid/hid-nvidia-shield.c b/drivers/hid/hid-nvidia-shield.c
+index c463e54decbc..edd0b0f1193b 100644
+--- a/drivers/hid/hid-nvidia-shield.c
++++ b/drivers/hid/hid-nvidia-shield.c
+@@ -800,6 +800,8 @@ static inline int thunderstrike_led_create(struct thunderstrike *ts)
  
+ 	led->name = devm_kasprintf(&ts->base.hdev->dev, GFP_KERNEL,
+ 				   "thunderstrike%d:blue:led", ts->id);
++	if (!led->name)
++		return -ENOMEM;
+ 	led->max_brightness = 1;
+ 	led->flags = LED_CORE_SUSPENDRESUME | LED_RETAIN_AT_SHUTDOWN;
+ 	led->brightness_get = &thunderstrike_led_get_brightness;
+@@ -831,6 +833,8 @@ static inline int thunderstrike_psy_create(struct shield_device *shield_dev)
+ 	shield_dev->battery_dev.desc.name =
+ 		devm_kasprintf(&ts->base.hdev->dev, GFP_KERNEL,
+ 			       "thunderstrike_%d", ts->id);
++	if (!shield_dev->battery_dev.desc.name)
++		return -ENOMEM;
+ 
+ 	shield_dev->battery_dev.psy = power_supply_register(
+ 		&hdev->dev, &shield_dev->battery_dev.desc, &psy_cfg);
 -- 
 2.43.0
 
