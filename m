@@ -1,190 +1,240 @@
-Return-Path: <linux-kernel+bounces-55832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E102584C238
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:03:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7114684C23A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:03:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC839B2A8ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:03:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB44D1F27948
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:03:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE539EADD;
-	Wed,  7 Feb 2024 02:02:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E50811CD2F;
+	Wed,  7 Feb 2024 02:03:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ThOy+bSo"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="C5Y2YPnL"
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BDD3DF4E;
-	Wed,  7 Feb 2024 02:02:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.55.52.88
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707271349; cv=fail; b=he1VOgYBfXF4PbFjQUAzP6w8di8Rg2I/WFVXvbxRWzUZtXjPp8ipCJ265Q0hGevv4S5wGy9Kjc9zmnR1450Z+vLIU9ROHBNC+7ydUWvUADzOMYr4k5opQdwuyR+9GaYeEyHL0EMwRO7dev52ZO5lfMcF/E+654So6ZkNV87U67A=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707271349; c=relaxed/simple;
-	bh=KNl4PjIMGZSH3FMDtg6prZGeahW6CtXizMn+/kr6lks=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=ukB6J1IcAMIpOcVq+LgpLMR31D8FTAfKwsKpQDufK5qdi4wiUPBF942SPGA8V68rsvCBUJ0Kyzay1yVGiv8McmWLU18Pxp9P22fNdD88Ss19qnmEtEuWzLN71VzCyzFkAlN8GsRsCIi2IuX3KZ5Z6l5rZZIWiBCeSBmlyWxcRlE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ThOy+bSo; arc=fail smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707271348; x=1738807348;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=KNl4PjIMGZSH3FMDtg6prZGeahW6CtXizMn+/kr6lks=;
-  b=ThOy+bSofRSpdZGk+cKfiBznkIkBefDXPO3mxYvcmn8ZCZDuSGBNSzkY
-   xdntZ1WJpGZNJd+QTil+o10e+V/JyXJ3vSAqu6IrruNGbCoc8T1wGGhX6
-   pXy35eyhZY0XrNk4yb6Opfb2psTsdBZV06vO3OgqfiGHvz6tMOCcAaGBr
-   SjBzFzMQEzCVPmZYtHHhvMxOiYdoqRc+UYOOCvSIASnZ89Ffqgm/NWJZB
-   eKX497hRWLoZ6qjtbvcBTtMZsHUXCG2jz99QJ8NC0sPdnQZLIeqDUpQOx
-   kFR7WRhJlrG2es522GFsHnowfuZT+8qOMplW0WYjWUN2F/vi8dlsWruMu
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="436025519"
-X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
-   d="scan'208";a="436025519"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 18:02:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
-   d="scan'208";a="1503113"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Feb 2024 18:02:27 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 6 Feb 2024 18:02:26 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 6 Feb 2024 18:02:25 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 6 Feb 2024 18:02:25 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.41) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 6 Feb 2024 18:02:22 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c3hrRLxKS298fpE/OKgKhcf6P41I+TjertOqTggKMHMDv/LuR3T/slMQ03j7Nuem65De8zq88ezLJTXIOo4skVXg0QGW46768xBn+Svfyo9BN5a/YatQ4WGUKL8V9ViSITrc9FhTbdO2A98HJrwVrFva0QD9Xaf65i26LAKxHAhvH91ROVmkzF0PWItLfpk4BvDM3tmELebKxRZvso4JqY+3JGPBNkkL5IDs6LWxzIxNYR032FkzW1Ueemmd7svunvXtPJbHf77pkEPpn9WzrFXW9RJI9Ci7aWgOU4kM4E904Dlm06CzlSBC0a1NUlgRFGc3hvr6NTH4MyjTCyKxrw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hW7Bx3Li3Jt5mc+Baj29OAOuhygjBBoAKTjVE++czgM=;
- b=np4Sg2m4ietd80olfkdVuC3RrcHpzoaolF29SDcxmPzt/4OVfRqZRi5MZWiXcXz28QyK6CfagW8jNJ6aHi+1OfBhr0gyZ/QP9jptisMOR3YUT0SoeZTIRmS9PxrvSRjWuLPmjkGT8TEURpaeYEceMqmGqn0TMuhbvsdHI7XsYbBtbhcmmR4Ilm+sCWd6ZW/DQoLO+WTYKlE3F6hb7ZUK+K22O3v3syo5t1I8411g97uifimKwQuPFlvtFmSVHh4Vt9K1mRb5qTYIQWMx2txH38lqfz29dsT5v/aooi5dvtZs1082he/7D7KF1MgKr62hDyXJtYEqOWDfRUhDOVlC6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by CY5PR11MB6463.namprd11.prod.outlook.com (2603:10b6:930:31::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Wed, 7 Feb
- 2024 02:02:21 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6257:f90:c7dd:f0b2]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6257:f90:c7dd:f0b2%4]) with mapi id 15.20.7249.035; Wed, 7 Feb 2024
- 02:02:21 +0000
-Date: Tue, 6 Feb 2024 18:02:18 -0800
-From: Dan Williams <dan.j.williams@intel.com>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>, "Xing, Cedric"
-	<cedric.xing@intel.com>, Kuppuswamy Sathyanarayanan
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, Dan Middleton
-	<dan.middleton@linux.intel.com>, Samuel Ortiz <sameo@rivosinc.com>, "Dan
- Williams" <dan.j.williams@intel.com>
-CC: Qinkun Bao <qinkun@google.com>, "Yao, Jiewen" <jiewen.yao@intel.com>,
-	Dionna Amalie Glaze <dionnaglaze@google.com>, <biao.lu@intel.com>,
-	<linux-coco@lists.linux.dev>, <linux-integrity@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 0/4] tsm: Runtime measurement registers ABI
-Message-ID: <65c2e4aa54a0_d4122947f@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <20240128212532.2754325-1-sameo@rivosinc.com>
- <c17a31e4fb30f5f9d4a337e5bd8d54cc6f99eef7.camel@HansenPartnership.com>
- <a255bc36-2438-41b7-b304-bcf7a6628bef@linux.intel.com>
- <42e14f74d3819c95fdb97cd2e9b2829dcb1b1563.camel@HansenPartnership.com>
- <1557f98a-3d52-4a02-992b-4401c7c85dd7@linux.intel.com>
- <85b7a4a679eada1d17b311bf004c2d9e18ab5cd3.camel@HansenPartnership.com>
- <b8140cc8-a56b-40f6-a593-7be49db14c77@intel.com>
- <fe1722c3618a8216cb53b8fd3f1b7cbb6fdff5a0.camel@HansenPartnership.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <fe1722c3618a8216cb53b8fd3f1b7cbb6fdff5a0.camel@HansenPartnership.com>
-X-ClientProxiedBy: MW4PR04CA0206.namprd04.prod.outlook.com
- (2603:10b6:303:86::31) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C851CD22;
+	Wed,  7 Feb 2024 02:03:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.120
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707271405; cv=none; b=CPiqg1uVyDFe75ewQuXu7Qr/0ue01+nsK+ztaxKKUxFCeULKBLSnzkcul1PPsnhEcuNAmBUZM9Nc0GkCxXwtak9KqLqGTJZ1ojFh4Vlg9ufOTv4/drQJUYezFiUZPuXvEhanAL7jU2GF71ySdch07OFtq5TTF/CMsXMQxa85oJk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707271405; c=relaxed/simple;
+	bh=SDRE0rw/sH4xsb0pXCX2TzJd5P36l13633gOcChpp6k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=YSq2UZNGB8z8pUzBLS8wx0K1tMXNoxs2CGdnyHi+9/gkdlq2Y6x/kg48uzV+Y3JN40JuYs4A0U1Xx6yoVnt6XQm5SjGNdnlLUcCznGyabmrP678Q1Qhy3WFoB830ZkuzTtFRVJbcj3vMvitFdaoHeEkeeiinCKL9PM2MZkvN8T8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=C5Y2YPnL; arc=none smtp.client-ip=185.125.188.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from [192.168.178.2] (unknown [58.7.187.102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 0B4983F2AE;
+	Wed,  7 Feb 2024 02:03:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1707271398;
+	bh=Uehal0PUIXb/o6zdMlG9jSwgBPrNjXIDJe97Eitsx0M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type;
+	b=C5Y2YPnLY3jPhMW16UrINrd7v5YGXF7kmIwzcsDJZPZZjbzsZBkxSxQqDjrOsuVou
+	 trFwqozGDYEA5Y9IUzAo84+KEmHHIzZzF3uMYlj1v6NF7b+Yt4T9Th14AFnNIgFWMl
+	 w16nNaO99a/CC1BcQ4BUORaamth6lwFoGFCIytkMz00twbc5ONymN3oJgLUBtnrBVd
+	 dt6ABRuevfoArAT3S/uB7BsLz6/tOIASyoouF+JvY5HpYQb2YF2wyPrrJOBC9B0XRo
+	 cJ734+tRhDmxLIAEfg2bzPhdFrdvC2FdgztxStzjBnGubrDNcZr2ghzBaWgLvTfwUe
+	 2Ai4blqboNTsg==
+Message-ID: <26893900-2d0d-4624-94f1-c4aa88386e9c@canonical.com>
+Date: Wed, 7 Feb 2024 10:03:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|CY5PR11MB6463:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1a789fb7-430e-433c-6dbe-08dc2780d1b7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZS1djYpWp26hDhuoqKr+FdLI76K6W5ww8CmeiKAF/4WkUXJsMbW4oHckZ3f2fnstf+7H06flv95+9Ygmz6s79sLScP9ag7FUdaERdh7or3jZq/KT5jTcT4S+y+aahjYG18GmfXTjr2DveNZsLkBW6uFtGpRXRf3b2V08B11DjOmnR6ZDQajsbWaVGdqALcRW8/3sJbVrEWhpBF7L2pB7AbV0G1JMeZ5e/lQBTpwI6RSpArkdbhKYxxhjslXUM2YbFfpH1O7f7UcOeL9DgYLPZLnFMoMiSoOQuwH9khp9+yblQRnE0HAEO78AV14xeJXmoYIQLYrh2By8VWzeUOFEqCC0/2f5MkeGJ6e+WUwy+tUjGOw4WsXVo9RZmgaqABVVlolByXO/SpYrzZTJXJpIPztD+PNlRQBgb6SPM6lRBlGfSXiCWu8Ttup91VDkvCgnVVY3m7JD/jKIeidIyp0XDou1I9AMur7LmKOIXPmtQorZEk7UKEuwYg2xKlDDfoX3TgbNK7sIX12EhmuhHhsyrNfUPVXrJs8JZ3XU0Que6n9gB0p6qi0CHf1WWoqmTB8Z
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(346002)(39860400002)(376002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(26005)(86362001)(41300700001)(4744005)(478600001)(6486002)(5660300002)(2906002)(110136005)(66946007)(66476007)(54906003)(66556008)(316002)(8676002)(4326008)(6512007)(9686003)(8936002)(6506007)(6666004)(38100700002)(82960400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?o5mPQavRjapFuBk5hBb8IbOA9k6FmTWXbOD5O8X0VgZhhgcWT22CnbfMtbhN?=
- =?us-ascii?Q?zzxW+pPP/VL/KS1APZfzmkhehgUfo+iyqzAJpLbyXNsU8w/HCFSA83QNP4cb?=
- =?us-ascii?Q?p5XSPasjtKo9AwaYy1m4ap+AuDScu8/y5XJqol2KrVKD/EwK0f4rzB5MNA2P?=
- =?us-ascii?Q?fVekoaHOExw4rXQttujsl7hzLdH0dZoRWE1OPqtLw9GkWM+xk+yNkCcqlIqc?=
- =?us-ascii?Q?wuE+Yf0UtiA5KFfNeBYTxvK2peF15YPh+UjtNxZoZ3CmuTMd28zSTMUy1otR?=
- =?us-ascii?Q?+Ah3sb/9T4euk6hogMiSkjnWHk3fiJkF9IR2PklkNC12g2shHNqkzj0BYlB4?=
- =?us-ascii?Q?ML8z2V2vMVIi02kwnXeHX4YtyFgFwbncQfvasrgHGjkTov3VWH5vuxf5ksbw?=
- =?us-ascii?Q?GBuMKlGsZ01qm90hvc4Ofs1zd3kRRtfO5feGS2ITMQSZCQ883Q0wCxu8SLY/?=
- =?us-ascii?Q?nlnnR4TOvrv0EvJN8uhFq20Yq8ugnp7Ndz/slm+KBb/EdvQGv2JI9NxIvBRY?=
- =?us-ascii?Q?pD2etrRsChxy6va4/XxSGvUtkxt73WT4Ijc3qWQTKwX8ETec1OJwWr82B4iN?=
- =?us-ascii?Q?ZUIJ1MwCTmvVJCS3yKakLLpnGR8OodCC1UIAMqQy4RdJccZI/kHa6dQCGLRi?=
- =?us-ascii?Q?HKNVhGt5mdH2pW9agMB25uX8QQJprpKTASL0bfs8AJ69nVLeYfr37pPRctGt?=
- =?us-ascii?Q?SoygUhFumlfHuY/kgBNy487/6Dy82TxM6l+xWkymWF2jwKwO2VFF0xSNZo1j?=
- =?us-ascii?Q?8aWw8fzpsVL8gDwxRco52Ty8RAYoJcu1kd/e5OAKwuqJam+SEJ8r7Ki43DZs?=
- =?us-ascii?Q?9/uIqDBfVFm7zcsBk2/DdGtWHkHskk0Q6qvb/hx0qmJvOILh0zcTN0FPCtDr?=
- =?us-ascii?Q?OfAXO6AB48zLDyO5D/5OAIiX/88dCgdRvNDawjVpn9fJACnU8tKZ3CyILAk6?=
- =?us-ascii?Q?/EjvrqUcq43jeW3s8I4N732Zpf5qDJ6cn7GbamcwQvMUZD46tNM+sljHP/oM?=
- =?us-ascii?Q?sl7OICLPHMBjwPVADRDxwn0WP9Q2CYTcWHN2jOC11CiICnQmcBIRtEbyYaV1?=
- =?us-ascii?Q?3cjnlK/KFg+IdigkBUqN/sZmxwZhdtz+o0k1nXCT8RYZlqiwhjEjNaxpig0p?=
- =?us-ascii?Q?kmYWR+cDHOc5dtoQ3lKTGxr+IccZ/Bm3kEBv/m5Gu6hmAlncVfrh71i/K4Sd?=
- =?us-ascii?Q?eNAuLeUmEzo0J1XaJQl870m4/KFYpfNA1lFvHwcaFf7Yf79VUpaYQIVwbG3R?=
- =?us-ascii?Q?SjzYqGSP74hayUF30G6o4Q1mzPAugRp84iIdgOiTUCRVpaHilyKGDD5zM84G?=
- =?us-ascii?Q?Wx21p8b2KM9ET+XgpYHEycqj56BWCY6anf5cAm+/1lP8bf0hSxWUq+JLa5PG?=
- =?us-ascii?Q?zRgC1F1JniSdgMo51zxkQ7eL3Hegk6XEEK/VzV5L5YR/j8yHMC/OozheDufI?=
- =?us-ascii?Q?nmLkDEaFozwXZRI2ti5JPG3x3BwV0iR5Xx0Lacl0Js0Z/y/7znAPYtKhJGWE?=
- =?us-ascii?Q?TEon0isNcFkYiU7qG+p3FFidJ8kssWZl5SwpZix7KIOlPTI0/7y3S5yhuzn7?=
- =?us-ascii?Q?r3r5lixA38OKikqkXlKCafLqDJL3UB+UkVp4YvunzImXGxBahpAYy4GOvs1x?=
- =?us-ascii?Q?+A=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a789fb7-430e-433c-6dbe-08dc2780d1b7
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2024 02:02:20.9845
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AbIQK4ng1Uv6eTLK9tb9Vx4PsmtAgR6QhfjLxUE7h1EWxd646ZdPbeXxIXpP17xkrj5kc/3VGJxAhYoYBto4S3b4Op6nm9IozmoCNiDnOVI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6463
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] fbcon: Defer console takeover for splash screens
+ to first switch
+Content-Language: en-US
+To: Mario Limonciello <mario.limonciello@amd.com>,
+ Daniel Vetter <daniel@ffwll.ch>
+References: <f037df4a-8a97-4fcd-b196-43f484b63d8d@amd.com>
+ <20240206101100.25536-1-daniel.van.vugt@canonical.com>
+ <20240206101100.25536-2-daniel.van.vugt@canonical.com>
+ <ZcJAVSyH3gRYx3EG@phenom.ffwll.local>
+ <e4fc61ae-97f5-4fa1-bfed-1312466a2a22@amd.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Helge Deller <deller@gmx.de>, Jani Nikula <jani.nikula@intel.com>,
+ Danilo Krummrich <dakr@redhat.com>, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+From: Daniel van Vugt <daniel.van.vugt@canonical.com>
+In-Reply-To: <e4fc61ae-97f5-4fa1-bfed-1312466a2a22@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-James Bottomley wrote:
-> There isn't really anything more complex about an interface that takes
-> a log entry, and does the record an extend, than an interface which
-> takes a PCR extension value.  So best practice would say that you
-> should create the ABI that you can't get wrong (log and record) rather
-> than creating one that causes additional problems for userspace.
+On 6/2/24 23:41, Mario Limonciello wrote:
+> On 2/6/2024 08:21, Daniel Vetter wrote:
+>> On Tue, Feb 06, 2024 at 06:10:51PM +0800, Daniel van Vugt wrote:
+>>> Until now, deferred console takeover only meant defer until there is
+>>> output. But that risks stepping on the toes of userspace splash screens,
+>>> as console messages may appear before the splash screen. So check the
+>>> command line for the expectation of userspace splash and if present then
+>>> extend the deferral until after the first switch.
+>>>
+>>> V2: Added Kconfig option instead of hard coding "splash".
+>>>
+>>> Closes: https://bugs.launchpad.net/bugs/1970069
+>>> Cc: Mario Limonciello <mario.limonciello@amd.com>
+>>> Signed-off-by: Daniel van Vugt <daniel.van.vugt@canonical.com>
+>>> ---
+>>>   drivers/video/console/Kconfig    | 13 +++++++++++
+>>>   drivers/video/fbdev/core/fbcon.c | 38 ++++++++++++++++++++++++++++++--
+>>>   2 files changed, 49 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/video/console/Kconfig b/drivers/video/console/Kconfig
+>>> index bc31db6ef7..a6e371bfb4 100644
+>>> --- a/drivers/video/console/Kconfig
+>>> +++ b/drivers/video/console/Kconfig
+>>> @@ -138,6 +138,19 @@ config FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
+>>>         by the firmware in place, rather then replacing the contents with a
+>>>         black screen as soon as fbcon loads.
+>>>   +config FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION
+>>> +    string "Framebuffer Console Deferred Takeover Condition"
+>>> +    depends on FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
+>>> +    default "splash"
+>>> +    help
+>>> +      If enabled this defers further the framebuffer console taking over
+>>> +      until the first console switch has occurred. And even then only if
+>>> +      text has been output, and only if the specified parameter is found
+>>> +      on the command line. This ensures fbcon does not interrupt userspace
+>>> +      splash screens such as Plymouth which may be yet to start rendering
+>>> +      at the time of the first console output. "splash" is the simplest
+>>> +      distro-agnostic condition for this that Plymouth checks for.
+>>
+>> Hm this seems a bit strange since a lot of complexity that no one needs,
+>> also my impression is that it's rather distro specific how you want this
+>> to work. So why not just a Kconfig option that lets you choose how much
+>> you want to delay fbcon setup, with the following options:
+>>
+>> - no delay at all
+>> - dely until first output from the console (which then works for distros
+>>    which set a log-level to suppress unwanted stuff)
+>> - delay until first vt-switch. In that case I don't think we also need to
+>>    delay for first output, since vt switch usually means you'll get first
+>>    output right away (if it's a vt terminal) or you switch to a different
+>>    graphical console (which will keep fbcon fully suppressed on the drm
+>>    side).
+>>
 
-Agree, there's no need for the kernel to leave deliberately pointy edges
-for userspace to trip over.
+I had similar thoughts, and had prototyped some of this already. But in the end
+it felt like extra complexity there was no demand for.
 
-Cedric, almost every time we, kernel community, build an interface where
-userspace says "trust us, we know what we are doing" it inevitably
-results later in "whoops, turns out it would have helped if the kernel
-enforced structure here". So the log ABI adds that structure for the
-primary use cases.
+If you would like to specify the preferred Kconfig design then I can implement
+it. Though I don't think there is an enumeration type. It could also be a
+runtime enumeration (deferred_takeover) controlled by fbcon=something.
+
+> 
+> IIUC there is an "automatic" VT switch that happens with Ubuntu GRUB + Ubuntu
+> kernels.
+> 
+> Why?
+> 
+> Couldn't this also be suppressed by just not doing that?
+
+I have not seen any automatic VT switches in debugging but now that you mention
+it I was probably only debugging on drm-misc-next and not an Ubuntu kernel.
+
+- Daniel
+
+> 
+>> I think you could even reuse the existing
+>> CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER for this, and then just
+>> compile-time select which kind of notifier to register (well plus the
+>> check for "splash" on the cmdline for the vt switch one I guess).
+>>
+>> Thoughts?
+>>
+>> Cheers, Sima
+>>
+>>
+>>> +
+>>>   config STI_CONSOLE
+>>>       bool "STI text console"
+>>>       depends on PARISC && HAS_IOMEM
+>>> diff --git a/drivers/video/fbdev/core/fbcon.c
+>>> b/drivers/video/fbdev/core/fbcon.c
+>>> index 63af6ab034..98155d2256 100644
+>>> --- a/drivers/video/fbdev/core/fbcon.c
+>>> +++ b/drivers/video/fbdev/core/fbcon.c
+>>> @@ -76,6 +76,7 @@
+>>>   #include <linux/crc32.h> /* For counting font checksums */
+>>>   #include <linux/uaccess.h>
+>>>   #include <asm/irq.h>
+>>> +#include <asm/cmdline.h>
+>>>     #include "fbcon.h"
+>>>   #include "fb_internal.h"
+>>> @@ -3358,6 +3359,26 @@ static int fbcon_output_notifier(struct
+>>> notifier_block *nb,
+>>>         return NOTIFY_OK;
+>>>   }
+>>> +
+>>> +#ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION
+>>> +static int initial_console;
+>>> +static struct notifier_block fbcon_switch_nb;
+>>> +
+>>> +static int fbcon_switch_notifier(struct notifier_block *nb,
+>>> +                 unsigned long action, void *data)
+>>> +{
+>>> +    struct vc_data *vc = data;
+>>> +
+>>> +    WARN_CONSOLE_UNLOCKED();
+>>> +
+>>> +    if (vc->vc_num != initial_console) {
+>>> +        dummycon_unregister_switch_notifier(&fbcon_switch_nb);
+>>> +        dummycon_register_output_notifier(&fbcon_output_nb);
+>>> +    }
+>>> +
+>>> +    return NOTIFY_OK;
+>>> +}
+>>> +#endif
+>>>   #endif
+>>>     static void fbcon_start(void)
+>>> @@ -3370,7 +3391,16 @@ static void fbcon_start(void)
+>>>         if (deferred_takeover) {
+>>>           fbcon_output_nb.notifier_call = fbcon_output_notifier;
+>>> -        dummycon_register_output_notifier(&fbcon_output_nb);
+>>> +#ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION
+>>> +        if (cmdline_find_option_bool(boot_command_line,
+>>> +              CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION)) {
+>>> +            initial_console = fg_console;
+>>> +            fbcon_switch_nb.notifier_call = fbcon_switch_notifier;
+>>> +            dummycon_register_switch_notifier(&fbcon_switch_nb);
+>>> +        } else
+>>> +#endif
+>>> +            dummycon_register_output_notifier(&fbcon_output_nb);
+>>> +
+>>>           return;
+>>>       }
+>>>   #endif
+>>> @@ -3417,8 +3447,12 @@ void __exit fb_console_exit(void)
+>>>   {
+>>>   #ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
+>>>       console_lock();
+>>> -    if (deferred_takeover)
+>>> +    if (deferred_takeover) {
+>>>           dummycon_unregister_output_notifier(&fbcon_output_nb);
+>>> +#ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER_CONDITION
+>>> +        dummycon_unregister_switch_notifier(&fbcon_switch_nb);
+>>> +#endif
+>>> +    }
+>>>       console_unlock();
+>>>         cancel_work_sync(&fbcon_deferred_takeover_work);
+>>> -- 
+>>> 2.43.0
+>>>
+>>
+> 
 
