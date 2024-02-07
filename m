@@ -1,57 +1,68 @@
-Return-Path: <linux-kernel+bounces-57125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48B6884D445
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:39:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC16E84D447
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:40:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEE74B24AAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:39:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 798B42830D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA6A14E2E8;
-	Wed,  7 Feb 2024 21:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A3CB14F9CF;
+	Wed,  7 Feb 2024 21:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I8WqJetO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H5Ut9bB9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84D7B14D45F;
-	Wed,  7 Feb 2024 21:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D57B512FF60;
+	Wed,  7 Feb 2024 21:24:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341047; cv=none; b=rM+bD2KrgO3eUTgjA7FFJCTYLwGgfzONer+VpdiVm/cMC6QGpg8r+TD0rEEDIddbZRC3Rq/EVq0zTcQYbvVV39hzzTor6PKp1XCG1nA9FZk/hO/iz15xjPknOhXC9cNNViXEgCT9HExWC3qiaYrYJtNSn7twXp969DtZWZzj9js=
+	t=1707341050; cv=none; b=RZmuUjJiLnEFrKC+2BEuX1PStvma1KcOhgQNnao3jpKGGwIj9MQU0sYUsFMTWqm5lIVzH/0F8kR4Zl3pqzv0zPuVczVbUoekH613LXNZ8BKiQ0BaAOMpYp+1NZTwzARjxqV1WLfSOJVx+ed1Ay+2THjcF+KYqUIO5SkAwG+KAfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341047; c=relaxed/simple;
-	bh=GeYMdViIZNwyqOKQLAvWZAyDii0ag5jF9idqaEjWLqI=;
+	s=arc-20240116; t=1707341050; c=relaxed/simple;
+	bh=droCsilHD9FvkUxBYds2+zzj71Va/FfGxR2e9G/B7cQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AI+zJ1lGzV7IjPplyEsN3VvQBkZi/yacVYytgY00tiLghH81KintqLcxaEXMd2AM9szxN11Ez9VK6rqD+9JorD7vuTfOlxXdWz+1SxBgND6goEyRw1+JXnSRQLnvzlpFLZGVqIlrB/nBsxUj0xvd2vrOotD+oj9Xkmq+aR4rMNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I8WqJetO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5009DC433F1;
-	Wed,  7 Feb 2024 21:24:06 +0000 (UTC)
+	 MIME-Version; b=tameCt+VV/Eorwan7B6+/6bpj21wsgobhRhw4e/GgeG62blzC1GizRqR/5rwtH6tdrcw7l6PUlHPqAxpNSuC8A4gvg7Vdt6hs61b5QTsnUIJPJazBz/41k5XK7K561Yv1CxLrhx+7DiRBXKsaMW6NRDmrHcLz4wiuTjoDJ0DFyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H5Ut9bB9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E4B7C43390;
+	Wed,  7 Feb 2024 21:24:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341047;
-	bh=GeYMdViIZNwyqOKQLAvWZAyDii0ag5jF9idqaEjWLqI=;
+	s=k20201202; t=1707341050;
+	bh=droCsilHD9FvkUxBYds2+zzj71Va/FfGxR2e9G/B7cQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=I8WqJetO5IGDSpNJqX+B4V0lOZ8ff3eyJ7gwdUByrpHYLYZ0pvV+7zyt9nLciKfFj
-	 qcHJXIqKPoUtbubkHp0R5w4CGCNGIFXRbW73ycX7sGOFhU4KY164qgJb6VmpgUz9Dm
-	 dI1GeiCaRg4l7b7tE68u1LM6uO2I/mYimyVrGMtHwXzA5MUaSI1WeZnsSQPowItspO
-	 jNwUxu532wKI/lEltbJDmRCNW6Bh3d2GfDWyAyz6a9OhqQaFMo7ZuX65rmHdBfbOGZ
-	 spRNlOboEzDMYZXXjhopoEV6d0JtCWG+uS3GufTC+q4lcMGbhE16lA5vOON72SolB8
-	 V90QXeWSQgZ0w==
+	b=H5Ut9bB9By8kaXmNwEY+Q/vv9Vwyo9+g30+sse5/vV7OQD5FEQweMMQXLAKbdUuZ8
+	 EwJNFEmi2AIOQFxxh26dBfFRkevHoy4gAsp+JuLq2bJtiy7hA4GUxomGwyowWd0kzI
+	 UbdOiOq5+QfyUSgiFbnNHNarHrVTklZgYpC5UzWQ/jS8qFnCNThNRSu7hvRByM+32g
+	 M3w3fYs9vMCScdt8eVhDdQPNgTyOSGjJ6sKGSQ9cIdiZELYagsrgd3CYcwIlgAEfr4
+	 B9lUYHHm7jpkPLweFMwyUil98WtJrNQ1dr404aojTjZRCTADzZnd0GSd9ZRpDS5qTI
+	 K+PMBvqJTdxSA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexander Tsoy <alexander@tsoy.me>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Chen-Yu Tsai <wens@csie.org>,
+	Andre Przywara <andre.przywara@arm.com>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 15/38] ALSA: usb-audio: Check presence of valid altsetting control
-Date: Wed,  7 Feb 2024 16:23:01 -0500
-Message-ID: <20240207212337.2351-15-sashal@kernel.org>
+	samuel@sholland.org,
+	kuninori.morimoto.gx@renesas.com,
+	robh@kernel.org,
+	ckeepax@opensource.cirrus.com,
+	ruanjinjie@huawei.com,
+	u.kleine-koenig@pengutronix.de,
+	linux-sound@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.6 16/38] ASoC: sunxi: sun4i-spdif: Add support for Allwinner H616
+Date: Wed,  7 Feb 2024 16:23:02 -0500
+Message-ID: <20240207212337.2351-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212337.2351-1-sashal@kernel.org>
 References: <20240207212337.2351-1-sashal@kernel.org>
@@ -66,84 +77,43 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.16
 Content-Transfer-Encoding: 8bit
 
-From: Alexander Tsoy <alexander@tsoy.me>
+From: Chen-Yu Tsai <wens@csie.org>
 
-[ Upstream commit 346f59d1e8ed0eed41c80e1acb657e484c308e6a ]
+[ Upstream commit 0adf963b8463faa44653e22e56ce55f747e68868 ]
 
-Many devices with a single alternate setting do not have a Valid
-Alternate Setting Control and validation performed by
-validate_sample_rate_table_v2v3() doesn't work on them and is not
-really needed. So check the presense of control before sending
-altsetting validation requests.
+The SPDIF hardware block found in the H616 SoC has the same layout as
+the one found in the H6 SoC, except that it is missing the receiver
+side.
 
-MOTU Microbook IIc is suffering the most without this check. It
-takes up to 40 seconds to bootup due to how slow it switches
-sampling rates:
+Since the driver currently only supports the transmit function, support
+for the H616 is identical to what is currently done for the H6.
 
-[ 2659.164824] usb 3-2: New USB device found, idVendor=07fd, idProduct=0004, bcdDevice= 0.60
-[ 2659.164827] usb 3-2: New USB device strings: Mfr=1, Product=2, SerialNumber=0
-[ 2659.164829] usb 3-2: Product: MicroBook IIc
-[ 2659.164830] usb 3-2: Manufacturer: MOTU
-[ 2659.166204] usb 3-2: Found last interface = 3
-[ 2679.322298] usb 3-2: No valid sample rate available for 1:1, assuming a firmware bug
-[ 2679.322306] usb 3-2: 1:1: add audio endpoint 0x3
-[ 2679.322321] usb 3-2: Creating new data endpoint #3
-[ 2679.322552] usb 3-2: 1:1 Set sample rate 96000, clock 1
-[ 2684.362250] usb 3-2: 2:1: cannot get freq (v2/v3): err -110
-[ 2694.444700] usb 3-2: No valid sample rate available for 2:1, assuming a firmware bug
-[ 2694.444707] usb 3-2: 2:1: add audio endpoint 0x84
-[ 2694.444721] usb 3-2: Creating new data endpoint #84
-[ 2699.482103] usb 3-2: 2:1 Set sample rate 96000, clock 1
-
-Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
-Link: https://lore.kernel.org/r/20240129121254.3454481-1-alexander@tsoy.me
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Link: https://msgid.link/r/20240127163247.384439-4-wens@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/format.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ sound/soc/sunxi/sun4i-spdif.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index ab5fed9f55b6..3b45d0ee7693 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -470,9 +470,11 @@ static int validate_sample_rate_table_v2v3(struct snd_usb_audio *chip,
- 					   int clock)
- {
- 	struct usb_device *dev = chip->dev;
-+	struct usb_host_interface *alts;
- 	unsigned int *table;
- 	unsigned int nr_rates;
- 	int i, err;
-+	u32 bmControls;
- 
- 	/* performing the rate verification may lead to unexpected USB bus
- 	 * behavior afterwards by some unknown reason.  Do this only for the
-@@ -481,6 +483,24 @@ static int validate_sample_rate_table_v2v3(struct snd_usb_audio *chip,
- 	if (!(chip->quirk_flags & QUIRK_FLAG_VALIDATE_RATES))
- 		return 0; /* don't perform the validation as default */
- 
-+	alts = snd_usb_get_host_interface(chip, fp->iface, fp->altsetting);
-+	if (!alts)
-+		return 0;
-+
-+	if (fp->protocol == UAC_VERSION_3) {
-+		struct uac3_as_header_descriptor *as = snd_usb_find_csint_desc(
-+				alts->extra, alts->extralen, NULL, UAC_AS_GENERAL);
-+		bmControls = le32_to_cpu(as->bmControls);
-+	} else {
-+		struct uac2_as_header_descriptor *as = snd_usb_find_csint_desc(
-+				alts->extra, alts->extralen, NULL, UAC_AS_GENERAL);
-+		bmControls = as->bmControls;
-+	}
-+
-+	if (!uac_v2v3_control_is_readable(bmControls,
-+				UAC2_AS_VAL_ALT_SETTINGS))
-+		return 0;
-+
- 	table = kcalloc(fp->nr_rates, sizeof(*table), GFP_KERNEL);
- 	if (!table)
- 		return -ENOMEM;
+diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
+index b849bb7cf58e..2347aeb049bc 100644
+--- a/sound/soc/sunxi/sun4i-spdif.c
++++ b/sound/soc/sunxi/sun4i-spdif.c
+@@ -578,6 +578,11 @@ static const struct of_device_id sun4i_spdif_of_match[] = {
+ 		.compatible = "allwinner,sun50i-h6-spdif",
+ 		.data = &sun50i_h6_spdif_quirks,
+ 	},
++	{
++		.compatible = "allwinner,sun50i-h616-spdif",
++		/* Essentially the same as the H6, but without RX */
++		.data = &sun50i_h6_spdif_quirks,
++	},
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, sun4i_spdif_of_match);
 -- 
 2.43.0
 
