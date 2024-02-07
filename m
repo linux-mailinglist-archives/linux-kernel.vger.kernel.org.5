@@ -1,190 +1,156 @@
-Return-Path: <linux-kernel+bounces-56336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9143C84C8DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:42:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C31DF84C8DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:42:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8550AB263BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:42:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72A7C1F22C6B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBAA214AB4;
-	Wed,  7 Feb 2024 10:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECDA514AA0;
+	Wed,  7 Feb 2024 10:42:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mO/hQ3qs"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ug3UVReh"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E76E14A89;
-	Wed,  7 Feb 2024 10:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C976117BBD
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707302540; cv=none; b=r/ILn6rT0qJ2dt5gsKoKkCS+sW7tJhC4q1y0zn0qAsw4OzgxUFlnEvdwZBI3negp2ObRXWXlxrfVNtaebCNNNndsXggxbOqHul+cETrl7BAd9pZYRlKp14gVdjL0ZLhaIEbwzvucDOGpTgxqE6NxfCVeCG8+aIM06lkSW9qlGcc=
+	t=1707302566; cv=none; b=AYvP6zh+8869+yoqODpP/RkXj9jrJfDYFpkKt/VUh8EITTQhNtrNle8wyUd2m8X9/OLaOjRKWakN6RaBo9DZBzekxRtbfRil0i0w06H76WDBJy9dPYE380QHgHphl8EZFBGQ4UvSnuIY8Yk7YF+pD3JuK0IjVBOOkuCfTycL6Lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707302540; c=relaxed/simple;
-	bh=II47jwsuZLY/0YRKVtpUI0sbrhHp7KT8QYWiYIYnm64=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=jiHJ6ngut7ABZTMl1n8IvVE53LRz+SyOKcioxGb9Z9PIvwU7oXAyMpgJjtnUcL/TjdpeEO4huNc2mKBGpYSpXiuAOJNuNHXy6slVHVEA3TCRj9qrefbWliCrWfUtIChwiB+8s5ZezqD36MtVfpQMx2e7wp741c/BylbgS43dfAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=mO/hQ3qs; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 417AQCvF013143;
-	Wed, 7 Feb 2024 10:42:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=f4a
-	6QVU4hulFuG7QklOItbrc6hHNenm18VOdI1gRvJM=; b=mO/hQ3qsZ4NCjy6vB8h
-	7a8g10w6fApuzU7RUOC6n7rJwK0gxLthGHk8qp4BDmpFkBm0fnz/9RWfN1U99xZv
-	J53BsAZ+MUndGabJzXPMMAQpI2qpEsyvnLEkPly1204TV42ytQDFyfDkTsb2Df/J
-	MSqXdLmRfuHkKny7S2XYPkMrMED71J2RbYGBTceKGSlBXdwTeyTSpKvUiKgioOhn
-	HdPchDRdi90ycMsqclDXuBdf6MJc+5Auw4qSN+YVI+kKBsVZAXsgWBfXp2CqzOGD
-	Xic0cZYQ2rgLCDFv9fj/wdmHyDZOlp4k9kQXAMQexG/A/P/afQJEyP/FDisjHxAu
-	3dA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3ub6hfnq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 10:42:02 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 417Ag13b003200
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 7 Feb 2024 10:42:01 GMT
-Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 7 Feb 2024 02:41:56 -0800
-From: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Date: Wed, 7 Feb 2024 16:11:49 +0530
-Subject: [PATCH] arm64: dts: qcom: qcs6490-rb3gen2: Add PCIe nodes
+	s=arc-20240116; t=1707302566; c=relaxed/simple;
+	bh=qfsLy0hVGwKzPrnkw+4jzhgJbclF8ucq1TUc5eZptCQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UE4xW+TmHcGP/TpcfJ14VFFH8OYF6yEkC+Y29vLAmshaGe10RD3Mlc5fW3K6k07sui+lf+R1bGuExv+QbTmParNQ05gSOMaeDxnCm6xGbDShTIU0Elph0F9Jg5JSAC/FyBTS4mqLs5kZ1RG5g5iJn7+MqjrIqmcq9xNlm/O0hb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ug3UVReh; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d8ef977f1eso4043645ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 02:42:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707302564; x=1707907364; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=taLlJJFKKjXeiZCf5pE+xI1yoxTfeKphVpWOgqQieJ0=;
+        b=Ug3UVRehy5wsGALuVZoLgZpEIvYrHXipschU09nNxrF93jSyLLVZgWTZ0Ox/7zuvGN
+         BIfnrZigLjJSghL387qfpSMHhKYcl/LA1sM4oH36PJgzAHmeHB52PzbqUG5g3knOWPPI
+         WoIgIR3K6JvX10zT3ll3F0+vUg7jvu4KBcCuo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707302564; x=1707907364;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=taLlJJFKKjXeiZCf5pE+xI1yoxTfeKphVpWOgqQieJ0=;
+        b=FYFnNgdBacmHdD7jk7FpYtRsG2008dMX3EI/8PILKOWQkNrv9p+0iAnIVz6cppiDbU
+         JXTu7Qvowb8DXFvrPMkJ+zF4KpidBIi1EE0eT7E+XWTyJR/q1m5OvPkKgByE25j5x9Vt
+         LRJnJWeoBR1FQUnvEK121rkl5/yEw5iw71su3L5qN5RmEQGb0QmDF72pFeHzloCRnsVQ
+         VUou03txDsyRODh6+a1Je/5Dk4qPqUV1TqVBDObKAhyMnwzbj8R3dM78zQpgnBvCLpfT
+         E0aGl9V8gvEdbPk+lFgfVOxdMNSC9oJIP0P61ooy94CWck8dcbbLxLe23QBWmOVHWfeY
+         kzrQ==
+X-Gm-Message-State: AOJu0Yy2890lnum4KdMdFVH/1m28LvT81AeiX8ATdY6w52muiA/d8Tmb
+	Qb6DoJbzPNeGdn8WLx7zlxpIwmtvyCcY93hydxRH++F9kehIk9IbeY/Dc2rNRQ==
+X-Google-Smtp-Source: AGHT+IGcqBnyCqUqdnANMHYt7Eh1Fhcfsr1n6hZQx/LknuAf/vrvb8y8pDKOVXVMm1pa4UwDyYA6Cg==
+X-Received: by 2002:a17:902:ec86:b0:1d9:1b55:a37 with SMTP id x6-20020a170902ec8600b001d91b550a37mr5140051plg.50.1707302564007;
+        Wed, 07 Feb 2024 02:42:44 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV/Xq6Rw0I9P8/CdxpvfRVWPDp8TQ5TScBRkNyxdCa0MKz6PfFT1WcYn+mW7Sdwj/sSJaqkSPaho+UMiPF9lA9Z8OtSledd+/d8icFk2tHuuumlDRViuP9gCvEodOVp80qFBZ1BNjb9UfJ/FMlwctH2P4WiAJm3QW2JAypwrStCeuxqGrnOOM3E0peMDRejcESKuwS4kA5KPz5NZaRYx0RPuSsUnvPYfiGghnyXWXpoMXR+kPTyF0AoogtwATzqRI6G4wMob5eHAhNeiixH+c1JlkC16fD/z93ynacGZ5FotBYllp+FipCyZ05M8TagrCwy0B3LhleChA46mm8QBdy8Ybku/Rf0YtVg32h0Z/6IPanfC8+NDddv81xzsGwvJKx/Kn7at1sCZ/rs07o1aJR+juC/EdyopW3S++4B6cYA4/aii8LjUneBstCt0AFeURFPpckJAlVJV9OuP2e6qMDd
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id x14-20020a170902ec8e00b001d9daf742ccsm1099403plg.233.2024.02.07.02.42.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 02:42:43 -0800 (PST)
+Date: Wed, 7 Feb 2024 02:42:42 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Andy Shevchenko <andy@kernel.org>, Richard Weinberger <richard@nod.at>,
+	linux-um@lists.infradead.org, Justin Stitt <justinstitt@google.com>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Jason Wang <jasowang@redhat.com>, kernel test robot <lkp@intel.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Azeem Shaikh <azeemshaikh38@gmail.com>,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Removing more str APIs (was Re: [PATCH v3 4/4] um: Convert strscpy()
+ usage to 2-argument style)
+Message-ID: <202402070234.79D2985585@keescook>
+References: <20240206142027.make.107-kees@kernel.org>
+ <20240206142221.2208763-4-keescook@chromium.org>
+ <CAHp75Vf3c0Q7tV8ih5fRL6Bsjr6dhspFe+mxV7xUN=vZ1JdTKQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240207-enable_pcie-v1-1-b684afa6371c@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAG1ew2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDIwNz3dS8xKSc1PiC5MxUXUvTJMMUMzNDoyQjcyWgjoKi1LTMCrBp0bG
- 1tQDbjrJiXQAAAA==
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>,
-        "Krishna chaitanya
- chundru" <quic_krichai@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707302517; l=2092;
- i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
- bh=II47jwsuZLY/0YRKVtpUI0sbrhHp7KT8QYWiYIYnm64=;
- b=u2Wyoa7F0oRnHv37GNU4l5ZZUKYEDZyWQtH9gXoTyXrBkP3tWdwz3DG5YGmGiYGfxXGIqOQdz
- Wu2/ku5afGnDK6vK/HMRwzBc2CIoCiER/U6gCqaKJouGC18XQcbPwnj
-X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
- pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 8L8kUlVtulcoBfuJ32aTvlkce2y4ag-W
-X-Proofpoint-ORIG-GUID: 8L8kUlVtulcoBfuJ32aTvlkce2y4ag-W
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-07_04,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=808 adultscore=0
- spamscore=0 bulkscore=0 priorityscore=1501 phishscore=0 clxscore=1015
- malwarescore=0 lowpriorityscore=0 suspectscore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402070079
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75Vf3c0Q7tV8ih5fRL6Bsjr6dhspFe+mxV7xUN=vZ1JdTKQ@mail.gmail.com>
 
-Enable PCIe1 controller and its corresponding PHY nodes on
-qcs6490-rb3g2 platform.
+On Tue, Feb 06, 2024 at 05:02:16PM +0200, Andy Shevchenko wrote:
+> On Tue, Feb 6, 2024 at 4:22 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > The ARCH=um build has its own idea about strscpy()'s definition. Adjust
+> > the callers to remove the redundant sizeof() arguments ahead of treewide
+> > changes, since it needs a manual adjustment for the newly named
+> > sized_strscpy() export.
+> 
+> ...
+> 
+> > -               strscpy(dir, home, sizeof(dir));
+> > +               strscpy(dir, home);
+> >                 uml_dir++;
+> >         }
+> >         strlcat(dir, uml_dir, sizeof(dir));
+> 
+> An (unrelated) side note: are we going to get rid of strlcat() as well
+> (after strlcpy() is gone)?
 
-PCIe switch is connected to PCIe1, PCIe switch has multiple endpoints
-connected. For each endpoint a unique BDF will be assigned and should
-assign unique smmu id. So for each BDF add smmu id.
+I think it would be worthwhile to remove it, yes. Switching to seq_buf
+in many cases seemed to be the clear solution, which is what triggered
+my trying to improve the allocation ergonomics for seq_buf recently:
+https://lore.kernel.org/linux-hardening/20231027155634.make.260-kees@kernel.org/
 
-Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
----
- arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 42 ++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+Its not in super common usage, so I think we can start chipping away at
+it:
 
-diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-index 8bb7d13d85f6..0082a3399453 100644
---- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-+++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-@@ -413,6 +413,32 @@ vreg_bob_3p296: bob {
- 	};
- };
- 
-+&pcie1 {
-+	perst-gpios = <&tlmm 2 GPIO_ACTIVE_LOW>;
-+
-+	pinctrl-0 = <&pcie1_reset_n>, <&pcie1_wake_n>;
-+	pinctrl-names = "default";
-+
-+	iommu-map = <0x0 &apps_smmu 0x1c80 0x1>,
-+		    <0x100 &apps_smmu 0x1c81 0x1>,
-+		    <0x208 &apps_smmu 0x1c84 0x1>,
-+		    <0x210 &apps_smmu 0x1c85 0x1>,
-+		    <0x218 &apps_smmu 0x1c86 0x1>,
-+		    <0x300 &apps_smmu 0x1c87 0x1>,
-+		    <0x400 &apps_smmu 0x1c88 0x1>,
-+		    <0x500 &apps_smmu 0x1c89 0x1>,
-+		    <0x501 &apps_smmu 0x1c90 0x1>;
-+
-+	status = "okay";
-+};
-+
-+&pcie1_phy {
-+	vdda-phy-supply = <&vreg_l10c_0p88>;
-+	vdda-pll-supply = <&vreg_l6b_1p2>;
-+
-+	status = "okay";
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
-@@ -420,6 +446,22 @@ &qupv3_id_0 {
- &tlmm {
- 	gpio-reserved-ranges = <32 2>, /* ADSP */
- 			       <48 4>; /* NFC */
-+
-+	pcie1_reset_n: pcie1-reset-n-state {
-+		pins = "gpio2";
-+		function = "gpio";
-+		drive-strength = <16>;
-+		output-low;
-+		bias-disable;
-+	};
-+
-+	pcie1_wake_n: pcie1-wake-n-state {
-+		pins = "gpio3";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-pull-up;
-+	};
-+
- };
- 
- &uart5 {
+$ git grep '\bstrlcat(' | wc -l
+480
 
----
-base-commit: 70d201a40823acba23899342d62bc2644051ad2e
-change-id: 20240207-enable_pcie-95b1d6612b27
+It's more risky cases (using the return value) is relatively rare,
+though, so I hadn't been prioritizing its removal:
 
-Best regards,
+$ git grep ' = strlcat(\b' | wc -l
+13
+
+(And almost all of it is in security/selinux/ima.c)
+
+
+As a comparison, strncpy has even fewer currently, with Justin making a
+dent on it recently:
+
+$ git grep '\bstrncpy(' | wc -l
+311
+
+
+> 
+> ...
+> 
+> >         if (*umid == '\0') {
+> > -               strscpy(tmp, uml_dir, sizeof(tmp));
+> > +               strscpy(tmp, uml_dir);
+> >                 strlcat(tmp, "XXXXXX", sizeof(tmp));
+> 
+> This code is interesting... (Esp. taking into account making a
+> temporary folder out of this...)
+
+I have tried to avoid reading UML code too closely. ;)
+
 -- 
-Krishna chaitanya chundru <quic_krichai@quicinc.com>
-
+Kees Cook
 
