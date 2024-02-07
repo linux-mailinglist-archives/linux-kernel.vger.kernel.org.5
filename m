@@ -1,138 +1,202 @@
-Return-Path: <linux-kernel+bounces-56169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8DA784C6EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:09:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56F2184C6EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D8271F25042
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:09:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12E9C284DF9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:09:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D597F20B14;
-	Wed,  7 Feb 2024 09:09:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8684220B34;
+	Wed,  7 Feb 2024 09:09:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b="o2F/n0we"
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="hxDASHby"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E2C522307
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:09:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A6320B12;
+	Wed,  7 Feb 2024 09:09:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707296960; cv=none; b=PN/eQX3xKjZEjizMwXf1PTg0V8s2hi6YzJpX8aIWb4nm54JurU/F387N7zB3ZoyqO+vHRqmR7M9CcjWYzf0o4ClhorKKpmqJYdTxfxRV4NeDEkyI29Jsvc0Kq9X2S8w7oP+gSKW+32mUGKYYD3fp3gKW4z8lx7CypMar2JV9Qv0=
+	t=1707296982; cv=none; b=gOtYhRKEZVN2/2jJXgCBt6QSgLHVtAQJx0B1KyVGA84hqVNGrjZRrkEZgfEsdptRC3dxdpnKU0wUuDaAKXYQQa5SXUeswae0CQOtOiITgxSCA6fgsBjmZSrsUnX0tWvSsgDd02Nys2Y7SrkO/CkExiXlRD63SCdYMzSJzpLR/Vw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707296960; c=relaxed/simple;
-	bh=kL9Qa5KilatsDA9dOcsd2sr7TpU8RxZfa1NocdfsKHo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YXe+OiSe0okMgIWu4Jam0+DbDfmF4xrKkmADE0IFz3n1P8mlamBfotbFUna//HZu6rpAzkXPDSFvWxqOhzMqFPo/UIRu5RwqUkb4fhoIR+Mrp90J1GBzsR/7Im5puX38ee0FVnRF/OvVjoqRYzP0kf5bEv/F69wdGZExNxHupnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org; spf=pass smtp.mailfrom=endlessos.org; dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b=o2F/n0we; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endlessos.org
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so1326435276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:09:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google; t=1707296957; x=1707901757; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IdNYaHzhP6aLq1DwaaQlYeeTpj0ps251+zH7kXwqcrU=;
-        b=o2F/n0we/xLNS4/cYBC7cu6TfsuYDLlbvRk1ts2Fb2S6mrG/cJxde63ihj6VxN93/1
-         SMD54K7v39MwacLiv+KCDS7oEoMf+AzBzBN9v2XiW6zcWYfMP75b4SpoLGMQj9GozD2O
-         +JCwSswkTU4lmy2ijQYQE47+tR8GHbJdjg9DrEsQU8MRdT96jsc6ISh0k2RRYfSx3XIA
-         aQb86PAmBk/xwG/6sPq/fGx2yL26GJnIYOcOJEpgcgZ9RcfsRLY2ttHRIaxPGPsP7GQh
-         NtmOaLqaK7TkcTTIwSg93lGY4vpkt/ZoXT9vn2QtODbOrIWzBHvcEO7W/1fSfq3lxlE+
-         DaOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707296957; x=1707901757;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IdNYaHzhP6aLq1DwaaQlYeeTpj0ps251+zH7kXwqcrU=;
-        b=cFbEVOSE1Pt2psuVR1N9AY9qORxrIsEwsR+zP+aAlDpTGKmoEWCE4vQ0B3vT3IMEgb
-         G4aGkLp0ORnWLzeFWqJXQ2rQwgCBzheoB3gOA1n0c+Ao6UztDU9cFSsgwm9UqYjsndv0
-         MNslNAGKOI8xEDNEWs6ydk+gEfWKG/FSlMuUhYi37OmW+xYjwk6c7hCVntexofsw6XNO
-         NGZQ0dx+d9i9PcztqdEDo7rML33gl8icUlqmUvdZoKUn/Jv9F7al43tXCnqiOPXsunx2
-         X6LMnOAT3C6RlfzsjBbC4gxQdttqiR6GzCXELqyLolT7TfGjFBp75fDupFX4jpvk+KTB
-         avQQ==
-X-Gm-Message-State: AOJu0YxKCCqf14o/m1Jidlc3gJYKF+c/o22KgHOVjP0ovLKqFzHCU1mF
-	oNRvGEBINr7EfBtZ5ZGgvf2loNI/k5Gclr4f26u2/FAoDnFOKszfQhUWzEwb5zJ7F4PJGkXR7lo
-	nERmUvnRUxdKXS/1Yr8cQwFtU9xfBU60f3AmC5g==
-X-Google-Smtp-Source: AGHT+IGI/sjUDIdU62Aw2X7CoIvmkWQz0p+NzMf8UuCStnMYVvDZdhQlqf/FP9/KnYi9EQAqimmbQxS4EJSxrJQ6m2M=
-X-Received: by 2002:a25:ae98:0:b0:dc2:1f6b:be4c with SMTP id
- b24-20020a25ae98000000b00dc21f6bbe4cmr3307793ybj.22.1707296957197; Wed, 07
- Feb 2024 01:09:17 -0800 (PST)
+	s=arc-20240116; t=1707296982; c=relaxed/simple;
+	bh=beBlKUnQlMjIIycAlMHD9WeMz6PrzSQqI+kN25ySIK8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rZG+gXVPhq0KgImi8bWOkRlqZ52B1FjLsZvM2r1afuT3HKM9JpEtgDKN2aB3BFND0xJg4jEHj5pa7qBYigC50aQbZfOWPc5E4nn/KM7XvA879FS06p3zsp4rz3axpnkhjY9k4zvCTlgZbcimBFPZmgJk5AsvkdFUYXzEGGedXAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=hxDASHby; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1707296981; x=1738832981;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=beBlKUnQlMjIIycAlMHD9WeMz6PrzSQqI+kN25ySIK8=;
+  b=hxDASHbybRG3IN29HIn7CjcJw63QLjd0ABxX66grbNl0fh+hTC/aMAXY
+   AhotpiWlj37BElL4H0IFWKAawt+k3wUSf/vqWKYOUK8BIhiXJLY0JMMyK
+   I5RqdKVLqbk1xXpsvpqUFPnqMHbaRRkEPDJRVGbW/GYMC5icz2/uR65lX
+   HO0PvH+P5NJNllFYSCaF+MNtJTuiweZpWsE6E0/XUzX4piI5fLN5maZr5
+   HlB40FjDuiNOg2KbeOsQzuQQvqM685PPP5ztCSi5zz1TJbeUYeqCnHVCp
+   52PHGnZTvj7enoWppmVCpxEPKOcsDShvebeUp0Vo/ewePPOAWkDdcVVXu
+   g==;
+X-CSE-ConnectionGUID: eOi1+RARQkqo8bSeKgzAhg==
+X-CSE-MsgGUID: TsHSek2YRS+KrX5nlr7uxw==
+X-IronPort-AV: E=Sophos;i="6.05,250,1701154800"; 
+   d="scan'208";a="15882619"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Feb 2024 02:09:39 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 7 Feb 2024 02:09:02 -0700
+Received: from che-lt-i70843lx.microchip.com (10.10.85.11) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Wed, 7 Feb 2024 02:08:57 -0700
+From: Dharma Balasubiramani <dharma.b@microchip.com>
+To: <dmitry.torokhov@gmail.com>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+	<claudiu.beznea@tuxon.dev>, <dharma.b@microchip.com>,
+	<linux-input@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] dt-bindings: input: atmel,captouch: convert bindings to YAML
+Date: Wed, 7 Feb 2024 14:38:53 +0530
+Message-ID: <20240207090853.188400-1-dharma.b@microchip.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207084452.9597-1-drake@endlessos.org> <20240207084452.9597-2-drake@endlessos.org>
-In-Reply-To: <20240207084452.9597-2-drake@endlessos.org>
-From: Jian-Hong Pan <jhp@endlessos.org>
-Date: Wed, 7 Feb 2024 17:08:41 +0800
-Message-ID: <CAPpJ_edoG0dD4aHZiZShcFMoD2JLQhbh7nuUPzgMT_ZMySJ=VQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] Revert "ACPI: PM: Block ASUS B1400CEAE from
- suspend to idle by default"
-To: Daniel Drake <drake@endlessos.org>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com, 
-	david.e.box@linux.intel.com, mario.limonciello@amd.com, rafael@kernel.org, 
-	lenb@kernel.org, linux-acpi@vger.kernel.org, linux@endlessos.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Daniel Drake <drake@endlessos.org> =E6=96=BC 2024=E5=B9=B42=E6=9C=887=E6=97=
-=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=884:45=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> This reverts commit d52848620de00cde4a3a5df908e231b8c8868250, which
-> was originally put in place to work around a s2idle failure on this
-> platform where the NVMe device was inaccessible upon resume.
->
-> After extended testing, we found that the firmware's implementation of
-> S3 is buggy and intermittently fails to wake up the system. We need
-> to revert to s2idle mode.
->
-> The NVMe issue has now been solved more precisely in the commit titled
-> "PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge"
->
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D215742
-> Signed-off-by: Daniel Drake <drake@endlessos.org>
+Convert the Atmel capacitive touchscreen bindings to YAML format.
 
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+---
+ .../bindings/input/atmel,captouch.txt         | 36 -----------
+ .../bindings/input/atmel,captouch.yaml        | 62 +++++++++++++++++++
+ 2 files changed, 62 insertions(+), 36 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/input/atmel,captouch.txt
+ create mode 100644 Documentation/devicetree/bindings/input/atmel,captouch.yaml
 
-> ---
->  drivers/acpi/sleep.c | 12 ------------
->  1 file changed, 12 deletions(-)
->
-> diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
-> index 808484d112097..728acfeb774d8 100644
-> --- a/drivers/acpi/sleep.c
-> +++ b/drivers/acpi/sleep.c
-> @@ -385,18 +385,6 @@ static const struct dmi_system_id acpisleep_dmi_tabl=
-e[] __initconst =3D {
->                 DMI_MATCH(DMI_PRODUCT_NAME, "20GGA00L00"),
->                 },
->         },
-> -       /*
-> -        * ASUS B1400CEAE hangs on resume from suspend (see
-> -        * https://bugzilla.kernel.org/show_bug.cgi?id=3D215742).
-> -        */
-> -       {
-> -       .callback =3D init_default_s3,
-> -       .ident =3D "ASUS B1400CEAE",
-> -       .matches =3D {
-> -               DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> -               DMI_MATCH(DMI_PRODUCT_NAME, "ASUS EXPERTBOOK B1400CEAE"),
-> -               },
-> -       },
->         {},
->  };
->
-> --
-> 2.43.0
->
+diff --git a/Documentation/devicetree/bindings/input/atmel,captouch.txt b/Documentation/devicetree/bindings/input/atmel,captouch.txt
+deleted file mode 100644
+index fe9ee5c53bcc..000000000000
+--- a/Documentation/devicetree/bindings/input/atmel,captouch.txt
++++ /dev/null
+@@ -1,36 +0,0 @@
+-Device tree bindings for Atmel capacitive touch device, typically
+-an Atmel touch sensor connected to AtmegaXX MCU running firmware
+-based on Qtouch library.
+-
+-The node for this device must be a child of a I2C controller node, as the
+-device communicates via I2C.
+-
+-Required properties:
+-
+-	compatible:	Must be "atmel,captouch".
+-	reg:		The I2C slave address of the device.
+-	interrupts:	Property describing the interrupt line the device
+-			is connected to. The device only has one interrupt
+-			source.
+-	linux,keycodes:	Specifies an array of numeric keycode values to
+-			be used for reporting button presses. The array can
+-			contain up to 8 entries.
+-
+-Optional properties:
+-
+-	autorepeat:	Enables the Linux input system's autorepeat
+-			feature on the input device.
+-
+-Example:
+-
+-	atmel-captouch@51 {
+-		compatible = "atmel,captouch";
+-		reg = <0x51>;
+-		interrupt-parent = <&tlmm>;
+-		interrupts = <67 IRQ_TYPE_EDGE_FALLING>;
+-		linux,keycodes = <BTN_0>, <BTN_1>,
+-			<BTN_2>, <BTN_3>,
+-			<BTN_4>, <BTN_5>,
+-			<BTN_6>, <BTN_7>;
+-		autorepeat;
+-	};
+diff --git a/Documentation/devicetree/bindings/input/atmel,captouch.yaml b/Documentation/devicetree/bindings/input/atmel,captouch.yaml
+new file mode 100644
+index 000000000000..5d5679896bc9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/atmel,captouch.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/atmel,captouch.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Atmel capacitive touch device
++
++maintainers:
++  - Dharma balasubiramani <dharma.b@microchip.com>
++
++description:
++  Atmel capacitive touch device, typically an Atmel touch sensor connected to
++  AtmegaXX MCU running firmware based on Qtouch library.
++
++allOf:
++  - $ref: input.yaml#
++
++properties:
++  compatible:
++    const: atmel,captouch
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  linux,keycodes:
++    minItems: 1
++    maxItems: 8
++
++  autorepeat:
++    type: boolean
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - linux,keycodes
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/input/linux-event-codes.h>
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      atmel-captouch@51 {
++        compatible = "atmel,captouch";
++        reg = <0x51>;
++        interrupt-parent = <&tlmm>;
++        interrupts = <67 IRQ_TYPE_EDGE_FALLING>;
++        linux,keycodes = <BTN_0>, <BTN_1>,
++                         <BTN_2>, <BTN_3>,
++                         <BTN_4>, <BTN_5>,
++                         <BTN_6>, <BTN_7>;
++        autorepeat;
++      };
++    };
+-- 
+2.25.1
+
 
