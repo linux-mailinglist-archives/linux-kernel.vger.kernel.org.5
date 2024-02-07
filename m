@@ -1,120 +1,124 @@
-Return-Path: <linux-kernel+bounces-56981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5355D84D232
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:19:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 344C684D235
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:24:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED99E288A30
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:19:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3404E1C22E98
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:24:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C60C8593E;
-	Wed,  7 Feb 2024 19:19:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1BB82D97;
+	Wed,  7 Feb 2024 19:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CVogVLNu"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="hxq+xGRc"
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301558562D;
-	Wed,  7 Feb 2024 19:19:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E720340BE5
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 19:23:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707333591; cv=none; b=RR6NFe/zN2KWrXr8UPk/KCM1N0l5jTrT3JQqj+xhASX2kM4DdHwVIA/mqKzfFxXoRhRp0ZU9uJT/8uZ7RhmPTA77F5+0W0CO444M7Tp6pPRMNHLJb0HBA2G2cvLlBScwOekFs/spErytjjjQHAnetp457urBFMRz6YH2TnxFkCE=
+	t=1707333840; cv=none; b=gCJ+p4j5Wja1MTFfhQp3LA5zeIRahc5QFK7UXQaDG5K9hVhaIFE0rp+fh9MwiltHYbw8nmRdc2CgtqwwGZvLLsWEgGH9KkIt1FMbFr6NkmbtFjnv1/YSRl0s5Sctwjs/fDSowh833YNrFLkqoivysB4TXmbJ51Q4c9P/UJ97Gfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707333591; c=relaxed/simple;
-	bh=sHXNvgc9UarrYc9iJXIFjX3yH/gJM0hkb+lJh6JySjY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=c4mPAaYRLkfFN/qt6mwhwUPEJufN6KxmmX0W7jiBAL466oaTi6XpUP8S8IIDHRuTWU03rWbKpU1tfryxv7hw5RuAXW+np8nEdo7JeYrJm2sI8fGoU/nBzx2ECZevZtcJiAMis7/KhY68WzFmTxjyZPGHp+/l91BE1QWq21TQwFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=CVogVLNu; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 417HseVs008737;
-	Wed, 7 Feb 2024 19:19:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=wQa3IkeDWDZNIJEgmH/jdPP7gbb8Id6gt71z1DJ8Cs8=; b=CV
-	ogVLNuBkwnjcxHig6YNfD/Flw7EO6aH+LnjcGZ9dvQvwgG36dGz8tgRKiwYQbY8z
-	OjIyEq++yHVLHMecmMKLm/iQsGBKvzE4uXuwiP/tmXjEHLZ9D31xN+14Iyg+gbFZ
-	LXZkJw2eRT/BasDzdE9H0Mx8zjTJ6BHlYVoZ7FGlZZPRr4od6ZdhHQ2QsGCdhZll
-	Rj4ZDYWZRpa79uBhNK5YXMgvHrbXPLZLUoGOtEdWiiZYJTT2R782SHJYfAk4x1p0
-	+cX7HZQmM7qo5milk2zs2kDTy9yRn2OxsddvKWhD9Ej9AOkqGtTzgPfN584nDG0o
-	grnBo/kE33qRBDhBrKxw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3ywbt6aa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 19:19:37 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 417JJamA012671
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 7 Feb 2024 19:19:36 GMT
-Received: from [10.110.9.143] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 7 Feb
- 2024 11:19:36 -0800
-Message-ID: <cb515863-f9ad-068e-88a2-7fec9b3d51dc@quicinc.com>
-Date: Wed, 7 Feb 2024 11:19:35 -0800
+	s=arc-20240116; t=1707333840; c=relaxed/simple;
+	bh=vVP9+4bMTGUVEI7wClHTNeWpJAl3MhpB/Uhdm13l9a0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=ae9QKazuruieq84FffemsS5iPQVJ2c0aEZqm1KBEd4lNFzM7i5SuYcamlpXrsR1jcf3duJPC27sAPx9B8FSCwivTBlNZutAyEli7R3YZVHm3E9Apqkos8l0dElStronr4GA2/IU2B0BSY8pNL+IzSlfhlpdnWYNXhtVKpTOlddY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=hxq+xGRc; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42a9f4935a6so1342621cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 11:23:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1707333838; x=1707938638; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:cc:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lRrpZ4A7adNY9DTQi8mLdXm1HAB9Tl2AxirgbrNvbSc=;
+        b=hxq+xGRcQfrfy3QEYJ1UQzpxvkZODDkEpYTlc9IWSpRQP+Rh1d0vNPSC/UB2wnrAhb
+         PDsI9nDNyFIvMtH+qsFlHdmRJSOJM0o9TKE1r+LMCTEvHrT9BIaYBFe6ChQdY82cyibE
+         sBKXUjTM3kODDSRwQYX03UHdmLNZ25eOC+0PEZsKk9oH8HpWg9ZdJrJI538/BqhT0Vlx
+         JxlBgocOQNyPtGW4CrxB8Mf+d71isi2oILddaJ1OZ/RRmMwLYrm9KczcIGeFm/8pTucf
+         LA59QJc+ohix5FNrXodqrR/LQC3S/WM6MruRKC6+VBq6dEL6wJsIO2Ojx9Vz/QcpXLbA
+         jkuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707333838; x=1707938638;
+        h=content-transfer-encoding:in-reply-to:cc:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lRrpZ4A7adNY9DTQi8mLdXm1HAB9Tl2AxirgbrNvbSc=;
+        b=eYyQkXqpJvFDbe88SPQF0TR8EDYx6DOPxpsoXBSa6S6bVjHiYPaHzs5DSgFqXiJCHJ
+         zLyAeSLBoGg7CTpKHPbHZjE1LAlsxiqcOgxzzYAO24z2TfZpV+luXPyp1M55uMJCfn5I
+         3j8wV3RV4wsJtUiPsPI7Ad7yhvqZsGeDEZpYdh2zC++8zRrTApyFgGqEAgY9FCBGs/q3
+         y+NAbaRZiuB4slTqQWXGdLpxcVTXozPFdbg5GI10lFTL5GlCDYaCoXqYFbHGSLVz56ek
+         mCK3L/DK9zPaLzw6LTWorj6oq/yh+mPJtjthpcs5+lQLxoBTbx7b8MQtAzi4IgQrv1bN
+         fKwA==
+X-Forwarded-Encrypted: i=1; AJvYcCVl1Rxw9kXSU0VXRNsHEwsMtwrFRkCDvd/d27/qtX3ilX6cEnfmznFuy/X1T6RRWQTGzPQ6SQZ8hapdOkXFxcT7mznsH9ViIrUMky/k
+X-Gm-Message-State: AOJu0Yxvm+mOTnTAbS8TaOdCGK+Gh1blDIzvPHhfC9sBGd6OSrTNp9AT
+	MpzmYcsmC5z2X4jU1cQjN6qQBmiSzGF/NeolK8U6ffOxyC5mXFopzwpK+N2N4y8=
+X-Google-Smtp-Source: AGHT+IHPhabZVoyg+PaGyiXwFczOGRFN7wWZjq42Zif6CdgbYaC7rgdwdLbbO0UEq9gekiEFJ6F9Gw==
+X-Received: by 2002:a05:622a:14cd:b0:42c:14c2:bff3 with SMTP id u13-20020a05622a14cd00b0042c14c2bff3mr763674qtx.3.1707333837841;
+        Wed, 07 Feb 2024 11:23:57 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXvGkEeWfyuyC+/wI+zPl0SzRwLoYhn+vcYjRxOL1PRJI26g+eg/OzjiDYYNASDYrjSHOsnAEWWc9k0dpxy/7d2fLMV6x0RWHiQgaiJmrhSP5Ed4uDYM+DYKKUW/hEiA6NtLqJ4bvLsAgorZ7hVKBOxGu6IMk7vXZ0bpj45sVLiiB+0ohUpI6qRSLS0r9R6iXEUAXvQZhdPB8lKeGQUfoXko8Ydi/7OugvKnDgx
+Received: from [100.64.0.1] ([170.85.8.192])
+        by smtp.gmail.com with ESMTPSA id o12-20020ac8428c000000b0042c00beee84sm785444qtl.43.2024.02.07.11.23.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 11:23:57 -0800 (PST)
+Message-ID: <a21e4253-9ef6-4c44-917c-02742440d192@sifive.com>
+Date: Wed, 7 Feb 2024 13:23:55 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3 3/4] drm/msm: add a kernel param to select between MDP5
- and DPU drivers
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -fixes] riscv: Fix arch_tlbbatch_flush() by clearing the
+ batch cpumask
 Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark
-	<robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>
-CC: <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Stephen
- Boyd <swboyd@chromium.org>
-References: <20240106-fd-migrate-mdp5-v3-0-3d2750378063@linaro.org>
- <20240106-fd-migrate-mdp5-v3-3-3d2750378063@linaro.org>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20240106-fd-migrate-mdp5-v3-3-3d2750378063@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Alexandre Ghiti <alexghiti@rivosinc.com>
+References: <20240130115508.105386-1-alexghiti@rivosinc.com>
+From: Samuel Holland <samuel.holland@sifive.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Jisheng Zhang <jszhang@kernel.org>, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240130115508.105386-1-alexghiti@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: uXQeDuwH3EepLNEDio5yi5-gG9slAwva
-X-Proofpoint-GUID: uXQeDuwH3EepLNEDio5yi5-gG9slAwva
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-07_09,2024-02-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=794 impostorscore=0
- phishscore=0 spamscore=0 adultscore=0 bulkscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402070143
 
+Hi Alex,
 
-
-On 1/5/2024 3:34 PM, Dmitry Baryshkov wrote:
-> For some of the platforms (e.g. SDM660, SDM630, MSM8996, etc.) it is
-> possible to support this platform via the DPU driver (e.g. to provide
-> support for DP, multirect, etc). Add a modparam to be able to switch
-> between these two drivers.
+On 2024-01-30 5:55 AM, Alexandre Ghiti wrote:
+> We must clear the cpumask once we have flushed the batch, otherwise cpus
+> get accumulated and we end sending IPIs to more cpus than needed.
 > 
-> All platforms supported by both drivers are by default handled by the
-> MDP5 driver. To let them be handled by the DPU driver pass the
-> `msm.prefer_mdp5=false` kernel param.
-> 
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Fixes: 54d7431af73e ("riscv: Add support for BATCHED_UNMAP_TLB_FLUSH")
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 > ---
+>  arch/riscv/mm/tlbflush.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> index 99c3e037f127..c8efc3f87a0f 100644
+> --- a/arch/riscv/mm/tlbflush.c
+> +++ b/arch/riscv/mm/tlbflush.c
+> @@ -240,4 +240,5 @@ void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
+>  {
+>  	__flush_tlb_range(NULL, &batch->cpumask,
+>  			  0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
+> +	cpumask_clear(&batch->cpumask);
+>  }
 
-Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+This patch doesn't apply to fixes -- it looks like it was based on "riscv: Call
+secondary mmu notifier when flushing the tlb"[1], which has not been merged and
+would go in for-next anyway. Otherwise:
+
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+
+[1]: https://lore.kernel.org/all/20240124080325.2324462-1-alexghiti@rivosinc.com/
+
 
