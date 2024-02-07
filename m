@@ -1,106 +1,111 @@
-Return-Path: <linux-kernel+bounces-56347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 350E184C905
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:55:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 805E184C908
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:56:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 680601C2555F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:54:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1915AB23D9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B64017997;
-	Wed,  7 Feb 2024 10:54:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBB0817BD6;
+	Wed,  7 Feb 2024 10:55:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HDO9i16d"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OzexBDYh"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3DC17BAE
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:54:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB7417BC9
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:55:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707303294; cv=none; b=rreR9hxT/zJBFJRveuCiSw1goYBqEs/kF35wB/5gWSVn0MD2VSvXwLrl/wZF6n/Z1xn+poYFOBq9qWZz5t1gk0shPdDcoJgGtqnXwvqSmgR7UuS7jYzyzHB7DKQRTeF7625za5/PYB06z7+CVEajATiwwGSUM0OT19ez6wWX2LY=
+	t=1707303358; cv=none; b=lO+ArZ1E0N1yddcy0AF4XfFBc2J2moamhSSIL9tIIowD4z3rFoZyRZC1eC7GR2qkhYyhqFyRZ1rlsayQMFNpIty4j/vQ8t59HBt0KkvclJo0eT5q3JtdCO+YwjqGklYBOInWdapA3PQeTRj3ekKhkQ/OQG2pBvGFo/S+WGyT3ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707303294; c=relaxed/simple;
-	bh=AqRyfre6hpYKrbdFfgct1DMOhUQC1J51jmJyfuq2n8I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=r4TdH1+C7aYHeFOnlVKVa3MhU3y3hVpl8VWKzILovm4o8WROGElvpscKqfiars+cd1Z9zDXmvdIgwZSqwldxpY3LatNV7bgBLboZ0jMo6CKbYTeQrSy4y9rIHc740EENxwc8QqG70Lc29UaZeM8DRDo4ypr5yz0yjxz/ynUBiwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HDO9i16d; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc238cb1b17so448435276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 02:54:52 -0800 (PST)
+	s=arc-20240116; t=1707303358; c=relaxed/simple;
+	bh=lItl1HgQctg0yGO3vQoW8No5gH2g/kKbqcRUSlAmvso=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f0SLjAYWnZfxisEnVdQNW1nhkKUWCeKyzz+fGa8W8sXjuJnolW2aPB/LXZtTmvRh2CmkRzsL+btkWz/msO6Y3I6L6LS5Y0ZX1JPI1sWGu+3F+OYD2koY1p1GPepWS9QDFcvIaXfDepemI6dZMknABTii74RDfXkAl0FiPKsDksA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OzexBDYh; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a385fa34c66so61501766b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 02:55:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707303292; x=1707908092; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AqRyfre6hpYKrbdFfgct1DMOhUQC1J51jmJyfuq2n8I=;
-        b=HDO9i16dkADSVvq6bn0Sbo+lrGoZqVgEmDyNnddeI8nc1hnZq+Ja3AMz9KQ3uYYhLz
-         /dccogs4m04hXV8h8p3iFRjmnsa5oOrDLB7agajpybVu09VFCRMSyGM5GEzQAz4jkTEa
-         X3Xn8Wu7VTXOR+alvwQIax07jdzy/X8V3P/4U9aoIQtQafuPuqtviS2tHCs8dTP4MCaD
-         0BlbgxAiNQYneX9QIZqfqVoVNV1aVZYGWgO1zIV8s5aoXVjGqJrhrzaXYnRgKY2xIN8/
-         fOrvWwnvq9iDaWDiPfqqjPR6e/CWaSymQpokA6dJcZqFEjHkdip85CsKVqK/BVgO10nX
-         2GWA==
+        d=gmail.com; s=20230601; t=1707303355; x=1707908155; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qLCLXsc5fUpptpYla60epcYi7vijOWLdq8xCpov6J+E=;
+        b=OzexBDYhUX2kIg2DWq2wDOb0iHCw/fJ5Xe5gn0PIPSdcHBT4e286sY12aO+8TLUBIA
+         uO6f1mkvmxrqQP0XKW80p0x1nhyNx7KYF/v5t4lYCeBCBp5uRwfRIoQGHRjp1c1VMne6
+         /Z1LJWahaoJJ6KgHU258oJe7jcZ7pW8cd2OpMY4pqha1LTD/uFzrkO2K3XKx7wAGMEG9
+         ze3O7ZCVPR/F0qDVw5Hy6HVK9cM0BCuOvVlfrPAkRa84ZdRaOlWGOtp6BmzDdgc0/ePH
+         Fkld6g8ke9vYIiNyWHVfTy5+4bI5HOTzBpxNos0ZCazr7mNC4w0d2zmi3NYHjVFZ94Sm
+         gV5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707303292; x=1707908092;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AqRyfre6hpYKrbdFfgct1DMOhUQC1J51jmJyfuq2n8I=;
-        b=TjpNUSRpVW1t3lDRENSeNW73mp6bSBvwo4qzE94wxX88R8CaOSnfJdJfydvNwPo44W
-         XJAVCLDRM4dOWkbOfKvSCegWaW2mkfqCpEsjCvmQcRdNNIJndTAOH0PVJCfF0gfcqttV
-         fk3g1C8LJHzmGNf/3v2awbkFUfFdKKokCDuJ4Fre9bmOUl5ARZZEkgcH3HOnuYdpzOIB
-         EQBx0O+ONkwOUKrETw3yIme2EF5kj5YoK/ivz5QFQIvVB+MiBEhYk5sAyYzY++OYSCKZ
-         oANYHkHab/OvPdfoFVu2IgnpqB1ssIa7MEr1n6exSdQY0HAsFq3gP8VB4bnKh/MX3kwB
-         gqig==
-X-Gm-Message-State: AOJu0YzLlmqlCbYZRo03qONIYf/EypKZDm+pI/ldO0PQNMpn4NcYFMO8
-	P50dy3Gr4TMOij9CmyOwkAQP7n4Tyn272UzP/lwwxpNDWuyFnp6kaor76RgLEPlN83irwZ5ECTL
-	uoiMOfKAjwPB0kmTwSDWHi+S1B45hKD7nCNdUUA==
-X-Google-Smtp-Source: AGHT+IGDflkHEVBa03b1Bfl72mpon3cdcyEI04qMZquBPzXoVaoldzCLxrdhfuAGz48oB/DXRZc65MMbqgc8o/+1+XU=
-X-Received: by 2002:a25:2d14:0:b0:dc2:3818:f36e with SMTP id
- t20-20020a252d14000000b00dc23818f36emr4815404ybt.18.1707303291509; Wed, 07
- Feb 2024 02:54:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707303355; x=1707908155;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qLCLXsc5fUpptpYla60epcYi7vijOWLdq8xCpov6J+E=;
+        b=V72UgJX4SshIShmqSG3B4p69cx1O8bwBP1luRnReG+5H+7c4dJQnT0ieA8IvSYZ+jR
+         WZVSoye1vh67b5VxnRLEjhwcSYvcObPLIno8UVxyGWX2+Xq1vT9vmbx4wNK1P/7fRxjn
+         cCC571sdlxVC0jDiJfVL6lzfVPHK/VVikgar5iP5H6wl+zXXx1Ag+Au4Zmdcf321DPSA
+         GKkFhTRSBIM0v4ytsnXUtMCg/8nCOnX3NdbF/0RAmqjRU/IxY0Hbl2nwRHILf388dNHj
+         qRJEp7v+IiSWxzasDBQH9Tp2DCtpnlPsEJPImDufWqf9HSMObFP8kk1Uarfdrlv1DeoB
+         vblg==
+X-Gm-Message-State: AOJu0YzGRMP8EFOwj/XTRlxtEZ7ZqCwOxjDi5Tpf9mqP4sQ0xff+s7N3
+	Apd9WMJRoEP7OhjGgvSvKKOEFkdjY4RlGytFVa0gIDNbkyXbxFVL
+X-Google-Smtp-Source: AGHT+IG45p9GOrVYDWYexIC+i3WbKpGc8eD4wiqw2CDKsihG2jvG+xhWIxjCsdmid7rhutrQ0vEAqw==
+X-Received: by 2002:a17:907:3c25:b0:a38:551d:ff1d with SMTP id gh37-20020a1709073c2500b00a38551dff1dmr1516680ejc.73.1707303354560;
+        Wed, 07 Feb 2024 02:55:54 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVLoIXfY+ERKrpUa2c4Uedi7yheP7R34zr6Q0XQOpvQT/qv/PFI1XIpHYmRTfCqFbPI+9HOVMOcKzkCp7b+y7B8NHIr4K4pK0A11agu5ZBd2l7z2sZK6DyGHytottEKkvRDGNknz4MxzOxcKkwAu0etrc+ELfkCD0n/2OB7uxRxJA==
+Received: from [192.168.0.101] ([95.90.186.51])
+        by smtp.gmail.com with ESMTPSA id vb5-20020a170907d04500b00a388723b7a1sm314137ejc.50.2024.02.07.02.55.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 02:55:54 -0800 (PST)
+Message-ID: <a7bb4065-6e78-459f-b280-caa0b922a317@gmail.com>
+Date: Wed, 7 Feb 2024 11:55:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202223454.1667383-1-robh@kernel.org>
-In-Reply-To: <20240202223454.1667383-1-robh@kernel.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 7 Feb 2024 11:55:04 +0100
-Message-ID: <CACRpkdb+Z8oxBa7kibHdob1qk1eVKiSm1MaY+bF442d=ztdmdA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: pinctrl: nvidia,tegra234-pinmux: Restructure
- common schema
-To: Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] staging: rtl8192e: remove redundant braces from single
+ line if-else blocks
+To: Greg KH <gregkh@linuxfoundation.org>,
+ Ahmet Sezgin Duran <sezgin.duran@linux.org.tr>
+Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Michael Straube <straube.linux@gmail.com>
+References: <b97e1f8927d81b9b72cdea7a30f300b35854c38d.camel@linux.org.tr>
+ <2024020757-desktop-atlantic-749e@gregkh>
+Content-Language: en-US
+From: Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <2024020757-desktop-atlantic-749e@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 2, 2024 at 11:35=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
+On 2/7/24 11:13, Greg KH wrote:
+> On Tue, Feb 06, 2024 at 11:53:38PM +0300, Ahmet Sezgin Duran wrote:
+>> >From de5c5bb23c77fe62987b446c740b971e85105526 Mon Sep 17 00:00:00 2001
+>> From: Ahmet Sezgin Duran <sezgin.duran@linux.org.tr>
+>> Date: Tue, 6 Feb 2024 22:28:55 +0300
+>> Subject: [PATCH] staging: rtl8192e: remove redundant braces from single line
+>> if-else blocks
+> 
+> Why is all of this here in the changelog body?
+> 
+> Please fix up and send a v2.
+> 
 
-> The structure of the NVIDIA Tegra234 common pinmux schema doesn't work
-> for restricting properties because a child node schema can't be extended
-> with additional properties from another schema defining the same child
-> node. The 2 child node schemas are evaluated independently as the
-> schemas are not recursively combined in any way.
->
-> As the common schema is almost all the child node schema anyways, just
-> remove the parent node from the common schema. Then add 'reg' and adjust
-> the $ref's in the users of the common schema.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
+There is already a pending patch with these changes.
 
-Patch applied!
+https://lore.kernel.org/lkml/20240201081824.6998-2-straube.linux@gmail.com/
 
-Yours,
-Linus Walleij
+regards,
+Michael
 
