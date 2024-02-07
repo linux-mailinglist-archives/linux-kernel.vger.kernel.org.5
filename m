@@ -1,68 +1,90 @@
-Return-Path: <linux-kernel+bounces-56247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0AAD84C7DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EFAD84C7E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:50:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 765951F2AFB5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:49:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CA101F2AFB4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C4F023748;
-	Wed,  7 Feb 2024 09:49:31 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D4423746
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:49:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F6032375A;
+	Wed,  7 Feb 2024 09:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cw+RmZKY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5394122F17;
+	Wed,  7 Feb 2024 09:50:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707299371; cv=none; b=KX74nL5cYw204H8PdFGQvnW0jbuYQfzsHcmAApgJn3uKu9koU3NlB+n89NaS+jK0Y52mKOvQSWDusIt1D7xQTqrXAxIOR7yll/I+wLJFI3CAOu4M4BC11Bsu+BDqxJHNOk9qHGnc6OEhvjT38mu8emmxPK2+/cQ+iwyuyavTZZg=
+	t=1707299413; cv=none; b=UhSd+zhf6hSccZboKzyZHu9xZ6Ib3yLqYWj/fc3rBPvKfHseE0eayGMt2AzK+5HQRX8XEnU+NhvK5Itwlgm4mnxsckwx+e3xDuHSNCaCFTOulfNdfjeHyZA2p9+vCnx/Alr0CtziwxExGdkEjYST5SuW69swRBq18PnmvkaV8ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707299371; c=relaxed/simple;
-	bh=MuZbi3mdQcpnHrJHkmlQTqUrkto/lcB3RcVF3kjns6o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U8VTC55ROivsEWTctnRM2Hw4PVEkxnp0g3twsVvVg51pBDE08/D1IbORbzX08/KCS080k2fM+CeDuY2Q56zUJ+yYkmhEhG8GMGENG5n8K+QN8Xklz2OtzywZ7wvz2RY0B4Rn1RfsxjEsEHkpceMTkfYIv0/MH4wrAHDHSgAVWHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F52A1FB;
-	Wed,  7 Feb 2024 01:50:10 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.26.150])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0778A3F5A1;
-	Wed,  7 Feb 2024 01:49:25 -0800 (PST)
-Date: Wed, 7 Feb 2024 09:49:23 +0000
-From: Mark Rutland <mark.rutland@arm.com>
+	s=arc-20240116; t=1707299413; c=relaxed/simple;
+	bh=Z7RlkR6pBXTxcfR2yNl0x4kWdlPW84U0WWRNxTe6kcQ=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=acun2f4YGz2nhRbVJbTo4g8VYcZkeS9UF5R0JemNOJUQ30YSaUhe/ZQOMDcLxoesP6Bodc+g2Kq0PEa8H5IwynGJTYrsKieOvNH0NOhOWCzI7zJi0RBBtnM8w5LFcPaCrcMLs09/LS2IxJORUjGFIrT3R0eHuzpxiAk3bk7WNRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cw+RmZKY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF0FCC433C7;
+	Wed,  7 Feb 2024 09:50:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707299412;
+	bh=Z7RlkR6pBXTxcfR2yNl0x4kWdlPW84U0WWRNxTe6kcQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Cw+RmZKYsDqxZqNaHIC2ZXIc+kIEFcWadvDoFHd+50/OKP0cOSu/DJLC2gUqzG2hY
+	 JY8awGsz2UzFQDE87QukobjDEyia+PAuvTIqnPZGgnzdupFyVLBOVt8sssbb9gV42p
+	 h9r4z4nx7HJWLK74m0LFIqlE5CBaBucZ6SGEXRZoB+fOMmBVxt7QVSI/9Bu9FKZRYh
+	 Jj39gqjdmcXLPILG43hIz/NXeAj/6SiaJ0SqCrfUW1GkK/KQzaEaMExPGO0vvSHAFQ
+	 t74o/4WYmAG7i3CAlUoR7lbeZIl2wN7o8EYKvsUIdoYwCrCmA2bnCRKj+1It5iylD/
+	 5/EsKYZOrLlsw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rXeZG-0014r2-87;
+	Wed, 07 Feb 2024 09:50:10 +0000
+Date: Wed, 07 Feb 2024 09:50:09 +0000
+Message-ID: <86r0ho61ta.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
 To: Easwar Hariharan <eahariha@linux.microsoft.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+	Will Deacon <will@kernel.org>,
 	Oliver Upton <oliver.upton@linux.dev>,
 	James Morse <james.morse@arm.com>,
 	Suzuki K Poulose <suzuki.poulose@arm.com>,
 	Zenghui Yu <yuzenghui@huawei.com>,
 	Andre Przywara <andre.przywara@arm.com>,
-	Rob Herring <robh@kernel.org>, Fuad Tabba <tabba@google.com>,
+	Rob Herring <robh@kernel.org>,
+	Fuad Tabba <tabba@google.com>,
 	Joey Gouly <joey.gouly@arm.com>,
 	Kristina Martsenko <kristina.martsenko@arm.com>,
-	"moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" <linux-arm-kernel@lists.infradead.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" <kvmarm@lists.linux.dev>
-Subject: Re: [RFC PATCH] KVM: arm64: Override Microsoft Azure Cobalt 100 MIDR
- value with ARM Neoverse N2
-Message-ID: <ZcNSI089xqia6lho@FVFF77S0Q05N.cambridge.arm.com>
+	linux-arm-kernel@lists.infradead.org (moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)),
+	linux-kernel@vger.kernel.org (open list),
+	kvmarm@lists.linux.dev (open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64))
+Subject: Re: [RFC PATCH] KVM: arm64: Override Microsoft Azure Cobalt 100 MIDR value with ARM Neoverse N2
+In-Reply-To: <20240206195819.1146693-1-eahariha@linux.microsoft.com>
 References: <20240206195819.1146693-1-eahariha@linux.microsoft.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240206195819.1146693-1-eahariha@linux.microsoft.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: eahariha@linux.microsoft.com, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, andre.przywara@arm.com, robh@kernel.org, tabba@google.com, joey.gouly@arm.com, kristina.martsenko@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Tue, Feb 06, 2024 at 07:58:16PM +0000, Easwar Hariharan wrote:
+On Tue, 06 Feb 2024 19:58:16 +0000,
+Easwar Hariharan <eahariha@linux.microsoft.com> wrote:
+> 
 > Several workload optimizations and errata depend on validating that the
 > optimization or errata are applicable to the particular CPU by checking
 > the MIDR_EL1 system register value. With the Microsoft implementer ID
@@ -71,21 +93,16 @@ On Tue, Feb 06, 2024 at 07:58:16PM +0000, Easwar Hariharan wrote:
 > value and replace it with the default ARM Neoverse N2 value that Azure
 > Cobalt 100 is based on.
 
-NAK to rewriting the MIDR in the kernel; we do not lie to userspace about the
-MIDR, and this is not a can of worms we're going to open.
+Since you don't disclose *why* this particular value should have any
+impact on the behaviour of the kernel, the answer should be "Thanks,
+but no, thanks".
 
-If you desire some microarchitectural performance optimizations in particular
-projects, please submit patches to those projects to understand your MIDR
-value.
+Whatever the reason is for doing so, you should make it plain what you
+are working around. Blindly overriding ID registers is not an option,
+and you should simply add your MIDR value to whatever errata list that
+actually matches your implementation.
 
-Further, if Azure Cobalt 100 is based on ARM Neoverse N2, you presumably suffer
-from the same errata; can you comment on that at all? e.g. are there any
-changes in this part that *might* lead to differences in errata and/or
-workarounds? How do the MIDR_EL1.{Variant,Revision} values compare to that of
-Neoverse N2?
-
-Mark.
-
+> 
 > Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 > ---
 >  arch/arm64/include/asm/cputype.h   | 3 ++-
@@ -137,14 +154,14 @@ Mark.
 > +	((struct sys_reg_desc *)r)->val = read_sysreg(midr_el1);
 > +	if (((struct sys_reg_desc *)r)->val == 0x6D0FD490)
 > +		((struct sys_reg_desc *)r)->val == 0x410FD490;
-> +	return ((struct sys_reg_desc *)r)->val;
-> +}
-> +
->  FUNCTION_INVARIANT(revidr_el1)
->  FUNCTION_INVARIANT(aidr_el1)
->  
-> -- 
-> 2.34.1
-> 
-> 
+
+As pointed out to me by Joey, this line is really interesting, and
+shows that you didn't really test this patch.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
