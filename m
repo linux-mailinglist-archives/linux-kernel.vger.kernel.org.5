@@ -1,143 +1,120 @@
-Return-Path: <linux-kernel+bounces-56624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C58284CCC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:32:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E87D84CCCA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:32:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0C64B223BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:32:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0AE8D1F22D8B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3CC7E773;
-	Wed,  7 Feb 2024 14:31:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5BEB7E592;
+	Wed,  7 Feb 2024 14:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NGdt/vGH"
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eu++iotz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A247E587;
-	Wed,  7 Feb 2024 14:31:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20FB57CF16;
+	Wed,  7 Feb 2024 14:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707316308; cv=none; b=c4bu/pdIZudm0w5jX4TCey5MJqDsoXIVgmaXDsKIEILQKg7/SoZi3GYcWbnIaEjE8m1TZ0fsdfeeg/n7vz2CruboFDEkTdu4xPybPH9mY2VKqVR1UpsRGPlqaYgHvbGw59UQL1BPNsBhvbh88nBmBkvx5IYLQuqrW5vR0UFBagQ=
+	t=1707316319; cv=none; b=mSk/Q5dDet+MrRf8/Q0n+NdXctrc5P+4Sclr99s/hmchVDuGxe/81hc7gNU9XyEqxPz7fh/Z0jJbup9h4LfYN4Mt2hmRBXjS6wqKZY46bBiW9maFzMohEG+fQdeRsmWe7h19F4hKbFC1qJM07nKWV7zm8V1d+HL5QcS43ICDgDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707316308; c=relaxed/simple;
-	bh=OPIgeCr9tX3JgphTgoxiOM/JEwMrIKmZmGk/wNxhpwk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TNiX0cEakSW2lAPMAQWooY8Gh2/DoXev0zFtn31fDAvOzAGee12gIjtUdJisE2rRm3/6vqQSOyzwWzqOwUEcm81TMQxzBRYHa+5Uwis/lFMw5f+8RWtx9jSQP+D/hnbR9cwA5GUCU5+t8p60ZTTD0odMa3CoOzHuijw6B6oI9Ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NGdt/vGH; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5d8df2edd29so439723a12.2;
-        Wed, 07 Feb 2024 06:31:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707316306; x=1707921106; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OPIgeCr9tX3JgphTgoxiOM/JEwMrIKmZmGk/wNxhpwk=;
-        b=NGdt/vGHBJwqh4gJF261gOHwnKsNfNEUT09uM0N3ujCS0XthxdaEtQC4pWAxvvRjHg
-         nYokGQtIIj9B4T64OBhxGoZYpyBGXbBYPfJYuGt/uY6/Jr05KRXzWfWazEGiqmogSyiQ
-         zw2dSUORq/z+XR/10gBLiy3YZP0sqnvZRqEGIfCAoqTSJq6kIBJ5aITp8tl0yD9y+P6E
-         D391+w8C30ZKO7SjTj+1HqeLbepefrSZFC4bMCayg+qhgBHFinEPrPOTsaviY/YPvdxk
-         5XyHGt8NqkSN9Sm3iNRvRFUrXVc64uTtOlVZhQSAQ0jubJgAoEkK7sqp2muMZ3HO0vAz
-         lKgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707316306; x=1707921106;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OPIgeCr9tX3JgphTgoxiOM/JEwMrIKmZmGk/wNxhpwk=;
-        b=CUHV/XQ41yUh32ERyEyFYtNNkwxozYQiAUqecGFUrKlsBqD5FM1KUgCNfroROkMxkd
-         ujQ44F5Tf1HtciZSCZ9pWAGof1AkThrUQlfzfqcDja4CAPqxzqK4iO1XEinzKXa8K16A
-         xMJv+GuX8g9GYmmJpqA7VlDvh5442ZQb5i5MAq353GHVA5WmcejyzobKwLcyD4NCAuuC
-         p1qbcs1xJvvtMU5qjUZTjLtZMwx3O8uCcyXyV9xtjwQfjLHNCI6r7G54tlytRX6B2E1g
-         K4QDax5Ybg4jlYZdcHULvnc9H55rfFuaHIp0EOljrY3JRxUJ0lFeypdk+MxKYyx6BMD3
-         Vx/g==
-X-Forwarded-Encrypted: i=1; AJvYcCUYu7HjfKVR0HWAieW6OiUNA/HRzVhYPFoNZnQNqcJezHlJrsyz2V2sBHc9gwzr+kC/5jkFlXfLjKVjjWeFaswwRD+L51qnwGo4G34j10XMxhsgt42FWws7lvtjnkLEJd7f2YvvVDlQQxCGLoq+UXgB4Jf1L/b/GuovSfn3i4EcPw==
-X-Gm-Message-State: AOJu0YyKNgRvPuhWDpMqjnq9jYxAAWoIwzyJeMGtpb5noWghPz7qojHs
-	VArja2P89IDk59q6M1cfnLNVh+ueua7cBqWs8vWyLZQnuOrwXjnxY61eA5g4kewfWfk5B72LZ2Z
-	1ST4x8m9V29d8Nap8xygMaitbTjXZaYSk
-X-Google-Smtp-Source: AGHT+IFxgrOu+ahtaoPMOs67gwkpG6ceSI7wXNAVBWDW5vLpOtek9d22tntZIeUSdN3qHaaaghql1346fultsMOr/Hc=
-X-Received: by 2002:a05:6a21:a59b:b0:19a:4e56:d81b with SMTP id
- gd27-20020a056a21a59b00b0019a4e56d81bmr5159619pzc.27.1707316306040; Wed, 07
- Feb 2024 06:31:46 -0800 (PST)
+	s=arc-20240116; t=1707316319; c=relaxed/simple;
+	bh=BruKfoYyY7uGBswpNK7x1dXk12it/S1keDjlolw+HpU=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=JV/0227xtqVbb1I9mipmfZNdyHp8VnLi7/JY+0lOV4+B4oCU+HIesi+mSWRFqVpSt9qBG3R0P82IkQuTiYM50S41kJ6hmoqF+slXEF+Cu7OK7omMMtKClg6AhBm698pr7SFSKq67Z22JjPCF57XJwFDxa2EQie40n9S8jsCuJrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eu++iotz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDA4DC433F1;
+	Wed,  7 Feb 2024 14:31:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707316318;
+	bh=BruKfoYyY7uGBswpNK7x1dXk12it/S1keDjlolw+HpU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=eu++iotzh8ZoOsnE5oECtw795jbt/pfDppxw/tQsMA37shxl6kw2q8zbKFIhBmCdi
+	 rwFs13SfMyjorG1j0sSL8ddw7Wd4+vlxpPVucvXTUwCaJ036lyXHGr92IstO+pq2Kf
+	 VhUAgxBkYzzXG4YXCU37DsebfL4jVHoUvw9WEwSXplAoKiE2qz1R0Xy8tjZK/1Dj+f
+	 S8S/GW6rajbU7mjPXlXj05p8fOCu531kavN3jTY2pe9g1H7gk1P8mE2Rq97/mgCO2p
+	 azmf+6ATsW0VAYJqrgkXWQopy0Ihzkl7HBtVl9zb6GjW1eJMIfmSPYEc0rNLXHMcLI
+	 ek4WFiD0ffxvA==
+Date: Wed, 7 Feb 2024 23:31:54 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Ye Bin <yebin10@huawei.com>
+Cc: <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
+ <linux-trace-kernel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 4/8] tracing/probes: support '%pd/%pD' type for
+ fprobe
+Message-Id: <20240207233154.cd38fd0bf4891d66807c4ed9@kernel.org>
+In-Reply-To: <20240125073923.2252057-5-yebin10@huawei.com>
+References: <20240125073923.2252057-1-yebin10@huawei.com>
+	<20240125073923.2252057-5-yebin10@huawei.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240206010311.149103-1-jdamato@fastly.com> <7e338c2a-6091-4093-8ca2-bb3b2af3e79d@gmail.com>
- <20240206171159.GA11565@fastly.com> <44d321bf-88a0-4d6f-8572-dfbda088dd8f@nvidia.com>
- <20240206192314.GA11982@fastly.com> <b3c595d8-b30a-41ac-bb82-c1264678b3c4@nvidia.com>
- <20240207142529.GA12897@fastly.com>
-In-Reply-To: <20240207142529.GA12897@fastly.com>
-From: Dave Taht <dave.taht@gmail.com>
-Date: Wed, 7 Feb 2024 09:31:33 -0500
-Message-ID: <CAA93jw6_KMR_T6vs5S40n6OGeCdxbhikE7DCEAbN1N8_nFW_5g@mail.gmail.com>
-Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and IRQs
-To: Joe Damato <jdamato@fastly.com>
-Cc: Gal Pressman <gal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, 
-	Tariq Toukan <ttoukan.linux@gmail.com>, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, rrameshbabu@nvidia.com, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 7, 2024 at 9:26=E2=80=AFAM Joe Damato <jdamato@fastly.com> wrot=
-e:
->
-> On Wed, Feb 07, 2024 at 08:59:18AM +0200, Gal Pressman wrote:
-> > On 06/02/2024 21:23, Joe Damato wrote:
-> > >> The per queue coalesce series is going through internal code review,=
- and is
-> > >> expected to also be ready in a matter of a few weeks.
-> > >
-> > > OK, great. Thanks for letting me know; we are definitely interested i=
-n
-> > > using this feature.
-> >
-> > Hi Joe,
-> > Can you please share some details about your usecase for this feature?
->
-> It was outlined in the cover letter for the RFC [1].
->
-> But, briefly: we set a number of queues (say 16) via ethtool. We then
-> create a series of n-tuple filters directing certain flows to queues 0-7
-> via a custom RSS context. The remaining queues, 8-15 are for all other
-> flows via the default RSS context.
->
-> Queues 0-7 are used with busy polling from userland so we want those queu=
-es
-> to have a larger rx/tx-usecs rx/tx-frames than queues 8-15.
+On Thu, 25 Jan 2024 15:39:19 +0800
+Ye Bin <yebin10@huawei.com> wrote:
 
-I am looking forward to trying this to chop some usec off of eBPF. I
-am curious as to how low can you go...
+> Support print type '%pd/%pD' for print dentry's or file's name.
+> 
 
-> We implemented basic support for this in the RFC we sent to the mailing
-> list.
+nit: Looks good to me. but the patch ordering seems a bit strange.
+This should be next to [2/8].
 
-thank you for re-citing this:
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-> [1]: https://lore.kernel.org/lkml/20230823223121.58676-1-dev@nalramli.com=
-/
+Thank you,
 
-The big feature that I hope appears in some ethernet card someday the
-ability to map (say 16k) LPMs to a hw queue, as opposed to a mere
-tuple. It's the biggest overhead operation we have (presently in
-vectoring data via ebpf) to libreqos for 10k+ ISP subscribers.
-
->
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>  kernel/trace/trace_fprobe.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
+> index 7d2ddbcfa377..988d68e906ad 100644
+> --- a/kernel/trace/trace_fprobe.c
+> +++ b/kernel/trace/trace_fprobe.c
+> @@ -976,6 +976,7 @@ static int __trace_fprobe_create(int argc, const char *argv[])
+>  	char gbuf[MAX_EVENT_NAME_LEN];
+>  	char sbuf[KSYM_NAME_LEN];
+>  	char abuf[MAX_BTF_ARGS_LEN];
+> +	char *dbuf = NULL;
+>  	bool is_tracepoint = false;
+>  	struct tracepoint *tpoint = NULL;
+>  	struct traceprobe_parse_context ctx = {
+> @@ -1086,6 +1087,10 @@ static int __trace_fprobe_create(int argc, const char *argv[])
+>  		argv = new_argv;
+>  	}
+>  
+> +	ret = traceprobe_expand_dentry_args(argc, argv, &dbuf);
+> +	if (ret)
+> +		goto out;
+> +
+>  	/* setup a probe */
+>  	tf = alloc_trace_fprobe(group, event, symbol, tpoint, maxactive,
+>  				argc, is_return);
+> @@ -1131,6 +1136,7 @@ static int __trace_fprobe_create(int argc, const char *argv[])
+>  	trace_probe_log_clear();
+>  	kfree(new_argv);
+>  	kfree(symbol);
+> +	kfree(dbuf);
+>  	return ret;
+>  
+>  parse_error:
+> -- 
+> 2.31.1
+> 
 
 
---=20
-40 years of net history, a couple songs:
-https://www.youtube.com/watch?v=3DD9RGX6QFm5E
-Dave T=C3=A4ht CSO, LibreQos
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
