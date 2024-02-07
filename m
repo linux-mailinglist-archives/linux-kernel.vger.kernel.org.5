@@ -1,118 +1,111 @@
-Return-Path: <linux-kernel+bounces-56319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 554D884C8A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:29:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 701B384C8AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:30:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0707E1F2433C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:29:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08FDFB2560F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8593E2561A;
-	Wed,  7 Feb 2024 10:29:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC9E214274;
+	Wed,  7 Feb 2024 10:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Rs13nRfU"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ON8auzqI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E8342577C
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:29:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470CD802
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707301786; cv=none; b=j5oh1spihGgzT5zUcq6CcewszOKPu82H2Dt2wb3F7y6gQFiXOWkMDeIw+pQb8Hv7ea+Dk6enpSAd4fJRSdCftWmQYZWPbuqazmEFOum6FgdMv30Q1MIBnpZf5p/09eI/gbgJzAG3c7HOOqsv7b16rQMTehwJuOOoKM1zn6yKgF0=
+	t=1707301818; cv=none; b=Vh9bO50o1l46CksbyK5acgQP9O3URz3qEhpmZ/7yLUge1kCPnJQKUROuULI+XMc3Yy8IYXREne42YQTVMHKnQa8Na4Oi3WWtIf8/rLsXKA5s+VFT5dSHdshtpp4FRJNf/peFGMZ40ruqHONpY4ALBg40XG3ie9eflvtG+WdUJTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707301786; c=relaxed/simple;
-	bh=R7H9cs6DbGLpBH+H9RkszszDtlqmhCAJkD+Ax/F7B3Y=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ixY0V/KwVlbDBy0ws103OQ3CFFfaCrqYUxDH9hfzY3jBj19ARJ231jt9ymHome+ECdxXJN1o7fh3L3oUY4UzLglPishk+JpWKHhjfs2+QT2PgXkQcyTVPiRmVV05ZNWg06zHicnSLjRVp4S/KcFSlr0V0oRKAQQsa6QmRwklPpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Rs13nRfU; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1707301785; x=1738837785;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=R7H9cs6DbGLpBH+H9RkszszDtlqmhCAJkD+Ax/F7B3Y=;
-  b=Rs13nRfUxIw/eVpl36DLb2Mk/vJSEwFvrF5HK2wbYv1KKHNDXLTpiUae
-   pakzxzAdyjXOceX1Hge1msTFf9awOvYNYTiuQ5giRFVzEjRf4J+PiD1eP
-   5u281nDpLRfILh1UVk/W2ioDUfX7tlXfQ5DaGJvdvKfoSsMvzv8X7VR3y
-   7Wm0F9ApjjAUlxMnwMG58sVODi9eHjFyu2kx1/u64F+gs0ZPFSgVYnnom
-   85yIidaSAWFYwGM/5Gi2Xc0rkfVJEddZUMK7sIkscMMH8kYsyd4Ck2NHH
-   NC/AEa85SyhawThdpG5WUg6qUnYYYcyArS/par58KNztwqb6eOXqUUqNz
-   Q==;
-X-CSE-ConnectionGUID: j4AD8RfGT+KjBzGzRGPXfg==
-X-CSE-MsgGUID: yxQHXMHUTNu7ReuQRkJiUw==
-X-IronPort-AV: E=Sophos;i="6.05,250,1701154800"; 
-   d="scan'208";a="16412544"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Feb 2024 03:29:43 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 7 Feb 2024 03:29:03 -0700
-Received: from che-lt-i70843lx.microchip.com (10.10.85.11) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Wed, 7 Feb 2024 03:28:51 -0700
-From: Dharma Balasubiramani <dharma.b@microchip.com>
-To: <andrzej.hajda@intel.com>, <neil.armstrong@linaro.org>,
-	<rfoss@kernel.org>, <Laurent.pinchart@ideasonboard.com>, <jonas@kwiboo.se>,
-	<jernej.skrabec@gmail.com>, <maarten.lankhorst@linux.intel.com>,
-	<mripard@kernel.org>, <tzimmermann@suse.de>, <airlied@gmail.com>,
-	<daniel@ffwll.ch>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <dharma.b@microchip.com>,
-	<manikandan.m@microchip.com>, <linux-kernel@vger.kernel.org>,
-	<dri-devel@lists.freedesktop.org>, <linux@armlinux.org.uk>,
-	<nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-	<claudiu.beznea@tuxon.dev>, <geert+renesas@glider.be>, <arnd@arndb.de>,
-	<palmer@rivosinc.com>, <akpm@linux-foundation.org>, <gerg@linux-m68k.org>,
-	<rdunlap@infradead.org>, <vbabka@suse.cz>,
-	<linux-arm-kernel@lists.infradead.org>
-CC: Hari Prasath Gujulan Elango <hari.prasathge@microchip.com>
-Subject: [PATCH v3 4/4] ARM: configs: at91: Enable LVDS serializer support
-Date: Wed, 7 Feb 2024 15:58:02 +0530
-Message-ID: <20240207102802.200220-5-dharma.b@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240207102802.200220-1-dharma.b@microchip.com>
-References: <20240207102802.200220-1-dharma.b@microchip.com>
+	s=arc-20240116; t=1707301818; c=relaxed/simple;
+	bh=SYwYCEnqQYQ+hYirpuiPZCwt/4X5tBxQZJMg02Qkego=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mER8BUtlCzKbdMsOqDhbeHtL4IzLVx1kmWtprybMw1hOia/9eRSWxiTwS25hU64C4fPu0vtaKUyXLPbPrmdwrByCkodphwztN4T/5LIneUAIST8RmJllLLW696Lj1k0XpYMg1gEixCyaO1y/TxVfX2/voEXr+NsF1nnaE5nHwo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ON8auzqI; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707301814;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SYwYCEnqQYQ+hYirpuiPZCwt/4X5tBxQZJMg02Qkego=;
+	b=ON8auzqITwmWvKkwKfMVXaiOXaBGp8OB/kMgXlANbMhhX68TdZC5F/edYGq54k2KCrIGCR
+	b0Qa2d4kGmCI71FMGBCBEuR1AvrfxDGtFuvUSHfvWDudK1twvnZCDsgRmiZvJQKegLRnqy
+	4OJK0a6nns6Xq48NeiZHdt0G1IKhe8w=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-173-HW9XA8KdNFeMtgpCsj9MIg-1; Wed, 07 Feb 2024 05:30:09 -0500
+X-MC-Unique: HW9XA8KdNFeMtgpCsj9MIg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 945FD828CEB;
+	Wed,  7 Feb 2024 10:30:08 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.212])
+	by smtp.corp.redhat.com (Postfix) with SMTP id E898B112131D;
+	Wed,  7 Feb 2024 10:30:06 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed,  7 Feb 2024 11:28:52 +0100 (CET)
+Date: Wed, 7 Feb 2024 11:28:50 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Tycho Andersen <tycho@tycho.pizza>,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
+	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	Tycho Andersen <tandersen@netflix.com>
+Subject: Re: [PATCH] pidfd: getfd should always report ESRCH if a task is
+ exiting
+Message-ID: <20240207102849.GA6627@redhat.com>
+References: <20240206164308.62620-1-tycho@tycho.pizza>
+ <20240206173722.GA3593@redhat.com>
+ <20240206180607.GB3593@redhat.com>
+ <ZcJ13uLxD6rTqqZZ@tycho.pizza>
+ <20240206192553.GC3593@redhat.com>
+ <20240207-beseitigen-ausfliegen-b2b95de67c4f@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207-beseitigen-ausfliegen-b2b95de67c4f@brauner>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-Enable LVDS serializer support for display pipeline.
+On 02/07, Christian Brauner wrote:
+>
+> On Tue, Feb 06, 2024 at 08:25:54PM +0100, Oleg Nesterov wrote:
+> > On 02/06, Tycho Andersen wrote:
+> >
+> > > On Tue, Feb 06, 2024 at 07:06:07PM +0100, Oleg Nesterov wrote:
+> > > > Or we can check task->files != NULL rather than PF_EXITING.
+> > > >
+> > > > To me this looks even better, but looks more confusing without a comment.
+> > > > OTOH, imo this needs a comment anyway ;)
+> > >
+> > > I thought about this, but I didn't really understand the null check in
+> > > exit_files();
+> >
+> > I guess task->files can be NULL at least if it was cloned with
+> > kernel_clone_args->no_files == T
+>
+> Won't this give false positives for vhost workers which do set
+> ->no_files but are user workers? IOW, return -ESRCH even though -EBADF
+> would be correct in this scenario?
 
-Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
-Acked-by: Hari Prasath Gujulan Elango <hari.prasathge@microchip.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
----
-Changelog
-v2 -> v3
-- No Changes.
----
- arch/arm/configs/at91_dt_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+OK, agreed. Lets check PF_EXITING or exit_state.
 
-diff --git a/arch/arm/configs/at91_dt_defconfig b/arch/arm/configs/at91_dt_defconfig
-index 71b5acc78187..6a7714beb099 100644
---- a/arch/arm/configs/at91_dt_defconfig
-+++ b/arch/arm/configs/at91_dt_defconfig
-@@ -143,6 +143,7 @@ CONFIG_VIDEO_OV2640=m
- CONFIG_VIDEO_OV7740=m
- CONFIG_DRM=y
- CONFIG_DRM_ATMEL_HLCDC=y
-+CONFIG_DRM_MICROCHIP_LVDS_SERIALIZER=y
- CONFIG_DRM_PANEL_SIMPLE=y
- CONFIG_DRM_PANEL_EDP=y
- CONFIG_FB_ATMEL=y
--- 
-2.25.1
+Oleg.
 
 
