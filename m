@@ -1,73 +1,47 @@
-Return-Path: <linux-kernel+bounces-56546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A55E884CB7A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:24:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F00284CB83
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:25:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A282B22098
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:24:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAECF28F70B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99EA776C8C;
-	Wed,  7 Feb 2024 13:23:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D53F877F21;
+	Wed,  7 Feb 2024 13:24:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iD/reISh"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="S/RKSu3n"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C6D76904;
-	Wed,  7 Feb 2024 13:23:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1101976C9F
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:24:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707312234; cv=none; b=OZ6xNSvJop9HUloCbB4rXXjX8taXKPAvncM5VUI98kMGW/iwn0D8Shn8wxzi++aeQmH8jwIg2d2VG+NBNqraZGJ2nVFeHTau65rc4aig7exAtRg+84H8LTSNj1096jzZi2jex145yqv8E21wiulzM6w18YNrg56pQPD5k1Bq6VI=
+	t=1707312271; cv=none; b=SwqG0rmpqw3oJ/TSZij+oYMmMyZrHP6AsjhCEVrXtxqClR52tPi1ZaA0DIRO8Siqo/rHHyEufgezA/RFwwtH+PIl30oYKgA7g3tqOLk12oiN1CW1WF2+2xB+EDrWGvbiWr2bYTOC12UELCi2yhjVSMuRyIc/mt3pJE2YbLKyaJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707312234; c=relaxed/simple;
-	bh=n9lnxml7vDWKWDhPukUbe53jnLIHfWyXAPQRkDlN8cs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KU8DI9PXTOxxWiZbMxnMLtuGBTLUdEbggdY6DhIoMx8c4vCscSYouga1FLA0wjQSnraDBIqzDfu3k0ZbwhhmkEm0Vn14oLAaZgWte3ym5XPLx7qMbB0YGTxp0jf/SSEC2I6WCAPAU1T8XG+T9YhzAMhDnpmBn6LDb7t8L0EHR5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iD/reISh; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-511689e01f3so456976e87.1;
-        Wed, 07 Feb 2024 05:23:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707312231; x=1707917031; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DlrXLQPU7SiDVj92lskAkNYdA49Qzw9WwEfRE3KmueI=;
-        b=iD/reIShEmiO5+JLardqIju3x6Wq4Q1z10Md3lFkWHuCalqJC98LnF2p8vlDZ/jN4J
-         GY50wgxSKiKQPd8qhQG4yNkcEjmbmun+HYzftngOAlbkC1kXhwOZpGykxh0iWDDYl9SR
-         pyF5/b2qd9WhSwwjOONiEYVgrMTvgfxSJiFmOokcutxAsnGQ7HrjXusDiUFDXE/0zjce
-         I6u/ZKXEuk22zWV4Oa4i68FYIkKTzAz4c64x/RmmLB7+/qX6y8nZHGYaAM/pikbyDDo8
-         qxmicgPcsVvATvMGpcIic/TM7ZIkMg6Rk4oV19FzAe9z9ztHST0QPhnmLXg+TxDfV7DL
-         0CWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707312231; x=1707917031;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DlrXLQPU7SiDVj92lskAkNYdA49Qzw9WwEfRE3KmueI=;
-        b=Fpkx3pL3S8D3DipNBGBywTC8zs51PPBIH8cpinnSMNvBUJ3c+WubMOd46x4Q9oTE+B
-         7Auqegh1TRq384MRJ2bplCkCW3YRaEF8Ch2/2r5oj+XcIL0MP/p2XJuqHU/s05Dsx9o2
-         ABy/cFexEyiryI8B/xotjuYGseBYQxYclcCfi9mlcEmzUaYjP/bsvPKuw2QVDgakve2a
-         78IwdieoqZBeL97R0EpK0O/O0L1nX77X48wiH0v4gwlKifRmwYygaHpPwtIiNUZ2+Jgp
-         DYEX9o5JO3fDkCoX2RgIcnR09Tvr/Whqm5A2CCnVS3M5iyBJsBjjLke9A3tdtMn7wmRL
-         BHYQ==
-X-Gm-Message-State: AOJu0YyoIDiHSVN660D3ZWe90D4+5EHUvnX68ulLXUEmHtck056ozSty
-	xUV9a4M7qC+lKAMJSWfhrRiHYwBSSoyap8JconIRDg8dtYno96VN
-X-Google-Smtp-Source: AGHT+IEM7csy2zcnsFVgegPV2i9UeAGj/ka+uV0FjlhlxQMcFZq1EuOMBgksb2YSqdTPTk3fQ60+5g==
-X-Received: by 2002:ac2:44d5:0:b0:511:4edb:501a with SMTP id d21-20020ac244d5000000b005114edb501amr4064284lfm.15.1707312230865;
-        Wed, 07 Feb 2024 05:23:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWM1dxoQWIi4KJuF3E581Mfce4Z9wgU445l4TYSli91UosKlBzuPThtUWOFnifu0Rm+HAtVeMbkYczszS0sz9/vSBy4iwQkSwxPmPV/l0wCvaTttI/JScNUcXZwgCjP1lJxAkkJdv6bd8hXrujxMU9+2WhWcRlo3gEaVBuf7b9RwAa419BxgX9VkAEusda4LdJhoUJ84R8/qFPUoJdmDatC98CITSt6OP46wCqKCl0JTtz0TGp1QUA4hGNRGp1+f69q9b3x879fqmIQ165iC8pp0AXKhXhejWhRj0tilp6mU0aeA9rddpXrJa++2MWoXpYDJfvIRvSfl3tm5CthVpyspIJ0euPH2v2LlaWwm7Y/
-Received: from [172.27.55.67] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id v23-20020a1709064e9700b00a3848ed2ef6sm750772eju.201.2024.02.07.05.23.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 05:23:50 -0800 (PST)
-Message-ID: <b19c4280-df54-409e-b3fd-00de6d6958d4@gmail.com>
-Date: Wed, 7 Feb 2024 15:23:47 +0200
+	s=arc-20240116; t=1707312271; c=relaxed/simple;
+	bh=Oa13bFDYDOyaCrGxZJuZFEdDFPrukfVYIVezOE6Z28g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=X+NlQWua7SMnBmUjZBJ0i/U87VCAJ0O47m0eyHTrpgAz+URj+vioSm28AYEQ3XHrwq5xnKr7wEVYkpH6OJj6L7d7Ql9jucF/ot3wh6JE0HuVSCDf2aeaQB0zK4qlVfqagTsEh9UfrQPJ6JkJiTv/G7YIluKYu9qVQdroLdv2Am0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=S/RKSu3n; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 77A9DA27;
+	Wed,  7 Feb 2024 14:22:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1707312177;
+	bh=Oa13bFDYDOyaCrGxZJuZFEdDFPrukfVYIVezOE6Z28g=;
+	h=Date:Subject:To:References:From:Cc:In-Reply-To:From;
+	b=S/RKSu3nbYmQ891AMqoh9ajOltNFCmBYs9WyWn66ZCA+hWibWqfGBENDXfGhfKd43
+	 qlruO5VxnR8wJAbzDifERNAaW/VYrpRaqRjdUelGlasrhd/fDXH5A9phBYYEEbxwuj
+	 XOhETChgL8PwocaZDTFgbzM6yoSUnwE77QAqig98=
+Message-ID: <b7148c0e-bda7-4d20-bb92-4f81d62ed7a7@ideasonboard.com>
+Date: Wed, 7 Feb 2024 15:24:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,61 +49,117 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and
- IRQs
+Subject: Re: [PATCH v3 0/5] Fixing live video input in ZynqMP DPSUB
 Content-Language: en-US
-To: Joe Damato <jdamato@fastly.com>, Tariq Toukan <tariqt@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- Gal Pressman <gal@nvidia.com>, rrameshbabu@nvidia.com,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- "open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
-References: <20240206010311.149103-1-jdamato@fastly.com>
- <7e338c2a-6091-4093-8ca2-bb3b2af3e79d@gmail.com>
- <20240206171159.GA11565@fastly.com>
- <44d321bf-88a0-4d6f-8572-dfbda088dd8f@nvidia.com>
- <20240206192314.GA11982@fastly.com>
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20240206192314.GA11982@fastly.com>
+To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+References: <20240124025402.373620-1-anatoliy.klymenko@amd.com>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: laurent.pinchart@ideasonboard.com, maarten.lankhorst@linux.intel.com,
+ mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+ michal.simek@amd.com, dri-devel@lists.freedesktop.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20240124025402.373620-1-anatoliy.klymenko@amd.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-
-
-On 06/02/2024 21:23, Joe Damato wrote:
-> On Tue, Feb 06, 2024 at 09:10:27PM +0200, Tariq Toukan wrote:
->>
->>
->> On 06/02/2024 19:12, Joe Damato wrote:
->>> On Tue, Feb 06, 2024 at 10:11:28AM +0200, Tariq Toukan wrote:
->>>>
->>>>
->>>> On 06/02/2024 3:03, Joe Damato wrote:
->>>>> Make mlx5 compatible with the newly added netlink queue GET APIs.
->>>>>
->>>>> Signed-off-by: Joe Damato <jdamato@fastly.com>
-
-..
-
+On 24/01/2024 04:53, Anatoliy Klymenko wrote:
+> Add few missing pieces to support ZynqMP DPSUB live video in mode.
 > 
-> OK, well I tweaked the v3 I had queued  based on your feedback. I am
-> definitiely not an mlx5 expert, so I have no idea if it's correct.
+> ZynqMP DPSUB supports 2 modes of operations in regard to video data
+> input.
+>      
+> In the first mode, DPSUB uses DMA engine to pull video data from memory
+> buffers. To support this the driver implements CRTC and DRM bridge
+> representing DP encoder.
+>      
+> In the second mode, DPSUB acquires video data pushed from FPGA and
+> passes it downstream to DP output. This mode of operation is modeled in
+> the driver as a DRM bridge that should be attached to some external
+> CRTC.
 > 
-> The changes can be summed up as:
->    - mlx5e_activate_channel and mlx5e_deactivate_channel to use
->      netif_queue_set_napi for each mlx5e_txqsq as it is
->      activated/deactivated. I assumed sq->txq_ix is the correct index, but I
->      have no idea.
->    - mlx5e_activate_qos_sq and mlx5e_deactivate_qos_sq to handle the QOS/HTB
->      case, similar to the above.
->    - IRQ storage removed
+> Patches 1/5,2/5,3/5,4/5 are minor fixes.
 > 
-> If you think that sounds vaguely correct, I can send the v3 tomorrow when
-> it has been >24hrs as per Rahul's request.
+> DPSUB requires input live video format to be configured.
+> Patch 5/5: The DP Subsystem requires the input live video format to be
+> configured. In this patch, we are assuming that the CRTC's bus format is
+> fixed (typical for FPGA CRTC) and comes from the device tree. This is a
+> proposed solution, as there is no API to query CRTC output bus format
+> or negotiate it in any other way.
+> 
+> Changes in v2:
+> - Address reviewers' comments:
+>    - More elaborate and consistent comments / commit messages
+>    - Fix includes' order
+>    - Replace of_property_read_u32_index() with of_property_read_u32()
+> 
+> Changes in v3:
+> - Split patch #3 into 3) moving status register clear immediately after
+>    read; 4) masking status against interrupts' mask
+> 
+> Link to v1: https://lore.kernel.org/all/20240112234222.913138-1-anatoliy.klymenko@amd.com/
+> Link to v2: https://lore.kernel.org/all/20240119055437.2549149-1-anatoliy.klymenko@amd.com/
+> 
+> Anatoliy Klymenko (5):
+>    drm: xlnx: zynqmp_dpsub: Make drm bridge discoverable
+>    drm: xlnx: zynqmp_dpsub: Fix timing for live mode
+>    drm: xlnx: zynqmp_dpsub: Clear status register ASAP
+>    drm: xlnx: zynqmp_dpsub: Filter interrupts against mask
+>    drm: xlnx: zynqmp_dpsub: Set live video in format
+> 
+>   drivers/gpu/drm/xlnx/zynqmp_disp.c      | 111 +++++++++++++++++++++---
+>   drivers/gpu/drm/xlnx/zynqmp_disp.h      |   3 +-
+>   drivers/gpu/drm/xlnx/zynqmp_disp_regs.h |   8 +-
+>   drivers/gpu/drm/xlnx/zynqmp_dp.c        |  16 +++-
+>   drivers/gpu/drm/xlnx/zynqmp_kms.c       |   2 +-
+>   5 files changed, 119 insertions(+), 21 deletions(-)
 > 
 
-Sounds correct.
-Please go on and send when it's time so we can review.
+Thanks! I have pushed patches 1 to 4 to drm-misc-next. As Laurent said, 
+the fifth one needs some more work.
+
+  Tomi
 
 
