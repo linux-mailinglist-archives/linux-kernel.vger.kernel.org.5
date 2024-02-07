@@ -1,135 +1,110 @@
-Return-Path: <linux-kernel+bounces-56507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 347A984CAFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC3C84CB00
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:05:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF4B81F24141
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:04:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C620E1F24492
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB79768EF;
-	Wed,  7 Feb 2024 13:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D65768F0;
+	Wed,  7 Feb 2024 13:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Ly1NyYWw"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Joxw6dC+"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E09176059
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7C859178;
+	Wed,  7 Feb 2024 13:04:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707311067; cv=none; b=u51nrFvK9NVj00QmqZ88VwfojWBDc+jlq8aI33UT24J+IN4Pfep7XSJqSfc0xlCspE6Rq8xx9Z7NaxCOCFQm7vnq62OfiBWqkIwIVn6G/v6t9VObEn27Rm940IkosfZNyHhzmxVFEfWQJAGeYI26Kb6HJtwjNf10Hf6hXB8o2Q4=
+	t=1707311100; cv=none; b=JerZZzpe+NEUvVxOHG9yHMcLdaIgcfOC4xkq4jwMFoJTvp3ByAq4OTtDd7a5xtyX6JaYPsnLfQLbeXnmJaR1ExWcaLpVkLpxjfY1CKRPNmMG/tq20jKPdnHLrNwWONestIiUAYdI8QtW2EkxYto5GbGXdElL4/bBpSy/0WziX/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707311067; c=relaxed/simple;
-	bh=gF3VcFxFiD1RkU0fj7v758VcLFQYwRIBzb5HxhOKpHI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i0teppka2aaboTmsR1/HhaGTRzDQ+qFlbHBE0ux/zt8REYJEG3Ouv9hL9zjcY2b8TC5imTqtaAQrwnCIQtM3zjb7fjhQfjvH+F9QzFPcQgsmf8kpB9iYMLcimxHPm1C2D01gKwpHbRL1szIvoAsHHQ7nJQ9mgSAhL70JEcQD9K4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Ly1NyYWw; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2cf3a095ba6so5330961fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 05:04:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1707311062; x=1707915862; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=x6nGer9hwb9V43aQD6TonkhwKDUWxh83YWENmNzzbSY=;
-        b=Ly1NyYWwqqoWISfqFxNwYRuQ7nfXcB5WZAAFEFBxejzslmLjOYVK4huguYAmXYkBwB
-         axtPW3pl3MXo40i6xMEu6lEvsWypzDmmlVbXLGg+GXGU2/YF7S739XEQ4ba8AVPm1ENB
-         yMkaPrkvwTMEIMpUEylIPJQHShkLX8Sg1VkXBdCdnLlQKo7YWzkPmoLfxQ1/KWGxEAfJ
-         rgAJq4N3zkXgJSorYfVV55LEH8guGa+TNt+HXWplf9uVvK+z7cm2xl59hgoZ/vWZ1BtI
-         4sjQIJN/MgWcpP+NgJcx0umvCATEU2UZcZ00mFNPiRnm9gQqATxZ8xX56Qjc+vhSM9Us
-         GXOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707311062; x=1707915862;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x6nGer9hwb9V43aQD6TonkhwKDUWxh83YWENmNzzbSY=;
-        b=TGKP9V25ruNv97Ea/qXB+m3Zf7+veJqAoMKEB4ni7ItWfoSHfl9PvCFXPnJRqj160c
-         j9QISNznRp1k2yrstNdRIUsZ13oNfuvvZP+7hG0Wg9zxuFl4u2uakku9cVzqqF//4sLM
-         ydTAOEbqozyqhKx8Yp76wXE9ini3pQecAwvbrEWWCgKliwhyntkq0ZV8r0DobgfitxYE
-         5YayVwpHvpdtRDB5xiCFEg4hml5cxg9CwMSw6AVt01EvS67LU2W2qUimJWzZX5+zufsX
-         GczR4G9l5ExAJ2LgOXJjgBA1PxeBT7Rh07rOgfuveP/78MQoI5ZeNeeQoSBGPp9TaC+v
-         yNVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXySsHyFLx+GXBWzSiEk16dXpl7FZTO0Btj+jGMWINr97SU37ZJGY3yH17yb8uLcHC48yeiMbs1sbQHyzVSRWdxIAR4SgnmlE6TnjHt
-X-Gm-Message-State: AOJu0YxAeP//5TXc3VPWemVVKShdw/xUMmbZNP9XQLNmkUKVLWmNT7wr
-	+vZfA0R8B17Evqe3duNppf7Xa7kH1w7Qk/FpmzsLClOZHCijFQLeS8g0KC3thxg=
-X-Google-Smtp-Source: AGHT+IFa0TVQIyUrSr4Ml/8FzQljm+HC3iMmztZAcNrfAUEAfc/EMyOWvqQqFubU8RqoS137xa3qXg==
-X-Received: by 2002:a2e:910d:0:b0:2d0:a829:6fc7 with SMTP id m13-20020a2e910d000000b002d0a8296fc7mr3948254ljg.5.1707311062085;
-        Wed, 07 Feb 2024 05:04:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXSL7zY7t194MdDq+81ZXKHFIS8Ji5rW8CtbLG9nXUarAre6Ke7qVaYJDL9lJS4Ks/6d1XfArD13+20dqJgCLUU1ltgncJxiLrddVDdFGXwle9jsGfKLw1/5pnfrlOo5f4B/usZIb7O5WTvYv289KWQAKzD/QpxbXAYc9ordgBRm/xn45DiLEDby58oZggW60OqskgBVybZUFFdzgjaN3d71C1+ey7pd2JS9+Jtp/GbAY4=
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id n5-20020a056402434500b00560c43b48f4sm637082edc.10.2024.02.07.05.04.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 05:04:21 -0800 (PST)
-Date: Wed, 7 Feb 2024 14:04:20 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Douglas Anderson <dianders@chromium.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Li Zhe <lizhe.67@bytedance.com>, Pingfan Liu <kernelfans@gmail.com>,
-	Lecopzer Chen <lecopzer.chen@mediatek.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] watchdog: Better handling of concurrent lockups
-Message-ID: <ZcN_1DOwE4D6jrra@alley>
-References: <20231220211640.2023645-1-dianders@chromium.org>
- <ZcIGKU8sxti38Kok@alley>
- <87ttmlan1d.fsf@jogness.linutronix.de>
+	s=arc-20240116; t=1707311100; c=relaxed/simple;
+	bh=ous0MH1KPZJPfO8wzVGi7xPdc7ON7llYysO4R/VPbGc=;
+	h=Content-Type:MIME-Version:In-Reply-To:References:Subject:From:Cc:
+	 To:Date:Message-ID; b=EaZCHQAE4PRaSQ1cYy4YPRpR/2aS92id1pnMFd8oHcwNGSzpdruEKPAllHOq7gIG6ZwiOB+nC2C5O2mWRbCOOafjcy56qMh+AEKfkOlX8Y2fDfHoBD+QN+U3kCPpJFgE0npEY7jt8PzmHN4ttZrJ6v3VdCoCmugsnajYAc+qQtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Joxw6dC+; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id A38DEA27;
+	Wed,  7 Feb 2024 14:03:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1707311007;
+	bh=ous0MH1KPZJPfO8wzVGi7xPdc7ON7llYysO4R/VPbGc=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=Joxw6dC+Kf6+vZVGbKclT283ZdQpJOdh2McfsJ7j9hSwJrzWJ0mCFzNp40kguAZSq
+	 d+P3gY5wwbOHjQvgkliFGKw0g8lTBan1YyTzl+xYjrpsXfPv47FHTdEDMXXcu28wao
+	 2h6QqHA042qlUNs3q14ux6pXti9Cj61yCoC2at9I=
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ttmlan1d.fsf@jogness.linutronix.de>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZcKk6QJXfGGo2DH9@pengutronix.de>
+References: <ZcFx7P30Su_Mx4AV@pengutronix.de> <20240206032301.6e4tmbvmk7vs72gg@synopsys.com> <ZcKk6QJXfGGo2DH9@pengutronix.de>
+Subject: Re: duplicate requests on host side while streaming via uvcvideo gadget
+From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc: linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>, linux-usb@vger.kernel.org <linux-usb@vger.kernel.org>
+To: Michael Grzeschik <mgr@pengutronix.de>, Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Date: Wed, 07 Feb 2024 13:04:48 +0000
+Message-ID: <170731108881.252503.6282895768429052406@ping.linuxembedded.co.uk>
+User-Agent: alot/0.10
 
-On Tue 2024-02-06 11:51:50, John Ogness wrote:
-> On 2024-02-06, Petr Mladek <pmladek@suse.com> wrote:
-> > I have just got an idea how to make printk_cpu_sync_get_irqsave()
-> > less error prone for deadlock on the panic() CPU. The idea is
-> > to ignore the lock or give up locking after a timeout on
-> > the panic CPU.
-> 
-> This idea is out of scope for this series. But it is something we should
-> think about. The issue has always been a possible problem in panic().
-> 
-> > AFAIK, the lock is currently used only to serialize related
-> > printk() calls. The only risk is that some messages might be
-> > interleaved when it is ignored.
+Hi Michael,
+
+Quoting Michael Grzeschik (2024-02-06 21:30:17)
+> On Tue, Feb 06, 2024 at 03:23:17AM +0000, Thinh Nguyen wrote:
+> >On Tue, Feb 06, 2024, Michael Grzeschik wrote:
+> >> Hi Thinh
+> >>
+> >> I found some strange situation while streaming via uvc-gadget to some
+> >> usb host. It happens when some requests are missed due to higher load =
+on
+> >> the gadget machine. In some cases some requests will reach the host
+> >> twice. In my special case, I added the following changes [1] for the
+> >> host and gadget side.
 > >
-> > I am not sure if this is a good idea though. It might create
-> > another risk when the lock gets used to serialize more
-> > things in the future and a race might create a real problem.
-> 
-> With the printk series we are currently working on [0], only the panic
-> CPU can store new printk messages anyway. So there would be nothing to
-> synchronize against (and it could be safely ignored).
+> >Does this only happen to some specific hosts?
+>=20
+> >Are all the data of the duplicate requests matching or just some bits of
+> >the transfer? Were you able to confirm from some usb analyzer/sniffer
+> >that the data out the wire is actually duplicate?
+>=20
+> Turns out, this duplicates are just misinterpretations.
 
-Right.
+I'm glad there's no deeper issue to worry about here.
 
-> kgdb uses the same technique to quiesce the CPUs. It does not use the
-> printk_cpu_sync for this, but it is an example of a possible future
-> usage not related to printk.
-> 
-> My vote is to make it a NOP for the panic CPU and then keep an eye on
-> any future uses.
-Sounds good.
+> The linux uvcvideo driver will parse the uvc header payload twice. (If
+> the FID was incremented inbetween). This led to those double misleading
+> outputs. Although this means that there is a bug in
+> uvc_video_stats_decode for incrementing the error count.
 
-> Should I add this to v4 of [0]?
+Do you plan/are you able to submit a patch to fix this?  Hopefully that
+would prevent anyone else following the same rabbit-hole.
 
-Let's not complicate this series any more. It is almost ready ;-)
-We could do it by a separate patch in top of it or in another
-patchset.
+--
+Kieran
 
-> 
-> [0] https://lore.kernel.org/lkml/20231214214201.499426-1-john.ogness@linutronix.de
 
-Best Regards,
-Petr
+>=20
+> Anyway, so just ignore this whole thread and be thanked for even having a=
+ny
+> thoghts on this.
+>=20
+> Regards,
+> Michael
+>=20
+> --=20
+> Pengutronix e.K.                           |                             |
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
