@@ -1,242 +1,104 @@
-Return-Path: <linux-kernel+bounces-56029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D5F284C51C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:44:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C67884C516
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:43:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0E26B21712
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:44:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C764A2884CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:43:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF2C61F959;
-	Wed,  7 Feb 2024 06:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 269061CF95;
+	Wed,  7 Feb 2024 06:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="du6jkm69"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M4fEAf4k"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B94B1B95B;
-	Wed,  7 Feb 2024 06:43:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3244E1CD30
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 06:43:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707288226; cv=none; b=A0vGjpGrTgwr6uTPFZYzHGCDurdOjG/FnKcAMpdtTWhbpXOSyRBxe2/REog7DYX7uU9fCFNtOzTgTNqILvmHTUDZO7twXKYs5xIgR7kZAGaZfB1h8OmDl+a7SMufpsKkDIsifRrwgKrkRMwoeICmHqu5MzfgCcC+8ZOzZB4HUdQ=
+	t=1707288204; cv=none; b=HabAsfnMv5wwJ6NkLyM1oElIg0wev3SCcBpEGB4Kaa7G/5i2X5q1Pwf6RJ6xC2FXQVvGClciXBZB5uwK7pllo5eDZTwGAyP9nM9RSWtmWUGP5UBfWVMWO6ilrU3ybxHIjwO1IX0gu+7+efFkS12wqNPtjUQ+F17dYyIcBe12PEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707288226; c=relaxed/simple;
-	bh=ZmbHA48mdcAgo9rPreneBpGW4T17Nyg3IwTQS03RZdo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MZTU8BRB06faabAXhbJmsD65rt2L60eCQABsXWuIwTy9g/Yd6KD2tBQ8t2WhTz7EWoIxZZp20rb9qmnfQoYzGQCEeON09v81/I/Jg6yz9ZkHpykS+jH3/Wkv9Rv8+z63puDfPwL5eZaB9C0vXMcZePZc7zQmLWsn1WPTaLQUxPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=du6jkm69; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707288223;
-	bh=ZmbHA48mdcAgo9rPreneBpGW4T17Nyg3IwTQS03RZdo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=du6jkm69GxYU0EjUc9tQojLR2xZ0SU3kzmuzOMf+hvJKsYSWvdOSZR3inWOk+Poza
-	 W4gl7mSB2Vhh/ro0tnzXbyc1HqrdZXnmFSFro3sodaLrRc0mr9E/pp0WLeBMjISnem
-	 FhXYa19MSJW3r1iOmwyqCjJXuhmaoi0rY6Spc0nzFK78bIwbskBWN0RZB74qWBRyU7
-	 yNz2glHtpj1CCitnNMsJsjbGrlI6LK/nbIcaWRumjslht8ANQGUk8VwTtkTysAZAZA
-	 axz34oqkvjdcYhW2gN7YEm/X7S35TO3i3vYgoHEbZomeIlkEp+z6QIeW2YrIEyZ+c7
-	 grE64MgSj4Jag==
-Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8981E378209A;
-	Wed,  7 Feb 2024 06:43:40 +0000 (UTC)
-From: Eugen Hristev <eugen.hristev@collabora.com>
-To: tytso@mit.edu,
-	jaegeuk@kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net
-Cc: chao@kernel.org,
-	adilger.kernel@dilger.ca,
-	linux-kernel@vger.kernel.org,
-	kernel@collabora.com,
-	eugen.hristev@collabora.com,
-	Gabriel Krisman Bertazi <krisman@collabora.com>,
-	Eric Biggers <ebiggers@google.com>
-Subject: [RESEND PATCH v9 2/2] f2fs: Simplify the handling of cached insensitive names
-Date: Wed,  7 Feb 2024 08:43:02 +0200
-Message-Id: <20240207064302.221060-3-eugen.hristev@collabora.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240207064302.221060-1-eugen.hristev@collabora.com>
-References: <20240207064302.221060-1-eugen.hristev@collabora.com>
+	s=arc-20240116; t=1707288204; c=relaxed/simple;
+	bh=Q+Syr8uWq4Bq9a8aaQxkFdYoFqJmdNHkFFakLvaozYw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o4foKb/KAA4EaL40H1LhTNtD7HKGRQnjDirE2jtP4Eyc+qe9T+qNdWOm8MmjiJ2LLAter7b+fGcX5vDDPiTZnVWJ5GdhIMitdO8wFvzEmtkOOhgTHQoIKW2aj4By+63YPoCtrLORfhppYoxMC31gl/UqgNV1VHcBii06i79WaAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M4fEAf4k; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707288201; x=1738824201;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Q+Syr8uWq4Bq9a8aaQxkFdYoFqJmdNHkFFakLvaozYw=;
+  b=M4fEAf4kyR+Pfu9ebnsxUzBJPj71qsJJuZsny8esWqFoVm4Ind1NV4t+
+   Rz0hYyvJnt7XDQUY28ZG8jWhvwyZo4IAbrvUFXK7+bWZ7QUxynv9zWFQg
+   iJui0u7FTrejzRDnk2Nbv404sGCIuf5x5VQ7vuLE8H24x50YgicyWCrYm
+   AhjmD/CnK6rn3w8+XWxko6NW3nD+QXW4wTY/nKjq82YIQdgtEdK/bOOiQ
+   3bIeAdo3DbrUWVwdTP+rFaDzisIkP7XtSdLhghdDI9/o8PNzcAvTpvius
+   /X1jcfNnQjlEAOKkOyppUlGBsZaE/AFUfVqw4Wx7KbCHw/7/jg5wysYpB
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="4735683"
+X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
+   d="scan'208";a="4735683"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 22:43:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="824414451"
+X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
+   d="scan'208";a="824414451"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 22:43:18 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id A52A611F89A;
+	Wed,  7 Feb 2024 08:43:15 +0200 (EET)
+Date: Wed, 7 Feb 2024 06:43:15 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Wentong Wu <wentong.wu@intel.com>
+Cc: gregkh@linuxfoundation.org, tomas.winkler@intel.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mei: Add Meteor Lake support for IVSC device
+Message-ID: <ZcMmg1f8975whpno@kekkonen.localdomain>
+References: <20240207004304.31862-1-wentong.wu@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207004304.31862-1-wentong.wu@intel.com>
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+On Wed, Feb 07, 2024 at 08:43:04AM +0800, Wentong Wu wrote:
+> Add IVSC device support on Meteor Lake platform.
+> 
+> Signed-off-by: Wentong Wu <wentong.wu@intel.com>
 
-Keeping it as qstr avoids the unnecessary conversion in f2fs_match
+Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-[eugen.hristev@collabora.com: port to 6.8-rc3]
-Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
----
- fs/f2fs/dir.c      | 53 ++++++++++++++++++++++++++--------------------
- fs/f2fs/f2fs.h     | 17 ++++++++++++++-
- fs/f2fs/recovery.c |  5 +----
- 3 files changed, 47 insertions(+), 28 deletions(-)
+> ---
+>  drivers/misc/mei/vsc-tp.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/misc/mei/vsc-tp.c b/drivers/misc/mei/vsc-tp.c
+> index 6f4a4be6ccb5..55f7db490d3b 100644
+> --- a/drivers/misc/mei/vsc-tp.c
+> +++ b/drivers/misc/mei/vsc-tp.c
+> @@ -535,6 +535,7 @@ static const struct acpi_device_id vsc_tp_acpi_ids[] = {
+>  	{ "INTC1009" }, /* Raptor Lake */
+>  	{ "INTC1058" }, /* Tiger Lake */
+>  	{ "INTC1094" }, /* Alder Lake */
+> +	{ "INTC10D0" }, /* Meteor Lake */
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(acpi, vsc_tp_acpi_ids);
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index 3f20d94e12f9..f5b65cf36393 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -42,35 +42,49 @@ static unsigned int bucket_blocks(unsigned int level)
- 		return 4;
- }
- 
-+#if IS_ENABLED(CONFIG_UNICODE)
- /* If @dir is casefolded, initialize @fname->cf_name from @fname->usr_fname. */
- int f2fs_init_casefolded_name(const struct inode *dir,
- 			      struct f2fs_filename *fname)
- {
--#if IS_ENABLED(CONFIG_UNICODE)
- 	struct super_block *sb = dir->i_sb;
-+	unsigned char *buf;
-+	int len;
- 
- 	if (IS_CASEFOLDED(dir) &&
- 	    !is_dot_dotdot(fname->usr_fname->name, fname->usr_fname->len)) {
--		fname->cf_name.name = f2fs_kmem_cache_alloc(f2fs_cf_name_slab,
--					GFP_NOFS, false, F2FS_SB(sb));
--		if (!fname->cf_name.name)
-+		buf = f2fs_kmem_cache_alloc(f2fs_cf_name_slab,
-+					    GFP_NOFS, false, F2FS_SB(sb));
-+		if (!buf)
- 			return -ENOMEM;
--		fname->cf_name.len = utf8_casefold(sb->s_encoding,
--						   fname->usr_fname,
--						   fname->cf_name.name,
--						   F2FS_NAME_LEN);
--		if ((int)fname->cf_name.len <= 0) {
--			kmem_cache_free(f2fs_cf_name_slab, fname->cf_name.name);
--			fname->cf_name.name = NULL;
-+
-+		len = utf8_casefold(sb->s_encoding, fname->usr_fname,
-+				    buf, F2FS_NAME_LEN);
-+		if (len <= 0) {
-+			kmem_cache_free(f2fs_cf_name_slab, buf);
- 			if (sb_has_strict_encoding(sb))
- 				return -EINVAL;
- 			/* fall back to treating name as opaque byte sequence */
-+			return 0;
- 		}
-+		fname->cf_name.name = buf;
-+		fname->cf_name.len = len;
- 	}
--#endif
-+
- 	return 0;
- }
- 
-+void f2fs_free_casefolded_name(struct f2fs_filename *fname)
-+{
-+	unsigned char *buf = (unsigned char *)fname->cf_name.name;
-+
-+	if (buf) {
-+		kmem_cache_free(f2fs_cf_name_slab, buf);
-+		fname->cf_name.name = NULL;
-+	}
-+}
-+#endif /* CONFIG_UNICODE */
-+
- static int __f2fs_setup_filename(const struct inode *dir,
- 				 const struct fscrypt_name *crypt_name,
- 				 struct f2fs_filename *fname)
-@@ -142,12 +156,7 @@ void f2fs_free_filename(struct f2fs_filename *fname)
- 	kfree(fname->crypto_buf.name);
- 	fname->crypto_buf.name = NULL;
- #endif
--#if IS_ENABLED(CONFIG_UNICODE)
--	if (fname->cf_name.name) {
--		kmem_cache_free(f2fs_cf_name_slab, fname->cf_name.name);
--		fname->cf_name.name = NULL;
--	}
--#endif
-+	f2fs_free_casefolded_name(fname);
- }
- 
- static unsigned long dir_block_index(unsigned int level,
-@@ -235,11 +244,9 @@ static inline int f2fs_match_name(const struct inode *dir,
- 	struct fscrypt_name f;
- 
- #if IS_ENABLED(CONFIG_UNICODE)
--	if (fname->cf_name.name) {
--		struct qstr cf = FSTR_TO_QSTR(&fname->cf_name);
--
--		return f2fs_match_ci_name(dir, &cf, de_name, de_name_len);
--	}
-+	if (fname->cf_name.name)
-+		return f2fs_match_ci_name(dir, &fname->cf_name,
-+					  de_name, de_name_len);
- #endif
- 	f.usr_fname = fname->usr_fname;
- 	f.disk_name = fname->disk_name;
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 84c9fead3ad4..2ff8e52642ec 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -530,7 +530,7 @@ struct f2fs_filename {
- 	 * internal operation where usr_fname is also NULL.  In all these cases
- 	 * we fall back to treating the name as an opaque byte sequence.
- 	 */
--	struct fscrypt_str cf_name;
-+	struct qstr cf_name;
- #endif
- };
- 
-@@ -3533,8 +3533,23 @@ int f2fs_get_tmpfile(struct mnt_idmap *idmap, struct inode *dir,
- /*
-  * dir.c
-  */
-+unsigned char f2fs_get_de_type(struct f2fs_dir_entry *de);
-+#if IS_ENABLED(CONFIG_UNICODE)
- int f2fs_init_casefolded_name(const struct inode *dir,
- 			      struct f2fs_filename *fname);
-+void f2fs_free_casefolded_name(struct f2fs_filename *fname);
-+#else
-+static inline int f2fs_init_casefolded_name(const struct inode *dir,
-+					    struct f2fs_filename *fname)
-+{
-+	return 0;
-+}
-+
-+static inline void f2fs_free_casefolded_name(struct f2fs_filename *fname)
-+{
-+}
-+#endif /* CONFIG_UNICODE */
-+
- int f2fs_setup_filename(struct inode *dir, const struct qstr *iname,
- 			int lookup, struct f2fs_filename *fname);
- int f2fs_prepare_lookup(struct inode *dir, struct dentry *dentry,
-diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
-index aad1d1a9b3d6..8e8501a3a8e0 100644
---- a/fs/f2fs/recovery.c
-+++ b/fs/f2fs/recovery.c
-@@ -153,11 +153,8 @@ static int init_recovered_filename(const struct inode *dir,
- 		if (err)
- 			return err;
- 		f2fs_hash_filename(dir, fname);
--#if IS_ENABLED(CONFIG_UNICODE)
- 		/* Case-sensitive match is fine for recovery */
--		kmem_cache_free(f2fs_cf_name_slab, fname->cf_name.name);
--		fname->cf_name.name = NULL;
--#endif
-+		f2fs_free_casefolded_name(fname);
- 	} else {
- 		f2fs_hash_filename(dir, fname);
- 	}
 -- 
-2.34.1
-
+Sakari Ailus
 
