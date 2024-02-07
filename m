@@ -1,157 +1,179 @@
-Return-Path: <linux-kernel+bounces-56376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9935184C972
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 17FF484C977
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:17:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03C36B2681B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:16:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 695CEB276CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:17:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B60C228DC1;
-	Wed,  7 Feb 2024 11:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF46A1AACF;
+	Wed,  7 Feb 2024 11:16:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="z7PjOecY"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="mzmvVkaY"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F09021E482
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:15:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D78D1AACC
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707304526; cv=none; b=pXtkKcb34KHwy0pMtSpS92eoNY84irc9iwDDj4j0NHhjFEL2ls+N4z9LpyBBK+gG+YoJotcNTgJWWR50p3+kXO545EXJgTGBsK/SZu3lalFor4MSwa4blbDE82+ES8lDq0QjGkR6d8GVIcNwCniwXruEa5F3LDy3GpcMR6vJcXk=
+	t=1707304592; cv=none; b=KGoM4lk2PHqGYluUoYMPgkxEeK2bYq34Zm/auxJLNZGaG34RaRJTM+w1gYG/d4AlQ8iwappdCJF2JdLkO90jibaKKlDpg+jERKcI38EaUzokgdLnAUJHp/8zFDENQpX6W8ZtyA4b/jgMkUSu+IzZ2z2O0Nvo8gUKU1ldsWygMng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707304526; c=relaxed/simple;
-	bh=OIO0Jdw0rKx9pnTeOXamc0BX8ibgMh/GcNFiiLOTq8M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZqnT8/fKjZZRREkKTtr/OXlwHK6uoY+l231m1dFUL9SHrr3QK/6HJ04Xl7NIl9v9DsN1ykj8T/MtGAxlkCHM31suUjQFO4IGg4XWjLsxU0xim0DHQNf6F9StAveJmwbS9/c1nTjswVkHtuQfYdjxsALnzlhuY24nVEl2LAXVpDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=z7PjOecY; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5115fcef9e9so581417e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 03:15:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707304523; x=1707909323; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dn0uxZFDo6NWePr2qdwdP08ijlsAxDoEPw964FSIz1A=;
-        b=z7PjOecYXXm+kVZFx6anxNnMBzFt5PK7acSZ4Wb13Vso1G7nBAJZfb7efH6+pXUASC
-         3hdCYABBkHNvj7YpLGM9Whr7S7qplprKiMot4Z/Pv5oF3hKjjCC1J1Jc68amaE0iolTV
-         AsAGV3D3Al0nu0Uh0Q6eXCYe7klY0dEXDN4q7YHX9PTrd1ZHkdLlBgXF8l9jLsCKD3Yc
-         dqM04hj7BgWzgphc4iducJcwhlZICTptuF3Y1/a/GWZGTxBGm3wmt4ZHzQyKSTLnEQTO
-         G4NoHpCCL5emR5TVwGuJJvAIcuJoj7xCZd5NGQwJveE9V09+zOvTsO6Mik5rYB78jjRT
-         zI4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707304523; x=1707909323;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dn0uxZFDo6NWePr2qdwdP08ijlsAxDoEPw964FSIz1A=;
-        b=e3vh+R2fQOYGFMzEoJf0OTXRKQvxlBIqyLC793epZ2Wum/7QEeuwZKWWC6TyYRyOUk
-         jVGHjNfGjVBqoAFlamyWCC/FPlAfFfJRizq5Wf7FIrDyB6oPKSQl4I+tFlnd26SwVVyS
-         OFMO4uTBhHXKOB3BTwEvLB4NTEuSw9ouyUOHXQ97QPa9S24mybP/7rwRpBvRNXBlgFjz
-         DZTdcrbdtLiMdMi5NKXUbvvmMD4v4efow6fag2hFAo1gIDdYYfZovbdouMmxmT1VQbq4
-         ahB7W8h9x+9HbtpLEzjmUjRe5a8kyaKBHqaFTVqLP7JIrzLI+KyTK3MCthSQqsPIS66E
-         +d9Q==
-X-Gm-Message-State: AOJu0YzYWKn3cegcjnoKGbl2T9UZM1nSSHtgXyOkC6MrlYRM9QREWt//
-	IOaP7TLpniMcWHqvTj59kUXviBuyY0OijJ1jEHkuN0AnGXhXtZOdV7OT6v2mrik=
-X-Google-Smtp-Source: AGHT+IE5eIKLuUmb8h+vJQhTopUxE+vxpnmBvmCs+6cqfMZAcpiMEAKVIc99ZTC/OMFtO9lArP2XLw==
-X-Received: by 2002:a19:f80a:0:b0:511:5e49:766 with SMTP id a10-20020a19f80a000000b005115e490766mr3055134lff.23.1707304523154;
-        Wed, 07 Feb 2024 03:15:23 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWpHmBFshfk+OSUXB7ANNEbw1MqbQNWZ1mwdFgbfeK2iC+AXM8eorwCeMYn6Qk77+424RjJ4E7ST0wUsphxqtaN4qo+VFdiEgSheX4t1LqFECen46n0V7MHAhqv4BUlrmCZICQRZdDA23T5iQWfsJtKJLDwoXSk5Z73VJDuhOwH9xL79Bs8GtSnqU+EwuUM3uQ8Xrf59laCDWiQCCiPEWpU6hS3m1/ag4kNIcmEgXQuDu103ECJC/afRpf8IIDuNqfSXRCJW639Zhv730GM4m4EgAcBRtzlfxoXuMagO7Pp2twztw4u7RNL/7BD5rKgDeKbDPj7Ws0a+x223wUqbMOO2byVhNXsNPI/pDNxb3n8zUrrHUTKlGFcZpyFtppRP9TKDUfv/IxZ4Vi7J32S+5OB+XiaDbU0M1RzNbIlEsdVGWEzYu5JOj6y3bwz6xyFRC46AyshRTpHg9dk1JvpzcSX9eULRFzrejotGkif+etjoANhVgRpvAZ8AMHCTbbK+EPyXaR7WA3i4G8s3SENMOjoR+oJ2FH9gH3xLMYZBdeO2i1r22TQULwWZH5lLEThSob/74OD+55soHL4ffGRKeCY9w==
-Received: from ta2.c.googlers.com.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id l14-20020a05600c4f0e00b0040ec8330c8asm4983260wmq.39.2024.02.07.03.15.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 03:15:21 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: broonie@kernel.org,
-	andi.shyti@kernel.org,
-	semen.protsenko@linaro.org
-Cc: krzysztof.kozlowski@linaro.org,
-	alim.akhtar@samsung.com,
-	linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	andre.draszik@linaro.org,
-	peter.griffin@linaro.org,
-	kernel-team@android.com,
-	willmcvicker@google.com,
-	robh+dt@kernel.org,
-	conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v2 4/4] spi: s3c64xx: add support for google,gs101-spi
-Date: Wed,  7 Feb 2024 11:15:16 +0000
-Message-ID: <20240207111516.2563218-5-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-In-Reply-To: <20240207111516.2563218-1-tudor.ambarus@linaro.org>
-References: <20240207111516.2563218-1-tudor.ambarus@linaro.org>
+	s=arc-20240116; t=1707304592; c=relaxed/simple;
+	bh=LJtFGIADyf/tpqM1VRO1P2IVV+9g5WuvYQlUJGQtzAQ=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:In-Reply-To:
+	 Content-Type:References; b=YVsj3zKTsv4ZVRcQxhYp2mDhOOv1kpWhax4hRCo6W0Kvya/l0e9E1N84PvvBg9nWsIjp9WFMkgMD0V/4H5YH0WS/s8bDEq9qLcvdEdW92h5/OASWjj2igj/dndSr11GK98RbZhMq8j+DQjm7zQZjRmQ5qEmzM3gXf8NsHR+G14A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=mzmvVkaY; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240207111628euoutp02f670d881fee32aaed66d12a4bceb664a~xkHpBvhdV0413104131euoutp02e
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:16:28 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240207111628euoutp02f670d881fee32aaed66d12a4bceb664a~xkHpBvhdV0413104131euoutp02e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1707304588;
+	bh=Y5FZSjgrrNPEIoeyx60PXrwjiJiBieeyiawTNRw4j0g=;
+	h=Date:From:Subject:To:Cc:In-Reply-To:References:From;
+	b=mzmvVkaY8AuaCxvIYbs71IwEsnZs8XnfUPbS4gv88beWLSkF6wlMp9ODAN1deINDj
+	 oZfo5dxrimOY9YqUxU0MbJNKzaQYqjKy8LwyPeUemSYCOgSZXfLKQcFHNd1F6+xT2A
+	 VsDEVRbXEvojxSLs4JES43niccqWxShZGqwMcs20=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240207111628eucas1p291cb78a004be8b706c065337e82c576f~xkHoxRXIf1544215442eucas1p2u;
+	Wed,  7 Feb 2024 11:16:28 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges3new.samsung.com (EUCPMTA) with SMTP id 8D.76.09552.C8663C56; Wed,  7
+	Feb 2024 11:16:28 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240207111627eucas1p18965924f9815a1d8bf94c3bedcd6a945~xkHoXLbtw0515305153eucas1p1g;
+	Wed,  7 Feb 2024 11:16:27 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240207111627eusmtrp1b7afce73360a0814c5dd87e926b37662~xkHoWivvZ3199031990eusmtrp1j;
+	Wed,  7 Feb 2024 11:16:27 +0000 (GMT)
+X-AuditID: cbfec7f5-853ff70000002550-08-65c3668c9894
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms1.samsung.com (EUCPMTA) with SMTP id 48.DC.09146.B8663C56; Wed,  7
+	Feb 2024 11:16:27 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240207111626eusmtip1f12e8a2850e8d6b9df2ea7087b60f46e~xkHnlIucd1225112251eusmtip1h;
+	Wed,  7 Feb 2024 11:16:26 +0000 (GMT)
+Message-ID: <4a043533-009f-4db9-b107-c8374be28d2b@samsung.com>
+Date: Wed, 7 Feb 2024 12:16:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v1] PM: sleep: Restore asynchronous device resume
+ optimization
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM
+	<linux-pm@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Tejun Heo
+	<tj@kernel.org>, Nathan Chancellor <nathan@kernel.org>, LKML
+	<linux-kernel@vger.kernel.org>, Stanislaw Gruszka
+	<stanislaw.gruszka@linux.intel.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Naohiro.Aota@wdc.com, kernel-team@meta.com
+Content-Language: en-US
+In-Reply-To: <CAJZ5v0hn=KgaWn9pwtLsH2a8n61BNxzb1xrNoxUfEi3o9OAZGw@mail.gmail.com>
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPKsWRmVeSWpSXmKPExsWy7djP87o9aYdTDfafY7WYunY3k8W+i2vY
+	LC7vmsNm8bn3CKPFxOObWS3aVz5ls5j7ZSqzxZnTl1gtPu7ZwGjxa/lRRovja8MduD12zrrL
+	7rFpVSebx51re9g85p0M9Dh3scJjy9V2Fo/Pm+Q82g90MwVwRHHZpKTmZJalFunbJXBlnHwy
+	j71ggkDFisk/WBsYF/N2MXJySAiYSEw4O5Gli5GLQ0hgBaPE8RNX2SCcL4wS73d+hXI+AzkH
+	f7DCtLSt+QCVWM4o8W/2PkYI5yOjxIbHl5i6GDk4eAXsJE7c4gBpYBFQkdh1YisjiM0rIChx
+	cuYTFhBbVEBe4v6tGewgNpuAoUTX2y42EFtYIETi9dmjYMtEBLQlliy6ygwyn1ngE5PE7YnN
+	YM3MAuISt57MZwKxOQUCJS7OuMIOEZeXaN46G6xBQmAyp8Sl+TsZIc52kfi89wczhC0s8er4
+	FnYIW0bi9OQeFoiGdkaJBb/vM0E4ExglGp7fguq2lrhz7hcbyGvMApoS63fpQ4QdJVqXbGAF
+	CUsI8EnceCsIcQSfxKRt05khwrwSHW1CENVqErOOr4Nbe/DCJeYJjEqzkMJlFpLXZiF5ZxbC
+	3gWMLKsYxVNLi3PTU4uN81LL9YoTc4tL89L1kvNzNzEC09jpf8e/7mBc8eqj3iFGJg7GQ4wS
+	HMxKIrxmOw6kCvGmJFZWpRblxxeV5qQWH2KU5mBREudVTZFPFRJITyxJzU5NLUgtgskycXBK
+	NTCVRxTO7OJ0DA7ZbCeidrF2xq7v/84umnb8gcGEtrlPi8pMrp6Oje90eFBtb338Tb7Q4Wh7
+	/9fqp2U3Tm/uuHhFaIlB4Nf+HbwWPbFO6tpX0modY9uKZB8xKq6ckCWVF5/w/3O42ovi7bk2
+	4YK6y1/lVR76rpTow6IhMf3DrjbmldqGU8NaT8zmkNaWF9RsPLxtIWOG0ju237NnShR935vV
+	ZhAVFO7TaaDCpc+/NXPint8JP2/aJiSz33544nHC5Vnr15Wn8m2eFuqWcni3dkT2gUDVly8W
+	5fNs2q6xe/H84jJTydx1ZocXhPJ8ThAVOyrD08P6nfV3S/YnjSsrjTp1uH/tmWQdvuOH1bPI
+	CUosxRmJhlrMRcWJAOXs9LzSAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRmVeSWpSXmKPExsVy+t/xu7rdaYdTDU7e0LaYunY3k8W+i2vY
+	LC7vmsNm8bn3CKPFxOObWS3aVz5ls5j7ZSqzxZnTl1gtPu7ZwGjxa/lRRovja8MduD12zrrL
+	7rFpVSebx51re9g85p0M9Dh3scJjy9V2Fo/Pm+Q82g90MwVwROnZFOWXlqQqZOQXl9gqRRta
+	GOkZWlroGZlY6hkam8daGZkq6dvZpKTmZJalFunbJehlnHwyj71ggkDFisk/WBsYF/N2MXJy
+	SAiYSLSt+cDWxcjFISSwlFHi2Ow9rBAJGYmT0xqgbGGJP9e6oIreM0qs6F/F3MXIwcErYCdx
+	4hYHSA2LgIrErhNbGUFsXgFBiZMzn7CA2KIC8hL3b81gB7HZBAwlut6CzOHkEBYIkXh99ijY
+	fBEBbYkli64yg8xnFvjCJPFp0kpWiGW/GCVmrPoL1s0sIC5x68l8JhCbUyBQ4uKMK1BxM4mu
+	rV2MELa8RPPW2cwTGIVmITlkFpL2WUhaZiFpWcDIsopRJLW0ODc9t9hQrzgxt7g0L10vOT93
+	EyMwbrcd+7l5B+O8Vx/1DjEycTAeYpTgYFYS4TXbcSBViDclsbIqtSg/vqg0J7X4EKMpMDQm
+	MkuJJucDE0deSbyhmYGpoYmZpYGppZmxkjivZ0FHopBAemJJanZqakFqEUwfEwenVAPT5GBW
+	Tn67Gz8nTi+dopYrbv7fU12wOmTzU92cPxcvKjpWNt1it9bdb1Q5bfvlU3GbGW8mvVmjf3tm
+	/6KLK6dPqBA8Yuj+f+LMri1Tylvnyr+adppN4qNJrozqkfIn65++85pad/SnQM3Rc3VHXuf8
+	1b5eOfejTdPNU87OIieKi4u7BKT/Ld3xaPaPX9Onzp6zJ/7u64fZws4LXwUWvjG02O1jLrRT
+	YYqzxvfySsfTWx6fYGC/u2tBhJjy7njprs5CgZ3/tayjpdui1/bVvjqko+L6c/33L9Oa0jsf
+	9y3vLntu8eLmu2KpOIeoIJtMsx1z4gsr5/hIpTR6qs773TnV+mjP8tPe3/qLmacuCm6LV2Ip
+	zkg01GIuKk4EAC1oeRhkAwAA
+X-CMS-MailID: 20240207111627eucas1p18965924f9815a1d8bf94c3bedcd6a945
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20240207103144eucas1p16b601a73ff347d2542f8380b25921491
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240207103144eucas1p16b601a73ff347d2542f8380b25921491
+References: <CGME20240207103144eucas1p16b601a73ff347d2542f8380b25921491@eucas1p1.samsung.com>
+	<10423008.nUPlyArG6x@kreacher>
+	<708a65cc-79ec-44a6-8454-a93d0f3114c3@samsung.com>
+	<CAJZ5v0hn=KgaWn9pwtLsH2a8n61BNxzb1xrNoxUfEi3o9OAZGw@mail.gmail.com>
 
-Add support for GS101 SPI. GS101 integrates 16 SPI nodes, all with 64
-bytes FIFOs. GS101 allows just 32 bit register accesses, otherwise a
-Serror Interrupt is raised. Do the write reg accesses in 32 bits.
+On 07.02.2024 11:38, Rafael J. Wysocki wrote:
+> On Wed, Feb 7, 2024 at 11:31 AM Marek Szyprowski
+> <m.szyprowski@samsung.com>  wrote:
+>> On 09.01.2024 17:59, Rafael J. Wysocki wrote:
+>>>    From: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
+>>>
+>>> Before commit 7839d0078e0d ("PM: sleep: Fix possible deadlocks in core
+>>> system-wide PM code"), the resume of devices that were allowed to resume
+>>> asynchronously was scheduled before starting the resume of the other
+>>> devices, so the former did not have to wait for the latter unless
+>>> functional dependencies were present.
+>>>
+>>> Commit 7839d0078e0d removed that optimization in order to address a
+>>> correctness issue, but it can be restored with the help of a new device
+>>> power management flag, so do that now.
+>>>
+>>> Signed-off-by: Rafael J. Wysocki<rafael.j.wysocki@intel.com>
+>>> ---
+>> This patch finally landed in linux-next some time ago as 3e999770ac1c
+>> ("PM: sleep: Restore asynchronous device resume optimization"). Recently
+>> I found that it causes a non-trivial interaction with commit
+>> 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement
+>> for unbound workqueues"). Since merge commit 954350a5f8db in linux-next
+>> system suspend/resume fails (board doesn't wake up) on my old Samsung
+>> Exynos4412-based Odroid-U3 board (ARM 32bit based), which was rock
+>> stable for last years.
+>>
+>> My further investigations confirmed that the mentioned commits are
+>> responsible for this issue. Each of them separately (3e999770ac1c and
+>> 5797b1c18919) doesn't trigger any problems. Reverting any of them on top
+>> of linux-next (with some additional commit due to code dependencies)
+>> also fixes/hides the problem.
+>>
+>> Let me know if You need more information or tests on the hardware. I'm
+>> open to help debugging this issue.
+> If you echo 0 to /sys/power/pm_async before suspending the system,
+> does it still fail?
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/spi/spi-s3c64xx.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+In such case it works fine.
 
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index 014fcc933c90..7ab3f3c2e9aa 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -17,7 +17,7 @@
- 
- #include <linux/platform_data/spi-s3c64xx.h>
- 
--#define MAX_SPI_PORTS		12
-+#define MAX_SPI_PORTS		16
- #define S3C64XX_SPI_QUIRK_CS_AUTO	(1 << 1)
- #define AUTOSUSPEND_TIMEOUT	2000
- 
-@@ -1534,6 +1534,19 @@ static const struct s3c64xx_spi_port_config fsd_spi_port_config = {
- 	.quirks		= S3C64XX_SPI_QUIRK_CS_AUTO,
- };
- 
-+static const struct s3c64xx_spi_port_config gs101_spi_port_config = {
-+	.fifo_lvl_mask	= { 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f,
-+			    0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f},
-+	.rx_lvl_offset	= 15,
-+	.tx_st_done	= 25,
-+	.clk_div	= 4,
-+	.high_speed	= true,
-+	.clk_from_cmu	= true,
-+	.has_loopback	= true,
-+	.use_32bit_io	= true,
-+	.quirks		= S3C64XX_SPI_QUIRK_CS_AUTO,
-+};
-+
- static const struct platform_device_id s3c64xx_spi_driver_ids[] = {
- 	{
- 		.name		= "s3c2443-spi",
-@@ -1546,6 +1559,9 @@ static const struct platform_device_id s3c64xx_spi_driver_ids[] = {
- };
- 
- static const struct of_device_id s3c64xx_spi_dt_match[] = {
-+	{ .compatible = "google,gs101-spi",
-+			.data = &gs101_spi_port_config,
-+	},
- 	{ .compatible = "samsung,s3c2443-spi",
- 			.data = (void *)&s3c2443_spi_port_config,
- 	},
+Best regards
 -- 
-2.43.0.687.g38aa6559b0-goog
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
 
