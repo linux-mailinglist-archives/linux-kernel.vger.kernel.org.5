@@ -1,117 +1,137 @@
-Return-Path: <linux-kernel+bounces-56328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49B6F84C8C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:39:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 145F984C8CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:40:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB4EA1F24CC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:39:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C5ADB239B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3007C14A9F;
-	Wed,  7 Feb 2024 10:39:14 +0000 (UTC)
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C87317BCF;
+	Wed,  7 Feb 2024 10:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b="OWSjFK/X"
+Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40BE914281;
-	Wed,  7 Feb 2024 10:39:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B34214281;
+	Wed,  7 Feb 2024 10:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.195.75.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707302353; cv=none; b=iVFdxo1d9oPt8aBJnL2ubaPjlkXrJLKXwbeWsDGUGr2u53mK6MZ8zeoK6Hoom8CUOzI0/Ol5vQD+kpIPQQRBeO4Br8QZ+0iNGXXg4o68obLlgjH1yKr0nAGkc6SnAChkexfDLUusOXBwPxYXk76yVWSizPxNogUePR0uBW+ikb8=
+	t=1707302369; cv=none; b=jk0gk3nqncFKb895/BKAKOhv5OWHADFWOBUCzUd1t6JjLZTN5g5+EUH2HnGSpsiPk/0dooYolxBjfMscwALjE7cNHjvWuq/DfdHPYpDqPbgAHobgmm3qLGoQNLYXAAh9R6kAbFTXcI9Cab1ylthX6u8gWM9RlfiJxoyXBkVMIeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707302353; c=relaxed/simple;
-	bh=gE6SAJEXxSF8lMihno1P6E66BnJYxILkKvLcrIl4Od8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ht9gKN2qXmws/aw8sqCvjCmUDVl62zx8kyKYkkRIDYcdfq4LsIfHMrPKIAKXK9kwK+Z9TVufhM6WldVB35gnrHs6OJRU+IyULVdQFd6chh0Iw00uFJACIZKs7Llw5iNnVUBzV2lxJZnYgVxjdqlBuOHWhAPGC8oc3Bad8rilNjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e2b801c5a9so31871a34.1;
-        Wed, 07 Feb 2024 02:39:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707302351; x=1707907151;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N5vsCn4enzggiJdbpvmX5GI9tH3dwN15rhRbQaFF3lY=;
-        b=LjozTZed0bXi3Odcy7bnP1Wufk37sie46X1EXWluk7UAkL8DXYmlxTL4dGRsrqUl50
-         lNnRyMxxUFkSmabLVIpJWSXq8DHyHEQf9gQgMfzCCN9AV/nbvMY3MrP88v9EmeZ+SJcj
-         sSV1HvxSRbjHoAdXnb73rwA9QFfaBArN0zTbt9Z15kxYTI7fI8p6AHeSDaQUVqvufgTB
-         80VAZ7h0yUs6EfEu17ExKmDAAv3p507gXMNKp0doOgs9BPKweU4MMEgh323kamEZxSvC
-         C0QNqprCrHpdM8NIlMdDXaGtq7iv46Iit27y7gjxomjtIDFkCBTnFc+cL4Y5AAQFzKtm
-         YECA==
-X-Forwarded-Encrypted: i=1; AJvYcCXIb+h3PhJscuW1hKrs9LDj9KYhdzgljJGoDcMxpWhifW88ybE7ZkjYousQCs4t+h335BQGpVUwFjVX4CzKTopb7Nrfjvwowgyur9a3wMVmT7aMx4koL6iuZtdDRQhgvNVygB4Qjyk=
-X-Gm-Message-State: AOJu0YyK883ic22a2i1iBaZEIxUW2FP9yQley3xQwp07T7rJSj6wPxVn
-	11vWe0bTqV+WUukJnxJ4tiqYUp7qgBJ5nm7XWrm6/KPzBXdE5FdCcLvbACvZhbMzWZpvESpbJM7
-	9VLSFXsPgJ66maedT/c/a2oSO2x4=
-X-Google-Smtp-Source: AGHT+IFs7F0FcNFhvjfCMNqzNrKwts/lOSiz1geoDzpOUmz/gw1UtesLLTgfwcWXmLzFHSO3JU3gMbt8dgiw9u8nUWo=
-X-Received: by 2002:a4a:eb03:0:b0:59c:7c63:928f with SMTP id
- f3-20020a4aeb03000000b0059c7c63928fmr5772477ooj.0.1707302351226; Wed, 07 Feb
- 2024 02:39:11 -0800 (PST)
+	s=arc-20240116; t=1707302369; c=relaxed/simple;
+	bh=JoEyE+MfjTvyZcsiLGlm3U7JAnN2n6Yzc654NE4ZF38=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t7qcVVzouS7EjOx76ckjFCubWPvzRHUUkYhe3UaTzYx5h564kAFBDW0CqH6GjcOUEeX3iktUgQDwQT8iMT3QxYd6XS75VjFImNRu6qGZX9vnO4i6s6RV6Lkx69Vq6duYFzHySII6wJpyq64tksORr8qxivT1508m+n+ltzKeOrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=none smtp.mailfrom=debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=OWSjFK/X; arc=none smtp.client-ip=82.195.75.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=debian.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
+	s=smtpauto.stravinsky; h=X-Debian-User:In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=HWAwF2YdOQMEfTUHZf37BFCb5r8J7CTQWb/66Vahoho=; b=OWSjFK/XyCTaih7CRpbZkN5x8y
+	TFUtUVOkD4C21QQK7uStobCqlkfBQqgxjZJpmnEu7qBXDYCgcHJQ1eSfBDSx9le4Vf/LAzz5B3OEy
+	VUtfHraWAG+oTIL9XEil9VjXORDxUVwAZioUZXYutEeURetJk+FRY6lIJFqRvlAcqeo5Dug99e87H
+	wA5Cx7ss3r1lG4MCGQqtDa4kBGW/cH3HFCWVtjqDKFHLlXeewCv6RZ1MPPVU2RZHwX9OyXAjgVtdF
+	5CFxcz8++gxS/rS6K5xvRqeNCp8AJBBGnIcrMoctgyN7G7OrOX3+ou8TnCbYQtQUN/X6t/xHRS2of
+	gjxowczw==;
+Received: from authenticated user
+	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.94.2)
+	(envelope-from <carnil@debian.org>)
+	id 1rXfKn-00D8bo-QO; Wed, 07 Feb 2024 10:39:18 +0000
+Received: by eldamar.lan (Postfix, from userid 1000)
+	id E68E6BE2EE8; Wed,  7 Feb 2024 11:39:09 +0100 (CET)
+Date: Wed, 7 Feb 2024 11:39:09 +0100
+From: Salvatore Bonaccorso <carnil@debian.org>
+To: Valentin Kleibel <valentin@vrvis.at>, Jordan Rife <jrife@google.com>,
+	David Teigland <teigland@redhat.com>,
+	Alexander Aring <aahringo@redhat.com>
+Cc: 1063338@bugs.debian.org, gfs2@lists.linux.dev,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	gregkh@linuxfoundation.org, regressions@lists.linux.dev
+Subject: [regression 6.1.67] dlm: cannot start dlm midcomms -97 after
+ backport of e9cdebbe23f1 ("dlm: use kernel_connect() and kernel_bind()")
+Message-ID: <ZcNdzZVPD76uSbps@eldamar.lan>
+References: <38f51dbb-65aa-4ec2-bed2-e914aef27d25@vrvis.at>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CGME20240207103144eucas1p16b601a73ff347d2542f8380b25921491@eucas1p1.samsung.com>
- <10423008.nUPlyArG6x@kreacher> <708a65cc-79ec-44a6-8454-a93d0f3114c3@samsung.com>
-In-Reply-To: <708a65cc-79ec-44a6-8454-a93d0f3114c3@samsung.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 7 Feb 2024 11:38:59 +0100
-Message-ID: <CAJZ5v0hn=KgaWn9pwtLsH2a8n61BNxzb1xrNoxUfEi3o9OAZGw@mail.gmail.com>
-Subject: Re: [PATCH v1] PM: sleep: Restore asynchronous device resume optimization
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM <linux-pm@vger.kernel.org>, 
-	Ulf Hansson <ulf.hansson@linaro.org>, Tejun Heo <tj@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Naohiro.Aota@wdc.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <38f51dbb-65aa-4ec2-bed2-e914aef27d25@vrvis.at>
+X-Debian-User: carnil
 
-On Wed, Feb 7, 2024 at 11:31=E2=80=AFAM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
->
-> Dear All,
->
-> On 09.01.2024 17:59, Rafael J. Wysocki wrote:
-> >   From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Before commit 7839d0078e0d ("PM: sleep: Fix possible deadlocks in core
-> > system-wide PM code"), the resume of devices that were allowed to resum=
-e
-> > asynchronously was scheduled before starting the resume of the other
-> > devices, so the former did not have to wait for the latter unless
-> > functional dependencies were present.
-> >
-> > Commit 7839d0078e0d removed that optimization in order to address a
-> > correctness issue, but it can be restored with the help of a new device
-> > power management flag, so do that now.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
->
-> This patch finally landed in linux-next some time ago as 3e999770ac1c
-> ("PM: sleep: Restore asynchronous device resume optimization"). Recently
-> I found that it causes a non-trivial interaction with commit
-> 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement
-> for unbound workqueues"). Since merge commit 954350a5f8db in linux-next
-> system suspend/resume fails (board doesn't wake up) on my old Samsung
-> Exynos4412-based Odroid-U3 board (ARM 32bit based), which was rock
-> stable for last years.
->
-> My further investigations confirmed that the mentioned commits are
-> responsible for this issue. Each of them separately (3e999770ac1c and
-> 5797b1c18919) doesn't trigger any problems. Reverting any of them on top
-> of linux-next (with some additional commit due to code dependencies)
-> also fixes/hides the problem.
->
-> Let me know if You need more information or tests on the hardware. I'm
-> open to help debugging this issue.
+Hi Valentin, hi all
 
-If you echo 0 to /sys/power/pm_async before suspending the system,
-does it still fail?
+[This is about a regression reported in Debian for 6.1.67]
+
+On Tue, Feb 06, 2024 at 01:00:11PM +0100, Valentin Kleibel wrote:
+> Package: linux-image-amd64
+> Version: 6.1.76+1
+> Source: linux
+> Source-Version: 6.1.76+1
+> Severity: important
+> Control: notfound -1 6.6.15-2
+> 
+> Dear Maintainers,
+> 
+> We discovered a bug affecting dlm that prevents any tcp communications by
+> dlm when booted with debian kernel 6.1.76-1.
+> 
+> Dlm startup works (corosync-cpgtool shows the dlm:controld group with all
+> expected nodes) but as soon as we try to add a lockspace dmesg shows:
+> ```
+> dlm: Using TCP for communications
+> dlm: cannot start dlm midcomms -97
+> ```
+> 
+> It seems that commit "dlm: use kernel_connect() and kernel_bind()"
+> (e9cdebbe) was merged to 6.1.
+> 
+> Checking the code it seems that the changed function dlm_tcp_listen_bind()
+> fails with exit code 97 (EAFNOSUPPORT)
+> It is called from
+> 
+> dlm/lockspace.c: threads_start() -> dlm_midcomms_start()
+> dlm/midcomms.c: dlm_midcomms_start() -> dlm_lowcomms_start()
+> dlm/lowcomms.c: dlm_lowcomms_start() -> dlm_listen_for_all() ->
+> dlm_proto_ops->listen_bind() = dlm_tcp_listen_bind()
+> 
+> The error code is returned all the way to threads_start() where the error
+> message is emmitted.
+> 
+> Booting with the unsigned kernel from testing (6.6.15-2), which also
+> contains this commit, works without issues.
+> 
+> I'm not sure what additional changes are required to get this working or if
+> rolling back this change is an option.
+> 
+> We'd be happy to test patches that might fix this issue.
+
+Thanks for your report. So we have a 6.1.76 specific regression for
+the backport of e9cdebbe23f1 ("dlm: use kernel_connect() and
+kernel_bind()") .
+
+Let's loop in the upstream regression list for tracking and people
+involved for the subsystem to see if the issue can be identified. As
+it is working for 6.6.15 which includes the commit backport as well it
+might be very well that a prerequisite is missing.
+
+# annotate regression with 6.1.y specific commit
+#regzbot ^introduced e11dea8f503341507018b60906c4a9e7332f3663
+#regzbot link: https://bugs.debian.org/1063338
+
+Any ideas?
+
+Regards,
+Salvatore
 
