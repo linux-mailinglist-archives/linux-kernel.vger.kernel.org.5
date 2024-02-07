@@ -1,82 +1,83 @@
-Return-Path: <linux-kernel+bounces-57266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ED7884D5ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:40:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6005984D5F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:44:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF40D285BE3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:40:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14D322840F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:44:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8780A1CFAB;
-	Wed,  7 Feb 2024 22:40:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D585149DFD;
+	Wed,  7 Feb 2024 22:44:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="R9C+9KFf"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="lqWxQ76t"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2065.outbound.protection.outlook.com [40.107.220.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D0C1CF8F;
-	Wed,  7 Feb 2024 22:40:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707345623; cv=none; b=VnyejI7ZKANSOF3bFY1eGtQ+2MSS/gwi43jRaPWOWDFUY1+c5AteAF3KtntaSjsPUq/7SH3rtFyKy4BVsFD7EUDIj/eqYMAzg5aj9oVjvRw7WTYG7GG56IbiXQWsWntEMPh1DMUmaH2YARzFAZTIDkTmUr8xXpYgk132HwQZ0ZM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707345623; c=relaxed/simple;
-	bh=JrHrLoJ85hFFk3+8HWDc7rX+xkKwsD9tAa8cHPn3WYs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZElVmC+iVPgG58WgZb99CgNRw15Pjc5guj7QDiJnfSCRdRT/cNwP4vyK/B1k9snxibTcqO1Y+v+fOB7PSSbwGIWbfjWELHkOgGCNNZTIvK5/PsKLqBq+WD8JH8tos15gRD2vobDzZCLWlnoapHqGNC5f4IiqgZ/WCfCSCdKvghY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=R9C+9KFf; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 417MaNCb031282;
-	Wed, 7 Feb 2024 22:40:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding; s=qcppdkim1; bh=e8IsPVmgS02K5pCUVYuT
-	MXKVbfZtogBhFG4sXIhGNwI=; b=R9C+9KFfow99zushQ5JA9lx4DAkKwj/on5rG
-	hkes4Kig9Z1f+IFQft1b9VVaIu6CfGJL2QUp074Io8N1jonggDWaGsMcjx78fo/Q
-	EyGfNNRzl/BztRqyYvIX2KcQSonF880z70DA9woelnDCplMxeQoD8+Uy0MO94Tlv
-	2cD8z673DaX22AMMudIZriNTcqFE3J+vmjIE5lOi2VzzmZqslD5rAEFzPfERLeTj
-	5jpwRetaJJZK1QTySEV4zQF4hl/s5pvzrTDIO4qzA/ysSvowGLVZpOOQgfIWr33o
-	eb6TlE7PnFNG0ezAOfvuFks+jG+GrF3nVEx2ZyYbNMRrY/Xe7Q==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w4hhk85hh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 22:40:03 +0000 (GMT)
-Received: from pps.filterd (NALASPPMTA04.qualcomm.com [127.0.0.1])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 417Me284024292;
-	Wed, 7 Feb 2024 22:40:02 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by NALASPPMTA04.qualcomm.com (PPS) with ESMTPS id 3w47rjkww5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 22:40:02 +0000
-Received: from NALASPPMTA04.qualcomm.com (NALASPPMTA04.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 417Me2Si024265;
-	Wed, 7 Feb 2024 22:40:02 GMT
-Received: from hu-devc-lv-u20-a-new.qualcomm.com (hu-abchauha-lv.qualcomm.com [10.81.25.35])
-	by NALASPPMTA04.qualcomm.com (PPS) with ESMTPS id 417Me1Sg024240
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 22:40:02 +0000
-Received: by hu-devc-lv-u20-a-new.qualcomm.com (Postfix, from userid 214165)
-	id BA973220E1; Wed,  7 Feb 2024 14:40:01 -0800 (PST)
-From: Abhishek Chauhan <quic_abchauha@quicinc.com>
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: kernel@quicinc.com
-Subject: [PATCH net-next v3] net: stmmac: dwmac-qcom-ethqos: Enable TBS on all queues but 0
-Date: Wed,  7 Feb 2024 14:40:01 -0800
-Message-Id: <20240207224001.2109224-1-quic_abchauha@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF73828E8;
+	Wed,  7 Feb 2024 22:44:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.65
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707345885; cv=fail; b=CFwbm3SyhmxbXGB/n/9przbkJE+3LPrkFXpC7Qj4pDcNeCZrCBNmJm095Enk93YIXnI+yoTN77A2NXzLjKxbkru7c+8H2ZpImMWZ3tCnhKarFMyZD4d8Xw6BDqihv4mYj9r+XSE9+ohlJ7N8Jlyink/EkkKu9xFbNBNpKHRx+iY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707345885; c=relaxed/simple;
+	bh=KsOAShBmDvvJw42A4ABLwV5/S60/vuv3E+LvLfsO7rY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=O7aFCh/r77gbZBnK8e1PdTkEx0+aqCwNa5QQan/sV9HbIHG43V7PWGrb8v/EsBemoL7IxhesSwGpdnQC/1uXuDZCXtAhUZwv/VPsrC2BNFkKRYVCfJEWnp+zUyAQtcux3elCgxCQX+l3/LYsKQVTOIRGYbSB5l2OuzOnbVbqP/M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=lqWxQ76t; arc=fail smtp.client-ip=40.107.220.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M/l80FXh8QG4XiFOioN7rc7iw3JWLlgCISBpQSY2ZCpWxNWEHT7GKV/F62F+KEfjf+U/gJpHGaWRVJWI4syZaf5GMqjIkbU5c9T2SFXjiAXjy22/HeraE9VAol6kJ2UFeJ7YR4cnsbdYzNXS6plBDG/sTfWnOo8pr/iBmNW3PH0oBcBM/ocMjz9CEeP4AAXMbUd2cIwOHSO4j5RzkRBDiGCcrJe4EAUgZt33ohednVqt1KrZEfLizo4YNryje1TB8q4rdxzy49AprvVBiAfo1sqbw9cnwgW8gFVC/dUhZ9+gl9nVHeJ/l/RIZuPdBPK0PWK+g/18OQlA0v01wMkS9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/Rk8SpnvubJU1ZxcrWKo+tO2r9uyUMj+yF0yB/O/Eow=;
+ b=BQnGEe5kuJkCPjo9l09Kchv4cWDON/oJ2OtAjsvK1TaQvxLUvBRuj75IWt/vqmoHJBNDfumLk7w1IlZYE4ZPwx2HGu+ff2b5sKIoyJFmzM0H7dGzWJDjhX40tGdGrtu2K4eg/ZltUIo1Icve9t/MZohRCDve1OtmY1RC3wAVOWLbcWKvdpfJT4T94PaQqQS80mseM6KvvfcdoDSi4DPqvMU8kF+41gT7R3tlSdH/OD+/wESJ0pDfctSyjLXrm3nsv5UaS7UeYCwKvHJK3bnxJPJCGNw8F4wYeJxVZgigNU94RWIJXQgFEIpWD//aQ9QOHPZl+ojGcoNUjpqfyh4//A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/Rk8SpnvubJU1ZxcrWKo+tO2r9uyUMj+yF0yB/O/Eow=;
+ b=lqWxQ76ta6hoDzRrEDp6JNkR/n49S5tFzK7C39HDPXC7gl+Ot7iK8Ljkqg5kPE0b7IAE13CLHSS9CQ9eqxqiBxpkWTf5cEopnC5y4SaVfJLRc9Tro0Qdc3ulWPHqqdDduNZtFlBiea36nWmN8kqwH4Qas5ttVtr8+qg1UL9fCWI=
+Received: from CY5PR17CA0033.namprd17.prod.outlook.com (2603:10b6:930:12::8)
+ by DM6PR12MB4927.namprd12.prod.outlook.com (2603:10b6:5:20a::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.16; Wed, 7 Feb
+ 2024 22:44:41 +0000
+Received: from CY4PEPF0000EE32.namprd05.prod.outlook.com
+ (2603:10b6:930:12:cafe::16) by CY5PR17CA0033.outlook.office365.com
+ (2603:10b6:930:12::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.38 via Frontend
+ Transport; Wed, 7 Feb 2024 22:44:41 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EE32.mail.protection.outlook.com (10.167.242.38) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7249.19 via Frontend Transport; Wed, 7 Feb 2024 22:44:41 +0000
+Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 7 Feb
+ 2024 16:44:40 -0600
+From: Mario Limonciello <mario.limonciello@amd.com>
+To: <amd-gfx@lists.freedesktop.org>, "open list:DRM DRIVERS"
+	<dri-devel@lists.freedesktop.org>
+CC: "open list:ACPI" <linux-acpi@vger.kernel.org>, open list
+	<linux-kernel@vger.kernel.org>, Melissa Wen <mwen@igalia.com>, "Mario
+ Limonciello" <mario.limonciello@amd.com>
+Subject: [PATCH v4 0/3] Add drm_get_acpi_edid() helper
+Date: Wed, 7 Feb 2024 16:44:26 -0600
+Message-ID: <20240207224429.104625-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,74 +85,64 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: CUSyoBKPajMxG-bRe_wXkb7umQSdrnsz
-X-Proofpoint-GUID: CUSyoBKPajMxG-bRe_wXkb7umQSdrnsz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-07_09,2024-02-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=819 spamscore=0 adultscore=0 phishscore=0 mlxscore=0
- malwarescore=0 lowpriorityscore=0 clxscore=1015 impostorscore=0
- bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402070167
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE32:EE_|DM6PR12MB4927:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3b485a42-4545-45cd-977c-08dc282e5f66
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	kIq6evsDcLqRyvUeZoIPSb2PnNpA0O1taIQG0tZ0fL06kuIZp9PM86HFlGK+jk9pPs+AqFEItp43Vl0XsvpF0AOIJFOEYwPi+5CLzclSLOZ0HCXsHKdu1p6L0O31tgzSDzwxc1tw4DsmfWMwD3V99Wv69juZ5DsAPWo0ZyJso2nrLQ47v1p6vU5vDr6tPcDVi331yLPXHSoUwCD/mVaRhWslshQMGk0Nreu3PhqO/z8Pldb+Y48nGmFHzoANzhvXvzEuRXcr/go05rxR0JGiq3Lf7dKZBCv2lQv6E+ypPar53rVzRi/i9XyN8G3fkYYicBkamAzh1CrGjIlnBAyz5+Z2XlBXpdyl5QQUD2V9pZbKNcAziG7G/s2uPwS/DoBkJgWYeGK8z1/mrFCSs2VSP57MAdaNIdbx8UK9/qdISI3AfTd8Zwj3XSVv/Zc63PMJgFYnAp8J41RI+pUMjARndj6Iwe6eaaPdCnmppiySsmGKlDZal5oFAVjy8C/cyOk1z5VrxSjKK3+fc/4Nvjp8SQ7eL4BXhrQLuiGz1Xn3hV9jtmZzG6ra2HETCv9bRanSdrv40AuP4vt24WpVZl5MdA==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39860400002)(136003)(376002)(230922051799003)(451199024)(1800799012)(82310400011)(64100799003)(186009)(46966006)(36840700001)(40470700004)(1076003)(426003)(16526019)(336012)(26005)(2616005)(41300700001)(70586007)(44832011)(36756003)(54906003)(478600001)(6666004)(83380400001)(966005)(356005)(110136005)(82740400003)(81166007)(316002)(7696005)(2906002)(4326008)(70206006)(8676002)(86362001)(5660300002)(8936002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2024 22:44:41.2058
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b485a42-4545-45cd-977c-08dc282e5f66
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000EE32.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4927
 
-TSO and TBS cannot co-exist. TBS requires special descriptor to be
-allocated at bootup. Initialising Tx queues at probe to support
-TSO and TBS can help in allocating those resources at bootup.
+The drm_get_acpi_edid() helper is for drivers that would prefer
+to get the EDID from ACPI instead of from the panel.
 
-TX queues with TBS can support etf qdisc hw offload.
+Earlier versions of this series were aimed at using this in amdgpu
+and nouveau.
 
-This is similar to the patch raised by NXP
-commit 3b12ec8f618e ("net: stmmac: dwmac-imx: set TSO/TBS TX queues default 
-settings")
+This version does NOT update amdgpu as the change will require a
+larger overhaul to use struct drm_edid. There will be a follow up
+patch to amdgpu after Melissa Wen finishes that effort [2].
 
-Changes since v2:
-- Fixed the styling of comment in the dwmac-qcom-ethqos.c
-- Followed the upstream format to give other glue
-  driver references to solve the same problem
-- Appended  the subject with net-next
-- Discussion of why this patch is required is discussed in
-https://lore.kernel.org/netdev/c2497eef-1041-4cd0-8220-42622c8902f4@quicinc.com/
+https://lore.kernel.org/dri-devel/20240201221119.42564-1-mario.limonciello@amd.com/ [1]
+https://lore.kernel.org/amd-gfx/20240126163429.56714-1-mwen@igalia.com/ [2]
+Mario Limonciello (3):
+  drm: Add drm_get_acpi_edid() helper
+  drm/nouveau: Use drm_get_acpi_edid() helper
+  drm: Drop unneeded selects in DRM drivers
 
-Changes since v1:
-- Subject is changed as per upstream guidelines
-- Added a reference of a similar change done by NXP in
-  body of the commit message
+ drivers/gpu/drm/Kconfig                     |  5 ++
+ drivers/gpu/drm/amd/amdgpu/Kconfig          |  7 --
+ drivers/gpu/drm/drm_edid.c                  | 77 +++++++++++++++++++++
+ drivers/gpu/drm/gma500/Kconfig              |  6 --
+ drivers/gpu/drm/i915/Kconfig                |  7 --
+ drivers/gpu/drm/nouveau/Kconfig             |  4 --
+ drivers/gpu/drm/nouveau/nouveau_acpi.c      | 27 --------
+ drivers/gpu/drm/nouveau/nouveau_acpi.h      |  2 -
+ drivers/gpu/drm/nouveau/nouveau_connector.c | 20 +++---
+ drivers/gpu/drm/radeon/Kconfig              |  7 --
+ drivers/gpu/drm/xe/Kconfig                  |  6 --
+ include/drm/drm_edid.h                      |  1 +
+ 12 files changed, 92 insertions(+), 77 deletions(-)
 
-Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-index 31631e3f89d0..2691a250a5a7 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-@@ -728,7 +728,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 	struct stmmac_resources stmmac_res;
- 	struct device *dev = &pdev->dev;
- 	struct qcom_ethqos *ethqos;
--	int ret;
-+	int ret, i;
- 
- 	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
- 	if (ret)
-@@ -822,6 +822,10 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 		plat_dat->serdes_powerdown  = qcom_ethqos_serdes_powerdown;
- 	}
- 
-+	/* Enable TSO on queue0 and enable TBS on rest of the queues */
-+	for (i = 1; i < plat_dat->tx_queues_to_use; i++)
-+		plat_dat->tx_queues_cfg[i].tbs_en = 1;
-+
- 	return devm_stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
- }
- 
 -- 
-2.25.1
+2.34.1
 
 
