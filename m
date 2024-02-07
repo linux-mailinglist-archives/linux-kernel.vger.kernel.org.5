@@ -1,132 +1,160 @@
-Return-Path: <linux-kernel+bounces-56733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80A1A84CE4E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:43:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC1D184CE51
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:44:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D590282725
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:43:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 150E4B22639
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:44:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE1580021;
-	Wed,  7 Feb 2024 15:43:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C3C80603;
+	Wed,  7 Feb 2024 15:43:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ITlOJxGB"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LFw9oKbh"
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41D87993B
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:43:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F5680055
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:43:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707320630; cv=none; b=YWUHZLr4d4DG3kPk57tHNbPkVAbfVnWBRCLGGrymX1U6rbYgRvtAJAtYFXMBUtLCONDPEg+/bk/g3LXd8yT8UlhzOFLecn39pIpUtTT+O+IUVm963foCJgVlpn6mFpUCQNM07FnrhpJjF7Q+UhvZCimc1MA076PDZPxdRRMzfWU=
+	t=1707320636; cv=none; b=LE09oi4wx0LMWuBJJ3Ny9Nf7Ce3U+Elw7AFvOM3bFkWvjO44PMR9j0bLlDayrkTFDUZP9NE0xzIwX4L8KU3HQdQlUiGXKbAfllUuCnZ5r1uWCRfOG34KpB4L4G7XuyfqJ4xpjzq7AmZFvsPRAsVd5+XDYyhwMcUxcS9ps1QRIMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707320630; c=relaxed/simple;
-	bh=oMhnQDhbzTftoXe32RQIwWtdO96us4xrhjolZAiZHHk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T9UEI54Uy0pVia0FZf/kzsjs5pl3Dqkb4YsLGL9tePtLK6pd9E6BhqVno/CB8GV3Y9RztvIgMMqWx9yFejKr/HL65GvMuI29i61gkIRIh1Vmjg+ve+uOTTxhEMAwhtPs+ETJMr6p7q7n1qsSwe07ITCKmmW+rWstjW3h/RRgtJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ITlOJxGB; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707320627;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=29GmU0WJVI81RRCnUaroCVhXsQRA2hKi8oNlrxbN5n0=;
-	b=ITlOJxGBLRbh78QhLJ9b8GFVlZ+xnnmevzTIKZSTXRzcFLCeR03Osxg+//nAZxzglvUd2E
-	KYDqJDw6wYqV9NbdMiEYQBb7AOLQEZ4Nz9/98Av9fRXoCytEV9mkUwVL6CbrlQdSwztiwf
-	KyXi+6Q6Wbtq0pv02YFiAzDMnlIT2IA=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-300-nqX9PV6BOPGo2jmWgcuHeQ-1; Wed, 07 Feb 2024 10:43:46 -0500
-X-MC-Unique: nqX9PV6BOPGo2jmWgcuHeQ-1
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7859d428fdfso81422885a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:43:46 -0800 (PST)
+	s=arc-20240116; t=1707320636; c=relaxed/simple;
+	bh=0vxjX47B6ZgpdmiW7EVKqCFH/j69PxaUc08wp4q8im8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sMVMRunozFeT6yXW3JSvGGPkvgMTs+BEicRHuTcguu4qA82HC7zm62M/kRER2yJF3IgAhvhu/6MQJmLbqR4Fd1ehD6R26RP3jyuDhR+i7lUSudDokkecg3Da3f3lc1o0T0PXUJo8fp24zkNYjKwJjSy1gSh5ST9Z+RYeCQKwHo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LFw9oKbh; arc=none smtp.client-ip=209.85.167.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3bfd27f6dc0so492786b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:43:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707320634; x=1707925434; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fT7OrhiRuIZhNQcmagLUCZ3268l7RImx+viDE+2dBHY=;
+        b=LFw9oKbh2lMPICDhaQyxT7pKPlavYRiL/Arlh0g7UTbkmB49L4DnCwYdJbT5m+CHle
+         19jOhg/eeC+/hlNcLEpMyGSL8CB1tYivigS0KVsO5Msllav3KxkA2b03joaxYwmto723
+         oFigIKI5waEKkAGVZm8OJizZRptX8YVHaLEII=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707320626; x=1707925426;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1707320634; x=1707925434;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=29GmU0WJVI81RRCnUaroCVhXsQRA2hKi8oNlrxbN5n0=;
-        b=HVuKs8HUmByaINDTVwkyNPo7uKHJNYYMXkYEYlIeep7TYbZK1D1aSauPE8FVcJBmtF
-         KBWXX3JaC+vIzlbYFB77kimF/CCkA3VIe3slKKkVKEx0kHhrJqfQ86Pp+ozE0sdvCe6K
-         ad+CG9RG8sSns5viBpgvhjBLo3Ntk4ifT8/RxeljQ+QJ1wyZQInGmDvEaHTS5QO7qP3P
-         sqxzACNJ0gm/LWdoHfJz36+Uh3Upnj+uwrZrDkkeHi2Ybw5fMVOreorFiBdVL5BEOYk3
-         rPkh0wJUGUX2l9XOc7R0aUetV4wv9ZM2BKpe0SxFh2tizjdmvAEwSfoOfUiIiJWTyikU
-         sQFw==
-X-Forwarded-Encrypted: i=1; AJvYcCXFPA35dR+jML23TA06g2VK2JCd++BRZbK1iz7HecY7lr8n8G5XbiAzZrJvEkYl7dqRw22IATRwV2rEIFalheFDkqtg4j1m+64ffgT2
-X-Gm-Message-State: AOJu0YyWKpYPBZVCNK2u3VL5QojE1xTfiL+aPmtfONrqHG3M7NEun6J4
-	+7Mfe3QrrBTK5tnR37G/pmqxgRLbrJnKBlGTpP/0qG+RTowntL9tudX0XS/vlYynG9s2YfQ8OTS
-	8WgvwxSGdAIbpuYFn9qAMNXvaaQTbw7KKSBZb16i+/VWQpD/AJMjg4lzbSIVDkA==
-X-Received: by 2002:a05:620a:612a:b0:785:5a45:c051 with SMTP id oq42-20020a05620a612a00b007855a45c051mr6515421qkn.10.1707320626038;
-        Wed, 07 Feb 2024 07:43:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHzonaLyrIAVvkXXGpzqr7TSJxC/KB7KAItXbWifbvzd/5hFgwnWuI+eWmu0G+TxPkW33FFBw==
-X-Received: by 2002:a05:620a:612a:b0:785:5a45:c051 with SMTP id oq42-20020a05620a612a00b007855a45c051mr6515406qkn.10.1707320625752;
-        Wed, 07 Feb 2024 07:43:45 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVgFggNyOqEwxOXsDjt+zIkkPwv8yHX3cH+PDA0TmIe69kGLkevANZZURzsWtBSkRjifEbwcO45Bik2TVz2YxAnGDWnwEQaoZsKO+hNcSocl2F0yGwet8AwPH/pjLOpqws9Eh5ra/ikZE5Qmtb7WRLGMg9SjHxw
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id d15-20020a05620a158f00b007859d590478sm602828qkk.64.2024.02.07.07.43.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 07:43:44 -0800 (PST)
-Message-ID: <86c33c28-77a8-46ed-9c5c-2ae0acbf5b3b@redhat.com>
-Date: Wed, 7 Feb 2024 16:43:40 +0100
+        bh=fT7OrhiRuIZhNQcmagLUCZ3268l7RImx+viDE+2dBHY=;
+        b=PFuF4sCeWztpD5i7tw6VkMJIfQtInc29A1kfMznBAP3dN3LysmLVVnIsX5NimEbflo
+         6yNvIpyYDe7myNx+ZJNHrEzkmEAU1sG19BS/pBagOt3K28lrLBhKa8CyTRmsrpOn1FNf
+         RkLDl0RnCKmZ5dVfG48foIm1AWoZ4hpcanYStLAicYhpaFIXu46/RbuLe5QoGvTdc2+X
+         lbvo4wiNLLUZgNYzx6ymcWvbDyHxaohXzNwCW5woqzc82HgpFGH6jokaCWe7Wj71mRJZ
+         mzvr4uSv60oFxSJwfnCKMe4i0+E8Z8gedK1ulC4+DPI+A4jvoVPHPZU+sn8b5d0E5Ihd
+         +BLw==
+X-Gm-Message-State: AOJu0YxO4BS19waY+N44I2bxOLVvzOY1mmQBmTpJDrtbILqR/k+H+iE4
+	k7kvn+e5z3rkZ4Ae9pwIzBBf5fVJclNO0D2CvT5tDFR9JGnOaPbB5YVnDSfQM1x1815qAPK30go
+	=
+X-Google-Smtp-Source: AGHT+IF396kKk0rdy004VVPYDuPYv9DwxzXoOR6Kvm9ziqiHthI/RUMfDBLMi4vfaoIZ2sbm9RevTQ==
+X-Received: by 2002:a05:6808:f8b:b0:3bf:ede4:9a57 with SMTP id o11-20020a0568080f8b00b003bfede49a57mr1838228oiw.27.1707320633877;
+        Wed, 07 Feb 2024 07:43:53 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU3PuW6ws9JWC7eVxAlbqXnDHKSk0P2YmIzFI97ctOQmNTs+74DKsJKO4wYGBbGfO42/jRaojmBW5kV4n2FT4d0tr8kH7r4aQUxMEmIK9FSpzX0+pIMCA15w2h9wknJ03TotrXxVbFLDDJMb3tAR9UBjBQ1lm3zQBDxElQLAnLBo/q7iMfJqxCY2fmPncMLgWFvGjIAikLYHUGWVzwlMWYm3vHqlpF/gcN/FnIldLYt0SP7xo1Z2wH1mPSDaOXCGzltp29+grXhTvd+rvan/N/uNyiAlByd2IkHMNf8nbgttrAyvF0AHMlcB0xUerECuwe2T0UC7sguw0Id8vwFxFwXiSEbTTEOxQmlnfedeEq8E4MuJEWbwVUt6ROZfmwaV08Ju508ne3sow==
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id o26-20020a629a1a000000b006e0521c2156sm1834465pfe.173.2024.02.07.07.43.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 07:43:53 -0800 (PST)
+Date: Wed, 7 Feb 2024 07:43:52 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Paul Moore <paul@paul-moore.com>
+Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	linux-security-module <linux-security-module@vger.kernel.org>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] LSM: add security_execve_abort() hook
+Message-ID: <202402070740.CFE981A4@keescook>
+References: <8fafb8e1-b6be-4d08-945f-b464e3a396c8@I-love.SAKURA.ne.jp>
+ <999a4733-c554-43ca-a6e9-998c939fbeb8@I-love.SAKURA.ne.jp>
+ <202402070622.D2DCD9C4@keescook>
+ <CAHC9VhTJ85d6jBFBMYUoA4CrYgb6i9yHDC_tFce9ACKi7UTa6Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: selftests: Fix a semaphore imbalance in the dirty
- ring logging test
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org, Shaoqin Huang <shahuang@redhat.com>
-References: <20240202231831.354848-1-seanjc@google.com>
- <170724566758.385340.17150738546447592707.b4-ty@google.com>
- <6fdbeed0-980e-4371-a448-0c215c4bc48e@redhat.com>
- <ZcOXSZ2OPL5WCcRM@google.com>
-From: Eric Auger <eauger@redhat.com>
-In-Reply-To: <ZcOXSZ2OPL5WCcRM@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHC9VhTJ85d6jBFBMYUoA4CrYgb6i9yHDC_tFce9ACKi7UTa6Q@mail.gmail.com>
 
-
-
-On 2/7/24 15:44, Sean Christopherson wrote:
-> On Wed, Feb 07, 2024, Eric Auger wrote:
->> Hi Sean,
->>
->> On 2/6/24 22:36, Sean Christopherson wrote:
->>> On Fri, 02 Feb 2024 15:18:31 -0800, Sean Christopherson wrote:
->>>> When finishing the final iteration of dirty_log_test testcase, set
->>>> host_quit _before_ the final "continue" so that the vCPU worker doesn't
->>>> run an extra iteration, and delete the hack-a-fix of an extra "continue"
->>>> from the dirty ring testcase.  This fixes a bug where the extra post to
->>>> sem_vcpu_cont may not be consumed, which results in failures in subsequent
->>>> runs of the testcases.  The bug likely was missed during development as
->>>> x86 supports only a single "guest mode", i.e. there aren't any subsequent
->>>> testcases after the dirty ring test, because for_each_guest_mode() only
->>>> runs a single iteration.
->>>>
->>>> [...]
->>>
->>> Applied to kvm-x86 selftests, thanks!
->> Do you plan to send this branch to Paolo for v6.8?
+On Wed, Feb 07, 2024 at 10:21:07AM -0500, Paul Moore wrote:
+> On Wed, Feb 7, 2024 at 9:24 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Sat, Feb 03, 2024 at 07:52:54PM +0900, Tetsuo Handa wrote:
+> > > A regression caused by commit 978ffcbf00d8 ("execve: open the executable
+> > > file before doing anything else") has been fixed by commit 4759ff71f23e
+> > > ("exec: Check __FMODE_EXEC instead of in_execve for LSMs") and commit
+> > > 3eab830189d9 ("uselib: remove use of __FMODE_EXEC"). While fixing this
+> > > regression, Linus commented that we want to remove current->in_execve flag.
+> > >
+> > > The current->in_execve flag was introduced by commit f9ce1f1cda8b ("Add
+> > > in_execve flag into task_struct.") when TOMOYO LSM was merged, and the
+> > > reason was explained in commit f7433243770c ("LSM adapter functions.").
+> > >
+> > > In short, TOMOYO's design is not compatible with COW credential model
+> > > introduced in Linux 2.6.29, and the current->in_execve flag was added for
+> > > emulating security_bprm_free() hook which has been removed by introduction
+> > > of COW credential model.
+> > >
+> > > security_task_alloc()/security_task_free() hooks have been removed by
+> > > commit f1752eec6145 ("CRED: Detach the credentials from task_struct"),
+> > > and these hooks have been revived by commit 1a2a4d06e1e9 ("security:
+> > > create task_free security callback") and commit e4e55b47ed9a ("LSM: Revive
+> > > security_task_alloc() hook and per "struct task_struct" security blob.").
+> > >
+> > > But security_bprm_free() hook did not revive until now. Now that Linus
+> > > wants TOMOYO to stop carrying state across two independent execve() calls,
+> > > and TOMOYO can stop carrying state if a hook for restoring previous state
+> > > upon failed execve() call were provided, this patch revives the hook.
+> > >
+> > > Since security_bprm_committing_creds() and security_bprm_committed_creds()
+> > > hooks are called when an execve() request succeeded, we don't need to call
+> > > security_bprm_free() hook when an execve() request succeeded. Therefore,
+> > > this patch adds security_execve_abort() hook which is called only when an
+> > > execve() request failed after successful prepare_bprm_creds() call.
+> > >
+> > > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> >
+> > This looks good to me.
+> >
+> > Given this touches execve and is related to the recent execve changes,
+> > shall I carry this in the execve tree for testing and send a PR to Linus
+> > for it before v6.8 releases?
+> >
+> > There's already an Ack from Serge, so this seems a reasonable way to go
+> > unless Paul would like it done some other way?
 > 
-> That wasn't my initial plan, but looking at what's in there, the only thing that
-> isn't a fix is Andrew's series to remove redundant newlines.  So yeah, I'll send
-> this along for 6.8.
-> 
+> Please hold off on this Kees (see my email from yesterday), I'd prefer
+> to take this via the LSM tree and with the immediate regression
+> resolved I'd prefer this go in during the upcoming merge window and
+> not during the -rcX cycle.  Or am I misunderstanding things about the
+> state of Linus' tree currently?
 
-OK. Many thanks!
+My understanding was that TOMOYO is currently broken in Linus's tree. If
+that's true, I'd like to make sure it gets fixed before v6.8 is
+released.
 
-Eric
+If it's working okay, then sure, that's fine to wait. :)
 
+-Kees
+
+-- 
+Kees Cook
 
