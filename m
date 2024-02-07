@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-56571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA38184CBD3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:42:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CF2484CBD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:43:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E77F6B260E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:42:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F8F01C23A05
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 784D97E77E;
-	Wed,  7 Feb 2024 13:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA497FBB4;
+	Wed,  7 Feb 2024 13:41:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UOWZLETl";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8ZVlsQJP"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cKTByp08";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="dZo+Xyev"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22BB7C092
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:41:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B107CF14
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:41:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707313283; cv=none; b=AVVdvwThAN6fVYiuxQnVjck3a+1LXihHiSp9ORXumOdCjwg0rUMSAbZRJe5yyWPngXCa2AdZBMbJUToFliAgDxyO3+Uigr3DtYaaSgYYVNPcCVpmeBjIYrPsgNYzZwevyG/hguIAwajeR8qLBz2edC7Fh5UXhE9dJxXT4+/C8fw=
+	t=1707313284; cv=none; b=tJ4oMBD+nS2CnYIOEgFJLflhGDOSTK/3KUjCFRxbV3K0pUO+v8ni5F/kAZ75bq363AbTFYhETNNA5l+PVtSmqFDoxB5EYVHV4d5mdmsCWAf1yJqvAz0/QXtY73RLYQrqaDaCaoVtlsDYLQcnBpWVjGbeVoO0s14rmeYQd0UT/Kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707313283; c=relaxed/simple;
-	bh=LgqHmaayiIBzXTCRVfuLGbNqvjVYRa0vasgGK+33Hc8=;
+	s=arc-20240116; t=1707313284; c=relaxed/simple;
+	bh=CEW+1jm4Jjbzfoy5qe5W0Jz6zUqG9fMl4RYmnU5hdu0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GfMj6HJnxD1Ko6IJjlTPSp7+53JX65JIjNX3FH1WPWGVOm0TngV1du6lVOjkTGgMg3WV7HIJnXbS+fLzKe0ptFAeXmJ6UM73ix/MixTCfMyofS/P+/oB/hHN9J3aEWff6Y18gFNfXb1w3opWds03AaGa4JbAb6ED6ScoBSaj/YE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UOWZLETl; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=8ZVlsQJP; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=ET86fwTN5phYFMr8g1mgJhlj4378Debrnrz3MkK/XmU9j5rqgQDxdqB8lS32sou9ReYRZ6naUXCgxPK6b3uJiMNCMUoYAWFx1P6qd3FGlA6J4EC/7iQ4z8YULJB0TnuK8PgNw4jzul91qPDhOQSEg0eyKKaOz9wtoXAcTfM/GQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cKTByp08; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=dZo+Xyev; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: John Ogness <john.ogness@linutronix.de>
@@ -38,29 +38,36 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Qr6+1j81aENvGfbCAyeGtVP3cfgAJxlpbRhW4IiDqto=;
-	b=UOWZLETl5J68nJmWxOfvORvekRjA8gunoQq/j/rMaDOPt3K+o5KHeH9r+cdhcPw3p+iWGE
-	y/yzKHYlXvEr74Z8VkYqkvjWy80B7Sz+hz/CFoy9IjTlLFB7ceKhB8NH0KTDvll4yInx/Z
-	T2yRNLQnZZ20LIC3wH/CfUr+ihk442zy3anpH4vyzrO3ztDR3g2lylP0N2fqybBegyPrin
-	MxIlixqUaW6ompHY7BpseLDGuusmJE6/R7dQ236hronWGNXG+e2oABU5bubwmOQE6+/mJ2
-	UfEpBtaNS33gjbIxF76bCYGHEdQeiLiTiI0Er5ZYcoJKLjvnsnHNFnq5E3EcTQ==
+	bh=dglETRzgeJkpvG6OhED1NA4N4r3adrKLfLIWNwh3o/w=;
+	b=cKTByp08JTA4mBNGvjF+r3B+h3oDP2A/bF0kIDK3Of7rFF9xt19VJNvJ0cjRPTf4coBWLt
+	xhneAgT1tON2UttA0t02eGIP02a8XH73ZdtOx454Km/3hruinbPpjpev802RB0kGNMsUgt
+	spWQbaUob+Q81Ih2+sfFcDyzZ37e2xcY+FyUUT22Pwc7w51ZlTXoedt7bc/pRF3y3O2Hu/
+	123aPrBb/FvH89xuwHWR/soP9zpojd7iaE+VQI1vPEFJc4Vzty3J7009D1pVc4avWYiYQs
+	xTPqfwc38+1XZtET4wKjpxiD2Ohk+29ALcehkBstaM3XiGrX8FQRR/HuKP1Myw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1707313278;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Qr6+1j81aENvGfbCAyeGtVP3cfgAJxlpbRhW4IiDqto=;
-	b=8ZVlsQJPNIK7aih4qE1pCWt2uBXwc7crk6HrxBoNG0qJi1dAqhS7aXEood5IQVdiN/gXK9
-	1myip7bxPQrnY+Bw==
+	bh=dglETRzgeJkpvG6OhED1NA4N4r3adrKLfLIWNwh3o/w=;
+	b=dZo+XyevsHtdYpqiRG8A+vejgzxI/quf3igei9fqL+qYK7ZnuJx9XroTnlhM7muuJQPKqJ
+	o3H+KoZfFQN8xNBA==
 To: Petr Mladek <pmladek@suse.com>
 Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH printk v4 12/14] printk: Avoid non-panic CPUs writing to ringbuffer
-Date: Wed,  7 Feb 2024 14:47:01 +0106
-Message-Id: <20240207134103.1357162-13-john.ogness@linutronix.de>
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Uros Bizjak <ubizjak@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH printk v4 13/14] panic: Flush kernel log buffer at the end
+Date: Wed,  7 Feb 2024 14:47:02 +0106
+Message-Id: <20240207134103.1357162-14-john.ogness@linutronix.de>
 In-Reply-To: <20240207134103.1357162-1-john.ogness@linutronix.de>
 References: <20240207134103.1357162-1-john.ogness@linutronix.de>
 Precedence: bulk
@@ -71,86 +78,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Commit 13fb0f74d702 ("printk: Avoid livelock with heavy printk
-during panic") introduced a mechanism to silence non-panic CPUs
-if too many messages are being dropped. Aside from trying to
-workaround the livelock bugs of legacy consoles, it was also
-intended to avoid losing panic messages. However, if non-panic
-CPUs are writing to the ringbuffer, then reacting to dropped
-messages is too late.
+If the kernel crashes in a context where printk() calls always
+defer printing (such as in NMI or inside a printk_safe section)
+then the final panic messages will be deferred to irq_work. But
+if irq_work is not available, the messages will not get printed
+unless explicitly flushed. The result is that the final
+"end Kernel panic" banner does not get printed.
 
-Another motivation is that non-finalized messages already might
-be skipped in panic(). In other words, random messages from
-non-panic CPUs might already get lost. It is better to ignore
-all to avoid confusion.
-
-To avoid losing panic CPU messages, silence non-panic CPUs
-immediately on panic.
+Add one final flush after the last printk() call to make sure
+the final panic messages make it out as well.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
 ---
- kernel/printk/printk.c | 26 ++++++--------------------
- 1 file changed, 6 insertions(+), 20 deletions(-)
+ kernel/panic.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index cb99c854a648..1685a71f3f71 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -462,12 +462,6 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
- static DEFINE_MUTEX(syslog_lock);
+diff --git a/kernel/panic.c b/kernel/panic.c
+index 2807639aab51..f22d8f33ea14 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -446,6 +446,14 @@ void panic(const char *fmt, ...)
  
- #ifdef CONFIG_PRINTK
--/*
-- * During panic, heavy printk by other CPUs can delay the
-- * panic and risk deadlock on console resources.
-- */
--static int __read_mostly suppress_panic_printk;
--
- DECLARE_WAIT_QUEUE_HEAD(log_wait);
- /* All 3 protected by @syslog_lock. */
- /* the next printk record to read by syslog(READ) or /proc/kmsg */
-@@ -2322,7 +2316,12 @@ asmlinkage int vprintk_emit(int facility, int level,
- 	if (unlikely(suppress_printk))
- 		return 0;
- 
--	if (unlikely(suppress_panic_printk) && other_cpu_in_panic())
+ 	/* Do not scroll important messages printed above */
+ 	suppress_printk = 1;
++
 +	/*
-+	 * The messages on the panic CPU are the most important. If
-+	 * non-panic CPUs are generating any messages, they will be
-+	 * silently dropped.
++	 * The final messages may not have been printed if in a context that
++	 * defers printing (such as NMI) and irq_work is not available.
++	 * Explicitly flush the kernel log buffer one last time.
 +	 */
-+	if (other_cpu_in_panic())
- 		return 0;
- 
- 	if (level == LOGLEVEL_SCHED) {
-@@ -2799,8 +2798,6 @@ void console_prepend_dropped(struct printk_message *pmsg, unsigned long dropped)
- bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
- 			     bool is_extended, bool may_suppress)
- {
--	static int panic_console_dropped;
--
- 	struct printk_buffers *pbufs = pmsg->pbufs;
- 	const size_t scratchbuf_sz = sizeof(pbufs->scratchbuf);
- 	const size_t outbuf_sz = sizeof(pbufs->outbuf);
-@@ -2828,17 +2825,6 @@ bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
- 	pmsg->seq = r.info->seq;
- 	pmsg->dropped = r.info->seq - seq;
- 
--	/*
--	 * Check for dropped messages in panic here so that printk
--	 * suppression can occur as early as possible if necessary.
--	 */
--	if (pmsg->dropped &&
--	    panic_in_progress() &&
--	    panic_console_dropped++ > 10) {
--		suppress_panic_printk = 1;
--		pr_warn_once("Too many dropped messages. Suppress messages on non-panic CPUs to prevent livelock.\n");
--	}
--
- 	/* Skip record that has level above the console loglevel. */
- 	if (may_suppress && suppress_message_printing(r.info->level))
- 		goto out;
++	console_flush_on_panic(CONSOLE_FLUSH_PENDING);
++
+ 	local_irq_enable();
+ 	for (i = 0; ; i += PANIC_TIMER_STEP) {
+ 		touch_softlockup_watchdog();
 -- 
 2.39.2
 
