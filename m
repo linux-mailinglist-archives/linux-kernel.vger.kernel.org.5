@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-56568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CC3284CBD1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:42:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F27CE84CBD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:42:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61C971C22A7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:42:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9127D1F22EE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 451927CF02;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C52097F46F;
 	Wed,  7 Feb 2024 13:41:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iK/gRZVy";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2sK/GioH"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MJVAYK/8";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VeaaC2Sa"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 417D57A72F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4A77C08C
 	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:41:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707313282; cv=none; b=fKvkAuhlTymcycBX2d4DK1rZhuzbUirQLtjz9jU4OhaQeezgyGeguAGI1h9OPFI5G9NAN0+GRjFdrUikgpi5ebeTNXGK2EC7ziTuGF1flrotrg/8w0UVzuskzUmfj5hfxf6DP/vi8hregYcwUQVo5g3QENifUT0DIO+KcqofkmM=
+	t=1707313283; cv=none; b=ePSyF8JRSfQkQjo+27qk0w/KqJUuAXkcg/2QyDtLFkJ+wrLCUhgB1GhYrHW1JguwZmIww95oj6SpivIBDxzSA5e6DA6/sjj9jF4lgr5dW7WKO3JE/6JvUd/nHR9sZE8OvwQ/ZtW3+bmmICsl521dTYO5z8hMK34yhTFim9TM57A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707313282; c=relaxed/simple;
-	bh=jE0seAEC/xsUWMRtdK3YedzagSyj6mY+1emI8btEf4E=;
+	s=arc-20240116; t=1707313283; c=relaxed/simple;
+	bh=Bn8TIXFNy3nrR6EMlKeOogQoD3nNIaQmPzKytNHWvfg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kzxciqblxtj05vKWVOh4YDimamGDY0KXAyUeL+JZ4SW22tMNdz/QipTXklxmaD+uLtzO/3c7OlOGhC2ii4Rv6JFMj7B4uXS0Rpx0YcPdHVxuBcqjRXr6Vt0B/MTBLe+HTk+swiAKd6sbHMNaSj0zYldsm6hB08Kmw3k7eT1AQ/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iK/gRZVy; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2sK/GioH; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=lQbX/6WSTR4KHKb5BzR+eRq1oeT/cReYJNjVmCnGiAdiyFvbdL8iB9ZxGnEn/JxUnOUQnpt0k/w4fpzsu5LKCAcZeea1445zPAn7UlywwiYAEPDidL64cNDGqjcBjhUrf/FAj3KvJmL456n7lxBNUPA3WPRPJubcLNaasEa3Z3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MJVAYK/8; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=VeaaC2Sa; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: John Ogness <john.ogness@linutronix.de>
@@ -38,29 +38,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xT7zVJldSqDSwoUDq5kV0sG2up4ftkGgvjxHkX7b2JY=;
-	b=iK/gRZVy1yAsy2xKP2G9BqmZpuuGbm32s8UcXFG/hBTiagvYU6EoS/TBBVmV33diYWmUOM
-	OTPByYacFZy0/RuqZnrT21N7r+qe4PnGixv6MXVLumcD72yaNRW594Sg0PWhgnGIyV/fcI
-	8tKt6cODKqTnDuJA3JRrOjma9eyroJSXhCnuwVWrYdwDtAKMVHc/u3plx9O7dr7OVHquv0
-	v9fNk+Ptha5BdRC9EgNN8Q5GcBX0L2Hmgtogv2UdpUEL8c9or8pFPg/ErqNapJvdsvWiR2
-	+wxxEvXPzYioktkLWU9dQyV3cRPnA//ynXONy7xWePvTmnqoBRvV6qrSMPP6Eg==
+	bh=8cOMblqM1UqBk6IDY0+aDtpsYhEPmwBpENMB0j8kk28=;
+	b=MJVAYK/8B8rWBhPLduCIXQaBtKp9vcnlN9io5mD5r2rJxwFngbFDMi/th0WOB1+9Vz/hpa
+	IVmVjklkR8lOyIRxbqBZ+sShA2MavoAVu3yb4sJv9HVG9rGQIIVYxVW1Fs3Y9lOIaOJ+dp
+	4ojca3GCz4a755r4SevT3vT9Xj96UcVWOLq9kDCXjnXYY5qI/dQrFsyfn+WxFEpHUKSEDi
+	nkEFwjdnH18wwJvtBKeJU3dXBXtACBjlBpvFJVjvXmlsDV7wAJlJSHJikzWI9ROv3padVj
+	HqBN+zcZ7KXYoQQHksqEbn+xx07Z/+Frfcr7SdRYICmDKNI5UOnhv9DfAh+ucg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1707313277;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xT7zVJldSqDSwoUDq5kV0sG2up4ftkGgvjxHkX7b2JY=;
-	b=2sK/GioHV+lIq5/fwAQVa/ezEoivaOvGl1twa+slOYEw+QdPKUhyN3Q+1v8nZskiQAE+l3
-	VAWlM4oFIvQ2zHBQ==
+	bh=8cOMblqM1UqBk6IDY0+aDtpsYhEPmwBpENMB0j8kk28=;
+	b=VeaaC2SaSkOlJC7NiQORzUvNwmblPlIYafvBsfBZW5GZJyphx67eE865Bel0XHeYayVX0F
+	wSO8A8uUFhEKEzAQ==
 To: Petr Mladek <pmladek@suse.com>
 Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH printk v4 09/14] printk: Wait for all reserved records with pr_flush()
-Date: Wed,  7 Feb 2024 14:46:58 +0106
-Message-Id: <20240207134103.1357162-10-john.ogness@linutronix.de>
+Subject: [PATCH printk v4 10/14] printk: ringbuffer: Skip non-finalized records in panic
+Date: Wed,  7 Feb 2024 14:46:59 +0106
+Message-Id: <20240207134103.1357162-11-john.ogness@linutronix.de>
 In-Reply-To: <20240207134103.1357162-1-john.ogness@linutronix.de>
 References: <20240207134103.1357162-1-john.ogness@linutronix.de>
 Precedence: bulk
@@ -71,168 +71,69 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently pr_flush() will only wait for records that were
-available to readers at the time of the call (using
-prb_next_seq()). But there may be more records (non-finalized)
-that have following finalized records. pr_flush() should wait
-for these to print as well. Particularly because any trailing
-finalized records may be the messages that the calling context
-wants to ensure are printed.
+Normally a reader will stop once reaching a non-finalized
+record. However, when a panic happens, writers from other CPUs
+(or an interrupted context on the panic CPU) may have been
+writing a record and were unable to finalize it. The panic CPU
+will reserve/commit/finalize its panic records, but these will
+be located after the non-finalized records. This results in
+panic() not flushing the panic messages.
 
-Add a new ringbuffer function prb_next_reserve_seq() to return
-the sequence number following the most recently reserved record.
-This guarantees that pr_flush() will wait until all current
-printk() messages (completed or in progress) have been printed.
+Extend _prb_read_valid() to skip over non-finalized records if
+on the panic CPU.
 
-Fixes: 3b604ca81202 ("printk: add pr_flush()")
+Fixes: 896fbe20b4e2 ("printk: use the lockless ringbuffer")
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
 ---
- kernel/printk/printk.c            |   2 +-
- kernel/printk/printk_ringbuffer.c | 105 ++++++++++++++++++++++++++++++
- kernel/printk/printk_ringbuffer.h |   1 +
- 3 files changed, 107 insertions(+), 1 deletion(-)
+ kernel/printk/printk_ringbuffer.c | 28 ++++++++++++++++++++++++++--
+ 1 file changed, 26 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 82dc2c7949b7..f3a7f5a6f6f8 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -3755,7 +3755,7 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
- 
- 	might_sleep();
- 
--	seq = prb_next_seq(prb);
-+	seq = prb_next_reserve_seq(prb);
- 
- 	/* Flush the consoles so that records up to @seq are printed. */
- 	console_lock();
 diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-index 67ee1c62fcd6..24b484c221e8 100644
+index 24b484c221e8..88e8f3a61922 100644
 --- a/kernel/printk/printk_ringbuffer.c
 +++ b/kernel/printk/printk_ringbuffer.c
-@@ -1986,6 +1986,111 @@ u64 prb_first_seq(struct printk_ringbuffer *rb)
- 	return seq;
- }
- 
-+/**
-+ * prb_next_reserve_seq() - Get the sequence number after the most recently
-+ *                  reserved record.
-+ *
-+ * @rb:  The ringbuffer to get the sequence number from.
-+ *
-+ * This is the public function available to readers to see what sequence
-+ * number will be assigned to the next reserved record.
-+ *
-+ * Note that depending on the situation, this value can be equal to or
-+ * higher than the sequence number returned by prb_next_seq().
-+ *
-+ * Context: Any context.
-+ * Return: The sequence number that will be assigned to the next record
-+ *         reserved.
-+ */
-+u64 prb_next_reserve_seq(struct printk_ringbuffer *rb)
-+{
-+	struct prb_desc_ring *desc_ring = &rb->desc_ring;
-+	unsigned long last_finalized_id;
-+	atomic_long_t *state_var;
-+	u64 last_finalized_seq;
-+	unsigned long head_id;
-+	struct prb_desc desc;
-+	unsigned long diff;
-+	struct prb_desc *d;
-+	int err;
-+
-+	/*
-+	 * It may not be possible to read a sequence number for @head_id.
-+	 * So the ID of @last_finailzed_seq is used to calculate what the
-+	 * sequence number of @head_id will be.
-+	 */
-+
-+try_again:
-+	last_finalized_seq = desc_last_finalized_seq(rb);
-+
-+	/*
-+	 * @head_id is loaded after @last_finalized_seq to ensure that
-+	 * it points to the record with @last_finalized_seq or newer.
-+	 *
-+	 * Memory barrier involvement:
-+	 *
-+	 * If desc_last_finalized_seq:A reads from
-+	 * desc_update_last_finalized:A, then
-+	 * prb_next_reserve_seq:A reads from desc_reserve:D.
-+	 *
-+	 * Relies on:
-+	 *
-+	 * RELEASE from desc_reserve:D to desc_update_last_finalized:A
-+	 *    matching
-+	 * ACQUIRE from desc_last_finalized_seq:A to prb_next_reserve_seq:A
-+	 *
-+	 * Note: desc_reserve:D and desc_update_last_finalized:A can be
-+	 *       different CPUs. However, the desc_update_last_finalized:A CPU
-+	 *       (which performs the release) must have previously seen
-+	 *       desc_read:C, which implies desc_reserve:D can be seen.
-+	 */
-+	head_id = atomic_long_read(&desc_ring->head_id); /* LMM(prb_next_reserve_seq:A) */
-+
-+	d = to_desc(desc_ring, last_finalized_seq);
-+	state_var = &d->state_var;
-+
-+	/* Extract the ID, used to specify the descriptor to read. */
-+	last_finalized_id = DESC_ID(atomic_long_read(state_var));
-+
-+	/* Ensure @last_finalized_id is correct. */
-+	err = desc_read_finalized_seq(desc_ring, last_finalized_id, last_finalized_seq, &desc);
-+
-+	if (err == -EINVAL) {
-+		if (last_finalized_seq == 0) {
-+			/*
-+			 * No record has been finalized or even reserved yet.
-+			 *
-+			 * The @head_id is initialized such that the first
-+			 * increment will yield the first record (seq=0).
-+			 * Handle it separately to avoid a negative @diff
-+			 * below.
-+			 */
-+			if (head_id == DESC0_ID(desc_ring->count_bits))
-+				return 0;
-+
-+			/*
-+			 * One or more descriptors are already reserved. Use
-+			 * the descriptor ID of the first one (@seq=0) for
-+			 * the @diff below.
-+			 */
-+			last_finalized_id = DESC0_ID(desc_ring->count_bits) + 1;
-+		} else {
-+			/* Record must have been overwritten. Try again. */
-+			goto try_again;
-+		}
-+	}
-+
-+	/* Diff of known descriptor IDs to compute related sequence numbers. */
-+	diff = head_id - last_finalized_id;
-+
-+	/*
-+	 * @head_id points to the most recently reserved record, but this
-+	 * function returns the sequence number that will be assigned to the
-+	 * next (not yet reserved) record. Thus +1 is needed.
-+	 */
-+	return (last_finalized_seq + diff + 1);
-+}
-+
- /*
-  * Non-blocking read of a record.
+@@ -2099,6 +2099,10 @@ u64 prb_next_reserve_seq(struct printk_ringbuffer *rb)
   *
-diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
-index d49460f7578e..52626d0f1fa3 100644
---- a/kernel/printk/printk_ringbuffer.h
-+++ b/kernel/printk/printk_ringbuffer.h
-@@ -395,6 +395,7 @@ bool prb_read_valid_info(struct printk_ringbuffer *rb, u64 seq,
- u64 prb_first_seq(struct printk_ringbuffer *rb);
- u64 prb_first_valid_seq(struct printk_ringbuffer *rb);
- u64 prb_next_seq(struct printk_ringbuffer *rb);
-+u64 prb_next_reserve_seq(struct printk_ringbuffer *rb);
+  * On failure @seq is updated to a record that is not yet available to the
+  * reader, but it will be the next record available to the reader.
++ *
++ * Note: When the current CPU is in panic, this function will skip over any
++ *       non-existent/non-finalized records in order to allow the panic CPU
++ *       to print any and all records that have been finalized.
+  */
+ static bool _prb_read_valid(struct printk_ringbuffer *rb, u64 *seq,
+ 			    struct printk_record *r, unsigned int *line_count)
+@@ -2121,8 +2125,28 @@ static bool _prb_read_valid(struct printk_ringbuffer *rb, u64 *seq,
+ 			(*seq)++;
  
- #ifdef CONFIG_64BIT
+ 		} else {
+-			/* Non-existent/non-finalized record. Must stop. */
+-			return false;
++			/*
++			 * Non-existent/non-finalized record. Must stop.
++			 *
++			 * For panic situations it cannot be expected that
++			 * non-finalized records will become finalized. But
++			 * there may be other finalized records beyond that
++			 * need to be printed for a panic situation. If this
++			 * is the panic CPU, skip this
++			 * non-existent/non-finalized record unless it is
++			 * at or beyond the head, in which case it is not
++			 * possible to continue.
++			 *
++			 * Note that new messages printed on panic CPU are
++			 * finalized when we are here. The only exception
++			 * might be the last message without trailing newline.
++			 * But it would have the sequence number returned
++			 * by "prb_next_reserve_seq() - 1".
++			 */
++			if (this_cpu_in_panic() && ((*seq + 1) < prb_next_reserve_seq(rb)))
++				(*seq)++;
++			else
++				return false;
+ 		}
+ 	}
  
 -- 
 2.39.2
