@@ -1,164 +1,159 @@
-Return-Path: <linux-kernel+bounces-56506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA42F84CAFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:04:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 988A684CB06
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:08:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 432CDB21EDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:04:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC7CA1F25012
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57E6F7691F;
-	Wed,  7 Feb 2024 13:04:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B332276C81;
+	Wed,  7 Feb 2024 13:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Fb/60FrZ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Cph3DwTB"
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE78F76055
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:04:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F5C776C69
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:07:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707311058; cv=none; b=nJEnDNW0qWBGJMR7FW73gcC2beK1YR/z/9G/WDBqzY/ebWG65rhW8JRZyYoqfboYYWU1UhRbjkmLPyVSla4WOR2GAC//Ktzgih+ZGDKEZZn3acTXgDN3kGhgqKJKq/ejHDalzY6sYZoZYzvWUacz0hwECrLt4LsmNDLvlOxF904=
+	t=1707311279; cv=none; b=fE86h1LFTpo3FGepdXokcBW7NWp27zO7EF7x2OEEMS+x8LKlzE1MqSoXLCyD51MWA17PKss4EYc4Q8JDsNc+/lpgJGnyrxtmyPlnsljbKvAHOsdL3HMz3B1BM99K0JRD748Xu3HRjZd7UM+6tHWImi2KGX3hpZKbFg+o4zGgW64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707311058; c=relaxed/simple;
-	bh=NX8orA+GVnnPwrF0apwCns+C6OpZLx0AleNzR/n5FUs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cO8YtaBeSf0t0X/ygCiW6+cy/89RQqXB5vgQTZ9EPE09xfw+CvNn1rMsUcIr6iNbXntZ7ckuD5C/rZGJX76FbPpy0Ntd6gkHcarnnGp87UYtWimnn+8IojIl8lZWgNuHnS9eSEv4Uxelvcx8YA9BcokAFlwTuhGLlFBrYUr9VqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Fb/60FrZ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707311055;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L12i3OcGmJi2tYPUezs3YjaVa/gCWzHhD1McLmDOUM8=;
-	b=Fb/60FrZomR7MEKSM5O2426+YaRPc7cS9Vf35F8ehMU5yO+f1J6lKtCRX++C/AoRWYStlU
-	tPRN7k7AEy3KWy5MPoR6JJ3a0l6cy6FoiK7jY48L5f6KklGS010TazbiZmjceA72cbv9TT
-	Cz/PC525TiKQEEbZSbscPmuRz6xSD5M=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-440-OV_Rx9OvMKyeOZ5fiIid2g-1; Wed, 07 Feb 2024 08:04:11 -0500
-X-MC-Unique: OV_Rx9OvMKyeOZ5fiIid2g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 450F5862DC8;
-	Wed,  7 Feb 2024 13:04:11 +0000 (UTC)
-Received: from bfoster (unknown [10.22.32.186])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id C87151121312;
-	Wed,  7 Feb 2024 13:04:10 +0000 (UTC)
-Date: Wed, 7 Feb 2024 08:05:29 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Dave Chinner <david@fromorbit.com>, brauner@kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH v2 3/7] fs: FS_IOC_GETUUID
-Message-ID: <ZcN+8iOBR97t451x@bfoster>
-References: <20240206201858.952303-1-kent.overstreet@linux.dev>
- <20240206201858.952303-4-kent.overstreet@linux.dev>
- <ZcKsIbRRfeXfCObl@dread.disaster.area>
- <cm4wbdmpuq6mlyfqrb3qqwyysa3qao6t5sc2eq3ykmgb4ptpab@qkyberqtvrtt>
+	s=arc-20240116; t=1707311279; c=relaxed/simple;
+	bh=cnUYyVs5/vC7vebIv9+mS88wVxIV0SdJzuzMN/NHZ3Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=G4qVXXJTauJTx2t3CITd2H11dQhN+eqJ8rHwnjZmPD5OiXeq9IIs58hfU/wjIvYMxNPvcF0xTMPuaMLr74TKPFIpgLLtw3oLRjMLDdquMEBxLgS8uSUi1ncgj6itvtEHVCYbk+RG1Gd0lxx5KJ1sDgnCTrbDqR7Ihuh+vDeNUEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=Cph3DwTB; arc=none smtp.client-ip=209.85.210.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6dbcebaf9a9so346136a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 05:07:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1707311275; x=1707916075; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cgZxjoWrT1AZAxZIzQbeXNN5B4NUExBzEhcUQwx7T6M=;
+        b=Cph3DwTBukllsxqRfOjoNMLbVy+BrSiWUJHXNm/MMVC0N1x+1qhe/TAPddTvp6MPVB
+         UcV1MIYys+ueNkCO+9cRvtUqdRFJhKaudl++opXhKButacdjpkilsSQic1Y0TI01XWkx
+         019IK3QxZp8IoCTAmg23XmUnbHpBhhXAUwUNSot0Pt6ZSUze2Z/+AJrtCg6hUgR/ufzs
+         UI0c6THi+8YKg7QD0XWqwwTZ1ojJRcaDGcHZHgnU9D9AYeKfriwjjDiGTdPxWEP/xGqh
+         uKP8pChyuAOVvf3hrLjc32p4VSXMeAJV9SKHvy8S27GknQeEnBmQ+Xhzvq6MIYW45L3j
+         2XTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707311275; x=1707916075;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cgZxjoWrT1AZAxZIzQbeXNN5B4NUExBzEhcUQwx7T6M=;
+        b=O9cHKY60GG+Esdpvpp0x1O0QIETAFlOXH7x23wwxG27Ve/cD4V4uzNM5wziYdfSghf
+         CKTx8Seybt6Y8cpiklv/hIYUUQIVAhzqMUx4FbCavUCraJB4SpYYvh7cGQdV9Ax6kaiG
+         G3O4ynEOI/JL+Jcnl+jeON16dQyKtOgGONgd0D+FbrPbvjXVtw3nE/QWwAOzagG96OsO
+         6pG4pKJp7RJizm0cgLy8guHxEjvXZNQeIzO7q37H2fn0RwlYdjllInt9buRpn9KwENYv
+         YSFfrO/SIcYlUl/H1D4bDKt5i6nYZCYyOF+HMUcDZTz26NQWH049hmyQ2ThdRCDU5VuS
+         HX+g==
+X-Forwarded-Encrypted: i=1; AJvYcCU0R3fEE1sGtIbbU8vU5Obf4Fcw9ZYvGm5276JDEjf77XEyQBHWqmA5b6feNnzwRVD6oOIKOc9T1TonAy8gCtHQskzBRjJyvgaufPT8
+X-Gm-Message-State: AOJu0YzH8E4UtSwEs8jkH3YNrVRzsL0iXXj3qMXqjYLClYcIg9+0BmlR
+	n8zyHwkSjgOHqe80ZnIn1L7Izy3OXO1QGc14DaTTskbSO7CgaE0mECouzh+AI1o=
+X-Google-Smtp-Source: AGHT+IGN3NF79eAyEr+25oA68ij44eKtiXaEuQSz0jscK3NPCNE+n65Z6eFMP6e1JcIgHQCGfmqIqg==
+X-Received: by 2002:a05:6830:3a88:b0:6dd:cd73:3b0e with SMTP id dj8-20020a0568303a8800b006ddcd733b0emr5678654otb.23.1707311275538;
+        Wed, 07 Feb 2024 05:07:55 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXqCDZDDBRDbsXqT1ey9HzXOkExZvunGlbVwR85X02+RML9qzTmXaasE8bMz95+CJqyJuDdjUU7X9NSSdPFs6u4B/AWUp18Ziek6W7WmFahz/Y9bhmywcXigdcQK83JMVOzlxD38ThZFceT/k9sH93EMJoRlvnvVWB3K1aWSCPFXiKEpycfUvxXwG/G5g1zrMmqlGL8m4vcyxsnr33K8BtM+ftBrAq9mSnC013gk1IuqVTZ7uUhYiJzKAgOQZEs5/cflyl7YXklzWZBHyV7SrJ1oZ2jC5GXiW/2Bf8r3uFhFHx306TyTLk39IaICzhaPsn+9KsbeZeITYVJGNLZ8tQuzS2PsEbC1nrFqoMMq/vnDFChRJrtfcKLgKAa7qod/Xy5uJ8J3+/Ti9VP+lhyS2U6BBOgmp/wDHtwNQMPF4gd36FdVc1ZYU6gdfdp/cdeuFZxrcpJrwpZTQ0JrBnrbqADrEKLaf5wFOklZB5ggDQITRmhYutPfPuWHFp8vYvumvsmI3nODM3r3Q==
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.114])
+        by smtp.gmail.com with ESMTPSA id a17-20020a0ca991000000b0068c9cd2cf88sm565455qvb.60.2024.02.07.05.07.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 05:07:55 -0800 (PST)
+From: Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To: wim@linux-watchdog.org,
+	linux@roeck-us.net,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	p.zabel@pengutronix.de,
+	geert+renesas@glider.be,
+	magnus.damm@gmail.com,
+	biju.das.jz@bp.renesas.com
+Cc: linux-watchdog@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	claudiu.beznea@tuxon.dev,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH v5 0/9] watchdog: rzg2l_wdt: Add support for RZ/G3S
+Date: Wed,  7 Feb 2024 15:07:36 +0200
+Message-Id: <20240207130745.1783198-1-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cm4wbdmpuq6mlyfqrb3qqwyysa3qao6t5sc2eq3ykmgb4ptpab@qkyberqtvrtt>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 06, 2024 at 05:37:22PM -0500, Kent Overstreet wrote:
-> On Wed, Feb 07, 2024 at 09:01:05AM +1100, Dave Chinner wrote:
-> > On Tue, Feb 06, 2024 at 03:18:51PM -0500, Kent Overstreet wrote:
-> > > +static int ioctl_getfsuuid(struct file *file, void __user *argp)
-> > > +{
-> > > +	struct super_block *sb = file_inode(file)->i_sb;
-> > > +
-> > > +	if (!sb->s_uuid_len)
-> > > +		return -ENOIOCTLCMD;
-> > > +
-> > > +	struct fsuuid2 u = { .len = sb->s_uuid_len, };
-> > > +	memcpy(&u.uuid[0], &sb->s_uuid, sb->s_uuid_len);
-> > > +
-> > > +	return copy_to_user(argp, &u, sizeof(u)) ? -EFAULT : 0;
-> > > +}
-> > 
-> > Can we please keep the declarations separate from the code? I always
-> > find this sort of implicit scoping of variables both difficult to
-> > read (especially in larger functions) and a landmine waiting to be
-> > tripped over. This could easily just be:
-> > 
-> > static int ioctl_getfsuuid(struct file *file, void __user *argp)
-> > {
-> > 	struct super_block *sb = file_inode(file)->i_sb;
-> > 	struct fsuuid2 u = { .len = sb->s_uuid_len, };
-> > 
-> > 	....
-> > 
-> > and then it's consistent with all the rest of the code...
-> 
-> The way I'm doing it here is actually what I'm transitioning my own code
-> to - the big reason being that always declaring variables at the tops of
-> functions leads to separating declaration and initialization, and worse
-> it leads people to declaring a variable once and reusing it for multiple
-> things (I've seen that be a source of real bugs too many times).
-> 
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-I still think this is of questionable value. I know I've mentioned
-similar concerns to Dave's here on the bcachefs list, but still have not
-really seen any discussion other than a bit of back and forth on the
-handful of generally accepted (in the kernel) uses of this sort of thing
-for limiting scope in loops/branches and such.
+Hi,
 
-I was skimming through some more recent bcachefs patches the other day
-(the journal write pipelining stuff) where I came across one or two
-medium length functions where this had proliferated, and I found it kind
-of annoying TBH. It starts to almost look like there are casts all over
-the place and it's a bit more tedious to filter out logic from the
-additional/gratuitous syntax, IMO.
+Series adds watchdog support for Renesas RZ/G3S (R9A08G045) SoC.
 
-That's still just my .02, but there was also previous mention of
-starting/having discussion on this sort of style change. Is that still
-the plan? If so, before or after proliferating it throughout the
-bcachefs code? ;) I am curious if there are other folks in kernel land
-who think this makes enough sense that they'd plan to adopt it. Hm?
+Patches do the following:
+- patch 1/9 makes the driver depend on ARCH_RZG2L || ARCH_R9A09G011
+- patch 2/9 makes the driver depend on PM
+- patches 3-7/9 adds fixes and cleanups for the watchdog driver
+- patch 8/9 adds suspend to RAM to the watchdog driver (to be used by
+  RZ/G3S)
+- patch 9/9 documents the RZ/G3S support
 
-Brian
+Thank you,
+Claudiu Beznea
 
-> But I won't push that in this patch, we can just keep the style
-> consistent for now.
-> 
-> > > +/* Returns the external filesystem UUID, the same one blkid returns */
-> > > +#define FS_IOC_GETFSUUID		_IOR(0x12, 142, struct fsuuid2)
-> > > +
-> > 
-> > Can you add a comment somewhere in the file saying that new VFS
-> > ioctls should use the "0x12" namespace in the range 142-255, and
-> > mention that BLK ioctls should be kept within the 0x12 {0-141}
-> > range?
-> 
-> Well, if we're going to try to keep the BLK_ and FS_IOC_ ioctls in
-> separate ranges, then FS_IOC_ needs to move to something else becasue
-> otherwise BLK_ won't have a way to expand.
-> 
-> So what else -
-> 
-> ioctl-number.rst has a bunch of other ranges listed for fs.h, but 0x12
-> appears to be the only one without conflicts - all the other ranges seem
-> to have originated with other filesystems.
-> 
-> So perhaps I will take Darrick's nak (0x15) suggestion after all.
-> 
+Changes in v5:
+- updated description of patch 2/9
+- simplify the code in patch 2/9 by using on a new line:
+  depends on PM || COMPILE_TEST
+
+Changes in v4:
+- added patch "watchdog: rzg2l_wdt: Restrict the driver to ARCH_RZG2L and
+  ARCH_R9A09G011"
+- collected tags
+
+Changes in v3:
+- make driver depend on PM not select it
+- drop patches already accepted (patches 1, 10, 11 from v2)
+- re-arranged the tags in patch 8/8 as they were messed by b4 am/shazam
+
+Changes in v2:
+- added patch "watchdog: rzg2l_wdt: Select PM"
+- propagate the return status of rzg2l_wdt_start() to it's callers
+  in patch "watchdog: rzg2l_wdt: Use pm_runtime_resume_and_get()" 
+- propagate the return status of rzg2l_wdt_stop() to it's callers
+  in patch "watchdog: rzg2l_wdt: Check return status of pm_runtime_put()" 
+- removed pm_ptr() from patch "watchdog: rzg2l_wdt: Add suspend/resume support"
+- s/G2UL/G2L in patch "dt-bindings: watchdog: renesas,wdt: Document RZ/G3S support"
+- collected tags
+
+Claudiu Beznea (9):
+  watchdog: rzg2l_wdt: Restrict the driver to ARCH_RZG2L and
+    ARCH_R9A09G011
+  watchdog: rzg2l_wdt: Make the driver depend on PM
+  watchdog: rzg2l_wdt: Use pm_runtime_resume_and_get()
+  watchdog: rzg2l_wdt: Check return status of pm_runtime_put()
+  watchdog: rzg2l_wdt: Remove reset de-assert on probe/stop
+  watchdog: rzg2l_wdt: Remove comparison with zero
+  watchdog: rzg2l_wdt: Rely on the reset driver for doing proper reset
+  watchdog: rzg2l_wdt: Add suspend/resume support
+  dt-bindings: watchdog: renesas,wdt: Document RZ/G3S support
+
+ .../bindings/watchdog/renesas,wdt.yaml        |   1 +
+ drivers/watchdog/Kconfig                      |   3 +-
+ drivers/watchdog/rzg2l_wdt.c                  | 111 ++++++++++--------
+ 3 files changed, 64 insertions(+), 51 deletions(-)
+
+-- 
+2.39.2
 
 
