@@ -1,98 +1,158 @@
-Return-Path: <linux-kernel+bounces-56117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD4CD84C622
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:24:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 843AA84C625
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:26:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67BEA287DDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:24:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3843B252B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:26:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86252030D;
-	Wed,  7 Feb 2024 08:24:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D98C8200C9;
+	Wed,  7 Feb 2024 08:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="I4tpDPfL"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AWPrJ4RU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 436362030F
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 08:24:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28287200C0;
+	Wed,  7 Feb 2024 08:26:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707294274; cv=none; b=KqvvDB76ilmsis/Or2WeJhG2zQspcqB7+QeAceZe79SdxIDJZ0qNIbv912klKMfu6EudsnETDLMSGKqqllUvKo/+WDFLkaxH8IV2GQnT4lVuLNjgDwPIaYaFi7SH+lvAhZCxsg+q/OozIxFWPioN8uHQGVJCGXgFl87KNFcR/kc=
+	t=1707294372; cv=none; b=SPUobpHmh+HSm11OnTJIzoDK0A4igFS0F3jczyNV8mprEkJhs6dEOnciIfQutt+CDZ/mjTe1dK3/0o0AML8/4Cu3VAkbS/mrtOuq1LJT4hIerVIha6tSfhPoTh6Qz1K6IFi1SWrc2w/FyUvYEBvgICbffRg3JiS9vnEOvz3Bvhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707294274; c=relaxed/simple;
-	bh=HpwKvo0uAhfpy70Id63b3QXrIH8sMkAlZqCmstgxuWw=;
+	s=arc-20240116; t=1707294372; c=relaxed/simple;
+	bh=kk20eFR8A8AL7SqwOYmg4eexD2O3SgXOEqjTFOgwVRI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kxzdVboiu5Of2wlABR3/rL61PazMiBPUlqNlAz2bUpwpJkkZ1IXw+2PLnbJ9rMeOUylJ7DiatGf3AzmCSxXvij+i6Vvgu8WaxRbtgu91Emjvp1WAOaAdrbyboBhhVF5mf6DAiTQ/Es2Db86QJjzCTC2fKvCeZRXJnal0FtDdXOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=I4tpDPfL; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 882F940E0192;
-	Wed,  7 Feb 2024 08:24:28 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id CFSBZ7m3g6fk; Wed,  7 Feb 2024 08:24:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707294266; bh=UXes4RVGRFQzRZWda+DnplAwh6NrhwGhzGkpIQWlYes=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=B0aVnFQ8oysHJxQyAXOHS3CoU/QCQQ04Y+d9vUr4zsk9t6o6FlbCOMZHafHSu1hspCSCAPp2YiqbmVOFLt5x4kYyUrUUj9c39T8JwY3dCvICrGCny5TaNJNGwo0HXAq/rzcOL+oxXnb3OYc6PBmHbMv6xDysDt/8CbXbaJcOHBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AWPrJ4RU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45325C433F1;
+	Wed,  7 Feb 2024 08:26:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707294371;
+	bh=kk20eFR8A8AL7SqwOYmg4eexD2O3SgXOEqjTFOgwVRI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I4tpDPfLH8cShQQ1rStHIwV6gKToRKAi/yyo1v4t/AdxYpsqFWD/dmMLb7Bdg0T2I
-	 BQhquc+bR0wlLmk3wQMJGaRM7XKuSi255ZH0R3BOgpPptnxHZ0tSEI3KiPwoAPT672
-	 3oeYFv/OvIp9vkeJ/b4BzrX+ZOg9f33fGj6EHMI0pmXfYaWuBa1YYVe3jUxt038KLI
-	 SOTmm/+YwUlVrlEbAIiILzrgHqZcc3gC6SosNLuJM7Kj+U3eszsDeLvgSfPOMgSmCM
-	 IpdDqO3RvA/LPUyfsa7z7lyxFeSXLERJ4KOtL2OpEOWqi5dRDMK1EmUmNpr/LiIzfg
-	 3TsOpy5+KEctz02FaUOX3TmRrgYAXLQoM0AaMczVLWobKi8UhWWC3Rs5G7ts3h5Weq
-	 fd3IJHKxFe2sy82+KWHIC4uc39/s2xLHcW8RkJcq3ZN6iz5IbjEm0Tn2vU1sYzG5qu
-	 ZYMDF9KX9a6ioOu7AP3eXe0GUQpN4wlOVaCmcR5mR1pYDlZ74DmhwAZLMiJP3a3TDu
-	 QUxo9IrZbdOj8qz5a8ZOvHmTFswXbztsDOItbqMF5J1eBsn59A9kUHiE4P4t8iNRgY
-	 JghTG4ZfTc0RxveJGsHdyON0YWwZYFye1AO5HHIsU/p6pyNMeD4auJNhFw2MlLW6SO
-	 uizsgbgap1vhuWKNABUbSQXU=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4D2C240E01BB;
-	Wed,  7 Feb 2024 08:24:18 +0000 (UTC)
-Date: Wed, 7 Feb 2024 09:24:16 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	Andy Lutomirski <luto@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] x86: vdso: clean up vdso Makefile
-Message-ID: <20240207082416.GCZcM-MHISTCdT08VW@fat_crate.local>
-References: <20231121235701.239606-1-masahiroy@kernel.org>
- <CAK7LNAQXw8owCpehxnUQG7upkENMezazzHFsdu9kggcZQLgykg@mail.gmail.com>
+	b=AWPrJ4RUBls+adUHSEXRulzNK+6ChFb4CV9ebbET9ywxL4dISfgLEPuKySzfXgvl9
+	 c9RODstJiLO9yEDjcSuJV7vf4ILx+pJ+ogeREZ2Ccrrc7sWaoFsGPmOX8aZeC8wLDl
+	 vKfxzFRy8q5U5CQvpJyeQub4u6wwhmX/ya7hHUSVbiGOwjV6JWH/nPuWB2wpOsLEW7
+	 xRjRWUyS5G+wxnkTW/OmWcc9JJd0L5AgYx88gpoFFZQ7w7Wuvmqlxb2rEgBnLKu3Oe
+	 mxfoY9ZjuY7XYZVD3C8yaKp1tsmwtyMvaow5utqWQAWPOGD5+5CUsjG9bIFXmzj9KV
+	 nhIkPAdK8CbYQ==
+Date: Wed, 7 Feb 2024 09:26:08 +0100
+From: Vinod Koul <vkoul@kernel.org>
+To: Andrea della Porta <andrea.porta@suse.com>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	dmaengine@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Maxime Ripard <maxime@cerno.tech>,
+	Dom Cobley <popcornmix@gmail.com>,
+	Phil Elwell <phil@raspberrypi.com>
+Subject: Re: [PATCH 10/12] dmaengine: bcm2835: Support DMA-Lite channels
+Message-ID: <ZcM-oM2hySPlOcyp@matsya>
+References: <cover.1706948717.git.andrea.porta@suse.com>
+ <ca956587595954525fca0b635a66ca78b7000bf4.1706948717.git.andrea.porta@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK7LNAQXw8owCpehxnUQG7upkENMezazzHFsdu9kggcZQLgykg@mail.gmail.com>
+In-Reply-To: <ca956587595954525fca0b635a66ca78b7000bf4.1706948717.git.andrea.porta@suse.com>
 
-On Sat, Feb 03, 2024 at 12:56:22AM +0900, Masahiro Yamada wrote:
-> Hi x86 maintainers,
+On 04-02-24, 07:59, Andrea della Porta wrote:
+> From: Maxime Ripard <maxime@cerno.tech>
 > 
+> The BCM2712 has a DMA-Lite controller that is basically a BCM2835-style
+> DMA controller that supports 40 bits DMA addresses.
 > 
-> Gentle ping.
+> We need it for HDMI audio to work.
 > 
-> It has been more than 2 months since the submission.
+> Cc: Maxime Ripard <maxime@cerno.tech>
+> Cc: Dom Cobley <popcornmix@gmail.com>
+> Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
+> ---
+>  drivers/dma/bcm2835-dma.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
+> index 548cf7343d83..055c558caa0e 100644
+> --- a/drivers/dma/bcm2835-dma.c
+> +++ b/drivers/dma/bcm2835-dma.c
+> @@ -100,6 +100,7 @@ struct bcm2835_chan {
+>  
+>  	bool is_lite_channel;
+>  	bool is_40bit_channel;
+> +	bool is_2712;
 
-Lemme have a look.
+why not use is_40bit_channel..? also this can be applicable for more
+soc, make it generic flag if you cant reuse this one
+
+>  };
+>  
+>  struct bcm2835_desc {
+> @@ -545,7 +546,11 @@ static struct bcm2835_desc *bcm2835_dma_create_cb_chain(
+>  			control_block->info = info;
+>  			control_block->src = src;
+>  			control_block->dst = dst;
+> -			control_block->stride = 0;
+> +			if (c->is_2712)
+> +				control_block->stride = (upper_32_bits(dst) << 8) |
+> +							upper_32_bits(src);
+> +			else
+> +				control_block->stride = 0;
+>  			control_block->next = 0;
+>  		}
+>  
+> @@ -570,7 +575,8 @@ static struct bcm2835_desc *bcm2835_dma_create_cb_chain(
+>  			 d->cb_list[frame - 1].cb)->next_cb =
+>  				to_bcm2711_cbaddr(cb_entry->paddr);
+>  		if (frame && !c->is_40bit_channel)
+> -			d->cb_list[frame - 1].cb->next = cb_entry->paddr;
+> +			d->cb_list[frame - 1].cb->next = c->is_2712 ?
+> +			to_bcm2711_cbaddr(cb_entry->paddr) : cb_entry->paddr;
+>  
+>  		/* update src and dst and length */
+>  		if (src && (info & BCM2835_DMA_S_INC)) {
+> @@ -750,7 +756,10 @@ static void bcm2835_dma_start_desc(struct bcm2835_chan *c)
+>  		writel(BCM2711_DMA40_ACTIVE | BCM2711_DMA40_PROT | BCM2711_DMA40_CS_FLAGS(c->dreq),
+>  		       c->chan_base + BCM2711_DMA40_CS);
+>  	} else {
+> -		writel(d->cb_list[0].paddr, c->chan_base + BCM2835_DMA_ADDR);
+> +		writel(BIT(31), c->chan_base + BCM2835_DMA_CS);
+> +
+> +		writel(c->is_2712 ? to_bcm2711_cbaddr(d->cb_list[0].paddr) : d->cb_list[0].paddr,
+> +		       c->chan_base + BCM2835_DMA_ADDR);
+>  		writel(BCM2835_DMA_ACTIVE | BCM2835_DMA_CS_FLAGS(c->dreq),
+>  		       c->chan_base + BCM2835_DMA_CS);
+>  	}
+> @@ -1119,7 +1128,8 @@ static struct dma_async_tx_descriptor *bcm2835_dma_prep_dma_cyclic(
+>  		 d->cb_list[frames - 1].cb)->next_cb =
+>  			to_bcm2711_cbaddr(d->cb_list[0].paddr);
+>  	else
+> -		d->cb_list[d->frames - 1].cb->next = d->cb_list[0].paddr;
+> +		d->cb_list[d->frames - 1].cb->next = c->is_2712 ?
+> +		to_bcm2711_cbaddr(d->cb_list[0].paddr) : d->cb_list[0].paddr;
+>  
+>  	return vchan_tx_prep(&c->vc, &d->vd, flags);
+>  }
+> @@ -1186,6 +1196,8 @@ static int bcm2835_dma_chan_init(struct bcm2835_dmadev *d, int chan_id,
+>  	else if (readl(c->chan_base + BCM2835_DMA_DEBUG) &
+>  		 BCM2835_DMA_DEBUG_LITE)
+>  		c->is_lite_channel = true;
+> +	if (d->cfg_data->dma_mask == DMA_BIT_MASK(40))
+> +		c->is_2712 = true;
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.41.0
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+~Vinod
 
