@@ -1,103 +1,90 @@
-Return-Path: <linux-kernel+bounces-56341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FB4E84C8F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:48:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3539984C8F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:49:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C482E28A028
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:48:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6B01284C6C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:49:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 050F4171AD;
-	Wed,  7 Feb 2024 10:48:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96270171B6;
+	Wed,  7 Feb 2024 10:49:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qWtxvwZX"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="AV8BBeIJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6673171AB
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:48:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5A3717BB4;
+	Wed,  7 Feb 2024 10:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707302916; cv=none; b=WUSTjbA5Fr2DXKXM28uQva8cj+14rYmIVTLGmDSKfTzh9ba7FvLUP0j40ZF74UIIldsqMWzskX00OnS/5aoHCPRg0vc8xONExzCCLngN/g945ZTj77Yi7+WL7w3QJWkJFxGKafZLvRbUy4mZC+uwGH9X8fGMPGLtYKVKNAmdUkg=
+	t=1707302948; cv=none; b=YhC+SdHAJ3RJL3zEGEhLSxHPoAbd9I7WYoN5CXY8LDiWJ66o3MOQWD1OQdU1aJU/KleX9TmTUzNpEKdKBJoJOusHyyoTCjHnXb8NHOBFK6CR8K9FBVe0YaS+Axpl4d16si4yIql5RJIdYNA3gcwQyk5w+c57Y55s9YXzbLn/VZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707302916; c=relaxed/simple;
-	bh=GvnB5ueesQjpAOjR8nVz/seYPxt7xYcubH1vH2siBcI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aqA70uES7h3ynYat8EokDV5KNWPlJvEYNp0nSsLj31tyEBvYmrFujTj2DYQCmwOI/bZZxCpXSo6HhjbZZHjlD11KsoHxG8HLuQbLvfw/aWU+4FhsxtKpEJv5/3HM6U/SUFtQy0gglHYXQ2a8Zk+mfV4errGwxZXguHWjnJ1fhtI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qWtxvwZX; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dbed179f0faso1176090276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 02:48:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707302914; x=1707907714; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GvnB5ueesQjpAOjR8nVz/seYPxt7xYcubH1vH2siBcI=;
-        b=qWtxvwZXobwkpcgLQmpiCsjLIucoGXOvzXpXo/BsuM0g1YobvUrnM44k7I8cNQpaCX
-         Z6/W0KaIRqHE9gY3zG8FHSKvSA8hRVpw3L2MbTDekFU9zvAAyTQ3IskpQ87AkqTijC8O
-         XBS2hqsKO9gadOOJhF7r7O+0hlTDYBJbvJEnoA9yhHS1bF3mUngq+S0hqSSPnh9m0zps
-         82TxwyGFE5iYF46oECYPurRusyz8XyEItJNB5mBtEyVMWWCG/IxRJmCW8RSP9nC5EwwQ
-         xdiQtUNhOzvXPfSYSLGlwe/fG8TbQ/ypXBnFF8tIJ75wIZ+W5ODb3Wiohr9yQPMET9VJ
-         qfKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707302914; x=1707907714;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GvnB5ueesQjpAOjR8nVz/seYPxt7xYcubH1vH2siBcI=;
-        b=cGAIGMJfpiVdkc61LIC8EHG5XyOHfI/vzsclVOKCUeansVkpDXV8v8nSPxjFN9fxW7
-         3H3hxw7tIvQBpLUNDKL0gsB6PcCZFch7uWUVxDGAAksv/ZreOhj+55CM8kJVroyQLf03
-         iJ+X0L52KW0VOSdPnMgK61JbhMdH99LZRxa8eE+JcS+EBUFf46SQMJlQ6xunhRJAeACk
-         LVTWTURFM/ByMzHLtIQwL7mStxT3hdnOuBSLRulSK6eobr12ei+aJ4sAAqjq17IEH7I3
-         jMy/GZjYOiAfuBpP6oE01yp6/y5xUV68Nt5HH2K8J4+szm3TO/QqWxsxNyFjOW6kS5+6
-         6Djw==
-X-Gm-Message-State: AOJu0YzyiJtJ1HE2wl+lqRc4QuRKTl5jyVmJjgfpfcwBztj5VPDNHeR+
-	mQwuC1LHKDFxNxakgfqL5T638/qY8JQGS65WRkYix9M7kEfLFPKUFG+mA7buPqBuMGB4HHYu31F
-	ZQec+pOv5t/R1l5/mEeMa0irxAjpumVHcHXQuYg==
-X-Google-Smtp-Source: AGHT+IEyeEd+YmW1ElXSMWlGNBIbSjnJ686ocEUtx/vkJsI/HbYPN0Ib4cxLvb7P2uWVdDqkJpUOfJUu6YpaPjdJ3OM=
-X-Received: by 2002:a05:6902:4cc:b0:dc2:58af:2af7 with SMTP id
- v12-20020a05690204cc00b00dc258af2af7mr2987912ybs.22.1707302913682; Wed, 07
- Feb 2024 02:48:33 -0800 (PST)
+	s=arc-20240116; t=1707302948; c=relaxed/simple;
+	bh=HjVI1rzsu+zvlKE1HIxOXNwow7cL5cXi4YaNQhhBG84=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kIL670lE6RjQCNlU8W+X4AfLP5ZVwv1zuu2D0VLjR6QHVmvbZU+Tk4S0Y3AqclxMjdrt3S7u0V6ak/EQeKQ2C3jndT6v0H4p1BbafF+xCcIvsn97E/uAJUhb9pTfx5+i5odrr3CCyFBqskBBvuCs7IC/PnvdymZ7BeRptmDuzJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=AV8BBeIJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5913C433F1;
+	Wed,  7 Feb 2024 10:49:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707302948;
+	bh=HjVI1rzsu+zvlKE1HIxOXNwow7cL5cXi4YaNQhhBG84=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AV8BBeIJl2tQ1nV+4PPUTSvU8ah2M0D1ak19c8pIvvlyjwR59PkOhskYe7IysKTmr
+	 MRpcTccxtnwh3R62ct1PrbRCwJfNfsRNL9ksiEA7QdBSx1As+QXKqnvP5rehfVTo0L
+	 vj9pzph8ahvLRVJ0GkjC01q4+5uKlmwbrJHXZ9eg=
+Date: Wed, 7 Feb 2024 10:49:05 +0000
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH] gpio: set device type for GPIO chips
+Message-ID: <2024020732-duchess-husband-8b1b@gregkh>
+References: <20240201162758.50733-1-brgl@bgdev.pl>
+ <CACRpkdbAw5NfSr8GSNiQhOzSi-tERyn=-ZroLfF-FRbsW2JviQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131071910.3950450-1-wenst@chromium.org>
-In-Reply-To: <20240131071910.3950450-1-wenst@chromium.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 7 Feb 2024 11:48:47 +0100
-Message-ID: <CACRpkdbRY70+Er-=Xv338j68NgjEKZeD5FYW9GqFY-68sCBvgA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pinctrl: mediatek: Drop bogus slew rate register
- range for MT8186
-To: Chen-Yu Tsai <wenst@chromium.org>
-Cc: Sean Wang <sean.wang@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdbAw5NfSr8GSNiQhOzSi-tERyn=-ZroLfF-FRbsW2JviQ@mail.gmail.com>
 
-On Wed, Jan 31, 2024 at 8:19=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org> w=
-rote:
+On Wed, Feb 07, 2024 at 11:45:39AM +0100, Linus Walleij wrote:
+> On Thu, Feb 1, 2024 at 5:28 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> 
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > It's useful to have the device type information for those sub-devices
+> > that are actually GPIO chips registered with GPIOLIB. While at it: use
+> > the device type struct to setup the release callback which is the
+> > preferred way to use the device API.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> (...=
+> > +static struct device_type gpio_dev_type = {
 
-> The MT8186 does not support configuring pin slew rate. This is evident
-> from both the datasheet, and the fact that the driver points the slew
-> rate register range at the GPIO direction register range.
->
-> Drop the bogus setting.
->
-> Fixes: 8b483bda1e46 ("pinctrl: add pinctrl driver on mt8186")
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+Can you make this structure const please?
 
-Patches applied!
+> > +       .name = "gpio_chip",
+> > +       .release = gpiodev_release,
+> > +};
+> > +       gdev->dev.type = &gpio_dev_type;
+> >         gdev->dev.bus = &gpio_bus_type;
+> >         gdev->dev.parent = gc->parent;
+> 
+> Looks good to me (TM) but we should run this by Greg so he get the chance
+> to chime in, I doubt he will see it on LKML.
 
-Yours,
-Linus Walleij
+Yes thanks, I wouldn't have caught it...
+
+greg k-h
 
