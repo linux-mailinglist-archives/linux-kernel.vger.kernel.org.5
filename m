@@ -1,95 +1,117 @@
-Return-Path: <linux-kernel+bounces-56971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 805D984D201
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:07:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91CB584D202
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:08:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EC101F257E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:07:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C30F28A80E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:08:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52DFE8562B;
-	Wed,  7 Feb 2024 19:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QR8vRHFK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C88E85624;
+	Wed,  7 Feb 2024 19:08:28 +0000 (UTC)
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82254823DA;
-	Wed,  7 Feb 2024 19:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C823C8289E;
+	Wed,  7 Feb 2024 19:08:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707332848; cv=none; b=oAcHy/Ve/cMex0qozPOwoe4IdIHZ5FiEFBwZv2ztU5h8zE5VFk9tpextYOAMJ8v5Id5l2JVa7Hw3as+TQbDF/uPL3SQ2Kq78OlieBUArD0FkeLe3zSzzKKbdWdSKhV9Ls62OVfdB5RHFK6CyVJnlYnuKmsLf0lHxTlSkNkTysVA=
+	t=1707332908; cv=none; b=en0sy9cWSAo8WUQ4LhI0gvjd8qmRtlRTdSb+8P5ww7gAcgt1dZK4oZ9iH+jO+/5W+Ri+TjJJpnh0XRzTymrJowuiUU3tmekHBiqgf146qWtsD8R3+Ammfd051qjsT7weXcETPIU2lrKKsv5UgFCs++kYxYijchthTv8h/63VmVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707332848; c=relaxed/simple;
-	bh=32b8qXnDnhangiLWu11oK/IFaNchO41kne7P17ywF0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=heqr4cW7QTzyoleLBei79rQZxYxexDgFOqMCphsIERYH9HGMULn2QQgx+KxVfbOc8lr5SsdTPoqnNtUEML2v+VyUU0YEqBLmVS49Af5DAQ9FAS+71sK17lNjczS+2dMdxRG0JZz8j9PQKXi7qukUVZ7O95zR7ReQXzyrIxWn9Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QR8vRHFK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1103C433F1;
-	Wed,  7 Feb 2024 19:07:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707332848;
-	bh=32b8qXnDnhangiLWu11oK/IFaNchO41kne7P17ywF0o=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=QR8vRHFKZY+rHXYBNbvc6eoNFkPkbaKZ3C8iazyT+m1abt7chD4Doq/5Auq53dnWW
-	 HtNhDmwtQjqq7Xud4MLKS457LYKThGxyyDCbo/UlLIkPTiTrJMY7nXuj7SRVsRxTaE
-	 S9g6rmGIAOFOvkSRG+oEDos7H4kV53VmtgVzN4sgEM3yAv24fWmACxMFFZB/PooYXg
-	 oN3pWTndrcTNCWvh7MFlEc5kEbz+SzYzB7X59kHHMB/KOqgH6s11Ng94LVahrlLiDU
-	 UhSGtnq5l/wmXezmk7jTGKuKK7IcCN8/zUQqHde5Q0UDRPzz9so56OTx3z5I1kgU0k
-	 ab50T2sldLyYA==
-Date: Wed, 7 Feb 2024 11:07:26 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Joe Damato <jdamato@fastly.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- chuck.lever@oracle.com, jlayton@kernel.org, linux-api@vger.kernel.org,
- brauner@kernel.org, edumazet@google.com, davem@davemloft.net,
- alexander.duyck@gmail.com, sridhar.samudrala@intel.com,
- willemdebruijn.kernel@gmail.com, weiwan@google.com,
- David.Laight@ACULAB.COM, arnd@arndb.de, sdf@google.com,
- amritha.nambiar@intel.com, Jonathan Corbet <corbet@lwn.net>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Nathan Lynch
- <nathanl@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Namjae Jeon
- <linkinjeon@kernel.org>, Steve French <stfrench@microsoft.com>, Thomas
- Zimmermann <tzimmermann@suse.de>, Julien Panis <jpanis@baylibre.com>,
- Andrew Waterman <waterman@eecs.berkeley.edu>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "open
- list:DOCUMENTATION" <linux-doc@vger.kernel.org>, "open list:FILESYSTEMS
- (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH net-next v6 4/4] eventpoll: Add epoll ioctl for
- epoll_params
-Message-ID: <20240207110726.68c07188@kernel.org>
-In-Reply-To: <20240207185014.GA1221@fastly.com>
-References: <20240205210453.11301-1-jdamato@fastly.com>
-	<20240205210453.11301-5-jdamato@fastly.com>
-	<ec9791cf-d0a2-4d75-a7d6-00bcab92e823@kernel.org>
-	<20240207185014.GA1221@fastly.com>
+	s=arc-20240116; t=1707332908; c=relaxed/simple;
+	bh=gppkMTLUZP2M0ir4y57co003yRnpqCBQwMrit6QAMRY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oXDKTMpsa5nlQXTBWUu66zTguCcdtUKZIWl/6nYq0KAIXO7vsF8y4bwQ8bs8CoeDhOqU0262IAXKvnj5vmRI5bv2BKGbTaXgsEDaZQj6K7VP4i+aVFj8Ts3RT+B9zBj+vbyGWXpUaoh5G+OtEfYtvgC2n7szQed4IpmhcHMYqrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e06c06c0f6so111581b3a.0;
+        Wed, 07 Feb 2024 11:08:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707332906; x=1707937706;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b5NAyJJk2M6nTouAkFWsG1u5nlnAwfDcNyiH/8GXd1c=;
+        b=C/4YYI5y9POb1PY8NMjbEC3mSjf2OBAwSBTqXjBZAnEYUiwPn1wPPFVWMi7FR9Lqjg
+         /MorQX9dPOW96VdhGztqQytC2RIL0eQOwtiMqm7ZrYriFW/ww3qaZ+XSur6TMC5xCfcC
+         PaWMVlvr6OLT0Dm2dhy6pLIIXrUot+3rv4T8JdK+0eW9t21sQeX0iEFalPf9b4nGiRat
+         Z1wWA7jDS2NO2tFhIIUrMytNUg8VtaETPB7T7p/UKqFY2DrlOBmjkjHcz3KaurYljpxT
+         uYA3BSRZhspXpTpNgwO8KNp7JeYZxitl2/U7tE4xjVBX0YbIaG04WbuMPy3EsSUefccY
+         OkBg==
+X-Gm-Message-State: AOJu0Yyp2kgXdPl6+Qgru1Jw8Dv8XlLP4tmVvE/FsEILSxWllwMqU5ll
+	LlhobANgiLzHTjHCEzGXjqR4Gh+Ga80rLd4Z+dfOCPw4wOPEFStHmm1kJBXtpoAKhVc+vT4Q9Ww
+	bZW19QDQH7e2yoGxJFD12HYDbjZ0=
+X-Google-Smtp-Source: AGHT+IFbDa1MkIhin+YrCea3UDRAWki+bDn7OQtqgtmEhvXnmb3mzN9FOwFGws3FiO87xF1vQI6cvCXFaGKdkJVwvJA=
+X-Received: by 2002:a05:6a20:438f:b0:19c:9e7d:3f4e with SMTP id
+ i15-20020a056a20438f00b0019c9e7d3f4emr891189pzl.1.1707332906015; Wed, 07 Feb
+ 2024 11:08:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-15-namhyung@kernel.org>
+ <CAP-5=fUWaKW7d6_YkET0o26=fjBwX6PPJ1gXQ9wndQM_Oi2O3A@mail.gmail.com>
+ <CAM9d7cgF_PYm2fG1Vgu25u1hVZUK0wmFBqY7DHW2eVpRV=iERA@mail.gmail.com> <CAP-5=fV7fWHM53roUJOU+0vAYQJAbhdE1EkgzHLv7jPgeLc2HQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fV7fWHM53roUJOU+0vAYQJAbhdE1EkgzHLv7jPgeLc2HQ@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Wed, 7 Feb 2024 11:08:15 -0800
+Message-ID: <CAM9d7cgV-c2bLE9KGSA2qTHNbzGriQo9NqYD5k177+46e51pJA@mail.gmail.com>
+Subject: Re: [PATCH 14/14] perf annotate-data: Add stack canary type
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
+	linux-trace-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 7 Feb 2024 10:50:15 -0800 Joe Damato wrote:
-> > This !! is unnecessary. Nonzero values shall be "converted" to true.
-> > 
-> > But FWIW, the above is nothing which should be blocking, so:
-> "> 
-> > Reviewed-by: Jiri Slaby <jirislaby@kernel.org>  
-> 
-> netdev maintainers: Jiri marked this with Reviewed-by, but was this review
-> what caused "Changes Requested" to be the status set for this patch set in
-> patchwork?
-> 
-> If needed, I'll send a v7 with the changes Jiri suggested and add the
-> "Reviewed-by" since the changes are cosmetic, but I wanted to make sure
-> this was the reason.
+On Tue, Feb 6, 2024 at 3:40=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> On Tue, Feb 6, 2024 at 3:19=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
+ wrote:
+> >
+> > On Fri, Feb 2, 2024 at 7:21=E2=80=AFPM Ian Rogers <irogers@google.com> =
+wrote:
+> > >
+> > > On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.=
+org> wrote:
+> > > >
+> > > > When the stack protector is enabled, compiler would generate code t=
+o
+> > > > check stack overflow with a special value called 'stack carary' at
+> > > > runtime.  On x86_64, GCC hard-codes the stack canary as %gs:40.
+> > > >
+> > > > While there's a definition of fixed_percpu_data in asm/processor.h,
+> > > > it seems that the header is not included everywhere and many places
+> > > > it cannot find the type info.  As it's in the well-known location (=
+at
+> > > > %gs:40), let's add a pseudo stack canary type to handle it speciall=
+y.
+> > >
+> > > I wonder if cases like this can be handled by debug info rather than
+> > > special cases in the tool. Special cases are fine too, but are
+> > > potentially less portable.
+> >
+> > Agreed, but I couldn't find anything special in DWARF.
+>
+> The fs and gs selectors are commonly used for thread local storage, so
+> could something like DW_OP_form_tls_address be used?
+> https://dwarfstd.org/issues/110803.1.html
 
-Yes, I think that's it.
+I'm not sure if it's the same thing.  Maybe it's for variables with
+__thread annotation.  I don't know if compilers generate a
+(pseudo) variable for stack canary.
+
+Thanks,
+Namhyung
 
