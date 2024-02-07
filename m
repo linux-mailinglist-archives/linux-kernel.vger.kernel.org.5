@@ -1,319 +1,179 @@
-Return-Path: <linux-kernel+bounces-55771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7164984C189
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:52:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA75A84C18B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:52:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 969F71C245E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:52:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEDF21C23A74
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:52:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A15D27E;
-	Wed,  7 Feb 2024 00:51:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013C58C05;
+	Wed,  7 Feb 2024 00:51:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZlMfGoxO"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ONSqO9Sf"
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A884A1B;
-	Wed,  7 Feb 2024 00:51:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A24DDAD
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 00:51:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707267083; cv=none; b=GCoVEkO5hd8GxPm1GGIDw4+bNp02EROoic5W6TRe3H62kyuVW0zrHySCFu2Olh6Yqb84jJBS7UTYdfNek8W/ZALMIv+9tor0fdotYPilvGcPMPvKlwdvY4Qw2npLT9CTbJJNcVkYgJwxSzPAX+3i1JDzYRcyoyzRQ81TK7v3gvA=
+	t=1707267118; cv=none; b=akcLIscxVrl4wlnV/TmyrRFyWn/KO0fvc1cSK0NnAg1spvflhCLGZ1dTW7rRG+s+jlCuA/tFaQ3kKRHdcurVWxdMXwJC3LI40DmBHwdmsi4U4wpRYM2mIPJU0V8fgDXNsei04HO5BQy2tGk26VOlykct8Fm1ji8YsajuTkPioJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707267083; c=relaxed/simple;
-	bh=4AO/+UsepqAx8tpPjNVWsbXWuvjnjCrfhVLpqhMoGcE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZOUyyJC9A6eK33C2+Xp1rayrKTN1+TGo7q9kt2maVqSpx9kacWBKy6xblba1Nl+FTCGLV4xcYt7eWvA+/3hgCIussgC4UfBHgnFM6871YCBTkHBWruMaPr/d4cFDXtrtte4TzFOGXvsgzu5V+0XQJ6dY4hWDEBGpEDD7+KnY+Jo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZlMfGoxO; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf4d2175b2so1058381fa.0;
-        Tue, 06 Feb 2024 16:51:20 -0800 (PST)
+	s=arc-20240116; t=1707267118; c=relaxed/simple;
+	bh=zNJXxzOEtRt0uJXobHWSX6yUAHNaIahZf4y9z7/TbsI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sOvRm/kGinb5XGhocDVvz629XDnULEqCzd9FORABAjohsdT+lny4PM/X7kQkUeOpj7hfa8C8HLXzY0VsAVfTrOtKzCwlznk4k2ZkVuOgT9T8qTdXNIki9Xblu5ayX823jrBK7I5h8e3uwYkWAYb+xLwNGINay4a/5PVR4PZcX74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ONSqO9Sf; arc=none smtp.client-ip=209.85.166.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-363c2edac5aso204365ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 16:51:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707267078; x=1707871878; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h1B+J6u5jhg4RLeG3CC53Y7+wHzqP87W36OesHElAkc=;
-        b=ZlMfGoxOJPLffGfWFU786GXz+nB+2czZ2mOk1Ul+NLENHgoCSLIfZycv4NihouHJTk
-         Llol4aUDWyBWGtZi2akSCB2sg46gSlwQx5taaGweS9Qdc4kQ7RZLcy3PDAhbj+VT6AWl
-         CQPOMWWrI60rTwFzkJ3Jbra5Q/fKg5AP0mZ9I4c/DyQi4tRL9864TdAAgttTFyX1Q2QG
-         DI9Is61mE96/IaMX7dJi0Z8Ivjb25QpJOv8CWWGXB1Sfc/ra/aiOELnMum625N5BP4rU
-         1m4VnCCiOWHajDCglUoxSpzowTsAHP3T9w8b5PXMBpMa1u1FoUJqJ9SCkDqCiSk6TfrT
-         41TA==
+        d=google.com; s=20230601; t=1707267115; x=1707871915; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=baJvcfh2d5K+Em7xs4mnjX+k4FKta+zMPcd+Ztd7ZXw=;
+        b=ONSqO9SfoGbRMixn7fnRtS1G/1Jjc6fXjirkAxPoivDL7+XuZZZOYresRad+Cg7iW+
+         2ETEDAxrbhT7qJSXFxXzSMHKZi2zSYGwMS60d/GDR0WfjavxCBplXd3CR5AuuQhCesrq
+         moBVOiMthujXGMA7skBc13mGNV7mSpU55qOjZrk5oPBxfaKAhKhlpBWm9tKNNupQLavK
+         RItb0afaNhRmQZIp+agUVQmYODJ/z4CX9eTs2tJbGxpyqqiFBBL96bLe0i0wb7MehWu8
+         ecwr0GMiIMLCssVsFw9s5bza9ffAIHk36bjQQYpV54ukaJkfj3FJ7AW1ftQiFXDc4ycE
+         0trw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707267078; x=1707871878;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h1B+J6u5jhg4RLeG3CC53Y7+wHzqP87W36OesHElAkc=;
-        b=LHuuR+vK9Cax6G9BM6cYwdJCcGtk5zt3wzLr4s01sK3kAWx/XTdt4GLVmOxMqI0vah
-         kLtCUJMP2YuRxSvzAoPlWHF9ZmOX11Xt81qMz09wETIKnnvL36FmIolh2dBI4FXxJWNY
-         jk2AvcfOlVG4nxJ+Pfg54aCnH94dbRANuqN6V7FoZOy41yxyr/0S65OP8jD6EVv5HT26
-         lYBxbQtyMhVyCQdvqsYHjEd5GpfHK21VJjwk0iS+aC/na3nLTC/7elnmh7RHheH6aHjO
-         9CCBDervgUBg6XojLXMgzIeNL9WNPXAKzKtdcdnzc91xFL5mjQseYQHUAGUfFy8TR8GX
-         09sg==
-X-Gm-Message-State: AOJu0Yx3+wn/+i1i/Fnt2skFw5XRLqOGJd7dsXZR9ntMZ3VQ9nEi/p2D
-	Cs8bieEOrRjtbxlcax44WIIG1f4FTZyi9st00MnNt7Jl1OQ50JPa0HyQDzc4h98muXKRn2vK4Jk
-	RCEoGZMGNpCaE6wYpstMzMBER8DA=
-X-Google-Smtp-Source: AGHT+IGGeMHFUyqeCOF6yL8wa0QoHskikr5vyK/TGm3rz7xqTeKUcnLH7NVLUwjVyA3iN5nfb77SnbV/uWZTlm0u9pI=
-X-Received: by 2002:a2e:b903:0:b0:2d0:b3c4:5113 with SMTP id
- b3-20020a2eb903000000b002d0b3c45113mr2537860ljb.11.1707267077915; Tue, 06 Feb
- 2024 16:51:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707267115; x=1707871915;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=baJvcfh2d5K+Em7xs4mnjX+k4FKta+zMPcd+Ztd7ZXw=;
+        b=vZ3+j4OY58snWzitotTEC5tdn/Wt7uZlXlPAWWfld/Zlsj9hTmsZWLzsgxzcl+m2aS
+         mDlybx4OGYlTjad2TpuDvKLR1/TSWynqVINN095KXrIIjlIGF0U19C+t3+KNre+Hr0eH
+         QwqWLOIlZUrWT+gujY+AW+zLsxGYcfS23hAQ2ArF5E/d6fSoMjhlEDqVIqMbnbwLDwoa
+         yNwmvyJkSd8C7gS+7Ep8xNxgADHxo7PJmKcg33tGfe/3KCoWnrv65doFjSrdkSY7FbL8
+         8QyMOmCL8d9m49W99vBjLEkm6/K7Tmrq8nfOIAQzaAjCZg3gvMSZmCJLkGOAqHu40n37
+         RGMw==
+X-Gm-Message-State: AOJu0YxThS/J+NlMAyTpIlTS5Y12Tu34rphOQ905IqDralsd3KC3o1hy
+	Z43g7/+7x10LYoC8BERPJuBbc9wk0S0Ny7L7N7IfXyKhkRDGdmEtHsGJcaejQg==
+X-Google-Smtp-Source: AGHT+IGa9tcSPup65Y2Ws5SFq33Iafx0c5ApEjnuekYBaJ/6NAEsvxGWsB8LTJVVfveSZlywMiHiZg==
+X-Received: by 2002:a92:dc10:0:b0:363:d953:a129 with SMTP id t16-20020a92dc10000000b00363d953a129mr1746208iln.25.1707267115441;
+        Tue, 06 Feb 2024 16:51:55 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWpfl7GfkjIT0OB4pGx9trasISF1+iPcKlXo1qDPQknWfHTqtIbJi2f5hVj0rQc5zx9SI2rbEy6dlI9jc0ym4OplbpgDs0c7/V1T1zwDOvK54r0fHyUQYCMYBtEJr44LRlMYz+c/W8ayPxf/rYquE/tE3ohp4I479wCwJV0w7YtikLrgny0+iT9LQUzB/lEx6BODMPoCybksTOYvFpsH05O2AzufbmZVubZKjt5z6tJmnssldAWpRywZv6mKuApFCNvglLZPnHE0HTHGrcySkGu7JKK8flu97ZuctM3Bm27WC3HTyplvO9zmh7HfkHjsmaulEzmwvz2lNdR6SbFZsn0WwNqpr//Tc+L225b1ybsDJD2idpsa/RV7gMuPgqFuvLAi9oRCnY15hprI6LDu6uaJYeFUiTucUuSJWVzgGO1f7rKa3Oo4T9P
+Received: from google.com (20.10.132.34.bc.googleusercontent.com. [34.132.10.20])
+        by smtp.gmail.com with ESMTPSA id s5-20020a92cc05000000b00363c8e5a1a1sm28357ilp.44.2024.02.06.16.51.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 16:51:54 -0800 (PST)
+Date: Wed, 7 Feb 2024 00:51:51 +0000
+From: Justin Stitt <justinstitt@google.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Jason Wang <jasowang@redhat.com>, kernel test robot <lkp@intel.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Azeem Shaikh <azeemshaikh38@gmail.com>,
+	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+Subject: Re: [PATCH v3 3/4] string: Allow 2-argument strscpy_pad()
+Message-ID: <20240207005151.lyrtgqd4wekolwe7@google.com>
+References: <20240206142027.make.107-kees@kernel.org>
+ <20240206142221.2208763-3-keescook@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206023740.81351-1-zhaoyang.huang@unisoc.com>
-In-Reply-To: <20240206023740.81351-1-zhaoyang.huang@unisoc.com>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Wed, 7 Feb 2024 08:51:06 +0800
-Message-ID: <CAGWkznFPjKKUeTbzVwSbihK7KWo_duhNL++MLGfvjvHK-2vYQw@mail.gmail.com>
-Subject: Re: [PATCHv9 1/1] block: introduce content activity based ioprio
-To: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>, 
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, steve.kang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240206142221.2208763-3-keescook@chromium.org>
 
-I would like to state more thoughts here. That is, the RT tasks have
-had privilege on CPU resources as more cpu time and scheduled earlier
-via which they could generally launch the bio earlier than CFS tasks
-do. This commit just wants to improve this a little by letting CFS
-tasks have the opportunity to raise their bio's ioprio by judging the
-content's activities.
+Hi,
 
-On Tue, Feb 6, 2024 at 10:40=E2=80=AFAM zhaoyang.huang
-<zhaoyang.huang@unisoc.com> wrote:
+On Tue, Feb 06, 2024 at 06:22:18AM -0800, Kees Cook wrote:
+> Similar to strscpy(), update strscpy_pad()'s 3rd argument to be
+> optional when the destination is a compile-time known size array.
+
+This patch is diff'd against Patch 1/4 in this series, right? I wonder
+why you split them up. If I hadn't literally just read that patch I
+would be mildly confused.
+
+I suppose one reason may be that 1/4 is a standalone change with a high
+percentage chance of landing whilst this overloading magic may not land
+as easily?
+
+At any rate,
+Reviewed-by: Justin Stitt <justinstitt@google.com>
+
 >
-> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
->
-> Currently, request's ioprio are set via task's schedule priority(when no
-> blkcg configured), which has high priority tasks possess the privilege on
-> both of CPU and IO scheduling. Furthermore, most of the write requestes
-> are launched asynchronosly from kworker which can't know the submitter's
-> priorities.
-> This commit works as a hint of original policy by promoting the request
-> ioprio based on the page/folio's activity. The original idea comes from
-> LRU_GEN which provides more precised folio activity than before. This
-> commit try to adjust the request's ioprio when certain part of its folios
-> are hot, which indicate that this request carry important contents and
-> need be scheduled ealier.
->
-> The filesystem should call bio_set_active_ioprio_folio() after
-> calling bio_add_folio. Please be noted that this set of API can not
-> handle bvec_try_merge_page cases.
->
-> This commit is verified on a v6.6 6GB RAM android14 system via 4 test cas=
-es
-> by calling bio_set_active_ioprio in erofs, ext4, f2fs and blkdev(raw
-> partition of gendisk)
->
-> Case 1:
-> script[a] which get significant improved fault time as expected[b]*
-> where dd's cost also shrink from 55s to 40s.
-> (1). fault_latency.bin is an ebpf based test tool which measure all task'=
-s
->    iowait latency during page fault when scheduled out/in.
-> (2). costmem generate page fault by mmaping a file and access the VA.
-> (3). dd generate concurrent vfs io.
->
-> [a]
-> ./fault_latency.bin 1 5 > /data/dd_costmem &
-> costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-> costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-> costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-> costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-> dd if=3D/dev/block/sda of=3D/data/ddtest bs=3D1024 count=3D2048000 &
-> dd if=3D/dev/block/sda of=3D/data/ddtest1 bs=3D1024 count=3D2048000 &
-> dd if=3D/dev/block/sda of=3D/data/ddtest2 bs=3D1024 count=3D2048000 &
-> dd if=3D/dev/block/sda of=3D/data/ddtest3 bs=3D1024 count=3D2048000
-> [b]
->                        mainline         commit
-> io wait                736us            523us
->
-> * provide correct result for test case 1 in v7 which was compared between
-> EMMC and UFS wrongly.
->
-> Case 2:
-> fio -filename=3D/dev/block/by-name/userdata -rw=3Drandread -direct=3D0 -b=
-s=3D4k -size=3D2000M -numjobs=3D8 -group_reporting -name=3Dmytest
-> mainline: 513MiB/s
-> READ: bw=3D531MiB/s (557MB/s), 531MiB/s-531MiB/s (557MB/s-557MB/s), io=3D=
-15.6GiB (16.8GB), run=3D30137-30137msec
-> READ: bw=3D543MiB/s (569MB/s), 543MiB/s-543MiB/s (569MB/s-569MB/s), io=3D=
-15.6GiB (16.8GB), run=3D29469-29469msec
-> READ: bw=3D474MiB/s (497MB/s), 474MiB/s-474MiB/s (497MB/s-497MB/s), io=3D=
-15.6GiB (16.8GB), run=3D33724-33724msec
-> READ: bw=3D535MiB/s (561MB/s), 535MiB/s-535MiB/s (561MB/s-561MB/s), io=3D=
-15.6GiB (16.8GB), run=3D29928-29928msec
-> READ: bw=3D523MiB/s (548MB/s), 523MiB/s-523MiB/s (548MB/s-548MB/s), io=3D=
-15.6GiB (16.8GB), run=3D30617-30617msec
-> READ: bw=3D492MiB/s (516MB/s), 492MiB/s-492MiB/s (516MB/s-516MB/s), io=3D=
-15.6GiB (16.8GB), run=3D32518-32518msec
-> READ: bw=3D533MiB/s (559MB/s), 533MiB/s-533MiB/s (559MB/s-559MB/s), io=3D=
-15.6GiB (16.8GB), run=3D29993-29993msec
-> READ: bw=3D524MiB/s (550MB/s), 524MiB/s-524MiB/s (550MB/s-550MB/s), io=3D=
-15.6GiB (16.8GB), run=3D30526-30526msec
-> READ: bw=3D529MiB/s (554MB/s), 529MiB/s-529MiB/s (554MB/s-554MB/s), io=3D=
-15.6GiB (16.8GB), run=3D30269-30269msec
-> READ: bw=3D449MiB/s (471MB/s), 449MiB/s-449MiB/s (471MB/s-471MB/s), io=3D=
-15.6GiB (16.8GB), run=3D35629-35629msec
->
-> commit: 633MiB/s
-> READ: bw=3D668MiB/s (700MB/s), 668MiB/s-668MiB/s (700MB/s-700MB/s), io=3D=
-15.6GiB (16.8GB), run=3D23952-23952msec
-> READ: bw=3D589MiB/s (618MB/s), 589MiB/s-589MiB/s (618MB/s-618MB/s), io=3D=
-15.6GiB (16.8GB), run=3D27164-27164msec
-> READ: bw=3D638MiB/s (669MB/s), 638MiB/s-638MiB/s (669MB/s-669MB/s), io=3D=
-15.6GiB (16.8GB), run=3D25071-25071msec
-> READ: bw=3D714MiB/s (749MB/s), 714MiB/s-714MiB/s (749MB/s-749MB/s), io=3D=
-15.6GiB (16.8GB), run=3D22409-22409msec
-> READ: bw=3D600MiB/s (629MB/s), 600MiB/s-600MiB/s (629MB/s-629MB/s), io=3D=
-15.6GiB (16.8GB), run=3D26669-26669msec
-> READ: bw=3D592MiB/s (621MB/s), 592MiB/s-592MiB/s (621MB/s-621MB/s), io=3D=
-15.6GiB (16.8GB), run=3D27036-27036msec
-> READ: bw=3D691MiB/s (725MB/s), 691MiB/s-691MiB/s (725MB/s-725MB/s), io=3D=
-15.6GiB (16.8GB), run=3D23150-23150msec
-> READ: bw=3D569MiB/s (596MB/s), 569MiB/s-569MiB/s (596MB/s-596MB/s), io=3D=
-15.6GiB (16.8GB), run=3D28142-28142msec
-> READ: bw=3D563MiB/s (590MB/s), 563MiB/s-563MiB/s (590MB/s-590MB/s), io=3D=
-15.6GiB (16.8GB), run=3D28429-28429msec
-> READ: bw=3D712MiB/s (746MB/s), 712MiB/s-712MiB/s (746MB/s-746MB/s), io=3D=
-15.6GiB (16.8GB), run=3D22478-22478msec
->
-> Case 3:
-> This commit is also verified by the case of launching camera APP which is
-> usually considered as heavy working load on both of memory and IO, which
-> shows 12%-24% improvement.
->
->                 ttl =3D 0         ttl =3D 50        ttl =3D 100
-> mainline        2267ms          2420ms          2316ms
-> commit          1992ms          1806ms          1998ms
->
-> case 4:
-> androbench has no improvment as well as regression in RD/WR test item
-> while make a 3% improvement in sqlite items.
->
-> Suggested-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> Cc: Andy Shevchenko <andy@kernel.org>
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
-> change of v2: calculate page's activity via helper function
-> change of v3: solve layer violation by move API into mm
-> change of v4: keep block clean by removing the page related API
-> change of v5: introduce the macros of bio_add_folio/page for read dir.
-> change of v6: replace the macro of bio_add_xxx by submit_bio which
->                 iterating the bio_vec before launching bio to block layer
-> change of v7: introduce the function bio_set_active_ioprio
->               provide updated test result
-> change of v8: provide two sets of APIs for bio_set_active_ioprio_xxx
-> change of v9: modify the code according to Matthew's opinion, leave
->               bio_set_active_ioprio_folio only
-> ---
-> ---
->  block/Kconfig       | 15 +++++++++++++++
->  block/bio.c         | 33 +++++++++++++++++++++++++++++++++
->  include/linux/bio.h |  1 +
->  3 files changed, 49 insertions(+)
+>  include/linux/string.h | 29 ++++++++++++++++++-----------
+>  1 file changed, 18 insertions(+), 11 deletions(-)
 >
-> diff --git a/block/Kconfig b/block/Kconfig
-> index f1364d1c0d93..fb3a888194c0 100644
-> --- a/block/Kconfig
-> +++ b/block/Kconfig
-> @@ -228,6 +228,21 @@ config BLOCK_HOLDER_DEPRECATED
->  config BLK_MQ_STACKING
->         bool
+> diff --git a/include/linux/string.h b/include/linux/string.h
+> index 79b875de615e..9bd421ad92a4 100644
+> --- a/include/linux/string.h
+> +++ b/include/linux/string.h
+> @@ -79,6 +79,10 @@ ssize_t sized_strscpy(char *, const char *, size_t);
+>  	sized_strscpy(dst, src, sizeof(dst) + __must_be_array(dst))
+>  #define __strscpy1(dst, src, size)	sized_strscpy(dst, src, size)
 >
-> +config BLK_CONT_ACT_BASED_IOPRIO
-> +       bool "Enable content activity based ioprio"
-> +       depends on LRU_GEN
-> +       default n
-> +       help
-> +         This item enable the feature of adjust bio's priority by
-> +         calculating its content's activity.
-> +         This feature works as a hint of original bio_set_ioprio
-> +         which means rt task get no change of its bio->bi_ioprio
-> +         while other tasks have the opportunity to raise the ioprio
-> +         if the bio take certain numbers of active pages.
-> +         The file system should use the API after bio_add_folio for
-> +         their buffered read/write/sync function to adjust the
-> +         bio->bi_ioprio.
+> +#define __strscpy_pad0(dst, src, ...)	\
+> +	sized_strscpy_pad(dst, src, sizeof(dst) + __must_be_array(dst))
+> +#define __strscpy_pad1(dst, src, size)	sized_strscpy_pad(dst, src, size)
 > +
->  source "block/Kconfig.iosched"
+>  /**
+>   * strscpy - Copy a C-string into a sized buffer
+>   * @dst: Where to copy the string to
+> @@ -104,6 +108,18 @@ ssize_t sized_strscpy(char *, const char *, size_t);
+>  #define strscpy(dst, src, ...)	\
+>  	CONCATENATE(__strscpy, COUNT_ARGS(__VA_ARGS__))(dst, src, __VA_ARGS__)
 >
->  endif # BLOCK
-> diff --git a/block/bio.c b/block/bio.c
-> index 816d412c06e9..2c0b8f2ae4d4 100644
-> --- a/block/bio.c
-> +++ b/block/bio.c
-> @@ -1476,6 +1476,39 @@ void bio_set_pages_dirty(struct bio *bio)
->  }
->  EXPORT_SYMBOL_GPL(bio_set_pages_dirty);
+> +#define sized_strscpy_pad(dest, src, count)	({			\
+> +	char *__dst = (dest);						\
+> +	const char *__src = (src);					\
+> +	const size_t __count = (count);					\
+> +	ssize_t __wrote;						\
+> +									\
+> +	__wrote = sized_strscpy(__dst, __src, __count);			\
+> +	if (__wrote >= 0 && __wrote < __count)				\
+> +		memset(__dst + __wrote + 1, 0, __count - __wrote - 1);	\
+> +	__wrote;							\
+> +})
+> +
+>  /**
+>   * strscpy_pad() - Copy a C-string into a sized buffer
+>   * @dest: Where to copy the string to
+> @@ -124,17 +140,8 @@ ssize_t sized_strscpy(char *, const char *, size_t);
+>   * * The number of characters copied (not including the trailing %NULs)
+>   * * -E2BIG if count is 0 or @src was truncated.
+>   */
+> -#define strscpy_pad(dest, src, count)	({			\
+> -	char *__dst = (dest);						\
+> -	const char *__src = (src);					\
+> -	const size_t __count = (count);					\
+> -	ssize_t __wrote;						\
+> -									\
+> -	__wrote = strscpy(__dst, __src, __count);			\
+> -	if (__wrote >= 0 && __wrote < __count)				\
+> -		memset(__dst + __wrote + 1, 0, __count - __wrote - 1);	\
+> -	__wrote;							\
+> -})
+> +#define strscpy_pad(dst, src, ...)	\
+> +	CONCATENATE(__strscpy_pad, COUNT_ARGS(__VA_ARGS__))(dst, src, __VA_ARGS__)
 >
-> +/*
-> + * bio_set_active_ioprio_folio is helper function to count the bio's
-> + * content's activities which measured by MGLRU.
-> + * The file system should call this function after bio_add_page/folio fo=
-r
-> + * the buffered read/write/sync.
-> + */
-> +#ifdef CONFIG_BLK_CONT_ACT_BASED_IOPRIO
-> +void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio)
-> +{
-> +       int class, level, hint;
-> +       int activities;
-> +
-> +       /*
-> +        * use bi_ioprio to record the activities, assume no one will set=
- it
-> +        * before submit_bio
-> +        */
-> +       bio->bi_ioprio +=3D folio_test_workingset(folio) ? 1 : 0;
-> +       activities =3D IOPRIO_PRIO_DATA(bio->bi_ioprio);
-> +       level =3D IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
-> +       hint =3D IOPRIO_PRIO_HINT(bio->bi_ioprio);
-> +
-> +       if (activities > bio->bi_vcnt / 2)
-> +               class =3D IOPRIO_CLASS_RT;
-> +       else if (activities > bio->bi_vcnt / 4)
-> +               class =3D max(IOPRIO_PRIO_CLASS(get_current_ioprio()), IO=
-PRIO_CLASS_BE);
-> +
-> +       bio->bi_ioprio =3D IOPRIO_PRIO_VALUE_HINT(class, level, hint);
-> +}
-> +#else
-> +void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio) {=
-}
-> +#endif
-> +EXPORT_SYMBOL_GPL(bio_set_active_ioprio_folio);
-> +
->  /*
->   * bio_check_pages_dirty() will check that all the BIO's pages are still=
- dirty.
->   * If they are, then fine.  If, however, some pages are clean then they =
-must
-> diff --git a/include/linux/bio.h b/include/linux/bio.h
-> index 41d417ee1349..6c36546f6b9b 100644
-> --- a/include/linux/bio.h
-> +++ b/include/linux/bio.h
-> @@ -487,6 +487,7 @@ void bio_iov_bvec_set(struct bio *bio, struct iov_ite=
-r *iter);
->  void __bio_release_pages(struct bio *bio, bool mark_dirty);
->  extern void bio_set_pages_dirty(struct bio *bio);
->  extern void bio_check_pages_dirty(struct bio *bio);
-> +void bio_set_active_ioprio_folio(struct bio *bio, struct folio *folio);
->
->  extern void bio_copy_data_iter(struct bio *dst, struct bvec_iter *dst_it=
-er,
->                                struct bio *src, struct bvec_iter *src_ite=
-r);
+>  #ifndef __HAVE_ARCH_STRCAT
+>  extern char * strcat(char *, const char *);
 > --
-> 2.25.1
+> 2.34.1
 >
+
+Thanks
+Justin
 
