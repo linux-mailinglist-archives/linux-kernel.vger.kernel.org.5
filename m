@@ -1,226 +1,192 @@
-Return-Path: <linux-kernel+bounces-55750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E6B984C130
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:07:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 848E584C12F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:07:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98FEEB24A23
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 101D71F253BA
 	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B3AF3D71;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CAE63D76;
 	Wed,  7 Feb 2024 00:07:32 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5F3EC2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154EE28E8
 	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 00:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707264451; cv=none; b=LamTqIEJnuC891K4gS10iVUiG4E1ypBeZbJAM5eJBCoV4q/TSBSU2VerEKT+nbbgKPkxgqpHQCJmybTwwtVyJ/zVcq1Li2j0Ef29ejq+hsRNbBkGCBT9p1e/fmNPogs0qRaqXv8U273QpU8jIMYt3cA9gu2JsZHstjq4WEgwvFk=
+	t=1707264451; cv=none; b=R0RbQkySTkwxVZ9hR9SyjUGS6SaVitGsb+SKGdwk3/5ByGt5RdpnnFKxQp/8MPiDy/SCULU5tJPB5/Oqdo+5wYz45zMwsYCSHxKdauSqcybM933cb9esDL1h1sPQLbgq9yMRl9aWevB+W+5ZjKPKWcZ8FvMU1GNnbXrbVVyArpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707264451; c=relaxed/simple;
-	bh=e/wWgvLaH6Xms95KzTm+BykT06sEDTluKljxtlhBtXI=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=D8Ftrk3r5Q5WPZBdB+wSOZP/OcfDw3q8UKi0nUw7G23LPJp9AiSKToSuqm5CuGVvI6bqD97x0n0OuJYJfQP3UiMVgymItPfoqgmvWX9wV9TcJRQQhhbpyZQRG1rluzrWzZhWlOCbNYH4utqSV3CdnAhCZwBAXqcK+a9pc6PLfMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+	bh=fzBMwjP3R+a5R2HdhiIMhtmDSAFyjPs7cnyLs+nLCOU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=PYwnPX6l3Xog3RAuvSFrhmoCEnM7diOagg5LzzSocAV2kcQDGwa85wPc6uHOH/M5USAyMOVOng8GJOPLCDpREMTrpYx3gPWr1Qn2uXW814PjQGG5afRhPTA8Rr74Mlrp2TOfunfJ47gaFKZ7CanQPZMuIBFc4WNcFIU4f90Qw1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7bec4b24a34so6050439f.3
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7becfc75cd4so5886239f.3
         for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 16:07:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1707264449; x=1707869249;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=kOJdGbNsb2xZMjmIcHRBPA6EHTzqMxcGC265Oe/VtXQ=;
-        b=sHYsctzh7WrjGGsip0WT+LU+FFZIEltlNFrTrA4CjxFVb40A8dYgu0rUD5XJL7+xPY
-         6f9vFG7KPNiq9l0gerGNjKFt/PXjl2EwVLLe9VCf4tog47j7ttJQ1csx6BTDYSwk6enx
-         PYc2910jA+34mngz3OpwvkJM8Is0k8CkuwSe7GUQCeo52oQx5RhQvAVT55v/y3nxBuNU
-         pmBQ4IzfUSFaHY5brNAB2O7rsbGAKcXeP81gm03n9Z4lpK1WKeybivMaartguI1FtO6Q
-         I9O8euyKJsMjKx2hK8EqhVgRljNrixLsf8aI4dLGmXq6XIQ6XleEZ+l/2xw0dpXgdgfw
-         wP4Q==
-X-Gm-Message-State: AOJu0Yz5mBKSrkaswpjMo8Y1CRtJss9mf3XxATKLBUST7kJjjXjZuoob
-	wUaCITeoTILAvBTVzL1si3HAzEW2DpnmY1fmsnNBILAc2lzemd/pb1hUxRBJcugFzemMcDft9kU
-	HY9jCBmUeW5ULwRUQ5ImhmQyah5BM+ntO61S0QV10XVIopYjQR8c6S/Y=
-X-Google-Smtp-Source: AGHT+IECQAH95uwwoZT2xXecLlAiaAZKlLjmj+ILu0JYJftbR1DCmNvqqTkOv/6pC1tOdsPDbpfYakYPJ+K2tbW6FtoiL6T5rIJF
+        bh=OEF1tKQoR2J3woTag73sOwwH7baxXxEr34WqP9038pg=;
+        b=NsA+8Btwyldq72koh2qXCH0twbpQje5DF4wbMftlXRG2AlPggdXzk+ZyMzRx0Ya/Qh
+         6CyeL+5sdjGGjSbCO93rPKfon+4y9nkaw/pwQOBx2JTngMgx2OsbYu7KgyDRBMsUMTJS
+         VEDaq3GYkDDPZBs2pVKs2bgEUPN27nWg+AII8L0tigjtEePDXUAC9t5F2+k0dej+rGG/
+         Sh6/71aZErTzHng3PhWr0i8gOD6YJ6peEw8ETSAFrC6SGOTARcEu7PRlNLGD3Dgom9fx
+         kgdU+Y4DntFqbJMDDusJaWqaztc7NxsA9XNTVHq8shhmtcA6VRj+vnCdeX3ZyfhmPyCU
+         0YAg==
+X-Gm-Message-State: AOJu0Yy67EzDYxANaesDhiF3CEYNfa0QbHZL4Obne3EqKdOSHvBWOfUT
+	1MnhqHzZ2AfHYDETyYFeOp0+tNwFOahsT5Edzs6tNlFKJ5m52O4lxT/h6zrzRgIwTenacZk0bag
+	3fkQD+SJhUvoLBg1T9ZQbUJKh9Xr2gLIUPTKxlOQKyerS2b2pVU7xsZI=
+X-Google-Smtp-Source: AGHT+IFG5NSDC+h42rp1GTbwW/E6K5b3F2dv0r7w0pkLfSL+5ZlsjoFnWtxwdMjaBhcrohwkoPjYFWEfTOMWyHaK4e9ZY8sx5o/e
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:ad08:0:b0:471:2650:2b10 with SMTP id
- s8-20020a02ad08000000b0047126502b10mr29438jan.6.1707264448991; Tue, 06 Feb
- 2024 16:07:28 -0800 (PST)
-Date: Tue, 06 Feb 2024 16:07:28 -0800
+X-Received: by 2002:a05:6638:35ac:b0:471:cde:78e with SMTP id
+ v44-20020a05663835ac00b004710cde078emr75269jal.3.1707264449265; Tue, 06 Feb
+ 2024 16:07:29 -0800 (PST)
+Date: Tue, 06 Feb 2024 16:07:29 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000051d4b0610bf7b20@google.com>
-Subject: [syzbot] [bluetooth?] INFO: task hung in hci_release_dev
-From: syzbot <syzbot+83da23da6243e55b4670@syzkaller.appspotmail.com>
-To: jiangshanlai@gmail.com, johan.hedberg@gmail.com, 
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	luiz.dentz@gmail.com, marcel@holtmann.org, syzkaller-bugs@googlegroups.com, 
-	tj@kernel.org
+Message-ID: <0000000000000946190610bf7bd5@google.com>
+Subject: [syzbot] [dri?] [media?] inconsistent lock state in valid_state (2)
+From: syzbot <syzbot+a225ee3df7e7f9372dbe@syzkaller.appspotmail.com>
+To: christian.koenig@amd.com, dri-devel@lists.freedesktop.org, 
+	gustavo@padovan.org, linaro-mm-sig@lists.linaro.org, 
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+	sumit.semwal@linaro.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    076d56d74f17 Add linux-next specific files for 20240202
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=155f1540180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=428086ff1c010d9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=83da23da6243e55b4670
+HEAD commit:    021533194476 Kconfig: Disable -Wstringop-overflow for GCC ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10a82db0180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=457249c250b93697
+dashboard link: https://syzkaller.appspot.com/bug?extid=a225ee3df7e7f9372dbe
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1181463fe80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=105dfab7e80000
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/dece45d1a4b5/disk-076d56d7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/4921e269b178/vmlinux-076d56d7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2a9156da9091/bzImage-076d56d7.xz
-
-The issue was bisected to:
-
-commit dd6c3c5441263723305a9c52c5ccc899a4653000
-Author: Tejun Heo <tj@kernel.org>
-Date:   Mon Jan 29 18:11:24 2024 +0000
-
-    workqueue: Move pwq_dec_nr_in_flight() to the end of work item handling
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14b9456c180000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16b9456c180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12b9456c180000
+disk image: https://storage.googleapis.com/syzbot-assets/da8c6426660d/disk-02153319.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a866aaa09be9/vmlinux-02153319.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4a5680d805d7/bzImage-02153319.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+83da23da6243e55b4670@syzkaller.appspotmail.com
-Fixes: dd6c3c544126 ("workqueue: Move pwq_dec_nr_in_flight() to the end of work item handling")
+Reported-by: syzbot+a225ee3df7e7f9372dbe@syzkaller.appspotmail.com
 
-INFO: task syz-executor108:5074 blocked for more than 143 seconds.
-      Not tainted 6.8.0-rc2-next-20240202-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor108 state:D stack:25360 pid:5074  tgid:5074  ppid:5064   flags:0x00004002
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5400 [inline]
- __schedule+0x17df/0x4a40 kernel/sched/core.c:6727
- __schedule_loop kernel/sched/core.c:6804 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6819
- schedule_timeout+0xb0/0x310 kernel/time/timer.c:2159
- do_wait_for_common kernel/sched/completion.c:95 [inline]
- __wait_for_common kernel/sched/completion.c:116 [inline]
- wait_for_common kernel/sched/completion.c:127 [inline]
- wait_for_completion+0x355/0x620 kernel/sched/completion.c:148
- __flush_workqueue+0x730/0x1630 kernel/workqueue.c:3617
- drain_workqueue+0xc9/0x390 kernel/workqueue.c:3730
- destroy_workqueue+0xba/0xc40 kernel/workqueue.c:5319
- hci_release_dev+0x136/0x1670 net/bluetooth/hci_core.c:2807
- bt_host_release+0x83/0x90 net/bluetooth/hci_sysfs.c:94
- device_release+0x99/0x1c0
- kobject_cleanup lib/kobject.c:682 [inline]
- kobject_release lib/kobject.c:716 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1f5/0x430 lib/kobject.c:733
- hci_uart_tty_close+0x1c1/0x290 drivers/bluetooth/hci_ldisc.c:552
- tty_ldisc_kill+0xa3/0x1a0 drivers/tty/tty_ldisc.c:607
- tty_ldisc_release+0x174/0x200 drivers/tty/tty_ldisc.c:775
- tty_release_struct+0x2b/0xe0 drivers/tty/tty_io.c:1696
- tty_release+0xd0c/0x12c0 drivers/tty/tty_io.c:1867
- __fput+0x429/0x8a0 fs/file_table.c:376
- task_work_run+0x24f/0x310 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa1b/0x27e0 kernel/exit.c:878
- do_group_exit+0x207/0x2c0 kernel/exit.c:1027
- __do_sys_exit_group kernel/exit.c:1038 [inline]
- __se_sys_exit_group kernel/exit.c:1036 [inline]
- __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1036
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f08333d3309
-RSP: 002b:00007ffd1b9835d8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f08333d3309
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 00007f0833453390 R08: ffffffffffffffb8 R09: 0000555556c61610
-R10: 000000000000000e R11: 0000000000000246 R12: 00007f0833453390
-R13: 0000000000000000 R14: 00007f0833454e60 R15: 00007f08333a42f0
- </TASK>
+================================
+WARNING: inconsistent lock state
+6.8.0-rc2-syzkaller-00199-g021533194476 #0 Not tainted
+--------------------------------
+inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
+syz-executor.4/9508 [HC0[0]:SC0[0]:HE0:SE1] takes:
+ffffffff8ea8c5d8 (sync_timeline_list_lock){?...}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:376 [inline]
+ffffffff8ea8c5d8 (sync_timeline_list_lock){?...}-{2:2}, at: sync_info_debugfs_show+0x94/0x4d0 drivers/dma-buf/sync_debug.c:147
+{IN-HARDIRQ-W} state was registered at:
+  lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
+  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+  _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+  sync_timeline_debug_remove+0x2c/0x150 drivers/dma-buf/sync_debug.c:31
+  sync_timeline_free drivers/dma-buf/sw_sync.c:125 [inline]
+  kref_put include/linux/kref.h:65 [inline]
+  sync_timeline_put drivers/dma-buf/sw_sync.c:137 [inline]
+  timeline_fence_release+0x204/0x250 drivers/dma-buf/sw_sync.c:165
+  kref_put include/linux/kref.h:65 [inline]
+  dma_fence_put include/linux/dma-fence.h:297 [inline]
+  dma_fence_array_release+0x13e/0x240 drivers/dma-buf/dma-fence-array.c:120
+  irq_work_single+0xe1/0x240 kernel/irq_work.c:221
+  irq_work_run_list kernel/irq_work.c:252 [inline]
+  irq_work_run+0x18b/0x350 kernel/irq_work.c:261
+  __sysvec_irq_work+0xa8/0x3e0 arch/x86/kernel/irq_work.c:22
+  sysvec_irq_work+0x8f/0xb0 arch/x86/kernel/irq_work.c:17
+  asm_sysvec_irq_work+0x1a/0x20 arch/x86/include/asm/idtentry.h:674
+  __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:160 [inline]
+  _raw_spin_unlock_irq+0x29/0x50 kernel/locking/spinlock.c:202
+  spin_unlock_irq include/linux/spinlock.h:401 [inline]
+  sw_sync_debugfs_release+0x14b/0x1d0 drivers/dma-buf/sw_sync.c:359
+  __fput+0x429/0x8a0 fs/file_table.c:376
+  task_work_run+0x24e/0x310 kernel/task_work.c:180
+  exit_task_work include/linux/task_work.h:38 [inline]
+  do_exit+0xa2c/0x2740 kernel/exit.c:871
+  do_group_exit+0x206/0x2c0 kernel/exit.c:1020
+  __do_sys_exit_group kernel/exit.c:1031 [inline]
+  __se_sys_exit_group kernel/exit.c:1029 [inline]
+  __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1029
+  do_syscall_64+0xf9/0x240
+  entry_SYSCALL_64_after_hwframe+0x6f/0x77
+irq event stamp: 364
+hardirqs last  enabled at (363): [<ffffffff8b710daf>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
+hardirqs last  enabled at (363): [<ffffffff8b710daf>] _raw_spin_unlock_irqrestore+0x8f/0x140 kernel/locking/spinlock.c:194
+hardirqs last disabled at (364): [<ffffffff8b710bdd>] __raw_spin_lock_irq include/linux/spinlock_api_smp.h:117 [inline]
+hardirqs last disabled at (364): [<ffffffff8b710bdd>] _raw_spin_lock_irq+0xad/0x120 kernel/locking/spinlock.c:170
+softirqs last  enabled at (0): [<ffffffff8156a0f3>] rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+softirqs last  enabled at (0): [<ffffffff8156a0f3>] rcu_read_lock include/linux/rcupdate.h:750 [inline]
+softirqs last  enabled at (0): [<ffffffff8156a0f3>] copy_process+0x9c3/0x3fc0 kernel/fork.c:2366
+softirqs last disabled at (0): [<0000000000000000>] 0x0
 
-Showing all locks held in the system:
-5 locks held by kworker/u4:0/10:
-1 lock held by khungtaskd/29:
- #0: ffffffff8e130d60 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
- #0: ffffffff8e130d60 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
- #0: ffffffff8e130d60 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6614
-2 locks held by getty/4817:
- #0: ffff88802afa30a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc90002f162f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b5/0x1e10 drivers/tty/n_tty.c:2201
-1 lock held by syz-executor108/5074:
- #0: ffff88807a68e0a0 (&tty->ldisc_sem){++++}-{0:0}, at: __tty_ldisc_lock drivers/tty/tty_ldisc.c:289 [inline]
- #0: ffff88807a68e0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_lock_pair_timeout drivers/tty/tty_ldisc.c:352 [inline]
- #0: ffff88807a68e0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_lock_pair drivers/tty/tty_ldisc.c:366 [inline]
- #0: ffff88807a68e0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_release+0x110/0x200 drivers/tty/tty_ldisc.c:774
+other info that might help us debug this:
+ Possible unsafe locking scenario:
 
-=============================================
+       CPU0
+       ----
+  lock(sync_timeline_list_lock);
+  <Interrupt>
+    lock(sync_timeline_list_lock);
 
-NMI backtrace for cpu 1
-CPU: 1 PID: 29 Comm: khungtaskd Not tainted 6.8.0-rc2-next-20240202-syzkaller #0
+ *** DEADLOCK ***
+
+3 locks held by syz-executor.4/9508:
+ #0: ffff888086cd7748 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x258/0x320 fs/file.c:1191
+ #1: ffff88801f9c8448 (&p->lock){+.+.}-{3:3}, at: seq_read_iter+0xb7/0xd60 fs/seq_file.c:182
+ #2: ffffffff8ea8c5d8 (sync_timeline_list_lock){?...}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:376 [inline]
+ #2: ffffffff8ea8c5d8 (sync_timeline_list_lock){?...}-{2:2}, at: sync_info_debugfs_show+0x94/0x4d0 drivers/dma-buf/sync_debug.c:147
+
+stack backtrace:
+CPU: 0 PID: 9508 Comm: syz-executor.4 Not tainted 6.8.0-rc2-syzkaller-00199-g021533194476 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
 Call Trace:
  <TASK>
  __dump_stack lib/dump_stack.c:88 [inline]
  dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xfb0/0xff0 kernel/hung_task.c:379
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:242
+ valid_state+0x13a/0x1c0 kernel/locking/lockdep.c:4013
+ mark_lock_irq+0xbb/0xc20 kernel/locking/lockdep.c:4216
+ mark_lock+0x223/0x350 kernel/locking/lockdep.c:4678
+ mark_held_locks kernel/locking/lockdep.c:4274 [inline]
+ __trace_hardirqs_on_caller kernel/locking/lockdep.c:4292 [inline]
+ lockdep_hardirqs_on_prepare+0x281/0x780 kernel/locking/lockdep.c:4359
+ trace_hardirqs_on+0x28/0x40 kernel/trace/trace_preemptirq.c:61
+ __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:159 [inline]
+ _raw_spin_unlock_irq+0x23/0x50 kernel/locking/spinlock.c:202
+ spin_unlock_irq include/linux/spinlock.h:401 [inline]
+ sync_print_obj drivers/dma-buf/sync_debug.c:118 [inline]
+ sync_info_debugfs_show+0x158/0x4d0 drivers/dma-buf/sync_debug.c:153
+ seq_read_iter+0x445/0xd60 fs/seq_file.c:230
+ seq_read+0x3a3/0x4f0 fs/seq_file.c:162
+ vfs_read+0x204/0xb70 fs/read_write.c:474
+ ksys_read+0x1a0/0x2c0 fs/read_write.c:619
+ do_syscall_64+0xf9/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7fc881e7dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc882b390c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 00007fc881fabf80 RCX: 00007fc881e7dda9
+RDX: 0000000000002020 RSI: 0000000020001b00 RDI: 0000000000000006
+RBP: 00007fc881eca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fc881fabf80 R15: 00007fc8820cfa48
  </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 10 Comm: kworker/u4:0 Not tainted 6.8.0-rc2-next-20240202-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Workqueue: events_unbound toggle_allocation_gate
-RIP: 0010:can_migrate_task+0x4ef/0x960 kernel/sched/fair.c:8991
-Code: c1 e8 03 42 0f b6 04 20 84 c0 0f 85 fa 01 00 00 44 3b 7d 00 76 6c 83 fb 01 75 0a 0f 1f 44 00 00 0f 1f 44 00 00 b9 01 00 00 00 <89> c8 48 83 c4 38 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc 48
-RSP: 0018:ffffc900000f6f70 EFLAGS: 00000046
-RAX: 0000000000000000 RBX: ffff88801969bc34 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88801969c028
-RBP: 0000000000000001 R08: ffff88801969c02f R09: 1ffff110032d3805
-R10: dffffc0000000000 R11: ffffed10032d3806 R12: ffffc900000f7580
-R13: ffff88801969bc00 R14: dffffc0000000000 R15: ffff88801969c018
-FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055b598263448 CR3: 000000000df32000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- detach_tasks kernel/sched/fair.c:9088 [inline]
- load_balance+0x5480/0x8920 kernel/sched/fair.c:11335
- newidle_balance+0x6be/0x1080 kernel/sched/fair.c:12363
- pick_next_task_fair+0x27a/0xde0 kernel/sched/fair.c:8502
- __pick_next_task+0xb0/0x2c0 kernel/sched/core.c:6021
- pick_next_task kernel/sched/core.c:6111 [inline]
- __schedule+0x729/0x4a40 kernel/sched/core.c:6691
- __schedule_loop kernel/sched/core.c:6804 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6819
- toggle_allocation_gate+0x16a/0x250 mm/kfence/core.c:828
- process_one_work kernel/workqueue.c:3049 [inline]
- process_scheduled_works+0x913/0x14f0 kernel/workqueue.c:3125
- worker_thread+0xa60/0x1000 kernel/workqueue.c:3206
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:242
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.335 msecs
 
 
 ---
@@ -230,14 +196,9 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 If the report is already addressed, let syzbot know by replying with:
 #syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
 If you want to overwrite report's subsystems, reply with:
 #syz set subsystems: new-subsystem
