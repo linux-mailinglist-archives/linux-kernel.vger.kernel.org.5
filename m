@@ -1,370 +1,244 @@
-Return-Path: <linux-kernel+bounces-55896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01F0E84C323
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:33:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D756D84C31D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:30:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B355828DD32
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:33:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E0B3B29275
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:30:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD54911C94;
-	Wed,  7 Feb 2024 03:33:23 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61069101EE;
+	Wed,  7 Feb 2024 03:29:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sW+wveX/"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F677101C4;
-	Wed,  7 Feb 2024 03:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19FF9FC01;
+	Wed,  7 Feb 2024 03:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707276803; cv=none; b=WheYTX/m5ufqVYF3j9Yi9brtHdJqc+ayOQAgkUCCG9nGvctDp3GKMAImonz3cHj9yo12z9VS8Pa3hzqXb3Dnn0+sUHVTy6S3HDkqlOD54iM9I29sEPmeZKi7hC+T+oxxLBPbEDWn9eaTSRVRKC/PRPiLjZjHRDUwOIFNkRsBL1w=
+	t=1707276595; cv=none; b=BkO91c69wQJEwtCdT9ybc3sR88Hw22qS4iw441s+woQNlNal/G0/lo4n1c2CuTmj4Ce2HVFBII2NI947Yn5dHNdBURHCZ0eCZiO6UqioQUPCApwC93ueeBB0kKMxB50yyi/dqtyq+sHRSz/cMuaHQOpPqpYdktSsppLIvBDte6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707276803; c=relaxed/simple;
-	bh=dvqAjBUxSIHK7bIQQ1NvbcPuPs08Cu4BN+2/zSyHInE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FfbfseUqh5d78Jf81q9BRBsMgvoow+hL4E/l4sev9UaNW0dUDgVtLnAqRw+G/m1a+6IZjwmBavFMj5oDLB+IYFZOxgXS6FYWbK3rmWyDIzDU55Tc5Pwxk3dx8Z3fKnkWKbaqD+vom0nYiXeQta718mqclC2iHBDRGSysk1/JqE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TV5Jp4jRZz1xnJq;
-	Wed,  7 Feb 2024 11:32:10 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id D34F61A0178;
-	Wed,  7 Feb 2024 11:33:17 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 7 Feb 2024 11:33:17 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-next 2/2] RDMA/hns: Support configuring congestion control algorithm with QP granularity
-Date: Wed, 7 Feb 2024 11:29:10 +0800
-Message-ID: <20240207032910.3959426-3-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20240207032910.3959426-1-huangjunxian6@hisilicon.com>
-References: <20240207032910.3959426-1-huangjunxian6@hisilicon.com>
+	s=arc-20240116; t=1707276595; c=relaxed/simple;
+	bh=LyH5K+H7797yevEx4J2prl3QUboclXhc6NHRR987NYQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=JadEiUoxXjxqZxtaeyFaAmGNcRIFhwNgmlTxqL/0VnqgjhlRBpEPbT+vU6/q11doMKEnR1DTjOYfwQUMauQ+xUduN0u9S5O5IAEx2Bo4rvYl02tqIWkl/UW6brqDMX4t26Fgtksslla+CG5qHtZVDpb2Y5G1zEji/4U6ovkHdP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sW+wveX/; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=LyH5K+H7797yevEx4J2prl3QUboclXhc6NHRR987NYQ=; b=sW+wveX/Pza0urHwhOvQYOO6xb
+	+rfQWljn2Y2JaRTI0Xwfkbb9kfu7dhbJg6E0z5rM9+RhcsPfT5WsotUugFE/2roZ6//cvQh0g+b7m
+	HskKob8X9XG1nn9zdPzPgb2hdc1e3tu1y4sH1wReM/m7ZO+cUxxGsJEnpRRY7x2ZkbqHKTtF4c1Af
+	DYq60B4zzJmJQ1cNAgftLkraplUqY/0e6ZayqZJKNzit8LHvOrmJU9n9aNj28rw7pJcNnZyi9Df/F
+	cFD3bZFJq7TC/sNNXLmzvRTO/PpFoM0E1brMiD8H9GVYtidDMYVeugPBqKHFK6mvXkjhAfBdq7cfH
+	FXjKfVyQ==;
+Received: from 72-21-196-67.amazon.com ([72.21.196.67] helo=u3832b3a9db3152.ant.amazon.com)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rXYdA-0000000E418-3env;
+	Wed, 07 Feb 2024 03:29:50 +0000
+Message-ID: <165f07deb8d1e082756e6cae21a25b0060c18f85.camel@infradead.org>
+Subject: Re: [PATCH v3] KVM: x86: Use fast path for Xen timer delivery
+From: David Woodhouse <dwmw2@infradead.org>
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm <kvm@vger.kernel.org>, Paul Durrant <paul@xen.org>, Paolo Bonzini
+ <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>,  linux-kernel@vger.kernel.org
+Date: Tue, 06 Feb 2024 19:29:45 -0800
+In-Reply-To: <ZcLxzrbvSs0jNeR4@google.com>
+References: <f21ee3bd852761e7808240d4ecaec3013c649dc7.camel@infradead.org>
+	 <ZcJ9bXxU_Pthq_eh@google.com>
+	 <19a1ac538e6cb1b479122df677909fb49fedbb28.camel@infradead.org>
+	 <ZcLxzrbvSs0jNeR4@google.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+	boundary="=-fEkZUfdFOYO0ekxydfqM"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
-Support userspace configuring congestion control algorithm with
-QP granularity. If the algorithm is not specified in userspace,
-use the default one.
 
-Besides, add a restriction that only DCQCN is supported for UD.
+--=-fEkZUfdFOYO0ekxydfqM
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h | 26 +++++---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 15 ++---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  3 +-
- drivers/infiniband/hw/hns/hns_roce_main.c   |  3 +
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 71 +++++++++++++++++++++
- include/uapi/rdma/hns-abi.h                 | 17 +++++
- 6 files changed, 118 insertions(+), 17 deletions(-)
+On Tue, 2024-02-06 at 18:58 -0800, Sean Christopherson wrote:
+> On Tue, Feb 06, 2024, David Woodhouse wrote:
+> > On Tue, 2024-02-06 at 10:41 -0800, Sean Christopherson wrote:
+> > >=20
+> > > This has an obvious-in-hindsight recursive deadlock bug.=C2=A0 If KVM=
+ actually needs
+> > > to inject a timer IRQ, and the fast path fails, i.e. the gpc is inval=
+id,
+> > > kvm_xen_set_evtchn() will attempt to acquire xen.xen_lock, which is a=
+lready held
+> >=20
+> > Hm, right. In fact, kvm_xen_set_evtchn() shouldn't actually *need* the
+> > xen_lock in an ideal world; it's only taking it in order to work around
+> > the fact that the gfn_to_pfn_cache doesn't have its *own* self-
+> > sufficient locking. I have patches for that...
+> >=20
+> > I think the *simplest* of the "patches for that" approaches is just to
+> > use the gpc->refresh_lock to cover all activate, refresh and deactivate
+> > calls. I was waiting for Paul's series to land before sending that one,
+> > but I'll work on it today, and double-check my belief that we can then
+> > just drop xen_lock from kvm_xen_set_evtchn().
+>=20
+> While I definitely want to get rid of arch.xen.xen_lock, I don't want to =
+address
+> the deadlock by relying on adding more locking to the gpc code.=C2=A0 I w=
+ant a teeny
+> tiny patch that is easy to review and backport.=C2=A0 Y'all are *proably*=
+ the only
+> folks that care about Xen emulation, but even so, that's not a valid reas=
+on for
+> taking a roundabout way to fixing a deadlock.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 1a8516019516..55f2f54e15fb 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -594,6 +594,21 @@ struct hns_roce_work {
- 	u32 queue_num;
- };
- 
-+enum hns_roce_scc_algo {
-+	HNS_ROCE_SCC_ALGO_DCQCN = 0,
-+	HNS_ROCE_SCC_ALGO_LDCP,
-+	HNS_ROCE_SCC_ALGO_HC3,
-+	HNS_ROCE_SCC_ALGO_DIP,
-+	HNS_ROCE_SCC_ALGO_TOTAL,
-+};
-+
-+enum hns_roce_cong_type {
-+	CONG_TYPE_DCQCN = 1 << HNS_ROCE_SCC_ALGO_DCQCN,
-+	CONG_TYPE_LDCP = 1 << HNS_ROCE_SCC_ALGO_LDCP,
-+	CONG_TYPE_HC3 = 1 << HNS_ROCE_SCC_ALGO_HC3,
-+	CONG_TYPE_DIP = 1 << HNS_ROCE_SCC_ALGO_DIP,
-+};
-+
- struct hns_roce_qp {
- 	struct ib_qp		ibqp;
- 	struct hns_roce_wq	rq;
-@@ -637,6 +652,7 @@ struct hns_roce_qp {
- 	struct list_head	sq_node; /* all send qps are on a list */
- 	struct hns_user_mmap_entry *dwqe_mmap_entry;
- 	u32			config;
-+	enum hns_roce_cong_type	cong_type;
- };
- 
- struct hns_roce_ib_iboe {
-@@ -708,13 +724,6 @@ struct hns_roce_eq_table {
- 	struct hns_roce_eq	*eq;
- };
- 
--enum cong_type {
--	CONG_TYPE_DCQCN,
--	CONG_TYPE_LDCP,
--	CONG_TYPE_HC3,
--	CONG_TYPE_DIP,
--};
--
- struct hns_roce_caps {
- 	u64		fw_ver;
- 	u8		num_ports;
-@@ -844,7 +853,8 @@ struct hns_roce_caps {
- 	u16		default_aeq_period;
- 	u16		default_aeq_arm_st;
- 	u16		default_ceq_arm_st;
--	enum cong_type	cong_type;
-+	u8		cong_cap;
-+	enum hns_roce_cong_type	default_cong_type;
- };
- 
- enum hns_roce_device_state {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 8907c30598ab..21532f213b0f 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -2209,11 +2209,12 @@ static int hns_roce_query_caps(struct hns_roce_dev *hr_dev)
- 	caps->max_wqes = 1 << le16_to_cpu(resp_c->sq_depth);
- 
- 	caps->num_srqs = 1 << hr_reg_read(resp_d, PF_CAPS_D_NUM_SRQS);
--	caps->cong_type = hr_reg_read(resp_d, PF_CAPS_D_CONG_TYPE);
-+	caps->cong_cap = hr_reg_read(resp_d, PF_CAPS_D_CONG_CAP);
- 	caps->max_srq_wrs = 1 << le16_to_cpu(resp_d->srq_depth);
- 	caps->ceqe_depth = 1 << hr_reg_read(resp_d, PF_CAPS_D_CEQ_DEPTH);
- 	caps->num_comp_vectors = hr_reg_read(resp_d, PF_CAPS_D_NUM_CEQS);
- 	caps->aeqe_depth = 1 << hr_reg_read(resp_d, PF_CAPS_D_AEQ_DEPTH);
-+	caps->default_cong_type = hr_reg_read(resp_d, PF_CAPS_D_DEFAULT_ALG);
- 	caps->reserved_pds = hr_reg_read(resp_d, PF_CAPS_D_RSV_PDS);
- 	caps->num_uars = 1 << hr_reg_read(resp_d, PF_CAPS_D_NUM_UARS);
- 	caps->reserved_qps = hr_reg_read(resp_d, PF_CAPS_D_RSV_QPS);
-@@ -4737,10 +4738,10 @@ enum {
- static int check_cong_type(struct ib_qp *ibqp,
- 			   struct hns_roce_congestion_algorithm *cong_alg)
- {
--	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
-+	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
- 
- 	/* different congestion types match different configurations */
--	switch (hr_dev->caps.cong_type) {
-+	switch (hr_qp->cong_type) {
- 	case CONG_TYPE_DCQCN:
- 		cong_alg->alg_sel = CONG_DCQCN;
- 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
-@@ -4766,10 +4767,7 @@ static int check_cong_type(struct ib_qp *ibqp,
- 		cong_alg->wnd_mode_sel = WND_LIMIT;
- 		break;
- 	default:
--		ibdev_warn(&hr_dev->ib_dev,
--			   "invalid type(%u) for congestion selection.\n",
--			   hr_dev->caps.cong_type);
--		hr_dev->caps.cong_type = CONG_TYPE_DCQCN;
-+		hr_qp->cong_type = CONG_TYPE_DCQCN;
- 		cong_alg->alg_sel = CONG_DCQCN;
- 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
- 		cong_alg->dip_vld = DIP_INVALID;
-@@ -4788,6 +4786,7 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
- 	struct hns_roce_congestion_algorithm cong_field;
- 	struct ib_device *ibdev = ibqp->device;
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibdev);
-+	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
- 	u32 dip_idx = 0;
- 	int ret;
- 
-@@ -4800,7 +4799,7 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
- 		return ret;
- 
- 	hr_reg_write(context, QPC_CONG_ALGO_TMPL_ID, hr_dev->cong_algo_tmpl_id +
--		     hr_dev->caps.cong_type * HNS_ROCE_CONG_SIZE);
-+		     ilog2(hr_qp->cong_type) * HNS_ROCE_CONG_SIZE);
- 	hr_reg_clear(qpc_mask, QPC_CONG_ALGO_TMPL_ID);
- 	hr_reg_write(&context->ext, QPCEX_CONG_ALG_SEL, cong_field.alg_sel);
- 	hr_reg_clear(&qpc_mask->ext, QPCEX_CONG_ALG_SEL);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index cd97cbee682a..359a74672ba1 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -1214,12 +1214,13 @@ struct hns_roce_query_pf_caps_d {
- #define PF_CAPS_D_RQWQE_HOP_NUM PF_CAPS_D_FIELD_LOC(21, 20)
- #define PF_CAPS_D_EX_SGE_HOP_NUM PF_CAPS_D_FIELD_LOC(23, 22)
- #define PF_CAPS_D_SQWQE_HOP_NUM PF_CAPS_D_FIELD_LOC(25, 24)
--#define PF_CAPS_D_CONG_TYPE PF_CAPS_D_FIELD_LOC(29, 26)
-+#define PF_CAPS_D_CONG_CAP PF_CAPS_D_FIELD_LOC(29, 26)
- #define PF_CAPS_D_CEQ_DEPTH PF_CAPS_D_FIELD_LOC(85, 64)
- #define PF_CAPS_D_NUM_CEQS PF_CAPS_D_FIELD_LOC(95, 86)
- #define PF_CAPS_D_AEQ_DEPTH PF_CAPS_D_FIELD_LOC(117, 96)
- #define PF_CAPS_D_AEQ_ARM_ST PF_CAPS_D_FIELD_LOC(119, 118)
- #define PF_CAPS_D_CEQ_ARM_ST PF_CAPS_D_FIELD_LOC(121, 120)
-+#define PF_CAPS_D_DEFAULT_ALG PF_CAPS_D_FIELD_LOC(127, 122)
- #define PF_CAPS_D_RSV_PDS PF_CAPS_D_FIELD_LOC(147, 128)
- #define PF_CAPS_D_NUM_UARS PF_CAPS_D_FIELD_LOC(155, 148)
- #define PF_CAPS_D_RSV_QPS PF_CAPS_D_FIELD_LOC(179, 160)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index b55fe6911f9f..e5b678814f58 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -394,6 +394,9 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 			resp.config |= HNS_ROCE_RSP_CQE_INLINE_FLAGS;
- 	}
- 
-+	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
-+		resp.congest_type  = hr_dev->caps.cong_cap;
-+
- 	ret = hns_roce_uar_alloc(hr_dev, &context->uar);
- 	if (ret)
- 		goto error_out;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 31b147210688..e22911d6b6a9 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -1004,6 +1004,70 @@ static void free_kernel_wrid(struct hns_roce_qp *hr_qp)
- 	kfree(hr_qp->sq.wrid);
- }
- 
-+static void default_congest_type(struct hns_roce_dev *hr_dev,
-+				 struct hns_roce_qp *hr_qp)
-+{
-+	struct hns_roce_caps *caps = &hr_dev->caps;
-+
-+	if (hr_qp->ibqp.qp_type == IB_QPT_UD ||
-+	    hr_qp->ibqp.qp_type == IB_QPT_GSI)
-+		hr_qp->cong_type = CONG_TYPE_DCQCN;
-+	else
-+		hr_qp->cong_type = 1 << caps->default_cong_type;
-+}
-+
-+static int set_congest_type(struct hns_roce_qp *hr_qp,
-+			    struct hns_roce_ib_create_qp *ucmd)
-+{
-+	struct hns_roce_dev *hr_dev = to_hr_dev(hr_qp->ibqp.device);
-+
-+	switch (ucmd->cong_type_flags) {
-+	case HNS_ROCE_CREATE_QP_FLAGS_DCQCN:
-+		hr_qp->cong_type = CONG_TYPE_DCQCN;
-+		break;
-+	case HNS_ROCE_CREATE_QP_FLAGS_LDCP:
-+		hr_qp->cong_type = CONG_TYPE_LDCP;
-+		break;
-+	case HNS_ROCE_CREATE_QP_FLAGS_HC3:
-+		hr_qp->cong_type = CONG_TYPE_HC3;
-+		break;
-+	case HNS_ROCE_CREATE_QP_FLAGS_DIP:
-+		hr_qp->cong_type = CONG_TYPE_DIP;
-+		break;
-+	default:
-+		hr_qp->cong_type = 0;
-+	}
-+
-+	if (!(hr_qp->cong_type & hr_dev->caps.cong_cap)) {
-+		ibdev_err_ratelimited(&hr_dev->ib_dev,
-+				      "Unsupported congest type 0x%x, cong_cap = 0x%x.\n",
-+				      hr_qp->cong_type, hr_dev->caps.cong_cap);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (hr_qp->ibqp.qp_type == IB_QPT_UD &&
-+	    !(hr_qp->cong_type & CONG_TYPE_DCQCN)) {
-+		ibdev_err_ratelimited(&hr_dev->ib_dev,
-+				      "Only DCQCN supported for UD. Unsupported congest type 0x%x.\n",
-+				      hr_qp->cong_type);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
-+static int set_congest_param(struct hns_roce_dev *hr_dev,
-+			     struct hns_roce_qp *hr_qp,
-+			     struct hns_roce_ib_create_qp *ucmd)
-+{
-+	if (ucmd->comp_mask & HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE)
-+		return set_congest_type(hr_qp, ucmd);
-+
-+	default_congest_type(hr_dev, hr_qp);
-+
-+	return 0;
-+}
-+
- static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 			struct ib_qp_init_attr *init_attr,
- 			struct ib_udata *udata,
-@@ -1026,6 +1090,9 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 		return ret;
- 	}
- 
-+	if (init_attr->qp_type == IB_QPT_XRC_TGT)
-+		default_congest_type(hr_dev, hr_qp);
-+
- 	if (udata) {
- 		ret = ib_copy_from_udata(ucmd, udata,
- 					 min(udata->inlen, sizeof(*ucmd)));
-@@ -1043,6 +1110,10 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 			ibdev_err(ibdev,
- 				  "failed to set user SQ size, ret = %d.\n",
- 				  ret);
-+
-+		ret = set_congest_param(hr_dev, hr_qp, ucmd);
-+		if (ret)
-+			return ret;
- 	} else {
- 		if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
- 			hr_qp->config = HNS_ROCE_EXSGE_FLAGS;
-diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index c996e151081e..757095a6c6fc 100644
---- a/include/uapi/rdma/hns-abi.h
-+++ b/include/uapi/rdma/hns-abi.h
-@@ -81,6 +81,9 @@ struct hns_roce_ib_create_qp {
- 	__u8    sq_no_prefetch;
- 	__u8    reserved[5];
- 	__aligned_u64 sdb_addr;
-+	__aligned_u64 comp_mask; /* Use enum hns_roce_create_qp_comp_mask */
-+	__aligned_u64 create_flags;
-+	__aligned_u64 cong_type_flags;
- };
- 
- enum hns_roce_qp_cap_flags {
-@@ -107,6 +110,17 @@ enum {
- 	HNS_ROCE_RSP_CQE_INLINE_FLAGS = 1 << 2,
- };
- 
-+enum hns_roce_congest_type_flags {
-+	HNS_ROCE_CREATE_QP_FLAGS_DCQCN = 1 << 0,
-+	HNS_ROCE_CREATE_QP_FLAGS_LDCP = 1 << 1,
-+	HNS_ROCE_CREATE_QP_FLAGS_HC3 = 1 << 2,
-+	HNS_ROCE_CREATE_QP_FLAGS_DIP = 1 << 3,
-+};
-+
-+enum hns_roce_create_qp_comp_mask {
-+	HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE = 1 << 1,
-+};
-+
- struct hns_roce_ib_alloc_ucontext_resp {
- 	__u32	qp_tab_size;
- 	__u32	cqe_size;
-@@ -114,6 +128,9 @@ struct hns_roce_ib_alloc_ucontext_resp {
- 	__u32	reserved;
- 	__u32	config;
- 	__u32	max_inline_data;
-+	__u8	reserved0;
-+	__u8	congest_type;
-+	__u8	reserved1[6];
- };
- 
- struct hns_roce_ib_alloc_ucontext {
--- 
-2.30.0
+I strongly disagree. I get that you're reticent about fixing the gpc
+locking, but what I'm proposing is absolutely *not* a 'roundabout way
+to fixing a deadlock'. The kvm_xen_set_evtchn() function shouldn't
+*need* that lock; it's only taking it because of the underlying problem
+with the gpc itself, which needs its caller to do its locking for it.
 
+The solution is not to do further gymnastics with the xen_lock.
+
+> Can't we simply not take xen_lock in kvm_xen_vcpu_get_attr()=C2=A0 It hol=
+ds vcpu->mutex
+> so it's mutually exclusive with kvm_xen_vcpu_set_attr(), and I don't see =
+any other
+> flows other than vCPU destruction that deactivate (or change) the gpc.
+
+Maybe. Although with the gpc locking being incomplete, I'm extremely
+concerned about something *implicitly* relying on the xen_lock. We
+still need to fix the gpc to have self-contained locking.
+
+I'll put something together and do some testing.
+
+
+--=-fEkZUfdFOYO0ekxydfqM
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwMjA3MDMyOTQ1WjAvBgkqhkiG9w0BCQQxIgQgoPE3/4jn
+RnQkrArvfF9fPNxia5TKotgrQVoS7OMMl5swgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgAQBSDgIX4PL/cBkRMVg6B6Y5/rfqVkvsZL
+S7jGgUDeOEroR7kYBfUkBt3iJYMN1p3fUe3NN3lujKGlnphh46bDHSB3sOyy5/ztCRal9hABTaUL
+7NyQb7k7OlgwQsTHL73C/sjrAddK1623Qn6Kkf0OVzwYF/P18jaOzNXlkCyQHmFSxTOv0COL5rCR
+2Yn/TJBJmFgLfXRUqQUqbBcGRzI3R4La4wNAUvUN7deHgQwbKy2qLVsj4oyFm+6zwwBCH40pYiSB
+DfHl66OR7t3K4LAGyuzoQ1Av+HeZA5JoXd+v/k8P9VB66V7FCnkzPLL6eM0GnAo7dIGpsPzbr7ur
+r2M0bWB0c28ht4ciN8gpLcdDct+HQBZiIcMiQNftyzFTzl+fQ5O7Xl6hfrV/e4HtPXawnHc+1VQd
+icd8aR2M95rsg68oI5HwTb96g2SNY2dp7+a0SbnRLNepaAF6IhLbvPXwevKUaYhDY3gpjrAPAgZ2
+bY5+G23Kd4Jpqn8iMuUvTj8atoGLvujlZSnX3knsGxzSpcVTOBN4flGxlSxabghRemIpj+/IdNzb
+0bZ+VdEge8iCW9M6qB5KZss+7LsZdDlVjf+VlS34qXsZuCHrc3i9UQS0n12qsSnp0XtPELYYLlMX
+5Lk/goegad6SqfCR7OnYJoI2iOI809kvi92oq0vuFgAAAAAAAA==
+
+
+--=-fEkZUfdFOYO0ekxydfqM--
 
