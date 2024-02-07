@@ -1,193 +1,203 @@
-Return-Path: <linux-kernel+bounces-56233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A167384C7AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:40:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2283A84C7B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:41:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD314B24547
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:40:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AACEE1F20C27
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:41:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F33952E657;
-	Wed,  7 Feb 2024 09:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D04033CD4;
+	Wed,  7 Feb 2024 09:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lKxinKyj";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="WDJUNO2a";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lKxinKyj";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="WDJUNO2a"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tuGYofVK"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5108C288B0;
-	Wed,  7 Feb 2024 09:37:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD9E288AE;
+	Wed,  7 Feb 2024 09:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707298632; cv=none; b=EEdK1XojEAl3uN8TxG9U6oykmdJJCvAuNhJ/3HH1Jih+b1+4mBnQOKuQvOx+Y//52+cm+0q1lKbdi03jztLSBBwziDCFcqIPNorpEGZOtZnX59e/w5lymQca37aR2FZOEuuOB0nJizimKG4bs2bs+0ra5toNIoSzNUZbIzM7t1w=
+	t=1707298693; cv=none; b=fHuSHmQgFuDee8MUG4HpKqJHeFmsyXUVJSQnludf3+DfFbT9YZfWo2mBNcczbwKIFt0TZNvC04S6Bzyul5ZJ36unRMlXZXv2yA7/b31N5khsPEfzHt5z6jxvbdJvMgnGnwVQKu2xpzdQ4TrP4xkZZ9W+gKLU5NMeUE4l8bgJqZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707298632; c=relaxed/simple;
-	bh=i0gDnOr8ChhbAJBZdzQ56mxFjoBYV4Kfk89JYVDHJm8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=K3DFCB1Rzm1MNwOfbrcqip8vl2El4xsTQaccbKtLrik2fJV/gQlrWLPHf/nvorjpsDkL5BDor+r/niDJf5juAuMYh1fArvpFZygQNUwT95WoupQ4n1W6G5Xn+YWFby2aJ8IsnT8qWDMOdMr9yGE2DmPYTyNwEiKj7Ns39KajdKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lKxinKyj; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=WDJUNO2a; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lKxinKyj; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=WDJUNO2a; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 79FC122087;
-	Wed,  7 Feb 2024 09:37:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707298628; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vzj8/dPmZXFpnOLTT80VGGF37J8xoKbl58mvW09yE/k=;
-	b=lKxinKyjc8MAHPT/uQa5KniKE1Jc2KNvn0dYog7udRxWztSX6FQQEEB14nLic36cztOSnm
-	MpVFbcL/fS8n8KlJ+xa/liTCRlZgxrTOZcJnO0MZM869Xh25xqSuR75UMo5jCx/P58JRst
-	GP21v7AZj3+MvUMATINTnuWqwTUVToo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707298628;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vzj8/dPmZXFpnOLTT80VGGF37J8xoKbl58mvW09yE/k=;
-	b=WDJUNO2aBLQP5uvJ5cJPEJJ7ZqGCTY1cNWzP2bZhBoNq0eG83+ohXoUc1oRdT5iCY0/ebD
-	u5aRsFZZ3HdQSQDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707298628; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vzj8/dPmZXFpnOLTT80VGGF37J8xoKbl58mvW09yE/k=;
-	b=lKxinKyjc8MAHPT/uQa5KniKE1Jc2KNvn0dYog7udRxWztSX6FQQEEB14nLic36cztOSnm
-	MpVFbcL/fS8n8KlJ+xa/liTCRlZgxrTOZcJnO0MZM869Xh25xqSuR75UMo5jCx/P58JRst
-	GP21v7AZj3+MvUMATINTnuWqwTUVToo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707298628;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vzj8/dPmZXFpnOLTT80VGGF37J8xoKbl58mvW09yE/k=;
-	b=WDJUNO2aBLQP5uvJ5cJPEJJ7ZqGCTY1cNWzP2bZhBoNq0eG83+ohXoUc1oRdT5iCY0/ebD
-	u5aRsFZZ3HdQSQDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EB8D5139D8;
-	Wed,  7 Feb 2024 09:37:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id o0EmNkNPw2UxUgAAD6G6ig
-	(envelope-from <lhenriques@suse.de>); Wed, 07 Feb 2024 09:37:07 +0000
-Received: from localhost (brahms.olymp [local])
-	by brahms.olymp (OpenSMTPD) with ESMTPA id 07e29045;
-	Wed, 7 Feb 2024 09:37:07 +0000 (UTC)
-From: Luis Henriques <lhenriques@suse.de>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: "Theodore Y. Ts'o" <tytso@mit.edu>,  Jaegeuk Kim <jaegeuk@kernel.org>,
-  David Howells <dhowells@redhat.com>,  Jarkko Sakkinen
- <jarkko@kernel.org>,  linux-fscrypt@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: clear keyring before calling key_put()
-In-Reply-To: <20240207005731.GB35324@sol.localdomain> (Eric Biggers's message
-	of "Tue, 6 Feb 2024 16:57:31 -0800")
-References: <20240206101619.8083-1-lhenriques@suse.de>
-	<20240207005731.GB35324@sol.localdomain>
-Date: Wed, 07 Feb 2024 09:37:06 +0000
-Message-ID: <87ttmkaa4d.fsf@suse.de>
+	s=arc-20240116; t=1707298693; c=relaxed/simple;
+	bh=Ku6yxq93zK30Dm+6ROgr5NQtVTuS9Ifro1Pddbtwfbs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=apjrvT3GNoivDgFNpCnaFS7hPju0xyaDC7d50jrt9aGpyXd+rnWuuRsM+buCB6jSx/q8da2FpTHg3YE67wdV6AvBlIMjck31YkrGSxAZp4UpKZyMSnaN+T8eztTkMWAmAzsM3y1EY9a9O+y7NXiAYpTYg95v5USbB0kEeeNu/jA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=tuGYofVK; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4179bxDF063459;
+	Wed, 7 Feb 2024 03:37:59 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707298679;
+	bh=SOzyt0EF/Om6sMYBCsg6uB82WUavl6cpyJpn0kOAg4Q=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=tuGYofVKPdiYLY+P9i+cyylot0lYagba5BiF3Iab7FDniYMkvNZmFGBHf2AY2PUUZ
+	 PQkaBzmnNgH9N90ioDUPet6KiYe855dvck1RPKazWTQtn+/GRSWKURSf3O5evZ3Kn3
+	 81NXD0vAWAc0D2pWL1UC6W8Ckk9rHBn0biyNyPuE=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4179bxDs016204
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 7 Feb 2024 03:37:59 -0600
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 7
+ Feb 2024 03:37:59 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 7 Feb 2024 03:37:59 -0600
+Received: from [172.24.20.156] (lt5cd2489kgj.dhcp.ti.com [172.24.20.156])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4179bu2G075875;
+	Wed, 7 Feb 2024 03:37:56 -0600
+Message-ID: <8edafc4f-c4b9-4cf6-9a11-178492404170@ti.com>
+Date: Wed, 7 Feb 2024 15:07:55 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.30
-X-Spamd-Result: default: False [-1.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[4];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_LAST(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-0.00)[27.34%]
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: ti: k3-am68-sk-som: Add support for OSPI
+ flash
+To: Sinthu Raja <sinthu.raja@mistralsolutions.com>,
+        Nishanth Menon
+	<nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra
+	<vigneshr@ti.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Sinthu Raja <sinthu.raja@ti.com>
+References: <20240206092334.30307-1-sinthu.raja@ti.com>
+Content-Language: en-US
+From: "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20240206092334.30307-1-sinthu.raja@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Eric Biggers <ebiggers@kernel.org> writes:
 
-> On Tue, Feb 06, 2024 at 10:16:19AM +0000, Luis Henriques wrote:
->> Now that the key quotas are handled immediately on key_put() instead of
->> being postponed to the key management garbage collection worker, a call =
-to
->> keyring_clear() is all that is required in fscrypt_put_master_key() so t=
-hat
->> the keyring clean-up is also done synchronously.  This patch should fix =
-the
->> fstest generic/581 flakiness.
->>=20
->> Signed-off-by: Luis Henriques <lhenriques@suse.de>
->> ---
->> Hi!
->>=20
->> I know that patch "keys: update key quotas in key_put()" isn't yet merged
->> but since David and Jarkko seem to be OK with it, it doesn't hurt to send
->> this follow-up patch immediately.
->>=20
->> Cheers,
->> --=20
->> Luis
->>=20
->>  fs/crypto/keyring.c | 7 +++++--
->>  1 file changed, 5 insertions(+), 2 deletions(-)
->>=20
->> diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
->> index 0edf0b58daa7..dfdaae16b83a 100644
->> --- a/fs/crypto/keyring.c
->> +++ b/fs/crypto/keyring.c
->> @@ -74,8 +74,11 @@ void fscrypt_put_master_key(struct fscrypt_master_key=
- *mk)
->>  	 * that concurrent keyring lookups can no longer find it.
->>  	 */
->>  	WARN_ON_ONCE(refcount_read(&mk->mk_active_refs) !=3D 0);
->> -	key_put(mk->mk_users);
->> -	mk->mk_users =3D NULL;
->> +	if (mk->mk_users) {
->> +		keyring_clear(mk->mk_users);
->> +		key_put(mk->mk_users);
->> +		mk->mk_users =3D NULL;
->> +	}
->>  	call_rcu(&mk->mk_rcu_head, fscrypt_free_master_key);
+On 2/6/2024 2:53 PM, Sinthu Raja wrote:
+> From: Sinthu Raja <sinthu.raja@ti.com>
 >
-> Applied, thanks.  I added a comment above the call to keyring_clear() to =
-explain
-> why it's there:
+> AM68 SK has an OSPI NOR flash on its SOM connected to OSPI0 instance.
+> Enable support for the same. Also, describe the OSPI flash partition
+> information through the device tree, according to the offsets in the
+> bootloader.
 >
->         /* Clear the keyring so the quota gets released right away. */
+> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
+> ---
+>   arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi | 79 ++++++++++++++++++++++
+>   1 file changed, 79 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi b/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi
+> index 20861a0a46b0..84011d5e1b3b 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi
+> @@ -130,6 +130,25 @@ rtos_ipc_memory_region: ipc-memories@a8000000 {
+>   	};
+>   };
+>   
+> +&wkup_pmx0 {
+> +	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-pins-default {
+> +		pinctrl-single,pins = <
+> +			J721S2_WKUP_IOPAD(0x000, PIN_OUTPUT, 0) /* (D19) MCU_OSPI0_CLK */
+> +			J721S2_WKUP_IOPAD(0x02c, PIN_OUTPUT, 0) /* (F15) MCU_OSPI0_CSn0 */
+> +			J721S2_WKUP_IOPAD(0x00c, PIN_INPUT, 0) /* (C19) MCU_OSPI0_D0 */
+> +			J721S2_WKUP_IOPAD(0x010, PIN_INPUT, 0) /* (F16) MCU_OSPI0_D1 */
+> +			J721S2_WKUP_IOPAD(0x014, PIN_INPUT, 0) /* (G15) MCU_OSPI0_D2 */
+> +			J721S2_WKUP_IOPAD(0x018, PIN_INPUT, 0) /* (F18) MCU_OSPI0_D3 */
+> +			J721S2_WKUP_IOPAD(0x01c, PIN_INPUT, 0) /* (E19) MCU_OSPI0_D4 */
+> +			J721S2_WKUP_IOPAD(0x020, PIN_INPUT, 0) /* (G19) MCU_OSPI0_D5 */
+> +			J721S2_WKUP_IOPAD(0x024, PIN_INPUT, 0) /* (F19) MCU_OSPI0_D6 */
+> +			J721S2_WKUP_IOPAD(0x028, PIN_INPUT, 0) /* (F20) MCU_OSPI0_D7 */
+> +			J721S2_WKUP_IOPAD(0x008, PIN_INPUT, 0) /* (E18) MCU_OSPI0_DQS */
+> +			J721S2_WKUP_IOPAD(0x004, PIN_INPUT, 0) /* (E20) MCU_OSPI0_LBCLKO */
 
-Awesome, makes sense.  Thanks a lot, Eric!
 
-Cheers,
---=20
-Lu=C3=ADs
+E20 is seems to be not connected  . Refer page-11 of SOM schematic 
+(PROC131 001 AM68 SK, rev E2)
+
+Can we think of to remove pin, which is not connected .
+
+
+> +		>;
+> +	};
+> +};
+> +
+>   &wkup_pmx2 {
+>   	wkup_i2c0_pins_default: wkup-i2c0-default-pins {
+>   		pinctrl-single,pins = <
+> @@ -152,6 +171,66 @@ eeprom@51 {
+>   	};
+>   };
+>   
+> +&ospi0 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
+> +
+> +	flash@0 {
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0x0>;
+> +		spi-tx-bus-width = <8>;
+> +		spi-rx-bus-width = <8>;
+> +		spi-max-frequency = <25000000>;
+> +		cdns,tshsl-ns = <60>;
+> +		cdns,tsd2d-ns = <60>;
+> +		cdns,tchsh-ns = <60>;
+> +		cdns,tslch-ns = <60>;
+> +		cdns,read-delay = <4>;
+> +
+> +		partitions {
+> +			compatible = "fixed-partitions";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			partition@0 {
+> +				label = "ospi.tiboot3";
+> +				reg = <0x0 0x80000>;
+> +			};
+> +
+> +			partition@80000 {
+> +				label = "ospi.tispl";
+> +				reg = <0x80000 0x200000>;
+> +			};
+> +
+> +			partition@280000 {
+> +				label = "ospi.u-boot";
+> +				reg = <0x280000 0x400000>;
+> +			};
+> +
+> +			partition@680000 {
+> +				label = "ospi.env";
+> +				reg = <0x680000 0x40000>;
+> +			};
+> +
+> +			partition@6c0000 {
+> +				label = "ospi.env.backup";
+> +				reg = <0x6c0000 0x40000>;
+> +			};
+> +
+> +			partition@800000 {
+> +				label = "ospi.rootfs";
+> +				reg = <0x800000 0x37c0000>;
+> +			};
+> +
+> +			partition@3fc0000 {
+> +				label = "ospi.phypattern";
+> +				reg = <0x3fc0000 0x40000>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+>   &mailbox0_cluster0 {
+>   	status = "okay";
+>   	interrupts = <436>;
 
