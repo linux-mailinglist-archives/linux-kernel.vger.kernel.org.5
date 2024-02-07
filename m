@@ -1,220 +1,187 @@
-Return-Path: <linux-kernel+bounces-56188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D90A84C727
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:20:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FBC184C72F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:22:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D501C1F25974
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:20:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E627288E57
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:22:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873C2210EC;
-	Wed,  7 Feb 2024 09:20:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D457210F2;
+	Wed,  7 Feb 2024 09:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JVBFPqdw"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="c1hU9qLC"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2068.outbound.protection.outlook.com [40.107.101.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1411420DCC
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707297625; cv=none; b=SmPqDA8kK8nvvW8jC/7T9iEimbwHmUcVqkhY/A17un/AyAD1D9DI8a9+peUhDClD1jXjsyQLlzlXFfNgsvHyDI0eIxnmb5dd1Omo9HEyEVoJ0ywsxHjvA9CguFuiF4c7ehsUGCQdiNGd4mCtK4ZitoPGpZtl9Rmm0mLQZc5iwYg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707297625; c=relaxed/simple;
-	bh=95US5Bry8ta5OEd6eEVd0gOFFok1XZEXloks+CN3KJQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FXzYsKx/9sUwf6EUiK5UasduY10rHb2lEOwrcVJ+eLyjQTC/GuG2k923+E8+gaob/0E1nJJRBwbF2aO3Z0dKJpHC7F74YLjsAywOSjK5IOZ45fjEoXmTVljmQUx+qGWF3b2hdQHy62SadTB4JRcurgsIMq2NT6IFQXjgBZ50pUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JVBFPqdw; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a37878ac4f4so49229466b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:20:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1707297621; x=1707902421; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=V6LAyjJAkdZ4pS3ypf47UTM6Qe5HmDg2tiLAggF/HJ4=;
-        b=JVBFPqdws4loMdY/NqlBLt96bf484flaOwD498BeZmgGsEvRe+kM9ogEzyPuYf6F+N
-         SvKBR1SWLpXxOstED7mEJPsVUc0lok6KpGQIsx1aoXCgR0qWgIUaAVJyw7/thwrh0K0w
-         XDiMwKM9rajLmopZ6WuUGMAUUDgIByzda9OlskFOByOiRgz2OeYwEERcUgwsDjatMJYS
-         9x//OhAqdGfHCzM7azX6K3FHE3zN1jVbhMqv8qtQBINk8KSNHgBh744qK7LKlptrj2kV
-         CsGUp8ue1BqaFV7M4DH+fjIYuSAoCOvvcLGPiNG0A63k+Nbe/d03nzEPCsEhefEF0mQ5
-         9jzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707297621; x=1707902421;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V6LAyjJAkdZ4pS3ypf47UTM6Qe5HmDg2tiLAggF/HJ4=;
-        b=TFH2y3PI/uzZUMGt+LbKjvxJj49ZKCx11iIfLQ++gyKfOwGx3qCZKUvgE5U4/iuogd
-         hePXcRGJjoHsU6L2AGauhxpiXY/U+zrEBQ++0L1+13WzWDVkvwB1orZ30zlW/32EHLLH
-         AXzJ8lyMAcIBXdme5XN9O4owtBKJO/ni5CwGD/c+fg+SMh3EXqnRl2XYLMzPEfjgfHKx
-         L4KJ6Wpx3/KCMH1BlPXuvDOIyg3L+g6prna36MhxzH2qtIXQldyCuJY/xKGoZTn0xCcR
-         pkzgKZup9ovCXOp6Z0wrWp32MVttwiwr5S9V6QLIguBbG0GvHvghNzQRe4CEDb81hSOq
-         YUEw==
-X-Gm-Message-State: AOJu0Yw7WyIWlPifsIBQAU1OXfGvc4YDn0it4fsino7JY0ndtwFI4Cu6
-	T66HTbaJUwiR1gyoJGGh0LTc8Ydij2bLAKKlabn+DlPbl5pc+DNZYFq6ia7KL/o=
-X-Google-Smtp-Source: AGHT+IE0WTzJt8mskCiQyaa5+K2iTcUUhhePnWZaNwIWSVRVmWxM8hY4BqDNBinQlZ1MOP5GLnYfIA==
-X-Received: by 2002:a17:907:1de1:b0:a38:929d:b6ff with SMTP id og33-20020a1709071de100b00a38929db6ffmr55528ejc.77.1707297621258;
-        Wed, 07 Feb 2024 01:20:21 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVkQqsYL8jLO5d7z5SWG5LMTB+mZP1osevZZA3dnX+mztNdzyufRe7LLcndtBiDrw/A7RlGf7eVDpXJcljimjM5Te0LejetpbrwWRVosUTqFpLjK9NFpw6+qGiH/hzcdoCS/8RanrQP425OysSB670KBDSMOws=
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id vg11-20020a170907d30b00b00a37210f1e92sm538503ejc.205.2024.02.07.01.20.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 01:20:20 -0800 (PST)
-Date: Wed, 7 Feb 2024 10:20:19 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v3 09/14] printk: Wait for all reserved records
- with pr_flush()
-Message-ID: <ZcNLU8g479-SEqrY@alley>
-References: <20231214214201.499426-1-john.ogness@linutronix.de>
- <20231214214201.499426-10-john.ogness@linutronix.de>
- <ZbowlkOVWiSgCxNX@alley>
- <87y1bznii8.fsf@jogness.linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CFA8224D7;
+	Wed,  7 Feb 2024 09:22:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.68
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707297760; cv=fail; b=QS3GGMgeOAfcJAf17fvkpxqAqR6ewwoq3fgT/ac7PH1a7PmUF+BH+CHWOxLt69ID73TWqwGeAcyK9Ut1CuDAq3cnkmfrAG7l0ILTaC6/f/DNzdFMCADUVIDRMUSLIMk6rzC5aseVVCCJrmOQhubEGnwLb7ygRYw+DDLZPGRrOkQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707297760; c=relaxed/simple;
+	bh=hhK6Hx+zcLKcLXVsGcitYDqkviJ04RJL6whvUbI5sO0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=A+FfC63rno79bTNZtvftllFvk3wU7/ZpD+RkigP4ILQ8QeY0+mThZ4vcGsfdBQvZjD8M7VwAUGx7gB/IFfWGRiySa/7Qz+A2bgIYJC8UK5VjnrknP5xigA6bLfSaBv9YoMMeDwPI/SvrNCmxzbWc8t3Tsa+00UWkzcYghyzT1Ic=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=c1hU9qLC; arc=fail smtp.client-ip=40.107.101.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aNeGr8nRy4YjIIlXpBig3mfdrUw0JgfRpwvpHtrUneah4/SwHwFBTjorhI/fQFsOO+34i8fUGXosm/IKOiOx5Q1o34mEYLalb6gXkhJ7OTNGMMUvloADshN3eUTXbO2ZYheitRwnCarmrmsJCo2DnFlxsw10Yh3QqGZk+4j+VDvmtoSP0B06A48hEUREcqgn7/2ceGqwF4zqVzvZ0G+jzS2aNi4KXyvfHwbJXfmadlM9VyrllSPPAmFD8GLnxaLSn7BsWXDN7qhdRz54A5Kd1ysvloLOS8uW7vczdZG+5LzT2MSLbOQRgJOf9tXob5ia5JuqYRwI9oUox+/JwPg+6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vaZH5mEUmoFLORrJ3Z6O0ciOZkMmCIWROxuD/A+vHqg=;
+ b=gIuzUmfTedAmT4wy+SMQdRNhMYUNA3r7Jlc1RWCVdVA6UoQP6y7F0KsA4GeYrDwWsXJPmKXKZzPpvr6TBumsBqoTTeyszWSBxu8/zkFTUV3ti7J/nY7Ifa59uySKlAQuCbukYrPwSddNHLwTp8DQpGVtbLP3FTU75gpiPFFwYhZxurnapuWQNVIj+CZlxS9aC3237n88SZCCmpcq5DbaZjSNT5Ch5ZT83u05eRQT3ekdaPtoT2CgPiYh/MtSltK9hxjWZahM/TxrR6zMVz31v/vbOb4Dihj2/OEreZ4j/k/gHYnFTiQo7O9w3eZQNfOVFtuzW+aUgxzJiQncCX1CKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vaZH5mEUmoFLORrJ3Z6O0ciOZkMmCIWROxuD/A+vHqg=;
+ b=c1hU9qLCothZaTEhBTTpCrS2XbqX2i6DznViaHai75LhOKSa217O0cT9hFmnpdjIYzPMnIpif8+Q1fWNWaroEMYDT5eLS4NF3HpIaIwbNdY30bLetaW5YYb/9hnjxusAkmA9M4aeXH77SglBsbJWWj623QM/nA55RhIa2wqaAHo=
+Received: from BN9PR03CA0586.namprd03.prod.outlook.com (2603:10b6:408:10d::21)
+ by SA3PR12MB7877.namprd12.prod.outlook.com (2603:10b6:806:31b::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.17; Wed, 7 Feb
+ 2024 09:22:35 +0000
+Received: from BN1PEPF00004685.namprd03.prod.outlook.com
+ (2603:10b6:408:10d:cafe::25) by BN9PR03CA0586.outlook.office365.com
+ (2603:10b6:408:10d::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36 via Frontend
+ Transport; Wed, 7 Feb 2024 09:22:35 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN1PEPF00004685.mail.protection.outlook.com (10.167.243.86) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7249.19 via Frontend Transport; Wed, 7 Feb 2024 09:22:35 +0000
+Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 7 Feb 2024 03:22:29 -0600
+From: Perry Yuan <perry.yuan@amd.com>
+To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
+	<viresh.kumar@linaro.org>, <Ray.Huang@amd.com>, <gautham.shenoy@amd.com>,
+	<Borislav.Petkov@amd.com>
+CC: <Alexander.Deucher@amd.com>, <Xinmei.Huang@amd.com>,
+	<Xiaojian.Du@amd.com>, <Li.Meng@amd.com>, <linux-pm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/7] AMD Pstate Driver Core Performance Boost
+Date: Wed, 7 Feb 2024 17:21:51 +0800
+Message-ID: <cover.1707297581.git.perry.yuan@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y1bznii8.fsf@jogness.linutronix.de>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN1PEPF00004685:EE_|SA3PR12MB7877:EE_
+X-MS-Office365-Filtering-Correlation-Id: b20d7d82-c370-475a-01c2-08dc27be522e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	LQeV4hJco0VYtVwoKBcttfLJV2UNa2hxF9E6BHAEvYpAB51rM2x73Hw/zYo/KKZSYdt55cxBxG0p5LOwkr8RtXVSmCAtGkhv5HoFJabSKhHni1MIe2m6oPYBLpOkACWLn14iziv5bhvJLVaQNUhhMDVdc+JvZUECyAaTKpoOAtFs93JdHJB5cdAiPcKrdZHlMh6liExWYkv19j5ffKjSNXzzdwDAOo01CHSBo8+VaJdqq2BQKKLg6ZI9z/6sz2Sx1D2aUv9h6q9j8ZyGnIqE0KeT0pRWJRSQoTWGp2eONc5I0qnnkj9Zwa1rKV2E6P3VjlhULzd6ddmX8n9gZlZopwjooI5Ach9QAIv4tMeuk3n9wBpp2/xMPjEV5b8rYAuy759dlS2IUPUYpdFpjInYKDuTyN3hLGQ4GnhcryvKbmGK0Vy9qbedTXrxEeoiM0cUdHcw4SoePUShJ5DIiW1utTfYarnxTrL57efokNXU3Z6rKWbaeB2gyJSbLa8R8FHclprWgEgWYZLcm+hkEWlo+sVFLr0/N8awjpHwkusSFqJ7Q49WOeyBHP+jfsirFKGj8MZrgn7UMpxvgdORObTCYvS0ngdhDhC8kqRFMToUhjCTy5JTBkRZmAOS7HTjYoJ708q3Mv9uSygggRJbJEnu+GmHVb1VjrlkvekBEH67J3ngBqzLrvJVZI4yITYWO4sPUoQepUruR8TOPp5D1DabsNVZ2syd+OwlUnsKqZfq2C6UULjpbJjLkVBWIEs8lhU9Qom/BhoF8+a8nMU9PM4rsJ4Zb2WdE/LVXuu+a3JjdaM=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(1800799012)(82310400011)(64100799003)(186009)(451199024)(40470700004)(36840700001)(46966006)(36756003)(40460700003)(40480700001)(966005)(478600001)(426003)(82740400003)(336012)(41300700001)(81166007)(2616005)(47076005)(83380400001)(16526019)(356005)(26005)(44832011)(2906002)(110136005)(70206006)(54906003)(86362001)(8676002)(7696005)(6636002)(5660300002)(70586007)(36860700001)(316002)(6666004)(8936002)(4326008)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2024 09:22:35.5471
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b20d7d82-c370-475a-01c2-08dc27be522e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN1PEPF00004685.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7877
 
-On Mon 2024-02-05 14:39:03, John Ogness wrote:
-> On 2024-01-31, Petr Mladek <pmladek@suse.com> wrote:
-> >> +	last_finalized_seq = desc_last_finalized_seq(rb);
-> >> +
-> >> +	/*
-> >> +	 * @head_id is loaded after @last_finalized_seq to ensure that it is
-> >> +	 * at or beyond @last_finalized_seq.
+Hi all,
+The patchset series add core performance boost feature for AMD pstate
+driver including passisve ,guide and active mode support.
 
-Maybe we could do it the following way. I would slightly update the
-above comment:
+User can change core frequency boost control with a new sysfs entry:
 
-	 * @head_id is loaded after @last_finalized_seq to ensure that
-	 * it points to the record with @last_finalized_seq or newer.
+"/sys/devices/system/cpu/amd_pstate/cpb_boost"
 
-I have got it even from the previous record but I had to think about
-it a  bit. You always wanted to make a difference between the IDs
-and sequence numbers.
+The legancy boost interface has been removed due to the function
+conflict with new cpb_boost which can support all modes.
 
-Anyway, this comment makes the safety kind of obvious.
+1). enable core boost:
+$ sudo bash -c "echo 0 > /sys/devices/system/cpu/amd_pstate/cpb_boost"
+$ lscpu -ae
+CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE    MAXMHZ   MINMHZ      MHZ
+  0    0      0    0 0:0:0:0          yes 4201.0000 400.0000 2983.578
+  1    0      0    1 1:1:1:0          yes 4201.0000 400.0000 2983.578
+  2    0      0    2 2:2:2:0          yes 4201.0000 400.0000 2583.855
+  3    0      0    3 3:3:3:0          yes 4201.0000 400.0000 2983.578
+  4    0      0    4 4:4:4:0          yes 4201.0000 400.0000 2983.578
 
-@head_id always have to be updated when the related record is reserved.
-And all other CPUs have to see it so that they have to bump @head_id
-for a newer record.
+2). disabble core boost:
+$ sudo bash -c "echo 1 > /sys/devices/system/cpu/amd_pstate/cpb_boost"
+$ lscpu -ae
+   0    0      0    0 0:0:0:0          yes 5759.0000 400.0000 2983.578
+  1    0      0    1 1:1:1:0          yes 5759.0000 400.0000 2983.578
+  2    0      0    2 2:2:2:0          yes 5759.0000 400.0000 2983.578
+  3    0      0    3 3:3:3:0          yes 5759.0000 400.0000 2983.578
+  4    0      0    4 4:4:4:0          yes 5759.0000 400.0000 2983.578
 
-And @last_finalized_seq points to an already finalized record.
-If a record is finalized then other CPUs must be able to
-read valid data.
 
-Maybe, we should add the two above paragraphs into the human
-readable part of the comment as well. They describe some
-basics of the design. Everything would blow up when
-neither of them is true.
+The patches have been tested with the AMD 7950X processor and many users
+would like to get core boost control enabled for power saving.
 
-My motivation is that a good human friendly description
-helps to understand what the code does and that it is
-"obviously" correct.
+Perry.
 
-I agree that the below precise description is useful.
-But people should need it only when they want to prove
-or revisit the human friendly claim.
+Changes from v2:
+ * move global struct to amd-pstate.h
+ * fix the amd-pstate-ut with new cpb control interface
 
-> >> +	 *
-> >> +	 * Memory barrier involvement:
-> >> +	 *
-> >> +	 * If desc_last_finalized_seq:A reads from
-> >> +	 * desc_update_last_finalized:A, then
-> >> +	 * prb_next_reserve_seq:A reads from desc_reserve:D.
-> >> +	 *
-> >> +	 * Relies on:
-> >> +	 *
-> >> +	 * RELEASE from desc_reserve:D to desc_update_last_finalized:A
-> >> +	 *    matching
-> >> +	 * ACQUIRE from desc_last_finalized_seq:A to prb_next_reserve_seq:A
-> >> +	 *
-> >> +	 * Note: desc_reserve:D and desc_update_last_finalized:A can be
-> >> +	 *       different CPUs. However, the desc_update_last_finalized:A CPU
-> >> +	 *       (which performs the release) must have previously seen
-> >> +	 *       desc_read:C, which implies desc_reserve:D can be seen.
-> >
-> > The most tricky part is desc_reserve:D. It is a supper complicated
-> > barrier which guarantees many things. But I think that there are
-> > many more write barriers before the allocated descriptor reaches
-> > finalized state. So that it should be easier to prove the correctness
-> > here by other easier barriers.
-> 
-> Yes, desc_reserve:D provides memory barriers for several orderings. But
-> it is _not_ providing a memory barrier for this ordering. It only marks
-> where @head_id is stored.
-> 
-> The only memory barriers involved here are desc_update_last_finalized:A
-> and its counterpart desc_last_finalized_seq:A.
-> 
-> CPU0                                 CPU1
-> ====                                 ====
-> store(head_id)
-> store_release(last_finalized_seq)    load_acquire(last_finalized_seq)
->                                      load(head_id)
-> 
-> > To make it clear. I am all for keeping the above precise description
-> > as is. I just think about adding one more human friendly note which
-> > might help future generations to understand the correctness an easier
-> > way.  Something like:
-> >
-> > 	* Note: The above description might be hard to follow because
-> > 	*	desc_reserve:D is a multi-purpose barrier. But this is
-> > 	*	just the first barrier which makes sure that @head_id
-> > 	*	is updated before the reserved descriptor gets finalized
-> > 	*	and updates @last_finalized_seq.
-> > 	*
-> > 	*	There are more release barriers in between, especially,
-> > 	*	desc_reserve:F and desc_update_last_finalized:A. Also these make
-> > 	*	sure that the desc_last_finalized_seq:A acquire barrier allows
-> > 	*	to read @head_id related to @last_finalized_seq or newer.
-> 
-> Non-global memory barriers must operate on the same memory. In this
-> case, the acquire/release memory barriers are operating on
-> @last_finalized_seq. The other ordered memory load in this situation is
-> for @head_id, so it makes sense to specify the store of @head_id as the
-> start of the release block.
+Changes from v1:
+ * drop suspend/resume fix patch 6/7 because of the fix should be in
+   another fix series instead of CPB feature
+ * move the set_boost remove patch to the last(Mario)
+ * Fix commit info with "Closes:" (Mario)
+ * simplified global.cpb_supported initialization(Mario)
+ * Add guide mode support for CPB control
+ * Fixed some Doc typos and add guide mode info to Doc as well.
 
-I am a bit confused by the "non-global memory barrier" here. I would
-expect that acquire()/release() variants provide global barriers.
-They are used to implement locking.
+v1: https://lore.kernel.org/all/cover.1706255676.git.perry.yuan@amd.com/
+v2: https://lore.kernel.org/lkml/cover.1707047943.git.perry.yuan@amd.com/
 
-Anyway, I am fine with keeping this precise description as is
-if we make the correctness more "obvious" from the human friendly
-part of the comment.
+Perry Yuan (7):
+  cpufreq: amd-pstate: initialize new core precision boost state
+  cpufreq: amd-pstate: implement cpb_boost sysfs entry for boost control
+  cpufreq: amd-pstate: fix max_perf calculation for amd_get_max_freq()
+  cpufreq: amd-pstate: fix the MSR highest perf will be reset issue
+    while cpb boost off
+  Documentation: cpufreq: amd-pstate: introduce the new cpu boost
+    control method
+  cpufreq: amd-pstate: remove legacy set_boost callback for passive mode
+  cpufreq: amd-pstate-ut: support new cpb boost control interface
 
-I am sorry for all the nitpicking. I want to make sure that
-the entire comment is correct including the precise part.
-This was not easy so I thought about ways to make it easier.
-Sigh.
+ Documentation/admin-guide/pm/amd-pstate.rst |  11 ++
+ drivers/cpufreq/amd-pstate-ut.c             |   2 +-
+ drivers/cpufreq/amd-pstate.c                | 156 +++++++++++++++-----
+ include/linux/amd-pstate.h                  |  15 +-
+ 4 files changed, 148 insertions(+), 36 deletions(-)
 
-Anyway, I do not want to block the patchset much longer
-because of this formal things.
+-- 
+2.34.1
 
-> > BTW: It came to my mind whether the logic might be more
-> >      straightforward if we store desc_ring->next_finalized_seq instead
-> >      of @last_finalized_seq.
-> 
-> I thought about this as well. But I felt like the meaning was a bit
-> confusing. Also @head_id points to the latest reserved descriptor, so it
-> makes the code a bit easier to follow when creating a diff based on the
-> latest finalized descriptor.
-
-Fair enough.
-
-Best Regards,
-Petr
 
