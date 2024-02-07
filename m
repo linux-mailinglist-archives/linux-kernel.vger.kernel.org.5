@@ -1,67 +1,62 @@
-Return-Path: <linux-kernel+bounces-55958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA9B684C412
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:52:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 293EB84C415
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:52:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A8F41F270F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:52:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7E261F25BDF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:52:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 071DE28DDC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1A22C6B2;
 	Wed,  7 Feb 2024 04:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iqpFpgWB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EoxW5JL5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3815628DBD;
-	Wed,  7 Feb 2024 04:47:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BBF128E0B;
+	Wed,  7 Feb 2024 04:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707281236; cv=none; b=jsYCQ6+5dxlZr4KVpmFoEBLaNTw5+RzB8j3GnyRJ+sDN+5vR40Zy8aV010ar8Z0THL+4DM9JTIbjpBYqgAGLtAj9oHwG3cRQsUCIhbL3AuS3JBp6gLPzWyg3Tr7lIau94y4MYiZoI8gYfvsMjsjoBBEKRbxC9bmcPA9AWEKg298=
+	t=1707281237; cv=none; b=dZvWbeHVAOZdSPnRqoaTrhCSLt+RxwQSxGfx9v8Ev4lPVxluaALGuPfkk8OrvEMz2M1Kl9ELZuo+o1JEfB0QCFbsOp5Hb5LamQwoKKmr/lWMI7BtH0vZcKMhAzC/r4dHg5LkzgAhaAgpWs8y47olRSb6RoHsIVhAItpC5PSYod4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707281236; c=relaxed/simple;
-	bh=UYd+KQbWrD/vp6wD1XU/N9A0AH2bAKaYL4bBOyrHZRU=;
+	s=arc-20240116; t=1707281237; c=relaxed/simple;
+	bh=snwEmEnlXdURlEnZbQJEX2cLBcC1/EELYYEHISPcEWI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LO+6Ii25CXz6aicCF6qW7ZxIruk5tVh5ZWijIf5D6MbMOEH48+u6niAb1+h4Qfnqrxy4iC3ziPQKVKeOMEgr6K2snstogooysSnDp2r0nOmg+WRugY7WDj+vq/fSNJ723yHN1YuBku1Z9VCP4aOaB5FrXT6icQDdnSCiiNPfg5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iqpFpgWB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E818C43399;
-	Wed,  7 Feb 2024 04:47:14 +0000 (UTC)
+	 MIME-Version:Content-Type; b=EPxuCQmbD2Ri7xIK3n/IKpHLELk6Oc04bk4FSLvuoRcaLFL+yVOt9UPoGsBA2ff3ep1s55qo1Dyk24JdNdumGjnGJ6gQ57EUeT9abctm3RbSpg77sbNETVqmCu/mqUZE9uiLQevOSKiJzVuf77Ts3QOrE6S6W48G7FbaVjVqa2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EoxW5JL5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 096DDC433B1;
+	Wed,  7 Feb 2024 04:47:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707281235;
-	bh=UYd+KQbWrD/vp6wD1XU/N9A0AH2bAKaYL4bBOyrHZRU=;
+	s=k20201202; t=1707281236;
+	bh=snwEmEnlXdURlEnZbQJEX2cLBcC1/EELYYEHISPcEWI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iqpFpgWBzvYT0jOxt+PDi0gbf2eHb2bQTx6RzexSVUAk+pB1acw+GpAMoUB4dHUI3
-	 Gqqcs215BvncX2S2Kg/9ZollqhMI0qHKyFl5xy7UBvQlRPJljfBlvRBQpH+rGoyPar
-	 U6wN9fl1QtbTKKS5EpdIc76K8msIzY7m7R8uGm67zaeACVMIR1jYOYH27M3dKFJ5c9
-	 TxdKBxfEhlN6HfPI+JSHvyPM+9GXH9zTX4sCOA1mjd3cYDoKc9NK7yJ/gDoD9uzCHL
-	 TGE6Jytvh7INZmEM9xl/6ccCBEW2/1g83VsGEGwKZA7LZgK1y8x+SshdelIk8I5UFB
-	 gjATWCfjoU8hQ==
+	b=EoxW5JL5D8B/4N2WcyW/artw7ymqKq3GXLqYnw4g3Rr1dAP/TrTG8L4yjakrYGxGb
+	 U+tmiwNvwTCC2d204tLJ/z6WlLJ1OE3DH1cEBfnvDfXwh+bJN9RrSmH2C37RZ+YBCA
+	 Cbhu3pxTHn4ACL2lqpVnVOX4X+OJbGmzFBUc6FEU37FnjwpaDHBoacdLTfTV0lu5pO
+	 HuAwPHHMzJlacPMi3HBzNazwrE0LA2v3yCEyBbtNRjXVuTJP8NDdPN34VPveO1134d
+	 NFCJ7yeQNqNfy6HUEH43FE/i/9bsjBWWQGMTNPZfjFmISgjOtFkW10xsU0J/+HXk4J
+	 eHvyBQ7CQKkPQ==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Andy Gross <agross@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>
+	Bjorn Andersson <quic_bjorande@quicinc.com>
 Cc: linux-arm-msm@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Mukesh Ojha <quic_mojha@quicinc.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: Re: (subset) [PATCH v7 0/4] remoteproc: qcom: Introduce DSP support for SM8650
-Date: Tue,  6 Feb 2024 22:46:33 -0600
-Message-ID: <170728117675.479358.12858304848396800970.b4-ty@kernel.org>
+	Johan Hovold <johan@kernel.org>,
+	Johan Hovold <johan+linaro@kernel.org>
+Subject: Re: [PATCH v3] arm64: dts: qcom: sc8280xp: Introduce additional tsens instances
+Date: Tue,  6 Feb 2024 22:46:34 -0600
+Message-ID: <170728117692.479358.8204389004285378331.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240123-topic-sm8650-upstream-remoteproc-v7-0-61283f50162f@linaro.org>
-References: <20240123-topic-sm8650-upstream-remoteproc-v7-0-61283f50162f@linaro.org>
+In-Reply-To: <20240206-sc8280xp-tsens2_3-v3-1-4577b3b38ea8@quicinc.com>
+References: <20240206-sc8280xp-tsens2_3-v3-1-4577b3b38ea8@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,25 +67,18 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 23 Jan 2024 09:51:01 +0100, Neil Armstrong wrote:
-> Add the bindings and driver changes for DSP support on the
-> SM8650 platform in order to enable the aDSP, cDSP and MPSS
-> subsystems to boot.
+On Tue, 06 Feb 2024 15:51:11 -0800, Bjorn Andersson wrote:
+> The SC8280XP contains two additional tsens instances, providing among
+> other things thermal measurements for the GPU.
 > 
-> Compared to SM8550, where SM8650 uses the same dual firmware files,
-> (dtb file and main firmware) the memory zones requirement has changed:
-> - cDSP: now requires 2 memory zones to be configured as shared
->   between the cDSP and the HLOS subsystem
-> - MPSS: In addition to the memory zone required for the SM8550
->   MPSS, two more are required to be configured for MPSS
->   usage only.
+> Add these and a GPU thermal-zone.
 > 
-> [...]
+> 
 
 Applied, thanks!
 
-[4/4] arm64: dts: qcom: sm8650: add missing qlink_logging reserved memory for mpss
-      commit: af53ecef19ffab5eed346032a0e79110cb82cc1d
+[1/1] arm64: dts: qcom: sc8280xp: Introduce additional tsens instances
+      commit: 014bbc990e27043e2d0c152bf63f8918b9c347c2
 
 Best regards,
 -- 
