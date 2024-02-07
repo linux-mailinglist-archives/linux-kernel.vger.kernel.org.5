@@ -1,155 +1,132 @@
-Return-Path: <linux-kernel+bounces-56732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A07384CE4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:42:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80A1A84CE4E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:43:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE3CAB2302A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:42:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D590282725
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9747980024;
-	Wed,  7 Feb 2024 15:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE1580021;
+	Wed,  7 Feb 2024 15:43:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="f72ZL+19"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ITlOJxGB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65AC37FBC9
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41D87993B
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707320553; cv=none; b=LnI0BwkP4+lMvJWS+9VNMGIABFkmpFs1wkfcba2ZYJojZg9y8hckCyaJdKRTuz6dFWkPjOQKd0JihxfNN8/Df1M0OXYq1csmq2E7Hrqpn7sepTqGTThEEWnaDHWDa7BwZYpldwViv/QKHuUiztn/3pbHAZXfiFROD8CJ5fyk+80=
+	t=1707320630; cv=none; b=YWUHZLr4d4DG3kPk57tHNbPkVAbfVnWBRCLGGrymX1U6rbYgRvtAJAtYFXMBUtLCONDPEg+/bk/g3LXd8yT8UlhzOFLecn39pIpUtTT+O+IUVm963foCJgVlpn6mFpUCQNM07FnrhpJjF7Q+UhvZCimc1MA076PDZPxdRRMzfWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707320553; c=relaxed/simple;
-	bh=6SHPMjNP8YDT15Iij7ixZFtooCnxVqeUcWFZiDatm2Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GkQXFf8XgL787tLPNANaUdlLlw+L043BypOxWaEqPghL7MnMg7emEnG3TX/B5Lny3ovH0QuaZEz8R6loBf3+3id2DyFFVL8wIU3SdVM07b+TPj4xEo2Xi21QuvHkv01Jeb/PeNvGN332geOIW+3yPlOnVE00yRFfLsBGcCA29NI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=f72ZL+19; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d8df2edd29so506954a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:42:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707320551; x=1707925351; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G1k6l9VsJqCh+RqlLUdVe9MZtp+zPDCT1Q+6Pwca5BQ=;
-        b=f72ZL+19RKp/8pv1MeD3DGZTuv3EIHZ20hZ3sV4chavUcxoC34N5W6gE2E981dOuLE
-         2WfXE/z+dFoKxA2Vf9NOrBMQIJCv/Ild5c4Go31tnXsWt7GRdZMgc3ZIRFkwq4ty1vcX
-         L/b+sZBuGk8ixkBuhw8tXoMp1ROAZrhDg5x7tI6YduoZ6uKTwRws+lhTbbj8ljGhnkv1
-         4eCJAmydXrDc26POIxSPgY54xjM4UpvsgPQJpGdOcOMTasoDoEf7ouYu8D0LzV6SKpjl
-         BVq5Ts+idnVRAvypfKeMEgBO3b+MXKUqwcJ3MMAY1j6rn5gGt7RdvStLtaWCsrfBoF9A
-         d7Jg==
+	s=arc-20240116; t=1707320630; c=relaxed/simple;
+	bh=oMhnQDhbzTftoXe32RQIwWtdO96us4xrhjolZAiZHHk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T9UEI54Uy0pVia0FZf/kzsjs5pl3Dqkb4YsLGL9tePtLK6pd9E6BhqVno/CB8GV3Y9RztvIgMMqWx9yFejKr/HL65GvMuI29i61gkIRIh1Vmjg+ve+uOTTxhEMAwhtPs+ETJMr6p7q7n1qsSwe07ITCKmmW+rWstjW3h/RRgtJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ITlOJxGB; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707320627;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=29GmU0WJVI81RRCnUaroCVhXsQRA2hKi8oNlrxbN5n0=;
+	b=ITlOJxGBLRbh78QhLJ9b8GFVlZ+xnnmevzTIKZSTXRzcFLCeR03Osxg+//nAZxzglvUd2E
+	KYDqJDw6wYqV9NbdMiEYQBb7AOLQEZ4Nz9/98Av9fRXoCytEV9mkUwVL6CbrlQdSwztiwf
+	KyXi+6Q6Wbtq0pv02YFiAzDMnlIT2IA=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-300-nqX9PV6BOPGo2jmWgcuHeQ-1; Wed, 07 Feb 2024 10:43:46 -0500
+X-MC-Unique: nqX9PV6BOPGo2jmWgcuHeQ-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7859d428fdfso81422885a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:43:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707320551; x=1707925351;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G1k6l9VsJqCh+RqlLUdVe9MZtp+zPDCT1Q+6Pwca5BQ=;
-        b=d9WeAejg1oaT/OK2zrT8W1OtUWmhtUI0VdErlO968JXf2DG+8e2tmZqVJnh0kaPxPd
-         DPUUcSWQVtdjYx5M6jN3b937DkW8uPya8p+Ao9wKxbHKOfaAuubx/DuBwxCvVnF6undn
-         tuJxbZ4SldfWc3gPaAfpstprQHJpN6GlxVD7RNwb9QPa/hG4TWViY/gWUiR9eM4jHsgM
-         aOUXTcZ9tGVqTsz2iF042OhggM7/J8xjfV7oVEFv1mor6lwBQKnUq98Oux/WOF4MvRKg
-         fahcNVfMt+inLZxm7cYoJVm+TV1T79IWgPfgUBqvcn20xH3MgvZQJVPkVm/txx1gtpZ7
-         82+w==
-X-Forwarded-Encrypted: i=1; AJvYcCUsMXgGf3XBvkvYgLA8Znv3C+Lgbb+Fm6gXFlofPvlNcLMlgz1LmP8iYuF21xShS3yLp3lKJ5oOG7Ev3AHiB2tA/VXDFvDZwBIiEM11
-X-Gm-Message-State: AOJu0YyFqLLKxMapVCZ8Of1gLJFRZ8F9mfOF408ogRhK4+QZhSzURzWr
-	5L/I6aGlznwy+djtG3uTwxcGcbVb8dY/u6ZijKhW98MHRnGnH/WNZXlJQr1JK58XmFOQXov3OpG
-	Krh699iKFnRhR3AWlzQsIt3rPStcTmbBfLKTIzA==
-X-Google-Smtp-Source: AGHT+IHoo4XR4AOXdM1Xi2DWyc3VAXdtc9F/OIyCgMe01EYezQtt37cphv12SPLoNwfrzSk+idTwfQsKhr3rHYJ1sig=
-X-Received: by 2002:a17:90a:d48f:b0:296:c695:4962 with SMTP id
- s15-20020a17090ad48f00b00296c6954962mr2669545pju.41.1707320551601; Wed, 07
- Feb 2024 07:42:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707320626; x=1707925426;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=29GmU0WJVI81RRCnUaroCVhXsQRA2hKi8oNlrxbN5n0=;
+        b=HVuKs8HUmByaINDTVwkyNPo7uKHJNYYMXkYEYlIeep7TYbZK1D1aSauPE8FVcJBmtF
+         KBWXX3JaC+vIzlbYFB77kimF/CCkA3VIe3slKKkVKEx0kHhrJqfQ86Pp+ozE0sdvCe6K
+         ad+CG9RG8sSns5viBpgvhjBLo3Ntk4ifT8/RxeljQ+QJ1wyZQInGmDvEaHTS5QO7qP3P
+         sqxzACNJ0gm/LWdoHfJz36+Uh3Upnj+uwrZrDkkeHi2Ybw5fMVOreorFiBdVL5BEOYk3
+         rPkh0wJUGUX2l9XOc7R0aUetV4wv9ZM2BKpe0SxFh2tizjdmvAEwSfoOfUiIiJWTyikU
+         sQFw==
+X-Forwarded-Encrypted: i=1; AJvYcCXFPA35dR+jML23TA06g2VK2JCd++BRZbK1iz7HecY7lr8n8G5XbiAzZrJvEkYl7dqRw22IATRwV2rEIFalheFDkqtg4j1m+64ffgT2
+X-Gm-Message-State: AOJu0YyWKpYPBZVCNK2u3VL5QojE1xTfiL+aPmtfONrqHG3M7NEun6J4
+	+7Mfe3QrrBTK5tnR37G/pmqxgRLbrJnKBlGTpP/0qG+RTowntL9tudX0XS/vlYynG9s2YfQ8OTS
+	8WgvwxSGdAIbpuYFn9qAMNXvaaQTbw7KKSBZb16i+/VWQpD/AJMjg4lzbSIVDkA==
+X-Received: by 2002:a05:620a:612a:b0:785:5a45:c051 with SMTP id oq42-20020a05620a612a00b007855a45c051mr6515421qkn.10.1707320626038;
+        Wed, 07 Feb 2024 07:43:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHzonaLyrIAVvkXXGpzqr7TSJxC/KB7KAItXbWifbvzd/5hFgwnWuI+eWmu0G+TxPkW33FFBw==
+X-Received: by 2002:a05:620a:612a:b0:785:5a45:c051 with SMTP id oq42-20020a05620a612a00b007855a45c051mr6515406qkn.10.1707320625752;
+        Wed, 07 Feb 2024 07:43:45 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVgFggNyOqEwxOXsDjt+zIkkPwv8yHX3cH+PDA0TmIe69kGLkevANZZURzsWtBSkRjifEbwcO45Bik2TVz2YxAnGDWnwEQaoZsKO+hNcSocl2F0yGwet8AwPH/pjLOpqws9Eh5ra/ikZE5Qmtb7WRLGMg9SjHxw
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id d15-20020a05620a158f00b007859d590478sm602828qkk.64.2024.02.07.07.43.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 07:43:44 -0800 (PST)
+Message-ID: <86c33c28-77a8-46ed-9c5c-2ae0acbf5b3b@redhat.com>
+Date: Wed, 7 Feb 2024 16:43:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206085238.1208256-1-tudor.ambarus@linaro.org>
- <20240206085238.1208256-2-tudor.ambarus@linaro.org> <CAPLW+4=Xd+B=ZncqPgU4qaJ8zY8JJvJZApdUW_v0w6yr2cy9Sg@mail.gmail.com>
- <16a5e423-1111-49ff-ad6c-b0bb89a4879a@linaro.org>
-In-Reply-To: <16a5e423-1111-49ff-ad6c-b0bb89a4879a@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Wed, 7 Feb 2024 09:42:20 -0600
-Message-ID: <CAPLW+4n_1yBOuzW3Ke2DKh_0EBZMUrd3nyGd=U0TeOML_2dXuw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] spi: s3c64xx: explicitly include <linux/types.h>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, broonie@kernel.org, andi.shyti@kernel.org, 
-	krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com, 
-	linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	andre.draszik@linaro.org, peter.griffin@linaro.org, kernel-team@android.com, 
-	willmcvicker@google.com, robh+dt@kernel.org, conor+dt@kernel.org, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM: selftests: Fix a semaphore imbalance in the dirty
+ ring logging test
+Content-Language: en-US
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Shaoqin Huang <shahuang@redhat.com>
+References: <20240202231831.354848-1-seanjc@google.com>
+ <170724566758.385340.17150738546447592707.b4-ty@google.com>
+ <6fdbeed0-980e-4371-a448-0c215c4bc48e@redhat.com>
+ <ZcOXSZ2OPL5WCcRM@google.com>
+From: Eric Auger <eauger@redhat.com>
+In-Reply-To: <ZcOXSZ2OPL5WCcRM@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 7, 2024 at 12:21=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
-org> wrote:
->
->
->
-> On 2/6/24 18:02, Sam Protsenko wrote:
-> > On Tue, Feb 6, 2024 at 2:52=E2=80=AFAM Tudor Ambarus <tudor.ambarus@lin=
-aro.org> wrote:
-> >>
-> >> The driver uses u32 and relies on an implicit inclusion of
-> >> <linux/types.h>.
-> >>
-> >> It is good practice to directly include all headers used, it avoids
-> >> implicit dependencies and spurious breakage if someone rearranges
-> >> headers and causes the implicit include to vanish.
-> >>
-> >> Include the missing header.
-> >>
-> >> Fixes: 230d42d422e7 ("spi: Add s3c64xx SPI Controller driver")
-> >
-> > Not sure if Fixes tag is needed here.
->
-> We have already talked about this. If a patch that causes the implicit
-> include to vanish is backported to stable, it will reveal the missing
-> header here and will result in backporting this patch as well. So, as a
-> good practice let's allow this patch to be queued to stable, it will
-> avoid possible compilation errors.
->
-> I guess Mark has to break the tie again. Or Greg if he cares, I added
-> him in To:.
->
-> >
-> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> >> ---
-> >>  drivers/spi/spi-s3c64xx.c | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-> >> index 72c35dbe53b2..c15ca6a910dc 100644
-> >> --- a/drivers/spi/spi-s3c64xx.c
-> >> +++ b/drivers/spi/spi-s3c64xx.c
-> >> @@ -17,6 +17,7 @@
-> >>  #include <linux/platform_device.h>
-> >>  #include <linux/pm_runtime.h>
-> >>  #include <linux/spi/spi.h>
-> >> +#include <linux/types.h>
-> >
-> > Is this really needed for the further patches in this series?
-> >
->
-> Yes, because in patch 3/4 I use u8 and u16 and I don't want to use those
-> without having the header included. Do you find this wrong?
->
 
-I'd say if this header is really needed for your patch 3/4 to have a
-successful build, just merge this patch into the patch 3/4 then.
 
-> >>
-> >>  #define MAX_SPI_PORTS          12
-> >>  #define S3C64XX_SPI_QUIRK_CS_AUTO      (1 << 1)
-> >> --
-> >> 2.43.0.594.gd9cf4e227d-goog
-> >>
+On 2/7/24 15:44, Sean Christopherson wrote:
+> On Wed, Feb 07, 2024, Eric Auger wrote:
+>> Hi Sean,
+>>
+>> On 2/6/24 22:36, Sean Christopherson wrote:
+>>> On Fri, 02 Feb 2024 15:18:31 -0800, Sean Christopherson wrote:
+>>>> When finishing the final iteration of dirty_log_test testcase, set
+>>>> host_quit _before_ the final "continue" so that the vCPU worker doesn't
+>>>> run an extra iteration, and delete the hack-a-fix of an extra "continue"
+>>>> from the dirty ring testcase.  This fixes a bug where the extra post to
+>>>> sem_vcpu_cont may not be consumed, which results in failures in subsequent
+>>>> runs of the testcases.  The bug likely was missed during development as
+>>>> x86 supports only a single "guest mode", i.e. there aren't any subsequent
+>>>> testcases after the dirty ring test, because for_each_guest_mode() only
+>>>> runs a single iteration.
+>>>>
+>>>> [...]
+>>>
+>>> Applied to kvm-x86 selftests, thanks!
+>> Do you plan to send this branch to Paolo for v6.8?
+> 
+> That wasn't my initial plan, but looking at what's in there, the only thing that
+> isn't a fix is Andrew's series to remove redundant newlines.  So yeah, I'll send
+> this along for 6.8.
+> 
+
+OK. Many thanks!
+
+Eric
+
 
