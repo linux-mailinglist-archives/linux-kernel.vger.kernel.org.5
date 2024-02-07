@@ -1,160 +1,204 @@
-Return-Path: <linux-kernel+bounces-57009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E76D584D2D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:22:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7697584D2DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:23:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 169211C22852
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:22:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD2741F24435
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:23:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B062E1272BE;
-	Wed,  7 Feb 2024 20:22:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2927E126F11;
+	Wed,  7 Feb 2024 20:23:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="Q8BBWGyp"
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="VIZvOC2i"
+Received: from relay.smtp-ext.broadcom.com (unknown [192.19.166.228])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8290E126F11
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 20:22:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 889238286B;
+	Wed,  7 Feb 2024 20:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.228
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707337322; cv=none; b=JNc4KLBohFBRP/GL4AfLezaNl0Fp2t4/C/PgX174WgGvaRW+ZGTUIvF4fZMKwBWQBGdgoNbMnjSxsTNQ1zw1mpgPHGqb1GrQuKHozRifLluAKhCdthwf5acRD0rWotEK2IG1+5JXCGncHHWIGokR1RWnn7xUGGYE33yr6Q0v5O4=
+	t=1707337404; cv=none; b=LScyIK+l22bzpF9jgcChePc63A9nfMD56oqSAgNwrZ5CjVIVspEYZaRsGH8YL+lxfV+MUNmGoZSv2gr5QwK4IxI6ur3jMWDap4dtCEuv3/1aDU/+0b84bdxR9rh3AGIUNPN0wYCIeKpA/03/h9MKX5TQhWc1q+u3JCe7fS/CvJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707337322; c=relaxed/simple;
-	bh=i3XpBGDoD9F52CwY8m+nZ5lY1uCjGSkm+bBzMFeSARQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=sic38/8MJPJGM2AK5YcXYRpUiKbuIRjbHBSQDfM8H8mnl7IjT7yqB1xcG7fTbfdnmYApOl2h4Ccqb6UFG2pWIyrCB9AbKtZ7O4Hz66GYW048fjaPVZn24jXGOtJZVPEU3gj3+UTo3o5bxNxF1lB06V5U4BdNk6kY1gDR8JKrXvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=Q8BBWGyp; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from mx0.riseup.net (mx0-pn.riseup.net [10.0.1.42])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	s=arc-20240116; t=1707337404; c=relaxed/simple;
+	bh=t5MTZ6h/uF6MK783sntQUSeREsibdAMo9MkPq0iXWVc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=STsK64UDRf+V5Ks/CuLEXtYZGDUR3x77dbSvvLYTrl2Yh6T0TLfUE3bihaJ+hONU8QUAQMRK1KPs8X2Qd3fk2JK1QaM3tMgCAQh10ZGOJ9AhLTcZzscNpHGR59Am2dmbywmqwb9vNCSU6tbrWqCM4OGso3JHZUnCnQ+lXa3zTsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=VIZvOC2i; arc=none smtp.client-ip=192.19.166.228
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 3FA82C0000DB;
+	Wed,  7 Feb 2024 12:23:16 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 3FA82C0000DB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1707337396;
+	bh=t5MTZ6h/uF6MK783sntQUSeREsibdAMo9MkPq0iXWVc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=VIZvOC2i/YjF/sD+9YF/0dVttV2NUp0AJm5wOUJ5AGqICArHyc+J+vXktZDpYzPLl
+	 SYC39A1Kcb5bz6UbtdPh4iDfbAqgv9da316SnbMqSVAP5JwLoF+Z5E/9I/QCSqlpCP
+	 0yArxykypBhmgCDGONW6Fhv7kLMznW5Ukh2wXx50=
+Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.173.232.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4TVWjv1R76zDr0R
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 20:21:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1707337315; bh=i3XpBGDoD9F52CwY8m+nZ5lY1uCjGSkm+bBzMFeSARQ=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=Q8BBWGyptFpwjRCPSgTyn8Q/Mp4rL6jMFAxDwTT4zBFhdss7cWQ1c1wMH5V/Uinsq
-	 vq4BZS7JthW5EY4DQvd78kmrDAPpmE+tyoS6E+Qf0LRkGnXOalQpjZVu8sDD8AOmMA
-	 Nai8VNjCTPOq7xDXfcKjp9+GPkhFIVGXS0BzRZaY=
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx0.riseup.net (Postfix) with ESMTPS id 4TVWjn272Rz9wpF;
-	Wed,  7 Feb 2024 20:21:49 +0000 (UTC)
-X-Riseup-User-ID: A119657D52AA30ACBA852831A1D54514D8C49CF4D1DBA5B0DA7DE26AB620A038
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4TVWjh1VkdzFwY8;
-	Wed,  7 Feb 2024 20:21:43 +0000 (UTC)
-Message-ID: <902e30af-b917-4cd7-a6bf-2ba13e5cc9ac@riseup.net>
-Date: Wed, 7 Feb 2024 17:21:41 -0300
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id B4A2318041CAC4;
+	Wed,  7 Feb 2024 12:23:14 -0800 (PST)
+From: William Zhang <william.zhang@broadcom.com>
+To: Linux MTD List <linux-mtd@lists.infradead.org>,
+	Linux ARM List <linux-arm-kernel@lists.infradead.org>,
+	Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>
+Cc: f.fainelli@gmail.com,
+	kursad.oney@broadcom.com,
+	joel.peshkin@broadcom.com,
+	anand.gore@broadcom.com,
+	dregan@mail.com,
+	kamal.dasu@broadcom.com,
+	tomer.yacoby@broadcom.com,
+	dan.beygelman@broadcom.com,
+	William Zhang <william.zhang@broadcom.com>,
+	Andre Przywara <andre.przywara@arm.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Kamal Dasu <kdasu.kdev@gmail.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Shawn Guo <shawnguo@kernel.org>,
+	David Regan <dregan@broadcom.com>,
+	devicetree@vger.kernel.org,
+	Alexandre TORGUE <alexandre.torgue@st.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Brian Norris <computersforpeace@gmail.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	linux-kernel@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>
+Subject: [PATCH v5 00/12] mtd: rawnand: brcmnand: driver and doc updates
+Date: Wed,  7 Feb 2024 12:22:45 -0800
+Message-Id: <20240207202257.271784-1-william.zhang@broadcom.com>
+X-Mailer: git-send-email 2.37.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] drm/vkms: Use a simpler composition function
-Content-Language: en-US
-To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- =?UTF-8?Q?Ma=C3=ADra_Canal?= <mairacanal@riseup.net>,
- Maxime Ripard <mripard@kernel.org>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>,
- Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- marcheu@google.com, seanpaul@google.com, nicolejadeyee@google.com,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com
-References: <20240201-yuv-v1-2-3ca376f27632@bootlin.com>
- <20240202105522.43128e19@eldfell> <20240202102601.70b6d49c@xps-13>
- <3nofkwzgnf4yva2wfogdbii47ohpi2wm5vp6aijtg3emxyoowt@twyreqz7ai3g>
- <20240202131322.5471e184@xps-13> <20240202174913.789a9db9@eldfell>
- <20240202170734.3176dfe4@xps-13> <20240202214527.1d97c881@ferris.localdomain>
- <d258c8dc-78e9-4509-9037-a98f7f33b3a3@riseup.net>
- <20240207104407.7b06bac2@eldfell> <ZcOpzszyR49_MlqB@localhost.localdomain>
-From: Arthur Grillo <arthurgrillo@riseup.net>
-In-Reply-To: <ZcOpzszyR49_MlqB@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+This patch series is an update from the previous version [1] after
+exex_op support and fixes (patch 1 to 4 from the previous version.)
 
+It updates all the BCMBCA SoC to support the nand controller and add
+functions to handle BCMBCA specific needs on ECC and Write Protection
+usage. The device tree document is also updated accordingly with the new
+properties needed by the driver.
 
-On 07/02/24 13:03, Louis Chauvet wrote:
-> Hello Pekka, Arthur,
-> 
-> [...]
-> 
->>>> Would it be possible to have a standardised benchmark specifically
->>>> for performance rather than correctness, in IGT or where-ever it
->>>> would make sense? Then it would be simple to tell contributors to
->>>> run this and report the numbers before and after.
->>>>
->>>> I would propose this kind of KMS layout:
->>>>
->>>> - CRTC size 3841 x 2161
->>>> - primary plane, XRGB8888, 3639 x 2161 @ 101,0
->>>> - overlay A, XBGR2101010, 3033 x 1777 @ 201,199
->>>> - overlay B, ARGB8888, 1507 x 1400 @ 1800,250
->>>>
->>>> The sizes and positions are deliberately odd to try to avoid happy
->>>> alignment accidents. The planes are big, which should let the pixel
->>>> operations easily dominate performance measurement. There are
->>>> different pixel formats, both opaque and semi-transparent. There is
->>>> lots of plane overlap. The planes also do not cover the whole CRTC
->>>> leaving the background visible a bit.
->>>>
->>>> There should be two FBs per each plane, flipped alternatingly each
->>>> frame. Writeback should be active. Run this a number of frames, say,
->>>> 100, and measure the kernel CPU time taken. It's supposed to take at
->>>> least several seconds in total.
->>>>
->>>> I think something like this should be the base benchmark. One can
->>>> add more to it, like rotated planes, YUV planes, etc. or switch
->>>> settings on the existing planes. Maybe even FB_DAMAGE_CLIPS. Maybe
->>>> one more overlay that is very tall and thin.
->>>>
->>>> Just an idea, what do you all think?  
->>>
->>> Hi Pekka,
->>>
->>> I just finished writing this proposal using IGT.
->>>
->>> I got pretty interesting results:
->>>
->>> The mentioned commit 8356b97906503a02125c8d03c9b88a61ea46a05a took
->>> around 13 seconds. While drm-misc/drm-misc-next took 36 seconds.
->>>
->>> I'm currently bisecting to be certain that the change to the
->>> pixel-by-pixel is the culprit, but I don't see why it wouldn't be.
->>>
->>> I just need to do some final touches on the benchmark code and it
->>> will be ready for revision.
->>
->> Awesome, thank you very much for doing that!
->> pq
-> 
-> I also think it's a good benchmarks for classic configurations. The odd 
-> size is a very nice idea to verify the corner cases of line-by-line 
-> algorithms.
-> 
-> When this is ready, please share the test, so I can check if my patch is 
-> as performant as before.
-> 
-> Thank you for this work.
-> 
-> Have a nice day,
-> Louis Chauvet
-> 
+In addition there is a bug fix for exec_op helper functions and log
+level adjustment on uncorrectable ECC error.
 
-Just sent the benchmark for revision:
-https://lore.kernel.org/r/20240207-bench-v1-1-7135ad426860@riseup.net
+[1] https://lore.kernel.org/lkml/20230606231252.94838-1-william.zhang@broadcom.com/
+
+Changes in v5:
+- Add reviewed-by tag for the first patch of the yaml change
+- Update the description for the WP connection and strap ecc properties
+  based on the feedbacks
+- Add check in dts binding to ensure the strap ecc property and core 
+  nand ecc property can not be used at the same time
+- Update the commit message for the log level change patch
+
+Changes in v4:
+- Split the yaml changes into three patches.
+- Move the WP pin property to a new patch and change it to boolean type.
+- Move ecc strap property to a new patch and remove some non-binding 
+  related text from the description
+- Add a new patch for bcm4908 based router board dts update
+- Move the board related dts setting from SoC dtsi to board dts
+- Update the comments for ecc setting selection
+- Use the new brcm,wp-not-connected property based on the dts binding
+  change
+- Fix the commit id in the fixes tag
+- Revert the log level change for correctable ecc error
+
+Changes in v3:
+- Update brcm,nand-use-wp description
+- Revert the description change to BCM63168 SoC-specific NAND controller
+- Updated bcmbca_read_data_bus comment
+
+Changes in v2:
+- Revert the new compatible string nand-bcmbca
+- Drop the BCM63168 compatible fix to avoid any potential ABI
+  incompatibility issue
+- Simplify the explanation for brcm,nand-use-wp
+- Keep the interrupt name requirement when interrupt number is specified
+- Add nand controller node label for 4908 so it is consistent with other
+  SoC's and can be referenced by board dts file
+- Drop the is_param argument to the read data bus function now that we
+  have the exec_op API to read the parameter page and ONFI data
+- Minor cosmetic fixes
+- Added patches 8, 9, 10 to patch series
+
+David Regan (2):
+  mtd: rawnand: brcmnand: exec_op helper functions return type fixes
+  mtd: rawnand: brcmnand: update log level messages
+
+William Zhang (10):
+  dt-bindings: mtd: brcmnand: Updates for bcmbca SoCs
+  dt-bindings: mtd: brcmnand: Add WP pin connection property
+  dt-bindings: mtd: brcmnand: Add ecc strap property
+  ARM: dts: broadcom: bcmbca: Add NAND controller node
+  arm64: dts: broadcom: bcmbca: Add NAND controller node
+  arm64: dts: broadcom: bcmbca: Update router boards
+  mtd: rawnand: brcmnand: Rename bcm63138 nand driver
+  mtd: rawnand: brcmnand: Add BCMBCA read data bus interface
+  mtd: rawnand: brcmnand: Add support for getting ecc setting from strap
+  mtd: rawnand: brcmnand: Support write protection setting from dts
+
+ .../bindings/mtd/brcm,brcmnand.yaml           |  39 +++++-
+ arch/arm/boot/dts/broadcom/bcm47622.dtsi      |  14 ++
+ arch/arm/boot/dts/broadcom/bcm63138.dtsi      |   7 +-
+ arch/arm/boot/dts/broadcom/bcm63148.dtsi      |  14 ++
+ arch/arm/boot/dts/broadcom/bcm63178.dtsi      |  14 ++
+ arch/arm/boot/dts/broadcom/bcm6756.dtsi       |  14 ++
+ arch/arm/boot/dts/broadcom/bcm6846.dtsi       |  14 ++
+ arch/arm/boot/dts/broadcom/bcm6855.dtsi       |  14 ++
+ arch/arm/boot/dts/broadcom/bcm6878.dtsi       |  14 ++
+ arch/arm/boot/dts/broadcom/bcm947622.dts      |  10 ++
+ arch/arm/boot/dts/broadcom/bcm963138.dts      |  10 ++
+ arch/arm/boot/dts/broadcom/bcm963138dvt.dts   |  14 +-
+ arch/arm/boot/dts/broadcom/bcm963148.dts      |  10 ++
+ arch/arm/boot/dts/broadcom/bcm963178.dts      |  10 ++
+ arch/arm/boot/dts/broadcom/bcm96756.dts       |  10 ++
+ arch/arm/boot/dts/broadcom/bcm96846.dts       |  10 ++
+ arch/arm/boot/dts/broadcom/bcm96855.dts       |  10 ++
+ arch/arm/boot/dts/broadcom/bcm96878.dts       |  10 ++
+ .../bcmbca/bcm4906-netgear-r8000p.dts         |   5 +
+ .../bcmbca/bcm4906-tplink-archer-c2300-v1.dts |   5 +
+ .../bcmbca/bcm4908-asus-gt-ac5300.dts         |   6 +-
+ .../boot/dts/broadcom/bcmbca/bcm4908.dtsi     |   4 +-
+ .../boot/dts/broadcom/bcmbca/bcm4912.dtsi     |  14 ++
+ .../boot/dts/broadcom/bcmbca/bcm63146.dtsi    |  14 ++
+ .../boot/dts/broadcom/bcmbca/bcm63158.dtsi    |  14 ++
+ .../boot/dts/broadcom/bcmbca/bcm6813.dtsi     |  14 ++
+ .../boot/dts/broadcom/bcmbca/bcm6856.dtsi     |  14 ++
+ .../boot/dts/broadcom/bcmbca/bcm6858.dtsi     |  14 ++
+ .../boot/dts/broadcom/bcmbca/bcm94908.dts     |  10 ++
+ .../boot/dts/broadcom/bcmbca/bcm94912.dts     |  10 ++
+ .../boot/dts/broadcom/bcmbca/bcm963146.dts    |  10 ++
+ .../boot/dts/broadcom/bcmbca/bcm963158.dts    |  10 ++
+ .../boot/dts/broadcom/bcmbca/bcm96813.dts     |  10 ++
+ .../boot/dts/broadcom/bcmbca/bcm96856.dts     |  10 ++
+ .../boot/dts/broadcom/bcmbca/bcm96858.dts     |  10 ++
+ drivers/mtd/nand/raw/brcmnand/Makefile        |   2 +-
+ drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c |  99 --------------
+ drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c   | 126 ++++++++++++++++++
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c      | 126 +++++++++++++++---
+ drivers/mtd/nand/raw/brcmnand/brcmnand.h      |   2 +
+ 40 files changed, 633 insertions(+), 134 deletions(-)
+ delete mode 100644 drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
+ create mode 100644 drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
+
+-- 
+2.37.3
+
 
