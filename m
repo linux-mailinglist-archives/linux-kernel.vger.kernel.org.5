@@ -1,73 +1,74 @@
-Return-Path: <linux-kernel+bounces-56356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB2C284C928
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:05:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60EB884C939
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:09:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5147B2407D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:05:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 177A528997C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:09:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F90617BDD;
-	Wed,  7 Feb 2024 11:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2953917BD4;
+	Wed,  7 Feb 2024 11:09:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sBJ8wESf"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="IPLZI6uG"
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7771B7E1
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:05:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C835C175A6
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:09:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707303907; cv=none; b=mhD3oWOC7idOXTKai+qic01wCC/tPM+Ktj/VzLAybDFPNl9z9S+L+sKjoW+uz6B8xmOENcVH0PbmuQHqv/IfeAlTSxFymg/2cBNJL0EbbnjqmhUT2WYCAwKliFeIVw9Y2PKY8KD1z7BrRj5S9k5LCAuIJnJjyPyG9zWqQXOlSP0=
+	t=1707304142; cv=none; b=Wmo8KSAsiiloOgolGm3Vckgqipty6okdMlF217iMOY9iF/qT8cEXZKqCYJt3vbG+fSEFCpk/s+LDI5NNJIlBQtyEf9TEncflxLF04nYTdE2Eoe2G0sFTVzHpFwzN2uV1+MrADxOkCiZNB4+a4vhljdeJiYzOdlc4S45GNqVyZPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707303907; c=relaxed/simple;
-	bh=0+Ct3FjmfiuZlfh/SzKNT+CbmGRaJsLMmVQW8wDoDsg=;
+	s=arc-20240116; t=1707304142; c=relaxed/simple;
+	bh=ludCN2TVVC0VlF3oN4zQ55FOfOprq98JMt8dluiEa28=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QSyvbogjE+Ad/eA2z/2Y2WlfzUjwrSrNcwPJ+XZfovQvzZiMNMhZNwONDsmTlCcA74q6rRx7y0lM+bFE1iMMcUfXb9NfIPph2LkqJMLZ3ptebJuYFu7VDOE9FvscT2u2IT00qyVydeigcceI8K9itrpZHiO0UtStDKGygX6M9CE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sBJ8wESf; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33b1d7f736bso414373f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 03:05:05 -0800 (PST)
+	 In-Reply-To:Content-Type; b=i50MzlFYMjwTC6+fXoEbiePIy/icDCyCFrLVdrmDPhQCangJkcmYEwse+mVzckPXvlVL9KlLKXOlUXuM166r87k03TK/qqXtDJUKElQIZ/3UtpWL/jfrfmjV4/9Dd7lHulfWQEOKt0VjOIV2JoKkSkGKrE/6Uq4ncFvfyGvcbb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=IPLZI6uG; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso331209a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 03:09:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707303904; x=1707908704; darn=vger.kernel.org;
+        d=tweaklogic.com; s=google; t=1707304140; x=1707908940; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9JhdFREau9a6Lz9UlDo/svgNXxSvwHYR1LSN6sffUzI=;
-        b=sBJ8wESfVqXadoKjiKuxVf6OlJDDO7HRT+Ak7vsTkjIBRq0Aq+zQiEGAuaOO/0FA/4
-         OTDE+gBKIiP8dbF8sR3/QZLJQ+lADC4yrDTGo1v2HXG8OPLI6X1miZYS7JF4ygnnm23o
-         CSp8Nt+wITQxrpJiwWxpPDNKU4FpWlFKd8xuGLeNXk3xvKS4y4IBpyqUSWURYhWCVO/r
-         IPT9soOsFtVZ4GJT6o1Y/bzAXY86fCXmnCeCZJbi9s/CbAZnyQhZvv6LCgNH/PYztu9u
-         rvLPG6CsPadLHR+Cm1VrBgwW1WKzLbnyFORC4CzWZxH3d3TozuhJMPVyQkNDhC0X49HQ
-         0lJQ==
+        bh=y4Er2JvCrzXK5LJAuZCNC4zYfiOB+GgDvOYEhwDSc+I=;
+        b=IPLZI6uGiXIo17/jo0x508617kB7W6KczHe4RcLzWh/b6sWOzre62cgdOgJ+YqqjZR
+         /nr9XURqVwZLHrXbqx7aguaiQdXhp8JoTNJqHFhf081wC+1ue1qknCALgNt84QZ2PHg1
+         ryApSowKjfdPdY509+f/P7RepgDxdTlUWRN3lmnreL0NFpX4JsiV4dZs+svMtToj4rIa
+         qP+q+frpQkPmMmoIAeKd41GMLgBXA8NNruTA8P+FxQvjYWZmUK9tWW+o0oWis9LAJWKH
+         szTUqmcOEIuKE4H2J17yZtwrGE+z2fDWJPeOzlIspJqFy+i9V0b4pBuBQPgUNXGO7zpG
+         F5mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707303904; x=1707908704;
+        d=1e100.net; s=20230601; t=1707304140; x=1707908940;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9JhdFREau9a6Lz9UlDo/svgNXxSvwHYR1LSN6sffUzI=;
-        b=Dzj/bBDDsX8Rqh73o97FlqXFPGiH/hWrVkhxJ+cqSoobspTHSVWWcmfsLH3dW0ya1M
-         gqSHLudY8qeh//13ZVrlmd15dKW6bsnQ8HnnLqw03VC8TC7DuTTa89LnO8S/ewX66cK1
-         rbhv9kQaQO8hDoTM80ZRplfhGLGsUjajYA9+uaivdWv1oBhyLH77uryY+e3J69YXk9OW
-         wsYf90/twL/fa4WtF4x1/do41iFWISZoJ1Hj1IznQVzxr2wqLof9h7OncbGJFAr9p2Bc
-         PrrwTVnyTHImOh8vFM3WhZ4W7cgjD1hHwAl/xBjVJ6l0IwxGVHWj6bHQbMNx28Yhq+sb
-         AoUw==
-X-Gm-Message-State: AOJu0Yw1hggSZdDRZnjlbVcm6Dkq9EfWKLw4kvXbpKl/wsZ5rP2nFs1w
-	eneb8ZW07arlFOGYfyAVR2XiO3dMepAhB8g+lUWrcKpVBN9YCvcbnKhwhBrw0NQ=
-X-Google-Smtp-Source: AGHT+IGNOZ+Ucmt/8ReBjQs9L2rBoNxgcsuKi3zDlKPcCubwuNeujFxUTR7VbZClTKUMfdsYf7R+WA==
-X-Received: by 2002:a5d:5f4c:0:b0:33a:e739:28bd with SMTP id cm12-20020a5d5f4c000000b0033ae73928bdmr3925870wrb.59.1707303904241;
-        Wed, 07 Feb 2024 03:05:04 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUIzDjQPQCruwsPLOJ4gl23f7Yhwci4/KG6rLDwv2k2dXmMNUjrT6Ji0sMcdjcUqRUMuorkoVFKzfSzRwDjKIA5GQ/kK2YcOKwAF/i6ijVHVHXOug8OHmXXYj5Y3eHbWgAX8chb2R+Qqr7y1uc8GF1jMDJQxQ+kdvEeWXC+pODREjGr6X876r1BrzRNKJQ8mmbVWYUbX1+GYAnsPy5jjqCageY+oCgTS8yA6ejjZOTwBcuig4jjwL6KyY0tFIWVv4XTaduACzx5M57+MAsXaMGMD3EbS9eK6zK8PVB+W4wZx30uAtvd+g5NU5dW0F8v1b8=
-Received: from [192.168.43.244] ([213.215.212.194])
-        by smtp.googlemail.com with ESMTPSA id f7-20020a5d4dc7000000b0033b51e2b9b8sm174122wru.23.2024.02.07.03.05.03
+        bh=y4Er2JvCrzXK5LJAuZCNC4zYfiOB+GgDvOYEhwDSc+I=;
+        b=tsraNqIlsjJ8/t61+Tt7o9fnCppY59fW5bioBnihaAXtoBf39fxY9iQ2BXYIl4XBgF
+         1VKPHtVe3jSVbDWPgpLnBHIzz/Iqy4jb1ytb5x/0Jo6NDPQRyaOLQt5tlDaUKQ1Y+Mq7
+         oF9nklixBELWLevaRMpW+Qnd+ncTw1weqpnK1XP+wE2oaFoQUQ3q28oPVAmeYVVVGZs6
+         O58jCSO07zVvf/NDTzDlXW1ZfTxfqKA3V1z9i71lZamCblNLdGYIr4YhFascWRZRPLKx
+         m2JZWMlEwRU7zxe/ySCzajmAfBmd8O1RSiHzYW0aL4yh+iKYjRsJkQKZM2/0hjz5G6+5
+         9Urg==
+X-Gm-Message-State: AOJu0YxFLHrAl80ArVj8l9VeYTAb2euAzI8ShVFlHtmf4RlbhNFd0OZV
+	7+xL8QKWo3k99ZMfMrWNzcAgf5vADAAXz9APzHwS0WZEeWtt1uCedJ+a69JknvEK1FIjlUronq/
+	v
+X-Google-Smtp-Source: AGHT+IHixBjQ+x80cJqn2rYfFLizhrgAUeBl7cIYsU+F3jtydagok6FWiSeTqw+grYXJUYAIgI621A==
+X-Received: by 2002:a05:6a21:394a:b0:19e:5683:e8d0 with SMTP id ac10-20020a056a21394a00b0019e5683e8d0mr5054306pzc.12.1707304140011;
+        Wed, 07 Feb 2024 03:09:00 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWMBqqrEu/Maor6qKAKLi9J/x5p341mi1EahuFaugvKkoTSe5J4Pb6t6JsihxD9xPQJUCL1T3bIunLFxQC3QJfUkl9xYQsIjLm+HDB7WeNu204v8P56D+jkse98AadzL39P0GVpdnNAuJtzp0Mf9R5PS7t/oTYQCZdUJTSFFgKHceZhzRGTEhu4/rCSIyIj08pmsBrGeKdb/MhauXUhCL0ie9yYOggcjOW7j43eTfK7U4fn7/S4coP1xMCqPoJbYnlAmUpbK+AthNY1GbT+ZS8pARtQOWLBgCmUAr/ICRC1Uh6xWQcccwfxB89K57KhxcdCsefQhce29rOjpY+AMg3cIHW7HeXU1KAg2/e90BonQTTB3npnKxSlryUKNfjzRH+5M8g92QbrmMho0GduzxjqmKPoe2rfpsyVKzgEcgEHLvENk+nvW0aoIAUtQGlBai1w3SNDB6l2Kc6E7cwrgxpk8rwzPQ9uWhEttNmEoLSHk+k=
+Received: from [192.168.20.11] ([180.150.113.62])
+        by smtp.gmail.com with ESMTPSA id a17-20020a056a000c9100b006dd9ff236b6sm1273985pfv.177.2024.02.07.03.07.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 03:05:03 -0800 (PST)
-Message-ID: <c075f2f8-4fbf-4309-a478-a5cfb199fdd5@linaro.org>
-Date: Wed, 7 Feb 2024 11:05:02 +0000
+        Wed, 07 Feb 2024 03:08:59 -0800 (PST)
+Message-ID: <43e01493-1f26-414b-b2eb-7fb959b9b542@tweaklogic.com>
+Date: Wed, 7 Feb 2024 21:37:37 +1030
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,60 +76,142 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp-x13s: correct analogue
- microphone route
+Subject: Re: [PATCH v6 5/5] iio: light: Add support for APDS9306 Light Sensor
 Content-Language: en-US
-To: Johan Hovold <johan@kernel.org>, Steev Klimaszewski <steev@kali.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen
+ <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240125154531.417098-1-krzysztof.kozlowski@linaro.org>
- <c34dd7ca-01b5-4424-a8ec-a525b8d722a3@linaro.org>
- <5497d428-cdc1-4057-afda-6861d2e3860a@linaro.org>
- <e9b6f790-831c-4df6-b16c-8d7a2f8ddc26@linaro.org>
- <CAKXuJqjDM3P4wOKz3CaAB9DUyemqQ6ks=FPnfL7OsHnnyoyn=A@mail.gmail.com>
- <ZcCX0hDGrWqRXr9R@hovoldconsulting.com>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <ZcCX0hDGrWqRXr9R@hovoldconsulting.com>
+ Conor Dooley <conor+dt@kernel.org>,
+ Matti Vaittinen <mazziesaccount@gmail.com>, Marek Vasut <marex@denx.de>,
+ Anshul Dalal <anshulusr@gmail.com>,
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+ Matt Ranostay <matt@ranostay.sg>,
+ Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240206130017.7839-1-subhajit.ghosh@tweaklogic.com>
+ <20240206130017.7839-6-subhajit.ghosh@tweaklogic.com>
+ <ZcI3Pz6Z5V4qqpHO@smile.fi.intel.com>
+From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <ZcI3Pz6Z5V4qqpHO@smile.fi.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Thanks Steev,
+Hi Andy,
+>> + */
+> 
+> ...
+> 
+>> +static_assert(ARRAY_SIZE(apds9306_repeat_rate_freq) ==
+>> +		APDS9306_NUM_REPEAT_RATES);
+> 
+> Just make that define to be inside [] in the respective array and drop this
+> static assert. The assertion might make sense to have different arrays to be
+> synchronized and when their maximums are different due to semantics (not your
+> case AFAICS).
+> 
+> ...
+> 
+>> +static_assert(ARRAY_SIZE(apds9306_repeat_rate_period) ==
+>> +		APDS9306_NUM_REPEAT_RATES);
+> 
+> Ditto.
+> 
+> ...
+I apologize for this. You pointed me out in an earlier review, I misunderstood
+it and used the macro in two static asserts! It will be fixed.
+> 
+>> +	struct mutex mutex;
+> 
+> checkpatch probably wants this to have a comment.
+I used the mainline checkpatch, it did not through any explicit warnings or errors
+regarding this.
+As per previous review pointed below, I removed the the comment from here to
+kernel doc:
+https://lore.kernel.org/all/20240121152332.6b15666a@jic23-huawei/
 
-On 05/02/2024 08:09, Johan Hovold wrote:
-> On Sun, Feb 04, 2024 at 11:30:54PM -0600, Steev Klimaszewski wrote:
->> On Mon, Jan 29, 2024 at 8:27 AM Krzysztof Kozlowski
->> <krzysztof.kozlowski@linaro.org> wrote:
+Do you still want me to add a comment before struct mutex?
 > 
->>> so I will go with that approach. Please ignore this DTS patch. I will
->>> send ASoC changes which won't affect sc8280xp.
+> ...
 > 
->> I somehow missed that patchset or conversation; As an owner of an
->> X13s, which is sc8280xp, I can say, neither pre-dts patch, nor post,
->> seem to do much good.  When I attempt to do a voice chat in armcord,
->> the responses I get to how I sound when using the mic on the X13s
->> itself range from "You sound like hot trash" to "You sound like a
->> robot with hiccups".
+>> +	struct regmap_field *regfield_sw_reset;
+>> +	struct regmap_field *regfield_en;
+>> +	struct regmap_field *regfield_intg_time;
+>> +	struct regmap_field *regfield_repeat_rate;
+>> +	struct regmap_field *regfield_gain;
+>> +	struct regmap_field *regfield_int_src;
+>> +	struct regmap_field *regfield_int_thresh_var_en;
+>> +	struct regmap_field *regfield_int_en;
+>> +	struct regmap_field *regfield_int_persist_val;
+>> +	struct regmap_field *regfield_int_thresh_var_val;
+> 
+> May we reduce the names by
+> 
+> 	struct {
+> 		...
+> 		struct regmap_field *int_persist_val;
+> 		struct regmap_field *int_thresh_var_val;
+> 	} regfield;
+> 
+> In the code
+> 
+> 	struct regfield *rf = &priv->regfield;
+> 
+> 	rf->int...
+> 
+> ...
+> 
+>> +static struct attribute *apds9306_event_attributes[] = {
+>> +	&iio_const_attr_thresh_either_period_available.dev_attr.attr,
+>> +	&iio_const_attr_thresh_adaptive_either_values_available.dev_attr.attr,
+>> +	NULL
+>> +};
+>> +
+>> +static const struct attribute_group apds9306_event_attr_group = {
+>> +	.attrs = apds9306_event_attributes,
+>> +};
+> 
+> ...
+> 
+>> +static int apds9306_runtime_power_on(struct device *dev)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = pm_runtime_resume_and_get(dev);
+>> +	if (ret < 0)
+>> +		dev_err_ratelimited(dev, "runtime resume failed: %d\n", ret);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int apds9306_runtime_power_off(struct device *dev)
+>> +{
+>> +	pm_runtime_mark_last_busy(dev);
+>> +	pm_runtime_put_autosuspend(dev);
+>> +
+>> +	return 0;
+>> +}
+> 
+> Seems to me like useless wrappers. Why do you need that message?
+No specific need for that message, however the wrapper was suggested in a previous review:
+https://lore.kernel.org/all/ZTuuUl0PBklbVjb9@smile.fi.intel.com/
 
-does arecord exhibit same issue?
+Do you still want me to use the pm functions directly from the calling functions?
 
-What is your setup looking like? I would like to reproduce this on my x13s.
+> Btw, it's used only twice, open coding saves the LoCs!
+Yes, it makes sense.
+> Try making the next submission so the driver LoCs is < 1400.
+The current driver file is 1335 lines, next one, I will definitely try to keep in under 1400 lines.
+> 
+> ...
+Acknowledging all other review comments. Thank you for reviewing.
 
-thanks,
-Srini
-> 
-> That's a separate issue entirely. Both the digital and analog microphone
-> (jack) is working on the X13s as long as you use pulseaudio.
-> 
-> As I've mentioned before, there are problems with both playback and
-> capture when you use pipewire however ("robot with hiccups" one could
-> indeed describe it as).
-> 
-> That suggests a more general problem with the Qualcomm audio drivers,
-> but that has nothing to do with the audio routing.
-> 
-> Johan
+Regards,
+Subhajit Ghosh
+
+
+
+
+
 
