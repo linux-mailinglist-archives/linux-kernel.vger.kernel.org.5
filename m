@@ -1,259 +1,208 @@
-Return-Path: <linux-kernel+bounces-56251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B0C084C7EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:51:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12BD284C7F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:51:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A858286C02
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:51:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D2551F25ED6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:51:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0AC92261B;
-	Wed,  7 Feb 2024 09:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7D923776;
+	Wed,  7 Feb 2024 09:51:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T89x4npj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FBqN7qxN"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A4DC2556D;
-	Wed,  7 Feb 2024 09:50:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF63023745;
+	Wed,  7 Feb 2024 09:51:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707299432; cv=none; b=R0GXSyCyjnfqW6hvIuCSbFI/p9VJW3IHP394iY5iQffyo6xiCM7FXgKvWXa7svKII0HoqbkvOIeVjCsvBL7P8DY1O7p1S9xjn5LbSisDhAT+0NiLvHXYYjQMXNd1g5a19ZX2GWd6hfvwPKuQl3e3/OwlGLzGVAD8c5xFV0n2ng8=
+	t=1707299504; cv=none; b=Rp9VLBch3TO/Fbp5eEVLTB1cjUWue6oONTf7E8YTdaOFPqPGFtnJJa6ZUN5xRcIX4n3WNJJKW/g2ZOPg8wFzUF8CimT0VNz9clVCfCCK7yeOxDWuzuPZJii5oksJGMx1L675mjVmCeQaOsDXd1hgnMqmIk0bfjthCLmrYUPeVq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707299432; c=relaxed/simple;
-	bh=/tImMrVIVbTZtJyKXd55BPzqmcJN5F5TwsaZMk1n1bM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QWCbCxktCisUPzYLsm0gg4emJzafYIL8E3mYb6IiM/KlhnDoiUxDhreUrT+u73TlayyIW7CpHIloCgsMUrzgAMRnZedAxJw6gsbWvaIfakfzOqTr+KDplo2M9jSl9GvocYiK/IrgpLUWaD4PzsT96Sc8AkhU8KYlXJ4y9fz6fGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T89x4npj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A560AC433C7;
-	Wed,  7 Feb 2024 09:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707299431;
-	bh=/tImMrVIVbTZtJyKXd55BPzqmcJN5F5TwsaZMk1n1bM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=T89x4npjbUipJ36uBKlCrNDZs66j7OGP+Pe6APwqCddMPcZmx1JFVVcrkTJRpaRgi
-	 WSdoAMf2PLNr6S69Nc8uAukobVxIOUdVOmxt0+LRdx8kX1YIYePSDOIUWf0fzYgmrq
-	 DpzHh8ThZDe+9nwpVBD05918kbKQ13RbWpUzhTPaaxr2lXsmBPsraGhAMoOjLqXtt4
-	 3NUguH3Ix+B08u9f0tk3WTxJn08Jt+hcfuZlYQnt43Bggul9QJV5mMUsXWYR5i6li2
-	 yb7jZvSM0q1j1ZBwhb3IrtMuSMu9iXUmiH2zE7lUnDuhA13r3w6NMsh2+/8lwhu2kD
-	 R9Anz7L5yEjPg==
-Date: Wed, 7 Feb 2024 10:50:26 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Tycho Andersen <tycho@tycho.pizza>, Oleg Nesterov <oleg@redhat.com>
-Cc: "Eric W . Biederman" <ebiederm@xmission.com>, 
-	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
-	Tycho Andersen <tandersen@netflix.com>
-Subject: Re: [PATCH v2] pidfd: getfd should always report ESRCH if a task is
- exiting
-Message-ID: <20240207-blumen-neulich-f1507e0c5cc0@brauner>
-References: <20240206192357.81942-1-tycho@tycho.pizza>
- <20240207-vibrieren-waldarbeiten-30eeade05203@brauner>
- <20240207-daran-fliesen-6039a2e36f39@brauner>
+	s=arc-20240116; t=1707299504; c=relaxed/simple;
+	bh=nxBqeWL0d1U1qVe7h+N5GcZWZBAxhmQuqYyK6pjO2bQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=bno/xNcYhIOgonSLYIhh+yQzvSdSLn+L46jWD5casKs+VMkcxPNC1czRqMwHsdWGJgapzLqlhhxzPizI8Pw3enCb1F0bXzBnXyDr1H3icGC+50RacepmHH5cx09iAQHR2YUiREUCW4jn99mDuUR9opZxWcCSK8ro5KRGvIcaa6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=FBqN7qxN; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4179oqUD014863;
+	Wed, 7 Feb 2024 03:50:52 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707299452;
+	bh=nxBqeWL0d1U1qVe7h+N5GcZWZBAxhmQuqYyK6pjO2bQ=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To;
+	b=FBqN7qxNgtUXypruSROzFl0cIEBMTPJyy/LpyyfykjW2X2YJLjAvD3TSgm0W813a2
+	 npjkBPis8AJVVnIQ9vjQfAsay9S3HPw1a+wcvWVCfEBzdqveFLBCByHan9JdiJSwKY
+	 dXNBQPKr/ePE0smKIflhpgKEox1wFqgNXJdHk1pQ=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4179oqVQ015094
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 7 Feb 2024 03:50:52 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 7
+ Feb 2024 03:50:52 -0600
+Received: from DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c]) by
+ DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c%18]) with mapi id
+ 15.01.2507.023; Wed, 7 Feb 2024 03:50:52 -0600
+From: "Ding, Shenghao" <shenghao-ding@ti.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: "Lu, Kevin" <kevin-lu@ti.com>, "Xu, Baojun" <baojun.xu@ti.com>,
+        "P O,
+ Vijeth" <v-po@ti.com>, "Navada Kanyana, Mukund" <navada@ti.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "McPherson, Jeff" <j-mcpherson@ti.com>,
+        "pierre-louis.bossart@linux.intel.com"
+	<pierre-louis.bossart@linux.intel.com>,
+        "13916275206@139.com"
+	<13916275206@139.com>,
+        "Chawla, Mohit" <mohit.chawla@ti.com>, "soyer@irl.hu"
+	<soyer@irl.hu>,
+        "Huang, Jonathan" <jkhuang3@ti.com>, "tiwai@suse.de"
+	<tiwai@suse.de>,
+        "Djuandi, Peter" <pdjuandi@ti.com>,
+        "Agrawal, Manisha"
+	<manisha.agrawal@ti.com>,
+        "Hari, Raj" <s-hari@ti.com>, "Yashar, Avi"
+	<aviel@ti.com>,
+        "Nagalla, Hari" <hnagalla@ti.com>,
+        "Bajjuri, Praneeth"
+	<praneeth@ti.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
+        "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+        "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [EXTERNAL] Re: [PATCH v3 4/4] ASoc: dt-bindings: PCM6240: Add
+ initial DT binding
+Thread-Topic: [EXTERNAL] Re: [PATCH v3 4/4] ASoc: dt-bindings: PCM6240: Add
+ initial DT binding
+Thread-Index: AQHaVk3kv2C9l+KpeUSliV0WealeY7D9v3qAgADk+SCAAAT5YA==
+Date: Wed, 7 Feb 2024 09:50:51 +0000
+Message-ID: <0a1f20ae254746b1adbfbdf7b4027518@ti.com>
+References: <20240203030504.1724-1-shenghao-ding@ti.com>
+ <20240203030504.1724-4-shenghao-ding@ti.com>
+ <ac4b73f6-0c2c-4586-98d6-e97c575b3df7@linaro.org>
+ <8fe0b2d1990346efa056d6c2245412c3@ti.com>
+In-Reply-To: <8fe0b2d1990346efa056d6c2245412c3@ti.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240207-daran-fliesen-6039a2e36f39@brauner>
 
-On Wed, Feb 07, 2024 at 10:29:51AM +0100, Christian Brauner wrote:
-> On Wed, Feb 07, 2024 at 10:15:25AM +0100, Christian Brauner wrote:
-> > On Tue, Feb 06, 2024 at 12:23:57PM -0700, Tycho Andersen wrote:
-> > > From: Tycho Andersen <tandersen@netflix.com>
-> > > 
-> > > We can get EBADF from __pidfd_fget() if a task is currently exiting, which
-> > > might be confusing. Let's check PF_EXITING, and just report ESRCH if so.
-> > > 
-> > > I chose PF_EXITING, because it is set in exit_signals(), which is called
-> > > before exit_files(). Since ->exit_status is mostly set after exit_files()
-> > > in exit_notify(), using that still leaves a window open for the race.
-> > > 
-> > > Signed-off-by: Tycho Andersen <tandersen@netflix.com>
-> > > v2: fix a race in the check by putting the check after __pidfd_fget()
-> > >     (thanks Oleg)
-> > > ---
-> > >  kernel/pid.c                                  | 17 +++++++++-
-> > >  .../selftests/pidfd/pidfd_getfd_test.c        | 31 ++++++++++++++++++-
-> > >  2 files changed, 46 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/kernel/pid.c b/kernel/pid.c
-> > > index de0bf2f8d18b..a8cd6296ed6d 100644
-> > > --- a/kernel/pid.c
-> > > +++ b/kernel/pid.c
-> > > @@ -693,8 +693,23 @@ static int pidfd_getfd(struct pid *pid, int fd)
-> > >  
-> > >  	file = __pidfd_fget(task, fd);
-> > >  	put_task_struct(task);
-> > > -	if (IS_ERR(file))
-> > > +	if (IS_ERR(file)) {
-> > > +		/*
-> > > +		 * It is possible that the target thread is exiting; it can be
-> > > +		 * either:
-> > > +		 * 1. before exit_signals(), which gives a real fd
-> > > +		 * 2. before exit_files() takes the task_lock() gives a real fd
-> > > +		 * 3. after exit_files() releases task_lock(), ->files is NULL;
-> > > +		 *    this has PF_EXITING, since it was set in exit_signals(),
-> > > +		 *    __pidfd_fget() returns EBADF.
-> > > +		 * In case 3 we get EBADF, but that really means ESRCH, since
-> > > +		 * the task is currently exiting and has freed its files
-> > > +		 * struct, so we fix it up.
-> > > +		 */
-> > > +		if (task->flags & PF_EXITING && PTR_ERR(file) == -EBADF)
-> > > +			return -ESRCH;
-> > 
-> > Isn't that a potential UAF because we called put_task_struct() above but
-> > this is exiting task->flags afterwards?
-> 
-> s/exiting/accessing/
-
-So this is what I have applied currently where I moved the check into
-__pidfd_fget() where it makes more sense imho. But please double check
-that I didn't mess anything up:
-
-From 7ab8f833aceb11c78627f4ea5d7e354314efa385 Mon Sep 17 00:00:00 2001
-From: Tycho Andersen <tandersen@netflix.com>
-Date: Wed, 7 Feb 2024 10:19:29 +0100
-Subject: [PATCH 1/2] pidfd: getfd should always report ESRCH if a task is
- exiting
-
-We can get EBADF from pidfd_getfd() if a task is currently exiting,
-which might be confusing. Let's check PF_EXITING, and just report ESRCH
-if so.
-
-I chose PF_EXITING, because it is set in exit_signals(), which is called
-before exit_files(). Since ->exit_status is mostly set after
-exit_files() in exit_notify(), using that still leaves a window open for
-the race.
-
-Signed-off-by: Tycho Andersen <tandersen@netflix.com>
-Link: https://lore.kernel.org/r/20240206192357.81942-1-tycho@tycho.pizza
-Signed-off-by: Christian Brauner <brauner@kernel.org>
----
- kernel/pid.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/pid.c b/kernel/pid.c
-index de0bf2f8d18b..c1d940fbd314 100644
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -678,7 +678,26 @@ static struct file *__pidfd_fget(struct task_struct *task, int fd)
- 
- 	up_read(&task->signal->exec_update_lock);
- 
--	return file ?: ERR_PTR(-EBADF);
-+	if (!file) {
-+		/*
-+		 * It is possible that the target thread is exiting; it can be
-+		 * either:
-+		 * 1. before exit_signals(), which gives a real fd
-+		 * 2. before exit_files() takes the task_lock() gives a real fd
-+		 * 3. after exit_files() releases task_lock(), ->files is NULL;
-+		 *    this has PF_EXITING, since it was set in exit_signals(),
-+		 *    __pidfd_fget() returns EBADF.
-+		 * In case 3 we get EBADF, but that really means ESRCH, since
-+		 * the task is currently exiting and has freed its files
-+		 * struct, so we fix it up.
-+		 */
-+		if (task->flags & PF_EXITING)
-+			file = ERR_PTR(-ESRCH);
-+		else
-+			file = ERR_PTR(-EBADF);
-+	}
-+
-+	return file;
- }
- 
- static int pidfd_getfd(struct pid *pid, int fd)
--- 
-2.43.0
-
-From 43316ed070cd8fb02a51ea9577c5fc1fcf639652 Mon Sep 17 00:00:00 2001
-From: Tycho Andersen <tandersen@netflix.com>
-Date: Wed, 7 Feb 2024 10:19:44 +0100
-Subject: [PATCH 2/2] selftests: add ESRCH tests for pidfd_getfd()
-
-Ensure that pidfd_getfd() reports -ESRCH if the task is already exiting.
-
-Signed-off-by: Tycho Andersen <tandersen@netflix.com>
-Link: https://lore.kernel.org/r/20240206192357.81942-1-tycho@tycho.pizza
-Signed-off-by: Christian Brauner <brauner@kernel.org>
----
- .../selftests/pidfd/pidfd_getfd_test.c        | 31 ++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/pidfd/pidfd_getfd_test.c b/tools/testing/selftests/pidfd/pidfd_getfd_test.c
-index 0930e2411dfb..cd51d547b751 100644
---- a/tools/testing/selftests/pidfd/pidfd_getfd_test.c
-+++ b/tools/testing/selftests/pidfd/pidfd_getfd_test.c
-@@ -5,6 +5,7 @@
- #include <fcntl.h>
- #include <limits.h>
- #include <linux/types.h>
-+#include <poll.h>
- #include <sched.h>
- #include <signal.h>
- #include <stdio.h>
-@@ -129,6 +130,7 @@ FIXTURE(child)
- 	 * When it is closed, the child will exit.
- 	 */
- 	int sk;
-+	bool ignore_child_result;
- };
- 
- FIXTURE_SETUP(child)
-@@ -165,10 +167,14 @@ FIXTURE_SETUP(child)
- 
- FIXTURE_TEARDOWN(child)
- {
-+	int ret;
-+
- 	EXPECT_EQ(0, close(self->pidfd));
- 	EXPECT_EQ(0, close(self->sk));
- 
--	EXPECT_EQ(0, wait_for_pid(self->pid));
-+	ret = wait_for_pid(self->pid);
-+	if (!self->ignore_child_result)
-+		EXPECT_EQ(0, ret);
- }
- 
- TEST_F(child, disable_ptrace)
-@@ -235,6 +241,29 @@ TEST(flags_set)
- 	EXPECT_EQ(errno, EINVAL);
- }
- 
-+TEST_F(child, no_strange_EBADF)
-+{
-+	struct pollfd fds;
-+
-+	self->ignore_child_result = true;
-+
-+	fds.fd = self->pidfd;
-+	fds.events = POLLIN;
-+
-+	ASSERT_EQ(kill(self->pid, SIGKILL), 0);
-+	ASSERT_EQ(poll(&fds, 1, 5000), 1);
-+
-+	/*
-+	 * It used to be that pidfd_getfd() could race with the exiting thread
-+	 * between exit_files() and release_task(), and get a non-null task
-+	 * with a NULL files struct, and you'd get EBADF, which was slightly
-+	 * confusing.
-+	 */
-+	errno = 0;
-+	EXPECT_EQ(sys_pidfd_getfd(self->pidfd, self->remote_fd, 0), -1);
-+	EXPECT_EQ(errno, ESRCH);
-+}
-+
- #if __NR_pidfd_getfd == -1
- int main(void)
- {
--- 
-2.43.0
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRGluZywgU2hlbmdoYW8g
+PHNoZW5naGFvLWRpbmdAdGkuY29tPg0KPiBTZW50OiBXZWRuZXNkYXksIEZlYnJ1YXJ5IDcsIDIw
+MjQgNTo0OCBQTQ0KPiBUbzogS3J6eXN6dG9mIEtvemxvd3NraSA8a3J6eXN6dG9mLmtvemxvd3Nr
+aUBsaW5hcm8ub3JnPjsNCj4gYnJvb25pZUBrZXJuZWwub3JnOyBjb25vcitkdEBrZXJuZWwub3Jn
+OyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsNCj4gcm9iaCtkdEBrZXJuZWwub3JnOyBhbmRy
+aXkuc2hldmNoZW5rb0BsaW51eC5pbnRlbC5jb207IGxpbnV4LQ0KPiBzb3VuZEB2Z2VyLmtlcm5l
+bC5vcmc7IGxpYW0uci5naXJkd29vZEBpbnRlbC5jb207IGxnaXJkd29vZEBnbWFpbC5jb207DQo+
+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IEx1LCBLZXZpbiA8a2V2aW4tbHVA
+dGkuY29tPjsgWHUsIEJhb2p1biA8YmFvanVuLnh1QHRpLmNvbT47IFAgTywgVmlqZXRoDQo+IDx2
+LXBvQHRpLmNvbT47IE5hdmFkYSBLYW55YW5hLCBNdWt1bmQgPG5hdmFkYUB0aS5jb20+Ow0KPiBw
+ZXJleEBwZXJleC5jejsgTWNQaGVyc29uLCBKZWZmIDxqLW1jcGhlcnNvbkB0aS5jb20+OyBwaWVy
+cmUtDQo+IGxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tOyAxMzkxNjI3NTIwNkAxMzkuY29t
+OyBDaGF3bGEsIE1vaGl0DQo+IDxtb2hpdC5jaGF3bGFAdGkuY29tPjsgc295ZXJAaXJsLmh1OyBI
+dWFuZywgSm9uYXRoYW4NCj4gPGpraHVhbmczQHRpLmNvbT47IHRpd2FpQHN1c2UuZGU7IERqdWFu
+ZGksIFBldGVyIDxwZGp1YW5kaUB0aS5jb20+Ow0KPiBBZ3Jhd2FsLCBNYW5pc2hhIDxtYW5pc2hh
+LmFncmF3YWxAdGkuY29tPjsgSGFyaSwgUmFqIDxzLWhhcmlAdGkuY29tPjsNCj4gWWFzaGFyLCBB
+dmkgPGF2aWVsQHRpLmNvbT47IE5hZ2FsbGEsIEhhcmkgPGhuYWdhbGxhQHRpLmNvbT47IEJhamp1
+cmksDQo+IFByYW5lZXRoIDxwcmFuZWV0aEB0aS5jb20+DQo+IFN1YmplY3Q6IFJFOiBbRVhURVJO
+QUxdIFJlOiBbUEFUQ0ggdjMgNC80XSBBU29jOiBkdC1iaW5kaW5nczogUENNNjI0MDoNCj4gQWRk
+IGluaXRpYWwgRFQgYmluZGluZw0KPiANCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLSA+
+IEZyb206IEtyenlzenRvZiBLb3psb3dza2kgPGtyenlzenRvZi7igIoNCj4gPiBrb3psb3dza2lA
+4oCKbGluYXJvLuKAim9yZz4gPiBTZW50OiBUdWVzZGF5LCBGZWJydWFyeSA2LCAyMDI0IDk64oCK
+NTMgUE0gPg0KPiA+IFRvOiBEaW5nLCBTaGVuZ2hhbyA8c2hlbmdoYW8tZGluZ0DigIp0aS7igIpj
+b20+OyBicm9vbmllQOKAimtlcm5lbC7igIpvcmc7ID4NCj4gPiBjb25vcitkdEDigIprZXJuZWwu
+4oCKb3JnOw0KPiBaalFjbVFSWUZwZnB0QmFubmVyU3RhcnQNCj4gVGhpcyBtZXNzYWdlIHdhcyBz
+ZW50IGZyb20gb3V0c2lkZSBvZiBUZXhhcyBJbnN0cnVtZW50cy4NCj4gRG8gbm90IGNsaWNrIGxp
+bmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSByZWNvZ25pemUgdGhlIHNvdXJjZSBv
+Zg0KPiB0aGlzIGVtYWlsIGFuZCBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUuDQo+IA0KPiBaalFj
+bVFSWUZwZnB0QmFubmVyRW5kDQo+IA0KPiANCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0t
+LQ0KPiA+IEZyb206IEtyenlzenRvZiBLb3psb3dza2kgPGtyenlzenRvZi5rb3psb3dza2lAbGlu
+YXJvLm9yZz4NCj4gPiBTZW50OiBUdWVzZGF5LCBGZWJydWFyeSA2LCAyMDI0IDk6NTMgUE0NCj4g
+PiBUbzogRGluZywgU2hlbmdoYW8gPHNoZW5naGFvLWRpbmdAdGkuY29tPjsgYnJvb25pZUBrZXJu
+ZWwub3JnOw0KPiA+IGNvbm9yK2R0QGtlcm5lbC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwu
+b3JnOyByb2JoK2R0QGtlcm5lbC5vcmc7DQo+ID4gYW5kcml5LnNoZXZjaGVua29AbGludXguaW50
+ZWwuY29tOyBsaW51eC1zb3VuZEB2Z2VyLmtlcm5lbC5vcmc7DQo+ID4gbGlhbS5yLmdpcmR3b29k
+QGludGVsLmNvbTsgbGdpcmR3b29kQGdtYWlsLmNvbTsgbGludXgtDQo+ID4ga2VybmVsQHZnZXIu
+a2VybmVsLm9yZw0KPiA+IENjOiBMdSwgS2V2aW4gPGtldmluLWx1QHRpLmNvbT47IFh1LCBCYW9q
+dW4gPGJhb2p1bi54dUB0aS5jb20+OyBQIE8sDQo+ID4gVmlqZXRoIDx2LXBvQHRpLmNvbT47IE5h
+dmFkYSBLYW55YW5hLCBNdWt1bmQgPG5hdmFkYUB0aS5jb20+Ow0KPiA+IHBlcmV4QHBlcmV4LmN6
+OyBNY1BoZXJzb24sIEplZmYgPGotbWNwaGVyc29uQHRpLmNvbT47IHBpZXJyZS0NCj4gPiBsb3Vp
+cy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbTsgMTM5MTYyNzUyMDZAMTM5LmNvbTsgQ2hhd2xhLCBN
+b2hpdA0KPiA+IDxtb2hpdC5jaGF3bGFAdGkuY29tPjsgc295ZXJAaXJsLmh1OyBIdWFuZywgSm9u
+YXRoYW4NCj4gPiA8amtodWFuZzNAdGkuY29tPjsgdGl3YWlAc3VzZS5kZTsgRGp1YW5kaSwgUGV0
+ZXIgPHBkanVhbmRpQHRpLmNvbT47DQo+ID4gQWdyYXdhbCwgTWFuaXNoYSA8bWFuaXNoYS5hZ3Jh
+d2FsQHRpLmNvbT47IEhhcmksIFJhaiA8cy1oYXJpQHRpLmNvbT47DQo+ID4gWWFzaGFyLCBBdmkg
+PGF2aWVsQHRpLmNvbT47IE5hZ2FsbGEsIEhhcmkgPGhuYWdhbGxhQHRpLmNvbT47IEJhamp1cmks
+DQo+ID4gUHJhbmVldGggPHByYW5lZXRoQHRpLmNvbT4NCj4gPiBTdWJqZWN0OiBbRVhURVJOQUxd
+IFJlOiBbUEFUQ0ggdjMgNC80XSBBU29jOiBkdC1iaW5kaW5nczogUENNNjI0MDogQWRkDQo+ID4g
+aW5pdGlhbCBEVCBiaW5kaW5nDQo+ID4NCj4gPiBPbiAwMy8wMi8yMDI0IDA0OuKAijA1LCBTaGVu
+Z2hhbyBEaW5nIHdyb3RlOiA+ICsgPiArIHRpLHRhZDUyMTI6DQo+ID4gTG93LXBvd2VyIHN0ZXJl
+byBhdWRpbyBEQUMgd2l0aCAxMjAtZEIgZHluYW1pYyByYW5nZS4gPiArIG9uZU9mOiA+ICsgLQ0K
+PiA+IGl0ZW1zOiA+ICsgLQ0KPiA+IGVudW06ID4gKyAtIHRpLGFkYzMxMjAgPiArIC0gdGksYWRj
+NTEyMCA+ICsgLSB0aSxwY20zMTIwID4gKyAtDQo+ID4gdGkscGNtNTEyMCBaalFjbVFSWUZwZnB0
+QmFubmVyU3RhcnQgVGhpcyBtZXNzYWdlIHdhcyBzZW50IGZyb20NCj4gb3V0c2lkZQ0KPiA+IG9m
+IFRleGFzIEluc3RydW1lbnRzLg0KPiA+IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFj
+aG1lbnRzIHVubGVzcyB5b3UgcmVjb2duaXplIHRoZSBzb3VyY2UNCj4gPiBvZiB0aGlzIGVtYWls
+IGFuZCBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUuDQo+ID4NCj4gPiBaalFjbVFSWUZwZnB0QmFu
+bmVyRW5kDQo+ID4gT24gMDMvMDIvMjAyNCAwNDowNSwgU2hlbmdoYW8gRGluZyB3cm90ZToNCj4g
+PiA+ICsNCj4gPiA+ICsgICAgICB0aSx0YWQ1MjEyOiBMb3ctcG93ZXIgc3RlcmVvIGF1ZGlvIERB
+QyB3aXRoIDEyMC1kQiBkeW5hbWljIHJhbmdlLg0KPiA+ID4gKyAgICBvbmVPZjoNCj4gPiA+ICsg
+ICAgICAtIGl0ZW1zOg0KPiA+ID4gKyAgICAgICAgICAtIGVudW06DQo+ID4gPiArICAgICAgICAg
+ICAgICAtIHRpLGFkYzMxMjANCj4gPiA+ICsgICAgICAgICAgICAgIC0gdGksYWRjNTEyMA0KPiA+
+ID4gKyAgICAgICAgICAgICAgLSB0aSxwY20zMTIwDQo+ID4gPiArICAgICAgICAgICAgICAtIHRp
+LHBjbTUxMjANCj4gPiA+ICsgICAgICAgICAgICAgIC0gdGkscGNtNjEyMA0KPiA+ID4gKyAgICAg
+ICAgICAtIGNvbnN0OiB0aSxhZGM2MTIwDQo+ID4gPiArICAgICAgLSBpdGVtczoNCj4gPiA+ICsg
+ICAgICAgICAgLSBlbnVtOg0KPiA+ID4gKyAgICAgICAgICAgICAgLSB0aSxwY202MjYwDQo+ID4g
+PiArICAgICAgICAgICAgICAtIHRpLHBjbTYxNDANCj4gPiA+ICsgICAgICAgICAgICAgIC0gdGks
+cGNtMzE0MA0KPiA+ID4gKyAgICAgICAgICAgICAgLSB0aSxwY201MTQwDQo+ID4gPiArICAgICAg
+ICAgIC0gY29uc3Q6IHRpLHBjbTYyNDANCj4gPiA+ICsgICAgICAtIGl0ZW1zOg0KPiA+ID4gKyAg
+ICAgICAgICAtIGNvbnN0OiB0aSxkaXg0MTkyDQo+ID4gPiArICAgICAgICAgIC0gY29uc3Q6IHRp
+LHBjbTYyNDANCj4gPg0KPiA+IFdoeSBkaXg0MTkyIGlzIG5vdCBwYXJ0IG9mIHByZXZpb3VzIGVu
+dW0/DQo+IA0KPiBkaXg0MTkyIGlzIG5vdCB0cmFkaXRpb25hbCBBREMgb3IgREFDLCBidXQgYW4g
+SW50ZWdyYXRlZCBEaWdpdGFsIEF1ZGlvDQo+IEludGVyZmFjZSBSZWNlaXZlciBhbmQgVHJhbnNt
+aXR0ZXIsIGxpa2UgYW4gYXVkaW8gYnJpZGdlIHRvIGNvbm5lY3QgZGlmZmVyZW50DQo+IGRpZ2l0
+YWwgYXVkaW8gcHJvdG9jb2wsIGNvbXBhdGlibGUgd2l0aCB0aGUgQUVTMywgUy9QRElGLCBJRUMg
+NjA5NTgsIGFuZCBFSUFKDQo+IENQLTEyMDEgaW50ZXJmYWNlIHN0YW5kYXJkcywgTGVmdC1KdXN0
+aWZpZWQsIFJpZ2h0LUp1c3RpZmllZCwgYW5kIFBoaWxpcHMgSTJT4oSiDQo+IERhdGEgRm9ybWF0
+cy4NCj4gU28ga2VlcCBpdCBhbG9uZSBmb3IgcHJvZmVzc2lvbmFsIHB1cnBvc2UuDQpJIHdpbGwg
+YWRkIGRldGFpbCBkaXg0MTkxIGRlc2NyaXB0aW9uIGluIG5leHQgcGF0Y2guDQo+IA0KPiA+DQo+
+ID4gPiArICAgICAgLSBpdGVtczoNCj4gPiA+ICsgICAgICAgICAgLSBjb25zdDogdGksYWRjNjEy
+MA0KPiA+ID4gKyAgICAgICAgICAtIGNvbnN0OiB0aSxwY21kNTEyeA0KPiA+ID4gKyAgICAgIC0g
+aXRlbXM6DQo+ID4gPiArICAgICAgICAgIC0gY29uc3Q6IHRpLHBjbTE2OTANCj4gPiA+ICsgICAg
+ICAgICAgLSBjb25zdDogdGkscGNtOTIxMQ0KPiA+ID4gKyAgICAgIC0gaXRlbXM6DQo+ID4gPiAr
+ICAgICAgICAgIC0gZW51bToNCj4gPiA+ICsgICAgICAgICAgICAgIC0gdGkscGNtZDMxODANCj4g
+PiA+ICsgICAgICAgICAgLSBjb25zdDogdGkscGNtZDMxNDANCj4gPiA+ICsgICAgICAtIGl0ZW1z
+Og0KPiA+ID4gKyAgICAgICAgICAtIGVudW06DQo+ID4gPiArICAgICAgICAgICAgICAtIHRpLHRh
+YTU0MTINCj4gPiA+ICsgICAgICAgICAgLSBjb25zdDogdGksdGFhNTIxMg0KPiA+ID4gKyAgICAg
+IC0gaXRlbXM6DQo+ID4gPiArICAgICAgICAgIC0gZW51bToNCj4gPiA+ICsgICAgICAgICAgICAg
+IC0gdGksdGFkNTQxMg0KPiA+ID4gKyAgICAgICAgICAtIGNvbnN0OiB0aSx0YWQ1MjEyDQo+ID4g
+PiArICAgICAgLSBlbnVtOg0KPiA+ID4gKyAgICAgICAgICAtIHRpLHBjbTYyNDANCj4gPiA+ICsg
+ICAgICAgICAgLSB0aSxwY21kMzE0MA0KPiA+ID4gKyAgICAgICAgICAtIHRpLHRhYTUyMTINCj4g
+PiA+ICsgICAgICAgICAgLSB0aSx0YWQ1MjEyDQo+ID4gPiArICAgICAgICAgIC0gdGkscGNtZDMx
+ODANCj4gPg0KPiA+IFRoaXMgb25lIGlzIGR1cGxpY2F0ZWQuDQo+IGFjY2VwdA0KPiA+DQo+ID4g
+PiArDQo+ID4NCj4gPg0KPiA+IEJlc3QgcmVnYXJkcywNCj4gPiBLcnp5c3p0b2YNCg0K
 
