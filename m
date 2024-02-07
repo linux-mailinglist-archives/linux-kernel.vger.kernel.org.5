@@ -1,138 +1,123 @@
-Return-Path: <linux-kernel+bounces-56526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EA1E84CB3F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:12:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 012E084CB3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:12:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 719A21C2662E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:12:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B2311C267AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:12:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0688A7D3F2;
-	Wed,  7 Feb 2024 13:11:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AA6E7CF0E;
+	Wed,  7 Feb 2024 13:11:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qaN4izum"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a8SZXyG9"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597CF7CF24
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:11:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D543D7CF14;
+	Wed,  7 Feb 2024 13:11:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707311481; cv=none; b=Jsq4gXGDy3lydIPEHvBhSFia2ger5yKD8Ojw0ARL888nHC3dMAxcxp/7IKZjwIb5lvTTEiqCxGPIIanPiBko3CEyEdyP7GzkyLZDuvq3cv30sOq4CFCgAvVDi8XNW9HVT5PM9DSRLkjOTpLqarUBhyg87O5pEYbJL5//a+Un2uE=
+	t=1707311478; cv=none; b=KkdUeA2cnRpzMzQMt22ZPHCAeJtwscA5aO++V+m8KSjmhYU/nSuGGtSWQR6Zd00BOEcD64Zlp9F4nTFp0k2Rop5dL0PKV50YbOq6lhGzpdtOKVMHNebkYaICVwJ9WOsuFLE90w8c1Rg+LiDJko8mSVSaqIFkiTdgUbNOQYsE6oY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707311481; c=relaxed/simple;
-	bh=R0QoTkpqrfbEypqfuVgfcQUAGnbIyMTkH94BvCYKsms=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W1rmI2Kjb+8XXxMRzy2xRYD5k0x8BwKv8u5L3Fe1+zHYpX/0sCmxO/HOA3sOpa8TzmPGyCeYZRU83KbLebeS1Ru5xuK6oKb8MUV124bFepCZL1P2b3p323bzzQ3ABf4Kb+eGPmozhdrF73Qb66tKXoD5SxU7QGpnOsyFo3KZDlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qaN4izum; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33b29b5ea96so364688f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 05:11:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707311477; x=1707916277; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VBFC04ajuUywX7zgVv37Mz+xT5BCyZWN/G5H45gUkes=;
-        b=qaN4izumts6yIkcMeGa8EJhyI3e1Rf4xXR1/1YPZmp5HvqG/pUSGHJ8N135RdjvOqA
-         rI7p4QCSneKUoRInwqcQs5ZiJt50YJQemC8JRwRECiRzmKN+m1hf2bNCz+j2t8CIFEku
-         2Wq2hnJWM2GKVUX1R03oGsvFCnWBMWjAsqXmGjsGu4MDgr3/xTC3HCj0KhVXEXXOHTCe
-         Jv8UyTwMLiZVR0MTzT6tKsOhP6xzW050Nd1hvrFBqyYh/PjhyEa2AKiN1cfVSfQHwKLg
-         T4ISD0jTx5TualijHxj/Uki1vY7I/4aMNd6JZhPsJrxHhOmUPTzG31xmy5GoQg8SSlAy
-         EI3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707311477; x=1707916277;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VBFC04ajuUywX7zgVv37Mz+xT5BCyZWN/G5H45gUkes=;
-        b=LNYnQiu3m9TF7NBXsS6XjRJCS1Ocr+UgfqFSj9f4ni7/da6qkLf4YiXsG5bfK4rw6y
-         4hw//DybX9v5uwbjMNK3ZC8uN+XQ0HKX2AnT+wiAqZlu0jePauMaDFpvxPx+MwKcUnUq
-         ra3BQyaHYDrwPKiI4IBMzV82YNz8t4/uQ8GPxRdriEBjsufF6XK2PNxPVOjadnb/yT0N
-         8QTuo+tB54ggYlzeRgbkxifAM1YDgEynQzyd6nlX9CeoNQm8toWq/i/v+4lPFJUQsXbI
-         t6F/8fYOKSRxllVeCY1UycLXClUz78uOX8PvEpoT66ujhtqz3wXtDZpU3DaOwWS/yFc0
-         4chA==
-X-Forwarded-Encrypted: i=1; AJvYcCX/E0W5nKtH+qQO7Z+4iJMfpfCUh3KQY8jMa6Ya9PCGIcLXWUW2ZkATm5X4vJIs8Ln3wsakr0hzJTSQf0AdDUx2DP+OR+bypvNeFYVO
-X-Gm-Message-State: AOJu0Yyvd36y6+nUf1NWX2IkVoKWaAVCT3tEoRZraBBosGK9Pu8yxDg/
-	DYswoMNnN5DFH2jXO8SdFzVFUyzCUnz7b4VYiKy58vt+xw/C3rOd9e2vIILRC+k=
-X-Google-Smtp-Source: AGHT+IGYUuPxP7ZShydeLhw9wd/LEQodOHgyXLq7S8S1YAq9mW/Fj0ja93heYUm4O9Os21mPDsHSeg==
-X-Received: by 2002:a5d:55d0:0:b0:33a:ff6f:815e with SMTP id i16-20020a5d55d0000000b0033aff6f815emr3801177wrw.8.1707311477518;
-        Wed, 07 Feb 2024 05:11:17 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVvJFqVFkOE0CT7NM1P3ByTvsuELdsidzrJi3hCKofPEptwr0hGdqfS8Zv44GFyKLbdZUWraMHTbqnjWD6twPOS4+Ph2JioCcYQReZA43qGGmifHPDO5Q2iarcSpCDjkZgJPp0mtgKiVL1H3Y/d9Ct019mUeTXC/eG2zwPxbAtGKqddigtLuEN3dlKTNS5WC6bEGcWNDFmOoaKykuWmvLKq8wEvrfoGPaZjtKnWO5xCyZNF1grNw1BHL3krqVW6EpLrSVs1HwgJjkcc4+2Q2QOdrUzGsae5e5JbFS57B5ZT7/h9em8LH8RRIyYHyLejhHjoAjphUXZu9gfGjzYh2dR1AYhk716gKswarAPuHDwwuMC6UvTidE7O4wvCIQGJ2v1lBI3Lvv6jlpFC8DMJxhy+pf8Wx1XO931qgeKT9tnLC3Mc3MSr/A8S+M2N0AYwQqf7DaNixNFT9FvP58rCrjudcNo5QVD0ro9M0iTEPuuptiS67bnIES6J1rthB4zb/YQ8qD/3babkPeQsEW3hPR0axg==
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id bv7-20020a0560001f0700b0033b525dbc70sm222811wrb.79.2024.02.07.05.11.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+	s=arc-20240116; t=1707311478; c=relaxed/simple;
+	bh=3GNprG9wTEH4DW6gV31U3iQPEU8BXqZEBULVqbe4ifM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=XZGGYiCSQwMkwClzVhpvcSuvIUZta/+O79PEIpQCR5iM7cFpIb/cnpkC7I+HHKeLM2jJnXzeWqwy5P6nVtQxjWatNXAFLcWDFZlXwTke0nR9AjkDrNZj666qYhxuKshh7c17xjPYlS5577ZHCIeepC263KInwKqMu7x9StC652I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a8SZXyG9; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3392b045e0aso391526f8f.2;
         Wed, 07 Feb 2024 05:11:16 -0800 (PST)
-Message-ID: <edc9fa59-5f39-4f47-8647-242a9b0a8cb4@linaro.org>
-Date: Wed, 7 Feb 2024 13:11:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707311475; x=1707916275; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w1RihZit+1vSgq9G8FoQ/W9gis9ZTbZPo3dwEeqShqE=;
+        b=a8SZXyG9Nk8kygk571Ar1NQu+FpT4dWv4tlsjK9BGFtfV0qGSau6wTyEqRyZRxqaY6
+         43AcE5UK6bm4psGfcm+1XeV4LmT1y1xhO1ZOZqzIdUA/0lfY3X81TXle0bGgJZyy+W92
+         nDLZ3FPXRCg3Y26vBZ60ejADlCIzK8quhOiqEJ986l7inIR8d8JXc+FzPoeHDp6IgCiw
+         2uzu8YN8ehUvXWekrCF0GzMhqHPy/bGDZx61WbNmUv91HJKgntGrxzfcJP7Pxauc69UV
+         +NbkgkD8PXiJBJm0nvBDBKQdZ0TXA1Uh3Qw2K+96KPesOZgC9S0KSU233EgShv4Ihdu0
+         fHZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707311475; x=1707916275;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w1RihZit+1vSgq9G8FoQ/W9gis9ZTbZPo3dwEeqShqE=;
+        b=wwF62T1nsLm5Yk1h29WOpMCjnXRwP3Q3BY/tSC8IVNxJTMV/jwA4BQB23euRAL2agg
+         l9rIW1ZmVqRhLVS7FzLHW/w3MMDGWdY/WGv5d1Oe224r6CDUzbMiEiPYnwhQTsSCny6N
+         3GLrq/NlTBJfPKsvVTwftAgz2z3ntKr3PrdDImk4v9pOd7/LvLi6Qj8B+4TlBdhn52fZ
+         JRESnprfKtGEYPE1wywoijjb/KK5EOSp8il9ALR8OsO/0Z0OHKPMvPHB2s0Uv8BALDAr
+         lqkT1o3Cy5DTxdaREGv51E0KXNdFV2eeanswX5Z9pE5q0gbOxmQH4encEx4L1FmFB32P
+         X19w==
+X-Gm-Message-State: AOJu0YxnbaV8LhWXV70IBI6kTgBCGvp2cYW7ZED1srV8NOLdDVNMVPsR
+	eZTlImvYw0hYJY1fdZs0LkvWpaQNw9hKYkFxranB7DlkIRFMdP9F
+X-Google-Smtp-Source: AGHT+IHLRqhcd11KsozD0d9k4SiStaKrBqSgCjQkcM99WIB8aENFVx+5vi0yiVtlNyO+oDye/aqZRg==
+X-Received: by 2002:a5d:42ce:0:b0:33b:159d:8222 with SMTP id t14-20020a5d42ce000000b0033b159d8222mr3226920wrr.23.1707311474773;
+        Wed, 07 Feb 2024 05:11:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWxT+EHwt8qDaK324BHNX1CyyMnptoy+k5D9JtRhhA1qtfS43fAC/uTJ4azFCLjq6qUy7yHXJqptwncrq6Zz30BIraarUAAg4aCZvz8doOJrrFc5vzzMwjOj9mm50yrQ35CXxMmE+zI6uqz26O5PO4Iwgc0A14U40+jvVkCVgqgkHMS4CbNz1SOSgEAMkT1smp5i76gFJPdxvh+S9uH9/f6FaY6F//7fwAYg0UqJKzHnUBzPGYYh26PWt0iFjZTb7cXphqLsimqqMcaa/Mv0CpuAaCGmp9KwvDIx7Sx56P+aCSMSwYcGy+jKgK/Qz9FQL05rZXZto2cecoNE0g0VGzFl7aNCjiSDZQrU/5I+rdUp8xbIAYqTqxYPzLOvvkRKBMWia/ao53w/Y4WIFtUzAE41q2tlsdpV716qgD09uwXllHFl1cnfwPIqQCg+VsLxCOsOrQ0SGaFI6R2oxXwLW30rIL5/ZurvigKqxEyghfWT6K3KHcjJKafjyRsesv8YA==
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id n10-20020a5d67ca000000b0033b4b165aa0sm1525798wrw.74.2024.02.07.05.11.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 05:11:14 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Felix Fietkau <nbd@nbd.name>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Ryder Lee <ryder.lee@mediatek.com>,
+	Shayne Chen <shayne.chen@mediatek.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-wireless@vger.kernel.org,
+	linux-mediatek@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH][next] mt76: Remove redundant assignment to variable tidno
+Date: Wed,  7 Feb 2024 13:11:13 +0000
+Message-Id: <20240207131113.2450297-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] clk: qcom: camcc-sm8650: Add camera clock controller
- driver for SM8650
-Content-Language: en-US
-To: Jagadeesh Kona <quic_jkona@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
- Taniya Das <quic_tdas@quicinc.com>, linux-arm-msm@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Imran Shaik <quic_imrashai@quicinc.com>,
- Ajit Pandey <quic_ajipan@quicinc.com>
-References: <20240206113145.31096-1-quic_jkona@quicinc.com>
- <20240206113145.31096-5-quic_jkona@quicinc.com>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20240206113145.31096-5-quic_jkona@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On 06/02/2024 11:31, Jagadeesh Kona wrote:
-> Add support for the camera clock controller for camera clients to be
-> able to request for camcc clocks on SM8650 platform.
-> 
-> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+The variable tidno is being assigned a value that is not being read
+and is being re-assigned a new value a few statements later.
+The assignment is redundant and can be removed.
 
-> +static struct clk_rcg2 cam_cc_mclk1_clk_src = {
-> +	.cmd_rcgr = 0x1501c,
-> +	.mnd_width = 8,
-> +	.hid_width = 5,
-> +	.parent_map = cam_cc_parent_map_1,
-> +	.freq_tbl = ftbl_cam_cc_mclk0_clk_src,
-> +	.clkr.hw.init = &(const struct clk_init_data) {
-> +		.name = "cam_cc_mclk1_clk_src",
-> +		.parent_data = cam_cc_parent_data_1,
-> +		.num_parents = ARRAY_SIZE(cam_cc_parent_data_1),
-> +		.flags = CLK_SET_RATE_PARENT,
-> +		.ops = &clk_rcg2_shared_ops,
+Cleans up clang scan warning:
+drivers/net/wireless/mediatek/mt76/agg-rx.c:125:5: warning: Value stored
+to 'tidno' during its initialization is never read [deadcode.DeadStores]
 
-Nice.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/net/wireless/mediatek/mt76/agg-rx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I compared this to WIP for x1e80100 which looks nearly register 
-compatible. Use of the shared_ops indicates to me you've thought about 
-which clocks should not be switched all the way off.
+diff --git a/drivers/net/wireless/mediatek/mt76/agg-rx.c b/drivers/net/wireless/mediatek/mt76/agg-rx.c
+index 10cbd9e560e7..07c386c7b4d0 100644
+--- a/drivers/net/wireless/mediatek/mt76/agg-rx.c
++++ b/drivers/net/wireless/mediatek/mt76/agg-rx.c
+@@ -122,7 +122,7 @@ mt76_rx_aggr_check_ctl(struct sk_buff *skb, struct sk_buff_head *frames)
+ 	struct ieee80211_bar *bar = mt76_skb_get_hdr(skb);
+ 	struct mt76_wcid *wcid = status->wcid;
+ 	struct mt76_rx_tid *tid;
+-	u8 tidno = status->qos_ctl & IEEE80211_QOS_CTL_TID_MASK;
++	u8 tidno;
+ 	u16 seqno;
+ 
+ 	if (!ieee80211_is_ctl(bar->frame_control))
+-- 
+2.39.2
 
-> +static struct platform_driver cam_cc_sm8650_driver = {
-> +	.probe = cam_cc_sm8650_probe,
-> +	.driver = {
-> +		.name = "cam_cc-sm8650",
-
-That said .. please fix the name here "cam_cc-sm8650". The title of your 
-series is "camcc-sm8650" which IMO is a much more appropriate name.
-
-The admixture of hyphen "-" and underscore "_" is some kind of 
-tokenisation sin.
-
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
