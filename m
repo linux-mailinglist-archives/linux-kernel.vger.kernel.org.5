@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-56891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5197884D0EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:14:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7265F84D0F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:14:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FA92B22250
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:14:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A59FF1C25235
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:14:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F008612B176;
-	Wed,  7 Feb 2024 18:08:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D70012C7F8;
+	Wed,  7 Feb 2024 18:08:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pDADnC07"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y5GcXBiJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2621012B15D;
-	Wed,  7 Feb 2024 18:08:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84CE812BF09;
+	Wed,  7 Feb 2024 18:08:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707329331; cv=none; b=mLnazkxXPYiCG/MjjVkq6pLiO1nQlfhVOmYWa0dRfSdR7xr2zMyGaGN8CgV52VvpVGJF0ZLXj+j8Ci9sHz+35oTMd4XNjRlz4nAh+Ag9KzgbLiZKZ6Ib+JMpHMekpqZSluobEJ0OFwQGKNP7H0bVo9P39dCUinlRiHR1E5nTWzg=
+	t=1707329335; cv=none; b=XHoxsbOfXMwuEQ1xs8Q3WuCFminIIWWsZVvU9X4hvA780g3mhDQNn8ytR9tM5f8eM33SYXY50CVWNpZ/fBguAXaiSY1je8yLC7xFO+w47XQ86NWXp6CXCs2NyufJ/m+EQ6LDY7K3lOrfYK4qxVNA+mDWY4pxtB2HP/sKsCruznI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707329331; c=relaxed/simple;
-	bh=YVGw57OtAK5zBdIGrEi7tz/VsEgsPoy2IrSnNQ2b0aI=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=uwgdVk6KMw/QR8To5uG8fg0+ejNGi+iZZ9Hxa/ixm6IkHz1NGYUfg4V+KyrF+eAdUD25amVQ6uHDUXwwhpp0DLH5C6zrJ+m+G5xGTvg0I5g3Gl7Yrqm4QB+x5q/+x0OjTGzfgFWTzkERza2CAOnCZy4vJYP229TtvLCBk/eR3yU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pDADnC07; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8A053C433F1;
-	Wed,  7 Feb 2024 18:08:50 +0000 (UTC)
+	s=arc-20240116; t=1707329335; c=relaxed/simple;
+	bh=SRSTjQU25Si5Mc82OIFI1VgoL9ylA6hpOqje8jabBRA=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=ONsEtNwPJmLFu/UstqEuldg/fV3FioWSD8fssXWrLTId9qnU52hyWZ3/0URCcnVlLxXNOOsKygozIahN4Ph12VnhCSgwZprYwp0XhsoRGz1CIdm5QiAL1loiJZG/jqmZJ5tex9yTskJdgqW0iBcSy3DAavmB9C8JnKvUFrTpVyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y5GcXBiJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5AF84C43390;
+	Wed,  7 Feb 2024 18:08:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707329330;
-	bh=YVGw57OtAK5zBdIGrEi7tz/VsEgsPoy2IrSnNQ2b0aI=;
+	s=k20201202; t=1707329335;
+	bh=SRSTjQU25Si5Mc82OIFI1VgoL9ylA6hpOqje8jabBRA=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=pDADnC07xA8I6szpY3WSwXLnAYhtam9rUJRgcRLHFxcBrLtMfa9v3h7r+2Ea8fR9x
-	 Yijzo9/lrUToctR9gIdOM/AMtDQzN1Yl2MBGw7VuacoO6jm1povJnUUbsA51w+mUKj
-	 5DSD5wHRqGccWGoFnRyzyVtcRJ5+16jNKKs909lLFMTxxhOMdkC+2qw1bdsTUQ1kxg
-	 NVsnmxMtK84V3syc3Rv0fAFqO80NjsG4zwETxTvoXrQNxHXuKdPm7jWIxzN98Jzhgh
-	 TysJdK3DyQj7Rn2yKDDNjhVF5jDLdUR3sRtgBcolivu/CnYcV9TzS+Nf/e/zq08Tkp
-	 FdTBzNLj4IgDQ==
+	b=Y5GcXBiJ0YFK3yBfjRwcTTn/4ZkpV4iK3gh9KNNkw84g2ibTY8hgW22diNpGrKVm3
+	 WKv2HWnFJZu/l2ejFjWPBLZ8NIgY1spSTlboCcRqW1WPV5NaaRhGvwkCLe6BoCjCH7
+	 NxBB2WnB4rv9Zk9RPz+awJURK8RzPNFEH3cnnz1EuIxtFOQ06XsmtpRd/qz+d4/286
+	 q7xNpn0EM9p1zD8Kb1usPxtaOlZV65O1GUcu9kkF+F5Fp6kKsyzlsUisDAhYtocqWw
+	 kEegJ7t+kTiRuFR+TU9Xq8aU6DWZciC7GpQuDP9bwyYoJheBOgTjOnSZBmGm1nRk0p
+	 DH6Q4+DAj7sRQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 737C7E2F2F1;
-	Wed,  7 Feb 2024 18:08:50 +0000 (UTC)
-Subject: Re: [GIT PULL] LoongArch fixes for v6.8-rc4
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3FD64E2F2F1;
+	Wed,  7 Feb 2024 18:08:55 +0000 (UTC)
+Subject: Re: [GIT PULL] another NFSD fix for 6.8-rc
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240207121436.3845425-1-chenhuacai@loongson.cn>
-References: <20240207121436.3845425-1-chenhuacai@loongson.cn>
-X-PR-Tracked-List-Id: <linux-arch.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240207121436.3845425-1-chenhuacai@loongson.cn>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.8-2
-X-PR-Tracked-Commit-Id: cca5efe77a6a2d02b3da4960f799fa233e460ab1
+In-Reply-To: <EE8DFAAF-C9CF-4D82-B946-739F2D1AA390@oracle.com>
+References: <EE8DFAAF-C9CF-4D82-B946-739F2D1AA390@oracle.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <EE8DFAAF-C9CF-4D82-B946-739F2D1AA390@oracle.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.8-3
+X-PR-Tracked-Commit-Id: 5ea9a7c5fe4149f165f0e3b624fe08df02b6c301
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 547ab8fc4cb04a1a6b34377dd8fad34cd2c8a8e3
-Message-Id: <170732933046.14404.13301953236605274396.pr-tracker-bot@kernel.org>
-Date: Wed, 07 Feb 2024 18:08:50 +0000
-To: Huacai Chen <chenhuacai@loongson.cn>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>, Huacai Chen <chenhuacai@loongson.cn>
+X-PR-Merge-Commit-Id: c8d80f83de47fd183a0eef2d6b1085d4fdecea37
+Message-Id: <170732933525.14404.8579635684203844209.pr-tracker-bot@kernel.org>
+Date: Wed, 07 Feb 2024 18:08:55 +0000
+To: Chuck Lever III <chuck.lever@oracle.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Linux NFS Mailing List <linux-nfs@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jeff Layton <jlayton@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Wed,  7 Feb 2024 20:14:36 +0800:
+The pull request you sent on Wed, 7 Feb 2024 14:21:04 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.8-2
+> https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.8-3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/547ab8fc4cb04a1a6b34377dd8fad34cd2c8a8e3
+https://git.kernel.org/torvalds/c/c8d80f83de47fd183a0eef2d6b1085d4fdecea37
 
 Thank you!
 
