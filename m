@@ -1,86 +1,71 @@
-Return-Path: <linux-kernel+bounces-57231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE6C284D560
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C617D84D565
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:08:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BEEA1C2579C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:07:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8ADF1C2580D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:08:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6E312AAC6;
-	Wed,  7 Feb 2024 21:30:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FEB212B151;
+	Wed,  7 Feb 2024 21:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=beims.me header.i=@beims.me header.b="T72Bcz8g";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZvrIiZoW"
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="LYKXjOMh"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C64F5823B8;
-	Wed,  7 Feb 2024 21:30:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A883F127B6C
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 21:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341413; cv=none; b=dJGTj30RDf7BmzYxkI9EPhxSDssXzmzWkBuKDQRjvYldxDWE2BGhMk2Y5cydHZh+mE4rTSL+sLPJQ8hzov6bjLV9UdittUpE6mMVnxKqolZNPIGks+iG0frwT2qZnfwlgxiBNIZ0IgWR+sqPDFsVHeeehBe1BFRTKfixa8U9J9k=
+	t=1707341466; cv=none; b=NMNpcr5S17TRRPSu5NsyfOCnTTQRw/MLR22iTXV2QoYBoRTB8Qckw5Ads2KWUMhkqV1YsXoGQZGBeB+k+Re0kCERon2kuuZsgL5/9AgcKEz5ZgE7v80EG2hnnEAAnpNYhiRPYuJZDpbItX3JLIvqViSxyfpQs16e1q/AzQsPgeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341413; c=relaxed/simple;
-	bh=g0gLIVsTVlzEVgXEZE5VyWYUAXSY6iiynaTgHHjaG2A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mdZZ0x6sZ6m98ZbnDHbzj0I8/ct8jEGT5DYLc4QKnVzM9z290RaAVqZful4K8HqhlJFMoruheBeykl5oyPEF2Avr6lqqjA+83dvb0/s5GLRB3BSUMSco/j5VSLiXdoXxoFB/8nXjWwwf1jBAnH6swPF3zY6olIhfuy9loURAFa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=beims.me; spf=pass smtp.mailfrom=beims.me; dkim=pass (2048-bit key) header.d=beims.me header.i=@beims.me header.b=T72Bcz8g; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ZvrIiZoW; arc=none smtp.client-ip=66.111.4.26
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=beims.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=beims.me
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 9EF555C00C6;
-	Wed,  7 Feb 2024 16:30:08 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 07 Feb 2024 16:30:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=beims.me; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1707341408;
-	 x=1707427808; bh=Vilm1ec4KJ+cVj/DgCBF0t8G880tQw9jQT+O9WGH1A0=; b=
-	T72Bcz8gyrFrOLWjwX11/7ujKoPMWZQvm2oyQ/7El/MmrBVn8sodwkYXlUg5KU02
-	bs6zMbLuiTWy3LRQ3Gjl2xALYSK/REGtqbZMY96endXINadRuliXIjKHrtH1whhn
-	58QgxHHfKqZQIer8e2K9pq0go4erqAYhGTzGoR42E5/fVUIGcM9pRe9Xuj8MpZtW
-	Iy2Yi+Mj9XR7htpZxnlE30+VzolEKNwUaYUkwXmX6g/Jgjhx3mYA2fxPObjb2jSH
-	zOa2buUnr2LZ6WF2oW6+cY04ZNeHDiDuq+Y3hGUaG2xz5Fa9LBDh4UbSJJfSj4vx
-	A5Na8jZfocv1FhByzhBKfg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1707341408; x=
-	1707427808; bh=Vilm1ec4KJ+cVj/DgCBF0t8G880tQw9jQT+O9WGH1A0=; b=Z
-	vrIiZoWEyRe4Ac3TP+/yEzsdIdC9IxSmc1I+EtMixQKv5o7chm6NQv3yQmsS/z4J
-	csb7UJB626+AeBcg5FaSJxqc4d7Fw9qDVpKb7aq6w/ite0IBRqM1K0g5ek2QG4TL
-	Ep/Slge7Ws/DxLmt1ppaFtxata6sC+XlkRQYcYZVg7nmv5av3JLGZS+cYddTQ2oW
-	jo5HkBOmlg1fIVUsMUXYSBk88bfZj4D2KeFDfFnRfPs6OvxYb9InnxcM4XLP15W7
-	Zhq9LOoSAOxMEzcj7cQI+sCRH8X+3YFMm7Csxg/ErxXN7RJg0zlv7bbREt5jkCD7
-	cH7qetKzzAzmhL9TvGLpQ==
-X-ME-Sender: <xms:X_bDZdjOGTxUoAD5EA0fRE_MSljYhIG-U1qv0w8iKD_LS5ijXQEzGA>
-    <xme:X_bDZSA-6Q0puZq7ifhZ5Jii_rBAZhA9WOwGUepK3Y5cWKhTBD1z-hvSBqVyZ12hU
-    yRASjy7MsCZ7pYI6bM>
-X-ME-Received: <xmr:X_bDZdGLAHcKyid5Tu4S6jmlOnnWryEt1RkezthHFXAFZLeDzs1DCT394g2fBb_zzK0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtddvgddugeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeftrghf
-    rggvlhcuuegvihhmshcuoehrrghfrggvlhessggvihhmshdrmhgvqeenucggtffrrghtth
-    gvrhhnpedutdfgjeeitddtkedthffhvdevteefgedutdefhfelueeiledviefhffefudel
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrg
-    hfrggvlhessggvihhmshdrmhgv
-X-ME-Proxy: <xmx:X_bDZSS6aJD8xMKyYbLHmonu3gaZ1iO5OvT4oMfQJGfuVq3mKejQGA>
-    <xmx:X_bDZaxdR6G_xp2aKWsdpRrLjvLDGDXlX64lQr2IWQp95aU2Qx3lzA>
-    <xmx:X_bDZY4GAs0bdP6G7sEnRZSo0DwEA1RKDHZH5lrkFtQHLH73dU0mFg>
-    <xmx:YPbDZRpSwEy17DkhVBWO5kOPxFNQB8h1ONQeafpOgj_YBfLvsrKRsg>
-Feedback-ID: idc214666:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 7 Feb 2024 16:30:06 -0500 (EST)
-Message-ID: <48364f66-99b4-40ca-b4b2-4adf1071960f@beims.me>
-Date: Wed, 7 Feb 2024 18:30:03 -0300
+	s=arc-20240116; t=1707341466; c=relaxed/simple;
+	bh=cdJe1ztU6E5GZI3pna9qPmlOhh2zb+xFkuJpyM7H3KU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
+	 Content-Type:References; b=pdsCjyXHyGBAjW9ndmpieumgdzjVXz7eWOnDR7KmImdiwFGZ0MUtNjilKyDIgRhsITrMKTuKD0F9M0JlUEXerlDFHeMrVo7iGLI/otiqtzYaDdnM9p5F7epnc46O66Lcuisk402xjmTRIlGYGF5Y18MWVbmiVIOVxecPGvsgio4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=LYKXjOMh; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240207213100euoutp0226c9caecb7d50dca679a52337ee7e430~xsgM3SfhS1444914449euoutp02Q
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 21:31:00 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240207213100euoutp0226c9caecb7d50dca679a52337ee7e430~xsgM3SfhS1444914449euoutp02Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1707341460;
+	bh=giEsucpdNlnWSHysV0Xbof/QdmgFW+LMKr4piMpm4aQ=;
+	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+	b=LYKXjOMh89zCve+4r0IWw/2xrPj4B0xDYxsIb2ihkIPg6FbKz7tTaWrsz1rQEovri
+	 c9KVNfKVwVH7zH6CiCxORINfhe+mytFH4r3JV/abmSZKsmRJubazpu2JCoakslKXcl
+	 5CM8bL+hmOgBoYBWsy3U23m5+wVxcLLffTnPoPAc=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240207213100eucas1p18ff344f47d25a7d13a51048eb1945f47~xsgMg8qZN2313223132eucas1p1s;
+	Wed,  7 Feb 2024 21:31:00 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges3new.samsung.com (EUCPMTA) with SMTP id 67.46.09552.496F3C56; Wed,  7
+	Feb 2024 21:31:00 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240207213059eucas1p10a237b3b9208eae12cd75afb55a3e071~xsgLb7sc21776717767eucas1p1i;
+	Wed,  7 Feb 2024 21:30:59 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240207213059eusmtrp100bb07f68e681f3b18b1a9aaa030f9a4~xsgLWX7uR1255812558eusmtrp1v;
+	Wed,  7 Feb 2024 21:30:59 +0000 (GMT)
+X-AuditID: cbfec7f5-83dff70000002550-9d-65c3f6948ac3
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms1.samsung.com (EUCPMTA) with SMTP id D3.FF.09146.296F3C56; Wed,  7
+	Feb 2024 21:30:58 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240207213058eusmtip122feeca1207a4fa13dd66b3a6b1a7c9a~xsgKjtXA03032030320eusmtip1V;
+	Wed,  7 Feb 2024 21:30:58 +0000 (GMT)
+Message-ID: <b4ceab79-3208-419b-9a79-f34540db3f70@samsung.com>
+Date: Wed, 7 Feb 2024 22:30:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,234 +73,142 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [EXT] Re: [PATCH v8 0/2] wifi: mwifiex: add code to support host
- mlme
-Content-Language: pt-BR
-To: David Lin <yu-hao.lin@nxp.com>,
- "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "briannorris@chromium.org" <briannorris@chromium.org>,
- "kvalo@kernel.org" <kvalo@kernel.org>,
- "francesco@dolcini.it" <francesco@dolcini.it>,
- Pete Hsieh <tsung-hsien.hsieh@nxp.com>
-References: <20231222032123.1036277-1-yu-hao.lin@nxp.com>
- <97bb3869-3b82-4b64-87cd-9b63d4516649@beims.me>
- <PA4PR04MB96389A5DDB41DFF80CBB4738D17D2@PA4PR04MB9638.eurprd04.prod.outlook.com>
-From: Rafael Beims <rafael@beims.me>
-In-Reply-To: <PA4PR04MB96389A5DDB41DFF80CBB4738D17D2@PA4PR04MB9638.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v1] PM: sleep: Restore asynchronous device resume
+ optimization
+Content-Language: en-US
+To: Tejun Heo <tj@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, "Rafael J. Wysocki"
+	<rjw@rjwysocki.net>, Linux PM <linux-pm@vger.kernel.org>, Ulf Hansson
+	<ulf.hansson@linaro.org>, Nathan Chancellor <nathan@kernel.org>, LKML
+	<linux-kernel@vger.kernel.org>, Stanislaw Gruszka
+	<stanislaw.gruszka@linux.intel.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Naohiro.Aota@wdc.com, kernel-team@meta.com
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <ZcPelerpp3Rr5YFW@slm.duckdns.org>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SbVBMYRT23rv37q21ubboTD52ZpUwbDWMuWiayHCHMWgyZgzD0m2L2szu
+	RvqRJaTEhCI7ZMcIoexsykd2raUWsehjSzbJV2G2mVQUE9pu6N/zPOc85znnnZfCJVYigEpQ
+	aTm1SpEoI70FFdX9z2blfbvPhea8FjH5JZUYY3lxlWTqbp8mme7DDxBz1F5GMJnFH0jmTE8+
+	zjypqSWYrjtGxPy4WIUYe8naSBF7S98iZE2Xs0jW5bxDsoWPVrOOF6ns9YZMAdttmsxmWg9h
+	q6h13uGxXGLCDk4dErHJO77g5RVse9P41E97+pAOZfhmIy8K6Dlw/vs3lI28KQl9CUGn48gw
+	6UFQ+LiD4Ek3guPOAeFfi/HdJ5IvXETQ3PEV40kXgtLCp5inS0xHQI6rHXmwgA6EPTVFiNfH
+	wqNT7wUePI6WQmtzwdBUXzoGvjytIjwYp/2h+f3ZoTl+9CSoP9E2tBNO63AwFhUPGUg6DLLd
+	2aQHe9EhcPd3OcmbpXDDfRr3GIA+5AXtZW9xfu/FYLX0Dd/gC5/t14fxRKg5niPgDZkIDD9b
+	MZ7kItC1NyO+awG4HD8GI6jBiOlw7XYILy+E/eeNhEcG2gea3GP5JXzgWMVJnJfFcPCAhO+e
+	Cnp76b/Ye89r8Vwk0494F/2I+/UjztH/zzUgwWXkz6VokpScZraK2ynXKJI0KSqlfEtykgkN
+	frKaX/bem+jS5y65DWEUsiGgcJmfeO5NKycRxyp2pXHq5I3qlEROY0MTKIHMXxwUK+UktFKh
+	5bZx3HZO/beKUV4BOkzn6w6Iypsv7f/yOip98Ya4oGpn1RJprpzW+FU2rE1o3XtDuOaxLKN3
+	TaS2L6+63DQt3m0ON6Yt9bE861dRJwhnXMKB0pBdkJ8emmqpEndFh3WQQsyye2tw0GGXOtB2
+	d+bmRfZVuUutWBOqa5A/XHcw40PK74LJK0tmt000miOTtQGisk5R98kVsU5HWla6cBz7tmI/
+	k4X3hE8i5nWW3Vu+7V3RguBiYv2sr28+Pm+cYZCaXxnMyjZtnXKMrWVftClOcjSo9RxCV1Yq
+	w0QFMQOLItymUdKWI3GNAx3BF3yiRzsqe4/Ft5XXNkwJDHWtXla8MEO3zBoVY66XG/a+kgk0
+	8YqwGbhao/gD4WFSkNMDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRmVeSWpSXmKPExsVy+t/xu7qTvh1ONXh028Ri6trdTBb7Lq5h
+	s7i8aw6bxefeI4wWE49vZrVoX/mUzWLul6nMFmdOX2K1+LhnA6PFr+VHGS2Orw134PbYOesu
+	u8emVZ1sHneu7WHzmHcy0OPcxQqPLVfbWTw+b5LzaD/QzRTAEaVnU5RfWpKqkJFfXGKrFG1o
+	YaRnaGmhZ2RiqWdobB5rZWSqpG9nk5Kak1mWWqRvl6CXMePmaqaCG2IVLxt/MDYwNgt3MXJy
+	SAiYSGx4/JINxBYSWMoo8Wp5OURcRuLktAZWCFtY4s+1Lqia94wSD24rg9i8AnYSPXeeM4LY
+	LAIqEo2nlzJCxAUlTs58wgJiiwrIS9y/NYMdxBYWCJF4ffYo2ExmAXGJW0/mM4HYIgKyElem
+	PQTq5QKKNzFLLP23iwnEERKYwSKxunsV2CQ2AUOJrrcQV3AK6Evs/7+VDWKSmUTX1i5GCFte
+	YvvbOcwTGIVmITlkFpKFs5C0zELSsoCRZRWjSGppcW56brGhXnFibnFpXrpecn7uJkZg1G47
+	9nPzDsZ5rz7qHWJk4mA8xCjBwawkwmu240CqEG9KYmVValF+fFFpTmrxIUZTYGhMZJYSTc4H
+	po28knhDMwNTQxMzSwNTSzNjJXFez4KORCGB9MSS1OzU1ILUIpg+Jg5OqQamKaen7J8nPTPE
+	/WTUbeWauXkigbOkNG4/077rF+d8QSeDVeRYwiuLtTP7W0I26ubFVCbbpT+btvbGtAZVY+M1
+	qx8qzNuifK/t1YPz51Z84ub1y2DcK31LizPA5fHbT9ej+KVOr3rB/bA+dYORsuRd7ZT7oU+O
+	rjvfd8zl9V5nQW1Fj/W/y6u+XEvcLRB91PqwV5J1eo/zhJl+m2pqhLraF01qVLJ7yb4owGTu
+	mTjve3vr4rWFnXXibUoFfFxOXwjlk+TkFq5nZ3bf25Wde0njZ49iiYLsOuvZRd/+7Hl/KuPS
+	95al2kfzgtaEbZ3yr8ZHooJ1W5sAw+GHSd6hM541MDBvCNj6zcD9766WEzxKLMUZiYZazEXF
+	iQAmQFhQYwMAAA==
+X-CMS-MailID: 20240207213059eucas1p10a237b3b9208eae12cd75afb55a3e071
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20240207103144eucas1p16b601a73ff347d2542f8380b25921491
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240207103144eucas1p16b601a73ff347d2542f8380b25921491
+References: <CGME20240207103144eucas1p16b601a73ff347d2542f8380b25921491@eucas1p1.samsung.com>
+	<10423008.nUPlyArG6x@kreacher>
+	<708a65cc-79ec-44a6-8454-a93d0f3114c3@samsung.com>
+	<CAJZ5v0hn=KgaWn9pwtLsH2a8n61BNxzb1xrNoxUfEi3o9OAZGw@mail.gmail.com>
+	<4a043533-009f-4db9-b107-c8374be28d2b@samsung.com>
+	<CAJZ5v0hDmwaFEtLc8yDc4cXn2wODXAqATe0+_Hpm9QPODUPMQw@mail.gmail.com>
+	<ZcOyW_Q1FC35oxob@slm.duckdns.org>
+	<2f125955-8c7c-465c-938c-8768f7ca360b@samsung.com>
+	<ZcPSuUBoL_EDvcTF@slm.duckdns.org> <ZcPelerpp3Rr5YFW@slm.duckdns.org>
 
-On 30/01/2024 04:19, David Lin wrote:
->> From: Rafael Beims <rafael@beims.me>
->> Sent: Friday, January 19, 2024 1:09 AM
->> To: David Lin <yu-hao.lin@nxp.com>; linux-wireless@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org; briannorris@chromium.org;
->> kvalo@kernel.org; francesco@dolcini.it; Pete Hsieh
->> <tsung-hsien.hsieh@nxp.com>
->> Subject: [EXT] Re: [PATCH v8 0/2] wifi: mwifiex: add code to support host mlme
->>
->> Caution: This is an external email. Please take care when clicking links or
->> opening attachments. When in doubt, report the message using the 'Report
->> this email' button
->>
->>
->> On 22/12/2023 00:21, David Lin wrote:
->>
->>> This series add host based MLME support to the mwifiex driver, this
->>> enables WPA3 support in both client and AP mode.
->>> To enable WPA3, a firmware with corresponding V2 Key API support is
->>> required.
->>> The feature is currently only enabled on NXP IW416 (SD8978), and it
->>> was internally validated by the NXP QA team. Other NXP Wi-Fi chips
->>> supported in current mwifiex are not affected by this change.
->>>
->>> v8:
->>>      - Separate 6/12 from patch v7.
->>>        As it's a bug fix not part of host MLME feature.
->>>      - Rearrnage MLME feature into 2 patches:
->>>        a. Add host based MLME support for STA mode.
->>>        b. Add host based MLME support for AP mode.
->>>
->>> v7:
->>>      - Fix regression: Downlink throughput degraded by 70% in AP mode.
->>>      - Fix issue: On STAUT, kernel Oops occurs when there is no association
->>>        response from AP.
->>>      - Fix issue: On STAUT, if AP leaves abruptly and deauth is missing,
->>>        STA can't connect to AP anymore.
->>>      - Fix regression: STA can't connect to AP when host_mlme is disabled
->>>        (impact all chips).
->>>      - Address reviewer comments.
->>>
->>> v6:
->>>      - Correct mailing sequence.
->>>
->>> v5:
->>>      - Add host base MLME support to enable WPA3 functionalities for both
->>>        STA and AP mode.
->>>      - This feature (WPA3) required a firmware with corresponding Key API
->> V2
->>>        support.
->>>      - QA validation and regression have been covered for IW416.
->>>      - This feature (WPA3) is currently enabled and verified only for IW416.
->>>      - Changelogs since patch V4:
->>>        a. Add WPA3 support for AP mode.
->>>        b. Bug fix: In WPA3 STA mode, deice gets disconnected from AP
->>>           when group rekey occurs.
->>>        c. Bug fix: STAUT doesn't send WMM IE in association request when
->>>           associate to a WMM-AP.
->>>
->>> v4:
->>>      - Refine code segment per review comment.
->>>      - Add API to check firmware encryption key command version when
->>>        host_mlme is enabled.
->>>
->>> v3:
->>>      - Cleanup commit message.
->>>
->>> v2:
->>>      - Fix checkpatch error (pwe[1] -> pwe[0]).
->>>      - Move module parameter 'host_mlme' to mwifiex_sdio_device
->> structure.
->>>        Default only enable for IW416.
->>>      - Disable advertising NL80211_FEATURE_SAE if host_mlme is not
->> enabled.
->>> David Lin (2):
->>>     wifi: mwifiex: add host mlme for client mode
->>>     wifi: mwifiex: add host mlme for AP mode
->>>
->>>    .../net/wireless/marvell/mwifiex/cfg80211.c   | 394
->> +++++++++++++++++-
->>>    drivers/net/wireless/marvell/mwifiex/cmdevt.c |  27 ++
->>>    drivers/net/wireless/marvell/mwifiex/decl.h   |  22 +
->>>    drivers/net/wireless/marvell/mwifiex/fw.h     |  54 +++
->>>    drivers/net/wireless/marvell/mwifiex/init.c   |   6 +
->>>    drivers/net/wireless/marvell/mwifiex/ioctl.h  |   5 +
->>>    drivers/net/wireless/marvell/mwifiex/join.c   |  66 ++-
->>>    drivers/net/wireless/marvell/mwifiex/main.c   |  54 +++
->>>    drivers/net/wireless/marvell/mwifiex/main.h   |  17 +
->>>    drivers/net/wireless/marvell/mwifiex/scan.c   |   6 +
->>>    drivers/net/wireless/marvell/mwifiex/sdio.c   |  13 +
->>>    drivers/net/wireless/marvell/mwifiex/sdio.h   |   2 +
->>>    .../wireless/marvell/mwifiex/sta_cmdresp.c    |   2 +
->>>    .../net/wireless/marvell/mwifiex/sta_event.c  |  36 +-
->>>    .../net/wireless/marvell/mwifiex/sta_ioctl.c  |   3 +-
->>>    drivers/net/wireless/marvell/mwifiex/sta_tx.c |   9 +-
->>>    .../net/wireless/marvell/mwifiex/uap_cmd.c    | 171 ++++++++
->>>    drivers/net/wireless/marvell/mwifiex/util.c   | 104 +++++
->>>    18 files changed, 974 insertions(+), 17 deletions(-)
->>>
->>>
->>> base-commit: 783004b6dbda2cfe9a552a4cc9c1d168a2068f6c
->> I applied the two commits of this series on top of v6.7 but unfortunately the AP
->> is failing to start with the patches. I get this output from "hostapd -d" (running
->> on a Verdin AM62 with IW416):
->>
->> nl80211: kernel reports: Match already configured
->> nl80211: Register frame command failed (type=176): ret=-114 (Operation
->> already in progress)
->> nl80211: Register frame match - hexdump(len=0): [NULL]
->>
->> If I run the same hostapd on v6.7 without the patches, the AP is started with no
->> issues.
->>
->>
->> Is there anything else that should be done in order to test this?
->>
->>
->> Rafael
-> I applied patch v8 (mbox from patch work) to Linux stable repository (tag v6.7.2).
+On 07.02.2024 20:48, Tejun Heo wrote:
+> Hello,
 >
-> Both client and AP mode can work with and without WPA3.
+> I couldn't reproduce effective max_active being pushed down to min_active
+> across suspend/resume cycles on x86. There gotta be something different.
 >
-> David
->
-I went back and executed the tests again. I re-applied the pach on top 
-of tag v6.7.2 to make sure we're seeing exactly the same thing.
+> - Can you please apply the following patch along with the WQ_DFL_MIN_ACTIVE
+>    bump, go through suspend/resume once and report the dmesg?
 
-At first, the behavior I was seeing was exactly the same I reported 
-before. Upon starting hostapd with our basic example configuration, it 
-would fail to start the AP with the error:
+Here is the relevant part of the log:
 
-nl80211: kernel reports: Match already configured
-nl80211: Could not configure driver mode
-
-After some investigation of what could cause this error, I found out 
-that it was connman that was interfering with this somehow. After 
-killing the connman service, the AP would start correctly.
-
-I want to point out that this behavior is different from the unpatched 
-driver. With that one we don't need to kill connman in order to start 
-the AP with hostapd.
-
-
-After seeing the AP starting up, I did a quick series of tests (Toradex 
-Verdin AM62 with 1GB of RAM and two antennas connected via SMA adapter):
-
-1) AP test: I was able to use the simple AP configuration with two 
-clients connected simultaneously. I executed simple ping tests and also 
-a quick run of iperf3 with the following results
-
-[ ID] Interval           Transfer     Bitrate         Retr
-[  5]   0.00-10.00  sec  16.8 MBytes  14.1 Mbits/sec 11             sender
-[  5]   0.00-10.05  sec  16.4 MBytes  13.7 Mbits/sec                  
-receiver
-
-I repeated the same iperf3 test several times with similar results.
-
-Comparing the iperf3 results with what I get on the unpatched driver 
-(v6.7.2), there seems to be a difference in average bandwidth:
-
-[ ID] Interval           Transfer     Bitrate         Retr
-[  5]   0.00-10.00  sec  20.2 MBytes  17.0 Mbits/sec 0             sender
-[  5]   0.00-10.04  sec  19.7 MBytes  16.4 Mbits/sec                  
-receiver
-
-
-2) Client test: I also executed a similar test but now with the AM62 as 
-the client. It was possible to connect to an AP and do the ping tests 
-without problems.
-
-The iperf3 results are in line with what we see on the AP:
-
-[ ID] Interval           Transfer     Bitrate         Retr
-[  5]   0.00-10.00  sec  19.3 MBytes  16.2 Mbits/sec 32             sender
-[  5]   0.00-10.01  sec  19.0 MBytes  15.9 Mbits/sec                  
-receiver
-
-Comparing with the unpatched v6.7.2 we can also see a difference:
-
-[ ID] Interval           Transfer     Bitrate         Retr
-[  5]   0.00-10.00  sec  23.4 MBytes  19.6 Mbits/sec 0             sender
-[  5]   0.00-10.01  sec  20.7 MBytes  17.3 Mbits/sec                  
-receiver
-
-
-3) Simple WPA3 AP test: to finish this round of tests, I started an AP 
-with a configuration enabling SAE. The AP was started successfully and I 
-could connect a client with wpa_supplicant. Ping tests were also 
-succesful here.
-
-The iperf3 result shows a bigger bandwidth than all the previous tests:
-
-[ ID] Interval           Transfer     Bitrate         Retr
-[  5]   0.00-10.00  sec  20.6 MBytes  17.3 Mbits/sec 35             sender
-[  5]   0.00-10.04  sec  19.8 MBytes  16.6 Mbits/sec                  
-receiver
+PM: suspend entry (deep)
+Filesystems sync: 0.004 seconds
+Freezing user space processes
+Freezing user space processes completed (elapsed 0.002 seconds)
+OOM killer disabled.
+Freezing remaining freezable tasks
+Freezing remaining freezable tasks completed (elapsed 0.002 seconds)
+dwc2 12480000.usb: suspending usb gadget g_ether
+dwc2 12480000.usb: new device is full-speed
+smsc95xx 1-2:1.0 eth0: entering SUSPEND2 mode
+wake enabled for irq 97 (gpx3-2)
+usb3503 0-0008: switched to STANDBY mode
+wake enabled for irq 124 (gpx1-3)
+samsung-pinctrl 11000000.pinctrl: Setting external wakeup interrupt 
+mask: 0xfbfff7ff
+Disabling non-boot CPUs ...
+XXX wq_update_node_max_active: wq=events_unbound off_cpu=1 total=3 
+range=[32, 512] node[0] node_cpus=3 max=512
+XXX wq_update_node_max_active: wq=events_unbound off_cpu=2 total=2 
+range=[32, 512] node[0] node_cpus=2 max=512
+XXX wq_update_node_max_active: wq=events_unbound off_cpu=3 total=1 
+range=[32, 512] node[0] node_cpus=1 max=512
+Enabling non-boot CPUs ...
+XXX wq_update_node_max_active: wq=events_unbound off_cpu=-1 total=2 
+range=[32, 512] node[0] node_cpus=2 max=512
+CPU1 is up
+XXX wq_update_node_max_active: wq=events_unbound off_cpu=-1 total=3 
+range=[32, 512] node[0] node_cpus=3 max=512
+CPU2 is up
+XXX wq_update_node_max_active: wq=events_unbound off_cpu=-1 total=4 
+range=[32, 512] node[0] node_cpus=4 max=512
+CPU3 is up
+s3c-i2c 138e0000.i2c: slave address 0x00
+s3c-i2c 138e0000.i2c: bus frequency set to 97 KHz
+s3c-i2c 13870000.i2c: slave address 0x00
+s3c-i2c 13870000.i2c: bus frequency set to 97 KHz
+s3c-i2c 13860000.i2c: slave address 0x00
+s3c-i2c 13860000.i2c: bus frequency set to 390 KHz
+s3c-i2c 13880000.i2c: slave address 0x00
+s3c-i2c 13880000.i2c: bus frequency set to 97 KHz
+s3c2410-wdt 10060000.watchdog: watchdog disabled
+wake disabled for irq 124 (gpx1-3)
+s3c-rtc 10070000.rtc: rtc disabled, re-enabling
+usb3503 0-0008: switched to HUB mode
+wake disabled for irq 97 (gpx3-2)
+usb usb1: root hub lost power or was reset
+usb 1-2: reset high-speed USB device number 2 using exynos-ehci
+smsc95xx 1-2:1.0 eth0: Link is Down
+dwc2 12480000.usb: resuming usb gadget g_ether
+usb 1-3: reset high-speed USB device number 3 using exynos-ehci
+usb 1-3.1: reset high-speed USB device number 4 using exynos-ehci
+OOM killer enabled.
+Restarting tasks ... done.
+random: crng reseeded on system resumption
+PM: suspend exit
 
 
-To summarize the results, it seems that the basic functionality is 
-working and also WPA3 support.
+> ...
 
-We have a different behavior when starting the AP, where now we need to 
-stop connman (blacklisting the uap0 interface will probably also work) 
-beforehand.
-
-I don't know if the bandwidth results are something to be worried about, 
-I saw some variation between iperf3 runs, but the results I posted show 
-an average of what I was seeing.
-
-
-Rafael
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
 
