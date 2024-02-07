@@ -1,91 +1,91 @@
-Return-Path: <linux-kernel+bounces-56459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 840EA84CA6B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:09:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4538E84CA6F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:10:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAA101F2C18F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:09:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0E7C290F47
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9C45B1F3;
-	Wed,  7 Feb 2024 12:06:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4834F5B5AD;
+	Wed,  7 Feb 2024 12:06:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="A3SX75PX"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2049.outbound.protection.outlook.com [40.107.94.49])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="d6WIB1Lh"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2063.outbound.protection.outlook.com [40.107.244.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 039D55A7A6;
-	Wed,  7 Feb 2024 12:06:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E35F5B1F9;
+	Wed,  7 Feb 2024 12:06:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.63
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707307565; cv=fail; b=bIrxU7b8tEUTDvLoYUsSZhRTjhk4ZNRYsA14wgNc2u33pb30L2WU58pNQWnKv0qMGjI6z7VEgZ0l2tqSjYtWp2MphPI7qPO/L6GabPeMTSagWW6YL+Iu5JLCMPYWfNcpMNXDOZW2Gt/ixR1VShe4eHW8+jks5Se0qdYh6V5EMfY=
+	t=1707307569; cv=fail; b=Z+Jm6tOKz6siooVP+Vf7nGyv5MgmODPwGpFZuhrfnyRtkDUMU5Q3IwLMsLFTEvGODEVkXxQb8NF/D/5zX2CKnwNIVZYqw9HJ8tUe3IyfoGLdem/+2KuTuHcmoAhA0w/eGSfGjhMOvCwuJH+UkwtHJTiiLO+YRsPLfN//i1qfQfA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707307565; c=relaxed/simple;
-	bh=GLaNXQKI5c6NgZTvm4h+u214lanwQnSaUd0kav5+bBU=;
+	s=arc-20240116; t=1707307569; c=relaxed/simple;
+	bh=Fw6hzNUfiu56SsPuRbyoTa76DQS/6OAS09usTHzIGNM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Wq0VkoKT3j45ZEhCKqdrJJKufOPHW488Z9P8Ubw+1x2u5c6iEw5VgrgT01GM882BwitDD0fDLITWs2SLOWJptIYxM5K31hbG8J93dbx3JPZy5XcLj+zECdDZ1Ylo4xsJYKtL00IoBo6prS5ivc3JHijHik03GvSMAfywmAwzb/o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=A3SX75PX; arc=fail smtp.client-ip=40.107.94.49
+	 MIME-Version:Content-Type; b=d8Bljnijixd1DFfUKq3aH/Dw0pVmiV5Jzi7F9X6QqIutCQirZvZvE+EG5bVAaRhnUqshv+JiOt/w8U6uyF6qMtp8Xl4pYuTQEe6OJmKW0bfabdBGbUMieoLuy/ODsxhVLlxttzay/WRsB3jbWXgi7T8rVwJOm+vKKYeawFxcAdE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=d6WIB1Lh; arc=fail smtp.client-ip=40.107.244.63
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vi6pAwV1QSR2POSQbGyaiUhg/W7ZaMKQFmxy9D6DyumH3KFpZBYJVTnKtZzvueRCAMDuZSd+RzTKJki2cfevHkugRAb0iiZmeNDPHG2txkSOSdZxLVft1CzSVPqOYhyL0V3NwK0Um/7PFdLr5+AryFqwyflxVZ9kmvxLl1bOtoqN79/XPjjry/JCguV6Ua1ldsPhxaIS+cR5R157qGJKDYOgeKuPkf7DrOjMEX8PNVuzViWQ4PkXt2VQqUnCdNbY/aShcgZCtnkWcUowGWj2tEzUveG5LpaGnba9MKbuo/3PlgLKcsqt5yjLdnA17vJt0ZqvAvyhgzEbTCqLTpce/Q==
+ b=hN/lShrSN+IW0HEFSj8NIisNcaTggl1gYTe+qdpa7w6IYY9hsidlLjlpuvIzvRBZ0sZC8k1nv+QV4tIc8tVwUBSBJGcIms4w63tNJJwtc6zMqXG8chN350ubIHnmbU9Vn7ed1liaxWRbHQFhK+b/FIX5Dlj2Y0b4LesyVDWXpRR6CqZO8V8x16BhBwOqm9r3pqlXsx96+FDXiwCDqrSiyvwDNgP437KkDc7cv1Ke8hZOSmULIraDy9PEsocZ8GyHC2ye3UEi72GeWWS99FC8mF3StmIG/8v2wICF1JTmj/YolYmA8oVcRieuXFReF3I3u0wxcCtRcYSn3BmFAmIoHg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GSFhjCZJWT8x7i10BY80YiQW7GTaNBKVSUz/5zLrNIE=;
- b=fK832brE+OTVu0J4IzcCesKvVh9fnWisRZozmVXlbpL7kyxKRpsuHHbPBcfEqXz9lNQ6Gs32qixnLvYPJc8YFjpn0AL3Dd1E87gXMv76ba039BitE3bsBQK/CNDH6+Eoukk/mh3M4FM5kY+5Yzj2NXmbgeShq/HootCe4OSWMDc/BUr8LL70kC6VFovYsuAUWGarxMVZc8xqA4Hxc5spexAmtUIzYLsRsYy/o3pjr7Fw1f9ndZxYmeMUpSSZXIN/r9WA9KNHX2Mjx7KXZ3WKLc3dCqvNUBB4l+XnTP+f3fpOokcBVwj/W1LiMwPB3kM8Q5B3ToqHn1+LwGgcm6UuYA==
+ bh=3Pz/kOuKKZZ59Qn/ZT9FUsOjfwSoaX5HAQIw/A9zQR8=;
+ b=R5l2SVdWEA4fupsgELdnLeP3+803XJFmrDcIFACOlc67/k/DPLF4tPyA77ggBf7jYW/I+BHeI2U0OmxKAeJMnGWzeVU8FxvZlzCBumOEkDh0Nlie3jvAormb4sexMrWIX5uiOB0A5GHgFamNbWg74iDYFwyozRwq9k9Jghx36a4Z37u/hSxMowbkwQYnceO932JuqQDImwGvn01P5pmKeFPE+OMukCh35pwXXyWRdw2h2D6fkgIdfU1K7bEbYWCFtZCld8adJHwxA8r8o42a5u+t/ebcbZk6WVvOL4gh9/67+wv4rx0Hk923spToVyVVx1IxhmoGV8c4TPy4lHKK2g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GSFhjCZJWT8x7i10BY80YiQW7GTaNBKVSUz/5zLrNIE=;
- b=A3SX75PXSVuwQY5LCEFjXF1oTQ3YwD+X+W6WvSoIzC35cC988eyizYiczx3ZAuWOQ1cg5/srJ2z7n3fMw807WH++puwTwqZBDH2q+itGvlLSXczabKiLQ/V9lGUdMIc/pnbNvDiafW/d1mLNdKwfmvMiLRrlCCMiPUF0sfwhWBKFT6r0CNNNNhEdsukSKu8mYlqLOVFkqNBwiMs0/ObEYNiC++ao5Hk5zTV5fGFaV6zNtEIXXQR+kOoDz/COb+buESYrcOfHxTpYJp3x9Fcw2fWoodsHx8C+XA4NtFE0xLO6P10bcpi2jZiTdh5noFPl1OQfNyAuMC0FQ5FXMS9ARw==
-Received: from CY5PR04CA0026.namprd04.prod.outlook.com (2603:10b6:930:1e::21)
- by CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13) with
+ bh=3Pz/kOuKKZZ59Qn/ZT9FUsOjfwSoaX5HAQIw/A9zQR8=;
+ b=d6WIB1LhsswOxenkEj5f5Z/Fm2LWW3hCxHZftGCuqNH6uNFZYYkAyzVBcWf5AB6MURvVK/33a2SLQhLQGZkPN+gvAHPkZibqpeuZr1wrVSW9QY2K75AhV4nKnQZ3jJ+WJOuG1U5KedCGiGitL7MDG54YWwPcKibxkZOxNi7QP5/xGS5MLjRJJWy8K5BUc54vvSUyPr1B3XRafNroP+YUMsu6sP78WFL/ZwQr9bEpF0LkM75EFBnE6JFh1W5/tX1rl9Q2KXrdDNGp3vpAERZ+SPm258a6kNXhVvwGwruKTWkSL4dsDRBzmShoiZivCXMYSD4Hf4IzEueNvydPI9VT2w==
+Received: from DS7PR03CA0073.namprd03.prod.outlook.com (2603:10b6:5:3bb::18)
+ by DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.17; Wed, 7 Feb
- 2024 12:06:00 +0000
-Received: from CY4PEPF0000E9D6.namprd05.prod.outlook.com
- (2603:10b6:930:1e:cafe::37) by CY5PR04CA0026.outlook.office365.com
- (2603:10b6:930:1e::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.38 via Frontend
- Transport; Wed, 7 Feb 2024 12:06:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.14; Wed, 7 Feb
+ 2024 12:06:04 +0000
+Received: from DS1PEPF0001709A.namprd05.prod.outlook.com
+ (2603:10b6:5:3bb:cafe::bf) by DS7PR03CA0073.outlook.office365.com
+ (2603:10b6:5:3bb::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36 via Frontend
+ Transport; Wed, 7 Feb 2024 12:06:04 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CY4PEPF0000E9D6.mail.protection.outlook.com (10.167.241.80) with Microsoft
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ DS1PEPF0001709A.mail.protection.outlook.com (10.167.18.104) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7249.19 via Frontend Transport; Wed, 7 Feb 2024 12:06:00 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.7249.19 via Frontend Transport; Wed, 7 Feb 2024 12:06:04 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 7 Feb 2024
- 04:05:47 -0800
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ 04:05:51 -0800
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Wed, 7 Feb
- 2024 04:05:46 -0800
+ 2024 04:05:51 -0800
 Received: from sheetal.nvidia.com (10.127.8.13) by mail.nvidia.com
  (10.129.68.9) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Wed, 7 Feb 2024 04:05:44 -0800
+ Transport; Wed, 7 Feb 2024 04:05:48 -0800
 From: "Sheetal ." <sheetal@nvidia.com>
 To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
 	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC: <thierry.reding@gmail.com>, <linux-tegra@vger.kernel.org>,
 	<spujar@nvidia.com>, <jonathanh@nvidia.com>, <mkumard@nvidia.com>, sheetal
 	<sheetal@nvidia.com>
-Subject: [PATCH 2/4] arm64: tegra: Define missing IO ports
-Date: Wed, 7 Feb 2024 17:35:16 +0530
-Message-ID: <20240207120518.697926-3-sheetal@nvidia.com>
+Subject: [PATCH 3/4] arm64: tegra: Add audio support for Jetson Orin NX and Jetson Orin Nano
+Date: Wed, 7 Feb 2024 17:35:17 +0530
+Message-ID: <20240207120518.697926-4-sheetal@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240207120518.697926-1-sheetal@nvidia.com>
 References: <20240207120518.697926-1-sheetal@nvidia.com>
@@ -100,326 +100,192 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D6:EE_|CO6PR12MB5427:EE_
-X-MS-Office365-Filtering-Correlation-Id: 727821d5-f4b9-4684-3881-08dc27d5264d
+X-MS-TrafficTypeDiagnostic: DS1PEPF0001709A:EE_|DM4PR12MB6280:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3548f33f-a658-40eb-e453-08dc27d528de
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	lPPoS5CBVhIQ9UTctb8rSL0ALZhQkIew5Y+ZJEBKrl0quQvSIIDDQDLglvAJLE7M6tg6kSdqKtuQ27/oF+2RzvCcch9MBmdgO+2LIg94XAzjpyFq8K7f+rGE4F7oP3ouCx8EYw3g9AbY48Gr12pct54L7KOkNEAij5r73Ik/K4IBo+x2joGoZmOXj3X4DVbG2XyQvHTSlq3CtCU0KLVirjrjhZCKzxRp9LcD2xmPekbjY69YmDGdexq0IXxEbD3BCndRtkD5OKn/z5mpgWTLxkje4VWsnCtbV5TvmFGaQkxABep9wnAD++YqDJbrp1YencCgjCJb9QqBT8aXL8koHduC8F2xMuLakOcRFon2tCTo4T1r4dE42ZfJu4bZEzrYm8lBfFvEPzvaPLh4CPk5KAoV25L1Od5nwWojePuESzIgo62560aNo+NCEh/941MmQJQ63K9t0BhRBjgA8Lxtm7dRT+dF53WdmBDwycobwp2efOyhy+dnTg91UZcHK1RCjjRDnjWAdYP1IjQ7QWiW1qLGudEl3yO15vmKc87vnwIvNkGPPbGJ5PtAKf1A1P+djvWEq/W8mQNMWGuMyo/srntnamm/HKhy9NzwHr8t4rPyMOgckCrmmWN0wMjpWfPSUGH0Apq8u60K3LIHeREtOpaLJeZQlwBPG6z5D4bn+40zIpgU1WFwmbjXOoOOtBGCuMQXlnPj8ndDK7ncC5x7ZdZEhW9xQR5YrLpLumq5nxk=
+	bEAhxD/MXmdFxwjqi85+4YfrhhsvknZiCccqAiUGu+gcwxWbMnWTciHva/H0opJJ8T0WJyiz8XVIBibIeGY0OIKM4ENFQQRF91zQvbSPISdwLV0dUwUqzin3/FzM/kLf3FxZJqOR8Zs31j2B1JNiM8FsGD58OHjlaLlp7C+UBufk6TAEGOkuCjmCtorPQvMY4YnKShsLkKzrFe2uxowPnnTv8OSB3sBDayQ7lS4vYYXHbfhoe1MVAxMZ2cPiUhEI5XwFG5WXr6xsOZrKXOgJBhVbdWd6JHWBZQswkrQOh33GLFshg18oJgcrQZagNXQy2GUbYUuMs1V5vZauYcemsF06Rzgo9QqlDbuCDr4dgV+byHpEgZko+vO34YJnr05hLJY0KEe/n2YPZEa5CkteiGv9vfOVRENUIWdQi07Z2gflRVrlj1JhQeQe+XOzDD+Yg0fCXgt6mKhaU7g69t6GeFVZRBjw7G8+NZXk2MkDYabF1ZhKPLk9hXeiLFT0bCAGLvnxkzNMcvNPSLgXeT1dyKpy1qU70wex7bDenW2k2K1kN4BioptitV/kIR0+LDWdNvS4QQPYXbCBjpo8q4v4wj1fJaJhC8WPKy/dUQQY7yQa2ZHvEY8SNj9396C48j+xofYJLMNMRQ/04ShuwL95DBUUKRUIYDuIrZTXaGzz0kZVneRMl9VuOYBMMTw3eFkihzoKFajMdMyAkrpL8k22sKDO/oN31RzGYPRNIe8qmu554ClUivoZh4HJ2IlWqm6k
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(396003)(39860400002)(346002)(230922051799003)(230273577357003)(82310400011)(451199024)(1800799012)(186009)(64100799003)(46966006)(36840700001)(40470700004)(6666004)(86362001)(478600001)(36860700001)(47076005)(40480700001)(40460700003)(2616005)(336012)(426003)(1076003)(7696005)(82740400003)(83380400001)(107886003)(26005)(7636003)(356005)(41300700001)(8936002)(54906003)(8676002)(5660300002)(2906002)(4326008)(316002)(36756003)(70586007)(70206006)(110136005);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(136003)(39860400002)(396003)(376002)(230922051799003)(82310400011)(451199024)(64100799003)(186009)(1800799012)(36840700001)(46966006)(40470700004)(1076003)(2906002)(70586007)(316002)(4326008)(8676002)(70206006)(5660300002)(110136005)(54906003)(8936002)(86362001)(478600001)(41300700001)(82740400003)(426003)(36860700001)(356005)(7696005)(7636003)(83380400001)(26005)(6666004)(336012)(47076005)(36756003)(107886003)(2616005)(40460700003)(40480700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2024 12:06:00.2474
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2024 12:06:04.5418
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 727821d5-f4b9-4684-3881-08dc27d5264d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3548f33f-a658-40eb-e453-08dc27d528de
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000E9D6.namprd05.prod.outlook.com
+	DS1PEPF0001709A.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5427
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6280
 
 From: sheetal <sheetal@nvidia.com>
 
-I2S3, I2S5, DMIC1, DMIC2, DMIC4, DSPK1 and DSPK2 IO ports are not
-defined. Those are not defined earlier because it was inside platform
-DT and defined only for supported IOs by the platform.
-Now these are part of SoC DTSI, all IOs ports are defined
-so that all the ports are available to be used by platforms.
+Add audio support for the NVIDIA Jetson Orin NX (p3767, SKU0) module and
+Jetson Orin Nano (p3767, SKU5) module Developer Kit with P3768 carrier
+board.
+
+APE and HDA sound cards are enabled.
+
+Supported IO interfaces: I2S2 and I2S4.
 
 Signed-off-by: sheetal <sheetal@nvidia.com>
 ---
- arch/arm64/boot/dts/nvidia/tegra234.dtsi | 205 +++++++++++++++++++++++
- 1 file changed, 205 insertions(+)
+ .../arm64/boot/dts/nvidia/tegra234-p3767.dtsi | 82 +++++++++++++++++++
+ .../nvidia/tegra234-p3768-0000+p3767-0000.dts |  5 +-
+ .../nvidia/tegra234-p3768-0000+p3767-0005.dts | 10 +++
+ 3 files changed, 96 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra234.dtsi b/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-index a01ff6174f74..561d01dfef56 100644
---- a/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-@@ -272,6 +272,28 @@ tegra_i2s3: i2s@2901200 {
- 					assigned-clock-rates = <1536000>;
- 					sound-name-prefix = "I2S3";
- 					status = "disabled";
-+
-+					ports {
-+						#address-cells = <1>;
-+						#size-cells = <0>;
-+
-+						port@0 {
-+							reg = <0>;
-+
-+							i2s3_cif: endpoint {
-+								remote-endpoint = <&xbar_i2s3>;
-+							};
-+						};
-+
-+						i2s3_port: port@1 {
-+							reg = <1>;
-+
-+							i2s3_dap: endpoint {
-+								dai-format = "i2s";
-+								/* placeholder for external codec */
-+							};
-+						};
-+					};
- 				};
+diff --git a/arch/arm64/boot/dts/nvidia/tegra234-p3767.dtsi b/arch/arm64/boot/dts/nvidia/tegra234-p3767.dtsi
+index 59c14ded5e9f..1b23d37e4463 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra234-p3767.dtsi
++++ b/arch/arm64/boot/dts/nvidia/tegra234-p3767.dtsi
+@@ -6,6 +6,30 @@ / {
+ 	compatible = "nvidia,p3767", "nvidia,tegra234";
  
- 				tegra_i2s4: i2s@2901300 {
-@@ -322,6 +344,28 @@ tegra_i2s5: i2s@2901400 {
- 					assigned-clock-rates = <1536000>;
- 					sound-name-prefix = "I2S5";
- 					status = "disabled";
+ 	bus@0 {
++		aconnect@2900000 {
++			status = "okay";
 +
-+					ports {
-+						#address-cells = <1>;
-+						#size-cells = <0>;
++			ahub@2900800 {
++				status = "okay";
 +
-+						port@0 {
-+							reg = <0>;
++				i2s@2901100 {
++					status = "okay";
++				};
 +
-+							i2s5_cif: endpoint {
-+								remote-endpoint = <&xbar_i2s5>;
-+							};
-+						};
++				i2s@2901300 {
++					status = "okay";
++				};
++			};
 +
-+						i2s5_port: port@1 {
-+							reg = <1>;
++			dma-controller@2930000 {
++				status = "okay";
++			};
 +
-+							i2s5_dap: endpoint {
-+								dai-format = "i2s";
-+								/* placeholder for external codec */
-+							};
-+						};
-+					};
- 				};
++			interrupt-controller@2a40000 {
++				status = "okay";
++			};
++		};
++
+ 		i2c@3160000 {
+ 			status = "okay";
  
- 				tegra_i2s6: i2s@2901500 {
-@@ -900,6 +944,27 @@ tegra_dmic1: dmic@2904000 {
- 					assigned-clock-rates = <3072000>;
- 					sound-name-prefix = "DMIC1";
- 					status = "disabled";
-+
-+					ports {
-+						#address-cells = <1>;
-+						#size-cells = <0>;
-+
-+						port@0 {
-+							reg = <0>;
-+
-+							dmic1_cif: endpoint {
-+								remote-endpoint = <&xbar_dmic1>;
-+							};
-+						};
-+
-+						dmic1_port: port@1 {
-+							reg = <1>;
-+
-+							dmic1_dap: endpoint {
-+								/* placeholder for external codec */
-+							};
-+						};
-+					};
- 				};
+@@ -127,6 +151,64 @@ vdd_3v3_ao: regulator-vdd-3v3-ao {
+ 		vin-supply = <&vdd_5v0_sys>;
+ 	};
  
- 				tegra_dmic2: dmic@2904100 {
-@@ -913,6 +978,27 @@ tegra_dmic2: dmic@2904100 {
- 					assigned-clock-rates = <3072000>;
- 					sound-name-prefix = "DMIC2";
- 					status = "disabled";
++	sound {
++		compatible = "nvidia,tegra186-audio-graph-card";
++		status = "okay";
 +
-+					ports {
-+						#address-cells = <1>;
-+						#size-cells = <0>;
++		dais = /* ADMAIF (FE) Ports */
++		       <&admaif0_port>, <&admaif1_port>, <&admaif2_port>, <&admaif3_port>,
++		       <&admaif4_port>, <&admaif5_port>, <&admaif6_port>, <&admaif7_port>,
++		       <&admaif8_port>, <&admaif9_port>, <&admaif10_port>, <&admaif11_port>,
++		       <&admaif12_port>, <&admaif13_port>, <&admaif14_port>, <&admaif15_port>,
++		       <&admaif16_port>, <&admaif17_port>, <&admaif18_port>, <&admaif19_port>,
++		       /* XBAR Ports */
++		       <&xbar_i2s2_port>, <&xbar_i2s4_port>,
++		       <&xbar_sfc1_in_port>, <&xbar_sfc2_in_port>,
++		       <&xbar_sfc3_in_port>, <&xbar_sfc4_in_port>,
++		       <&xbar_mvc1_in_port>, <&xbar_mvc2_in_port>,
++		       <&xbar_amx1_in1_port>, <&xbar_amx1_in2_port>,
++		       <&xbar_amx1_in3_port>, <&xbar_amx1_in4_port>,
++		       <&xbar_amx2_in1_port>, <&xbar_amx2_in2_port>,
++		       <&xbar_amx2_in3_port>, <&xbar_amx2_in4_port>,
++		       <&xbar_amx3_in1_port>, <&xbar_amx3_in2_port>,
++		       <&xbar_amx3_in3_port>, <&xbar_amx3_in4_port>,
++		       <&xbar_amx4_in1_port>, <&xbar_amx4_in2_port>,
++		       <&xbar_amx4_in3_port>, <&xbar_amx4_in4_port>,
++		       <&xbar_adx1_in_port>, <&xbar_adx2_in_port>,
++		       <&xbar_adx3_in_port>, <&xbar_adx4_in_port>,
++		       <&xbar_mix_in1_port>, <&xbar_mix_in2_port>,
++		       <&xbar_mix_in3_port>, <&xbar_mix_in4_port>,
++		       <&xbar_mix_in5_port>, <&xbar_mix_in6_port>,
++		       <&xbar_mix_in7_port>, <&xbar_mix_in8_port>,
++		       <&xbar_mix_in9_port>, <&xbar_mix_in10_port>,
++		       <&xbar_asrc_in1_port>, <&xbar_asrc_in2_port>,
++		       <&xbar_asrc_in3_port>, <&xbar_asrc_in4_port>,
++		       <&xbar_asrc_in5_port>, <&xbar_asrc_in6_port>,
++		       <&xbar_asrc_in7_port>,
++		       <&xbar_ope1_in_port>,
++		       /* HW accelerators */
++		       <&sfc1_out_port>, <&sfc2_out_port>,
++		       <&sfc3_out_port>, <&sfc4_out_port>,
++		       <&mvc1_out_port>, <&mvc2_out_port>,
++		       <&amx1_out_port>, <&amx2_out_port>,
++		       <&amx3_out_port>, <&amx4_out_port>,
++		       <&adx1_out1_port>, <&adx1_out2_port>,
++		       <&adx1_out3_port>, <&adx1_out4_port>,
++		       <&adx2_out1_port>, <&adx2_out2_port>,
++		       <&adx2_out3_port>, <&adx2_out4_port>,
++		       <&adx3_out1_port>, <&adx3_out2_port>,
++		       <&adx3_out3_port>, <&adx3_out4_port>,
++		       <&adx4_out1_port>, <&adx4_out2_port>,
++		       <&adx4_out3_port>, <&adx4_out4_port>,
++		       <&mix_out1_port>, <&mix_out2_port>, <&mix_out3_port>,
++		       <&mix_out4_port>, <&mix_out5_port>,
++		       <&asrc_out1_port>, <&asrc_out2_port>, <&asrc_out3_port>,
++		       <&asrc_out4_port>, <&asrc_out5_port>, <&asrc_out6_port>,
++		       <&ope1_out_port>,
++		       /* BE I/O Ports */
++		       <&i2s2_port>, <&i2s4_port>;
++	};
 +
-+						port@0 {
-+							reg = <0>;
-+
-+							dmic2_cif: endpoint {
-+								remote-endpoint = <&xbar_dmic2>;
-+							};
-+						};
-+
-+						dmic2_port: port@1 {
-+							reg = <1>;
-+
-+							dmic2_dap: endpoint {
-+								/* placeholder for external codec */
-+							};
-+						};
-+					};
- 				};
+ 	thermal-zones {
+ 		tj-thermal {
+ 			polling-delay = <1000>;
+diff --git a/arch/arm64/boot/dts/nvidia/tegra234-p3768-0000+p3767-0000.dts b/arch/arm64/boot/dts/nvidia/tegra234-p3768-0000+p3767-0000.dts
+index 61b0e69d3d20..4c75dc940e99 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra234-p3768-0000+p3767-0000.dts
++++ b/arch/arm64/boot/dts/nvidia/tegra234-p3768-0000+p3767-0000.dts
+@@ -37,7 +37,6 @@ pwm@32a0000 {
  
- 				tegra_dmic3: dmic@2904200 {
-@@ -960,6 +1046,27 @@ tegra_dmic4: dmic@2904300 {
- 					assigned-clock-rates = <3072000>;
- 					sound-name-prefix = "DMIC4";
- 					status = "disabled";
-+
-+					ports {
-+						#address-cells = <1>;
-+						#size-cells = <0>;
-+
-+						port@0 {
-+							reg = <0>;
-+
-+							dmic4_cif: endpoint {
-+								remote-endpoint = <&xbar_dmic4>;
-+							};
-+						};
-+
-+						dmic4_port: port@1 {
-+							reg = <1>;
-+
-+							dmic4_dap: endpoint {
-+								/* placeholder for external codec */
-+							};
-+						};
-+					};
- 				};
+ 		hda@3510000 {
+ 			nvidia,model = "NVIDIA Jetson Orin NX HDA";
+-			status = "okay";
+ 		};
  
- 				tegra_dspk1: dspk@2905000 {
-@@ -973,6 +1080,27 @@ tegra_dspk1: dspk@2905000 {
- 					assigned-clock-rates = <12288000>;
- 					sound-name-prefix = "DSPK1";
- 					status = "disabled";
-+
-+					ports {
-+						#address-cells = <1>;
-+						#size-cells = <0>;
-+
-+						port@0 {
-+							reg = <0>;
-+
-+							dspk1_cif: endpoint {
-+								remote-endpoint = <&xbar_dspk1>;
-+							};
-+						};
-+
-+						dspk1_port: port@1 {
-+							reg = <1>;
-+
-+							dspk1_dap: endpoint {
-+								/* placeholder for external codec */
-+							};
-+						};
-+					};
- 				};
+ 		padctl@3520000 {
+@@ -85,6 +84,10 @@ vdd_3v3_pcie: regulator-vdd-3v3-pcie {
+ 		enable-active-high;
+ 	};
  
- 				tegra_dspk2: dspk@2905100 {
-@@ -986,6 +1114,27 @@ tegra_dspk2: dspk@2905100 {
- 					assigned-clock-rates = <12288000>;
- 					sound-name-prefix = "DSPK2";
- 					status = "disabled";
++	sound {
++		label = "NVIDIA Jetson Orin NX APE";
++	};
 +
-+					ports {
-+						#address-cells = <1>;
-+						#size-cells = <0>;
-+
-+						port@0 {
-+							reg = <0>;
-+
-+							dspk2_cif: endpoint {
-+								remote-endpoint = <&xbar_dspk2>;
-+							};
-+						};
-+
-+						dspk2_port: port@1 {
-+							reg = <1>;
-+
-+							dspk2_dap: endpoint {
-+								/* placeholder for external codec */
-+							};
-+						};
-+					};
- 				};
+ 	thermal-zones {
+ 		tj-thermal {
+ 			cooling-maps {
+diff --git a/arch/arm64/boot/dts/nvidia/tegra234-p3768-0000+p3767-0005.dts b/arch/arm64/boot/dts/nvidia/tegra234-p3768-0000+p3767-0005.dts
+index 9e9bb9ca8be4..ba949203eba0 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra234-p3768-0000+p3767-0005.dts
++++ b/arch/arm64/boot/dts/nvidia/tegra234-p3768-0000+p3767-0005.dts
+@@ -11,10 +11,20 @@ / {
+ 	compatible = "nvidia,p3768-0000+p3767-0005", "nvidia,p3767-0005", "nvidia,tegra234";
+ 	model = "NVIDIA Jetson Orin Nano Developer Kit";
  
- 				tegra_ope1: processing-engine@2908000 {
-@@ -1746,6 +1895,14 @@ xbar_i2s2: endpoint {
- 						};
- 					};
++	bus@0 {
++		hda@3510000 {
++			nvidia,model = "NVIDIA Jetson Orin Nano HDA";
++		};
++	};
++
+ 	pwm-fan {
+ 		cooling-levels = <0 88 187 255>;
+ 	};
  
-+					xbar_i2s3_port: port@16 {
-+						reg = <0x16>;
++	sound {
++		label = "NVIDIA Jetson Orin Nano APE";
++	};
 +
-+						xbar_i2s3: endpoint {
-+							remote-endpoint = <&i2s3_cif>;
-+						};
-+					};
-+
- 					xbar_i2s4_port: port@17 {
- 						reg = <0x17>;
- 
-@@ -1754,6 +1911,14 @@ xbar_i2s4: endpoint {
- 						};
- 					};
- 
-+					xbar_i2s5_port: port@18 {
-+						reg = <0x18>;
-+
-+						xbar_i2s5: endpoint {
-+							remote-endpoint = <&i2s5_cif>;
-+						};
-+					};
-+
- 					xbar_i2s6_port: port@19 {
- 						reg = <0x19>;
- 
-@@ -1762,6 +1927,22 @@ xbar_i2s6: endpoint {
- 						};
- 					};
- 
-+					xbar_dmic1_port: port@1a {
-+						reg = <0x1a>;
-+
-+						xbar_dmic1: endpoint {
-+							remote-endpoint = <&dmic1_cif>;
-+						};
-+					};
-+
-+					xbar_dmic2_port: port@1b {
-+						reg = <0x1b>;
-+
-+						xbar_dmic2: endpoint {
-+							remote-endpoint = <&dmic2_cif>;
-+						};
-+					};
-+
- 					xbar_dmic3_port: port@1c {
- 						reg = <0x1c>;
- 
-@@ -1770,6 +1951,30 @@ xbar_dmic3: endpoint {
- 						};
- 					};
- 
-+					xbar_dmic4_port: port@1d {
-+						reg = <0x1d>;
-+
-+						xbar_dmic4: endpoint {
-+							remote-endpoint = <&dmic4_cif>;
-+						};
-+					};
-+
-+					xbar_dspk1_port: port@1e {
-+						reg = <0x1e>;
-+
-+						xbar_dspk1: endpoint {
-+							remote-endpoint = <&dspk1_cif>;
-+						};
-+					};
-+
-+					xbar_dspk2_port: port@1f {
-+						reg = <0x1f>;
-+
-+						xbar_dspk2: endpoint {
-+							remote-endpoint = <&dspk2_cif>;
-+						};
-+					};
-+
- 					xbar_sfc1_in_port: port@20 {
- 						reg = <0x20>;
- 
+ 	thermal-zones {
+ 		tj-thermal {
+ 			cooling-maps {
 -- 
 2.34.1
 
