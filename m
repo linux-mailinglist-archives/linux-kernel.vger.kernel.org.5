@@ -1,150 +1,196 @@
-Return-Path: <linux-kernel+bounces-56228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9D9084C79E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:39:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F155D84C7A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:39:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F96028C511
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:39:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3035F1C24E94
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:39:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2145822EE8;
-	Wed,  7 Feb 2024 09:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ECA925619;
+	Wed,  7 Feb 2024 09:35:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mp2Qgq4l"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="AmMg+ImI"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBDDB22330
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:35:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B045825561
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707298514; cv=none; b=GGHjfXuzjkym9H1mN2yKhjVFdH2wtiWFzCYl7VYz9Gbr0OmTh/cS/QdrFI2i+yEgL5tE/epuGLA2sQlWRuEPMXKBplw00sv578FiikD3FyuR306i1iz23QycLT9Nl2G5/UcqKuRlzmEPlferRZLpzql5MiyB9VjR2Q8T9fLOmaE=
+	t=1707298517; cv=none; b=UcGoDasAM8mShZZnYiBx4qpJDdjKV6Nb/9+VSAC0SkW82U28K/Mawvic9ZBctJ0NWq1TZX3nxgSZ8oTxnePrnYPxrILLyPNLQ+XNwFDb16a5iaC3+PUGMOTKuMZBQR1Rtc5BT0zKhuDyeqaGmOcovJu/S6F/EdBH+I/wEupLl54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707298514; c=relaxed/simple;
-	bh=XjpRzdoTfjP3OQt5mqE+y9WThcPznmjyICcveK2XvE0=;
+	s=arc-20240116; t=1707298517; c=relaxed/simple;
+	bh=q5s5HsLedbmhWblfW5P5IttEtCuzggKcPzjW3KKyicw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i8iu3FE3j71SdUBgJYTBfOyRCo4LO0k/eiI0vdtUSKq8YcmaXvSghkBzCicnulPavXFpncykJllIjyiJ5lV3pd3iQgA7Qzq/fzRtes+A/ehPrAhKR8TYUrn+Brrh4m5KoAjJ3PUss05afSRsKtQRd0sorgwmcIevhrqm8yiIXtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=mp2Qgq4l; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e04e7b687bso248219b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:35:12 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=FT4zUOnTu+8y6rATiLlI8YlWeiJyRavyj3XQ7sygszqsIX7HO6yhg7qnktgd5RGn0V0kOvaIGCftHeTwnUhM9lLSAKAtyzxzkzxieCps+8DKJZdCs80KvaFGlEunX51p4C+2q9PA34qjq9cQMSNlE1vW9xegB1jK3JIQFatXXtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=AmMg+ImI; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55a035669d5so488838a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:35:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707298512; x=1707903312; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707298514; x=1707903314; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lnzs6TPIgp3HqVBCfdcD7KxhniQZ5JYkJZ6YNmMCISs=;
-        b=mp2Qgq4ltvOvC+3iDb//06CICpkJJTdcqCM/FvZ9jpuxIfYxLsgSc+5uQB5yBtVFf5
-         tno0XYnwDiAuOkPzh0FnLztgL08ONAC6rPWoI1frOFzyJX3kKDOBog9xOtelb7Mydo/C
-         99r0VR8uMuIRQUG0X7ebItltvEoZXB/8mvB6g=
+        bh=5lVUQ+esox3+YZ4FAL/zC0DsXpMXIO/eYNjqHysD3mw=;
+        b=AmMg+ImIMR2rtLUVya0MMt2pI8rGkA13axJeo/bVoNVxjRk7GLS0pEGP3j6UpxohFy
+         lK7W6DrBxP42CgBnlXfXj+pojDo3WLSflyEnEgOMCz4EqMZnNGPiXi+FFTw4QtRS5cys
+         hVvzpo+wtWsnuSMEm7Oejx0A6WI6asPyUIrpJ1gh8WxM1K/mWwqsSuCTcB+KND5YLQBM
+         87Qv/14EMs1lV5yploiKlzGWMQJSrJ0H/QhZS9SbFjCeNFGx5NYcOnkEJo9NZtUL1ZoJ
+         MBqoQjIz4ivwNb5vi7Jo5NyUNscqB4wJViyNWh16kvN4Pk9gOMaakAwNSE5zT0BhzZ9J
+         ZthQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707298512; x=1707903312;
+        d=1e100.net; s=20230601; t=1707298514; x=1707903314;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Lnzs6TPIgp3HqVBCfdcD7KxhniQZ5JYkJZ6YNmMCISs=;
-        b=Y5TO1n3sWblLPSod9t9OV0PovE4OmY33diQ4W45rVDxg2vJ6+p3K2Rp2B2eTrZYcua
-         iHpBimICdv2kdrxbXOyEUdRCXq3NlZ+fQame0wJK2STUwJfJoF0M5G0ETCFa3e/xF4o7
-         Ib/fyPuv1/jjlytYsQhUxZRsgwKW+9rA2EzRL4t725RaEMv4f4MJiCxxRG2/tLRcn8Sq
-         Mdkqovd8vLFU/UZiX05UmCAj2wi/zB1+WEJ/vikLhbPBq8+05ZjCdiQeYUX1GqBEjSDz
-         2qL2Ui6lvVgPoG5PrHtGqgq+WBp39l969dbTi4AjKbVZnNTR2DxLpnx5sM0a6LdWJpnS
-         IY1g==
-X-Gm-Message-State: AOJu0YzTmE9nYB7ESAOvndXvOjoR8hMAORnamRoKL1a2w1gBTgWut1WA
-	kr9gL7aaQ6FrOVwz5aulYZajOkUR+SXyi7WJEYnrGYvrPArBPciZs+Bs3ef58Q==
-X-Google-Smtp-Source: AGHT+IEkEilvjof7TiSRF97ozyPZg+g25k745KHQmjN0ECt8d5Z5zPMmfEBaBMrEFYqdYbnRc0Guyw==
-X-Received: by 2002:a05:6a21:2d0a:b0:19e:9f2d:9814 with SMTP id tw10-20020a056a212d0a00b0019e9f2d9814mr2957878pzb.39.1707298512206;
-        Wed, 07 Feb 2024 01:35:12 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW5fXL+oPKiDobv+fb/lHAozLsmX7lK/yZb08Gn9bfd2pAuX+sot8hH0/znY26GmybtpE91R7S10ham8tIjbvT1yzWzIltOtz9zURXpQfQdTaE1E3KqHTrF09ABSgIuq0yFEQl64KuyMPyNH/jxEAHaxCQMHFIee4Xmv5J4t7pF3zNF4a+0BAK2U4cNEgS7yp3wyHkdL4RB5IHEjtQgFv/ZpNPqO6EsfmNDgg7Od/DVl15J6Zyzub1pYZo82EFL06rfZnoTQfAFC2nPbLRJEoxM3WP+9Q05oKwtFwnJ
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id lb6-20020a170902fa4600b001d95407f6f5sm986587plb.48.2024.02.07.01.35.11
+        bh=5lVUQ+esox3+YZ4FAL/zC0DsXpMXIO/eYNjqHysD3mw=;
+        b=TAID9KZnberaI016DxJ0pleNsCC1RdMLshwIUOxOFXKufL8yRfq2i6DVDBguwQ3Dv7
+         mg3pkJ6WLp/2j4w9F0deEXT7+IG3RvXJ16U9rcE7U8IjYbBVdu3rFhWamconreCziaYT
+         0lubo289cr16M1ckG0hCSDnxe5wW4jgHyXYRUYH/Jv3JSLuXG5h+ZOGEQpnJywpH5G9k
+         ndIFCj2AFumZjbU0ysQcgWqFVVIc+pSOQucUQ0nPA+TxjwB99G0DPGf9S0WW/oGivUuo
+         JbCO4miAI21EreHPn7hB+JRDFRdp3QG9Gyy35b9GWmXdZHOoGtqvt2k+6IsBTuszogm7
+         9Rrg==
+X-Gm-Message-State: AOJu0Yyku2u/UkaMabMWTlL32ZrRbJwRk0lN/zZv7aQyIlZl7O91Fbro
+	WycypIhTJqld+21VEIbW2AOr/HQk4brKbkoERNaCAYDWUZczMvzABRIcvce+JuU=
+X-Google-Smtp-Source: AGHT+IFtkf4VPj6Dgd7y1ZrX0bJMTHriq6dSY8L3xS8rwsKRyJe3YFW+KuqICG1BHJW9Ew1QCMXU5w==
+X-Received: by 2002:aa7:cfd4:0:b0:55f:d90a:e68b with SMTP id r20-20020aa7cfd4000000b0055fd90ae68bmr3334578edy.20.1707298514040;
+        Wed, 07 Feb 2024 01:35:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUhmgTRPKEhVfGCCnkEQ42yYuTwdQJYl26xBRkdKw29eqoP001lXQsIHYUgOQ9qjLnnteyobOoMRvqN4Nl29ukI/AEBoNKWEa51A6KTBURKq6ahfunIDhDG7poEbZNcYTd9FGsS7NCtUpzWntWqKXRmru0qKsNccypFQFLaeQ6cwR/1U1Ra3kDu4GiufpM3sD4MqL+pnpGrWdrOqBO6+tR5Yj9BFD+mu3q+osq12fIQHlaqkZWg+RD4ETwe9suNk1FmVp7QlJsUT1DdUj44I3iw7SzzQCmYavJIbjOtAKGUYvWhviui8WH6MtaqaHaRKAsInUeuodwHVlOr518mlz9XdDnAfQf8AoJxYTJQdX9RI4zoxysjSYdYSE3RTaBWa5Ezt7yXNwXJDmmoKG4KdZC273ojpT8BQofy
+Received: from blmsp ([2001:4091:a246:821e:6f3b:6b50:4762:8343])
+        by smtp.gmail.com with ESMTPSA id q15-20020aa7d44f000000b0055ef4a779d9sm477495edr.34.2024.02.07.01.35.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 01:35:11 -0800 (PST)
-Date: Wed, 7 Feb 2024 01:35:10 -0800
-From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-	Marco Elver <elver@google.com>, Eric Biggers <ebiggers@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-hardening@vger.kernel.org,
-	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] overflow: Introduce wrapping_add(),
- wrapping_sub(), and wrapping_mul()
-Message-ID: <202402070134.53727173F@keescook>
-References: <20240206102354.make.081-kees@kernel.org>
- <20240206103201.2013060-2-keescook@chromium.org>
- <4bde6e72-c7f6-434d-9489-3a0de7804b18@embeddedor.com>
+        Wed, 07 Feb 2024 01:35:13 -0800 (PST)
+Date: Wed, 7 Feb 2024 10:35:12 +0100
+From: Markus Schneider-Pargmann <msp@baylibre.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+	Chandrasekar Ramakrishnan <rcsekar@samsung.com>, Wolfgang Grandegger <wg@grandegger.com>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Tony Lindgren <tony@atomide.com>, Judith Mendez <jm@ti.com>
+Cc: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>, 
+	Simon Horman <horms@kernel.org>, linux-can@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Julien Panis <jpanis@baylibre.com>
+Subject: Re: [PATCH 00/14] can: m_can: Optimizations for m_can/tcan part 2
+Message-ID: <3rdpfjzahlcdxxszezxrk7vwvgwzpxxgsct32ydinki2xzbxz7@z2suuxtjnwjb>
+References: <20240207093220.2681425-1-msp@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4bde6e72-c7f6-434d-9489-3a0de7804b18@embeddedor.com>
+In-Reply-To: <20240207093220.2681425-1-msp@baylibre.com>
 
-On Tue, Feb 06, 2024 at 10:54:06AM -0600, Gustavo A. R. Silva wrote:
+Sorry, this is of course v7, forgot to add --reroll-count.
+
+Best,
+Markus
+
+On Wed, Feb 07, 2024 at 10:32:06AM +0100, Markus Schneider-Pargmann wrote:
+> Hi Marc, Simon, Martin and everyone,
 > 
+> v7 is a rebase on v6.8. During my am62 tests I discovered some problems
+> which are fixed with this update.
 > 
-> On 2/6/24 04:31, Kees Cook wrote:
-> > Provide helpers that will perform wrapping addition, subtraction, or
-> > multiplication without tripping the arithmetic wrap-around sanitizers. The
-> > first argument is the type under which the wrap-around should happen
-> > with. In other words, these two calls will get very different results:
-> > 
-> > 	wrapping_mul(int, 50, 50) == 2500
-> > 	wrapping_mul(u8,  50, 50) ==  196
-> > 
-> > Add to the selftests to validate behavior and lack of side-effects.
-> > 
-> > Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-> > Cc: Marco Elver <elver@google.com>
-> > Cc: Eric Biggers <ebiggers@kernel.org>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: linux-hardening@vger.kernel.org
-> > Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >   include/linux/overflow.h | 54 ++++++++++++++++++++++++++++++++++++++++
-> >   lib/overflow_kunit.c     | 24 +++++++++++++++---
-> >   2 files changed, 74 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-> > index 4e741ebb8005..429c4d61a940 100644
-> > --- a/include/linux/overflow.h
-> > +++ b/include/linux/overflow.h
-> > @@ -64,6 +64,24 @@ static inline bool __must_check __must_check_overflow(bool overflow)
-> >   #define check_add_overflow(a, b, d)	\
-> >   	__must_check_overflow(__builtin_add_overflow(a, b, d))
-> > +/**
-> > + * wrapping_add() - Intentionally perform a wrapping addition
-> > + * @type: type for result of calculation
-> > + * @a: first addend
-> > + * @b: second addend
-> > + *
-> > + * Return the potentially wrapped-around addition without
-> > + * tripping any wrap-around sanitizers that may be enabled.
-> > + */
-> > +#define wrapping_add(type, a, b)				\
-> > +	({							\
-> > +		type __val;					\
-> > +		if (__builtin_add_overflow(a, b, &__val)) {	\
-> > +			/* do nothing */			\
-> > +		}						\
-> > +		__val;						\
+> @Simon: I had to remove most of your reviews again, due to a few
+> fixes I made.
 > 
-> mmh... now that __builtin_*_overflow() is directly used, I guess
-> we don't need to _check_ for overflow anymore.
-
-/me slaps his forehead
-
-Yes indeed! I will adjust it.
-
--- 
-Kees Cook
+> The series implements many small and bigger throughput improvements and
+> adds rx/tx coalescing at the end.
+> 
+> Based on v6.8-rc1. Also available at
+> https://gitlab.baylibre.com/msp8/linux/-/tree/topic/mcan-optimization/v6.8?ref_type=heads
+> 
+> Best,
+> Markus
+> 
+> Changes in v7:
+> - Rebased to v6.8-rc1
+> - Fixed NULL pointer dereference in m_can_clean() on am62 that happened
+>   when doing ip link up, ip link down, ip link up
+> - Fixed a racecondition on am62 observed with high throughput tests.
+>   netdev_completed_queue() was called before netdev_sent_queue() as the
+>   interrupt was processed so fast. netdev_sent_queue() is now reported
+>   before the actual sent is done.
+> - Fixed an initializing issue on am62 where active interrupts are
+>   getting lost between runs. Fixed by resetting cdev->active_interrupts
+>   in m_can_disable_all_interrupts()
+> - Removed m_can_start_fast_xmit() because of a reordering of operations
+>   due to above mentioned racecondition
+> 
+> Changes in v6:
+> - Rebased to v6.6-rc2
+> - Added two small changes for the newly integrated polling feature
+> - Reuse the polling hrtimer for coalescing as the timer used for
+>   coalescing has a similar purpose as the one for polling. Also polling
+>   and coalescing will never be active at the same time.
+> 
+> Changes in v5:
+> - Add back parenthesis in m_can_set_coalesce(). This will make
+>   checkpatch unhappy but gcc happy.
+> - Remove unused fifo_header variable in m_can_tx_handler().
+> - Rebased to v6.5-rc1
+> 
+> Changes in v4:
+> - Create and use struct m_can_fifo_element in m_can_tx_handler
+> - Fix memcpy_and_pad to copy the full buffer
+> - Fixed a few checkpatch warnings
+> - Change putidx to be unsigned
+> - Print hard_xmit error only once when TX FIFO is full
+> 
+> Changes in v3:
+> - Remove parenthesis in error messages
+> - Use memcpy_and_pad for buffer copy in 'can: m_can: Write transmit
+>   header and data in one transaction'.
+> - Replace spin_lock with spin_lock_irqsave. I got a report of a
+>   interrupt that was calling start_xmit just after the netqueue was
+>   woken up before the locked region was exited. spin_lock_irqsave should
+>   fix this. I attached the full stack at the end of the mail if someone
+>   wants to know.
+> - Rebased to v6.3-rc1.
+> - Removed tcan4x5x patches from this series.
+> 
+> Changes in v2:
+> - Rebased on v6.2-rc5
+> - Fixed missing/broken accounting for non peripheral m_can devices.
+> 
+> previous versions:
+> v1 - https://lore.kernel.org/lkml/20221221152537.751564-1-msp@baylibre.com
+> v2 - https://lore.kernel.org/lkml/20230125195059.630377-1-msp@baylibre.com
+> v3 - https://lore.kernel.org/lkml/20230315110546.2518305-1-msp@baylibre.com/
+> v4 - https://lore.kernel.org/lkml/20230621092350.3130866-1-msp@baylibre.com/
+> v5 - https://lore.kernel.org/lkml/20230718075708.958094-1-msp@baylibre.com
+> v6 - https://lore.kernel.org/lkml/20230929141304.3934380-1-msp@baylibre.com
+> 
+> Markus Schneider-Pargmann (14):
+>   can: m_can: Start/Cancel polling timer together with interrupts
+>   can: m_can: Move hrtimer init to m_can_class_register
+>   can: m_can: Write transmit header and data in one transaction
+>   can: m_can: Implement receive coalescing
+>   can: m_can: Implement transmit coalescing
+>   can: m_can: Add rx coalescing ethtool support
+>   can: m_can: Add tx coalescing ethtool support
+>   can: m_can: Use u32 for putidx
+>   can: m_can: Cache tx putidx
+>   can: m_can: Use the workqueue as queue
+>   can: m_can: Introduce a tx_fifo_in_flight counter
+>   can: m_can: Use tx_fifo_in_flight for netif_queue control
+>   can: m_can: Implement BQL
+>   can: m_can: Implement transmit submission coalescing
+> 
+>  drivers/net/can/m_can/m_can.c          | 551 ++++++++++++++++++-------
+>  drivers/net/can/m_can/m_can.h          |  34 +-
+>  drivers/net/can/m_can/m_can_platform.c |   4 -
+>  3 files changed, 439 insertions(+), 150 deletions(-)
+> 
+> -- 
+> 2.43.0
+> 
 
