@@ -1,57 +1,63 @@
-Return-Path: <linux-kernel+bounces-57074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DA8784D3C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:24:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78C9084D3C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:24:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 524BF1F2218E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:24:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07BFAB21605
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:24:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B0212F38B;
-	Wed,  7 Feb 2024 21:21:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C7212880D;
+	Wed,  7 Feb 2024 21:22:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EgnVeJYJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HHKw68Ft"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2129C12F5B3;
-	Wed,  7 Feb 2024 21:21:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D240213247A;
+	Wed,  7 Feb 2024 21:22:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707340919; cv=none; b=p7cONrbI+k1eg7y5PLrtMh1/QTyJlSTswYUXs3GBryuJkBUkgrGZbSiW0OOzqhmuHYpx/nOkrHHy4NvQP+nnIklgUrJr5QuAPU62EDR0kkTiCkdM4GWMeK7URRk6hlmMLptpV7yRcR+6C3KrUAKPQ4JC/nNri6W0N7r8XGNhgm4=
+	t=1707340921; cv=none; b=Kj0ldkZt5dUShx1PCz1TSs9KBYj8c3i+O3m4SoHeZoJo7CVUifv05yJIWnrbM/O8ejustxPWtKta8+UdhyQoGgTKqPLIDyh3n0cvVTyqKYu1RvL+LXGDvfoZX1s2K4nk8kKf3ogzCQQHoUY46K9BzNNHN8fGiA0Mma/Z7WLNPRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707340919; c=relaxed/simple;
-	bh=T4dKGluWwNhVczRT6Xa4bYlNUXP1O8lVxoA6WzByoTw=;
+	s=arc-20240116; t=1707340921; c=relaxed/simple;
+	bh=/5nl6Iew2ZZ6v34fHncyB6p62geweUKDTTaTWheOpiY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UmWIn7KSDJ+l4yLl5o7EMqV9vGMyuBjxmlOyxYMtxt91xw3aa5n+RUscue0rvgiTpImaAvlmfJBb6RFf/3DDD5Rg+GmeZM5znWhWx/3FX0/J+gquJfmz63C8zWMYw8zKOao6x2M0cPVwGDt9i5tEO3QEYziXoLbRYsjc7bgOHU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EgnVeJYJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBF55C43394;
-	Wed,  7 Feb 2024 21:21:57 +0000 (UTC)
+	 MIME-Version:Content-Type; b=YvPaNlG7jTeH/kCfaWLr6qoqaBN9K+HzfL+4Rs+6GfZE22kmBIIOqUIK9r2r1Pl3VJwpnVpCL0X20/CksyhNMEY2/jrXRedOU02Qtd+BIqoDXWr1j4a2NZ8HEAdG4N9xd0nSGmGLmwmBqvfqdhzhzww+9ZBllL4wqhAZJLQdSbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HHKw68Ft; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07B2AC433F1;
+	Wed,  7 Feb 2024 21:21:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707340919;
-	bh=T4dKGluWwNhVczRT6Xa4bYlNUXP1O8lVxoA6WzByoTw=;
+	s=k20201202; t=1707340921;
+	bh=/5nl6Iew2ZZ6v34fHncyB6p62geweUKDTTaTWheOpiY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EgnVeJYJhVh9FBY7IBFt70pILKFr1aCutoTrM43EeolfoYR6+rEgBdCJ1GZ6IbtfA
-	 UDw+JULdq3sGkiSUCxzi+Zz4wIRXbqkXoa/mIjJv1FaoOgk+SOmRv2o7wVJZkpkFjP
-	 RmpH51IK04W6XU9iL6Vr+RSq9a5pgPX+WDHMazGrsCCou1TaJwVoSwDcm8WPKmHqdO
-	 Eqa0PIShMSrqdolGqdvqLJ/EHe5j24oIK8NyV0AERP+XluGQcMJwLU0N20xN+Sk1YB
-	 jLbaHNrQhO3S/+0oGn3Fvrj9RID5nCIa1aerzBxmaRpx5xL/HHGvFeyLUe9t8rvUru
-	 0lo0G4K+PtPmQ==
+	b=HHKw68FtSJqJLTHXAGHI5G+UBSKzt0+G+TyqzjTU66xdoIHfxfKgxO09h8Xxp6bsq
+	 AXSF1eNkZGCIfOk5F9kdkh8jXT/KVdHXeh9yP/6x7HizHTSkfH+ebkD3eQwSwxFNCx
+	 QHvRmrJOaatI6NkPGw8WaGWE4A4Bd6p3RyfDM6XyQUwiaDMOC7CJEdXBZTaZ6LRMNQ
+	 PEMXLl0MkqXoC+roQlgo/vwKIXe5aQnRr3B7V6kstNaaFINiKBLiVxhq85IaBfdL61
+	 eaLQFpwjHo5Cm6vRiOHftj29+/H5UkOolG9rZdcUY9+gQkN/f/SOsdMT0Rbt6sPCas
+	 +KrIBaUNmYxag==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jiri Kosina <jkosina@suse.com>,
-	=?UTF-8?q?Marcus=20R=C3=BCckert?= <darix@opensu.se>,
+Cc: Rui Salvaterra <rsalvaterra@gmail.com>,
+	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	jikos@kernel.org,
-	benjamin.tissoires@redhat.com,
-	linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 09/44] HID: logitech-hidpp: add support for Logitech G Pro X Superlight 2
-Date: Wed,  7 Feb 2024 16:20:36 -0500
-Message-ID: <20240207212142.1399-9-sashal@kernel.org>
+	perex@perex.cz,
+	tiwai@suse.com,
+	pierre-louis.bossart@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
+	maarten.lankhorst@linux.intel.com,
+	siyanteng@loongson.cn,
+	jasontao@glenfly.com,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 10/44] ALSA: hda: Replace numeric device IDs with constant values
+Date: Wed,  7 Feb 2024 16:20:37 -0500
+Message-ID: <20240207212142.1399-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212142.1399-1-sashal@kernel.org>
 References: <20240207212142.1399-1-sashal@kernel.org>
@@ -67,32 +73,37 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.4
 Content-Transfer-Encoding: 8bit
 
-From: Jiri Kosina <jkosina@suse.com>
+From: Rui Salvaterra <rsalvaterra@gmail.com>
 
-[ Upstream commit afa6ac2690bb9904ff883c6e942281e1032a484d ]
+[ Upstream commit 3526860f26febbe46960f9b37f5dbd5ccc109ea8 ]
 
-Let logitech-hidpp driver claim Logitech G Pro X Superlight 2.
+We have self-explanatory constants for Intel HDA devices, let's use them instead
+of magic numbers and code comments.
 
-Reported-by: Marcus Rückert <darix@opensu.se>
-Signed-off-by: Jiri Kosina <jkosina@suse.com>
+Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
+Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Link: https://lore.kernel.org/r/20240122114512.55808-2-rsalvaterra@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-logitech-hidpp.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/hda_intel.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
-index fd6d8f1d9b8f..6ef0c88e3e60 100644
---- a/drivers/hid/hid-logitech-hidpp.c
-+++ b/drivers/hid/hid-logitech-hidpp.c
-@@ -4610,6 +4610,8 @@ static const struct hid_device_id hidpp_devices[] = {
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC088) },
- 	{ /* Logitech G Pro X Superlight Gaming Mouse over USB */
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC094) },
-+	{ /* Logitech G Pro X Superlight 2 Gaming Mouse over USB */
-+	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC09b) },
- 
- 	{ /* G935 Gaming Headset */
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0x0a87),
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 2d1df3654424..98b162c8eab6 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1729,8 +1729,8 @@ static int default_bdl_pos_adj(struct azx *chip)
+ 	/* some exceptions: Atoms seem problematic with value 1 */
+ 	if (chip->pci->vendor == PCI_VENDOR_ID_INTEL) {
+ 		switch (chip->pci->device) {
+-		case 0x0f04: /* Baytrail */
+-		case 0x2284: /* Braswell */
++		case PCI_DEVICE_ID_INTEL_HDA_BYT:
++		case PCI_DEVICE_ID_INTEL_HDA_BSW:
+ 			return 32;
+ 		}
+ 	}
 -- 
 2.43.0
 
