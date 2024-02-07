@@ -1,58 +1,59 @@
-Return-Path: <linux-kernel+bounces-56244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DEC284C7D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:46:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8B1284C7CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:46:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E33831F2ABDC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:46:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B122282D80
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:46:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5E523748;
-	Wed,  7 Feb 2024 09:46:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9729C23741;
+	Wed,  7 Feb 2024 09:46:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G7aCWeJJ"
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W+OpaAY4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC49224F5
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BE0224CC;
+	Wed,  7 Feb 2024 09:46:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707299176; cv=none; b=JpRepl5F/SX3aacZsFZiXYLmSJFZTMnA/AM3uqUH/hv8shLPpV0EGzqV9qXWfcAr9MgJksCgBTZFuU1NChWpjU9lXprvQNb3BDrdiwyHu/STjChn3EDVPYqFXgfMFq5XEecEXH95Y/D7j2qHOC10b13gZ4SD2HEssXXkI56EZfw=
+	t=1707299173; cv=none; b=HyvTI10p8b5WOstY+Xrpj3Kx5LKm1OPMubIxfGC1qy5dTHDz2loPqo+e33P0lhtFXAzU7m759nRx8E5Js10/y0iWcvR8j6ffQFIri19GtdzZqg/KBDZTueJ8rYTtNXqquhKkWVBM6ojwery+4R2aBeikWbU7GPhVqJQr+piQdNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707299176; c=relaxed/simple;
-	bh=8pC5J/DPGDYSm7eVYO0ax2DxRputXMPsGsVLNt9KW2A=;
+	s=arc-20240116; t=1707299173; c=relaxed/simple;
+	bh=hkrf29qHJozatNFewJsMGAqd91LzfIcTuGK9E1t1LtI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bVXUkzFaZnWFXukF5I5xW4cHDKNMFYihW/8e+Wuzm1aXvETcXygZhNDnXkersZGT9Eb4nN1y9qje/k3dG/OL0N1CVlXRNaiYRhlUfn0Uo54V/LpboEqQfw6XjljpBQAuiTPT5J0RhoTXotFXnxW86Jnr37DwsO+pQAWlUmHF6GM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G7aCWeJJ; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 7 Feb 2024 09:45:59 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707299172;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BbyM0TxgwW7NxbPK8YYz+FX1qkBRa9X6fI99XFXXJRM=;
-	b=G7aCWeJJUhuhyNkWBRZ9UM7qlDYraFHLUrbdbVEE0wOk8mLC6yo3/1GVntJvr+NUewQ9en
-	9MgAR7WrDBTD6ftSPhs/OCIsWK+SigLahE1gyASEjrHsxvXac7YkxTWVfKoAjlSjWuEADl
-	ny0eRVGG9xoovzWOU8BYc/VxoZz4t+w=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
-Cc: kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, maz@kernel.org, catalin.marinas@arm.com,
-	will@kernel.org, suzuki.poulose@arm.com, james.morse@arm.com,
-	corbet@lwn.net, boris.ostrovsky@oracle.com,
-	darren@os.amperecomputing.com, d.scott.phillips@amperecomputing.com
-Subject: Re: [PATCH] arm64: errata: Minimize tlb flush due to vttbr writes on
- AmpereOne
-Message-ID: <ZcNRV-lMiNgE0_jv@linux.dev>
-References: <20240207090458.463021-1-gankulkarni@os.amperecomputing.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gskgXwy990quUu91Z5VrI3qqUlzbTn5xuTWuy+sdFFGQdJdWDnA8fT0CEaTylqzgZbu+6p8bintpBu4NUc1vrVMDSMJAmELMYEd6iMhcq5HAsIUz+36E//apaSpm83Sg52MyMSENdaW7/zLxvbIjrY4uTzc+RL81Zo5I3D/d/ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W+OpaAY4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4457CC433C7;
+	Wed,  7 Feb 2024 09:46:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707299173;
+	bh=hkrf29qHJozatNFewJsMGAqd91LzfIcTuGK9E1t1LtI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=W+OpaAY4HT4KwIzZQl8KtgYFQiSKDgvJH5Z8iTfZHwDywdRqNtQgDAl1NRhx57Rrf
+	 wWMvDfmwVdEWa2BfaVK8o9bh9F0LPOHFxar91VFDB2oG4Vd6KePKtqdfHvDayK0L1m
+	 LFT0Hxc38QuIQmkjmjqqQe9ygWc/8BZmmdT39Yl74oi8e1JTjYfQIXcw/UBOTMrDKZ
+	 4r80d3LYaQQitMU8/E66IfRD6qTPwa3RU0rr1P2X6PEY0bYPECMv1JcZXttLgYUl+M
+	 0hh9o/H7lOzqeq0oa0XvDDbx6MOo6LPom4lhhBtFMsOegHFhiSRNajAzRVYBhHcKQq
+	 ay5kPd7s5tbJw==
+Date: Wed, 7 Feb 2024 09:46:09 +0000
+From: Simon Horman <horms@kernel.org>
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: Manish Chopra <manishc@marvell.com>, Rahul Verma <rahulv@marvell.com>,
+	GR-Linux-NIC-Dev@marvell.com,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] netxen_nic: remove redundant assignment to
+ variable capability
+Message-ID: <20240207094609.GN1104779@kernel.org>
+References: <20240206115049.1879389-1-colin.i.king@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,36 +62,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240207090458.463021-1-gankulkarni@os.amperecomputing.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240206115049.1879389-1-colin.i.king@gmail.com>
 
-On Wed, Feb 07, 2024 at 01:04:58AM -0800, Ganapatrao Kulkarni wrote:
-> AmpereOne implementation is doing tlb flush when ever there is
-> a write to vttbr_el2. As per KVM implementation, vttbr_el2 is updated
-> with VM's S2-MMU while return to VM. This is not necessary when there
-> is no VM context switch and a just return to same Guest.
+On Tue, Feb 06, 2024 at 11:50:49AM +0000, Colin Ian King wrote:
+> The variable capability is being assigned a value that is never
+> read and is being re-assigned later. The assignment is redundant and
+> can be removed. Also remove empty line before assignment to capability.
 > 
-> Adding a check to avoid the vttbr_el2 write if the same value
-> already exist to prevent needless tlb flush.
+> Cleans up clang scan build warning:
+> drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c:1189:2: warning:
+> Value stored to 'capability' is never read [deadcode.DeadStores]
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>  drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c b/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
+> index 35ec9aab3dc7..51fa880eaf6c 100644
+> --- a/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
+> +++ b/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
+> @@ -1186,7 +1186,6 @@ static int
+>  netxen_p3_has_mn(struct netxen_adapter *adapter)
+>  {
+>  	u32 capability, flashed_ver;
+> -	capability = 0;
 
-Sorry, zero interest in taking what is really a uarch optimization.
-The errata framework exists to allow the kernel achieve *correctness*
-on a variety of hardware and is not a collection of party tricks for
-optimizing any given implementation.
+This part looks correct :)
 
-Think of the precedent this would establish. What would stop
-implementers from, say, changing out our memcpy implementation into a
-a hundred different uarch-specific routines. That isn't maintainable,
-nor is it even testable as most folks don't have access to your
-hardware.
+>  
+>  	/* NX2031 always had MN */
+>  	if (NX_IS_REVISION_P2(adapter->ahw.revision_id))
+> @@ -1197,7 +1196,6 @@ netxen_p3_has_mn(struct netxen_adapter *adapter)
+>  	flashed_ver = NETXEN_DECODE_VERSION(flashed_ver);
+>  
+>  	if (flashed_ver >= NETXEN_VERSION_CODE(4, 0, 220)) {
+> -
 
-Ignoring all of that -- I question the necessity of these patches
-altogether. KVM writes to VTTBR at the time of vcpu load as of commit
-934bf871f011 ("KVM: arm64: Load the stage-2 MMU context in
-kvm_vcpu_load_vhe()"), which should drastically reduce the overhead of
-this hardware fix.
+This part doesn't seem strictly related to the patch description.
+But in looking at it more closely, I wonder if it would be good
+to reduce the scope of capability to this context (and leave the bank
+line).
 
---
-Thanks,
-Oliver
+>  		capability = NXRD32(adapter, NX_PEG_TUNE_CAPABILITY);
+>  		if (capability & NX_PEG_TUNE_MN_PRESENT)
+>  			return 1;
+
+In any case, I agree that this patch is correct, and I'm happy with
+it with or without the change I suggested above.
+
+Reviewed-by: Simon Horman <horms@kernel.org>
+
 
