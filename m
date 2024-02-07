@@ -1,194 +1,226 @@
-Return-Path: <linux-kernel+bounces-55862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3B1084C298
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:44:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DC4B84C29C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:46:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 872662858E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:44:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA090283B0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7853AF9F2;
-	Wed,  7 Feb 2024 02:43:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB341CD2D;
+	Wed,  7 Feb 2024 02:46:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="grFK2SFK"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="oOx4/ocs"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F06BB1095C
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 02:43:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EF331CD1B;
+	Wed,  7 Feb 2024 02:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707273822; cv=none; b=uTNUhxeZIekX8KaOoOz57+tS7ghLQ1OIv76tWt6LFDwZM6RFqxANv9K1PPzbGKg7ykvOR2IDk3MBbTru8xi06krXtyys0FfECX138WC/iWmRpAUSephRO4dvX7hHS30HaQfIbacJUWjCuOadyOGN05KRNcH9hmZ5eKys8C9Qi7A=
+	t=1707273971; cv=none; b=aYmWRN832KVCyG+N08xdsO9MIxUhxVGHVcIbuddZz+d3wQ4KD54DlNlENTlsFn+fIs07sqhWknTwgJyib7ZG/WPUAJj4JkbVBOP0r1QKFM7pPHnfHAuxgHaY/FPVqKfuUZxjWgIOS0QoMtYFBqg7++nsKPjTMBjVU5fGVGQAHeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707273822; c=relaxed/simple;
-	bh=yAc2qDg86yKSHh+BWfG2RTtPpu6Cksg1ErI8pCgZ7jE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Qsz5mdFEdNH7pUxh53+O4HeUfN2TrZeefGe8BWvWtaTzbIXjNa/FeJL7YZpqIE0p5VBVCcQ0mQluE9fl9KVxSqFSG09/7b0hArFxv5SuFQ7cvPbB0+Dkc9KiJtH2Dju8WxtfvYm/ZHovHk2F5R1JU3Ionoskpi5EA42tqsIbDao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=grFK2SFK; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf216080f5so236056276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 18:43:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707273820; x=1707878620; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g7guOO3K6cZeccVPYodTSSR3CLbTuFzc0JepOhwBqf8=;
-        b=grFK2SFKZqLTXSDLVLI4bcvE0N08jdaLe1SI3FOpqQ0ljetYoTLDld5EdWLBmT/LbW
-         0eINMxXXSg3F9w4BlsaXm7IRfS6/gBFePOjaGmLOOBk8K2dgvImHNZoihGK05rhzS9EM
-         sd2OSZ6Fwd372IpKtvHh44VzMFVSoIqQuLQKtLJ+4oHPMwBnmPAU2x8m49+RFnt3lMb8
-         QibJ+olqqhcCADpriEKFktx1v0WeIG7zqS7K0juyRfpMBGPWadCBeuB/b2QlrQRFTBUU
-         V/d1UhftHn1nmFNSyhSn7AQbvrW3HF+5wmzWYsyPhg3QmSSeBRM2nHzZ2byyjFMNfceA
-         Ccqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707273820; x=1707878620;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=g7guOO3K6cZeccVPYodTSSR3CLbTuFzc0JepOhwBqf8=;
-        b=YvEaVPPYFqJYSKvtevhaiGl1FVsQguka85lkXzDQ1Vlj/HZJXcV77/4AEmgKk2BCqK
-         gKoeGzWLCoksQ4RQqZFPTmPWvNOyeg6f1wkb1+TTV5T9UPP9M/YhcPo9IAg6O9Hr45Ak
-         vrtY5ukAhrmWdFTcCHwHLkMAWpP+z7Zw0lxikoWIEqieDF78Eou4zl9lmk9gnTmjnPDm
-         RGQmeObvk/G5siA405XpfoVA6smK4UwBiHSeSznrU5lW2mHqTLRYhp0y9PER5bvNgNsB
-         vTma5hSgYJi06AnMJW/HpYkBCvvuPcJtxPm/gwI9f2gSz02LlrWm/Y5Ois8Trwbr4hzn
-         SPGQ==
-X-Gm-Message-State: AOJu0YwEjHglB0AYqmWP2FiIq6B9ky+Jd9DRapamtHld+xQwoZc7un9P
-	Kc15nr8KyFlueW0FxX7NxKrkZ6f24u86JKkqk55Jv4jgf+TWGKuC2fiDZu+bVBcRkMhP9Gj7aqc
-	3ZQ==
-X-Google-Smtp-Source: AGHT+IHFKn95FP8tDKGyeHSLkuyZnMtdrnlqEFcDN45UncE4QphOeyXOIkcKI10ZFatjnFxEnz3hwTc5JAw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:2485:b0:dc2:550b:a4f4 with SMTP id
- ds5-20020a056902248500b00dc2550ba4f4mr906756ybb.1.1707273820039; Tue, 06 Feb
- 2024 18:43:40 -0800 (PST)
-Date: Tue, 6 Feb 2024 18:43:38 -0800
-In-Reply-To: <CABgObfa_PbxXdj9v7=2ZXfqQ_tJgdQTrO9NHKOQ691TSKQDY2A@mail.gmail.com>
+	s=arc-20240116; t=1707273971; c=relaxed/simple;
+	bh=ZnVcTN40JzNoOsOtf2qwDdITExDSdDJm8AwzlIj5vWE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tDdBBhLTwMjf4xO88otb3zgZoetff+G8hQuF/yziphJS73/t9akd7q2QjB0KNdWHiosF3Kzu3CoKgAsmCUb3DBFwZ+MSpXvv+QRaNSJDC0SY1H8jVuYeG+Pd/+g2qKJeyQ0/pwfRBF8dK7QbWrD28AYFzWqNwUeopyXeWExJUXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=oOx4/ocs; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707273963;
+	bh=m2IP95JMxveFFleg+ObudlZMqaQ8gm6KHoaDb35aFKI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=oOx4/ocs8S0lWgpb3QhHNdFts+H21JtLfPIcuExLd/OXS4tM25Sa6zNHlxuGhrsp5
+	 nRBoA132+HaKTuZTX1plfj4v3R4946hkF7X9xnFVCVPGcjU7J7YIWTv4k9wW6mCNBS
+	 PdJq/lHsIvBAscyROOTICm3vGmN9NTBPmU0kLLGK9ttnCQTK1hbNvUhFIj32y9YWcX
+	 aK/uMPXr8DhCReWnIv4lsUkHVPGyGLi0t3oNuM345KH6L0QhwnqvAUMF6vnJWp3G8J
+	 sVJqlQwUhyqMVjuNy2yqFSMnPYOmnO56qe+XDpmeMYYMhPDLimFj1STh7yst0m/GO0
+	 2QFfmEpzbnaIQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TV4HZ6lWPz4wcC;
+	Wed,  7 Feb 2024 13:46:02 +1100 (AEDT)
+Date: Wed, 7 Feb 2024 13:46:00 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Matthew Brost <matthew.brost@intel.com>, Rodrigo Vivi
+ <rodrigo.vivi@intel.com>, Christian =?UTF-8?B?S8O2bmln?=
+ <christian.koenig@amd.com>, Somalapuram Amaranath
+ <Amaranath.Somalapuram@amd.com>, Intel Graphics
+ <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+Message-ID: <20240207134600.5ab91ba8@canb.auug.org.au>
+In-Reply-To: <20240206122822.12a2df89@canb.auug.org.au>
+References: <20240206122822.12a2df89@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231230172351.574091-1-michael.roth@amd.com> <20231230172351.574091-19-michael.roth@amd.com>
- <ZZ67oJwzAsSvui5U@google.com> <20240116041457.wver7acnwthjaflr@amd.com>
- <Zb1yv67h6gkYqqv9@google.com> <CABgObfa_PbxXdj9v7=2ZXfqQ_tJgdQTrO9NHKOQ691TSKQDY2A@mail.gmail.com>
-Message-ID: <ZcLuGxZ-w4fPmFxd@google.com>
-Subject: Re: [PATCH v11 18/35] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_UPDATE command
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org, linux-coco@lists.linux.dev, 
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org, 
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, 
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, 
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
-	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
-	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com, 
-	Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_//rg3B1F4UH/_d07_M7NfKGO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_//rg3B1F4UH/_d07_M7NfKGO
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 07, 2024, Paolo Bonzini wrote:
-> On Fri, Feb 2, 2024 at 11:55=E2=80=AFPM Sean Christopherson <seanjc@googl=
-e.com> wrote:
-> > > It doesn't really matter if the attributes are set before or after
-> > > KVM_SNP_LAUNCH_UPDATE, only that by the time the guest actually launc=
-hes
-> > > they pages get set to private so they get faulted in from gmem. We co=
-uld
-> > > document our expectations and enforce them here if that's preferable
-> > > however. Maybe requiring KVM_SET_MEMORY_ATTRIBUTES(private) in advanc=
-e
-> > > would make it easier to enforce that userspace does the right thing.
-> > > I'll see how that looks if there are no objections.
-> >
-> > Userspace owns whether a page is PRIVATE or SHARED, full stop.  If KVM =
-can't
-> > honor that, then we need to come up with better uAPI.
+Hi all,
+
+On Tue, 6 Feb 2024 12:28:22 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> After merging the drm-misc tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+
+drivers/gpu/drm/xe/xe_bo.c:41:10: error: 'struct ttm_placement' has no memb=
+er named 'num_busy_placement'; did you mean 'num_placement'?
+   41 |         .num_busy_placement =3D 1,
+      |          ^~~~~~~~~~~~~~~~~~
+      |          num_placement
+drivers/gpu/drm/xe/xe_bo.c:41:31: error: excess elements in struct initiali=
+zer [-Werror]
+   41 |         .num_busy_placement =3D 1,
+      |                               ^
+drivers/gpu/drm/xe/xe_bo.c:41:31: note: (near initialization for 'sys_place=
+ment')
+drivers/gpu/drm/xe/xe_bo.c:42:10: error: 'struct ttm_placement' has no memb=
+er named 'busy_placement'; did you mean 'num_placement'?
+   42 |         .busy_placement =3D &sys_placement_flags,
+      |          ^~~~~~~~~~~~~~
+      |          num_placement
+drivers/gpu/drm/xe/xe_bo.c:42:27: error: excess elements in struct initiali=
+zer [-Werror]
+   42 |         .busy_placement =3D &sys_placement_flags,
+      |                           ^
+drivers/gpu/drm/xe/xe_bo.c:42:27: note: (near initialization for 'sys_place=
+ment')
+drivers/gpu/drm/xe/xe_bo.c:55:10: error: 'struct ttm_placement' has no memb=
+er named 'num_busy_placement'; did you mean 'num_placement'?
+   55 |         .num_busy_placement =3D 1,
+      |          ^~~~~~~~~~~~~~~~~~
+      |          num_placement
+drivers/gpu/drm/xe/xe_bo.c:55:31: error: excess elements in struct initiali=
+zer [-Werror]
+   55 |         .num_busy_placement =3D 1,
+      |                               ^
+drivers/gpu/drm/xe/xe_bo.c:55:31: note: (near initialization for 'tt_placem=
+ent')
+drivers/gpu/drm/xe/xe_bo.c:56:10: error: 'struct ttm_placement' has no memb=
+er named 'busy_placement'; did you mean 'num_placement'?
+   56 |         .busy_placement =3D &sys_placement_flags,
+      |          ^~~~~~~~~~~~~~
+      |          num_placement
+drivers/gpu/drm/xe/xe_bo.c:56:27: error: excess elements in struct initiali=
+zer [-Werror]
+   56 |         .busy_placement =3D &sys_placement_flags,
+      |                           ^
+drivers/gpu/drm/xe/xe_bo.c:56:27: note: (near initialization for 'tt_placem=
+ent')
+drivers/gpu/drm/xe/xe_bo.c: In function '__xe_bo_placement_for_flags':
+drivers/gpu/drm/xe/xe_bo.c:233:18: error: 'struct ttm_placement' has no mem=
+ber named 'num_busy_placement'; did you mean 'num_placement'?
+  233 |                 .num_busy_placement =3D c,
+      |                  ^~~~~~~~~~~~~~~~~~
+      |                  num_placement
+drivers/gpu/drm/xe/xe_bo.c:233:39: error: excess elements in struct initial=
+izer [-Werror]
+  233 |                 .num_busy_placement =3D c,
+      |                                       ^
+drivers/gpu/drm/xe/xe_bo.c:233:39: note: (near initialization for '(anonymo=
+us)')
+drivers/gpu/drm/xe/xe_bo.c:234:18: error: 'struct ttm_placement' has no mem=
+ber named 'busy_placement'; did you mean 'num_placement'?
+  234 |                 .busy_placement =3D bo->placements,
+      |                  ^~~~~~~~~~~~~~
+      |                  num_placement
+drivers/gpu/drm/xe/xe_bo.c:234:35: error: excess elements in struct initial=
+izer [-Werror]
+  234 |                 .busy_placement =3D bo->placements,
+      |                                   ^~
+drivers/gpu/drm/xe/xe_bo.c:234:35: note: (near initialization for '(anonymo=
+us)')
+drivers/gpu/drm/xe/xe_bo.c: In function 'xe_evict_flags':
+drivers/gpu/drm/xe/xe_bo.c:254:36: error: 'struct ttm_placement' has no mem=
+ber named 'num_busy_placement'; did you mean 'num_placement'?
+  254 |                         placement->num_busy_placement =3D 0;
+      |                                    ^~~~~~~~~~~~~~~~~~
+      |                                    num_placement
+drivers/gpu/drm/xe/xe_bo.c: In function '__xe_bo_fixed_placement':
+drivers/gpu/drm/xe/xe_bo.c:1356:18: error: 'struct ttm_placement' has no me=
+mber named 'num_busy_placement'; did you mean 'num_placement'?
+ 1356 |                 .num_busy_placement =3D 1,
+      |                  ^~~~~~~~~~~~~~~~~~
+      |                  num_placement
+drivers/gpu/drm/xe/xe_bo.c:1356:39: error: excess elements in struct initia=
+lizer [-Werror]
+ 1356 |                 .num_busy_placement =3D 1,
+      |                                       ^
+drivers/gpu/drm/xe/xe_bo.c:1356:39: note: (near initialization for '(anonym=
+ous)')
+drivers/gpu/drm/xe/xe_bo.c:1357:18: error: 'struct ttm_placement' has no me=
+mber named 'busy_placement'; did you mean 'num_placement'?
+ 1357 |                 .busy_placement =3D place,
+      |                  ^~~~~~~~~~~~~~
+      |                  num_placement
+drivers/gpu/drm/xe/xe_bo.c:1357:35: error: excess elements in struct initia=
+lizer [-Werror]
+ 1357 |                 .busy_placement =3D place,
+      |                                   ^~~~~
+drivers/gpu/drm/xe/xe_bo.c:1357:35: note: (near initialization for '(anonym=
+ous)')
+drivers/gpu/drm/xe/xe_bo.c: In function 'xe_bo_migrate':
+drivers/gpu/drm/xe/xe_bo.c:2115:19: error: 'struct ttm_placement' has no me=
+mber named 'num_busy_placement'; did you mean 'num_placement'?
+ 2115 |         placement.num_busy_placement =3D 1;
+      |                   ^~~~~~~~~~~~~~~~~~
+      |                   num_placement
+drivers/gpu/drm/xe/xe_bo.c:2117:19: error: 'struct ttm_placement' has no me=
+mber named 'busy_placement'; did you mean 'num_placement'?
+ 2117 |         placement.busy_placement =3D &requested;
+      |                   ^~~~~~~~~~~~~~
+      |                   num_placement
+
+> Caused by commit
 >=20
-> Can you explain more verbosely what you mean?
-
-As proposed, snp_launch_update_gfn_handler() doesn't verify the state of th=
-e
-gfns' attributes.  But that's a minor problem and probably not a sticking p=
-oint.
-
-My overarching complaint is that the code is to be wildly unsafe, or at the=
- very
-least brittle.  Without guest_memfd's knowledge, and without holding any lo=
-cks
-beyond kvm->lock, it=20
-
- 1) checks if a pfn is shared in the RMP
- 2) copies data to the page
- 3) converts the page to private in the RMP
- 4) does PSP stuff
- 5) on failure, converts the page back to shared in RMP
- 6) conditionally on failure, writes to the page via a gfn
-
-I'm not at all confident that 1-4 isn't riddled with TOCTOU bugs, and that'=
-s
-before KVM gains support for intrahost migration, i.e. before KVM allows mu=
-ltiple
-VM instances to bind to a single guest_memfd.
-
-But I _think_ we mostly sorted this out at PUCK.  IIRC, the plan is to have=
- guest_memfd
-provide (kernel) APIs to allow arch/vendor code to initialize a guest_memfd=
- range.
-That will give guest_memfd complete control over the state of a given page,=
- will
-allow guest_memfd to take the appropriate locks, and if we're lucky, will b=
-e reusable
-by other CoCo flavors beyond SNP.
-
-> > > > > +                  * When invalid CPUID function entries are dete=
-cted, the firmware
-> > > > > +                  * corrects these entries for debugging purpose=
- and leaves the
-> > > > > +                  * page unencrypted so it can be provided users=
- for debugging
-> > > > > +                  * and error-reporting.
-> > > >
-> > > > Why?  IIUC, this is basically backdooring reads/writes into guest_m=
-emfd to avoid
-> > > > having to add proper mmap() support.
-> >
-> > Yes, I am specifically complaining about writing guest memory on failur=
-e, which is
-> > all kinds of weird.
+>   a78a8da51b36 ("drm/ttm: replace busy placement with flags v6")
 >=20
-> It is weird but I am not sure if you are complaining about firmware
-> behavior or something else.
+> interacting with commit
+>=20
+>   dd08ebf6c352 ("drm/xe: Introduce a new DRM driver for Intel GPUs")
+>=20
+> (and maybe others) from Linus' tree (v6.8-rc1).
 
-This proposed KVM code:
+Given that the latter above commit(s) are also in the drm-misc tree, I
+have just used the drm-misc tree from next-20240205 for today.
 
-+                               host_rmp_make_shared(pfns[i], PG_LEVEL_4K, =
-true);
-+
-+                               ret =3D kvm_write_guest_page(kvm, gfn, kvad=
-dr, 0, PAGE_SIZE);
-+                               if (ret)
-+                                       pr_err("Failed to write CPUID page =
-back to userspace, ret: 0x%x\n",
-+                                              ret);
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_//rg3B1F4UH/_d07_M7NfKGO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-I have no objection to propagating error/debug information back to userspac=
-e,
-but it needs to be routed through the source page (or I suppose some dedica=
-ted
-error page, but that seems like overkill).  Shoving the error information i=
-nto
-guest memory is gross.
+-----BEGIN PGP SIGNATURE-----
 
-But this should naturally go away when the requirement that the source be
-covered by the same memslot also goes away.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXC7ugACgkQAVBC80lX
+0GxCKQf/dFGRZp+POtnOvcJVZCr2J0Ev71DeNEa2uRbyt3MxCeKKbYhn3C8OwzHn
+6U68cQh+3dotTrMBYUS8cqIAmS6gRPiav+sD5jtHhcY+sDExezR++zA+qnYIaMTB
+23qjm8jjRgxu9uh5I/vdV+PvZmS3ladqi31zhpGRa0ZRKPoWrNE4vGUE/PNX71i4
+K+aHusdr3cISIsDbX/Rzvo8pUmIOG44+L8LJtVeKlnhQho8WqOqvaR/wdSsKptNl
+NbzCT/BM2jN3R1CGPzcWtxKCCKHNnQRLLIHI1RN9imujD2Ri6MvMEE9sxi0lfRHL
+QyjSsEqhWGT2dovnMsrzkWj1sqLebw==
+=nAVV
+-----END PGP SIGNATURE-----
+
+--Sig_//rg3B1F4UH/_d07_M7NfKGO--
 
