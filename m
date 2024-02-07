@@ -1,125 +1,161 @@
-Return-Path: <linux-kernel+bounces-56353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDB4384C91B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:00:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F1684C920
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:00:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F12E31C25A08
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:00:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95804B25BEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:00:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01A0717C65;
-	Wed,  7 Feb 2024 11:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB8C1804F;
+	Wed,  7 Feb 2024 11:00:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XzV2Foia"
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LGf89IfT";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TYvli/OI";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LGf89IfT";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TYvli/OI"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DFB817BD4
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:00:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BCB017BCB;
+	Wed,  7 Feb 2024 11:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707303625; cv=none; b=ifP8mZbF4PXXbSO0/uO+gefLQbD0E+v4eam7+G0w+v0ZkheoQFkwNa4CaHRpTYyGM6ZayN/TmoA0oE2k2lQUZSveXZaiDhNsJGH4jIAvVMngW5VCG7I62mVC0fVsAvbTIUbMT8cUNlg74QvtfMZlCxEsHGWMQjI9p5UAN9rtfes=
+	t=1707303648; cv=none; b=FbmB6Eh426Q7hjprX1wJqxgqLWEwER89AG4W9hhOa7zCkrY8x/n0fFB6JgA9YL8PLAVVzNt5iTwn+R+pmO+iB3Xzm0eXVgcPKioCAp+ifJCxKZbvnSbIfXG6p/G/Q3rRu1VQ8GGBN41SzXWZOp4HdLbk0N8nEFDksTAfzeeP2gI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707303625; c=relaxed/simple;
-	bh=IUilT9WOclCQtH5VWRVonZk3/qbzSqxOlZhEZ5eLUvc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I6e0AJArIOr6ARDXMPFgUEJ24Oncow6i4jtGzjcE98x9qj3GaiOXLubFU7hX/yejiP51ZGzAcHFthzTtggVxtTP/yLXtat+qrTSeSaruXVrJAiFqMv5ZbXLabRRnejRqteucfvYSdClwTwBcwaNLZ1rtUDFzOcrmuR9nZ42R3t8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XzV2Foia; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc6e08fde11so453807276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 03:00:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707303622; x=1707908422; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=e1oTkTP4QkeaUyMu3TaMQMZZ/Iz+5n4/yJ7O/hUjUWM=;
-        b=XzV2Foia4jUfoenSnk3wMTR0XWfdz7ILJ0s0lBBr5fzGXVg77FcTg63ZLYtoWr5GRU
-         NzFHuu6GbwJ5lB0oFrRF82NnIgVlGHGhYioMqliq7O5Ly+A3LKXOoIpAKISvnus6ZTO7
-         ipyYYi3ESQ+oOEpMNBaPXl/gQX1rsQKxdm80bPMW0JCPvE8ABK3D5eqsbRRfF0umKR8g
-         GeP6QgAKx6Dc/HN4bnpqs3oNaYSNQRS9roCAZ7DWGjqK+KF1RoX/cyeuwTAI642Tk5ip
-         MqNFwZ8pigKeYeUxwD3Pfzzsb2VqX4a/+fCrBIQ9HHeB5zZxoZ/gm09FT/l6mNFUmiN/
-         MlUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707303622; x=1707908422;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e1oTkTP4QkeaUyMu3TaMQMZZ/Iz+5n4/yJ7O/hUjUWM=;
-        b=u7hyENty/ZLF2LdCzg2hH9cp1JmSskT6nxiV7r6ycc3gfW+W89J0I0Gf0wDzNDzpDk
-         2AGiD+LxHz3dQPeVxRKFb0zz/X3PuuBpqRpQykKV00FUlKuzsC3vgwKe9IdZLjkhSgTe
-         xDTiIu7q9xesqSp376dAdKkFqgU4C/+DvFH5f8tus3M94i07MfWte6o7B8aifk9a4HAx
-         uKa2vmN9layAV1ihVQ5jMstV4E3OJM19WOe9kAg67/9CUsV4qCD4bIzIsjuZzkU4qZ/f
-         lxn9HeuAgGrRynNF0Y44MoFSejSCpNVWhQBUnvJg0WWJyFd0vYB5LaC7C6Jeyr544Tgp
-         /MJA==
-X-Gm-Message-State: AOJu0YxyD1u/vYzvhWfgf87DQ0V2jWhM94ITCbiVyq7+s99xBqSActU3
-	kIj3arKM7Sdx139n54UurenOMEilO949pa7w3we7pcE8uaWjvpke6PIGueglSb2TGI7QfesV5AP
-	xSzY9NWh51F/IjWXgQcMFYj7qYd5EYjAlplvXyA==
-X-Google-Smtp-Source: AGHT+IGQdKkGiez+TnRZfGQM7DgkVjmdX5toNOIRXKKSNj/a8pEzFI29tXzE1B1btGc7p72ZOLZ8rhOfOywvyz6IHmk=
-X-Received: by 2002:a05:6902:4c2:b0:dbd:2b6:6cfd with SMTP id
- v2-20020a05690204c200b00dbd02b66cfdmr3769507ybs.2.1707303620647; Wed, 07 Feb
- 2024 03:00:20 -0800 (PST)
+	s=arc-20240116; t=1707303648; c=relaxed/simple;
+	bh=FFSAnBd5Se93bT02HPMvL2EH82+uilSJf/jAlwQuULE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mTUCHyYiaFbgxufYSBNdpNBFOYo2pn3kBAhtI/D8o0Qd3eO9ircNs8s/nhyN5riorUXrnNOS9Xm0zQiZ0sTWJlOubmuP9cX1szZYCJa6vig0NUmg5ZHSLJz69o23tZGQZH1cZvbskHTw2UU5miA63fdhMqi9PWFNFBI3935qd4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LGf89IfT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=TYvli/OI; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LGf89IfT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=TYvli/OI; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BDFE51F74D;
+	Wed,  7 Feb 2024 11:00:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707303644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eyUiwpFluA7WcMFlIVSpAKe54wAT0z8+m/oRT7nE+0Q=;
+	b=LGf89IfTA4RVcerXsbYRkgZvIaDnx484T5e21bRXDAxjPZ1Rj5njN4gOw2gf3Q/1Ma0Z/B
+	lcgkvOTxmn5AATSG3UusBAqGNblM+oJQoUPtkBYhDWwU9z3NATXxFmfJNro1hx3k+oE7xm
+	fhv76d0M5AAparRnA4c4TKnB/z9/0AE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707303644;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eyUiwpFluA7WcMFlIVSpAKe54wAT0z8+m/oRT7nE+0Q=;
+	b=TYvli/OIyXnEaUcCET9zbyUu8hu+WhCALgJU8+TvZEJSTslC16szgwtHE/P0B90QfwfBmK
+	0HCbcgpDxcRq80DQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707303644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eyUiwpFluA7WcMFlIVSpAKe54wAT0z8+m/oRT7nE+0Q=;
+	b=LGf89IfTA4RVcerXsbYRkgZvIaDnx484T5e21bRXDAxjPZ1Rj5njN4gOw2gf3Q/1Ma0Z/B
+	lcgkvOTxmn5AATSG3UusBAqGNblM+oJQoUPtkBYhDWwU9z3NATXxFmfJNro1hx3k+oE7xm
+	fhv76d0M5AAparRnA4c4TKnB/z9/0AE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707303644;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eyUiwpFluA7WcMFlIVSpAKe54wAT0z8+m/oRT7nE+0Q=;
+	b=TYvli/OIyXnEaUcCET9zbyUu8hu+WhCALgJU8+TvZEJSTslC16szgwtHE/P0B90QfwfBmK
+	0HCbcgpDxcRq80DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B29C0139D8;
+	Wed,  7 Feb 2024 11:00:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id oz2TK9xiw2UscQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 07 Feb 2024 11:00:44 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id BBE1EA0809; Wed,  7 Feb 2024 12:00:41 +0100 (CET)
+Date: Wed, 7 Feb 2024 12:00:41 +0100
+From: Jan Kara <jack@suse.cz>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: lsf-pc <lsf-pc@lists.linux-foundation.org>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] tracing the source of errors
+Message-ID: <20240207110041.fwypjtzsgrcdhalv@quack3>
+References: <CAJfpegtw0-88qLjy0QDLyYFZEM7PJCG3R-mBMa9s8TNSVZmJTA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205222556.299481-1-tjakobi@math.uni-bielefeld.de>
-In-Reply-To: <20240205222556.299481-1-tjakobi@math.uni-bielefeld.de>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 7 Feb 2024 13:00:08 +0200
-Message-ID: <CAA8EJpqv2moyu6XUtCHb_EK-HLKSCgTa8CgchEVBg06PQKMM+w@mail.gmail.com>
-Subject: Re: [PATCH] drm: panel-orientation-quirks: Add quirk for Aya Neo KUN
-To: cubic2k@gmail.com
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Tobias Jakobi <tjakobi@math.uni-bielefeld.de>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfpegtw0-88qLjy0QDLyYFZEM7PJCG3R-mBMa9s8TNSVZmJTA@mail.gmail.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.82
+X-Spamd-Result: default: False [-0.82 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.02)[53.73%]
+X-Spam-Flag: NO
 
-On Tue, 6 Feb 2024 at 01:57, <cubic2k@gmail.com> wrote:
->
-> From: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>
->
-> Similar to the other Aya Neo devices this one features
-> again a portrait screen, here with a native resolution
-> of 1600x2560.
->
-> Signed-off-by: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>
+On Wed 07-02-24 10:54:34, Miklos Szeredi via Lsf-pc wrote:
+> [I'm not planning to attend LSF this year, but I thought this topic
+> might be of interest to those who will.]
+> 
+> The errno thing is really ancient and yet quite usable.  But when
+> trying to find out where a particular EINVAL is coming from, that's
+> often mission impossible.
+> 
+> Would it make sense to add infrastructure to allow tracing the source
+> of errors?  E.g.
+> 
+> strace --errno-trace ls -l foo
+> ...
+> statx(AT_FDCWD, "foo", ...) = -1 ENOENT [fs/namei.c:1852]
+> ...
+> 
+> Don't know about others, but this issue comes up quite often for me.
 
-As you don't seem to be the author of the patch, this needs your sign-off too.
+Yes, having this available would be really useful at times. Sometimes I
+had to resort to kprobes or good old printks.
 
-> ---
->  drivers/gpu/drm/drm_panel_orientation_quirks.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-> index d5c15292ae93..03224f8860ce 100644
-> --- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
-> +++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-> @@ -196,6 +196,12 @@ static const struct dmi_system_id orientation_data[] = {
->                   DMI_MATCH(DMI_BOARD_NAME, "NEXT"),
->                 },
->                 .driver_data = (void *)&lcd800x1280_rightside_up,
-> +       }, {    /* AYA NEO KUN */
-> +               .matches = {
-> +                 DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AYANEO"),
-> +                 DMI_MATCH(DMI_BOARD_NAME, "KUN"),
-> +               },
-> +               .driver_data = (void *)&lcd1600x2560_rightside_up,
->         }, {    /* Chuwi HiBook (CWI514) */
->                 .matches = {
->                         DMI_MATCH(DMI_BOARD_VENDOR, "Hampoo"),
-> --
-> 2.43.0
->
+> I would implement this with macros that record the place where a
+> particular error has originated, and some way to query the last one
+> (which wouldn't be 100% accurate, but good enough I guess).
 
+The problem always has been how to implement this functionality in a
+transparent way so the code does not become a mess. So if you have some
+idea, I'd say go for it :)
 
+								Honza
 -- 
-With best wishes
-Dmitry
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
