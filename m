@@ -1,73 +1,49 @@
-Return-Path: <linux-kernel+bounces-57254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB4EF84D5BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:21:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E16784D5C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:23:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C5DE1F2261D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:21:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C29C8B227AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:23:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01DEA1CD25;
-	Wed,  7 Feb 2024 22:21:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gUvP5LaQ"
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DF68149E07;
+	Wed,  7 Feb 2024 22:23:38 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD93149DE1;
-	Wed,  7 Feb 2024 22:21:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8688A149DED;
+	Wed,  7 Feb 2024 22:23:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707344497; cv=none; b=h723pXzDbyZU7ORwgVZJP4TYnHl6qGL6DpjrEwEbUs6VxeVDM2l6p8HqiYS1RfiTTkxLh5gITMzRg2eMFcnlGZHYfpPGJ2bgBQapLc/1XUBOKqtoaugK9m6RoSL5bC6r/cKzo3J8+L49oAbD8qvqvL6hdN3cjer+oZ/iZd1ueq0=
+	t=1707344617; cv=none; b=T5RILniLnhDn3ZdAmcdQLRUwTmPG8HRHCv914/FdOk+4/JbA2RGC9opzUiPPdOA3IeS4Z6DfnnJ1wzEqCRSCj0ZA+4Lq+FEGUGRnfJ1UMnXxbc6ukin0yvwHCHg62kXx+N8cMqntS5S/DWmnf1ebZ545nQ6cLYmf+JX3asMEBsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707344497; c=relaxed/simple;
-	bh=7Yu3npk101DAnDKrjGerLcOuTAsg7Rx/yrW5tAqMvRc=;
+	s=arc-20240116; t=1707344617; c=relaxed/simple;
+	bh=XwikaQ6+ius76AbMgM536A/XK9118cZuO9+91lyE5wY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fJTK5drLygvKQJiLu/YpvvPgAuQmk92nQBzwDk+a03kPbcghb/RGQLMTD9byVh1x5Hp42HSeQyebEpx0TvXdQYDTOtJkHer6y8D5VzhlEeviwd/Uc1Y/x+/srXI1gL5+1lmcP+l654oSfKixV982bxN/W/+wQaJqugHNUdP/pt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gUvP5LaQ; arc=none smtp.client-ip=209.85.161.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-59cb1e24e91so451779eaf.0;
-        Wed, 07 Feb 2024 14:21:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707344494; x=1707949294; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RhWhKt4UvQfn+hHPuSvATyjnFTI4urLTAt1CdH1oJcU=;
-        b=gUvP5LaQAR/QQeM07X47VZyfcWFWs1sQ0aSU6hwC8pqX/ZK//5jQVJ0eXT/9cBbiSk
-         NnBGzERruwfexriWUjlCcVoJ19p3a4C6icqUjpFVcMEkhRQ18h4sCPavNbwDqF8D8cKe
-         ktzgkg2h09F9Chci4mYodf+QcBpZ0pVQDX8zup6y5TVV5GFVZS9iqLFJ0anYzQKJvXGY
-         b8iB47kNQeNw1EeloEF7fUsAXNEP0JMHFlNvGdL1hmSJG49NN7vvl620q3CvIXJfCx3h
-         8A/QUvRoERxbnv17J7tFyH5lljkVoERabjPE0FDehmZZlHlDPjNz7ddgKpNEL87fLIOs
-         4fAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707344494; x=1707949294;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RhWhKt4UvQfn+hHPuSvATyjnFTI4urLTAt1CdH1oJcU=;
-        b=iNoHzZuqT19bEVT5elZjJJJKB1XMw61oaJH/+g5UYYV1VbZwRm/qwfl9QGf/8o/rTl
-         btsmDAha8KJD/6tVXC6sMo81PSlgvR4F3h56jTFGavo/X71Uwpauito1bW64LskYSXiE
-         eM7/X0/RHet/qiQnrC5VmiRW2Hx/ILnhk6rWZoIN5a0856/TJ6kNXZvlzUH5YjQrvEh2
-         xfFFTByslsH/+7fTzeD/MELsrXgoMjkyahgFYPRThCP6lXumdWKsb4jAhwtcXg0VZlZM
-         /0C3qeuIc1G+JznfSAV1JY+373Eylzq4oKgyan3zRU3USA4LxhQE33hHjt2hRBm8Sd7B
-         W0WQ==
-X-Gm-Message-State: AOJu0YxaJTbRs0l0XTB8wqPFfVMEfcx0n/s8tSaGwqHoLszjBrQ2YFQv
-	WbZPLxXVj3OEdbxj8IxMtfWxCj8niBarksQOgCiqVF1LCTJAR41b
-X-Google-Smtp-Source: AGHT+IGVNXLYiyp+WCoCDCWY1EWAEdG9n+N7bi8javw/3HrS6Ymixm9xXAtE9BMeSAUW4jXcyS8pMA==
-X-Received: by 2002:a05:6358:7e52:b0:176:a14c:544b with SMTP id p18-20020a0563587e5200b00176a14c544bmr3869949rwm.11.1707344482418;
-        Wed, 07 Feb 2024 14:21:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVQQYjxGLfIqvqukBD6sUihh1nEZkuPztmhEMUnBQu7drOwi73/6vxNxqcFoFOhYiZrlWoDcYML8yRoBGvBjacxACBDuivBu+Ze78WPqNOG5M5K7LysQBP9ushu0H3ZiLWkiPxt+kf71AUtLbrSGEF8ffIt+qOf+V77IzMBuP29aZdHptFzbHy2/MBN4B5u+OpFeW3X0VZ7py88tcddIsdnvgJn1KYsijRSwNrZbttZBEAJCTkacvpbXrLPA6rjdxSg4qw+EqjcGQvZRcuyS1E=
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id a28-20020a637f1c000000b005dbf22d6e1asm2194524pgd.56.2024.02.07.14.21.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 14:21:20 -0800 (PST)
-Message-ID: <4c62b202-c2af-400d-bb3c-92d33317620e@gmail.com>
-Date: Wed, 7 Feb 2024 14:21:14 -0800
+	 In-Reply-To:Content-Type; b=Y5hzriESyOVK+sBAdEAanVc5HSg80NIGG7BUWvxnHybWBfjbDhBuUl6Lu7yKV8x5kW8T4NBWlEZRw9A58pdL35/c06pEb0nnBIiqYlmN1vjbpioQQfCR6AAJ3M8/+u7nE5FxZA1Wr0qezzPsbiF8VdCpqwkiSIbU8wHJ9MdZ1tU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav311.sakura.ne.jp (fsav311.sakura.ne.jp [153.120.85.142])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 417MN1Lq031045;
+	Thu, 8 Feb 2024 07:23:01 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav311.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp);
+ Thu, 08 Feb 2024 07:23:01 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav311.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 417MN0Tr031037
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Thu, 8 Feb 2024 07:23:00 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <824bbb77-588b-4b64-b0cd-85519c16a3fb@I-love.SAKURA.ne.jp>
+Date: Thu, 8 Feb 2024 07:22:57 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,46 +51,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 9/9] net: fill in MODULE_DESCRIPTION()s for
- dsa_loop_bdinfo
+Subject: Re: [PATCH v2 1/3] LSM: add security_execve_abort() hook
 Content-Language: en-US
-To: Breno Leitao <leitao@debian.org>, kuba@kernel.org, davem@davemloft.net,
- pabeni@redhat.com, edumazet@google.com, Andrew Lunn <andrew@lunn.ch>,
- Vladimir Oltean <olteanv@gmail.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, horms@kernel.org
-References: <20240207101929.484681-1-leitao@debian.org>
- <20240207101929.484681-10-leitao@debian.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240207101929.484681-10-leitao@debian.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>
+Cc: Kees Cook <keescook@chromium.org>, Eric Biederman
+ <ebiederm@xmission.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+        James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <8fafb8e1-b6be-4d08-945f-b464e3a396c8@I-love.SAKURA.ne.jp>
+ <999a4733-c554-43ca-a6e9-998c939fbeb8@I-love.SAKURA.ne.jp>
+ <202402070622.D2DCD9C4@keescook>
+ <CAHC9VhTJ85d6jBFBMYUoA4CrYgb6i9yHDC_tFce9ACKi7UTa6Q@mail.gmail.com>
+ <202402070740.CFE981A4@keescook>
+ <CAHC9VhT+eORkacqafT_5KWSgkRS-QLz89a2LEVJHvi7z7ts0MQ@mail.gmail.com>
+ <CAHk-=whSMoFWCw=p1Nyu5DJ2hP2k=dYmPp-WjeY8xuc7O=ts7g@mail.gmail.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <CAHk-=whSMoFWCw=p1Nyu5DJ2hP2k=dYmPp-WjeY8xuc7O=ts7g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2/7/24 02:19, Breno Leitao wrote:
-> W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-> Add descriptions to the DSA loopback fixed PHY module.
+On 2024/02/08 2:57, Linus Torvalds wrote:
+> On Wed, 7 Feb 2024 at 16:45, Paul Moore <paul@paul-moore.com> wrote:
+>>
+>> Okay, let's get confirmation from Tetsuo on the current state of
+>> TOMOYO in Linus' tree.  If it is currently broken [..]
 > 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> ---
->   drivers/net/dsa/dsa_loop_bdinfo.c | 1 +
->   1 file changed, 1 insertion(+)
+> As far as I understand, the current state is working, just the horrid
+> random flag.
+
+Yes, the current state is working.
+
 > 
-> diff --git a/drivers/net/dsa/dsa_loop_bdinfo.c b/drivers/net/dsa/dsa_loop_bdinfo.c
-> index 237066d30704..fd412ae4e84b 100644
-> --- a/drivers/net/dsa/dsa_loop_bdinfo.c
-> +++ b/drivers/net/dsa/dsa_loop_bdinfo.c
-> @@ -32,4 +32,5 @@ static int __init dsa_loop_bdinfo_init(void)
->   }
->   arch_initcall(dsa_loop_bdinfo_init)
->   
-> +MODULE_DESCRIPTION("DSA loopback fixed PHY library");
+> So I think the series is a cleanup and worth doing, but also not
+> hugely urgent. But it would probably be good to just get this whole
+> thing over and done with, rather than leave it lingering for another
+> release for no reason.
 
-Should be:
-
-DSA mock-up switch driver
-
->   MODULE_LICENSE("GPL");
-
--- 
-Florian
+Right.
 
 
