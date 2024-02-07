@@ -1,92 +1,60 @@
-Return-Path: <linux-kernel+bounces-56180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA15684C710
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:15:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45AC784C713
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:17:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 428952825CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:15:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7BFC1F240AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:17:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30580224F6;
-	Wed,  7 Feb 2024 09:15:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A533D20DC1;
+	Wed,  7 Feb 2024 09:16:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KpWx3O2e";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4YjtLenJ";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KpWx3O2e";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4YjtLenJ"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IB5uZepd"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94181224D1
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:15:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F371D554
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:16:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707297344; cv=none; b=gnz8YlQtj+5qVODAr79Xd1tIf6kdtqQS4m45GOHvJqYK/pwR+7gqrGz6bU23IaRkgNiOqNBR20nBJXeTmHEnzPqgJAYWD1e/bCtxlNy6L5wigVqlhD1qJsE2V7VUjxOiLhmc+ah//LYJlYQ6ArWtoUbQNv6Z0kCA8LVlbIup9Bc=
+	t=1707297414; cv=none; b=RXZTjWq+c9UseAnM94zcd3Fp6x4Tm32e3MttupPBQ3AMMwPRDugML+qiFzwKudWNUli+zLADoX3INIQnhzDXl+AEXOFtGWUr4ASXI3usqDafm08M8jRib2xOcG+BkRJgs7Ib5ijODup2wwNEjz999LaKf6YpONrOrvxUWw3EHPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707297344; c=relaxed/simple;
-	bh=plRRSrgpKWYgSj52E6+36OdSX9yZp/M+7WUcFsLdls4=;
+	s=arc-20240116; t=1707297414; c=relaxed/simple;
+	bh=zQQCNmahUwZK3qO6Zo+aBo/S2P1qs/t9sW1T2X5nctU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I/ydIDj0MfsPB1CcopBoBxGC3dqwsvuH1PIreXPYfQAwDYk0oTys3ulWKaMa+S3uKJFZMLKRkMtu9RMhbn81Zxu6XHaw5OgaqmRnVsyZU/ikTsBE3StxJGBQ+rCwo4xh9i7y9oAOU0Krs/UKa00tJOog9O7Lwgt1O026dEexZjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=KpWx3O2e; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4YjtLenJ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=KpWx3O2e; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4YjtLenJ; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C340D2210C;
-	Wed,  7 Feb 2024 09:15:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707297334; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=WHE7iiwSq/e5TqacZcGPpPvF9XkYeQ9aVRI5Zh78Pq8=;
-	b=KpWx3O2e1HBxi8WCFdYUah7h04rgtrvOSHRa05R5Wg/cvt+pbH07DtnMHWMaI4cwdpMvVC
-	X0ye5YT7VZZJvL0D5pfsBjXl+cLgaGUIttF27Hqzk+BniKsRB4HswJrkQ76JiYn1yIu10k
-	bUTqy/uaNclrWwzm6pPh4x+YF5qR8PM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707297334;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=WHE7iiwSq/e5TqacZcGPpPvF9XkYeQ9aVRI5Zh78Pq8=;
-	b=4YjtLenJF3A1dr4avEtQ5mU7NgUAp11a25Juw0FFbWlRgPOmPR7ok68JVkAeaFS8Rkhq6N
-	n6pdE2Vdkw8Kf+DQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707297334; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=WHE7iiwSq/e5TqacZcGPpPvF9XkYeQ9aVRI5Zh78Pq8=;
-	b=KpWx3O2e1HBxi8WCFdYUah7h04rgtrvOSHRa05R5Wg/cvt+pbH07DtnMHWMaI4cwdpMvVC
-	X0ye5YT7VZZJvL0D5pfsBjXl+cLgaGUIttF27Hqzk+BniKsRB4HswJrkQ76JiYn1yIu10k
-	bUTqy/uaNclrWwzm6pPh4x+YF5qR8PM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707297334;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=WHE7iiwSq/e5TqacZcGPpPvF9XkYeQ9aVRI5Zh78Pq8=;
-	b=4YjtLenJF3A1dr4avEtQ5mU7NgUAp11a25Juw0FFbWlRgPOmPR7ok68JVkAeaFS8Rkhq6N
-	n6pdE2Vdkw8Kf+DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 852DF139D8;
-	Wed,  7 Feb 2024 09:15:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yJRrHzZKw2V6TAAAD6G6ig
-	(envelope-from <tzimmermann@suse.de>); Wed, 07 Feb 2024 09:15:34 +0000
-Message-ID: <3c23f4c9-30e8-4265-b89a-47ffe60a6c41@suse.de>
-Date: Wed, 7 Feb 2024 10:15:34 +0100
+	 In-Reply-To:Content-Type; b=EW6uwbImaURbD9QUvLOC09xKj2jNWvC8KD82P0vAkt1faP9vOIwOuBjaPO6PJ9NTke6bOBmimekc+MC2OnQv1zVAuV0H9QWIBoBEHgCFunI7sEgkoMzXVfHkruaFjZ3OHVHjp+qXwk0Kb9TX8odDuGY1TjwI7cU6KD096ULWCEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IB5uZepd; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707297413; x=1738833413;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=zQQCNmahUwZK3qO6Zo+aBo/S2P1qs/t9sW1T2X5nctU=;
+  b=IB5uZepdBizq31JwXc2j7AmolCQShmrTm9aGBdd3llPLEbsmq9u5JYFb
+   u0GXsdWtjH+ez/exPFS1B8HDxlHWSI4Lhnp0VvWxAEr4Jr9PHdpyR3JJY
+   0aldbwh3ZZxzYnE0HHuv+9l7BAVmRJQppHDFhEHAZc3hJZnXWd3CGmOCo
+   2jhNDEOOtFz7KgJyVqHXLxA5SO2TCcGGM0U8EDOUiY4fcmrmtZ5Ljk7qG
+   WJkWyR2N7v27ka80DTYhCn5nDE18uJx37I6jVIrL/9P11YtFvBp9b1qGh
+   1i7NPx2jPMB1cxI7XyVP9NB7AlCSsFGFAmHo+y9xUfq5k5Dp9ES9/jaZd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="11683702"
+X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
+   d="scan'208";a="11683702"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 01:16:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
+   d="scan'208";a="1559644"
+Received: from ahamill-mobl2.ger.corp.intel.com (HELO [10.213.228.167]) ([10.213.228.167])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 01:16:32 -0800
+Message-ID: <3c63aea1-1a04-45eb-9af1-02f52d4132e4@linux.intel.com>
+Date: Wed, 7 Feb 2024 09:16:30 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,125 +62,94 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drivers/ps3: select VIDEO to provide cmdline functions
-To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc: Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin
- <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
- "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
- linuxppc-dev@lists.ozlabs.org, Geoff Levand <geoff@infradead.org>
-References: <20240207033744.13028-1-rdunlap@infradead.org>
+Subject: Re: [PATCH] drm/i915/gt: Prevent possible NULL dereference in
+ __caps_show()
 Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <20240207033744.13028-1-rdunlap@infradead.org>
+To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+ Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, intel-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ lvc-project@linuxtesting.org
+References: <20240206164543.46834-1-n.zhandarovich@fintech.ru>
+From: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+In-Reply-To: <20240206164543.46834-1-n.zhandarovich@fintech.ru>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-7.09 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLY(-4.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,infradead.org:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[ellerman.id.au,gmail.com,csgroup.eu,kernel.org,linux.ibm.com,lists.ozlabs.org,infradead.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -7.09
 
-Hi
 
-Am 07.02.24 um 04:37 schrieb Randy Dunlap:
-> When VIDEO is not set, there is a build error. Fix that by selecting
-> VIDEO for PS3_PS3AV.
->
-> ERROR: modpost: ".video_get_options" [drivers/ps3/ps3av_mod.ko] undefined!
->
-> Fixes: dae7fbf43fd0 ("driver/ps3: Include <video/cmdline.h> for mode parsing")
+Hi,
 
-Thanks for the fix. Please also add
-
-Fixes: a3b6792e990d ("video/cmdline: Introduce CONFIG_VIDEO for video= 
-parameter")
-Cc: linux-fbdev@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-
-That's the commit that exposed the problem. IDK why the old config 
-option VIDEO_CMDLINE worked.
-
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
-> Cc: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Geoff Levand <geoff@infradead.org>
-
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-
+On 06/02/2024 16:45, Nikita Zhandarovich wrote:
+> After falling through the switch statement to default case 'repr' is
+> initialized with NULL, which will lead to incorrect dereference of
+> '!repr[n]' in the following loop.
+> 
+> Fix it with the help of an additional check for NULL.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with static
+> analysis tool SVACE.
+> 
+> Fixes: 4ec76dbeb62b ("drm/i915/gt: Expose engine properties via sysfs")
+> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 > ---
->   arch/powerpc/platforms/ps3/Kconfig |    1 +
->   1 file changed, 1 insertion(+)
->
-> diff -- a/arch/powerpc/platforms/ps3/Kconfig b/arch/powerpc/platforms/ps3/Kconfig
-> --- a/arch/powerpc/platforms/ps3/Kconfig
-> +++ b/arch/powerpc/platforms/ps3/Kconfig
-> @@ -67,6 +67,7 @@ config PS3_VUART
->   config PS3_PS3AV
->   	depends on PPC_PS3
->   	tristate "PS3 AV settings driver" if PS3_ADVANCED
-> +	select VIDEO
->   	select PS3_VUART
->   	default y
->   	help
+> P.S. The NULL-deref problem might be dealt with this way but I am
+> not certain that the rest of the __caps_show() behaviour remains
+> correct if we end up in default case. For instance, as far as I
+> can tell, buf might turn out to be w/o '\0'. I could use some
+> direction if this has to be addressed as well.
+> 
+>   drivers/gpu/drm/i915/gt/sysfs_engines.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/gt/sysfs_engines.c b/drivers/gpu/drm/i915/gt/sysfs_engines.c
+> index 021f51d9b456..6b130b732867 100644
+> --- a/drivers/gpu/drm/i915/gt/sysfs_engines.c
+> +++ b/drivers/gpu/drm/i915/gt/sysfs_engines.c
+> @@ -105,7 +105,7 @@ __caps_show(struct intel_engine_cs *engine,
+>   
+>   	len = 0;
+>   	for_each_set_bit(n, &caps, show_unknown ? BITS_PER_LONG : count) {
+> -		if (n >= count || !repr[n]) {
+> +		if (n >= count || !repr || !repr[n]) {
 
--- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
+There are two input combinations to this function when repr is NULL.
 
+First is show_unknown=true and caps=0, which means the for_each_set_bit 
+will not execute its body. (No bits set.)
+
+Second is show_unknown=false and caps=~0, which means count is zero so 
+for_each_set_bit will again not run. (Bitfield size input param is zero.)
+
+So unless I am missing something I do not see the null pointer dereference.
+
+What could theoretically happen is that a third input combination 
+appears, where caps is not zero in the show_unknown=true case, either 
+via a fully un-handled engine->class (switch), or a new capability bit 
+not added to the static array a bit above.
+
+That would assert during driver development here:
+
+			if (GEM_WARN_ON(show_unknown))
+
+Granted that could be after the dereference in "if (n >= count || 
+!repr[n])", but would be caught in debug builds (CI) and therefore not 
+be able to "ship" (get merge to the repo).
+
+Your second question is about empty buffer returned i.e. len=0 at the 
+end of the function? (Which is when the buffer will not be null 
+terminated - or you see another option?)
+
+That I think is safe too since it just results in a zero length read in 
+sysfs.
+
+Regards,
+
+Tvrtko
+
+>   			if (GEM_WARN_ON(show_unknown))
+>   				len += sysfs_emit_at(buf, len, "[%x] ", n);
+>   		} else {
 
