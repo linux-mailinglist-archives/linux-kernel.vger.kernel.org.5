@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-56290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23CBE84C858
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:12:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4A3E84C85A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:13:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDD42286DB4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:12:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F608287040
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:13:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1441124B39;
-	Wed,  7 Feb 2024 10:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D0A25108;
+	Wed,  7 Feb 2024 10:13:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QOQE5xZS"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="TF39cxwK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31773241E6
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:12:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D4D424B2F;
+	Wed,  7 Feb 2024 10:13:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707300758; cv=none; b=QUa8GRSYwQa9R02HvGuw+2QkovHLsUv48alhTiheawGwhyTqH7Poo9E95TYOQFYt9Sx2uuEYxbPXW8tSs2haw53EtbN5lcXDZEu8exoRtR54q30zSPGk2nwidzv9R2UlDDGDewcSxpO7kYAv82ioKB+xrc/cUleIKfWloNcyH1Q=
+	t=1707300806; cv=none; b=QwoXcVnMJVhru0UfS9FALoyr3SZsQaPerxon6u+ndxKash+5hZ2706pr6b2UFYMrNCM2ytT7d8p1QBZx5DkEOURkOBkciUVO2jCHuOHAfDk+C2jfR/WrtABMR1KaRRsBnO2LQIXvJw33Oqbrcj+OnU3QrALzWyLq8kYyaZOCD54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707300758; c=relaxed/simple;
-	bh=Y+v0eyT0XQ1tyCEGwMTDA+YBw9zpRqps4fcTDdHbrDU=;
+	s=arc-20240116; t=1707300806; c=relaxed/simple;
+	bh=xvUHhBukpzpilWeY4cmdhc/x/ajRglVk/WoxXocHRbc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FKOxCSlJINvvTgIMVA+kXkayE9TFzafwXa8VlaTANSRgwy7T1QRCyMmt3Zk6p35X5YZeRVE0a4b8llqVXaYq/llYAEfMEf1wdtSTGXq6IgIvUAT1tFYwsQE4QUTCloCXRnPq/+GnBp7LnwuKM6Tfo4el5nWKPPmCwxtyHaH/0Zc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=QOQE5xZS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3E8EC433F1;
-	Wed,  7 Feb 2024 10:12:36 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=SCMAtc5ShEHUsghETu9GOU5Ppc7+qoIRcKVFEc35WoLDNsURkMsFLRpD5qsaEdH4CEJfcE5hcKQ2764kO74oTvZApSRRP+mDkjysK7D3QlNQ3G393Yz2vzuhqcTQQcfChLJxntxwjgpe3N35viRN1WKSqYaZPDcR0zFYe58dZPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=TF39cxwK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 879C1C433C7;
+	Wed,  7 Feb 2024 10:13:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707300757;
-	bh=Y+v0eyT0XQ1tyCEGwMTDA+YBw9zpRqps4fcTDdHbrDU=;
+	s=korg; t=1707300806;
+	bh=xvUHhBukpzpilWeY4cmdhc/x/ajRglVk/WoxXocHRbc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QOQE5xZSv+QafwjC7N8enEavLhsLi9dYo0oHuK7G4kZ8OU3+L5s8YhjxdT85ksWRo
-	 /cWWFrpPDVctta9mYY5YhQJFdj9KVXYNmObMgIFvwvFCR5Rzq2zBk5f8DkVUnK4IBS
-	 v3acnP6dxtWGcf43nYK0cNGslpRf705mjfBg5Ow0=
-Date: Wed, 7 Feb 2024 10:12:34 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] workqueue: make wq_subsys const
-Message-ID: <2024020752-tannery-frozen-04ea@gregkh>
-References: <20240206-bus_cleanup-workqueue-v1-1-72b10d282d58@marliere.net>
+	b=TF39cxwK8ncJLrDGoLU4/+42jVdqN+B9QIzr5cwHANxCmEURqwBAJt7O3QpGR2qW1
+	 pGgDcpF4D2TAmzxz/SBbpXAIR4GiwhjXlo93mHieNcMhyRNOuDsOsQW9K6C39ICPXe
+	 RihihD/ipdnZrEkUJTmMUApuKZhdGEGuTwh2GU5Y=
+Date: Wed, 7 Feb 2024 10:13:23 +0000
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Ahmet Sezgin Duran <sezgin.duran@linux.org.tr>
+Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8192e: remove redundant braces from single
+ line if-else blocks
+Message-ID: <2024020757-desktop-atlantic-749e@gregkh>
+References: <b97e1f8927d81b9b72cdea7a30f300b35854c38d.camel@linux.org.tr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,22 +53,18 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240206-bus_cleanup-workqueue-v1-1-72b10d282d58@marliere.net>
+In-Reply-To: <b97e1f8927d81b9b72cdea7a30f300b35854c38d.camel@linux.org.tr>
 
-On Tue, Feb 06, 2024 at 03:05:06PM -0300, Ricardo B. Marliere wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the wq_subsys variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
-> 
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> ---
-> The maintainer asked [1] for this patch to be received through the
-> driver-core tree.
-> [1]: https://lore.kernel.org/all/ZcEeOueCbrltxr_b@slm.duckdns.org/
+On Tue, Feb 06, 2024 at 11:53:38PM +0300, Ahmet Sezgin Duran wrote:
+> >From de5c5bb23c77fe62987b446c740b971e85105526 Mon Sep 17 00:00:00 2001
+> From: Ahmet Sezgin Duran <sezgin.duran@linux.org.tr>
+> Date: Tue, 6 Feb 2024 22:28:55 +0300
+> Subject: [PATCH] staging: rtl8192e: remove redundant braces from single line
+> if-else blocks
 
-There is no cross-tree dependency at all, but hey, I'll take it, no
-worries...
+Why is all of this here in the changelog body?
+
+Please fix up and send a v2.
 
 thanks,
 
