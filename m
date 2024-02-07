@@ -1,115 +1,104 @@
-Return-Path: <linux-kernel+bounces-56343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7BCB84C8F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:49:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D9A884C8F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:51:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9E5F1C25B7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:49:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49667284B62
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9511772D;
-	Wed,  7 Feb 2024 10:49:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA08417559;
+	Wed,  7 Feb 2024 10:50:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SLDG4Fqa"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E/lnjGSJ"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 423EC182A7;
-	Wed,  7 Feb 2024 10:49:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 802F314A9F;
+	Wed,  7 Feb 2024 10:50:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707302982; cv=none; b=JCStCxA0S5azDfOs5wABiYFRJHHsgpOwlxm/TJn6SGSQalxd6VJectuFpjtiR8oA0Xdjv71MmKaKstvo9erIsWRvDHrZ/ZZb2aQbp+Ekmyf0NFoXS8wbHwx+XO0qhC07zBpg6TpS5ntDY/oCQiTPaJ0H5H+DWiKtM1+SYkZ7Y34=
+	t=1707303059; cv=none; b=ReBdTo1Tp7O/CfzMKKX00O7iRTlobt9sNG1gNHcdrWfnaXFF3dpgYWwXQcjba6PKfnJBv/k0+/WwteyhtDT3Yl1pkvH0xNUhQRtavPHIQvFlx0sVdmUlfAs9DgoEyyYsT7NxV9+R4qTVfxLyguRvwg0cmexeqxq4eBu1xzQfhV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707302982; c=relaxed/simple;
-	bh=kt0zOLTcL1HWHJnw6yZryV/wCuD7xd1Hb506uXxvfuo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=cyPsMinuwDQnNBT/rkBxPPRNHybdDO/lZ9rShCKn+DR6PUHhhzQdPtsr/RlVNaUc+5XgAMfing+xOAurs7bGdWTVzuJdZvRDc2PFuvGoM9jMpsyGAguQwUc4/OBcMlkXn0V447GA2dL2mwcXIQfJp8Pp8DALfxcDo3E1Ut9DOK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SLDG4Fqa; arc=none smtp.client-ip=209.85.221.41
+	s=arc-20240116; t=1707303059; c=relaxed/simple;
+	bh=NRKAhvvx7ipTSFAI46idp0Ld9WXXVjH+rnutwv8ffzc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=degKTG1aLlGlmEQnUqldcB540jW9ng1Rul1ZPSPXgwj1ptPQ26fFXqUEZRTQIDRxyrphOAlTGJAoEQMBBiSY0CXGUtp1h6gLoTPCGKEW14T36lg0cSaDvI783yizu+pHsP1EoXg2i2UQqNntZeg+4QUKWZPCyXOvHzoOexsrBQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E/lnjGSJ; arc=none smtp.client-ip=209.85.218.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3394bec856fso922575f8f.0;
-        Wed, 07 Feb 2024 02:49:38 -0800 (PST)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a383016f428so51324966b.2;
+        Wed, 07 Feb 2024 02:50:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707302977; x=1707907777; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DI3W1hyqaNPdQCStHZpWr3XfLdJcYQ1oBBj7o4zZK5c=;
-        b=SLDG4Fqam5VFt6KXe+6E42+cWV/LZmj3bhH7Yqkb+i4/fcF1FOdqlweO5eOAA7fSIL
-         KGfSkSE0gl5Jn4fMz6uklqz6zvCHtaeGp1mNNLaX9B76cMtes4zLrElEPUHj2dDJGPcz
-         PSZIudf/11phJPnazlzzOWginpC1m3E5397Zjh/5J/xUZEh/GMMUw43PR8KjPVPDFxuK
-         1LfAN52rinZRNeHo9f8DHCZR5rvih/DU2ZrXWcrz8B2C2Sz6IYOEAcal5VpHIUTR99iM
-         dIe0WYFMid0EbDpgjKCQSz+PJTK0OzCSKsv8//v2LJUlswoAIqA29hisQDq3/EqRdOUB
-         KyZA==
+        d=gmail.com; s=20230601; t=1707303056; x=1707907856; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=v3RmONeN1aWOfGtsR0Ww5qsPyB7Fzz/W0DvQ1KxYknQ=;
+        b=E/lnjGSJt76C+QEQbxmm+xwxYat3K1vKSZBh3rxrmE2FNLa3Po1eXpbc4fWwE30mqF
+         jgn0yEY4NUikP4g4ywKjnC5WEyqo/A+Y+4B5KueOlKHpNfnkkMyagN5mV9eGjKLjd0uO
+         UgXdmT92FrKGyjtknHzLmyLhFd3FrD4/5CIRDD8IMZX4/OcpTdR34SdmLq+GTuZ6ZbX2
+         2AloLvapVRDeofi9RPnQhz+b2pOzNox19VYXAUURm1+NVgqIqGQNVPJZzJFlD0a3BM7p
+         GOtL3I979/PeL5l6pTZ/Q74Nt54xjBXXBjH/uQj3eus3IAmV70sm4m0LCvugOmaPxjkQ
+         N4CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707302977; x=1707907777;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DI3W1hyqaNPdQCStHZpWr3XfLdJcYQ1oBBj7o4zZK5c=;
-        b=oY1yqSop/VP2D0Wgyr0fM0L0nf/itEzS9F+l3bVyzmLs89sA7B0chpVZgW/BSZ9FHQ
-         t//4UPdRj76x8JJDoSIMhDE4M1uwEUV5O4aDeCossv2DfAXjqS4ob/YaVoDI8soAceUs
-         Husj8SD/D6Ec2QVvYzkhAwYNzNEQoYZ/4ZQxtpZug8AQpBp+J/Ea1AOrc/6gkfbUYq0l
-         +p57qIEI0EeA5c29NMofsF/HT76RZAs1Kk3+o5faz/U7/yacV1cDVkVqPoC2isaoau2C
-         CLnvx0CxdQyow63oAz0Qi8Nj1kDhBfXMpTMmd+77s2RXF2TQBAq/0EABEX+CE2gQt+jw
-         steg==
-X-Gm-Message-State: AOJu0Yx6pYQMmLthhVIQD8q77XxlqApTXiRBFFsze7ycizUGBJNjETMZ
-	UhKPdZ4L5tCeX8DTdGBC7puruGauUpQBLvm875WJ10NhwDd78OEe9bVzrP4emeY=
-X-Google-Smtp-Source: AGHT+IFBxJGUQtRyWwApXmHdgtgFEploDEBoyVbUXb2bfaM1oo+4vxt3Cr8vTBEkawOWZBKcIYEIBg==
-X-Received: by 2002:adf:ea01:0:b0:33b:26c3:4fe0 with SMTP id q1-20020adfea01000000b0033b26c34fe0mr3412621wrm.6.1707302977122;
-        Wed, 07 Feb 2024 02:49:37 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWChfYQ26ruVxK/0C+NL6FTtor+PbyhCshRbuHxK8X0y5jjJGNtBwOsezz1J/QSknBbupMQafAMH5HR1fwBQTR9ZKXjzkn2Stmdw2BwqlXJrqXbvMF0snzT9/NxqOPZuWESxjPQ68s/aVGtbXEJN7iSJrxQ7e5O+qSjtmK/8cSk+NxHhdJmEQVj16sBBtPgnePJ8z3di+uhYiBEPQ==
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id q18-20020a05600c46d200b0040ff2933959sm1689595wmo.7.2024.02.07.02.49.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 02:49:36 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Johan Hovold <johan@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] USB: serial: ftdi_sio: Remove redundant assignment to variable cflag
-Date: Wed,  7 Feb 2024 10:49:36 +0000
-Message-Id: <20240207104936.2441424-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20230601; t=1707303056; x=1707907856;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v3RmONeN1aWOfGtsR0Ww5qsPyB7Fzz/W0DvQ1KxYknQ=;
+        b=tk7w7Ioh+WoTy75LPpa2961aiq/QeQE12020gkgEDsNXzzoxwcL4sU8m5ITzD3YnGR
+         G/8WhDSNwkGPH8GPqycr6vEsy2xah24DsIBWfHir62nBq8qdCccKJ9ARj17x5QBBlzdm
+         C+w5WXuUngQakiWEeYgWegvWVJuw1/zYhG8omxkJXh/ss993igzPkwWDMSoWtU5X67lq
+         R/aGFbQHtnDRmbghxOLfwUU+MIeqAFj5XTKGOpBi1Czl7JDOxCGWY6G5NA6hkuwF3D+p
+         ud3VSbyAO4oPdOxZz+8z0NOQf5S4SFVkIT7KFuWgKqhx+zxVqwvEGLysbNo/Dwt6d2qD
+         euUg==
+X-Forwarded-Encrypted: i=1; AJvYcCUctbnQnC79CqRuPxaQT90gS2iQLV8GjGoUwDPmje3yTuvSDqptK2rbZujIiYOysTfEeeEuUkYvZUJ3EyUXcKJs4DxQ0Lg0GW+kN3WA0ykgVjTaubC06DFR3iqPGpcM3gcpb6njfjk/CQ==
+X-Gm-Message-State: AOJu0Yz3gVbGqEYnTyvBdRpaQBk257cua1EOFG//hJONG+6uB3GVmYDm
+	j0mK8rqZ66BsQY74wH1i4XMsoadYE2DyFVbagly9QWR0o31jqFRFkyCcz/sF344=
+X-Google-Smtp-Source: AGHT+IGrHQ4Ui8Xm/HTFLN9s8F76B1TcVewU0Ndl0+KkjzPxt4GxduUdssKCe6aiw7H7DO4tXx2V6w==
+X-Received: by 2002:a17:907:9197:b0:a38:c07:7d51 with SMTP id bp23-20020a170907919700b00a380c077d51mr3820777ejb.59.1707303055484;
+        Wed, 07 Feb 2024 02:50:55 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXAN0HywYSFmAn9SSnww0M967qD9WTRDtEZgy+zMjMvlextyFsTop1Mao9C9tu21Mde/XAs/JbotcCQ1IOdMW+agjnk9tCPB2J6HM6eV6c+ZPs35CkS74EhshaBMyAmRwF97DdyJjitj3pclSF015DFIZzTwZMv4pN+P5QYRoi7El+iIeoAd4Nqk9ZgZpgGf6+sHm8rAv4LqRTTHYFksB6wVb9cdVLxjOPEFLK4SLZX4VlYhSdG+rAwm8IiTqPDGcZv2M9l0ziE2O1cbpc6YQUEoBV8LRYuN8k+odthVuuKPEJkXUVoUqUrYac8CvcV0Fb3BYMxS7YaaQ8lAroNmapR4OemXpyGfxgQ6QdzlDRu
+Received: from [192.168.3.110] ([86.38.52.161])
+        by smtp.gmail.com with ESMTPSA id h9-20020a17090619c900b00a35ed4fd4cesm619443ejd.115.2024.02.07.02.50.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 02:50:54 -0800 (PST)
+Message-ID: <0dab8d77-ea4e-4cea-99dd-2ffe7c9051d5@gmail.com>
+Date: Wed, 7 Feb 2024 12:50:51 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] pinctrl: mcp23s08: Check only GPIOs which have
+ interrupts enabled
+Content-Language: en-US
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linus.walleij@linaro.org, biju.das.jz@bp.renesas.com,
+ akaessens@gmail.com, thomas.preston@codethink.co.uk,
+ preid@electromag.com.au, u.kleine-koenig@pengutronix.de,
+ linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ arturas.moskvinas@gmail.com
+References: <ZcDpDaclAXEa5ETN@smile.fi.intel.com>
+From: Arturas Moskvinas <arturas.moskvinas@gmail.com>
+In-Reply-To: <ZcDpDaclAXEa5ETN@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The variable cflag is being assigned a value that is not being read
-afterwards, it is being re-assigned later on. The assignment is
-redundant and can be removed.
+On 2/5/24 15:56, Andy Shevchenko wrote:
+>> Do you want that information to be added as part of commit message or
+>> information in the mailing thread will be enough?
+> Up to maintainers. I'm fine with this email. If Linus uses b4 to generate
+> a Link tag to this discussion it will be enough (in my opinion).
 
-Cleans up clang scan warning:
-drivers/usb/serial/ftdi_sio.c:2613:15: warning: Value stored to 'cflag'
-during its initialization is never read [deadcode.DeadStores]
+Is there anything left for me to update/change? Or we're waiting for 
+other reviewers and/or Linus to chime in?
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/usb/serial/ftdi_sio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
-index 13a56783830d..c634d345a652 100644
---- a/drivers/usb/serial/ftdi_sio.c
-+++ b/drivers/usb/serial/ftdi_sio.c
-@@ -2610,7 +2610,7 @@ static void ftdi_set_termios(struct tty_struct *tty,
- 	struct device *ddev = &port->dev;
- 	struct ftdi_private *priv = usb_get_serial_port_data(port);
- 	struct ktermios *termios = &tty->termios;
--	unsigned int cflag = termios->c_cflag;
-+	unsigned int cflag;
- 	u16 value, index;
- 	int ret;
- 
--- 
-2.39.2
-
+Arturas Moskvinas
 
