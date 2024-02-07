@@ -1,104 +1,142 @@
-Return-Path: <linux-kernel+bounces-56026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C67884C516
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:43:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A08E084C51D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:45:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C764A2884CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:43:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2C2A1C239B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 269061CF95;
-	Wed,  7 Feb 2024 06:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F4ED1CD35;
+	Wed,  7 Feb 2024 06:45:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M4fEAf4k"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fcC/1JK8"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3244E1CD30
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 06:43:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C041CD2B
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 06:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707288204; cv=none; b=HabAsfnMv5wwJ6NkLyM1oElIg0wev3SCcBpEGB4Kaa7G/5i2X5q1Pwf6RJ6xC2FXQVvGClciXBZB5uwK7pllo5eDZTwGAyP9nM9RSWtmWUGP5UBfWVMWO6ilrU3ybxHIjwO1IX0gu+7+efFkS12wqNPtjUQ+F17dYyIcBe12PEs=
+	t=1707288307; cv=none; b=Kf1jlPZ7Fdy08heSunMmjz5W56NqMGfNQYHoWjh0XkeqJkFMMoQIXFSt5v3tUIRZMv2+t9XoP46o57Gf2gK+16bh9mEDFGVQYNQhO/tGX3XcvY99p1uWKV0vCNlfOGEmQ7LpmJC/n7OPn3nmN6UCjRCaU7DfrmZBvhnc4R59VD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707288204; c=relaxed/simple;
-	bh=Q+Syr8uWq4Bq9a8aaQxkFdYoFqJmdNHkFFakLvaozYw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o4foKb/KAA4EaL40H1LhTNtD7HKGRQnjDirE2jtP4Eyc+qe9T+qNdWOm8MmjiJ2LLAter7b+fGcX5vDDPiTZnVWJ5GdhIMitdO8wFvzEmtkOOhgTHQoIKW2aj4By+63YPoCtrLORfhppYoxMC31gl/UqgNV1VHcBii06i79WaAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M4fEAf4k; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707288201; x=1738824201;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Q+Syr8uWq4Bq9a8aaQxkFdYoFqJmdNHkFFakLvaozYw=;
-  b=M4fEAf4kyR+Pfu9ebnsxUzBJPj71qsJJuZsny8esWqFoVm4Ind1NV4t+
-   Rz0hYyvJnt7XDQUY28ZG8jWhvwyZo4IAbrvUFXK7+bWZ7QUxynv9zWFQg
-   iJui0u7FTrejzRDnk2Nbv404sGCIuf5x5VQ7vuLE8H24x50YgicyWCrYm
-   AhjmD/CnK6rn3w8+XWxko6NW3nD+QXW4wTY/nKjq82YIQdgtEdK/bOOiQ
-   3bIeAdo3DbrUWVwdTP+rFaDzisIkP7XtSdLhghdDI9/o8PNzcAvTpvius
-   /X1jcfNnQjlEAOKkOyppUlGBsZaE/AFUfVqw4Wx7KbCHw/7/jg5wysYpB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="4735683"
-X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
-   d="scan'208";a="4735683"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 22:43:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="824414451"
-X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
-   d="scan'208";a="824414451"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 22:43:18 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id A52A611F89A;
-	Wed,  7 Feb 2024 08:43:15 +0200 (EET)
-Date: Wed, 7 Feb 2024 06:43:15 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Wentong Wu <wentong.wu@intel.com>
-Cc: gregkh@linuxfoundation.org, tomas.winkler@intel.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mei: Add Meteor Lake support for IVSC device
-Message-ID: <ZcMmg1f8975whpno@kekkonen.localdomain>
-References: <20240207004304.31862-1-wentong.wu@intel.com>
+	s=arc-20240116; t=1707288307; c=relaxed/simple;
+	bh=qeDEPTK4m6VBZwGjwpCHxfCWgFesd/WrAsfsyaMOeJk=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=VUuMVT/g5LOOuYr/ks2QbbhtwbhZCgvDvh9bw326TRa1GsBy7Up9RQkkIleppXMCSL8oL5Z+WC1lcOweWz9zgh/XJjtrNmKvIV1cR4WN7LvzIsEKKUVdjc1qZ9rMuP2rKtIEc6ZYZBYsi9DgGLjFTXy7Tfj2T8qLGrzg22zrvic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fcC/1JK8; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707288304;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yhtIBc1C8bQwbqg4JYyqcWdulDcmw0/HXgXvj6B8//o=;
+	b=fcC/1JK8vSXsmf2L1e2UbkFtRFkLStWiRNYqxYaLK4JG7KDS7mTAI5qRmW9d54fP6Z9L3w
+	semgslBjilZz/xI08SwHpWWa1dVMKcDOddrE9E3Tt095nwxeZPARDq+Z0lRFrs9ai4L6Or
+	EzdgAfaXPMIDwgHJkOXWi8hIuwLIq/I=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-326-5JCEKhvfOhG1NIIdaYYkiQ-1; Wed,
+ 07 Feb 2024 01:45:02 -0500
+X-MC-Unique: 5JCEKhvfOhG1NIIdaYYkiQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 64971280AA20;
+	Wed,  7 Feb 2024 06:45:02 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.192.94])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 5304A492BC6;
+	Wed,  7 Feb 2024 06:45:01 +0000 (UTC)
+From: Florian Weimer <fweimer@redhat.com>
+To: Stephen Hemminger <stephen@networkplumber.org>
+Cc: Stephen Gallagher <sgallagh@redhat.com>,  netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH] iproute2: fix type incompatibility in ifstat.c
+References: <20240206142213.777317-1-sgallagh@redhat.com>
+	<20240206191209.3aaf9916@hermes.local>
+Date: Wed, 07 Feb 2024 07:44:59 +0100
+In-Reply-To: <20240206191209.3aaf9916@hermes.local> (Stephen Hemminger's
+	message of "Tue, 6 Feb 2024 19:12:09 -0800")
+Message-ID: <877cjg6adw.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.3 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207004304.31862-1-wentong.wu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-On Wed, Feb 07, 2024 at 08:43:04AM +0800, Wentong Wu wrote:
-> Add IVSC device support on Meteor Lake platform.
-> 
-> Signed-off-by: Wentong Wu <wentong.wu@intel.com>
+* Stephen Hemminger:
 
-Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> On Tue,  6 Feb 2024 09:22:06 -0500
+> Stephen Gallagher <sgallagh@redhat.com> wrote:
+>
+>> Throughout ifstat.c, ifstat_ent.val is accessed as a long long unsigned
+>> type, however it is defined as __u64. This works by coincidence on many
+>> systems, however on ppc64le, __u64 is a long unsigned.
+>>=20
+>> This patch makes the type definition consistent with all of the places
+>> where it is accessed.
+>>=20
+>> Signed-off-by: Stephen Gallagher <sgallagh@redhat.com>
+>> ---
 
-> ---
->  drivers/misc/mei/vsc-tp.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/misc/mei/vsc-tp.c b/drivers/misc/mei/vsc-tp.c
-> index 6f4a4be6ccb5..55f7db490d3b 100644
-> --- a/drivers/misc/mei/vsc-tp.c
-> +++ b/drivers/misc/mei/vsc-tp.c
-> @@ -535,6 +535,7 @@ static const struct acpi_device_id vsc_tp_acpi_ids[] = {
->  	{ "INTC1009" }, /* Raptor Lake */
->  	{ "INTC1058" }, /* Tiger Lake */
->  	{ "INTC1094" }, /* Alder Lake */
-> +	{ "INTC10D0" }, /* Meteor Lake */
->  	{}
->  };
->  MODULE_DEVICE_TABLE(acpi, vsc_tp_acpi_ids);
+Patch was:
 
--- 
-Sakari Ailus
+diff --git a/misc/ifstat.c b/misc/ifstat.c
+index 721f4914..767cedd4 100644
+--- a/misc/ifstat.c
++++ b/misc/ifstat.c
+@@ -58,7 +58,7 @@ struct ifstat_ent {
+ 	struct ifstat_ent	*next;
+ 	char			*name;
+ 	int			ifindex;
+-	__u64			val[MAXS];
++	unsigned long long	val[MAXS];
+ 	double			rate[MAXS];
+ 	__u32			ival[MAXS];
+ };
+
+> Why not fix the use of unsigned long long to be __u64 instead?
+> That would make more sense.
+
+You still won't be able to use %llu to print it.  I don't think the UAPI
+headers provide anything like the <stdint.h> macros because the
+assumption is that %llu is okay for printing __u64 on all architectures.
+
+But we have this in POWER:
+
+/*
+ * This is here because we used to use l64 for 64bit powerpc
+ * and we don't want to impact user mode with our change to ll64
+ * in the kernel.
+ *
+ * However, some user programs are fine with this.  They can
+ * flag __SANE_USERSPACE_TYPES__ to get int-ll64.h here.
+ */
+#if !defined(__SANE_USERSPACE_TYPES__) && defined(__powerpc64__) && !define=
+d(__KERNEL__)
+# include <asm-generic/int-l64.h>
+#else
+# include <asm-generic/int-ll64.h>
+#endif
+
+I didn't know some architectures are that =E2=80=A6 different.  Sadly this
+wasn't fixed as part of the transition to powerpc64le.
+
+I suppose iproute2 should build with -D__SANE_USERSPACE_TYPES__.
+
+Thanks,
+Florian
+
 
