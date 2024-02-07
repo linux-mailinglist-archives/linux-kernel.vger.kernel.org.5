@@ -1,57 +1,56 @@
-Return-Path: <linux-kernel+bounces-57151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A28084D486
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:46:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D051B84D489
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:47:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CCDC1C21B41
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:46:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D282F1C2250D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30D5D1552FB;
-	Wed,  7 Feb 2024 21:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA1B154BF3;
+	Wed,  7 Feb 2024 21:25:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KAu2QnHb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H0RuEvnX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6A3154C16;
-	Wed,  7 Feb 2024 21:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8450155302;
+	Wed,  7 Feb 2024 21:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341111; cv=none; b=q/VWX5psGfFI/k5CFWPoai2VdygZNHuAy5ubIv65ZbeU0st8Hx0Fnx9TgvmSNEmKpsn9mXpJ5Y7m4tK4dqBbYRSza3l8EwuEmn3JOe26D3WoxH5slUnu3Z8B2RHc/iyGSadlKtji+TLmLUuJ8PG2goPLNBMUSG1JtaY+FuFCyfI=
+	t=1707341112; cv=none; b=UGA2OBykArttq3PYqtqtYOaUOMoXpOGTT2TkkxsKAkJtN+WhGX/RiItuqKMggUgssGeVgdJbgoUCxVxYGT2S16r+j6P560Op4vK/qDBKTbP0dq0qvC6OBZiakAlw4CWyyTUnKv42aWljfEGmJZEpajH6GKSLjp20y23Y39+5mz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341111; c=relaxed/simple;
-	bh=d/5uGtavP+Xs8rcq3xWOf3A+B4TcB1duD1lcW+yhmao=;
+	s=arc-20240116; t=1707341112; c=relaxed/simple;
+	bh=HxzqeR34vWKyBCxMv6Ub7CmvMT1sXq3Y15wW9tH7EGY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CHeWollKKFi+PWA+rApVFjfjgXBZJNjk2yTZSI7NrvTnYQFb9v8eHS/CstjNjR/3WfI3q+bKvBtl4Wn6YL8n1iaNn26YBtYrCuzELZj6aZbezLeaHiwz7rEwlgXl8VzyLO7fC/zcoti24Otx0mpjj4y67kjcyvmjPvYwEDZVAKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KAu2QnHb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E7F8C4166A;
-	Wed,  7 Feb 2024 21:25:10 +0000 (UTC)
+	 MIME-Version; b=aS6tvXCRb6uawZYuvyMm+IfGqVtUYCKyMDsyiBv9cP0Hgm3Bv7uKcLWhgYJXjTdmQcvOMCQiurdTj5u/R+dMUNV8W3VJe5FjS9uAVBAwWnxK91rPfJVN76dzyhCW6aTQ2dE5HsXzHp994smeNLGe3grmtH4lEz5V8MLmBAQXCvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H0RuEvnX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9078CC433C7;
+	Wed,  7 Feb 2024 21:25:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341111;
-	bh=d/5uGtavP+Xs8rcq3xWOf3A+B4TcB1duD1lcW+yhmao=;
+	s=k20201202; t=1707341112;
+	bh=HxzqeR34vWKyBCxMv6Ub7CmvMT1sXq3Y15wW9tH7EGY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KAu2QnHbwDxd/F9QovLgDi77hzv0Z2pxstHQNFOGN84NqwelHbMZmS2mS90yx4sYh
-	 dbnn3Xi/6/cEnokc9bd83qKymT+GrDJdbtH4MLgHv1Xg1y9G644dGhMjEAevfJnxwZ
-	 Za3WRmbeiivhBtpdLa3BR3lpor/yiqlc0pqh/+lciTC1LP87LiOkWd6zbqmG7IeJ2F
-	 ZWRwiAjLu3B5bionJ/LQs+0CbfAAFu4UjO9M/rwBvBodkGHRTyMevfahiO/6EmZ3G3
-	 SpA4r6bTIj7hXm38NEfkth3HXzHZuQN3bmIvX5g33wGIZ60+EbyztiSQgFngNNK85D
-	 936cc+ACIxHxg==
+	b=H0RuEvnXTExRkjO/dAO6bVRmxqbEcr31KufCb4eCxWqy7pgb/bxsP8flc98jUUdoe
+	 KasOagCNgL/5Otu8ehNMgv9kVSDzudPsHIIz2opPZCSNW73PihwWcOKGD2o4981fi6
+	 X/Zi2Kl/DZlwWLI0e5wUXDbse/QaYqVoakJ6z08M5NUXGXdGl7KbsKlS9hLVd/CR3j
+	 9qUSDe57mz+HFOSzkuoseYcPRX+DeWgcdVaWqokcc+OeHTfkDXqXAvHOv3fSaeIFUD
+	 /pQlV0SfE1ero2sjJWie3VjC9OUuDgVzcebIhSLoO0UBeRNR4iox5NUdX56iH6mlBQ
+	 qgPuZVCRoT/aQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Baokun Li <libaokun1@huawei.com>,
-	Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 03/29] ext4: avoid allocating blocks from corrupted group in ext4_mb_find_by_goal()
-Date: Wed,  7 Feb 2024 16:24:28 -0500
-Message-ID: <20240207212505.3169-3-sashal@kernel.org>
+	hadess@hadess.net,
+	linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 04/29] Input: goodix - accept ACPI resources with gpio_count == 3 && gpio_int_idx == 0
+Date: Wed,  7 Feb 2024 16:24:29 -0500
+Message-ID: <20240207212505.3169-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212505.3169-1-sashal@kernel.org>
 References: <20240207212505.3169-1-sashal@kernel.org>
@@ -66,51 +65,50 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.77
 Content-Transfer-Encoding: 8bit
 
-From: Baokun Li <libaokun1@huawei.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 832698373a25950942c04a512daa652c18a9b513 ]
+[ Upstream commit 180a8f12c21f41740fee09ca7f7aa98ff5bb99f8 ]
 
-Places the logic for checking if the group's block bitmap is corrupt under
-the protection of the group lock to avoid allocating blocks from the group
-with a corrupted block bitmap.
+Some devices list 3 Gpio resources in the ACPI resource list for
+the touchscreen:
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20240104142040.2835097-8-libaokun1@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+1. GpioInt resource pointing to the GPIO used for the interrupt
+2. GpioIo resource pointing to the reset GPIO
+3. GpioIo resource pointing to the GPIO used for the interrupt
+
+Note how the third extra GpioIo resource really is a duplicate
+of the GpioInt provided info.
+
+Ignore this extra GPIO, treating this setup the same as gpio_count == 2 &&
+gpio_int_idx == 0 fixes the touchscreen not working on the Thunderbook
+Colossus W803 rugged tablet and likely also on the CyberBook_T116K.
+
+Reported-by: Maarten van der Schrieck
+Closes: https://gitlab.com/AdyaAdya/goodix-touchscreen-linux-driver/-/issues/22
+Suggested-by: Maarten van der Schrieck
+Tested-by: Maarten van der Schrieck
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20231223141650.10679-1-hdegoede@redhat.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/mballoc.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/input/touchscreen/goodix.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 83618cdfd6e9..f7af0dea8149 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2192,12 +2192,10 @@ int ext4_mb_find_by_goal(struct ext4_allocation_context *ac,
- 	if (err)
- 		return err;
- 
--	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info))) {
--		ext4_mb_unload_buddy(e4b);
--		return 0;
--	}
--
- 	ext4_lock_group(ac->ac_sb, group);
-+	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)))
-+		goto out;
-+
- 	max = mb_find_extent(e4b, ac->ac_g_ex.fe_start,
- 			     ac->ac_g_ex.fe_len, &ex);
- 	ex.fe_logical = 0xDEADFA11; /* debug value */
-@@ -2230,6 +2228,7 @@ int ext4_mb_find_by_goal(struct ext4_allocation_context *ac,
- 		ac->ac_b_ex = ex;
- 		ext4_mb_use_best_found(ac, e4b);
+diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
+index 3f0732db7bf5..6de64b3f900f 100644
+--- a/drivers/input/touchscreen/goodix.c
++++ b/drivers/input/touchscreen/goodix.c
+@@ -884,7 +884,8 @@ static int goodix_add_acpi_gpio_mappings(struct goodix_ts_data *ts)
+ 		}
  	}
-+out:
- 	ext4_unlock_group(ac->ac_sb, group);
- 	ext4_mb_unload_buddy(e4b);
  
+-	if (ts->gpio_count == 2 && ts->gpio_int_idx == 0) {
++	/* Some devices with gpio_int_idx 0 list a third unused GPIO */
++	if ((ts->gpio_count == 2 || ts->gpio_count == 3) && ts->gpio_int_idx == 0) {
+ 		ts->irq_pin_access_method = IRQ_PIN_ACCESS_ACPI_GPIO;
+ 		gpio_mapping = acpi_goodix_int_first_gpios;
+ 	} else if (ts->gpio_count == 2 && ts->gpio_int_idx == 1) {
 -- 
 2.43.0
 
