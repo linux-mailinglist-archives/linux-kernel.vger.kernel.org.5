@@ -1,203 +1,170 @@
-Return-Path: <linux-kernel+bounces-56747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5879D84CE89
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:03:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7A4F84CE8B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:03:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D71B1C21B39
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:02:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 384BE28BAFB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:03:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E3F580602;
-	Wed,  7 Feb 2024 16:02:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E90B8005B;
+	Wed,  7 Feb 2024 16:03:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZA6WnA4E"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="EMZwGDA6"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1AFB8002F;
-	Wed,  7 Feb 2024 16:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0033780045
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 16:03:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707321771; cv=none; b=el8glPsHY2IzyUtJW70sDvL7Rt9ir/5uZ4cToTjFVYMXz8vBZEuLUwn/PIfz5Ic98m3AhRrjrvlOEEQod0zNb2cfGlPFxPuwxkC3OhypabvprUqT0uwxeJk1DP22/tGefuaohaR07lH+O3/aSaWYAhtNPTyLaO4uRujFhTN9HLY=
+	t=1707321815; cv=none; b=hEsuJLmIXJoh0GLyK4iJ6WB+usUbsQwq1RuDmqernwf18V6BPYS4qSwsEZSl5agVNaQWA8gvSqA3/N1ia92/1zqgpUPwLDK+dl214ThAvDTDokaKuCtgV2hvzp95Ln25QkmQZymwvpkco4Gp930sG8ppgAgyC2tOT785dml27J0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707321771; c=relaxed/simple;
-	bh=M611GcMdGJykO0N8Dmv8PbgGyZn3lTmhtUBEPLS0brw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=bqj4xV8jrp+6VsNGtM7fD39BnNNJPD8at5qbaPOSORmA/ksCvTyvxqL31ve2mm33dG7bX2OnoO69lVTR+JEKBj9FMGJXF3iENrwsSTzbU7h8Fk2oZ099JbMtK+2dJuEff/cnSH0RVPDcq+sX1OhPKGsU5aXjllA7IyAJhUzuP2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZA6WnA4E; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707321770; x=1738857770;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=M611GcMdGJykO0N8Dmv8PbgGyZn3lTmhtUBEPLS0brw=;
-  b=ZA6WnA4EiriqqO7GmUErIylK0nx72R1/pqaqG9Fgxb0cjtUozwhEPZB3
-   SsIYo/zJ6UH6m6s50l1jTNAjE/TTtI0ntdQ/psLwz4DGeAisVgtdvjqfN
-   pGMoScENh0Ot+ICAzxXeTz0e3LqR+0R5KNZBjJNX0z1GDiTr9JsQMKoLL
-   AGpAY7Y00JBEsFyOiJsWb5kZZ/wNmYHtvl9Fr3FR9LxzFsp4FNm6RDKuM
-   H0+yyDlLZVBpQx5hPV0KMlBZTjz1nN5BBJQKhYtYe5GnuHxzQACKHRTbX
-   lduyq9xrZMptLxeGL/TT57GYP8xDU+/8VbsVOXYSTrmRwP5PwkODn1n7P
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="12104204"
-X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
-   d="scan'208";a="12104204"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 08:02:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
-   d="scan'208";a="38811757"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 08:02:49 -0800
-Received: from hsinjuiy-mobl.amr.corp.intel.com (unknown [10.209.57.193])
-	by linux.intel.com (Postfix) with ESMTP id 12A70580D94;
-	Wed,  7 Feb 2024 08:02:49 -0800 (PST)
-Message-ID: <0e7944d410664153b506ea584d92cd6bb0a93f6a.camel@linux.intel.com>
-Subject: Re: [PATCH v3 3/3] PCI/ASPM: Fix L1SS parameters & only enable
- supported features when enable link state
-From: "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To: Jian-Hong Pan <jhp@endlessos.org>, Bjorn Helgaas <helgaas@kernel.org>, 
- Johan Hovold <johan@kernel.org>, Ilpo =?ISO-8859-1?Q?J=E4rvinen?=
- <ilpo.jarvinen@linux.intel.com>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>, Nirmal Patel
- <nirmal.patel@linux.intel.com>, Jonathan Derrick
- <jonathan.derrick@linux.dev>,  linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux@endlessos.org
-Date: Wed, 07 Feb 2024 08:02:48 -0800
-In-Reply-To: <20240207111854.576402-2-jhp@endlessos.org>
-References: <20240207111854.576402-2-jhp@endlessos.org>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1707321815; c=relaxed/simple;
+	bh=PPznGmhkXlUq37eNefw13UOZ4Md4/hqYu3L9ybT6LHw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LCeltmPScil1QVr1gXDmUrHE6HkbG4M7MPWsM7b/f0e5EMfa7+I8swbIYWT0uSIHywBBA6FLQeBIb2n/69z3an0alV00bZSickEEWv61UFkCJmuhEzv2YR6uxpXGR14KZnSktw+jDLQ27kv7jq8YjyW9nBYQOVxSnaNsVii5hog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=EMZwGDA6; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 71B90E0003;
+	Wed,  7 Feb 2024 16:03:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707321808;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DMJ2m5Th6qWplrx0t7J61CsGhja3NucIGbS+faRx7/A=;
+	b=EMZwGDA6xV2r8cVWsFXSq1IiR7L2EciyAfg1wFvIjlXguHqiOjtrEAuJ361956hIiDzjlY
+	U6pV95ybBs2RWWLJeiZE0qntjU/v5WWuzIWumx1fxOE5PWV2+7l88ypMx1qfrbrDgWllLT
+	gXtiijL8UBi5/z3E1gWHUJitUullmH63jmuLbmH9I+L0Y11OQ+f6NfEH/cddjF2ZvAuhyR
+	9EpM0iK8bWEf7MmVPwfpMT4O9YW20gwbhtOI2kr8Z8yTxcgMo7juZwb843+FLT4EW3c9Ov
+	CE7Kv1jxMOE82e8+7dgmMc1FhYhCRCXTSljAkjoS1w+M+VaiKkscNZrTajVVBQ==
+Date: Wed, 7 Feb 2024 17:03:26 +0100
+From: Louis Chauvet <louis.chauvet@bootlin.com>
+To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
+Cc: Arthur Grillo <arthurgrillo@riseup.net>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
+	Maxime Ripard <mripard@kernel.org>,
+	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+	Melissa Wen <melissa.srw@gmail.com>,
+	Haneen Mohammed <hamohammed.sa@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, marcheu@google.com,
+	seanpaul@google.com, nicolejadeyee@google.com,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	thomas.petazzoni@bootlin.com
+Subject: Re: [PATCH 2/2] drm/vkms: Use a simpler composition function
+Message-ID: <ZcOpzszyR49_MlqB@localhost.localdomain>
+Mail-Followup-To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>,
+	Arthur Grillo <arthurgrillo@riseup.net>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
+	Maxime Ripard <mripard@kernel.org>,
+	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+	Melissa Wen <melissa.srw@gmail.com>,
+	Haneen Mohammed <hamohammed.sa@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, marcheu@google.com,
+	seanpaul@google.com, nicolejadeyee@google.com,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	thomas.petazzoni@bootlin.com
+References: <20240201-yuv-v1-2-3ca376f27632@bootlin.com>
+ <20240202105522.43128e19@eldfell>
+ <20240202102601.70b6d49c@xps-13>
+ <3nofkwzgnf4yva2wfogdbii47ohpi2wm5vp6aijtg3emxyoowt@twyreqz7ai3g>
+ <20240202131322.5471e184@xps-13>
+ <20240202174913.789a9db9@eldfell>
+ <20240202170734.3176dfe4@xps-13>
+ <20240202214527.1d97c881@ferris.localdomain>
+ <d258c8dc-78e9-4509-9037-a98f7f33b3a3@riseup.net>
+ <20240207104407.7b06bac2@eldfell>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207104407.7b06bac2@eldfell>
+X-GND-Sasl: louis.chauvet@bootlin.com
 
-On Wed, 2024-02-07 at 19:18 +0800, Jian-Hong Pan wrote:
-> The original __pci_enable_link_state() configs the links directly without=
-:
-> * Check the L1 substates features which are supported, or not
-> * Calculate & program related parameters for L1.2, such as T_POWER_ON,
-> =C2=A0 Common_Mode_Restore_Time, and LTR_L1.2_THRESHOLD
->=20
-> This leads some supported L1 PM substates of the link between VMD remappe=
-d
-> PCIe Root Port and NVMe get wrong configs when a caller tries to enabled
-> them.
->=20
-> Here is a failed example on ASUS B1400CEAE with enabled VMD:
->=20
-> Capabilities: [900 v1] L1 PM Substates
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCap: PCI-PM_L1.2+ PCI-PM_=
-L1.1- ASPM_L1.2+ ASPM_L1.1-
-> L1_PM_Substates+
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PortCommonModeRestoreTime=3D32us PortTPowerO=
-nTime=3D10us
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl1: PCI-PM_L1.2- PCI-PM=
-_L1.1- ASPM_L1.2+ ASPM_L1.1-
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 T_CommonMode=3D0us LTR1.2_Threshold=3D=
-0ns
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L1SubCtl2: T_PwrOn=3D10us
->=20
-> This patch initializes the link's L1 PM substates to get the supported
-> features and programs relating paramters, if some of them are going to be
-> enabled in __pci_enable_link_state(). Then, enables the L1 PM substates i=
-f
-> the caller intends to enable them and they are supported.
->=20
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D218394
-> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-> ---
-> v2:
-> - Prepare the PCIe LTR parameters before enable L1 Substates
->=20
-> v3:
-> - Only enable supported features for the L1 Substates part
->=20
-> =C2=A0drivers/pci/pcie/aspm.c | 12 +++++++-----
-> =C2=A01 file changed, 7 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index a39d2ee744cb..c866971cae70 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -1389,14 +1389,16 @@ static int __pci_enable_link_state(struct pci_dev
-> *pdev, int state, bool locked)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0link->aspm_default |=3D ASPM_STATE_L0S;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & PCIE_LINK_STA=
-TE_L1)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0link->aspm_default |=3D ASPM_STATE_L1;
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* L1 PM substates require L1 =
-*/
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & PCIE_LINK_STATE_L1=
-_1)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & ASPM_STATE_L1_2_MA=
-SK)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0aspm_l1ss_init(link);
+Hello Pekka, Arthur,
 
-This mixes ASPM_STATE flags with PCIE_LINK_STATE register mapping. This may=
- work
-but I don't know if it's intended to. Rather do,
+[...]
 
-    if (link->default & ASPM_STATE_L1_2_MASK)
+> > > Would it be possible to have a standardised benchmark specifically
+> > > for performance rather than correctness, in IGT or where-ever it
+> > > would make sense? Then it would be simple to tell contributors to
+> > > run this and report the numbers before and after.
+> > > 
+> > > I would propose this kind of KMS layout:
+> > > 
+> > > - CRTC size 3841 x 2161
+> > > - primary plane, XRGB8888, 3639 x 2161 @ 101,0
+> > > - overlay A, XBGR2101010, 3033 x 1777 @ 201,199
+> > > - overlay B, ARGB8888, 1507 x 1400 @ 1800,250
+> > > 
+> > > The sizes and positions are deliberately odd to try to avoid happy
+> > > alignment accidents. The planes are big, which should let the pixel
+> > > operations easily dominate performance measurement. There are
+> > > different pixel formats, both opaque and semi-transparent. There is
+> > > lots of plane overlap. The planes also do not cover the whole CRTC
+> > > leaving the background visible a bit.
+> > > 
+> > > There should be two FBs per each plane, flipped alternatingly each
+> > > frame. Writeback should be active. Run this a number of frames, say,
+> > > 100, and measure the kernel CPU time taken. It's supposed to take at
+> > > least several seconds in total.
+> > > 
+> > > I think something like this should be the base benchmark. One can
+> > > add more to it, like rotated planes, YUV planes, etc. or switch
+> > > settings on the existing planes. Maybe even FB_DAMAGE_CLIPS. Maybe
+> > > one more overlay that is very tall and thin.
+> > > 
+> > > Just an idea, what do you all think?  
+> > 
+> > Hi Pekka,
+> > 
+> > I just finished writing this proposal using IGT.
+> > 
+> > I got pretty interesting results:
+> > 
+> > The mentioned commit 8356b97906503a02125c8d03c9b88a61ea46a05a took
+> > around 13 seconds. While drm-misc/drm-misc-next took 36 seconds.
+> > 
+> > I'm currently bisecting to be certain that the change to the
+> > pixel-by-pixel is the culprit, but I don't see why it wouldn't be.
+> > 
+> > I just need to do some final touches on the benchmark code and it
+> > will be ready for revision.
+> 
+> Awesome, thank you very much for doing that!
+> pq
 
-after collecting all of the states to be enabled.
+I also think it's a good benchmarks for classic configurations. The odd 
+size is a very nice idea to verify the corner cases of line-by-line 
+algorithms.
 
-I understand that you are calling aspm_l1ss_init() to do the L1.2 calculati=
-ons
-but it does more than this that you don't need. Maybe it would be more
-appropriate to call aspm_calc_l12_info() directly through an additional fun=
-ction
-that finds the parent and determines both ends of the link support L1SS.
+When this is ready, please share the test, so I can check if my patch is 
+as performant as before.
 
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* L1 PM substates require L1 =
-and should be in supported list */
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & link->aspm_support=
- & PCIE_LINK_STATE_L1_1)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0link->aspm_default |=3D ASPM_STATE_L1_1 | ASPM_STAT=
-E_L1;
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & PCIE_LINK_STATE_L1=
-_2)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & link->aspm_support=
- & PCIE_LINK_STATE_L1_2)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0link->aspm_default |=3D ASPM_STATE_L1_2 | ASPM_STAT=
-E_L1;
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & PCIE_LINK_STATE_L1=
-_1_PCIPM)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & link->aspm_support=
- & PCIE_LINK_STATE_L1_1_PCIPM)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0link->aspm_default |=3D ASPM_STATE_L1_1_PCIPM | ASP=
-M_STATE_L1;
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & PCIE_LINK_STATE_L1=
-_2_PCIPM)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & link->aspm_support=
- & PCIE_LINK_STATE_L1_2_PCIPM)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0link->aspm_default |=3D ASPM_STATE_L1_2_PCIPM | ASP=
-M_STATE_L1;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pcie_config_aspm_link(lin=
-k, policy_to_aspm_state(link));
-> =C2=A0
+Thank you for this work.
 
-I don't think these changes are necessary. pcie_config_aspm_link() already
-checks link->aspm_capable which was initialized from link->aspm_support.
+Have a nice day,
+Louis Chauvet
 
-David
+-- 
+Louis Chauvet, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
