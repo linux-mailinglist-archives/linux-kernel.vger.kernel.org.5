@@ -1,92 +1,108 @@
-Return-Path: <linux-kernel+bounces-56583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FFCC84CC03
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:50:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D67884CC07
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:51:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CA041F2624B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:50:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA2D81C21598
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:51:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E21125A118;
-	Wed,  7 Feb 2024 13:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qkkpQCo4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D26877F08;
-	Wed,  7 Feb 2024 13:50:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C357B79DB8;
+	Wed,  7 Feb 2024 13:51:50 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9366077F08
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:51:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707313827; cv=none; b=djOx16CrCfls6WakaxA0BnwqVzCjCHCSYUjDcNTZBv4ulxBTI+ugvppQg2CDmNoKDrPu04gBvT2/S+sstkc0qLW16u3N5GbkiDVozo2My54RnQUahKrSofjO2FlsjW4kT64+2qwI5600tV2U1h9pSHMHnT53hIwPyd1t3S503sg=
+	t=1707313910; cv=none; b=cyDtay/NvBiz0t6nt3rIWQjaZAKutuWK7b+59i4uPmMkBiIePOV6W+IDKLIhJ6J3V1wnhyU31PUp8feLC3oCmU1xl8OiCMnx1yvSBKBR+dpAL25vSxsHG0FvVjk81oTrNV+Jn2mI3ZSOXij+bTXWOzEz1SMGyn8rateDNNLqbNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707313827; c=relaxed/simple;
-	bh=dmuXJA4ZT1tUJMeDuSw5EWD8YBIigWfeJDIEJHdcVsQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=qg4nXwsVGqYZZpCpke1qplTKL6dSEUbEsMBnWd3mW/VpHGANVR41zv33aX2YPzcQ/WhLibI0i04ZGDp4yIx51jaMo0D49tnlCX2uLLwdKn41EXV5Q6YpH0Aw8JwhjCug3Zeba6TBMLDr2bcTPJth1P0nxIfK728qRV2Fba+gHv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qkkpQCo4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9D4EAC433C7;
-	Wed,  7 Feb 2024 13:50:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707313826;
-	bh=dmuXJA4ZT1tUJMeDuSw5EWD8YBIigWfeJDIEJHdcVsQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=qkkpQCo4ewCRimVC1n0DNRR7iY9L8Wz5JMGwJSQalOsF9e9llvX0Tqm73h6umGVsf
-	 +wuB8vWCbtr0JjvsrpBjp67jr2MOcRGGxn1OLFwRCSC/5VzzVpTq13mwtXI89d4XCF
-	 9sE8ZyOnHrMD8KiPx/PHbcV4gPWTHrSTfptLnXCOow/KK8H24yc3JqR8QsiguWc/NW
-	 ZnmZu2tt+fBJL0S11XDoIExMh6E9B85y9sWToxofeA+MuyAZlA4JIMm30uP7X+S58U
-	 hh7bZ8gIFJjkHpbRYSQPjCaFmLXdH8bpO2WLZtlazMaVIfHIyE/L4QFXqa/ea/3Cui
-	 qPbBiiGw7QlcA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 77BB0E2F2F1;
-	Wed,  7 Feb 2024 13:50:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1707313910; c=relaxed/simple;
+	bh=zexCmC4fXcwE3lcy44wNcZYTwGpTTivyKi8epTwOIFs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FXbqwaklr3sFVhbSQUUbIHXeYnnwsbUl3ARVOun5zSVd/yz7DFvLJoEg6v7A4BsSOqJTJBeOU8UBl9aNYURtBbV9ghjDPGi9sqczvrymc+I7dAchHuPxuBy1rq7ai+FP+4jIJfi64UaLlBfaYAq1ePHnGaY+sLLqyQKk2A7c9ls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C8C891FB;
+	Wed,  7 Feb 2024 05:52:28 -0800 (PST)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 543D53F5A1;
+	Wed,  7 Feb 2024 05:51:45 -0800 (PST)
+Date: Wed, 7 Feb 2024 13:51:42 +0000
+From: Dave Martin <Dave.Martin@arm.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Will Deacon <will@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Oleg Nesterov <oleg@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Doug Anderson <dianders@chromium.org>
+Subject: Re: [PATCH] arm64/sve: Lower the maximum allocation for the SVE
+ ptrace regset
+Message-ID: <ZcOK7oIe2f/BFlDj@e133380.arm.com>
+References: <20240203-arm64-sve-ptrace-regset-size-v1-1-2c3ba1386b9e@kernel.org>
+ <ZcEW3y0IlEctOYBA@e133380.arm.com>
+ <ZcEd2zU/JpeIwn5f@finisterre.sirena.org.uk>
+ <ZcN2XMkvqxNnsz5K@e133380.arm.com>
+ <ZcOBH7ip/KMhLYGO@finisterre.sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] netdevsim: make nsim_bus const
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170731382648.23380.5700800203117881885.git-patchwork-notify@kernel.org>
-Date: Wed, 07 Feb 2024 13:50:26 +0000
-References: <20240204-bus_cleanup-net-v1-1-704b36d75901@marliere.net>
-In-Reply-To: <20240204-bus_cleanup-net-v1-1-704b36d75901@marliere.net>
-To: Ricardo B. Marliere <ricardo@marliere.net>
-Cc: kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- gregkh@linuxfoundation.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcOBH7ip/KMhLYGO@finisterre.sirena.org.uk>
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Sun, 04 Feb 2024 17:16:34 -0300 you wrote:
-> Now that the driver core can properly handle constant struct bus_type,
-> move the nsim_bus variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
+On Wed, Feb 07, 2024 at 01:09:51PM +0000, Mark Brown wrote:
+> On Wed, Feb 07, 2024 at 12:23:56PM +0000, Dave Martin wrote:
+> > On Mon, Feb 05, 2024 at 05:41:47PM +0000, Mark Brown wrote:
+> > > On Mon, Feb 05, 2024 at 05:11:59PM +0000, Dave Martin wrote:
 > 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> > > > If the kernel is now juggling two #defines for the maximum vector size,
+> > > > this feels like it may seed bitrot...
 > 
-> [...]
+> > > Ideally we'd just not have the existing define externally but it's there
+> > > and it's been used.
+> 
+> > To clarify, is this intended as a temporary band-aid against silly
+> > behaviour while a cleaner solution is found, or a permanent limitation?
+> 
+> Ideally we'd just make everything dynamic, other than the regset issue
+> and the bitmasks used for VL enumeration we're there already.  Making
+> the bitmasks dynamically sized is more painful but are also doing
+> enumeration that userspace doesn't need to do.
 
-Here is the summary with links:
-  - netdevsim: make nsim_bus const
-    https://git.kernel.org/netdev/net-next/c/56b93cd358b3
+For the bitmasks, we'd be saving (512 - 16) / 8 = 62 bytes for each of
+SVE and SME (I think).
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+The tradeoff really didn't seem worth it...
 
+> 
+> > We'd need to change various things if the architectural max VL actually
+> > grew, so no forward-portability is lost immediately if the kernel
+> > adopts 16 internally, but I'm still a little concerned that people may
+> > poke about in the kernel code as a reference and this will muddy the
+> > waters regarding how to do the right thing in userspace (I know people
+> > shouldn't, but...)
+> 
+> I think if we fix the ptrace regset issue we're doing a good enough job
+> of just using fully dynamic sizing with no limits other than what's been
+> enumerated there.  We could possibly deal with the enumberation code by
+> changing it to use ZCR/SMCR_ELx_LEN_ based defines so that it's
+> obviously coming from what we can possibly write to the register but
+> it's a bit less clear how to do that neatly.
 
+OK, but we still seem to have two competing approaches: clamp SVE_VQ_MAX
+for kernel internal purposes, or restore the dynamic sizing of
+NT_ARM_SVE based on the new regset core behaviour.
+
+Are you saying we should or both, or otherwise which one?
+
+Cheers
+---Dave
 
