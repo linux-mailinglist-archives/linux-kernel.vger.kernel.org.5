@@ -1,118 +1,135 @@
-Return-Path: <linux-kernel+bounces-56545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BCA884CB76
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:24:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A55E884CB7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:24:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEAC31C24CFA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:24:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A282B22098
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5B2079DB8;
-	Wed,  7 Feb 2024 13:22:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99EA776C8C;
+	Wed,  7 Feb 2024 13:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eYl/gimL"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iD/reISh"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66DA47E571;
-	Wed,  7 Feb 2024 13:22:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C6D76904;
+	Wed,  7 Feb 2024 13:23:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707312158; cv=none; b=nmRmOGEDwLFZC/WIYZ0h7baGIjqyIl9/90XyGFuygb3q+a6EQQxU/XP0FCeUi54aUM2cDJBn5INV7xdr8jo6Nu6WrMuFnAU0ADYDTQglEt5vgAfpcmzm7/F4KL0OLlqUbyjzciMFzWT9MS+Q2fB4UG/g0NF1rOTeDlG2cI68MC8=
+	t=1707312234; cv=none; b=OZ6xNSvJop9HUloCbB4rXXjX8taXKPAvncM5VUI98kMGW/iwn0D8Shn8wxzi++aeQmH8jwIg2d2VG+NBNqraZGJ2nVFeHTau65rc4aig7exAtRg+84H8LTSNj1096jzZi2jex145yqv8E21wiulzM6w18YNrg56pQPD5k1Bq6VI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707312158; c=relaxed/simple;
-	bh=lp2EuxvbdjktSjgXoQYRe6g36+FmIO4Tk9k172WgeII=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=b8NIjON8CEtHGZTJFDPRrrFy07Ui62jsquawWlJgCkDXXlbRDeHnQ4QE7DSMK5kqrTadQbv848eFaI++0mthhSROuvKJND7j+kK+1oNWf+wfNmgPYnibFJlNEoFpErPOFuAUKYmppokkpaozGaNpXOrygmMLrlRFxFDCO3cRs8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eYl/gimL; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1707312234; c=relaxed/simple;
+	bh=n9lnxml7vDWKWDhPukUbe53jnLIHfWyXAPQRkDlN8cs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KU8DI9PXTOxxWiZbMxnMLtuGBTLUdEbggdY6DhIoMx8c4vCscSYouga1FLA0wjQSnraDBIqzDfu3k0ZbwhhmkEm0Vn14oLAaZgWte3ym5XPLx7qMbB0YGTxp0jf/SSEC2I6WCAPAU1T8XG+T9YhzAMhDnpmBn6LDb7t8L0EHR5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iD/reISh; arc=none smtp.client-ip=209.85.167.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3864258438so125394066b.0;
-        Wed, 07 Feb 2024 05:22:36 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-511689e01f3so456976e87.1;
+        Wed, 07 Feb 2024 05:23:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707312154; x=1707916954; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=btAz24IgCKzwrdNvEUaIqqAv+WGdf0h9y7BxoNQKWVc=;
-        b=eYl/gimLL06NmTIZ2LtVX3BCBKh+qD9EM2cK15WeYvB2vK9eEFhuS+eV6cvnWHvyIz
-         +uL+IuP+JmDttXk1qnVphJ+TWa5Z3chCia4x07KFF+j2XkaVjCnoApDlZ/MxX5flX0SJ
-         pE3GyspJN1h7oDtRnU8bQu7b25xGbiF6D7i3ylAgV2k5F648kMSQSi074QsdgajQjPFQ
-         e/v5KCwYT/3au7OGQq3k5fa5dEU8tu+mXRH23knTku9c7R64snYWx8KWJPVWAf5L3roJ
-         eb2R0/R1k3PxFlNrOAnlwcabU8l1+LLxVL+BkqMJHbSo+yj85cseIwyAo44LiledpROQ
-         27Hg==
+        d=gmail.com; s=20230601; t=1707312231; x=1707917031; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DlrXLQPU7SiDVj92lskAkNYdA49Qzw9WwEfRE3KmueI=;
+        b=iD/reIShEmiO5+JLardqIju3x6Wq4Q1z10Md3lFkWHuCalqJC98LnF2p8vlDZ/jN4J
+         GY50wgxSKiKQPd8qhQG4yNkcEjmbmun+HYzftngOAlbkC1kXhwOZpGykxh0iWDDYl9SR
+         pyF5/b2qd9WhSwwjOONiEYVgrMTvgfxSJiFmOokcutxAsnGQ7HrjXusDiUFDXE/0zjce
+         I6u/ZKXEuk22zWV4Oa4i68FYIkKTzAz4c64x/RmmLB7+/qX6y8nZHGYaAM/pikbyDDo8
+         qxmicgPcsVvATvMGpcIic/TM7ZIkMg6Rk4oV19FzAe9z9ztHST0QPhnmLXg+TxDfV7DL
+         0CWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707312154; x=1707916954;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=btAz24IgCKzwrdNvEUaIqqAv+WGdf0h9y7BxoNQKWVc=;
-        b=o+O+F4770SplQTI4GHDwkQifpIKkeCw6Xvfwj0NruZ1avoxxXiuMkkKxsokT7/hkvS
-         IC2n4Yeic1zqdFyVzub4I/oEFF7kB+VnCu/5/o8Tpuyd64hLJceND160zZGuGYbtBbd6
-         MyR1Cg9NngZx1nTVmNn08WoOMEOz6m9BH2Zbf6Eunw3IXBATAazR53qEh71gepDMBBZg
-         ZPL822lgwvdcgeMthz6PSPG4Rp61CwljsCNyxCWOw85XKKrqDhgFPjxi61kqoIPvOqvZ
-         fVQZYplhS9zfwYtvxpHvZR9s8q4t5cprYizfTSuHdyGLa09TGIBCdKJ+54kNy8I+62Mk
-         S3Xg==
-X-Gm-Message-State: AOJu0YzKu/LlUOscE8tDXDH55V/01qpSjfIzhB3UQWWemcYaaOFbOsCA
-	ufSTDnl9DoELG91c7lXKTWMZEN0/32mpBDYD7kgCXvudoPBvfKwqm1sIHe1C
-X-Google-Smtp-Source: AGHT+IE9bPVZK04UV+tm9WxRbdfPetniu/nC04eKXIaiiybNhHN9HXBwQ0KgpUds9btFyHEoFTfDSA==
-X-Received: by 2002:a17:906:185:b0:a38:757:fee with SMTP id 5-20020a170906018500b00a3807570feemr6011595ejb.8.1707312154395;
-        Wed, 07 Feb 2024 05:22:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXEA2ocgoqDIFCWEXQDSQX8pgVyYCYjVsTdCMkVU7XfRMtcWNQhFE75VvhLIaT3uwsk5lHOpItKRF7PxRvr9C0tesHs0Qr6WkiTUoQvsabEpSQK5pypqWEskE1CpmRxvYMe6MUgCG5fm66ufb5zoYL7fylhVRn7ryQJvh8vk0hwwml3VWw6fboHrVjuiX/1USsOW83GekxpM6wpi0gLoqqcqKPdTu1wiTFo3KE1RS3+kLSI6zgbWJ42xJxyBQBGB1hmEf2DsTC/fpaCfGbAqvMT3trPDgeXbNqnl3IrZuIq6HTIsMDQYmrcwvgwdXsg
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:81be:a476:88e2:db23])
-        by smtp.gmail.com with ESMTPSA id gq13-20020a170906e24d00b00a37116e2885sm758649ejb.84.2024.02.07.05.22.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 05:22:33 -0800 (PST)
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To: Andrei Simion <andrei.simion@microchip.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-arm-kernel@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: repair entry for MICROCHIP MCP16502 PMIC DRIVER
-Date: Wed,  7 Feb 2024 14:22:31 +0100
-Message-Id: <20240207132231.16392-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        d=1e100.net; s=20230601; t=1707312231; x=1707917031;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DlrXLQPU7SiDVj92lskAkNYdA49Qzw9WwEfRE3KmueI=;
+        b=Fpkx3pL3S8D3DipNBGBywTC8zs51PPBIH8cpinnSMNvBUJ3c+WubMOd46x4Q9oTE+B
+         7Auqegh1TRq384MRJ2bplCkCW3YRaEF8Ch2/2r5oj+XcIL0MP/p2XJuqHU/s05Dsx9o2
+         ABy/cFexEyiryI8B/xotjuYGseBYQxYclcCfi9mlcEmzUaYjP/bsvPKuw2QVDgakve2a
+         78IwdieoqZBeL97R0EpK0O/O0L1nX77X48wiH0v4gwlKifRmwYygaHpPwtIiNUZ2+Jgp
+         DYEX9o5JO3fDkCoX2RgIcnR09Tvr/Whqm5A2CCnVS3M5iyBJsBjjLke9A3tdtMn7wmRL
+         BHYQ==
+X-Gm-Message-State: AOJu0YyoIDiHSVN660D3ZWe90D4+5EHUvnX68ulLXUEmHtck056ozSty
+	xUV9a4M7qC+lKAMJSWfhrRiHYwBSSoyap8JconIRDg8dtYno96VN
+X-Google-Smtp-Source: AGHT+IEM7csy2zcnsFVgegPV2i9UeAGj/ka+uV0FjlhlxQMcFZq1EuOMBgksb2YSqdTPTk3fQ60+5g==
+X-Received: by 2002:ac2:44d5:0:b0:511:4edb:501a with SMTP id d21-20020ac244d5000000b005114edb501amr4064284lfm.15.1707312230865;
+        Wed, 07 Feb 2024 05:23:50 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWM1dxoQWIi4KJuF3E581Mfce4Z9wgU445l4TYSli91UosKlBzuPThtUWOFnifu0Rm+HAtVeMbkYczszS0sz9/vSBy4iwQkSwxPmPV/l0wCvaTttI/JScNUcXZwgCjP1lJxAkkJdv6bd8hXrujxMU9+2WhWcRlo3gEaVBuf7b9RwAa419BxgX9VkAEusda4LdJhoUJ84R8/qFPUoJdmDatC98CITSt6OP46wCqKCl0JTtz0TGp1QUA4hGNRGp1+f69q9b3x879fqmIQ165iC8pp0AXKhXhejWhRj0tilp6mU0aeA9rddpXrJa++2MWoXpYDJfvIRvSfl3tm5CthVpyspIJ0euPH2v2LlaWwm7Y/
+Received: from [172.27.55.67] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id v23-20020a1709064e9700b00a3848ed2ef6sm750772eju.201.2024.02.07.05.23.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 05:23:50 -0800 (PST)
+Message-ID: <b19c4280-df54-409e-b3fd-00de6d6958d4@gmail.com>
+Date: Wed, 7 Feb 2024 15:23:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and
+ IRQs
+Content-Language: en-US
+To: Joe Damato <jdamato@fastly.com>, Tariq Toukan <tariqt@nvidia.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ Gal Pressman <gal@nvidia.com>, rrameshbabu@nvidia.com,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
+References: <20240206010311.149103-1-jdamato@fastly.com>
+ <7e338c2a-6091-4093-8ca2-bb3b2af3e79d@gmail.com>
+ <20240206171159.GA11565@fastly.com>
+ <44d321bf-88a0-4d6f-8572-dfbda088dd8f@nvidia.com>
+ <20240206192314.GA11982@fastly.com>
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20240206192314.GA11982@fastly.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Commit 64db3e8d7be0 ("regulator: dt-bindings: microchip,mcp16502: convert
-to YAML") converts mcp16502-regulator.txt to microchip,mcp16502.yaml, but
-misses to adjust its reference in MAINTAINERS.
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
-broken reference.
 
-Repair this file reference in MICROCHIP MCP16502 PMIC DRIVER.
+On 06/02/2024 21:23, Joe Damato wrote:
+> On Tue, Feb 06, 2024 at 09:10:27PM +0200, Tariq Toukan wrote:
+>>
+>>
+>> On 06/02/2024 19:12, Joe Damato wrote:
+>>> On Tue, Feb 06, 2024 at 10:11:28AM +0200, Tariq Toukan wrote:
+>>>>
+>>>>
+>>>> On 06/02/2024 3:03, Joe Damato wrote:
+>>>>> Make mlx5 compatible with the newly added netlink queue GET APIs.
+>>>>>
+>>>>> Signed-off-by: Joe Damato <jdamato@fastly.com>
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-Mark, please pick this minor clean-up patch on top of the commit above.
+..
 
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> OK, well I tweaked the v3 I had queued  based on your feedback. I am
+> definitiely not an mlx5 expert, so I have no idea if it's correct.
+> 
+> The changes can be summed up as:
+>    - mlx5e_activate_channel and mlx5e_deactivate_channel to use
+>      netif_queue_set_napi for each mlx5e_txqsq as it is
+>      activated/deactivated. I assumed sq->txq_ix is the correct index, but I
+>      have no idea.
+>    - mlx5e_activate_qos_sq and mlx5e_deactivate_qos_sq to handle the QOS/HTB
+>      case, similar to the above.
+>    - IRQ storage removed
+> 
+> If you think that sounds vaguely correct, I can send the v3 tomorrow when
+> it has been >24hrs as per Rahul's request.
+> 
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bb234d11f21e..e5087e4659f3 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14415,7 +14415,7 @@ MICROCHIP MCP16502 PMIC DRIVER
- M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Supported
--F:	Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt
-+F:	Documentation/devicetree/bindings/regulator/microchip,mcp16502.yaml
- F:	drivers/regulator/mcp16502.c
- 
- MICROCHIP MCP3564 ADC DRIVER
--- 
-2.17.1
+Sounds correct.
+Please go on and send when it's time so we can review.
 
 
