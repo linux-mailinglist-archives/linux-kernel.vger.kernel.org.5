@@ -1,105 +1,116 @@
-Return-Path: <linux-kernel+bounces-55778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D95D84C1AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:08:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6A6084C1B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:15:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A95DCB23A39
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:08:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65EDD1F25177
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:15:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03307BE4D;
-	Wed,  7 Feb 2024 01:08:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D3DD2FE;
+	Wed,  7 Feb 2024 01:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZLu4yKjX"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="gQVmsxkr"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC1D8F55
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 01:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E5A88F48;
+	Wed,  7 Feb 2024 01:15:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707268084; cv=none; b=VSnsva3dj1gT1ajBAKRHzhYdrOMazJZuoq6FkMTLaRIg+r9Om1JPJ4LuTlE+Bh91dXPoq3tYbr2pa2zugIUHvKX4rzLibpHXgSZsq0424GqaiuSEKl+4NIIOrX2NLtsuE92GKFinT/GDf14/EE5ndJb0B8lNlrVAyvwhfBguaYc=
+	t=1707268525; cv=none; b=meeP72FErvplYMxxzRXV1Tjs3F+X2QPz9eO9yj34PdtKB4qrOEmEW467hI6cgiw7ihokxd4Ea01K6Fvlj26mVK4WTeaVaNIXTxKjhbWx47pcCuYb2ji+qDkjFfA3dCiKLVqkn5tptLFx2vSNQrXXnIXHnzq+ya3LUwAhciiG0bw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707268084; c=relaxed/simple;
-	bh=YWoqPUFfMGS47WFb4mE5+cl1K2/d2tJFTG4u0nDPs6Q=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=b0ezG1wkmYSHDkGtWN1HFPxgJN3LF090HJr514uAuF86TX9m1l3x4Qqa2EWFGva2s2720PBygwEcMHfaOIvzaJgq9/wnHH7z4EK4vxB7XVUT0xvnmNtEf4iRFV3eJXaXxFICLNmAP6ivxTNnw7XpT8jXosB1lmFc5RZQaqNCAa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZLu4yKjX; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707268081; x=1738804081;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=YWoqPUFfMGS47WFb4mE5+cl1K2/d2tJFTG4u0nDPs6Q=;
-  b=ZLu4yKjX/hUYIj8V3mtDyYSM25s0Jl2r3BHa3XEyE/aYphjXjafVxsBc
-   jTktXKxwoqu2t1e8uBu83CaiHTMdpa7RyRhb2h26O92JbWFV8E41wN1s+
-   e/J2b/XNtXSPl1hTWp/Q2P+5YPzPY/OTvjAyOsCKTRPM4JAB9z2ZK6Mo5
-   agVGlzLxZtZyhAchQK6n7rfKUA71YAYJCYviIlKZLf2sisxJZ4IYfTJKG
-   xeTCODAxlKbVOS8fTA2ArFWP65vlVdx8kdZgnFohE9ZT02hhs0wTYr/ky
-   fGzCMwSzRyKoQP0O6lgyOr70BSzUNNlPnrE9Dji+7zgT014+9mNaL5HQp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="26326489"
-X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
-   d="scan'208";a="26326489"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 17:08:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
-   d="scan'208";a="32260071"
-Received: from rmahambr-mobl.amr.corp.intel.com (HELO [10.209.58.248]) ([10.209.58.248])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 17:08:00 -0800
-Message-ID: <a869aff64f69bd1e1318653559f4c32e9f0a4c08.camel@linux.intel.com>
-Subject: Re: [PATCH v2] mm: swap: async free swap slot cache entries
-From: Tim Chen <tim.c.chen@linux.intel.com>
-To: Chris Li <chrisl@kernel.org>
-Cc: "Huang, Ying" <ying.huang@intel.com>, Andrew Morton
- <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org,  Wei =?UTF-8?Q?Xu=EF=BF=BC?= <weixugc@google.com>, Yu
- =?UTF-8?Q?Zhao=EF=BF=BC?= <yuzhao@google.com>, Greg Thelen
- <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, Suren
- =?UTF-8?Q?Baghdasaryan=EF=BF=BC?= <surenb@google.com>, Yosry
- =?UTF-8?Q?Ahmed=EF=BF=BC?= <yosryahmed@google.com>,  Brain Geffon
- <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko
- <mhocko@suse.com>, Mel Gorman <mgorman@techsingularity.net>, Nhat Pham
- <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Kairui Song
- <kasong@tencent.com>, Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng
- Shi <shikemeng@huaweicloud.com>,  Barry Song <v-songbaohua@oppo.com>
-Date: Tue, 06 Feb 2024 17:08:00 -0800
-In-Reply-To: <CAF8kJuMz+HCHkPUQhum32EPB7E1uVvN-E-TffOS7SSHxJNwNmQ@mail.gmail.com>
-References: <20240131-async-free-v2-1-525f03e07184@kernel.org>
-	 <87sf2ceoks.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	 <7f19b4d69ff20efe8260a174c7866b4819532b1f.camel@linux.intel.com>
-	 <CAF8kJuNvB8gXv3kj2nkN5j2ny0ZjJoVEdkeDDWSuWxySkKE=1g@mail.gmail.com>
-	 <1fa1da19b0b929efec46bd02a6fc358fef1b9c42.camel@linux.intel.com>
-	 <CAF8kJuMz+HCHkPUQhum32EPB7E1uVvN-E-TffOS7SSHxJNwNmQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+	s=arc-20240116; t=1707268525; c=relaxed/simple;
+	bh=jb0WADSs8jzHMDJOumcCK5xjY92G5/BQFltArPqFDCU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fu4oPRNDUUrLbe4FvrWKW5ZWtXfF1XPmPFaDiBeo/bPmCLmsMiZD2HcJe9FwxA6nPjG8QVIe8UwA+te28nQX0/a0Zvg3iAmjE1g8UVqsDR3v6UzHRLQtSWKv4Oxk9sDPhBvlQmP+0jTBP1LXe+ApLZGsZaj78wqHGUoumlGVVpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=gQVmsxkr; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4171FKgD053885;
+	Tue, 6 Feb 2024 19:15:20 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707268520;
+	bh=nLwkfNDASkjCG3CEoS36quV/YANOd685QNozGD7eIdE=;
+	h=From:To:CC:Subject:Date;
+	b=gQVmsxkrPJ0jn9/Va0hRfHlV1T23hZ+X+gKQt/EIQzZ+l5wRzRb6aET49EFfpX6Lr
+	 Mk9iteoZ06coQdt22XvkgANmyIsJlSdJufVLqWy6QPIHzY0pXd7uC2rrN6vZ+fTcrC
+	 52F7+Yq1pYi1pE2AcbqzbaRyuIiZEZkFXxHx1CNE=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4171FKA8109412
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 6 Feb 2024 19:15:20 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 6
+ Feb 2024 19:15:20 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 6 Feb 2024 19:15:20 -0600
+Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4171FKMo122103;
+	Tue, 6 Feb 2024 19:15:20 -0600
+From: Judith Mendez <jm@ti.com>
+To: Ulf Hansson <ulf.hansson@linaro.org>
+CC: Adrian Hunter <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/7] Add tuning algorithm for delay chain
+Date: Tue, 6 Feb 2024 19:15:13 -0600
+Message-ID: <20240207011520.3128382-1-jm@ti.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Mon, 2024-02-05 at 11:10 -0800, Chris Li wrote:
->=20
->=20
-> In our system, a really heavy swap load is rare and it means something
-> is already wrong. At that point the app's SLO is likely at risk,
-> regardless of long tail swap latency. It is already too late to
-> address it at the swap fault end. We need to address the source of the
-> problem which is swapping out too much.
->=20
->=20
+This patch series introduces a new tuning algorithm for
+mmc. The new algorithm should be used when delay chain is
+enabled. The ITAPDLY is selected from the largest passing
+window and the buffer is not viewed as a circular buffer.
+The new tuning algorithm is implemented as per the paper
+published here [0] and has been tested on the following
+platforms: AM62x SK, AM62A SK, AM62p SK, AM64x SK, and AM64x
+EVM.
 
-Could some usage scenarios put more pressure on swap than your
-usage scenario?  Say system with limited RAM and rely on zswap?
+The series also includes a few fixes in the sdhci_am654
+driver on OTAPDLYEN/ITAPDLYEN and ITAPDELSEL.
 
-Tim
+Changelog:
+v1->v2:
+- Remove unnecessary indentations and if/else in
+ sdhci_am654_calculate_itap
+- Optimize sdhci_am654_calculate_itap()
+- Call sdhci_am654_write_itapdly() in sdhci_am654_set_clock()
+ instead of sdhci_am654_setup_dll()
+- Change otap_del_sel[], itap_del_sel[], and itap_del_ena[]
+ to type u32
+- Revert unnecessary reformating in sdhci_am654_set_clock()
+ and sdhci_j721e_4bit_set_clock()
+
+Judith Mendez (7):
+  mmc: sdhci_am654: Add tuning algorithm for delay chain
+  mmc: sdhci_am654: Write ITAPDLY for DDR52 timing
+  mmc: sdhci_am654: Add missing OTAP/ITAP enable
+  mmc: sdhci_am654: Fix itapdly/otapdly array type
+  mmc: sdhci_am654: Update comments in sdhci_am654_set_clock
+  mmc: sdhci_am654: Add ITAPDLYSEL in sdhci_j721e_4bit_set_clock
+  mmc: sdhci_am654: Fix ITAPDLY for HS400 timing
+
+ drivers/mmc/host/sdhci_am654.c | 176 ++++++++++++++++++++++++++-------
+ 1 file changed, 138 insertions(+), 38 deletions(-)
+
+
+base-commit: 40d83f40c44ba8aa79cba409ace619db3a7f86f2
+-- 
+2.43.0
+
 
