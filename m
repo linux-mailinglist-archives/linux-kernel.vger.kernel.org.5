@@ -1,362 +1,194 @@
-Return-Path: <linux-kernel+bounces-56136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2392384C682
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C23284C687
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:45:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48C971C21D78
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:45:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FD291C20B3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:45:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38FCE2232E;
-	Wed,  7 Feb 2024 08:44:26 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2487020B0F;
+	Wed,  7 Feb 2024 08:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b="vSAAENbS"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20C46208B9
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 08:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7088A208C5
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 08:44:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707295465; cv=none; b=bvdsIUIotYP+tWMF38x75IzNzl4l5Z3p3oPHjycfe0f9iF/V1iISQOoWXUnbaP/6xsyfd27YcqdJvtbp7Bvd2W/eBFSM9MFtZWslz8gNd2Txd7u1CXBrI1PAh7QuupCurSe9DrJ0pON0+lgBO5w2mjOSn+g1IFByxjerEF1Brnk=
+	t=1707295501; cv=none; b=ZK5yotztXw4A04mZ8jtW9bwreVsQD/nB4PUQptA20pLB93ICdGcILbjTnOCWKgnG2JU7tsES9txXZny0ZKD+uVKXujzzLPKLz7OxtzWaAUeFNdaYqrpe9w+UvpKHT4R5ZLCdtllk1UHpxbCw/FlLt1uzqS7N6TuR0D1v8HMCVBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707295465; c=relaxed/simple;
-	bh=kXF+1SWOveE7F13ZT6xkBXUF2xosnAPNwsf7IsTYVE0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=VQWgNtHe6N/ZGMsoLWd+6rWxG47OdFm+xNZakfCmO1Ccaxd2vbvxN+u2fyVRsNBzecGp7/Wpg8u7V9Zk8Op0QuY/1b/MvE1FaHfeeAyMxSw7J91dZROMb+Fe5kbloaS3uThXRupHKgm2HAUprEj2Gr2rTf+Err9u6YY23bsJYJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-363bc4a8d38so2882285ab.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 00:44:22 -0800 (PST)
+	s=arc-20240116; t=1707295501; c=relaxed/simple;
+	bh=H2Xrmgvl+SM8bD81WrtzhSJbxFmN+3cpc89YY2RXfaY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i3znl7cwLrUPf3f3wBYaUxiLOLscjinNaFopyIIxHuGLQlzYSOAqMhrxRI9IZPm7Gk7UqcQhziAHg+1sKi5wypxSBiZCff95JO6lWpvlumlFxQm1Wfy0le6EecvoE8TWSveKs3x6cbhN2v8DbHGQgiU0HSYNbltEUM1ck4iqtZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org; spf=pass smtp.mailfrom=endlessos.org; dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b=vSAAENbS; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endlessos.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a27e7b70152so15442566b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 00:44:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google; t=1707295497; x=1707900297; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NAeXDExjFp8LIE+XwnvVYSsXych5ypTHEBtl908GHMU=;
+        b=vSAAENbS7Ku2Cqif8kivUKMCOsd2sJ6WRog0B7TL9tw14zwYyeGsdJiioa9HcpxjYH
+         yFYKzcUmiOgF3shyP8ydFwJdundQFs+w7cg1WHkh/v3EsFa1j0I7J7fR8FFixarJakIM
+         e/TmlquDXXR+gW75yxBoqmayaaM8FZLxWZM4iXxTf+Et2HOgCgwRMfYx51U61re5lgLk
+         68lBmBqWHaxRyWxOTpcVz7zv1ApCIglTkaK1ymGvDeudkwFlpYZqITNQH3tLXzGjBx3j
+         SKsTEMZ8BLClFY9A60YrZzZ197omQAHirIw3gnjnjVDJO+l3si1m9O1FbMYmkmyVxAyL
+         rosw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707295462; x=1707900262;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2gZsBuExxNt/ZQaIeT/QcDer15IeSIPf303fEJnFZc0=;
-        b=LPLh0UJYZeLcsRgAZML76pxJfLye4StPdToA4m7Bc/qPrJ1bYX/8y/AAgbFlLOgb2u
-         AYxvR5iO1URwZEkwQgi/Vn2fjxOynJnoH3EQD+onGE46KvSt4dcqIihs7ZJN+50pjiJz
-         MU0/axka8bTA5+XRrvyKWqQapjERxO++ccbc1eglohoZqyWVkrAaTvzmlyNHaunGsnpD
-         lGdS4JnMaCLGCFmPmwqO9QH1Edy3CYf/+zj90dGP7inQMFDvArkEK0PC6LcAMy+evPAa
-         emv/x31e2dITlfQLNUVFJa2jyUQeVO41M/YjZ+nsfmOTR+PbgoXB6Fy+CYRZ8ikTwBai
-         BM8Q==
-X-Gm-Message-State: AOJu0YyIVN/ABsvrOefM6OSpGk9Un+uYbypxcgwFL/bB5dGYss68bDrA
-	ifXRafp05+fEdotlEF/IWhFhiRPIAD60zj/LlaOwqvdimdjyL9vJTPPbhwgDDLaK9Zagws48k2o
-	gPFnYzavuBMcLpwLtXFe0kxPSCDA54l4lMRX6lizaAyyAy9Wemky5n6k=
-X-Google-Smtp-Source: AGHT+IGuRv49JOThcLFReFlT+ySXgfC8Uhp+R8Mxfy3lkQfqepHrTsgUBBfXQ2aCQJ3CEe/b8RYvFCCosWRsigosSx20mQ+2Neyg
+        d=1e100.net; s=20230601; t=1707295497; x=1707900297;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NAeXDExjFp8LIE+XwnvVYSsXych5ypTHEBtl908GHMU=;
+        b=UP0dS+S4ZMbwu7fPxK9WCSo0VkY0USMEAfX36GWFR0Z1okz88xJDdRAHC+SvBWAzh0
+         9gwU9xcOpusZ6UTKX87DeHxApTCE++NHOfqGMt1/F2Ct/yIF8gWOqf3XWC0VunQ1rCG2
+         BNva56kyyOgf1kMyc0x3NSXW7m1OrBj6tXbuomPEyq/leg4V88U1C/lRs9UbQRSB1tvi
+         6og7merWkkjtMrzBTJK4SxfkPMP4pI+OpUjIVXCrLgWKwGOpxCjw6HP09e3r7h/Prncm
+         fRAoIkfvwvJxF7S7TCm4QwdNdY4FeTb5FEw3iaQrmIsMy2e7gAc5KO1GqKJdZXIDYYPX
+         dszA==
+X-Forwarded-Encrypted: i=1; AJvYcCWzAVRld0ieSoTJPWKAxYPpNIY9GaKPNTBhe0r/kfTaknUVNRtw6qDWrSPtKXQ121n92HUUESp8FLPS4a6yuh/JTR4W+ORUTLQOCPLf
+X-Gm-Message-State: AOJu0YyWMCLx+OWNPZX0dXGqUwwaXIT5h6uZGsMi1Lx2g0sQlfL7RMVv
+	MiqXXGUljLyErNCNiRYRAuJkKp27STuNskKhvutas5NGBVKw0AXgPqMjPd/+Jek=
+X-Google-Smtp-Source: AGHT+IHJH5b5XooA6vxYl/ux0hGtgIEdFNhaZyz2JiJVHAJXfPzU9wQ/SBYAIGJZBWwVpFZM4e6MpA==
+X-Received: by 2002:a17:907:7e9b:b0:a38:4eae:b129 with SMTP id qb27-20020a1709077e9b00b00a384eaeb129mr2455655ejc.3.1707295496181;
+        Wed, 07 Feb 2024 00:44:56 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXD4y+Ezus4AOUzHyJWgh6A6hXrLCrVZBKoWkE0W3oEF/JTD27sbTQK6xQyoJWrBnAUfEZWhID+7mlpMNEKd0kkmQ8o77b4Y4bmYcPaw/sBKUTPNwC+HeAFtFCLPfQ1Xopv4i9LgSzYqZym2Mh9140t6KoFQ0PyOxXiph2KN2ByJAQxH6tvOwNzJMJ5Xkg7LVrG1z7K+HI7sicNl2P0uvx85Xi8vsUDv4Q+m7Ub+TQIEY2rXUtq+PIDrqGbLrq60Gf1xTCtKlwncMj3Cwlnfn8tA4jqgSPeuRjIvvB1eMhsJ1jisXpgeRm+z6/C2DftlpuYaNrrv6M2qY0q4k3L67RYdQRoyu1blHhC+8GDzTLMUyBhe68ONUhSjwSvWaFWt4cDJZplbpJgFCPDfY2Fb/XgSa5RGwSlY9sXuaDwH9Swb69jpyiYR8Fn5exbH1LCzPMw47UFUas=
+Received: from limbo.local ([2a00:1bb8:11e:cb8d:24dc:94bb:6d8:7d12])
+        by smtp.gmail.com with ESMTPSA id u25-20020a1709060b1900b00a370a76d3a0sm493921ejg.123.2024.02.07.00.44.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 00:44:55 -0800 (PST)
+From: Daniel Drake <drake@endlessos.org>
+To: tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org
+Cc: hpa@zytor.com,
+	linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bhelgaas@google.com,
+	david.e.box@linux.intel.com,
+	mario.limonciello@amd.com,
+	rafael@kernel.org,
+	lenb@kernel.org,
+	linux-acpi@vger.kernel.org,
+	linux@endlessos.org
+Subject: [PATCH v2 1/2] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
+Date: Wed,  7 Feb 2024 09:44:51 +0100
+Message-ID: <20240207084452.9597-1-drake@endlessos.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20e9:b0:363:8396:a068 with SMTP id
- q9-20020a056e0220e900b003638396a068mr327995ilv.5.1707295462318; Wed, 07 Feb
- 2024 00:44:22 -0800 (PST)
-Date: Wed, 07 Feb 2024 00:44:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008eec060610c6b378@google.com>
-Subject: [syzbot] [usb?] [fs?] KASAN: slab-use-after-free Read in comedi_release_hardware_device
-From: syzbot <syzbot+cf1afeda4043ffecf03e@syzkaller.appspotmail.com>
-To: gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, rafael@kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+The Asus B1400 with original shipped firmware versions and VMD disabled
+cannot resume from suspend: the NVMe device becomes unresponsive and
+inaccessible.
 
-syzbot found the following issue on:
+This is because the NVMe device and parent PCI bridge get put into D3cold
+during suspend, and this PCI bridge cannot be recovered from D3cold mode:
 
-HEAD commit:    ed5551279c91 Merge 6.8-rc3 into usb-next
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=113f3c9fe80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=28a3704ea90ef255
-dashboard link: https://syzkaller.appspot.com/bug?extid=cf1afeda4043ffecf03e
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d42d8fe80000
+  echo "0000:01:00.0" > /sys/bus/pci/drivers/nvme/unbind
+  echo "0000:00:06.0" > /sys/bus/pci/drivers/pcieport/unbind
+  setpci -s 00:06.0 CAP_PM+4.b=03 # D3hot
+  acpidbg -b "execute \_SB.PC00.PEG0.PXP._OFF"
+  acpidbg -b "execute \_SB.PC00.PEG0.PXP._ON"
+  setpci -s 00:06.0 CAP_PM+4.b=0 # D0
+  echo "0000:00:06.0" > /sys/bus/pci/drivers/pcieport/bind
+  echo "0000:01:00.0" > /sys/bus/pci/drivers/nvme/bind
+  # NVMe probe fails here with -ENODEV
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/10b543a7171a/disk-ed555127.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/dc10f27643e8/vmlinux-ed555127.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/bb6389e754b9/bzImage-ed555127.xz
+This appears to be an untested D3cold transition by the vendor; Intel
+socwatch shows that Windows leaves the NVMe device and parent bridge in D0
+during suspend, even though these firmware versions have StorageD3Enable=1.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cf1afeda4043ffecf03e@syzkaller.appspotmail.com
+Experimenting with the DSDT, the _OFF method calls DL23() which sets a L23E
+bit at offset 0xe2 into the PCI configuration space for this root port.
+This is the specific write that the _ON routine is unable to recover from.
+This register is not documented in the public chipset datasheet.
 
-vmk80xx 2-1:0.173: driver 'vmk80xx' failed to auto-configure device.
-------------[ cut here ]------------
-==================================================================
-BUG: KASAN: slab-use-after-free in string_nocheck lib/vsprintf.c:646 [inline]
-BUG: KASAN: slab-use-after-free in string+0x394/0x3d0 lib/vsprintf.c:728
-Read of size 1 at addr ffff888103efc600 by task kworker/1:2/725
+Disallow D3cold on the PCI bridge to enable successful suspend/resume.
 
-CPU: 1 PID: 725 Comm: kworker/1:2 Not tainted 6.8.0-rc3-syzkaller-00047-ged5551279c91 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:488
- kasan_report+0xda/0x110 mm/kasan/report.c:601
- string_nocheck lib/vsprintf.c:646 [inline]
- string+0x394/0x3d0 lib/vsprintf.c:728
- vsnprintf+0xc5f/0x1870 lib/vsprintf.c:2824
- vprintk_store+0x3a0/0xb80 kernel/printk/printk.c:2187
- vprintk_emit+0x14c/0x5f0 kernel/printk/printk.c:2284
- vprintk+0x7b/0x90 kernel/printk/printk_safe.c:45
- __warn_printk+0x181/0x350 kernel/panic.c:724
- sysfs_remove_group+0x12b/0x180 fs/sysfs/group.c:282
- dpm_sysfs_remove+0x9d/0xb0 drivers/base/power/sysfs.c:837
- device_del+0x1a8/0xa50 drivers/base/core.c:3789
- device_unregister+0x1d/0xc0 drivers/base/core.c:3855
- device_destroy+0x9a/0xd0 drivers/base/core.c:4414
- comedi_free_board_dev drivers/comedi/comedi_fops.c:611 [inline]
- comedi_free_board_dev drivers/comedi/comedi_fops.c:606 [inline]
- comedi_release_hardware_device+0x196/0x210 drivers/comedi/comedi_fops.c:3291
- comedi_auto_config+0x1f2/0x440 drivers/comedi/drivers.c:1076
- usb_probe_interface+0x307/0x9c0 drivers/usb/core/driver.c:399
- call_driver_probe drivers/base/dd.c:579 [inline]
- really_probe+0x234/0xc90 drivers/base/dd.c:658
- __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
- __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
- bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
- __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
- bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
- device_add+0x117e/0x1aa0 drivers/base/core.c:3625
- usb_set_configuration+0x10cb/0x1c40 drivers/usb/core/message.c:2207
- usb_generic_driver_probe+0xad/0x110 drivers/usb/core/generic.c:254
- usb_probe_device+0xec/0x3e0 drivers/usb/core/driver.c:294
- call_driver_probe drivers/base/dd.c:579 [inline]
- really_probe+0x234/0xc90 drivers/base/dd.c:658
- __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
- __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
- bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
- __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
- bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
- device_add+0x117e/0x1aa0 drivers/base/core.c:3625
- usb_new_device+0xd90/0x1a10 drivers/usb/core/hub.c:2643
- hub_port_connect drivers/usb/core/hub.c:5512 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5652 [inline]
- port_event drivers/usb/core/hub.c:5812 [inline]
- hub_event+0x2e62/0x4f40 drivers/usb/core/hub.c:5894
- process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
- process_scheduled_works kernel/workqueue.c:2706 [inline]
- worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
- kthread+0x2c6/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-
-Allocated by task 4815:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
- kasan_save_track+0x14/0x30 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:372 [inline]
- __kasan_kmalloc+0x87/0x90 mm/kasan/common.c:389
- kasan_kmalloc include/linux/kasan.h:211 [inline]
- __do_kmalloc_node mm/slub.c:3981 [inline]
- __kmalloc_node_track_caller+0x212/0x420 mm/slub.c:4001
- kvasprintf+0xbd/0x160 lib/kasprintf.c:25
- kvasprintf_const+0x66/0x190 lib/kasprintf.c:49
- kobject_set_name_vargs+0x5a/0x130 lib/kobject.c:272
- device_create_groups_vargs+0x1b1/0x270 drivers/base/core.c:4308
- device_create+0xe9/0x120 drivers/base/core.c:4351
- comedi_alloc_board_minor+0x24c/0x3a0 drivers/comedi/comedi_fops.c:3270
- comedi_auto_config+0x74/0x440 drivers/comedi/drivers.c:1055
- usb_probe_interface+0x307/0x9c0 drivers/usb/core/driver.c:399
- call_driver_probe drivers/base/dd.c:579 [inline]
- really_probe+0x234/0xc90 drivers/base/dd.c:658
- __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
- __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
- bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
- __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
- bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
- device_add+0x117e/0x1aa0 drivers/base/core.c:3625
- usb_set_configuration+0x10cb/0x1c40 drivers/usb/core/message.c:2207
- usb_generic_driver_probe+0xad/0x110 drivers/usb/core/generic.c:254
- usb_probe_device+0xec/0x3e0 drivers/usb/core/driver.c:294
- call_driver_probe drivers/base/dd.c:579 [inline]
- really_probe+0x234/0xc90 drivers/base/dd.c:658
- __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
- __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
- bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
- __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
- bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
- device_add+0x117e/0x1aa0 drivers/base/core.c:3625
- usb_new_device+0xd90/0x1a10 drivers/usb/core/hub.c:2643
- hub_port_connect drivers/usb/core/hub.c:5512 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5652 [inline]
- port_event drivers/usb/core/hub.c:5812 [inline]
- hub_event+0x2e62/0x4f40 drivers/usb/core/hub.c:5894
- process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
- process_scheduled_works kernel/workqueue.c:2706 [inline]
- worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
- kthread+0x2c6/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-
-Freed by task 4815:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
- kasan_save_track+0x14/0x30 mm/kasan/common.c:68
- kasan_save_free_info+0x3f/0x60 mm/kasan/generic.c:640
- poison_slab_object mm/kasan/common.c:241 [inline]
- __kasan_slab_free+0x106/0x1b0 mm/kasan/common.c:257
- kasan_slab_free include/linux/kasan.h:184 [inline]
- slab_free_hook mm/slub.c:2121 [inline]
- slab_free mm/slub.c:4299 [inline]
- kfree+0x105/0x340 mm/slub.c:4409
- kfree_const+0x55/0x60 mm/util.c:41
- kobject_cleanup lib/kobject.c:691 [inline]
- kobject_release lib/kobject.c:716 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1f1/0x440 lib/kobject.c:733
- put_device+0x1f/0x30 drivers/base/core.c:3733
- comedi_dev_kref_release drivers/comedi/comedi_fops.c:117 [inline]
- kref_put include/linux/kref.h:65 [inline]
- comedi_dev_put.part.0+0xae/0xe0 drivers/comedi/comedi_fops.c:136
- comedi_dev_put drivers/comedi/comedi_fops.c:135 [inline]
- comedi_free_board_dev drivers/comedi/comedi_fops.c:614 [inline]
- comedi_free_board_dev drivers/comedi/comedi_fops.c:606 [inline]
- comedi_release_hardware_device+0x1a3/0x210 drivers/comedi/comedi_fops.c:3291
- comedi_auto_config+0x1f2/0x440 drivers/comedi/drivers.c:1076
- usb_probe_interface+0x307/0x9c0 drivers/usb/core/driver.c:399
- call_driver_probe drivers/base/dd.c:579 [inline]
- really_probe+0x234/0xc90 drivers/base/dd.c:658
- __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
- __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
- bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
- __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
- bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
- device_add+0x117e/0x1aa0 drivers/base/core.c:3625
- usb_set_configuration+0x10cb/0x1c40 drivers/usb/core/message.c:2207
- usb_generic_driver_probe+0xad/0x110 drivers/usb/core/generic.c:254
- usb_probe_device+0xec/0x3e0 drivers/usb/core/driver.c:294
- call_driver_probe drivers/base/dd.c:579 [inline]
- really_probe+0x234/0xc90 drivers/base/dd.c:658
- __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
- __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
- bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
- __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
- bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
- device_add+0x117e/0x1aa0 drivers/base/core.c:3625
- usb_new_device+0xd90/0x1a10 drivers/usb/core/hub.c:2643
- hub_port_connect drivers/usb/core/hub.c:5512 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5652 [inline]
- port_event drivers/usb/core/hub.c:5812 [inline]
- hub_event+0x2e62/0x4f40 drivers/usb/core/hub.c:5894
- process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
- process_scheduled_works kernel/workqueue.c:2706 [inline]
- worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
- kthread+0x2c6/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-
-The buggy address belongs to the object at ffff888103efc600
- which belongs to the cache kmalloc-8 of size 8
-The buggy address is located 0 bytes inside of
- freed 8-byte region [ffff888103efc600, ffff888103efc608)
-
-The buggy address belongs to the physical page:
-page:ffffea00040fbf00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x103efc
-flags: 0x200000000000800(slab|node=0|zone=2)
-page_type: 0xffffffff()
-raw: 0200000000000800 ffff888100041280 ffffea000422ff80 dead000000000004
-raw: 0000000000000000 00000000002a002a 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1, tgid 1 (swapper/0), ts 2863822057, free_ts 2708191453
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2d0/0x350 mm/page_alloc.c:1533
- prep_new_page mm/page_alloc.c:1540 [inline]
- get_page_from_freelist+0x139c/0x3470 mm/page_alloc.c:3311
- __alloc_pages+0x228/0x2250 mm/page_alloc.c:4567
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page mm/slub.c:2190 [inline]
- allocate_slab mm/slub.c:2354 [inline]
- new_slab+0xcc/0x3a0 mm/slub.c:2407
- ___slab_alloc+0x4b0/0x1860 mm/slub.c:3540
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3625
- __slab_alloc_node mm/slub.c:3678 [inline]
- slab_alloc_node mm/slub.c:3850 [inline]
- __do_kmalloc_node mm/slub.c:3980 [inline]
- __kmalloc+0x371/0x400 mm/slub.c:3994
- kmalloc include/linux/slab.h:594 [inline]
- kzalloc include/linux/slab.h:711 [inline]
- acpi_os_allocate_zeroed include/acpi/platform/aclinuxex.h:57 [inline]
- acpi_ns_internalize_name+0x149/0x220 drivers/acpi/acpica/nsutils.c:331
- acpi_ns_get_node_unlocked+0x164/0x310 drivers/acpi/acpica/nsutils.c:666
- acpi_ns_get_node+0x4c/0x70 drivers/acpi/acpica/nsutils.c:726
- acpi_get_handle+0x106/0x270 drivers/acpi/acpica/nsxfname.c:98
- acpi_has_method+0x7b/0xb0 drivers/acpi/utils.c:663
- acpi_device_setup_files+0x2f0/0x650 drivers/acpi/device_sysfs.c:570
- acpi_device_add+0x3f9/0xbc0 drivers/acpi/scan.c:736
- acpi_add_single_object+0x966/0x1b00 drivers/acpi/scan.c:1867
- acpi_bus_check_add+0x231/0xae0 drivers/acpi/scan.c:2114
-page last free pid 1 tgid 1 stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1140 [inline]
- free_unref_page_prepare+0x504/0xae0 mm/page_alloc.c:2346
- free_unref_page+0x33/0x2d0 mm/page_alloc.c:2486
- __put_partials+0x14c/0x160 mm/slub.c:2922
- qlink_free mm/kasan/quarantine.c:160 [inline]
- qlist_free_all+0x58/0x150 mm/kasan/quarantine.c:176
- kasan_quarantine_remove_cache+0x167/0x180 mm/kasan/quarantine.c:375
- kmem_cache_shrink+0xd/0x20 mm/slab_common.c:514
- acpi_os_purge_cache+0x15/0x20 drivers/acpi/osl.c:1573
- acpi_purge_cached_objects+0x86/0xf0 drivers/acpi/acpica/utxface.c:239
- acpi_initialize_objects+0x47/0xa0 drivers/acpi/acpica/utxfinit.c:250
- acpi_bus_init drivers/acpi/bus.c:1345 [inline]
- acpi_init+0x169/0xb70 drivers/acpi/bus.c:1430
- do_one_initcall+0x11c/0x650 init/main.c:1236
- do_initcall_level init/main.c:1298 [inline]
- do_initcalls init/main.c:1314 [inline]
- do_basic_setup init/main.c:1333 [inline]
- kernel_init_freeable+0x682/0xc10 init/main.c:1551
- kernel_init+0x1c/0x2a0 init/main.c:1441
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-
-Memory state around the buggy address:
- ffff888103efc500: fc fc fc fc fc fc fc fc fa fc fc fc fc fc fc fc
- ffff888103efc580: fc fc fc fc fa fc fc fc fc fc fc fc fc fc fc fc
->ffff888103efc600: fa fc fc fc fc fc fc fc fc fc fc fc fa fc fc fc
-                   ^
- ffff888103efc680: fc fc fc fc fc fc fc fc fa fc fc fc fc fc fc fc
- ffff888103efc700: fc fc fc fc fa fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=215742
+Signed-off-by: Daniel Drake <drake@endlessos.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/x86/pci/fixup.c | 45 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+v2:
+Match only specific BIOS versions where this quirk is required.
+Add subsequent patch to this series to revert the original S3 workaround
+now that s2idle is usable again.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+diff --git a/arch/x86/pci/fixup.c b/arch/x86/pci/fixup.c
+index f347c20247d30..6b0b341178e4f 100644
+--- a/arch/x86/pci/fixup.c
++++ b/arch/x86/pci/fixup.c
+@@ -907,6 +907,51 @@ static void chromeos_fixup_apl_pci_l1ss_capability(struct pci_dev *dev)
+ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x5ad6, chromeos_save_apl_pci_l1ss_capability);
+ DECLARE_PCI_FIXUP_RESUME(PCI_VENDOR_ID_INTEL, 0x5ad6, chromeos_fixup_apl_pci_l1ss_capability);
+ 
++/*
++ * Disable D3cold on Asus B1400 PCIe bridge at 00:06.0.
++ *
++ * On this platform with VMD off, the NVMe's parent PCI bridge cannot
++ * successfully power back on from D3cold, resulting in unresponsive NVMe on
++ * resume. This appears to be an untested transition by the vendor: Windows
++ * leaves the NVMe and parent bridge in D0 during suspend.
++ * This is only needed on BIOS versions before 308; the newer versions flip
++ * StorageD3Enable from 1 to 0.
++ */
++static const struct dmi_system_id asus_nvme_broken_d3cold_table[] = {
++	{
++		.matches = {
++				DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++				DMI_MATCH(DMI_BIOS_VERSION, "B1400CEAE.304"),
++		},
++	},
++	{
++		.matches = {
++				DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++				DMI_MATCH(DMI_BIOS_VERSION, "B1400CEAE.305"),
++		},
++	},
++	{
++		.matches = {
++				DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++				DMI_MATCH(DMI_BIOS_VERSION, "B1400CEAE.306"),
++		},
++	},
++	{
++		.matches = {
++				DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++				DMI_MATCH(DMI_BIOS_VERSION, "B1400CEAE.307"),
++		},
++	},
++	{}
++};
++
++static void asus_disable_nvme_d3cold(struct pci_dev *pdev)
++{
++	if (dmi_check_system(asus_nvme_broken_d3cold_table) > 0)
++		pci_d3cold_disable(pdev);
++}
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x9a09, asus_disable_nvme_d3cold);
++
+ #ifdef CONFIG_SUSPEND
+ /*
+  * Root Ports on some AMD SoCs advertise PME_Support for D3hot and D3cold, but
+-- 
+2.43.0
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
