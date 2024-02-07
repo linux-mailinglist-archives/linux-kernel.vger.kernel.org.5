@@ -1,109 +1,78 @@
-Return-Path: <linux-kernel+bounces-56998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EB0C84D287
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:02:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1FDB84D1F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:04:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45C761C24E1A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:02:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D33111C24819
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:04:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9032126F03;
-	Wed,  7 Feb 2024 20:02:25 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B0785299;
+	Wed,  7 Feb 2024 19:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dw1PNj2J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98D48662E;
-	Wed,  7 Feb 2024 20:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9C380050;
+	Wed,  7 Feb 2024 19:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707336145; cv=none; b=aV/J4KGiVBgyExuzU9r/wV4CN/WGqQrQGCwqlj4gOfdEU5+4PH2gGZPHj9Z8aYUJLovz9MSAOAzxAxQfWDIC4spFhGDDXmLWly0eUicHHCEi8JvzPAYMkH6r2d4+exAk5jCm1Te99dDNH0CDtjtL71oJAZngjGPSz4TVssPCo7M=
+	t=1707332655; cv=none; b=eJkBjPfCFkyx/9iMEJI3OvTQ5D+YX/1sPQA4r2GTIW2kf6RO1+uzBxIDO5OTs+QbbQXmo1RyIM1Yz1d7vC9ukDkF/IKJSD3AhOkf0xZOqfh6ev0NrcHFBLhYTWrePKr3q3DfxPYYVgnXfDkkI93c+x+23Si9Ld4pQvmaZmytbZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707336145; c=relaxed/simple;
-	bh=TrjEqjLvOxUxtg4GqmJF1cp5iazOi1slhQk9UHFTM38=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QExhm6ULN4R5oU9NH/j0hAbyTSIgMm1PtWZgHoTpLqYYm54+a0m7r2RfLdL5OeMsiKtqlJoe4deo6yHNFnwc43hcKhNThH4gFD7UqcY6VdBQt0oO7qarhLpIReHtew7hTD14+LJqR7KXjlflzibSgNulGyQ4DL0EMz9N1+jOrDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=black.fi.intel.com; spf=pass smtp.mailfrom=intel.com; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=black.fi.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="982540"
-X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
-   d="scan'208";a="982540"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 12:02:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="933895627"
-X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
-   d="scan'208";a="933895627"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Feb 2024 12:02:19 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 74EB94C4; Wed,  7 Feb 2024 16:03:35 +0200 (EET)
-Date: Wed, 7 Feb 2024 16:03:35 +0200
-From: Andy Shevchenko <andy@black.fi.intel.com>
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Justin Stitt <justinstitt@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v2] x86/tdx: replace deprecated strncpy with strtomem_pad
-Message-ID: <ZcONt_he_08batik@black.fi.intel.com>
-References: <20231003-strncpy-arch-x86-coco-tdx-tdx-c-v2-1-0bd21174a217@google.com>
- <ZR0VJsgA6g0Wk4dq@gmail.com>
+	s=arc-20240116; t=1707332655; c=relaxed/simple;
+	bh=1eMoQIwa2v9F1EG4OnTgU45DkG8KXU0lJOhuCKUtpaA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=a1o4K0NeNoJvUU5JiuXUG1zoaEvf22KSrnyyRHrlCp5nZUi0AXN3/+rQVj89+izMAf7Q3F3VAy3KMiCIOrAqIQf/jkP/osETjROHDdlBM2o8zZ3/MzxIoi4kdFids+pzrsDAIHr9vkZD5E5a3wm9eDxtAD5t/NMiPj9FMqqHU+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dw1PNj2J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 360BAC433C7;
+	Wed,  7 Feb 2024 19:04:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707332654;
+	bh=1eMoQIwa2v9F1EG4OnTgU45DkG8KXU0lJOhuCKUtpaA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Dw1PNj2JwItoT+3D9hyvFIPIS+84+F4sljILJ2R6pOzHBaf4n34CiMi04rSr0MVlT
+	 6l2C1boXR6XQHK9XSRBs/nYGefkbidvcF2o2wW5lLaDrfOnedr8DN9PbiS621nsUAN
+	 zJ23Es244HUuvCxr86cSgIe8QtVZ2iBJjSHnXEVWJMbfBHsl3MOJiq347gqGmBp4rE
+	 wwOaFTAws8Sc7La3ricgbvn93g6wYX4Cu7q9MK0Kt7INR1SAnwA4KGoOG6CHlUOcgQ
+	 fkyc5GvF1EDUJm3Us8rNjObxRDXFIf/MV+wTjIhM7249UXqW0GXeMKoVtl74FqiBuX
+	 UyTtp+WW9YHng==
+Date: Wed, 7 Feb 2024 11:04:13 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Joe Damato <jdamato@fastly.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ chuck.lever@oracle.com, jlayton@kernel.org, linux-api@vger.kernel.org,
+ brauner@kernel.org, edumazet@google.com, davem@davemloft.net,
+ alexander.duyck@gmail.com, sridhar.samudrala@intel.com,
+ willemdebruijn.kernel@gmail.com, weiwan@google.com,
+ David.Laight@ACULAB.COM, arnd@arndb.de, sdf@google.com,
+ amritha.nambiar@intel.com, Alexander Viro <viro@zeniv.linux.org.uk>, Jan
+ Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org (open list:FILESYSTEMS
+ (VFS and infrastructure))
+Subject: Re: [PATCH net-next v6 1/4] eventpoll: support busy poll per epoll
+ instance
+Message-ID: <20240207110413.0cfedc37@kernel.org>
+In-Reply-To: <20240205210453.11301-2-jdamato@fastly.com>
+References: <20240205210453.11301-1-jdamato@fastly.com>
+	<20240205210453.11301-2-jdamato@fastly.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZR0VJsgA6g0Wk4dq@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Oct 04, 2023 at 09:32:54AM +0200, Ingo Molnar wrote:
+On Mon,  5 Feb 2024 21:04:46 +0000 Joe Damato wrote:
+> Allow busy polling on a per-epoll context basis. The per-epoll context
+> usec timeout value is preferred, but the pre-existing system wide sysctl
+> value is still supported if it specified.
 
-..
-
-> > Note: Ingo Molnar has some concerns about the comment being out of sync
-> > [1] but I believe the comment still has a place as we can still
-> > theoretically copy 64 bytes into our destination buffer without a
-> > NUL-byte. The extra information about the 65th byte being NUL may serve
-> > helpful to future travelers of this code. What do we think? I can drop
-> > the comment in a v3 if needed.
-> 
-> >  	/* VMM assumes '\0' in byte 65, if the message took all 64 bytes */
-> > -	strncpy(message.str, msg, 64);
-> > +	strtomem_pad(message.str, msg, '\0');
-> 
-> My concern was that with the old code it was obvious that the size
-> of message.str was 64 bytes - but I judged this based on the
-> patch context alone, which seemingly lost context due to the change.
-> 
-> In reality it's easy to see it when reading the code, because the
-> length definition is right before the code:
-> 
->         union {
->                 /* Define register order according to the GHCI */
->                 struct { u64 r14, r15, rbx, rdi, rsi, r8, r9, rdx; };
-> 
->                 char str[64];
->                 ^^^^^^^^^^^^^
->         } message;
-> 
->         /* VMM assumes '\0' in byte 65, if the message took all 64 bytes */
->         strtomem_pad(message.str, msg, '\0');
-
-This comment and size of union seems not in agreement.
-How does the previous code work if message indeed takes 64 bytes?
-By luck?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Why do we need u64 for usecs? I think u16 would do, and u32 would give
+a very solid "engineering margin". If it was discussed in previous
+versions I think it's worth explaining in the commit message.
 
