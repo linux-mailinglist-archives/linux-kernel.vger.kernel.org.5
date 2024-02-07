@@ -1,115 +1,261 @@
-Return-Path: <linux-kernel+bounces-56436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D34E784CA21
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:03:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECDEF84CA24
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:03:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1B421C250E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:03:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A21C3281C5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:03:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64A2759B6D;
-	Wed,  7 Feb 2024 12:03:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B6159B66;
+	Wed,  7 Feb 2024 12:03:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HENe6pA0"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IfULpFCv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2153859B54;
-	Wed,  7 Feb 2024 12:03:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087FA5A0E9;
+	Wed,  7 Feb 2024 12:03:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707307404; cv=none; b=YzPkFSSjqcS4HF8Hb0eJddhE30qiOWobszqzagoGjufNLOyE4jPiPXEDi1fs1kdsQlBNNIPBX/JcNTRtSvVBm2HQW+04mBCtJOWFJ33QnpmRp1SA2DTUxChS1xiKKm9KTLWjuyqxlYXv32FC2AQq1qHMzrYt4UnjNDKS3Ob/sVs=
+	t=1707307427; cv=none; b=Kqsr1AlpeK53sGGvFF1AL1yQ6aJSeKfJtPe+RuEIrttHE/J7NjWeWZ+XrjPzOZbh8xym53e3F0nhboUClJR5cl+L0tuM/OzSn8ImUXq/vS6UyhDUz24ZtkCT87Zj1DKurzN5o4314XKTzAmvXisYlwWovGAMjdUjZ3xWB8IWgMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707307404; c=relaxed/simple;
-	bh=uReOIAUr3yxIpe3V/+0Z1QbKOOO0Li8w6pbjd5rWadM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=F8dKr3eSGxFLYAdLS6KFsY+8YvK97n7qupD3bvP1Cug1ChwuRRB2V+2vqq5HCn4O83n5gs/IVIt36w5k9wpRm4qaE61sgXtdIo6FVhR+vwEWQC9fryg5pg5NGVdh0i4zrsCf7M9IbeetYxbLH6fdc9iCnTJ/xpC8gimOcQhx8Ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HENe6pA0; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33b28aadb28so415131f8f.3;
-        Wed, 07 Feb 2024 04:03:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707307401; x=1707912201; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mQGin1dTgZWE68jPKB5i3Z1XPabW/tMTQJ4NouFdDP8=;
-        b=HENe6pA0NBpO+l+JNgQW37HbDDOvyyqe0UcVWwEeRDHVlUrGQ4WD4iTr4pMmWM0x9b
-         S9SA53S9Y7SzWucntCpRKczkN/APJNkLFA2DKvs5DpSjDQmHbRjYyuoa87vE5CfN7a8M
-         E4yLNrrhcOXfBN+BUr1nwYUEGk8dYen43KBDY8d1xBoBwVUrcEDkQwmhYZoyjzlX7Vfk
-         qGONRGIOOyM1Ca1PPcVvHkvajXPaOg2qyaVeTINS0yDjim+cu8lAlfSRaAGLepxeLTYu
-         JHMRWyw59MYikX+ptP70oVGR/qYsvAqZUSofHBXQHxUjHdwvH9llKJBJW4TP7D7AttrY
-         rBiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707307401; x=1707912201;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mQGin1dTgZWE68jPKB5i3Z1XPabW/tMTQJ4NouFdDP8=;
-        b=r7QiBkTKL8PwahOSvGBa7jpZuVmzmgqsctutrhh6AShQYEdhlFSq+QrTzl3Wwujpf3
-         gYzoRWtfzy3QpHszlfyQyerXUNRd8sMTpeo2c3tfTrEWOlEjZsTFRAYqVW8c8uDv4IPy
-         ZJkWfRT5hBe0oUaUZYUOpZhJgA7FddiJ3S+GjDgUHAuwu+08rV8KAm4DKQzV5HxMPDq2
-         nLfT8C/nGe4njReFfO53eTwufO0u3B2trxCE7AuTT7coTQs3kdIAcUvTylVmQil6ExkO
-         CMwOTxxo4l5nGGnUmYGA0G3kh6Lx76E7B9DUcbxoMNtOzUEUo/PMinkLXRPaOhZnJYpQ
-         ik1A==
-X-Gm-Message-State: AOJu0YyLS1Jt6nRTzx6A2tnFvxHwIltmJwqJEDJbiH7zHG5WMKa9bX1H
-	YdjVPSWMlXAjJhTwL7v7CZm6PHjf5bR1BDZzSkJ5++MWoIMwQEH/
-X-Google-Smtp-Source: AGHT+IGQtfZ92Xdh3R8wY/pBqwf8Y1LmilebBMiQCFtTVWT8gKQNkK8GSJng9MSP9/MbliBN+Zg+sQ==
-X-Received: by 2002:adf:f3ca:0:b0:33b:26c4:ca3 with SMTP id g10-20020adff3ca000000b0033b26c40ca3mr3185263wrp.22.1707307400899;
-        Wed, 07 Feb 2024 04:03:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXez9PNj+4Sh47lOny7j7IfJx7AlwS8BY1LUaLBPsFCyF3uFlyFO9Zm1f/x6a0eYcGtgEBaERydvsubvgcJIwrznw/4gH5ZG03ip60+Ke+aF97kwx31myaxjwy3RHQXvemBZDVjs8Ba+EDdiWIvSpZjoYLuiUf09ZJvo5aRkfT5SiYFf9JelRwjrloxqDtx9tWqAXBC0WkSEeQQFw==
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id g16-20020adfa490000000b0033b50ed5f98sm626338wrb.72.2024.02.07.04.03.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 04:03:20 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] usb: dwc3: gadget: Remove redundant assignment to pointer trb
-Date: Wed,  7 Feb 2024 12:03:19 +0000
-Message-Id: <20240207120319.2445123-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707307427; c=relaxed/simple;
+	bh=a2Y7H1pRZaSET9eSXkWnLn1IAOa+qUY8ZdUduo6Wn/M=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=R1SDMrP8Jepy0eyLHkhjhvwL123YprZaorW8eBPYjC2HbLKjpXPAj5X3UPGNZAYJJsUX7E5yxycZxFZFb7po1hKEXaOI/y2Uw9cs2u6OoCzuq/VZW1hfQWCgwVDDkHqvvs8GT9wW/C4oXaPvc6OXaSqQFhQubw+AZ7WAyDkW+9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IfULpFCv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60D79C433F1;
+	Wed,  7 Feb 2024 12:03:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707307426;
+	bh=a2Y7H1pRZaSET9eSXkWnLn1IAOa+qUY8ZdUduo6Wn/M=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=IfULpFCvdYujQb/MqrhKnq116TrbWk3uVUVNO8cHUhx8myiFxw1DwWwPYq6EwnzNg
+	 pdYlnUn6Q6wIX91i4WFjpp76fErBFPC9C0pfXRMTDIOeDUPmzVR26Ox4X2AWM8UkeJ
+	 YBahrxcArgEcYodHo4RtIV5j47Vd16Oi2uhWpoArujTiY/olqQETVmA7Xk0YO5IZjz
+	 K0cYTqfUWm4eyCtCzxWOBv2RW2TQF3j/Ex08N0cdbjEnzPSDLEAoe9gI04JPerQ1Hh
+	 4WTUUzAa3kR1cG9y43+CU9L148r5f9BhjRpO6Io4TH6Y8WitnX2cZax4uLXdMM5vkn
+	 qLZfK84Y/lHmg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rXgeW-00177V-0o;
+	Wed, 07 Feb 2024 12:03:44 +0000
+Date: Wed, 07 Feb 2024 12:03:43 +0000
+Message-ID: <86mssc5vmo.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: "Thierry Reding" <thierry.reding@gmail.com>
+Cc: "Jon Hunter" <jonathanh@nvidia.com>,
+	"Sumit Gupta" <sumitg@nvidia.com>,
+	<treding@nvidia.com>,
+	<krzysztof.kozlowski@linaro.org>,
+	<mark.rutland@arm.com>,
+	<linux-kernel@vger.kernel.org>,
+	<linux-tegra@vger.kernel.org>,
+	<amhetre@nvidia.com>,
+	<bbasu@nvidia.com>
+Subject: Re: [Patch] memory: tegra: Skip SID override from Guest VM
+In-Reply-To: <CYY5TXBRWCVF.6KNIROYGM631@gmail.com>
+References: <20240206114852.8472-1-sumitg@nvidia.com>
+	<86wmrh6b2n.wl-maz@kernel.org>
+	<252d6094-b2d6-496d-b28f-93507a193ede@nvidia.com>
+	<86v87169g2.wl-maz@kernel.org>
+	<CYY1YXL0FWK2.1L5CRNMKUF22J@gmail.com>
+	<86sf2563u3.wl-maz@kernel.org>
+	<CYY5TXBRWCVF.6KNIROYGM631@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: thierry.reding@gmail.com, jonathanh@nvidia.com, sumitg@nvidia.com, treding@nvidia.com, krzysztof.kozlowski@linaro.org, mark.rutland@arm.com, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, amhetre@nvidia.com, bbasu@nvidia.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-The pointer trb is being assigned a value that is not being
-read afterwards, it is being re-assigned later inside a for_each_sg
-loop. The assignment is redundant and can be removed.
+On Tue, 06 Feb 2024 17:08:42 +0000,
+"Thierry Reding" <thierry.reding@gmail.com> wrote:
+> 
+> [1  <text/plain; UTF-8 (quoted-printable)>]
+> On Tue Feb 6, 2024 at 3:54 PM CET, Marc Zyngier wrote:
+> > On Tue, 06 Feb 2024 14:07:10 +0000,
+> > "Thierry Reding" <thierry.reding@gmail.com> wrote:
+> > > 
+> > > [1  <text/plain; UTF-8 (quoted-printable)>]
+> > > On Tue Feb 6, 2024 at 1:53 PM CET, Marc Zyngier wrote:
+> > > > On Tue, 06 Feb 2024 12:28:27 +0000, Jon Hunter <jonathanh@nvidia.com> wrote:
+> > > > > On 06/02/2024 12:17, Marc Zyngier wrote:
+> > > [...]
+> > > > > > - My own tegra186 HW doesn't have VHE, since it is ARMv8.0, and this
+> > > > > >    helper will always return 'false'. How could this result in
+> > > > > >    something that still works? Can I get a free CPU upgrade?
+> > > > > 
+> > > > > I thought this API just checks to see if we are in EL2?
+> > > >
+> > > > It does. And that's the problem. On ARMv8.0, we run the Linux kernel
+> > > > at EL1. Tegra186 is ARMv8.0 (Denver + A57). So as written, this change
+> > > > breaks the very platform it intends to support.
+> > > 
+> > > To clarify, the code that accesses these registers is shared across
+> > > Tegra186 and later chips. Tegra194 and later do support ARMv8.1 VHE.
+> >
+> > But even on these machines that are VHE-capable, not running at EL2
+> > doesn't mean we're running as a guest. The user can force the kernel
+> > to stick to EL1, using a command-line option such as kvm-arm.mode=nvhe
+> > which will force the kernel to stay at EL1 while deploying KVM at EL2.
+> >
+> > > Granted, if it always returns false on Tegra186 that's not what we
+> > > want.
+> >
+> > I'm glad we agree here.
+> >
+> > > > > > - If you assign this device to a VM and that the hypervisor doesn't
+> > > > > >    correctly virtualise it, then it is a different device and you
+> > > > > >    should simply advertise it something else. Or even better, fix your
+> > > > > >    hypervisor.
+> > > > > 
+> > > > > Sumit can add some more details on why we don't completely disable the
+> > > > > device for guest OSs.
+> > > >
+> > > > It's not about disabling it. It is about correctly supporting it
+> > > > (providing full emulation for it), or advertising it as something
+> > > > different so that SW can handle it differently.
+> > > 
+> > > It's really not a different device. It's exactly the same device except
+> > > that accessing some registers isn't permitted. We also can't easily
+> > > remove parts of the register region from device tree because these are
+> > > intermixed with other registers that we do want access to.
+> >
+> > But that's the definition of being a different device. It has a
+> > different programming interface, hence it is different. The fact that
+> > it is the same HW block mediated by a hypervisor doesn't really change
+> > that.
+> 
+> The programming model isn't really different in these cases, but rather
+> restricted. I think a compatible string is a suboptimal way to describe
+> this.
 
-Cleans up clang scan warning:
-drivers/usb/dwc3/gadget.c:3432:19: warning: Value stored to 'trb'
-during its initialization is never read [deadcode.DeadStores]
+It *is* different. If it wasn't different, you wouldn't need this
+patch. I'm puzzled that we have to argue on *that*. You can call it
+restricted, I call it broken. In both case, it is a *different*
+programming interface as you can't use existing SW for it.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/usb/dwc3/gadget.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> > > > Poking into the internals of how the kernel is booted for a driver
+> > > > that isn't tied to the core architecture (because it would need to
+> > > > access system registers, for example) is not an acceptable outcome.
+> > > 
+> > > So what would be the better option? Use a different compatible string to
+> > > make the driver handle the device differently? Or adding a custom
+> > > property to the device tree node to mark this as running in a
+> > > virtualized environment?
+> >
+> > A different compatible string would be my preferred option. An extra
+> > property would work as well. As far as I am concerned, these two
+> > options are the right way to express the fact that you have something
+> > that isn't quite like the real thing.
+> 
+> Coincidentally there's another discussion with a lot of similarities
+> regarding simulated platforms. For these it's usually less about the
+> register set being restricted and more about certain quirks that are
+> needed which will not ultimately be necessary for silicon.
+> 
+> This could be a timeout that's longer in simulation, or it could be
+> certain programming that would be needed in silicon but isn't necessary
+> or functional in simulation (think I/O calibration, that sort of thing).
+> One could argue that these are also different devices when in simulation
+> but they really aren't. They're more like an approximation of the actual
+> device that will be in silicon chips.
 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 564976b3e2b9..6e47259f2c4f 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -3429,7 +3429,7 @@ static int dwc3_gadget_ep_reclaim_trb_sg(struct dwc3_ep *dep,
- 		struct dwc3_request *req, const struct dwc3_event_depevt *event,
- 		int status)
- {
--	struct dwc3_trb *trb = &dep->trb_pool[dep->trb_dequeue];
-+	struct dwc3_trb *trb;
- 	struct scatterlist *sg = req->sg;
- 	struct scatterlist *s;
- 	unsigned int num_queued = req->num_queued_sgs;
+Simulation/DV environments are a very different kettle of fish. You
+generally treat passing time with a scaling factor, and you are likely
+to run  very hacked-up SW stack anyway.
+
+In any case, this is not relevant to upstream stuff, unless you plan
+to ship your emulation environment.
+
+> Another problem that both of the cases have in common is that they are
+> parameters that usually apply to the entire system. For some devices it
+> is easier to parameterize via DT (for example for certain devices we
+> have bindings with special register regions that are only available in
+> host OS mode), but for others this may not be true. Adding extra
+> compatible strings for virtualization/simulation is going to get quite
+> complex very quickly if we need to differentiate between all of these
+> scenarios.
+
+That's the price you pay for these inconsistencies. If your "HW" has a
+lot of variability and that you can't discover its capabilities from
+SW, then it either badly designed, badly implemented, badly emulated,
+or any combination thereof.
+
+In any case, you get to keep the pieces.
+
+> 
+> > > Perhaps we can reuse the top-level hypervisor node? That seems to only
+> > > ever have been used for Xen on 32-bit ARM, so not sure if that'd still
+> > > be appropriate.
+> >
+> > I'd shy away from this. You would be deriving properties from a
+> > hypervisor implementation, instead of expressing those properties
+> > directly. In my experience, the direct method is always preferable.
+> 
+> I would generally agree. However, I think especially the compatible
+> string solution could turn very ugly for this. If we express these
+> properties via compatible strings we may very well end up with many
+> different compatible strings to cover all cases.
+> 
+> Say you've got one hypervisor that changes the programming model in a
+> certain way and a second hypervisor that constrains in a different way.
+> Do we now need one compatible string for each hypervisor? Do we add
+> compatible strings for each restriction and have potentially very long
+> compatible string lists? Separate properties would work slightly better
+> for this.
+
+Again, the job of a hypervisor is to offer an architecturally correct
+view of some HW, emulated or not. If your hypervisors are implementing
+a large variety of diverging behaviours, SW needs to be able to
+distinguish between those. You can either add properties, use compat
+strings, or use a discovery protocol implemented by the device.
+
+In any case, each deviation needs to be uniquely identifiable, and be
+described either in FW or by the device itself, if only because Linux
+isn't the only game in town.
+
+> There are some cases where we can use register contents to determine
+> what the OS is allowed to do, but these registers don't exist for all HW
+> blocks. We may be able to get more added to new chips, but we obviously
+> can't retroactively add them for existing ones.
+> 
+> A central node or property would at least allow broad parameterization.
+> I would hope that at least hypervisor implementations don't vary too
+> much in terms of what they restrict and what they don't, so perhaps it
+> wouldn't be that bad. Perhaps that's also overly optimistic.
+
+Top level properties are no good unless what they express is forever
+immutable and described upfront. Identifying a hypervisor doesn't do
+that, and most of the time there will be all sorts of *variable*
+properties that need to be further discovered by a mechanism or
+another. In my (surely very limited) experience at writing hypervisors
+for some time, this eventually becomes an unmaintainable mess.
+
+You are of course free to do that in the drivers you maintain as long
+as you don't break my own toys, but I'd urge you to reconsider this
+and explore other possibilities.
+
+Thanks,
+
+	M.
+
 -- 
-2.39.2
-
+Without deviation from the norm, progress is not possible.
 
