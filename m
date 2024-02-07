@@ -1,377 +1,155 @@
-Return-Path: <linux-kernel+bounces-56282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB9CC84C848
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:07:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F02F84C853
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:11:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61B8B1F24E86
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:07:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80E421C24320
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD4B024B2A;
-	Wed,  7 Feb 2024 10:07:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978E624B5B;
+	Wed,  7 Feb 2024 10:11:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NKFKh2K1"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b="KyL7oM7i"
+Received: from prime.voidband.net (prime.voidband.net [199.247.17.104])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3FDE28DB3;
-	Wed,  7 Feb 2024 10:07:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334D924B2A;
+	Wed,  7 Feb 2024 10:11:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.247.17.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707300449; cv=none; b=GHbCOhrQHC0Dg46a/FEgolsO3Bg+Lt9gPCVeqbRTC3Pqt4ttt74LXgYqU4BVAkmg4Tab7EJdBIKDPU3U5BtJwDYF2LHcDtN3faNJ2A+i+RKqxIdW6V6QagqiBAydGn3EI+i3q5qfdXuo+TXKx7Z1EkbMP9hm4FRUMxc717GInUs=
+	t=1707300678; cv=none; b=ldXa7Fp0ZdIpjHVqdQi/J4xK6pWdqs7KEMt+R8Q8TAEQvQfYY5aL7TS4dy0/znlTVXPcsqEJtP0ur8uszkV/NfPwR9vBMaQZ4UZtFQQMnDxL7RH5yQXdmt/xo9pQwoVha7DeY6R4mrzs/BnlxPafvUaanx4Sp47YoFuxaqAW7Ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707300449; c=relaxed/simple;
-	bh=YU4n9ZID1r/Mh8EPIjWaqePEReRmpswBCgTPXNg96T8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=tmhYNws/FEgV5VUU9qiTDnmbAh6fgAerm9gRRmW2+EMPbAN5tS9WvGZ6fNI4Jn3OYClnhsUIJSCLRyYACu4jecNMzQn5KrmDx2hQHfWM2SUjKekinJ09gX8j1QDkDufvnCPWr0td9MdnOJuLXVcvk2LLaJzI0VGH37p96z2brL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NKFKh2K1; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so56489066b.1;
-        Wed, 07 Feb 2024 02:07:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707300446; x=1707905246; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qtFJspFDeXXLXa8scsO4YdjHmItQbAvcjZq/GbcC1VM=;
-        b=NKFKh2K1221wplJ1m/VXbmEBcQ4NTjI8ly4qMY7vPHE1k1TN+Eq6FqZ0nJKtZG72cw
-         82+/SU8NqT4TCNRhh5zMxP0WYM+NLoGtgxnkGnAvouiNBhH6bjI8EaZ3cM0w6ZWThvLV
-         Uv03CThM9DlmfpiXT3HBOtH/RmJNCK5JTZz0a582KAZSN8o0pFigGZoK75tfX6EYvGnC
-         sCPhSR4zfEH+CNmupSBJMDnVmxfKYBn01oL9CImmnWgXoktjO5A+1dJLXWBXx8FMNSVV
-         GXveGWvN2k2Egqr9P/2XXZGktC9qkUzj/5ZzawvPseE6B40kJkvQfpkqpiTJppK/2XcP
-         UbDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707300446; x=1707905246;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qtFJspFDeXXLXa8scsO4YdjHmItQbAvcjZq/GbcC1VM=;
-        b=ib61IhFrbCCrguH23R9oCVe12Ld5UbRYo4ZOFxMMg2ZE05Q2HNw5LwD01elVsBXJhm
-         9C3opFWfXumKV0wcCxTl6x7rACHq2LlYBmyRrtUxpStzUnOFShjT72gYbIegD40rk9/n
-         0Uy6aruPUkVMgJMzo5tay0E8J/9WSSyllqTmXc6zLk+bCE+qj3BV+E2v/KfOeKXHUVLg
-         kmXWTEDouKV1qh5ROHdD+bbqM/gG20mscU+Gy9JnRxoo8k/9KxGQp10+aFPi5m8wmkly
-         NBFxd/jncL3HiukZjDdS0IRxuFaqU5DZRmbLIBl4H5pkNzIo05ovzwUbnmV4D01ebhtN
-         NPzQ==
-X-Gm-Message-State: AOJu0Yxj6GXEBYKBMksjJVGe4X2pjl7xq7SPpTWr19WcTOBRf/WTXxV1
-	M0a+76nb5PouLMbrNQLecNMzQoG5q3L6ciCO09P6XNNbVHuuxwAi
-X-Google-Smtp-Source: AGHT+IHMl/UPTHa4mVeLcTCzXQ+AmZdTD8+M+8f+hv0XChV/FRAqeQeB51pKChqHX4+oTdCMFtdWbg==
-X-Received: by 2002:a17:906:6d4e:b0:a31:805b:4172 with SMTP id a14-20020a1709066d4e00b00a31805b4172mr3559951ejt.9.1707300445937;
-        Wed, 07 Feb 2024 02:07:25 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXo+W5KxMp0Kab+jBDX0/COO+302oPsMS8drIsnuZ5ziUCuunBIXkcfStDzmEp4PfEpnrt5AN5GI9U5/T0IfGX5VVZuF8tyEZZv2a9pSBRJNYWi3/seZxZ6u4HbTXu5OKP8cgRwRcfsI1pjGeTkRluuL8/aEWf1yyhi3RcXV4j7JqE89i6fnRF1IHThOWaumKARphdN4pp2lLD8cI4zwjarwtnwGP1nY5z8BwfDdKr7n/41ObIJakMOJjhJkstsTMCNmp4gjkCA3xZ19sfpXwEGdzt1FYy0zBV77ISKD2NUq6bK3a38H4h+zXMOazHTpMwNX0rYxWd5yCAfAsNw/n9Aw5HJbXS4vi8zwJXGo2XVeBnKSbfmmXOGdDdf9/A9
-Received: from ?IPv6:2003:f6:ef1b:2000:15d4:fc17:481e:8afe? (p200300f6ef1b200015d4fc17481e8afe.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:15d4:fc17:481e:8afe])
-        by smtp.gmail.com with ESMTPSA id un1-20020a170907cb8100b00a3758a1ca48sm569530ejc.218.2024.02.07.02.07.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 02:07:25 -0800 (PST)
-Message-ID: <5fd17b66eab1989b9cfb874445c18480a2282809.camel@gmail.com>
-Subject: Re: [PATCH 2/2] iio: adc: ad7944: add driver for
- AD7944/AD7985/AD7986
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: David Lechner <dlechner@baylibre.com>, linux-iio@vger.kernel.org
-Cc: Michael Hennerich <Michael.Hennerich@analog.com>, Jonathan Cameron
- <jic23@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
- Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Wed, 07 Feb 2024 11:10:44 +0100
-In-Reply-To: <20240206-ad7944-mainline-v1-2-bf115fa9474f@baylibre.com>
-References: <20240206-ad7944-mainline-v1-0-bf115fa9474f@baylibre.com>
-	 <20240206-ad7944-mainline-v1-2-bf115fa9474f@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1707300678; c=relaxed/simple;
+	bh=fy0MuGEeBqq0yRk9q1POmHQUTTNM7NnZ5ogEzRYEj/I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=GsWIaYsBulZX1olSOvNYrC4Yoqci3oSRWcJFkFLEMlPaAbQHVMEqaAod0M5BIWHhQ02O4kvJhLfRFjQYHCaqf8DKxJyAcX8XcpT29j8nFqSS1I7gUO/hMCrzj7fU4MNcPdJK+jeGQnUfBibCIsfO92KheOH6vET266IzOZx9q20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name; spf=pass smtp.mailfrom=natalenko.name; dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b=KyL7oM7i; arc=none smtp.client-ip=199.247.17.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=natalenko.name
+Received: from spock.localnet (unknown [94.142.239.106])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by prime.voidband.net (Postfix) with ESMTPSA id D1D67635B069;
+	Wed,  7 Feb 2024 11:11:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+	s=dkim-20170712; t=1707300666;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qk89De6FrqTdMkAJYqG4hQmTMMefgxmhKdx6js2QarM=;
+	b=KyL7oM7iafK7DSybwDFdAZAMiJ3ehUyp+BRzcCbLYde4BRADgMdlGp3/4m3KvueGghizKu
+	T0CBG9kR9OpEUCFUfp22+dQ1cirlFfG0ekAzHWklbRNhWJLx1n4TrPnGeXmeCokEA72M6M
+	CNT5dMy4P44VGic0SsjSOmoIvXjKcFo=
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: rafael.j.wysocki@intel.com, Mario.Limonciello@amd.com,
+ viresh.kumar@linaro.org, Ray.Huang@amd.com, gautham.shenoy@amd.com,
+ Borislav.Petkov@amd.com, Perry Yuan <perry.yuan@amd.com>
+Cc: Alexander.Deucher@amd.com, Xinmei.Huang@amd.com, Xiaojian.Du@amd.com,
+ Li.Meng@amd.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject:
+ Re: [PATCH v3 6/7] cpufreq: amd-pstate: remove legacy set_boost callback for
+ passive mode
+Date: Wed, 07 Feb 2024 11:10:52 +0100
+Message-ID: <2887380.mvXUDI8C0e@natalenko.name>
+In-Reply-To:
+ <fb14f6e7748f1b872f68eb2549d4e6033f0facbc.1707297581.git.perry.yuan@amd.com>
+References:
+ <cover.1707297581.git.perry.yuan@amd.com>
+ <fb14f6e7748f1b872f68eb2549d4e6033f0facbc.1707297581.git.perry.yuan@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart12544814.O9o76ZdvQC";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
 
-Hi David,
+--nextPart12544814.O9o76ZdvQC
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+Date: Wed, 07 Feb 2024 11:10:52 +0100
+Message-ID: <2887380.mvXUDI8C0e@natalenko.name>
+MIME-Version: 1.0
 
-The driver It's in pretty good shape... Just some comments from me
-=20
-On Tue, 2024-02-06 at 11:26 -0600, David Lechner wrote:
-> This adds a driver for the Analog Devices Inc. AD7944, AD7985, and
-> AD7986 ADCs. These are a family of pin-compatible ADCs that can sample
-> at rates up to 2.5 MSPS.
+Hello.
+
+On st=C5=99eda 7. =C3=BAnora 2024 10:21:57 CET Perry Yuan wrote:
+> With new freqency boost interface supported, legacy boost control
+> doesn't make sense any more which only support passive mode.
+> so it can remove the legacy set_boost interface from amd-pstate driver
+> in case of there is conflict with new boost control logic.
 >=20
-> The initial driver adds support for sampling at lower rates using the
-> usual IIO triggered buffer and can handle all 3 possible reference
-> voltage configurations.
->=20
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> Signed-off-by: Perry Yuan <perry.yuan@amd.com>
 > ---
-> =C2=A0MAINTAINERS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
-> =C2=A0drivers/iio/adc/Kconfig=C2=A0 |=C2=A0 10 ++
-> =C2=A0drivers/iio/adc/Makefile |=C2=A0=C2=A0 1 +
-> =C2=A0drivers/iio/adc/ad7944.c | 397
-> +++++++++++++++++++++++++++++++++++++++++++++++
-> =C2=A04 files changed, 409 insertions(+)
+>  drivers/cpufreq/amd-pstate.c | 1 -
+>  include/linux/amd-pstate.h   | 1 -
+>  2 files changed, 2 deletions(-)
 >=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4f1e658e1e0d..83d8367595f1 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -458,6 +458,7 @@ R:	David Lechner <dlechner@baylibre.com>
-> =C2=A0S:	Supported
-> =C2=A0W:	https://ez.analog.com/linux-software-drivers
-> =C2=A0F:	Documentation/devicetree/bindings/iio/adc/adi,ad7944.yaml
-> +F:	drivers/iio/adc/ad7944.c
-> =C2=A0
-> =C2=A0ADAFRUIT MINI I2C GAMEPAD
-> =C2=A0M:	Anshul Dalal <anshulusr@gmail.com>
-> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-> index 59ae1d17b50d..93fbe6f8e306 100644
-> --- a/drivers/iio/adc/Kconfig
-> +++ b/drivers/iio/adc/Kconfig
-> @@ -280,6 +280,16 @@ config AD7923
-> =C2=A0	=C2=A0 To compile this driver as a module, choose M here: the
-> =C2=A0	=C2=A0 module will be called ad7923.
-> =C2=A0
-> +config AD7944
-> +	tristate "Analog Devices AD7944 and similar ADCs driver"
-> +	depends on SPI
-> +	help
-> +	=C2=A0 Say yes here to build support for Analog Devices
-> +	=C2=A0 AD7944, AD7985, AD7986 ADCs.
-> +
-> +	=C2=A0 To compile this driver as a module, choose M here: the
-> +	=C2=A0 module will be called ad7944
-> +
-> =C2=A0config AD7949
-> =C2=A0	tristate "Analog Devices AD7949 and similar ADCs driver"
-> =C2=A0	depends on SPI
-> diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
-> index 5a26ab6f1109..52d803b92cd7 100644
-> --- a/drivers/iio/adc/Makefile
-> +++ b/drivers/iio/adc/Makefile
-> @@ -29,6 +29,7 @@ obj-$(CONFIG_AD7780) +=3D ad7780.o
-> =C2=A0obj-$(CONFIG_AD7791) +=3D ad7791.o
-> =C2=A0obj-$(CONFIG_AD7793) +=3D ad7793.o
-> =C2=A0obj-$(CONFIG_AD7887) +=3D ad7887.o
-> +obj-$(CONFIG_AD7944) +=3D ad7944.o
-> =C2=A0obj-$(CONFIG_AD7949) +=3D ad7949.o
-> =C2=A0obj-$(CONFIG_AD799X) +=3D ad799x.o
-> =C2=A0obj-$(CONFIG_AD9467) +=3D ad9467.o
-> diff --git a/drivers/iio/adc/ad7944.c b/drivers/iio/adc/ad7944.c
-> new file mode 100644
-> index 000000000000..67b525fb8e59
-> --- /dev/null
-> +++ b/drivers/iio/adc/ad7944.c
-> @@ -0,0 +1,397 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Analog Devices AD7944/85/86 PulSAR ADC family driver.
-> + *
-> + * Copyright 2024 Analog Devices, Inc.
-> + * Copyright 2024 Baylibre, SAS
-> + */
-> +
-> +#include <linux/bitfield.h>
-> +#include <linux/bitops.h>
-> +#include <linux/delay.h>
-> +#include <linux/device.h>
-> +#include <linux/err.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/module.h>
-> +#include <linux/property.h>
-> +#include <linux/regulator/consumer.h>
-> +#include <linux/spi/spi.h>
-> +
-> +#include <linux/iio/iio.h>
-> +#include <linux/iio/sysfs.h>
-> +#include <linux/iio/trigger_consumer.h>
-> +#include <linux/iio/triggered_buffer.h>
-> +
-> +#define AD7944_INTERNAL_REF_MV		4096
-> +
-> +struct ad7944_timing_spec {
-> +	/* Normal mode minimum CNV pulse width in nanoseconds. */
-> +	unsigned int cnv_ns;
-> +	/* TURBO mode minimum CNV pulse width in nanoseconds. */
-> +	unsigned int turbo_cnv_ns;
-> +};
-> +
+> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+> index 35791efc6e88..1dd523db3871 100644
+> --- a/drivers/cpufreq/amd-pstate.c
+> +++ b/drivers/cpufreq/amd-pstate.c
+> @@ -1675,7 +1675,6 @@ static struct cpufreq_driver amd_pstate_driver =3D {
+>  	.exit		=3D amd_pstate_cpu_exit,
+>  	.suspend	=3D amd_pstate_cpu_suspend,
+>  	.resume		=3D amd_pstate_cpu_resume,
+> -	.set_boost	=3D amd_pstate_set_boost,
+>  	.update_limits	=3D amd_pstate_update_limits,
+>  	.name		=3D "amd-pstate",
+>  	.attr		=3D amd_pstate_attr,
+> diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h
+> index 465e9295a60c..ab7ca26974da 100644
+> --- a/include/linux/amd-pstate.h
+> +++ b/include/linux/amd-pstate.h
+> @@ -93,7 +93,6 @@ struct amd_cpudata {
+>  	struct amd_aperf_mperf prev;
+> =20
+>  	u64	freq;
+> -	bool	boost_supported;
+
+As a result of this removal the kernel-doc for this struct should be amende=
+d too because even after this patch is applied the `boost_supported` field =
+remains documented.
+
+>  	bool	hw_prefcore;
+> =20
+>  	/* EPP feature related attributes*/
 >=20
 
-..
 
-> +}
-> +
-> +static int ad7944_single_conversion(struct ad7944_adc *adc,
-> +				=C2=A0=C2=A0=C2=A0 const struct iio_chan_spec *chan,
-> +				=C2=A0=C2=A0=C2=A0 int *val)
-> +{
-> +	int ret;
-> +
-> +	ret =3D ad7944_4_wire_mode_conversion(adc, chan);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (chan->scan_type.storagebits > 16)
-> +		*val =3D adc->sample.raw.u32;
-> +	else
-> +		*val =3D adc->sample.raw.u16;
-> +
+=2D-=20
+Oleksandr Natalenko (post-factum)
+--nextPart12544814.O9o76ZdvQC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-Will this work both in big vs little endian archs? I don't think so but may=
-be
-I'm missing something. At a first glance, it seems we get big endian from s=
-pi so
-shouldn't we have __be16 and __be32?
-=20
-> +	if (chan->scan_type.sign =3D=3D 's')
-> +		*val =3D sign_extend32(*val, chan->scan_type.realbits - 1);
-> +
-> +	return IIO_VAL_INT;
-> +}
-> +
-> +static int ad7944_read_raw(struct iio_dev *indio_dev,
-> +			=C2=A0=C2=A0 const struct iio_chan_spec *chan,
-> +			=C2=A0=C2=A0 int *val, int *val2, long info)
-> +{
-> +	struct ad7944_adc *adc =3D iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	switch (info) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		ret =3D iio_device_claim_direct_mode(indio_dev);
-> +		if (ret)
-> +			return ret;
-> +
+-----BEGIN PGP SIGNATURE-----
 
-I'm not totally sure but I think Jonathan already merged his series for the
-cleanup stuff for the claim direct mode. Maybe take a look and use it? Not =
-a big
-win in here but I guess we could still reduce some LOC.
+iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmXDVywACgkQil/iNcg8
+M0usJA/8DvFsv4pQV0fQtw4hJh2XYcd5dI7x9P7ACTWNem6eWk5h8r8E50qAAj/i
+mhw1eZ7XKEALojhZPehAs4FBkFSZDKwfj7mO4crwDvBtX4sN+zKQI92YAmxY08fu
+jWzGSL607lbFJosXKQ5AUwj4oFLbntWt3I8sYgY9/7LqiaUbyGf376QIDr2+1aNQ
+i3kcCrALsnN0mFmCXmyc7mJLMDRy41v859TBNVpjprq7GUxdhmp42uLl8n49B3uN
+3P4McJLQ1UGc+mOB64MGMypZcBpPGQdGOF+a+0ijNOuUnLKvGm8vxc4vmZFn/lwF
+HVqhnDdFG5e0i4recu3ExN3n43Ji28pcfFYhfBNlu+ro8b4fypF1ija184fl5w44
+POv5QVTLELrLBGE+lzvigTZip/afLojug6VSGVq+PwSAc6UzB0akJTRXO4p5vNyl
+F1l8wcEhKN0flzJkp0q18hIKDLKr9n+Ja3pr+EDkZPQ3W8Fu3dXBHOg4IDWvyvEC
+C5V5UyU1KDF7S3bEIDj1hgDuHG2rGtCNp5UWhCeIxR5GnI4KXgEU1flOu3Yp3VN8
+f4rTaKJHgwZCC1vmK3QejH762nTxqLuAmQXe728nEjEO9Kbs0pPuY9FUQhLRjf6z
+YRDiGifZxWVomkZbz1ueePf5U3zwH1QtnyZbgVUeTWcyftSGC0w=
+=B1Jv
+-----END PGP SIGNATURE-----
 
-> +		ret =3D ad7944_single_conversion(adc, chan, val);
-> +		iio_device_release_direct_mode(indio_dev);
-> +		return ret;
-> +
-> +	case IIO_CHAN_INFO_SCALE:
-> +		switch (chan->type) {
-> +		case IIO_VOLTAGE:
-> +			*val =3D adc->ref_mv;
-> +			*val2 =3D chan->scan_type.realbits;
-> +
-> +			return IIO_VAL_FRACTIONAL_LOG2;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static const struct iio_info ad7944_iio_info =3D {
-> +	.read_raw =3D &ad7944_read_raw,
-> +};
-> +
-> +static irqreturn_t ad7944_trigger_handler(int irq, void *p)
-> +{
-> +	struct iio_poll_func *pf =3D p;
-> +	struct iio_dev *indio_dev =3D pf->indio_dev;
-> +	struct ad7944_adc *adc =3D iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	ret =3D ad7944_4_wire_mode_conversion(adc, &indio_dev->channels[0]);
-> +	if (ret)
-> +		goto out;
-> +
-> +	iio_push_to_buffers_with_timestamp(indio_dev, &adc->sample.raw,
-> +					=C2=A0=C2=A0 indio_dev->scan_timestamp);
-> +
-> +out:
-> +	iio_trigger_notify_done(indio_dev->trig);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static const char * const ad7944_power_supplies[] =3D {
-> +	"avdd",	"dvdd",	"bvdd", "vio"
-> +};
-> +
-> +static void ad7944_ref_disable(void *ref)
-> +{
-> +	regulator_disable(ref);
-> +}
-> +
-> +static int ad7944_probe(struct spi_device *spi)
-> +{
-> +	const struct ad7944_chip_info *chip_info;
-> +	struct iio_dev *indio_dev;
-> +	struct ad7944_adc *adc;
-> +	struct regulator *ref;
-> +	const char *str_val;
-> +	int ret;
-> +
-> +	/* adi,spi-mode property defaults to "4-wire" if not present */
-> +	if (device_property_read_string(&spi->dev, "adi,spi-mode", &str_val)
-> < 0)
-> +		str_val =3D "4-wire";
-> +
-> +	if (strcmp(str_val, "4-wire"))
-> +		return dev_err_probe(&spi->dev, -EINVAL,
-> +				=C2=A0=C2=A0=C2=A0=C2=A0 "only \"4-wire\" mode is currently
-> supported\n");
+--nextPart12544814.O9o76ZdvQC--
 
-Did you looked at spi core? I guess the chain mode is not available but IIR=
-C spi
-already has spi-3wire. So maybe you could just have a boolean property for =
-the
-chain mode and check both that and 3wire?
 
-> +
-> +	indio_dev =3D devm_iio_device_alloc(&spi->dev, sizeof(*adc));
-> +	if (!indio_dev)
-> +		return -ENOMEM;
-> +
-> +	adc =3D iio_priv(indio_dev);
-> +	adc->spi =3D spi;
-> +
-> +	chip_info =3D spi_get_device_match_data(spi);
-> +	if (!chip_info)
-> +		return dev_err_probe(&spi->dev, -EINVAL, "no chip info\n");
-> +
-> +	adc->t =3D chip_info->t;
-> +
-> +	/*
-> +	 * Some chips use unusual word sizes, so check now instead of waiting
-> +	 * for the first xfer.
-> +	 */
-> +	if (!spi_is_bpw_supported(spi, chip_info-
-> >channels[0].scan_type.realbits))
-> +		return dev_err_probe(&spi->dev, -EINVAL,
-> +				"SPI host does not support %d bits per
-> word\n",
-> +				chip_info->channels[0].scan_type.realbits);
-> +
-> +	ret =3D devm_regulator_bulk_get_enable(&spi->dev,
-> +					=C2=A0=C2=A0=C2=A0=C2=A0
-> ARRAY_SIZE(ad7944_power_supplies),
-> +					=C2=A0=C2=A0=C2=A0=C2=A0 ad7944_power_supplies);
-> +	if (ret)
-> +		return dev_err_probe(&spi->dev, ret,
-> +				=C2=A0=C2=A0=C2=A0=C2=A0 "failed to get and enable supplies\n");
-> +
-> +	/* adi,reference property defaults to "internal" if not present */
-> +	if (device_property_read_string(&spi->dev, "adi,reference", &str_val)
-> < 0)
-> +		str_val =3D "internal";
-> +
-> +	/* sort out what is being used for the reference voltage */
-> +	if (strcmp(str_val, "internal") =3D=3D 0) {
-
-Maybe you can make the code neater with match_string() and some enum...
-
-- Nuno S=C3=A1
 
 
