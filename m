@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-56927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8799984D184
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:45:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5291984D188
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:45:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A2E72898CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:45:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0719B1F236D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:45:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB0D285C58;
-	Wed,  7 Feb 2024 18:43:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B1F129A71;
+	Wed,  7 Feb 2024 18:43:26 +0000 (UTC)
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F4885943
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E6DE85953
 	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 18:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707331403; cv=none; b=E7KSLVucSaw35hxl7nlIEOMIz8Hba1sUjk2aevl+6tzFDJG9erKlT/G95vK/lBEFVn4Bi7hLeU2ar2fJWkOEhRKCPbpJx0EsWSeNY9Q3D95ZiEytaXcIhJ+bIG2xtMYzfE2RFTCRrFGIsKf3k/+a+wkFML1PAZHNi13a+qoUDRQ=
+	t=1707331403; cv=none; b=UxRdQqdt9dGlVXkvq1jhdI5vTvOm2aO2nnQ+kGGrdEXsBdrLsSgsagILEGRapkhqJfcv77ZvXA9Ji3WkkCRLDsr1gK3hCn8IwCk6E28Tz9wpwUkUDEJJXnHzW9cibxfDmgjV7eL2oNPBr26A0/1vVfbPAPTEp2LMzbGkENjaY9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707331403; c=relaxed/simple;
-	bh=RbOvDVmurbfANfv8VPt3j5rWCMBhT6rMxR0v2GBXhN4=;
+	bh=4wYu7Xc9eR22LmfUrJP6PrWGCG5RVj4kh+07Xr06lbI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uREZ7UEPYSfEju4UvlTpWl0ozB4lUpDSZ5RetMVMe0K/kfKxPPzhdALRIbiValIqheA7lUEaeVV1UduQ+5KTXekUfq7EB5g7XzuRsVjzGoLthE25YVa8/4d9eVZV9VEakJlU0cVlCYdH19Spxt4GgSMEwMQMb+RgKtGeVbM7U/I=
+	 MIME-Version:Content-Type; b=pDdYLhwGIqM0TxHXelF3ItHhXPEBV+aC2+xfzAavvbwIB2DdDj7Nz5t9IChFoaIrrGNBEx8TXE2jVuluT/AnGCsRPZ7ll5xhhOzWkuQNckTQEnlG4nWYF3rvd1NF5cEL+nRsoJz8fneVfcT94i6gBRaO331WxAaVhoDw8c4Jafg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -32,25 +32,25 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rXmt9-0007mI-Eo; Wed, 07 Feb 2024 19:43:15 +0100
+	id 1rXmt9-0007mU-RQ; Wed, 07 Feb 2024 19:43:15 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rXmt9-0054Xx-2G; Wed, 07 Feb 2024 19:43:15 +0100
+	id 1rXmt9-0054Y0-Ee; Wed, 07 Feb 2024 19:43:15 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rXmt8-00HRsw-3B;
-	Wed, 07 Feb 2024 19:43:14 +0100
+	id 1rXmt9-00HRt0-1B;
+	Wed, 07 Feb 2024 19:43:15 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Mark Brown <broonie@kernel.org>
 Cc: kernel@pengutronix.de,
 	linux-spi@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v3 18/32] spi: cadence-quadspi: Follow renaming of SPI "master" to "controller"
-Date: Wed,  7 Feb 2024 19:40:32 +0100
-Message-ID:  <d741960846b7f4896eeff91a4c8c7dfa8a6f8b7b.1707324794.git.u.kleine-koenig@pengutronix.de>
+Subject: [PATCH v3 19/32] spi: cavium: Follow renaming of SPI "master" to "controller"
+Date: Wed,  7 Feb 2024 19:40:33 +0100
+Message-ID:  <8aa122cffa6c8c18cc3367def872f81cd9471f2a.1707324794.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1707324793.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1707324793.git.u.kleine-koenig@pengutronix.de>
@@ -61,7 +61,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1151; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=RbOvDVmurbfANfv8VPt3j5rWCMBhT6rMxR0v2GBXhN4=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlw86qP+LJktb5dkl7rbmpmK/xxovvRS6CdS4pc qKGLZfaToCJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZcPOqgAKCRCPgPtYfRL+ TgPICACEOB9h8aDM2Y6v2EVwZJouk5eaWTzwY3r62EzHehblZh3eWE8hbMVE4ggfzLMWsCh8nZ4 hwrXvjFYzSrS9knpA0IlE5CjRWPIpggKClkKWH69BllfWdHFRsRKDQ80Ng4IFpsos4ye19+/49T wplWugZUQYfyiJdoOtiMMJZqTN2gURsUli8soUDoIZWpd536oujqrhOgtFISveiWNBXmohzD9qO 71OInPWc7QkUWGXT5d16jndIpWhVJA9WarVwNnj2bpOq2jhVZdMPLly3VIKRMmMOPqS1romHIFC E5+IWGxVDmaV6MPQ7jQn2fQ/QW81p2X0F61RL9rLCGRa1uyN
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1944; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=4wYu7Xc9eR22LmfUrJP6PrWGCG5RVj4kh+07Xr06lbI=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlw86wqlDvFCYYlimi5Xl/f9sNAl28lWhxwDESB PRBb6RZCTeJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZcPOsAAKCRCPgPtYfRL+ TlhwB/9wJIDWQA6DRjbZ+vEgqOeuVDb9PtgXaQbpGYxCmht57WivI7IxbP70onTdaPX9Tt38Q+9 1CL8hB3Ra7mt4yKam5rQv82KhgAoVOQ9Hqkz78xIeJqk+7LvaX9xQ7nvXUWbtkaJ98M0C9FroLP /dHAQfRw43WFG/g1hE8MNpccYMADgnBDN6EEzkUd7h9n2nhAv000NH6gb50ZjZ1Zmo7/4p74VQO H1igC/trEgoSvPE0FJ1DQrFTP3F8H0IbmuYPNKplCabuhHGYSG/jBwCK2W9CSDn74a3mBKlGQBa U+A5XG/HhiZG/w87bMmoPxo10ZGuli7xDcqAwm8bXX+mRh7v
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -79,22 +79,48 @@ this driver.
 Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/spi/spi-cadence-quadspi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-cavium.c | 6 +++---
+ drivers/spi/spi-cavium.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index eb6cc861b00b..a5e2f7786b76 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -1410,7 +1410,7 @@ static int cqspi_mem_process(struct spi_mem *mem, const struct spi_mem_op *op)
- static int cqspi_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op *op)
- {
- 	int ret;
--	struct cqspi_st *cqspi = spi_master_get_devdata(mem->spi->master);
-+	struct cqspi_st *cqspi = spi_controller_get_devdata(mem->spi->controller);
- 	struct device *dev = &cqspi->pdev->dev;
+diff --git a/drivers/spi/spi-cavium.c b/drivers/spi/spi-cavium.c
+index dfe224defd6e..26b8cd1c76e1 100644
+--- a/drivers/spi/spi-cavium.c
++++ b/drivers/spi/spi-cavium.c
+@@ -124,10 +124,10 @@ static int octeon_spi_do_transfer(struct octeon_spi *p,
+ 	return xfer->len;
+ }
  
- 	ret = pm_runtime_resume_and_get(dev);
+-int octeon_spi_transfer_one_message(struct spi_master *master,
++int octeon_spi_transfer_one_message(struct spi_controller *ctlr,
+ 				    struct spi_message *msg)
+ {
+-	struct octeon_spi *p = spi_master_get_devdata(master);
++	struct octeon_spi *p = spi_controller_get_devdata(ctlr);
+ 	unsigned int total_len = 0;
+ 	int status = 0;
+ 	struct spi_transfer *xfer;
+@@ -145,6 +145,6 @@ int octeon_spi_transfer_one_message(struct spi_master *master,
+ err:
+ 	msg->status = status;
+ 	msg->actual_length = total_len;
+-	spi_finalize_current_message(master);
++	spi_finalize_current_message(ctlr);
+ 	return status;
+ }
+diff --git a/drivers/spi/spi-cavium.h b/drivers/spi/spi-cavium.h
+index 1f3ac463a20b..af53a0c31476 100644
+--- a/drivers/spi/spi-cavium.h
++++ b/drivers/spi/spi-cavium.h
+@@ -28,7 +28,7 @@ struct octeon_spi {
+ #define OCTEON_SPI_TX(x)	(x->regs.tx)
+ #define OCTEON_SPI_DAT0(x)	(x->regs.data)
+ 
+-int octeon_spi_transfer_one_message(struct spi_master *master,
++int octeon_spi_transfer_one_message(struct spi_controller *ctlr,
+ 				    struct spi_message *msg);
+ 
+ /* MPI register descriptions */
 -- 
 2.43.0
 
