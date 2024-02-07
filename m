@@ -1,113 +1,114 @@
-Return-Path: <linux-kernel+bounces-56383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5157F84C985
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:21:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DECB84C989
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:22:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07400283BFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:21:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C072F28AE6F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E4C1B279;
-	Wed,  7 Feb 2024 11:21:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A67CE1AAD3;
+	Wed,  7 Feb 2024 11:22:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ImxC9KpO"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZuIGlB2b"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2292417BCB
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:21:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5355F1D524;
+	Wed,  7 Feb 2024 11:22:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707304893; cv=none; b=cWoBUfMVVygqG7/YwC49UkbKAQqG1VVqBhLDtGK+qfS7eNV+b3+pgoUOXfI+N0dpwYGKZNBkflEH19UTMOnsoi1KW9dHGfNC/tSh2cuNpbAH2bm6FwITK7HXz1ifusMh4qWjGzltd8A2IEVYVgCe/NtNXhnh49r34AopnWLvREQ=
+	t=1707304933; cv=none; b=LTdKR1uy3b7l/lnPBqkLxQZbWibdQK3d4OlnnliyjdTUnHAp2448K6GPA339MGugceJgNiGP3HetCt+hXKcEMVhoqO0r+Ivp1gtmVVjPGYHaLkQtKN1bCscUM5bOiOBSQAvYKHIm8h89u9ACoP2vYB7de8UFAnVZeBra9SLlplc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707304893; c=relaxed/simple;
-	bh=dCNfvFwSJa8Rp8P+IbRv4dPyBw+ZIdZdM5oYn2lS0eE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wq9WSdPkyYXQIjweaPgzVT8k2HcvGg3GJhDxxnt0v2zQTnBohpXEL++NkeNs7bliPhIEZqrh4Hx8sfmSoq5Typ0LvWI2k3bj7VMFQHauQiul36yYbb1+HZkiqmEBpt7+5ctmlfnW9qgZQxzCHXqQQdK9a4KkKDW6QpVieFeyv6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ImxC9KpO; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=WpX5mJ+dnqA+dv/RTqJrWW+rQFLmTBT94nD0uWiwdMI=; b=ImxC9KpOSn9Kp0yFacpAPbEXBC
-	QgbMi18qkmmyI9lmhwLdu/xEpKlsg9SptWborQ7SxET2RfEPO+Etjs97p0IoPatPFO8iaA7bC36YI
-	e7WvpDgWq+MzGUdEBxK7cVsjWIRazsEidEFb/U+NdZDDGTs8FISZ6QMNvr3SjN6CZ7a6bkW+ioYky
-	UEjihsZRLEASsrjmij8aP/NxFrPSfPJaX2CgtUHmVgu5Wj6uwoNAH+PFymrZivF7DJhEoTOvsTqiF
-	fpw9JM9IxVo6HV5JHCv3GF301Y0zZnQF2HU2kGXzcDvZb+6pIdofdsvOGJtPSayOiLNECLLfJVaRE
-	dl3sWP0Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rXfzR-0000000EzNf-1XL0;
-	Wed, 07 Feb 2024 11:21:17 +0000
-Date: Wed, 7 Feb 2024 11:21:17 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Will Deacon <will@kernel.org>
-Cc: Nanyong Sun <sunnanyong@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>, mike.kravetz@oracle.com,
-	muchun.song@linux.dev, akpm@linux-foundation.org,
-	anshuman.khandual@arm.com, wangkefeng.wang@huawei.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH v3 0/3] A Solution to Re-enable hugetlb vmemmap optimize
-Message-ID: <ZcNnrdlb3fe0kGHK@casper.infradead.org>
-References: <20240113094436.2506396-1-sunnanyong@huawei.com>
- <ZbKjHHeEdFYY1xR5@arm.com>
- <d1671959-74a4-8ea5-81f0-539df8d9c0f0@huawei.com>
- <20240207111252.GA22167@willie-the-truck>
+	s=arc-20240116; t=1707304933; c=relaxed/simple;
+	bh=lAFsxsdIlZPft8hnkICfi8w8bgkb6/ZUkvhhdX71gHE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ktGD2/9I6B37FEa0UwkwCJH6Ax0S16ZrrrO2fdxVwIfUa+q3XceKpDsUsm1gQeykhP9w3tZLQP9UntSw9RZyYOLaRVxbMa1T6w4nC7nHCkwVUEQoCuBdGRc3L645gswMM23uhsEq173daMcs7C3DQfjNbzYERvD/dtb34NiWj1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZuIGlB2b; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33b0e5d1e89so450309f8f.0;
+        Wed, 07 Feb 2024 03:22:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707304929; x=1707909729; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fe6SZmmP/zqXcfKDaAFGsJGopV6aAaohrfdr91yiNs0=;
+        b=ZuIGlB2bBkYvDbsImnw9WwowvZTdCarqxr5NOJTBiEYTewWZakWSH5MLOrJImsFIop
+         rnk/l2EilFR+INRm6/0MS8cYHVbS8PM1mvP/F2slh408aI4+IsDefpPqN7rgWha+VRBz
+         y2w7DOHPVBO73xkphkukdBS257/C0BsdPVAOpthy9QEn5NCiNGrNQSNPxFEHFWrjoWkY
+         RIIZOjc+dc0fBVS8H4ncQf2+5e1QqJCKQUXCZVnXcFzI1b3Zn6pkXfP7WEIREwrTPxJO
+         wA0mVI9IPCmYgCpy6PBPiL0IUjlUCWvo7Zn+nvWo1Z9SJ2n82HL07VVvyo4DgXnWdT6D
+         6z9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707304929; x=1707909729;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fe6SZmmP/zqXcfKDaAFGsJGopV6aAaohrfdr91yiNs0=;
+        b=h0ThpZfnKWo50c/qESVotuzRHlWf0Ie4iTi/zi6uUpsWYWy1WaDSBbjH1y6Kyv4Vug
+         bEQ950dOn4TNMjMHUo3tcj9GH11MjpAeYWyL522toa4eGO+pxSaQnllpRlN0piuF7etu
+         WCaFVzIZjZirviCibmoQT3TdlfDaGO6zek6SJJ6wwBrR8Hf2QnCZg9gXChqIChi1JnKG
+         hpmGOUUJ/XQ4kEQWxBYtpQlDpNf4WiBJsPT8wkEvkTruAiPVWEekKmnq9bAs+/tRuHG0
+         fbFczlQVskXonkiS4QqtIRtxGxU9bhP/TBXGaX7R9X/kydK5jym1yrezfSN24jdc5QTc
+         tGsQ==
+X-Gm-Message-State: AOJu0YyYB8sHm46SGOJJPD1cY25LnUZXIqGvUI7ZdttqnES4eUBXnsLT
+	ItaKZkUC2GHFVrVEEv5i4PXOwHf+X4jDJBcDpaCRgFC5yeMpdcj5yCUzNtNbveg=
+X-Google-Smtp-Source: AGHT+IGGPHCdSSr6e5ViKiCcz9bcuOkY7ZgebIUX/gxAFauciZn4jxk+qyvNU6k4pEfYGd8snIM0JA==
+X-Received: by 2002:adf:b1c3:0:b0:33b:279a:5cb1 with SMTP id r3-20020adfb1c3000000b0033b279a5cb1mr3554011wra.11.1707304929441;
+        Wed, 07 Feb 2024 03:22:09 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXid5VlkYlXypa1vZv6wwgKQJzGkoy1QHIVzTTa46oCuH2O6c7JisiUYKgsz8bhDDRGkqT28h2dW3Fg0dwGB9MjN9TaTua53IUbK0si/R2FE/owq+r9yFjATTpcHyZURbFa/5ODMsGVgSUqsaMUo7j0VAKO4fzgobxEl3WkxzunRpf+XawrgN70Upk7heW5iO9wzvJGuYUBQMMUY9sMMbWrbp7x4ecFxcddeVT7xZ/JlKuQdoB5Ys6UHUAzNRtfb7Mo
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id l1-20020a5d5601000000b0033b406bc689sm1262926wrv.75.2024.02.07.03.22.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 03:22:08 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Alan Stern <stern@rowland.harvard.edu>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-usb@vger.kernel.org,
+	usb-storage@lists.one-eyed-alien.net
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] usb: storage: freecom: Remove redundant assignment to variable offset
+Date: Wed,  7 Feb 2024 11:22:08 +0000
+Message-Id: <20240207112208.2443237-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207111252.GA22167@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 07, 2024 at 11:12:52AM +0000, Will Deacon wrote:
-> On Sat, Jan 27, 2024 at 01:04:15PM +0800, Nanyong Sun wrote:
-> > 
-> > On 2024/1/26 2:06, Catalin Marinas wrote:
-> > > On Sat, Jan 13, 2024 at 05:44:33PM +0800, Nanyong Sun wrote:
-> > > > HVO was previously disabled on arm64 [1] due to the lack of necessary
-> > > > BBM(break-before-make) logic when changing page tables.
-> > > > This set of patches fix this by adding necessary BBM sequence when
-> > > > changing page table, and supporting vmemmap page fault handling to
-> > > > fixup kernel address translation fault if vmemmap is concurrently accessed.
-> > > I'm not keen on this approach. I'm not even sure it's safe. In the
-> > > second patch, you take the init_mm.page_table_lock on the fault path but
-> > > are we sure this is unlocked when the fault was taken?
-> > I think this situation is impossible. In the implementation of the second
-> > patch, when the page table is being corrupted
-> > (the time window when a page fault may occur), vmemmap_update_pte() already
-> > holds the init_mm.page_table_lock,
-> > and unlock it until page table update is done.Another thread could not hold
-> > the init_mm.page_table_lock and
-> > also trigger a page fault at the same time.
-> > If I have missed any points in my thinking, please correct me. Thank you.
-> 
-> It still strikes me as incredibly fragile to handle the fault and trying
-> to reason about all the users of 'struct page' is impossible. For example,
-> can the fault happen from irq context?
+The variable offset is being assigned a value that is not being read
+afterwards, the assignment is redundant and can be removed.
 
-The pte lock cannot be taken in irq context (which I think is what
-you're asking?)  While it is not possible to reason about all users of
-struct page, we are somewhat relieved of that work by noting that this is
-only for hugetlbfs, so we don't need to reason about slab, page tables,
-netmem or zsmalloc.
+Cleans up clang scan warning:
+drivers/usb/storage/freecom.c:537:2: warning: Value stored to 'offset'
+is never read [deadcode.DeadStores]
 
-> If we want to optimise the vmemmap mapping for arm64, I think we need to
-> consider approaches which avoid the possibility of the fault altogether.
-> It's more complicated to implement, but I think it would be a lot more
-> robust.
-> 
-> Andrew -- please can you drop these from -next?
-> 
-> Thanks,
-> 
-> Will
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/usb/storage/freecom.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/usb/storage/freecom.c b/drivers/usb/storage/freecom.c
+index 2b098b55c4cb..c3ce51c2dabd 100644
+--- a/drivers/usb/storage/freecom.c
++++ b/drivers/usb/storage/freecom.c
+@@ -534,7 +534,6 @@ static void pdump(struct us_data *us, void *ibuffer, int length)
+ 	}
+ 	line[offset] = 0;
+ 	usb_stor_dbg(us, "%s\n", line);
+-	offset = 0;
+ }
+ #endif
+ 
+-- 
+2.39.2
+
 
