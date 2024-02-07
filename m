@@ -1,129 +1,190 @@
-Return-Path: <linux-kernel+bounces-56505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AF4F84CAF6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:56:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F089884CB42
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:13:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DEDF1F23066
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:56:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AD041F22EB4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0CEC76055;
-	Wed,  7 Feb 2024 12:56:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0160777621;
+	Wed,  7 Feb 2024 13:12:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XwJ9/kVc"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b1nxFYqG"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58ED476036
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 12:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988E87604B
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707310571; cv=none; b=CC4dOUqtR+JbG9hbidHlXhKkBNyiPcm1/eNA4D9x1D/oSwJZ+5skfEhoc2+NkmSNlbtQHeQ4A1+jZ6EDemDEXMSZc6S6RFvJHrQcpAp3EqOrW7SArQ1pzAZ7wVV2ihlojnPOHRF55OjMYpaKCrsqEj/Go8tjxD1B4r70dwNHJ1M=
+	t=1707311554; cv=none; b=clXYPFRrPMJNHjbuZ4J4T6Fm9x6tPBYQ47BQi7+Y6V1aKZO1ts44rXxm4HxZtmlMApLtC5+XmIUQFD39yc482dFetujxr8vysEHYmSbuVKOix/bed5h0Ug0p1cf91r6BRaRVHidEtXonfyqRWMWbOp65K6r87eED+IXTF8OlFc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707310571; c=relaxed/simple;
-	bh=4w4s8GAeYati7RUQEBui/SkRd47gbmjGEuufx8ZOtdk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qX8+d9U7YCIJc/yIizCHvDaR9ri71ef1k+1jZ5DPjbJy56ueiUm7ScnfKJTqrUfI7n4kbeVItDGRHzKSxFSmOSEULVXF6xo8p3QUfi010eQ6Da7IC+WQ8HyygdraNpjsgAxwNnJBzeHf31RCTYOkec5sxEqlIk13f3E8VfwsPew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XwJ9/kVc; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1707311554; c=relaxed/simple;
+	bh=eHfaLB0w9StkMcmAmJyt0WL3X4LB5H4bpV1qlxJJDNg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a+EnA0Jx0qo36MyG2udW67XlG1WFtJT4Qm7zgi+MUsf4uHnkfgnPoXqeBomvojlLRj3l703xSoXUJKeeoOo+yP7OtxqISFXlBq3gVeKuM7fhShYoe1ulazRUgp9HQpO88KaUYpq9wsNZedqauFxr4y8k9aH5rJCQv6ck6VHkUFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b1nxFYqG; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707310568;
+	s=mimecast20190719; t=1707311548;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IjLljkcOjmkfh1di8sk/TzvNm0GraGUpgA3hDhsNW28=;
-	b=XwJ9/kVcP5ne5Uu/zrUtKroyyeUSkp1SUxaDQNvz7ch6vD1nDxO3xbJ1pucjU5N8HJoick
-	+gVzqtEJPju8imvjAFqV2yYK7VfP8M9pmNdO9JeJuA7TCEgAk7dEDSrTIfpFdyDmO1JJOi
-	TveDp10MEg9yZ1pAOtuPcP3SiHTMhDI=
-Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
- [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-76-bMxVDLmOMZeuLs5ZMUPJmw-1; Wed, 07 Feb 2024 07:56:06 -0500
-X-MC-Unique: bMxVDLmOMZeuLs5ZMUPJmw-1
-Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-6041c45ce1cso9280297b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 04:56:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707310566; x=1707915366;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IjLljkcOjmkfh1di8sk/TzvNm0GraGUpgA3hDhsNW28=;
-        b=mmF0HTnIDdWn/6naXYoNqsDszP0Nhj6ijqo/xUXkp4uuHj7YtJWC/2QQknavaKaDtr
-         uEbfrfbBg+foO8D8wLtVYa00r2vPGC+n73scWK0JVltyp9BSfiwPiNRmnVfRUKwqrjgn
-         lTHBWMYAd2zjpIG06Sdwvv1pw1MfhxIHA0xKHeXL9ai3k0SL8BFp7r7BRtk6z8wez1oJ
-         IfSB4sITCySJcHfcQIADJH6BLKZQGc8FqaXoT/4D+JmgxKL7nfn1BGOXEFS+5admLGN0
-         PM7nRPsdYyK1hGFwGVNuC50vKhc3LLOxKTnb3x4WFU9Fo4wQgoRyvx5DuFu1ma3xZR95
-         FRxg==
-X-Gm-Message-State: AOJu0YwJwttSWohAsp/LzgBbmgvu+u5d4gYU8B/dSDW5rJYZZiG4Dqpm
-	p2MqH1q477UV9MglU0OyQfacI3ZYQIS/7JPt8FS308D/P+S8qqRkQujlry5LbbET3QK3VXgyjY6
-	AS+2g5OYvvuialgB36sjN29Mr37v7s5JBA4ul/E1JLTarKiNwqSt05XYhU4xnEQ==
-X-Received: by 2002:a81:7e07:0:b0:5ef:4a7d:2426 with SMTP id o7-20020a817e07000000b005ef4a7d2426mr4480575ywn.31.1707310566090;
-        Wed, 07 Feb 2024 04:56:06 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHYTvpG27MlsryLbPhBMlMIDy/jl5qqx0QN1iCiRJomoklTijNwOrhVPd9T0itjoUQMRMCGJg==
-X-Received: by 2002:a81:7e07:0:b0:5ef:4a7d:2426 with SMTP id o7-20020a817e07000000b005ef4a7d2426mr4480558ywn.31.1707310565774;
-        Wed, 07 Feb 2024 04:56:05 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUbvebY0DHLBbpoXm/fnjGZulxd8pCjjhojAGkGAcd7WpnxeWBRBg67IuDeNig/ivTHU5HwTf5TDBpkbJnn8+VMCIme8IfMhsqPH4BQM262p9qwit0mfUit90B4ocwSCyFYuWmusQmjG+/qy30hyRqQPN800MF4
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id a10-20020ac844aa000000b0042c22902ca2sm489302qto.81.2024.02.07.04.56.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 04:56:04 -0800 (PST)
-Message-ID: <6fdbeed0-980e-4371-a448-0c215c4bc48e@redhat.com>
-Date: Wed, 7 Feb 2024 13:56:02 +0100
+	bh=TxHbYgF40mvXhoLp/NUG6zCoxS7zVB+OFLNTVEsXK0E=;
+	b=b1nxFYqGi+zLp6nFpFt9mx0Rh2Z2AK0ZpsAhcfgpVRilZnRFRGjU9B2+qCU4wTyr9GoTGr
+	jBfnx00XuUWXYpfJ0pwrII7hVhAtFVkOf0OKQnVh9wYqpUCLT2NF3VNX+Sl9utBtQRgJ2+
+	sk8nmO4sUhbaIJBiWbc6YO/cFCGGKm8=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-618-zztZeUjeOFqBlf5fejcSCw-1; Wed,
+ 07 Feb 2024 08:12:24 -0500
+X-MC-Unique: zztZeUjeOFqBlf5fejcSCw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 68AD13816B45;
+	Wed,  7 Feb 2024 13:12:24 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.4])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 1DB131C066AA;
+	Wed,  7 Feb 2024 13:12:24 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id C40704023C99F; Wed,  7 Feb 2024 09:51:24 -0300 (-03)
+Date: Wed, 7 Feb 2024 09:51:24 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Leonardo Bras <leobras@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [patch 04/12] clockevent unbind: use smp_call_func_single_fail
+Message-ID: <ZcN8zA4WaLx7c3qy@tpad>
+References: <20240206184911.248214633@redhat.com>
+ <20240206185709.928420669@redhat.com>
+ <87jzngmqsw.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: selftests: Fix a semaphore imbalance in the dirty
- ring logging test
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Shaoqin Huang <shahuang@redhat.com>
-References: <20240202231831.354848-1-seanjc@google.com>
- <170724566758.385340.17150738546447592707.b4-ty@google.com>
-From: Eric Auger <eauger@redhat.com>
-In-Reply-To: <170724566758.385340.17150738546447592707.b4-ty@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87jzngmqsw.ffs@tglx>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-Hi Sean,
-
-On 2/6/24 22:36, Sean Christopherson wrote:
-> On Fri, 02 Feb 2024 15:18:31 -0800, Sean Christopherson wrote:
->> When finishing the final iteration of dirty_log_test testcase, set
->> host_quit _before_ the final "continue" so that the vCPU worker doesn't
->> run an extra iteration, and delete the hack-a-fix of an extra "continue"
->> from the dirty ring testcase.  This fixes a bug where the extra post to
->> sem_vcpu_cont may not be consumed, which results in failures in subsequent
->> runs of the testcases.  The bug likely was missed during development as
->> x86 supports only a single "guest mode", i.e. there aren't any subsequent
->> testcases after the dirty ring test, because for_each_guest_mode() only
->> runs a single iteration.
->>
->> [...]
+On Wed, Feb 07, 2024 at 12:55:59PM +0100, Thomas Gleixner wrote:
+> On Tue, Feb 06 2024 at 15:49, Marcelo Tosatti wrote:
+> > Convert clockevents_unbind from smp_call_function_single
+> > to smp_call_func_single_fail, which will fail in case
+> > the target CPU is tagged as block interference CPU.
 > 
-> Applied to kvm-x86 selftests, thanks!
-Do you plan to send this branch to Paolo for v6.8?
+> Seriously? This is a root only operation. So if root wants to interfere
+> then so be it.
 
-Thanks
+Hi Thomas!
 
-Eric
-> 
-> [1/1] KVM: selftests: Fix a semaphore imbalance in the dirty ring logging test
->       https://github.com/kvm-x86/linux/commit/ba58f873cdee
+OK, so the problem is the following: due to software complexity, one is
+often not aware of all operations that might take place.
 
-> 
-> --
-> https://github.com/kvm-x86/linux/tree/next
-> 
+For example:
+
+https://lore.kernel.org/lkml/Y6mXDUZkII5OnuE8@tpad/T/
+
+[PATCH] hwmon: coretemp: avoid RDMSR interruptions to isolated CPUs
+
+The coretemp driver uses rdmsr_on_cpu calls to read
+MSR_IA32_PACKAGE_THERM_STATUS/MSR_IA32_THERM_STATUS registers,
+which contain information about current core temperature.
+
+For certain low latency applications, the RDMSR interruption exceeds    
+the applications requirements.
+
+So disable reading of crit_alarm and temp files via /sys, in case
+CPU isolation is enabled.
+
+Temperature information from the housekeeping cores should be
+sufficient to infer die temperature.
+
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+
+diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
+index 9bee4d33fbdf..30a35f4130d5 100644
+--- a/drivers/hwmon/coretemp.c
++++ b/drivers/hwmon/coretemp.c
+@@ -27,6 +27,7 @@
+ #include <asm/msr.h>
+ #include <asm/processor.h>
+ #include <asm/cpu_device_id.h>
++#include <linux/sched/isolation.h>
+ 
+ #define DRVNAME	"coretemp"
+ 
+@@ -121,6 +122,10 @@ static ssize_t show_crit_alarm(struct device *dev,
+ 	struct platform_data *pdata = dev_get_drvdata(dev);
+ 	struct temp_data *tdata = pdata->core_data[attr->index];
+ 
++
++	if (!housekeeping_cpu(tdata->cpu, HK_TYPE_MISC))
++		return -EINVAL;
++
+ 	mutex_lock(&tdata->update_lock);
+ 	rdmsr_on_cpu(tdata->cpu, tdata->status_reg, &eax, &edx);
+ 	mutex_unlock(&tdata->update_lock);
+@@ -158,6 +163,8 @@ static ssize_t show_temp(struct device *dev,
+ 
+ 	/* Check whether the time interval has elapsed */
+ 	if (!tdata->valid || time_after(jiffies, tdata->last_updated + HZ)) {
++		if (!housekeeping_cpu(tdata->cpu, HK_TYPE_MISC))
++			return -EINVAL;
+ 		rdmsr_on_cpu(tdata->cpu, tdata->status_reg, &eax, &edx);
+ 		/*
+ 		 * Ignore the valid bit. In all observed cases the register
+
+
+In this case, a userspace application (collecting telemetry data), was
+responsible for reading the sysfs files.
+
+Now think of all possible paths, from userspace, that lead to kernel
+code that ends up in smp_call_function_* variants (or other functions
+that cause IPIs to isolated CPUs).
+
+The alternative, from blocking this in the kernel, would be to validate all 
+userspace software involved in your application, to ensure it won't end
+up in the kernel sending IPIs. Which is impractical, isnt it ?
+(or rather, with such option in the kernel, it would be possible to run 
+applications which have not been validated, since the kernel would fail
+the operation that results in IPI to isolated CPU).
+
+So the idea would be an additional "isolation mode", which when enabled, 
+would disallow the IPIs. Its still possible for root user to disable
+this mode, and retry the operation.
+
+So lets say i want to read MSRs on a given CPU, as root.
+
+You'd have to: 
+
+1) readmsr on given CPU (returns -EPERM or whatever), since the
+"block interference" mode is enabled for that CPU.
+
+2) Disable that CPU in the block interference cpumask.
+
+3) readmsr on the given CPU (success).
+
+4) Re-enable CPU in block interference cpumask, if desired.
+
+
+(BTW, better ideas than the cpumask are welcome, but it seems the
+realibility aspect of something similar to this is necessary).
+
+Thanks!
 
 
