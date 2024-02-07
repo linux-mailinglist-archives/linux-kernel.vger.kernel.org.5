@@ -1,74 +1,83 @@
-Return-Path: <linux-kernel+bounces-56189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FC5684C729
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:21:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D90A84C727
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:20:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8D581F25A73
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:21:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D501C1F25974
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064F220DFA;
-	Wed,  7 Feb 2024 09:20:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873C2210EC;
+	Wed,  7 Feb 2024 09:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kK8i5+wP"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JVBFPqdw"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC0120DCF;
-	Wed,  7 Feb 2024 09:20:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1411420DCC
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:20:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707297652; cv=none; b=IP51l2Xn+Z1rrLzyXxCbbPfm3be64aw4ae0r4aS2QCoF6NkTyApQb9xOECOZgB+nYQOZXVG5nHvACLDOPnoHjCJZ8OYRWVxguRBNqE/hiNCeNVguuvOexZQ9RIwQN4VMmEKlNW9Dm0xNrKVMhxd7XPARiC+uwCfKjSsnAesffxc=
+	t=1707297625; cv=none; b=SmPqDA8kK8nvvW8jC/7T9iEimbwHmUcVqkhY/A17un/AyAD1D9DI8a9+peUhDClD1jXjsyQLlzlXFfNgsvHyDI0eIxnmb5dd1Omo9HEyEVoJ0ywsxHjvA9CguFuiF4c7ehsUGCQdiNGd4mCtK4ZitoPGpZtl9Rmm0mLQZc5iwYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707297652; c=relaxed/simple;
-	bh=6YvQzVV4nusevcHCqpVYqUFJYCCJgg8JwrDhNoV+FTM=;
+	s=arc-20240116; t=1707297625; c=relaxed/simple;
+	bh=95US5Bry8ta5OEd6eEVd0gOFFok1XZEXloks+CN3KJQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QnOctq25G/YtUctrk3a/5arMP+Sm3svPdwvby4ACslznA5bxH8xup1dpZWjxGVqHGtTAMEhbz0pFzQ4ySHHwqo6hE0giPJ4RJq93iGi+vHCZ1saq8aOfPuATPlMLgowFwDT/OgeOd1BqK6D0BRe1XO3p6YZp55Xu/DTelXDVS8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kK8i5+wP; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707297651; x=1738833651;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6YvQzVV4nusevcHCqpVYqUFJYCCJgg8JwrDhNoV+FTM=;
-  b=kK8i5+wPmRsUKNu3gKq/P+rKxfHYbk709xj9yW8agh1lFzqLGeOC49Jk
-   SzLJiu0eC1bamZRpBqNjtQb3o7LID1pCtoGz04qwP2+W+NY9AdwfE7F1S
-   6G3trwOaOkUakGt8kuczB9NqRqRuRnjrTBaapJ5+rlasoosuj48CzWiFl
-   LjojzbiVwDLiba9eYc3ovJijqhGJgFJM4Bpv3EL6Vng9SNIsntFj10sQb
-   H2Kz8xZqGmBgu8+YfMX4JIFFuDyH0XiwxJHnny9KIDQ38uA0k1VeKMQK0
-   ti+O6XZbtQ+HyXZa53qyqMKjGGP/UKTOCtg7PMDkrrTmR9Q2kjC71VoHL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="1086070"
-X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
-   d="scan'208";a="1086070"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 01:20:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
-   d="scan'208";a="6050463"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 07 Feb 2024 01:20:47 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rXe6m-0002Rg-2D;
-	Wed, 07 Feb 2024 09:20:44 +0000
-Date: Wed, 7 Feb 2024 17:19:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>,
-	Mark Brown <broonie@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-	Miquel Raynal <miquel.raynal@bootlin.com>, yen-mei.goh@keysight.com,
-	koon-kee.lie@keysight.com,
-	Louis Chauvet <louis.chauvet@bootlin.com>
-Subject: Re: [PATCH 2/2] spi: omap2-mcspi: Add support for MULTI-mode
-Message-ID: <202402071719.e1p4tUge-lkp@intel.com>
-References: <20240126-spi-omap2-mcspi-multi-mode-v1-2-d143d33f0fe0@bootlin.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FXzYsKx/9sUwf6EUiK5UasduY10rHb2lEOwrcVJ+eLyjQTC/GuG2k923+E8+gaob/0E1nJJRBwbF2aO3Z0dKJpHC7F74YLjsAywOSjK5IOZ45fjEoXmTVljmQUx+qGWF3b2hdQHy62SadTB4JRcurgsIMq2NT6IFQXjgBZ50pUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JVBFPqdw; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a37878ac4f4so49229466b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:20:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1707297621; x=1707902421; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=V6LAyjJAkdZ4pS3ypf47UTM6Qe5HmDg2tiLAggF/HJ4=;
+        b=JVBFPqdws4loMdY/NqlBLt96bf484flaOwD498BeZmgGsEvRe+kM9ogEzyPuYf6F+N
+         SvKBR1SWLpXxOstED7mEJPsVUc0lok6KpGQIsx1aoXCgR0qWgIUaAVJyw7/thwrh0K0w
+         XDiMwKM9rajLmopZ6WuUGMAUUDgIByzda9OlskFOByOiRgz2OeYwEERcUgwsDjatMJYS
+         9x//OhAqdGfHCzM7azX6K3FHE3zN1jVbhMqv8qtQBINk8KSNHgBh744qK7LKlptrj2kV
+         CsGUp8ue1BqaFV7M4DH+fjIYuSAoCOvvcLGPiNG0A63k+Nbe/d03nzEPCsEhefEF0mQ5
+         9jzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707297621; x=1707902421;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V6LAyjJAkdZ4pS3ypf47UTM6Qe5HmDg2tiLAggF/HJ4=;
+        b=TFH2y3PI/uzZUMGt+LbKjvxJj49ZKCx11iIfLQ++gyKfOwGx3qCZKUvgE5U4/iuogd
+         hePXcRGJjoHsU6L2AGauhxpiXY/U+zrEBQ++0L1+13WzWDVkvwB1orZ30zlW/32EHLLH
+         AXzJ8lyMAcIBXdme5XN9O4owtBKJO/ni5CwGD/c+fg+SMh3EXqnRl2XYLMzPEfjgfHKx
+         L4KJ6Wpx3/KCMH1BlPXuvDOIyg3L+g6prna36MhxzH2qtIXQldyCuJY/xKGoZTn0xCcR
+         pkzgKZup9ovCXOp6Z0wrWp32MVttwiwr5S9V6QLIguBbG0GvHvghNzQRe4CEDb81hSOq
+         YUEw==
+X-Gm-Message-State: AOJu0Yw7WyIWlPifsIBQAU1OXfGvc4YDn0it4fsino7JY0ndtwFI4Cu6
+	T66HTbaJUwiR1gyoJGGh0LTc8Ydij2bLAKKlabn+DlPbl5pc+DNZYFq6ia7KL/o=
+X-Google-Smtp-Source: AGHT+IE0WTzJt8mskCiQyaa5+K2iTcUUhhePnWZaNwIWSVRVmWxM8hY4BqDNBinQlZ1MOP5GLnYfIA==
+X-Received: by 2002:a17:907:1de1:b0:a38:929d:b6ff with SMTP id og33-20020a1709071de100b00a38929db6ffmr55528ejc.77.1707297621258;
+        Wed, 07 Feb 2024 01:20:21 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVkQqsYL8jLO5d7z5SWG5LMTB+mZP1osevZZA3dnX+mztNdzyufRe7LLcndtBiDrw/A7RlGf7eVDpXJcljimjM5Te0LejetpbrwWRVosUTqFpLjK9NFpw6+qGiH/hzcdoCS/8RanrQP425OysSB670KBDSMOws=
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id vg11-20020a170907d30b00b00a37210f1e92sm538503ejc.205.2024.02.07.01.20.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 01:20:20 -0800 (PST)
+Date: Wed, 7 Feb 2024 10:20:19 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v3 09/14] printk: Wait for all reserved records
+ with pr_flush()
+Message-ID: <ZcNLU8g479-SEqrY@alley>
+References: <20231214214201.499426-1-john.ogness@linutronix.de>
+ <20231214214201.499426-10-john.ogness@linutronix.de>
+ <ZbowlkOVWiSgCxNX@alley>
+ <87y1bznii8.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,104 +86,135 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240126-spi-omap2-mcspi-multi-mode-v1-2-d143d33f0fe0@bootlin.com>
+In-Reply-To: <87y1bznii8.fsf@jogness.linutronix.de>
 
-Hi Louis,
+On Mon 2024-02-05 14:39:03, John Ogness wrote:
+> On 2024-01-31, Petr Mladek <pmladek@suse.com> wrote:
+> >> +	last_finalized_seq = desc_last_finalized_seq(rb);
+> >> +
+> >> +	/*
+> >> +	 * @head_id is loaded after @last_finalized_seq to ensure that it is
+> >> +	 * at or beyond @last_finalized_seq.
 
-kernel test robot noticed the following build errors:
+Maybe we could do it the following way. I would slightly update the
+above comment:
 
-[auto build test ERROR on 41bccc98fb7931d63d03f326a746ac4d429c1dd3]
+	 * @head_id is loaded after @last_finalized_seq to ensure that
+	 * it points to the record with @last_finalized_seq or newer.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Louis-Chauvet/Revert-spi-spi-omap2-mcspi-c-Toggle-CS-after-each-word/20240206-180243
-base:   41bccc98fb7931d63d03f326a746ac4d429c1dd3
-patch link:    https://lore.kernel.org/r/20240126-spi-omap2-mcspi-multi-mode-v1-2-d143d33f0fe0%40bootlin.com
-patch subject: [PATCH 2/2] spi: omap2-mcspi: Add support for MULTI-mode
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240207/202402071719.e1p4tUge-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240207/202402071719.e1p4tUge-lkp@intel.com/reproduce)
+I have got it even from the previous record but I had to think about
+it a  bit. You always wanted to make a difference between the IDs
+and sequence numbers.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402071719.e1p4tUge-lkp@intel.com/
+Anyway, this comment makes the safety kind of obvious.
 
-All error/warnings (new ones prefixed by >>):
+@head_id always have to be updated when the related record is reserved.
+And all other CPUs have to see it so that they have to bump @head_id
+for a newer record.
 
-   drivers/spi/spi-omap2-mcspi.c: In function 'omap2_mcspi_prepare_message':
->> drivers/spi/spi-omap2-mcspi.c:1415:30: error: 'master' undeclared (first use in this function)
-    1415 |         omap2_mcspi_set_mode(master);
-         |                              ^~~~~~
-   drivers/spi/spi-omap2-mcspi.c:1415:30: note: each undeclared identifier is reported only once for each function it appears in
->> drivers/spi/spi-omap2-mcspi.c:1388:13: warning: unused variable 'speed_hz' [-Wunused-variable]
-    1388 |         u32 speed_hz;
-         |             ^~~~~~~~
+And @last_finalized_seq points to an already finalized record.
+If a record is finalized then other CPUs must be able to
+read valid data.
 
+Maybe, we should add the two above paragraphs into the human
+readable part of the comment as well. They describe some
+basics of the design. Everything would blow up when
+neither of them is true.
 
-vim +/master +1415 drivers/spi/spi-omap2-mcspi.c
+My motivation is that a good human friendly description
+helps to understand what the code does and that it is
+"obviously" correct.
 
-  1379	
-  1380	static int omap2_mcspi_prepare_message(struct spi_controller *ctlr,
-  1381					       struct spi_message *msg)
-  1382	{
-  1383		struct omap2_mcspi	*mcspi = spi_controller_get_devdata(ctlr);
-  1384		struct omap2_mcspi_regs	*ctx = &mcspi->ctx;
-  1385		struct omap2_mcspi_cs	*cs;
-  1386		struct spi_transfer	*tr;
-  1387		u8 bits_per_word;
-> 1388		u32 speed_hz;
-  1389	
-  1390		/*
-  1391		 * The conditions are strict, it is mandatory to check each transfer of the list to see if
-  1392		 * multi-mode is applicable.
-  1393		 */
-  1394		mcspi->use_multi_mode = true;
-  1395		list_for_each_entry(tr, &msg->transfers, transfer_list) {
-  1396			if (!tr->bits_per_word)
-  1397				bits_per_word = msg->spi->bits_per_word;
-  1398			else
-  1399				bits_per_word = tr->bits_per_word;
-  1400	
-  1401			/* Check if the transfer content is only one word */
-  1402			if ((bits_per_word < 8 && tr->len > 1) ||
-  1403			    (bits_per_word >= 8 && tr->len > bits_per_word / 8))
-  1404				mcspi->use_multi_mode = false;
-  1405	
-  1406			/* Check if transfer asks to change the CS status after the transfer */
-  1407			if (!tr->cs_change)
-  1408				mcspi->use_multi_mode = false;
-  1409	
-  1410			/* If at least one message is not compatible, switch back to single mode */
-  1411			if (!mcspi->use_multi_mode)
-  1412				break;
-  1413		}
-  1414	
-> 1415		omap2_mcspi_set_mode(master);
-  1416	
-  1417		/* In single mode only a single channel can have the FORCE bit enabled
-  1418		 * in its chconf0 register.
-  1419		 * Scan all channels and disable them except the current one.
-  1420		 * A FORCE can remain from a last transfer having cs_change enabled
-  1421		 *
-  1422		 * In multi mode all FORCE bits must be disabled.
-  1423		 */
-  1424		list_for_each_entry(cs, &ctx->cs, node) {
-  1425			if (msg->spi->controller_state == cs && !mcspi->use_multi_mode) {
-  1426				continue;
-  1427			}
-  1428	
-  1429			if ((cs->chconf0 & OMAP2_MCSPI_CHCONF_FORCE)) {
-  1430				cs->chconf0 &= ~OMAP2_MCSPI_CHCONF_FORCE;
-  1431				writel_relaxed(cs->chconf0,
-  1432						cs->base + OMAP2_MCSPI_CHCONF0);
-  1433				readl_relaxed(cs->base + OMAP2_MCSPI_CHCONF0);
-  1434			}
-  1435		}
-  1436	
-  1437		return 0;
-  1438	}
-  1439	
+I agree that the below precise description is useful.
+But people should need it only when they want to prove
+or revisit the human friendly claim.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> >> +	 *
+> >> +	 * Memory barrier involvement:
+> >> +	 *
+> >> +	 * If desc_last_finalized_seq:A reads from
+> >> +	 * desc_update_last_finalized:A, then
+> >> +	 * prb_next_reserve_seq:A reads from desc_reserve:D.
+> >> +	 *
+> >> +	 * Relies on:
+> >> +	 *
+> >> +	 * RELEASE from desc_reserve:D to desc_update_last_finalized:A
+> >> +	 *    matching
+> >> +	 * ACQUIRE from desc_last_finalized_seq:A to prb_next_reserve_seq:A
+> >> +	 *
+> >> +	 * Note: desc_reserve:D and desc_update_last_finalized:A can be
+> >> +	 *       different CPUs. However, the desc_update_last_finalized:A CPU
+> >> +	 *       (which performs the release) must have previously seen
+> >> +	 *       desc_read:C, which implies desc_reserve:D can be seen.
+> >
+> > The most tricky part is desc_reserve:D. It is a supper complicated
+> > barrier which guarantees many things. But I think that there are
+> > many more write barriers before the allocated descriptor reaches
+> > finalized state. So that it should be easier to prove the correctness
+> > here by other easier barriers.
+> 
+> Yes, desc_reserve:D provides memory barriers for several orderings. But
+> it is _not_ providing a memory barrier for this ordering. It only marks
+> where @head_id is stored.
+> 
+> The only memory barriers involved here are desc_update_last_finalized:A
+> and its counterpart desc_last_finalized_seq:A.
+> 
+> CPU0                                 CPU1
+> ====                                 ====
+> store(head_id)
+> store_release(last_finalized_seq)    load_acquire(last_finalized_seq)
+>                                      load(head_id)
+> 
+> > To make it clear. I am all for keeping the above precise description
+> > as is. I just think about adding one more human friendly note which
+> > might help future generations to understand the correctness an easier
+> > way.  Something like:
+> >
+> > 	* Note: The above description might be hard to follow because
+> > 	*	desc_reserve:D is a multi-purpose barrier. But this is
+> > 	*	just the first barrier which makes sure that @head_id
+> > 	*	is updated before the reserved descriptor gets finalized
+> > 	*	and updates @last_finalized_seq.
+> > 	*
+> > 	*	There are more release barriers in between, especially,
+> > 	*	desc_reserve:F and desc_update_last_finalized:A. Also these make
+> > 	*	sure that the desc_last_finalized_seq:A acquire barrier allows
+> > 	*	to read @head_id related to @last_finalized_seq or newer.
+> 
+> Non-global memory barriers must operate on the same memory. In this
+> case, the acquire/release memory barriers are operating on
+> @last_finalized_seq. The other ordered memory load in this situation is
+> for @head_id, so it makes sense to specify the store of @head_id as the
+> start of the release block.
+
+I am a bit confused by the "non-global memory barrier" here. I would
+expect that acquire()/release() variants provide global barriers.
+They are used to implement locking.
+
+Anyway, I am fine with keeping this precise description as is
+if we make the correctness more "obvious" from the human friendly
+part of the comment.
+
+I am sorry for all the nitpicking. I want to make sure that
+the entire comment is correct including the precise part.
+This was not easy so I thought about ways to make it easier.
+Sigh.
+
+Anyway, I do not want to block the patchset much longer
+because of this formal things.
+
+> > BTW: It came to my mind whether the logic might be more
+> >      straightforward if we store desc_ring->next_finalized_seq instead
+> >      of @last_finalized_seq.
+> 
+> I thought about this as well. But I felt like the meaning was a bit
+> confusing. Also @head_id points to the latest reserved descriptor, so it
+> makes the code a bit easier to follow when creating a diff based on the
+> latest finalized descriptor.
+
+Fair enough.
+
+Best Regards,
+Petr
 
