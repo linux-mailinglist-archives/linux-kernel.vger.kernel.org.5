@@ -1,218 +1,306 @@
-Return-Path: <linux-kernel+bounces-56828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AA8984CFCA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:28:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B6B684CFCC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:29:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FA8E1C25770
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:28:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A3FB1F2278C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B674682897;
-	Wed,  7 Feb 2024 17:28:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EE998002F;
+	Wed,  7 Feb 2024 17:29:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=PHYTEC.onmicrosoft.com header.i=@PHYTEC.onmicrosoft.com header.b="ZeojYU6J"
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2126.outbound.protection.outlook.com [40.107.100.126])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BBLStwxT"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB6A81AC2;
-	Wed,  7 Feb 2024 17:28:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.126
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707326924; cv=fail; b=B99/A2r3AoWGWjlkyLOEXE9EefVypOXKKld98Ig9WEs6LmplXgHyh7xy33W21ppcxc7PCWpFUNCx7emSnQ2NzPfgeETr9QlWjL/frUXNrOKSlvH3Qo1SSJ8xTxFp+83d6MemtA4/85aEzYKwqrvVL17W6DeRV2FZUi3RNUQ3dEw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707326924; c=relaxed/simple;
-	bh=J1hlcozeGzr8OfYSueGI4qI4mfDZCrDQ76ixxTjC71E=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=UvF0O+05483cpAgx9mQ736+kvFDckcHhHm0GElLt2l3iQs6fOaDy16NDiOY6w+Q1kLywP+IWeUfOjWH6aNuGZ0P2SVkpBvdXXJmdGejuhopVXkoNoEtxPM5AN12jupGWBUvGHmlpRLTwRGKU+2Q4yApUxQwXMuKzcWjvtV7yM94=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.com; spf=pass smtp.mailfrom=phytec.com; dkim=pass (1024-bit key) header.d=PHYTEC.onmicrosoft.com header.i=@PHYTEC.onmicrosoft.com header.b=ZeojYU6J; arc=fail smtp.client-ip=40.107.100.126
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dtlx3N5rUOG04gUum4l7u6CQ2dEQ+bCT7/488q32TJVgwJTrb720/DnZ7jxRN/BiYUylXsgJd0pi2n6P4JwxHLFdO/A+7m6mLhocJ4VYRlpqAVgjjuagdyEDymbKw35mLZUxzN6DTorrdblt4zFHhE/kpt00Teo9MIB7YRXiDRyFKryC4ltz56CwV9/s+3niQy3wtGFLEhUccfCEXo7HA4cL/3Hi2zYE6kgo6XrjXCJtpO/43ulLXZgin7u53NacpdEgt7zoJ8olVeQozZC3ZDbmvjaaZZNBRa0IvqWFjb5vqLDU+TN3XsXG1YJHj4REJXcKO/mS6df2wAGvg42FYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LG053cT3p+fOUVgJ50JKKHtA0A8WHDQTRWq70i03JEo=;
- b=Ay7mAsVsJwviXW86TDP/nBIHn4awYFz44YvjDTVlqwxGrgBj4ll98qlxxSxc0SLzg55R5CMuTs3bfarj5qegKTx2zJEfKeK7wutOihIXZlCq8+xnHa1tYCILxgaHDaGPr2Q6nxGzWuolbKAbXjeFUFYBmc/dyW6/C8fMrE4NbSr1BZVWFpAVcboZHMy5GjeUbOhlYtZLRKgZ8YF/qd4O6Xdo8O/nTz3tZ7B5Ofc7h+zQxzKJSWI+OmuHFpAtc9luI/OufSqpr/W5smhuTb2djAH+opRKG1EcfO6cqjszx9bbFAa6pKbOWYQzXAikprp75q6/wP8lwXpBUTGvmXR1AQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=phytec.com; dmarc=pass action=none header.from=phytec.com;
- dkim=pass header.d=phytec.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A372446C8
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 17:29:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707326978; cv=none; b=OfqqD8CbNl85meztwwYCpzaxqC5eGvcIboqSxhQMwewC9KYNdtrHdWMxfV+nI6ZqbtZdUkVdroysSepR1czFXYBvFsb3T9IjOAjkHEJUyf7JNykd6wZ77Shs+ynmj8tlTvDIgHjIs0R21ZzS8kbvIPhK0jv8zGcVEWRwr2WR0WY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707326978; c=relaxed/simple;
+	bh=++Bklq5ymOBIPQQU4XmU9PUUxhf2RrPGXBz2NxWi4y4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B1bTbze71nPDKxzJYdzTC7oIHffxU63QD+Yl0W5h1V6IvmeqMnoUs3e21aOvcWNp56ML/ZUW1M8OPPBAQjKHUmVx+9nhiMonZoJ6AgvE+uDWt/t/KzGLR3aexnhzKcZEAYQV6OxKFP1krzhAt4JgA8Jf4qSAhpe5RX8ZsdPO/1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BBLStwxT; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51167496943so1412253e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 09:29:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=PHYTEC.onmicrosoft.com; s=selector2-PHYTEC-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LG053cT3p+fOUVgJ50JKKHtA0A8WHDQTRWq70i03JEo=;
- b=ZeojYU6J9CyLp3bBJpmVybgsEVuyKjJE2Bwj00F24KXj9Nom2aXdS8H5NAyO+lLxUsTKpWbQgTfwu4YNuh6bCXKGRMx1L3FmgZPKo8R2PucTWv1LlwFQ223HVMbwfDi9EmV6p0VoMrrW152LiLIa9bjkdxSRqAnudwBRcE9H+ig=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=phytec.com;
-Received: from SA1PR22MB5636.namprd22.prod.outlook.com (2603:10b6:806:3e2::15)
- by SN4PR22MB2822.namprd22.prod.outlook.com (2603:10b6:806:1e9::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Wed, 7 Feb
- 2024 17:28:39 +0000
-Received: from SA1PR22MB5636.namprd22.prod.outlook.com
- ([fe80::e2ac:f990:32c6:334b]) by SA1PR22MB5636.namprd22.prod.outlook.com
- ([fe80::e2ac:f990:32c6:334b%6]) with mapi id 15.20.7249.038; Wed, 7 Feb 2024
- 17:28:38 +0000
-From: Nathan Morrisson <nmorrisson@phytec.com>
-To: nm@ti.com,
-	vigneshr@ti.com,
-	kristo@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	upstream@lists.phytec.de,
-	w.egorov@phytec.de
-Subject: [PATCH] arm64: dts: ti: am62-phyboard-lyra: Add overlay to enable a GPIO fan
-Date: Wed,  7 Feb 2024 09:28:20 -0800
-Message-Id: <20240207172820.478332-1-nmorrisson@phytec.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: CH0PR03CA0017.namprd03.prod.outlook.com
- (2603:10b6:610:b0::22) To SA1PR22MB5636.namprd22.prod.outlook.com
- (2603:10b6:806:3e2::15)
+        d=google.com; s=20230601; t=1707326974; x=1707931774; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LGf3jNllSJ1jiYrkiqgx4SfdodgVl2gqXkNeLLnWW+o=;
+        b=BBLStwxTdqaBbNsgo06Ogn2L3CJH2jc9u6ge9mm46P1Nsu+3gk31PFEbnAf0TReEbm
+         JpkEit/K2JEMCBYaFOnqNTq+Z4LEblz9q72xiYe81nXnVYtnNpXAbAfobl0qfs1z6u5q
+         xd6bBWyVWf7P6b8rPXHLf9xxTCh1o/DC8cohf3qHoACJN2GwektTl0l5k7Xyc/M/Hmij
+         Jcvpkkoh5cR8kLCwC4eLMBe5vhh53Ut7LU+/sp98mUDJviRLQarz/Iy24bHZRUQBtUOt
+         DOLWqSG0j+4F6nPUCJWPQ0TOAC2KLxMyQCgVmTz+SMm53gzp/D7DHcd6jTl2DX9Eej5B
+         5YyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707326974; x=1707931774;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LGf3jNllSJ1jiYrkiqgx4SfdodgVl2gqXkNeLLnWW+o=;
+        b=lZ7HodljhXFhBUP01laKcxayblflTtpQdvM1jZY5MVn7nb7Z9ApcZ2vF3oKAkAy2lY
+         aME7CbGKvJ4lcBxehM00/qkgbTAHbCkxdiOkiaANAx/8NpSgFfxNnTLqcen5QNl87g4g
+         u70vOnlhmKJHID6KxhqaVtFWBvbsAamWTEjkDLaRtqqOX4pK9VoAHCeU83N6VeAzjSX/
+         ir9nJLRy6HCVZlpp8BHx0HzVYG9JpMwIspudk3gbGhWMTsDe5HW7bUoOHSQ44dtiqF+s
+         SqQo3f47TsIr2L+a7LdaYOGGTzyljaYBwgX49LmUdLdMbKFB5X6S5zCJx+N7Rp0kwLib
+         dTMw==
+X-Gm-Message-State: AOJu0YytQP32yRZW6v+yON/RZJ+/GZj50xgyMIZmOY5XyHD5hWnLMMp5
+	CbAgYvqFTQ56VRjA4qnrp9dT+R9YI2Sgg4KcHAmfdwqXnPBhf2yhqZGCwMqI2I1e6WlnhRhZju0
+	f+o7amtUrPmshj/gojcrY5pjAyqT82cmJIgOe
+X-Google-Smtp-Source: AGHT+IGUbzSAAo+a5mDR+wLIlDyCc9vlKpByQMits6/mHIp6FihqrfXRNw/3GOPQJSg0T39OIVKrGBBykkkLqzJuuFQ=
+X-Received: by 2002:a19:6513:0:b0:511:484a:daca with SMTP id
+ z19-20020a196513000000b00511484adacamr4426708lfb.18.1707326974208; Wed, 07
+ Feb 2024 09:29:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR22MB5636:EE_|SN4PR22MB2822:EE_
-X-MS-Office365-Filtering-Correlation-Id: f49c0699-1a97-45ac-a0e3-08dc280238b6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	1ndyiwrjQUeP+W2c52Ney+Z6rTtHhL5+vyIGPWln+rG5BXx9NEbotEw69ryFS/j7XNJaUfz01+Pe7IPFZ1kUoTStha/Fab6OF61ZdpWZPSIEmG4lQJiYWnGV5gQ5q/dVHgrUvzoAS+BKE8vN7pFZPguGIbJAbTDEzWXlSvDq71NqC7yXfLVbGdmOqNJrQEkDsQ5qfq79vzVzROkn1rw1GLkvHi1VYfD57jYnqGFxF/XEIolycPtr+mZKSWiL7bHPqFIAa2cbYUe2ybuWZq8rOSW9A7UzRWqXKnKHgmvlw7xZV4ovyNNXuRizHr4j2u8SeN4fJd38bzgXR3cFhaaYOzgSNtsa5ArIpHhSOuVk3vWGlK+MQTpJTVlE6rIre7CiEc+RVtj5AyELV86XeyJuyvdBhHmPJ/hflz/1TYkos5mComfqIlGEVJBKPo/UG4TSJyOnci40Q2nqn+qHTqENe2A9QTgeTup8GcYLgu3UpyykM30n+FLH0qfia3TpAbUEtkMYiZQX+iQ5vkcnhBpL6yhHrqBhC3nViLLTdYYN7oCdBN3oKwmkKfqT+ZB/A8Ckq2s+EimFZn+JYs9l7WeBo9p68kb5fm7a9UMn2kq7DSV22krlM9f6HAYKCI4LDa9Y
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR22MB5636.namprd22.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39830400003)(376002)(346002)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(1076003)(2616005)(86362001)(26005)(41300700001)(5660300002)(6486002)(2906002)(38350700005)(316002)(66946007)(478600001)(66476007)(66556008)(8676002)(36756003)(8936002)(4326008)(6512007)(7416002)(6666004)(52116002)(38100700002)(6506007)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ONc4tzpuAhiOaoIw4MXqiA6LGV+azTjg6pmhZlQcMqPpFP22LZo8uqQQUIQw?=
- =?us-ascii?Q?vDLW4JfmnEgFSxbuLRtcWwuiKnwNrodlXpOMvcPkSplTRletiyENKlK/EqAa?=
- =?us-ascii?Q?Y0OiBgLHF3TSPWGTBjJw3dCZA0y5qVrVV4BWczzd4whxEpX1eZmk/ZMaCgVG?=
- =?us-ascii?Q?dLSLTrYHK+U4AeC/49vZcyTbx3yQpPqyt8Yja+nVRofT7zN8K0zZZkjP4dzY?=
- =?us-ascii?Q?3HJ/osAjIlzFEdz5HRevUkIOuNpzvRovlE7EP0hBRXKs+IK+CVZkKvdn+C3i?=
- =?us-ascii?Q?XugwSu2sJ1gvzEn5s60MKZrqcTspxEPJvh3ZqL0/Y3+L5LZ4cO6auH0DCUdw?=
- =?us-ascii?Q?7GclvPTVPfiQh9U9on1ZU6mmF3zhW5QzyZ9UYMuJl01PUl3b1NYjzrIADrJv?=
- =?us-ascii?Q?27MGOxil49ycu1/cBysWvwxJvslPzTt74X28HkNXSGcUCtD1r6XZMGHzkx8h?=
- =?us-ascii?Q?cP8r02ZlE3DpaqSpHXz+4KxDHf9wIk6BlrZ8b39yVtXNmJTMy7LEyRi43B7p?=
- =?us-ascii?Q?vGy3/vq2HwiEJlW97sjo5oED64ReElQdmYy2mp8HIyhybq/dO/b5jhPBgreM?=
- =?us-ascii?Q?J7fSbwlhMEuBca+7Hvu1U46bJtqK6CcfjNbxlw05JQVFImg/SHOZns68Yx9m?=
- =?us-ascii?Q?+qZBFabcH8utQTZUsLOP/mqbLhs4AiB6Jo9YgPNOThdoiCbt+qF21HTuWOcV?=
- =?us-ascii?Q?35OicM7AenaTjoy/6GFEuvNx2Cod2/ya5KE5bpBxfSAQdEMxb4xHpHSdp0AE?=
- =?us-ascii?Q?Ce5Pc3bjEXZOVe/jea4tlOyBpCVxMXRd0WL/rsTs1YhfXE33agNW5q1n2Mm1?=
- =?us-ascii?Q?FYh+CtI+wpt4MH0qXEEdZ6CRIMN/yDELiA9f+VVqI1V8BGNpnwGbEOr2nBqp?=
- =?us-ascii?Q?sFHxHvh04wRXa3nJeM59QALJYPHRvVV0ridW5a/R/7ypY7z9UJTKifLFfRXG?=
- =?us-ascii?Q?zNSRYSsy6nGs48xP1BqYfUHJLUrsEk3D2AZsQTQ4QCzDB3DtVF+EkRET87qL?=
- =?us-ascii?Q?MdJyb4Zkkgcpyq9KjpzfOmEWl5NpwUHBnjhfDKAHmUtV08o3wF6vm/yi4TsZ?=
- =?us-ascii?Q?pniSovpcBR+UBBtu+OG9u0NM8szpCl+cEpT3PkB3BCeuQPmdfE0CoOkwqecG?=
- =?us-ascii?Q?0oZt/CEMHTssoCadgzCFCiokDv8j2qwiV7Unovg7fG4sbhR4YJSM4JTBmnMG?=
- =?us-ascii?Q?3pRPR2Dpg9qzySakxMqjWy1l4FDOaHcwXeg81/XMBlYlS2B1B7tXntsi127O?=
- =?us-ascii?Q?7KABNIRgtXryCuIV7yggnhOcsS/44R905NxUmxQAY6tftMbB7yI+yDl7mfEX?=
- =?us-ascii?Q?/DS/W5zofk8mpBu8wU9ckb/Tli0ixO2w1ckkmSx6GQm6w6Ot6EpHK+H8MgLg?=
- =?us-ascii?Q?kHG3qc6Uw+BcZdEQXguLj6NzGDuB0m8k1qC8g4lT3hvf6oHcVW6epshhVK4O?=
- =?us-ascii?Q?CBlKsZwwiTArPjIKntjB4LCv/k9mp5qZx1twcovc7bqFk+2Vlde5kZyE8rxu?=
- =?us-ascii?Q?HUhnZKUJ9IYrUehZI91AoxiWqUz+2dgT/xu4uvQouvmJUrOF0DvheJoYAtnh?=
- =?us-ascii?Q?1om8ArGsMdZJ/HT8rVRE6z0fIBP6OB4NLC7QJ/xm?=
-X-OriginatorOrg: phytec.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f49c0699-1a97-45ac-a0e3-08dc280238b6
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR22MB5636.namprd22.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2024 17:28:38.7447
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 67bcab1a-5db0-4ee8-86f4-1533d0b4b5c7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hSkmKVs4UOaoqw5ZoV19xgSw1U0CRWC24IQqrnjscLav4QVHkpGXjZkAqTd8rZGzaBEDa+u693QsRI4iF9gFFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR22MB2822
+References: <20240207100619.3947442-1-pranavpp@google.com> <20240207100619.3947442-3-pranavpp@google.com>
+ <CACkwYU22HOuB=8qpTTUoxZUm7kpnWhSeH2ui3vsHg8AP__xd9Q@mail.gmail.com>
+In-Reply-To: <CACkwYU22HOuB=8qpTTUoxZUm7kpnWhSeH2ui3vsHg8AP__xd9Q@mail.gmail.com>
+From: Pranav Prasad <pranavpp@google.com>
+Date: Wed, 7 Feb 2024 09:29:23 -0800
+Message-ID: <CACkwYU31qGLYSNZRyZerddNRxSWS3UL=X19Wevx2cATXKOWDoQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] alarmtimer: Modify alarmtimer suspend callback to
+To: Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>, sboyd@kernel.org
+Cc: linux-kernel@vger.kernel.org, Kelly Rossmoyer <krossmo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The phyBOARD-Lyra has a GPIO fan header. This overlay enables the fan
-header and sets the fan to turn on at 65C.
+Please ignore this patch, submitting v2 with some more suggested fixes.
 
-Signed-off-by: Nathan Morrisson <nmorrisson@phytec.com>
----
- arch/arm64/boot/dts/ti/Makefile               |  1 +
- .../ti/k3-am62-phyboard-lyra-gpio-fan.dtso    | 51 +++++++++++++++++++
- 2 files changed, 52 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso
+Pranav
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 52c1dc910308..379fb4f31a1f 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-dev.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-mallow.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-yavia.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am62-lp-sk.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am62-phyboard-lyra-gpio-fan.dtbo
- 
- # Boards with AM62Ax SoC
- dtb-$(CONFIG_ARCH_K3) += k3-am62a7-sk.dtb
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso b/arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso
-new file mode 100644
-index 000000000000..9c05748bdd9d
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
-+/*
-+ * Copyright (C) 2024 PHYTEC America LLC
-+ * Author: Garrett Giordano <ggiordano@phytec.com>
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/thermal/thermal.h>
-+#include "k3-pinctrl.h"
-+
-+&{/} {
-+	fan: gpio-fan {
-+		compatible = "gpio-fan";
-+		gpio-fan,speed-map = <0 0 8600 1>;
-+		gpios = <&main_gpio0 40 GPIO_ACTIVE_LOW>;
-+		#cooling-cells = <2>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&gpio_fan_pins_default>;
-+		status = "okay";
-+	};
-+};
-+
-+&main_pmx0 {
-+	gpio_fan_pins_default: gpio-fan-default-pins {
-+		pinctrl-single,pins = <
-+			AM62X_IOPAD(0x0a4, PIN_OUTPUT, 7) /* (M22) GPMC0_DIR.GPIO0_40 */
-+		>;
-+	};
-+};
-+
-+&thermal_zones {
-+	main0_thermal: main0-thermal {
-+		trips {
-+			main0_thermal_trip0: main0-thermal-trip {
-+				temperature = <65000>;  /* millicelsius */
-+				hysteresis = <2000>;    /* millicelsius */
-+				type = "active";
-+			};
-+		};
-+
-+		cooling-maps {
-+			map0 {
-+				trip = <&main0_thermal_trip0>;
-+				cooling-device = <&fan THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+			};
-+		};
-+	};
-+};
--- 
-2.25.1
 
+On Wed, Feb 7, 2024 at 8:39=E2=80=AFAM Pranav Prasad <pranavpp@google.com> =
+wrote:
+>
+> Please ignore this patch, submitting v2 with some more suggested fixes.
+>
+> Pranav
+>
+> On Wed, Feb 7, 2024, 2:06=E2=80=AFAM Pranav Prasad <pranavpp@google.com> =
+wrote:
+>>
+>> The alarmtimer driver currently fails suspend attempts when there is an
+>> alarm pending within the next suspend_check_duration_ns nanoseconds, sin=
+ce
+>> the system is expected to wake up soon anyway. The entire suspend proces=
+s
+>> is initiated even though the system will immediately awaken. This proces=
+s
+>> includes substantial work before the suspend fails and additional work
+>> afterwards to undo the failed suspend that was attempted. Therefore on
+>> battery-powered devices that initiate suspend attempts from userspace, i=
+t
+>> may be advantageous to be able to fail the suspend earlier in the suspen=
+d
+>> flow to avoid power consumption instead of unnecessarily doing extra wor=
+k.
+>> As one data point, an analysis of a subset of Android devices showed tha=
+t
+>> imminent alarms account for roughly 40% of all suspend failures on avera=
+ge
+>> leading to unnecessary power wastage.
+>>
+>> To facilitate this, register a PM notifier in the alarmtimer subsystem
+>> that checks if an alarm is imminent during the prepare stage of kernel
+>> suspend denoted by the event PM_SUSPEND_PREPARE. If an alarm is imminent=
+,
+>> it returns the errno code ETIME instead of EBUSY to userspace in order t=
+o
+>> make it easily diagnosable.
+>>
+>> Signed-off-by: Pranav Prasad <pranavpp@google.com>
+>> Signed-off-by: Kelly Rossmoyer <krossmo@google.com>
+>> ---
+>>  kernel/time/alarmtimer.c | 121 ++++++++++++++++++++++++++++-----------
+>>  1 file changed, 88 insertions(+), 33 deletions(-)
+>>
+>> diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
+>> index e5d2e560b4c1..229de937c266 100644
+>> --- a/kernel/time/alarmtimer.c
+>> +++ b/kernel/time/alarmtimer.c
+>> @@ -27,6 +27,7 @@
+>>  #include <linux/compat.h>
+>>  #include <linux/module.h>
+>>  #include <linux/time_namespace.h>
+>> +#include <linux/suspend.h>
+>>
+>>  #include "posix-timers.h"
+>>
+>> @@ -115,6 +116,87 @@ static int alarmtimer_sysfs_add(void)
+>>         return ret;
+>>  }
+>>
+>> +/**
+>> + * alarmtimer_init_soonest - Initializes parameters to find soonest ala=
+rm.
+>> + * @min: ptr to relative time to the soonest alarm to expire
+>> + * @expires: ptr to absolute time of the soonest alarm to expire
+>> + * @type: ptr to alarm type
+>> + *
+>> + */
+>> +static void alarmtimer_init_soonest(ktime_t *min, ktime_t *expires, int=
+ *type)
+>> +{
+>> +       unsigned long flags;
+>> +
+>> +       spin_lock_irqsave(&freezer_delta_lock, flags);
+>> +       *min =3D freezer_delta;
+>> +       *expires =3D freezer_expires;
+>> +       *type =3D freezer_alarmtype;
+>> +       freezer_delta =3D 0;
+>> +       spin_unlock_irqrestore(&freezer_delta_lock, flags);
+>> +}
+>> +
+>> +/**
+>> + * alarmtimer_get_soonest - Finds the soonest alarm to expire among the=
+ alarm bases.
+>> + * @min: ptr to relative time to the soonest alarm to expire
+>> + * @expires: ptr to absolute time of the soonest alarm to expire
+>> + * @type: ptr to alarm type
+>> + *
+>> + */
+>> +static void alarmtimer_get_soonest(ktime_t *min, ktime_t *expires, int =
+*type)
+>> +{
+>> +       int i;
+>> +       unsigned long flags;
+>> +
+>> +       /* Find the soonest timer to expire */
+>> +       for (i =3D 0; i < ALARM_NUMTYPE; i++) {
+>> +               struct alarm_base *base =3D &alarm_bases[i];
+>> +               struct timerqueue_node *next;
+>> +               ktime_t delta;
+>> +
+>> +               spin_lock_irqsave(&base->lock, flags);
+>> +               next =3D timerqueue_getnext(&base->timerqueue);
+>> +               spin_unlock_irqrestore(&base->lock, flags);
+>> +               if (!next)
+>> +                       continue;
+>> +               delta =3D ktime_sub(next->expires, base->get_ktime());
+>> +               if (!(*min) || (delta < *min)) {
+>> +                       *expires =3D next->expires;
+>> +                       *min =3D delta;
+>> +                       *type =3D i;
+>> +               }
+>> +       }
+>> +}
+>> +
+>> +static int alarmtimer_pm_callback(struct notifier_block *nb,
+>> +                           unsigned long mode, void *_unused)
+>> +{
+>> +       ktime_t min, expires;
+>> +       int type;
+>> +
+>> +       switch (mode) {
+>> +       case PM_SUSPEND_PREPARE:
+>> +               /* Initialize parameters to find soonest timer */
+>> +               alarmtimer_init_soonest(&min, &expires, &type);
+>> +
+>> +               /* Find the soonest timer to expire */
+>> +               alarmtimer_get_soonest(&min, &expires, &type);
+>> +
+>> +               if (min =3D=3D 0)
+>> +                       return NOTIFY_DONE;
+>> +
+>> +               if (ktime_to_ns(min) < suspend_check_duration_ns) {
+>> +                       pr_warn("[%s] Suspend abort due to imminent alar=
+m\n", __func__);
+>> +                       return notifier_from_errno(-ETIME);
+>> +               }
+>> +       }
+>> +
+>> +       return NOTIFY_DONE;
+>> +}
+>> +
+>> +static struct notifier_block alarmtimer_pm_notifier =3D {
+>> +       .notifier_call =3D alarmtimer_pm_callback,
+>> +};
+>> +
+>>  /**
+>>   * alarmtimer_get_rtcdev - Return selected rtcdevice
+>>   *
+>> @@ -181,6 +263,7 @@ static int alarmtimer_rtc_add_device(struct device *=
+dev)
+>>  static inline void alarmtimer_rtc_timer_init(void)
+>>  {
+>>         rtc_timer_init(&rtctimer, NULL, NULL);
+>> +       register_pm_notifier(&alarmtimer_pm_notifier);
+>>  }
+>>
+>>  static struct class_interface alarmtimer_rtc_interface =3D {
+>> @@ -296,48 +379,20 @@ EXPORT_SYMBOL_GPL(alarm_expires_remaining);
+>>  static int alarmtimer_suspend(struct device *dev)
+>>  {
+>>         ktime_t min, now, expires;
+>> -       int i, ret, type;
+>> +       int ret, type;
+>>         struct rtc_device *rtc;
+>> -       unsigned long flags;
+>>         struct rtc_time tm;
+>>
+>> -       spin_lock_irqsave(&freezer_delta_lock, flags);
+>> -       min =3D freezer_delta;
+>> -       expires =3D freezer_expires;
+>> -       type =3D freezer_alarmtype;
+>> -       freezer_delta =3D 0;
+>> -       spin_unlock_irqrestore(&freezer_delta_lock, flags);
+>> +       /* Initialize parameters to find soonest timer */
+>> +       alarmtimer_init_soonest(&min, &expires, &type);
+>>
+>>         rtc =3D alarmtimer_get_rtcdev();
+>>         /* If we have no rtcdev, just return */
+>>         if (!rtc)
+>>                 return 0;
+>>
+>> -       /* Find the soonest timer to expire*/
+>> -       for (i =3D 0; i < ALARM_NUMTYPE; i++) {
+>> -               struct alarm_base *base =3D &alarm_bases[i];
+>> -               struct timerqueue_node *next;
+>> -               ktime_t delta;
+>> -
+>> -               spin_lock_irqsave(&base->lock, flags);
+>> -               next =3D timerqueue_getnext(&base->timerqueue);
+>> -               spin_unlock_irqrestore(&base->lock, flags);
+>> -               if (!next)
+>> -                       continue;
+>> -               delta =3D ktime_sub(next->expires, base->get_ktime());
+>> -               if (!min || (delta < min)) {
+>> -                       expires =3D next->expires;
+>> -                       min =3D delta;
+>> -                       type =3D i;
+>> -               }
+>> -       }
+>> -       if (min =3D=3D 0)
+>> -               return 0;
+>> -
+>> -       if (ktime_to_ns(min) < suspend_check_duration_ns) {
+>> -               pm_wakeup_event(dev, suspend_check_duration_ns/NSEC_PER_=
+MSEC);
+>> -               return -EBUSY;
+>> -       }
+>> +       /* Find the soonest timer to expire */
+>> +       alarmtimer_get_soonest(&min, &expires, &type);
+>>
+>>         trace_alarmtimer_suspend(expires, type);
+>>
+>> --
+>> 2.43.0.594.gd9cf4e227d-goog
+>>
 
