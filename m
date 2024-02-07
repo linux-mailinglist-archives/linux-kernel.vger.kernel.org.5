@@ -1,62 +1,60 @@
-Return-Path: <linux-kernel+bounces-55948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8F9984C3F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:49:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57BE884C3F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:49:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA67C1C259CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:49:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14504285817
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E1220315;
-	Wed,  7 Feb 2024 04:47:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EEF820337;
+	Wed,  7 Feb 2024 04:47:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="coKNV8EU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OOPz6F0K"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0347200BA;
-	Wed,  7 Feb 2024 04:47:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CE8E20319;
+	Wed,  7 Feb 2024 04:47:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707281221; cv=none; b=mx8t0exMFwRW35KVmr3a7PB6CW3VnPKWYUdhDfXxbz5Oz3BlGr+FpRfmF2gC007Fd8ZE8Z3RPNKex9ZG3922n7Kl7OljZys5upt3jn+9VkJ+SmWHwYBPDkMNmiFymtjX4vMLQTnN//iJ7xNfdHNrpm2BcSx6cxo+lQSvAK4sW8U=
+	t=1707281221; cv=none; b=UCpC/+ca8zCvA8MBYjVOthvzWEtVv4TDwp2TINoSNWZjFY9v2FpTlPyjnR5ElpDGPNgGK5igsSFIAABXVbIgPKhfzk3B7/OUwEtBGOeR6KiuaUWCR0XMUsCAdVVty8k9RwF5rT2Smbd57N6qHdXFQWKcugfpd+TK5vMae6HjQXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707281221; c=relaxed/simple;
-	bh=ah4fNiXUN0qnsNYg/9tNzHgmJyGt7n2KX+H460RlCU8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GK2km2nc9e1bDz+qhwMwMtFeXcPCi85zU8STKz2qSyUlzZOkaaJfh0+NiHwF7BIC4AbHtrJpZ4Gai91GKqpepX0aAFUFIjXtiA+m86Mkru7xmpg0aNI4P0W0AblHvLNgFFQDveMyOjbsBvNNPOEhcadZ7bSQ6h6vUuHc+372GMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=coKNV8EU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1E5CC43330;
-	Wed,  7 Feb 2024 04:46:59 +0000 (UTC)
+	bh=xuSaL9WMpsa08OcWTc5eN4qGpXKlxlY/+CVmWqnsS5Y=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=HdWSLucnsJrs2wnx9rwltSkrIMYnOioVjhedILtyE3TfNJ3tUU+wa/y4pyw0rWOklyJmxD/jskhOly0O3zX/bYrDbuz+ZCoLAmZpJb0pvBY2heEFghVmg7Bf/QsPMdcTb5PcnkktbEV+4XjYZ7rdFLZ9H85rP2PWMqIFlnwB93M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OOPz6F0K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE082C433C7;
+	Wed,  7 Feb 2024 04:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707281220;
-	bh=ah4fNiXUN0qnsNYg/9tNzHgmJyGt7n2KX+H460RlCU8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=coKNV8EUc45DRfwbOKlFoYDTj8tc+bS+s9BV1RSuYGBuADgGuq4jfeVhNqsWsQRDS
-	 fYHF5DComsjqvKuKF5+Jki7RXpexTcDNayhBjGr7rDHpFtetvuBW634Zgtjgc6fNt3
-	 QENMCTgHajWr8Yh9DUjnvJcoaZRhiCX55ASltvyXHwfjHbFPSn40PEsk5/qc1WVQ4c
-	 zh5rqKy8FfBdL/pfBEOyYNlhFuVke7ckwxtQ6j4vkCYAeSDYpG0AHoT4bALWNAzwfL
-	 8robiJz3VqATgXpyqg+Y6F29fP2BPJTnT3vasvZw38dvErpFerCULD1vN6tNRLsioI
-	 irzDkR8QdN2WQ==
+	s=k20201202; t=1707281221;
+	bh=xuSaL9WMpsa08OcWTc5eN4qGpXKlxlY/+CVmWqnsS5Y=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=OOPz6F0KpR0VT8rN8UVG0lmT+nsn1ojGjBGjs+E0QQRy1jug+nMHaHXCmW0fWWo5U
+	 bOs+GMLSlPZ+l784jnzh/WwGQOoeWdYGR26R40zsq1D84nJv+22I+ZfUnd2u9z7SPz
+	 5FK4/6Th7DlC1d4JdkluGtb0TvTFZSiUrza4bg29qD2Vq+x5BmNuIES2zFaMFhij/x
+	 WbTZaAVbZXDDgFu7G0ROIde8NC8qAW5eEcsx9ov8xb0EJVF6zIneFNOzPgqhX19fQs
+	 3PzwSyAJC6vQQfwRJVpVEeUmFHOAf0sio8hd2QxGpTvOq918/AmqLY3D5W30uf1d0X
+	 y1fne3nfZahKA==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Andy Gross <agross@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
+To: agross@kernel.org,
+	konrad.dybcio@linaro.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
 	linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: stable@vger.kernel.org
-Subject: Re: (subset) [PATCH 1/4] arm64: dts: qcom: sm8550-qrd: correct WCD9385 TX port mapping
-Date: Tue,  6 Feb 2024 22:46:23 -0600
-Message-ID: <170728117680.479358.16920334289720602189.b4-ty@kernel.org>
+	Isaev Ruslan <legale.legale@gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: qcom: ipq6018: add QUP5 I2C node
+Date: Tue,  6 Feb 2024 22:46:24 -0600
+Message-ID: <170728117668.479358.67804220618568249.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240124164505.293202-1-krzysztof.kozlowski@linaro.org>
-References: <20240124164505.293202-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CACDmYyfOe-jcgj4BAD8=pr08sHpOF=+FRcwrouuLAVsa4+zwtw@mail.gmail.com>
+References: <CACDmYyfOe-jcgj4BAD8=pr08sHpOF=+FRcwrouuLAVsa4+zwtw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,23 +65,17 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Wed, 24 Jan 2024 17:45:02 +0100, Krzysztof Kozlowski wrote:
-> WCD9385 audio codec TX port mapping was copied form HDK8450, but in fact
-> it is offset by one.  Correct it to fix recording via analogue
-> microphones.
+On Wed, 15 Nov 2023 18:38:53 +0300, Isaev Ruslan wrote:
+> Add node to support this bus inside of IPQ6018.
+> For example, this bus is used to work with the
+> voltage regulator (mp5496) on the Yuncore AX840 wireless AP.
 > 
 > 
 
 Applied, thanks!
 
-[1/4] arm64: dts: qcom: sm8550-qrd: correct WCD9385 TX port mapping
-      commit: 8ca7fbd92c1b28edb5d5df7aeb8bb4886ddb9829
-[2/4] arm64: dts: qcom: sm8550-mtp: correct WCD9385 TX port mapping
-      commit: b66966b1bbc0aa58f7af83cbd56d5a206892857c
-[3/4] arm64: dts: qcom: sm8550-qrd: add correct analogue microphones
-      commit: e2f1a18747b1bcb48900290d8f4de13e2ee55cbb
-[4/4] arm64: dts: qcom: sm8550-mtp: add correct analogue microphones
-      commit: 503c0129b3aaf2aaf481ffd7f0a422af8a18f0b9
+[1/1] arm64: dts: qcom: ipq6018: add QUP5 I2C node
+      commit: cc3cfef3e3d942f73fe8adc26105bccdb296ec52
 
 Best regards,
 -- 
