@@ -1,99 +1,106 @@
-Return-Path: <linux-kernel+bounces-56346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DA4784C8FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:52:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 350E184C905
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:55:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91C401F25E7F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:52:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 680601C2555F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:54:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E9117BD6;
-	Wed,  7 Feb 2024 10:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B64017997;
+	Wed,  7 Feb 2024 10:54:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="Uv0/hed8"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HDO9i16d"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55E4917582;
-	Wed,  7 Feb 2024 10:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3DC17BAE
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:54:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707303135; cv=none; b=O5YnpmuWjJEpsx6wwioXi0ZVG21h1A0TazBTag7A4WVeyutyr1NzDPLVfiK9clTQ9nVeuPC5zklhWddY8t4Kxdh7q49BtpAJ1oictvOuvnk6GhLVf0ot5RgHbjfGHjRhCk7RTXvaKDAP9r/+Aspoum1q7x6SGHkW8zrQGBBzHJk=
+	t=1707303294; cv=none; b=rreR9hxT/zJBFJRveuCiSw1goYBqEs/kF35wB/5gWSVn0MD2VSvXwLrl/wZF6n/Z1xn+poYFOBq9qWZz5t1gk0shPdDcoJgGtqnXwvqSmgR7UuS7jYzyzHB7DKQRTeF7625za5/PYB06z7+CVEajATiwwGSUM0OT19ez6wWX2LY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707303135; c=relaxed/simple;
-	bh=HTW77sv4gHQlJ35myLHT4fY0jEm6BXDhen5KdxeYT5A=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=GZy+qkQ/j0qrc/siPrUCQfp9fMjpeJ9HNPJWW+5fmecsWUHK5EIN8ACTRJDYm/OoBRTTZIDX3xC1xT3UN+A7mA/RGwvGw9tT78Fxc8h72BjscNWfnoFGfWLs/YiSel/3I16lIwtMjSgOzMQ3SMuHz3AsVb9ieeS81wAKpPlRr+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=Uv0/hed8; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=xIhBdBuB4+Irj+sDFGwSgr9BNo29FSMxovC23RovWA0=;
-	t=1707303133; x=1708512733; b=Uv0/hed8jGA9DYZ0SjjF13vL/sjeJKME3LKjd8JMy8dAUGX
-	EF2PIbUTmsXdC1R0KKqIMT6p5DymUFD/n7grIIiMjLnqW4qhhmb2n7HroPxrLRB7EZbVGITQYWYQD
-	IMS+OoHEY7ycfi8FtmnY8fCoCBdHicIxxPA8ONzvxq1cu31OkmrRCbc6Uw9Zwi8crw8enZx7R2CQ6
-	gNurO1O+kdVaS+gUm4SnrwCsyvU/Nl/Wbmk+2iA0GLXPcqLAm7jImnZZ2v24WrKrbzDeviNr3+528
-	fPnbBgQQeCoc72ZlsyoCC6LibyKkKSgRdGYT7JMy2kDQkPXKoDSMKlPcz7N3J2eQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1rXfXE-0000000FsHZ-0NYz;
-	Wed, 07 Feb 2024 11:52:08 +0100
-Message-ID: <cc9b25a584471699375d85f12e24a26098397ad5.camel@sipsolutions.net>
-Subject: Re: [PATCH] wifi: mt76: inititalize sband.band to correct value
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Bert Karwatzki <spasswolf@web.de>, Lorenzo Bianconi
- <lorenzo@kernel.org>,  Felix Fietkau <nbd@nbd.name>, Ryder Lee
- <ryder.lee@mediatek.com>
-Cc: linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-Date: Wed, 07 Feb 2024 11:52:07 +0100
-In-Reply-To: <20240207072253.4189-1-spasswolf@web.de>
-References: <20240207072253.4189-1-spasswolf@web.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1707303294; c=relaxed/simple;
+	bh=AqRyfre6hpYKrbdFfgct1DMOhUQC1J51jmJyfuq2n8I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r4TdH1+C7aYHeFOnlVKVa3MhU3y3hVpl8VWKzILovm4o8WROGElvpscKqfiars+cd1Z9zDXmvdIgwZSqwldxpY3LatNV7bgBLboZ0jMo6CKbYTeQrSy4y9rIHc740EENxwc8QqG70Lc29UaZeM8DRDo4ypr5yz0yjxz/ynUBiwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HDO9i16d; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc238cb1b17so448435276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 02:54:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707303292; x=1707908092; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AqRyfre6hpYKrbdFfgct1DMOhUQC1J51jmJyfuq2n8I=;
+        b=HDO9i16dkADSVvq6bn0Sbo+lrGoZqVgEmDyNnddeI8nc1hnZq+Ja3AMz9KQ3uYYhLz
+         /dccogs4m04hXV8h8p3iFRjmnsa5oOrDLB7agajpybVu09VFCRMSyGM5GEzQAz4jkTEa
+         X3Xn8Wu7VTXOR+alvwQIax07jdzy/X8V3P/4U9aoIQtQafuPuqtviS2tHCs8dTP4MCaD
+         0BlbgxAiNQYneX9QIZqfqVoVNV1aVZYGWgO1zIV8s5aoXVjGqJrhrzaXYnRgKY2xIN8/
+         fOrvWwnvq9iDaWDiPfqqjPR6e/CWaSymQpokA6dJcZqFEjHkdip85CsKVqK/BVgO10nX
+         2GWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707303292; x=1707908092;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AqRyfre6hpYKrbdFfgct1DMOhUQC1J51jmJyfuq2n8I=;
+        b=TjpNUSRpVW1t3lDRENSeNW73mp6bSBvwo4qzE94wxX88R8CaOSnfJdJfydvNwPo44W
+         XJAVCLDRM4dOWkbOfKvSCegWaW2mkfqCpEsjCvmQcRdNNIJndTAOH0PVJCfF0gfcqttV
+         fk3g1C8LJHzmGNf/3v2awbkFUfFdKKokCDuJ4Fre9bmOUl5ARZZEkgcH3HOnuYdpzOIB
+         EQBx0O+ONkwOUKrETw3yIme2EF5kj5YoK/ivz5QFQIvVB+MiBEhYk5sAyYzY++OYSCKZ
+         oANYHkHab/OvPdfoFVu2IgnpqB1ssIa7MEr1n6exSdQY0HAsFq3gP8VB4bnKh/MX3kwB
+         gqig==
+X-Gm-Message-State: AOJu0YzLlmqlCbYZRo03qONIYf/EypKZDm+pI/ldO0PQNMpn4NcYFMO8
+	P50dy3Gr4TMOij9CmyOwkAQP7n4Tyn272UzP/lwwxpNDWuyFnp6kaor76RgLEPlN83irwZ5ECTL
+	uoiMOfKAjwPB0kmTwSDWHi+S1B45hKD7nCNdUUA==
+X-Google-Smtp-Source: AGHT+IGDflkHEVBa03b1Bfl72mpon3cdcyEI04qMZquBPzXoVaoldzCLxrdhfuAGz48oB/DXRZc65MMbqgc8o/+1+XU=
+X-Received: by 2002:a25:2d14:0:b0:dc2:3818:f36e with SMTP id
+ t20-20020a252d14000000b00dc23818f36emr4815404ybt.18.1707303291509; Wed, 07
+ Feb 2024 02:54:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+References: <20240202223454.1667383-1-robh@kernel.org>
+In-Reply-To: <20240202223454.1667383-1-robh@kernel.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 7 Feb 2024 11:55:04 +0100
+Message-ID: <CACRpkdb+Z8oxBa7kibHdob1qk1eVKiSm1MaY+bF442d=ztdmdA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: pinctrl: nvidia,tegra234-pinmux: Restructure
+ common schema
+To: Rob Herring <robh@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-02-07 at 08:22 +0100, Bert Karwatzki wrote:
-> Set phy->sband_{2,5,6}g.sband.band to the correct enum value, otherwise
-> the ieee80211_register_hw() will fail to register the device.
+On Fri, Feb 2, 2024 at 11:35=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
+:
 
-So turns out that technically, it wasn't needed before because cfg80211
-*will* set sband->band, but *mac80211* now requires it to have been set
-before ...
+> The structure of the NVIDIA Tegra234 common pinmux schema doesn't work
+> for restricting properties because a child node schema can't be extended
+> with additional properties from another schema defining the same child
+> node. The 2 child node schemas are evaluated independently as the
+> schemas are not recursively combined in any way.
+>
+> As the common schema is almost all the child node schema anyways, just
+> remove the parent node from the common schema. Then add 'reg' and adjust
+> the $ref's in the users of the common schema.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-We could do a trivial fix in mac80211 as well:
+Patch applied!
 
---- a/net/mac80211/main.c
-+++ b/net/mac80211/main.c
-@@ -1124,7 +1124,7 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
- 			supp_he =3D supp_he || iftd->he_cap.has_he;
- 			supp_eht =3D supp_eht || iftd->eht_cap.has_eht;
-=20
--			if (sband->band =3D=3D NL80211_BAND_2GHZ)
-+			if (band =3D=3D NL80211_BAND_2GHZ)
- 				he_40_mhz_cap =3D
- 					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_IN_2G;
- 			else
-
-
-but seems like no other driver even likely needed this, and it's
-probably less reliable in the long term?
-
-Or do both?
-
-johannes
-
+Yours,
+Linus Walleij
 
