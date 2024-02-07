@@ -1,113 +1,160 @@
-Return-Path: <linux-kernel+bounces-56400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6E0084C9B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DA6F84C9BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:40:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A9BC1F235DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:37:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED7831F23CB9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BCF1B7FF;
-	Wed,  7 Feb 2024 11:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41DBF1D53C;
+	Wed,  7 Feb 2024 11:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qm1HqhDw"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="C13xIH7T"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE9A619BBA;
-	Wed,  7 Feb 2024 11:37:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888631AADD
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:40:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707305855; cv=none; b=KXjAXvIzBf1j+l5EZyDm3fLtApSP6FIs+zLycXyWuVf0O1fN3nBsDeKtuyW6yGkVCfBIpe+ndKKlDfSLKdPcF1neV1FnlFXcYUWUfN9Z+YRBNjgqAt8NYzMvmlM97o8ju+qQZCgqVJxllMNKnFheYkJTPlPOzLNBrz1cNUvTjo0=
+	t=1707306017; cv=none; b=ucrta8Z/R8dfk9lx+uZCAu1ODk/r2mZdu21njqIQca+euwYiE2m2rv4vl+nxqjFMBf1dxpv4Mbrrr3wQ7zMqEHmjvkVs/EZ+YvfcZzlw3acGafnxWPsBK6o3ty20ONc39OOwjipic/GmdUHrGsIddLDcLER6sWwbI2P2ieYA0no=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707305855; c=relaxed/simple;
-	bh=83PVRJcxzAA2WbczYT0DNaElV8eyxg5A/J+MvaxcW0E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=gUQRu8WzDqLUoP12cNIJXHnHvQh85LSjXN6ai3BiM7vasGfcwacd7qCoBrPy19EPHwtEEItvcb1ky0RMnvV8/ZbboDoPSmCczMvUFY1waO9XhiKimMAnWI2dRx87xXaDJYuksw5hfcksUmYBpHzT9oRDuYCK1ngqfl0AGhilmMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qm1HqhDw; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40fe79f1aaaso4342495e9.0;
-        Wed, 07 Feb 2024 03:37:33 -0800 (PST)
+	s=arc-20240116; t=1707306017; c=relaxed/simple;
+	bh=j2hucPWlt4QARh6EpWCHZVZmiT27JEZfL87REB11SSM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LNUuKSdnYc8KEbGVAyftEiJB1BJR7ZWnQ6OJ8e/AR9fRw1GJkcqqTSo2emdm/osJnGBg3hA3h7fdAVpMr22kDVZrTJldfqxFaWf9O1rDVf90kRMW2+nAjX+SkNs25p49NZvbOM5IuqjU/iu07STk/ORqYS4vXhdLJRFh4184gqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=C13xIH7T; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60482f88f04so5790027b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 03:40:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707305852; x=1707910652; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dlcGl3niyrqEgqteXegO7t1b/+0Yl2m8/0ksFX1JNYk=;
-        b=Qm1HqhDwCr5wOIQQ69zC1Zo3ORDg280cjli0YjypQKw2NoT95LTPuDj1DxYP0K7EsP
-         tsvnF/cxDopBdaWcrYoLEIMIKgoogeSAB6HrXheCMFLPL+I9g8s0+vX5khS+8bvn7CD0
-         iR9m80UDF8yNK4ewlaTRQwzpyEAGinKFPv/0jL6p5qkmzxO8sjdlyWrdZgkebjD+5jlq
-         DZVCEjeN8YDvNmS1jFQFt7oxzp3ChObc1wLCUjg9Gpbvh44TNXoDC6X+fwNqBKVkkhPc
-         daDHT/q8saSiFmfwmUgWFK14B72xrRGHF6CA944oeDYcGbImFYYqyhzNIbS/w6wv+qeF
-         lYbA==
+        d=linaro.org; s=google; t=1707306014; x=1707910814; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YGulZCD6+zMcYgPZs795MTY99+l/D3vsNxyEgcJw+h8=;
+        b=C13xIH7T3/Dq+QRnt/A4mqHwsZtbVadlk1ady5NDtyOg0bUlIQUuj/iuVUKH/3lBx9
+         04qGXSf5tWeNVXKzot/q6rHR4zXyxR6mdCeohT/ANOKsAWHhdMn13c0Z0Ms80CG2UU/z
+         esaVWnu4eIbvfKcZj0ITfLhZkJfhtFyW0UdMr6h5jn3PfHts5RlEsf5T9JRQ/zOEZcn5
+         ar5ufFsEaa3pxzXwO3hD982agh6gjma7LJ08B9+wqRVnEHgcOOu0aSLTw1hg/gnTQ7SG
+         OBQeQggZlxzWdf5HXrFmYznwxlbynZV8iBrLkpjzsWxMAhqaUUDNoINV8LNpFo4727lo
+         7aUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707305852; x=1707910652;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1707306014; x=1707910814;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dlcGl3niyrqEgqteXegO7t1b/+0Yl2m8/0ksFX1JNYk=;
-        b=ctQqzXeixRFgIeXkBeDuA7H2719+jX5zPGCVFcIqS0TB3lbcgvT3u/weaWlPpWshGo
-         Eobua6pgNaLNbKMfpwyasmNUHVM6jdvHvHuRR7KctySKgwTHDJentB/bEKMH+3neUF/l
-         SE+aAYvSVgsY2lwxBwoIh5iZ//CchjkuBK+iSRDcfW3QHt9aTRshD0vNwwPQ4wBFWe0Y
-         mY/T8iu58uAjaRtTaIYIybmBiCvo4+ePqFqEZjFofb+78oaVVXNLgKu+fE5q2uRuNLFA
-         OwAKFZmLEYyHQ9lfU8v0FCnQcUTyic8hirzbTLmpUMhWd0MyAYLkjJqg2pLbAYcnLNWa
-         RdYg==
-X-Gm-Message-State: AOJu0YwSz6W1BODeuJDQ9A71bVNaWIKXKmS46zVivYYkdBCDG+zrhWG0
-	VDIjhoqHtHaXfq+LCCmVGgM29emgut7H+HQkbVUNLEPIg6NKfOga
-X-Google-Smtp-Source: AGHT+IHhCUX2jjAkPgubFzMyy76hD0Xxlq2ESogbUyYzpNFEBgb67F+Ta6WRyJY0bGIudfZoiE7p+A==
-X-Received: by 2002:a05:600c:4fce:b0:40e:fc20:b574 with SMTP id o14-20020a05600c4fce00b0040efc20b574mr4281438wmq.10.1707305851884;
-        Wed, 07 Feb 2024 03:37:31 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVXfFqoZvMNzjNtuEk2FBBeq/zo+aauQxSicOM2td9a+tz8NUXIwEzc8t4NV/BC+ZYMZoGmlcHTt54JzNMAPsTA5WD7Yb5q6FPdrW+63d+see3Dp91Yfn2agcmN48l6WmXvz5zidUzed4YyDsWXhY6ZpQPdNSgyXj8a0tWRbeFj
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id bd24-20020a05600c1f1800b0041004826669sm2081907wmb.42.2024.02.07.03.37.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 03:37:31 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] usb: image: mdc800: Remove redundant assignment to variable retval
-Date: Wed,  7 Feb 2024 11:37:30 +0000
-Message-Id: <20240207113730.2444296-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        bh=YGulZCD6+zMcYgPZs795MTY99+l/D3vsNxyEgcJw+h8=;
+        b=jh/WAn3J7n8CC5sYuS3ddN4Sz1iDf0w2hgHtJ5xXPwpAgcmpAYy4w+I1Vuzy3K8tEl
+         dOJSZbb5Bkzjfp4uglOgdulaH/PlbI/VF7NWJyluDbm5s/YIUUNmTYDwuoIRzV1O2EE1
+         dtka1oIzGH1qKiGo28q7rAvkJZfIlnSkoV+zydEsGsLWwtEGgMnKAc0PHxLmubreanBX
+         lRysPy60NrHs5GgR6GtH61rvoQ9DIkFujDTIqJMeNGDiNBSxNU3+bsmlQCXOVARyKW5h
+         Ho6HXlwFx5AswLd3WN9uhsiTZOswaWUmjL/T1FIX26yxPhjua6FzmzJftzNe0yRUQAve
+         MGBQ==
+X-Gm-Message-State: AOJu0YyQqHTV72Ri0oOXn/5cB6gf+gkuwqc+VlB3JUHfkiUbNS9geG/l
+	tJasy8iaJ9Qwsq3Gfd7hU7Z+m88EgyKfbPWhz2Sp5v6FrKDPx48pjafoGC2+/7kaRBGCEgWh5IC
+	bxLPstbvI62W3N+t3Wv1hfWWezLVqQ8GpU9e+2w==
+X-Google-Smtp-Source: AGHT+IHcJYp0WTpeyXfA6/v0KQqS2+K+bFf4BMoXAxddY+rgyz/NFtVQ2CSaJeYh5kLZrQX4DemLxRgcf++7/oAjGa4=
+X-Received: by 2002:a81:9b4b:0:b0:604:926b:94a9 with SMTP id
+ s72-20020a819b4b000000b00604926b94a9mr1274134ywg.26.1707306014489; Wed, 07
+ Feb 2024 03:40:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20240130123951.236243-1-ulf.hansson@linaro.org>
+In-Reply-To: <20240130123951.236243-1-ulf.hansson@linaro.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Wed, 7 Feb 2024 12:39:38 +0100
+Message-ID: <CAPDyKFruKJhOLRLbxibF3ChDGMcJDvdOmCekRNTDYunbnKgQpw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/5] PM: domains: Add helpers for multi PM domains to
+ avoid open-coding
+To: "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
+	Sudeep Holla <sudeep.holla@arm.com>, Kevin Hilman <khilman@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Nikunj Kela <nkela@quicinc.com>, Prasad Sodagudi <psodagud@quicinc.com>, 
+	Stephan Gerhold <stephan@gerhold.net>, Ben Horgan <Ben.Horgan@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-remoteproc@vger.kernel.org, 
+	linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The variable retval is being assigned a value that is not being read
-and is being re-assigned a new value a couple of statements later.
-The assignment is redundant and can be removed.
+On Tue, 30 Jan 2024 at 13:39, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> Rafael, my plan is queue up this series via my pmdomain tree. Please let me know
+> if you see any issues with that, especially around patch1.
+>
+> Updates in v3:
+>         - Added tested-by, reviewed-by and suggested-by tags. No other changes
+>         have been made.
+>
+> Updates in v2:
+>         - Ccing Daniel Baluta and Iuliana Prodan the NXP remoteproc patches to
+>         requests help with testing.
+>         - Fixed NULL pointer bug in patch1, pointed out by Nikunj.
+>         - Added some tested/reviewed-by tags.
+>
+> Attaching/detaching of a device to multiple PM domains has started to become a
+> common operation for many drivers, typically during ->probe() and ->remove().
+> In most cases, this has lead to lots of boilerplate code in the drivers.
+>
+> This series adds a pair of helper functions to manage the attach/detach of a
+> device to its multiple PM domains. Moreover, a couple of drivers have been
+> converted to use the new helpers as a proof of concept.
+>
+> Note 1)
+> The changes in the drivers have only been compile tested, while the helpers
+> have been tested along with a couple of local dummy drivers that I have hacked
+> up to model both genpd providers and genpd consumers.
+>
+> Note 2)
+> I was struggling to make up mind if we should have a separate helper to attach
+> all available power-domains described in DT, rather than providing "NULL" to the
+> dev_pm_domain_attach_list(). I decided not to, but please let me know if you
+> prefer the other option.
+>
+> Note 3)
+> For OPP integration, as a follow up I am striving to make the
+> dev_pm_opp_attach_genpd() redundant. Instead I think we should move towards
+> using dev_pm_opp_set_config()->_opp_set_required_devs(), which would allow us to
+> use the helpers that $subject series is adding.
+>
+> Kind regards
+> Ulf Hansson
+>
+> Ulf Hansson (5):
+>   PM: domains: Add helper functions to attach/detach multiple PM domains
+>   remoteproc: imx_dsp_rproc: Convert to
+>     dev_pm_domain_attach|detach_list()
+>   remoteproc: imx_rproc: Convert to dev_pm_domain_attach|detach_list()
+>   remoteproc: qcom_q6v5_adsp: Convert to
+>     dev_pm_domain_attach|detach_list()
+>   media: venus: Convert to dev_pm_domain_attach|detach_list() for vcodec
+>
+>  drivers/base/power/common.c                   | 134 +++++++++++++++
+>  drivers/media/platform/qcom/venus/core.c      |  12 +-
+>  drivers/media/platform/qcom/venus/core.h      |   7 +-
+>  .../media/platform/qcom/venus/pm_helpers.c    |  48 ++----
+>  drivers/remoteproc/imx_dsp_rproc.c            |  82 +--------
+>  drivers/remoteproc/imx_rproc.c                |  73 +-------
+>  drivers/remoteproc/qcom_q6v5_adsp.c           | 160 ++++++++----------
+>  include/linux/pm_domain.h                     |  38 +++++
+>  8 files changed, 289 insertions(+), 265 deletions(-)
+>
+>
 
-Cleans up clang scan warning:
-drivers/usb/image/mdc800.c:634:2: warning: Value stored to 'retval'
-is never read [deadcode.DeadStores]
+I have now applied this to my next branch to my pmdomain tree, to get
+it more tested in linux-next.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/usb/image/mdc800.c | 1 -
- 1 file changed, 1 deletion(-)
+Please let me know if there are objections to this or if any of you
+want to provide an ack/tested/reviewed-by tag, thanks!
 
-diff --git a/drivers/usb/image/mdc800.c b/drivers/usb/image/mdc800.c
-index 67f098579fb4..7b7e1554ea20 100644
---- a/drivers/usb/image/mdc800.c
-+++ b/drivers/usb/image/mdc800.c
-@@ -631,7 +631,6 @@ static int mdc800_device_open (struct inode* inode, struct file *file)
- 	mdc800->camera_busy=0;
- 	mdc800->camera_request_ready=0;
- 
--	retval=0;
- 	mdc800->irq_urb->dev = mdc800->dev;
- 	retval = usb_submit_urb (mdc800->irq_urb, GFP_KERNEL);
- 	if (retval) {
--- 
-2.39.2
-
+Kind regards
+Uffe
 
