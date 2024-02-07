@@ -1,66 +1,64 @@
-Return-Path: <linux-kernel+bounces-57240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A33684D58D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:12:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33FB984D58F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:12:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38B361F218F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:12:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9437B28A7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57BC134CEB;
-	Wed,  7 Feb 2024 21:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42AF3132C19;
+	Wed,  7 Feb 2024 21:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MxL0GoOC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eDRtlpVm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A32128839;
-	Wed,  7 Feb 2024 21:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77D5A134CFF;
+	Wed,  7 Feb 2024 21:48:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707342459; cv=none; b=jAVjPEzRblPXA+kPViBHkRStU+I5TS8VJCLAcQ37dz90O3eJTlztDoNbeZR0GdMmmCAhajB6W1zVDH+2rGLJj6xk2cg0kuFDmPK9193/mzPSeGWIAXQmqHo+VSswa22qX5r88QACsDkefYRutvdySDqgskYgym+MLqi0D9lh1Qg=
+	t=1707342480; cv=none; b=T2B7/DtsBCD8Dv07WieNjf5HkMI1tbbxCuHfTg/Gn1jhjmlqsGUHH1HhB38vmjOZQ9nGKmACufzIhWkHRoPF4Ck+Qa0BcIOehCKUQarcSI6lwC0/gE1cNWpEuk8Xb6WSPW0eojlrRPUT7qXE3a3UbT9Httwx05cAOOYK/g+4R5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707342459; c=relaxed/simple;
-	bh=B/hlIJ7K85wB/3PBEgSm6jFwUTWS70jBvDeVV2N69sA=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XYRwHXiRBbSp+GzkLdZmS5y1SZmvt8wIq+HJutPt67TPKLBgiqG7YNU9Q3/Ph8kd7ccLj7UXu4Q/JztRGWC0bEN8zbgBmvR5egomm1i3JHnmcrAfMylWtg72iWT0Q76dEHiDTs7shz/ifPfj4dSez8BnVY0WPvEJ/umhq79SKt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MxL0GoOC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA001C433F1;
-	Wed,  7 Feb 2024 21:47:37 +0000 (UTC)
+	s=arc-20240116; t=1707342480; c=relaxed/simple;
+	bh=VHe2yJyAM+ce7BaDBL2a1L8/IELsLZavLcYjHWeL4ng=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JKtuSkeXwIp8THcIWR6ngejcZUSvxyJaKYnJnPbZUCbhPgo79uxDTEUeByuJGvGaa9GTukko4TUi1e56pphXH+MEEcZHtEsiTmdEsxLFHjZLddD4EB9bsEpqTIOUZaEK2KmgeSdx0JlQ9KewggC5PaST9fMeVccjkETFPLOqCHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eDRtlpVm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7E23C433C7;
+	Wed,  7 Feb 2024 21:47:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707342458;
-	bh=B/hlIJ7K85wB/3PBEgSm6jFwUTWS70jBvDeVV2N69sA=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=MxL0GoOCvBj3xAKeO/lPiW2K0F5c+8/2k6JnnZXnTs4LjjXCnUNrJysxUr8RbeKwc
-	 QBQ5D+GEfPhjoDO/wcJIs6bYAIrOCSltq2yRbf/XLHvFl/H/ea9cFV0rffAhk0a22c
-	 1ux9BpXIROd42eLaP3KuQJsWeer5h5pZUESzO7kVul8QXCo3rl90s8JLTDeWP7nsC+
-	 nhiU0xKGN6PKTsjw9zqWu7QHjVIX/gM0lzvNhECPj2zTR3tgDApbsfAq9dRia8/YhD
-	 yM/DRSXJ0PpaS4vrxclGpCAmDx0HNoUI9XNK8HLJzzsBDk/aMPH+JnHJzhDwOqkcRu
-	 DceHS2EIad5PA==
+	s=k20201202; t=1707342480;
+	bh=VHe2yJyAM+ce7BaDBL2a1L8/IELsLZavLcYjHWeL4ng=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=eDRtlpVmofjE/Vcn590P6Smm89V8G2Xmqof3as38LymjClzEuB4mt2rCR+tL+vyBP
+	 RI/KAamvmTjHvZHlFuSybwv5Y0AEMLldsR8s5+p2UeGxBPiCBIVMS8My28dTYnOx3e
+	 PXugmWfCPhqjZLWy5qoqoNj1yAOYnZsyWRkAhQog4YI/170PfcRmUhUqLL8HDcuig5
+	 OBA1Tyc+khtUXE/xBRri8X78YcZNbShVbrJjuB1vGl5xBeCRAhhQ3dK7BR21U5ic5g
+	 ICPoacIkyZszrkxbeLxNZsGoU0cXz30WwireLwrlb8Vcf4HWeRrWjqpzKWkwus+UQS
+	 RtB8sJoe4JO2A==
 From: Namhyung Kim <namhyung@kernel.org>
-To: Kan Liang <kan.liang@linux.intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Leo Yan <leo.yan@linaro.org>,
-	linux-kernel@vger.kernel.org,
-	Jiri Olsa <jolsa@kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	James Clark <james.clark@arm.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Ian Rogers <irogers@google.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	sfr@canb.auug.org.au,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH v1] perf kvm powerpc: Fix build
-Date: Wed,  7 Feb 2024 13:47:33 -0800
-Message-ID: <170734243424.3472515.9977206326611492106.b4-ty@kernel.org>
+To: linux-perf-users@vger.kernel.org,
+	acme@kernel.org,
+	peterz@infradead.org,
+	mingo@kernel.org,
+	kan.liang@linux.intel.com,
+	linux-kernel@vger.kernel.org
+Cc: amiri.khalil@intel.com,
+	adrian.hunter@intel.com,
+	irogers@google.com,
+	jolsa@kernel.org,
+	ak@linux.intel.com,
+	ahmad.yasin@intel.com
+Subject: Re: [PATCH] perf script: Print source line for each jump in brstackinsn
+Date: Wed,  7 Feb 2024 13:47:58 -0800
+Message-ID: <170734243427.3472515.9177879341122405433.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <20240206235902.2917395-1-irogers@google.com>
-References: <20240206235902.2917395-1-irogers@google.com>
+In-Reply-To: <20240205145819.1943114-1-kan.liang@linux.intel.com>
+References: <20240205145819.1943114-1-kan.liang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,11 +68,16 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Tue, 6 Feb 2024 15:59:02 -0800, Ian Rogers wrote:
-> Updates to struct parse_events_error needed to be carried through to
-> PowerPC specific event parsing.
+On Mon, 5 Feb 2024 06:58:19 -0800, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
+> With the srcline option, the perf script only prints a source line at
+> the beginning of a sample with call/ret from functions, but not for
+> each jump in brstackinsn. It's useful to print a source line for each
+> jump in brstackinsn when the end user analyze the full assembler
+> sequences of branch sequences for the sample.
 > 
+> [...]
 
 Applied to perf-tools-next, thanks!
 
