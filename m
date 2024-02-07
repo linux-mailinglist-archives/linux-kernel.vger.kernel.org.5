@@ -1,177 +1,181 @@
-Return-Path: <linux-kernel+bounces-56416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F292F84C9E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2070E84C9E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:47:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80EC61F2506A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:47:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82B451F25272
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:47:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45791B7F7;
-	Wed,  7 Feb 2024 11:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FC3A1D526;
+	Wed,  7 Feb 2024 11:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a1+SCfFb"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XrmXKPIA"
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A5741B7E3
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B94E1B7F0
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707306433; cv=none; b=r+MTosaeYHm0F70UVd47xesyB2jVShQWdv7TppCgJ3wFIcdk7H/lCMVE1IBdIqlRhnL8z38ew5SgY5nMfz1kQw7nVR6W8sAkb0s4DambvLvlQyJK8cIiPrqv/+CESgx3zz32drWjgcqrZDoxPgXYxB9JqgbqDLzHPEPHhIc8Ob4=
+	t=1707306445; cv=none; b=sR56DKh/fXqHCJNMm7279UsA3+6EYeYwGgonolNRAXMcJcbyiatkTSAE0Xjf950EFIp2qPdi2Rm+75sAeg4sOsIUuepYwbA0sdya0rKvoLf0cPnzta3DrQXvrGO32Bzt2r+so4D72meCEnTf/uj9cFGgkPDInKuKWM6iSXUVkmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707306433; c=relaxed/simple;
-	bh=tjrQh1y4H5W6sx6xqeHy4JzMSxFgjnezbUH6ZJHM5NI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=klXR/+PvGbwRbxAEzs+yUlZBSsuUXNXG7Gh5DpdbZ/MKCH+rWwn2D3y7SxMYs4AEehhQ8gzazKYHosJWBX83D2BdLdBTJ0DD7Z4MESyJZ76SBcSHpGL7SP2GSCJ64pKIIQqwCWYIrnEgtwDfWSiFhCxblneOSezWQ/YJnn3umG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a1+SCfFb; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707306429;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=nvbuj/0u9tEQEJhqguXdXu/oFCwcAEaMYAW5rW/LIQU=;
-	b=a1+SCfFbIJhGzlOD8valK23DgWu7JYk8fdd0alY8o8ZjLFJRGEHzMVaIaGuZ6gJ3sYIlDs
-	Pmibue2fZwnnsaWp4IWpgp7jrSSHJ77fEpQG093r2/IZumN5sT7NHY00nqc6mGn1tHLEmj
-	tVj0DwLRcpVA1cmZMqQ0myAwWfPZLvc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-435-aNrfZZEpPIqEjvdaQ2srow-1; Wed, 07 Feb 2024 06:47:08 -0500
-X-MC-Unique: aNrfZZEpPIqEjvdaQ2srow-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F195185A588;
-	Wed,  7 Feb 2024 11:47:07 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.212])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 5171F1C02EB3;
-	Wed,  7 Feb 2024 11:47:06 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed,  7 Feb 2024 12:45:51 +0100 (CET)
-Date: Wed, 7 Feb 2024 12:45:49 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andy Lutomirski <luto@amacapital.net>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] pidfd: change pidfd_send_signal() to respect PIDFD_THREAD
-Message-ID: <20240207114549.GA12697@redhat.com>
+	s=arc-20240116; t=1707306445; c=relaxed/simple;
+	bh=bk9mKLUBkiVeKV9Jlt3UQtxCYxjxQfDKf8LJgvf2SIs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pxnW9BU96VFKeXI4yYlh9PDN9TjwdkztOx2ExTA9vo+V+2/x938cdmUOhqiZnD3ARJwL3/gnHso3eEmEvD3xKzm9aaPNRvWQmo7EHvttke/IwEGeikD+ed5RvJGhpsgQvjdD1+wlAnC+jk2WGsAVAacElMbsSNEKb3u/uKtn0C0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XrmXKPIA; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-604545fee99so5035017b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 03:47:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707306443; x=1707911243; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IBdEAORytiIoqLtaxVLqe0PceqtibKVmrzJCQ1csK14=;
+        b=XrmXKPIA6wddI6GfdCcknuhhKrRiCBJPgpzRp9jfg7HxQS21Ly9HBuu0cgIbqwGCCL
+         ZNUFeeOWZkIn9NobtdkNOlZ9TaM+TYYbzw6M39IeCb/D05YXX8RPhznw8Aatl/XfHVU4
+         JPkfGTFtei7Kf6mI4I7fBUEkOKuTxkmZ8mEChxoeHsM8OEBkr+bLBL6SLRdEtBL3t/pz
+         jLtbPpDpcDAKfppSOoVJXaRRF8o5KXBv6sdxJfaBRvbx/O4QkKteh2lsYqC+ok4mqKiJ
+         Av3pPgwnRQ9TDQhku83bcaFIgbW8hFtOz8KS02Cz7+lgnL5PPi6vh8srrWEZ9GG71PE8
+         dOFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707306443; x=1707911243;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IBdEAORytiIoqLtaxVLqe0PceqtibKVmrzJCQ1csK14=;
+        b=TqtOuwh/AJZ1WoB32/TbJfArX1IhMlILYLQtJrveIzyAK+gM2ToxNyCYsSdHodh0YQ
+         S7teHoYXybXXYm6BgPiF/gfhBlGQrxRpzh+S7klV9HzWpa1/4+qlELatOlW5OQTTs7dM
+         xVVKlcbCDCS3Kci76k+c9hyb1C3XjwFk4pH64ubDM2v9d8leNvVTKoqc54Nu2g3QGmIO
+         gPG2ASGZAgQ5hHeQc16JC3CiWlCNidSi3ob/BVdcbVbjhpFqXrPKUUMfgmy18TesqPLE
+         UxWDNAxQT+LPs0mjub5b5qsL4wDucaePkQr7nNZX322IJO6GLu4/ddXiZzdpJV/RlofT
+         Zd8A==
+X-Forwarded-Encrypted: i=1; AJvYcCUIMwa8en8yrD0skE10QsR+havQFbCckvW6rZqd8q6V8OGqMpt8+tb8CHQtAkk1KIilBiyf32fG/AwtzbESXQKAvvLqvJ8afqnpw+RU
+X-Gm-Message-State: AOJu0Yz7PNdy5h/nW41WuSaOo3/xO4ZifvbTCmAiyi0Vq/t5OaF3KPq9
+	cTnEsyDcRgrx+fP9+sq8PUf9fM23Q+ns+hvz/YBwyqBgfUmTTyvxyzzFKWOeN2/C+wB5Bnyef21
+	YA06lj5Yijev/KpdfwObHh6lCBZ2GCoSeKwj+cA==
+X-Google-Smtp-Source: AGHT+IGQmgN4lJV2lpVJU3mhUKZlqNZeXns1+EfXYUyDWZiVaRGvSCitx9bvLEZ6p75HORpuQBSnccf5GLqoIeuTOxw=
+X-Received: by 2002:a81:d80b:0:b0:5fa:564:afad with SMTP id
+ d11-20020a81d80b000000b005fa0564afadmr4599487ywj.7.1707306443214; Wed, 07 Feb
+ 2024 03:47:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+References: <20240207-enable_pcie-v1-1-b684afa6371c@quicinc.com>
+In-Reply-To: <20240207-enable_pcie-v1-1-b684afa6371c@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 7 Feb 2024 13:47:11 +0200
+Message-ID: <CAA8EJpqjm_2aE+7BtMkFUdet11q7v_jyHbUEpiDHSBSnzhndYA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: qcs6490-rb3gen2: Add PCIe nodes
+To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com, 
+	quic_ramkri@quicinc.com, quic_nitegupt@quicinc.com, quic_skananth@quicinc.com, 
+	quic_parass@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-Turn kill_pid_info() into kill_pid_info_type(), this allows to pass any
-pid_type to group_send_sig_info(), despite its name it should work fine
-even if type = PIDTYPE_PID.
+On Wed, 7 Feb 2024 at 12:42, Krishna chaitanya chundru
+<quic_krichai@quicinc.com> wrote:
+>
+> Enable PCIe1 controller and its corresponding PHY nodes on
+> qcs6490-rb3g2 platform.
+>
+> PCIe switch is connected to PCIe1, PCIe switch has multiple endpoints
+> connected. For each endpoint a unique BDF will be assigned and should
+> assign unique smmu id. So for each BDF add smmu id.
+>
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 42 ++++++++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> index 8bb7d13d85f6..0082a3399453 100644
+> --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> @@ -413,6 +413,32 @@ vreg_bob_3p296: bob {
+>         };
+>  };
+>
+> +&pcie1 {
+> +       perst-gpios = <&tlmm 2 GPIO_ACTIVE_LOW>;
+> +
+> +       pinctrl-0 = <&pcie1_reset_n>, <&pcie1_wake_n>;
+> +       pinctrl-names = "default";
+> +
+> +       iommu-map = <0x0 &apps_smmu 0x1c80 0x1>,
+> +                   <0x100 &apps_smmu 0x1c81 0x1>,
+> +                   <0x208 &apps_smmu 0x1c84 0x1>,
+> +                   <0x210 &apps_smmu 0x1c85 0x1>,
+> +                   <0x218 &apps_smmu 0x1c86 0x1>,
+> +                   <0x300 &apps_smmu 0x1c87 0x1>,
+> +                   <0x400 &apps_smmu 0x1c88 0x1>,
+> +                   <0x500 &apps_smmu 0x1c89 0x1>,
+> +                   <0x501 &apps_smmu 0x1c90 0x1>;
 
-Change pidfd_send_signal() to use PIDTYPE_PID or PIDTYPE_TGID depending
-on PIDFD_THREAD.
+Is the iommu-map really board specific?
 
-While at it kill another TODO comment in pidfd_show_fdinfo(). As Christian
-expains fdinfo reports f_flags, userspace can already detect PIDFD_THREAD.
+> +
+> +       status = "okay";
+> +};
+> +
+> +&pcie1_phy {
+> +       vdda-phy-supply = <&vreg_l10c_0p88>;
+> +       vdda-pll-supply = <&vreg_l6b_1p2>;
+> +
+> +       status = "okay";
+> +};
+> +
+>  &qupv3_id_0 {
+>         status = "okay";
+>  };
+> @@ -420,6 +446,22 @@ &qupv3_id_0 {
+>  &tlmm {
+>         gpio-reserved-ranges = <32 2>, /* ADSP */
+>                                <48 4>; /* NFC */
+> +
+> +       pcie1_reset_n: pcie1-reset-n-state {
+> +               pins = "gpio2";
+> +               function = "gpio";
+> +               drive-strength = <16>;
+> +               output-low;
+> +               bias-disable;
+> +       };
+> +
+> +       pcie1_wake_n: pcie1-wake-n-state {
+> +               pins = "gpio3";
+> +               function = "gpio";
+> +               drive-strength = <2>;
+> +               bias-pull-up;
+> +       };
+> +
+>  };
+>
+>  &uart5 {
+>
+> ---
+> base-commit: 70d201a40823acba23899342d62bc2644051ad2e
+> change-id: 20240207-enable_pcie-95b1d6612b27
+>
+> Best regards,
+> --
+> Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>
+>
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- kernel/fork.c   |  2 --
- kernel/signal.c | 18 ++++++++++++------
- 2 files changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index cd61ca87d0e6..47b565598063 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2051,8 +2051,6 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
- 
- 	seq_put_decimal_ll(m, "Pid:\t", nr);
- 
--	/* TODO: report PIDFD_THREAD */
--
- #ifdef CONFIG_PID_NS
- 	seq_put_decimal_ll(m, "\nNSpid:\t", nr);
- 	if (nr > 0) {
-diff --git a/kernel/signal.c b/kernel/signal.c
-index c3fac06937e2..e3edcd784e45 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -47,6 +47,7 @@
- #include <linux/cgroup.h>
- #include <linux/audit.h>
- #include <linux/sysctl.h>
-+#include <uapi/linux/pidfd.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/signal.h>
-@@ -1478,7 +1479,8 @@ int __kill_pgrp_info(int sig, struct kernel_siginfo *info, struct pid *pgrp)
- 	return ret;
- }
- 
--int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
-+static int kill_pid_info_type(int sig, struct kernel_siginfo *info,
-+				struct pid *pid, enum pid_type type)
- {
- 	int error = -ESRCH;
- 	struct task_struct *p;
-@@ -1487,11 +1489,10 @@ int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
- 		rcu_read_lock();
- 		p = pid_task(pid, PIDTYPE_PID);
- 		if (p)
--			error = group_send_sig_info(sig, info, p, PIDTYPE_TGID);
-+			error = group_send_sig_info(sig, info, p, type);
- 		rcu_read_unlock();
- 		if (likely(!p || error != -ESRCH))
- 			return error;
--
- 		/*
- 		 * The task was unhashed in between, try again.  If it
- 		 * is dead, pid_task() will return NULL, if we race with
-@@ -1500,6 +1501,11 @@ int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
- 	}
- }
- 
-+int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
-+{
-+	return kill_pid_info_type(sig, info, pid, PIDTYPE_TGID);
-+}
-+
- static int kill_proc_info(int sig, struct kernel_siginfo *info, pid_t pid)
- {
- 	int error;
-@@ -3890,6 +3896,7 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
- 	struct fd f;
- 	struct pid *pid;
- 	kernel_siginfo_t kinfo;
-+	enum pid_type type;
- 
- 	/* Enforce flags be set to 0 until we add an extension. */
- 	if (flags)
-@@ -3928,9 +3935,8 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
- 		prepare_kill_siginfo(sig, &kinfo);
- 	}
- 
--	/* TODO: respect PIDFD_THREAD */
--	ret = kill_pid_info(sig, &kinfo, pid);
--
-+	type = (f.file->f_flags & PIDFD_THREAD) ? PIDTYPE_PID : PIDTYPE_TGID;
-+	ret = kill_pid_info_type(sig, &kinfo, pid, type);
- err:
- 	fdput(f);
- 	return ret;
 -- 
-2.25.1.362.g51ebf55
-
-
+With best wishes
+Dmitry
 
