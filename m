@@ -1,106 +1,156 @@
-Return-Path: <linux-kernel+bounces-56697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4511984CDBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:10:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70D5D84CDBC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:10:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBB6C1F238E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:10:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94A251C22450
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:10:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5FA7F7EB;
-	Wed,  7 Feb 2024 15:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24F37FBBB;
+	Wed,  7 Feb 2024 15:10:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hE3lMhLz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AtX7nhxl"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD5E7F492
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 617C97F488
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:10:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707318631; cv=none; b=WyIoa7NGxmNSSID6I/6bqCC2OAtW23X6SLB43VJwbNIYbEOkQwYwIC86J75SLbtQRegVzUIJ0OoEkvKqp1LT2dI/1ElKo6CseXM7ujQFJFkr4bz1tnFliLUxrc0DoD9T/EaB6faT54/CU+KKUDd0UAqo20anfsEj7qToyZHE1Hw=
+	t=1707318633; cv=none; b=mi114vKRU8/xNtzaq66C71raRv8tIo7ugY3uJ/PI1J1GrN5oZHtj32QYlmDKQq3XyN7geq4lc+jQ4El5m35bk3wEe0/YkU0LdISAoCE5+q8U4sSjWCY+eZAz0ElMW95Jv/UGr+zLQrvix1qC45zARj7X0Q6Ayu1jmfb3kumpS5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707318631; c=relaxed/simple;
-	bh=z7kDN/9RKM6srpE/iDGZ736vndtbrUwfOgAVPlVsV8c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D4IUmlSpvXoO3jJY9DmDPoa+bdS/HDDyL2R/uxKaHiKdxvSlpPVaJtAEDkymjpsSL+jGk7erfhhMTNhBA+UVYbm0lRa5qnQoQPZTlcMTnDfwSqwzm1rj81782JHPL/SgXMAljsDdIgcn0tdUZGtqs4C2ZqMZevqom1pd/Wj3QwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hE3lMhLz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEAB7C433C7;
-	Wed,  7 Feb 2024 15:10:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707318630;
-	bh=z7kDN/9RKM6srpE/iDGZ736vndtbrUwfOgAVPlVsV8c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hE3lMhLzAQH18yuIFUsYKJa4oavc9S+ZOM7C87o/RkVIWyhbHXOykv11LTlT0ubiE
-	 pwfTt7gkZyE7mEjL8PFIPp6AEj0xRRO9eEPMdIGyh4oErPT67Y6gyiC76DwyW8DBcP
-	 K865XTkME9n+0BPkOXHxI+XXst2C+b1/5ODZrgEEHAIX19ds+G2AlR9ZSn2KHjaQjT
-	 0UgPqQZEysM0A+U2eaEgtfs1BQ9X53w/Qme9+jzY1vhMX6SikFCfGVk8OsoEhFd2y/
-	 lJXOCbmLtYx8/OddTinzzv4OWRFB84YAbqGztCANDBMHCxMZDOOsLi9z0ZahG4mSS0
-	 SM3h5NsFOmXdg==
-Date: Wed, 7 Feb 2024 15:10:28 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Dave Martin <Dave.Martin@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/sve: Document that __SVE_VQ_MAX is much larger
- than needed
-Message-ID: <ZcOdZNEDXy14OGGI@finisterre.sirena.org.uk>
-References: <20240206-arm64-sve-vl-max-comment-v1-1-dddf16414412@kernel.org>
- <ZcNxJ56+bvcUTGlT@e133380.arm.com>
- <ZcN8OltRDUlDlTHQ@finisterre.sirena.org.uk>
- <ZcOIAck16ZyUi/yj@e133380.arm.com>
+	s=arc-20240116; t=1707318633; c=relaxed/simple;
+	bh=TDeuMYw3V5mfviFayWil0sUeiH295xl/tQfWNiFIdFg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=c5cP8crJan6ef7nilO8tm8LT2tSHuZFgPERiyrQf/kbpr3gIJlHzYHKy/4M3Bv/4RGmp470zvGlpWPIc9AeTA01KgI9B7SRZCgiLMenPFa/2dKHZbxww8jAsEUD2uO6L20/6mcYU6386HbrpLNnBOhicPDoriT31AOteivlKPOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AtX7nhxl; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6df2b2d1aso926793276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:10:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707318630; x=1707923430; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C/5FPgGvRtWIxXt/NaMkBCrrVZJi2vGASXviIWBw83Q=;
+        b=AtX7nhxlgibTRw+/Xuk1ltRXz6DAeXR1MOjqdE8mMFF5Q1PrKrmwcQ2E2imBhe5l+E
+         DVVO95MQh6dG2yMwt7utxjtaBVlTlk4qd11EO6K3i+l8CLvR6kdlxt8m6kJSQw9DsS1D
+         EIx8NoYelrredMlJj7KtQDH3JM90e/KNnwpYkUEuKjCsQkv8OzXuHuZ3ZzMIosC3rWKI
+         N5UqY4+VBR5F8oFEn8wVaUa93sIi4LDQnoXlUlVSfCemXIfkCOHriP4SGwLopFs5d0EE
+         /keGIyll82Q24nQQHjsDbdV+4cz2aq3IzBC+Hhxd5rXpbkVy88gzZWC5DQUKVyZ3p928
+         UcMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707318630; x=1707923430;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=C/5FPgGvRtWIxXt/NaMkBCrrVZJi2vGASXviIWBw83Q=;
+        b=nzxxGd780nM+ZpEx1HF//ZIjgRMzHk+hyhDytcEYlvtPIw6gPfF/zpgNABb7PeaNhY
+         BSLVLp6L+N+ga3SoCFK0nJ0lpAOHxdvw9rGaPB7kS7MMg9AcjY1MJ+3lA3y2CRGrk2OD
+         AMXVv//HabUbqLGpu7glkxaLueOA/q+UKMjh6uKWQlVUI6vh84uruMyG4MPYzLk0ty88
+         444Y0inzm9K2KWdVPpo1+xAOQg6rb7SA8d9rxyYfDq54tOmDD3Vkgadvw5WAsXkNwxwh
+         fvvtrsTqYBNiMb1m16PUi5l3+LU3+lEwvEXxNjDuRK3Hy4ndQ/mPV5Tc22r4yTr5hFwl
+         yOIg==
+X-Gm-Message-State: AOJu0YyPN3eFnIbKeQcyypvkV8fg0T+sFP+ZeS2TXGy0DPrxcCjE2EK3
+	tpqwmYgGrqXyvU48QtE8RbULzqS8TH2mAsq/+QQHM5rpKrsQ7l1Yr2+PnCXdrbzHuIfK3qxTEsH
+	Jug==
+X-Google-Smtp-Source: AGHT+IFvJL9oypygwTLZ3VHM332NyBw8WKMDivEtxpFXSaOzxlyiHKWCNbhIvXGG/Y4f74o4QcvLCt4/dbI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:220c:b0:dc2:5456:d9ac with SMTP id
+ dm12-20020a056902220c00b00dc25456d9acmr181054ybb.5.1707318630365; Wed, 07 Feb
+ 2024 07:10:30 -0800 (PST)
+Date: Wed, 7 Feb 2024 07:10:28 -0800
+In-Reply-To: <a817d64f3fe7b935a02e78df02dc0c6281e61af3.camel@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6wd8y45bC39+B3ls"
-Content-Disposition: inline
-In-Reply-To: <ZcOIAck16ZyUi/yj@e133380.arm.com>
-X-Cookie: You might have mail.
+Mime-Version: 1.0
+References: <20240115125707.1183-1-paul@xen.org> <20240115125707.1183-19-paul@xen.org>
+ <ZcMFb1epchA7Mbzo@google.com> <bbd59a2c0897d8ca642ea8c4787b829190e75a4d.camel@infradead.org>
+ <ZcMLX5Omum3riZe8@google.com> <a817d64f3fe7b935a02e78df02dc0c6281e61af3.camel@infradead.org>
+Message-ID: <ZcOdZKmmYz3kMgwp@google.com>
+Subject: Re: [PATCH v12 18/20] KVM: pfncache: check the need for invalidation
+ under read lock first
+From: Sean Christopherson <seanjc@google.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Paul Durrant <paul@xen.org>, Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>, kvm@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Feb 06, 2024, David Woodhouse wrote:
+> On Tue, 2024-02-06 at 20:47 -0800, Sean Christopherson wrote:
+> >=20
+> > I'm saying this:
+> >=20
+> > =C2=A0 When processing mmu_notifier invalidations for gpc caches, pre-c=
+heck for
+> > =C2=A0 overlap with the invalidation event while holding gpc->lock for =
+read, and
+> > =C2=A0 only take gpc->lock for write if the cache needs to be invalidat=
+ed.=C2=A0 Doing
+> > =C2=A0 a pre-check without taking gpc->lock for write avoids unnecessar=
+ily
+> > =C2=A0 contending the lock for unrelated invalidations, which is very b=
+eneficial
+> > =C2=A0 for caches that are heavily used (but rarely subjected to mmu_no=
+tifier
+> > =C2=A0 invalidations).
+> >=20
+> > is much friendlier to readers than this:
+> >=20
+> > =C2=A0 Taking a write lock on a pfncache will be disruptive if the cach=
+e is
+> > =C2=A0 heavily used (which only requires a read lock). Hence, in the MM=
+U notifier
+> > =C2=A0 callback, take read locks on caches to check for a match; only t=
+aking a
+> > =C2=A0 write lock to actually perform an invalidation (after a another =
+check).
+>=20
+> That's a somewhat subjective observation. I actually find the latter to
+> be far more succinct and obvious.
+>=20
+> Actually... maybe I find yours harder because it isn't actually stating
+> the situation as I understand it. You said "unrelated invalidation" in
+> your first email, and "overlap with the invalidation event" in this
+> one... neither of which makes sense to me because there is no *other*
+> invalidation here.
 
---6wd8y45bC39+B3ls
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I am referring to the "mmu_notifier invalidation event".  While a particula=
+r GPC
+may not be affected by the invalidation, it's entirely possible that a diff=
+erent
+GPC and/or some chunk of guest memory does need to be invalidated/zapped.
 
-On Wed, Feb 07, 2024 at 01:39:13PM +0000, Dave Martin wrote:
+> We're only talking about the MMU notifier gratuitously taking the write
 
-> How about something along the lines of:
+It's not "the MMU notifier" though, it's KVM that unnecessarily takes a loc=
+k.  I
+know I'm being somewhat pedantic, but the distinction does matter.  E.g. wi=
+th
+guest_memfd, there will be invalidations that get routed through this code,=
+ but
+that do not originate in the mmu_notifier.
 
-> /*
->  * Yes, this is 512 QUADWORDS.
->  * To help ensure forward portability, this is much larger than the
->  * current maximum value defined by the SVE architecture.
->  * While arrays or static allocations can be sized based on this value,
->  * watch out!  It will waste a surprisingly large amount of memory.
->  * Dynamic sizing based on the actual runtime vector length is likely to
->  * be preferable for most purposes.
->  */
+And I think it's important to make it clear to readers that an mmu_notifier=
+ really
+just is a notification from the primary MMU, albeit a notification that com=
+es with
+a rather strict contract.
 
-That works for me.  The cost of initialising can also add up in
-emulation.
-
---6wd8y45bC39+B3ls
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXDnWMACgkQJNaLcl1U
-h9D6Ugf+JL/cppHvNNJuGS1wEso5Ew3SN0U8U6OhO0o5/EchygtGZBzmsIHkBxLG
-wLq303vk0lALc3LB0j7Q43kaPzFDg/vIUPbCbdfAohqqVt/3+afBRlFAc3eMg8E9
-0bSv+tlbM7TQOZaaC6JPI0jDhxhCCCX97dQ3IxqFo5wq4TYdmo9G6I3LCNVaeCuU
-q78btLKrrXrXkFAcSdWv2FEUiHeuGDkcrjFS9g6H6Gskrmk0aVWciWjTXC3Jcpel
-PIVNc8sOCdfnc/QgO61YjxopAV84gnDAlcblSEUoRLsCRKY51o0NvPusGCSsOkUd
-EX30mUNpWRh2Z2cteqzTcGINiQMXEg==
-=z019
------END PGP SIGNATURE-----
-
---6wd8y45bC39+B3ls--
+> lock on a GPC that it *isn't* going to invalidate (the common case),
+> and that disrupting users which are trying to take the read lock on
+> that GPC.
 
