@@ -1,141 +1,98 @@
-Return-Path: <linux-kernel+bounces-56519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FE4E84CB2D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:10:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F97D84CB2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:11:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A33181F27CAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:10:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F6611C267FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9467764D;
-	Wed,  7 Feb 2024 13:09:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A3577F13;
+	Wed,  7 Feb 2024 13:09:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="QX9qMGrB"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="ikhlTEK/"
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4399076C84
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:09:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90B1377F0A;
+	Wed,  7 Feb 2024 13:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707311356; cv=none; b=fYPsCa8uBqW8uXOTDroUWBGGLRt9+xiHYRMw+gbbkFQrDUO00E34m7VmaxxV8xUCcO6ePVps78BoH/Uiw6SzyDjqVFCWl0s+v61HL3bB7K33HPTgvVVc70g2fF1SK2ym3/MTphWZ3+eYk9+fxHHV1HGyLx/qXprBa+g1dgKPem4=
+	t=1707311359; cv=none; b=sT+myDD5JFeIBkAQn1fzO7+aduYokuVasOtedNhwK/Ai1p75NsvnPsIN733SNuGYWz4sqwR5j1H1WuZ+s8rjmaOxYCz0CK/qSzqv5DDJbrQ+Fi51Nvno9qlt0jtQDAXQh7GzPM2lPkjWL24Xtu/Da0npt43wydYkY2TC0dd7jcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707311356; c=relaxed/simple;
-	bh=00E6HIe11CgAo2O0miczqRLxo0ZJcS0ae2ZwIYvBsds=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tAPVYkHr1ICTAooCZS9a7o4dodAbcjt/1peMHP7w32fIqsaQKIygo8KhcBmDNGJ11KVdupg0bskm5zfvo0cMhsRmmWOPNxAJaWDZWwSDmARCevnqxe+gl1lzYZIFGLh44qnhjdeeCYwpp/5b4wDRJTrUPynJv2W1x8Zl5uvrkbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=QX9qMGrB; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf4d2175b2so7149861fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 05:09:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1707311352; x=1707916152; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=00E6HIe11CgAo2O0miczqRLxo0ZJcS0ae2ZwIYvBsds=;
-        b=QX9qMGrBRE/l91bW3xVYKcelFfA9qgDXW/Cn/Ft2eoVIE+vEgCBEM4zTEcHJJ0L4k0
-         oN4ovMy0SlD4YmUAa3VEg9v5eSdYyTQSbnygKfXQlar2dFoj9VOoP93y7OEWPwDsv6eM
-         O/0xQdKbxGogdc7jXndDILFszupMuyUTvkj6lRyx5d4HgVhhZI+E4CLUJ8l8mkrROFtS
-         pnNZka4fYa4Dd6irCI9DK7Y/7pTDd3kFHXl1PF3ugCByWOiTU0Itkq7LPBljNcwWZBp0
-         fnbOqg8QklpgsyEWsDkUTD2KpjbBIgwltG5KiOYM+m0cgLM9VJAaCzEmlIyE9ORxZtE3
-         Tmow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707311352; x=1707916152;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=00E6HIe11CgAo2O0miczqRLxo0ZJcS0ae2ZwIYvBsds=;
-        b=YkOZPlKzjqXF/dKmtKepBPCjs7GjScv2x0h3VDIagxE9G+9WxkjBRm7W1laaq8dWwR
-         kWDBGTLOTUGFEft9/zDjIpi3jV7DjdfWUE20WMKXNsIezTncG9mKz/7FnZgyxtq62qlM
-         o1klhaC+bLa2gGjzJrOAaVqVw73AjauwQ6SJOLGYVW+5KKGF6wcZIQYA7QnX6lGWHleS
-         UrSOG7kMW8WnZ8x9q+SahO5sPK4lUgEvtj0CKXteP5PSDuM2J0wKLLKXTHlU1WirRjsK
-         XA63yHdFeo5JrWaPLZTbxCueBlAoiQjkzgZeV/R9EZwVp2AhBoCvY2vgaKpXabK236KF
-         5YrA==
-X-Gm-Message-State: AOJu0YxvCJyk8Z/v0OYftumjYe7KgcjvIKTnF4gbqrHcI630whEP2oir
-	nh5bxv5T9+H5j4Cbw6KtCsj76xgyKZjiadZ0PEpPuZdX0a/C+tN96EP8wNzolVeflZGZqOAjsf9
-	AebgZw0SdoQXIbBIZMW4I/AjqHIL66ghFOClVNQ==
-X-Google-Smtp-Source: AGHT+IFdqOXB6ghYnKqxixi71HDIVUyBb6K4yLgyQsY8z+jH6b5Dj0DBcg23SVmyQ/HQ0KyJt1aTiAzz+yQw9qYykWI=
-X-Received: by 2002:a2e:9ad4:0:b0:2d0:cb23:c719 with SMTP id
- p20-20020a2e9ad4000000b002d0cb23c719mr1085079ljj.13.1707311352050; Wed, 07
- Feb 2024 05:09:12 -0800 (PST)
+	s=arc-20240116; t=1707311359; c=relaxed/simple;
+	bh=GWAgaDJ3zdRn3qm1MtZe+axa+R6PJ8fMMxWJrbGg7AQ=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=gitN/5VlSPgv1+2mgTH3p6U6SXDKHcz4XZRYMCXbJng2IgJjJ1xkEpmI7wQIPFMFD9xxkAdJDDlsZ5WsWo2PbHWvE+CIo1MV7YKpNrMs5zMxQqq4Z4CBbpDSQSXi+Sc74K8r+eni8ZnoLah9KrvLvBMSTyvt6ClrytmzIbFAoos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=ikhlTEK/; arc=none smtp.client-ip=80.241.56.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4TVL6W6k3kz9sw2;
+	Wed,  7 Feb 2024 14:09:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1707311347;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=xxONrTvJa5WGKkunFtaEoZBXl9eRExoEHx1SGG+4XXs=;
+	b=ikhlTEK/L4z8v8ELl0gxcfrTW0e38Po69NiBubwHSN+SOYzu5zRmVd9D4U/hu1G0XYYJSW
+	hjBMa7Coevc9BrQTTOhJ3xTSVDZVPp3XlyUvpgRzz5U6MpNkF0dHAQoRfBUHWMKK2ft+Cd
+	4LB5Pw12gbTkPUdPy0X7QL+K9mXqFVZ9Kt8WFw611WHat/vIpxW2WY1n4RTMg4WjBQPsDr
+	azO9ekKjmiqVP80MT92e+I/5DwhDsI8TQmlPsfP//RHz7aAuSF5pN761kasdRNT1GtTFvt
+	ySgUISiYpN+GupU7IYMw4Hmm4H1RDP4xlRvdejGzxN9qBb18Fv52dB0ENVhqfA==
+Message-ID: <41f82085-8ea9-4ffa-a93a-8e39ce0f4c27@mailbox.org>
+Date: Wed, 7 Feb 2024 14:09:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
- <87h6ily53k.fsf@all.your.base.are.belong.to.us> <CAAhSdy2PPjS6++Edh8NkgiBmcovTUjS5oXE2eR5ZwPfAfVA0ng@mail.gmail.com>
- <874jekag3w.fsf@all.your.base.are.belong.to.us> <CAK9=C2XJYTfY4nXWtjK9OP1iXLDXBVF-=mN1SmJDmJ_dO5CohA@mail.gmail.com>
- <87plx8y5s3.fsf@all.your.base.are.belong.to.us> <87sf24mo1g.fsf@all.your.base.are.belong.to.us>
-In-Reply-To: <87sf24mo1g.fsf@all.your.base.are.belong.to.us>
-From: Anup Patel <apatel@ventanamicro.com>
-Date: Wed, 7 Feb 2024 18:38:59 +0530
-Message-ID: <CAK9=C2UiOXS7NE91ykvQHc8h8-DUAUwEuMphwC-df3__zK1dVg@mail.gmail.com>
-Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: Anup Patel <anup@brainfault.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
-	Saravana Kannan <saravanak@google.com>, Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org, 
-	Atish Patra <atishp@atishpatra.org>, linux-riscv@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+To: Huang Rui <ray.huang@amd.com>, Perry Yuan <Perry.Yuan@amd.com>,
+ rafael@kernel.org
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-pm@vger.kernel.org, Oleksandr Natalenko <oleksandr@natalenko.name>
+From: Tor Vic <torvic9@mailbox.org>
+Subject: [PATCH][next] cpufreq: amd-pstate: Fix min_perf assignment in
+ amd_pstate_adjust_perf()
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MBO-RS-META: 4wcfr81h7xkjb3at6zuheac1jr4e8dqn
+X-MBO-RS-ID: 76e10efaad271e17016
 
-On Wed, Feb 7, 2024 at 6:25=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.=
-org> wrote:
->
-> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
->
-> >>> Hmm, seems like we're talking past each other, or at least I get the
-> >>> feeling I can't get my opinions out right. I'll try to do a quick PoC=
-,
-> >>> to show you what I mean. That's probably easier than just talking abo=
-ut
-> >>> it. ...and maybe I'll come realizing I'm all wrong!
-> >>
-> >> I suggest to wait for my v13 and try something on top of that
-> >> otherwise we might duplicate efforts.
-> >
-> > OK!
->
-> I did some really rough code sketching, and I'm confident that you can
-> get rid of all ids_enabled_bitmap, hwirqs_used_bitmap, and the
-> corresponding functions/locks. I'd say one lock is enough, and the key
-> is having the per-cpu imsic_local_priv.vectors change from struct
-> imsic_vector * to struct imsic_vector **.
+In the function amd_pstate_adjust_perf(), the 'min_perf' variable is set
+to 'highest_perf' instead of 'lowest_perf'.
 
-I have managed to remove hwirqs_bitmap (and related function).
+Fixes: 1d215f0319c2 ("cpufreq: amd-pstate: Add fast switch function for 
+AMD P-State")
+Reported-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+Signed-off-by: Tor Vic <torvic9@mailbox.org>
+---
+IIRC, this was first reported by Oleksandr, hence the 'Reported-by' tag.
+---
+  drivers/cpufreq/amd-pstate.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Now, I am trying another approach to simplify locking using atomics.
+diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+index 08e112444c27..aa5e57e27d2b 100644
+--- a/drivers/cpufreq/amd-pstate.c
++++ b/drivers/cpufreq/amd-pstate.c
+@@ -577,7 +577,7 @@ static void amd_pstate_adjust_perf(unsigned int cpu,
+  	if (target_perf < capacity)
+  		des_perf = DIV_ROUND_UP(cap_perf * target_perf, capacity);
 
->
-> Using smp_call_function_single() to IPI enable (and disable if you don't
-> want to use the lazy timer disable mechanism) seems feasible as well!
+-	min_perf = READ_ONCE(cpudata->highest_perf);
++	min_perf = READ_ONCE(cpudata->lowest_perf);
+  	if (_min_perf < capacity)
+  		min_perf = DIV_ROUND_UP(cap_perf * _min_perf, capacity);
 
-We have intentionally kept separate virq for synchronization because
-this allows us to gather stats for debugging. Calling smp_call_function_sin=
-gle()
-will not allow us to separately gather stats for sync IPIs.
-
-The smp_call_function_single() eventually leads to __ipi_send_mask()
-via send_ipi_mask() in arch/riscv so directly calling __ipi_send_mask()
-for sync IPI is faster.
-
->
-> (Let me know if you don't have the spare cycles, and I can help out.)
->
->
-> Bj=C3=B6rn
-
-Regards,
-Anup
+-- 
+2.43.0
 
