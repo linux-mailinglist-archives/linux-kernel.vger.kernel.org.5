@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-57215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AE1584D535
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:03:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06AF684D537
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:03:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D8CF1C24923
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:03:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A4D0B2109D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:03:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F1EC143652;
-	Wed,  7 Feb 2024 21:27:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92C8142C52;
+	Wed,  7 Feb 2024 21:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rqGgRgZi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hO0HVvZT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 524EF143661;
-	Wed,  7 Feb 2024 21:27:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BCAA14367E;
+	Wed,  7 Feb 2024 21:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341245; cv=none; b=ExU/J9Z0sSnMafhv0J/PVaxSGzJDWvtOfcKwZ2rAJ8xO2QRvpZt1nC2KCOxT7cgPqJDUiFtIU99TLLuTorGLLwsTFxA3Vgph3sBJoSXv+T4ZUOkYIiK8msPt4n+oT9vwV4vgmzLdQgCWxcoS+CtoQTO3KYrXpBE18r8oKAq/17o=
+	t=1707341247; cv=none; b=MQuUQF7nYjgLwdxhnPJ3c7dx2W1UkXGWvEQBbJOJhAWWy86PqXffkBFXAi4IqxDeEq0EApF9596kekbLuLrGhLO0WEsN8Z51e1+JsUZqdryPhBJvTTM2ArAI9VEHWbZnELcIVQ/ukLafCQBViGfXDIIC+nZBUarPj31KZOf7U7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341245; c=relaxed/simple;
-	bh=QOfzfBWnSePPrn3EU/czqjpW8X2ZbStvoN5lzrDArKM=;
+	s=arc-20240116; t=1707341247; c=relaxed/simple;
+	bh=bQdppS9UAQRred1gpAr3p4kft8EjZf1tmlb3dTOulA8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jyvmzaJiL1hkOOIxNzBaxpIK+kwhkAi3+m7q8b5TKJDBNhpUsGiuOncBPFEoTu1sPrWtnPhZYrkN0UTJiI4ozKz4xjv95c3IER+VoYRSnfC4aXqiZdmBT+tRge3fFiBeNJ6JZCk0BYNiCJYK+xBjk1hB7V5eYHDhJ09ZT4BtWXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rqGgRgZi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7C21C43394;
-	Wed,  7 Feb 2024 21:27:23 +0000 (UTC)
+	 MIME-Version; b=NiEqYbnEMuM7fwx7aaoY6hNRRzFXn9ccHdau0gNo+UcbN1nKjElXI+bVJ/UaCt1x8tYR208r1e01q3kgm9zff14P0puxB59aIhUUBTtzh/YiTzv4BEwVF8Fn8aw/aiiK9yfCnllTO+7MsCJJZQk8ATkJ2eUWgd4IoIrR7Xo6qTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hO0HVvZT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9269FC43390;
+	Wed,  7 Feb 2024 21:27:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341245;
-	bh=QOfzfBWnSePPrn3EU/czqjpW8X2ZbStvoN5lzrDArKM=;
+	s=k20201202; t=1707341246;
+	bh=bQdppS9UAQRred1gpAr3p4kft8EjZf1tmlb3dTOulA8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rqGgRgZiFF7NOR55bEjMMgxIC5FY+6mPPpK8Wd7NhVkN8VgilQlLOO4RuAPCp11tB
-	 j/kHl31U7cnfKgYlvcIFwvhuI6vdGH8sgZbx+NlIQr4u5SRytYA8Su7J3l5LymEaHZ
-	 QiCAk4JisXokGU8jqvc2d2Ul/sY7wUf+tWjGvRQj/UrnDbL4GOXHofGCP1uLf9L+KJ
-	 X+oOW/Mou0SftLETm1pTf8z8fsCOtMIe4wQ/quaTqgmNPfQOIOVp9vPv6Id4pO1WrO
-	 AziBPjY5eGy5BKpZ7ezSmyuv2hmsuz57N3u0czl/wiEq2SXv0FDCAI84JpfOj9bZwa
-	 QjMOySDjK4pqQ==
+	b=hO0HVvZTCPS8syvHGZYj32fFcRWkChaK0AveWX7j8Xb88QK1SAdX1tYJ38ajtxXnB
+	 f+ECc+x8l5rNaeOVR9P5iDyH+atZdMu74mIQ2m2OSpMvp4jdszBZL5mEs6sk2/j/wB
+	 l/PVJ1crsoX6wClgCCScJmBTkM+UFgpVj+g+bhp4cub1I5hkmDQt74n6TnS+ODIZsi
+	 XF0XKQplr8NrMJQzVTSCuQP/N36Ef1JA/r2qcYKSQcj9TLN1h4FVY84vgdPlVaG+ng
+	 ovYmjJWDBk1DgCrpt5WRps24TKQ/4z39BQX4fk1DkqFP5vtgQRC2rdvzQVRZZ06/N/
+	 +wZ+Hnb6pni8w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,9 +52,9 @@ Cc: Daniel Wagner <dwagner@suse.de>,
 	sagi@grimberg.me,
 	kch@nvidia.com,
 	linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 13/16] nvmet-fc: do not tack refs on tgtports from assoc
-Date: Wed,  7 Feb 2024 16:26:53 -0500
-Message-ID: <20240207212700.4287-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 14/16] nvmet-fc: abort command when there is no binding
+Date: Wed,  7 Feb 2024 16:26:54 -0500
+Message-ID: <20240207212700.4287-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212700.4287-1-sashal@kernel.org>
 References: <20240207212700.4287-1-sashal@kernel.org>
@@ -71,11 +71,11 @@ Content-Transfer-Encoding: 8bit
 
 From: Daniel Wagner <dwagner@suse.de>
 
-[ Upstream commit 1c110588dd95d21782397ff3cbaa55820b4e1fad ]
+[ Upstream commit 3146345c2e9c2f661527054e402b0cfad80105a4 ]
 
-The association life time is tied to the life time of the target port.
-That means we should not take extra a refcount when creating a
-association.
+When the target port has not active port binding, there is no point in
+trying to process the command as it has to fail anyway. Instead adding
+checks to all commands abort the command early.
 
 Reviewed-by: Hannes Reinecke <hare@suse.de>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
@@ -83,36 +83,35 @@ Signed-off-by: Daniel Wagner <dwagner@suse.de>
 Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/fc.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/nvme/target/fc.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
-index 18a64a4fd8da..ebbc513682e1 100644
+index ebbc513682e1..6bdf9235b14d 100644
 --- a/drivers/nvme/target/fc.c
 +++ b/drivers/nvme/target/fc.c
-@@ -1110,12 +1110,9 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
- 	if (idx < 0)
- 		goto out_free_assoc;
+@@ -1102,6 +1102,9 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
+ 	int idx;
+ 	bool needrandom = true;
  
--	if (!nvmet_fc_tgtport_get(tgtport))
--		goto out_ida;
--
- 	assoc->hostport = nvmet_fc_alloc_hostport(tgtport, hosthandle);
- 	if (IS_ERR(assoc->hostport))
--		goto out_put;
-+		goto out_ida;
++	if (!tgtport->pe)
++		return NULL;
++
+ 	assoc = kzalloc(sizeof(*assoc), GFP_KERNEL);
+ 	if (!assoc)
+ 		return NULL;
+@@ -2524,8 +2527,9 @@ nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
  
- 	assoc->tgtport = tgtport;
- 	assoc->a_id = idx;
-@@ -1145,8 +1142,6 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
+ 	fod->req.cmd = &fod->cmdiubuf.sqe;
+ 	fod->req.cqe = &fod->rspiubuf.cqe;
+-	if (tgtport->pe)
+-		fod->req.port = tgtport->pe->port;
++	if (!tgtport->pe)
++		goto transport_error;
++	fod->req.port = tgtport->pe->port;
  
- 	return assoc;
- 
--out_put:
--	nvmet_fc_tgtport_put(tgtport);
- out_ida:
- 	ida_simple_remove(&tgtport->assoc_cnt, idx);
- out_free_assoc:
+ 	/* clear any response payload */
+ 	memset(&fod->rspiubuf, 0, sizeof(fod->rspiubuf));
 -- 
 2.43.0
 
