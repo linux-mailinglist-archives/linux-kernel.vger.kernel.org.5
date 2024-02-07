@@ -1,56 +1,61 @@
-Return-Path: <linux-kernel+bounces-57205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1068984D51D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:00:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 813EA84D51F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:00:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B14551F232E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:00:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C0AB28D8CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:00:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE886F502;
-	Wed,  7 Feb 2024 21:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F7F6F517;
+	Wed,  7 Feb 2024 21:27:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NLe+iGHM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ScPlpuNv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79E7135A52;
-	Wed,  7 Feb 2024 21:27:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86B86136643;
+	Wed,  7 Feb 2024 21:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341228; cv=none; b=Z7lkesgLR+py8ivGp76AwAfwIe+F2rNMsV1M2hhcgnHpf2mHZiNROw4uJHnI1arbX2nmBVBDq85oQF5x5yHmYjYL7+rtAp0A3Q9FJtb7ilTeYhm7asaFfurdx6EQ7SMtyWzdteHnHdeKA59FYvF3jcuG7lAMBWiCsN0u3sgmJ5Y=
+	t=1707341228; cv=none; b=SwG7Qk2ogHuIAS9ZnjBtPaKJ5IM6bVuuVk3y7YRToPuOytbxM1YVR6cjvuuQA8IGVPctubTYjfLxfaA+k1GdegVcwlDO67sOaY5T88gQkqRhfvAJCdMwk5JgV74nd7lNB1vMjxILmlXWoORlqzu11eGpfGfa13yeh4FveRsajCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707341228; c=relaxed/simple;
-	bh=9m1jj0JfmvljBoVsanyPCb70uqWdNvxZtOaXmyRb2l4=;
+	bh=wG0sK8XFHjHc0nOKGs+2WnDbeM8qvPvmjUhVq3j+FIY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mYouPaHBWgKwSK7NOpNEz5phtKgoFTErfx2RGDdxTEPS7m2y5DMf7d6jPh/F+L1zPOBzOm1uVczDRBW6oxnt37rgdllBJAC+tsgzPA+pCojtuAlpHsjiIcR5khGoauLd/abasU8RuAmS/Sc8pViLNp+NX1Jl1zrqIcFVK+vJ4QM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NLe+iGHM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 567BAC433C7;
-	Wed,  7 Feb 2024 21:27:05 +0000 (UTC)
+	 MIME-Version; b=m74TI+Mk+8mUZ5tn134t0ezRgIipmDcAuDwz7oPsmAlyfX4IB4xe07RYANBjbHEX2r3Rhq0v8ziUqSJkyNTJvw71EGakkSI77Y5tI+BETnyFHTqBRWnKQSmKK3/wn2JnvyYS9bZJZ8h0JdIKLo36gGWYMvevSOJYj/exvJrypto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ScPlpuNv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5D03C433B1;
+	Wed,  7 Feb 2024 21:27:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341226;
-	bh=9m1jj0JfmvljBoVsanyPCb70uqWdNvxZtOaXmyRb2l4=;
+	s=k20201202; t=1707341228;
+	bh=wG0sK8XFHjHc0nOKGs+2WnDbeM8qvPvmjUhVq3j+FIY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NLe+iGHMIR1odpGwmSAbEeuEFHHLQVboMOJuGrUm5iNhrQi1pkDWUh+HXYSLc3coC
-	 8JTSIO1hBvwQfmovRWkx2DdCtlM0/q7uBG+Tc3IPchz5gDUGRg4PJ1LUZ4YulItxXi
-	 +BveYICwkvea3UoigJ4IPQMz4aspi4dsjLmWhrDoDsUocFTBkL5kXMv1us0UF43PPN
-	 7dd2KKN4Xo94N+iX/3WgG7TszxXozFcV7mHCEBficLCvwdHvcany8c/cKLFXF8/ze/
-	 ljrnUHQR/3ID7Fpun6hGFUNQ9x1a/Nf52D4ycSUhG8FjlnFWoiDdpIvgMtvNQZsYNx
-	 BgGtNBHngtEDw==
+	b=ScPlpuNv9llbNWTZLlGQ8xbcuT2zUp9pafczcB1nhFXM0MwwbHZfPoD0f/sqPy4nM
+	 Yb8CJZyLGPuOZcsXasrFbCNRkYcQ22ZxGUhKu8IPw/Fc8udewlPRnR7UCv1UjuDCTh
+	 4I+ax0RKi66GCsypHLA2yR1hDqktMzipsBlGhg95btCuTQW3SqBAzGWmpErEzYK1ut
+	 v1a2JUaECC9jsmDSm4bFyyxbrnnaPhjAhqY1P7mwVPUQfKUANprUqYfQuFFyZCfvd+
+	 8V2I3qRFQXnyMS3zdx98HYdL0GlArqLOis0eMSjWTlhLAECRST9VtuwSpZ86qa3LOv
+	 7qWSQZFiPnzuQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kunwu Chan <chentao@kylinos.cn>,
-	Vinod Koul <vkoul@kernel.org>,
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	peter.ujfalusi@gmail.com,
-	dmaengine@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 03/16] dmaengine: ti: edma: Add some null pointer checks to the edma_probe
-Date: Wed,  7 Feb 2024 16:26:43 -0500
-Message-ID: <20240207212700.4287-3-sashal@kernel.org>
+	srinivas.kandagatla@linaro.org,
+	bgoswami@quicinc.com,
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 04/16] ASoC: codecs: wcd934x: drop unneeded regulator include
+Date: Wed,  7 Feb 2024 16:26:44 -0500
+Message-ID: <20240207212700.4287-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212700.4287-1-sashal@kernel.org>
 References: <20240207212700.4287-1-sashal@kernel.org>
@@ -65,50 +70,33 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.209
 Content-Transfer-Encoding: 8bit
 
-From: Kunwu Chan <chentao@kylinos.cn>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-[ Upstream commit 6e2276203ac9ff10fc76917ec9813c660f627369 ]
+[ Upstream commit 35314e39dabcfb256832654ad0e856a9fba744bd ]
 
-devm_kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure. Ensure the allocation was successful
-by checking the pointer validity.
+Driver does not use any regulator code, so drop redundant include of
+regulator/consumer.h header.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-Link: https://lore.kernel.org/r/20240118031929.192192-1-chentao@kylinos.cn
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Link: https://msgid.link/r/20240117151208.1219755-3-krzysztof.kozlowski@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/ti/edma.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/codecs/wcd934x.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/dma/ti/edma.c b/drivers/dma/ti/edma.c
-index a1adc8d91fd8..69292d4a0c44 100644
---- a/drivers/dma/ti/edma.c
-+++ b/drivers/dma/ti/edma.c
-@@ -2462,6 +2462,11 @@ static int edma_probe(struct platform_device *pdev)
- 	if (irq > 0) {
- 		irq_name = devm_kasprintf(dev, GFP_KERNEL, "%s_ccint",
- 					  dev_name(dev));
-+		if (!irq_name) {
-+			ret = -ENOMEM;
-+			goto err_disable_pm;
-+		}
-+
- 		ret = devm_request_irq(dev, irq, dma_irq_handler, 0, irq_name,
- 				       ecc);
- 		if (ret) {
-@@ -2478,6 +2483,11 @@ static int edma_probe(struct platform_device *pdev)
- 	if (irq > 0) {
- 		irq_name = devm_kasprintf(dev, GFP_KERNEL, "%s_ccerrint",
- 					  dev_name(dev));
-+		if (!irq_name) {
-+			ret = -ENOMEM;
-+			goto err_disable_pm;
-+		}
-+
- 		ret = devm_request_irq(dev, irq, dma_ccerr_handler, 0, irq_name,
- 				       ecc);
- 		if (ret) {
+diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
+index 104751ac6cd1..dbed3a646524 100644
+--- a/sound/soc/codecs/wcd934x.c
++++ b/sound/soc/codecs/wcd934x.c
+@@ -13,7 +13,6 @@
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+-#include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
+ #include <linux/slimbus.h>
+ #include <sound/pcm_params.h>
 -- 
 2.43.0
 
