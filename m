@@ -1,128 +1,276 @@
-Return-Path: <linux-kernel+bounces-55985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DF0184C47D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:48:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C439684C471
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:46:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B92F1F22D66
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:48:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AE7E281E00
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:46:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEEE2200DB;
-	Wed,  7 Feb 2024 05:47:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED23E1CD30;
+	Wed,  7 Feb 2024 05:45:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="flQ3DrS5"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mTiFNkKV"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF96200A8
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 05:47:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1311CD13;
+	Wed,  7 Feb 2024 05:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707284872; cv=none; b=ohQPa59raDocByFa2rZTX2m/VEeqD7ArJvfhBbumoUCf2Hx3GKEp5tP/B2DwYfj/MKuoCdwXRQY0nHbHhAfu8iTwdCVwj4NW2/+Hia9ouwENe8a0PY9wHw6uzQmr7X5P9eCxYoEvD/UTJD4VvTEpsCQqxHEVx0s6SI+sov8BkXQ=
+	t=1707284751; cv=none; b=bdMuCeT1f65qKRSzO79tNKBWK/pNyV98c0WilKsqdXqG5SzmNHvIODp++v8bzVfCaAPRbSiXfRjfyu04M9isSRAe5gt2h+SlivN6eg1YbYKKvxqC0vTvCKjHNqflUMEpnH+8CbFZFNN8nhsU0l6M+G/KkqDgJtxzuTTIl4FiO50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707284872; c=relaxed/simple;
-	bh=6uX9zfQ8cQJ8WnngTxHu/ne5naJ+QAafInm6eyaxJy0=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Cs2sFLY1F5GkGSBNB32ScPaSvYjbQbPbO8oQz12+4vcN1A1LWlSCUziI+xXqBe71MNkrLNrbWMEJa27OOippbBIFNSAgT698BVir7cLz1kPjz8mUhexEfxMGbrAZ7lyRN9eb4LdPWiWtATryFlUJO2HMj4i9OOjVcoGYwop5e5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=flQ3DrS5; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707284869;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mxvyLlwFPrOAb4E1s475cmzm9HXLhSgjIXU0tbGtRvE=;
-	b=flQ3DrS54ZCp8VW/C5iohqfH+ufwKd3U+3uuU+lpCH3CxRRSrcDQQC/qjhwbXI5bj/GdIr
-	d9uhc7xY2vHc5IcpdKdvdv4wzOI3qVG9hEO5VnJXHMDW/vxuW/+kCSicf6Bokrj1fyC4d4
-	Nl85h+naRLbd26T5kXR8AuGK4YXKO6g=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-6-f3trEO6NNI-I9I6uYGLkcQ-1; Wed,
- 07 Feb 2024 00:47:45 -0500
-X-MC-Unique: f3trEO6NNI-I9I6uYGLkcQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 76D903811F41;
-	Wed,  7 Feb 2024 05:47:45 +0000 (UTC)
-Received: from server.redhat.com (unknown [10.72.112.36])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id ECCD7492BC6;
-	Wed,  7 Feb 2024 05:47:42 +0000 (UTC)
-From: Cindy Lu <lulu@redhat.com>
-To: lulu@redhat.com,
-	jasowang@redhat.com,
-	mst@redhat.com,
-	xieyongji@bytedance.com,
-	linux-kernel@vger.kernel.org,
-	maxime.coquelin@redhat.com
-Subject: [PATCH v4 5/5] Documentation: Add reconnect process for VDUSE
-Date: Wed,  7 Feb 2024 13:43:32 +0800
-Message-ID: <20240207054701.616094-6-lulu@redhat.com>
-In-Reply-To: <20240207054701.616094-1-lulu@redhat.com>
-References: <20240207054701.616094-1-lulu@redhat.com>
+	s=arc-20240116; t=1707284751; c=relaxed/simple;
+	bh=ZG5O/oDpuPyqi/II+mnqqiRy90UtJUFQDlRfxvNX4yc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Y/6XmIkQlAdR7T8vymwBrZ/SD2tnrz6cDmiXXPIPQuPddd6kvilRCgNuC+EwpMU5TeV7zrWZ/kCByB1vg8TmaaqpZrxb8Igwuo08oSITTvpHEkVSm1fKKlV8bciT7VeUwF85PA1mLdiEGJS29Aj8eI0dYSPutO4rJQJpAt+jOqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mTiFNkKV; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4174WIxH029726;
+	Wed, 7 Feb 2024 05:45:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=2q9wYdLiAFypv56eU29otYgs1NbtQUDBWRKXs+vMQ+o=;
+ b=mTiFNkKVjAWnHQO6sqs+diV+DCZQMY8CkUHq0CezFM6QM+VyaActbTTrpYbMEtugk59c
+ ZohMqnK5LcSat7AaDSHKnqLfdxOnFu6YjdYtgoIxD/o2TUPPZzKRsH4bGtWYgV2FQQsH
+ A/JopcIW0wBA3QH2Qwdn3bg/+VN/b77q6ULhXRSUgTFDKqiLQ4BmeYpLcceyf/D/JJKh
+ 1aYdQbi255y6RnfKll7U2mAS5Kmx3p8MuWMqFahGAFHDXSNCqenCndgBkQoklbKeTHaU
+ trNwypr+7aGD2aTV5aFDqdwmKILf0IhCfxMAKayHGt9eoFJW3BL31GRkuHirETYyHnIU 6Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w42x0sd3y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 Feb 2024 05:45:37 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4175069Y010592;
+	Wed, 7 Feb 2024 05:45:36 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w42x0sd3r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 Feb 2024 05:45:36 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4173O3WP020375;
+	Wed, 7 Feb 2024 05:45:35 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w1ytt44c0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 Feb 2024 05:45:35 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4175jXSv7668468
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 7 Feb 2024 05:45:33 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DADDB2004B;
+	Wed,  7 Feb 2024 05:45:32 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B9E0620043;
+	Wed,  7 Feb 2024 05:45:29 +0000 (GMT)
+Received: from li-a83676cc-350e-11b2-a85c-e11f86bb8d73.ibm.com.com (unknown [9.43.65.120])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  7 Feb 2024 05:45:29 +0000 (GMT)
+From: Amit Machhiwal <amachhiw@linux.ibm.com>
+To: linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org
+Cc: Vaibhav Jain <vaibhav@linux.ibm.com>, Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Amit Machhiwal <amachhiw@linux.ibm.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v4] KVM: PPC: Book3S HV: Fix L2 guest reboot failure due to empty 'arch_compat'
+Date: Wed,  7 Feb 2024 11:15:26 +0530
+Message-ID: <20240207054526.3720087-1-amachhiw@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: D_8x-I_1CFHt3jP_reTtRMUSv5nBlPCW
+X-Proofpoint-GUID: FxCSAno3ahqLPxriIWNGCJ8eN7-XyolC
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-06_16,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 mlxscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0
+ malwarescore=0 spamscore=0 adultscore=0 suspectscore=0 clxscore=1015
+ mlxlogscore=825 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402070041
 
-Add a document explaining the reconnect process, including what the
-Userspace App needs to do and how it works with the kernel.
+Currently, rebooting a pseries nested qemu-kvm guest (L2) results in
+below error as L1 qemu sends PVR value 'arch_compat' == 0 via
+ppc_set_compat ioctl. This triggers a condition failure in
+kvmppc_set_arch_compat() resulting in an EINVAL.
 
-Signed-off-by: Cindy Lu <lulu@redhat.com>
+qemu-system-ppc64: Unable to set CPU compatibility mode in KVM: Invalid
+argument
+
+Also, a value of 0 for arch_compat generally refers the default
+compatibility of the host. But, arch_compat, being a Guest Wide Element
+in nested API v2, cannot be set to 0 in GSB as PowerVM (L0) expects a
+non-zero value. A value of 0 triggers a kernel trap during a reboot and
+consequently causes it to fail:
+
+[   22.106360] reboot: Restarting system
+KVM: unknown exit, hardware reason ffffffffffffffea
+NIP 0000000000000100   LR 000000000000fe44 CTR 0000000000000000 XER 0000000020040092 CPU#0
+MSR 0000000000001000 HID0 0000000000000000  HF 6c000000 iidx 3 didx 3
+TB 00000000 00000000 DECR 0
+GPR00 0000000000000000 0000000000000000 c000000002a8c300 000000007fe00000
+GPR04 0000000000000000 0000000000000000 0000000000001002 8000000002803033
+GPR08 000000000a000000 0000000000000000 0000000000000004 000000002fff0000
+GPR12 0000000000000000 c000000002e10000 0000000105639200 0000000000000004
+GPR16 0000000000000000 000000010563a090 0000000000000000 0000000000000000
+GPR20 0000000105639e20 00000001056399c8 00007fffe54abab0 0000000105639288
+GPR24 0000000000000000 0000000000000001 0000000000000001 0000000000000000
+GPR28 0000000000000000 0000000000000000 c000000002b30840 0000000000000000
+CR 00000000  [ -  -  -  -  -  -  -  -  ]     RES 000@ffffffffffffffff
+ SRR0 0000000000000000  SRR1 0000000000000000    PVR 0000000000800200 VRSAVE 0000000000000000
+SPRG0 0000000000000000 SPRG1 0000000000000000  SPRG2 0000000000000000  SPRG3 0000000000000000
+SPRG4 0000000000000000 SPRG5 0000000000000000  SPRG6 0000000000000000  SPRG7 0000000000000000
+HSRR0 0000000000000000 HSRR1 0000000000000000
+ CFAR 0000000000000000
+ LPCR 0000000000020400
+ PTCR 0000000000000000   DAR 0000000000000000  DSISR 0000000000000000
+
+ kernel:trap=0xffffffea | pc=0x100 | msr=0x1000
+
+This patch updates kvmppc_set_arch_compat() to use the host PVR value if
+'compat_pvr' == 0 indicating that qemu doesn't want to enforce any
+specific PVR compat mode.
+
+The relevant part of the code might need a rework if PowerVM implements
+a support for `arch_compat == 0` in nestedv2 API.
+
+Fixes: 19d31c5f1157 ("KVM: PPC: Add support for nestedv2 guests")
+Reviewed-by: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
+Reviewed-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+Signed-off-by: Amit Machhiwal <amachhiw@linux.ibm.com>
 ---
- Documentation/userspace-api/vduse.rst | 32 +++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
 
-diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/userspace-api/vduse.rst
-index bdb880e01132..a2be85e0e516 100644
---- a/Documentation/userspace-api/vduse.rst
-+++ b/Documentation/userspace-api/vduse.rst
-@@ -231,3 +231,35 @@ able to start the dataplane processing as follows:
-    after the used ring is filled.
+Changes v3 -> v4:
+    - Moved part of a code comment around implementation of `arch_compat
+      == 0` in PowerVM to the patch description based on an off mailing
+      list discussion
+
+Changes v2 -> v3:
+    - Vaibhav: Use a 'break' instead of switch-case fallthrough
+    - v2: https://lore.kernel.org/all/20240205132607.2776637-1-amachhiw@linux.ibm.com/
+
+Changes v1 -> v2:
+    - Added descriptive error log in the patch description when
+      `arch_compat == 0` passed in GSB
+    - Added a helper function for PCR to capabilities mapping
+    - Added relevant comments around the changes being made
+    - v1: https://lore.kernel.org/lkml/20240118095653.2588129-1-amachhiw@linux.ibm.com/
+
+ arch/powerpc/kvm/book3s_hv.c          | 26 ++++++++++++++++++++++++--
+ arch/powerpc/kvm/book3s_hv_nestedv2.c | 20 ++++++++++++++++++--
+ 2 files changed, 42 insertions(+), 4 deletions(-)
+
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 52427fc2a33f..0b921704da45 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -391,6 +391,24 @@ static void kvmppc_set_pvr_hv(struct kvm_vcpu *vcpu, u32 pvr)
+ /* Dummy value used in computing PCR value below */
+ #define PCR_ARCH_31    (PCR_ARCH_300 << 1)
  
- For more details on the uAPI, please see include/uapi/linux/vduse.h.
++static inline unsigned long map_pcr_to_cap(unsigned long pcr)
++{
++	unsigned long cap = 0;
 +
-+HOW VDUSE devices reconnectoin works
-+----------------
-+0. Userspace APP checks if the device /dev/vduse/vduse_name exists.
-+   If it does not exist, need to create the instance.goto step 1
-+   If it does exist, it means this is a reconnect and goto step 3.
++	switch (pcr) {
++	case PCR_ARCH_300:
++		cap = H_GUEST_CAP_POWER9;
++		break;
++	case PCR_ARCH_31:
++		cap = H_GUEST_CAP_POWER10;
++		break;
++	default:
++		break;
++	}
 +
-+1. Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
-+   /dev/vduse/control.
++	return cap;
++}
 +
-+2. When the ioctl(VDUSE_CREATE_DEV) function is called, the kernel allocates memory
-+   to save the reconnect information.
-+
-+3. Userspace App need to mmap the pages to userspace
-+   Userspace App need to map Pages 0 to vq_number for vq status,
-+   Users can define the structure for saving the reconnect information themselves
-+   in the userspace.
-+
-+4. Check if the infomatin sutiable for reconnect
-+   If this is reconnect:
-+   Before attempting to reconnect, The userspace application need to the
-+   ioctl VDUSE_DEV_GET_CONFIG,VDUSE_DEV_GET_STATUS,VDUSE_DEV_GET_FEATURES...
-+   to get the and confirm if these information are suitable for reconnecting.
-+
-+5. Start the userspace App.
-+   While running, the application should store the relevant information about
-+   reconnections in mapped pages.
-+   When calling ioctl VDUSE_VQ_GET_INFO from the userspace APP to get vq information, it is necessary
-+   to check if this is a reconnection. If a reconnection has occurred, the vq-related information
-+   must be get from the mapped pages.
-+
-+6. When the Userspace App exits, it is necessary to unmap all the reconnect pages.
+ static int kvmppc_set_arch_compat(struct kvm_vcpu *vcpu, u32 arch_compat)
+ {
+ 	unsigned long host_pcr_bit = 0, guest_pcr_bit = 0, cap = 0;
+@@ -424,11 +442,9 @@ static int kvmppc_set_arch_compat(struct kvm_vcpu *vcpu, u32 arch_compat)
+ 			break;
+ 		case PVR_ARCH_300:
+ 			guest_pcr_bit = PCR_ARCH_300;
+-			cap = H_GUEST_CAP_POWER9;
+ 			break;
+ 		case PVR_ARCH_31:
+ 			guest_pcr_bit = PCR_ARCH_31;
+-			cap = H_GUEST_CAP_POWER10;
+ 			break;
+ 		default:
+ 			return -EINVAL;
+@@ -440,6 +456,12 @@ static int kvmppc_set_arch_compat(struct kvm_vcpu *vcpu, u32 arch_compat)
+ 		return -EINVAL;
+ 
+ 	if (kvmhv_on_pseries() && kvmhv_is_nestedv2()) {
++		/*
++		 * 'arch_compat == 0' would mean the guest should default to
++		 * L1's compatibility. In this case, the guest would pick
++		 * host's PCR and evaluate the corresponding capabilities.
++		 */
++		cap = map_pcr_to_cap(guest_pcr_bit);
+ 		if (!(cap & nested_capabilities))
+ 			return -EINVAL;
+ 	}
+diff --git a/arch/powerpc/kvm/book3s_hv_nestedv2.c b/arch/powerpc/kvm/book3s_hv_nestedv2.c
+index 5378eb40b162..8e6f5355f08b 100644
+--- a/arch/powerpc/kvm/book3s_hv_nestedv2.c
++++ b/arch/powerpc/kvm/book3s_hv_nestedv2.c
+@@ -138,6 +138,7 @@ static int gs_msg_ops_vcpu_fill_info(struct kvmppc_gs_buff *gsb,
+ 	vector128 v;
+ 	int rc, i;
+ 	u16 iden;
++	u32 arch_compat = 0;
+ 
+ 	vcpu = gsm->data;
+ 
+@@ -347,8 +348,23 @@ static int gs_msg_ops_vcpu_fill_info(struct kvmppc_gs_buff *gsb,
+ 			break;
+ 		}
+ 		case KVMPPC_GSID_LOGICAL_PVR:
+-			rc = kvmppc_gse_put_u32(gsb, iden,
+-						vcpu->arch.vcore->arch_compat);
++			/*
++			 * Though 'arch_compat == 0' would mean the default
++			 * compatibility, arch_compat, being a Guest Wide
++			 * Element, cannot be filled with a value of 0 in GSB
++			 * as this would result into a kernel trap.
++			 * Hence, when `arch_compat == 0`, arch_compat should
++			 * default to L1's PVR.
++			 */
++			if (!vcpu->arch.vcore->arch_compat) {
++				if (cpu_has_feature(CPU_FTR_ARCH_31))
++					arch_compat = PVR_ARCH_31;
++				else if (cpu_has_feature(CPU_FTR_ARCH_300))
++					arch_compat = PVR_ARCH_300;
++			} else {
++				arch_compat = vcpu->arch.vcore->arch_compat;
++			}
++			rc = kvmppc_gse_put_u32(gsb, iden, arch_compat);
+ 			break;
+ 		}
+ 
+
+base-commit: 6764c317b6bb91bd806ef79adf6d9c0e428b191e
 -- 
 2.43.0
 
