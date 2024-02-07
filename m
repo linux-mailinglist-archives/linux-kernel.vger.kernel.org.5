@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-56254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED93F84C7F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:52:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B252384C804
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E82C1C22683
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:52:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 521D01F2346B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6287E2374A;
-	Wed,  7 Feb 2024 09:51:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D37D24A19;
+	Wed,  7 Feb 2024 09:53:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ky96FDE7"
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GzQiPDNF"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE96222F1E
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:51:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 474D022F1E
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:53:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707299515; cv=none; b=GB62To91a2xNpeyVzlgq3gXtLcfytFMMLSF/QezhLSxRPAvnkM3YHQRcfIvHpOSYMklW33m1U0tsWovV26h/JO6ukTs0HD8m7U/5JZ8tOuHDCJQB7Hny2OIjRahI8fAURlwZBBXT0JsibC49maiD9sh3QwjZHWIki/atPxXYMp4=
+	t=1707299592; cv=none; b=E3Ecla1XhpokpFIfjgGuJDRLyzxK1eZ/V/64RkO+ppCGE7MQk12fg394ncBjf+9DpwxMVnZRiGIoNjeTqt1HxImSPeS5Z7VsHcLLnZpKLhdq1vjfdeWTmoHQcMGmp7Z48yOucSmE+d34bMEinqPzkreJ4igi+b7NvIzxwBfhbbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707299515; c=relaxed/simple;
-	bh=KR2sG7J4c3ofHOmeepSU9gMmPKLoScOYxX43x3M1eFw=;
+	s=arc-20240116; t=1707299592; c=relaxed/simple;
+	bh=fBagnQpf9lsurAdCpTPPCwp0zC2lC8ox5gnQI1Q20r0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bVpJQtF8dPyXhBYdRK7blpKXE2cgZnFRn3TIK2UWZJILBaC2BD3tLtkGrd1imrlZiIDW+eFpW2ESALcC7NH8krvLQ14fahBGCmPxsgSyCXiC9A7bZzcWFXCQEdRYCHjqtzFdPuxEGI2JA0DH0umJYXh0N4jU1OUa2IdlfW1X25w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ky96FDE7; arc=none smtp.client-ip=209.85.128.178
+	 To:Cc:Content-Type; b=XaYomt4/N00RNad83njifUxmaW+apbMFiWUG2m8PBRB1BazQVwVcbjMl7ZvCAsdjCfBGuZV5nVSEeiapQWNZ3YSHJmXrrD2Ulkp0rtEe9CV5YmOPjeyTFCwQcrg5R6Lg77fJlgLEs+zWdzcWY/u+UMBFvpmDyl0xwC26VgpdxHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GzQiPDNF; arc=none smtp.client-ip=209.85.128.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-604966eaf6eso1963327b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:51:53 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60491b1fdeaso3485227b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:53:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707299512; x=1707904312; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707299590; x=1707904390; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tL/r8AXFGxGMMcyM8KcarAKkFwTyeEeSx1AZSjKfuYU=;
-        b=ky96FDE7ziHgnLqlev77pd2UHXgEW/4rprecDW8MHgXeQm1ekDj+ud4MYzDUSCQKYf
-         hphTkXd/Dv8GneMsGkuv3lli+ylZ1o6efp3GBgg012nkDM4a0FqkgIrX4PDf3oyPlVlk
-         4KcXLYiUcGaYQC9wULjrHWmkEjyaFXTsbOalkZx7ZXTzQJFh9OIVRT+xiaIbhpdSy5Ro
-         za7r+XDZz8hp7etUYtCPzIHrruOHzj1Q6GdtfNGOYlsK9UwJzMO5Osk0LHs6mI1ui5dH
-         WYABlA5yxnPulYmBONbLUZ9A7CpPEv8Rckyi3xCOj1pOGm8vIaUMhBsJzdZiZ3/cSaTY
-         p6wA==
+        bh=D48j7hXU3glDBmXxDOFw5bCwEMnSogYiPviREFd32FQ=;
+        b=GzQiPDNFGzV+WacOxV2qmKnevKuNYdxne9ZZf2GPguun7J2rV5ep60zPImNMx1tVMd
+         FPt5dKM3bcUx7hOWghjP+f7V7T8AZlu/rmJuH8i+IB/vX/hA2tkaiMT8i2A5v9s8LzAB
+         cF0sDnRNQK4G3d4zw2FicrJcJDC5521gaQ1Xlt0uOtLqgthqLhBljxqQ28ngwY2qo7+1
+         8NSFjvK4f179Lg38idDuML0rIlQVOm+sb+fSIYk78PjtDWkPWV/DJ6IwFdP5eTxkJ4oa
+         LBC7LkP1s62rD7gWyXeqKZc7RlrE+oAmVigSDOVO+El8zL25BoPnIPZvI7wtXL3zVoBW
+         g6SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707299512; x=1707904312;
+        d=1e100.net; s=20230601; t=1707299590; x=1707904390;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tL/r8AXFGxGMMcyM8KcarAKkFwTyeEeSx1AZSjKfuYU=;
-        b=UWAaTNxxuE7ZQFW0q/8VLtRvyb8B0SgkidJmGvBeVcsnS2LuvHCRLMRH/yhkNDpA1p
-         8LdY2lUYReUv48moZoohaGdwz28HZytOvHPB1Wt/qD1LAQONL1AbHDvIvmIB+X1EHnv3
-         4LnNfq7KSzc8pYihbAvOCQ1h+5yygCe9G1Ywdk4/XsCXmZE5HJfobZKjU8aG8BHog6uq
-         gVtPrFdT54ve4gx1SMaYA4JjpOmqDIxnwhO8sVThD1LbQwyjpFe9jH3NKBOhsyzhVUqL
-         FRG3pWlbehBfFA5UZc62rJ92unjjF8UI6nvPrEDrDOQYslUVsWN2L/4xuweOytYrlPez
-         2X9g==
-X-Gm-Message-State: AOJu0YzQxXPCutwACLY3ss/TwJI+1hdJAjzP2CE8HCSNzu/xiaVV1yiL
-	/SCS96X2S0dioS61zPPiKK2fqhk3IUbKTXv+Bs1bkiEX7B69Ztu2PcYIKOqaulpVvbD3UIq1MVo
-	KbDUgkVKiJ0IRkMTGdWmkYCykUZvw1M1JmBOfwA==
-X-Google-Smtp-Source: AGHT+IHijGzj8uRjINoynUtKvsODzePDZYI2IRClC5jIBfJbvgeat7fp8n2svTrjS5gczDAdT1OcKNi6CZuwYdJnwps=
-X-Received: by 2002:a81:cf08:0:b0:604:5415:b204 with SMTP id
- u8-20020a81cf08000000b006045415b204mr3872325ywi.33.1707299512595; Wed, 07 Feb
- 2024 01:51:52 -0800 (PST)
+        bh=D48j7hXU3glDBmXxDOFw5bCwEMnSogYiPviREFd32FQ=;
+        b=Cz19P10yxn+WIjSYY2qHQV9Jrmu5+d7XldZNWh5PNFFRLIexgTGyDHpmUSRWpBIdTC
+         TjXj71KHvjjfLHdLYyNB1lBAaG6gG4bbpRGPO4hAtJO+j/lU+h62LePxzb/nKxRlzfJD
+         D2LVBwf3jbDo7k5w6cl8Eg+H5Mt3eF4RpwNs7qL/wjx7QcFS4cbfwT4Uo/GDCIQ5p3VF
+         awv8fFydP4aSK0D2Q7RIGbAq4ADOloLEy2zPmm8B1kKhCkDNXMKqRNLB87hIQEG9Seaa
+         A0zb1g/IXGu7zmoOuqnZuut3QE69SqB5GBasQJfZSlx95q0T8BTm7lSIjN9ixOPxHhcG
+         KLBQ==
+X-Gm-Message-State: AOJu0YzmdsZO9c5fiPGPaiyDGGvpA9B/zX8AurBZwkFLhZlmChjBoRH1
+	O1sFC3P575hhNKGzgetiVoH5OcWBqAcbYnnTnTMVXTIAsEktYFOEJgNOJj3DTYonAyttd1ML1Cv
+	s842bAdHXGUPcEh0MakAYp5sxrZL+64q9NiHnqw==
+X-Google-Smtp-Source: AGHT+IEh15/3UNFNxwbhtyktWrw5Dq3WwqrIRYrh9/Lre+JIygghfrZgJ0hP4Cue7+98aLmgX4RyI000Dpu6bvDHXZM=
+X-Received: by 2002:a81:e60c:0:b0:5fa:5251:2332 with SMTP id
+ u12-20020a81e60c000000b005fa52512332mr4349582ywl.32.1707299590157; Wed, 07
+ Feb 2024 01:53:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,121 +69,56 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240202064039.15505-1-quic_ekangupt@quicinc.com>
- <d8e32f3d-1658-4dcd-a1dd-e37b664986ae@linaro.org> <41703424-f711-420e-bcb8-290f68a0aec9@quicinc.com>
-In-Reply-To: <41703424-f711-420e-bcb8-290f68a0aec9@quicinc.com>
+ <20240202064039.15505-3-quic_ekangupt@quicinc.com> <2024020248-improving-algorithm-a5f0@gregkh>
+ <a2c5e594-f485-4510-84ba-6cd022c4c774@quicinc.com>
+In-Reply-To: <a2c5e594-f485-4510-84ba-6cd022c4c774@quicinc.com>
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 7 Feb 2024 11:51:41 +0200
-Message-ID: <CAA8EJpqB4OG1n9maGuwo4BLRPctD6-nHJBvzauxoodS_Xji86g@mail.gmail.com>
-Subject: Re: [PATCH v1 00/16] Add missing features to FastRPC driver
+Date: Wed, 7 Feb 2024 11:52:59 +0200
+Message-ID: <CAA8EJppuaPLuH2Xb1Cu6P1HiD3PSjTy4L-Q6C3S82m5RAxfApg@mail.gmail.com>
+Subject: Re: [PATCH v1 02/16] misc: fastrpc: Add support for unsigned PD
 To: Ekansh Gupta <quic_ekangupt@quicinc.com>
-Cc: neil.armstrong@linaro.org, srinivas.kandagatla@linaro.org, 
-	linux-arm-msm@vger.kernel.org, gregkh@linuxfoundation.org, 
-	linux-kernel@vger.kernel.org
+Cc: Greg KH <gregkh@linuxfoundation.org>, srinivas.kandagatla@linaro.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 7 Feb 2024 at 10:30, Ekansh Gupta <quic_ekangupt@quicinc.com> wrote:
+On Wed, 7 Feb 2024 at 10:57, Ekansh Gupta <quic_ekangupt@quicinc.com> wrote:
 >
 >
-> On 2/2/2024 1:41 PM, neil.armstrong@linaro.org wrote:
-> > Hi,
+> On 2/2/2024 8:13 PM, Greg KH wrote:
+> > On Fri, Feb 02, 2024 at 12:10:25PM +0530, Ekansh Gupta wrote:
+> >> Unsigned PD requires more initial memory to spawn.
+> > What exactly is "Unsigned PD"?
 > >
-> > On 02/02/2024 07:40, Ekansh Gupta wrote:
-> >> This patch series adds the listed features that have been missing
-> >> in upstream fastRPC driver.
-> >>
-> >> - Redesign and improve remote heap management.
-> >> - Add static PD restart support for audio and sensors PD using
-> >>    PDR framework.
-> >> - Add changes to support multimode invocation ioctl request. This
-> >>    ioctl call facilitates multiple types of requests from user including
-> >>    CRC check, performance counters, shared context bank usage, etc.
-> >>    This series also carries patch to save and restore interrupted
-> >>    context.
-> >> - Add early wakeup support to allow DSP user to send early response
-> >>    to CPU and improve fastrpc performance.
-> >> - Add polling mode support with which driver polls on memory to avoid
-> >>    CPU from going to low power modes.
-> >> - Add notifications frameworks to provide users with the DSP PD status
-> >>    notifications.
-> >> - Add a control mechanism to allow users to clean up DSP user PD
-> >> - Add wakelock management support
-> >> - Add DSP signalling support
-> >> - Add check for untrusted applications and allow trusted processed to
-> >>    offload to system unsigned PD.
+> > And where are all of the userspace changes for this series so we can
+> > verify they work properly?
 > >
-> > Could you precise:
-> > - Which workload are you fixing
-> > - Which platforms are concerned
-> > - Which platforms were tested
+> > thanks,
 > >
-> 1. This patch mostly consists of missing features from fastrpc driver and it doesn't
-> carry any bug fixes.
-> 2. We are not targeting these changes for any specific platform. These features are
-> applicable for most of the recent platforms .
+> > greg k-h
+>
+> Hi Greg,
+> Unsigned PDs are sandboxed DSP processes used to offload computation
+> workloads to the DSP. Unsigned PD have less privileges in terms of
+> DSP resource access as compared to Signed PD.
 
-Please define 'recent'. The upstream kernel supports a wide set of
-platforms. We have fastrpc supported since msm8916. Please make sure
-that your patches will not break on such platforms.
-
-> 3. These changes were tested on SM8650 and QCM6490 platforms.
->
-> > So far I've been trying to run the "getserial" on SM8550-QRD and
-> > SM8650-QRD without
-> > success, would those changes fix this ?
->
-> Can you please help me with the "getserial" failure details? Or the steps that you are
-> running to get to the failure? I can have a look at that to understand the reason for
-> failure.
->
-> > Is there any chance we could get an open-source minimal implementation
-> > of a fastRPC SDK using
-> > the open-source Hexagon LLVM like we have for the AIC100 ?
-> > It would definitely help validating the upstream fastRPC implementation.
->
-> Generally Hexagon SDK is used to write and test fastRPC use-cases which is well documented.
-> Is there anything else that you can suggest would help here?
-
-Hexagon SDK is a closed source toolkit. Both in terms of toolchain,
-library code and generated code.
-The fastrpc_shell_N, which is used to handle loaded code, is also
-closed source. As such, it is nearly impossible to verify the code.
-Please consider the requirements for the drivers/accel/ subsystem: to
-have complete open source userspace. Qualcomm AIC100, for example,
-fulfills those requirements.
+All such details must be described in commit messages for the patches.
 
 >
-> >
-> > Thanks,
-> > Neil
-> >
-> Hi Neil, added my comments.
+> Unsigned PD can be enabled using userspace API:
+> https://git.codelinaro.org/linaro/qcomlt/fastrpc/-/blob/master/src/fastrpc_apps_user.c?ref_type=heads#L1173
 >
+> For multimode invoke request(other feature) also I've shared the
+> userspace changes with Srini which he will be pulling to userspace
+> project.
+
+And this should be a part of the cover letter.
+
+>
+> Please let me know if you have any other queries.
+>
+> Thanks
 > --ekansh
 >
-> >>
-> >> Ekansh Gupta (16):
-> >>    misc: fastrpc: Redesign remote heap management
-> >>    misc: fastrpc: Add support for unsigned PD
-> >>    misc: fastrpc: Add static PD restart support
-> >>    misc: fastrpc: Add fastrpc multimode invoke request support
-> >>    misc: fastrpc: Add CRC support for remote buffers
-> >>    misc: fastrpc: Capture kernel and DSP performance counters
-> >>    misc: fastrpc: Add support to save and restore interrupted
-> >>    misc: fastrpc: Add support to allocate shared context bank
-> >>    misc: fastrpc: Add early wakeup support for fastRPC driver
-> >>    misc: fastrpc: Add polling mode support for fastRPC driver
-> >>    misc: fastrpc: Add DSP PD notification support
-> >>    misc: fastrpc: Add support for users to clean up DSP user PD
-> >>    misc: fastrpc: Add wakelock management support
-> >>    misc: fastrpc: Add DSP signal support
-> >>    misc: fastrpc: Restrict untrusted apk to spawn privileged PD
-> >>    misc: fastrpc: Add system unsigned PD support
-> >>
-> >>   drivers/misc/fastrpc.c      | 1949 +++++++++++++++++++++++++++++++----
-> >>   include/uapi/misc/fastrpc.h |  112 ++
-> >>   2 files changed, 1844 insertions(+), 217 deletions(-)
-> >>
-> >
 >
 
 
