@@ -1,81 +1,79 @@
-Return-Path: <linux-kernel+bounces-56362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B23684C93E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:09:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26C5784C93F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:10:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AD921F27766
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:09:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3A6828AD96
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:10:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7C8199B8;
-	Wed,  7 Feb 2024 11:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ofNieulp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7255D18AF6;
+	Wed,  7 Feb 2024 11:09:31 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69938224EF;
-	Wed,  7 Feb 2024 11:09:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D6925601;
+	Wed,  7 Feb 2024 11:09:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707304148; cv=none; b=rFIimeS7H4Z6bOyn+NE4NIw9cQuin4l8gtprzEo7psQ6feOuOo+vd51szZ//HIHA+/ctxyJhxWeCSKWDPd8O85K/xidgzu/Ii02Oh73PgHFQUkeAZh3ydqBeCoxYiUky7Qi7FKGtu+Wrnwx+Rkjz0pLYnmrvzGfRx9NtUcgqKkY=
+	t=1707304170; cv=none; b=ICSCClr7k0wRfvnci9qab8ceDHfrR5v9y4zpLBlsvXfNWv0/3UIcLmEV0b5aiw5rD4/FhRRjvLnyjytzpbGoj5CFIxyAXsWN4h83ivRDMUDCnL8dFTearTj46Xvt/UTP5aQWaPOMxsPMm0YU1xODtEfNA/kXeO+OsjRGistjsjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707304148; c=relaxed/simple;
-	bh=91DCFeQ7d3VJjnWv7geoiac+u+Qyv8mwJMlI/ARZNSg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jL2CLAS8fBWNmhBcns+TcnfwoyL6nRNe5sgZtjXyVIKAVlqbHU3JXAoxHafPxWS8aYBjrW9neoPMkybesyyapcb6f+cYzefiGElZprd6WErCZSYlvGs5Cvd4NPp8a5PU92D5Tt9nBDcBbuvu3LjOe2ra8D0LTka2Ti4Vi04f3KA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ofNieulp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ACC1C433C7;
-	Wed,  7 Feb 2024 11:09:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707304147;
-	bh=91DCFeQ7d3VJjnWv7geoiac+u+Qyv8mwJMlI/ARZNSg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ofNieulp1lv7S4WEoCoFFOejsfQCM/0UFI4LnmKrztj2CzYKy54049p3ECwmmLtzg
-	 6BybZv6ROFqk3ejU0udD8uy0/peDzW+S8QdpKyiPYGE06/zu2xb9hSfRjaVvcJjP/Z
-	 hlCazkBchNnA9ZRu5AFr8KyI4QItkouKcSImzUq+T4QNl9PBp/evBpM553rKPk20eu
-	 S02Z1qtzt0eIcUdqagCdaR9RhXEUCigJ2OydxW9sSHXuQjCdpsCENcnSl/ZnDrw8rX
-	 nGjFtjcQSECzWYySlTaZAFXUrUsLVriI26BAIKhTqO33DX8iiDRgbSnN42OpOjROhr
-	 FiH50pSostpDA==
-Date: Wed, 7 Feb 2024 12:09:05 +0100
-From: Vinod Koul <vkoul@kernel.org>
-To: Julien Stephan <jstephan@baylibre.com>
-Cc: Andy Hsieh <andy.hsieh@mediatek.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Chunfeng Yun <chunfeng.yun@mediatek.com>,
-	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v5 0/2] phy: mtk-mipi-csi: add driver for CSI phy
-Message-ID: <ZcNk0VylU2mBsewy@matsya>
-References: <20240111101504.468169-1-jstephan@baylibre.com>
+	s=arc-20240116; t=1707304170; c=relaxed/simple;
+	bh=3d920/gg0NJob19M4Cyq7mli11h+3maiACOkvHgQw6E=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ktjqs3QwqvYHsmw926cvaPkqRobGBO/LjcdHF/5GimeJ1NMw5KV43ojaQq94v4V58JQT9RqoaoYtwj9ncYMboV7IPlwWPjcs00CMuN64Yq77XBsikH5uUsmHcTSP3HW/5CaYpnrsof8x0q04RONyG92sujr8hX2j114Qm8U2mM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 945EEC43390;
+	Wed,  7 Feb 2024 11:09:28 +0000 (UTC)
+Date: Wed, 7 Feb 2024 06:09:23 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Sven Schnelle <svens@linux.ibm.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Mete Durlu <meted@linux.ibm.com>
+Subject: Re: [PATCH] tracing: use ring_buffer_record_is_set_on() in
+ tracer_tracing_is_on()
+Message-ID: <20240207060923.182ecb55@rorschach.local.home>
+In-Reply-To: <yt9deddovn3w.fsf@linux.ibm.com>
+References: <20240205065340.2848065-1-svens@linux.ibm.com>
+	<20240205075504.1b55f29c@rorschach.local.home>
+	<yt9djznj3vbl.fsf@linux.ibm.com>
+	<20240205092353.523cc1ef@rorschach.local.home>
+	<yt9d34u63xxz.fsf@linux.ibm.com>
+	<yt9dsf262d2n.fsf@linux.ibm.com>
+	<20240206060113.39c0f5bc@rorschach.local.home>
+	<yt9deddovn3w.fsf@linux.ibm.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240111101504.468169-1-jstephan@baylibre.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 11-01-24, 11:14, Julien Stephan wrote:
-> Adding a new driver for the MIPI CSI CD-PHY module v 0.5 embedded in
-> some Mediatek soc, such as the MT8365
+On Wed, 07 Feb 2024 06:50:59 +0100
+Sven Schnelle <svens@linux.ibm.com> wrote:
 
-You would want to fix the way you send patches, the series is disjoint.
-I had to apply them manually, but please fix your process
+> Hi Steven,
 
--- 
-~Vinod
+> Not sure whether that is enough, have to test. However, it's not really
+> a fix, it would just require a bit more load and the test would fail
+> again. The fundamental problem is that even after disabling tracing
+> there might be some tracing line added due to the lockless nature of
+> the ringbuffer. This might then replace some existing cmdline entry.
+> So maybe we should change the test to ignore the program name when
+> calculating the checksums.
+
+Have you figured out what caused the cmdlines to change when tracing is
+off. It shouldn't be updated even with just 128 entries.
+
+I'm also looking into a way to keep more of a LRU command lines around,
+but nothing concrete yet.
+
+-- Steve
 
