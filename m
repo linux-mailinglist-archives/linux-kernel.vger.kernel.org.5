@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-57083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C5E784D3DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:27:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9269C84D3E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:27:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAEE2282E53
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:27:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ECDC282812
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0BBF129A79;
-	Wed,  7 Feb 2024 21:22:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23FA13699D;
+	Wed,  7 Feb 2024 21:22:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aa9wGBg0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FHdMvTet"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5EEC136667;
-	Wed,  7 Feb 2024 21:22:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E931136988;
+	Wed,  7 Feb 2024 21:22:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707340941; cv=none; b=k8PhhAottm37q81WufpVYGDZ5ajWkXXLtR6CQKiuYw3WG0R77vxpJRvgMr1mqxaguAwwNCVVne9sTii8nnHgDSTadQk1u8hbg8hoKp0478djYtcxiaVRe1WGciMEZ3xQrziTjDhgKEgUyKgcvvZEdoqCPb0GoZSjhb9JciVSMtg=
+	t=1707340942; cv=none; b=MrnMkcP1YLflhp69p92+PEkLyycBmhhI+q3AdRANAY0UMUhOkbgzwCK5iLjZ1FFxe6QVK0CRSSoyQ9YX02y7nyTm9IsOWPWyoeJTU/rc+DmuTjsJ2DVfvpiEgDsR1n4bkq0gOc0OawcEoV6fjoErjjFQYTm2U/WeZ5xwZvuQfAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707340941; c=relaxed/simple;
-	bh=7tDtXXLhukjCThdDgcFeym7od/Dd8RgO6dXE6j133no=;
+	s=arc-20240116; t=1707340942; c=relaxed/simple;
+	bh=iKLsFpxZAKXdU3Dh4xq8EBlGqQ0v28uGCDiERYwasto=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VSUhN3+V7KnqQ8/fD10TgO9pM7tpkjwdqNF+RWhrAdwBji+4WPAomfPzcwEC2xonzlq5rM3IE3V4PMp/fqMTHrLSqNjrW6rGfSU3W9Ugrsq+fNf9d9uqa2+GouEMN3zVXV75F2N8wKxEx2eVFCRR8iN8hH1Bw8utoNe3Mh79Tu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aa9wGBg0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D90A0C43390;
-	Wed,  7 Feb 2024 21:22:19 +0000 (UTC)
+	 MIME-Version; b=Vz98zYjnn0Ud1kdiGhuDPTjqmx4AmDDJZ8VoCh5zZz3HkLZW5fWDP9TDFZtI0mDJEyv68hVXBuJOxWgc+vosAotJBfO8bmn5FxfuGO2CVK2swpx/OhvJEpO20sy5GxkVgz+BXF6S1Ul8CXiMihMw8M2FThQ6w4aDMtqBltDdX9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FHdMvTet; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E4EAC433C7;
+	Wed,  7 Feb 2024 21:22:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707340940;
-	bh=7tDtXXLhukjCThdDgcFeym7od/Dd8RgO6dXE6j133no=;
+	s=k20201202; t=1707340942;
+	bh=iKLsFpxZAKXdU3Dh4xq8EBlGqQ0v28uGCDiERYwasto=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aa9wGBg0PO3gfMCarp/B9PbtUUR3MMWpcad3HpQ9ieuIKBLsbkwumpgtZn8h2t23D
-	 81JfL7b4szrAufXZM4zzxmJBrlWiE4iSEoEbo4AeGBeLYBtBEmIWtdrvF3Apz7kstR
-	 /4M8kGm3inAUKdm40Va7wiJqLINSPSwNVaogKz9Hpvfw5eYYDrXe4Vo+8NllWek2KI
-	 LNACk4LgDwLVqF39KTvBcrGuvA9oSLt13lDOVabRg9OBNeiZtpsAEDDWlY26QTNgqY
-	 iGKJRcID1c83NP4noxzSu+p2JOSCicw1Fj/IwP2tugHsYpF3ye/3jO3ZkRnByMf2t2
-	 0DaE1yFFxXCxA==
+	b=FHdMvTettUzONRi08MrMasZ53Mc/F7gFWutr9BX/lWmLjOrVV/nNfHoMq6WXyT5I5
+	 2APBZsDh8qoaj8ZnjB9YkSb05841WiyV6Wo14FDVW1TCxSL2pZIkDzu4C4krM8MXU0
+	 MQmWSlX9tWmof4aLzZrv8zfvifl11AZZ1pgNxzpbWWMUuhEixj/bS2U1wzczYDKZRB
+	 8WqjBLWgsif5IswiSJ4H8u9mYMRBN/k76NhTPQlZdQIPBbDqPRPJd3Okcx8TTAdT+6
+	 2j5HygkHy3VcZTskF4nzZAZV4dSEm+UWmtLxqHDMZOxPfuL6vYPdu5PVVVnFG8xdF1
+	 /8lOsQbFjvB8Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Patrick Rudolph <patrick.rudolph@9elements.com>,
-	Naresh Solanki <naresh.solanki@9elements.com>,
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com
-Subject: [PATCH AUTOSEL 6.7 19/44] regulator (max5970): Fix IRQ handler
-Date: Wed,  7 Feb 2024 16:20:46 -0500
-Message-ID: <20240207212142.1399-19-sashal@kernel.org>
+	linux-spi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 20/44] spi: sh-msiof: avoid integer overflow in constants
+Date: Wed,  7 Feb 2024 16:20:47 -0500
+Message-ID: <20240207212142.1399-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212142.1399-1-sashal@kernel.org>
 References: <20240207212142.1399-1-sashal@kernel.org>
@@ -65,39 +65,51 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.4
 Content-Transfer-Encoding: 8bit
 
-From: Patrick Rudolph <patrick.rudolph@9elements.com>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-[ Upstream commit a3fa9838e8140584a6f338e8516f2b05d3bea812 ]
+[ Upstream commit 6500ad28fd5d67d5ca0fee9da73c463090842440 ]
 
-The max5970 datasheet gives the impression that IRQ status bits must
-be cleared by writing a one to set bits, as those are marked with 'R/C',
-however tests showed that a zero must be written.
+cppcheck rightfully warned:
 
-Fixes an IRQ storm as the interrupt handler actually clears the IRQ
-status bits.
+ drivers/spi/spi-sh-msiof.c:792:28: warning: Signed integer overflow for expression '7<<29'. [integerOverflow]
+ sh_msiof_write(p, SIFCTR, SIFCTR_TFWM_1 | SIFCTR_RFWM_1);
 
-Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
-Link: https://msgid.link/r/20240130150257.3643657-1-naresh.solanki@9elements.com
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://msgid.link/r/20240130094053.10672-1-wsa+renesas@sang-engineering.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/max5970-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-sh-msiof.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/regulator/max5970-regulator.c b/drivers/regulator/max5970-regulator.c
-index bc88a40a88d4..830a1c4cd705 100644
---- a/drivers/regulator/max5970-regulator.c
-+++ b/drivers/regulator/max5970-regulator.c
-@@ -392,7 +392,7 @@ static int max597x_regmap_read_clear(struct regmap *map, unsigned int reg,
- 		return ret;
+diff --git a/drivers/spi/spi-sh-msiof.c b/drivers/spi/spi-sh-msiof.c
+index cfc3b1ddbd22..6f12e4fb2e2e 100644
+--- a/drivers/spi/spi-sh-msiof.c
++++ b/drivers/spi/spi-sh-msiof.c
+@@ -136,14 +136,14 @@ struct sh_msiof_spi_priv {
  
- 	if (*val)
--		return regmap_write(map, reg, *val);
-+		return regmap_write(map, reg, 0);
- 
- 	return 0;
- }
+ /* SIFCTR */
+ #define SIFCTR_TFWM_MASK	GENMASK(31, 29)	/* Transmit FIFO Watermark */
+-#define SIFCTR_TFWM_64		(0 << 29)	/*  Transfer Request when 64 empty stages */
+-#define SIFCTR_TFWM_32		(1 << 29)	/*  Transfer Request when 32 empty stages */
+-#define SIFCTR_TFWM_24		(2 << 29)	/*  Transfer Request when 24 empty stages */
+-#define SIFCTR_TFWM_16		(3 << 29)	/*  Transfer Request when 16 empty stages */
+-#define SIFCTR_TFWM_12		(4 << 29)	/*  Transfer Request when 12 empty stages */
+-#define SIFCTR_TFWM_8		(5 << 29)	/*  Transfer Request when 8 empty stages */
+-#define SIFCTR_TFWM_4		(6 << 29)	/*  Transfer Request when 4 empty stages */
+-#define SIFCTR_TFWM_1		(7 << 29)	/*  Transfer Request when 1 empty stage */
++#define SIFCTR_TFWM_64		(0UL << 29)	/*  Transfer Request when 64 empty stages */
++#define SIFCTR_TFWM_32		(1UL << 29)	/*  Transfer Request when 32 empty stages */
++#define SIFCTR_TFWM_24		(2UL << 29)	/*  Transfer Request when 24 empty stages */
++#define SIFCTR_TFWM_16		(3UL << 29)	/*  Transfer Request when 16 empty stages */
++#define SIFCTR_TFWM_12		(4UL << 29)	/*  Transfer Request when 12 empty stages */
++#define SIFCTR_TFWM_8		(5UL << 29)	/*  Transfer Request when 8 empty stages */
++#define SIFCTR_TFWM_4		(6UL << 29)	/*  Transfer Request when 4 empty stages */
++#define SIFCTR_TFWM_1		(7UL << 29)	/*  Transfer Request when 1 empty stage */
+ #define SIFCTR_TFUA_MASK	GENMASK(26, 20) /* Transmit FIFO Usable Area */
+ #define SIFCTR_TFUA_SHIFT	20
+ #define SIFCTR_TFUA(i)		((i) << SIFCTR_TFUA_SHIFT)
 -- 
 2.43.0
 
