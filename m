@@ -1,35 +1,75 @@
-Return-Path: <linux-kernel+bounces-56174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0942584C6FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:12:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DC7E84C6FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:13:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94A651F23BC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:12:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1475A286D85
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:13:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 559F320B03;
-	Wed,  7 Feb 2024 09:12:18 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9915220DC5;
+	Wed,  7 Feb 2024 09:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CcEwJd41"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5F3220B34;
-	Wed,  7 Feb 2024 09:12:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E301820B12
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:13:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707297137; cv=none; b=Hy0PTc/KgHHex73sYiovxwXSqBlizmTO529wVD3Eat5xXu5/DGSzW5MCACnoHTVuvxBspG0j56xrcBZ+lOnYF4qe4TeFf8DjdygAMBGBy3aDJ9sHID6PsGJhUr62OS5hDrU7IFV3x+CMj3oysOjCQUHD+8U2MtoaHnefems/3Dw=
+	t=1707297214; cv=none; b=q7E23psPI0/NiAzxISaONt6+DnW3LOzqn7zDh7JBq2vQIcdRFdhCo0QMEuRNsGzZEPfUAsLVsEwf05b/HuEfSb1kEAkM/49/2ychnWH6N/upm0tYc1NpdGHTH/xGXPVOdFFDqZHvbmT5w9z3ilNIe5K3HQEh/PPRDx07zLkgtY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707297137; c=relaxed/simple;
-	bh=Hak/Wks0pD+5w/+gwNlOXGyCqKdw8c+mYnb4+Bjejbk=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=XuVcl8YjCCb30w2wD68jgkgeELZJnvJTpkkX5cAWMZ1mIOwTizP6+ZnyOz7ILE9/waZSShXuc1uNtVTo1BsIc4b/DMevlOFNIJa9Lfa8zA5tQpJ+BjT7BOZ/3K57vKHFpP69yoiFwv88Xlhnqey8iE6cnXHwpi5apVc0vS5mlwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01AAAC43399;
-	Wed,  7 Feb 2024 09:12:15 +0000 (UTC)
-Message-ID: <67823e2e-9d60-4c08-bdd1-c974aaf96a93@xs4all.nl>
-Date: Wed, 7 Feb 2024 10:12:14 +0100
+	s=arc-20240116; t=1707297214; c=relaxed/simple;
+	bh=ltC84Rm/vIiUlkpOo3LWjCuHw3JXzUtFSelaS6n7GO8=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=R0/UPZfKN+AuhCCTY0P92wHjzyjZV2ZKQMK1JQ5HEwOEDMjDCqmThIfE/A6P4szCnRyflO2Qws15mvONF1jW5+AxV/uYX1SkJWwVYZ9QhV1TKafvLXTNgQRacrx9CTuf4bEVOqabvNdzt1+OUBqAliIDWH3e3C+W8IawUz6kb3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CcEwJd41; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5114b1e8819so557980e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:13:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707297211; x=1707902011; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N4boiLkEy1/DFsAyyQnQqltI77jo7vrHFr3VsLB2XPg=;
+        b=CcEwJd413hpv0uNqy7kxX66LbWL/LFRHypigPJhNX9mtAfUWb5cUFBNpb40r91GVjU
+         06vPfrnuDRpTkohtcnknX1CJ0FvJWs3qziIRCOptN+c6rEVmpnMNJNhDziK6UexMnyin
+         wHuWhBUtYpi6ylH9ARrIh6f7HWOkWW/EdEwFR2P0Let+aAAYXYOXywu7/K9q2XuToKSI
+         l6Il7plyQA69IzQeno24HKiFNovyYLCVrzy6cQby6Yq6A38ssUY42CFyc3mHHGsdqFqm
+         UBf1pFpk5kNhKzyaR7wWsENQ8zFmaSWPEgC3F0pA22iPUZ2UqFsNXnFCJymJPniR25vN
+         f0Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707297211; x=1707902011;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=N4boiLkEy1/DFsAyyQnQqltI77jo7vrHFr3VsLB2XPg=;
+        b=cjXVtZDQjgek1x0Bc/fvqaVKdPf80Er+q3tvDWSgURRSsUmkoTr0pgeY9zdhV2iUvH
+         GCOFPDbew/fzqC9TbCnXd8EfYcymD6X9FVi3eQrkI6dL//lHLcSMf2JrfmMSGJey2gCN
+         yDvAKUQbEXJx/YWVHFfGQEY0OdfGUTaH4s0Ew+NxS4IUFgEddVnbZJlV20o9eripLzTh
+         X/qBWZTXQvc6zSDs9/BriPPgzCRIPr+zQyLTBQrvZNihbN41s0moC1gT5LcW/5hySVWC
+         fTTZ6gJOoo0+W6BD3DyJiJ2jWkf1Ekcow+Xk4qMeiBfZ/yFmhCme68XFhSU+r5Pv2xr/
+         NCYQ==
+X-Gm-Message-State: AOJu0Yw5DaAbIxTNjGFumg+7AnWEOGy/+2P/1bA/VpjZ2IlKQKGmqm2G
+	TbxrtvKYzLUySjCLngL6DypTZQ3ZaSFRvUBzvFi78BIQ2YtzjbqwBdryte3SbQ4=
+X-Google-Smtp-Source: AGHT+IEuKbF7eBlriHKPLcwyu5r6eScSFaoKyMjxw2EWKwCxQk1uz0UMi4uXx8ofme0Ll3/2mFimkQ==
+X-Received: by 2002:a05:6512:31ce:b0:511:619b:7257 with SMTP id j14-20020a05651231ce00b00511619b7257mr3066369lfe.53.1707297210825;
+        Wed, 07 Feb 2024 01:13:30 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV1h55aFk4ssgTouARzpzOg8iRxKm8VcexMbk+pLi1qK7rx1tOgj4fNft8e5da46EZzV1Uvf5kXOTYY9B4XRhnM9Esc4NYJ/uJjaTcXpgrLQTiNGtwKq/oJAC/H4qqwPYNShN4fRv4Nmsqszbm+Ny+el+oX75fmR4oFqYvhQSJkxZ5BEpYGS07GnJPvBDtsEtXlVxH7Yqg8txxQ8A1NMWkyZ8XClfrk1La+R1bMUCLPN9hlbAKvsqiTNL/GnUPwOwEcKAs8kGXaFpp2e9u2r7YZImnZ0To9MMhFUcIuWVhFFF465lm014+Hd2/P+IzVNBL13cqrw1oHAvfK4U2VdbDOSYLQQBqiItVB5oSoAmL9HevxT8yu/FMhK5AAt/vrhDvnqtUpwYAfVyiZuJvAAfYG4MI/lqgSllmXOGNwIIg6EMqcYBQQgL7KUJ5hrmtUdwkAR/y3rzsuBPids6LyUqKYqHQOT7tUH6WVd2er09ol7sZLsHkbfj/a0GUtYCE2aMl/PCC7DZqLmzrC/G2BicoeNKJSFoR1z9IIIjKgzJxuTdFA+CvBNIOvdLCHNjvQQU9A5w+82UeLMDkyOu8KPS6UR+HGWTsEkDHzq+1kynIlBJTvrR/t0tRwHq54R3jXDuvxjGOzQec/w9YkxtfPOhLPARonyiBgD31uhNQXymwh/bSH5oXP6eoz6JWVh6Lvb6pyKSMgK4cHtER3yMiqdtV7uLIXs93iJEclefaJ2VJe0p+qSjZpwjtcl9nR7y0=
+Received: from ?IPV6:2a01:e0a:982:cbb0:5ae7:7fdb:32ad:f6d7? ([2a01:e0a:982:cbb0:5ae7:7fdb:32ad:f6d7])
+        by smtp.gmail.com with ESMTPSA id fc16-20020a05600c525000b0040feb8c71a0sm3809215wmb.13.2024.02.07.01.13.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 01:13:30 -0800 (PST)
+Message-ID: <b56d11ce-869f-4183-bb26-f0261af356a6@linaro.org>
+Date: Wed, 7 Feb 2024 10:13:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -37,164 +77,88 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 0/9] Add DELETE_BUF ioctl
-Content-Language: en-US, nl
-From: Hans Verkuil <hverkuil@xs4all.nl>
-To: Benjamin Gaignard <benjamin.gaignard@collabora.com>, mchehab@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- kernel@collabora.com
-References: <20240206080219.11951-1-benjamin.gaignard@collabora.com>
- <dcafb602-228f-439f-99d2-010d26a23ad1@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <dcafb602-228f-439f-99d2-010d26a23ad1@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] drm/bridge: imx8mp-hdmi-pvi: Fix build warnings
+Content-Language: en-US, fr
+To: Adam Ford <aford173@gmail.com>, dri-devel@lists.freedesktop.org
+Cc: nathan@kernel.org, kernel test robot <lkp@intel.com>,
+ Liu Ying <victor.liu@nxp.com>, Andrzej Hajda <andrzej.hajda@intel.com>,
+ Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Lucas Stach <l.stach@pengutronix.de>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240207002305.618499-1-aford173@gmail.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20240207002305.618499-1-aford173@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi Benjamin,
-
-On 06/02/2024 09:58, Hans Verkuil wrote:
-> On 06/02/2024 09:02, Benjamin Gaignard wrote:
->> Unlike when resolution change on keyframes, dynamic resolution change
->> on inter frames doesn't allow to do a stream off/on sequence because
->> it is need to keep all previous references alive to decode inter frames.
->> This constraint have two main problems:
->> - more memory consumption.
->> - more buffers in use.
->> To solve these issue this series introduce DELETE_BUFS ioctl and remove
->> the 32 buffers limit per queue.
+On 07/02/2024 01:23, Adam Ford wrote:
+> Two separate build warnings were reported.  One from an
+> uninitialized variable, and the other from returning 0
+> instead of NULL from a pointer.
 > 
-> This v19 looks good. There are three outstanding issues that I need to take a
-> look at:
+> Fixes: 059c53e877ca ("drm/bridge: imx: add driver for HDMI TX Parallel Video Interface")
+> Reported-by: nathan@kernel.org
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202402062134.a6CqAt3s-lkp@intel.com/
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 > 
-> 1) Can we still signal support for DELETE_BUFS in the V4L2_BUF_CAP_ caps?
->    It would be nice to have, but I'm not sure if and how that can be done.
+> diff --git a/drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c b/drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c
+> index a76b7669fe8a..f2a09c879e3d 100644
+> --- a/drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c
+> +++ b/drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c
+> @@ -57,7 +57,7 @@ static void imx8mp_hdmi_pvi_bridge_enable(struct drm_bridge *bridge,
+>   	const struct drm_display_mode *mode;
+>   	struct drm_crtc_state *crtc_state;
+>   	struct drm_connector *connector;
+> -	u32 bus_flags, val;
+> +	u32 bus_flags = 0, val;
+>   
+>   	connector = drm_atomic_get_new_connector_for_encoder(state, bridge->encoder);
+>   	conn_state = drm_atomic_get_new_connector_state(state, connector);
+> @@ -110,7 +110,7 @@ imx8mp_hdmi_pvi_bridge_get_input_bus_fmts(struct drm_bridge *bridge,
+>   	struct drm_bridge_state *next_state;
+>   
+>   	if (!next_bridge->funcs->atomic_get_input_bus_fmts)
+> -		return 0;
+> +		return NULL;
+>   
+>   	next_state = drm_atomic_get_new_bridge_state(crtc_state->state,
+>   						     next_bridge);
 
-So, I came up with the following patch to add back the V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS
-capability. If the DELETE_BUFS ioctl is valid, then it sets this capability
-before calling vidioc_reqbufs or vidioc_create_bufs. So right now it will set
-this for any queue. If we ever want to disable this for a specific queue, then
-either the driver has to override these two ops and clear the flag, or a new
-vb2_queue flag (e.g. disable_delete_bufs) is added and vb2_set_flags_and_caps()
-will clear that capability based on that flag.
-
-In any case, for now just set it for both queues by default.
-
-If you agree that this is a good way to proceed, then can you incorporate this
-into a v20? You can add the documentation for this cap from the v17 version.
-
-Regards,
-
-	Hans
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
----
-diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-index 8e437104f9c1..64f2d662d068 100644
---- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-+++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-@@ -685,7 +685,7 @@ static void vb2_set_flags_and_caps(struct vb2_queue *q, u32 memory,
- 		*flags &= V4L2_MEMORY_FLAG_NON_COHERENT;
- 	}
-
--	*caps = V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS;
-+	*caps |= V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS;
- 	if (q->io_modes & VB2_MMAP)
- 		*caps |= V4L2_BUF_CAP_SUPPORTS_MMAP;
- 	if (q->io_modes & VB2_USERPTR)
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index a172d33edd19..45bc705e171e 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -2100,6 +2100,7 @@ static int v4l_overlay(const struct v4l2_ioctl_ops *ops,
- static int v4l_reqbufs(const struct v4l2_ioctl_ops *ops,
- 				struct file *file, void *fh, void *arg)
- {
-+	struct video_device *vfd = video_devdata(file);
- 	struct v4l2_requestbuffers *p = arg;
- 	int ret = check_fmt(file, p->type);
-
-@@ -2108,6 +2109,9 @@ static int v4l_reqbufs(const struct v4l2_ioctl_ops *ops,
-
- 	memset_after(p, 0, flags);
-
-+	if (is_valid_ioctl(vfd, VIDIOC_DELETE_BUFS))
-+		p->capabilities = V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS;
-+
- 	return ops->vidioc_reqbufs(file, fh, p);
- }
-
-@@ -2141,6 +2145,7 @@ static int v4l_dqbuf(const struct v4l2_ioctl_ops *ops,
- static int v4l_create_bufs(const struct v4l2_ioctl_ops *ops,
- 				struct file *file, void *fh, void *arg)
- {
-+	struct video_device *vfd = video_devdata(file);
- 	struct v4l2_create_buffers *create = arg;
- 	int ret = check_fmt(file, create->format.type);
-
-@@ -2151,6 +2156,9 @@ static int v4l_create_bufs(const struct v4l2_ioctl_ops *ops,
-
- 	v4l_sanitize_format(&create->format);
-
-+	if (is_valid_ioctl(vfd, VIDIOC_DELETE_BUFS))
-+		create->capabilities = V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS;
-+
- 	ret = ops->vidioc_create_bufs(file, fh, create);
-
- 	if (create->format.type == V4L2_BUF_TYPE_VIDEO_CAPTURE ||
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index 03443833aaaa..da307f46f903 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -1036,6 +1036,7 @@ struct v4l2_requestbuffers {
- #define V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF	(1 << 5)
- #define V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS		(1 << 6)
- #define V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS		(1 << 7)
-+#define V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS		(1 << 8)
-
- /**
-  * struct v4l2_plane - plane info for multi-planar buffers
-
-
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
