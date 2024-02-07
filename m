@@ -1,96 +1,117 @@
-Return-Path: <linux-kernel+bounces-56738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F23E584CE5D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:47:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD1B284CE5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:47:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE9E62879DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:47:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B16531C23B6B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:47:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6E58002B;
-	Wed,  7 Feb 2024 15:47:10 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D5D7FBD8;
+	Wed,  7 Feb 2024 15:47:27 +0000 (UTC)
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D641B7FBDE;
-	Wed,  7 Feb 2024 15:47:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D5B7FBC9
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707320829; cv=none; b=in4zsczbZ19tRAEAPqiwx6VxejN9G6y9N/DH+XUys3TmSh/ENeQp+aWXu/qxn5XMLDvYpeo+wQEUNyFgQDkLEhDVdmrtuBuQ/nLdzhzOOkhaodPkexUjaJx0Lk/Fcvt06gMGnMCPFW0UOs+x6ZPCJB3QmL4L1crSfWeLc1OwHjs=
+	t=1707320847; cv=none; b=l2A7T+j2kWfK1MLo2ZW/Y7FtNv5/vw9V+YuLr7QHfCyMqUQ460byHUqxLhmm0Umvjd/btFmuYfoLT+xsypHlx6oLID/NihlgAgL4LrjEiq9nUjnlQxA0/671Wg5X/mftJB0qmp1Qp0Pb10e2Jo4CnzBILwZmarpGC9vI7JvywsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707320829; c=relaxed/simple;
-	bh=OjwsOP8AG5skKI4fhs6803ooEFYrGsVmNA28weA5DaU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JMckhjV7R44HvAvt6JX4FkNenE8sjGbE368J1ZnGfiUzVrHjUqii6omKQOImiH3Kf/CmD3mxF32/lXU8y0ONw25zdvJDX9JpzRUUNd2kioaHvE2vqSvfgqd7zpLnE7iZyNLAKbBNmC0p3E8eGRo41t3L9S7b6eZauiWomo9GGyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7176C433F1;
-	Wed,  7 Feb 2024 15:47:07 +0000 (UTC)
-Date: Wed, 7 Feb 2024 10:47:03 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Sven Schnelle <svens@linux.ibm.com>
-Cc: Mete Durlu <meted@linux.ibm.com>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing: use ring_buffer_record_is_set_on() in
- tracer_tracing_is_on()
-Message-ID: <20240207104703.071ee985@rorschach.local.home>
-In-Reply-To: <yt9dzfwch00u.fsf@linux.ibm.com>
-References: <20240205065340.2848065-1-svens@linux.ibm.com>
-	<20240205075504.1b55f29c@rorschach.local.home>
-	<yt9djznj3vbl.fsf@linux.ibm.com>
-	<20240205092353.523cc1ef@rorschach.local.home>
-	<yt9d34u63xxz.fsf@linux.ibm.com>
-	<yt9dsf262d2n.fsf@linux.ibm.com>
-	<20240206060113.39c0f5bc@rorschach.local.home>
-	<yt9deddovn3w.fsf@linux.ibm.com>
-	<20240207060923.182ecb55@rorschach.local.home>
-	<9a062196-ccbe-440e-a2f9-23eb8c5eb837@linux.ibm.com>
-	<20240207072812.4a29235f@rorschach.local.home>
-	<yt9dzfwch00u.fsf@linux.ibm.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707320847; c=relaxed/simple;
+	bh=dyWYtiGXzFXJ4IwI077Y5XLrNdGOtoniTabO833k+eY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JNVgVzL/PczdF3f79y8EiKDrLkbJBPur4QWfbailckfdz7FCCAkLZzHdfa49NkG+PiMwgkzQhE0wPyzCd8CjPr4j9JN72Dl2sFnNO6yNnG+BurV3vT9BgcIjIG5UZjFeZjA2s0cylJkMT8TrgOU0nhxDQOI4ZJ17dB4yDJ/ggvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42c44a3e49dso2961641cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:47:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707320844; x=1707925644;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EH4QAI1e51e5AItBVUzjoRUHTunfM2rXlK/xs3B5qbw=;
+        b=LzJ+Ee7YPl268UkGyBdIBW0XjZa9Ur+y+xuOdODYQdmBic/CMKi6bjkxJfYE4PwGV8
+         3JP+30J866D9VvgskAfqW4ZF8NM2gCX2cMQHxylzT8BpnohPKOa8Z93vrsQ9W9hxPk6+
+         wnZWI3g8CIomoqzk4Cfh3jJHHKK6I4quKQ28BRiGtQuJaHfPRuneWFQV8NjDNzg2xIZR
+         aFlr74yJoHyyHyqHzQ2mkSkadYLhtc6YZNxoMYtJyfQpellYQ4Ve0FkheitsAGT6uc2G
+         sRaN+zkG99VdS+oWu4PmLWPlA8j9Wl72GsoJ0JHLx7fOZ21PtqXY+LTUr4Wu2IuqFPXR
+         GmBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV+DYvryzjrPNsksENbDJf1jn9d5nrk0fOq/Hxac3umQoQw8JP6LWG/b3CdUjSqOAA9i9Z3R1TbUlvrc3k9r/qGDJAFSSj9ak19Fngd
+X-Gm-Message-State: AOJu0YyiWJ838FIQAb9TtzYewCRmXNkbDYEK+BthMESx4Gccxg15sEOi
+	uSH76GHLxRergbwKu4BfCG3EujsT00jpUAlwpx1BsfxjrNxa3DRP7rJGxt/4jQ==
+X-Google-Smtp-Source: AGHT+IFj5BQVZ4HkbvaVuLsW5/vSgXxrjxxPEtPZ/DtIoeQq68kueNtsATKPfnUSerkMiTzWpn4HfQ==
+X-Received: by 2002:ac8:5745:0:b0:42b:ebf7:d207 with SMTP id 5-20020ac85745000000b0042bebf7d207mr11986797qtx.29.1707320844599;
+        Wed, 07 Feb 2024 07:47:24 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWLpDb25OiRPZPgQY6IeUVI0HZHgU+RVGrYeyDJtizwnQBJv0koZZBP+xzhOKpWHQaxVtdi3VAC9YAwApJ8Cz7XOL/PMqpVrZwUBcEdkSyKQggkIOw4weozWCk/ZQHBjqluhlLQ/4KRQ2SP9mHCi+nhuCIgYM4ocjVSeJTXVhX0jJWH5PwiuiLr5fv7fuMZISJNzKAjnHmmHy0MpmErmER5m1VuLfjgpA2LXcri/SMZkKqYnb/J5PZOjSyUHI95Wi2IQpwzC4EoKilWzVIyB9ouW6HiSE+dDBK69z6jWbM1x7IwBYKj
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id o13-20020ac8698d000000b0042c18b0fb1asm626781qtq.56.2024.02.07.07.47.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 07:47:24 -0800 (PST)
+Date: Wed, 7 Feb 2024 10:47:23 -0500
+From: Mike Snitzer <snitzer@kernel.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Alasdair G Kergon <agk@redhat.com>, Hongyu Jin <hongyu.jin@unisoc.com>,
+	John Wiele <jwiele@redhat.com>, Matthew Sakai <msakai@redhat.com>,
+	Michael Sclafani <vdo-devel@redhat.com>,
+	Thomas Jaskiewicz <tom@jaskiewicz.us>,
+	Yibin Ding <yibin.ding@unisoc.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the device-mapper tree
+Message-ID: <ZcOmCwaun6SRXShJ@redhat.com>
+References: <20240207144053.1285b3e2@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207144053.1285b3e2@canb.auug.org.au>
 
-On Wed, 07 Feb 2024 14:33:21 +0100
-Sven Schnelle <svens@linux.ibm.com> wrote:
+On Tue, Feb 06 2024 at 10:40P -0500,
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-> My assumption without reading the code is that something like this
-> happens:
+> Hi all,
 > 
-> CPU0                             CPU1
-> [ringbuffer enabled]
->                                  ring_buffer_write()
->                                      if (atomic_read(&buffer->record_disabled))
->                                             goto out;
-> echo 0 > tracing_on
-> record_disabled |= RB_BUFFER_OFF
-> csum1=`md5sum trace`
+> After merging the device-mapper tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> drivers/md/dm-vdo/io-factory.c: In function 'read_ahead':
+> drivers/md/dm-vdo/io-factory.c:118:17: error: too few arguments to function 'dm_bufio_prefetch'
+>   118 |                 dm_bufio_prefetch(reader->client, block_number, read_ahead);
+>       |                 ^~~~~~~~~~~~~~~~~
+> In file included from drivers/md/dm-vdo/io-factory.h:9,
+>                  from drivers/md/dm-vdo/io-factory.c:6:
+> include/linux/dm-bufio.h:86:6: note: declared here
+>    86 | void dm_bufio_prefetch(struct dm_bufio_client *c,
+>       |      ^~~~~~~~~~~~~~~~~
+> drivers/md/dm-vdo/io-factory.c: In function 'position_reader':
+> drivers/md/dm-vdo/io-factory.c:182:24: error: too few arguments to function 'dm_bufio_read'
+>   182 |                 data = dm_bufio_read(reader->client, block_number, &buffer);
+>       |                        ^~~~~~~~~~~~~
+> include/linux/dm-bufio.h:64:7: note: declared here
+>    64 | void *dm_bufio_read(struct dm_bufio_client *c, sector_t block,
+>       |       ^~~~~~~~~~~~~
+> 
+> Caused by commit
+> 
+>   82da73bac1ee ("dm vdo: add deduplication index storage interface")
+> 
+> interacting with commit
+> 
+>   3be93545346e ("dm bufio: Support IO priority")
+> 
+> I have used the device-mapper tree from next-20240206 for today.
 
-Note, the CPU1 is performing with preemption disabled, so for this to
-happen, something really bad happened on CPU0 to delay preempt disabled
-section so long to allow the trace to be read. Perhaps we should have
-the return of the echo 0 > tracing_on require a synchronize_rcu() to
-make sure all ring buffers see it disabled before it returns.
+I've just fixed the device-mapper tree. Sorry for the trouble,
 
-But unless your system is doing something really stressed to cause the
-preempt disabled section to take so long, I highly doubt this was the
-race.
-
--- Steve
-
-
->                                  [adds trace entry to ring buffer,
->                                   overwriting savedcmd_lines entry because
->                                   it thinks ring buffer is enabled]
-> csum2=`md5sum trace`
-
+Mike
 
