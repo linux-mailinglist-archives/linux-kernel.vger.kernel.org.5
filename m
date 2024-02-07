@@ -1,147 +1,94 @@
-Return-Path: <linux-kernel+bounces-56753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C59F84CE9F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:09:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D910D84CEAA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:10:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50077285D5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:09:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FEFC1F2930A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:10:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F40B180BE8;
-	Wed,  7 Feb 2024 16:08:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9250F811FC;
+	Wed,  7 Feb 2024 16:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Hes8HIdE"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EhgA7COQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED588005F
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 16:08:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD347F7DF;
+	Wed,  7 Feb 2024 16:10:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707322137; cv=none; b=Mof/WoOSKD/r8Ycx2WQ9XVZA0ReuqrqRT7WzKyGgi3zHd9RPy+JcBSB596CwIgZ2shDVihjk7bSXEj23uzphNpcmhUngMV9qaBOGxPJssCUJvII1tGWzT7VWUvvmx9I8QAGnjEuYydOjooXGnbkKTanhvtbxQJjJuRVEmfrZl0Q=
+	t=1707322226; cv=none; b=cV7GziCTSCesD4BDpP3DiJn4Qz+IKtA9FlAT8LfQGqvMWL3PmJif/8tGfnFCBviMK4iNqJDBcGxRpZMFTXEOdx2Lzg4Lnk0QUTEOwOI6c6aRSKG79OsKP++mf7qa/ijZvgaKUTQreJ9kvw1qmsV8lXJC2v0aMN+IGZZYqRMHImE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707322137; c=relaxed/simple;
-	bh=b6Pbg0aSosy9STDoBERpFBWvqP2/G4p3nZSShoKz0EA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=RPv3BvOPRNY4p9PtgOyiRRezHXIneAQf2zWf3EIbD3AmyQ0iVYmEktsxMiefHYOEVJqU2KB3nwAt+Wc2gdBS/xL839Qj8WU89+N6bby+yxyblWQxOO71weNiInNr68pq9MR+Xe1LizxytsUqCiUwSwAZDZawo4g8N8m6tBfScDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Hes8HIdE; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26eef6cso1078586276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 08:08:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707322134; x=1707926934; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=b6Pbg0aSosy9STDoBERpFBWvqP2/G4p3nZSShoKz0EA=;
-        b=Hes8HIdExo5hJfKu7G1taJvHisMdFqJ0TM3RtEQZ63NsbKXrEjkO1+YTQa1uTvhfiw
-         jB1/5h3x4Q9uI/RoSHXQb+jRtTilb+X/8sjVD9pMJI6984Cugjg+cTvgmpL4dwwD2SkD
-         bXAmq3JBmuwMGu8yiPPqSOzy5MFuyLYXmjAdpPmSodO8LJmpdWAtsGCrKBR0FysDb8zG
-         ksjQcgfIVZ67tvHp72bj3m4wEV3XvdeLs/ZgkSXa1o4Jwv2D6Wcj0N3dzAc06qEvpahi
-         AhXI06iOI+5P8p91phUyp/nX0VR2bUYjgPwvtuTX7R0HFcaYeSS5CYJL6/IIkMehZhfh
-         ICFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707322134; x=1707926934;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=b6Pbg0aSosy9STDoBERpFBWvqP2/G4p3nZSShoKz0EA=;
-        b=vEEkkUHYt6bPGdJf/narmO2neyUko0DqFZialmaVlAk1+OEidftFDRhYzO69ntQVdz
-         rA8VnrBiZvfGz+11VHIzyYR1Li9AA+IancXC6Avqyvf/MQZKMxua8R669py/QaXz2Njt
-         3bQS50j4hxjzrCSXOR6DjAiZv5uJgGLD6qjBS9mhttY9cVsLsarAHqpjMeQmS2g+yuTJ
-         5o7ozFSkTIfSXzmTM1vj7524hZSjIp16aPrYGJZVhFheC5jcqpstywXdXkEdDFHcomAv
-         tHpnkkLDD6rrp1qoJiitmKA8WUx7gZVpfEGyorZ1/3V3z+Js1iQZYAawwBMNsAxXdeAP
-         e1Zw==
-X-Gm-Message-State: AOJu0YyQCANSnhVXpAg5s/M15n74+vOcn01a8meyIWaGLBzSHzXew8Lx
-	geASldt/87MtFzLYwfoo+kNk8O8qFer1vM8nVx8D8uaDtIe9ADRfamYVjwqltSYoEUTvBgAMUwN
-	jCA==
-X-Google-Smtp-Source: AGHT+IFo7vSX32978mHp9DuIV/CuPmJCEwqoVvO8kVgUZkqtVinWNB21gS0NfuMw8kBxSh/qL8E88+WZRgE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:2293:b0:dc6:207c:dc93 with SMTP id
- dn19-20020a056902229300b00dc6207cdc93mr194834ybb.2.1707322134581; Wed, 07 Feb
- 2024 08:08:54 -0800 (PST)
-Date: Wed, 7 Feb 2024 08:08:52 -0800
-In-Reply-To: <afc496b886bc46b956ede716d8db6f208e7bab0a.camel@infradead.org>
+	s=arc-20240116; t=1707322226; c=relaxed/simple;
+	bh=PJbRFquDFS5PjoXy1Tp0XeTWuHvBy+YC5ZPjygbcMzI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=YJikEvVX1n1oyXZakJVLp3yySXJtmX8jxIKaJHuBngzM3TQtdI0e6tpfxVsGCm3wQRrv6Nrodlw2S82um7iGur9LAzhCoypR+RERAFh3R8qtrbAuiO+FxRpKB97q7XrMm0krqg2u9PugIqn+Vq1L4RnCJJcG17zit2Z2Lf+RH34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EhgA7COQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4F5E9C433A6;
+	Wed,  7 Feb 2024 16:10:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707322226;
+	bh=PJbRFquDFS5PjoXy1Tp0XeTWuHvBy+YC5ZPjygbcMzI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=EhgA7COQyuQt+GU35BYtbZ7fpKQmwnqADSmDVZ7xrzTgTx0giO6i+KJavGu4/xjvo
+	 Qg2NO3WrgBCFng7gFN9nToVjyEWANNiFppflxK9QmtYiuIDkbkfMM72Ab9Qqp4iB97
+	 /ODjPZ/QGhaYOZ95JvFdn9+4Ij6Uv9kiY2bpMHQbDlTybFRXhBETK/y65eqVAoh7zg
+	 Qrf+BPU4cxSWa3d1wwe1BYNNgjCoyCDNbdv6/PAdAJQgxoVDzB0ix8uxmom5SFJzBp
+	 FgEzqbFquQg6lX/X/18t12oHVeaEc+shhXb5lOl7gbi3MSTtGODn84uzl19OvBH6A0
+	 3LH/9zSZ3p+bQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 35FA3D8C96F;
+	Wed,  7 Feb 2024 16:10:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <afc496b886bc46b956ede716d8db6f208e7bab0a.camel@infradead.org>
-Message-ID: <ZcOrFOPKekcDq3xe@google.com>
-Subject: Re: [PATCH v3] KVM: x86/xen: improve accuracy of Xen timers
-From: Sean Christopherson <seanjc@google.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: kvm@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>, 
-	Paul Durrant <paul@xen.org>, Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 0/2] Bluetooth: Improve retrying of connection attempts
+From: patchwork-bot+bluetooth@kernel.org
+Message-Id: 
+ <170732222621.9598.18285805408891036019.git-patchwork-notify@kernel.org>
+Date: Wed, 07 Feb 2024 16:10:26 +0000
+References: <20240206110816.74995-1-verdre@v0yd.nl>
+In-Reply-To: <20240206110816.74995-1-verdre@v0yd.nl>
+To: =?utf-8?q?Jonas_Dre=C3=9Fler_=3Cverdre=40v0yd=2Enl=3E?=@codeaurora.org
+Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+ linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org
 
-On Thu, Dec 14, 2023, David Woodhouse wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
->=20
-> A test program such as http://david.woodhou.se/timerlat.c=C2=A0confirms u=
-ser
-> reports that timers are increasingly inaccurate as the lifetime of a
-> guest increases. Reporting the actual delay observed when asking for
-> 100=C2=B5s of sleep, it starts off OK on a newly-launched guest but gets
-> worse over time, giving incorrect sleep times:
->=20
-> root@ip-10-0-193-21:~# ./timerlat -c -n 5
-> 00000000 latency 103243/100000 (3.2430%)
-> 00000001 latency 103243/100000 (3.2430%)
-> 00000002 latency 103242/100000 (3.2420%)
-> 00000003 latency 103245/100000 (3.2450%)
-> 00000004 latency 103245/100000 (3.2450%)
->=20
-> The biggest problem is that get_kvmclock_ns() returns inaccurate values
-> when the guest TSC is scaled. The guest sees a TSC value scaled from the
-> host TSC by a mul/shift conversion (hopefully done in hardware). The
-> guest then converts that guest TSC value into nanoseconds using the
-> mul/shift conversion given to it by the KVM pvclock information.
->=20
-> But get_kvmclock_ns() performs only a single conversion directly from
-> host TSC to nanoseconds, giving a different result. A test program at
-> http://david.woodhou.se/tsdrift.c=C2=A0demonstrates the cumulative error
-> over a day.
->=20
-> It's non-trivial to fix get_kvmclock_ns(), although I'll come back to
-> that. The actual guest hv_clock is per-CPU, and *theoretically* each
-> vCPU could be running at a *different* frequency. But this patch is
-> needed anyway because...
->=20
-> The other issue with Xen timers was that the code would snapshot the
-> host CLOCK_MONOTONIC at some point in time, and then... after a few
-> interrupts may have occurred, some preemption perhaps... would also read
-> the guest's kvmclock. Then it would proceed under the false assumption
-> that those two happened at the *same* time. Any time which *actually*
-> elapsed between reading the two clocks was introduced as inaccuracies
-> in the time at which the timer fired.
->=20
-> Fix it to use a variant of kvm_get_time_and_clockread(), which reads the
-> host TSC just *once*, then use the returned TSC value to calculate the
-> kvmclock (making sure to do that the way the guest would instead of
-> making the same mistake get_kvmclock_ns() does).
->=20
-> Sadly, hrtimers based on CLOCK_MONOTONIC_RAW are not supported, so Xen
-> timers still have to use CLOCK_MONOTONIC. In practice the difference
-> between the two won't matter over the timescales involved, as the
-> *absolute* values don't matter; just the delta.
->=20
-> This does mean a new variant of kvm_get_time_and_clockread() is needed;
-> called kvm_get_monotonic_and_clockread() because that's what it does.
->=20
-> Fixes: 536395260582 ("KVM: x86/xen: handle PV timers oneshot mode")
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> ---
+Hello:
 
-Dagnabbit, this one is corrupt too :-/
+This series was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+
+On Tue,  6 Feb 2024 12:08:12 +0100 you wrote:
+> Since commit 4c67bc74f016 ("[Bluetooth] Support concurrent connect
+> requests"), the kernel supports trying to connect again in case the
+> bluetooth card is busy and fails to connect.
+> 
+> The logic that should handle this became a bit spotty over time, and also
+> cards these days appear to fail with more errors than just "Command
+> Disallowed".
+> 
+> [...]
+
+Here is the summary with links:
+  - [v4,1/2] Bluetooth: hci_conn: Only do ACL connections sequentially
+    https://git.kernel.org/bluetooth/bluetooth-next/c/456561ba8e49
+  - [v4,2/2] Bluetooth: Remove pending ACL connection attempts
+    https://git.kernel.org/bluetooth/bluetooth-next/c/8e14d581d125
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
