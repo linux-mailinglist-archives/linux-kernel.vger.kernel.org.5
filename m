@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-55789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5828884C1C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:18:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A11384C1C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:19:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A4421C2476F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:18:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED3B31F24E5A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B3EDE55F;
-	Wed,  7 Feb 2024 01:18:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0766FF9FE;
+	Wed,  7 Feb 2024 01:18:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XlxjDbVI"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="E5jDfe4Q"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFB8DDB3
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 01:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEEB4EEDA
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 01:18:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707268698; cv=none; b=GOuR19FLZbovcBcZY16wOaJvJzw4THwil1R3ShCebIDsVc9BIIo0OaOrZ1v2oyUQbCNwovC47Tyy9r3GkqGdTXUvmDjUsiqMhD5LCMcgUOvMUf1bZBJEfk74jXDQYV5UPLhXp1xlEX5fooFqyovsnm9tsPEXygOEgyY9VFQsYhA=
+	t=1707268701; cv=none; b=HzmHQnk4cLGMHTMdFoIn0Z2h2pZ61iDIysZcPH802JmKQfh76ibVm3+wNJ6NCwjkvF2eabxTq8Y9UAw934LTtLdYePhFtEAxrFNglFP2nheMfEj6zNB29FGp0YeCVZquUlPqwZN+A3v4vSI8Y/Lm2hTApdeU3zZ0hJMn9Ug/HhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707268698; c=relaxed/simple;
-	bh=T62blaTiqzQLizGlfVWivOeIOmYziapjvmFfizRpV/g=;
+	s=arc-20240116; t=1707268701; c=relaxed/simple;
+	bh=JJyqqsDhj00w4rvbp0+xvDd5ul7th/oRNUlKqIehj68=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Cc:Content-Type; b=jht1oxlFbu18aHiCoWsWi/xnrYAt4Vq62ixapMCctTZLZjnM7A3P3R/miDsb9MbgV2p3GKW80rB5EfLy8HBhyEUFvzT31yL99AmMWpnio0kl6OI8p9JagimqarzU2pH+CtTZtzK/mdpFPT3HeLFUhougIuYq2kaTC8jhNzWUa64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XlxjDbVI; arc=none smtp.client-ip=209.85.128.201
+	 To:Cc:Content-Type; b=AYsa6hCOpkC1v+tWrhTSE2vAfIyj87HBPQ79UiqJ1pW3YApac/2RFQIOERKgvWLYdZGIwXicDvAJWaE77b+NrrtbxipswSpTAJa2rkkKLi74GRd74vruubw9cVvN/D8myJcBuVIFW7NeeRnnJL84B0C9LNstSK/3ONPQm7ciZI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=E5jDfe4Q; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6041dbb7a78so2167707b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 17:18:16 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60491e90830so654687b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 17:18:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707268696; x=1707873496; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707268699; x=1707873499; darn=vger.kernel.org;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pzwZNLSU6r/5TPCVrrLL62lmP2jEiRWNyfq6bcL8Mo0=;
-        b=XlxjDbVIImD32kab5Kwo4YlVC7p8+E8aqJhRxHw3ADM7ebhWgRPO248dnC29vQAOaG
-         8fs2LK5ke80mt3oM3xQ7xaHCMTPvghS7nxPe7wS9M6vPWvfIP9wgqDxI04Pj2nxE2cV0
-         TWqzX4gBKVZ7cVirmgAZGQVCNDU/GdonLXs8DZ3z39gyU/9X/lo72EYCOvCoOsnRUUKi
-         pH/LJfuVjZSoU6ounkkuxr2ptpwITbHFlTk2hlfc+Et5z0jLiJRvhIF9FHFqyME4N1Hk
-         gPTHPItW5S3AMDYmuA0Q/mwPUwI8zJkX6tLZjWFQS3XUtMQzYhYiNhQaUQqF8W0pa0cl
-         TBTw==
+        bh=IALq/oq3h9hevE4KUuaY6CyXWslIu36itE2hrGdOodc=;
+        b=E5jDfe4QTJG4YayQayIPixvd9ItLqfrS5RRQcPItL8/NDiKG6yRM/W8eKiAxSyDZnu
+         b4yjEQpoOcU3Q2omAWegWR7h81HwwhWuF6n07HPNOSDzzDM+v0/TjjwihmEWOjvWbV5R
+         uA0jnxWx8LYpd7WvX/ewEAbVM5sF4ik4oOcPQ21KbddH7a+iedpS7km5CY8wUkjrvJsA
+         W3h+ZfhfEBIPknIsd8ejRv1ALQ7lrlKEdMly1DIQ320xNbg9Tsb7XPwQS95y2axZm+Ut
+         gOgQNy5JsRPMpM4hFH0EvhEbo56TMEUc7wTQ/tGcqob5AURFq3xtOP2kL4ojRn9aja1W
+         e95g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707268696; x=1707873496;
+        d=1e100.net; s=20230601; t=1707268699; x=1707873499;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pzwZNLSU6r/5TPCVrrLL62lmP2jEiRWNyfq6bcL8Mo0=;
-        b=lDNgWEpV+qwITySQ/wes1wv7Ncpisin73+4ReGvHi0XOKJ74Ml2EDjxzoUN7/TzY0o
-         viBL6sKHJ6g4LHHqRjTJ2wuS19b22bD8WYk7SistcNy35EZlOQd1LM6QPYT9/9UKjDTS
-         5tuRAfwQuBwWhnKbR4lQ0NxdafJ8IxrqMEy15wv2sz2+Ss+irRVOOcN7anK98T0C9ArM
-         KhK40kJHVgrQIRIZjY3uBwZJ9vnakRepTk9CYui2aHPMBD6ynA83eBbuzs8HZnK1q6o+
-         ON24jcv3aYV7nvTgIaYBZh4xt+1SuL2UeI5dgiPWCIahoRA4jSSTQJsu7CCsn1QJUZ2q
-         fgSA==
-X-Gm-Message-State: AOJu0YypHRFFQTBGuOQwF0avdCZZAEVvjotahzMsmU7sG5m86gUta6yi
-	rNUSmJxnYS7M1m7LEYbdYCU+qoWoug5Fup2/8rWygxOCbkJPLOgBdwWN31UpFndMfWyriQdwIiS
-	W1itVVOxmaL3J/g==
-X-Google-Smtp-Source: AGHT+IG3z+4r/hvV7+1dLnMRbxeMCicoD6AFIsr/18VUeXwbdI/EtTCFNbIV8rOJfhHGjy6+ovOrP/JrgoY+n/Q=
+        bh=IALq/oq3h9hevE4KUuaY6CyXWslIu36itE2hrGdOodc=;
+        b=rUYA59bW5sem+rg++EnulCiPbUHrZ/pG2FpphKn/LQmvuDs91bEXesRV+TBGdFLvXS
+         AOy7JM5ihmQbOo6edV02Xk20BRlYc1RXfEWldy1LLFSj+9Nr8itkN87W+ZYllK7j58p4
+         x9ss7/mBL/uL1QDtkbz5d3V6hz1xyft5rf4yfteLqQ67IFSp/+mF+Rkk2bRuI5TiSLQZ
+         HiyVrcy5k22D4aLCPzIOD72mdf2st8R+tXCKKTwCoKr5iZNcoVRJTs9xrznJmDnZEve8
+         BRYxSnaJ0yYhpoeBzUBFi+nu5ILRCnMbEkoSUD9wiWgbugjNhCB9r2N/YYPmnrHsEONo
+         o7MA==
+X-Gm-Message-State: AOJu0Ywrfd5bXbAmK5bJuUh/08olgRab5ID8KdqiSFzyjFqhf+a9WQu1
+	9+M4L5gcx6aRol50L4NMbBRMuXjkfobh6MN1HZ+7xIyJVZBcsJgpnm397faLps2+M4uefL+dJwW
+	i9dHcHF1kIqeQFg==
+X-Google-Smtp-Source: AGHT+IEfm4a88rUxhBt5lCf6gJ1kr+tZtTsbpaQYiZFB+DmCUF8SDTSzroVYIOyQjAf9f6G+i1LFC0K/MS0Wz2g=
 X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:dc84:66b8:120:935a])
- (user=saravanak job=sendgmr) by 2002:a81:9b82:0:b0:5fb:7e5b:b87f with SMTP id
- s124-20020a819b82000000b005fb7e5bb87fmr677991ywg.1.1707268695967; Tue, 06 Feb
- 2024 17:18:15 -0800 (PST)
-Date: Tue,  6 Feb 2024 17:18:01 -0800
+ (user=saravanak job=sendgmr) by 2002:a05:6902:168b:b0:dc6:d7a2:bc2 with SMTP
+ id bx11-20020a056902168b00b00dc6d7a20bc2mr141599ybb.9.1707268698853; Tue, 06
+ Feb 2024 17:18:18 -0800 (PST)
+Date: Tue,  6 Feb 2024 17:18:02 -0800
 In-Reply-To: <20240207011803.2637531-1-saravanak@google.com>
-Message-Id: <20240207011803.2637531-3-saravanak@google.com>
+Message-Id: <20240207011803.2637531-4-saravanak@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,8 +73,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240207011803.2637531-1-saravanak@google.com>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Subject: [PATCH v2 2/3] of: property: Improve finding the supplier of a
- remote-endpoint property
+Subject: [PATCH v2 3/3] of: property: Add in-ports/out-ports support to of_graph_get_port_parent()
 From: Saravana Kannan <saravanak@google.com>
 To: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Saravana Kannan <saravanak@google.com>
@@ -82,48 +81,34 @@ Cc: Xu Yang <xu.yang_2@nxp.com>, kernel-team@android.com, devicetree@vger.kernel
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-After commit 4a032827daa8 ("of: property: Simplify of_link_to_phandle()"),
-remote-endpoint properties created a fwnode link from the consumer device
-to the supplier endpoint. This is a tiny bit inefficient (not buggy) when
-trying to create device links or detecting cycles. So, improve this the
-same way we improved finding the consumer of a remote-endpoint property.
+Similar to the existing "ports" node name, coresight device tree bindings
+have added "in-ports" and "out-ports" as standard node names for a
+collection of ports.
 
-Fixes: 4a032827daa8 ("of: property: Simplify of_link_to_phandle()")
+Add support for these name to of_graph_get_port_parent() so that
+remote-endpoint parsing can find the correct parent node for these
+coresight ports too.
+
 Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
- drivers/of/property.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/of/property.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/of/property.c b/drivers/of/property.c
-index da70aaa62ca3..7bb2d8e290de 100644
+index 7bb2d8e290de..39a3ee1dfb58 100644
 --- a/drivers/of/property.c
 +++ b/drivers/of/property.c
-@@ -1232,7 +1232,6 @@ DEFINE_SIMPLE_PROP(pinctrl5, "pinctrl-5", NULL)
- DEFINE_SIMPLE_PROP(pinctrl6, "pinctrl-6", NULL)
- DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
- DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
--DEFINE_SIMPLE_PROP(remote_endpoint, "remote-endpoint", NULL)
- DEFINE_SIMPLE_PROP(pwms, "pwms", "#pwm-cells")
- DEFINE_SIMPLE_PROP(resets, "resets", "#reset-cells")
- DEFINE_SIMPLE_PROP(leds, "leds", NULL)
-@@ -1298,6 +1297,17 @@ static struct device_node *parse_interrupts(struct device_node *np,
- 	return of_irq_parse_one(np, index, &sup_args) ? NULL : sup_args.np;
- }
- 
-+static struct device_node *parse_remote_endpoint(struct device_node *np,
-+						 const char *prop_name,
-+						 int index)
-+{
-+	/* Return NULL for index > 0 to signify end of remote-endpoints. */
-+	if (!index || strcmp(prop_name, "remote-endpoint"))
-+		return NULL;
-+
-+	return of_graph_get_remote_port_parent(np);
-+}
-+
- static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_clocks, },
- 	{ .parse_prop = parse_interconnects, },
+@@ -763,7 +763,9 @@ struct device_node *of_graph_get_port_parent(struct device_node *node)
+ 	/* Walk 3 levels up only if there is 'ports' node. */
+ 	for (depth = 3; depth && node; depth--) {
+ 		node = of_get_next_parent(node);
+-		if (depth == 2 && !of_node_name_eq(node, "ports"))
++		if (depth == 2 && !of_node_name_eq(node, "ports") &&
++		    !of_node_name_eq(node, "in-ports") &&
++		    !of_node_name_eq(node, "out-ports"))
+ 			break;
+ 	}
+ 	return node;
 -- 
 2.43.0.594.gd9cf4e227d-goog
 
