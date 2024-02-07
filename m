@@ -1,106 +1,259 @@
-Return-Path: <linux-kernel+bounces-56250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FB4784C7E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B0C084C7EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:51:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5E04282BC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:50:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A858286C02
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:51:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E11421107;
-	Wed,  7 Feb 2024 09:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0AC92261B;
+	Wed,  7 Feb 2024 09:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J162WSTh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T89x4npj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79D1224CC;
-	Wed,  7 Feb 2024 09:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A4DC2556D;
+	Wed,  7 Feb 2024 09:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707299419; cv=none; b=ATNJB3FzSBwaLu+IF2aMMwsjpDguXMeyi/SgnCIgbbLxvDsl25LnREHXxKjIqn1ptjm2m1HO79lMXfh193tRWngDyCOPservv24MpqJbvQEXpBxRLdKWmdegVGRa3IqBRGkT7lZerOGvornzUesWCqydLLQo0jYDqbZd2+d9Sds=
+	t=1707299432; cv=none; b=R0GXSyCyjnfqW6hvIuCSbFI/p9VJW3IHP394iY5iQffyo6xiCM7FXgKvWXa7svKII0HoqbkvOIeVjCsvBL7P8DY1O7p1S9xjn5LbSisDhAT+0NiLvHXYYjQMXNd1g5a19ZX2GWd6hfvwPKuQl3e3/OwlGLzGVAD8c5xFV0n2ng8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707299419; c=relaxed/simple;
-	bh=M1ta89V8AB5yJhhSl1CeMPbzafjggbkHhxGqO2RD4Qs=;
+	s=arc-20240116; t=1707299432; c=relaxed/simple;
+	bh=/tImMrVIVbTZtJyKXd55BPzqmcJN5F5TwsaZMk1n1bM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G164sePLLLbEr4y/pjdWMP4O97EWvXOpERmKR9+vmNKnsyiqae5qdICkPFkrfP7TJj1GGFTFVCixG56xvw9NXNIX/icMqxqdSYcwpCY5PtqmGxArSNCeGwiPFBz1J/7BgEp9nB9DaAZzPTqA2sqjGlQZtSQ1bjZyfgRo6m+FXAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J162WSTh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDC6DC43390;
-	Wed,  7 Feb 2024 09:50:18 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=QWCbCxktCisUPzYLsm0gg4emJzafYIL8E3mYb6IiM/KlhnDoiUxDhreUrT+u73TlayyIW7CpHIloCgsMUrzgAMRnZedAxJw6gsbWvaIfakfzOqTr+KDplo2M9jSl9GvocYiK/IrgpLUWaD4PzsT96Sc8AkhU8KYlXJ4y9fz6fGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T89x4npj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A560AC433C7;
+	Wed,  7 Feb 2024 09:50:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707299419;
-	bh=M1ta89V8AB5yJhhSl1CeMPbzafjggbkHhxGqO2RD4Qs=;
+	s=k20201202; t=1707299431;
+	bh=/tImMrVIVbTZtJyKXd55BPzqmcJN5F5TwsaZMk1n1bM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J162WSThIE3H02LQNVV2E9du8wM6DKtdvi7z8HYBDqXzzUm1Ndln/9jywJHBVaE71
-	 85YZ9j3CIjAbBpTZh92GkwpLp/VKVT20WACgj+loL1CFPgCQTzUlJ3fJ+3YnFmLP6V
-	 m7oajI341msnA4nCcRg/MrDBCVepUYwmTWtKDZsx6tUeisCUZ5DWPAsvmkL+PvdPFN
-	 7ahey9M0Eimtecpvqf/pg7LBfAffhNTeV6K0V+/ENJ8iUJ+OUIsfjD8cUo8NPywEQa
-	 iQ9bZupe5F/YRS7dEETqeUzqecB310HLGUEcVheuXpNNjaIxnMlQJhnV+sTuFDzkGz
-	 4HkDDeCw9kvzg==
-Date: Wed, 7 Feb 2024 09:50:16 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Dhruva Gole <d-gole@ti.com>
-Cc: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	Apurva Nandan <a-nandan@ti.com>, linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH v2 2/4] spi: cadence-qspi: fix pointer reference in
- runtime PM hooks
-Message-ID: <ZcNSWPucn6Vg43Wu@finisterre.sirena.org.uk>
-References: <20240205-cdns-qspi-pm-fix-v2-0-2e7bbad49a46@bootlin.com>
- <20240205-cdns-qspi-pm-fix-v2-2-2e7bbad49a46@bootlin.com>
- <ZcD6yqc+o62x2AjA@finisterre.sirena.org.uk>
- <20240207083902.mzkcsqf3tbwkkxd2@dhruva>
+	b=T89x4npjbUipJ36uBKlCrNDZs66j7OGP+Pe6APwqCddMPcZmx1JFVVcrkTJRpaRgi
+	 WSdoAMf2PLNr6S69Nc8uAukobVxIOUdVOmxt0+LRdx8kX1YIYePSDOIUWf0fzYgmrq
+	 DpzHh8ThZDe+9nwpVBD05918kbKQ13RbWpUzhTPaaxr2lXsmBPsraGhAMoOjLqXtt4
+	 3NUguH3Ix+B08u9f0tk3WTxJn08Jt+hcfuZlYQnt43Bggul9QJV5mMUsXWYR5i6li2
+	 yb7jZvSM0q1j1ZBwhb3IrtMuSMu9iXUmiH2zE7lUnDuhA13r3w6NMsh2+/8lwhu2kD
+	 R9Anz7L5yEjPg==
+Date: Wed, 7 Feb 2024 10:50:26 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Tycho Andersen <tycho@tycho.pizza>, Oleg Nesterov <oleg@redhat.com>
+Cc: "Eric W . Biederman" <ebiederm@xmission.com>, 
+	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
+	Tycho Andersen <tandersen@netflix.com>
+Subject: Re: [PATCH v2] pidfd: getfd should always report ESRCH if a task is
+ exiting
+Message-ID: <20240207-blumen-neulich-f1507e0c5cc0@brauner>
+References: <20240206192357.81942-1-tycho@tycho.pizza>
+ <20240207-vibrieren-waldarbeiten-30eeade05203@brauner>
+ <20240207-daran-fliesen-6039a2e36f39@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="8hJZUwphHllQZKzw"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240207083902.mzkcsqf3tbwkkxd2@dhruva>
-X-Cookie: You might have mail.
+In-Reply-To: <20240207-daran-fliesen-6039a2e36f39@brauner>
 
+On Wed, Feb 07, 2024 at 10:29:51AM +0100, Christian Brauner wrote:
+> On Wed, Feb 07, 2024 at 10:15:25AM +0100, Christian Brauner wrote:
+> > On Tue, Feb 06, 2024 at 12:23:57PM -0700, Tycho Andersen wrote:
+> > > From: Tycho Andersen <tandersen@netflix.com>
+> > > 
+> > > We can get EBADF from __pidfd_fget() if a task is currently exiting, which
+> > > might be confusing. Let's check PF_EXITING, and just report ESRCH if so.
+> > > 
+> > > I chose PF_EXITING, because it is set in exit_signals(), which is called
+> > > before exit_files(). Since ->exit_status is mostly set after exit_files()
+> > > in exit_notify(), using that still leaves a window open for the race.
+> > > 
+> > > Signed-off-by: Tycho Andersen <tandersen@netflix.com>
+> > > v2: fix a race in the check by putting the check after __pidfd_fget()
+> > >     (thanks Oleg)
+> > > ---
+> > >  kernel/pid.c                                  | 17 +++++++++-
+> > >  .../selftests/pidfd/pidfd_getfd_test.c        | 31 ++++++++++++++++++-
+> > >  2 files changed, 46 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/kernel/pid.c b/kernel/pid.c
+> > > index de0bf2f8d18b..a8cd6296ed6d 100644
+> > > --- a/kernel/pid.c
+> > > +++ b/kernel/pid.c
+> > > @@ -693,8 +693,23 @@ static int pidfd_getfd(struct pid *pid, int fd)
+> > >  
+> > >  	file = __pidfd_fget(task, fd);
+> > >  	put_task_struct(task);
+> > > -	if (IS_ERR(file))
+> > > +	if (IS_ERR(file)) {
+> > > +		/*
+> > > +		 * It is possible that the target thread is exiting; it can be
+> > > +		 * either:
+> > > +		 * 1. before exit_signals(), which gives a real fd
+> > > +		 * 2. before exit_files() takes the task_lock() gives a real fd
+> > > +		 * 3. after exit_files() releases task_lock(), ->files is NULL;
+> > > +		 *    this has PF_EXITING, since it was set in exit_signals(),
+> > > +		 *    __pidfd_fget() returns EBADF.
+> > > +		 * In case 3 we get EBADF, but that really means ESRCH, since
+> > > +		 * the task is currently exiting and has freed its files
+> > > +		 * struct, so we fix it up.
+> > > +		 */
+> > > +		if (task->flags & PF_EXITING && PTR_ERR(file) == -EBADF)
+> > > +			return -ESRCH;
+> > 
+> > Isn't that a potential UAF because we called put_task_struct() above but
+> > this is exiting task->flags afterwards?
+> 
+> s/exiting/accessing/
 
---8hJZUwphHllQZKzw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So this is what I have applied currently where I moved the check into
+__pidfd_fget() where it makes more sense imho. But please double check
+that I didn't mess anything up:
 
-On Wed, Feb 07, 2024 at 02:09:02PM +0530, Dhruva Gole wrote:
-> On Feb 05, 2024 at 15:12:10 +0000, Mark Brown wrote:
+From 7ab8f833aceb11c78627f4ea5d7e354314efa385 Mon Sep 17 00:00:00 2001
+From: Tycho Andersen <tandersen@netflix.com>
+Date: Wed, 7 Feb 2024 10:19:29 +0100
+Subject: [PATCH 1/2] pidfd: getfd should always report ESRCH if a task is
+ exiting
 
-> > Please place fixes at the start of serieses so that they don't end up
-> > with spurious dependencies on other changes and can more easily be
-> > applied as fixes.
+We can get EBADF from pidfd_getfd() if a task is currently exiting,
+which might be confusing. Let's check PF_EXITING, and just report ESRCH
+if so.
 
-> Didn't really understand the comment here, aren't the 1,2 and 3 patches
-> fixes and the last one the non-fix? Thus fixes are indeed placed at
-> start of this series right?
+I chose PF_EXITING, because it is set in exit_signals(), which is called
+before exit_files(). Since ->exit_status is mostly set after
+exit_files() in exit_notify(), using that still leaves a window open for
+the race.
 
-Patch 1 is a rename, this is obviously cosmetic and not a bug fix.
+Signed-off-by: Tycho Andersen <tandersen@netflix.com>
+Link: https://lore.kernel.org/r/20240206192357.81942-1-tycho@tycho.pizza
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+ kernel/pid.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
---8hJZUwphHllQZKzw
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/kernel/pid.c b/kernel/pid.c
+index de0bf2f8d18b..c1d940fbd314 100644
+--- a/kernel/pid.c
++++ b/kernel/pid.c
+@@ -678,7 +678,26 @@ static struct file *__pidfd_fget(struct task_struct *task, int fd)
+ 
+ 	up_read(&task->signal->exec_update_lock);
+ 
+-	return file ?: ERR_PTR(-EBADF);
++	if (!file) {
++		/*
++		 * It is possible that the target thread is exiting; it can be
++		 * either:
++		 * 1. before exit_signals(), which gives a real fd
++		 * 2. before exit_files() takes the task_lock() gives a real fd
++		 * 3. after exit_files() releases task_lock(), ->files is NULL;
++		 *    this has PF_EXITING, since it was set in exit_signals(),
++		 *    __pidfd_fget() returns EBADF.
++		 * In case 3 we get EBADF, but that really means ESRCH, since
++		 * the task is currently exiting and has freed its files
++		 * struct, so we fix it up.
++		 */
++		if (task->flags & PF_EXITING)
++			file = ERR_PTR(-ESRCH);
++		else
++			file = ERR_PTR(-EBADF);
++	}
++
++	return file;
+ }
+ 
+ static int pidfd_getfd(struct pid *pid, int fd)
+-- 
+2.43.0
 
------BEGIN PGP SIGNATURE-----
+From 43316ed070cd8fb02a51ea9577c5fc1fcf639652 Mon Sep 17 00:00:00 2001
+From: Tycho Andersen <tandersen@netflix.com>
+Date: Wed, 7 Feb 2024 10:19:44 +0100
+Subject: [PATCH 2/2] selftests: add ESRCH tests for pidfd_getfd()
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXDUlcACgkQJNaLcl1U
-h9DIXwf+J/u1u4AZtGji0lT2UBDnRwkuZLPS4tvXyX/lFxCWUMX4z0ZXqer0/8Sj
-A4YryZnYd9LkGj350WVwq5UwPTGs2XyXOlenM7I57li0+vLOpzV4neBXROX5PGw/
-03FSh3Qfx6t9Y3TYki26NPEyObj1NTZ3lXw6FQrAHMSLZV09PxbL3C+MY15GKJhx
-Pw6dzSoX8loijGLYDKxNKCGTKldou/JeL2v4HDq4uetGbQM0nlFm4R4nhg21Ohkz
-vijLB0G0bjq384zAko4p8BXX7fkXOAl8vYJ/4PsiNeIrokUWf63B8a8P5eI2BUMi
-lAJEkXO2jyuzLqqwNTclcQaKCxN7Cg==
-=GIf5
------END PGP SIGNATURE-----
+Ensure that pidfd_getfd() reports -ESRCH if the task is already exiting.
 
---8hJZUwphHllQZKzw--
+Signed-off-by: Tycho Andersen <tandersen@netflix.com>
+Link: https://lore.kernel.org/r/20240206192357.81942-1-tycho@tycho.pizza
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+ .../selftests/pidfd/pidfd_getfd_test.c        | 31 ++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/pidfd/pidfd_getfd_test.c b/tools/testing/selftests/pidfd/pidfd_getfd_test.c
+index 0930e2411dfb..cd51d547b751 100644
+--- a/tools/testing/selftests/pidfd/pidfd_getfd_test.c
++++ b/tools/testing/selftests/pidfd/pidfd_getfd_test.c
+@@ -5,6 +5,7 @@
+ #include <fcntl.h>
+ #include <limits.h>
+ #include <linux/types.h>
++#include <poll.h>
+ #include <sched.h>
+ #include <signal.h>
+ #include <stdio.h>
+@@ -129,6 +130,7 @@ FIXTURE(child)
+ 	 * When it is closed, the child will exit.
+ 	 */
+ 	int sk;
++	bool ignore_child_result;
+ };
+ 
+ FIXTURE_SETUP(child)
+@@ -165,10 +167,14 @@ FIXTURE_SETUP(child)
+ 
+ FIXTURE_TEARDOWN(child)
+ {
++	int ret;
++
+ 	EXPECT_EQ(0, close(self->pidfd));
+ 	EXPECT_EQ(0, close(self->sk));
+ 
+-	EXPECT_EQ(0, wait_for_pid(self->pid));
++	ret = wait_for_pid(self->pid);
++	if (!self->ignore_child_result)
++		EXPECT_EQ(0, ret);
+ }
+ 
+ TEST_F(child, disable_ptrace)
+@@ -235,6 +241,29 @@ TEST(flags_set)
+ 	EXPECT_EQ(errno, EINVAL);
+ }
+ 
++TEST_F(child, no_strange_EBADF)
++{
++	struct pollfd fds;
++
++	self->ignore_child_result = true;
++
++	fds.fd = self->pidfd;
++	fds.events = POLLIN;
++
++	ASSERT_EQ(kill(self->pid, SIGKILL), 0);
++	ASSERT_EQ(poll(&fds, 1, 5000), 1);
++
++	/*
++	 * It used to be that pidfd_getfd() could race with the exiting thread
++	 * between exit_files() and release_task(), and get a non-null task
++	 * with a NULL files struct, and you'd get EBADF, which was slightly
++	 * confusing.
++	 */
++	errno = 0;
++	EXPECT_EQ(sys_pidfd_getfd(self->pidfd, self->remote_fd, 0), -1);
++	EXPECT_EQ(errno, ESRCH);
++}
++
+ #if __NR_pidfd_getfd == -1
+ int main(void)
+ {
+-- 
+2.43.0
+
 
