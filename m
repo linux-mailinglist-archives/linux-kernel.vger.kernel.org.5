@@ -1,235 +1,275 @@
-Return-Path: <linux-kernel+bounces-56395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C936A84C9A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A32D84C9AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:36:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F5F4B2226B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:34:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C430CB246E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8678E1B7EE;
-	Wed,  7 Feb 2024 11:34:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C281B297;
+	Wed,  7 Feb 2024 11:35:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NEznwrhH"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Xm9ig6zZ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3BC71AADD;
-	Wed,  7 Feb 2024 11:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115731B7E1;
+	Wed,  7 Feb 2024 11:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707305682; cv=none; b=QbvOzpTI2qQbWP1U/cnt/JYf4V5OzCeMHlG5gu4SB2l9SmsAjGk2T8NlfWtsoDm0qLqOQkwHpmQFzH6J8LvYd5H+RsHLaN4lX03S5aUTZzoRRQr3f9YUUwQGn82z/BVGNr3qQ8nQkqdXqF0xm51Kwt9OXG31X4F5aLeNU2umsgQ=
+	t=1707305750; cv=none; b=X8LKmiOzYL3j5aALyHfUN9KooQZ+WpS09/NTbyAKrz9v4uxLjXmvAG0CtjW+QhFi83edY5jCyTvHOv6RAidS5kKK1psHsHp3tY0Bo2U1sZ7EPoNqu6VIT8ygVdKoIsEbcMNStl94ohpFtua2b69UPGVQLUPhuJ70TaB18M3+kug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707305682; c=relaxed/simple;
-	bh=fHEmx2+YD6aSghPKIzxTl0lTC3dy/fynUqTivLKdpsA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NCDIA9c7W90BsLL9/tu76IZQLoSwIoZ30nNDzynmX2/Nf+rwDx6lVaYCqfolHLakdGh5nq2MGctZIFl/u/pkWzczeQJPLdhaIZX6+aUTcAWcIksbSGhC2mBK1zTAoqf/NetQKtHHOfhZ4VkQlbpAjFHMm2VFtUJ0C1cyMW68Wsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NEznwrhH; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d09b21a8bbso5667411fa.3;
-        Wed, 07 Feb 2024 03:34:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707305679; x=1707910479; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nPQzZxl5bE1RItDITVNujm+ZmvjYJeoOtU5sHIw4Szs=;
-        b=NEznwrhHXDPNAAxvvge/J5bYcF4/ZEYGwbyWrKIJnhfgjCf3JnqiWyikdnEyGa/taM
-         RL1XTjjxeRXJsQEhjIELibcuX9LvO31sowufNZL83MlZk5prHjAFyYeP9dE16VcGRky6
-         HDfiTd2RYgmru8tptbBYc1lztVpH2PDr3HYpgbumQ8wViKXEAndzKc8588tyOtX6Q+vd
-         dbi3wdRIFsiJGGZT3aKQyxytOfj+LodP32HqClf2Hi6Qp7PWVAmPnBox51LyeczNYJQo
-         ZZM76+heNUfga+GCMOx+BZyxbmQylAnmG8XI3/xV3ahjikHCAuxJib12n1WIlS4BeO6n
-         ICFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707305679; x=1707910479;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nPQzZxl5bE1RItDITVNujm+ZmvjYJeoOtU5sHIw4Szs=;
-        b=WRO7qD9qFpNB5kUhcUIEVTZMA+9F6oKiyJTzmyWWp6x4emEXCCfqlXhPNoxmZzThq8
-         PqtnvosYlWVlJ9D6tjvDTMp1J1spFgqNCUraA8vifqToR8ZHjh7raTf2StBz2OyX4PGq
-         JofWq/rfVT/M694zkw4zkgFY+vDZs4khO/IqbPPs++IzcdopEx31zX5tMb3meptsHuxk
-         21YG+GazF1gMJHcd2rLrUOaaXRSnyKcnHEn1Wo2FFBJzbfRJ3RE9lVaKiRtFQo67o+dz
-         YOxowdh2PWK1f8T1HG3xiPqZdiVEeFNrnwEde5d3WsGoR3SUfGctpOlEuKL2IxrjrCHi
-         Hqbw==
-X-Gm-Message-State: AOJu0YyvX4eyMF2dg2xB8FJVCNuxHZfLeywiVe6RdD5xwWpyAa0jAn30
-	glA4nZ097UVseGUhZs0xDqVqhSLfa8s5z3Bbw8CVFlUWoxNN7Jc3
-X-Google-Smtp-Source: AGHT+IFtHTL1sJ/QvAt+78/YRYABzfZKnDNRbo56DjDqklw/3Z6EPdqKy3AIocI3PHi8NhHTSurcFg==
-X-Received: by 2002:a2e:9992:0:b0:2d0:9076:e9cc with SMTP id w18-20020a2e9992000000b002d09076e9ccmr4268383lji.29.1707305678385;
-        Wed, 07 Feb 2024 03:34:38 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXPe5zFF9e6iqt4dBN6yTi7bU1Mk4W5dqeCN8tJ8xEbbnrz8Gc7cE2oCKwiHti8Gx/YzrcsG5BP0GT+OD+3SPL7hrhSNYfN2cMZ+dhbteqMsmeSVdRvQ8ED4C+NR0zJuO/zgFBHu1k6/CA7leb1eAO3OsvjdwJbgYTjQ+tompJjlsypzA1bZN8g8RnY46/H1MTgrHlDuEnbsnC1aBK+SOipw6QqbqRExkYsWKIZ9u8gGucNRpuJrVQeQ/1pdgnYl/3UDXE6VPZeRuB0p6TxVsbKkIBbXt30aR1JqHgDXn51fdn6pTxk84G1N/zXFL1mwNEoKnu57/1ude+sA/RSXrVyo/JD2G2XB4vAH0Le8bZjfYjtgrEydQn03O9JR7Zx+m3TTyDoj9XM8AFweb5P+YPDD7r75FZURhL4ingHlDtsbCHNYgmkrus/lvQIur4m8IULurTLu6c5svaOEwl5cAWd59WtRSVeFyikZO5v34Bkcu89QD6G7qNrYKNK7nTU
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id t1-20020a2e7801000000b002d0a6b9d0casm145443ljc.67.2024.02.07.03.34.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 03:34:38 -0800 (PST)
-Date: Wed, 7 Feb 2024 14:34:33 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Simon Horman <horms@kernel.org>, Pavel Sakharov <p.sakharov@ispras.ru>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org, 
-	Alexey Khoroshilov <khoroshilov@ispras.ru>
-Subject: Re: [PATCH] stmmac: Fix incorrect dereference in stmmac_*_interrupt()
-Message-ID: <tg2au3a524douxq6k37aa73zuotlx5sl6hbcokm7xwy3bumqxc@lothlyjh6ksg>
-References: <20240203150323.1041736-1-p.sakharov@ispras.ru>
- <20240206150704.GD1104779@kernel.org>
+	s=arc-20240116; t=1707305750; c=relaxed/simple;
+	bh=0YPkjMO46SfT4+DaDWi2AKdkqPLqA1uaOj6h7G+eQuo=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=n18KMlI6akMKCRRoL0W4MyomnLLELxZxY8zeT7zbvqhvK7CtOW8VR2xlosln1HAA35YbC/nalskyU+gnLHIpTV7nUNQQz3+5PTm/r4GexyzNRwWFR7D49pxQiaWnlTX5Cu2eGl4GvycS4/AxUJLtDhDwVjPPIu0dw9rTw40p1dQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Xm9ig6zZ; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707305749; x=1738841749;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=0YPkjMO46SfT4+DaDWi2AKdkqPLqA1uaOj6h7G+eQuo=;
+  b=Xm9ig6zZWyh5yCEDHgnsrdObet4lL0vMZFo/epPEhZQKjQeIebldP40P
+   T4jXpWMiElWiDYVUJMiYYMgx1M4U2G8HQES56iP35cho3xPsw1IDWo8BL
+   9tJE48pMAKyeFOGYWtB/Se/o9qiQh+ttmCGnDEubpMUl9ognOl6q1zJRj
+   lk4Z7Y81uk9nU7BU9D2WzRQISqdV8FDAB9HfzC4NwaM4R46ZQ4OLWUsS1
+   0cyYYh7mkP3d4cDvAsJu4Us4Qcq1Ej7EzU5sH4q1wYXtlRK6yAkgas76x
+   kmLymY/XkfFjb9vD1XlPKkHoVcV4AxHwipQOrbOhWVmo7KLgHp9IIScnv
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="1121916"
+X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
+   d="scan'208";a="1121916"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 03:35:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
+   d="scan'208";a="5938646"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.51.96])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 03:35:45 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 7 Feb 2024 13:35:38 +0200 (EET)
+To: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+cc: linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+    Bjorn Helgaas <bhelgaas@google.com>, 
+    Mahesh J Salgaonkar <mahesh@linux.ibm.com>, Lukas Wunner <lukas@wunner.de>, 
+    Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH v8] PCI/DPC: Ignore Surprise Down error on hot removal
+In-Reply-To: <20240207111256.110982-1-Smita.KoralahalliChannabasappa@amd.com>
+Message-ID: <ef39439f-e9ba-848d-8fef-73b446db15e5@linux.intel.com>
+References: <20240207111256.110982-1-Smita.KoralahalliChannabasappa@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240206150704.GD1104779@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
 
-On Tue, Feb 06, 2024 at 03:07:04PM +0000, Simon Horman wrote:
-> On Sat, Feb 03, 2024 at 06:03:21PM +0300, Pavel Sakharov wrote:
-> > If 'dev' is NULL, the 'priv' variable has an incorrect address when
-> > dereferencing calling netdev_err().
-> > 
-> > Pass 'dev' instead of 'priv->dev" to the function.
-> > 
-> > Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> > 
-> > Signed-off-by: Pavel Sakharov <p.sakharov@ispras.ru>
-> 
-> Thanks Pavel,
-> 
-> I agree with your analysis that this can result in a NULL dereference.
-> And that your proposed fix is good: netdev_err() can handle a NULL
-> dev argument.
-> 
-> As this seems to be a fix I suggest it should be for net.
-> And that it should be based on that tree and designated as such
-> in the subject:
-> 
-> Subject: [PATCH net] ...
-> 
-> Also if it is a fix, it should have a fixes tag.
-> Perhaps this one:
-> 
-> Fixes: 8532f613bc78 ("net: stmmac: introduce MSI Interrupt routines for mac, safety, RX & TX")
-> 
-> 
-> I don't think there is a need to respin for the above, though please
-> keep this in mind when posting Networking patches in future.
-> 
-> 
-> Looking at the patch above, and stmmac_main.c, it seems that the following
-> functions also suffer from a similar problem:
-> 
-> static irqreturn_t stmmac_msi_intr_tx(int irq, void *data)
-> {
-> 	struct stmmac_tx_queue *tx_q = (struct stmmac_tx_queue *)data;
-> 	...
-> 	dma_conf = container_of(tx_q, struct stmmac_dma_conf, tx_queue[chan]);
-> 	priv = container_of(dma_conf, struct stmmac_priv, dma_conf);
-> 
-> 	if (unlikely(!data)) {
-> 		netdev_err(priv->dev, "%s: invalid dev pointer\n", __func__);
-> 		...
-> 
-> And stmmac_msi_intr_rx(), which follows a similar pattern
-> to stmmac_msi_intr_tx().
-> 
-> I also note that in those functions "invalid dev pointer" seems misleading,
-> perhaps it ought to be "invalid queue" pointer.
-> 
-> As these problems seem to all have been introduced at the same time,
-> perhaps it is appropriate to fix them all in one patch?
+On Wed, 7 Feb 2024, Smita Koralahalli wrote:
 
-IMO we can just drop these and the noted in the patch checks. Before
-actually making a decision about that there are three general
-questions we'd need to answer to:
-
-1. Do we trust the IRQ-subsystem to supply a correct cookie pointer
-specified during the IRQ request procedure?
-
-2. Do we trust the driver code for correctly performing the IRQs
-request?
-
-3. If we don't trust to any of that then what is caused if the problem
-happens and there is no sanity checks implemented?
-
-Here are my thoughts regarding that:
-
-1. If no dev_id sanity checks implemented in the handlers then having
-the IRQ requested with NULL argument passed even though the handlers
-imply the netdev pointer will for sure cause troubles right away since
-the driver won't work and the system will likely crash. So it will be
-spotted during the initial test/debug stage of the respective change.
-
-2. If for some reason the IRQ subsystem supplied a NULL pointer
-instead of the cookie pointer, then something is really wrong and the
-entire system likely won't work correctly. If this case is possible
-to happen then all the kernel IRQ handlers should have been
-implemented with such sanity check, which I don't see in practice.
-
-3. If IRQ was caused by the DW *MAC controller, but NULL pointer is
-passed and the handler returns IRQ_NONE state, then the actual IRQ
-won't be handled AFAICS causing the spurious IRQs detected. Eventually
-the IRQ will be effectively disabled. In anyway the driver will stop
-working. But even if this happens see points 1. and 2. for the
-problem cause implications.
-
-4. The common IRQ handler doesn't have such check in the driver.
-Though unlike the rest of the handlers it's assigned with the
-IRQF_SHARED flag which requires the cookie pointer passed. Anyway the
-sanity check was removed from the common IRQ handler in the commit
-f42234ffd531 ("stmmac: fix pointer check after utilization in
-stmmac_interrupt") with a justification as being _paranoidal_ and
-pointless in the respective context. But in about a year afterwards
-the individual IRQ handlers were introduced with the same check but
-this time in a bit more reasonable context. Still it doesn't make
-the check existence less paranoidal.
-
-5. I took a look at first 20 Ethernet device drivers. None of them has
-such checks implemented even though about half of them request IRQs as
-non-shared (so the cookie pointer is optional).
-
-6. Finally the checks are implemented in the hard IRQ handlers for
-which the less code the better.
-
-To sum all the above up from my point of view the checks are redundant
-of course unless we turn on the paranoidal mode and stop trusting the
-driver code and the IRQ subsystem.
-
--Serge(y)
-
+> According to PCIe r6.0 sec 6.7.6 [1], async removal with DPC may result in
+> surprise down error. This error is expected and is just a side-effect of
+> async remove.
 > 
-> > ---
-> >  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> > index 4727f7be4f86..5ab5148013cd 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> > @@ -5848,7 +5848,7 @@ static irqreturn_t stmmac_mac_interrupt(int irq, void *dev_id)
-> >  	struct stmmac_priv *priv = netdev_priv(dev);
-> > 
-> >  	if (unlikely(!dev)) {
-> > -		netdev_err(priv->dev, "%s: invalid dev pointer\n", __func__);
-> > +		netdev_err(dev, "%s: invalid dev pointer\n", __func__);
-> >  		return IRQ_NONE;
-> >  	}
-> > 
-> > @@ -5868,7 +5868,7 @@ static irqreturn_t stmmac_safety_interrupt(int irq, void *dev_id)
-> >  	struct stmmac_priv *priv = netdev_priv(dev);
-> > 
-> >  	if (unlikely(!dev)) {
-> > -		netdev_err(priv->dev, "%s: invalid dev pointer\n", __func__);
-> > +		netdev_err(dev, "%s: invalid dev pointer\n", __func__);
-> >  		return IRQ_NONE;
-> >  	}
-> > 
-> > 
+> Ignore surprise down error generated as a side-effect of async remove.
+> Typically, this error is benign as the pciehp handler invoked by PDC
+> or/and DLLSC alongside DPC, de-enumerates and brings down the device
+> appropriately. But the error messages might confuse users. Get rid of
+> these irritating log messages with a 1s delay while pciehp waits for
+> dpc recovery.
+
+dpc -> DPC.
+
+> The implementation is as follows: On an async remove a DPC is triggered
+> along with a Presence Detect State change and/or DLL State Change.
+> Determine it's an async remove by checking for DPC Trigger Status in DPC
+> Status Register and Surprise Down Error Status in AER Uncorrected Error
+> Status to be non-zero. If true, treat the DPC event as a side-effect of
+> async remove, clear the error status registers and continue with hot-plug
+> tear down routines. If not, follow the existing routine to handle AER and
+> DPC errors.
 > 
+> Please note that, masking Surprise Down Errors was explored as an
+> alternative approach, but left due to the odd behavior that masking only
+> avoids the interrupt, but still records an error per PCIe r6.0.1 Section
+> 6.2.3.2.2. That stale error is going to be reported the next time some
+> error other than Surprise Down is handled.
+> 
+> Dmesg before:
+> 
+>   pcieport 0000:00:01.4: DPC: containment event, status:0x1f01 source:0x0000
+>   pcieport 0000:00:01.4: DPC: unmasked uncorrectable error detected
+>   pcieport 0000:00:01.4: PCIe Bus Error: severity=Uncorrected (Fatal), type=Transaction Layer, (Receiver ID)
+>   pcieport 0000:00:01.4:   device [1022:14ab] error status/mask=00000020/04004000
+>   pcieport 0000:00:01.4:    [ 5] SDES (First)
+>   nvme nvme2: frozen state error detected, reset controller
+>   pcieport 0000:00:01.4: DPC: Data Link Layer Link Active not set in 1000 msec
+>   pcieport 0000:00:01.4: AER: subordinate device reset failed
+>   pcieport 0000:00:01.4: AER: device recovery failed
+>   pcieport 0000:00:01.4: pciehp: Slot(16): Link Down
+>   nvme2n1: detected capacity change from 1953525168 to 0
+>   pci 0000:04:00.0: Removing from iommu group 49
+> 
+> Dmesg after:
+> 
+>  pcieport 0000:00:01.4: pciehp: Slot(16): Link Down
+>  nvme1n1: detected capacity change from 1953525168 to 0
+>  pci 0000:04:00.0: Removing from iommu group 37
+> 
+> [1] PCI Express Base Specification Revision 6.0, Dec 16 2021.
+>     https://members.pcisig.com/wg/PCI-SIG/document/16609
+> 
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+> Reviewed-by: Lukas Wunner <lukas@wunner.de>
+> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+> v2:
+> 	Indentation is taken care. (Bjorn)
+> 	Unrelevant dmesg logs are removed. (Bjorn)
+> 	Rephrased commit message, to be clear on native vs FW-First
+> 	handling. (Bjorn and Sathyanarayanan)
+> 	Prefix changed from pciehp_ to dpc_. (Lukas)
+> 	Clearing ARI and AtomicOp Requester are performed as a part of
+> 	(de-)enumeration in pciehp_unconfigure_device(). (Lukas)
+> 	Changed to clearing all optional capabilities in DEVCTL2.
+> 	OS-First -> native. (Sathyanarayanan)
+> 
+> v3:
+> 	Added error message when root port become inactive.
+> 	Modified commit description to add more details.
+> 	Rearranged code comments and function calls with no functional
+> 	change.
+> 	Additional check for is_hotplug_bridge.
+> 	dpc_completed_waitqueue to wakeup pciehp handler.
+> 	Cleared only Fatal error detected in DEVSTA.
+> 
+> v4:
+> 	Made read+write conditional on "if (pdev->dpc_rp_extensions)"
+> 	for DPC_RP_PIO_STATUS.
+> 	Wrapped to 80 chars.
+> 	Code comment for clearing PCI_STATUS and PCI_EXP_DEVSTA.
+> 	Added pcie_wait_for_link() check.
+> 	Removed error message for root port inactive as the message
+> 	already existed.
+> 	Check for is_hotplug_bridge before registers read.
+> 	Section 6.7.6 of the PCIe Base Spec 6.0 -> PCIe r6.0 sec 6.7.6.
+> 	Made code comment more meaningful.
+> 
+> v5:
+> 	$SUBJECT correction.
+> 	Added "Reviewed-by" tag.
+> 	No code changes. Re-spin on latest base to get Bjorn's
+> 	attention.
+> 
+> v6:
+> 	Change to write 1's to clear error. (Sathyanarayanan)
+> 
+> v7:
+> 	No changes. Rebasing on pci main branch as per Bjorn comments.
+> 
+> v8:
+> 	Just return "status & PCI_ERR_UNC_SURPDN" instead of true and
+> 	false and allow C to handle the conversion to bool. (Ilpo)
+> ---
+>  drivers/pci/pcie/dpc.c | 64 ++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+> 
+> diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+> index 94111e438241..ba7240a2ba2f 100644
+> --- a/drivers/pci/pcie/dpc.c
+> +++ b/drivers/pci/pcie/dpc.c
+> @@ -303,10 +303,74 @@ void dpc_process_error(struct pci_dev *pdev)
+>  	}
+>  }
+>  
+> +static void pci_clear_surpdn_errors(struct pci_dev *pdev)
+> +{
+> +	u32 reg32;
+> +
+> +	if (pdev->dpc_rp_extensions) {
+> +		pci_read_config_dword(pdev, pdev->dpc_cap + PCI_EXP_DPC_RP_PIO_STATUS,
+> +				      &reg32);
+> +		pci_write_config_dword(pdev, pdev->dpc_cap + PCI_EXP_DPC_RP_PIO_STATUS,
+> +				       reg32);
+> +	}
+> +
+> +	/*
+> +	 * In practice, Surprise Down errors have been observed to also set
+> +	 * error bits in the Status Register as well as the Fatal Error
+> +	 * Detected bit in the Device Status Register.
+> +	 */
+> +	pci_write_config_word(pdev, PCI_STATUS, 0xffff);
+> +
+> +	pcie_capability_write_word(pdev, PCI_EXP_DEVSTA, PCI_EXP_DEVSTA_FED);
+> +}
+> +
+> +static void dpc_handle_surprise_removal(struct pci_dev *pdev)
+> +{
+> +	if (!pcie_wait_for_link(pdev, false)) {
+> +		pci_info(pdev, "Data Link Layer Link Active not cleared in 1000 msec\n");
+> +		goto out;
+> +	}
+> +
+> +	if (pdev->dpc_rp_extensions && dpc_wait_rp_inactive(pdev))
+> +		goto out;
+> +
+> +	pci_aer_raw_clear_status(pdev);
+> +	pci_clear_surpdn_errors(pdev);
+> +
+> +	pci_write_config_word(pdev, pdev->dpc_cap + PCI_EXP_DPC_STATUS,
+> +			      PCI_EXP_DPC_STATUS_TRIGGER);
+> +
+> +out:
+> +	clear_bit(PCI_DPC_RECOVERED, &pdev->priv_flags);
+> +	wake_up_all(&dpc_completed_waitqueue);
+> +}
+> +
+> +static bool dpc_is_surprise_removal(struct pci_dev *pdev)
+> +{
+> +	u16 status;
+> +
+> +	if (!pdev->is_hotplug_bridge)
+> +		return false;
+> +
+> +	pci_read_config_word(pdev, pdev->aer_cap + PCI_ERR_UNCOR_STATUS,
+> +			     &status);
+> +
+> +	return status & PCI_ERR_UNC_SURPDN;
+
+Thanks for the update, looks more readable now.
+
+While staring this now again, I think checking for error from
+pci_read_config_word() would be useful so that it cannot confused with
+surprise down?
+
+-- 
+ i.
+
+> +}
+> +
+>  static irqreturn_t dpc_handler(int irq, void *context)
+>  {
+>  	struct pci_dev *pdev = context;
+>  
+> +	/*
+> +	 * According to PCIe r6.0 sec 6.7.6, errors are an expected side effect
+> +	 * of async removal and should be ignored by software.
+> +	 */
+> +	if (dpc_is_surprise_removal(pdev)) {
+> +		dpc_handle_surprise_removal(pdev);
+> +		return IRQ_HANDLED;
+> +	}
+> +
+>  	dpc_process_error(pdev);
+>  
+>  	/* We configure DPC so it only triggers on ERR_FATAL */
+> 
+
 
