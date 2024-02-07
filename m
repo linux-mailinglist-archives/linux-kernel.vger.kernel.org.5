@@ -1,167 +1,249 @@
-Return-Path: <linux-kernel+bounces-55850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 824F884C27C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:25:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E9BD84C27E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:29:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DCD91F21E28
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:25:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF3932853B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 649ECF9DB;
-	Wed,  7 Feb 2024 02:25:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C5EEEDC;
+	Wed,  7 Feb 2024 02:28:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PvQ5YOH0"
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QUkclYJR"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCE9EEAC
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 02:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B577DF58;
+	Wed,  7 Feb 2024 02:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707272739; cv=none; b=N92mqhEKOFOegKHSCtkKZIbYZd3vFosJlLBPV4ls2Ky2dA7AjcXjJnkNeXtNvx6gtUsB1pOQ3J6MogeiJ3teY83nRnP3u46UkFTvmIg3/hhca/1K8Qy+bZbAyOAjgNNFcMrrLaQKB5pQ37+hQkLxhuQgWtFge9UZXe64FrlFHCY=
+	t=1707272936; cv=none; b=YVoY3SPHYgMLxyB/C/yUvBJEVATJExvKRQJPllVceZoC9EuMPYpTaJIY1VfRTIQGXhStROPVh7nmOCuo68UmbioAPdHT8c5eYEODLMdRy4J7NM2wvJ7zaBKDKxKEhywXBDxa6ZBY09CqIdmwLt8BIa4VmNhtVCH9j7YP9HkBw3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707272739; c=relaxed/simple;
-	bh=OuRoN1AaajxzC9NcM1BSle+BErg7eCWnR8Pv33SqleQ=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=cfpnOinnZXAE1YOYNJl5SyFk4Qh2nwJI74N8y158dImxSDXyFGyyARc67cqQ+yN4xP9QwJuSOuwSGZrPmbeHtSu4Mqt40fouSLdS5zl2HNf0Gz/X6jRuIJ7YJsXoNpmGM6pV8/m+nNPRT7kHa9uBwWVDVw1m0MQ1tj/QxqrKRsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PvQ5YOH0; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain; charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707272735;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KxDGt9b3bgYXiw9ZtkUhOb/RH81efkpcL0KqwcN75VA=;
-	b=PvQ5YOH00zOroTBNYKsZS52hOf+6xeqTmhSZoJIDwWQuhwYD2kGq/THf2t9yMELPeqFqwa
-	hSMc7XmhwbuGoUTbDCkjBE0rEfqcv24cUEsg0/x2Upsy9PoBTc4Wd7KAV8gn8VO3hkvqfH
-	o+26BJbbfBmzRv2GjgeVeFuLfvrHUoc=
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
+	s=arc-20240116; t=1707272936; c=relaxed/simple;
+	bh=GAzfdjQyUQZQlsw/9SQ4PdngMFFUkF5iE/vp59Bqf/I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OI2HZL7c0oaEWHYqQwnp8SyB8Ph3/1Q9MRnf4v2uPOCZUeGTf3PiC7B4PXA8ctZrSWlcGmUdklp3gRZ8T4DcRa0U5kg4nXEfl77xiHlZ900mbs03RshgGIMZiVhT5Q13CgSqiMXPHw+5yYsyLp2nC+FGuTIrqzFiGv8fxKCjD+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QUkclYJR; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3394ca0c874so128327f8f.2;
+        Tue, 06 Feb 2024 18:28:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707272929; x=1707877729; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+iVcz3g4MxUWRJae273hESZ7afXcLOcAGbcYewPQcZ4=;
+        b=QUkclYJRVNI9ZVjWQCWhMYViG515va0/LqMDJe5Fy8+FVGvD31iQFm7Er7pIW7j+om
+         AiBNTKFUzlqJJfUaTYBTWan1CdkobSQbgARmmBmLXqljHg30d1CIM6HHnWYeHHa9EMnK
+         1LabsdWw7kwFXyoZb27cTkdk1eNVdgEBL25gY9NZKnepsds7x0KucYs3gknSLaBtvKdM
+         jNBESIgmZ0tN8MrZTwYbJywp7OW4qS9ssqvLTDXCLuOaoHHL7OoK9/Be0OOKZKaTFfrf
+         ZjmoXzysr3KXcqRMl0zTzKhsOaSOSoTvFKJhDwKnFa/in1v0iucjvh60v4JnK0itf1za
+         JO7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707272929; x=1707877729;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+iVcz3g4MxUWRJae273hESZ7afXcLOcAGbcYewPQcZ4=;
+        b=ot4+nEDtmp2jhFhsQ6JSaGM80OYGlVqrkcfrrfY2nbjvsRucCQPWU0oFW+KqH0bab6
+         BWUdszJIbGAf+RZqUIi0KQyLPVFPTsLkK/HG9I8fh6lemxFkz2P7er75iv4/YxDxKEPv
+         KDFJYxxjMFJDLm/8dwC7lKQXgrks40+uQIadf6tB4nmxrTKxlUXq4mnWF362Z+HtBnkq
+         lyQyNRdGWiid6Ud9ybsR6LRdGM6RRVuSYt4gTtTqjvg0+ObHcITsH7q/A15eg6ZOQALt
+         XfEH9/Cn7PIHFfeQ6HqVLmdnHwyjLpb+IKZbdR0AaGQBKoMuAd8mN2TH8faS6vJR0Mf2
+         oSTA==
+X-Forwarded-Encrypted: i=1; AJvYcCVJHYvDK8KBjG2sSQZaE6P2YVT+WoGFzeEpssFvPZFTXc6u44BY619syG8I62DkK2d9SgY8POvXwuWLk7w4oW+EjprCFNx1S8nC40myBD7CYiwpJ6voFtkcgNFPVmR6JixPKQeqsxPOWUApvETjF70q
+X-Gm-Message-State: AOJu0YyFFTBd8hyjx+yDytRxAOUflXs6kHyWKnGNFESmDnyishEgi64V
+	GmXo2IaWpdo4P+V5ikhey2ksFggjilnTBUiW3zkPaRdC+z2oElEnUg64VNFnTkQ+Og2hcBNVqtc
+	Zx2TBViKuPANttNW+3RPfzrXvfn/bEc3mmAE=
+X-Google-Smtp-Source: AGHT+IGL8HAR6YXekDae3plAm2kECL3tjVhSc5fDO//CWaL5/ApYDPvzX3p2iVkt+QMEDifp98018wjw21wAWXicRy0=
+X-Received: by 2002:a5d:4a90:0:b0:33b:3d7b:9df5 with SMTP id
+ o16-20020a5d4a90000000b0033b3d7b9df5mr2368927wrq.3.1707272929037; Tue, 06 Feb
+ 2024 18:28:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH v3] mm: hugetlb: improve the handling of hugetlb allocation failure for freed or in-use hugetlb
-Date: Wed, 7 Feb 2024 10:24:52 +0800
-Message-Id: <CB00D336-84AE-412C-ACA4-254EDD3C2279@linux.dev>
-References: <62890fd60b1ecd5bf1cdc476c973f60fe37aa0cb.1707181934.git.baolin.wang@linux.alibaba.com>
-Cc: akpm@linux-foundation.org, osalvador@suse.de, david@redhat.com,
- mhocko@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-In-Reply-To: <62890fd60b1ecd5bf1cdc476c973f60fe37aa0cb.1707181934.git.baolin.wang@linux.alibaba.com>
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+References: <ZcDwoce6Ok25K6Dm@FVFF77S0Q05N> <xhsmhmssehp6t.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <CAJNi4rMiGcP4wdA=1dSOXwYXOKSCWnN8FYxBaFdaAXBqAU_ePQ@mail.gmail.com> <xhsmhjznigcdr.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+In-Reply-To: <xhsmhjznigcdr.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+From: richard clark <richard.xnu.clark@gmail.com>
+Date: Wed, 7 Feb 2024 10:28:33 +0800
+Message-ID: <CAJNi4rPHhEMGbv9ndKxFLdTvdN9a3HBiRkT4jtTp0bOTYvWq0Q@mail.gmail.com>
+Subject: Re: Question about the ipi_raise filter usage and output
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Steven Rostedt <rostedt@goodmis.org>, nico@fluxnic.net, 
+	mhiramat@kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Feb 6, 2024 at 5:39=E2=80=AFPM Valentin Schneider <vschneid@redhat.=
+com> wrote:
+>
+> You should have access to the generic fields which include the CPU from
+> which the event happens. Any of "CPU", "cpu" or "common_cpu" would match
+> this.
+>
+> So if you're on a recent enough kernel (v6.6 or above AFAICT), you should
+> be able to do something like so:
+>
+>   trace-cmd record -e 'ipi_raise' -f 'CPU & CPUS{7-42}' ./foo.sh
+>
+> If you just want to match a single CPU, or are on an older kernel, this
+> should work as well:
+>
+>   trace-cmd record -e 'ipi_raise' -f 'CPU =3D=3D 42' ./foo.sh
+>
+> For example on a QEMU x86 environment:
+>
+>   # trace-cmd record -e 'call_function*' -f 'CPU & CPUS{3}' hackbench
+>   Running in process mode with 10 groups using 40 file descriptors each (=
+=3D=3D 400 tasks)
+>   Each sender will pass 100 messages of 100 bytes
+>   Time: 0.396
+>   CPU0 data recorded at offset=3D0x738000
+>       0 bytes in size
+>   CPU1 data recorded at offset=3D0x738000
+>       0 bytes in size
+>   CPU2 data recorded at offset=3D0x738000
+>       0 bytes in size
+>   CPU3 data recorded at offset=3D0x738000
+>       4096 bytes in size
+>
+>   # trace-cmd report
+>   CPU 0 is empty
+>   CPU 1 is empty
+>   CPU 2 is empty
+>   cpus=3D4
+>             <idle>-0     [003]    29.704387: call_function_single_entry: =
+vector=3D251
+>             <idle>-0     [003]    29.704388: call_function_single_exit: v=
+ector=3D251
+>             <idle>-0     [003]    29.705950: call_function_single_entry: =
+vector=3D251
+>             <idle>-0     [003]    29.705951: call_function_single_exit: v=
+ector=3D251
+>             <idle>-0     [003]    29.706462: call_function_single_entry: =
+vector=3D251
+>             <idle>-0     [003]    29.706463: call_function_single_exit: v=
+ector=3D251
+>          hackbench-962   [003]    29.706501: call_function_single_entry: =
+vector=3D251
+>          hackbench-962   [003]    29.706502: call_function_single_exit: v=
+ector=3D251
+>          hackbench-955   [003]    29.706521: call_function_single_entry: =
+vector=3D251
+>          hackbench-955   [003]    29.706522: call_function_single_exit: v=
+ector=3D251
+>             <idle>-0     [003]    30.101812: call_function_single_entry: =
+vector=3D251
+>             <idle>-0     [003]    30.101814: call_function_single_exit: v=
+ector=3D251
+>             <idle>-0     [003]    30.101897: call_function_single_entry: =
+vector=3D251
+>             <idle>-0     [003]    30.101898: call_function_single_exit: v=
+ector=3D251
+>             <idle>-0     [003]    30.101985: call_function_single_entry: =
+vector=3D251
+>             <idle>-0     [003]    30.101986: call_function_single_exit: v=
+ector=3D251
+>             <idle>-0     [003]    30.102072: call_function_single_entry: =
+vector=3D251
+>             <idle>-0     [003]    30.102072: call_function_single_exit: v=
+ector=3D251
+>             <idle>-0     [003]    30.102161: call_function_single_entry: =
+vector=3D251
+>             <idle>-0     [003]    30.102161: call_function_single_exit: v=
+ector=3D251
+>             <idle>-0     [003]    30.102250: call_function_single_entry: =
+vector=3D251
+>             <idle>-0     [003]    30.102251: call_function_single_exit: v=
+ector=3D251
+>             <idle>-0     [003]    30.102372: call_function_single_entry: =
+vector=3D251
+>             <idle>-0     [003]    30.102372: call_function_single_exit: v=
+ector=3D251
+>
+>
+>   CPU 0 is empty
+>   CPU 1 is empty
+>   CPU 2 is empty
+>   cpus=3D4
+>           <idle>-0     [003]  1067.718304: call_function_single_entry: ve=
+ctor=3D251
+>           <idle>-0     [003]  1067.718309: call_function_single_exit: vec=
+tor=3D251
+>
+> and that behaves the same as
+>
+>   trace-cmd record -e 'call_function*' -f 'CPU =3D=3D 3' hackbench
+>
+Thanks, # trace-cmd record -e 'ipi' -f 'CPU=3D=3D10 || CPU=3D=3D11' -f
+'reason=3D=3D"Function call interrupts"' works:
+CPU0 data recorded at offset=3D0x336000
+    0 bytes in size
+CPU1 data recorded at offset=3D0x336000
+    0 bytes in size
+CPU2 data recorded at offset=3D0x336000
+    0 bytes in size
+CPU3 data recorded at offset=3D0x336000
+    0 bytes in size
+CPU4 data recorded at offset=3D0x336000
+    0 bytes in size
+CPU5 data recorded at offset=3D0x336000
+    0 bytes in size
+CPU6 data recorded at offset=3D0x336000
+    0 bytes in size
+CPU7 data recorded at offset=3D0x336000
+    0 bytes in size
+CPU8 data recorded at offset=3D0x336000
+    0 bytes in size
+CPU9 data recorded at offset=3D0x336000
+    0 bytes in size
+CPU10 data recorded at offset=3D0x336000
+    4096 bytes in size
+CPU11 data recorded at offset=3D0x337000
+    4096 bytes in size
 
+# trace-cmd report
+CPU 0 is empty
+CPU 1 is empty
+CPU 2 is empty
+CPU 3 is empty
+CPU 4 is empty
+CPU 5 is empty
+CPU 6 is empty
+CPU 7 is empty
+CPU 8 is empty
+CPU 9 is empty
+cpus=3D12
+          insmod-8519  [010] 170847.580062: ipi_raise:
+target_mask=3D00000000,00000bff (Function call interrupts)
+          <idle>-0     [011] 170847.580070: ipi_entry:
+(Function call interrupts)
+          <idle>-0     [011] 170847.580071: ipi_exit:
+(Function call interrupts)
+          insmod-8519  [010] 170847.580078: ipi_raise:
+target_mask=3D00000000,00000bff (Function call interrupts)
+          <idle>-0     [011] 170847.580080: ipi_entry:
+(Function call interrupts)
+          <idle>-0     [011] 170847.580080: ipi_exit:
+(Function call interrupts)
+          insmod-8519  [010] 170847.580282: ipi_raise:
+target_mask=3D00000000,00000002 (Function call interrupts)
+          insmod-8519  [010] 170847.580329: ipi_raise:
+target_mask=3D00000000,00000800 (Function call interrupts)
+          <idle>-0     [011] 170847.580331: ipi_entry:
+(Function call interrupts)
+          <idle>-0     [011] 170847.580343: ipi_exit:
+(Function call interrupts)
 
-> On Feb 6, 2024, at 11:08, Baolin Wang <baolin.wang@linux.alibaba.com> wrot=
-e:
->=20
-> =EF=BB=BFalloc_and_dissolve_hugetlb_folio() preallocates a new hugetlb pag=
-e before
-> it takes hugetlb_lock. In 3 out of 4 cases the page is not really used and=
-
-> therefore the newly allocated page is just freed right away. This is
-> wasteful and it might cause pre-mature failures in those cases.
->=20
-> Address that by moving the allocation down to the only case (hugetlb
-> page is really in the free pages pool). We need to drop hugetlb_lock
-> to do so and therefore need to recheck the page state after regaining
-> it.
->=20
-> The patch is more of a cleanup than an actual fix to an existing
-> problem. There are no known reports about pre-mature failures.
->=20
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-
-Reviewed-by: Muchun Song <muchun.song@linux.dev>
-
-Thanks
-
-> ---
-> Changes from v2=EF=BC=9B
-> - Update the commit message suggested by Michal.
-> - Remove unnecessary comments.
-> Changes from v1:
-> - Update the suject line per Muchun.
-> - Move the allocation into the free hugetlb handling branch per Michal.
-> ---
-> mm/hugetlb.c | 32 ++++++++++++++++----------------
-> 1 file changed, 16 insertions(+), 16 deletions(-)
->=20
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 9d996fe4ecd9..a05507a2143f 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -3031,21 +3031,9 @@ static int alloc_and_dissolve_hugetlb_folio(struct h=
-state *h,
-> {
->    gfp_t gfp_mask =3D htlb_alloc_mask(h) | __GFP_THISNODE;
->    int nid =3D folio_nid(old_folio);
-> -    struct folio *new_folio;
-> +    struct folio *new_folio =3D NULL;
->    int ret =3D 0;
->=20
-> -    /*
-> -     * Before dissolving the folio, we need to allocate a new one for the=
-
-> -     * pool to remain stable.  Here, we allocate the folio and 'prep' it
-> -     * by doing everything but actually updating counters and adding to
-> -     * the pool.  This simplifies and let us do most of the processing
-> -     * under the lock.
-> -     */
-> -    new_folio =3D alloc_buddy_hugetlb_folio(h, gfp_mask, nid, NULL, NULL)=
-;
-> -    if (!new_folio)
-> -        return -ENOMEM;
-> -    __prep_new_hugetlb_folio(h, new_folio);
-> -
-> retry:
->    spin_lock_irq(&hugetlb_lock);
->    if (!folio_test_hugetlb(old_folio)) {
-> @@ -3075,6 +3063,16 @@ static int alloc_and_dissolve_hugetlb_folio(struct h=
-state *h,
->        cond_resched();
->        goto retry;
->    } else {
-> +        if (!new_folio) {
-> +            spin_unlock_irq(&hugetlb_lock);
-> +            new_folio =3D alloc_buddy_hugetlb_folio(h, gfp_mask, nid,
-> +                                  NULL, NULL);
-> +            if (!new_folio)
-> +                return -ENOMEM;
-> +            __prep_new_hugetlb_folio(h, new_folio);
-> +            goto retry;
-> +        }
-> +
->        /*
->         * Ok, old_folio is still a genuine free hugepage. Remove it from
->         * the freelist and decrease the counters. These will be
-> @@ -3102,9 +3100,11 @@ static int alloc_and_dissolve_hugetlb_folio(struct h=
-state *h,
->=20
-> free_new:
->    spin_unlock_irq(&hugetlb_lock);
-> -    /* Folio has a zero ref count, but needs a ref to be freed */
-> -    folio_ref_unfreeze(new_folio, 1);
-> -    update_and_free_hugetlb_folio(h, new_folio, false);
-> +    if (new_folio) {
-> +        /* Folio has a zero ref count, but needs a ref to be freed */
-> +        folio_ref_unfreeze(new_folio, 1);
-> +        update_and_free_hugetlb_folio(h, new_folio, false);
-> +    }
->=20
->    return ret;
-> }
-> --=20
-> 2.39.3
->=20
+BTW: where does 12 come from in 'cpus=3D12' :-)
 
