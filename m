@@ -1,387 +1,169 @@
-Return-Path: <linux-kernel+bounces-56708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 533DF84CDE5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:23:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6169584CDEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:23:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD675B27A24
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:22:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1853B286C57
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC9C57FBD4;
-	Wed,  7 Feb 2024 15:22:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB9E47F7D0;
+	Wed,  7 Feb 2024 15:23:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="f6DkeyLK"
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YQUmnG+x"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B71F87F7F6
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 303F47F46D
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707319345; cv=none; b=ATMuK8XY6eyy5+nawzEC9at2AqG/UytZyfKX88p6U+zcvV+qreRmxKReulGCUkFpiEuaXlExHtOUtnXedHkSRHr4ZtVJEq61WYw+TI5HOvSKEs36xN7zDI+6L//H8kXsgjqE3J4V0UB87nrvs7ppSeqMwaaf1QS8itSGUKnMSIc=
+	t=1707319404; cv=none; b=eDCCwFOlKHxjjPICZtZ0F/1ZwEs1wHPN8HO4g/XzGCSj3fvKU7y74YUMGuV4LH7SKM4bYRbIc7mFxRrwuXtAO/xS8JxpiblaQvUj++Wy1+PqaSIhfyoYhRbu///56Elnv3zrXr7P91pzEHIMaMoFT+OdeM0/Ro4YNKoXqiWP/ws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707319345; c=relaxed/simple;
-	bh=y2+ixwCrJlL98/rFoHOQ2dy/0y39rOCotwOZnAyaaIc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o1gZ6sq7Xtrx6TL3UeY2a/54oPnA2lGmZ05Aq10RSwtKQduPiwIPAzS9M9JyEpeFZrzcBv9EdrUNDmCXMHOQhzDwOAfgiq8U30P9LwTi0EIi/vciurSUjToCDljTvqFQAZ8snZq4nTK4N9rRoBgstHjZbDtb/OdQgoR6I3CfULo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=f6DkeyLK; arc=none smtp.client-ip=209.85.161.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-59a31c14100so310112eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:22:23 -0800 (PST)
+	s=arc-20240116; t=1707319404; c=relaxed/simple;
+	bh=D1nHBy9BTEGJ6f8wgI2PA54FXtxwvMIUT6iWGXX6YOQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KfVcVr7Jt612uegay/40vZgG+d+uUUTAd7Ati7cimtFV/eu8M6xGt2CnZ4FODdFeLtUm8x9zY0ZjjvlbbR/OJymdBf2I2Dr3k7iaKSRGqrzfzheON8GIynY6OgElVyD3U9eQ6B3HwbRDf8mN5xsb3S2Qw05duTpLc5yLvu7mB2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YQUmnG+x; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40fe79f1aaaso6620905e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:23:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1707319343; x=1707924143; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RXuoUtlFYAMq0mxsqrcVmWz5P/ig/5TnpdupOSgG5vo=;
-        b=f6DkeyLK2SE7BY4ELpEH/lbJtejO7choEGk9PkV+HMD+YUK+TUSRjC3XEpxidw5oGK
-         CNIZcBqlceqBJoGagLYbGxV9cU/ueHWYNSqkEbrFiPN84bD3fckBm2yFUQboG1dFD4JM
-         Ro0vZs+kLeXdUCm7q/LJWDz+43LqQWDwMhxQOPQ3CCSS8+w53Ktb+Vr4DaMH9CGc7fk7
-         LWJyoBzUyqYsQuFrF5voyt2NiRhwBCdzJysALwB6QrpLna6ctEtLpcE2yxXZhuVz+OQz
-         GFNs45RTa2rr21dlbTvmWU+a+byCUMVgR1fYLUhCLsNHEfkvIjYENMjmQYb4U0eYgFFP
-         068Q==
+        d=linaro.org; s=google; t=1707319401; x=1707924201; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mCvQlP1u/ahMkxnt3s+kY4WBZy5d0gK0JV7DH+GWHro=;
+        b=YQUmnG+xPxfjgPc1fZOyCPdUSG5gWG+pQ+cELWXQYiKQC4yzcgt02BnF/6tRRYczqG
+         XoSnnL0PnSKvxQLTcA0l9d54t73570VDiKfxVsZyk09V4icjuUYRWsnI9iw6jI8F5NRf
+         uCBQNkYND7QABEBg+ywLH2n0gpnTGcCRSMg7VFXyzoqGNrjJt6QD0pZGCAL+mZdi1WbP
+         e5EPeglkqxKnP7kt353NH4TS128SRXmVGlToa6AtLhUl2tnhSZ4k22IBa71Vr/KYnYDn
+         Q2K4R64MEvYUBxHPsmaKXx+IkPHU61gAp/0NkAfglkOGPfEbgVkLhUlc4nIykvzT+5qD
+         o8lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707319343; x=1707924143;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1707319401; x=1707924201;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RXuoUtlFYAMq0mxsqrcVmWz5P/ig/5TnpdupOSgG5vo=;
-        b=VKhUh81BWRJ8YuAfRpRMhoOsXQBQ9NhoEaaGcaia8svargbKcCsBzzZl1Ol3rDiG/l
-         s5giMjTt8ALxW0ntLu/M7kcb0KHpTpNq/n4gx+dV+ExtAPTmEXPQYBGS05kJl/+hFb/C
-         vPkXgdzFctaA5RO6VaR4TDekgdcgW2mmpBpM2uBFgGNw+r8ubiuSZods9j+1Na5TCxDA
-         x6f66AT+/CdQgjhtjB/xrp8Xh8FW+QSS43hfFoY+0IVvxjDPsYwCQf/s4D/rZDE4TjbW
-         g1o40YPeB2em2CEENg3d909Gl/xKyALpTubvBgTCp/5PWZM7p7LC68jToUIJUYlyPNw9
-         pAcw==
-X-Gm-Message-State: AOJu0YwK2JxK8gqxuzbH2vnXu/yLLNuOl9Tx8DQAGIXgcg3qdnOqpDjt
-	fQXGg6VYFB1QW+ulHGyikNtJsHo/DtRs3/PaRu0ur3Hh0fur4DAsUIrAHeE9s6g=
-X-Google-Smtp-Source: AGHT+IEU9d6tiASyetFtinfn76+eYul26J1pERlMLisD1fypSRV2TkE+6QjH/VPGxqwfr8LcAXvuow==
-X-Received: by 2002:a4a:6c44:0:b0:59a:e669:a37c with SMTP id u4-20020a4a6c44000000b0059ae669a37cmr4640190oof.1.1707319342629;
-        Wed, 07 Feb 2024 07:22:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWlZUQlzB5nEGYzlfQNjBmy6WGyBIFOav0ILKGadYFljPZ2+oGD8Twtia/0iJf6U9tFIdLqhHXVahOG/XmoUubZJMeEM4rpVPpvZ0FStTNoXfsDkHIXZMeXUzGkuW4a/PztUH6CmF0X1Bbc1WYwb06iSmm6d9F4StU6fcWish9bCZSRmHUtE8R7uIYWrzNa9gzQGKvLkgNZMz0HqbU4bJbpYr81DgfQdWezcwzyUcAgnqAt2Q1YMlLehKQqDyLWGWbhzABh/f6k7SKlXXHFXCEc+pPvIof+SHSyIUht14U8WbRPGH4EzuiTHc9If8tkJJM07AmzYBSXqZCtp0IBWQkdq/kZdK430lMKxOMvTvHFJ/fHM9EHk8eApsESQ08rJx5oMxyjhwwU/7mVZx8Dq80XBtLo4831p9M1sIEU8y/VSynG962PfZWiwyMEfnlPwpfYoKN9RiyP3LRbH9iNX14tn4MwMzvMTzA9ifpOK7SvuCeQ/s8VUYy5LAElj/YwwSUw4meZ3+l0xN8XKzk+5yZdHmNShWVBNIZthCZOI182evPfkmLFq1gW8vT1rMJ1P6JJVSb2mNthFexHaWKalNIzNCENO4mgF5b5xaVvhG0nLWjdxHCozKQQ+eOeukMiNvmgslukCZUHnL7EZrV6SFEbYuxFKOkVfzSmf8gMW9rcFW7d
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id k5-20020a4a3105000000b0059cf1cddca5sm253713ooa.34.2024.02.07.07.22.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 07:22:22 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rXjkj-008bE7-0x;
-	Wed, 07 Feb 2024 11:22:21 -0400
-Date: Wed, 7 Feb 2024 11:22:21 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: "Gowans, James" <jgowans@amazon.com>
-Cc: "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"Graf (AWS), Alexander" <graf@amazon.de>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"madvenka@linux.microsoft.com" <madvenka@linux.microsoft.com>,
-	"anthony.yznaga@oracle.com" <anthony.yznaga@oracle.com>,
-	"skinsburskii@linux.microsoft.com" <skinsburskii@linux.microsoft.com>,
-	"steven.sistare@oracle.com" <steven.sistare@oracle.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Woodhouse, David" <dwmw@amazon.co.uk>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"joro@8bytes.org" <joro@8bytes.org>,
-	"ebiederm@xmission.com" <ebiederm@xmission.com>,
-	=?utf-8?B?U2Now7ZuaGVyciwgSmFuIEgu?= <jschoenh@amazon.de>,
-	"will@kernel.org" <will@kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"usama.arif@bytedance.com" <usama.arif@bytedance.com>
-Subject: Re: [RFC 00/18] Pkernfs: Support persistence for live update
-Message-ID: <20240207152221.GK31743@ziepe.ca>
-References: <20240205120203.60312-1-jgowans@amazon.com>
- <20240205174238.GC31743@ziepe.ca>
- <8e4cc7fd4c7cb14a8942e15a676e5b95e6f44b43.camel@amazon.com>
+        bh=mCvQlP1u/ahMkxnt3s+kY4WBZy5d0gK0JV7DH+GWHro=;
+        b=LF6deeAZr4UgfpnyJvwHEaQQCpQgOBLhbpamRr6uhik8onPFxPhsJWNEdpE7zlnGsh
+         f9Q29vDx2Y7ga87u+Xvj5jsPj4CigJEFEUuTmciEwaYGKSwvpprnE5vNgJChLAqzbUj4
+         pFASHHIT4GZbcPH7Wwl3e+bnKli2mq+lbJ3kYEjZZU/9mDVE7o1IR1yHW7dPCFeS7xjr
+         t+Lblhe8YH6pYllEplY06HnvJB7ojdDh24CE/W64egvftBRW+IRVuUoHbV1J6IPf/o8R
+         6DakShaQSgItHxumsfBlNkjnBYhiyX4IKJ0t9VjxTkPpZcBoCFQAZMFyPvLXE9cyyEs3
+         OFHg==
+X-Gm-Message-State: AOJu0YyE5ByvyYY2ByKjOLCmnS1EAWWC2J1R3f6A7eWFM/Y06onRX9RW
+	/x5+ojK9qN2K1HS7x0VwrUgf+Z0av+3CG185EabebJSsbPBgBAlQnATrbZPy49k=
+X-Google-Smtp-Source: AGHT+IGNjyyB9/HI9xRkpYscVCCwB8DaNJjgYqtNY3P+rNPe1NY5dOlwlyA00QbTwbWNcMXClESO1A==
+X-Received: by 2002:a05:600c:5198:b0:40f:eb8c:71b4 with SMTP id fa24-20020a05600c519800b0040feb8c71b4mr3703239wmb.15.1707319401403;
+        Wed, 07 Feb 2024 07:23:21 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWXDwo7H10qk/Re+HBBozFGkmpsK1Tyk/vJlHWPjxrhHeQORyYoFdTMgFa74InYKeAoQkHeVrninH1RWyWSkDXcxFBzKmbBq8KldAKaUHbEZVbItHJvLu3ihvpE+hcgmpP5yh3I4et3YFFk8t0XEqP+0bL/5UE67OeRUTy51YWbbfP8neqaFyKXweJVzaywHaq0tZAf+Y88ABsN56tRettYbTKGIXaeU7EhMNsJJssxRKPMJvn61ZpA7wgQEOd2hE0MLBjOLq6VlJKnEmgaurCHHJLx3RgDztmP5Qlr+ZEjGpQlm+nbfKr5Us7b3GCFvJB7Hui9zacrunpjhojPup03wGynY1s0WzNwq/Lbb6Ri5Hvuwnvh1WAxo482wnHLNjCm7CzugbP5zckSY36GaZq6O15GgbPRMLn44N2HFabQM1ssWUgi6sP1Q7+vr+oAJaVe8NbDzSAUuZB93dd20+dnj+nrcELNlhHJ2jlNV6z0AxohVP1gRmisjefOqDbSpvqqsbf036zZvZoJeEkSNREwD99LbD0+taOYJBKMDe5aO1k8XJr7s0VihUsxk1ye8kVE3QJyhs5MSvwmG+9LgKuF1Ki6KJgZdE+MvXHso+giaJP36+rE+bOygTadKkRCNA4CtLeNhjEyG73GJyLh+QugGcDaDvfbud1/OSmFg6qSga7CCVOFig==
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id b7-20020a05600010c700b0033b459e8f60sm1723604wrx.18.2024.02.07.07.23.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 07:23:20 -0800 (PST)
+Message-ID: <6feff535-d9d7-4f4c-8e7c-956c4bba1713@linaro.org>
+Date: Wed, 7 Feb 2024 16:23:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/7] gs101 oriole: peripheral block 1 (peric1) and
+ i2c12 support
+Content-Language: en-US
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+ tudor.ambarus@linaro.org, willmcvicker@google.com,
+ semen.protsenko@linaro.org, alim.akhtar@samsung.com, s.nawrocki@samsung.com,
+ tomasz.figa@gmail.com, cw00.choi@samsung.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org
+References: <20240201161258.1013664-1-andre.draszik@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240201161258.1013664-1-andre.draszik@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8e4cc7fd4c7cb14a8942e15a676e5b95e6f44b43.camel@amazon.com>
 
-On Wed, Feb 07, 2024 at 02:45:42PM +0000, Gowans, James wrote:
-> Hi Jason,
+On 01/02/2024 17:11, André Draszik wrote:
+> Hi,
 > 
-> Thanks for this great feedback on the approach - it's exactly the sort
-> of thing we were looking for.
+> This patch series implements support for the 2nd connectivity
+> peripheral block on gs101.
+> This block contains an additional 6 USI, 1 I3C and 1 PWM
+> interfaces/busses.
 > 
-> On Mon, 2024-02-05 at 13:42 -0400, Jason Gunthorpe wrote:
-> > 
-> > On Mon, Feb 05, 2024 at 12:01:45PM +0000, James Gowans wrote:
-> > 
-> > > The main aspect we’re looking for feedback/opinions on here is the concept of
-> > > putting all persistent state in a single filesystem: combining guest RAM and
-> > > IOMMU pgtables in one store. Also, the question of a hard separation between
-> > > persistent memory and ephemeral memory, compared to allowing arbitrary pages to
-> > > be persisted. Pkernfs does it via a hard separation defined at boot time, other
-> > > approaches could make the carving out of persistent pages dynamic.
-> > 
-> > I think if you are going to attempt something like this then the end
-> > result must bring things back to having the same data structures fully
-> > restored.
-> > 
-> > It is fine that the pkernfs holds some persistant memory that
-> > guarentees the IOMMU can remain programmed and the VM pages can become
-> > fixed across the kexec
-> > 
-> > But once the VMM starts to restore it self we need to get back to the
-> > original configuration:
-> >  - A mmap that points to the VM's physical pages
-> >  - An iommufd IOAS that points to the above mmap
-> >  - An iommufd HWPT that represents that same mapping
-> >  - An iommu_domain programmed into HW that the HWPT
+> i2cdetect shows all expected devices on the one i2c bus that this patch
+> series enables.
+> Everything that's in scope in this series works also without the
+> clk_ignore_unused kernel command line argument.
 > 
-> (A quick note on iommufd vs VFIO: I'll still keep referring to VFIO for
-> now because that's what I know, but will explore iommufd more and reply
-> in more detail about iommufd in the other email thread.)
+> While working on this, I noticed the existing peric0 support for gs101
+> has a couple issues. That explains why there are differences compared
+> to it and a separate patch series has been sent to fix up peric0
+> support.
 > 
-> How much of this do you think should be done automatically, vs how much
-> should userspace need to drive? With this RFC userspace basically re-
-> drives everything, including re-injecting the file containing the
-> persistent page tables into the IOMMU domain via VFIO.
-
-My guess is that fully automatically is hard/impossible as there is
-lots and lots of related state that has to come back. Like how do you
-get all the internal iommufs IOAS related datastructures
-automatically. Seems way too hard.
-
-Feels simpler to have userspace redo whatever setup was needed to get
-back to the right spot.
-
-> Part of the reason is simplicity, to avoid having auto-deserialise code
-> paths in the drivers and modules. Another part of the reason so that
-> userspace can get FD handles on the resources. Typically FDs are
-> returned by doing actions like creating VFIO containers. If we make all
-> that automatic then there needs to be some other mechanism for auto-
-> restored resources to present themselves to userspace so that userspace
-> can discover and pick them up again.
-
-Right, there is lots of state all over the place that would hard to
-just re-materialize.
-
-> Can you expand on what you mean by "A mmap that points to the VM's
-> physical pages?" Are you suggesting that the QEMU process automatically
-> gets something appearing in it's address space? Part of the live update
-> process involves potentially changing the userspace binaries: doing
-> kexec and booting a new system is an opportunity to boot new versions of
-> the userspace binary. So we shouldn't try to preserve too much of
-> userspace state; it's better to let it re-create internal data
-> structures do fresh mmaps.
-
-I expect the basic flow would be like:
-
- Starting kernel
-   - run the VMM
-   - Allocate VM memory in the pkernfs
-   - mmap that VM memory
-   - Attach the VM memory to KVM
-   - Attach the VM memory mmap to IOMMUFD
-   - Operate the VM
-
- Suspending the kernel
-   - Stop touching iommufd
-   - Freeze changes to the IOMMU, and move its working memory to pkernfs
-   - Exit the kernel
-
- New kernel
-   - Recover the frozen IOMMU back to partially running, like crash
-     dump. Continue to use some of the working memory in the pkernfs
-   - run the new VMM. Some IOMMU_DOMAIN_PKERNFS thing to represent
-     this state
-   - mmap the VM memory
-   - Get KVM going again
-   - Attach the new VMM's VM memory mmap to IOMMUFD
-   - Replace the iommu partial configuration with a full configuration
-   - Free the pkernfs iommu related memory
-
-> What I'm really asking is: do you have a specific suggestion about how
-> these persistent resources should present themselves to userspace and
-> how userspace can discover them and pick them up?
-
-The only tricky bit in the above is having VFIO know it should leave
-the iommu and PCI device state alone when the VFIO cdev is first
-opened. Otherwise everything else is straightforward.
-
-Presumably vfio would know it inherited a pkernfs blob and would do
-the right stuff. May be some uAPI fussing there to handshake that
-properly
-
-Once VFIO knows this it can operate iommufd to conserve the
-IOMMU_DOMAIN_PKERNFS as well.
-
-> > Ie you can't just reboot and leave the IOMMU hanging out in some
-> > undefined land - especially in latest kernels!
->
-> Not too sure what you mean by "undefined land" - the idea is that the
-> IOMMU keeps doing what it was going until userspace comes along re-
-
-In terms of how the iommu subystems understands what the iommu is
-doing. The iommu subsystem now forces the iommu into defined states as
-part of its startup and you need an explicit defined state which means
-"continuing to use the pkernfs saved state" which the iommu driver
-deliberately enters.
-
-> creates the handles to the IOMMU at which point it can do modifications
-> like change mappings or tear the domain down. This is what deferred
-> attached gives us, I believe, and why I had to change it to be
-> enabled.
-
-VFIO doesn't trigger deferred attach at all, that patch made no sense.
-
-> > For vt-d you need to retain the entire root table and all the required
-> > context entries too, The restarting iommu needs to understand that it
-> > has to "restore" a temporary iommu_domain from the pkernfs.
-> > You can later reconstitute a proper iommu_domain from the VMM and
-> > atomic switch.
+> Cheers,
+> Andre'
 > 
-> Why does it need to go via a temporary domain? 
+> Changes in v3:
+> - drop samsung,mode = <USI_V2_NONE> default assignment in patch #6
 
-Because that is the software model we have now. You must be explicit
-not in some lalal undefined land of "i don't know WTF is going on but
-if I squint this is doing some special thing!" That concept is dead in
-the iommu subsystem, you must be explicit.
+I am confused. I have "another" v3 with different changelog.
 
-If the iommu is translating through special page tables stored in a
-pkernfs then you need a IOMMU_DOMAIN_PKERNFS to represent that
-behavior.
+Best regards,
+Krzysztof
 
-> > So, I'm surprised to see this approach where things just live forever
-> > in the kernfs, I don't see how "restore" is going to work very well
-> > like this.
-> 
-> Can you expand on why the suggested restore path will be problematic? In
-> summary the idea is to re-create all of the "ephemeral" data structures
-> by re-doing ioctls like MAP_DMA, but keeping the persistent IOMMU
-> root/context tables pointed at the original persistent page tables. The
-> ephemeral data structures are re-created in userspace but the persistent
-> page tables left alone. This is of course dependent on userspace re-
-> creating things *correctly* - it can easily do the wrong thing. Perhaps
-> this is the issue? Or is there a problem even if userspace is sane.
-
-Because how do you regain control of the iommu in a fully configured
-way with all the right pin counts and so forth? It seems impossible
-like this, all that information is washed away during the kexec.
-
-It seems easier if the pkernfs version of the iommu configuration is
-temporary and very special. The normal working mode is just exactly as
-today.
-
-> > I would think that a save/restore mentalitity would make more
-> > sense. For instance you could make a special iommu_domain that is fixed
-> > and lives in the pkernfs. The operation would be to copy from the live
-> > iommu_domain to the fixed one and then replace the iommu HW to the
-> > fixed one.
-> > 
-> > In the post-kexec world the iommu would recreate that special domain
-> > and point the iommu at it. (copying the root and context descriptions
-> > out of the pkernfs). Then somehow that would get into iommufd and VFIO
-> > so that it could take over that special mapping during its startup.
-> 
-> The save and restore model is super interesting - I'm keen to discuss
-> this as an alternative. You're suggesting that IOMMU driver have a
-> serialise phase just before kexec where it dumps everything into
-> persistent memory and then after kexec pulls it back into ephemeral
-> memory. That's probably do-able, but it may increase the critical
-> section latency of live update (every millisecond counts!) 
-
-Suspending preperation can be done before stopping the vCPUs. You have
-to commit to freezing the iommu which only means things like memory
-hotplug can't progress. So it isn't critical path
-
-Same on resume, you can resum kvm and the vCPUs and leave the IOMMU in
-its suspended state while you work on returning it to normal
-operation. Again only memory hotplug becomes blocked so it isn't
-critical path.
-
-> and I'm also not too sure what that buys compared to always working
-> with persistent memory and just always being in a state where
-> persistent data is always being used and can be picked up as-is.
-
-You don't mess up the entire driver and all of its memory management,
-and end up with a problem where you can't actually properly restore it
-anyhow :)
-
-> However, the idea of a serialise and deserialise operation is relevant
-> to a possible alternative to this RFC. My colleague Alex Graf is working
-> on a framework called Kexec Hand Over (KHO):
-> https://lore.kernel.org/all/20240117144704.602-1-graf@amazon.com/#r
-> That allows drivers/modules to mark arbitrary memory pages as persistent
-> (ie: not allocatable by next kernel) and to pass over some serialised
-> state across kexec.
-> An alternative to IOMMU domain persistence could be to use KHO to mark
-> the IOMMU root, context and domain page table pages as persistent via
-> KHO.
-
-IMHO it doesn't matter how you get the memory across the kexec, you
-still have to answer all these questions about how does the new kernel
-actually keep working with this inherited data, and how does it
-transform the inherited data into operating data that is properly
-situated in the kernel data structures.
-
-You can't just startup iommufd and point it at a set of io page tables
-that something else populated. It is fundamentally wrong and would
-lead to corrupting the mm's pin counts.
-
-> > > * Needing to drive and re-hydrate the IOMMU page tables by defining an IOMMU file.
-> > > Really we should move the abstraction one level up and make the whole VFIO
-> > > container persistent via a pkernfs file. That way you’d "just" re-open the VFIO
-> > > container file and all of the DMA mappings inside VFIO would already be set up.
-> > 
-> > I doubt this.. It probably needs to be much finer grained actually,
-> > otherwise you are going to be serializing everything. Somehow I think
-> > you are better to serialize a minimum and try to reconstruct
-> > everything else in userspace. Like conserving iommufd IDs would be a
-> > huge PITA.
-> > 
-> > There are also going to be lots of security questions here, like we
-> > can't just let userspace feed in any garbage and violate vfio and
-> > iommu invariants.
-> 
-> Right! This is definitely one of the big gaps at the moment: this
-> approach requires that VFIO has the same state re-driven into it from
-> userspace so that the persistent and ephemeral data match. If userspace
-> does something dodgy, well, it may cause problems. :-)
-> That's exactly why I thought we should move the abstraction up to a
-> level that doesn't depend on userspace re-driving data. It sounds like
-> you were suggesting similar in the first part of your comment, but I
-> didn't fully understand how you'd like to see it presented to userspace.
-
-I'd think you end up with some scenario where the pkernfs data has to
-be trusted and sealed somehow before vfio would understand it. Ie you
-have to feed it into vfio/etc via kexec only.
-
-From a security perspective it does seem horribly wrong to expose such
-sensitive data in a filesystem API where there are API surfaces that
-would let userspace manipulate it.
-
-At least from the iommu/vfio perspective:
-
-The trusted data should originate inside a signed kernel only.
-
-The signed kernel should prevent userspace from reading or writing it
-
-The next kernel should trust that the prior kernel put the correct
-data in there. There should be no option for the next kernel userspace
-to read or write the data.
-
-The next kernel can automatically affiliate things with the trusted
-inherited data that it knows was passed from the prior signed kernel.
-eg autocreate a IOMMU_DOMAIN_PKERNFS, tweak VFIO, etc.
-
-I understand the appeal of making a pkernfs to hold the VM's memory
-pages, but it doesn't seem so secure for kernel internal data
-strucures..
-
-Jason
 
