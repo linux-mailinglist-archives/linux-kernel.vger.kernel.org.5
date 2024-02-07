@@ -1,98 +1,83 @@
-Return-Path: <linux-kernel+bounces-57236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B72384D572
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:09:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFC5F84D573
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:10:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE79A1F2B5DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:09:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF6361C20C1F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:10:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876AD12C7F8;
-	Wed,  7 Feb 2024 21:36:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD0C12EBCB;
+	Wed,  7 Feb 2024 21:37:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TjDM162x"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="N0jswrwx"
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FDDE12882A;
-	Wed,  7 Feb 2024 21:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AE76127B5C
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 21:37:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341759; cv=none; b=dt/TnL7sasXfvo360JDOBrj0eSf8u70r+eZk/YkvTarykBHmjrSKWB6VRJ9CdDzwWb1k0F3qE+xophgl0QfrZOP5n8PbgabRoRWMzky9JHguNT7ViVyRgHw7hRf2eCguoEYeiL/otS1Ogh3gSeINzRH14L9k6PR5CAW06NfhAH0=
+	t=1707341855; cv=none; b=DZiOoFJvO45ycO5TVtvDXuqc/W2snDmp4HvbTe9SgMMOt+uM9Dn8TSqwmnuk4NfBRzst0dhrvFxi2ikPdWu2z7HzDranDxX6Y4pRZy12hdNx1W/DwFFdLVNjmYPANspllVo60bJPxU49w9qcnBKRFBYXXj919T1ZdZu6M7MpIzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341759; c=relaxed/simple;
-	bh=Hi8WKTB2SHPguJc94yPFvuzcB+jOfKYMDIOG7OJiqG0=;
+	s=arc-20240116; t=1707341855; c=relaxed/simple;
+	bh=MJ9tjUW3xcnRUT8N8amSJPFJmFefKIlDCMy8MipxXqE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hJXIQ70XmUzZV9LIfAYv+lRuCv6aQMLrl5SIwWKUAbHfq2RzpDefT96Pz5xVTqitPmHRvPs8pnfURaedzR4IaT0FCtcWZMmaAw9F7Ryr896snDquuUdzTm64UlV4hnr/J4InYFWQJkv9ykmWRg5LuNKZkf1qDzDiXV+RXctK/1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TjDM162x; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d7354ba334so9442885ad.1;
-        Wed, 07 Feb 2024 13:35:57 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=SKWWUp6Pb3rcU3BCsch01d7ZkdGA6MGNGk3ruCn7YJ3F1MxQZqrRdZ/pX4t2Ezj1C+Khm4lDBZrLJGH5Y7MkmPXCnihz6khhtb47BwSBqZ9Imbp8+2Me4iC3igf97WsyfLxy5n9bF1RCLVCxrpPFTE51wK4Kc4lVUzDduBEi4A4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=N0jswrwx; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59a7682486aso394192eaf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 13:37:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707341756; x=1707946556; darn=vger.kernel.org;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707341853; x=1707946653; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BEz0l2Yktui+FbUn+gXIBN0iRKIGqS5+WthaqhNu9Zo=;
-        b=TjDM162xmRUPmFwQaJLmu+t4MZS/IKG2kEDrNkvAaIKeuSSmCToJIDsYycQcopvx8w
-         hWcTnjtPixuptmvnS7R/4v26iINH8EXkclrDV2HOdd35JhqKv+SE5gBvctE/eV8T8sbn
-         opK8fMymnbp5eEzSRBnasF6Ki6H8aY0OHIAFtgvoNHSgAEdYHsFDZkXxjf+MCam3Mpoq
-         S8Z0YoFAolnj0uDsCOae2I41lvCICbsJdmVsqDRK/NjxCJgyGBhddK+tFL7Ao2R+VQp2
-         cnmAqL9aJcD9FGb9m+LHjChV1aYivwQvLSSFBiDav6Ubd6vtA36iF4kemYI8GOUgpGY1
-         HQGA==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5t8oHdj43HvWAnm0LTgz5p/xtchmO2b+GM6B+T+0/v4=;
+        b=N0jswrwxQQT4YcPXYv4ZUugehgcpncIM8mEyojEWXDGYTfFxLhgUnL7tazfQapgkqJ
+         74T2Iw71qddWRpHAo6sWGUMkvP2mOnCvvYG8gc1pezE5XN00XxG4OBTSkJoAmhCKKFmp
+         x1sR9T2Jb7JJsbikOujRtWMHU4Y5po5mSmX6vTC+QWLb1TsMFCQFOmnwD+0v4QvDZZaV
+         FdXKwhA/IrdQUkIvpr1jNToc/7NdiqDNVD4HgMV2PYVjl5pzaPM1AUG7mhWHemXcIbKj
+         i0omi5NjLLaHRYebxQbAazYAuu1RTHar2rs2/EZP/FE9xmmxuOJWv48RVsBT5x4bZXHb
+         sT5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707341756; x=1707946556;
+        d=1e100.net; s=20230601; t=1707341853; x=1707946653;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BEz0l2Yktui+FbUn+gXIBN0iRKIGqS5+WthaqhNu9Zo=;
-        b=vDlMsG7T2ZrtcQcD6xga0/KMY4wLQlbBZefPAwJ8rbac+k8yO6mARa2LOhmVstEcCO
-         Aidn2qa16oDywWuAOw0pFz9t2VaA1j7vNR6ZGAPEdgx7QUdmaZDXhwxi8z70eflFD8T5
-         7sZXUj0eP0ZAgnfbMqwuetPM3mzv1XKKex48Bnnf03iwsIzEmBMIU1CZJ9cH6UYmlc6W
-         qwuHOseawh9aaZsP4MSWLthducy4y3X8vTF9T3KGbPjop/FeA35upDUhCmRrmo8MyzEt
-         s1gEcodZGj6J9dCmFGkSVfZJEjLLmLcTLggUzMARZN9k/6YlPvhYNO5C01yQ0doZROWq
-         TtHw==
-X-Forwarded-Encrypted: i=1; AJvYcCVzNFKkLVe8MMLH+7R+vJjEBxyxyUxUOwLW1F71Q/QTCbVpgrAp8WSe//dGeWFXtpiF9Omt/lJlUaTiBfq3/SVYexVHqB8+flrGzsExJRxd5qJup4ciTxFb/5QntqpRl6N2eMKivyU=
-X-Gm-Message-State: AOJu0YwFVJAlUSDAMlNkAW3TzsG3HxYhrBd3ChYE1GAs9p6Wu3+KdINs
-	u+TuA5A/Aws5jZoJaA14B2jlgJ0eNLKVusZi2MUJjwIN2hs4y8iI
-X-Google-Smtp-Source: AGHT+IHlW28ss/Xeqx89EIojs4+hQi1/0sypdExhbT0Arg+HXWNUfkHvwwm7hcOamuzrJqrnLTlR+Q==
-X-Received: by 2002:a17:903:2582:b0:1d9:c37d:7182 with SMTP id jb2-20020a170903258200b001d9c37d7182mr5692295plb.53.1707341756543;
-        Wed, 07 Feb 2024 13:35:56 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCULypFOwtRQarob0m/v0WdCZw8KY9+25kXEnP14XY3Wd7Y7G/k59LIoEvBuZ+oVTj8nnVxkU4EjItTcrVpQz5p6kdEQwkEGq+T4jQUG6xg43o/HgBJetk5qWsRIeTR3OrUdeAefMtRUVRNTyyPyCpU0Q5cGjDZfIY6aQ/Gx8ZHnF0kKMhy0MLwifBBmw2BYlTe0Dq+RjiMN7xuUesiyWE7Ww5+ZgE2rZ0zoWmAmcQKEVQ9Q6814tKQpkB8MmvMGM4n+LLYzN+7W+oyoiencN1GJ/tvWW+FN/k3kpGCAD0YZOAWWOTvlESFgqxdEE6UlVh0GdLgmiJw7AOgvBdmH6PRkSbmCyrsW16wdZB/by5gLN8CSJLuhB/r3tj4UKPo=
-Received: from localhost ([2620:10d:c090:400::4:3c45])
-        by smtp.gmail.com with ESMTPSA id w13-20020a170902d3cd00b001d8d71b8807sm1953042plb.97.2024.02.07.13.35.55
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5t8oHdj43HvWAnm0LTgz5p/xtchmO2b+GM6B+T+0/v4=;
+        b=oB+5BIsw3SJ3JDCOjOFGKYricD04QHl5YNwXB/nJvthT+yhNebccuwnbNvP9drYjRh
+         5tw3HYnO0/t9PjaWb++C8CQ7fSvn0lG09IvGMFVwt3sUHBse9KxMQYrfxiB1rFJbW2Ws
+         OTS7alp/Vja1oKsYEispqzHVxK+i336wva1f3g6B4Vr0lujdH8+oOUR3ZMfDs408I5cv
+         LNLcF85iXXvSZ7f7ut3obQnBYaBleGvpoC2+5HYLZJ4pvRMXJ+mQIf8LJ1lLZA7vzrO3
+         xzt8CF2Y92/lFmkHmaqHPw1AvGxDsTZ52mAi79LJ1Bdqms9gikNk3VjYZLOyndGFn/j5
+         g4Yg==
+X-Forwarded-Encrypted: i=1; AJvYcCX2q4Pab6rtdD+co45XSUqN14ToLXgHWysa9SKl9seg5ko8WwbhW6ls7vyE+yrVVT+lKfSUmxVFfNmoNKfSvvgQvDUECmTlZcGHiZ0R
+X-Gm-Message-State: AOJu0Yzv7nhnzQmrUQC9RUfgkXxmT5y1BYIcTTrJwqPRXqnp9c8h7BFE
+	hH4GcVH0Dg3i8Dzh1U2xfNBLiP/4uP4SkOjqtL8kghRqmJAmyLZmqr8srMZpSVQ=
+X-Google-Smtp-Source: AGHT+IHcjmtAy4moDc5eecSrPjzxgf0TzI7mCdcZJ67DZTcwDTXZZq/PsQpeSSfJ3bKSPuVgJmO5jg==
+X-Received: by 2002:a05:6358:1914:b0:178:f482:6e56 with SMTP id w20-20020a056358191400b00178f4826e56mr4157938rwm.12.1707341853161;
+        Wed, 07 Feb 2024 13:37:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXnaI1yMTjyzyiORfE4wEG0c0EjfVS4eLq8k2NEdte69T9QU5xFLujYbaEkBr6CBLt5ZJ93jcGIqhoUtf376yA50qdtiwt1x8eFmjFbcB0wjN2SncXYHgmdh4NQbVk9Njweq8Rgg0cuC/4nRg==
+Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
+        by smtp.gmail.com with ESMTPSA id r5-20020a632b05000000b005d8e280c879sm2137667pgr.84.2024.02.07.13.37.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 13:35:56 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 7 Feb 2024 11:35:54 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	"Rafael J. Wysocki" <rjw@rjwysocki.net>,
-	Linux PM <linux-pm@vger.kernel.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>, Naohiro.Aota@wdc.com,
-	kernel-team@meta.com
-Subject: Re: [PATCH v1] PM: sleep: Restore asynchronous device resume
- optimization
-Message-ID: <ZcP3uiapKGZqw0q5@slm.duckdns.org>
-References: <10423008.nUPlyArG6x@kreacher>
- <708a65cc-79ec-44a6-8454-a93d0f3114c3@samsung.com>
- <CAJZ5v0hn=KgaWn9pwtLsH2a8n61BNxzb1xrNoxUfEi3o9OAZGw@mail.gmail.com>
- <4a043533-009f-4db9-b107-c8374be28d2b@samsung.com>
- <CAJZ5v0hDmwaFEtLc8yDc4cXn2wODXAqATe0+_Hpm9QPODUPMQw@mail.gmail.com>
- <ZcOyW_Q1FC35oxob@slm.duckdns.org>
- <2f125955-8c7c-465c-938c-8768f7ca360b@samsung.com>
- <ZcPSuUBoL_EDvcTF@slm.duckdns.org>
- <ZcPelerpp3Rr5YFW@slm.duckdns.org>
- <b4ceab79-3208-419b-9a79-f34540db3f70@samsung.com>
+        Wed, 07 Feb 2024 13:37:32 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rXpbl-003Rb1-23;
+	Thu, 08 Feb 2024 08:37:29 +1100
+Date: Thu, 8 Feb 2024 08:37:29 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: lsf-pc <lsf-pc@lists.linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [LSF/MM/BPF TOPIC] tracing the source of errors
+Message-ID: <ZcP4GewZ9jPw5NbA@dread.disaster.area>
+References: <CAJfpegtw0-88qLjy0QDLyYFZEM7PJCG3R-mBMa9s8TNSVZmJTA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -101,30 +86,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b4ceab79-3208-419b-9a79-f34540db3f70@samsung.com>
+In-Reply-To: <CAJfpegtw0-88qLjy0QDLyYFZEM7PJCG3R-mBMa9s8TNSVZmJTA@mail.gmail.com>
 
-Hello,
+On Wed, Feb 07, 2024 at 10:54:34AM +0100, Miklos Szeredi wrote:
+> [I'm not planning to attend LSF this year, but I thought this topic
+> might be of interest to those who will.]
+> 
+> The errno thing is really ancient and yet quite usable.  But when
+> trying to find out where a particular EINVAL is coming from, that's
+> often mission impossible.
+> 
+> Would it make sense to add infrastructure to allow tracing the source
+> of errors?  E.g.
+> 
+> strace --errno-trace ls -l foo
+> ...
+> statx(AT_FDCWD, "foo", ...) = -1 ENOENT [fs/namei.c:1852]
+> ...
+> 
+> Don't know about others, but this issue comes up quite often for me.
 
-On Wed, Feb 07, 2024 at 10:30:58PM +0100, Marek Szyprowski wrote:
-..
-> Disabling non-boot CPUs ...
-> XXX wq_update_node_max_active: wq=events_unbound off_cpu=1 total=3 range=[32, 512] node[0] node_cpus=3 max=512
-> XXX wq_update_node_max_active: wq=events_unbound off_cpu=2 total=2 range=[32, 512] node[0] node_cpus=2 max=512
-> XXX wq_update_node_max_active: wq=events_unbound off_cpu=3 total=1 range=[32, 512] node[0] node_cpus=1 max=512
-> Enabling non-boot CPUs ...
-> XXX wq_update_node_max_active: wq=events_unbound off_cpu=-1 total=2 range=[32, 512] node[0] node_cpus=2 max=512
-> CPU1 is up
-> XXX wq_update_node_max_active: wq=events_unbound off_cpu=-1 total=3 range=[32, 512] node[0] node_cpus=3 max=512
-> CPU2 is up
-> XXX wq_update_node_max_active: wq=events_unbound off_cpu=-1 total=4 range=[32, 512] node[0] node_cpus=4 max=512
-> CPU3 is up
+ftrace using the function_graph tracer will emit the return values
+of the functions if you use it with the 'funcgraph-retval' option.
 
-So, the node max_active does stay at 512. The only pwq which uses min_active
-would be the dfl_pwq but I'm not sure why that'd be being used. Can you
-please post the output of `drgn -v vmlinux tools/workqueue/wq_dump.py`?
+Seems like a solved problem?
 
-Thanks.
-
+-Dave.
 -- 
-tejun
+Dave Chinner
+david@fromorbit.com
 
