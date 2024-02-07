@@ -1,129 +1,104 @@
-Return-Path: <linux-kernel+bounces-56619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 414B784CCBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:28:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3639D84CCB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:27:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2A69289BBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:28:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9565DB21D82
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DE07E564;
-	Wed,  7 Feb 2024 14:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88787E595;
+	Wed,  7 Feb 2024 14:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lI5a/wVj"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IeGPdI4T"
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92657CF24;
-	Wed,  7 Feb 2024 14:27:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEFBD7E57D
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707316026; cv=none; b=mvZZZTotqZetveKzdvn8mKX8rFpG+WYNj4+rrkOSgdpq/max1UGbmpJLjPAh/hp2xQu8Wr3xszx37B9WrMf9i8b7P4OUF8KKjo9SROaDxYW7yKCqIZBxuHEIUrHquD5ESrWy0XuAOhrqqnF9odHPEdAtnHSepPdCVwCsqR96a1M=
+	t=1707316008; cv=none; b=h12POu/Tw0tXXM+oKFAL4lyUJ7656eOYFnecrtYhZOukm6QrvSLdNtiejm0fYcvm+uoStpFdb7nnCz46Ad7kT+ZJjnt/CNNWYkqv8xKIahDUChw7ZxHD61xtaFdqQkyIbxSLgwbdlzK9baRc/jigBpVOj4ekPHX0KEhXClV7ejQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707316026; c=relaxed/simple;
-	bh=2RU6ecwvwpj7XkTwgh+rq7eFoMgidQfwzGpuxMhjwCU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cLfYqCzdEhDsyfbp+kmNYxgGQhktnM8YFF1ykZAzTxb//9ZJu+8l9r6bzOUTCsuIrrPnUc/5cA68kdfUe1ke+eZlgF0O2eTn9mInYX7IicRslS5xh41yI8/+nnNnp4be53GQ89SIvtvMDH8joDLuSAbMxN9WM4sKsHSB27wVfJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lI5a/wVj; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 417B9FXi003395;
-	Wed, 7 Feb 2024 14:26:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=56dI8angvNGkFV+K065e/Uxx2IJmqo4mMZ34YBNZr30=; b=lI
-	5a/wVjbqCPP96LWur9ehj7i41QxTOGGdQDnEAI1r56P1TZYIp1+ozoVNVePt2g5F
-	aWNKF+q8NSF2XTlfZedvV2rVw99j62NRheN14UNtVCOXlFcqRr/gIX2lKClieIMh
-	hhf1QkFkkOIblW/06Dj9Z3dWiD7fzU+RTGHxgut5Abnf9lxsNKWsvNUPIAa+FhYw
-	73zIFO1Z7Udu2n0dbI4Yz/KpcpkL8644IoJqWYTrmUw22BSw+arV8ZKQ8x36cd8Q
-	bqrROU0Xw2zIQNf0ZNMc8pGL209HTPfpF9caHaGthvKqe8K4pMLbeEREwUxZ71DV
-	HDOHHbG4jCng+yjmbzEA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w46r80mka-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 14:26:50 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 417EQo2P029635
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 7 Feb 2024 14:26:50 GMT
-Received: from [10.216.9.205] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 7 Feb
- 2024 06:26:47 -0800
-Message-ID: <9ba9c4fa-3fa9-c6c4-ce77-0c6cd5e23680@quicinc.com>
-Date: Wed, 7 Feb 2024 19:56:25 +0530
+	s=arc-20240116; t=1707316008; c=relaxed/simple;
+	bh=SzNba8tns2PjOCy+3sLZurxF77k6eo+WRElh5iR4ztI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qf6lASgtP785hyjoDxkwRXF1J0ZKOej3Tf2C3fwOKsobWyE35V/CJ8hHRT6IrJGIrqybc8W1wRdgxzNXgWyraBkuruxIwMHy9SsNvCvfzVCHiZzdhBlEZXkppQZ9lCQHF6frMd9B5Nr7Uo0jSftOVv7vNSgA7m1DPUCK22X4P8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=IeGPdI4T; arc=none smtp.client-ip=209.85.210.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e11988708aso205351a34.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 06:26:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707316006; x=1707920806; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=b35sBEtbFqh3Pg3VieC4+YWlOps4TFS92ag8IjVB+58=;
+        b=IeGPdI4TFeAM4ulxEkU2gHnhbbQ8pGMCY83nA4Fvy8kjJUVTAIFOB77bWFuYks4XO1
+         Sv2S6PhKyJoifHCQUjHM8z2RYOOP3lt/wdeTDABY4xa2Blk08pu/94I5mCl9V/WiA8rT
+         FS58FahLkIwP+3AuhYGXsHmuwNTIVVPB1hbWQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707316006; x=1707920806;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b35sBEtbFqh3Pg3VieC4+YWlOps4TFS92ag8IjVB+58=;
+        b=cjiBWllqrcvwnMccG91L6pCz3EYphN/aaV+nQ9mnM1b5gNY+4toZchsbpa4eJB7c9+
+         S7N3RKaBU4bnALD5M2CgrIXePSDrwnMx32nCsI6s/FKxce5SY0fh5mwBbZzoVSNO/8QA
+         v9H7ahWNfYsIearmNqoDdilmpGTBBfpZVzE0aedBxRiIdzCnHkQf2PMN+fXEDsfBqgEr
+         PNCejQUoFAP22yNapYLdNfj+U5EhzX2wUQfc9blAudwb1pQAv6GMb82updj/UhhYFukk
+         Hp3w7OcHRfwOlGYuHgT4S2vubeaMVoSILSLlwskzZ4wAzCZYOgIvrUvb8LOMPVThY1qi
+         Be6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUiy2E+RBy4nIzL0hjg/pf56SnwJRWIrcGN1UthMFkcZO/KELug57zmErDc7jPLUku8LmUEwMSP2QPHq0C0JoIeEc7sA5W9djbVtld5
+X-Gm-Message-State: AOJu0Yw6D2ad0gwCmVnKWp0wlTz+LcVq8Ewa/6TdG/3K5Lz+Y9lfqmSc
+	h1XIbwMHMsEIICLgvg4dR4E2ZmzUnX83YLt5eGxXb5jF7wF3TbhA0cJzuRto0w==
+X-Google-Smtp-Source: AGHT+IEDOylu231KDIh4sMA3cVAttvp/AJwj9dEU0mykM819lTgyMUQoFPhnukQ5YsRpK9sDmH7kfA==
+X-Received: by 2002:a9d:6b1a:0:b0:6dd:e95f:c6f5 with SMTP id g26-20020a9d6b1a000000b006dde95fc6f5mr5343343otp.37.1707316005810;
+        Wed, 07 Feb 2024 06:26:45 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVXGaj4tDR3W6GsuU3ECICUkCbx7bJKhuRe0NK/6JLYesRSbPGzMki3W55ANLUNjbvrac72TncJNOFcFyxhY5rqkQOqOmFajh3nJ/NBiHUKABXgQEYGj/cQhTUF3sTOC9CobPXIaDkuuT0XlUN+uqy6itwZ9NhhKdaC2Gx4Zmu7OPZlhkGBgLSigoppQ5sXWiaubs1ryxuIhVxSP3SGzYFpoj5/FO8LwPJ2MlwMVeR121h12q9xZusZ13My+Bp9Ya+lydQs6FoHKzyenMw1kpRIlJcqejx0fbbQwb0OYhPsedVnlNdXIqidxnSQAe3VU2ARyuovlR8nHSmO1UtvGLIz35ZxzbnnjnRlUodi7ppxgTPBqO4XmzCor85xaKLN
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id g24-20020a633758000000b005d68962e1a7sm1563691pgn.24.2024.02.07.06.26.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 06:26:45 -0800 (PST)
+Date: Wed, 7 Feb 2024 06:26:44 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	linux-security-module <linux-security-module@vger.kernel.org>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] fs/exec: remove current->in_execve flag
+Message-ID: <202402070626.C4B0476A1@keescook>
+References: <8fafb8e1-b6be-4d08-945f-b464e3a396c8@I-love.SAKURA.ne.jp>
+ <c62a36de-716e-439d-80a2-57e6a3c22db0@I-love.SAKURA.ne.jp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH 1/1] iommu: Avoid races around default domain allocations
-To: Jason Gunthorpe <jgg@ziepe.ca>
-CC: Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        "Robin
- Murphy" <robin.murphy@arm.com>,
-        Charan Teja Kalla
-	<quic_charante@quicinc.com>,
-        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-References: <e605b38a2d40b1e7589e10110c6d3ece35f6af4e.1705571894.git.quic_nprakash@quicinc.com>
- <139a9abe-75d8-3bda-3ec9-a14a493eb2a9@quicinc.com>
- <20240201162317.GI50608@ziepe.ca>
-Content-Language: en-US
-From: Nikhil V <quic_nprakash@quicinc.com>
-In-Reply-To: <20240201162317.GI50608@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: XS2JtNc24MCAbwrtdj1SJiyuNZV7xRJ9
-X-Proofpoint-ORIG-GUID: XS2JtNc24MCAbwrtdj1SJiyuNZV7xRJ9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-07_05,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=773
- spamscore=0 mlxscore=0 adultscore=0 malwarescore=0 bulkscore=0
- priorityscore=1501 suspectscore=0 lowpriorityscore=0 clxscore=1011
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402070107
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c62a36de-716e-439d-80a2-57e6a3c22db0@I-love.SAKURA.ne.jp>
 
-
-
-On 2/1/2024 9:53 PM, Jason Gunthorpe wrote:
-> On Mon, Jan 29, 2024 at 01:29:12PM +0530, Nikhil V wrote:
+On Sat, Feb 03, 2024 at 07:53:39PM +0900, Tetsuo Handa wrote:
+> Addition of security_execve_abort() hook made it possible to remove
+> this flag.
 > 
->> Gentle ping to have your valuable feedback. This fix is helping us
->> downstream without which we see a bunch of kernel crashes.
-> 
-> What are you expecting here? This was fixed in Linus's tree some time
-> ago now
-> 
-> Are you asking for the stable team to put something weird in 6.1? I
-> don't think they generally do that?
-> 
-> Jason
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
+Yay removal! :)
 
-Hi @Jason,
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Considering that the issue is reported on 6.1, which is an __LTS 
-kernel__, any suggestion to fix this issue cleanly would help us a lot. 
-Right thing here would have been propagating the changes from 6.6 (like 
-for any stability issue), but considering the intrusiveness of them, is 
-it even possible?
-
-Just to be open about reproducibility of the issue, a bunch of them are 
-reported, both internally and by customers.
-
-Thanks
-Nikhil V
+-- 
+Kees Cook
 
