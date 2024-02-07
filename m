@@ -1,153 +1,127 @@
-Return-Path: <linux-kernel+bounces-56686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AD1084CD98
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:03:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B9EC84CD9B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:04:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44FDC28251B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:03:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E25D1C25C2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:04:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2C617F49F;
-	Wed,  7 Feb 2024 15:03:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A38DA7E784;
+	Wed,  7 Feb 2024 15:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F4I3/AT4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hdiLXX2c"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78E425A118;
-	Wed,  7 Feb 2024 15:03:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A247F492
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:04:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707318225; cv=none; b=WzKhQsOsuEtQ1Q6Mx4WuhDfjKxXu300C+OiKpV6suRju/bR25N1ZfiagC8RRy9inogCh1Eo4PegzDdCiH7IjcT5kU4pKlCBD8TVO5ntccZ9febQvjAweWAXfSwtvMdda5oqxUmtgp674ySsz2HIOybU6v1JOl5lX8QOq72bhTRU=
+	t=1707318246; cv=none; b=OpROi2SWcZZ/5ejHS41Jcd424Xn2pTcmM10DGvOu63C4PWeGJMQvhAZnnqI7uz4QVKAmOyl89p3YpkSVBNxOpA7kVE6QACqsT2k0LP5olfLVlnjzHbEVeqsShX6BBCggbsufHPtwK/X3FlG3e+z4zcDTk1SwMfrDE1A1im0bH9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707318225; c=relaxed/simple;
-	bh=HgWvn5bAM4Im/qqGraSiL8Ix3OSmzKgABaZhyzWAiKg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CBt8NjLKudW/H1QkrN99cBxZhyf+m2OnXsxkdEPOwfIACb1ulHulAuvL7kjx5P/U6UB4mL38CTk7rP35Gv3NLH7/Lb5uxvOeMTYGIyY9kUpDm6F7dydoy7REHGDbTGICtiNk3S7MAsQg8QWbxDbsygxEGGWKK+oTf6azjpd5qms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F4I3/AT4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C766BC433F1;
-	Wed,  7 Feb 2024 15:03:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707318224;
-	bh=HgWvn5bAM4Im/qqGraSiL8Ix3OSmzKgABaZhyzWAiKg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=F4I3/AT4d/5kejR4u5TiWh8m1He0YasYGQJiNftNfXfbHjKkuYGUtVpL6iPzskJOQ
-	 r5dX6Vfsb0rEERFPG+F+RNbxMrstoUDJURRCTulxaBfnpYES70bWWf747850ptkUou
-	 JtjqARFRlU/52AW0t/4rHZWfQfAMCecINeS6OsNteqpx1d29yjOBBmz6DY9mrn1IEF
-	 bTByxUceRMOrpgWd5sRsk8RqV+KOuj4f9GnzyG385X0yq46oWSUPBGDHH95tsvbnLY
-	 6fHEmH7tiZCzxUMhLEKdIyVwP/+CT/afS0ZRH9v2PASWXpqQX5Ten9/8JOP79fA4wx
-	 pc0oMmfXOEa3A==
-Date: Wed, 7 Feb 2024 07:03:42 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Saeed Mahameed <saeed@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Leon Romanovsky <leonro@nvidia.com>, Jason
- Gunthorpe <jgg@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Leonid Bloch
- <lbloch@nvidia.com>, Itay Avraham <itayavr@nvidia.com>, Saeed Mahameed
- <saeedm@nvidia.com>, David Ahern <dsahern@kernel.org>, Aron Silverton
- <aron.silverton@oracle.com>, Christoph Hellwig <hch@infradead.org>,
- andrew.gospodarek@broadcom.com, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Message-ID: <20240207070342.21ad3e51@kernel.org>
-In-Reply-To: <20240207072435.14182-1-saeed@kernel.org>
-References: <20240207072435.14182-1-saeed@kernel.org>
+	s=arc-20240116; t=1707318246; c=relaxed/simple;
+	bh=I87ABi+TTrDuBafniC/PL+SYU/E2xqbbxV0VxETwk3o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HC1AWCJQjP/B1BZGZSptAzRIH9iXWKsFjzhkF+ktK4Zw7+AHrOr3AGPEoM/24T/mknsxes0ONdDcVZaVjkP1sPDlwEzE5GVlX+tewUnCy31rSrq4mlgYNzEbiLWzI47SiySq+GCgK2ke/WDDUrFx9/PQfIU5fRiaeUXTwzK9U4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hdiLXX2c; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a293f2280c7so108093066b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:04:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707318242; x=1707923042; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ekyRb1jmMOkOI68xzhu6ghCfzzpSW1u5Hc1zwdlq+5o=;
+        b=hdiLXX2cEgIB4BsoZb5dRt58iqBF9zujnVBHIkqHNqB7MeVCmiNaRJMsPbmH6EXgzd
+         VzpIUbq7HtOCgHTZEC683kqoI0eugMvm7hxWSYJ8XUuXJtjPlyJzj2EUxWiK0jFzSWKl
+         27Dr29OGmITyP+KKzTquCI1TU09iXT+yl79WSClJxbycRNY/ImFlRVZQ2ZofZqrvszH2
+         L6uyULdI4s/DNZIxZtJRRuBqb9zNVP04ggyXGU+mZZa2r7CIig2YNIrfgSUz/yMfsmAm
+         U1es0GlPlrR3D1x5Ray+ZL6kWX3uZTB3YBJD2dW7b759iybQAq5oD9DyWna5o3x+HILx
+         4QVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707318242; x=1707923042;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ekyRb1jmMOkOI68xzhu6ghCfzzpSW1u5Hc1zwdlq+5o=;
+        b=ZmGvKBd9Bkqovxp7oq6CsqKKyl+8C5Rwc9y/ffRu6FNdRaedHB1De4JWmqE3JsWg2S
+         TF8cgHXs/7W/MsImyuCfUOtXHugQYkPvSsFJOzCJGUdHHfykYkQWivjCuk2RTc4KKrDk
+         tH5kZlHHw6hd/xh/lZyOGFRDUUmh7auwma8d3rJdZt8GioK6ujiIR31fNXuXsie11Boj
+         b1KKXS+omF+WgFKmxG3BI5YZGOeSST+p5F2nIkuTTrBJ8rD1Tg3FVDtwQbrF+GGIRBIk
+         oyKTcxTkkQ2sx7HWYyRL9rS5RCFUS3U2GneLr9kcz5tZAFwaoqpjAPD7jwCgn80M3Xm1
+         WQeg==
+X-Forwarded-Encrypted: i=1; AJvYcCW4sHNqwdGqVAHgLX9k+VHLCOb+8Iuz/HMykKdH3HnUmmL6SnL2dqZiMjLQ4J/ZO8CBfSdq+X7o/XwHvs+9zvLTPLootquTQcU6f9eG
+X-Gm-Message-State: AOJu0Yx6uaT/Vwy+znEuBvhB8dNHdtr5Ik1m0NovlzSN9WCoqUjbCXaA
+	B72rWriUxusOKgVmcCs30wAmEt9EQdaWqy4DbSLdsizru2h85akNLO9KmIUDJ3WDQL95RyikS2O
+	KqRwuE2T8oBIXow7LUb0uuArrLdgSLNU0gASR2naa0fxhBE0SiBpV
+X-Google-Smtp-Source: AGHT+IHTli2pAHUoJrCsw8RIEWALTQk+BoAv5NH4xK0yYAxfNkWEMUQAL5bQpZTsGV8s+Yd3F2Y+rtpYpl3PRIO57n4=
+X-Received: by 2002:a17:906:1b4f:b0:a36:fc15:d724 with SMTP id
+ p15-20020a1709061b4f00b00a36fc15d724mr5051540ejg.18.1707318242300; Wed, 07
+ Feb 2024 07:04:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240206042408.224138-1-joychakr@google.com> <2024020647-submarine-lucid-ea7b@gregkh>
+ <CAOSNQF3jk+85-P+NB-1w=nQwJr1BBO9OQuLbm6s8PiXrFMQdjg@mail.gmail.com>
+ <2024020637-handpick-pamphlet-bacb@gregkh> <CAOSNQF2_qy51Z01DKO1MB-d+K4EaXGDkof1T4pHNO10U_Hm0WQ@mail.gmail.com>
+ <2024020734-curliness-licking-44c1@gregkh>
+In-Reply-To: <2024020734-curliness-licking-44c1@gregkh>
+From: Joy Chakraborty <joychakr@google.com>
+Date: Wed, 7 Feb 2024 20:33:49 +0530
+Message-ID: <CAOSNQF2WKang6DpGoVztybkEbtL=Uhc5J-WLvyfRhT3MGWgiaA@mail.gmail.com>
+Subject: Re: [PATCH v2] nvmem: rmem: Fix return value of rmem_read()
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Rob Herring <robh@kernel.org>, 
+	Nicolas Saenz Julienne <nsaenz@kernel.org>, linux-kernel@vger.kernel.org, manugautam@google.com, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue,  6 Feb 2024 23:24:30 -0800 Saeed Mahameed wrote:
-> From: Saeed Mahameed <saeedm@nvidia.com>
-> 
-> Recap from V3 discussion:
-> =========================
-> 
-> LWN has published an article on this series aptly summarizing the debate.
-> LINK: https://lwn.net/Articles/955001/
-> 
-> We continue to think that mlx5ctl is reasonable and aligned with the
-> greater kernel community values. People have pointed to the HW RAID
-> miscdevices as a good analog. The MD developers did not get to block HW
-> RAID configuration on the basis that it undermines their work on the
-> software RAID stack. Further, while there is a superficial similarity to
-> the DRM/accel debate, that was grounded in a real concern that DRM values
-> on open source would be bypassed. That argument does not hold up here as
-> this does come with open source userspace and the functionality mlx5ctl
-> enables on lockdown has always been available to ConnectX users through
-> the non-lockdown PCI sysfs. netdev has been doing just fine despite the
-> long standing presence of this tooling and we have continued to work with
-> Jakub on building common APIs when appropriate. mlx5 already implements
-> a wide range of the netdev common interfaces, many of which were pushed
-> forward by our staff - the DPLL configuration netlink being a recent
-> example.
+On Wed, Feb 7, 2024 at 3:04=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Feb 06, 2024 at 05:22:15PM +0530, Joy Chakraborty wrote:
+> > > > Userspace will see a false error with nvmem cell reads from
+> > > > nvmem_cell_attr_read() in current code, which should be fixed on
+> > > > returning 0 for success.
+> > >
+> > > So maybe fix this all up to allow the read to return the actual amoun=
+t
+> > > read?  That feels more "correct" to me.
+> > >
+> >
+> > If I change the behavior of the nvmem_reg_read_t callback to negative
+> > for error and number of bytes actually read for success then, other
+> > than the core driver I would also have to change all the
+> > nvmem-provider drivers.
+> > Is it okay to do so ?
+>
+> Sure, why not?  That seems like the correct fix to me, right?
 
-I appreciate Jiri's contributions (and you hired Maciej off of Intel at
-some point) but don't make it sound like nVidia lead DPLL, or pushed for
-a common interface :| Intel posted SyncE support. I asked them make it
-a standalone API family:
+Sure, I can do that.
 
-https://lore.kernel.org/netdev/20210830162909.110753ec@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
+Is it okay to change the if checks on the return code to "if (rc < 0)"
+instead of "if (rc)" as a fix for the immediate issue with how return
+value from rmem is handled which can be applied to older kernels.
+In a separate patch I can change the definition of nvmem_reg_read_t()
+to return ssize_t instead of int and make corresponding changes to
+nvmem-provider drivers.
 
-Vadim from Meta joined in and helped a lot based on the OCP time card.
-Then after some delaying and weird noises y'all started participating.
+Does that sound okay ?
+>
+> thanks,
+>
+> greg k-h
 
-> mlx5 ConnectX control misc driver:
-> ==================================
-> 
-> The ConnectX HW family supported by the mlx5 drivers uses an architecture
-> where a FW component executes "mailbox RPCs" issued by the driver to make
-> changes to the device. This results in a complex debugging environment
-> where the FW component has information and low level configuration that
-> needs to be accessed to userspace for debugging purposes.
-
-You don't explain anywhere why addressing the challenges of using
-debugfs in secure environments isn't the way to go.
-
-Also you keep saying debugging purposes but the driver is called
-"control misc driver", you need to iron out your narrative just 
-a bit more.
-
-> Historically a userspace program was used that accessed the PCI register
-> and config space directly through /sys/bus/pci/.../XXX and could operate
-> these debugging interfaces in parallel with the running driver.
-> This approach is incompatible with secure boot and kernel lockdown so this
-> driver provides a secure and restricted interface to that.
-
-[snip]
-
->     i) mstreg
->       The mlxreg utility allows users to obtain information regarding
->       supported access registers, such as their fields
-
-So the access mstreg gives over this interface is read only? That's
-what your description sounds like, but given your complaints about
-"inability to add knobs" and "control" in the name of the driver that
-must be false.
-
-> Other usecases with umem:
->   - dynamic HW and FW trace monitoring
->   - high frequency diagnostic counters sampling
-
-Ah yes, the high frequency counters. Something that is definitely
-impossible to implement in a generic way. You were literally in the
-room at netconf when David Ahern described his proposal for this.
-
-Anyway, I don't want to waste any more time arguing with you.
-My opinion is that the kernel community is under no obligation to carry
-your proprietary gateway interfaces. I may be wrong, but I'm entitled
-to my opinion.
-
-Please do me the basic courtesy of carrying my nack on these patches:
-
-Nacked-by: Jakub Kicinski <kuba@kernel.org>
-
-and CC netdev, so I don't have to respond again :|
+Thanks
+Joy
 
