@@ -1,210 +1,156 @@
-Return-Path: <linux-kernel+bounces-55762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3580E84C15C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:32:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B066384C160
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:34:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 910FC1F254B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:32:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D1C7284F39
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C6434A0F;
-	Wed,  7 Feb 2024 00:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5795382;
+	Wed,  7 Feb 2024 00:34:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KYbiyfde"
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="J6ZVpuuH"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF22A8F5B
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 00:32:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28C008C07
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 00:34:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707265952; cv=none; b=H2YvPn5I28VX2tuKaX6rGip9fCvP069V7Ljhdiv4ejJc78H9e9PINGdmhTnXsJ9oOtRBvQr1JKQ1PcCGrocTSTfhaTwGONH8QMC3ugH9eu96L4lxsEpitdTaq9JBE7dR6cxYbS/7A+DxmD/2k1qg5Jt+PTmKOJ92/8g6nVM2fRA=
+	t=1707266050; cv=none; b=GQJO6knd3FGVShmJchDZiCJQT7LntR/lfBose93sPjFTdDTBxvraPWvRTX3mFpwH3eiYSOpNb3vQor/x0SZkK3Xt1vlDAjcJMHi61NrgcpIrMFLylXbDeWJbB1o25A5DFAq1ITyOJCrEWVWJ/KhbVruxGCqg77WyFmfA6RN1OfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707265952; c=relaxed/simple;
-	bh=ax4kbwR1wG2ecwpHsW2swGQp3y7VpR79Vvh+CgItsug=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u173U8ddfZt8GfEUegsH8cSFgo9duoKcpFCvmhI9hH5DTTfMvqqcxm8j7Ysw8ulYBa1djFwFL+97bC/7oMHYUdMB5pG5T2pdC4MPUf8TRBCmvqkzVuq5Q8w9G4VcJP529dCOb7wwIn0K+NXpfOU7e83YeKjAE4zx5ScwwzZb9z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KYbiyfde; arc=none smtp.client-ip=209.85.166.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7c01af010bcso3415439f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 16:32:30 -0800 (PST)
+	s=arc-20240116; t=1707266050; c=relaxed/simple;
+	bh=hWjx7OvWm/8QXPKMAgLMqWzK+L5kNmBXQ8UEWbRWCxE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XSv2+2LYdt7ucV02ZCwKXOw/+cbTDnMqd5fLlNvMEuUcuyR8NyVyzH2OAGm8hJx0D9iTgt6Ui0Tmdtc0EtpfBrWw+0/8JcPw3cLYupCvrmnjv5/16tt5N+qQgUjuJBx9pOvaJQ4HU6bIG/U95KiJu4C/s96fVdGaKVroDcTrYrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=J6ZVpuuH; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a34c5ca2537so11370466b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 16:34:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707265950; x=1707870750; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QJXlby+AD30AsP8JwtKyQnYYLLwLHxDqcJGOtskX1jw=;
-        b=KYbiyfdeSfwTPP2NVxxfCUMOF06JOc0Dhu1QtOsyxzSH/iyKgbpTvBtLv0CB13hXKs
-         OZiTi7P3N7ZEM+TDwspeORv3wdckfkEUCfnKdw4lNOEoVp7w8fMaU0CRSvc+gcZ64/gi
-         um8ous412hq2o3sI0LfxM/u33qnFOKLCO2vNgSKQttURnjKsIVEo1l+0FFnQ/EAa+2jZ
-         il1QcHqlFf86SY3YJmJ11O2CsQDUTyYVQiRtzOmopC1GB4+gG5zzu7aINF8q5Muw6KB2
-         TC9wkstRtCBFX89cV1K02aRFgrrMSMH6XE0IJqjbDnxRowLcvmBoNMaau31fVAYgWqn7
-         ijBA==
+        d=linaro.org; s=google; t=1707266045; x=1707870845; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=zoIssldsl7RLEgJkqY30g/hBXmKLlPeWIP+wgIMPoQI=;
+        b=J6ZVpuuHAwSAtCP8IG8GiGauDhzdBYW+QqjrReZQ/hUk66vpuySImBpZaFg8o0koN5
+         et8zj1RKnQZLtsBoWf4xPriU2UM+OIoqQKN57PtAKUYzZ3WJWxdgexoizQJJq8rp7zlU
+         V/3iPGJbGZgCPMIi77qJ2QT9bzeBQ3dxNNxSBvS4olhrbfVD9NoupDYULDNod1xWgZ+o
+         Pd/p28XY3j8kSF20lOVrgrqELudpqZE7i0XJpoF68KbpLADL8Cms1pf4vy/46cdHQezL
+         z5AwGsUtmU5Ewj0EtjwA5uoVeRgQdhCUaGj71G10G4FPle/do3lF0E1pKJAJYmXAF02C
+         15pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707265950; x=1707870750;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1707266045; x=1707870845;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QJXlby+AD30AsP8JwtKyQnYYLLwLHxDqcJGOtskX1jw=;
-        b=lAgmZP0jc0Py5NDk6vlaWeK4dAEjCYB3ubqLnfaqgyiYNx+UEgHvAaFicdEU5jjQKa
-         EDWoKkQ1Fb+K3hX0Z0qoykLLLvMN6ozFX6Q1VDo/rEygRTqGq3SpVT7tnAN5ltba4MIQ
-         ideheUakAM4vAC3ApqyZ2kXEzNN2c5itpQPqntWU2u6KXm5mIBOpUDKv6tfv2QGuN1Sk
-         o9p/0hcWScrV9pFsRelTeV/ulObRBa+aSwgkj5Q9e8nJ/9UtF4E7iKiC0QCjPfPDIqvm
-         VQnyKCpUOWfDcI9zL5O8N9P4/RN0JDh6K0sVdtg0B8EGTXb23Y/YH1JGl2wSDHYddQoN
-         SCBg==
-X-Gm-Message-State: AOJu0YyOFYEcmhA8admSv/bZNQFK1eqj50hNg7c1Dzd+k3g+A6XQWWLR
-	AnmCHmidbCsRcXHFoRIXfJjQP+EmSAlEOILm1PRXOll9gIg3TGzPJN9RZNJ8gw==
-X-Google-Smtp-Source: AGHT+IFc68UeTfh18sBbRkqxKprSuedOLBwsjWYaAXb6UcbNSOYzvLEShWlSsdkoB4CHqFd0WVDn7A==
-X-Received: by 2002:a6b:7b4b:0:b0:7c3:f398:7de8 with SMTP id m11-20020a6b7b4b000000b007c3f3987de8mr3414654iop.11.1707265949818;
-        Tue, 06 Feb 2024 16:32:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVqEC4vX8ewfaMiHobk4xS6GjGAJVg4zEGV4f2EcUVSYtvbaa7WKav90QosTXetCDOM6AK7MFFlYmnzWOVrdd9AWRh4DNgHtFbxbbQcRQGGg62wefpQmEAtz435+IlJizHzvyB1fSQFjZUAu8Ij6jhKuiMMU29qK4Xcw8xxSPG0YiQDLk5nnwaRZrQPB9FKLoIBXwo2mW9/mFypT35cHOkm1N2lrrjqxJGqqDiQU8L97onZjq58CVrmq8JdWPwAspczV9+p65+jtwNNGsJGz/HzogXLM63QHGSLsUxgt9zRpbNMofmu5rzgyzFM9tFoDLx0rleiv6bd8sk4zLRW+MPIkXu8cl3Y4YND1BBOn+ezc3Qi7K/WF1/YVkWjXWGTQWz/+D2Fpd7aLJZxJH0A9aMcX9R0OZivHReMhWiaALR0QE8iXdSvkjvN
-Received: from google.com (20.10.132.34.bc.googleusercontent.com. [34.132.10.20])
-        by smtp.gmail.com with ESMTPSA id b66-20020a0295c8000000b00470b6d256c1sm2975jai.91.2024.02.06.16.32.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 16:32:28 -0800 (PST)
-Date: Wed, 7 Feb 2024 00:32:24 +0000
-From: Justin Stitt <justinstitt@google.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Jason Wang <jasowang@redhat.com>, kernel test robot <lkp@intel.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
-Subject: Re: [PATCH v3 1/4] string: Redefine strscpy_pad() as a macro
-Message-ID: <20240207003224.gzatchm47gy3aihv@google.com>
-References: <20240206142027.make.107-kees@kernel.org>
- <20240206142221.2208763-1-keescook@chromium.org>
+        bh=zoIssldsl7RLEgJkqY30g/hBXmKLlPeWIP+wgIMPoQI=;
+        b=L8UvhE5oRNg32Zc9wrQrriNZN11dChyZ+HMzoebBDSl18l+gxERD9so5O/pcfnHS+L
+         6uK6MfKQ+CjUmRvxKaVdTcTH5Y7rr7iJSPOZokKEXWLxn7xxwQESKZZQO021x8CTmcjx
+         h8Ov0miQQb3UDjzgSEpZopM1yM9BYGogr4EBka8VXYCoWTKsBO1uNWKXkpIpxng3BnEv
+         +pp/Y6si3Doniw327db38QFQDmkQ80gNsObGHKrRQK4CBSZ5fHlhuHT+Q/JjpV7Nfjzb
+         Nm1wfYJgorw/XJfJIO4IjEOEGzgneh4MTi/iNxULTA6h3UhvHTAKsvc/HGRu+YhsbWxH
+         aEYA==
+X-Gm-Message-State: AOJu0YwX3qAFZDSL6Kaxsg4YUelCtaXILQJQTiUhSVfxcotJLaubfJ/t
+	m1aWNxS/rjojJojH4Ot/991tjEl71I6SpEa4VApDx1+P43Xukmn/8cb+1JFSnXo=
+X-Google-Smtp-Source: AGHT+IHjfdlyOsAVkZ53m+il6/prtIWLZi42Mfos6SyR2gwQniU+Zl7F/BdyBPq8g3UbHOX6+HH5Vg==
+X-Received: by 2002:a17:906:6892:b0:a38:786b:f37d with SMTP id n18-20020a170906689200b00a38786bf37dmr59966ejr.50.1707266045292;
+        Tue, 06 Feb 2024 16:34:05 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXgraZ9N9TqzbgI6UnQmnuFgTpiBmWAauBuDSl8P4EIhrPto7JAIFSUKl2UKxe/6QbaaTA62HI5k1KuFU/ETfNg1UMCnP9MVDP57QbqyoLkndKafwp/9yaR5jvEP2eMLQvx0IhiBETiTRH3+bFPEQwEuM0rmLMS96kAtnzBpjQj7m5ss76qA0zA/DhNTZo7vae695F8KudGYte5XvyrbmrJflhf+cyEk4ENcMeclaJwChyGsHTrnlo+w7PQToK3YYX7gMl6NHwp3yC5fT/7eZp5UqwNeptVgwSBqn1+VSacE0jEfc8i8Iz3i4MgZnsAKv9OJJsJDA==
+Received: from [192.168.192.207] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
+        by smtp.gmail.com with ESMTPSA id u25-20020a1709060b1900b00a370a76d3a0sm118812ejg.123.2024.02.06.16.34.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 16:34:04 -0800 (PST)
+Message-ID: <d0535e0f-ecdd-4258-a389-de9be31d0b6d@linaro.org>
+Date: Wed, 7 Feb 2024 01:34:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240206142221.2208763-1-keescook@chromium.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] arm64: dts: qcom: sc8280xp: Introduce additional tsens
+ instances
+To: Bjorn Andersson <quic_bjorande@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+ Johan Hovold <johan+linaro@kernel.org>
+References: <20240206-sc8280xp-tsens2_3-v3-1-4577b3b38ea8@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240206-sc8280xp-tsens2_3-v3-1-4577b3b38ea8@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
-
-On Tue, Feb 06, 2024 at 06:22:16AM -0800, Kees Cook wrote:
-> In preparation for making strscpy_pad()'s 3rd argument optional, redefine
-> it as a macro. This also has the benefit of allowing greater FORITFY
-> introspection, as it couldn't see into the strscpy() nor the memset()
-> within strscpy_pad().
->
-> Cc: Andy Shevchenko <andy@kernel.org>
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On 7.02.2024 00:51, Bjorn Andersson wrote:
+> The SC8280XP contains two additional tsens instances, providing among
+> other things thermal measurements for the GPU.
+> 
+> Add these and a GPU thermal-zone.
+> 
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 > ---
->  include/linux/string.h | 33 +++++++++++++++++++++++++++++++--
->  lib/string_helpers.c   | 34 ----------------------------------
->  2 files changed, 31 insertions(+), 36 deletions(-)
->
-> diff --git a/include/linux/string.h b/include/linux/string.h
-> index ab148d8dbfc1..03f59cf7fe72 100644
-> --- a/include/linux/string.h
-> +++ b/include/linux/string.h
-> @@ -70,8 +70,37 @@ extern char * strncpy(char *,const char *, __kernel_size_t);
->  ssize_t strscpy(char *, const char *, size_t);
->  #endif
->
-> -/* Wraps calls to strscpy()/memset(), no arch specific code required */
-> -ssize_t strscpy_pad(char *dest, const char *src, size_t count);
-> +/**
-> + * strscpy_pad() - Copy a C-string into a sized buffer
-> + * @dest: Where to copy the string to
-> + * @src: Where to copy the string from
-> + * @count: Size of destination buffer
-> + *
-> + * Copy the string, or as much of it as fits, into the dest buffer. The
-> + * behavior is undefined if the string buffers overlap. The destination
-> + * buffer is always %NUL terminated, unless it's zero-sized.
-> + *
-> + * If the source string is shorter than the destination buffer, zeros
-> + * the tail of the destination buffer.
-> + *
-> + * For full explanation of why you may want to consider using the
-> + * 'strscpy' functions please see the function docstring for strscpy().
-> + *
-> + * Returns:
-> + * * The number of characters copied (not including the trailing %NULs)
-> + * * -E2BIG if count is 0 or @src was truncated.
-> + */
-> +#define strscpy_pad(dest, src, count)	({			\
-> +	char *__dst = (dest);						\
-> +	const char *__src = (src);					\
-> +	const size_t __count = (count);					\
-> +	ssize_t __wrote;						\
-> +									\
-> +	__wrote = strscpy(__dst, __src, __count);			\
-> +	if (__wrote >= 0 && __wrote < __count)				\
-> +		memset(__dst + __wrote + 1, 0, __count - __wrote - 1);	\
-> +	__wrote;							\
-> +})
->
->  #ifndef __HAVE_ARCH_STRCAT
->  extern char * strcat(char *, const char *);
-> diff --git a/lib/string_helpers.c b/lib/string_helpers.c
-> index 7713f73e66b0..606c3099013f 100644
-> --- a/lib/string_helpers.c
-> +++ b/lib/string_helpers.c
-> @@ -825,40 +825,6 @@ char **devm_kasprintf_strarray(struct device *dev, const char *prefix, size_t n)
->  }
->  EXPORT_SYMBOL_GPL(devm_kasprintf_strarray);
->
-> -/**
-> - * strscpy_pad() - Copy a C-string into a sized buffer
-> - * @dest: Where to copy the string to
-> - * @src: Where to copy the string from
-> - * @count: Size of destination buffer
-> - *
-> - * Copy the string, or as much of it as fits, into the dest buffer.  The
-> - * behavior is undefined if the string buffers overlap.  The destination
-> - * buffer is always %NUL terminated, unless it's zero-sized.
-> - *
-> - * If the source string is shorter than the destination buffer, zeros
-> - * the tail of the destination buffer.
-> - *
-> - * For full explanation of why you may want to consider using the
-> - * 'strscpy' functions please see the function docstring for strscpy().
-> - *
-> - * Returns:
-> - * * The number of characters copied (not including the trailing %NUL)
-> - * * -E2BIG if count is 0 or @src was truncated.
-> - */
-> -ssize_t strscpy_pad(char *dest, const char *src, size_t count)
-> -{
-> -	ssize_t written;
-> -
-> -	written = strscpy(dest, src, count);
-> -	if (written < 0 || written == count - 1)
-> -		return written;
-> -
-> -	memset(dest + written + 1, 0, count - written - 1);
-> -
-> -	return written;
-> -}
-> -EXPORT_SYMBOL(strscpy_pad);
 
-Yep, looks good. This is reminiscent of strtomem and strtomem_pad.
+[...]
 
-Reviewed-by: Justin Stitt <justinstitt@google.com>
+>  
+> +		gpu-thermal {
+> +			polling-delay-passive = <0>;
+> +			polling-delay = <0>;
+> +
+> +			thermal-sensors = <&tsens2 2>;
+> +
+> +			trips {
+> +				cpu-crit {
 
-> -
->  /**
->   * skip_spaces - Removes leading whitespace from @str.
->   * @str: The string to be stripped.
-> --
-> 2.34.1
->
+I assume you'll fix that up when applying!
 
-Thanks
-Justin
+Konrad
 
