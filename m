@@ -1,110 +1,123 @@
-Return-Path: <linux-kernel+bounces-56782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9995D84CF0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:39:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A927884CF19
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:39:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 387BC1F218CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:39:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45FB31F222FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:39:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C00881ADA;
-	Wed,  7 Feb 2024 16:38:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 176C87E775;
+	Wed,  7 Feb 2024 16:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iMghq/rH"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dOkQYHM6"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC5281ACA
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 16:38:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66204811EB
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 16:39:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707323924; cv=none; b=S89oAG/5PbXE7dFPvvQciSigFjpCcwCPuOu8+mmyYkmp+K+0G0nhAECj7SWG0RdwQqrGvZDlLOFsAD7M+vx/85pMmqZ2Fy8J8i8cO8I2xMNDMILYQM7hYFtlVczvXYpRg2ivBfjNxdeVS5k1HtP9kdlCEPjpx2vbcq3cJPbdzvE=
+	t=1707323959; cv=none; b=Eya9lGRLjmNEX0DGaV54dKpY78JMrmARHPiSt0mZe/gv4B4VkiFbgUNUUzOsArQ7QyPz9J0Yz1/mzPaR+ICgpShuf1tiUIyN/NFB4KvE4Ny24CvWDzVgoOIlCW1rIpCuXxdrxGRRIp/LYeXNM7lCpt7sjHfurBjqEFKd8HtZuDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707323924; c=relaxed/simple;
-	bh=yYV90edUO6IBYkZTKapElVIsZy637LpXyy4M8oFz3bE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iX8YT9IBJCQ7ZHuoIafzLXT01BlfgG+5qCP5mhzpylYcjepwuArAmJh/z/cA9ShTcVmIRgqrguOr/mlwLk87AkwRW8A+cQGq4XIhzYcrhKLC/T/G3h9lTWwg9kiV9nWvVEolvcpkdmXW0GPvyXY+HSG4xwKM3DNZek71LldHsa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iMghq/rH; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707323920;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q3J41sYakbr7nCpsD0r1AspXJMKiAGuYob6ug5klcDE=;
-	b=iMghq/rHUGC5sOFPB8Hi9E7u5n5848J1z4rqtN654xuw8w7jDb0O6sRna4KaDHOvFUH1Lu
-	0eG28+WHkAvlmUuQWdP+MkLxjzNtDHCZayPYgjttBPaasgrVUCGl4gzsloWJvISdmELXks
-	zLEfe6ehcfzBM5mZ/lRR/sxnIIXe1I0=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-399-06INBmvBN5SXWsXDgT0wbA-1; Wed, 07 Feb 2024 11:38:39 -0500
-X-MC-Unique: 06INBmvBN5SXWsXDgT0wbA-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-7853d5e398dso102250385a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 08:38:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707323918; x=1707928718;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1707323959; c=relaxed/simple;
+	bh=VClLQfkmwNHlgWpWvEFolbCHf6+5KVH8rjR03BidlJw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fVzt+udQU0SvrSzVNG8GVLgetqfz0w7IoQHIHPNNnPTn0QCBCk605Ndmfa7syg2zZ1IWOkrNQrTwrb1GqefhdSohbvXAnbab7+RWRayoArXdppXXGs3wj4KxjVSCGWuMnRrschn2JpfziBmmG2axQFqRGuwQTm8HadFb99da81U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=dOkQYHM6; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5112bd13a4fso8265e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 08:39:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707323955; x=1707928755; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Q3J41sYakbr7nCpsD0r1AspXJMKiAGuYob6ug5klcDE=;
-        b=o8DIHS5FfIosLGj4X5vGn95MXPmpNBcQ7LD44/QVlSph9BBArsX3yFhiVT5OFamN7c
-         UqVlxlxdDO1oQ/4ilQlVJgX4b/kdUaNbukrFuCL+adOxoibUPEkGCdtBbXxZJGKbtywp
-         rk8bbESlgB4I1iWLwPSP0EO4XymHOSCLtwkfrsT/IOUx9tGVDN3iKt2U4h4XI6w+EI4S
-         bl68EeyyosIkQD1kCtvc1LFQYex/QhKYtZZgwlBmrwd8NmaRDUkRRJHdmXfyc8kq8LUj
-         NK+bocNvoXDcxbiukki5mPZRZsQU50r66btpUO9B9lEqvMUu0OjcgPNeH3Klar21a+DU
-         HENA==
-X-Gm-Message-State: AOJu0YxDBO97c9F1XV9/UQ76KdGQpGz1t5o3aYGFl2jUA2E8OdDCAVE+
-	0KsXysndq/kFquRvVgVOuBJlgfERVDtkPFoQRhBoYeMHoUiqOw4YpAuYRZTy4FW/WQabsk7FMjL
-	RLm/HIDl6g5mZNwUvScC1CH7jlOkbE5MJ69znB7pQs+/M1+BrVkirzDyCKqHlXQ==
-X-Received: by 2002:a05:620a:4620:b0:785:46d6:6453 with SMTP id br32-20020a05620a462000b0078546d66453mr8619126qkb.32.1707323918660;
-        Wed, 07 Feb 2024 08:38:38 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHiEbBDmZmhAUIBjpoTcJxQ/xfWi8GWUZO8r9kZQB4bZdUkJIFsHGgvQZ7LJqnB27/7UFJoFA==
-X-Received: by 2002:a05:620a:4620:b0:785:46d6:6453 with SMTP id br32-20020a05620a462000b0078546d66453mr8619102qkb.32.1707323918350;
-        Wed, 07 Feb 2024 08:38:38 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXRlQ2kj5BCUsqdr5MMIndRdzdUBRc4MiqRznozuly6meVvpHGVfmkdbwYOUf94wUWuZrYm1uEJ9HtRqkUBtS5lZKBPN+R2DGN8vO6b59SWsRtYXgUKNLh0bU/9FJ3wzFW6urLaUjH2AGPo75FD0sBlLZonRd7lDrG0n3g4Q34FAWnM9ry2cxIemSn++NzGk2K6diNvTBS6UNh3+l3XbQwFJatQ5n651ju0MWDAxcY66G90/uaG4edgyJWxM6m958Bi4G1TL3tMZUvts2+fHxkYsdE6v6YuUiUqYDRdp/2x1SWhnzh/oUzO
-Received: from localhost (ip70-163-216-141.ph.ph.cox.net. [70.163.216.141])
-        by smtp.gmail.com with ESMTPSA id b3-20020a05620a088300b007832870e803sm658476qka.68.2024.02.07.08.38.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 08:38:37 -0800 (PST)
-Date: Wed, 7 Feb 2024 09:38:36 -0700
-From: Jerry Snitselaar <jsnitsel@redhat.com>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: joro@8bytes.org, will@kernel.org, pasha.tatashin@soleen.com, 
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	rientjes@google.com, yosryahmed@google.com, john.g.garry@oracle.com
-Subject: Re: [PATCH v3 1/3] iommu/iova: Tidy up iova_cache_get() failure
-Message-ID: <bpw77hrrerzmhxk3jkw2b44cupnusddqqnrjaj2jjq7w2zukpr@ghcbjhexqxqw>
-References: <cover.1707144953.git.robin.murphy@arm.com>
- <ae4a3bda2d6a9b738221553c838d30473bd624e7.1707144953.git.robin.murphy@arm.com>
+        bh=VClLQfkmwNHlgWpWvEFolbCHf6+5KVH8rjR03BidlJw=;
+        b=dOkQYHM6yWvVqSdfm0kpojoGFK4ojGQxCju/JDTrg63lbA3l/n1fJZV3pF/G/qptdQ
+         2a0RtJHU4zuQu03Pl84YLUgweRB8RBKh34kg361P1jrF56Fjb1o5uwja2Ob/n/pIOd8g
+         CQRmKw8dFW32lbX4fkUYhwd792q3njyT597Zs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707323955; x=1707928755;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VClLQfkmwNHlgWpWvEFolbCHf6+5KVH8rjR03BidlJw=;
+        b=cR9oUxJ2gZy5a9zGR+baQ0r9InGME2wL6Ilj5unGBbxf/D8oxmKGzhsWtiNQDlJdJt
+         lbYgrThHGpsBwDAcNfWsiuY+e+0+jkjG+Q/FmfVa1T4wAvvXMPi4zxlxpL6LoFxPSALz
+         2iDAByewBZVzruoAqkNizmTqCkYiQwhLkR1FCsVc6CG1Fh57W+/ykeYZW+R4TFGtbswm
+         GYCdCk9tuhbUKkKj7Qx/XDVcDQ0TEoKq1CkHp6NZlPZboK9zhRdy9aJHf8pyeNiO08SU
+         t0OQd5tGvOiUP83/p7DxmCKiK1ZCNRKaLY3XEW67X4qsY75/mhr++5WW1yVs7SLXVoe3
+         LNmw==
+X-Gm-Message-State: AOJu0YxE9UKc24qy3vYBjxCdrzGnJIrUFLc+j7CvFZS5+vJTGYFveHxj
+	NhifoU+xWoprbhb3YZh5M8tIX+1swTcp23q4R/G6v1E2wHRTRcHm+CMWcs83f8sHbQYMKz49+te
+	jEtxt4hZ50GUocc3opbjuijtB1NnkBaWV3LvF
+X-Google-Smtp-Source: AGHT+IFHgq21oXoCxOiWIBFBqj4JaHe2YOSpxCURnMqhZTe1YstQ+GevJDe+Y6FxdER8sqwVvicQlyOyYmsylrqnVlU=
+X-Received: by 2002:a19:e056:0:b0:511:6922:18ee with SMTP id
+ g22-20020a19e056000000b00511692218eemr12432lfj.9.1707323954929; Wed, 07 Feb
+ 2024 08:39:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae4a3bda2d6a9b738221553c838d30473bd624e7.1707144953.git.robin.murphy@arm.com>
+References: <20231102075243.1.Idb37ff8043a29f607beab6440c32b9ae52525825@changeid>
+ <ZcKs589qYxviC1J4@google.com>
+In-Reply-To: <ZcKs589qYxviC1J4@google.com>
+From: Jonathan Denose <jdenose@chromium.org>
+Date: Wed, 7 Feb 2024 10:39:03 -0600
+Message-ID: <CALNJtpV0KsOusPQeGv8bQ3jKy2sUj+k=mPHc172f+vMaTDYPfg@mail.gmail.com>
+Subject: Re: [PATCH] Input: psmouse - add resync_on_resume dmi check
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, jefferymiller@google.com, 
+	Jonathan Denose <jdenose@google.com>, Raul Rangel <rrangel@chromium.org>, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 05, 2024 at 03:32:39PM +0000, Robin Murphy wrote:
-> Failure handling in iova_cache_get() is a little messy, and we'd like
-> to add some more to it, so let's tidy up a bit first. By leaving the
-> hotplug handler until last we can take advantage of kmem_cache_destroy()
-> being NULL-safe to have a single cleanup label. We can also improve the
-> error reporting, noting that kmem_cache_create() already screams if it
-> fails, so that one is redundant.
-> 
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-> ---
->  drivers/iommu/iova.c | 33 ++++++++++++++++-----------------
->  1 file changed, 16 insertions(+), 17 deletions(-)
-> 
+Hi Dmitry,
 
-Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Thanks for your reply.
 
+On Tue, Feb 6, 2024 at 4:04=E2=80=AFPM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+>
+> Hi Jonathan,
+>
+> On Thu, Nov 02, 2023 at 07:52:47AM -0500, Jonathan Denose wrote:
+> > Some elantech touchpads consistently fail after resuming from
+> > suspend at sanity_check in elantech_packet_check_v4. This means
+> > the touchpad is completely unusable after suspend resume.
+> >
+> > With different permutations of i8042 nomux, nopnp, reset, and noloop
+> > kernel options enabled, and with crc_enabled the touchpad fails in
+> > the same way.
+> >
+> > Resyncing the touchpad after receiving the
+> > PACKET_UNKNOWN/PSMOUSE_BAD_DATA return code allows the touchpad to
+> > function correctly on resume. The touchpad fails to reconnect with
+> > the serio reconnect no matter how many times it retries, so this
+> > change skips over that retry sequence and goes directly to resync.
+>
+> Why can't we do this in elantech_reconnect()? I am sure we can make it
+> simpler and more robust than what the generic handler is trying to do
+> with polling and everything.
+>
+> Thanks.
+>
+> --
+> Dmitry
+
+I am fine with anything that would be simpler and more robust, though
+I'm not sure how to implement what you are describing.
+
+Are you suggesting that in this PSMOUSE_BAD_DATA case, instead of
+using psmouse_set_state and psmouse_queue_work to call
+psmouse->reconnect (which calls elantech_reconnect)?
+
+Jonathan
 
