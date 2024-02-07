@@ -1,56 +1,62 @@
-Return-Path: <linux-kernel+bounces-57189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16FAF84D4E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:56:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF0E384D4E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:56:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C82802876D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:56:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CC2E283BB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2870B16E387;
-	Wed,  7 Feb 2024 21:26:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B33179A11;
+	Wed,  7 Feb 2024 21:26:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dtiGKcTr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kxUXX8tX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656BF16E36F;
-	Wed,  7 Feb 2024 21:26:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65C5179A06;
+	Wed,  7 Feb 2024 21:26:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341190; cv=none; b=R/gPcsqXEWrgKf/I47Fj79adv9akFJjNxeacuzgiPFxC23JAsoiDnkgt83Y25ZviWoTB9jnvW9vfaJLBsDeaxT4PqN4M4qRTwt+ZaVY/EFlVjXLTbXMahUbFFK0BiP4yMjU0VgXTmA6BTSOK0HPItRk8vDSE+Gf1kBnOmSxiii0=
+	t=1707341193; cv=none; b=teLYwaECbIhoNUbEnC/SkY28zxr07t1j3Z+tLRc00xBWGIGOFy8fTahsIyEENHSQYfhGMXIf3I10wtptvGZspIsdABCV+pEhOmtWlgMLZaXCHWIPDtDgEWJHTZcCALh9vkhH+Ap5sfa8bY8OnMf8HaU2xM7TcRtB0JuAeMbZQO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341190; c=relaxed/simple;
-	bh=DjgFIZsIJHQtauIY3Ym8/w6PerCGUhGpApxoInI12lo=;
+	s=arc-20240116; t=1707341193; c=relaxed/simple;
+	bh=R0dOcXmanYZWpCUfSoSQ5uZPRgUSkvXD7HI1oiHj4bM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oTAflYWg36eds020PCp8FpIqtHZFahvsmE6iA+BFdM4T86VU9kTtGBo6Y/FeovWJllrfb0Ky0vHy0fsrcgiBpRImTM4aOKyR7OR07GXbesyPkAAqNkW5wZ51B1Ft60NcZyHCewKiW/M+NAIuq3qa8tPrOHc0PxI1iEhZalwTwdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dtiGKcTr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46C60C43399;
-	Wed,  7 Feb 2024 21:26:29 +0000 (UTC)
+	 MIME-Version; b=az2Cvj3m9uZwK+ZlUwzKWRGLGV/Cbr6syb0qGfGWhdBAQW4n1NaiK3zzOfNDf/yfBCweZPmLWWkyOFnkdfmXfya05w95uGhud6TpqGpXhALlul9SoiFyl73S1y+TovKh6m6GFsSRBOIA/Fs8kwDErRV9KXH6TXCI0yAzcHZCh7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kxUXX8tX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85CD6C433F1;
+	Wed,  7 Feb 2024 21:26:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341190;
-	bh=DjgFIZsIJHQtauIY3Ym8/w6PerCGUhGpApxoInI12lo=;
+	s=k20201202; t=1707341193;
+	bh=R0dOcXmanYZWpCUfSoSQ5uZPRgUSkvXD7HI1oiHj4bM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dtiGKcTrCw3HMAwPC5o+MrTc/ezkg2QVgYoGTVSa9X5PqomK9hmmIMtVRiTPBbd64
-	 MlwIoiMvOW9oXFZ8SoW7LIDRAY5LAQEmTGkTXFx23VQRgiKjd/TDMYU6RnXvH7yxmk
-	 DaL7MCk+oxKkfNRP/35db74lDHAFsabL5EGkTl8Ha+irCNyn9TcDzk1azpsiyCYUG5
-	 ePUz7CztpjJpmzULkX6vnKxZs1XI44mnmQIvRMMiuetygsfUh8DAGGzcuMI0vdDuzh
-	 87NfkfTitWyyeuwW3p9nfVeJYKo/YXshh48nt3maV0aoLQyGJCl1Ge43x23e9tzbcK
-	 obS0+yZE57lgA==
+	b=kxUXX8tXTC3vOC2C/Fk2FlgU49YqGu3E64D6B0elQQq/QhvKt+GTAX/CyHpu4zYek
+	 lByq7YZ/S8/SJfdON21hT9Mw3UOie69GjTao5EFE0RGra8jnn+ZgVnNCZDwYq+p3n5
+	 +jj7FWUr4IHNVcvNzsD7FpEN+ai+zs4xvRj9ZGR9UX3e6pcCIj6CY8lM2x8g19cGfg
+	 ce+5mdW7ksaru6mb2TRVK6DXp1scwZMp5njsW0fd0w1BLZQoXEPirlnfs+V+1Hj1pw
+	 kJNbnaW+1jlez4tMDTpEwtHR8ATY1qusW53ndmY+2vd5rHBE8L+RhAUzLmieyfP0Yg
+	 IeY3ANV0AL/nA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Brenton Simpson <appsforartists@google.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-spi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 10/23] spi: sh-msiof: avoid integer overflow in constants
-Date: Wed,  7 Feb 2024 16:25:51 -0500
-Message-ID: <20240207212611.3793-10-sashal@kernel.org>
+	vi@endrift.com,
+	swyterzone@gmail.com,
+	luca@z3ntu.xyz,
+	slouken@libsdl.org,
+	pgriffais@valvesoftware.com,
+	matthias_berndt@gmx.de,
+	christophe.jaillet@wanadoo.fr,
+	linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 11/23] Input: xpad - add Lenovo Legion Go controllers
+Date: Wed,  7 Feb 2024 16:25:52 -0500
+Message-ID: <20240207212611.3793-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212611.3793-1-sashal@kernel.org>
 References: <20240207212611.3793-1-sashal@kernel.org>
@@ -65,51 +71,67 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.148
 Content-Transfer-Encoding: 8bit
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Brenton Simpson <appsforartists@google.com>
 
-[ Upstream commit 6500ad28fd5d67d5ca0fee9da73c463090842440 ]
+[ Upstream commit 80441f76ee67002437db61f3b317ed80cce085d2 ]
 
-cppcheck rightfully warned:
+The Lenovo Legion Go is a handheld gaming system, similar to a Steam Deck.
+It has a gamepad (including rear paddles), 3 gyroscopes, a trackpad,
+volume buttons, a power button, and 2 LED ring lights.
 
- drivers/spi/spi-sh-msiof.c:792:28: warning: Signed integer overflow for expression '7<<29'. [integerOverflow]
- sh_msiof_write(p, SIFCTR, SIFCTR_TFWM_1 | SIFCTR_RFWM_1);
+The Legion Go firmware presents these controls as a USB hub with various
+devices attached.  In its default state, the gamepad is presented as an
+Xbox controller connected to this hub.  (By holding a combination of
+buttons, it can be changed to use the older DirectInput API.)
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://msgid.link/r/20240130094053.10672-1-wsa+renesas@sang-engineering.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This patch teaches the existing Xbox controller module `xpad` to bind to
+the controller in the Legion Go, which enables support for the:
+
+- directional pad,
+- analog sticks (including clicks),
+- X, Y, A, B,
+- start and select (or menu and capture),
+- shoulder buttons, and
+- rumble.
+
+The trackpad, touchscreen, volume controls, and power button are already
+supported via existing kernel modules.  Two of the face buttons, the
+gyroscopes, rear paddles, and LEDs are not.
+
+After this patch lands, the Legion Go will be mostly functional in Linux,
+out-of-the-box.  The various components of the USB hub can be synthesized
+into a single logical controller (including the additional buttons) in
+userspace with [Handheld Daemon](https://github.com/hhd-dev/hhd), which
+makes the Go fully functional.
+
+Signed-off-by: Brenton Simpson <appsforartists@google.com>
+Link: https://lore.kernel.org/r/20240118183546.418064-1-appsforartists@google.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-sh-msiof.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/input/joystick/xpad.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/spi/spi-sh-msiof.c b/drivers/spi/spi-sh-msiof.c
-index eb2c64e0a5f7..b7b3ec76e2cb 100644
---- a/drivers/spi/spi-sh-msiof.c
-+++ b/drivers/spi/spi-sh-msiof.c
-@@ -137,14 +137,14 @@ struct sh_msiof_spi_priv {
- 
- /* SIFCTR */
- #define SIFCTR_TFWM_MASK	GENMASK(31, 29)	/* Transmit FIFO Watermark */
--#define SIFCTR_TFWM_64		(0 << 29)	/*  Transfer Request when 64 empty stages */
--#define SIFCTR_TFWM_32		(1 << 29)	/*  Transfer Request when 32 empty stages */
--#define SIFCTR_TFWM_24		(2 << 29)	/*  Transfer Request when 24 empty stages */
--#define SIFCTR_TFWM_16		(3 << 29)	/*  Transfer Request when 16 empty stages */
--#define SIFCTR_TFWM_12		(4 << 29)	/*  Transfer Request when 12 empty stages */
--#define SIFCTR_TFWM_8		(5 << 29)	/*  Transfer Request when 8 empty stages */
--#define SIFCTR_TFWM_4		(6 << 29)	/*  Transfer Request when 4 empty stages */
--#define SIFCTR_TFWM_1		(7 << 29)	/*  Transfer Request when 1 empty stage */
-+#define SIFCTR_TFWM_64		(0UL << 29)	/*  Transfer Request when 64 empty stages */
-+#define SIFCTR_TFWM_32		(1UL << 29)	/*  Transfer Request when 32 empty stages */
-+#define SIFCTR_TFWM_24		(2UL << 29)	/*  Transfer Request when 24 empty stages */
-+#define SIFCTR_TFWM_16		(3UL << 29)	/*  Transfer Request when 16 empty stages */
-+#define SIFCTR_TFWM_12		(4UL << 29)	/*  Transfer Request when 12 empty stages */
-+#define SIFCTR_TFWM_8		(5UL << 29)	/*  Transfer Request when 8 empty stages */
-+#define SIFCTR_TFWM_4		(6UL << 29)	/*  Transfer Request when 4 empty stages */
-+#define SIFCTR_TFWM_1		(7UL << 29)	/*  Transfer Request when 1 empty stage */
- #define SIFCTR_TFUA_MASK	GENMASK(26, 20) /* Transmit FIFO Usable Area */
- #define SIFCTR_TFUA_SHIFT	20
- #define SIFCTR_TFUA(i)		((i) << SIFCTR_TFUA_SHIFT)
+diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
+index 1ff0d4e24fe6..f0b1dac93822 100644
+--- a/drivers/input/joystick/xpad.c
++++ b/drivers/input/joystick/xpad.c
+@@ -276,6 +276,7 @@ static const struct xpad_device {
+ 	{ 0x1689, 0xfd00, "Razer Onza Tournament Edition", 0, XTYPE_XBOX360 },
+ 	{ 0x1689, 0xfd01, "Razer Onza Classic Edition", 0, XTYPE_XBOX360 },
+ 	{ 0x1689, 0xfe00, "Razer Sabertooth", 0, XTYPE_XBOX360 },
++	{ 0x17ef, 0x6182, "Lenovo Legion Controller for Windows", 0, XTYPE_XBOX360 },
+ 	{ 0x1949, 0x041a, "Amazon Game Controller", 0, XTYPE_XBOX360 },
+ 	{ 0x1bad, 0x0002, "Harmonix Rock Band Guitar", 0, XTYPE_XBOX360 },
+ 	{ 0x1bad, 0x0003, "Harmonix Rock Band Drumkit", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
+@@ -464,6 +465,7 @@ static const struct usb_device_id xpad_table[] = {
+ 	XPAD_XBOX360_VENDOR(0x15e4),		/* Numark X-Box 360 controllers */
+ 	XPAD_XBOX360_VENDOR(0x162e),		/* Joytech X-Box 360 controllers */
+ 	XPAD_XBOX360_VENDOR(0x1689),		/* Razer Onza */
++	XPAD_XBOX360_VENDOR(0x17ef),		/* Lenovo */
+ 	XPAD_XBOX360_VENDOR(0x1949),		/* Amazon controllers */
+ 	XPAD_XBOX360_VENDOR(0x1bad),		/* Harminix Rock Band Guitar and Drums */
+ 	XPAD_XBOX360_VENDOR(0x20d6),		/* PowerA Controllers */
 -- 
 2.43.0
 
