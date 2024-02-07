@@ -1,493 +1,353 @@
-Return-Path: <linux-kernel+bounces-56014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBAC984C4F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:24:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EBE484C4F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:26:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B9F22851EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:24:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF0D428473E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A691CD30;
-	Wed,  7 Feb 2024 06:24:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D9F1C28F;
+	Wed,  7 Feb 2024 06:25:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="peLzen/b"
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2078.outbound.protection.outlook.com [40.107.13.78])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hKOXchSj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29FAA1CF87;
-	Wed,  7 Feb 2024 06:24:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.13.78
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707287070; cv=fail; b=C86VKobNHP4XgeHeOXDGJ2MUhMcWfcHdaa2ZbTU2dPrZ1IdxOp7P4g3xuBKq6RJJlvcUakrTmM2XbfAcDk/heWYtizsovLlSfyltZUzNDj13N7vl8a5WriLJMWqGuOiwu+xb+8f1w/gtciwUK5FCJKS+Sc8z8VyDQjZNF+p/x6I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707287070; c=relaxed/simple;
-	bh=2hOWvUgOfbO+GtoFYixeUKdBDgmY0G6lX/h4IEa2R4k=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=QewJ3hx3F22jQiNVWopNOy8RVfA/m0RMT1EFXJ/3SCrT8LMfvLivKqDTAskE0HLAeRFuqRNKAVoONzRjLuG0zk2yInJGnE56Ci5Qf2jAkxAs3Rgj3epPO7T9+FKwBiMUnlS/1XYbXTITyt2F1rNa9R5i76ecvkcCnQPO+MUutf4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=peLzen/b; arc=fail smtp.client-ip=40.107.13.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HV2SNveeVlYEaSxWb1eF/+FJ9oAx2O9j45C67+lB6MH8HgwUKycTapmLc90Be2NUmeOFBuJxzk+w92F4UmAUlHLfAixVpuWuavjEjV9Z+m6PmVpTvwaOGg3U5UPz3mmBmcqylIHkRWcMfcrwzeYRr/zQFLyA7J9vLjZ+XDWGMJ8NdqQEa9tV0ZsMA/F50rrmJHuiAFW6HRfu6cQQgeMVyLHgeUoYM/7O7kml0DNyUG/K/cvbZS1tcSfCY3a9+2PjGf6W/BfvOFUzRxIOYWqpr/bvrCdtf7twKfM43k+RFMgsG2hTBw+VSZQjfpZWG6IN7a6BnL39aTh1RTTznlW1KA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9J+uDlQ71IlsL2ROCGPQx7s3FHMxqFolgrVvkpWpz2Q=;
- b=F4K8HHae3clESnPi3MWFihUQE1V1neP79O4VYvLtkZCQy18MykfRT5KfD5Og05Ls1i37BkRYezuXP3hgSrOVQZn056cCVNT/dnQoW9riuDFlZvnuiz+yATPs6YT08huqKA7wAxqSH+NOz+ZSsDzBRDwsf/Q3Lan766REJlh6XDCHuTnEGKa7XcYSJdcgdoExEAC6BrbY4ZsCinIHMgyDvru4JNM8DiMGEnpqMCQXJbDHNxnR9DAlm7rYtzz5Yr3KIgek5lG3ospRx3tPaxMZczqFcHX/eIVMumhKYaw7rwvmy2IaZOY2INT0/XDY4iZ851rqA4BuVsm+MN22k43Ulw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9J+uDlQ71IlsL2ROCGPQx7s3FHMxqFolgrVvkpWpz2Q=;
- b=peLzen/bSYOSSkjkjTVYet+hczHHqSpTfucyEJqaHkUOcRYp1iR8162ML3Y/H+7zUrBTq8EZ3RmJb8fVW8jLtxVj60F6lKFIQqYmoD/dIGCarAqwuwBY3GlQxLSmts3ZXVyBqAZf2/I3ugQdvuKt5nYI0ju1c5qZq96H4VEtcyo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by PAXPR04MB8895.eurprd04.prod.outlook.com (2603:10a6:102:20e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Wed, 7 Feb
- 2024 06:24:24 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7249.035; Wed, 7 Feb 2024
- 06:24:24 +0000
-From: Frank Li <Frank.Li@nxp.com>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-pci@vger.kernel.org (open list:PCI SUBSYSTEM),
-	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
-	linux-kernel@vger.kernel.org (open list)
-Cc: imx@lists.linux.dev
-Subject: [PATCH 1/1] dt-bindings: pci: layerscape-pci: Convert to yaml file
-Date: Wed,  7 Feb 2024 01:24:02 -0500
-Message-Id: <20240207062403.304367-1-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0128.namprd03.prod.outlook.com
- (2603:10b6:a03:33c::13) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D33DBF9F2
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 06:25:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707287153; cv=none; b=LFsJf7cXBpKNZgU2PlttmiFP+c6JDuEega3U62se93HiSwNLktaZ/uT5uVHC7TYSaYBv495+j/+9HjMptAdaZ1GJr1o2wZ7mK28nVpQ4Xaw0v5H4GZ9y7G8P1Iq1qBvSYgjDrRlUkEs4ZIFu1UCz6nncZN/xRQ3LVA/n2CPJtGg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707287153; c=relaxed/simple;
+	bh=uflDMgvem0mYiMVcueyG1Dt5uetRK/0PCj7eb9jEMUA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=V4MQIitQQStqf11nDjbEwgO0ZzNzG1sXmnWL5L1pTCmPNLaJMNrixMRc+BBj2DIsDA/NIDhDQhr+NH1TExXTb+BH+eysN38JVPrhsqmdyBVH/IhsB6KM6vMQS5uf6mTmyvEjuzACNq7Ah7hD0Bspkn0oxVsgzblfC6plO0cHMkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hKOXchSj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84D21C433F1;
+	Wed,  7 Feb 2024 06:25:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707287153;
+	bh=uflDMgvem0mYiMVcueyG1Dt5uetRK/0PCj7eb9jEMUA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=hKOXchSjPpYOgw77zC+PrFBcEdxM7gXRHQXmeGvO3MoehoDh6ucXSq+9OI/htG8c2
+	 yrmiC5EM0H6B1iw/3ilZLXA50aNzYCKzkBv7cmLkkVfi4LahZcvAkaqSYEtewQmC5k
+	 QnH9qRjn5pcV354n+UhQrExi36rRDQJv4PP/uV9JHsUB62fgXA9kAW097SdU07ZZaw
+	 BxDYJC40i1RshLRX6hpAZ1goH4F8RpXTFAFFkGJ1JbUyR5YUMhWLI3ygcaWGDi5xjT
+	 K1lwdTVZcMV7bmY6KEhhxAYTk6wJFenkL686+zsFKozH2DvsGbWmkd0faOPueBtfVN
+	 UW76DlK0AhXGA==
+From: Chao Yu <chao@kernel.org>
+To: jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Chao Yu <chao@kernel.org>,
+	Sheng Yong <shengyong@oppo.com>
+Subject: [PATCH] f2fs: support compress extension update via sysfs interface
+Date: Wed,  7 Feb 2024 14:25:46 +0800
+Message-Id: <20240207062546.3083870-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PAXPR04MB8895:EE_
-X-MS-Office365-Filtering-Correlation-Id: f43310ae-ca4d-475f-76d4-08dc27a56d96
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	af1UuzzFBAOYwKjPXAwHvR3sp5sbZWtRwpIRXg565HF7vODvAzahNqakla3OnShoMVGLyLS6Y7sh/m9IwZEYEtUmhDffxDlAF3AAdS8k2g301QJQNsnG5p60uJZ4zxhV2XxHqu7Dxsfj1jifnnkN6KwWrGTf+4AhnUtVa3X/qWnwtg42QBD8sblFjxM1voorEUAs32YaB9j2Dud2Gp0/+HAB/NdIsfjFAVUaFSzVxrHUVMuYKZxP4yHOBWsVU838WQtqCRnW/Z6TurRK11I2j0dSFT3tVYU9S1OJlcm4LLYQMjqlLdOIoSUIzHGmiSETHeDgWIC4AhPO2oFvgom2VIBQFqyUeh66Qphbc8ggn3f/V2Xu91VrjdyZ4MeNawEW8lNofxT6noY59YpUpCl8wr/mvRhQDx7u/bKjTjKZvf/8R1WTWyqnkIg9LsuhWdkmrkoOQTyzq+jHQqSDMPm303nPC2iVFtr1YdXBHerm/jqOY3NqY5hG/HfJaHDqdKbeBZbZey6MVmWKphjzxvqnLGp9t6Mj5HDBfut8ySvVnMWEEdQ7JLOIvqfcysoFomMslGdXat5HJk9D5Te5jNziP+a0kMBsXRYCk5tBPA7jvXU=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(376002)(346002)(366004)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(83380400001)(2906002)(38100700002)(41300700001)(316002)(26005)(38350700005)(66556008)(66946007)(66476007)(110136005)(7416002)(30864003)(8676002)(86362001)(8936002)(4326008)(6506007)(52116002)(2616005)(6666004)(5660300002)(6512007)(1076003)(478600001)(6486002)(36756003)(966005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?oJ+MNXFm98LMxC7INJI27w5728vxdN+ATOI2YaDm7eKwJzky8+tH2D16/ira?=
- =?us-ascii?Q?TSwSPLWBTzocG6bQW4OCtSRpQC+Uw8chpftzouUk7Yo1RIhNaeECuGcgih04?=
- =?us-ascii?Q?sKSF7nWVAZl2Z0AvECmOJMY1pLsQGLiwvl0TCPtgxtxHVyHETwssFF2r8M+y?=
- =?us-ascii?Q?+VhjNtwxu63bWDfoOPnDSKvoT78O9dYzyQx0E8F1p1+rFOLfPAF0J8BaUB1Z?=
- =?us-ascii?Q?bcATnAyhvsdkGczgeQD/R42BSetq9VwAy9oESYp+y6jPpHOrxBRV4lsq0WDa?=
- =?us-ascii?Q?FV9K6uo/XKQXrSGVILr+AMns1HnWCZGbx9cJyPQ7i9lof7WKOfgUPuaiw1EZ?=
- =?us-ascii?Q?FwNy0t+EB8PB0nvzIled1gW+MSIbePy1HdgFZiIbbC2wbMcVqx4a3SQDo7qS?=
- =?us-ascii?Q?BOH8yGM9SFk5nnzDwkoqVOI6GLLtPjMb+nH5Pwkqp0czItK0TCmyon3Lm+LO?=
- =?us-ascii?Q?TvERTR3izQ48pHiERzTpsRnMb4zKOjR+CHYRe6+IcsJb9LLEnRrfvYZlDTK7?=
- =?us-ascii?Q?iMuexBXMrtl6ORbrFcy1FZzM4v1l9ul1MI+1vvr2UCLo8f9lu8EREqgz4p00?=
- =?us-ascii?Q?98T932o6EA+ZdJVJjGTAabN+S4DuIKdojSeejzNkK1FwERE5Q0ChW8/k3q+8?=
- =?us-ascii?Q?bCatgLQ0w6pLcVxAjBdkqMaixeihZClgNtoJSAcmERgULH0RmwP4cvZHmon8?=
- =?us-ascii?Q?zREqlxB65OQzBePuanLfhH1/q6Y1uHVpA/fe0ctvfM10JG8qseVk3n+AK5jQ?=
- =?us-ascii?Q?wRgt+P3CIrVY4cWw95bCzVn118R0uC1PpGlpWoy214rJOsedQpYX2sukOVMJ?=
- =?us-ascii?Q?Ku+Hm2wRVY+odtlyp7BPxga14LoSBBb8jIsxla72g2nqh//YA0q94Y3+TjCn?=
- =?us-ascii?Q?snU9GeNcEIo+jIOLzQwUxofwe9tDChe0v5uUl8JrK/EezmzzDfDNhn0e+nT8?=
- =?us-ascii?Q?ffZ9q24O/uF2mQRQhezvhvRCUy9dKE9zJM293hV0pssJFHaowHAJTv1HkJq9?=
- =?us-ascii?Q?UVnwDWuXQHoUHDM5klfsHQp962cpboRS3EIKwqq8G0Vx9ubYiYJkVvbQriBt?=
- =?us-ascii?Q?RBwbF/nLkaCrT/psm6U0VP2YbAIN7z8blmQOOlR8pmecySILB8l+092k0cLC?=
- =?us-ascii?Q?4N7YkoSnf3KnUvqgJ3Epu3VO2ot8ZyYP71ee2rdi2wIWC6AnCEL2WMS5HEFC?=
- =?us-ascii?Q?tUtJ/U7eidpxy3hE7doB7wqe8eoVERPMuyWiOHGg75JgfU/k6KLyqm5RZA92?=
- =?us-ascii?Q?45X2lFVsXeyINB0XDYWY6CPBBr1UUzrGoezuiuNnS85Qky2WvtJRGJmIVjVH?=
- =?us-ascii?Q?oxynr9QQ77nSrWH/qym4rnTO8Hx9kC/TkkdzNGd20N3IL4s+CnIcXBOpkqRc?=
- =?us-ascii?Q?5pT6JJ0uRtxYTKWdSPEzY7SUEl81gq8gSXN/smEPO0EAi5QA9DqH0hPrKcq5?=
- =?us-ascii?Q?+lH7zP+4ZJR+XED/U7MsDUdS/LS3UbAUb0ySl/iGDByACvfe5dzY6LAw9A1B?=
- =?us-ascii?Q?txkz7EgL1M1BaqosDW5xNnhKScpfwSlcOopBRB9qlTi4oS280JpaKhd/SqUm?=
- =?us-ascii?Q?fIjfwfPczYLUktfQ1CI=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f43310ae-ca4d-475f-76d4-08dc27a56d96
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2024 06:24:24.4348
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5In9dPYek0269yQ1VNglEyHXabeGV7Zds1wCU5B8iV8aLGEb4ZuONpUFpP+7NEExp+XQkt9HBsUdILj2uaDbkA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8895
+Content-Transfer-Encoding: 8bit
 
-Convert layerscape pcie bind document to yaml file.
+Introduce /sys/fs/f2fs/<disk>/compress_extension to support
+adding/deleting compress extension via sysfs interface, in
+comparison to mount option, it's more easy to use and less
+authority issue for applications.
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Usage:
+- Query: cat /sys/fs/f2fs/<disk>/compress_extension
+- Add: echo '[c|n]extension' > /sys/fs/f2fs/<disk>/compress_extension
+- Del: echo '[c|n]!extension' > /sys/fs/f2fs/<disk>/compress_extension
+- [c] means add/del compress extension
+- [n] means add/del nocompress extension
+
+Signed-off-by: Sheng Yong <shengyong@oppo.com>
+Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- .../bindings/pci/fsl,layerscape-pcie-ep.yaml  |  84 +++++++++
- .../bindings/pci/fsl,layerscape-pcie.yaml     | 163 ++++++++++++++++++
- .../bindings/pci/layerscape-pci.txt           |  79 ---------
- 3 files changed, 247 insertions(+), 79 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
- create mode 100644 Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
- delete mode 100644 Documentation/devicetree/bindings/pci/layerscape-pci.txt
+ Documentation/ABI/testing/sysfs-fs-f2fs | 10 ++++
+ Documentation/filesystems/f2fs.rst      |  6 ++-
+ fs/f2fs/compress.c                      | 61 +++++++++++++++++++++++
+ fs/f2fs/f2fs.h                          |  4 +-
+ fs/f2fs/sysfs.c                         | 65 +++++++++++++++++++++++--
+ 5 files changed, 139 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-new file mode 100644
-index 0000000000000..3b592c820eb4c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-@@ -0,0 +1,84 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie-ep.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 48c135e24eb5..1f2cc0913e45 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -762,3 +762,13 @@ Date:		November 2023
+ Contact:	"Chao Yu" <chao@kernel.org>
+ Description:	It controls to enable/disable IO aware feature for background discard.
+ 		By default, the value is 1 which indicates IO aware is on.
 +
-+title: Freescale Layerscape PCIe controller
++What:		/sys/fs/f2fs/<disk>/compress_extension
++Date:		October 2023
++Contact:	"Chao Yu" <chao@kernel.org>
++Description:	Used to control configure [|no]compress_extension list:
++		- Query: cat /sys/fs/f2fs/<disk>/compress_extension
++		- Add: echo '[c|n]extension' > /sys/fs/f2fs/<disk>/compress_extension
++		- Del: echo '[c|n]!extension' > /sys/fs/f2fs/<disk>/compress_extension
++		- [c] means add/del compress extension
++		- [n] means add/del nocompress extension
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index 32cbfa864f38..c82a8fd7316b 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -821,17 +821,19 @@ Compression implementation
+   all logical blocks in cluster contain valid data and compress ratio of
+   cluster data is lower than specified threshold.
+ 
+-- To enable compression on regular inode, there are four ways:
++- To enable compression on regular inode, there are five ways:
+ 
+   * chattr +c file
+   * chattr +c dir; touch dir/file
+   * mount w/ -o compress_extension=ext; touch file.ext
+   * mount w/ -o compress_extension=*; touch any_file
++  * echo '[c]ext' > /sys/fs/f2fs/<disk>/compress_extension; touch file.ext
+ 
+-- To disable compression on regular inode, there are two ways:
++- To disable compression on regular inode, there are three ways:
+ 
+   * chattr -c file
+   * mount w/ -o nocompress_extension=ext; touch file.ext
++  * echo '[n]ext' > /sys/fs/f2fs/<disk>/compress_extension; touch file.ext
+ 
+ - Priority in between FS_COMPR_FL, FS_NOCOMP_FS, extensions:
+ 
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 3dc488ce882b..a5257882c772 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -20,6 +20,67 @@
+ #include "segment.h"
+ #include <trace/events/f2fs.h>
+ 
++static int is_compress_extension_exist(struct f2fs_sb_info *sbi,
++				unsigned char (*ext)[F2FS_EXTENSION_LEN],
++				int ext_cnt, unsigned char *new_ext)
++{
++	int i;
 +
-+maintainers:
-+  - Frank Li <Frank.Li@nxp.com>
++	for (i = 0; i < ext_cnt; i++) {
++		if (!strcasecmp(new_ext, ext[i]))
++			return i;
++	}
++	return -1;
++}
 +
-+description: |+
-+  This PCIe endpoint controller is based on the Synopsys DesignWare PCIe IP
-+  and thus inherits all the common properties defined in snps,dw-pcie-ep.yaml.
++int f2fs_update_compress_extension(struct f2fs_sb_info *sbi,
++				unsigned char *new_ext, bool is_ext, bool set)
++{
++	unsigned char (*ext)[F2FS_EXTENSION_LEN];
++	unsigned char *ext_cnt;
 +
-+  This controller derives its clocks from the Reset Configuration Word (RCW)
-+  which is used to describe the PLL settings at the time of chip-reset.
++	if (is_ext) {
++		ext = F2FS_OPTION(sbi).extensions;
++		ext_cnt = &F2FS_OPTION(sbi).compress_ext_cnt;
++	} else {
++		ext = F2FS_OPTION(sbi).noextensions;
++		ext_cnt = &F2FS_OPTION(sbi).nocompress_ext_cnt;
++	}
 +
-+  Also as per the available Reference Manuals, there is no specific 'version'
-+  register available in the Freescale PCIe controller register set,
-+  which can allow determining the underlying DesignWare PCIe controller version
-+  information.
++	if (set) {
++		if (*ext_cnt >= COMPRESS_EXT_NUM)
++			return -EINVAL;
 +
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,ls2088a-pcie-ep
-+      - fsl,ls1088a-pcie-ep
-+      - fsl,ls1046a-pcie-ep
-+      - fsl,ls1028a-pcie-ep
-+      - fsl,lx2160ar2-pcie-ep
++		if (is_compress_extension_exist(sbi,
++					F2FS_OPTION(sbi).extensions,
++					F2FS_OPTION(sbi).compress_ext_cnt,
++					new_ext) >= 0)
++			return -EEXIST;
 +
-+  reg:
-+    maxItems: 2
++		if (is_compress_extension_exist(sbi,
++					F2FS_OPTION(sbi).noextensions,
++					F2FS_OPTION(sbi).nocompress_ext_cnt,
++					new_ext) >= 0)
++			return -EEXIST;
 +
-+  reg-names:
-+    items:
-+      - const: regs
-+      - const: addr_space
++		strcpy(ext[*ext_cnt], new_ext);
++		(*ext_cnt)++;
++	} else {
++		int pos = is_compress_extension_exist(sbi, ext,
++						*ext_cnt, new_ext);
++		if (pos < 0)
++			return -ENOENT;
 +
-+  fsl,pcie-scfg:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: A phandle to the SCFG device node. The second entry is the
-+      physical PCIe controller index starting from '0'. This is used to get
-+      SCFG PEXN registers.
++		if (pos < *ext_cnt - 1)
++			memmove(ext + pos, ext + pos + 1,
++				F2FS_EXTENSION_LEN * (*ext_cnt - pos - 1));
++		memset(ext + *ext_cnt - 1, 0, F2FS_EXTENSION_LEN);
++		(*ext_cnt)--;
++	}
 +
-+  dma-coherent:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: Indicates that the hardware IP block can ensure the coherency
-+      of the data transferred from/to the IP block. This can avoid the software
-+      cache flush/invalid actions, and improve the performance significantly.
++	return 0;
++}
 +
-+  big-endian:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: If the PEX_LUT and PF register block is in big-endian, specify
-+      this property.
+ static struct kmem_cache *cic_entry_slab;
+ static struct kmem_cache *dic_entry_slab;
+ 
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index c5e7460d1a0a..d44e2c43d8ab 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -186,7 +186,7 @@ struct f2fs_mount_info {
+ 	unsigned char compress_level;		/* compress level */
+ 	bool compress_chksum;			/* compressed data chksum */
+ 	unsigned char compress_ext_cnt;		/* extension count */
+-	unsigned char nocompress_ext_cnt;		/* nocompress extension count */
++	unsigned char nocompress_ext_cnt;	/* nocompress extension count */
+ 	int compress_mode;			/* compression mode */
+ 	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
+ 	unsigned char noextensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN]; /* extensions */
+@@ -4273,6 +4273,8 @@ static inline bool f2fs_post_read_required(struct inode *inode)
+  * compress.c
+  */
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
++int f2fs_update_compress_extension(struct f2fs_sb_info *sbi,
++				unsigned char *new_ext, bool is_ext, bool set);
+ bool f2fs_is_compressed_page(struct page *page);
+ struct page *f2fs_compress_control_page(struct page *page);
+ int f2fs_prepare_compress_overwrite(struct inode *inode,
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index a7ec55c7bb20..a8f05a02e202 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -39,6 +39,7 @@ enum {
+ 	RESERVED_BLOCKS,	/* struct f2fs_sb_info */
+ 	CPRC_INFO,	/* struct ckpt_req_control */
+ 	ATGC_INFO,	/* struct atgc_management */
++	MOUNT_INFO,	/* struct f2fs_mount_info */
+ };
+ 
+ static const char *gc_mode_names[MAX_GC_MODE] = {
+@@ -89,6 +90,8 @@ static unsigned char *__struct_ptr(struct f2fs_sb_info *sbi, int struct_type)
+ 		return (unsigned char *)&sbi->cprc_info;
+ 	else if (struct_type == ATGC_INFO)
+ 		return (unsigned char *)&sbi->am;
++	else if (struct_type == MOUNT_INFO)
++		return (unsigned char *)&F2FS_OPTION(sbi);
+ 	return NULL;
+ }
+ 
+@@ -358,6 +361,25 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
+ 
+ 	if (!strcmp(a->attr.name, "compr_new_inode"))
+ 		return sysfs_emit(buf, "%u\n", sbi->compr_new_inode);
 +
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - "#address-cells"
-+  - "#size-cells"
-+  - device_type
-+  - bus-range
-+  - ranges
++	if (!strcmp(a->attr.name, "compress_extension")) {
++		int len = 0, i;
 +
-+allOf:
-+  - $ref: /schemas/pci/snps,dw-pcie-ep.yaml#
++		f2fs_down_read(&sbi->sb_lock);
++		len += scnprintf(buf + len, PAGE_SIZE - len,
++						"compress extension:\n");
++		for (i = 0; i < F2FS_OPTION(sbi).compress_ext_cnt; i++)
++			len += scnprintf(buf + len, PAGE_SIZE - len, "%s\n",
++					F2FS_OPTION(sbi).extensions[i]);
 +
-+  - if:
-+      properties:
-+        compatible:
-+          enum:
-+            - fsl,ls1028a-pcie-ep
-+            - fsl,ls1046a-pcie-ep
-+            - fsl,ls1088a-pcie-ep
-+    then:
-+      properties:
-+        interrupt-names:
-+          items:
-+            - const: pme
++		len += scnprintf(buf + len, PAGE_SIZE - len,
++						"nocompress extension:\n");
++		for (i = 0; i < F2FS_OPTION(sbi).nocompress_ext_cnt; i++)
++			len += scnprintf(buf + len, PAGE_SIZE - len, "%s\n",
++					F2FS_OPTION(sbi).noextensions[i]);
++		f2fs_up_read(&sbi->sb_lock);
++		return len;
++	}
+ #endif
+ 
+ 	if (!strcmp(a->attr.name, "gc_segment_mode"))
+@@ -446,6 +468,35 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 		return ret ? ret : count;
+ 	}
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	if (!strcmp(a->attr.name, "compress_extension")) {
++		char *name = strim((char *)buf);
++		bool set = true, cmpr;
 +
-+unevaluatedProperties: false
-diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
-new file mode 100644
-index 0000000000000..e3719da306f25
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
-@@ -0,0 +1,163 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++		if (!strncmp(name, "[c]", 3))
++			cmpr = true;
++		else if (!strncmp(name, "[n]", 3))
++			cmpr = false;
++		else
++			return -EINVAL;
 +
-+title: Freescale Layerscape PCIe controller
++		name += 3;
 +
-+maintainers:
-+  - Frank Li <Frank.Li@nxp.com>
++		if (*name == '!') {
++			name++;
++			set = false;
++		}
 +
-+description: |+
-+  This PCIe host controller is based on the Synopsys DesignWare PCIe IP
-+  and thus inherits all the common properties defined in snps,dw-pcie.yaml.
++		if (!strlen(name) || strlen(name) >= F2FS_EXTENSION_LEN)
++			return -EINVAL;
 +
-+  This controller derives its clocks from the Reset Configuration Word (RCW)
-+  which is used to describe the PLL settings at the time of chip-reset.
++		f2fs_down_write(&sbi->sb_lock);
++		ret = f2fs_update_compress_extension(sbi, name, cmpr, set);
++		f2fs_up_write(&sbi->sb_lock);
++		return ret ? ret : count;
++	}
++#endif
 +
-+  Also as per the available Reference Manuals, there is no specific 'version'
-+  register available in the Freescale PCIe controller register set,
-+  which can allow determining the underlying DesignWare PCIe controller version
-+  information.
+ 	if (!strcmp(a->attr.name, "ckpt_thread_ioprio")) {
+ 		const char *name = strim((char *)buf);
+ 		struct ckpt_req_control *cprc = &sbi->cprc_info;
+@@ -785,15 +836,16 @@ static ssize_t f2fs_sbi_store(struct f2fs_attr *a,
+ 			const char *buf, size_t count)
+ {
+ 	ssize_t ret;
+-	bool gc_entry = (!strcmp(a->attr.name, "gc_urgent") ||
+-					a->struct_type == GC_THREAD);
++	bool need_lock = (!strcmp(a->attr.name, "gc_urgent") ||
++					a->struct_type == GC_THREAD ||
++					a->struct_type == MOUNT_INFO);
+ 
+-	if (gc_entry) {
++	if (need_lock) {
+ 		if (!down_read_trylock(&sbi->sb->s_umount))
+ 			return -EAGAIN;
+ 	}
+ 	ret = __sbi_store(a, sbi, buf, count);
+-	if (gc_entry)
++	if (need_lock)
+ 		up_read(&sbi->sb->s_umount);
+ 
+ 	return ret;
+@@ -942,6 +994,9 @@ static struct f2fs_attr f2fs_attr_##name = __ATTR(name, 0444, name##_show, NULL)
+ #define ATGC_INFO_RW_ATTR(name, elname)				\
+ 	F2FS_RW_ATTR(ATGC_INFO, atgc_management, name, elname)
+ 
++#define MOUNT_INFO_RW_ATTR(name, elname)			\
++	F2FS_RW_ATTR(MOUNT_INFO, f2fs_mount_info, name, elname)
 +
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,ls1021a-pcie
-+      - fsl,ls2080a-pcie
-+      - fsl,ls2085a-pcie
-+      - fsl,ls2088a-pcie
-+      - fsl,ls1088a-pcie
-+      - fsl,ls1046a-pcie
-+      - fsl,ls1043a-pcie
-+      - fsl,ls1012a-pcie
-+      - fsl,ls1028a-pcie
-+
-+  reg:
-+    maxItems: 2
-+
-+  reg-names:
-+    items:
-+      - const: regs
-+      - const: config
-+
-+  fsl,pcie-scfg:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: A phandle to the SCFG device node. The second entry is the
-+      physical PCIe controller index starting from '0'. This is used to get
-+      SCFG PEXN registers.
-+
-+  dma-coherent:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: Indicates that the hardware IP block can ensure the coherency
-+      of the data transferred from/to the IP block. This can avoid the software
-+      cache flush/invalid actions, and improve the performance significantly.
-+
-+  big-endian:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: If the PEX_LUT and PF register block is in big-endian, specify
-+      this property.
-+
-+  msi-parent: true
-+
-+  iommu-map: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - "#address-cells"
-+  - "#size-cells"
-+  - device_type
-+  - bus-range
-+  - ranges
-+  - interrupts
-+  - interrupt-names
-+  - "#interrupt-cells"
-+  - interrupt-map-mask
-+  - interrupt-map
-+
-+allOf:
-+  - $ref: /schemas/pci/pci-bus.yaml#
-+
-+  - if:
-+      properties:
-+        compatible:
-+          enum:
-+            - fsl,ls1028a-pcie
-+            - fsl,ls1046a-pcie
-+            - fsl,ls1043a-pcie
-+            - fsl,ls1012a-pcie
-+    then:
-+      properties:
-+        interrupts:
-+          maxItems: 2
-+        interrupt-names:
-+          items:
-+            - const: pme
-+            - const: aer
-+
-+  - if:
-+      properties:
-+        compatible:
-+          enum:
-+            - fsl,ls2080a-pcie
-+            - fsl,ls2085a-pcie
-+            - fsl,ls2088a-pcie
-+    then:
-+      properties:
-+        interrupts:
-+          maxItems: 1
-+        interrupt-names:
-+          items:
-+            - const: intr
-+
-+  - if:
-+      properties:
-+        compatible:
-+          enum:
-+            - fsl,ls1088a-pcie
-+    then:
-+      properties:
-+        interrupts:
-+          maxItems: 1
-+        interrupt-names:
-+          items:
-+            - const: aer
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    soc {
-+      #address-cells = <2>;
-+      #size-cells = <2>;
-+
-+      pcie@3400000 {
-+        compatible = "fsl,ls1088a-pcie";
-+        reg = <0x00 0x03400000 0x0 0x00100000>, /* controller registers */
-+            <0x20 0x00000000 0x0 0x00002000>; /* configuration space */
-+        reg-names = "regs", "config";
-+        interrupts = <0 108 IRQ_TYPE_LEVEL_HIGH>; /* aer interrupt */
-+        interrupt-names = "aer";
-+        #address-cells = <3>;
-+        #size-cells = <2>;
-+        dma-coherent;
-+        device_type = "pci";
-+        bus-range = <0x0 0xff>;
-+        ranges = <0x81000000 0x0 0x00000000 0x20 0x00010000 0x0 0x00010000   /* downstream I/O */
-+                 0x82000000 0x0 0x40000000 0x20 0x40000000 0x0 0x40000000>; /* non-prefetchable memory */
-+        msi-parent = <&its>;
-+        #interrupt-cells = <1>;
-+        interrupt-map-mask = <0 0 0 7>;
-+        interrupt-map = <0000 0 0 1 &gic 0 0 0 109 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0000 0 0 2 &gic 0 0 0 110 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0000 0 0 3 &gic 0 0 0 111 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0000 0 0 4 &gic 0 0 0 112 IRQ_TYPE_LEVEL_HIGH>;
-+        iommu-map = <0 &smmu 0 1>; /* Fixed-up by bootloader */
-+      };
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/pci/layerscape-pci.txt b/Documentation/devicetree/bindings/pci/layerscape-pci.txt
-deleted file mode 100644
-index ee8a4791a78b4..0000000000000
---- a/Documentation/devicetree/bindings/pci/layerscape-pci.txt
-+++ /dev/null
-@@ -1,79 +0,0 @@
--Freescale Layerscape PCIe controller
--
--This PCIe host controller is based on the Synopsys DesignWare PCIe IP
--and thus inherits all the common properties defined in snps,dw-pcie.yaml.
--
--This controller derives its clocks from the Reset Configuration Word (RCW)
--which is used to describe the PLL settings at the time of chip-reset.
--
--Also as per the available Reference Manuals, there is no specific 'version'
--register available in the Freescale PCIe controller register set,
--which can allow determining the underlying DesignWare PCIe controller version
--information.
--
--Required properties:
--- compatible: should contain the platform identifier such as:
--  RC mode:
--        "fsl,ls1021a-pcie"
--        "fsl,ls2080a-pcie", "fsl,ls2085a-pcie"
--        "fsl,ls2088a-pcie"
--        "fsl,ls1088a-pcie"
--        "fsl,ls1046a-pcie"
--        "fsl,ls1043a-pcie"
--        "fsl,ls1012a-pcie"
--        "fsl,ls1028a-pcie"
--  EP mode:
--	"fsl,ls1028a-pcie-ep", "fsl,ls-pcie-ep"
--	"fsl,ls1046a-pcie-ep", "fsl,ls-pcie-ep"
--	"fsl,ls1088a-pcie-ep", "fsl,ls-pcie-ep"
--	"fsl,ls2088a-pcie-ep", "fsl,ls-pcie-ep"
--	"fsl,lx2160ar2-pcie-ep", "fsl,ls-pcie-ep"
--- reg: base addresses and lengths of the PCIe controller register blocks.
--- interrupts: A list of interrupt outputs of the controller. Must contain an
--  entry for each entry in the interrupt-names property.
--- interrupt-names: It could include the following entries:
--  "aer": Used for interrupt line which reports AER events when
--	 non MSI/MSI-X/INTx mode is used
--  "pme": Used for interrupt line which reports PME events when
--	 non MSI/MSI-X/INTx mode is used
--  "intr": Used for SoCs(like ls2080a, lx2160a, ls2080a, ls2088a, ls1088a)
--	  which has a single interrupt line for miscellaneous controller
--	  events(could include AER and PME events).
--- fsl,pcie-scfg: Must include two entries.
--  The first entry must be a link to the SCFG device node
--  The second entry is the physical PCIe controller index starting from '0'.
--  This is used to get SCFG PEXN registers
--- dma-coherent: Indicates that the hardware IP block can ensure the coherency
--  of the data transferred from/to the IP block. This can avoid the software
--  cache flush/invalid actions, and improve the performance significantly.
--
--Optional properties:
--- big-endian: If the PEX_LUT and PF register block is in big-endian, specify
--  this property.
--
--Example:
--
--        pcie@3400000 {
--                compatible = "fsl,ls1088a-pcie";
--                reg = <0x00 0x03400000 0x0 0x00100000>, /* controller registers */
--                      <0x20 0x00000000 0x0 0x00002000>; /* configuration space */
--                reg-names = "regs", "config";
--                interrupts = <0 108 IRQ_TYPE_LEVEL_HIGH>; /* aer interrupt */
--                interrupt-names = "aer";
--                #address-cells = <3>;
--                #size-cells = <2>;
--                device_type = "pci";
--                dma-coherent;
--                num-viewport = <256>;
--                bus-range = <0x0 0xff>;
--                ranges = <0x81000000 0x0 0x00000000 0x20 0x00010000 0x0 0x00010000   /* downstream I/O */
--                          0x82000000 0x0 0x40000000 0x20 0x40000000 0x0 0x40000000>; /* non-prefetchable memory */
--                msi-parent = <&its>;
--                #interrupt-cells = <1>;
--                interrupt-map-mask = <0 0 0 7>;
--                interrupt-map = <0000 0 0 1 &gic 0 0 0 109 IRQ_TYPE_LEVEL_HIGH>,
--                                <0000 0 0 2 &gic 0 0 0 110 IRQ_TYPE_LEVEL_HIGH>,
--                                <0000 0 0 3 &gic 0 0 0 111 IRQ_TYPE_LEVEL_HIGH>,
--                                <0000 0 0 4 &gic 0 0 0 112 IRQ_TYPE_LEVEL_HIGH>;
--                iommu-map = <0 &smmu 0 1>; /* Fixed-up by bootloader */
--        };
+ /* GC_THREAD ATTR */
+ GC_THREAD_RW_ATTR(gc_urgent_sleep_time, urgent_sleep_time);
+ GC_THREAD_RW_ATTR(gc_min_sleep_time, min_sleep_time);
+@@ -1008,6 +1063,7 @@ F2FS_SBI_GENERAL_RW_ATTR(compr_saved_block);
+ F2FS_SBI_GENERAL_RW_ATTR(compr_new_inode);
+ F2FS_SBI_GENERAL_RW_ATTR(compress_percent);
+ F2FS_SBI_GENERAL_RW_ATTR(compress_watermark);
++MOUNT_INFO_RW_ATTR(compress_extension, extensions);
+ #endif
+ /* atomic write */
+ F2FS_SBI_GENERAL_RO_ATTR(current_atomic_write);
+@@ -1181,6 +1237,7 @@ static struct attribute *f2fs_attrs[] = {
+ 	ATTR_LIST(compr_new_inode),
+ 	ATTR_LIST(compress_percent),
+ 	ATTR_LIST(compress_watermark),
++	ATTR_LIST(compress_extension),
+ #endif
+ 	/* For ATGC */
+ 	ATTR_LIST(atgc_candidate_ratio),
 -- 
-2.34.1
+2.40.1
 
 
