@@ -1,62 +1,57 @@
-Return-Path: <linux-kernel+bounces-57202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8000B84D514
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:59:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5639284D517
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:59:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C4A1286C5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:59:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82D9B1C24849
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E4056BFA1;
-	Wed,  7 Feb 2024 21:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977206D876;
+	Wed,  7 Feb 2024 21:27:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zi5d/UT0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jvOWwzVs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC2856BFCA;
-	Wed,  7 Feb 2024 21:26:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF1A86D860;
+	Wed,  7 Feb 2024 21:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341215; cv=none; b=dpTEnSrUM7l5Dt4OIor//GDD7Easl/d1PpZVA9khroHziU0yZcWifSXKSd4ueuqK4oJezXvo6CjcTcZ1tEeUj0Hx+Cr/rPYFtQno8bEzWir2X33lInMNpFl5b636UuBNqjmLjoSppMuFHLyTVOgW8R2dl1FFAcKf9MAzyh9PZao=
+	t=1707341223; cv=none; b=ZsClm1AdQDjnwRLnRy0Wsg0OpONA4MkrOCUHYNvibFkPRLBNqPV/P55I4YfAqCHJntG7YJR8Seba+m8U3xfJDvic+mwSQG93NSToz8aUwdBmSJsTbKSGnk8NsPfW56wXnEraGC1Nb9trlQVDzBIk2Tbawj61vfq+2+O/aHvMsdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341215; c=relaxed/simple;
-	bh=5AfnTg+OU3W3j2LltrIgksiWO7cV1lN5s+AyZFDoXm0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SJPPbHbQW2q6zBPczkEwtYlQm4bGhk4lqk2FJAuE8XM0fe+lrsVyyX2ORqszSumU8bd3Q2vSq/NfPkrUB8+cU3LVb7JDwEKgK/V/CZ18LAUwMSxLQudpc4UKovetgjRJ4m0PsGQFKl9azy8IEBIKBsXvyZgYkiKl+Y+IEywMDDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zi5d/UT0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B1E6C433C7;
-	Wed,  7 Feb 2024 21:26:54 +0000 (UTC)
+	s=arc-20240116; t=1707341223; c=relaxed/simple;
+	bh=MjEd8+cP7sRII+F/VCnFCl958GjFREUuy8bQleD4UYo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M8wA+1GDJqHzP4KO+qARKwmCVcCBB5MiO5I46NhatSspJy4hd3LmM4TCbXOel8X4clcOTqdCFszReHrpzzDGwV25m5PyRZQ0OmmQIYVlHOjImTG9iE4daL2vflk8hSqJvRmxNVwBK4E4Y3hqiR20bMTP3dfhtA+15/N1ODkuLe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jvOWwzVs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EB48C43390;
+	Wed,  7 Feb 2024 21:27:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341215;
-	bh=5AfnTg+OU3W3j2LltrIgksiWO7cV1lN5s+AyZFDoXm0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Zi5d/UT0U9NRflzvVA1w136ezNMO21RFTECjOHv+r66sGL6opNoxsjE89MRluX585
-	 uIcxzl261kg39/rTXDt/tXH7AZUwQjiTl0BfThFM5Pk/zbHqlMmZd2hlUlHVfDeH8b
-	 +pfQYSOMEaIZA/w7OdentQDFNCfmI1mLjWwEkFPbdubj+ctNbhJxdMSWfsfc3DF90t
-	 mCqBMKb1Tt5mIc7vc0K9K4fD3c8lr6PI1P1OQjOHm5pcW0H6ETysqM3paHn5wOLvMB
-	 +PAjI3NgD59htYEHrafZIyI+M25630an+q5e/2qDuUE2RxmzG2aQEAeeBRR4CW7qWf
-	 HNaSoghCxuQ0g==
+	s=k20201202; t=1707341223;
+	bh=MjEd8+cP7sRII+F/VCnFCl958GjFREUuy8bQleD4UYo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jvOWwzVsiDhyJZ0+VaqnOqmrIVmIl7IvLqeLePvYhNfiUFr/ET++v7dw0A5p84Uib
+	 iK4ooI9GYgjq9iahE2mk8WMnH4aFsbHIwtevOw7JfsJCIDbXYrqx9sT3oxmN79b/Hw
+	 Io0uPspKH35XJX2LuNVbtOsk51fmorV/3He/si6IlW8CQfQ/SK0+N3ZEBzBZBkOKJ2
+	 3J6Ym3QE1nXlJmAkGn6np5WHcRwizK+9fqQwlRuXxFTiT4wQsmE3pxoO1n+R+HYkbI
+	 0/eyfgfNa7NVAQygZlPWNotdCZTf8ueqecp1fQ2HiR92Gg1ORPgXmpy/0EgrYJanOG
+	 NTHQcLjlpaOLg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Szilard Fabian <szfabian@bluemarch.art>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+Cc: Baokun Li <libaokun1@huawei.com>,
+	Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
-	wse@tuxedocomputers.com,
-	jdenose@chromium.org,
-	hdegoede@redhat.com,
-	eshimanovich@chromium.org,
-	linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 23/23] Input: i8042 - add Fujitsu Lifebook U728 to i8042 quirk table
-Date: Wed,  7 Feb 2024 16:26:04 -0500
-Message-ID: <20240207212611.3793-23-sashal@kernel.org>
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 01/16] ext4: avoid allocating blocks from corrupted group in ext4_mb_try_best_found()
+Date: Wed,  7 Feb 2024 16:26:41 -0500
+Message-ID: <20240207212700.4287-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240207212611.3793-1-sashal@kernel.org>
-References: <20240207212611.3793-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,56 +60,65 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.148
+X-stable-base: Linux 5.10.209
 Content-Transfer-Encoding: 8bit
 
-From: Szilard Fabian <szfabian@bluemarch.art>
+From: Baokun Li <libaokun1@huawei.com>
 
-[ Upstream commit 4255447ad34c5c3785fcdcf76cfa0271d6e5ed39 ]
+[ Upstream commit 4530b3660d396a646aad91a787b6ab37cf604b53 ]
 
-Another Fujitsu-related patch.
+Determine if the group block bitmap is corrupted before using ac_b_ex in
+ext4_mb_try_best_found() to avoid allocating blocks from a group with a
+corrupted block bitmap in the following concurrency and making the
+situation worse.
 
-In the initial boot stage the integrated keyboard of Fujitsu Lifebook U728
-refuses to work and it's not possible to type for example a dm-crypt
-passphrase without the help of an external keyboard.
+ext4_mb_regular_allocator
+  ext4_lock_group(sb, group)
+  ext4_mb_good_group
+   // check if the group bbitmap is corrupted
+  ext4_mb_complex_scan_group
+   // Scan group gets ac_b_ex but doesn't use it
+  ext4_unlock_group(sb, group)
+                           ext4_mark_group_bitmap_corrupted(group)
+                           // The block bitmap was corrupted during
+                           // the group unlock gap.
+  ext4_mb_try_best_found
+    ext4_lock_group(ac->ac_sb, group)
+    ext4_mb_use_best_found
+      mb_mark_used
+      // Allocating blocks in block bitmap corrupted group
 
-i8042.nomux kernel parameter resolves this issue but using that a PS/2
-mouse is detected. This input device is unused even when the i2c-hid-acpi
-kernel module is blacklisted making the integrated ELAN touchpad
-(04F3:3092) not working at all.
-
-So this notebook uses a hid-over-i2c touchpad which is managed by the
-i2c_designware input driver. Since you can't find a PS/2 mouse port on this
-computer and you can't connect a PS/2 mouse to it even with an official
-port replicator I think it's safe to not use the PS/2 mouse port at all.
-
-Signed-off-by: Szilard Fabian <szfabian@bluemarch.art>
-Link: https://lore.kernel.org/r/20240103014717.127307-2-szfabian@bluemarch.art
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20240104142040.2835097-7-libaokun1@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-acpipnpio.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/ext4/mballoc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/input/serio/i8042-acpipnpio.h b/drivers/input/serio/i8042-acpipnpio.h
-index 6af38f53154b..37b87e05cf0b 100644
---- a/drivers/input/serio/i8042-acpipnpio.h
-+++ b/drivers/input/serio/i8042-acpipnpio.h
-@@ -625,6 +625,14 @@ static const struct dmi_system_id i8042_dmi_quirk_table[] __initconst = {
- 		},
- 		.driver_data = (void *)(SERIO_QUIRK_NOAUX)
- 	},
-+	{
-+		/* Fujitsu Lifebook U728 */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "FUJITSU"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "LIFEBOOK U728"),
-+		},
-+		.driver_data = (void *)(SERIO_QUIRK_NOAUX)
-+	},
- 	{
- 		/* Gigabyte M912 */
- 		.matches = {
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 3babc07ae613..d7724601f42b 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -1854,6 +1854,9 @@ int ext4_mb_try_best_found(struct ext4_allocation_context *ac,
+ 		return err;
+ 
+ 	ext4_lock_group(ac->ac_sb, group);
++	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)))
++		goto out;
++
+ 	max = mb_find_extent(e4b, ex.fe_start, ex.fe_len, &ex);
+ 
+ 	if (max > 0) {
+@@ -1861,6 +1864,7 @@ int ext4_mb_try_best_found(struct ext4_allocation_context *ac,
+ 		ext4_mb_use_best_found(ac, e4b);
+ 	}
+ 
++out:
+ 	ext4_unlock_group(ac->ac_sb, group);
+ 	ext4_mb_unload_buddy(e4b);
+ 
 -- 
 2.43.0
 
