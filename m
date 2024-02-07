@@ -1,117 +1,310 @@
-Return-Path: <linux-kernel+bounces-56788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B6E884CF34
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:45:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D400484CF3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:47:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27BE1282394
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:45:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3A5AB2829D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:47:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E56A81AD3;
-	Wed,  7 Feb 2024 16:45:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28340823A1;
+	Wed,  7 Feb 2024 16:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="Q6PXEEPK"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PW5WC5TR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6866C81AB5
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 16:45:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A1C81ADB
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 16:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707324315; cv=none; b=tcA7UU9zxleI9eU4THFELuyAKzSdzNh9xyW006oKNNHTF2MotfyamDiBQqH1vEdzC8Tybd/UV3NltVfCEsZZOth5aIX887g1FtldR+YO6SPkHhPVHRAorH71U1s3jZUe9PDTRD8VO4uDZzGAJQ/0aPc4b23n4TDRwc0gR4ZM1pU=
+	t=1707324467; cv=none; b=AHfzyt3l2PJOlhod4SKtO7MH9uuoNRbchXcyZ2lSZe9vRM9v0kq/AqBDScaf+HnXFNH19OHLu4HBZBOAR/aO8XWGQOMpn3r/FuMbX9z3x4pdhBgA+OmSh4gOmbN4LP/cOYuPpZiNwkhHvmKUOdN1BA29UkbZdJeXKqZK4qVf2w0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707324315; c=relaxed/simple;
-	bh=jX1o2DqvrsVX0Ygwc04l+jqit2/Rd//ugPrvxIoI0Uo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EWghalxqu++90jJ9Os9fKDOob4lQZTk7KFEH/Qfd9obAXqJivUXbpiwlW0cOoJA9wlofzCI+JJCWlwS7PjwQX5jdiYjrFtVdr103Kojc9PtXJkrWbfYlerw1GNLvVPK3KSKnGb53MOhpTWbaUlCnYFWZSFZ+ZXojqkvXeSFw64k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=Q6PXEEPK; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc6d5206f18so826337276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 08:45:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1707324313; x=1707929113; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u+RVmbChygOBAmJgHT868vpaz7uzT1TsygZuYJ78CkQ=;
-        b=Q6PXEEPKhVwQ0kPkyUuCmFZmJvRBtJDjCwG92W00qtmlbKFfQnCxuiLerP3Eht2KzT
-         tMh962ihgzeOX704jHS7OdJSNAN7MobRFV67cUF2Ni+rxAG+ZCer0YIgPs2sHsYi/pkq
-         q9DAqtlbesMRkBAxR2REnehYh+mc+dNa11SKxdVlzBjTwRoOOD9jmsnBRCoC3Ta43mKB
-         HmLP1hNmtYhBhzN3fMYLi9OAht/3DWzoKqyH9+PcO2TU5hvcVBTcY3ICsNgU51cvGjDZ
-         IhAvsczAwFIkSzvxh1iET00m3Cda+utAsMpWG6yU8H/sof51MAtjq/uRoidY/Cn/3BnL
-         w5kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707324313; x=1707929113;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u+RVmbChygOBAmJgHT868vpaz7uzT1TsygZuYJ78CkQ=;
-        b=Cpk4Yui5ACC3zV9nN95wksergpmlKuOHi2v6284kIUF7iYkuX2oBKe+POa4m34g8Ty
-         updPyn72R/e2dSkbHNG2BQ7Sv+vr2MnsYUvSP5YVu9yWfyYqL3tPVhZWTm9HZTmjzM3V
-         Xh0vzSC6jorkB/UWLu0p2ZZqJme1p5Xq6DwFsKgXUmrCJFrifQeu2Nov/RA7QYQGr4AE
-         HT0R/8yPjFOiMgSDKIaDtFvsytKpGPO4N6bamgP3lwbx8R/wPeqyppzhS+CLmzscWc1i
-         o4a5duXGC1YnBbpbUiQe4n+hhDCuqhT8FxUYdsglPL34577QygicZXofA6YCHqiSjXvu
-         N1Gw==
-X-Gm-Message-State: AOJu0YxlBzRs9iM4VIFDL9zQS+ttaLFcsRyOUFsnHwAA/vZf9BBbnUs7
-	YuZSkUgYiDbhttbH9a4zyN1BDaTAgl+15cOkDlEViP3LXx+Du2oJesRpMCnx1GjDuKR73xjXcOK
-	vwRC5FVHLvobT3Y5aHB2aBJVYeu8PPPY37bnq
-X-Google-Smtp-Source: AGHT+IHRgcgMxbkrsPyJQIEFMLZQE+5SzwFbUZBRUzL4DU8q0Ya24A0FTp6644UsHQnVPJ1XIg6pqBWs0HQgn0Qzw7s=
-X-Received: by 2002:a05:6902:1b05:b0:dc6:898:150d with SMTP id
- eh5-20020a0569021b0500b00dc60898150dmr6082425ybb.25.1707324313368; Wed, 07
- Feb 2024 08:45:13 -0800 (PST)
+	s=arc-20240116; t=1707324467; c=relaxed/simple;
+	bh=O8TFoIddkKyvAT0AdWOOk8Cu0gey2ydHbGJH/Xhc9Jg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nzYLH6a+9ISn0gpRpa5W4wUZNNpMszL3vuy4K0IFUX/RA50Q0AqWRuiJioL2pZYHLlPk5cbX3flLuHfUlyEb7SjOjCvcQiT9dC+RBO6VG1AMs7tyXqluP3Rkg3IU7Ew5x+aPDDOVQElUz1Ehu788/s+UQy+Qx+ShI3oLDNVl8eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PW5WC5TR; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707324465; x=1738860465;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=O8TFoIddkKyvAT0AdWOOk8Cu0gey2ydHbGJH/Xhc9Jg=;
+  b=PW5WC5TRl0sbcfR3si3f/iBynZCRn4qyIr2g1aV6wfkI7aFmdf/mrdoT
+   4CKJ8lG2+1GGBZN2b9Y2N68XkGr7sIemzW7CCFStQFqXG77qZ2N9WRypK
+   V8PbQCk+no6xwhAVHaMQ8oFrz53GVAMVOYfOI1N/UtZquczXQEYjcLJDm
+   MbUW6G5bSMZDuNOPxbRe5/84T+PW+FXIhODU5VIysIYvTLpNGloTAp2f2
+   lu2TqA+v5wguUtbxaNZq3qVVf0z8c7aVcrl3VJUWals6hfvPMPd0+ldEw
+   2BhtTanTrec+Iz0Qp1PnP2lN3T+OdqOYSqS4jRQ2xGooCoQKujshisf0m
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="1172947"
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="1172947"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 08:47:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="32457830"
+Received: from ndarceda-mobl1.amr.corp.intel.com (HELO [10.212.81.33]) ([10.212.81.33])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 08:47:37 -0800
+Message-ID: <b864e6d7-1e37-4901-b934-1e074d3c0b6c@linux.intel.com>
+Date: Wed, 7 Feb 2024 10:45:51 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8fafb8e1-b6be-4d08-945f-b464e3a396c8@I-love.SAKURA.ne.jp>
- <999a4733-c554-43ca-a6e9-998c939fbeb8@I-love.SAKURA.ne.jp>
- <202402070622.D2DCD9C4@keescook> <CAHC9VhTJ85d6jBFBMYUoA4CrYgb6i9yHDC_tFce9ACKi7UTa6Q@mail.gmail.com>
- <202402070740.CFE981A4@keescook>
-In-Reply-To: <202402070740.CFE981A4@keescook>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 7 Feb 2024 11:45:02 -0500
-Message-ID: <CAHC9VhT+eORkacqafT_5KWSgkRS-QLz89a2LEVJHvi7z7ts0MQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] LSM: add security_execve_abort() hook
-To: Kees Cook <keescook@chromium.org>, 
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Eric Biederman <ebiederm@xmission.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
-	linux-security-module <linux-security-module@vger.kernel.org>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7] ASoc: tas2783: Add tas2783 codec driver
+Content-Language: en-US
+To: Shenghao Ding <shenghao-ding@ti.com>, broonie@kernel.org
+Cc: andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz,
+ 13916275206@139.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+ bard.liao@intel.com, mengdong.lin@intel.com,
+ yung-chuan.liao@linux.intel.com, baojun.xu@ti.com, kevin-lu@ti.com,
+ navada@ti.com, tiwai@suse.de, soyer@irl.hu
+References: <20240207054743.1504-1-shenghao-ding@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20240207054743.1504-1-shenghao-ding@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 7, 2024 at 10:43=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
-rote:
-> On Wed, Feb 07, 2024 at 10:21:07AM -0500, Paul Moore wrote:
+Much better than previous versions but still questions on pm_runtime and
+a big undocumented part on the unique_id use. see comments below
+-Pierre
 
-..
 
-> > Please hold off on this Kees (see my email from yesterday), I'd prefer
-> > to take this via the LSM tree and with the immediate regression
-> > resolved I'd prefer this go in during the upcoming merge window and
-> > not during the -rcX cycle.  Or am I misunderstanding things about the
-> > state of Linus' tree currently?
->
-> My understanding was that TOMOYO is currently broken in Linus's tree. If
-> that's true, I'd like to make sure it gets fixed before v6.8 is
-> released.
->
-> If it's working okay, then sure, that's fine to wait. :)
+> +config SND_SOC_TAS2783
+> +	tristate "Texas Instruments TAS2783 speaker amplifier (sdw)"
+> +	depends on SOUNDWIRE
+> +	depends on EFI
+> +	select REGMAP
+> +	select REGMAP_SOUNDWIRE
 
-Okay, let's get confirmation from Tetsuo on the current state of
-TOMOYO in Linus' tree.  If it is currently broken, I'll merge the next
-updated patchset from Tetsuo into the lsm/stable-6.8 branch and send
-it up to Linus during v6.8-rcX after some soaking in linux-next.  If
-it's working, we'll wait :)
+nit-pick: should have 'select CRC32'...
 
---=20
-paul-moore.com
+> +	select CRC32_SARWATE
+
+before selecting the CRC32 implementation. It's also not clear if this
+is needed, the help says
+
+ "Only choose this option if you know what you are doing."
+
+> +static void tas2783_apply_calib(struct tasdevice_priv *tas_dev,
+> +	unsigned int *cali_data)
+> +{
+> +	struct regmap *map = tas_dev->regmap;
+> +	u8 *reg_start;
+> +	int ret;
+> +
+> +	if (!tas_dev->sdw_peripheral) {
+> +		dev_err(tas_dev->dev, "%s, slaver doesn't exist.\n",
+
+"peripheral does not exist"
+
+> +			__func__);
+> +		return;
+> +	}
+> +	if ((tas_dev->sdw_peripheral->id.unique_id < TAS2783_ID_MIN) ||
+> +		(tas_dev->sdw_peripheral->id.unique_id > TAS2783_ID_MAX)) {
+
+Where does this unique_id requirement come from?
+
+I see this in the header files, and that means only half of the bits are
+supported?
+
++/* Unique id start */
++#define TAS2783_ID_MIN			0x08
++/* Unique id end */
++#define TAS2783_ID_MAX			0x0f
+
+the unique_id is only meant to allow identical devices to work
+concurrently on the same link, specifically it enables the enumeration
+of identical devices with the hardware arbitration. The device with the
+highest unique_id is enumerated first in case of conflicts.
+
+The unique_id is usually set at the board level. I don't know how the
+codec driver can enforce a specific value.
+
+This needs more explanations....
+
+> +		dev_err(tas_dev->dev, "%s, error unique_id.\n",
+> +			__func__);
+> +		return;
+> +	}
+> +
+> +	reg_start = (u8 *)(cali_data + (tas_dev->sdw_peripheral->id.unique_id
+> +		- TAS2783_ID_MIN) * sizeof(tas2783_cali_reg));
+> +	for (int i = 0; i < ARRAY_SIZE(tas2783_cali_reg); i++) {
+> +		ret = regmap_bulk_write(map, tas2783_cali_reg[i],
+> +			&reg_start[4 * i], 4);
+> +		if (ret) {
+> +			dev_err(tas_dev->dev, "Cali failed %x:%d\n",
+> +				tas2783_cali_reg[i], ret);
+> +			break;
+> +		}
+> +	}
+> +}
+
+> +static void tasdevice_rca_ready(const struct firmware *fmw,
+> +	void *context)
+> +{
+> +	struct tasdevice_priv *tas_dev =
+> +		(struct tasdevice_priv *) context;
+> +	struct tas2783_firmware_node *p;
+> +	struct regmap *map = tas_dev->regmap;
+> +	unsigned char *buf = NULL;
+> +	int offset = 0, img_sz;
+> +	int ret, value_sdw;
+> +
+> +	if (!fmw || !fmw->data) {
+> +		/* No firmware binary, devices will work in ROM mode. */
+> +		dev_err(tas_dev->dev,
+> +			"Failed to read %s, no side-effect on driver\n",
+> +			tas_dev->rca_binaryname);
+> +		ret = -EINVAL;
+
+If this is not an error, it should be dev_info or dev_warn?
+
+> +		goto out;
+> +	}
+> +	buf = (unsigned char *)fmw->data;
+> +
+> +	img_sz = le32_to_cpup((__le32 *)&buf[offset]);
+> +	offset  += sizeof(img_sz);
+> +	if (img_sz != fmw->size) {
+> +		dev_err(tas_dev->dev, "Size not matching, %d %u",
+> +			(int)fmw->size, img_sz);
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	while (offset < img_sz) {
+> +		p = (struct tas2783_firmware_node *)(buf + offset);
+> +		if (p->length > 1) {
+> +			ret = regmap_bulk_write(map, p->download_addr,
+> +			buf + offset + sizeof(unsigned int)*5, p->length);
+> +		} else
+> +			ret = regmap_write(map, p->download_addr,
+> +				*(buf + offset + sizeof(unsigned int) * 5));
+> +
+> +		if (ret != 0) {
+> +			dev_dbg(tas_dev->dev, "Load FW fail: %d.\n", ret);
+> +			goto out;
+> +		}
+> +		offset += sizeof(unsigned int)*5 + p->length;
+> +	}
+> +	/* Select left/right channel based on unique id. */
+> +	value_sdw = 0x1a;
+> +	value_sdw |= ((tas_dev->sdw_peripheral->dev_num & 1) << 4);
+
+This is a very odd sequence, please add commments on what those bits
+mean. It looks like this is confusing unique id and device number. Not
+the same thing at all! The unique_id is set at the board level and used
+during enumeration only, the dev_num is used as a logical value for
+command/control. The dev_num is assigned in drivers/soundwire/bus.c and
+depends on multiple things (order of attachment, allocation policy on
+this host, etc). The codec driver cannot assume any specific value for
+dev_num.
+
+> +	dev_dbg(tas_dev->dev, "%s dev_num = %u", __func__,
+> +		tas_dev->sdw_peripheral->dev_num);
+> +	regmap_write(map, TAS2783_REG_TDM_RX_CFG, value_sdw);
+> +
+> +	tas2783_calibration(tas_dev);
+> +
+> +out:
+> +	if (fmw)
+> +		release_firmware(fmw);
+> +}
+
+> +static int tasdevice_init(struct tasdevice_priv *tas_dev)
+> +{
+> +	int ret;
+> +
+> +	dev_set_drvdata(tas_dev->dev, tas_dev);
+> +
+> +	ret = devm_snd_soc_register_component(tas_dev->dev,
+> +		&soc_codec_driver_tasdevice,
+> +		tasdevice_dai_driver, ARRAY_SIZE(tasdevice_dai_driver));
+> +	if (ret) {
+> +		dev_err(tas_dev->dev, "%s: codec register error:%d.\n",
+> +			__func__, ret);
+> +		goto out;
+> +	}
+> +
+> +	/* tas2783-link_id[0,1,...,N]-unique_id[8,9,...,f].bin stores the dsp
+> +	 * firmware including speaker protection algorithm, audio acoustic
+> +	 * algorithm, speaker characters and algorithm params, it must be
+> +	 * copied into firmware folder. Each tas2783 has its own bin file.
+> +	 */
+> +	scnprintf(tas_dev->rca_binaryname, 64, "tas2783-%d-%x.bin",
+> +		tas_dev->sdw_peripheral->bus->link_id,
+> +		tas_dev->sdw_peripheral->id.unique_id);
+
+Goodness, again this unique_id usage.
+
+This is really problematic, how would this work for a Linux
+distribution? Fetching the firmware ONLY on the basis of a unique_id
+means possible collisions between platformA from OEM_X and platformB
+from OEM_Y.
+
+> +
+> +	ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
+> +		tas_dev->rca_binaryname, tas_dev->dev, GFP_KERNEL,
+> +		tas_dev, tasdevice_rca_ready);
+> +	if (ret) {
+> +		dev_err(tas_dev->dev,
+> +			"%s: request_firmware %x open status: %d.\n",
+> +			__func__, tas_dev->sdw_peripheral->id.unique_id, ret);
+> +		goto out;
+> +	}
+> +
+> +	/* set autosuspend parameters */
+> +	pm_runtime_set_autosuspend_delay(tas_dev->dev, 3000);
+> +	pm_runtime_use_autosuspend(tas_dev->dev);
+> +
+> +	/* make sure the device does not suspend immediately */
+> +	pm_runtime_mark_last_busy(tas_dev->dev);
+> +	pm_runtime_get_noresume(tas_dev->dev);
+
+why are you increasing the refcount here? No other SoundWire codec
+driver does this.
+
+> +	pm_runtime_enable(tas_dev->dev);
+> +
+> +out:
+> +	return ret;
+> +}
+
+> +static int tasdevice_sdw_remove(struct sdw_slave *peripheral)
+> +{
+> +	struct tasdevice_priv *tas_dev = dev_get_drvdata(&peripheral->dev);
+> +
+> +	if (tas_dev->first_hw_init)
+> +		pm_runtime_disable(tas_dev->dev);
+> +
+> +	pm_runtime_put_noidle(tas_dev->dev);
+
+that should be removed as well, this and the previous get_no_resume()
+guarantee that pm_runtime suspend *NEVER* happens...
+
+> +	return 0;
+> +}
+
+> +/* Unique id start */
+> +#define TAS2783_ID_MIN			0x08
+> +/* Unique id end */
+> +#define TAS2783_ID_MAX			0x0f
+
+this needs a lot more documentation, there's really nothing in the
+SoundWire spec that allows for the unique_id to be restricted...
 
