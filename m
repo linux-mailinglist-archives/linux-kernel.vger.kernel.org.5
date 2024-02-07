@@ -1,132 +1,133 @@
-Return-Path: <linux-kernel+bounces-56674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F48A84CD72
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:57:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EA7784CD74
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:57:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE5692916C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:57:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 816711F213EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:57:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A4377F46D;
-	Wed,  7 Feb 2024 14:56:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA997F7C8;
+	Wed,  7 Feb 2024 14:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="BhyBzEYb"
-Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="TuqdcN5g"
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1505E7F477;
-	Wed,  7 Feb 2024 14:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.188.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9743B7E77F
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:56:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707317804; cv=none; b=GRrt4YmOxsuddG6XspMhnI3nSS1q92nAOyPjKFmWO2R4CWi8tMMzN09+jleInu3SAj6TG6P8JRaW82iwJVFnShuJtrWkwHcbKLsLNFDbZaAxWKjzFbKvRqB0du2I5JdI73fzgV+Z571wdGfR/fO3wfH1KpLbiKVtKV2HENB8ExM=
+	t=1707317821; cv=none; b=RuJdtP2k5sQN66udnSB+V4R+rmjl7OwYNFWne9PQgwHGGaWz3f03qLRx9ZwL0AF3mKA9SFAyQP8wVsn4hh8HU40PrOMTzBRYbipGHlcftd3eawBlMbsbQQR3+zENb0FngEeMHMphveEvMG8qF6E11pWwhPKrF/RYTwRUM5e/OqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707317804; c=relaxed/simple;
-	bh=TkFpvZmkphqkK0Mc10r/Fe7liBcw8osCeQ/jSq2WNzk=;
-	h=Subject:From:To:CC:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=OGw7QNDKhjYsu1HiiJEwypjE2ZTzzoam9LZmdYqxN2fiJLpGFThGJE9Xe9+CiZsYqgnPGHW8JBo35tlVexJik6E7N0Rd/zUFMHAlDeVidqavbt9S2MHRHEIJkt0IQBYwnLHSoAgWmuEa2j0Pmy8Wkesa4HsaM58cPHjALMxMpKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=BhyBzEYb; arc=none smtp.client-ip=207.171.188.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+	s=arc-20240116; t=1707317821; c=relaxed/simple;
+	bh=/qjE+nqSpEqB34LHfo7cPWwv+pZ6RnEWm3Y5iE2Thd0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t00F0GTehCcPkvTZv6yXkmtjP2J8t0g6DXM8PBKFTJPIi+XqXs6d1Xm5KlI/icjbvuQYqGyudnfPzBLL9tpgid7Ua/rB9V2vXAkNg9NUInDItn3KEdC4nKQ/v2r7ov2B4QuARFfGpxGLHxFVgsI7cQsEZqRaBcZzGDlQKwtqdxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=TuqdcN5g; arc=none smtp.client-ip=209.85.167.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3bfdb84c0ebso404832b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 06:56:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1707317804; x=1738853804;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=TkFpvZmkphqkK0Mc10r/Fe7liBcw8osCeQ/jSq2WNzk=;
-  b=BhyBzEYbSJL/RtHXiu83YiUoPc6Kp+kadbQWWVG2dsCE+ppdEvmIisbZ
-   YVsFwm7KBUPbzBNEl34Hbq1fKGOmNTstchHY4xBn0vkRvf9PnU/ocDs/l
-   AizigMnLrXUML3d7ao4nuVuRe6MHAgSVSr5NE0yCcVB1eB9inLeByef59
-   4=;
-X-IronPort-AV: E=Sophos;i="6.05,251,1701129600"; 
-   d="scan'208";a="702749743"
-Subject: Re: [RFC 00/18] Pkernfs: Support persistence for live update
-Thread-Topic: [RFC 00/18] Pkernfs: Support persistence for live update
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
-  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 14:56:36 +0000
-Received: from EX19MTAEUB001.ant.amazon.com [10.0.17.79:53357]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.33.191:2525] with esmtp (Farcaster)
- id 163cb722-79c0-4cd0-bb34-f3f452cd665d; Wed, 7 Feb 2024 14:56:33 +0000 (UTC)
-X-Farcaster-Flow-ID: 163cb722-79c0-4cd0-bb34-f3f452cd665d
-Received: from EX19D012EUC002.ant.amazon.com (10.252.51.162) by
- EX19MTAEUB001.ant.amazon.com (10.252.51.28) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 7 Feb 2024 14:56:33 +0000
-Received: from EX19D014EUC004.ant.amazon.com (10.252.51.182) by
- EX19D012EUC002.ant.amazon.com (10.252.51.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 7 Feb 2024 14:56:33 +0000
-Received: from EX19D014EUC004.ant.amazon.com ([fe80::76dd:4020:4ff2:1e41]) by
- EX19D014EUC004.ant.amazon.com ([fe80::76dd:4020:4ff2:1e41%3]) with mapi id
- 15.02.1118.040; Wed, 7 Feb 2024 14:56:33 +0000
-From: "Gowans, James" <jgowans@amazon.com>
-To: "alex.williamson@redhat.com" <alex.williamson@redhat.com>, "jgg@ziepe.ca"
-	<jgg@ziepe.ca>
-CC: "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "brauner@kernel.org"
-	<brauner@kernel.org>, "Graf (AWS), Alexander" <graf@amazon.de>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>, "anthony.yznaga@oracle.com"
-	<anthony.yznaga@oracle.com>, "skinsburskii@linux.microsoft.com"
-	<skinsburskii@linux.microsoft.com>, "steven.sistare@oracle.com"
-	<steven.sistare@oracle.com>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "seanjc@google.com" <seanjc@google.com>,
-	"Woodhouse, David" <dwmw@amazon.co.uk>, "pbonzini@redhat.com"
-	<pbonzini@redhat.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"joro@8bytes.org" <joro@8bytes.org>, "ebiederm@xmission.com"
-	<ebiederm@xmission.com>, =?utf-8?B?U2Now7ZuaGVyciwgSmFuIEgu?=
-	<jschoenh@amazon.de>, "will@kernel.org" <will@kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"usama.arif@bytedance.com" <usama.arif@bytedance.com>
-Thread-Index: AQHaWFZfiDfmUo9FfU6oG+xq/LSkjrD++v0A
-Date: Wed, 7 Feb 2024 14:56:33 +0000
-Message-ID: <6387700a8601722838332fdb2f535f9802d2202e.camel@amazon.com>
-References: <20240205120203.60312-1-jgowans@amazon.com>
-	 <20240205101040.5d32a7e4.alex.williamson@redhat.com>
-In-Reply-To: <20240205101040.5d32a7e4.alex.williamson@redhat.com>
-Accept-Language: en-ZA, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E7A761E4DFFA1B418369CD572A93C5BE@amazon.com>
-Content-Transfer-Encoding: base64
+        d=ziepe.ca; s=google; t=1707317818; x=1707922618; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=W0M3TTROdnQ99LEOVazWVIVuG+en6VXt1COOl14WDc8=;
+        b=TuqdcN5gvVjifQyToKKHIrb62FsRQfdArYZ8Wk6zzRqDa6PeACYWWs5V87c9irJ169
+         mtSBMBe0Afsar8dTeATIAtSxI4tnijzUWuYdygcMGx5G0hDvk4t79IqH2CGCF4ku+EyM
+         u+cOk2DjPcA2tHIPygW1mVgjiodc36jclGo26XNtO6YVoWO6pjAppDPpE26cPzojyMit
+         ZTgvJBH7Zp7H3yRkIjrKNIRSX6++llI+uTLis+8of/QzjDIu8Ekgue+HqWK55CytceEA
+         qGcXsKF5wvBjqz8g9dWCGvlYZuenqFccHFmsxG0PD9l/v8/VJi5f5/e/CXZJbqEU7pg8
+         Ta9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707317818; x=1707922618;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W0M3TTROdnQ99LEOVazWVIVuG+en6VXt1COOl14WDc8=;
+        b=rjrIgH7ke+4gLwf6XgaEt1OprGAtb2Egr+QhosDC7u8ix+Le93nhNeX8QjomWHt/5+
+         S7S1vUfHguqx9GouYhgj46k8LPLp3Uj+IwGqegvNq15JHSGs0HsxnEtOxAFnKWgUsfN1
+         Uz4DjRxKGp5UFxQxZJUg+cGtbY1jwbh+iUcPCxzVql0NMOC9wK2+JxH2HiNBwmqz0eFn
+         81PQ8gplgpYWBWIP19kiy9FaKzqR3kAfpOX6QE4qsrBaXnfy6uYUof5DZditqumFts2/
+         3XeD7Lbkgzs4TDpMzxEDTuGK5/8caoqyvpZeuSBeH5ekrLsYnUI9gpWUHVq6KR0eVHdN
+         /E5A==
+X-Gm-Message-State: AOJu0YzR+Cw862zqMZ5d1lnbCINmNpymlLWjho3SKsiYrnMON3evRykS
+	V9BfVi1gbmRL9lduuftegdOvzFRDJ2m1Pq3vOIrfh/lQRGAc+z8n14awbQtzN/s=
+X-Google-Smtp-Source: AGHT+IH0cGhGSUUEHRfNJyx46hgtKE8MP2Q4bijQoKH/+hSAOGqsrBm8bmc4wOyxrlNBdW++URiPlw==
+X-Received: by 2002:a05:6808:228d:b0:3bf:e427:d11e with SMTP id bo13-20020a056808228d00b003bfe427d11emr6918880oib.27.1707317818498;
+        Wed, 07 Feb 2024 06:56:58 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW8Vl0sHpxqYNmb3IO1yaxSDS8Kwsbp3SFMBoVHT0KITNM8mecYYn7vRx6DgxJfxVsz+8az+e0iU511lusFO7VEXsStZrpyPCtahqJFSKIGp8qCQyhZ0VBPq9iFSzT5sLyGS4mfU/JS0TPw+n5X0EUOaI1UuaMhwyQbc2p60pV8YqEJk9NQa9hCOGfMvMJCYaBBPATZLFVDBMKCOu06L4Izdao9SVg=
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id es11-20020a056808278b00b003bfe85d3a62sm205325oib.38.2024.02.07.06.56.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 06:56:58 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rXjM8-008VpY-Vw;
+	Wed, 07 Feb 2024 10:56:56 -0400
+Date: Wed, 7 Feb 2024 10:56:56 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Nikhil V <quic_nprakash@quicinc.com>
+Cc: Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Charan Teja Kalla <quic_charante@quicinc.com>,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] iommu: Avoid races around default domain allocations
+Message-ID: <20240207145656.GJ31743@ziepe.ca>
+References: <e605b38a2d40b1e7589e10110c6d3ece35f6af4e.1705571894.git.quic_nprakash@quicinc.com>
+ <139a9abe-75d8-3bda-3ec9-a14a493eb2a9@quicinc.com>
+ <20240201162317.GI50608@ziepe.ca>
+ <9ba9c4fa-3fa9-c6c4-ce77-0c6cd5e23680@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ba9c4fa-3fa9-c6c4-ce77-0c6cd5e23680@quicinc.com>
 
-T24gTW9uLCAyMDI0LTAyLTA1IGF0IDEwOjEwIC0wNzAwLCBBbGV4IFdpbGxpYW1zb24gd3JvdGU6
-DQo+ID4gKiBOZWVkaW5nIHRvIGRyaXZlIGFuZCByZS1oeWRyYXRlIHRoZSBJT01NVSBwYWdlIHRh
-YmxlcyBieSBkZWZpbmluZw0KPiA+IGFuIElPTU1VIGZpbGUuDQo+ID4gUmVhbGx5IHdlIHNob3Vs
-ZCBtb3ZlIHRoZSBhYnN0cmFjdGlvbiBvbmUgbGV2ZWwgdXAgYW5kIG1ha2UgdGhlDQo+ID4gd2hv
-bGUgVkZJTw0KPiA+IGNvbnRhaW5lciBwZXJzaXN0ZW50IHZpYSBhIHBrZXJuZnMgZmlsZS4gVGhh
-dCB3YXkgeW914oCZZCAianVzdCIgcmUtDQo+ID4gb3BlbiB0aGUgVkZJTw0KPiA+IGNvbnRhaW5l
-ciBmaWxlIGFuZCBhbGwgb2YgdGhlIERNQSBtYXBwaW5ncyBpbnNpZGUgVkZJTyB3b3VsZCBhbHJl
-YWR5DQo+ID4gYmUgc2V0IHVwLg0KPiANCj4gTm90ZSB0aGF0IHRoZSB2ZmlvIGNvbnRhaW5lciBp
-cyBvbiBhIHBhdGggdG93YXJkcyBkZXByZWNhdGlvbiwgdGhpcw0KPiBzaG91bGQgYmUgcmVmb2N1
-c2VkIG9uIHZmaW8gcmVsYXRpdmUgdG8gaW9tbXVmZC7CoCBUaGVyZSB3b3VsZCBuZWVkIHRvDQo+
-IGJlIGEgc3Ryb25nIGFyZ3VtZW50IGZvciBhIGNvbnRhaW5lci90eXBlMSBleHRlbnNpb24gdG8g
-c3VwcG9ydCB0aGlzLA0KPiBpb21tdWZkIHdvdWxkIG5lZWQgdG8gYmUgdGhlIGZpcnN0IGNsYXNz
-IGltcGxlbWVudGF0aW9uLsKgIFRoYW5rcywNCg0KQWNrISBXaGVuIEkgZmlyc3Qgc3RhcnRlZCBw
-dXR0aW5nIHBrZXJuZnMgdG9nZXRoZXIsIGlvbW11ZmQgd2Fzbid0DQppbnRlZ3JhdGVkIGludG8g
-UUVNVSB5ZXQsIGhlbmNlIEkgc3R1Y2sgd2l0aCBWRklPIGZvciB0aGlzIFBvQy4NCkknbSB0aHJp
-bGxlZCB0byBzZWUgdGhhdCBpb21tdWZkIG5vdyBzZWVtcyB0byBiZSBpbnRlZ3JhdGVkIGluIFFF
-TVUhDQpHb29kIG9wcG9ydHVuaXR5IHRvIGdldCB0byBncmlwcyB3aXRoIGl0Lg0KDQpUaGUgVkZJ
-Ty1zcGVjaWZpYyBwYXJ0IG9mIHRoaXMgcGF0Y2ggaXMgZXNzZW50aWFsbHkgaW9jdGxzIG9uIHRo
-ZQ0KKmNvbnRhaW5lciogdG8gYmUgYWJsZSB0bzoNCg0KMS4gZGVmaW5lIHBlcnNpc3RlbnQgcGFn
-ZSB0YWJsZXMgKFBQVHMpIG9uIHRoZSBjb250YWluZXJzIHNvIHRoYXQgdGhvc2UNClBQVHMgYXJl
-IHVzZWQgYnkgdGhlIElPTU1VIGRvbWFpbiBhbmQgaGVuY2UgYnkgYWxsIGRldmljZXMgYWRkZWQg
-dG8gdGhhdA0KY29udGFpbmVyLg0KaHR0cHM6Ly9naXRodWIuY29tL2pnb3dhbnMvcWVtdS9jb21t
-aXQvZTg0Y2ZiODE4NmQ3MWY3OTdlZjFmNzJkNTdkODczMjIyYTliNDc5ZQ0KDQoyLiBUZWxsIFZG
-SU8gdG8gYXZvaWQgbWFwcGluZyB0aGUgbWVtb3J5IGluIGFnYWluIGFmdGVyIGxpdmUgdXBkYXRl
-DQpiZWNhdXNlIGl0IGFscmVhZHkgZXhpc3RzLg0KaHR0cHM6Ly9naXRodWIuY29tL2pnb3dhbnMv
-cWVtdS9jb21taXQvNmU0ZjE3ZjcwM2VhZjJhNmYxZTRjYjI1NzZkNjE2ODNlYWVlMDJiMA0KKHRo
-ZSBhYm92ZSBmbGFnIHNob3VsZCBvbmx5IGJlIHNldCAqYWZ0ZXIqIGxpdmUgdXBkYXRlLi4uKS4N
-Cg0KRG8geW91IGhhdmUgYSByb3VnaCBzdWdnZXN0aW9uIGFib3V0IGhvdyBzaW1pbGFyIGNvdWxk
-IGJlIGRvbmUgd2l0aA0KaW9tbXVmZD8NCg0KSkcNCg0K
+On Wed, Feb 07, 2024 at 07:56:25PM +0530, Nikhil V wrote:
+> 
+> 
+> On 2/1/2024 9:53 PM, Jason Gunthorpe wrote:
+> > On Mon, Jan 29, 2024 at 01:29:12PM +0530, Nikhil V wrote:
+> > 
+> > > Gentle ping to have your valuable feedback. This fix is helping us
+> > > downstream without which we see a bunch of kernel crashes.
+> > 
+> > What are you expecting here? This was fixed in Linus's tree some time
+> > ago now
+> > 
+> > Are you asking for the stable team to put something weird in 6.1? I
+> > don't think they generally do that?
+> > 
+> > Jason
+> 
+> 
+> Hi @Jason,
+> 
+> Considering that the issue is reported on 6.1, which is an __LTS kernel__,
+> any suggestion to fix this issue cleanly would help us a lot. Right thing
+> here would have been propagating the changes from 6.6 (like for any
+> stability issue), but considering the intrusiveness of them, is it even
+> possible?
+> 
+> Just to be open about reproducibility of the issue, a bunch of them are
+> reported, both internally and by customers.
+
+I think you need to talk to the stable maintainers not the iommu
+upstream folks. I don't well know their policy.
+
+Frankly, I'd suggest just proposing the necessary (and tested)
+upstream patches to 6.1, however large they are, and see what Greg and
+Sasha say. This is the usual working model they have, as I understand
+it.
+
+Jason
 
