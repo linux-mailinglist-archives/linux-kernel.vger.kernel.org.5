@@ -1,233 +1,343 @@
-Return-Path: <linux-kernel+bounces-55846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EB3B84C272
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:21:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EA6D84C274
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:21:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 640C91C217E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:21:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56A37285B0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:21:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021BFEEAC;
-	Wed,  7 Feb 2024 02:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19707E55F;
+	Wed,  7 Feb 2024 02:21:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="btjl8GTE"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nNrAWeBz"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B621CD1E;
-	Wed,  7 Feb 2024 02:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E861EFC02;
+	Wed,  7 Feb 2024 02:21:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707272457; cv=none; b=mpCRGjmZYCHBicko86TJWaVXCIdkOxZLMdXoQ4aIEIangWboutTRMPjsw2WOZYJx16gyJQ3nXNdYY2b7nI+PDqX6e226urg7g8k4igWktdPp2jwB/lWrpYWcsM0E5qsrlEyRxQ/56Y5xggv4qJxuWc0CDCfMflEHCThp06xEYKA=
+	t=1707272472; cv=none; b=U+AouKTDS80ktavLOt2+u3NOXUcdT37GT1wHCHRkid0iNTkvDHctD0pe08vID2QU5sd6dpBTE5mgu6ycpMbTiawUGT1VdtuRVrVXQXtShCSLANpCl4shNrG81ZoGup6yXgBVXDrzrcCc2IKZ2F/hQoQkB+vknGtzMSTSweVhtc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707272457; c=relaxed/simple;
-	bh=pPmjLZQk/syRJBZPIvptZzEbOgte7u2NJek0+dwN9uI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=aAVeMGgca/RrhqJo9JMpiUQbelkM8d5NafDXyGD531u1eN0T2JA4dIdiZBU1XVoblM6H+EhHr4zCkB3qUNcjXeKaVlOQOcGDxXxOHewdnJooD8E2ZjFR6klO+8wySP7/kq8diZkWh0gB4vxE51hL7GEnkJCVczLEXYQl2FT3olY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=btjl8GTE; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4172GFsb021935;
-	Wed, 7 Feb 2024 02:20:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=9QXtNKq4I3TBfat6HvMurueK9bBBSRepYLI4I1syHAU=; b=bt
-	jl8GTEmvoepvnpfU3SEoguLqLnokI9p0408idwXGVO+tvgmC2fvpVupDLgPdT2mp
-	jDxgGF6G4Avk7IXvVFJygFBTjSs626wsIaEpGHAR8BgMgYa1Z5kpLJbmOXtk3oHf
-	lCR9i6Lgoxox98amX30L2nBmLnKISPn52PZGNDZK0zn2orztMC+WDM/T/tCRKOp9
-	mxifYGLmKw0Q64SHHstOTQnb6vxwM8yrYrgEiBbk/oWN/EFFcWEOt+PXJivsAr/x
-	WGTXWxigHNmoGfA9fNRn0ty7VQIkQQ2tzrsCRAJLeWvlC8kBWVlmJ2FjchAOxHW6
-	moPnzTcRGFdVf9ur7PJg==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3k6g9s8g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 02:20:51 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4172KpIK023475
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 7 Feb 2024 02:20:51 GMT
-Received: from [10.238.139.231] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 6 Feb
- 2024 18:20:47 -0800
-Message-ID: <feef8ddd-c816-4088-ae21-eb9afdbfc86e@quicinc.com>
-Date: Wed, 7 Feb 2024 10:20:37 +0800
+	s=arc-20240116; t=1707272472; c=relaxed/simple;
+	bh=bl/ihRuEwO0XtvAAhL909VhOisNF8/3zUlOkAtxKZKQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EQJwzqZ4d/azzpmbvypsJsQ9PKz5T8OLnuQmHjmk7x8SiKNXp6wuoi9X2enxzsrrOmM/D4d15PJxKDdCQg2DuGP+PwJLD9wZLkZq11apumxSv4+9rO0YE1flqhLv4WDCXbM3cMDU7Ge8zz9588gt2XGI4v92T/KvqCg0uc6L/Eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nNrAWeBz; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d0abdde3easo1695401fa.2;
+        Tue, 06 Feb 2024 18:21:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707272467; x=1707877267; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YPnnKt6ujZ5heZEbRxkEnShISOdcME2cSrFXG7+ktlc=;
+        b=nNrAWeBzsccMmX/prw5ci8DjrYCX4AitTjVBxmyPysoCiLLbrkDmFMUvzX7S4hLh1W
+         /GoYhIos0Gk9m/uGWaPloq8gPcAVIMvQewo+uUvAWY4+hPEBiV0GU58wdZrTWC1ouEHZ
+         WpGTm01kJq1+nvNAUvugJsPCnB3s7lqZF6kTyc0nxZTyBssek2uBA44rfCPOh1FwgBvc
+         ddhWP9hTGEbhHmhJzjIK+hMVqy8L0oObjMAvhzxguZaUpxiyne9CWpiF1VMs0ZSGDdhb
+         J4/lAvI5gcWPEZPtrU0zyRnQu98WqE9LFtV/cpBNev54VioVcuKPUSnrr5llZZYKx5QE
+         UNIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707272467; x=1707877267;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YPnnKt6ujZ5heZEbRxkEnShISOdcME2cSrFXG7+ktlc=;
+        b=VncvqrbKMrNHbqAmkbvVRq0W0X+rjKPDOHxSUkH6hlqyZal5gH2LcneKhSp4Nlcqln
+         AiEMz45dkIpxvCF5Dey6LY7QvtR7Zrin40QpAyt55cyZ/FYZfUwsT+Bt5f9xsKWjRKN/
+         /qun8bCA6IlsTyLA0AurXfvG55scHYBiGnEX5Jq8iuiFHNIbB0KE+pmcUQBgB9JY8qkD
+         DU/LrnHo89JwbVigOcFXWjakSx7r0kz1asRpi9Xf32mz6vW11IER9IUkKCmpTo5Wa3ax
+         6xqe0hvap+yEFgNHCpZfp8T7p4CuZ6qebflVhrNeL92MSo9EOiDgS0PX3omILE8s6xC2
+         4VcA==
+X-Forwarded-Encrypted: i=1; AJvYcCXPCZSoHjIFvLDmlrHNgmtpDpKZ8uv4vwS8FFZbWb9eVgJgqTv+BxXmFbrd8tnCcbRlj3w1lKAfzMBsJzjCoznC7jbTX6cVNJAD/BQEZt0M3DDC2rjglZ482POclFXNR7bwPq8I
+X-Gm-Message-State: AOJu0YyvtCvubbcZY6lbw/x4oagkinJ1Pbgh/A1fdjDJ7kKG9dP9viae
+	J2qcxa0sko2mJ4qO6MYWdCHY3M9vlqnUfR5b4AGRsDh8+Xn8co3ivEP0l7Szbx/dHuu4PCHndSy
+	nqkvXUWhdH1n3vAmTlV7ouPV0cfQ=
+X-Google-Smtp-Source: AGHT+IEojrZJvywmznFMRhLkxIayeF0rtm+cG/Cwbh7r8sjQ5Wa9tMH+rxy6WrF7Bx72k1I28jfluTdVzaFkObGL5I4=
+X-Received: by 2002:a05:651c:506:b0:2d0:c73b:3b49 with SMTP id
+ o6-20020a05651c050600b002d0c73b3b49mr413746ljp.5.1707272467044; Tue, 06 Feb
+ 2024 18:21:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: qcm6490-idp: Add configurations for
- gpio-keys
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240206-gpio-keys-v1-1-7683799daf8d@quicinc.com>
- <CAA8EJpqo6p+S4JirhGybGsiG0X9Evdb3LEVgorsewEcRT8LMgg@mail.gmail.com>
-From: hui liu <quic_huliu@quicinc.com>
-In-Reply-To: <CAA8EJpqo6p+S4JirhGybGsiG0X9Evdb3LEVgorsewEcRT8LMgg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 9G6tJPLMzklHsEzX-k594KXxO8iN0zux
-X-Proofpoint-GUID: 9G6tJPLMzklHsEzX-k594KXxO8iN0zux
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-06_16,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 priorityscore=1501 clxscore=1011
- impostorscore=0 mlxscore=0 bulkscore=0 adultscore=0 spamscore=0
- suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401310000 definitions=main-2402070016
+References: <20240206182559.32264-1-ryncsn@gmail.com> <CAF8kJuMe7MYsAhwX804jZfO4w6kt74YMZXuz+FqUbZEt70p7Rg@mail.gmail.com>
+ <CAGsJ_4zF+U5JG8XYANe2x0VbjovokFCirf=YLHOfO3E-U8b4sg@mail.gmail.com> <CAF8kJuOBtT+n5CM2s1Mobk5fzpgetCSMTZ-nb8+0KUj1W5f+Mw@mail.gmail.com>
+In-Reply-To: <CAF8kJuOBtT+n5CM2s1Mobk5fzpgetCSMTZ-nb8+0KUj1W5f+Mw@mail.gmail.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Wed, 7 Feb 2024 10:20:49 +0800
+Message-ID: <CAMgjq7CV-Cxar8cRj1SxB4ZtO8QPTUuA5mj9_vQro7sm+eFH=w@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/swap: fix race when skipping swapcache
+To: Chris Li <chrisl@kernel.org>
+Cc: Barry Song <21cnbao@gmail.com>, linux-mm@kvack.org, 
+	Andrew Morton <akpm@linux-foundation.org>, "Huang, Ying" <ying.huang@intel.com>, 
+	Minchan Kim <minchan@kernel.org>, Yu Zhao <yuzhao@google.com>, 
+	Barry Song <v-songbaohua@oppo.com>, SeongJae Park <sj@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, David Hildenbrand <david@redhat.com>, stable@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Feb 7, 2024 at 10:03=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote:
+>
+> On Tue, Feb 6, 2024 at 4:43=E2=80=AFPM Barry Song <21cnbao@gmail.com> wro=
+te:
+> >
+> > On Wed, Feb 7, 2024 at 7:18=E2=80=AFAM Chris Li <chrisl@kernel.org> wro=
+te:
+> > >
+> > > Hi Kairui,
+> > >
+> > > Sorry replying to your patch V1 late, I will reply on the V2 thread.
+> > >
+> > > On Tue, Feb 6, 2024 at 10:28=E2=80=AFAM Kairui Song <ryncsn@gmail.com=
+> wrote:
+> > > >
+> > > > From: Kairui Song <kasong@tencent.com>
+> > > >
+> > > > When skipping swapcache for SWP_SYNCHRONOUS_IO, if two or more thre=
+ads
+> > > > swapin the same entry at the same time, they get different pages (A=
+, B).
+> > > > Before one thread (T0) finishes the swapin and installs page (A)
+> > > > to the PTE, another thread (T1) could finish swapin of page (B),
+> > > > swap_free the entry, then swap out the possibly modified page
+> > > > reusing the same entry. It breaks the pte_same check in (T0) becaus=
+e
+> > > > PTE value is unchanged, causing ABA problem. Thread (T0) will
+> > > > install a stalled page (A) into the PTE and cause data corruption.
+> > > >
+> > > > One possible callstack is like this:
+> > > >
+> > > > CPU0                                 CPU1
+> > > > ----                                 ----
+> > > > do_swap_page()                       do_swap_page() with same entry
+> > > > <direct swapin path>                 <direct swapin path>
+> > > > <alloc page A>                       <alloc page B>
+> > > > swap_read_folio() <- read to page A  swap_read_folio() <- read to p=
+age B
+> > > > <slow on later locks or interrupt>   <finished swapin first>
+> > > > ...                                  set_pte_at()
+> > > >                                      swap_free() <- entry is free
+> > > >                                      <write to page B, now page A s=
+talled>
+> > > >                                      <swap out page B to same swap =
+entry>
+> > > > pte_same() <- Check pass, PTE seems
+> > > >               unchanged, but page A
+> > > >               is stalled!
+> > > > swap_free() <- page B content lost!
+> > > > set_pte_at() <- staled page A installed!
+> > > >
+> > > > And besides, for ZRAM, swap_free() allows the swap device to discar=
+d
+> > > > the entry content, so even if page (B) is not modified, if
+> > > > swap_read_folio() on CPU0 happens later than swap_free() on CPU1,
+> > > > it may also cause data loss.
+> > > >
+> > > > To fix this, reuse swapcache_prepare which will pin the swap entry =
+using
+> > > > the cache flag, and allow only one thread to pin it. Release the pi=
+n
+> > > > after PT unlocked. Racers will simply busy wait since it's a rare
+> > > > and very short event.
+> > > >
+> > > > Other methods like increasing the swap count don't seem to be a goo=
+d
+> > > > idea after some tests, that will cause racers to fall back to use t=
+he
+> > > > swap cache again. Parallel swapin using different methods leads to
+> > > > a much more complex scenario.
+> > > >
+> > > > Reproducer:
+> > > >
+> > > > This race issue can be triggered easily using a well constructed
+> > > > reproducer and patched brd (with a delay in read path) [1]:
+> > > >
+> > > > With latest 6.8 mainline, race caused data loss can be observed eas=
+ily:
+> > > > $ gcc -g -lpthread test-thread-swap-race.c && ./a.out
+> > > >   Polulating 32MB of memory region...
+> > > >   Keep swapping out...
+> > > >   Starting round 0...
+> > > >   Spawning 65536 workers...
+> > > >   32746 workers spawned, wait for done...
+> > > >   Round 0: Error on 0x5aa00, expected 32746, got 32743, 3 data loss=
+!
+> > > >   Round 0: Error on 0x395200, expected 32746, got 32743, 3 data los=
+s!
+> > > >   Round 0: Error on 0x3fd000, expected 32746, got 32737, 9 data los=
+s!
+> > > >   Round 0 Failed, 15 data loss!
+> > > >
+> > > > This reproducer spawns multiple threads sharing the same memory reg=
+ion
+> > > > using a small swap device. Every two threads updates mapped pages o=
+ne by
+> > > > one in opposite direction trying to create a race, with one dedicat=
+ed
+> > > > thread keep swapping out the data out using madvise.
+> > > >
+> > > > The reproducer created a reproduce rate of about once every 5 minut=
+es,
+> > > > so the race should be totally possible in production.
+> > > >
+> > > > After this patch, I ran the reproducer for over a few hundred round=
+s
+> > > > and no data loss observed.
+> > > >
+> > > > Performance overhead is minimal, microbenchmark swapin 10G from 32G
+> > > > zram:
+> > > >
+> > > > Before:     10934698 us
+> > > > After:      11157121 us
+> > > > Non-direct: 13155355 us (Dropping SWP_SYNCHRONOUS_IO flag)
+> > > >
+> > > > Fixes: 0bcac06f27d7 ("mm, swap: skip swapcache for swapin of synchr=
+onous device")
+> > > > Reported-by: "Huang, Ying" <ying.huang@intel.com>
+> > > > Closes: https://lore.kernel.org/lkml/87bk92gqpx.fsf_-_@yhuang6-desk=
+2.ccr.corp.intel.com/
+> > > > Link: https://github.com/ryncsn/emm-test-project/tree/master/swap-s=
+tress-race [1]
+> > > > Signed-off-by: Kairui Song <kasong@tencent.com>
+> > > > Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+> > > > Acked-by: Yu Zhao <yuzhao@google.com>
+> > > >
+> > > > ---
+> > > > Update from V1:
+> > > > - Add some words on ZRAM case, it will discard swap content on swap=
+_free so the race window is a bit different but cure is the same. [Barry So=
+ng]
+> > > > - Update comments make it cleaner [Huang, Ying]
+> > > > - Add a function place holder to fix CONFIG_SWAP=3Dn built [SeongJa=
+e Park]
+> > > > - Update the commit message and summary, refer to SWP_SYNCHRONOUS_I=
+O instead of "direct swapin path" [Yu Zhao]
+> > > > - Update commit message.
+> > > > - Collect Review and Acks.
+> > > >
+> > > >  include/linux/swap.h |  5 +++++
+> > > >  mm/memory.c          | 15 +++++++++++++++
+> > > >  mm/swap.h            |  5 +++++
+> > > >  mm/swapfile.c        | 13 +++++++++++++
+> > > >  4 files changed, 38 insertions(+)
+> > > >
+> > > > diff --git a/include/linux/swap.h b/include/linux/swap.h
+> > > > index 4db00ddad261..8d28f6091a32 100644
+> > > > --- a/include/linux/swap.h
+> > > > +++ b/include/linux/swap.h
+> > > > @@ -549,6 +549,11 @@ static inline int swap_duplicate(swp_entry_t s=
+wp)
+> > > >         return 0;
+> > > >  }
+> > > >
+> > > > +static inline int swapcache_prepare(swp_entry_t swp)
+> > > > +{
+> > > > +       return 0;
+> > > > +}
+> > > > +
+> > > >  static inline void swap_free(swp_entry_t swp)
+> > > >  {
+> > > >  }
+> > > > diff --git a/mm/memory.c b/mm/memory.c
+> > > > index 7e1f4849463a..1749c700823d 100644
+> > > > --- a/mm/memory.c
+> > > > +++ b/mm/memory.c
+> > > > @@ -3867,6 +3867,16 @@ vm_fault_t do_swap_page(struct vm_fault *vmf=
+)
+> > > >         if (!folio) {
+> > > >                 if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+> > > >                     __swap_count(entry) =3D=3D 1) {
+> > > > +                       /*
+> > > > +                        * Prevent parallel swapin from proceeding =
+with
+> > > > +                        * the cache flag. Otherwise, another threa=
+d may
+> > > > +                        * finish swapin first, free the entry, and=
+ swapout
+> > > > +                        * reusing the same entry. It's undetectabl=
+e as
+> > > > +                        * pte_same() returns true due to entry reu=
+se.
+> > > > +                        */
+> > > > +                       if (swapcache_prepare(entry))
+> > > > +                               goto out;
+> > > > +
+> > >
+> > > I am puzzled by this "goto out". If I understand this correctly, you
+> > > have two threads CPU1 and CPU2 racing to set the flag SWAP_HAS_CACHE.
+> > > The CPU1 will succeed in adding the flag and  the CPU2 will get
+> > > "-EEXIST" from "swapcache_prepare(entry)".  Am I understanding it
+> > > correctly so far?
+> > >
+> > > Then the goto out seems wrong to me. For the CPU2, the page fault wil=
+l
+> > > return *unhandled*. Even worse, the "-EEXIST" error is not preserved,
+> > > CPU2 does not even know the page fault is not handled, it will resume
+> > > from the page fault instruction, possibly generate another page fault
+> > > at the exact same location. That page fault loop will repeat until
+> > > CPU1 install the new pte on that faulting virtual address and pick up
+> > > by CPU2.
+> > >
+> > > Am I missing something obvious there?
+> >
+> > I feel you are right. any concurrent page faults at the same pte
+> > will increase the count of page faults for a couple of times now.
+> >
+> > >
+> > > I just re-read your comment: "Racers will simply busy wait since it's
+> > > a rare and very short event." That might be referring to the above
+> > > CPU2 page fault looping situation. I consider the page fault looping
+> > > on CPU2 not acceptable. For one it will mess up the page fault
+> > > statistics.
+> > > In my mind, having an explicit loop for CPU2 waiting for the PTE to
+> > > show up is still better than this page fault loop. You can have more
+> > > CPU power friendly loops.
+> >
+> > I assume you mean something like
+> >
+> > while(!pte_same())
+> >    cpu_relax();
+> >
+> > then we still have a chance to miss the change of B.
+> >
+> > For example, another thread is changing pte to A->B->A, our loop can
+> > miss B. Thus we will trap into an infinite loop. this is even worse.
+>
+> Yes. You are right, it is worse. Thanks for catching that. That is why
+> I say this needs more discussion, I haven't fully thought it through
+> :-)
 
+Hi Chris and Barry,
 
-On 2/6/2024 1:57 PM, Dmitry Baryshkov wrote:
-> On Tue, 6 Feb 2024 at 04:21, Hui Liu via B4 Relay
-> <devnull+quic_huliu.quicinc.com@kernel.org> wrote:
->>
->> From: Hui Liu <quic_huliu@quicinc.com>
->>
->> Add configurations for gpio-keys to enable pon_key and pon_resin
->> key.
-> 
-> Configuring gpio-keys is a requirement for enabling the pon_key and
-> pon_resin, so the commit message is incorrect.
-Hi Dmitry,
-This change is used to enable pwrkey, volume-up and volume-down 
-function, and the gpio-keys configuration is used to enable volume-up.
+Thanks for the comments!
 
-So can I update the commit message as below:
+The worst thing I know of returning in do_swap_page without handling
+the swap, is an increase of some statistic counters, note it will not
+cause major page fault counters to grow, only things like perf counter
+and vma lock statistic are affected.
 
-arm64: dts: qcom: qcm6490-idp: enable pwrkey and volume-up/down function
+And actually there are multiple already existing return points in
+do_swap_page that will return without handling it, which may
+re-trigger the page fault.
+When do_swap_page is called, many pre-checks have been applied, and
+they could all be invalidated if something raced, simply looping
+inside here could miss a lot of corner cases, so we have to go through
+that again.
 
-Add configurations to enable pwrkey, volume-up and volume-down function.
-
-Thanks,
-Hui
-
-> 
-> 
-> 
-> 
->>
->> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 43 ++++++++++++++++++++++++++++++++
->>   1 file changed, 43 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
->> index acf145d1d97c..4199ebf667af 100644
->> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
->> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
->> @@ -9,6 +9,7 @@
->>   #define PM7250B_SID 8
->>   #define PM7250B_SID1 9
->>
->> +#include <dt-bindings/input/linux-event-codes.h>
->>   #include <dt-bindings/leds/common.h>
->>   #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->>   #include "sc7280.dtsi"
->> @@ -39,6 +40,24 @@ chosen {
->>                  stdout-path = "serial0:115200n8";
->>          };
->>
->> +       gpio-keys {
->> +               compatible = "gpio-keys";
->> +               label = "gpio-keys";
->> +
->> +               pinctrl-names = "default";
->> +               pinctrl-0 = <&key_vol_up_default>;
-> 
-> pinctrl-names should come after pinctrl-0
-I will update it in next change
-> 
-> LGTM otherwise
-> 
->> +
->> +               key-volume-up {
->> +                       label = "volume_up";
->> +                       gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
->> +                       linux,input-type = <1>;
->> +                       linux,code = <KEY_VOLUMEUP>;
->> +                       wakeup-source;
->> +                       debounce-interval = <15>;
->> +                       linux,can-disable;
->> +               };
->> +       };
->> +
->>          reserved-memory {
->>                  xbl_mem: xbl@80700000 {
->>                          reg = <0x0 0x80700000 0x0 0x100000>;
->> @@ -421,6 +440,17 @@ vreg_bob_3p296: bob {
->>          };
->>   };
->>
->> +&pm7325_gpios {
->> +       key_vol_up_default: key-vol-up-state {
->> +               pins = "gpio6";
->> +               function = "normal";
->> +               input-enable;
->> +               bias-pull-up;
->> +               power-source = <0>;
->> +               qcom,drive-strength = <3>;
->> +       };
->> +};
->> +
->>   &pm8350c_pwm {
->>          status = "okay";
->>
->> @@ -448,6 +478,19 @@ led@3 {
->>          };
->>   };
->>
->> +&pmk8350_pon {
->> +       status = "okay";
->> +};
->> +
->> +&pon_pwrkey {
->> +       status = "okay";
->> +};
->> +
->> +&pon_resin {
->> +       linux,code = <KEY_VOLUMEDOWN>;
->> +       status = "okay";
->> +};
->> +
->>   &qupv3_id_0 {
->>          status = "okay";
->>   };
->>
->> ---
->> base-commit: 23e11d0318521e8693459b0e4d23aec614b3b68b
->> change-id: 20240206-gpio-keys-138bbd850298
->>
->> Best regards,
->> --
->> Hui Liu <quic_huliu@quicinc.com>
->>
->>
-> 
-> 
-> --
-> With best wishes
-> 
-> Dmitry
+This patch did increase the chance of false positive increase of some
+counters, maybe something like returning a VM_FAULT_RETRY could make
+it better, but code is more complex and will cause other counters to
+grow.
 
