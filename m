@@ -1,63 +1,57 @@
-Return-Path: <linux-kernel+bounces-57191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7572684D4EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:56:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 004B384D4ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:57:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A88801C20DAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:56:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 317481C22481
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EF8613541B;
-	Wed,  7 Feb 2024 21:26:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF01E535C0;
+	Wed,  7 Feb 2024 21:26:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BGT73awP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GzUH6k2y"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDC92179A09;
-	Wed,  7 Feb 2024 21:26:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E994013541D;
+	Wed,  7 Feb 2024 21:26:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341195; cv=none; b=VsHHX6CEXy2rwmO5B8K8paG3cd92GXZ7GwcMu7t+4jE9aEkWU+0vGVMkx+FPiuhdyG3S4/c2YRIkMB7Qcgt5YMefC9LrsQjvY4RQeZAmzknmQb2/fS2R/e2qQE+80q//tLHwCJawLUlFVr7iCIGNnRzqYIxxUGaKbltD0VIUaGE=
+	t=1707341198; cv=none; b=mK6LjxdrO1+Nzy2IMO7To2tqLJjDqCnunD/7ZkX1jHDis+LKnPQuP36FW8bySejjLmU99tpCPPo288rU2JbPhm7mjrTDUDkifTaMptGKmZ/71eYFGBWn/LZzucy25/7FguEtlOwx9iQ06Gvb7MfaHEy7Cb2K744nM7Ae/Zc4VlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341195; c=relaxed/simple;
-	bh=Mp9Egq9jUiCzq+Q31fSaaXWLTJCV0WI3GtGR8muqObA=;
+	s=arc-20240116; t=1707341198; c=relaxed/simple;
+	bh=vLGX9cgNvvE7OOqZYy6JEy2ZFuLj5csREoW758lScko=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WQsOycTrhZPnHhFrclelZ6Ofai1qbv0I94OHXMmEXlk8yAVbjDh4jZPlz66D3IWWSdFPcsddE2pMs95+k6AUvsY2K6Smu6Q3G0uJ9s7sQrcRD1S/VXbFMYhiaOygdKW/mQWm7gfQmDHh/RA+gJ8f5kkGTmeiuvtNEiWIyIMDqBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BGT73awP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96B18C43390;
-	Wed,  7 Feb 2024 21:26:33 +0000 (UTC)
+	 MIME-Version; b=TOeTNxVO1ZBZWVOHErNh38wr0oATTEkOYGkz0REhUweaY4I4DZqQRPo85uxR1CIXgDQHSCF+UMIiYbbXza5GCcckiWfoVi24NvIJIvZJwarXhCHHybYTGrvfJwpT5dgfffp7mFwd8EzuehvkPsT48LFsKShWbmTQwhzA/J+6D+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GzUH6k2y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A715C433F1;
+	Wed,  7 Feb 2024 21:26:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341195;
-	bh=Mp9Egq9jUiCzq+Q31fSaaXWLTJCV0WI3GtGR8muqObA=;
+	s=k20201202; t=1707341197;
+	bh=vLGX9cgNvvE7OOqZYy6JEy2ZFuLj5csREoW758lScko=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BGT73awPkj/FLDIjrA+T3jecuuv42Y1U5NqdZBRGBXtzel9/fX/NVUjpDm7q6PWqv
-	 kezjZdFsZmOw9I40yPZANZ2a4hFt9lSdjy+cH79ScQZwSpgLTTbIwwwhE3TtS4rAgW
-	 o/ZNOs4doLxakOptnbeNizdpweo72tJttqjmEAKM5kcV1d7hWDx1B2vqqEuZMNCiBb
-	 SWmFAAH3a+uUK5MMw+Q2hI1Nd9cvD2Qkj8PwbM1AI+GkzITzZuPAIJbfEfH1Gumckh
-	 57yKf2AXnzBkLDexLHn0QuegPYx6lU4QUG0TCxjKPKQMhgUud35AKAEjBOvzx0oOfE
-	 4NFMyVTZq0eEQ==
+	b=GzUH6k2yLQ0mOpCEQfg5Gsgxcv6Oz0HinexVkte5Xl9tL9KOtGCfOPkIK5E9FJ0B2
+	 pAJPQCXuaz8F/8SSxfkzxZStrUufqFUgmUD4fguIpTCkGJevFdITFGsI/5oyMqidIZ
+	 xwkqiIlaImXb85VylDXs4wVua2V/CTEaxNeglzj0xXJr9hTMMvnPtMJQZPegyRgnxx
+	 f0UrgAFVBiffeGFDTHDsyZvY/gB8z+P6B0d5fif4JeDcwgVkV9wgqA6+q7UB/St1ob
+	 A5PTZ0Q1rOMcj8zdM4Fs88+8/FZtitf297yywsjVA7Mlq7Bkh7VZn+jfXxcZDD2g45
+	 HF0F/4yH0Wbcw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Xin Long <lucien.xin@gmail.com>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
+Cc: Alexander Tsoy <alexander@tsoy.me>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	kadlec@netfilter.org,
-	fw@strlen.de,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 12/23] netfilter: conntrack: check SCTP_CID_SHUTDOWN_ACK for vtag setting in sctp_new
-Date: Wed,  7 Feb 2024 16:25:53 -0500
-Message-ID: <20240207212611.3793-12-sashal@kernel.org>
+	perex@perex.cz,
+	tiwai@suse.com,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 13/23] ALSA: usb-audio: Ignore clock selector errors for single connection
+Date: Wed,  7 Feb 2024 16:25:54 -0500
+Message-ID: <20240207212611.3793-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212611.3793-1-sashal@kernel.org>
 References: <20240207212611.3793-1-sashal@kernel.org>
@@ -72,68 +66,66 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.148
 Content-Transfer-Encoding: 8bit
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Alexander Tsoy <alexander@tsoy.me>
 
-[ Upstream commit 6e348067ee4bc5905e35faa3a8fafa91c9124bc7 ]
+[ Upstream commit eaa1b01fe709d6a236a9cec74813e0400601fd23 ]
 
-The annotation says in sctp_new(): "If it is a shutdown ack OOTB packet, we
-expect a return shutdown complete, otherwise an ABORT Sec 8.4 (5) and (8)".
-However, it does not check SCTP_CID_SHUTDOWN_ACK before setting vtag[REPLY]
-in the conntrack entry(ct).
+For devices with multiple clock sources connected to a selector, we need
+to check what a clock selector control request has returned. This is
+needed to ensure that a requested clock source is indeed selected and for
+autoclock feature to work.
 
-Because of that, if the ct in Router disappears for some reason in [1]
-with the packet sequence like below:
+For devices with single clock source connected, if we get an error there
+is nothing else we can do about it. We can't skip clock selector setup as
+it is required by some devices. So lets just ignore error in this case.
 
-   Client > Server: sctp (1) [INIT] [init tag: 3201533963]
-   Server > Client: sctp (1) [INIT ACK] [init tag: 972498433]
-   Client > Server: sctp (1) [COOKIE ECHO]
-   Server > Client: sctp (1) [COOKIE ACK]
-   Client > Server: sctp (1) [DATA] (B)(E) [TSN: 3075057809]
-   Server > Client: sctp (1) [SACK] [cum ack 3075057809]
-   Server > Client: sctp (1) [HB REQ]
-   (the ct in Router disappears somehow)  <-------- [1]
-   Client > Server: sctp (1) [HB ACK]
-   Client > Server: sctp (1) [DATA] (B)(E) [TSN: 3075057810]
-   Client > Server: sctp (1) [DATA] (B)(E) [TSN: 3075057810]
-   Client > Server: sctp (1) [HB REQ]
-   Client > Server: sctp (1) [DATA] (B)(E) [TSN: 3075057810]
-   Client > Server: sctp (1) [HB REQ]
-   Client > Server: sctp (1) [ABORT]
+This should fix various buggy Mackie devices:
 
-when processing HB ACK packet in Router it calls sctp_new() to initialize
-the new ct with vtag[REPLY] set to HB_ACK packet's vtag.
+[  649.109785] usb 1-1.3: parse_audio_format_rates_v2v3(): unable to find clock source (clock -32)
+[  649.111946] usb 1-1.3: parse_audio_format_rates_v2v3(): unable to find clock source (clock -32)
+[  649.113822] usb 1-1.3: parse_audio_format_rates_v2v3(): unable to find clock source (clock -32)
 
-Later when sending DATA from Client, all the SACKs from Server will get
-dropped in Router, as the SACK packet's vtag does not match vtag[REPLY]
-in the ct. The worst thing is the vtag in this ct will never get fixed
-by the upcoming packets from Server.
+There is also interesting info from the Windows documentation [1] (this
+is probably why manufacturers dont't even test this feature):
 
-This patch fixes it by checking SCTP_CID_SHUTDOWN_ACK before setting
-vtag[REPLY] in the ct in sctp_new() as the annotation says. With this
-fix, it will leave vtag[REPLY] in ct to 0 in the case above, and the
-next HB REQ/ACK from Server is able to fix the vtag as its value is 0
-in nf_conntrack_sctp_packet().
+"The USB Audio 2.0 driver doesn't support clock selection. The driver
+uses the Clock Source Entity, which is selected by default and never
+issues a Clock Selector Control SET CUR request."
 
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Link: https://learn.microsoft.com/en-us/windows-hardware/drivers/audio/usb-2-0-audio-drivers [1]
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=217314
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218175
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218342
+Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+Link: https://lore.kernel.org/r/20240201115308.17838-1-alexander@tsoy.me
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_proto_sctp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/clock.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_conntrack_proto_sctp.c b/net/netfilter/nf_conntrack_proto_sctp.c
-index c94a9971d790..7ffd698497f2 100644
---- a/net/netfilter/nf_conntrack_proto_sctp.c
-+++ b/net/netfilter/nf_conntrack_proto_sctp.c
-@@ -299,7 +299,7 @@ sctp_new(struct nf_conn *ct, const struct sk_buff *skb,
- 			pr_debug("Setting vtag %x for secondary conntrack\n",
- 				 sh->vtag);
- 			ct->proto.sctp.vtag[IP_CT_DIR_ORIGINAL] = sh->vtag;
--		} else {
-+		} else if (sch->type == SCTP_CID_SHUTDOWN_ACK) {
- 		/* If it is a shutdown ack OOTB packet, we expect a return
- 		   shutdown complete, otherwise an ABORT Sec 8.4 (5) and (8) */
- 			pr_debug("Setting vtag %x for new conn OOTB\n",
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index ccca9efa7d33..970e14ff54d1 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -328,8 +328,16 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+ 			if (chip->quirk_flags & QUIRK_FLAG_SKIP_CLOCK_SELECTOR)
+ 				return ret;
+ 			err = uac_clock_selector_set_val(chip, entity_id, cur);
+-			if (err < 0)
++			if (err < 0) {
++				if (pins == 1) {
++					usb_audio_dbg(chip,
++						      "%s(): selector returned an error, "
++						      "assuming a firmware bug, id %d, ret %d\n",
++						      __func__, clock_id, err);
++					return ret;
++				}
+ 				return err;
++			}
+ 		}
+ 
+ 		if (!validate || ret > 0 || !chip->autoclock)
 -- 
 2.43.0
 
