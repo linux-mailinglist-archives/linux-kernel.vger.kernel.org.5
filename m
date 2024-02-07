@@ -1,64 +1,55 @@
-Return-Path: <linux-kernel+bounces-56593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7097184CC4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:02:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A73484CC4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:02:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A35961C21EA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:02:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAB102884D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:02:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 557F37E56E;
-	Wed,  7 Feb 2024 14:01:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C658A7E769;
+	Wed,  7 Feb 2024 14:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JRulxDwt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="slFWABO9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 974807E586;
-	Wed,  7 Feb 2024 14:01:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC5D77630
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:01:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707314493; cv=none; b=RZ40Kb2qa9F23WT7P1C43gacJ8iCJsq9Uok+/Tq3IoRiRJ012xqLyzaAOSLgg7uLWHvimaV+m1jb3gB97udoGsowpgojacYNPMv3P3UAFF23A37Wnn5qpAg40WkmQA8jEH5EvCSbqCg+5gl2urfgZqULrTDNcdSQhr27dDHpVZw=
+	t=1707314496; cv=none; b=lTj5oM+FrXjTjZndDch4Mqi8/vtYtsikoe7prA+dx+Ze2ht/v3zhPDc3lcR5+VP+iVssbKs0P7VBmR0RNy1FkPAN7muBYsNPxZBzHldEtwUtXM88TFH46yvJC+A40FTqz1FloZFbUw/0b4n72vhTJiAwOlpF0HVnLOT/TL2aOYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707314493; c=relaxed/simple;
-	bh=g3Z88DUNdFcDu+TkPwpM/lXAN8LWu5w+gBGr1EpmKz8=;
+	s=arc-20240116; t=1707314496; c=relaxed/simple;
+	bh=DBW93eoiTOGNMTaQDIpoBf6GGb16/dyPd9SHQcXcCiM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=e0ZjnrBRiayR/gW3zVyR26vHOCUdhuY0xgp2DPQcj/AQPkqvHjKZ0vqgRfUgcD9oKq07G3NOh0d0fJZgpKjqnP+4hsq2MLMM2U8TUQSX0LUfj1EtEfu9XKK0EgqNzoH9jKJQiZ5mD0vl6DwAwuaFjBUMCWj/3+h1sFFFyZ8S4qQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JRulxDwt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E7FAC43399;
-	Wed,  7 Feb 2024 14:01:29 +0000 (UTC)
+	 MIME-Version:Content-Type; b=DGbw8V0uQycHSmJz8k0iYNNifDU+kYevXgmkInm8p3AcRzQVc7Or98k7NrC+8sGLrS2Wvhx8+NRjB3Fbk58OqH9wBD+2lDXPJhb7APTZyvR3RtlMEL6JgbNqHXzhsowKsO5uuV4S7601MYh6fnVFnzkoUy+i8Ln7BDXw+1FMUa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=slFWABO9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B24DCC433F1;
+	Wed,  7 Feb 2024 14:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707314493;
-	bh=g3Z88DUNdFcDu+TkPwpM/lXAN8LWu5w+gBGr1EpmKz8=;
+	s=k20201202; t=1707314495;
+	bh=DBW93eoiTOGNMTaQDIpoBf6GGb16/dyPd9SHQcXcCiM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=JRulxDwtEBTvF/i1yphRDtxYZsJHZ3RoXyDmR0n20YayYd3ONvQFTdgJXhRAxzmGZ
-	 gy7IYcUWCGcjxAT9YcYGMYu3IT0be4Xt0Ye8/E/6JxJ7t40YjKGCSgwmQsLaMlHQLs
-	 UPWeFhafDy9VRlvQBtYE3hBGYj1aqYQqh+O1WERtnIG+TprXL/ih29DUpbrroPOb6k
-	 hJ0KVsG0fgj0CYAQrhScp5mdH3ZpXQTQrWaRIP6osmTy3FZ+VArt5vsPnNB8C2U0Rp
-	 YLnhKpBJClH5KwYXXFi52cG1cOhAKb+Lxj9+bfwUGtraZPN26DgOMngx/knYXongCD
-	 D8EvOFZVgV+xQ==
+	b=slFWABO9qFaXy85EHmRnfvVNbLeVSRQdFtUArjUkxzvnsQWXm9E4oWmzZ9LU+0t8c
+	 pIMwdvzEBCsT+I5wdLOCpqmzWd4UDGFfGgS6MA9vuGCMD9cWbtca2IFelDU6HF/3Ao
+	 Z6TIv2fn2GzKTEyRuwkk24XIaTeSuwBR9IJLjfUB5FLcJGlfxxJUda4qKkLvrDFuki
+	 QG/N5LmAahnQRSHS56YwMz+Tr/0uBJQySP1eFjonUsx75LPAsXhv88ZSeV+KSN6r/e
+	 n1/8QRQksbMbdZwhZYtt6uws/1mFcpGB0f4I0bvqk7Z/Jupg67NrRLRB7zeRmFGDCC
+	 KId9lB1NV2Shw==
 From: Vinod Koul <vkoul@kernel.org>
-To: Julien Stephan <jstephan@baylibre.com>
-Cc: Phi-bang Nguyen <pnguyen@baylibre.com>, 
- Louis Kuo <louis.kuo@mediatek.com>, Andy Hsieh <andy.hsieh@mediatek.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Chunfeng Yun <chunfeng.yun@mediatek.com>, 
- Chun-Kuang Hu <chunkuang.hu@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
- devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- Kishon Vijay Abraham I <kishon@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20240111101738.468916-1-jstephan@baylibre.com>
-References: <20240111101738.468916-1-jstephan@baylibre.com>
-Subject: Re: [PATCH v5 2/2] phy: mtk-mipi-csi: add driver for CSI phy
-Message-Id: <170731448892.147119.12389092200889790020.b4-ty@kernel.org>
-Date: Wed, 07 Feb 2024 15:01:28 +0100
+To: kishon@kernel.org, Thomas Richard <thomas.richard@bootlin.com>
+Cc: linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ gregory.clement@bootlin.com, thomas.petazzoni@bootlin.com, 
+ theo.lebrun@bootlin.com, u-kumar1@ti.com
+In-Reply-To: <20240125171754.773909-1-thomas.richard@bootlin.com>
+References: <20240125171754.773909-1-thomas.richard@bootlin.com>
+Subject: Re: [PATCH] phy: ti: gmii-sel: add resume support
+Message-Id: <170731449338.147119.13043324915980323672.b4-ty@kernel.org>
+Date: Wed, 07 Feb 2024 15:01:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,20 +61,18 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.3
 
 
-On Thu, 11 Jan 2024 11:17:30 +0100, Julien Stephan wrote:
-> This is a new driver that supports the MIPI CSI CD-PHY version 0.5
+On Thu, 25 Jan 2024 18:17:54 +0100, Thomas Richard wrote:
+> The resume callback restores the submode of each PHY.
 > 
-> The number of PHYs depend on the SoC.
-> Each PHY can support D-PHY only or CD-PHY configuration.
-> The driver supports only D-PHY mode, so CD-PHY
-> compatible PHY are configured in D-PHY mode.
+> It uses the submode stored in struct phy_gmii_sel_phy_priv (variable
+> phy_if_mode). The submode was saved by the set_mode PHY operation.
 > 
-> [...]
+> 
 
 Applied, thanks!
 
-[2/2] phy: mtk-mipi-csi: add driver for CSI phy
-      commit: 673d70cb3c652ad6d97594e03225bbdf20226216
+[1/1] phy: ti: gmii-sel: add resume support
+      commit: dc7c77bd79ffbd4c2840354a5da4b08781cb1ee8
 
 Best regards,
 -- 
