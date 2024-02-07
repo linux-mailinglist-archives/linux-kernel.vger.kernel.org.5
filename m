@@ -1,186 +1,101 @@
-Return-Path: <linux-kernel+bounces-56647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66D4984CD2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:48:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05B8F84CD2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:48:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8C3D1F21BD0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:48:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B705A28B883
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:48:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93EA27F7C3;
-	Wed,  7 Feb 2024 14:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91DC37F7C8;
+	Wed,  7 Feb 2024 14:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="icYajaCA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="G50tUKri"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C127D3E6;
-	Wed,  7 Feb 2024 14:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8393C7E779;
+	Wed,  7 Feb 2024 14:48:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707317269; cv=none; b=t/AfrvzZKvEJfMvQ0/MXJLmniPCW0FUVaTQbLtFq1SPiwdPoV6FGdMX+FKiKKTJKWryV8X8VIvXqYKv5OCpufvwziFz4o5FwpPlohjp2uH9HKcqUvnpvZ8M9q2whbqJiZy09a0N+VdbkQrzaGGVYsP50ed7zDVTvOsxIDPM2kzQ=
+	t=1707317288; cv=none; b=F1mJC55lSz87/XCbanjoWnRADpJBr3TVyFfGnE04XfYJBWtLUDtJb1ZcDLDLDBGkSRuZCrfv9CxiOQArc6LlW0epoVDHutRTJGenGYuRBKgLC+lPGJQ0TeOo1mCn9G1k+rr/PTdS8Hx7YvgM983KF2ssKBhBiX+YlZjDPVFQthI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707317269; c=relaxed/simple;
-	bh=dqeS7RKaqg5NSBHC9tqAZ0jlOtvjCCV80N050qidhz4=;
+	s=arc-20240116; t=1707317288; c=relaxed/simple;
+	bh=BKNP9vGvcUxiD10sWfb8N0pUD3IrC1mjd7jdcTMxLa4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HzRYVwZOikh7PXvTpnuv/06Xu2fFITQA/EscgbNhWI5kfxylcErZiV/1PxlIryufU3rJnoZvIAr4aIQmDhl6b/8pnBpQ2Z2cFm4wPcMxSxIvyU36uZIu6wu/4mG4wKQDKvVQMT+A4rIm0lvfKnBhZYek5fsNYsl7TkK7K6SNJmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=icYajaCA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B241DC433C7;
-	Wed,  7 Feb 2024 14:47:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707317269;
-	bh=dqeS7RKaqg5NSBHC9tqAZ0jlOtvjCCV80N050qidhz4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=icYajaCA2tFuTuC9D1SNlZkAipRaQApzHfHrIPO4rCmYFsJxTQhhfFshiqBzaCWju
-	 y12CJHYXvQttTjw5qpXSAtyLcfMStuhpTAyRQEhLzToFX0NrTqDP81kOhE2wMFrQpM
-	 HQB9k4CEAY9lkMSxxC4tQYBwQ1ilFaMSUNmfR1zqzAlallx3LLJP2zBl/kNfc8/tvz
-	 7y6rbmy/s3mgvrPkcOT9x/RJ0buI/rNL47I4cQaFBkfRU1n/g7tiArc81Jx7KqxO5w
-	 ySeNZCGRyg6jIOTOdyZoouhyyFlMC3z9ynle0GLAdzOCw7gKdklno1RqDO4QEusQcT
-	 XVhPLhZv65j0w==
-Date: Wed, 7 Feb 2024 15:47:46 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Marcelo Tosatti <mtosatti@redhat.com>
-Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
-	Ryan Phillips <rphillips@redhat.com>,
-	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
-	Paul Gortmaker <paul.gortmaker@windriver.com>,
-	Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Costa Shulyupin <cshulyup@redhat.com>
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
-Message-ID: <ZcOYEkHCoh75R-LA@localhost.localdomain>
-References: <20240117163511.88173-1-longman@redhat.com>
- <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
- <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
- <ZcIsd6fjgmsb2dxr@localhost.localdomain>
- <ZcKFRqrUh5tTbsaJ@tpad>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NzxobUq3KS5Xu120snk7rtrWtqk6YGVOtADK8ouYV5gH2LAVraQuUc0Fr/be94nqaxaqEylh4A4Id9No6DHmr5SPGh5+DugsGox9LHwvSXb1lHTXqbmDLfMn710wGFICXpxM9SwMOcyDkuNF5P3HwMZgzNnTa4voZnxHiEDsYuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=G50tUKri; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707317286; x=1738853286;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BKNP9vGvcUxiD10sWfb8N0pUD3IrC1mjd7jdcTMxLa4=;
+  b=G50tUKriOwNdRmLd/8jdyVh4QwAKSwosyepf+tt3mGA2SlgmmTBA3NPs
+   RP50j7wHk6noVzU6oTj1+fvc1txCvAJttzgNlv9/k00xukVY2JGnpiK8g
+   t4b0qToSCnvdGR0hHySIKZXyF+H2Ew8WqwSQtGGFSCQc38TssNg8Vw+Zt
+   JlS1eZXvaLJdbOoX8F+wYsHuV4k1g/hZNrmHMz3xl52E/ReZWhYfRzmlu
+   yJRuhoc8+oSol9avcvWjz/vhf4n3x9XTi4hmB/m1QpoiQoj2e9aI9aFNN
+   jngPH6A7v9f480kemwK6SCNtIh7Z8MZs/xMMsWqXA2CqlNZNpduJNVvje
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="4866615"
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="4866615"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 06:48:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="910010162"
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="910010162"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 06:48:03 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rXjDU-00000002dFR-1LRq;
+	Wed, 07 Feb 2024 16:48:00 +0200
+Date: Wed, 7 Feb 2024 16:48:00 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Arturas Moskvinas <arturas.moskvinas@gmail.com>
+Cc: linus.walleij@linaro.org, biju.das.jz@bp.renesas.com,
+	akaessens@gmail.com, thomas.preston@codethink.co.uk,
+	preid@electromag.com.au, u.kleine-koenig@pengutronix.de,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pinctrl: mcp23s08: Check only GPIOs which have
+ interrupts enabled
+Message-ID: <ZcOYIBGfxdviQ1E7@smile.fi.intel.com>
+References: <ZcDpDaclAXEa5ETN@smile.fi.intel.com>
+ <0dab8d77-ea4e-4cea-99dd-2ffe7c9051d5@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZcKFRqrUh5tTbsaJ@tpad>
+In-Reply-To: <0dab8d77-ea4e-4cea-99dd-2ffe7c9051d5@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Le Tue, Feb 06, 2024 at 04:15:18PM -0300, Marcelo Tosatti a écrit :
-> On Tue, Feb 06, 2024 at 01:56:23PM +0100, Frederic Weisbecker wrote:
-> > Le Wed, Jan 17, 2024 at 12:15:07PM -0500, Waiman Long a écrit :
-> > > 
-> > > On 1/17/24 12:07, Tejun Heo wrote:
-> > > > Hello,
-> > > > 
-> > > > On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
-> > > > > The first 2 patches are adopted from Federic with minor twists to fix
-> > > > > merge conflicts and compilation issue. The rests are for implementing
-> > > > > the new cpuset.cpus.isolation_full interface which is essentially a flag
-> > > > > to globally enable or disable full CPU isolation on isolated partitions.
-> > > > I think the interface is a bit premature. The cpuset partition feature is
-> > > > already pretty restrictive and makes it really clear that it's to isolate
-> > > > the CPUs. I think it'd be better to just enable all the isolation features
-> > > > by default. If there are valid use cases which can't be served without
-> > > > disabling some isolation features, we can worry about adding the interface
-> > > > at that point.
-> > > 
-> > > My current thought is to make isolated partitions act like isolcpus=domain,
-> > > additional CPU isolation capabilities are optional and can be turned on
-> > > using isolation_full. However, I am fine with making all these turned on by
-> > > default if it is the consensus.
-> > 
-> > Right it was the consensus last time I tried. Along with the fact that mutating
-> > this isolation_full set has to be done on offline CPUs to simplify the whole
-> > picture.
-> > 
-> > So lemme try to summarize what needs to be done:
-> > 
-> > 1) An all-isolation feature file (that is, all the HK_TYPE_* things) on/off for
-> >   now. And if it ever proves needed, provide a way later for more finegrained
-> >   tuning.
-> > 
-> > 2) This file must only apply to offline CPUs because it avoids migrations and
-> >   stuff.
-> > 
-> > 3) I need to make RCU NOCB tunable only on offline CPUs, which isn't that much
-> >    changes.
-> > 
-> > 4) HK_TYPE_TIMER:
-> >    * Wrt. timers in general, not much needs to be done, the CPUs are
-> >      offline. But:
-> >    * arch/x86/kvm/x86.c does something weird
-> >    * drivers/char/random.c might need some care
-> >    * watchdog needs to be (de-)activated
-> >    
-> > 5) HK_TYPE_DOMAIN:
-> >    * This one I fear is not mutable, this is isolcpus...
+On Wed, Feb 07, 2024 at 12:50:51PM +0200, Arturas Moskvinas wrote:
+> On 2/5/24 15:56, Andy Shevchenko wrote:
+> > > Do you want that information to be added as part of commit message or
+> > > information in the mailing thread will be enough?
+> > Up to maintainers. I'm fine with this email. If Linus uses b4 to generate
+> > a Link tag to this discussion it will be enough (in my opinion).
 > 
-> Except for HK_TYPE_DOMAIN, i have never seen anyone use any of this
-> flags.
+> Is there anything left for me to update/change? Or we're waiting for other
+> reviewers and/or Linus to chime in?
 
-HK_TYPE_DOMAIN is used by isolcpus=domain,....
-HK_TYPE_MANAGED_IRQ is used by isolcpus=managed_irq,...
+I believe we are waiting for Linus' decision.
 
-All the others (except HK_TYPE_SCHED) are used by nohz_full=
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks.
 
-> 
-> > 
-> > 6) HK_TYPE_MANAGED_IRQ:
-> >    * I prefer not to think about it :-)
-> > 
-> > 7) HK_TYPE_TICK:
-> >    * Maybe some tiny ticks internals to revisit, I'll check that.
-> >    * There is a remote tick to take into consideration, but again the
-> >      CPUs are offline so it shouldn't be too complicated.
-> > 
-> > 8) HK_TYPE_WQ:
-> >    * Fortunately we already have all the mutable interface in place.
-> >      But we must make it live nicely with the sysfs workqueue affinity
-> >      files.
-> > 
-> > 9) HK_FLAG_SCHED:
-> >    * Oops, this one is ignored by nohz_full/isolcpus, isn't it?
-> >    Should be removed?
-> > 
-> > 10) HK_TYPE_RCU:
-> >     * That's point 3) and also some kthreads to affine, which leads us
-> >      to the following in HK_TYPE_KTHREAD:
-> > 
-> > 11) HK_FLAG_KTHREAD:
-> >     * I'm guessing it's fine as long as isolation_full is also an
-> >       isolated partition. Then unbound kthreads shouldn't run there.
-> > 
-> > 12) HK_TYPE_MISC:
-> >     * Should be fine as ILB isn't running on offline CPUs.
-> > 
-> > Thanks.
-> > 
-> > 
-> 
 
