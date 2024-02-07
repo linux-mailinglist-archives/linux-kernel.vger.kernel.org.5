@@ -1,61 +1,56 @@
-Return-Path: <linux-kernel+bounces-57161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7A3A84D49F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:49:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8813184D4A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:49:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BD831F21621
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:49:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAB351C22A3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B70F15835D;
-	Wed,  7 Feb 2024 21:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B277915836F;
+	Wed,  7 Feb 2024 21:25:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ib7KbE5m"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gxqQ9W2g"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EA0A15834C;
-	Wed,  7 Feb 2024 21:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0E73158362;
+	Wed,  7 Feb 2024 21:25:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341131; cv=none; b=exrR8pKHzGQ22Teo2CS7Aefi8fyYmgovFDqyeRznyx6vndaTsML7bn0CfjcKSxe12N4gcuHShTjR/JRFLYKe/2sn7Zb/fbTdHToOCq9GC++kGJOIrY5YthkLXbCQhRz7iwY6sxq1AJd8ikIhoW6zb6hjGCvZnongz2DcvhBRUYk=
+	t=1707341133; cv=none; b=kEnCa3EiiHjXxu+q9NNy+onyUcQ9jWaJqRVQR+vQQo/jjCYk4BUgR9QvV+I1qkhlTnYRf7mUBMu6H6Bqi/y58rnFtNSoibcgoegpXgxmPbdYVSJ3TSxcPKm+DoqdCn8tKE2lzuoBIKTtO2o2jvUQW8H56XZhESVlK8NIRQ++JQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341131; c=relaxed/simple;
-	bh=G7iCaHlA7Oz0rW1vGnMZr5iEOwhTncPPYDCbXFk5Rio=;
+	s=arc-20240116; t=1707341133; c=relaxed/simple;
+	bh=09VRC5UMWOCeUD2XAo6R/Emcj6lgXZug47ftIxkJGck=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G0BmZDazPnmjJSA1WTQuR3HKa0THG2mz6FDLCfzxVyKj4jnm+rzLR2rEb+6qA3d0/iyUZ9lkxoudNqmDFlo148jjFSJcQRFhD7Y3GXLvB4rRsCz95SGtVTZAEVgWa0Oq13OLnt3GJ883ygQIEF8jJMDFsCn9n0iRv50SXuwceMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ib7KbE5m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBB04C433C7;
-	Wed,  7 Feb 2024 21:25:29 +0000 (UTC)
+	 MIME-Version; b=oxcjf4BSm8YhZeElwoK1uejEHgpLRiI0IERoaFRlBrAG57m/2nL8L27JPzPwAhM/fNZbSBmiFn2zxik2M8/ZMolvy3DY4pWv+z8NoW7qkGnALkp2vTvz3Xysi6/IqB/Kd0O0TwLPqRMxQPH1Ji8csAAibMoTNgeVlEl7KI6rVDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gxqQ9W2g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0DE6C433F1;
+	Wed,  7 Feb 2024 21:25:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341131;
-	bh=G7iCaHlA7Oz0rW1vGnMZr5iEOwhTncPPYDCbXFk5Rio=;
+	s=k20201202; t=1707341132;
+	bh=09VRC5UMWOCeUD2XAo6R/Emcj6lgXZug47ftIxkJGck=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ib7KbE5meQB7RM8XnjQksCUq4lvhgFl4Kcp+cdyHNE3Q1Egkf1XnOUddUBCskmWoq
-	 lSccnDMoguffVioDqSaIDb7Vyzac3Kn1zKbuPtSrri2TWZrDHJ2ic0Yf9QdIOzt/uA
-	 zruF5hMabkXAYCTRRrE8ysrGYwvH4NZJGUTnkk+Xwoz5c/OBYx+kezkCCU4skOumml
-	 0X9kU+XuZRVvh28kTHXlbt6ZgLshnCyT36ae8/xP9VpcXaqK/Oc28IN6jqaFlLr20n
-	 cre71Oigbi5j09mnnAjURsa+j5lMYtSZyA5vtlaBZ80hhGYy8ELhq9Bz9B+BFlWWXJ
-	 D0Shhxl+SEVnw==
+	b=gxqQ9W2gGxqpLmWe5lqBmNgFd0hQLaYT34UXaR5KhW43z27bP1vf8CipfBPGfObQO
+	 MBTrX30KlAW8W15VeBJ0pMYTWte7oQzc8js6pm/PX+NSvKliDs6lZdADl3m2/wWWzM
+	 nQnlMvzw2ehQbhPc7Ts0aIhICokqKXJzeJmwk9FwZQkxM7tOLM9Pw0OK490uyjBxQ+
+	 iqkteqmsm4RkQWMy8NIoe+7jgwH5iDjniCdWsue4LtWq+hfmvlFY62A+T+4FKXCEvG
+	 ERa+lEOsZJn/JHjOWI1bIFjUMMoqyfTDCkvLGv/dLETc9x2ppuH00aJNrGHCNF3qER
+	 BGpcp3BdS99uA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Brenton Simpson <appsforartists@google.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Sasha Levin <sashal@kernel.org>,
-	vi@endrift.com,
-	swyterzone@gmail.com,
-	aicommander@gmail.com,
-	luca@z3ntu.xyz,
-	pgriffais@valvesoftware.com,
-	doublej472@gmail.com,
-	linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 13/29] Input: xpad - add Lenovo Legion Go controllers
-Date: Wed,  7 Feb 2024 16:24:38 -0500
-Message-ID: <20240207212505.3169-13-sashal@kernel.org>
+Cc: Will Deacon <will@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	David Brazdil <dbrazdil@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 14/29] misc: open-dice: Fix spurious lockdep warning
+Date: Wed,  7 Feb 2024 16:24:39 -0500
+Message-ID: <20240207212505.3169-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212505.3169-1-sashal@kernel.org>
 References: <20240207212505.3169-1-sashal@kernel.org>
@@ -70,67 +65,52 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.77
 Content-Transfer-Encoding: 8bit
 
-From: Brenton Simpson <appsforartists@google.com>
+From: Will Deacon <will@kernel.org>
 
-[ Upstream commit 80441f76ee67002437db61f3b317ed80cce085d2 ]
+[ Upstream commit ac9762a74c7ca7cbfcb4c65f5871373653a046ac ]
 
-The Lenovo Legion Go is a handheld gaming system, similar to a Steam Deck.
-It has a gamepad (including rear paddles), 3 gyroscopes, a trackpad,
-volume buttons, a power button, and 2 LED ring lights.
+When probing the open-dice driver with PROVE_LOCKING=y, lockdep
+complains that the mutex in 'drvdata->lock' has a non-static key:
 
-The Legion Go firmware presents these controls as a USB hub with various
-devices attached.  In its default state, the gamepad is presented as an
-Xbox controller connected to this hub.  (By holding a combination of
-buttons, it can be changed to use the older DirectInput API.)
+ | INFO: trying to register non-static key.
+ | The code is fine but needs lockdep annotation, or maybe
+ | you didn't initialize this object before use?
+ | turning off the locking correctness validator.
 
-This patch teaches the existing Xbox controller module `xpad` to bind to
-the controller in the Legion Go, which enables support for the:
+Fix the problem by initialising the mutex memory with mutex_init()
+instead of __MUTEX_INITIALIZER().
 
-- directional pad,
-- analog sticks (including clicks),
-- X, Y, A, B,
-- start and select (or menu and capture),
-- shoulder buttons, and
-- rumble.
-
-The trackpad, touchscreen, volume controls, and power button are already
-supported via existing kernel modules.  Two of the face buttons, the
-gyroscopes, rear paddles, and LEDs are not.
-
-After this patch lands, the Legion Go will be mostly functional in Linux,
-out-of-the-box.  The various components of the USB hub can be synthesized
-into a single logical controller (including the additional buttons) in
-userspace with [Handheld Daemon](https://github.com/hhd-dev/hhd), which
-makes the Go fully functional.
-
-Signed-off-by: Brenton Simpson <appsforartists@google.com>
-Link: https://lore.kernel.org/r/20240118183546.418064-1-appsforartists@google.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: David Brazdil <dbrazdil@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20240126152410.10148-1-will@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/joystick/xpad.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/misc/open-dice.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-index e8011d70d079..02f3bc4e4895 100644
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -294,6 +294,7 @@ static const struct xpad_device {
- 	{ 0x1689, 0xfd00, "Razer Onza Tournament Edition", 0, XTYPE_XBOX360 },
- 	{ 0x1689, 0xfd01, "Razer Onza Classic Edition", 0, XTYPE_XBOX360 },
- 	{ 0x1689, 0xfe00, "Razer Sabertooth", 0, XTYPE_XBOX360 },
-+	{ 0x17ef, 0x6182, "Lenovo Legion Controller for Windows", 0, XTYPE_XBOX360 },
- 	{ 0x1949, 0x041a, "Amazon Game Controller", 0, XTYPE_XBOX360 },
- 	{ 0x1bad, 0x0002, "Harmonix Rock Band Guitar", 0, XTYPE_XBOX360 },
- 	{ 0x1bad, 0x0003, "Harmonix Rock Band Drumkit", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
-@@ -489,6 +490,7 @@ static const struct usb_device_id xpad_table[] = {
- 	XPAD_XBOX360_VENDOR(0x15e4),		/* Numark X-Box 360 controllers */
- 	XPAD_XBOX360_VENDOR(0x162e),		/* Joytech X-Box 360 controllers */
- 	XPAD_XBOX360_VENDOR(0x1689),		/* Razer Onza */
-+	XPAD_XBOX360_VENDOR(0x17ef),		/* Lenovo */
- 	XPAD_XBOX360_VENDOR(0x1949),		/* Amazon controllers */
- 	XPAD_XBOX360_VENDOR(0x1bad),		/* Harminix Rock Band Guitar and Drums */
- 	XPAD_XBOX360_VENDOR(0x20d6),		/* PowerA Controllers */
+diff --git a/drivers/misc/open-dice.c b/drivers/misc/open-dice.c
+index c61be3404c6f..504b836a7abf 100644
+--- a/drivers/misc/open-dice.c
++++ b/drivers/misc/open-dice.c
+@@ -142,7 +142,6 @@ static int __init open_dice_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	*drvdata = (struct open_dice_drvdata){
+-		.lock = __MUTEX_INITIALIZER(drvdata->lock),
+ 		.rmem = rmem,
+ 		.misc = (struct miscdevice){
+ 			.parent	= dev,
+@@ -152,6 +151,7 @@ static int __init open_dice_probe(struct platform_device *pdev)
+ 			.mode	= 0600,
+ 		},
+ 	};
++	mutex_init(&drvdata->lock);
+ 
+ 	/* Index overflow check not needed, misc_register() will fail. */
+ 	snprintf(drvdata->name, sizeof(drvdata->name), DRIVER_NAME"%u", dev_idx++);
 -- 
 2.43.0
 
