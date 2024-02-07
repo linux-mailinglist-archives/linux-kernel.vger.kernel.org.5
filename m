@@ -1,206 +1,233 @@
-Return-Path: <linux-kernel+bounces-55844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABDA384C26C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:20:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EB3B84C272
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:21:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62A8D28D18F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:20:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 640C91C217E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:21:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A97610979;
-	Wed,  7 Feb 2024 02:20:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021BFEEAC;
+	Wed,  7 Feb 2024 02:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="iM+5XBYy"
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="btjl8GTE"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9A0EEAC;
-	Wed,  7 Feb 2024 02:19:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B621CD1E;
+	Wed,  7 Feb 2024 02:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707272400; cv=none; b=uNdjxtQRwRDlG59T29KbFAg0YH33Zse5RQ5gmT10UQYGFfZMcrdjkHPB9lbEx9cQf5aNeIWKmj7VhDmKtxa/ilBwOUYCT7/iukILyZsoKmVHZoIgt0ZmJAF4/b4widy/fOcluxIhbey5VsHJIScwq1Vr4kkF+Egtlh9gtdc+QBk=
+	t=1707272457; cv=none; b=mpCRGjmZYCHBicko86TJWaVXCIdkOxZLMdXoQ4aIEIangWboutTRMPjsw2WOZYJx16gyJQ3nXNdYY2b7nI+PDqX6e226urg7g8k4igWktdPp2jwB/lWrpYWcsM0E5qsrlEyRxQ/56Y5xggv4qJxuWc0CDCfMflEHCThp06xEYKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707272400; c=relaxed/simple;
-	bh=70uIplFj6tYmIaM2+/hdbOkFRGVdFZN4V4RRhP1FyCA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ok5HRpQHxeaqvXwpC6kfGrbiiUHGWcnxedL3Int/PAK5z6P9ctBFMMHkhjCbHhgEwIRFPLF6EbwaHN/Pn5Uq0nZy9ZHh/dur7u0r8EpAjA7V4+r1X0vQOEzUMwqRqu6eLi6qLiXE3LZa+WkCcs55wBMGNziao8IRx+v7DPQL95w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=iM+5XBYy; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1707272395; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=z5XFUY+97aQgYz9qIycNQwP7iD9Nqzay3ltOgamXdOE=;
-	b=iM+5XBYypPqRqVkX7SSdMAFhYxUxL+5jwHujoF6KahwLpbJbrlyCWX1Lc7IykOcWQk2UVajwGD1H/xOf40kgNxtXZvRfgO2BPTY/Hrgm2iM5SNEExsM6oChVhum0G2dmF9NXeo10qxkesjKzrCzlmFhVRm9r5zNSsGoI7yWyEOk=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xiangzao@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0W0F5hYM_1707272393;
-Received: from localhost.localdomain(mailfrom:xiangzao@linux.alibaba.com fp:SMTPD_---0W0F5hYM_1707272393)
-          by smtp.aliyun-inc.com;
-          Wed, 07 Feb 2024 10:19:54 +0800
-From: Yuanhe Shu <xiangzao@linux.alibaba.com>
-To: keescook@chromium.org,
-	tony.luck@intel.com,
-	gpiccoli@igalia.com,
-	shuah@kernel.org,
-	corbet@lwn.net
-Cc: xlpang@linux.alibaba.com,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Yuanhe Shu <xiangzao@linux.alibaba.com>
-Subject: [PATCH 3/3] tools/testing: adjust pstore backend related selftest
-Date: Wed,  7 Feb 2024 10:19:21 +0800
-Message-Id: <20240207021921.206425-4-xiangzao@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240207021921.206425-1-xiangzao@linux.alibaba.com>
-References: <20240207021921.206425-1-xiangzao@linux.alibaba.com>
+	s=arc-20240116; t=1707272457; c=relaxed/simple;
+	bh=pPmjLZQk/syRJBZPIvptZzEbOgte7u2NJek0+dwN9uI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=aAVeMGgca/RrhqJo9JMpiUQbelkM8d5NafDXyGD531u1eN0T2JA4dIdiZBU1XVoblM6H+EhHr4zCkB3qUNcjXeKaVlOQOcGDxXxOHewdnJooD8E2ZjFR6klO+8wySP7/kq8diZkWh0gB4vxE51hL7GEnkJCVczLEXYQl2FT3olY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=btjl8GTE; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4172GFsb021935;
+	Wed, 7 Feb 2024 02:20:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=9QXtNKq4I3TBfat6HvMurueK9bBBSRepYLI4I1syHAU=; b=bt
+	jl8GTEmvoepvnpfU3SEoguLqLnokI9p0408idwXGVO+tvgmC2fvpVupDLgPdT2mp
+	jDxgGF6G4Avk7IXvVFJygFBTjSs626wsIaEpGHAR8BgMgYa1Z5kpLJbmOXtk3oHf
+	lCR9i6Lgoxox98amX30L2nBmLnKISPn52PZGNDZK0zn2orztMC+WDM/T/tCRKOp9
+	mxifYGLmKw0Q64SHHstOTQnb6vxwM8yrYrgEiBbk/oWN/EFFcWEOt+PXJivsAr/x
+	WGTXWxigHNmoGfA9fNRn0ty7VQIkQQ2tzrsCRAJLeWvlC8kBWVlmJ2FjchAOxHW6
+	moPnzTcRGFdVf9ur7PJg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3k6g9s8g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 Feb 2024 02:20:51 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4172KpIK023475
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 7 Feb 2024 02:20:51 GMT
+Received: from [10.238.139.231] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 6 Feb
+ 2024 18:20:47 -0800
+Message-ID: <feef8ddd-c816-4088-ae21-eb9afdbfc86e@quicinc.com>
+Date: Wed, 7 Feb 2024 10:20:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: qcm6490-idp: Add configurations for
+ gpio-keys
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240206-gpio-keys-v1-1-7683799daf8d@quicinc.com>
+ <CAA8EJpqo6p+S4JirhGybGsiG0X9Evdb3LEVgorsewEcRT8LMgg@mail.gmail.com>
+From: hui liu <quic_huliu@quicinc.com>
+In-Reply-To: <CAA8EJpqo6p+S4JirhGybGsiG0X9Evdb3LEVgorsewEcRT8LMgg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 9G6tJPLMzklHsEzX-k594KXxO8iN0zux
+X-Proofpoint-GUID: 9G6tJPLMzklHsEzX-k594KXxO8iN0zux
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-06_16,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 clxscore=1011
+ impostorscore=0 mlxscore=0 bulkscore=0 adultscore=0 spamscore=0
+ suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2401310000 definitions=main-2402070016
 
-Pstore now supports multiple backends, the module parameter
-pstore.backend varies from 'registered backend' to 'backends that are
-allowed to register'. Adjust selftests to match the change.
 
-Signed-off-by: Yuanhe Shu <xiangzao@linux.alibaba.com>
----
- tools/testing/selftests/pstore/common_tests   |  8 +--
- .../selftests/pstore/pstore_post_reboot_tests | 65 ++++++++++---------
- tools/testing/selftests/pstore/pstore_tests   |  2 +-
- 3 files changed, 38 insertions(+), 37 deletions(-)
 
-diff --git a/tools/testing/selftests/pstore/common_tests b/tools/testing/selftests/pstore/common_tests
-index 4509f0cc9c91..497e6fc3215f 100755
---- a/tools/testing/selftests/pstore/common_tests
-+++ b/tools/testing/selftests/pstore/common_tests
-@@ -27,9 +27,9 @@ show_result() { # result_value
- }
- 
- check_files_exist() { # type of pstorefs file
--    if [ -e ${1}-${backend}-0 ]; then
-+    if [ -e ${1}-${2}-0 ]; then
- 	prlog "ok"
--	for f in `ls ${1}-${backend}-*`; do
-+	for f in `ls ${1}-${2}-*`; do
-             prlog -e "\t${f}"
- 	done
-     else
-@@ -74,9 +74,9 @@ prlog "=== Pstore unit tests (`basename $0`) ==="
- prlog "UUID="$UUID
- 
- prlog -n "Checking pstore backend is registered ... "
--backend=`cat /sys/module/pstore/parameters/backend`
-+backends=$(dmesg | sed -n 's/.*pstore: Registered \(.*\) as persistent store backend.*/\1/p')
- show_result $?
--prlog -e "\tbackend=${backend}"
-+prlog -e "\tbackends="$backends
- prlog -e "\tcmdline=`cat /proc/cmdline`"
- if [ $rc -ne 0 ]; then
-     exit 1
-diff --git a/tools/testing/selftests/pstore/pstore_post_reboot_tests b/tools/testing/selftests/pstore/pstore_post_reboot_tests
-index d6da5e86efbf..9e40ccb9c918 100755
---- a/tools/testing/selftests/pstore/pstore_post_reboot_tests
-+++ b/tools/testing/selftests/pstore/pstore_post_reboot_tests
-@@ -36,45 +36,46 @@ else
- fi
- 
- cd ${mount_point}
-+for backend in ${backends}; do
-+    prlog -n "Checking ${backend}-dmesg files exist in pstore filesystem ... "
-+    check_files_exist dmesg ${backend}
- 
--prlog -n "Checking dmesg files exist in pstore filesystem ... "
--check_files_exist dmesg
-+    prlog -n "Checking ${backend}-console files exist in pstore filesystem ... "
-+    check_files_exist console ${backend}
- 
--prlog -n "Checking console files exist in pstore filesystem ... "
--check_files_exist console
-+    prlog -n "Checking ${backend}-pmsg files exist in pstore filesystem ... "
-+    check_files_exist pmsg ${backend}
- 
--prlog -n "Checking pmsg files exist in pstore filesystem ... "
--check_files_exist pmsg
-+    prlog -n "Checking ${backend}-dmesg files contain oops end marker"
-+    grep_end_trace() {
-+        grep -q "\---\[ end trace" $1
-+    }
-+    files=`ls dmesg-${backend}-*`
-+    operate_files $? "$files" grep_end_trace
- 
--prlog -n "Checking dmesg files contain oops end marker"
--grep_end_trace() {
--    grep -q "\---\[ end trace" $1
--}
--files=`ls dmesg-${backend}-*`
--operate_files $? "$files" grep_end_trace
-+    prlog -n "Checking ${backend}-console file contains oops end marker ... "
-+    grep -q "\---\[ end trace" console-${backend}-0
-+    show_result $?
- 
--prlog -n "Checking console file contains oops end marker ... "
--grep -q "\---\[ end trace" console-${backend}-0
--show_result $?
--
--prlog -n "Checking pmsg file properly keeps the content written before crash ... "
--prev_uuid=`cat $TOP_DIR/prev_uuid`
--if [ $? -eq 0 ]; then
--    nr_matched=`grep -c "$TEST_STRING_PATTERN" pmsg-${backend}-0`
--    if [ $nr_matched -eq 1 ]; then
--	grep -q "$TEST_STRING_PATTERN"$prev_uuid pmsg-${backend}-0
--	show_result $?
-+    prlog -n "Checking ${backend}-pmsg file properly keeps the content written before crash ... "
-+    prev_uuid=`cat $TOP_DIR/prev_uuid`
-+    if [ $? -eq 0 ]; then
-+        nr_matched=`grep -c "$TEST_STRING_PATTERN" pmsg-${backend}-0`
-+        if [ $nr_matched -eq 1 ]; then
-+	    grep -q "$TEST_STRING_PATTERN"$prev_uuid pmsg-${backend}-0
-+	    show_result $?
-+        else
-+            prlog "FAIL"
-+            rc=1
-+        fi
-     else
--	prlog "FAIL"
--	rc=1
-+        prlog "FAIL"
-+        rc=1
-     fi
--else
--    prlog "FAIL"
--    rc=1
--fi
- 
--prlog -n "Removing all files in pstore filesystem "
--files=`ls *-${backend}-*`
--operate_files $? "$files" rm
-+    prlog -n "Removing all ${backend} files in pstore filesystem "
-+    files=`ls *-${backend}-*`
-+    operate_files $? "$files" rm
-+done
- 
- exit $rc
-diff --git a/tools/testing/selftests/pstore/pstore_tests b/tools/testing/selftests/pstore/pstore_tests
-index 2aa9a3852a84..f4665a8c77dc 100755
---- a/tools/testing/selftests/pstore/pstore_tests
-+++ b/tools/testing/selftests/pstore/pstore_tests
-@@ -10,7 +10,7 @@
- . ./common_tests
- 
- prlog -n "Checking pstore console is registered ... "
--dmesg | grep -Eq "console \[(pstore|${backend})"
-+dmesg | grep -Eq "console \[(pstore console)"
- show_result $?
- 
- prlog -n "Checking /dev/pmsg0 exists ... "
--- 
-2.39.3
+On 2/6/2024 1:57 PM, Dmitry Baryshkov wrote:
+> On Tue, 6 Feb 2024 at 04:21, Hui Liu via B4 Relay
+> <devnull+quic_huliu.quicinc.com@kernel.org> wrote:
+>>
+>> From: Hui Liu <quic_huliu@quicinc.com>
+>>
+>> Add configurations for gpio-keys to enable pon_key and pon_resin
+>> key.
+> 
+> Configuring gpio-keys is a requirement for enabling the pon_key and
+> pon_resin, so the commit message is incorrect.
+Hi Dmitry,
+This change is used to enable pwrkey, volume-up and volume-down 
+function, and the gpio-keys configuration is used to enable volume-up.
 
+So can I update the commit message as below:
+
+arm64: dts: qcom: qcm6490-idp: enable pwrkey and volume-up/down function
+
+Add configurations to enable pwrkey, volume-up and volume-down function.
+
+Thanks,
+Hui
+
+> 
+> 
+> 
+> 
+>>
+>> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 43 ++++++++++++++++++++++++++++++++
+>>   1 file changed, 43 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+>> index acf145d1d97c..4199ebf667af 100644
+>> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+>> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+>> @@ -9,6 +9,7 @@
+>>   #define PM7250B_SID 8
+>>   #define PM7250B_SID1 9
+>>
+>> +#include <dt-bindings/input/linux-event-codes.h>
+>>   #include <dt-bindings/leds/common.h>
+>>   #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+>>   #include "sc7280.dtsi"
+>> @@ -39,6 +40,24 @@ chosen {
+>>                  stdout-path = "serial0:115200n8";
+>>          };
+>>
+>> +       gpio-keys {
+>> +               compatible = "gpio-keys";
+>> +               label = "gpio-keys";
+>> +
+>> +               pinctrl-names = "default";
+>> +               pinctrl-0 = <&key_vol_up_default>;
+> 
+> pinctrl-names should come after pinctrl-0
+I will update it in next change
+> 
+> LGTM otherwise
+> 
+>> +
+>> +               key-volume-up {
+>> +                       label = "volume_up";
+>> +                       gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
+>> +                       linux,input-type = <1>;
+>> +                       linux,code = <KEY_VOLUMEUP>;
+>> +                       wakeup-source;
+>> +                       debounce-interval = <15>;
+>> +                       linux,can-disable;
+>> +               };
+>> +       };
+>> +
+>>          reserved-memory {
+>>                  xbl_mem: xbl@80700000 {
+>>                          reg = <0x0 0x80700000 0x0 0x100000>;
+>> @@ -421,6 +440,17 @@ vreg_bob_3p296: bob {
+>>          };
+>>   };
+>>
+>> +&pm7325_gpios {
+>> +       key_vol_up_default: key-vol-up-state {
+>> +               pins = "gpio6";
+>> +               function = "normal";
+>> +               input-enable;
+>> +               bias-pull-up;
+>> +               power-source = <0>;
+>> +               qcom,drive-strength = <3>;
+>> +       };
+>> +};
+>> +
+>>   &pm8350c_pwm {
+>>          status = "okay";
+>>
+>> @@ -448,6 +478,19 @@ led@3 {
+>>          };
+>>   };
+>>
+>> +&pmk8350_pon {
+>> +       status = "okay";
+>> +};
+>> +
+>> +&pon_pwrkey {
+>> +       status = "okay";
+>> +};
+>> +
+>> +&pon_resin {
+>> +       linux,code = <KEY_VOLUMEDOWN>;
+>> +       status = "okay";
+>> +};
+>> +
+>>   &qupv3_id_0 {
+>>          status = "okay";
+>>   };
+>>
+>> ---
+>> base-commit: 23e11d0318521e8693459b0e4d23aec614b3b68b
+>> change-id: 20240206-gpio-keys-138bbd850298
+>>
+>> Best regards,
+>> --
+>> Hui Liu <quic_huliu@quicinc.com>
+>>
+>>
+> 
+> 
+> --
+> With best wishes
+> 
+> Dmitry
 
