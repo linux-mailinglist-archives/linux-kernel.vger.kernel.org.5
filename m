@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-56921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB75884D16A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:44:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C969084D16C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEB2C1C25225
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:44:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE4B21C252BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:44:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE6D86AD4;
-	Wed,  7 Feb 2024 18:42:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6D8C126F0A;
+	Wed,  7 Feb 2024 18:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Qez9rF5q"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ee+/qVnN"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0087885C55
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 18:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F3C86AC3
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 18:42:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707331354; cv=none; b=tBvasGo3yb3+U/Ld3cK3XD6+Q+uooEVwjOTwaKpnAcEJp5YXWk6REpaynM48/efa2WpZgvEL+5LQMQJFqOi7OlohXoDkJLQIAG6RQwJFMHgjUuKJ13YYKro6wE6UToNWdRNLF5qk/df5Zu/MLWDEzU4UloJWqJM0hmErAkvSEHI=
+	t=1707331356; cv=none; b=Qi4ljkF/vrHX4nGpBDUrtvAH5KfZ/+ZvBs+3ObruDqt5/imlLDriE18fjdk5rWWXEvSnYBMpwgOZFOYZiUa60Oe2wcjoh5Wx2ZtwcG9uYFb+viRrNupSGKcK9pDyXbzieD/Z5awcRp3PrlWbwpPKFB6zRsGZYbaS5SNVqBxcdT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707331354; c=relaxed/simple;
-	bh=WqtFxcWaLhMLfcgOm6/fPisBGllXDcSk/ewd1nnwqAo=;
+	s=arc-20240116; t=1707331356; c=relaxed/simple;
+	bh=WxvH6FDX/eWNGMCI+SWHVfMnLqP3askGdu0ASe254/Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PGXVQ7A6IHm+eltN/5TOtbV4f4m8kmDiDloxLir9Ib04vc6gqvnCg4DZQlk8EEhfBYTuLzJx1NXChYL06tXnfMcq/Gx3a+PTYqDT+eXdt8RuSVTEgcqpLnQXr6RCWhDamMOGZhYpHlPBapT4UFSQA+Sw01TtUY6qdtWRob6hJf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Qez9rF5q; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=dti5G61IYM7E/xP0blr6rXq8jHow9ioL3O1qFm/+sKT+dUgZIlL1MSqzUbIBGphb/gbBbAC3k1jn6magHNPt9VouvC+tKqh+ctQdJpzqY4TntEi1AySekKQrDZkxTwq2gbvX3EkWaaBde7iAVMeqkWP5Y3smT61/sXmoGAUTrt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ee+/qVnN; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707331352;
+	s=mimecast20190719; t=1707331353;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=CkqM01Ya14Nn8HXhASJf/0/vp8tMuDctYMCTKWoKrUI=;
-	b=Qez9rF5q83g+zLRbfk8AG8419pUiEpu+YN8evHmwO+y9a6LM3n0a02QSF/aQYJsSOf1Wb0
-	gKf3Re9aRUk+2a+0x6muWMtaQcNprTAQ6OujsnTzAeG/MDFbWpUHaFJzXcNNlp4Ti3S+HK
-	gk3/fGVS3ENWcLprC0wO2V1mE+Nv9Mo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-180-Nw_CWQa9P_abWidS2p2VLA-1; Wed,
- 07 Feb 2024 13:42:26 -0500
-X-MC-Unique: Nw_CWQa9P_abWidS2p2VLA-1
+	bh=VwU//eJ9yadzq/fsfDhiEtvVbtfHI98m1htYpt9Ipdk=;
+	b=ee+/qVnNk8KVahdZouW+oiRq+/6BcPlD/19dTMp7FKf/ffDaQlzVIwY7lzY3yRKfdSKLwQ
+	mSlf9lkl5x/41VPySBTQ8mJWuoicJinakPK3hXwGTmmtp9q0wlhFExOy2snv9o5hLpSCkq
+	KwzjtSM8HjhAeHd1WaXxvKefl70x0Iw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-686-m-6gGQ7ROWmYlHUy-tFPLQ-1; Wed, 07 Feb 2024 13:42:28 -0500
+X-MC-Unique: m-6gGQ7ROWmYlHUy-tFPLQ-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7AE253C23FC6;
-	Wed,  7 Feb 2024 18:42:26 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 28C2C84AF81;
+	Wed,  7 Feb 2024 18:42:28 +0000 (UTC)
 Received: from fedora-work.redhat.com (unknown [10.22.32.236])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 1127740C9444;
-	Wed,  7 Feb 2024 18:42:26 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id AC90B4011FF1;
+	Wed,  7 Feb 2024 18:42:27 +0000 (UTC)
 From: David Jeffery <djeffery@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-nvme@lists.infradead.org,
@@ -62,9 +62,9 @@ Cc: linux-nvme@lists.infradead.org,
 	"Rafael J . Wysocki" <rafael@kernel.org>,
 	David Jeffery <djeffery@redhat.com>,
 	Laurence Oberman <loberman@redhat.com>
-Subject: [RFC PATCH 5/6] scsi mid layer support for async command submit
-Date: Wed,  7 Feb 2024 13:40:59 -0500
-Message-ID: <20240207184100.18066-6-djeffery@redhat.com>
+Subject: [RFC PATCH 6/6] sd: async cache flush on shutdown
+Date: Wed,  7 Feb 2024 13:41:00 -0500
+Message-ID: <20240207184100.18066-7-djeffery@redhat.com>
 In-Reply-To: <20240207184100.18066-1-djeffery@redhat.com>
 References: <20240207184100.18066-1-djeffery@redhat.com>
 Precedence: bulk
@@ -76,239 +76,134 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-Create scsi_execute_cmd_nowait to allow asynchronous scsi command submit.
-Parts of the code originally in scsi_execute_cmd are shifted into helper
-functions used by both scsi_execute_cmd and the new scsi_execute_cmd_nowait.
-
-The scsi_exec_args struct is expanded to contain the fields needed for
-the completion and callback for the async path.
+Add async shutdown for the cache flush to the sd device by sending a
+SYNCHRONIZE_CACHE command asynchronously. If there is any sort of error,
+falls back to the synchronous sd_sync_cache() to try again and resolve
+any errors.
 
 Signed-off-by: David Jeffery <djeffery@redhat.com>
 Tested-by:     Laurence Oberman <loberman@redhat.com>
 
 ---
- drivers/scsi/scsi_lib.c    | 138 +++++++++++++++++++++++++++++--------
- include/scsi/scsi_device.h |   8 +++
- 2 files changed, 118 insertions(+), 28 deletions(-)
+ drivers/scsi/sd.c | 66 ++++++++++++++++++++++++++++++++++++++++++-----
+ drivers/scsi/sd.h |  2 ++
+ 2 files changed, 62 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index 1fb80eae9a63..fe35bc2021e3 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -185,42 +185,37 @@ void scsi_queue_insert(struct scsi_cmnd *cmd, int reason)
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index 0833b3e6aa6e..f972310df76a 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -3838,23 +3838,64 @@ static int sd_start_stop_device(struct scsi_disk *sdkp, int start)
+ 	return 0;
  }
  
- /**
-- * scsi_execute_cmd - insert request and wait for the result
-+ * scsi_execute_init - helper for setting up a scsi_cmnd in a request
-  * @sdev:	scsi_device
-  * @cmd:	scsi command
-  * @opf:	block layer request cmd_flags
-- * @buffer:	data buffer
-- * @bufflen:	len of buffer
-  * @timeout:	request timeout in HZ
-  * @retries:	number of times to retry request
-- * @args:	Optional args. See struct definition for field descriptions
-+ * @args:	scsi command args
-  *
-- * Returns the scsi_cmnd result field if a command was executed, or a negative
-- * Linux error code if we didn't get that far.
-+ * Returns a request if successful, or an error pointer if there was a failure.
-  */
--int scsi_execute_cmd(struct scsi_device *sdev, const unsigned char *cmd,
--		     blk_opf_t opf, void *buffer, unsigned int bufflen,
--		     int timeout, int retries,
--		     const struct scsi_exec_args *args)
-+static struct request *scsi_execute_init(struct scsi_device *sdev,
-+					 const unsigned char *cmd,
-+					 blk_opf_t opf,
-+					 int timeout, int retries,
-+					 struct scsi_exec_args *args)
+-/*
+- * Send a SYNCHRONIZE CACHE instruction down to the device through
+- * the normal SCSI command structure.  Wait for the command to
+- * complete.
+- */
+-static void sd_shutdown(struct device *dev)
++static void sd_sync_cache_callback(struct scsi_cmnd *scmd,
++				   struct scsi_exec_args *args) {
++	struct scsi_disk *sdkp;
++
++	sdkp = container_of(args, struct scsi_disk, shutdown_params);
++	complete(&sdkp->shutdown_done);
++}
++
++static void sd_async_shutdown_start(struct device *dev)
  {
--	static const struct scsi_exec_args default_args;
- 	struct request *req;
- 	struct scsi_cmnd *scmd;
- 	int ret;
- 
--	if (!args)
--		args = &default_args;
--	else if (WARN_ON_ONCE(args->sense &&
--			      args->sense_len != SCSI_SENSE_BUFFERSIZE))
--		return -EINVAL;
-+	if (WARN_ON_ONCE(args->sense &&
-+			 args->sense_len != SCSI_SENSE_BUFFERSIZE))
-+		return ERR_PTR(-EINVAL);
- 
- 	req = scsi_alloc_request(sdev->request_queue, opf, args->req_flags);
- 	if (IS_ERR(req))
--		return PTR_ERR(req);
-+		return req;
- 
--	if (bufflen) {
--		ret = blk_rq_map_kern(sdev->request_queue, req,
--				      buffer, bufflen, GFP_NOIO);
-+	if (args->bufflen) {
-+		ret = blk_rq_map_kern(sdev->request_queue, req, args->buffer,
-+				      args->bufflen, GFP_NOIO);
- 		if (ret)
- 			goto out;
- 	}
-@@ -232,19 +227,27 @@ int scsi_execute_cmd(struct scsi_device *sdev, const unsigned char *cmd,
- 	req->timeout = timeout;
- 	req->rq_flags |= RQF_QUIET;
- 
--	/*
--	 * head injection *required* here otherwise quiesce won't work
--	 */
--	blk_execute_rq(req, true);
-+	return req;
-+out:
-+	blk_mq_free_request(req);
-+	return ERR_PTR(ret);
-+}
-+
-+static int scsi_execute_uninit(struct request *req,
-+				struct scsi_exec_args *args)
-+{
-+	struct scsi_cmnd *scmd;
- 
-+	scmd = blk_mq_rq_to_pdu(req);
- 	/*
- 	 * Some devices (USB mass-storage in particular) may transfer
- 	 * garbage data together with a residue indicating that the data
- 	 * is invalid.  Prevent the garbage from being misinterpreted
- 	 * and prevent security leaks by zeroing out the excess data.
- 	 */
--	if (unlikely(scmd->resid_len > 0 && scmd->resid_len <= bufflen))
--		memset(buffer + bufflen - scmd->resid_len, 0, scmd->resid_len);
-+	if (unlikely(scmd->resid_len > 0 && scmd->resid_len <= args->bufflen))
-+		memset(args->buffer + args->bufflen - scmd->resid_len, 0,
-+		       scmd->resid_len);
- 
- 	if (args->resid)
- 		*args->resid = scmd->resid_len;
-@@ -254,14 +257,93 @@ int scsi_execute_cmd(struct scsi_device *sdev, const unsigned char *cmd,
- 		scsi_normalize_sense(scmd->sense_buffer, scmd->sense_len,
- 				     args->sshdr);
- 
--	ret = scmd->result;
-- out:
-+	args->result = scmd->result;
-+
-+	if (args->callback)
-+		args->callback(scmd, args);
-+
-+	return scmd->result;
-+}
-+
-+/**
-+ * scsi_execute_cmd - insert request and wait for the result
-+ * @sdev:	scsi_device
-+ * @cmd:	scsi command
-+ * @opf:	block layer request cmd_flags
-+ * @buffer:	data buffer
-+ * @bufflen:	len of buffer
-+ * @timeout:	request timeout in HZ
-+ * @retries:	number of times to retry request
-+ * @args:	Optional args. See struct definition for field descriptions
-+ *
-+ * Returns the scsi_cmnd result field if a command was executed, or a negative
-+ * Linux error code if we didn't get that far.
-+ */
-+int scsi_execute_cmd(struct scsi_device *sdev, const unsigned char *cmd,
-+		     blk_opf_t opf, void *buffer, unsigned int bufflen,
-+		     int timeout, int retries,
-+		     const struct scsi_exec_args *const_args)
-+{
-+	struct scsi_exec_args args;
+ 	struct scsi_disk *sdkp = dev_get_drvdata(dev);
++	const int timeout = sdkp->device->request_queue->rq_timeout
++			    * SD_FLUSH_TIMEOUT_MULTIPLIER;
 +	int ret;
-+	struct request *req;
-+
-+	if (!const_args)
-+		memset(&args, 0, sizeof(struct scsi_exec_args));
-+	else
-+		args = *const_args;
-+
-+	args.buffer = buffer;
-+	args.bufflen = bufflen;
-+
-+	req = scsi_execute_init(sdev, cmd, opf, timeout, retries, &args);
-+
-+	if (IS_ERR(req))
-+		return PTR_ERR(req);
-+
-+	/*
-+	 * head injection *required* here otherwise quiesce won't work
-+	 */
-+	blk_execute_rq(req, true);
-+
-+	ret = scsi_execute_uninit(req, &args);
-+
- 	blk_mq_free_request(req);
  
- 	return ret;
+ 	if (!sdkp)
+ 		return;         /* this can happen */
+ 
++	init_completion(&sdkp->shutdown_done);
++	sdkp->shutdown_params.callback = sd_sync_cache_callback;
++
+ 	if (pm_runtime_suspended(dev))
+ 		return;
+ 
+ 	if (sdkp->WCE && sdkp->media_present) {
++		unsigned char cmd[16] = { 0 };
++
+ 		sd_printk(KERN_NOTICE, sdkp, "Synchronizing SCSI cache\n");
++		if (sdkp->device->use_16_for_sync)
++			cmd[0] = SYNCHRONIZE_CACHE_16;
++		else
++			cmd[0] = SYNCHRONIZE_CACHE;
++
++		ret = scsi_execute_cmd_nowait(sdkp->device, cmd, REQ_OP_DRV_IN,
++					      timeout, sdkp->max_retries,
++					      &sdkp->shutdown_params);
++		if (!ret)
++			return;
++		sdkp->shutdown_params.result = ret;
++	}
++	/* no async I/O to do, go ahead and mark it complete */
++	complete(&sdkp->shutdown_done);
++}
++
++static void sd_async_shutdown_end(struct device *dev)
++{
++	struct scsi_disk *sdkp = dev_get_drvdata(dev);
++
++	if (!sdkp)
++		return;
++
++	if (pm_runtime_suspended(dev))
++		return;
++
++	wait_for_completion(&sdkp->shutdown_done);
++
++	if (sdkp->WCE && sdkp->media_present && sdkp->shutdown_params.result) {
++		/* for any error with the async flush, retry as sync */
+ 		sd_sync_cache(sdkp);
+ 	}
+ 
+@@ -3867,6 +3908,17 @@ static void sd_shutdown(struct device *dev)
+ 	}
  }
- EXPORT_SYMBOL(scsi_execute_cmd);
  
-+
-+static enum rq_end_io_ret scsi_execute_cmd_complete(struct request *req,
-+						    blk_status_t ret)
++/*
++ * Send a SYNCHRONIZE CACHE instruction down to the device through
++ * the normal SCSI command structure.  Wait for the command to
++ * complete.
++ */
++static void sd_shutdown(struct device *dev)
 +{
-+	struct scsi_exec_args *args = req->end_io_data;
-+
-+	scsi_execute_uninit(req, args);
-+	return RQ_END_IO_FREE;
++	sd_async_shutdown_start(dev);
++	sd_async_shutdown_end(dev);
 +}
 +
-+int scsi_execute_cmd_nowait(struct scsi_device *sdev, const unsigned char *cmd,
-+			    blk_opf_t opf, int timeout, int retries,
-+			    struct scsi_exec_args *args)
-+{
-+	struct request *req;
-+
-+	req = scsi_execute_init(sdev, cmd, opf, timeout, retries, args);
-+
-+	if (IS_ERR(req))
-+		return PTR_ERR(req);
-+
-+	req->end_io = scsi_execute_cmd_complete;
-+	req->end_io_data = args;
-+
-+	blk_execute_rq_nowait(req, true);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(scsi_execute_cmd_nowait);
-+
- /*
-  * Wake up the error handler if necessary. Avoid as follows that the error
-  * handler is not woken up if host in-flight requests number ==
-diff --git a/include/scsi/scsi_device.h b/include/scsi/scsi_device.h
-index 5ec1e71a09de..c80c98b48bc1 100644
---- a/include/scsi/scsi_device.h
-+++ b/include/scsi/scsi_device.h
-@@ -497,6 +497,10 @@ struct scsi_exec_args {
- 	blk_mq_req_flags_t req_flags;	/* BLK_MQ_REQ flags */
- 	int scmd_flags;			/* SCMD flags */
- 	int *resid;			/* residual length */
-+	void *buffer;			/* data buffer */
-+	unsigned int bufflen;		/* buffer length */
-+	int result;			/* scsi layer result */
-+	void (*callback)(struct scsi_cmnd *scmd, struct scsi_exec_args *args);
- };
- 
- int scsi_execute_cmd(struct scsi_device *sdev, const unsigned char *cmd,
-@@ -504,6 +508,10 @@ int scsi_execute_cmd(struct scsi_device *sdev, const unsigned char *cmd,
- 		     int timeout, int retries,
- 		     const struct scsi_exec_args *args);
- 
-+int scsi_execute_cmd_nowait(struct scsi_device *sdev, const unsigned char *cmd,
-+			    blk_opf_t opf, int timeout, int retries,
-+			    struct scsi_exec_args *args);
-+
- extern void sdev_disable_disk_events(struct scsi_device *sdev);
- extern void sdev_enable_disk_events(struct scsi_device *sdev);
- extern int scsi_vpd_lun_id(struct scsi_device *, char *, size_t);
+ static inline bool sd_do_start_stop(struct scsi_device *sdev, bool runtime)
+ {
+ 	return (sdev->manage_system_start_stop && !runtime) ||
+@@ -4003,6 +4055,8 @@ static struct scsi_driver sd_template = {
+ 		.probe_type	= PROBE_PREFER_ASYNCHRONOUS,
+ 		.remove		= sd_remove,
+ 		.shutdown	= sd_shutdown,
++		.async_shutdown_start = sd_async_shutdown_start,
++		.async_shutdown_end   = sd_async_shutdown_end,
+ 		.pm		= &sd_pm_ops,
+ 	},
+ 	.rescan			= sd_rescan,
+diff --git a/drivers/scsi/sd.h b/drivers/scsi/sd.h
+index 409dda5350d1..7b5098211cec 100644
+--- a/drivers/scsi/sd.h
++++ b/drivers/scsi/sd.h
+@@ -91,6 +91,8 @@ struct scsi_disk {
+ 	struct device	disk_dev;
+ 	struct gendisk	*disk;
+ 	struct opal_dev *opal_dev;
++	struct scsi_exec_args shutdown_params;
++	struct completion shutdown_done;
+ #ifdef CONFIG_BLK_DEV_ZONED
+ 	/* Updated during revalidation before the gendisk capacity is known. */
+ 	struct zoned_disk_info	early_zone_info;
 -- 
 2.43.0
 
