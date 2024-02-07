@@ -1,209 +1,109 @@
-Return-Path: <linux-kernel+bounces-55936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B08D984C3A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:36:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FA8284C3A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:36:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6762C28CDD8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:36:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDE2E28DC4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753241CD39;
-	Wed,  7 Feb 2024 04:36:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726E51CF8D;
+	Wed,  7 Feb 2024 04:36:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IBVlbZkC"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="allp2fdJ"
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FDD21CD2B;
-	Wed,  7 Feb 2024 04:36:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 390A91CF8C
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 04:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707280582; cv=none; b=o5KhN1i9cVmi/tAvuwyGhBEjnjIMYnbBBMY0gLR9QnyN/U3LQFo2zoZcG94C9uHkYGPyegb7OASAUs6wbqHrb0BfOiS9UxCzDQgh/Qo0CzfjY8FdLQknL2GTXd+3yyEUNAj9WgGRAK7Ymq8LzRg464Y8bkFST4qTWqkMUlSW0yA=
+	t=1707280603; cv=none; b=mbiTLOIVZChAt58ChqsxmgwobiCpYfcZeYyAHupv4ERCFUFMnc7DyegsNnXXdky7iT6pg8SSU3VkJOTH0nadaGf8MZmVHREgMHP2Ug2JdSgRKUgl5vSJaigepTamRqvpFy6InMXwYT9FXGK2Hhe0WIHRmc+NKEcZtYVIJWHdIZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707280582; c=relaxed/simple;
-	bh=VkO7lQ0huSxCofbxzkzzcHRufI1i1PSa32W/WCf0Qng=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=WJdf0IYKNYh9iZX2tk9W3mJ8ucM9vYh8ZylD+S9oWnaKqgeGGqrXCCbbUpjJTcYEmZ71+74eld/pF1A1t1fabjukNjp58AlwNig4Z4y72eXQAjIYTAiNhZzD4aiZIVDK6wRDhj339IvPKkVJrBqQ8ywQwZzJB4MKasUDKsm1BPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=IBVlbZkC; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=VkO7lQ0huSxCofbxzkzzcHRufI1i1PSa32W/WCf0Qng=; b=IBVlbZkCxR56S2Ld9xk4EFDqN0
-	LXVk7qEu0n44xsJhwBzGy8Qu0bm4tpdm3kuJNGVVc/6GySa20cXGQ+6wpDqICsiOojbM9TcSubAee
-	72w/XHLoGElYiE9TeP1iNRmj1aT1u8onEfNeqRzXz8HwbPAt9d9LYhJQ3eYNWN85bmn8icC4405Pl
-	l0i5Ry/az6Mc7UwlZVWjoqcQK6w3T+N9o33BdfIsJrnO1zBGwMZlgIIqcXm0hxytKgoKScT4rvqZt
-	CwClJWMc6FtXbp5xyHdlNMllx0iqvH+uTpoli53KsrgNVRFu1/PvobxmeHeQW9+fOA1QKCVh6x1lE
-	zc1NglBw==;
-Received: from 72-21-198-67.amazon.com ([72.21.198.67] helo=u3832b3a9db3152.ant.amazon.com)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rXZfU-0000000ECC2-0prK;
-	Wed, 07 Feb 2024 04:36:17 +0000
-Message-ID: <3078fde54d6a4a34587cc14b286d7ad199e77dca.camel@infradead.org>
-Subject: Re: [PATCH v3] KVM: x86: Use fast path for Xen timer delivery
-From: David Woodhouse <dwmw2@infradead.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm <kvm@vger.kernel.org>, Paul Durrant <paul@xen.org>, Paolo Bonzini
- <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
- <hpa@zytor.com>,  linux-kernel@vger.kernel.org
-Date: Tue, 06 Feb 2024 20:36:12 -0800
-In-Reply-To: <ZcMG6NA63MqOR1V9@google.com>
-References: <f21ee3bd852761e7808240d4ecaec3013c649dc7.camel@infradead.org>
-	 <ZcJ9bXxU_Pthq_eh@google.com>
-	 <19a1ac538e6cb1b479122df677909fb49fedbb28.camel@infradead.org>
-	 <ZcLxzrbvSs0jNeR4@google.com>
-	 <165f07deb8d1e082756e6cae21a25b0060c18f85.camel@infradead.org>
-	 <ZcMG6NA63MqOR1V9@google.com>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-LaIjWn1AVBplSqCox62e"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1707280603; c=relaxed/simple;
+	bh=RtSqp1JYFTovf2zthsrQ+F52HyZRz9QN+jvAQn9sieM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nXIQEJhT2YimumUrYFnkbbk3VSOjyQC7+MV2+WFr4a+dM3hIlFkvloBjbAPuqfUr3RsZiRvAGC/AV6ZdRcHnvjwosLBP3g4pgokSoi6obXQGaPzFeU6TCy13X21mcLPtVgKj79ueIKpbIMhwakyyHB6yKAOCeLjrNEcCmq9TvOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=allp2fdJ; arc=none smtp.client-ip=209.85.160.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-21432e87455so161949fac.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 20:36:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707280601; x=1707885401; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xXmL2187gHpmL0np47Ze2nLt0jvODGEfenOxk5qwPvE=;
+        b=allp2fdJrCH1so/XYtPVyopJmQCgAhOWERuy44idtWPR+ZmynH64rCiT+YEaFsfUWr
+         RukTGHIw468X0MM2rV+LzqQZX08LS8uk/mffxx07kGWQnUZYbtG5ogbqAMkyhZ8fqARN
+         3KGbx3xkbN+URHua85nN/KVRCg363DLh500+E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707280601; x=1707885401;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xXmL2187gHpmL0np47Ze2nLt0jvODGEfenOxk5qwPvE=;
+        b=siBJaG4FRAH3ez2+FCEXBWNPwZEnZP9gDHC0wZ7I9pUHknNqvGVh9upCgE8SAQqes8
+         jhlr8GKvgy1l1twjzhYIsPGhjfzcVpL6c5uonzxw/AnzaChNxVPIVuQt5D5h9KoePbZn
+         qMZzILbELYYkcAjlFHeEfkGsgYbuOLP1sGvHcHkAqYsdpj30DdNnQeE297Thas3jCwuP
+         k9UR7A49Vmt0Impy2umQNY7zr1hnGV7ndBT5nyj5Bg1hvlwCEETlWjLN9GIFikUvkWYc
+         hLOJKTXIzDOtxwKiuQTvKr6vUXdw6558eEUX05PNa1ypOcQg82oefmNS3fLH/TvZbvwL
+         7qhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW3+rKk37WsgLbkQbnijMtGQu4pUpW7r4AboFmaM3nn+ZxSZ5lnHMZGg8DkddTsXYbbJUGKOIvQ+O2P65hjtycGYzBHocVrjc7AGbSL
+X-Gm-Message-State: AOJu0YxOPNuux7seynqZ+ATDVX2A7MZZWbvakQ5DQO11SOzTPNHKCSmB
+	ditEqbxHHtWaekYYXASGHSMlynC5CMzeRtQR5PtTjr1VX8f26cNcxJpvsajgtg==
+X-Google-Smtp-Source: AGHT+IFO44dKQJIbmf1HaMA+xo1RI3yTOS1ects1dva6gr08BhW/p1aXM5wyZ+X6kTGvy+2n7wGkoQ==
+X-Received: by 2002:a05:6870:390e:b0:219:92e5:8b4 with SMTP id b14-20020a056870390e00b0021992e508b4mr5403115oap.5.1707280601380;
+        Tue, 06 Feb 2024 20:36:41 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWPDLtqg4P2TGcdbEEvcr7bpsaydM1bkhMm0f34M1al3KjlWR9Rv6wHLukrXyyJiiB5rsjok7PGeZOdUw54EV9O1QsM/Roo2Pw6pQRxSfColdcfKWorGDXJLP0VkbGPlPsOBIM/DdjvJ0i2kdch5s/XIv3/hiyVGpymPGih6CwH0WFboBO0mkOuo5kX5wtDt0mt0/KjQO7piZY7yfVcWOxsgMS16F5lyrwi713ajRc1Z6Upof8fTsOU3XsQJuvSq9TF2ROBGkO34MqLhIRVZoDrk9WzeneQ47f07w==
+Received: from google.com ([2401:fa00:8f:203:679b:7168:b5c0:a415])
+        by smtp.gmail.com with ESMTPSA id s133-20020a63778b000000b005d3bae243bbsm371606pgc.4.2024.02.06.20.36.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 20:36:40 -0800 (PST)
+Date: Wed, 7 Feb 2024 13:36:36 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Barry Song <21cnbao@gmail.com>,
+	Minchan Kim <minchan@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	zhengtangquan@oppo.com, Barry Song <v-songbaohua@oppo.com>
+Subject: Re: [PATCH v2] zram: easy the allocation of zcomp_strm's buffers
+ through vmalloc
+Message-ID: <20240207043636.GC489524@google.com>
+References: <20240206202511.4799-1-21cnbao@gmail.com>
+ <20240207014442.GI69174@google.com>
+ <41226c84-e780-4408-b7d2-bd105f4834f5@kernel.dk>
+ <20240207031447.GA489524@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207031447.GA489524@google.com>
 
+On (24/02/07 12:14), Sergey Senozhatsky wrote:
+> ---
+> 
+> zram: do not allocate physically contiguous strm buffers
+> 
+> Currently zram allocates 2 physically contigous pages per-CPU's
+> compression stream (we may have up to 3 streams per-CPU). Since
 
---=-LaIjWn1AVBplSqCox62e
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Correction:
+								^ up to 4
 
-On Tue, 2024-02-06 at 20:28 -0800, Sean Christopherson wrote:
->=20
-> I agree that's the long term solution, but I am not entirely confident th=
-at a big
-> overhaul is 6.9 material at this point.=C2=A0 Squeezing an overhaul into =
-6.8 (and if
-> we're being nitpicky, backporting to 6.7) is out of the question.
-
-It actually ends up being really simple. We just lift ->refresh_lock up
-and use it to protect all the activate/deactivate/refresh paths.
-
-I have a patch in my tree; just need to put it through some testing.
-
-(Currently stuck in a hotel room with a bunch of positive COVID tests,
-unstable wifi and no decent screen, getting a bit fractious :)
-
---=-LaIjWn1AVBplSqCox62e
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwMjA3MDQzNjEyWjAvBgkqhkiG9w0BCQQxIgQgE1GmVlYx
-YxeZndNrzvrBa8ONyZMqV+bcP9ehrmn09X4wgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCZ0oqps28oSPnMVjJDflyxa4lp0iLUaC5f
-UMAmEIUQ8tA68jDSnsmYBuaULTFjCaLyVPojZhUZVuRaJ59HlQzBwAA/YVMOU8xM2MPS5w0xivwU
-uqzmZkmVHFtCdWk7SgrX8VRw4csZ8A5SwKW4l35FQ1gtWc7uZ1JBEdgpEwEPkoLHzOs3bGj3hYvo
-0hFf9uiwOerW7R+RT2c1D98xHulb11cgzC7KYPPNgTEnGawAKHwDiPWef3W1ufy0HdRqdPK+yIAd
-FL2/vROqj2lay9VW6Sgw+8DzKrFUnMPPB5CXyTb+tYg8C44FnVyqEDspBzKlydH1zHGewpQ8s4Fa
-M3aAEXbxq3LN8LgJIoSbMkw51AYyC7ULmAt+BqmxmdnVM6dA7ko/IdLh7sexIhtNWlcReEtMMqvP
-OZslLWVKt89CGG6oy2akzT9HIjlaYodjL7te7r6XiTS4584k/0OnqINISTFqlg7MUZOJhDrDwg3n
-IRULJMQu05LtYiwt3gJUpuRuSBej8JvPxy30NH7/PuJpdnpUHM+GsY64LOsI6TX/zVXs5r0xLibZ
-xTl0A9Xs6qpmPHzQHqQWU4OOxIYaBy3HFsHDTd6Im2ili2R9PL0AYC4tEosd0ZZ082rAw/SC05ZU
-2W7+jsiPncNOuEzz3TCl3//T7GoG4mMXxDmq1X8D7QAAAAAAAA==
-
-
---=-LaIjWn1AVBplSqCox62e--
+> those buffers are per-CPU we allocate them from CPU hotplug path,
+> which may have higher risks of failed allocations on devices with
+> fragmented memory.
+> 
+> Switch to virtually contiguos allocations - crypto comp does not
+> seem impose requirements on compression working buffers to be
+> physically contiguous.
 
