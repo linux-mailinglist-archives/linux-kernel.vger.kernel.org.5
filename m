@@ -1,119 +1,240 @@
-Return-Path: <linux-kernel+bounces-56264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9273184C810
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:55:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11D7484C814
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:56:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D806282420
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:55:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3700A1C2153F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C45725576;
-	Wed,  7 Feb 2024 09:55:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C045C23775;
+	Wed,  7 Feb 2024 09:56:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="ozeq4FC7"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SVrZzz/Z"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC5724B57
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68822374A
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:56:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707299714; cv=none; b=Dcn1eSZJ1b+myhMLOQuds5Fp4jTkYRqXeRTARdmVMu7HijQ8sOyYUuBqArc+pXsiX4iQcukFIjxecjvJOVVPG7KUdJm3sJ2Pu5Uw1wF4W4Ib8fYDBGs4VgZxOoIejCm+rWcZvnvcORgASl8ZxENA24EQR1pmzdJT/OVXoErfGYI=
+	t=1707299793; cv=none; b=PV45y9kP6qgGWRAfGVDoN2rTSyNdRDJbEQDfCz2nvWev1lrsoH2qPBmLjRCE+2aWKTWHfesbrzHZINr+P2B7M1ni1TL7miQqGWvTNXxGkOq9mmmIPMufOIORLySDn/2HGt1gzlRsZXZZTJpkvLVmgJoSge4m8dNDmqJqQjS3BRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707299714; c=relaxed/simple;
-	bh=kaJT+HlW06iCWLlw7hsvOu6LhCgGH4HmAFtBgRxZjAw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=J7cIUFKCUXfrcf4CzmOrNHgwMeJLNJHBkhgeMVYNEKmRV5pOUug6S3xf8DPHJ3mzdW12/hzn062U7PQiQ3b/wj3WkNZQILZeT8cjdJwwVHGnHvdBa65ogj0mcqGxXAhprL7lp84Tqh8cwNMSjYTgE1QMXRK8KDlBhw9OP43yIKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=ozeq4FC7; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33b18099411so317330f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:55:11 -0800 (PST)
+	s=arc-20240116; t=1707299793; c=relaxed/simple;
+	bh=Ffw/WkqVLoBbaHS/K/csRcmb3UzmOEbVg81Hra2QAAI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XdZHfCqFO0NHnfC+dLDiDQr1iNb4fBWMwnIHfXSY9zQxnnwJJyTc6yJM9+N8lW0EQUvXPCTzF7UkNlzANmJ70uEBvsg6TFAOIbRVlzyNb4soSSLnr2OKV3JEnblt3fOubg4Mmpb5GWWBS9c77auKF+xdBPakdp4HT2+NQOX/dzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SVrZzz/Z; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40fe3244bc6so3628875e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:56:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707299710; x=1707904510; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fsRZs51W2huLngb3aSHYllyqQl8VP5fXmWHfrrQr+1k=;
-        b=ozeq4FC7PhWKHu+MScTibvQfeT2WT4NOSph2XBT9WO0yBvj7Woa0qOX4J+l0Bigqan
-         pr2p0ZexUNj41DznwmnMANqUX98uGRI0aiRH+c9u4MpcfvmK0tO+RHNmBzy0b52JAkad
-         gBMe0IvIrybTgy3tL+P6BT3Bth+jWBbq0+JphtpEtMUqpkGGmhjEAxIuTMVHYJs8zm0e
-         xLxvsp++IgmpzGbewf9WNQH6bEucptiV6icikXrTHTj4UHZNBUGPgULBng2x5enqhey9
-         4pZCO94M2tJ21obvYa+5rMdZrwAvVYt+Qh74RkeORVZfDiFuUzT6HZNdMg3PbcdHcloc
-         sF9Q==
+        d=google.com; s=20230601; t=1707299790; x=1707904590; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XBRINMVN7gGvuV2gPWLOj+4bMKi6LNNeT7KGZJCI6SQ=;
+        b=SVrZzz/ZDYryvQyahStA9U/4axrnfI94BjogIoOVHju99mpXjWjuBThvr9NTf6lwat
+         s8sEGhiojS/bSPEiXbvJUt3WIpHLHaKayiXp48jSfV3t7ZvkfGA+Pq8PDvgm6WrVTZf8
+         cxALDR5YhUwgeB8kH0rlB/NQlbTGjRs41R4iSevwD6d169Fm4vejivdRaopUYrWsM5MO
+         +V4xXiK6+6jgABEEghIru5JwY8+AjYskqm+HBxa/dLNt5UyEILA59PsZXsBH231nCO2/
+         Idf8+eIMhT3iYOGprn9J0JMrYEseMIRIKmKHDElT9ZQQCb5TMtoSrvqIULjt5wEbNPUF
+         xB4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707299710; x=1707904510;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fsRZs51W2huLngb3aSHYllyqQl8VP5fXmWHfrrQr+1k=;
-        b=qM910PyOfKxALVx+PqMgTd1WSHaWUqTUvipYSd71BlcofPQl+7tFpESwi9g8pvQaSr
-         +7ORTY9rNzI+h6efIdSjl9LE0AvLYuX+D2J84SMeCvRsukoLwKYKNyLuPF+tFLA3rPRX
-         0TvlVoheGEdFgklbBkag7Cuwn6tvoiFoAkowf7V3ec6gXD5cQXVeTb8qffu4aQrOSXGV
-         dV3TRBgyIB+LeXYoI0ogOLMgAStK6maIJM2ZGFFE91bIes1w6n7/3x6+3KJQJj/CF7MD
-         0657geDG0d/T/EDojzB17TvslozGDZMwZb7ZfwfdX0QvmWMBdHD0KKZwWWHLhq8wJDY0
-         uITg==
-X-Gm-Message-State: AOJu0YwRTUqD4+8kv5m4k2P7IEtY9gZLXmpWNKLLObr2qZLrgJvxIAdI
-	0rckkdIBNTwXlwJDabjLdCZxaFamKWib7ih739beYk4OgswoQwIrGwh3/5HKpEw=
-X-Google-Smtp-Source: AGHT+IG7N3OfmAh54zPppxgxnipuAkjejir3UBYj6pe+R+53DlWxcD0lVN8Xy4HfG00GDYpT1e67lg==
-X-Received: by 2002:adf:ce8c:0:b0:33b:136a:95a3 with SMTP id r12-20020adfce8c000000b0033b136a95a3mr2875503wrn.28.1707299709759;
-        Wed, 07 Feb 2024 01:55:09 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWomvasDY2y1JGYC41yi3XjKUcCAy+WjDD4t4v3x0Py0iVpS7KfDv1ihzcoSIGyJDs9LYYnSaZ9fVzQIbMxYSQddfp8BcaLQPOmNuHTxP0Iq3nKxKzxCYdg5Amf2xeEnKy64aN9m8kBu/Y+G8fqpLaCgUrbByqQO5y14+C2vcwkn906lbapgjN3P9YUIbT0CwDgRn4OxG9kOMqi2wJLn5digJZ2gLiWgHsG+LSTfjqwUg32N2xvJHUSKhjyYbeycS6tsV13hPkwZlniyYYpr+1XW9zDtc2Jk6XvtZUPvYjgT1Ovve5EMo9BDAjQT2jSLISuzRUJ/qWitiGBJqvLZXczHzEPtiShAn8QqCcU56rFp3agu6i3oSNL9XqzAS1I2ntzuQAt078dz8WPVcmbJz8L2srFCMgE2eVFDg==
-Received: from [10.101.1.8] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id f7-20020a5d4dc7000000b0033b51e2b9b8sm23808wru.23.2024.02.07.01.55.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 01:55:09 -0800 (PST)
-Message-ID: <843e34a5-f175-4bda-a2f1-2ea3b56b68f5@baylibre.com>
-Date: Wed, 7 Feb 2024 10:55:07 +0100
+        d=1e100.net; s=20230601; t=1707299790; x=1707904590;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XBRINMVN7gGvuV2gPWLOj+4bMKi6LNNeT7KGZJCI6SQ=;
+        b=rfAI0g8QlndBYCOZlOrzyxQFoJG9VvdSqGr+JG4C619nCMD8mK44k4u4kBteRbqY2y
+         2MENeLnGCBmy66pdhTbIcwtaquWoj/PT1L0vtloDP+RZzlxPTTQzasCz/5UcEVXWOWxQ
+         9+6diQgYos+nYCmh8RaeO2RlO+QxKLg5EisXsqX1rQLf1n25qvSdL2u1fhPk2CyL6SB4
+         sOgc8FIkZjuUewHdSlODDBSw7Bkyw6rkH8BHwN9VwLDYZjcHbC1d+f+RHaSyJ1qsaT/h
+         qaAO10ZSv1u5zA/zmiA4dkGH0xcsNVgB7TzHDDKlwpqkkpyi3SfvQhksb1md2lxCRd2m
+         PFow==
+X-Gm-Message-State: AOJu0YzAZjLGNwsWAKSxdCTkmQRIjInyTes0P4qrDdJKWOpyWR+uEAeU
+	X9e0hhhkVq8jRZxQj1f5A+hZ6Dy8r9gXHKOjv//1eQ1BxvQBo4cg2gm6ul6fLw==
+X-Google-Smtp-Source: AGHT+IF8kR8B78x6TBqRljCAS0uaAxhIj59afAe+4cqPh3iM/YDKkZ4pQ2wA3orFeSk6VwV2oT/g1A==
+X-Received: by 2002:a05:600c:3d8e:b0:40f:e930:9eb8 with SMTP id bi14-20020a05600c3d8e00b0040fe9309eb8mr2810266wmb.0.1707299790036;
+        Wed, 07 Feb 2024 01:56:30 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVqjfLsSMmbCH6BsS59K6SJoox9aCWhi8IF36lRKAreLYEX5BcNuvF7bnmTfJ92oKEpCfNlZ6fvcvjcjdWqWeaU1tjs3n1xXTxIS3QJJIKp8k3yHT6GYOGa16iDWF7BG2i1loc56bHAYphnkGBqC8mnRW1+7ZCBmtRttWB/3AoagDq4XpR4v3PPlm3Lc9zRiLGuzbuhuOChPB0+BkvcLAWtlJcO4rk1EgNJNmoJhja3gHGT6FAS/6qhzUWalGA/02JHNUUw+EzDP5FogM/I78WOx1oPcmvhU15ccozNPNbXknvQfughjhW16tWbkqCSY5yAbFgdnoImLbwEsaZ0OgPUlSXmu4T+VRBD1tXkTse9SZNWG1UaexmiluYYzfis6UinmCXLTT1vTkrkPqYnLTGN5/i9wmb+tLaKII+Rm6HNJbup1DjMCanPjObkK20HXzo07uRDWNMXGM7A
+Received: from elver.google.com ([2a00:79e0:9c:201:4d69:c225:7956:ca4])
+        by smtp.gmail.com with ESMTPSA id v9-20020a05600c470900b0040fe2d3aec4sm4704383wmo.19.2024.02.07.01.56.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 01:56:29 -0800 (PST)
+Date: Wed, 7 Feb 2024 10:56:23 +0100
+From: Marco Elver <elver@google.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] bpf: Separate bpf_local_storage_lookup() fast and slow
+ paths
+Message-ID: <ZcNTx2X7Y7zA5nrC@elver.google.com>
+References: <20240131141858.1149719-1-elver@google.com>
+ <b500bb70-aa3f-41d3-b058-2b634471ffef@linux.dev>
+ <CANpmjNPKACDwXMnZRw9=CAgWNaMWAyFZ2W7KY2s4ck0s_ue1ag@mail.gmail.com>
+ <5a08032b-ed4d-4429-b0a9-2736689d8c33@linux.dev>
+ <ZcJmok64Xqv6l4ZS@elver.google.com>
+ <9908bdfb-1030-4a9f-8405-3696c5d03981@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/9] drm/mediatek: dsi: Use GENMASK() for register mask
- definitions
-Content-Language: en-US
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- chunkuang.hu@kernel.org
-Cc: fshao@chromium.org, p.zabel@pengutronix.de, airlied@gmail.com,
- daniel@ffwll.ch, matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-References: <20240206120748.136610-1-angelogioacchino.delregno@collabora.com>
- <20240206120748.136610-2-angelogioacchino.delregno@collabora.com>
- <f91db779-ad94-4c18-9a06-1029da4edaab@baylibre.com>
- <c1e2c380-21b5-47c1-b83b-f7f2b481df21@collabora.com>
-From: Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <c1e2c380-21b5-47c1-b83b-f7f2b481df21@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9908bdfb-1030-4a9f-8405-3696c5d03981@linux.dev>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-
-
-On 06/02/2024 16:53, AngeloGioacchino Del Regno wrote:
->>>   #define DSI_PSCTRL        0x1c
->>> -#define DSI_PS_WC            0x3fff
->>> -#define DSI_PS_SEL            (3 << 16)
->>> +#define DSI_PS_WC            GENMASK(14, 0)
->>> +#define DSI_PS_SEL            GENMASK(19, 16)
->>
->> 0011 0000 0000 0000 0000 => GENMASK(17, 16)
+On Tue, Feb 06, 2024 at 05:22PM -0800, Martin KaFai Lau wrote:
+> On 2/6/24 9:04 AM, Marco Elver wrote:
+> > On Mon, Feb 05, 2024 at 03:24PM -0800, Martin KaFai Lau wrote:
+> > [...]
+> > > > Or can you suggest different functions to hook to for the recursion test?
+> > > 
+> > > I don't prefer to add another tracepoint for the selftest.
+> > 
+> > Ok - I also checked, even though it should be a no-op, it wasn't
+> > (compiler generated worse code).
 > 
-> Alexandre, the reason for that is in the commit description :-P
+> I am interested to how the tracepoint generates worse code. Can you share
+> some details ?
+
+My guess is that it produces enough code that some inlinable functions
+are no longer being inlined. Specifically __bpf_task_storage_get().
+
+> > 
+> > > The test in "SEC("fentry/bpf_local_storage_lookup")" is testing that the
+> > > initial bpf_local_storage_lookup() should work and the immediate recurred
+> > > bpf_task_storage_delete() will fail.
+> > > 
+> > > Depends on how the new slow path function will look like in v2. The test can
+> > > probably be made to go through the slow path, e.g. by creating a lot of task
+> > > storage maps before triggering the lookup.
+[...]
+> > Could you suggest how we can fix up the tests? I'm a little stuck
+> > because there's not much we can hook to left.
 > 
-> "While at it, also fix the DSI_PS_SEL mask to include all bits instead
-> of just a subset of them."
+> I don't see a solution either if only the cache insertion code path is in a
+> traceable function.
+> 
+> The prog->active counter has already been covered in another test. This test
+> is mostly only covering the lookup => delete recur case and the code path is
+> contained within the bpf storage logic. The future code review should be
+> able to cover. I would make an exception here and remove this test case
+> considering anything (e.g. tracepoint) we do here is likely to make it
+> worse. (more on the test removal below).
+> 
+> > 
+> > Thanks,
+> > -- Marco
+> > 
+> > ------ >8 ------
+> > 
+> > From: Marco Elver <elver@google.com>
+> > Date: Tue, 30 Jan 2024 17:57:45 +0100
+> > Subject: [PATCH v2] bpf: Allow compiler to inline most of
+> >   bpf_local_storage_lookup()
+> > 
+> > In various performance profiles of kernels with BPF programs attached,
+> > bpf_local_storage_lookup() appears as a significant portion of CPU
+> > cycles spent. To enable the compiler generate more optimal code, turn
+> > bpf_local_storage_lookup() into a static inline function, where only the
+> > cache insertion code path is outlined (call instruction can be elided
+> > entirely if cacheit_lockit is a constant expression).
+> 
+> Can you share more why only putting the cache insertion code to a function
+> improves the larger number of maps case. In the benchmark, cacheit_lockit
+> should always be true and __bpf_local_storage_insert_cache() should always
+> be called.
 
-Oh sorry...
+Keeping bpf_local_storage_lookup() smaller (even if just outlining the
+cache insertion) makes a difference as it allows the compiler generate
+more optimal code, specifically we avoid duplicating setting up calls to
+_raw_spin_lock/unlock. E.g.  __bpf_task_storage_get is not being inlined
+anymore if bpf_local_storage_lookup() becomes too large (i.e. everything
+is up for inlining incl. cache insertion).
 
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+Also, on x86 preempt builds, spin_lock/unlock aren't inlinable, so we
+have to pay the price of 2 calls regardless: previously for calls to
+_raw_spin_lock_irqsave and to _raw_spin_unlock_irqsave. However, with
+the version of __bpf_local_storage_insert_cache in my patch, the call to
+_raw_spin_unlock_irqsave is tail called, which allows the compiler to
+perform TCO, i.e. we still only pay the price of 2 calls: one to
+__bpf_local_storage_insert_cache and to _raw_spin_lock_irqsave (but no
+call to _raw_spin_unlock_irqsave, which can just be jumped to):
 
--- 
-Regards,
-Alexandre
+<__bpf_local_storage_insert_cache>:
+  endbr64
+  nopl   0x0(%rax,%rax,1)
+  push   %r15
+  push   %r14
+  push   %r12
+  push   %rbx
+  mov    %rdx,%rbx
+  mov    %rsi,%r12
+  mov    %rdi,%r15
+  lea    0xa8(%rdi),%r14
+  mov    %r14,%rdi
+  call   ffffffff82323650 <_raw_spin_lock_irqsave>
+  cmpq   $0x0,0x18(%rbx)
+  je     ffffffff8127ea80 <__bpf_local_storage_insert_cache+0x40>
+  add    $0x40,%rbx
+  movzwl 0x10e(%r12),%ecx
+
+  mov    %rbx,(%r15,%rcx,8)
+  mov    %r14,%rdi
+  mov    %rax,%rsi
+  pop    %rbx
+  pop    %r12
+  pop    %r14
+  pop    %r15
+  jmp    ffffffff823237d0 <_raw_spin_unlock_irqrestore>        <--- TCO
+
+I also compared a version where _everything_ is inlined vs. the one with
+__bpf_local_storage_insert_cache outlined: the one where everything is
+inlined nullifies any performance improvements and is significantly
+worse than the one with __bpf_local_storage_insert_cache outlined.
+
+[...]
+> > -SEC("fentry/bpf_local_storage_lookup")
+> > +SEC("fentry/??????????????????????????") >   int BPF_PROG(on_lookup)
+> 
+> Remove this BPF_PROG.
+> 
+> >   {
+> >   	struct task_struct *task = bpf_get_current_task_btf();
+> > diff --git a/tools/testing/selftests/bpf/progs/task_ls_recursion.c b/tools/testing/selftests/bpf/progs/task_ls_recursion.c
+> > index 4542dc683b44..d73b33a4c153 100644
+> > --- a/tools/testing/selftests/bpf/progs/task_ls_recursion.c
+> > +++ b/tools/testing/selftests/bpf/progs/task_ls_recursion.c
+> > @@ -27,7 +27,7 @@ struct {
+> >   	__type(value, long);
+> >   } map_b SEC(".maps");
+> > -SEC("fentry/bpf_local_storage_lookup")
+> > +SEC("fentry/??????????????????????????")
+> 
+> Same here. The checks related to on_lookup in
+> prog_tests/task_local_storage.c need to be removed also.
+> 
+> >   int BPF_PROG(on_lookup)
+> >   {
+> >   	struct task_struct *task = bpf_get_current_task_btf();
+> 
+
+Thanks,
+-- Marco
 
