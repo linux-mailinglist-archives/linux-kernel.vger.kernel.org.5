@@ -1,114 +1,192 @@
-Return-Path: <linux-kernel+bounces-56897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87F3C84D0F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:16:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6D0784D0FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:16:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB29D1C24863
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:15:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 521C41F28C2D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3B385276;
-	Wed,  7 Feb 2024 18:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7120839F0;
+	Wed,  7 Feb 2024 18:13:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="SWReDU48"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="k9puPfw6";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="wD9lp1FB";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="k9puPfw6";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="wD9lp1FB"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F156682D82
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 18:12:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D089B83CA7;
+	Wed,  7 Feb 2024 18:13:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707329547; cv=none; b=itA/EjCcI0iqWUN1L7jCZusaaA8vUrb6gQP3nv0sIReOsS8vDqx7iDhizkW6CerwYfkU8mnj7HKO999OeWjfsTojZod+gei0XjIJO7+ci7jAW/PaYOPAPjLO3E+mTFfkgJuWBaqfRP6vKu8mjK/jywc3qUm+Sj6NFhdhFZJHl+s=
+	t=1707329627; cv=none; b=las/8wjDw1Yb7fPPWFK0dfcCfAp54D7Ma3VDXZsW4Npx+uXsttmcIeCXgep2OXisv70v6GypjXELRLruZSeJHzSTlsbeYCjZw5FsI6MQkSxSuI0kNyTWnMVfDCkd4vPaw0OcFef0gVj5tLqUtGevOmtfW6Sj0hI/BNrGVRW8RtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707329547; c=relaxed/simple;
-	bh=HemVGK6zZne3B0GajBNYqVima/P4OLJW7RPvot4BnIc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ciKbL1CJAADo0k+XxaN7nTtA1/QoeudgdGE2DosoQNLbHW0l5pO2v9n1XpTKvwC+JuuWC5o5QDa8xlh8JgbU00bFFjYcrPStZpcQVZADVg2U56f7dMiwPThqRmHn2Ecjym63+gca6exvOCt44R+cgymHCBsw2o646Sbww5pXT+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=SWReDU48; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso926957276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 10:12:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1707329545; x=1707934345; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9hHXbmrv3ps1sMVSmLFG15zm3/Plob5tS/368EqKz5w=;
-        b=SWReDU48FE7BclzS2BxrGrfX+g+CGjiVq0wUg09cuz9SyES6ugYQ7Lm6UvTijviwcO
-         tSkY9hIEDdWyIdw0VWpCZLPduw5Uxtrn6aLpU2VScppiocx0+zKxTVby62emzn8JcOth
-         yFRa0KaCzlOjDXa8L7VecFSlHMKb4eG/N/zaZJyQxcpoVAN3wH+Rf0pDiWsfTTLVdW6D
-         6js/jtMKe06gp35Nziyib/+X8yA7wazlz0VXWZddYfeQPgiYvx9ziTvG47XTWvvI5nby
-         L8t+zNZ/XYGWX1B7kG7BWW9yE5D03ZoJIw2BoavzC5rh1s5UORbC+XfkdQ7jchiRNCZn
-         L/wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707329545; x=1707934345;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9hHXbmrv3ps1sMVSmLFG15zm3/Plob5tS/368EqKz5w=;
-        b=V/a6emN+U3rhZX2Yzk35BHr1Fn2WE8au0KS2ALWSstoqsAq/hPa6JVLaFHWARXhn3L
-         ts6rUPAsf05PQOTV1ePDr7eIBnUUl9ojJsQ+/0gUMPIdUG+HRkIeAvWfRi0wPF8ONBQ0
-         XqEClzFaMuV5yDGegqcrMXhcS9Nkj6oSxuOPAm6g/s9tKxroBYp+JD69z+OKrOxw5Ux8
-         yEfdewlE1WAa3LHa8xpz1lZruOKXYnfxwUlzX9D0DJRhgVmQCsmYgkxqT7gCc38AJyNw
-         eK0g1S4ZfRZauMfEI2lKDwpN8vWlfqd0Tg4jTySmnSJUfogBv7W67TTn/rrSK7aMlPc4
-         3l2w==
-X-Gm-Message-State: AOJu0YzfT0OSfqej8Q/PG1gzfzz4H/jyhnYpvzxWAM1UKZLCdBkK3ZEX
-	8fOA6NJcmNmkVpfBWbR2Uhh14d+cHlJ40BXUr2714vSF87aghYrfkNvTac8a2gLNew7lrvk768D
-	npKJnocLzLhIs+SFNgy9VjzxkEx6EDYnqP9DS
-X-Google-Smtp-Source: AGHT+IHxnQ5vAEAJSNuMes3+eXgpNC1vkbsCULnqxfu1b77zpdub65nMVS21AFiTfVqgPjNJ25GA/1LSAKxOdxXqZY4=
-X-Received: by 2002:a25:ec0e:0:b0:dc7:1d:5db4 with SMTP id j14-20020a25ec0e000000b00dc7001d5db4mr5835418ybh.34.1707329544772;
- Wed, 07 Feb 2024 10:12:24 -0800 (PST)
+	s=arc-20240116; t=1707329627; c=relaxed/simple;
+	bh=9HvsAONbrtp/bywjjWOLTQvsdOXTPBVIAYItcIIyQrw=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nuLrkJByZ8vZMD9NR+lPrkRC/Ur8/OfuM+D2OS9/+P7Q0HnyHT/S/tZi8HTT9A408Q7U/TXgS9MwboJyK1MmeOqVdJLcZ6QTMBS+1qvUhrO1hIa+uNd1Dr9UUZITg4J8RHJiH/HQPj00cNgnlQzdVECinfMLbGxydJPsj3l71xI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=k9puPfw6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=wD9lp1FB; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=k9puPfw6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=wD9lp1FB; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E1095221DE;
+	Wed,  7 Feb 2024 18:13:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707329622; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KNNR2C2S8ckO8T2jS3L5HyHOHI9cQbyncIQ0RXIxN9U=;
+	b=k9puPfw6kR/Jm4Sj31+G+DE1Jks2LZUYTS3kIJlmPL+YVnTgzcDewJRf0nhd9zrHITjwxc
+	wL1t6bWWv2oz82c7VgXZLPdK7DNv4uw6odwIRG7vWflCmk5RU6hF2O4DtCPpaIx/hyHRbg
+	hqfU62+wtfL18+NQfs6Kk838QG0xYxQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707329622;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KNNR2C2S8ckO8T2jS3L5HyHOHI9cQbyncIQ0RXIxN9U=;
+	b=wD9lp1FBEGqUxS0ApDR1Y4/P8it1ZRsrFHJUuy5RMdJr0n9fFOQ7tNWd3/1e1cy4DpEREJ
+	wtPCdzUMK76uh7CA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707329622; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KNNR2C2S8ckO8T2jS3L5HyHOHI9cQbyncIQ0RXIxN9U=;
+	b=k9puPfw6kR/Jm4Sj31+G+DE1Jks2LZUYTS3kIJlmPL+YVnTgzcDewJRf0nhd9zrHITjwxc
+	wL1t6bWWv2oz82c7VgXZLPdK7DNv4uw6odwIRG7vWflCmk5RU6hF2O4DtCPpaIx/hyHRbg
+	hqfU62+wtfL18+NQfs6Kk838QG0xYxQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707329622;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KNNR2C2S8ckO8T2jS3L5HyHOHI9cQbyncIQ0RXIxN9U=;
+	b=wD9lp1FBEGqUxS0ApDR1Y4/P8it1ZRsrFHJUuy5RMdJr0n9fFOQ7tNWd3/1e1cy4DpEREJ
+	wtPCdzUMK76uh7CA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 798781326D;
+	Wed,  7 Feb 2024 18:13:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id twNUGlbIw2U/bAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Wed, 07 Feb 2024 18:13:42 +0000
+Date: Wed, 07 Feb 2024 19:13:41 +0100
+Message-ID: <877cjg5ei2.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: =?ISO-8859-1?Q?Jean-Lo=EFc?= Charroud <lagiraudiere+linux@free.fr>
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Stefan Binding <sbinding@opensource.cirrus.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	linux-sound <linux-sound@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	patches <patches@opensource.cirrus.com>
+Subject: Re: [PATCH v2] ALSA: hda/realtek: cs35l41: Fix internal speaker support for ASUS UM3402 with missing DSD
+In-Reply-To: <4879c094-5fdc-4fe4-a7ba-21168d7b2afe@free.fr>
+References: <726559913.576332068.1707239153891.JavaMail.zimbra@free.fr>
+	<87o7cs5r29.wl-tiwai@suse.de>
+	<1366935939.585144512.1707316246651.JavaMail.zimbra@free.fr>
+	<87jzng5mzv.wl-tiwai@suse.de>
+	<4879c094-5fdc-4fe4-a7ba-21168d7b2afe@free.fr>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <8fafb8e1-b6be-4d08-945f-b464e3a396c8@I-love.SAKURA.ne.jp>
- <999a4733-c554-43ca-a6e9-998c939fbeb8@I-love.SAKURA.ne.jp>
- <202402070622.D2DCD9C4@keescook> <CAHC9VhTJ85d6jBFBMYUoA4CrYgb6i9yHDC_tFce9ACKi7UTa6Q@mail.gmail.com>
- <202402070740.CFE981A4@keescook> <CAHC9VhT+eORkacqafT_5KWSgkRS-QLz89a2LEVJHvi7z7ts0MQ@mail.gmail.com>
- <CAHk-=whSMoFWCw=p1Nyu5DJ2hP2k=dYmPp-WjeY8xuc7O=ts7g@mail.gmail.com>
-In-Reply-To: <CAHk-=whSMoFWCw=p1Nyu5DJ2hP2k=dYmPp-WjeY8xuc7O=ts7g@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 7 Feb 2024 13:12:13 -0500
-Message-ID: <CAHC9VhQ4UZGOJg=DCEokKEP7e5S62pSax+XOgiBB-qQ=WGCbOA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] LSM: add security_execve_abort() hook
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Kees Cook <keescook@chromium.org>, 
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, Eric Biederman <ebiederm@xmission.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
-	linux-security-module <linux-security-module@vger.kernel.org>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.80
+X-Spamd-Result: default: False [-1.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[free.fr];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[linux];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 TO_DN_ALL(0.00)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FREEMAIL_TO(0.00)[free.fr];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-On Wed, Feb 7, 2024 at 12:57=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, 7 Feb 2024 at 16:45, Paul Moore <paul@paul-moore.com> wrote:
-> >
-> > Okay, let's get confirmation from Tetsuo on the current state of
-> > TOMOYO in Linus' tree.  If it is currently broken [..]
->
-> As far as I understand, the current state is working, just the horrid
-> random flag.
->
-> So I think the series is a cleanup and worth doing, but also not
-> hugely urgent. But it would probably be good to just get this whole
-> thing over and done with, rather than leave it lingering for another
-> release for no reason.
+On Wed, 07 Feb 2024 18:48:13 +0100,
+Jean-Loïc Charroud wrote:
+> 
+> Le 07/02/2024 à 16:10, Takashi Iwai a écrit :
+> > Jean-Loïc Charroud wrote:
+> >> Fix device ID for "ASUS UM3402" and "ASUS UM6702RA/RC".
+> > This change is only about the string in the table, not the actual
+> > behavior, right?
+> 
+> Well, not sure it doesn't matter.
+> Before the device ID were swapped, my syslog reported :
+>     cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: Error: ACPI _DSD
+>     Properties are missing for HID CSC3551.
+> And then, after the patch 51d976079976c800ef19ed1b542602fcf63f0edb, it
+> reports :
+>     cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: Failed property
+>     cirrus,dev-index: -22
+> So, as it looks like a regression, it makes me think that the model name
+> may be checked along the device ID...
 
-I've always operated under a policy of "just fixes" during the -rcX
-period of development, but you're the boss.  Once we get something
-suitable for merging I'll send it up to you after it has soaked in
-linux-next for a bit.
+It can't be.  The name string is discarded (not compiled at all)
+unless CONFIG_SND_DEBUG is set, so it's really optional.
 
---=20
-paul-moore.com
+That is, the swap of the name strings must not influence on the driver
+behavior.  Try it out.
+
+So, splitting the patches into logical pieces helps to improve the
+understanding of the problems more clearly.  You see the effect.
+
+> > The name string there is only for debug info, so
+> > it's no big problem even if it's not 100% right.
+> > That is, this can be again split to another patch -- with the
+> > additional Fixes tag to the commit that introduced the entries.
+> > 
+> >> Add DSD values for "ASUS UM3402" to cs35l41_config_table[].
+> > ... and this one is the mandatory fix for your device.  It should be
+> > the patch 1.  Then we'll have two more, one for correcting the entry
+> > names, and another for sorting the entries.
+> I already submitted that last one
+> > 
+> > I'm a bit picky, but now you see how the things work.
+> > Divide-and-conquer is the basic strategy.
+> Yes, but not smooth, as I have to workaround my broken mailer...
+
+Good that you spotted out, it had to be fixed in anyway :)
+
+
+Takashi
 
