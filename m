@@ -1,156 +1,112 @@
-Return-Path: <linux-kernel+bounces-56337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C31DF84C8DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:42:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 299EB84C8E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:45:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72A7C1F22C6B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:42:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D80F92898ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:45:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECDA514AA0;
-	Wed,  7 Feb 2024 10:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D951D16431;
+	Wed,  7 Feb 2024 10:45:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ug3UVReh"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EtiECEDE"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C976117BBD
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92E5D14A8E
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707302566; cv=none; b=AYvP6zh+8869+yoqODpP/RkXj9jrJfDYFpkKt/VUh8EITTQhNtrNle8wyUd2m8X9/OLaOjRKWakN6RaBo9DZBzekxRtbfRil0i0w06H76WDBJy9dPYE380QHgHphl8EZFBGQ4UvSnuIY8Yk7YF+pD3JuK0IjVBOOkuCfTycL6Lo=
+	t=1707302728; cv=none; b=u7Qmi5xD+HYrb4zHSNy9dq6peCXtLgpvxg44K7hCgZwFxLwnL7gm9cQgYMc3Y4uc7XfHQSDzHQIISEnbfqp+Q2AM+qFXk8FzNWyYPKKQUrrlyUSKnGSsX4Fj1Y4IusPpMsNJyEWNprKJppR3RRxl22yEvibDf2oV74G1tmcyz94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707302566; c=relaxed/simple;
-	bh=qfsLy0hVGwKzPrnkw+4jzhgJbclF8ucq1TUc5eZptCQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UE4xW+TmHcGP/TpcfJ14VFFH8OYF6yEkC+Y29vLAmshaGe10RD3Mlc5fW3K6k07sui+lf+R1bGuExv+QbTmParNQ05gSOMaeDxnCm6xGbDShTIU0Elph0F9Jg5JSAC/FyBTS4mqLs5kZ1RG5g5iJn7+MqjrIqmcq9xNlm/O0hb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ug3UVReh; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d8ef977f1eso4043645ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 02:42:44 -0800 (PST)
+	s=arc-20240116; t=1707302728; c=relaxed/simple;
+	bh=zx/TbZQKImahNt+7vIsidHWjAMcFHpW7Q2SH672vuPc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KKojAgaA8guoPf7D0eqksdYQL8Yhb+MEw4l85TSEBLeBQwDsyiXeJQfLb6EHVuqk0J7KfkahKaee1t7rSwY9fhBqd55ycE2OjCrilt9Z55Gxlcfk9vT+bGyVhusgB+cxQIBSLoEJNW7Gcofs5KU7VW7+4JocB2/HDhf6GMicFMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EtiECEDE; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60486805aa8so5195687b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 02:45:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707302564; x=1707907364; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=taLlJJFKKjXeiZCf5pE+xI1yoxTfeKphVpWOgqQieJ0=;
-        b=Ug3UVRehy5wsGALuVZoLgZpEIvYrHXipschU09nNxrF93jSyLLVZgWTZ0Ox/7zuvGN
-         BIfnrZigLjJSghL387qfpSMHhKYcl/LA1sM4oH36PJgzAHmeHB52PzbqUG5g3knOWPPI
-         WoIgIR3K6JvX10zT3ll3F0+vUg7jvu4KBcCuo=
+        d=linaro.org; s=google; t=1707302725; x=1707907525; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iO1cuzbZEvcOb/xBKlHSWUgxNAB1xNrbQxxqm+U1OtM=;
+        b=EtiECEDE0UqcYXS+z1UzJfqXswzfPnmc+QLPnFDi6dxcAp0w+C1LWKrF//Tj5S+031
+         qhnkBOuxz21Amp9civCrfw9Z36Ke+/ytfbU9ZKWLiQjxlEwHBNiAAFBzNO7PGRDNMKGi
+         gwT+lq0tcarHho5izVjN7BLXBGQ0fMqupVBKh2/MX601AxdkZxA0NkqT2puaS3DvuOI6
+         10k8iB8EdxjvIAWb/vuhqvbK7WCfcIex8Fq2qwprHZ4Eb5gGDT/nIu6ewBbM9NJ27gc1
+         ErZmQH/GothZuQuMrsOS82oMZEGWuVCGM1CEJFbK9aeCl02NxmOgWgBUXvr0DkcFqglp
+         NWqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707302564; x=1707907364;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=taLlJJFKKjXeiZCf5pE+xI1yoxTfeKphVpWOgqQieJ0=;
-        b=FYFnNgdBacmHdD7jk7FpYtRsG2008dMX3EI/8PILKOWQkNrv9p+0iAnIVz6cppiDbU
-         JXTu7Qvowb8DXFvrPMkJ+zF4KpidBIi1EE0eT7E+XWTyJR/q1m5OvPkKgByE25j5x9Vt
-         LRJnJWeoBR1FQUnvEK121rkl5/yEw5iw71su3L5qN5RmEQGb0QmDF72pFeHzloCRnsVQ
-         VUou03txDsyRODh6+a1Je/5Dk4qPqUV1TqVBDObKAhyMnwzbj8R3dM78zQpgnBvCLpfT
-         E0aGl9V8gvEdbPk+lFgfVOxdMNSC9oJIP0P61ooy94CWck8dcbbLxLe23QBWmOVHWfeY
-         kzrQ==
-X-Gm-Message-State: AOJu0Yy2890lnum4KdMdFVH/1m28LvT81AeiX8ATdY6w52muiA/d8Tmb
-	Qb6DoJbzPNeGdn8WLx7zlxpIwmtvyCcY93hydxRH++F9kehIk9IbeY/Dc2rNRQ==
-X-Google-Smtp-Source: AGHT+IGcqBnyCqUqdnANMHYt7Eh1Fhcfsr1n6hZQx/LknuAf/vrvb8y8pDKOVXVMm1pa4UwDyYA6Cg==
-X-Received: by 2002:a17:902:ec86:b0:1d9:1b55:a37 with SMTP id x6-20020a170902ec8600b001d91b550a37mr5140051plg.50.1707302564007;
-        Wed, 07 Feb 2024 02:42:44 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV/Xq6Rw0I9P8/CdxpvfRVWPDp8TQ5TScBRkNyxdCa0MKz6PfFT1WcYn+mW7Sdwj/sSJaqkSPaho+UMiPF9lA9Z8OtSledd+/d8icFk2tHuuumlDRViuP9gCvEodOVp80qFBZ1BNjb9UfJ/FMlwctH2P4WiAJm3QW2JAypwrStCeuxqGrnOOM3E0peMDRejcESKuwS4kA5KPz5NZaRYx0RPuSsUnvPYfiGghnyXWXpoMXR+kPTyF0AoogtwATzqRI6G4wMob5eHAhNeiixH+c1JlkC16fD/z93ynacGZ5FotBYllp+FipCyZ05M8TagrCwy0B3LhleChA46mm8QBdy8Ybku/Rf0YtVg32h0Z/6IPanfC8+NDddv81xzsGwvJKx/Kn7at1sCZ/rs07o1aJR+juC/EdyopW3S++4B6cYA4/aii8LjUneBstCt0AFeURFPpckJAlVJV9OuP2e6qMDd
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x14-20020a170902ec8e00b001d9daf742ccsm1099403plg.233.2024.02.07.02.42.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 02:42:43 -0800 (PST)
-Date: Wed, 7 Feb 2024 02:42:42 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Andy Shevchenko <andy@kernel.org>, Richard Weinberger <richard@nod.at>,
-	linux-um@lists.infradead.org, Justin Stitt <justinstitt@google.com>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Jason Wang <jasowang@redhat.com>, kernel test robot <lkp@intel.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Removing more str APIs (was Re: [PATCH v3 4/4] um: Convert strscpy()
- usage to 2-argument style)
-Message-ID: <202402070234.79D2985585@keescook>
-References: <20240206142027.make.107-kees@kernel.org>
- <20240206142221.2208763-4-keescook@chromium.org>
- <CAHp75Vf3c0Q7tV8ih5fRL6Bsjr6dhspFe+mxV7xUN=vZ1JdTKQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1707302725; x=1707907525;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iO1cuzbZEvcOb/xBKlHSWUgxNAB1xNrbQxxqm+U1OtM=;
+        b=XAoTKMuv335VNJIUoynV/boTTdOX/62Wx6ccClwJ5D+HBsX+iXeV0s9zuSgZVRCQtt
+         L1GRg1J2JrZqvI+LbAd3PaXDwyduPr/yOhRl6c7Ixd/Pi8LVBbK7aD5mpDOjmpHiN0Uz
+         tKAL3r4DkbVI6JO4z3ZXYvM6AkmrLua3yw1U96wSMEovEV3GbQvmVTo00fQNUUmbT6mX
+         A3LbvGnc4dR9QJ4DQ/ovxPVR4Yj7AyAKF599qwUF6sKCg+9knEQNZ0enQmJ6hdxHE+9G
+         9iLPKUmMh0JMBsmnNiYwCHKRHTP9zpXalJFdbmnIJUhObVWBXJuDcxJRY65BxWppUPvo
+         Rs+A==
+X-Gm-Message-State: AOJu0Yy6MyNDmR/kcsMEFVK+5INf5L5maijuVZ1Pm7YKRa9zuorJ6zNM
+	0dWlmCWbK7tLFMJn5ShAffmivOVll2FRlXUD9wFqo6w8hD0AcVmDtSNvQfApVRUGq5T3jh+JOFZ
+	S+Pdo3CHP96Qj8RfdHaxqgUopxdikTN2S6ad8vFVZ2NbKceeoVRM=
+X-Google-Smtp-Source: AGHT+IE1ftODiv+xLOHecUFUm++aMHwfgZ7h08sXj2xrCeIg8UY/Uu1Wa7/7wK0TEDHsqKVhdSUcstbAlEEEvg9Ffq0=
+X-Received: by 2002:a25:d050:0:b0:dc6:c3e0:82d1 with SMTP id
+ h77-20020a25d050000000b00dc6c3e082d1mr4143050ybg.60.1707302725545; Wed, 07
+ Feb 2024 02:45:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75Vf3c0Q7tV8ih5fRL6Bsjr6dhspFe+mxV7xUN=vZ1JdTKQ@mail.gmail.com>
+References: <20240201162758.50733-1-brgl@bgdev.pl>
+In-Reply-To: <20240201162758.50733-1-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 7 Feb 2024 11:45:39 +0100
+Message-ID: <CACRpkdbAw5NfSr8GSNiQhOzSi-tERyn=-ZroLfF-FRbsW2JviQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: set device type for GPIO chips
+To: Bartosz Golaszewski <brgl@bgdev.pl>, Greg KH <gregkh@linuxfoundation.org>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 06, 2024 at 05:02:16PM +0200, Andy Shevchenko wrote:
-> On Tue, Feb 6, 2024 at 4:22 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > The ARCH=um build has its own idea about strscpy()'s definition. Adjust
-> > the callers to remove the redundant sizeof() arguments ahead of treewide
-> > changes, since it needs a manual adjustment for the newly named
-> > sized_strscpy() export.
-> 
-> ...
-> 
-> > -               strscpy(dir, home, sizeof(dir));
-> > +               strscpy(dir, home);
-> >                 uml_dir++;
-> >         }
-> >         strlcat(dir, uml_dir, sizeof(dir));
-> 
-> An (unrelated) side note: are we going to get rid of strlcat() as well
-> (after strlcpy() is gone)?
+On Thu, Feb 1, 2024 at 5:28=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl> =
+wrote:
 
-I think it would be worthwhile to remove it, yes. Switching to seq_buf
-in many cases seemed to be the clear solution, which is what triggered
-my trying to improve the allocation ergonomics for seq_buf recently:
-https://lore.kernel.org/linux-hardening/20231027155634.make.260-kees@kernel.org/
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> It's useful to have the device type information for those sub-devices
+> that are actually GPIO chips registered with GPIOLIB. While at it: use
+> the device type struct to setup the release callback which is the
+> preferred way to use the device API.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+(...=3D
+> +static struct device_type gpio_dev_type =3D {
+> +       .name =3D "gpio_chip",
+> +       .release =3D gpiodev_release,
+> +};
+> +       gdev->dev.type =3D &gpio_dev_type;
+>         gdev->dev.bus =3D &gpio_bus_type;
+>         gdev->dev.parent =3D gc->parent;
 
-Its not in super common usage, so I think we can start chipping away at
-it:
+Looks good to me (TM) but we should run this by Greg so he get the chance
+to chime in, I doubt he will see it on LKML.
 
-$ git grep '\bstrlcat(' | wc -l
-480
+FWIW:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-It's more risky cases (using the return value) is relatively rare,
-though, so I hadn't been prioritizing its removal:
-
-$ git grep ' = strlcat(\b' | wc -l
-13
-
-(And almost all of it is in security/selinux/ima.c)
-
-
-As a comparison, strncpy has even fewer currently, with Justin making a
-dent on it recently:
-
-$ git grep '\bstrncpy(' | wc -l
-311
-
-
-> 
-> ...
-> 
-> >         if (*umid == '\0') {
-> > -               strscpy(tmp, uml_dir, sizeof(tmp));
-> > +               strscpy(tmp, uml_dir);
-> >                 strlcat(tmp, "XXXXXX", sizeof(tmp));
-> 
-> This code is interesting... (Esp. taking into account making a
-> temporary folder out of this...)
-
-I have tried to avoid reading UML code too closely. ;)
-
--- 
-Kees Cook
+Yours,
+Linus Walleij
 
