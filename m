@@ -1,160 +1,165 @@
-Return-Path: <linux-kernel+bounces-56734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC1D184CE51
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:44:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9ABF84CE55
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:44:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 150E4B22639
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:44:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F13C1F26AB7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:44:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C3C80603;
-	Wed,  7 Feb 2024 15:43:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41787FBC9;
+	Wed,  7 Feb 2024 15:44:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LFw9oKbh"
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ELlOjE0w"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F5680055
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:43:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE347FBD8
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:44:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707320636; cv=none; b=LE09oi4wx0LMWuBJJ3Ny9Nf7Ce3U+Elw7AFvOM3bFkWvjO44PMR9j0bLlDayrkTFDUZP9NE0xzIwX4L8KU3HQdQlUiGXKbAfllUuCnZ5r1uWCRfOG34KpB4L4G7XuyfqJ4xpjzq7AmZFvsPRAsVd5+XDYyhwMcUxcS9ps1QRIMk=
+	t=1707320680; cv=none; b=rmdk3zqu3CI7KKvgs25wtxHMSCy2x1OUhaGb0mDDbUE6tzCB3LXKDSGbNOwJ/u7ZvuBJs1aO244129Kj7RblapJ0bFF2SIMqq0GJSOnYxPQLLN6CpiOI1QI5VX3agV1GQHpj2hh3BLcxZ3ZrsIaQxrNkaL6Cja2SIfSkZJRXnCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707320636; c=relaxed/simple;
-	bh=0vxjX47B6ZgpdmiW7EVKqCFH/j69PxaUc08wp4q8im8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sMVMRunozFeT6yXW3JSvGGPkvgMTs+BEicRHuTcguu4qA82HC7zm62M/kRER2yJF3IgAhvhu/6MQJmLbqR4Fd1ehD6R26RP3jyuDhR+i7lUSudDokkecg3Da3f3lc1o0T0PXUJo8fp24zkNYjKwJjSy1gSh5ST9Z+RYeCQKwHo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LFw9oKbh; arc=none smtp.client-ip=209.85.167.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3bfd27f6dc0so492786b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:43:54 -0800 (PST)
+	s=arc-20240116; t=1707320680; c=relaxed/simple;
+	bh=hkvLvW5bir63qGmigcs+g/1lCwmcJeYVQAJXfmIzNFQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HCmxrqqpulamP3EZeNO1fuzLyMpUnOeqPaie93z/PjemANdkNelCHtjz/bKjgNfHtESfrvii15KdhSqNM9nxjbb+uE62dAHki0uxpfNBCSdeO2bTdKviVr0FxkjeOsF0PkuhrMQoLlMJ/5wPhr6gLuSD/IunWgC9cJNmnoHsP2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ELlOjE0w; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2909a632e40so566721a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:44:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707320634; x=1707925434; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fT7OrhiRuIZhNQcmagLUCZ3268l7RImx+viDE+2dBHY=;
-        b=LFw9oKbh2lMPICDhaQyxT7pKPlavYRiL/Arlh0g7UTbkmB49L4DnCwYdJbT5m+CHle
-         19jOhg/eeC+/hlNcLEpMyGSL8CB1tYivigS0KVsO5Msllav3KxkA2b03joaxYwmto723
-         oFigIKI5waEKkAGVZm8OJizZRptX8YVHaLEII=
+        d=linaro.org; s=google; t=1707320678; x=1707925478; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cjM9X4mSlwFPt/1gwrjtYdpsyoYU4c7cfCOblUpLYMA=;
+        b=ELlOjE0wWbwSKt/f2BcpxFm3rpijzImxHkj9nGQ8AI4x4GBlVFDRoxLbNchWSBOC0g
+         O8S+6jcpFpdMA19jcPKtIYfezGgfNYmW0QuWvqeFRTDezY9T+gGG9c71LLmY/wGCpEws
+         x+xQ+3+lrGW/9NkSaXqr/1xX11kbaqTBs3JRi8XavDC2PSaZots4iL8dHJBEcP95vUDV
+         aTiSJbQ0PeuYWghvxZ+ovg6UhHXC8NsMPdlTyvJG3seWyGKtNNr4TS6Rw589owarxAl4
+         pFmPbBkxRF7esKLP6o9Jk7MHddmLhP7kS2IVGkv8FI1ZKEpgHFjfAWNeK3fzqfytiKSi
+         NuXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707320634; x=1707925434;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fT7OrhiRuIZhNQcmagLUCZ3268l7RImx+viDE+2dBHY=;
-        b=PFuF4sCeWztpD5i7tw6VkMJIfQtInc29A1kfMznBAP3dN3LysmLVVnIsX5NimEbflo
-         6yNvIpyYDe7myNx+ZJNHrEzkmEAU1sG19BS/pBagOt3K28lrLBhKa8CyTRmsrpOn1FNf
-         RkLDl0RnCKmZ5dVfG48foIm1AWoZ4hpcanYStLAicYhpaFIXu46/RbuLe5QoGvTdc2+X
-         lbvo4wiNLLUZgNYzx6ymcWvbDyHxaohXzNwCW5woqzc82HgpFGH6jokaCWe7Wj71mRJZ
-         mzvr4uSv60oFxSJwfnCKMe4i0+E8Z8gedK1ulC4+DPI+A4jvoVPHPZU+sn8b5d0E5Ihd
-         +BLw==
-X-Gm-Message-State: AOJu0YxO4BS19waY+N44I2bxOLVvzOY1mmQBmTpJDrtbILqR/k+H+iE4
-	k7kvn+e5z3rkZ4Ae9pwIzBBf5fVJclNO0D2CvT5tDFR9JGnOaPbB5YVnDSfQM1x1815qAPK30go
-	=
-X-Google-Smtp-Source: AGHT+IF396kKk0rdy004VVPYDuPYv9DwxzXoOR6Kvm9ziqiHthI/RUMfDBLMi4vfaoIZ2sbm9RevTQ==
-X-Received: by 2002:a05:6808:f8b:b0:3bf:ede4:9a57 with SMTP id o11-20020a0568080f8b00b003bfede49a57mr1838228oiw.27.1707320633877;
-        Wed, 07 Feb 2024 07:43:53 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU3PuW6ws9JWC7eVxAlbqXnDHKSk0P2YmIzFI97ctOQmNTs+74DKsJKO4wYGBbGfO42/jRaojmBW5kV4n2FT4d0tr8kH7r4aQUxMEmIK9FSpzX0+pIMCA15w2h9wknJ03TotrXxVbFLDDJMb3tAR9UBjBQ1lm3zQBDxElQLAnLBo/q7iMfJqxCY2fmPncMLgWFvGjIAikLYHUGWVzwlMWYm3vHqlpF/gcN/FnIldLYt0SP7xo1Z2wH1mPSDaOXCGzltp29+grXhTvd+rvan/N/uNyiAlByd2IkHMNf8nbgttrAyvF0AHMlcB0xUerECuwe2T0UC7sguw0Id8vwFxFwXiSEbTTEOxQmlnfedeEq8E4MuJEWbwVUt6ROZfmwaV08Ju508ne3sow==
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id o26-20020a629a1a000000b006e0521c2156sm1834465pfe.173.2024.02.07.07.43.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 07:43:53 -0800 (PST)
-Date: Wed, 7 Feb 2024 07:43:52 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Paul Moore <paul@paul-moore.com>
-Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	linux-security-module <linux-security-module@vger.kernel.org>,
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] LSM: add security_execve_abort() hook
-Message-ID: <202402070740.CFE981A4@keescook>
-References: <8fafb8e1-b6be-4d08-945f-b464e3a396c8@I-love.SAKURA.ne.jp>
- <999a4733-c554-43ca-a6e9-998c939fbeb8@I-love.SAKURA.ne.jp>
- <202402070622.D2DCD9C4@keescook>
- <CAHC9VhTJ85d6jBFBMYUoA4CrYgb6i9yHDC_tFce9ACKi7UTa6Q@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1707320678; x=1707925478;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cjM9X4mSlwFPt/1gwrjtYdpsyoYU4c7cfCOblUpLYMA=;
+        b=PRCwokwQRsqWU/9vd7CWNcVqQUqXNLdvAo/ashwFaDBU0AOD6hDYj7dSNXRgX1UFLJ
+         vCktO+KXG6OIZAok+PHxYeq2uFoLD4tYWsMVQ+2gRtLSkjgFH37vSiqclK1RzbkbMoKl
+         J8/TMO7v67692FV9W4v7X5BdPi/joz+4a+B36OlkkSx+hbEJFJoOsSW6gtX8elH6BfES
+         0isfw1GPlreT6i45QKh47J40v1KWIjbBnS5jsO+8PoUI0Fetl2yR78pRF8PRprX/Eog3
+         boXND2OeqD301aPPb/kA37f3CN38cXBmfIBFJzkAyvxAVHAyd2RgrVPVU/NIMUWcoFZP
+         gP2A==
+X-Gm-Message-State: AOJu0YxqNM2FiWV0yzz0nFtKmuRHrt2OsZqcqQxu5t5lmS9cLKnACiCz
+	4YK1HnBYydGwOI2IUtO9IF6t+OG6+xnB8j1Mbv8ZIYiJDQqEp/07IiaZNh42IhRGPXBic9Vst2N
+	16wczlEM76Fxm07v+9Nbsyt16Vc/40DbIkr9KAw==
+X-Google-Smtp-Source: AGHT+IEOlo/KPrp4YPJuYvFD5Blwu/nidyNMltgHO7/0dpAc6+9Bv8bsnV+2FJETRdJtJxCs7qFvqtu+bC4a80lxed0=
+X-Received: by 2002:a17:90b:4c85:b0:296:2057:28c with SMTP id
+ my5-20020a17090b4c8500b002962057028cmr3040845pjb.31.1707320677939; Wed, 07
+ Feb 2024 07:44:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHC9VhTJ85d6jBFBMYUoA4CrYgb6i9yHDC_tFce9ACKi7UTa6Q@mail.gmail.com>
+References: <20240207111516.2563218-1-tudor.ambarus@linaro.org> <20240207111516.2563218-3-tudor.ambarus@linaro.org>
+In-Reply-To: <20240207111516.2563218-3-tudor.ambarus@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Wed, 7 Feb 2024 09:44:27 -0600
+Message-ID: <CAPLW+4nyYxeZcvmrK8FJ4cvpxOs4=mPzBC5JcCPB5yNBNqkVAg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] spi: s3c64xx: prepare for a different flavor of
+ iowrite rep
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: broonie@kernel.org, andi.shyti@kernel.org, krzysztof.kozlowski@linaro.org, 
+	alim.akhtar@samsung.com, linux-spi@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, andre.draszik@linaro.org, 
+	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com, 
+	robh+dt@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 07, 2024 at 10:21:07AM -0500, Paul Moore wrote:
-> On Wed, Feb 7, 2024 at 9:24 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Sat, Feb 03, 2024 at 07:52:54PM +0900, Tetsuo Handa wrote:
-> > > A regression caused by commit 978ffcbf00d8 ("execve: open the executable
-> > > file before doing anything else") has been fixed by commit 4759ff71f23e
-> > > ("exec: Check __FMODE_EXEC instead of in_execve for LSMs") and commit
-> > > 3eab830189d9 ("uselib: remove use of __FMODE_EXEC"). While fixing this
-> > > regression, Linus commented that we want to remove current->in_execve flag.
-> > >
-> > > The current->in_execve flag was introduced by commit f9ce1f1cda8b ("Add
-> > > in_execve flag into task_struct.") when TOMOYO LSM was merged, and the
-> > > reason was explained in commit f7433243770c ("LSM adapter functions.").
-> > >
-> > > In short, TOMOYO's design is not compatible with COW credential model
-> > > introduced in Linux 2.6.29, and the current->in_execve flag was added for
-> > > emulating security_bprm_free() hook which has been removed by introduction
-> > > of COW credential model.
-> > >
-> > > security_task_alloc()/security_task_free() hooks have been removed by
-> > > commit f1752eec6145 ("CRED: Detach the credentials from task_struct"),
-> > > and these hooks have been revived by commit 1a2a4d06e1e9 ("security:
-> > > create task_free security callback") and commit e4e55b47ed9a ("LSM: Revive
-> > > security_task_alloc() hook and per "struct task_struct" security blob.").
-> > >
-> > > But security_bprm_free() hook did not revive until now. Now that Linus
-> > > wants TOMOYO to stop carrying state across two independent execve() calls,
-> > > and TOMOYO can stop carrying state if a hook for restoring previous state
-> > > upon failed execve() call were provided, this patch revives the hook.
-> > >
-> > > Since security_bprm_committing_creds() and security_bprm_committed_creds()
-> > > hooks are called when an execve() request succeeded, we don't need to call
-> > > security_bprm_free() hook when an execve() request succeeded. Therefore,
-> > > this patch adds security_execve_abort() hook which is called only when an
-> > > execve() request failed after successful prepare_bprm_creds() call.
-> > >
-> > > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> >
-> > This looks good to me.
-> >
-> > Given this touches execve and is related to the recent execve changes,
-> > shall I carry this in the execve tree for testing and send a PR to Linus
-> > for it before v6.8 releases?
-> >
-> > There's already an Ack from Serge, so this seems a reasonable way to go
-> > unless Paul would like it done some other way?
-> 
-> Please hold off on this Kees (see my email from yesterday), I'd prefer
-> to take this via the LSM tree and with the immediate regression
-> resolved I'd prefer this go in during the upcoming merge window and
-> not during the -rcX cycle.  Or am I misunderstanding things about the
-> state of Linus' tree currently?
+On Wed, Feb 7, 2024 at 5:15=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro.=
+org> wrote:
+>
+> There are SoCs (gs101) that allow only 32 bit register accesses. As the
+> requirement is rare enough, for those SoCs we'll open code in the driver
+> some s3c64xx_iowrite{8,16}_32_rep() accessors. Prepare for such addition.
+>
+> Suggested-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
 
-My understanding was that TOMOYO is currently broken in Linus's tree. If
-that's true, I'd like to make sure it gets fixed before v6.8 is
-released.
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
-If it's working okay, then sure, that's fine to wait. :)
-
--Kees
-
--- 
-Kees Cook
+>  drivers/spi/spi-s3c64xx.c | 35 +++++++++++++++++++++--------------
+>  1 file changed, 21 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+> index 7f7eb8f742e4..eb79c6e4f509 100644
+> --- a/drivers/spi/spi-s3c64xx.c
+> +++ b/drivers/spi/spi-s3c64xx.c
+> @@ -414,6 +414,26 @@ static bool s3c64xx_spi_can_dma(struct spi_controlle=
+r *host,
+>
+>  }
+>
+> +static void s3c64xx_iowrite_rep(const struct s3c64xx_spi_driver_data *sd=
+d,
+> +                               struct spi_transfer *xfer)
+> +{
+> +       void __iomem *addr =3D sdd->regs + S3C64XX_SPI_TX_DATA;
+> +       const void *buf =3D xfer->tx_buf;
+> +       unsigned int len =3D xfer->len;
+> +
+> +       switch (sdd->cur_bpw) {
+> +       case 32:
+> +               iowrite32_rep(addr, buf, len / 4);
+> +               break;
+> +       case 16:
+> +               iowrite16_rep(addr, buf, len / 2);
+> +               break;
+> +       default:
+> +               iowrite8_rep(addr, buf, len);
+> +               break;
+> +       }
+> +}
+> +
+>  static int s3c64xx_enable_datapath(struct s3c64xx_spi_driver_data *sdd,
+>                                     struct spi_transfer *xfer, int dma_mo=
+de)
+>  {
+> @@ -447,20 +467,7 @@ static int s3c64xx_enable_datapath(struct s3c64xx_sp=
+i_driver_data *sdd,
+>                         modecfg |=3D S3C64XX_SPI_MODE_TXDMA_ON;
+>                         ret =3D prepare_dma(&sdd->tx_dma, &xfer->tx_sg);
+>                 } else {
+> -                       switch (sdd->cur_bpw) {
+> -                       case 32:
+> -                               iowrite32_rep(regs + S3C64XX_SPI_TX_DATA,
+> -                                       xfer->tx_buf, xfer->len / 4);
+> -                               break;
+> -                       case 16:
+> -                               iowrite16_rep(regs + S3C64XX_SPI_TX_DATA,
+> -                                       xfer->tx_buf, xfer->len / 2);
+> -                               break;
+> -                       default:
+> -                               iowrite8_rep(regs + S3C64XX_SPI_TX_DATA,
+> -                                       xfer->tx_buf, xfer->len);
+> -                               break;
+> -                       }
+> +                       s3c64xx_iowrite_rep(sdd, xfer);
+>                 }
+>         }
+>
+> --
+> 2.43.0.687.g38aa6559b0-goog
+>
 
