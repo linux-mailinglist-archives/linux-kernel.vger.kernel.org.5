@@ -1,105 +1,118 @@
-Return-Path: <linux-kernel+bounces-55822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B316984C222
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C78884C223
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:51:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 573991F29C45
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:47:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31A431F25321
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9318EAE5;
-	Wed,  7 Feb 2024 01:47:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E485DDC9;
+	Wed,  7 Feb 2024 01:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MI9/krqi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RtRvJPHD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06583D271;
-	Wed,  7 Feb 2024 01:47:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4505DDA1
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 01:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707270454; cv=none; b=tEgJ8YIawUV+owZQ6oXohRAzNOLdKsZxZrFCc7lzN+S39Rt5W8Oz1ptntkxcc2cRulUpNBgkzR9oUSAX4knqF/q3Jt5KwRenM13bFSj1EMf1iMXMRPfE/+PBPklGFu5dweg6wlEwF8q4sh6MjlAAtbWKU3Wd84CeGsMlhg07LSY=
+	t=1707270692; cv=none; b=LiVhLJqq5kZXRFLcaW1h1g0/9A86pjYPxhLA2iORpvvqmMc0ddRhWSG0x73d31QzbwYcr6YsSX81T9BSjLak2oxppNzkkPDAeIgLcGNExEAvVNPB3eq+R2Kijeezxc1S6PYoxcCpCAYQg8hGHOnEhpyBj21MJMI2AOqSGmH0wzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707270454; c=relaxed/simple;
-	bh=xWoR0ZKxvLLFyhiSSg2oVlIbFnNgIJaoB8AXT4Fz8kU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lYzxuRMtD+NmEUcpezVxuCXQYMS1vjSqpMHInz6bATwY+A1pQbtTTzi/SMN0ZsRvHLNFn80EaT+naDkn00pW8rCqDeQ9wGsc5OlXWRGijCOeMPYGZpg0/qWJ11s1albSs9doKwOqEa0fK43HHCkDdCxNp5IxkXLuijc2yChXxwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MI9/krqi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6721DC433C7;
-	Wed,  7 Feb 2024 01:47:31 +0000 (UTC)
+	s=arc-20240116; t=1707270692; c=relaxed/simple;
+	bh=DR/f4wmMEO0FHWiT6UWA2tVUbamBflq7aNmEDUILUlo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZMWHQb/06v1gm/xzb6b2Cfgy8laVnnDKLwuvEuK9AaLXor4yKqCUmrdBduQoJiq5wou7ueDJvm6FNlfwpnNKnHoukkxLp0rPMUichtxQrnxu/n8sfP5Vpu+yrtonCGqkyVye8cy5r4zQFQokQhog+y5xGrZcD1XJ2YAzJg+/rqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RtRvJPHD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E50BC41674
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 01:51:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707270451;
-	bh=xWoR0ZKxvLLFyhiSSg2oVlIbFnNgIJaoB8AXT4Fz8kU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MI9/krqiJyzPoXKvPjbyKqU53iXZB+OLOJMVCer+Y5vkY5jb4N5t+eF8UACp6cn/g
-	 Hc5rQT8JMkAJNjBTSw+RYxW8RAwLI85qMXnf2qPK2L/ejWL4Ij1Spw9Xme5DgFccAj
-	 /ifM0l+HWZkHUUFYHPKvmVzaADyV5p4RJ9gjwixlKq1tQ4CbEuarB50EhnmAfK7ewo
-	 /8Fj3HarU2XS4RBvzI2FT8/Hh+3+UN8WVUS2uXYIl0Bo7P1IOg88adJOJmaCX+/Lbe
-	 Agd8+crlNeYv/T3g66hHdrRJIkGSNzKx+YjsgERteeaw6L71RSV6FEKFJFJMV9b5S0
-	 +XVSRtD+9VI2A==
-Date: Tue, 6 Feb 2024 17:47:29 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: brauner@kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] filesystem visibililty ioctls
-Message-ID: <20240207014729.GC35324@sol.localdomain>
-References: <20240206201858.952303-1-kent.overstreet@linux.dev>
+	s=k20201202; t=1707270692;
+	bh=DR/f4wmMEO0FHWiT6UWA2tVUbamBflq7aNmEDUILUlo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=RtRvJPHDc8lDdg75nS1ecN5vYIqXsSsTE+LTQYqbEu8HHpU9Q2uHD+EGdQa2GoKv7
+	 FSDVHnWbLwcDRJC+37HbWS/G34jPrbBy5KiaPA2XLSgCoViXZ2na20fBczYMSYNQIs
+	 VjvMxLoYbmuvy5fm3Kf+S41dq2ZnWYEYqDr4tk0m2WAaFAw6OHBdaj31EPPa9WVtqp
+	 AZi08bVxh5Wvq0G0UbqA+XCBdntEAr8n8AMigIP+nsnUnptrtuwbADEnP3yCvdU/nO
+	 FuGxU8y+CPdkSbcu9Itcz5STHTE4Tz9ZYjftHieNiGJQZQhM9BqVVt1KDAfTitDDHL
+	 fxqd/kLmw/33w==
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7c3e01a7fe0so5476739f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 17:51:32 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX4jtaH93noHi+ZL72fKbJfmUE0Q2WU7dFllleTyLyQRWPDO33aIcTf7HVPhWhee6sMMa1Ti4rMRRyVB1kUjh9BX9dsDP9ozdtQ/Q16
+X-Gm-Message-State: AOJu0Yzp3OQSboxWNh0gWQGQqF1tyl02Rw2WKwejRv6YO3lKkrFEE8G8
+	9BluWiuJOvYUICGNNQ0U5hsqmFNtO4p0FTss/VENVuHmQ+tOsStkVQBoDrTIpLa6izazfRpfNKH
+	y67uZezYQQ4LfhGMHkaYJFSHKzpnSGRFEOW3x
+X-Google-Smtp-Source: AGHT+IHKa1DtQGiIaDMRysece3Z/Gb66f23Tv+SkqePrw9p9+AEvslkh3C3YT+7QzX+KhkV4kbgSNf2IlmrXerMbkBQ=
+X-Received: by 2002:a05:6e02:1d04:b0:363:bc92:e4f with SMTP id
+ i4-20020a056e021d0400b00363bc920e4fmr6455830ila.23.1707270691181; Tue, 06 Feb
+ 2024 17:51:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240206201858.952303-1-kent.overstreet@linux.dev>
+References: <20240131-async-free-v2-1-525f03e07184@kernel.org>
+ <87sf2ceoks.fsf@yhuang6-desk2.ccr.corp.intel.com> <7f19b4d69ff20efe8260a174c7866b4819532b1f.camel@linux.intel.com>
+ <CAF8kJuNvB8gXv3kj2nkN5j2ny0ZjJoVEdkeDDWSuWxySkKE=1g@mail.gmail.com>
+ <1fa1da19b0b929efec46bd02a6fc358fef1b9c42.camel@linux.intel.com>
+ <CAF8kJuMz+HCHkPUQhum32EPB7E1uVvN-E-TffOS7SSHxJNwNmQ@mail.gmail.com> <a869aff64f69bd1e1318653559f4c32e9f0a4c08.camel@linux.intel.com>
+In-Reply-To: <a869aff64f69bd1e1318653559f4c32e9f0a4c08.camel@linux.intel.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Tue, 6 Feb 2024 17:51:19 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuNC1D0sy90GoSt6yiA7T0Htsu_-gXsbTkmK5GAdO4udgA@mail.gmail.com>
+Message-ID: <CAF8kJuNC1D0sy90GoSt6yiA7T0Htsu_-gXsbTkmK5GAdO4udgA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: swap: async free swap slot cache entries
+To: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	=?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, 
+	=?UTF-8?B?WXUgWmhhb++/vA==?= <yuzhao@google.com>, 
+	Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
+	=?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
+	=?UTF-8?B?WW9zcnkgQWhtZWTvv7w=?= <yosryahmed@google.com>, 
+	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
+	Mel Gorman <mgorman@techsingularity.net>, Nhat Pham <nphamcs@gmail.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
+	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Barry Song <v-songbaohua@oppo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 06, 2024 at 03:18:48PM -0500, Kent Overstreet wrote:
-> 
-> Darrick also noticed that fscrypt (!) is using sb->s_uuid, which looks
-> busted - they want to be using the "this can never change" UUID, but
-> that is not an item for this patchset.
-> 
+On Tue, Feb 6, 2024 at 5:08=E2=80=AFPM Tim Chen <tim.c.chen@linux.intel.com=
+> wrote:
+>
+> On Mon, 2024-02-05 at 11:10 -0800, Chris Li wrote:
+> >
+> >
+> > In our system, a really heavy swap load is rare and it means something
+> > is already wrong. At that point the app's SLO is likely at risk,
+> > regardless of long tail swap latency. It is already too late to
+> > address it at the swap fault end. We need to address the source of the
+> > problem which is swapping out too much.
+> >
+> >
+>
+> Could some usage scenarios put more pressure on swap than your
+> usage scenario?  Say system with limited RAM and rely on zswap?
+>
+Of course. In that case what I proposed  to do will already doing what
+I think is the best of this situation. After grabbing the cache lock
+and finding out async fre hasn't started the freeing yet. Just free
+all 64 entries in the swap slot cache. It is similar to the old code
+behavior.
+Yes, it will have the long tail latency due to batch freeing 64 entries.
+My point is not that I don't care about heavy swap behavior.
+My point is that the app will suffer from the swap strom anyway, it is
+unavoidable. That will be the dominant factor shadowing the batch free
+optimization effect.
 
-fscrypt only uses sb->s_uuid if FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 or
-FSCRYPT_POLICY_FLAG_IV_INO_LBLK_32 is being used in the encryption policy.
-These flags are only supported by ext4 and f2fs, and they are only useful when
-the file contents encryption is being done with inline encryption hardware that
-only allows 64-bits or less of the initialization vector to be specified and
-that has poor performance when switching keys.  This hardware is currently only
-known to be present on mobile and embedded systems that use eMMC or UFS storage.
+Or do I miss your point as you want to purpose the swap cache double
+buffer  so it can perform better under swap storm situations?
 
-Note that these settings assume the inode numbers are stable as well as the
-UUID.  So, when they are in use, filesystem shrinking is prohibited as well as
-changing the filesystem UUID.  (In ext4, both operations are forbidden using the
-stable_inodes feature flag.  f2fs doesn't support either operation regardless.)
-
-These restrictions are unfortunate, but so far they haven't been a problem for
-the only known use case for these non-default settings.
-
-In the case of s_uuid, for both ext4 and f2fs it's true that we could have used
-s_encrypt_pw_salt instead, or added a new general-purpose internal UUID field
-and used that.  Maybe we even should have, considering the precedent of ext4's
-metadata_csum migrating away from using the UUID to its own internal seed.  I do
-worry that relying on an internal UUID for these settings would make it easier
-for people to create insecure setups where they're using the same fscrypt key on
-multiple filesystems with the same internal UUID.  With the external UUID, such
-misconfigurations are obvious and will be noticed and fixed.  With the internal
-UUID, such vulnerabilities would not be noticed, as things will "just work".
-Which is better?  It's not entirely clear to me.  We do encourage the use of
-different fscrypt keys on different filesystems anyway, but this isn't required.
-
-Of course, even if the usability improvement outweighs that concern, switching
-these already-existing encryption settings over to use an internal UUID can't be
-done trivially; it would have to be controlled by a new filesystem feature flag.
-We probably shouldn't bother unless/until there's a clear use case for it.
-
-If anyone does have any new use case for these weird and non-default encryption
-settings (and I hope you don't!), I'd be interested to hear...
-
-- Eric
+Chris
 
