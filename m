@@ -1,363 +1,405 @@
-Return-Path: <linux-kernel+bounces-56909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EFCF84D136
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:31:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4DA384D138
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:32:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06CDD28AAAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:31:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F1431C2207C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:32:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C0B41C86;
-	Wed,  7 Feb 2024 18:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F5A21E4AB;
+	Wed,  7 Feb 2024 18:32:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A9fbMgP8"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="wkL728VJ"
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3ADA1E4A2;
-	Wed,  7 Feb 2024 18:31:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C199F1D54A
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 18:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707330706; cv=none; b=EA67X1ORqY1btEkQrLAbKJpe20Fta+dJCOVzZDVLvBt3Ytgjyrsb65HA1cY8XzNSOHBEvFzh8xys1reem8L2YOUTXd4gHidO7wNvmoursP2t/y3ocjNyuO6pfPKYmODMA9H9FvPWy9GFAb4wIF2WdEbXLMJeEVB/CBYXRTVMDyI=
+	t=1707330723; cv=none; b=iO1QfyCks9qHqXoPodu1MnTbRLCzUtUjfM74pNUqGSXjdHFON7Q/zbRHnhAIv6ZwtWrRXrdOTStwx3Ws/P9zQSjJs3yPge1QMwgk7nQDqMIonbbKCW72vTpfcRa2VPI2f+5bXLH6ESTrJ+ovcrDnSQzu0o62sLpJ3IqJ9i2XGIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707330706; c=relaxed/simple;
-	bh=Kxzqhz4TTsnch2G9gpxUwSGGABgXC77bKBgl/ePHqRQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ee+faCGOjCpRodmgi9AAfgzYsUNkhGPjgh761QoZN8lH7OSrTcfbslfc9OoPxwd9ixGTJXxIeqwv+DII22+KCu5NrINOE+rF0BLP3vAfycIquijHmX1SwJIqw96DQwUHSePo8VvTFbWFVZTQQRMfBydeP/sVnmfoVPLcdD8uSds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A9fbMgP8; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-59502aa878aso356825eaf.1;
-        Wed, 07 Feb 2024 10:31:43 -0800 (PST)
+	s=arc-20240116; t=1707330723; c=relaxed/simple;
+	bh=ugjzdpdqWvk/XRxaXitZV7UeF73SOnU4F9tATJvn5jY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=AwROD/XwNUhoEoTNKvewcDYkWOiwr4M0r7nXHttNEBE/xz9FRwGqdT+ulCdIdlLSrkOEPsKyf9+m/Odn9bxoSqa9nG3euoWLATLrlvhKgWQVP3pwRdGsi3cgviAtfcS/jnfJwc5iR8WSNaGXKtp9K3lx2Va620VdHsbgXLqyHDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=wkL728VJ; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7857bbfb25bso55824785a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 10:32:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707330703; x=1707935503; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7YmZ43NB+BehRpaBTVIbrV/YG+RFEqgwiaWaxlRa1fA=;
-        b=A9fbMgP88wHE+9+zyjiTAV13oGawyvI5M9+YXNZXCRw307hg+ti9NbXantALJdmfPv
-         emb0129NytzuHudgun2tFYZ3n/SixeaX6+aAYNnZsrFVAfxQ3NTGkJZmD9N3GEU4rFjL
-         7gKvZBeVdc+KOqbkMWNGJxcRlR4aAt1d5UBGgd60EELZb2qBamQWy/4uzXJxQHj+2egW
-         EBWGYRaQjzrzAb15UqzE7lrDK5x0GD8m7rNY9bJRsV1OMbedrQ+gTXDJ4jF1SnLA35Pc
-         F7dCY1HD0pP1avZoNOTBcBynVMxyRdGXEbK27+FA6SJrL9x6tHSn3NQp7CKqYGKiwc3f
-         JrbQ==
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1707330720; x=1707935520; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xiZrfaXoDns80FS5vZuJhwtMeBB/GDE4Y1RJbKsgQl8=;
+        b=wkL728VJlEXgmrBfCXhKYNRMAv18MD/Bg/Kv5U8wDEP+kBptmVpZEjVIyUdf0mjaAz
+         FFUjXpOl5bDYx7ji1nngmq/DVE9lqzZQrxUt8EQkaWQJVrGMxI1rFlf0Uf57tYZyhj3u
+         ktj+9GHriGFUmloDsNUDW8E3BxBsQciQNMsF2C9MwLSrSj88cxH2D11XhPqp5z9y2XDe
+         2ebv44PYkbwKNeG11EWxXtyVSrwvWnCy+c/Dw49v1K728pbuBotBqgSGyW8fRQi0Mz3O
+         t4t8Yq48jCjK+r0pWJ17Ptl7gON7vUdVMBu9ctGxAyU/iQequiEYKOEbo4eGhr8g704h
+         1Gpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707330703; x=1707935503;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
+        d=1e100.net; s=20230601; t=1707330720; x=1707935520;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7YmZ43NB+BehRpaBTVIbrV/YG+RFEqgwiaWaxlRa1fA=;
-        b=iewMkPC+aoI/c8aGscWHMEXhCkjpaRKOI6I60pgthMlh20hqNclOFQTFYkbhjBkJwT
-         aeBz22oQ4yyzv/CzWxIfEFhKbehIT5VkjnB/M++wFggi4o6eDqqtnVvUpkKNvsc9l3GH
-         nII4E3tYaxV8jn2iL+hb1rjEBVoG3N7a+5pGUj+xguB+Jg0OJHgu9eH6AAZAOxeBP6Jg
-         V73EVe+4gOs3f46vS7G1ZBgOhbDTAb1DZb6U9tIUJThRKNlWCci1cHazqNQwx+h9WkWS
-         3K42wMsfLMMnDYbhz8RIyYBUO76BSp8jylurdNeIj2PJiU3QnDKwse8mzfVQak/Uh+cY
-         H16A==
-X-Forwarded-Encrypted: i=1; AJvYcCWhYwOQpo97qmpE/r+BH+hWSMsvhC5xBIa0gqfn6BDkkd6cO0+L+PqTKfLUb65ymBF53S5q5jE53tz+NJ6yRPrPZsdlJ+9suMl4nJkfwCYzgHlXRqsPAgEFSYgTbfR6bdKfOq9R
-X-Gm-Message-State: AOJu0YxhvwF1V81sN+q0y3dI6b0kGm/d8ib0eoG/h+T31sVbDhSSCkg9
-	wtOPDVfugOwmOMxzhf8JFe1yPGQE6LfZL1tU6uVHbjUoPsoOTm2P
-X-Google-Smtp-Source: AGHT+IFH1B5cQy3Fb7aFIqGlFKILTHcEMJVE06JEo/MnfWVfAwssCbv+l6ogS4nbOVnRNYHJ5uGyPg==
-X-Received: by 2002:a05:6358:e48c:b0:176:5c73:393b with SMTP id by12-20020a056358e48c00b001765c73393bmr3500280rwb.18.1707330702692;
-        Wed, 07 Feb 2024 10:31:42 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXzdyuIwrHaslKrBWZ9q8r0nij6Vvms+3M4/YsEPc+PdXE9Goahy9vFEVoNR0C2B2bAHRCo9Q1X+sLyKMrXuAUEOkb5pE07ttsusVi5QOutQFJf0pTV34UloKIHJ61VTiFOJeChsWEejTIOBuGLn10j7RrfN/HBulboNzcjI+Zig4vgI5TjXhAVcjlGHwV6KcS2qos2IPofebRwMdAI6GiPMMxXrNytPNIw/aTcj7n7uKpS6zqNS2I0XOZBOWAdPl8QC6ancAPvVn2nf7vYtJhY0JcsIdz1+Kl8VNOwIk7wma/k+WavS0+t0GEboP0iT3XGt3QDkCJ8YGTVNxrnz2rLARV9LL8VZN4CLrjHtd1W723J7E5BLo7gdkV9EdIyRRORyONajEWI1nJyoKlXgIUHpTzYlUc9eetsbrr8X7DimBMbYQKgoH/1ZieEB8knH5E+Zk2WcB7ZWF/zJNthGgNHpMWbHkpOUan9Og==
-Received: from google.com ([2620:0:1000:8411:af44:f774:c4ae:c82a])
-        by smtp.gmail.com with ESMTPSA id r12-20020aa7844c000000b006d9a6039745sm1941051pfn.40.2024.02.07.10.31.41
+        bh=xiZrfaXoDns80FS5vZuJhwtMeBB/GDE4Y1RJbKsgQl8=;
+        b=NtVhFXNzaBRbuM1opM3j7U93jSHn9Cx9Pw1s7mL4eA4Mv68dJkreiVu6LRmHqZ7mOP
+         pBmxpSoETaj/1ryTNoVXAbPfgjGZGFPmZKQ4oG2yMbFZKoQ0rrkbtOYFxBsYmVyaREqz
+         HS2Yn4DFnBu/gAoZMO3Ah2DBa6vSut9efH5k1zVSybdGSg8wvE6mFFGPfxyFxOGH8Q9P
+         4B+/JOaWbWxvdxOjsN5ehjkJtot2SKrOd384pUTWUasdCJZGQgmZnztxjNJ1fXh+sUsP
+         hpFxhrZZD3n+aZlj26SXZQtoQn16IWHJ73Suf/stg0OfMTakvQ5clm2ThMtampt1i8TA
+         /4kA==
+X-Gm-Message-State: AOJu0YxeH2llTHVeGgwLr4lNaxnpEwzRrlTH7OO5G+sw9F3US3wxWl0n
+	AtRkXXzDA5ZHV8VUt387ImB4/bwK4w5o9O9670z2DtaXrhMh2R8QvfcDlIQhbTk=
+X-Google-Smtp-Source: AGHT+IE4cdzI6omn160Zh4nV7jizWSOo2Fx3aXlHEQYAwxbiHHWHVJaanYJSvPSUNU1bQTZPH0wnBA==
+X-Received: by 2002:a05:620a:3914:b0:783:de24:f315 with SMTP id qr20-20020a05620a391400b00783de24f315mr7621646qkn.58.1707330720559;
+        Wed, 07 Feb 2024 10:32:00 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUiUFVIgBA0PGPxbkkrzGPB4hqJv029fW7V7vQgXHAHWrm9BxX9Oh2wysHQZn9caufV/0iPprLUHlAfkUbg5ZT6QAdp+W7h/4hJ8l1hHxp0hM83IM0OoKHnJEQwTVBVNUi2hi2uwSAQfY63dIb7OKhUwTMdGyeSDSfuywiUku1iL7ezj+5m1iTBQZxmetaxHCuWHJyRgzn5U8zVcuYZeVJpFdT+Y84cqHdS
+Received: from nicolas-tpx395.localdomain ([2606:6d00:11:3354::7a9])
+        by smtp.gmail.com with ESMTPSA id v22-20020ae9e316000000b007840bab5897sm741901qkf.111.2024.02.07.10.31.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 10:31:42 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date: Wed, 7 Feb 2024 10:31:39 -0800
-From: Minchan Kim <minchan@kernel.org>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: Chris Li <chrisl@kernel.org>, Barry Song <21cnbao@gmail.com>,
-	linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-	"Huang, Ying" <ying.huang@intel.com>, Yu Zhao <yuzhao@google.com>,
-	Barry Song <v-songbaohua@oppo.com>, SeongJae Park <sj@kernel.org>,
-	Hugh Dickins <hughd@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Michal Hocko <mhocko@suse.com>, Yosry Ahmed <yosryahmed@google.com>,
-	David Hildenbrand <david@redhat.com>, stable@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/swap: fix race when skipping swapcache
-Message-ID: <ZcPMi6DX5PN4WwHr@google.com>
-References: <20240206182559.32264-1-ryncsn@gmail.com>
- <CAF8kJuMe7MYsAhwX804jZfO4w6kt74YMZXuz+FqUbZEt70p7Rg@mail.gmail.com>
- <CAGsJ_4zF+U5JG8XYANe2x0VbjovokFCirf=YLHOfO3E-U8b4sg@mail.gmail.com>
- <CAF8kJuOBtT+n5CM2s1Mobk5fzpgetCSMTZ-nb8+0KUj1W5f+Mw@mail.gmail.com>
- <CAMgjq7CV-Cxar8cRj1SxB4ZtO8QPTUuA5mj9_vQro7sm+eFH=w@mail.gmail.com>
- <CAF8kJuOQqqqM6MvOvo4PyOhT9eyNFreQjWC+TybGYDgXRfpweA@mail.gmail.com>
- <CAMgjq7CBV4dVo7ETr0K1VbLE=M7T0Go5=7pHBUY6=o0cuXaZXg@mail.gmail.com>
+        Wed, 07 Feb 2024 10:32:00 -0800 (PST)
+Message-ID: <90e82dd29a10fb196332e9228fa318febb5e035b.camel@ndufresne.ca>
+Subject: Re: [RESEND PATCH v0 5/5] wave5 : Fixed the wrong buffer size
+ formula.
+From: Nicolas Dufresne <nicolas@ndufresne.ca>
+To: "jackson.lee" <jackson.lee@chipsnmedia.com>, mchehab@kernel.org, 
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nas.chung@chipsnmedia.com
+Cc: lafley.kim@chipsnmedia.com, b-brnich@ti.com
+Date: Wed, 07 Feb 2024 13:31:59 -0500
+In-Reply-To: <20240131013046.15687-6-jackson.lee@chipsnmedia.com>
+References: <20240131013046.15687-1-jackson.lee@chipsnmedia.com>
+	 <20240131013046.15687-6-jackson.lee@chipsnmedia.com>
+Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMgjq7CBV4dVo7ETr0K1VbLE=M7T0Go5=7pHBUY6=o0cuXaZXg@mail.gmail.com>
 
-On Wed, Feb 07, 2024 at 12:06:15PM +0800, Kairui Song wrote:
-> On Wed, Feb 7, 2024 at 12:02 PM Chris Li <chrisl@kernel.org> wrote:
-> >
-> > On Tue, Feb 6, 2024 at 6:21 PM Kairui Song <ryncsn@gmail.com> wrote:
-> > >
-> > > On Wed, Feb 7, 2024 at 10:03 AM Chris Li <chrisl@kernel.org> wrote:
-> > > >
-> > > > On Tue, Feb 6, 2024 at 4:43 PM Barry Song <21cnbao@gmail.com> wrote:
-> > > > >
-> > > > > On Wed, Feb 7, 2024 at 7:18 AM Chris Li <chrisl@kernel.org> wrote:
-> > > > > >
-> > > > > > Hi Kairui,
-> > > > > >
-> > > > > > Sorry replying to your patch V1 late, I will reply on the V2 thread.
-> > > > > >
-> > > > > > On Tue, Feb 6, 2024 at 10:28 AM Kairui Song <ryncsn@gmail.com> wrote:
-> > > > > > >
-> > > > > > > From: Kairui Song <kasong@tencent.com>
-> > > > > > >
-> > > > > > > When skipping swapcache for SWP_SYNCHRONOUS_IO, if two or more threads
-> > > > > > > swapin the same entry at the same time, they get different pages (A, B).
-> > > > > > > Before one thread (T0) finishes the swapin and installs page (A)
-> > > > > > > to the PTE, another thread (T1) could finish swapin of page (B),
-> > > > > > > swap_free the entry, then swap out the possibly modified page
-> > > > > > > reusing the same entry. It breaks the pte_same check in (T0) because
-> > > > > > > PTE value is unchanged, causing ABA problem. Thread (T0) will
-> > > > > > > install a stalled page (A) into the PTE and cause data corruption.
-> > > > > > >
-> > > > > > > One possible callstack is like this:
-> > > > > > >
-> > > > > > > CPU0                                 CPU1
-> > > > > > > ----                                 ----
-> > > > > > > do_swap_page()                       do_swap_page() with same entry
-> > > > > > > <direct swapin path>                 <direct swapin path>
-> > > > > > > <alloc page A>                       <alloc page B>
-> > > > > > > swap_read_folio() <- read to page A  swap_read_folio() <- read to page B
-> > > > > > > <slow on later locks or interrupt>   <finished swapin first>
-> > > > > > > ...                                  set_pte_at()
-> > > > > > >                                      swap_free() <- entry is free
-> > > > > > >                                      <write to page B, now page A stalled>
-> > > > > > >                                      <swap out page B to same swap entry>
-> > > > > > > pte_same() <- Check pass, PTE seems
-> > > > > > >               unchanged, but page A
-> > > > > > >               is stalled!
-> > > > > > > swap_free() <- page B content lost!
-> > > > > > > set_pte_at() <- staled page A installed!
-> > > > > > >
-> > > > > > > And besides, for ZRAM, swap_free() allows the swap device to discard
-> > > > > > > the entry content, so even if page (B) is not modified, if
-> > > > > > > swap_read_folio() on CPU0 happens later than swap_free() on CPU1,
-> > > > > > > it may also cause data loss.
-> > > > > > >
-> > > > > > > To fix this, reuse swapcache_prepare which will pin the swap entry using
-> > > > > > > the cache flag, and allow only one thread to pin it. Release the pin
-> > > > > > > after PT unlocked. Racers will simply busy wait since it's a rare
-> > > > > > > and very short event.
-> > > > > > >
-> > > > > > > Other methods like increasing the swap count don't seem to be a good
-> > > > > > > idea after some tests, that will cause racers to fall back to use the
-> > > > > > > swap cache again. Parallel swapin using different methods leads to
-> > > > > > > a much more complex scenario.
-> > > > > > >
-> > > > > > > Reproducer:
-> > > > > > >
-> > > > > > > This race issue can be triggered easily using a well constructed
-> > > > > > > reproducer and patched brd (with a delay in read path) [1]:
-> > > > > > >
-> > > > > > > With latest 6.8 mainline, race caused data loss can be observed easily:
-> > > > > > > $ gcc -g -lpthread test-thread-swap-race.c && ./a.out
-> > > > > > >   Polulating 32MB of memory region...
-> > > > > > >   Keep swapping out...
-> > > > > > >   Starting round 0...
-> > > > > > >   Spawning 65536 workers...
-> > > > > > >   32746 workers spawned, wait for done...
-> > > > > > >   Round 0: Error on 0x5aa00, expected 32746, got 32743, 3 data loss!
-> > > > > > >   Round 0: Error on 0x395200, expected 32746, got 32743, 3 data loss!
-> > > > > > >   Round 0: Error on 0x3fd000, expected 32746, got 32737, 9 data loss!
-> > > > > > >   Round 0 Failed, 15 data loss!
-> > > > > > >
-> > > > > > > This reproducer spawns multiple threads sharing the same memory region
-> > > > > > > using a small swap device. Every two threads updates mapped pages one by
-> > > > > > > one in opposite direction trying to create a race, with one dedicated
-> > > > > > > thread keep swapping out the data out using madvise.
-> > > > > > >
-> > > > > > > The reproducer created a reproduce rate of about once every 5 minutes,
-> > > > > > > so the race should be totally possible in production.
-> > > > > > >
-> > > > > > > After this patch, I ran the reproducer for over a few hundred rounds
-> > > > > > > and no data loss observed.
-> > > > > > >
-> > > > > > > Performance overhead is minimal, microbenchmark swapin 10G from 32G
-> > > > > > > zram:
-> > > > > > >
-> > > > > > > Before:     10934698 us
-> > > > > > > After:      11157121 us
-> > > > > > > Non-direct: 13155355 us (Dropping SWP_SYNCHRONOUS_IO flag)
-> > > > > > >
-> > > > > > > Fixes: 0bcac06f27d7 ("mm, swap: skip swapcache for swapin of synchronous device")
-> > > > > > > Reported-by: "Huang, Ying" <ying.huang@intel.com>
-> > > > > > > Closes: https://lore.kernel.org/lkml/87bk92gqpx.fsf_-_@yhuang6-desk2.ccr.corp.intel.com/
-> > > > > > > Link: https://github.com/ryncsn/emm-test-project/tree/master/swap-stress-race [1]
-> > > > > > > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > > > > > > Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-> > > > > > > Acked-by: Yu Zhao <yuzhao@google.com>
-> > > > > > >
-> > > > > > > ---
-> > > > > > > Update from V1:
-> > > > > > > - Add some words on ZRAM case, it will discard swap content on swap_free so the race window is a bit different but cure is the same. [Barry Song]
-> > > > > > > - Update comments make it cleaner [Huang, Ying]
-> > > > > > > - Add a function place holder to fix CONFIG_SWAP=n built [SeongJae Park]
-> > > > > > > - Update the commit message and summary, refer to SWP_SYNCHRONOUS_IO instead of "direct swapin path" [Yu Zhao]
-> > > > > > > - Update commit message.
-> > > > > > > - Collect Review and Acks.
-> > > > > > >
-> > > > > > >  include/linux/swap.h |  5 +++++
-> > > > > > >  mm/memory.c          | 15 +++++++++++++++
-> > > > > > >  mm/swap.h            |  5 +++++
-> > > > > > >  mm/swapfile.c        | 13 +++++++++++++
-> > > > > > >  4 files changed, 38 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/include/linux/swap.h b/include/linux/swap.h
-> > > > > > > index 4db00ddad261..8d28f6091a32 100644
-> > > > > > > --- a/include/linux/swap.h
-> > > > > > > +++ b/include/linux/swap.h
-> > > > > > > @@ -549,6 +549,11 @@ static inline int swap_duplicate(swp_entry_t swp)
-> > > > > > >         return 0;
-> > > > > > >  }
-> > > > > > >
-> > > > > > > +static inline int swapcache_prepare(swp_entry_t swp)
-> > > > > > > +{
-> > > > > > > +       return 0;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > >  static inline void swap_free(swp_entry_t swp)
-> > > > > > >  {
-> > > > > > >  }
-> > > > > > > diff --git a/mm/memory.c b/mm/memory.c
-> > > > > > > index 7e1f4849463a..1749c700823d 100644
-> > > > > > > --- a/mm/memory.c
-> > > > > > > +++ b/mm/memory.c
-> > > > > > > @@ -3867,6 +3867,16 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
-> > > > > > >         if (!folio) {
-> > > > > > >                 if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
-> > > > > > >                     __swap_count(entry) == 1) {
-> > > > > > > +                       /*
-> > > > > > > +                        * Prevent parallel swapin from proceeding with
-> > > > > > > +                        * the cache flag. Otherwise, another thread may
-> > > > > > > +                        * finish swapin first, free the entry, and swapout
-> > > > > > > +                        * reusing the same entry. It's undetectable as
-> > > > > > > +                        * pte_same() returns true due to entry reuse.
-> > > > > > > +                        */
-> > > > > > > +                       if (swapcache_prepare(entry))
-> > > > > > > +                               goto out;
-> > > > > > > +
-> > > > > >
-> > > > > > I am puzzled by this "goto out". If I understand this correctly, you
-> > > > > > have two threads CPU1 and CPU2 racing to set the flag SWAP_HAS_CACHE.
-> > > > > > The CPU1 will succeed in adding the flag and  the CPU2 will get
-> > > > > > "-EEXIST" from "swapcache_prepare(entry)".  Am I understanding it
-> > > > > > correctly so far?
-> > > > > >
-> > > > > > Then the goto out seems wrong to me. For the CPU2, the page fault will
-> > > > > > return *unhandled*. Even worse, the "-EEXIST" error is not preserved,
-> > > > > > CPU2 does not even know the page fault is not handled, it will resume
-> > > > > > from the page fault instruction, possibly generate another page fault
-> > > > > > at the exact same location. That page fault loop will repeat until
-> > > > > > CPU1 install the new pte on that faulting virtual address and pick up
-> > > > > > by CPU2.
-> > > > > >
-> > > > > > Am I missing something obvious there?
-> > > > >
-> > > > > I feel you are right. any concurrent page faults at the same pte
-> > > > > will increase the count of page faults for a couple of times now.
-> > > > >
-> > > > > >
-> > > > > > I just re-read your comment: "Racers will simply busy wait since it's
-> > > > > > a rare and very short event." That might be referring to the above
-> > > > > > CPU2 page fault looping situation. I consider the page fault looping
-> > > > > > on CPU2 not acceptable. For one it will mess up the page fault
-> > > > > > statistics.
-> > > > > > In my mind, having an explicit loop for CPU2 waiting for the PTE to
-> > > > > > show up is still better than this page fault loop. You can have more
-> > > > > > CPU power friendly loops.
-> > > > >
-> > > > > I assume you mean something like
-> > > > >
-> > > > > while(!pte_same())
-> > > > >    cpu_relax();
-> > > > >
-> > > > > then we still have a chance to miss the change of B.
-> > > > >
-> > > > > For example, another thread is changing pte to A->B->A, our loop can
-> > > > > miss B. Thus we will trap into an infinite loop. this is even worse.
-> > > >
-> > > > Yes. You are right, it is worse. Thanks for catching that. That is why
-> > > > I say this needs more discussion, I haven't fully thought it through
-> > > > :-)
-> > >
-> > > Hi Chris and Barry,
-> > >
-> > > Thanks for the comments!
-> > >
-> > > The worst thing I know of returning in do_swap_page without handling
-> > > the swap, is an increase of some statistic counters, note it will not
-> > > cause major page fault counters to grow, only things like perf counter
-> > > and vma lock statistic are affected.
-> > >
-> > > And actually there are multiple already existing return points in
-> > > do_swap_page that will return without handling it, which may
-> > > re-trigger the page fault.
-> >
-> > Thanks for pointing that out. I take a look at those, which seems
-> > different than the case here.  In those cases, it truely can not make
-> > forward progress.
-> > Here we actually have all the data it needs to complete the page
-> > fault. Just a data synchronization issue preventing making forward
-> > progress.
-> > Ideally we can have some clever data structure to solve the
-> > synchronization issue and make forward progress.
-> >
-> > > When do_swap_page is called, many pre-checks have been applied, and
-> > > they could all be invalidated if something raced, simply looping
-> > > inside here could miss a lot of corner cases, so we have to go through
-> > > that again.
-> >
-> > Actually, I  think about it. Looping it here seems worse in the sense
-> > that it is already holding some locks. Return and retry the page fault
-> > at least release those locks and let others have a chance to make
-> > progress.
-> >
-> > >
-> > > This patch did increase the chance of false positive increase of some
-> > > counters, maybe something like returning a VM_FAULT_RETRY could make
-> > > it better, but code is more complex and will cause other counters to
-> > > grow.
-> >
-> > This is certainly not ideal. It might upset the feedback loop that
-> > uses the swap fault statistic as input to adjust the swapping
-> > behavior.
-> >
-> > Chris
-> 
-> Hi Chris,
-> 
-> Thanks for the reply.
-> 
-> So I think the thing is, it's getting complex because this patch
-> wanted to make it simple and just reuse the swap cache flags.
+Hi,
 
-I agree that a simple fix would be the important at this point.
+Le mercredi 31 janvier 2024 =C3=A0 10:30 +0900, jackson.lee a =C3=A9crit=C2=
+=A0:
+> S_FMT/G_FMT should report the buffer size based on aligned width and heig=
+ht.
+> And, Host can set the real encoding size through s_selection and g_select=
+ion.
+> So, Driver should use the conf_win information for encoding size instead =
+of size of S_FMT/G_FMT.
 
-Considering your description, here's my understanding of the other idea:
-Other method, such as increasing the swap count, haven't proven effective
-in your tests. The approach risk forcing racers to rely on the swap cache
-again and the potential performance loss in race scenario.
+This patch will go away as soon as you have ported to v4l2-common as reques=
+ted
+in patch 1/5. It will also make future addition of pixel formats less tedio=
+us.
 
-While I understand that simplicity is important, and performance loss
-in this case may be infrequent, I believe swap_count approach could be a
-suitable solution. What do you think?
+regards,
+Nicolas
+
+>=20
+> Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
+> Signed-off-by: Jackson Lee <jackson.lee@chipsnmedia.com>
+> ---
+>  .../chips-media/wave5/wave5-vpu-dec.c         | 77 +++++++------------
+>  .../chips-media/wave5/wave5-vpu-enc.c         | 77 +++++++++++--------
+>  2 files changed, 72 insertions(+), 82 deletions(-)
+>=20
+> diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c b/d=
+rivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+> index 328a7a8f26c5..fb9449908ebd 100644
+> --- a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+> +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+> @@ -243,54 +243,54 @@ static void wave5_update_pix_fmt(struct v4l2_pix_fo=
+rmat_mplane *pix_mp, unsigned
+>  	case V4L2_PIX_FMT_NV21:
+>  		pix_mp->width =3D round_up(width, 32);
+>  		pix_mp->height =3D round_up(height, 16);
+> -		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[0].sizeimage =3D width * height * 3 / 2;
+> +		pix_mp->plane_fmt[0].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[0].sizeimage =3D pix_mp->width * pix_mp->height * 3 =
+/ 2;
+>  		break;
+>  	case V4L2_PIX_FMT_YUV422P:
+>  	case V4L2_PIX_FMT_NV16:
+>  	case V4L2_PIX_FMT_NV61:
+>  		pix_mp->width =3D round_up(width, 32);
+>  		pix_mp->height =3D round_up(height, 16);
+> -		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[0].sizeimage =3D width * height * 2;
+> +		pix_mp->plane_fmt[0].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[0].sizeimage =3D pix_mp->width * pix_mp->height * 2;
+>  		break;
+>  	case V4L2_PIX_FMT_YUV420M:
+>  		pix_mp->width =3D round_up(width, 32);
+>  		pix_mp->height =3D round_up(height, 16);
+> -		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[0].sizeimage =3D width * height;
+> -		pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32) / 2;
+> -		pix_mp->plane_fmt[1].sizeimage =3D width * height / 4;
+> -		pix_mp->plane_fmt[2].bytesperline =3D round_up(width, 32) / 2;
+> -		pix_mp->plane_fmt[2].sizeimage =3D width * height / 4;
+> +		pix_mp->plane_fmt[0].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[0].sizeimage =3D pix_mp->width * pix_mp->height;
+> +		pix_mp->plane_fmt[1].bytesperline =3D pix_mp->width / 2;
+> +		pix_mp->plane_fmt[1].sizeimage =3D pix_mp->width * pix_mp->height / 4;
+> +		pix_mp->plane_fmt[2].bytesperline =3D pix_mp->width / 2;
+> +		pix_mp->plane_fmt[2].sizeimage =3D pix_mp->width * pix_mp->height / 4;
+>  		break;
+>  	case V4L2_PIX_FMT_NV12M:
+>  	case V4L2_PIX_FMT_NV21M:
+>  		pix_mp->width =3D round_up(width, 32);
+>  		pix_mp->height =3D round_up(height, 16);
+> -		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[0].sizeimage =3D width * height;
+> -		pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[1].sizeimage =3D width * height / 2;
+> +		pix_mp->plane_fmt[0].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[0].sizeimage =3D pix_mp->width * pix_mp->height;
+> +		pix_mp->plane_fmt[1].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[1].sizeimage =3D pix_mp->width * pix_mp->height / 2;
+>  		break;
+>  	case V4L2_PIX_FMT_YUV422M:
+>  		pix_mp->width =3D round_up(width, 32);
+>  		pix_mp->height =3D round_up(height, 16);
+> -		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[0].sizeimage =3D width * height;
+> -		pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32) / 2;
+> -		pix_mp->plane_fmt[1].sizeimage =3D width * height / 2;
+> -		pix_mp->plane_fmt[2].bytesperline =3D round_up(width, 32) / 2;
+> -		pix_mp->plane_fmt[2].sizeimage =3D width * height / 2;
+> +		pix_mp->plane_fmt[0].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[0].sizeimage =3D pix_mp->width * pix_mp->height;
+> +		pix_mp->plane_fmt[1].bytesperline =3D pix_mp->width / 2;
+> +		pix_mp->plane_fmt[1].sizeimage =3D pix_mp->width * pix_mp->height / 2;
+> +		pix_mp->plane_fmt[2].bytesperline =3D pix_mp->width / 2;
+> +		pix_mp->plane_fmt[2].sizeimage =3D pix_mp->width * pix_mp->height / 2;
+>  		break;
+>  	case V4L2_PIX_FMT_NV16M:
+>  	case V4L2_PIX_FMT_NV61M:
+>  		pix_mp->width =3D round_up(width, 32);
+>  		pix_mp->height =3D round_up(height, 16);
+> -		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[0].sizeimage =3D width * height;
+> -		pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[1].sizeimage =3D width * height;
+> +		pix_mp->plane_fmt[0].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[0].sizeimage =3D pix_mp->width * pix_mp->height;
+> +		pix_mp->plane_fmt[1].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[1].sizeimage =3D pix_mp->width * pix_mp->height;
+>  		break;
+>  	default:
+>  		pix_mp->width =3D width;
+> @@ -1003,6 +1003,7 @@ static int wave5_vpu_dec_queue_setup(struct vb2_que=
+ue *q, unsigned int *num_buff
+>  	struct vpu_instance *inst =3D vb2_get_drv_priv(q);
+>  	struct v4l2_pix_format_mplane inst_format =3D
+>  		(q->type =3D=3D V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) ? inst->src_fmt : i=
+nst->dst_fmt;
+> +	unsigned int i;
+> =20
+>  	dev_dbg(inst->dev->dev, "%s: num_buffers: %u | num_planes: %u | type: %=
+u\n", __func__,
+>  		*num_buffers, *num_planes, q->type);
+> @@ -1016,31 +1017,9 @@ static int wave5_vpu_dec_queue_setup(struct vb2_qu=
+eue *q, unsigned int *num_buff
+>  		if (*num_buffers < inst->fbc_buf_count)
+>  			*num_buffers =3D inst->fbc_buf_count;
+> =20
+> -		if (*num_planes =3D=3D 1) {
+> -			if (inst->output_format =3D=3D FORMAT_422)
+> -				sizes[0] =3D inst_format.width * inst_format.height * 2;
+> -			else
+> -				sizes[0] =3D inst_format.width * inst_format.height * 3 / 2;
+> -			dev_dbg(inst->dev->dev, "%s: size[0]: %u\n", __func__, sizes[0]);
+> -		} else if (*num_planes =3D=3D 2) {
+> -			sizes[0] =3D inst_format.width * inst_format.height;
+> -			if (inst->output_format =3D=3D FORMAT_422)
+> -				sizes[1] =3D inst_format.width * inst_format.height;
+> -			else
+> -				sizes[1] =3D inst_format.width * inst_format.height / 2;
+> -			dev_dbg(inst->dev->dev, "%s: size[0]: %u | size[1]: %u\n",
+> -				__func__, sizes[0], sizes[1]);
+> -		} else if (*num_planes =3D=3D 3) {
+> -			sizes[0] =3D inst_format.width * inst_format.height;
+> -			if (inst->output_format =3D=3D FORMAT_422) {
+> -				sizes[1] =3D inst_format.width * inst_format.height / 2;
+> -				sizes[2] =3D inst_format.width * inst_format.height / 2;
+> -			} else {
+> -				sizes[1] =3D inst_format.width * inst_format.height / 4;
+> -				sizes[2] =3D inst_format.width * inst_format.height / 4;
+> -			}
+> -			dev_dbg(inst->dev->dev, "%s: size[0]: %u | size[1]: %u | size[2]: %u\=
+n",
+> -				__func__, sizes[0], sizes[1], sizes[2]);
+> +		for (i =3D 0; i < *num_planes; i++) {
+> +			sizes[i] =3D inst_format.plane_fmt[i].sizeimage;
+> +			dev_dbg(inst->dev->dev, "%s: size[%u]: %u\n", __func__, i, sizes[i]);
+>  		}
+>  	}
+> =20
+> diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c b/d=
+rivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+> index 19018ace41b6..762973d0677b 100644
+> --- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+> +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+> @@ -152,46 +152,46 @@ static void wave5_update_pix_fmt(struct v4l2_pix_fo=
+rmat_mplane *pix_mp, unsigned
+>  	case V4L2_PIX_FMT_YUV420:
+>  	case V4L2_PIX_FMT_NV12:
+>  	case V4L2_PIX_FMT_NV21:
+> -		pix_mp->width =3D width;
+> -		pix_mp->height =3D height;
+> -		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[0].sizeimage =3D round_up(width, 32) * height * 3 / =
+2;
+> +		pix_mp->width =3D round_up(width, 32);
+> +		pix_mp->height =3D round_up(height, 16);
+> +		pix_mp->plane_fmt[0].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[0].sizeimage =3D pix_mp->width * pix_mp->height * 3 =
+/ 2;
+>  		break;
+>  	case V4L2_PIX_FMT_YUV420M:
+> -		pix_mp->width =3D width;
+> -		pix_mp->height =3D height;
+> -		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[0].sizeimage =3D round_up(width, 32) * height;
+> -		pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32) / 2;
+> -		pix_mp->plane_fmt[1].sizeimage =3D round_up(width, 32) * height / 4;
+> -		pix_mp->plane_fmt[2].bytesperline =3D round_up(width, 32) / 2;
+> -		pix_mp->plane_fmt[2].sizeimage =3D round_up(width, 32) * height / 4;
+> +		pix_mp->width =3D round_up(width, 32);
+> +		pix_mp->height =3D round_up(height, 16);
+> +		pix_mp->plane_fmt[0].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[0].sizeimage =3D pix_mp->width * pix_mp->height;
+> +		pix_mp->plane_fmt[1].bytesperline =3D pix_mp->width / 2;
+> +		pix_mp->plane_fmt[1].sizeimage =3D pix_mp->width * pix_mp->height / 4;
+> +		pix_mp->plane_fmt[2].bytesperline =3D pix_mp->width / 2;
+> +		pix_mp->plane_fmt[2].sizeimage =3D pix_mp->width * pix_mp->height / 4;
+>  		break;
+>  	case V4L2_PIX_FMT_NV12M:
+>  	case V4L2_PIX_FMT_NV21M:
+> -		pix_mp->width =3D width;
+> -		pix_mp->height =3D height;
+> -		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[0].sizeimage =3D round_up(width, 32) * height;
+> -		pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[1].sizeimage =3D round_up(width, 32) * height / 2;
+> +		pix_mp->width =3D round_up(width, 32);
+> +		pix_mp->height =3D round_up(height, 16);
+> +		pix_mp->plane_fmt[0].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[0].sizeimage =3D pix_mp->width * pix_mp->height;
+> +		pix_mp->plane_fmt[1].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[1].sizeimage =3D pix_mp->width * pix_mp->height / 2;
+>  		break;
+>  	case V4L2_PIX_FMT_YUV422P:
+>  	case V4L2_PIX_FMT_NV16:
+>  	case V4L2_PIX_FMT_NV61:
+> -		pix_mp->width =3D width;
+> -		pix_mp->height =3D height;
+> -		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[0].sizeimage =3D round_up(width, 32) * height * 2;
+> +		pix_mp->width =3D round_up(width, 32);
+> +		pix_mp->height =3D round_up(height, 16);
+> +		pix_mp->plane_fmt[0].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[0].sizeimage =3D pix_mp->width * pix_mp->height * 2;
+>  		break;
+>  	case V4L2_PIX_FMT_NV16M:
+>  	case V4L2_PIX_FMT_NV61M:
+> -		pix_mp->width =3D width;
+> -		pix_mp->height =3D height;
+> -		pix_mp->plane_fmt[0].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[0].sizeimage =3D round_up(width, 32) * height;
+> -		pix_mp->plane_fmt[1].bytesperline =3D round_up(width, 32);
+> -		pix_mp->plane_fmt[1].sizeimage =3D round_up(width, 32) * height;
+> +		pix_mp->width =3D round_up(width, 32);
+> +		pix_mp->height =3D round_up(height, 16);
+> +		pix_mp->plane_fmt[0].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[0].sizeimage =3D pix_mp->width * pix_mp->height;
+> +		pix_mp->plane_fmt[1].bytesperline =3D pix_mp->width;
+> +		pix_mp->plane_fmt[1].sizeimage =3D pix_mp->width * pix_mp->height;
+>  		break;
+>  	default:
+>  		pix_mp->width =3D width;
+> @@ -638,6 +638,8 @@ static int wave5_vpu_enc_s_fmt_out(struct file *file,=
+ void *fh, struct v4l2_form
+>  	inst->xfer_func =3D f->fmt.pix_mp.xfer_func;
+> =20
+>  	wave5_update_pix_fmt(&inst->dst_fmt, f->fmt.pix_mp.width, f->fmt.pix_mp=
+height);
+> +	inst->conf_win.width =3D inst->dst_fmt.width;
+> +	inst->conf_win.height =3D inst->dst_fmt.height;
+> =20
+>  	return 0;
+>  }
+> @@ -653,12 +655,17 @@ static int wave5_vpu_enc_g_selection(struct file *f=
+ile, void *fh, struct v4l2_se
+>  	switch (s->target) {
+>  	case V4L2_SEL_TGT_CROP_DEFAULT:
+>  	case V4L2_SEL_TGT_CROP_BOUNDS:
+> -	case V4L2_SEL_TGT_CROP:
+>  		s->r.left =3D 0;
+>  		s->r.top =3D 0;
+>  		s->r.width =3D inst->dst_fmt.width;
+>  		s->r.height =3D inst->dst_fmt.height;
+>  		break;
+> +	case V4L2_SEL_TGT_CROP:
+> +		s->r.left =3D 0;
+> +		s->r.top =3D 0;
+> +		s->r.width =3D inst->conf_win.width;
+> +		s->r.height =3D inst->conf_win.height;
+> +		break;
+>  	default:
+>  		return -EINVAL;
+>  	}
+> @@ -681,8 +688,10 @@ static int wave5_vpu_enc_s_selection(struct file *fi=
+le, void *fh, struct v4l2_se
+> =20
+>  	s->r.left =3D 0;
+>  	s->r.top =3D 0;
+> -	s->r.width =3D inst->src_fmt.width;
+> -	s->r.height =3D inst->src_fmt.height;
+> +	s->r.width =3D min(s->r.width, inst->dst_fmt.width);
+> +	s->r.height =3D min(s->r.height, inst->dst_fmt.height);
+> +
+> +	inst->conf_win =3D s->r;
+> =20
+>  	return 0;
+>  }
+> @@ -1229,8 +1238,8 @@ static void wave5_set_enc_openparam(struct enc_open=
+_param *open_param,
+>  	open_param->wave_param.lambda_scaling_enable =3D 1;
+> =20
+>  	open_param->line_buf_int_en =3D true;
+> -	open_param->pic_width =3D inst->dst_fmt.width;
+> -	open_param->pic_height =3D inst->dst_fmt.height;
+> +	open_param->pic_width =3D inst->conf_win.width;
+> +	open_param->pic_height =3D inst->conf_win.height;
+>  	open_param->frame_rate_info =3D inst->frame_rate;
+>  	open_param->rc_enable =3D inst->rc_enable;
+>  	if (inst->rc_enable) {
+> @@ -1806,6 +1815,8 @@ static int wave5_vpu_open_enc(struct file *filp)
+>  	v4l2_ctrl_handler_setup(v4l2_ctrl_hdl);
+> =20
+>  	wave5_set_default_format(&inst->src_fmt, &inst->dst_fmt);
+> +	inst->conf_win.width =3D inst->dst_fmt.width;
+> +	inst->conf_win.height =3D inst->dst_fmt.height;
+>  	inst->colorspace =3D V4L2_COLORSPACE_REC709;
+>  	inst->ycbcr_enc =3D V4L2_YCBCR_ENC_DEFAULT;
+>  	inst->quantization =3D V4L2_QUANTIZATION_DEFAULT;
+
 
