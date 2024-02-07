@@ -1,212 +1,196 @@
-Return-Path: <linux-kernel+bounces-56649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C7EA84CD34
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:48:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68CD684CD37
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:49:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50D861C2540B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:48:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F6C9B21FCD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:49:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42A947F47F;
-	Wed,  7 Feb 2024 14:48:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1077CF03;
+	Wed,  7 Feb 2024 14:49:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZLZX1m/u"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R2xXr0pa"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616077762B
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:48:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EDC77C09D
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:49:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707317306; cv=none; b=tspKjWraAMbxgoIIsN/Agz8XiQUBjKHRY2cApFLWrvweULjVgL1riTj7gkiUKaK0ipSEWbZrA7MEkme5P7xytfonfOT06HdUPZPdzKcIVk5YkRF0rXIZqNcvKe3jiLZRYY9KUhesvOF6bp21oBrjNQBuob3Esirvqy20fFJPZd4=
+	t=1707317359; cv=none; b=UlC/c/buLJuvkVymiB4BX0kjUc54d2GYuyBAAFmcltjamADevaoWc8Mt7WQGEOGvO+PZZ7q5aJCZDvnD992YPm1ZeW2avpB6KK6uLljnrCDBzK6yiG8sA61TVxjbxXjU5+Gu4NZKCeXK0yB1ex7FJgtC9ejQWspvZnqJIEBnbwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707317306; c=relaxed/simple;
-	bh=TG3Gw2URrbzNYz4gRkIWZjCBPa9SJfm7IeLSghIRzEc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eKMYLUwnxLVpcnOlmqba+SB4msNlrKF/6h4kRZtz9+xVcO9c8aXtXxUkq0rLgBCNnWjShcsrRuOVlAgoAJSsfDvtT8SSfm6Gw7OlNOR/9wfz6FOBvNUHRRDN7vX/cjAbJc8gyu+tHPGXqW+6Tx+iZWCqT0DJ++v92nO+qHgA1e4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZLZX1m/u; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4101fc00832so2379085e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 06:48:23 -0800 (PST)
+	s=arc-20240116; t=1707317359; c=relaxed/simple;
+	bh=krJX2wO8be7NQJXlSD1F9IfkFfrvInq26sVU2TNKHxs=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=IpvZbSx+TT8XwA97qBakMBKe/SV47B8hcRgPlwwt27ljp5wm4N8Kz1PxxrPKFcC6mv2qlvfN00QRgRPUkOSgkZ4jEZ4LmYzBI0dTz+99ZTdYcs8sl+animrptaSc+Tjl27/imLzHPZADvwx7OV3/2dl9g26/HCzv3GWSOQndYv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sebastianene.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=R2xXr0pa; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sebastianene.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-603c0e020a6so10198107b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 06:49:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707317302; x=1707922102; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=TjrnaMfjtaIdIMxZWoxjKFFoCN4X5eE097h6HkqsF+Y=;
-        b=ZLZX1m/uNPPzBfubNX0ZQmSXI3qTUnfJenUR2Q/hsOlkOYrrtzlPSAeEu2YzZmMLb+
-         AnSNLDbrrFqbvjt36kqGuf/XezZlwpvf8fabsB3TRzMkzgG4rO6k5OcmXiKPzyfaTCPQ
-         lajm3/P9H+57gfgIry89hwKTr7PX7qMFQDcQpHEOai/trJ7WA5ZMoYyFqvKVAd90db13
-         RR6bptRYp97lpiDzgFwnB31PnahY5M1URLaUMSyCPKjkDmWy+aBeOrS+TkhzVptTchpn
-         Pa8IGhZe5QkzPvjbvBi0B9Y8AZjgUzYhqkRCw5CBMzIgZzvYb3sNd5VttsPMvKqWQkiM
-         KhJw==
+        d=google.com; s=20230601; t=1707317357; x=1707922157; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TvegWWdI0OwCbkhac2nall+6RkPi+o6vdVPfpeCUajU=;
+        b=R2xXr0parLvm0n0gmqieFjxqiIhlnIfeFuJx5wQuq1yu2eMM9bqjhL4a7vZ+CkLTy0
+         9N1c8/TtbGVNqrzyQ+6BW3Lri02VeGbqxa2tgPEeiuAsO8KyDjGpbrcS2DCQBW+6JcKj
+         c0nKSWXO1B64OdZihEMTu2A+XKZwaA3PJciek7KI2ZSIowMl9g5MKKfOjTwrARbbT8Wy
+         DRFriUyEbXAr30owz4Hofa1xufCykVXxm38rD91lSmXTA0U5JVzBmUXSUjFLyVkuhvVB
+         grA/GnvwyQkShZH+r72WqLabwj58BzOlecfTTry/Qv0Q/FoHnFB73GhgJGENHXDas4l9
+         ya0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707317302; x=1707922102;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TjrnaMfjtaIdIMxZWoxjKFFoCN4X5eE097h6HkqsF+Y=;
-        b=a9JwOwuho1pKhtpX/1EY11pUm/dHIFuUMzLgKOhzS0ky/3HEfTFVS4Es2gFp+2W0EG
-         0/F33FpjcxSXLLNTY+RCP4o6nCHs7U2j9JgJregLgBRL5tOjOIgEpLKEjgfbh/C7jmhz
-         gfYQ1tC3lUxHj2ZA0WpZPDa3SMijk5Gs6P8V3O3QmSHLD2AqQ6FcB3WkMtArwvKvJl1L
-         nXAdObVX9nHlsJocwDkUl7rFQYo+LGLVHMv25H2yfBoVRX+kqzelnhr02cDgWUHch/Wb
-         2m5rm+XiSRbu5R7B5q+ba2fulwUXuoPslRv+sRiefN/4pwaWTTuj885CoaoNHdNkhS5B
-         v+Pw==
-X-Gm-Message-State: AOJu0YxXeN+dqIMMWTVmwqObsno2bqkpA7kcn/VB7GTw87RazHRI4A5l
-	xdQ8GH2+MzPq9jIpyweJGfSuQZbqVZGWAG83o4Ng0V7JGJIMkAIPTeTSj3KhTMc=
-X-Google-Smtp-Source: AGHT+IGh8sXcNQjqiVsv9lLCBPY7A8Ao3cTvDIxAoj/rq2WKA4j7B3aKawxRDyUlkMTSZBLCDv2YWg==
-X-Received: by 2002:a05:600c:1ca6:b0:40e:b195:6bdb with SMTP id k38-20020a05600c1ca600b0040eb1956bdbmr5187499wms.2.1707317301725;
-        Wed, 07 Feb 2024 06:48:21 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVr47OU9QJl84wqhieyiA7SQq/5jQEWYK8EGQjYIYZhlVII6geGc/M8BoVUFjokxeIvxWFIKDLcQpTgleT5Ppaajcnv1g7ZvlYlkvzN17Cedy6f8aRvB3ePmLfjV2vedna3vmXy/22FSQCf1rf8sc+05Ea7CZXH/Hvy+xI4h/xPIAlwzfT4qIxvhOucqWAs5qpkp3TzlckrOYJpeEiJnOrYM5hzt6R9/8AfFZsTjk3w1MpeVU4mrcJVU6JmpCdIyuO5CBC1tDC+tQcHbIgQPyNyDM7YLRD6CwMhLyjPcz0aGUcXnYMyDBOMAHiVmWx0H1IUyWbQAG3ecIN395x0GITI/RfkSqNgjtumXh/vlKErAsycLpSnDLgvfmZXfu9hoV7PGMvOMAroa1vr7fK1D4SswobOdezb4B/DtPCqWSTcv+Gvoi5g1SdGMNkcTcVsXgFBJ5EE6Lb8jeK/w8Tb7dVhQj/A+yEao2nm2bh2MggVYIgTp5P2ObDl+dOSvxaE2voMebJJqHaeyYiDp++E2tIYydQw9y5396r9wude4o46hR4Ee6PS9MatfuryGpRcYMPSybP4zHnpYQZlFcmgmDnQ8QTp5Uo5rwTSCKwJcgB14PUzVy25z9JAHbDtKGw=
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id o14-20020a05600c4fce00b0040fdd7cbc8dsm5518023wmq.47.2024.02.07.06.48.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 06:48:21 -0800 (PST)
-Message-ID: <d367bd65-605e-44b7-9400-acd463dec0b6@linaro.org>
-Date: Wed, 7 Feb 2024 15:48:18 +0100
+        d=1e100.net; s=20230601; t=1707317357; x=1707922157;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TvegWWdI0OwCbkhac2nall+6RkPi+o6vdVPfpeCUajU=;
+        b=ELhVButwJDT258QEzTVA9f0dM8ci/3fcYIeNeYZdHbJjbs5NoK6tAvz0NdqQTBTS0f
+         rjHbk1r+vU/+j4NppY4PkEE/TbBj1BNfPQ+O1YZv/+VRvgX+TnB+ICBpcwJW6xY2BsQL
+         5xuYhPJNUQKq+hV7xd+8oV8VvRSEKvgmiSPViGM4/OVAB0eyKTTqZPqyE6dcgjjm/u1o
+         6GtmGHZYMCIyt7ZoYX7gbW8EuY2Sg6+2nd2aACyhe0/7OuyqgFwRz0WDN4G1+IQSD/54
+         reVlaEadVxny6iguFgQK2GWEDcYePKYMwR62a5a6Yv5GTO4R33Zlp+5iJGcCMmni8xkA
+         Snow==
+X-Forwarded-Encrypted: i=1; AJvYcCU79DcsHpJ5A+y2GETgVkvFfPIMSYgMvyn6kwAdmRegKTiG3Ge7vTJNq4KyqDeiPp8pLUoobQQ0nwuxtbZUzh0ftUfuYgUDlLYEhfVs
+X-Gm-Message-State: AOJu0Yy74PAMn/bk0PghtGppoXj2tdeTsls5oAnNVSrmZ7HuCyAamwrA
+	S9yZAd3EdDbpZasxIhAwSXtopOEWEL/AzGthHpMwVCPWhhtLakP8tA7oBFp2tWeQ7CA+p/6vqbb
+	Ran7Zx/gCY7gKaY4iRox8vEHPTw==
+X-Google-Smtp-Source: AGHT+IHsVGJFxNmDhsKxmS2lrYPhk6GujJhV1UK7jEEId4g4rPm9A+7WF09PvN/kfQINfrelSokR/4V2F8FfP1X7dG0=
+X-Received: from sebkvm.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:cd5])
+ (user=sebastianene job=sendgmr) by 2002:a05:6902:118f:b0:dc6:c623:ce6f with
+ SMTP id m15-20020a056902118f00b00dc6c623ce6fmr158528ybu.13.1707317356952;
+ Wed, 07 Feb 2024 06:49:16 -0800 (PST)
+Date: Wed,  7 Feb 2024 14:48:29 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] soc: samsung: exynos-pmu: Add regmap support for
- SoCs that protect PMU regs
-To: Peter Griffin <peter.griffin@linaro.org>
-Cc: arnd@arndb.de, linux@roeck-us.net, wim@linux-watchdog.org,
- alim.akhtar@samsung.com, jaewon02.kim@samsung.com,
- semen.protsenko@linaro.org, kernel-team@android.com,
- tudor.ambarus@linaro.org, andre.draszik@linaro.org, saravanak@google.com,
- willmcvicker@google.com, linux-fsd@tesla.com,
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org
-References: <20240129211912.3068411-1-peter.griffin@linaro.org>
- <20240129211912.3068411-2-peter.griffin@linaro.org>
- <fb530eb8-e32b-4faf-81f3-efc334ebf241@linaro.org>
- <CADrjBPoQmTRsFYRtxBxdvAoKK816O8XN3=hOJ3vBt8wbbbk-=Q@mail.gmail.com>
- <99828589-c0b5-456d-b250-6ad3e6085a91@linaro.org>
- <CADrjBPrWH8uFrFmn_CZpr+fAnPrzbDT4i9XuMXJqKfzeouPpKg@mail.gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CADrjBPrWH8uFrFmn_CZpr+fAnPrzbDT4i9XuMXJqKfzeouPpKg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
+Message-ID: <20240207144832.1017815-2-sebastianene@google.com>
+Subject: [PATCH v5 0/4] arm64: ptdump: View the second stage page-tables
+From: Sebastian Ene <sebastianene@google.com>
+To: catalin.marinas@arm.com, gshan@redhat.com, james.morse@arm.com, 
+	mark.rutland@arm.com, maz@kernel.org, oliver.upton@linux.dev, 
+	rananta@google.com, ricarkol@google.com, ryan.roberts@arm.com, 
+	shahuang@redhat.com, suzuki.poulose@arm.com, will@kernel.org, 
+	yuzenghui@huawei.com
+Cc: kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, kernel-team@android.com, vdonnefort@google.com, 
+	Sebastian Ene <sebastianene@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 07/02/2024 12:42, Peter Griffin wrote:
->>>>>  #include <linux/soc/samsung/exynos-regs-pmu.h>
->>>>>  #include <linux/soc/samsung/exynos-pmu.h>
->>>>>
->>>>>  #include "exynos-pmu.h"
->>>>>
->>>>> +static struct platform_driver exynos_pmu_driver;
->>>>
->>>> I don't understand why do you need it. You can have only one
->>>> pmu_context. The moment you probe second one, previous becomes invalid.
->>>>
->>>> I guess you want to parse phandle and check if just in case if it points
->>>> to the right device, but still the original code is not ready for two
->>>> PMU devices. I say either this problem should be solved entirely,
->>>> allowing two devices, or just compare device node from phandle with
->>>> device node of exynos_pmu_context->dev and return -EINVAL on mismatches.
->>>
->>> Apologies I didn't answer your original question. This wasn't about
->>> having partial support for multiple pmu devices. It is being used by
->>> driver_find_device_by_of_node() in exynos_get_pmu_regmap_by_phandle()
->>> to determine that the exynos-pmu device has probed and therefore a
->>> pmu_context exists and a regmap has been created and can be returned
->>> to the caller (as opposed to doing a -EPROBE_DEFER).
->>>
->>> Is there some better/other API you recommend for this purpose? Just
->>> checking pmu_context directly seems racy, so I don't think we should
->>> do that.
->>
->> Hm, I don't quite get why you cannot use of_find_device_by_node()?
-> 
-> of_find_device_by_node() returns a platform_device, even if the driver
-> hasn't probed. Whereas driver_find_device_by_of_node() iterates
-> devices bound to a driver.
-> 
-> If using of_find_device_by_node() API I could check the result of
-> platform_get_drvdata(), and -EPROBE_DEFER if NULL (that pattern seems
-> to be used by a few drivers). But that AFAIK only guarantees you
-> reached the platform_set_drvdata() call in your driver probe()
-> function, not that it has completed.
+Hi,
 
-All drivers, except two, use of_find_device_by_node(), so basically you
-claim they are all broken. If that's true, the core API and these
-drivers should be fixed, instead of implementing here entirely different
-pattern.
+This is the first part of the series which enables dumping of the guest
+stage-2 pagetables. The support for dumping the host stage-2 pagetables
+which is pKVM specific will be part of a follow-up series as per the
+feedback received in v4. 
 
-of_find_device_by_node() goes via platform_bus_type->sp->klist_devices
-and devices are added to the list in device_add() after
-bus_probe_device(dev), regardless of its success. Therefore after
-successful first probe, you will have the same result.
+When CONFIG_PTDUMP_STAGE2_DEBUGFS is enabled, ptdump registers 
+'/sys/debug/kvm/<guest_id>/stage2_page_tables' entry with debugfs
+upon guest creation. This allows userspace tools (eg. cat) to dump the
+stage-2 pagetables by reading the registered file.
 
+Reading the debugfs file shows stage-2 memory ranges in following format:
+<IPA range> <size> <descriptor type> <access permissions> <mem_attributes>
 
-> 
-> IMHO the drivers using driver_find_device_by_of_node() for probe
-> deferral are doing it more robustly than those using
-> of_find_device_by_node()  and checking if platform_get_drvdata() is
-> NULL.
+Below is the output of a guest stage-2 pagetable mappings running under
+Qemu:
 
-Some are checking dev->driver, but this also looks buggy, because it is
-called before actual drv->probe().
+---[ IPA bits 33 start lvl 2 ]---
+0x0000000000000000-0x0000000080000000           2G PGD
+0x0000000080000000-0x0000000080c00000          12M PGD      R W AF        BLK
+0x0000000080c00000-0x0000000080e00000           2M PGD   XN R W AF        BLK
+0x0000000080e00000-0x0000000081000000           2M PGD      R W AF        BLK
+0x0000000081000000-0x0000000081400000           4M PGD   XN R W AF        BLK
+0x0000000081400000-0x000000008fe00000         234M PGD
+0x000000008fe00000-0x0000000090000000           2M PGD   XN R W AF        BLK
+0x0000000090000000-0x00000000fa000000        1696M PGD
+0x00000000fa000000-0x00000000fe000000          64M PGD   XN R W AF        BLK
+0x00000000fe000000-0x0000000100000000          32M PGD
+0x0000000100000000-0x0000000101c00000          28M PGD   XN R W AF        BLK
+0x0000000101c00000-0x0000000102000000           4M PGD
+0x0000000102000000-0x0000000102200000           2M PGD   XN R W AF        BLK
+0x0000000102200000-0x000000017b000000        1934M PGD
+0x000000017b000000-0x0000000180000000          80M PGD   XN R W AF        BLK
 
-OK, let's go with this method. I dislike the difference from everyone
-else, but it seems everyone else is doing it wrong. :(
+Link to v4:
+https://lore.kernel.org/all/20231218135859.2513568-2-sebastianene@google.com/
 
-Best regards,
-Krzysztof
+Link to v3:
+https://lore.kernel.org/all/20231115171639.2852644-2-sebastianene@google.com/
+
+Changelog:
+ v4 -> current_version:
+ * refactorization: split the series into two parts as per the feedback
+   received from Oliver. Introduce the base support which allows dumping
+   of the guest stage-2 pagetables.
+ 
+ * removed the *ops* struct wrapper built on top of the file_ops and
+   simplify the ptdump interface access.
+ 
+ * keep the page table walker away from the ptdump specific code
+
+  v3 -> current_version:
+  * refactorization: moved all the **KVM** specific components under
+    kvm/ as suggested by Oliver. Introduced a new file
+    arm64/kvm/ptdump.c which handled the second stage translation.
+    re-used only the display portion from mm/ptdump.c
+
+  * pagetable snapshot creation now uses memory donated from the host.
+    The memory is no longer shared with the host as this can pose a security
+    risk if the host has access to manipulate the pagetable copy while
+    the hypervisor iterates it.
+
+  * fixed a memory leak: while memory was used from the memcache for
+    building the snapshot pagetable, it was no longer giving back the
+    pages to the host for freeing. A separate array was introduced to
+    keep track of the pages allocated from the memcache.
+
+  v2 -> v3:
+  * register the stage-2 debugfs entry for the host under
+    /sys/debug/kvm/host_stage2_page_tables and in
+    /sys/debug/kvm/<guest_id>/stage2_page_tables for guests.
+
+  * don't use a static array for parsing the attributes description,
+    generate it dynamically based on the number of pagetable levels
+
+  * remove the lock that was guarding the seq_file private inode data,
+    and keep the data private to the open file session.
+
+  * minor fixes & renaming of CONFIG_NVHE_EL2_PTDUMP_DEBUGFS to
+    CONFIG_PTDUMP_STAGE2_DEBUGFS
+
+  v1 -> v2:
+  * use the stage-2 pagetable walker for dumping descriptors instead of
+    the one provided by ptdump.
+
+  * support for guests pagetables dumping under VHE/nVHE non-protected
+
+Thanks,
+
+Sebastian Ene (4):
+  arm64: ptdump: Expose the attribute parsing functionality
+  arm64: ptdump: Use the mask from the state structure
+  KVM: arm64: Register ptdump with debugfs on guest creation
+  KVM: arm64: Initialize the ptdump parser with stage-2 attributes
+
+ arch/arm64/include/asm/ptdump.h |  42 +++++-
+ arch/arm64/kvm/Kconfig          |  13 ++
+ arch/arm64/kvm/Makefile         |   1 +
+ arch/arm64/kvm/debug.c          |   7 +
+ arch/arm64/kvm/kvm_ptdump.h     |  20 +++
+ arch/arm64/kvm/ptdump.c         | 235 ++++++++++++++++++++++++++++++++
+ arch/arm64/mm/ptdump.c          |  49 ++-----
+ 7 files changed, 327 insertions(+), 40 deletions(-)
+ create mode 100644 arch/arm64/kvm/kvm_ptdump.h
+ create mode 100644 arch/arm64/kvm/ptdump.c
+
+-- 
+2.43.0.594.gd9cf4e227d-goog
 
 
