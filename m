@@ -1,138 +1,118 @@
-Return-Path: <linux-kernel+bounces-56044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97B6384C543
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:56:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63E8D84C548
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:58:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC4691C20F61
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:56:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01D401F27599
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:58:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEC361CF91;
-	Wed,  7 Feb 2024 06:56:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 792801F5F0;
+	Wed,  7 Feb 2024 06:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Nf1misr0"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="MfeQX4J+"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C71C1CD3A;
-	Wed,  7 Feb 2024 06:56:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED4B41CD30
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 06:58:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707289008; cv=none; b=TX7I6waNVsLImPvDtx3AxeYnGi4m+r0LilJ84vfOYGOmjjyi3PndtT7oo8TUO/m1OzIKdAvLZS22rH4H+MUVgPrXGOHRi+4A2/1ThcnospbIksLaQRkmt6hyCE/qwNjiSWBg1M/ZspzPSUaMrQCai9UNwtq/uvCHSgBsce8bRDc=
+	t=1707289083; cv=none; b=LDbPI15X4U7FWmYah5814TpQUohd+0owptfEbzE90TK2a12IVPf7047DEkPkrdJj2foP+FMJF83ArEWtqTnsmefYHbTZdOhWFu84KovZ10P2D2A9h2mmVPKUbHtMDL+aNbUhsDDziWYakZ6Ssg+Ww3DySr42I3V/dInuWTX0y0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707289008; c=relaxed/simple;
-	bh=lLOLMXJsAYbQ6m+PnkysiiwQB1o67gcWOvRURYVCQ7c=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=UA3D3HffjNltyvM2L/GWP6mlp8g/2v/+hOmMG/6g1qSkWOvbxsGLtXxGGMKKD4rgeNLKUnEUaPpYDFsye1FM6cdD87pFtZaix+M6uG/fRfqVqU5xufF76NTFGnGirhSQKJJZkmKrOBsD4FXDBJFCxs/R1LF3eFDU3i/ln5AZSWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Nf1misr0; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707289007; x=1738825007;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=lLOLMXJsAYbQ6m+PnkysiiwQB1o67gcWOvRURYVCQ7c=;
-  b=Nf1misr0tNNbewIJ/sbE9VxGCo0yWeOwC8M1mgoE6ljFtqFJfBvviQg7
-   bjdEvcEugDFHMG2H1EfLiR5ANeE/G18OeswhfEMbcewT13zKUzieIGuEX
-   7hMjYSk89CoRSKXDGGtB1Yc6HUwchpyX0Vg8tiXu9I0knALNMdN2MBLqq
-   ScfQoTTUnfS78GNwLg0kwej7by8HS1kptKE9Ae3geUpIKRXCKiccu9ND6
-   1mWIl2pMDm1+ZHG2sYMHDY+aV4uY7OukoN7mXeAcEvJXsgtqqgWTf4xWf
-   pCVU5s7HnO4kcAGFXl94AVziZso8a1cqvty85dw1BTxbog1jkxctQ5Iem
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="11508193"
-X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
-   d="scan'208";a="11508193"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 22:56:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
-   d="scan'208";a="1477944"
-Received: from yuyingfa-mobl.ccr.corp.intel.com (HELO [10.249.254.50]) ([10.249.254.50])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 22:56:42 -0800
-Message-ID: <5b3adb702cfaa944fdaa1b49ee7f10e4d0e86b2f.camel@linux.intel.com>
-Subject: Re: Re: linux-next: build failure after merge of the drm-misc tree
-From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-To: Lucas De Marchi <lucas.demarchi@intel.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Daniel Vetter
- <daniel.vetter@ffwll.ch>, Matthew Brost <matthew.brost@intel.com>, Rodrigo
- Vivi <rodrigo.vivi@intel.com>, Christian =?ISO-8859-1?Q?K=F6nig?=
- <christian.koenig@amd.com>, Somalapuram Amaranath
- <Amaranath.Somalapuram@amd.com>, Intel Graphics
- <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, Dave Airlie <airlied@gmail.com>,
- intel-xe@lists.freedesktop.org
-Date: Wed, 07 Feb 2024 07:56:39 +0100
-In-Reply-To: <tughiv3y52m6ruczgb3g6mvvek7ihfrxaxh7ovoogzqfi6jmun@jcn6xap7vwcg>
-References: <20240206122822.12a2df89@canb.auug.org.au>
-	 <f9a027765a3c65c69c2d49cf2964fe1155e914f4.camel@linux.intel.com>
-	 <tughiv3y52m6ruczgb3g6mvvek7ihfrxaxh7ovoogzqfi6jmun@jcn6xap7vwcg>
-Autocrypt: addr=thomas.hellstrom@linux.intel.com; prefer-encrypt=mutual;
- keydata=mDMEZaWU6xYJKwYBBAHaRw8BAQdAj/We1UBCIrAm9H5t5Z7+elYJowdlhiYE8zUXgxcFz360SFRob21hcyBIZWxsc3Ryw7ZtIChJbnRlbCBMaW51eCBlbWFpbCkgPHRob21hcy5oZWxsc3Ryb21AbGludXguaW50ZWwuY29tPoiTBBMWCgA7FiEEbJFDO8NaBua8diGTuBaTVQrGBr8FAmWllOsCGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQuBaTVQrGBr/yQAD/Z1B+Kzy2JTuIy9LsKfC9FJmt1K/4qgaVeZMIKCAxf2UBAJhmZ5jmkDIf6YghfINZlYq6ixyWnOkWMuSLmELwOsgPuDgEZaWU6xIKKwYBBAGXVQEFAQEHQF9v/LNGegctctMWGHvmV/6oKOWWf/vd4MeqoSYTxVBTAwEIB4h4BBgWCgAgFiEEbJFDO8NaBua8diGTuBaTVQrGBr8FAmWllOsCGwwACgkQuBaTVQrGBr/P2QD9Gts6Ee91w3SzOelNjsus/DcCTBb3fRugJoqcfxjKU0gBAKIFVMvVUGbhlEi6EFTZmBZ0QIZEIzOOVfkaIgWelFEH
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1707289083; c=relaxed/simple;
+	bh=rCZ9HSGtLLD4caLOi+C1H8AptWnr7xurWcFkoFTjU1w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eJrJEbpwnw+4jLzqX9eUbLg+wmXGOaGencEUm5aijNTUfoTBMyfI5mZr7ihdsuvQHBM478N6IF7VvVzy5icmvi/H2hLgPaQg7NRhgPdL6jrpoSgAGq3BQoskmyn2zy7/xjaQVcnU0pkZjtRhiOP/LwIqWGt3t+72RIbNz8bSH4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=MfeQX4J+; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc730e5d88cso213745276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 22:58:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707289080; x=1707893880; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tjfy54B6+Jm7MlmeoV5+p4SaY3yr3KlOWnWh/R3pw/Q=;
+        b=MfeQX4J+50Q+ag2o5vzzyEtnDwVDIINPiKv4QiLy11lxUI83QtjeWW1+AMOA6jN4r0
+         jsSgFnJsuh1RtTwjsR7mIcesGHpSIqnT7Nmkrmsaf+HB+nsrIxuow1vT0mPU96zkyN8Z
+         w6azVL2BzPEHxB28B4dWbKXPgWUMiMSjQXg/Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707289080; x=1707893880;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Tjfy54B6+Jm7MlmeoV5+p4SaY3yr3KlOWnWh/R3pw/Q=;
+        b=OJMqUL4Ri9WvqUZN3EzUi64kSOswGtwYEh1FzexEdOMNyUtc6XGTs87JEWKO1sc4o4
+         +XlTR87nYKnJ6VsJM9Z7vW2ygqYausH4w+RfAO/D8eWoOyMAgMGOyaOK5qtUFYlgqyfL
+         ONV3ZJO9EVjID6yYxU+4dLpvJeGwFDVLSwQv8gsr8rrqz3JOpBdoUCKt+q2dF5yfZdz5
+         xNoWgclTKHCoHMOGnhhJEPM0QVI2JSuf+aUrmNwuF7wu69K+XA6rRefG1YkLxlcmfQAU
+         yyQfsdcFX6Cd8UH4/8ypI+GDuiAfTge9uJKy2YnIVY7RdMqeMQHRu7ShMsIpUfP8zrI+
+         qaOg==
+X-Gm-Message-State: AOJu0YwMZ9xme2QGBa2A7uWwvC9rl6IaMmUWDeV/stPtnRT6n85gz1w5
+	EJ9h9WJnRZaVYOqXhQTaWfzv78vf/fmVKxf9Z1zWPKRq6P/ol/nlpbsRTXilTA==
+X-Google-Smtp-Source: AGHT+IHYzKqvu7XWwdPK9IPIQeA91PTLPU/0wlPyf2K/JsBCamw5GLYRhxdxFWHdSc6dKa3lYE3i8w==
+X-Received: by 2002:a05:6902:1a45:b0:dc6:b8f5:50ae with SMTP id cy5-20020a0569021a4500b00dc6b8f550aemr4421214ybb.32.1707289079959;
+        Tue, 06 Feb 2024 22:57:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW0zpFxQmjQG8MCNugXs8T9eOKOGkwr3Fe3UTCLKl3sSP4+a0vNh1XuKHHW5agD9D1LTYrg91AHdng2rpQiRJrzXdZtQgTITvaLSFetHFjk3/ZfKxeHMU5IowymtMTkelrCsGTsxATuh03xQ8S6SsQA/3oGqqy8hL92FGaz0Ubl0zw=
+Received: from tigerii.tok.corp.google.com ([2401:fa00:8f:203:aa4c:2868:935:7ac6])
+        by smtp.gmail.com with ESMTPSA id jw15-20020a056a00928f00b006e03ac84d53sm672576pfb.193.2024.02.06.22.57.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 22:57:59 -0800 (PST)
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Minchan Kim <minchan@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: [RFC][PATCH 0/2] zram: decouple comp stream and comp buffer
+Date: Wed,  7 Feb 2024 15:57:10 +0900
+Message-ID: <20240207065751.1908939-1-senozhatsky@chromium.org>
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2024-02-06 at 14:21 -0600, Lucas De Marchi wrote:
-> On Tue, Feb 06, 2024 at 01:39:28PM +0100, Thomas Hellstr=C3=B6m wrote:
-> > Hi
-> >=20
-> > On Tue, 2024-02-06 at 12:28 +1100, Stephen Rothwell wrote:
-> > > Hi all,
-> > >=20
-> > > After merging the drm-misc tree, today's linux-next build (x86_64
-> > > allmodconfig) failed like this:
-> > >=20
-> > >=20
-> > > Caused by commit
-> > >=20
-> > > =C2=A0 a78a8da51b36 ("drm/ttm: replace busy placement with flags v6")
-> > >=20
-> > > interacting with commit
-> > >=20
-> > > =C2=A0 dd08ebf6c352 ("drm/xe: Introduce a new DRM driver for Intel
-> > > GPUs")
-> > >=20
-> > > (and maybe others) from Linus' tree (v6.8-rc1).
-> > >=20
-> > > I have applied the following merge fix patch for today.=C2=A0 This
-> > > makes
-> > > it build,
-> > > but more is likely needed ...
-> >=20
-> > There was a manual fixup for the drm-misc-next merge into drm-tip
-> > that
-> > did the right thing here.
-> >=20
-> > How do we ensure these are included into the linux-next builds?
->=20
-> I think it should have been done in commit 4db102dcb039 ("Merge
-> drm/drm-next into drm-misc-next")
-> when drm-next merged back into drm-misc-next. Now one option is
-> probably a
-> commit on drm-misc-next with this content:
-> https://cgit.freedesktop.org/drm-tip/tree/fixups/drm-misc-next.patch?h=3D=
-rerere-cache&id=3Dc39c6e3d74203820ef630884a5323237696bd36c
->=20
->=20
-> Lucas De Marchi
+	RFC
 
-Indeed. Not even drm-misc itself compiles with xe enabled. I'll ping
-drm-misc maintainers.
+	We keep compression work memory buffer per-comp stream (which
+is per-CPU), but we don't need that many buffers, because on each
+CPU only one compression backend can access work memory at any given
+time. Hence the patch series moves compression work memory to a
+dedicated per-CPU area, reducing the amount of memory we allocate
+for those buffers.
 
-/Thomas
+For instance, assume a 12 CPUs system, 2 compression streams
+per-CPU (a default and one for deferred recompression). Before
+we'd allocate 12 * 2 * 2 pages, after we'll allocate 12 * 2 pages.
 
+NOTE:
+The series stops short of moving comp buffers to a global per-CPU
+area, which all zram devices can share. Compression backends use
+CPUs exclusively (disable migration and CPU hotplug), so in theory
+comp work memory can be in global per-CPU data. This can reduce
+memory usage on systems that init numerous zram devices.
+E.g. instead of num-zram-devices * num-cpus buffers we'll allocate
+only num-cpus buffers.
 
+Sergey Senozhatsky (2):
+  zram: do not allocate buffer if crypto comp allocation failed
+  zram: move comp buffer to a dedicate per-CPU area
+
+ drivers/block/zram/zcomp.c    | 118 +++++++++++++++++++++++++++++-----
+ drivers/block/zram/zcomp.h    |  24 +++++--
+ drivers/block/zram/zram_drv.c |  32 +++++++--
+ drivers/block/zram/zram_drv.h |   1 +
+ include/linux/cpuhotplug.h    |   1 +
+ 5 files changed, 151 insertions(+), 25 deletions(-)
+
+-- 
+2.43.0.594.gd9cf4e227d-goog
 
 
