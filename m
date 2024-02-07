@@ -1,319 +1,110 @@
-Return-Path: <linux-kernel+bounces-55840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 792BB84C24D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:15:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CB5D84C266
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:20:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 305D5285F5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:15:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DAED1C21FDD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:20:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EE9EDDD4;
-	Wed,  7 Feb 2024 02:15:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACC75EAE5;
+	Wed,  7 Feb 2024 02:19:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="pXs9T3GS"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ui/tL+mc"
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDFBE8BF0
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 02:15:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7554DDC6;
+	Wed,  7 Feb 2024 02:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707272120; cv=none; b=OF6IfZaeWsOs5y6JJ8UH+kkiDhRQidUssHfXFqs6WQal1Sld+6IyzuCot+95wmw/Z6gSATpIUvMn52s+Vt0IEiKcWk7ciRVMKw1MgHV3XgAVh284N0GOVZntuWDJ0x9uUfc6vya0NW7ekEb/A39LjE1ifMxBWRJDalIFWyDdIHg=
+	t=1707272397; cv=none; b=kAA22HUyGM/nZtotkpvmCc7OFhmxZKXVE77NvQuyfUoCJiMkkrerxkASY9PaOpkch1om8CUr48C5gdR22BLx3O/poMaA9E1BeTr32lzOHj6w5PNcGSANPwaM3GtY2flnqsN688USwWuCRma3qJ6dkwhZA/fDVJJPzq4V2iNzNR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707272120; c=relaxed/simple;
-	bh=8d5l1i5/iJxcGdfZhzd+Mn/cTdjRg2PySuAR7EDTpKg=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a092uPmXB2wmcQysfS+2WquqLMtKnftEu8G4RpZMD/+wyvB1VNIn8Koq3wo7IQBtQPoxEVjgWL0lN2klYp0M/Wj/TnA9ebgVp4KLaGaZETfTCkCICTgfXgpNUgzgQOTPKN2Uc5ec+OHAw/B6uBJZwhPh0iohba9FgitmnxcIZgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=pXs9T3GS; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: ba374f78c55e11ee9e680517dc993faa-20240207
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=LIwzj4PRSE8nZMkJ2P9QCkeQYE9U4jv4prf+NbUnZEo=;
-	b=pXs9T3GSaFRL+9lavQVguUQm4h9+mqQLEoNcxtgbC1Ava9JCnszt77d/gpMJkr/eGbOwHIQljWXm1REdZqvrCLap6rY3qX/8n+os3ickp9d/kS8ekBn8a85/XdrMowzB4im1+xZ+qvQo1EzxGpGcf5QvuSVoLNvwjhIusDlX/IU=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:b58a890d-924b-4820-98ba-ed0caef50c45,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:6f543d0,CLOUDID:2ac43380-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: ba374f78c55e11ee9e680517dc993faa-20240207
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
-	(envelope-from <shawn.sung@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1457236482; Wed, 07 Feb 2024 10:15:13 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 7 Feb 2024 10:15:12 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 7 Feb 2024 10:15:12 +0800
-From: Hsiao Chien Sung <shawn.sung@mediatek.com>
-To: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
-	<dri-devel@lists.freedesktop.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Hsiao
- Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
-Subject: [PATCH v2 1/1] drm/mediatek: Filter modes according to hardware capability
-Date: Wed, 7 Feb 2024 10:15:10 +0800
-Message-ID: <20240207021510.24035-2-shawn.sung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20240207021510.24035-1-shawn.sung@mediatek.com>
-References: <20240207021510.24035-1-shawn.sung@mediatek.com>
+	s=arc-20240116; t=1707272397; c=relaxed/simple;
+	bh=Chp9zNiZQisqvJTCxnpUb83eLJUJnwZdDtmJwK5aEjE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TuI22k+YlsJc9R1PuqtoSfjjX00XT85dWQeBFYh9U8/YLwP7R3vEWT2oyfXpLv5+CT391ZfTrT5+q7q8rXpnr1e4Dl+pLVEZQ2XLSHOSH0tlQslyHMlRGJ1H+YF8Or6u707aV+PGmAbXbDEkPD7w5/iwt18+30oMKhheWz/2aIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ui/tL+mc; arc=none smtp.client-ip=115.124.30.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1707272384; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=SzzRsuoKn9NUe6qiu7CdTsPN+rpGpZaX9D+ucZDQDig=;
+	b=ui/tL+mcqJVOTxMOJR2kU7D5xQAgfJqpdqcg9i+yvwllD7CNjqMsXqdKR9U79+WTGuzfeG3phA6dM+8bIGLycrLt+S66IhBTwZSpZn+EOH2eeM/L+m+P+4YezubFTV6f/wGxgv4DKisR3vSx+YHe1f7nTxx8nY7q+3BgvpPwLOQ=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xiangzao@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0W0F5hRE_1707272372;
+Received: from localhost.localdomain(mailfrom:xiangzao@linux.alibaba.com fp:SMTPD_---0W0F5hRE_1707272372)
+          by smtp.aliyun-inc.com;
+          Wed, 07 Feb 2024 10:19:43 +0800
+From: Yuanhe Shu <xiangzao@linux.alibaba.com>
+To: keescook@chromium.org,
+	tony.luck@intel.com,
+	gpiccoli@igalia.com,
+	shuah@kernel.org,
+	corbet@lwn.net
+Cc: xlpang@linux.alibaba.com,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Yuanhe Shu <xiangzao@linux.alibaba.com>
+Subject: [PATCH v3 0/3] pstore: add multi-backend support
+Date: Wed,  7 Feb 2024 10:19:18 +0800
+Message-Id: <20240207021921.206425-1-xiangzao@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
+Content-Transfer-Encoding: 8bit
 
-From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
+I have been steadily working but struggled to find a seamlessly
+integrated way to implement tty frontend until Guilherme inspired me
+that multi-backend and tty frontend are actually two separate entities.
+This submission presents the 3rd iteration of my efforts, listing
+notable changes form the v1:
 
-We found a stability issue on MT8188 when connecting an external monitor
-in 2560x1440@144Hz mode. Checked with the designer, there is a function
-called "prefetch" which is working during VBP (triggered by VSYNC).
-If the duration of VBP is too short, the throughput requirement could
-increase more than 3 times and lead to stability issues.
+1. pstore.backend no longer acts as "registered backend", but "backends
+eligible for registration".
 
-The mode settings that VDOSYS supports are mainly affected by clock
-rate and throughput, display driver should filter these settings
-according to the SoC's limitation to avoid unstable conditions.
+2. drop subdir since it will break user space
 
-Since currently the mode filter is only available on MT8195 and MT8188
-and they share the same compatible name, the reference number (8250)
-is hard coded instead of in the driver data.
+3. drop tty frontend since I haven't yet devised a satisfactory
+implementation strategy
 
-Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
----
- drivers/gpu/drm/mediatek/mtk_disp_drv.h       |  4 ++
- drivers/gpu/drm/mediatek/mtk_disp_merge.c     | 56 +++++++++++++++++++
- .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c   | 17 ++++++
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c       | 17 ++++++
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   |  1 +
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   | 12 ++++
- 6 files changed, 107 insertions(+)
+Changes from v2:
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-index eb738f14f09e3..4a5661334fb1a 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-@@ -72,6 +72,8 @@ void mtk_merge_advance_config(struct device *dev, unsigned int l_w, unsigned int
- 			      struct cmdq_pkt *cmdq_pkt);
- void mtk_merge_start_cmdq(struct device *dev, struct cmdq_pkt *cmdq_pkt);
- void mtk_merge_stop_cmdq(struct device *dev, struct cmdq_pkt *cmdq_pkt);
-+enum drm_mode_status mtk_merge_mode_valid(struct device *dev,
-+					  const struct drm_display_mode *mode);
- 
- void mtk_ovl_bgclr_in_on(struct device *dev);
- void mtk_ovl_bgclr_in_off(struct device *dev);
-@@ -130,6 +132,8 @@ unsigned int mtk_ovl_adaptor_layer_nr(struct device *dev);
- struct device *mtk_ovl_adaptor_dma_dev_get(struct device *dev);
- const u32 *mtk_ovl_adaptor_get_formats(struct device *dev);
- size_t mtk_ovl_adaptor_get_num_formats(struct device *dev);
-+enum drm_mode_status mtk_ovl_adaptor_mode_valid(struct device *dev,
-+						const struct drm_display_mode *mode);
- 
- void mtk_rdma_bypass_shadow(struct device *dev);
- int mtk_rdma_clk_enable(struct device *dev);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_merge.c b/drivers/gpu/drm/mediatek/mtk_disp_merge.c
-index c19fb1836034d..6b065ee254455 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_merge.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_merge.c
-@@ -223,6 +223,62 @@ void mtk_merge_clk_disable(struct device *dev)
- 	clk_disable_unprepare(priv->clk);
- }
- 
-+enum drm_mode_status mtk_merge_mode_valid(struct device *dev,
-+					  const struct drm_display_mode *mode)
-+{
-+	struct mtk_disp_merge *priv = dev_get_drvdata(dev);
-+	unsigned long rate = 0;
-+
-+	rate = clk_get_rate(priv->clk);
-+
-+	/* Convert to KHz and round the number */
-+	rate = (rate + 500) / 1000;
-+
-+	if (rate && mode->clock > rate) {
-+		dev_dbg(dev, "invalid clock: %d (>%lu)\n", mode->clock, rate);
-+		return MODE_CLOCK_HIGH;
-+	}
-+
-+	/*
-+	 * Measure the bandwidth requirement of hardware prefetch (per frame)
-+	 *
-+	 * let N = prefetch buffer size in lines
-+	 *         (ex. N=3, then prefetch buffer size = 3 lines)
-+	 *
-+	 * prefetch size = htotal * N (pixels)
-+	 * time per line = 1 / fps / vtotal (seconds)
-+	 * duration      = vbp * time per line
-+	 *               = vbp / fps / vtotal
-+	 *
-+	 * data rate = prefetch size / duration
-+	 *           = htotal * N / (vbp / fps / vtotal)
-+	 *           = htotal * vtotal * fps * N / vbp
-+	 *           = clk * N / vbp (pixels per second)
-+	 *
-+	 * Say 4K60 (CAE-861) is the maximum mode supported by the SoC
-+	 * data rate = 594000K * N / 72 = 8250 (standard)
-+	 * (remove K*N because of the same unit)
-+	 *
-+	 * For 2560x1440@144 (clk=583600K, vbp=17):
-+	 * rate = 583600 / 17 ~= 34329 > 8250 (NG)
-+	 *
-+	 * For 2560x1440@120 (clk=497760K, vbp=77):
-+	 * rate = 497760 / 77 ~= 6464 < 8250 (OK)
-+	 *
-+	 * Bandwidth requirement of hardware prefetch increases significantly
-+	 * when the VBP decreases (more than 4x in this example).
-+	 */
-+	rate = mode->clock / (mode->vtotal - mode->vsync_end);
-+
-+	if (rate > 8250) {
-+		dev_dbg(dev, "invalid rate: %lu (>8250): " DRM_MODE_FMT "\n",
-+			rate, DRM_MODE_ARG(mode));
-+		return MODE_BAD;
-+	}
-+
-+	return MODE_OK;
-+}
-+
- static int mtk_disp_merge_bind(struct device *dev, struct device *master,
- 			       void *data)
- {
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-index 10d23e76acaa9..6d4334955e3d3 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-@@ -88,6 +88,7 @@ static const struct mtk_ddp_comp_funcs ethdr = {
- static const struct mtk_ddp_comp_funcs merge = {
- 	.clk_enable = mtk_merge_clk_enable,
- 	.clk_disable = mtk_merge_clk_disable,
-+	.mode_valid = mtk_merge_mode_valid,
- };
- 
- static const struct mtk_ddp_comp_funcs padding = {
-@@ -341,6 +342,22 @@ void mtk_ovl_adaptor_clk_disable(struct device *dev)
- 	}
- }
- 
-+enum drm_mode_status mtk_ovl_adaptor_mode_valid(struct device *dev,
-+						const struct drm_display_mode *mode)
-+
-+{
-+	int i;
-+	struct mtk_disp_ovl_adaptor *ovl_adaptor = dev_get_drvdata(dev);
-+
-+	for (i = 0; i < OVL_ADAPTOR_ID_MAX; i++) {
-+		dev = ovl_adaptor->ovl_adaptor_comp[i];
-+		if (!dev || !comp_matches[i].funcs->mode_valid)
-+			continue;
-+		return comp_matches[i].funcs->mode_valid(dev, mode);
-+	}
-+	return MODE_OK;
-+}
-+
- unsigned int mtk_ovl_adaptor_layer_nr(struct device *dev)
- {
- 	return MTK_OVL_ADAPTOR_LAYER_NUM;
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index 1dac8d0fbc669..14cf75fa217f9 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -212,6 +212,22 @@ static void mtk_drm_crtc_destroy_state(struct drm_crtc *crtc,
- 	kfree(to_mtk_crtc_state(state));
- }
- 
-+static enum drm_mode_status
-+mtk_drm_crtc_mode_valid(struct drm_crtc *crtc,
-+			const struct drm_display_mode *mode)
-+{
-+	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
-+	enum drm_mode_status status = MODE_OK;
-+	int i;
-+
-+	for (i = 0; i < mtk_crtc->ddp_comp_nr; i++) {
-+		status = mtk_ddp_comp_mode_valid(mtk_crtc->ddp_comp[i], mode);
-+		if (status != MODE_OK)
-+			break;
-+	}
-+	return status;
-+}
-+
- static bool mtk_drm_crtc_mode_fixup(struct drm_crtc *crtc,
- 				    const struct drm_display_mode *mode,
- 				    struct drm_display_mode *adjusted_mode)
-@@ -830,6 +846,7 @@ static const struct drm_crtc_funcs mtk_crtc_funcs = {
- static const struct drm_crtc_helper_funcs mtk_crtc_helper_funcs = {
- 	.mode_fixup	= mtk_drm_crtc_mode_fixup,
- 	.mode_set_nofb	= mtk_drm_crtc_mode_set_nofb,
-+	.mode_valid	= mtk_drm_crtc_mode_valid,
- 	.atomic_begin	= mtk_drm_crtc_atomic_begin,
- 	.atomic_flush	= mtk_drm_crtc_atomic_flush,
- 	.atomic_enable	= mtk_drm_crtc_atomic_enable,
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-index 9633e860cc3ce..94590227c56a9 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-@@ -416,6 +416,7 @@ static const struct mtk_ddp_comp_funcs ddp_ovl_adaptor = {
- 	.remove = mtk_ovl_adaptor_remove_comp,
- 	.get_formats = mtk_ovl_adaptor_get_formats,
- 	.get_num_formats = mtk_ovl_adaptor_get_num_formats,
-+	.mode_valid = mtk_ovl_adaptor_mode_valid,
- };
- 
- static const char * const mtk_ddp_comp_stem[MTK_DDP_COMP_TYPE_MAX] = {
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-index f8c7e8d8ddc12..215b7234ff13c 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-@@ -12,6 +12,8 @@
- #include <linux/soc/mediatek/mtk-mmsys.h>
- #include <linux/soc/mediatek/mtk-mutex.h>
- 
-+#include <drm/drm_modes.h>
-+
- struct device;
- struct device_node;
- struct drm_crtc;
-@@ -84,6 +86,7 @@ struct mtk_ddp_comp_funcs {
- 	void (*add)(struct device *dev, struct mtk_mutex *mutex);
- 	void (*remove)(struct device *dev, struct mtk_mutex *mutex);
- 	unsigned int (*encoder_index)(struct device *dev);
-+	enum drm_mode_status (*mode_valid)(struct device *dev, const struct drm_display_mode *mode);
- };
- 
- struct mtk_ddp_comp {
-@@ -125,6 +128,15 @@ static inline void mtk_ddp_comp_clk_disable(struct mtk_ddp_comp *comp)
- 		comp->funcs->clk_disable(comp->dev);
- }
- 
-+static inline
-+enum drm_mode_status mtk_ddp_comp_mode_valid(struct mtk_ddp_comp *comp,
-+					     const struct drm_display_mode *mode)
-+{
-+	if (comp && comp->funcs && comp->funcs->mode_valid)
-+		return comp->funcs->mode_valid(comp->dev, mode);
-+	return MODE_OK;
-+}
-+
- static inline void mtk_ddp_comp_config(struct mtk_ddp_comp *comp,
- 				       unsigned int w, unsigned int h,
- 				       unsigned int vrefresh, unsigned int bpc,
+1. Fix ftrace.c build error as I did not compile with
+CONFIG_PSTORE_FTRACE.
+
+A heartfelt thank you to Kees and Guilherme for your suggestions.
+I firmly believe that a tty frontend is crucial for kdump debugging,
+and I am still dedicating effort to develop one. Hope in the future I
+can accomplish it with deeper comprehension with tty driver :) 
+
+Yuanhe Shu (3):
+  pstore: add multi-backend support
+  Documentation: adjust pstore backend related document
+  tools/testing: adjust pstore backend related selftest
+
+ Documentation/ABI/testing/pstore              |   8 +-
+ .../admin-guide/kernel-parameters.txt         |   4 +-
+ fs/pstore/ftrace.c                            |  31 ++-
+ fs/pstore/inode.c                             |  19 +-
+ fs/pstore/internal.h                          |   4 +-
+ fs/pstore/platform.c                          | 225 ++++++++++++------
+ fs/pstore/pmsg.c                              |  24 +-
+ include/linux/pstore.h                        |  29 +++
+ tools/testing/selftests/pstore/common_tests   |   8 +-
+ .../selftests/pstore/pstore_post_reboot_tests |  65 ++---
+ tools/testing/selftests/pstore/pstore_tests   |   2 +-
+ 11 files changed, 295 insertions(+), 124 deletions(-)
+
 -- 
-2.18.0
+2.39.3
 
 
