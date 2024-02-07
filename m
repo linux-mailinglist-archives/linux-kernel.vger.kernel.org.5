@@ -1,159 +1,102 @@
-Return-Path: <linux-kernel+bounces-56558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5C6B84CBBF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:39:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D1E584CBC5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:40:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BA23285B8A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:39:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B063A1F23E17
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361BC77630;
-	Wed,  7 Feb 2024 13:39:21 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208F43C062
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF19277F20;
+	Wed,  7 Feb 2024 13:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="dnS/pEGg"
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1177276C8F;
+	Wed,  7 Feb 2024 13:40:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707313160; cv=none; b=PBa8aePpQieYTpZqpQUtawSz0/HP/aBjN+uioZhGh/B+dvnNTJ7j9TfK8UqBTZB9Vb9uquQAngXQTYH5xOSmHBQuOGb++IKCu2NxivmOd5jPrPI14eLG4rGAiHI8j7brPcnybzxnpQicglj/rK9jdKY1IoFeO+r+ZdSKtHLvj0M=
+	t=1707313228; cv=none; b=b/S+z4mWVh1T82Ve2yUEUSVy3+R2mW5/DittvhDCu2lEaTmuW/O4ticXkPYox5ZmubOMU0f+td9ugnu6xwP9gBmMdSEGqEw8bTL56QaszsBKstEPdN2LD6DXHVAsuwnAQUHOLZ2GiLW6DVAFSZv4aEQUGHy9tSNr1dUE41SdpFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707313160; c=relaxed/simple;
-	bh=aBs+EX7Bb+YTjsckp3Mn2PkEbqjk5GQOA8AhCugaPyY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gRjNAd7iXtCXkveecCVH2T/Kh9E2Wn1hygFo+NDC52xqnyFCrtxTxNJf9pU0UM5ObwOVnx1ccgQ/wFH4z3J8GkZdOLssjqQ03ZucemOQXaJK6dBEn++DR2GEx4mOpstN5qN1Uxhl2Ay2MKvmV9mCopZd/uKPFFNi9xmABidSb3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 379A41FB;
-	Wed,  7 Feb 2024 05:39:59 -0800 (PST)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.58])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F7E03F762;
-	Wed,  7 Feb 2024 05:39:15 -0800 (PST)
-Date: Wed, 7 Feb 2024 13:39:13 +0000
-From: Dave Martin <Dave.Martin@arm.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/sve: Document that __SVE_VQ_MAX is much larger
- than needed
-Message-ID: <ZcOIAck16ZyUi/yj@e133380.arm.com>
-References: <20240206-arm64-sve-vl-max-comment-v1-1-dddf16414412@kernel.org>
- <ZcNxJ56+bvcUTGlT@e133380.arm.com>
- <ZcN8OltRDUlDlTHQ@finisterre.sirena.org.uk>
+	s=arc-20240116; t=1707313228; c=relaxed/simple;
+	bh=KXP8XQgu1vPb7UIBRCAFbCn2XbWBSi9zlPgqvl9ob/Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=HKVmc58tWiKp6qm3ZPcBjrcG0veBRNalmGLjmRKFGX/iHDaYkTk7ydA5k+Xoo5qlXtKtaZxhpvk0vVRha2DCUG6LmOOk/iv8NTeMKN3Q8P7ACeSc28wuLOPDv55U1jo9Ipyj0ZeXr7ZDILV11tQE25/bMA/LcX+5LWx72H26MHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=dnS/pEGg; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from fpc.intra.ispras.ru (unknown [10.10.165.6])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 5CCFA40F1DEF;
+	Wed,  7 Feb 2024 13:40:22 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 5CCFA40F1DEF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1707313222;
+	bh=oJI2plXYN0CmS62atrDcw/0YXz35BqxpvKCMr0u8TjE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=dnS/pEGghnu4Oy0O9SuHkrzqgDeZ7i4KRaZNBOgqTCUn9dO2dcYdlm82QgxdXGc8K
+	 o828vcRrxI7O4ZgCVoqyFpO+b4RyfvABP6gxgZxUbcp9tMKvpQTRST+NUK8bwLEQbZ
+	 XEW14U6grY/0yQn1oj7PgPTPtteWDh9r202FoABA=
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
+	Jeffrey Hugo <quic_jhugo@quicinc.com>,
+	Kalle Valo <quic_kvalo@quicinc.com>,
+	Carl Vanderlip <quic_carlv@quicinc.com>,
+	Sujeev Dias <sdias@codeaurora.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Siddartha Mohanadoss <smohanad@codeaurora.org>,
+	mhi@lists.linux.dev,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexey Khoroshilov <khoroshilov@ispras.ru>,
+	lvc-project@linuxtesting.org,
+	stable@vger.kernel.org
+Subject: [PATCH v2] bus: mhi: host: free buffer on error in mhi_alloc_bhie_table
+Date: Wed,  7 Feb 2024 16:40:05 +0300
+Message-Id: <20240207134005.7515-1-pchelkin@ispras.ru>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <2024020709-familiar-slapping-a96a@gregkh>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZcN8OltRDUlDlTHQ@finisterre.sirena.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 07, 2024 at 12:48:58PM +0000, Mark Brown wrote:
-> On Wed, Feb 07, 2024 at 12:01:43PM +0000, Dave Martin wrote:
-> > On Tue, Feb 06, 2024 at 04:27:01PM +0000, Mark Brown wrote:
-> 
-> > > +/*
-> > > + * Note that for future proofing __SVE_VQ_MAX is defined much larger
-> > > + * than the actual architecture maximum of 16.
-> > > + */
-> 
-> > I think that putting shadow #defines in comments in UAPI headers is a
-> > really bad idea...  is this a normative statement about the user API,
-> > or what?
-> 
-> Well, the only reason I'm mentioning the constant here is that
-> __SVE_VQ_MIN is defined too and has a perfectly good value, things look
-> a bit neater with a shared comment block.  I'm not sure there's a hugely
-> meaingful difference between having a comment adjacent to a named
-> constant in a header and one a couple of lines away that mentions the
-> constant by name.
+img_info->mhi_buf should be freed on error path in mhi_alloc_bhie_table().
+This error case is rare but still needs to be fixed.
 
-It wasn't so much the exact location that concerned me, rather putting
-it in a UAPI header at all.
+Found by Linux Verification Center (linuxtesting.org).
 
-Maybe so long as the comment doesn't quote a literal value for the arch
-max VQ that would be better.  If there is a value there, we may be kind
-of legitimising its use even if it's in a comment...
+Fixes: 3000f85b8f47 ("bus: mhi: core: Add support for basic PM operations")
+Cc: stable@vger.kernel.org
+Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+---
+v2: add missing Cc: stable, as Greg Kroah-Hartman's bot reported
 
-> 
-> > My concern is that if we muddy the waters here different bits of
-> > software will do different things and we will get a mess with no
-> > advantages.
-> 
-> > Portability issues may ensue if userspace software feels it can
-> > substitute some other value for this constant, since we can't control
-> > what userspace uses it for.
-> 
-> I don't think we want people using this at all, ideally we'd remove it
-> but it's in the uapi.
+ drivers/bus/mhi/host/boot.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I think the main legitimate uses are for implementing sve_vl_valid() and
-for type selection purposes (analogous to the C <limits.h> constants --
-though all the "obvious" types are fine so this is a but redundant).
-But yeah, it's there now.
+diff --git a/drivers/bus/mhi/host/boot.c b/drivers/bus/mhi/host/boot.c
+index edc0ec5a0933..738dcd11b66f 100644
+--- a/drivers/bus/mhi/host/boot.c
++++ b/drivers/bus/mhi/host/boot.c
+@@ -357,6 +357,7 @@ int mhi_alloc_bhie_table(struct mhi_controller *mhi_cntrl,
+ 	for (--i, --mhi_buf; i >= 0; i--, mhi_buf--)
+ 		dma_free_coherent(mhi_cntrl->cntrl_dev, mhi_buf->len,
+ 				  mhi_buf->buf, mhi_buf->dma_addr);
++	kfree(img_info->mhi_buf);
+ 
+ error_alloc_mhi_buf:
+ 	kfree(img_info);
+-- 
+2.39.2
 
-> > Would it be sufficient to say something like:
-> 
-> > /*
-> >  * Yes, this is 512 QUADWORDS.
-> >  * Never allocate memory or size structures based on the value of this
-> >  * constant.
-> >  */
-> > >  #define __SVE_VQ_MAX		512
-> 
-> I think the fact that this vector length is more than an order of
-> magnitude more than is architecturally supported at present needs to be
-> conveyed, it's perfectly reasonable for people to not want to do dynamic
-> allocation/sizing of buffers in some applications and the above sounds
-> more like stylistic guidance about using dynamic sizing to improve
-> memory usage.
-
-I guess that's true; people need to know that they'll be allocating a
-silly amount of memory if they use the existing _MAX constants directly.
-Laziness is a perfectly good reason for doing this for development hacks
-that aren't going to be published, less so for code that ends up in
-libraries or otherwise gets into the wild...
-
-I preferred to encourage people to size dynamically, but we don't have
-a way to enforce it.
-
-Ideally there would be a direct way to read out the system-wide max VL
-to provide userspace with a sensible default allocation size, but that
-doesn't really exist today (though ptrace and PR_SVE_{SET,GEL}_VL
-provide ways to find out, but it's a bit grungy).
-
-How about something along the lines of:
-
-/*
- * Yes, this is 512 QUADWORDS.
- * To help ensure forward portability, this is much larger than the
- * current maximum value defined by the SVE architecture.
- * While arrays or static allocations can be sized based on this value,
- * watch out!  It will waste a surprisingly large amount of memory.
- * Dynamic sizing based on the actual runtime vector length is likely to
- * be preferable for most purposes.
- */
-
-> 
-> > Though comments might be better placed alongsize SVE_VQ_MAX at al., in
-> > ptrace.h and sigcontext.h rather than here.  The leading __ should at
-> > least be a hint that __SVE_VQ_MAX shouldn't be used directly by
-> > anyone...
-> 
-> Yeah, the multiple layers of indirection aren't helpful here.  We
-> probably need to comment it in both places TBH.
-
-Agreed, part of that came from a desire to avoid duplicating
-information.  I think the indirection via sve_context.h was introduced
-to work around a bad interaction with user C library headers, but I'm a
-bit hazy on that now without digging through the history.
-
-Cheers
----Dave
 
