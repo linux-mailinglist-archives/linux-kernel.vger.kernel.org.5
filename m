@@ -1,111 +1,85 @@
-Return-Path: <linux-kernel+bounces-56422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0B5A84C9F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:52:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5E0284C9F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:52:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F21901C25E11
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:52:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FB541F27BB0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:52:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1761D527;
-	Wed,  7 Feb 2024 11:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hXZMIbRw"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C34C1D52B;
+	Wed,  7 Feb 2024 11:52:06 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 091E32560B;
-	Wed,  7 Feb 2024 11:52:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB061D524
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:52:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707306744; cv=none; b=uNJuTSqfn2uXW7YV0XagJa61bF/AVQlLNi001dE0t+bVk3kNg5LwFweKhTodPK1RtXGgwsYP87b6NYQS6rDXJ42D4CrJB1gjRKDkf8T9ZYBTwoZccsnHsL8tDOHUxWZ8qogoPx4R7sI+g3pto3iuAbrafboE3JLz+60mn1Ny2pc=
+	t=1707306726; cv=none; b=FMQh/xACFzy05+c64YrGQ1H+oxhielrHENSqqbnn9rcr269g/fKBlTL73Y15QG0dJYujKrLLwIuHP0TcINM9HR0gs/KLL+K2pkGgtU8/Gg1v85nPO/O8RgbSsd5tFIQqJdDCI9ERra9mh/PgWxeaUZJZjG3/AZBWFYRU0tbGz2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707306744; c=relaxed/simple;
-	bh=XD640F5iTSZXIjl6aEqDrUVojoQ2lsSyrOaHCQ1IyIY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=eZeQ43eVKA/IoL6E6LU+Dz8wmz8oCSdGqH+LUR9B5G+SHHgds5BUp45VMbHhBez7xxH7X+kGaJlGFa3b13s/jzOIwAe4zaNeMjwoQ+P4oLF51S1rYIAS+iFjEe/4fR8j56JYBIYZN3ElBLcSAbLk0bEDzpTj404DCBtYUCAfPsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hXZMIbRw; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 417Ble7P030028;
-	Wed, 7 Feb 2024 11:52:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=oZfRncVqEFp1cWYqquAibwYhDJfa0mmo/1DFZ23d00o=; b=hX
-	ZMIbRwVIiOVfBZ6ABjlfgSYvTdX94ElEfbyKSsV2yFpbKzQmaBh3PKkbhoXf0ZHO
-	V0c/UI5Z+kuW5YfmZwYr8WdjAOAeraGR7l8EjCSNVTwgA1jMCLyFlry03MtZvzOZ
-	OXL8vtlzPAdNhvZxqLb9KqwNyR5n49oYTm53crzYC666KwpBW4s3OLOCRw60GWqL
-	trjZ+81FZSZnK+PhNXL+Y4knT/MA/YCYh8bAG4itZ0i4WnKoum90Z0U+0kfMnKK9
-	OZxRJ4fJ1pNDujHccvV49aDn7YqhKyIcbEGItLvRMuIe43Sbw5snYKzYHjewVSas
-	1apvXGLHtvXvorYIpTyQ==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3ub6hkes-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 11:52:18 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 417BqHfO002483
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 7 Feb 2024 11:52:17 GMT
-Received: from [10.214.67.128] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 7 Feb
- 2024 03:52:13 -0800
-Message-ID: <1af9d3cf-33d7-8eac-7820-3db5b881e866@quicinc.com>
-Date: Wed, 7 Feb 2024 17:21:17 +0530
+	s=arc-20240116; t=1707306726; c=relaxed/simple;
+	bh=JyyB+xwzTfWceLKzrVoFyYUD8McBiLaCxrGO49shQ1Q=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=F75Tc0MpFHgBWRjzl1FZWEQH+ks/wvpO0gPe/rm6F4koyQJRy5UON2NAhWH3vGTAIzlyzVVtfArqQt19VJac/HTqovj1wXDzx3i3uBnA4GqJGseeGwumXflQqEkyZ6EP1Qf5xlxChr7G6fQ3LX/8IUqoMhHidEW98VrSE7WrDYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363d86bef43so2518315ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 03:52:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707306724; x=1707911524;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YYjWeZ/hZEvaM5rvBaNC11crdBcOmLYiQvMupK8SDMs=;
+        b=duzYzfmXSh1OLKrS8/p2vEzPrKlPqVk6kMj2RMEe4dDGUsxTrtKwyt8zSg0LlcJW9s
+         Aj4lExlnRF+T0UHyqG21st7Eef2yOg9UqAK+HaE43Zd693MFP78is21FlSKVpyBr/0EN
+         7etrAO34K5RDBv6Q/GiZZxzpVQkNOx6X+qpbiijEENZR+Z9l2JNhZscu6vhAo8WSJLGS
+         CjQn2estEhuDLFy3Z2Peit/gOH0h9YdMc1bDhNaHdlhDT7TzNUYaSeJeACjUNvtgyMGj
+         rINe5IeNR1CQs7ItuRq+qrjQIGrC0KCXALno4Vv46yifRbVqdi9Tv+kAWWOT6mAKSyN6
+         qaXw==
+X-Gm-Message-State: AOJu0YwTmEHonmFH5ul9YH8sXmoRchcoNl7tlH5CJcdiWus/uYxCqsd6
+	NYqIxuaeCCSWw7vilEqeV1zaa0lwUIcMu5NC/AwpMsj+mwrQLJzlisIWGvIY5N4pYKY+T9VBCCy
+	Ov899eVPF2mme75tlMnotnN7DJNcZEcng7aeM0oW72JPACFLHqa/LEyQ=
+X-Google-Smtp-Source: AGHT+IFw8HXwSFcBftnlV/RhW8Iy6rHtZpG8DlCt4YFa5TIHMnyAiSIf3K6K01l93PaAzYabLAOxysa9v3BljxgEwihUoXTyJKvT
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH 0/2] Correcting the voltage setting for vph_pwr
-To: Bjorn Andersson <andersson@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Caleb Connolly <caleb.connolly@linaro.org>,
-        Naina Mehta
-	<quic_nainmeht@quicinc.com>
-References: <20231220110015.25378-1-quic_kbajaj@quicinc.com>
-Content-Language: en-US
-From: Komal Bajaj <quic_kbajaj@quicinc.com>
-In-Reply-To: <20231220110015.25378-1-quic_kbajaj@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: RhJ4sOUMzl2zlvglL1Y5wcnhkdd2J23L
-X-Proofpoint-ORIG-GUID: RhJ4sOUMzl2zlvglL1Y5wcnhkdd2J23L
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-07_04,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=414 adultscore=0
- spamscore=0 bulkscore=0 priorityscore=1501 phishscore=0 clxscore=1011
- malwarescore=0 lowpriorityscore=0 suspectscore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402070088
+X-Received: by 2002:a05:6e02:1a09:b0:363:96ee:cc55 with SMTP id
+ s9-20020a056e021a0900b0036396eecc55mr352541ild.1.1707306723917; Wed, 07 Feb
+ 2024 03:52:03 -0800 (PST)
+Date: Wed, 07 Feb 2024 03:52:03 -0800
+In-Reply-To: <20240207113405.999-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cd471a0610c95277@google.com>
+Subject: Re: [syzbot] [usb?] [fs?] KASAN: slab-use-after-free Read in comedi_release_hardware_device
+From: syzbot <syzbot+cf1afeda4043ffecf03e@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hello,
 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On 12/20/2023 4:30 PM, Komal Bajaj wrote:
-> Correcting the voltage setting for vph_pwr for qcm6490-idp and
-> qcs6490-rb3gen2 boards.
-> 
-Can you please apply these two patches.
+Reported-and-tested-by: syzbot+cf1afeda4043ffecf03e@syzkaller.appspotmail.com
 
-Thanks
-Komal
+Tested on:
+
+commit:         ed555127 Merge 6.8-rc3 into usb-next
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=16ba118fe80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=28a3704ea90ef255
+dashboard link: https://syzkaller.appspot.com/bug?extid=cf1afeda4043ffecf03e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=131153c4180000
+
+Note: testing is done by a robot and is best-effort only.
 
