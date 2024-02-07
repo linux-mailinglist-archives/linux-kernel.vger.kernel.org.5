@@ -1,191 +1,115 @@
-Return-Path: <linux-kernel+bounces-57001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66D3384D295
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:05:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BE7284D29F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:09:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB8D21F25A0A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:05:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 409781C245F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:09:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8FB4126F15;
-	Wed,  7 Feb 2024 20:05:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38346126F1E;
+	Wed,  7 Feb 2024 20:09:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A3uUcr1h"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="vIkO2YUq"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F6E126F0A;
-	Wed,  7 Feb 2024 20:05:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C726A86AFF;
+	Wed,  7 Feb 2024 20:09:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707336340; cv=none; b=Lob+zuEoV+EE0wyB2iyIMf7w0LVJDv8CP9ecYxsPix6VnysQG6cFIr/rNpidCJSwZPOKKpGqJ50J68rk/RMosPs/RZPlAW3I89mPqbIdTYLtC9+QtqRYj29+yHt7KF5C19wp9J6SmyAOJzu86Vmnc2HA91G2+RAsghn02IswCxY=
+	t=1707336548; cv=none; b=sZARsVrw7zE8dhGvV8/YJ0Atz5/p6feMNIkUvG3eiBuVfTW2qSyHPLof1upO9HTsZxPWl9Oo+FXqx/jcWVMAui5V8XYxfXBmfwK1OQrBTOLhIKrwo6udtHdA/8K9wHVpSFREm8z/W3YOP0EVqrIjq0UhI3pTojqpuuNI3G5sp+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707336340; c=relaxed/simple;
-	bh=zVLu/Me3Xv0QeEeWdOcnivT42o54BAx6yp83UTbIVRU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Ta4yzzRMMwXnPPn1aCIOVX/+gboJOYPPPlKSXTno6ktUdwcfCC29Szt9Da1BrSVY5TWM0UMC7S+tY7lDMGQFMT30MFRi0WW7OIBGj9Zz5UBwMVYginGxYChYFKjoVzRpJR3PErH9ouiORWG5R98cPfOWjTa6xC1+1PPccExze+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A3uUcr1h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18DF8C433F1;
-	Wed,  7 Feb 2024 20:05:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707336340;
-	bh=zVLu/Me3Xv0QeEeWdOcnivT42o54BAx6yp83UTbIVRU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=A3uUcr1hFB1TaQI4fFerVSyrdccM8G6kZ8Ir6zq0BMAL4h94HRt0tQEmNntzxZxWi
-	 aLSUhWima9yS32RbFBN3xx0qZ/uiKuI5XuBB3UZpiwm6r7EcMMp6ONDS03fXr8zmEa
-	 kGEmx1/iBFZzW1ylFdmwKdDDSGrFfzV/pU7jNBXheKIIth28PgSpQ0lENJ3H5CFzri
-	 xrX/T68gWXQsMHIkNSuDtuURU4LR8J5i/5BHmTdAap8GXcGCrfXZiVwVWVTYM8eZ6Z
-	 mNkTm4Zffl6FuBgxfIIOVzJl6nQr1uXHG30QQKHtcRDYgF7cgYdTfrV61kGwfAVOtu
-	 gQuiGyYKtutIw==
-Date: Wed, 7 Feb 2024 14:05:38 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Daniel Drake <drake@endlessos.org>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bhelgaas@google.com, david.e.box@linux.intel.com,
-	mario.limonciello@amd.com, rafael@kernel.org, lenb@kernel.org,
-	linux-acpi@vger.kernel.org, linux@endlessos.org
-Subject: Re: [PATCH v2 1/2] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
-Message-ID: <20240207200538.GA912749@bhelgaas>
+	s=arc-20240116; t=1707336548; c=relaxed/simple;
+	bh=5PzECJm0CObzRT3GachtnhewUzsyt5UC6ouVCFeWJAo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=LH1FTV6Owzv4TvQEWZSZDdPyek773wDprAdpl3GGjkYmt4AXI9KXGkWZEUh2ckX6ZaHvLrxExnZde7ozBSvv92H+R0Lo6xHtmxxVgJf/KnZ3W2AVBpj9sez8k20ZSXlJ/VdLJhdRFv7cncOyFFiivNvB0TsQo7XGgmY7YQ8alXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=vIkO2YUq; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707336544;
+	bh=5PzECJm0CObzRT3GachtnhewUzsyt5UC6ouVCFeWJAo=;
+	h=From:Date:Subject:To:Cc:From;
+	b=vIkO2YUqLigxb5vwOJzXDLfScVqxvRhguAs0B1dAJ7rLb/rcNbiNjvTs8Tv1wKaaE
+	 h5VAlF++5pN6jSSQ/e4ga1ZKv4Vt2Iz0wGu8t5lpCMqvaqKbWWMbR7KF7TJvMNcpil
+	 uCo7h0rT93UulZKHU/JjTvPOCd+1Mmj/aBO9w0JX7qpzWIZzy2rBdaZm6P8KwK58Mb
+	 AzAX8c4FolpSu/8zj9PpX5/gUmibOwUrR/ICsgwR3juNNkdz0bv0e0+1BHyuvkBFz1
+	 qkRhXxwJHSp2wk2xOv6MEN5Uk7wstoiwrYA+f9DGAMxGtwEuH2QaDF+wSPBQ6DBYRd
+	 4SU3s4o3tu/WA==
+Received: from [192.168.1.249] (zone.collabora.co.uk [167.235.23.81])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4FA9937811CF;
+	Wed,  7 Feb 2024 20:09:02 +0000 (UTC)
+From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
+Date: Wed, 07 Feb 2024 15:08:42 -0500
+Subject: [PATCH RESEND] arm64: dts: mediatek: mt8192-asurada: Remove CrosEC
+ base detection node
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207084452.9597-1-drake@endlessos.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240207-mt8192-asurada-cbas-remove-v1-1-04cb65951975@collabora.com>
+X-B4-Tracking: v=1; b=H4sIAEnjw2UC/zXNMQ+CMBCG4b9ibvZIW0TAyUFWBx2Nw1EOaQKUX
+ JGYEP67jYnj+w3Pt0JgcRzgtFtBeHHB+TGG3u/AdjS+GF0TG4wyB2VUjsNc6NIghbdQQ2hrCig
+ 8+IXRUsa6sUVZZwQRmIRb9/nhD7hV9+p6gWfcW/EDzp0w/elUK53qTOWmTPJMHVWJGsdWaIon/
+ mx931PthRLrB9i2L+jnpzu2AAAA
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Chen-Yu Tsai <wenst@chromium.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, kernel@collabora.com, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+ =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
+X-Mailer: b4 0.12.4
 
-On Wed, Feb 07, 2024 at 09:44:51AM +0100, Daniel Drake wrote:
-> The Asus B1400 with original shipped firmware versions and VMD disabled
-> cannot resume from suspend: the NVMe device becomes unresponsive and
-> inaccessible.
-> 
-> This is because the NVMe device and parent PCI bridge get put into D3cold
-> during suspend, and this PCI bridge cannot be recovered from D3cold mode:
-> 
->   echo "0000:01:00.0" > /sys/bus/pci/drivers/nvme/unbind
->   echo "0000:00:06.0" > /sys/bus/pci/drivers/pcieport/unbind
->   setpci -s 00:06.0 CAP_PM+4.b=03 # D3hot
->   acpidbg -b "execute \_SB.PC00.PEG0.PXP._OFF"
->   acpidbg -b "execute \_SB.PC00.PEG0.PXP._ON"
->   setpci -s 00:06.0 CAP_PM+4.b=0 # D0
->   echo "0000:00:06.0" > /sys/bus/pci/drivers/pcieport/bind
->   echo "0000:01:00.0" > /sys/bus/pci/drivers/nvme/bind
->   # NVMe probe fails here with -ENODEV
+The commit adding the ChromeOS EC to the Asurada Devicetree mistakenly
+added a base detection node. While tablet mode detection is supported by
+CrosEC and used by Hayato, it is done through the cros-ec-keyb driver.
+The base detection node, which is handled by the hid-google-hammer
+driver, also provides tablet mode detection but by checking base
+attachment status on the CrosEC, which is not supported for Asurada.
 
-Can you run "sudo lspci -vvxxxx -s00:06.0" before putting the Root
-Port in D3hot, and then again after putting it back in D0 (when NVMe
-is inaccessible), and attach both outputs to the bugzilla?
+Hence, remove the unused CrosEC base detection node for Asurada.
 
-> This appears to be an untested D3cold transition by the vendor; Intel
-> socwatch shows that Windows leaves the NVMe device and parent bridge in D0
-> during suspend, even though these firmware versions have StorageD3Enable=1.
-> 
-> Experimenting with the DSDT, the _OFF method calls DL23() which sets a L23E
-> bit at offset 0xe2 into the PCI configuration space for this root port.
-> This is the specific write that the _ON routine is unable to recover from.
-> This register is not documented in the public chipset datasheet.
-> 
-> Disallow D3cold on the PCI bridge to enable successful suspend/resume.
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=215742
-> Signed-off-by: Daniel Drake <drake@endlessos.org>
-> ---
->  arch/x86/pci/fixup.c | 45 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
-> 
-> v2:
-> Match only specific BIOS versions where this quirk is required.
-> Add subsequent patch to this series to revert the original S3 workaround
-> now that s2idle is usable again.
-> 
-> diff --git a/arch/x86/pci/fixup.c b/arch/x86/pci/fixup.c
-> index f347c20247d30..6b0b341178e4f 100644
-> --- a/arch/x86/pci/fixup.c
-> +++ b/arch/x86/pci/fixup.c
-> @@ -907,6 +907,51 @@ static void chromeos_fixup_apl_pci_l1ss_capability(struct pci_dev *dev)
->  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x5ad6, chromeos_save_apl_pci_l1ss_capability);
->  DECLARE_PCI_FIXUP_RESUME(PCI_VENDOR_ID_INTEL, 0x5ad6, chromeos_fixup_apl_pci_l1ss_capability);
->  
-> +/*
-> + * Disable D3cold on Asus B1400 PCIe bridge at 00:06.0.
+Fixes: eb188a2aaa82 ("arm64: dts: mediatek: asurada: Add ChromeOS EC")
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi | 4 ----
+ 1 file changed, 4 deletions(-)
 
-I doubt the 00:06.0 PCI address is relevant here.
+diff --git a/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi b/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
+index 6867c4ad04a9..9b738f6a5d21 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
+@@ -1337,10 +1337,6 @@ cros_ec: ec@0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+-		base_detection: cbas {
+-			compatible = "google,cros-cbas";
+-		};
+-
+ 		cros_ec_pwm: pwm {
+ 			compatible = "google,cros-ec-pwm";
+ 			#pwm-cells = <1>;
 
-> + * On this platform with VMD off, the NVMe's parent PCI bridge cannot
-> + * successfully power back on from D3cold, resulting in unresponsive NVMe on
-> + * resume. This appears to be an untested transition by the vendor: Windows
-> + * leaves the NVMe and parent bridge in D0 during suspend.
-> + * This is only needed on BIOS versions before 308; the newer versions flip
-> + * StorageD3Enable from 1 to 0.
+---
+base-commit: 2ae0a045e6814c8c1d676d6153c605a65746aa29
+change-id: 20240207-mt8192-asurada-cbas-remove-ca5e1dc89b5a
 
-Given that D3cold is just "main power off," and obviously the Root
-Port *can* transition from D3cold to D0 (at initial platform power-up
-if nothing else), this seems kind of strange and makes me think we may
-not completely understand the root cause, e.g., maybe some config
-didn't get restored.
+Best regards,
+-- 
+Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
-But the fact that Windows doesn't use D3cold in this case suggests
-that either (1) Windows has a similar quirk to work around this, or
-(2) Windows decides whether to use D3cold differently than Linux does.
-
-I have no data, but (1) seems sort of unlikely.  In case it turns out
-to be (2) and we figure out how to fix it that way someday, can you
-add the output of "sudo lspci -vvxxxx" of the system to the bugzilla?
-
-What would be the downside of skipping the DMI table and calling
-pci_d3cold_disable() always?  If this truly is a Root Port defect, it
-should affect all platforms with this device, and what's the benefit
-of relying on BIOS to use StorageD3Enable to avoid the defect?
-
-Rewrap into a single paragraph or add a blank line between paragraphs.
-
-> + */
-> +static const struct dmi_system_id asus_nvme_broken_d3cold_table[] = {
-> +	{
-> +		.matches = {
-> +				DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> +				DMI_MATCH(DMI_BIOS_VERSION, "B1400CEAE.304"),
-> +		},
-> +	},
-> +	{
-> +		.matches = {
-> +				DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> +				DMI_MATCH(DMI_BIOS_VERSION, "B1400CEAE.305"),
-> +		},
-> +	},
-> +	{
-> +		.matches = {
-> +				DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> +				DMI_MATCH(DMI_BIOS_VERSION, "B1400CEAE.306"),
-> +		},
-> +	},
-> +	{
-> +		.matches = {
-> +				DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> +				DMI_MATCH(DMI_BIOS_VERSION, "B1400CEAE.307"),
-> +		},
-> +	},
-> +	{}
-> +};
-> +
-> +static void asus_disable_nvme_d3cold(struct pci_dev *pdev)
-> +{
-> +	if (dmi_check_system(asus_nvme_broken_d3cold_table) > 0)
-> +		pci_d3cold_disable(pdev);
-> +}
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x9a09, asus_disable_nvme_d3cold);
-> +
->  #ifdef CONFIG_SUSPEND
->  /*
->   * Root Ports on some AMD SoCs advertise PME_Support for D3hot and D3cold, but
-> -- 
-> 2.43.0
-> 
 
