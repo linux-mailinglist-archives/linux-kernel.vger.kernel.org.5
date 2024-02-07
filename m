@@ -1,63 +1,64 @@
-Return-Path: <linux-kernel+bounces-55962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A8A584C41E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:53:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40D2D84C421
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:53:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B495B2A588
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:53:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 736631C24412
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:53:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F67C33080;
-	Wed,  7 Feb 2024 04:47:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E013BB55;
+	Wed,  7 Feb 2024 04:47:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QTWNHZwx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pE9RTMj5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 716E22E85D;
-	Wed,  7 Feb 2024 04:47:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A253E341BE;
+	Wed,  7 Feb 2024 04:47:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707281240; cv=none; b=QGYcsc+t8w2jRzO2lf95z3IY3yvjitl/KVy4TtX0iiJWkXyRMVPFToSHxHvaf3NLG/Zp3T1X1bETIVXQX31FVHvWPPrUd1Y1EVrIuAAzxd0DQ0UilHttFJ6UdZ650bQLs3g7fpozNoiehUx6pzHqNtuQw1aNIhh68g/G0fKK7cw=
+	t=1707281241; cv=none; b=uXWcHv2oOJSSmAAN3X07r4MCSRYWrjd+ArgBHHANqagELqj+n9XCfs88w9mr/Qwb+pZI+GlVDUIqCQvP6UMp6HlK3hmOsz9ymOM81sZbd5BymaD9AlWgkCcruAT2oibAZCjluFpPMsmBFtB+NGX76W9AtfYSWAH04VYr8m1PfLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707281240; c=relaxed/simple;
-	bh=akD9fi+uU51SgzNlzw+tT7qmbTTv9OhaRe+6mXu6Nrs=;
+	s=arc-20240116; t=1707281241; c=relaxed/simple;
+	bh=KU7wXRVFt/qU6993hWRw8w/omnWwkF8V+uS6yGfDnMA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YkyzTjbkF3Lyq50aGYZQJ+amtozN0zqFdNbhvO4mo80S72fj2ATUIZ71UbmDfw+Zh54Q2oQN0q9ZhOXQ7prvNja3I3TncJqdf0HvkAI7kZT6ZKU2y3NWycbA89RmDC4k+xPHSJ42uVkBlrg3WYUIlLgRWEiQzo7YkDfI7aE0y40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QTWNHZwx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6046AC43399;
-	Wed,  7 Feb 2024 04:47:19 +0000 (UTC)
+	 MIME-Version:Content-Type; b=IY7bz3CpkPjXIE9O4IFJoEp5X4xysca6I2ZhwdLXIUUlCN63CfJGQhSSCovThgbTAtpHFsXxrd0ZEGgF3ISerUVLGmpLMF6KUuAV7vZ517a2/AwJkiH7NUHD77MgjXNOlmHI8gkLQUxI/fvyzCT1i//cS6TltNj06kBYbVuzg4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pE9RTMj5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8130FC43394;
+	Wed,  7 Feb 2024 04:47:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707281240;
-	bh=akD9fi+uU51SgzNlzw+tT7qmbTTv9OhaRe+6mXu6Nrs=;
+	s=k20201202; t=1707281241;
+	bh=KU7wXRVFt/qU6993hWRw8w/omnWwkF8V+uS6yGfDnMA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QTWNHZwx8DFR2YFrCYbZsJzw/zRHp3YP5YlToCpS4O2/pJEcb6kzC5xM0tBVCKuA7
-	 HrjI/ZyP2wtMJFrlTBNIsZHo4CVcl9hYpwpzgUcQQwjES19ZdOzG5M6i9SJ0BXBxjS
-	 OpOqO1nuX/m+bxkg8WG76HuecOA/nmr77IW55snngXtsqN7+TfFmZ6O4Wp/BzG8fNc
-	 L6tzMCzGE3jE7lnqLu4/IFdeEoIhlBTnJr/3sKOwocoi5vH6Xe8Kv4uLaUEBDqTKSM
-	 bzFY7ghP5SEDr/P5foDmDBqmuiTcVJm82ir0vIztaaxepWEEBVSUvC383EuBXQV6z1
-	 31oLx2dL7iong==
+	b=pE9RTMj54n7yRva2lnR/XyYhdokl67GxREI2ZiNUTFCuOyYHPErjLzQeOi6VgqcaQ
+	 65zP8XwyUqIuWaWvI/mM4p7r2OJ/MFv0n5qDVhl8F3VEun8UQZBAyax1LR5WgNXfD1
+	 qc5jC8lh0XMFTjB1ZICZ6nHZ8F4i2m4W0VFMP+AzVm02gXvj5Jf/TrW9wnV8W+UPbI
+	 +K1IJNibRh6t7vFmtp+BuSRv4ZUvwGJ2wyMBO3kclUPN1hpmQSVpnpHh4m4Sl2+v65
+	 YRD12RYahwmPtmuU44tzHcrWKby85OS4B/L7QkuctH2FshrMyRPYt4zcs/hIHEWnNW
+	 qa7hZhgeoH3wQ==
 From: Bjorn Andersson <andersson@kernel.org>
-To: konrad.dybcio@linaro.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	Ling Xu <quic_lxu5@quicinc.com>
-Cc: quic_kuiw@quicinc.com,
-	quic_ekangupt@quicinc.com,
-	kernel@quicinc.com,
-	linux-arm-msm@vger.kernel.org,
+To: agross@kernel.org,
+	cros-qcom-dts-watchers@chromium.org,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	luca.weiss@fairphone.com,
+	Maulik Shah <quic_mkshah@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] arm64: dts: qcom: Add dma-coherent property on
-Date: Tue,  6 Feb 2024 22:46:37 -0600
-Message-ID: <170728117684.479358.15525440812586627141.b4-ty@kernel.org>
+	linux-kernel@vger.kernel.org,
+	quic_lsrao@quicinc.com
+Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: Update domain-idle-states for cluster sleep
+Date: Tue,  6 Feb 2024 22:46:38 -0600
+Message-ID: <170728117677.479358.8880415787094538495.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240125102413.3016-1-quic_lxu5@quicinc.com>
-References: <20240125102413.3016-1-quic_lxu5@quicinc.com>
+In-Reply-To: <20240109-qcm6490_cluster_sleep-v2-1-8f94f1ad188d@quicinc.com>
+References: <20240109-qcm6490_cluster_sleep-v2-1-8f94f1ad188d@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,23 +69,21 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 25 Jan 2024 15:54:11 +0530, Ling Xu wrote:
-> Add dma-coherent property to fastRPC context bank nodes on sm8550 and
-> sm8650 dtsi files to pass dma sequence test in fastrpc sanity test,
-> ensure that data integrity is matained during DMA operations.
+On Tue, 09 Jan 2024 21:28:52 +0530, Maulik Shah wrote:
+> QCM6490 uses Trustzone as firmware whereas SC7280 uses arm trusted firmware.
+> The PSCI suspend param and the number of domain-idle-states supported is
+> different in Trustzone for cluster sleep.
 > 
-> Ling Xu (2):
->   arm64: dts: qcom: sm8550: Add dma-coherent property
->   arm64: dts: qcom: sm8650: Add dma-coherent property
+> Move the arm trusted firmware supported domain-idle-states in chrome specific
+> sc7280-chrome-common.dtsi and add the Trustzone supported sleep states as default
+> domain-idle-states in sc7280.dtsi
 > 
 > [...]
 
 Applied, thanks!
 
-[1/2] arm64: dts: qcom: sm8550: Add dma-coherent property
-      commit: 4a03b85b8491d8bfe84a26ff979507b6ae7122c1
-[2/2] arm64: dts: qcom: sm8650: Add dma-coherent property
-      commit: feed0507688b7e77755c4cf507d02223137fb8c0
+[1/1] arm64: dts: qcom: sc7280: Update domain-idle-states for cluster sleep
+      commit: db5d137e81bcce6a2506c1d056e5834a53405a5e
 
 Best regards,
 -- 
