@@ -1,82 +1,105 @@
-Return-Path: <linux-kernel+bounces-56594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A73484CC4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 093F384CC4D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:03:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAB102884D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:02:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8CD528C1C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:03:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C658A7E769;
-	Wed,  7 Feb 2024 14:01:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB88E23775;
+	Wed,  7 Feb 2024 14:02:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="slFWABO9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ci39I2UM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC5D77630
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:01:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127A77993B;
+	Wed,  7 Feb 2024 14:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707314496; cv=none; b=lTj5oM+FrXjTjZndDch4Mqi8/vtYtsikoe7prA+dx+Ze2ht/v3zhPDc3lcR5+VP+iVssbKs0P7VBmR0RNy1FkPAN7muBYsNPxZBzHldEtwUtXM88TFH46yvJC+A40FTqz1FloZFbUw/0b4n72vhTJiAwOlpF0HVnLOT/TL2aOYI=
+	t=1707314578; cv=none; b=TbmXhD5vQWzLdCvdCuOTYp2fJj/9apqXzVMVopeQVb24XMN11S6ydhw81pDwOLYoutdfANw4OpUZmxrNR+i1ZQgNloLgaISEjGJFP+Tc8aqJZ5UDxPd20kI7/cl2SEGD5+QP0Ehwj3D5e0iBYYHH9Rd0kDSWMUUoYz/R1RiFZeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707314496; c=relaxed/simple;
-	bh=DBW93eoiTOGNMTaQDIpoBf6GGb16/dyPd9SHQcXcCiM=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=DGbw8V0uQycHSmJz8k0iYNNifDU+kYevXgmkInm8p3AcRzQVc7Or98k7NrC+8sGLrS2Wvhx8+NRjB3Fbk58OqH9wBD+2lDXPJhb7APTZyvR3RtlMEL6JgbNqHXzhsowKsO5uuV4S7601MYh6fnVFnzkoUy+i8Ln7BDXw+1FMUa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=slFWABO9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B24DCC433F1;
-	Wed,  7 Feb 2024 14:01:33 +0000 (UTC)
+	s=arc-20240116; t=1707314578; c=relaxed/simple;
+	bh=lBxlhXxu+GabBGVYKEg2jqp2jWZlucJFL35TxJDn30g=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=UE2CU/kzVPcWoW7rpZRWTSFGEkFkeCw+iX8WCalTWnLdPkHxORdT4FcW8sNl77VzUo7MIcAUqOdLw+glazONX10xyvmOmC+AzLxx9ekPUAIX1japYkbWSBrJHxfzCBZmAcFflQaXYphpqqHVwm+kabvUCcex4BNIj68IdUJL+WQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ci39I2UM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD24EC433C7;
+	Wed,  7 Feb 2024 14:02:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707314495;
-	bh=DBW93eoiTOGNMTaQDIpoBf6GGb16/dyPd9SHQcXcCiM=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=slFWABO9qFaXy85EHmRnfvVNbLeVSRQdFtUArjUkxzvnsQWXm9E4oWmzZ9LU+0t8c
-	 pIMwdvzEBCsT+I5wdLOCpqmzWd4UDGFfGgS6MA9vuGCMD9cWbtca2IFelDU6HF/3Ao
-	 Z6TIv2fn2GzKTEyRuwkk24XIaTeSuwBR9IJLjfUB5FLcJGlfxxJUda4qKkLvrDFuki
-	 QG/N5LmAahnQRSHS56YwMz+Tr/0uBJQySP1eFjonUsx75LPAsXhv88ZSeV+KSN6r/e
-	 n1/8QRQksbMbdZwhZYtt6uws/1mFcpGB0f4I0bvqk7Z/Jupg67NrRLRB7zeRmFGDCC
-	 KId9lB1NV2Shw==
-From: Vinod Koul <vkoul@kernel.org>
-To: kishon@kernel.org, Thomas Richard <thomas.richard@bootlin.com>
-Cc: linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
- gregory.clement@bootlin.com, thomas.petazzoni@bootlin.com, 
- theo.lebrun@bootlin.com, u-kumar1@ti.com
-In-Reply-To: <20240125171754.773909-1-thomas.richard@bootlin.com>
-References: <20240125171754.773909-1-thomas.richard@bootlin.com>
-Subject: Re: [PATCH] phy: ti: gmii-sel: add resume support
-Message-Id: <170731449338.147119.13043324915980323672.b4-ty@kernel.org>
-Date: Wed, 07 Feb 2024 15:01:33 +0100
+	s=k20201202; t=1707314577;
+	bh=lBxlhXxu+GabBGVYKEg2jqp2jWZlucJFL35TxJDn30g=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ci39I2UM/1UznbgkKvJ+Pq/e4yXTdRC1m1r4sUF1lzDy9WHS0DHGYRF7/KYoCZ7mI
+	 aAGXnGZ4KUuLDGgnz7686QIXzdnOWOjfvE6pM68IZpqtgCNJ11OXxoqAZB43Y6+oy3
+	 HS+w5xemZauglfzhudqSI3/WUKl9rjo6qd01+efEnia+i7JV3eduxn6mnhqCM9TWKi
+	 pjFuRS7sJBdEuUeuqHdCjTiPWseSQj7Eo8+kdX1hDG2uaWBGF7FBlPXj8ZdNTW1/ko
+	 sY7WcmqeTZ9lnX0yFMekPHAikKn1SVqMkWWGO1GdHGzPitzbPS1ccz49HPhRSnC+Wi
+	 p7yW5KTCcX1wQ==
+Date: Wed, 7 Feb 2024 23:02:51 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
+ Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 13/36] function_graph: Have the instances use their
+ own ftrace_ops for filtering
+Message-Id: <20240207230251.48db0dd281aa13cbc223ed25@kernel.org>
+In-Reply-To: <170723219437.502590.17981699514070908579.stgit@devnote2>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723219437.502590.17981699514070908579.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
 
+On Wed,  7 Feb 2024 00:09:54 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-On Thu, 25 Jan 2024 18:17:54 +0100, Thomas Richard wrote:
-> The resume callback restores the submode of each PHY.
-> 
-> It uses the submode stored in struct phy_gmii_sel_phy_priv (variable
-> phy_if_mode). The submode was saved by the set_mode PHY operation.
-> 
-> 
+> diff --git a/arch/loongarch/kernel/ftrace_dyn.c b/arch/loongarch/kernel/ftrace_dyn.c
+> index 73858c9029cc..81d18b911cc1 100644
+> --- a/arch/loongarch/kernel/ftrace_dyn.c
+> +++ b/arch/loongarch/kernel/ftrace_dyn.c
+> @@ -241,10 +241,17 @@ void prepare_ftrace_return(unsigned long self_addr, unsigned long *parent)
+>  void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+>  		       struct ftrace_ops *op, struct ftrace_regs *fregs)
+>  {
+> +	struct fgraph_ops *gops = container_of(op, struct fgraph_ops, ops);
+>  	struct pt_regs *regs = &fregs->regs;
+>  	unsigned long *parent = (unsigned long *)&regs->regs[1];
+>  
+> -	prepare_ftrace_return(ip, (unsigned long *)parent);
+> +	if (unlikely(atomic_read(&current->tracing_graph_pause)))
+> +		return;
+> +
+> +	old = *parent;
 
-Applied, thanks!
+Oops, this caused an error. 
 
-[1/1] phy: ti: gmii-sel: add resume support
-      commit: dc7c77bd79ffbd4c2840354a5da4b08781cb1ee8
+> +
+> +	if (!function_graph_enter_ops(old, ip, 0, parent, gops))
 
-Best regards,
+So this should be
+
+if (!function_graph_enter_ops(*parent, ip, 0, parent, gops))
+
+Thanks, 
+
 -- 
-~Vinod
-
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
