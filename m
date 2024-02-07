@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-56213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 027DB84C76B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:33:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4977784C770
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:34:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 816C31F27B7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:33:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 857C31F27F07
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:34:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FBF225619;
-	Wed,  7 Feb 2024 09:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A88D25639;
+	Wed,  7 Feb 2024 09:32:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="STwuEo/g"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="jRxkLwph"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E21B21107
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:32:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A73E23775
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:32:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707298362; cv=none; b=XEoETOP542u8z6WpCVOWjSsEUVlWUvwpTtL3d5baDzZMGq73vdBbkjPt8oEm+voHagUpmrPLqLTqoAywLfQ4CKN1/QIteLP/dIW0gmNTz1a6B6LP2Daa1d+nH6MC4y19RvjCEmcURqx6jz3KlngsqxXE9uLJM1yMqqm6bW7rp2s=
+	t=1707298363; cv=none; b=Fg95kezSrXeKH6ksiwN4d0DhA71Q5bxeTFozCQlXg0NApQ4GGzNe2Rz9CXwoZ547SvDYgqokEjICcO4a78Hf1tnZeSsdnjPwVIzXYC0ZFvfNsG2p0t+EdIokf9lVbPezFD8gEKMBswo1DN+zaAh/gm06qA/V8aTod4XjxK8x7o4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707298362; c=relaxed/simple;
-	bh=7bSdXgQdUcY0VNdr3J/s8h/nUNIriTpRiX0a0S7PH1g=;
+	s=arc-20240116; t=1707298363; c=relaxed/simple;
+	bh=Wxakw6fE1DMMi9exThr7nrt0kqXTsan4pdOnvja2w8I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YyAynuE2vjBLFTZQEE+AipRImuZwL4RcUhw2Yu8cNBawIVJ+0qAQRNQsmvXE9x7k5OBD7ztpdxj2cgihNQVpiSfIucLFdpbgPzUMupdmEe9Jvsncc7O4ux2mmtE+qPTRzGnbBdVaFrDPBFstf+l8aCn+W9ccvA0fsSmNsuyqty4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=STwuEo/g; arc=none smtp.client-ip=209.85.167.48
+	 MIME-Version; b=EePHSnDzaqO1zkYijOPOsoVxAuBWBivLx5ZZW+Q1dMN+EGqWlEjet1vWRX9unZq5o/pzPLB0NZIOiL5NTShY0iQeuSwgzddLlU37fjFL0eld0btT/wUAnZls//ySj2fVv1lpmjVUF1wjNmZzDxEp23mv3eBonrdNTw9+UzvKQvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=jRxkLwph; arc=none smtp.client-ip=209.85.208.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5114c05806eso604055e87.1
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-560037b6975so341447a12.2
         for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:32:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707298358; x=1707903158; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707298359; x=1707903159; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VqIx4YPebbDa42PI5lR3HpT5nBD0XB/qzFpDRiRKWz4=;
-        b=STwuEo/grSQuSHWuzhkPooX5IL9eq/y+39QuZcgyKbJ+N7Y4qWh7Ahw5O0nJYpa8JX
-         X/zuomR98iFCU+acS/+EG37WEwSNvBdsMFNCvMkGSNZJWNLt61hWjsGrwiPLQ4QmwjTz
-         hn9JN5Mz1afRnRy1ObI71KAhFPltQ+lwSExrif2RJOjOjC6paPZuOno0MH7zWiw+ZjXK
-         3Ssd0F0r3ewOr9rffFtY+SsXc0C0kq7Dmv2ilbCtNTxeih46XLcs+BIVAAymqHwXYrnp
-         kerhcINjG2jR3DGzlMF2q1P9hHiyO6uCgIq2l9xW/nhYbgMfYClEij0VwrriEEh/psRW
-         rsmA==
+        bh=2PJ1TfDECCRhl9e8NnkkRK2OxbkQuy+WkqaiUJY4FUE=;
+        b=jRxkLwphErvBaHdBnj+XW4SC2jfRs/EHjrQzKH+yfEAwWGB84kHW+4HrG0vP6okS05
+         89LWwfmWn1L9B8vhMBslNI8EUSnBFP6okWS8tZNtDbogrYOuQ9mCgUoBWhsTxZg4miya
+         WbUvkGsG7N0Bl5FPpYEMUkDxT7KmrHqDfLvn6JSnD0U2Z3TKErqyDRGwibr789ScfvIs
+         hhXAnRaZvkEVjsuNCpsAg4wEUaDgs/Z56dCEDSWkXVXlWnZNAHU8hUkwInjeOpd7AcOc
+         TktL8iB0oZ4dB0tgQViGELA39s6HqO3bQNNeEfvmudBH5qbZF03crJSyJaCFvmEub8Kc
+         P1kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707298358; x=1707903158;
+        d=1e100.net; s=20230601; t=1707298359; x=1707903159;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VqIx4YPebbDa42PI5lR3HpT5nBD0XB/qzFpDRiRKWz4=;
-        b=SGxp/7XYc+/HhpaFZRYkxHCgEzZC08Wm0V8tTBjLB3mJWtwZkGd+oJH2MVOShgfMsp
-         R44zLSofOYyD3PJLPS3kyh9CkhyyQND3TeYkuthqYCU9/pOAfWdiTm/vtzkatXbu5oHh
-         CnpS26hup+mw1jOGNOs2rWvFhX91DWYN+g7gbZRQQMFt/Oi0icqt4UEI8/Myt4ah8V56
-         f0EulpW7afriTSeG61+fW7WRV+0VDG532z5JXxYD8/da0heNwJ/kfOOK600JwkNayhBh
-         BGwh5hTFGrCMaiOjOYoVtDU7WHjG9AGNBxxEAuZM/t12FSeRSp66cqH3yv2z1fDCY+EW
-         w82g==
-X-Gm-Message-State: AOJu0YzbQiWrias9uHpN7bjAV9aF5mbYIUN7j/NJVBKgXO+tAcF22xg7
-	Uqf1TgbFqo5gCNaetKWT9HdbPR1YhmRDriJg8RiT2JwpOnDcQD5YFxUR55sRZNg=
-X-Google-Smtp-Source: AGHT+IE/SEcep+YYjl96mIk1b9dSvRfHe8uUA/txSmvSgMmrcoUo/rNI+3B36GkKhNOvK3KPBKkXRw==
-X-Received: by 2002:a19:5f57:0:b0:511:51a9:7759 with SMTP id a23-20020a195f57000000b0051151a97759mr3912294lfj.64.1707298358354;
-        Wed, 07 Feb 2024 01:32:38 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCViyuYpZSFAh9YXyT4xbYF9rpB2bg7/qwN83vxYPI3PqTLT9mTjDBWutcVFxx25llRWCWp7eWSiimanYiJqfwKA4atnLCP4aiFHGIJ9vLYG8e20DKQf6O4goKx7sEd9FOj/LQ0xvua0CNl2Bu9Osf1BWQTY3PFJpl+IQIDjU3hanQRFyoN50k3UYismIncBA6kTWD+M8IjZt82VER0h04OwTgRUpWhM5MhnH1p73JxumCIwjAkKIsukzwmKxWwAblouOCxtDaRcMDfHUb/MYTjTNVZv2SZYJ++UF1CGUoLnvrXHwU1lhL6D1BIcy1zYrH09RzfgPuh5VZ9rt7cY9LOEB4E3OZRXlHqS/pJiys/aGVvzoljPQ4oE30bWgbCy4jQI2sz9cHOVEffVojoyo+pwc9T96lWiskNgYhFZ3MEA/saChNvW0tpRWa2A/q24PZh2YhKDIZEShyYN4I2S+Oq80zqPSi2i
+        bh=2PJ1TfDECCRhl9e8NnkkRK2OxbkQuy+WkqaiUJY4FUE=;
+        b=LF+hCmyVZukVIFbQtcN0rAjI9W+jd6Lgjlgt54mDvuKtlSLh+O99CJl7nTA+v1b/pX
+         NLx5B5vut+d+T0KAs4sxCoJk4DhbNpgsgKwzxNF+9DqcDHKJIbTssliNOzxnEeVFehrr
+         8vdPXRdJcmfm/kmmdMQWDLBqkZ1GbjjihZey47A0QdWfuiyQL0NhIdk4u1KD9saf5DO9
+         qs1UXcsvtfE6tkH+Je0zU8zDao8kmIZ7UgoKiEug+QVDZPkXvUCls5IIR2h7ks6yXYHQ
+         Sr5U2jV7mvqKDZ3xAYOEWhmMilf7BnasNxqaNWLO0o05YrwJMS4Lug8K2JGWctqxMmN+
+         W/cw==
+X-Gm-Message-State: AOJu0YyHHw5KlvkDP9I8WOGIXKgiIESY2PTNnQyUcAUCb3XB974LWa8b
+	g1YoxtJN6iW0jDw4AJhFj/T0SgvHKeA4UpHXWrf/GRJptxavlwkFXOSiW1FhotE=
+X-Google-Smtp-Source: AGHT+IG+yN0E/u8ZGPtyD8DAsvpuqjkGk06Ijnen0P+bYzyrJXSoe3FgzbKZtj+Q5SEQj1Lbfxc5uA==
+X-Received: by 2002:a17:907:b92:b0:a38:7fe2:bc71 with SMTP id ey18-20020a1709070b9200b00a387fe2bc71mr535864ejc.1.1707298359537;
+        Wed, 07 Feb 2024 01:32:39 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCULePGS3+yA40vb5tJpegr7p3qAqnjVQYdvGFb9ypSVLWytfnb8WZ9lhZx35PamQBZj9GqNw+bjDHC33Hr7hEptq6sOQq2yMojFJpy4YH2KABIjwqs5IM8pwKNHgzpaMRD1weiVZkJPMNyQ9mS5gHmihTXRiwhB7Af6F0vUJ18j1QivOx/5wtgbhpKbChHXE+tvlCnxf/zQn0GaVnUbWYqrJoC2uGGk6LUmIAQqlqIG6CT403lkM0lCRSlu7JFKT9/DpG7ZCvIvc3XxaQHzgiJQtsSQnQsAThfpDReomgXbWzSIiGBAqiTSrlDMEgq3JKTSgHN4oGnPumAaZ9u6Z1TA/ztXOwBYVYmtosg9N/NTByXplVGsDALbR/d0WfQy1dL02WCbGRy4s2W/Pz+SmAKZqSA3tag6IRIDE1nubfSm8iwpqPjke0UjniBo
 Received: from blmsp.fritz.box ([2001:4091:a246:821e:6f3b:6b50:4762:8343])
-        by smtp.gmail.com with ESMTPSA id qo9-20020a170907874900b00a388e24f533sm122336ejc.148.2024.02.07.01.32.37
+        by smtp.gmail.com with ESMTPSA id qo9-20020a170907874900b00a388e24f533sm122336ejc.148.2024.02.07.01.32.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 01:32:37 -0800 (PST)
+        Wed, 07 Feb 2024 01:32:39 -0800 (PST)
 From: Markus Schneider-Pargmann <msp@baylibre.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
 	Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
@@ -82,11 +82,10 @@ Cc: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Julien Panis <jpanis@baylibre.com>,
-	Markus Schneider-Pargmann <msp@baylibre.com>,
-	Simon Horman <simon.horman@corigine.com>
-Subject: [PATCH 03/14] can: m_can: Write transmit header and data in one transaction
-Date: Wed,  7 Feb 2024 10:32:09 +0100
-Message-ID: <20240207093220.2681425-4-msp@baylibre.com>
+	Markus Schneider-Pargmann <msp@baylibre.com>
+Subject: [PATCH 04/14] can: m_can: Implement receive coalescing
+Date: Wed,  7 Feb 2024 10:32:10 +0100
+Message-ID: <20240207093220.2681425-5-msp@baylibre.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207093220.2681425-1-msp@baylibre.com>
 References: <20240207093220.2681425-1-msp@baylibre.com>
@@ -98,101 +97,201 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Combine header and data before writing to the transmit fifo to reduce
-the overhead for peripheral chips.
+m_can offers the possibility to set an interrupt on reaching a watermark
+level in the receive FIFO. This can be used to implement coalescing.
+Unfortunately there is no hardware timeout available to trigger an
+interrupt if only a few messages were received within a given time. To
+solve this I am using a hrtimer to wake up the irq thread after x
+microseconds.
+
+The timer is always started if receive coalescing is enabled and new
+received frames were available during an interrupt. The timer is stopped
+if during a interrupt handling no new data was available.
+
+If the timer is started the new item interrupt is disabled and the
+watermark interrupt takes over. If the timer is not started again, the
+new item interrupt is enabled again, notifying the handler about every
+new item received.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
 ---
- drivers/net/can/m_can/m_can.c | 35 +++++++++++++++++++++--------------
- 1 file changed, 21 insertions(+), 14 deletions(-)
+ drivers/net/can/m_can/m_can.c | 77 ++++++++++++++++++++++++++++++++---
+ drivers/net/can/m_can/m_can.h |  5 +++
+ 2 files changed, 76 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 45391492339e..a01c9261331d 100644
+index a01c9261331d..b76fcf5f3889 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -320,6 +320,12 @@ struct id_and_dlc {
- 	u32 dlc;
- };
+@@ -422,6 +422,25 @@ static void m_can_config_endisable(struct m_can_classdev *cdev, bool enable)
+ 	}
+ }
  
-+struct m_can_fifo_element {
-+	u32 id;
-+	u32 dlc;
-+	u8 data[CANFD_MAX_DLEN];
-+};
++static void m_can_interrupt_enable(struct m_can_classdev *cdev, u32 interrupts)
++{
++	if (cdev->active_interrupts == interrupts)
++		return;
++	cdev->ops->write_reg(cdev, M_CAN_IE, interrupts);
++	cdev->active_interrupts = interrupts;
++}
 +
- static inline u32 m_can_read(struct m_can_classdev *cdev, enum m_can_reg reg)
++static void m_can_coalescing_disable(struct m_can_classdev *cdev)
++{
++	u32 new_interrupts = cdev->active_interrupts | IR_RF0N;
++
++	if (!cdev->net->irq)
++		return;
++
++	hrtimer_cancel(&cdev->hrtimer);
++	m_can_interrupt_enable(cdev, new_interrupts);
++}
++
+ static inline void m_can_enable_all_interrupts(struct m_can_classdev *cdev)
  {
- 	return cdev->ops->read_reg(cdev, reg);
-@@ -1637,9 +1643,10 @@ static int m_can_next_echo_skb_occupied(struct net_device *dev, int putidx)
- static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
+ 	if (!cdev->net->irq) {
+@@ -437,7 +456,9 @@ static inline void m_can_enable_all_interrupts(struct m_can_classdev *cdev)
+ 
+ static inline void m_can_disable_all_interrupts(struct m_can_classdev *cdev)
  {
- 	struct canfd_frame *cf = (struct canfd_frame *)cdev->tx_skb->data;
-+	u8 len_padded = DIV_ROUND_UP(cf->len, 4);
-+	struct m_can_fifo_element fifo_element;
- 	struct net_device *dev = cdev->net;
- 	struct sk_buff *skb = cdev->tx_skb;
--	struct id_and_dlc fifo_header;
- 	u32 cccr, fdflags;
- 	u32 txfqs;
- 	int err;
-@@ -1650,27 +1657,27 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
- 	/* Generate ID field for TX buffer Element */
- 	/* Common to all supported M_CAN versions */
- 	if (cf->can_id & CAN_EFF_FLAG) {
--		fifo_header.id = cf->can_id & CAN_EFF_MASK;
--		fifo_header.id |= TX_BUF_XTD;
-+		fifo_element.id = cf->can_id & CAN_EFF_MASK;
-+		fifo_element.id |= TX_BUF_XTD;
- 	} else {
--		fifo_header.id = ((cf->can_id & CAN_SFF_MASK) << 18);
-+		fifo_element.id = ((cf->can_id & CAN_SFF_MASK) << 18);
++	m_can_coalescing_disable(cdev);
+ 	m_can_write(cdev, M_CAN_ILE, 0x0);
++	cdev->active_interrupts = 0x0;
+ 
+ 	if (!cdev->net->irq) {
+ 		dev_dbg(cdev->dev, "Stop hrtimer\n");
+@@ -1091,15 +1112,42 @@ static int m_can_echo_tx_event(struct net_device *dev)
+ 	return err;
+ }
+ 
++static void m_can_coalescing_update(struct m_can_classdev *cdev, u32 ir)
++{
++	u32 new_interrupts = cdev->active_interrupts;
++	bool enable_timer = false;
++
++	if (!cdev->net->irq)
++		return;
++
++	if (cdev->rx_coalesce_usecs_irq > 0 && (ir & (IR_RF0N | IR_RF0W))) {
++		enable_timer = true;
++		new_interrupts &= ~IR_RF0N;
++	} else if (!hrtimer_active(&cdev->hrtimer)) {
++		new_interrupts |= IR_RF0N;
++	}
++
++	m_can_interrupt_enable(cdev, new_interrupts);
++	if (enable_timer) {
++		hrtimer_start(&cdev->hrtimer,
++			      ns_to_ktime(cdev->rx_coalesce_usecs_irq * NSEC_PER_USEC),
++			      HRTIMER_MODE_REL);
++	}
++}
++
+ static irqreturn_t m_can_isr(int irq, void *dev_id)
+ {
+ 	struct net_device *dev = (struct net_device *)dev_id;
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
+ 	u32 ir;
+ 
+-	if (pm_runtime_suspended(cdev->dev))
++	if (pm_runtime_suspended(cdev->dev)) {
++		m_can_coalescing_disable(cdev);
+ 		return IRQ_NONE;
++	}
++
+ 	ir = m_can_read(cdev, M_CAN_IR);
++	m_can_coalescing_update(cdev, ir);
+ 	if (!ir)
+ 		return IRQ_NONE;
+ 
+@@ -1114,13 +1162,17 @@ static irqreturn_t m_can_isr(int irq, void *dev_id)
+ 	 * - state change IRQ
+ 	 * - bus error IRQ and bus error reporting
+ 	 */
+-	if ((ir & IR_RF0N) || (ir & IR_ERR_ALL_30X)) {
++	if (ir & (IR_RF0N | IR_RF0W | IR_ERR_ALL_30X)) {
+ 		cdev->irqstatus = ir;
+ 		if (!cdev->is_peripheral) {
+ 			m_can_disable_all_interrupts(cdev);
+ 			napi_schedule(&cdev->napi);
+-		} else if (m_can_rx_peripheral(dev, ir) < 0) {
+-			goto out_fail;
++		} else {
++			int pkts;
++
++			pkts = m_can_rx_peripheral(dev, ir);
++			if (pkts < 0)
++				goto out_fail;
+ 		}
  	}
  
- 	if (cf->can_id & CAN_RTR_FLAG)
--		fifo_header.id |= TX_BUF_RTR;
-+		fifo_element.id |= TX_BUF_RTR;
+@@ -1156,6 +1208,15 @@ static irqreturn_t m_can_isr(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
  
- 	if (cdev->version == 30) {
- 		netif_stop_queue(dev);
- 
--		fifo_header.dlc = can_fd_len2dlc(cf->len) << 16;
-+		fifo_element.dlc = can_fd_len2dlc(cf->len) << 16;
- 
- 		/* Write the frame ID, DLC, and payload to the FIFO element. */
--		err = m_can_fifo_write(cdev, 0, M_CAN_FIFO_ID, &fifo_header, 2);
-+		err = m_can_fifo_write(cdev, 0, M_CAN_FIFO_ID, &fifo_element, 2);
- 		if (err)
- 			goto out_fail;
- 
- 		err = m_can_fifo_write(cdev, 0, M_CAN_FIFO_DATA,
--				       cf->data, DIV_ROUND_UP(cf->len, 4));
-+				       cf->data, len_padded);
- 		if (err)
- 			goto out_fail;
- 
-@@ -1732,15 +1739,15 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
- 				fdflags |= TX_BUF_BRS;
- 		}
- 
--		fifo_header.dlc = FIELD_PREP(TX_BUF_MM_MASK, putidx) |
-+		fifo_element.dlc = FIELD_PREP(TX_BUF_MM_MASK, putidx) |
- 			FIELD_PREP(TX_BUF_DLC_MASK, can_fd_len2dlc(cf->len)) |
- 			fdflags | TX_BUF_EFC;
--		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_ID, &fifo_header, 2);
--		if (err)
--			goto out_fail;
- 
--		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_DATA,
--				       cf->data, DIV_ROUND_UP(cf->len, 4));
-+		memcpy_and_pad(fifo_element.data, CANFD_MAX_DLEN, &cf->data,
-+			       cf->len, 0);
++static enum hrtimer_restart m_can_coalescing_timer(struct hrtimer *timer)
++{
++	struct m_can_classdev *cdev = container_of(timer, struct m_can_classdev, hrtimer);
 +
-+		err = m_can_fifo_write(cdev, putidx, M_CAN_FIFO_ID,
-+				       &fifo_element, 2 + len_padded);
- 		if (err)
- 			goto out_fail;
++	irq_wake_thread(cdev->net->irq, cdev->net);
++
++	return HRTIMER_NORESTART;
++}
++
+ static const struct can_bittiming_const m_can_bittiming_const_30X = {
+ 	.name = KBUILD_MODNAME,
+ 	.tseg1_min = 2,		/* Time segment 1 = prop_seg + phase_seg1 */
+@@ -1296,7 +1357,7 @@ static int m_can_chip_config(struct net_device *dev)
+ 	/* Disable unused interrupts */
+ 	interrupts &= ~(IR_ARA | IR_ELO | IR_DRX | IR_TEFF | IR_TEFW | IR_TFE |
+ 			IR_TCF | IR_HPM | IR_RF1F | IR_RF1W | IR_RF1N |
+-			IR_RF0F | IR_RF0W);
++			IR_RF0F);
  
+ 	m_can_config_endisable(cdev, true);
+ 
+@@ -1340,6 +1401,7 @@ static int m_can_chip_config(struct net_device *dev)
+ 
+ 	/* rx fifo configuration, blocking mode, fifo size 1 */
+ 	m_can_write(cdev, M_CAN_RXF0C,
++		    FIELD_PREP(RXFC_FWM_MASK, cdev->rx_max_coalesced_frames_irq) |
+ 		    FIELD_PREP(RXFC_FS_MASK, cdev->mcfg[MRAM_RXF0].num) |
+ 		    cdev->mcfg[MRAM_RXF0].off);
+ 
+@@ -1398,7 +1460,7 @@ static int m_can_chip_config(struct net_device *dev)
+ 		else
+ 			interrupts &= ~(IR_ERR_LEC_31X);
+ 	}
+-	m_can_write(cdev, M_CAN_IE, interrupts);
++	m_can_interrupt_enable(cdev, interrupts);
+ 
+ 	/* route all interrupts to INT0 */
+ 	m_can_write(cdev, M_CAN_ILS, ILS_ALL_INT0);
+@@ -2082,6 +2144,9 @@ int m_can_class_register(struct m_can_classdev *cdev)
+ 		hrtimer_init(&cdev->hrtimer, CLOCK_MONOTONIC,
+ 			     HRTIMER_MODE_REL_PINNED);
+ 		cdev->hrtimer.function = &hrtimer_callback;
++	} else {
++		hrtimer_init(&cdev->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++		cdev->hrtimer.function = m_can_coalescing_timer;
+ 	}
+ 
+ 	ret = m_can_dev_setup(cdev);
+diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
+index 520e14277dff..b916206199f1 100644
+--- a/drivers/net/can/m_can/m_can.h
++++ b/drivers/net/can/m_can/m_can.h
+@@ -92,6 +92,11 @@ struct m_can_classdev {
+ 	int pm_clock_support;
+ 	int is_peripheral;
+ 
++	// Cached M_CAN_IE register content
++	u32 active_interrupts;
++	u32 rx_max_coalesced_frames_irq;
++	u32 rx_coalesce_usecs_irq;
++
+ 	struct mram_cfg mcfg[MRAM_CFG_NUM];
+ 
+ 	struct hrtimer hrtimer;
 -- 
 2.43.0
 
