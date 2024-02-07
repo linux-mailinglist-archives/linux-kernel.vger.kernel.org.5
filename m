@@ -1,125 +1,172 @@
-Return-Path: <linux-kernel+bounces-56523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C9E284CB35
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:11:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5611284CB41
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:13:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00E4E1F215DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:11:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AB0F1C2656A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:13:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A311576C8B;
-	Wed,  7 Feb 2024 13:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA33C76C7F;
+	Wed,  7 Feb 2024 13:12:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="Lh1Cv6rM"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KFfXjnG1"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4843876C8A
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:10:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B177763B
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:12:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707311456; cv=none; b=gQu488h+BzIQbgg/i65ufOkmXwxsCDFTQpBTrUkQr+uhkufHCGUHKNTnfHauIbSr31EUy3D/woqlCpHNVxxSPpG/GEQWfnMQjEQcbrDPX+IW6Q3pveH8l5k2A3KlPj4lefhbVK+YKPoMSsFnEB+Wo5zAUYPK4LvQeEQHildVd7g=
+	t=1707311554; cv=none; b=AANuwOrLh89Pzq8rz9qazW4PCngzvb+E4qsYPgNFW+dqxQOvqX39KWh0AuehopyNN7jBgYKv7s17VeGrVGj//WC9RbRyTq9/34NA8+cfupFDmpVeDLJ/cWCuteeDvIGVQBkELEXcTM+8NL54CzCOJKefuE9v2nODEo1s/ZCUWHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707311456; c=relaxed/simple;
-	bh=QeiQKTjUpaXlC5rTpAh57LecWBMIQwcK9WBuhzqF9Gc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E1F4Td8Il7sgoc48+HAcRIEX606bTF/Vwtw2XH7L3/SU43hKWvwPYDBK2xxMjlHLZUJToiKZxl9QbQfxsVWQxW32W7vSBZS4dAY6lPNLsG4uD/AjRSBjia/mnhffKTE3aeAhRVp4zQMeXwiVS9xqlJKuEpCnRqRKOPQaKJZ9ioM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=Lh1Cv6rM; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-51124e08565so924928e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 05:10:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1707311452; x=1707916252; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QeiQKTjUpaXlC5rTpAh57LecWBMIQwcK9WBuhzqF9Gc=;
-        b=Lh1Cv6rMH7oADt8qkmoRXSJ6/fdGaTDDdQMuEER+HE6dWn5lz7zeuO3+0i/3jIgrQf
-         016qOlOHcULn26X2CXLcLV6g3j+OBuKXFQ06e6dwFzmgNJ1JuFzUz36AaSUuXQMmWOhW
-         GWPEFPgXZ+KOw/+GYswfZjCqqhoaYDAMHfFwSbaPEJ8ix3Y5hdxluNA/m2ToNd/oxTGZ
-         WP/R0CuYC1CHO8we/XzuXMV225l00guXU3+iVVlbIJGoSpgGq4tQLDX1OCB6o9PgSSnO
-         B8UG2XbYcCIm5BBKE31HExIwKNiTDf4+PApZCxI4wOxMLpDb84x8u4lQhL5z8rg7s3MQ
-         SClw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707311452; x=1707916252;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QeiQKTjUpaXlC5rTpAh57LecWBMIQwcK9WBuhzqF9Gc=;
-        b=dqNQhxlTaCNxzOcNb7krWHmpQgugkiXvFtLD3Zo6x2uyj5kHWpXxfc84StXZmVpLv6
-         VSpBR/8OtSqB6zpovdmyRXs3whmZW3apeUgNKqk+nONpwtshtc1RTY+YB0+zEZDj/XhI
-         FkMfyxQauzqDi1cPGwKRJnI059r36orFnr3Xi8drUSa9vrxUxu/KYp6dTgdqCgQwt0e8
-         7VUtd19/1x4j30SCRNmi+5z0Bnq6ccxdW/ovWvOKm4dtOzNJj3hP0Y3uqOsogn6ss5JM
-         vTfhOYd1NTJzCgn5YX8YxSr+6tix82GaK7RUdmMvUVlh1sH8DFXe1TQKSRb+gyldX4ai
-         M5OA==
-X-Gm-Message-State: AOJu0YyeeMaxPKQ4Cz8QJo3zRvP3lH4UTves42HJV7fEBzb7L3p+8EbU
-	Kgy3ekClIq89JK764SIaex97zhci6R8JtVT3fB+zM6/KNvjhgtsriYckyOHYLZq8hENwSXC+d42
-	bvdey/mANkllgOGheP5rhMPsD9DxijCnMkoI7xZYARF9r0IC/6LY=
-X-Google-Smtp-Source: AGHT+IEDiiJkE3kwGwtW/YKJfbR7qahBZMUX/dBC8fmDAROEYy79l0gPVz7ALeJMY4eBJ5z3ImHy8UPIS5Uk8HzPGLA=
-X-Received: by 2002:ac2:4ac4:0:b0:511:551a:c330 with SMTP id
- m4-20020ac24ac4000000b00511551ac330mr4406484lfp.16.1707311452159; Wed, 07 Feb
- 2024 05:10:52 -0800 (PST)
+	s=arc-20240116; t=1707311554; c=relaxed/simple;
+	bh=mcgudmNsgGYlUWEso2KgZlxVIAjOAUJd8mkOJpdSHgs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=txJVH+hR2DBWCtjgaErA8fa3II5rHfTTp21SQv80ieUZyK2S3E2HzNJyEkNlfJTR+EngcVLBu88zx+//JeHZqZIgsgAWF8fFNwPSy+/q/SddD1NlYBqdg79wr7lk1dyPSyfc/loMG7aiaEtIq3jDWjChHhBcND75qIft4QFUU8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KFfXjnG1; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707311547;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4eRyFxceGltGzr8JPr9dUfh3b9LMZCIpGvQjr0KChxI=;
+	b=KFfXjnG1fltBG1fYqcfOpLiYer8A7Tl9/cNOIPZZbuZrmmeIScHC+LmuR8+jWClXiiQeZI
+	DeSG+NlnsMq3awhHFeDa4xMyV5oZPzsHCMpTwdAqwFFpvWWgdipJvD4LNtazguXMJkwqO/
+	elIbNqeBlJk6d8oDbdL5J7CWCzYJw8U=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-147-JL0pHH3iOpCClapp8WzwRA-1; Wed, 07 Feb 2024 08:12:24 -0500
+X-MC-Unique: JL0pHH3iOpCClapp8WzwRA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 69CE285A58E;
+	Wed,  7 Feb 2024 13:12:24 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.4])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 2E40AC08EF7;
+	Wed,  7 Feb 2024 13:12:24 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id 3E826401E12E5; Wed,  7 Feb 2024 10:10:41 -0300 (-03)
+Date: Wed, 7 Feb 2024 10:10:41 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Leonardo Bras <leobras@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [patch 12/12] x86/cacheinfo.c: check for block interference CPUs
+Message-ID: <ZcOBUWlZMpIErtKu@tpad>
+References: <20240206184911.248214633@redhat.com>
+ <20240206185710.142514323@redhat.com>
+ <87eddomoov.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
- <87h6ily53k.fsf@all.your.base.are.belong.to.us> <CAAhSdy2PPjS6++Edh8NkgiBmcovTUjS5oXE2eR5ZwPfAfVA0ng@mail.gmail.com>
- <874jekag3w.fsf@all.your.base.are.belong.to.us> <CAK9=C2XJYTfY4nXWtjK9OP1iXLDXBVF-=mN1SmJDmJ_dO5CohA@mail.gmail.com>
- <87plx8y5s3.fsf@all.your.base.are.belong.to.us> <87sf24mo1g.fsf@all.your.base.are.belong.to.us>
-In-Reply-To: <87sf24mo1g.fsf@all.your.base.are.belong.to.us>
-From: Anup Patel <apatel@ventanamicro.com>
-Date: Wed, 7 Feb 2024 18:40:40 +0530
-Message-ID: <CAK9=C2VLf96D8cm86D26=hJMsqehUM5x_=Cjyy+7kVcAZ5KrUQ@mail.gmail.com>
-Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: Anup Patel <anup@brainfault.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
-	Saravana Kannan <saravanak@google.com>, Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org, 
-	Atish Patra <atishp@atishpatra.org>, linux-riscv@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87eddomoov.ffs@tglx>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-On Wed, Feb 7, 2024 at 6:25=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.=
-org> wrote:
->
-> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
->
-> >>> Hmm, seems like we're talking past each other, or at least I get the
-> >>> feeling I can't get my opinions out right. I'll try to do a quick PoC=
-,
-> >>> to show you what I mean. That's probably easier than just talking abo=
-ut
-> >>> it. ...and maybe I'll come realizing I'm all wrong!
-> >>
-> >> I suggest to wait for my v13 and try something on top of that
-> >> otherwise we might duplicate efforts.
-> >
-> > OK!
->
-> I did some really rough code sketching, and I'm confident that you can
-> get rid of all ids_enabled_bitmap, hwirqs_used_bitmap, and the
-> corresponding functions/locks. I'd say one lock is enough, and the key
-> is having the per-cpu imsic_local_priv.vectors change from struct
-> imsic_vector * to struct imsic_vector **.
->
-> Using smp_call_function_single() to IPI enable (and disable if you don't
-> want to use the lazy timer disable mechanism) seems feasible as well!
->
-> (Let me know if you don't have the spare cycles, and I can help out.)
+On Wed, Feb 07, 2024 at 01:41:36PM +0100, Thomas Gleixner wrote:
+> On Tue, Feb 06 2024 at 15:49, Marcelo Tosatti wrote:
+> > @@ -396,6 +397,7 @@ static void amd_l3_disable_index(struct
+> >  	 *  disable index in all 4 subcaches
+> >  	 */
+> >  	for (i = 0; i < 4; i++) {
+> > +		int ret;
+> >  		u32 reg = idx | (i << 20);
+> >  
+> >  		if (!nb->l3_cache.subcaches[i])
+> > @@ -409,6 +411,7 @@ static void amd_l3_disable_index(struct
+> >  		 * is not sufficient.
+> >  		 */
+> >  		ret = wbinvd_on_cpu(cpu);
+> > +		WARN_ON(ret == -EPERM);
+> 
+> What? You create inconsistent state here.
 
-If you can help upstream IOMMU driver then that would be awesome.
+That should not happen, since we checked for 
 
-Regards,
-Anup
++   idx = block_interf_srcu_read_lock();
++
++   if (block_interf_cpu(cpu))
++           ret = -EPERM;
+
+Earlier.
+
+Thus the WARN_ON (hum, can change to BUG_ON...).
+
+> > -	amd_l3_disable_index(nb, cpu, slot, index);
+> > +	ret = 0;
+> > +	idx = block_interf_srcu_read_lock();
+> > +
+> > +	if (block_interf_cpu(cpu))
+> > +		ret = -EPERM;
+> > +	else
+> > +		amd_l3_disable_index(nb, cpu, slot, index);
+> > +
+> > +	block_interf_srcu_read_unlock(idx);
+> 
+> Again. This is a root only operation.
+> 
+> This whole patch series is just voodoo programming with zero
+> justification for the mess it creates.
+> 
+> Thanks,
+> 
+>         tglx
+
+Its not really voodoo programming: its simply returning errors to
+userspace if a CPU is set in a particular cpumask.
+
+Do you have a better idea? (i am in the process of converting more
+users).
+Can improve on the patchset quality.
+
+Ok, the justification is as follows. Today, there is a reactive approach
+to interruptions to isolated CPUs:
+
+1) Run Linux+latency sensitive application on isolated CPU.
+
+2) Wait for IPI or other interruption to happen on that isolated CPU,
+which breaks the application.
+
+3) Remove that interruption to the isolated CPU.
+
+This is (for a class of IPIs), an active approach, where those IPIs are 
+not permitted to interrupt the latency sensitive applications.
+
+https://iot-analytics.com/soft-plc-industrial-innovators-dilemma/
+
+"Hard PLCs (a market in which incumbent vendors dominate) have
+historically addressed most of the needs of the existing / high end
+market, such as high reliability, fast cycle times and, perhaps most
+importantly, the ability of existing workforce to support and maintain
+the systems. Soft PLCs, on the other hand, initially addressed the needs
+of new / lower end customers by providing more flexible,
+non-deterministic control solutions often at a fraction of the cost of
+similar hard PLCs. Since entering the market in the 90’s, soft PLCs have
+rapidly become more performant thanks to advances in virtualization
+technologies, real-time Linux operating systems and more powerful edge
+computing hardware, thus moving up the y-axis (product performance) in
+the chart above."
+
+
+
 
