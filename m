@@ -1,167 +1,106 @@
-Return-Path: <linux-kernel+bounces-56249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EFAD84C7E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:50:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FB4784C7E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:50:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CA101F2AFB4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:50:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5E04282BC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F6032375A;
-	Wed,  7 Feb 2024 09:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E11421107;
+	Wed,  7 Feb 2024 09:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cw+RmZKY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J162WSTh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5394122F17;
-	Wed,  7 Feb 2024 09:50:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79D1224CC;
+	Wed,  7 Feb 2024 09:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707299413; cv=none; b=UhSd+zhf6hSccZboKzyZHu9xZ6Ib3yLqYWj/fc3rBPvKfHseE0eayGMt2AzK+5HQRX8XEnU+NhvK5Itwlgm4mnxsckwx+e3xDuHSNCaCFTOulfNdfjeHyZA2p9+vCnx/Alr0CtziwxExGdkEjYST5SuW69swRBq18PnmvkaV8ow=
+	t=1707299419; cv=none; b=ATNJB3FzSBwaLu+IF2aMMwsjpDguXMeyi/SgnCIgbbLxvDsl25LnREHXxKjIqn1ptjm2m1HO79lMXfh193tRWngDyCOPservv24MpqJbvQEXpBxRLdKWmdegVGRa3IqBRGkT7lZerOGvornzUesWCqydLLQo0jYDqbZd2+d9Sds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707299413; c=relaxed/simple;
-	bh=Z7RlkR6pBXTxcfR2yNl0x4kWdlPW84U0WWRNxTe6kcQ=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=acun2f4YGz2nhRbVJbTo4g8VYcZkeS9UF5R0JemNOJUQ30YSaUhe/ZQOMDcLxoesP6Bodc+g2Kq0PEa8H5IwynGJTYrsKieOvNH0NOhOWCzI7zJi0RBBtnM8w5LFcPaCrcMLs09/LS2IxJORUjGFIrT3R0eHuzpxiAk3bk7WNRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cw+RmZKY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF0FCC433C7;
-	Wed,  7 Feb 2024 09:50:12 +0000 (UTC)
+	s=arc-20240116; t=1707299419; c=relaxed/simple;
+	bh=M1ta89V8AB5yJhhSl1CeMPbzafjggbkHhxGqO2RD4Qs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G164sePLLLbEr4y/pjdWMP4O97EWvXOpERmKR9+vmNKnsyiqae5qdICkPFkrfP7TJj1GGFTFVCixG56xvw9NXNIX/icMqxqdSYcwpCY5PtqmGxArSNCeGwiPFBz1J/7BgEp9nB9DaAZzPTqA2sqjGlQZtSQ1bjZyfgRo6m+FXAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J162WSTh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDC6DC43390;
+	Wed,  7 Feb 2024 09:50:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707299412;
-	bh=Z7RlkR6pBXTxcfR2yNl0x4kWdlPW84U0WWRNxTe6kcQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Cw+RmZKYsDqxZqNaHIC2ZXIc+kIEFcWadvDoFHd+50/OKP0cOSu/DJLC2gUqzG2hY
-	 JY8awGsz2UzFQDE87QukobjDEyia+PAuvTIqnPZGgnzdupFyVLBOVt8sssbb9gV42p
-	 h9r4z4nx7HJWLK74m0LFIqlE5CBaBucZ6SGEXRZoB+fOMmBVxt7QVSI/9Bu9FKZRYh
-	 Jj39gqjdmcXLPILG43hIz/NXeAj/6SiaJ0SqCrfUW1GkK/KQzaEaMExPGO0vvSHAFQ
-	 t74o/4WYmAG7i3CAlUoR7lbeZIl2wN7o8EYKvsUIdoYwCrCmA2bnCRKj+1It5iylD/
-	 5/EsKYZOrLlsw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rXeZG-0014r2-87;
-	Wed, 07 Feb 2024 09:50:10 +0000
-Date: Wed, 07 Feb 2024 09:50:09 +0000
-Message-ID: <86r0ho61ta.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Fuad Tabba <tabba@google.com>,
-	Joey Gouly <joey.gouly@arm.com>,
-	Kristina Martsenko <kristina.martsenko@arm.com>,
-	linux-arm-kernel@lists.infradead.org (moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)),
-	linux-kernel@vger.kernel.org (open list),
-	kvmarm@lists.linux.dev (open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64))
-Subject: Re: [RFC PATCH] KVM: arm64: Override Microsoft Azure Cobalt 100 MIDR value with ARM Neoverse N2
-In-Reply-To: <20240206195819.1146693-1-eahariha@linux.microsoft.com>
-References: <20240206195819.1146693-1-eahariha@linux.microsoft.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1707299419;
+	bh=M1ta89V8AB5yJhhSl1CeMPbzafjggbkHhxGqO2RD4Qs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=J162WSThIE3H02LQNVV2E9du8wM6DKtdvi7z8HYBDqXzzUm1Ndln/9jywJHBVaE71
+	 85YZ9j3CIjAbBpTZh92GkwpLp/VKVT20WACgj+loL1CFPgCQTzUlJ3fJ+3YnFmLP6V
+	 m7oajI341msnA4nCcRg/MrDBCVepUYwmTWtKDZsx6tUeisCUZ5DWPAsvmkL+PvdPFN
+	 7ahey9M0Eimtecpvqf/pg7LBfAffhNTeV6K0V+/ENJ8iUJ+OUIsfjD8cUo8NPywEQa
+	 iQ9bZupe5F/YRS7dEETqeUzqecB310HLGUEcVheuXpNNjaIxnMlQJhnV+sTuFDzkGz
+	 4HkDDeCw9kvzg==
+Date: Wed, 7 Feb 2024 09:50:16 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Dhruva Gole <d-gole@ti.com>
+Cc: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
+	Apurva Nandan <a-nandan@ti.com>, linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Gregory CLEMENT <gregory.clement@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH v2 2/4] spi: cadence-qspi: fix pointer reference in
+ runtime PM hooks
+Message-ID: <ZcNSWPucn6Vg43Wu@finisterre.sirena.org.uk>
+References: <20240205-cdns-qspi-pm-fix-v2-0-2e7bbad49a46@bootlin.com>
+ <20240205-cdns-qspi-pm-fix-v2-2-2e7bbad49a46@bootlin.com>
+ <ZcD6yqc+o62x2AjA@finisterre.sirena.org.uk>
+ <20240207083902.mzkcsqf3tbwkkxd2@dhruva>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: eahariha@linux.microsoft.com, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, andre.przywara@arm.com, robh@kernel.org, tabba@google.com, joey.gouly@arm.com, kristina.martsenko@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="8hJZUwphHllQZKzw"
+Content-Disposition: inline
+In-Reply-To: <20240207083902.mzkcsqf3tbwkkxd2@dhruva>
+X-Cookie: You might have mail.
 
-On Tue, 06 Feb 2024 19:58:16 +0000,
-Easwar Hariharan <eahariha@linux.microsoft.com> wrote:
-> 
-> Several workload optimizations and errata depend on validating that the
-> optimization or errata are applicable to the particular CPU by checking
-> the MIDR_EL1 system register value. With the Microsoft implementer ID
-> for Azure Cobalt 100, the value doesn't match and ~20-25% performance
-> regression is seen in these workloads. Override the Azure Cobalt 100
-> value and replace it with the default ARM Neoverse N2 value that Azure
-> Cobalt 100 is based on.
 
-Since you don't disclose *why* this particular value should have any
-impact on the behaviour of the kernel, the answer should be "Thanks,
-but no, thanks".
+--8hJZUwphHllQZKzw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Whatever the reason is for doing so, you should make it plain what you
-are working around. Blindly overriding ID registers is not an option,
-and you should simply add your MIDR value to whatever errata list that
-actually matches your implementation.
+On Wed, Feb 07, 2024 at 02:09:02PM +0530, Dhruva Gole wrote:
+> On Feb 05, 2024 at 15:12:10 +0000, Mark Brown wrote:
 
-> 
-> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
-> ---
->  arch/arm64/include/asm/cputype.h   | 3 ++-
->  arch/arm64/include/asm/el2_setup.h | 5 +++++
->  arch/arm64/kvm/sys_regs.c          | 9 ++++++++-
->  3 files changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
-> index 7c7493cb571f..0450c6c32377 100644
-> --- a/arch/arm64/include/asm/cputype.h
-> +++ b/arch/arm64/include/asm/cputype.h
-> @@ -262,7 +262,8 @@ is_midr_in_range_list(u32 midr, struct midr_range const *ranges)
->   */
->  static inline u32 __attribute_const__ read_cpuid_id(void)
->  {
-> -	return read_cpuid(MIDR_EL1);
-> +	return (read_cpuid(MIDR_EL1) == 0x6D0FD490 ? 0x410FD490 :
-> +			read_cpuid(MIDR_EL1));
->  }
->  
->  static inline u64 __attribute_const__ read_cpuid_mpidr(void)
-> diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
-> index b7afaa026842..502a14e54a31 100644
-> --- a/arch/arm64/include/asm/el2_setup.h
-> +++ b/arch/arm64/include/asm/el2_setup.h
-> @@ -138,6 +138,11 @@
->  .macro __init_el2_nvhe_idregs
->  	mrs	x0, midr_el1
->  	mrs	x1, mpidr_el1
-> +	ldr	x2, =0x6D0FD490
-> +	cmp	x0, x2
-> +	bne	.Loverride_cobalt100_\@
-> +	ldr	x0, =0x410FD490
-> +.Loverride_cobalt100_\@:
->  	msr	vpidr_el2, x0
->  	msr	vmpidr_el2, x1
->  .endm
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index 30253bd19917..8ea9c7fdabdb 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -3574,7 +3574,14 @@ id_to_sys_reg_desc(struct kvm_vcpu *vcpu, u64 id,
->  		return ((struct sys_reg_desc *)r)->val;			\
->  	}
->  
-> -FUNCTION_INVARIANT(midr_el1)
-> +static u64 get_midr_el1(struct kvm_vcpu *v, const struct sys_reg_desc *r)
-> +{
-> +	((struct sys_reg_desc *)r)->val = read_sysreg(midr_el1);
-> +	if (((struct sys_reg_desc *)r)->val == 0x6D0FD490)
-> +		((struct sys_reg_desc *)r)->val == 0x410FD490;
+> > Please place fixes at the start of serieses so that they don't end up
+> > with spurious dependencies on other changes and can more easily be
+> > applied as fixes.
 
-As pointed out to me by Joey, this line is really interesting, and
-shows that you didn't really test this patch.
+> Didn't really understand the comment here, aren't the 1,2 and 3 patches
+> fixes and the last one the non-fix? Thus fixes are indeed placed at
+> start of this series right?
 
-Thanks,
+Patch 1 is a rename, this is obviously cosmetic and not a bug fix.
 
-	M.
+--8hJZUwphHllQZKzw
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Without deviation from the norm, progress is not possible.
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXDUlcACgkQJNaLcl1U
+h9DIXwf+J/u1u4AZtGji0lT2UBDnRwkuZLPS4tvXyX/lFxCWUMX4z0ZXqer0/8Sj
+A4YryZnYd9LkGj350WVwq5UwPTGs2XyXOlenM7I57li0+vLOpzV4neBXROX5PGw/
+03FSh3Qfx6t9Y3TYki26NPEyObj1NTZ3lXw6FQrAHMSLZV09PxbL3C+MY15GKJhx
+Pw6dzSoX8loijGLYDKxNKCGTKldou/JeL2v4HDq4uetGbQM0nlFm4R4nhg21Ohkz
+vijLB0G0bjq384zAko4p8BXX7fkXOAl8vYJ/4PsiNeIrokUWf63B8a8P5eI2BUMi
+lAJEkXO2jyuzLqqwNTclcQaKCxN7Cg==
+=GIf5
+-----END PGP SIGNATURE-----
+
+--8hJZUwphHllQZKzw--
 
