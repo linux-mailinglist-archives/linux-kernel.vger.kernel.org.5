@@ -1,51 +1,52 @@
-Return-Path: <linux-kernel+bounces-56659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B587984CD48
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:53:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95B7684CD4C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:53:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0A68B2770A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:53:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BCEE1F29278
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:53:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69CFD7E77E;
-	Wed,  7 Feb 2024 14:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C167F486;
+	Wed,  7 Feb 2024 14:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="XFzFNkTF"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="VNbMQFrX"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB547CF03
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EDD77762B
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:53:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707317597; cv=none; b=FJFHgTp1XyyVuvYRtRPgXLGkMCRqJ+i2bBeWI1dTZcXQcVI/jH1XWx/9O7adK097MOKotC1dM/1oBcUpJooxkXzQO9IrDye67zCgInE6RlZUmej+/48zj/8zTDooZ+f225yQw1WGXnA7ezIRfqj5xYli2/MCrnnXOReUsFrKsjM=
+	t=1707317598; cv=none; b=ia2rLdvvjRDUkbqh01DegFt1ny3t1luvBg3PCBCGKB2FboBGmztPM0FYMXre7OcrxLdQq2CTh4uXiYRl8+XAm18JHGuECVHAJbb8PJVyi17v3yQLGhwxaMK7xr6wy9wPyr1pRMIaTNNaXyzInDMNrXk1bF7T2nttmZ7iliwPKss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707317597; c=relaxed/simple;
-	bh=7dhx+O2PyaDEDeGc1HBTFc5NQvFFIflUo1Mzmg6Ym7U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VxpYOR/ZifxaFz/v4T9x23rU5e3+Y3Z4AFMZ+q9IhkcYqTgxR1TTd9EgfjfLb7Mj2AOAyqnCTfHVuxpSRdoyVafyR8b1fByl7GTTggOHQtMyqNTaszgQLU6aMpBhJu6ZesC5UdUqudWzYmMmflvAKLESFMC83UbUfbI0NuwqjWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=XFzFNkTF; arc=none smtp.client-ip=46.235.227.194
+	s=arc-20240116; t=1707317598; c=relaxed/simple;
+	bh=zBMjlcbiKu6XccSNoWq0I9ENCzJJnrNqKTV00u6JsDQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=amcBx8IXwFVYhbjxty+L3v5ElEoC48vCjGwYrFeHky0Ff2mpozvwPX+u89wJ9UllC67+0IABQKhtn/E+JeOttinaq1+pt2BTDv15khks4hMXOk2SEpCIUqlase5mq5Zmf69gRA/9yQnd1Lq0J5f4DCP6F2eANy/HQjdfMK3bROw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=VNbMQFrX; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707317594;
-	bh=7dhx+O2PyaDEDeGc1HBTFc5NQvFFIflUo1Mzmg6Ym7U=;
-	h=From:To:Cc:Subject:Date:From;
-	b=XFzFNkTFM1aH23cD74LkWG3zPLnD/HBJr9y4S6RvFGQimYbG20ztzBGPyq0S1HKw/
-	 Az8LXxflEtm+V9AK7gIAtY9M/PdzthysoHX0YBvtAiycfa8fXBIrENQn83KTRgSkH3
-	 eeUCLDrHrJWMiwm46p0w0uydiq2FYbKqIm5rYe/9FPi6lGza5N4QHinfYOZLNdHeP+
-	 pj/vP3wHY9lCUEN7LweLzugDIHXqpCQaYZkb10g77w5/E3uoH1mQxSDFtx7xcl6EcA
-	 eynQlhkUCiIOVJQj2D1McyAZPyh2285nXFJd7+c9fZi2NcXlkhTjubO5hxE5ZVSRjg
-	 PXDZv9bJKWSRg==
+	s=mail; t=1707317595;
+	bh=zBMjlcbiKu6XccSNoWq0I9ENCzJJnrNqKTV00u6JsDQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=VNbMQFrX6jTNVHuuClUk7k584JbBXYYd+vZrizo15qcTpqN07FiZv7XVuQ+eHFVeT
+	 bVrITgrPO4Lh4ysRatg6mn0ELY7DNsFnpOo0cdyDx/XH/yaj706H1/miyILqVijBFE
+	 KeOYA6xWzcen2OhHDdAtG2XQdYD8qQsT7O7cXsrSeQQMdn+zBZMPRpRMtSJyqWxTni
+	 zMroo4BXCH3I/e/PTvXfabFWk/KQgz92Tg5OLUMn7kAHJWd9E5+cWe883+X5fHqMLX
+	 VzT5/rwXpOyvSCIiY8XgIU5zJHTItHfJmFW6GYV7WLrRuSUuS4fyl6bavZhWTeUPnV
+	 GafJ4qlLOIBJw==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 778283782059;
-	Wed,  7 Feb 2024 14:53:13 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 84B013782072;
+	Wed,  7 Feb 2024 14:53:14 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: chunkuang.hu@kernel.org
 Cc: fshao@chromium.org,
@@ -58,11 +59,14 @@ Cc: fshao@chromium.org,
 	linux-mediatek@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
-	kernel@collabora.com
-Subject: [PATCH v5 0/9] MediaTek DRM - DSI driver cleanups
-Date: Wed,  7 Feb 2024 15:52:58 +0100
-Message-ID: <20240207145307.1626009-1-angelogioacchino.delregno@collabora.com>
+	kernel@collabora.com,
+	Alexandre Mergnat <amergnat@baylibre.com>
+Subject: [PATCH v5 1/9] drm/mediatek: dsi: Use GENMASK() for register mask definitions
+Date: Wed,  7 Feb 2024 15:52:59 +0100
+Message-ID: <20240207145307.1626009-2-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240207145307.1626009-1-angelogioacchino.delregno@collabora.com>
+References: <20240207145307.1626009-1-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,46 +75,104 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Changes in v5:
- - Changed patch 1 to not fix the DSI_PS_SEL mask for newer SoCs
+Change magic numerical masks with usage of the GENMASK() macro
+to improve readability.
 
-Changes in v4:
- - Added a fix for RGB666 formats setting and for wrong register
-   definitions for packed vs loosely packed formats
- - Added a commit to make use of mipi_dsi_pixel_format_to_bpp() helper
-   instead of open coding the same
+This commit brings no functional changes.
 
-Changes in v3:
- - Rebased over next-20240131
- - Added bitfield.h inclusion in patch 3
- - Added three more cleanup commits to the mix to simplify
-   the probe function and remove gotos.
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ drivers/gpu/drm/mediatek/mtk_dsi.c | 45 +++++++++++++++---------------
+ 1 file changed, 23 insertions(+), 22 deletions(-)
 
-Changes in v2:
- - Rebased over next-20231213
-
-This series performs some cleanups for mtk_dsi, enhancing human
-readability, using kernel provided macros where possible and
-also reducing code size.
-
-Tested on MT8173 and MT8192 Chromebooks (using a DSI<->DP bridge)
-and on MT6795 Sony Xperia M5 (DSI video mode panel).
-
-
-AngeloGioacchino Del Regno (9):
-  drm/mediatek: dsi: Use GENMASK() for register mask definitions
-  drm/mediatek: dsi: Fix DSI RGB666 formats and definitions
-  drm/mediatek: dsi: Cleanup functions mtk_dsi_ps_control{_vact}()
-  drm/mediatek: dsi: Use bitfield macros where useful
-  drm/mediatek: dsi: Replace open-coded instance of HZ_PER_MHZ
-  drm/mediatek: dsi: Register DSI host after acquiring clocks and PHY
-  drm/mediatek: dsi: Simplify with dev_err_probe and remove gotos
-  drm/mediatek: dsi: Compress of_device_id entries and add sentinel
-  drm/mediatek: dsi: Use mipi_dsi_pixel_format_to_bpp() helper function
-
- drivers/gpu/drm/mediatek/mtk_dsi.c | 310 ++++++++++++-----------------
- 1 file changed, 126 insertions(+), 184 deletions(-)
-
+diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+index a2fdfc8ddb15..c66e18006070 100644
+--- a/drivers/gpu/drm/mediatek/mtk_dsi.c
++++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+@@ -58,18 +58,18 @@
+ 
+ #define DSI_TXRX_CTRL		0x18
+ #define VC_NUM				BIT(1)
+-#define LANE_NUM			(0xf << 2)
++#define LANE_NUM			GENMASK(5, 2)
+ #define DIS_EOT				BIT(6)
+ #define NULL_EN				BIT(7)
+ #define TE_FREERUN			BIT(8)
+ #define EXT_TE_EN			BIT(9)
+ #define EXT_TE_EDGE			BIT(10)
+-#define MAX_RTN_SIZE			(0xf << 12)
++#define MAX_RTN_SIZE			GENMASK(15, 12)
+ #define HSTX_CKLP_EN			BIT(16)
+ 
+ #define DSI_PSCTRL		0x1c
+-#define DSI_PS_WC			0x3fff
+-#define DSI_PS_SEL			(3 << 16)
++#define DSI_PS_WC			GENMASK(13, 0)
++#define DSI_PS_SEL			GENMASK(17, 16)
+ #define PACKED_PS_16BIT_RGB565		(0 << 16)
+ #define LOOSELY_PS_18BIT_RGB666		(1 << 16)
+ #define PACKED_PS_18BIT_RGB666		(2 << 16)
+@@ -109,26 +109,26 @@
+ #define LD0_WAKEUP_EN			BIT(2)
+ 
+ #define DSI_PHY_TIMECON0	0x110
+-#define LPX				(0xff << 0)
+-#define HS_PREP				(0xff << 8)
+-#define HS_ZERO				(0xff << 16)
+-#define HS_TRAIL			(0xff << 24)
++#define LPX				GENMASK(7, 0)
++#define HS_PREP				GENMASK(15, 8)
++#define HS_ZERO				GENMASK(23, 16)
++#define HS_TRAIL			GENMASK(31, 24)
+ 
+ #define DSI_PHY_TIMECON1	0x114
+-#define TA_GO				(0xff << 0)
+-#define TA_SURE				(0xff << 8)
+-#define TA_GET				(0xff << 16)
+-#define DA_HS_EXIT			(0xff << 24)
++#define TA_GO				GENMASK(7, 0)
++#define TA_SURE				GENMASK(15, 8)
++#define TA_GET				GENMASK(23, 16)
++#define DA_HS_EXIT			GENMASK(31, 24)
+ 
+ #define DSI_PHY_TIMECON2	0x118
+-#define CONT_DET			(0xff << 0)
+-#define CLK_ZERO			(0xff << 16)
+-#define CLK_TRAIL			(0xff << 24)
++#define CONT_DET			GENMASK(7, 0)
++#define CLK_ZERO			GENMASK(23, 16)
++#define CLK_TRAIL			GENMASK(31, 24)
+ 
+ #define DSI_PHY_TIMECON3	0x11c
+-#define CLK_HS_PREP			(0xff << 0)
+-#define CLK_HS_POST			(0xff << 8)
+-#define CLK_HS_EXIT			(0xff << 16)
++#define CLK_HS_PREP			GENMASK(7, 0)
++#define CLK_HS_POST			GENMASK(15, 8)
++#define CLK_HS_EXIT			GENMASK(23, 16)
+ 
+ #define DSI_VM_CMD_CON		0x130
+ #define VM_CMD_EN			BIT(0)
+@@ -138,13 +138,14 @@
+ #define FORCE_COMMIT			BIT(0)
+ #define BYPASS_SHADOW			BIT(1)
+ 
+-#define CONFIG				(0xff << 0)
++/* CMDQ related bits */
++#define CONFIG				GENMASK(7, 0)
+ #define SHORT_PACKET			0
+ #define LONG_PACKET			2
+ #define BTA				BIT(2)
+-#define DATA_ID				(0xff << 8)
+-#define DATA_0				(0xff << 16)
+-#define DATA_1				(0xff << 24)
++#define DATA_ID				GENMASK(15, 8)
++#define DATA_0				GENMASK(23, 16)
++#define DATA_1				GENMASK(31, 24)
+ 
+ #define NS_TO_CYCLE(n, c)    ((n) / (c) + (((n) % (c)) ? 1 : 0))
+ 
 -- 
 2.43.0
 
