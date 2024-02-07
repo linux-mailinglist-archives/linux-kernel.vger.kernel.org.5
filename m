@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-55984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99DFF84C47C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:48:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DF0184C47D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:48:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF288B27D1D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:48:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B92F1F22D66
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:48:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603211F953;
-	Wed,  7 Feb 2024 05:47:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEEE2200DB;
+	Wed,  7 Feb 2024 05:47:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KAVrWgRy"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="flQ3DrS5"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AAE41F946
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 05:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF96200A8
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 05:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707284866; cv=none; b=qR+tGSuzlQ57Ri4pnicTRT3VYL480D1iGHlSt4nj4TkNY6ez1o10iYExUBXflWJKE2BhpCdMwdxRyM6mPfwQym22qGyPO69K5kBpBmRCq2gji7RQeIxjbwrOn6FUtk8/209m1ezaIzr1FUJ2X9XaoDCCE7Ewik2OSlFqTkrB0cM=
+	t=1707284872; cv=none; b=ohQPa59raDocByFa2rZTX2m/VEeqD7ArJvfhBbumoUCf2Hx3GKEp5tP/B2DwYfj/MKuoCdwXRQY0nHbHhAfu8iTwdCVwj4NW2/+Hia9ouwENe8a0PY9wHw6uzQmr7X5P9eCxYoEvD/UTJD4VvTEpsCQqxHEVx0s6SI+sov8BkXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707284866; c=relaxed/simple;
-	bh=WXKHRU/uEj6cYAvi50bYRlcQ0ruywm7WIxvBv/gN2jw=;
+	s=arc-20240116; t=1707284872; c=relaxed/simple;
+	bh=6uX9zfQ8cQJ8WnngTxHu/ne5naJ+QAafInm6eyaxJy0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CZeWhJw8XReDTeEbaP8+N2HpvbCXoO3wGD6XVtUQW5kbw2lWdntRZiDcgzRinMUFk+d3DaFOgT1O0uXmvi6u6tAT49elpmHzYCEyQIFM3P+7s7gSTqP/owxAqOx1nsYvkCABI8NFCo77h5mwbJTRnzj0DHgczjKeXjYeSan6tvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KAVrWgRy; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=Cs2sFLY1F5GkGSBNB32ScPaSvYjbQbPbO8oQz12+4vcN1A1LWlSCUziI+xXqBe71MNkrLNrbWMEJa27OOippbBIFNSAgT698BVir7cLz1kPjz8mUhexEfxMGbrAZ7lyRN9eb4LdPWiWtATryFlUJO2HMj4i9OOjVcoGYwop5e5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=flQ3DrS5; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707284864;
+	s=mimecast20190719; t=1707284869;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dx4vuXIklQBxh8l06pvXMAeW4Cc8GkKcbpmXFc8So2o=;
-	b=KAVrWgRyXEykUOLAu0jhOuMlhtYEoyN72bjR+qtPzV78S/o5F2ME3nlQLsELdK1X3hGnh1
-	0CARfeXjyCNflfs7JIwSDSFZtCgG6YKCa98T+LBZrb71UD6CNTAaO4qTsrcuy7xxL6sTde
-	SIAKAZzXp2reaydwshFQ7GWtGfZNySQ=
+	bh=mxvyLlwFPrOAb4E1s475cmzm9HXLhSgjIXU0tbGtRvE=;
+	b=flQ3DrS54ZCp8VW/C5iohqfH+ufwKd3U+3uuU+lpCH3CxRRSrcDQQC/qjhwbXI5bj/GdIr
+	d9uhc7xY2vHc5IcpdKdvdv4wzOI3qVG9hEO5VnJXHMDW/vxuW/+kCSicf6Bokrj1fyC4d4
+	Nl85h+naRLbd26T5kXR8AuGK4YXKO6g=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-499-5UgG03rVNwC6AlVylbb-5A-1; Wed,
- 07 Feb 2024 00:47:42 -0500
-X-MC-Unique: 5UgG03rVNwC6AlVylbb-5A-1
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-6-f3trEO6NNI-I9I6uYGLkcQ-1; Wed,
+ 07 Feb 2024 00:47:45 -0500
+X-MC-Unique: f3trEO6NNI-I9I6uYGLkcQ-1
 Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 586DA3C0F247;
-	Wed,  7 Feb 2024 05:47:42 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 76D903811F41;
+	Wed,  7 Feb 2024 05:47:45 +0000 (UTC)
 Received: from server.redhat.com (unknown [10.72.112.36])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id CBF64492BC6;
-	Wed,  7 Feb 2024 05:47:39 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id ECCD7492BC6;
+	Wed,  7 Feb 2024 05:47:42 +0000 (UTC)
 From: Cindy Lu <lulu@redhat.com>
 To: lulu@redhat.com,
 	jasowang@redhat.com,
@@ -61,9 +61,9 @@ To: lulu@redhat.com,
 	xieyongji@bytedance.com,
 	linux-kernel@vger.kernel.org,
 	maxime.coquelin@redhat.com
-Subject: [PATCH v4 4/5] vduse: Add file operation for mmap
-Date: Wed,  7 Feb 2024 13:43:31 +0800
-Message-ID: <20240207054701.616094-5-lulu@redhat.com>
+Subject: [PATCH v4 5/5] Documentation: Add reconnect process for VDUSE
+Date: Wed,  7 Feb 2024 13:43:32 +0800
+Message-ID: <20240207054701.616094-6-lulu@redhat.com>
 In-Reply-To: <20240207054701.616094-1-lulu@redhat.com>
 References: <20240207054701.616094-1-lulu@redhat.com>
 Precedence: bulk
@@ -75,89 +75,54 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-Add the operation for mmap, This function  will be used by the user space
-application to map the pages to the user space.
+Add a document explaining the reconnect process, including what the
+Userspace App needs to do and how it works with the kernel.
 
 Signed-off-by: Cindy Lu <lulu@redhat.com>
 ---
- drivers/vdpa/vdpa_user/vduse_dev.c | 57 ++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
+ Documentation/userspace-api/vduse.rst | 32 +++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
-index 2da659d5f4a8..083fe0047677 100644
---- a/drivers/vdpa/vdpa_user/vduse_dev.c
-+++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-@@ -1465,6 +1465,61 @@ static struct vduse_dev *vduse_dev_get_from_minor(int minor)
- 	return dev;
- }
+diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/userspace-api/vduse.rst
+index bdb880e01132..a2be85e0e516 100644
+--- a/Documentation/userspace-api/vduse.rst
++++ b/Documentation/userspace-api/vduse.rst
+@@ -231,3 +231,35 @@ able to start the dataplane processing as follows:
+    after the used ring is filled.
  
-+static vm_fault_t vduse_vm_fault(struct vm_fault *vmf)
-+{
-+	struct vduse_dev *dev = vmf->vma->vm_file->private_data;
-+	struct vm_area_struct *vma = vmf->vma;
-+	u16 index = vma->vm_pgoff;
-+	struct vduse_virtqueue *vq;
-+	unsigned long vaddr;
+ For more details on the uAPI, please see include/uapi/linux/vduse.h.
 +
-+	/* index 1+vq_number page reserved for virtqueue state*/
-+	vq = dev->vqs[index];
-+	vaddr = vq->vdpa_reconnect_vaddr;
-+	if (remap_pfn_range(vma, vmf->address & PAGE_MASK,
-+			    PFN_DOWN(virt_to_phys((void *)vaddr)), PAGE_SIZE,
-+			    vma->vm_page_prot))
-+		return VM_FAULT_SIGBUS;
-+	return VM_FAULT_NOPAGE;
-+}
++HOW VDUSE devices reconnectoin works
++----------------
++0. Userspace APP checks if the device /dev/vduse/vduse_name exists.
++   If it does not exist, need to create the instance.goto step 1
++   If it does exist, it means this is a reconnect and goto step 3.
 +
-+static const struct vm_operations_struct vduse_vm_ops = {
-+	.fault = vduse_vm_fault,
-+};
++1. Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
++   /dev/vduse/control.
 +
-+static int vduse_dev_mmap(struct file *file, struct vm_area_struct *vma)
-+{
-+	struct vduse_dev *dev = file->private_data;
-+	unsigned long vaddr = 0;
-+	unsigned long index = vma->vm_pgoff;
-+	struct vduse_virtqueue *vq;
++2. When the ioctl(VDUSE_CREATE_DEV) function is called, the kernel allocates memory
++   to save the reconnect information.
 +
-+	if (vma->vm_end - vma->vm_start != PAGE_SIZE)
-+		return -EINVAL;
-+	if ((vma->vm_flags & VM_SHARED) == 0)
-+		return -EINVAL;
++3. Userspace App need to mmap the pages to userspace
++   Userspace App need to map Pages 0 to vq_number for vq status,
++   Users can define the structure for saving the reconnect information themselves
++   in the userspace.
 +
-+	if (index > dev->vq_num)
-+		return -EINVAL;
++4. Check if the infomatin sutiable for reconnect
++   If this is reconnect:
++   Before attempting to reconnect, The userspace application need to the
++   ioctl VDUSE_DEV_GET_CONFIG,VDUSE_DEV_GET_STATUS,VDUSE_DEV_GET_FEATURES...
++   to get the and confirm if these information are suitable for reconnecting.
 +
-+	vq = dev->vqs[index];
-+	vaddr = vq->vdpa_reconnect_vaddr;
-+	if (vaddr == 0)
-+		return -EOPNOTSUPP;
++5. Start the userspace App.
++   While running, the application should store the relevant information about
++   reconnections in mapped pages.
++   When calling ioctl VDUSE_VQ_GET_INFO from the userspace APP to get vq information, it is necessary
++   to check if this is a reconnection. If a reconnection has occurred, the vq-related information
++   must be get from the mapped pages.
 +
-+	if (virt_to_phys((void *)vaddr) & (PAGE_SIZE - 1))
-+		return -EINVAL;
-+
-+	/* Check if the Userspace App mapped the correct size */
-+	if (vma->vm_end - vma->vm_start != PAGE_SIZE)
-+		return -EOPNOTSUPP;
-+
-+	vm_flags_set(vma, VM_DONTEXPAND);
-+	vma->vm_ops = &vduse_vm_ops;
-+
-+	return 0;
-+}
-+
- static int vduse_dev_open(struct inode *inode, struct file *file)
- {
- 	int ret;
-@@ -1497,6 +1552,8 @@ static const struct file_operations vduse_dev_fops = {
- 	.unlocked_ioctl	= vduse_dev_ioctl,
- 	.compat_ioctl	= compat_ptr_ioctl,
- 	.llseek		= noop_llseek,
-+	.mmap		= vduse_dev_mmap,
-+
- };
- 
- static ssize_t irq_cb_affinity_show(struct vduse_virtqueue *vq, char *buf)
++6. When the Userspace App exits, it is necessary to unmap all the reconnect pages.
 -- 
 2.43.0
 
