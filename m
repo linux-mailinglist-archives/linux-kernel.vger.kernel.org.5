@@ -1,123 +1,138 @@
-Return-Path: <linux-kernel+bounces-56160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2840E84C6D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:05:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8DA784C6EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:09:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4D11288B8C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:05:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D8271F25042
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27B92208BB;
-	Wed,  7 Feb 2024 09:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D597F20B14;
+	Wed,  7 Feb 2024 09:09:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LwvhrRfS"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b="o2F/n0we"
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1649208B4;
-	Wed,  7 Feb 2024 09:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E2C522307
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:09:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707296723; cv=none; b=To9q8N2rbeUxxcC1RVxK4j5RRcGrOeTQCxMDR5PWoaMPfOCVZkkg2R8s+rVIvwOzVU4naj1ILolD56AI4DSzHwEQMBdjBpdCJqNhK0C4cPJCBXBtkjxPFGLkwiNYSKZGeaKg3Ys0wxwxr6q3TCfUrz0CIiMWy3NHY7QwVHNDzKg=
+	t=1707296960; cv=none; b=PN/eQX3xKjZEjizMwXf1PTg0V8s2hi6YzJpX8aIWb4nm54JurU/F387N7zB3ZoyqO+vHRqmR7M9CcjWYzf0o4ClhorKKpmqJYdTxfxRV4NeDEkyI29Jsvc0Kq9X2S8w7oP+gSKW+32mUGKYYD3fp3gKW4z8lx7CypMar2JV9Qv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707296723; c=relaxed/simple;
-	bh=xtxqiTXuDBirFx6NEaQvBC0NzUg8vJLy9EConsFO6rM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LgHwUVhfia1MuuKHGux0xAxtL4O5grEYlnqNNDO/3kFkdGNu+97l7FklF4kN9TFM7vs150zTB5Y90EnjE5TvhjF85C0dOoDx8o+JT+o+fL2omBi5Cu9+8yTlFYuZEjjOs5sBEooK8WVnPvBuCrRYJT++pxoWInqnYiYtCnOslMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LwvhrRfS; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a30f7c9574eso49766166b.0;
-        Wed, 07 Feb 2024 01:05:21 -0800 (PST)
+	s=arc-20240116; t=1707296960; c=relaxed/simple;
+	bh=kL9Qa5KilatsDA9dOcsd2sr7TpU8RxZfa1NocdfsKHo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YXe+OiSe0okMgIWu4Jam0+DbDfmF4xrKkmADE0IFz3n1P8mlamBfotbFUna//HZu6rpAzkXPDSFvWxqOhzMqFPo/UIRu5RwqUkb4fhoIR+Mrp90J1GBzsR/7Im5puX38ee0FVnRF/OvVjoqRYzP0kf5bEv/F69wdGZExNxHupnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org; spf=pass smtp.mailfrom=endlessos.org; dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b=o2F/n0we; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endlessos.org
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so1326435276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:09:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707296720; x=1707901520; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=esE2h1nVkSVqHSvE+Z95Z0pvn32WS6+v2R6aUj+4MIk=;
-        b=LwvhrRfSYwszDoPqQqpEKs38ecFP7Fpg4p+/+cPhOZTsPpZeS3LLrLJ/v2kpwqt0BB
-         Te44yWPcIgSOlngegyeTERPQVRbvcAjve0AlhZmzYes2+JJDX3ENkIO2Por12K2FfwwV
-         cwNQXxBueMfNVr3zZ0K4cWwom0WVRf5Z+K7ZLpFE1g3sH3PlJKK+2EfDMspeD5LhhWYV
-         C8t3jNxQTQim4IEAArRb2Ua2P5xfTZRJCYodE3FWaiaoaZReXBUSRzW9v002ylEP0lSA
-         7iqJcFrbUo+XXdAVpHe16v5daiOVlaufkYjYQawI8admxPKwiisOtSS8hPvd6HR5p3Hn
-         0DNw==
+        d=endlessos.org; s=google; t=1707296957; x=1707901757; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IdNYaHzhP6aLq1DwaaQlYeeTpj0ps251+zH7kXwqcrU=;
+        b=o2F/n0we/xLNS4/cYBC7cu6TfsuYDLlbvRk1ts2Fb2S6mrG/cJxde63ihj6VxN93/1
+         SMD54K7v39MwacLiv+KCDS7oEoMf+AzBzBN9v2XiW6zcWYfMP75b4SpoLGMQj9GozD2O
+         +JCwSswkTU4lmy2ijQYQE47+tR8GHbJdjg9DrEsQU8MRdT96jsc6ISh0k2RRYfSx3XIA
+         aQb86PAmBk/xwG/6sPq/fGx2yL26GJnIYOcOJEpgcgZ9RcfsRLY2ttHRIaxPGPsP7GQh
+         NtmOaLqaK7TkcTTIwSg93lGY4vpkt/ZoXT9vn2QtODbOrIWzBHvcEO7W/1fSfq3lxlE+
+         DaOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707296720; x=1707901520;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=esE2h1nVkSVqHSvE+Z95Z0pvn32WS6+v2R6aUj+4MIk=;
-        b=XRxvkdH68L/1OKCzLgn5RTZF8i9i8/Jq/+YUQZ1iAMOXKiZwKIfmtzg73y+cpxHH8H
-         ppF3VuN2M5+vh/qkeRhQr5VFImaPLML059YsgDElT+u46Mwlr40+HzwJx8RG+AhYtUqI
-         B2JyWkuLNo/1NCEf8OpoxVFPpYAHdyeTgI4ZvHyVpp7/56y4qB3vaq89dsYUC/VhL7rg
-         zyQRtfcfiOnrcbPG5eWMx3okCaMXlvV4JATdyTD/4/mstuy3tXbjz7uUf0ENbBV8eJ8g
-         VB6PRO3oG3NA9a3OMcWk5cDl65N1EOhyBzZ9804QpUzAZdRNvhWoY81kVZ+SDIrhnA2z
-         K5Yg==
-X-Gm-Message-State: AOJu0YzlVIrfO/bjnTkWzjaJ3pJa53Ofm6h6ZZYHOgxAgAKuOCFBxuk5
-	TwoKUwkEYkYqe0pXg4OO5f9n/sE8swwWrCQmIhnnx8C+M3LpB9CX
-X-Google-Smtp-Source: AGHT+IEaj7zV6zJ+AJmCTjLy4JM5pqgb3fG+Rr3bhlMl8pG5g7ngHLFlygha5muv/ceg7OBCrJ99Ng==
-X-Received: by 2002:a17:906:af14:b0:a36:fc06:6f7b with SMTP id lx20-20020a170906af1400b00a36fc066f7bmr3726567ejb.44.1707296719667;
-        Wed, 07 Feb 2024 01:05:19 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWaigS8/0B268hzEBsKAjyBzI5b74juO+4hkmnLQlGYjXfHV4CH9OTz1HSdsYGznaVZdnknVYdeCQfdcP1hSa8T77MoLsSc/tl0oVgf6QJ7oEiUSEdu2J2u8HvEH3Ad52O6vZ0zNbt3QLWprQp8HR3v22pqFWyWhNl19exsWruZNBc/r4hL+O3/ZwmSj8p7+lpb730wtiXeqSj4M3qbmqBLOwdGTZ+Gfbtj2YJzH7cHobryxw==
-Received: from ?IPv6:2003:f6:ef1b:2000:15d4:fc17:481e:8afe? (p200300f6ef1b200015d4fc17481e8afe.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:15d4:fc17:481e:8afe])
-        by smtp.gmail.com with ESMTPSA id a21-20020a1709065f9500b00a385832f8d8sm515578eju.128.2024.02.07.01.05.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 01:05:19 -0800 (PST)
-Message-ID: <70a4854e94cfd04b1a0ec9d3defe50ec56fc874f.camel@gmail.com>
-Subject: Re: [PATCH 2/2] iio: accel: adxl367: fix I2C FIFO data register
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Cosmin Tanislav <demonsingur@gmail.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
- <Michael.Hennerich@analog.com>, Cosmin Tanislav
- <cosmin.tanislav@analog.com>,  Jonathan Cameron <jic23@kernel.org>,
- linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Wed, 07 Feb 2024 10:08:38 +0100
-In-Reply-To: <20240207033657.206171-2-demonsingur@gmail.com>
-References: <20240207033657.206171-1-demonsingur@gmail.com>
-	 <20240207033657.206171-2-demonsingur@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        d=1e100.net; s=20230601; t=1707296957; x=1707901757;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IdNYaHzhP6aLq1DwaaQlYeeTpj0ps251+zH7kXwqcrU=;
+        b=cFbEVOSE1Pt2psuVR1N9AY9qORxrIsEwsR+zP+aAlDpTGKmoEWCE4vQ0B3vT3IMEgb
+         G4aGkLp0ORnWLzeFWqJXQ2rQwgCBzheoB3gOA1n0c+Ao6UztDU9cFSsgwm9UqYjsndv0
+         MNslNAGKOI8xEDNEWs6ydk+gEfWKG/FSlMuUhYi37OmW+xYjwk6c7hCVntexofsw6XNO
+         NGZQ0dx+d9i9PcztqdEDo7rML33gl8icUlqmUvdZoKUn/Jv9F7al43tXCnqiOPXsunx2
+         X6LMnOAT3C6RlfzsjBbC4gxQdttqiR6GzCXELqyLolT7TfGjFBp75fDupFX4jpvk+KTB
+         avQQ==
+X-Gm-Message-State: AOJu0YxKCCqf14o/m1Jidlc3gJYKF+c/o22KgHOVjP0ovLKqFzHCU1mF
+	oNRvGEBINr7EfBtZ5ZGgvf2loNI/k5Gclr4f26u2/FAoDnFOKszfQhUWzEwb5zJ7F4PJGkXR7lo
+	nERmUvnRUxdKXS/1Yr8cQwFtU9xfBU60f3AmC5g==
+X-Google-Smtp-Source: AGHT+IGI/sjUDIdU62Aw2X7CoIvmkWQz0p+NzMf8UuCStnMYVvDZdhQlqf/FP9/KnYi9EQAqimmbQxS4EJSxrJQ6m2M=
+X-Received: by 2002:a25:ae98:0:b0:dc2:1f6b:be4c with SMTP id
+ b24-20020a25ae98000000b00dc21f6bbe4cmr3307793ybj.22.1707296957197; Wed, 07
+ Feb 2024 01:09:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240207084452.9597-1-drake@endlessos.org> <20240207084452.9597-2-drake@endlessos.org>
+In-Reply-To: <20240207084452.9597-2-drake@endlessos.org>
+From: Jian-Hong Pan <jhp@endlessos.org>
+Date: Wed, 7 Feb 2024 17:08:41 +0800
+Message-ID: <CAPpJ_edoG0dD4aHZiZShcFMoD2JLQhbh7nuUPzgMT_ZMySJ=VQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] Revert "ACPI: PM: Block ASUS B1400CEAE from
+ suspend to idle by default"
+To: Daniel Drake <drake@endlessos.org>
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com, 
+	david.e.box@linux.intel.com, mario.limonciello@amd.com, rafael@kernel.org, 
+	lenb@kernel.org, linux-acpi@vger.kernel.org, linux@endlessos.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-02-07 at 05:36 +0200, Cosmin Tanislav wrote:
-> As specified in the datasheet, the I2C FIFO data register is
-> 0x18, not 0x42. 0x42 was used by mistake when adapting the
-> ADXL372 driver.
->=20
-> Fix this mistake.
->=20
-> Signed-off-by: Cosmin Tanislav <demonsingur@gmail.com>
+Daniel Drake <drake@endlessos.org> =E6=96=BC 2024=E5=B9=B42=E6=9C=887=E6=97=
+=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=884:45=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> This reverts commit d52848620de00cde4a3a5df908e231b8c8868250, which
+> was originally put in place to work around a s2idle failure on this
+> platform where the NVMe device was inaccessible upon resume.
+>
+> After extended testing, we found that the firmware's implementation of
+> S3 is buggy and intermittently fails to wake up the system. We need
+> to revert to s2idle mode.
+>
+> The NVMe issue has now been solved more precisely in the commit titled
+> "PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge"
+>
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D215742
+> Signed-off-by: Daniel Drake <drake@endlessos.org>
+
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+
 > ---
-
-This needs a Fixes: tag. With that:
-
-Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-
-> =C2=A0drivers/iio/accel/adxl367_i2c.c | 2 +-
-> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/iio/accel/adxl367_i2c.c b/drivers/iio/accel/adxl367_=
-i2c.c
-> index b595fe94f3a3..62c74bdc0d77 100644
-> --- a/drivers/iio/accel/adxl367_i2c.c
-> +++ b/drivers/iio/accel/adxl367_i2c.c
-> @@ -11,7 +11,7 @@
-> =C2=A0
-> =C2=A0#include "adxl367.h"
-> =C2=A0
-> -#define ADXL367_I2C_FIFO_DATA	0x42
-> +#define ADXL367_I2C_FIFO_DATA	0x18
-> =C2=A0
-> =C2=A0struct adxl367_i2c_state {
-> =C2=A0	struct regmap *regmap;
-
+>  drivers/acpi/sleep.c | 12 ------------
+>  1 file changed, 12 deletions(-)
+>
+> diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
+> index 808484d112097..728acfeb774d8 100644
+> --- a/drivers/acpi/sleep.c
+> +++ b/drivers/acpi/sleep.c
+> @@ -385,18 +385,6 @@ static const struct dmi_system_id acpisleep_dmi_tabl=
+e[] __initconst =3D {
+>                 DMI_MATCH(DMI_PRODUCT_NAME, "20GGA00L00"),
+>                 },
+>         },
+> -       /*
+> -        * ASUS B1400CEAE hangs on resume from suspend (see
+> -        * https://bugzilla.kernel.org/show_bug.cgi?id=3D215742).
+> -        */
+> -       {
+> -       .callback =3D init_default_s3,
+> -       .ident =3D "ASUS B1400CEAE",
+> -       .matches =3D {
+> -               DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> -               DMI_MATCH(DMI_PRODUCT_NAME, "ASUS EXPERTBOOK B1400CEAE"),
+> -               },
+> -       },
+>         {},
+>  };
+>
+> --
+> 2.43.0
+>
 
