@@ -1,126 +1,134 @@
-Return-Path: <linux-kernel+bounces-56355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7274284C925
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:04:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB2C284C928
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F57F1F271D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:04:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5147B2407D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F5117C76;
-	Wed,  7 Feb 2024 11:04:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F90617BDD;
+	Wed,  7 Feb 2024 11:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RNBtpq1M"
-Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sBJ8wESf"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 254FF17BCF
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:04:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7771B7E1
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:05:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707303860; cv=none; b=me9cHlf0mglNXEpY9VVTSKZ2oFzp8FDSu+74LQKeQUF38NqpTZswih5nN6c5WgF+F/QBxLGaqaynKWd4FH9WNjz7B552af7glj0d+ervnjzYG5gNAKPVIbSQgih+ViwdAY0GYCOt/BMg8FLTApNQbUyyDCKlvkPh6s2pR86Ob+U=
+	t=1707303907; cv=none; b=mhD3oWOC7idOXTKai+qic01wCC/tPM+Ktj/VzLAybDFPNl9z9S+L+sKjoW+uz6B8xmOENcVH0PbmuQHqv/IfeAlTSxFymg/2cBNJL0EbbnjqmhUT2WYCAwKliFeIVw9Y2PKY8KD1z7BrRj5S9k5LCAuIJnJjyPyG9zWqQXOlSP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707303860; c=relaxed/simple;
-	bh=CgYyRmc6Z59PnXZh+5ZKWs0+Cbn8qJv1WXKrOV0Or9o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sk91bdRtvEr9Xf447UJlKnqXdGbu8xRiXgX1TagpOjzdwiAO9T1QNuyx+gsO9cXA/+jZrgFrcA5L08CHRIZdisvpMBWKXQvERJPgQWNr8yqmhU0SmI3vsxV7fVycRplBfYN+1y7ImovNlkb6NRBIVnJeFena/TVrqHYIWALbbwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RNBtpq1M; arc=none smtp.client-ip=209.85.166.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-363c7d490d1so777095ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 03:04:16 -0800 (PST)
+	s=arc-20240116; t=1707303907; c=relaxed/simple;
+	bh=0+Ct3FjmfiuZlfh/SzKNT+CbmGRaJsLMmVQW8wDoDsg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QSyvbogjE+Ad/eA2z/2Y2WlfzUjwrSrNcwPJ+XZfovQvzZiMNMhZNwONDsmTlCcA74q6rRx7y0lM+bFE1iMMcUfXb9NfIPph2LkqJMLZ3ptebJuYFu7VDOE9FvscT2u2IT00qyVydeigcceI8K9itrpZHiO0UtStDKGygX6M9CE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sBJ8wESf; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33b1d7f736bso414373f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 03:05:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707303856; x=1707908656; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MkHJEMhdHIEDISZVoKhCE9ifS1ot8NgYUDuuTg1ODbU=;
-        b=RNBtpq1MRPESx57cDJ2wvt+fsfxaz6FtCznbReN75Ij/Ise8wkzw5yJuMiajsv14vq
-         Ih8R64zS87/5xpfjgnzqnRwLse0rigqN+Qam00rj56JRkgt7I6gGiXb1xDdRrCFXelCx
-         u4hAza/gL9vD8O41sEJ114ZzZui3d+yph9NSY=
+        d=linaro.org; s=google; t=1707303904; x=1707908704; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9JhdFREau9a6Lz9UlDo/svgNXxSvwHYR1LSN6sffUzI=;
+        b=sBJ8wESfVqXadoKjiKuxVf6OlJDDO7HRT+Ak7vsTkjIBRq0Aq+zQiEGAuaOO/0FA/4
+         OTDE+gBKIiP8dbF8sR3/QZLJQ+lADC4yrDTGo1v2HXG8OPLI6X1miZYS7JF4ygnnm23o
+         CSp8Nt+wITQxrpJiwWxpPDNKU4FpWlFKd8xuGLeNXk3xvKS4y4IBpyqUSWURYhWCVO/r
+         IPT9soOsFtVZ4GJT6o1Y/bzAXY86fCXmnCeCZJbi9s/CbAZnyQhZvv6LCgNH/PYztu9u
+         rvLPG6CsPadLHR+Cm1VrBgwW1WKzLbnyFORC4CzWZxH3d3TozuhJMPVyQkNDhC0X49HQ
+         0lJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707303856; x=1707908656;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MkHJEMhdHIEDISZVoKhCE9ifS1ot8NgYUDuuTg1ODbU=;
-        b=YhJLtBcK+a6DnPM7jwqpxf7Q7a4EMU3irCbsZGMTIO58xzIc8ZU/JN1JTEOvoPgjdn
-         zL7TjrQoRtmO1W65H7TP8q0of6dQnspdJ0raGffTOvMlj1fWCS+nim8qotBab9F8uwSj
-         C76ztseT8H7oYotY/NJ9+Q8GGs3BNdWHcdutSqOaxw9oAJMUkQanihnER9fXYGdjX8BW
-         lTOIfwHrjfiLAVlr2moSs8g3QMhcXWINfPSw3UuhtX3XfhzXoJHdQf4d8kNaEfCFu2F4
-         I6j7n3Z5uKSxoefC1jVtKwEjY8FfBC5MYmY93tsxFuGJRNLe6E0KGr6GajdXoWxvZhBD
-         tBzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXjjUEBs8bS/lBuaxox+o5NfAXq7jJNba7mnuUSgAIorkOwD4bcCo+yiLaL5p8nYm6uMzGyYTrJKO0pli8/8GgjFBQb4Nhqj7tNo8Ma
-X-Gm-Message-State: AOJu0YwjNODh4RL5brTmY9Rx4IMRXQBnoat1VYMHXjyDdakhtrUAvbHF
-	h/jW4WpTCXtz2/wT/zB6aOtPIvMfyGbBQe78Ornhj6EnIDXrzCe9/+ucJ1iqGA==
-X-Google-Smtp-Source: AGHT+IFsYYm7hJGs5m67HBsC49sVaunlIdTZxtC+l0udvR2oLwzFexMXoEljKEGwE1VAc90ijtD/5w==
-X-Received: by 2002:a92:c20f:0:b0:363:ad00:106d with SMTP id j15-20020a92c20f000000b00363ad00106dmr5585505ilo.4.1707303856225;
-        Wed, 07 Feb 2024 03:04:16 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWrtNEYtrYrUbd3WCx5d+Vo2gSvxdEHF0BNGt6ximizf7qYe7T5H46Ie55fL2VWgxMxlWduhoOX6KlMOKtsxeFyYCjnhIkE3L6KvmtJVxIpjw7kXgW5qPN+w4huuzEm3qwVbp0AVgQ1ZkASW5U90p88VrUkWp6nk5vR49oEi+InXGOlVot97XzK5pkmLoC/C2lIuxSGPyqlv0uv7XGoAEMGG6mOD7CY9rcJB8pP2E8YKfhqP27o1FFSVoC5YBVbtY5PZ9MkHM2h+wYCchXO4Cb0F8vo8CHqj9008WFYSz/M028lVxfT3MffozMwCJI64UcjTuNhYeBexPzgZrEmQuSK3FMTUJHePjnEMG8JGdN/epYhO8fGrZcF43GqGd7MGSkLs0TQbrG7Y1g3GzzCBrKf8uLtRggideexU9Q0w5aJ/L4dwMQvoBR9qCjBvFyTRh6Icke/q+ziPbcKh2mMkoOp3unEJyA0N6zOTMm/dlbK9WvXl3hPgy+yY0O9wlGZ62HqyqCbYDs=
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ck4-20020a056a02090400b0059b2316be86sm1109248pgb.46.2024.02.07.03.04.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 03:04:15 -0800 (PST)
-Date: Wed, 7 Feb 2024 03:04:14 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Justin Stitt <justinstitt@google.com>
-Cc: Marco Elver <elver@google.com>, Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, Hao Luo <haoluo@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-	linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v3] ubsan: Reintroduce signed overflow sanitizer
-Message-ID: <202402070255.36699AE147@keescook>
-References: <20240205093725.make.582-kees@kernel.org>
- <20240207014528.5byuufi5f33bl6e2@google.com>
+        d=1e100.net; s=20230601; t=1707303904; x=1707908704;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9JhdFREau9a6Lz9UlDo/svgNXxSvwHYR1LSN6sffUzI=;
+        b=Dzj/bBDDsX8Rqh73o97FlqXFPGiH/hWrVkhxJ+cqSoobspTHSVWWcmfsLH3dW0ya1M
+         gqSHLudY8qeh//13ZVrlmd15dKW6bsnQ8HnnLqw03VC8TC7DuTTa89LnO8S/ewX66cK1
+         rbhv9kQaQO8hDoTM80ZRplfhGLGsUjajYA9+uaivdWv1oBhyLH77uryY+e3J69YXk9OW
+         wsYf90/twL/fa4WtF4x1/do41iFWISZoJ1Hj1IznQVzxr2wqLof9h7OncbGJFAr9p2Bc
+         PrrwTVnyTHImOh8vFM3WhZ4W7cgjD1hHwAl/xBjVJ6l0IwxGVHWj6bHQbMNx28Yhq+sb
+         AoUw==
+X-Gm-Message-State: AOJu0Yw1hggSZdDRZnjlbVcm6Dkq9EfWKLw4kvXbpKl/wsZ5rP2nFs1w
+	eneb8ZW07arlFOGYfyAVR2XiO3dMepAhB8g+lUWrcKpVBN9YCvcbnKhwhBrw0NQ=
+X-Google-Smtp-Source: AGHT+IGNOZ+Ucmt/8ReBjQs9L2rBoNxgcsuKi3zDlKPcCubwuNeujFxUTR7VbZClTKUMfdsYf7R+WA==
+X-Received: by 2002:a5d:5f4c:0:b0:33a:e739:28bd with SMTP id cm12-20020a5d5f4c000000b0033ae73928bdmr3925870wrb.59.1707303904241;
+        Wed, 07 Feb 2024 03:05:04 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUIzDjQPQCruwsPLOJ4gl23f7Yhwci4/KG6rLDwv2k2dXmMNUjrT6Ji0sMcdjcUqRUMuorkoVFKzfSzRwDjKIA5GQ/kK2YcOKwAF/i6ijVHVHXOug8OHmXXYj5Y3eHbWgAX8chb2R+Qqr7y1uc8GF1jMDJQxQ+kdvEeWXC+pODREjGr6X876r1BrzRNKJQ8mmbVWYUbX1+GYAnsPy5jjqCageY+oCgTS8yA6ejjZOTwBcuig4jjwL6KyY0tFIWVv4XTaduACzx5M57+MAsXaMGMD3EbS9eK6zK8PVB+W4wZx30uAtvd+g5NU5dW0F8v1b8=
+Received: from [192.168.43.244] ([213.215.212.194])
+        by smtp.googlemail.com with ESMTPSA id f7-20020a5d4dc7000000b0033b51e2b9b8sm174122wru.23.2024.02.07.03.05.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 03:05:03 -0800 (PST)
+Message-ID: <c075f2f8-4fbf-4309-a478-a5cfb199fdd5@linaro.org>
+Date: Wed, 7 Feb 2024 11:05:02 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207014528.5byuufi5f33bl6e2@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp-x13s: correct analogue
+ microphone route
+Content-Language: en-US
+To: Johan Hovold <johan@kernel.org>, Steev Klimaszewski <steev@kali.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240125154531.417098-1-krzysztof.kozlowski@linaro.org>
+ <c34dd7ca-01b5-4424-a8ec-a525b8d722a3@linaro.org>
+ <5497d428-cdc1-4057-afda-6861d2e3860a@linaro.org>
+ <e9b6f790-831c-4df6-b16c-8d7a2f8ddc26@linaro.org>
+ <CAKXuJqjDM3P4wOKz3CaAB9DUyemqQ6ks=FPnfL7OsHnnyoyn=A@mail.gmail.com>
+ <ZcCX0hDGrWqRXr9R@hovoldconsulting.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <ZcCX0hDGrWqRXr9R@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 07, 2024 at 01:45:28AM +0000, Justin Stitt wrote:
-> I wouldn't mind also seeing a test_ubsan_div_overflow test case here.
-> 
-> It has some quirky behavior and it'd be nice to test that the sanitizers
-> properly capture it.
-> 
-> Check out this Godbolt: https://godbolt.org/z/qG5f1j6n1
-> 
-> tl;dr: with -fsanitize=signed-integer-overflow division (/) and
-> remainder (%) operators still instrument arithmetic even with
-> -fno-strict-overflow on.
-> 
-> This makes sense as division by 0 and INT_MIN/-1 are UBs that are not
-> influenced by -fno-strict-overflow.
+Thanks Steev,
 
-There is actually already a test_ubsan_divrem_overflow, but because the
-failure modes result in a trap even without the sanitizer, it's disabled
-in the test. For testing a crashing mode, it might be interesting to add
-it to LKDTM, which is the crash tester...
-
+On 05/02/2024 08:09, Johan Hovold wrote:
+> On Sun, Feb 04, 2024 at 11:30:54PM -0600, Steev Klimaszewski wrote:
+>> On Mon, Jan 29, 2024 at 8:27 AM Krzysztof Kozlowski
+>> <krzysztof.kozlowski@linaro.org> wrote:
 > 
-> Really though, the patch is fine and the above test case is optional and
-> can be shipped later -- as such:
+>>> so I will go with that approach. Please ignore this DTS patch. I will
+>>> send ASoC changes which won't affect sc8280xp.
 > 
-> Reviewed-by: Justin Stitt <justinstitt@google.com>
+>> I somehow missed that patchset or conversation; As an owner of an
+>> X13s, which is sc8280xp, I can say, neither pre-dts patch, nor post,
+>> seem to do much good.  When I attempt to do a voice chat in armcord,
+>> the responses I get to how I sound when using the mic on the X13s
+>> itself range from "You sound like hot trash" to "You sound like a
+>> robot with hiccups".
 
-Thanks!
+does arecord exhibit same issue?
 
--Kees
+What is your setup looking like? I would like to reproduce this on my x13s.
 
--- 
-Kees Cook
+thanks,
+Srini
+> 
+> That's a separate issue entirely. Both the digital and analog microphone
+> (jack) is working on the X13s as long as you use pulseaudio.
+> 
+> As I've mentioned before, there are problems with both playback and
+> capture when you use pipewire however ("robot with hiccups" one could
+> indeed describe it as).
+> 
+> That suggests a more general problem with the Qualcomm audio drivers,
+> but that has nothing to do with the audio routing.
+> 
+> Johan
 
