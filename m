@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-56094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B30AF84C5DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:58:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E29C84C5E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:58:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D77EE1C21F71
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:58:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 059A928B0B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:58:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A60EE200BD;
-	Wed,  7 Feb 2024 07:58:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FFDF200B8;
+	Wed,  7 Feb 2024 07:58:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ec1P0rwr"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uDem5nXC"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F10200AC;
-	Wed,  7 Feb 2024 07:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F12C120303
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 07:58:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707292679; cv=none; b=XmAEhSKCFIpqDt7kFufv/prvE3YDqwAZUXWKDgEPTsw8FUSRIZ2BkPuAlB5ex+8nhb+A6+SDq+Hxt5iAuo1JeoWuP/bndcP8XflxsqgQ5S4QalIzBDhKSrl2hIPKxDOP7yCIZgETqe9FYujgErPJfxTkggqJYHrHoIBGqwKTrgI=
+	t=1707292688; cv=none; b=peq7kNtij6aIZ4ERFDymtsitHWIXfmj1HjUn62X5sE7BqGI171HpIyX+cMkvkc2gIJjvjRFcsKIjHz2VQPSa15zCyogor4Fa4voss2GtSO83dZb1m7XPgMIRWShpc8b91nGaUdbbUdWBcTd/2bfSCSq4spADSK8wiRRQcDvV6sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707292679; c=relaxed/simple;
-	bh=rjWBgcSirSxeB63xKQnjPtAD1NzTaKfcIDTiS95daPw=;
+	s=arc-20240116; t=1707292688; c=relaxed/simple;
+	bh=MCSpeewmE+j3/rytl3OjrJdIrcbi5ZMzLaK558jb5eo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XAJ25jSpiUHHacT6HZFWM5KqxAExBQbZnN2ss9KzNRrEAufIERz1BaiNputfnQ0YrxF4CbwaQXI5BaLy1czI0l3RiFDscUgKkYvOuin6tzo6T34uu/QjEpa5gtVaZ6D9E4GPYXF80eejJajP9KytWWFSlWpJJ4kscveEqJE+jfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ec1P0rwr; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51142b5b76dso523175e87.2;
-        Tue, 06 Feb 2024 23:57:58 -0800 (PST)
+	 In-Reply-To:Content-Type; b=DTWt/AKQsqpI5PLGxP69lTWrxYgQSk59AMriHXxwG60qSy/m1Ks+brJ+OzWyR/DhTSnIhb1E8l/97tz8CJPjOXHLIt/g+o3UNpTeUDwKTxpilf27S/ZTV/s9Tnd/eJ6T2CV7qP0Ud+woVblYXtbfC/oSuMGztj/xFEAA1bAMzVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uDem5nXC; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3394bec856fso814531f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 23:58:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707292676; x=1707897476; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1707292685; x=1707897485; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=faw62muK8rMq99LhU7XEIx44p0VAUyI8BL+QRChVvwA=;
-        b=Ec1P0rwr9lDiiDKc27yzxxzqsjJfEJ95zvePusTi2xPTaJ/e2v4WhKT8uWet+0pZ2w
-         +dvv62TqzXRTo/xRB0b/d6HUSHPYtcfTz+h8x7DCXW60QVa4L2u3TiV8nqEoJks+jQF9
-         P9NhpqiE4nhJ0VkuzLb+3JT0DIYAzKdEk0iiP+Vb6vjJgGOSnTAYqOt8shOlBK5JtZNs
-         R//DdjtFwWGVEqYNzaEFo3K82qNwGWREsdQRy4s64/UUgKtLAy7U8aZCQepVU+rJzvb5
-         p/uoA5/jiWxlfUd8BYr7rpKx3McMbROKv2ch/rRfTgwNLlIFBaBZAjk6eMoNdVBLkme8
-         geBA==
+        bh=efejXOz8gCY+wvZXYadjG5gx4t/4ddj+jd7SccrGXh0=;
+        b=uDem5nXCph4mf/f+lo5C+jFNkOH9YxqNZBMquNiAXSMQaXxE5jqXGTN5/1063MM+6g
+         ooPUcl515L6qbYfELTEbJ2thuyzBmEnuKfp2+sdcJ8lhqQCnod23qbZTnuzGwZi+i6Uu
+         qEmp4WnPAiI3rt3Ot5Yt9lwWvFZtSoF/p4SrmvdvJwD5W7kcAF+LBGlcVXwdvUgd2Gh6
+         BkYkKSGL3+Gfpnml6RSBF8m8vNRoHzsB/m1/DP6E1zpdcqigkpQ0g/mgdVWR2Lalf5pG
+         9lR6IzjkYaURTVA2SsAsN+MBGy/iVrXfPtvwyIYbKgAzKyQt8YU5G73293Bf0XMWIWBP
+         Wp+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707292676; x=1707897476;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1707292685; x=1707897485;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=faw62muK8rMq99LhU7XEIx44p0VAUyI8BL+QRChVvwA=;
-        b=N3TSJIMAqpz8PofcJGO32jLYA/bgMIIALGz6P06WHzwH89Kw8JgOsWe//WY2z17cyO
-         ZAooLL4Q6Uj1xvYOBDmUyTc4TgoysPNP/e0fEXpJbRmrnuEdth8k73euKJKnIkYDYRvm
-         AI3kNkTI3sRdX6LpvftgbrLrf411Xjdb3nfgEx2ajYVzVZcR/NWJmwNXDYVrPmTtoq4Y
-         dq4AHnGNFMkU2HAKgoNxm+0HLltGCksFjIYUie21g43twbJmabJ5oUrZmRWxXTJ3S4BG
-         L+UHvi+V3v92tc2k5qzYfluc1FxqgDTmFEY8aWXt2j2RtH8cAK0etMSLNQBxn0Ldtg7Q
-         DQxA==
-X-Gm-Message-State: AOJu0YywrzDTBaTKYZH41ypWR4vsIP7+as4SNwIATgQ9MDNIXdpY/srX
-	z0YQ2yZM6kVaIx7MTBYXY4cIMfM2F37fNzknEUi8K16F831ILEi8
-X-Google-Smtp-Source: AGHT+IHrOG4ej7Nc8ic00cewvUn2sqV1hsMqwojBzY8/6TzL9zMPEDbPRaGu93Tp6EIf/bcp6ZT7zw==
-X-Received: by 2002:ac2:42d5:0:b0:511:5b47:1fe8 with SMTP id n21-20020ac242d5000000b005115b471fe8mr3472289lfl.6.1707292676205;
-        Tue, 06 Feb 2024 23:57:56 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWCJTQDT9qidD5GSnJxXCfNIUbZHTrA3J5SEMhoGXkwZ8UHtixP6Uu2E0dmz4PJCKV0lED018lrWOuIW368bJFU2nzD5CDed1ZTSKe19z8Dczg0RB0oxZ18Tfzbw8jOsM3Vb4ps4gOqQxHxVRB2ycP8l0JoiKbzhUHUzu9kY77hcC/6ESLjmv6wB3ujRzYOM6FqR2iizc7p/MiKL8nGcQIzct0Kx7YECuXvtTQ9NaYsOxZ7IWQSOGJ0UUs/qUnnVg+iZGKxQ9qxnhKxDng2I6N/+oAD7xAqY6oz5HYas2dUWL2SvBTcPKkJUSKrP3NFocMBv1vjMJMPfX2e4ZOZ4mIxqR6h3uNnOeEUhALQJzGRZKTpfZ08hHuHVBkhqayVq00SB/lUS+4ITMiHqiFEm13zTZ25gt09zSGyk6LunSj+PVdw8u9Ovw4jIvD7iw75kK35MgkLo5fULXOjp3QV9olbvzUPtuN9c6s/lPW7tFOpXimlnGV/BItO7P8F3p3D9N1AgDPOCYl4+5jazyW5qGeUF53lIBl6lzWtfX2/BcIkjPP/p5Apwv7TNC21ji4rpHUfe/ZK1E+L/gXrM8DcgkQUMOIzkVQBh8bYZjJ5tOE=
-Received: from ?IPV6:2001:14ba:7426:df00::2? (drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:7426:df00::2])
-        by smtp.gmail.com with ESMTPSA id n2-20020a056512310200b0051140df84fdsm96155lfb.12.2024.02.06.23.57.55
+        bh=efejXOz8gCY+wvZXYadjG5gx4t/4ddj+jd7SccrGXh0=;
+        b=nGa3yq01/TUjLxSoR+3R9bQNsIrAAxqjEuAU0Z/uQHtydiHeXoeqMpS3FeS0jLNNSC
+         F81MtuxutlWg6TRMMy9w6d/fTq60L4FzoeFzLojBZWmJMcyQSiMKReymFwhDzKROSXdZ
+         04nLBSkdYaHqE2/dNqSvkYE6W+WfMnSl5O5FTF5JSAKbVdC+65HkAtxz4pGIr2oFox8n
+         P84QYDBwO8oIPMgyq6zuzlj+qJ3EEROG5OWfsZGqwySR3/ZNYQdMJqPJZBA3HD/PyiOk
+         LeS8bAzI7WBtKLo/BMRJCEYqcWZ6Z1CN8BadJPnfD/SJhfbrt9HC3vG8c5nQb73r9Xr/
+         ZaAA==
+X-Gm-Message-State: AOJu0YyBV7ltkDg5/KdweAVdk2BtA59diB0uXmU3lVv/jW4bPNdr+Y22
+	RsagaelBHTkw3G6P6m2eu/L2nTonQE3If8qgdc4SrjK002B2nk26G9N7eXBNVZk=
+X-Google-Smtp-Source: AGHT+IFb6ObjpyOJxVq3L4ZUhu1tH0PEKzQnvH127fjCv02vWQ+jK5c5H5/RbUaZFyctNrx8Fg/RAg==
+X-Received: by 2002:adf:e6cc:0:b0:33b:4d2d:e97c with SMTP id y12-20020adfe6cc000000b0033b4d2de97cmr1067582wrm.2.1707292685259;
+        Tue, 06 Feb 2024 23:58:05 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXCcCnmeFicXReM+CUJJGa7IKi/BrvFp3SKxW+oiU1lhtcInakBAQqLG0q8Q8bg9AKN0gbyDyIR38woYgEHNBC1NMuX5ftwiKqId96/NPlhZWUNuKt56xdVXHl2tHKDtSEDcaVmospl2X9MZKdf91BT1WJNpFmDykOJODVtDPQgIypxKdF/tQM+fZlgFC8DeY0R8u27CCXiKbb3EhMP5SDR+wxx+6IPn5PLbJQU8Dr+VJ/bxmXHvR1sY0XPsejc2JOdkiMl2X8woGTD2j6gpHoH32vBxGxh1NZiOdcoAij8tvWP+sr+vqljTcpzlr8GFBnIbHD7XamnX7NaH9364stVQHiZlT3NkjgKKFQbisR+pftr0AwNFDrdlR4A2/MD+WmdpfZJNlMzqKS0UjgZ6mVUOuM2Okr83kLlouOHTAA=
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id v16-20020a05600c445000b0040ff7e3170asm1193518wmn.2.2024.02.06.23.58.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 23:57:55 -0800 (PST)
-Message-ID: <ab8d9d0a-aad4-42b7-9e24-9ae6acf7c939@gmail.com>
-Date: Wed, 7 Feb 2024 09:57:54 +0200
+        Tue, 06 Feb 2024 23:58:04 -0800 (PST)
+Message-ID: <ef617fb5-8086-4f86-b855-e27fd69751fd@linaro.org>
+Date: Wed, 7 Feb 2024 08:58:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,93 +75,105 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/18] mfd: rohm: convert to use maple tree register cache
-Content-Language: en-US, en-GB
-To: Bo Liu <liubo03@inspur.com>, lee@kernel.org, wens@csie.org,
- marek.vasut+renesas@gmail.com, support.opensource@diasemi.com,
- neil.armstrong@linaro.org, ckeepax@opensource.cirrus.com,
- rf@opensource.cirrus.com, mcoquelin.stm32@gmail.com,
- alexandre.torgue@foss.st.com
-Cc: linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-amlogic@lists.infradead.org, patches@opensource.cirrus.com,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org
-References: <20240206071314.8721-1-liubo03@inspur.com>
- <20240206071314.8721-12-liubo03@inspur.com>
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20240206071314.8721-12-liubo03@inspur.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH 2/4] dt-bindings: hwinfo: ti,k3-socinfo: Add nvmem-cells
+Content-Language: en-US
+To: Markus Schneider-Pargmann <msp@baylibre.com>, Nishanth Menon <nm@ti.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Santosh Shilimkar <ssantosh@kernel.org>
+Cc: Andrew Davis <afd@ti.com>, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240206143711.2410135-1-msp@baylibre.com>
+ <20240206143711.2410135-3-msp@baylibre.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240206143711.2410135-3-msp@baylibre.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2/6/24 09:13, Bo Liu wrote:
-> The maple tree register cache is based on a much more modern data structure
-> than the rbtree cache and makes optimisation choices which are probably
-> more appropriate for modern systems than those made by the rbtree cache.
+On 06/02/2024 15:37, Markus Schneider-Pargmann wrote:
+> The information k3-socinfo requires is stored in an efuse area. This
+> area is required by other devices/drivers as well, so using nvmem-cells
+> can be a cleaner way to describe which information are used.
 > 
-> Signed-off-by: Bo Liu <liubo03@inspur.com>
-
-Acked-by: Matti Vaittinen <mazziesaccount@gmail.com>
-
+> If nvmem-cells are supplied, the address range is not required.
+> Cells chipvariant, chippartno and chipmanufacturer are introduced to
+> cover all required information.
+> 
+> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+> Reviewed-by: Andrew Davis <afd@ti.com>
 > ---
->   drivers/mfd/rohm-bd71828.c | 4 ++--
->   drivers/mfd/rohm-bd718x7.c | 2 +-
->   drivers/mfd/rohm-bd9576.c  | 2 +-
->   3 files changed, 4 insertions(+), 4 deletions(-)
+>  .../bindings/hwinfo/ti,k3-socinfo.yaml        | 23 ++++++++++++++++++-
+>  1 file changed, 22 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mfd/rohm-bd71828.c b/drivers/mfd/rohm-bd71828.c
-> index 594718f7e8e1..2f3826c7eef4 100644
-> --- a/drivers/mfd/rohm-bd71828.c
-> +++ b/drivers/mfd/rohm-bd71828.c
-> @@ -197,7 +197,7 @@ static const struct regmap_config bd71815_regmap = {
->   	.val_bits = 8,
->   	.volatile_table = &bd71815_volatile_regs,
->   	.max_register = BD71815_MAX_REGISTER - 1,
-> -	.cache_type = REGCACHE_RBTREE,
-> +	.cache_type = REGCACHE_MAPLE,
->   };
->   
->   static const struct regmap_config bd71828_regmap = {
-> @@ -205,7 +205,7 @@ static const struct regmap_config bd71828_regmap = {
->   	.val_bits = 8,
->   	.volatile_table = &bd71828_volatile_regs,
->   	.max_register = BD71828_MAX_REGISTER,
-> -	.cache_type = REGCACHE_RBTREE,
-> +	.cache_type = REGCACHE_MAPLE,
->   };
->   
->   /*
-> diff --git a/drivers/mfd/rohm-bd718x7.c b/drivers/mfd/rohm-bd718x7.c
-> index 4798bdf27afb..7755a4c073bf 100644
-> --- a/drivers/mfd/rohm-bd718x7.c
-> +++ b/drivers/mfd/rohm-bd718x7.c
-> @@ -87,7 +87,7 @@ static const struct regmap_config bd718xx_regmap_config = {
->   	.val_bits = 8,
->   	.volatile_table = &volatile_regs,
->   	.max_register = BD718XX_MAX_REGISTER - 1,
-> -	.cache_type = REGCACHE_RBTREE,
-> +	.cache_type = REGCACHE_MAPLE,
->   };
->   
->   static int bd718xx_init_press_duration(struct regmap *regmap,
-> diff --git a/drivers/mfd/rohm-bd9576.c b/drivers/mfd/rohm-bd9576.c
-> index bceac7016740..3a9f61961721 100644
-> --- a/drivers/mfd/rohm-bd9576.c
-> +++ b/drivers/mfd/rohm-bd9576.c
-> @@ -62,7 +62,7 @@ static struct regmap_config bd957x_regmap = {
->   	.val_bits = 8,
->   	.volatile_table = &volatile_regs,
->   	.max_register = BD957X_MAX_REGISTER,
-> -	.cache_type = REGCACHE_RBTREE,
-> +	.cache_type = REGCACHE_MAPLE,
->   };
->   
->   static struct regmap_irq bd9576_irqs[] = {
+> diff --git a/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml b/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
+> index dada28b47ea0..f085b7275b7d 100644
+> --- a/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
+> +++ b/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
+> @@ -26,9 +26,24 @@ properties:
+>    reg:
+>      maxItems: 1
+>  
+> +  nvmem-cells:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
 
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
+You do not need to redefine the type. You need constraints, so maxItems.
 
-~~ When things go utterly wrong vim users can always type :help! ~~
+> +
+> +  nvmem-cell-names:
+> +    items:
+> +      - const: chipvariant
+> +      - const: chippartno
+> +      - const: chipmanufacturer
+
+
+Best regards,
+Krzysztof
 
 
