@@ -1,112 +1,116 @@
-Return-Path: <linux-kernel+bounces-56338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 299EB84C8E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:45:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16D4B84C8E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:46:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D80F92898ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:45:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A03A1F26C23
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D951D16431;
-	Wed,  7 Feb 2024 10:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A00BD168DD;
+	Wed,  7 Feb 2024 10:46:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EtiECEDE"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="bVW5X8A7"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92E5D14A8E
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E96114AA8;
+	Wed,  7 Feb 2024 10:46:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707302728; cv=none; b=u7Qmi5xD+HYrb4zHSNy9dq6peCXtLgpvxg44K7hCgZwFxLwnL7gm9cQgYMc3Y4uc7XfHQSDzHQIISEnbfqp+Q2AM+qFXk8FzNWyYPKKQUrrlyUSKnGSsX4Fj1Y4IusPpMsNJyEWNprKJppR3RRxl22yEvibDf2oV74G1tmcyz94=
+	t=1707302789; cv=none; b=QFKfffjUQFyBueY6jIbsyhwmSHU/x4M46mbcjYsPeo2OJce/aAMRk8BiivjNaP4jg+HwS53WpZOKh918l0a2/kJAk2zgZzvr312C9RdJen4/ZqH+O8W8O7n3yuW4qxFrFQuuJL282U8hwKsT7G+RupNBuSmQp6jCQ14eWzaOdB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707302728; c=relaxed/simple;
-	bh=zx/TbZQKImahNt+7vIsidHWjAMcFHpW7Q2SH672vuPc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KKojAgaA8guoPf7D0eqksdYQL8Yhb+MEw4l85TSEBLeBQwDsyiXeJQfLb6EHVuqk0J7KfkahKaee1t7rSwY9fhBqd55ycE2OjCrilt9Z55Gxlcfk9vT+bGyVhusgB+cxQIBSLoEJNW7Gcofs5KU7VW7+4JocB2/HDhf6GMicFMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EtiECEDE; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60486805aa8so5195687b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 02:45:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707302725; x=1707907525; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iO1cuzbZEvcOb/xBKlHSWUgxNAB1xNrbQxxqm+U1OtM=;
-        b=EtiECEDE0UqcYXS+z1UzJfqXswzfPnmc+QLPnFDi6dxcAp0w+C1LWKrF//Tj5S+031
-         qhnkBOuxz21Amp9civCrfw9Z36Ke+/ytfbU9ZKWLiQjxlEwHBNiAAFBzNO7PGRDNMKGi
-         gwT+lq0tcarHho5izVjN7BLXBGQ0fMqupVBKh2/MX601AxdkZxA0NkqT2puaS3DvuOI6
-         10k8iB8EdxjvIAWb/vuhqvbK7WCfcIex8Fq2qwprHZ4Eb5gGDT/nIu6ewBbM9NJ27gc1
-         ErZmQH/GothZuQuMrsOS82oMZEGWuVCGM1CEJFbK9aeCl02NxmOgWgBUXvr0DkcFqglp
-         NWqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707302725; x=1707907525;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iO1cuzbZEvcOb/xBKlHSWUgxNAB1xNrbQxxqm+U1OtM=;
-        b=XAoTKMuv335VNJIUoynV/boTTdOX/62Wx6ccClwJ5D+HBsX+iXeV0s9zuSgZVRCQtt
-         L1GRg1J2JrZqvI+LbAd3PaXDwyduPr/yOhRl6c7Ixd/Pi8LVBbK7aD5mpDOjmpHiN0Uz
-         tKAL3r4DkbVI6JO4z3ZXYvM6AkmrLua3yw1U96wSMEovEV3GbQvmVTo00fQNUUmbT6mX
-         A3LbvGnc4dR9QJ4DQ/ovxPVR4Yj7AyAKF599qwUF6sKCg+9knEQNZ0enQmJ6hdxHE+9G
-         9iLPKUmMh0JMBsmnNiYwCHKRHTP9zpXalJFdbmnIJUhObVWBXJuDcxJRY65BxWppUPvo
-         Rs+A==
-X-Gm-Message-State: AOJu0Yy6MyNDmR/kcsMEFVK+5INf5L5maijuVZ1Pm7YKRa9zuorJ6zNM
-	0dWlmCWbK7tLFMJn5ShAffmivOVll2FRlXUD9wFqo6w8hD0AcVmDtSNvQfApVRUGq5T3jh+JOFZ
-	S+Pdo3CHP96Qj8RfdHaxqgUopxdikTN2S6ad8vFVZ2NbKceeoVRM=
-X-Google-Smtp-Source: AGHT+IE1ftODiv+xLOHecUFUm++aMHwfgZ7h08sXj2xrCeIg8UY/Uu1Wa7/7wK0TEDHsqKVhdSUcstbAlEEEvg9Ffq0=
-X-Received: by 2002:a25:d050:0:b0:dc6:c3e0:82d1 with SMTP id
- h77-20020a25d050000000b00dc6c3e082d1mr4143050ybg.60.1707302725545; Wed, 07
- Feb 2024 02:45:25 -0800 (PST)
+	s=arc-20240116; t=1707302789; c=relaxed/simple;
+	bh=TPnfcICgI4g3grUmcA2X1ujtIdIPQQJkpPLYySJnthk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YwWAn+ORD6xlbQPxTWE6xAEmiA9H7pDj9TqpOWD0eXiPRpkyVwrENo5FtbFEH9OAMHDoqyYqh7Scr61kYYW15mrg+Yqv0bEre7ChOLCA1e/+t54gLi9j203wsQoLBMwTAkKTYVQ4s6fByFW1hvLysUQjbNWyUglXJCoSayyypcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=bVW5X8A7; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4176FQnZ003091;
+	Wed, 7 Feb 2024 11:46:16 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=PIc5fr4
+	3l23sf01s2fsMtu9PxKCMeqeCBi0nksf6Bds=; b=bVW5X8A7Obp8CGLSsz7WyBu
+	kXC3XvjBa2ggJ63H1GVCUnIcvfTspUTDb0VJ8FaNlUYIQKd4XZxYFapca+pB6jyw
+	YlCkuKXgnni4D7RHUUjOrzFHSpJ2I6ioMgShTCUcUvP0tds4yvEF24VFog55M9s+
+	JoIr8ioX6q/CDcUevO29NdoHWMXuIweh511oEy3hV13SxGYJloRNz/AN2RxeyktJ
+	+A85TU2Q/7XK0B9ir28liEE1ynMfa8gj60c96ybXOcna20KHm6FDFAlRsPehgUVF
+	t7Sj9fpT58VPI9Ht0AoLYGE2MBFW5wx1vPedZNLkYPsvYKMpupL5wkrApDw1rbw=
+	=
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3w1yx45j5e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 Feb 2024 11:46:16 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F1E1D100058;
+	Wed,  7 Feb 2024 11:46:15 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EBD4922D181;
+	Wed,  7 Feb 2024 11:46:15 +0100 (CET)
+Received: from localhost (10.252.26.183) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 7 Feb
+ 2024 11:46:15 +0100
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+To: Linus Walleij <linus.walleij@linaro.org>,
+        Maxime Coquelin
+	<mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-gpio@vger.kernel.org>
+CC: Antonio Borneo <antonio.borneo@foss.st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] pinctrl: stm32: fix PM support for stm32mp257
+Date: Wed, 7 Feb 2024 11:46:04 +0100
+Message-ID: <20240207104604.174843-1-antonio.borneo@foss.st.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201162758.50733-1-brgl@bgdev.pl>
-In-Reply-To: <20240201162758.50733-1-brgl@bgdev.pl>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 7 Feb 2024 11:45:39 +0100
-Message-ID: <CACRpkdbAw5NfSr8GSNiQhOzSi-tERyn=-ZroLfF-FRbsW2JviQ@mail.gmail.com>
-Subject: Re: [PATCH] gpio: set device type for GPIO chips
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Greg KH <gregkh@linuxfoundation.org>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-07_04,2024-01-31_01,2023-05-22_02
 
-On Thu, Feb 1, 2024 at 5:28=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl> =
-wrote:
+The driver for stm32mp257 is missing the suspend callback in
+struct dev_pm_ops.
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> It's useful to have the device type information for those sub-devices
-> that are actually GPIO chips registered with GPIOLIB. While at it: use
-> the device type struct to setup the release callback which is the
-> preferred way to use the device API.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-(...=3D
-> +static struct device_type gpio_dev_type =3D {
-> +       .name =3D "gpio_chip",
-> +       .release =3D gpiodev_release,
-> +};
-> +       gdev->dev.type =3D &gpio_dev_type;
->         gdev->dev.bus =3D &gpio_bus_type;
->         gdev->dev.parent =3D gc->parent;
+Add the callback, using the common stm32_pinctrl_suspend()
+function.
 
-Looks good to me (TM) but we should run this by Greg so he get the chance
-to chime in, I doubt he will see it on LKML.
+Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+Fixes: 619f8ca4a73d ("pinctrl: stm32: add stm32mp257 pinctrl support")
+---
+ drivers/pinctrl/stm32/pinctrl-stm32mp257.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-FWIW:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32mp257.c b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
+index 73f091cd827e..23aebd4695e9 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
++++ b/drivers/pinctrl/stm32/pinctrl-stm32mp257.c
+@@ -2562,7 +2562,7 @@ static const struct of_device_id stm32mp257_pctrl_match[] = {
+ };
+ 
+ static const struct dev_pm_ops stm32_pinctrl_dev_pm_ops = {
+-	 SET_LATE_SYSTEM_SLEEP_PM_OPS(NULL, stm32_pinctrl_resume)
++	 SET_LATE_SYSTEM_SLEEP_PM_OPS(stm32_pinctrl_suspend, stm32_pinctrl_resume)
+ };
+ 
+ static struct platform_driver stm32mp257_pinctrl_driver = {
 
-Yours,
-Linus Walleij
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+-- 
+2.34.1
+
 
