@@ -1,71 +1,69 @@
-Return-Path: <linux-kernel+bounces-56299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78F2F84C872
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:20:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34D8C84C874
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:20:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 094642837A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:20:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 924E5B24A93
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C9DE2562A;
-	Wed,  7 Feb 2024 10:19:44 +0000 (UTC)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28FE528DA7;
+	Wed,  7 Feb 2024 10:19:47 +0000 (UTC)
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1915125571;
-	Wed,  7 Feb 2024 10:19:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D7A1286AC;
+	Wed,  7 Feb 2024 10:19:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707301183; cv=none; b=XHGreJDeTA2gVWmeDKXWhDrmqv75JHNr7Lrlm9TJtMKHPeis8fhOSQ0eW00kpvcW/e0yiWG+kmXk3tEKbKQfMnXJOX00vVRm0XvNLRqbJwxjvPfZEjn0tqh5ApKyoIhduxmTwbWy19fR6lE9bitn4LxRZXvNvwPAE6tj5CUw0SA=
+	t=1707301186; cv=none; b=neGJPzbvT8EdZ+6h989/eQOj0SFQdLBLLI/X77kTuk1HcCyUJMjbNwWmJVFkFRI1vQhyQwfm+r3kBnSLQvyWGQ0d2eyy+NhyM2sLM27v/0mIncEm5pgOOobFf2kgjk8ZCaFdGGS+XFxm58JT/eM59xzvtg2yMSjMLqbX0veMHCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707301183; c=relaxed/simple;
-	bh=xH69Xw3DVD0dhlpjBXThkJ1M9fXCl+ci+4v6DASKARs=;
+	s=arc-20240116; t=1707301186; c=relaxed/simple;
+	bh=cLlSglYo5zPsuAw9zjY3og+Hq2BehO4c6tsRI1MltBQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=L/99j55WwOWuJ7kydqAC0WlEnVgqj+yp3PSZtRcfWJcp49Ee1doUo9v32qDRY19aFy+fAQNttdID9yF0o4PM+9x0dHdE9w3l9kkkt+D/9a4T9uO9KqDyV5n3whg0jAXTS6wpZYP3xPzb4xZE4dZWO3sbWlXh0zOBefBqICnhBSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.48
+	 MIME-Version; b=s25VE8y3kNyTFHhulp/NVSkYKH83XX0MgCIWfRYokq44qkw2juvHdLgn8qxXjvDjumVn1GriPeLmUVkEkWOjgpXE4Ml5sbXx/D784aAslRgyxPSKiLzKOV/wymiFxt2iViW/iWq4G9Sx8UGFzXIhQSnRt3a3O2PqOAXf4symQl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51165efb684so767552e87.3;
-        Wed, 07 Feb 2024 02:19:41 -0800 (PST)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55790581457so580274a12.3;
+        Wed, 07 Feb 2024 02:19:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707301180; x=1707905980;
+        d=1e100.net; s=20230601; t=1707301183; x=1707905983;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bjSPVVvnnRzkYLgJXv5Mc7t5j4u2y9HdB6tgbsPJKPM=;
-        b=bfLyOBrlCSrzqAXHaBg0l7sxbiGC0y+ZOnR+EJH8D7c4wvzM5yZAKZm11LH8o2akkn
-         a61ahttoIGBMui9RbxS003QGAInlliZikbRH51A9ppDOKH9V6c9UWa30yU4AZJnDV0+h
-         Wi8UB1O2gMkhbf2O++xork/jU4x4/+vweaRR7eGE37JzsSbYgMMMBlYbDj7dP783f0p3
-         lrP+uzw5Q0RaBG54R5q9HOzqW5Aj5oca3aQaRZ4YrZ6xkLdN6wFb2bHkOfrZEO4NyNM7
-         n3fmzLGZapw47ID0K3KWhOD7Cda1+F0+8UQH1bsLJRUHZIt9r2lI8sa2yn+HPXCK2cVH
-         Uw6g==
-X-Gm-Message-State: AOJu0YxbxDmLQJTx8BgT7jkDvFhQaWjwkeUd+oMDr3thcmLUpkUwwAeV
-	w7Sp1u/3XKlrc0TX5Ul7PdrS0neAy3vAEOYyKO2QWwAPDQ8fZIF5ff3HDh1dxU7wZg==
-X-Google-Smtp-Source: AGHT+IHgFAvwfVV4NmDZ17v1iRxOL1dreU/Wbrnf2eBIpSJ82+7Xh7gWPhnR3rzbeMlhOITysEk3rQ==
-X-Received: by 2002:a05:6512:39c7:b0:511:3a20:e116 with SMTP id k7-20020a05651239c700b005113a20e116mr4698458lfu.11.1707301179832;
-        Wed, 07 Feb 2024 02:19:39 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXsJ2RavYcUMXxJ4dhE9wwHOOAS9EYUmM9ZbHI6thppYYxFjljxN3RPUkT1wylwXdW9uMRzYZWX1LaHe+153umJgFbieMLwZdSF7jXmo4T0kaYKVuCxgViVo8hH9hCu7u5nTL1OqA0/tEVx3j3FYwtTqxAXLMjWP6OUb3pGoZuh8QFK8+CKRyha0w2gxD97Cz82wZ5pygBWSV7OFUPjql60ktc11EqBWZU3uiQr2JBaTJ7E4fo3OQ6PD928075kaSTJTFqFZJa154kPpJJbAdWBD5lDuWCz9x/gPETCMg5DhbzpS2hEzw==
-Received: from localhost (fwdproxy-lla-119.fbsv.net. [2a03:2880:30ff:77::face:b00c])
-        by smtp.gmail.com with ESMTPSA id vi11-20020a170907d40b00b00a37b0d09d9esm576760ejc.119.2024.02.07.02.19.39
+        bh=aeD6034q8KvdXPJcZmxXEmuuy9qPKKAyxbAnHHYFoBw=;
+        b=jcyQSwDyOxelu6nXRMZwW0ZqDE1hd+Dj9IPKFWtPzTtjfbxVePM3oaGAZ7uE81ilFh
+         6M3VrFwbbe1MfQaCKEKoDEkH7zbUFZ3ZoRKeZ7qtH/dsep2tjr48punkYYtmmgxWmEPE
+         PI+WpEEZzP/L/2dFWLnzzTOh1M8bE1CKpfLP/MW2C3lc3Ivfk/cJK6LICUSy6RGcB5jA
+         uGmsP6Nx5vVULQZbINOs2UKn61dP/yaW6ehkEUOgu1UKWhQtm7TjtePkERUdR1OZ/E5B
+         TtJz7VSXNNuxxLpP9NsMqZ2+KLowb3SZXkXeRTPdwnx/Y9occ9+Pcz4OXyM+eEWt0jaJ
+         zWQg==
+X-Gm-Message-State: AOJu0YwZFV1Vr0D/4yw15Ab/crkUCSqgniN42QtjVAXWDpxY5kgyvHsJ
+	AR1pYrZeuYQBkvvTVfNfRA6I1qltqYTWjyudTmGLe3AJ2D/i5KuQ
+X-Google-Smtp-Source: AGHT+IFaRgITS9KbagU/W6G07GebP3AniBfTbZW/CjChlH204cHBL1fMfL+yz4y9nLWBzUsTMlPOAw==
+X-Received: by 2002:aa7:de04:0:b0:560:1652:e7cb with SMTP id h4-20020aa7de04000000b005601652e7cbmr3841706edv.16.1707301182902;
+        Wed, 07 Feb 2024 02:19:42 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUaJCr40+XRSXJuvfAWi9ZXqHI11FUrXvasmyxQLoHnVH7PPK0pm+2771Sw6V4BwPyALaYT/ZwP2++atngi4Vl+Un1iR4/m7EjlxEWsivW2IqVImTjtzLoVEHuU2KDPF0zagogA4WQ+9USiga7cpKg+DX6VodJjiqgOSTV437+0KGJDad6R8h/SeEOaqs5ouxzyx8L7mC6Nu3+MAEOMNVFsmlpXPZlykosRTAI=
+Received: from localhost (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
+        by smtp.gmail.com with ESMTPSA id l20-20020aa7c3d4000000b005601e5ca418sm514607edr.33.2024.02.07.02.19.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 02:19:39 -0800 (PST)
+        Wed, 07 Feb 2024 02:19:42 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
 	pabeni@redhat.com,
-	edumazet@google.com,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>
+	edumazet@google.com
 Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	horms@kernel.org,
 	andrew@lunn.ch
-Subject: [PATCH net v2 1/9] net: fill in MODULE_DESCRIPTION()s for xfrm
-Date: Wed,  7 Feb 2024 02:19:20 -0800
-Message-Id: <20240207101929.484681-2-leitao@debian.org>
+Subject: [PATCH net v2 2/9] net: fill in MODULE_DESCRIPTION()s for mpoa
+Date: Wed,  7 Feb 2024 02:19:21 -0800
+Message-Id: <20240207101929.484681-3-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240207101929.484681-1-leitao@debian.org>
 References: <20240207101929.484681-1-leitao@debian.org>
@@ -78,35 +76,23 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-Add descriptions to the XFRM interface drivers.
+Add descriptions to the Multi-Protocol Over ATM (MPOA) driver.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- net/xfrm/xfrm_algo.c | 1 +
- net/xfrm/xfrm_user.c | 1 +
- 2 files changed, 2 insertions(+)
+ net/atm/mpc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/xfrm/xfrm_algo.c b/net/xfrm/xfrm_algo.c
-index 41533c631431..e6da7e8495c9 100644
---- a/net/xfrm/xfrm_algo.c
-+++ b/net/xfrm/xfrm_algo.c
-@@ -858,4 +858,5 @@ int xfrm_count_pfkey_enc_supported(void)
- }
- EXPORT_SYMBOL_GPL(xfrm_count_pfkey_enc_supported);
+diff --git a/net/atm/mpc.c b/net/atm/mpc.c
+index 033871e718a3..324e3ab96bb3 100644
+--- a/net/atm/mpc.c
++++ b/net/atm/mpc.c
+@@ -1532,4 +1532,5 @@ static void __exit atm_mpoa_cleanup(void)
+ module_init(atm_mpoa_init);
+ module_exit(atm_mpoa_cleanup);
  
-+MODULE_DESCRIPTION("XFRM Algorithm interface");
++MODULE_DESCRIPTION("Multi-Protocol Over ATM (MPOA) driver");
  MODULE_LICENSE("GPL");
-diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
-index ad01997c3aa9..f037be190bae 100644
---- a/net/xfrm/xfrm_user.c
-+++ b/net/xfrm/xfrm_user.c
-@@ -3888,5 +3888,6 @@ static void __exit xfrm_user_exit(void)
- 
- module_init(xfrm_user_init);
- module_exit(xfrm_user_exit);
-+MODULE_DESCRIPTION("XFRM User interface");
- MODULE_LICENSE("GPL");
- MODULE_ALIAS_NET_PF_PROTO(PF_NETLINK, NETLINK_XFRM);
 -- 
 2.39.3
 
