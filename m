@@ -1,68 +1,56 @@
-Return-Path: <linux-kernel+bounces-57159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96B2184D499
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:48:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06AB984D49C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:49:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 283741F2198B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:48:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE515284B68
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:49:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B04D1350D3;
-	Wed,  7 Feb 2024 21:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83646157E75;
+	Wed,  7 Feb 2024 21:25:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oP2OIF+z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jo5VHiyD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF6F157043;
-	Wed,  7 Feb 2024 21:25:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2B6157059;
+	Wed,  7 Feb 2024 21:25:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341127; cv=none; b=qpHvGw9kjmfMdMWzq0wctWb6sm6q2vhsEY8DZkJKXWfcjnNSepSKBz2fpsZCJxwy7KM02EYpa6EFeYFQTp98ZkJh64H+pQIjn0IDWWvv0/cchjs4BdcQyelmzuh83y98hG0k07vl3EdqBjywriXHQgOsiPT8+6a/RTTiGT3W3dA=
+	t=1707341128; cv=none; b=PS1jHzstMCBdIAEDf25uo9FlSgAC4i9osQlX1/E6/T3VcWB2Hx3dl6w/EiKAZkZrzTro1Xu0KcCzsGOIXqvcmtqBQyV2XTcVtgGwg/6vmVH+kRqbAx51j1/dnwxtAXtcnoSUJel2ou4PdBFcnUh6T3gMeFPC3eRliHIdvxsvqvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341127; c=relaxed/simple;
-	bh=8clVlBmFo+UTPTjVu6eDvOnRGTbqZs8d+hMhuA2e8fE=;
+	s=arc-20240116; t=1707341128; c=relaxed/simple;
+	bh=pUapY0eizi0jwq6pjThZK/3NtTcTS8vPfN1bWyS0kSo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CpKIkacdOhlWBgiQSx4AQ+u2shyqWK5fNf8FTWAZTwVMsUKWnZlbD7GjgdScBdHj8ddB7mmLb7NU/iFshAK3vWkYmFam6I9akDtwJolDUg6CoywNQekYjqfnR0K9Is2ElEzq3Gyvyss5qlr4KiuamNX3JhDQ9dHyTm/2QcFUcNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oP2OIF+z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05B1BC433F1;
-	Wed,  7 Feb 2024 21:25:24 +0000 (UTC)
+	 MIME-Version; b=Xzy3ARcKiGii0ZU6LiF9dyXEuO4GPpmPKZSW5TtkuRAkIEMC8C7pTMHNLI2oqiuwQ14yHYNAIZ35Ti32xl2f+JQgotpQ+Ey21KG2/f/KVHgdD8+7mpJa+Koww1DeDBNHePm5mhn3mdnG02lzaMRkDYB5h3ChIBWNPJ+C85CapzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jo5VHiyD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD34AC433A6;
+	Wed,  7 Feb 2024 21:25:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341127;
-	bh=8clVlBmFo+UTPTjVu6eDvOnRGTbqZs8d+hMhuA2e8fE=;
+	s=k20201202; t=1707341128;
+	bh=pUapY0eizi0jwq6pjThZK/3NtTcTS8vPfN1bWyS0kSo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oP2OIF+z/flvS0b8WN+dZNSNRDnBE2tYTNotherI38YfknQDzEDDgGGM3rLrGwdQK
-	 QhMUs2Y5eSJxSkWyzdw6ShJeGq2mUOuhKwYOpx2/BjiROXCJKktBO5tdzLUk4pB/Ud
-	 SB5ZpZjTomGm31R5K0vAbeLuUkArNxVyxCngXt4Y3RxVwc8AkKDjclXRR1Z86ekW24
-	 5iMG28O2KiDspsicKhPV7/4vxaGHW5baGzXj/BsPT1oF3e5yWJbYd4CTGxUOU2I8H1
-	 buqRDO1bzDs5USUKQpXWWoY4bTsJSl7iRjF0Xltisl5ke6vex8ZtP/HxJYJt86ztwO
-	 RizItBAwY9cBA==
+	b=Jo5VHiyDz8wz/3+MmzRYRYCvpkq3lQL6IVOUD7qjtjV59KLB/mRxppak/AVSNmTFp
+	 Tyu/CMc9gCqWrvH9YAkx7wt04SUUisUGNHKV5L9uXiBV8ID8le+AZh5qE5UJCOTvu9
+	 Kf/xH0RORqF5TrdlIcllAlkjkmN5bO9SsixSTTodzjdbVY16MwnEmR2B07sA87Cpnb
+	 Qoqx5zPI0V0zjvytVDVuorTP3Oac/4ARgs8Yv37FHyDhGfgHCt57LMZi3P+/Aj/gyU
+	 gY831TD4E8PLURdjvAjnzz94r8BBEbN0WQ6PKmcmeEkTKKOlcKVx0z2tzsYYmsl4Kv
+	 NWEqBywoieyzg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chen-Yu Tsai <wens@csie.org>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	samuel@sholland.org,
-	kuninori.morimoto.gx@renesas.com,
-	ckeepax@opensource.cirrus.com,
-	robh@kernel.org,
-	u.kleine-koenig@pengutronix.de,
-	ruanjinjie@huawei.com,
-	linux-sound@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.1 11/29] ASoC: sunxi: sun4i-spdif: Add support for Allwinner H616
-Date: Wed,  7 Feb 2024 16:24:36 -0500
-Message-ID: <20240207212505.3169-11-sashal@kernel.org>
+	linux-spi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 12/29] spi: sh-msiof: avoid integer overflow in constants
+Date: Wed,  7 Feb 2024 16:24:37 -0500
+Message-ID: <20240207212505.3169-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212505.3169-1-sashal@kernel.org>
 References: <20240207212505.3169-1-sashal@kernel.org>
@@ -77,43 +65,51 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.77
 Content-Transfer-Encoding: 8bit
 
-From: Chen-Yu Tsai <wens@csie.org>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-[ Upstream commit 0adf963b8463faa44653e22e56ce55f747e68868 ]
+[ Upstream commit 6500ad28fd5d67d5ca0fee9da73c463090842440 ]
 
-The SPDIF hardware block found in the H616 SoC has the same layout as
-the one found in the H6 SoC, except that it is missing the receiver
-side.
+cppcheck rightfully warned:
 
-Since the driver currently only supports the transmit function, support
-for the H616 is identical to what is currently done for the H6.
+ drivers/spi/spi-sh-msiof.c:792:28: warning: Signed integer overflow for expression '7<<29'. [integerOverflow]
+ sh_msiof_write(p, SIFCTR, SIFCTR_TFWM_1 | SIFCTR_RFWM_1);
 
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-Link: https://msgid.link/r/20240127163247.384439-4-wens@kernel.org
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://msgid.link/r/20240130094053.10672-1-wsa+renesas@sang-engineering.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sunxi/sun4i-spdif.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/spi/spi-sh-msiof.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
-index bcceebca915a..484b0e7c2def 100644
---- a/sound/soc/sunxi/sun4i-spdif.c
-+++ b/sound/soc/sunxi/sun4i-spdif.c
-@@ -578,6 +578,11 @@ static const struct of_device_id sun4i_spdif_of_match[] = {
- 		.compatible = "allwinner,sun50i-h6-spdif",
- 		.data = &sun50i_h6_spdif_quirks,
- 	},
-+	{
-+		.compatible = "allwinner,sun50i-h616-spdif",
-+		/* Essentially the same as the H6, but without RX */
-+		.data = &sun50i_h6_spdif_quirks,
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, sun4i_spdif_of_match);
+diff --git a/drivers/spi/spi-sh-msiof.c b/drivers/spi/spi-sh-msiof.c
+index 51ceaa485724..ec3a4939ee98 100644
+--- a/drivers/spi/spi-sh-msiof.c
++++ b/drivers/spi/spi-sh-msiof.c
+@@ -137,14 +137,14 @@ struct sh_msiof_spi_priv {
+ 
+ /* SIFCTR */
+ #define SIFCTR_TFWM_MASK	GENMASK(31, 29)	/* Transmit FIFO Watermark */
+-#define SIFCTR_TFWM_64		(0 << 29)	/*  Transfer Request when 64 empty stages */
+-#define SIFCTR_TFWM_32		(1 << 29)	/*  Transfer Request when 32 empty stages */
+-#define SIFCTR_TFWM_24		(2 << 29)	/*  Transfer Request when 24 empty stages */
+-#define SIFCTR_TFWM_16		(3 << 29)	/*  Transfer Request when 16 empty stages */
+-#define SIFCTR_TFWM_12		(4 << 29)	/*  Transfer Request when 12 empty stages */
+-#define SIFCTR_TFWM_8		(5 << 29)	/*  Transfer Request when 8 empty stages */
+-#define SIFCTR_TFWM_4		(6 << 29)	/*  Transfer Request when 4 empty stages */
+-#define SIFCTR_TFWM_1		(7 << 29)	/*  Transfer Request when 1 empty stage */
++#define SIFCTR_TFWM_64		(0UL << 29)	/*  Transfer Request when 64 empty stages */
++#define SIFCTR_TFWM_32		(1UL << 29)	/*  Transfer Request when 32 empty stages */
++#define SIFCTR_TFWM_24		(2UL << 29)	/*  Transfer Request when 24 empty stages */
++#define SIFCTR_TFWM_16		(3UL << 29)	/*  Transfer Request when 16 empty stages */
++#define SIFCTR_TFWM_12		(4UL << 29)	/*  Transfer Request when 12 empty stages */
++#define SIFCTR_TFWM_8		(5UL << 29)	/*  Transfer Request when 8 empty stages */
++#define SIFCTR_TFWM_4		(6UL << 29)	/*  Transfer Request when 4 empty stages */
++#define SIFCTR_TFWM_1		(7UL << 29)	/*  Transfer Request when 1 empty stage */
+ #define SIFCTR_TFUA_MASK	GENMASK(26, 20) /* Transmit FIFO Usable Area */
+ #define SIFCTR_TFUA_SHIFT	20
+ #define SIFCTR_TFUA(i)		((i) << SIFCTR_TFUA_SHIFT)
 -- 
 2.43.0
 
