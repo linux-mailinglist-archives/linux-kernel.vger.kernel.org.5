@@ -1,149 +1,129 @@
-Return-Path: <linux-kernel+bounces-56370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F180B84C953
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:15:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C26884C962
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:16:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 208841C25C4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:15:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48EA42888B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:16:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB661B5BF;
-	Wed,  7 Feb 2024 11:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD4D91B7F4;
+	Wed,  7 Feb 2024 11:15:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K0282IXN"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jxxyNyE1"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0D11B803
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:15:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F2BF23759
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:15:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707304514; cv=none; b=UH+JiJILh5SdcyvmP97AXlPFL2PkSM11890RRKSxFhQkLZVUZFCqTbw7skTb8t1qyWpFFreOQ0XXvDBy6R4m2U4n0BUKBiDYacela6U+Meld9Cbzs8sMGzbscz/Edvpxw08SP1WJpsARjLG0EUvAnpvnSsk5BJlGfJLSdjZ5LLM=
+	t=1707304524; cv=none; b=hL74XRkBvFkqZZMGzfY0ZWPOe/9x5sdSFaVVz6wyk7zfZfmCU2TaoOb9jrgWbgtHEUJbKD9RtOlh2iAJK82nh8U8TdKtkFfoQtFEkAxCk5AGP9bu9EIUmxPi9qa7RFLErTtHGghTEIIn48FOVEAjA7IfWIWh/8jUdnMpSl2T0MU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707304514; c=relaxed/simple;
-	bh=2jRd6S/kViHophAQmJqHxJZPJSo88AAapcBv8aFpxnw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TndARNu54WbHpf2VoKZ0TIrAhTwSKNMtCiJEcxY9941qbDEHaj4LLTCGpdZVRVhwUEVs317MPvClCJsfoWJ3/4wp2CE6HtZ6zZ4fsqr4qgAjEP2yZwcqHmmeu6kIrWYB87UWf/dFDfcF4f7SLNpM8ozJhqvpRRvwtPBCJTRSo9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=K0282IXN; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707304510;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jmoBg7e7gy5QqQecjw4wn2ntdcJ+MlXfkM360aqYPa8=;
-	b=K0282IXNRlF27yZiL2hdFcsAwT/5/ONEm7JcBp85jW6MYICjuVza4TJLGST6Jdf6U4y8FQ
-	6erbwe6/Uzg4B2Y5zK8ACF6SNtgKUa+ot0YPkEhw9p+k/1hmfg5QrPk8C8zfhpQcIKslrz
-	Q1gt46j28G2qcgD3Z4zK400D3dpNPrI=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-570-SGbgIyx9OrC7dMS8ZIvupA-1; Wed, 07 Feb 2024 06:15:08 -0500
-X-MC-Unique: SGbgIyx9OrC7dMS8ZIvupA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a2c653c7b35so38073466b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 03:15:08 -0800 (PST)
+	s=arc-20240116; t=1707304524; c=relaxed/simple;
+	bh=SCPR2qSc7UFQAu1LKrcwc8/FX4vyYYychtz2gG6sa6k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CaYY+MDjBXSOTfMewsG14IVBnYPYmw+ylKX2g/YCydp6w382U5zuh80lExyxTqkkuMweZCb/C0OQTWWG0Tvuyrwa9F3HIwi5cTCJjGpro1LRsFdcZxqrs6EUvckLGAWUi7lia1tkeeH7Tk4hZD5a+l1WXs9ILFsDc5ylxpomQkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jxxyNyE1; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5116063585aso543313e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 03:15:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707304519; x=1707909319; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bMnb5HJhS7G41QVRQROXaO1EL3gS+emI2A/pWCIDppQ=;
+        b=jxxyNyE1IUdKZc5SKmskvucNqSysMFEmU7tsQhKxVdzHTwpgqnXWQeYXgWILkJDJnX
+         I1tb6tFWJf3Gd04KqBRKuvXhZ68o87bt4oW552IC0blmsXnKKW60tE1oGQbYgzVLzHnd
+         bVh/TdhpnrW+iwaZ/ROpSRMzWYFskbWRnrdCNOvVrU3vjdwxA7R7zoKblSXvwlFABn0t
+         wCcdfnYD5Z8nwb5AwvUIGaysqtoE9D76ueJb6lTvn3C4LnLf+Uq/LTOr3achFKttHT0u
+         S39+ffenPB9zA4uc38o/NvCPZUBC8nO5hnqf0q8jacsnE14URUBuqKlNmEb5FZecC+sB
+         IyYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707304507; x=1707909307;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jmoBg7e7gy5QqQecjw4wn2ntdcJ+MlXfkM360aqYPa8=;
-        b=NAxwLkradSjw/W+iArgG59CSizPTrsLpN+hzdJgqliz0nzXidkhFjDXnWSP7eHbZ0a
-         4Xbkt75m1vcrurAnMHu9GeZEoBokBb/sM/lqyszwYw+FCBfO6WoQtoUtwPEUr/h8IA6l
-         mT4+IcEF6ww5iN4JxUP1cetOI5+wTohGICm/eUM4QhS1jFCO6plbqon1C34Gag9QysE8
-         19lTlcUyq2EOgEFiM1AWQC12w0sb285aq53uj4NtJNAmdybQoMEavk6o9JkQquZCntBC
-         1ThipBjNL+Kjadpx0m7PIaz+5jx7UgG7lPHJo3NUp3LcKvUu7hc6/PyqYz+xGuleIWgQ
-         cf7g==
-X-Gm-Message-State: AOJu0Yxwv+5z4/yaRpjE/ep2gkIntnzZqYiKUZbPcv6vsPVEdnOiGTXN
-	iL2w67g94bhF0PjlT9UHepWYB9sG+9zD6+jwkualawJCRuU2/8Y870lULlMHWfOK5uiQvEpUcft
-	iSwxwga93UlnEtKgXPTWDG7HfhTHRdYkWHHQU9uYIkiUqsmIq+R/+N6feiKgOtOHoRnaSjQ==
-X-Received: by 2002:a17:907:78d8:b0:a38:4842:56da with SMTP id kv24-20020a17090778d800b00a38484256damr2394302ejc.61.1707304507615;
-        Wed, 07 Feb 2024 03:15:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFI7phN0cl7yqV3k3uQG1I17le+bYyLwlre47A/++8jqI4873lc2i/D0SykgCpk0lxan1uBoA==
-X-Received: by 2002:a17:907:78d8:b0:a38:4842:56da with SMTP id kv24-20020a17090778d800b00a38484256damr2394288ejc.61.1707304507235;
-        Wed, 07 Feb 2024 03:15:07 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVXORI031b40O/G+OxcTOjq/8CfUjMsqC32dPuAVMquninPKNgyQbIMqFY431qT03c2avtkG9jigcpQ1ya0L+4ZB/Opyfc5pqVrXcBS8S0g8I0AKjj4dqK8d6bXkF2sHIFN4Kz/wgoz
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id ti14-20020a170907c20e00b00a36f0610088sm647138ejc.96.2024.02.07.03.15.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 03:15:06 -0800 (PST)
-Message-ID: <31d9b48d-320b-44b6-9ab5-d53f741dcc72@redhat.com>
-Date: Wed, 7 Feb 2024 12:15:06 +0100
+        d=1e100.net; s=20230601; t=1707304519; x=1707909319;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bMnb5HJhS7G41QVRQROXaO1EL3gS+emI2A/pWCIDppQ=;
+        b=spU4+ABBFOT5QmQ+uLDUr+x3GdZ3AjhIZueYZa0+clluo2W4xaczgCitZigQE+4VDW
+         117z650uyjtyb7OyIagOVNXcar08ihy7KFBLi+tJJziWLqKR8+ll8mIxgQCS+4A3rOeU
+         XAsXTW6bpnQdUaNi6y7UcPIHyYSr1t/g1T9THSgsToTEx87jH7LE9ricahDXE9jEdw2T
+         ERw8JY5JtT1q5496mAWnxjQkDbhFAUzCyZL0B2uRoOwwRBqrMVZY8tyx+8CfW1LOG8cF
+         vQW4i0OHQYqUIuJ5aVdrZFw5Hv5DTVxDxwAEgjuFd5nQmym5PINfTRult/++bu2CH7qI
+         tahw==
+X-Forwarded-Encrypted: i=1; AJvYcCUYXPiAf2LQS88sRjtUcg+zkQRd30xSCsnhd8XPPPm4e80pEOMtv4W/IffPVuG48CB0YdxlQ0SrWz1JF5pdYSTCT67yYmaOPoi7Oe9y
+X-Gm-Message-State: AOJu0YwylzQ4EFM3pOObQw+p5XZjylh1ZroTLy9Ze3IAsq02CGzAcJ5v
+	+uo8+qvRqyIuBJ25Ce9sfrO3aKAg4ZDfNUL4Iw88cqx3jNsZPwGtNtgFZD4+31I=
+X-Google-Smtp-Source: AGHT+IH3+SKj/e8TPmX4R8reqgJaV+c9yh5OZQbKxNfKFS1eIQzKy98A8IPXAhgrDb1YJy+B9/KSCQ==
+X-Received: by 2002:a05:6512:3d29:b0:511:61ab:406e with SMTP id d41-20020a0565123d2900b0051161ab406emr3012942lfv.28.1707304519410;
+        Wed, 07 Feb 2024 03:15:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXUzup+s1uQRbpAdflsODdHWm0qj4MlCpwuH2pfrt2Ir/2vtrkZaqGew624khQQuCwMkkDJF8HQs/NrowL5pDYpkzjrtCW8w0gfqJSLRjPFJEIlrJU+8UG6QL7CaK0Ri8d/9ezqfUK+oKZIT2b+A4yYcGJNZI3c2SP/jyw03pFF6FeB27hBaKu+yveWvwF+pmiCguWPXUgt19TxF5HTWQy4KRTWHQi5TVOk3SN3g+z1cel7IinEo1kMR1cDNKe4tx8L0J12fPKBd+/MQnxfrRe3ySpvKGzK5n6ne3N8sPCY9dJZ08Jvw51ouoVVXlu528M1b8vRDdydKWLjnVTCIRXAlz0vIrTnJUW+mcRbfhxJm2n09xLs5giQWa8BcWl5n3czj93UghepfqqPKGM0XJLSUCUPDJGr7Vx1W2lAqE2MwPfTDGRqO22otQzHjwULgnVtMer3s4iffalzM+9FDulnIxFf4cdpKNCQQWkDWdGSuKDZ0XdeeeDgau6IEIE/RMURAXGU7TcUcKLtD8T3r8bF8VynxT5gQuzTa4OL5sA6JvEu9uniF4lU3sj1qkRlqZo00EabG+I5IgupFeRSEWYdhA==
+Received: from ta2.c.googlers.com.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id l14-20020a05600c4f0e00b0040ec8330c8asm4983260wmq.39.2024.02.07.03.15.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 03:15:18 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: broonie@kernel.org,
+	andi.shyti@kernel.org,
+	semen.protsenko@linaro.org
+Cc: krzysztof.kozlowski@linaro.org,
+	alim.akhtar@samsung.com,
+	linux-spi@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	andre.draszik@linaro.org,
+	peter.griffin@linaro.org,
+	kernel-team@android.com,
+	willmcvicker@google.com,
+	robh+dt@kernel.org,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH v2 0/4] spi: s3c64xx: add support for google,gs101-spi
+Date: Wed,  7 Feb 2024 11:15:12 +0000
+Message-ID: <20240207111516.2563218-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ahci: asm1064: correct count of reported ports
-Content-Language: en-US, nl
-To: "Andrey Jr. Melnikov" <temnota.am@gmail.com>, linux-ide@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: dlemoal@kernel.org
-References: <vbpzr7uqpfemb3qa6xy2fxioct44l5vugg2wkywyolfpzqcmau@jgrrhmk2scaj>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <vbpzr7uqpfemb3qa6xy2fxioct44l5vugg2wkywyolfpzqcmau@jgrrhmk2scaj>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Andrey
+This applies on Mark's for-next branch. It can be queued before the
+simple cleanup patches.
 
-On 2/7/24 10:58, Andrey Jr. Melnikov wrote:
-> The ASM1064 SATA host controller always reports wrongly,
-> that it has 24 ports. But in reality, it only has four ports.
-> 
-> before:
-> ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
-> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xffff0f impl SATA mode
-> ahci 0000:04:00.0: flags: 64bit ncq sntf stag pm led only pio sxs deso sadm sds apst 
-> 
-> after:
-> ahci 0000:04:00.0: ASM1064 has only four ports
-> ahci 0000:04:00.0: forcing port_map 0xffff0f -> 0xf
-> ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
-> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xf impl SATA mode
+v2:
+- drop the include linux/types.h patch
+- patch 2 is a preparation step as per Sam's suggestion
+- contrary to Sam's suggestion, I kept the style for the
+  s3c64xx_iowrite{8,16}_32_rep() methods, to be consistent with the
+  generic implementations from asm-generic/io.h.
+- s/just/only
+- collect R-b tags.
 
-This still says 24 ports, is that a copy & paste error in the commit msg ?
+v1:
+https://lore.kernel.org/linux-spi/20240206085238.1208256-1-tudor.ambarus@linaro.org/
 
-Regards,
+v1 was derived from:
+https://lore.kernel.org/linux-spi/20240125145007.748295-1-tudor.ambarus@linaro.org/
 
-Hans
+Tudor Ambarus (4):
+  spi: dt-bindings: samsung: add google,gs101-spi compatible
+  spi: s3c64xx: prepare for a different flavor of iowrite rep
+  spi: s3c64xx: add s3c64xx_iowrite{8,16}_32_rep accessors
+  spi: s3c64xx: add support for google,gs101-spi
 
+ .../devicetree/bindings/spi/samsung,spi.yaml  |  1 +
+ drivers/spi/spi-s3c64xx.c                     | 85 +++++++++++++++----
+ 2 files changed, 71 insertions(+), 15 deletions(-)
 
-
-> ahci 0000:04:00.0: flags: 64bit ncq sntf stag pm led only pio sxs deso sadm sds apst 
-> 
-> 
-> Signed-off-by: Andrey Jr. Melnikov <temnota.am@gmail.com>
-> 
-> diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-> index da2e74fce2d9..ec30d8330d16 100644
-> --- a/drivers/ata/ahci.c
-> +++ b/drivers/ata/ahci.c
-> @@ -671,9 +671,14 @@ MODULE_PARM_DESC(mobile_lpm_policy, "Default LPM policy for mobile chipsets");
->  static void ahci_pci_save_initial_config(struct pci_dev *pdev,
->  					 struct ahci_host_priv *hpriv)
->  {
-> -	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA && pdev->device == 0x1166) {
-> -		dev_info(&pdev->dev, "ASM1166 has only six ports\n");
-> -		hpriv->saved_port_map = 0x3f;
-> +	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA) {
-> +		if (pdev->device == 0x1166) {
-> +			dev_info(&pdev->dev, "ASM1166 has only six ports\n");
-> +			hpriv->saved_port_map = 0x3f;
-> +		} else if (pdev->device == 0x1064) {
-> +			dev_info(&pdev->dev, "ASM1064 has only four ports\n");
-> +			hpriv->saved_port_map = 0xf;
-> +		}
->  	}
->  
->  	if (pdev->vendor == PCI_VENDOR_ID_JMICRON && pdev->device == 0x2361) {
-> 
+-- 
+2.43.0.687.g38aa6559b0-goog
 
 
