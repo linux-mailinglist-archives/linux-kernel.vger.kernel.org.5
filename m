@@ -1,80 +1,79 @@
-Return-Path: <linux-kernel+bounces-55885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4F6D84C2FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:18:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAB9184C304
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:20:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7F411C21870
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:18:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2CABB2567B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F10C410940;
-	Wed,  7 Feb 2024 03:17:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F200101D5;
+	Wed,  7 Feb 2024 03:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D/+k48pg"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RCbXwnM1"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA6C9FC05
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 03:17:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2987BF9F7
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 03:20:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707275879; cv=none; b=LGXqDOM2in3VOL653b7WuP4AulnyKb+5Bn/ah8SAVGANr8d5HUCvZ8o4glzQMKV57/D4txi64hkWI6KhvAHxOMOPgM5T4OFIH3H0yDfkUy3B0FvYYbrwMbPzdVZyvhf5Cd016JVqRijwYxJRLUrU3IR7GqU/iJa4/gBWlFkx1fE=
+	t=1707276045; cv=none; b=SsrEH15Xv6kqFlsVQV90389yQhxt6nr+Txyc9HgiBzR+QNJEla3pJ0EGYdDWsaeOGuhCQsvCfqc21hSEthuihpnCJ9NJjVKOh7gIkbAYHxMmp3di4rxytrqwh1gOWbMmOc0XsVOXMVOCYFwm/ASIOzG6VKjSAxGOhA4Z0DVDSy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707275879; c=relaxed/simple;
-	bh=xv4B1LEIU4KOtG2Ub7BjbYH4Tj88+0kJFfUuhhkXn10=;
+	s=arc-20240116; t=1707276045; c=relaxed/simple;
+	bh=VVWU1hTHdDiHcMV+44gh4MOWuxsDTk6kozGbwxsOEB4=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ZVPKb5m4ubYZv4yghUxV3D/m3xiXp8yuuvKOZltD79HPCT++/Sz4bYTbgOt2Lr780XeNuKM3bmAUKfha94AB02KPxnw7k0fkoTqoSf8rPlAht7gAe7X3egBG+lGuWUNa7DuedBjYGdJ5JbXXbvDH3B6cGdzgbu62vT3OGLgqVfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D/+k48pg; arc=none smtp.client-ip=209.85.219.202
+	 To:Cc:Content-Type; b=o/kSDUDMFKATMp9IMsw9MGXCDNtFRRZQjXBFek+4j+fSMzVpihVOxOpNB5z5XKr8DWeylG1fgWHkZWWNJXmZy8vHqJL82OVT2oSqg1YTk9/ya0J83zZh5Gj4BMCuqKkiG1Kt8y9yotR3NctibUkGKnkL3ebrf9eSMB5GWLUdqkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RCbXwnM1; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6e6bc4aa3so213722276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 19:17:57 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60491e90830so1870097b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 19:20:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707275876; x=1707880676; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707276043; x=1707880843; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=c4CjCucqTLIudtP5PVERixa/oHt8DzPccdaWLPRE6E0=;
-        b=D/+k48pg4+cPb4R97X9AG8UgLKAiJ34XAIe4MLydGty8u8Y8skBBgydIYZ+3EpySDH
-         uVJcq703Ljn5fui46gS6pzdOwwhhFsd4XQl0t2bYvK65VlOaAItTIMH7M5oVsu3iv7Tc
-         0cN+/fmbt74DmVaG57gGZ28NNqhKdaHEoiv0lny2QBO9BWg8FhDaHTQp/TISI0pDJpP/
-         S0BrPTA1cKugS4Z/j/0TQyFW2ayEE4JNZXGSps0yotn8Sn7xSJ2eS4pT5V4Z9ydPSne1
-         hKcX+XQz/zYfLwJuOINqz8PvAm9LJILYPReuXxNFO3LQ4NCBeQnMnCwwxTaUU4VCNkaK
-         XXZQ==
+        bh=ApcLgLGrxwLEuYf7+iIf/mNSaHhoA2l57UsnC6CxVWA=;
+        b=RCbXwnM1A83uV6GI9gS/PEnbZTtxDZzwUS7HK/1MRmcMfHkcocbpQhaIx7QobYZ/fE
+         fnYs3FGnVDPk0Xx8R4nInEuE7MS34oeQIYr6elgdJIKsFb04Azd99GdCJsXzx2rY7S+R
+         zW8Z3nRlpfYbsvoShBosLPD02BqulFozispCJrJ7+tqL1ZiUr57/UbtCIEg+pNzDKmrV
+         26xora0KFkBrk7NPixM2JVYIZLzv8++JY+GxjwhtENILsHowkUAf627Kq8JIfRg1jo80
+         0SmVwnLMsqt+PA329AX5hPCl2TTSRmyN/K9gQUh+bY1tiwzkef1HZUbsloMQFOTPrNXF
+         irHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707275876; x=1707880676;
+        d=1e100.net; s=20230601; t=1707276043; x=1707880843;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c4CjCucqTLIudtP5PVERixa/oHt8DzPccdaWLPRE6E0=;
-        b=CTHSyLvot0wskUfp2SqN2L0bqRiBvFxq8L+0n40jHdzrIh79J2xyEorVg0SzUxM3HO
-         wywlRGDWPV1672RJOSExm6OAlcqdoGFaSttXZZSUKDYiyOB/WdMnhblnknsXr93vt5Wr
-         Cry1KkxtUcxHjzG0Ey6qkyRVxKHoWK6oV2//DMuzcX4TNR4791GbaNrOYy2mz/aHxJ1z
-         HnEQScAtOoqAwZSOM6eGHUDdbQT/oc7vQobP5gjnjIsljX+V95juGIO8ip10Dumtjr6z
-         YOC1bwA9Aqmvzm7zdZZkt0POLMtrhvjspj49Gu0kMbg9abN6m0o4a9uI4CH0piTS49Dh
-         9cRA==
-X-Forwarded-Encrypted: i=1; AJvYcCVLkkS9ReKdwxXPabMTBH8BcASkaC4oOGqqc2Et5fqMZhBWHAGNWpj2xl8m2ecLJcn4pW9MB++pr3MYKZAvqwgh9JZUADZ5P64LSo0P
-X-Gm-Message-State: AOJu0YzQZzkenlS6q+lQ7Pv2wfQyWdEVToD98edjzirp7fomHE9c+chf
-	jBbIqX8/2sA8oB3ZqAFRIY1JZl10k0/JWSuHmG+AvZIgkmhFXTB2eY/TxO9+4m4429sjnkfozDm
-	KxA==
-X-Google-Smtp-Source: AGHT+IEDt9S4Bp3akJ9/asxSh8xQpB7ev1QayNj+tDmZqMrZWt3F4FRrmzgPTDDZ2QioeOUf8ryjx+YClGg=
+        bh=ApcLgLGrxwLEuYf7+iIf/mNSaHhoA2l57UsnC6CxVWA=;
+        b=BWqhw9dgBe24st9EvdeywRXAhJrqpttT5CFrz1jXp/3QZAZqBbzU8uPjnb0BediBBM
+         FWnWXJrDXRhhgEKrbQP67UZwaNrxzmZ+mS4jp+yJNKOHPLyRz5plFW3wji76lZbsT1pe
+         1ScdrrzZ40+37qPNndfsZAGBLTrIq0A0GXI0dY04cmHHcAvT03V4C2Mhcxu3lGtUf4O6
+         E5bHE2AeS/fz6ndFaJ0oXt9MOLyH41G8tNx+DXTcAGsv5ouxIXF/KpzinbIxdQicyuPo
+         uSIBgnQodIEztP1jin7++3uprb4uXBKRZP+HRBuaVbJiBG5CYR4dLP+792z/bXGR2SVv
+         prEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV+0Hs097XbjuvpVwT0X7BmQC+4eTxB9qM8jyZq6cA8PnBYJfXuGEA+rGSMC4+N5Pf3WC2KDUsFSVu3dYj+KvlyRMuYvGyG8r6lvF/m
+X-Gm-Message-State: AOJu0YzSQT0kJqVE83N1NnL85fIpz1dsFoolyqnSIFze5C7uXZXEzGrZ
+	hCX93R/GjFheH2erd42v9r2HquK2Q2Jf2xqtzNN6xfo7z5dettgtnlcmutvqrcyGbwp45svq191
+	ccQ==
+X-Google-Smtp-Source: AGHT+IE6+ak0PAgn0IRrGPuGwJrHJbNcaTNHfZcp6Flwwm7fwcPNynluNR+UQlMh0RNPJUkPjXawe1UpPx8=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:e01:b0:dc6:b768:2994 with SMTP id
- df1-20020a0569020e0100b00dc6b7682994mr152301ybb.0.1707275876698; Tue, 06 Feb
- 2024 19:17:56 -0800 (PST)
-Date: Tue, 6 Feb 2024 19:17:55 -0800
-In-Reply-To: <20240115125707.1183-4-paul@xen.org>
+ (user=seanjc job=sendgmr) by 2002:a05:690c:10c:b0:5e8:bea4:4d3b with SMTP id
+ bd12-20020a05690c010c00b005e8bea44d3bmr656047ywb.6.1707276043260; Tue, 06 Feb
+ 2024 19:20:43 -0800 (PST)
+Date: Tue, 6 Feb 2024 19:20:41 -0800
+In-Reply-To: <20240115125707.1183-5-paul@xen.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240115125707.1183-1-paul@xen.org> <20240115125707.1183-4-paul@xen.org>
-Message-ID: <ZcL2Y1gpRG8C1_8f@google.com>
-Subject: Re: [PATCH v12 03/20] KVM: xen: mark guest pages dirty with the
- pfncache lock held
+References: <20240115125707.1183-1-paul@xen.org> <20240115125707.1183-5-paul@xen.org>
+Message-ID: <ZcL3CdGHv5FQHBVD@google.com>
+Subject: Re: [PATCH v12 04/20] KVM: pfncache: add a mark-dirty helper
 From: Sean Christopherson <seanjc@google.com>
 To: Paul Durrant <paul@xen.org>
 Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
@@ -85,6 +84,23 @@ Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
 	linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 
-KVM: x86/xen: for the scope please.  A few commits have "KVM: xen:", but "x86/xen"
-is the overwhelming favorite.
+On Mon, Jan 15, 2024, Paul Durrant wrote:
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 7e7fd25b09b3..f3bb9e0a81fe 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -1399,6 +1399,17 @@ int kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, unsigned long len);
+>   */
+>  void kvm_gpc_deactivate(struct gfn_to_pfn_cache *gpc);
+>  
+> +/**
+> + * kvm_gpc_mark_dirty - mark a cached page as dirty.
+> + *
+> + * @gpc:	   struct gfn_to_pfn_cache object.
+> + */
+> +static inline void kvm_gpc_mark_dirty(struct gfn_to_pfn_cache *gpc)
+
+Any objection to kvm_gpc_mark_dirty_in_slot()?  I want to make it clear this only
+marks the gfn dirty in the memslot, i.e. that it doesn't mark the underlying page
+as dirty.
 
