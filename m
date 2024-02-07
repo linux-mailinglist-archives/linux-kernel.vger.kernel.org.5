@@ -1,79 +1,86 @@
-Return-Path: <linux-kernel+bounces-56580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2E7A84CBE9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:48:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6883D84CBED
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:49:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCFF91C21A34
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:48:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 130F8289586
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEB7377F0E;
-	Wed,  7 Feb 2024 13:48:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EFE377F15;
+	Wed,  7 Feb 2024 13:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="c/iJ5n9y"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="D6XHv7C9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0474617BDD;
-	Wed,  7 Feb 2024 13:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA42776C9D;
+	Wed,  7 Feb 2024 13:49:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707313710; cv=none; b=Ei3MArygawOrk51JtgBM2goqaEw6e4FYGhKzlXQGNsGmGFGobhk7mZ16Civ/FotRSzoXnRqBg6bzoI4uIZHkA5mq4HFwnl7E7OC6gLctOEKG3nfvnF/buhMW3nXCB9d2i7SgwtAwbeGOVQHvhDCA+4U+8vanJdaCFKfCxKScdAM=
+	t=1707313777; cv=none; b=Wr87gZVFG6aMBgjNCtglwBOKFTsiZ9FqIG5ERD4nOs3Do+bFerYERybZSMCcd8OWvggH94xuVp8GzEBQabKCQ6Mfh7QkY1TsQDSeiZAA60nxndR0EB8c6UxaqeeC1Vuz/kmj+jJuAybEvoBcCV/iQeuw3i0w896IY/e2I+wZ9Fw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707313710; c=relaxed/simple;
-	bh=LmYzeNQgT/9+MELH1VLfosTX85cvpxu2g3dpE1NbMeI=;
+	s=arc-20240116; t=1707313777; c=relaxed/simple;
+	bh=gagwzctTYGVLM9lNLbemXeMrrifQ3wVeVx/2WJycYwQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EfyCeCfsN8WE00vfVJzRT1DzTj0GBftWyeIFSMc7FBRk/c7kFZL5mZewMBMIm9YCUbBavjbMlUgctunel4Da/ant45FGiUd+205vRne6ktyA3C/5uY5WdY26Pwosq12kJ0oTDkBWPeW1OhOTrqDi261T2RHlrCUbAsYRV4d+WEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=c/iJ5n9y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16911C433F1;
-	Wed,  7 Feb 2024 13:48:28 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=rkKWnaU7/Q3ipP0d/VBOhj8+QmdBDJM6CTBLnTMfBBfP4EQ59dR0/S9XGu+LMGfwxJlNFhjuXcu76A9PPlWOBNaNt4QuXCmZPcS/ryua6gKFRWWhnxW6gyo1Ynzwu6eGExhBnOA05CweewKGsF8d9gFcEgo9oJ8X2TFhWu4qdPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=D6XHv7C9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D86FBC433F1;
+	Wed,  7 Feb 2024 13:49:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707313709;
-	bh=LmYzeNQgT/9+MELH1VLfosTX85cvpxu2g3dpE1NbMeI=;
+	s=korg; t=1707313777;
+	bh=gagwzctTYGVLM9lNLbemXeMrrifQ3wVeVx/2WJycYwQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=c/iJ5n9yrL294ArOKsWf3zMo5VALpEd/XMF8aBj0G3LHuPoGQaUEoOe+UCmgpnwqW
-	 Ql8FWbQiJIdM14KJ5hGQZpUwfnM2TyCnqS3g1/g6hRhaZW3BMeLN+1+NiM0MDVNym1
-	 Avq7TEgOHGGt6/Mkz+MN9xc2Ov3nFg6FcqEv/ElM=
-Date: Wed, 7 Feb 2024 13:48:25 +0000
+	b=D6XHv7C9/xyB9I+LZ9WFz6TfoYLqte6dwSaiKfS91tD2N0Q/5xfjDkz9+nnRAwSB6
+	 ZavivR6e9fMyjXSyeFwQuEssUUwOaCKNPA9CeNJh3KMLeEUNKL8kRu4LijNWwyunPt
+	 6yI7F16s2EVkZI7HavO4JBKLYOHbHJBOineFq5l8=
+Date: Wed, 7 Feb 2024 13:49:34 +0000
 From: Greg KH <gregkh@linuxfoundation.org>
-To: Georgi Djakov <djakov@kernel.org>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] interconnect fixes for 6.8-rc
-Message-ID: <2024020716-subtotal-quack-1c08@gregkh>
-References: <20240207131905.2355454-1-djakov@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH] gpio: set device type for GPIO chips
+Message-ID: <2024020723-arbitrary-harmful-53c3@gregkh>
+References: <20240201162758.50733-1-brgl@bgdev.pl>
+ <CACRpkdbAw5NfSr8GSNiQhOzSi-tERyn=-ZroLfF-FRbsW2JviQ@mail.gmail.com>
+ <2024020732-duchess-husband-8b1b@gregkh>
+ <CAMRc=MeWD-4xx9Y=P3ajO37XJAsBrZ2TyqNeCE8vkxXW1yXWVQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240207131905.2355454-1-djakov@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MeWD-4xx9Y=P3ajO37XJAsBrZ2TyqNeCE8vkxXW1yXWVQ@mail.gmail.com>
 
-On Wed, Feb 07, 2024 at 03:19:05PM +0200, Georgi Djakov wrote:
-> Hello Greg,
+On Wed, Feb 07, 2024 at 01:19:37PM +0100, Bartosz Golaszewski wrote:
+> On Wed, Feb 7, 2024 at 11:49 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, Feb 07, 2024 at 11:45:39AM +0100, Linus Walleij wrote:
+> > > On Thu, Feb 1, 2024 at 5:28 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> > >
+> > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > >
+> > > > It's useful to have the device type information for those sub-devices
+> > > > that are actually GPIO chips registered with GPIOLIB. While at it: use
+> > > > the device type struct to setup the release callback which is the
+> > > > preferred way to use the device API.
+> > > >
+> > > > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > (...=
+> > > > +static struct device_type gpio_dev_type = {
+> >
+> > Can you make this structure const please?
+> >
 > 
-> This pull request brings in some oneliner fixes for the current cycle. The
-> details are in the signed tag as usual. All patches have been in linux-next
-> for a few days now. Please pull into char-misc-linus when you get a chance.
-> 
-> Thanks,
-> Georgi
-> 
-> 
-> The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
-> 
->   Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-6.8-rc4
+> I have, there's a v2 on the list already.
 
-Pulled and pushed out, thanks.
-
-greg k-h
+Great, let me go dig that up and do a review...
 
