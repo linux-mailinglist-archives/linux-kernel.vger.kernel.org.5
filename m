@@ -1,121 +1,114 @@
-Return-Path: <linux-kernel+bounces-56556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8F0684CBAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:36:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A080284CBBC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:38:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84D431F27AD0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:36:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D41951C21E5B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:38:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 109157763B;
-	Wed,  7 Feb 2024 13:36:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF8A27763B;
+	Wed,  7 Feb 2024 13:38:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XQdu5pnq"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="2ovkCmc7";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Z+fRcucR"
+Received: from fout3-smtp.messagingengine.com (fout3-smtp.messagingengine.com [103.168.172.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA2D59B76;
-	Wed,  7 Feb 2024 13:35:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61B583C062;
+	Wed,  7 Feb 2024 13:38:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707312961; cv=none; b=sUg8FVusPK2bZ/6U/DiWJeA+6NtW8dmR+u/P3gKtTnSSlI39AxK1VCrIja9a34Utt386WfxqB0IMrJqi1DkzrfKvhAO94n1xGE3kYSKD/GV9Km/e8kwDGv/6UeYZc+e6vI39s2ZIOiqLiAqxvMKEZEnKOAwh8eX1hrERkbT13ws=
+	t=1707313111; cv=none; b=OzSaAbysqI/DY33mZoEp+Wst2Ia5+zi7YMquaorHlbnlr+/YQaq8kwpSiYXqajRLjL+YCjnMsdIRIGXQfwzWeLp/tRBemf1l21NzXWIOp6tp196B95Qf67JaIwdgxFQ5qUIIjGSaN+DER2uFxPKfIRj6dD8jhSc2psgEMOZiY+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707312961; c=relaxed/simple;
-	bh=/ccbhvQ4GC+RIE+K+c3gsvN+o/lIl323mNlKNYRaMNc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=nDl0KgNqKBc1bG62FgOm/qjsHCbVImdRSwob8krv22k6uuMEcMa8/VbofLllqYPAwcHbUTsg6stf/GmJPqfKzEprHjTdVZLHHDm+4sYuHx6+89g5b6pRV7VZAAr+C6WeB6ZeqlLU+u297Jt0c+HAXl3AN78qahsyKrQ+iPdfRXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XQdu5pnq; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707312959; x=1738848959;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=/ccbhvQ4GC+RIE+K+c3gsvN+o/lIl323mNlKNYRaMNc=;
-  b=XQdu5pnqAAEVx9OBXhoTjQLe3zwuTCt8/e4TA8ifHNRjjJj8bww+zQkE
-   raiF33KnbaFveIfmEhouEnug5+zarGdKa5MtPWSGv7x4UWkEBkDGFrEu1
-   Z/phBe+q4bOMWag5pEK4BApChZP/KAQCA5MnskRKYkPpoGTniQQAIGCxZ
-   z79TauvRSgDkzJo+4HlT2JuIOzsPKQLxKg/WSCvVXIn46exvZ5FjBKxIt
-   yE2bg8JNIc8ceT8TnooafCKtpfuhnS46PRZL0ONyxam09br8Wd73pUEjK
-   a5MwP5rpHSTRH96GgUVug1PyOHo3z+NVinJ2Ny6XdHQnperU/EhEj2Tc+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="12345399"
-X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
-   d="scan'208";a="12345399"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 05:35:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
-   d="scan'208";a="5946169"
-Received: from andreial-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.61.47])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 05:35:53 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Rae Moar <rmoar@google.com>, David Gow <davidgow@google.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>, Matti Vaittinen
- <mazziesaccount@gmail.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Brendan Higgins <brendan.higgins@linux.dev>,
- Maxime Ripard <mripard@kernel.org>, linux-kselftest@vger.kernel.org,
- kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, Chaitanya Kumar
- <chaitanya.kumar.borah@intel.com>, Jani <jani.saarinen@intel.com>, Richard
- Fitzgerald <rf@opensource.cirrus.com>, intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH] kunit: device: Unregister the kunit_bus on shutdown
-In-Reply-To: <CA+GJov6Swgvc+wrCvW3Ujqh_UW1BSRDrp9ccHUX2CVRjWpe1dQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240201060437.861155-2-davidgow@google.com>
- <CA+GJov6Swgvc+wrCvW3Ujqh_UW1BSRDrp9ccHUX2CVRjWpe1dQ@mail.gmail.com>
-Date: Wed, 07 Feb 2024 15:35:49 +0200
-Message-ID: <878r3wcs7e.fsf@intel.com>
+	s=arc-20240116; t=1707313111; c=relaxed/simple;
+	bh=Uwv/WJmwhyfFa3neNLcSwsw2I11UAjibajrmPfs5/Gg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tF0v/Vz2VL9mI3xUGQ3jS7Mr6iWM+rV/U6LGD02wB/ALS//cMfxnQA54duh9fikeEddiLqaJQuo8ekrzF218iEuZRX9hKSjURiath0+ZqAe7lpj/Ui+h1Q5MFHi5hHR5by5xMBXTLVvUAsL+oTHMMn6AWy7H/P5pMCwVeqCiCrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=2ovkCmc7; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Z+fRcucR; arc=none smtp.client-ip=103.168.172.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 2E70713800A2;
+	Wed,  7 Feb 2024 08:38:28 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Wed, 07 Feb 2024 08:38:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1707313108; x=1707399508; bh=Uwv/WJmwhy
+	fFa3neNLcSwsw2I11UAjibajrmPfs5/Gg=; b=2ovkCmc7b3vweBJqbF0JUDKVOV
+	UCWiNDfPA3olqR8WShz32FyTUwtdjnD2mIRt2M4BjytuRTMOeikE4QT12/BfEQcn
+	mHjRr4qdKQMSqV78ZkM2/mM6t/jyQPl4eV1tXf9wov3SiRphaU/nkbAJC6oyMWtv
+	HOrAlTFkMn4Em2UDOhr/AVNxMakdwdJZ4luUpMkPs0CoInG+VZYPWqQhYiABQd14
+	IXOTvj6J/T/Va5bIb6MeNprd3ErfuC5UERvvCY109Q3JZaRCra6FfTL5ALWwy6ft
+	Wo6swmJel4HXfkFSyEooRLkAO+v2OObjIM5jncuWXPKqZRIv9jlD3SeL5YMw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707313108; x=1707399508; bh=Uwv/WJmwhyfFa3neNLcSwsw2I11U
+	AjibajrmPfs5/Gg=; b=Z+fRcucRzmYBfCUoA0Sm14AV+itHbpEugXzpXfUC+rQ8
+	mOpJrtW/kTv4VNAas4Z13zQtpjk2DcDrdJ0a01jUfR0L3Vbr6vB2O/F3R6K5h/tv
+	SjYrOSc7KgJaFaGJWQ6tYr93WJtFE7kKLS2FZEI66a5SjYayjBgQugJlV3b/QCf1
+	Xc48mRCi+fZ2WS0PUDPgENm4oufo/CkduwHaDHzVO+/nkLQLLPU45+L3dnEzxKXe
+	+QTubQjZ0tExnCz4OKjf9yNryA2bEpfyeyxIpc0T0DCPIIBGnVCq7UFBuBYUKx9l
+	DYnZiQr+2UJ5xFf3Mom6Y8im/11T+D1iubst+iR91Q==
+X-ME-Sender: <xms:0ofDZSNN0CA154QkgwyAnUcuejqrzpx_7RL8LrIpdSIs38NvJdDUCg>
+    <xme:0ofDZQ9mONyIEFyWCKBmt1AcJJXJHrWMrP9wcFa092Xin2XzDrbtjPN_85N_0zWld
+    GSn3BGkciYlgAGfqQg>
+X-ME-Received: <xmr:0ofDZZRG6X5JkN-SkYPppihv3piPcY0yOox9JKxDXYFClOx-MvRqOmnoiuJWl_eCMeMWGgl4Jqo0P-Uc60NBBj3w2iej>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtddvgdehvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
+    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
+    htthgvrhhnpeeutedttefgjeefffehffffkeejueevieefudelgeejuddtfeffteeklefh
+    leelteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hthigthhhosehthigthhhordhpihiiiigr
+X-ME-Proxy: <xmx:0ofDZStxD0ycQ1PpqlvoR42P9n2gZpiLXs1Fi-19Y_9c7-lY4G959w>
+    <xmx:0ofDZaeVJxyHpM7qrA0OiKnQwmdhKhtt3zpKIKR-R2j4EMq7gal6oQ>
+    <xmx:0ofDZW1eKdbZJr_p72hh_EtZRh5Rrt8y5CsinCEZerwfla03aBn4GA>
+    <xmx:1IfDZSRBx7R-hpTkDeP2gmqJrobEpjBwjnKNhUi4fcn_SPH11JGs_Q>
+Feedback-ID: i21f147d5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 7 Feb 2024 08:38:26 -0500 (EST)
+Date: Wed, 7 Feb 2024 06:38:24 -0700
+From: Tycho Andersen <tycho@tycho.pizza>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
+	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	Tycho Andersen <tandersen@netflix.com>
+Subject: Re: [PATCH v2] pidfd: getfd should always report ESRCH if a task is
+ exiting
+Message-ID: <ZcOH0GcW4RSAItnN@tycho.pizza>
+References: <20240206192357.81942-1-tycho@tycho.pizza>
+ <20240207-vibrieren-waldarbeiten-30eeade05203@brauner>
+ <20240207-daran-fliesen-6039a2e36f39@brauner>
+ <20240207-blumen-neulich-f1507e0c5cc0@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207-blumen-neulich-f1507e0c5cc0@brauner>
 
-On Fri, 02 Feb 2024, Rae Moar <rmoar@google.com> wrote:
-> On Thu, Feb 1, 2024 at 1:06=E2=80=AFAM David Gow <davidgow@google.com> wr=
-ote:
->>
->> If KUnit is built as a module, and it's unloaded, the kunit_bus is not
->> unregistered. This causes an error if it's then re-loaded later, as we
->> try to re-register the bus.
->>
->> Unregister the bus and root_device on shutdown, if it looks valid.
->>
->> In addition, be more specific about the value of kunit_bus_device. It
->> is:
->> - a valid struct device* if the kunit_bus initialised correctly.
->> - an ERR_PTR if it failed to initialise.
->> - NULL before initialisation and after shutdown.
->>
->> Fixes: d03c720e03bd ("kunit: Add APIs for managing devices")
->> Signed-off-by: David Gow <davidgow@google.com>
->
-> Hello,
->
-> I have tested this with modules and it looks good to me!
->
-> Thanks!
-> -Rae
->
-> Reviewed-by: Rae Moar <rmoar@google.com>
+On Wed, Feb 07, 2024 at 10:50:26AM +0100, Christian Brauner wrote:
+> So this is what I have applied currently where I moved the check into
+> __pidfd_fget() where it makes more sense imho. But please double check
+> that I didn't mess anything up:
 
-Thanks for the patch and review!
-
-Is this on its way to some v6.8-rc's? The regression in -rc1 is hurting
-our CI.
-
+Oof, good catch. Looks good to me.
 
 Thanks,
-Jani.
 
-
---=20
-Jani Nikula, Intel
+Tycho
 
