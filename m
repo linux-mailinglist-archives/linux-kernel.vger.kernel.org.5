@@ -1,92 +1,104 @@
-Return-Path: <linux-kernel+bounces-56849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8D4784D034
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:50:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B84D284D035
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:52:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 498F4B23DB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:50:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 234C4B25E26
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:52:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC47D54645;
-	Wed,  7 Feb 2024 17:50:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F15182D6C;
+	Wed,  7 Feb 2024 17:51:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jxEDhHHm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="AJv7n9vD"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E61E182D73;
-	Wed,  7 Feb 2024 17:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C5B582C88;
+	Wed,  7 Feb 2024 17:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707328233; cv=none; b=t2jr4XJzbPMwpWxrqXw2zPM4xnvTzddAURGRHjRUUBvptxSlb/ZqWgYtGvasnIIybNyaTl0UcgSMob/Ufh22h/T7cn5O7uI/BZbdQxzwIZpCqFsMdShCDbqGOflkXI0SPI1Ca9B5CAWqPbow/rP7D4R65BrHSRUYmNCAxqCCZ38=
+	t=1707328318; cv=none; b=gBtFf+mQzpx+yxXeAugDP7yzFnmAmIQkq7qoWUKumW+lsPKaJphTpWbGY4Uqr0ADzf8IdBvZ8sVZdlAOvA20bbaCXme6bfio8O4kpRSIG4ylMNBXHOj1OTr0u0C+GBlfgVoRrFX4BE5HbSA39tnhNIbgtTzrdGGbPbe8U1aUx7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707328233; c=relaxed/simple;
-	bh=OFVjgX+skhzLMEQtXnI4Ir8Wwpvt73NhyXm9sT76BRo=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=YEyZiSE+WrhtuOQX98xZDX+EbWeXD8T3tJCv7fX4aTLmFM7of+3n3QFlsnwPXDKb+lXpePxLYwbyDHpSqDQMEF3EMl0eglkdKl4nUaW1MVVk26m743k9lzMABzfD1131zjzqXMzD0sEAjfbO4CeuHRZ2och1CKbzdRIecTSOyUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jxEDhHHm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7232DC433A6;
-	Wed,  7 Feb 2024 17:50:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707328232;
-	bh=OFVjgX+skhzLMEQtXnI4Ir8Wwpvt73NhyXm9sT76BRo=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=jxEDhHHm1YCIhsWTR/4bpYdCpnGfN864F7SKg+2VjaIaCfpquhjQbZZyojdVtkjiN
-	 gVLe9PJThbBLDrlo42F4VNf/DSsR2cbzE0UXhDaYGje6cGE0p8awtBbrF9NAUdIfJi
-	 1awBvEWN0gD1j04idc3dyht807ySmd6uXYrnE0QfBCzayGFwmwsksBBqOzgG/z1YLR
-	 2h0hXhuX+5HddCa1ps8RzD/iYrxYF+6dfgmsNk1F6DcPehHuyX/9Rh9OTdmK2gDjhG
-	 Euqr/Wjqofy9uM8Hy/C95xdXtztnuRSg9nXtMVsTDLNTWDf7uwA3NHUg+QyRiQDRhF
-	 MAVqkp4g9gNEg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5D82CD8C96F;
-	Wed,  7 Feb 2024 17:50:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1707328318; c=relaxed/simple;
+	bh=KB1LsbI9/iUC8oYPnytmZnQblhHYCQTehzwzfDiz2RA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OxauPeqm593dLMJhS0yuxIt8aMZj8gXHhUhLmDrHXxLwKsRmFxDjZkVVNE/mjB7/ZWK1982mrdnZsE4GsXReOg0TTfNMooxgeDYanNWoBg3ntm/LrcyDM3y2uzTdgzGpD8Hf4b5Q7ZkpG39ep0+cTeC5rGKRuvU8X/wXPhVVmgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=AJv7n9vD; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 916C01C0076; Wed,  7 Feb 2024 18:51:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1707328306;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eaGHk2OWa64/I10L/xQQJe59trrcxp4jWd9IlpfddAc=;
+	b=AJv7n9vDjSfyeVJ2zRfFUlcvMAlJ5YlI0FUBCziNAg2SKhPXoBMIEiemllfSOK6zjhP+l/
+	gNRZbnVdDpziFPHSXZzflNXhpNbPNqTw/bUXOXvsJUt/CH5Xb7W9heD7rAJgyTIZ/gL3eM
+	yigL4XjNp7M0VPjFJmMmk0bsLTqHIc0=
+Date: Wed, 7 Feb 2024 18:51:45 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Kees Cook <keescook@chromium.org>, Andy Shevchenko <andy@kernel.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] string: Allow 2-argument strscpy()
+Message-ID: <ZcPDMZFPY08S4MGR@duo.ucw.cz>
+References: <20240129202901.work.282-kees@kernel.org>
+ <20240129215525.4uxchtrywzzsrauc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: Do not return value from init_dummy_netdev()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170732823237.3503.3883222852584962770.git-patchwork-notify@kernel.org>
-Date: Wed, 07 Feb 2024 17:50:32 +0000
-References: <20240205103022.440946-1-amcohen@nvidia.com>
-In-Reply-To: <20240205103022.440946-1-amcohen@nvidia.com>
-To: Amit Cohen <amcohen@nvidia.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- daniel@iogearbox.net, mlxsw@nvidia.com, idosch@nvidia.com, jiri@nvidia.com
-
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Mon, 5 Feb 2024 12:30:22 +0200 you wrote:
-> init_dummy_netdev() always returns zero and all the callers do not check
-> the returned value. Set the function to not return value, as it is not
-> really used today.
-> 
-> Signed-off-by: Amit Cohen <amcohen@nvidia.com>
-> Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next] net: Do not return value from init_dummy_netdev()
-    https://git.kernel.org/netdev/net-next/c/d160c66cda0a
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eLOfAe0GFtq5q4sl"
+Content-Disposition: inline
+In-Reply-To: <20240129215525.4uxchtrywzzsrauc@google.com>
 
 
+--eLOfAe0GFtq5q4sl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> > Using sizeof(dst) is the overwhelmingly common case for strscpy().
+> > Instead of requiring this everywhere, allow a 2-argument version to be
+> > used that will use the sizeof() internally.
+>=20
+> Yeah, this is definitely the case. I have a ton of patches replacing
+> strncpy with strscpy [1] and many of them match the pattern of:
+> | strscpy(dest, src, sizeof(dest))
+>=20
+> BTW, this hack for function overloading is insane. Never really looked in=
+to
+> it before.
+
+This hack is insane, but this is also highly confusing, please don't
+do this.
+
+BR,
+									Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--eLOfAe0GFtq5q4sl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZcPDMQAKCRAw5/Bqldv6
+8l3TAJ9JeO899iqkl6Ymsyx096x6S41JLQCdE2n2yCsojfhW1w17jM7QJNEtg/c=
+=8PgS
+-----END PGP SIGNATURE-----
+
+--eLOfAe0GFtq5q4sl--
 
