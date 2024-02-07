@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-56919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B325F84D160
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:43:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D434784D15C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:42:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 217F01F235EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:43:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EE7C2889D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:42:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29BC885952;
-	Wed,  7 Feb 2024 18:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E548528E;
+	Wed,  7 Feb 2024 18:42:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FNO4T+9B"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NT4AAfqD"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58B882889
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5C783CBE
 	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 18:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707331348; cv=none; b=cZQv2ypLAAq64lVg9+z12cWkZ2xai0q2HYBOR4dXToR9LAjGF6g3eA7zcYiD9eZ6JkIu+zXYr73FibT6oCufH9rbe3iYAl7l80kd9/oaZDKczGMLc8T1LGd9TICjvwihwaINsqe5fxMzM5pi9g2QFBaWIPIouC8OGWrBB0zNDqc=
+	t=1707331347; cv=none; b=YJYHkM/ciriMXtXcQnhvguaWNk0ZuTfhiNi3kI2Q5U7z+7Y9v/4E7L3HQGx2c70iZ8Prm2JGe6OAhQvXvEiPFMUeLSJGmuKEvsBnYC6fYNi9u/S/j5fwrdjKO+tGodWdLEhWI6jin1RhhRI2mtSHXmyNB/PPRctxlXG/rCSa14I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707331348; c=relaxed/simple;
-	bh=IAD5k7mJ5GTdKJh3kH8fpJh/ezNJOFY0mEoN0yEKfYk=;
+	s=arc-20240116; t=1707331347; c=relaxed/simple;
+	bh=Dwy/u3XKKFj/qy3AWoxAcE6kPy3lkPw+HkoBS6KoqLw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZLfwIDx9L3oE1UcbYlQINGx7nl/NfpmgxtDSh0NEs+/2LWOylAbVcaJNG939P1K1wyDN3RRZCDfxS7Euv8k7XK5ePA3PdxiSQi3Gpfzc9n/l2fA+7jDl5eSZA1hzYzn+ikVLSHdUhK1AJRWmMHPG+SKu5bnxpmENS7hpiXf2BLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FNO4T+9B; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=s9cCqkXjXROw+P8HKECQWVryWEc//SBDnbjtSMbffm0aC0D/nhW9Dk779KP2mbl3wphK+RRGURotH1+SqNUPMkXD4JDHcKOHAVg4ndQZSlNPhZ/g3DIjYL9P7KlNQwR4LJUEnJZcYoR8H9zKKqC6FqG/teP/hd6EVthDlT4st9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NT4AAfqD; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
@@ -36,24 +36,24 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=oTFy4nGaIuyAjRSeWWj3icZv9u9DGODaCpUqVFylGh8=;
-	b=FNO4T+9BLt37qyocVqxh7WZpBdhVDEAFm0IXUC8sZJSGsN49OJrj18LRdnCRZWaFnRnLce
-	13oni/405hzaelV6/W+S6ZqBGVkVGHzQfIlGZrK7TpyKLPD5/Nwg0eaSh4rzoY87nX6xn3
-	hcavhR8CNChjq56FTvPbqM7kdhjlb5A=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-590-K0PNYfJIP2qWNiPNid8kCQ-1; Wed,
- 07 Feb 2024 13:42:21 -0500
-X-MC-Unique: K0PNYfJIP2qWNiPNid8kCQ-1
+	bh=F7841DLyqRx4+GFENMTDanBPrbVQXHzKvu3LLMhu66w=;
+	b=NT4AAfqDI6FVn8ldfJL1w74g5NhlQHEWElchsxd1s9HmS15rmD//ainlZ/Gzs/ooIfA3jZ
+	wpxTZXvrD4mbzZd6jRSzsTpq8MMWIfLk5BkizdcXdPU/ailyjRYYcDhzvlT4cd9XPzxyBC
+	ujJqIIz90g0EwDp1y3KQgerECGlJRmE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-223-g0k1TawDMgiM8jXxLRJciw-1; Wed, 07 Feb 2024 13:42:22 -0500
+X-MC-Unique: g0k1TawDMgiM8jXxLRJciw-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D2C5338212C5;
-	Wed,  7 Feb 2024 18:42:20 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 602F2185A780;
+	Wed,  7 Feb 2024 18:42:22 +0000 (UTC)
 Received: from fedora-work.redhat.com (unknown [10.22.32.236])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 66FB2400D6D2;
-	Wed,  7 Feb 2024 18:42:20 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id E6DB24011FF1;
+	Wed,  7 Feb 2024 18:42:21 +0000 (UTC)
 From: David Jeffery <djeffery@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-nvme@lists.infradead.org,
@@ -62,9 +62,9 @@ Cc: linux-nvme@lists.infradead.org,
 	"Rafael J . Wysocki" <rafael@kernel.org>,
 	David Jeffery <djeffery@redhat.com>,
 	Laurence Oberman <loberman@redhat.com>
-Subject: [RFC PATCH 2/6] Improve ability to perform async shutdown in parallel
-Date: Wed,  7 Feb 2024 13:40:56 -0500
-Message-ID: <20240207184100.18066-3-djeffery@redhat.com>
+Subject: [RFC PATCH 3/6] pci bus async shutdown support
+Date: Wed,  7 Feb 2024 13:40:57 -0500
+Message-ID: <20240207184100.18066-4-djeffery@redhat.com>
 In-Reply-To: <20240207184100.18066-1-djeffery@redhat.com>
 References: <20240207184100.18066-1-djeffery@redhat.com>
 Precedence: bulk
@@ -76,202 +76,97 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-Expands the async shutdown implementation to allow more cases of parallel
-async shutdown. A field is added so that a device under async shutdown can
-mark its parent as busy due to the async shutdown. A busy parent on reaching
-the head of the shutdown list gets stored and flags its own parent as busy.
-
-Once the async shutdown operations are completed, the stored parents are
-returned to the shutdown list and shut down in an order maintaining their
-parent-child ordering. Unlike the minimal implementation, this allows more
-end nodes of the device tree to be under async shutdown in parallel.
-
-A cap on the number of async shutdown devices is still enforced, though not
-required and could be removed if desired.
+Add async shutdown shutdown fields and Convert pci's shutdown logic into
+async shutdown calls so that individual pci device drivers can implement
+async shutdown.
 
 Signed-off-by: David Jeffery <djeffery@redhat.com>
 Tested-by:     Laurence Oberman <loberman@redhat.com>
 
 ---
- drivers/base/base.h |  1 +
- drivers/base/core.c | 71 ++++++++++++++++++++++++++++++++-------------
- 2 files changed, 52 insertions(+), 20 deletions(-)
+ drivers/pci/pci-driver.c | 24 ++++++++++++++++++++++--
+ include/linux/pci.h      |  4 ++++
+ 2 files changed, 26 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/base/base.h b/drivers/base/base.h
-index eb4c0ace9242..954008bd39e5 100644
---- a/drivers/base/base.h
-+++ b/drivers/base/base.h
-@@ -116,6 +116,7 @@ struct device_private {
- 	char *deferred_probe_reason;
- 	struct device *device;
- 	u8 dead:1;
-+	u8 child_shutdown:1;
- };
- #define to_device_private_parent(obj)	\
- 	container_of(obj, struct device_private, knode_parent)
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 5bc2282c00cd..e88d418bf0fd 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -4720,9 +4720,10 @@ int device_change_owner(struct device *dev, kuid_t kuid, kgid_t kgid)
- EXPORT_SYMBOL_GPL(device_change_owner);
+diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
+index 51ec9e7e784f..0ad418905115 100644
+--- a/drivers/pci/pci-driver.c
++++ b/drivers/pci/pci-driver.c
+@@ -502,16 +502,28 @@ static void pci_device_remove(struct device *dev)
+ 	pci_dev_put(pci_dev);
+ }
  
- 
--#define MAX_ASYNC_SHUTDOWNS 32
-+#define MAX_ASYNC_SHUTDOWNS 256
- static int async_shutdown_count;
- static LIST_HEAD(async_shutdown_list);
-+static LIST_HEAD(async_delayed_list);
- 
- /**
-  * If a device has a child busy with an async shutdown or there are too many
-@@ -4730,15 +4731,15 @@ static LIST_HEAD(async_shutdown_list);
-  */
- static bool may_shutdown_device(struct device *dev)
+-static void pci_device_shutdown(struct device *dev)
++static void pci_device_async_shutdown_start(struct device *dev)
  {
--	struct device *tmp;
--
--	if (async_shutdown_count >= MAX_ASYNC_SHUTDOWNS)
-+	if (dev->p->child_shutdown) {
-+		if (list_empty(&async_shutdown_list)) {
-+			dev_err(dev, "child_shutdown set but no children? Clearing\n");
-+			dev->p->child_shutdown = 0;
-+			return true;
-+		}
- 		return false;
--
--	list_for_each_entry(tmp, &async_shutdown_list, kobj.entry) {
--		if (tmp->parent == dev)
--			return false;
- 	}
-+
- 	return true;
- }
+ 	struct pci_dev *pci_dev = to_pci_dev(dev);
+ 	struct pci_driver *drv = pci_dev->driver;
  
-@@ -4753,6 +4754,9 @@ static void async_shutdown_start(struct device *dev, void (*callback) (struct de
- 	(*callback)(dev);
- 	list_add_tail(&dev->kobj.entry, &async_shutdown_list);
- 	async_shutdown_count++;
-+
-+	if (dev->parent)
-+		dev->parent->p->child_shutdown = 1;
- }
+ 	pm_runtime_resume(dev);
  
- /**
-@@ -4760,7 +4764,7 @@ static void async_shutdown_start(struct device *dev, void (*callback) (struct de
-  */
- static void wait_for_active_async_shutdown(void)
- {
--	struct device *dev, *parent;
-+	struct device *dev, *parent, *tmp;
+-	if (drv && drv->shutdown)
++	if (drv && drv->async_shutdown_start)
++		drv->async_shutdown_start(pci_dev);
++	else if (drv && drv->shutdown)
+ 		drv->shutdown(pci_dev);
  
-         while (!list_empty(&async_shutdown_list)) {
-                 dev = list_entry(async_shutdown_list.next, struct device,
-@@ -4787,15 +4791,29 @@ static void wait_for_active_async_shutdown(void)
- 			dev->driver->async_shutdown_end(dev);
- 		}
-                 device_unlock(dev);
--                if (parent)
--                        device_unlock(parent);
--
-+                if (parent) {
-+			tmp = parent;
-+			do {
-+				tmp->p->child_shutdown = 0;
-+				device_unlock(tmp);
++}
 +
-+				tmp = tmp->parent;
-+				if (!tmp || !tmp->p->child_shutdown)
-+					break;
-+				device_lock(tmp);
-+			} while (1);
-+		}
-                 put_device(dev);
-                 put_device(parent);
-         }
- 	if (initcall_debug)
- 		printk(KERN_INFO "device shutdown: waited for %d async shutdown callbacks\n", async_shutdown_count);
++static void pci_device_async_shutdown_end(struct device *dev)
++{
++	struct pci_dev *pci_dev = to_pci_dev(dev);
++	struct pci_driver *drv = pci_dev->driver;
 +
- 	async_shutdown_count = 0;
-+	spin_lock(&devices_kset->list_lock);
-+	list_splice_tail_init(&async_delayed_list, &devices_kset->list);
-+	spin_unlock(&devices_kset->list_lock);
++	if (drv && drv->async_shutdown_end)
++		drv->async_shutdown_end(pci_dev);
 +
- }
- 
- /**
-@@ -4810,7 +4828,7 @@ void device_shutdown(void)
- 	device_block_probing();
- 
- 	cpufreq_suspend();
--
-+restart:
- 	spin_lock(&devices_kset->list_lock);
  	/*
- 	 * Walk the devices list backward, shutting down each in turn.
-@@ -4832,12 +4850,15 @@ void device_shutdown(void)
- 		get_device(dev);
- 
-                 if (!may_shutdown_device(dev)) {
-+			list_move(&dev->kobj.entry, &async_delayed_list);
-+			if (parent) {
-+				device_lock(parent);
-+				parent->p->child_shutdown = 1;
-+				device_unlock(parent);
-+			}
-+
- 			put_device(dev);
- 			put_device(parent);
--
--			spin_unlock(&devices_kset->list_lock);
--			wait_for_active_async_shutdown();
--			spin_lock(&devices_kset->list_lock);
- 			continue;
- 		}
- 
-@@ -4863,14 +4884,16 @@ void device_shutdown(void)
- 			dev->class->shutdown_pre(dev);
- 		}
- 		if (dev->bus && dev->bus->async_shutdown_start) {
--			async_shutdown_start(dev, dev->bus->async_shutdown_start);
-+			async_shutdown_start(dev,
-+					     dev->bus->async_shutdown_start);
- 			async_busy = true;
- 		} else if (dev->bus && dev->bus->shutdown) {
- 			if (initcall_debug)
- 				dev_info(dev, "shutdown\n");
- 			dev->bus->shutdown(dev);
- 		} else if (dev->driver && dev->driver->async_shutdown_start) {
--			async_shutdown_start(dev, dev->driver->async_shutdown_start);
-+			async_shutdown_start(dev,
-+					     dev->driver->async_shutdown_start);
- 			async_busy = true;
- 		} else if (dev->driver && dev->driver->shutdown) {
- 			if (initcall_debug)
-@@ -4891,14 +4914,22 @@ void device_shutdown(void)
- 			put_device(parent);
- 		}
- 
-+		if (async_shutdown_count == MAX_ASYNC_SHUTDOWNS)
-+			wait_for_active_async_shutdown();
-+
- 		spin_lock(&devices_kset->list_lock);
- 	}
- 	spin_unlock(&devices_kset->list_lock);
- 	/*
--	 * Wait for any async shutdown still running.
-+	 * Wait for any async shutdown still running, then restart the loop
-+	 * if the list is no longer empty from delayed entries returning to
-+	 * the list.
- 	 */
- 	if (!list_empty(&async_shutdown_list))
- 		wait_for_active_async_shutdown();
-+
-+	if(!list_empty(&devices_kset->list))
-+		goto restart;
+ 	 * If this is a kexec reboot, turn off Bus Master bit on the
+ 	 * device to tell it to not continue to do DMA. Don't touch
+@@ -523,6 +535,12 @@ static void pci_device_shutdown(struct device *dev)
+ 		pci_clear_master(pci_dev);
  }
  
- /*
++static void pci_device_shutdown(struct device *dev)
++{
++	pci_device_async_shutdown_start(dev);
++	pci_device_async_shutdown_end(dev);
++}
++
+ #ifdef CONFIG_PM_SLEEP
+ 
+ /* Auxiliary functions used for system resume */
+@@ -1682,6 +1700,8 @@ struct bus_type pci_bus_type = {
+ 	.probe		= pci_device_probe,
+ 	.remove		= pci_device_remove,
+ 	.shutdown	= pci_device_shutdown,
++	.async_shutdown_start	= pci_device_async_shutdown_start,
++	.async_shutdown_end	= pci_device_async_shutdown_end,
+ 	.dev_groups	= pci_dev_groups,
+ 	.bus_groups	= pci_bus_groups,
+ 	.drv_groups	= pci_drv_groups,
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index add9368e6314..6f61325c956a 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -917,6 +917,8 @@ struct module;
+  *		Useful for enabling wake-on-lan (NIC) or changing
+  *		the power state of a device before reboot.
+  *		e.g. drivers/net/e100.c.
++ * @async_shutdown_start:	This starts the asynchronous shutdown
++ * @async_shutdown_end:	This completes the started asynchronous shutdown
+  * @sriov_configure: Optional driver callback to allow configuration of
+  *		number of VFs to enable via sysfs "sriov_numvfs" file.
+  * @sriov_set_msix_vec_count: PF Driver callback to change number of MSI-X
+@@ -947,6 +949,8 @@ struct pci_driver {
+ 	int  (*suspend)(struct pci_dev *dev, pm_message_t state);	/* Device suspended */
+ 	int  (*resume)(struct pci_dev *dev);	/* Device woken up */
+ 	void (*shutdown)(struct pci_dev *dev);
++	void (*async_shutdown_start)(struct pci_dev *dev);
++	void (*async_shutdown_end)(struct pci_dev *dev);
+ 	int  (*sriov_configure)(struct pci_dev *dev, int num_vfs); /* On PF */
+ 	int  (*sriov_set_msix_vec_count)(struct pci_dev *vf, int msix_vec_count); /* On PF */
+ 	u32  (*sriov_get_vf_total_msix)(struct pci_dev *pf);
 -- 
 2.43.0
 
