@@ -1,87 +1,160 @@
-Return-Path: <linux-kernel+bounces-56150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAE6784C6AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:53:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88C0C84C6B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:54:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 793B81F25745
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:53:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F159282DD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE358208D9;
-	Wed,  7 Feb 2024 08:52:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 517F1208D9;
+	Wed,  7 Feb 2024 08:53:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PN2f31id"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LY6jY6ow"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFD1208B9;
-	Wed,  7 Feb 2024 08:52:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC41A208A5;
+	Wed,  7 Feb 2024 08:53:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707295971; cv=none; b=kS5DZ10Fi3jApAnh7380HKfnfpqxpqJH1TMZZD9EgNLOGH2tOpBtzKBKJqvhIfNsKEwlfD/iHm1GHB3z7t8h80EmjjZlD5f6koM4k7eouSZb8Zkk5TfMpdVAiup892/BR2vS5/t9eatwGizaXPh7jrJbuFJeeH76nG8P1DiS2ew=
+	t=1707296028; cv=none; b=o6dk6/dHK6T+yHQBcgQqSirmbHwMnqujcpBdg7Dzy03vuv/hB8d8hpWTNTkRlpprzYeyRvluEGODYkqOJkrPTDAxhwchhNRkXRe1SmpKQ4VVNXMBzqYlVdCYaiDOVbD8NCxoXwaWhgx+mnp7EAvuKXH16V6jmEjWDJS+avSSofU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707295971; c=relaxed/simple;
-	bh=n16H6C7qD7/PvLAlbp7IuAkQRMQk1BEPXl8o0SoT2aY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=SdSdwZjkgZ+FJVtb/Qv3A9g/uiIdhV67SqhQxMm0B9Lem+cwQLXVFk/PwGdDGycKeRJtq6CBU9ZFym/Jur4enZZR1/Chh0/nLPu9uOUc3uSpr80Bs5BktRkFQXM+NJrifRdfiBWheK8quIFTgYgBSwX8bXwmZDkNz9nOLE8jAEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PN2f31id; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC9E1C433C7;
-	Wed,  7 Feb 2024 08:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707295970;
-	bh=n16H6C7qD7/PvLAlbp7IuAkQRMQk1BEPXl8o0SoT2aY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=PN2f31id9dC3HHooKnb5zlqeGbDCI0DBE4S4hu7tV02unUDSqAg0Ohg0zslx5qvR0
-	 l8HSalsVwsUxb2B1kgKmdpGpDxvsPaQK05gkFQNCnl/j0DeXMVhQePES0H1Z89MaoC
-	 IwDzDxUa52ebr8mvjj5tHBmpw5EHUEiavCEbuk6SlXytznQ1NwwkhBhn6h26wY81WE
-	 TjnCSocstnvYsNdbLctmwfXhRCwlg3qWuQjvJhTC+eu20hnVxiiTWJAFExe940ODis
-	 GufMk0ZBR8mMzFDsUE77hvYqn+yT6Ahn2mZjq5CFszZ72EpQ2V26zhLn+QY42hqxEH
-	 1pjJCv7ZeFKZw==
-From: Vinod Koul <vkoul@kernel.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>, 
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
- Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org, 
- Colin Ian King <colin.i.king@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240205182436.1843447-1-colin.i.king@gmail.com>
-References: <20240205182436.1843447-1-colin.i.king@gmail.com>
-Subject: Re: [PATCH][next] soundwire: intel_auxdevice: remove redundant
- assignment to variable link_flags
-Message-Id: <170729596857.94552.8333430107320887182.b4-ty@kernel.org>
-Date: Wed, 07 Feb 2024 09:52:48 +0100
+	s=arc-20240116; t=1707296028; c=relaxed/simple;
+	bh=Ze9TjTNsusybIu4R+Q5RAlJ+7TR712PHZd4Dq2Qt1E0=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=nN2Y7ps5HNz/fMcWXZ3hck4j6gL2ijfv4DSxKXYQMzZzxaouNiMSnBuY8xO9Dl9152Qkkah4YGivq8pmpwQz1y7INlbm2vGK7iraemsUA0dRYAyyfBfUyPt00PhtnB6Tem8HLzCWDO7THPiVYhWwSRDRfKBODCCKTZlkII0k5MM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LY6jY6ow; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d073b54359so4871921fa.0;
+        Wed, 07 Feb 2024 00:53:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707296025; x=1707900825; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0Z5MHCMJOK96pZVawvfvH8EAWfIhq8izplmFA7WigwY=;
+        b=LY6jY6owPFGJcstqVSp0BuxGOqdQir8Sg7W2Ehttsp3PKj7H/FdrnAfdSkDlCoCH+o
+         pR1JgNzsADXMYh45dii1jZW+xzhakcsz+UK2dy/7n7BM4YslU7Z9dh98NgUuGG45XFku
+         ZUCvL/Sd9VO9sdO8s5sdOXxfOUKdwHR/rlRTmvxb7eMlX5RkAkw7beRil3P+zIR/N3MM
+         MtS/3IjfDwFev4lWz3xLV8qymxAcEXpxpv1/XJLCIKpC7Czfq+GeB44nWsQYR169OHiR
+         cF5+xFCTawYE6g659WO++1eNpgQz53pOSY6UeXTaVqtJpGbFAJwKCQ2HNQau/+v+xllY
+         keGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707296025; x=1707900825;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Z5MHCMJOK96pZVawvfvH8EAWfIhq8izplmFA7WigwY=;
+        b=rimMpEmFv+C9qC36rbohF3wtXbr6GyKMaOhYGlDvCxy08sh6PbFKy/RLVIIvsSE3o/
+         7vVJX/ylZJzEhQEzpjoEPJqqoqansQySFvT6zzP1K2Ptun0lsIthToeCcbQ6QvKxnvK7
+         7vmA/Acm4uCXI50WObhkeKy+Er2ZeK9Qq7zGsnFZASokGgcEOACYV5A6wpXwhutFna2A
+         sXEVqYvstwYUGZqfqwSPBkhBfRNRZbjsuzsNPc/+7mOMWGtwnoWmWAV81/5iMr8H7rVY
+         ZFjthlo80ChLa5usg4DTAOan/CNxbbayuODQwmiGzvycsGPBi1ZmYpPJXItvTj3H3qZv
+         yWPg==
+X-Gm-Message-State: AOJu0YyGtm9q/vYEXXBbPOwWlHuxDUvBZZuw8pjdmGmQPETmhuq3d6Av
+	yyWLib5RTfXIISnPmd36dm8W/FKuYvQ4AAX2bxK1EB3Mdpqn70nmssMjNKsCv1k=
+X-Google-Smtp-Source: AGHT+IE3wHEuStBaDo7m2Yv58tZR8xHGAvRzh1++i5FDA8todSbtUIg29W4GZ+IiZgyFM72RbrbQTA==
+X-Received: by 2002:ac2:4c45:0:b0:511:2dfc:9ffc with SMTP id o5-20020ac24c45000000b005112dfc9ffcmr3989109lfk.60.1707296024517;
+        Wed, 07 Feb 2024 00:53:44 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVuTUbJj4IMVhu38Cr/KsWdubMiAInf3zVws9WDhUkzruIBhaRK8IG81Nl1oSYP9ojkMRYm7SWTiHO7+BwCM/m7y9JT33ESAQjW2SDClU5vPV4YAw9xVkEw4SMeFGCgvO028iEdNhwbce8dd3nsNiGG584kbiwKq8uqeD//pxqbVBZL8M/KWa9VAndlKbF2wVjnbaX5EYB0J5lxS1K0pfCQaG434OP762fCyTc78Anh1gj79ShI22iUu2waZwryDsuhf8ZyqFDXImr5JWcSmPCL0m59UMTARcv1u+jvHk6rPHsMqDjfZFILcGYl73Wd1ZMdUkx2GdtagXm2YvzxVomVCg7bm1u3efwo/nkxeBkT1I6jxfd3WJ/Et7N5+Bzj93yUZQEclhlW3vRopvGATZoVBSEttq/3w3tKa3Y3I8q0Vrw6cS8=
+Received: from [192.168.11.39] (54-240-197-227.amazon.com. [54.240.197.227])
+        by smtp.gmail.com with ESMTPSA id oz14-20020a170906cd0e00b00a38620c3b3dsm503254ejb.198.2024.02.07.00.53.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 00:53:44 -0800 (PST)
+From: Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <96e25eed-8487-40a4-b56c-b5ca42667645@xen.org>
+Date: Wed, 7 Feb 2024 08:53:37 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v12 11/20] KVM: xen: allow shared_info to be mapped by
+ fixed HVA
+Content-Language: en-US
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>,
+ kvm@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240115125707.1183-1-paul@xen.org>
+ <20240115125707.1183-12-paul@xen.org> <ZcMCogbbVKuTIXWJ@google.com>
+Organization: Xen Project
+In-Reply-To: <ZcMCogbbVKuTIXWJ@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
 
-
-On Mon, 05 Feb 2024 18:24:36 +0000, Colin Ian King wrote:
-> The variable link_flags is being initialized with a value that is never
-> read, it is being re-assigned later on. The initialization is
-> redundant and can be removed.
+On 07/02/2024 04:10, Sean Christopherson wrote:
+> On Mon, Jan 15, 2024, Paul Durrant wrote:
+>> @@ -638,20 +637,32 @@ int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
+>>   		}
+>>   		break;
+>>   
+>> -	case KVM_XEN_ATTR_TYPE_SHARED_INFO: {
+>> +	case KVM_XEN_ATTR_TYPE_SHARED_INFO:
+>> +	case KVM_XEN_ATTR_TYPE_SHARED_INFO_HVA: {
+>>   		int idx;
+>>   
+>>   		mutex_lock(&kvm->arch.xen.xen_lock);
+>>   
+>>   		idx = srcu_read_lock(&kvm->srcu);
+>>   
+>> -		if (data->u.shared_info.gfn == KVM_XEN_INVALID_GFN) {
+>> -			kvm_gpc_deactivate(&kvm->arch.xen.shinfo_cache);
+>> -			r = 0;
+>> +		if (data->type == KVM_XEN_ATTR_TYPE_SHARED_INFO) {
+>> +			if (data->u.shared_info.gfn == KVM_XEN_INVALID_GFN) {
+>> +				kvm_gpc_deactivate(&kvm->arch.xen.shinfo_cache);
+>> +				r = 0;
+>> +			} else {
+>> +				r = kvm_gpc_activate(&kvm->arch.xen.shinfo_cache,
+>> +						     gfn_to_gpa(data->u.shared_info.gfn),
+>> +						     PAGE_SIZE);
+>> +			}
+>>   		} else {
+>> -			r = kvm_gpc_activate(&kvm->arch.xen.shinfo_cache,
+>> -					     gfn_to_gpa(data->u.shared_info.gfn),
+>> -					     PAGE_SIZE);
+>> +			if (data->u.shared_info.hva == 0) {
 > 
-> Cleans up clang scan build warning:
-> drivers/soundwire/intel_auxdevice.c:624:2: warning: Value stored
-> to 'link_flags' is never read [deadcode.DeadStores]
+> I know I said I don't care about the KVM Xen ABI, but I still think using '0' as
+> "invalid" is ridiculous.
 > 
-> [...]
 
-Applied, thanks!
+I don't have any massive preference; we could define a 
+KVM_XEN_INVALID_HVA too.
 
-[1/1] soundwire: intel_auxdevice: remove redundant assignment to variable link_flags
-      commit: 9282cfa2eb080e3bbb95f488af35618b614cdf76
+> More importantly, this code needs to check that HVA is a userspace pointer.
+> Because __kvm_set_memory_region() performs the address checks, KVM assumes any
+> hva that it gets out of a memslot, i.e. from a gfn, is a safe userspace address.
+> 
+> kvm_is_error_hva() will catch most addresses, but I'm pretty sure there's still
+> a small window where userspace could use this to write kernel memory.
 
-Best regards,
--- 
-~Vinod
+Ok. Good point. I'll add some appropriate checks.
 
+   Paul
+
+> 
+>> +				kvm_gpc_deactivate(&kvm->arch.xen.shinfo_cache);
+>> +				r = 0;
+>> +			} else {
+>> +				r = kvm_gpc_activate_hva(&kvm->arch.xen.shinfo_cache,
+>> +							 data->u.shared_info.hva,
+>> +							 PAGE_SIZE);
+>> +			}
 
 
