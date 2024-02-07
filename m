@@ -1,154 +1,278 @@
-Return-Path: <linux-kernel+bounces-56573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A49584CBD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:43:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 005AD84CBDB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:44:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E89C2855AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:43:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A8C71F2408A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:44:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98F987F7FD;
-	Wed,  7 Feb 2024 13:41:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FDE87A70B;
+	Wed,  7 Feb 2024 13:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Zayr+TMU";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="KEnRLdtz"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M+nwHWID"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E5879DB5
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AEB577653;
+	Wed,  7 Feb 2024 13:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707313284; cv=none; b=IIzg8Tm5ng1Uh/BxbwlLZXwjGLGIN2QJ4uajTaOozttR3fwZfuDOGJzbBg7gDV/upJxtoExyXSR9fEQeLFOVWMH8zsFT3BXpSREHSSfwX5gZwwByzo142Qez5vdWsRsAJTrjXtSanwe4dr0An42K0baOfGaitqZA9zDNnzvxf18=
+	t=1707313345; cv=none; b=lLnmNMccA1u4YpICDU08ZTPriL8NuGAtEvrQvazNkWXE+FmtX2YU7omIl/UEnf4AWWjMSoRqfRyjkvpZqPtplJLawNRdkn5AnPYEYAXy7jKxZe6IB91mLzEw2JQSYGPe3PXh8yxvGz/f6xOSGOq5lknFA9NlQ0gPmXVmuTEhsAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707313284; c=relaxed/simple;
-	bh=rCdB1Pa4Tv7uSe3TR4FRXyAZD0vHyhOKHq0ldmSv8k8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=F/B3krhaaehSr6dtC2Dk3qH15OiAqyUNcvXv10tlaqkR6fLpiMtle1aCvatBwOYZmyNp4yBu2/uZijreTNj0ajSBjoHAO2/4fPPHWzdxSgFeYDdUcSStV4vUe5JWAOHimmzpWOApK7KJqiu3WmpjU/CoKyArZQ2BYKNiI3QzsPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Zayr+TMU; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=KEnRLdtz; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707313278;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3tOC9aXvX0QnLyHAZSaZBIUXi3xE4WWmBQ6mB2/+B2Y=;
-	b=Zayr+TMUy9c3T9cpC6eEj8Guy8iVZTBL0nRC/wsEBkxwClxISj9Y0K7hevXpYyXb9mSEfs
-	fEa5b1XLAks7cSplbX1mKiPG9xRCkrGQhUrIa8vWkMlaCOedn43B018fDlF3Q3Kgwl6sWw
-	yrghjQydHqV7B2GXQ05yMYMGS93JIOCOrxQiIWT+2xLgjVdqJ7NP4fJ9au+F/WrCZ6k86I
-	rrrj4G138i+eKrdzhWfsBFrbyNe4PI8AMukgM5T0yYpyoSCpQm7KOgqz2A13ZzOHMyrCpB
-	8LzxmahywVV2coZTzWbZsW8Y7ARLSAY4/wpbrddoIr23kY4QZ4QGO+X3K0Dwxw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707313278;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3tOC9aXvX0QnLyHAZSaZBIUXi3xE4WWmBQ6mB2/+B2Y=;
-	b=KEnRLdtzeybX5PwNYbgVrbGJe7LkxghZpjkKSvisgJ7mF5EhQRLRsx9T2aUMrRL7OkBTMU
-	hd61myZeEmQTN/Ag==
-To: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH printk v4 14/14] dump_stack: Do not get cpu_sync for panic CPU
-Date: Wed,  7 Feb 2024 14:47:03 +0106
-Message-Id: <20240207134103.1357162-15-john.ogness@linutronix.de>
-In-Reply-To: <20240207134103.1357162-1-john.ogness@linutronix.de>
-References: <20240207134103.1357162-1-john.ogness@linutronix.de>
+	s=arc-20240116; t=1707313345; c=relaxed/simple;
+	bh=Q5i1+JxAX3X37h5Opr/MnoRC2yOzxSaGQbgIbaLb9Dw=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=rBrcPDr/lbkcpvAAq5+EYwHf7WDVylMw0dkaB6HhZhcunRg0g2NLNRt0C00krece53ur4CdYssv/Oon2AxwKPCMpinqzc8GFVN1pAGEYIOLsCcaOiW0/MIfgRjg8/WOF1LPMJEccEebYTNk4+8pl7VJON8bXNHarVjnGW+AkiXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M+nwHWID; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a38271c0bd5so90311066b.0;
+        Wed, 07 Feb 2024 05:42:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707313341; x=1707918141; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=svSDgPYX8pMwLFJxNK8qqtmJaLjednJg3y5h+ZDs4aw=;
+        b=M+nwHWIDaEhPlc2rB25V/cc1VkKH3220dsBfYjfxui0UrnnayyBufGLVRHbMxls26H
+         fhvwGA87pAjxZj6g4l4We9nO2lf5rab1Ey1wxkp62z99fKr63YlNcowwtJX8ELtgINLQ
+         8rsg+FNnV+78EkdQScYAYxBgkrQGLbSPaVUWCrb37TuinQxbU2/3nfbCwxn9YCLk3ocG
+         BHbDg5LtgbiNC8/JkdolEkYtRUF0w4h5Qxk631A2raqj1A1hLwvfRdEu0WX2QbW5DNJi
+         mvsYrXKOIsYFZRF5tDGQ0Q2rAPY3tDMQ8/DrEPshr9sTlteUT/7DYfAW21O8/U6ElaeN
+         vbDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707313341; x=1707918141;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=svSDgPYX8pMwLFJxNK8qqtmJaLjednJg3y5h+ZDs4aw=;
+        b=fo7fTorFs3WxSGxBIdWW04hIyj+aB/WkAXI5vy/sdqXZU9Tnar27rHSCtKGHJzpH05
+         AobVJEqFxq1NdmwjSBl9GwczBOxGpSte9yzh62zamPQSteQoSMaF9N/oC4YSOpNeUwU8
+         XtjGXwDNJkiNhZ2VtLM8ydpPIocuZKfPib4Z9GtTwiJHquU63L3yP8i+MmO+P9I8pItu
+         rWexOAVJ/pwmt5Y4LnwhEuyZfsXiYUZ7NpiT4bkvDGKwRtJHX5pfA7D9Bvr0oo2wZ+nP
+         MWrcyhbh8NKrExae5BXRcmH/yyQFDjdrWXxdVe3ptwF4/++PLcSz1lOaiRJEC9sxU98U
+         xfOg==
+X-Gm-Message-State: AOJu0YxOCXeMbjjfnZFJK6H1q5CxoPqGAPJ9LA3TV7GRIYAmJ15dSp/a
+	tel6dV9UDBDEygIbfEIN2b28u9aNOl6G+jj0RabwCGbJMKfjx/fa
+X-Google-Smtp-Source: AGHT+IHbuvGjT0Vd8LtdWDajODsTZctUdqUCO9ot6uEy57r0b1GGenN9vqs2vYUNuRPv5JZCloCWSg==
+X-Received: by 2002:a17:906:6b8a:b0:a38:5ce0:2f86 with SMTP id l10-20020a1709066b8a00b00a385ce02f86mr2068370ejr.40.1707313341068;
+        Wed, 07 Feb 2024 05:42:21 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVQUo4LjH42nATAcFls2YkfgXjqFucrIzJNeMt2O3ck/gNRxyB9Ojr2MGAyqtKC5s7Yz50dTEybm2p/kIx8iZDASxV7O8bLBhDK4BJjgqPQdRq9IBbqqfSlNcj7Zw+WKiTjVUHu+6B5gMP3/zu18rVj+Zvt9RQssMySw0CWz2h+zj++XYSc+polmuP3vdkPFmSKZuHkn41Z2x5Oi7oGnrEnItfSXRelUGYlKxhFWJi/9QU9BuGh
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:81be:a476:88e2:db23])
+        by smtp.gmail.com with ESMTPSA id c17-20020a170906695100b00a34d0a865ecsm754770ejs.163.2024.02.07.05.42.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 05:42:20 -0800 (PST)
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To: Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	linux-bluetooth@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] Bluetooth: hci_event: Remove code to removed CONFIG_BT_HS
+Date: Wed,  7 Feb 2024 14:42:11 +0100
+Message-Id: <20240207134211.29201-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-dump_stack() is called in panic(). If for some reason another CPU
-is holding the printk_cpu_sync and is unable to release it, the
-panic CPU will be unable to continue and print the stacktrace.
+Commit cec9f3c5561d ("Bluetooth: Remove BT_HS") removes config BT_HS, but
+misses two "ifdef BT_HS" blocks in hci_event.c.
 
-Since non-panic CPUs are not allowed to store new printk messages
-anyway, there is no need to synchronize the stacktrace output in
-a panic situation.
+Remove this dead code from this removed config option.
 
-For the panic CPU, do not get the printk_cpu_sync because it is
-not needed and avoids a potential deadlock scenario in panic().
-
-Link: https://lore.kernel.org/lkml/ZcIGKU8sxti38Kok@alley
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- include/linux/printk.h   |  2 ++
- kernel/printk/internal.h |  1 -
- lib/dump_stack.c         | 16 +++++++++++++---
- 3 files changed, 15 insertions(+), 4 deletions(-)
+ net/bluetooth/hci_event.c | 163 --------------------------------------
+ 1 file changed, 163 deletions(-)
 
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index 8ef499ab3c1e..955e31860095 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -273,6 +273,8 @@ static inline void printk_trigger_flush(void)
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 271c00792801..07e690b7f8db 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5676,150 +5676,6 @@ static void hci_remote_oob_data_request_evt(struct hci_dev *hdev, void *edata,
+ 	hci_dev_unlock(hdev);
  }
- #endif
  
-+bool this_cpu_in_panic(void);
-+
- #ifdef CONFIG_SMP
- extern int __printk_cpu_sync_try_get(void);
- extern void __printk_cpu_sync_wait(void);
-diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
-index ac2d9750e5f8..6c2afee5ef62 100644
---- a/kernel/printk/internal.h
-+++ b/kernel/printk/internal.h
-@@ -130,7 +130,6 @@ struct printk_message {
- };
- 
- bool other_cpu_in_panic(void);
--bool this_cpu_in_panic(void);
- bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
- 			     bool is_extended, bool may_supress);
- 
-diff --git a/lib/dump_stack.c b/lib/dump_stack.c
-index 83471e81501a..222c6d6c8281 100644
---- a/lib/dump_stack.c
-+++ b/lib/dump_stack.c
-@@ -96,15 +96,25 @@ static void __dump_stack(const char *log_lvl)
-  */
- asmlinkage __visible void dump_stack_lvl(const char *log_lvl)
+-#if IS_ENABLED(CONFIG_BT_HS)
+-static void hci_chan_selected_evt(struct hci_dev *hdev, void *data,
+-				  struct sk_buff *skb)
+-{
+-	struct hci_ev_channel_selected *ev = data;
+-	struct hci_conn *hcon;
+-
+-	bt_dev_dbg(hdev, "handle 0x%2.2x", ev->phy_handle);
+-
+-	hcon = hci_conn_hash_lookup_handle(hdev, ev->phy_handle);
+-	if (!hcon)
+-		return;
+-
+-	amp_read_loc_assoc_final_data(hdev, hcon);
+-}
+-
+-static void hci_phy_link_complete_evt(struct hci_dev *hdev, void *data,
+-				      struct sk_buff *skb)
+-{
+-	struct hci_ev_phy_link_complete *ev = data;
+-	struct hci_conn *hcon, *bredr_hcon;
+-
+-	bt_dev_dbg(hdev, "handle 0x%2.2x status 0x%2.2x", ev->phy_handle,
+-		   ev->status);
+-
+-	hci_dev_lock(hdev);
+-
+-	hcon = hci_conn_hash_lookup_handle(hdev, ev->phy_handle);
+-	if (!hcon)
+-		goto unlock;
+-
+-	if (!hcon->amp_mgr)
+-		goto unlock;
+-
+-	if (ev->status) {
+-		hci_conn_del(hcon);
+-		goto unlock;
+-	}
+-
+-	bredr_hcon = hcon->amp_mgr->l2cap_conn->hcon;
+-
+-	hcon->state = BT_CONNECTED;
+-	bacpy(&hcon->dst, &bredr_hcon->dst);
+-
+-	hci_conn_hold(hcon);
+-	hcon->disc_timeout = HCI_DISCONN_TIMEOUT;
+-	hci_conn_drop(hcon);
+-
+-	hci_debugfs_create_conn(hcon);
+-	hci_conn_add_sysfs(hcon);
+-
+-	amp_physical_cfm(bredr_hcon, hcon);
+-
+-unlock:
+-	hci_dev_unlock(hdev);
+-}
+-
+-static void hci_loglink_complete_evt(struct hci_dev *hdev, void *data,
+-				     struct sk_buff *skb)
+-{
+-	struct hci_ev_logical_link_complete *ev = data;
+-	struct hci_conn *hcon;
+-	struct hci_chan *hchan;
+-	struct amp_mgr *mgr;
+-
+-	bt_dev_dbg(hdev, "log_handle 0x%4.4x phy_handle 0x%2.2x status 0x%2.2x",
+-		   le16_to_cpu(ev->handle), ev->phy_handle, ev->status);
+-
+-	hcon = hci_conn_hash_lookup_handle(hdev, ev->phy_handle);
+-	if (!hcon)
+-		return;
+-
+-	/* Create AMP hchan */
+-	hchan = hci_chan_create(hcon);
+-	if (!hchan)
+-		return;
+-
+-	hchan->handle = le16_to_cpu(ev->handle);
+-	hchan->amp = true;
+-
+-	BT_DBG("hcon %p mgr %p hchan %p", hcon, hcon->amp_mgr, hchan);
+-
+-	mgr = hcon->amp_mgr;
+-	if (mgr && mgr->bredr_chan) {
+-		struct l2cap_chan *bredr_chan = mgr->bredr_chan;
+-
+-		l2cap_chan_lock(bredr_chan);
+-
+-		bredr_chan->conn->mtu = hdev->block_mtu;
+-		l2cap_logical_cfm(bredr_chan, hchan, 0);
+-		hci_conn_hold(hcon);
+-
+-		l2cap_chan_unlock(bredr_chan);
+-	}
+-}
+-
+-static void hci_disconn_loglink_complete_evt(struct hci_dev *hdev, void *data,
+-					     struct sk_buff *skb)
+-{
+-	struct hci_ev_disconn_logical_link_complete *ev = data;
+-	struct hci_chan *hchan;
+-
+-	bt_dev_dbg(hdev, "handle 0x%4.4x status 0x%2.2x",
+-		   le16_to_cpu(ev->handle), ev->status);
+-
+-	if (ev->status)
+-		return;
+-
+-	hci_dev_lock(hdev);
+-
+-	hchan = hci_chan_lookup_handle(hdev, le16_to_cpu(ev->handle));
+-	if (!hchan || !hchan->amp)
+-		goto unlock;
+-
+-	amp_destroy_logical_link(hchan, ev->reason);
+-
+-unlock:
+-	hci_dev_unlock(hdev);
+-}
+-
+-static void hci_disconn_phylink_complete_evt(struct hci_dev *hdev, void *data,
+-					     struct sk_buff *skb)
+-{
+-	struct hci_ev_disconn_phy_link_complete *ev = data;
+-	struct hci_conn *hcon;
+-
+-	bt_dev_dbg(hdev, "status 0x%2.2x", ev->status);
+-
+-	if (ev->status)
+-		return;
+-
+-	hci_dev_lock(hdev);
+-
+-	hcon = hci_conn_hash_lookup_handle(hdev, ev->phy_handle);
+-	if (hcon && hcon->type == AMP_LINK) {
+-		hcon->state = BT_CLOSED;
+-		hci_disconn_cfm(hcon, ev->reason);
+-		hci_conn_del(hcon);
+-	}
+-
+-	hci_dev_unlock(hdev);
+-}
+-#endif
+-
+ static void le_conn_update_addr(struct hci_conn *conn, bdaddr_t *bdaddr,
+ 				u8 bdaddr_type, bdaddr_t *local_rpa)
  {
-+	bool in_panic = this_cpu_in_panic();
- 	unsigned long flags;
- 
- 	/*
- 	 * Permit this cpu to perform nested stack dumps while serialising
--	 * against other CPUs
-+	 * against other CPUs, unless this CPU is in panic.
-+	 *
-+	 * When in panic, non-panic CPUs are not permitted to store new
-+	 * printk messages so there is no need to synchronize the output.
-+	 * This avoids potential deadlock in panic() if another CPU is
-+	 * holding and unable to release the printk_cpu_sync.
- 	 */
--	printk_cpu_sync_get_irqsave(flags);
-+	if (!in_panic)
-+		printk_cpu_sync_get_irqsave(flags);
-+
- 	__dump_stack(log_lvl);
--	printk_cpu_sync_put_irqrestore(flags);
-+
-+	if (!in_panic)
-+		printk_cpu_sync_put_irqrestore(flags);
- }
- EXPORT_SYMBOL(dump_stack_lvl);
- 
+@@ -7629,25 +7485,6 @@ static const struct hci_ev {
+ 	/* [0x3e = HCI_EV_LE_META] */
+ 	HCI_EV_REQ_VL(HCI_EV_LE_META, hci_le_meta_evt,
+ 		      sizeof(struct hci_ev_le_meta), HCI_MAX_EVENT_SIZE),
+-#if IS_ENABLED(CONFIG_BT_HS)
+-	/* [0x40 = HCI_EV_PHY_LINK_COMPLETE] */
+-	HCI_EV(HCI_EV_PHY_LINK_COMPLETE, hci_phy_link_complete_evt,
+-	       sizeof(struct hci_ev_phy_link_complete)),
+-	/* [0x41 = HCI_EV_CHANNEL_SELECTED] */
+-	HCI_EV(HCI_EV_CHANNEL_SELECTED, hci_chan_selected_evt,
+-	       sizeof(struct hci_ev_channel_selected)),
+-	/* [0x42 = HCI_EV_DISCONN_PHY_LINK_COMPLETE] */
+-	HCI_EV(HCI_EV_DISCONN_LOGICAL_LINK_COMPLETE,
+-	       hci_disconn_loglink_complete_evt,
+-	       sizeof(struct hci_ev_disconn_logical_link_complete)),
+-	/* [0x45 = HCI_EV_LOGICAL_LINK_COMPLETE] */
+-	HCI_EV(HCI_EV_LOGICAL_LINK_COMPLETE, hci_loglink_complete_evt,
+-	       sizeof(struct hci_ev_logical_link_complete)),
+-	/* [0x46 = HCI_EV_DISCONN_LOGICAL_LINK_COMPLETE] */
+-	HCI_EV(HCI_EV_DISCONN_PHY_LINK_COMPLETE,
+-	       hci_disconn_phylink_complete_evt,
+-	       sizeof(struct hci_ev_disconn_phy_link_complete)),
+-#endif
+ 	/* [0x48 = HCI_EV_NUM_COMP_BLOCKS] */
+ 	HCI_EV(HCI_EV_NUM_COMP_BLOCKS, hci_num_comp_blocks_evt,
+ 	       sizeof(struct hci_ev_num_comp_blocks)),
 -- 
-2.39.2
+2.17.1
 
 
