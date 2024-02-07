@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-55960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40B0684C418
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:52:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A00C84C41B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:52:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E60471F26D5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:52:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D0131C21BDE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:52:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0017D2E401;
-	Wed,  7 Feb 2024 04:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143E52E84A;
+	Wed,  7 Feb 2024 04:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C/yGEhIF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PdUlUjfw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F02F2D052;
-	Wed,  7 Feb 2024 04:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F6432E62B;
+	Wed,  7 Feb 2024 04:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707281238; cv=none; b=oW6tzrWNKJI+Sg1WCLCQz8bMOgrYVKQHG+7xG4mJEvrkbTzc+3vy9INuvruJ3hvIz/ReO1ARK08VIsdlRPPu72gTgdnLsvmumh1fa8+SqijuYaVTmREAEpP/FnnzVtK1UoGLrckOUWkvOnf5WyaZPkcXFBZCGN60yp2VpIo8QiM=
+	t=1707281239; cv=none; b=j53NnuXK+p8rLaCCWjiY7rmmRPvduCfsiOt56iWwN+wm4vDLoQKvrOLHJGE6zWEvg0Oa4/6sJMgXHykh4A7q6uuH5OIYOOP8rGbgPtCF3mZGzuZCoBMqnutakdI4u17DrIast8Ua+DC5IJ75kQBw8Pbau+sos98zbeP55zO4xn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707281238; c=relaxed/simple;
-	bh=QeEtYoAax1/TXsms/+81G8Its5dIVGpUz73BnaWsU3I=;
+	s=arc-20240116; t=1707281239; c=relaxed/simple;
+	bh=fbuKI5I/KredeKMIwa77Y2hV8wzA+0g6yOY4Y3NliWA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EByuF9goN2N0bNr7ICciSZrOhzzIFMQoH9LlCA2/bJ0BNFHqTmiwZjTWzIKPQlP/I9hX3WmUqchxUOA6+HMt+c5BrzK+EajRtVnfn/mCjYFFZmg7beiXuEc7IIaHtI7l1OlAFmIpDVv73SXE+5Efza1oaC9dNc4aDRuLO9WEms0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C/yGEhIF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E1F9C433F1;
-	Wed,  7 Feb 2024 04:47:17 +0000 (UTC)
+	 MIME-Version:Content-Type; b=BeWY4Dyw6i/rjfkIs1cskSn8MQ2vj+wNi947jucuMei1O02+yhLYY8Uql4taVxPoQlGIL4GCGn+IBS1rWZfr/AGG1gPQeDxJ3n4zcIlvchaKq2lByGR6v9aBf4blR8wL6M1Lyn9MAw39VeHiB2D8zW8kuh0p8JGx1OjmiVshT48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PdUlUjfw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 500EFC43390;
+	Wed,  7 Feb 2024 04:47:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707281238;
-	bh=QeEtYoAax1/TXsms/+81G8Its5dIVGpUz73BnaWsU3I=;
+	s=k20201202; t=1707281239;
+	bh=fbuKI5I/KredeKMIwa77Y2hV8wzA+0g6yOY4Y3NliWA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=C/yGEhIFL550iJjZvGfM/BuMKD9LOFqz/lQmN0B0raO7j0t7j88JIPhMcJDgYzs9r
-	 HbW0atgpmZBxolmcIpwS7KgrjIPOb/ksbpCO2+Fl19vQxdz/T3NlKEP3XXYywiy5Zr
-	 76YsQBXNaE2JEPuI4MF5XMrPSG5xwUJ3VZ7mNyLMPt1OVEa8g82B9USndDL0xJ6cfv
-	 fBg+ZAXkVpdZYRtRYAdm9wmvTG5bp5A2BHshOB4tXfmX9Wbd+uc6MnDDUD9KRUs0KF
-	 2v5UOF8eM+dp7UU8iRRtzMknTDROflrh2TO0ccGjd/PWP4JIPpcFO6mo6uoOUx3VRk
-	 LjOqxE/doz3mw==
+	b=PdUlUjfwx3zdxNNLxEA+ASxo73osA8saY+pfcqsNmaSuhQ0g9LvRaWtxtw+IWY+NW
+	 aLriV3kOdFVX8nhH8dq2rAqgT8Fmmq2otR1t6W1HcUGS5ILlYD3qYg9EA62jdrwj/1
+	 grOs5zoBn3oEegIntnnX/uO7JHY/Zd3iw15ZmbqQKs8m/8ogwFJnUNrCjOFfrHO8wY
+	 gcsMAYYtyCQGJ0d+6xQZuCokxISFI/VaRx6tj1HC9GE9rSSvHlNSPqafC7YH5saTmH
+	 VywLR8Lba/GjxVuhQGLyt49pzNrevpBjEyQr56wypC+druqfOwH8znORgPyfk00NM5
+	 h1YrBq/KR9r8A==
 From: Bjorn Andersson <andersson@kernel.org>
 To: kernel@quicinc.com,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
@@ -50,14 +50,13 @@ To: kernel@quicinc.com,
 Cc: linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	quic_collinsd@quicinc.com,
-	Neil Armstrong <neil.armstrong@linaro.org>
-Subject: Re: [PATCH v2 0/2] Add PM8010 regulators for sm8650 boards.
-Date: Tue,  6 Feb 2024 22:46:35 -0600
-Message-ID: <170728117662.479358.7960241052983200486.b4-ty@kernel.org>
+	quic_collinsd@quicinc.com
+Subject: Re: [PATCH v3 0/2] Add PM8010 regulators for sm8650 boards.
+Date: Tue,  6 Feb 2024 22:46:36 -0600
+Message-ID: <170728117683.479358.8973558237499261418.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240123-sm8650_pm8010_support-v2-0-52f517b20a1d@quicinc.com>
-References: <20240123-sm8650_pm8010_support-v2-0-52f517b20a1d@quicinc.com>
+In-Reply-To: <20240125-sm8650_pm8010_support-v3-0-2f291242a7c4@quicinc.com>
+References: <20240125-sm8650_pm8010_support-v3-0-2f291242a7c4@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,7 +67,7 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 23 Jan 2024 16:49:23 +0800, Fenglin Wu wrote:
+On Thu, 25 Jan 2024 17:31:14 +0800, Fenglin Wu wrote:
 > Add PM8010 RPMh regulators for sm8650-mtp and sm8650-qrd boards.
 > 
 > 
