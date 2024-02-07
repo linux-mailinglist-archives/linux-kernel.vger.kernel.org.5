@@ -1,106 +1,137 @@
-Return-Path: <linux-kernel+bounces-56391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C111584C996
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:26:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EFB784C99A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:28:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60F5AB22E79
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:26:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA7171C25A03
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 989521AADA;
-	Wed,  7 Feb 2024 11:26:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5202D1B270;
+	Wed,  7 Feb 2024 11:28:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rVs+jf/Y";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hLYCgGrH"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fcItn1I3"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71AB71B275;
-	Wed,  7 Feb 2024 11:26:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E96901AACC;
+	Wed,  7 Feb 2024 11:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707305190; cv=none; b=aveJyfA8nEN0VXBmDIJzbOJvB8sQU6sDoV6F8RkfKfsun71WT4QG/HTKYqU9e5ubHuaxISWznceLPV0jdebLvUXfLs7aL4FYI4UwvBgBEdOg1ZKZthodylF227Gyz5Dr9hHqJkWpGVVlAZ6ZCiAl5Ue6o+m/oU1UlYVWvHkTeYY=
+	t=1707305318; cv=none; b=LJgeQFOl9QAcJtmSJTMmn+B6oCKV2zuN0nceId1/9VOh8NUktGikQRS6L9NVn+cHziEEBw92EgyyifGAUGCVBkMdyfhztKh+03p5Qk7RNo+fwB2DUUPdh+QUtCuW+h72p8HpVfeLzyggtigtl/4TVa8Hkdsv6Vz0Qf1Za/R9id8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707305190; c=relaxed/simple;
-	bh=JfYBzih6S6mvSYeUfR3TJzJyamqjVFjhY7RxM4mbHeg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=OaW9B6uo0WBqirn3WpJWqcQcPd5liK1F1jV0dso/jtjrOxWAXPdR2/Xvgp1nnjsoDWrihNwOhBFdVq5onPNm2tHl57NTO/S0SFbJgZjibGKWmKSl+gp2KB8A6I4tPvh1QOEgJbRQ+GOHzREbmxkXvcl78bA7GYeCbXDI5Zf8m7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rVs+jf/Y; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hLYCgGrH; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707305187;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jdCIcHY3HFLAduHPxS6ZbiHVayvEt7hL0AjwboJZzHk=;
-	b=rVs+jf/YT/rRqYGCZt6/RMrx/PA95qNfki/mh0TL7LHCe5jje8ceLJGry2F2qmIhT0UfCE
-	1i5afSBU/iLIxigCi5jSKDtuwUrNVppdKQDL/EXL1rni/H3hqaONZS0j6kJtG8GHWls5fi
-	c5zF8kbHH8ZtbtCopwbBBYRNz0Q0J96hEUFEusm3ypMUkLwfFDvLg2YB6N66Gwd1H4Uca5
-	aOtfa5ISa2a2k5DaEPjscbIE3poLkqDj+0gJQPgXAbgqNlNXiRJq/fv8Dj8q6ZVasWUgMo
-	cQ+K3+Y8uqwhM1yHetql7mwu179TPYbiwjsQjTfTdykO2tWs9rcgxA3gYIO89g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707305187;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jdCIcHY3HFLAduHPxS6ZbiHVayvEt7hL0AjwboJZzHk=;
-	b=hLYCgGrHKz53r5YQVdNWW5ahRCIfoL61j/VjkJJCHFGfjzVDyqugAEdGVti6IhSUFz0EOy
-	ZJIcdFpN8SXeBTCA==
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Pranav Prasad
- <pranavpp@google.com>
-Cc: rafael@kernel.org, pavel@ucw.cz, linux-pm@vger.kernel.org,
- linux-kernel@vger.kernel.org, krossmo@google.com, jstultz@google.com
-Subject: Re: [PATCH] alarmtimer, PM: suspend: Expose a function from
-In-Reply-To: <CAJZ5v0gXsCuVvqynDeuf_NZtyAJ07umx1NUqfFZb25vjNABAfw@mail.gmail.com>
-References: <20240131191317.2191421-1-pranavpp@google.com>
- <CAJZ5v0gXsCuVvqynDeuf_NZtyAJ07umx1NUqfFZb25vjNABAfw@mail.gmail.com>
-Date: Wed, 07 Feb 2024 12:26:26 +0100
-Message-ID: <87msscms65.ffs@tglx>
+	s=arc-20240116; t=1707305318; c=relaxed/simple;
+	bh=mChLLvfn+WsSX/4Ol3EUABXaUd0ZI/tG6Zz98KwoPc8=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=OBfM5tvUk4HhwVAaWUltDX8WhNvf0cXyBbZhHOBozNOyVmSQ/A+TEoe+frBRr3SDhyqtnN6vLAfc+sw4vyyUqmujV1Ie1j6Eluls0Xrq1nAgir5gNw8R3Eckq0XIN6hwkbL8I0kMaIX4iawfm36zVURCoZWjBNZMmGW9cd0zCow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fcItn1I3; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d0512f6e32so6382881fa.1;
+        Wed, 07 Feb 2024 03:28:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707305315; x=1707910115; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1gcUDslEA/Bw1BsVVSuc8cGc8YlbjxoxUNk/ASpPHtQ=;
+        b=fcItn1I34GrrLxVAC3blwnZCWOfGDhkbPiH7wr8aBKBZacDEPfyyruh9Jc+/l/XwKN
+         aw+QXgFsC43T3DHpofjL1RJCP0kepJEgyd5mcVlCp2CCsPlfp6BhN3lP5xQ8XO59l4zk
+         AKJW0WiUV/QXJatYfM3GxxEu06v9iMPrKCtxVZsT//ndN/qQqvnphTUdUCvpo3FEw+2c
+         XZD7jtQKkoXFYklSAMibRu+eviAfX0zUNRM7RA0wHtnmle/HRkevFaD9X28wxQwj9oyi
+         40TF820bo65CrI8TXfcdqqmJNaW9cY6WFrStH0AfkMP+Pa/bor/jg/aqbEEZeFOMnJXO
+         oaZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707305315; x=1707910115;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1gcUDslEA/Bw1BsVVSuc8cGc8YlbjxoxUNk/ASpPHtQ=;
+        b=pqDtjaooSTABkGlPxEw6BcG/IWxweq6GXMgpT5g39ddpGf4wyXIZ7/9Q843WNbUX9t
+         K6T2pAFR8bPu56oJCiqbukigrYm25p7j6q9OFgOEWGHAtXzItLDdtFpZiRVBEUqT857s
+         /jWsw+vgaz5lk+j7xFPEnFZi3yGO58tP9Hxf7KpJwDib5aE0q+pJ8jeYFCGpLz6KVCFQ
+         KAQv1iFwy9eAy7MHJgKhpHsDV4CdfBfUXLg/gHXJTdvPQPkvAUJYUpXQNk1Rtgg7wahp
+         raZuGxv9GcV9BRffyPm6r7qszohYjDcc+P9usgB41uWTmCc0bdEryh2PNb8ByIK+kbqg
+         aCkQ==
+X-Gm-Message-State: AOJu0YzhWP7qP5uOhz0sVGNVkBYK3cSwUUBWZSjh49dCVqEgQszOnsPb
+	n56IxCISsCxrp6lghff+1LzlEctXYj1JjW2b+C4fTNrgSIJIr1Mq
+X-Google-Smtp-Source: AGHT+IFNRXDFAOkcXrn2c+JUyuqEXiC3mt4GsQhBZg/UU6aYKE28T7UtCDIb7BE3huf/0GRfOqulxA==
+X-Received: by 2002:a2e:bb95:0:b0:2d0:c9b5:7257 with SMTP id y21-20020a2ebb95000000b002d0c9b57257mr755754lje.8.1707305314678;
+        Wed, 07 Feb 2024 03:28:34 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVroSiFaR5ihQieFacoRUgcGAmUc85HOb1iiHk5sO3ix0iPsdZpc2MojpiVStXx4aaDY3KCxsbGroSTujTAmDKKXYNV6tGfpjBP3A56EXJXGJfiRkAtnyWOXQl7Y2Y9uRg+e65GwSg2nojmbSTKxo6HJU0PkjoO1SXFf2y+
+Received: from [192.168.1.105] ([178.176.77.110])
+        by smtp.gmail.com with ESMTPSA id bd9-20020a05651c168900b002d0a10d7618sm148184ljb.75.2024.02.07.03.28.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 03:28:34 -0800 (PST)
+Subject: Re: [PATCH] ahci: asm1064: correct count of reported ports
+To: "Andrey Jr. Melnikov" <temnota.am@gmail.com>, linux-ide@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: dlemoal@kernel.org, hdegoede@redhat.com
+References: <vbpzr7uqpfemb3qa6xy2fxioct44l5vugg2wkywyolfpzqcmau@jgrrhmk2scaj>
+From: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <7559d940-f191-4fe0-e147-17ffa6c1dfc4@gmail.com>
+Date: Wed, 7 Feb 2024 14:28:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <vbpzr7uqpfemb3qa6xy2fxioct44l5vugg2wkywyolfpzqcmau@jgrrhmk2scaj>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 31 2024 at 21:10, Rafael J. Wysocki wrote:
-> On Wed, Jan 31, 2024 at 8:13=E2=80=AFPM Pranav Prasad <pranavpp@google.co=
-m> wrote:
->> @@ -564,6 +565,8 @@ static int enter_state(suspend_state_t state)
->>  #endif
->>         } else if (!valid_state(state)) {
->>                 return -EINVAL;
->> +       } else if (time_check_suspend_fail()) {
->> +               return -ETIME;
->
-> This causes a function defined in modular code to be called from
-> non-modular code which is an obvious mistake.
->
-> It also makes the generic suspend code call a function defined in a
-> random driver, which is a total no-go as far as I am concerned.
+On 2/7/24 12:58 PM, Andrey Jr. Melnikov wrote:
 
-Alarmtimers is built-in core infrastructure and not a random modular
-driver, but nevertheless:
+> The ASM1064 SATA host controller always reports wrongly,
+> that it has 24 ports. But in reality, it only has four ports.
+> 
+> before:
+> ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
+> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xffff0f impl SATA mode
+> ahci 0000:04:00.0: flags: 64bit ncq sntf stag pm led only pio sxs deso sadm sds apst 
+> 
+> after:
+> ahci 0000:04:00.0: ASM1064 has only four ports
+> ahci 0000:04:00.0: forcing port_map 0xffff0f -> 0xf
+> ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
+> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xf impl SATA mode
+> ahci 0000:04:00.0: flags: 64bit ncq sntf stag pm led only pio sxs deso sadm sds apst 
+> 
+> 
+> Signed-off-by: Andrey Jr. Melnikov <temnota.am@gmail.com>
+> 
+> diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+> index da2e74fce2d9..ec30d8330d16 100644
+> --- a/drivers/ata/ahci.c
+> +++ b/drivers/ata/ahci.c
+> @@ -671,9 +671,14 @@ MODULE_PARM_DESC(mobile_lpm_policy, "Default LPM policy for mobile chipsets");
+>  static void ahci_pci_save_initial_config(struct pci_dev *pdev,
+>  					 struct ahci_host_priv *hpriv)
+>  {
+> -	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA && pdev->device == 0x1166) {
+> -		dev_info(&pdev->dev, "ASM1166 has only six ports\n");
+> -		hpriv->saved_port_map = 0x3f;
+> +	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA) {
+> +		if (pdev->device == 0x1166) {
 
-> Why don't you instead define a PM notifier in the alarmtimer driver
-> and check if it is going to trigger shortly from there?  PM notifiers
-> run before the tasks freezer, so there would be a little difference
-> timing-wise and you can return whatever error code you like from
-> there.  As an additional benefit, you'd be able to handle hibernation
-> in the same way.
+   Maybe *switch* instead?
 
-Makes sense.
+> +			dev_info(&pdev->dev, "ASM1166 has only six ports\n");
+> +			hpriv->saved_port_map = 0x3f;
+> +		} else if (pdev->device == 0x1064) {
+> +			dev_info(&pdev->dev, "ASM1064 has only four ports\n");
+> +			hpriv->saved_port_map = 0xf;
+> +		}
+>  	}
+>  
+>  	if (pdev->vendor == PCI_VENDOR_ID_JMICRON && pdev->device == 0x2361) {
 
-Thanks,
-
-        tglx
+MBR, Sergey
 
