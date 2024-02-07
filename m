@@ -1,146 +1,99 @@
-Return-Path: <linux-kernel+bounces-56484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E403084CAB8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:30:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59C5384CABE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:33:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98E0A1F27F45
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:30:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC5BBB24ACD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:33:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE8D5A116;
-	Wed,  7 Feb 2024 12:29:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q3vJ7KWR"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6580F5A108;
-	Wed,  7 Feb 2024 12:29:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B107603F;
+	Wed,  7 Feb 2024 12:32:55 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21FF25A4CC
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 12:32:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707308994; cv=none; b=gLJwaN/5PNxKopRmWutbEHCRzO5O8kmtBOrnsgLrkzQXLReQm3LMONiOVoWa5K3qKapsXvRlTulvifMszs5lmaiv1YIBwAl+qBLRHgoqHxwvxaumT4RHq5jiL4PzJa5WQj+75fepM6K1MKijGK36+WLKwpUqoP/au8Nsm22LGlc=
+	t=1707309175; cv=none; b=fhZhuS3e6DX2cvKWH8q+qVnKQqkPbeyhS8hN5UvB00AvLGzJRWEsmfZ5d04mw5AKPh2poGKF0Xz5nCAo3oB8XlWTBrg2P0LqBUXITOi0CiBzx8JioY9VE9NZfN+adtakNA2YAG7Ea2bqgAwBQnz7/S+FXz0wR0yiPsyRAKVWh8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707308994; c=relaxed/simple;
-	bh=khJSx+sRKXLZUupDrn2ywNGOHTSvykattMG1rSkvEOk=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=El2WA0+0AkS+hTu48N7ZzUVMDxUUDqdGPDwk6td/1mynMFfC1XXiyOyazcaWQ6IrJjy3MfKhkYwEMkv+0eygs/joXKNvBYJjyOgq/iSFIvje9z3Y90NZSXfuMeka8jnbH3oNkG0vVdEixRQlMQcOQLkOQTW2DkayjRh1W9ulMUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q3vJ7KWR; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707308992; x=1738844992;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=khJSx+sRKXLZUupDrn2ywNGOHTSvykattMG1rSkvEOk=;
-  b=Q3vJ7KWRQytrL0y9+0K7Ii2yCrE7EAb7ozLHmjddU3zKm4iXnM2jFMLD
-   UmT3xCeAZOz9aLPY3FhcG+qQfkUi1iSnkeY+T3aSpuD7QQVGrJunU5iLH
-   Oicewx5Fxla0rH37GzNUMhzZpoy++uPTiubYzK4Gfy1XOuuKvUPmo0Uim
-   T5yaVxsYsCLuLk6Mq48vCow5wn5yVegYcIEazlZ9fUiYb+9iffFQUNHmk
-   BR3TPnO5qYmsHrLsUIsnH6DIzR+QaYPkS1yvX0krDYlCNghja7ctrNtU3
-   yxFupu+FYXSXXg+JWGTCktC6HpVlz6aOdWk3WFDSF3kZU+1R+/FgXsu0Y
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="1254978"
-X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
-   d="scan'208";a="1254978"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 04:29:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
-   d="scan'208";a="1319731"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.215.224]) ([10.254.215.224])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 04:29:47 -0800
-Message-ID: <693ee23d-30c6-4824-9bb2-1cfbf2eccfef@linux.intel.com>
-Date: Wed, 7 Feb 2024 20:29:45 +0800
+	s=arc-20240116; t=1707309175; c=relaxed/simple;
+	bh=0A2O2AnCQRdpMky+QV6PJ304LgFb3EgxTyizFXYemWM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ONXB9JIfA7lEiEUC6qPk8IYHezMqguKkpzEJ5uxU1wH1ocEKzwFJOARZpXCxZv8ZqOG3C7RRM34ECQl596Ge76dr2w0x/6NNUqQES1lISY5jpTgP+SAYp7xX9CF1RnZbH+NpDbWJvtWKZ/u24xqzQXfgGvW0d3LEEsr/PyI5PdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BAC0D1FB;
+	Wed,  7 Feb 2024 04:33:34 -0800 (PST)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4761E3F5A1;
+	Wed,  7 Feb 2024 04:32:51 -0800 (PST)
+Date: Wed, 7 Feb 2024 12:32:48 +0000
+From: Dave Martin <Dave.Martin@arm.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, Will Deacon <will@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Oleg Nesterov <oleg@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>,
+	linux-kernel@vger.kernel.org, Doug Anderson <dianders@chromium.org>
+Subject: Re: [RFC PATCH] arm64/sve,sme: Refine scalable regset sizes at boot
+Message-ID: <ZcN4cGb66qjSId/B@e133380.arm.com>
+References: <ZcEaeLeEG8ve+Yp7@e133380.arm.com>
+ <ZcNVyMyiFB3Nndth@finisterre.sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
- Jacob Pan <jacob.jun.pan@linux.intel.com>,
- Longfang Liu <liulongfang@huawei.com>, "Zhao, Yan Y" <yan.y.zhao@intel.com>,
- Joel Granados <j.granados@samsung.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH v12 13/16] iommu: Improve iopf_queue_remove_device()
-Content-Language: en-US
-To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Nicolin Chen <nicolinc@nvidia.com>
-References: <20240207013325.95182-1-baolu.lu@linux.intel.com>
- <20240207013325.95182-14-baolu.lu@linux.intel.com>
- <BN9PR11MB527603AB5685FF3ED21647958C452@BN9PR11MB5276.namprd11.prod.outlook.com>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB527603AB5685FF3ED21647958C452@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcNVyMyiFB3Nndth@finisterre.sirena.org.uk>
 
-On 2024/2/7 10:50, Tian, Kevin wrote:
->> From: Lu Baolu<baolu.lu@linux.intel.com>
->> Sent: Wednesday, February 7, 2024 9:33 AM
->>
->> Convert iopf_queue_remove_device() to return void instead of an error code,
->> as the return value is never used. This removal helper is designed to be
->> never-failed, so there's no need for error handling.
->>
->> Ack all outstanding page requests from the device with the response code of
->> IOMMU_PAGE_RESP_INVALID, indicating device should not attempt any retry.
->>
->> Add comments to this helper explaining the steps involved in removing a
->> device from the iopf queue and disabling its PRI. The individual drivers
->> are expected to be adjusted accordingly. Here we just define the expected
->> behaviors of the individual iommu driver from the core's perspective.
->>
->> Suggested-by: Jason Gunthorpe<jgg@nvidia.com>
->> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
->> Reviewed-by: Jason Gunthorpe<jgg@nvidia.com>
->> Tested-by: Yan Zhao<yan.y.zhao@intel.com>
-> Reviewed-by: Kevin Tian<kevin.tian@intel.com>, with one nit:
+On Wed, Feb 07, 2024 at 10:04:56AM +0000, Mark Brown wrote:
+> On Mon, Feb 05, 2024 at 05:27:20PM +0000, Dave Martin wrote:
 > 
->> + * Removing a device from an iopf_queue. It's recommended to follow
->> these
->> + * steps when removing a device:
->>    *
->> - * Return: 0 on success and <0 on error.
->> + * - Disable new PRI reception: Turn off PRI generation in the IOMMU
->> hardware
->> + *   and flush any hardware page request queues. This should be done
->> before
->> + *   calling into this helper.
->> + * - Acknowledge all outstanding PRQs to the device: Respond to all
->> outstanding
->> + *   page requests with IOMMU_PAGE_RESP_INVALID, indicating the device
->> should
->> + *   not retry. This helper function handles this.
-> this implies calling iopf_queue_remove_device() here.
+> > index a5dc6f764195..5c2f91f84c31 100644
+> > --- a/arch/arm64/kernel/fpsimd.c
+> > +++ b/arch/arm64/kernel/fpsimd.c
+> > @@ -1189,6 +1189,7 @@ void __init sve_setup(void)
+> >  		pr_warn("%s: unvirtualisable vector lengths present\n",
+> >  			info->name);
+> >  
+> > +	arch_ptrace_sve_init(sve_vq_from_vl(info->max_vl));
+> >  	sve_efi_setup();
+> >  }
 > 
->> + * - Disable PRI on the device: After calling this helper, the caller could
->> + *   then disable PRI on the device.
->> + * - Call iopf_queue_remove_device(): Calling iopf_queue_remove_device()
->> + *   essentially disassociates the device. The fault_param might still exist,
->> + *   but iommu_page_response() will do nothing. The device fault parameter
->> + *   reference count has been properly passed from
->> iommu_report_device_fault()
->> + *   to the fault handling work, and will eventually be released after
->> + *   iommu_page_response().
->>    */
-> but here it suggests calling iopf_queue_remove_device() again. If the comment
-> is just about to detail the behavior with that invocation shouldn't it be merged
-> with the previous one instead of pretending to be the final step for driver
-> to call?
+> This will only get run if the system actually supports SVE since the
+> first thing that sve_setup() does is to exit if the system does not
+> support SVE.  That means that the size limiting will only be done on
+> systems that have SVE, but since we unconditionally register all our
+> regsets if the system doesn't have SVE it will end up with a maximally
+> sized SVE regset registered which doesn't seem ideal.  As I mentioned in
+> the other thread we should probably just not be registering unsupported
+> regsets with the core, that would avoid the issue without a change to
+> this patch.
+> 
+> A similar issue applies for SME.
 
-Above just explains the behavior of calling iopf_queue_remove_device().
+Good point.
 
-Best regards,
-baolu
+I guess if we're following this approach we also do have the option
+to knock out entries of the array altogether once cpufeatures are
+finalised.
+
+If we want a quick fix the silly memory allocation triggering for
+Douglas' splat then this probably isn't it, but if removing regsets at
+boot time is desirable anyway, we might kill two birds with one stone
+here.
+
+I'll wait for progress on the other threads before digging too deeply
+into this (but anyone wanting to see this patch expedited, please
+shout!)
+
+Cheers
+---Dave
 
