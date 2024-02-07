@@ -1,69 +1,68 @@
-Return-Path: <linux-kernel+bounces-56651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E01084CD38
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:49:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBBFD84CD39
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75AD5B237EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:49:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E11AB1C23984
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7A07E77C;
-	Wed,  7 Feb 2024 14:49:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CABBE7F7F6;
+	Wed,  7 Feb 2024 14:49:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="V+6LXN51"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hDUxzYaH"
+Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B647E788
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:49:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB457F7E6
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707317362; cv=none; b=P9EOzuqlwA3MRLGvPR5Mws35BvtcscH87H8UdZyIZTv9pSbwmHutCoCDDShmSKJS0KaMGURTsBtrMNPwN/Z8suZgFX6AdOwLq6CbaiFAsQR5MdPeBWjPy+/5GGoSnTc4i3PG7jcwBXAWT20LeoAVQ9PhH875tBR/DAw+J4eeeRU=
+	t=1707317366; cv=none; b=jFELrAnREB93lztQdayKXvYesBSK3StODyg/fqh0brSWqFMHRs4fRHJgT/UnMo9SVnjWEy574Oswzt17sExbYicZ4Xt8x7xipZLO6bUQLhX6FeBU3GTl/kt/0jxhDOrqRIqOyHlpGh2L97gmg+jlo/qTV/uRHfsTZkeI6rSvtb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707317362; c=relaxed/simple;
-	bh=6vzgHsVxuihU3g4TMAduWqr1ZW75RviyAlTg5U5fA5M=;
+	s=arc-20240116; t=1707317366; c=relaxed/simple;
+	bh=iJoX6VotvrSCPb1HffuAPKumVXhHe9gdUehIpt69Ano=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=sOfVXlgGCM9GhDtJKkwmpaKUMwkKMlt8sctJZOguQ1bCCrXvyEhiHWmxM2qDxI9DqzkxSw+Ex5mBKBGCpaJFdeAEpILKtTKih1+Ira8po7cf8CvKvFdfjh7K74KBjVfeVZFjtk4sRnElZSVPM4w+PbsMxC+Ki59eaboNRiYJae4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sebastianene.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=V+6LXN51; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=DCk8TutNYjuwfjQada492bHGc7zBpmAYHcFtIyWVvkMtog0HVB/yaLgxTDDk4Io536wuanRAbyMGQ3YZ2oHHn0TQgZcKJfOFqHr1dgNmXJB5bkPnCSXAZCZ/vbyutjVe7BArO/mLjD4Oi9ZwWxGlkQmy4/Pe9d3tVqii9TLpVlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sebastianene.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hDUxzYaH; arc=none smtp.client-ip=209.85.128.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sebastianene.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc64b659a9cso1170664276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 06:49:20 -0800 (PST)
+Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-40fb1690f94so3405085e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 06:49:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707317359; x=1707922159; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707317362; x=1707922162; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KuSad3U75XWRyrG0hVFC7e1TsgCe+6P5oSqEz6h0Hdo=;
-        b=V+6LXN51egocelhYpPCGC0FSCX3O9qOcgbKQeueTaPfPCCUdXooa8sH6hTR4s8ZqdH
-         sf3qWUxWDiMJ/3NNf7b4pKoMv95h77K1HqzL/5FPVSLh1eKOqnz3WCzq1mh5I2h44MDz
-         7vDGFIeZC0Th9ngqu75h6GDro6aDxL9zBENFMnsp6jeiozra+94th9FpWRBCPe51TSLA
-         7dKgZ+Pfs6OjwpTNYJ3v9mAlSNfn8denk0ik0uMYJjGic05ugTcM/qZVr5h2l0KbIYcH
-         4L0+3tHfXh5Dto/M3X5PENBJXSm1Gww8KNg4hMr9w4W2MgPWUsMJCKtvm4mU/IIUvFHu
-         Y/Yg==
+        bh=8tIUh8e7+u6fe/L9d2IoiyaWpJieVgDcIoakNbd8hrU=;
+        b=hDUxzYaHy4XiCBGOtzRrhQPnCE2Jd4DbQH3cY+fS2coIWL3hUpvC0SU2Y312FA3vrK
+         Xqacv3u51TAKXdkONKQwSjAd7Ahdmu1QfZ9Wf4VefRfYYkSnV4vJgJDFW8cCsUtPZ/SG
+         1nuaJ86vvabbVoSiP6fUZoH1RW3kKauwIeBXIZjr/lYE0KuZ8kzGV0GCkv0qLaL4Wmbz
+         jpK78nnAEMHUwkrBGuRHRnmhYE50K4mH4/hhvNGMgaUW7QJDD6yPknIkCiJ+gPGhjFSy
+         nL4WTj3iGkxivncPImHxCHvqU6R/7cVlXi247ouVXfKqX7g4ieGPl/3mSfw8yfZ7v+Ae
+         QVHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707317359; x=1707922159;
+        d=1e100.net; s=20230601; t=1707317362; x=1707922162;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KuSad3U75XWRyrG0hVFC7e1TsgCe+6P5oSqEz6h0Hdo=;
-        b=XOT7T/3CaDMFK/ezKHGftWt/6BZl18bXWYqd5R/xRTqv2T9CDyDerM2L6ijklorVXv
-         TBJaKS5I+b5LhJ74dOnax9lMqm2ukaV9BBC4MVn0DA7qLGdGll2O9HDMvjisZBaZrqWM
-         ZJapE4pmkaVNAN/QcHFlumieezpVm6XmjHMSKuQlScpAXGGvtgPERmMv6+x2zY0SDIgz
-         xwRnK7fBvb6FpdSYTIJcw61Fqg7is5GVJZfkByKxPAiiJQHak8VLDopIcT5NyvO5/5z2
-         r//6RBhesLFTULdqZtLr/orsU11qPCVr3RmrVPz0nG/Vw9BV2tVOCALubDn6Cx2VLfF4
-         xKjw==
-X-Forwarded-Encrypted: i=1; AJvYcCUQ9T2IhfyJHjM/oGVIpWVufPTNA4RWG+AKWDRR7wEwxr0L6tjlIvFN0mSAWFCECRUANQQBQ/pxl06I1IoF6mdMZNQ2GvxaYhOQ6zHQ
-X-Gm-Message-State: AOJu0YwmTtaZsoLpT5sC7KZRqylAd4FrSM+cRHDEIuLonIYd5iWDXj0W
-	asKEnbcfdYh2+dG7QkY3FUZsIssRw1uOk6m15V2pgMZwy+Mjc65AmWi5Luxi55BxcAFtAlObphK
-	dobnzHE60mrF5lq2iuocflGCKmQ==
-X-Google-Smtp-Source: AGHT+IFtCuGfAeqFdgjl+E/TRR4RFQ5mbVlens49Mh0ShuT1nuemqiHaz2jdZNbdKjru2453mCpm44BAccO7UGz0AYU=
+        bh=8tIUh8e7+u6fe/L9d2IoiyaWpJieVgDcIoakNbd8hrU=;
+        b=k6uL4BiWb1GNCexUd42+E1JsZDbCHnOdscAQE97Y2RkizVeY2tE7Edk3b0AELBU3dr
+         ZcU5suNI28LdNeinyNjJalruVrDPxpnYwxzWtGZA75fFONjjrnKHiL/f+w5raki8UOZv
+         268d0yWejcseBPCrbt5a5acNk2RT5GOrAkmHoivtJq4iN51WDZ+31ENfd6XL3Qsx2Vu2
+         4CMgDuZ0+UleLKnt/xepX8frD31bzeWm6vEyEQnTMeZO66S1b41Mu+bNld58S9ME1vjL
+         V+2dO6NU8m7z0Kowfp39BMA/30VtkSWg9l3oY8ZFVQnUmQzUj7cKTwevJyXgba+0S6eX
+         94dA==
+X-Gm-Message-State: AOJu0YzzL+c2RZhh6Hmi5p6uPQGkJpu+hq87Q5FJsewGqc4dfTSbB1Ip
+	ijLP6t3wXxifDVGYcF872bLVAvMan92rLQyUR3/2hGajTJVB9oJ8Wj99xnkt2zM0YTFc3Mv8ngv
+	OcmcxGMZIuc9sOortVccW3XZnQA==
+X-Google-Smtp-Source: AGHT+IHZWozJw6iEdHYJvbi8rYI97x/8VSLY+PehA27Gu1vNkYuY53+7wudnkk76X2VvuGrFo0tvrbQt62XM8gjTJX0=
 X-Received: from sebkvm.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:cd5])
- (user=sebastianene job=sendgmr) by 2002:a05:6902:200c:b0:dc6:53c3:bcbd with
- SMTP id dh12-20020a056902200c00b00dc653c3bcbdmr1272474ybb.7.1707317359551;
- Wed, 07 Feb 2024 06:49:19 -0800 (PST)
-Date: Wed,  7 Feb 2024 14:48:30 +0000
+ (user=sebastianene job=sendgmr) by 2002:a05:600c:518b:b0:40f:e205:9868 with
+ SMTP id fa11-20020a05600c518b00b0040fe2059868mr158210wmb.0.1707317361885;
+ Wed, 07 Feb 2024 06:49:21 -0800 (PST)
+Date: Wed,  7 Feb 2024 14:48:31 +0000
 In-Reply-To: <20240207144832.1017815-2-sebastianene@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,8 +72,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240207144832.1017815-2-sebastianene@google.com>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Message-ID: <20240207144832.1017815-3-sebastianene@google.com>
-Subject: [PATCH v5 1/4] arm64: ptdump: Expose the attribute parsing functionality
+Message-ID: <20240207144832.1017815-4-sebastianene@google.com>
+Subject: [PATCH v5 2/4] arm64: ptdump: Use the mask from the state structure
 From: Sebastian Ene <sebastianene@google.com>
 To: catalin.marinas@arm.com, gshan@redhat.com, james.morse@arm.com, 
 	mark.rutland@arm.com, maz@kernel.org, oliver.upton@linux.dev, 
@@ -86,144 +85,81 @@ Cc: kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
 	Sebastian Ene <sebastianene@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-To keep the same output format as the arch specific ptdump and for the
-sake of reusability, move the parser's state tracking code out
-of the arch specific.
+Printing the descriptor attributes requires accessing a mask which has a
+different set of attributes for stage-2. In preparation for adding support
+for the stage-2 pagetables dumping, use the mask from the local context
+and not from the globally defined pg_level array. Store a pointer to
+the pg_level array in the ptdump state structure. This will allow us to
+extract the mask which is wrapped in the pg_level array and use it for
+descriptor parsing in the note_page.
 
 Signed-off-by: Sebastian Ene <sebastianene@google.com>
 ---
- arch/arm64/include/asm/ptdump.h | 41 ++++++++++++++++++++++++++++++++-
- arch/arm64/mm/ptdump.c          | 36 ++---------------------------
- 2 files changed, 42 insertions(+), 35 deletions(-)
+ arch/arm64/include/asm/ptdump.h |  1 +
+ arch/arm64/mm/ptdump.c          | 13 ++++++++-----
+ 2 files changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/arch/arm64/include/asm/ptdump.h b/arch/arm64/include/asm/ptdump.h
-index 581caac525b0..23510be35084 100644
+index 23510be35084..4e728d2a1f2c 100644
 --- a/arch/arm64/include/asm/ptdump.h
 +++ b/arch/arm64/include/asm/ptdump.h
-@@ -9,6 +9,8 @@
- 
- #include <linux/mm_types.h>
- #include <linux/seq_file.h>
-+#include <linux/ptdump.h>
-+
- 
- struct addr_marker {
- 	unsigned long start_address;
-@@ -21,15 +23,52 @@ struct ptdump_info {
- 	unsigned long			base_addr;
- };
- 
-+struct prot_bits {
-+	u64		mask;
-+	u64		val;
-+	const char	*set;
-+	const char	*clear;
-+};
-+
-+struct pg_level {
-+	const struct prot_bits	*bits;
-+	const char		*name;
-+	size_t			num;
-+	u64			mask;
-+};
-+
-+/*
-+ * The page dumper groups page table entries of the same type into a single
-+ * description. It uses pg_state to track the range information while
-+ * iterating over the pte entries. When the continuity is broken it then
-+ * dumps out a description of the range.
-+ */
-+struct pg_state {
-+	struct ptdump_state		ptdump;
-+	struct seq_file			*seq;
-+	const struct addr_marker	*marker;
-+	unsigned long			start_address;
-+	int				level;
-+	u64				current_prot;
-+	bool				check_wx;
-+	unsigned long			wx_pages;
-+	unsigned long			uxn_pages;
-+};
-+
- void ptdump_walk(struct seq_file *s, struct ptdump_info *info);
-+void note_page(struct ptdump_state *pt_st, unsigned long addr, int level,
-+	       u64 val);
- #ifdef CONFIG_PTDUMP_DEBUGFS
- #define EFI_RUNTIME_MAP_END	DEFAULT_MAP_WINDOW_64
- void __init ptdump_debugfs_register(struct ptdump_info *info, const char *name);
- #else
- static inline void ptdump_debugfs_register(struct ptdump_info *info,
- 					   const char *name) { }
--#endif
-+#endif /* CONFIG_PTDUMP_DEBUGFS */
- void ptdump_check_wx(void);
-+#else
-+static inline void note_page(void *pt_st, unsigned long addr,
-+			     int level, u64 val) { }
- #endif /* CONFIG_PTDUMP_CORE */
- 
- #ifdef CONFIG_DEBUG_WX
+@@ -45,6 +45,7 @@ struct pg_level {
+  */
+ struct pg_state {
+ 	struct ptdump_state		ptdump;
++	struct pg_level			*pg_level;
+ 	struct seq_file			*seq;
+ 	const struct addr_marker	*marker;
+ 	unsigned long			start_address;
 diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
-index e305b6593c4e..64127c70b109 100644
+index 64127c70b109..015ed65d3e9b 100644
 --- a/arch/arm64/mm/ptdump.c
 +++ b/arch/arm64/mm/ptdump.c
-@@ -66,31 +66,6 @@ static struct addr_marker address_markers[] = {
- 		seq_printf(m, fmt);	\
- })
- 
--/*
-- * The page dumper groups page table entries of the same type into a single
-- * description. It uses pg_state to track the range information while
-- * iterating over the pte entries. When the continuity is broken it then
-- * dumps out a description of the range.
-- */
--struct pg_state {
--	struct ptdump_state ptdump;
--	struct seq_file *seq;
--	const struct addr_marker *marker;
--	unsigned long start_address;
--	int level;
--	u64 current_prot;
--	bool check_wx;
--	unsigned long wx_pages;
--	unsigned long uxn_pages;
--};
--
--struct prot_bits {
--	u64		mask;
--	u64		val;
--	const char	*set;
--	const char	*clear;
--};
--
- static const struct prot_bits pte_bits[] = {
- 	{
- 		.mask	= PTE_VALID,
-@@ -170,13 +145,6 @@ static const struct prot_bits pte_bits[] = {
- 	}
- };
- 
--struct pg_level {
--	const struct prot_bits *bits;
--	const char *name;
--	size_t num;
--	u64 mask;
--};
--
- static struct pg_level pg_level[] = {
- 	{ /* pgd */
- 		.name	= "PGD",
-@@ -248,8 +216,8 @@ static void note_prot_wx(struct pg_state *st, unsigned long addr)
- 	st->wx_pages += (addr - st->start_address) / PAGE_SIZE;
- }
- 
--static void note_page(struct ptdump_state *pt_st, unsigned long addr, int level,
--		      u64 val)
-+void note_page(struct ptdump_state *pt_st, unsigned long addr, int level,
-+	       u64 val)
+@@ -220,11 +220,12 @@ void note_page(struct ptdump_state *pt_st, unsigned long addr, int level,
+ 	       u64 val)
  {
  	struct pg_state *st = container_of(pt_st, struct pg_state, ptdump);
++	struct pg_level *pg_info = st->pg_level;
  	static const char units[] = "KMGTPE";
+ 	u64 prot = 0;
+ 
+ 	if (level >= 0)
+-		prot = val & pg_level[level].mask;
++		prot = val & pg_info[level].mask;
+ 
+ 	if (st->level == -1) {
+ 		st->level = level;
+@@ -250,10 +251,10 @@ void note_page(struct ptdump_state *pt_st, unsigned long addr, int level,
+ 			unit++;
+ 		}
+ 		pt_dump_seq_printf(st->seq, "%9lu%c %s", delta, *unit,
+-				   pg_level[st->level].name);
+-		if (st->current_prot && pg_level[st->level].bits)
+-			dump_prot(st, pg_level[st->level].bits,
+-				  pg_level[st->level].num);
++				   pg_info[st->level].name);
++		if (st->current_prot && pg_info[st->level].bits)
++			dump_prot(st, pg_info[st->level].bits,
++				  pg_info[st->level].num);
+ 		pt_dump_seq_puts(st->seq, "\n");
+ 
+ 		if (addr >= st->marker[1].start_address) {
+@@ -284,6 +285,7 @@ void ptdump_walk(struct seq_file *s, struct ptdump_info *info)
+ 	st = (struct pg_state){
+ 		.seq = s,
+ 		.marker = info->markers,
++		.pg_level = &pg_level[0],
+ 		.level = -1,
+ 		.ptdump = {
+ 			.note_page = note_page,
+@@ -321,6 +323,7 @@ void ptdump_check_wx(void)
+ 			{ 0, NULL},
+ 			{ -1, NULL},
+ 		},
++		.pg_level = &pg_level[0],
+ 		.level = -1,
+ 		.check_wx = true,
+ 		.ptdump = {
 -- 
 2.43.0.594.gd9cf4e227d-goog
 
