@@ -1,167 +1,152 @@
-Return-Path: <linux-kernel+bounces-56011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6703284C4E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:19:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4644E84C4EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:21:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99B1B1C2532E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:19:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F243D281EC5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 835D21CD33;
-	Wed,  7 Feb 2024 06:19:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C65471CD2B;
+	Wed,  7 Feb 2024 06:21:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fd4ls4ap"
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OhO43A2e"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C00510788;
-	Wed,  7 Feb 2024 06:19:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DF341CD26
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 06:21:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707286776; cv=none; b=HBMY84p10kufaqfEyBar2sY2c/0ZQTwhz5/fQSKnPenvNRcv98Il3A2smtgrdnYpMsLfwFwC3gQemFjTrPzoPSGhN0cDeNJwNDbvC/S44lChGZnHIZYL0YPRB28WBMqJjggpNSQU47W5suKGqINj1tl88FrTWk7c0zvfMbiN8Ho=
+	t=1707286863; cv=none; b=Rg/48TYFvdaxZz4Pt8bh8m5PirqaonLJM0mFUBB+0RXM9TO2FWNlKSc6C2/y2hNb7Br66cGxORK1ZkqaQQPv2Y1yoAmeMZzM9OOwkb7OTTk/pdqTF8O1toqw0OyhrXr5/eDtDOTrT2cJ6jasrohAH/5sM+nLrO1YbYVWQy56sr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707286776; c=relaxed/simple;
-	bh=Zw+zuvVKn7BHCJYKlJtcd0VYWlBnyG3eURH4PJZTXzw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bCo9rUNhYbgunmCIClXYKtCjDf2oiN99hr7/d0SDqKl5LQGKgIfTkIkGiTtK0ycIqWoezjXluslHVYI7IelO6UIG5zHqLsh1qO07Y7B8/VCp59fAIsW3Zf4//FE1c/mNRhx1jIGWjPiKoNDI0IK5JrfkUTfxHIEx0YEjSB8Pf0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fd4ls4ap; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6818f3cf00aso1797006d6.0;
-        Tue, 06 Feb 2024 22:19:34 -0800 (PST)
+	s=arc-20240116; t=1707286863; c=relaxed/simple;
+	bh=l1clcTPdVURHS4P5RVBj+1FOj0fLnM8XRADul96ykm8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iPCSC+iVdESrCB/wbZ4wrB/r2VpFgxOt48S9atZs3SVLCvQrLjxcRFWNpicC46jsUYreusPoGeGOiSH73Ug/urYzbmA1H0/mAnxUjDNo93p4l4E4H8DhBp2PEPnEs6vF63vkGvbEoeTp+9aQm6lkZEa7eflUmdJqjFacMTXUsyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OhO43A2e; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40efcb37373so2069415e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 22:21:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707286774; x=1707891574; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fvxHz8UI4TMnELHil0IULsGrxG7+ElSx4mu4N8xJ1KA=;
-        b=Fd4ls4apCZLNIGOwhLeHBb2VwcCzFehgFsvZl2gGdO5Z4wWMs+G7HeWlBU5QLCLUgp
-         nlnwMwqUGlQge6/u9CZ1ttHeIM5/917tGheA/uHSWJJ39yUa/DMkfpdFkJjnHl2x1e/T
-         7IWqbu1VHX+iNuzHWSbHXrwCRWwfEW2JdPOxfMkaIdLmaUan8YkiryVPDz3KI7ciBxVx
-         ahwcsikcWnNTRjxt0sAsoaHUsrsU8XZfmJV4n099HQs35+YcggKWAYd+LPij3MhLB+Km
-         /L2VH88jnDB6W8jNLoGz7NBB0VUA3O/hX0IilysOxKUxWuUdakhBsCAJBNQfwtMIRQ3d
-         EAkQ==
+        d=linaro.org; s=google; t=1707286859; x=1707891659; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qZCDdTRk8ciH6FS26XWJyVrDKJALrXXLu6bJhxDtbHY=;
+        b=OhO43A2eEz85oHAAmEJpxzJjlP3U2AbHicGVFZETg9FyoSV+DqKhXwIwO06d/f/v1T
+         2TIA77WPfijcdrtDwh+BA0ZmcS1oHEGHQDpDoMfMFjd4WRS43h+J9CVtURuRzmDlzmEq
+         w4xuWPxk1Gmgv3UPv0EhdQu8CXqGM0j157OjZXDRQHNCkA9QgYEFZh/286amByS8Ywzi
+         ihJws0BfraV3MJCpLqueYvBEaFvMUdsVO1iejtXCZmj0X+HvHrRCihAEVv7PgipgD+YG
+         u+IXleM/MnIjHeAwQlfOnPuHRx652GqRbAjqrZfWfrI/lVMUwPd9fcjk6lRAhcE7SREN
+         IxwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707286774; x=1707891574;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fvxHz8UI4TMnELHil0IULsGrxG7+ElSx4mu4N8xJ1KA=;
-        b=IBN4e9Tr686dGsBXUGw19tdKN5QfK9S3XFzhOoG2JV98xhMIVGVv1a5SMM6eQQ6RVO
-         hUPjmwN9p6gEdGXV9ygWr4f4p6DtkbNjppXWpfmL+OnuLbcgOEhHuMG67SiXRGOeKCla
-         Qzw8TrZEjjgM7jSs7w66zoUSPImfrr2672nGG/MXNGBFPEggoAnoz7fhrt8k4X8ozFad
-         grQHCTw+vVFI9BfsjZIWN16nGdLREkt5r6Q5JmcqbhQHwAshreqGBN4yyJEyWs82Xk44
-         5QRqFBKhvc+zlH111Tau4u2xhacow3oGIvJDoueDBtFB07X9XgeX/4vnvyfA8h6d80b/
-         t2Yw==
-X-Gm-Message-State: AOJu0YyXWIDoIUbIa8lTj3WZH5rt1khUbLzIF7HYnsOKhyVcJW/XOLRI
-	vmxfQHZYHSYRuxb7tm7lqwpFZLuFUM75C7S9lptH3KjsbMSYaAJsd9Lb71ydTnZtJgecedDW8Ka
-	FFXrCeAjeS+9SC50R2judd03ToP4=
-X-Google-Smtp-Source: AGHT+IHH+mNF5lXuZAsuSpyRHnUZd/EhrIFMnrt2+Dexy3XfE0zvOhtGwBQ6/SaFaAed8UpcWIeI6mjNX75zDlSZ560=
-X-Received: by 2002:ad4:5cc6:0:b0:68c:8775:7593 with SMTP id
- iu6-20020ad45cc6000000b0068c87757593mr5861197qvb.12.1707286774036; Tue, 06
- Feb 2024 22:19:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707286859; x=1707891659;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qZCDdTRk8ciH6FS26XWJyVrDKJALrXXLu6bJhxDtbHY=;
+        b=micqKXqBK/prnj6nyw1b45ZUiFRx6Uqy76Vhu3pHbMe24A0BFjldpKhbM/PkrAOnMI
+         y7b1q3vkJO5eSPov9Iedxm3vV/34c37Eua08eBF3SgyNIbsdapL3RvofDdMkRZjGjJvr
+         ymk3NzjEBZFrt1bIvxWtJjdI4iJYhezeL0ZpiH/Ol/53TVcrBiBRmzRng74hSTxXWiBi
+         uN8Wt6u7ypTEUSA89V1KEyNnhpRbJlBW1UwWapFFIcnUlVgVIGnat9jp2V7k+gx1HX/T
+         PNj7iY88YUA7Q5hzjJSP/sDhjoP0b5ToXCjPV351ye98A+g4Z+fFWulo9m+aKGTHQ6oU
+         Qd2Q==
+X-Gm-Message-State: AOJu0YxtE2XVhjL5ody1uzLJ499gKGkiuye3wfoZaQM7EsY8AsHK/oIy
+	qp7e/1rl3ZBTv21mMIiuaJlMui569aUmunGaEq/lyEc5H3HKtoX3ZGJkdfdqOFA=
+X-Google-Smtp-Source: AGHT+IG4xM+HZbEIWxMtNnq3z/vbBUehFRqRlrmFRVXJBVJIfxcsZmP1vgixaZRfj4Dwn64BO86YDQ==
+X-Received: by 2002:adf:ea11:0:b0:33b:187f:ccc2 with SMTP id q17-20020adfea11000000b0033b187fccc2mr2393960wrm.71.1707286859461;
+        Tue, 06 Feb 2024 22:20:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXht0s+5XLYwmbMYGHO9hYHEKtMIUR8SMKjE4DZmjf+xKGxyhIM5rAZEuuWoLJKwsmcjTJs9nRIxCvdnS2zNlZmsth5vb75/NUrmSnamzu6Nt/8tFLcoPOdOgbIVMKx9HBjsF/tXdRsxueEHq+4ftQiT7E1J6bn7RlJrlpF2L3vdespp4G/GGaqNeCTnd8RKoH/7VYvHPHv8ComfNLd6Ci7C7pdZofvJ7hPHSSqahghDNe2LZrxB8TBLGVwLUcZJ1rtmDqSADOu7gwyKM+M49seY5zX8jq7yzu4I0O6Dj8zY8/p4Bh8oDr7vhNQGF9pd+8JR3L1h4gMlWmZHDQsVx2ixvVDwCGBPJ7s4kM6MmkLlMbrdewCARgnf/ojZEYTmog8rkQQEh44gz42ax6rAKg3tGaVvSg4Qa0XZ0mlNdJRenfI3isFZgd4mgXz5eLsmzdEUgx9Kj2BRYUJ9mWKaBa7qxNRi0n9r5aB5yhxKKJ9F3iML0JckyMxbw8R7AF7wVUV1fGE/88WJwOba5dcg/brdetGteJiciGg2I4S18Zxuca6VPNGPUy1tiesEoYgTYmudjw6QJolwQPKUhuzPYmsijAr8tHXsA==
+Received: from [192.168.0.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id x7-20020a5d54c7000000b0033b444a39a9sm622871wrv.54.2024.02.06.22.20.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 22:20:58 -0800 (PST)
+Message-ID: <16a5e423-1111-49ff-ad6c-b0bb89a4879a@linaro.org>
+Date: Wed, 7 Feb 2024 06:20:56 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206201858.952303-1-kent.overstreet@linux.dev>
- <20240206201858.952303-3-kent.overstreet@linux.dev> <ZcKpSU9frvTUb2eq@dread.disaster.area>
-In-Reply-To: <ZcKpSU9frvTUb2eq@dread.disaster.area>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 7 Feb 2024 08:19:22 +0200
-Message-ID: <CAOQ4uxgMY+QeYGn5wH0N9GhJD1h-EWqrng99XxMtXXUCB8zL=g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] overlayfs: Convert to super_set_uuid()
-To: Dave Chinner <david@fromorbit.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, brauner@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] spi: s3c64xx: explicitly include <linux/types.h>
+Content-Language: en-US
+To: Sam Protsenko <semen.protsenko@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: broonie@kernel.org, andi.shyti@kernel.org,
+ krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
+ linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ andre.draszik@linaro.org, peter.griffin@linaro.org, kernel-team@android.com,
+ willmcvicker@google.com, robh+dt@kernel.org, conor+dt@kernel.org,
+ devicetree@vger.kernel.org
+References: <20240206085238.1208256-1-tudor.ambarus@linaro.org>
+ <20240206085238.1208256-2-tudor.ambarus@linaro.org>
+ <CAPLW+4=Xd+B=ZncqPgU4qaJ8zY8JJvJZApdUW_v0w6yr2cy9Sg@mail.gmail.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <CAPLW+4=Xd+B=ZncqPgU4qaJ8zY8JJvJZApdUW_v0w6yr2cy9Sg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 6, 2024 at 11:49=E2=80=AFPM Dave Chinner <david@fromorbit.com> =
-wrote:
->
-> On Tue, Feb 06, 2024 at 03:18:50PM -0500, Kent Overstreet wrote:
-> > We don't want to be settingc sb->s_uuid directly anymore, as there's a
-> > length field that also has to be set, and this conversion was not
-> > completely trivial.
-> >
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > Cc: Miklos Szeredi <miklos@szeredi.hu>
-> > Cc: Amir Goldstein <amir73il@gmail.com>
-> > Cc: linux-unionfs@vger.kernel.org
-> > ---
-> >  fs/overlayfs/util.c | 14 +++++++++-----
-> >  1 file changed, 9 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/fs/overlayfs/util.c b/fs/overlayfs/util.c
-> > index 0217094c23ea..f1f0ee9a9dff 100644
-> > --- a/fs/overlayfs/util.c
-> > +++ b/fs/overlayfs/util.c
-> > @@ -760,13 +760,14 @@ bool ovl_init_uuid_xattr(struct super_block *sb, =
-struct ovl_fs *ofs,
-> >                        const struct path *upperpath)
-> >  {
-> >       bool set =3D false;
-> > +     uuid_t uuid;
-> >       int res;
-> >
-> >       /* Try to load existing persistent uuid */
-> > -     res =3D ovl_path_getxattr(ofs, upperpath, OVL_XATTR_UUID, sb->s_u=
-uid.b,
-> > +     res =3D ovl_path_getxattr(ofs, upperpath, OVL_XATTR_UUID, uuid.b,
-> >                               UUID_SIZE);
-> >       if (res =3D=3D UUID_SIZE)
-> > -             return true;
-> > +             goto success;
-> >
-> >       if (res !=3D -ENODATA)
-> >               goto fail;
-> > @@ -794,14 +795,14 @@ bool ovl_init_uuid_xattr(struct super_block *sb, =
-struct ovl_fs *ofs,
-> >       }
-> >
-> >       /* Generate overlay instance uuid */
-> > -     uuid_gen(&sb->s_uuid);
-> > +     uuid_gen(&uuid);
-> >
-> >       /* Try to store persistent uuid */
-> >       set =3D true;
-> > -     res =3D ovl_setxattr(ofs, upperpath->dentry, OVL_XATTR_UUID, sb->=
-s_uuid.b,
-> > +     res =3D ovl_setxattr(ofs, upperpath->dentry, OVL_XATTR_UUID, uuid=
-b,
-> >                          UUID_SIZE);
-> >       if (res =3D=3D 0)
-> > -             return true;
-> > +             goto success;
->
-> This is a bit weird. Normally the success case is in line, and we
-> jump out of line for the fail case. I think this is more better:
->
->         if (res)
->                 goto fail;
-> success:
->         super_set_uuid(sb, uuid.b, sizeof(uuid));
->         return true;
-> >
-> >  fail:
-> >       memset(sb->s_uuid.b, 0, UUID_SIZE);
->
-> And then the fail case follows naturally.
->
 
-I agree. Please use the label name
-set_uuid:
 
-Also the memset() in fail: case is not needed anymore, because
-with your change we do not dirty sb->s_uuid in this function.
+On 2/6/24 18:02, Sam Protsenko wrote:
+> On Tue, Feb 6, 2024 at 2:52 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>>
+>> The driver uses u32 and relies on an implicit inclusion of
+>> <linux/types.h>.
+>>
+>> It is good practice to directly include all headers used, it avoids
+>> implicit dependencies and spurious breakage if someone rearranges
+>> headers and causes the implicit include to vanish.
+>>
+>> Include the missing header.
+>>
+>> Fixes: 230d42d422e7 ("spi: Add s3c64xx SPI Controller driver")
+> 
+> Not sure if Fixes tag is needed here.
 
-Thanks,
-Amir.
+We have already talked about this. If a patch that causes the implicit
+include to vanish is backported to stable, it will reveal the missing
+header here and will result in backporting this patch as well. So, as a
+good practice let's allow this patch to be queued to stable, it will
+avoid possible compilation errors.
+
+I guess Mark has to break the tie again. Or Greg if he cares, I added
+him in To:.
+
+> 
+>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>> ---
+>>  drivers/spi/spi-s3c64xx.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+>> index 72c35dbe53b2..c15ca6a910dc 100644
+>> --- a/drivers/spi/spi-s3c64xx.c
+>> +++ b/drivers/spi/spi-s3c64xx.c
+>> @@ -17,6 +17,7 @@
+>>  #include <linux/platform_device.h>
+>>  #include <linux/pm_runtime.h>
+>>  #include <linux/spi/spi.h>
+>> +#include <linux/types.h>
+> 
+> Is this really needed for the further patches in this series?
+> 
+
+Yes, because in patch 3/4 I use u8 and u16 and I don't want to use those
+without having the header included. Do you find this wrong?
+
+>>
+>>  #define MAX_SPI_PORTS          12
+>>  #define S3C64XX_SPI_QUIRK_CS_AUTO      (1 << 1)
+>> --
+>> 2.43.0.594.gd9cf4e227d-goog
+>>
 
