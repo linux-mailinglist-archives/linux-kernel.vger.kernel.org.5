@@ -1,204 +1,193 @@
-Return-Path: <linux-kernel+bounces-57274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A632484D60B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:53:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C98A484D609
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:53:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38B19289245
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:53:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31E8C1F24AA3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:53:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC90A1EB2B;
-	Wed,  7 Feb 2024 22:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8A7A1D691;
+	Wed,  7 Feb 2024 22:53:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bx4B6DK9"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FSP9qAyt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314A0200D8;
-	Wed,  7 Feb 2024 22:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138821CF95;
+	Wed,  7 Feb 2024 22:53:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707346404; cv=none; b=PeObR9UAGj2nJGwHdbLV4GFEKXf7TuWuQPrGkEV3Nos7B/GLC/zyIKuVAfePeftZayATHJq9dbF86Fjj5vr8U1rF2CXy7QY1YG8J9nKCr9UcN/y9wa71UthrF3K76h+bq/n4IiIqIcIHl3zRPJq+B5WZ1S5xRWE8Vn/szC6I12o=
+	t=1707346397; cv=none; b=cbbS5OF7MF6e26EyeAlUKkKRbq4lbdsb30h6X3niXq0FLTZSdcmtD/5mi1cyQyyP9OYloWgpz18PB5pzfJ6Rm5cXL49fxCNHH3wPqlobQiME5k+eLJJnzwa76Dn2SeMACCkvzA3LA3M8mHOH2mDhNNlGQCyOLX/ZKBjxFeBqqjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707346404; c=relaxed/simple;
-	bh=nmb2k3C9v+KzAmt2g3cPPXFlei6g+FVLekXJpHiBpLI=;
+	s=arc-20240116; t=1707346397; c=relaxed/simple;
+	bh=rP4JcaMQDvEMYdZZT3B3rq2quv1kyXqyFd0xfhCJ6O4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NS/JFQWxsk2zCAxt6XubWZepqLaZht/c6YuBXEJp6nbzfedrPLvhovpemA6pmB2WtgX1QJPok2g6TYkmjck/bVJdPiKM+CtXb5Vonqorb40Q0xjfCRb0uE/kAbOR5FSV4afj8n76bRmEjrPdptCdiIvpkj8j2EWlNe3JOREaZvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bx4B6DK9; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707346402; x=1738882402;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=nmb2k3C9v+KzAmt2g3cPPXFlei6g+FVLekXJpHiBpLI=;
-  b=bx4B6DK9cAZW4NeoF+ZNq8KkKYJ3r2FMD0aBkRwCc2B1aWPSVjA+ZvKd
-   s3QrytosAXeEXwP2ZGQv343c2wAx+rgMqjo9C26yIUtfba+FtLwi0YIOv
-   aOg6mpKde7VbQph7Xsq/1YZURkXMOVd5muoCEn2LaPbinsFIamFGadqkg
-   lS42kimccj4seghVoD9kT7k/3aAsliinV2m1TjKOkbxe0Y5F9B7l4gr/+
-   3GMO3QFSwEjozigOcpw6k+lMLefVF4apNqF938XPDtWYC8x8VJcBUQiZR
-   3Kizc/Yr9VaEmPxobF9/Ly7rSmHInMW0dQno7FTUclPc+Xb3NhZNHiWXq
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="12467562"
-X-IronPort-AV: E=Sophos;i="6.05,252,1701158400"; 
-   d="scan'208";a="12467562"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 14:53:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,252,1701158400"; 
-   d="scan'208";a="1494186"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 07 Feb 2024 14:53:17 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rXqn3-000376-2u;
-	Wed, 07 Feb 2024 22:53:13 +0000
-Date: Thu, 8 Feb 2024 06:52:42 +0800
-From: kernel test robot <lkp@intel.com>
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Prashant Malani <pmalani@chromium.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Benson Leung <bleung@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Guenter Roeck <groeck@chromium.org>,
-	Emilie Roberts <hadrosaur@google.com>,
-	"Nyman, Mathias" <mathias.nyman@intel.com>,
-	"Regupathy, Rajaram" <rajaram.regupathy@intel.com>,
-	"Radjacoumar, Shyam Sundar" <ssradjacoumar@google.com>,
-	Samuel Jacob <samjaco@google.com>, linux-usb@vger.kernel.org,
-	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Uday Bhat <uday.m.bhat@intel.com>
-Subject: Re: [PATCH 2/2] platform/chrome: cros_ec_typec: Make sure the USB
- role switch has PLD
-Message-ID: <202402080600.zOq5UvYq-lkp@intel.com>
-References: <20240207145851.1603237-3-heikki.krogerus@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RvO6vcII7/y0G0/Xawoq5N3xzcCm/rSaovyrVn+km7yh2Oo6edUWWCn8TxKBxcQTBUdwuajbLd4ECi9gSBR7lEZABpxrFhjfFRxtsg56FBnIi+juSOJkIFdp7HWkBD8REBx882kIciSDndH/gUge/WG0pJsboqenU3T/D9yetgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FSP9qAyt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E834BC433C7;
+	Wed,  7 Feb 2024 22:53:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707346396;
+	bh=rP4JcaMQDvEMYdZZT3B3rq2quv1kyXqyFd0xfhCJ6O4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FSP9qAytXk5I+VJJ+/D10LMsrO7jWkOfGTT0vjK9NKYdzznet0UiMF8hU5l3jU3M/
+	 HwA6oqKDA6UCspCvv57rLttajuxe0uySipZ2rZ3GGnK1+v/k6ZHzyjr7j7d8Gg6OCV
+	 qroXLIbnGBPeaOktqpA15je2gQrKPCzsNDTiB19E4visd51oR0cfbQGfPoH6Ttex8u
+	 de5L92gghArYaYA/gmziHBKmptTuytviOxLkZTO7kY4x7mgQftpPB/mIn6JC3n1hNd
+	 nK8PpZJ/UIA7gMYRhK636jpxK0YTUWQZBDns1Zg2c7Wnl7DYqbVPWecFVn3dhJ8gsE
+	 e9pNR+gIlz8rg==
+Date: Wed, 7 Feb 2024 23:53:13 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	linux-doc@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+	Chen Zhongjin <chenzhongjin@huawei.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Heiko Carstens <hca@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Peng Zhang <zhangpeng.00@bytedance.com>
+Subject: Re: [PATCH 2/2] rcu-tasks: Eliminate deadlocks involving do_exit()
+ and RCU tasks
+Message-ID: <ZcQJ2Vec1_b5ooS_@pavilion.home>
+References: <20240129225730.3168681-1-boqun.feng@gmail.com>
+ <20240129225730.3168681-3-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240207145851.1603237-3-heikki.krogerus@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240129225730.3168681-3-boqun.feng@gmail.com>
 
-Hi Heikki,
+Le Mon, Jan 29, 2024 at 02:57:27PM -0800, Boqun Feng a écrit :
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> Holding a mutex across synchronize_rcu_tasks() and acquiring
+> that same mutex in code called from do_exit() after its call to
+> exit_tasks_rcu_start() but before its call to exit_tasks_rcu_stop()
+> results in deadlock.  This is by design, because tasks that are far
+> enough into do_exit() are no longer present on the tasks list, making
+> it a bit difficult for RCU Tasks to find them, let alone wait on them
+> to do a voluntary context switch.  However, such deadlocks are becoming
+> more frequent.  In addition, lockdep currently does not detect such
+> deadlocks and they can be difficult to reproduce.
+> 
+> In addition, if a task voluntarily context switches during that time
+> (for example, if it blocks acquiring a mutex), then this task is in an
+> RCU Tasks quiescent state.  And with some adjustments, RCU Tasks could
+> just as well take advantage of that fact.
+> 
+> This commit therefore eliminates these deadlock by replacing the
+> SRCU-based wait for do_exit() completion with per-CPU lists of tasks
+> currently exiting.  A given task will be on one of these per-CPU lists for
+> the same period of time that this task would previously have been in the
+> previous SRCU read-side critical section.  These lists enable RCU Tasks
+> to find the tasks that have already been removed from the tasks list,
+> but that must nevertheless be waited upon.
+> 
+> The RCU Tasks grace period gathers any of these do_exit() tasks that it
+> must wait on, and adds them to the list of holdouts.  Per-CPU locking
+> and get_task_struct() are used to synchronize addition to and removal
+> from these lists.
+> 
+> Link: https://lore.kernel.org/all/20240118021842.290665-1-chenzhongjin@huawei.com/
+> 
+> Reported-by: Chen Zhongjin <chenzhongjin@huawei.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-kernel test robot noticed the following build errors:
+With that, I think we can now revert 28319d6dc5e2 (rcu-tasks: Fix
+synchronize_rcu_tasks() VS zap_pid_ns_processes()). Because if the task
+is in rcu_tasks_exit_list, it's treated just like the others and must go
+through check_holdout_task(). Therefore and unlike with the previous srcu thing,
+a task sleeping between exit_tasks_rcu_start() and exit_tasks_rcu_finish() is
+now a quiescent state. And that kills the possible deadlock.
 
-[auto build test ERROR on usb/usb-testing]
-[also build test ERROR on usb/usb-next usb/usb-linus chrome-platform/for-next chrome-platform/for-firmware-next driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.8-rc3 next-20240207]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> -void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
+> +void exit_tasks_rcu_start(void)
+>  {
+> -	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
+> +	unsigned long flags;
+> +	struct rcu_tasks_percpu *rtpcp;
+> +	struct task_struct *t = current;
+> +
+> +	WARN_ON_ONCE(!list_empty(&t->rcu_tasks_exit_list));
+> +	get_task_struct(t);
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Heikki-Krogerus/usb-roles-Link-the-switch-to-its-connector/20240207-230017
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-patch link:    https://lore.kernel.org/r/20240207145851.1603237-3-heikki.krogerus%40linux.intel.com
-patch subject: [PATCH 2/2] platform/chrome: cros_ec_typec: Make sure the USB role switch has PLD
-config: arm-defconfig (https://download.01.org/0day-ci/archive/20240208/202402080600.zOq5UvYq-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240208/202402080600.zOq5UvYq-lkp@intel.com/reproduce)
+Is this get_task_struct() necessary?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402080600.zOq5UvYq-lkp@intel.com/
+> +	preempt_disable();
+> +	rtpcp = this_cpu_ptr(rcu_tasks.rtpcpu);
+> +	t->rcu_tasks_exit_cpu = smp_processor_id();
+> +	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
 
-All errors (new ones prefixed by >>):
+Do we really need smp_mb__after_unlock_lock() ?
 
->> drivers/platform/chrome/cros_ec_typec.c:75:20: error: incomplete definition of type 'struct acpi_device'
-                   if (adev && !adev->pld_crc)
-                                ~~~~^
-   include/linux/acpi.h:795:8: note: forward declaration of 'struct acpi_device'
-   struct acpi_device;
-          ^
-   drivers/platform/chrome/cros_ec_typec.c:76:8: error: incomplete definition of type 'struct acpi_device'
-                           adev->pld_crc = to_acpi_device_node(fwnode)->pld_crc;
-                           ~~~~^
-   include/linux/acpi.h:795:8: note: forward declaration of 'struct acpi_device'
-   struct acpi_device;
-          ^
-   drivers/platform/chrome/cros_ec_typec.c:76:47: error: incomplete definition of type 'struct acpi_device'
-                           adev->pld_crc = to_acpi_device_node(fwnode)->pld_crc;
-                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
-   include/linux/acpi.h:795:8: note: forward declaration of 'struct acpi_device'
-   struct acpi_device;
-          ^
-   3 errors generated.
+> +	if (!rtpcp->rtp_exit_list.next)
+> +		INIT_LIST_HEAD(&rtpcp->rtp_exit_list);
+> +	list_add(&t->rcu_tasks_exit_list, &rtpcp->rtp_exit_list);
+> +	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+> +	preempt_enable();
+>  }
+>  
+>  /*
+> - * Contribute to protect against tasklist scan blind spot while the
+> - * task is exiting and may be removed from the tasklist. See
+> - * corresponding synchronize_srcu() for further details.
+> + * Remove the task from the "yet another list" because do_exit() is now
+> + * non-preemptible, allowing synchronize_rcu() to wait beyond this point.
+>   */
+> -void exit_tasks_rcu_stop(void) __releases(&tasks_rcu_exit_srcu)
+> +void exit_tasks_rcu_stop(void)
+>  {
+> +	unsigned long flags;
+> +	struct rcu_tasks_percpu *rtpcp;
+>  	struct task_struct *t = current;
+>  
+> -	__srcu_read_unlock(&tasks_rcu_exit_srcu, t->rcu_tasks_idx);
+> +	WARN_ON_ONCE(list_empty(&t->rcu_tasks_exit_list));
+> +	rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, t->rcu_tasks_exit_cpu);
+> +	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+> +	list_del_init(&t->rcu_tasks_exit_list);
+> +	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+> +	put_task_struct(t);
 
+And conversely this put_task_struct()?
 
-vim +75 drivers/platform/chrome/cros_ec_typec.c
+Thanks.
 
-    23	
-    24	#define DP_PORT_VDO	(DP_CONF_SET_PIN_ASSIGN(BIT(DP_PIN_ASSIGN_C) | BIT(DP_PIN_ASSIGN_D)) | \
-    25					DP_CAP_DFP_D | DP_CAP_RECEPTACLE)
-    26	
-    27	static int cros_typec_parse_port_props(struct typec_capability *cap,
-    28					       struct fwnode_handle *fwnode,
-    29					       struct device *dev)
-    30	{
-    31		struct fwnode_handle *sw_fwnode;
-    32		const char *buf;
-    33		int ret;
-    34	
-    35		memset(cap, 0, sizeof(*cap));
-    36		ret = fwnode_property_read_string(fwnode, "power-role", &buf);
-    37		if (ret) {
-    38			dev_err(dev, "power-role not found: %d\n", ret);
-    39			return ret;
-    40		}
-    41	
-    42		ret = typec_find_port_power_role(buf);
-    43		if (ret < 0)
-    44			return ret;
-    45		cap->type = ret;
-    46	
-    47		ret = fwnode_property_read_string(fwnode, "data-role", &buf);
-    48		if (ret) {
-    49			dev_err(dev, "data-role not found: %d\n", ret);
-    50			return ret;
-    51		}
-    52	
-    53		ret = typec_find_port_data_role(buf);
-    54		if (ret < 0)
-    55			return ret;
-    56		cap->data = ret;
-    57	
-    58		/* Try-power-role is optional. */
-    59		ret = fwnode_property_read_string(fwnode, "try-power-role", &buf);
-    60		if (ret) {
-    61			dev_warn(dev, "try-power-role not found: %d\n", ret);
-    62			cap->prefer_role = TYPEC_NO_PREFERRED_ROLE;
-    63		} else {
-    64			ret = typec_find_power_role(buf);
-    65			if (ret < 0)
-    66				return ret;
-    67			cap->prefer_role = ret;
-    68		}
-    69	
-    70		/* Assing the USB role switch the correct pld_crc if it's missing. */
-    71		sw_fwnode = fwnode_find_reference(fwnode, "usb-role-switch", 0);
-    72		if (!IS_ERR_OR_NULL(sw_fwnode)) {
-    73			struct acpi_device *adev = to_acpi_device_node(sw_fwnode);
-    74	
-  > 75			if (adev && !adev->pld_crc)
-    76				adev->pld_crc = to_acpi_device_node(fwnode)->pld_crc;
-    77			fwnode_handle_put(sw_fwnode);
-    78		}
-    79	
-    80		cap->fwnode = fwnode;
-    81	
-    82		return 0;
-    83	}
-    84	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>  }
+>  
+>  /*
+> -- 
+> 2.43.0
+> 
 
