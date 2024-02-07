@@ -1,62 +1,73 @@
-Return-Path: <linux-kernel+bounces-57253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D058884D5BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB4EF84D5BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:21:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85BBB1F210D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:21:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C5DE1F2261D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:21:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 099DC149DFE;
-	Wed,  7 Feb 2024 22:21:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01DEA1CD25;
+	Wed,  7 Feb 2024 22:21:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PUVxTqRN"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gUvP5LaQ"
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4851A149DE1;
-	Wed,  7 Feb 2024 22:21:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD93149DE1;
+	Wed,  7 Feb 2024 22:21:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707344476; cv=none; b=G8lV43u3Wp+m/YNSfXd1AGUBBXKVTg/rZjR8dD38fxj/aospaVCXxUZjrw8JEA4q0uCmLV1X6NWjtM6wf6TNKgqOGiXe4t6uHxby7e5TJvazynZPVVW+UKyISVKTHpubbnLiTJiDOQ8Og6YvOfvTfmiWn9lk1vTMaiENLKTXtBE=
+	t=1707344497; cv=none; b=h723pXzDbyZU7ORwgVZJP4TYnHl6qGL6DpjrEwEbUs6VxeVDM2l6p8HqiYS1RfiTTkxLh5gITMzRg2eMFcnlGZHYfpPGJ2bgBQapLc/1XUBOKqtoaugK9m6RoSL5bC6r/cKzo3J8+L49oAbD8qvqvL6hdN3cjer+oZ/iZd1ueq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707344476; c=relaxed/simple;
-	bh=MwKKEGQFdFPG17wTp+h4gYVVhNXo2sy1ZgK90C/wlfc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=tBWV0/PC1/DaEzb7RI5r9JPRhlhApvOkyYfbOJz02Z1lNcyn7l4PufgP6r+bPHSmX1DwrbbJYg1ApU+i8B9n/iWg49AEOaEeioEY6+c9DEYYQnfqfru/QtP3OfhHVPlEUg4KG0F7R+wCV0Jn+KxrL7P6j85CzF3+/v7CjMUsX8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=PUVxTqRN; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 417MKeTo092705;
-	Wed, 7 Feb 2024 16:20:40 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707344440;
-	bh=eJhrs04xgEpmz99w4LZjg0w+qu2XVcprjfFaFuIENRs=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=PUVxTqRNaX/jUnmKv47wB7SCWj2JxwopdOptbRF1OTFKZJYiqq0vMmAIaxFgVCh94
-	 39oahiqbKdv8cFNCMeTwR95k5Lfb+nqMo7YAEcmT7kG38Lv1ParELxzjDHP+jctdTh
-	 ahBXLUPGnrBOrjZC6eOvJOQgBbBvvyilY9tpWj+w=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 417MKerg046097
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 7 Feb 2024 16:20:40 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 7
- Feb 2024 16:20:40 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 7 Feb 2024 16:20:40 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 417MKdtZ043771;
-	Wed, 7 Feb 2024 16:20:39 -0600
-Message-ID: <acd3c7f2-930d-46c0-9924-9775e9795fca@ti.com>
-Date: Wed, 7 Feb 2024 16:20:39 -0600
+	s=arc-20240116; t=1707344497; c=relaxed/simple;
+	bh=7Yu3npk101DAnDKrjGerLcOuTAsg7Rx/yrW5tAqMvRc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fJTK5drLygvKQJiLu/YpvvPgAuQmk92nQBzwDk+a03kPbcghb/RGQLMTD9byVh1x5Hp42HSeQyebEpx0TvXdQYDTOtJkHer6y8D5VzhlEeviwd/Uc1Y/x+/srXI1gL5+1lmcP+l654oSfKixV982bxN/W/+wQaJqugHNUdP/pt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gUvP5LaQ; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-59cb1e24e91so451779eaf.0;
+        Wed, 07 Feb 2024 14:21:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707344494; x=1707949294; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RhWhKt4UvQfn+hHPuSvATyjnFTI4urLTAt1CdH1oJcU=;
+        b=gUvP5LaQAR/QQeM07X47VZyfcWFWs1sQ0aSU6hwC8pqX/ZK//5jQVJ0eXT/9cBbiSk
+         NnBGzERruwfexriWUjlCcVoJ19p3a4C6icqUjpFVcMEkhRQ18h4sCPavNbwDqF8D8cKe
+         ktzgkg2h09F9Chci4mYodf+QcBpZ0pVQDX8zup6y5TVV5GFVZS9iqLFJ0anYzQKJvXGY
+         b8iB47kNQeNw1EeloEF7fUsAXNEP0JMHFlNvGdL1hmSJG49NN7vvl620q3CvIXJfCx3h
+         8A/QUvRoERxbnv17J7tFyH5lljkVoERabjPE0FDehmZZlHlDPjNz7ddgKpNEL87fLIOs
+         4fAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707344494; x=1707949294;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RhWhKt4UvQfn+hHPuSvATyjnFTI4urLTAt1CdH1oJcU=;
+        b=iNoHzZuqT19bEVT5elZjJJJKB1XMw61oaJH/+g5UYYV1VbZwRm/qwfl9QGf/8o/rTl
+         btsmDAha8KJD/6tVXC6sMo81PSlgvR4F3h56jTFGavo/X71Uwpauito1bW64LskYSXiE
+         eM7/X0/RHet/qiQnrC5VmiRW2Hx/ILnhk6rWZoIN5a0856/TJ6kNXZvlzUH5YjQrvEh2
+         xfFFTByslsH/+7fTzeD/MELsrXgoMjkyahgFYPRThCP6lXumdWKsb4jAhwtcXg0VZlZM
+         /0C3qeuIc1G+JznfSAV1JY+373Eylzq4oKgyan3zRU3USA4LxhQE33hHjt2hRBm8Sd7B
+         W0WQ==
+X-Gm-Message-State: AOJu0YxaJTbRs0l0XTB8wqPFfVMEfcx0n/s8tSaGwqHoLszjBrQ2YFQv
+	WbZPLxXVj3OEdbxj8IxMtfWxCj8niBarksQOgCiqVF1LCTJAR41b
+X-Google-Smtp-Source: AGHT+IGVNXLYiyp+WCoCDCWY1EWAEdG9n+N7bi8javw/3HrS6Ymixm9xXAtE9BMeSAUW4jXcyS8pMA==
+X-Received: by 2002:a05:6358:7e52:b0:176:a14c:544b with SMTP id p18-20020a0563587e5200b00176a14c544bmr3869949rwm.11.1707344482418;
+        Wed, 07 Feb 2024 14:21:22 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVQQYjxGLfIqvqukBD6sUihh1nEZkuPztmhEMUnBQu7drOwi73/6vxNxqcFoFOhYiZrlWoDcYML8yRoBGvBjacxACBDuivBu+Ze78WPqNOG5M5K7LysQBP9ushu0H3ZiLWkiPxt+kf71AUtLbrSGEF8ffIt+qOf+V77IzMBuP29aZdHptFzbHy2/MBN4B5u+OpFeW3X0VZ7py88tcddIsdnvgJn1KYsijRSwNrZbttZBEAJCTkacvpbXrLPA6rjdxSg4qw+EqjcGQvZRcuyS1E=
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id a28-20020a637f1c000000b005dbf22d6e1asm2194524pgd.56.2024.02.07.14.21.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 14:21:20 -0800 (PST)
+Message-ID: <4c62b202-c2af-400d-bb3c-92d33317620e@gmail.com>
+Date: Wed, 7 Feb 2024 14:21:14 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,106 +75,46 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: am62-phyboard-lyra: Add overlay to enable
- a GPIO fan
+Subject: Re: [PATCH net v2 9/9] net: fill in MODULE_DESCRIPTION()s for
+ dsa_loop_bdinfo
 Content-Language: en-US
-To: Nathan Morrisson <nmorrisson@phytec.com>, <nm@ti.com>, <vigneshr@ti.com>,
-        <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <upstream@lists.phytec.de>,
-        <w.egorov@phytec.de>
-References: <20240207172820.478332-1-nmorrisson@phytec.com>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240207172820.478332-1-nmorrisson@phytec.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Breno Leitao <leitao@debian.org>, kuba@kernel.org, davem@davemloft.net,
+ pabeni@redhat.com, edumazet@google.com, Andrew Lunn <andrew@lunn.ch>,
+ Vladimir Oltean <olteanv@gmail.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, horms@kernel.org
+References: <20240207101929.484681-1-leitao@debian.org>
+ <20240207101929.484681-10-leitao@debian.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240207101929.484681-10-leitao@debian.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 2/7/24 11:28 AM, Nathan Morrisson wrote:
-> The phyBOARD-Lyra has a GPIO fan header. This overlay enables the fan
-> header and sets the fan to turn on at 65C.
+On 2/7/24 02:19, Breno Leitao wrote:
+> W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
+> Add descriptions to the DSA loopback fixed PHY module.
 > 
-> Signed-off-by: Nathan Morrisson <nmorrisson@phytec.com>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 > ---
->   arch/arm64/boot/dts/ti/Makefile               |  1 +
->   .../ti/k3-am62-phyboard-lyra-gpio-fan.dtso    | 51 +++++++++++++++++++
->   2 files changed, 52 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso
+>   drivers/net/dsa/dsa_loop_bdinfo.c | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-> index 52c1dc910308..379fb4f31a1f 100644
-> --- a/arch/arm64/boot/dts/ti/Makefile
-> +++ b/arch/arm64/boot/dts/ti/Makefile
-> @@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-dev.dtb
->   dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-mallow.dtb
->   dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-yavia.dtb
->   dtb-$(CONFIG_ARCH_K3) += k3-am62-lp-sk.dtb
-> +dtb-$(CONFIG_ARCH_K3) += k3-am62-phyboard-lyra-gpio-fan.dtbo
-
-Why not call this k3-am625-phyboard-lyra-gpio-fan.dtbo to match the
-name of the base board it applies to better?
-
-Andrew
-
+> diff --git a/drivers/net/dsa/dsa_loop_bdinfo.c b/drivers/net/dsa/dsa_loop_bdinfo.c
+> index 237066d30704..fd412ae4e84b 100644
+> --- a/drivers/net/dsa/dsa_loop_bdinfo.c
+> +++ b/drivers/net/dsa/dsa_loop_bdinfo.c
+> @@ -32,4 +32,5 @@ static int __init dsa_loop_bdinfo_init(void)
+>   }
+>   arch_initcall(dsa_loop_bdinfo_init)
 >   
->   # Boards with AM62Ax SoC
->   dtb-$(CONFIG_ARCH_K3) += k3-am62a7-sk.dtb
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso b/arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso
-> new file mode 100644
-> index 000000000000..9c05748bdd9d
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso
-> @@ -0,0 +1,51 @@
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
-> +/*
-> + * Copyright (C) 2024 PHYTEC America LLC
-> + * Author: Garrett Giordano <ggiordano@phytec.com>
-> + */
-> +
-> +/dts-v1/;
-> +/plugin/;
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/thermal/thermal.h>
-> +#include "k3-pinctrl.h"
-> +
-> +&{/} {
-> +	fan: gpio-fan {
-> +		compatible = "gpio-fan";
-> +		gpio-fan,speed-map = <0 0 8600 1>;
-> +		gpios = <&main_gpio0 40 GPIO_ACTIVE_LOW>;
-> +		#cooling-cells = <2>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&gpio_fan_pins_default>;
-> +		status = "okay";
-> +	};
-> +};
-> +
-> +&main_pmx0 {
-> +	gpio_fan_pins_default: gpio-fan-default-pins {
-> +		pinctrl-single,pins = <
-> +			AM62X_IOPAD(0x0a4, PIN_OUTPUT, 7) /* (M22) GPMC0_DIR.GPIO0_40 */
-> +		>;
-> +	};
-> +};
-> +
-> +&thermal_zones {
-> +	main0_thermal: main0-thermal {
-> +		trips {
-> +			main0_thermal_trip0: main0-thermal-trip {
-> +				temperature = <65000>;  /* millicelsius */
-> +				hysteresis = <2000>;    /* millicelsius */
-> +				type = "active";
-> +			};
-> +		};
-> +
-> +		cooling-maps {
-> +			map0 {
-> +				trip = <&main0_thermal_trip0>;
-> +				cooling-device = <&fan THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +			};
-> +		};
-> +	};
-> +};
+> +MODULE_DESCRIPTION("DSA loopback fixed PHY library");
+
+Should be:
+
+DSA mock-up switch driver
+
+>   MODULE_LICENSE("GPL");
+
+-- 
+Florian
+
 
