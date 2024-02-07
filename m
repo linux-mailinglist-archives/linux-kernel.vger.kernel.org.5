@@ -1,139 +1,113 @@
-Return-Path: <linux-kernel+bounces-56614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A8184CC96
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:25:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90DF484CC9D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:25:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC1FF1C25743
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:25:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42CE01F26AF1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953E57CF01;
-	Wed,  7 Feb 2024 14:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07E07C6EE;
+	Wed,  7 Feb 2024 14:25:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="T/XogiOr"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RRxvGBaY"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574337A727
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:24:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0077A727;
+	Wed,  7 Feb 2024 14:25:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707315900; cv=none; b=LzzqrfiXR05Kr1X+CE9nsJK5NyHEp6pez2NnghH3FIYQGd5tkG8SFpTNTkidZC3sTUIYJuqOtWiv071qLb1PH9p4EdXfq3CVP6p5MULBy/Xl9vwjvTFh1DIRkkDcbOqYxB7z6LARBNI2clc00LHw3y5bv2JlxwhMh8ZHt2nv5CE=
+	t=1707315920; cv=none; b=IWJvLmpI4squOZOJjpHET2bf5L0XCbMf4EdBpOYLyTwjebUoi0YF1H9E8/CPjSs0SxhwoDz/dV03vdKIa8xNGZ1x3bGjh8pbuqDtgjOOLDGqw4Xcz2hF9BTRctEa0olD8bA81K7l5VeIbmLgDQjABK95AEpbjiiowH1h+g2PBjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707315900; c=relaxed/simple;
-	bh=fmDZRKAJ+iyEaLTPH9eG1pOzWbScOmhUKK0nz1DRrTU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZLRhd2FQwyRnGy2xeMm+1ZRZOSyjgQjVGagSk7AVK/aA0bclh1LDu8vEPXfgh/FuLearuq43TOdKGvrYhithBNTWvaDIzaFXiGPPNYrnl3VFfW4Yd6dJ24Ct5JKFDasJwJWBdE5v+/1bI6Y+2qBEtS0dPjwajGDrAanqOAD1t74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=T/XogiOr; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso441005a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 06:24:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707315898; x=1707920698; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RWTf399WiJ8kfKwENv7YV66YYsIFa333tQkHLNWYJlE=;
-        b=T/XogiOrbAciZ8Z/r8zOQlhz7B82kGxr2tGGrH1BUhP/fjZ24vDDL6cQnQh/ux02TI
-         zZKun0SNpW9AyadLwPESUtmXvfwyOblaFqFh6ALmd2LkaVw7omsWTkWFKtIg1mQryBaz
-         7fwtW1Jfky12Dspqqeop2U2B0AxtLQdEeukvQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707315898; x=1707920698;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RWTf399WiJ8kfKwENv7YV66YYsIFa333tQkHLNWYJlE=;
-        b=CAbuX3ohoRtwQhUd0W4gVEXxbBszUORc/wBgb/n5WUY3mwTXkGQUI9ZNmJJ5QqgXpx
-         ARb3pRhmqi21U7bp5fbs/c9hXFEjN7WhE0ctG6zDe3Y64/5y9qc9EImFONnqUCq2sfpT
-         YBdtACJ+uh4w/l0C+ivdYVxS4ONQJvZPkZor33frM1FcEFM9YjCa2L1wTtNh4wHRJERe
-         WBVomAb45IES3ynQXEbfKYyNVbDOf64HIsAwYsnX/5DpZsqF/5wFPgqxJRG+r5/dKQnC
-         YZDI38eyRRZ5VcX6v+fbExxypNOQhgZxa0f8h2a8BRvgDnQeO4v9a8veTHNPd699AcVF
-         sQqg==
-X-Gm-Message-State: AOJu0YxAe596PF8wUNyF31E+mcbLoPldFonpHh/B708SKdzxTQjjoRfM
-	vyYap46hnnDF9bvGXfzATpLNUEAxox04zk40onZ9J2iwzXI+TxqJ3NQsezulDw==
-X-Google-Smtp-Source: AGHT+IFsc+BSTCgRv1ZpK/ieJdv+YqxnqxXsVsJR7lZChMujr1OjP6TDVd83adcGpGxlPXua9nMFag==
-X-Received: by 2002:a05:6a21:398d:b0:199:86d6:43de with SMTP id ad13-20020a056a21398d00b0019986d643demr6419947pzc.58.1707315898566;
-        Wed, 07 Feb 2024 06:24:58 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWqYTB32oLv18AVZReWaKpoBixSOUFmOIGH3sK31jBy9rdQH2doA9rUaPvUaYBAzoAoonnCl0ZZeK/uy5tPYvJR3QjpCEYuDqOdMLVL4cVIZbknrzU+ke7rR6aed0gHWz2X/kXxVDlpsCMogMn6Ye03/Y1SXDfXgbQaeOG8EXTAmXDWnpCP5AZJfNzA2IVTEQ5w3pHxl/r24gGGLCIVlLhMlGP3cqT5LMBSsWRZNjDvZino6v5WKXN3gixGndvEK81j25WB9JTGFESG/TTTxD/UbOjs30B/qWtcYO924wHevka7gOWVhNYsWSboI6fa904vKvIEA/3YnQ1RplKR7/DsikG7N6M5YaHVo23Zgmj8ksnlSmzT40z4OmAjyEy9
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id kz16-20020a170902f9d000b001d987592c6asm1473701plb.232.2024.02.07.06.24.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 06:24:57 -0800 (PST)
-Date: Wed, 7 Feb 2024 06:24:57 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	linux-security-module <linux-security-module@vger.kernel.org>,
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] LSM: add security_execve_abort() hook
-Message-ID: <202402070622.D2DCD9C4@keescook>
-References: <8fafb8e1-b6be-4d08-945f-b464e3a396c8@I-love.SAKURA.ne.jp>
- <999a4733-c554-43ca-a6e9-998c939fbeb8@I-love.SAKURA.ne.jp>
+	s=arc-20240116; t=1707315920; c=relaxed/simple;
+	bh=goer9JW5LQVNm42ou1bYbGgI7bBWhVy7CrVfB19USoM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=RYKUtXc2WLEqYqso+aRk58TUkcFlhWRwgajHyDh+00AciuWUOMzofLtYdSeOcLmkECYmzvxK2CpacSedqmSao3Mc36WjKClgJuRkkF0v0sMKBptGw1Q9HyqxJEqHjoji7ujWBt1408eLHwuCFMYy5FJggNlXF4adizQFZUQ5ehA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=RRxvGBaY; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 417EP8wD021937;
+	Wed, 7 Feb 2024 08:25:08 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707315908;
+	bh=FzuzGJ8GsxhI1TBl02HGU19mwn0nxJbHBIPkm1no2Og=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=RRxvGBaYBXMwn7fqssRZuaRVFDgQGs2eV14ztIOVNRMM5bgFQ+LZqVZbOY5ZFQBSb
+	 F9Cwqy9fcCyMDiGOxtlR1ZIhaJ96ucusc//3fnU/p6dZbxWqsoL37AGny8pm6LNYbG
+	 0Gx3MbFTzvCq8ozqp0pmAxXkJw104xtmX/oWDGzk=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 417EP8cv046099
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 7 Feb 2024 08:25:08 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 7
+ Feb 2024 08:25:08 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 7 Feb 2024 08:25:08 -0600
+Received: from [10.249.141.75] ([10.249.141.75])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 417EP4FF087603;
+	Wed, 7 Feb 2024 08:25:05 -0600
+Message-ID: <1d5c0570-fa10-4b87-9833-1710f33db01f@ti.com>
+Date: Wed, 7 Feb 2024 19:55:04 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <999a4733-c554-43ca-a6e9-998c939fbeb8@I-love.SAKURA.ne.jp>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 0/2] Add CAN and OSPI support for AM69-SK platform
+Content-Language: en-US
+To: <sabiya.d@mistralsolutions.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <linus.walleij@linaro.org>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Dasnavis
+ Sabiya <sabiya.d@ti.com>,
+        "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
+References: <20240205200744.216572-1-sabiya.d@ti.com>
+From: "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20240205200744.216572-1-sabiya.d@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Sat, Feb 03, 2024 at 07:52:54PM +0900, Tetsuo Handa wrote:
-> A regression caused by commit 978ffcbf00d8 ("execve: open the executable
-> file before doing anything else") has been fixed by commit 4759ff71f23e
-> ("exec: Check __FMODE_EXEC instead of in_execve for LSMs") and commit
-> 3eab830189d9 ("uselib: remove use of __FMODE_EXEC"). While fixing this
-> regression, Linus commented that we want to remove current->in_execve flag.
-> 
-> The current->in_execve flag was introduced by commit f9ce1f1cda8b ("Add
-> in_execve flag into task_struct.") when TOMOYO LSM was merged, and the
-> reason was explained in commit f7433243770c ("LSM adapter functions.").
-> 
-> In short, TOMOYO's design is not compatible with COW credential model
-> introduced in Linux 2.6.29, and the current->in_execve flag was added for
-> emulating security_bprm_free() hook which has been removed by introduction
-> of COW credential model.
-> 
-> security_task_alloc()/security_task_free() hooks have been removed by
-> commit f1752eec6145 ("CRED: Detach the credentials from task_struct"),
-> and these hooks have been revived by commit 1a2a4d06e1e9 ("security:
-> create task_free security callback") and commit e4e55b47ed9a ("LSM: Revive
-> security_task_alloc() hook and per "struct task_struct" security blob.").
-> 
-> But security_bprm_free() hook did not revive until now. Now that Linus
-> wants TOMOYO to stop carrying state across two independent execve() calls,
-> and TOMOYO can stop carrying state if a hook for restoring previous state
-> upon failed execve() call were provided, this patch revives the hook.
-> 
-> Since security_bprm_committing_creds() and security_bprm_committed_creds()
-> hooks are called when an execve() request succeeded, we don't need to call
-> security_bprm_free() hook when an execve() request succeeded. Therefore,
-> this patch adds security_execve_abort() hook which is called only when an
-> execve() request failed after successful prepare_bprm_creds() call.
-> 
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-This looks good to me.
+On 2/6/2024 1:37 AM, sabiya.d@mistralsolutions.com wrote:
+> From: Dasnavis Sabiya <sabiya.d@ti.com>
+>
+> Hi All,
+>
+> This series adds support for the below interfaces on AM69-SK platform:
+> -  CAN support on both MCU and MAIN domains
+> -  OSPI NOR flash support
+>
+> v2: Changelog:
+> 1) Removed CAN interface aliasing.
+> 2) Updated bootph property on the leaf nodes.
+>
+> Link to v1: https://lore.kernel.org/lkml/20240118153524.4135901-1-sabiya.d@ti.com/
+>
+> Dasnavis Sabiya (2):
+>    arm64: dts: ti: k3-am69-sk: Enable CAN interfaces for AM69 SK board
+>    arm64: dts: ti: k3-am69-sk: Add support for OSPI flash
 
-Given this touches execve and is related to the recent execve changes,
-shall I carry this in the execve tree for testing and send a PR to Linus
-for it before v6.8 releases?
 
-There's already an Ack from Serge, so this seems a reasonable way to go
-unless Paul would like it done some other way?
+For Series
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Udit Kumar <u-kumar1@ti.com>
 
--- 
-Kees Cook
+
+>   arch/arm64/boot/dts/ti/k3-am69-sk.dts | 162 ++++++++++++++++++++++++++
+>   1 file changed, 162 insertions(+)
+>
 
