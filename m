@@ -1,137 +1,236 @@
-Return-Path: <linux-kernel+bounces-56392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EFB784C99A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C493084C99E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:33:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA7171C25A03
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:28:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9F461C25A03
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:33:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5202D1B270;
-	Wed,  7 Feb 2024 11:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fcItn1I3"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2151A1B5BF;
+	Wed,  7 Feb 2024 11:32:51 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E96901AACC;
-	Wed,  7 Feb 2024 11:28:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 733DC1B295;
+	Wed,  7 Feb 2024 11:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707305318; cv=none; b=LJgeQFOl9QAcJtmSJTMmn+B6oCKV2zuN0nceId1/9VOh8NUktGikQRS6L9NVn+cHziEEBw92EgyyifGAUGCVBkMdyfhztKh+03p5Qk7RNo+fwB2DUUPdh+QUtCuW+h72p8HpVfeLzyggtigtl/4TVa8Hkdsv6Vz0Qf1Za/R9id8=
+	t=1707305570; cv=none; b=GutbZXjCad7Ll++M/gsqVZdntoUX6fczSO09jS2hDChFL82+6qwQaflEXiMJcLPmX7dn7S8KlMMu6/XCnfSP4QNKiDFFk8npGfQEyDeCTvR5zrdErwmvMeqBRJnTFcCPERiPSboaU63iQFO02XM1qp2enbVmVWOD/Ow0NxDHuHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707305318; c=relaxed/simple;
-	bh=mChLLvfn+WsSX/4Ol3EUABXaUd0ZI/tG6Zz98KwoPc8=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=OBfM5tvUk4HhwVAaWUltDX8WhNvf0cXyBbZhHOBozNOyVmSQ/A+TEoe+frBRr3SDhyqtnN6vLAfc+sw4vyyUqmujV1Ie1j6Eluls0Xrq1nAgir5gNw8R3Eckq0XIN6hwkbL8I0kMaIX4iawfm36zVURCoZWjBNZMmGW9cd0zCow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fcItn1I3; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d0512f6e32so6382881fa.1;
-        Wed, 07 Feb 2024 03:28:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707305315; x=1707910115; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1gcUDslEA/Bw1BsVVSuc8cGc8YlbjxoxUNk/ASpPHtQ=;
-        b=fcItn1I34GrrLxVAC3blwnZCWOfGDhkbPiH7wr8aBKBZacDEPfyyruh9Jc+/l/XwKN
-         aw+QXgFsC43T3DHpofjL1RJCP0kepJEgyd5mcVlCp2CCsPlfp6BhN3lP5xQ8XO59l4zk
-         AKJW0WiUV/QXJatYfM3GxxEu06v9iMPrKCtxVZsT//ndN/qQqvnphTUdUCvpo3FEw+2c
-         XZD7jtQKkoXFYklSAMibRu+eviAfX0zUNRM7RA0wHtnmle/HRkevFaD9X28wxQwj9oyi
-         40TF820bo65CrI8TXfcdqqmJNaW9cY6WFrStH0AfkMP+Pa/bor/jg/aqbEEZeFOMnJXO
-         oaZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707305315; x=1707910115;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1gcUDslEA/Bw1BsVVSuc8cGc8YlbjxoxUNk/ASpPHtQ=;
-        b=pqDtjaooSTABkGlPxEw6BcG/IWxweq6GXMgpT5g39ddpGf4wyXIZ7/9Q843WNbUX9t
-         K6T2pAFR8bPu56oJCiqbukigrYm25p7j6q9OFgOEWGHAtXzItLDdtFpZiRVBEUqT857s
-         /jWsw+vgaz5lk+j7xFPEnFZi3yGO58tP9Hxf7KpJwDib5aE0q+pJ8jeYFCGpLz6KVCFQ
-         KAQv1iFwy9eAy7MHJgKhpHsDV4CdfBfUXLg/gHXJTdvPQPkvAUJYUpXQNk1Rtgg7wahp
-         raZuGxv9GcV9BRffyPm6r7qszohYjDcc+P9usgB41uWTmCc0bdEryh2PNb8ByIK+kbqg
-         aCkQ==
-X-Gm-Message-State: AOJu0YzhWP7qP5uOhz0sVGNVkBYK3cSwUUBWZSjh49dCVqEgQszOnsPb
-	n56IxCISsCxrp6lghff+1LzlEctXYj1JjW2b+C4fTNrgSIJIr1Mq
-X-Google-Smtp-Source: AGHT+IFNRXDFAOkcXrn2c+JUyuqEXiC3mt4GsQhBZg/UU6aYKE28T7UtCDIb7BE3huf/0GRfOqulxA==
-X-Received: by 2002:a2e:bb95:0:b0:2d0:c9b5:7257 with SMTP id y21-20020a2ebb95000000b002d0c9b57257mr755754lje.8.1707305314678;
-        Wed, 07 Feb 2024 03:28:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVroSiFaR5ihQieFacoRUgcGAmUc85HOb1iiHk5sO3ix0iPsdZpc2MojpiVStXx4aaDY3KCxsbGroSTujTAmDKKXYNV6tGfpjBP3A56EXJXGJfiRkAtnyWOXQl7Y2Y9uRg+e65GwSg2nojmbSTKxo6HJU0PkjoO1SXFf2y+
-Received: from [192.168.1.105] ([178.176.77.110])
-        by smtp.gmail.com with ESMTPSA id bd9-20020a05651c168900b002d0a10d7618sm148184ljb.75.2024.02.07.03.28.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 03:28:34 -0800 (PST)
-Subject: Re: [PATCH] ahci: asm1064: correct count of reported ports
-To: "Andrey Jr. Melnikov" <temnota.am@gmail.com>, linux-ide@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: dlemoal@kernel.org, hdegoede@redhat.com
-References: <vbpzr7uqpfemb3qa6xy2fxioct44l5vugg2wkywyolfpzqcmau@jgrrhmk2scaj>
-From: Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <7559d940-f191-4fe0-e147-17ffa6c1dfc4@gmail.com>
-Date: Wed, 7 Feb 2024 14:28:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	s=arc-20240116; t=1707305570; c=relaxed/simple;
+	bh=WkXdBZMgvymp13PrfFULoKdqHyQQgJ8yxdPfTokMK+k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iR34ndc1hWypLCGbKHvG5PEpiFBKtUot5MIIMnPx1wxtmhp5ybhKVW9rcJI6aq9RAFhFC2JDKm8oLw3bBbLJYc4fNbX4xcwJzCqDhFiMhMwH+5XEoz+gzFTyFpwZEC1n/yzb0zwJzzLiXQ75qKhRIWLXYvwJbpxddvOtni25VZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EA83C433F1;
+	Wed,  7 Feb 2024 11:32:48 +0000 (UTC)
+Message-ID: <0916816d-a417-420c-b8f9-26b210bd6add@xs4all.nl>
+Date: Wed, 7 Feb 2024 12:32:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <vbpzr7uqpfemb3qa6xy2fxioct44l5vugg2wkywyolfpzqcmau@jgrrhmk2scaj>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 0/9] Add DELETE_BUF ioctl
+Content-Language: en-US, nl
+To: Benjamin Gaignard <benjamin.gaignard@collabora.com>, mchehab@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ kernel@collabora.com
+References: <20240206080219.11951-1-benjamin.gaignard@collabora.com>
+ <dcafb602-228f-439f-99d2-010d26a23ad1@xs4all.nl>
+ <63a46881-7fe8-4858-b0f7-cde33ffc7ea6@xs4all.nl>
+ <9fda7e17-42e8-4b2e-8daf-f0e556934356@collabora.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <9fda7e17-42e8-4b2e-8daf-f0e556934356@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2/7/24 12:58 PM, Andrey Jr. Melnikov wrote:
+On 07/02/2024 12:25, Benjamin Gaignard wrote:
+> 
+> Le 07/02/2024 à 11:28, Hans Verkuil a écrit :
+>> On 06/02/2024 09:58, Hans Verkuil wrote:
+>>> On 06/02/2024 09:02, Benjamin Gaignard wrote:
+>>>> Unlike when resolution change on keyframes, dynamic resolution change
+>>>> on inter frames doesn't allow to do a stream off/on sequence because
+>>>> it is need to keep all previous references alive to decode inter frames.
+>>>> This constraint have two main problems:
+>>>> - more memory consumption.
+>>>> - more buffers in use.
+>>>> To solve these issue this series introduce DELETE_BUFS ioctl and remove
+>>>> the 32 buffers limit per queue.
+>>> This v19 looks good. There are three outstanding issues that I need to take a
+>>> look at:
+>>>
+>>> 1) Can we still signal support for DELETE_BUFS in the V4L2_BUF_CAP_ caps?
+>>>     It would be nice to have, but I'm not sure if and how that can be done.
+>>>
+>>> 2) I want to take another look at providing a next version of the VIDIOC_CREATE_BUFS
+>>>     ioctl and how that would possibly influence the design of DELETE_BUFS.
+>>>     Just to make sure we're not blocking anything or making life harder.
+>> So I just tried creating a new version of the VIDIOC_CREATE_BUFS ioctl
+>> that is greatly simplified. This just updates the header, no real code yet:
+>>
+>> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+>> ---
+>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+>> index 03443833aaaa..a7398e4c85e7 100644
+>> --- a/include/uapi/linux/videodev2.h
+>> +++ b/include/uapi/linux/videodev2.h
+>> @@ -2624,6 +2624,39 @@ struct v4l2_create_buffers {
+>>       __u32            reserved[5];
+>>   };
+>>
+>> +/**
+>> + * struct v4l2_create_buffers_v2 - VIDIOC_CREATE_BUFFERS argument
+>> + * @type:    enum v4l2_buf_type
+>> + * @memory:    enum v4l2_memory; buffer memory type
+>> + * @count:    entry: number of requested buffers,
+>> + *        return: number of created buffers
+>> + * @num_planes:    requested number of planes for each buffer
+>> + * @sizes:    requested plane sizes for each buffer
+>> + * @start_index:on return, index of the first created buffer
+>> + * @total_count:on return, the total number of allocated buffers
+>> + * @capabilities: capabilities of this buffer type.
+>> + * @flags:    additional buffer management attributes (ignored unless the
+>> + *        queue has V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS capability
+>> + *        and configured for MMAP streaming I/O).
+>> + * @max_num_buffers: if V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS capability flag is set
+>> + *        this field indicate the maximum possible number of buffers
+>> + *        for this queue.
+>> + * @reserved:    future extensions
+>> + */
+>> +struct v4l2_create_buffers_v2 {
+>> +    __u32            type;
+>> +    __u32            memory;
+>> +    __u32            count;
+>> +    __u32            num_planes;
+>> +    __u32            size[VIDEO_MAX_PLANES];
+>> +    __u32            start_index;
+>> +    __u32            total_count;
+>> +    __u32            capabilities;
+>> +    __u32            flags;
+>> +    __u32            max_num_buffers;
+>> +    __u32            reserved[7];
+>> +};
+>> +
+>>   /**
+>>    * struct v4l2_delete_buffers - VIDIOC_DELETE_BUFS argument
+>>    * @index:    the first buffer to be deleted
+>> @@ -2738,6 +2771,7 @@ struct v4l2_delete_buffers {
+>>
+>>   #define VIDIOC_QUERY_EXT_CTRL    _IOWR('V', 103, struct v4l2_query_ext_ctrl)
+>>   #define VIDIOC_DELETE_BUFS    _IOWR('V', 104, struct v4l2_delete_buffers)
+>> +#define VIDIOC_CREATE_BUFFERS    _IOWR('V', 105, struct v4l2_create_buffers_v2)
+>>
+>>
+>>   /* Reminder: when adding new ioctls please add support for them to
+>>
+>>
+>> Sadly, struct v4l2_create_buffers was already used for the existing
+>> VIDIOC_CREATE_BUFS (I wish it was called v4l2_create_bufs...), so I did
+>> have to add a _v2 suffix. Compared to the old struct it just moves the
+>> type, num_planes and sizes from v4l2_format into the new struct and drops
+>> the format field. Note that those fields are the only v4l2_format fields
+>> that VIDIOC_CREATE_BUFS used, so getting rid of the format makes live
+>> much easier. I also renamed 'index' to 'start_index' and added a new 'total_count'
+>> field to report the total number of buffers.
+>>
+>> The reason for adding 'total_count' is that VIDIOC_CREATE_BUFS with
+>> count == 0 would report the total number of buffers in the 'index' field,
+>> which was rather odd. Adding a specific field for this purpose is nicer.
+>>
+>> One thing that might impact your series is the name of the ioctls.
+>>
+>> We have:
+>>
+>> VIDIOC_CREATE_BUFS/v4l2_create_buffers
+>> VIDIOC_DELETE_BUFS/v4l2_delete_buffers
+>> VIDIOC_CREATE_BUFFERS/v4l2_create_buffers_v2 (TBD)
+>>
+>> I'm wondering if VIDIOC_DELETE_BUFS should be renamed to
+>> VIDIOC_DELETE_BUFFERS, that would make it more consistent with
+>> the proposed VIDIOC_CREATE_BUFFERS.
+>>
+>> Alternatively, instead of calling it VIDIOC_CREATE_BUFFERS we
+>> might call it VIDIOC_CREATE_BUFS_V2.
+>>
+>> Or perhaps some other naming convention?
+> 
+> Maybe VIDIOC_NEW_BUFS/v4l2_new_buffers ?
+> 
+> I will wait until naming convention is fixed before send v20.
 
-> The ASM1064 SATA host controller always reports wrongly,
-> that it has 24 ports. But in reality, it only has four ports.
-> 
-> before:
-> ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
-> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xffff0f impl SATA mode
-> ahci 0000:04:00.0: flags: 64bit ncq sntf stag pm led only pio sxs deso sadm sds apst 
-> 
-> after:
-> ahci 0000:04:00.0: ASM1064 has only four ports
-> ahci 0000:04:00.0: forcing port_map 0xffff0f -> 0xf
-> ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
-> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xf impl SATA mode
-> ahci 0000:04:00.0: flags: 64bit ncq sntf stag pm led only pio sxs deso sadm sds apst 
-> 
-> 
-> Signed-off-by: Andrey Jr. Melnikov <temnota.am@gmail.com>
-> 
-> diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-> index da2e74fce2d9..ec30d8330d16 100644
-> --- a/drivers/ata/ahci.c
-> +++ b/drivers/ata/ahci.c
-> @@ -671,9 +671,14 @@ MODULE_PARM_DESC(mobile_lpm_policy, "Default LPM policy for mobile chipsets");
->  static void ahci_pci_save_initial_config(struct pci_dev *pdev,
->  					 struct ahci_host_priv *hpriv)
->  {
-> -	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA && pdev->device == 0x1166) {
-> -		dev_info(&pdev->dev, "ASM1166 has only six ports\n");
-> -		hpriv->saved_port_map = 0x3f;
-> +	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA) {
-> +		if (pdev->device == 0x1166) {
+How about VIDIOC_ADD_BUFS/REMOVE_BUFS?
 
-   Maybe *switch* instead?
+And struct v4l2_add_bufs/v4l2_remove_bufs.
 
-> +			dev_info(&pdev->dev, "ASM1166 has only six ports\n");
-> +			hpriv->saved_port_map = 0x3f;
-> +		} else if (pdev->device == 0x1064) {
-> +			dev_info(&pdev->dev, "ASM1064 has only four ports\n");
-> +			hpriv->saved_port_map = 0xf;
-> +		}
->  	}
->  
->  	if (pdev->vendor == PCI_VENDOR_ID_JMICRON && pdev->device == 0x2361) {
+One thing that I always found debatable about the names CREATE and DELETE
+is that it suggests that buffer memory is also created and deleted. While
+true for MMAP, that's not the case for DMABUF and USERPTR.
 
-MBR, Sergey
+Regards,
+
+	Hans
+
+> 
+> Regards,
+> Benjamin
+> 
+>>
+>> Ideas are welcome.
+>>
+>> Regards,
+>>
+>>     Hans
+>>
+
 
