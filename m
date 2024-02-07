@@ -1,94 +1,90 @@
-Return-Path: <linux-kernel+bounces-56552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99B3884CB99
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:33:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5441484CB9F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:34:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49483282388
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:33:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 796A41C2206C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:34:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BCBE77622;
-	Wed,  7 Feb 2024 13:33:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC0777630;
+	Wed,  7 Feb 2024 13:34:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dwWz2nJc"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S4PMeZQ2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD4F76C8F;
-	Wed,  7 Feb 2024 13:33:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A122C76C8F
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 13:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707312813; cv=none; b=m+GbOR4Cz0NfVNsztRo61ymxpPAPAucKPWK7QuMhhVXYTnvmKPqyQ0D5HW9Ag3QaKVZPwQgSB+YEgCTKJrP1NHfuAwqNOgcCMk3G25bpy/+a9uggijR6qgg9aWrtOt9lQkHkwnxmI9msnBQw7RyjkK93971AvqPEY9bAqbDrbbg=
+	t=1707312885; cv=none; b=lhPb4PvYp+53By7NuzX60+AQLvKkwH1zGJyeyHPLzvAphMwKfmt2rsDf+F/uyzQ4wraZoKlzuWBWO+u3MPx2/Yd3gsteWYtdRVT4vcJzuXd/nNRQSFZJ30wO7Bo3Gh38TVvfdK4jtFE/+lwt9Uqedfjek40fTW94feHaODYXGjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707312813; c=relaxed/simple;
-	bh=ZSe4z1HCyYrJKERT65x4UpvppmJUQYF549bGogyFD+o=;
+	s=arc-20240116; t=1707312885; c=relaxed/simple;
+	bh=jfdDfyobmnPI3wq5bQDKzQVCXliwCJ+uL6jgW7Mc80A=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=WfPbiZIoVSjtLDeEKvgYFr3//wYz/P0P3T/iSqz7q3oT4j3vsen97iZkSn50Xc2QKu8gupjPdv1Y4uIuqbdTns0Yk3xQRzNfRTABAgy8OB8fTW+0xuIS/uvXdv3ZPH9Fnv+Vx4Fx9qZruhEIgeMTgbFW9fGrwXgFNpwyGXzRuOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dwWz2nJc; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 417CivsL019789;
-	Wed, 7 Feb 2024 13:33:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=KlwPRPULd+ltLeNtqjMhdh9CekZatxoXADZYmL1/9xA=;
- b=dwWz2nJcfTkCR87ARl1giFnwXXCby4wQKydyRjly0V54VK1T6B5u3lp6NUm209eITjY8
- 4/S1UTyL9YR7TiuhcSZqo2si8dENN+ZUinZtbUHxK62xHSS+sC14MctCA3kdtmKRODc9
- SkTUzk6s0Dy4o8wR5+lCn7O1EsFbYbdrj7qSG+cEEaT3K9bpoNAAsoOB/1zVgrjIB8ys
- fvZOg37oCzyAVeHrOu6jqvXQ2S5pxWOs9tV8P0Rq6JUZkX5cnW/9y3FsyU5faKvSupYR
- Hb/bzOcAYlZWc41dHh7WKYkipSka324vacqS8hJ9xbMRQ1Swc9FwMofs/G8lQxjTDsa9 /w== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w49vksxw3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 13:33:24 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 417CQAut016154;
-	Wed, 7 Feb 2024 13:33:24 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w22h25ey7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 13:33:23 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 417DXMFL53346766
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 7 Feb 2024 13:33:22 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3060B20043;
-	Wed,  7 Feb 2024 13:33:22 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EBF9C2004B;
-	Wed,  7 Feb 2024 13:33:21 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed,  7 Feb 2024 13:33:21 +0000 (GMT)
-From: Sven Schnelle <svens@linux.ibm.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mete Durlu <meted@linux.ibm.com>, Masami Hiramatsu
- <mhiramat@kernel.org>,
-        Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing: use ring_buffer_record_is_set_on() in
- tracer_tracing_is_on()
-In-Reply-To: <20240207072812.4a29235f@rorschach.local.home> (Steven Rostedt's
-	message of "Wed, 7 Feb 2024 07:28:12 -0500")
-References: <20240205065340.2848065-1-svens@linux.ibm.com>
-	<20240205075504.1b55f29c@rorschach.local.home>
-	<yt9djznj3vbl.fsf@linux.ibm.com>
-	<20240205092353.523cc1ef@rorschach.local.home>
-	<yt9d34u63xxz.fsf@linux.ibm.com> <yt9dsf262d2n.fsf@linux.ibm.com>
-	<20240206060113.39c0f5bc@rorschach.local.home>
-	<yt9deddovn3w.fsf@linux.ibm.com>
-	<20240207060923.182ecb55@rorschach.local.home>
-	<9a062196-ccbe-440e-a2f9-23eb8c5eb837@linux.ibm.com>
-	<20240207072812.4a29235f@rorschach.local.home>
-Date: Wed, 07 Feb 2024 14:33:21 +0100
-Message-ID: <yt9dzfwch00u.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	 MIME-Version:Content-Type; b=DCPkOvw+MXeDMTvd/bt8JoLn5qYLoFhLfN3urCMNXmfGTjzfCZMMtLVtGvn+w3NUC4SA3kiUAMU8vyVXSsmbcky/4ZZ70nqx/wbz0GGyGQcT+6caxNXsKO1lptDVrVuDa7kQVc97RwqaYX+C1pYJb+gVjTZhhKSn+SEFlQTBFzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=S4PMeZQ2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707312882;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jfdDfyobmnPI3wq5bQDKzQVCXliwCJ+uL6jgW7Mc80A=;
+	b=S4PMeZQ2INTQlAXQ1WY525SnBsMBy2B0vbKmw4PU80v2FDof5l14K8v7L45ew/+/AiL88o
+	U4h9h79sZSEnDUYbkNynL7iqvR3UimHu1nrJ8ppB4O0+yD8ROfyd2aTs8h342ivdaGywAj
+	ofeKjeRhT5cg3gLWvao/iCzanJE6Ueg=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-311-XAFcLhDaPwKRbhA6hrEcGQ-1; Wed, 07 Feb 2024 08:34:40 -0500
+X-MC-Unique: XAFcLhDaPwKRbhA6hrEcGQ-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7833761135dso72391685a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 05:34:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707312880; x=1707917680;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jfdDfyobmnPI3wq5bQDKzQVCXliwCJ+uL6jgW7Mc80A=;
+        b=cleGBF6YB3pc5nt4bDnqvy5/RXbi61fZcsdScMJxwQBITGRJL5gjtbmUpeV+2dy7hA
+         9y6R+zXsjT0xdK0hB6G5mlQLIh8AdCgoEHAOr/NsH5WUNFuRHNJ33X4zrwzBoG33jo4V
+         B2vKEIuSlxsVrSd+6MWsec+Gc9F19VrvslKG5xjg7j5C6jaxuKDjqEnTI3p42IuxWZzN
+         pEtcFyXVQrCJqpDIHXJwyC2gwcXkv88oMLz54xg2KmVKT85P8qWixfJrNDyu2uoJvJpB
+         7S0YfiEJSjDw8LuQkaOUsv9+pFvJ5bk0J/M1cce5koXlWGzBSVpuMV/utbJ1POQXlOTn
+         z/Zg==
+X-Gm-Message-State: AOJu0Yy+8V1ErCne6y6h6gbmUA6rvqMT/PKAR+0KgJkRNs+vTM8cupt4
+	QgpQOKAk9z5auCNyr+FPdfVEs5HApW8nV/wJZ5gNtvDwLItZRGFDTyUP9QMb8XIpzglTPLdB5KN
+	x/OuPFtqsV7oBht8JOrD2eWdmbE94b9UPeFRA8zrNzwm1GMf26eD0mIpghFTOuQ==
+X-Received: by 2002:ac8:7f56:0:b0:42c:123b:1b88 with SMTP id g22-20020ac87f56000000b0042c123b1b88mr6236537qtk.12.1707312880410;
+        Wed, 07 Feb 2024 05:34:40 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEFTQCZxlSugTHKlCSW5VG41meB+m8F94fMZ8CLvQkeN9VnuSSrW/haIkTWK0Qmgv4OUc2r+A==
+X-Received: by 2002:ac8:7f56:0:b0:42c:123b:1b88 with SMTP id g22-20020ac87f56000000b0042c123b1b88mr6236521qtk.12.1707312880140;
+        Wed, 07 Feb 2024 05:34:40 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUpVlVgywJuMUta5SO8adjEKoihJLq7BUYDSzlAQZV3xMAVhiNazdOf4hqPiDa+U1Pt+BdKrC21Z83KDAsgago/QMZ8v+MIDXjGW263wZDSvbZw+dqdezlFPUH4Qdd/w2w0avLcfufAQ5KI7rxrnIhA2y2bBe72j92iC1JCwm1KZsr7fDnUFB7ZCZKIy+/n0SasUAdr2XD/WZvkmEO9ks4/5n4glO98shQUBF//ap52JGZ0hk3BMZGzvIvbvzONbcuX9JCa/tfUy2WESqO131fhzL9l9pWhBlqkF8RXD0r3L10DPPHe38iGI/j9YyTXnPitKC0Abfx/kOcTKOzwE+WHUl36+uckuyWbXhVLMHVd7G8zMA7lzTBT
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id h7-20020ac85847000000b0042a233d21c2sm515644qth.80.2024.02.07.05.34.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 05:34:39 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Benjamin Segall <bsegall@google.com>
+Cc: linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Peter
+ Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Mel
+ Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Phil Auld <pauld@redhat.com>, Clark Williams <williams@redhat.com>, Tomas
+ Glozar <tglozar@redhat.com>
+Subject: Re: [RFC PATCH v2 0/5] sched/fair: Defer CFS throttle to user entry
+In-Reply-To: <xm26cyt92r7t.fsf@google.com>
+References: <20240202080920.3337862-1-vschneid@redhat.com>
+ <xm26cyt92r7t.fsf@google.com>
+Date: Wed, 07 Feb 2024 14:34:35 +0100
+Message-ID: <xhsmh7cjggzys.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -96,81 +92,49 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: q-fCWpd0q8CBRclbROSdJD19GZpUya-x
-X-Proofpoint-GUID: q-fCWpd0q8CBRclbROSdJD19GZpUya-x
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-07_04,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=875 suspectscore=0 mlxscore=0 clxscore=1015 bulkscore=0
- adultscore=0 spamscore=0 impostorscore=0 priorityscore=1501 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402070101
 
-Steven Rostedt <rostedt@goodmis.org> writes:
-
-> On Wed, 7 Feb 2024 13:07:36 +0100
-> Mete Durlu <meted@linux.ibm.com> wrote:
+On 06/02/24 13:55, Benjamin Segall wrote:
+> Valentin Schneider <vschneid@redhat.com> writes:
 >
->> wouldn't the following scenario explain the behavior we are seeing.
->> When using event triggers, trace uses lockless ringbuffer control paths.
->> If cmdline update and trace output reading is happening on different
->> cpus, the ordering can get messed up.
+>
+>> Proposed approach
+>> =================
 >>
->> 1. event happens and trace trigger tells ring buffer to stop writes
->> 2. (on cpu#1)test calculates checksum on current state of trace
->>     output.
->> 3. (on cpu#2)not knowing about the trace buffers status yet, writer adds
->>     a one last entry which would collide with a pid in cmdline map before
->>     actually stopping. While (on cpu#1) checksum is being calculated, new
->>     saved cmdlines entry is waiting for spinlocks to be unlocked and then
->>     gets added.
->> 4. test calculates checksum again and finds that the trace output has
->>     changed. <...> is put on collided pid.
+>> Peter mentioned [1] that there have been discussions on changing /when/ the
+>> throttling happens: rather than have it be done immediately upon updating
+>> the runtime statistics and realizing the cfs_rq has depleted its quota, we wait
+>> for the task to be about to return to userspace: if it's in userspace, it can't
+>> hold any in-kernel lock.
+>>
+>> I submitted an initial jab at this [2] and Ben Segall added his own version to
+>> the conversation [3]. This series contains Ben's patch plus my additions. The
+>> main change here is updating the .h_nr_running counts throughout the cfs_rq
+>> hierachies to improve the picture given to load_balance().
+>>
+>> The main thing that remains doing for this series is making the second cfs_rq
+>> tree an actual RB tree (it's just a plain list ATM).
+>>
+>> This also doesn't touch rq.nr_running yet, I'm not entirely sure whether we want
+>> to expose this outside of CFS, but it is another field that's used by load balance.
 >
-> But the failure is here:
+> Then there's also all the load values as well; I don't know the load
+> balance code well, but it looks like the main thing would be
+> runnable_avg and that it isn't doing anything that would particularly
+> care about h_nr_running and runnable_avg being out of sync.
 >
-> on=`cat tracing_on`
-> if [ $on != "0" ]; then
->     fail "Tracing is not off"
-> fi
 
-It might be misleading because we're discussing two issues in one
-thread. The failure above was one problem, which the initial fix
-is for. The other issue we're still seeing is the test below:
+Yes, all of the runnable, load and util averages are still going to be an
+issue unfortunately. AFAICT tackling this would imply pretty much dequeuing
+the throttle_pending user tasks, which was my earlier attempt.
 
-> csum1=`md5sum trace`
-> sleep $SLEEP_TIME
-> csum2=`md5sum trace`
->
-> if [ "$csum1" != "$csum2" ]; then
->     fail "Tracing file is still changing"
-> fi
->
-> 1. tracing is off
-> 2. do checksum of trace
-> 3. sleep
-> 4. do another checksum of trace
-> 5. compare the two checksums
->
-> Now how did they come up differently in that amount of time? The
-> saved_cmdlines really should not have been updated.
+> Maybe pulling a pending-throttle user task and then not seeing the
+> update in h_nr_running could be a bit of trouble?
 
-My assumption without reading the code is that something like this
-happens:
-
-CPU0                             CPU1
-[ringbuffer enabled]
-                                 ring_buffer_write()
-                                     if (atomic_read(&buffer->record_disabled))
-                                            goto out;
-echo 0 > tracing_on
-record_disabled |= RB_BUFFER_OFF
-csum1=`md5sum trace`
-                                 [adds trace entry to ring buffer,
-                                  overwriting savedcmd_lines entry because
-                                  it thinks ring buffer is enabled]
-csum2=`md5sum trace`
+That too is something I hadn't considered. Given the h_nr_running count is
+updated accordingly, we could change can_migrate_task() to only allow
+kernel tasks to be pulled if the hierarchy is ->throttle_pending. That
+would probably require implementing a throttle_pending_count (as you
+suggested in the other email) so we don't waste too much time checking up
+the hierarchy for every task.
 
 
