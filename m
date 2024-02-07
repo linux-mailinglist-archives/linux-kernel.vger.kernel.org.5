@@ -1,140 +1,159 @@
-Return-Path: <linux-kernel+bounces-56720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 084CD84CE08
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:29:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAE3684CE0D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:30:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69344B22649
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:29:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E047D1C233F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:30:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B10B28002F;
-	Wed,  7 Feb 2024 15:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E56C77F7FF;
+	Wed,  7 Feb 2024 15:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="NU0KCFI2"
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XmS6bQ0o"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264087FBBA
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D887F7FD
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:30:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707319740; cv=none; b=O9g354FwyHsxN/ch8o3wnTiMBtmaMvru0Km0VY/6VKSIndBtIBX2H4NvioBwlS4oWPX2w/nVCXQpZYUqCVb+MM+/JRa/Lkh7Gx8NBc+YyOtZu/dV92rimEg7Gw1AOqnW1yetAAI9NjVEXa42unOZfoQnkGUks8sCCWPD5yB0Wu8=
+	t=1707319818; cv=none; b=DCd39xJzCUm1o4wN/sz3XYIJ73ngqF46VpaA+WOpUwB/5KzFa5xuqx0tWhp/valr0pz7j/lCvej7gqwJVAvtCQeaVFmIHL4VxPYlaUkwtY8sUQ8ooeo+AuedNqb7AwxnyiEZFT25TWyDkhwcxGFOpLws8RllO7+M1yOb8uJ2aJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707319740; c=relaxed/simple;
-	bh=KgcZE+tbSx7VYsRad6qU230OGLkbrGEcFdePnG3XBqw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZAeUlXKaNNFwkM/0nDmG2q2zimJmg3l1RpLD0qdON6gIFf3zXBkpc780QQfDneYyUuhfdC2J/2koAMkO2FtfdX7uDtXSjk7XsZYY2WfE4kfLM6+Wh3O8kJ55y29Y2EVE6sV2LVpDNSdWNYDj99pYDDHxO661FicjyAygOQcKKIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=NU0KCFI2; arc=none smtp.client-ip=209.85.160.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-2191b085639so310461fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:28:56 -0800 (PST)
+	s=arc-20240116; t=1707319818; c=relaxed/simple;
+	bh=9Gs36drIPM9UUKn8G6E3uMLP6Kraj6q95m+7RitPm9c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tofI/RramrNIg7sjW6RXAHQyrfAcv5I5Zikcb4R2Ngm0crmqPj92IUvdeEITeefBPSQkltuBK5Q2HvIAj5/zMB8iWxLlrctvAh+C6qN+IEbzO1z0PsPW2ySS8yjMAACGDuWoJaiTNTifhq//gqv2vHK+40INjO9nXRWVVUhZRH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XmS6bQ0o; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40ff28388a6so6811995e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:30:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1707319736; x=1707924536; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KgcZE+tbSx7VYsRad6qU230OGLkbrGEcFdePnG3XBqw=;
-        b=NU0KCFI2PcXIesrZqDGaMumM07ZvsINqITiEAwBMhskWR31PwJB4q9nWxtvDCTO8Rh
-         IfbIpX2RViygtZEXSpGQCGsTpsDT++li9tKJl1fcXN9y0zRUAUS7k9Vj9IluITTrToXf
-         xPIJsabXnGELRFFBalq7+OpPtmVwCRBvcBFnDUeNl1oL0ZgyAT+2IHM3qrrw8yQd1d29
-         WoNgWFmGjcu4PtpA3hm6bd6GDiVniNDgAiSjev6BW9nIsWDZFtgeSvTTPfYIfoa4Sbxq
-         0UlYxzNH7P8IyUa/gcZr3zalpmpaeVxPmxRrNG8d2DEjrIJKcndJUQSHxUSM1ckT3kjU
-         0zlA==
+        d=linaro.org; s=google; t=1707319815; x=1707924615; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yW6ZBt89YTx/wzUfUDXHhU8+peF89W8hdZzNN91NiGg=;
+        b=XmS6bQ0o93rZdXwuVSCn2HpYpP6IQz0iRaCg7nnQ2wukt4Ru3I9sIh3MECNWDgGWtA
+         2bZ+pcFWU1DBbPBd7bqHyqEkoA97HE8QVyVUu3vcGeixaMgFgGb0aLtETk3L5tg+8f8K
+         IOuOdrl4dW2CulkL97sC06Tm3gVrcR+M7Fpra/oo08pw9o+w22FmwB3SKzFbdWmZhWy+
+         A1CXSQY8yCJGECewdA3tgIcZX6HVwcHXk4GE3q4qKY5BphEiIXXUGnkNkSz6cfhEQa+J
+         2UjQMWxuRPmnGBsaIHqCYD8mX2RQHIZOgtwklh5koNonSadCN9PhSeG52gxe2os5tzoe
+         9u4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707319736; x=1707924536;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KgcZE+tbSx7VYsRad6qU230OGLkbrGEcFdePnG3XBqw=;
-        b=Akb3cdg/0uYor92T8jvZx4x7PAXj32j8DASoCZcJ5be3YZPz8POykUBJ2S1jfCaHP6
-         RCoUn2kmJtY2jtj6d8/65nNJDTdwHJZcJ++dhHjsDLUO5eLEbYfc9z2E+gPNh4J6T4Bh
-         1x/LU5WPFKy1zPtBKeawRvzlPiPIiRUu/EHbD3+F26uzd64MQ0YdD8D1iVjt/TmmpLFg
-         HvKUuprWB/iF4dGDPvUO3t1vsg25avLQhZBhKe3s0EA2BqgWCPuFcu2nVX1W+HyuCnmf
-         WC+fmXHSaAYvGg5jWEDH9hTyJ+KWx1VO9KUaCU+FkaXiS8sBC5TPOIj90/Wu9TIbPHNI
-         /GZA==
-X-Gm-Message-State: AOJu0YyUWG5eURH51ZwN+FteVQzA+Y6Pn/3AoQG4CdR5yoe1OnDoASiC
-	QLwmMw3xp7foZOJRiFGpFf5mUBEFtVMPSAitqTnCD9gLxrRXiDJrdG8ODIcM2UrL72q2x/YizrD
-	U7kw=
-X-Google-Smtp-Source: AGHT+IHEL7CFznI2Gw3SaxhMoycGQY1ZAMJ2M/MoHIzeasU/nr/2JepWSFEuheW8Ams28t9PtymRRw==
-X-Received: by 2002:a05:6870:bac7:b0:219:83cc:287c with SMTP id js7-20020a056870bac700b0021983cc287cmr6065943oab.18.1707319736190;
-        Wed, 07 Feb 2024 07:28:56 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVUY+po1giBXhl03Vf0urto5lU8KkUE0xa/D+uEwt3aAnuuk7whgR0HTCfY+MTVQpslUqqUs/wsMp+t3ROMVbRdiv139tCe2ZBXKAtq4ZceV9PQJGgSNRI8IXanfewIYC0pI3FzZsKmRPGCkekyIVSuYunEdq/NKi0/3z9aOOnSjGhG1HWtDCKx6tkf7sG69wd0voFNXVKcPnx/Nm+iJxlnF6OfGX8tZ9W5Ef2TdHxCT40iWFJmfW6S8uQKXx/coePehrn7fBGc1ApNtwTAo8s/s5HRc5UVF5kRUR22WO8nHBRkrzcJX/Ul/xP8hPJikjNY5otCJsvQrEVBk2ZaVzx3MkqaDTyR4Ul7c2lNd1sQoJE9R4hMA5FyNT4k6cGm9+PELO3Pd2X6HZW5Jm8qV/VAErzvt6LcaoXye2Wua/2AYMT/wp1V94k8M1zgi8oPWuI9edPTgsfIAIs+qSWZnIHymtDR0ZDoa4pbEKoLlGJm39ZpBPkOgypT7AHFEI8rU/GAr/BBLOvIN75lw9qDVd4OTS7E4DjE+P+TXjW/ejHtWFFjkRAxscCfnxXGlxTCjMW8flXh31SrWNWQb7kthgrk5FZ0nc1rQCTq6Q8fWQP0Awd0gAJf2PwiCs47eD05aetIREJ1Gf81uCiJ/HxdH+LBZUmXJT18VOvJdRMBqtyz
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id p6-20020a9d76c6000000b006e112c93b1esm228799otl.6.2024.02.07.07.28.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 07:28:55 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rXjr4-008ccK-Kk;
-	Wed, 07 Feb 2024 11:28:54 -0400
-Date: Wed, 7 Feb 2024 11:28:54 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: "Gowans, James" <jgowans@amazon.com>
-Cc: "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-	"kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"Graf (AWS), Alexander" <graf@amazon.de>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"anthony.yznaga@oracle.com" <anthony.yznaga@oracle.com>,
-	"skinsburskii@linux.microsoft.com" <skinsburskii@linux.microsoft.com>,
-	"steven.sistare@oracle.com" <steven.sistare@oracle.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Woodhouse, David" <dwmw@amazon.co.uk>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"joro@8bytes.org" <joro@8bytes.org>,
-	"ebiederm@xmission.com" <ebiederm@xmission.com>,
-	=?utf-8?B?U2Now7ZuaGVyciwgSmFuIEgu?= <jschoenh@amazon.de>,
-	"will@kernel.org" <will@kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"usama.arif@bytedance.com" <usama.arif@bytedance.com>
-Subject: Re: [RFC 00/18] Pkernfs: Support persistence for live update
-Message-ID: <20240207152854.GL31743@ziepe.ca>
-References: <20240205120203.60312-1-jgowans@amazon.com>
- <20240205101040.5d32a7e4.alex.williamson@redhat.com>
- <6387700a8601722838332fdb2f535f9802d2202e.camel@amazon.com>
+        d=1e100.net; s=20230601; t=1707319815; x=1707924615;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yW6ZBt89YTx/wzUfUDXHhU8+peF89W8hdZzNN91NiGg=;
+        b=cy0nNSBkptQrblIHxqDQWnxZY3wLxc0oQZqUI2fdxLKlDyDaQ1ezSY/fZSIvOIh6/v
+         6a3pVdcSeIckO1IABWb2wbNjyn6L2YdweS8PaAgtrv94OF/QC8IbFVkh+nySYTz9Bv15
+         G9yd1VhuKKrK5mwpHBb4mX7Wbvrv0Z8IcM8YhAxY8ota/sH+f7H5oH3kVxjgAvzHEqXD
+         qobHiXDQAp2HIkkeSu8iiP+8mRoFgQmG9hbAJEhjyZV3V++/3HDi61yYyDJLtvnxYLvK
+         gWS7I1bukXEEe6zycpPEqluJ59vtmpiYpYm1bbYdoI2kYcIqu3xzINfgS+a/9tBQuDwz
+         cQkA==
+X-Gm-Message-State: AOJu0YzckE6I4EBh/y8F8RVOFLQOPMXrTPDSg5vZ5wWetf5niw7fNWHS
+	+ag/QY35NNMNtCODWZ0eehk7OCflm3YDB1v4SXiy2/Mfx6nnUODWH6FNvznaJGg=
+X-Google-Smtp-Source: AGHT+IHUZ+ze8SoTaGJENjxRM+je5SRBAEpXnDJN4W2y0rjY4fZafM0YcBW+k8lTLS4B9ov6XtIB3A==
+X-Received: by 2002:a05:600c:4fce:b0:40f:d3b2:8ed5 with SMTP id o14-20020a05600c4fce00b0040fd3b28ed5mr5002850wmq.3.1707319814710;
+        Wed, 07 Feb 2024 07:30:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV9EPxqKW/o4Gdmn7ILkZETK+5uTO6fAEq0Fh9t+EBxgaUNNHOkTE3qvanRnA9+P87x5BO3LGlnQ/RDjz89Kn1s8OQcU9MQetKcqUs0DsjZg60CBxGIEQpiqKyojuTVp+gablRsZYS4e8YSbbVQ2BqDj/mwYfC8BsUVN2+RpwO+ZHMpyCBL/CqsK4Gvzt+/tevw5B8ZqEJEEyhwosceMN/Wah8S1Qryz39LBpxx/Y9r2SQwqMSu2ShQDngA9gZougvLf8AKBB5HEtsYEHQ3nTMuWV0HIwXhZ/OGk1dzFsl4uiCVgTr+yY0OITD8OmZyPpys/pVj/MfzuqKiunL429EmGfxj+ETUOZI3l8Bu+wK63ZDgY9JjIK3PipaO7YgFJjUsEvQYdkPui3KVb+YyUMGDWcyF2QfqqGrzenEG0GegoU54rkkKi/hAjH12PbSM4NMM1sIVn78C+QMvFnToKbpo5QwPooj6/gNJO+ezYKd8IWOXljBpIikQ86VUZA0qOjaNXHZI0GuYfwIuPbzveGVoi+kCh9kjJpA0buLZXrshikZdguRt/Enu04xPBEnmo+4L/ZP3dQhSYsrM3Fk5HU2B6QrtWRhe03b8y7Q0Q/jWVdICg21LLig5N8qvYf9GXKF4ZY/G9Q7uVpX5V8j3nAqybICAsmm3pLYzeNjyvEyruqWW8+/bcGX2um2sYhWIyWQCfE5j7Oc5
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id m4-20020a05600c4f4400b0041007731a52sm2464323wmq.11.2024.02.07.07.30.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 07:30:14 -0800 (PST)
+Message-ID: <23963f63-7410-46be-8bac-c6862fedfbef@linaro.org>
+Date: Wed, 7 Feb 2024 16:30:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6387700a8601722838332fdb2f535f9802d2202e.camel@amazon.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/7] dt-bindings: clock: google,gs101-clock: add PERIC1
+ clock management unit
+Content-Language: en-US
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
+ tudor.ambarus@linaro.org, willmcvicker@google.com,
+ semen.protsenko@linaro.org, alim.akhtar@samsung.com, s.nawrocki@samsung.com,
+ tomasz.figa@gmail.com, cw00.choi@samsung.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ Rob Herring <robh@kernel.org>
+References: <20240201161258.1013664-1-andre.draszik@linaro.org>
+ <20240201161258.1013664-3-andre.draszik@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240201161258.1013664-3-andre.draszik@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 07, 2024 at 02:56:33PM +0000, Gowans, James wrote:
-> 2. Tell VFIO to avoid mapping the memory in again after live update
-> because it already exists.
-> https://github.com/jgowans/qemu/commit/6e4f17f703eaf2a6f1e4cb2576d61683eaee02b0
-> (the above flag should only be set *after* live update...).
+On 01/02/2024 17:11, André Draszik wrote:
+> Add dt-schema documentation and clock IDs for the Connectivity
+> Peripheral 1 (PERIC1) clock management unit.
+> 
+> Signed-off-by: André Draszik <andre.draszik@linaro.org>
+> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> 
 
-Definately no to that entire idea. It completely breaks how the memory
-lifetime model works in iommufd.
+I was waiting a bit to be sure these are the last bindings you send for
+this cycle. I assume that's the case, so I will go ahead with this one.
 
-iommufd has to re-establish its pins, and has to rebuild all its
-mapping data structures. Otherwise it won't work correctly at all.
+Best regards,
+Krzysztof
 
-This is what I was saying in the other thread, you can't just ignore
-fully restoring the iommu environment.
-
-The end goal must be to have fully reconstituted iommufd with all its
-maps, ioas's, and memory pins back to fully normal operation.
-
-IMHO you need to focus on atomic replace where you go from the frozen
-pkernfs environment to a live operating enviornment by hitlessly
-replacing the IO page table in the HW. Ie going from an
-IOMMU_DOMAIN_PKERFS to an IOMMU_DOMAIN_PAGING owned by iommufd that
-describes exactly the same translation.
-
-"adopting" an entire io page table with unknown contents, and still
-being able to correctly do map/unmap seems way too hard.
-
-Jason
 
