@@ -1,39 +1,73 @@
-Return-Path: <linux-kernel+bounces-56092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0A4F84C5D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:55:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3DC584C5DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:55:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 508FB28A248
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:55:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 261391F267EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC5B200BD;
-	Wed,  7 Feb 2024 07:55:02 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FAA1200A8
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 07:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D926120312;
+	Wed,  7 Feb 2024 07:55:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E3F0CSXH"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855CE200AA;
+	Wed,  7 Feb 2024 07:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707292501; cv=none; b=MkKljeQ8MLiCKqcjMJhm7yW8VbWihCfIjI9L02lCTMxL0idhmGi0GrD9bA50htm1B1jCh2vUWHVzyPy5fM9ecYGeJ8o15y6lh4o2dlFyIOFBQvL76Ue1ymgExM0BGjWFlwHGHwX3nHwlJlsfd/iCSqvVodOuLyuYW9C67HjQiEI=
+	t=1707292503; cv=none; b=M3XbY2etKT1JyRLirnWrcDQqhoHerHq7Rn5TWuaEF7mIw53Zf/vBstTWVvgkexqseMht3z+KKaBaZtWJ0LTBA5Zb3Y32zkgEbw+WBfdR0vqnmfLXn/y6WOk27Vg7/fFZR9F6M7OCbHHGbeh9LgS079liHdL2glNdwltknaDx8ks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707292501; c=relaxed/simple;
-	bh=UVKMCTgNsvOUu0emV/e54Yr6GVPsmnUHrJmU0/IlzJQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=eTEo593ny0HkNqlX8pkiMvyTninRAhwqExlrnZ4PecY6bSyliH0Q6DQguyvhTCyamkjKual8B4PQIz/5W29MNajmITHyf53OU0XAqAxP9Q4cuahrk7Oe2x8M1lt6hXxKeeu1XcVsPjyHbgCdCIoDZKInw4+Y1+W3nD2Ur0cl+SA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ADF1B1FB;
-	Tue,  6 Feb 2024 23:55:39 -0800 (PST)
-Received: from [10.162.40.23] (a077893.blr.arm.com [10.162.40.23])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5BA8F3F5A1;
-	Tue,  6 Feb 2024 23:54:52 -0800 (PST)
-Message-ID: <df731836-04ab-41b9-b317-434a1060ad61@arm.com>
-Date: Wed, 7 Feb 2024 13:24:48 +0530
+	s=arc-20240116; t=1707292503; c=relaxed/simple;
+	bh=plo9ffD39AflvULKtb7V+e4QpJ5YhVSIF75AQbjiprE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=csRz/sY+mu3E/fJl3885+j+Hl4WQa09lJkP6BKe2aWwVJjH1FaNx4gbj92csokqO/qbzcDxBI5wYaBKZK8fXytcSD6tmVLp14Z1a/NUX2Z2Qk2Pl1+Bld+/CgxqHGa3mpneZ/iCWeiq9EECOa3LzQwhbPvvYXrT910KzNWfDUzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E3F0CSXH; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a385fa34c66so40132766b.1;
+        Tue, 06 Feb 2024 23:55:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707292500; x=1707897300; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5siQqDPvIzVZKJKzFGz6pPdvnLjufoJPCSBU/Y3gTLQ=;
+        b=E3F0CSXHZLcQ8A3/tUgeVv/kcNG2W71aBEgEesfqz5j3kvTSUYkxd79ki7IXwSFM60
+         Wpv6/saGPlnO65d+D3TYJ3fT5eIQpYavwE3O9ZkUXNGb1jg29zO5IkuGrlkLgIR7l6zm
+         ayGLWAVqSJFEwsEJVx60bkRhuXh/sXxcFoa1y0S12Oy0JO4L7OkbJU5n+8owPBV51vUR
+         +7DA2FeSgdnVaykaPO78LeL5YRy3Qb2escLIr/XrK54Sb2HesaoeKQg7aAuaDXT6/6DK
+         ZlTZRmNGDSqY/vq0sUnMx1FhA/7SIDk3Kkcg+rATeecBkBwSK8BL1sEQ9xi7MMD1lj9z
+         bTig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707292500; x=1707897300;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5siQqDPvIzVZKJKzFGz6pPdvnLjufoJPCSBU/Y3gTLQ=;
+        b=owD6Bd+pAOYaYre6CkHS1RA8yod1LJXYfAeI5/eQB+hLRnKragwTbTcuhkcTdWqHow
+         6QAtkmEeFrkY+ZBi3HKDcgJ6wlcdr8LRRqWiiCkr/5uqd6mH4jcH/aJYia3ThlQVGJQs
+         RN/ti8+8qD+uEPXgtWo5LA60+cQbnkPkfdJcFMURdjdMbay1ivb2kLpRoEp0k7v3LM5k
+         Vq2x8I3YVnuiT3ohIckdxKeS9+yHcLnjM/qvjY9iNApHzN6QlXd3O3AqXmcmsK9vLR8w
+         1xZwimDEsl3PHrXrUcM+qfJSXqL2nTnTBjtfsXZGCk9aKszLx2bbqLlJ3JGThVQmP+pl
+         pzHg==
+X-Gm-Message-State: AOJu0YySuptoA4Xgl8E0YQNQD9LpefzLMkrm8ifYcF3IobxVU/9G5rBq
+	zsGxsKenD483ZBje/jAzMTTzcIKYQ73ZsWFAwbWf8anBeDmF2OfQ
+X-Google-Smtp-Source: AGHT+IGjilopHWWobuDbb4rhf8FYRAuvtIhKc0v0uJfyOtiYBgO42Q1Y0+Y8nTldOI51yZjQD6yQUA==
+X-Received: by 2002:a17:906:ecac:b0:a36:8cb6:92f7 with SMTP id qh12-20020a170906ecac00b00a368cb692f7mr3008358ejb.77.1707292499559;
+        Tue, 06 Feb 2024 23:54:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVu2cjRG6zO6MdctV8q8Cr2LmysVb3AReab7AY/n7DJupJ1B7/iQle9snjRmpUytzoNo1xTBrZeuRsMbvpGlxlU2KIzpeuO1bmKHOfYey09kWj78Ndh4mbK6f2jOHIE4HpN7Jdr3x03KmFBwk/6jeCsaMBSAqrZS260M2BUIKPTsuN3t/sEvGNOGO7kcfSEy425rzL2ttpuYkgWemdvsoVqT527DTCg/Rl0TrMusw+e6fvJZcswwUv4zt7mXVINphp7Pn/+7BJA182DLMCHIvkICXsGYhCEKQ/a60MN7NdTXPd/Debkp2E23DuHVbxDf9gc3V+9q8YAfXA+LVb1LKCzbzOu1m13
+Received: from [192.168.100.74] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
+        by smtp.gmail.com with ESMTPSA id vw13-20020a170907a70d00b00a37585d5dcesm456935ejc.51.2024.02.06.23.54.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Feb 2024 23:54:59 -0800 (PST)
+Message-ID: <626fe429-98b3-4319-b104-ef66e4b7afdd@gmail.com>
+Date: Wed, 7 Feb 2024 08:54:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,102 +75,49 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] KVM: arm64: Override Microsoft Azure Cobalt 100 MIDR
- value with ARM Neoverse N2
+Subject: Re: [PATCH v3 2/3] dt-bindings: iio: humidity: hdc3020: add interrupt
+ bindings in example
 Content-Language: en-US
-To: Easwar Hariharan <eahariha@linux.microsoft.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>,
- James Morse <james.morse@arm.com>, Suzuki K Poulose
- <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>,
- Andre Przywara <andre.przywara@arm.com>, Rob Herring <robh@kernel.org>,
- Fuad Tabba <tabba@google.com>, Joey Gouly <joey.gouly@arm.com>,
- Kristina Martsenko <kristina.martsenko@arm.com>,
- "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)"
- <linux-arm-kernel@lists.infradead.org>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)"
- <kvmarm@lists.linux.dev>
-References: <20240206195819.1146693-1-eahariha@linux.microsoft.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20240206195819.1146693-1-eahariha@linux.microsoft.com>
+To: Dimitri Fedrau <dima.fedrau@gmail.com>
+Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen
+ <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Li peiyu <579lpy@gmail.com>,
+ Nuno Sa <nuno.sa@analog.com>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240207074758.4138724-1-dima.fedrau@gmail.com>
+ <20240207074758.4138724-3-dima.fedrau@gmail.com>
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <20240207074758.4138724-3-dima.fedrau@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
+Hi Dimitri,
 
-On 2/7/24 01:28, Easwar Hariharan wrote:
-> Several workload optimizations and errata depend on validating that the
-> optimization or errata are applicable to the particular CPU by checking
-> the MIDR_EL1 system register value. With the Microsoft implementer ID
-
-Which is how it should be done.
-
-> for Azure Cobalt 100, the value doesn't match and ~20-25% performance
-> regression is seen in these workloads. Override the Azure Cobalt 100
-> value and replace it with the default ARM Neoverse N2 value that Azure
-> Cobalt 100 is based on.
-
-Why cannot these MIDR values be classified as required and subscribed to
-the existing erratas that is affecting such implementations. Hence these
-work arounds will be triggered as and when applicable. Why then override
-MIDR value instead ?
-
+On 07.02.24 08:47, Dimitri Fedrau wrote:
+> Add interrupt bindings in example.
 > 
-> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+> Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
 > ---
->  arch/arm64/include/asm/cputype.h   | 3 ++-
->  arch/arm64/include/asm/el2_setup.h | 5 +++++
->  arch/arm64/kvm/sys_regs.c          | 9 ++++++++-
->  3 files changed, 15 insertions(+), 2 deletions(-)
+>  Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
-> index 7c7493cb571f..0450c6c32377 100644
-> --- a/arch/arm64/include/asm/cputype.h
-> +++ b/arch/arm64/include/asm/cputype.h
-> @@ -262,7 +262,8 @@ is_midr_in_range_list(u32 midr, struct midr_range const *ranges)
->   */
->  static inline u32 __attribute_const__ read_cpuid_id(void)
->  {
-> -	return read_cpuid(MIDR_EL1);
-> +	return (read_cpuid(MIDR_EL1) == 0x6D0FD490 ? 0x410FD490 :
-> +			read_cpuid(MIDR_EL1));
->  }
->  
->  static inline u64 __attribute_const__ read_cpuid_mpidr(void)
-> diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
-> index b7afaa026842..502a14e54a31 100644
-> --- a/arch/arm64/include/asm/el2_setup.h
-> +++ b/arch/arm64/include/asm/el2_setup.h
-> @@ -138,6 +138,11 @@
->  .macro __init_el2_nvhe_idregs
->  	mrs	x0, midr_el1
->  	mrs	x1, mpidr_el1
-> +	ldr	x2, =0x6D0FD490
-> +	cmp	x0, x2
-> +	bne	.Loverride_cobalt100_\@
-> +	ldr	x0, =0x410FD490
-> +.Loverride_cobalt100_\@:
->  	msr	vpidr_el2, x0
->  	msr	vmpidr_el2, x1
->  .endm
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index 30253bd19917..8ea9c7fdabdb 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -3574,7 +3574,14 @@ id_to_sys_reg_desc(struct kvm_vcpu *vcpu, u64 id,
->  		return ((struct sys_reg_desc *)r)->val;			\
->  	}
->  
-> -FUNCTION_INVARIANT(midr_el1)
-> +static u64 get_midr_el1(struct kvm_vcpu *v, const struct sys_reg_desc *r)
-> +{
-> +	((struct sys_reg_desc *)r)->val = read_sysreg(midr_el1);
-> +	if (((struct sys_reg_desc *)r)->val == 0x6D0FD490)
-> +		((struct sys_reg_desc *)r)->val == 0x410FD490;
-> +	return ((struct sys_reg_desc *)r)->val;
-> +}
-> +
->  FUNCTION_INVARIANT(revidr_el1)
->  FUNCTION_INVARIANT(aidr_el1)
->  
+> diff --git a/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml b/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml
+> index 7f6d0f9edc75..5b3f9670fa52 100644
+> --- a/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml
+> +++ b/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml
+> @@ -51,5 +51,7 @@ examples:
+>              compatible = "ti,hdc3021", "ti,hdc3020";
+>              reg = <0x47>;
+>              vdd-supply = <&vcc_3v3>;
+> +            interrupt-parent = <&gpio3>;
+> +            interrupts = <23 IRQ_TYPE_EDGE_RISING>;
+>          };
+>      };
+
+Did you compile the example? I think this will fail because you don't
+have the include for IRQ_TYPE_EDGE_RISING.
+
+Best regards,
+Javier Carrasco
 
