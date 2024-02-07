@@ -1,92 +1,96 @@
-Return-Path: <linux-kernel+bounces-56635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 769EA84CD07
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FA6684CD08
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:42:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A82731C21DA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:42:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9394C1C21CD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:42:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E7DE7E777;
-	Wed,  7 Feb 2024 14:41:52 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CEDD7E777;
+	Wed,  7 Feb 2024 14:42:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="f0ZEToLx"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA982561C;
-	Wed,  7 Feb 2024 14:41:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E59A97D3E6
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:42:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707316912; cv=none; b=uLWtuMuZY4Sit98VoUj5GovDCmquVqjfSq64EsnCcgQ5Tw8JziSgfamwMwv5MXzLsEzif41VMGm3HUSW3v7bPX3DUHawgfi4y9WdikJr7CZqRFgOxmijl6ZzPyFEO9e0vF4lso2LlTJY5tlLuzQHLRs5ob7KFtdx/ViDAP+D4r4=
+	t=1707316933; cv=none; b=l4oXOkcHcrg2SiAO7IR5pr176NuSVeVyLbVDbM8vYqvkJa+s3/3+cKG92WZwF/OAbFNVBFinQVyU3oq68ltGziL8MXF9PpWkdM8oYRsDja5/p9xMQFTW+EIFVtz+fcMY7hk5C1hUQI1sfinrBCfbGZYnVqYrxaeC0wRe93TOfk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707316912; c=relaxed/simple;
-	bh=ht5EjXVnhtYPjjYf7qPGVv/MLquyBdgjIj/mEaw7S6M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C1HphomtqUimjIosROa+6SFmtdCYWipy1sU9egpsI6VDmbHmPztz6uC0Fdrw43xwak7QVRFDMgJCRYJtGXc6qJEKNKoiIhz8A0s1ehzsWeov24Yu29LCmCiGJIrgofKPf+Nv4MugCBvJI21FUK0AzxKxorucz5IR0XHFfqLSO+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav414.sakura.ne.jp (fsav414.sakura.ne.jp [133.242.250.113])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 417Ef573028669;
-	Wed, 7 Feb 2024 23:41:05 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav414.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp);
- Wed, 07 Feb 2024 23:41:05 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 417Ef5NY028664
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 7 Feb 2024 23:41:05 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <38e6e589-23f9-4dfd-8588-9e0d13500dfc@I-love.SAKURA.ne.jp>
-Date: Wed, 7 Feb 2024 23:41:01 +0900
+	s=arc-20240116; t=1707316933; c=relaxed/simple;
+	bh=3Cv8/QhBIpD74slYSSoo4vxVIJLl/J4xx5zC5DQgKTk=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ZRxI6CHhPo1XkbhpBc+F/HYrQhb/JkdabPStCeSNJtAC9AUok1/4GzB6WrgqpOA7wZVIkh5YOOvx3jdDME8nwX5pXVZ5PpzirYQxAhTQ3GM6P4D+6Un9D/BpNOh1Cmt9N1eUbWyw8o5Q8ccy0ZnsPYcHHnsz7xNUDygH5kuO1Ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=f0ZEToLx; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5cfc2041cdfso494694a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 06:42:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707316931; x=1707921731; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=P+knB1ngdSyKARG/doZP96ZXvsPHGkqMevFJ+aYaZPk=;
+        b=f0ZEToLxMs5TDBDkMEF2LePt9f4ymD9ISzVGM1Ft+/s6mrYclpP04f6PklXj3OTx3H
+         wcR+ulr1eIOKWmu3p7Tz5NKfbQqfO1OkP0FjXxVvHLXdkyL3zSquUkDAevegBQYzZwmM
+         Iov5KqUInUM7fdr8mHwf2BIAqTCYKAISl+gMTwtyPePd8urAmsgvR532GN4YwS6Ao92a
+         MAtUqdoj3LfnnaOQq+1vojACoTQJnhZJcGY9HndsFEBK0l8zd+JxX6qZS6t4DJPjFB7k
+         neDSnwGGUyb7YRutDLt+2HBJfkqcZZaHX/kmfREMAnTDfIcGD94l+50XXaADW5vKeMmp
+         lF5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707316931; x=1707921731;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=P+knB1ngdSyKARG/doZP96ZXvsPHGkqMevFJ+aYaZPk=;
+        b=SyzqWMjXEaXVMWJTNRLYw8IdBr25WQC5wUZmnacgGCtR608FlZw+/9WIQ2N88uA0OJ
+         ytEIatlKNuilMcg5WJZr+/qLUxR3dfmCHbWDOGg2Hs4tHuFwRMVO8cdC7k8+V1FTSa1c
+         HwQZbkAOg6swOrrrbyBZTRVwkSYNrUawoOM6atI4ZIHC///sg+HxC3bHsRI/zgPBXtKk
+         cHtFJVAoacK+KlyR7anyh/7QA/EZ1w6KhemL2yO8KvkuoAQi22p8FUCcZfhuCUuDiyJY
+         rJn0PDPapdarE3PBeP54He5IYpnuSipNFkFx1OKw3Jdi8MnI4DqSZjdMEXUqTnn6ZLxh
+         PQfg==
+X-Gm-Message-State: AOJu0YzRjvQIw1nLjfRPw5xM/jXMeoX/trj6h4vlW5CEO1VU7G7i3nAM
+	Ji5cI0E+aRs8MS5ZYHv+Kynrjf+r+0vzXximQnfqSy5oAsky6naykhSwnPGl9ylMwo8t72PukaW
+	9Sw==
+X-Google-Smtp-Source: AGHT+IH2CYj13LOcOTolr6P9fTU40Ga1BYphTzszQJKE8pMlAoy03SGK9b1MwI11mOBq96zOCeNblDSCKiQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a02:190:b0:5ca:439c:86ac with SMTP id
+ bj16-20020a056a02019000b005ca439c86acmr8804pgb.8.1707316931114; Wed, 07 Feb
+ 2024 06:42:11 -0800 (PST)
+Date: Wed, 7 Feb 2024 06:42:09 -0800
+In-Reply-To: <20240131233056.10845-1-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] LSM: add security_execve_abort() hook
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-        Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <8fafb8e1-b6be-4d08-945f-b464e3a396c8@I-love.SAKURA.ne.jp>
- <999a4733-c554-43ca-a6e9-998c939fbeb8@I-love.SAKURA.ne.jp>
- <202402070622.D2DCD9C4@keescook>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <202402070622.D2DCD9C4@keescook>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20240131233056.10845-1-pbonzini@redhat.com>
+Message-ID: <ZcOWwYRUxZmpH304@google.com>
+Subject: Re: [PATCH 0/8] KVM: cleanup linux/kvm.h
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On 2024/02/07 23:24, Kees Cook wrote:
-> This looks good to me.
+On Wed, Jan 31, 2024, Paolo Bonzini wrote:
+> More cleanups of KVM's main header:
 > 
-> Given this touches execve and is related to the recent execve changes,
-> shall I carry this in the execve tree for testing and send a PR to Linus
-> for it before v6.8 releases?
-
-Yes, please do so. (My git tree is currently down.)
-
+> * remove thoroughly obsolete APIs
 > 
-> There's already an Ack from Serge, so this seems a reasonable way to go
-> unless Paul would like it done some other way?
+> * move architecture-dependent stuff to uapi/asm/kvm.h
 > 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
+> * small cleanups to __KVM_HAVE_* symbols
 
-Thank you.
+Do you have any thoughts on how/when you're going to apply this?  The kvm.h code
+movement is likely going to generate conflicts for any new uAPI, e.g. I know Paul's
+Xen series at least conflicts.
 
+A topic branch is probably overkill.  Maybe getting this into kvm/next sooner
+than later so that kvm/next can be used as a base will suffice?
 
