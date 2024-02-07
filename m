@@ -1,99 +1,117 @@
-Return-Path: <linux-kernel+bounces-56503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5739984CAF3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:55:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EDF084CAF5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:56:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89E141C24765
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:55:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3339B26E01
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:56:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33FC7605C;
-	Wed,  7 Feb 2024 12:55:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62A8376035;
+	Wed,  7 Feb 2024 12:55:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J2ouZ6Mk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="yTcug6xl"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10ABD76034;
-	Wed,  7 Feb 2024 12:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3CD658AD0;
+	Wed,  7 Feb 2024 12:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707310543; cv=none; b=UPmgSZ/ayoy+DJkp7SAworf4ycrZgwUhiVn2ZzQkTr+MVKfTbvEB4WsLj1aVe5EqTAY/w9NwWhEDl5Ce4N+UddC1sn/myOSgyDwVpTfUI9K8iwZO358VaCdL2ntFkd5fkkMzSaGbispHRCwdeynn9Ttns0nLRhiFYigMAsyS2JY=
+	t=1707310555; cv=none; b=gHAY+cHz4b+ryjxupwoGp1AMaAlL6qco2vAL4eAZdO5ynrifcntAPfrV2jNh2x0rRYlWvKTlJggRNZm5sx7APDdQduXLNGwXdn/JL+MuUWsP1pQGmWxYgtaBBCFMEEvt6dihX5eTLBfAlppNcF5DSuArg9CqNEl5aBmpoxRc64c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707310543; c=relaxed/simple;
-	bh=OqO47zrMtFcqPOc5eFmBtHhP/Vp4uEHbdMjDNWFDyDI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ayr0Eaz9b9VNqWJCita3Oe5YU1uIdxNeAKkiw1KT0DfJQoUg0CPWqhnd4rNmDhqa38++tRhtvMth6fGkBEWyqfJeAt7RquY4gS7H5eqyrkWAcc7rMX7bX2RcTRMkzr55UkVVmKIdAYHJDq/6vf9m7akIoF/3c/smIPK17OHJavU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J2ouZ6Mk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 295D0C433C7;
-	Wed,  7 Feb 2024 12:55:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707310542;
-	bh=OqO47zrMtFcqPOc5eFmBtHhP/Vp4uEHbdMjDNWFDyDI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=J2ouZ6MkZ6Aq1Hi0Y3We/Gn/CLPgFPHOZd3JpzD+EnxJrxY/Foaono86PQnCY3/3L
-	 neeign9PDE8fspUqWU8jaMAslNYdvVw+DGmtJhgc5Rn+ssD4nLdgo7DtvxwEhZYrJ1
-	 qi99a7HI7YJBfmvhKcS3oAAu5V3Ay6NZ98E8tfdyBczVYb5KvxTJ5ockjO/fh0T5rF
-	 5AlCtH9ivlUGlQyNOz/3AJDmDqdG65BImOdkqBeDUq9R5OrvAgGbn/97dzFFSEApwD
-	 e3J80Nn/F7DNsWbBuJd61iB+Hi+9LST8cs5A5aifhmI0xF2y65m94GUfRfkKpDWu87
-	 NSuqC4hhG9B8A==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Anup Patel <apatel@ventanamicro.com>
-Cc: Anup Patel <anup@brainfault.org>, Palmer Dabbelt <palmer@dabbelt.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Thomas Gleixner
- <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
- <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>,
- devicetree@vger.kernel.org, Saravana Kannan <saravanak@google.com>, Marc
- Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org, Atish Patra
- <atishp@atishpatra.org>, linux-riscv@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Andrew Jones
- <ajones@ventanamicro.com>
-Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
-In-Reply-To: <87plx8y5s3.fsf@all.your.base.are.belong.to.us>
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
- <87h6ily53k.fsf@all.your.base.are.belong.to.us>
- <CAAhSdy2PPjS6++Edh8NkgiBmcovTUjS5oXE2eR5ZwPfAfVA0ng@mail.gmail.com>
- <874jekag3w.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2XJYTfY4nXWtjK9OP1iXLDXBVF-=mN1SmJDmJ_dO5CohA@mail.gmail.com>
- <87plx8y5s3.fsf@all.your.base.are.belong.to.us>
-Date: Wed, 07 Feb 2024 13:55:39 +0100
-Message-ID: <87sf24mo1g.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1707310555; c=relaxed/simple;
+	bh=86CEiR8Qk2LPFxdR8IR7g3c2tfkCJKLqr7f8uVBnOYo=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R1BPYpBwnUr+5ukTNZbm1VHIxkSgbvOhi9sEg5WLqiuZt4djc4E2Zg7RbqPOEeAmvJldCfKuhWX9MZeu5t7sEcqYZzBJ6neRaxB/ppFryGxzlgxsWViyD4QrdaJ/lmxDBGyYvla/Fc60EMIjzsjwWYZB79IOQyN7PoJJv2x/xxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=yTcug6xl; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 417CtlLt054165;
+	Wed, 7 Feb 2024 06:55:47 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707310547;
+	bh=IKNk9oQWotkMzJk2/nGT+Z2XUGF4Q+T0Q2x6YfjgH2s=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=yTcug6xlHMHPDXMQGzhJQiqZKDMv0R6y9jzmQgbX3N7xgDuLHK0qVlXpUuB6z0M9F
+	 kTo1aoqK0eBD8aVL82MYPVEqrAnKID1hCsm4vk4p6s/RxsiMfwXHe8WngO1QFyX32g
+	 rrv7BSE3JR6aHb0ZZGtjmhWFeg+XtTo18AGhpVjA=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 417Ctlw8091263
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 7 Feb 2024 06:55:47 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 7
+ Feb 2024 06:55:47 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 7 Feb 2024 06:55:47 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 417CtliX032776;
+	Wed, 7 Feb 2024 06:55:47 -0600
+Date: Wed, 7 Feb 2024 06:55:47 -0600
+From: Nishanth Menon <nm@ti.com>
+To: "Kumar, Udit" <u-kumar1@ti.com>
+CC: <sabiya.d@mistralsolutions.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linus.walleij@linaro.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Dasnavis Sabiya <sabiya.d@ti.com>
+Subject: Re: [PATCH V2 0/2] Add CAN and OSPI support for AM69-SK platform
+Message-ID: <20240207125547.fet53fd26g4cjnpm@operate>
+References: <20240205200744.216572-1-sabiya.d@ti.com>
+ <d490d4cb-fb42-4189-b992-ba46be404137@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <d490d4cb-fb42-4189-b992-ba46be404137@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+On 14:45-20240207, Kumar, Udit wrote:
+> Thanks Sabiya
+> 
+> On 2/6/2024 1:37 AM, sabiya.d@mistralsolutions.com wrote:
+> > From: Dasnavis Sabiya <sabiya.d@ti.com>
+> > 
+> > Hi All,
+> > 
+> > This series adds support for the below interfaces on AM69-SK platform:
+> > -  CAN support on both MCU and MAIN domains
+> > -  OSPI NOR flash support
+> > 
+> > v2: Changelog:
+> > 1) Removed CAN interface aliasing.
+> > 2) Updated bootph property on the leaf nodes.
+> > 
+> > Link to v1: https://lore.kernel.org/lkml/20240118153524.4135901-1-sabiya.d@ti.com/
+> > 
+> > Dasnavis Sabiya (2):
+> >    arm64: dts: ti: k3-am69-sk: Enable CAN interfaces for AM69 SK board
+> >    arm64: dts: ti: k3-am69-sk: Add support for OSPI flash
+> 
+> Series LTGM
 
->>> Hmm, seems like we're talking past each other, or at least I get the
->>> feeling I can't get my opinions out right. I'll try to do a quick PoC,
->>> to show you what I mean. That's probably easier than just talking about
->>> it. ...and maybe I'll come realizing I'm all wrong!
->>
->> I suggest to wait for my v13 and try something on top of that
->> otherwise we might duplicate efforts.
->
-> OK!
+If that is an Reviewed-by, please add tag.
+> 
+> 
+> >   arch/arm64/boot/dts/ti/k3-am69-sk.dts | 162 ++++++++++++++++++++++++++
+> >   1 file changed, 162 insertions(+)
+> > 
 
-I did some really rough code sketching, and I'm confident that you can
-get rid of all ids_enabled_bitmap, hwirqs_used_bitmap, and the
-corresponding functions/locks. I'd say one lock is enough, and the key
-is having the per-cpu imsic_local_priv.vectors change from struct
-imsic_vector * to struct imsic_vector **.
+Please CC linux-arm-kernel mailing list and resubmit.
 
-Using smp_call_function_single() to IPI enable (and disable if you don't
-want to use the lazy timer disable mechanism) seems feasible as well!
-
-(Let me know if you don't have the spare cycles, and I can help out.)
-
-
-Bj=C3=B6rn
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
