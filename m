@@ -1,126 +1,121 @@
-Return-Path: <linux-kernel+bounces-56964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FD0C84D1DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:58:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 052C884D1EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:03:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04F551F26129
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:58:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CB24B2540C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:03:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06A785266;
-	Wed,  7 Feb 2024 18:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8190285281;
+	Wed,  7 Feb 2024 19:02:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jIM8ZpIc"
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TJXMG0tg"
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 925AE84FCC;
-	Wed,  7 Feb 2024 18:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6058984FB4;
+	Wed,  7 Feb 2024 19:02:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707332286; cv=none; b=Rq4UjJU844ewQSkbnNDxBBZIxCj8Sb1oq+m/sNJfF4hllPFnqjMaYrh8k3QNhZirod7J1ZVLkjtfWNJVKZmmRsZ1R1FsNSkGMKFvinjFNmvDjXNg6C1stA9ByxVb/XlT5EZvTY9wKbzAYMKFBoh4sYItXu286wjdGzUgbRsp4Co=
+	t=1707332572; cv=none; b=cw6TQdgD+dPkx89YS1NpIYtzh4Hr1e6eLnx1OyVfhE45a+bzYv/iV6CRYC8cdCsRadVlSY7rQTiElGIW3B7Pxc2LNxFTVRXa2CB9IThJWmykzBvCzEZ6PDa8mBuWsRk8u5UMmzUEvb8YkHMbX7RI9ogQswd9YDP9SQsl3SMMnvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707332286; c=relaxed/simple;
-	bh=pAOj+DSJjz+jvCbGKZ44IvbjjglxWKMYA2+il8mYawo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P5ZJXAxPUoIepW2pLV0VpA1xtE5wWp0fTyiDpU688JLgdk+mtAka7BBgp0A3GGRDQpK9QzaxHTCYKrTI3i+aIP0WP+rUZL4nkCLpbzFE6yQwavBYHHlfPC1UQaQXOMQaSeVtNuvPwDMRc1HbgupQ1fPNvPD+yX8GhjjdxxvsINk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jIM8ZpIc; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1707332572; c=relaxed/simple;
+	bh=0WP3GhnoPTDV0+joY1N49lbD3qna4WrhBLUKcV4NQ7I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VFo9IYavE+xDSFpwERMWw35hoAeCCsneLe9qWsAlEZ33tkGb81YKp3yrSEOtgyDceD96EwqFYMMAl+JaFKg/hbnhEB9CSDKebPWf2E31/9E2sCpliM3SQnBljCQwyR+D6kKA82CX50m4XMrvbLAredtSJHDnUileC6B88T3xh0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TJXMG0tg; arc=none smtp.client-ip=209.85.221.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5d8b519e438so821915a12.1;
-        Wed, 07 Feb 2024 10:58:04 -0800 (PST)
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4c02be905beso345136e0c.0;
+        Wed, 07 Feb 2024 11:02:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707332284; x=1707937084; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nq0e4pOcA//e/KkGEcUuu94EhWD+e4sWk9MIHyJok5U=;
-        b=jIM8ZpIcVNoZ3L9flfBLte7UlQsJtdJBe85SplOGCbdZ7ajVTyPLE7FjkwniQkt13G
-         f0Dd4Qcm71RyHrWn31P3YrNYxqtF2k8EmBUFfxmEVx96nhm+aldgT3k3DQqzuxHzBE/u
-         ryOzqgFWQEDR3326+uqpDyyFahh7Fu0NV4gWBSEF+v8GJZi6h3/4FrdOZ7g0N9FLIMa2
-         PASlRdMnjlkCsXgIGQ/nhxvaMR++13kVJqNT307ExUppdnx7k3nNTNRzhD/BovOnUSmw
-         6JFGmcYohDkuCkUI7BMYzghCyzh7FDXp2haNXR0MH931qfrX9u/+pToZ8JtZsBQ4R83q
-         Itaw==
+        d=gmail.com; s=20230601; t=1707332570; x=1707937370; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ujAb35RnTLt8ZUbzta1x6PdsdJ+WhetZSVI49IXzaL4=;
+        b=TJXMG0tgr90Y/gti2h7kNxMOgy9AGBY7/WDOaipS0/hDPOUr19A3kCnrx5bqqD90tu
+         jgXryeJtdCobqpc1z6vn5fw69MgiBNAdkZgbnqfSwULXiag5Ku/LvfYO0f9XhXc2Y6y1
+         6qasx3Y4I5+ehPkZ+qUI3OLw1W+f97waWKaiAd4nz3tHtfdMPqBBtlojdWHXWiTGXQlM
+         LWqo+H8MIPs0W7rfG1DaZ1R+xj3CQE7RYNpZPjFmxPQI1JfjfeO9Xa9Fww8KOjRbuiXg
+         YC6HcC5rumzhAcd2LjjlIPtig4SPStHPLCKs8SnENH22xj5E4lZa0FLjHqkJ8SdoMgeo
+         kFxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707332284; x=1707937084;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nq0e4pOcA//e/KkGEcUuu94EhWD+e4sWk9MIHyJok5U=;
-        b=BfeaIYJmTqrHzJSoxu0jjIHlq3wbGhsjjcr+Z/SXBdZYg4X5T/ktnQKA6JvWkrrkbg
-         uIbJ8TYGCkw5e8PAcSMiDU0hbrWjk+pwfipreAMC1ar6bcnCLLNHsPZLjjTIuhXRz02s
-         g5KDYDDGTI0l0IHYLk2vlePI3Id2BDLjtVK2uNRCGEbs9Q2SNkq6YC36nOEyrEGKszCk
-         IZJfUMjjNM3bSPT+/o9b2CrOfrkqU7CyEGwHk3SZh/cQDRajiplhzSm8dv7c/iGYze+A
-         Ck5x0+oJUoPtpQxvd3jRBZFZB0hpMUz8ESIJKRkV6zcy003xk0PADw2zXvvLE3ukXn2R
-         Cqpg==
-X-Gm-Message-State: AOJu0Yzz6xJiWILOmHDaduM2gcmnUZZe1qIJ7LNEAYoGRCEJ5mXfu3JS
-	25emQC4m2gmmgJcBfAiyu3dHfx4M2b22VSAo8l9c5IHTPNr/c5K6
-X-Google-Smtp-Source: AGHT+IFrezsfR3ZUFYCsjd3IteHZ8Q9Kx3xJByT+pvxVb2EZlj0Kj4RCrKcGYQOuxSTmjdUAGB7fRg==
-X-Received: by 2002:a05:6a20:e115:b0:19c:6a60:b433 with SMTP id kr21-20020a056a20e11500b0019c6a60b433mr6774647pzb.3.1707332283658;
-        Wed, 07 Feb 2024 10:58:03 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWYuIp9BWufSitnIyIH4En+BA2qY7vSL4td8JDn4aiFmRGgjot/RSULtT7k/Qkvi9ei3uqUbAaBcfR5tRF0kTpUuID7lLqJH0FlPyEeXUnrLUlaRaA0L8m1ntPvwljRgOHp2unUl7Y0rfKs3UD8AsiBblTlEjMyFd/id75DwqTdj54ZYyAobf7hR8+V6x/DRigcFnS09vLtx6RfQp7lH7n8AVpDQtpBYQ0hsOZsAdFQdDt2vx819zc0o+n78DNtg7NwRzgmCGidM+b4zTCmNhjnay+e4Yhrr21bvR5SjXH7Time5rpFw91/etESICon0Q/iQs/tNjJH1EXYiAsY1YJPSa0XpSCirC3b393y0/N98+/j/ljLVVRbmnxrDdM=
-Received: from localhost ([2620:10d:c090:400::4:3c45])
-        by smtp.gmail.com with ESMTPSA id m4-20020a632604000000b005dbe22202fbsm1984724pgm.42.2024.02.07.10.58.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 10:58:03 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 7 Feb 2024 08:58:01 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	"Rafael J. Wysocki" <rjw@rjwysocki.net>,
-	Linux PM <linux-pm@vger.kernel.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>, Naohiro.Aota@wdc.com,
-	kernel-team@meta.com
-Subject: Re: [PATCH v1] PM: sleep: Restore asynchronous device resume
- optimization
-Message-ID: <ZcPSuUBoL_EDvcTF@slm.duckdns.org>
-References: <CGME20240207103144eucas1p16b601a73ff347d2542f8380b25921491@eucas1p1.samsung.com>
- <10423008.nUPlyArG6x@kreacher>
- <708a65cc-79ec-44a6-8454-a93d0f3114c3@samsung.com>
- <CAJZ5v0hn=KgaWn9pwtLsH2a8n61BNxzb1xrNoxUfEi3o9OAZGw@mail.gmail.com>
- <4a043533-009f-4db9-b107-c8374be28d2b@samsung.com>
- <CAJZ5v0hDmwaFEtLc8yDc4cXn2wODXAqATe0+_Hpm9QPODUPMQw@mail.gmail.com>
- <ZcOyW_Q1FC35oxob@slm.duckdns.org>
- <2f125955-8c7c-465c-938c-8768f7ca360b@samsung.com>
+        d=1e100.net; s=20230601; t=1707332570; x=1707937370;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ujAb35RnTLt8ZUbzta1x6PdsdJ+WhetZSVI49IXzaL4=;
+        b=V9PpW6Z6RmwbtFXBx8Kbuermy0LZqc2OvtTkfBLbbccTx3Zprcekby8Cjj2l87UATP
+         aZsnSQuQr+xwRa0dynK1yQAplsEFZ7zCr50GVavF/6g2duUba8hQZDA6dUyvZC0wW5Ds
+         7OCq8XLiysehHrKvPhF4JatcHPSTeBEek1OCVFHp+d9uqnoQctkQlkW9X5qrd1XAXDJO
+         S2CUYizNooae8IF3+oiInBU/l1/PnJoW02F2VR8VOYSE+0+84IYGoiAOvIaLh7hrNNcX
+         BOhxUTN5gb+JA1V4nQEmSQkrK8dPgu7317Q/w8PGMQck+UzfeBhNmfXqA48xrjEMDLQK
+         WHdw==
+X-Forwarded-Encrypted: i=1; AJvYcCX2Nr45Qa1IyU3DaJNqzz41oyhUKGx2kKHV/bmC/V+sB1zLMb6fIR0BC04e0BbB0UHIQsTNf/hTxnRcel0KrmVqMffV16bU9gZMS25wUhCUqtCqeqNqZeqRKdy6hLVZhRAI9qtJ
+X-Gm-Message-State: AOJu0YzjP2pfecmNPBJu1PFTjAE8aUUqroiG7dpX/ZndC+AKQdfdDsxy
+	gwTczIO4JHvnAlzAtHiO6scemMlnnLFH8NPVwqS3lh+e0iuLUOoHb2sCmG/j/GCPAS4XLdPW5fs
+	vr/wC751ohhM8Z48jHO56rZJI6AM=
+X-Google-Smtp-Source: AGHT+IEGjaS2wfaJL/3N0IjNMSRVZR1yOOmxYjAVKnt3O04KW4cnozm5HRpUgMBIQTf4a+F1nGQe1OZy405NekISujs=
+X-Received: by 2002:a05:6122:1699:b0:4c0:2553:3b19 with SMTP id
+ 25-20020a056122169900b004c025533b19mr3739687vkl.13.1707332569959; Wed, 07 Feb
+ 2024 11:02:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f125955-8c7c-465c-938c-8768f7ca360b@samsung.com>
+References: <20240130091300.2968534-1-tj@kernel.org> <ZcACvVz83QFuSLR6@slm.duckdns.org>
+ <CAOMdWSLNMqsZNJ-oCLN2RjckZmJSvdU_Yq0F0frmqMqa67Oy1g@mail.gmail.com>
+ <ZcFPKaWwxJhgy8HQ@slm.duckdns.org> <CAOMdWSKQC4UWXp57qubcSOHmPj0E7wHZWWbCz+yCZqROhoPSGw@mail.gmail.com>
+In-Reply-To: <CAOMdWSKQC4UWXp57qubcSOHmPj0E7wHZWWbCz+yCZqROhoPSGw@mail.gmail.com>
+From: Allen <allen.lkml@gmail.com>
+Date: Wed, 7 Feb 2024 11:02:37 -0800
+Message-ID: <CAOMdWSLF9AaQF0ux03-tonw-Jy+4rXdKEZGzPrp_v+fnas6SnQ@mail.gmail.com>
+Subject: Re: [PATCHSET wq/for-6.9] workqueue: Implement BH workqueue and
+ convert several tasklet users
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, mpatocka@redhat.com, 
+	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, msnitzer@redhat.com, 
+	ignat@cloudflare.com, damien.lemoal@wdc.com, bob.liu@oracle.com, 
+	houtao1@huawei.com, peterz@infradead.org, mingo@kernel.org, 
+	netdev@vger.kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Feb 07, 2024 at 07:55:51PM +0100, Marek Szyprowski wrote:
-> On 07.02.2024 17:39, Tejun Heo wrote:
-> > On Wed, Feb 07, 2024 at 12:25:46PM +0100, Rafael J. Wysocki wrote:
-> >> The other one is that what happens during async resume does not meet
-> >> the assumptions of commit 5797b1c18919 (for example, it can easily
-> >> produce a chain of interdependent work items longer than 8) and so it
-> >> breaks things.
-> > Ah, that's fascinating. But aren't CPUs all brought up online before devices
-> > are resumed? If so, the max_active should already be way higher than the
-> > WQ_DFL_MIN_ACTIVE. Also, are these multi node NUMA machines? Otherwise, it
-> > really shouldn't affect anything. One easy way to verify would be just
-> > bumping up WQ_DFL_MIN_ACTIVE and see what happens.
-> 
-> I've increased WQ_DFL_MIN_ACTIVE from 8 to 32 and all the system 
-> suspend/resume issues went away. :)
+Tejun,
 
-Ah, okay, that's surprising. Lemme look at the code again. I gotta be
-missing something.
+> > On Mon, Feb 05, 2024 at 12:50:28PM -0800, Allen wrote:
+> > > Thank you. I am basing my work on the branch you have
+> > > pushed.(or-6.9-bh-conversions)
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git/log/?h=for-6.9-bh-conversions
+> > >
+> > > In the order of priority, I have started converting drivers/media/*,
+> > > drivers/dma/* followed by drivers/net/*
+> > > which constitutes the majority. Putting my plan out here so that the
+> > > work is not duplicated.
+> > > I will write back in a day and share the branch for review.
+> >
+> > That's great. Thanks.
+> >
 
-Thanks.
+  I have the first set of conversions ready. Kindly review the patchset
+before I post it to the list. These convert drivers/dma/* to use the new
+Atomic WQ mechanism.
 
--- 
-tejun
+Based on
+https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-6.9-bh-conversions
+
+
+https://github.com/allenpais/for-6.9-bh-conversions
+
+ I am holding on to the patch that converts drivers/media/*, as I haven't found
+a right way to replace tasklet_[disable/enable] api's. The rest should be ready
+in a day or two.
+
+Thanks,
+  - Allen
 
