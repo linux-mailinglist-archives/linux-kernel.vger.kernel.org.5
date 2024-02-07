@@ -1,169 +1,146 @@
-Return-Path: <linux-kernel+bounces-55974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24C5384C463
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:29:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FDCC84C46B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:34:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6585DB26346
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:29:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A410C289DDD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:34:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507BE1CD13;
-	Wed,  7 Feb 2024 05:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A5A14AB2;
+	Wed,  7 Feb 2024 05:34:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="N/GirgzU"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xjNkYLLQ"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9AC41CD1B;
-	Wed,  7 Feb 2024 05:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFDAE1CD1E;
+	Wed,  7 Feb 2024 05:34:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707283745; cv=none; b=rYwdTYY/UKuSqWhenJxUihmtkGpLxQekQw/BX6VKnj/qHFZP+1R5ufVEfZS/Xyf7QdkgHxt+qjUikMvKwKkLJuMx6rWzsCzclXu7hRTfx0VVMpW/mgm7XvPQYY7TJYF6UpHP2cr5SpYv4npvaU3Nq+q9nzWO5v3l88nq1gBHSmE=
+	t=1707284073; cv=none; b=rqetDIjJKkujzX8FeERE9iKfHMOC/yIJG+rWDsG7/oMwOKOXY8qh3va0cXu3X2bET9R4Ia0cvbe6ZQCQv944SvTEPElsN49FAidcNf8vN2CJ5gUpXL5TJhRxrR/QhuAqkNgx0DyYJBb8xd3mkTqNCIdna4r2KenVglwwaXUFH+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707283745; c=relaxed/simple;
-	bh=i/9LvpgXGgZ77SSVigrMvMQowB8KXTdbL+Ss6ARL8YY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TPIjbiL2YkFg+G74LffsZwqNQg9pZeyVQKddKypTJZHBw2xD+OY7WCfD5LML2PFkareqCc3vjywU25uRWqO0gNxyui7QJl4fVVHVSgSKsXLQqi3fWmb4VI6pXL3QZQ/5AZBZiqnmqmdZ9wiG4mYXWhPmqiALL+fdH5NO5kYLU04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=N/GirgzU; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4175RQFe008991;
-	Wed, 7 Feb 2024 05:28:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=RKdLZ6KJdPreBS6zTodP4YAl+wBdS315ObfSy4389rc=;
- b=N/GirgzUnUWQXP3si2k/FugV/BKGchJeLL31q7np1CEusXm8GGaUxGGYNFuIN0PSKt1M
- MkCMN170M9VrnVQ93BAIIPtiKsrzr0K2nwZu/GxdevR03xMOUz0QJ5Q2s+xEFqBtVBTz
- Wft9xuVIr76Hz/g6c6/jscsMOF2wkS5GyqELKDrvC2mI8nQxirvCRb9EMvD+j2bx1Hn4
- TZzGMLgmFmPZAMYPoDmn878K/uT/2phI+uYmyTRxNH/bRnix47bcS7W7hUGZAYBb0SEA
- 7wAKn4OudrANG2S7B4ArOFZ7JRQvkdE6fUd5LjUdH6QsjB5QYVg8xEF3253ilSZNQ1rG HQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w43qn80kr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 05:28:53 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4175Sq9r014295;
-	Wed, 7 Feb 2024 05:28:52 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w43qn80kg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 05:28:52 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4172QCv8016137;
-	Wed, 7 Feb 2024 05:28:51 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w22h23ac9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 05:28:51 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4175Sm9C18088640
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 7 Feb 2024 05:28:48 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C1C4620040;
-	Wed,  7 Feb 2024 05:28:48 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 11D2A20043;
-	Wed,  7 Feb 2024 05:28:46 +0000 (GMT)
-Received: from li-a83676cc-350e-11b2-a85c-e11f86bb8d73.ibm.com (unknown [9.43.65.120])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed,  7 Feb 2024 05:28:45 +0000 (GMT)
-Date: Wed, 7 Feb 2024 10:58:43 +0530
-From: Amit Machhiwal <amachhiw@linux.ibm.com>
-To: Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org, kvm-ppc@vger.kernel.org
-Cc: Jordan Niethe <jniethe5@gmail.com>, linux-kernel@vger.kernel.org,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>
-Subject: Re: Re: [PATCH v3] KVM: PPC: Book3S HV: Fix L2 guest reboot failure
- due to empty 'arch_compat'
-Message-ID: <t5qjoir2gvckq6vscsi4zg66grkk3px24znzfrraaq32x5wea3@ogxxeqk5vrpu>
-Mail-Followup-To: Michael Ellerman <mpe@ellerman.id.au>, 
-	linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, kvm-ppc@vger.kernel.org, 
-	Jordan Niethe <jniethe5@gmail.com>, linux-kernel@vger.kernel.org, 
-	Nicholas Piggin <npiggin@gmail.com>, Vaidyanathan Srinivasan <svaidy@linux.ibm.com>, 
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>, "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>, 
-	Vaibhav Jain <vaibhav@linux.ibm.com>
-References: <20240205181833.212955-1-amachhiw@linux.ibm.com>
- <87r0hp9a4z.fsf@mail.lhotse>
+	s=arc-20240116; t=1707284073; c=relaxed/simple;
+	bh=/vwFyEuN+SciqLKd3L2Vv0FZcwpX+FovUMX7WH9gDf0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=jPNxNl5YEkI4XqonznXJlq8EBmEatKXqcdIGmvFH6H7nJEfmPj8zoj0vXwy+st1j2MbUg1P/IjIXVrCtJ8Udg+If16FIsrh/H7yb1tBoJTMO5YIj0FfKpTF67qHT7s55dubs2Pdx8CNu9QfMRspXDYoO9EujBWM1BdPC40K0cCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=xjNkYLLQ; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4175Y6aa067259;
+	Tue, 6 Feb 2024 23:34:06 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707284046;
+	bh=iRmefxTu3nU+jSjCWHu54KxXXwApbQgyUthBZ1sSZHs=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=xjNkYLLQH4kg5BXxsb9vfbrUNI7/xn/sNjgCqjm0kwXbC7NcbjBjWrBRR+LUqpCl4
+	 547nvaNdml+hCKYfkyLYZ9eMQK1FbIOHgg04e58sM4qInRwG1yp1t3Wf/2h3zLtm47
+	 6UOwzJkDFyc1SOs1f/h57h2GMYT1NK1Q7Q/LP6cA=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4175Y53p120442
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 6 Feb 2024 23:34:06 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 6
+ Feb 2024 23:34:05 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 6 Feb 2024 23:34:05 -0600
+Received: from [172.24.20.156] (lt5cd2489kgj.dhcp.ti.com [172.24.20.156])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4175XrFZ073161;
+	Tue, 6 Feb 2024 23:33:55 -0600
+Message-ID: <e2ea03ce-0367-413b-aca9-7c1fabda173a@ti.com>
+Date: Wed, 7 Feb 2024 11:03:52 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87r0hp9a4z.fsf@mail.lhotse>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vJKbdV8S2LfECZu1weNGWppdRNnRLro8
-X-Proofpoint-GUID: mZVR6pjwlinTqQk15RoF39MwZ6XhFph_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-06_16,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=982 suspectscore=0 phishscore=0
- priorityscore=1501 impostorscore=0 clxscore=1015 spamscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402070039
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] clk: keystone: sci-clk: Adding support for non
+ contiguous clocks
+To: Kamlesh Gurudasani <kamlesh@ti.com>, CHANDRU DHAVAMANI <chandru@ti.com>,
+        Nishanth Menon <nm@ti.com>
+CC: <kristo@kernel.org>, <ssantosh@kernel.org>, <rishabh@ti.com>,
+        <vigneshr@ti.com>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>
+References: <20240206104357.3803517-1-u-kumar1@ti.com>
+ <20240206131420.wtitflgav23jto2q@verbally>
+ <871q9pzoiq.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
+ <c5b6bd1d-dbb4-4bfb-8b3e-9b0733e2ba5d@ti.com>
+ <c2b7f22d-f07d-4cac-8a01-af7b014e7ff4@ti.com>
+ <a4fdbcfe-e0e0-4280-8638-e39b6b46778e@ti.com>
+ <87ttmly4fa.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
+Content-Language: en-US
+From: "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <87ttmly4fa.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Michael,
 
-Thanks for looking into the patch and your comments.
+On 2/6/2024 9:24 PM, Kamlesh Gurudasani wrote:
+> "Kumar, Udit" <u-kumar1@ti.com> writes:
+>
+>>>>>> get_freq is a bit expensive as it has to walk the clock tree to find
+>>>>>> the clock frequency (at least the first time?). just wondering if
+>>>>>> there is lighter alternative here?
+>>>>>>
+>>>>> How about get_clock? Doesn't read the registers at least.
+>>>> Said API needs, some flags to be passed,
+>>>>
+>>>> Can those flag be set to zero, Chandru ?
+>>>
+>>> get_clock doesn't require any flags to be passed.
+>>
+>> May be firmware does not need it but  I was referring to
+>>
+>> https://elixir.bootlin.com/linux/latest/source/drivers/clk/keystone/sci-clk.c#L78
+> Just took a look,
+>
+> I now understand the reason for confusion,
+>
+> #define TI_SCI_MSG_SET_CLOCK_STATE	0x0100
+> #define TI_SCI_MSG_GET_CLOCK_STATE	0x0101
+>
+> cops->get_clock = ti_sci_cmd_get_clock;  --> refers to
+> TI_SCI_MSG_SET_CLOCK_STATE
+> That's why we are passing the flag from linux for get_clock
+>
+> Linux is using terminology of get/put.
+>
+> As Chandru pointed, we don't have to pass flags, cause he is refering
+> to TI_SCI_MSG_GET_CLOCK_STATE
+>
+> Below functions passes TI_SCI_MSG_GET_CLOCK_STATE to DM, which is what
+> we actually want.
+> cops->is_auto = ti_sci_cmd_clk_is_auto;
+> cops->is_on = ti_sci_cmd_clk_is_on;
+> cops->is_off = ti_sci_cmd_clk_is_off;
 
-On 2024/02/06 09:09 PM, Michael Ellerman wrote:
-> Hi Amit,
-> 
-> One comment below ...
-> 
-> Amit Machhiwal <amachhiw@linux.ibm.com> writes:
-> > Currently, rebooting a pseries nested qemu-kvm guest (L2) results in
-> > below error as L1 qemu sends PVR value 'arch_compat' == 0 via
-> > ppc_set_compat ioctl. This triggers a condition failure in
-> > kvmppc_set_arch_compat() resulting in an EINVAL.
-> ...
-> >  	
-> > diff --git a/arch/powerpc/kvm/book3s_hv_nestedv2.c b/arch/powerpc/kvm/book3s_hv_nestedv2.c
-> > index 5378eb40b162..6042bdc70230 100644
-> > --- a/arch/powerpc/kvm/book3s_hv_nestedv2.c
-> > +++ b/arch/powerpc/kvm/book3s_hv_nestedv2.c
-> > @@ -347,8 +348,26 @@ static int gs_msg_ops_vcpu_fill_info(struct kvmppc_gs_buff *gsb,
-> >  			break;
-> >  		}
-> >  		case KVMPPC_GSID_LOGICAL_PVR:
-> > -			rc = kvmppc_gse_put_u32(gsb, iden,
-> > -						vcpu->arch.vcore->arch_compat);
-> > +			/*
-> > +			 * Though 'arch_compat == 0' would mean the default
-> > +			 * compatibility, arch_compat, being a Guest Wide
-> > +			 * Element, cannot be filled with a value of 0 in GSB
-> > +			 * as this would result into a kernel trap.
-> > +			 * Hence, when `arch_compat == 0`, arch_compat should
-> > +			 * default to L1's PVR.
-> > +			 *
-> > +			 * Rework this when PowerVM supports a value of 0
-> > +			 * for arch_compat for KVM API v2.
-> > +			 */
-> 
-> Is there an actual plan that PowerVM will support this in future?
-> 
-> If so, how will a future kernel know that it's running on a version of
-> PowerVM that does support arch_compat == 0?
-> 
-> Similarly how will we know when it's OK to drop support for this
-> workaround?
 
-I'm sending a v4 based on an off mailing list discussion.
+I think calling ti_sci_cmd_clk_is_auto should be good . other functions 
+needs current state and requested state.
 
-> 
-> cheers
+Chandru ?
 
-~Amit
+>
+> Which should be safe to call, Chandru can confirm.
+>
+> Regards,
+> Kamlesh
+>>
+>>
+>>>
+>>>>
+>>>>> Regards,
+>>>>> Kamlesh
 
