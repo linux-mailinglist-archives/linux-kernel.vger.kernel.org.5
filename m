@@ -1,105 +1,99 @@
-Return-Path: <linux-kernel+bounces-56143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BC8B84C695
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:48:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19CCD84C69A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:49:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 129B41F28218
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:48:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C26A71F28565
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFDC208D9;
-	Wed,  7 Feb 2024 08:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E202208CF;
+	Wed,  7 Feb 2024 08:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A4MIXknH"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lOFyi2L6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A1C0208B9;
-	Wed,  7 Feb 2024 08:48:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE40F208BA;
+	Wed,  7 Feb 2024 08:49:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707295695; cv=none; b=EM2Pl9ouv2SiVXFghoDBYuh/HEQVdGUJF638T/XHr/Bed0DsnWT9CbKa1L13RQigiwhOxzaOdzQtouL02GO9GzuLEiN3gaHo+cPfV3RFSaauTW6R41vJp7Mi+UUEZiT5nkKxQn+feDwUSoeDzUlo/8vURLmB9jgqFIJ2WU0bD6M=
+	t=1707295758; cv=none; b=ugFLogzuOwUa5ZZdZSVafxFCTClYcwtJ1TL/GxFmwo0CB+RQxs7c3bPQkv2rrYyVYApCwx6bvS+ZFSxbc2HC/KT7ZKtdy7sph3w0aCktBQb19RlAfYLkfnJ4/HG5IyDYC25FeKExUaNiOICAxNSozL1Hm2AVVCxvBm5kjev3430=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707295695; c=relaxed/simple;
-	bh=dt8hzbTascoa4l4AGdRm3+8cLSOSYx3O1wN3E7heOjo=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=DEeDC2of5YVDOSd/k3gvFYP8RVbRQTQYHnKVvI4gfO+5CvBl3yPQ8L5/PBXIguD81bymt06f7Uj8GkXmRt1OZJds8PKX/WCK1puvHiNeLgWVx/wjuVDSqpPNiUPiR4CeOyVjj9GS4bZ/ylWOTBF2/E5Rn8ZfA+PyI5oFW3Muu9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A4MIXknH; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a372a3773a5so38959566b.3;
-        Wed, 07 Feb 2024 00:48:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707295692; x=1707900492; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=umVkVcQlllxg2jaOuf58sSKKw2cF+x9a/MWyBZj1VFY=;
-        b=A4MIXknHscOQhliW3agzNBOnFBEQdMVlzKLDHl5CJDarHTjiOr4Ev1O+THOvnQCZW9
-         IEMdJBjNS3mb99cUuBbVPPjSYjenkgLKhFAFoCv1BUd4fZ6MmjeZviScKZNyXETfYhJ9
-         x7X7/3oY9LfJTdGkK7E7vZXAr/30k+gBarf7+3x40daQiyGTxy9vgHG4MH4OEI2DVE8b
-         qkDVPE/zg3wrSACol8bvOJPKy2gJyvNZb1bvpCfmn7HpkYxYr5/qxnkegv7XnnUJrbai
-         Qy98JN4psC5YOYr8smcV+AOeFGY5Gw1yUFZ/C/T97ARmMRw9v0FYeh6hwktiCfp+njDp
-         ADeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707295692; x=1707900492;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=umVkVcQlllxg2jaOuf58sSKKw2cF+x9a/MWyBZj1VFY=;
-        b=PHjp/C3ge0SjxEu5949z5zdXnmTh7AZ43hheN9+WuiejGUmw4q+GW+ZLR+xB5NUK+G
-         XNnMQWsrXqFITjBkgXCaad5uk8mH0swSg6JSqHexGJeqjxILFQ+Way4Bv7lh2WgzH1es
-         ZWRRfxVJAb/XyQR6YETtFNY/O1HAlmVH1qfwoRf9LB45Na+gfds+SQkIbcx3FRyy0mNn
-         yYHVhzgGR1R2WBxv5B392LqGmUvIbGZKx0qw1LKFP83u/JJQ9wsmNRvcoH4ngxWVhv4j
-         8LjNszRT3adHtN205UuY0m6c7XXF/LSzssAtjvq77CkOPWlLiu+02MYQbq3AvlRW+MnP
-         5iFQ==
-X-Gm-Message-State: AOJu0YzyFKL387tEhnEQwXAwEDXiZi1o+BgkrBdyqXQ5aNo7k3kr0/8n
-	mPKH/PtInXckpGBH4E4L2VePsyFkVGY3jXrLGtkKaDNNzdcY7BkV
-X-Google-Smtp-Source: AGHT+IGpUJ/0ACcl+neX6Ydjjpk6uS/ABCcNl7cu4cSkVrgLltpTwm0NKB4H4lPU0IaRRiBMne+Z3A==
-X-Received: by 2002:a17:906:318b:b0:a37:a3bf:4045 with SMTP id 11-20020a170906318b00b00a37a3bf4045mr3233509ejy.35.1707295691492;
-        Wed, 07 Feb 2024 00:48:11 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXeyWDdHdcxKWvxJYpmrL/bXiL5OHWoD6aoK8AJu7zCoIoy8TKnr5vPZ06R+G3/boLJ8wZF0FOn/QS83M7O83S0dNav9M+kuRMWlZlPmOYwDWg56cgNmWb4bxG4dIM06zMQ595V0/xr73ps1KaU/s8n8TNvTJzvGvIaz/LkivzOzhKLsGUEv6Mt2G4AixLLBOvsqsif03jJRolPC7eS7sJ8dSycxaYpr6zUTBu+xKa12AxwPeliH1zLacYzJSQbQhU5nDk8R0BLG7Wdhj1O7TwP28lBKc1sUnhrm/YP4Q5YcA4ful1F5un+EMnOs9DNnG4oI0tN737e1bIgnS3wzpgMBXn3r9JGmXh7fZuyjEhG3IFMDFG4lrHGdpBYcvnj3uboS7qWbFyc6+SrPkoqlHe22T9Nsc7Bh7pbVlBGtnDOgqk275g=
-Received: from [192.168.11.39] (54-240-197-227.amazon.com. [54.240.197.227])
-        by smtp.gmail.com with ESMTPSA id i26-20020a170906115a00b00a36c7a7b4f7sm503528eja.207.2024.02.07.00.48.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 00:48:11 -0800 (PST)
-From: Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <05edc239-0f9d-43e8-9e59-4cdb6d2bcbed@xen.org>
-Date: Wed, 7 Feb 2024 08:48:04 +0000
+	s=arc-20240116; t=1707295758; c=relaxed/simple;
+	bh=N2UmQem2e+uq88ryx+p+eHtWXlWzYmH6j+nDfWSq+uo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=mShdsRB2zoaVy3gCLNOhHd4fh0vZGJ1l/AKmIfYrDohy7KLxWyytcmMwIAlmmKyAykS9MjIj3/S7fYUNlp0C+2i/4j+3UJ7gS+WbVIpA8jSZeWjXn4yhj7j7PvyEkpJgBkaKgxwShf7VvrWHQySqVykcSeXS7keWJi1ZW7IuQW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lOFyi2L6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11A25C433C7;
+	Wed,  7 Feb 2024 08:49:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707295757;
+	bh=N2UmQem2e+uq88ryx+p+eHtWXlWzYmH6j+nDfWSq+uo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=lOFyi2L65FKIZDw3m/NUm8s30sPTf1Rk1UYuDyjugi9jpOvFrorwpdHyRznMumkFE
+	 7Cj58LUGPoegSSic35vgxfwWxa4tlF5PxUdu+jUWQJshv+jzBBoBHqRsMpEWf/rm9o
+	 zGZNKnLSCeFPMRI69i6g2KoxJbqGSs1/XYRKKoJK+KcqK4jhKAz6aE+LI4QnuCWvPX
+	 NHABAbqDCx8FtXx/hoyweiE66LABhRgTZh9ouf+RWGgTDgcBG1jtciafe5sQ6LIXcM
+	 NPc+UBL3RHAxJyx7KlZzB0HjJy3joWid82qed009nkSDYpirft8TNzQDST843pQX2C
+	 R+aqcL8nCpPbw==
+From: Vinod Koul <vkoul@kernel.org>
+To: Manivannan Sadhasivam <mani@kernel.org>, 
+ Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
+ Serge Semin <fancer.lancer@gmail.com>, Cai Huoqing <cai.huoqing@linux.dev>, 
+ Kory Maincent <kory.maincent@bootlin.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Herve Codina <herve.codina@bootlin.com>, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+In-Reply-To: <20240129-b4-feature_hdma_mainline-v7-0-8e8c1acb7a46@bootlin.com>
+References: <20240129-b4-feature_hdma_mainline-v7-0-8e8c1acb7a46@bootlin.com>
+Subject: Re: [PATCH v7 0/6] Fix support of dw-edma HDMA NATIVE IP in remote
+ setup
+Message-Id: <170729575467.88665.9946479404086930369.b4-ty@kernel.org>
+Date: Wed, 07 Feb 2024 09:49:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH v12 03/20] KVM: xen: mark guest pages dirty with the
- pfncache lock held
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>,
- kvm@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240115125707.1183-1-paul@xen.org>
- <20240115125707.1183-4-paul@xen.org> <ZcL2Y1gpRG8C1_8f@google.com>
-Organization: Xen Project
-In-Reply-To: <ZcL2Y1gpRG8C1_8f@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
 
-On 07/02/2024 03:17, Sean Christopherson wrote:
-> KVM: x86/xen: for the scope please.  A few commits have "KVM: xen:", but "x86/xen"
-> is the overwhelming favorite.
 
-If I have to re-post anyway then I can do that.
+On Mon, 29 Jan 2024 17:25:56 +0100, Kory Maincent wrote:
+> This patch series fix the support of dw-edma HDMA NATIVE IP.
+> I can only test it in remote HDMA IP setup with single dma transfer, but
+> with these fixes it works properly.
+> 
+> Few fixes has also been added for eDMA version. Similarly to HDMA I have
+> tested only eDMA in remote setup.
+> 
+> [...]
+
+Applied, thanks!
+
+[1/6] dmaengine: dw-edma: Fix the ch_count hdma callback
+      commit: cd665bfc757c71e9b7e0abff0f362d8abd38a805
+[2/6] dmaengine: dw-edma: Fix wrong interrupt bit set for HDMA
+      commit: 7b52ba8616e978bf4f38f207f11a8176517244d0
+[3/6] dmaengine: dw-edma: HDMA_V0_REMOTEL_STOP_INT_EN typo fix
+      commit: 930a8a015dcfde4b8906351ff081066dc277748c
+[4/6] dmaengine: dw-edma: Add HDMA remote interrupt configuration
+      commit: e2f6a5789051ee9c632f27a12d0f01f0cbf78aac
+[5/6] dmaengine: dw-edma: HDMA: Add sync read before starting the DMA transfer in remote setup
+      commit: 712a92a48158e02155b4b6b21e03a817f78c9b7e
+[6/6] dmaengine: dw-edma: eDMA: Add sync read before starting the DMA transfer in remote setup
+      commit: bbcc1c83f343e580c3aa1f2a8593343bf7b55bba
+
+Best regards,
+-- 
+~Vinod
+
+
 
