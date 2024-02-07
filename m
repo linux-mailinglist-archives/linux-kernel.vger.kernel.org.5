@@ -1,160 +1,99 @@
-Return-Path: <linux-kernel+bounces-56798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D596584CF54
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:03:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEACE84CF58
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:04:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 591361F23366
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:03:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 915D62874F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AABB823DB;
-	Wed,  7 Feb 2024 17:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C39823BD;
+	Wed,  7 Feb 2024 17:04:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IchEwQbe";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0p9BYUK2";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IchEwQbe";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0p9BYUK2"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="dACm1iHS"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF60F823A6;
-	Wed,  7 Feb 2024 17:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 350611E532;
+	Wed,  7 Feb 2024 17:04:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707325368; cv=none; b=Dew6nkK7tApDnD5tWEsqnCNhZaG84ZFRHX14Y0BOl21l0jUa5tY6/IIHn6yBxXOAPHlZfGLoostcHphRLK/vZMbdLnfyfgdhHY/+5HJr2vfatj3i3q9HJEQHdV2M3p31H+CVeDfTMWBcrvtYWo1trGCGVL5apgTTMciY2pINh3c=
+	t=1707325480; cv=none; b=mgcfcC5sYlKrs4nQ5+YUkG+DrMnP84mby62HCfbSE7HGv681F/K1cT31ihr1e5AfkdP6w5EKa24w+yJ8iLCl1/lKD2VhA9up3BNHI77xMCM3N4dfe40G5s0RSNKBgOxwhUiyXpOh7nNfPW4VrRCcz++tM+ZiTeAxgHOu7MCTh20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707325368; c=relaxed/simple;
-	bh=WgD1NhEQjsL++ZYh/RfI+iB5inPBUdnV7Z8lEE2yr7I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aQMnegRSXAiO8/nudWGzSh43JkqV7NWtEa19SLYQ756JmWZ5acY6NziPDfM8379XoSPU3+P5p/1CW68UkJ1/G9QAVZnMf7TI5NzDKoqq73VHNrVhMA/rzwlsnKu2eW4KrUwOHc22/pCEbd1Fg44KWUlNZ8+qa+0lBgpQgEotr/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IchEwQbe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0p9BYUK2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IchEwQbe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0p9BYUK2; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9339B222BE;
-	Wed,  7 Feb 2024 17:02:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707325364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GrZhZlhxqXLYEkbdk4VPL60MymfHMgRveGBli/w4prU=;
-	b=IchEwQbek5eJuciXztHCVOT7ob/EnnUFsLWQo2JcsiDx9A1vrA6kJOIMrg4+MO4FZT5/cQ
-	36dWdkuVCUAebmrkYTpKzRbuDdEmVgcx5yYhGlnL+gjEhP+QcJ4ieQOAQTu7MwfMuwyQkI
-	Rbdzhl9C51GCM39XYk+haCC210YlWvM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707325364;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GrZhZlhxqXLYEkbdk4VPL60MymfHMgRveGBli/w4prU=;
-	b=0p9BYUK2//btrZIakwH6JQSmeajGmqZ6HUIc0WsSRaNMi+d7aZPuUzhcSjyVYGD/QkyRSN
-	bcV5ELab88p91HAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707325364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GrZhZlhxqXLYEkbdk4VPL60MymfHMgRveGBli/w4prU=;
-	b=IchEwQbek5eJuciXztHCVOT7ob/EnnUFsLWQo2JcsiDx9A1vrA6kJOIMrg4+MO4FZT5/cQ
-	36dWdkuVCUAebmrkYTpKzRbuDdEmVgcx5yYhGlnL+gjEhP+QcJ4ieQOAQTu7MwfMuwyQkI
-	Rbdzhl9C51GCM39XYk+haCC210YlWvM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707325364;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GrZhZlhxqXLYEkbdk4VPL60MymfHMgRveGBli/w4prU=;
-	b=0p9BYUK2//btrZIakwH6JQSmeajGmqZ6HUIc0WsSRaNMi+d7aZPuUzhcSjyVYGD/QkyRSN
-	bcV5ELab88p91HAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 865C913931;
-	Wed,  7 Feb 2024 17:02:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kr7FILS3w2XUWQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 07 Feb 2024 17:02:44 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 1A843A0809; Wed,  7 Feb 2024 18:02:44 +0100 (CET)
-Date: Wed, 7 Feb 2024 18:02:44 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+3969ffae9388a369bab8@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [reiserfs?] KASAN: use-after-free Read in
- set_de_name_and_namelen
-Message-ID: <20240207170244.unipov7cbfbrupnb@quack3>
-References: <000000000000a5f23f05ee4865cf@google.com>
- <000000000000027e150610c8b964@google.com>
+	s=arc-20240116; t=1707325480; c=relaxed/simple;
+	bh=7E2tN5vNsRQcYCZDoKyseWRCgmaTVw2l7a9vlKrj/Xs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gMFqef+kEz3Vnm+EdFt40l4F3gv2+tMxayzmus93YVoYZ0tLfPoaQ6a9Eh/muctVi10FRiwzgNg6m6qV/IYDI/ykzFeJkk3dfyPnucHThpYMR6Qo1VW5x7RjmqdSdN5rhoLzPSaZC2uIIXqfSwoWRdr7ZDzvTbr0TpG5xO1JguU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=none smtp.helo=mx0b-0016f401.pphosted.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=dACm1iHS; arc=none smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mx0b-0016f401.pphosted.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 417BpkUp032015;
+	Wed, 7 Feb 2024 09:04:36 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=ciZwADXn
+	NmNJYiBeTNeY+fNdnoE/X0K8nMca2ob/mgM=; b=dACm1iHS0rXLEsJ03P+nYEHv
+	zkE8g0BXTe83spRqshCMWKUyj9FJXjfqcS4lKgb958IfI2hKIaUM85DOXVI6+JVT
+	bE7sk2CwHNygWKJLzlh3rrU/CoVcwfmPpt/aESTd1IpZ8F87g41utx+69y4/g/20
+	3pwekRVvKVNzhO6KyLMvpMVNb496K41pK0ns4aiYDZdF8AMb28+aAnCxW2fwQCDM
+	g9BHQpQIzO5WQ9BWLyDYd/7nEhFkieFRPBk3Z/d01iGglSviwR0YwHtrJabXuil7
+	RQ8d4POs9WvRmGppeTQq5r6CWQj/JcjMQ3oWceDd836CQqYet9PT9R8oFZnjCw==
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3w46k7tkpn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+	Wed, 07 Feb 2024 09:04:36 -0800 (PST)
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 7 Feb
+ 2024 09:04:35 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Wed, 7 Feb 2024 09:04:35 -0800
+Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
+	by maili.marvell.com (Postfix) with ESMTP id 687F55E6870;
+	Wed,  7 Feb 2024 09:04:33 -0800 (PST)
+From: Elad Nachman <enachman@marvell.com>
+To: <huziji@marvell.com>, <ulf.hansson@linaro.org>, <adrian.hunter@intel.com>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <enachman@marvell.com>
+Subject: [PATCH 0/2] Fix PHY init timeout issues
+Date: Wed, 7 Feb 2024 19:04:23 +0200
+Message-ID: <20240207170425.478558-1-enachman@marvell.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000027e150610c8b964@google.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [2.89 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.01)[45.88%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=8d01b6e3197974dd];
-	 TAGGED_RCPT(0.00)[3969ffae9388a369bab8];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Level: **
-X-Spam-Score: 2.89
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 0tKNMpxriajs4j1b8qwrFpbJZ6Sq9Tq2
+X-Proofpoint-GUID: 0tKNMpxriajs4j1b8qwrFpbJZ6Sq9Tq2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-07_08,2024-02-07_01,2023-05-22_02
 
-On Wed 07-02-24 03:09:03, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14fffd6c180000
-> start commit:   c3eb11fbb826 Merge tag 'pci-v6.1-fixes-3' of git://git.ker..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=8d01b6e3197974dd
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3969ffae9388a369bab8
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1615d7e5880000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f20981880000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+From: Elad Nachman <enachman@marvell.com>
 
-Makes sense.
- 
-#syz fix: fs: Block writes to mounted block devices
+Fix PHY init timeout issues:
 
-								Honza
+1. Clock Stability issue causing PHY timeout
+
+2. Timeout taking longer than needed on AC5X.
+   Solve by constantly testing the PHY init bit
+   until it toggles, but up to 100X timeout factor.
+
+Elad Nachman (2):
+  mmc: xenon: fix PHY init clock stability
+  mmc: xenon: add timeout for PHY init complete
+
+ drivers/mmc/host/sdhci-xenon-phy.c | 54 ++++++++++++++++++++++++++----
+ 1 file changed, 48 insertions(+), 6 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.25.1
+
 
