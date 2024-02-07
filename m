@@ -1,1320 +1,713 @@
-Return-Path: <linux-kernel+bounces-57296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D46F84D68F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 00:28:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 048BA84D692
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 00:29:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66DD81F24041
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:28:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D6DAB2305B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:29:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B2FC200DD;
-	Wed,  7 Feb 2024 23:27:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99BB2033F;
+	Wed,  7 Feb 2024 23:29:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VBMilske"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XYUysxRW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC70220327
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 23:27:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ADD5200DD
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 23:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707348471; cv=none; b=Bqt37HxZz7CgUc5TDmqiUIP/ZaDOTSjsHENxR1gFkUlm8zYNx+vrTznb9vV5QVVq1rffHJzVKOJjBIiE34GfCTfy8aaSmyzaidqKpTqp7KwT4Buy683/BULi+gUm2fH39YUi0hRhfgW4hYxtUxl1AC/Pdgt88bpOfXSRCD3Vb2Y=
+	t=1707348569; cv=none; b=BnHNiPiutn4KRXB+bCbfXy89A3FyTgM1QvEuSdWMNoIjzUtqTsVx8VpEm/nYC1+iXe2uW8E/fXe0nnCCcPupLe9oIySFZl9K1+irz/9ONpPMmMuXgLE4WsG0Yb098GHVAkiru68A2qyW2I1exsrRO/aLPWM9ltPsBd979oXBLqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707348471; c=relaxed/simple;
-	bh=HlrS38QinLJkmIP3nntvjr/lOrEmB1KrqYZSn+p0UmA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XVtpQULD0yt0vgRAvnseShK8CDkU+/zeBLqmzZfdKQNydhAotndqWlHzHwIuCuzRqM9cEhxv7B/GKIoO6FdWtYuR6yR1JrS29Wlrryx1MMwjj1WU/IKeatVGKV+6n/X9sg1WxNm4FiNhmw/pnJI5TFaobJ+DKVMnB9uKozCM7Zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VBMilske; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707348466;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mLWOrtpYOW3LAXB6kmV1SsnIpyZIr1pzcUZge/wOupc=;
-	b=VBMilskeuQSAC50A0pIptoPGOV/obaZqsmW92b4NATpACeNvMu8tJ7qPC5s4erApZQMgG9
-	vu+3kLqtKYW+51dWLaMz2Vd3fSp32F3E1jFglu0xavbNcsrkktgu65n/liRNKzf4ygysJA
-	aFlaNzvqVU7JheM7MXJxiepvjEDzTuU=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-340-BWgmSn8JMfuk1Eyy5PdNuA-1; Wed, 07 Feb 2024 18:27:45 -0500
-X-MC-Unique: BWgmSn8JMfuk1Eyy5PdNuA-1
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363b68b9af3so8700495ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 15:27:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707348464; x=1707953264;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mLWOrtpYOW3LAXB6kmV1SsnIpyZIr1pzcUZge/wOupc=;
-        b=fCED8ANlmAfF0ShQVcPT1iIwLbwlwZCo22f9nSMyj+oMzwMN1YTSOzIIR+AOSEjr2X
-         gg3jGv1VqhGDonqQRYYg8Hc6+J1Snq6+Jeu854OdM3LfJox9UgO3VqGQ7+pTB0CsBdz5
-         9f2MiepTfHeuQk9x4zu//FMucLhLKq0PQIWSydQ7h5rOuNZkqX40/Ro/q/6TY+Ru4kXp
-         w8rAwF7qWnIV7FqHGmWxcTbMRSn4Q0BJFVmalb2sJV4tkUU7XikA7lmiv/3bXOKATQDu
-         i/k03NyCTFocULbq61vfHnaH2oGJHvTx1RjXPfnSJgNY+If0sSSz3aUrbEXNwkMrFXK6
-         4VMw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5lIUtnyqT9QQdPf2ZyHoRG4AjeaRI0AI79+tN9Mq67dQAIHq46HYkgDaX8xMCUZmQWkYsZf6LlY5xNul/5movRExm02t4AvoBn2Py
-X-Gm-Message-State: AOJu0Yxu1AbTfdMBaYwUQPUQ39kQejg1h4a2zwgxaOSAzIjzBLhYK6SO
-	tphy1dAnGTE7Zt4dvreJejn91H5cqnk0YT++5wTHA3tboj3fMtuQCJIH/0VOL+wE17Av/hbDeDt
-	XeKS5EjZn0pzYNBSdWAW4a/9451lwwW+/WtM5mjzDj65w/dXc6mvTq2hVyxB7Sg==
-X-Received: by 2002:a92:c5ad:0:b0:363:b519:bff0 with SMTP id r13-20020a92c5ad000000b00363b519bff0mr7334804ilt.23.1707348464061;
-        Wed, 07 Feb 2024 15:27:44 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFFBxiwuACcuJoTGvmJD5PZTN3wSQ2xEL7jJJUQxa8j1mqck2+u0vO6pq2rJmff+OpopEF9OQ==
-X-Received: by 2002:a92:c5ad:0:b0:363:b519:bff0 with SMTP id r13-20020a92c5ad000000b00363b519bff0mr7334760ilt.23.1707348463432;
-        Wed, 07 Feb 2024 15:27:43 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWLxew+a0nrVFsAiFVbDdTnsUnjf2xYZGkSK/XZlgjE+2JgFsCOKGBlyANneqEwiR9IPY8yo6kiBSfezwVEdQFeCyu0zqrVII0weTWA8d6fW05EDUG0RdvSDHiQvREqkNItCIEKPWKIvDqM+BZ1BzzTD6vQMAdluqxSq4Tjw6hrDbWei4rCEE8uti0UsNzTFtkzQ+kDZKmMQPRdNEVINXn1V2KYpQ9tp5nAbNzcN5JpI3Jva/1rNi0CYs65SShyRqf/UpejGbMFx0iXJrMa25otCjWgyiTkTjZB1V4WRGxGRvbjpL/iOIhS0SHVw/WI4NWaZBbZA3NZKkFqQB0fyo0+t6kzf+XG9Es0qJ7p7fBCiPDjaWngnBK6kg7kdws9GcmEOaria84Atw6kfFtBMXqqyUv6RliuY0CRIg/5uZXoM4qPaYj3S15QUcpfAOFb99SM2lM/ZhmBrxREh0T2AQdCEk+6VM4Bdd2B6nbx+P9kNnWCkB3lj7CiLfJ08Su72sjnYeUavM6xFmknnIzye/MSQNH10XziK/sZBTS8pXrr4PsaApLtgB6PMpUVkCkPvs4UrhMmrctYmioPJSWYzzNGcoRDqnPi8TOGskQv5XI32MkPfuuC1Cjt4MOBZDRGS/lBVTp3UZOzs+k0ImQOswnX7gJPJohMCMWLE+1dHfhZT0x5ojbVBzjOkGe3DFNHNgVhaFP53IphQGIWtVRFwNJ5ErpxOSShGGhU0/d9is7M3yHpU6242DsDBYaT5bn73GXT1ZAERFZfkt4n6dWrzHcIFGylgjuDuxmzm2Cz/0bQpU8w1miDckptX/kt91EomzKE3VD0Lvb/tA==
-Received: from redhat.com ([38.15.36.11])
-        by smtp.gmail.com with ESMTPSA id q12-20020a056638040c00b0047129be7bd1sm579106jap.101.2024.02.07.15.27.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 15:27:42 -0800 (PST)
-Date: Wed, 7 Feb 2024 16:27:40 -0700
-From: Alex Williamson <alex.williamson@redhat.com>
-To: Zhi Wang <zhi.wang.linux@gmail.com>
-Cc: <ankita@nvidia.com>, <jgg@nvidia.com>, <yishaih@nvidia.com>,
- <mst@redhat.com>, <shameerali.kolothum.thodi@huawei.com>,
- <kevin.tian@intel.com>, <clg@redhat.com>, <oleksandr@natalenko.name>,
- <satyanarayana.k.v.p@intel.com>, <eric.auger@redhat.com>,
- <brett.creeley@amd.com>, <horms@kernel.org>, <rrameshbabu@nvidia.com>,
- <aniketa@nvidia.com>, <cjia@nvidia.com>, <kwankhede@nvidia.com>,
- <targupta@nvidia.com>, <vsethi@nvidia.com>, <acurrid@nvidia.com>,
- <apopple@nvidia.com>, <jhubbard@nvidia.com>, <danw@nvidia.com>,
- <anuaggarwal@nvidia.com>, <mochs@nvidia.com>, <kvm@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH v17 3/3] vfio/nvgrace-gpu: Add vfio pci variant module
- for grace hopper
-Message-ID: <20240207162740.1d713cf0.alex.williamson@redhat.com>
-In-Reply-To: <20240208003210.000078ba.zhi.wang.linux@gmail.com>
-References: <20240205230123.18981-1-ankita@nvidia.com>
-	<20240205230123.18981-4-ankita@nvidia.com>
-	<20240208003210.000078ba.zhi.wang.linux@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1707348569; c=relaxed/simple;
+	bh=Nyhw/5o3yrXgNhspHp/bpdFaHL0iPv3RSHYiaItn5wg=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DOxkqXgdJhsrSNcUeLTHQeITDjVaeNTzptkONXI6qmuq9/fAwZSWpFXvxNl0FgYXXB9G8LRDFz6eSS3xKSAxKwbHMWhBjOouhSsTfpLX//eM5e9O9mj+XS5rcWYV90JXOnPCdmvPRCchXuxZtXVfodNdru/jOPgxQBpZ8bNRxMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XYUysxRW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFFF6C433C7;
+	Wed,  7 Feb 2024 23:29:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707348569;
+	bh=Nyhw/5o3yrXgNhspHp/bpdFaHL0iPv3RSHYiaItn5wg=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=XYUysxRWdh5qDBWA56sghcKZCSV9c6Ddu0i9XrHXY0NmAfYLqH3dL+pKuYmxLzdEK
+	 2pakMSi3N7JbqW6m7L9rEMvzygkYm5P0Vc8NJlK9t0kkOAQgt+UD9fFQh0csdgFV9T
+	 +yr/GVrIbFMCojCFCMGqPBGWA84g10pkjSu7EbKp0110sJ05xqJQ2mlsPFacEq4AmE
+	 2pk21mWDCwQrF6o++Nu+QU8UxwkANbOadD6xch8WVDPiLOKbGEwU/3yWiRGNM78wCc
+	 8A+SNtPQnlQwUA1A8tvGC7s+2LtEiMTahs9cM6dEUkQO46vaz5EN7DC05gZXZ2vh6M
+	 Mug9cHNQ6E9JQ==
+Date: Wed, 7 Feb 2024 15:29:27 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 3/3 v2] f2fs: kill zone-capacity support
+Message-ID: <ZcQSV0HyTwoiW8os@google.com>
+References: <20240207005105.3744811-1-jaegeuk@kernel.org>
+ <20240207005105.3744811-3-jaegeuk@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207005105.3744811-3-jaegeuk@kernel.org>
 
-On Thu, 8 Feb 2024 00:32:10 +0200
-Zhi Wang <zhi.wang.linux@gmail.com> wrote:
+Since we don't see any user, let's kill.
 
-> On Tue, 6 Feb 2024 04:31:23 +0530
-> <ankita@nvidia.com> wrote:
-> 
-> > From: Ankit Agrawal <ankita@nvidia.com>
-> > 
-> > NVIDIA's upcoming Grace Hopper Superchip provides a PCI-like device
-> > for the on-chip GPU that is the logical OS representation of the
-> > internal proprietary chip-to-chip cache coherent interconnect.
-> > 
-> > The device is peculiar compared to a real PCI device in that whilst
-> > there is a real 64b PCI BAR1 (comprising region 2 & region 3) on the
-> > device, it is not used to access device memory once the faster
-> > chip-to-chip interconnect is initialized (occurs at the time of host
-> > system boot). The device memory is accessed instead using the
-> > chip-to-chip interconnect that is exposed as a contiguous physically
-> > addressable region on the host. This device memory aperture can be
-> > obtained from host ACPI table using device_property_read_u64(),
-> > according to the FW specification. Since the device memory is cache
-> > coherent with the CPU, it can be mmap into the user VMA with a
-> > cacheable mapping using remap_pfn_range() and used like a regular
-> > RAM. The device memory is not added to the host kernel, but mapped
-> > directly as this reduces memory wastage due to struct pages.
-> > 
-> > There is also a requirement of a reserved 1G uncached region (termed
-> > as resmem) to support the Multi-Instance GPU (MIG) feature [1]. This
-> > is to work around a HW defect. Based on [2], the requisite properties
-> > (uncached, unaligned access) can be achieved through a VM mapping (S1)
-> > of NORMAL_NC and host (S2) mapping with MemAttr[2:0]=0b101. To provide
-> > a different non-cached property to the reserved 1G region, it needs to
-> > be carved out from the device memory and mapped as a separate region
-> > in Qemu VMA with pgprot_writecombine(). pgprot_writecombine() sets the
-> > Qemu VMA page properties (pgprot) as NORMAL_NC.
-> > 
-> > Provide a VFIO PCI variant driver that adapts the unique device memory
-> > representation into a more standard PCI representation facing
-> > userspace.
-> > 
-> > The variant driver exposes these two regions - the non-cached reserved
-> > (resmem) and the cached rest of the device memory (termed as usemem)
-> > as separate VFIO 64b BAR regions. This is divergent from the baremetal
-> > approach, where the device memory is exposed as a device memory
-> > region. The decision for a different approach was taken in view of
-> > the fact that it would necessiate additional code in Qemu to discover
-> > and insert those regions in the VM IPA, along with the additional VM
-> > ACPI DSDT changes to communicate the device memory region IPA to the
-> > VM workloads. Moreover, this behavior would have to be added to a
-> > variety of emulators (beyond top of tree Qemu) out there desiring
-> > grace hopper support.
-> > 
-> > Since the device implements 64-bit BAR0, the VFIO PCI variant driver
-> > maps the uncached carved out region to the next available PCI BAR
-> > (i.e. comprising of region 2 and 3). The cached device memory
-> > aperture is assigned BAR region 4 and 5. Qemu will then naturally
-> > generate a PCI device in the VM with the uncached aperture reported
-> > as BAR2 region, the cacheable as BAR4. The variant driver provides
-> > emulation for these fake BARs' PCI config space offset registers.
-> > 
-> > The hardware ensures that the system does not crash when the memory
-> > is accessed with the memory enable turned off. It synthesis ~0 reads
-> > and dropped writes on such access. So there is no need to support the
-> > disablement/enablement of BAR through PCI_COMMAND config space
-> > register.
-> > 
-> > The memory layout on the host looks like the following:
-> >                devmem (memlength)
-> > |--------------------------------------------------|
-> > |-------------cached------------------------|--NC--|
-> > |                                           |
-> > usemem.phys/memphys                         resmem.phys
-> > 
-> > PCI BARs need to be aligned to the power-of-2, but the actual memory
-> > on the device may not. A read or write access to the physical address
-> > from the last device PFN up to the next power-of-2 aligned physical
-> > address results in reading ~0 and dropped writes. Note that the GPU
-> > device driver [6] is capable of knowing the exact device memory size
-> > through separate means. The device memory size is primarily kept in
-> > the system ACPI tables for use by the VFIO PCI variant module.
-> > 
-> > Note that the usemem memory is added by the VM Nvidia device driver
-> > [5] to the VM kernel as memblocks. Hence make the usable memory size
-> > memblock aligned.
-> > 
-> > Currently there is no provision in KVM for a S2 mapping with
-> > MemAttr[2:0]=0b101, but there is an ongoing effort to provide the
-> > same [3]. As previously mentioned, resmem is mapped
-> > pgprot_writecombine(), that sets the Qemu VMA page properties
-> > (pgprot) as NORMAL_NC. Using the proposed changes in [4] and [3], KVM
-> > marks the region with MemAttr[2:0]=0b101 in S2.
-> > 
-> > If the bare metal properties are not present, the driver registers the
-> > vfio-pci-core function pointers.
-> > 
-> > This goes along with a qemu series [6] to provides the necessary
-> > implementation of the Grace Hopper Superchip firmware specification so
-> > that the guest operating system can see the correct ACPI modeling for
-> > the coherent GPU device. Verified with the CUDA workload in the VM.
-> > 
-> > [1] https://www.nvidia.com/en-in/technologies/multi-instance-gpu/
-> > [2] section D8.5.5 of
-> > https://developer.arm.com/documentation/ddi0487/latest/ [3]
-> > https://lore.kernel.org/all/20231205033015.10044-1-ankita@nvidia.com/
-> > [4]
-> > https://lore.kernel.org/all/20230907181459.18145-2-ankita@nvidia.com/
-> > [5] https://github.com/NVIDIA/open-gpu-kernel-modules [6]
-> > https://lore.kernel.org/all/20231203060245.31593-1-ankita@nvidia.com/
-> > 
-> > Signed-off-by: Aniket Agashe <aniketa@nvidia.com>
-> > Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
-> > ---
-> >  MAINTAINERS                           |   6 +
-> >  drivers/vfio/pci/Kconfig              |   2 +
-> >  drivers/vfio/pci/Makefile             |   2 +
-> >  drivers/vfio/pci/nvgrace-gpu/Kconfig  |  10 +
-> >  drivers/vfio/pci/nvgrace-gpu/Makefile |   3 +
-> >  drivers/vfio/pci/nvgrace-gpu/main.c   | 856
-> > ++++++++++++++++++++++++++ 6 files changed, 879 insertions(+)
-> >  create mode 100644 drivers/vfio/pci/nvgrace-gpu/Kconfig
-> >  create mode 100644 drivers/vfio/pci/nvgrace-gpu/Makefile
-> >  create mode 100644 drivers/vfio/pci/nvgrace-gpu/main.c
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 8999497011a2..529ec8966f58 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -23103,6 +23103,12 @@ L:	kvm@vger.kernel.org
-> >  S:	Maintained
-> >  F:	drivers/vfio/platform/
-> >  
-> > +VFIO NVIDIA GRACE GPU DRIVER
-> > +M:	Ankit Agrawal <ankita@nvidia.com>
-> > +L:	kvm@vger.kernel.org
-> > +S:	Supported
-> > +F:	drivers/vfio/pci/nvgrace-gpu/
-> > +
-> >  VGA_SWITCHEROO
-> >  R:	Lukas Wunner <lukas@wunner.de>
-> >  S:	Maintained
-> > diff --git a/drivers/vfio/pci/Kconfig b/drivers/vfio/pci/Kconfig
-> > index 18c397df566d..15821a2d77d2 100644
-> > --- a/drivers/vfio/pci/Kconfig
-> > +++ b/drivers/vfio/pci/Kconfig
-> > @@ -67,4 +67,6 @@ source "drivers/vfio/pci/pds/Kconfig"
-> >  
-> >  source "drivers/vfio/pci/virtio/Kconfig"
-> >  
-> > +source "drivers/vfio/pci/nvgrace-gpu/Kconfig"
-> > +
-> >  endmenu
-> > diff --git a/drivers/vfio/pci/Makefile b/drivers/vfio/pci/Makefile
-> > index 046139a4eca5..ce7a61f1d912 100644
-> > --- a/drivers/vfio/pci/Makefile
-> > +++ b/drivers/vfio/pci/Makefile
-> > @@ -15,3 +15,5 @@ obj-$(CONFIG_HISI_ACC_VFIO_PCI) += hisilicon/
-> >  obj-$(CONFIG_PDS_VFIO_PCI) += pds/
-> >  
-> >  obj-$(CONFIG_VIRTIO_VFIO_PCI) += virtio/
-> > +
-> > +obj-$(CONFIG_NVGRACE_GPU_VFIO_PCI) += nvgrace-gpu/
-> > diff --git a/drivers/vfio/pci/nvgrace-gpu/Kconfig
-> > b/drivers/vfio/pci/nvgrace-gpu/Kconfig new file mode 100644
-> > index 000000000000..936e88d8d41d
-> > --- /dev/null
-> > +++ b/drivers/vfio/pci/nvgrace-gpu/Kconfig
-> > @@ -0,0 +1,10 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only
-> > +config NVGRACE_GPU_VFIO_PCI
-> > +	tristate "VFIO support for the GPU in the NVIDIA Grace
-> > Hopper Superchip"
-> > +	depends on ARM64 || (COMPILE_TEST && 64BIT)
-> > +	select VFIO_PCI_CORE
-> > +	help
-> > +	  VFIO support for the GPU in the NVIDIA Grace Hopper
-> > Superchip is
-> > +	  required to assign the GPU device using KVM/qemu/etc.
-> > +
-> > +	  If you don't know what to do here, say N.
-> > diff --git a/drivers/vfio/pci/nvgrace-gpu/Makefile
-> > b/drivers/vfio/pci/nvgrace-gpu/Makefile new file mode 100644
-> > index 000000000000..3ca8c187897a
-> > --- /dev/null
-> > +++ b/drivers/vfio/pci/nvgrace-gpu/Makefile
-> > @@ -0,0 +1,3 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only
-> > +obj-$(CONFIG_NVGRACE_GPU_VFIO_PCI) += nvgrace-gpu-vfio-pci.o
-> > +nvgrace-gpu-vfio-pci-y := main.o
-> > diff --git a/drivers/vfio/pci/nvgrace-gpu/main.c
-> > b/drivers/vfio/pci/nvgrace-gpu/main.c new file mode 100644
-> > index 000000000000..6279af2bc6b8
-> > --- /dev/null
-> > +++ b/drivers/vfio/pci/nvgrace-gpu/main.c
-> > @@ -0,0 +1,856 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES. All rights
-> > reserved
-> > + */
-> > +
-> > +#include <linux/vfio_pci_core.h>
-> > +
-> > +/*
-> > + * The device memory usable to the workloads running in the VM is
-> > cached
-> > + * and showcased as a 64b device BAR (comprising of BAR4 and BAR5
-> > region)
-> > + * to the VM and is represented as usemem.
-> > + * Moreover, the VM GPU device driver needs a non-cacheable region to
-> > + * support the MIG feature. This region is also exposed as a 64b BAR
-> > + * (comprising of BAR2 and BAR3 region) and represented as resmem.
-> > + */
-> > +#define RESMEM_REGION_INDEX VFIO_PCI_BAR2_REGION_INDEX
-> > +#define USEMEM_REGION_INDEX VFIO_PCI_BAR4_REGION_INDEX
-> > +
-> > +/* Memory size expected as non cached and reserved by the VM driver
-> > */ +#define RESMEM_SIZE 0x40000000
-> > +#define MEMBLK_SIZE 0x20000000
-> > +  
-> 
-> Maybe use SZ_* definitions in linux/size.h
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
 
-Good suggestion.
+ from v1:
+  - keep setting the seq bit
 
-> 
-> > +/*
-> > + * The state of the two device memory region - resmem and usemem - is
-> > + * saved as struct mem_region.
-> > + */
-> > +struct mem_region {
-> > +	phys_addr_t memphys;    /* Base physical address of the
-> > region */
-> > +	size_t memlength;       /* Region size */
-> > +	size_t bar_size;        /* Reported region BAR size */
-> > +	__le64 bar_val;         /* Emulated BAR offset registers */
-> > +	union {
-> > +		void *memaddr;
-> > +		void __iomem *ioaddr;
-> > +	};                      /* Base virtual address of the
-> > region */ +};
-> > +
-> > +struct nvgrace_gpu_vfio_pci_core_device {
-> > +	struct vfio_pci_core_device core_device;
-> > +	/* Cached and usable memory for the VM. */
-> > +	struct mem_region usemem;
-> > +	/* Non cached memory carved out from the end of device
-> > memory */
-> > +	struct mem_region resmem;
-> > +	/* Lock to control device memory kernel mapping */
-> > +	struct mutex remap_lock;
-> > +};
-> > +
-> > +static void nvgrace_gpu_init_fake_bar_emu_regs(struct vfio_device
-> > *core_vdev) +{
-> > +	struct nvgrace_gpu_vfio_pci_core_device *nvdev =
-> > +		container_of(core_vdev, struct
-> > nvgrace_gpu_vfio_pci_core_device,
-> > +			     core_device.vdev);
-> > +
-> > +	nvdev->resmem.bar_val = 0;
-> > +	nvdev->usemem.bar_val = 0;
-> > +}
-> > +
-> > +/* Choose the structure corresponding to the fake BAR with a given
-> > index. */ +static struct mem_region *
-> > +nvgrace_gpu_memregion(int index,
-> > +		      struct nvgrace_gpu_vfio_pci_core_device *nvdev)
-> > +{
-> > +	if (index == USEMEM_REGION_INDEX)
-> > +		return &nvdev->usemem;
-> > +
-> > +	if (index == RESMEM_REGION_INDEX)
-> > +		return &nvdev->resmem;
-> > +
-> > +	return NULL;
-> > +}
-> > +
-> > +static int nvgrace_gpu_open_device(struct vfio_device *core_vdev)
-> > +{
-> > +	struct vfio_pci_core_device *vdev =
-> > +		container_of(core_vdev, struct vfio_pci_core_device,
-> > vdev);
-> > +	struct nvgrace_gpu_vfio_pci_core_device *nvdev =
-> > +		container_of(core_vdev, struct
-> > nvgrace_gpu_vfio_pci_core_device,
-> > +			     core_device.vdev);
-> > +	int ret;
-> > +
-> > +	ret = vfio_pci_core_enable(vdev);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	vfio_pci_core_finish_enable(vdev);
-> > +  
-> ---
-> > +	if (nvdev->usemem.memlength) {
-> > +		nvgrace_gpu_init_fake_bar_emu_regs(core_vdev);
-> > +		mutex_init(&nvdev->remap_lock);
-> > +	}
-> > +  
-> ---
-> 
-> Better move this part to the place between vfio_pci_core_enable() and
-> vfio_pci_core_finish_enable() like others for respecting the expected
-> device initialization sequence of life cycle.
-> 
-> It doesn't bite something right now, but think about when someone
-> changes the behavior of vfio_pci_core_finish_enable() in the future,
-> they have to propose a patch for this.
+ Documentation/ABI/testing/sysfs-fs-f2fs |  6 --
+ fs/f2fs/debug.c                         |  7 +-
+ fs/f2fs/f2fs.h                          |  5 --
+ fs/f2fs/file.c                          |  6 +-
+ fs/f2fs/gc.c                            | 33 +++------
+ fs/f2fs/gc.h                            | 26 -------
+ fs/f2fs/segment.c                       | 93 +++----------------------
+ fs/f2fs/segment.h                       | 41 ++++-------
+ fs/f2fs/super.c                         | 16 ++---
+ fs/f2fs/sysfs.c                         |  6 --
+ 10 files changed, 44 insertions(+), 195 deletions(-)
 
-Agree.
-
-> > +	return 0;
-> > +}
-> > +
-> > +static void nvgrace_gpu_close_device(struct vfio_device *core_vdev)
-> > +{
-> > +	struct nvgrace_gpu_vfio_pci_core_device *nvdev =
-> > +		container_of(core_vdev, struct
-> > nvgrace_gpu_vfio_pci_core_device,
-> > +			     core_device.vdev);
-> > +  
-> 
-> Shouldn't there be a lock/unlock sequence when using/freeing the map? As
-> the vfio device open/close paths are protected by group/dev_set lock,
-> probably they are fine without driver-level lock protection. But
-> for vfio_device_read/write/ioctl, if they are racing with open/close
-> path, I think there should be a lock/unlock to protect the map.
-
-This should only be called when the vfio device files is no longer
-opened and therefore cannot have a race with other userspace access.
-
-> --- 
-> > +	/* Unmap the mapping to the device memory cached region */
-> > +	if (nvdev->usemem.memaddr) {
-> > +		memunmap(nvdev->usemem.memaddr);
-> > +		nvdev->usemem.memaddr = NULL;
-> > +	}
-> > +
-> > +	/* Unmap the mapping to the device memory non-cached region
-> > */
-> > +	if (nvdev->resmem.ioaddr) {
-> > +		iounmap(nvdev->resmem.ioaddr);
-> > +		nvdev->resmem.ioaddr = NULL;
-> > +	}
-> > +  
-> ---
-> 
-> > +	mutex_destroy(&nvdev->remap_lock);
-> > +
-> > +	vfio_pci_core_close_device(core_vdev);
-> > +}
-> > +
-> > +static int nvgrace_gpu_mmap(struct vfio_device *core_vdev,
-> > +			    struct vm_area_struct *vma)
-> > +{
-> > +	struct nvgrace_gpu_vfio_pci_core_device *nvdev =
-> > +		container_of(core_vdev, struct
-> > nvgrace_gpu_vfio_pci_core_device,
-> > +			     core_device.vdev);
-> > +
-> > +	unsigned long start_pfn;
-> > +	unsigned int index;
-> > +	u64 req_len, pgoff, end;
-> > +	int ret = 0;
-> > +	struct mem_region *memregion;
-> > +
-> > +	index = vma->vm_pgoff >> (VFIO_PCI_OFFSET_SHIFT -
-> > PAGE_SHIFT); +
-> > +	memregion = nvgrace_gpu_memregion(index, nvdev);
-> > +	if (!memregion)
-> > +		return vfio_pci_core_mmap(core_vdev, vma);
-> > +
-> > +	/*
-> > +	 * Request to mmap the BAR. Map to the CPU accessible memory
-> > on the
-> > +	 * GPU using the memory information gathered from the system
-> > ACPI
-> > +	 * tables.
-> > +	 */
-> > +	pgoff = vma->vm_pgoff &
-> > +		((1U << (VFIO_PCI_OFFSET_SHIFT - PAGE_SHIFT)) - 1);
-> > +
-> > +	if (check_sub_overflow(vma->vm_end, vma->vm_start, &req_len)
-> > ||
-> > +	    check_add_overflow(PHYS_PFN(memregion->memphys), pgoff,
-> > &start_pfn) ||
-> > +	    check_add_overflow(PFN_PHYS(pgoff), req_len, &end))
-> > +		return -EOVERFLOW;
-> > +
-> > +	/*
-> > +	 * Check that the mapping request does not go beyond
-> > available device
-> > +	 * memory size
-> > +	 */
-> > +	if (end > memregion->memlength)
-> > +		return -EINVAL;
-> > +
-> > +	/*
-> > +	 * The carved out region of the device memory needs the
-> > NORMAL_NC
-> > +	 * property. Communicate as such to the hypervisor.
-> > +	 */
-> > +	if (index == RESMEM_REGION_INDEX)
-> > +		vma->vm_page_prot =
-> > pgprot_writecombine(vma->vm_page_prot); +
-> > +	/*
-> > +	 * Perform a PFN map to the memory and back the device BAR
-> > by the
-> > +	 * GPU memory.
-> > +	 *
-> > +	 * The available GPU memory size may not be power-of-2
-> > aligned. The
-> > +	 * remainder is only backed by vfio_device_ops read/write
-> > handlers.
-> > +	 *
-> > +	 * During device reset, the GPU is safely disconnected to
-> > the CPU
-> > +	 * and access to the BAR will be immediately returned
-> > preventing
-> > +	 * machine check.
-> > +	 */
-> > +	ret = remap_pfn_range(vma, vma->vm_start, start_pfn,
-> > +			      req_len, vma->vm_page_prot);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	vma->vm_pgoff = start_pfn;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static long
-> > +nvgrace_gpu_ioctl_get_region_info(struct vfio_device *core_vdev,
-> > +				  unsigned long arg)
-> > +{
-> > +	unsigned long minsz = offsetofend(struct vfio_region_info,
-> > offset);
-> > +	struct nvgrace_gpu_vfio_pci_core_device *nvdev =
-> > +		container_of(core_vdev, struct
-> > nvgrace_gpu_vfio_pci_core_device,
-> > +			     core_device.vdev);
-> > +	struct vfio_region_info_cap_sparse_mmap *sparse;
-> > +	struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
-> > +	struct vfio_region_info info;
-> > +	struct mem_region *memregion;
-> > +	u32 size;
-> > +	int ret;
-> > +
-> > +	if (copy_from_user(&info, (void __user *)arg, minsz))
-> > +		return -EFAULT;
-> > +
-> > +	if (info.argsz < minsz)
-> > +		return -EINVAL;
-> > +
-> > +	memregion = nvgrace_gpu_memregion(info.index, nvdev);
-> > +	if (!memregion)
-> > +		return vfio_pci_core_ioctl(core_vdev,
-> > +
-> > VFIO_DEVICE_GET_REGION_INFO, arg); +
-> > +	/*
-> > +	 * Request to determine the BAR region information. Send the
-> > +	 * GPU memory information.
-> > +	 */
-> > +	size = struct_size(sparse, areas, 1);
-> > +
-> > +	/*
-> > +	 * Setup for sparse mapping for the device memory. Only the
-> > +	 * available device memory on the hardware is shown as a
-> > +	 * mappable region.
-> > +	 */
-> > +	sparse = kzalloc(size, GFP_KERNEL);
-> > +	if (!sparse)
-> > +		return -ENOMEM;
-> > +
-> > +	sparse->nr_areas = 1;
-> > +	sparse->areas[0].offset = 0;
-> > +	sparse->areas[0].size = memregion->memlength;
-> > +	sparse->header.id = VFIO_REGION_INFO_CAP_SPARSE_MMAP;
-> > +	sparse->header.version = 1;
-> > +
-> > +	ret = vfio_info_add_capability(&caps, &sparse->header, size);
-> > +	kfree(sparse);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	info.offset = VFIO_PCI_INDEX_TO_OFFSET(info.index);
-> > +	/*
-> > +	 * The region memory size may not be power-of-2 aligned.
-> > +	 * Given that the memory  as a BAR and may not be
-> > +	 * aligned, roundup to the next power-of-2.
-> > +	 */
-> > +	info.size = memregion->bar_size;
-> > +	info.flags = VFIO_REGION_INFO_FLAG_READ |
-> > +		     VFIO_REGION_INFO_FLAG_WRITE |
-> > +		     VFIO_REGION_INFO_FLAG_MMAP;
-> > +
-> > +	if (caps.size) {
-> > +		info.flags |= VFIO_REGION_INFO_FLAG_CAPS;
-> > +		if (info.argsz < sizeof(info) + caps.size) {
-> > +			info.argsz = sizeof(info) + caps.size;
-> > +			info.cap_offset = 0;
-> > +		} else {
-> > +			vfio_info_cap_shift(&caps, sizeof(info));
-> > +			if (copy_to_user((void __user *)arg +
-> > +					 sizeof(info), caps.buf,
-> > +					 caps.size)) {
-> > +				kfree(caps.buf);
-> > +				return -EFAULT;
-> > +			}
-> > +			info.cap_offset = sizeof(info);
-> > +		}
-> > +		kfree(caps.buf);
-> > +	}
-> > +	return copy_to_user((void __user *)arg, &info, minsz) ?
-> > +			    -EFAULT : 0;
-> > +}
-> > +
-> > +static long nvgrace_gpu_ioctl(struct vfio_device *core_vdev,
-> > +			      unsigned int cmd, unsigned long arg)
-> > +{
-> > +	switch (cmd) {
-> > +	case VFIO_DEVICE_GET_REGION_INFO:
-> > +		return nvgrace_gpu_ioctl_get_region_info(core_vdev,
-> > arg);
-> > +	case VFIO_DEVICE_IOEVENTFD:
-> > +		return -ENOTTY;
-> > +	case VFIO_DEVICE_RESET:
-> > +		nvgrace_gpu_init_fake_bar_emu_regs(core_vdev);
-> > +		fallthrough;
-> > +	default:
-> > +		return vfio_pci_core_ioctl(core_vdev, cmd, arg);
-> > +	}
-> > +}
-> > +
-> > +static __le64
-> > +nvgrace_gpu_get_read_value(size_t bar_size, u64 flags, __le64 val64)
-> > +{
-> > +	u64 tmp_val;
-> > +
-> > +	tmp_val = le64_to_cpu(val64);
-> > +	tmp_val &= ~(bar_size - 1);
-> > +	tmp_val |= flags;
-> > +
-> > +	return cpu_to_le64(tmp_val);
-> > +}
-> > +
-> > +/*
-> > + * Both the usable (usemem) and the reserved (resmem) device memory
-> > region
-> > + * are exposed as a 64b fake BARs in the VM. These fake BARs must
-> > respond
-> > + * to the accesses on their respective PCI config space offsets.
-> > + *
-> > + * resmem BAR owns PCI_BASE_ADDRESS_2 & PCI_BASE_ADDRESS_3.
-> > + * usemem BAR owns PCI_BASE_ADDRESS_4 & PCI_BASE_ADDRESS_5.
-> > + */
-> > +static ssize_t
-> > +nvgrace_gpu_read_config_emu(struct vfio_device *core_vdev,
-> > +			    char __user *buf, size_t count, loff_t
-> > *ppos) +{
-> > +	struct nvgrace_gpu_vfio_pci_core_device *nvdev =
-> > +		container_of(core_vdev, struct
-> > nvgrace_gpu_vfio_pci_core_device,
-> > +			     core_device.vdev);
-> > +	struct mem_region *memregion = NULL;
-> > +	u64 pos = *ppos & VFIO_PCI_OFFSET_MASK;
-> > +	__le64 val64;
-> > +	size_t register_offset;
-> > +	loff_t copy_offset;
-> > +	size_t copy_count;
-> > +	int ret;
-> > +
-> > +	ret = vfio_pci_core_read(core_vdev, buf, count, ppos);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	if (vfio_pci_core_range_intersect_range(pos, count,
-> > PCI_BASE_ADDRESS_2,
-> > +						sizeof(val64),
-> > +						&copy_offset,
-> > &copy_count,
-> > +						&register_offset))
-> > +		memregion =
-> > nvgrace_gpu_memregion(RESMEM_REGION_INDEX, nvdev);
-> > +	else if (vfio_pci_core_range_intersect_range(pos, count,
-> > +
-> > PCI_BASE_ADDRESS_4,
-> > +						     sizeof(val64),
-> > +						     &copy_offset,
-> > &copy_count,
-> > +
-> > &register_offset))
-> > +		memregion =
-> > nvgrace_gpu_memregion(USEMEM_REGION_INDEX, nvdev); +
-> > +	if (memregion) {
-> > +		val64 =
-> > nvgrace_gpu_get_read_value(memregion->bar_size,
-> > +
-> > PCI_BASE_ADDRESS_MEM_TYPE_64 |
-> > +
-> > PCI_BASE_ADDRESS_MEM_PREFETCH,
-> > +
-> > memregion->bar_val);
-> > +		if (copy_to_user(buf + copy_offset,
-> > +				 (void *)&val64 + register_offset,
-> > copy_count))
-> > +			return -EFAULT;
-> > +	}
-> > +
-> > +	return count;
-> > +}
-> > +
-> > +static ssize_t
-> > +nvgrace_gpu_write_config_emu(struct vfio_device *core_vdev,
-> > +			     const char __user *buf, size_t count,
-> > loff_t *ppos) +{
-> > +	struct nvgrace_gpu_vfio_pci_core_device *nvdev =
-> > +		container_of(core_vdev, struct
-> > nvgrace_gpu_vfio_pci_core_device,
-> > +			     core_device.vdev);
-> > +	u64 pos = *ppos & VFIO_PCI_OFFSET_MASK;
-> > +	size_t register_offset;
-> > +	loff_t copy_offset;
-> > +	size_t copy_count;
-> > +	struct mem_region *memregion = NULL;
-> > +
-> > +	if (vfio_pci_core_range_intersect_range(pos, count,
-> > PCI_BASE_ADDRESS_2,
-> > +						sizeof(u64),
-> > &copy_offset,
-> > +						&copy_count,
-> > &register_offset))
-> > +		memregion =
-> > nvgrace_gpu_memregion(RESMEM_REGION_INDEX, nvdev);
-> > +	else if (vfio_pci_core_range_intersect_range(pos, count,
-> > PCI_BASE_ADDRESS_4,
-> > +						     sizeof(u64),
-> > &copy_offset,
-> > +						     &copy_count,
-> > &register_offset))
-> > +		memregion =
-> > nvgrace_gpu_memregion(USEMEM_REGION_INDEX, nvdev); +
-> > +	if (memregion) {
-> > +		if (copy_from_user((void *)&memregion->bar_val +
-> > register_offset,
-> > +				   buf + copy_offset, copy_count))
-> > +			return -EFAULT;
-> > +		*ppos += copy_count;
-> > +		return copy_count;
-> > +	}
-> > +
-> > +	return vfio_pci_core_write(core_vdev, buf, count, ppos);
-> > +}
-> > +
-> > +/*
-> > + * Ad hoc map the device memory in the module kernel VA space.
-> > Primarily needed
-> > + * as vfio does not require the userspace driver to only perform
-> > accesses through
-> > + * mmaps of the vfio-pci BAR regions and such accesses should be
-> > supported using
-> > + * vfio_device_ops read/write implementations.
-> > + *
-> > + * The usemem region is cacheable memory and hence is memremaped.
-> > + * The resmem region is non-cached and is mapped using ioremap_wc
-> > (NORMAL_NC).
-> > + */
-> > +static int
-> > +nvgrace_gpu_map_device_mem(int index,
-> > +			   struct nvgrace_gpu_vfio_pci_core_device
-> > *nvdev) +{
-> > +	struct mem_region *memregion;
-> > +	int ret = 0;
-> > +
-> > +	memregion = nvgrace_gpu_memregion(index, nvdev);
-> > +	if (!memregion)
-> > +		return -EINVAL;
-> > +
-> > +	mutex_lock(&nvdev->remap_lock);
-> > +	if (index == USEMEM_REGION_INDEX && !memregion->memaddr) {
-> > +		memregion->memaddr = memremap(memregion->memphys,
-> > +					      memregion->memlength,
-> > +					      MEMREMAP_WB);
-> > +		if (!memregion->memaddr)
-> > +			ret = -ENOMEM;
-> > +	} else if (index == RESMEM_REGION_INDEX &&
-> > !memregion->ioaddr) {
-> > +		memregion->ioaddr = ioremap_wc(memregion->memphys,
-> > +					       memregion->memlength);
-> > +		if (!memregion->ioaddr)
-> > +			ret = -ENOMEM;
-> > +	}
-> > +	mutex_unlock(&nvdev->remap_lock);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +/*
-> > + * Read the data from the device memory (mapped either through
-> > ioremap
-> > + * or memremap) into the user buffer.
-> > + */
-> > +static int
-> > +nvgrace_gpu_map_and_read(struct nvgrace_gpu_vfio_pci_core_device
-> > *nvdev,
-> > +			 char __user *buf, size_t mem_count, loff_t
-> > *ppos) +{
-> > +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
-> > +	u64 offset = *ppos & VFIO_PCI_OFFSET_MASK;
-> > +	int ret;
-> > +
-> > +	/*
-> > +	 * Handle read on the BAR regions. Map to the target device
-> > memory
-> > +	 * physical address and copy to the request read buffer.
-> > +	 */
-> > +	ret = nvgrace_gpu_map_device_mem(index, nvdev);
-> > +	if (ret)
-> > +		return ret;
-> > +  
-> 
-> Wouldn't it be better to do the map in the open path? 
-
-AIUI the device would typically be used exclusively through the mmap of
-these ranges, these mappings are only for pread/pwrite type accesses,
-so I think it makes sense to map them on demand.
-
-> > +	if (index == USEMEM_REGION_INDEX) {
-> > +		if (copy_to_user(buf,
-> > +				 (u8 *)nvdev->usemem.memaddr +
-> > offset,
-> > +				 mem_count))
-> > +			ret = -EFAULT;
-> > +	} else {
-> > +		/*
-> > +		 * The hardware ensures that the system does not
-> > crash when
-> > +		 * the device memory is accessed with the memory
-> > enable
-> > +		 * turned off. It synthesizes ~0 on such read. So
-> > there is
-> > +		 * no need to check or support the
-> > disablement/enablement of
-> > +		 * BAR through PCI_COMMAND config space register.
-> > Pass
-> > +		 * test_mem flag as false.
-> > +		 */
-> > +		ret = vfio_pci_core_do_io_rw(&nvdev->core_device,
-> > false,
-> > +					     nvdev->resmem.ioaddr,
-> > +					     buf, offset, mem_count,
-> > +					     0, 0, false);
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +/*
-> > + * Read count bytes from the device memory at an offset. The actual
-> > device
-> > + * memory size (available) may not be a power-of-2. So the driver
-> > fakes
-> > + * the size to a power-of-2 (reported) when exposing to a user space
-> > driver.
-> > + *
-> > + * Reads extending beyond the reported size are truncated; reads
-> > starting
-> > + * beyond the reported size generate -EINVAL; reads extending beyond
-> > the
-> > + * actual device size is filled with ~0.
-> > + */
-> > +static ssize_t
-> > +nvgrace_gpu_read_mem(struct nvgrace_gpu_vfio_pci_core_device *nvdev,
-> > +		     char __user *buf, size_t count, loff_t *ppos)
-> > +{
-> > +	u64 offset = *ppos & VFIO_PCI_OFFSET_MASK;
-> > +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
-> > +	struct mem_region *memregion;
-> > +	size_t mem_count, i;
-> > +	u8 val = 0xFF;
-> > +	int ret;
-> > +
-> > +	memregion = nvgrace_gpu_memregion(index, nvdev);
-> > +	if (!memregion)
-> > +		return -EINVAL;
-> > +
-> > +	if (offset >= memregion->bar_size)
-> > +		return -EINVAL;
-> > +
-> > +	/* Clip short the read request beyond reported BAR size */
-> > +	count = min(count, memregion->bar_size - (size_t)offset);
-> > +
-> > +	/*
-> > +	 * Determine how many bytes to be actually read from the
-> > device memory.
-> > +	 * Read request beyond the actual device memory size is
-> > filled with ~0,
-> > +	 * while those beyond the actual reported size is skipped.
-> > +	 */
-> > +	if (offset >= memregion->memlength)
-> > +		mem_count = 0;  
-> 
-> If mem_count == 0, going through nvgrace_gpu_map_and_read() is not
-> necessary.
-
-Harmless, other than the possibly unnecessary call through to
-nvgrace_gpu_map_device_mem().  Maybe both nvgrace_gpu_map_and_read()
-and nvgrace_gpu_map_and_write() could conditionally return 0 as their
-first operation when !mem_count.  Thanks,
-
-Alex
-
-> > +	else
-> > +		mem_count = min(count, memregion->memlength -
-> > (size_t)offset); +
-> > +	ret = nvgrace_gpu_map_and_read(nvdev, buf, mem_count, ppos);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/*
-> > +	 * Only the device memory present on the hardware is mapped,
-> > which may
-> > +	 * not be power-of-2 aligned. A read to an offset beyond the
-> > device memory
-> > +	 * size is filled with ~0.
-> > +	 */
-> > +	for (i = mem_count; i < count; i++)
-> > +		put_user(val, (unsigned char __user *)(buf + i));
-> > +
-> > +	*ppos += count;
-> > +	return count;
-> > +}
-> > +
-> > +static ssize_t
-> > +nvgrace_gpu_read(struct vfio_device *core_vdev,
-> > +		 char __user *buf, size_t count, loff_t *ppos)
-> > +{
-> > +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
-> > +	struct nvgrace_gpu_vfio_pci_core_device *nvdev =
-> > +		container_of(core_vdev, struct
-> > nvgrace_gpu_vfio_pci_core_device,
-> > +			     core_device.vdev);
-> > +
-> > +	if (nvgrace_gpu_memregion(index, nvdev))
-> > +		return nvgrace_gpu_read_mem(nvdev, buf, count, ppos);
-> > +
-> > +	if (index == VFIO_PCI_CONFIG_REGION_INDEX)
-> > +		return nvgrace_gpu_read_config_emu(core_vdev, buf,
-> > count, ppos); +
-> > +	return vfio_pci_core_read(core_vdev, buf, count, ppos);
-> > +}
-> > +
-> > +/*
-> > + * Write the data to the device memory (mapped either through ioremap
-> > + * or memremap) from the user buffer.
-> > + */
-> > +static int
-> > +nvgrace_gpu_map_and_write(struct nvgrace_gpu_vfio_pci_core_device
-> > *nvdev,
-> > +			  const char __user *buf, size_t mem_count,
-> > +			  loff_t *ppos)
-> > +{
-> > +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
-> > +	loff_t pos = *ppos & VFIO_PCI_OFFSET_MASK;
-> > +	int ret;
-> > +
-> > +	ret = nvgrace_gpu_map_device_mem(index, nvdev);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (index == USEMEM_REGION_INDEX) {
-> > +		if (copy_from_user((u8 *)nvdev->usemem.memaddr + pos,
-> > +				   buf, mem_count))
-> > +			return -EFAULT;
-> > +	} else {
-> > +		/*
-> > +		 * The hardware ensures that the system does not
-> > crash when
-> > +		 * the device memory is accessed with the memory
-> > enable
-> > +		 * turned off. It drops such writes. So there is no
-> > need to
-> > +		 * check or support the disablement/enablement of BAR
-> > +		 * through PCI_COMMAND config space register. Pass
-> > test_mem
-> > +		 * flag as false.
-> > +		 */
-> > +		ret = vfio_pci_core_do_io_rw(&nvdev->core_device,
-> > false,
-> > +					     nvdev->resmem.ioaddr,
-> > +					     (char __user *)buf,
-> > pos, mem_count,
-> > +					     0, 0, true);
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +/*
-> > + * Write count bytes to the device memory at a given offset. The
-> > actual device
-> > + * memory size (available) may not be a power-of-2. So the driver
-> > fakes the
-> > + * size to a power-of-2 (reported) when exposing to a user space
-> > driver.
-> > + *
-> > + * Writes extending beyond the reported size are truncated; writes
-> > starting
-> > + * beyond the reported size generate -EINVAL.
-> > + */
-> > +static ssize_t
-> > +nvgrace_gpu_write_mem(struct nvgrace_gpu_vfio_pci_core_device *nvdev,
-> > +		      size_t count, loff_t *ppos, const char __user
-> > *buf) +{
-> > +	u64 offset = *ppos & VFIO_PCI_OFFSET_MASK;
-> > +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
-> > +	struct mem_region *memregion;
-> > +	size_t mem_count;
-> > +	int ret = 0;
-> > +
-> > +	memregion = nvgrace_gpu_memregion(index, nvdev);
-> > +	if (!memregion)
-> > +		return -EINVAL;
-> > +
-> > +	if (offset >= memregion->bar_size)
-> > +		return -EINVAL;
-> > +
-> > +	/* Clip short the write request beyond reported BAR size */
-> > +	count = min(count, memregion->bar_size - (size_t)offset);
-> > +
-> > +	/*
-> > +	 * Determine how many bytes to be actually written to the
-> > device memory.
-> > +	 * Do not write to the offset beyond available size.
-> > +	 */
-> > +	if (offset >= memregion->memlength)
-> > +		goto exitfn;
-> > +
-> > +	/*
-> > +	 * Only the device memory present on the hardware is mapped,
-> > which may
-> > +	 * not be power-of-2 aligned. Drop access outside the
-> > available device
-> > +	 * memory on the hardware.
-> > +	 */
-> > +	mem_count = min(count, memregion->memlength -
-> > (size_t)offset); +
-> > +	ret = nvgrace_gpu_map_and_write(nvdev, buf, mem_count, ppos);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +exitfn:
-> > +	*ppos += count;
-> > +	return count;
-> > +}
-> > +
-> > +static ssize_t
-> > +nvgrace_gpu_write(struct vfio_device *core_vdev,
-> > +		  const char __user *buf, size_t count, loff_t *ppos)
-> > +{
-> > +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
-> > +	struct nvgrace_gpu_vfio_pci_core_device *nvdev =
-> > +		container_of(core_vdev, struct
-> > nvgrace_gpu_vfio_pci_core_device,
-> > +			     core_device.vdev);
-> > +
-> > +	if (nvgrace_gpu_memregion(index, nvdev))
-> > +		return nvgrace_gpu_write_mem(nvdev, count, ppos,
-> > buf); +
-> > +	if (index == VFIO_PCI_CONFIG_REGION_INDEX)
-> > +		return nvgrace_gpu_write_config_emu(core_vdev, buf,
-> > count, ppos); +
-> > +	return vfio_pci_core_write(core_vdev, buf, count, ppos);
-> > +}
-> > +
-> > +static const struct vfio_device_ops nvgrace_gpu_vfio_pci_ops = {
-> > +	.name		= "nvgrace-gpu-vfio-pci",
-> > +	.init		= vfio_pci_core_init_dev,
-> > +	.release	= vfio_pci_core_release_dev,
-> > +	.open_device	= nvgrace_gpu_open_device,
-> > +	.close_device	= nvgrace_gpu_close_device,
-> > +	.ioctl		= nvgrace_gpu_ioctl,
-> > +	.read		= nvgrace_gpu_read,
-> > +	.write		= nvgrace_gpu_write,
-> > +	.mmap		= nvgrace_gpu_mmap,
-> > +	.request	= vfio_pci_core_request,
-> > +	.match		= vfio_pci_core_match,
-> > +	.bind_iommufd	= vfio_iommufd_physical_bind,
-> > +	.unbind_iommufd	= vfio_iommufd_physical_unbind,
-> > +	.attach_ioas	= vfio_iommufd_physical_attach_ioas,
-> > +	.detach_ioas	= vfio_iommufd_physical_detach_ioas,
-> > +};
-> > +
-> > +static const struct vfio_device_ops nvgrace_gpu_vfio_pci_core_ops = {
-> > +	.name		= "nvgrace-gpu-vfio-pci-core",
-> > +	.init		= vfio_pci_core_init_dev,
-> > +	.release	= vfio_pci_core_release_dev,
-> > +	.open_device	= nvgrace_gpu_open_device,
-> > +	.close_device	= vfio_pci_core_close_device,
-> > +	.ioctl		= vfio_pci_core_ioctl,
-> > +	.device_feature	= vfio_pci_core_ioctl_feature,
-> > +	.read		= vfio_pci_core_read,
-> > +	.write		= vfio_pci_core_write,
-> > +	.mmap		= vfio_pci_core_mmap,
-> > +	.request	= vfio_pci_core_request,
-> > +	.match		= vfio_pci_core_match,
-> > +	.bind_iommufd	= vfio_iommufd_physical_bind,
-> > +	.unbind_iommufd	= vfio_iommufd_physical_unbind,
-> > +	.attach_ioas	= vfio_iommufd_physical_attach_ioas,
-> > +	.detach_ioas	= vfio_iommufd_physical_detach_ioas,
-> > +};
-> > +
-> > +static struct
-> > +nvgrace_gpu_vfio_pci_core_device *nvgrace_gpu_drvdata(struct pci_dev
-> > *pdev) +{
-> > +	struct vfio_pci_core_device *core_device =
-> > dev_get_drvdata(&pdev->dev); +
-> > +	return container_of(core_device, struct
-> > nvgrace_gpu_vfio_pci_core_device,
-> > +			    core_device);
-> > +}
-> > +
-> > +static int
-> > +nvgrace_gpu_fetch_memory_property(struct pci_dev *pdev,
-> > +				  u64 *pmemphys, u64 *pmemlength)
-> > +{
-> > +	int ret;
-> > +
-> > +	/*
-> > +	 * The memory information is present in the system ACPI
-> > tables as DSD
-> > +	 * properties nvidia,gpu-mem-base-pa and nvidia,gpu-mem-size.
-> > +	 */
-> > +	ret = device_property_read_u64(&pdev->dev,
-> > "nvidia,gpu-mem-base-pa",
-> > +				       pmemphys);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (*pmemphys > type_max(phys_addr_t))
-> > +		return -EOVERFLOW;
-> > +
-> > +	ret = device_property_read_u64(&pdev->dev,
-> > "nvidia,gpu-mem-size",
-> > +				       pmemlength);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (*pmemlength > type_max(size_t))
-> > +		return -EOVERFLOW;
-> > +
-> > +	/*
-> > +	 * If the C2C link is not up due to an error, the coherent
-> > device
-> > +	 * memory size is returned as 0. Fail in such case.
-> > +	 */
-> > +	if (*pmemlength == 0)
-> > +		return -ENOMEM;
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int
-> > +nvgrace_gpu_init_nvdev_struct(struct pci_dev *pdev,
-> > +			      struct
-> > nvgrace_gpu_vfio_pci_core_device *nvdev,
-> > +			      u64 memphys, u64 memlength)
-> > +{
-> > +	int ret = 0;
-> > +
-> > +	/*
-> > +	 * The VM GPU device driver needs a non-cacheable region to
-> > support
-> > +	 * the MIG feature. Since the device memory is mapped as
-> > NORMAL cached,
-> > +	 * carve out a region from the end with a different NORMAL_NC
-> > +	 * property (called as reserved memory and represented as
-> > resmem). This
-> > +	 * region then is exposed as a 64b BAR (region 2 and 3) to
-> > the VM, while
-> > +	 * exposing the rest (termed as usable memory and
-> > represented using usemem)
-> > +	 * as cacheable 64b BAR (region 4 and 5).
-> > +	 *
-> > +	 *               devmem (memlength)
-> > +	 * |-------------------------------------------------|
-> > +	 * |                                           |
-> > +	 * usemem.phys/memphys                         resmem.phys
-> > +	 */
-> > +	nvdev->usemem.memphys = memphys;
-> > +
-> > +	/*
-> > +	 * The device memory exposed to the VM is added to the
-> > kernel by the
-> > +	 * VM driver module in chunks of memory block size. Only the
-> > usable
-> > +	 * memory (usemem) is added to the kernel for usage by the VM
-> > +	 * workloads. Make the usable memory size memblock aligned.
-> > +	 */
-> > +	if (check_sub_overflow(memlength, RESMEM_SIZE,
-> > +			       &nvdev->usemem.memlength)) {
-> > +		ret = -EOVERFLOW;
-> > +		goto done;
-> > +	}
-> > +	nvdev->usemem.memlength = round_down(nvdev->usemem.memlength,
-> > +					     MEMBLK_SIZE);
-> > +	if ((check_add_overflow(nvdev->usemem.memphys,
-> > +				nvdev->usemem.memlength,
-> > +				&nvdev->resmem.memphys)) ||
-> > +	    (check_sub_overflow(memlength, nvdev->usemem.memlength,
-> > +				&nvdev->resmem.memlength))) {
-> > +		ret = -EOVERFLOW;
-> > +		goto done;
-> > +	}
-> > +
-> > +	/*
-> > +	 * The memory regions are exposed as BARs. Calculate and save
-> > +	 * the BAR size for them.
-> > +	 */
-> > +	nvdev->usemem.bar_size =
-> > roundup_pow_of_two(nvdev->usemem.memlength);
-> > +	nvdev->resmem.bar_size =
-> > roundup_pow_of_two(nvdev->resmem.memlength); +done:
-> > +	return ret;
-> > +}
-> > +
-> > +static int nvgrace_gpu_probe(struct pci_dev *pdev,
-> > +			     const struct pci_device_id *id)
-> > +{
-> > +	const struct vfio_device_ops *ops =
-> > &nvgrace_gpu_vfio_pci_core_ops;
-> > +	struct nvgrace_gpu_vfio_pci_core_device *nvdev;
-> > +	u64 memphys, memlength;
-> > +	int ret;
-> > +
-> > +	ret = nvgrace_gpu_fetch_memory_property(pdev, &memphys,
-> > &memlength);
-> > +	if (!ret)
-> > +		ops = &nvgrace_gpu_vfio_pci_ops;
-> > +
-> > +	nvdev = vfio_alloc_device(nvgrace_gpu_vfio_pci_core_device,
-> > core_device.vdev,
-> > +				  &pdev->dev, ops);
-> > +	if (IS_ERR(nvdev))
-> > +		return PTR_ERR(nvdev);
-> > +
-> > +	dev_set_drvdata(&pdev->dev, &nvdev->core_device);
-> > +
-> > +	if (ops == &nvgrace_gpu_vfio_pci_ops) {
-> > +		/*
-> > +		 * Device memory properties are identified in the
-> > host ACPI
-> > +		 * table. Set the nvgrace_gpu_vfio_pci_core_device
-> > structure.
-> > +		 */
-> > +		ret = nvgrace_gpu_init_nvdev_struct(pdev, nvdev,
-> > +						    memphys,
-> > memlength);
-> > +		if (ret)
-> > +			goto out_put_vdev;
-> > +	}
-> > +
-> > +	ret = vfio_pci_core_register_device(&nvdev->core_device);
-> > +	if (ret)
-> > +		goto out_put_vdev;
-> > +
-> > +	return ret;
-> > +
-> > +out_put_vdev:
-> > +	vfio_put_device(&nvdev->core_device.vdev);
-> > +	return ret;
-> > +}
-> > +
-> > +static void nvgrace_gpu_remove(struct pci_dev *pdev)
-> > +{
-> > +	struct nvgrace_gpu_vfio_pci_core_device *nvdev =
-> > nvgrace_gpu_drvdata(pdev);
-> > +	struct vfio_pci_core_device *vdev = &nvdev->core_device;
-> > +
-> > +	vfio_pci_core_unregister_device(vdev);
-> > +	vfio_put_device(&vdev->vdev);
-> > +}
-> > +
-> > +static const struct pci_device_id nvgrace_gpu_vfio_pci_table[] = {
-> > +	/* GH200 120GB */
-> > +	{ PCI_DRIVER_OVERRIDE_DEVICE_VFIO(PCI_VENDOR_ID_NVIDIA,
-> > 0x2342) },
-> > +	/* GH200 480GB */
-> > +	{ PCI_DRIVER_OVERRIDE_DEVICE_VFIO(PCI_VENDOR_ID_NVIDIA,
-> > 0x2345) },
-> > +	{}
-> > +};
-> > +
-> > +MODULE_DEVICE_TABLE(pci, nvgrace_gpu_vfio_pci_table);
-> > +
-> > +static struct pci_driver nvgrace_gpu_vfio_pci_driver = {
-> > +	.name = KBUILD_MODNAME,
-> > +	.id_table = nvgrace_gpu_vfio_pci_table,
-> > +	.probe = nvgrace_gpu_probe,
-> > +	.remove = nvgrace_gpu_remove,
-> > +	.err_handler = &vfio_pci_core_err_handlers,
-> > +	.driver_managed_dma = true,
-> > +};
-> > +
-> > +module_pci_driver(nvgrace_gpu_vfio_pci_driver);
-> > +
-> > +MODULE_LICENSE("GPL");
-> > +MODULE_AUTHOR("Ankit Agrawal <ankita@nvidia.com>");
-> > +MODULE_AUTHOR("Aniket Agashe <aniketa@nvidia.com>");
-> > +MODULE_DESCRIPTION("VFIO NVGRACE GPU PF - User Level driver for
-> > NVIDIA devices with CPU coherently accessible device memory");  
-> 
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 48c135e24eb5..dff8c87d87dd 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -628,12 +628,6 @@ Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
+ Description:	Controls max # of node block writes to be used for roll forward
+ 		recovery. This can limit the roll forward recovery time.
+ 
+-What:		/sys/fs/f2fs/<disk>/unusable_blocks_per_sec
+-Date:		June 2022
+-Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
+-Description:	Shows the number of unusable blocks in a section which was defined by
+-		the zone capacity reported by underlying zoned device.
+-
+ What:		/sys/fs/f2fs/<disk>/current_atomic_write
+ Date:		July 2022
+ Contact:	"Daeho Jeong" <daehojeong@google.com>
+diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
+index 0d02224b99b7..6617195bd27e 100644
+--- a/fs/f2fs/debug.c
++++ b/fs/f2fs/debug.c
+@@ -32,21 +32,20 @@ static struct dentry *f2fs_debugfs_root;
+ void f2fs_update_sit_info(struct f2fs_sb_info *sbi)
+ {
+ 	struct f2fs_stat_info *si = F2FS_STAT(sbi);
+-	unsigned long long blks_per_sec, hblks_per_sec, total_vblocks;
++	unsigned long long hblks_per_sec, total_vblocks;
+ 	unsigned long long bimodal, dist;
+ 	unsigned int segno, vblocks;
+ 	int ndirty = 0;
+ 
+ 	bimodal = 0;
+ 	total_vblocks = 0;
+-	blks_per_sec = CAP_BLKS_PER_SEC(sbi);
+-	hblks_per_sec = blks_per_sec / 2;
++	hblks_per_sec = BLKS_PER_SEC(sbi) / 2;
+ 	for (segno = 0; segno < MAIN_SEGS(sbi); segno += SEGS_PER_SEC(sbi)) {
+ 		vblocks = get_valid_blocks(sbi, segno, true);
+ 		dist = abs(vblocks - hblks_per_sec);
+ 		bimodal += dist * dist;
+ 
+-		if (vblocks > 0 && vblocks < blks_per_sec) {
++		if (vblocks > 0 && vblocks < BLKS_PER_SEC(sbi)) {
+ 			total_vblocks += vblocks;
+ 			ndirty++;
+ 		}
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 9a9e858083af..34d718301392 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1618,7 +1618,6 @@ struct f2fs_sb_info {
+ 	unsigned int meta_ino_num;		/* meta inode number*/
+ 	unsigned int log_blocks_per_seg;	/* log2 blocks per segment */
+ 	unsigned int blocks_per_seg;		/* blocks per segment */
+-	unsigned int unusable_blocks_per_sec;	/* unusable blocks per section */
+ 	unsigned int segs_per_sec;		/* segments per section */
+ 	unsigned int secs_per_zone;		/* sections per zone */
+ 	unsigned int total_sections;		/* total section count */
+@@ -3743,10 +3742,6 @@ void f2fs_destroy_segment_manager(struct f2fs_sb_info *sbi);
+ int __init f2fs_create_segment_manager_caches(void);
+ void f2fs_destroy_segment_manager_caches(void);
+ int f2fs_rw_hint_to_seg_type(enum rw_hint hint);
+-unsigned int f2fs_usable_segs_in_sec(struct f2fs_sb_info *sbi,
+-			unsigned int segno);
+-unsigned int f2fs_usable_blks_in_seg(struct f2fs_sb_info *sbi,
+-			unsigned int segno);
+ 
+ #define DEF_FRAGMENT_SIZE	4
+ #define MIN_FRAGMENT_SIZE	1
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index b0be576b2090..2c13b340c8a0 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -1717,7 +1717,7 @@ static int f2fs_expand_inode_data(struct inode *inode, loff_t offset,
+ 		return 0;
+ 
+ 	if (f2fs_is_pinned_file(inode)) {
+-		block_t sec_blks = CAP_BLKS_PER_SEC(sbi);
++		block_t sec_blks = BLKS_PER_SEC(sbi);
+ 		block_t sec_len = roundup(map.m_len, sec_blks);
+ 
+ 		map.m_len = sec_blks;
+@@ -2525,7 +2525,7 @@ static int __f2fs_ioc_gc_range(struct file *filp, struct f2fs_gc_range *range)
+ 			ret = -EAGAIN;
+ 		goto out;
+ 	}
+-	range->start += CAP_BLKS_PER_SEC(sbi);
++	range->start += BLKS_PER_SEC(sbi);
+ 	if (range->start <= end)
+ 		goto do_more;
+ out:
+@@ -2654,7 +2654,7 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
+ 		goto out;
+ 	}
+ 
+-	sec_num = DIV_ROUND_UP(total, CAP_BLKS_PER_SEC(sbi));
++	sec_num = DIV_ROUND_UP(total, BLKS_PER_SEC(sbi));
+ 
+ 	/*
+ 	 * make sure there are enough free section for LFS allocation, this can
+diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+index d61a60c1c844..0a1a50b68df8 100644
+--- a/fs/f2fs/gc.c
++++ b/fs/f2fs/gc.c
+@@ -340,14 +340,13 @@ static unsigned int get_cb_cost(struct f2fs_sb_info *sbi, unsigned int segno)
+ 	unsigned char age = 0;
+ 	unsigned char u;
+ 	unsigned int i;
+-	unsigned int usable_segs_per_sec = f2fs_usable_segs_in_sec(sbi, segno);
+ 
+-	for (i = 0; i < usable_segs_per_sec; i++)
++	for (i = 0; i < SEGS_PER_SEC(sbi); i++)
+ 		mtime += get_seg_entry(sbi, start + i)->mtime;
+ 	vblocks = get_valid_blocks(sbi, segno, true);
+ 
+-	mtime = div_u64(mtime, usable_segs_per_sec);
+-	vblocks = div_u64(vblocks, usable_segs_per_sec);
++	mtime = div_u64(mtime, SEGS_PER_SEC(sbi));
++	vblocks = div_u64(vblocks, SEGS_PER_SEC(sbi));
+ 
+ 	u = (vblocks * 100) >> sbi->log_blocks_per_seg;
+ 
+@@ -530,7 +529,6 @@ static void atgc_lookup_victim(struct f2fs_sb_info *sbi,
+ 	unsigned long long age, u, accu;
+ 	unsigned long long max_mtime = sit_i->dirty_max_mtime;
+ 	unsigned long long min_mtime = sit_i->dirty_min_mtime;
+-	unsigned int sec_blocks = CAP_BLKS_PER_SEC(sbi);
+ 	unsigned int vblocks;
+ 	unsigned int dirty_threshold = max(am->max_candidate_count,
+ 					am->candidate_ratio *
+@@ -560,13 +558,13 @@ static void atgc_lookup_victim(struct f2fs_sb_info *sbi,
+ 
+ 	/* age = 10000 * x% * 60 */
+ 	age = div64_u64(accu * (max_mtime - ve->mtime), total_time) *
+-								age_weight;
++							age_weight;
+ 
+ 	vblocks = get_valid_blocks(sbi, ve->segno, true);
+-	f2fs_bug_on(sbi, !vblocks || vblocks == sec_blocks);
++	f2fs_bug_on(sbi, !vblocks || vblocks == BLKS_PER_SEC(sbi));
+ 
+ 	/* u = 10000 * x% * 40 */
+-	u = div64_u64(accu * (sec_blocks - vblocks), sec_blocks) *
++	u = div64_u64(accu * (BLKS_PER_SEC(sbi) - vblocks), BLKS_PER_SEC(sbi)) *
+ 							(100 - age_weight);
+ 
+ 	f2fs_bug_on(sbi, age + u >= UINT_MAX);
+@@ -1003,7 +1001,6 @@ static int gc_node_segment(struct f2fs_sb_info *sbi,
+ 	int phase = 0;
+ 	bool fggc = (gc_type == FG_GC);
+ 	int submitted = 0;
+-	unsigned int usable_blks_in_seg = f2fs_usable_blks_in_seg(sbi, segno);
+ 
+ 	start_addr = START_BLOCK(sbi, segno);
+ 
+@@ -1013,7 +1010,7 @@ static int gc_node_segment(struct f2fs_sb_info *sbi,
+ 	if (fggc && phase == 2)
+ 		atomic_inc(&sbi->wb_sync_req[NODE]);
+ 
+-	for (off = 0; off < usable_blks_in_seg; off++, entry++) {
++	for (off = 0; off < BLKS_PER_SEG(sbi); off++, entry++) {
+ 		nid_t nid = le32_to_cpu(entry->nid);
+ 		struct page *node_page;
+ 		struct node_info ni;
+@@ -1498,14 +1495,13 @@ static int gc_data_segment(struct f2fs_sb_info *sbi, struct f2fs_summary *sum,
+ 	int off;
+ 	int phase = 0;
+ 	int submitted = 0;
+-	unsigned int usable_blks_in_seg = f2fs_usable_blks_in_seg(sbi, segno);
+ 
+ 	start_addr = START_BLOCK(sbi, segno);
+ 
+ next_step:
+ 	entry = sum;
+ 
+-	for (off = 0; off < usable_blks_in_seg; off++, entry++) {
++	for (off = 0; off < BLKS_PER_SEG(sbi); off++, entry++) {
+ 		struct page *data_page;
+ 		struct inode *inode;
+ 		struct node_info dni; /* dnode info for the data */
+@@ -1520,7 +1516,7 @@ static int gc_data_segment(struct f2fs_sb_info *sbi, struct f2fs_summary *sum,
+ 		 */
+ 		if ((gc_type == BG_GC && has_not_enough_free_secs(sbi, 0, 0)) ||
+ 			(!force_migrate && get_valid_blocks(sbi, segno, true) ==
+-							CAP_BLKS_PER_SEC(sbi)))
++							BLKS_PER_SEC(sbi)))
+ 			return submitted;
+ 
+ 		if (check_valid_map(sbi, segno, off) == 0)
+@@ -1680,15 +1676,6 @@ static int do_garbage_collect(struct f2fs_sb_info *sbi,
+ 	if (__is_large_section(sbi))
+ 		end_segno = rounddown(end_segno, SEGS_PER_SEC(sbi));
+ 
+-	/*
+-	 * zone-capacity can be less than zone-size in zoned devices,
+-	 * resulting in less than expected usable segments in the zone,
+-	 * calculate the end segno in the zone which can be garbage collected
+-	 */
+-	if (f2fs_sb_has_blkzoned(sbi))
+-		end_segno -= SEGS_PER_SEC(sbi) -
+-					f2fs_usable_segs_in_sec(sbi, segno);
+-
+ 	sanity_check_seg_type(sbi, get_seg_entry(sbi, segno)->type);
+ 
+ 	/* readahead multi ssa blocks those have contiguous address */
+@@ -1862,7 +1849,7 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
+ 
+ 	total_freed += seg_freed;
+ 
+-	if (seg_freed == f2fs_usable_segs_in_sec(sbi, segno)) {
++	if (seg_freed == SEGS_PER_SEC(sbi)) {
+ 		sec_freed++;
+ 		total_sec_freed++;
+ 	}
+diff --git a/fs/f2fs/gc.h b/fs/f2fs/gc.h
+index 28a00942802c..e4a75aa4160f 100644
+--- a/fs/f2fs/gc.h
++++ b/fs/f2fs/gc.h
+@@ -68,34 +68,8 @@ struct victim_entry {
+  * inline functions
+  */
+ 
+-/*
+- * On a Zoned device zone-capacity can be less than zone-size and if
+- * zone-capacity is not aligned to f2fs segment size(2MB), then the segment
+- * starting just before zone-capacity has some blocks spanning across the
+- * zone-capacity, these blocks are not usable.
+- * Such spanning segments can be in free list so calculate the sum of usable
+- * blocks in currently free segments including normal and spanning segments.
+- */
+-static inline block_t free_segs_blk_count_zoned(struct f2fs_sb_info *sbi)
+-{
+-	block_t free_seg_blks = 0;
+-	struct free_segmap_info *free_i = FREE_I(sbi);
+-	int j;
+-
+-	spin_lock(&free_i->segmap_lock);
+-	for (j = 0; j < MAIN_SEGS(sbi); j++)
+-		if (!test_bit(j, free_i->free_segmap))
+-			free_seg_blks += f2fs_usable_blks_in_seg(sbi, j);
+-	spin_unlock(&free_i->segmap_lock);
+-
+-	return free_seg_blks;
+-}
+-
+ static inline block_t free_segs_blk_count(struct f2fs_sb_info *sbi)
+ {
+-	if (f2fs_sb_has_blkzoned(sbi))
+-		return free_segs_blk_count_zoned(sbi);
+-
+ 	return free_segments(sbi) << sbi->log_blocks_per_seg;
+ }
+ 
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 8d330664b925..1013276ad12a 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -769,7 +769,7 @@ static void __locate_dirty_segment(struct f2fs_sb_info *sbi, unsigned int segno,
+ 				get_valid_blocks(sbi, segno, true);
+ 
+ 			f2fs_bug_on(sbi, unlikely(!valid_blocks ||
+-					valid_blocks == CAP_BLKS_PER_SEC(sbi)));
++					valid_blocks == BLKS_PER_SEC(sbi)));
+ 
+ 			if (!IS_CURSEC(sbi, secno))
+ 				set_bit(secno, dirty_i->dirty_secmap);
+@@ -805,7 +805,7 @@ static void __remove_dirty_segment(struct f2fs_sb_info *sbi, unsigned int segno,
+ 			unsigned int secno = GET_SEC_FROM_SEG(sbi, segno);
+ 
+ 			if (!valid_blocks ||
+-					valid_blocks == CAP_BLKS_PER_SEC(sbi)) {
++					valid_blocks == BLKS_PER_SEC(sbi)) {
+ 				clear_bit(secno, dirty_i->dirty_secmap);
+ 				return;
+ 			}
+@@ -825,22 +825,20 @@ static void locate_dirty_segment(struct f2fs_sb_info *sbi, unsigned int segno)
+ {
+ 	struct dirty_seglist_info *dirty_i = DIRTY_I(sbi);
+ 	unsigned short valid_blocks, ckpt_valid_blocks;
+-	unsigned int usable_blocks;
+ 
+ 	if (segno == NULL_SEGNO || IS_CURSEG(sbi, segno))
+ 		return;
+ 
+-	usable_blocks = f2fs_usable_blks_in_seg(sbi, segno);
+ 	mutex_lock(&dirty_i->seglist_lock);
+ 
+ 	valid_blocks = get_valid_blocks(sbi, segno, false);
+ 	ckpt_valid_blocks = get_ckpt_valid_blocks(sbi, segno, false);
+ 
+ 	if (valid_blocks == 0 && (!is_sbi_flag_set(sbi, SBI_CP_DISABLED) ||
+-		ckpt_valid_blocks == usable_blocks)) {
++		ckpt_valid_blocks == BLKS_PER_SEG(sbi))) {
+ 		__locate_dirty_segment(sbi, segno, PRE);
+ 		__remove_dirty_segment(sbi, segno, DIRTY);
+-	} else if (valid_blocks < usable_blocks) {
++	} else if (valid_blocks < BLKS_PER_SEG(sbi)) {
+ 		__locate_dirty_segment(sbi, segno, DIRTY);
+ 	} else {
+ 		/* Recovery routine with SSR needs this */
+@@ -882,12 +880,7 @@ block_t f2fs_get_unusable_blocks(struct f2fs_sb_info *sbi)
+ 	mutex_lock(&dirty_i->seglist_lock);
+ 	for_each_set_bit(segno, dirty_i->dirty_segmap[DIRTY], MAIN_SEGS(sbi)) {
+ 		se = get_seg_entry(sbi, segno);
+-		if (IS_NODESEG(se->type))
+-			holes[NODE] += f2fs_usable_blks_in_seg(sbi, segno) -
+-							se->valid_blocks;
+-		else
+-			holes[DATA] += f2fs_usable_blks_in_seg(sbi, segno) -
+-							se->valid_blocks;
++		holes[SE_PAGETYPE(se)] += BLKS_PER_SEG(sbi) - se->valid_blocks;
+ 	}
+ 	mutex_unlock(&dirty_i->seglist_lock);
+ 
+@@ -2406,8 +2399,7 @@ static void update_sit_entry(struct f2fs_sb_info *sbi, block_t blkaddr, int del)
+ 	new_vblocks = se->valid_blocks + del;
+ 	offset = GET_BLKOFF_FROM_SEG0(sbi, blkaddr);
+ 
+-	f2fs_bug_on(sbi, (new_vblocks < 0 ||
+-			(new_vblocks > f2fs_usable_blks_in_seg(sbi, segno))));
++	f2fs_bug_on(sbi, new_vblocks < 0 || new_vblocks > BLKS_PER_SEG(sbi));
+ 
+ 	se->valid_blocks = new_vblocks;
+ 
+@@ -3449,7 +3441,7 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
+ 		if (F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_BLK)
+ 			f2fs_randomize_chunk(sbi, curseg);
+ 	}
+-	if (curseg->next_blkoff >= f2fs_usable_blks_in_seg(sbi, curseg->segno))
++	if (curseg->next_blkoff >= BLKS_PER_SEG(sbi))
+ 		segment_full = true;
+ 	stat_inc_block_count(sbi, curseg);
+ 
+@@ -4687,8 +4679,6 @@ static void init_free_segmap(struct f2fs_sb_info *sbi)
+ 	struct seg_entry *sentry;
+ 
+ 	for (start = 0; start < MAIN_SEGS(sbi); start++) {
+-		if (f2fs_usable_blks_in_seg(sbi, start) == 0)
+-			continue;
+ 		sentry = get_seg_entry(sbi, start);
+ 		if (!sentry->valid_blocks)
+ 			__set_free(sbi, start);
+@@ -4710,7 +4700,7 @@ static void init_dirty_segmap(struct f2fs_sb_info *sbi)
+ 	struct dirty_seglist_info *dirty_i = DIRTY_I(sbi);
+ 	struct free_segmap_info *free_i = FREE_I(sbi);
+ 	unsigned int segno = 0, offset = 0, secno;
+-	block_t valid_blocks, usable_blks_in_seg;
++	block_t valid_blocks;
+ 
+ 	while (1) {
+ 		/* find dirty segment based on free segmap */
+@@ -4719,10 +4709,9 @@ static void init_dirty_segmap(struct f2fs_sb_info *sbi)
+ 			break;
+ 		offset = segno + 1;
+ 		valid_blocks = get_valid_blocks(sbi, segno, false);
+-		usable_blks_in_seg = f2fs_usable_blks_in_seg(sbi, segno);
+-		if (valid_blocks == usable_blks_in_seg || !valid_blocks)
++		if (valid_blocks == BLKS_PER_SEG(sbi) || !valid_blocks)
+ 			continue;
+-		if (valid_blocks > usable_blks_in_seg) {
++		if (valid_blocks > BLKS_PER_SEG(sbi)) {
+ 			f2fs_bug_on(sbi, 1);
+ 			continue;
+ 		}
+@@ -4739,7 +4728,7 @@ static void init_dirty_segmap(struct f2fs_sb_info *sbi)
+ 		valid_blocks = get_valid_blocks(sbi, segno, true);
+ 		secno = GET_SEC_FROM_SEG(sbi, segno);
+ 
+-		if (!valid_blocks || valid_blocks == CAP_BLKS_PER_SEC(sbi))
++		if (!valid_blocks || valid_blocks == BLKS_PER_SEC(sbi))
+ 			continue;
+ 		if (IS_CURSEC(sbi, secno))
+ 			continue;
+@@ -5097,42 +5086,6 @@ int f2fs_check_write_pointer(struct f2fs_sb_info *sbi)
+ 
+ 	return 0;
+ }
+-
+-/*
+- * Return the number of usable blocks in a segment. The number of blocks
+- * returned is always equal to the number of blocks in a segment for
+- * segments fully contained within a sequential zone capacity or a
+- * conventional zone. For segments partially contained in a sequential
+- * zone capacity, the number of usable blocks up to the zone capacity
+- * is returned. 0 is returned in all other cases.
+- */
+-static inline unsigned int f2fs_usable_zone_blks_in_seg(
+-			struct f2fs_sb_info *sbi, unsigned int segno)
+-{
+-	block_t seg_start, sec_start_blkaddr, sec_cap_blkaddr;
+-	unsigned int secno;
+-
+-	if (!sbi->unusable_blocks_per_sec)
+-		return BLKS_PER_SEG(sbi);
+-
+-	secno = GET_SEC_FROM_SEG(sbi, segno);
+-	seg_start = START_BLOCK(sbi, segno);
+-	sec_start_blkaddr = START_BLOCK(sbi, GET_SEG_FROM_SEC(sbi, secno));
+-	sec_cap_blkaddr = sec_start_blkaddr + CAP_BLKS_PER_SEC(sbi);
+-
+-	/*
+-	 * If segment starts before zone capacity and spans beyond
+-	 * zone capacity, then usable blocks are from seg start to
+-	 * zone capacity. If the segment starts after the zone capacity,
+-	 * then there are no usable blocks.
+-	 */
+-	if (seg_start >= sec_cap_blkaddr)
+-		return 0;
+-	if (seg_start + BLKS_PER_SEG(sbi) > sec_cap_blkaddr)
+-		return sec_cap_blkaddr - seg_start;
+-
+-	return BLKS_PER_SEG(sbi);
+-}
+ #else
+ int f2fs_fix_curseg_write_pointer(struct f2fs_sb_info *sbi)
+ {
+@@ -5143,31 +5096,7 @@ int f2fs_check_write_pointer(struct f2fs_sb_info *sbi)
+ {
+ 	return 0;
+ }
+-
+-static inline unsigned int f2fs_usable_zone_blks_in_seg(struct f2fs_sb_info *sbi,
+-							unsigned int segno)
+-{
+-	return 0;
+-}
+-
+ #endif
+-unsigned int f2fs_usable_blks_in_seg(struct f2fs_sb_info *sbi,
+-					unsigned int segno)
+-{
+-	if (f2fs_sb_has_blkzoned(sbi))
+-		return f2fs_usable_zone_blks_in_seg(sbi, segno);
+-
+-	return BLKS_PER_SEG(sbi);
+-}
+-
+-unsigned int f2fs_usable_segs_in_sec(struct f2fs_sb_info *sbi,
+-					unsigned int segno)
+-{
+-	if (f2fs_sb_has_blkzoned(sbi))
+-		return CAP_SEGS_PER_SEC(sbi);
+-
+-	return SEGS_PER_SEC(sbi);
+-}
+ 
+ /*
+  * Update min, max modified time for cost-benefit GC algorithm
+diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+index 96cec83012f1..b725ae1a7043 100644
+--- a/fs/f2fs/segment.h
++++ b/fs/f2fs/segment.h
+@@ -99,12 +99,6 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
+ 	((!__is_valid_data_blkaddr(blk_addr)) ?			\
+ 	NULL_SEGNO : GET_L2R_SEGNO(FREE_I(sbi),			\
+ 		GET_SEGNO_FROM_SEG0(sbi, blk_addr)))
+-#define CAP_BLKS_PER_SEC(sbi)					\
+-	((sbi)->segs_per_sec * (sbi)->blocks_per_seg -		\
+-	 (sbi)->unusable_blocks_per_sec)
+-#define CAP_SEGS_PER_SEC(sbi)					\
+-	((sbi)->segs_per_sec - ((sbi)->unusable_blocks_per_sec >>\
+-	(sbi)->log_blocks_per_seg))
+ #define GET_SEC_FROM_SEG(sbi, segno)				\
+ 	(((segno) == -1) ? -1 : (segno) / (sbi)->segs_per_sec)
+ #define GET_SEG_FROM_SEC(sbi, secno)				\
+@@ -440,7 +434,6 @@ static inline void __set_free(struct f2fs_sb_info *sbi, unsigned int segno)
+ 	unsigned int secno = GET_SEC_FROM_SEG(sbi, segno);
+ 	unsigned int start_segno = GET_SEG_FROM_SEC(sbi, secno);
+ 	unsigned int next;
+-	unsigned int usable_segs = f2fs_usable_segs_in_sec(sbi, segno);
+ 
+ 	spin_lock(&free_i->segmap_lock);
+ 	clear_bit(segno, free_i->free_segmap);
+@@ -448,7 +441,7 @@ static inline void __set_free(struct f2fs_sb_info *sbi, unsigned int segno)
+ 
+ 	next = find_next_bit(free_i->free_segmap,
+ 			start_segno + SEGS_PER_SEC(sbi), start_segno);
+-	if (next >= start_segno + usable_segs) {
++	if (next >= start_segno + SEGS_PER_SEC(sbi)) {
+ 		clear_bit(secno, free_i->free_secmap);
+ 		free_i->free_sections++;
+ 	}
+@@ -474,7 +467,6 @@ static inline void __set_test_and_free(struct f2fs_sb_info *sbi,
+ 	unsigned int secno = GET_SEC_FROM_SEG(sbi, segno);
+ 	unsigned int start_segno = GET_SEG_FROM_SEC(sbi, secno);
+ 	unsigned int next;
+-	unsigned int usable_segs = f2fs_usable_segs_in_sec(sbi, segno);
+ 
+ 	spin_lock(&free_i->segmap_lock);
+ 	if (test_and_clear_bit(segno, free_i->free_segmap)) {
+@@ -484,7 +476,7 @@ static inline void __set_test_and_free(struct f2fs_sb_info *sbi,
+ 			goto skip_free;
+ 		next = find_next_bit(free_i->free_segmap,
+ 				start_segno + SEGS_PER_SEC(sbi), start_segno);
+-		if (next >= start_segno + usable_segs) {
++		if (next >= start_segno + SEGS_PER_SEC(sbi)) {
+ 			if (test_and_clear_bit(secno, free_i->free_secmap))
+ 				free_i->free_sections++;
+ 		}
+@@ -577,16 +569,15 @@ static inline bool has_curseg_enough_space(struct f2fs_sb_info *sbi,
+ 	/* check current node segment */
+ 	for (i = CURSEG_HOT_NODE; i <= CURSEG_COLD_NODE; i++) {
+ 		segno = CURSEG_I(sbi, i)->segno;
+-		left_blocks = f2fs_usable_blks_in_seg(sbi, segno) -
++		left_blocks = BLKS_PER_SEG(sbi) -
+ 				get_seg_entry(sbi, segno)->ckpt_valid_blocks;
+-
+ 		if (node_blocks > left_blocks)
+ 			return false;
+ 	}
+ 
+ 	/* check current data segment */
+ 	segno = CURSEG_I(sbi, CURSEG_HOT_DATA)->segno;
+-	left_blocks = f2fs_usable_blks_in_seg(sbi, segno) -
++	left_blocks = BLKS_PER_SEG(sbi) -
+ 			get_seg_entry(sbi, segno)->ckpt_valid_blocks;
+ 	if (dent_blocks > left_blocks)
+ 		return false;
+@@ -604,10 +595,10 @@ static inline void __get_secs_required(struct f2fs_sb_info *sbi,
+ 					get_pages(sbi, F2FS_DIRTY_DENTS) +
+ 					get_pages(sbi, F2FS_DIRTY_IMETA);
+ 	unsigned int total_dent_blocks = get_pages(sbi, F2FS_DIRTY_DENTS);
+-	unsigned int node_secs = total_node_blocks / CAP_BLKS_PER_SEC(sbi);
+-	unsigned int dent_secs = total_dent_blocks / CAP_BLKS_PER_SEC(sbi);
+-	unsigned int node_blocks = total_node_blocks % CAP_BLKS_PER_SEC(sbi);
+-	unsigned int dent_blocks = total_dent_blocks % CAP_BLKS_PER_SEC(sbi);
++	unsigned int node_secs = total_node_blocks / BLKS_PER_SEC(sbi);
++	unsigned int dent_secs = total_dent_blocks / BLKS_PER_SEC(sbi);
++	unsigned int node_blocks = total_node_blocks % BLKS_PER_SEC(sbi);
++	unsigned int dent_blocks = total_dent_blocks % BLKS_PER_SEC(sbi);
+ 
+ 	if (lower_p)
+ 		*lower_p = node_secs + dent_secs;
+@@ -766,22 +757,21 @@ static inline int check_block_count(struct f2fs_sb_info *sbi,
+ 	bool is_valid  = test_bit_le(0, raw_sit->valid_map) ? true : false;
+ 	int valid_blocks = 0;
+ 	int cur_pos = 0, next_pos;
+-	unsigned int usable_blks_per_seg = f2fs_usable_blks_in_seg(sbi, segno);
+ 
+ 	/* check bitmap with valid block count */
+ 	do {
+ 		if (is_valid) {
+ 			next_pos = find_next_zero_bit_le(&raw_sit->valid_map,
+-					usable_blks_per_seg,
++					BLKS_PER_SEG(sbi),
+ 					cur_pos);
+ 			valid_blocks += next_pos - cur_pos;
+ 		} else
+ 			next_pos = find_next_bit_le(&raw_sit->valid_map,
+-					usable_blks_per_seg,
++					BLKS_PER_SEG(sbi),
+ 					cur_pos);
+ 		cur_pos = next_pos;
+ 		is_valid = !is_valid;
+-	} while (cur_pos < usable_blks_per_seg);
++	} while (cur_pos < BLKS_PER_SEG(sbi));
+ 
+ 	if (unlikely(GET_SIT_VBLOCKS(raw_sit) != valid_blocks)) {
+ 		f2fs_err(sbi, "Mismatch valid blocks %d vs. %d",
+@@ -791,14 +781,9 @@ static inline int check_block_count(struct f2fs_sb_info *sbi,
+ 		return -EFSCORRUPTED;
+ 	}
+ 
+-	if (usable_blks_per_seg < BLKS_PER_SEG(sbi))
+-		f2fs_bug_on(sbi, find_next_bit_le(&raw_sit->valid_map,
+-				BLKS_PER_SEG(sbi),
+-				usable_blks_per_seg) != BLKS_PER_SEG(sbi));
+-
+ 	/* check segment usage, and check boundary of a given segment number */
+-	if (unlikely(GET_SIT_VBLOCKS(raw_sit) > usable_blks_per_seg
+-					|| !valid_main_segno(sbi, segno))) {
++	if (unlikely(GET_SIT_VBLOCKS(raw_sit) > BLKS_PER_SEG(sbi) ||
++				!valid_main_segno(sbi, segno))) {
+ 		f2fs_err(sbi, "Wrong valid blocks %d or segno %u",
+ 			 GET_SIT_VBLOCKS(raw_sit), segno);
+ 		set_sbi_flag(sbi, SBI_NEED_FSCK);
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index c0688c124aa7..cd6a56020a5d 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3837,21 +3837,13 @@ static int f2fs_report_zone_cb(struct blk_zone *zone, unsigned int idx,
+ 			      void *data)
+ {
+ 	struct f2fs_report_zones_args *rz_args = data;
+-	block_t unusable_blocks = (zone->len - zone->capacity) >>
+-					F2FS_LOG_SECTORS_PER_BLOCK;
+ 
+-	if (zone->type == BLK_ZONE_TYPE_CONVENTIONAL)
+-		return 0;
+-
+-	set_bit(idx, rz_args->dev->blkz_seq);
+-	if (!rz_args->sbi->unusable_blocks_per_sec) {
+-		rz_args->sbi->unusable_blocks_per_sec = unusable_blocks;
+-		return 0;
+-	}
+-	if (rz_args->sbi->unusable_blocks_per_sec != unusable_blocks) {
+-		f2fs_err(rz_args->sbi, "F2FS supports single zone capacity\n");
++	if (zone->len != zone->capacity) {
++		f2fs_err(rz_args->sbi, "F2FS does not support zone capacity.\n");
+ 		return -EINVAL;
+ 	}
++	if (zone->type != BLK_ZONE_TYPE_CONVENTIONAL)
++		set_bit(idx, rz_args->dev->blkz_seq);
+ 	return 0;
+ }
+ 
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 906d2af2d849..2689cc9c3bf8 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -1018,9 +1018,6 @@ F2FS_SBI_GENERAL_RW_ATTR(revoked_atomic_block);
+ F2FS_SBI_GENERAL_RW_ATTR(hot_data_age_threshold);
+ F2FS_SBI_GENERAL_RW_ATTR(warm_data_age_threshold);
+ F2FS_SBI_GENERAL_RW_ATTR(last_age_weight);
+-#ifdef CONFIG_BLK_DEV_ZONED
+-F2FS_SBI_GENERAL_RO_ATTR(unusable_blocks_per_sec);
+-#endif
+ 
+ /* STAT_INFO ATTR */
+ #ifdef CONFIG_F2FS_STAT_FS
+@@ -1172,9 +1169,6 @@ static struct attribute *f2fs_attrs[] = {
+ 	ATTR_LIST(moved_blocks_background),
+ 	ATTR_LIST(avg_vblocks),
+ #endif
+-#ifdef CONFIG_BLK_DEV_ZONED
+-	ATTR_LIST(unusable_blocks_per_sec),
+-#endif
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 	ATTR_LIST(compr_written_block),
+ 	ATTR_LIST(compr_saved_block),
+-- 
+2.43.0.594.gd9cf4e227d-goog
 
 
