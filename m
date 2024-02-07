@@ -1,150 +1,164 @@
-Return-Path: <linux-kernel+bounces-56694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 033E184CDB4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:09:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4631B84CDB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:10:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32FB51C225BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:09:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F18E928D6F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:10:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FB197F7DF;
-	Wed,  7 Feb 2024 15:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6D67F7C6;
+	Wed,  7 Feb 2024 15:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PY+GQVkB"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="X7DSmwWw";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="OWw2wAUI";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="X7DSmwWw";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="OWw2wAUI"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9216B7F488
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:09:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8990577658;
+	Wed,  7 Feb 2024 15:10:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707318580; cv=none; b=prZHTbLPGPnhJJHcrSaXXlFXGd6JXuOORK9HAnUgqFYkv2bU+FzbGbG0PF1PXT1gsOayO5r0HBfL9W6y/w0anzo1p9dmuTiaKkYYhvvjD1ziI7MVt2QwQ3S5aIFTEpRixAAq8V+p9vJJkfn03xoRRJpHaSKPEcC2TbM9T44kJug=
+	t=1707318617; cv=none; b=IBjE3fQ2gqW9WXnViyi7hrfbzkigcyBBE7uIvLz1nkjXIFw1gyxRAejqUBpMWJbhBHv8LGeK8e4EyGAP+x4FELoY3SBCZ2lwhbprN+3rpoK8LcbcUt22g/QmL1pX3QpwjYpbo9gnpnVlSGEB6KhqMDyXupxmYxZnJoMHbKG8nl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707318580; c=relaxed/simple;
-	bh=289HaGYyUFlSBzdgaJPiX1tdAh3koUayV8L35fXtBMQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eTTgN8S3t8YM1Lz/i0hHb9dfWZTLmcXf1RwHAsXrj9YOzQyaFqt45po6LPKr/m44kPstJmcJh6Zc0QhfVkABsA9Z1W+lUNVgvEzD7llzuzkrtRqJ26/RCKh0GpirbBvFN/CW2Wn3ybT41S4k8WSJvGHb5Rc+B8WqBgrE3sIl5UI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PY+GQVkB; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a389a3b9601so34924266b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:09:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1707318577; x=1707923377; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3fOJyiQhDEQVM/OwkrnT+6+TKgKM76JkW083fWVVDBk=;
-        b=PY+GQVkBbwxWwZNCfwCthRubJa9T++UD1BCfRZdMnhgRuWB0As4VvOuMekPlhPwVHH
-         s+NMskSpxvlXsKzp0sCv+9SsErwtFOpIDfrmEhLRbLvsH7SEkG13VYhVUgQW+AbXsop0
-         mQjQttud987Oh5DIrHXZXoAQzSSnEGV7n6apJLh13NJX22EkfFrXsUv54ORBs1yfM7YJ
-         /vHcYbEJMKI9RsSlUvwOGPH4W7f76HYKeqX2UC/+0nzbCqozTFTHtxaBPdzlh2DpXazM
-         +9azSiI7vdi2Kmj/P5vtqO0kPJCGN/LIgTwmTL9bkq2QBmpoHij1hb9MnFrrOrs8o5Cs
-         gPlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707318577; x=1707923377;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3fOJyiQhDEQVM/OwkrnT+6+TKgKM76JkW083fWVVDBk=;
-        b=mbUewWYmSkK9P3YuoTYZZhtOUJ7JqUitTpibylWfWOgUfM6PWM7y1YPQlElAPx/iTK
-         8lai5Y5rmPj71semtQaqcG9jpZ5QYpoZhqAT0JR0FwaAFRAbebp/PrTvw7djixhlcsWG
-         CpbU8XZVdGYeAvrbdyZWdxms6umjYcrE5pVBuamraFmkPbPQEvyI69mWCewEU7r1tOJy
-         M3yr1YjqBaM9S/1OJQ+9nC33IjXRKoQlhxWA4epdxyU9H4evaSyDEeFITc7z2nq49D3A
-         1uYxBZMFDBb7PO6fKtT2dmlzk2vyppCIxurBKlZY22CJIvYE3Y9UPXIjUMsHrIPeDJvQ
-         phpA==
-X-Gm-Message-State: AOJu0YxWR/P7eAe1Z1sM/xhZUfbGoatGQsuIVDCRtM0lJaubzpZp9A2a
-	AFvestrFenq2JOyb/AGwfhSYPIqHl26IsH9v3PbghZz+4jRdhl3aiByBjmdZ6rk=
-X-Google-Smtp-Source: AGHT+IEll9oUuMXPJPEKfzna/H4NBKn3iyg+La3JeQgNI7lqzBIfxefGwoDNHHhuwYO4qQW6EQqgRQ==
-X-Received: by 2002:a17:907:7803:b0:a34:96e9:f46c with SMTP id la3-20020a170907780300b00a3496e9f46cmr4162025ejc.31.1707318576821;
-        Wed, 07 Feb 2024 07:09:36 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUvxcgxBYzEwqY+Jl6A6mhH/kPpsJosFYLwZCqbchnZsHhP6c7ZxGSU2Pz3grVJ8cfjhumSW1VdAs+UJ7Ul6fU9s+A8UAlJhMYDdt5sCHZXd9AkWmm89A7S103tkhQ0bM9wY75FZeNX0J3e9OmLVhp5lX7s3NXsfoeD0jbChoB4GHnMC7EFZ09KXxuUag+NW2zXpd7bqdGZAQO0c5Ez/YDspt5lkcAoDjZdJJXG4Gan82yImyk3HveUAmh+IVRwaM9UxblyfwczOHmc4CSEqPIAGLoupgSWYtWvzbjXCRaR9AQXdG5d4IQIHvuwlzDnJIYTkZuZkXwsg5WUxAyMXlCDn/idLyxAzGsobpp+2fJXPKVCYSvRiibxgisv/q2wgrJ/QKOAwY0cS1PDQ+hccitcgvV2it8taIHfieBe/MRrQ54D4GGb0RkYECSF9EGJ3bo3LOJ1jC6QxXWNXbe8zCqFEYO22V2DwySm
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id cw9-20020a170907160900b00a388e24bd2fsm428980ejd.162.2024.02.07.07.09.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 07:09:36 -0800 (PST)
-Date: Wed, 7 Feb 2024 16:09:34 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: Sreenath Vijayan <sreenath.vijayan@sony.com>
-Cc: john.ogness@linutronix.de, corbet@lwn.net, gregkh@linuxfoundation.org,
-	jirislaby@kernel.org, rdunlap@infradead.org, rostedt@goodmis.org,
-	senozhatsky@chromium.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	taichi.shimoyashiki@sony.com, daniel.palmer@sony.com,
-	anandakumar.balasubramaniam@sony.com
-Subject: Re: [PATCH v4 2/2] tty/sysrq: Dump printk ring buffer messages via
- sysrq
-Message-ID: <ZcOdLrOPiPJmCec5@alley>
-References: <cover.1706772349.git.sreenath.vijayan@sony.com>
- <ca8dd18e434f309612c907d90e9f77c09e045b37.1706772349.git.sreenath.vijayan@sony.com>
+	s=arc-20240116; t=1707318617; c=relaxed/simple;
+	bh=Jv1RJVQSa+s6LkiGweYVwWUnmBEVv5H8dA9b/E7cFxc=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Xuv5IzV/6/G+qo9/3xR69IrJblYX8tHYPTMd1H6xzLSmT6S6N0FDn9AlOMgejm17BCEds7H0Wj7ZThiaYLFYM30o+B32e0Iwo6QN/cYKyneI4BbslJym5j+8z5uduxMxRSRNng93lc5ILjhQeRGDgpRoRY0cucoYiNuVG2tEsec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=X7DSmwWw; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=OWw2wAUI; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=X7DSmwWw; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=OWw2wAUI; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6188E1F78A;
+	Wed,  7 Feb 2024 15:10:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707318613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZDQEipVTzee4WgFsB2xE+sJDZ6njATigmiLm4iw2r7I=;
+	b=X7DSmwWwfzJB57r5y+p/fUCE2Gxo/P8LsynUfmA2PkWKLKVsBDC5O50ecjjb+x7xRLnP/v
+	zzf14eQSkPusj3o6Ieknx4UjJpLzWqkig3D4QTwmMjneWVahBX9JgMvmkohkonDy7FIWPj
+	U+Dl8t6FxQ+Ul0/UvCJG52ceHhVS0sc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707318613;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZDQEipVTzee4WgFsB2xE+sJDZ6njATigmiLm4iw2r7I=;
+	b=OWw2wAUIJl6L4hWSfEepo5y4UZuXpgcHIRf8oLIcxr2hmZeCEMnxdleQaPWXIabF9ZVBtv
+	bSoO9a1r3MT6gWCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707318613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZDQEipVTzee4WgFsB2xE+sJDZ6njATigmiLm4iw2r7I=;
+	b=X7DSmwWwfzJB57r5y+p/fUCE2Gxo/P8LsynUfmA2PkWKLKVsBDC5O50ecjjb+x7xRLnP/v
+	zzf14eQSkPusj3o6Ieknx4UjJpLzWqkig3D4QTwmMjneWVahBX9JgMvmkohkonDy7FIWPj
+	U+Dl8t6FxQ+Ul0/UvCJG52ceHhVS0sc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707318613;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZDQEipVTzee4WgFsB2xE+sJDZ6njATigmiLm4iw2r7I=;
+	b=OWw2wAUIJl6L4hWSfEepo5y4UZuXpgcHIRf8oLIcxr2hmZeCEMnxdleQaPWXIabF9ZVBtv
+	bSoO9a1r3MT6gWCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 17F97139B9;
+	Wed,  7 Feb 2024 15:10:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 0JprBFWdw2UJOQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Wed, 07 Feb 2024 15:10:13 +0000
+Date: Wed, 07 Feb 2024 16:10:12 +0100
+Message-ID: <87jzng5mzv.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: =?ISO-8859-1?Q?Jean-Lo=EFc?= Charroud <lagiraudiere+linux@free.fr>
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Stefan Binding <sbinding@opensource.cirrus.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	linux-sound <linux-sound@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	patches <patches@opensource.cirrus.com>
+Subject: Re: [PATCH v2] ALSA: hda/realtek: cs35l41: Fix internal speaker support for ASUS UM3402 with missing DSD
+In-Reply-To: <1366935939.585144512.1707316246651.JavaMail.zimbra@free.fr>
+References: <726559913.576332068.1707239153891.JavaMail.zimbra@free.fr>
+	<87o7cs5r29.wl-tiwai@suse.de>
+	<1366935939.585144512.1707316246651.JavaMail.zimbra@free.fr>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca8dd18e434f309612c907d90e9f77c09e045b37.1706772349.git.sreenath.vijayan@sony.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: 0.86
+X-Spamd-Result: default: False [0.86 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.34)[76.09%];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[free.fr];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[linux];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 TO_DN_ALL(0.00)[];
+	 NEURAL_HAM_SHORT(-0.20)[-0.997];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FREEMAIL_TO(0.00)[free.fr];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-On Thu 2024-02-01 13:12:41, Sreenath Vijayan wrote:
-> When terminal is unresponsive, one cannot use dmesg to view printk
-> ring buffer messages. Also, syslog services may be disabled,
-> to check the messages after a reboot, especially on embedded systems.
-> In this scenario, dump the printk ring buffer messages via sysrq
-> by pressing sysrq+D.
+On Wed, 07 Feb 2024 15:30:46 +0100,
+Jean-Loïc Charroud wrote:
+> 
+> Fix device ID for "ASUS UM3402" and "ASUS UM6702RA/RC".
 
-I would use sysrq-R and say that it replays the kernel log on
-consoles.
+This change is only about the string in the table, not the actual
+behavior, right?  The name string there is only for debug info, so
+it's no big problem even if it's not 100% right.
+That is, this can be again split to another patch -- with the
+additional Fixes tag to the commit that introduced the entries.
 
-The word "dump" is ambiguous. People might thing that it calls
-dmesg dumpers.
+> Add DSD values for "ASUS UM3402" to cs35l41_config_table[].
 
-Also the messages would be shown on the terminal only when
-console_loglevel is set to show all messages. This is done
-in __handle_sysrq(). But it is not done in the workqueue
-context.
+.. and this one is the mandatory fix for your device.  It should be
+the patch 1.  Then we'll have two more, one for correcting the entry
+names, and another for sorting the entries.
 
-Finally, the commit message should explain why workqueues are used
-and what are the limitations. Something like:
+I'm a bit picky, but now you see how the things work.
+Divide-and-conquer is the basic strategy.
 
-<add>
-The log is replayed using workqueues. The reason is that it has to
-be done a safe way (in compare with panic context).
 
-This also means that the sysrq won't have the desired effect
-when the system is in so bad state that workqueues do not
-make any progress.
-</add>
-
-Another reason might be that we do not want to do it in
-an interrupt context. But this reason is questionable.
-Many other sysrq commands do a complicate work and
-print many messages as well.
-
-Another reason is that the function need to use console_lock()
-which can't be called in IRQ context. Maybe, we should use
-console_trylock() instead.
-
-The function would replay the messages only when console_trylock()
-succeeds. Users could repeat the sysrq when it fails.
-
-Idea:
-
-Using console_trylock() actually might be more reliable than
-workqueues. console_trylock() might fail repeatably when:
-
-    + the console_lock() owner is stuck. But workqueues would fail
-      in this case as well.
-
-    + there is a flood of messages. In this case, replaying
-      the log would not help much.
-
-Another advantage is that the consoles would be flushed
-in sysrq context with the manipulated console_loglevel.
-
-Best Regards,
-Petr
+Takashi
 
