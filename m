@@ -1,129 +1,204 @@
-Return-Path: <linux-kernel+bounces-57272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8730584D605
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:47:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A632484D60B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:53:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E785AB21515
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:47:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38B19289245
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 398F71CD22;
-	Wed,  7 Feb 2024 22:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC90A1EB2B;
+	Wed,  7 Feb 2024 22:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fxX+C25m"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bx4B6DK9"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3E271F947;
-	Wed,  7 Feb 2024 22:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314A0200D8;
+	Wed,  7 Feb 2024 22:53:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707346011; cv=none; b=btC/nANacixk6DZmQ5XnCNHi4xWvWs7/24wsgjCxUCh4BDK/zKAqJYH6vyeU1oEnKaaIQR6QBT4IPzhhz8eHzAxFp9SF+L26aNsViuCz3xi6ra3Jco8OKZSyE+01SXybHUaRd54DU2oH9yMkdHfBLdrxlXC5O5PBy86OsNMNaZk=
+	t=1707346404; cv=none; b=PeObR9UAGj2nJGwHdbLV4GFEKXf7TuWuQPrGkEV3Nos7B/GLC/zyIKuVAfePeftZayATHJq9dbF86Fjj5vr8U1rF2CXy7QY1YG8J9nKCr9UcN/y9wa71UthrF3K76h+bq/n4IiIqIcIHl3zRPJq+B5WZ1S5xRWE8Vn/szC6I12o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707346011; c=relaxed/simple;
-	bh=x+UHYL03txX/IiQygGKZy2oVnfJX5rWtBgj4pmbaRd8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bct1Gosu233gpcvmjJFZEZHQRfDEhdXjsH8z2M/gJpA7Gm2COP2Ee81RwV4j9KdKLLaxzb8DZ7HSmOYkT53FXHuyymM/X3ohMlDM5+zcflqLFG7xgCWB71sk309qrNkGGSPvwf0GQBy9kxcl7+54/TA2wwoqEwY2qtzHhEUSgCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fxX+C25m; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a38392b9917so159954266b.1;
-        Wed, 07 Feb 2024 14:46:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707346008; x=1707950808; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C9FdIPkRnRC8GFhXD7gXQqpwUiJyXPG9kqjvS6nLa3I=;
-        b=fxX+C25mnyIaPjiA4eK8qrUcD+GlqL/hP/WBrNZ/nANatovtEaeQ2vSGNhx1AtTulS
-         gzzh219iBoReCUn0mXInq0IcuVU4oyzOoF1wDjXqY7+6fHmXrMvpgQZDiS/YVTTWizEf
-         ydtxgvrpP7blXD6SR15HUy2HyGk+ITiYxt7VUZQoxOQbGQOhtcfWkxT4qEv6zMH9IpmC
-         v7leKcG42jCMc0KHyTok6var+1AfPR+IhM61bHr2CQlrdWlZ9d4RhJmxVqgEceHzPXW5
-         4v2OJ5AV0/xi/XriNtsvfo3GaMhAv8NwacTlc9TLAm9mrSB8DoiA3kOQC9KoJPQkjlia
-         eD1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707346008; x=1707950808;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C9FdIPkRnRC8GFhXD7gXQqpwUiJyXPG9kqjvS6nLa3I=;
-        b=DaSQIWS4O/qujv8Bgte+wkw8c2Rkq6l4mt4yU+ZzJztWAMUq7OIdKTLda7hyeDZ82J
-         ywbEcmcF0qkK6U3g91m8pvZsHJYyqm1PGZqGEtfjikHoNGUGTYf99AHkzhVfXA7zRNsZ
-         V9xjVOSRaWfOMQB8fLRsUD28LBe+8GvSkty1iZTN7NAN7evwip3Gk2adWlk2E3dcIU3E
-         36KCAL/QVTRF20Ji6W3V3fWop/t1LAiaSeuGU8ocRVxOg57wOXHWDBP2uyf6w/p05DsP
-         BEJFbbSbu19d0dKSeLhwOzcPkoYC2r7s09nc/WY44amHZMLgxEWsrImNeiF+T18rCePP
-         8yWg==
-X-Forwarded-Encrypted: i=1; AJvYcCXyXzzWTxtiyCRenjCcjlRNWffPfLrn6QAWSj4V18AES96HTswn34VYzS9v+IZMBFtnEMyX4zY4yqMdylxOpPHAYCQyIgJquxktJLapRreMtl6DDH2/YNRUlgm2UJzMrZCKTYsDPKJzzgLqhAIV1pqOAtNuXDQU824sorWzPzd9cPXFjA==
-X-Gm-Message-State: AOJu0YxWlWfgMX0AUjxQgr075Ad/RCKpmHMMU0zvOseFFDqyMWa70e2j
-	TNEaZsSbc0RnIIlV6me8rkXo0D+Zlvz7k58pp6/BZceYMcXuND4=
-X-Google-Smtp-Source: AGHT+IF0QPdMVJv15K2QOPbQPEqVG3lS1RLcmu2yTzxDvSwVgafg9vm3KWdW0FMS+sGUXy9xtRSTuQ==
-X-Received: by 2002:a17:906:4a06:b0:a36:2da9:987e with SMTP id w6-20020a1709064a0600b00a362da9987emr5411183eju.5.1707346007918;
-        Wed, 07 Feb 2024 14:46:47 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUCQGQ62weSy2cPNUhFKLGMaBX4yA3vi+Q4FwaRc2QfdqBVHdUU2AIXB1XmA2UzNB/pxkVxxWgAn1G3mhrRmt7h+Nry5xb6oYYTpe7R1trhIuTKeLuXveDRNcmTAeEbibfmvNZMwHcdHEoc3yjSdO33WQ9RfyayLggJjzxMhdqiHQjCEA2MyogqUG2Ahytm+QLAjAV/aQGp+gbj3oiwqGhsDSc4eu1JN14EndRtcAddeVAWcfKaLjMauP0Lr6HeyovnZw0K3P8TTM8ZuLwFqyu0GstptVBvCqCHqA57kgcUpWthyTnlyicQGM6YTXOhO//mlt8xs6vadtilkpwXyRcra+9oFx11QFm0eUxQuq1rfKWyUi6LgXGTd3dK3czQc22i4tg85uodn/ui8Sr9OeALgDEPszdzgpXQHS93CfPYXH3QEEMzCY4Iw4Bw7rxCbaV21jTKfY6G0JDHMraLDFiegxZsbzvH42EVMgcgLdi+ykclr0n6aeYoWprAiSPQ5rWbkqOVbm1b+9QJIPz7xodU++g8zDD3DdmKwP0kfwX3B3aCVFS1xfBWQdZU50NszyGPo1vfT/Y9hZ8h4Md1+lLpz1AAlCyeQZypCQ==
-Received: from frutis-latitude7490.lan (public-gprs393011.centertel.pl. [37.47.166.116])
-        by smtp.googlemail.com with ESMTPSA id rs6-20020a170907036600b00a358b6242fcsm1217449ejb.114.2024.02.07.14.46.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 14:46:47 -0800 (PST)
-From: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>
-To: Rob Herring <robh+dt@kernel.org>
-Cc: Robert Marko <robimarko@gmail.com>,
-	=?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Mark Brown <broonie@kernel.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Peter Yin <peteryin.openbmc@gmail.com>,
-	Patrick Rudolph <patrick.rudolph@9elements.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Marek Vasut <marex@denx.de>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	Fabio Estevam <festevam@denx.de>,
-	Alexander Stein <alexander.stein@ew.tq-group.com>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-spi@vger.kernel.org
-Subject: [PATCH v2 2/2] dt-bindings: trivial-devices: Add qca,qca4024
-Date: Wed,  7 Feb 2024 23:45:23 +0100
-Message-ID: <20240207224546.44030-2-frut3k7@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240207224546.44030-1-frut3k7@gmail.com>
-References: <ZcH9u7Vo2sFERIHJ@finisterre.sirena.org.uk>
- <20240207224546.44030-1-frut3k7@gmail.com>
+	s=arc-20240116; t=1707346404; c=relaxed/simple;
+	bh=nmb2k3C9v+KzAmt2g3cPPXFlei6g+FVLekXJpHiBpLI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NS/JFQWxsk2zCAxt6XubWZepqLaZht/c6YuBXEJp6nbzfedrPLvhovpemA6pmB2WtgX1QJPok2g6TYkmjck/bVJdPiKM+CtXb5Vonqorb40Q0xjfCRb0uE/kAbOR5FSV4afj8n76bRmEjrPdptCdiIvpkj8j2EWlNe3JOREaZvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bx4B6DK9; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707346402; x=1738882402;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nmb2k3C9v+KzAmt2g3cPPXFlei6g+FVLekXJpHiBpLI=;
+  b=bx4B6DK9cAZW4NeoF+ZNq8KkKYJ3r2FMD0aBkRwCc2B1aWPSVjA+ZvKd
+   s3QrytosAXeEXwP2ZGQv343c2wAx+rgMqjo9C26yIUtfba+FtLwi0YIOv
+   aOg6mpKde7VbQph7Xsq/1YZURkXMOVd5muoCEn2LaPbinsFIamFGadqkg
+   lS42kimccj4seghVoD9kT7k/3aAsliinV2m1TjKOkbxe0Y5F9B7l4gr/+
+   3GMO3QFSwEjozigOcpw6k+lMLefVF4apNqF938XPDtWYC8x8VJcBUQiZR
+   3Kizc/Yr9VaEmPxobF9/Ly7rSmHInMW0dQno7FTUclPc+Xb3NhZNHiWXq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="12467562"
+X-IronPort-AV: E=Sophos;i="6.05,252,1701158400"; 
+   d="scan'208";a="12467562"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 14:53:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,252,1701158400"; 
+   d="scan'208";a="1494186"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 07 Feb 2024 14:53:17 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rXqn3-000376-2u;
+	Wed, 07 Feb 2024 22:53:13 +0000
+Date: Thu, 8 Feb 2024 06:52:42 +0800
+From: kernel test robot <lkp@intel.com>
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Prashant Malani <pmalani@chromium.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Benson Leung <bleung@chromium.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	Emilie Roberts <hadrosaur@google.com>,
+	"Nyman, Mathias" <mathias.nyman@intel.com>,
+	"Regupathy, Rajaram" <rajaram.regupathy@intel.com>,
+	"Radjacoumar, Shyam Sundar" <ssradjacoumar@google.com>,
+	Samuel Jacob <samjaco@google.com>, linux-usb@vger.kernel.org,
+	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Uday Bhat <uday.m.bhat@intel.com>
+Subject: Re: [PATCH 2/2] platform/chrome: cros_ec_typec: Make sure the USB
+ role switch has PLD
+Message-ID: <202402080600.zOq5UvYq-lkp@intel.com>
+References: <20240207145851.1603237-3-heikki.krogerus@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207145851.1603237-3-heikki.krogerus@linux.intel.com>
 
-Add Qualcomm QCA4024 to trivial devices.
+Hi Heikki,
 
-Signed-off-by: Paweł Owoc <frut3k7@gmail.com>
----
- Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+kernel test robot noticed the following build errors:
 
-diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-index 79dcd92c4a43..c6362e981920 100644
---- a/Documentation/devicetree/bindings/trivial-devices.yaml
-+++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-@@ -309,6 +309,8 @@ properties:
-           - plx,pex8648
-             # Pulsedlight LIDAR range-finding sensor
-           - pulsedlight,lidar-lite-v2
-+            # Qualcomm QCA4024 Multi-mode Bluetooth and 802.15.4 SoC
-+          - qca,qca4024
-             # Renesas HS3001 Temperature and Relative Humidity Sensors
-           - renesas,hs3001
-             # Renesas ISL29501 time-of-flight sensor
+[auto build test ERROR on usb/usb-testing]
+[also build test ERROR on usb/usb-next usb/usb-linus chrome-platform/for-next chrome-platform/for-firmware-next driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.8-rc3 next-20240207]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Heikki-Krogerus/usb-roles-Link-the-switch-to-its-connector/20240207-230017
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+patch link:    https://lore.kernel.org/r/20240207145851.1603237-3-heikki.krogerus%40linux.intel.com
+patch subject: [PATCH 2/2] platform/chrome: cros_ec_typec: Make sure the USB role switch has PLD
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20240208/202402080600.zOq5UvYq-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240208/202402080600.zOq5UvYq-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402080600.zOq5UvYq-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/platform/chrome/cros_ec_typec.c:75:20: error: incomplete definition of type 'struct acpi_device'
+                   if (adev && !adev->pld_crc)
+                                ~~~~^
+   include/linux/acpi.h:795:8: note: forward declaration of 'struct acpi_device'
+   struct acpi_device;
+          ^
+   drivers/platform/chrome/cros_ec_typec.c:76:8: error: incomplete definition of type 'struct acpi_device'
+                           adev->pld_crc = to_acpi_device_node(fwnode)->pld_crc;
+                           ~~~~^
+   include/linux/acpi.h:795:8: note: forward declaration of 'struct acpi_device'
+   struct acpi_device;
+          ^
+   drivers/platform/chrome/cros_ec_typec.c:76:47: error: incomplete definition of type 'struct acpi_device'
+                           adev->pld_crc = to_acpi_device_node(fwnode)->pld_crc;
+                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+   include/linux/acpi.h:795:8: note: forward declaration of 'struct acpi_device'
+   struct acpi_device;
+          ^
+   3 errors generated.
+
+
+vim +75 drivers/platform/chrome/cros_ec_typec.c
+
+    23	
+    24	#define DP_PORT_VDO	(DP_CONF_SET_PIN_ASSIGN(BIT(DP_PIN_ASSIGN_C) | BIT(DP_PIN_ASSIGN_D)) | \
+    25					DP_CAP_DFP_D | DP_CAP_RECEPTACLE)
+    26	
+    27	static int cros_typec_parse_port_props(struct typec_capability *cap,
+    28					       struct fwnode_handle *fwnode,
+    29					       struct device *dev)
+    30	{
+    31		struct fwnode_handle *sw_fwnode;
+    32		const char *buf;
+    33		int ret;
+    34	
+    35		memset(cap, 0, sizeof(*cap));
+    36		ret = fwnode_property_read_string(fwnode, "power-role", &buf);
+    37		if (ret) {
+    38			dev_err(dev, "power-role not found: %d\n", ret);
+    39			return ret;
+    40		}
+    41	
+    42		ret = typec_find_port_power_role(buf);
+    43		if (ret < 0)
+    44			return ret;
+    45		cap->type = ret;
+    46	
+    47		ret = fwnode_property_read_string(fwnode, "data-role", &buf);
+    48		if (ret) {
+    49			dev_err(dev, "data-role not found: %d\n", ret);
+    50			return ret;
+    51		}
+    52	
+    53		ret = typec_find_port_data_role(buf);
+    54		if (ret < 0)
+    55			return ret;
+    56		cap->data = ret;
+    57	
+    58		/* Try-power-role is optional. */
+    59		ret = fwnode_property_read_string(fwnode, "try-power-role", &buf);
+    60		if (ret) {
+    61			dev_warn(dev, "try-power-role not found: %d\n", ret);
+    62			cap->prefer_role = TYPEC_NO_PREFERRED_ROLE;
+    63		} else {
+    64			ret = typec_find_power_role(buf);
+    65			if (ret < 0)
+    66				return ret;
+    67			cap->prefer_role = ret;
+    68		}
+    69	
+    70		/* Assing the USB role switch the correct pld_crc if it's missing. */
+    71		sw_fwnode = fwnode_find_reference(fwnode, "usb-role-switch", 0);
+    72		if (!IS_ERR_OR_NULL(sw_fwnode)) {
+    73			struct acpi_device *adev = to_acpi_device_node(sw_fwnode);
+    74	
+  > 75			if (adev && !adev->pld_crc)
+    76				adev->pld_crc = to_acpi_device_node(fwnode)->pld_crc;
+    77			fwnode_handle_put(sw_fwnode);
+    78		}
+    79	
+    80		cap->fwnode = fwnode;
+    81	
+    82		return 0;
+    83	}
+    84	
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
