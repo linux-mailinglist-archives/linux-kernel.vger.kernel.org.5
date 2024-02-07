@@ -1,160 +1,136 @@
-Return-Path: <linux-kernel+bounces-55919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECCBA84C35F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:10:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA57284C363
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:10:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 945901F2472D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:10:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7740D286ED3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:10:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8764E10A20;
-	Wed,  7 Feb 2024 04:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B13D125C1;
+	Wed,  7 Feb 2024 04:10:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="sCZTL6IU"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SF8Qnkhd"
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B0C10940;
-	Wed,  7 Feb 2024 04:09:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C82BE14AB2
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 04:10:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707278998; cv=none; b=rTVUq2Kh24Q58LLbEIGbmC1TSnqvsYrV9RPjtm4OhnxlxDrgLyxCtyDL2tL/sEpbXSTB/94RYP9cIN2c8wqvQ6NQYjXrjtBPIdhfOU8XlHsUpF198LSvdEPqkKYN7QJsALz6pe+ZlqOA/bYp36suQh5FYRH0ze9IabHgldN8y+c=
+	t=1707279015; cv=none; b=IzLUSlFzZWqLn0J8WcyC4UXk5x2p0nNUvR9/uUrTSV/kaUR+T+VBlUYlW3Jn9yQjLgBYNo9x3rYY/ncrqx1p6aMLC0dQBR2xTOBPiozHVj1Wgsdh9hRr7rJ1JOvBWeM24lYs/hvkjbAxkXJzXXrV0n406gq+Xp+Qva91f7GGliY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707278998; c=relaxed/simple;
-	bh=yqZqsfOuNrFhhOM0WOUw3Bhnj2nSg3Bk5pHQ5SYDzss=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ha4KNPWtybY517jrkpvdWVgMIMHzPHXI9YCxnjcfYl3n6QNfXlOAbDj1lyHQNZmakw6YYW/k0md6yb4myYj3w3fmwMKNvqa/6XO6r8+jWsAOZ0tsIpKsPIrtia4a6nxR9T+5NMfE1ZD3bmmSqWcU3XxFPCGoCqMkPy3EDvIWkP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=sCZTL6IU; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707278992;
-	bh=C826NNNKt8ZIGL54VMmqCCadJzosFA/ZbZqSB/IKd8o=;
-	h=Date:From:To:Cc:Subject:From;
-	b=sCZTL6IUkjIp8JRujoLdXBk8pInizAMZ8hFbHe8ZA6jkUnyRqt/OS9IWoa7Wg2NKW
-	 /h6wS6goj2LNAOzp66pB8nBb7hvQDxQve8r68FdLKpBrR6+3hkvaxB1y+jxS5bC6UK
-	 ovj7o3duc5Ty4gRQGItPWbT6t0qpMT7IL1A5VhtDcR2AYPx/qU9VreXqCMYLmYFufl
-	 k3koJB+oiXObtWvRIt8GxjmUHptmctpcbXMTu0WEwswLVbp64U0awnM33wemVX28EI
-	 bOUSCr/R0FrHTbTg5jymOvLss0cu1uL/uHNTbvbHLprCciZXwSXi8GG2/J5liBkneX
-	 SDCKPJX2uU8sA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TV68H4WyCz4wc3;
-	Wed,  7 Feb 2024 15:09:51 +1100 (AEDT)
-Date: Wed, 7 Feb 2024 15:09:47 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Rob Herring <robh@kernel.org>, Guenter Roeck <linux@roeck-us.net>
-Cc: Charles Hsu <ythsu0511@gmail.com>, Krzysztof Kozlowski
- <krzysztof.kozlowski@linaro.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the devicetree tree with the
- hwmon-staging tree
-Message-ID: <20240207150947.1f2bb82c@canb.auug.org.au>
+	s=arc-20240116; t=1707279015; c=relaxed/simple;
+	bh=GoYtXApYyZBo4VKeqb1AsTKENYpsyaUCglDP8GuS7kQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=gpW8s+sfljyEphQZU6EZ7LUkjy6VicbP0Fx7xY3rwmVPAA6i4Jq8EccxIdKdbMXXzQjxR4BfGZ+jYi3hRMM/JTrJw1Ys9eH5CqUgNylsLc8H9qrmK0lZXFdNz+PcldrD/fmYk7wUpXanmRLgJLeSZhYEJdKRHsxBOY7BDucorek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SF8Qnkhd; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2966701bedcso182895a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 20:10:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707279012; x=1707883812; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ykLN7fs6qQRnuF8WSISkwVcQAWTyJrlW1o+moHfC85k=;
+        b=SF8QnkhdmzPTdOrFesWrthVZBtR5tJkCM6a1G1aS4RwUlGEQ4b20Pyai4LwpRFZEDO
+         gbEOvuVlz/MRpZJJnFJ8Y14uy8DBy1xXBNcixgUNsPHwR0c8U9QgwuzYRARv3SdKJkEJ
+         G4ogiri+ow+sdLNpjI+GZf0jqlAMbKT4Xdd+P3FDWi4ftO6FTEagEdvcP1TVkBHDKoyj
+         eTRBV2/y/ysc1M+lxWYKioQ3UiKFv8T8LYhfqG/EECEi77PtBhPBago1/6LkW65MaCEB
+         YpHz8/1KXdv5sAI1vG91MYiVxcqC1cvEvNFtGSYRI90M8h+cSwh28uhh3ZCDvKQMfyLL
+         Ru9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707279012; x=1707883812;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ykLN7fs6qQRnuF8WSISkwVcQAWTyJrlW1o+moHfC85k=;
+        b=KeWZm9erJhnDkSmwIIe88snHUKbC9wqmf17LE9sestC6JUBHS7ciafiaWl6zd6pdPG
+         SqcRRQ/nKB0p9oBQyFC4T9//AsEcvqT5crEFqeUhAiCeeYj0s86jRw2h44lmKAnZs6BU
+         110549TzaHCJICvkbyfCx1iIWJwWRIIW0x1cDZuLjf33pm8yp6B8Ocd4MRm4gcptZ+m2
+         lUA1pny+5woUpERNOY/5PanMNtQ5cibARPNDOxpJqCsqCHGSW+v4LbR7dFpMOmaQnH8C
+         h/Al6WQojUjxbVCpGlZCZqEgj173IwXYyzWbqcmCnZTvrNm09x+gpzDDxOcpVUOhlBcJ
+         0YjQ==
+X-Gm-Message-State: AOJu0Yw0SbrBoOaQ60Q2KLLL5YYyUEXFstaGwLvv9sL1MNtj/HsrQAou
+	S3+0wu0Kcl4Kn5s6w6TnkSi/qyAErcmx9p5cRxmmvjK4muwgo858svdX0aPY7+z3EmwSH/A/2do
+	/Qg==
+X-Google-Smtp-Source: AGHT+IH+x2hZr5hgrqRm9mwlhGTe1zHc/Sl0rpDh0FcM4XBSnVg/GkvyIkz7aXggcw04KlEwBYkQvLZXGzU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:50c8:b0:296:58cc:601f with SMTP id
+ sb8-20020a17090b50c800b0029658cc601fmr51199pjb.9.1707279012122; Tue, 06 Feb
+ 2024 20:10:12 -0800 (PST)
+Date: Tue, 6 Feb 2024 20:10:10 -0800
+In-Reply-To: <20240115125707.1183-12-paul@xen.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/YfEiLhIy.6LEA4Cd5+Y6/vI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0
+References: <20240115125707.1183-1-paul@xen.org> <20240115125707.1183-12-paul@xen.org>
+Message-ID: <ZcMCogbbVKuTIXWJ@google.com>
+Subject: Re: [PATCH v12 11/20] KVM: xen: allow shared_info to be mapped by
+ fixed HVA
+From: Sean Christopherson <seanjc@google.com>
+To: Paul Durrant <paul@xen.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>, 
+	kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
---Sig_/YfEiLhIy.6LEA4Cd5+Y6/vI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jan 15, 2024, Paul Durrant wrote:
+> @@ -638,20 +637,32 @@ int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
+>  		}
+>  		break;
+>  
+> -	case KVM_XEN_ATTR_TYPE_SHARED_INFO: {
+> +	case KVM_XEN_ATTR_TYPE_SHARED_INFO:
+> +	case KVM_XEN_ATTR_TYPE_SHARED_INFO_HVA: {
+>  		int idx;
+>  
+>  		mutex_lock(&kvm->arch.xen.xen_lock);
+>  
+>  		idx = srcu_read_lock(&kvm->srcu);
+>  
+> -		if (data->u.shared_info.gfn == KVM_XEN_INVALID_GFN) {
+> -			kvm_gpc_deactivate(&kvm->arch.xen.shinfo_cache);
+> -			r = 0;
+> +		if (data->type == KVM_XEN_ATTR_TYPE_SHARED_INFO) {
+> +			if (data->u.shared_info.gfn == KVM_XEN_INVALID_GFN) {
+> +				kvm_gpc_deactivate(&kvm->arch.xen.shinfo_cache);
+> +				r = 0;
+> +			} else {
+> +				r = kvm_gpc_activate(&kvm->arch.xen.shinfo_cache,
+> +						     gfn_to_gpa(data->u.shared_info.gfn),
+> +						     PAGE_SIZE);
+> +			}
+>  		} else {
+> -			r = kvm_gpc_activate(&kvm->arch.xen.shinfo_cache,
+> -					     gfn_to_gpa(data->u.shared_info.gfn),
+> -					     PAGE_SIZE);
+> +			if (data->u.shared_info.hva == 0) {
 
-Hi all,
+I know I said I don't care about the KVM Xen ABI, but I still think using '0' as
+"invalid" is ridiculous.
 
-Today's linux-next merge of the devicetree tree got a conflict in:
+More importantly, this code needs to check that HVA is a userspace pointer.
+Because __kvm_set_memory_region() performs the address checks, KVM assumes any
+hva that it gets out of a memslot, i.e. from a gfn, is a safe userspace address.
 
-  Documentation/devicetree/bindings/trivial-devices.yaml
+kvm_is_error_hva() will catch most addresses, but I'm pretty sure there's still
+a small window where userspace could use this to write kernel memory.
 
-between commit:
-
-  fd67e0c7b60b ("dt-bindings: Add MPQ8785 voltage regulator device")
-
-from the hwmon-staging tree and commit:
-
-  6284d33d1749 ("dt-bindings: trivial-devices: sort entries alphanumericall=
-y")
-
-from the devicetree tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc Documentation/devicetree/bindings/trivial-devices.yaml
-index 842eb65e4c03,41982a41398a..000000000000
---- a/Documentation/devicetree/bindings/trivial-devices.yaml
-+++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-@@@ -47,10 -48,10 +48,12 @@@ properties
-            - adi,lt7182s
-              # AMS iAQ-Core VOC Sensor
-            - ams,iaq-core
- +            # Temperature monitoring of Astera Labs PT5161L PCIe retimer
- +          - asteralabs,pt5161l
-              # i2c serial eeprom (24cxx)
-            - at,24c08
-+             # i2c h/w elliptic curve crypto module
-+           - atmel,atecc508a
-              # ATSHA204 - i2c h/w symmetric crypto module
-            - atmel,atsha204
-              # ATSHA204A - i2c h/w symmetric crypto module
-@@@ -295,6 -280,20 +282,22 @@@
-            - miramems,da280
-              # MiraMEMS DA311 3-axis 12-bit digital accelerometer
-            - miramems,da311
-+             # Monolithic Power Systems Inc. multi-phase controller mp2856
-+           - mps,mp2856
-+             # Monolithic Power Systems Inc. multi-phase controller mp2857
-+           - mps,mp2857
-+             # Monolithic Power Systems Inc. multi-phase controller mp2888
-+           - mps,mp2888
-+             # Monolithic Power Systems Inc. multi-phase controller mp2971
-+           - mps,mp2971
-+             # Monolithic Power Systems Inc. multi-phase controller mp2973
-+           - mps,mp2973
-+             # Monolithic Power Systems Inc. multi-phase controller mp2975
-+           - mps,mp2975
-+             # Monolithic Power Systems Inc. multi-phase hot-swap controll=
-er mp5990
-+           - mps,mp5990
-++            # Monolithic Power Systems Inc. synchronous step-down convert=
-er mpq8785
-++          - mps,mpq8785
-              # Temperature sensor with integrated fan control
-            - national,lm63
-              # Serial Interface ACPI-Compatible Microprocessor System Hard=
-ware Monitor
-
---Sig_/YfEiLhIy.6LEA4Cd5+Y6/vI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXDAosACgkQAVBC80lX
-0Gx+Rgf7B3DC+yo3kNIKHgG9RKZi2hpn7LX4vb6U+QPb7YFK4Q3xOA4GMKxvkS3O
-+tKn3bYnyK/zz+vE8fyUm/CODcEHu2/UOMUJvTjlaYa0Q1DPraWXyRlkMZPHp5kn
-d0CY6Q5N7oY8jwrxDJVoN6tY6pLj53zsDjNfIuupnAhj9wGMgyWmKN6D4Q+hGj1p
-G37BnCONvSeDk+qO2o3kWUnoU8YOMm0gN8zGWtQgabp7L8CrZaNu+wunF+i/eq0u
-oL0XXDbJjrX/CX7tonvGMy0S9Z2IaMRJZiPNrQ5/tW61MWecEqSq7HxlHjjySfE7
-iB3MO7RW0v1u+hRNreAG1iNXvl+ekQ==
-=EMdf
------END PGP SIGNATURE-----
-
---Sig_/YfEiLhIy.6LEA4Cd5+Y6/vI--
+> +				kvm_gpc_deactivate(&kvm->arch.xen.shinfo_cache);
+> +				r = 0;
+> +			} else {
+> +				r = kvm_gpc_activate_hva(&kvm->arch.xen.shinfo_cache,
+> +							 data->u.shared_info.hva,
+> +							 PAGE_SIZE);
+> +			}
 
