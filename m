@@ -1,115 +1,145 @@
-Return-Path: <linux-kernel+bounces-56292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCB8184C85D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:14:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB26B84C861
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:15:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A38C2884C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:14:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A844828856B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:15:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5056E24B2A;
-	Wed,  7 Feb 2024 10:14:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B82425567;
+	Wed,  7 Feb 2024 10:14:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="vwamRFRm"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jYV/BBpa"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E006A24B34;
-	Wed,  7 Feb 2024 10:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F40250F2
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:14:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707300874; cv=none; b=UYbIq7fuNTd1Y7cQTS+vmrW+LGoc1/VvNpDQUZy69bRjkxnxDlDvy22c+SE2fOfmduZ6Ffq3HwN+IXbBSgvVLs8mM5xS/SCwkumxmkkDVgbh0GXReoN7JXplXV6PYDuYwICtLaQdSyd7KpuE8J27sheE9GJ0Eo7WPKOVxASWLWs=
+	t=1707300897; cv=none; b=lvnPjgHyJimj3gdjNL7/vG+QsCie3n78SdoneSYKt9PNLwcA+M+Q+TOBuJuRMWstX80ZrE73oOMkmpJMx+V51GT/R0mP3QDB9eNAzWna7UyeXFvHJWSGb+i2LZlsXeF2olJdz38J8XNN6WEMCKZKHdhNLSUSNoPt5gc35LFUAjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707300874; c=relaxed/simple;
-	bh=P183eMW6DaHUYF92qSRTkmhYeCW8erNWQol9I2XOFuQ=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mo4oca5su4KsnKlBBh2QVxRP7TA+Rb0MFvjf96xkok0ozbm4fcnhlNsNVAVxMwCSUTNMi4heWooLZMmQYTaRF8JT40cP3dN8rLsn/x1PPDky2b9ocv/o2yx5glDOI3p/hoevScg/SZq+Nur40gAXaV7RP6rlbG54IByfBY/g5kM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=vwamRFRm; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 417AEK1C070828;
-	Wed, 7 Feb 2024 04:14:20 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707300860;
-	bh=Iq6ybKkO1aW9WfaqZp6GVQH0nzFKXX1+rPSibyuIf50=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=vwamRFRmh+OBAViUS77VQ6kCPdIbf4gucoFwx7kmXTnDrJaRRe+7XUopSQlcKFgJk
-	 c2xf3OUieAJFn257lKtDHGbUBnMRn9eaW29dQbZFLHmrXKR9HM6wf89KzIEZ+6WcOb
-	 R/+LCVlVKkjj7iOAeo4a2wI9MvNrbLEa5qHqk4tI=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 417AEJXr029380
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 7 Feb 2024 04:14:19 -0600
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 7
- Feb 2024 04:14:18 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 7 Feb 2024 04:14:19 -0600
-Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 417AEIaw085890;
-	Wed, 7 Feb 2024 04:14:18 -0600
-Date: Wed, 7 Feb 2024 15:44:17 +0530
-From: Dhruva Gole <d-gole@ti.com>
-To: Mark Brown <broonie@kernel.org>
-CC: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
-        Apurva Nandan
-	<a-nandan@ti.com>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Gregory CLEMENT
-	<gregory.clement@bootlin.com>,
-        Vladimir Kondratiev
-	<vladimir.kondratiev@mobileye.com>,
-        Thomas Petazzoni
-	<thomas.petazzoni@bootlin.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH v2 2/4] spi: cadence-qspi: fix pointer reference in
- runtime PM hooks
-Message-ID: <20240207101417.tn5z5cpauqmno7dn@dhruva>
-References: <20240205-cdns-qspi-pm-fix-v2-0-2e7bbad49a46@bootlin.com>
- <20240205-cdns-qspi-pm-fix-v2-2-2e7bbad49a46@bootlin.com>
- <ZcD6yqc+o62x2AjA@finisterre.sirena.org.uk>
- <20240207083902.mzkcsqf3tbwkkxd2@dhruva>
- <ZcNSWPucn6Vg43Wu@finisterre.sirena.org.uk>
+	s=arc-20240116; t=1707300897; c=relaxed/simple;
+	bh=q6bQnwUqaVGcclfFabbklXYfbgyQCcPXKWsE/HtS/E4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HmwnsRKz20TjIYWe7avKT0/luOH/LJYKZtEqep44VOE5d4likL5lJ+d638BUUcN5BNZkScRrRsf2eLtxmOCtsvBSQE7SSAizfEjwGswdn0JuFPwOZOuAvCTAP6qaxzaU1c+DJpc74MkB07zz3N1++XKBbml2yLJQH6ihmYini4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jYV/BBpa; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33b436dbdcfso364940f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 02:14:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707300893; x=1707905693; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8SpP3uo6CWXbsGtYpTJN7BN0yrIkj+G/qNJ7CBzI06o=;
+        b=jYV/BBpad3SdIOR8EUCW9VdompFMxQJFGYcJNP5mIfqaSoeTl743spH1U5q1N6R645
+         GJt59tDy0hbuRNfVED5iP4kKrkiHfj+oXC7gW09a/BryrS8DAL0Kn7IIT9fwttbDwt65
+         sVMlpuOm/fcAkaeegh7YDelnWLGalDynaxAqN7cGViHY041it9u/B9yc4okorBsTHOz/
+         Qx247UDS+0bZFnv9HUYl+UT7e0xf6vJRBYyGpK0jmeG7NYAf6Ub7k5Hqp0R5N7wa7E/+
+         vb3yt52yUYPRFh1g2+hXIEB5+oWfD0XKCLcVO1WnMqHUGTVNaGl00afni5IJHZY20amT
+         4t1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707300893; x=1707905693;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8SpP3uo6CWXbsGtYpTJN7BN0yrIkj+G/qNJ7CBzI06o=;
+        b=RuCvfXcrKWRybUeN5Vtcz4MOecRn5oFpol2fpObX7m3uJUrnGFNi5QFxDPQr62t4mF
+         Qt+wV6ImfDANQoKzozuvQvcwpwZ+qdMP40jfVrj3YNakbouL0O/EJKdC+sbcErpsU7eH
+         gHxBO4sDe1GqB63FMqFMUz3Mgq54h89Q6Ecn5g+8XQy0hXXIxJBUbz8ne3eT5Q8xcOIG
+         He1PntQV5TOd/8djMwJtkhZQa0MLA5ldmtpxi/FzMh7IsZUbGWvKW1H6qelkhGhtm96a
+         XqdYFI22ZXZaQ/SV13k+N9B7l0LgAA9nyOHvv3+EEj/7JNdX8Fjfnucq/7VAu6nRJYy9
+         KLuw==
+X-Forwarded-Encrypted: i=1; AJvYcCVmt6R/Ei+j8fMVPJw9ogO+QNSoA9TNwo0rlxjsjSBcx0JgwuD9wvsZoBjgb5SLpwbnIMoOfgLPiIeHucxwPNTmSObym5I4By6PZUrb
+X-Gm-Message-State: AOJu0YyjNc+TFGmPc3K3j8aOZDDul0fjR2UQcd7km++4w9d0vEI+3yDO
+	linOUmN2lSlPeUOGSvW9UyXoaGUMU/7s7QhzPtOSssiusOq/LM9kpOLVvia2S4E=
+X-Google-Smtp-Source: AGHT+IFRZvWaIc4R4wqzFQxzb4lr/0s5+VXmSp/P9CqMffphL5aQPauRPhjEJ7GIOKJGgYq4goWJow==
+X-Received: by 2002:a5d:64a7:0:b0:33b:14f8:7331 with SMTP id m7-20020a5d64a7000000b0033b14f87331mr4038225wrp.4.1707300893590;
+        Wed, 07 Feb 2024 02:14:53 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUw6Ze0/Hikj13JQIsBsOcFBPXxiElzhsZJIyiR3J+MmfQqMrI7qBj3Z/V71devLD0zfoR8uRT+alIeBPn9jopt4LwIM4SByB/eggi2CVF/uL0D2Z73swumDZ13NZklxHVZuC1+htTQzhsQVXZRJRwb764sY6UzuExPUWGaMJ4iGTUMRasagx8UWA7FHOFXCzkog1I0/d3FhvKYQTwmKOTFjU4UEDdzycbRZjZdANkJweFCQZfIOuMB20IM/3zc/kAsEv9UlPYi9FnUIENw3qzJ9l8bPGP47TI+a4Gj9LFI6lbrlU46ni7PJsvoNDJ7dg340uK5FwSm6LFv1AJoFMh3Lp/FGDQ2M6B3YJPLIukmCEdPlhBpsa5WCH8CEwPRtLLRQbhsJ7o9bCKswA3lh2huzFPBhgWxCp/c+Iq5g5rbTC1eZZp3YlzIRHaiobJlOU58NNyyIiENisooFEfTk7fsytOLLLqxoUq6ND+ggkPXVlY7F6yM9Fk4ypv6WnvyiLT8vGI6yktyP+aMaSbHUmaUvkjtkm3kNwolU9SAy7I+ZxSKPLiunglPlJiw+ToGf6xRv51lVh8suHkLeRpiIBo=
+Received: from [192.168.0.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id dr9-20020a5d5f89000000b0033b14f22180sm1180447wrb.20.2024.02.07.02.14.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 02:14:53 -0800 (PST)
+Message-ID: <894561a9-51b5-4e7d-a65d-5e8e6c32a3ff@linaro.org>
+Date: Wed, 7 Feb 2024 10:14:49 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZcNSWPucn6Vg43Wu@finisterre.sirena.org.uk>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] spi: s3c64xx: explicitly include <linux/types.h>
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Sam Protsenko <semen.protsenko@linaro.org>, broonie@kernel.org,
+ andi.shyti@kernel.org, krzysztof.kozlowski@linaro.org,
+ alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, andre.draszik@linaro.org,
+ peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com,
+ robh+dt@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org
+References: <20240206085238.1208256-1-tudor.ambarus@linaro.org>
+ <20240206085238.1208256-2-tudor.ambarus@linaro.org>
+ <CAPLW+4=Xd+B=ZncqPgU4qaJ8zY8JJvJZApdUW_v0w6yr2cy9Sg@mail.gmail.com>
+ <16a5e423-1111-49ff-ad6c-b0bb89a4879a@linaro.org>
+ <2024020741-repaint-nastiness-9f8d@gregkh>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <2024020741-repaint-nastiness-9f8d@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hey,
 
-On Feb 07, 2024 at 09:50:16 +0000, Mark Brown wrote:
-> On Wed, Feb 07, 2024 at 02:09:02PM +0530, Dhruva Gole wrote:
-> > On Feb 05, 2024 at 15:12:10 +0000, Mark Brown wrote:
+
+On 2/7/24 09:58, Greg Kroah-Hartman wrote:
+> On Wed, Feb 07, 2024 at 06:20:56AM +0000, Tudor Ambarus wrote:
+>>
+>>
+>> On 2/6/24 18:02, Sam Protsenko wrote:
+>>> On Tue, Feb 6, 2024 at 2:52 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>>>>
+>>>> The driver uses u32 and relies on an implicit inclusion of
+>>>> <linux/types.h>.
+>>>>
+>>>> It is good practice to directly include all headers used, it avoids
+>>>> implicit dependencies and spurious breakage if someone rearranges
+>>>> headers and causes the implicit include to vanish.
+>>>>
+>>>> Include the missing header.
+>>>>
+>>>> Fixes: 230d42d422e7 ("spi: Add s3c64xx SPI Controller driver")
+>>>
+>>> Not sure if Fixes tag is needed here.
+>>
+>> We have already talked about this. If a patch that causes the implicit
+>> include to vanish is backported to stable, it will reveal the missing
+>> header here and will result in backporting this patch as well.
 > 
-> > > Please place fixes at the start of serieses so that they don't end up
-> > > with spurious dependencies on other changes and can more easily be
-> > > applied as fixes.
+> So worry about this then, not now.
 > 
-> > Didn't really understand the comment here, aren't the 1,2 and 3 patches
-> > fixes and the last one the non-fix? Thus fixes are indeed placed at
-> > start of this series right?
+>> So, as a
+>> good practice let's allow this patch to be queued to stable, it will
+>> avoid possible compilation errors.
 > 
-> Patch 1 is a rename, this is obviously cosmetic and not a bug fix.
+> "possible" does not mean "needed".
+> 
+> Please only tag stuff that you know is needed, if the stable developers
+> break things, they can fix it up when it happens.
+> 
+> Adding .h includes is not a fixes: thing unless it actually fixes
+> something in Linus's tree, otherwise it's an abuse of the tag.  Please
+> don't do that.
+> 
 
+Okay, thanks for the clarification.
 
-Well, Theo, seems like you better fix the first patch, then reorder and
-send a v3 :)
-
-
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+Cheers,
+ta
 
