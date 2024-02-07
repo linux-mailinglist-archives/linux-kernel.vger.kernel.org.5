@@ -1,57 +1,56 @@
-Return-Path: <linux-kernel+bounces-57204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB95D84D51A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:00:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1068984D51D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:00:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B0D21F23B0C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:00:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B14551F232E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:00:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B86B6D892;
-	Wed,  7 Feb 2024 21:27:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE886F502;
+	Wed,  7 Feb 2024 21:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Iufrfc99"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NLe+iGHM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55E7A6D87B;
-	Wed,  7 Feb 2024 21:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79E7135A52;
+	Wed,  7 Feb 2024 21:27:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341225; cv=none; b=ui05G53pQYTNI5kvGqleqB5RrpJ4ImZo8+3fZT6n7nBeoSOF+YqHjT/9ByXKMZOqkqPl8mEIRyHi/k06OiyRrl+M9p2Sfut5lbBIljx9yBkj2wICfE2JsKoUcRq2MtNEfnXkqBEZsius2rhXtYPXds5Npm4o5hRA8CY5QzUUaL0=
+	t=1707341228; cv=none; b=Z7lkesgLR+py8ivGp76AwAfwIe+F2rNMsV1M2hhcgnHpf2mHZiNROw4uJHnI1arbX2nmBVBDq85oQF5x5yHmYjYL7+rtAp0A3Q9FJtb7ilTeYhm7asaFfurdx6EQ7SMtyWzdteHnHdeKA59FYvF3jcuG7lAMBWiCsN0u3sgmJ5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341225; c=relaxed/simple;
-	bh=wSXq6+ypghM8GSvXsb1WdLAK3hWaXouBFWr5putC/8o=;
+	s=arc-20240116; t=1707341228; c=relaxed/simple;
+	bh=9m1jj0JfmvljBoVsanyPCb70uqWdNvxZtOaXmyRb2l4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ou/rbq6Y+GoPgK+KfWxFhaiuwFUAGZsvYqvMse2pTjlEuk3nfn0P4XcjTiH4abfn/ND3AFMoM6Pd8aNi9/0wdNLS+lKrxZ4XLDjnVREcjIBe1SL8m01RtmCa2DAx6WBqy9D+iO6p/uzFNWt05XSq+xqskHy9qpVJ+0CYDuqFP7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Iufrfc99; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2B21C433A6;
-	Wed,  7 Feb 2024 21:27:03 +0000 (UTC)
+	 MIME-Version; b=mYouPaHBWgKwSK7NOpNEz5phtKgoFTErfx2RGDdxTEPS7m2y5DMf7d6jPh/F+L1zPOBzOm1uVczDRBW6oxnt37rgdllBJAC+tsgzPA+pCojtuAlpHsjiIcR5khGoauLd/abasU8RuAmS/Sc8pViLNp+NX1Jl1zrqIcFVK+vJ4QM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NLe+iGHM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 567BAC433C7;
+	Wed,  7 Feb 2024 21:27:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341224;
-	bh=wSXq6+ypghM8GSvXsb1WdLAK3hWaXouBFWr5putC/8o=;
+	s=k20201202; t=1707341226;
+	bh=9m1jj0JfmvljBoVsanyPCb70uqWdNvxZtOaXmyRb2l4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Iufrfc993wJvw6r2xZ6zDY9WrqOwgYBEf56GJOe6QzyQJoZ4ZQ9EgWpAYDDAqOr+e
-	 QtO3/F2/4UoBGhB1YkmSWypALVgZTzKBUyOD7GQwenQ09xLEQsB6iC0GRqwmVW/8Wy
-	 9U9WXyltInkqufp5iM2tvtsu3B52OMNObtdPlqgHf9vC82zgdTWRgCzoPJktASYcCB
-	 vBLpd3TCLIBWDLF5oS+efFDZJ1kGatJs3uyOTeCCPjfIxmdnH1kZPynJ6/LbQlACRq
-	 2v8HR7WNG2l4CBBDkyICZu7XVIplXxhjQzTXoQMkZHmsKV5t7MofNYtGdCHIO53Q0L
-	 BeXYx6+pkZIKA==
+	b=NLe+iGHMIR1odpGwmSAbEeuEFHHLQVboMOJuGrUm5iNhrQi1pkDWUh+HXYSLc3coC
+	 8JTSIO1hBvwQfmovRWkx2DdCtlM0/q7uBG+Tc3IPchz5gDUGRg4PJ1LUZ4YulItxXi
+	 +BveYICwkvea3UoigJ4IPQMz4aspi4dsjLmWhrDoDsUocFTBkL5kXMv1us0UF43PPN
+	 7dd2KKN4Xo94N+iX/3WgG7TszxXozFcV7mHCEBficLCvwdHvcany8c/cKLFXF8/ze/
+	 ljrnUHQR/3ID7Fpun6hGFUNQ9x1a/Nf52D4ycSUhG8FjlnFWoiDdpIvgMtvNQZsYNx
+	 BgGtNBHngtEDw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Baokun Li <libaokun1@huawei.com>,
-	Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
+Cc: Kunwu Chan <chentao@kylinos.cn>,
+	Vinod Koul <vkoul@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 02/16] ext4: avoid allocating blocks from corrupted group in ext4_mb_find_by_goal()
-Date: Wed,  7 Feb 2024 16:26:42 -0500
-Message-ID: <20240207212700.4287-2-sashal@kernel.org>
+	peter.ujfalusi@gmail.com,
+	dmaengine@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 03/16] dmaengine: ti: edma: Add some null pointer checks to the edma_probe
+Date: Wed,  7 Feb 2024 16:26:43 -0500
+Message-ID: <20240207212700.4287-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212700.4287-1-sashal@kernel.org>
 References: <20240207212700.4287-1-sashal@kernel.org>
@@ -66,51 +65,50 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.209
 Content-Transfer-Encoding: 8bit
 
-From: Baokun Li <libaokun1@huawei.com>
+From: Kunwu Chan <chentao@kylinos.cn>
 
-[ Upstream commit 832698373a25950942c04a512daa652c18a9b513 ]
+[ Upstream commit 6e2276203ac9ff10fc76917ec9813c660f627369 ]
 
-Places the logic for checking if the group's block bitmap is corrupt under
-the protection of the group lock to avoid allocating blocks from the group
-with a corrupted block bitmap.
+devm_kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure. Ensure the allocation was successful
+by checking the pointer validity.
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20240104142040.2835097-8-libaokun1@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Link: https://lore.kernel.org/r/20240118031929.192192-1-chentao@kylinos.cn
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/mballoc.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/dma/ti/edma.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index d7724601f42b..e528ae0618fe 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1893,12 +1893,10 @@ int ext4_mb_find_by_goal(struct ext4_allocation_context *ac,
- 	if (err)
- 		return err;
- 
--	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info))) {
--		ext4_mb_unload_buddy(e4b);
--		return 0;
--	}
--
- 	ext4_lock_group(ac->ac_sb, group);
-+	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)))
-+		goto out;
+diff --git a/drivers/dma/ti/edma.c b/drivers/dma/ti/edma.c
+index a1adc8d91fd8..69292d4a0c44 100644
+--- a/drivers/dma/ti/edma.c
++++ b/drivers/dma/ti/edma.c
+@@ -2462,6 +2462,11 @@ static int edma_probe(struct platform_device *pdev)
+ 	if (irq > 0) {
+ 		irq_name = devm_kasprintf(dev, GFP_KERNEL, "%s_ccint",
+ 					  dev_name(dev));
++		if (!irq_name) {
++			ret = -ENOMEM;
++			goto err_disable_pm;
++		}
 +
- 	max = mb_find_extent(e4b, ac->ac_g_ex.fe_start,
- 			     ac->ac_g_ex.fe_len, &ex);
- 	ex.fe_logical = 0xDEADFA11; /* debug value */
-@@ -1931,6 +1929,7 @@ int ext4_mb_find_by_goal(struct ext4_allocation_context *ac,
- 		ac->ac_b_ex = ex;
- 		ext4_mb_use_best_found(ac, e4b);
- 	}
-+out:
- 	ext4_unlock_group(ac->ac_sb, group);
- 	ext4_mb_unload_buddy(e4b);
- 
+ 		ret = devm_request_irq(dev, irq, dma_irq_handler, 0, irq_name,
+ 				       ecc);
+ 		if (ret) {
+@@ -2478,6 +2483,11 @@ static int edma_probe(struct platform_device *pdev)
+ 	if (irq > 0) {
+ 		irq_name = devm_kasprintf(dev, GFP_KERNEL, "%s_ccerrint",
+ 					  dev_name(dev));
++		if (!irq_name) {
++			ret = -ENOMEM;
++			goto err_disable_pm;
++		}
++
+ 		ret = devm_request_irq(dev, irq, dma_ccerr_handler, 0, irq_name,
+ 				       ecc);
+ 		if (ret) {
 -- 
 2.43.0
 
