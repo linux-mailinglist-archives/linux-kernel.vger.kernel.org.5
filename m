@@ -1,83 +1,108 @@
-Return-Path: <linux-kernel+bounces-57053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C20BD84D362
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:01:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FF6184D366
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:02:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6021D1F216CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:01:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F057B24F08
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5313E127B4C;
-	Wed,  7 Feb 2024 21:01:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546DD1272C0;
+	Wed,  7 Feb 2024 21:02:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="esx+Yz0c"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="A4wXsdTK"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9078585C58;
-	Wed,  7 Feb 2024 21:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B388288A
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 21:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707339663; cv=none; b=GRhviug1hvprdf43CnJm+128hX+sxboUTen4ge+cjd260P+xJGGkFpiatGyLc3Qer9fy4ZWImKd/cl65qJn+m4YQ2GJDpkRg2rlq8bvqlcogIxgqfrxr6nqVZpBdm/sHK+wbf7daUTGYDaXksNmTDFGhiVf2Pmz55XiKUJ/r92E=
+	t=1707339724; cv=none; b=Cj4sgIOp2+V7sLk3IXh8nW+ohR2E6/Khju2q3th82S0NyiWyPW/4MA9anGqCg7ZftWDI7d7ipgpC7rBfvvBlZzHdkXzzRUfBGPzei5h5DjXaKYgqbTpxwSCQLKzGAM3wj6lY9Wp8EYMIxdeDzIGf7q0+WlLzqX+gLjV+ivVw94o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707339663; c=relaxed/simple;
-	bh=OfD7wr9LWAP6WJGGaRebhD936Sr/G+hRcry7kQ+lhXw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h6bnBabYwhVPFhVgzaJWr4eQRrLgMyitbG6MJPbfaMMSJDw0oK/PQuxy4gu7IjwsF6Ww8qy0HXhrE2PDDk+j+M7MR8m8HkZnsFzDpWSIZpefFXJjw5kiCLYbgOi806zE3nxpHU+8yQj+MDsvvllFOSzbIQsdCocJRr1nlTWj8js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=esx+Yz0c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7005EC433C7;
-	Wed,  7 Feb 2024 21:00:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707339663;
-	bh=OfD7wr9LWAP6WJGGaRebhD936Sr/G+hRcry7kQ+lhXw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=esx+Yz0cKI5KUPIQweG+DjlJwTRzWwX1gkgVfWTEtiYPGzZ3ZvpV4SXLevxbcAlM1
-	 n9PI5UkRt2blaGRYDf2Tt9hiqOz8TYPHa0vf0WxDFcJV5dkePBse8PfQLmcTNWW2Mx
-	 P68JdsN6im8SYBjIbtxim12nJEgYf5o5foNzzcmP9kuzltZGYC/6CNpKocM9J5UTEH
-	 CbkUOuUzTUVu3A19XPhzZB7nLNiAT2Y7MHJQGQZnr7YO+QCo3l5XDH0oAgAC5QLbN+
-	 mv8Z7z67WqM+5BAPPFyntBRN5GKzaKiDD4V/i4K0nOrHO81M2MW+eYUJXZ4C5akYdd
-	 W4Zphet/u6hSw==
-Date: Wed, 7 Feb 2024 20:59:26 +0000
-From: Simon Horman <horms@kernel.org>
-To: Ratheesh Kannoth <rkannoth@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	sgoutham@marvell.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, bcreeley@amd.com,
-	sbhatta@marvell.com, gakula@marvell.com, hkelam@marvell.com,
-	sumang@marvell.com
-Subject: Re: [PATCH net v4] octeontx2-af: Initialize maps.
-Message-ID: <20240207205926.GO1297511@kernel.org>
-References: <20240206024000.1070260-1-rkannoth@marvell.com>
+	s=arc-20240116; t=1707339724; c=relaxed/simple;
+	bh=i46sTbdDr8UdjMnH1rLSXtScrIqetfu9Ima9Qu9Pj74=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HYwz4qttzoFn8wGSAgKHVrEh2QDNh2x6go45/i2R8+7PUU2JXHDWV2+wpiYW7SGvahdjyIfIzizPLiepR2HJ32KKjgVevO1UwMxuS4zC+sar0S5zvGmciYbssoSlEAWll5QYoMxqDj6TeKU21l3cib65acsFIKVwU1mJMqsQds8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=A4wXsdTK; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc6e0fe3195so1183180276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 13:02:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1707339722; x=1707944522; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6dcafiTmzHGJt+jHQEJxLA8lSwqg1A+ED2VnBp8P9VI=;
+        b=A4wXsdTKuuIfH1Sg0HcI+vc1BfDfL1UjtXZksadh33OPEPj8BrVXk7JCzVOiEHsqW+
+         YaIkd/f32vniWzTjpYPnBPSjz/yTuS43Ornv1I9RDXWsmglLbT9aG+6YGyG/JIPZVGv7
+         DEeVx2k9/eRzV6IxJyQ8A136dmk9aQgi8bbMNhQnAoB49RhNSnDs39DGdJFgsrYJ6A5g
+         p9gySvV1kq6g9i+IOqc9Z4tRYRcsIO3JsN9KDQO46OMg7hmqOALmyKAM21t0aIyrBxL4
+         k0dAPSE++szFwakPErc7I1o91xp20agfx15Elcwl/mhHKz7Z6TnY6Kaj+O2bnmH/GiS5
+         pD4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707339722; x=1707944522;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6dcafiTmzHGJt+jHQEJxLA8lSwqg1A+ED2VnBp8P9VI=;
+        b=uuOkHR7bRO35+gZGqZi7H7ZuFyawKLYnzqk9liJ/SvqPShRidxSIZ7SCHsAYQw+6F9
+         GF6Gid1EO+DisMcIcF3XTN+Qqibq5LN7R2bB3202uRB/HabazotTEw15S+YOimLpGgxN
+         ZOcvO03VbJp86TBoSB2Rur9rkf8ft9buQzjGlzSFIDxwmdtVmtevijmKEYbzRbVIahCQ
+         1aWogH+8Gx7KISxo9iSWtLXOWCabdOS1ET64+YYKsQp3J7DOH+qo5tlqwMdn6yFh1YwZ
+         VMiq5swaUUOt0AHgtHJtEYitX89OjHb/y3PDbPkYwOMRM40Ea3woXdgkVHBDO0N8u7TK
+         wpKA==
+X-Forwarded-Encrypted: i=1; AJvYcCUGWRgBdqk+nLL2dEHv892lBpw+1oQ8AGljRMngW9M7tw4ns80mXyFGQBTNizbGSwVfrAT7rvca50qD+/eEYqlyI6L9ytwjM+3NAN9Y
+X-Gm-Message-State: AOJu0YyIsUzMKHsA5f4vKlKOgt5G5c8YFxdJP4eFE7FyV4yFCf6xFFch
+	UBlHpNSr0Kb8VyuRWiH90EBYhJVlKnWsHuuXnRcxtAVkCEFuZwy98ah3zFqEqAYOHktbcNznaa4
+	iES6l7vm+IsNHXUJp5jdpsCnxynyNiG4kTTRp
+X-Google-Smtp-Source: AGHT+IHWHwc+iImIuxdQEKCLhBoDAR3fswbF/BKBVg3vDaNMyYhrbfjOZ+ytql1yX9mEi/nLXKqPfN1bNXHb5kejG7Q=
+X-Received: by 2002:a25:8212:0:b0:dc6:d574:9371 with SMTP id
+ q18-20020a258212000000b00dc6d5749371mr5179044ybk.47.1707339720640; Wed, 07
+ Feb 2024 13:02:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240206024000.1070260-1-rkannoth@marvell.com>
+References: <20240207101929.484681-1-leitao@debian.org> <20240207101929.484681-8-leitao@debian.org>
+ <20240207073725.4e70235e@kernel.org>
+In-Reply-To: <20240207073725.4e70235e@kernel.org>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Wed, 7 Feb 2024 16:01:49 -0500
+Message-ID: <CAM0EoMmcsRqP9K8PPMe_3B2gn3yEvvSQu5NuAJCWA4gOOj-GhA@mail.gmail.com>
+Subject: Re: [PATCH net v2 7/9] net: fill in MODULE_DESCRIPTION()s for net/sched
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Breno Leitao <leitao@debian.org>, davem@davemloft.net, pabeni@redhat.com, 
+	edumazet@google.com, Cong Wang <xiyou.wangcong@gmail.com>, 
+	Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	horms@kernel.org, andrew@lunn.ch
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 06, 2024 at 08:10:00AM +0530, Ratheesh Kannoth wrote:
-> kmalloc_array() without __GFP_ZERO flag does not initialize
-> memory to zero. This causes issues. Use kcalloc() for maps and
-> bitmap_zalloc() for bitmaps.
-> 
-> Fixes: dd7842878633 ("octeontx2-af: Add new devlink param to configure maximum usable NIX block LFs")
-> Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
-> Reviewed-by: Brett Creeley <bcreeley@amd.com>
-> ---
-> 
-> ChangeLogs:
-> v3 -> v4: Used kcalloc() for normal maps
-> v2 -> v3: Used GFP_ZERO for normal map arrays
-> v1 -> v2: Used bitmap_zalloc() API.
-> v0 -> v1: Removed devm_kcalloc()._
+On Wed, Feb 7, 2024 at 10:37=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> On Wed,  7 Feb 2024 02:19:26 -0800 Breno Leitao wrote:
+> > --- a/net/sched/em_canid.c
+> > +++ b/net/sched/em_canid.c
+> > @@ -222,6 +222,7 @@ static void __exit exit_em_canid(void)
+> >       tcf_em_unregister(&em_canid_ops);
+> >  }
+> >
+> > +MODULE_DESCRIPTION("CAN Identifier comparison network helpers");
+>
+> That sounds like it as library for any code, but it's TC extended match.
+> Jamal, any suggestion for a good name template for em_ ?
 
-Thanks for the updates.
+At minimal what Simon said. But let me go over it and do individual respons=
+es.
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+cheers,
+jamal
 
