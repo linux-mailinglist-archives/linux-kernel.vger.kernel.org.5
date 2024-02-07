@@ -1,127 +1,108 @@
-Return-Path: <linux-kernel+bounces-56482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E79C584CAB4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:28:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D05784CAB6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:28:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FC88B22987
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:28:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 881691F27F1E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674BD59B7E;
-	Wed,  7 Feb 2024 12:27:56 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB0835A0F5;
+	Wed,  7 Feb 2024 12:28:20 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3C5A5A0FD;
-	Wed,  7 Feb 2024 12:27:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4161759B5B;
+	Wed,  7 Feb 2024 12:28:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707308875; cv=none; b=N6DptMUbslajFagpNPmN7sMRle+QA7S05LSAflNri5W0nKIfvMfPBgfnOBd85C+WykA90tMUcXOo6/xaKco+oXKTC2CvM1EpxrwoUBfkre1j5BftJC63mwAUG7xxt5obH/b+rArC9LaoqUXH6UqiRvMmwb93FDs/RhHW/mJ+RQ4=
+	t=1707308900; cv=none; b=nYXRs43CkKR12/sySfrnvj6cWkzCEO/ID+64QCiBCPOhnhe0TBOEnBRfsLTGfAdGkehfhisBHISy726ZNVlTRE3jiZaIcKPStMqDmC5UubJ+n/Kdwy0dQUqzwglRKY1GMLoon8jX7i2mPS9iRnT9hIOcghpGS7MIh931Ikjrocw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707308875; c=relaxed/simple;
-	bh=zNgtsqJEnEr66FZuG+V88C+VFdZoePSCJZJWhNtsyyA=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GW23hhP26mDl1CaBAIUie0IPjDZ7V14IxtaqLC6aBZnEEUL4KbcEPwNhggYPmXHPe6W/AAcNdQod6s34HhTyxfc4EGZjOL+E0R9XjMyzhQ1lT3ftq4tktpSW3QXCfJgonOW5n0ehYAK3NqDDosEFB48pG/xNTB2LSHsLxeZDqD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TVK6y1jhjz6K62N;
-	Wed,  7 Feb 2024 20:24:26 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 97A32140736;
-	Wed,  7 Feb 2024 20:27:44 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 7 Feb
- 2024 12:27:44 +0000
-Date: Wed, 7 Feb 2024 12:27:43 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Hojin Nam <hj96.nam@samsung.com>
-CC: "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>, Wonjae Lee
-	<wj28.lee@samsung.com>, KyungSan Kim <ks0204.kim@samsung.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "will@kernel.org" <will@kernel.org>,
-	"mark.rutland@arm.com" <mark.rutland@arm.com>
-Subject: Re: [PATCH v2] perf: CXL: fix mismatched cpmu event opcode
-Message-ID: <20240207122743.00004acc@Huawei.com>
-In-Reply-To: <20240207042235epcms2p358e40f0409e25bd9e875ad1ae0dd0764@epcms2p3>
-References: <CGME20240207042235epcms2p358e40f0409e25bd9e875ad1ae0dd0764@epcms2p3>
-	<20240207042235epcms2p358e40f0409e25bd9e875ad1ae0dd0764@epcms2p3>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1707308900; c=relaxed/simple;
+	bh=bB8ao9k5FwzcKPDglzpXKInrfcRJlfz/wXfTNITCd4A=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TdLGvn3ujPhtOXo4O7mFhwWPV6+C3tSRaA81e+4LM3V0PV+t6zs0XLgxfD1s0/H5Rqv6+IxQzFk+rC0wtlntLxs3Md9aMB3imZcaHb8XISHfKsXToAfbfnKVxbn2TjnROIDyP9oEV/jGQjV9arQ78SUy6fNaChYKpNakqS7pT58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DE19C43390;
+	Wed,  7 Feb 2024 12:28:17 +0000 (UTC)
+Date: Wed, 7 Feb 2024 07:28:12 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mete Durlu <meted@linux.ibm.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing: use ring_buffer_record_is_set_on() in
+ tracer_tracing_is_on()
+Message-ID: <20240207072812.4a29235f@rorschach.local.home>
+In-Reply-To: <9a062196-ccbe-440e-a2f9-23eb8c5eb837@linux.ibm.com>
+References: <20240205065340.2848065-1-svens@linux.ibm.com>
+	<20240205075504.1b55f29c@rorschach.local.home>
+	<yt9djznj3vbl.fsf@linux.ibm.com>
+	<20240205092353.523cc1ef@rorschach.local.home>
+	<yt9d34u63xxz.fsf@linux.ibm.com>
+	<yt9dsf262d2n.fsf@linux.ibm.com>
+	<20240206060113.39c0f5bc@rorschach.local.home>
+	<yt9deddovn3w.fsf@linux.ibm.com>
+	<20240207060923.182ecb55@rorschach.local.home>
+	<9a062196-ccbe-440e-a2f9-23eb8c5eb837@linux.ibm.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, 07 Feb 2024 13:22:35 +0900
-Hojin Nam <hj96.nam@samsung.com> wrote:
+On Wed, 7 Feb 2024 13:07:36 +0100
+Mete Durlu <meted@linux.ibm.com> wrote:
 
-> S2M NDR BI-ConflictAck opcode is described as 4 in the CXL
-> r3.1 3.3.9 Table 3.50. However, it is defined as 3 in macro definition. Also
-> adds s2m_ndr_cmpm for bit 3 that was added in CXL r3.1.
+> wouldn't the following scenario explain the behavior we are seeing.
+> When using event triggers, trace uses lockless ringbuffer control paths.
+> If cmdline update and trace output reading is happening on different
+> cpus, the ordering can get messed up.
 > 
-> Fixes: 5d7107c72796 ("perf: CXL Performance Monitoring Unit driver")
-> Signed-off-by: Hojin Nam <hj96.nam@samsung.com>
+> 1. event happens and trace trigger tells ring buffer to stop writes
+> 2. (on cpu#1)test calculates checksum on current state of trace
+>     output.
+> 3. (on cpu#2)not knowing about the trace buffers status yet, writer adds
+>     a one last entry which would collide with a pid in cmdline map before
+>     actually stopping. While (on cpu#1) checksum is being calculated, new
+>     saved cmdlines entry is waiting for spinlocks to be unlocked and then
+>     gets added.
+> 4. test calculates checksum again and finds that the trace output has
+>     changed. <...> is put on collided pid.
 
-Ah. Sorry I've mislead you. I lazily assumed this was in the 3.0 spec as well
-without checking.
+But the failure is here:
 
-As a fix, we should not add the cmpm or update the reference comment.
+on=`cat tracing_on`
+if [ $on != "0" ]; then
+    fail "Tracing is not off"
+fi
 
-So should be the v1 patch with a reference to table 3-43 in r3.0
-and the fixes tag.
+csum1=`md5sum trace`
+sleep $SLEEP_TIME
+csum2=`md5sum trace`
 
-A follow up patch to add the 3.1 definitions would be excellent but we shouldn't
-be looking to backport that so it doesn't belong in the fix :(
+if [ "$csum1" != "$csum2" ]; then
+    fail "Tracing file is still changing"
+fi
 
+1. tracing is off
+2. do checksum of trace
+3. sleep
+4. do another checksum of trace
+5. compare the two checksums
 
-Jonathan
+Now how did they come up differently in that amount of time? The
+saved_cmdlines really should not have been updated.
 
+(note, I'm not against the patch, I just want to understand why this
+test really failed).
 
-> ---
-> 
-> Hi Jonathan,
-> I've modified the commit messsge and code to reflect you mentioned. Thank you!
-> 
-> Changes since v1:
-> - Add s2m_ndr_cmpm event attribute (Jonathan)
-> 
-> 
->  drivers/perf/cxl_pmu.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/perf/cxl_pmu.c b/drivers/perf/cxl_pmu.c
-> index 365d964b0f6a..d85d53d907a6 100644
-> --- a/drivers/perf/cxl_pmu.c
-> +++ b/drivers/perf/cxl_pmu.c
-> @@ -415,11 +415,12 @@ static struct attribute *cxl_pmu_event_attrs[] = {
->         CXL_PMU_EVENT_CXL_ATTR(s2m_bisnp_curblk,                CXL_PMU_GID_S2M_BISNP, BIT(4)),
->         CXL_PMU_EVENT_CXL_ATTR(s2m_bisnp_datblk,                CXL_PMU_GID_S2M_BISNP, BIT(5)),
->         CXL_PMU_EVENT_CXL_ATTR(s2m_bisnp_invblk,                CXL_PMU_GID_S2M_BISNP, BIT(6)),
-> -       /* CXL rev 3.0 Table 3-43 S2M NDR Opcopdes */
-> +       /* CXL rev 3.1 Table 3-50 S2M NDR Opcopdes */
->         CXL_PMU_EVENT_CXL_ATTR(s2m_ndr_cmp,                     CXL_PMU_GID_S2M_NDR, BIT(0)),
->         CXL_PMU_EVENT_CXL_ATTR(s2m_ndr_cmps,                    CXL_PMU_GID_S2M_NDR, BIT(1)),
->         CXL_PMU_EVENT_CXL_ATTR(s2m_ndr_cmpe,                    CXL_PMU_GID_S2M_NDR, BIT(2)),
-> -       CXL_PMU_EVENT_CXL_ATTR(s2m_ndr_biconflictack,           CXL_PMU_GID_S2M_NDR, BIT(3)),
-> +       CXL_PMU_EVENT_CXL_ATTR(s2m_ndr_cmpm,                    CXL_PMU_GID_S2M_NDR, BIT(3)),
-> +       CXL_PMU_EVENT_CXL_ATTR(s2m_ndr_biconflictack,           CXL_PMU_GID_S2M_NDR, BIT(4)),
->         /* CXL rev 3.0 Table 3-46 S2M DRS opcodes */
->         CXL_PMU_EVENT_CXL_ATTR(s2m_drs_memdata,                 CXL_PMU_GID_S2M_DRS, BIT(0)),
->         CXL_PMU_EVENT_CXL_ATTR(s2m_drs_memdatanxm,              CXL_PMU_GID_S2M_DRS, BIT(1)),
-> --
-> 2.34.1
-
+-- Steve
 
