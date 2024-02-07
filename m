@@ -1,110 +1,93 @@
-Return-Path: <linux-kernel+bounces-56475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6304D84CA9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:20:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A21484CA9D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:20:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 179BA1F27DC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:20:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 867851C2497A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38CB75A4CB;
-	Wed,  7 Feb 2024 12:20:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="CD5Y07JU"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E6A5A0F3;
+	Wed,  7 Feb 2024 12:20:34 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 921355A110
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 12:19:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F26EE5A785
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 12:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707308401; cv=none; b=kv7E1GjZJQFViv0/noENehFrG60cqW5FJACRnUhPTdYk1VCBf4/eTHRqgzGPiIb8slQHSWe6JO8GUfP1743uGRJRFZlWn9QS4I45azgSC1eOru9M2gcyuU+5a5J7EodE7zEwmah6OudcU9XsWIz8yR2+vyYvkmc24AMCfAJ3tto=
+	t=1707308428; cv=none; b=tKxfPR+Vs8dZFFW+kTd/DQUpuM4oIAVSK9fQC3F4gCMxRhbV4k/Vxz9yoP/mE4+NhRPeP7H0qzpXj9uGctsT8X1No3Z9pelhM7cMxwFm0j74IxAw32fnxx5XGKCBMApPiBw5lF2kol9GGQ7k3FbyxAwd5DovgnS5OYKR9eS8e5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707308401; c=relaxed/simple;
-	bh=VxHyCQHmmWVFgH5PeO7vMYEFUMu8X9qb6MlTex58/bA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kfXgOGchNcorK/YKe+1aAx3BRxji9f+D+z+/r53LNGOsFL8juDQIwLQGkOUn32JAM6FCsndambguKg+kY+mNliosjvldnLRD89k0EiXwIQ3BjYj+WN8wP0JDIZ5CUiFPn+GOwDw0f95zXNqvKEWjMqq+X96mXKVAmWsN8Hxed3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=CD5Y07JU; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55fbbfbc0f5so3061044a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 04:19:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1707308398; x=1707913198; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9zDDMQO/u1F7IHrBB5QtsezbFNTZVMkbylHAKSxKrCA=;
-        b=CD5Y07JUcCPJJb+yz034svMye1nvUSLCv1D3WcQfJK1w18eZG9lELCoZS7Pe6iDwRm
-         UG4U2Qn6Z/MJEWjuTZNZuCXl4j8FwjRd2YIkbJc/zqGpRw6gTPA447/taFrrpGRY3cRW
-         QcFpAYAmz81hO3NyDvQTqPUVfQOqCne2pYUNU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707308398; x=1707913198;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9zDDMQO/u1F7IHrBB5QtsezbFNTZVMkbylHAKSxKrCA=;
-        b=mysLG2bQj5PnRD4yQt9QILlHuIMj6uFCDjZWC9QhckN/LM4fgFC0F6kR8+/Ug3dyzR
-         nYQAAOvoQ/heqQinMwFYx5OGN8y3z8dxXIj2nv/cIo8uQXYmG3TS2PxdlYPwd3FA53H4
-         cNsaf8OFg8uFzweuErA5xLm3OwXwdfWp68ud8iguOh947+cwDIw8zk1z8VnCFcLrLkw0
-         lYlxWV9/Tmz1LeSKjhnMb3v/MnAGLtVqZmfWuEzGKwRde1grzmw2XN9kONkFHR+QPPGN
-         7YHHf9G5uzcbtm8c54iR62yHuu6UxYVyZm9CW8jq/fDR5A4FaljMjvU52t29mW4QASiC
-         7Tbw==
-X-Forwarded-Encrypted: i=1; AJvYcCVHeDTr4VCBvk41QGg09//ziFIhY/ivIH/QQTP6f2qtJHTrfw4ynkkNP1aQ7RD8APeMUOrDvaYn1tlbJj4nnbsZ9US7D5tgwGHL6HkC
-X-Gm-Message-State: AOJu0Yxi0rHIhTkWpLeM+l4kR0HgXq2uQ8dQYuxkXEtNow918MH/0Mbv
-	w12nbQraNIiwBRbr/EVXbcMx/6VhMdVqt5q1ACU5+e1prNU9u+0Qu91iLzmcV5T0fmlayMuEnFb
-	w27TWaG/kS4bom6N/RUVUtXFKoP/vyLhDpF9lFQ==
-X-Google-Smtp-Source: AGHT+IHzKQ0RYqAT/GDn4Hmr1R2HRVZELwU6NMz1FXiolA++wwYj9diX44wqd6JLXXbOK1o7LQA9USbuPopflB4CpWI=
-X-Received: by 2002:a17:907:7703:b0:a38:5b3c:7c9b with SMTP id
- kw3-20020a170907770300b00a385b3c7c9bmr2616933ejc.18.1707308397758; Wed, 07
- Feb 2024 04:19:57 -0800 (PST)
+	s=arc-20240116; t=1707308428; c=relaxed/simple;
+	bh=Pn7tOMM6QU+EjDKvoXtQ6tV+upxMGu1a0ytn1xCKq+c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J3I6T85CD+Y8RbhwK34GKeGqa3bwb+/tZQNMofDB79wjuZhTrKPEBP4Fz2L9TYLCrzsKdi1MnpZS/0i+e89GjbUSY5tEJNu4VdEWet1vYmWw04AlD9mUfp5BUZTNnupvUYpJT8OQkXwZkcuyfD7OXscPI7XyXp3fPRKa1lAhjPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7F91C433C7;
+	Wed,  7 Feb 2024 12:20:23 +0000 (UTC)
+Date: Wed, 7 Feb 2024 12:20:21 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Will Deacon <will@kernel.org>, Nanyong Sun <sunnanyong@huawei.com>,
+	mike.kravetz@oracle.com, muchun.song@linux.dev,
+	akpm@linux-foundation.org, anshuman.khandual@arm.com,
+	wangkefeng.wang@huawei.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 0/3] A Solution to Re-enable hugetlb vmemmap optimize
+Message-ID: <ZcN1hTrAhy-B1P2_@arm.com>
+References: <20240113094436.2506396-1-sunnanyong@huawei.com>
+ <ZbKjHHeEdFYY1xR5@arm.com>
+ <d1671959-74a4-8ea5-81f0-539df8d9c0f0@huawei.com>
+ <20240207111252.GA22167@willie-the-truck>
+ <ZcNnrdlb3fe0kGHK@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJfpegtw0-88qLjy0QDLyYFZEM7PJCG3R-mBMa9s8TNSVZmJTA@mail.gmail.com>
- <20240207110041.fwypjtzsgrcdhalv@quack3> <CAJfpegvkP5dic7CXB=ZtwTF4ZhRth1xyUY36svoM9c1pcx=f+A@mail.gmail.com>
- <ZcNw-ek8s3AHxxCB@casper.infradead.org>
-In-Reply-To: <ZcNw-ek8s3AHxxCB@casper.infradead.org>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Wed, 7 Feb 2024 13:19:46 +0100
-Message-ID: <CAJfpegssQ73Wv2w0F6oHm7yhUP3Q2n2vmqAPWw2E72Xa2MMSSw@mail.gmail.com>
-Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] tracing the source of errors
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Jan Kara <jack@suse.cz>, lsf-pc <lsf-pc@lists.linux-foundation.org>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcNnrdlb3fe0kGHK@casper.infradead.org>
 
-On Wed, 7 Feb 2024 at 13:00, Matthew Wilcox <willy@infradead.org> wrote:
+On Wed, Feb 07, 2024 at 11:21:17AM +0000, Matthew Wilcox wrote:
+> On Wed, Feb 07, 2024 at 11:12:52AM +0000, Will Deacon wrote:
+> > On Sat, Jan 27, 2024 at 01:04:15PM +0800, Nanyong Sun wrote:
+> > > On 2024/1/26 2:06, Catalin Marinas wrote:
+> > > > On Sat, Jan 13, 2024 at 05:44:33PM +0800, Nanyong Sun wrote:
+> > > > > HVO was previously disabled on arm64 [1] due to the lack of necessary
+> > > > > BBM(break-before-make) logic when changing page tables.
+> > > > > This set of patches fix this by adding necessary BBM sequence when
+> > > > > changing page table, and supporting vmemmap page fault handling to
+> > > > > fixup kernel address translation fault if vmemmap is concurrently accessed.
+> > > > I'm not keen on this approach. I'm not even sure it's safe. In the
+> > > > second patch, you take the init_mm.page_table_lock on the fault path but
+> > > > are we sure this is unlocked when the fault was taken?
+> > > I think this situation is impossible. In the implementation of the second
+> > > patch, when the page table is being corrupted
+> > > (the time window when a page fault may occur), vmemmap_update_pte() already
+> > > holds the init_mm.page_table_lock,
+> > > and unlock it until page table update is done.Another thread could not hold
+> > > the init_mm.page_table_lock and
+> > > also trigger a page fault at the same time.
+> > > If I have missed any points in my thinking, please correct me. Thank you.
+> > 
+> > It still strikes me as incredibly fragile to handle the fault and trying
+> > to reason about all the users of 'struct page' is impossible. For example,
+> > can the fault happen from irq context?
+> 
+> The pte lock cannot be taken in irq context (which I think is what
+> you're asking?)
 
-> To be perfectly clear, you're suggesting two things.
->
-> Option (a) change "all" code like this:
-> -       ret = -EINVAL;
-> +       ret = -ERR(EINVAL);
->
-> where ERR would do some magic with __func__ and __LINE__.
->
-> Option (b)
->
-> -#define EINVAL         22
-> +#define E_INVAL        22
-> +#define EINVAL         ERR(E_INVAL)
->
-> and then change all code that does something like:
->
->         if (err == -EINVAL)
-> to
->         if (err == -E_INVAL)
->
-> Or have I misunderstood?
+With this patchset, I think it can: IRQ -> interrupt handler accesses
+vmemmap -> faults -> fault handler in patch 2 takes the
+init_mm.page_table_lock to wait for the vmemmap rewriting to complete.
+Maybe it works if the hugetlb code disabled the IRQs but, as Will said,
+such fault in any kernel context looks fragile.
 
-Something like that, yes.
-
-Thanks,
-Miklos
+-- 
+Catalin
 
