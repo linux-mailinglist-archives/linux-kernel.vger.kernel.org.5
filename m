@@ -1,153 +1,175 @@
-Return-Path: <linux-kernel+bounces-56245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BBD284C7D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:47:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2312E84C7DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:49:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B96E0285107
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:47:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B338D282787
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:49:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE8722EFD;
-	Wed,  7 Feb 2024 09:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA4C21107;
+	Wed,  7 Feb 2024 09:48:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="hxxdc8kl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ETnJVvk/"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A854523745;
-	Wed,  7 Feb 2024 09:47:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACCF420B14;
+	Wed,  7 Feb 2024 09:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707299247; cv=none; b=H9BcuogCvT8xWS0oL4atuIPBUWuWlAHCIWR4DxfUEG7DHWRyx9AdQ123C71uUI71QUiMbvG5qLb5YwXDAbC8ITnYGTkutIvpqYZd+IaW61NJlPBMxgGu3tuQGfiBNeb4Try5LDZDKC21qpEAtuSf3Hk5b1Wl230UJ4FzSDYGDEY=
+	t=1707299333; cv=none; b=JjJG3ar6Xh6yRdS1pUaFP+v5G/CTiyQq6pjrNezf7Ae7RlFzYma2STk4kQwnzqYDcnEHqvfnEEFv0nOy6NWyGCeA6Ss7TA/AMmUk70g9+guBtcih39oJPoHWFrcRnUWuLPAJrxrkuFV3geBoQfNCBqXDXqNYHDhwKOnnYi+vRd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707299247; c=relaxed/simple;
-	bh=3Guh8FFWdBHHjtk/64P3ZLJj+ITcekYysmUVlFzYeS4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QROWL7yS4vrQCGTn/7XzCN63XRghN/MzMnxveODzh4+i1Ievc1plF2cEd8LCrXpCpWl7w63TOC3fiHyMaS+Iw0TynWqIz7FgQXNJ+Iwyy3WN/as/RSnw4IEm1fqd5zk4F1Ajq/PXD6vUkbMSd0PlCAy3sleCKtBcUgiVk6sLy1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=hxxdc8kl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85A5EC433F1;
-	Wed,  7 Feb 2024 09:47:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707299247;
-	bh=3Guh8FFWdBHHjtk/64P3ZLJj+ITcekYysmUVlFzYeS4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hxxdc8klnIy4ZDNB5BWD04rH+GMHbiNDBN6/hTxQc/vByYJ5XITJCX69MyWl1yYxf
-	 0UeJc615SI12VAM1ChmwiQgVXFRgRg6ODGum5sCfsC3a07JrFwHB60n1zKwo599D5P
-	 Advs1kA3wnh04DvGL0zsveVAJSN93LbtYq6UYwz4=
-Date: Wed, 7 Feb 2024 09:47:23 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Luca Weiss <luca.weiss@fairphone.com>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	cros-qcom-dts-watchers@chromium.org,
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 0/3] Fairphone 5 PMIC-GLINK support (USB-C, charger, fuel
- gauge)
-Message-ID: <2024020710-regulator-charging-7682@gregkh>
-References: <20231220-fp5-pmic-glink-v1-0-2a1f8e3c661c@fairphone.com>
- <8d042095-1e09-45cc-9762-909fe8d663a9@linaro.org>
- <CXTU5MLN0YDS.29PPV8KZF8G9R@fairphone.com>
- <CAA8EJpoD3x=kVLu4x2yLtAqCp=wmGSU4ssq5Oj_SD5VQ=GyAYQ@mail.gmail.com>
- <d2007240-2779-4881-8e9d-1c4f5daa55e5@linaro.org>
- <CXU22OZNAH2H.24YIQWBA4KE3C@fairphone.com>
- <2024010227-darn-litmus-4ddf@gregkh>
- <CY49JOEDOEZX.1KNYT91GHL3MX@fairphone.com>
- <2024010205-placidly-expire-221c@gregkh>
- <CYYDQ7RF0HB7.G7R6KHP1Z42U@fairphone.com>
+	s=arc-20240116; t=1707299333; c=relaxed/simple;
+	bh=Bw3nI1352z8vEjNQFvPE2329jopo2oNYApt9B+Y/sBs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=iQgBmcjPR2uIGHxqlQ+ZgTl2tXresFV3/a69CbaeSPnFSdxaBM0GzpwcdEiLZPjNz6vO2k94ylGwa0zwzIwZAflNASIHPaV1Fb30hQUDhetGd5kkHWTNkEKVOrLp+R3f1gilerHJYZ/2FL5SHyrBqslU3Fr5WYl6CZLfQqB4714=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ETnJVvk/; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4179luKJ079147;
+	Wed, 7 Feb 2024 03:47:56 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707299276;
+	bh=Bw3nI1352z8vEjNQFvPE2329jopo2oNYApt9B+Y/sBs=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To;
+	b=ETnJVvk/JSVn7cLGEuOgOct9lVTPP5BMQM54MxjcUKEuq+eX4l+rSjUVBLr7U3IQn
+	 G3/GS4bxrWK4nwvgjY2R732bqJgQ+EFUzQUHgdiA8GxgucMRxlUlEdfBygjvoO5j0i
+	 jJij99Gb5JJrZWPQmAnKuV9XvdBPgw+QKTq8nE0k=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4179luor026981
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 7 Feb 2024 03:47:56 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 7
+ Feb 2024 03:47:55 -0600
+Received: from DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c]) by
+ DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c%18]) with mapi id
+ 15.01.2507.023; Wed, 7 Feb 2024 03:47:55 -0600
+From: "Ding, Shenghao" <shenghao-ding@ti.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "broonie@kernel.org"
+	<broonie@kernel.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
+        "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+        "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+CC: "Lu, Kevin" <kevin-lu@ti.com>, "Xu, Baojun" <baojun.xu@ti.com>,
+        "P O,
+ Vijeth" <v-po@ti.com>, "Navada Kanyana, Mukund" <navada@ti.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "McPherson, Jeff" <j-mcpherson@ti.com>,
+        "pierre-louis.bossart@linux.intel.com"
+	<pierre-louis.bossart@linux.intel.com>,
+        "13916275206@139.com"
+	<13916275206@139.com>,
+        "Chawla, Mohit" <mohit.chawla@ti.com>, "soyer@irl.hu"
+	<soyer@irl.hu>,
+        "Huang, Jonathan" <jkhuang3@ti.com>, "tiwai@suse.de"
+	<tiwai@suse.de>,
+        "Djuandi, Peter" <pdjuandi@ti.com>,
+        "Agrawal, Manisha"
+	<manisha.agrawal@ti.com>,
+        "Hari, Raj" <s-hari@ti.com>, "Yashar, Avi"
+	<aviel@ti.com>,
+        "Nagalla, Hari" <hnagalla@ti.com>,
+        "Bajjuri, Praneeth"
+	<praneeth@ti.com>
+Subject: RE: [EXTERNAL] Re: [PATCH v3 4/4] ASoc: dt-bindings: PCM6240: Add
+ initial DT binding
+Thread-Topic: [EXTERNAL] Re: [PATCH v3 4/4] ASoc: dt-bindings: PCM6240: Add
+ initial DT binding
+Thread-Index: AQHaVk3kv2C9l+KpeUSliV0WealeY7D9v3qAgADk+SA=
+Date: Wed, 7 Feb 2024 09:47:55 +0000
+Message-ID: <8fe0b2d1990346efa056d6c2245412c3@ti.com>
+References: <20240203030504.1724-1-shenghao-ding@ti.com>
+ <20240203030504.1724-4-shenghao-ding@ti.com>
+ <ac4b73f6-0c2c-4586-98d6-e97c575b3df7@linaro.org>
+In-Reply-To: <ac4b73f6-0c2c-4586-98d6-e97c575b3df7@linaro.org>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CYYDQ7RF0HB7.G7R6KHP1Z42U@fairphone.com>
 
-On Wed, Feb 07, 2024 at 12:20:00AM +0100, Luca Weiss wrote:
-> On Tue Jan 2, 2024 at 2:53 PM CET, Greg Kroah-Hartman wrote:
-> > On Tue, Jan 02, 2024 at 02:43:24PM +0100, Luca Weiss wrote:
-> > > On Tue Jan 2, 2024 at 2:36 PM CET, Greg Kroah-Hartman wrote:
-> > > > On Thu, Dec 21, 2023 at 02:45:26PM +0100, Luca Weiss wrote:
-> > > > > On Thu Dec 21, 2023 at 1:53 PM CET, Konrad Dybcio wrote:
-> > > > > > On 21.12.2023 11:34, Dmitry Baryshkov wrote:
-> > > > > > > On Thu, 21 Dec 2023 at 09:33, Luca Weiss <luca.weiss@fairphone.com> wrote:
-> > > > > > >>
-> > > > > > >> On Wed Dec 20, 2023 at 1:32 PM CET, Konrad Dybcio wrote:
-> > > > > > >>> On 20.12.2023 11:02, Luca Weiss wrote:
-> > > > > > >>>> This series adds all the necessary bits to enable USB-C role switching,
-> > > > > > >>>> charger and fuel gauge (all via pmic-glink) on Fairphone 5.
-> > > > > > >>>>
-> > > > > > >>>> One thing that could be made different is the pmic-glink compatible.
-> > > > > > >>>> I've chosen to use qcm6490 compatible for it and not sc7280 since
-> > > > > > >>>> there's plenty of firmware variety on sc7280-based platforms and they
-> > > > > > >>>> might require different quirks in the future, so limit this PDOS quirk
-> > > > > > >>>> to just qcm6490 for now.
-> > > > > > >>>>
-> > > > > > >>>> If someone thinks it should be qcom,sc7280-pmic-glink, please let me
-> > > > > > >>>> know :)
-> > > > > > >>> IMO it's best to continue using the "base soc" (which just so happened
-> > > > > > >>> to fall onto sc7280 this time around) for all compatibles, unless the
-> > > > > > >>> derivatives actually had changes
-> > > > > > >>
-> > > > > > >> Hi Konrad,
-> > > > > > >>
-> > > > > > >> I think at some point I asked Dmitry what he thought and he mentioned
-> > > > > > >> qcm6490. Even found the message again:
-> > > > > > >>
-> > > > > > >>> well, since it is a firmware thing, you might want to emphasise that.
-> > > > > > >>> So from my POV qcm6490 makes more sense
-> > > > > > >>
-> > > > > > >> But yeah since it's likely that sc7280 firmware behaves the same as
-> > > > > > >> qcm6490 firmware it's probably okay to use sc7280 compatible, worst case
-> > > > > > >> we change it later :) I'll send a v2 with those changes.
-> > > > > > > 
-> > > > > > > Worst case we end up with sc7280 which has yet another slightly
-> > > > > > > different UCSI / PMIC GLINK implementation, but the compatible string
-> > > > > > > is already taken.
-> > > > > > > I still suppose that this should be a qcm6490-related string.
-> > > > > > Right, let's keep qcm then
-> > > > > 
-> > > > > Ack from my side also. Thanks for the feedback!
-> > > >
-> > > > This doesn't apply to my tree, where should it be going through?
-> > > 
-> > > As far as I can see the dependency for the driver commit 1d103d6af241
-> > > ("usb: typec: ucsi: fix UCSI on buggy Qualcomm devices") was applied to
-> > > Bjorn's qcom tree, so 2/3 should also go there then.
-> > > 
-> > > Patch 3/3 (arm64 dts) definitely also Bjorn's qcom tree.
-> > > 
-> > > So that leaves patch 1/3 which Bjorn can probably pick up as well but
-> > > looking at git log you also picked up some for that file in the past,
-> > > dunno.
-> >
-> > Ok, for any remaining ones that want to be merged before 6.8-rc1 is out,
-> > feel free to add my:
-> >
-> > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >
-> > If they don't get picked up by 6.8-rc1, feel free to rebase and send it
-> > for me to take through my tree.
-> 
-> Hi Greg,
-> 
-> This applies cleanly on -next as of next-20240206 still.
-> 
-> Could you please pick it up for v6.9? I can also send a v2 with only
-> the two remaining patches (dts was applied to qcom by Bjorn already).
-
-v2 with just the remaining patches would be great, thanks.
-
-greg k-h
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS3J6eXN6dG9mIEtvemxv
+d3NraSA8a3J6eXN6dG9mLmtvemxvd3NraUBsaW5hcm8ub3JnPg0KPiBTZW50OiBUdWVzZGF5LCBG
+ZWJydWFyeSA2LCAyMDI0IDk6NTMgUE0NCj4gVG86IERpbmcsIFNoZW5naGFvIDxzaGVuZ2hhby1k
+aW5nQHRpLmNvbT47IGJyb29uaWVAa2VybmVsLm9yZzsNCj4gY29ub3IrZHRAa2VybmVsLm9yZzsg
+ZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IHJvYmgrZHRAa2VybmVsLm9yZzsNCj4gYW5kcml5
+LnNoZXZjaGVua29AbGludXguaW50ZWwuY29tOyBsaW51eC1zb3VuZEB2Z2VyLmtlcm5lbC5vcmc7
+DQo+IGxpYW0uci5naXJkd29vZEBpbnRlbC5jb207IGxnaXJkd29vZEBnbWFpbC5jb207IGxpbnV4
+LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IENjOiBMdSwgS2V2aW4gPGtldmluLWx1QHRp
+LmNvbT47IFh1LCBCYW9qdW4gPGJhb2p1bi54dUB0aS5jb20+OyBQIE8sIFZpamV0aA0KPiA8di1w
+b0B0aS5jb20+OyBOYXZhZGEgS2FueWFuYSwgTXVrdW5kIDxuYXZhZGFAdGkuY29tPjsNCj4gcGVy
+ZXhAcGVyZXguY3o7IE1jUGhlcnNvbiwgSmVmZiA8ai1tY3BoZXJzb25AdGkuY29tPjsgcGllcnJl
+LQ0KPiBsb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbTsgMTM5MTYyNzUyMDZAMTM5LmNvbTsg
+Q2hhd2xhLCBNb2hpdA0KPiA8bW9oaXQuY2hhd2xhQHRpLmNvbT47IHNveWVyQGlybC5odTsgSHVh
+bmcsIEpvbmF0aGFuDQo+IDxqa2h1YW5nM0B0aS5jb20+OyB0aXdhaUBzdXNlLmRlOyBEanVhbmRp
+LCBQZXRlciA8cGRqdWFuZGlAdGkuY29tPjsNCj4gQWdyYXdhbCwgTWFuaXNoYSA8bWFuaXNoYS5h
+Z3Jhd2FsQHRpLmNvbT47IEhhcmksIFJhaiA8cy1oYXJpQHRpLmNvbT47DQo+IFlhc2hhciwgQXZp
+IDxhdmllbEB0aS5jb20+OyBOYWdhbGxhLCBIYXJpIDxobmFnYWxsYUB0aS5jb20+OyBCYWpqdXJp
+LA0KPiBQcmFuZWV0aCA8cHJhbmVldGhAdGkuY29tPg0KPiBTdWJqZWN0OiBbRVhURVJOQUxdIFJl
+OiBbUEFUQ0ggdjMgNC80XSBBU29jOiBkdC1iaW5kaW5nczogUENNNjI0MDogQWRkDQo+IGluaXRp
+YWwgRFQgYmluZGluZw0KPiANCj4gT24gMDMvMDIvMjAyNCAwNDrigIowNSwgU2hlbmdoYW8gRGlu
+ZyB3cm90ZTogPiArID4gKyB0aSx0YWQ1MjEyOiBMb3ctcG93ZXINCj4gc3RlcmVvIGF1ZGlvIERB
+QyB3aXRoIDEyMC1kQiBkeW5hbWljIHJhbmdlLiA+ICsgb25lT2Y6ID4gKyAtIGl0ZW1zOiA+ICsg
+LQ0KPiBlbnVtOiA+ICsgLSB0aSxhZGMzMTIwID4gKyAtIHRpLGFkYzUxMjAgPiArIC0gdGkscGNt
+MzEyMCA+ICsgLSB0aSxwY201MTIwDQo+IFpqUWNtUVJZRnBmcHRCYW5uZXJTdGFydCBUaGlzIG1l
+c3NhZ2Ugd2FzIHNlbnQgZnJvbSBvdXRzaWRlIG9mIFRleGFzDQo+IEluc3RydW1lbnRzLg0KPiBE
+byBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IHJlY29nbml6
+ZSB0aGUgc291cmNlIG9mDQo+IHRoaXMgZW1haWwgYW5kIGtub3cgdGhlIGNvbnRlbnQgaXMgc2Fm
+ZS4NCj4gDQo+IFpqUWNtUVJZRnBmcHRCYW5uZXJFbmQNCj4gT24gMDMvMDIvMjAyNCAwNDowNSwg
+U2hlbmdoYW8gRGluZyB3cm90ZToNCj4gPiArDQo+ID4gKyAgICAgIHRpLHRhZDUyMTI6IExvdy1w
+b3dlciBzdGVyZW8gYXVkaW8gREFDIHdpdGggMTIwLWRCIGR5bmFtaWMgcmFuZ2UuDQo+ID4gKyAg
+ICBvbmVPZjoNCj4gPiArICAgICAgLSBpdGVtczoNCj4gPiArICAgICAgICAgIC0gZW51bToNCj4g
+PiArICAgICAgICAgICAgICAtIHRpLGFkYzMxMjANCj4gPiArICAgICAgICAgICAgICAtIHRpLGFk
+YzUxMjANCj4gPiArICAgICAgICAgICAgICAtIHRpLHBjbTMxMjANCj4gPiArICAgICAgICAgICAg
+ICAtIHRpLHBjbTUxMjANCj4gPiArICAgICAgICAgICAgICAtIHRpLHBjbTYxMjANCj4gPiArICAg
+ICAgICAgIC0gY29uc3Q6IHRpLGFkYzYxMjANCj4gPiArICAgICAgLSBpdGVtczoNCj4gPiArICAg
+ICAgICAgIC0gZW51bToNCj4gPiArICAgICAgICAgICAgICAtIHRpLHBjbTYyNjANCj4gPiArICAg
+ICAgICAgICAgICAtIHRpLHBjbTYxNDANCj4gPiArICAgICAgICAgICAgICAtIHRpLHBjbTMxNDAN
+Cj4gPiArICAgICAgICAgICAgICAtIHRpLHBjbTUxNDANCj4gPiArICAgICAgICAgIC0gY29uc3Q6
+IHRpLHBjbTYyNDANCj4gPiArICAgICAgLSBpdGVtczoNCj4gPiArICAgICAgICAgIC0gY29uc3Q6
+IHRpLGRpeDQxOTINCj4gPiArICAgICAgICAgIC0gY29uc3Q6IHRpLHBjbTYyNDANCj4gDQo+IFdo
+eSBkaXg0MTkyIGlzIG5vdCBwYXJ0IG9mIHByZXZpb3VzIGVudW0/DQoNCmRpeDQxOTIgaXMgbm90
+IHRyYWRpdGlvbmFsIEFEQyBvciBEQUMsIGJ1dCBhbiBJbnRlZ3JhdGVkIERpZ2l0YWwgQXVkaW8g
+SW50ZXJmYWNlIA0KUmVjZWl2ZXIgYW5kIFRyYW5zbWl0dGVyLCBsaWtlIGFuIGF1ZGlvIGJyaWRn
+ZSB0byBjb25uZWN0IGRpZmZlcmVudCBkaWdpdGFsIGF1ZGlvIA0KcHJvdG9jb2wsIGNvbXBhdGli
+bGUgd2l0aCB0aGUgQUVTMywgUy9QRElGLCBJRUMgNjA5NTgsIGFuZCBFSUFKIENQLTEyMDEgDQpp
+bnRlcmZhY2Ugc3RhbmRhcmRzLCBMZWZ0LUp1c3RpZmllZCwgUmlnaHQtSnVzdGlmaWVkLCBhbmQg
+UGhpbGlwcyBJMlPihKIgRGF0YSBGb3JtYXRzLiANClNvIGtlZXAgaXQgYWxvbmUgZm9yIHByb2Zl
+c3Npb25hbCBwdXJwb3NlLiANCg0KPiANCj4gPiArICAgICAgLSBpdGVtczoNCj4gPiArICAgICAg
+ICAgIC0gY29uc3Q6IHRpLGFkYzYxMjANCj4gPiArICAgICAgICAgIC0gY29uc3Q6IHRpLHBjbWQ1
+MTJ4DQo+ID4gKyAgICAgIC0gaXRlbXM6DQo+ID4gKyAgICAgICAgICAtIGNvbnN0OiB0aSxwY20x
+NjkwDQo+ID4gKyAgICAgICAgICAtIGNvbnN0OiB0aSxwY205MjExDQo+ID4gKyAgICAgIC0gaXRl
+bXM6DQo+ID4gKyAgICAgICAgICAtIGVudW06DQo+ID4gKyAgICAgICAgICAgICAgLSB0aSxwY21k
+MzE4MA0KPiA+ICsgICAgICAgICAgLSBjb25zdDogdGkscGNtZDMxNDANCj4gPiArICAgICAgLSBp
+dGVtczoNCj4gPiArICAgICAgICAgIC0gZW51bToNCj4gPiArICAgICAgICAgICAgICAtIHRpLHRh
+YTU0MTINCj4gPiArICAgICAgICAgIC0gY29uc3Q6IHRpLHRhYTUyMTINCj4gPiArICAgICAgLSBp
+dGVtczoNCj4gPiArICAgICAgICAgIC0gZW51bToNCj4gPiArICAgICAgICAgICAgICAtIHRpLHRh
+ZDU0MTINCj4gPiArICAgICAgICAgIC0gY29uc3Q6IHRpLHRhZDUyMTINCj4gPiArICAgICAgLSBl
+bnVtOg0KPiA+ICsgICAgICAgICAgLSB0aSxwY202MjQwDQo+ID4gKyAgICAgICAgICAtIHRpLHBj
+bWQzMTQwDQo+ID4gKyAgICAgICAgICAtIHRpLHRhYTUyMTINCj4gPiArICAgICAgICAgIC0gdGks
+dGFkNTIxMg0KPiA+ICsgICAgICAgICAgLSB0aSxwY21kMzE4MA0KPiANCj4gVGhpcyBvbmUgaXMg
+ZHVwbGljYXRlZC4NCmFjY2VwdA0KPiANCj4gPiArDQo+IA0KPiANCj4gQmVzdCByZWdhcmRzLA0K
+PiBLcnp5c3p0b2YNCg0K
 
