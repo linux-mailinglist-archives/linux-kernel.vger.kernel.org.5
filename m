@@ -1,153 +1,168 @@
-Return-Path: <linux-kernel+bounces-55756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 153F884C147
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:11:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB34484C14E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:20:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B00D281DD2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:11:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B60C1C24371
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EBFCDF44;
-	Wed,  7 Feb 2024 00:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECEFE4A0A;
+	Wed,  7 Feb 2024 00:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Uw21QNs9"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="owOPz0Ft"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCFC5DDA0;
-	Wed,  7 Feb 2024 00:10:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D7C1320E
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 00:20:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707264655; cv=none; b=HhYD4wsX4h5DaHsbSJ+d59G0fBrlQpAe2nSC+PQWJYxUtHaRb4odDIMhv0HaOJQ8rJIuI5xRPYwihGhYAhMhN+eQnAPfvpHAmcyuSstQbHqh42TDKvKHQ6pi0Ic/IaQyct/P51fIVuZn2dcvzjohjiBglciNx7Q2ek2CaeaO5TU=
+	t=1707265248; cv=none; b=QDhGZ0z+CnNrQb2ybyJLsrH8H7n5VsWPHPykeMjrRIxl5SK0r22b3aOtl4JGx5RuePNcdilisxSrMA04GQ0PmXi+HybEVDjWOVzUuYbVc7XYSFwfTUkrfzSnik+0DKQK96yINxDhmGI8KY1oC3X2jNWHCMmNiKFieWKQDuPr5ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707264655; c=relaxed/simple;
-	bh=6reKaR74PsLEEhWXFF0eYoOTUvHn7NUWzmF0g9nPW+k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=s/Lc4KHK6Puk241P9PI2hAg9DKofMGs5dQpieJzPidkhfixfvWqXSFcV0wyzkrVKQmYAz7pGz48xEtWBZ2FEpj/oDcgePf6VzNxjY2B0NKIMCAmQQuGUS+hyZwNTp1P1UQakWPl6T5bWhzt+hrPNUvxSswM3tmrubr5b2WML1tI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Uw21QNs9; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 416NISTZ010794;
-	Wed, 7 Feb 2024 00:10:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding; s=qcppdkim1; bh=Skg3HbQjq2/sqhBqmP0V
-	Z8miwYY04Us8dUh25zkVrRE=; b=Uw21QNs9FXkmcZGXLoDo2qZoXPcwQ0ZqwPNt
-	pabH1bIQXEqzBe1AeA/7kBvCRFhIi8S5hgjVBtG5M0Z9H5RBh88KA1vthCqYvicn
-	HRMCj2Xq6jky79/V1JKxIBfllnzY0OqII2Xu/YXa28/MxPa7n/MyvZtTtfVrrGfR
-	1gRqet3r9qSyl30SK1Rpwo8jWja0kxEYxI1GWGTvnynEXLynu+uc2vUts0gltE/K
-	C8FToJft24r1UMfLcEJ4KwJKT0/naAVer3rf0bkApjb7Fy+iMZN+LMi2uplPUBaQ
-	IhJowCUsW4fI7nj3YDJe22XvtVgVlMTFAIXwepsTypOCVOJ0kw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3ud2ree6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 00:10:38 +0000 (GMT)
-Received: from pps.filterd (NALASPPMTA04.qualcomm.com [127.0.0.1])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 4170AbMC031971;
-	Wed, 7 Feb 2024 00:10:37 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by NALASPPMTA04.qualcomm.com (PPS) with ESMTPS id 3w37h10ecd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 00:10:37 +0000
-Received: from NALASPPMTA04.qualcomm.com (NALASPPMTA04.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4170Ab4d031966;
-	Wed, 7 Feb 2024 00:10:37 GMT
-Received: from hu-devc-lv-u20-a-new.qualcomm.com (hu-abchauha-lv.qualcomm.com [10.81.25.35])
-	by NALASPPMTA04.qualcomm.com (PPS) with ESMTPS id 4170AaGU031961
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 00:10:37 +0000
-Received: by hu-devc-lv-u20-a-new.qualcomm.com (Postfix, from userid 214165)
-	id 5216A22B62; Tue,  6 Feb 2024 16:10:36 -0800 (PST)
-From: Abhishek Chauhan <quic_abchauha@quicinc.com>
-To: Vinod Koul <vkoul@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>, Rob Herring <robh@kernel.org>
-Cc: kernel@quicinc.com
-Subject: [PATCH v2] net: stmmac: dwmac-qcom-ethqos: Enable TBS on all queues but 0
-Date: Tue,  6 Feb 2024 16:10:36 -0800
-Message-Id: <20240207001036.1333450-1-quic_abchauha@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1707265248; c=relaxed/simple;
+	bh=ClMmOPCFmH/6Ksgfa+SOlxvhUma7Q2HOGymy3+SEnec=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CQMR5OCtduviUV0U9TYFPC5fbz8USwhflgDxWy3o+IcA4ty7O5uwA15B9J41XiU9rW6k87DgUMCywxeKXdIp23E/bOFUnqWxWMGS2FgUY3gV5YZsMNPodM/pUkA2VVF1W28DK7nztwQwQLe0S1Cxxj2J/5d8XXxFAsAIqMMnnJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=owOPz0Ft; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5ce942efda5so11239a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 16:20:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707265246; x=1707870046; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xurpwFdNldy5a43C8x3u+zLZtuzGTp5D1pD7HBDvZoc=;
+        b=owOPz0FtatUSBKltM/eCgtG+lE3sMC/AYgegW7NkiROgDfRlXOoCcBv+LxDfTyQcXT
+         K1Jpf1zQS8vXcE/T25CVQ1YEkGD4dv0uY7CVBB+UVz7fsqCK800yihCoKosUd8SaSJsX
+         xzOCUy+vf3Ev93P8LOr9cL2RfupL6dzZJHXPueh6ZtJPxIYPKiaHQE2Wc6emyqPBFvkB
+         wMi2st9n8Ps7Cs0Jz0hwkXaHILF8lyHhAEg10uakj69OO4Rlfe9l8kpQyjlTvdZDB+lI
+         V6VZraMQALjTmtyRECa9xkrbLdO+IKovgxerPV3AxnmmcSQK1RKhgIYAnZXjnojLI7qu
+         hoaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707265246; x=1707870046;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xurpwFdNldy5a43C8x3u+zLZtuzGTp5D1pD7HBDvZoc=;
+        b=lVbqcDNIyBQU+TmlF16ucAXgCRTcAZJobmHLSP9Q4egZ1Xxm/vhleE+ihHWJJ8LW3w
+         jjWSwgbxKadZ7e2MbFJY4SZY3u0Dw+qA0e+p/7rkfeqGv24HbKSb1mCpMJBzCNhymaON
+         dVMZJSeMDPZ2m8KnCirG3U4CL+4YIGgnvoaDFan+i5lyZ7V1P3tuKtzPCu3BvkBu6aif
+         AdNGIRmDWSUid+0XGkPe49xQGYQ8NIxSjLYmSRk3la+PpwVRWdLBQBul6YmIfmhOY67B
+         +l0t/WpquqTGbf/rTHHjJtKjsnKt8qFv3Cs+Q/MU1p6sviqjc/SpscNZ0cnd9XR6bX51
+         14sQ==
+X-Gm-Message-State: AOJu0YwJBvlf8+HUCce46frv8DwSv5RaB8nHlOYBgAzdInevKKlBdVxm
+	oCHioIzGauU9ycbt517bQ2nI/QxFUaDTVuM9ta1PYVo4uzgCIiPlIwYYW3XLCEg=
+X-Google-Smtp-Source: AGHT+IF8twI7ftb08mDIR98Af5TRgbBRPMHph5yBr+fYyqBAwVo5BvfgXqyCRrLPcFKAg6PsVZgW6A==
+X-Received: by 2002:a05:6a21:339d:b0:19c:aba2:69e5 with SMTP id yy29-20020a056a21339d00b0019caba269e5mr3572946pzb.45.1707265245829;
+        Tue, 06 Feb 2024 16:20:45 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXl4DRRtp4/GlKt7mHd4EOTMTbXwbjSRdRoMPgx4uuppxHN2Apvk65L5wczgD0dn5kGdTTiNp9v0RPYnhtp1/GDmYpD85kJYY26k/+HLsVWUaSM7nyyTMbAA2cJOK0V92wjTeQQjO8ynnygv4seb5bOG8WqY36b2IOTltX56OS0MZL9aE5bDJ6PB91ol3cH++d2YC7FLuoE6I6tKC2Yrbx88I3mdK9c/IwLh05qVN52dbKD0MgNn1jxvYbjoKbguVQCfem4sKI5sHmkWGhMYA==
+Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
+        by smtp.gmail.com with ESMTPSA id hq6-20020a056a00680600b006e03be933cesm89563pfb.96.2024.02.06.16.20.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 16:20:45 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rXVgA-0032zx-2J;
+	Wed, 07 Feb 2024 11:20:42 +1100
+Date: Wed, 7 Feb 2024 11:20:42 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: brauner@kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+	Dave Chinner <dchinner@redhat.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>, linux-fsdevel@vger.kernel.or
+Subject: Re: [PATCH v2 3/7] fs: FS_IOC_GETUUID
+Message-ID: <ZcLM2t11U86twC/Y@dread.disaster.area>
+References: <20240206201858.952303-1-kent.overstreet@linux.dev>
+ <20240206201858.952303-4-kent.overstreet@linux.dev>
+ <ZcKsIbRRfeXfCObl@dread.disaster.area>
+ <cm4wbdmpuq6mlyfqrb3qqwyysa3qao6t5sc2eq3ykmgb4ptpab@qkyberqtvrtt>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: pFMpKkgujDH8ky-4mt2LIGwBn_H2n5fc
-X-Proofpoint-GUID: pFMpKkgujDH8ky-4mt2LIGwBn_H2n5fc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-06_15,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- lowpriorityscore=0 priorityscore=1501 clxscore=1015 bulkscore=0
- malwarescore=0 mlxscore=0 adultscore=0 mlxlogscore=801 impostorscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402060171
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cm4wbdmpuq6mlyfqrb3qqwyysa3qao6t5sc2eq3ykmgb4ptpab@qkyberqtvrtt>
 
-TSO and TBS cannot co-exist. TBS requires special descriptor to be
-allocated at bootup. Initialising Tx queues at probe to support
-TSO and TBS can help in allocating those resources at bootup.
+On Tue, Feb 06, 2024 at 05:37:22PM -0500, Kent Overstreet wrote:
+> On Wed, Feb 07, 2024 at 09:01:05AM +1100, Dave Chinner wrote:
+> > On Tue, Feb 06, 2024 at 03:18:51PM -0500, Kent Overstreet wrote:
+> > > +static int ioctl_getfsuuid(struct file *file, void __user *argp)
+> > > +{
+> > > +	struct super_block *sb = file_inode(file)->i_sb;
+> > > +
+> > > +	if (!sb->s_uuid_len)
+> > > +		return -ENOIOCTLCMD;
+> > > +
+> > > +	struct fsuuid2 u = { .len = sb->s_uuid_len, };
+> > > +	memcpy(&u.uuid[0], &sb->s_uuid, sb->s_uuid_len);
+> > > +
+> > > +	return copy_to_user(argp, &u, sizeof(u)) ? -EFAULT : 0;
+> > > +}
+> > 
+> > Can we please keep the declarations separate from the code? I always
+> > find this sort of implicit scoping of variables both difficult to
+> > read (especially in larger functions) and a landmine waiting to be
+> > tripped over. This could easily just be:
+> > 
+> > static int ioctl_getfsuuid(struct file *file, void __user *argp)
+> > {
+> > 	struct super_block *sb = file_inode(file)->i_sb;
+> > 	struct fsuuid2 u = { .len = sb->s_uuid_len, };
+> > 
+> > 	....
+> > 
+> > and then it's consistent with all the rest of the code...
+> 
+> The way I'm doing it here is actually what I'm transitioning my own code
+> to - the big reason being that always declaring variables at the tops of
+> functions leads to separating declaration and initialization, and worse
+> it leads people to declaring a variable once and reusing it for multiple
+> things (I've seen that be a source of real bugs too many times).
+> 
+> But I won't push that in this patch, we can just keep the style
+> consistent for now.
+> 
+> > > +/* Returns the external filesystem UUID, the same one blkid returns */
+> > > +#define FS_IOC_GETFSUUID		_IOR(0x12, 142, struct fsuuid2)
+> > > +
+> > 
+> > Can you add a comment somewhere in the file saying that new VFS
+> > ioctls should use the "0x12" namespace in the range 142-255, and
+> > mention that BLK ioctls should be kept within the 0x12 {0-141}
+> > range?
+> 
+> Well, if we're going to try to keep the BLK_ and FS_IOC_ ioctls in
+> separate ranges, then FS_IOC_ needs to move to something else becasue
+> otherwise BLK_ won't have a way to expand.
 
-TX queues with TBS can support etf qdisc hw offload.
+The BLK range can grow downwards towards zero, I think. It starts at
+93 and goes to 136, so there's heaps of space for it to grow from 92
+to 0....
 
-This is similar to the patch raised by NXP <3b12ec8f618e>
-<"net: stmmac: dwmac-imx: set TSO/TBS TX queues default settings">
+> So what else -
+> 
+> ioctl-number.rst has a bunch of other ranges listed for fs.h, but 0x12
+> appears to be the only one without conflicts - all the other ranges seem
+> to have originated with other filesystems.
 
-Changes since v1:
-- Subject is changed as per upstream guidelines
-- Added a reference of a similar change done by NXP in
-  body of the commit message
+*nod*
 
-Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+> So perhaps I will take Darrick's nak (0x15) suggestion after all.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-index 31631e3f89d0..d2f9b8f6c027 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-@@ -728,7 +728,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 	struct stmmac_resources stmmac_res;
- 	struct device *dev = &pdev->dev;
- 	struct qcom_ethqos *ethqos;
--	int ret;
-+	int ret, i;
- 
- 	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
- 	if (ret)
-@@ -822,6 +822,10 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 		plat_dat->serdes_powerdown  = qcom_ethqos_serdes_powerdown;
- 	}
- 
-+	/*Enable TSO on queue0 and enable TBS on rest of the queues*/
-+	for (i = 1; i < plat_dat->tx_queues_to_use; i++)
-+		plat_dat->tx_queues_cfg[i].tbs_en = 1;
-+
- 	return devm_stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
- }
- 
+That works, too.
+
+-Dave.
 -- 
-2.25.1
-
+Dave Chinner
+david@fromorbit.com
 
