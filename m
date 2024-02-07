@@ -1,161 +1,123 @@
-Return-Path: <linux-kernel+bounces-56167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A475E84C6E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:08:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2840E84C6D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:05:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D63891C23869
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:08:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4D11288B8C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 138D520B34;
-	Wed,  7 Feb 2024 09:08:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27B92208BB;
+	Wed,  7 Feb 2024 09:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nRZgvTgz"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LwvhrRfS"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9663A208D6;
-	Wed,  7 Feb 2024 09:08:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1649208B4;
+	Wed,  7 Feb 2024 09:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707296903; cv=none; b=O8YTllcoTs+i4WeiHRZ2XBLUG2Fbq6L/2RXf63TxcmXIXbyj152LacZ1OTdRWHuxzTKQ/a6z2o8RQRGjJtgkXo8BY3AA+mVL+h/SDmoRwNoGyS+Ehej/ZQJV6sWaPAjWH6r38zO/9tQAAphOEotIkwQL/klFL4Yacvenliy9hQM=
+	t=1707296723; cv=none; b=To9q8N2rbeUxxcC1RVxK4j5RRcGrOeTQCxMDR5PWoaMPfOCVZkkg2R8s+rVIvwOzVU4naj1ILolD56AI4DSzHwEQMBdjBpdCJqNhK0C4cPJCBXBtkjxPFGLkwiNYSKZGeaKg3Ys0wxwxr6q3TCfUrz0CIiMWy3NHY7QwVHNDzKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707296903; c=relaxed/simple;
-	bh=zQcmyPzidh2ULzN2fhkznfu/Jvo6esPfod05O3lf1Yw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ou21LdUNEzYi65FPPbzjgnF4vsDa2T+loQ0iCMPXLBs1HudmTitZQyIHrn2JEIlk5Cx+eXUVW9gcRqI3/tcFHCxTUreIS5FUGQyZyIMHRmyFBQJ0oc5JNUd32W68WK8EhzfKxJ+Ng1xlFLyOERP3NfoTMAyVdxocZuOz2306wn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nRZgvTgz; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41792Gog032577;
-	Wed, 7 Feb 2024 09:08:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=h+biz4tUuljiF+ayL/YbyRBen4Dw0b9YaXGCt/2B6uM=;
- b=nRZgvTgz2uIJXskW8SRj6EHIDglstjXOqwydsOxRZjJ+baGngp1t6YsoXcywhlwamOTp
- 1U7c0UBq+frTDFjzgFDAkvGJynCxqT/myr3mbWeomo1vICa4fxYbZX7QC8y9OxiLKXTB
- 6ppq+fRSwXh6076Mr5dewQH+jUghjE8Sc/TQIOsEGuqsqRP2e2X8wVvbuZElKzToXlr3
- E3twHXIsrvYrYt/5b9sjTyHjLKJ+FskqRRK2B/SgTfGYKahqdQt1NeT0OkkJRgnyMOsF
- QTfJFNctOrTljf/+agFPdtKVe8GZOqseEMnsggNRglvMLD6AD6DQz44cr6fsz5QCMMly Aw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w46vgg4hq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 09:08:16 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41792LER000358;
-	Wed, 7 Feb 2024 09:08:15 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w46vgg4h5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 09:08:15 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4176Mods020371;
-	Wed, 7 Feb 2024 09:08:14 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w1ytt50w8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 09:08:14 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41798D0q6554116
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 7 Feb 2024 09:08:14 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B6F035805C;
-	Wed,  7 Feb 2024 09:08:13 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 857E658054;
-	Wed,  7 Feb 2024 09:08:10 +0000 (GMT)
-Received: from [9.171.63.25] (unknown [9.171.63.25])
-	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  7 Feb 2024 09:08:10 +0000 (GMT)
-Message-ID: <2cfe62d4-b903-46aa-bcc3-26e1786f7cc1@linux.ibm.com>
-Date: Wed, 7 Feb 2024 10:08:09 +0100
+	s=arc-20240116; t=1707296723; c=relaxed/simple;
+	bh=xtxqiTXuDBirFx6NEaQvBC0NzUg8vJLy9EConsFO6rM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=LgHwUVhfia1MuuKHGux0xAxtL4O5grEYlnqNNDO/3kFkdGNu+97l7FklF4kN9TFM7vs150zTB5Y90EnjE5TvhjF85C0dOoDx8o+JT+o+fL2omBi5Cu9+8yTlFYuZEjjOs5sBEooK8WVnPvBuCrRYJT++pxoWInqnYiYtCnOslMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LwvhrRfS; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a30f7c9574eso49766166b.0;
+        Wed, 07 Feb 2024 01:05:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707296720; x=1707901520; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=esE2h1nVkSVqHSvE+Z95Z0pvn32WS6+v2R6aUj+4MIk=;
+        b=LwvhrRfSYwszDoPqQqpEKs38ecFP7Fpg4p+/+cPhOZTsPpZeS3LLrLJ/v2kpwqt0BB
+         Te44yWPcIgSOlngegyeTERPQVRbvcAjve0AlhZmzYes2+JJDX3ENkIO2Por12K2FfwwV
+         cwNQXxBueMfNVr3zZ0K4cWwom0WVRf5Z+K7ZLpFE1g3sH3PlJKK+2EfDMspeD5LhhWYV
+         C8t3jNxQTQim4IEAArRb2Ua2P5xfTZRJCYodE3FWaiaoaZReXBUSRzW9v002ylEP0lSA
+         7iqJcFrbUo+XXdAVpHe16v5daiOVlaufkYjYQawI8admxPKwiisOtSS8hPvd6HR5p3Hn
+         0DNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707296720; x=1707901520;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=esE2h1nVkSVqHSvE+Z95Z0pvn32WS6+v2R6aUj+4MIk=;
+        b=XRxvkdH68L/1OKCzLgn5RTZF8i9i8/Jq/+YUQZ1iAMOXKiZwKIfmtzg73y+cpxHH8H
+         ppF3VuN2M5+vh/qkeRhQr5VFImaPLML059YsgDElT+u46Mwlr40+HzwJx8RG+AhYtUqI
+         B2JyWkuLNo/1NCEf8OpoxVFPpYAHdyeTgI4ZvHyVpp7/56y4qB3vaq89dsYUC/VhL7rg
+         zyQRtfcfiOnrcbPG5eWMx3okCaMXlvV4JATdyTD/4/mstuy3tXbjz7uUf0ENbBV8eJ8g
+         VB6PRO3oG3NA9a3OMcWk5cDl65N1EOhyBzZ9804QpUzAZdRNvhWoY81kVZ+SDIrhnA2z
+         K5Yg==
+X-Gm-Message-State: AOJu0YzlVIrfO/bjnTkWzjaJ3pJa53Ofm6h6ZZYHOgxAgAKuOCFBxuk5
+	TwoKUwkEYkYqe0pXg4OO5f9n/sE8swwWrCQmIhnnx8C+M3LpB9CX
+X-Google-Smtp-Source: AGHT+IEaj7zV6zJ+AJmCTjLy4JM5pqgb3fG+Rr3bhlMl8pG5g7ngHLFlygha5muv/ceg7OBCrJ99Ng==
+X-Received: by 2002:a17:906:af14:b0:a36:fc06:6f7b with SMTP id lx20-20020a170906af1400b00a36fc066f7bmr3726567ejb.44.1707296719667;
+        Wed, 07 Feb 2024 01:05:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWaigS8/0B268hzEBsKAjyBzI5b74juO+4hkmnLQlGYjXfHV4CH9OTz1HSdsYGznaVZdnknVYdeCQfdcP1hSa8T77MoLsSc/tl0oVgf6QJ7oEiUSEdu2J2u8HvEH3Ad52O6vZ0zNbt3QLWprQp8HR3v22pqFWyWhNl19exsWruZNBc/r4hL+O3/ZwmSj8p7+lpb730wtiXeqSj4M3qbmqBLOwdGTZ+Gfbtj2YJzH7cHobryxw==
+Received: from ?IPv6:2003:f6:ef1b:2000:15d4:fc17:481e:8afe? (p200300f6ef1b200015d4fc17481e8afe.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:15d4:fc17:481e:8afe])
+        by smtp.gmail.com with ESMTPSA id a21-20020a1709065f9500b00a385832f8d8sm515578eju.128.2024.02.07.01.05.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 01:05:19 -0800 (PST)
+Message-ID: <70a4854e94cfd04b1a0ec9d3defe50ec56fc874f.camel@gmail.com>
+Subject: Re: [PATCH 2/2] iio: accel: adxl367: fix I2C FIFO data register
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Cosmin Tanislav <demonsingur@gmail.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
+ <Michael.Hennerich@analog.com>, Cosmin Tanislav
+ <cosmin.tanislav@analog.com>,  Jonathan Cameron <jic23@kernel.org>,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Wed, 07 Feb 2024 10:08:38 +0100
+In-Reply-To: <20240207033657.206171-2-demonsingur@gmail.com>
+References: <20240207033657.206171-1-demonsingur@gmail.com>
+	 <20240207033657.206171-2-demonsingur@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 00/15] net/smc: implement loopback-ism used by
- SMC-D
-Content-Language: en-GB
-To: Wen Gu <guwen@linux.alibaba.com>,
-        Alexandra Winter
- <wintera@linux.ibm.com>, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
-        tonylu@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240111120036.109903-1-guwen@linux.alibaba.com>
- <f98849a7-41e9-421b-97b7-36d720cc43ee@linux.alibaba.com>
- <20a1a1f3-789a-4d91-9a94-dca16161afd7@linux.ibm.com>
- <1860588f-2246-4dcd-9db5-4ccd7add0f4a@linux.alibaba.com>
- <3c51c969-3884-4104-b38d-570c61525214@linux.ibm.com>
- <47c1b777-6d4e-40ac-9297-61240c126d6a@linux.alibaba.com>
- <a29ead38-7a39-4bbb-80cc-619c1b0dfd62@linux.alibaba.com>
-From: Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <a29ead38-7a39-4bbb-80cc-619c1b0dfd62@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: AiVMsJyngXP4eYc6Cv8d172WmThcBFdi
-X-Proofpoint-ORIG-GUID: dMWmfPKEniCtuTfKAx4QvYiEWbrHUKi0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-07_02,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- impostorscore=0 malwarescore=0 mlxlogscore=755 suspectscore=0 phishscore=0
- adultscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402070067
 
+On Wed, 2024-02-07 at 05:36 +0200, Cosmin Tanislav wrote:
+> As specified in the datasheet, the I2C FIFO data register is
+> 0x18, not 0x42. 0x42 was used by mistake when adapting the
+> ADXL372 driver.
+>=20
+> Fix this mistake.
+>=20
+> Signed-off-by: Cosmin Tanislav <demonsingur@gmail.com>
+> ---
 
+This needs a Fixes: tag. With that:
 
-On 05.02.24 11:05, Wen Gu wrote:
-> 
-> On 2024/1/24 14:33, Wen Gu wrote:
->>
->>
->> On 2024/1/23 22:03, Alexandra Winter wrote:
->>> Hello Wen Gu and others,
->>>
->>> I just wanted to let you know that unfortunately both Wenjia and Jan 
->>> have called in sick and we don't know
->>> when they will be back at work.
->>> So I'm sorry but there may be mroe delays in the review of this 
->>> patchset.
->>>
->>> Kind regards
->>> Alexandra Winter
->>
->> Hi Alexandra,
->>
->> Thank you for the update. Health comes first. Wishing Wenjia and Jan
->> both make a swift recovery.
->>
->> Best regards,
->> Wen Gu
-> 
-> Hi, Wenjia and Jan
-> 
-> I would like to ask if I should wait for the review of this version
-> or send a v2 (with some minor changes) ?
-> 
-> Thanks!
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
 
-Hi Wen,
+> =C2=A0drivers/iio/accel/adxl367_i2c.c | 2 +-
+> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/iio/accel/adxl367_i2c.c b/drivers/iio/accel/adxl367_=
+i2c.c
+> index b595fe94f3a3..62c74bdc0d77 100644
+> --- a/drivers/iio/accel/adxl367_i2c.c
+> +++ b/drivers/iio/accel/adxl367_i2c.c
+> @@ -11,7 +11,7 @@
+> =C2=A0
+> =C2=A0#include "adxl367.h"
+> =C2=A0
+> -#define ADXL367_I2C_FIFO_DATA	0x42
+> +#define ADXL367_I2C_FIFO_DATA	0x18
+> =C2=A0
+> =C2=A0struct adxl367_i2c_state {
+> =C2=A0	struct regmap *regmap;
 
-Finally I can carve out some time on this patches, the review is still 
-ongoing. I'll send my comments out, as soon as I finish all of them.
-
-Thank you for the patience!
-Wenjia
 
