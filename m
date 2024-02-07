@@ -1,343 +1,203 @@
-Return-Path: <linux-kernel+bounces-55847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EA6D84C274
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:21:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3604E84C27A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:23:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56A37285B0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:21:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEF901F22554
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:23:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19707E55F;
-	Wed,  7 Feb 2024 02:21:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF613FC0A;
+	Wed,  7 Feb 2024 02:23:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nNrAWeBz"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n3urytyN"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E861EFC02;
-	Wed,  7 Feb 2024 02:21:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C8E0FBF7
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 02:23:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707272472; cv=none; b=U+AouKTDS80ktavLOt2+u3NOXUcdT37GT1wHCHRkid0iNTkvDHctD0pe08vID2QU5sd6dpBTE5mgu6ycpMbTiawUGT1VdtuRVrVXQXtShCSLANpCl4shNrG81ZoGup6yXgBVXDrzrcCc2IKZ2F/hQoQkB+vknGtzMSTSweVhtc0=
+	t=1707272611; cv=none; b=ha9kVJel20ybcjsVvhA4Pmx0p8f/GEbZgKBMdx3sv7OXkFzq7qbrvt56M3vGqJrL1WkQWprO7amHe09Bvfbs7GxNK5af5o36yPjbkkSQ2UkpMSgLoSs2ctEyAQzGE/ASblBQ4BfzOsqGZKkMAP8oIIanqOQNqqEWSyotWHdu9Ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707272472; c=relaxed/simple;
-	bh=bl/ihRuEwO0XtvAAhL909VhOisNF8/3zUlOkAtxKZKQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EQJwzqZ4d/azzpmbvypsJsQ9PKz5T8OLnuQmHjmk7x8SiKNXp6wuoi9X2enxzsrrOmM/D4d15PJxKDdCQg2DuGP+PwJLD9wZLkZq11apumxSv4+9rO0YE1flqhLv4WDCXbM3cMDU7Ge8zz9588gt2XGI4v92T/KvqCg0uc6L/Eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nNrAWeBz; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d0abdde3easo1695401fa.2;
-        Tue, 06 Feb 2024 18:21:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707272467; x=1707877267; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YPnnKt6ujZ5heZEbRxkEnShISOdcME2cSrFXG7+ktlc=;
-        b=nNrAWeBzsccMmX/prw5ci8DjrYCX4AitTjVBxmyPysoCiLLbrkDmFMUvzX7S4hLh1W
-         /GoYhIos0Gk9m/uGWaPloq8gPcAVIMvQewo+uUvAWY4+hPEBiV0GU58wdZrTWC1ouEHZ
-         WpGTm01kJq1+nvNAUvugJsPCnB3s7lqZF6kTyc0nxZTyBssek2uBA44rfCPOh1FwgBvc
-         ddhWP9hTGEbhHmhJzjIK+hMVqy8L0oObjMAvhzxguZaUpxiyne9CWpiF1VMs0ZSGDdhb
-         J4/lAvI5gcWPEZPtrU0zyRnQu98WqE9LFtV/cpBNev54VioVcuKPUSnrr5llZZYKx5QE
-         UNIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707272467; x=1707877267;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YPnnKt6ujZ5heZEbRxkEnShISOdcME2cSrFXG7+ktlc=;
-        b=VncvqrbKMrNHbqAmkbvVRq0W0X+rjKPDOHxSUkH6hlqyZal5gH2LcneKhSp4Nlcqln
-         AiEMz45dkIpxvCF5Dey6LY7QvtR7Zrin40QpAyt55cyZ/FYZfUwsT+Bt5f9xsKWjRKN/
-         /qun8bCA6IlsTyLA0AurXfvG55scHYBiGnEX5Jq8iuiFHNIbB0KE+pmcUQBgB9JY8qkD
-         DU/LrnHo89JwbVigOcFXWjakSx7r0kz1asRpi9Xf32mz6vW11IER9IUkKCmpTo5Wa3ax
-         6xqe0hvap+yEFgNHCpZfp8T7p4CuZ6qebflVhrNeL92MSo9EOiDgS0PX3omILE8s6xC2
-         4VcA==
-X-Forwarded-Encrypted: i=1; AJvYcCXPCZSoHjIFvLDmlrHNgmtpDpKZ8uv4vwS8FFZbWb9eVgJgqTv+BxXmFbrd8tnCcbRlj3w1lKAfzMBsJzjCoznC7jbTX6cVNJAD/BQEZt0M3DDC2rjglZ482POclFXNR7bwPq8I
-X-Gm-Message-State: AOJu0YyvtCvubbcZY6lbw/x4oagkinJ1Pbgh/A1fdjDJ7kKG9dP9viae
-	J2qcxa0sko2mJ4qO6MYWdCHY3M9vlqnUfR5b4AGRsDh8+Xn8co3ivEP0l7Szbx/dHuu4PCHndSy
-	nqkvXUWhdH1n3vAmTlV7ouPV0cfQ=
-X-Google-Smtp-Source: AGHT+IEojrZJvywmznFMRhLkxIayeF0rtm+cG/Cwbh7r8sjQ5Wa9tMH+rxy6WrF7Bx72k1I28jfluTdVzaFkObGL5I4=
-X-Received: by 2002:a05:651c:506:b0:2d0:c73b:3b49 with SMTP id
- o6-20020a05651c050600b002d0c73b3b49mr413746ljp.5.1707272467044; Tue, 06 Feb
- 2024 18:21:07 -0800 (PST)
+	s=arc-20240116; t=1707272611; c=relaxed/simple;
+	bh=4N/5tP5iMHWmFVdx1HRYIF5wy7QwMIH1xbJY0jDg6SY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=t1+aKBqWlC8P026nnTROTGur8z09Rc6NUZgC4fRNIK2wscY6lrs58cNA6I/MHt32XaM3VcVw6MgbBDDf7+iQJp6kd07+QqI9UGOB1o3rR5X9Cl5KM39F0WuGkEFfEKwu3eIRv/OA+BB0d+la2vLJfF7A6eMKGFvXPTK45EEz2iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n3urytyN; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707272609; x=1738808609;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=4N/5tP5iMHWmFVdx1HRYIF5wy7QwMIH1xbJY0jDg6SY=;
+  b=n3urytyNasUK34OoiMnU4phaxGdhXeafV4HkxRtvVEGX5EdTMkFeg/v7
+   osaatDIplz9Y+GdPWvp4z+AZlYN/glPDXOC2YEHXT+bj6fMiETvHHLMZr
+   Fdk5dFYmanzhXNCYL6q+DbvHEtf0+zFLqg7jC47CM8fvqYR3WMBa2563s
+   Huif5A9EghdghP5HAQzk8S5ckv+4+bZHUHbNdTkWVc2jcNmgs0J/R7r0u
+   L1NtcNfiT1sgaUoesj6tMNGftFtqHhrpvY3ICv4tvEJqGeRht6fWqUxo2
+   T4YYt5DWaexDEtUSgVIbH+SFO7LegoDDXhAFkbL8vX21PgB6xmDLJaE4k
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="780232"
+X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
+   d="scan'208";a="780232"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 18:23:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,248,1701158400"; 
+   d="scan'208";a="1421154"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 18:23:25 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Peng Zhang <zhangpeng362@huawei.com>
+Cc: <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>,
+  <akpm@linux-foundation.org>,  <willy@infradead.org>,
+  <fengwei.yin@intel.com>,  <aneesh.kumar@linux.ibm.com>,
+  <shy828301@gmail.com>,  <hughd@google.com>,  <david@redhat.com>,
+  <wangkefeng.wang@huawei.com>
+Subject: Re: [PATCH v2] filemap: avoid unnecessary major faults in
+ filemap_fault()
+In-Reply-To: <20240206092627.1421712-1-zhangpeng362@huawei.com> (Peng Zhang's
+	message of "Tue, 6 Feb 2024 17:26:27 +0800")
+References: <20240206092627.1421712-1-zhangpeng362@huawei.com>
+Date: Wed, 07 Feb 2024 10:21:29 +0800
+Message-ID: <87jznhypxy.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206182559.32264-1-ryncsn@gmail.com> <CAF8kJuMe7MYsAhwX804jZfO4w6kt74YMZXuz+FqUbZEt70p7Rg@mail.gmail.com>
- <CAGsJ_4zF+U5JG8XYANe2x0VbjovokFCirf=YLHOfO3E-U8b4sg@mail.gmail.com> <CAF8kJuOBtT+n5CM2s1Mobk5fzpgetCSMTZ-nb8+0KUj1W5f+Mw@mail.gmail.com>
-In-Reply-To: <CAF8kJuOBtT+n5CM2s1Mobk5fzpgetCSMTZ-nb8+0KUj1W5f+Mw@mail.gmail.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Wed, 7 Feb 2024 10:20:49 +0800
-Message-ID: <CAMgjq7CV-Cxar8cRj1SxB4ZtO8QPTUuA5mj9_vQro7sm+eFH=w@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/swap: fix race when skipping swapcache
-To: Chris Li <chrisl@kernel.org>
-Cc: Barry Song <21cnbao@gmail.com>, linux-mm@kvack.org, 
-	Andrew Morton <akpm@linux-foundation.org>, "Huang, Ying" <ying.huang@intel.com>, 
-	Minchan Kim <minchan@kernel.org>, Yu Zhao <yuzhao@google.com>, 
-	Barry Song <v-songbaohua@oppo.com>, SeongJae Park <sj@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, David Hildenbrand <david@redhat.com>, stable@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ascii
 
-On Wed, Feb 7, 2024 at 10:03=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote:
+Peng Zhang <zhangpeng362@huawei.com> writes:
+
+> From: ZhangPeng <zhangpeng362@huawei.com>
 >
-> On Tue, Feb 6, 2024 at 4:43=E2=80=AFPM Barry Song <21cnbao@gmail.com> wro=
-te:
-> >
-> > On Wed, Feb 7, 2024 at 7:18=E2=80=AFAM Chris Li <chrisl@kernel.org> wro=
-te:
-> > >
-> > > Hi Kairui,
-> > >
-> > > Sorry replying to your patch V1 late, I will reply on the V2 thread.
-> > >
-> > > On Tue, Feb 6, 2024 at 10:28=E2=80=AFAM Kairui Song <ryncsn@gmail.com=
-> wrote:
-> > > >
-> > > > From: Kairui Song <kasong@tencent.com>
-> > > >
-> > > > When skipping swapcache for SWP_SYNCHRONOUS_IO, if two or more thre=
-ads
-> > > > swapin the same entry at the same time, they get different pages (A=
-, B).
-> > > > Before one thread (T0) finishes the swapin and installs page (A)
-> > > > to the PTE, another thread (T1) could finish swapin of page (B),
-> > > > swap_free the entry, then swap out the possibly modified page
-> > > > reusing the same entry. It breaks the pte_same check in (T0) becaus=
-e
-> > > > PTE value is unchanged, causing ABA problem. Thread (T0) will
-> > > > install a stalled page (A) into the PTE and cause data corruption.
-> > > >
-> > > > One possible callstack is like this:
-> > > >
-> > > > CPU0                                 CPU1
-> > > > ----                                 ----
-> > > > do_swap_page()                       do_swap_page() with same entry
-> > > > <direct swapin path>                 <direct swapin path>
-> > > > <alloc page A>                       <alloc page B>
-> > > > swap_read_folio() <- read to page A  swap_read_folio() <- read to p=
-age B
-> > > > <slow on later locks or interrupt>   <finished swapin first>
-> > > > ...                                  set_pte_at()
-> > > >                                      swap_free() <- entry is free
-> > > >                                      <write to page B, now page A s=
-talled>
-> > > >                                      <swap out page B to same swap =
-entry>
-> > > > pte_same() <- Check pass, PTE seems
-> > > >               unchanged, but page A
-> > > >               is stalled!
-> > > > swap_free() <- page B content lost!
-> > > > set_pte_at() <- staled page A installed!
-> > > >
-> > > > And besides, for ZRAM, swap_free() allows the swap device to discar=
-d
-> > > > the entry content, so even if page (B) is not modified, if
-> > > > swap_read_folio() on CPU0 happens later than swap_free() on CPU1,
-> > > > it may also cause data loss.
-> > > >
-> > > > To fix this, reuse swapcache_prepare which will pin the swap entry =
-using
-> > > > the cache flag, and allow only one thread to pin it. Release the pi=
-n
-> > > > after PT unlocked. Racers will simply busy wait since it's a rare
-> > > > and very short event.
-> > > >
-> > > > Other methods like increasing the swap count don't seem to be a goo=
-d
-> > > > idea after some tests, that will cause racers to fall back to use t=
-he
-> > > > swap cache again. Parallel swapin using different methods leads to
-> > > > a much more complex scenario.
-> > > >
-> > > > Reproducer:
-> > > >
-> > > > This race issue can be triggered easily using a well constructed
-> > > > reproducer and patched brd (with a delay in read path) [1]:
-> > > >
-> > > > With latest 6.8 mainline, race caused data loss can be observed eas=
-ily:
-> > > > $ gcc -g -lpthread test-thread-swap-race.c && ./a.out
-> > > >   Polulating 32MB of memory region...
-> > > >   Keep swapping out...
-> > > >   Starting round 0...
-> > > >   Spawning 65536 workers...
-> > > >   32746 workers spawned, wait for done...
-> > > >   Round 0: Error on 0x5aa00, expected 32746, got 32743, 3 data loss=
-!
-> > > >   Round 0: Error on 0x395200, expected 32746, got 32743, 3 data los=
-s!
-> > > >   Round 0: Error on 0x3fd000, expected 32746, got 32737, 9 data los=
-s!
-> > > >   Round 0 Failed, 15 data loss!
-> > > >
-> > > > This reproducer spawns multiple threads sharing the same memory reg=
-ion
-> > > > using a small swap device. Every two threads updates mapped pages o=
-ne by
-> > > > one in opposite direction trying to create a race, with one dedicat=
-ed
-> > > > thread keep swapping out the data out using madvise.
-> > > >
-> > > > The reproducer created a reproduce rate of about once every 5 minut=
-es,
-> > > > so the race should be totally possible in production.
-> > > >
-> > > > After this patch, I ran the reproducer for over a few hundred round=
-s
-> > > > and no data loss observed.
-> > > >
-> > > > Performance overhead is minimal, microbenchmark swapin 10G from 32G
-> > > > zram:
-> > > >
-> > > > Before:     10934698 us
-> > > > After:      11157121 us
-> > > > Non-direct: 13155355 us (Dropping SWP_SYNCHRONOUS_IO flag)
-> > > >
-> > > > Fixes: 0bcac06f27d7 ("mm, swap: skip swapcache for swapin of synchr=
-onous device")
-> > > > Reported-by: "Huang, Ying" <ying.huang@intel.com>
-> > > > Closes: https://lore.kernel.org/lkml/87bk92gqpx.fsf_-_@yhuang6-desk=
-2.ccr.corp.intel.com/
-> > > > Link: https://github.com/ryncsn/emm-test-project/tree/master/swap-s=
-tress-race [1]
-> > > > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > > > Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-> > > > Acked-by: Yu Zhao <yuzhao@google.com>
-> > > >
-> > > > ---
-> > > > Update from V1:
-> > > > - Add some words on ZRAM case, it will discard swap content on swap=
-_free so the race window is a bit different but cure is the same. [Barry So=
-ng]
-> > > > - Update comments make it cleaner [Huang, Ying]
-> > > > - Add a function place holder to fix CONFIG_SWAP=3Dn built [SeongJa=
-e Park]
-> > > > - Update the commit message and summary, refer to SWP_SYNCHRONOUS_I=
-O instead of "direct swapin path" [Yu Zhao]
-> > > > - Update commit message.
-> > > > - Collect Review and Acks.
-> > > >
-> > > >  include/linux/swap.h |  5 +++++
-> > > >  mm/memory.c          | 15 +++++++++++++++
-> > > >  mm/swap.h            |  5 +++++
-> > > >  mm/swapfile.c        | 13 +++++++++++++
-> > > >  4 files changed, 38 insertions(+)
-> > > >
-> > > > diff --git a/include/linux/swap.h b/include/linux/swap.h
-> > > > index 4db00ddad261..8d28f6091a32 100644
-> > > > --- a/include/linux/swap.h
-> > > > +++ b/include/linux/swap.h
-> > > > @@ -549,6 +549,11 @@ static inline int swap_duplicate(swp_entry_t s=
-wp)
-> > > >         return 0;
-> > > >  }
-> > > >
-> > > > +static inline int swapcache_prepare(swp_entry_t swp)
-> > > > +{
-> > > > +       return 0;
-> > > > +}
-> > > > +
-> > > >  static inline void swap_free(swp_entry_t swp)
-> > > >  {
-> > > >  }
-> > > > diff --git a/mm/memory.c b/mm/memory.c
-> > > > index 7e1f4849463a..1749c700823d 100644
-> > > > --- a/mm/memory.c
-> > > > +++ b/mm/memory.c
-> > > > @@ -3867,6 +3867,16 @@ vm_fault_t do_swap_page(struct vm_fault *vmf=
-)
-> > > >         if (!folio) {
-> > > >                 if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
-> > > >                     __swap_count(entry) =3D=3D 1) {
-> > > > +                       /*
-> > > > +                        * Prevent parallel swapin from proceeding =
-with
-> > > > +                        * the cache flag. Otherwise, another threa=
-d may
-> > > > +                        * finish swapin first, free the entry, and=
- swapout
-> > > > +                        * reusing the same entry. It's undetectabl=
-e as
-> > > > +                        * pte_same() returns true due to entry reu=
-se.
-> > > > +                        */
-> > > > +                       if (swapcache_prepare(entry))
-> > > > +                               goto out;
-> > > > +
-> > >
-> > > I am puzzled by this "goto out". If I understand this correctly, you
-> > > have two threads CPU1 and CPU2 racing to set the flag SWAP_HAS_CACHE.
-> > > The CPU1 will succeed in adding the flag and  the CPU2 will get
-> > > "-EEXIST" from "swapcache_prepare(entry)".  Am I understanding it
-> > > correctly so far?
-> > >
-> > > Then the goto out seems wrong to me. For the CPU2, the page fault wil=
-l
-> > > return *unhandled*. Even worse, the "-EEXIST" error is not preserved,
-> > > CPU2 does not even know the page fault is not handled, it will resume
-> > > from the page fault instruction, possibly generate another page fault
-> > > at the exact same location. That page fault loop will repeat until
-> > > CPU1 install the new pte on that faulting virtual address and pick up
-> > > by CPU2.
-> > >
-> > > Am I missing something obvious there?
-> >
-> > I feel you are right. any concurrent page faults at the same pte
-> > will increase the count of page faults for a couple of times now.
-> >
-> > >
-> > > I just re-read your comment: "Racers will simply busy wait since it's
-> > > a rare and very short event." That might be referring to the above
-> > > CPU2 page fault looping situation. I consider the page fault looping
-> > > on CPU2 not acceptable. For one it will mess up the page fault
-> > > statistics.
-> > > In my mind, having an explicit loop for CPU2 waiting for the PTE to
-> > > show up is still better than this page fault loop. You can have more
-> > > CPU power friendly loops.
-> >
-> > I assume you mean something like
-> >
-> > while(!pte_same())
-> >    cpu_relax();
-> >
-> > then we still have a chance to miss the change of B.
-> >
-> > For example, another thread is changing pte to A->B->A, our loop can
-> > miss B. Thus we will trap into an infinite loop. this is even worse.
+> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+> in application, which leading to an unexpected performance issue[1].
 >
-> Yes. You are right, it is worse. Thanks for catching that. That is why
-> I say this needs more discussion, I haven't fully thought it through
-> :-)
+> This caused by temporarily cleared PTE during a read+clear/modify/write
+> update of the PTE, eg, do_numa_page()/change_pte_range().
+>
+> For the data segment of the user-mode program, the global variable area
+> is a private mapping. After the pagecache is loaded, the private anonymous
+> page is generated after the COW is triggered. Mlockall can lock COW pages
+> (anonymous pages), but the original file pages cannot be locked and may
+> be reclaimed. If the global variable (private anon page) is accessed when
+> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
+>
+> At this time, the original private file page may have been reclaimed.
+> If the page cache is not available at this time, a major fault will be
+> triggered and the file will be read, causing additional overhead.
+>
+> Fix this by rechecking the PTE without acquiring PTL in filemap_fault()
+> before triggering a major fault.
+>
+> Testing file anonymous page read and write page fault performance in ext4
+> and ramdisk using will-it-scale[2] on a x86 physical machine. The data
+> is the average change compared with the mainline after the patch is
+> applied. The test results are within the range of fluctuation, and there
+> is no obvious difference. The test results are as follows:
 
-Hi Chris and Barry,
+You still claim that there's no difference in the test results.  If so,
+why do you implement the patch?  IMHO, you need to prove your patch can
+improve the performance in some cases.
 
-Thanks for the comments!
+> 	                 processes processes_idle threads threads_idle
+> ext4    private file write: -1.14%  -0.08%         -1.87%   0.13%
+> ext4    shared  file write:  0.14%  -0.53%          2.88%  -0.77%
+> ext4    private file  read:  0.03%  -0.65%         -0.51%  -0.08%
+> tmpfs   private file write: -0.34%  -0.11%          0.20%   0.15%
+> tmpfs   shared  file write:  0.96%   0.10%          2.78%  -0.34%
+> ramdisk private file write: -1.21%  -0.21%         -1.12%   0.11%
+> ramdisk private file  read:  0.00%  -0.68%         -0.33%  -0.02%
+>
+> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
+> [2] https://github.com/antonblanchard/will-it-scale/
+>
+> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
+> Suggested-by: Yin Fengwei <fengwei.yin@intel.com>
+> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+> v1->v2:
+> - Add more test results per Huang, Ying
+> - Add more comments before check PTE per Huang, Ying, David Hildenbrand
+>   and Yin Fengwei
+> - Change pte_offset_map_nolock to pte_offset_map as the ptl lock won't
+>   be used
+>
+> RFC->v1:
+> - Add error handling when ptep == NULL per Huang, Ying and Matthew
+>   Wilcox
+> - Check the PTE without acquiring PTL in filemap_fault(), suggested by
+>   Huang, Ying and Yin Fengwei
+> - Add pmd_none() check before PTE map
+> - Update commit message and add performance test information
+>
+>  mm/filemap.c | 34 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+>
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 142864338ca4..a2c1a98bc771 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -3238,6 +3238,40 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>  			mapping_locked = true;
+>  		}
+>  	} else {
+> +		if (!pmd_none(*vmf->pmd)) {
+> +			pte_t *ptep;
+> +
+> +			ptep = pte_offset_map(vmf->pmd, vmf->address);
+> +			if (unlikely(!ptep))
+> +				return VM_FAULT_NOPAGE;
+> +			/*
+> +			 * Recheck PTE as the PTE can be cleared temporarily
+> +			 * during a read+clear/modify/write update of the PTE,
+> +			 * eg, do_numa_page()/change_pte_range(). This will
+> +			 * trigger a major fault, even if we use mlockall,
+> +			 * which may affect performance.
+> +			 * We don't hold PTL here as acquiring PTL hurts
+> +			 * performance. So the check is still racy, but
+> +			 * the race window seems small enough.
+> +			 *
+> +			 * If we lose the race during the check, the page_fault
+> +			 * will be triggered. Butthe page table entry lock
+> +			 * still make sure the correctness:
+> +			 * - If the page cache is not reclaimed, the page_fault
+> +			 *   will work like the page fault was served already
+> +			 *   and bail out.
+> +			 * - If the page cache is reclaimed, the major fault
+> +			 *   will be triggered, page cache is filled,
+> +			 *   page_fault also work like the page fault was
+> +			 *   served already and bail out.
+> +			 */
 
-The worst thing I know of returning in do_swap_page without handling
-the swap, is an increase of some statistic counters, note it will not
-cause major page fault counters to grow, only things like perf counter
-and vma lock statistic are affected.
+IMHO, this is too long.  It can be shorten to like,
 
-And actually there are multiple already existing return points in
-do_swap_page that will return without handling it, which may
-re-trigger the page fault.
-When do_swap_page is called, many pre-checks have been applied, and
-they could all be invalidated if something raced, simply looping
-inside here could miss a lot of corner cases, so we have to go through
-that again.
+If we lose the race, major fault may be triggered unnecessary.  This
+hurts performance but not functionality.
 
-This patch did increase the chance of false positive increase of some
-counters, maybe something like returning a VM_FAULT_RETRY could make
-it better, but code is more complex and will cause other counters to
-grow.
+> +			if (unlikely(!pte_none(ptep_get_lockless(ptep))))
+> +				ret = VM_FAULT_NOPAGE;
+> +			pte_unmap(ptep);
+> +			if (unlikely(ret))
+> +				return ret;
+> +		}
+> +
+>  		/* No page in the page cache at all */
+>  		count_vm_event(PGMAJFAULT);
+>  		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
+
+--
+Best Regards,
+Huang, Ying
 
