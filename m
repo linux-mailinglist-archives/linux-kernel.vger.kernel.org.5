@@ -1,195 +1,208 @@
-Return-Path: <linux-kernel+bounces-56804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73C1E84CF6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:10:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0247584CF74
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:11:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 985E61C26CE4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:10:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8471728B656
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0387C8289A;
-	Wed,  7 Feb 2024 17:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BCD82D69;
+	Wed,  7 Feb 2024 17:10:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="kwxj5o5r"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b="VazHCZVU"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B700823B8
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 17:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C27282875
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 17:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707325817; cv=none; b=OavMqBBAUmh+qWv6KqBVc9x+ffLImdVjmhFkFrdT/xljbOHPOCnGFIbYVdeZBIIxZ3/3cpQsovoZbokLf2GKfBC3hGaKDD3/51CqmpuPnjDVcCcZuRtyCCox4F0s89wGkaOiVTw2wrntYZMKQWp2so36geJvGd6yiO2IQPzvrkQ=
+	t=1707325850; cv=none; b=SDAEeNGYh+1NPqwNL17rbRIZY8zQHyvdf95QCpyqSHA/ryTgXDb80UHRzf0PsSGSZ4a/DYXBIUAz2xlyH/QX3U9WhgA1wPQqIl0fNDTyx3qK0td5yTP8GuIolRxoB+Wqh3/TyvQdO0PA1J+Oxpz+MUcsUtTMSVAtb3F0oxZhdQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707325817; c=relaxed/simple;
-	bh=vEUPI+uVUhfTV/tojMqehfC5wsKr2e5S0TdhVxbgmpk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=su42prOBmL2lFctr6XD3qwulH+2EWnLCGYc2AsLd2/LH1Z7Pn+ll9rqJb+XS5cIHpjCDgsd1nvALnFMk5iYs4xFulDpuCX5ueXq4VX/XRAe+J21o8HB3RHiD3Kj2rBSK9TNQUFz69Cvkio/x39fFFLk3lSvKpNbq0hOhgCs1AOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=kwxj5o5r; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40fb7427044so2665945e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 09:10:14 -0800 (PST)
+	s=arc-20240116; t=1707325850; c=relaxed/simple;
+	bh=bwc8Yls6eRt/O4jDgK96IDVTeO7vvV4hN9vR3g446yU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YFRxXzEsAkWsRigD0QieK5j8ZL9diApA00zLFx9ER4uEMq5bV+tXukHjJ3t1P8UsV1r2ITD879iyk14E+/T2uGFKPN3T4gULQEmRypRHDMc2r0hk3Vnf/cLR0xxEobw/Lol/K6IveZtv+aQyjacbNsP11sRJH+NU5mkHJMN7Fg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr; spf=pass smtp.mailfrom=smile.fr; dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b=VazHCZVU; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smile.fr
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4101eb5a115so4666195e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 09:10:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1707325812; x=1707930612; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UPG+Y5UifSfAr1b/3ugQkQKZbhHpDNonzO9dzweV4Ww=;
-        b=kwxj5o5r3k2qZWAp2ske0jdNDUjyE8l1jCeq/X2uoaiFLy52Flmd77vayPCatztiRr
-         lW6ZIIwoo4itIYGQGTHWp16g+iNNCH9ya1EHAFCAsjZ5dUw5rikKlEr1DC/A4EYizTK5
-         k4Oa70jPZomY0Bvmm+R8kbI41EwubCbBIguCY=
+        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1707325846; x=1707930646; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jn7k1jazp2MccOFMY/hBnR29Hjiyxg1FLp6nPl1S1t8=;
+        b=VazHCZVUpgk3fkWazz9cuVO0dwvkT0e6Z2NBs2ERlZrJcz9ewyjMBBS9tT7sbaQ+gR
+         f+Keo364cXxfylsSozFCKseVHZ8GfmGROU2Ymlrk8SgHoO1TATMyeRvFPHkQ7ArGooKE
+         OjfKv6qYkSnJTEKDD9MjyWDPMdLcOAEbNQpop0P60Dsfy3cwtp72cJtaZHDWUOv617Gq
+         AwxasDHfrBiSMoCo1phjq0h3Tn823k2u76Ab7j6FxgzboMcpb2snuEssCMA00rXjBxJa
+         8BrW0UJJV0ZpbkTPAGqCpA/9UFr8RwJhL/RwdHkirMwiDAMcuyDEt5F+D5ffOWNb8agK
+         vsRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707325812; x=1707930612;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UPG+Y5UifSfAr1b/3ugQkQKZbhHpDNonzO9dzweV4Ww=;
-        b=AK7HHe5sgDZutSPCcjzwQmGrM0jZ6nfVOm65gG088Pw2ax4pMMMF47fL5i6NkZNdku
-         6NU9oIo+lWILs85f+GXJBUvdo1o3IY0IDoZ2YjB363ijW/hvFaRWkLTDeAM7lZCpfTMS
-         Venrq0ARu186vgDE+lkQiVweF+O4ES5KIDF+j7qfUDb3+NqWecJjKYfew/N556reo4sx
-         ulo2XyAZvQHhr1q3helG5kvT8uiT7n5jj8noI59FJpeytNlWbq5+fmq0YJG6UBaTnJVo
-         dng/okAlPX9kCj/uDoyEZlXwBp82msDV5N2tC7EX34am4+/p5Igr8t3qS7A18EJkXF72
-         CQuw==
-X-Forwarded-Encrypted: i=1; AJvYcCX3V49Mhg4rb7KiIBoFnBTBpRj93EsIPeFT+xW8DrWK9oubsbpApwrnX/jqL9gc6v5fm0tpH9RrM9exFvVl6CoP7B8x4zNLT1mP4+4h
-X-Gm-Message-State: AOJu0YygP3Ha0WUbq2IGo2nJ0a/axhbCtmlG8YTdEMsoMn5hmfwDUAKP
-	Zcz1pFPTH9XyOlQlYpAa5W/xTGUcXB2jKe9C+3z+3mj+B6wL75EnvFX1X4GlWMc=
-X-Google-Smtp-Source: AGHT+IEsPRfVy9ib6+oPTaqzljo0dzFnfy37G2xZ7RAqfN0oGHicnE8YOdNtlahZH3k+EfqI3cynvg==
-X-Received: by 2002:a05:600c:3d8e:b0:40f:e930:9ebe with SMTP id bi14-20020a05600c3d8e00b0040fe9309ebemr3771440wmb.0.1707325812247;
-        Wed, 07 Feb 2024 09:10:12 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU4d78PdJmWpGaxeVM/qVZphJus4y+keSsoOAhdIG4L9XbZi80S4LVlZjttUegahtRfb+WxnirB+rL7E+6dEhFQZdLaQyPdkA85Et84sn/Z8V/ODYhjfY3gJmYMEOdASWS2hdFyUPFRrIZVkyqcw0v85EO8qpTdvza67qAvwxb8v8BF/UDU0yEtj/Fn+NGrXSYKuDi9d7XLMrSSk76P9fgRxH0AWyOIvrR05xWc7FcVAoPrRXBLzq7YxpULr524RIadgKGCNrDuyW8mlrDJUD7xOJeXQD13mpqPdZWEXcQnHr3PlmyY9P7zejXJmXoH7gngc7HcscVY61Kip0O2FNSNaM+3P97i/aa9+TLPtTTFX+vV65/23X6hTg7Onsn7Q9bNaviLS1LE6W6mgxV274yHq6U/3XLMgAU6cMqSzvM0MAghTIXF0LHNbKtFP8+14g1vjHl3lVfjH9rlI5hH9zzOblXyvY+ixmIMPg==
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m4-20020a05600c4f4400b0041007731a52sm2697105wmq.11.2024.02.07.09.10.10
+        d=1e100.net; s=20230601; t=1707325846; x=1707930646;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jn7k1jazp2MccOFMY/hBnR29Hjiyxg1FLp6nPl1S1t8=;
+        b=AsE3Kf9CC5zX2PqSWALvjKjFM+Awr1gnHVoI84qS93OCl+RLifwArXsglYHcbPO7oB
+         +nFVok6KmDStQWqbru+dte4uAt53BkWTiAiSVQKvpbLhxDounT/iPbZIaNChaQWzOB8u
+         aagCrZN2h4tNSd/cZduuBx3iWV8CxTxMRtBW24FkF2J4QPZIIqF/1u7UAjl2GcTnb8JI
+         o+RD/Njbh3FsDZ/TT4HXwRMT7OqkIvRFgykbGK7URTUQR9bZLEPPOkL6Q12qBfZprg1Y
+         X3Zi9EDIMHsyV6CZudVQlwPZy4LGns5mhiYYJCUp874k+GcQNOlr0bluoEaElHu94FZ1
+         cgyg==
+X-Forwarded-Encrypted: i=1; AJvYcCVWO3P+NnhpCaTYle0WunkD68xkalti2wKw2vBWJMPb0gw3vk67iNe+t+DbG7VeQ9epWKXI6t9nwUh/dURfo6nNBQZdxkHspy1vFEGH
+X-Gm-Message-State: AOJu0YzV/pZkFMXGrhz2RnCKxut5I3uZRJqHTbGf7unrQG+dvWo4+wl9
+	R3gyxW4DJJshfLTk03sQuTa/I+bb8C56wW/wock3AoqGa7xYW3qJSP/cR1OqfLg=
+X-Google-Smtp-Source: AGHT+IEWrhvn8EyV1F2rjTjpl9Tcz/fM2cqK29jaBYCn9Y7E5y3hCQ2iSE5tG0/ub95wiRUTBK0FzQ==
+X-Received: by 2002:a05:600c:1c0d:b0:40f:fe1a:6ba2 with SMTP id j13-20020a05600c1c0d00b0040ffe1a6ba2mr2812279wms.3.1707325846253;
+        Wed, 07 Feb 2024 09:10:46 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWv0RNvIYsD1i6Osvtq8xDwio8Hvh0N1+H+/FPvd99ndM3oEy+6MWQTVOCT3kVHyD+DM26DoHw67to4ekLY3KUYuQuVnf3AttdSIknS8qS5ngCXzbG8A3VZDb5c2XjZKGW2BuvLWxWBRoZnY/Jdej9UiYzpiVK0/XEs3dIlAme2VhyuHBzK9aRnXJqrlHNFNLbdWiIA5olg5XYHgbMiJS+7n21euKedktCzORR3SDhI5jRc9009kzqyTBDEc6NOD+LGqg3E1seyzR5QDjnQWoYkFoD/GdiOvlvcrLBZNs5bAwOh1H/Xd4c634ZDpVK+dcfSfvvUBHwJbuwz9mXWj2EEOjJAZBloA+bTmzepDlD05waD8Tj7ViWo3b/KY+orOsoFCi6VeFj/WyaHgV93lylYljMhnIEKgOLnp1oOOG6uIhE5o18izY8eKZfLKgelpBrzdXTqEbOWZlNZ1LMz5FNHP+K2GbJBUBmkILGU4t6KEElipUEyQLZXridqF9lfn4knXJzAaiMZI+OnHMe0f9B/2iKTzvfC+XMJtgqLK2XjWRDkqDRh85vdS+9i9HPvCo4mgH17TkSkGBuxYUEfJdi+oXTb02cwe0JjsjKv5y2dz/cXakkRYQzm7edOhIgaDfogKDOpfMWgfKWsbqE/yMhod5w/FSTjUiNgoeCdTeVSwOFN0XfTD45QlgjE3noH9vm22t4HsqqZTRraRRqqaJ7kkyZm+qptCtx7wIsS1NddF/B8W6oU2w6bAgn2b6TcsTXA88WzFnbAk8NvR0gsJ+DuuCetTO4=
+Received: from P-ASN-ECS-830T8C3.idf.intranet (static-css-ccs-204145.business.bouyguestelecom.com. [176.157.204.145])
+        by smtp.gmail.com with ESMTPSA id u14-20020a05600c19ce00b0040fdf2832desm2645584wmq.12.2024.02.07.09.10.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 09:10:11 -0800 (PST)
-Date: Wed, 7 Feb 2024 18:10:09 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Subject: Re: [Linaro-mm-sig] [PATCH v5 2/6] dma-buf: udmabuf: Implement
- .{begin,end}_access
-Message-ID: <ZcO5ccqwTIhSKDfS@phenom.ffwll.local>
-Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
+        Wed, 07 Feb 2024 09:10:45 -0800 (PST)
+From: Yoann Congal <yoann.congal@smile.fr>
+To: linux-fsdevel@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	x86@kernel.org
+Cc: =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Darren Hart <dvhart@infradead.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-References: <20240119141402.44262-1-paul@crapouillou.net>
- <20240119141402.44262-3-paul@crapouillou.net>
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Petr Mladek <pmladek@suse.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Yoann Congal <yoann.congal@smile.fr>
+Subject: [PATCH v5 0/3] printk: CONFIG_BASE_SMALL fix for LOG_CPU_MAX_BUF_SHIFT and removal of CONFIG_BASE_FULL
+Date: Wed,  7 Feb 2024 18:10:17 +0100
+Message-Id: <20240207171020.41036-1-yoann.congal@smile.fr>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240119141402.44262-3-paul@crapouillou.net>
-X-Operating-System: Linux phenom 6.6.11-amd64 
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 19, 2024 at 03:13:58PM +0100, Paul Cercueil wrote:
-> Implement .begin_access() and .end_access() callbacks.
-> 
-> For now these functions will simply sync/flush the CPU cache when
-> needed.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> 
-> ---
-> v5: New patch
-> ---
->  drivers/dma-buf/udmabuf.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
-> 
-> diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
-> index c40645999648..a87d89b58816 100644
-> --- a/drivers/dma-buf/udmabuf.c
-> +++ b/drivers/dma-buf/udmabuf.c
-> @@ -179,6 +179,31 @@ static int end_cpu_udmabuf(struct dma_buf *buf,
->  	return 0;
->  }
->  
-> +static int begin_udmabuf(struct dma_buf_attachment *attach,
-> +			 struct sg_table *sgt,
-> +			 enum dma_data_direction dir)
-> +{
-> +	struct dma_buf *buf = attach->dmabuf;
-> +	struct udmabuf *ubuf = buf->priv;
-> +	struct device *dev = ubuf->device->this_device;
-> +
-> +	dma_sync_sg_for_device(dev, sgt->sgl, sg_nents(sgt->sgl), dir);
+This series focuses on CONFIG_BASE_SMALL.
+The first patch fixes LOG_CPU_MAX_BUF_SHIFT when CONFIG_BASE_SMALL is
+used.
+The second patch globally changes the type of CONFIG_BASE_SMALL and
+adapts usages.
+The third patch removes the now redundant BASE_FULL, puts BASE_SMALL
+in its place in the config menus and updates usages in defconfigs.
 
-So one thing I've just wondered is whether we've made sure that this is
-only doing cache coherency maintenance, and not swiotlb bounce buffer
-copying. The latter would really not be suitable for dma-buf anymore I
-think.
+Thanks everyone for your reviews! :)
 
-Not sure how to best check for that since it's all in the depths of the
-dma-api code, but I guess the best way to really make sure is to disable
-CONFIG_SWIOTLB. Otherwise I guess the way to absolutely make sure is to
-trace swiotlb_sync_single_for_device/cpu.
+Patch history:
+v4->v5:
+* Applied Petr Mladek's suggestion (Thanks!):
+  * Added defconfig update to patch 3/3
+* Applied Masahiro Yamada's comments (Thanks!):
+  * Shorter form in patch 2/3
+  * Dropped the redundant "default n" in patch 3/3
 
-It would be kinda neat if dma-buf.c code could make sure you never ever
-get an swiotlb entry from a dma_buf_map_attachment call, but I don't think
-we can enforce that. There's sg_dma_is_swiotlb, but that won't catch all
-implementations, only the generic dma-iommu.c one.
+v4 series:
+https://lore.kernel.org/all/20240206001333.1710070-1-yoann.congal@smile.fr/
+* Patch v4 1/3: (unchanged in v5)
+  * Reviewed-by: Petr Mladek <pmladek@suse.com>
+  * Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+* Patch v4 2/3:
+  * Reviewed-by: Petr Mladek <pmladek@suse.com>
+  * Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  * Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Cheers, Sima
+v3->v4: Applied Petr Mladek's suggestion (Thanks!):
+* Keep BASE_SMALL instead of BASE_FULL
+* A patch changing the type of BASE_SMALL was added.
 
-> +	return 0;
-> +}
-> +
-> +static int end_udmabuf(struct dma_buf_attachment *attach,
-> +		       struct sg_table *sgt,
-> +		       enum dma_data_direction dir)
-> +{
-> +	struct dma_buf *buf = attach->dmabuf;
-> +	struct udmabuf *ubuf = buf->priv;
-> +	struct device *dev = ubuf->device->this_device;
-> +
-> +	if (dir != DMA_TO_DEVICE)
-> +		dma_sync_sg_for_cpu(dev, sgt->sgl, sg_nents(sgt->sgl), dir);
-> +	return 0;
-> +}
-> +
->  static const struct dma_buf_ops udmabuf_ops = {
->  	.cache_sgt_mapping = true,
->  	.map_dma_buf	   = map_udmabuf,
-> @@ -189,6 +214,8 @@ static const struct dma_buf_ops udmabuf_ops = {
->  	.vunmap		   = vunmap_udmabuf,
->  	.begin_cpu_access  = begin_cpu_udmabuf,
->  	.end_cpu_access    = end_cpu_udmabuf,
-> +	.begin_access      = begin_udmabuf,
-> +	.end_access        = end_udmabuf,
->  };
->  
->  #define SEALS_WANTED (F_SEAL_SHRINK)
-> -- 
-> 2.43.0
-> 
-> _______________________________________________
-> Linaro-mm-sig mailing list -- linaro-mm-sig@lists.linaro.org
-> To unsubscribe send an email to linaro-mm-sig-leave@lists.linaro.org
+v3 series was named "printk: CONFIG_BASE_SMALL fix for
+LOG_CPU_MAX_BUF_SHIFT and removal"
+https://lore.kernel.org/all/20240204232945.1576403-1-yoann.congal@smile.fr/
+* Patch v3 1/2:
+  * Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+  * Reviewed-by: John Ogness <john.ogness@linutronix.de>
+  * Reviewed-by: Petr Mladek <pmladek@suse.com>
+* Patch v3 2/2:
+  * Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+
+v2 -> v3: Applied Luis Chamberlain's comments (Thanks!):
+* Split the single commit in two : one functional fix, one global
+  removal.
+
+v2 patch was named "printk: Remove redundant CONFIG_BASE_SMALL"
+https://lore.kernel.org/all/20240127220026.1722399-1-yoann.congal@smile.fr/
+* Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+* Reviewed-by: John Ogness <john.ogness@linutronix.de>
+
+v1 -> v2: Applied Masahiro Yamada's comments (Thanks!):
+* Changed from "Change CONFIG_BASE_SMALL to type bool" to
+  "Remove it and switch usage to !CONFIG_BASE_FULL"
+* Fixed "Fixes:" tag and reference to the mailing list thread.
+* Added a note about CONFIG_LOG_CPU_MAX_BUF_SHIFT changing.
+
+v1 patch was named "treewide: Change CONFIG_BASE_SMALL to bool type"
+https://lore.kernel.org/all/20240126163032.1613731-1-yoann.congal@smile.fr/
+
+Yoann Congal (3):
+  printk: Fix LOG_CPU_MAX_BUF_SHIFT when BASE_SMALL is enabled
+  printk: Change type of CONFIG_BASE_SMALL to bool
+  printk: Remove redundant CONFIG_BASE_FULL
+
+ arch/arm/configs/collie_defconfig                  |  2 +-
+ arch/arm/configs/keystone_defconfig                |  2 +-
+ arch/arm/configs/lpc18xx_defconfig                 |  2 +-
+ arch/arm/configs/moxart_defconfig                  |  2 +-
+ arch/arm/configs/mps2_defconfig                    |  2 +-
+ arch/arm/configs/omap1_defconfig                   |  2 +-
+ arch/arm/configs/stm32_defconfig                   |  2 +-
+ arch/microblaze/configs/mmu_defconfig              |  2 +-
+ arch/mips/configs/rs90_defconfig                   |  2 +-
+ arch/powerpc/configs/adder875_defconfig            |  2 +-
+ arch/powerpc/configs/ep88xc_defconfig              |  2 +-
+ arch/powerpc/configs/mpc866_ads_defconfig          |  2 +-
+ arch/powerpc/configs/mpc885_ads_defconfig          |  2 +-
+ arch/powerpc/configs/tqm8xx_defconfig              |  2 +-
+ arch/riscv/configs/nommu_k210_defconfig            |  2 +-
+ arch/riscv/configs/nommu_k210_sdcard_defconfig     |  2 +-
+ arch/riscv/configs/nommu_virt_defconfig            |  2 +-
+ arch/sh/configs/edosk7705_defconfig                |  2 +-
+ arch/sh/configs/se7619_defconfig                   |  2 +-
+ arch/sh/configs/se7712_defconfig                   |  2 +-
+ arch/sh/configs/se7721_defconfig                   |  2 +-
+ arch/sh/configs/shmin_defconfig                    |  2 +-
+ arch/x86/include/asm/mpspec.h                      |  6 +++---
+ drivers/tty/vt/vc_screen.c                         |  2 +-
+ include/linux/threads.h                            |  4 ++--
+ include/linux/udp.h                                |  2 +-
+ include/linux/xarray.h                             |  2 +-
+ init/Kconfig                                       | 14 ++++----------
+ kernel/futex/core.c                                |  2 +-
+ kernel/user.c                                      |  2 +-
+ .../testing/selftests/wireguard/qemu/kernel.config |  1 -
+ 31 files changed, 36 insertions(+), 43 deletions(-)
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.39.2
+
 
