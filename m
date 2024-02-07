@@ -1,138 +1,108 @@
-Return-Path: <linux-kernel+bounces-57190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF0E384D4E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:56:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CA0584D4BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:52:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CC2E283BB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:56:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C529B1F223C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:52:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B33179A11;
-	Wed,  7 Feb 2024 21:26:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD49515CD66;
+	Wed,  7 Feb 2024 21:25:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kxUXX8tX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WJlCtETy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65C5179A06;
-	Wed,  7 Feb 2024 21:26:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 248BF15CB8E;
+	Wed,  7 Feb 2024 21:25:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341193; cv=none; b=teLYwaECbIhoNUbEnC/SkY28zxr07t1j3Z+tLRc00xBWGIGOFy8fTahsIyEENHSQYfhGMXIf3I10wtptvGZspIsdABCV+pEhOmtWlgMLZaXCHWIPDtDgEWJHTZcCALh9vkhH+Ap5sfa8bY8OnMf8HaU2xM7TcRtB0JuAeMbZQO8=
+	t=1707341156; cv=none; b=KCYmrsFLIvA3BkikUSwsd0X/gElTmWBixscVg9ADmnN8zd9IbCXs0dtUE8FiHbSn4zXgkOaNpDEiPlcEnbboYyxEl1w77BQwR0U7BbMwpuAXgndVWOwcWUSRMBtshpl4Qcivoo08Ty5qnpWCQifSx9UHvCQypKFSOrpNYUe4hHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341193; c=relaxed/simple;
-	bh=R0dOcXmanYZWpCUfSoSQ5uZPRgUSkvXD7HI1oiHj4bM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=az2Cvj3m9uZwK+ZlUwzKWRGLGV/Cbr6syb0qGfGWhdBAQW4n1NaiK3zzOfNDf/yfBCweZPmLWWkyOFnkdfmXfya05w95uGhud6TpqGpXhALlul9SoiFyl73S1y+TovKh6m6GFsSRBOIA/Fs8kwDErRV9KXH6TXCI0yAzcHZCh7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kxUXX8tX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85CD6C433F1;
-	Wed,  7 Feb 2024 21:26:31 +0000 (UTC)
+	s=arc-20240116; t=1707341156; c=relaxed/simple;
+	bh=o8H4o09pkLeXy0frODGluKudoPi9PzNvii1yKYW0Lj0=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=p+g+EA7jiO2bhIAtplg8e2ft8fwifKa0s6rP9AYMyUqPzNWLhHAIsDO3rlZ8Ib1GUUJ/rMJ8hsiQP3q/WauQijA8h6IP4bfsrCWUo6rf7ySLpj0/fXnSGptrC3O1RI2TOzxEg1rot5IU8oDgiYnMKiO+OlDjCxylX5c8CvszE+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WJlCtETy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 779B8C433A6;
+	Wed,  7 Feb 2024 21:25:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341193;
-	bh=R0dOcXmanYZWpCUfSoSQ5uZPRgUSkvXD7HI1oiHj4bM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kxUXX8tXTC3vOC2C/Fk2FlgU49YqGu3E64D6B0elQQq/QhvKt+GTAX/CyHpu4zYek
-	 lByq7YZ/S8/SJfdON21hT9Mw3UOie69GjTao5EFE0RGra8jnn+ZgVnNCZDwYq+p3n5
-	 +jj7FWUr4IHNVcvNzsD7FpEN+ai+zs4xvRj9ZGR9UX3e6pcCIj6CY8lM2x8g19cGfg
-	 ce+5mdW7ksaru6mb2TRVK6DXp1scwZMp5njsW0fd0w1BLZQoXEPirlnfs+V+1Hj1pw
-	 kJNbnaW+1jlez4tMDTpEwtHR8ATY1qusW53ndmY+2vd5rHBE8L+RhAUzLmieyfP0Yg
-	 IeY3ANV0AL/nA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Brenton Simpson <appsforartists@google.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Sasha Levin <sashal@kernel.org>,
-	vi@endrift.com,
-	swyterzone@gmail.com,
-	luca@z3ntu.xyz,
-	slouken@libsdl.org,
-	pgriffais@valvesoftware.com,
-	matthias_berndt@gmx.de,
-	christophe.jaillet@wanadoo.fr,
-	linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 11/23] Input: xpad - add Lenovo Legion Go controllers
-Date: Wed,  7 Feb 2024 16:25:52 -0500
-Message-ID: <20240207212611.3793-11-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240207212611.3793-1-sashal@kernel.org>
-References: <20240207212611.3793-1-sashal@kernel.org>
+	s=k20201202; t=1707341156;
+	bh=o8H4o09pkLeXy0frODGluKudoPi9PzNvii1yKYW0Lj0=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=WJlCtETyglI9CUyxAiNpStKaFOkznG4fLAhkcnYvWPyUx+NxNcee6IJe7iomn2NvO
+	 9iOGfbTdAqrj+eGjS0mhBhkmW1h96EqDclNYMHjQT67YbHIaXUOs9HDPEsjpxmxmdx
+	 hDkjNALZIPL7j1Ko4fCH3pGL8Yk/rqRECsQd72uxQBWNpgBTCWE0uwYROCvz6QKzxe
+	 J7JEC4TzxR/12ND3tr4VOo8XJ/XJe1FgZ5rZxiwZhXO0zxgAaIUeFWN6saFIMgV217
+	 dbag2poBlAKhjuMPEzqK9Nivc4AHks2ZlTsll3eyMmrz021A3wFKgJaqgprYBDJz90
+	 l1IqlucNJ1Hyw==
+Date: Wed, 07 Feb 2024 21:25:53 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.148
-Content-Transfer-Encoding: 8bit
+From: Rob Herring <robh@kernel.org>
+To: Dimitri Fedrau <dima.fedrau@gmail.com>
+Cc: linux-iio@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Jonathan Cameron <jic23@kernel.org>, 
+ Lars-Peter Clausen <lars@metafoo.de>, Li peiyu <579lpy@gmail.com>, 
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>, 
+ linux-kernel@vger.kernel.org, Nuno Sa <nuno.sa@analog.com>
+In-Reply-To: <20240207074758.4138724-3-dima.fedrau@gmail.com>
+References: <20240207074758.4138724-1-dima.fedrau@gmail.com>
+ <20240207074758.4138724-3-dima.fedrau@gmail.com>
+Message-Id: <170734115194.3199410.700483085044705042.robh@kernel.org>
+Subject: Re: [PATCH v3 2/3] dt-bindings: iio: humidity: hdc3020: add
+ interrupt bindings in example
 
-From: Brenton Simpson <appsforartists@google.com>
 
-[ Upstream commit 80441f76ee67002437db61f3b317ed80cce085d2 ]
+On Wed, 07 Feb 2024 08:47:52 +0100, Dimitri Fedrau wrote:
+> Add interrupt bindings in example.
+> 
+> Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-The Lenovo Legion Go is a handheld gaming system, similar to a Steam Deck.
-It has a gamepad (including rear paddles), 3 gyroscopes, a trackpad,
-volume buttons, a power button, and 2 LED ring lights.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-The Legion Go firmware presents these controls as a USB hub with various
-devices attached.  In its default state, the gamepad is presented as an
-Xbox controller connected to this hub.  (By holding a combination of
-buttons, it can be changed to use the older DirectInput API.)
+yamllint warnings/errors:
 
-This patch teaches the existing Xbox controller module `xpad` to bind to
-the controller in the Legion Go, which enables support for the:
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.example.dts:33.34-35 syntax error
+FATAL ERROR: Unable to parse input tree
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
+make: *** [Makefile:240: __sub-make] Error 2
 
-- directional pad,
-- analog sticks (including clicks),
-- X, Y, A, B,
-- start and select (or menu and capture),
-- shoulder buttons, and
-- rumble.
+doc reference errors (make refcheckdocs):
 
-The trackpad, touchscreen, volume controls, and power button are already
-supported via existing kernel modules.  Two of the face buttons, the
-gyroscopes, rear paddles, and LEDs are not.
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240207074758.4138724-3-dima.fedrau@gmail.com
 
-After this patch lands, the Legion Go will be mostly functional in Linux,
-out-of-the-box.  The various components of the USB hub can be synthesized
-into a single logical controller (including the additional buttons) in
-userspace with [Handheld Daemon](https://github.com/hhd-dev/hhd), which
-makes the Go fully functional.
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-Signed-off-by: Brenton Simpson <appsforartists@google.com>
-Link: https://lore.kernel.org/r/20240118183546.418064-1-appsforartists@google.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/input/joystick/xpad.c | 2 ++
- 1 file changed, 2 insertions(+)
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-index 1ff0d4e24fe6..f0b1dac93822 100644
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -276,6 +276,7 @@ static const struct xpad_device {
- 	{ 0x1689, 0xfd00, "Razer Onza Tournament Edition", 0, XTYPE_XBOX360 },
- 	{ 0x1689, 0xfd01, "Razer Onza Classic Edition", 0, XTYPE_XBOX360 },
- 	{ 0x1689, 0xfe00, "Razer Sabertooth", 0, XTYPE_XBOX360 },
-+	{ 0x17ef, 0x6182, "Lenovo Legion Controller for Windows", 0, XTYPE_XBOX360 },
- 	{ 0x1949, 0x041a, "Amazon Game Controller", 0, XTYPE_XBOX360 },
- 	{ 0x1bad, 0x0002, "Harmonix Rock Band Guitar", 0, XTYPE_XBOX360 },
- 	{ 0x1bad, 0x0003, "Harmonix Rock Band Drumkit", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
-@@ -464,6 +465,7 @@ static const struct usb_device_id xpad_table[] = {
- 	XPAD_XBOX360_VENDOR(0x15e4),		/* Numark X-Box 360 controllers */
- 	XPAD_XBOX360_VENDOR(0x162e),		/* Joytech X-Box 360 controllers */
- 	XPAD_XBOX360_VENDOR(0x1689),		/* Razer Onza */
-+	XPAD_XBOX360_VENDOR(0x17ef),		/* Lenovo */
- 	XPAD_XBOX360_VENDOR(0x1949),		/* Amazon controllers */
- 	XPAD_XBOX360_VENDOR(0x1bad),		/* Harminix Rock Band Guitar and Drums */
- 	XPAD_XBOX360_VENDOR(0x20d6),		/* PowerA Controllers */
--- 
-2.43.0
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
 
