@@ -1,116 +1,127 @@
-Return-Path: <linux-kernel+bounces-56334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A47484C8D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:41:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E08084C8C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:39:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D0A11C25B18
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:41:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C77741F24D5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A78E179BE;
-	Wed,  7 Feb 2024 10:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4797014AA3;
+	Wed,  7 Feb 2024 10:39:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="urhzt818"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i0dbnjRo"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 502E317BBD
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB751429A;
+	Wed,  7 Feb 2024 10:39:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707302437; cv=none; b=fHXmCbk2ikUgklOFFTB2x6tEMv79NG9M7Skn4wD3wM0VqjjeMCPLxJfU2m2QpkWA0Acs+YPANnc2mTfYVCo0qylIH5fh0MMwKLafy50ocCO4R1XXEW+MWkaAT4QjRyM8hqDZNkQqDB2i3AhG/8hETsJT3T3HVicBcj4BAn3XqXs=
+	t=1707302367; cv=none; b=ntl9CbECRmxONQqZd2mjRT7y6dkSg7SsEJzlEzSbDKlxVKI/pLIBeH6SALVmgn02RykJrZGLbEpqmhPwaA6VQwRdd8t8ATOlqXPdA/Tw+fSSgr7/1mwksRxa1i7fr2rfdNcbaYL4hdBLhPbIHa3s5e58KG2G8YiphOagdSGVGQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707302437; c=relaxed/simple;
-	bh=SBYaeaIuRnUC3w0K5e3nyt12xvcEJ6H6M2CDDRVw8Nk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OFEX7ZDC9HFP6EA9NRYd/CoPV9aajIhEiamx/Pfkml3V45wDn+xz203vmqex8js4lih4F9ja+zgNvKQgHB14WpFXfi53qM9IJRTkLpCf7cq+EWn9+G3DYhciolvQjk+joJMExKXvgqxwOl83snjVC3ZQqMZo8AFYve0kTlexyLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=urhzt818; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc6de8a699dso404643276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 02:40:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707302435; x=1707907235; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SBYaeaIuRnUC3w0K5e3nyt12xvcEJ6H6M2CDDRVw8Nk=;
-        b=urhzt818Z/86GUdsrtUuQa3bShsHnDSqIhR3KcX4GBwJx7eeZK3A2bVuHU5rG0K+BM
-         tzJh2tbo20IrXxFDagvrNL1b7cO2Ah8qhw7vpckqtQmaIvUZArokYzkPIMIJjAtWjbYV
-         gdGKQKRlC405SaeZmSvdBBpa+ecA+J83NhYzQTsGtsucab0XNhHsQse4CIyGQqBGvrKp
-         TZvM2uEAgdudXpCECbi4j0JO4PeE0W9XvuDWfkQb1jG5Tli/w2FWfZhEJoK1/st2VV7r
-         G9mQV/GfjHzm9bvSovu7YJpbcEsAN1LCPCmjjVvdVIZmo04OT6AHks6U0t9MuI09Qzxk
-         julw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707302435; x=1707907235;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SBYaeaIuRnUC3w0K5e3nyt12xvcEJ6H6M2CDDRVw8Nk=;
-        b=LIzlNjeRLTlUQFUbf1gLGT39trXbRwQ9C3rk9Eyd1P71B6BgZfE3LHtr0xBYy3OkOd
-         9FPzyOvbLqh2d+imL76JjkBrNmUT8P++UuZwCe5q5p95J0R8sJ4VkKuSa8ZYX5pZT5Qk
-         eehA58xbu+m64HRFSGwrzb1ETAzIupXLB5XdUFnsz7lPte68dm6hul0J1mktCgwWAVIX
-         6Ya83Fp4KhvWdFFMn3b7eQNf+jhuka5Rb6X9WoQoRWr/9glnKEFMn5ryllQfwbWu8Qwe
-         u/08U9yqD5qOXUTr4piKXr12TTZEzuxorXhh9RfiSmgJQayujFHPS1mftEoMzbxPYbJz
-         VRjA==
-X-Gm-Message-State: AOJu0YwSgT8hC5GOD0Qg5mQeOfqOTUF+gs6fhlArlo8bzms/AGhlUCZN
-	4FVxTfPRlx+akdDgFuxbhCMDbl1F0HLq5HMdtMgyX7fJwmCQS3zv4AjMd8iwWy7cgKLy04H99EB
-	/pJ6PXFn16b4bis5MIPMqOuWqZSv7grgriXFkhQ==
-X-Google-Smtp-Source: AGHT+IEz7LQWmT6JbJREKGnbwdfQXPNZ58Y4gBzTwXRC1OvL+RlYu/fuYoEdElXzdsKyWagQjMcXUqHmCDDHbwhFeCE=
-X-Received: by 2002:a5b:b87:0:b0:dc2:2608:af74 with SMTP id
- l7-20020a5b0b87000000b00dc22608af74mr4439839ybq.26.1707302435177; Wed, 07 Feb
- 2024 02:40:35 -0800 (PST)
+	s=arc-20240116; t=1707302367; c=relaxed/simple;
+	bh=6Lh2sf+u9C2LnxdPcmlX2E9wL8aJD0elq4IyaQrMH+A=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
+	 In-Reply-To:Content-Type; b=e+cDB05WZP4J/vyXgcmPFLStCMgcViXeNO29JgQqfHeO2JyWIWrudTMGeQv7xDlY2wFblpsEZviUjeWtn/PZcuDe0TrBUpSokV9/2sHdex90uGRyuXnQbKCXJW/1jX7FCbgThgqQ/5xxlZArSFh25nYuxLIWCztJ86CA/iTXdM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i0dbnjRo; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707302366; x=1738838366;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=6Lh2sf+u9C2LnxdPcmlX2E9wL8aJD0elq4IyaQrMH+A=;
+  b=i0dbnjRo8uo8bamfuIM/wnCM0Mcry8wE8qqISpPmjULFPFKn93wvGAg8
+   nhvKeMQTZsuNS6fbBWW2/bLjGk1G2MNkNT++z8l1D2XhJk01IqLaVQNHN
+   lwr0iKY1WWW3JMw/2EdpXFrCV0T0fZfS74pYQ9oCUsBfNfWXUxoqcKenW
+   bJOb2/ZuZbG5n8bpvglr2U4hYHa2v88Fk5eg0Gk+mSN5sSTFs9w3OKpVf
+   pupi7Wx2g6rm6xpUpR2g/eNDaHk5EoqOTxAniMtzyyHJ9m7OybfARk8Vy
+   yjD0FnI6PMxBLHZ322jmezxk/MYnZ8HDExosDuKMmGTYtS3dG8Buzz/3F
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="870385"
+X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
+   d="scan'208";a="870385"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 02:39:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="933738390"
+X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
+   d="scan'208";a="933738390"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Feb 2024 02:39:22 -0800
+Message-ID: <2d87509a-1515-520c-4b9e-bba4cd4fa2c6@linux.intel.com>
+Date: Wed, 7 Feb 2024 12:40:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123180818.3994-1-mario.limonciello@amd.com>
- <CACRpkdZxOovTOF0rOjyU1WwaRLZqML41hfYcC7z=HsAQjY8BsA@mail.gmail.com> <4e9e5ec1-e040-49e0-84a4-9f86c0fcec1b@leemhuis.info>
-In-Reply-To: <4e9e5ec1-e040-49e0-84a4-9f86c0fcec1b@leemhuis.info>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 7 Feb 2024 11:40:48 +0100
-Message-ID: <CACRpkdZ4pyFh50imdgL6ZxgAyRYCxsuz0DbmssELZ0mAxVcRcA@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: amd: Add IRQF_ONESHOT to the interrupt request
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Mario Limonciello <mario.limonciello@amd.com>, 
-	Basavaraj Natikar <Basavaraj.Natikar@amd.com>, Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, 
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, 
-	"open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	"Rafael J . Wysocki" <rafael@kernel.org>, Christian Heusel <christian@heusel.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Content-Language: en-US
+To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc: "Christian A. Ehrhardt" <lk@c--e.de>, niklas.neronin@linux.intel.com,
+ Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+ Greg KH <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org
+References: <CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com>
+ <Zb6D/5R8nNrxveAP@cae.in-ulm.de> <Zb/30qOGYAH4j6Mn@cae.in-ulm.de>
+ <CABXGCsPu73D+JS9dpvzX78RktK2VOv_xT8vvuVaQ=B6zs2dMNQ@mail.gmail.com>
+ <e7b96819-edf7-1f9f-7b01-e2e805c99b33@linux.intel.com>
+ <CABXGCsPjW_Gr4fGBzYSkr_4tsn0fvuT72G-YJYXcb1a4kX=CQw@mail.gmail.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: =?UTF-8?Q?Re=3a_This_is_the_fourth_time_I=e2=80=99ve_tried_to_find_?=
+ =?UTF-8?Q?what_led_to_the_regression_of_outgoing_network_speed_and_each_tim?=
+ =?UTF-8?Q?e_I_find_the_merge_commit_8c94ccc7cd691472461448f98e2372c75849406?=
+ =?UTF-8?Q?c?=
+In-Reply-To: <CABXGCsPjW_Gr4fGBzYSkr_4tsn0fvuT72G-YJYXcb1a4kX=CQw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 7, 2024 at 9:07=E2=80=AFAM Linux regression tracking (Thorsten
-Leemhuis) <regressions@leemhuis.info> wrote:
+On 6.2.2024 18.12, Mikhail Gavrilov wrote:
+> On Tue, Feb 6, 2024 at 4:24 PM Mathias Nyman
+> <mathias.nyman@linux.intel.com> wrote:
+> 
+> I confirm after reverting all listed commits and 57e153dfd0e7
+> performance of the network returned to theoretical maximum.
+> 
+>> That patch changes how we request MSI/MSI-X interrupt(s) for xhci.
+>>
+>> Is there any change is /proc/interrupts between a good and bad case?
+>> Such as xhci_hcd using MSI-X instead of MSI, or eth0 and xhci_hcd
+>> interrupting on the same CPU?
+> 
+> On the good kernel I have - 32 xhci_hcd, and bad only - 4.
+> In both scenarios using PCI-MSIX.
+> I attached both interrupt output as archives to this message.
+> 
 
-> [me]
-> > Patch applied for fixes!
->
-> Hmm, Linus, that was a week ago and I still can't spot the fix in -next
-> or
-> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
-> ; am I missing something or did something come up?
 
-Something came up but it's just illnesses travels and other such
-excuses.
+Thanks,
 
-I have merged down fixed to for-next and the patch should appear
-in linux-next and after that I can send it to Torvalds.
+Looks like your network adapter ends up interrupting CPU0 in the bad case due
+to the change in how many interrupts are requested by xhci_hcd before it.
 
-> Furthermore Christian seems to grow impatient -- and I do as well, as I
-> recently couldn't wake up my laptop due to this while on the road. :-/
+bad case:
+	CPU0	CPU1	...	CPU31
+87:	18213809 0	... 	0	IR-PCI-MSIX-0000:0e:00.0    0-edge      enp14s0
 
-Sorry, my fault :(
+Does manually changing it to some other CPU help? picking one that doesn't already
+handle a lot of interrupts. CPU0 could also in general be more busy, possibly spending
+more time with interrupts disabled.
 
-I will try to get this upstream as quick as possible.
+For example change to CPU23 in the bad case:
 
-Thanks for chasing me!
+echo 800000 > /proc/irq/87/smp_affinity
 
-Yours,
-Linus Walleij
+Check from proc/interrupts that enp14s0 interrupts actually go to CPU23 after this.
+
+Thanks
+Mathias
+
 
