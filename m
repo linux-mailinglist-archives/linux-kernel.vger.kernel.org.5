@@ -1,131 +1,119 @@
-Return-Path: <linux-kernel+bounces-55987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75F6584C47F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:51:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF04284C481
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:53:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A27DD1C251FC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:51:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CAAE1F23BCE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:53:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6824814F98;
-	Wed,  7 Feb 2024 05:51:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E36EC15E97;
+	Wed,  7 Feb 2024 05:53:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="btcJX+Av"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VWuRugET"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518541CD19;
-	Wed,  7 Feb 2024 05:51:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C371CD1E
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 05:53:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707285070; cv=none; b=JufTvkusZdbO6ZL7m3URyU19Bsb0woTFno8itiXTwvnHzonH3vUjtTrNBtN1Jz97vDj5X34lj84J1C/pCU/Iw0XAICdg1FCuG7H4x8s/IFezxG/omDMtRFa3QF4GxbSEdIxWdx6flnP3zDbqUC+XDBt4pJRFQLKw8YAr3nNVsR0=
+	t=1707285187; cv=none; b=oMOLdV10HeEtgmnLbNM6efOu3lMGtH2SaVc3Pvx5V5fb/Yxeb7fTIeKic4DD5fRHDuDu+bBSi5kZUeu7B2DaxIuZeTMYvh9KmMJRfNyZuGO+3/m8HzHmfQgI50omSRrS3Z2/pQ6R8FrTGdj7hul2X864iOOtpSC2TAJeLPDkFrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707285070; c=relaxed/simple;
-	bh=6HFE5XbPkuv4IpUMzgPKK0ywUly+m6JEn80embN3fwQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=RzaQAwR7I3G4k9BMI8X6opC2zWefG0pD6rlno+ypD+sYbZfFebl1utoxjFHV4hrseItMJ3rNwY5ktFY3qjuFBVcRZtGw9ypZyzhWM3IvFvsWf2/4V+T5qig8LP07ncxU6mzndiDdGxFYCBBrHT2jXSRQWmQMSvPzCGGF4u0qBOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=btcJX+Av; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4175M2YO030237;
-	Wed, 7 Feb 2024 05:51:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=6HFE5XbPkuv4IpUMzgPKK0ywUly+m6JEn80embN3fwQ=;
- b=btcJX+AvDkJ47AjCW3IomtbuPjmpkUS+WlM/Ca9wzmAaGRZFusT5kKtXUvFov4hVX9uk
- 7dSJT4Hk+Wo+Tpo2OYDSQhc1HPxHhz3G4Kdf4NsI5U1JLuT3XfAuuyWauzOs1D9vxPuc
- 6FDtiZy/jQDKw0ExkBDUJ3ft7cQkWLe5CTXk+0gslUBcwNCMH1MbU4kGmysYqE+X9fFk
- 6DbyVEFBrDrG+DgDLX3SUHQ2x93oXnEUyB1BJvARq+GnSUCuiAebA9ehoEpA+yaA5erl
- dfJGQ3FAYUjtGfKJE65FzKcghFOjXC2Y/Uc2VhMfJd7Yox8+RhV7bUQnd5XnqhbLS5AH MA== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w43nb0m3s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 05:51:03 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4174o1cF014739;
-	Wed, 7 Feb 2024 05:51:02 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w20tnuvgn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Feb 2024 05:51:02 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4175p0VN1311332
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 7 Feb 2024 05:51:00 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 294AB2004B;
-	Wed,  7 Feb 2024 05:51:00 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E4E4F20040;
-	Wed,  7 Feb 2024 05:50:59 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed,  7 Feb 2024 05:50:59 +0000 (GMT)
-From: Sven Schnelle <svens@linux.ibm.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Mete Durlu <meted@linux.ibm.com>
-Subject: Re: [PATCH] tracing: use ring_buffer_record_is_set_on() in
- tracer_tracing_is_on()
-In-Reply-To: <20240206060113.39c0f5bc@rorschach.local.home> (Steven Rostedt's
-	message of "Tue, 6 Feb 2024 06:01:13 -0500")
-References: <20240205065340.2848065-1-svens@linux.ibm.com>
-	<20240205075504.1b55f29c@rorschach.local.home>
-	<yt9djznj3vbl.fsf@linux.ibm.com>
-	<20240205092353.523cc1ef@rorschach.local.home>
-	<yt9d34u63xxz.fsf@linux.ibm.com> <yt9dsf262d2n.fsf@linux.ibm.com>
-	<20240206060113.39c0f5bc@rorschach.local.home>
-Date: Wed, 07 Feb 2024 06:50:59 +0100
-Message-ID: <yt9deddovn3w.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1707285187; c=relaxed/simple;
+	bh=TByPXr7dTrWn79s6knx+N7D+PQY5JFNqw/lbqQ/BLu8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=idfckvNERy9xiT9f70qG8HA0aipd4Tgz+0jYAZgNaDO8/Yo0s2pvvNASO2U1X59i5agJqM7F6wP3WFaePLfWbvypu8VmMoRxWA7dhKmOZ/atPGUg5T7gi21atw7rABnSsENJ6NniDcXWkLCJpHwxWlkFiwFjCd0mKPhXqXS+J8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VWuRugET; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95342C433B2
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 05:53:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707285186;
+	bh=TByPXr7dTrWn79s6knx+N7D+PQY5JFNqw/lbqQ/BLu8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=VWuRugET//9iAp/Ke71ta5Mw+Tv2qJhWf15UxvbSj0TSVqxTEBbPmHLgEQ+JVkSIM
+	 kUFxfCxYrI1riZdm8Ly6YT6Y1s3tC52RZ+8Mlad9bVxVVk/l/31zDlUvC6Rv15MqMf
+	 e3ShULMeNqWM2QtQc3gUnQlWIZiiGGuS3/aG5GVbUznOQonCUGf3Gb4EAZmwQZ6L0F
+	 fPFqddC1SEczggTj5W5P0Isu67iSGaZf5mR4INZoiAO/4AKlWP9fH9twJzpQK8R/Ya
+	 dJYJpvo3qwHPmRT6miGDDhZ7dcQ2pX/yDGuUvNKPa/7sV+XAYFxIIT7J1g4vWO7p3d
+	 yyrRvl2OKUOsQ==
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-363b2cc9372so652185ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 21:53:06 -0800 (PST)
+X-Gm-Message-State: AOJu0YwxJlLaCZ43jgTa5oyD58MhZBQeOXxs1+ocwd0WbHTQ/RwuUFYl
+	RiIvN4bJs0GKhHEPNRlwsogUe+NNpojDlWM4GC3u1fHK2TUJtJ6226njlsISCDGBwu+mZ10UxAN
+	tI8gTcC9cd+WD9GBlGI8qppI+o+J9ZJ4LWCjY
+X-Google-Smtp-Source: AGHT+IEItXQ2dsvOVA3WJNrIak4YuH04DcNdDXg3J9pUKtIGPzVHGjWe8iOrcecC+5xCvWGBzwk+7+XwjhYU0roWuR4=
+X-Received: by 2002:a05:6e02:1d04:b0:363:b0fb:322 with SMTP id
+ i4-20020a056e021d0400b00363b0fb0322mr6273507ila.0.1707285185861; Tue, 06 Feb
+ 2024 21:53:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: FuTFExxk6Ff0yYrXjiA9ALP_kp81Bs_E
-X-Proofpoint-GUID: FuTFExxk6Ff0yYrXjiA9ALP_kp81Bs_E
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-06_16,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=735
- malwarescore=0 phishscore=0 bulkscore=0 adultscore=0 suspectscore=0
- clxscore=1015 impostorscore=0 lowpriorityscore=0 mlxscore=0
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2402070042
+References: <20240207033857.3820921-1-chengming.zhou@linux.dev>
+ <CAF8kJuOCbuFemoFNUYeNGYzYJ7eGLka6Y6OvSg8h61vXUfYdLw@mail.gmail.com> <CAJD7tkbc7j8B3X8YfQ9r00D3ojJvJg+YwNuAF6P=jyCyrGy_=Q@mail.gmail.com>
+In-Reply-To: <CAJD7tkbc7j8B3X8YfQ9r00D3ojJvJg+YwNuAF6P=jyCyrGy_=Q@mail.gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Tue, 6 Feb 2024 21:52:54 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuN=yN-fgv3RgQYq2kEbsUr5=bD1fbWVE5QNRTGAO9JgJg@mail.gmail.com>
+Message-ID: <CAF8kJuN=yN-fgv3RgQYq2kEbsUr5=bD1fbWVE5QNRTGAO9JgJg@mail.gmail.com>
+Subject: Re: [PATCH v3] mm/zswap: invalidate old entry when store fail or !zswap_enabled
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: chengming.zhou@linux.dev, hannes@cmpxchg.org, nphamcs@gmail.com, 
+	akpm@linux-foundation.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Chengming Zhou <zhouchengming@bytedance.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Steven,
-
-Steven Rostedt <rostedt@goodmis.org> writes:
-
-> On Tue, 06 Feb 2024 09:48:16 +0100
-> Sven Schnelle <svens@linux.ibm.com> wrote:
+On Tue, Feb 6, 2024 at 9:46=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
+wrote:
 >
->> I added some logging, and the test is not triggering this issue. So i
->> assume the default of 128 cmdline entries is just to small. Sorry for
->> the noise. Lets see whether we're still triggering some failures with
->> the other fix applied in CI. If we do, maybe we want to increase the
->> saved_cmdline_size for the ftrace test suite.
+> > > @@ -1608,14 +1598,12 @@ bool zswap_store(struct folio *folio)
+> > >         /* map */
+> > >         spin_lock(&tree->lock);
+> > >         /*
+> > > -        * A duplicate entry should have been removed at the beginnin=
+g of this
+> > > -        * function. Since the swap entry should be pinned, if a dupl=
+icate is
+> > > -        * found again here it means that something went wrong in the=
+ swap
+> > > -        * cache.
+> > > +        * The folio may have been dirtied again, invalidate the
+> > > +        * possibly stale entry before inserting the new entry.
+> > >          */
+> > > -       while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) =3D=
+=3D -EEXIST) {
+> > > -               WARN_ON(1);
+> > > +       if (zswap_rb_insert(&tree->rbroot, entry, &dupentry) =3D=3D -=
+EEXIST) {
+> > >                 zswap_invalidate_entry(tree, dupentry);
+> > > +               VM_WARN_ON(zswap_rb_insert(&tree->rbroot, entry, &dup=
+entry));
+> >
+> > It seems there is only one path called zswap_rb_insert() and there is
+> > no loop to repeat the insert any more. Can we have the
+> > zswap_rb_insert() install the entry and return the dupentry? We can
+> > still just call zswap_invalidate_entry() on the duplicate. The mapping
+> > of the dupentry has been removed when  zswap_rb_insert() returns. That
+> > will save a repeat lookup on the duplicate case.
+> > After this change, the zswap_rb_insert() will map to the xarray
+> > xa_store() pretty nicely.
 >
-> I wonder if it is a good idea to increase the size when tracing starts,
-> like the ring buffer expanding code. Maybe to 1024? Or is that still
-> too small?
+> I brought this up in v1 [1]. We agreed to leave it as-is for now since
+> we expect the xarray conversion soon-ish. No need to update
+> zswap_rb_insert() only to replace it with xa_store() later anyway.
+>
+> [1] https://lore.kernel.org/lkml/ZcFne336KJdbrvvS@google.com/
+>
+Ah, thanks for the pointer. I miss your earlier reply.
 
-Not sure whether that is enough, have to test. However, it's not really
-a fix, it would just require a bit more load and the test would fail
-again. The fundamental problem is that even after disabling tracing
-there might be some tracing line added due to the lockless nature of
-the ringbuffer. This might then replace some existing cmdline entry.
-So maybe we should change the test to ignore the program name when
-calculating the checksums.
+Acked-by: Chris Li <chrisl@kernel.org>
+
+Chris
 
