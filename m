@@ -1,237 +1,182 @@
-Return-Path: <linux-kernel+bounces-56500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EF3284CAED
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:53:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 024C684CAEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:54:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD07D28483D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:53:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3561D1C25FD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363D27605F;
-	Wed,  7 Feb 2024 12:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5CBB768EF;
+	Wed,  7 Feb 2024 12:54:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fXZiuR/C"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="N5gE6h6/"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D059076035
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 12:53:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC11B24208;
+	Wed,  7 Feb 2024 12:54:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707310418; cv=none; b=Rds+aZYJmuT/zWclpd7qNvi4aMlbJZxdqrz33kiw2iHX29taoLCV2+92yJLL7VICDtC4T7j7fjsSdibCx8mG4xmUMR+p3BsyLvTkjrATeZqJBQGsHYgGlVB1HTHX3iVbOr+FGf/yyIyyGwX06W1h6AiRa/nLwVMkdzmCie2jlfw=
+	t=1707310465; cv=none; b=eL18C7E+5DW8Kpa6u7FOHXsHHQLqU8r6e6hRNoToGnOU6X4IIVDmUoYpAUZ1o1FyjZqAD8xX3VATywAk575lnpm70FEKoLE8SF7E5eltwYDLh/wlRI8oNLqnwP11Ara6aDmgFSzF9wYlws2lJNNSrRQ4FiXukfd8YjyzO0bOwdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707310418; c=relaxed/simple;
-	bh=PpFdo+JQ4Mg2lCqCBdp2fgoJ+UQ+NLh6Fris2Zvw1KI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CNexHRO4qW3MzHvNaDNPb7Lz3mp/X+M0x1HYVkXRP1kzc0rZiK7JAwxPxBg9lizxHISJbdCNx7h1nlipcHcczMmMVhSZcWiMM8E0L31lYdFM7Nfypiw1k9mHtnqPGoyX7230OcwEU3liz/tItiIv/NBg5UFW1e9PT7CjlSVGX/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=fXZiuR/C; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d91397bd22so4715295ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 04:53:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707310416; x=1707915216; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8/FWqIrHK3r1+5/LGbrU0IvWdDfD0vfJmA+DhAX2wzg=;
-        b=fXZiuR/CdrH2FZZv/oES9AxZgcqaJ9D8YxUyJgwA1F3L+3xLLRyf2SPrNef45Z4c+3
-         MzXQmDsFR8zVvT5tfszd1HZvPOvpXXECsIu3KXU6Uj8k9AvmxF3cCwYCg0cuCuRacPR0
-         L6WUfuXPC3R5ak64U9uQRVsFcCO6fKD3xbtdc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707310416; x=1707915216;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8/FWqIrHK3r1+5/LGbrU0IvWdDfD0vfJmA+DhAX2wzg=;
-        b=qvV0PJloJ50MXHwU5VnhkRfiau2gKakEUC1URJshe01vLEaNsqLU3ay5xa36MTPRNl
-         gWwQ73DqQqASCtC8boh/eyf+zeQigdXewx3HHWC7JCMaL51g6JfY/hfWnYOdkpZiiI0D
-         Ss3zxKpcmIBbT777MORr/NGJU0Bdx0h1BFtGry1KokJCHkpp7OS062ogySZj8FK+ODXK
-         JtQbJA1ri+7VyV5vwAWz8cApWIkJtpdCvLT6SuLHI9B3aZW2y3r6MVsb6HFCvIPc0KmS
-         7GgqmOwZl2qE0wWneErjbmvaIQjZiKUcazPXTCIz/jHkPrz5YInftRblm8Mr3nSQ8jK+
-         5+pg==
-X-Forwarded-Encrypted: i=1; AJvYcCWxui9wTPHltDyJN5Kw3SkbIYkNITLBg55wZq5Q1ma41Kdy1PyvnEiSrLE6iP2cujN0D2ouASDDuuBpZS6jGzKFlEcGABu+CFA1QBus
-X-Gm-Message-State: AOJu0YwUrtUxB+wJ2W6yRvoI0Aiadr2HgRf/NsYiP4QHcneWmtPSle+E
-	+V6J6q2chD3daNW6z0mq+5/+IZ4v/Ev1cusVgFUssbuStlg6YaRccpJ15vBKEI5bUBUnI5Iz7lo
-	=
-X-Google-Smtp-Source: AGHT+IGDL5lqBvKqPmrTE6QBi9/tJBFm3Dbc94jiRAgzlfFbsjwtdpIVyjgBrLUpDwx1tabVhsWTeg==
-X-Received: by 2002:a17:902:6f16:b0:1d9:cc00:5240 with SMTP id w22-20020a1709026f1600b001d9cc005240mr4301862plk.39.1707310416018;
-        Wed, 07 Feb 2024 04:53:36 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVP2ws9DL0Nxv4lmGdm4q3o+K6PHJn06UiQrAnF9y/jM+zCfnIvZarhXt272aqoJjpK0E6jxXskcYeao+KvkE9zehS+7rfcGP2LcgAwetASVe3PqJa4vER5riMPWR2wYRxGOOl0yq5tVSTphkblxj6a6QQYAN9V/9cjxJI/2DAIRHQEDSh+QLJP3MDtGbIbAJ+AUwDClh3veiJpDrkk8GF7nl7wW4DbDf8mS/caRdH5IxcQn4BDH7H7Yrr0QkGHU0noErmIYVmXusj5hraLwZSw1sNrkMdno2bZpmctNkGaIcTAD0PdpQHW+wvXHXDrd7yYqQrt6Ut6HZj/
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x14-20020a170902ec8e00b001d9daf742ccsm1337181plg.233.2024.02.07.04.53.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 04:53:35 -0800 (PST)
-Date: Wed, 7 Feb 2024 04:53:35 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Yuanhe Shu <xiangzao@linux.alibaba.com>
-Cc: tony.luck@intel.com, gpiccoli@igalia.com, shuah@kernel.org,
-	corbet@lwn.net, xlpang@linux.alibaba.com,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 3/3] tools/testing: adjust pstore backend related selftest
-Message-ID: <202402070452.24B3200@keescook>
-References: <20240207021921.206425-1-xiangzao@linux.alibaba.com>
- <20240207021921.206425-4-xiangzao@linux.alibaba.com>
+	s=arc-20240116; t=1707310465; c=relaxed/simple;
+	bh=0dgVTyRDyIITEw8cjx/bO5qjXxVQQNS5aCdwjS7/6us=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I8vJ/e+Y22MM2GyL+ikblsyEgRg44OlnwXzg6fl97Dh9JF/8SA02Ox1r+9rMy+4JQGyxcsj3MNj7oi+yHuND14BvAssLEbG+Vo668AdWr9JXidQGTpriMmsSMUwJu7a6pA4e3Q6z2+w2m66GzoUJmP8v+FA0zPDu4x4I4wWVbW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=N5gE6h6/; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 417CsBdp121309;
+	Wed, 7 Feb 2024 06:54:11 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707310451;
+	bh=/M9KAPNd5z2NR6F6xgrGXHPVw+rjKoUC+4SOpn6mtiE=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=N5gE6h6/hLjlX6TbkCtPrKh5vRFkzS+KahqSVhxacypUrHq4P/XRSOFU/oHomAChv
+	 JsR2t+ekh6PexlcdKrBeu86PyoS6FWFZr0nEo/iVAob6ioNoNabkwHWn+QhfDqMxi4
+	 zojEteZiUXeZpAQBKX6SN97E4XSuv/GJxm8ADkLY=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 417CsBdH072448
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 7 Feb 2024 06:54:11 -0600
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 7
+ Feb 2024 06:54:10 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 7 Feb 2024 06:54:11 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 417CsA3J074777;
+	Wed, 7 Feb 2024 06:54:10 -0600
+Date: Wed, 7 Feb 2024 06:54:10 -0600
+From: Nishanth Menon <nm@ti.com>
+To: Udit Kumar <u-kumar1@ti.com>
+CC: <kristo@kernel.org>, <ssantosh@kernel.org>, <chandru@ti.com>,
+        <rishabh@ti.com>, <kamlesh@ti.com>, <vigneshr@ti.com>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v3] clk: keystone: sci-clk: Adding support for non
+ contiguous clocks
+Message-ID: <20240207125410.r2q3jcplvif7dvt2@tumbling>
+References: <20240207091100.4001428-1-u-kumar1@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240207021921.206425-4-xiangzao@linux.alibaba.com>
+In-Reply-To: <20240207091100.4001428-1-u-kumar1@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Wed, Feb 07, 2024 at 10:19:21AM +0800, Yuanhe Shu wrote:
-> Pstore now supports multiple backends, the module parameter
-> pstore.backend varies from 'registered backend' to 'backends that are
-> allowed to register'. Adjust selftests to match the change.
+On 14:41-20240207, Udit Kumar wrote:
+> Most of clocks and their parents are defined in contiguous range,
+> But in few cases, there is gap in clock numbers[0].
+> Driver assumes clocks to be in contiguous range, and add their clock
+> ids incrementally.
 > 
-> Signed-off-by: Yuanhe Shu <xiangzao@linux.alibaba.com>
+> New firmware started returning error while calling get_freq and is_on
+> API for non-available clock ids.
+> 
+> In this fix, driver checks and adds only valid clock ids.
+> 
+> Fixes: 3c13933c6033 ("clk: keystone: sci-clk: add support for dynamically probing clocks")
+> 
+> [0] https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j7200/clocks.html
+> Section Clocks for NAVSS0_CPTS_0 Device,
+> clock id 12-15 not present.
+> 
+> Signed-off-by: Udit Kumar <u-kumar1@ti.com>
 > ---
->  tools/testing/selftests/pstore/common_tests   |  8 +--
->  .../selftests/pstore/pstore_post_reboot_tests | 65 ++++++++++---------
->  tools/testing/selftests/pstore/pstore_tests   |  2 +-
->  3 files changed, 38 insertions(+), 37 deletions(-)
+> Changelog
+> Changes in v3
+> - instead of get_freq, is_auto API is used to check validilty of clock
+> - Address comments of v2, to have preindex increment
+> Link to v2 https://lore.kernel.org/all/20240206104357.3803517-1-u-kumar1@ti.com/
 > 
-> diff --git a/tools/testing/selftests/pstore/common_tests b/tools/testing/selftests/pstore/common_tests
-> index 4509f0cc9c91..497e6fc3215f 100755
-> --- a/tools/testing/selftests/pstore/common_tests
-> +++ b/tools/testing/selftests/pstore/common_tests
-> @@ -27,9 +27,9 @@ show_result() { # result_value
->  }
+> Changes in v2
+> - Updated commit message
+> - Simplified logic for valid clock id
+> link to v1 https://lore.kernel.org/all/20240205044557.3340848-1-u-kumar1@ti.com/
+> 
+> 
+> P.S
+> Firmawre returns total num_parents count including non available ids.
+> For above device id NAVSS0_CPTS_0, number of parents clocks are 16
+> i.e from id 2 to 17. But out of these ids few are not valid.
+> So driver adds only valid clock ids out ot total.
+> 
+> Original logs
+> https://gist.github.com/uditkumarti/de4b36b21247fb36725ad909ce4812f6#file-original-logs
+> Line 2630 for error
+> 
+> Logs with fix v3
+> https://gist.github.com/uditkumarti/94e3e28d62282fd708dbfe37435ce1d9#file-v3
+> Line 2586
+> 
+> 
+>  drivers/clk/keystone/sci-clk.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/clk/keystone/sci-clk.c b/drivers/clk/keystone/sci-clk.c
+> index 35fe197dd303..31b7df05d7bb 100644
+> --- a/drivers/clk/keystone/sci-clk.c
+> +++ b/drivers/clk/keystone/sci-clk.c
+> @@ -516,6 +516,7 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
+>  	struct sci_clk *sci_clk, *prev;
+>  	int num_clks = 0;
+>  	int num_parents;
+> +	bool state;
+>  	int clk_id;
+>  	const char * const clk_names[] = {
+>  		"clocks", "assigned-clocks", "assigned-clock-parents", NULL
+> @@ -583,16 +584,23 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
+>  					num_parents = 255;
+>  				}
 >  
->  check_files_exist() { # type of pstorefs file
-> -    if [ -e ${1}-${backend}-0 ]; then
-> +    if [ -e ${1}-${2}-0 ]; then
->  	prlog "ok"
-> -	for f in `ls ${1}-${backend}-*`; do
-> +	for f in `ls ${1}-${2}-*`; do
->              prlog -e "\t${f}"
->  	done
->      else
-> @@ -74,9 +74,9 @@ prlog "=== Pstore unit tests (`basename $0`) ==="
->  prlog "UUID="$UUID
+> -				clk_id = args.args[1] + 1;
+> +				clk_id = args.args[1];
 >  
->  prlog -n "Checking pstore backend is registered ... "
-> -backend=`cat /sys/module/pstore/parameters/backend`
-> +backends=$(dmesg | sed -n 's/.*pstore: Registered \(.*\) as persistent store backend.*/\1/p')
->  show_result $?
-> -prlog -e "\tbackend=${backend}"
-> +prlog -e "\tbackends="$backends
+>  				while (num_parents--) {
+> +					/* Check if this clock id is valid */
+> +					ret = provider->ops->is_auto(provider->sci,
+> +						sci_clk->dev_id, ++clk_id, &state);
 
-Missing trailing "? Also, doesn't this end up printing multiple lines?
-Perhaps, like LSM stacking, we need a /sys/module entry for the list of
-backends, comma separated?
+A bit too nice coding ;) => I had been confused momentarily by clk_id = args.args[1]
+change just above till I saw that you are pre-incrementing
+clk_id - Is there a harm in leaving the original clk_id increment logic
+alone (it was much simpler to read up)?
 
->  prlog -e "\tcmdline=`cat /proc/cmdline`"
->  if [ $rc -ne 0 ]; then
->      exit 1
-> diff --git a/tools/testing/selftests/pstore/pstore_post_reboot_tests b/tools/testing/selftests/pstore/pstore_post_reboot_tests
-> index d6da5e86efbf..9e40ccb9c918 100755
-> --- a/tools/testing/selftests/pstore/pstore_post_reboot_tests
-> +++ b/tools/testing/selftests/pstore/pstore_post_reboot_tests
-> @@ -36,45 +36,46 @@ else
->  fi
+> +
+> +					if (ret)
+> +						continue;
+> +
+>  					sci_clk = devm_kzalloc(dev,
+>  							       sizeof(*sci_clk),
+>  							       GFP_KERNEL);
+>  					if (!sci_clk)
+>  						return -ENOMEM;
+>  					sci_clk->dev_id = args.args[0];
+> -					sci_clk->clk_id = clk_id++;
+> +					sci_clk->clk_id = clk_id;
+>  					sci_clk->provider = provider;
+>  					list_add_tail(&sci_clk->node, &clks);
 >  
->  cd ${mount_point}
-> +for backend in ${backends}; do
-> +    prlog -n "Checking ${backend}-dmesg files exist in pstore filesystem ... "
-> +    check_files_exist dmesg ${backend}
->  
-> -prlog -n "Checking dmesg files exist in pstore filesystem ... "
-> -check_files_exist dmesg
-> +    prlog -n "Checking ${backend}-console files exist in pstore filesystem ... "
-> +    check_files_exist console ${backend}
->  
-> -prlog -n "Checking console files exist in pstore filesystem ... "
-> -check_files_exist console
-> +    prlog -n "Checking ${backend}-pmsg files exist in pstore filesystem ... "
-> +    check_files_exist pmsg ${backend}
->  
-> -prlog -n "Checking pmsg files exist in pstore filesystem ... "
-> -check_files_exist pmsg
-> +    prlog -n "Checking ${backend}-dmesg files contain oops end marker"
-> +    grep_end_trace() {
-> +        grep -q "\---\[ end trace" $1
-> +    }
-> +    files=`ls dmesg-${backend}-*`
-> +    operate_files $? "$files" grep_end_trace
->  
-> -prlog -n "Checking dmesg files contain oops end marker"
-> -grep_end_trace() {
-> -    grep -q "\---\[ end trace" $1
-> -}
-> -files=`ls dmesg-${backend}-*`
-> -operate_files $? "$files" grep_end_trace
-> +    prlog -n "Checking ${backend}-console file contains oops end marker ... "
-> +    grep -q "\---\[ end trace" console-${backend}-0
-> +    show_result $?
->  
-> -prlog -n "Checking console file contains oops end marker ... "
-> -grep -q "\---\[ end trace" console-${backend}-0
-> -show_result $?
-> -
-> -prlog -n "Checking pmsg file properly keeps the content written before crash ... "
-> -prev_uuid=`cat $TOP_DIR/prev_uuid`
-> -if [ $? -eq 0 ]; then
-> -    nr_matched=`grep -c "$TEST_STRING_PATTERN" pmsg-${backend}-0`
-> -    if [ $nr_matched -eq 1 ]; then
-> -	grep -q "$TEST_STRING_PATTERN"$prev_uuid pmsg-${backend}-0
-> -	show_result $?
-> +    prlog -n "Checking ${backend}-pmsg file properly keeps the content written before crash ... "
-> +    prev_uuid=`cat $TOP_DIR/prev_uuid`
-> +    if [ $? -eq 0 ]; then
-> +        nr_matched=`grep -c "$TEST_STRING_PATTERN" pmsg-${backend}-0`
-> +        if [ $nr_matched -eq 1 ]; then
-> +	    grep -q "$TEST_STRING_PATTERN"$prev_uuid pmsg-${backend}-0
-> +	    show_result $?
-> +        else
-> +            prlog "FAIL"
-> +            rc=1
-> +        fi
->      else
-> -	prlog "FAIL"
-> -	rc=1
-> +        prlog "FAIL"
-> +        rc=1
->      fi
-> -else
-> -    prlog "FAIL"
-> -    rc=1
-> -fi
->  
-> -prlog -n "Removing all files in pstore filesystem "
-> -files=`ls *-${backend}-*`
-> -operate_files $? "$files" rm
-> +    prlog -n "Removing all ${backend} files in pstore filesystem "
-> +    files=`ls *-${backend}-*`
-> +    operate_files $? "$files" rm
-> +done
->  
->  exit $rc
-> diff --git a/tools/testing/selftests/pstore/pstore_tests b/tools/testing/selftests/pstore/pstore_tests
-> index 2aa9a3852a84..f4665a8c77dc 100755
-> --- a/tools/testing/selftests/pstore/pstore_tests
-> +++ b/tools/testing/selftests/pstore/pstore_tests
-> @@ -10,7 +10,7 @@
->  . ./common_tests
->  
->  prlog -n "Checking pstore console is registered ... "
-> -dmesg | grep -Eq "console \[(pstore|${backend})"
-> +dmesg | grep -Eq "console \[(pstore console)"
->  show_result $?
->  
->  prlog -n "Checking /dev/pmsg0 exists ... "
 > -- 
-> 2.39.3
+> 2.34.1
 > 
-
-Otherwise seems ok
 
 -- 
-Kees Cook
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
