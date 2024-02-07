@@ -1,110 +1,152 @@
-Return-Path: <linux-kernel+bounces-55934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93AC684C39D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:34:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23A7F84C39F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:35:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2987E1F26F1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:34:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D59D728BDD8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A2D4134A4;
-	Wed,  7 Feb 2024 04:34:40 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2761712B71
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 04:34:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5BCA12E68;
+	Wed,  7 Feb 2024 04:35:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="IG98X5p3"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05BD41CD21;
+	Wed,  7 Feb 2024 04:35:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707280479; cv=none; b=loTjMAb4hSifAhs+R3NBoGw2qA8ja6MkXqpfNliaBbXPBV40HfGdyRPxRAw1zhNdm/lNfltbRXU5LFG/l/GKnAk9D1uWlB6K3Kqv/6XnAIpAx0sWXXNKjmIOyQae7u9p0fNGeO8ihCMJjVuv9yuwSLuiOUC+yGA68oywit/Zxe0=
+	t=1707280510; cv=none; b=Sb2uXlZ/ka27NQ4NFPF9zUQpk9DHx+Z1Wm8KlRF/3MQWY6fJq3hnjQp6ZX9dtzPTfbBnVIkrjoW+q57yo5G72G3Hn/1I8X04DjPWEBP0v03UQjy0tmacP5FL37D09zVatqeGxH9dfowL69FXYyO/tt5rVz9mxqPwtJ//9Umqk5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707280479; c=relaxed/simple;
-	bh=5SC92MxPuA44KXqdmryQh6nFTEySvoc2sDpD9I4xptM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TIvMDHjWgBkP03x7h+a3W/j51UwhbEFLRpxyDyuPEAC0y/+d6iEfVWSnUafRKrV4LCIXOrGr5UnR5IaUO+xnWMV+jmE064ZMh7nn6a0WG9keSbwvMAyB8tNOvbSp1CmJ3fWmCtDyjxZmtoH0fSdUP0CtruwRIWYQoYY0Kl/7WgI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 267511FB;
-	Tue,  6 Feb 2024 20:35:18 -0800 (PST)
-Received: from [10.162.40.23] (a077893.blr.arm.com [10.162.40.23])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6BA453F5A1;
-	Tue,  6 Feb 2024 20:34:34 -0800 (PST)
-Message-ID: <8d9f2950-6805-481f-a5e7-e5ea45128fb5@arm.com>
-Date: Wed, 7 Feb 2024 10:04:31 +0530
+	s=arc-20240116; t=1707280510; c=relaxed/simple;
+	bh=qJI7eNzmomK/NonfnHIZ3Nz1afIhuI/SSIjQfFADE2s=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=lPF8rZvnFK0Khrl+p4/RZChc2Oz98zNMnquMTOUjx+9l5PIiJYlrHJTde8J+TqE+OSBPdXQ4u4jweGSP+Xx2D9HcjFAZYa0sCuCQvkoOQX7F2hh4x/RYf051i23qO+ZgYg9mbxlRLJQ29DXgUKr2BgqdeMKb8BnOeSYwa5C/0yE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=IG98X5p3; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707280504;
+	bh=z9YwpF73pwWl7HHYVgw39x1Dmvsg3FtzgmklIGeR/Z4=;
+	h=Date:From:To:Cc:Subject:From;
+	b=IG98X5p3/Ehyjs5K5dtTlF24ecrtUHZsUV1s+Iv9dfN4M5sTwqtUp+QYszveQh8Vs
+	 OvPt+BWzshGZ1JUgqZ6LSXukaPGSrq2c2+p41qjlPrAkcmtAzvLq5+h60sahmPRKTh
+	 uk55eRTJqm9iI65Zdfp82J6vBDshU/AttpQQQggCeTDEhzlJXQz96pMWRE/1yetZ44
+	 D3AXHn7UuI+6cB/23tpkEt9HJTWUWG5i2OMCGN4al/RNC0/QVtCwzBSxLm7pn+4aYt
+	 AZEy5GNWadNrXw2hNEdFl2ipRO5VzszrPFKYvuEaAMS6TfxvfMBQL6v3G3U5kXodcP
+	 7yHCm/zHh0qyQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TV6jL4qS3z4wcQ;
+	Wed,  7 Feb 2024 15:35:02 +1100 (AEDT)
+Date: Wed, 7 Feb 2024 15:35:01 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Sean Christopherson <seanjc@google.com>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin"
+ <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>
+Cc: Ashish Kalra <ashish.kalra@amd.com>, "Borislav Petkov (AMD)"
+ <bp@alien8.de>, Brijesh Singh <brijesh.singh@amd.com>, Jarkko Sakkinen
+ <jarkko@profian.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Michael Roth <michael.roth@amd.com>, Tom
+ Lendacky <thomas.lendacky@amd.com>
+Subject: linux-next: manual merge of the kvm-x86 tree with the tip tree
+Message-ID: <20240207153501.2c575b60@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm/cma: Add sysfs file 'release_pages_success'
-Content-Language: en-US
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, alexandru.elisei@arm.com, linux-kernel@vger.kernel.org
-References: <20240206045731.472759-1-anshuman.khandual@arm.com>
- <20240206093857.d834af4f96d643c53e29e02d@linux-foundation.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20240206093857.d834af4f96d643c53e29e02d@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/A_aqSM6/V3s=i1Z7iKqJY9o";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/A_aqSM6/V3s=i1Z7iKqJY9o
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2/6/24 23:08, Andrew Morton wrote:
-> On Tue,  6 Feb 2024 10:27:31 +0530 Anshuman Khandual <anshuman.khandual@arm.com> wrote:
-> 
->> This adds the following new sysfs file tracking the number of successfully
->> released pages from a given CMA heap area. Also like before - this will be
->> available via CONFIG_CMA_SYSFS, and help in determining active CMA pages
->> available on the system.
-> 
-> "like before" is mysterious.  Is this referring to some other patch? 
-> To existing code?  Please be explicit and complete.
+Hi all,
 
-This was just referring to existing sysfs files i.e 'alloc_pages_success'
-and 'alloc_pages_fail'.
+Today's linux-next merge of the kvm-x86 tree got a conflict in:
 
-> 
->> /sys/kernel/mm/cma/<cma-heap-area>/release_pages_success
->>
->> It adds an element 'nr_pages_released' (with CONFIG_CMA_SYSFS config) into
->> 'struct cma' which gets updated during cma_release().
-> 
-> The changelog doesn't explain why Linux needs this feature.  The value
-> to our users.  Perhaps that info is buried in the link which is buried
-> below the ^---$, but as this is the most important part of a changelog,
-> it really should be spelled out here, completely and carefully please.
+  arch/x86/kvm/svm/sev.c
 
-Does this look better ?
+between commit:
 
-mm/cma: Add sysfs file 'release_pages_success'
+  1ca5614b84ee ("crypto: ccp: Add support to initialize the AMD-SP for SEV-=
+SNP")
 
-This adds the following new sysfs file tracking the number of successfully
-released pages from a given CMA heap area. This file will be available via
-CONFIG_CMA_SYSFS and help in determining active CMA pages available on the
-CMA heap area. This adds a new 'nr_pages_released' (CONFIG_CMA_SYSFS) into
-'struct cma' which gets updated during cma_release().
+from the tip tree and commit:
 
-/sys/kernel/mm/cma/<cma-heap-area>/release_pages_success
+  cc4ce37bed85 ("KVM: SVM: Set sev->asid in sev_asid_new() instead of overl=
+oading the return")
 
-After this change, an user will be able to find active CMA pages available
-in a given CMA heap area via the following method.
+from the kvm-x86 tree.
 
-Active pages = alloc_pages_success - release_pages_success
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-That's valuable information for both software designers, and system admins
-as it allows them to tune the number of CMA pages available in the system.
-This increases user visibility for allocated CMA area and its utilization.
+--=20
+Cheers,
+Stephen Rothwell
 
-> 
->> ---
->> This patch applies on v6.8-rc3
->>
->> Some earlier relevant discussions regarding arm64 MTE dynamic tag storage
->> in this regard can be found here.
->>
->> https://lore.kernel.org/all/ZbpKyNVHfhf1-AAv@raptor/
+diff --cc arch/x86/kvm/svm/sev.c
+index f99435b6648f,f06f9e51ad9d..000000000000
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@@ -246,8 -254,7 +254,8 @@@ static void sev_unbind_asid(struct kvm=20
+  static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
+  {
+  	struct kvm_sev_info *sev =3D &to_kvm_svm(kvm)->sev_info;
+ +	struct sev_platform_init_args init_args =3D {0};
+- 	int asid, ret;
++ 	int ret;
+ =20
+  	if (kvm->created_vcpus)
+  		return -EINVAL;
+@@@ -258,13 -264,11 +265,12 @@@
+ =20
+  	sev->active =3D true;
+  	sev->es_active =3D argp->id =3D=3D KVM_SEV_ES_INIT;
+- 	asid =3D sev_asid_new(sev);
+- 	if (asid < 0)
++ 	ret =3D sev_asid_new(sev);
++ 	if (ret)
+  		goto e_no_asid;
+- 	sev->asid =3D asid;
+ =20
+ -	ret =3D sev_platform_init(&argp->error);
+ +	init_args.probe =3D false;
+ +	ret =3D sev_platform_init(&init_args);
+  	if (ret)
+  		goto e_free;
+ =20
+
+--Sig_/A_aqSM6/V3s=i1Z7iKqJY9o
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXDCHUACgkQAVBC80lX
+0GwG0gf9ExbnjoE/XTjiMmZ7JfLwh+GLq11VlGyW51dsyURCw6jK1lt3ukR6O387
+DolkQJeb5U52V7U+weeDkoCZhNGrXjovnTXB+0CKOXno7yunkaPk6/JTk44gWC/i
+/NgoRwRAerOrhfa2ayi7bQqSqzBu2KZXgmWmcPcWonZ/N0gsNX4r3e1bUJrDDhgN
+ka2avv+G491ypfp/iUtzJ7PwrqwAVMOnJ4+iDgKpgF80XMuvGKmcMPv6tZgvmeMm
+DO5y2uneYY7PsqQ6GidOts2gcH6KDYyNU/YbD+xSznqx1AgcvMl9N9fPT8FZnjah
+S9oxMhOg7sTX+nRJ4t1n6zuGuRKouA==
+=cSPR
+-----END PGP SIGNATURE-----
+
+--Sig_/A_aqSM6/V3s=i1Z7iKqJY9o--
 
