@@ -1,139 +1,179 @@
-Return-Path: <linux-kernel+bounces-56612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BF5484CC91
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:23:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AE3084CC93
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:24:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A708B2423B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:23:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E4961C25518
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB5B77CF0F;
-	Wed,  7 Feb 2024 14:23:25 +0000 (UTC)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F52B7C6C0;
+	Wed,  7 Feb 2024 14:24:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="qXR1AY9q"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 515507A727;
-	Wed,  7 Feb 2024 14:23:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC8191E499;
+	Wed,  7 Feb 2024 14:24:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707315805; cv=none; b=LA19ro2/Z4QI4XFI1JXegdbgCXA8ePR1GrP1i2foI8wZPEJzmlJ9fiCChNwb/yGu/gzr3p8hOkp1k2E7GlNwGIFa6S/FCLwfSH8DM3jYJLtBfgv2iYmXO8965squVFoUtaQ63tol/h7fEFNYVTZKwbCZVK4z6qvIYaOWmH1XOZ4=
+	t=1707315849; cv=none; b=gR8xZ/OVO4wCwQ7bxUQF+2pPvit2r3+7qm0DH4Vot/eVeS1OlM2LQQZ59KnEnEr+3t7liS4HtAFn+a0vVnfBggZYhRcgNW0OwFYodYd7ErSBCNDjBm4EjbYwf40JwvpYsC/W7jdwaaI6VBJKe216W1NdjeoCz+5GPQj3xoBkBqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707315805; c=relaxed/simple;
-	bh=C8HAWKdg+GGDjKPhogyYOys9iDIIKvHEu7Ej597B0xk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VlQtwyrL/IKPwd94AEltzk1xkxH5CDOxsEIs1Ne1qIcIA42d3H8gRKfWT6aIC2malHShnGfSNmFFg3OCMxhP3IjvnUeDbnoRaCYQXzrtx8ErTiGGE6tJ2EQ4+2woJuy/lcAl1aw+9PgsceeRXgAEKZm+ayQZ4Q3SdR2GoWhYPF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60491b1fdeaso6387287b3.3;
-        Wed, 07 Feb 2024 06:23:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707315801; x=1707920601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=quLdQVtCbPlr3R7R7qoI+1xisR6sbzdwCB1pi/XdB0E=;
-        b=CrbNeQnrdfRbc7ZRmCfD9NCz2nfC2UmIZKjXUJJfUqc0FuJCD1Mz9Ty+G4dSbIqBLj
-         yBEVcntpWxt1Zjxc7YOhmJ6/mdMo3QCEEzIYbDtOXX6HLRP15b1jKaaG99mmnkZVfQKi
-         HBwkrDHaiSAfdjicdzlmqCaA9Z9wkPt/gRk/XIeJrYjHv83P3TFVjZ+U+/1nhivJRwBN
-         Op4Hc3n88WdNgDsZy8j8cAfF7WV5t2ozuwwHEWB8ovVsf3ZStWBwa0wNURPei6b62bjV
-         GmjHQV/GqW3c3AKvvqQ56tQVLJ0ftdFUwj/guRPTsM80v+qCyj4QxlZBZU5UTqnqITLe
-         0gBQ==
-X-Gm-Message-State: AOJu0YxAH5+WcI/BD/ydWE7gZbc/4CvG8Ec9WhobwMIWS+budCxkj0XJ
-	vADx0d4kmLWaOFK7E/So4QjH5qF04g8vk4zndCA3MWuVzlEHkQtIj9KNTsapctY=
-X-Google-Smtp-Source: AGHT+IFkoyZxcgIjHoazuT3U+9rYfh+rNKGQbBh9K+6z2lmCvxr8CXG2o7nsHROonhuJZzRTabavkg==
-X-Received: by 2002:a05:6902:1a45:b0:dc2:2e01:4ff0 with SMTP id cy5-20020a0569021a4500b00dc22e014ff0mr5239168ybb.45.1707315800924;
-        Wed, 07 Feb 2024 06:23:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXXj5EIwA7CUKWQNYzVF7to7/Jv2XJXW84HaCbqfBWLzEwrckzVtACOmfONStfMc4i+n1a4fpZG94MI/NYONDOm4snGVe+1c/e8XuXb+dPj0dZHrnP6r1UP+/OB+Lsgy21JyBK86V2KqA3MByvtKbSKOM++XvbOvnYv1ScwavgA81mbnzGCnPiMrJwL87lqFgkGdiVTkw1aPQ2AsLgEnem6SnrquqwwpcYqugM=
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
-        by smtp.gmail.com with ESMTPSA id ch22-20020a0569020b1600b00dc23af43ff3sm219983ybb.14.2024.02.07.06.23.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 06:23:20 -0800 (PST)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-60491b1fdeaso6386597b3.3;
-        Wed, 07 Feb 2024 06:23:19 -0800 (PST)
-X-Received: by 2002:a81:8841:0:b0:604:9c80:687a with SMTP id
- y62-20020a818841000000b006049c80687amr652928ywf.6.1707315799577; Wed, 07 Feb
- 2024 06:23:19 -0800 (PST)
+	s=arc-20240116; t=1707315849; c=relaxed/simple;
+	bh=6GhGXticMljWrT/NZCnDjjorJdfZUqKuvwA0lZ/rou4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=aRpzdHOH27+MaKlvJ/uIoIpn0PNQ6wK0+fTUba+GIC3ESqBGIYX0eXqXousIEYPsvpc4668KQAelldBCaxG2BdAe+pc2aw+Gng5rp8TP2QCJiwo66QsR8uK0uQ+Vg1ZASstAz5FoUdOlhUw+YDnCfHCPNEPmw7ZS+T0wr3q8sfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=qXR1AY9q; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 417EO0P5001571;
+	Wed, 7 Feb 2024 08:24:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707315840;
+	bh=Hzju3fhfS5w0f7c7/suS95Oe7Wd/KEzuWc+3V4lvURU=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=qXR1AY9qZfIOv7VPo53DOAS4/eVn0DJTc10wNCxw95a2BGJ6gbyQVmXRE1KjV3/Nz
+	 4fG3IbcC+VNtm/txbZ39HUWI7KWFDEYhkAOtpLIapflBFEkmAKMJWcR1986gqzoRfo
+	 GLF1luFMYvSt5Eg+58I43H36hCEM6Gy7/nUunMzk=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 417EO0vm013788
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 7 Feb 2024 08:24:00 -0600
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 7
+ Feb 2024 08:23:59 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 7 Feb 2024 08:23:59 -0600
+Received: from [10.249.141.75] ([10.249.141.75])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 417ENtgi041071;
+	Wed, 7 Feb 2024 08:23:56 -0600
+Message-ID: <3a7c4a18-5463-414f-82df-39aaed861148@ti.com>
+Date: Wed, 7 Feb 2024 19:53:55 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207130745.1783198-1-claudiu.beznea.uj@bp.renesas.com> <20240207130745.1783198-3-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240207130745.1783198-3-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 7 Feb 2024 15:23:07 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV-Lw3Ay94_gYHU4A8iYSRbXy8b7XOiMQ93Mbs+-ApsGQ@mail.gmail.com>
-Message-ID: <CAMuHMdV-Lw3Ay94_gYHU4A8iYSRbXy8b7XOiMQ93Mbs+-ApsGQ@mail.gmail.com>
-Subject: Re: [PATCH v5 2/9] watchdog: rzg2l_wdt: Make the driver depend on PM
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: wim@linux-watchdog.org, linux@roeck-us.net, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	p.zabel@pengutronix.de, geert+renesas@glider.be, magnus.damm@gmail.com, 
-	biju.das.jz@bp.renesas.com, linux-watchdog@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] clk: keystone: sci-clk: Adding support for non
+ contiguous clocks
+To: Nishanth Menon <nm@ti.com>
+CC: <kristo@kernel.org>, <ssantosh@kernel.org>, <chandru@ti.com>,
+        <rishabh@ti.com>, <kamlesh@ti.com>, <vigneshr@ti.com>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>
+References: <20240207091100.4001428-1-u-kumar1@ti.com>
+ <20240207125410.r2q3jcplvif7dvt2@tumbling>
+Content-Language: en-US
+From: "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20240207125410.r2q3jcplvif7dvt2@tumbling>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Claudiu,
+Hi Nishanth,
 
-On Wed, Feb 7, 2024 at 2:08=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> w=
-rote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> The rzg2l_wdt watchdog driver cannot work w/o CONFIG_PM=3Dy (e.g. the
-> clocks are enabled though pm_runtime_* specific APIs). To avoid building
-> a driver that doesn't work make explicit the dependency on CONFIG_PM. Alo=
-ng
-> with it the dependency on CONFIG_PM and CONFIG_COMPILE_TEST was moved to =
-a
-> new line to have the code simpler.
->
-> Suggested-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->
-> Changes in v5:
-> - updated patch description
-> - added on a new line the dependency on PM and COMPILE_TEST
+On 2/7/2024 6:24 PM, Nishanth Menon wrote:
+> On 14:41-20240207, Udit Kumar wrote:
+>> Most of clocks and their parents are defined in contiguous range,
+>> But in few cases, there is gap in clock numbers[0].
+>> Driver assumes clocks to be in contiguous range, and add their clock
+>> ids incrementally.
+>>
+>> New firmware started returning error while calling get_freq and is_on
+>> API for non-available clock ids.
+>>
+>> In this fix, driver checks and adds only valid clock ids.
+>>
+>> Fixes: 3c13933c6033 ("clk: keystone: sci-clk: add support for dynamically probing clocks")
+>>
+>> [0] https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j7200/clocks.html
+>> Section Clocks for NAVSS0_CPTS_0 Device,
+>> clock id 12-15 not present.
+>>
+>> Signed-off-by: Udit Kumar <u-kumar1@ti.com>
+>> ---
+>> Changelog
+>> Changes in v3
+>> - instead of get_freq, is_auto API is used to check validilty of clock
+>> - Address comments of v2, to have preindex increment
+>> Link to v2 https://lore.kernel.org/all/20240206104357.3803517-1-u-kumar1@ti.com/
+>>
+>> Changes in v2
+>> - Updated commit message
+>> - Simplified logic for valid clock id
+>> link to v1 https://lore.kernel.org/all/20240205044557.3340848-1-u-kumar1@ti.com/
+>>
+>>
+>> P.S
+>> Firmawre returns total num_parents count including non available ids.
+>> For above device id NAVSS0_CPTS_0, number of parents clocks are 16
+>> i.e from id 2 to 17. But out of these ids few are not valid.
+>> So driver adds only valid clock ids out ot total.
+>>
+>> Original logs
+>> https://gist.github.com/uditkumarti/de4b36b21247fb36725ad909ce4812f6#file-original-logs
+>> Line 2630 for error
+>>
+>> Logs with fix v3
+>> https://gist.github.com/uditkumarti/94e3e28d62282fd708dbfe37435ce1d9#file-v3
+>> Line 2586
+>>
+>>
+>>   drivers/clk/keystone/sci-clk.c | 12 ++++++++++--
+>>   1 file changed, 10 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/clk/keystone/sci-clk.c b/drivers/clk/keystone/sci-clk.c
+>> index 35fe197dd303..31b7df05d7bb 100644
+>> --- a/drivers/clk/keystone/sci-clk.c
+>> +++ b/drivers/clk/keystone/sci-clk.c
+>> @@ -516,6 +516,7 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
+>>   	struct sci_clk *sci_clk, *prev;
+>>   	int num_clks = 0;
+>>   	int num_parents;
+>> [..]					/* Check if this clock id is valid */
+>> +					ret = provider->ops->is_auto(provider->sci,
+>> +						sci_clk->dev_id, ++clk_id, &state);
+> A bit too nice coding ;) => I had been confused momentarily by clk_id = args.args[1]
+> change just above till I saw that you are pre-incrementing
+> clk_id - Is there a harm in leaving the original clk_id increment logic
+> alone (it was much simpler to read up)?
 
-Thanks for the update!
+No warm in using original code but want to avoid, two statement for 
+increment in case of failure and success.
 
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -910,7 +910,8 @@ config RENESAS_RZN1WDT
->
->  config RENESAS_RZG2LWDT
->         tristate "Renesas RZ/G2L WDT Watchdog"
-> -       depends on ARCH_RZG2L || ARCH_R9A09G011 || COMPILE_TEST
-> +       depends on ARCH_RZG2L || ARCH_R9A09G011
+Let me know, if i need to add few comments around this
 
-Please drop this change (i.e. retain the "|| COMPILE_TEST"), as it prevents
-compile-testing on any platforms but RZ/G2L(alike) and RZ/V2M.
+or if you think, code is confusing I can move to original one
 
-> +       depends on PM || COMPILE_TEST
->         select WATCHDOG_CORE
->         help
->           This driver adds watchdog support for the integrated watchdogs =
-in the
 
-Gr{oetje,eeting}s,
 
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+>> +
+>> +					if (ret)
+>> +						continue;
+>> +
+>>   					sci_clk = devm_kzalloc(dev,
+>>   							       sizeof(*sci_clk),
+>>   							       GFP_KERNEL);
+>>   					if (!sci_clk)
+>>   						return -ENOMEM;
+>>   					sci_clk->dev_id = args.args[0];
+>> -					sci_clk->clk_id = clk_id++;
+>> +					sci_clk->clk_id = clk_id;
+>>   					sci_clk->provider = provider;
+>>   					list_add_tail(&sci_clk->node, &clks);
+>>   
+>> -- 
+>> 2.34.1
+>>
 
