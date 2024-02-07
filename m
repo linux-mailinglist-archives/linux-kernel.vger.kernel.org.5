@@ -1,106 +1,126 @@
-Return-Path: <linux-kernel+bounces-55886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB9184C304
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:20:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B59BC84C308
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2CABB2567B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:20:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C618B24738
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F200101D5;
-	Wed,  7 Feb 2024 03:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BAA13FF8;
+	Wed,  7 Feb 2024 03:21:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RCbXwnM1"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Hg5NaB+5"
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2987BF9F7
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 03:20:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC6B134A4
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 03:21:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707276045; cv=none; b=SsrEH15Xv6kqFlsVQV90389yQhxt6nr+Txyc9HgiBzR+QNJEla3pJ0EGYdDWsaeOGuhCQsvCfqc21hSEthuihpnCJ9NJjVKOh7gIkbAYHxMmp3di4rxytrqwh1gOWbMmOc0XsVOXMVOCYFwm/ASIOzG6VKjSAxGOhA4Z0DVDSy4=
+	t=1707276115; cv=none; b=K5MWSv5RBT8JpEa5eVmH5Fd5bWeIre6zQUrd9gaYyozQzgVFXymeiRZOC2rI4edWURk4J91c5RghvUBx54apxCZzl307MSsptqvIT9ifSITNwQGdB9rm4J582duixBgyZWxm0Ud5CgeuwjmhAlFxU6YN24jVGH15sfDFc90jfUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707276045; c=relaxed/simple;
-	bh=VVWU1hTHdDiHcMV+44gh4MOWuxsDTk6kozGbwxsOEB4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=o/kSDUDMFKATMp9IMsw9MGXCDNtFRRZQjXBFek+4j+fSMzVpihVOxOpNB5z5XKr8DWeylG1fgWHkZWWNJXmZy8vHqJL82OVT2oSqg1YTk9/ya0J83zZh5Gj4BMCuqKkiG1Kt8y9yotR3NctibUkGKnkL3ebrf9eSMB5GWLUdqkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RCbXwnM1; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60491e90830so1870097b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 19:20:43 -0800 (PST)
+	s=arc-20240116; t=1707276115; c=relaxed/simple;
+	bh=5pxzaNmMZc9+qSFaBDVXGxDHawGlWqY/JZ8hS8+iA/c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nz6O5b8ZZVDKsCKajFp5GbrWpyZRmFflJUXoZGIPqUbAMVpWQchWEuwGYqoY8lYdcf8+UZYf9pCkiDmPpNDw5vcwwdpPiViJ5T3SkLH6nqUvABPEl9zncwpYDKffSaseVMSonPOyRA6zKiajzmRPAPltuH6bw14weEeNV34e0N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Hg5NaB+5; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-296a5863237so1025030a91.0
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 19:21:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707276043; x=1707880843; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ApcLgLGrxwLEuYf7+iIf/mNSaHhoA2l57UsnC6CxVWA=;
-        b=RCbXwnM1A83uV6GI9gS/PEnbZTtxDZzwUS7HK/1MRmcMfHkcocbpQhaIx7QobYZ/fE
-         fnYs3FGnVDPk0Xx8R4nInEuE7MS34oeQIYr6elgdJIKsFb04Azd99GdCJsXzx2rY7S+R
-         zW8Z3nRlpfYbsvoShBosLPD02BqulFozispCJrJ7+tqL1ZiUr57/UbtCIEg+pNzDKmrV
-         26xora0KFkBrk7NPixM2JVYIZLzv8++JY+GxjwhtENILsHowkUAf627Kq8JIfRg1jo80
-         0SmVwnLMsqt+PA329AX5hPCl2TTSRmyN/K9gQUh+bY1tiwzkef1HZUbsloMQFOTPrNXF
-         irHw==
+        d=chromium.org; s=google; t=1707276113; x=1707880913; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DvweSH+qaZmcX1cjz0FHPCeSe3ppOV6nsVuJOUHpS18=;
+        b=Hg5NaB+5qH4U8XnMsCctozNra0lNjVsahf7j+AExLjJRv3Jr3e8IHJddILao0B7k/M
+         dFvYG04kbDFIS9+W66nh0f9DSWet8Ji3JHlAGDLm0lDZdz+sIc8BvfDrbS0690Z206sy
+         cVB4E0I/4pMVlao34Uo7kfsQalVDU1e9sqbcQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707276043; x=1707880843;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ApcLgLGrxwLEuYf7+iIf/mNSaHhoA2l57UsnC6CxVWA=;
-        b=BWqhw9dgBe24st9EvdeywRXAhJrqpttT5CFrz1jXp/3QZAZqBbzU8uPjnb0BediBBM
-         FWnWXJrDXRhhgEKrbQP67UZwaNrxzmZ+mS4jp+yJNKOHPLyRz5plFW3wji76lZbsT1pe
-         1ScdrrzZ40+37qPNndfsZAGBLTrIq0A0GXI0dY04cmHHcAvT03V4C2Mhcxu3lGtUf4O6
-         E5bHE2AeS/fz6ndFaJ0oXt9MOLyH41G8tNx+DXTcAGsv5ouxIXF/KpzinbIxdQicyuPo
-         uSIBgnQodIEztP1jin7++3uprb4uXBKRZP+HRBuaVbJiBG5CYR4dLP+792z/bXGR2SVv
-         prEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV+0Hs097XbjuvpVwT0X7BmQC+4eTxB9qM8jyZq6cA8PnBYJfXuGEA+rGSMC4+N5Pf3WC2KDUsFSVu3dYj+KvlyRMuYvGyG8r6lvF/m
-X-Gm-Message-State: AOJu0YzSQT0kJqVE83N1NnL85fIpz1dsFoolyqnSIFze5C7uXZXEzGrZ
-	hCX93R/GjFheH2erd42v9r2HquK2Q2Jf2xqtzNN6xfo7z5dettgtnlcmutvqrcyGbwp45svq191
-	ccQ==
-X-Google-Smtp-Source: AGHT+IE6+ak0PAgn0IRrGPuGwJrHJbNcaTNHfZcp6Flwwm7fwcPNynluNR+UQlMh0RNPJUkPjXawe1UpPx8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:10c:b0:5e8:bea4:4d3b with SMTP id
- bd12-20020a05690c010c00b005e8bea44d3bmr656047ywb.6.1707276043260; Tue, 06 Feb
- 2024 19:20:43 -0800 (PST)
-Date: Tue, 6 Feb 2024 19:20:41 -0800
-In-Reply-To: <20240115125707.1183-5-paul@xen.org>
+        d=1e100.net; s=20230601; t=1707276113; x=1707880913;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DvweSH+qaZmcX1cjz0FHPCeSe3ppOV6nsVuJOUHpS18=;
+        b=LTboH/YS/3iKOWxbTUi7cu+2aCl4ZL4f5hb6Xg/3pu4GfAngpt4qbmzKW+zlVeL1Z6
+         EHp4viOB4m4sMKSqVY4Ac0g1jAI0WkY+GKry77117J7nCNzEHBzVc1X+ks8U42BfJG4L
+         a7iIymYk8c9UQEpOi+yZJtimwRE0twdDCrkQ75pgkx/8tboF5zmkM40ivZfig7QZNFrQ
+         OGGDzJ+8szP2FTWeHJH3r8oacSJRzy1nswZQvJIEDKU+9QkGOMe4ZbZH3swht+EWO+E2
+         a/+gz+FGMx1FnpyOXwb1Pcjm1Q2ofdZ5HRFA1MxOqa265k3F8qJnFh7/3hIF4mgXgu1c
+         o0fQ==
+X-Gm-Message-State: AOJu0YxFwiQ9M1NUV8LW1s7oce5mpgCyHu9lH5VOzr0IDKqSyst+2+Zy
+	dwY74HvZ5hzV+ibUMIno/TIOfiJBJSEY4oi81ICRR5HrH9fT5uMncV7cvkl/tw==
+X-Google-Smtp-Source: AGHT+IFJrrXprbZA+CjwH0Psh35AauMdJ0AuyLavTsMPHVZnSrSEAQq2gD2PzSdKXhnW3v8ZjxPsOg==
+X-Received: by 2002:a17:90b:198e:b0:296:321c:9bdc with SMTP id mv14-20020a17090b198e00b00296321c9bdcmr1908930pjb.13.1707276113036;
+        Tue, 06 Feb 2024 19:21:53 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW//AN5BX7VQ8JkwSzM/quJewDTXmLAecgV0tXzXipo0HobAr7UGghImrAeUePNCeTkSW877AftbHTzxouMh2hZCb0Aps8B+o7vF7E+0RJzp6ZskQqwfX08+JwR7fGVUp/UdkiGrv/jMCiBitpcn03LU1b/MFpWllH8GmlJ7mmibPQ9Kjob5vSx7Fo6kxfmJZhq+CI83bRzRqpysF9EFzwi5P+UcZOUnjq5O20Cv3OJXkj9CljVTxiYBdmAcJgCmugjn3m/r06oHyjtWebXgwW/RkBeNovY+Pc=
+Received: from google.com ([2401:fa00:8f:203:679b:7168:b5c0:a415])
+        by smtp.gmail.com with ESMTPSA id eu15-20020a17090af94f00b00296c9971348sm349487pjb.17.2024.02.06.19.21.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 19:21:52 -0800 (PST)
+Date: Wed, 7 Feb 2024 12:21:48 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Barry Song <21cnbao@gmail.com>, Jens Axboe <axboe@kernel.dk>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Minchan Kim <minchan@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	zhengtangquan@oppo.com, Barry Song <v-songbaohua@oppo.com>
+Subject: Re: [PATCH v2] zram: easy the allocation of zcomp_strm's buffers
+ through vmalloc
+Message-ID: <20240207032148.GB489524@google.com>
+References: <20240206202511.4799-1-21cnbao@gmail.com>
+ <20240207014442.GI69174@google.com>
+ <41226c84-e780-4408-b7d2-bd105f4834f5@kernel.dk>
+ <20240207031447.GA489524@google.com>
+ <79926b88-c1ef-4042-a871-61752d29c838@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240115125707.1183-1-paul@xen.org> <20240115125707.1183-5-paul@xen.org>
-Message-ID: <ZcL3CdGHv5FQHBVD@google.com>
-Subject: Re: [PATCH v12 04/20] KVM: pfncache: add a mark-dirty helper
-From: Sean Christopherson <seanjc@google.com>
-To: Paul Durrant <paul@xen.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>, 
-	kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <79926b88-c1ef-4042-a871-61752d29c838@kernel.dk>
 
-On Mon, Jan 15, 2024, Paul Durrant wrote:
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 7e7fd25b09b3..f3bb9e0a81fe 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1399,6 +1399,17 @@ int kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, unsigned long len);
->   */
->  void kvm_gpc_deactivate(struct gfn_to_pfn_cache *gpc);
->  
-> +/**
-> + * kvm_gpc_mark_dirty - mark a cached page as dirty.
-> + *
-> + * @gpc:	   struct gfn_to_pfn_cache object.
-> + */
-> +static inline void kvm_gpc_mark_dirty(struct gfn_to_pfn_cache *gpc)
+On (24/02/06 20:17), Jens Axboe wrote:
+[..]
+> >>> Minchan, if you have any objections, please chime in.
+> >>
+> >> Not Minchan, but I do have an issue with the title of the commit, it
+> >> doesn't make any sense. Can the maintainer please re-write that to be
+> >> something that is appropriate and actually describes what the patch
+> >> does?
+> > 
+> > Thanks Jens. I fully agree, I requested a better commit message in
+> > v1 feedback, we probably still can improve on this.
+> > 
+> > 
+> > Something like this?
+> > 
+> > ---
+> > 
+> > zram: do not allocate physically contiguous strm buffers
+> > 
+> > Currently zram allocates 2 physically contigous pages per-CPU's
+> > compression stream (we may have up to 3 streams per-CPU). Since
+> > those buffers are per-CPU we allocate them from CPU hotplug path,
+> > which may have higher risks of failed allocations on devices with
+> > fragmented memory.
+> > 
+> > Switch to virtually contiguos allocations - crypto comp does not
+> > seem impose requirements on compression working buffers to be
+> > physically contiguous.
+> 
+> Yep, this is much better! Thanks.
 
-Any objection to kvm_gpc_mark_dirty_in_slot()?  I want to make it clear this only
-marks the gfn dirty in the memslot, i.e. that it doesn't mark the underlying page
-as dirty.
+Thanks.
+
+Barry, can you please send v3 with the suggested subject and commit
+message?
 
