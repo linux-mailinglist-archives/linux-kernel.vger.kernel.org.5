@@ -1,164 +1,106 @@
-Return-Path: <linux-kernel+bounces-56696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4631B84CDB8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:10:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4511984CDBA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:10:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F18E928D6F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:10:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBB6C1F238E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:10:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6D67F7C6;
-	Wed,  7 Feb 2024 15:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5FA7F7EB;
+	Wed,  7 Feb 2024 15:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="X7DSmwWw";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="OWw2wAUI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="X7DSmwWw";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="OWw2wAUI"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hE3lMhLz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8990577658;
-	Wed,  7 Feb 2024 15:10:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD5E7F492
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:10:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707318617; cv=none; b=IBjE3fQ2gqW9WXnViyi7hrfbzkigcyBBE7uIvLz1nkjXIFw1gyxRAejqUBpMWJbhBHv8LGeK8e4EyGAP+x4FELoY3SBCZ2lwhbprN+3rpoK8LcbcUt22g/QmL1pX3QpwjYpbo9gnpnVlSGEB6KhqMDyXupxmYxZnJoMHbKG8nl8=
+	t=1707318631; cv=none; b=WyIoa7NGxmNSSID6I/6bqCC2OAtW23X6SLB43VJwbNIYbEOkQwYwIC86J75SLbtQRegVzUIJ0OoEkvKqp1LT2dI/1ElKo6CseXM7ujQFJFkr4bz1tnFliLUxrc0DoD9T/EaB6faT54/CU+KKUDd0UAqo20anfsEj7qToyZHE1Hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707318617; c=relaxed/simple;
-	bh=Jv1RJVQSa+s6LkiGweYVwWUnmBEVv5H8dA9b/E7cFxc=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Xuv5IzV/6/G+qo9/3xR69IrJblYX8tHYPTMd1H6xzLSmT6S6N0FDn9AlOMgejm17BCEds7H0Wj7ZThiaYLFYM30o+B32e0Iwo6QN/cYKyneI4BbslJym5j+8z5uduxMxRSRNng93lc5ILjhQeRGDgpRoRY0cucoYiNuVG2tEsec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=X7DSmwWw; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=OWw2wAUI; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=X7DSmwWw; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=OWw2wAUI; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6188E1F78A;
-	Wed,  7 Feb 2024 15:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707318613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZDQEipVTzee4WgFsB2xE+sJDZ6njATigmiLm4iw2r7I=;
-	b=X7DSmwWwfzJB57r5y+p/fUCE2Gxo/P8LsynUfmA2PkWKLKVsBDC5O50ecjjb+x7xRLnP/v
-	zzf14eQSkPusj3o6Ieknx4UjJpLzWqkig3D4QTwmMjneWVahBX9JgMvmkohkonDy7FIWPj
-	U+Dl8t6FxQ+Ul0/UvCJG52ceHhVS0sc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707318613;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZDQEipVTzee4WgFsB2xE+sJDZ6njATigmiLm4iw2r7I=;
-	b=OWw2wAUIJl6L4hWSfEepo5y4UZuXpgcHIRf8oLIcxr2hmZeCEMnxdleQaPWXIabF9ZVBtv
-	bSoO9a1r3MT6gWCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707318613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZDQEipVTzee4WgFsB2xE+sJDZ6njATigmiLm4iw2r7I=;
-	b=X7DSmwWwfzJB57r5y+p/fUCE2Gxo/P8LsynUfmA2PkWKLKVsBDC5O50ecjjb+x7xRLnP/v
-	zzf14eQSkPusj3o6Ieknx4UjJpLzWqkig3D4QTwmMjneWVahBX9JgMvmkohkonDy7FIWPj
-	U+Dl8t6FxQ+Ul0/UvCJG52ceHhVS0sc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707318613;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZDQEipVTzee4WgFsB2xE+sJDZ6njATigmiLm4iw2r7I=;
-	b=OWw2wAUIJl6L4hWSfEepo5y4UZuXpgcHIRf8oLIcxr2hmZeCEMnxdleQaPWXIabF9ZVBtv
-	bSoO9a1r3MT6gWCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 17F97139B9;
-	Wed,  7 Feb 2024 15:10:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0JprBFWdw2UJOQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Wed, 07 Feb 2024 15:10:13 +0000
-Date: Wed, 07 Feb 2024 16:10:12 +0100
-Message-ID: <87jzng5mzv.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: =?ISO-8859-1?Q?Jean-Lo=EFc?= Charroud <lagiraudiere+linux@free.fr>
-Cc: Takashi Iwai <tiwai@suse.de>,
-	Stefan Binding <sbinding@opensource.cirrus.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	linux-sound <linux-sound@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	patches <patches@opensource.cirrus.com>
-Subject: Re: [PATCH v2] ALSA: hda/realtek: cs35l41: Fix internal speaker support for ASUS UM3402 with missing DSD
-In-Reply-To: <1366935939.585144512.1707316246651.JavaMail.zimbra@free.fr>
-References: <726559913.576332068.1707239153891.JavaMail.zimbra@free.fr>
-	<87o7cs5r29.wl-tiwai@suse.de>
-	<1366935939.585144512.1707316246651.JavaMail.zimbra@free.fr>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1707318631; c=relaxed/simple;
+	bh=z7kDN/9RKM6srpE/iDGZ736vndtbrUwfOgAVPlVsV8c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D4IUmlSpvXoO3jJY9DmDPoa+bdS/HDDyL2R/uxKaHiKdxvSlpPVaJtAEDkymjpsSL+jGk7erfhhMTNhBA+UVYbm0lRa5qnQoQPZTlcMTnDfwSqwzm1rj81782JHPL/SgXMAljsDdIgcn0tdUZGtqs4C2ZqMZevqom1pd/Wj3QwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hE3lMhLz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEAB7C433C7;
+	Wed,  7 Feb 2024 15:10:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707318630;
+	bh=z7kDN/9RKM6srpE/iDGZ736vndtbrUwfOgAVPlVsV8c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hE3lMhLzAQH18yuIFUsYKJa4oavc9S+ZOM7C87o/RkVIWyhbHXOykv11LTlT0ubiE
+	 pwfTt7gkZyE7mEjL8PFIPp6AEj0xRRO9eEPMdIGyh4oErPT67Y6gyiC76DwyW8DBcP
+	 K865XTkME9n+0BPkOXHxI+XXst2C+b1/5ODZrgEEHAIX19ds+G2AlR9ZSn2KHjaQjT
+	 0UgPqQZEysM0A+U2eaEgtfs1BQ9X53w/Qme9+jzY1vhMX6SikFCfGVk8OsoEhFd2y/
+	 lJXOCbmLtYx8/OddTinzzv4OWRFB84YAbqGztCANDBMHCxMZDOOsLi9z0ZahG4mSS0
+	 SM3h5NsFOmXdg==
+Date: Wed, 7 Feb 2024 15:10:28 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Dave Martin <Dave.Martin@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/sve: Document that __SVE_VQ_MAX is much larger
+ than needed
+Message-ID: <ZcOdZNEDXy14OGGI@finisterre.sirena.org.uk>
+References: <20240206-arm64-sve-vl-max-comment-v1-1-dddf16414412@kernel.org>
+ <ZcNxJ56+bvcUTGlT@e133380.arm.com>
+ <ZcN8OltRDUlDlTHQ@finisterre.sirena.org.uk>
+ <ZcOIAck16ZyUi/yj@e133380.arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.86
-X-Spamd-Result: default: False [0.86 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.34)[76.09%];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[free.fr];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[linux];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 TO_DN_ALL(0.00)[];
-	 NEURAL_HAM_SHORT(-0.20)[-0.997];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FREEMAIL_TO(0.00)[free.fr];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
-
-On Wed, 07 Feb 2024 15:30:46 +0100,
-Jean-Loïc Charroud wrote:
-> 
-> Fix device ID for "ASUS UM3402" and "ASUS UM6702RA/RC".
-
-This change is only about the string in the table, not the actual
-behavior, right?  The name string there is only for debug info, so
-it's no big problem even if it's not 100% right.
-That is, this can be again split to another patch -- with the
-additional Fixes tag to the commit that introduced the entries.
-
-> Add DSD values for "ASUS UM3402" to cs35l41_config_table[].
-
-.. and this one is the mandatory fix for your device.  It should be
-the patch 1.  Then we'll have two more, one for correcting the entry
-names, and another for sorting the entries.
-
-I'm a bit picky, but now you see how the things work.
-Divide-and-conquer is the basic strategy.
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="6wd8y45bC39+B3ls"
+Content-Disposition: inline
+In-Reply-To: <ZcOIAck16ZyUi/yj@e133380.arm.com>
+X-Cookie: You might have mail.
 
 
-Takashi
+--6wd8y45bC39+B3ls
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Feb 07, 2024 at 01:39:13PM +0000, Dave Martin wrote:
+
+> How about something along the lines of:
+
+> /*
+>  * Yes, this is 512 QUADWORDS.
+>  * To help ensure forward portability, this is much larger than the
+>  * current maximum value defined by the SVE architecture.
+>  * While arrays or static allocations can be sized based on this value,
+>  * watch out!  It will waste a surprisingly large amount of memory.
+>  * Dynamic sizing based on the actual runtime vector length is likely to
+>  * be preferable for most purposes.
+>  */
+
+That works for me.  The cost of initialising can also add up in
+emulation.
+
+--6wd8y45bC39+B3ls
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXDnWMACgkQJNaLcl1U
+h9D6Ugf+JL/cppHvNNJuGS1wEso5Ew3SN0U8U6OhO0o5/EchygtGZBzmsIHkBxLG
+wLq303vk0lALc3LB0j7Q43kaPzFDg/vIUPbCbdfAohqqVt/3+afBRlFAc3eMg8E9
+0bSv+tlbM7TQOZaaC6JPI0jDhxhCCCX97dQ3IxqFo5wq4TYdmo9G6I3LCNVaeCuU
+q78btLKrrXrXkFAcSdWv2FEUiHeuGDkcrjFS9g6H6Gskrmk0aVWciWjTXC3Jcpel
+PIVNc8sOCdfnc/QgO61YjxopAV84gnDAlcblSEUoRLsCRKY51o0NvPusGCSsOkUd
+EX30mUNpWRh2Z2cteqzTcGINiQMXEg==
+=z019
+-----END PGP SIGNATURE-----
+
+--6wd8y45bC39+B3ls--
 
