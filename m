@@ -1,100 +1,138 @@
-Return-Path: <linux-kernel+bounces-56741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4FF684CE6C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:52:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1091784CE77
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:58:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 237921C20E18
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:52:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C14EC284381
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 593B28005A;
-	Wed,  7 Feb 2024 15:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3A9380050;
+	Wed,  7 Feb 2024 15:58:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HmzJMu7c"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="DZd1Ehl7"
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90E417FBD9
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE4F811F3
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 15:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707321148; cv=none; b=FMWrsjBgM2qVBdjg3fKCI5zkjRAqbggv8NMXtEJbB6uxKV0F5f2fNhDvVEIvTBDxXKKe4uBtzQEu76Hkj+jrhXTKAUjVFF+fuuZtnwDugrJqA73hyK3QmhLYBAfpb9SlZ1H9hT3fnejZHM9ftvVeH+mweuFUfECtqsGnSw3R/Vg=
+	t=1707321498; cv=none; b=pfmtswi9tzwE6F4micTyWn8Jk27fwBfoT9zPuAAxgu8Er/oM4ARpLLDfymBidvAukeSARdkvkjlnXtYg14/a7xYGpmx8SBX5RbaVPeETI6wYnI9Psv07hyyqDCKYiMMQYUGtS/hA6FL6+pKhNB0f/gP2sGRXO2v7t19SNXV1wec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707321148; c=relaxed/simple;
-	bh=cHYNDEi3WlHG4angWaXSJlNb7gbznKoIJltmiX4Cfa4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iX+fqKPiNHre/P2HWQukkoTu8yHG5PTd2JgpbcHiZQTQD4wwdalfElTIRGjs1jmXaXKOpMYvLUjJlU/Feess9PzT/eahOf9b+3DyFbCOMogQ4kn7k3J7k3K1kIQEn/1b3F1g43zef42I0yeOnMFRAMcYyGTKVbLzTIqi7UMGfHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HmzJMu7c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CF34C433F1;
-	Wed,  7 Feb 2024 15:52:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707321148;
-	bh=cHYNDEi3WlHG4angWaXSJlNb7gbznKoIJltmiX4Cfa4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HmzJMu7cKmZvdytEdbGNsrv/J2EM5eMY7C8ep99MQMYPXPSfn5RXk6Pl+W5hxQjgj
-	 5cLwXKOmxQ/tmKF1MbH05iRh3y/HS4iLUc5HifLrxW9uA3yXZNRc6eNEPyJgqVc0Gv
-	 9yzu21BUaTqV+u7tAOPY/QHvCFi6V+H4WOkZl2Tk7KNGGAuokp6i37yNSprn5+qaR5
-	 ZQ7BWDjoMTCfchTu6lEgIg+r7D5wm+Jw9AhbuJk1UszZ0E8mXr/LNG0YrnarhABAiH
-	 kzb6YDDJUpErLBcGRtQRMLk4K/6nvS9ickaC2GYnuW/6jWuefkwskvwVmUoOOSkWcL
-	 3WEGQiJt7qE0g==
-Date: Wed, 7 Feb 2024 15:52:19 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Dharma Balasubiramani <dharma.b@microchip.com>
-Cc: andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org,
-	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-	jernej.skrabec@gmail.com, maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
-	daniel@ffwll.ch, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	manikandan.m@microchip.com, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux@armlinux.org.uk,
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev, geert+renesas@glider.be, arnd@arndb.de,
-	palmer@rivosinc.com, akpm@linux-foundation.org, gerg@linux-m68k.org,
-	rdunlap@infradead.org, vbabka@suse.cz,
-	linux-arm-kernel@lists.infradead.org, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 1/4] dt-bindings: display: bridge: add sam9x75-lvds
- compatible
-Message-ID: <20240207-raving-chatty-7961fb5c5d43@spud>
-References: <20240207102802.200220-1-dharma.b@microchip.com>
- <20240207102802.200220-2-dharma.b@microchip.com>
+	s=arc-20240116; t=1707321498; c=relaxed/simple;
+	bh=Qye+zuX3oCWPut5vgJD+q4hUJcHXW8C5VACBs8eHm0Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fq42C1CR7IEZngHZvArKbv7nK3yOuV2mJeIYWRw+N0Z14WAHWBbq4n+vwVpdDUTqNBVa+xo6q/xRfJLBy//6s/5T/t+evx2uerenofjXFt6YE8vVWdgSjjovGiDHQfwsiUz2dOnjLotXxTyCCy0P/z11obmNW8354TN3lTKmSB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=DZd1Ehl7; arc=none smtp.client-ip=209.85.166.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-363c7d490d1so1759065ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 07:58:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1707321495; x=1707926295; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ThW4UOydoSx884aXPLxWcHCPZYcLHmO6NwU0Jp/gx9M=;
+        b=DZd1Ehl757sQTrcLgpMaNaPMsbbjFcz1JwySOu5c6Qwip36+h0dG0b8BD76rUrRt9p
+         gQ1KI7lxrBtwDyIUT+D1Nvdq6Otf275Rr49KTnW+6aOZ0zDTl1ZMcveLu2Pm/LRI8bH5
+         VHNxGve10y8gFK51hTx1hLfuGU8u9TgTZwVyl758ApKLun38jOrTnbT804bXWhpjPOtB
+         QZO5QcTFoQkgP9V6Eojv1Qel18qXjoFaCL9wkm9EKTnEmdy50hPBAORnTcgXRnslJ3Dl
+         RB7A7VvVM4YNKNCg5xphFmAaxzUUechkgx8ugV/pOcY9WwMFHE3bSm/GpvcuidKKZ4zs
+         5n1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707321495; x=1707926295;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ThW4UOydoSx884aXPLxWcHCPZYcLHmO6NwU0Jp/gx9M=;
+        b=nORd2AbPzg1svhrwZ6ltbNvCjMT5G4RXU5MceWk6yuPRJeJEBEd9LRwZXgsDfYJTyC
+         rbDVUjH90sb0cmKoC6Y8ODB4Zni0fDfq7CxZErnNeJOUAwCw94e0wskLfo0uNEk/jymp
+         qtGfwu9mXLsJBcs6hqP1FeFkDWEq9TAU7+H5ceFiiBng9B+Xw1rJ9RX0NJPeS54ffalU
+         lYJQ3cJRJzPPkiQ4W4ExRSNC020AmzpjliFiMr8vjFp0Rk49pcazbKBNTo1quTo5z3nH
+         10IYE0V3Qx4/Jg0mRXhvQREeOLh2wExxeQdlLu1FStjsEqJ9EmLJPsnTGXbrSL7hXIHw
+         hUrA==
+X-Forwarded-Encrypted: i=1; AJvYcCUJylm5n2yVrdLssshGvxbILHiM4EbTLhFgGYtwsIcxV2psQhgqV55//7JrSwNW+hiWPPwOLoRHAnk0ZyTmnO07EjGpwyuEgVpZ0B1u
+X-Gm-Message-State: AOJu0Yw8lnxX9n4ywzLxvc7c2f3kUZt+NH7nVA1dcdf3xogegl80egRq
+	P6zA/of0/pCvOP33fc8p5EMf8ttLiYkykZhA3GJ13cDbjth9MXFUm6wJNOHi/X5WyMCCUeCemEc
+	/S/7Xqgj5pGuhBeLvBlPB/gQp5puvlUgr1lC+RA==
+X-Google-Smtp-Source: AGHT+IFCMccHnOQccdE1uuYts0EwIbRXGd1LC1MRLGFWoBZRBmKBJLB8KbPbNhmf/iNYEURqw+cqufs3Yf929+3A1QM=
+X-Received: by 2002:a92:de4d:0:b0:363:c63a:7975 with SMTP id
+ e13-20020a92de4d000000b00363c63a7975mr5867115ilr.24.1707321495246; Wed, 07
+ Feb 2024 07:58:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="tvxf/pUyWbuFS5ma"
-Content-Disposition: inline
-In-Reply-To: <20240207102802.200220-2-dharma.b@microchip.com>
+References: <20240129072625.2837771-1-leyfoon.tan@starfivetech.com>
+In-Reply-To: <20240129072625.2837771-1-leyfoon.tan@starfivetech.com>
+From: Anup Patel <anup@brainfault.org>
+Date: Wed, 7 Feb 2024 21:28:02 +0530
+Message-ID: <CAAhSdy2Hp9GeXFBYVNSCGDNaHjYQjCgj+kPQtOaGz6RQecoDbw@mail.gmail.com>
+Subject: Re: [PATCH v2] clocksource: timer-riscv: Clear timer interrupt on
+ timer initialization
+To: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, atishp@rivosinc.com, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Ley Foon Tan <lftan.linux@gmail.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jan 29, 2024 at 1:12=E2=80=AFPM Ley Foon Tan
+<leyfoon.tan@starfivetech.com> wrote:
+>
+> In the RISC-V specification, the stimecmp register doesn't have a default
+> value. To prevent the timer interrupt from being triggered during timer
+> initialization, clear the timer interrupt by writing stimecmp with a
+> maximum value.
+>
+> Fixes: 9f7a8ff6391f ("RISC-V: Prefer sstc extension if available")
+> Cc:  <stable@vger.kernel.org>
+> Signed-off-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
 
---tvxf/pUyWbuFS5ma
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+LGTM.
 
-$subject: dt-bindings: display: bridge: add sam9x75-lvds compatible
+Reviewed-by: Anup Patel <anup@brainfault.org>
 
-If there's a respin for some reason, please update the subject to match
-what the commit is actually doing (adding a whole binding).
+Regards,
+Anup
 
-Cheers,
-Conor.
-
---tvxf/pUyWbuFS5ma
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcOnMwAKCRB4tDGHoIJi
-0ue9AQC+O1AcM535fj1ORbNpOe2LbZVdJ/keOqbM5p7WIHcV8gD/aJgptEm38mUu
-e4pTQU4ClUkiAFbmRHcNmXKC7rhfiww=
-=057J
------END PGP SIGNATURE-----
-
---tvxf/pUyWbuFS5ma--
+>
+> ---
+> v2:
+> Resolved comments from Anup.
+> - Moved riscv_clock_event_stop() to riscv_timer_starting_cpu().
+> - Added Fixes tag
+> ---
+>  drivers/clocksource/timer-riscv.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/time=
+r-riscv.c
+> index e66dcbd66566..672669eb7281 100644
+> --- a/drivers/clocksource/timer-riscv.c
+> +++ b/drivers/clocksource/timer-riscv.c
+> @@ -116,6 +116,9 @@ static int riscv_timer_starting_cpu(unsigned int cpu)
+>                 ce->rating =3D 450;
+>         clockevents_config_and_register(ce, riscv_timebase, 100, 0x7fffff=
+ff);
+>
+> +       /* Clear timer interrupt */
+> +       riscv_clock_event_stop();
+> +
+>         enable_percpu_irq(riscv_clock_event_irq,
+>                           irq_get_trigger_type(riscv_clock_event_irq));
+>         return 0;
+> --
+> 2.43.0
+>
+>
 
