@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-57101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95C0784D409
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:32:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABC0C84D40B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:33:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A7C41F22FC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:32:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 682E3284B5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:33:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F01912BF35;
-	Wed,  7 Feb 2024 21:23:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C02913BE90;
+	Wed,  7 Feb 2024 21:23:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bmorfrL/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sfnrQX6h"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D90E13B78D;
-	Wed,  7 Feb 2024 21:23:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F97F13B7B0;
+	Wed,  7 Feb 2024 21:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707340988; cv=none; b=Wt7c2hkVN+J0aHFdnX98Zyc5tin8pcIXFI3a5X/y3xh+JhA/G1KvrOCfCLFo/pufxYKyyyW54c44niA5bD4TZtCTau1zwLi5FZdjHX7cCTsS69+IneuVaA7HygLVwMcfKZLg3uDoih7OJ1kDxq/HowipC4yEhxJvhHlHygxJJpY=
+	t=1707340990; cv=none; b=IL1/5IP6IumjTdmxM5nkRYVwNtI/GMay9K4XJF6Lu097LncylfwLTWsCK4TCrjy/AizUMApRq4e7HErB+8T1RJDe0BgbuVFb15xi8VF8CjhWpTzH0b7Bu754LmXbFsjA5Fd1DwaH7bK0944X0Sc2vLlramUIVSjqfm7UOpyMHSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707340988; c=relaxed/simple;
-	bh=B51nWLS6ql3SkLV39cOPG21h/rGbV0rMuK6QnA/bR3s=;
+	s=arc-20240116; t=1707340990; c=relaxed/simple;
+	bh=jn8CVBM55Gc4xDsM9BKIXkqAVUal6LD7IM+rOMVXPYY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KvaRPv844J520b+gK4GtCVZJiMcnUHv10txsePhaaHullWkghPaSowNjrZ5fcbg1a9sqXAJJTeIAn5e1Q5XZ1QCyvZ2cFcQ0wNk1UJTlxan2GR7NGCLXVrcSAWTXqERRFQ8ODL6wX4mOuQD1pVBdLQrtecAYRnKpEEE9cCUBN2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bmorfrL/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A60C6C43394;
-	Wed,  7 Feb 2024 21:23:06 +0000 (UTC)
+	 MIME-Version; b=qjNHUby+2rEpbCmtqWfvLCSFce6YwC31ej6nXr9e6+20ZZE0QefUHAK1yfGIa7/1QzNwZASiWMmPxNVg2yDl2q7h7hn75RJjZKu+6oNf6CzWuMKt71uhWjQD8UzmL9AaHfRggLI6WuInix+LXkNi68WBqHn61HR10FfTUZp6E4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sfnrQX6h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79DDBC43390;
+	Wed,  7 Feb 2024 21:23:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707340988;
-	bh=B51nWLS6ql3SkLV39cOPG21h/rGbV0rMuK6QnA/bR3s=;
+	s=k20201202; t=1707340989;
+	bh=jn8CVBM55Gc4xDsM9BKIXkqAVUal6LD7IM+rOMVXPYY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bmorfrL/XSrfoil/1vNq1Q8/4olDgiHztjRCWpQ6XsYSSWFhL1GvnaXNFWyZxP9I4
-	 aAIxRsz6kdK3mXIGckWesiUrSDJhSukMjJucXTHxCAkRwUpQw2Kg40kIoEjVr1gCbB
-	 HkxV0PlZ3Hb5IDqL9K4j7EhRMWYOlIqW0xD3LhHLHy5o2T4iiLsWVU/SONGPQJxuc5
-	 kyql4hkw9/LV8vM+ynKp5nL2Pbg/7ChjLogW6SVpzyRL5psGowusW73zRhNesg8rSV
-	 tlnhUKzQucBIK6X4JHe0ikn2pXao2mN+E14aczCaGH857n5D/gwNtWDCuAOBvU4SYU
-	 yTrmAS8Yxrnew==
+	b=sfnrQX6hZjT+JS5EwAdbjFho9pLJC65ElJZQL+EBiXX2oBgEB6aRc6FdeSGvODf8R
+	 fsX1xBE08ILpJb/t6bjU1+v1zO/TqMpuaFzC+PCvjUT1mmfrdn7/lOin+Zg3vOG9t3
+	 BWQqa3T/Jmb+Mzr/nEuE2rRCUHesetx+iq4gUKnzQlh7ikQySACCLUc436CGdQkcmT
+	 SDBR/AsekV0QVf9I90Ymbl0WbKkEAc7mr9kIVcScFi3OBY6kOQhKoJccLBZF0Fn6Nj
+	 mPD7o21bvyZrytOdlGTS5aFFLrWy194K3EurbbC1o9IvghxCPo/3/AEqLKXsAIKea2
+	 GlixnMH7L+law==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,9 +52,9 @@ Cc: Daniel Wagner <dwagner@suse.de>,
 	sagi@grimberg.me,
 	kch@nvidia.com,
 	linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.7 35/44] nvmet-fc: free queue and assoc directly
-Date: Wed,  7 Feb 2024 16:21:02 -0500
-Message-ID: <20240207212142.1399-35-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 36/44] nvmet-fc: hold reference on hostport match
+Date: Wed,  7 Feb 2024 16:21:03 -0500
+Message-ID: <20240207212142.1399-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212142.1399-1-sashal@kernel.org>
 References: <20240207212142.1399-1-sashal@kernel.org>
@@ -71,11 +71,13 @@ Content-Transfer-Encoding: 8bit
 
 From: Daniel Wagner <dwagner@suse.de>
 
-[ Upstream commit c5e27b1a779ec25779d04c3af65aebaee6bd4304 ]
+[ Upstream commit ca121a0f7515591dba0eb5532bfa7ace4dc153ce ]
 
-Neither struct nvmet_fc_tgt_queue nor struct nvmet_fc_tgt_assoc are data
-structure which are used in a RCU context. So there is no reason to
-delay the free operation.
+The hostport data structure is shared between the association, this why
+we keep track of the users via a refcount. So we should not decrement
+the refcount on a match and free the hostport several times.
+
+Reported by KASAN.
 
 Reviewed-by: Hannes Reinecke <hare@suse.de>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
@@ -83,48 +85,22 @@ Signed-off-by: Daniel Wagner <dwagner@suse.de>
 Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/fc.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/nvme/target/fc.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
-index bb0791c9c0e3..5fd37e989106 100644
+index 5fd37e989106..6d111b03d371 100644
 --- a/drivers/nvme/target/fc.c
 +++ b/drivers/nvme/target/fc.c
-@@ -145,7 +145,6 @@ struct nvmet_fc_tgt_queue {
- 	struct list_head		avail_defer_list;
- 	struct workqueue_struct		*work_q;
- 	struct kref			ref;
--	struct rcu_head			rcu;
- 	/* array of fcp_iods */
- 	struct nvmet_fc_fcp_iod		fod[] __counted_by(sqsize);
- } __aligned(sizeof(unsigned long long));
-@@ -169,7 +168,6 @@ struct nvmet_fc_tgt_assoc {
- 	struct nvmet_fc_tgt_queue 	*queues[NVMET_NR_QUEUES + 1];
- 	struct kref			ref;
- 	struct work_struct		del_work;
--	struct rcu_head			rcu;
- };
- 
- 
-@@ -852,7 +850,7 @@ nvmet_fc_tgt_queue_free(struct kref *ref)
- 
- 	destroy_workqueue(queue->work_q);
- 
--	kfree_rcu(queue, rcu);
-+	kfree(queue);
- }
- 
- static void
-@@ -1185,8 +1183,8 @@ nvmet_fc_target_assoc_free(struct kref *ref)
- 	dev_info(tgtport->dev,
- 		"{%d:%d} Association freed\n",
- 		tgtport->fc_target_port.port_num, assoc->a_id);
--	kfree_rcu(assoc, rcu);
- 	nvmet_fc_tgtport_put(tgtport);
-+	kfree(assoc);
- }
- 
- static void
+@@ -1068,8 +1068,6 @@ nvmet_fc_alloc_hostport(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
+ 		/* new allocation not needed */
+ 		kfree(newhost);
+ 		newhost = match;
+-		/* no new allocation - release reference */
+-		nvmet_fc_tgtport_put(tgtport);
+ 	} else {
+ 		newhost->tgtport = tgtport;
+ 		newhost->hosthandle = hosthandle;
 -- 
 2.43.0
 
