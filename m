@@ -1,102 +1,117 @@
-Return-Path: <linux-kernel+bounces-56209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A948F84C75F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:31:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67CF684C751
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:29:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6443228493B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:31:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7C2F1F22305
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D6720DCC;
-	Wed,  7 Feb 2024 09:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D9521112;
+	Wed,  7 Feb 2024 09:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sysgo.com header.i=@sysgo.com header.b="CskoReOt"
-Received: from mail.sysgo.com (mail.sysgo.com [159.69.174.51])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="N9P8Cowo"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B770A20DC4
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:31:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.174.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5980D2233E;
+	Wed,  7 Feb 2024 09:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707298269; cv=none; b=P3K0li82zbntwmuR0E7xf0h5dCGVQdxZiu/FE0PW5qfAxBxjSnM+TvbhZqZ2IQaVPvihpSU5n7RVhwrLB0n2GvfEB7xOhSeoH0HgIiRwsyqCHs4Y/Fzzo5YEGA1w3z3DSRW7vnkMpTljLiZIbvFzs7nVky6uUrgFLClTYDc9rmw=
+	t=1707298144; cv=none; b=LdwQ95lbRd6Q6Wy94KjS++JzowQzUDN7Ou/xaqOprmVzvT0dErNoOR6yiywqeMXglQ2LR/0FfjxinvPOxwjzow9gpiP4rhXQ/wWaD+piJQ7u7f5Mv9YTr/0jmh2T998M/86iMhgJc7BgDUrbWkiVW9swFkNIYLbGCcVOx2QKE2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707298269; c=relaxed/simple;
-	bh=UQCs7jF0QDQSQP4Z2zUkGNTRIkBTrs+zMEEISjMVJiU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jbcGA27vMChXiiCxDz1mJsEdqM0CXevjqiZIc8BmxcJTI+8+Xdxdmh1b1qEZ3MHjNvkVHXbIJJWwyUr8RXcU/D6227rq4FevAW3RPXTPJ8PFuNs1rPWuimmo0SjHaw9JXrTIIheblylkQhK/Yf3ioAW/0km51/pfb9T5zXpbUPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sysgo.com; spf=pass smtp.mailfrom=sysgo.com; dkim=pass (2048-bit key) header.d=sysgo.com header.i=@sysgo.com header.b=CskoReOt; arc=none smtp.client-ip=159.69.174.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sysgo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sysgo.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=sysgo.com;
-	s=k1; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:
-	From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:
-	List-Owner:List-Archive; bh=KR8loywrqe549dMcInpZZOzBTyI3NtTgoQfmDmuVi9I=; b=C
-	skoReOtyGYZ/FpsY+JQS4sSZ2rN2xFwmOajdkGm6fMN+/W4Clv+d2oM5d7JYj5AsTMIMOPewKFMOd
-	IU1rCukrBiqVBwgHkTl0poeprDw8i9sBI7m8e+nleBhh8qb3KFVUmiIa5lRmVMgUcu7Xwf+25gutb
-	uBecXo58W5ZPmIhW5NcStxxnv0P9/39/3fZwq4iqYUVwjbg7WmozkCbOVwi/loctMHVC/5e3lBrm4
-	OnWStqSKonITFjCzgFFppYKHQFtMXw6H40+bzT3E2MIh4bxQB7beiq3pOONgvgbDiW6DNqVFE9T/C
-	mcAESjSM3cRgJjHs8O558cyJ6/qd0nA2g==;
-Received: from lantia.sysgo.com ([172.20.1.5]:47800)
-	by mail.sysgo.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <david.engraf@sysgo.com>)
-	id 1rXeDp-0002N2-2b;
-	Wed, 07 Feb 2024 10:28:01 +0100
-From: David Engraf <david.engraf@sysgo.com>
-To: mpe@ellerman.id.au,
-	npiggin@gmail.com,
-	christophe.leroy@csgroup.eu,
-	aneesh.kumar@kernel.org,
-	naveen.n.rao@linux.ibm.com
-Cc: david.engraf@sysgo.com,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] powerpc/cputable: Add missing PPC_FEATURE_BOOKE on PPC64 Book-E
-Date: Wed,  7 Feb 2024 10:27:58 +0100
-Message-Id: <20240207092758.1058893-1-david.engraf@sysgo.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1707298144; c=relaxed/simple;
+	bh=tZvO5HE5qIBsU4ugSLAGn3zDv2wwFN+ZxY7OuECjo+Q=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
+	 References:In-Reply-To; b=Gbp7697xX4qNz7wP87/bLrandfdm5dnaagJflbWh+EfynLkUxlwerBpXiFxlCw29ORxoUMua8chgWIz69dTGNqhcTJw+2w4L9CBnN4u52TAD/DrR20g65ZZXdEGnZMqMhoEGgumuYX+hbpuAH09SDVEXCdDwSW8m63paaqWldqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=N9P8Cowo; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F197F240005;
+	Wed,  7 Feb 2024 09:28:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707298140;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BU0/Sm8egevmDE5Fx9StEyR84uQHscaV0FmSOe4RKiE=;
+	b=N9P8CowoVS6aHtnXEZfpEdzXufF4DBdIfo9uX/1GKGZxGUwrC+WIpaK+Fvrd38vkLG8vME
+	l85g34lppP595QZB5qYEpj5/VjU1ghU0jqW/8o2Trk907O3/PvrrqLYK/na+2vWw4ZNQfl
+	uz5jMQre7aSXkVTCveh4rSz2apZVz2bu5Je0lSmqhivGyI3hZf+G3ExjM2LCZl5aVfYoao
+	ErZk3lWj82vxiXkrHtMZSfIaMPEqSzxdOLaSSQz2YglbvsReK/yAl16dAubPc3xH0qVO+V
+	v/sozOTgCYmc++BBwCmbr9Je5hb+Q/1jOgYuRmCyMJHmhFDZujBByHyz6/3SIw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 07 Feb 2024 10:28:59 +0100
+Message-Id: <CYYQOHJ4783D.39ZQKS2IK40RV@bootlin.com>
+Cc: "Mark Brown" <broonie@kernel.org>, "Apurva Nandan" <a-nandan@ti.com>,
+ <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Gregory
+ CLEMENT" <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Dhruva Gole" <d-gole@ti.com>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v2 2/4] spi: cadence-qspi: fix pointer reference in
+ runtime PM hooks
+X-Mailer: aerc 0.15.2
+References: <20240205-cdns-qspi-pm-fix-v2-0-2e7bbad49a46@bootlin.com>
+ <20240205-cdns-qspi-pm-fix-v2-2-2e7bbad49a46@bootlin.com>
+ <20240207084253.fxrnoskda5x6usqo@dhruva>
+In-Reply-To: <20240207084253.fxrnoskda5x6usqo@dhruva>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Commit e320a76db4b0 ("powerpc/cputable: Split cpu_specs[] out of cputable.h")
-moved the cpu_specs to separate header files. Previously PPC_FEATURE_BOOKE
-was enabled by CONFIG_PPC_BOOK3E_64. The definition in cpu_specs_e500mc.h
-for PPC64 no longer enables PPC_FEATURE_BOOKE.
+Hello,
 
-This breaks user space reading the ELF hwcaps and expect PPC_FEATURE_BOOKE.
-Debugging an application with gdb is no longer working on e5500/e6500
-because the 64-bit detection relies on PPC_FEATURE_BOOKE for Book-E.
+On Wed Feb 7, 2024 at 9:42 AM CET, Dhruva Gole wrote:
+> On Feb 05, 2024 at 15:57:30 +0100, Th=C3=A9o Lebrun wrote:
+> > dev_get_drvdata() gets used to acquire the pointer to cqspi and the SPI
+> > controller. Neither embed the other; this lead to memory corruption.
+> >=20
+> > On a given platform (Mobileye EyeQ5) the memory corruption is hidden
+> > inside cqspi->f_pdata. Also, this uninitialised memory is used as a
+> > mutex (ctlr->bus_lock_mutex) by spi_controller_suspend().
+> >=20
+> > Fixes: 2087e85bb66e ("spi: cadence-quadspi: fix suspend-resume implemen=
+tations")
+> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > ---
+> >  drivers/spi/spi-cadence-quadspi.c | 6 ++----
+> >  1 file changed, 2 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadenc=
+e-quadspi.c
+> > index 720b28d2980c..1a27987638f0 100644
+> > --- a/drivers/spi/spi-cadence-quadspi.c
+> > +++ b/drivers/spi/spi-cadence-quadspi.c
+> > @@ -1930,10 +1930,9 @@ static void cqspi_remove(struct platform_device =
+*pdev)
+> >  static int cqspi_runtime_suspend(struct device *dev)
+> >  {
+> >  	struct cqspi_st *cqspi =3D dev_get_drvdata(dev);
+> > -	struct spi_controller *host =3D dev_get_drvdata(dev);
+>
+> Or you could do:
+> +	struct spi_controller *host =3D cqspi->host;
 
-Fixes: e320a76db4b0 ("powerpc/cputable: Split cpu_specs[] out of cputable.h")
-Signed-off-by: David Engraf <david.engraf@sysgo.com>
----
- arch/powerpc/kernel/cpu_specs_e500mc.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Indeed. I preferred minimizing line count as I didn't see a benefit to
+introducing a new variable. It goes away new patch anyway. If you
+prefer it this way tell me and I'll fix it for next revision.
 
-diff --git a/arch/powerpc/kernel/cpu_specs_e500mc.h b/arch/powerpc/kernel/cpu_specs_e500mc.h
-index ceb06b109f831..2ae8e9a7b461c 100644
---- a/arch/powerpc/kernel/cpu_specs_e500mc.h
-+++ b/arch/powerpc/kernel/cpu_specs_e500mc.h
-@@ -8,7 +8,8 @@
- 
- #ifdef CONFIG_PPC64
- #define COMMON_USER_BOOKE	(PPC_FEATURE_32 | PPC_FEATURE_HAS_MMU | \
--				 PPC_FEATURE_HAS_FPU | PPC_FEATURE_64)
-+				 PPC_FEATURE_HAS_FPU | PPC_FEATURE_64 | \
-+				 PPC_FEATURE_BOOKE)
- #else
- #define COMMON_USER_BOOKE	(PPC_FEATURE_32 | PPC_FEATURE_HAS_MMU | \
- 				 PPC_FEATURE_BOOKE)
--- 
-2.40.1
+Thanks Dhruva,
 
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
