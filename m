@@ -1,131 +1,160 @@
-Return-Path: <linux-kernel+bounces-56796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18E5E84CF4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:54:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D596584CF54
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:03:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD74CB24FBC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:54:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 591361F23366
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:03:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFE6F823BD;
-	Wed,  7 Feb 2024 16:54:40 +0000 (UTC)
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AABB823DB;
+	Wed,  7 Feb 2024 17:02:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IchEwQbe";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0p9BYUK2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IchEwQbe";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0p9BYUK2"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE63081AD3;
-	Wed,  7 Feb 2024 16:54:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF60F823A6;
+	Wed,  7 Feb 2024 17:02:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707324880; cv=none; b=H64GGn81xUaTqzpftBy0Nh/EbGptjZZmHBzl2rX9vSL315LEhbhRpTNVxJnJ7t8ezMg6cCgIYa/69pZC8iqdB0Q5zlxflSeoOvgSnHJMLyp/sQaj04Q+pL20DxKZSGH9bIni7otmgFPmA2mfGBjsbsWlG17YsHTJfWeEnG5r6mQ=
+	t=1707325368; cv=none; b=Dew6nkK7tApDnD5tWEsqnCNhZaG84ZFRHX14Y0BOl21l0jUa5tY6/IIHn6yBxXOAPHlZfGLoostcHphRLK/vZMbdLnfyfgdhHY/+5HJr2vfatj3i3q9HJEQHdV2M3p31H+CVeDfTMWBcrvtYWo1trGCGVL5apgTTMciY2pINh3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707324880; c=relaxed/simple;
-	bh=8SMGcPX1EaAbOnwuaOxFDCVdYeYRvn5HrRLClVWFJnI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m1HoqeAQntlJMOw9WEwMyhCeCMYr08zdlfvVfYpgzlRqTlDULEZNLR+gNcs9MPQNkQx7e0VNaSSO5WLv+IpbCaROBNH45hQhvoS895q7Bn0pXHHVWBc7pKWpCxk3pCd6sBnQfL4mv5EmFg6FHNLJu3avFM3cjM7B+RYR4/UjF28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e0507eb60cso598482b3a.3;
-        Wed, 07 Feb 2024 08:54:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707324878; x=1707929678;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JFWCuFlBLzCUWV4jwVKyNSgCubC/35Kvhe3/yYpj56I=;
-        b=Wkp8fDRsEzUCheBcXcNxdwgCL23/TnqwpsA+8R0XWboWTIaUpKCDswF4kVK2OlHdH+
-         iWy04F3GALoKWI9YFnJ8FSVhHkQbRTIpumsunZW7RQIaNs7uhIfID17vtj+oj+eYqbOh
-         pAhOHaCK7qLyIIhkhZqf21Mtxdt3Rv55I0P9pEXk+8x3QotWslsxsSTTsLpXHQ+s1wke
-         XU/85+lohOQVxPZhJu/C0D/r/iLxWwIkW8k/hzQR7P9ZTbwEPb+Gf3Ye9hnAI1fagqT9
-         WEWzBzDoZPHl7sp9i2BX9HNQ7gkCXBzbNzEf0FYqaPHbjN4LHMXkiI17vfvz8MgDYHFz
-         8RMA==
-X-Gm-Message-State: AOJu0Yzz2ZBWTPNbz6N+UgoISyTXdYgJ4sybm09oo8+FzsQrWq87h04X
-	ARNh0HQ700jfKBs6LftCvxlrQeOQzNxhzJuFZg1ePt35rZeuEMaYujxT3HWhqdFYKfgrHADI5hB
-	yb5U11Ld3ZQBpN6RNrJ21/mdmxlU=
-X-Google-Smtp-Source: AGHT+IFvVYIu3Ss1QbwMuQSQ7A3OklEFUl+QL08+W1ad4I0SqbvyPguE+z/5iIaQaILDY4/Dpvadp9TJctdIlcLrEWE=
-X-Received: by 2002:a05:6a00:44c5:b0:6e0:6c89:e308 with SMTP id
- cv5-20020a056a0044c500b006e06c89e308mr1808249pfb.3.1707324878028; Wed, 07 Feb
- 2024 08:54:38 -0800 (PST)
+	s=arc-20240116; t=1707325368; c=relaxed/simple;
+	bh=WgD1NhEQjsL++ZYh/RfI+iB5inPBUdnV7Z8lEE2yr7I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aQMnegRSXAiO8/nudWGzSh43JkqV7NWtEa19SLYQ756JmWZ5acY6NziPDfM8379XoSPU3+P5p/1CW68UkJ1/G9QAVZnMf7TI5NzDKoqq73VHNrVhMA/rzwlsnKu2eW4KrUwOHc22/pCEbd1Fg44KWUlNZ8+qa+0lBgpQgEotr/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IchEwQbe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0p9BYUK2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IchEwQbe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0p9BYUK2; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9339B222BE;
+	Wed,  7 Feb 2024 17:02:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707325364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GrZhZlhxqXLYEkbdk4VPL60MymfHMgRveGBli/w4prU=;
+	b=IchEwQbek5eJuciXztHCVOT7ob/EnnUFsLWQo2JcsiDx9A1vrA6kJOIMrg4+MO4FZT5/cQ
+	36dWdkuVCUAebmrkYTpKzRbuDdEmVgcx5yYhGlnL+gjEhP+QcJ4ieQOAQTu7MwfMuwyQkI
+	Rbdzhl9C51GCM39XYk+haCC210YlWvM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707325364;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GrZhZlhxqXLYEkbdk4VPL60MymfHMgRveGBli/w4prU=;
+	b=0p9BYUK2//btrZIakwH6JQSmeajGmqZ6HUIc0WsSRaNMi+d7aZPuUzhcSjyVYGD/QkyRSN
+	bcV5ELab88p91HAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707325364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GrZhZlhxqXLYEkbdk4VPL60MymfHMgRveGBli/w4prU=;
+	b=IchEwQbek5eJuciXztHCVOT7ob/EnnUFsLWQo2JcsiDx9A1vrA6kJOIMrg4+MO4FZT5/cQ
+	36dWdkuVCUAebmrkYTpKzRbuDdEmVgcx5yYhGlnL+gjEhP+QcJ4ieQOAQTu7MwfMuwyQkI
+	Rbdzhl9C51GCM39XYk+haCC210YlWvM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707325364;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GrZhZlhxqXLYEkbdk4VPL60MymfHMgRveGBli/w4prU=;
+	b=0p9BYUK2//btrZIakwH6JQSmeajGmqZ6HUIc0WsSRaNMi+d7aZPuUzhcSjyVYGD/QkyRSN
+	bcV5ELab88p91HAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 865C913931;
+	Wed,  7 Feb 2024 17:02:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id kr7FILS3w2XUWQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 07 Feb 2024 17:02:44 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1A843A0809; Wed,  7 Feb 2024 18:02:44 +0100 (CET)
+Date: Wed, 7 Feb 2024 18:02:44 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+3969ffae9388a369bab8@syzkaller.appspotmail.com>
+Cc: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [reiserfs?] KASAN: use-after-free Read in
+ set_de_name_and_namelen
+Message-ID: <20240207170244.unipov7cbfbrupnb@quack3>
+References: <000000000000a5f23f05ee4865cf@google.com>
+ <000000000000027e150610c8b964@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206033320.2657716-1-irogers@google.com>
-In-Reply-To: <20240206033320.2657716-1-irogers@google.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 7 Feb 2024 08:54:25 -0800
-Message-ID: <CAM9d7cix-TuMov+hsqVvvkeSRA2snhuddcY0zypR1F9yY4G2Wg@mail.gmail.com>
-Subject: Re: [PATCH v1 0/6] maps memory improvements and fixes
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
-	Miguel Ojeda <ojeda@kernel.org>, Liam Howlett <liam.howlett@oracle.com>, 
-	Colin Ian King <colin.i.king@gmail.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Artem Savkov <asavkov@redhat.com>, Changbin Du <changbin.du@huawei.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	James Clark <james.clark@arm.com>, liuwenyu <liuwenyu7@huawei.com>, Leo Yan <leo.yan@linaro.org>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000027e150610c8b964@google.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [2.89 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.01)[45.88%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=8d01b6e3197974dd];
+	 TAGGED_RCPT(0.00)[3969ffae9388a369bab8];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Level: **
+X-Spam-Score: 2.89
+X-Spam-Flag: NO
 
-Hi Ian,
+On Wed 07-02-24 03:09:03, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
+> 
+>     fs: Block writes to mounted block devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14fffd6c180000
+> start commit:   c3eb11fbb826 Merge tag 'pci-v6.1-fixes-3' of git://git.ker..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8d01b6e3197974dd
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3969ffae9388a369bab8
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1615d7e5880000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f20981880000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
 
-On Mon, Feb 5, 2024 at 7:33=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
->
-> First 6 patches from:
-> https://lore.kernel.org/lkml/20240202061532.1939474-1-irogers@google.com/
->
-> Ian Rogers (6):
->   perf maps: Switch from rbtree to lazily sorted array for addresses
->   perf maps: Get map before returning in maps__find
->   perf maps: Get map before returning in maps__find_by_name
->   perf maps: Get map before returning in maps__find_next_entry
->   perf maps: Hide maps internals
->   perf maps: Locking tidy up of nr_maps
+Makes sense.
+ 
+#syz fix: fs: Block writes to mounted block devices
 
-This fails to build with NO_LIBUNWIND=3D1
-
-util/unwind-libdw.c: In function =E2=80=98unwind__get_entries=E2=80=99:
-util/unwind-libdw.c:266:70: error: invalid use of undefined type =E2=80=98s=
-truct maps=E2=80=99
-  266 |                 .machine        =3D
-RC_CHK_ACCESS(thread__maps(thread))->machine,
-
-Thanks,
-Namhyung
-
-
->
->  tools/perf/arch/x86/tests/dwarf-unwind.c |    1 +
->  tools/perf/tests/maps.c                  |    3 +
->  tools/perf/tests/thread-maps-share.c     |    8 +-
->  tools/perf/tests/vmlinux-kallsyms.c      |   10 +-
->  tools/perf/util/bpf-event.c              |    1 +
->  tools/perf/util/callchain.c              |    2 +-
->  tools/perf/util/event.c                  |    4 +-
->  tools/perf/util/machine.c                |   34 +-
->  tools/perf/util/map.c                    |    1 +
->  tools/perf/util/maps.c                   | 1296 ++++++++++++++--------
->  tools/perf/util/maps.h                   |   65 +-
->  tools/perf/util/probe-event.c            |    1 +
->  tools/perf/util/symbol-elf.c             |    4 +-
->  tools/perf/util/symbol.c                 |   31 +-
->  tools/perf/util/thread.c                 |    2 +-
->  tools/perf/util/unwind-libunwind-local.c |    2 +-
->  tools/perf/util/unwind-libunwind.c       |    7 +-
->  17 files changed, 899 insertions(+), 573 deletions(-)
->
-> --
-> 2.43.0.594.gd9cf4e227d-goog
->
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
