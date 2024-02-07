@@ -1,164 +1,126 @@
-Return-Path: <linux-kernel+bounces-56175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DC7E84C6FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:13:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D92084C701
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:13:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1475A286D85
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:13:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29089282DF5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9915220DC5;
-	Wed,  7 Feb 2024 09:13:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CcEwJd41"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F796224EF;
+	Wed,  7 Feb 2024 09:13:50 +0000 (UTC)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E301820B12
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:13:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B6B22309;
+	Wed,  7 Feb 2024 09:13:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707297214; cv=none; b=q7E23psPI0/NiAzxISaONt6+DnW3LOzqn7zDh7JBq2vQIcdRFdhCo0QMEuRNsGzZEPfUAsLVsEwf05b/HuEfSb1kEAkM/49/2ychnWH6N/upm0tYc1NpdGHTH/xGXPVOdFFDqZHvbmT5w9z3ilNIe5K3HQEh/PPRDx07zLkgtY0=
+	t=1707297230; cv=none; b=C3xcTpez7ySs7T+922ULQP0kQxrRZUz/4h6NB339tUUGfGyv4WKiHN4jqi3i/nHtJ/XgrJZpRBAnATE3BPNNktmyITfjxMe1R9szaFPZkI9L9aTp3Pkvsl8iVkErCTMfHWO3YHyaSbMcK/OJ/zU3PKsjpJAMCVbGq8dfiWCpx28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707297214; c=relaxed/simple;
-	bh=ltC84Rm/vIiUlkpOo3LWjCuHw3JXzUtFSelaS6n7GO8=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=R0/UPZfKN+AuhCCTY0P92wHjzyjZV2ZKQMK1JQ5HEwOEDMjDCqmThIfE/A6P4szCnRyflO2Qws15mvONF1jW5+AxV/uYX1SkJWwVYZ9QhV1TKafvLXTNgQRacrx9CTuf4bEVOqabvNdzt1+OUBqAliIDWH3e3C+W8IawUz6kb3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CcEwJd41; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5114b1e8819so557980e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:13:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707297211; x=1707902011; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=N4boiLkEy1/DFsAyyQnQqltI77jo7vrHFr3VsLB2XPg=;
-        b=CcEwJd413hpv0uNqy7kxX66LbWL/LFRHypigPJhNX9mtAfUWb5cUFBNpb40r91GVjU
-         06vPfrnuDRpTkohtcnknX1CJ0FvJWs3qziIRCOptN+c6rEVmpnMNJNhDziK6UexMnyin
-         wHuWhBUtYpi6ylH9ARrIh6f7HWOkWW/EdEwFR2P0Let+aAAYXYOXywu7/K9q2XuToKSI
-         l6Il7plyQA69IzQeno24HKiFNovyYLCVrzy6cQby6Yq6A38ssUY42CFyc3mHHGsdqFqm
-         UBf1pFpk5kNhKzyaR7wWsENQ8zFmaSWPEgC3F0pA22iPUZ2UqFsNXnFCJymJPniR25vN
-         f0Ag==
+	s=arc-20240116; t=1707297230; c=relaxed/simple;
+	bh=TqmxnL7LhKGRFaus9OcZ6Eu3Xvu+lsumuH85X4Jj9qg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HBFi3LDZDIu/BkpML+XiEZAD0fuZCOJQ6XtZdeztt0GAPkim0AzZ1FMh4f8C6M1VG6nRiAmGXul/ahho18uRhSa1jS8sQcZhEHbMKq3Jte4QapVyCkhNKmF1qI+EymS/ujVFoZrUVAxnS2ptKP0hZkTFb6wN8XXilx1ZgvZWzP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc6d94b9961so348756276.3;
+        Wed, 07 Feb 2024 01:13:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707297211; x=1707902011;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=N4boiLkEy1/DFsAyyQnQqltI77jo7vrHFr3VsLB2XPg=;
-        b=cjXVtZDQjgek1x0Bc/fvqaVKdPf80Er+q3tvDWSgURRSsUmkoTr0pgeY9zdhV2iUvH
-         GCOFPDbew/fzqC9TbCnXd8EfYcymD6X9FVi3eQrkI6dL//lHLcSMf2JrfmMSGJey2gCN
-         yDvAKUQbEXJx/YWVHFfGQEY0OdfGUTaH4s0Ew+NxS4IUFgEddVnbZJlV20o9eripLzTh
-         X/qBWZTXQvc6zSDs9/BriPPgzCRIPr+zQyLTBQrvZNihbN41s0moC1gT5LcW/5hySVWC
-         fTTZ6gJOoo0+W6BD3DyJiJ2jWkf1Ekcow+Xk4qMeiBfZ/yFmhCme68XFhSU+r5Pv2xr/
-         NCYQ==
-X-Gm-Message-State: AOJu0Yw5DaAbIxTNjGFumg+7AnWEOGy/+2P/1bA/VpjZ2IlKQKGmqm2G
-	TbxrtvKYzLUySjCLngL6DypTZQ3ZaSFRvUBzvFi78BIQ2YtzjbqwBdryte3SbQ4=
-X-Google-Smtp-Source: AGHT+IEuKbF7eBlriHKPLcwyu5r6eScSFaoKyMjxw2EWKwCxQk1uz0UMi4uXx8ofme0Ll3/2mFimkQ==
-X-Received: by 2002:a05:6512:31ce:b0:511:619b:7257 with SMTP id j14-20020a05651231ce00b00511619b7257mr3066369lfe.53.1707297210825;
-        Wed, 07 Feb 2024 01:13:30 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV1h55aFk4ssgTouARzpzOg8iRxKm8VcexMbk+pLi1qK7rx1tOgj4fNft8e5da46EZzV1Uvf5kXOTYY9B4XRhnM9Esc4NYJ/uJjaTcXpgrLQTiNGtwKq/oJAC/H4qqwPYNShN4fRv4Nmsqszbm+Ny+el+oX75fmR4oFqYvhQSJkxZ5BEpYGS07GnJPvBDtsEtXlVxH7Yqg8txxQ8A1NMWkyZ8XClfrk1La+R1bMUCLPN9hlbAKvsqiTNL/GnUPwOwEcKAs8kGXaFpp2e9u2r7YZImnZ0To9MMhFUcIuWVhFFF465lm014+Hd2/P+IzVNBL13cqrw1oHAvfK4U2VdbDOSYLQQBqiItVB5oSoAmL9HevxT8yu/FMhK5AAt/vrhDvnqtUpwYAfVyiZuJvAAfYG4MI/lqgSllmXOGNwIIg6EMqcYBQQgL7KUJ5hrmtUdwkAR/y3rzsuBPids6LyUqKYqHQOT7tUH6WVd2er09ol7sZLsHkbfj/a0GUtYCE2aMl/PCC7DZqLmzrC/G2BicoeNKJSFoR1z9IIIjKgzJxuTdFA+CvBNIOvdLCHNjvQQU9A5w+82UeLMDkyOu8KPS6UR+HGWTsEkDHzq+1kynIlBJTvrR/t0tRwHq54R3jXDuvxjGOzQec/w9YkxtfPOhLPARonyiBgD31uhNQXymwh/bSH5oXP6eoz6JWVh6Lvb6pyKSMgK4cHtER3yMiqdtV7uLIXs93iJEclefaJ2VJe0p+qSjZpwjtcl9nR7y0=
-Received: from ?IPV6:2a01:e0a:982:cbb0:5ae7:7fdb:32ad:f6d7? ([2a01:e0a:982:cbb0:5ae7:7fdb:32ad:f6d7])
-        by smtp.gmail.com with ESMTPSA id fc16-20020a05600c525000b0040feb8c71a0sm3809215wmb.13.2024.02.07.01.13.29
+        d=1e100.net; s=20230601; t=1707297227; x=1707902027;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eg3v7z1mB1AjuBlJK36dadneR0u0gyBpWirpxI2xans=;
+        b=I8xUGjZEOmVM7XjmboCxlNx8YmfwTeyyfDdZj9FFBKNhpeLli/s2xQ7JYY5diXLGnz
+         apJKFVYZ6spBK9cZ+YsplNqQgDUKF0iUvLVu1N9WkrZykHQJUwjvUrcc/KxuIwc09glT
+         7d0zgJMGZ5bHruXtwf4I715+JW7pbNW6cew+0EM1um1Ufjuoeh1EpuQrUoFpmLiPbWg2
+         CfBE0nqrwia3rChUaZ2hgJT1V9yoCfOecqSVVaC7ROMwl/e0DJVUKhWN+35gEBTZn26r
+         tZUBMEwPVytQ7q+QNEwGQhSWikv7uSDZa5P0s10Kb8xo4j4Kkz00Lfm12PVGm93ao4kK
+         4QOg==
+X-Gm-Message-State: AOJu0Yy20ecT6glK4IPGNmjo6ErVsYmuvSM2GlRWo5R718frUkLll6pf
+	Sfg26wf3+eEysCXoeX/s3naTw43EgO4ke8paCpuVyOMxxRKZYJSahdOOPN/RxFo=
+X-Google-Smtp-Source: AGHT+IEhMNuzZ2ZZ39P/sIpAG50u6k540KMC2zvDnMhDPcuh42e2t0YlNxOe8auveU/stq7mJZq3ZQ==
+X-Received: by 2002:a25:8284:0:b0:dbf:ec4:311f with SMTP id r4-20020a258284000000b00dbf0ec4311fmr4325322ybk.58.1707297226775;
+        Wed, 07 Feb 2024 01:13:46 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXQcKBlbOWpzDn+O5Of/vJ6zmF9MagJ1hsI5m8UQ40wd0GP96hQEZih0Qh/kHS9SiS9CiK3E8NoNtrgGNNZRlYOYpGyJCBwTTXXnylFfHGE3bTMcEk8AvnXa6Z+G9CzDxeG1r8ofzHZ120uS+1W
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id a5-20020a256605000000b00dc36ad3af97sm146291ybc.50.2024.02.07.01.13.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Feb 2024 01:13:30 -0800 (PST)
-Message-ID: <b56d11ce-869f-4183-bb26-f0261af356a6@linaro.org>
-Date: Wed, 7 Feb 2024 10:13:29 +0100
+        Wed, 07 Feb 2024 01:13:46 -0800 (PST)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc6d5206e96so369576276.0;
+        Wed, 07 Feb 2024 01:13:46 -0800 (PST)
+X-Received: by 2002:a25:84c3:0:b0:dc2:65da:d3af with SMTP id
+ x3-20020a2584c3000000b00dc265dad3afmr3965372ybm.65.1707297226259; Wed, 07 Feb
+ 2024 01:13:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] drm/bridge: imx8mp-hdmi-pvi: Fix build warnings
-Content-Language: en-US, fr
-To: Adam Ford <aford173@gmail.com>, dri-devel@lists.freedesktop.org
-Cc: nathan@kernel.org, kernel test robot <lkp@intel.com>,
- Liu Ying <victor.liu@nxp.com>, Andrzej Hajda <andrzej.hajda@intel.com>,
- Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Lucas Stach <l.stach@pengutronix.de>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240207002305.618499-1-aford173@gmail.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240207002305.618499-1-aford173@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <e01cdb99-8497-4fec-b423-a0bfb483ac75@web.de> <324d4e02-6a5a-4112-a3a7-d7aeb5876acc@arm.com>
+ <596b3bda-3bef-4e28-b9dd-08b96da97097@web.de>
+In-Reply-To: <596b3bda-3bef-4e28-b9dd-08b96da97097@web.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 7 Feb 2024 10:13:34 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXiszyYM0kc0iqSTDLAXKg_AKmYdc51_8oNwpQUbOWcVg@mail.gmail.com>
+Message-ID: <CAMuHMdXiszyYM0kc0iqSTDLAXKg_AKmYdc51_8oNwpQUbOWcVg@mail.gmail.com>
+Subject: Re: [PATCH v2] iommu/ipmmu-vmsa: Use devm_platform_ioremap_resource()
+ in ipmmu_probe()
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev, 
+	kernel-janitors@vger.kernel.org, =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>, 
+	Will Deacon <will@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 07/02/2024 01:23, Adam Ford wrote:
-> Two separate build warnings were reported.  One from an
-> uninitialized variable, and the other from returning 0
-> instead of NULL from a pointer.
-> 
-> Fixes: 059c53e877ca ("drm/bridge: imx: add driver for HDMI TX Parallel Video Interface")
-> Reported-by: nathan@kernel.org
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202402062134.a6CqAt3s-lkp@intel.com/
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> 
-> diff --git a/drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c b/drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c
-> index a76b7669fe8a..f2a09c879e3d 100644
-> --- a/drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c
-> +++ b/drivers/gpu/drm/bridge/imx/imx8mp-hdmi-pvi.c
-> @@ -57,7 +57,7 @@ static void imx8mp_hdmi_pvi_bridge_enable(struct drm_bridge *bridge,
->   	const struct drm_display_mode *mode;
->   	struct drm_crtc_state *crtc_state;
->   	struct drm_connector *connector;
-> -	u32 bus_flags, val;
-> +	u32 bus_flags = 0, val;
->   
->   	connector = drm_atomic_get_new_connector_for_encoder(state, bridge->encoder);
->   	conn_state = drm_atomic_get_new_connector_state(state, connector);
-> @@ -110,7 +110,7 @@ imx8mp_hdmi_pvi_bridge_get_input_bus_fmts(struct drm_bridge *bridge,
->   	struct drm_bridge_state *next_state;
->   
->   	if (!next_bridge->funcs->atomic_get_input_bus_fmts)
-> -		return 0;
-> +		return NULL;
->   
->   	next_state = drm_atomic_get_new_bridge_state(crtc_state->state,
->   						     next_bridge);
+On Tue, Feb 6, 2024 at 3:16=E2=80=AFPM Markus Elfring <Markus.Elfring@web.d=
+e> wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Tue, 6 Feb 2024 15:00:23 +0100
+>
+> A wrapper function is available since the commit 7945f929f1a77a1c8887a97c=
+a07f87626858ff42
+> ("drivers: provide devm_platform_ioremap_resource()").
+>
+> * Thus reuse existing functionality instead of keeping duplicate source c=
+ode.
+>
+> * Delete a local variable which became unnecessary with this refactoring.
+>
+>
+> This issue was transformed by using the Coccinelle software.
+>
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>
+> v2:
+> The transformation pattern was adjusted based on advices by known contrib=
+utors.
+>
+> Examples:
+> * Doug Anderson
+> * Geert Uytterhoeven
+> * Robin Murphy
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
