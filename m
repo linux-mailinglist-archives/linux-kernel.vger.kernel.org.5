@@ -1,451 +1,195 @@
-Return-Path: <linux-kernel+bounces-56048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2720C84C54B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 220FA84C545
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:57:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D240F28CDF2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:58:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD58528C1A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C2B200D9;
-	Wed,  7 Feb 2024 06:58:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81D5B1CF8B;
+	Wed,  7 Feb 2024 06:57:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="HcYw0PGK"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B25nkAt0"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7261D559
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 06:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707289086; cv=none; b=UWKZzZjRF6CAlr2t5BjKGp06Me9ffY6x1APG/8LolSgmPcyrchM339ybMJhtrRkSNkTQDnCjvlX6cX2xxtqjmBHveGfLXlBbk0qZIJn6sumjQjBiqZNENbZ/ZDczcydqoCqx4YA5rnb6sX5hFqrV2hgiP+P5DBPs//EWzuXzb8w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707289086; c=relaxed/simple;
-	bh=V7uFFpe8w3EF9zEsXHJZNarBHBrm8Ar/llgSi0z+4Z4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UGZ/xl9f8DKGRu+qjfO2QzXqnWmBP1EUwEPi27t3hj/JhEfQNq4BgEyeAAWcSWGXhqH7wKnP7mvFwxQRumRhh5NY+3y8+LPzCINw1H2JSCjYE27brouNFyukSlOLQ55j8OqP7ht/DITI4E3UURRkroEaigM0hzQE2rXNukvUILg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=HcYw0PGK; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e04fd5e05aso246059b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 22:58:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707289083; x=1707893883; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aecUI82Iy+XbHEXIEO1CZlXO6PZH5PAtjcYNmz1mNEQ=;
-        b=HcYw0PGKQ8pnFpijdZeCpDJMuTfQALfqKcCd4oR3+NKI+8KYyZC6r69Sjkw2O5AT6b
-         QJZTEHSvKf4sVTPcFlXmwXKq7NBxtmYn6tea4msSqxA41z5nGneVpSubS/m9v/qDORtO
-         hLVaCeMykfZjUkSXiZOFe1PDCW2Fc7zVeELyM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707289083; x=1707893883;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aecUI82Iy+XbHEXIEO1CZlXO6PZH5PAtjcYNmz1mNEQ=;
-        b=ZRkGW/8Q7lyX+9mA3Y6lDxOPmFFmxZiE5K7XnUxd5P8xr+V8AdwPZjO3Lqfi01BW3q
-         6YNhVWJRH0iA8FqsR/R+zUmkIIXwNmsLaIQX/0ws+pRubh0LjHTWp3NvrmOxRoA7JppA
-         3lFzcji2lkvrPsPWzc95p3soaDRKwODNSnclUKwfhQEsgDODtHnJzv9uQsuco2plvp7Q
-         CjwMYPxC1JSTWAI9Vhh237jdlbxrtBYmrdWRYFkxe1PG4B+Mwr3cPFiE+OqNvxWT62Aj
-         SxtsJB/sDGM9dPikak+QzU4NFC/PCMH1pTSx4BaMqFvMPSuP2X/5tLKZAjwDPeuaDMOg
-         Vj5w==
-X-Forwarded-Encrypted: i=1; AJvYcCUyB+dVV3PrUJ0GvQwAYdKBieTRqBQ558FkqAiGukTXhLEYBJctyDb73HG7KmHRu6KXiwnjqzWrkh91rDFG19IgYqITrKQKyam6f48+
-X-Gm-Message-State: AOJu0YwPq5ods9o0+23HTU5OW0Xj1iCsYKmyiqEBmYD2PAnuU5NQ16Gi
-	2JrUZrWLbONN4NMDropggqBJ1JSiY9CHQevEVwBzQaVjlQi36Q4E7+u+dzZ1Rw==
-X-Google-Smtp-Source: AGHT+IFELJwXkmY3OunMAIgQO/2tw+BOike8Ofqjzzk59xcmSBvDqnBhvRvwNn0Eu2+00jvLhins+Q==
-X-Received: by 2002:a05:6a00:4f96:b0:6da:c9e8:486f with SMTP id ld22-20020a056a004f9600b006dac9e8486fmr2959491pfb.3.1707289083519;
-        Tue, 06 Feb 2024 22:58:03 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU1FLAWtv16oNS8EQOb71JFwYbqgXmxQrqvEc+LjnWZCmoy75DdllOOmj+Vv1vpivueRCKXUfvQF4qa2HEbP97C0forU4DFKVCF0DkzHdFyxGh7GaE8oJD3iJSLDEsOso2iHI0LOLRmxbeIPp6/n8AD1QddxYikULAb8v35JH/+wbs=
-Received: from tigerii.tok.corp.google.com ([2401:fa00:8f:203:aa4c:2868:935:7ac6])
-        by smtp.gmail.com with ESMTPSA id jw15-20020a056a00928f00b006e03ac84d53sm672576pfb.193.2024.02.06.22.58.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 22:58:03 -0800 (PST)
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Minchan Kim <minchan@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [RFC][PATCH 2/2] zram: move comp buffer to a dedicate per-CPU area
-Date: Wed,  7 Feb 2024 15:57:12 +0900
-Message-ID: <20240207065751.1908939-3-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <20240207065751.1908939-1-senozhatsky@chromium.org>
-References: <20240207065751.1908939-1-senozhatsky@chromium.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4F871CD3A
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 06:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707289070; cv=fail; b=nHf5pSXnzcwLtd2qzji+6WphLCLmp6+ZLktaUSoN1yP4ku2pttnDEZ5R7aT1vT2jtXqGR0nu9O9XQj/jugnDKutRYlTF7+/d583sZlm47xPQt2SkyNUdBb9LS7+mL11rs2OWOZKEZOgZiDzwhLD6UZ7XUbcCC0ZYu82IUBPdnTk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707289070; c=relaxed/simple;
+	bh=5ZchEAyOKeRc28EuQLm0J1U3qNEZFIqvL4M2M5NfEnw=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=rQtTy2hbR88h/gTTa6cZjUHzFBHxMNfc14uR0Ie+mRXA7D2j1D6ZMWiecWQ93qHk9Z6NnD0cuomGAZROE6SJc3CfL81md0a7u62AFg0TISUUX7uLbv7k130A3FEKlivFmIKTKJpo7IHjEgn7qxFddPCm4z0riNOMV6m4/hFg75A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B25nkAt0; arc=fail smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707289069; x=1738825069;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=5ZchEAyOKeRc28EuQLm0J1U3qNEZFIqvL4M2M5NfEnw=;
+  b=B25nkAt0u7aPUuLt7xSG7sDCG3r8+NumVxr75pM7XRJlsheFM9HctL31
+   rIDxOMWQfMpRqvmMMK4E/u291hPgGDKMUyJ4SeHj5DyKRrRCqGqhOlLew
+   S6XtccPoD8bnbG/DQEnElEGCUR59Hl38O3KVnUZFIRj75cITyaEOc1cvY
+   ikbOKpDHxh5csxo/lN6iyXXI2vHrs0rymqsT/+jvvkGI+ZxHv2LcWvP+v
+   OyKWLpRxg4XK/ecFNXj2zaMpj16os9yKDoPyWqGJhEk53dZ6syxxXJkPq
+   i4/5gPK83jPkrBBC+lLLztLufuy2gHgWyV2ctqIqRiar479RzsTR1VG13
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="12008595"
+X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
+   d="scan'208";a="12008595"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 22:57:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
+   d="scan'208";a="1555991"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Feb 2024 22:57:49 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 6 Feb 2024 22:57:47 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 6 Feb 2024 22:57:47 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 6 Feb 2024 22:57:47 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lhqP3o1Qb78ndRuaR+MxuMlsdVtGXtTSvY7zCJ6RbD35mq9qY+HXam0y/wcKCwRcGoxgfhootqwF/iHmSQ7xtnqfR/mBu3SIQ8EHcHT6FEFwVJHe9pg5a2CrSsx8N/FDnscnI+wzm99MCNJC3Stss5bUNNj81hWScDQ9OWA0STNe0Zk+x8co/rtJaoTOVnGJTzd9kv/lZ/HCg1SWkCOWC6F2ByMv2St0oXBLRNXuJUHpxbUhRduYVnYrFP6eADh3UBgfyOmLcxxbZ18X8FqwBjxebEEOD/ZGJn7D49AJaPJals+t3oUeAKXxbNqmd04FXPdIVR6TeYxJ8tCFlyPTyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dPjDzXoDA6B5ciPSAFLFyTGoZXgSy9iDFzsQo273SxQ=;
+ b=MhD67x4qb5weHqCsDhec2eC2mC5OyJT8NBbjeib38ti2ekaGv+TW/MMTBk3XzMGwqJ0ZJWN8qUQKkvhUeKA00F9LcSsuIjm9F87SgdEvF9JucUXb0RCX+9+Ni8S8JvYq5QsmOhh0yaUYJwjcUKUvuzHliI4GHLg5ljx3xYYzQZMaYn+ArAA3djLvuYeag3gi3buxguQEA88nFfq5/+Ne9im0ElSvc2URY+myei+hcPUmZAqVtw6KKMy+CPiUq+r+bZ++v6P6kFoZV/3BQIW9kYZw8eNlQRQHK4iw9COFbnLo2vDVgXIyEsATCKfGc4O+dNcvMMmI+SPtiRwi/W/dcA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH7PR11MB7605.namprd11.prod.outlook.com (2603:10b6:510:277::5)
+ by SN7PR11MB7465.namprd11.prod.outlook.com (2603:10b6:806:34e::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Wed, 7 Feb
+ 2024 06:57:45 +0000
+Received: from PH7PR11MB7605.namprd11.prod.outlook.com
+ ([fe80::c138:faf0:9fa7:8a03]) by PH7PR11MB7605.namprd11.prod.outlook.com
+ ([fe80::c138:faf0:9fa7:8a03%7]) with mapi id 15.20.7249.035; Wed, 7 Feb 2024
+ 06:57:45 +0000
+From: "Winkler, Tomas" <tomas.winkler@intel.com>
+To: Sakari Ailus <sakari.ailus@linux.intel.com>, "Wu, Wentong"
+	<wentong.wu@intel.com>
+CC: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] mei: Add Meteor Lake support for IVSC device
+Thread-Topic: [PATCH] mei: Add Meteor Lake support for IVSC device
+Thread-Index: AQHaWV7Sezftrxbl60GSqveRb/sUyLD+bxyAgAAD8lA=
+Date: Wed, 7 Feb 2024 06:57:45 +0000
+Message-ID: <PH7PR11MB760526EBCB4CFCDB19A03E40E5452@PH7PR11MB7605.namprd11.prod.outlook.com>
+References: <20240207004304.31862-1-wentong.wu@intel.com>
+ <ZcMmg1f8975whpno@kekkonen.localdomain>
+In-Reply-To: <ZcMmg1f8975whpno@kekkonen.localdomain>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR11MB7605:EE_|SN7PR11MB7465:EE_
+x-ms-office365-filtering-correlation-id: 8f92ac8d-de91-4f81-4843-08dc27aa1681
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cqeDoodPA8n12WglY5BWeMc0o/ScNXJ84sCfMuB/t9t0v6jfXIrbIk+F6fwlgPCcH0E5PUGSq6i3TTrJd1bGzKrbIrSxqpjaVaGWHgHHz6hfzgRDFL4R9nAkSF8gVc7dD/EF3swIl1AolsxfHpO7yuwpGPnFQpxobNbT+G4kJhBg6Mh2ZP1YlDfBzZKm/tTMaKPXp8O/QbTf+ceP1pnQni1AmSD9n7yGiLFZEGkcHrILsgxS084oZbf/GLkSl8kLS9ic5ZLhssU+kbyeJt67+4s987NfISWK6bNgCr9vPncyzzOYXfDw7kpDivdJ2F+rlMfAIsl0FpF5Fyg9Z2Gm8xC2G2FCEeFWL3mHCcGCFumGuyw+o+3EXm9ucwyR03tEAzm34jbJ+aWhf2xsp50uRNjyX/q3xKAhyNDOP41KVxj9i1VPhTJQxq4yrjlvRZ6scKjce6MGk1FaByNHSGVibDquMuyjDN/I/MZ/2NBG4KwBsPRW5Sd+ZMooMOjXZgT3o8ftveCsx/eHKGRDp3T3ore3Jg9+lj/saJs8mN5Rv+cokrwKZjK+15+M4Dyydh+rPt+iYnfIkU9Msl6kEmRIkkrAA2r90ss3Yu0tkNAfGdr7BbPOiO1K6iE2VLCaVTAR
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB7605.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(39860400002)(376002)(396003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(26005)(86362001)(41300700001)(4744005)(5660300002)(2906002)(478600001)(38070700009)(110136005)(64756008)(66556008)(54906003)(316002)(66446008)(6636002)(66946007)(76116006)(66476007)(9686003)(8936002)(8676002)(4326008)(52536014)(71200400001)(6506007)(33656002)(55016003)(82960400001)(38100700002)(122000001)(7696005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?MK7LyEDZxsV8SkkkV6X1RzDrFjk+aQclQ9So5uXWzd4rmgstoLgTjXEJPU5k?=
+ =?us-ascii?Q?yFs/lTNFWcfYtFQB52fZ+Lq+2n3D6rbSgg5sgL1c26rn6CRoqmqDUEuE8vhF?=
+ =?us-ascii?Q?XnLNMJ9mi3kYDg//bs3RrIesAdLLkJsm7iw+ViH0gAJJ56+ciwPzgpEIOUeQ?=
+ =?us-ascii?Q?y42A4xaiH1ngj/V9VRKMXHxqsKNfHRV7yfK++bPEuzXLNNJmWdW8YwLkNDIF?=
+ =?us-ascii?Q?4kP2Dxm6fKUh1fdmUTyno61ZOov6mtlhTqEkDh9iC7ypjeGFiQlu0ghmMh2t?=
+ =?us-ascii?Q?qBoEo9IfCxIziV9HqJdOS2JZAIh4GXBDB2/lu2qB7dRXX/QCiZ9UHHMEkc2a?=
+ =?us-ascii?Q?/XQYR6pAOlrJrnPgWfVKd1pjyaJloQFp/7hRq/tw7OtU+XcFjfn9AcJgV1iz?=
+ =?us-ascii?Q?Pv7ZGX+2C19PQSwLpyrFSoRRs+XzRqIwpCkcliHEWk4JpGv5cxnI7lH5DVq9?=
+ =?us-ascii?Q?1jFu/Q79bouRO/Y7hBLtRGGcIiw+AJr5lOaiWacDuOrcclZQzsCR5/sa/JIM?=
+ =?us-ascii?Q?OcTlrDHpebIWMEw77Lfx+ioITGYYjuSPdEyyKOHfkKlBOUKxdkGVrHs1tjZu?=
+ =?us-ascii?Q?QxhL+lzbYmBrIQo9FmSqw5Dgh+8QFEWrRbHX2CfFPiRIfiAxEKKrG2zVHzUT?=
+ =?us-ascii?Q?x/WsMAHd1W3pKbBnrdIxXxznh6jMc1PEoKb7IkXXDu8y0UQMEvtLmCjO65wZ?=
+ =?us-ascii?Q?7b76HqGNagscPtJGS86jBpbzMBajjD0p/nBJ8NNtx47tjBtgDV/iFJCDHfK5?=
+ =?us-ascii?Q?v8xxOhLKMd93Q/Pk3yKqXI1kPGERWARb8Ral9Sh7+4YXWSF6Bt/iv27VDgAY?=
+ =?us-ascii?Q?vNr6Oj1wDGiKKKXTmR0IZLfhvT/ROxAnBhupho40rD8WIt478NiS7FMIsxfm?=
+ =?us-ascii?Q?Ga0mQDescMdNejCMA1C16Py6sLCpdc4RffEjJ5Q4KcfmgSE5a1aL4TqVsyH7?=
+ =?us-ascii?Q?qyzpwuAE++vNWKGymKk5QNTdnLW8wpsWM+2X2p76Q9mlV73PuMqoN/mSSDoY?=
+ =?us-ascii?Q?d2fHmXkMj1k5a+UJwDF53frA5WlxIbgYEiy7oLMwXdboxAoYs8pQguVorGHI?=
+ =?us-ascii?Q?gOBDHFrzDp8ZpG1DzIsd00JF0nVkJeKcpNDokHiVwDv4NBrBNgldjRr7+MT/?=
+ =?us-ascii?Q?+SylTxGaOgp0sdzaexUOOdL2nYaNZoopk2LUK+7s1OzRYnHPYJOVO+EVUniz?=
+ =?us-ascii?Q?B0D7LbOX3UkacTn1/S0GddFnAm4lVc1lfSFpbzdC6TzO3Fw4kTQS9pU7J+pl?=
+ =?us-ascii?Q?JHX2sDFvZ1073vrAC/6aI0t4mfV0FhSv+35zMGQNGZVT4UgBLZ+4ZNT12kWN?=
+ =?us-ascii?Q?rEozXWwTyHsUndWjg5sBgZQy3jLNw+V8o+FGPNFgfZhrlzSyBsZn7fSshaoW?=
+ =?us-ascii?Q?kKd+/2hx7HYV/w0NiMJWlp4kjQdYULVXGFvjYVqGOsQP3POf+oFRmrXnVMKi?=
+ =?us-ascii?Q?OiIEg6ezomhpoPf1ufkdTTS4Drl8d1/8mb3PzxjzsLecbYG1J0JLsnRnpqEm?=
+ =?us-ascii?Q?BZFHgBgj/URknCn+EQIUjW1ZBDZVjmkJdh3m8OjpJYrHlL8ZIDzn5YXkSmr/?=
+ =?us-ascii?Q?k0tBb/Esz1sh7OZu1xMWx849mdc9/ZBlVpC9ey1J?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB7605.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f92ac8d-de91-4f81-4843-08dc27aa1681
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Feb 2024 06:57:45.5140
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0Nn929Lee9CD9BDPqC631S8N71cP9U8JpdB3lnUDt36+FtATpgTXeB/4nZuDi0bJYvzyyFIZGqsvvWAcXCAUCA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7465
+X-OriginatorOrg: intel.com
 
-We currently keep compression work buffer (2 physical pages)
-in each per-CPU zcomp_stream structure. In some cases this
-results in increased memory usage (or even wastage), e.g.
-when we have multiple compression streams enabled.
 
-In fact, all we need is one compression work buffer per-CPU
-per-device, because we never have several compression backends
-being active on any given CPU. Compression backends use that
-buffer exclusively so one per-CPU buffer is enough.
 
-Ideally, we don't even need to allocate those buffers per-CPU
-and per-device. Just per-CPU should suffice, because zram
-compression/decompression runs with preemption and cpu-hotplug
-disabled.
+>=20
+> On Wed, Feb 07, 2024 at 08:43:04AM +0800, Wentong Wu wrote:
+> > Add IVSC device support on Meteor Lake platform.
+> >
+> > Signed-off-by: Wentong Wu <wentong.wu@intel.com>
+>=20
+> Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Acked-by: Tomas Winkler <tomas.winkler@intel.com>
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
- drivers/block/zram/zcomp.c    | 115 +++++++++++++++++++++++++++++-----
- drivers/block/zram/zcomp.h    |  24 +++++--
- drivers/block/zram/zram_drv.c |  32 ++++++++--
- drivers/block/zram/zram_drv.h |   1 +
- include/linux/cpuhotplug.h    |   1 +
- 5 files changed, 148 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/block/zram/zcomp.c b/drivers/block/zram/zcomp.c
-index d88954e8c7bf..fa6019fb0969 100644
---- a/drivers/block/zram/zcomp.c
-+++ b/drivers/block/zram/zcomp.c
-@@ -34,13 +34,41 @@ static const char * const backends[] = {
- #endif
- };
- 
-+static void zcomp_buf_free(struct zcomp_buf *buf)
-+{
-+	vfree(buf->ptr);
-+	buf->ptr = NULL;
-+}
-+
-+static int zcomp_buf_init(struct zcomp_buf *buf)
-+{
-+	/*
-+	 * allocate 2 pages. 1 for compressed data, plus 1 extra for the
-+	 * case when compressed size is larger than the original one
-+	 */
-+	buf->ptr = vzalloc(2 * PAGE_SIZE);
-+	if (!buf->ptr)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+void *zcomp_mem_buffer(struct zcomp_mem *mem)
-+{
-+	struct zcomp_buf *buf = this_cpu_ptr(mem->buf);
-+
-+	/*
-+	 * Note that this should be called after zstrm_get(), which
-+	 * should disable CPU-hotplug and preemption.
-+	 */
-+	return buf->ptr;
-+}
-+
- static void zcomp_strm_free(struct zcomp_strm *zstrm)
- {
- 	if (!IS_ERR_OR_NULL(zstrm->tfm))
- 		crypto_free_comp(zstrm->tfm);
--	vfree(zstrm->buffer);
- 	zstrm->tfm = NULL;
--	zstrm->buffer = NULL;
- }
- 
- /*
-@@ -53,15 +81,6 @@ static int zcomp_strm_init(struct zcomp_strm *zstrm, struct zcomp *comp)
- 	if (IS_ERR_OR_NULL(zstrm->tfm))
- 		return -EINVAL;
- 
--	/*
--	 * allocate 2 pages. 1 for compressed data, plus 1 extra for the
--	 * case when compressed size is larger than the original one
--	 */
--	zstrm->buffer = vzalloc(2 * PAGE_SIZE);
--	if (!zstrm->buffer) {
--		zcomp_strm_free(zstrm);
--		return -ENOMEM;
--	}
- 	return 0;
- }
- 
-@@ -118,8 +137,8 @@ void zcomp_stream_put(struct zcomp *comp)
- 	local_unlock(&comp->stream->lock);
- }
- 
--int zcomp_compress(struct zcomp_strm *zstrm,
--		const void *src, unsigned int *dst_len)
-+int zcomp_compress(struct zcomp_strm *zstrm, struct zcomp_mem *mem,
-+		   const void *src, unsigned int *dst_len)
- {
- 	/*
- 	 * Our dst memory (zstrm->buffer) is always `2 * PAGE_SIZE' sized
-@@ -137,9 +156,8 @@ int zcomp_compress(struct zcomp_strm *zstrm,
- 	 */
- 	*dst_len = PAGE_SIZE * 2;
- 
--	return crypto_comp_compress(zstrm->tfm,
--			src, PAGE_SIZE,
--			zstrm->buffer, dst_len);
-+	return crypto_comp_compress(zstrm->tfm, src, PAGE_SIZE,
-+				    zcomp_mem_buffer(mem), dst_len);
- }
- 
- int zcomp_decompress(struct zcomp_strm *zstrm,
-@@ -235,3 +253,68 @@ struct zcomp *zcomp_create(const char *alg)
- 	}
- 	return comp;
- }
-+
-+int zcomp_mem_cpu_up_prepare(unsigned int cpu, struct hlist_node *node)
-+{
-+	struct zcomp_mem *mem = hlist_entry(node, struct zcomp_mem, node);
-+	struct zcomp_buf *buf;
-+	int ret;
-+
-+	buf = per_cpu_ptr(mem->buf, cpu);
-+	ret = zcomp_buf_init(buf);
-+	if (ret)
-+		pr_err("Can't allocate compression buffer\n");
-+	return ret;
-+}
-+
-+int zcomp_mem_cpu_dead(unsigned int cpu, struct hlist_node *node)
-+{
-+	struct zcomp_mem *mem = hlist_entry(node, struct zcomp_mem, node);
-+	struct zcomp_buf *buf;
-+
-+	buf = per_cpu_ptr(mem->buf, cpu);
-+	zcomp_buf_free(buf);
-+	return 0;
-+}
-+
-+static int zcomp_mem_init(struct zcomp_mem *mem)
-+{
-+	int ret;
-+
-+	mem->buf = alloc_percpu(struct zcomp_buf);
-+	if (!mem->buf)
-+		return -ENOMEM;
-+
-+	ret = cpuhp_state_add_instance(CPUHP_ZCOMP_MEM_PREPARE, &mem->node);
-+	if (ret < 0)
-+		goto cleanup;
-+	return 0;
-+
-+cleanup:
-+	free_percpu(mem->buf);
-+	return ret;
-+}
-+
-+void zcomp_mem_destroy(struct zcomp_mem *mem)
-+{
-+	cpuhp_state_remove_instance(CPUHP_ZCOMP_MEM_PREPARE, &mem->node);
-+	free_percpu(mem->buf);
-+	kfree(mem);
-+}
-+
-+struct zcomp_mem *zcomp_mem_create(void)
-+{
-+	struct zcomp_mem *mem;
-+	int ret;
-+
-+	mem = kzalloc(sizeof(struct zcomp_mem), GFP_KERNEL);
-+	if (!mem)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ret = zcomp_mem_init(mem);
-+	if (ret) {
-+		kfree(mem);
-+		return ERR_PTR(ret);
-+	}
-+	return mem;
-+}
-diff --git a/drivers/block/zram/zcomp.h b/drivers/block/zram/zcomp.h
-index cdefdef93da8..93645cdabb89 100644
---- a/drivers/block/zram/zcomp.h
-+++ b/drivers/block/zram/zcomp.h
-@@ -8,10 +8,7 @@
- #include <linux/local_lock.h>
- 
- struct zcomp_strm {
--	/* The members ->buffer and ->tfm are protected by ->lock. */
- 	local_lock_t lock;
--	/* compression/decompression buffer */
--	void *buffer;
- 	struct crypto_comp *tfm;
- };
- 
-@@ -22,6 +19,25 @@ struct zcomp {
- 	struct hlist_node node;
- };
- 
-+/*
-+ * zcomp_buf should be accessed only after zcomp_stream_get() and should
-+ * not be accessed after zcomp_stream_get()
-+ */
-+struct zcomp_buf {
-+	void *ptr;
-+};
-+
-+struct zcomp_mem {
-+	struct zcomp_buf __percpu *buf;
-+	struct hlist_node node;
-+};
-+
-+void *zcomp_mem_buffer(struct zcomp_mem *mem);
-+int zcomp_mem_cpu_up_prepare(unsigned int cpu, struct hlist_node *node);
-+int zcomp_mem_cpu_dead(unsigned int cpu, struct hlist_node *node);
-+void zcomp_mem_destroy(struct zcomp_mem *mem);
-+struct zcomp_mem *zcomp_mem_create(void);
-+
- int zcomp_cpu_up_prepare(unsigned int cpu, struct hlist_node *node);
- int zcomp_cpu_dead(unsigned int cpu, struct hlist_node *node);
- ssize_t zcomp_available_show(const char *comp, char *buf);
-@@ -33,7 +49,7 @@ void zcomp_destroy(struct zcomp *comp);
- struct zcomp_strm *zcomp_stream_get(struct zcomp *comp);
- void zcomp_stream_put(struct zcomp *comp);
- 
--int zcomp_compress(struct zcomp_strm *zstrm,
-+int zcomp_compress(struct zcomp_strm *zstrm, struct zcomp_mem *mem,
- 		const void *src, unsigned int *dst_len);
- 
- int zcomp_decompress(struct zcomp_strm *zstrm,
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 6772e0c654fa..5e7b86660166 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1429,7 +1429,7 @@ static int zram_write_page(struct zram *zram, struct page *page, u32 index)
- compress_again:
- 	zstrm = zcomp_stream_get(zram->comps[ZRAM_PRIMARY_COMP]);
- 	src = kmap_local_page(page);
--	ret = zcomp_compress(zstrm, src, &comp_len);
-+	ret = zcomp_compress(zstrm, zram->comp_mem, src, &comp_len);
- 	kunmap_local(src);
- 
- 	if (unlikely(ret)) {
-@@ -1492,7 +1492,7 @@ static int zram_write_page(struct zram *zram, struct page *page, u32 index)
- 
- 	dst = zs_map_object(zram->mem_pool, handle, ZS_MM_WO);
- 
--	src = zstrm->buffer;
-+	src = zcomp_mem_buffer(zram->comp_mem);
- 	if (comp_len == PAGE_SIZE)
- 		src = kmap_local_page(page);
- 	memcpy(dst, src, comp_len);
-@@ -1615,7 +1615,7 @@ static int zram_recompress(struct zram *zram, u32 index, struct page *page,
- 		num_recomps++;
- 		zstrm = zcomp_stream_get(zram->comps[prio]);
- 		src = kmap_local_page(page);
--		ret = zcomp_compress(zstrm, src, &comp_len_new);
-+		ret = zcomp_compress(zstrm, zram->comp_mem, src, &comp_len_new);
- 		kunmap_local(src);
- 
- 		if (ret) {
-@@ -1683,7 +1683,7 @@ static int zram_recompress(struct zram *zram, u32 index, struct page *page,
- 	}
- 
- 	dst = zs_map_object(zram->mem_pool, handle_new, ZS_MM_WO);
--	memcpy(dst, zstrm->buffer, comp_len_new);
-+	memcpy(dst, zcomp_mem_buffer(zram->comp_mem), comp_len_new);
- 	zcomp_stream_put(zram->comps[prio]);
- 
- 	zs_unmap_object(zram->mem_pool, handle_new);
-@@ -1979,6 +1979,8 @@ static void zram_destroy_comps(struct zram *zram)
- 		zcomp_destroy(comp);
- 		zram->num_active_comps--;
- 	}
-+
-+	zcomp_mem_destroy(zram->comp_mem);
- }
- 
- static void zram_reset_device(struct zram *zram)
-@@ -2047,6 +2049,13 @@ static ssize_t disksize_store(struct device *dev,
- 		zram->comps[prio] = comp;
- 		zram->num_active_comps++;
- 	}
-+
-+	zram->comp_mem = zcomp_mem_create();
-+	if (!zram->comp_mem) {
-+		err = PTR_ERR(zram->comp_mem);
-+		goto out_free_comps;
-+	}
-+
- 	zram->disksize = disksize;
- 	set_capacity_and_notify(zram->disk, zram->disksize >> SECTOR_SHIFT);
- 	up_write(&zram->init_lock);
-@@ -2390,6 +2399,7 @@ static void destroy_devices(void)
- 	idr_destroy(&zram_index_idr);
- 	unregister_blkdev(zram_major, "zram");
- 	cpuhp_remove_multi_state(CPUHP_ZCOMP_PREPARE);
-+	cpuhp_remove_multi_state(CPUHP_ZCOMP_MEM_PREPARE);
- }
- 
- static int __init zram_init(void)
-@@ -2398,15 +2408,26 @@ static int __init zram_init(void)
- 
- 	BUILD_BUG_ON(__NR_ZRAM_PAGEFLAGS > BITS_PER_LONG);
- 
--	ret = cpuhp_setup_state_multi(CPUHP_ZCOMP_PREPARE, "block/zram:prepare",
-+	ret = cpuhp_setup_state_multi(CPUHP_ZCOMP_PREPARE,
-+				      "block/zram:zcomp_prepare",
- 				      zcomp_cpu_up_prepare, zcomp_cpu_dead);
- 	if (ret < 0)
- 		return ret;
- 
-+	ret = cpuhp_setup_state_multi(CPUHP_ZCOMP_MEM_PREPARE,
-+				      "block/zram:zcomp_mem_prepare",
-+				      zcomp_mem_cpu_up_prepare,
-+				      zcomp_mem_cpu_dead);
-+	if (ret < 0) {
-+		cpuhp_remove_multi_state(CPUHP_ZCOMP_PREPARE);
-+		return ret;
-+	}
-+
- 	ret = class_register(&zram_control_class);
- 	if (ret) {
- 		pr_err("Unable to register zram-control class\n");
- 		cpuhp_remove_multi_state(CPUHP_ZCOMP_PREPARE);
-+		cpuhp_remove_multi_state(CPUHP_ZCOMP_MEM_PREPARE);
- 		return ret;
- 	}
- 
-@@ -2416,6 +2437,7 @@ static int __init zram_init(void)
- 		pr_err("Unable to get major number\n");
- 		class_unregister(&zram_control_class);
- 		cpuhp_remove_multi_state(CPUHP_ZCOMP_PREPARE);
-+		cpuhp_remove_multi_state(CPUHP_ZCOMP_MEM_PREPARE);
- 		return -EBUSY;
- 	}
- 
-diff --git a/drivers/block/zram/zram_drv.h b/drivers/block/zram/zram_drv.h
-index 3b94d12f41b4..bdb3d5e07ec0 100644
---- a/drivers/block/zram/zram_drv.h
-+++ b/drivers/block/zram/zram_drv.h
-@@ -107,6 +107,7 @@ struct zram {
- 	struct zram_table_entry *table;
- 	struct zs_pool *mem_pool;
- 	struct zcomp *comps[ZRAM_MAX_COMPS];
-+	struct zcomp_mem *comp_mem;
- 	struct gendisk *disk;
- 	/* Prevent concurrent execution of device init */
- 	struct rw_semaphore init_lock;
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index 172d0a743e5d..0fc72eb6fc02 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -121,6 +121,7 @@ enum cpuhp_state {
- 	CPUHP_MM_ZSWP_POOL_PREPARE,
- 	CPUHP_KVM_PPC_BOOK3S_PREPARE,
- 	CPUHP_ZCOMP_PREPARE,
-+	CPUHP_ZCOMP_MEM_PREPARE,
- 	CPUHP_TIMERS_PREPARE,
- 	CPUHP_MIPS_SOC_PREPARE,
- 	CPUHP_BP_PREPARE_DYN,
--- 
-2.43.0.594.gd9cf4e227d-goog
-
+>=20
+> > ---
+> >  drivers/misc/mei/vsc-tp.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/misc/mei/vsc-tp.c b/drivers/misc/mei/vsc-tp.c
+> > index 6f4a4be6ccb5..55f7db490d3b 100644
+> > --- a/drivers/misc/mei/vsc-tp.c
+> > +++ b/drivers/misc/mei/vsc-tp.c
+> > @@ -535,6 +535,7 @@ static const struct acpi_device_id vsc_tp_acpi_ids[=
+]
+> =3D {
+> >  	{ "INTC1009" }, /* Raptor Lake */
+> >  	{ "INTC1058" }, /* Tiger Lake */
+> >  	{ "INTC1094" }, /* Alder Lake */
+> > +	{ "INTC10D0" }, /* Meteor Lake */
+> >  	{}
+> >  };
+> >  MODULE_DEVICE_TABLE(acpi, vsc_tp_acpi_ids);
+>=20
+> --
+> Sakari Ailus
 
