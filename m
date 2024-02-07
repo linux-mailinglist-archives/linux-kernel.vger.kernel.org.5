@@ -1,203 +1,128 @@
-Return-Path: <linux-kernel+bounces-56997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99D1184D283
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:59:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19A4784D28A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:02:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 257901F25DC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:59:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D92228AFA2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:02:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4EFD84A21;
-	Wed,  7 Feb 2024 19:59:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F328C126F12;
+	Wed,  7 Feb 2024 20:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tJByh9QL"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="LrJq38fd"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A8685943
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 19:59:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E1C786ACD;
+	Wed,  7 Feb 2024 20:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707335982; cv=none; b=iuw9JfAVV2c6dojhrKJe7fL2+ejP1ByzZMBc6rtwOf3y++s/AFnmoqG9WwWOcSi4jtUuUGDajFpnTwrXOfPOFrBkYAayUoVAmjXOXdAqv84miGPqHw/J6H/bf2MEEiRRUW6d4TVnf18usHB5U0nhPSPArFHeMIBWY8esC8+d6us=
+	t=1707336167; cv=none; b=UDUiiJiTR+saq6YFawA+LiC/Ar7vr4EjJ8oYWNIAOeK1MOQq39ZwbtlLrq/NS+Kkjt85sZ2YI8hZCus0H2kjOmvZ+6EQXods5zexSCnQqfMsQD2CCAKuY6WNLcUjp0P4Z0EIeyrbsc6ykSgyZ5tQ8SiBK6NXpWFNBPt8kBeQ6dw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707335982; c=relaxed/simple;
-	bh=UkQx4KYTSb6zos+CY9uB4ZKRtoH3ayU53Ahbx0ztcHQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sHx6gKPCLhM8uL6F0i0BCifNLJHk2A6BUM74j/rUXh0tvCwkx2mpXRO7DLR3SU2bOdWM0P56HLSZKxmn4Dw1isjhypgQH/gNf8zZU0tGLcytm5GhkyjHuu4q1HGDfltgIngygMMa8ZuNKRmaWMoDWJyzkhgfl+FpD0uYI1mb/Xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tJByh9QL; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6047a616bfeso10447957b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 11:59:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707335979; x=1707940779; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GwkfJHLn8/HfkCk/r+wwlW1fJAVG5oLG8A4VHYAkrHI=;
-        b=tJByh9QLL6QLI93LI3k+Cxp8i2axsgx29j5qZRlpKPs3LnWp20rZGaPFcYOGwDP7GD
-         7cqZ+Q9hUfGGSS3aI6MEq4zptxfymqLGCe8qg3BeSSBTKpTy1yxphkpmraN0Sq62WQru
-         Pg6+nsILS03vvprIuJQ/q/d2TygebWj5jP6OhlU++oOcqDd8okezL4xpoquahSPDul1u
-         pP1Avv4YLkYnHRLhf9jWRm9awutzptLqM/7Sz2RjIRS7EfNjaKRZCwfIOVYdiLZfvpeM
-         /X0nJWNYzuAvdJ1+beUCjF55mPOR7lxlZXoL7HxUoh5broHQ1J6Gmg97nLYuXxtW5JOo
-         btjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707335979; x=1707940779;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GwkfJHLn8/HfkCk/r+wwlW1fJAVG5oLG8A4VHYAkrHI=;
-        b=lEwwojfnsMxCKfInAqW0+FDcnHJQ6BS4btQHiK4/6QMSC7prYibojF3Fm/BS9JIq3H
-         Mu1ha3qwNxKskrkisDjNjW0RU0E4kI/zwVijlm0VNBmoY1Jp1+wCfkKAnRHAIvBtp76/
-         n0htRzW/U5zd/cyDKqMptYiTnc3MA5Z+YM9X4PQal06q/2Nm0wo9B2lxITdHn1HVo7F4
-         RdBYwzqP3VZeZwKfWRT18CmxYQR1yjgUm+MxjuI2e1Gr064UQk4xvYUr7lCmro4dg5WJ
-         TtrnPvQE96qklKCaYon2ZkaMnaBsH8ET7grjO09izO8jFiVQ3Fdw3SR+W568F4xGBV4j
-         CGWA==
-X-Gm-Message-State: AOJu0Yyz9djafMp/QEd+mQom0ho/cCIMIll+iPSHpgUtFNebBEsvbvNl
-	pIjogSm1cMkneaOnxc7c7Os3GUFnF0qwSkhIKfUyhUWSHWxoGF376vBtbaud6JCEiZMDcX+5rFn
-	SHZ/8cYyXwlpNRfHPnkrDJdMmOkTlnsprOPICtA==
-X-Google-Smtp-Source: AGHT+IEuEU6FhY/I616wY+eWpvyqJscoEtGa/IwbEkSleqQN6CLz65NvHcecJWfYtSCQAm6B9A1dkykyMc95djTRxCc=
-X-Received: by 2002:a5b:c0d:0:b0:dc2:4f96:fc38 with SMTP id
- f13-20020a5b0c0d000000b00dc24f96fc38mr5720301ybq.50.1707335979137; Wed, 07
- Feb 2024 11:59:39 -0800 (PST)
+	s=arc-20240116; t=1707336167; c=relaxed/simple;
+	bh=DB7B69i3jx8KDB+O/YvXLsnTNXdtzAUcpJasF/SRJ60=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EYlXY3mOTXzbeB8cy2WR3lBMfeu7To+maZ4d0v2GnHWQ7muX/JGD4SSBbIi8HKb1Sta5pvVfo97xdmynNb+6tW168WS3objK1SkfVdhNwSKiq27FuOzNZHRHupGS35k5jEsx/PtNjp4hJRC+xpCBe7GTS2Lh8m7bZYXAT0BADLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=LrJq38fd; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707336160;
+	bh=hBrq3eGQs3vOihvMl7KS8EhNCc86jiUVjvV8SoA2+bE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=LrJq38fdwda0XSw/lp+m2I7pyYdAJix5s8cb9ecKKfJoKzu/HnZd0xfFURR7UwfwI
+	 s+f6ip+INA4rLmB28O/5mxQDVvgfRv4MdsfpniFswLu+fV42tD/pxdNFo7uCueqCKn
+	 vkbPPEhM/bwjO/+YqEq1g/DzOu1hTy5cdIvVWYr6Ulg86FynuDfk/KAsbcZ4uUBaNC
+	 z7I/SaYOIRFz9KP3s8a+KbUNe7VlG68801WT1X0HOX+C6MotPzdTUUYm6KBOyprXKV
+	 N/0i88NFWCNWGOfd2xVyw7iwgu1DuhTnapcM1oFRQ/AtI4CZMpcz5ppFdiSAioFZBs
+	 6CnPELCsZVc5g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TVWHh3XFTz4wcW;
+	Thu,  8 Feb 2024 07:02:40 +1100 (AEDT)
+Date: Thu, 8 Feb 2024 07:02:22 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@kernel.org>, Linux
+ Next Mailing List <linux-next@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: MediaTek for-next: Replace matthias.bgg tree with mediatek
+Message-ID: <20240208070222.3a916478@canb.auug.org.au>
+In-Reply-To: <9e20a488-870f-4ff4-bfea-195a3f62b92e@gmail.com>
+References: <00a81be6-7dd7-4959-b1dc-eb94022bf0e5@kernel.org>
+	<20240207090505.515d8977@canb.auug.org.au>
+	<9e20a488-870f-4ff4-bfea-195a3f62b92e@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240106-fd-migrate-mdp5-v3-0-3d2750378063@linaro.org>
- <20240106-fd-migrate-mdp5-v3-1-3d2750378063@linaro.org> <89d02d5c-4af1-9f40-483f-1efb39b2a33d@quicinc.com>
-In-Reply-To: <89d02d5c-4af1-9f40-483f-1efb39b2a33d@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 7 Feb 2024 21:59:28 +0200
-Message-ID: <CAA8EJpro3jVPDAGWdpFiukCHTVif--Y-ZhEw=ir7U3ABsa_qbA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] drm/msm/mdss: generate MDSS data for MDP5 platforms
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>, 
-	Marijn Suijten <marijn.suijten@somainline.org>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, 
-	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/fmv6X/wDyIF3AuBMd7QQ58L";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Wed, 7 Feb 2024 at 20:25, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+--Sig_/fmv6X/wDyIF3AuBMd7QQ58L
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Matthias,
+
+On Wed, 7 Feb 2024 16:08:22 +0000 Matthias Brugger <matthias.bgg@gmail.com>=
+ wrote:
 >
->
->
-> On 1/5/2024 3:34 PM, Dmitry Baryshkov wrote:
-> > Older (mdp5) platforms do not use per-SoC compatible strings. Instead
-> > they use a single compat entry 'qcom,mdss'. To facilitate migrating
-> > these platforms to the DPU driver provide a way to generate the MDSS /
-> > UBWC data at runtime, when the DPU driver asks for it.
-> >
-> > It is not possible to generate this data structure at the probe time,
-> > since some platforms might not have MDP_CLK enabled, which makes reading
-> > HW_REV register return 0.
-> >
->
-> I would have expected a crash if clock was not enabled and we tried to
-> access the hw_rev register.
+> Please add Angelo to the contact list.
 
-No, for all the platforms I tested it returns 0 instead.
-However this doesn't make any difference, we don't read the register
-in MDP5 case until all clocks are enabled.
+Done
 
->
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > ---
-> >   drivers/gpu/drm/msm/msm_mdss.c | 51 ++++++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 51 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/msm/msm_mdss.c b/drivers/gpu/drm/msm/msm_mdss.c
-> > index 455b2e3a0cdd..566a5dd5b8e8 100644
-> > --- a/drivers/gpu/drm/msm/msm_mdss.c
-> > +++ b/drivers/gpu/drm/msm/msm_mdss.c
-> > @@ -3,6 +3,7 @@
-> >    * Copyright (c) 2018, The Linux Foundation
-> >    */
-> >
-> > +#include <linux/bitfield.h>
-> >   #include <linux/clk.h>
-> >   #include <linux/delay.h>
-> >   #include <linux/interconnect.h>
-> > @@ -213,6 +214,49 @@ static void msm_mdss_setup_ubwc_dec_40(struct msm_mdss *msm_mdss)
-> >       }
-> >   }
-> >
-> > +#define MDSS_HW_MAJ_MIN              GENMASK(31, 16)
-> > +
-> > +#define MDSS_HW_MSM8996              0x1007
-> > +#define MDSS_HW_MSM8937              0x100e
-> > +#define MDSS_HW_MSM8956              0x1010
->
-> This should be 0x100B in the docs I see.
+For Angelo's benefit:
 
-Yes, I mixed MSM8956 and MSM8953 here. The code support the latter one.
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgement of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
 
->
-> > +#define MDSS_HW_MSM8998              0x3000
-> > +#define MDSS_HW_SDM660               0x3002
-> > +#define MDSS_HW_SDM630               0x3003
-> > +
-> > +/*
-> > + * MDP5 platforms use generic qcom,mdp5 compat string, so we have to generate this data
-> > + */
-> > +static const struct msm_mdss_data *msm_mdss_generate_mdp5_mdss_data(struct msm_mdss *mdss)
-> > +{
-> > +     struct msm_mdss_data *data;
-> > +     u32 hw_rev;
-> > +
-> > +     data = devm_kzalloc(mdss->dev, sizeof(*data), GFP_KERNEL);
-> > +     if (!data)
-> > +             return NULL;
-> > +
-> > +     hw_rev = readl_relaxed(mdss->mmio + HW_REV);
-> > +     hw_rev = FIELD_GET(MDSS_HW_MAJ_MIN, hw_rev);
-> > +
-> > +     if (hw_rev == MDSS_HW_MSM8996 ||
-> > +         hw_rev == MDSS_HW_MSM8937 ||
-> > +         hw_rev == MDSS_HW_MSM8956 ||
-> > +         hw_rev == MDSS_HW_MSM8998 ||
-> > +         hw_rev == MDSS_HW_SDM660 ||
-> > +         hw_rev == MDSS_HW_SDM630) {
-> > +             data->ubwc_dec_version = UBWC_1_0;
-> > +             data->ubwc_enc_version = UBWC_1_0;
-> > +     }
-> > +
-> > +     if (hw_rev == MDSS_HW_MSM8996 ||
-> > +         hw_rev == MDSS_HW_MSM8998)
-> > +             data->highest_bank_bit = 2;
-> > +     else
-> > +             data->highest_bank_bit = 1;
-> > +
-> > +     return data;
-> > +}
-> > +
-> >   const struct msm_mdss_data *msm_mdss_get_mdss_data(struct device *dev)
-> >   {
-> >       struct msm_mdss *mdss;
-> > @@ -222,6 +266,13 @@ const struct msm_mdss_data *msm_mdss_get_mdss_data(struct device *dev)
-> >
-> >       mdss = dev_get_drvdata(dev);
-> >
-> > +     /*
-> > +      * We could not do it at the probe time, since hw revision register was
-> > +      * not readable. Fill data structure now for the MDP5 platforms.
-> > +      */
-> > +     if (!mdss->mdss_data && mdss->is_mdp5)
-> > +             mdss->mdss_data = msm_mdss_generate_mdp5_mdss_data(mdss);
-> > +
-> >       return mdss->mdss_data;
-> >   }
-> >
-> >
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+        Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
 
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
 
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
 
--- 
-With best wishes
-Dmitry
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/fmv6X/wDyIF3AuBMd7QQ58L
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXD4c4ACgkQAVBC80lX
+0GwLhAf/QYcyF+rsj9GN/2uMKqkIAkPCiPbwd4wrxpNG629jTIUb1A+bJMZj2SZ3
+GKjY4/VgNaoQqDRv+c2J6YvHE+lJxV+aNXNl/QyM9DZXx7iftWxpQlb5QlSViz9I
+LzyAhI1gaZvzHEXCAWcqDFiWwxJ96r5RNzhmZBezL4BY7hl7k1lH91SPO/+1zJs8
+34J1G6tYUMq/ITnKMJX11zSgsWYy/bzZNaP1YgydV9e9K7lcYegYJyGEHCAKKdJ6
+xR/le0eyVgUVakiP1p4RyOp1/TjyIXl+sChwtEqrE94c/qXpzsLKsTRpjphedFej
+o9usQKVZ0UGkePL9O3/zwGBCBFiuDw==
+=L0Bt
+-----END PGP SIGNATURE-----
+
+--Sig_/fmv6X/wDyIF3AuBMd7QQ58L--
 
