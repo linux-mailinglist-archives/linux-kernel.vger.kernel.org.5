@@ -1,191 +1,187 @@
-Return-Path: <linux-kernel+bounces-56068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F03984C599
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:26:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12FD384C59B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:26:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 312EB1C234B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:25:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8526C1F251B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:26:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BFF81F922;
-	Wed,  7 Feb 2024 07:25:52 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 496F31F95D;
+	Wed,  7 Feb 2024 07:26:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="monZpi5I"
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF711F5F0;
-	Wed,  7 Feb 2024 07:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA2FE1F947
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 07:26:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707290751; cv=none; b=jFF4v8xnxZgp/Veg2e7NAAKyNnqD2rhWnLQ1YjbOX96cgltbIkwXjITzoDVvWcqookLiXURXT34mAZk6QlqHyKKjkr8slyDk70rF3KqHn6h4JCMgTPt3mJ4c2bY+IspfmTrNDqTrdbpLiZaRuUTZcXFtF/Eo0B9xWwroh1U5Qig=
+	t=1707290773; cv=none; b=u8go7ea+Cn+Bd6hC76wzKQ2jYav4faIyG/IztFRGglth5n++cgj5UXaEmBHCoT+XhWc9b1jAfZlSRmjPQiV/8IYEOXcuH0kPNxL8jpwtUj3ayUrpvNUd0L0l8DuoL6deoE5qsMNsL7kLpW7PzJ2X6AJmlWCBJuoBoPlj6zOaBM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707290751; c=relaxed/simple;
-	bh=O3sgm62nSGmbFRQsGxqyJmL69Gjp1V9NVkxQGdzVeqc=;
-	h=CC:Subject:To:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=iaImtbtmet1UfyU3bFS7t8z+AAD7N5FUshMbnQTIZfkfUnbb1xgjbPrAa91rZKn0qR3mR0q88xJA+r5qyRdALxGD/RdGP8rPnHwQO2MpOQSL+0gOsY0Qm6hBapTwkSHxITEhv1oGNeomx1TtHjD7q4uP8kmt94rCW9oS5BtYmkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TVBTm6p8nz1vtJJ;
-	Wed,  7 Feb 2024 15:25:16 +0800 (CST)
-Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
-	by mail.maildlp.com (Postfix) with ESMTPS id 09797140414;
-	Wed,  7 Feb 2024 15:25:45 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 7 Feb 2024 15:25:44 +0800
-CC: <yangyicong@hisilicon.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
-	<peterz@infradead.org>, <mingo@redhat.com>, <james.clark@arm.com>,
-	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-	<namhyung@kernel.org>, <adrian.hunter@intel.com>,
-	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<Jonathan.Cameron@huawei.com>, <zhanjie9@hisilicon.com>, <21cnbao@gmail.com>,
-	<tim.c.chen@intel.com>, <prime.zeng@hisilicon.com>, <fanghao11@huawei.com>,
-	<linuxarm@huawei.com>, <linux-arm-kernel@lists.infradead.org>, Tim Chen
-	<tim.c.chen@linux.intel.com>
-Subject: Re: [RESEND v4] perf stat: Support per-cluster aggregation
-To: Ian Rogers <irogers@google.com>
-References: <20240206082016.22292-1-yangyicong@huawei.com>
- <CAP-5=fUaJSF1R_yDTeNwiNbm0isGTEpZSbp2m0q7BJox+TdRwg@mail.gmail.com>
-From: Yicong Yang <yangyicong@huawei.com>
-Message-ID: <d8382fd2-1c0c-5041-3c0e-cd15244ef9f6@huawei.com>
-Date: Wed, 7 Feb 2024 15:25:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+	s=arc-20240116; t=1707290773; c=relaxed/simple;
+	bh=Xr4QbVlNSDRWdDF6YqeMGp6/b7O96sTDR3R3JeYqQSk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a/tKUD/BdWTGuXVcKTlxclFyXvDXxceXJjYYHgZ9Pr9ErUyndfM+vSRdRv7znlkUiqbOgo+fDxEzD1lGPCYpQCSihEIBEYANtpLQvi3PWMkZyctvseKRy/YUGZR3Nng+LkfPJqBjr9ZIPAArYn0wbQAxxvZ76dPRoVB1EfHoaBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=monZpi5I; arc=none smtp.client-ip=209.85.161.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-59502aa878aso110289eaf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 23:26:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707290771; x=1707895571; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xr4QbVlNSDRWdDF6YqeMGp6/b7O96sTDR3R3JeYqQSk=;
+        b=monZpi5IVWEDF4PK1e27HTNFasq0kFd57wDwkTTYg6ucb6Vr7aukujpwo9zuVgqYAm
+         a6mjstuBwRLIH1aaQcSX0sIaNiDoEmRax1PDFq2hR3siAuSKp1b10/Sb9aAzLGx5JENE
+         XpHp/RtmDWdGVX7UXeRDZAggedM0a28RSj+DgyiQQ2dsuIQtmYdcwl80QVUll9l68aQV
+         E03Q2P3+0zKj8Vq2LciQ/DG9vwfXmF4IpgKqP+o+NJHlXF+jtexH5GYfcxrAHIK68LOm
+         Mg0XOeT5ZOBM7w7a6RTWPGfCiJueikzKrx3XmCYlM+dCu89H0x2iHKXDh/31NiZUzIB+
+         Ob2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707290771; x=1707895571;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xr4QbVlNSDRWdDF6YqeMGp6/b7O96sTDR3R3JeYqQSk=;
+        b=W/ip690NQ9GaIEmX8PrNU6t2PIDS871JlWvnOifw0opBUr8k2bC1yGPdZxFX+LtHwB
+         nSxdo7MX5ZZnMB1bbjJzQ8sInwIaVKEcbqeIHjTbKoNVs9XbYBIk2sMAlgAzsP80qILl
+         +fM36wS1wf4p8b0GXQ66MNNlHJBKWLMoUqxS6d3+/5fVhHOfkMaHPr1scH+ul+Knrd3W
+         oyhANSQ92hfS3jHcR/1w7v9Z4o2dGRjkUmCZSihXEgPWDikjU1lN4oY84Czl3KC80rRD
+         oo4gN8x1c8/XIU+9sQ3nmTL96TQolUe34cOf7dMebVvVoezqk2XDVfHO+QH33kLTanVU
+         QmGg==
+X-Gm-Message-State: AOJu0YwzvpCztpkhvEvYqMb4FkPYIKF124xemgT7DLnsk1FR9Nn6sQLN
+	i3r1mSph35rpWzi3iQnEfpWQcsb/BGwIkmHke7ylIPoAhp2F19Bd89/yZCThOGYD5+IL07fn9Mx
+	JnwfUZo6ZNMipnrgY7iYfg7mnQlltcQEsWpzjGQ==
+X-Google-Smtp-Source: AGHT+IGBYMcx2Qv+1PsdhEInOVkijjlWUTU7G4kTG64xit7GN+lOlRX6ltMsH3CESvRIOBR3uJV46YwlgDgLlZ6KFBY=
+X-Received: by 2002:a4a:3057:0:b0:599:5575:bdaf with SMTP id
+ z23-20020a4a3057000000b005995575bdafmr5202269ooz.9.1707290770888; Tue, 06 Feb
+ 2024 23:26:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fUaJSF1R_yDTeNwiNbm0isGTEpZSbp2m0q7BJox+TdRwg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500009.china.huawei.com (7.192.105.203)
+References: <20240131174347.510961-1-jens.wiklander@linaro.org>
+ <20240131174347.510961-2-jens.wiklander@linaro.org> <CAPDyKFqNhGWKm=+7niNsjXOjEJE3U=o7dRNG=JqpptUSo9G-ug@mail.gmail.com>
+ <CAC_iWj+k_Vsz4ot=9pv-Gv7r11=vCunH5TSyOMTK4z-NZ2TeTA@mail.gmail.com> <CAFA6WYNQoRg0PWgr1oCzrkMens7e0=m_zkBSXKvp8JVjmn2OZQ@mail.gmail.com>
+In-Reply-To: <CAFA6WYNQoRg0PWgr1oCzrkMens7e0=m_zkBSXKvp8JVjmn2OZQ@mail.gmail.com>
+From: Jens Wiklander <jens.wiklander@linaro.org>
+Date: Wed, 7 Feb 2024 08:25:58 +0100
+Message-ID: <CAHUa44G+7HMNztQyYAWEhLFJvDBHDxPnqm+FRSVavb0NCyoYzg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] rpmb: add Replay Protected Memory Block (RPMB) subsystem
+To: Sumit Garg <sumit.garg@linaro.org>
+Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>, Ulf Hansson <ulf.hansson@linaro.org>, 
+	linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	op-tee@lists.trustedfirmware.org, 
+	Shyam Saini <shyamsaini@linux.microsoft.com>, 
+	Jerome Forissier <jerome.forissier@linaro.org>, Bart Van Assche <bvanassche@acm.org>, 
+	Randy Dunlap <rdunlap@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tomas Winkler <tomas.winkler@intel.com>, 
+	=?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/2/7 1:49, Ian Rogers wrote:
-> On Tue, Feb 6, 2024 at 12:24 AM Yicong Yang <yangyicong@huawei.com> wrote:
->>
->> From: Yicong Yang <yangyicong@hisilicon.com>
->>
->> Some platforms have 'cluster' topology and CPUs in the cluster will
->> share resources like L3 Cache Tag (for HiSilicon Kunpeng SoC) or L2
->> cache (for Intel Jacobsville). Currently parsing and building cluster
->> topology have been supported since [1].
->>
->> perf stat has already supported aggregation for other topologies like
->> die or socket, etc. It'll be useful to aggregate per-cluster to find
->> problems like L3T bandwidth contention.
->>
->> This patch add support for "--per-cluster" option for per-cluster
->> aggregation. Also update the docs and related test. The output will
->> be like:
->>
->> [root@localhost tmp]# perf stat -a -e LLC-load --per-cluster -- sleep 5
->>
->>  Performance counter stats for 'system wide':
->>
->> S56-D0-CLS158    4      1,321,521,570      LLC-load
->> S56-D0-CLS594    4        794,211,453      LLC-load
->> S56-D0-CLS1030    4             41,623      LLC-load
->> S56-D0-CLS1466    4             41,646      LLC-load
->> S56-D0-CLS1902    4             16,863      LLC-load
->> S56-D0-CLS2338    4             15,721      LLC-load
->> S56-D0-CLS2774    4             22,671      LLC-load
->> [...]
->>
->> On a legacy system without cluster or cluster support, the output will
->> be look like:
->> [root@localhost perf]# perf stat -a -e cycles --per-cluster -- sleep 1
->>
->>  Performance counter stats for 'system wide':
->>
->> S56-D0-CLS0   64         18,011,485      cycles
->> S7182-D0-CLS0   64         16,548,835      cycles
->>
->> Note that this patch doesn't mix the cluster information in the outputs
->> of --per-core to avoid breaking any tools/scripts using it.
->>
->> Note that perf recently supports "--per-cache" aggregation, but it's not
->> the same with the cluster although cluster CPUs may share some cache
->> resources. For example on my machine all clusters within a die share the
->> same L3 cache:
->> $ cat /sys/devices/system/cpu/cpu0/cache/index3/shared_cpu_list
->> 0-31
->> $ cat /sys/devices/system/cpu/cpu0/topology/cluster_cpus_list
->> 0-3
->>
->> [1] commit c5e22feffdd7 ("topology: Represent clusters of CPUs within a die")
->> Tested-by: Jie Zhan <zhanjie9@hisilicon.com>
->> Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
->> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-> 
-> Reviewed-by: Ian Rogers <irogers@google.com>
-> 
+H,
 
-Thanks!
+On Wed, Feb 7, 2024 at 7:11=E2=80=AFAM Sumit Garg <sumit.garg@linaro.org> w=
+rote:
+>
+> Hi Ilias, Ulf,
+>
+> On Tue, 6 Feb 2024 at 20:41, Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
+> >
+> > Hi Ulf,
+> >
+> > On Tue, 6 Feb 2024 at 14:34, Ulf Hansson <ulf.hansson@linaro.org> wrote=
+:
+> > >
+> > > On Wed, 31 Jan 2024 at 18:44, Jens Wiklander <jens.wiklander@linaro.o=
+rg> wrote:
+> > > >
+> > > > A number of storage technologies support a specialised hardware
+> > > > partition designed to be resistant to replay attacks. The underlyin=
+g
+> > > > HW protocols differ but the operations are common. The RPMB partiti=
+on
+> > > > cannot be accessed via standard block layer, but by a set of specif=
+ic
+> > > > RPMB commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Suc=
+h a
+> > > > partition provides authenticated and replay protected access, hence
+> > > > suitable as a secure storage.
+> > > >
+> > > > The initial aim of this patch is to provide a simple RPMB Driver wh=
+ich
+> > > > can be accessed by the optee driver to facilitate early RPMB access=
+ to
+> > > > OP-TEE OS (secure OS) during the boot time.
+> > >
+> > > How early do we expect OP-TEE to need RPMB access?
+> >
+> > It depends on the requested services. I am currently aware of 2
+> > services that depend on the RPMB
+> > - FirmwareTPM
+> > - UEFI variables stored there via optee.
+> >
+> > For the FirmwareTPM it depends on when you want to use it. This
+> > typically happens when the initramfs is loaded or systemd requests
+> > access to the TPM. I guess this is late enough to not cause problems?
+>
+> Actually RPMB access is done as early as during fTPM probe, probably
+> to cache NVRAM from RPMB during fTPM init. Also, there is a kernel
+> user being IMA which would require fTPM access too. So we really need
+> to manage dependencies here.
+>
+> >
+> > For the latter, we won't need the supplicant until a write is
+> > requested. This will only happen once the userspace is up and running.
+> > The UEFI driver that sits behind OP-TEE has an in-memory cache of the
+> > variables, so all the reads (the kernel invokes get_next_variable
+> > during boot) are working without it.
+> >
+> > Thanks
+> > /Ilias
+> > >
+> > > The way things work for mmc today, is that the eMMC card gets
+> > > discovered/probed via a workqueue. The work is punted by the mmc host
+> > > driver (typically a module-platform-driver), when it has probed
+> > > successfully.
+>
+> It would be nice if RPMB is available as early as possible but for the
+> time being we can try to see if probe deferral suffices for all
+> use-cases.
+>
+> > >
+> > > The point is, it looks like we need some kind of probe deferral
+> > > mechanism too. Whether we want the OP-TEE driver to manage this itsel=
+f
+> > > or whether we should let rpmb_dev_find_device() deal with it, I don't
+> > > know.
+>
+> I wouldn't like to see the OP-TEE driver probe being deferred due to
+> this since there are other kernel drivers like OP-TEE RNG (should be
+> available as early as we can) etc. which don't have any dependency on
+> RPMB.
 
->> ---
->> Change since v3:
->> - Rebase on v6.7-rc4 and resolve the conflicts
->> Link: https://lore.kernel.org/all/20230404104951.27537-1-yangyicong@huawei.com/
->>
->> Change since v2:
->> - Use 0 as cluster ID on legacy system without cluster support, keep consistenct
->>   with what --per-die does.
->> Link: https://lore.kernel.org/all/20230328112717.19573-1-yangyicong@huawei.com/
->>
->> Change since v1:
->> - Provides the information about how to map the cluster to the CPUs in the manual
->> - Thanks the review from Tim and test from Jie.
->> Link: https://lore.kernel.org/all/20230313085911.61359-1-yangyicong@huawei.com/
->>
->>  tools/perf/Documentation/perf-stat.txt        | 11 ++++
->>  tools/perf/builtin-stat.c                     | 52 +++++++++++++++++--
->>  .../tests/shell/lib/perf_json_output_lint.py  |  4 +-
->>  tools/perf/tests/shell/lib/stat_output.sh     | 12 +++++
->>  tools/perf/tests/shell/stat+csv_output.sh     |  2 +
->>  tools/perf/tests/shell/stat+json_output.sh    | 13 +++++
->>  tools/perf/tests/shell/stat+std_output.sh     |  2 +
->>  tools/perf/util/cpumap.c                      | 32 +++++++++++-
->>  tools/perf/util/cpumap.h                      | 19 +++++--
->>  tools/perf/util/env.h                         |  1 +
->>  tools/perf/util/stat-display.c                | 13 +++++
->>  tools/perf/util/stat.h                        |  1 +
->>  12 files changed, 153 insertions(+), 9 deletions(-)
->>
-[...]
->> diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
->> index 0581ee0fa5f2..5907456d42a2 100644
->> --- a/tools/perf/util/cpumap.c
->> +++ b/tools/perf/util/cpumap.c
->> @@ -222,6 +222,8 @@ static int aggr_cpu_id__cmp(const void *a_pointer, const void *b_pointer)
->>                 return a->socket - b->socket;
->>         else if (a->die != b->die)
->>                 return a->die - b->die;
->> +       else if (a->cluster != b->cluster)
->> +               return a->cluster - b->cluster;
->>         else if (a->cache_lvl != b->cache_lvl)
->>                 return a->cache_lvl - b->cache_lvl;
->>         else if (a->cache != b->cache)
->> @@ -309,6 +311,29 @@ struct aggr_cpu_id aggr_cpu_id__die(struct perf_cpu cpu, void *data)
->>         return id;
->>  }
->>
->> +int cpu__get_cluster_id(struct perf_cpu cpu)
->> +{
->> +       int value, ret = cpu__get_topology_int(cpu.cpu, "cluster_id", &value);
-> 
-> nit: normal coding style is for a whitespace newline here.
-> 
+I agree, the optee driver itself can probe without RPMB.
 
-Will fix. I may referred to cpu__get_core_id() below which is an exception.
+>
+> How about for the time being we defer fTPM probe until RPMB is available?
+
+Sounds a bit like what we do with the
+optee_enumerate_devices(PTA_CMD_GET_DEVICES_SUPP) call when
+tee-supplicant has opened the supplicant device. It would perhaps work
+with a PTA_CMD_GET_DEVICES_RPMB or such.
 
 Thanks,
-Yicong
+Jens
 
