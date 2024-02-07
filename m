@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-55907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 479DB84C33F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D8B484C340
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:45:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 489A91C24A5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:44:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D05571C247FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:45:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDCA1CD1B;
-	Wed,  7 Feb 2024 03:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 364CD1CF8D;
+	Wed,  7 Feb 2024 03:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tSWUTl5M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JVqunjyh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28AF1C694
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 03:44:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62DF11CF80
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 03:44:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707277458; cv=none; b=nnjTJCf3epIqzGhG685VMDY5zNBwOF/n/vq9KDS8qRIB4eQNG6rk/soP1VZb9aVef4qXs6VZyUpLnoGtoR4/r/QcdSkIAWd0IzOCW+fZKI89B4Z50Z08Tp4JJvI79lWFmLEBDQOJjKWmzUIrRz//gGcdeU13bCdUc1GEsm2UXb4=
+	t=1707277461; cv=none; b=p8/kDztpGY8GF/53rdRr35G8KaapV4uAJQnUJCrgP8uKHAB4caApKQ00F6G8rwtnZaqyyUIwYfn7SZIrdEqLJ+imH99GeCn9x4hERrCF1zpEFP64y3k0836HkBaUx1ugEKGVuNPZoYEXa2MS+C8JMa+QXEAQ1+ux0AmvbPHVgiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707277458; c=relaxed/simple;
-	bh=ZBWabr/sl4BLAglGWdQysfp0ZTpL5iL55T/CdtsmPuA=;
+	s=arc-20240116; t=1707277461; c=relaxed/simple;
+	bh=JRihQeRnvMv6IBslLO3YQYd+JbOoJjzD4VVOTcl40hQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KSs/rvFp8VYsn62nmeFgY4eEVAjKYN0oU9ZVRthPIlPC5zUPteTR7BGP17ysPHhoV2j/3W1OQv5HotN5yPzOAUIxDRIJwSXOQmGsI732Hq0Za5dkoP2sMPVEQ0NtG8T8R3MzcSqeGVNWEWstHlYwe2ALYcmlI0n18U1c0hbPFso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tSWUTl5M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59F2DC433F1;
-	Wed,  7 Feb 2024 03:44:14 +0000 (UTC)
+	 MIME-Version; b=Noh0DryfFOr5uoJz4+0xvrx29k90XL6ew0ohQoEfYaCDIL1Cy85PdC2wQLPeN7l/ghRRsnQqLxVG/Ob2TmAQDSmtLn2laFb1j2bq6WXOxYwkZdbWzkp7u0FiXmK3YjMi9vStyyGNVKuurmykNOmPo1rwkzxD9hmIFgPkEQxBztM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JVqunjyh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE4A7C433C7;
+	Wed,  7 Feb 2024 03:44:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707277457;
-	bh=ZBWabr/sl4BLAglGWdQysfp0ZTpL5iL55T/CdtsmPuA=;
+	s=k20201202; t=1707277460;
+	bh=JRihQeRnvMv6IBslLO3YQYd+JbOoJjzD4VVOTcl40hQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tSWUTl5MrVR3aRqaLNPAk0UvumXyYjyTudHP0DvKUQpEUu8DiZdBWzjLL3F7C8MED
-	 JcjrVw3T/pkkEP/V/FSUU/hlGHNoNKKDoqC5ay/0S8uu8PGzom6PTfAzDgsq5PQN/X
-	 BmFs3agVrqKEKfVS7TAVYDB2KztXTTEgQSTc1EA3hjRWZVOZeXGi21cr+Hi9bKlsjL
-	 1NhuATAg6EMERrch94F3xAUivLqTF9dCXFOn9eRs8idRL+0uvdkQouBqL5mtghLeQa
-	 CFYJo3eAVYuLP57L1h7rUcMlVMhqliBsYDtQfGEnLeFm46k1E53Ihf54MUq/VVPf+v
-	 LvD1Obi8r8odA==
+	b=JVqunjyhj6v9iIXA7+241LS3sT9Zrqu2nctH3nylTQFehdPLbLm1Bh9DUwe2RVHEv
+	 3SiRF9snGljzV3h3qluoCadqVVBBJ6y9bpUWjUG8/VRuAqnng08hvVWuRPtF/vJsdC
+	 Nd/yS6E5P3GlrE1+sqsuIRu97G0px/UEftKWACDtSVYmjzoYevAeWtCeG9KS5NxgO/
+	 cgHFPzBjQNUqa5zhVaSYSV96MqtsKFYN6J1eMy00l/XzypTsRiRygSbxE5TfFhux6y
+	 zZYLiE4mAzS2C4jD5rkLx+nm9b0rbjYjctvzYmZ5vI0oR/SMWbLEh3oMPVcNc9LY5l
+	 Mplk7d9HIqjYw==
 From: alexs@kernel.org
 To: Ingo Molnar <mingo@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -54,9 +54,9 @@ To: Ingo Molnar <mingo@redhat.com>,
 	ricardo.neri-calderon@linux.intel.com,
 	yangyicong@hisilicon.com
 Cc: Alex Shi <alexs@kernel.org>
-Subject: [PATCH v4 3/4] sched/fair: Rework sched_use_asym_prio() and sched_asym_prefer()
-Date: Wed,  7 Feb 2024 11:47:03 +0800
-Message-ID: <20240207034704.935774-3-alexs@kernel.org>
+Subject: [PATCH v4 4/4] sched/fair: Check the SD_ASYM_PACKING flag in sched_use_asym_prio()
+Date: Wed,  7 Feb 2024 11:47:04 +0800
+Message-ID: <20240207034704.935774-4-alexs@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207034704.935774-1-alexs@kernel.org>
 References: <20240207034704.935774-1-alexs@kernel.org>
@@ -70,105 +70,76 @@ Content-Transfer-Encoding: 8bit
 
 From: Alex Shi <alexs@kernel.org>
 
-sched_use_asym_prio() sched_asym_prefer() are used together in various
-places. Consolidate them into a single function sched_asym().
-
-The existing sched_group_asym() is only used when collecting statistics
-of a scheduling group. Rename it as sched_group_asym().
-This makes the code easier to read. No functional changes.
+sched_use_asym_prio() checks whether CPU priorities should be used. It
+makes sense to check for the SD_ASYM_PACKING() inside the function.
+Since both sched_asym() and sched_group_asym() use sched_use_asym_prio(),
+remove the now superfluous checks for the flag in various places.
 
 Signed-off-by: Alex Shi <alexs@kernel.org>
+To: linux-kernel@vger.kernel.org
 To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To: Ben Segall <bsegall@google.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+To: Dietmar Eggemann <dietmar.eggemann@arm.com>
 To: Valentin Schneider <vschneid@redhat.com>
+To: Daniel Bristot de Oliveira <bristot@redhat.com>
 To: Vincent Guittot <vincent.guittot@linaro.org>
+To: Juri Lelli <juri.lelli@redhat.com>
 To: Peter Zijlstra <peterz@infradead.org>
 To: Ingo Molnar <mingo@redhat.com>
 ---
- kernel/sched/fair.c | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+ kernel/sched/fair.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 607dc310b355..942b6358f683 100644
+index 942b6358f683..10ae28e1c088 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -9746,8 +9746,18 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
- 	return sd->flags & SD_SHARE_CPUCAPACITY || is_core_idle(cpu);
- }
- 
-+static inline bool sched_asym(struct sched_domain *sd, int dst_cpu, int src_cpu)
-+{
-+	/*
-+	 * First check if @dst_cpu can do asym_packing load balance. Only do it
-+	 * if it has higher priority than @src_cpu.
-+	 */
-+	return sched_use_asym_prio(sd, dst_cpu) &&
-+		sched_asym_prefer(dst_cpu, src_cpu);
-+}
-+
- /**
-- * sched_asym - Check if the destination CPU can do asym_packing load balance
-+ * sched_group_asym - Check if the destination CPU can do asym_packing balance
-  * @env:	The load balancing environment
-  * @sgs:	Load-balancing statistics of the candidate busiest group
-  * @group:	The candidate busiest group
-@@ -9767,22 +9777,17 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
-  * otherwise.
+@@ -9740,6 +9740,9 @@ group_type group_classify(unsigned int imbalance_pct,
   */
- static inline bool
--sched_asym(struct lb_env *env, struct sg_lb_stats *sgs, struct sched_group *group)
-+sched_group_asym(struct lb_env *env, struct sg_lb_stats *sgs, struct sched_group *group)
+ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
  {
--	/* Ensure that the whole local core is idle, if applicable. */
--	if (!sched_use_asym_prio(env->sd, env->dst_cpu))
--		return false;
--
- 	/*
--	 * CPU priorities does not make sense for SMT cores with more than one
-+	 * CPU priorities do not make sense for SMT cores with more than one
- 	 * busy sibling.
- 	 */
--	if (group->flags & SD_SHARE_CPUCAPACITY) {
--		if (sgs->group_weight - sgs->idle_cpus != 1)
--			return false;
--	}
-+	if ((group->flags & SD_SHARE_CPUCAPACITY) &&
-+	    (sgs->group_weight - sgs->idle_cpus != 1))
++	if (!(sd->flags & SD_ASYM_PACKING))
 +		return false;
++
+ 	if (!sched_smt_active())
+ 		return true;
  
--	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
-+	return sched_asym(env->sd, env->dst_cpu, group->asym_prefer_cpu);
- }
+@@ -9941,11 +9944,9 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+ 	sgs->group_weight = group->group_weight;
  
- /* One group has more than one SMT CPU while the other group does not */
-@@ -9938,7 +9943,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
  	/* Check if dst CPU is idle and preferred to this group */
- 	if (!local_group && env->sd->flags & SD_ASYM_PACKING &&
- 	    env->idle != CPU_NOT_IDLE && sgs->sum_h_nr_running &&
--	    sched_asym(env, sgs, group)) {
-+	    sched_group_asym(env, sgs, group)) {
+-	if (!local_group && env->sd->flags & SD_ASYM_PACKING &&
+-	    env->idle != CPU_NOT_IDLE && sgs->sum_h_nr_running &&
+-	    sched_group_asym(env, sgs, group)) {
++	if (!local_group && env->idle != CPU_NOT_IDLE && sgs->sum_h_nr_running &&
++	    sched_group_asym(env, sgs, group))
  		sgs->group_asym_packing = 1;
- 	}
+-	}
  
-@@ -11037,8 +11042,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+ 	/* Check for loaded SMT group to be balanced to dst CPU */
+ 	if (!local_group && smt_balance(env, sgs, group))
+@@ -11041,9 +11042,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+ 		 * If balancing between cores, let lower priority CPUs help
  		 * SMT cores with more than one busy sibling.
  		 */
- 		if ((env->sd->flags & SD_ASYM_PACKING) &&
--		    sched_use_asym_prio(env->sd, i) &&
--		    sched_asym_prefer(i, env->dst_cpu) &&
-+		    sched_asym(env->sd, i, env->dst_cpu) &&
- 		    nr_running == 1)
+-		if ((env->sd->flags & SD_ASYM_PACKING) &&
+-		    sched_asym(env->sd, i, env->dst_cpu) &&
+-		    nr_running == 1)
++		if (sched_asym(env->sd, i, env->dst_cpu) && nr_running == 1)
  			continue;
  
-@@ -11908,8 +11912,7 @@ static void nohz_balancer_kick(struct rq *rq)
- 		 * preferred CPU must be idle.
- 		 */
- 		for_each_cpu_and(i, sched_domain_span(sd), nohz.idle_cpus_mask) {
--			if (sched_use_asym_prio(sd, i) &&
--			    sched_asym_prefer(i, cpu)) {
-+			if (sched_asym(sd, i, cpu)) {
- 				flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
- 				goto unlock;
- 			}
+ 		switch (env->migration_type) {
+@@ -11139,8 +11138,7 @@ asym_active_balance(struct lb_env *env)
+ 	 * the lower priority @env::dst_cpu help it. Do not follow
+ 	 * CPU priority.
+ 	 */
+-	return env->idle != CPU_NOT_IDLE && (env->sd->flags & SD_ASYM_PACKING) &&
+-	       sched_use_asym_prio(env->sd, env->dst_cpu) &&
++	return env->idle != CPU_NOT_IDLE && sched_use_asym_prio(env->sd, env->dst_cpu) &&
+ 	       (sched_asym_prefer(env->dst_cpu, env->src_cpu) ||
+ 		!sched_use_asym_prio(env->sd, env->src_cpu));
+ }
 -- 
 2.43.0
 
