@@ -1,173 +1,173 @@
-Return-Path: <linux-kernel+bounces-55875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A74CF84C2D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D3AD84C2DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:59:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03453B2C03A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:58:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 776DFB2B9B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:59:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3C91FC01;
-	Wed,  7 Feb 2024 02:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63674F9EF;
+	Wed,  7 Feb 2024 02:58:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2ukTrgd4"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="q7G7j77C"
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6145E6110
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 02:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C100014A8D
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 02:58:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707274706; cv=none; b=FEEhllAQAvNbzu2T/+WzlGI18TevKOXRxGX7TLeXlcV4RjWJ/RW/bvxgj1puHjL93QPjfDqNdpI7Lmamr6N5SPbVpasetib8iX2Zu/u2qCn202OeVPf6cNm7NIRJvMIWyfF51rVcB2XPbi07MX+Qc3Y4s/sBaMdcMVBx8kfBL8Q=
+	t=1707274728; cv=none; b=LCtvXkend1I4lOgxqVuTuqJZi44Bv4Z6wyprQEWZtkc8dbRR0nXPjaBCB9F7SpAmrOItZiblUOeH1GXLFQfo5uYj/7fU1c6pK8xtlfXYR2shGozJlzvP16e1T1XrIx5Aiv3+vrwj6KSg/TmmX0+TBOgFpjyrV7GDNuntQ2CTqm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707274706; c=relaxed/simple;
-	bh=q0YTkLGeLiHeoMECfeW+UDyihdTziDFAXkK/gYfa6m8=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=FlEgKGJrzslQ8xNz0kRgOXHosAhy55eHGNvc8MoEHAEl/cTxhWCv6ELb2S18dbcw2YBGyI2ovxOlpRu7FpxDPtlFyhdLOdKS3f3ghnUF05y2/SpF6yr4BZBN5aiGx8H34KdzOBcurxV4EFC+XSq5frSolYcC6yQpd/EuJOhOaFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2ukTrgd4; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b26eef6cso238016276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 18:58:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707274704; x=1707879504; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=REgxJxxqnJ9hacBXQ6aXWZQE1YsmJHbedjyy3CiQK2A=;
-        b=2ukTrgd4q81UHPu3MI9HusimapHQFjEo5lBjX5bWkjctL09MKKHCjDtmMdzWfNJi/J
-         Q9dR+lqB2TfLA+GLQlO8wIFxHHxJB1apbcM50V6I5gVINxItxNlPOByGeu1Hs38HyKrf
-         4GQcWpBNK/fd3jKPfiXl3njfThoMpv7/fWiCdLkaSbkrcjPJeXafmsfyQPj8ql56BH8a
-         v5GbV8WVw1jHb3AQfeeiI23GvE60eOAbDjLufVUV2MEsqchIJ0Xn/wUgn0EL9vC51TcL
-         8bUfK92X3uqdT+4r/MGH7YCZw/YXA44/ULLnKSGQiFPYxwgVmB/YI7DyzvY/7BqIUOO9
-         JdTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707274704; x=1707879504;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=REgxJxxqnJ9hacBXQ6aXWZQE1YsmJHbedjyy3CiQK2A=;
-        b=mxAOgGHWyx37fgybpQSw8f8P8izAcHj8x4Ov7ciBmBYqpW3zBr3NxR1t41UJ1he/In
-         DRvCl25wVpXu/uv7gD5/TalUDu2VhLtUs+jTu/o1tS0GJ5Q401Uahw/Uue0SxXVptAL4
-         tgMtMKQgbUmXuumBbFWxLCm57pYGY4wVUzzrYz0i1JmqApFEmAezdUSOhUT6xiKF6Jj8
-         wEtaT9tsEsIbq1FgLOJGSb6uxT2Ui5IaXPEBSLJv8Isy34W9rGk+7N/OAC3Qo0q4BzQM
-         AsHcAXMQw1/zUUetuIwUqDz5MhkWJuo3/hyQT8tiVZHQ78c+lnRXL89FG6IEsrN+tV3L
-         lS0Q==
-X-Gm-Message-State: AOJu0YwTQ/Dkfcdj7TIvD6xe5Md/PnozxpErw0rstmLPlkXTFh95gb+x
-	QoVWeO0+sOQLnHCt08sWgViktRFtf0i842y5zSGjPzLNN4uZ52LOpj48z8ozOBh9GPb1L/ce8Fc
-	ZOA==
-X-Google-Smtp-Source: AGHT+IEJ5Usl1LXo6fL+Uxm5BQe0zL0MKFLw1o5ny+TWq6aF8Z1lvB2IftryIW8cs4diMDf/g1gm2NrvVjk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:2310:b0:dc2:3a02:4fc8 with SMTP id
- do16-20020a056902231000b00dc23a024fc8mr146257ybb.6.1707274704457; Tue, 06 Feb
- 2024 18:58:24 -0800 (PST)
-Date: Tue, 6 Feb 2024 18:58:22 -0800
-In-Reply-To: <19a1ac538e6cb1b479122df677909fb49fedbb28.camel@infradead.org>
+	s=arc-20240116; t=1707274728; c=relaxed/simple;
+	bh=GssavB2eBu3MCykfKG7uDgs+4Abjn9OOgra4EZk4ZRI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Fi1QxarIKg8s59frV4dp3VIXQOba7OgKAC451zfOQALMidBFsKZVdiTqhBsFdKNhKgsGSDZURL2pYi7aMd5kq1V9MmdJ7Ca0tviBYLlnr/COaDpETzrR7NDwKGjg7aEKukgNyaOUaE97l+m2OMo9CUkqVuX1Ge1e1N4YQJoG0QQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=q7G7j77C; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707274725;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=YdTolOktysfsfJtvyDb6Ex+kid808dGZqD8vDTLFsAI=;
+	b=q7G7j77CtIpEYihaJPQD5FrbBwFuoFV3H4fjX/HELJ4abMv+2lreF8Kj5Du1EbcV+t5GOE
+	Z+jUosaM3kuUumKWYypEFJcBX9rx/Y0mJbs2C9+CAPG0yFxrPKwQ59CODm6Gh38wwNhcdX
+	n+5PRk20yQ/4NS2e4y/WopprGTOCuAU=
+From: chengming.zhou@linux.dev
+To: hannes@cmpxchg.org,
+	yosryahmed@google.com,
+	nphamcs@gmail.com,
+	akpm@linux-foundation.org
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	chengming.zhou@linux.dev,
+	Chengming Zhou <zhouchengming@bytedance.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v2] mm/zswap: invalidate old entry when store fail or !zswap_enabled
+Date: Wed,  7 Feb 2024 02:58:27 +0000
+Message-Id: <20240207025827.3819141-1-chengming.zhou@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <f21ee3bd852761e7808240d4ecaec3013c649dc7.camel@infradead.org>
- <ZcJ9bXxU_Pthq_eh@google.com> <19a1ac538e6cb1b479122df677909fb49fedbb28.camel@infradead.org>
-Message-ID: <ZcLxzrbvSs0jNeR4@google.com>
-Subject: Re: [PATCH v3] KVM: x86: Use fast path for Xen timer delivery
-From: Sean Christopherson <seanjc@google.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: kvm <kvm@vger.kernel.org>, Paul Durrant <paul@xen.org>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Feb 06, 2024, David Woodhouse wrote:
-> On Tue, 2024-02-06 at 10:41 -0800, Sean Christopherson wrote:
-> >=20
-> > This has an obvious-in-hindsight recursive deadlock bug.=C2=A0 If KVM a=
-ctually needs
-> > to inject a timer IRQ, and the fast path fails, i.e. the gpc is invalid=
-,
-> > kvm_xen_set_evtchn() will attempt to acquire xen.xen_lock, which is alr=
-eady held
->=20
-> Hm, right. In fact, kvm_xen_set_evtchn() shouldn't actually *need* the
-> xen_lock in an ideal world; it's only taking it in order to work around
-> the fact that the gfn_to_pfn_cache doesn't have its *own* self-
-> sufficient locking. I have patches for that...
->=20
-> I think the *simplest* of the "patches for that" approaches is just to
-> use the gpc->refresh_lock to cover all activate, refresh and deactivate
-> calls. I was waiting for Paul's series to land before sending that one,
-> but I'll work on it today, and double-check my belief that we can then
-> just drop xen_lock from kvm_xen_set_evtchn().
+From: Chengming Zhou <zhouchengming@bytedance.com>
 
-While I definitely want to get rid of arch.xen.xen_lock, I don't want to ad=
-dress
-the deadlock by relying on adding more locking to the gpc code.  I want a t=
-eeny
-tiny patch that is easy to review and backport.  Y'all are *proably* the on=
-ly
-folks that care about Xen emulation, but even so, that's not a valid reason=
- for
-taking a roundabout way to fixing a deadlock.
+We may encounter duplicate entry in the zswap_store():
 
-Can't we simply not take xen_lock in kvm_xen_vcpu_get_attr()  It holds vcpu=
-->mutex
-so it's mutually exclusive with kvm_xen_vcpu_set_attr(), and I don't see an=
-y other
-flows other than vCPU destruction that deactivate (or change) the gpc.
+1. swap slot that freed to per-cpu swap cache, doesn't invalidate
+   the zswap entry, then got reused. This has been fixed.
 
-And the worst case scenario is that if _userspace_ is being stupid, userspa=
-ce gets
-a stale GPA.
+2. !exclusive load mode, swapin folio will leave its zswap entry
+   on the tree, then swapout again. This has been removed.
 
-diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-index 4b4e738c6f1b..50aa28b9ffc4 100644
---- a/arch/x86/kvm/xen.c
-+++ b/arch/x86/kvm/xen.c
-@@ -973,8 +973,6 @@ int kvm_xen_vcpu_get_attr(struct kvm_vcpu *vcpu, struct=
- kvm_xen_vcpu_attr *data)
- {
-        int r =3D -ENOENT;
-=20
--       mutex_lock(&vcpu->kvm->arch.xen.xen_lock);
--
-        switch (data->type) {
-        case KVM_XEN_VCPU_ATTR_TYPE_VCPU_INFO:
-                if (vcpu->arch.xen.vcpu_info_cache.active)
-@@ -1083,7 +1081,6 @@ int kvm_xen_vcpu_get_attr(struct kvm_vcpu *vcpu, stru=
-ct kvm_xen_vcpu_attr *data)
-                break;
-        }
-=20
--       mutex_unlock(&vcpu->kvm->arch.xen.xen_lock);
-        return r;
- }
-=20
-=20
+3. one folio can be dirtied again after zswap_store(), so need to
+   zswap_store() again. This should be handled correctly.
 
-If that seems to risky, we could go with an ugly and hacky, but conservativ=
-e:
+So we must invalidate the old duplicate entry before insert the
+new one, which actually doesn't have to be done at the beginning
+of zswap_store(). And this is a normal situation, we shouldn't
+WARN_ON(1) in this case, so delete it. (The WARN_ON(1) seems want
+to detect swap entry UAF problem? But not very necessary here.)
 
-diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-index 4b4e738c6f1b..456d05c5b18a 100644
---- a/arch/x86/kvm/xen.c
-+++ b/arch/x86/kvm/xen.c
-@@ -1052,7 +1052,9 @@ int kvm_xen_vcpu_get_attr(struct kvm_vcpu *vcpu, stru=
-ct kvm_xen_vcpu_attr *data)
-                 */
-                if (vcpu->arch.xen.timer_expires) {
-                        hrtimer_cancel(&vcpu->arch.xen.timer);
-+                       mutex_unlock(&vcpu->kvm->arch.xen.xen_lock);
-                        kvm_xen_inject_timer_irqs(vcpu);
-+                       mutex_lock(&vcpu->kvm->arch.xen.xen_lock);
-                }
-=20
-                data->u.timer.port =3D vcpu->arch.xen.timer_virq;
+The good point is that we don't need to lock tree twice in the
+store success path.
+
+Note we still need to invalidate the old duplicate entry in the
+store failure path, otherwise the new data in swapfile could be
+overwrite by the old data in zswap pool when lru writeback.
+
+We have to do this even when !zswap_enabled since zswap can be
+disabled anytime. If the folio store success before, then got
+dirtied again but zswap disabled, we won't invalidate the old
+duplicate entry in the zswap_store(). So later lru writeback
+may overwrite the new data in swapfile.
+
+Fixes: 42c06a0e8ebe ("mm: kill frontswap")
+Cc: <stable@vger.kernel.org>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+v2:
+ - Change the duplicate entry invalidation loop to if, since we hold
+   the lock, we won't find it once we invalidate it, per Yosry.
+ - Add Fixes tag.
+---
+ mm/zswap.c | 33 ++++++++++++++++-----------------
+ 1 file changed, 16 insertions(+), 17 deletions(-)
+
+diff --git a/mm/zswap.c b/mm/zswap.c
+index cd67f7f6b302..6c1466633274 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -1518,18 +1518,8 @@ bool zswap_store(struct folio *folio)
+ 		return false;
+ 
+ 	if (!zswap_enabled)
+-		return false;
++		goto check_old;
+ 
+-	/*
+-	 * If this is a duplicate, it must be removed before attempting to store
+-	 * it, otherwise, if the store fails the old page won't be removed from
+-	 * the tree, and it might be written back overriding the new data.
+-	 */
+-	spin_lock(&tree->lock);
+-	entry = zswap_rb_search(&tree->rbroot, offset);
+-	if (entry)
+-		zswap_invalidate_entry(tree, entry);
+-	spin_unlock(&tree->lock);
+ 	objcg = get_obj_cgroup_from_folio(folio);
+ 	if (objcg && !obj_cgroup_may_zswap(objcg)) {
+ 		memcg = get_mem_cgroup_from_objcg(objcg);
+@@ -1608,14 +1598,12 @@ bool zswap_store(struct folio *folio)
+ 	/* map */
+ 	spin_lock(&tree->lock);
+ 	/*
+-	 * A duplicate entry should have been removed at the beginning of this
+-	 * function. Since the swap entry should be pinned, if a duplicate is
+-	 * found again here it means that something went wrong in the swap
+-	 * cache.
++	 * The folio could be dirtied again, invalidate the possible old entry
++	 * before insert this new entry.
+ 	 */
+-	while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
+-		WARN_ON(1);
++	if (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
+ 		zswap_invalidate_entry(tree, dupentry);
++		VM_WARN_ON(zswap_rb_insert(&tree->rbroot, entry, &dupentry));
+ 	}
+ 	if (entry->length) {
+ 		INIT_LIST_HEAD(&entry->lru);
+@@ -1638,6 +1626,17 @@ bool zswap_store(struct folio *folio)
+ reject:
+ 	if (objcg)
+ 		obj_cgroup_put(objcg);
++check_old:
++	/*
++	 * If zswap store fail or zswap disabled, we must invalidate possible
++	 * old entry which previously stored by this folio. Otherwise, later
++	 * writeback could overwrite the new data in swapfile.
++	 */
++	spin_lock(&tree->lock);
++	entry = zswap_rb_search(&tree->rbroot, offset);
++	if (entry)
++		zswap_invalidate_entry(tree, entry);
++	spin_unlock(&tree->lock);
+ 	return false;
+ 
+ shrink:
+-- 
+2.40.1
 
 
