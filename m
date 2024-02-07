@@ -1,387 +1,210 @@
-Return-Path: <linux-kernel+bounces-56317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D81A684C8A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:29:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D229E84C89A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:28:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 169841C249E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:29:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46DCF1F242BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9BC3288D7;
-	Wed,  7 Feb 2024 10:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="tuKCxYwK"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADB352561F;
+	Wed,  7 Feb 2024 10:28:04 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D96492560F
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:28:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E3125602;
+	Wed,  7 Feb 2024 10:28:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707301725; cv=none; b=nUpwsgqWtYMMFjAYLoKvzdQ8PMovxU848WcRAfxEWX98CZk6yxs17CfsA2QAfSxdJXz5qeCj28dmvhcZFwlj6VUb6z5BAoED1jStqFu+BR4/TPYcCk7ELNSvy4ZWWSq2DKL1NX1kSx4jENWXKcFEuDpJd61XfoAT8fEJVcrNjag=
+	t=1707301684; cv=none; b=bUqlTaEjc0ViG+ux/CG2TSmZvYwT/Ub6vOXEUCgwYfru4zrzOk/18mnPkW2g6iHT3StL484XKl0lIaiexAw37Tiwf/oBv/oYjVER/7Mn2FU5qL6HRdRiWxef0qUtR6iguQ4egO969PlpfvI63koXF4jjM3C+OzanC+t+d/fXwmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707301725; c=relaxed/simple;
-	bh=HioEdNBcatfnQSaOrKwA19VAWecYK/jvb0l6hAP3ruA=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Zg5ElaQTekYQnnkinhtzf7vx0PrzB1p22TBB6LOJt0vPRXMfjhEA19QLivKXKmyWMA5tL5mPJ5es66R6tBaZpbCvjRZZJ/Z/NjtzKsev4aSeuqJ3AqF763AQa6mQ2uq6BXzAuY5jrmCa+IHVqh9M6e3FM4moSXn5VP0pZwoy7+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=tuKCxYwK; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1707301724; x=1738837724;
-  h=from:to:subject:date:message-id:in-reply-to:references:
-   mime-version:content-transfer-encoding;
-  bh=HioEdNBcatfnQSaOrKwA19VAWecYK/jvb0l6hAP3ruA=;
-  b=tuKCxYwK1Vt1XU8XPrSYL2BM5WO74Gq69VcSh0mqdneYC+T/Oj+hGZ7x
-   kEdCK4V2JGkKCULwF0XGVpk7GAGIt9vTJu6TlLxQN4/LA7ByOK4AUdwYp
-   8roXSNqcLRZ4Fr7mG6yjtZKjZ+ZEl8c+IwmI4Whf0G9zGaOr4RVeXSzOJ
-   fjG9Ez6K8heZtMkPjEaj1fwalLlmXxM61XOoIYgww4reqfIU3tLngG9tp
-   0qCr14gaWofqyOC4MOUBOwtjo5ygiFHu/GoyG4kUdXgVCP733Aedyrygy
-   turih7oncNisPr1CjkymCT1W7ooazxKOTzYpq10iHr2CHwNy6XrRoXy7B
-   w==;
-X-CSE-ConnectionGUID: JxZ+DPsRTh6mZRhRbF3CqA==
-X-CSE-MsgGUID: VGD3wM1QTne9BBNjOeANfA==
-X-IronPort-AV: E=Sophos;i="6.05,250,1701154800"; 
-   d="scan'208";a="246623772"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Feb 2024 03:28:42 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 7 Feb 2024 03:28:40 -0700
-Received: from che-lt-i70843lx.microchip.com (10.10.85.11) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Wed, 7 Feb 2024 03:28:28 -0700
-From: Dharma Balasubiramani <dharma.b@microchip.com>
-To: <andrzej.hajda@intel.com>, <neil.armstrong@linaro.org>,
-	<rfoss@kernel.org>, <Laurent.pinchart@ideasonboard.com>, <jonas@kwiboo.se>,
-	<jernej.skrabec@gmail.com>, <maarten.lankhorst@linux.intel.com>,
-	<mripard@kernel.org>, <tzimmermann@suse.de>, <airlied@gmail.com>,
-	<daniel@ffwll.ch>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <dharma.b@microchip.com>,
-	<manikandan.m@microchip.com>, <linux-kernel@vger.kernel.org>,
-	<dri-devel@lists.freedesktop.org>, <linux@armlinux.org.uk>,
-	<nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-	<claudiu.beznea@tuxon.dev>, <geert+renesas@glider.be>, <arnd@arndb.de>,
-	<palmer@rivosinc.com>, <akpm@linux-foundation.org>, <gerg@linux-m68k.org>,
-	<rdunlap@infradead.org>, <vbabka@suse.cz>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v3 2/4] drm/bridge: add lvds controller support for sam9x7
-Date: Wed, 7 Feb 2024 15:58:00 +0530
-Message-ID: <20240207102802.200220-3-dharma.b@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240207102802.200220-1-dharma.b@microchip.com>
-References: <20240207102802.200220-1-dharma.b@microchip.com>
+	s=arc-20240116; t=1707301684; c=relaxed/simple;
+	bh=uC0MYzc9viXcsjURB6yEfdxhm8sZVMtWJzuwWazJQ+0=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=UOuMVdjCX0E7q45DJAA7pv/NU5d6YinlGPyhdd9tyqQD7UghjUh8aO5uNmPeD4Ea2QxJc0GHei5pRgXpPxiyWOWKjcq+cOl7nn0/8ca8DUjcgd1HT6LPZ5taaUnfrh6Hv2N3YIFzyXv7AV8ZDMwD8aEtrxlhH1EGU3MkdYsODaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DCEFC433F1;
+	Wed,  7 Feb 2024 10:28:02 +0000 (UTC)
+Message-ID: <63a46881-7fe8-4858-b0f7-cde33ffc7ea6@xs4all.nl>
+Date: Wed, 7 Feb 2024 11:28:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 0/9] Add DELETE_BUF ioctl
+Content-Language: en-US, nl
+From: Hans Verkuil <hverkuil@xs4all.nl>
+To: Benjamin Gaignard <benjamin.gaignard@collabora.com>, mchehab@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ kernel@collabora.com
+References: <20240206080219.11951-1-benjamin.gaignard@collabora.com>
+ <dcafb602-228f-439f-99d2-010d26a23ad1@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <dcafb602-228f-439f-99d2-010d26a23ad1@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add a new LVDS controller driver for sam9x7 which does the following:
-- Prepares and enables the LVDS Peripheral clock
-- Defines its connector type as DRM_MODE_CONNECTOR_LVDS and adds itself
-to the global bridge list.
-- Identifies its output endpoint as panel and adds it to the encoder
-display pipeline
-- Enables the LVDS serializer
+On 06/02/2024 09:58, Hans Verkuil wrote:
+> On 06/02/2024 09:02, Benjamin Gaignard wrote:
+>> Unlike when resolution change on keyframes, dynamic resolution change
+>> on inter frames doesn't allow to do a stream off/on sequence because
+>> it is need to keep all previous references alive to decode inter frames.
+>> This constraint have two main problems:
+>> - more memory consumption.
+>> - more buffers in use.
+>> To solve these issue this series introduce DELETE_BUFS ioctl and remove
+>> the 32 buffers limit per queue.
+> 
+> This v19 looks good. There are three outstanding issues that I need to take a
+> look at:
+> 
+> 1) Can we still signal support for DELETE_BUFS in the V4L2_BUF_CAP_ caps?
+>    It would be nice to have, but I'm not sure if and how that can be done.
+> 
+> 2) I want to take another look at providing a next version of the VIDIOC_CREATE_BUFS
+>    ioctl and how that would possibly influence the design of DELETE_BUFS.
+>    Just to make sure we're not blocking anything or making life harder.
 
-Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
-Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+So I just tried creating a new version of the VIDIOC_CREATE_BUFS ioctl
+that is greatly simplified. This just updates the header, no real code yet:
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 ---
-Changelog
-v2 ->v3
-- Correct Typo error "serializer".
-- Consolidate get() and prepare() functions and use devm_clk_get_prepared().
-- Remove unused variable 'ret' in probe().
-- Use devm_pm_runtime_enable() and drop the mchp_lvds_remove().
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index 03443833aaaa..a7398e4c85e7 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -2624,6 +2624,39 @@ struct v4l2_create_buffers {
+ 	__u32			reserved[5];
+ };
 
-v1 -> v2
-- Drop 'res' variable and combine two lines into one.
-- Handle deferred probe properly, use dev_err_probe().
-- Don't print anything on deferred probe. Dropped print.
-- Remove the MODULE_ALIAS and add MODULE_DEVICE_TABLE().
-- symbol 'mchp_lvds_driver' was not declared. It should be static.
----
- drivers/gpu/drm/bridge/Kconfig          |   7 +
- drivers/gpu/drm/bridge/Makefile         |   1 +
- drivers/gpu/drm/bridge/microchip-lvds.c | 228 ++++++++++++++++++++++++
- 3 files changed, 236 insertions(+)
- create mode 100644 drivers/gpu/drm/bridge/microchip-lvds.c
-
-diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-index 3e6a4e2044c0..74ca0edb4e0d 100644
---- a/drivers/gpu/drm/bridge/Kconfig
-+++ b/drivers/gpu/drm/bridge/Kconfig
-@@ -173,6 +173,13 @@ config DRM_MEGACHIPS_STDPXXXX_GE_B850V3_FW
- 	  to DP++. This is used with the i.MX6 imx-ldb
- 	  driver. You are likely to say N here.
- 
-+config DRM_MICROCHIP_LVDS_SERIALIZER
-+	tristate "Microchip LVDS serializer support"
-+	depends on OF
-+	depends on DRM_ATMEL_HLCDC
-+	help
-+	  Support for Microchip's LVDS serializer.
-+
- config DRM_NWL_MIPI_DSI
- 	tristate "Northwest Logic MIPI DSI Host controller"
- 	depends on DRM
-diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
-index 2b892b7ed59e..e3804e93d324 100644
---- a/drivers/gpu/drm/bridge/Makefile
-+++ b/drivers/gpu/drm/bridge/Makefile
-@@ -11,6 +11,7 @@ obj-$(CONFIG_DRM_LONTIUM_LT9611) += lontium-lt9611.o
- obj-$(CONFIG_DRM_LONTIUM_LT9611UXC) += lontium-lt9611uxc.o
- obj-$(CONFIG_DRM_LVDS_CODEC) += lvds-codec.o
- obj-$(CONFIG_DRM_MEGACHIPS_STDPXXXX_GE_B850V3_FW) += megachips-stdpxxxx-ge-b850v3-fw.o
-+obj-$(CONFIG_DRM_MICROCHIP_LVDS_SERIALIZER) += microchip-lvds.o
- obj-$(CONFIG_DRM_NXP_PTN3460) += nxp-ptn3460.o
- obj-$(CONFIG_DRM_PARADE_PS8622) += parade-ps8622.o
- obj-$(CONFIG_DRM_PARADE_PS8640) += parade-ps8640.o
-diff --git a/drivers/gpu/drm/bridge/microchip-lvds.c b/drivers/gpu/drm/bridge/microchip-lvds.c
-new file mode 100644
-index 000000000000..d3fd9d722e36
---- /dev/null
-+++ b/drivers/gpu/drm/bridge/microchip-lvds.c
-@@ -0,0 +1,228 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
-+ *
-+ * Author: Manikandan Muralidharan <manikandan.m@microchip.com>
-+ * Author: Dharma Balasubiramani <dharma.b@microchip.com>
-+ *
++/**
++ * struct v4l2_create_buffers_v2 - VIDIOC_CREATE_BUFFERS argument
++ * @type:	enum v4l2_buf_type
++ * @memory:	enum v4l2_memory; buffer memory type
++ * @count:	entry: number of requested buffers,
++ *		return: number of created buffers
++ * @num_planes:	requested number of planes for each buffer
++ * @sizes:	requested plane sizes for each buffer
++ * @start_index:on return, index of the first created buffer
++ * @total_count:on return, the total number of allocated buffers
++ * @capabilities: capabilities of this buffer type.
++ * @flags:	additional buffer management attributes (ignored unless the
++ *		queue has V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS capability
++ *		and configured for MMAP streaming I/O).
++ * @max_num_buffers: if V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS capability flag is set
++ *		this field indicate the maximum possible number of buffers
++ *		for this queue.
++ * @reserved:	future extensions
 + */
-+
-+#include <linux/clk.h>
-+#include <linux/component.h>
-+#include <linux/delay.h>
-+#include <linux/jiffies.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/of_graph.h>
-+#include <linux/pinctrl/devinfo.h>
-+#include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regmap.h>
-+#include <linux/reset.h>
-+
-+#include <drm/drm_atomic_helper.h>
-+#include <drm/drm_bridge.h>
-+#include <drm/drm_of.h>
-+#include <drm/drm_panel.h>
-+#include <drm/drm_print.h>
-+#include <drm/drm_probe_helper.h>
-+#include <drm/drm_simple_kms_helper.h>
-+
-+#define LVDS_POLL_TIMEOUT_MS 1000
-+
-+/* LVDSC register offsets */
-+#define LVDSC_CR	0x00
-+#define LVDSC_CFGR	0x04
-+#define LVDSC_SR	0x0C
-+#define LVDSC_WPMR	0xE4
-+
-+/* Bitfields in LVDSC_CR (Control Register) */
-+#define LVDSC_CR_SER_EN	BIT(0)
-+
-+/* Bitfields in LVDSC_CFGR (Configuration Register) */
-+#define LVDSC_CFGR_PIXSIZE_24BITS	0
-+#define LVDSC_CFGR_DEN_POL_HIGH		0
-+#define LVDSC_CFGR_DC_UNBALANCED	0
-+#define LVDSC_CFGR_MAPPING_JEIDA	BIT(6)
-+
-+/*Bitfields in LVDSC_SR */
-+#define LVDSC_SR_CS	BIT(0)
-+
-+/* Bitfields in LVDSC_WPMR (Write Protection Mode Register) */
-+#define LVDSC_WPMR_WPKEY_MASK	GENMASK(31, 8)
-+#define LVDSC_WPMR_WPKEY_PSSWD	0x4C5644
-+
-+struct mchp_lvds {
-+	struct device *dev;
-+	void __iomem *regs;
-+	struct clk *pclk;
-+	int format; /* vesa or jeida format */
-+	struct drm_panel *panel;
-+	struct drm_bridge bridge;
-+	struct drm_bridge *panel_bridge;
++struct v4l2_create_buffers_v2 {
++	__u32			type;
++	__u32			memory;
++	__u32			count;
++	__u32			num_planes;
++	__u32			size[VIDEO_MAX_PLANES];
++	__u32			start_index;
++	__u32			total_count;
++	__u32			capabilities;
++	__u32			flags;
++	__u32			max_num_buffers;
++	__u32			reserved[7];
 +};
 +
-+static inline struct mchp_lvds *bridge_to_lvds(struct drm_bridge *bridge)
-+{
-+	return container_of(bridge, struct mchp_lvds, bridge);
-+}
-+
-+static inline u32 lvds_readl(struct mchp_lvds *lvds, u32 offset)
-+{
-+	return readl_relaxed(lvds->regs + offset);
-+}
-+
-+static inline void lvds_writel(struct mchp_lvds *lvds, u32 offset, u32 val)
-+{
-+	writel_relaxed(val, lvds->regs + offset);
-+}
-+
-+static void lvds_serialiser_on(struct mchp_lvds *lvds)
-+{
-+	unsigned long timeout = jiffies + msecs_to_jiffies(LVDS_POLL_TIMEOUT_MS);
-+
-+	/* The LVDSC registers can only be written if WPEN is cleared */
-+	lvds_writel(lvds, LVDSC_WPMR, (LVDSC_WPMR_WPKEY_PSSWD &
-+				LVDSC_WPMR_WPKEY_MASK));
-+
-+	/* Wait for the status of configuration registers to be changed */
-+	while (lvds_readl(lvds, LVDSC_SR) & LVDSC_SR_CS) {
-+		if (time_after(jiffies, timeout)) {
-+			dev_err(lvds->dev, "%s: timeout error\n", __func__);
-+			return;
-+		}
-+		usleep_range(1000, 2000);
-+	}
-+
-+	/* Configure the LVDSC */
-+	lvds_writel(lvds, LVDSC_CFGR, (LVDSC_CFGR_MAPPING_JEIDA |
-+				LVDSC_CFGR_DC_UNBALANCED |
-+				LVDSC_CFGR_DEN_POL_HIGH |
-+				LVDSC_CFGR_PIXSIZE_24BITS));
-+
-+	/* Enable the LVDS serializer */
-+	lvds_writel(lvds, LVDSC_CR, LVDSC_CR_SER_EN);
-+}
-+
-+static int mchp_lvds_attach(struct drm_bridge *bridge,
-+			    enum drm_bridge_attach_flags flags)
-+{
-+	struct mchp_lvds *lvds = bridge_to_lvds(bridge);
-+
-+	bridge->encoder->encoder_type = DRM_MODE_ENCODER_LVDS;
-+
-+	return drm_bridge_attach(bridge->encoder, lvds->panel_bridge,
-+				 bridge, flags);
-+}
-+
-+static void mchp_lvds_enable(struct drm_bridge *bridge)
-+{
-+	struct mchp_lvds *lvds = bridge_to_lvds(bridge);
-+	int ret;
-+
-+	ret = clk_enable(lvds->pclk);
-+	if (ret < 0) {
-+		DRM_DEV_ERROR(lvds->dev, "failed to enable lvds pclk %d\n", ret);
-+		return;
-+	}
-+
-+	ret = pm_runtime_get_sync(lvds->dev);
-+	if (ret < 0) {
-+		DRM_DEV_ERROR(lvds->dev, "failed to get pm runtime: %d\n", ret);
-+		clk_disable(lvds->pclk);
-+		return;
-+	}
-+
-+	lvds_serialiser_on(lvds);
-+}
-+
-+static void mchp_lvds_disable(struct drm_bridge *bridge)
-+{
-+	struct mchp_lvds *lvds = bridge_to_lvds(bridge);
-+
-+	pm_runtime_put(lvds->dev);
-+	clk_disable(lvds->pclk);
-+}
-+
-+static const struct drm_bridge_funcs mchp_lvds_bridge_funcs = {
-+	.attach = mchp_lvds_attach,
-+	.enable = mchp_lvds_enable,
-+	.disable = mchp_lvds_disable,
-+};
-+
-+static int mchp_lvds_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct mchp_lvds *lvds;
-+	struct device_node *port;
-+
-+	if (!dev->of_node)
-+		return -ENODEV;
-+
-+	lvds = devm_kzalloc(&pdev->dev, sizeof(*lvds), GFP_KERNEL);
-+	if (!lvds)
-+		return -ENOMEM;
-+
-+	lvds->dev = dev;
-+
-+	lvds->regs = devm_ioremap_resource(lvds->dev,
-+			platform_get_resource(pdev, IORESOURCE_MEM, 0));
-+	if (IS_ERR(lvds->regs))
-+		return PTR_ERR(lvds->regs);
-+
-+	lvds->pclk = devm_clk_get_prepared(lvds->dev, "pclk");
-+	if (IS_ERR(lvds->pclk))
-+		return dev_err_probe(lvds->dev, PTR_ERR(lvds->pclk),
-+				"could not get pclk_lvds prepared\n");
-+
-+	port = of_graph_get_remote_node(dev->of_node, 1, 0);
-+	if (!port) {
-+		DRM_DEV_ERROR(dev,
-+			      "can't find port point, please init lvds panel port!\n");
-+		return -EINVAL;
-+	}
-+
-+	lvds->panel = of_drm_find_panel(port);
-+	of_node_put(port);
-+
-+	if (IS_ERR(lvds->panel))
-+		return -EPROBE_DEFER;
-+
-+	lvds->panel_bridge = devm_drm_panel_bridge_add(dev, lvds->panel);
-+
-+	if (IS_ERR(lvds->panel_bridge))
-+		return PTR_ERR(lvds->panel_bridge);
-+
-+	lvds->bridge.of_node = dev->of_node;
-+	lvds->bridge.type = DRM_MODE_CONNECTOR_LVDS;
-+	lvds->bridge.funcs = &mchp_lvds_bridge_funcs;
-+
-+	dev_set_drvdata(dev, lvds);
-+	devm_pm_runtime_enable(dev);
-+
-+	drm_bridge_add(&lvds->bridge);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id mchp_lvds_dt_ids[] = {
-+	{
-+		.compatible = "microchip,sam9x75-lvds",
-+	},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, mchp_lvds_dt_ids);
-+
-+static struct platform_driver mchp_lvds_driver = {
-+	.probe = mchp_lvds_probe,
-+	.driver = {
-+		   .name = "microchip-lvds",
-+		   .of_match_table = mchp_lvds_dt_ids,
-+	},
-+};
-+module_platform_driver(mchp_lvds_driver);
-+
-+MODULE_AUTHOR("Manikandan Muralidharan <manikandan.m@microchip.com>");
-+MODULE_AUTHOR("Dharma Balasubiramani <dharma.b@microchip.com>");
-+MODULE_DESCRIPTION("Low Voltage Differential Signaling Controller Driver");
-+MODULE_LICENSE("GPL");
--- 
-2.25.1
+ /**
+  * struct v4l2_delete_buffers - VIDIOC_DELETE_BUFS argument
+  * @index:	the first buffer to be deleted
+@@ -2738,6 +2771,7 @@ struct v4l2_delete_buffers {
 
+ #define VIDIOC_QUERY_EXT_CTRL	_IOWR('V', 103, struct v4l2_query_ext_ctrl)
+ #define VIDIOC_DELETE_BUFS	_IOWR('V', 104, struct v4l2_delete_buffers)
++#define VIDIOC_CREATE_BUFFERS	_IOWR('V', 105, struct v4l2_create_buffers_v2)
+
+
+ /* Reminder: when adding new ioctls please add support for them to
+
+
+Sadly, struct v4l2_create_buffers was already used for the existing
+VIDIOC_CREATE_BUFS (I wish it was called v4l2_create_bufs...), so I did
+have to add a _v2 suffix. Compared to the old struct it just moves the
+type, num_planes and sizes from v4l2_format into the new struct and drops
+the format field. Note that those fields are the only v4l2_format fields
+that VIDIOC_CREATE_BUFS used, so getting rid of the format makes live
+much easier. I also renamed 'index' to 'start_index' and added a new 'total_count'
+field to report the total number of buffers.
+
+The reason for adding 'total_count' is that VIDIOC_CREATE_BUFS with
+count == 0 would report the total number of buffers in the 'index' field,
+which was rather odd. Adding a specific field for this purpose is nicer.
+
+One thing that might impact your series is the name of the ioctls.
+
+We have:
+
+VIDIOC_CREATE_BUFS/v4l2_create_buffers
+VIDIOC_DELETE_BUFS/v4l2_delete_buffers
+VIDIOC_CREATE_BUFFERS/v4l2_create_buffers_v2 (TBD)
+
+I'm wondering if VIDIOC_DELETE_BUFS should be renamed to
+VIDIOC_DELETE_BUFFERS, that would make it more consistent with
+the proposed VIDIOC_CREATE_BUFFERS.
+
+Alternatively, instead of calling it VIDIOC_CREATE_BUFFERS we
+might call it VIDIOC_CREATE_BUFS_V2.
+
+Or perhaps some other naming convention?
+
+Ideas are welcome.
+
+Regards,
+
+	Hans
 
