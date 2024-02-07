@@ -1,241 +1,97 @@
-Return-Path: <linux-kernel+bounces-56991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E373A84D269
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:51:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A573084D271
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:54:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B5CA1C23620
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:51:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33E051F25B5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 830E384FC7;
-	Wed,  7 Feb 2024 19:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n9k778Iz"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF29126F03;
+	Wed,  7 Feb 2024 19:54:21 +0000 (UTC)
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7E698563E;
-	Wed,  7 Feb 2024 19:51:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E4985947;
+	Wed,  7 Feb 2024 19:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707335501; cv=none; b=mNG+JM/oGG3kiNRHj7MYeknzAcUxVjqvpgNiaTqjqb5pYH0RKuzGZkP12z+FP0FltznA7xau6TCzpRm4VKf9FkY56feRYOhRc1QXVA+LPKl3qNm4GRfVZxlD2VsqBQdp58cKtJRoA/tnIJ0Dt+lHn4IJSG2ZJS7xW+VninEpItA=
+	t=1707335660; cv=none; b=IVf72PS93zoNmjM41Lnl2yC2lAtb4lRXRDy3p/5ryLpVpveHii/4lOC68BQssqEPRQXzFpD9DDbuSlLg3F312i10V5g0k+OUbznlq0Ph+a7GP68MiQeBTaTDHkxjgG0eANSmyInItttOAeVmqL957XyaM3i4/xZmF5DN1ZFgPfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707335501; c=relaxed/simple;
-	bh=pv2VRu3SrRdSAM9IiT+hebyhoOnb9uKKlZWg141JHHw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=f3auuo2Y/ngWkAp7lHG3mH+JXtcPt1N6fnPxzAeiLSDOC+nPnxUHOlQoEhP4Y7pZFlhnyPkwF4+Dt8XVIMhuupv5hhwrRsvvgs6RyU1JNLOsNaH7YEeG+zq90vcJ2gWkWZfDqBH2jnkYlx6j4vK7eIoz+ORlPxzvXn716ItLz5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n9k778Iz; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707335499; x=1738871499;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=pv2VRu3SrRdSAM9IiT+hebyhoOnb9uKKlZWg141JHHw=;
-  b=n9k778Iz3oX8rjdnM0+X3B+FGY9wYxRjsMNWkzolC78u1AbpX0u/yYTv
-   DcKvrDcdgOTnDtimLyodOyFPNFvYafjJ9417vY18K46m5Z+6GDt+f/w52
-   uHuPOjDKTGo9+E9Eve73rLrVrayOKKoL1POfpA53xbabqIIm7FU4eqVKd
-   Zt6HezyA1QdBPI2jof6nUnLD84+qTND7Ur3dT2Ebh+sGnwQHeNk5V1mCx
-   WucSX1C79UodHEyhxCzOQB2/LSH6OW9J0/aO20EZdBwdamhkD/NtrpjsJ
-   WJdnOz2f2LYtteblZpdrluh0sERcrn4EP0Bwc/Y0AHYonIFNbehr20eGM
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="436205073"
-X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
-   d="scan'208";a="436205073"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 11:51:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
-   d="scan'208";a="1791657"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 11:51:39 -0800
-Received: from hsinjuiy-mobl.amr.corp.intel.com (unknown [10.209.57.193])
-	by linux.intel.com (Postfix) with ESMTP id 60E07580DCE;
-	Wed,  7 Feb 2024 11:51:38 -0800 (PST)
-Message-ID: <3ebd2ea35aadc23cf122af250bec47294fc2d9e2.camel@linux.intel.com>
-Subject: Re: [PATCH v2] PCI: vmd: Enable PCI PM's L1 substates of remapped
- PCIe Root Port and NVMe
-From: "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: puranjay12@gmail.com, Jian-Hong Pan <jhp@endlessos.org>, Johan Hovold
- <johan@kernel.org>, Mika Westerberg <mika.westerberg@linux.intel.com>, 
- Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
- Nirmal Patel <nirmal.patel@linux.intel.com>, Jonathan Derrick
- <jonathan.derrick@linux.dev>,  linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux@endlessos.org
-Date: Wed, 07 Feb 2024 11:51:38 -0800
-In-Reply-To: <20240206233007.GA886412@bhelgaas>
-References: <20240206233007.GA886412@bhelgaas>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1707335660; c=relaxed/simple;
+	bh=wfbSmuHab0V68wnlOCcAF2SVn1m+YMVLhGtx53tD9as=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bTOl5TTiEwf7B3+qB2XYvMOskM/TA+zysdVBnHfRdvoI475aHmMa7X1Ts1jThBo+w9CF2UxvT1uKWoJ0dk0amcZwcEbHMVdhgnNoS3ZrldnCwb5PCMYVNzSdN0Wo6U6kjhfBrd50A7oJIybkJTCCNznBVd7WKq22svooOWLzaRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-59a24bf7cadso281662eaf.0;
+        Wed, 07 Feb 2024 11:54:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707335658; x=1707940458;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cxuT7grQtF6+jxH5TdI/JH0psGW02KwfjrWP6++bBUo=;
+        b=w06rFthLoRNTI9bz1WlPMh8tV51FKliOMglBEg9dHPldMMqbFelNRhldhjMpfydxs2
+         293rF6U1lzYxIbiBfNkRk7kOjYQAPUSsvb0kGf3na1Aky9mmT0nnlZvA7Um9wOUsxUd7
+         +yvfls8F2oFH39wns9/IAjrk9fY5aRNNrzOKFhklURNgWtQg3ZRgFcleP9vLR2eOB6P4
+         PwdkVcZr+xRGMptsYz1UWsdrQ2l1PReuA6eE99yPtB9NKSh8K1OiSMNv718u7DMP44Gu
+         uCC/pctXTcY9BV5i41h7kAwkejPOhhNTJOftQcEK6mp6z7cGDIxj1PIh1KJbuOdvNp5e
+         7PnA==
+X-Forwarded-Encrypted: i=1; AJvYcCVTAMzlqdm4cy8PwWn0/mrWaUvDC72Me7pTBLIpVCmTjR7c0A1yjHzKEvPUjQnRZcVq06Ssh7uLi4oNFaWkCtvGGd7Xl67+v/YofbymlClu2yZ8f3AAjR/B1B/KLxrT6vdjlLDpb3I=
+X-Gm-Message-State: AOJu0YzehGV5eToLMfaLD2nNeR8zDAzG9roXr/x5UtYvpdhbPfWRec1B
+	uay7dOJncQ+q+5LdR2ba18ZDaBndPRUKFBq1XANvnl32y4JYg1L27Rzrk+XOQ2VM7svp98063hV
+	3tjJKaG4kVVOzzeSJAF49q8EtWh4=
+X-Google-Smtp-Source: AGHT+IHv6uqRut6OHEIswNK76znrlzV3lT4SqNcMhKHeZ34sVvR2sbP99u08sL7UiuUaaUlEcG6zTPrs+2nL2EfzsG0=
+X-Received: by 2002:a05:6871:8a4:b0:219:ed95:916e with SMTP id
+ r36-20020a05687108a400b00219ed95916emr77573oaq.5.1707335658402; Wed, 07 Feb
+ 2024 11:54:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <CGME20240207103144eucas1p16b601a73ff347d2542f8380b25921491@eucas1p1.samsung.com>
+ <10423008.nUPlyArG6x@kreacher> <708a65cc-79ec-44a6-8454-a93d0f3114c3@samsung.com>
+ <CAJZ5v0hn=KgaWn9pwtLsH2a8n61BNxzb1xrNoxUfEi3o9OAZGw@mail.gmail.com>
+ <4a043533-009f-4db9-b107-c8374be28d2b@samsung.com> <CAJZ5v0hDmwaFEtLc8yDc4cXn2wODXAqATe0+_Hpm9QPODUPMQw@mail.gmail.com>
+ <ZcOyW_Q1FC35oxob@slm.duckdns.org> <2f125955-8c7c-465c-938c-8768f7ca360b@samsung.com>
+ <ZcPSuUBoL_EDvcTF@slm.duckdns.org> <ZcPelerpp3Rr5YFW@slm.duckdns.org>
+In-Reply-To: <ZcPelerpp3Rr5YFW@slm.duckdns.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 7 Feb 2024 20:54:07 +0100
+Message-ID: <CAJZ5v0gB2h1G_0a_BAbBtib=VxnJgF9N3Sa3QYpCeURcCtKUTQ@mail.gmail.com>
+Subject: Re: [PATCH v1] PM: sleep: Restore asynchronous device resume optimization
+To: Tejun Heo <tj@kernel.org>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	"Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM <linux-pm@vger.kernel.org>, 
+	Ulf Hansson <ulf.hansson@linaro.org>, Nathan Chancellor <nathan@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Naohiro.Aota@wdc.com, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2024-02-06 at 17:30 -0600, Bjorn Helgaas wrote:
-> On Tue, Feb 06, 2024 at 01:25:29PM -0800, David E. Box wrote:
-> > On Mon, 2024-02-05 at 15:05 -0800, David E. Box wrote:
-> > > On Mon, 2024-02-05 at 16:42 -0600, Bjorn Helgaas wrote:
-> > > > On Mon, Feb 05, 2024 at 11:37:16AM -0800, David E. Box wrote:
-> > > > > On Fri, 2024-02-02 at 18:05 -0600, Bjorn Helgaas wrote:
-> > > > > > On Fri, Feb 02, 2024 at 03:11:12PM +0800, Jian-Hong Pan wrote:
-> > > > > ...
-> > > >=20
-> > > > > > > @@ -775,6 +773,14 @@ static int vmd_pm_enable_quirk(struct pc=
-i_dev
-> > > > > > > *pdev,
-> > > > > > > void *userdata)
-> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pci_write_con=
-fig_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT,
-> > > > > > > ltr_reg);
-> > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pci_info(pdev=
-, "VMD: Default LTR value set by driver\n");
-> > > > > >=20
-> > > > > > You're not changing this part, and I don't understand exactly h=
-ow
-> > > > > > LTR
-> > > > > > works, but it makes me a little bit queasy to read "set the LTR
-> > > > > > value
-> > > > > > to the maximum required to allow the deepest power management
-> > > > > > savings" and then we set the max snoop values to a fixed consta=
-nt.
-> > > > > >=20
-> > > > > > I don't think the goal is to "allow the deepest power savings";=
- I
-> > > > > > think it's to enable L1.2 *when the device has enough buffering=
- to
-> > > > > > absorb L1.2 entry/exit latencies*.
-> > > > > >=20
-> > > > > > The spec (PCIe r6.0, sec 7.8.2.2) says "Software should set thi=
-s to
-> > > > > > the platform's maximum supported latency or less," so it seems =
-like
-> > > > > > that value must be platform-dependent, not fixed.
-> > > > > >=20
-> > > > > > And I assume the "_DSM for Latency Tolerance Reporting" is part=
- of
-> > > > > > the
-> > > > > > way to get those platform-dependent values, but Linux doesn't
-> > > > > > actually
-> > > > > > use that yet.
-> > > > >=20
-> > > > > This may indeed be the best way but we need to double check with =
-our
-> > > > > BIOS folks.=C2=A0 AFAIK BIOS writes the LTR values directly so th=
-ere
-> > > > > hasn't been a need to use this _DSM. But under VMD the ports are
-> > > > > hidden from BIOS which is why we added it here. I've brought up t=
-he
-> > > > > question internally to find out how Windows handles the DSM and t=
-o
-> > > > > get a recommendation from our firmware leads.
-> > > >=20
-> > > > We want Linux to be able to program LTR itself, don't we?=C2=A0 We
-> > > > shouldn't have to rely on firmware to do it.=C2=A0 If Linux can't d=
-o
-> > > > it, hot-added devices aren't going to be able to use L1.2,
-> > > > right?
-> > >=20
-> > > Agreed. We just want to make sure we are not conflicting with what
-> > > BIOS may be doing.
-> >=20
-> > So the feedback is to run the _DSM and just overwrite any BIOS
-> > values. Looking up the _DSM I saw there was an attempt to upstream
-> > this 4 years ago [1]. I'm not sure why the effort stalled but we can
-> > pick up this work again.
-> >=20
-> > https://patchwork.kernel.org/project/linux-pci/patch/20201015080311.781=
-1-1-puranjay12@gmail.com/
->=20
-> There was a PCI SIG discussion about this a few years ago that never
-> really seemed to get resolved:
-> https://members.pcisig.com/wg/PCIe-Protocol/mail/thread/35064
->=20
-> Unfortunately that discussion is not public, but the summary is:
->=20
-> =C2=A0 Q: How is the LTR_L1.2_THRESHOLD value determined?
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0 PCIe r5.0, sec 5.5.4, says the same value must b=
-e programmed into
-> =C2=A0=C2=A0=C2=A0=C2=A0 both Ports.
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0 A: As noted in sec 5.5.4, the value is determine=
-d primarily by
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0the amount of time it wil=
-l take to re-establish the common
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mode bias on the AC coupl=
-ing caps, and it is assumed that the
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0BIOS knows this.
->=20
-> =C2=A0 Q: How are the LTR Max Snoop values determined?
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0 PCI Firmware r3.3, sec 4.6.6, says the LTR _DSM =
-reports the max
-> =C2=A0=C2=A0=C2=A0=C2=A0 values for each Downstream Port embedded in the =
-platform, and the
-> =C2=A0=C2=A0=C2=A0=C2=A0 OS should calculate latencies along the path bet=
-ween each
-> =C2=A0=C2=A0=C2=A0=C2=A0 Downstream Port and any Upstream Port (Switch Up=
-stream Port or
-> =C2=A0=C2=A0=C2=A0=C2=A0 Endpoint).
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0 Of course, Switches not embedded in the platform=
- (e.g., external
-> =C2=A0=C2=A0=C2=A0=C2=A0 Thunderbolt hierarchies) will not have this _DSM=
-, but I assume
-> =C2=A0=C2=A0=C2=A0=C2=A0 they should contribute to this sum?
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0 A: The fundamental problem is that there is no p=
-ractical way for
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0software to discover the =
-AC coupling capacitor sizes and
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0common mode bias circuit =
-impedance.
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Software could compute co=
-nservative values, but they would
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0likely be 10x worse than =
-typical, so the L1.2 exit latency
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0would be significantly lo=
-nger than actually required to be.
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0The interoperability issu=
-es here were understood when
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0designing L1 Substates, b=
-ut no viable solution was found.
->=20
-> So the main reason Puranjay's work got stalled is that I didn't feel
-> confident enough that we understood how to do this, especially for
-> external devices.
->=20
-> It would be great if somebody *did* feel confident about interpreting
-> and implementing all this.
+On Wed, Feb 7, 2024 at 8:48=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> I couldn't reproduce effective max_active being pushed down to min_active
+> across suspend/resume cycles on x86. There gotta be something different.
+>
+> - Can you please apply the following patch along with the WQ_DFL_MIN_ACTI=
+VE
+>   bump, go through suspend/resume once and report the dmesg?
+>
+> - Regardless of the root cause, I think async should switch to a dedicate=
+d
+>   workqueue with explicitly raised min_active (will add an interface for
+>   it).
 
-As it is BIOS (at least Intel BIOS) is already writing the maximum allowed =
-LTR
-value on Upstream Ports that have it set to 0. So we can't do any worse if =
-we
-write the BIOS provided _DSM value for all Upstream Ports, including extern=
-al
-devices. Sounds like the worst case scenario is that devices take longer th=
-an
-needed to exit L1.2 (I'm still asking about this detail). But I think this =
-is
-better than not programming the LTR at all which could prevent the platform=
- from
-power gating they very resources that LTR is meant to help manage.
-
-If that reasoning is okay with you, I'll submit patches to use the _DSM.
-
-David
+Agreed.
 
