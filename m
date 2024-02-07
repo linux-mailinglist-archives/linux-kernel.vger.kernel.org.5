@@ -1,284 +1,121 @@
-Return-Path: <linux-kernel+bounces-56946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C15884D1A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:48:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3225384D15A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:42:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FCE01C21959
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:48:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2AFA1F23597
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:42:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75781134CF5;
-	Wed,  7 Feb 2024 18:43:34 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22B2083CD1;
+	Wed,  7 Feb 2024 18:42:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SgoxrTrh"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86D512A142
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 18:43:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0052E83CBE
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 18:42:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707331410; cv=none; b=i0D8/HsHe5a+WJlwoxLSluJdyd62d5kztMgA1lsJweYcOKxrMtejnDSu6U3NXqfOPr9N0OlXGgg9kWDyJ0z18yUP8PbEhHqAV5buxfsBw7rrKG0/3Mbfe+p7oKvGuZ/cpa2PUJZTkscHgPpI4XRoAfz98qwcjJQfzUsPaVOJbLk=
+	t=1707331339; cv=none; b=jQ2pWbO91+9P0/Sw+ah6MWQoqRdP7B5Me0MA1d7H/cdsAZDkSVgDnXlaPQXPiHWLT53EEY7qUM0bwBL4CQb0pGQvQOX8gWDBJm0NE/er0Tg2Od7yq/9kMjukh/PYvBDUQ55tunOP3UYTP0nCBT+wZxr5TdQ2qDHprX0AzzKD/OY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707331410; c=relaxed/simple;
-	bh=lupNOJTfyldL3mmpGmFMUlRtxlv0yV5K01wD1FM//lU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R/vOZb2r+SUSc3A/y9rarwjOWs73GPxXhE7dJ4dIQTU3JZzvnZZIukFUe6B51BefO50fP+J9j7RIBPL0uChk7dMh7jJK4/mteBMnUcIHAMHrkuPYMji4nKxY1/N5DObiE4RffVWMJgyHi7yWmuYVQznI2CoOVsZd2SgaMX76RHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rXmtF-0008CF-2N; Wed, 07 Feb 2024 19:43:21 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rXmtE-0054Yq-I1; Wed, 07 Feb 2024 19:43:20 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rXmtE-00HRtx-1X;
-	Wed, 07 Feb 2024 19:43:20 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: kernel@pengutronix.de,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v3 32/32] Documentation: spi: Update documentation for renaming "master" to "controller"
-Date: Wed,  7 Feb 2024 19:40:46 +0100
-Message-ID:  <3d643e22cacff12d3918ad5224baa1d01813d03b.1707324794.git.u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1707324793.git.u.kleine-koenig@pengutronix.de>
-References: <cover.1707324793.git.u.kleine-koenig@pengutronix.de>
+	s=arc-20240116; t=1707331339; c=relaxed/simple;
+	bh=nYX20/aGyNT7+m3RqCINirH/BlFMdF3vqKDQqvuouqs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Am/TX4NbA3Lt/HUw6iIK23qaQcJwZ40E0FY5A45AKud1tzagIOS45qxmIeWiEK2g35aiJ3/kxjiKbvdSGFQ7W33S+WPl7tRZC8hiM7vtnw1Ow9KYa0/F59XTgl1QsYsHgx2Xt9QvSXl0hjDLzijqBmbNbdP/6UpsX7yHhoTmnhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SgoxrTrh; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707331337;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=uzhXO96uioYuw+s+CgtOuyqJZRewhrPzSOw58rzbztg=;
+	b=SgoxrTrhH4mVf1sXPVbcgeq5ckkRSnWexcRSFMO63+YENjH9R3paOwrLrV8J9xhta+9FoG
+	RabOpbb/htf0lxbd+r0URkl/L8hM59dN8CgK3mosJhvsn2jUrtyG6VVg0eFhExrHcAM+la
+	Z9rv5tbMYv4F66NjVbimMHxPsO8NyKI=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-84-SOx90uyXOvy1n8fT4n9uqA-1; Wed,
+ 07 Feb 2024 13:42:13 -0500
+X-MC-Unique: SOx90uyXOvy1n8fT4n9uqA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3689A38212CF;
+	Wed,  7 Feb 2024 18:42:13 +0000 (UTC)
+Received: from fedora-work.redhat.com (unknown [10.22.32.236])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id ADEB340C9444;
+	Wed,  7 Feb 2024 18:42:12 +0000 (UTC)
+From: David Jeffery <djeffery@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-nvme@lists.infradead.org,
+	linux-scsi@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	David Jeffery <djeffery@redhat.com>
+Subject: [RFC PATCH 0/6] async device shutdown support
+Date: Wed,  7 Feb 2024 13:40:54 -0500
+Message-ID: <20240207184100.18066-1-djeffery@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10646; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=lupNOJTfyldL3mmpGmFMUlRtxlv0yV5K01wD1FM//lU=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlw87sFPC2ubYJeQTZiACVo+Y+sBdgqZYeH8PWh 9hnwOjmkoCJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZcPO7AAKCRCPgPtYfRL+ ToR2B/9ipdkmLVRM5BbNknVUv/GZaKE+W7/96VxDH3aIJElcdW3Dxbj3Ow7+KVu2H/ffas2Eg7W IFr9Hq0vYqwIYRDE4dTStFhKAQuV7Zl9XCq8jmJEaf2uxybCWs3VCjZkaAlod9QHvQhr2R2QeOS csGnlKxpQyPSQTGJJII7rQ8wgqbXVALzk2Oq3cAlas9NI7Xg8ZzUd+4qYTZBKoZFz0+E3cJDycU PggD4RMiFyrl31tfipCSBqbveM802kNc5+wfGvEsYbt6Yp7rwD8rCvdHs9vfn7U14VchIOSox3B qllTlYfFOqlQwXdm6UjwaHOpoLM9t7gAibGHLFmy1jr1M0Gb
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-In commit 8caab75fd2c2 ("spi: Generalize SPI "master" to "controller"")
-some functions and struct members were renamed. Adapt the documentation
-accordingly.
+This is another attempt to implement an acceptable implementation of async
+device shutdown, inspired by a previous attempt by Tanjore Suresh. For
+systems with many disks, async shutdown can greatly reduce shutdown times
+from having slow operations run in parallel. The older patches were rejected,
+with this new implementation attempting to fix my understanding of the flaws
+in the older patches.
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- Documentation/spi/spi-summary.rst | 74 +++++++++++++++----------------
- 1 file changed, 37 insertions(+), 37 deletions(-)
+Using similar interfaces and building off the ideas of the older patches,
+this patchset creates an async shutdown implementation which follows the
+basic ordering of the shutdown list, ensuring the shutdown of any children
+devices complete whether synchronous or asynchronous before performing
+shutdown on a parent device.
 
-diff --git a/Documentation/spi/spi-summary.rst b/Documentation/spi/spi-summary.rst
-index 33f05901ccf3..e714472007f1 100644
---- a/Documentation/spi/spi-summary.rst
-+++ b/Documentation/spi/spi-summary.rst
-@@ -9,7 +9,7 @@ What is SPI?
- The "Serial Peripheral Interface" (SPI) is a synchronous four wire serial
- link used to connect microcontrollers to sensors, memory, and peripherals.
- It's a simple "de facto" standard, not complicated enough to acquire a
--standardization body.  SPI uses a master/slave configuration.
-+standardization body.  SPI uses a host/target configuration.
- 
- The three signal wires hold a clock (SCK, often on the order of 10 MHz),
- and parallel data lines with "Master Out, Slave In" (MOSI) or "Master In,
-@@ -19,11 +19,11 @@ commonly used.  Each clock cycle shifts data out and data in; the clock
- doesn't cycle except when there is a data bit to shift.  Not all data bits
- are used though; not every protocol uses those full duplex capabilities.
- 
--SPI masters use a fourth "chip select" line to activate a given SPI slave
-+SPI hosts use a fourth "chip select" line to activate a given SPI slave
- device, so those three signal wires may be connected to several chips
- in parallel.  All SPI slaves support chipselects; they are usually active
- low signals, labeled nCSx for slave 'x' (e.g. nCS0).  Some devices have
--other signals, often including an interrupt to the master.
-+other signals, often including an interrupt to the host.
- 
- Unlike serial busses like USB or SMBus, even low level protocols for
- SPI slave functions are usually not interoperable between vendors
-@@ -45,8 +45,8 @@ SPI slave functions are usually not interoperable between vendors
- 
- In the same way, SPI slaves will only rarely support any kind of automatic
- discovery/enumeration protocol.  The tree of slave devices accessible from
--a given SPI master will normally be set up manually, with configuration
--tables.
-+a given SPI host controller will normally be set up manually, with
-+configuration tables.
- 
- SPI is only one of the names used by such four-wire protocols, and
- most controllers have no problem handling "MicroWire" (think of it as
-@@ -62,8 +62,8 @@ course they won't handle full duplex transfers.  You may find such
- chips described as using "three wire" signaling: SCK, data, nCSx.
- (That data line is sometimes called MOMI or SISO.)
- 
--Microcontrollers often support both master and slave sides of the SPI
--protocol.  This document (and Linux) supports both the master and slave
-+Microcontrollers often support both host and target sides of the SPI
-+protocol.  This document (and Linux) supports both the host and target
- sides of SPI interactions.
- 
- 
-@@ -118,7 +118,7 @@ starting low (CPOL=0) and data stabilized for sampling during the
- trailing clock edge (CPHA=1), that's SPI mode 1.
- 
- Note that the clock mode is relevant as soon as the chipselect goes
--active.  So the master must set the clock to inactive before selecting
-+active.  So the host must set the clock to inactive before selecting
- a slave, and the slave can tell the chosen polarity by sampling the
- clock level when its select line goes active.  That's why many devices
- support for example both modes 0 and 3:  they don't care about polarity,
-@@ -179,7 +179,7 @@ shows up in sysfs in several locations::
-    /sys/bus/spi/drivers/D ... driver for one or more spi*.* devices
- 
-    /sys/class/spi_master/spiB ... symlink to a logical node which could hold
--	class related state for the SPI master controller managing bus "B".
-+	class related state for the SPI host controller managing bus "B".
- 	All spiB.* devices share one physical SPI bus segment, with SCLK,
- 	MOSI, and MISO.
- 
-@@ -316,7 +316,7 @@ sharing a bus with a device that interprets chipselect "backwards" is
- not possible until the infrastructure knows how to deselect it.
- 
- Then your board initialization code would register that table with the SPI
--infrastructure, so that it's available later when the SPI master controller
-+infrastructure, so that it's available later when the SPI host controller
- driver is registered::
- 
- 	spi_register_board_info(spi_board_info, ARRAY_SIZE(spi_board_info));
-@@ -474,34 +474,34 @@ How do I write an "SPI Master Controller Driver"?
- An SPI controller will probably be registered on the platform_bus; write
- a driver to bind to the device, whichever bus is involved.
- 
--The main task of this type of driver is to provide an "spi_master".
--Use spi_alloc_master() to allocate the master, and spi_master_get_devdata()
--to get the driver-private data allocated for that device.
-+The main task of this type of driver is to provide an "spi_controller".
-+Use spi_alloc_host() to allocate the host controller, and
-+spi_controller_get_devdata() to get the driver-private data allocated for that
-+device.
- 
- ::
- 
--	struct spi_master	*master;
-+	struct spi_controller	*ctlr;
- 	struct CONTROLLER	*c;
- 
--	master = spi_alloc_master(dev, sizeof *c);
--	if (!master)
-+	ctlr = spi_alloc_host(dev, sizeof *c);
-+	if (!ctlr)
- 		return -ENODEV;
- 
--	c = spi_master_get_devdata(master);
-+	c = spi_controller_get_devdata(ctlr);
- 
--The driver will initialize the fields of that spi_master, including the
--bus number (maybe the same as the platform device ID) and three methods
--used to interact with the SPI core and SPI protocol drivers.  It will
--also initialize its own internal state.  (See below about bus numbering
--and those methods.)
-+The driver will initialize the fields of that spi_controller, including the bus
-+number (maybe the same as the platform device ID) and three methods used to
-+interact with the SPI core and SPI protocol drivers.  It will also initialize
-+its own internal state.  (See below about bus numbering and those methods.)
- 
--After you initialize the spi_master, then use spi_register_master() to
-+After you initialize the spi_controller, then use spi_register_controller() to
- publish it to the rest of the system. At that time, device nodes for the
- controller and any predeclared spi devices will be made available, and
- the driver model core will take care of binding them to drivers.
- 
--If you need to remove your SPI controller driver, spi_unregister_master()
--will reverse the effect of spi_register_master().
-+If you need to remove your SPI controller driver, spi_unregister_controller()
-+will reverse the effect of spi_register_controller().
- 
- 
- Bus Numbering
-@@ -519,10 +519,10 @@ then be replaced by a dynamically assigned number. You'd then need to treat
- this as a non-static configuration (see above).
- 
- 
--SPI Master Methods
--^^^^^^^^^^^^^^^^^^
-+SPI Host Controller Methods
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^
- 
--``master->setup(struct spi_device *spi)``
-+``ctlr->setup(struct spi_device *spi)``
- 	This sets up the device clock rate, SPI mode, and word sizes.
- 	Drivers may change the defaults provided by board_info, and then
- 	call spi_setup(spi) to invoke this routine.  It may sleep.
-@@ -534,34 +534,34 @@ SPI Master Methods
- 	.. note::
- 
- 		BUG ALERT:  for some reason the first version of
--		many spi_master drivers seems to get this wrong.
-+		many spi_controller drivers seems to get this wrong.
- 		When you code setup(), ASSUME that the controller
- 		is actively processing transfers for another device.
- 
--``master->cleanup(struct spi_device *spi)``
-+``ctlr->cleanup(struct spi_device *spi)``
- 	Your controller driver may use spi_device.controller_state to hold
- 	state it dynamically associates with that device.  If you do that,
- 	be sure to provide the cleanup() method to free that state.
- 
--``master->prepare_transfer_hardware(struct spi_master *master)``
-+``ctlr->prepare_transfer_hardware(struct spi_controller *ctlr)``
- 	This will be called by the queue mechanism to signal to the driver
- 	that a message is coming in soon, so the subsystem requests the
- 	driver to prepare the transfer hardware by issuing this call.
- 	This may sleep.
- 
--``master->unprepare_transfer_hardware(struct spi_master *master)``
-+``ctlr->unprepare_transfer_hardware(struct spi_controller *ctlr)``
- 	This will be called by the queue mechanism to signal to the driver
- 	that there are no more messages pending in the queue and it may
- 	relax the hardware (e.g. by power management calls). This may sleep.
- 
--``master->transfer_one_message(struct spi_master *master, struct spi_message *mesg)``
-+``ctlr->transfer_one_message(struct spi_controller *ctlr, struct spi_message *mesg)``
- 	The subsystem calls the driver to transfer a single message while
- 	queuing transfers that arrive in the meantime. When the driver is
- 	finished with this message, it must call
- 	spi_finalize_current_message() so the subsystem can issue the next
- 	message. This may sleep.
- 
--``master->transfer_one(struct spi_master *master, struct spi_device *spi, struct spi_transfer *transfer)``
-+``ctrl->transfer_one(struct spi_controller *ctlr, struct spi_device *spi, struct spi_transfer *transfer)``
- 	The subsystem calls the driver to transfer a single transfer while
- 	queuing transfers that arrive in the meantime. When the driver is
- 	finished with this transfer, it must call
-@@ -576,15 +576,15 @@ SPI Master Methods
- 	* 0: transfer is finished
- 	* 1: transfer is still in progress
- 
--``master->set_cs_timing(struct spi_device *spi, u8 setup_clk_cycles, u8 hold_clk_cycles, u8 inactive_clk_cycles)``
--	This method allows SPI client drivers to request SPI master controller
-+``ctrl->set_cs_timing(struct spi_device *spi, u8 setup_clk_cycles, u8 hold_clk_cycles, u8 inactive_clk_cycles)``
-+	This method allows SPI client drivers to request SPI host controller
- 	for configuring device specific CS setup, hold and inactive timing
- 	requirements.
- 
- Deprecated Methods
- ^^^^^^^^^^^^^^^^^^
- 
--``master->transfer(struct spi_device *spi, struct spi_message *message)``
-+``ctrl->transfer(struct spi_device *spi, struct spi_message *message)``
- 	This must not sleep. Its responsibility is to arrange that the
- 	transfer happens and its complete() callback is issued. The two
- 	will normally happen later, after other transfers complete, and
+In addition to an implementation for asynchronous pci nvme shutdown, this
+patchset also adds support for async shutdown of sd devices for cache flush.
+As an example of the effects of the patch, one system with a large amount of
+disks went from over 30 seconds to shut down to less than 5.
+
+The specific driver changes are the roughest part of this patchset. But the
+acceptability of the core async functionality is critical. Any feedback on
+flaws or improvements is appreciated.
+
+David Jeffery (6):
+  minimal async shutdown infrastructure
+  Improve ability to perform async shutdown in parallel
+  pci bus async shutdown support
+  pci nvme async shutdown support
+  scsi mid layer support for async command submit
+  sd: async cache flush on shutdown
+
+ drivers/base/base.h           |   1 +
+ drivers/base/core.c           | 149 +++++++++++++++++++++++++++++++++-
+ drivers/nvme/host/core.c      |  26 ++++--
+ drivers/nvme/host/nvme.h      |   2 +
+ drivers/nvme/host/pci.c       |  53 +++++++++++-
+ drivers/pci/pci-driver.c      |  24 +++++-
+ drivers/scsi/scsi_lib.c       | 138 ++++++++++++++++++++++++-------
+ drivers/scsi/sd.c             |  66 +++++++++++++--
+ drivers/scsi/sd.h             |   2 +
+ include/linux/device/bus.h    |   8 +-
+ include/linux/device/driver.h |   7 ++
+ include/linux/pci.h           |   4 +
+ include/scsi/scsi_device.h    |   8 ++
+ 13 files changed, 439 insertions(+), 49 deletions(-)
+
 -- 
 2.43.0
 
