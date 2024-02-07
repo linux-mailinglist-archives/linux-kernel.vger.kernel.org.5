@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-57167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B02A784D4AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:50:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3F4484D4B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:51:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3610BB273E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:50:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E72671C21AA2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:51:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454B515A49C;
-	Wed,  7 Feb 2024 21:25:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C0E15B0E6;
+	Wed,  7 Feb 2024 21:25:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZFpZsEW3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AdQ03/kT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC14159CBC;
-	Wed,  7 Feb 2024 21:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE2B515A4BC;
+	Wed,  7 Feb 2024 21:25:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341146; cv=none; b=jl7KsjFyDcTTyFcinQSt4TWV0P+fN1r4byTBOcNA5nmPrexAjyWmvJCwqy/FXgnM+jQFSDjVF0gx9Fwo68HJ5aq6bEy+m7/RxzSPH9Pp2cuadEhBG0h2EPzZSItvEHrIld84qVmqQurNtPLI0hVx/HT0tVdmSnJIrVWmKPGoz6E=
+	t=1707341148; cv=none; b=rzk/OjSrkVp/2zasRY5rxnrPoQLz6s2oUA2D9DL5T4qCkRdtq75gUnr5I2pUnw/niyIilTWSzIkX+kEWbVSdHvGH9qWNJXmQIVhjHNxelm85tnnxJ1pjwOFej8OpXl95oZoji87xiNPfl503vAVwVJ6yOmyR/HRJ/RyyO0ANT9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341146; c=relaxed/simple;
-	bh=w1n66yihctU5N7CSUMpRa5jKDOiHFJxcvNhPYkbuZ9E=;
+	s=arc-20240116; t=1707341148; c=relaxed/simple;
+	bh=bNk4/N865uxd8oiyvt2u0F/rM7pIoJSR5LF6seU25Ok=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UoLji93BGl1v4LsFOXolSvxLGJ01Mzm6oztmUuBjzx0f52IpVCogDEvZfh41pI3OZ87uR86IJtUmanhIFdNqyKgSKRDTWLPdbF9V6nuUuqxQlWgX80lRaVkdefaSVARNjEKbV46lnj7DBL6HSn2qF5sTXjl+qhBnHrUGbqHUh+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZFpZsEW3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABBADC433C7;
-	Wed,  7 Feb 2024 21:25:44 +0000 (UTC)
+	 MIME-Version; b=pfbA9pDdwK1qg+fDA1GLuTHdhf5jvdfM1u+xPh7Ac8BHqG4ExFfbFcojnNQWEY+FyUXv+IJCnN3WypYTZunvG6pCkCxxdVeaZjyWCIvr8WTu3ASMos3LcuSfgmsPS/CuMy49QZXk7vh+7sGU83oROApEYbri+5ON9p+SbucsLfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AdQ03/kT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ACD0C43390;
+	Wed,  7 Feb 2024 21:25:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341146;
-	bh=w1n66yihctU5N7CSUMpRa5jKDOiHFJxcvNhPYkbuZ9E=;
+	s=k20201202; t=1707341147;
+	bh=bNk4/N865uxd8oiyvt2u0F/rM7pIoJSR5LF6seU25Ok=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZFpZsEW3uDMiLNEVD4DUTarkEL5LqIvNSRU+TlCBMat7txZVcFniePHAWuQip0UK4
-	 UX5AYHMledUiy2w0MTzhTjqljMeYPhl/UN4MGzWWNhLDseFKd4Di7jewzzho0IHlK0
-	 DJ1xS/RKUtNY0ClALQZ5XdHl3dqyMG3wG9cLZui/fRKgIy8vZn70BxcgKludM45sLH
-	 nJ2kbuyAkd0emOFpRuvZY9BmnWd6vZO+wknDFgKvzJUWPzgJKhv1cRMtKryPHrVU5q
-	 1Y7FarOcS+cz5kcxE4svoxv7ng5UW9cHc1GcGXSEtprO8kO3QYjX2n5gdboq+t0LvL
-	 FG39kcUw6nUGw==
+	b=AdQ03/kTMLpJGnhkRplLeDqqBpGkzs18/Oe4WFL23kt8sL0Kq8uss3yHKd82u1VWf
+	 6SQ3XPdt2hZgu4yM96SLTQGbeBZ3hIK/eWaE0sMe0KXBKGJ2vCeHDHqrkFSXYAs2ND
+	 NjeaVw6xHpR46tDsaV/gk8SvWU3gzVVC+9/Ny6Im8BNE7S052uW8Qv9shLdqOB7dCO
+	 7KA9sBhK8YEOfQgmW4fQQ2bAqZwUDqFPQZmRg29316RFFRqzLmhukw3vJqIYPjVw1/
+	 z7IpJpeBU6RT0R0w9juxy1XdZ6PpQaniuPgXfNOM3mWpngyENFu1IslNDenx7HOHBa
+	 8H3XohiWgghEw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,10 +50,11 @@ Cc: Daniel Wagner <dwagner@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
 	james.smart@broadcom.com,
 	sagi@grimberg.me,
+	kch@nvidia.com,
 	linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 19/29] nvme-fc: do not wait in vain when unloading module
-Date: Wed,  7 Feb 2024 16:24:44 -0500
-Message-ID: <20240207212505.3169-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 20/29] nvmet-fcloop: swap the list_add_tail arguments
+Date: Wed,  7 Feb 2024 16:24:45 -0500
+Message-ID: <20240207212505.3169-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212505.3169-1-sashal@kernel.org>
 References: <20240207212505.3169-1-sashal@kernel.org>
@@ -70,26 +71,11 @@ Content-Transfer-Encoding: 8bit
 
 From: Daniel Wagner <dwagner@suse.de>
 
-[ Upstream commit 70fbfc47a392b98e5f8dba70c6efc6839205c982 ]
+[ Upstream commit dcfad4ab4d6733f2861cd241d8532a0004fc835a ]
 
-The module exit path has race between deleting all controllers and
-freeing 'left over IDs'. To prevent double free a synchronization
-between nvme_delete_ctrl and ida_destroy has been added by the initial
-commit.
-
-There is some logic around trying to prevent from hanging forever in
-wait_for_completion, though it does not handling all cases. E.g.
-blktests is able to reproduce the situation where the module unload
-hangs forever.
-
-If we completely rely on the cleanup code executed from the
-nvme_delete_ctrl path, all IDs will be freed eventually. This makes
-calling ida_destroy unnecessary. We only have to ensure that all
-nvme_delete_ctrl code has been executed before we leave
-nvme_fc_exit_module. This is done by flushing the nvme_delete_wq
-workqueue.
-
-While at it, remove the unused nvme_fc_wq workqueue too.
+The first argument of list_add_tail function is the new element which
+should be added to the list which is the second argument. Swap the
+arguments to allow processing more than one element at a time.
 
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Hannes Reinecke <hare@suse.de>
@@ -97,114 +83,40 @@ Signed-off-by: Daniel Wagner <dwagner@suse.de>
 Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/fc.c | 47 ++++++------------------------------------
- 1 file changed, 6 insertions(+), 41 deletions(-)
+ drivers/nvme/target/fcloop.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-index 177a365b8ec5..3dbf926fd99f 100644
---- a/drivers/nvme/host/fc.c
-+++ b/drivers/nvme/host/fc.c
-@@ -221,11 +221,6 @@ static LIST_HEAD(nvme_fc_lport_list);
- static DEFINE_IDA(nvme_fc_local_port_cnt);
- static DEFINE_IDA(nvme_fc_ctrl_cnt);
- 
--static struct workqueue_struct *nvme_fc_wq;
--
--static bool nvme_fc_waiting_to_unload;
--static DECLARE_COMPLETION(nvme_fc_unload_proceed);
--
- /*
-  * These items are short-term. They will eventually be moved into
-  * a generic FC class. See comments in module init.
-@@ -255,8 +250,6 @@ nvme_fc_free_lport(struct kref *ref)
- 	/* remove from transport list */
- 	spin_lock_irqsave(&nvme_fc_lock, flags);
- 	list_del(&lport->port_list);
--	if (nvme_fc_waiting_to_unload && list_empty(&nvme_fc_lport_list))
--		complete(&nvme_fc_unload_proceed);
- 	spin_unlock_irqrestore(&nvme_fc_lock, flags);
- 
- 	ida_free(&nvme_fc_local_port_cnt, lport->localport.port_num);
-@@ -3869,10 +3862,6 @@ static int __init nvme_fc_init_module(void)
- {
- 	int ret;
- 
--	nvme_fc_wq = alloc_workqueue("nvme_fc_wq", WQ_MEM_RECLAIM, 0);
--	if (!nvme_fc_wq)
--		return -ENOMEM;
--
- 	/*
- 	 * NOTE:
- 	 * It is expected that in the future the kernel will combine
-@@ -3890,7 +3879,7 @@ static int __init nvme_fc_init_module(void)
- 	ret = class_register(&fc_class);
- 	if (ret) {
- 		pr_err("couldn't register class fc\n");
--		goto out_destroy_wq;
-+		return ret;
+diff --git a/drivers/nvme/target/fcloop.c b/drivers/nvme/target/fcloop.c
+index c780af36c1d4..f5b8442b653d 100644
+--- a/drivers/nvme/target/fcloop.c
++++ b/drivers/nvme/target/fcloop.c
+@@ -358,7 +358,7 @@ fcloop_h2t_ls_req(struct nvme_fc_local_port *localport,
+ 	if (!rport->targetport) {
+ 		tls_req->status = -ECONNREFUSED;
+ 		spin_lock(&rport->lock);
+-		list_add_tail(&rport->ls_list, &tls_req->ls_list);
++		list_add_tail(&tls_req->ls_list, &rport->ls_list);
+ 		spin_unlock(&rport->lock);
+ 		queue_work(nvmet_wq, &rport->ls_work);
+ 		return ret;
+@@ -391,7 +391,7 @@ fcloop_h2t_xmt_ls_rsp(struct nvmet_fc_target_port *targetport,
+ 	if (remoteport) {
+ 		rport = remoteport->private;
+ 		spin_lock(&rport->lock);
+-		list_add_tail(&rport->ls_list, &tls_req->ls_list);
++		list_add_tail(&tls_req->ls_list, &rport->ls_list);
+ 		spin_unlock(&rport->lock);
+ 		queue_work(nvmet_wq, &rport->ls_work);
  	}
- 
- 	/*
-@@ -3914,8 +3903,6 @@ static int __init nvme_fc_init_module(void)
- 	device_destroy(&fc_class, MKDEV(0, 0));
- out_destroy_class:
- 	class_unregister(&fc_class);
--out_destroy_wq:
--	destroy_workqueue(nvme_fc_wq);
- 
- 	return ret;
- }
-@@ -3935,45 +3922,23 @@ nvme_fc_delete_controllers(struct nvme_fc_rport *rport)
- 	spin_unlock(&rport->lock);
- }
- 
--static void
--nvme_fc_cleanup_for_unload(void)
-+static void __exit nvme_fc_exit_module(void)
- {
- 	struct nvme_fc_lport *lport;
- 	struct nvme_fc_rport *rport;
--
--	list_for_each_entry(lport, &nvme_fc_lport_list, port_list) {
--		list_for_each_entry(rport, &lport->endp_list, endp_list) {
--			nvme_fc_delete_controllers(rport);
--		}
--	}
--}
--
--static void __exit nvme_fc_exit_module(void)
--{
- 	unsigned long flags;
--	bool need_cleanup = false;
- 
- 	spin_lock_irqsave(&nvme_fc_lock, flags);
--	nvme_fc_waiting_to_unload = true;
--	if (!list_empty(&nvme_fc_lport_list)) {
--		need_cleanup = true;
--		nvme_fc_cleanup_for_unload();
--	}
-+	list_for_each_entry(lport, &nvme_fc_lport_list, port_list)
-+		list_for_each_entry(rport, &lport->endp_list, endp_list)
-+			nvme_fc_delete_controllers(rport);
- 	spin_unlock_irqrestore(&nvme_fc_lock, flags);
--	if (need_cleanup) {
--		pr_info("%s: waiting for ctlr deletes\n", __func__);
--		wait_for_completion(&nvme_fc_unload_proceed);
--		pr_info("%s: ctrl deletes complete\n", __func__);
--	}
-+	flush_workqueue(nvme_delete_wq);
- 
- 	nvmf_unregister_transport(&nvme_fc_transport);
- 
--	ida_destroy(&nvme_fc_local_port_cnt);
--	ida_destroy(&nvme_fc_ctrl_cnt);
--
- 	device_destroy(&fc_class, MKDEV(0, 0));
- 	class_unregister(&fc_class);
--	destroy_workqueue(nvme_fc_wq);
- }
- 
- module_init(nvme_fc_init_module);
+@@ -446,7 +446,7 @@ fcloop_t2h_ls_req(struct nvmet_fc_target_port *targetport, void *hosthandle,
+ 	if (!tport->remoteport) {
+ 		tls_req->status = -ECONNREFUSED;
+ 		spin_lock(&tport->lock);
+-		list_add_tail(&tport->ls_list, &tls_req->ls_list);
++		list_add_tail(&tls_req->ls_list, &tport->ls_list);
+ 		spin_unlock(&tport->lock);
+ 		queue_work(nvmet_wq, &tport->ls_work);
+ 		return ret;
 -- 
 2.43.0
 
