@@ -1,246 +1,108 @@
-Return-Path: <linux-kernel+bounces-56887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF1A384D0DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:12:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67B5F84D0E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:13:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BFC41F22936
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:12:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 800201C24D7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:13:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34361126F14;
-	Wed,  7 Feb 2024 18:02:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b="Z0TS9kxt"
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [208.88.110.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC47B85C55;
-	Wed,  7 Feb 2024 18:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=208.88.110.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54BF012880B;
+	Wed,  7 Feb 2024 18:05:49 +0000 (UTC)
+Received: from smtpfb2-g21.free.fr (smtpfb2-g21.free.fr [212.27.42.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E65383CBD;
+	Wed,  7 Feb 2024 18:05:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707328958; cv=none; b=dgKGc+xgZpNhANUJMSXYlnr3xX72jkr5XZoBXJsvLOo4oGKHt2K1RwsdVUI73+GpP4WZkIbUDnRvhBW+ZVJyUgc6Yar8zdA9RzV8AHkz0USlgofCtOvGPfhNMKAdk/2ermDntQocWUrkXXMn/RQTMYaR6SEDF/aPmj9+rtLQVmA=
+	t=1707329148; cv=none; b=RrPEqLrb+gxjcoBMZo1GYw2VTZvoPqX720rnat2PrvX3WtRv6Fy7kiEsiXsACXDkRkn6+uo/yufl4oX7+kSqL9jgNVSw9/l7aIwUiUjs8PNEFqX0y4jGKoLL/SH3aLZAajplMpV1NquSgnJ7xHKKTXLl1vUeY88gueYPACbZDm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707328958; c=relaxed/simple;
-	bh=NR5SjOtitKYacXAEEruvJ6JXFK2gpzJixBo6UISsrYc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pPfCeICGglyi08o7tRfiA27E62HtLtxzyQnP93xPSKi+K9ZU1QkEafYIv2xQ0rAmzC6atbeBG+pJLxYeh3UMxbXmwH1968e3AM+DM6+AB7bRjpBAslLrakMEdAc8Dr/t8r99bLjmHujTMRSYauKvaLBVh/sx4FxAxcst7nfZer4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com; spf=pass smtp.mailfrom=savoirfairelinux.com; dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b=Z0TS9kxt; arc=none smtp.client-ip=208.88.110.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=savoirfairelinux.com
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id C7BB39C48F1;
-	Wed,  7 Feb 2024 13:02:35 -0500 (EST)
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id f3bXL3Gt-X3n; Wed,  7 Feb 2024 13:02:35 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 249669C48F9;
-	Wed,  7 Feb 2024 13:02:35 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 249669C48F9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
-	t=1707328955; bh=ly1997o8a0kUOAeldUVP9gf71MeRB6+Tnu3YuBit5iE=;
-	h=From:To:Date:Message-ID:MIME-Version;
-	b=Z0TS9kxtpVoBjChlAkWCmhChshibcq3f4A1pEdaQDbMPnMTAnWVIBKs/lRMYyno1Q
-	 gjKc3dyV1RAO9YhK7Z2ZpiI955OBKDdoeTyQWyznAqDGJitW2ltU/k8Dytc6Pr8b+9
-	 tKn6VoWj53twKfFVOkVMeoLn7dzsucIREuxtk2ME0ynXaCst0hY9u/tVAgbvgPTVEQ
-	 i+c49eN+zzfdk6Qv+/vWDZ/nIKBd3DDN62gY5BPiBAV2pwwyiURPsfQpU90kQjNW3z
-	 L9IxN42QqTajrFEmYk2nR3eaLXMH1/3RFPETKM9st6aNf4ZMDXz/aztmmx9noNa5Vj
-	 VkSqMT7ZAkUPw==
-X-Virus-Scanned: amavis at mail.savoirfairelinux.com
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id bdq_3Q6xO9jO; Wed,  7 Feb 2024 13:02:35 -0500 (EST)
-Received: from pcperry.mtl.sfl (unknown [192.168.51.254])
-	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id 0194A9C48F1;
-	Wed,  7 Feb 2024 13:02:35 -0500 (EST)
-From: Charles Perry <charles.perry@savoirfairelinux.com>
-To: mdf@kernel.org
-Cc: avandiver@markem-imaje.com,
-	bcody@markem-imaje.com,
-	Charles Perry <charles.perry@savoirfairelinux.com>,
-	Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>,
-	Tom Rix <trix@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Michal Simek <michal.simek@amd.com>,
-	kishore Manne <nava.kishore.manne@amd.com>,
-	linux-fpga@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 5/5] fpga: xilinx-selectmap: add new driver
-Date: Wed,  7 Feb 2024 13:01:28 -0500
-Message-ID: <20240207180142.79625-6-charles.perry@savoirfairelinux.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240207180142.79625-1-charles.perry@savoirfairelinux.com>
-References: <20240207180142.79625-1-charles.perry@savoirfairelinux.com>
+	s=arc-20240116; t=1707329148; c=relaxed/simple;
+	bh=Djh3dR9ICrd+gZPt6qihUmY39eEIEk9Bi3cwjLDP6i8=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=AFHHv35ahSjo6eAyQqimnmZMbjvF+2SROH17+dPgq03x2Vkn21ShYH/7SgF9Swl0GLHz9UZ2ySGn9c4BLWtQezye6y9whTIs6OujSP6ifySNpZRQMqUF5u4UBZ6ygkVHHK3gGexAAw3C8/Lm4aEFr3YJl0nestLNp02w1BraAS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; arc=none smtp.client-ip=212.27.42.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
+Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
+	by smtpfb2-g21.free.fr (Postfix) with ESMTP id AADF34283EE;
+	Wed,  7 Feb 2024 19:05:41 +0100 (CET)
+Received: from zimbra-e1-03.priv.proxad.net (unknown [172.20.243.151])
+	by smtp1-g21.free.fr (Postfix) with ESMTP id 20163B00565;
+	Wed,  7 Feb 2024 19:05:34 +0100 (CET)
+Date: Wed, 7 Feb 2024 19:05:34 +0100 (CET)
+From: =?utf-8?Q?Jean-Lo=C3=AFc?= Charroud <lagiraudiere+linux@free.fr>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: =?utf-8?Q?Jean-Lo=C3=AFc?= Charroud <lagiraudiere+linux@free.fr>, 
+	Stefan Binding <sbinding@opensource.cirrus.com>, 
+	Jaroslav Kysela <perex@perex.cz>, 
+	Richard Fitzgerald <rf@opensource.cirrus.com>, 
+	linux-sound <linux-sound@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	patches <patches@opensource.cirrus.com>
+Message-ID: <742700696.587133028.1707329134088.JavaMail.zimbra@free.fr>
+In-Reply-To: <87a5oc5hel.wl-tiwai@suse.de>
+References: <726559913.576332068.1707239153891.JavaMail.zimbra@free.fr> <87o7cs5r29.wl-tiwai@suse.de> <1366935939.585144512.1707316246651.JavaMail.zimbra@free.fr> <87jzng5mzv.wl-tiwai@suse.de> <1618884269.586462178.1707324711030.JavaMail.zimbra@free.fr> <87a5oc5hel.wl-tiwai@suse.de>
+Subject: Re: [PATCH] ALSA: hda/realtek: cs35l41: Fix device ID / model name
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-Mailer: Zimbra 9.0.0_GA_1337 (ZimbraWebClient - FF122 (Linux)/9.0.0_GA_1337)
+Thread-Topic: ALSA: hda/realtek: cs35l41: Fix device ID / model name
+Thread-Index: 5oxs63Ed4iOvYd3kfZPXRwyaA/JxGA==
 
-Xilinx 7 series FPGA can be programmed using a parallel port named
-the SelectMAP interface in the datasheet. This interface is compatible
-with the i.MX6 EIM bus controller but other types of external memory
-mapped parallel bus might work.
+The patch 51d976079976c800ef19ed1b542602fcf63f0edb ("ALSA: hda/realtek:
+Add quirks for ASUS Zenbook 2022 Models") modified the entry 1043:1e2e
+from "ASUS UM3402" to "ASUS UM6702RA/RC" and add another entry for "ASUS
+UM3402" with 104e:1ee2.
+The first entry was correct, while the new one corresponds to model
+"ASUS UM6702RA/RC"
+Fix the model names for both devices.
 
-xilinx-selectmap currently only supports the x8 mode where data is loaded
-at one byte per rising edge of the clock, with the MSb of each byte
-presented to the D0 pin.
-
-Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
+Signed-off-by: Jean-Lo=C3=AFc Charroud <lagiraudiere+linux@free.fr>
 ---
- drivers/fpga/Kconfig            |  8 +++
- drivers/fpga/Makefile           |  1 +
- drivers/fpga/xilinx-selectmap.c | 97 +++++++++++++++++++++++++++++++++
- 3 files changed, 106 insertions(+)
- create mode 100644 drivers/fpga/xilinx-selectmap.c
+ sound/pci/hda/patch_realtek.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-index d27a1ebf40838..37b35f58f0dfb 100644
---- a/drivers/fpga/Kconfig
-+++ b/drivers/fpga/Kconfig
-@@ -67,6 +67,14 @@ config FPGA_MGR_STRATIX10_SOC
- config FPGA_MGR_XILINX_CORE
- 	tristate
-=20
-+config FPGA_MGR_XILINX_SELECTMAP
-+	tristate "Xilinx Configuration over SelectMAP"
-+	depends on HAS_IOMEM
-+	select FPGA_MGR_XILINX_CORE
-+	help
-+	  FPGA manager driver support for Xilinx FPGA configuration
-+	  over SelectMAP interface.
-+
- config FPGA_MGR_XILINX_SPI
- 	tristate "Xilinx Configuration over Slave Serial (SPI)"
- 	depends on SPI
-diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-index 7ec795b6a5a70..aeb89bb13517e 100644
---- a/drivers/fpga/Makefile
-+++ b/drivers/fpga/Makefile
-@@ -16,6 +16,7 @@ obj-$(CONFIG_FPGA_MGR_SOCFPGA_A10)	+=3D socfpga-a10.o
- obj-$(CONFIG_FPGA_MGR_STRATIX10_SOC)	+=3D stratix10-soc.o
- obj-$(CONFIG_FPGA_MGR_TS73XX)		+=3D ts73xx-fpga.o
- obj-$(CONFIG_FPGA_MGR_XILINX_CORE)	+=3D xilinx-core.o
-+obj-$(CONFIG_FPGA_MGR_XILINX_SELECTMAP)	+=3D xilinx-selectmap.o
- obj-$(CONFIG_FPGA_MGR_XILINX_SPI)	+=3D xilinx-spi.o
- obj-$(CONFIG_FPGA_MGR_ZYNQ_FPGA)	+=3D zynq-fpga.o
- obj-$(CONFIG_FPGA_MGR_ZYNQMP_FPGA)	+=3D zynqmp-fpga.o
-diff --git a/drivers/fpga/xilinx-selectmap.c b/drivers/fpga/xilinx-select=
-map.c
-new file mode 100644
-index 0000000000000..b63f4623f8b2c
---- /dev/null
-+++ b/drivers/fpga/xilinx-selectmap.c
-@@ -0,0 +1,97 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Xilinx Spartan6 and 7 Series SelectMAP interface driver
-+ *
-+ * (C) 2024 Charles Perry <charles.perry@savoirfairelinux.com>
-+ *
-+ * Manage Xilinx FPGA firmware loaded over the SelectMAP configuration
-+ * interface.
-+ */
-+
-+#include "xilinx-core.h"
-+
-+#include <linux/platform_device.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/of.h>
-+#include <linux/io.h>
-+
-+struct xilinx_selectmap_conf {
-+	struct xilinx_fpga_core core;
-+	void __iomem *base;
-+};
-+
-+#define to_xilinx_selectmap_conf(obj) \
-+	container_of(obj, struct xilinx_selectmap_conf, core)
-+
-+static int xilinx_selectmap_write(struct xilinx_fpga_core *core,
-+				  const char *buf, size_t count)
-+{
-+	struct xilinx_selectmap_conf *conf =3D to_xilinx_selectmap_conf(core);
-+	u32 i;
-+
-+	for (i =3D 0; i < count; ++i)
-+		writeb(buf[i], conf->base);
-+
-+	return 0;
-+}
-+
-+static int xilinx_selectmap_probe(struct platform_device *pdev)
-+{
-+	struct xilinx_selectmap_conf *conf;
-+	struct resource *r;
-+	void __iomem *base;
-+	struct gpio_desc *csi_b;
-+	struct gpio_desc *rdwr_b;
-+
-+	conf =3D devm_kzalloc(&pdev->dev, sizeof(*conf), GFP_KERNEL);
-+	if (!conf)
-+		return -ENOMEM;
-+
-+	conf->core.dev =3D &pdev->dev;
-+	conf->core.write =3D xilinx_selectmap_write;
-+
-+	base =3D devm_platform_get_and_ioremap_resource(pdev, 0, &r);
-+	if (IS_ERR(base))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(base),
-+				     "ioremap error\n");
-+	conf->base =3D base;
-+
-+	/* CSI_B is active low */
-+	csi_b =3D devm_gpiod_get_optional(&pdev->dev, "csi", GPIOD_OUT_HIGH);
-+	if (IS_ERR(csi_b))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(csi_b),
-+				     "Failed to get CSI_B gpio\n");
-+
-+	/* RDWR_B is active low */
-+	rdwr_b =3D devm_gpiod_get_optional(&pdev->dev, "rdwr", GPIOD_OUT_HIGH);
-+	if (IS_ERR(rdwr_b))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(rdwr_b),
-+				     "Failed to get RDWR_B gpio\n");
-+
-+	return xilinx_core_probe(&conf->core);
-+}
-+
-+static const struct of_device_id xlnx_selectmap_of_match[] =3D {
-+	{ .compatible =3D "xlnx,fpga-xc7s-selectmap", }, // Spartan-7
-+	{ .compatible =3D "xlnx,fpga-xc7a-selectmap", }, // Artix-7
-+	{ .compatible =3D "xlnx,fpga-xc7k-selectmap", }, // Kintex-7
-+	{ .compatible =3D "xlnx,fpga-xc7v-selectmap", }, // Virtex-7
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, xlnx_selectmap_of_match);
-+
-+static struct platform_driver xilinx_selectmap_driver =3D {
-+	.driver =3D {
-+		.name =3D "xilinx-selectmap",
-+		.of_match_table =3D xlnx_selectmap_of_match,
-+	},
-+	.probe  =3D xilinx_selectmap_probe,
-+};
-+
-+module_platform_driver(xilinx_selectmap_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Charles Perry <charles.perry@savoirfairelinux.com>");
-+MODULE_DESCRIPTION("Load Xilinx FPGA firmware over SelectMap");
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 7aa88ed04bde..fe81a628d7c8 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9939,11 +9939,11 @@ static const struct snd_pci_quirk alc269_fixup_tbl[=
+] =3D {
+         SND_PCI_QUIRK(0x1043, 0x16a3, "ASUS UX3402VA", ALC245_FIXUP_CS35L4=
+1_SPI_2),
+         SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602ZM", ALC245_FIXUP_CS35L4=
+1_SPI_2),
+         SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_AS=
+US_GA502),
+-        SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM6702RA/RC", ALC287_FIXUP_CS3=
+5L41_I2C_2),
++        SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM3402", ALC287_FIXUP_CS35L41_=
+I2C_2),
+         SND_PCI_QUIRK(0x1043, 0x1e51, "ASUS Zephyrus M15", ALC294_FIXUP_AS=
+US_GU502_PINS),
+         SND_PCI_QUIRK(0x1043, 0x1e5e, "ASUS ROG Strix G513", ALC294_FIXUP_=
+ASUS_G513_PINS),
+         SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", ALC289_FIXUP_AS=
+US_GA401),
+-        SND_PCI_QUIRK(0x1043, 0x1ee2, "ASUS UM3402", ALC287_FIXUP_CS35L41_=
+I2C_2),
++        SND_PCI_QUIRK(0x1043, 0x1ee2, "ASUS UM6702RA/RC", ALC287_FIXUP_CS3=
+5L41_I2C_2),
+         SND_PCI_QUIRK(0x1043, 0x1c52, "ASUS Zephyrus G15 2022", ALC289_FIX=
+UP_ASUS_GA401),
+         SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_AS=
+US_GA401),
+         SND_PCI_QUIRK(0x1043, 0x1f12, "ASUS UM5302", ALC287_FIXUP_CS35L41_=
+I2C_2),
 --=20
-2.43.0
-
+2.40.1
 
