@@ -1,682 +1,191 @@
-Return-Path: <linux-kernel+bounces-56077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1751184C5A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:29:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F03984C599
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:26:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2920285C40
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:29:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 312EB1C234B9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:25:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 882FF20B09;
-	Wed,  7 Feb 2024 07:28:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GKzEAhRr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BFF81F922;
+	Wed,  7 Feb 2024 07:25:52 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F4110208A5
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 07:28:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF711F5F0;
+	Wed,  7 Feb 2024 07:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707290909; cv=none; b=toJIwvIWGtHWLV+qPghFI5wWYYZeLK4CCT8ggyaI4yu9hr1nIllM2NWP89VrqlPpoB9d+LqR9ITMA1ZcHZvL8vj9jt6dknW5IcgLnnu4si3l8+YzPIiZoOjCezNSqcth7xW6ZSF1VL+A01VfFAlQ4vAZfgKaty33Ivq9cz40UqM=
+	t=1707290751; cv=none; b=jFF4v8xnxZgp/Veg2e7NAAKyNnqD2rhWnLQ1YjbOX96cgltbIkwXjITzoDVvWcqookLiXURXT34mAZk6QlqHyKKjkr8slyDk70rF3KqHn6h4JCMgTPt3mJ4c2bY+IspfmTrNDqTrdbpLiZaRuUTZcXFtF/Eo0B9xWwroh1U5Qig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707290909; c=relaxed/simple;
-	bh=Qkue2Af7Q7rcEc2gVZiT60RzYZW+XViGUWZEeJVPAmg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OSpoaWCj8qiWlb8GcpblkovM163ti61mqcEcSsj66SthjHMdq9+QbehvipgXWvjL2JZ2EUltUSkw1evEKx/4xXAYF2GbXWJEzjw9qNrKQoNwfiuWZJeyzlKs4nxttQqjsDt35+D8arcj9qekCgGm6ivVAjS5t63H4NMvGVdDMFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GKzEAhRr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6CB0C43390;
-	Wed,  7 Feb 2024 07:28:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707290908;
-	bh=Qkue2Af7Q7rcEc2gVZiT60RzYZW+XViGUWZEeJVPAmg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GKzEAhRr6QzTELX0Fmihe8kYsy8W1PDMuLCFNlPUXFX8JbyPZtW1OPjpSvFxEmRuX
-	 gLyUH4Hi57q+fOW9QcADODL/QbrJ/fXhlpeVhOCyfRZ9pHNdCpEqI7kk9AogVUjWHI
-	 6IqBBwaFDP1Cuvv/huI38TECtSbQYDNen9KRHf2f4FkkL9VockzQHNVe+C2z1K/IJ6
-	 nsKSTwfpQK9cFifuZjMF56emgsGKkH4aPcnrAuHaSVXYuY5xaegdJQaRpgf5JeO5d5
-	 RrsU+FletSHWLoiiAFngJQOHnTKqJpIMdZt/IVT0AoPD1qv1YHztQE/JLjr9gCPDE5
-	 PhYMI+QdVLweg==
-From: Saeed Mahameed <saeed@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Leon Romanovsky <leonro@nvidia.com>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Jiri Pirko <jiri@nvidia.com>,
-	Leonid Bloch <lbloch@nvidia.com>,
-	Itay Avraham <itayavr@nvidia.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	David Ahern <dsahern@kernel.org>,
-	Aron Silverton <aron.silverton@oracle.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	andrew.gospodarek@broadcom.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH V4 5/5] misc: mlx5ctl: Add umem reg/unreg ioctl
-Date: Tue,  6 Feb 2024 23:24:35 -0800
-Message-ID: <20240207072435.14182-6-saeed@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240207072435.14182-1-saeed@kernel.org>
-References: <20240207072435.14182-1-saeed@kernel.org>
+	s=arc-20240116; t=1707290751; c=relaxed/simple;
+	bh=O3sgm62nSGmbFRQsGxqyJmL69Gjp1V9NVkxQGdzVeqc=;
+	h=CC:Subject:To:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=iaImtbtmet1UfyU3bFS7t8z+AAD7N5FUshMbnQTIZfkfUnbb1xgjbPrAa91rZKn0qR3mR0q88xJA+r5qyRdALxGD/RdGP8rPnHwQO2MpOQSL+0gOsY0Qm6hBapTwkSHxITEhv1oGNeomx1TtHjD7q4uP8kmt94rCW9oS5BtYmkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TVBTm6p8nz1vtJJ;
+	Wed,  7 Feb 2024 15:25:16 +0800 (CST)
+Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
+	by mail.maildlp.com (Postfix) with ESMTPS id 09797140414;
+	Wed,  7 Feb 2024 15:25:45 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 7 Feb 2024 15:25:44 +0800
+CC: <yangyicong@hisilicon.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
+	<peterz@infradead.org>, <mingo@redhat.com>, <james.clark@arm.com>,
+	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+	<namhyung@kernel.org>, <adrian.hunter@intel.com>,
+	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<Jonathan.Cameron@huawei.com>, <zhanjie9@hisilicon.com>, <21cnbao@gmail.com>,
+	<tim.c.chen@intel.com>, <prime.zeng@hisilicon.com>, <fanghao11@huawei.com>,
+	<linuxarm@huawei.com>, <linux-arm-kernel@lists.infradead.org>, Tim Chen
+	<tim.c.chen@linux.intel.com>
+Subject: Re: [RESEND v4] perf stat: Support per-cluster aggregation
+To: Ian Rogers <irogers@google.com>
+References: <20240206082016.22292-1-yangyicong@huawei.com>
+ <CAP-5=fUaJSF1R_yDTeNwiNbm0isGTEpZSbp2m0q7BJox+TdRwg@mail.gmail.com>
+From: Yicong Yang <yangyicong@huawei.com>
+Message-ID: <d8382fd2-1c0c-5041-3c0e-cd15244ef9f6@huawei.com>
+Date: Wed, 7 Feb 2024 15:25:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <CAP-5=fUaJSF1R_yDTeNwiNbm0isGTEpZSbp2m0q7BJox+TdRwg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500009.china.huawei.com (7.192.105.203)
 
-From: Saeed Mahameed <saeedm@nvidia.com>
+On 2024/2/7 1:49, Ian Rogers wrote:
+> On Tue, Feb 6, 2024 at 12:24 AM Yicong Yang <yangyicong@huawei.com> wrote:
+>>
+>> From: Yicong Yang <yangyicong@hisilicon.com>
+>>
+>> Some platforms have 'cluster' topology and CPUs in the cluster will
+>> share resources like L3 Cache Tag (for HiSilicon Kunpeng SoC) or L2
+>> cache (for Intel Jacobsville). Currently parsing and building cluster
+>> topology have been supported since [1].
+>>
+>> perf stat has already supported aggregation for other topologies like
+>> die or socket, etc. It'll be useful to aggregate per-cluster to find
+>> problems like L3T bandwidth contention.
+>>
+>> This patch add support for "--per-cluster" option for per-cluster
+>> aggregation. Also update the docs and related test. The output will
+>> be like:
+>>
+>> [root@localhost tmp]# perf stat -a -e LLC-load --per-cluster -- sleep 5
+>>
+>>  Performance counter stats for 'system wide':
+>>
+>> S56-D0-CLS158    4      1,321,521,570      LLC-load
+>> S56-D0-CLS594    4        794,211,453      LLC-load
+>> S56-D0-CLS1030    4             41,623      LLC-load
+>> S56-D0-CLS1466    4             41,646      LLC-load
+>> S56-D0-CLS1902    4             16,863      LLC-load
+>> S56-D0-CLS2338    4             15,721      LLC-load
+>> S56-D0-CLS2774    4             22,671      LLC-load
+>> [...]
+>>
+>> On a legacy system without cluster or cluster support, the output will
+>> be look like:
+>> [root@localhost perf]# perf stat -a -e cycles --per-cluster -- sleep 1
+>>
+>>  Performance counter stats for 'system wide':
+>>
+>> S56-D0-CLS0   64         18,011,485      cycles
+>> S7182-D0-CLS0   64         16,548,835      cycles
+>>
+>> Note that this patch doesn't mix the cluster information in the outputs
+>> of --per-core to avoid breaking any tools/scripts using it.
+>>
+>> Note that perf recently supports "--per-cache" aggregation, but it's not
+>> the same with the cluster although cluster CPUs may share some cache
+>> resources. For example on my machine all clusters within a die share the
+>> same L3 cache:
+>> $ cat /sys/devices/system/cpu/cpu0/cache/index3/shared_cpu_list
+>> 0-31
+>> $ cat /sys/devices/system/cpu/cpu0/topology/cluster_cpus_list
+>> 0-3
+>>
+>> [1] commit c5e22feffdd7 ("topology: Represent clusters of CPUs within a die")
+>> Tested-by: Jie Zhan <zhanjie9@hisilicon.com>
+>> Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
+>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> Reviewed-by: Ian Rogers <irogers@google.com>
+> 
 
-Command rpc outbox buffer is limited in size, which can be very
-annoying when trying to pull large traces out of the device.
-Many device rpcs offer the ability to scatter output traces, contexts
-and logs directly into user space buffers in a single shot.
+Thanks!
 
-Allow user to register user memory space, so the device may dump
-information directly into user memory space.
+>> ---
+>> Change since v3:
+>> - Rebase on v6.7-rc4 and resolve the conflicts
+>> Link: https://lore.kernel.org/all/20230404104951.27537-1-yangyicong@huawei.com/
+>>
+>> Change since v2:
+>> - Use 0 as cluster ID on legacy system without cluster support, keep consistenct
+>>   with what --per-die does.
+>> Link: https://lore.kernel.org/all/20230328112717.19573-1-yangyicong@huawei.com/
+>>
+>> Change since v1:
+>> - Provides the information about how to map the cluster to the CPUs in the manual
+>> - Thanks the review from Tim and test from Jie.
+>> Link: https://lore.kernel.org/all/20230313085911.61359-1-yangyicong@huawei.com/
+>>
+>>  tools/perf/Documentation/perf-stat.txt        | 11 ++++
+>>  tools/perf/builtin-stat.c                     | 52 +++++++++++++++++--
+>>  .../tests/shell/lib/perf_json_output_lint.py  |  4 +-
+>>  tools/perf/tests/shell/lib/stat_output.sh     | 12 +++++
+>>  tools/perf/tests/shell/stat+csv_output.sh     |  2 +
+>>  tools/perf/tests/shell/stat+json_output.sh    | 13 +++++
+>>  tools/perf/tests/shell/stat+std_output.sh     |  2 +
+>>  tools/perf/util/cpumap.c                      | 32 +++++++++++-
+>>  tools/perf/util/cpumap.h                      | 19 +++++--
+>>  tools/perf/util/env.h                         |  1 +
+>>  tools/perf/util/stat-display.c                | 13 +++++
+>>  tools/perf/util/stat.h                        |  1 +
+>>  12 files changed, 153 insertions(+), 9 deletions(-)
+>>
+[...]
+>> diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
+>> index 0581ee0fa5f2..5907456d42a2 100644
+>> --- a/tools/perf/util/cpumap.c
+>> +++ b/tools/perf/util/cpumap.c
+>> @@ -222,6 +222,8 @@ static int aggr_cpu_id__cmp(const void *a_pointer, const void *b_pointer)
+>>                 return a->socket - b->socket;
+>>         else if (a->die != b->die)
+>>                 return a->die - b->die;
+>> +       else if (a->cluster != b->cluster)
+>> +               return a->cluster - b->cluster;
+>>         else if (a->cache_lvl != b->cache_lvl)
+>>                 return a->cache_lvl - b->cache_lvl;
+>>         else if (a->cache != b->cache)
+>> @@ -309,6 +311,29 @@ struct aggr_cpu_id aggr_cpu_id__die(struct perf_cpu cpu, void *data)
+>>         return id;
+>>  }
+>>
+>> +int cpu__get_cluster_id(struct perf_cpu cpu)
+>> +{
+>> +       int value, ret = cpu__get_topology_int(cpu.cpu, "cluster_id", &value);
+> 
+> nit: normal coding style is for a whitespace newline here.
+> 
 
-The registered memory will be described by a device UMEM object which
-has a unique umem_id, this umem_id can be later used in the rpc inbox
-to tell the device where to populate the response output,
-e.g HW traces and other debug object queries.
+Will fix. I may referred to cpu__get_core_id() below which is an exception.
 
-To do so this patch introduces two ioctls:
-
-MLX5CTL_IOCTL_UMEM_REG(va_address, size):
- - calculate page fragments from the user provided virtual address
- - pin the pages, and allocate a sg list
- - dma map the sg list
- - create a UMEM device object that points to the dma addresses
- - add a driver umem object to an xarray data base for bookkeeping
- - return UMEM ID to user so it can be used in subsequent rpcs
-
-MLX5CTL_IOCTL_UMEM_UNREG(umem_id):
- - user provides a pre allocated umem ID
- - unwinds the above
-
-Example usecase, ConnectX device coredump can be as large as 2MB.
-Using inline rpcs will take thousands of rpcs to get the full
-coredump which can take multiple seconds.
-
-With UMEM, it can be done in a single rpc, using 2MB of umem user buffer.
-
-$ ./mlx5ctlu mlx5_core.ctl.0 coredump --umem_size=$(( 2 ** 20 ))
-
-00 00 00 00 01 00 20 00 00 00 00 04 00 00 48 ec
-00 00 00 08 00 00 00 00 00 00 00 0c 00 00 00 03
-00 00 00 10 00 00 00 00 00 00 00 14 00 00 00 00
-...
-00 50 0b 3c 00 00 00 00 00 50 0b 40 00 00 00 00
-00 50 0b 44 00 00 00 00 00 50 0b 48 00 00 00 00
-00 50 0c 00 00 00 00 00
-
-INFO : Core dump done
-INFO : Core dump size 831304
-INFO : Core dump address 0x0
-INFO : Core dump cookie 0x500c04
-INFO : More Dump 0
-
-Other usecases are: dynamic HW and FW trace monitoring, high frequency
-diagnostic counters sampling and batched objects and resource dumps.
-
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
----
- drivers/misc/mlx5ctl/Makefile |   1 +
- drivers/misc/mlx5ctl/main.c   |  99 +++++++++++
- drivers/misc/mlx5ctl/umem.c   | 322 ++++++++++++++++++++++++++++++++++
- drivers/misc/mlx5ctl/umem.h   |  17 ++
- include/uapi/misc/mlx5ctl.h   |  18 ++
- 5 files changed, 457 insertions(+)
- create mode 100644 drivers/misc/mlx5ctl/umem.c
- create mode 100644 drivers/misc/mlx5ctl/umem.h
-
-diff --git a/drivers/misc/mlx5ctl/Makefile b/drivers/misc/mlx5ctl/Makefile
-index b5c7f99e0ab6..f35234e931a8 100644
---- a/drivers/misc/mlx5ctl/Makefile
-+++ b/drivers/misc/mlx5ctl/Makefile
-@@ -2,3 +2,4 @@
- 
- obj-$(CONFIG_MLX5CTL) += mlx5ctl.o
- mlx5ctl-y := main.o
-+mlx5ctl-y += umem.o
-diff --git a/drivers/misc/mlx5ctl/main.c b/drivers/misc/mlx5ctl/main.c
-index c02b80efffc1..f79e1aa62b8f 100644
---- a/drivers/misc/mlx5ctl/main.c
-+++ b/drivers/misc/mlx5ctl/main.c
-@@ -12,6 +12,8 @@
- #include <linux/atomic.h>
- #include <linux/refcount.h>
- 
-+#include "umem.h"
-+
- MODULE_DESCRIPTION("mlx5 ConnectX control misc driver");
- MODULE_AUTHOR("Saeed Mahameed <saeedm@nvidia.com>");
- MODULE_LICENSE("Dual BSD/GPL");
-@@ -46,6 +48,8 @@ struct mlx5ctl_fd {
- 	u16 uctx_uid;
- 	u32 uctx_cap;
- 	u32 ucap; /* user cap */
-+
-+	struct mlx5ctl_umem_db *umem_db;
- 	struct mlx5ctl_dev *mcdev;
- 	struct list_head list;
- };
-@@ -131,6 +135,12 @@ static int mlx5ctl_open_mfd(struct mlx5ctl_fd *mfd)
- 	if (uid < 0)
- 		return uid;
- 
-+	mfd->umem_db = mlx5ctl_umem_db_create(mdev, uid);
-+	if (IS_ERR(mfd->umem_db)) {
-+		mlx5ctl_release_uid(mcdev, uid);
-+		return PTR_ERR(mfd->umem_db);
-+	}
-+
- 	mfd->uctx_uid = uid;
- 	mfd->uctx_cap = cap;
- 	mfd->ucap = ucap;
-@@ -145,6 +155,7 @@ static void mlx5ctl_release_mfd(struct mlx5ctl_fd *mfd)
- {
- 	struct mlx5ctl_dev *mcdev = mfd->mcdev;
- 
-+	mlx5ctl_umem_db_destroy(mfd->umem_db);
- 	mlx5ctl_release_uid(mcdev,  mfd->uctx_uid);
- }
- 
-@@ -333,6 +344,86 @@ static int mlx5ctl_cmdrpc_ioctl(struct file *file,
- 	return err;
- }
- 
-+static int mlx5ctl_ioctl_umem_reg(struct file *file,
-+				  struct mlx5ctl_umem_reg __user *arg,
-+				  size_t usize)
-+{
-+	size_t ksize = sizeof(struct mlx5ctl_umem_reg);
-+	struct mlx5ctl_fd *mfd = file->private_data;
-+	struct mlx5ctl_umem_reg *umem_reg;
-+	int umem_id, err = 0;
-+
-+	if (usize < ksize)
-+		return -EINVAL;
-+
-+	umem_reg = kzalloc(ksize, GFP_KERNEL);
-+	if (!umem_reg)
-+		return -ENOMEM;
-+
-+	if (copy_from_user(umem_reg, arg, ksize)) {
-+		err = -EFAULT;
-+		goto out;
-+	}
-+
-+	if (umem_reg->reserved) {
-+		err = -EINVAL;
-+		goto out;
-+	}
-+
-+	umem_id = mlx5ctl_umem_reg(mfd->umem_db,
-+				   (unsigned long)umem_reg->addr,
-+				   umem_reg->len);
-+	if (umem_id < 0) {
-+		err = umem_id;
-+		goto out;
-+	}
-+
-+	umem_reg->umem_id = umem_id;
-+
-+	if (copy_to_user(arg, umem_reg, ksize)) {
-+		mlx5ctl_umem_unreg(mfd->umem_db, umem_id);
-+		err = -EFAULT;
-+	}
-+out:
-+	kfree(umem_reg);
-+	return err;
-+}
-+
-+static int mlx5ctl_ioctl_umem_unreg(struct file *file,
-+				    struct mlx5ctl_umem_unreg __user *arg,
-+				    size_t usize)
-+{
-+	size_t ksize = sizeof(struct mlx5ctl_umem_unreg);
-+	struct mlx5ctl_fd *mfd = file->private_data;
-+	struct mlx5ctl_umem_unreg *umem_unreg;
-+	int err = 0;
-+
-+	if (usize < ksize)
-+		return -EINVAL;
-+
-+	umem_unreg = kzalloc(ksize, GFP_KERNEL);
-+	if (!umem_unreg)
-+		return -ENOMEM;
-+
-+	if (copy_from_user(umem_unreg, arg, ksize)) {
-+		err = -EFAULT;
-+		goto out;
-+	}
-+
-+	if (umem_unreg->reserved) {
-+		err = -EOPNOTSUPP;
-+		goto out;
-+	}
-+
-+	err = mlx5ctl_umem_unreg(mfd->umem_db, umem_unreg->umem_id);
-+
-+	if (!err && copy_to_user(arg, umem_unreg, ksize))
-+		err = -EFAULT;
-+out:
-+	kfree(umem_unreg);
-+	return err;
-+}
-+
- static long mlx5ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- {
- 	struct mlx5ctl_fd *mfd = file->private_data;
-@@ -362,6 +453,14 @@ static long mlx5ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
- 		err = mlx5ctl_cmdrpc_ioctl(file, argp, size);
- 		break;
- 
-+	case MLX5CTL_IOCTL_UMEM_REG:
-+		err = mlx5ctl_ioctl_umem_reg(file, argp, size);
-+		break;
-+
-+	case MLX5CTL_IOCTL_UMEM_UNREG:
-+		err = mlx5ctl_ioctl_umem_unreg(file, argp, size);
-+		break;
-+
- 	default:
- 		mlx5ctl_dbg(mcdev, "Unknown ioctl %x\n", cmd);
- 		err = -ENOTTY;
-diff --git a/drivers/misc/mlx5ctl/umem.c b/drivers/misc/mlx5ctl/umem.c
-new file mode 100644
-index 000000000000..29091a19305b
---- /dev/null
-+++ b/drivers/misc/mlx5ctl/umem.c
-@@ -0,0 +1,322 @@
-+// SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0
-+/* Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved. */
-+
-+#include <linux/mlx5/device.h>
-+#include <linux/mlx5/driver.h>
-+#include <uapi/misc/mlx5ctl.h>
-+
-+#include "umem.h"
-+
-+#define MLX5CTL_UMEM_MAX_MB 64
-+
-+static unsigned long umem_num_pages(u64 addr, size_t len)
-+{
-+	return DIV_ROUND_UP(addr + len - PAGE_ALIGN_DOWN(addr), PAGE_SIZE);
-+}
-+
-+struct mlx5ctl_umem {
-+	struct sg_table sgt;
-+	unsigned long addr;
-+	size_t size;
-+	size_t offset;
-+	size_t npages;
-+	struct task_struct *source_task;
-+	struct mm_struct *source_mm;
-+	struct user_struct *source_user;
-+	u32 umem_id;
-+	struct page **page_list;
-+};
-+
-+struct mlx5ctl_umem_db {
-+	struct xarray xarray;
-+	struct mlx5_core_dev *mdev;
-+	u32 uctx_uid;
-+};
-+
-+static int inc_user_locked_vm(struct mlx5ctl_umem *umem, unsigned long npages)
-+{
-+	unsigned long lock_limit;
-+	unsigned long cur_pages;
-+	unsigned long new_pages;
-+
-+	lock_limit = task_rlimit(umem->source_task, RLIMIT_MEMLOCK) >>
-+		     PAGE_SHIFT;
-+	do {
-+		cur_pages = atomic_long_read(&umem->source_user->locked_vm);
-+		new_pages = cur_pages + npages;
-+		if (new_pages > lock_limit)
-+			return -ENOMEM;
-+	} while (atomic_long_cmpxchg(&umem->source_user->locked_vm, cur_pages,
-+				     new_pages) != cur_pages);
-+	return 0;
-+}
-+
-+static void dec_user_locked_vm(struct mlx5ctl_umem *umem, unsigned long npages)
-+{
-+	if (WARN_ON(atomic_long_read(&umem->source_user->locked_vm) < npages))
-+		return;
-+	atomic_long_sub(npages, &umem->source_user->locked_vm);
-+}
-+
-+#define PAGES_2_MB(pages) ((pages) >> (20 - PAGE_SHIFT))
-+
-+static struct mlx5ctl_umem *mlx5ctl_umem_pin(struct mlx5ctl_umem_db *umem_db,
-+					     unsigned long addr, size_t size)
-+{
-+	size_t npages = umem_num_pages(addr, size);
-+	struct mlx5_core_dev *mdev = umem_db->mdev;
-+	unsigned long endaddr = addr + size;
-+	struct mlx5ctl_umem *umem;
-+	struct page **page_list;
-+	int err = -EINVAL;
-+	int pinned = 0;
-+
-+	dev_dbg(mdev->device, "%s: addr %p size %zu npages %zu\n",
-+		__func__, (void __user *)addr, size, npages);
-+
-+	/* Avoid integer overflow */
-+	if (endaddr < addr || PAGE_ALIGN(endaddr) < endaddr)
-+		return ERR_PTR(-EINVAL);
-+
-+	if (npages == 0 || PAGES_2_MB(npages) > MLX5CTL_UMEM_MAX_MB)
-+		return ERR_PTR(-EINVAL);
-+
-+	page_list = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL_ACCOUNT);
-+	if (!page_list)
-+		return ERR_PTR(-ENOMEM);
-+
-+	umem = kzalloc(sizeof(*umem), GFP_KERNEL_ACCOUNT);
-+	if (!umem) {
-+		kvfree(page_list);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	umem->addr = addr;
-+	umem->size = size;
-+	umem->offset = addr & ~PAGE_MASK;
-+	umem->npages = npages;
-+
-+	umem->page_list = page_list;
-+	umem->source_mm = current->mm;
-+	umem->source_task = current->group_leader;
-+	get_task_struct(current->group_leader);
-+	umem->source_user = get_uid(current_user());
-+
-+	/* mm and RLIMIT_MEMLOCK user task accounting similar to what is
-+	 * being done in iopt_alloc_pages() and do_update_pinned()
-+	 * for IOPT_PAGES_ACCOUNT_USER @drivers/iommu/iommufd/pages.c
-+	 */
-+	mmgrab(umem->source_mm);
-+
-+	pinned = pin_user_pages_fast(addr, npages, FOLL_WRITE, page_list);
-+	if (pinned != npages) {
-+		dev_dbg(mdev->device, "pin_user_pages_fast failed %d\n", pinned);
-+		err = pinned < 0 ? pinned : -ENOMEM;
-+		goto pin_failed;
-+	}
-+
-+	err = inc_user_locked_vm(umem, npages);
-+	if (err)
-+		goto pin_failed;
-+
-+	atomic64_add(npages, &umem->source_mm->pinned_vm);
-+
-+	err = sg_alloc_table_from_pages(&umem->sgt, page_list, npages, 0,
-+					npages << PAGE_SHIFT, GFP_KERNEL_ACCOUNT);
-+	if (err) {
-+		dev_dbg(mdev->device, "sg_alloc_table failed: %d\n", err);
-+		goto sgt_failed;
-+	}
-+
-+	dev_dbg(mdev->device, "\tsgt: size %zu npages %zu sgt.nents (%d)\n",
-+		size, npages, umem->sgt.nents);
-+
-+	err = dma_map_sgtable(mdev->device, &umem->sgt, DMA_BIDIRECTIONAL, 0);
-+	if (err) {
-+		dev_dbg(mdev->device, "dma_map_sgtable failed: %d\n", err);
-+		goto dma_failed;
-+	}
-+
-+	dev_dbg(mdev->device, "\tsgt: dma_nents %d\n", umem->sgt.nents);
-+	return umem;
-+
-+dma_failed:
-+sgt_failed:
-+	sg_free_table(&umem->sgt);
-+	atomic64_sub(npages, &umem->source_mm->pinned_vm);
-+	dec_user_locked_vm(umem, npages);
-+pin_failed:
-+	if (pinned > 0)
-+		unpin_user_pages(page_list, pinned);
-+	mmdrop(umem->source_mm);
-+	free_uid(umem->source_user);
-+	put_task_struct(umem->source_task);
-+
-+	kfree(umem);
-+	kvfree(page_list);
-+	return ERR_PTR(err);
-+}
-+
-+static void mlx5ctl_umem_unpin(struct mlx5ctl_umem_db *umem_db,
-+			       struct mlx5ctl_umem *umem)
-+{
-+	struct mlx5_core_dev *mdev = umem_db->mdev;
-+
-+	dev_dbg(mdev->device, "%s: addr %p size %zu npages %zu dma_nents %d\n",
-+		__func__, (void *)umem->addr, umem->size, umem->npages,
-+		umem->sgt.nents);
-+
-+	dma_unmap_sgtable(mdev->device, &umem->sgt, DMA_BIDIRECTIONAL, 0);
-+	sg_free_table(&umem->sgt);
-+
-+	atomic64_sub(umem->npages, &umem->source_mm->pinned_vm);
-+	dec_user_locked_vm(umem, umem->npages);
-+	unpin_user_pages(umem->page_list, umem->npages);
-+	mmdrop(umem->source_mm);
-+	free_uid(umem->source_user);
-+	put_task_struct(umem->source_task);
-+
-+	kvfree(umem->page_list);
-+	kfree(umem);
-+}
-+
-+static int mlx5ctl_umem_create(struct mlx5_core_dev *mdev,
-+			       struct mlx5ctl_umem *umem, u32 uid)
-+{
-+	u32 out[MLX5_ST_SZ_DW(create_umem_out)] = {};
-+	int err, inlen, i, n = 0;
-+	struct scatterlist *sg;
-+	void *in, *umemptr;
-+	__be64 *mtt;
-+
-+	inlen = MLX5_ST_SZ_BYTES(create_umem_in) +
-+		umem->npages * MLX5_ST_SZ_BYTES(mtt);
-+
-+	in = kzalloc(inlen, GFP_KERNEL);
-+	if (!in)
-+		return -ENOMEM;
-+
-+	MLX5_SET(create_umem_in, in, opcode, MLX5_CMD_OP_CREATE_UMEM);
-+	MLX5_SET(create_umem_in, in, uid, uid);
-+
-+	umemptr = MLX5_ADDR_OF(create_umem_in, in, umem);
-+
-+	MLX5_SET(umem, umemptr, log_page_size,
-+		 PAGE_SHIFT - MLX5_ADAPTER_PAGE_SHIFT);
-+	MLX5_SET64(umem, umemptr, num_of_mtt, umem->npages);
-+	MLX5_SET(umem, umemptr, page_offset, umem->offset);
-+
-+	dev_dbg(mdev->device,
-+		"UMEM CREATE: log_page_size %d num_of_mtt %lld page_offset %d\n",
-+		MLX5_GET(umem, umemptr, log_page_size),
-+		MLX5_GET64(umem, umemptr, num_of_mtt),
-+		MLX5_GET(umem, umemptr, page_offset));
-+
-+	mtt = MLX5_ADDR_OF(create_umem_in, in, umem.mtt);
-+	for_each_sgtable_dma_sg(&umem->sgt, sg, i) {
-+		u64 dma_addr = sg_dma_address(sg);
-+		ssize_t len = sg_dma_len(sg);
-+
-+		for (; n < umem->npages && len > 0; n++, mtt++) {
-+			*mtt = cpu_to_be64(dma_addr);
-+			MLX5_SET(mtt, mtt, wr_en, 1);
-+			MLX5_SET(mtt, mtt, rd_en, 1);
-+			dma_addr += PAGE_SIZE;
-+			len -= PAGE_SIZE;
-+		}
-+		WARN_ON_ONCE(n == umem->npages && len > 0);
-+	}
-+
-+	err = mlx5_cmd_exec(mdev, in, inlen, out, sizeof(out));
-+	if (err)
-+		goto out;
-+
-+	umem->umem_id = MLX5_GET(create_umem_out, out, umem_id);
-+	dev_dbg(mdev->device, "\tUMEM CREATED: umem_id %d\n", umem->umem_id);
-+out:
-+	kfree(in);
-+	return err;
-+}
-+
-+static void mlx5ctl_umem_destroy(struct mlx5_core_dev *mdev,
-+				 struct mlx5ctl_umem *umem)
-+{
-+	u32 in[MLX5_ST_SZ_DW(destroy_umem_in)] = {};
-+
-+	MLX5_SET(destroy_umem_in, in, opcode, MLX5_CMD_OP_DESTROY_UMEM);
-+	MLX5_SET(destroy_umem_in, in, umem_id, umem->umem_id);
-+
-+	dev_dbg(mdev->device, "UMEM DESTROY: umem_id %d\n", umem->umem_id);
-+	mlx5_cmd_exec_in(mdev, destroy_umem, in);
-+}
-+
-+int mlx5ctl_umem_reg(struct mlx5ctl_umem_db *umem_db, unsigned long addr,
-+		     size_t size)
-+{
-+	struct mlx5ctl_umem *umem;
-+	void *ret;
-+	int err;
-+
-+	umem = mlx5ctl_umem_pin(umem_db, addr, size);
-+	if (IS_ERR(umem))
-+		return PTR_ERR(umem);
-+
-+	err = mlx5ctl_umem_create(umem_db->mdev, umem, umem_db->uctx_uid);
-+	if (err)
-+		goto umem_create_err;
-+
-+	ret = xa_store(&umem_db->xarray, umem->umem_id, umem, GFP_KERNEL_ACCOUNT);
-+	if (WARN(xa_is_err(ret), "Failed to store UMEM")) {
-+		err = xa_err(ret);
-+		goto xa_store_err;
-+	}
-+
-+	return umem->umem_id;
-+
-+xa_store_err:
-+	mlx5ctl_umem_destroy(umem_db->mdev, umem);
-+umem_create_err:
-+	mlx5ctl_umem_unpin(umem_db, umem);
-+	return err;
-+}
-+
-+int mlx5ctl_umem_unreg(struct mlx5ctl_umem_db *umem_db, u32 umem_id)
-+{
-+	struct mlx5ctl_umem *umem;
-+
-+	umem = xa_erase(&umem_db->xarray, umem_id);
-+	if (!umem)
-+		return -ENOENT;
-+
-+	mlx5ctl_umem_destroy(umem_db->mdev, umem);
-+	mlx5ctl_umem_unpin(umem_db, umem);
-+	return 0;
-+}
-+
-+struct mlx5ctl_umem_db *mlx5ctl_umem_db_create(struct mlx5_core_dev *mdev,
-+					       u32 uctx_uid)
-+{
-+	struct mlx5ctl_umem_db *umem_db;
-+
-+	umem_db = kzalloc(sizeof(*umem_db), GFP_KERNEL_ACCOUNT);
-+	if (!umem_db)
-+		return ERR_PTR(-ENOMEM);
-+
-+	xa_init(&umem_db->xarray);
-+	umem_db->mdev = mdev;
-+	umem_db->uctx_uid = uctx_uid;
-+
-+	return umem_db;
-+}
-+
-+void mlx5ctl_umem_db_destroy(struct mlx5ctl_umem_db *umem_db)
-+{
-+	struct mlx5ctl_umem *umem;
-+	unsigned long index;
-+
-+	xa_for_each(&umem_db->xarray, index, umem)
-+		mlx5ctl_umem_unreg(umem_db, umem->umem_id);
-+
-+	xa_destroy(&umem_db->xarray);
-+	kfree(umem_db);
-+}
-diff --git a/drivers/misc/mlx5ctl/umem.h b/drivers/misc/mlx5ctl/umem.h
-new file mode 100644
-index 000000000000..9cf62e5e775e
---- /dev/null
-+++ b/drivers/misc/mlx5ctl/umem.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0 */
-+/* Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved. */
-+
-+#ifndef __MLX5CTL_UMEM_H__
-+#define __MLX5CTL_UMEM_H__
-+
-+#include <linux/types.h>
-+#include <linux/mlx5/driver.h>
-+
-+struct mlx5ctl_umem_db;
-+
-+struct mlx5ctl_umem_db *mlx5ctl_umem_db_create(struct mlx5_core_dev *mdev, u32 uctx_uid);
-+void mlx5ctl_umem_db_destroy(struct mlx5ctl_umem_db *umem_db);
-+int mlx5ctl_umem_reg(struct mlx5ctl_umem_db *umem_db, unsigned long addr, size_t size);
-+int mlx5ctl_umem_unreg(struct mlx5ctl_umem_db *umem_db, u32 umem_id);
-+
-+#endif /* __MLX5CTL_UMEM_H__ */
-diff --git a/include/uapi/misc/mlx5ctl.h b/include/uapi/misc/mlx5ctl.h
-index 1e4622c5979f..bb9ca8581112 100644
---- a/include/uapi/misc/mlx5ctl.h
-+++ b/include/uapi/misc/mlx5ctl.h
-@@ -19,6 +19,18 @@ struct mlx5ctl_cmdrpc {
- 	__u32 outlen; /* outbox buffer length */
- };
- 
-+struct mlx5ctl_umem_reg {
-+	__aligned_u64 addr; /* user address */
-+	__aligned_u64 len; /* user buffer length */
-+	__u32 umem_id; /* returned device's umem ID */
-+	__u32 reserved; /* explicit padding must be zero */
-+};
-+
-+struct mlx5ctl_umem_unreg {
-+	__u32 umem_id;
-+	__u32 reserved; /* explicit padding must be zero */
-+};
-+
- #define MLX5CTL_MAX_RPC_SIZE (512 * 512) /* max FW RPC buffer size 512 blocks of 512 bytes */
- 
- #define MLX5CTL_IOCTL_MAGIC 0x5c
-@@ -29,4 +41,10 @@ struct mlx5ctl_cmdrpc {
- #define MLX5CTL_IOCTL_CMDRPC \
- 	_IOWR(MLX5CTL_IOCTL_MAGIC, 0x1, struct mlx5ctl_cmdrpc)
- 
-+#define MLX5CTL_IOCTL_UMEM_REG \
-+	_IOWR(MLX5CTL_IOCTL_MAGIC, 0x2, struct mlx5ctl_umem_reg)
-+
-+#define MLX5CTL_IOCTL_UMEM_UNREG \
-+	_IOWR(MLX5CTL_IOCTL_MAGIC, 0x3, struct mlx5ctl_umem_unreg)
-+
- #endif /* __MLX5CTL_IOCTL_H__ */
--- 
-2.43.0
-
+Thanks,
+Yicong
 
