@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-56039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41D1C84C536
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:53:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCA9F84C535
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:53:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66D321C25691
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:53:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72856286E78
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:53:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7585C200DC;
-	Wed,  7 Feb 2024 06:52:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73AC2200A5;
+	Wed,  7 Feb 2024 06:52:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="VeVE27+z"
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="JypRTE6U"
 Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9BA1CFA9;
-	Wed,  7 Feb 2024 06:52:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16EFB1CF8A;
+	Wed,  7 Feb 2024 06:52:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707288775; cv=none; b=VuM4WSWL/u2f5XIxaReEygxpH1C+7iG7WYaCtkQyZvmfrnlPwXquz501OuA/zOhigr/07kZfJAHKmSMZVWoyIkii2q4vS/O/VvAQKOmxJbNfC6/l6Mhbj6zgOCpSjhkhm2L19NsKHkjNyrK97BN3wBNref/fqm6So8cwXj5IXPE=
+	t=1707288774; cv=none; b=VtJ6izzG1vbfWnOY9ISnlK6VeXYdz/jEmb/q04ACvF2PtWIOAx4+QG0h6Chpt5AXQFpb3rCYHb46PElIRQkGt2xrOG5udidm0paAoOKEPwphC0ixoRwDlq/bUqUOpZMkY/2gNeiJl0mg4SRfmLxctXJDihsZICoE5KjEn2oqWgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707288775; c=relaxed/simple;
-	bh=pngSFjwGxE9vXqj0D908mM3i4M/7u5dmkcbfbidk3rk=;
+	s=arc-20240116; t=1707288774; c=relaxed/simple;
+	bh=sKTtZLOLuxHyv3cak5EvjcSZLI98S4tAveQ3Mb/TqDA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aEN7daVR9lyznJtXPysuDvGTOn6zCBLeJMTS3fqGgw6P6SJqNzJlHf/HjgzTy7N8zzh+LKeZxT6jIFXf13OwCBHUAfHSrWHlFd/ouGzlcsTVVB2VrZztThi2VB5MmG+NSUhLR8Q267GIPMny5jenVBvh7quhcgbl4tJBTxsoPEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=VeVE27+z; arc=none smtp.client-ip=67.231.156.173
+	 MIME-Version:Content-Type; b=LQJrgw+zOLWeGT5+Y5I53ddCMnwe4ovqezOu4TKoZNakOfKpkTsguMLyA48hswMkPqMYGAWho0rQu6S6aSu1TSK/w09LoBhJawBT+364L1cqId4Z4zummJwFOyAahDDDzDXDk9MRxdZViblxF0Vkux1nmEhBaYQ8GLNRN5Sh1IY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=JypRTE6U; arc=none smtp.client-ip=67.231.156.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
 Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4170fBAr007435;
-	Tue, 6 Feb 2024 22:52:44 -0800
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 416M6OE8027190;
+	Tue, 6 Feb 2024 22:52:46 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	pfpt0220; bh=8SKasW1r5BUjLalGBp9QvCizW4L1HrjPll3o6bBndso=; b=VeV
-	E27+zkRQXptDQJHBc7QQ8jk9CRfbGQ8t3YglmthTaopU8Vv/82y5tBAxRwmlwqwM
-	AMi/NZp5+mDR82dWhiD2AQ2vXDpNWIMqv9uEuS/Lb0/Onv9i9xU3W96Ig2rPeK9w
-	pBHvvn6TJJuL0uuUgwCKKCSDhLegadNCx2B88Oaen6FCiADkVO3ZK47BkoDqtcXz
-	ibJrRYO6hwkSIEaR21SZwmWTkLGlnAZSPVl1DkeO/422+uX5Am7NHFl3+G/qmeZx
-	yynEiU68souDlV/eytkmxkruzm157IJZG9fSyj10DFHekJWjrn9HOmZYSH5CbN4x
-	q/IydzsgmjjpbklkUdQ==
+	pfpt0220; bh=2AiKD312g5xUMEboHmpY7+LddJQXON1hpETZCNdCW54=; b=Jyp
+	RTE6UF0T9R20XpEk1W0BuK0ygAqkdVfiduCvLhTh+3uvFOMB6XWP01Cj5SV8Qbrs
+	Ep4kDPY+vyd6IshdscrWitQpXe9m/VXh3kfIVU4ypxNVNfeajY07AaHyYv1izToe
+	PMfZ/gTACCLjOiAHvKzH12ZeANpF9Qvx5Xy07nI6Ajj9ykfK7ei/pRXQ89qrxljP
+	2Wch7qc9WKN47mgsO56cNbMtVSNqdidJJhYjvY2jpW9Dw8JlWrgaaR1/mA/bdJEh
+	Lncw091zemE6qb+NzL4uToTqdxGYSlXU4+ZJi6N1L8QUg4ufWahkmsQZ6Dp9Y9LH
+	eDQvaHAoPWt1+JlXexg==
 Received: from dc5-exch02.marvell.com ([199.233.59.182])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3w38u85xxf-1
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3w38u85xxg-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 22:52:44 -0800 (PST)
+	Tue, 06 Feb 2024 22:52:45 -0800 (PST)
 Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
  (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 6 Feb
- 2024 22:52:41 -0800
+ 2024 22:52:43 -0800
 Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
  (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 6 Feb 2024 22:52:41 -0800
+ Transport; Tue, 6 Feb 2024 22:52:43 -0800
 Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
-	by maili.marvell.com (Postfix) with ESMTP id 6A2DD3F7082;
-	Tue,  6 Feb 2024 22:52:41 -0800 (PST)
+	by maili.marvell.com (Postfix) with ESMTP id 730CF3F7082;
+	Tue,  6 Feb 2024 22:52:43 -0800 (PST)
 From: Shinas Rasheed <srasheed@marvell.com>
 To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC: <hgani@marvell.com>, <vimleshk@marvell.com>, <sedara@marvell.com>,
@@ -68,9 +68,9 @@ CC: <hgani@marvell.com>, <vimleshk@marvell.com>, <sedara@marvell.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet
 	<edumazet@google.com>
-Subject: [PATCH net-next v6 4/8] octeon_ep_vf: add Tx/Rx ring resource setup and cleanup
-Date: Tue, 6 Feb 2024 22:52:03 -0800
-Message-ID: <20240207065207.3092004-5-srasheed@marvell.com>
+Subject: [PATCH net-next v6 5/8] octeon_ep_vf: add support for ndo ops
+Date: Tue, 6 Feb 2024 22:52:04 -0800
+Message-ID: <20240207065207.3092004-6-srasheed@marvell.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240207065207.3092004-1-srasheed@marvell.com>
 References: <20240207065207.3092004-1-srasheed@marvell.com>
@@ -82,546 +82,122 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: pWL2ez4zK3Inm0cbXdBWLJnUZOaKJ17C
-X-Proofpoint-GUID: pWL2ez4zK3Inm0cbXdBWLJnUZOaKJ17C
+X-Proofpoint-ORIG-GUID: 74_qZvmJdduxb8a9kdjWZ-9ZVC9eD4lI
+X-Proofpoint-GUID: 74_qZvmJdduxb8a9kdjWZ-9ZVC9eD4lI
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-06_16,2024-01-31_01,2023-05-22_02
 
-Implement Tx/Rx ring resource allocation and cleanup.
+Add support for ndo ops to set MAC address, change MTU, get stats.
+Add control path support to set MAC address, change MTU, get stats,
+set speed, get and set link mode.
 
 Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
 ---
 V6:
   - No changes
 
-V5: https://lore.kernel.org/all/20240129050254.3047778-5-srasheed@marvell.com/
+V5: https://lore.kernel.org/all/20240129050254.3047778-6-srasheed@marvell.com/
   - No changes
 
-V4: https://lore.kernel.org/all/20240108124213.2966536-5-srasheed@marvell.com/
+V4: https://lore.kernel.org/all/20240108124213.2966536-6-srasheed@marvell.com/
+  - Provide more stats in ndo_get_stats64 such as tx_dropped, rx_dropped
+    etc.
+
+V3: https://lore.kernel.org/all/20240105203823.2953604-6-srasheed@marvell.com/
   - No changes
 
-V3: https://lore.kernel.org/all/20240105203823.2953604-5-srasheed@marvell.com/
-  - Moved vfree and vzalloc null pointer casting corrections to this
-    patch
-  - Corrected return values to follow standard kernel error codes
-
-V2: https://lore.kernel.org/all/20231223134000.2906144-5-srasheed@marvell.com/
+V2: https://lore.kernel.org/all/20231223134000.2906144-6-srasheed@marvell.com/
   - No changes
 
-V1: https://lore.kernel.org/all/20231221092844.2885872-5-srasheed@marvell.com/
+V1: https://lore.kernel.org/all/20231221092844.2885872-6-srasheed@marvell.com/
 
- .../marvell/octeon_ep_vf/octep_vf_rx.c        | 223 +++++++++++++++++-
- .../marvell/octeon_ep_vf/octep_vf_tx.c        | 216 +++++++++++++++++
- 2 files changed, 438 insertions(+), 1 deletion(-)
+ .../marvell/octeon_ep_vf/octep_vf_main.c      | 58 +++++++++++++++++++
+ 1 file changed, 58 insertions(+)
 
-diff --git a/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_rx.c b/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_rx.c
-index 4f1a8157ce39..330d6e72bc0b 100644
---- a/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_rx.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_rx.c
-@@ -7,10 +7,198 @@
+diff --git a/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_main.c b/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_main.c
+index 562beed9af6a..ff879b1e846e 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_main.c
++++ b/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_main.c
+@@ -186,6 +186,23 @@ static netdev_tx_t octep_vf_start_xmit(struct sk_buff *skb,
+ 	return NETDEV_TX_OK;
+ }
  
- #include <linux/pci.h>
- #include <linux/etherdevice.h>
-+#include <linux/vmalloc.h>
++int octep_vf_get_if_stats(struct octep_vf_device *oct)
++{
++	struct octep_vf_iface_rxtx_stats vf_stats;
++	int ret, size;
++
++	memset(&vf_stats, 0, sizeof(struct octep_vf_iface_rxtx_stats));
++	ret = octep_vf_mbox_bulk_read(oct, OCTEP_PFVF_MBOX_CMD_GET_STATS,
++				      (u8 *)&vf_stats, &size);
++	if (!ret) {
++		memcpy(&oct->iface_rx_stats, &vf_stats.iface_rx_stats,
++		       sizeof(struct octep_vf_iface_rx_stats));
++		memcpy(&oct->iface_tx_stats, &vf_stats.iface_tx_stats,
++		       sizeof(struct octep_vf_iface_tx_stats));
++	}
++	return ret;
++}
++
+ int octep_vf_get_link_info(struct octep_vf_device *oct)
+ {
+ 	int ret, size;
+@@ -199,6 +216,46 @@ int octep_vf_get_link_info(struct octep_vf_device *oct)
+ 	return 0;
+ }
  
- #include "octep_vf_config.h"
- #include "octep_vf_main.h"
- 
-+static void octep_vf_oq_reset_indices(struct octep_vf_oq *oq)
-+{
-+	oq->host_read_idx = 0;
-+	oq->host_refill_idx = 0;
-+	oq->refill_count = 0;
-+	oq->last_pkt_count = 0;
-+	oq->pkts_pending = 0;
-+}
-+
 +/**
-+ * octep_vf_oq_fill_ring_buffers() - fill initial receive buffers for Rx ring.
++ * octep_vf_get_stats64() - Get Octeon network device statistics.
 + *
-+ * @oq: Octeon Rx queue data structure.
-+ *
-+ * Return: 0, if successfully filled receive buffers for all descriptors.
-+ *         -ENOMEM, if failed to allocate a buffer or failed to map for DMA.
++ * @netdev: kernel network device.
++ * @stats: pointer to stats structure to be filled in.
 + */
-+static int octep_vf_oq_fill_ring_buffers(struct octep_vf_oq *oq)
++static void octep_vf_get_stats64(struct net_device *netdev,
++				 struct rtnl_link_stats64 *stats)
 +{
-+	struct octep_vf_oq_desc_hw *desc_ring = oq->desc_ring;
-+	struct page *page;
-+	u32 i;
++	struct octep_vf_device *oct = netdev_priv(netdev);
++	u64 tx_packets, tx_bytes, rx_packets, rx_bytes;
++	int q;
 +
-+	for (i = 0; i < oq->max_count; i++) {
-+		page = dev_alloc_page();
-+		if (unlikely(!page)) {
-+			dev_err(oq->dev, "Rx buffer alloc failed\n");
-+			goto rx_buf_alloc_err;
-+		}
-+		desc_ring[i].buffer_ptr = dma_map_page(oq->dev, page, 0,
-+						       PAGE_SIZE,
-+						       DMA_FROM_DEVICE);
-+		if (dma_mapping_error(oq->dev, desc_ring[i].buffer_ptr)) {
-+			dev_err(oq->dev,
-+				"OQ-%d buffer alloc: DMA mapping error!\n",
-+				oq->q_no);
-+			goto dma_map_err;
-+		}
-+		oq->buff_info[i].page = page;
++	tx_packets = 0;
++	tx_bytes = 0;
++	rx_packets = 0;
++	rx_bytes = 0;
++	for (q = 0; q < oct->num_oqs; q++) {
++		struct octep_vf_iq *iq = oct->iq[q];
++		struct octep_vf_oq *oq = oct->oq[q];
++
++		tx_packets += iq->stats.instr_completed;
++		tx_bytes += iq->stats.bytes_sent;
++		rx_packets += oq->stats.packets;
++		rx_bytes += oq->stats.bytes;
 +	}
-+
-+	return 0;
-+
-+dma_map_err:
-+	put_page(page);
-+rx_buf_alloc_err:
-+	while (i) {
-+		i--;
-+		dma_unmap_page(oq->dev, desc_ring[i].buffer_ptr, PAGE_SIZE, DMA_FROM_DEVICE);
-+		put_page(oq->buff_info[i].page);
-+		oq->buff_info[i].page = NULL;
++	stats->tx_packets = tx_packets;
++	stats->tx_bytes = tx_bytes;
++	stats->rx_packets = rx_packets;
++	stats->rx_bytes = rx_bytes;
++	if (!octep_vf_get_if_stats(oct)) {
++		stats->multicast = oct->iface_rx_stats.mcast_pkts;
++		stats->rx_errors = oct->iface_rx_stats.err_pkts;
++		stats->rx_dropped = oct->iface_rx_stats.dropped_pkts_fifo_full +
++				    oct->iface_rx_stats.err_pkts;
++		stats->rx_missed_errors = oct->iface_rx_stats.dropped_pkts_fifo_full;
++		stats->tx_dropped = oct->iface_tx_stats.dropped;
 +	}
-+
-+	return -ENOMEM;
-+}
-+
-+/**
-+ * octep_vf_setup_oq() - Setup a Rx queue.
-+ *
-+ * @oct: Octeon device private data structure.
-+ * @q_no: Rx queue number to be setup.
-+ *
-+ * Allocate resources for a Rx queue.
-+ */
-+static int octep_vf_setup_oq(struct octep_vf_device *oct, int q_no)
-+{
-+	struct octep_vf_oq *oq;
-+	u32 desc_ring_size;
-+
-+	oq = vzalloc(sizeof(*oq));
-+	if (!oq)
-+		goto create_oq_fail;
-+	oct->oq[q_no] = oq;
-+
-+	oq->octep_vf_dev = oct;
-+	oq->netdev = oct->netdev;
-+	oq->dev = &oct->pdev->dev;
-+	oq->q_no = q_no;
-+	oq->max_count = CFG_GET_OQ_NUM_DESC(oct->conf);
-+	oq->ring_size_mask = oq->max_count - 1;
-+	oq->buffer_size = CFG_GET_OQ_BUF_SIZE(oct->conf);
-+	oq->max_single_buffer_size = oq->buffer_size - OCTEP_VF_OQ_RESP_HW_SIZE;
-+
-+	/* When the hardware/firmware supports additional capabilities,
-+	 * additional header is filled-in by Octeon after length field in
-+	 * Rx packets. this header contains additional packet information.
-+	 */
-+	if (oct->fw_info.rx_ol_flags)
-+		oq->max_single_buffer_size -= OCTEP_VF_OQ_RESP_HW_EXT_SIZE;
-+
-+	oq->refill_threshold = CFG_GET_OQ_REFILL_THRESHOLD(oct->conf);
-+
-+	desc_ring_size = oq->max_count * OCTEP_VF_OQ_DESC_SIZE;
-+	oq->desc_ring = dma_alloc_coherent(oq->dev, desc_ring_size,
-+					   &oq->desc_ring_dma, GFP_KERNEL);
-+
-+	if (unlikely(!oq->desc_ring)) {
-+		dev_err(oq->dev,
-+			"Failed to allocate DMA memory for OQ-%d !!\n", q_no);
-+		goto desc_dma_alloc_err;
-+	}
-+
-+	oq->buff_info = vzalloc(oq->max_count * OCTEP_VF_OQ_RECVBUF_SIZE);
-+
-+	if (unlikely(!oq->buff_info)) {
-+		dev_err(&oct->pdev->dev,
-+			"Failed to allocate buffer info for OQ-%d\n", q_no);
-+		goto buf_list_err;
-+	}
-+
-+	if (octep_vf_oq_fill_ring_buffers(oq))
-+		goto oq_fill_buff_err;
-+
-+	octep_vf_oq_reset_indices(oq);
-+	oct->hw_ops.setup_oq_regs(oct, q_no);
-+	oct->num_oqs++;
-+
-+	return 0;
-+
-+oq_fill_buff_err:
-+	vfree(oq->buff_info);
-+	oq->buff_info = NULL;
-+buf_list_err:
-+	dma_free_coherent(oq->dev, desc_ring_size,
-+			  oq->desc_ring, oq->desc_ring_dma);
-+	oq->desc_ring = NULL;
-+desc_dma_alloc_err:
-+	vfree(oq);
-+	oct->oq[q_no] = NULL;
-+create_oq_fail:
-+	return -ENOMEM;
-+}
-+
-+/**
-+ * octep_vf_oq_free_ring_buffers() - Free ring buffers.
-+ *
-+ * @oq: Octeon Rx queue data structure.
-+ *
-+ * Free receive buffers in unused Rx queue descriptors.
-+ */
-+static void octep_vf_oq_free_ring_buffers(struct octep_vf_oq *oq)
-+{
-+	struct octep_vf_oq_desc_hw *desc_ring = oq->desc_ring;
-+	int  i;
-+
-+	if (!oq->desc_ring || !oq->buff_info)
-+		return;
-+
-+	for (i = 0; i < oq->max_count; i++)  {
-+		if (oq->buff_info[i].page) {
-+			dma_unmap_page(oq->dev, desc_ring[i].buffer_ptr,
-+				       PAGE_SIZE, DMA_FROM_DEVICE);
-+			put_page(oq->buff_info[i].page);
-+			oq->buff_info[i].page = NULL;
-+			desc_ring[i].buffer_ptr = 0;
-+		}
-+	}
-+	octep_vf_oq_reset_indices(oq);
-+}
-+
-+/**
-+ * octep_vf_free_oq() - Free Rx queue resources.
-+ *
-+ * @oq: Octeon Rx queue data structure.
-+ *
-+ * Free all resources of a Rx queue.
-+ */
-+static int octep_vf_free_oq(struct octep_vf_oq *oq)
-+{
-+	struct octep_vf_device *oct = oq->octep_vf_dev;
-+	int q_no = oq->q_no;
-+
-+	octep_vf_oq_free_ring_buffers(oq);
-+
-+	vfree(oq->buff_info);
-+
-+	if (oq->desc_ring)
-+		dma_free_coherent(oq->dev,
-+				  oq->max_count * OCTEP_VF_OQ_DESC_SIZE,
-+				  oq->desc_ring, oq->desc_ring_dma);
-+
-+	vfree(oq);
-+	oct->oq[q_no] = NULL;
-+	oct->num_oqs--;
-+	return 0;
 +}
 +
  /**
-  * octep_vf_setup_oqs() - setup resources for all Rx queues.
+  * octep_vf_tx_timeout_task - work queue task to Handle Tx queue timeout.
   *
-@@ -18,7 +206,27 @@
-  */
- int octep_vf_setup_oqs(struct octep_vf_device *oct)
- {
--	return -1;
-+	int i, retval = 0;
-+
-+	oct->num_oqs = 0;
-+	for (i = 0; i < CFG_GET_PORTS_ACTIVE_IO_RINGS(oct->conf); i++) {
-+		retval = octep_vf_setup_oq(oct, i);
-+		if (retval) {
-+			dev_err(&oct->pdev->dev,
-+				"Failed to setup OQ(RxQ)-%d.\n", i);
-+			goto oq_setup_err;
-+		}
-+		dev_dbg(&oct->pdev->dev, "Successfully setup OQ(RxQ)-%d.\n", i);
-+	}
-+
-+	return 0;
-+
-+oq_setup_err:
-+	while (i) {
-+		i--;
-+		octep_vf_free_oq(oct->oq[i]);
-+	}
-+	return retval;
- }
- 
- /**
-@@ -30,6 +238,10 @@ int octep_vf_setup_oqs(struct octep_vf_device *oct)
-  */
- void octep_vf_oq_dbell_init(struct octep_vf_device *oct)
- {
-+	int i;
-+
-+	for (i = 0; i < oct->num_oqs; i++)
-+		writel(oct->oq[i]->max_count, oct->oq[i]->pkts_credit_reg);
- }
- 
- /**
-@@ -39,4 +251,13 @@ void octep_vf_oq_dbell_init(struct octep_vf_device *oct)
-  */
- void octep_vf_free_oqs(struct octep_vf_device *oct)
- {
-+	int i;
-+
-+	for (i = 0; i < CFG_GET_PORTS_ACTIVE_IO_RINGS(oct->conf); i++) {
-+		if (!oct->oq[i])
-+			continue;
-+		octep_vf_free_oq(oct->oq[i]);
-+		dev_dbg(&oct->pdev->dev,
-+			"Successfully freed OQ(RxQ)-%d.\n", i);
-+	}
- }
-diff --git a/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_tx.c b/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_tx.c
-index 232ba479ecf6..1a3e1a651dc4 100644
---- a/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_tx.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep_vf/octep_vf_tx.c
-@@ -7,10 +7,73 @@
- 
- #include <linux/pci.h>
- #include <linux/etherdevice.h>
-+#include <linux/vmalloc.h>
- 
- #include "octep_vf_config.h"
- #include "octep_vf_main.h"
- 
-+/* Reset various index of Tx queue data structure. */
-+static void octep_vf_iq_reset_indices(struct octep_vf_iq *iq)
-+{
-+	iq->fill_cnt = 0;
-+	iq->host_write_index = 0;
-+	iq->octep_vf_read_index = 0;
-+	iq->flush_index = 0;
-+	iq->pkts_processed = 0;
-+	iq->pkt_in_done = 0;
-+}
-+
-+/**
-+ * octep_vf_iq_free_pending() - Free Tx buffers for pending completions.
-+ *
-+ * @iq: Octeon Tx queue data structure.
-+ */
-+static void octep_vf_iq_free_pending(struct octep_vf_iq *iq)
-+{
-+	struct octep_vf_tx_buffer *tx_buffer;
-+	struct skb_shared_info *shinfo;
-+	u32 fi = iq->flush_index;
-+	struct sk_buff *skb;
-+	u8 frags, i;
-+
-+	while (fi != iq->host_write_index) {
-+		tx_buffer = iq->buff_info + fi;
-+		skb = tx_buffer->skb;
-+
-+		fi++;
-+		if (unlikely(fi == iq->max_count))
-+			fi = 0;
-+
-+		if (!tx_buffer->gather) {
-+			dma_unmap_single(iq->dev, tx_buffer->dma,
-+					 tx_buffer->skb->len, DMA_TO_DEVICE);
-+			dev_kfree_skb_any(skb);
-+			continue;
-+		}
-+
-+		/* Scatter/Gather */
-+		shinfo = skb_shinfo(skb);
-+		frags = shinfo->nr_frags;
-+
-+		dma_unmap_single(iq->dev,
-+				 tx_buffer->sglist[0].dma_ptr[0],
-+				 tx_buffer->sglist[0].len[0],
-+				 DMA_TO_DEVICE);
-+
-+		i = 1; /* entry 0 is main skb, unmapped above */
-+		while (frags--) {
-+			dma_unmap_page(iq->dev, tx_buffer->sglist[i >> 2].dma_ptr[i & 3],
-+				       tx_buffer->sglist[i >> 2].len[i & 3], DMA_TO_DEVICE);
-+			i++;
-+		}
-+
-+		dev_kfree_skb_any(skb);
-+	}
-+
-+	iq->flush_index = fi;
-+	netdev_tx_reset_queue(netdev_get_tx_queue(iq->netdev, iq->q_no));
-+}
-+
- /**
-  * octep_vf_clean_iqs()  - Clean Tx queues to shutdown the device.
-  *
-@@ -21,6 +84,132 @@
-  */
- void octep_vf_clean_iqs(struct octep_vf_device *oct)
- {
-+	int i;
-+
-+	for (i = 0; i < oct->num_iqs; i++) {
-+		octep_vf_iq_free_pending(oct->iq[i]);
-+		octep_vf_iq_reset_indices(oct->iq[i]);
-+	}
-+}
-+
-+/**
-+ * octep_vf_setup_iq() - Setup a Tx queue.
-+ *
-+ * @oct: Octeon device private data structure.
-+ * @q_no: Tx queue number to be setup.
-+ *
-+ * Allocate resources for a Tx queue.
-+ */
-+static int octep_vf_setup_iq(struct octep_vf_device *oct, int q_no)
-+{
-+	u32 desc_ring_size, buff_info_size, sglist_size;
-+	struct octep_vf_iq *iq;
-+	int i;
-+
-+	iq = vzalloc(sizeof(*iq));
-+	if (!iq)
-+		goto iq_alloc_err;
-+	oct->iq[q_no] = iq;
-+
-+	iq->octep_vf_dev = oct;
-+	iq->netdev = oct->netdev;
-+	iq->dev = &oct->pdev->dev;
-+	iq->q_no = q_no;
-+	iq->max_count = CFG_GET_IQ_NUM_DESC(oct->conf);
-+	iq->ring_size_mask = iq->max_count - 1;
-+	iq->fill_threshold = CFG_GET_IQ_DB_MIN(oct->conf);
-+	iq->netdev_q = netdev_get_tx_queue(iq->netdev, q_no);
-+
-+	/* Allocate memory for hardware queue descriptors */
-+	desc_ring_size = OCTEP_VF_IQ_DESC_SIZE * CFG_GET_IQ_NUM_DESC(oct->conf);
-+	iq->desc_ring = dma_alloc_coherent(iq->dev, desc_ring_size,
-+					   &iq->desc_ring_dma, GFP_KERNEL);
-+	if (unlikely(!iq->desc_ring)) {
-+		dev_err(iq->dev,
-+			"Failed to allocate DMA memory for IQ-%d\n", q_no);
-+		goto desc_dma_alloc_err;
-+	}
-+
-+	/* Allocate memory for hardware SGLIST descriptors */
-+	sglist_size = OCTEP_VF_SGLIST_SIZE_PER_PKT *
-+		      CFG_GET_IQ_NUM_DESC(oct->conf);
-+	iq->sglist = dma_alloc_coherent(iq->dev, sglist_size,
-+					&iq->sglist_dma, GFP_KERNEL);
-+	if (unlikely(!iq->sglist)) {
-+		dev_err(iq->dev,
-+			"Failed to allocate DMA memory for IQ-%d SGLIST\n",
-+			q_no);
-+		goto sglist_alloc_err;
-+	}
-+
-+	/* allocate memory to manage Tx packets pending completion */
-+	buff_info_size = OCTEP_VF_IQ_TXBUFF_INFO_SIZE * iq->max_count;
-+	iq->buff_info = vzalloc(buff_info_size);
-+	if (!iq->buff_info) {
-+		dev_err(iq->dev,
-+			"Failed to allocate buff info for IQ-%d\n", q_no);
-+		goto buff_info_err;
-+	}
-+
-+	/* Setup sglist addresses in tx_buffer entries */
-+	for (i = 0; i < CFG_GET_IQ_NUM_DESC(oct->conf); i++) {
-+		struct octep_vf_tx_buffer *tx_buffer;
-+
-+		tx_buffer = &iq->buff_info[i];
-+		tx_buffer->sglist =
-+			&iq->sglist[i * OCTEP_VF_SGLIST_ENTRIES_PER_PKT];
-+		tx_buffer->sglist_dma =
-+			iq->sglist_dma + (i * OCTEP_VF_SGLIST_SIZE_PER_PKT);
-+	}
-+
-+	octep_vf_iq_reset_indices(iq);
-+	oct->hw_ops.setup_iq_regs(oct, q_no);
-+
-+	oct->num_iqs++;
-+	return 0;
-+
-+buff_info_err:
-+	dma_free_coherent(iq->dev, sglist_size, iq->sglist, iq->sglist_dma);
-+sglist_alloc_err:
-+	dma_free_coherent(iq->dev, desc_ring_size,
-+			  iq->desc_ring, iq->desc_ring_dma);
-+desc_dma_alloc_err:
-+	vfree(iq);
-+	oct->iq[q_no] = NULL;
-+iq_alloc_err:
-+	return -1;
-+}
-+
-+/**
-+ * octep_vf_free_iq() - Free Tx queue resources.
-+ *
-+ * @iq: Octeon Tx queue data structure.
-+ *
-+ * Free all the resources allocated for a Tx queue.
-+ */
-+static void octep_vf_free_iq(struct octep_vf_iq *iq)
-+{
-+	struct octep_vf_device *oct = iq->octep_vf_dev;
-+	u64 desc_ring_size, sglist_size;
-+	int q_no = iq->q_no;
-+
-+	desc_ring_size = OCTEP_VF_IQ_DESC_SIZE * CFG_GET_IQ_NUM_DESC(oct->conf);
-+
-+	vfree(iq->buff_info);
-+
-+	if (iq->desc_ring)
-+		dma_free_coherent(iq->dev, desc_ring_size,
-+				  iq->desc_ring, iq->desc_ring_dma);
-+
-+	sglist_size = OCTEP_VF_SGLIST_SIZE_PER_PKT *
-+		      CFG_GET_IQ_NUM_DESC(oct->conf);
-+	if (iq->sglist)
-+		dma_free_coherent(iq->dev, sglist_size,
-+				  iq->sglist, iq->sglist_dma);
-+
-+	vfree(iq);
-+	oct->iq[q_no] = NULL;
-+	oct->num_iqs--;
- }
- 
- /**
-@@ -30,6 +219,25 @@ void octep_vf_clean_iqs(struct octep_vf_device *oct)
-  */
- int octep_vf_setup_iqs(struct octep_vf_device *oct)
- {
-+	int i;
-+
-+	oct->num_iqs = 0;
-+	for (i = 0; i < CFG_GET_PORTS_ACTIVE_IO_RINGS(oct->conf); i++) {
-+		if (octep_vf_setup_iq(oct, i)) {
-+			dev_err(&oct->pdev->dev,
-+				"Failed to setup IQ(TxQ)-%d.\n", i);
-+			goto iq_setup_err;
-+		}
-+		dev_dbg(&oct->pdev->dev, "Successfully setup IQ(TxQ)-%d.\n", i);
-+	}
-+
-+	return 0;
-+
-+iq_setup_err:
-+	while (i) {
-+		i--;
-+		octep_vf_free_iq(oct->iq[i]);
-+	}
- 	return -1;
- }
- 
-@@ -40,4 +248,12 @@ int octep_vf_setup_iqs(struct octep_vf_device *oct)
-  */
- void octep_vf_free_iqs(struct octep_vf_device *oct)
- {
-+	int i;
-+
-+	for (i = 0; i < CFG_GET_PORTS_ACTIVE_IO_RINGS(oct->conf); i++) {
-+		octep_vf_free_iq(oct->iq[i]);
-+		dev_dbg(&oct->pdev->dev,
-+			"Successfully destroyed IQ(TxQ)-%d.\n", i);
-+	}
-+	oct->num_iqs = 0;
- }
+@@ -313,6 +370,7 @@ static const struct net_device_ops octep_vf_netdev_ops = {
+ 	.ndo_open                = octep_vf_open,
+ 	.ndo_stop                = octep_vf_stop,
+ 	.ndo_start_xmit          = octep_vf_start_xmit,
++	.ndo_get_stats64         = octep_vf_get_stats64,
+ 	.ndo_tx_timeout          = octep_vf_tx_timeout,
+ 	.ndo_set_mac_address     = octep_vf_set_mac,
+ 	.ndo_change_mtu          = octep_vf_change_mtu,
 -- 
 2.25.1
 
