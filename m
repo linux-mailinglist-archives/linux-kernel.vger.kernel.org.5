@@ -1,404 +1,183 @@
-Return-Path: <linux-kernel+bounces-56607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3816D84CC82
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:19:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EF6E84CC7F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:19:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2DC7B24723
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:19:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A5341F268E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:19:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85E4C7CF32;
-	Wed,  7 Feb 2024 14:19:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8233D7604B;
+	Wed,  7 Feb 2024 14:19:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="eKb75DVV"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lah87/mU"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6ACC7C090
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:19:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707315559; cv=none; b=KqH3pvjFlmg8CcDmK8z8mPAt5YGgFYp8NHQVOhLKpwWf/rytcUWn/xdSaEH2t4Ptzu8majfICSiOY63zVvPR087hqXpUf7dmNaeMMTGFplhnItqvf7vVvctGIXPg2FIKEfXveNXFC+VGwRgIAziQeS+gbQBY8C40DExsgTFxXkk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707315559; c=relaxed/simple;
-	bh=qNiDxmPLRX2gONHjp5V//oNUCAneHOBmKcLQJZDoqq4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KExT5umSEc5sTN6FKfCBRox7HZSxhKzCp/Xw+sjaNs6H5jku4cSOOtuorOuK1l1gvgqUxrqW07EQAyhxeVbmiC7yepgOzIY53EaRgjgsF+lEGsxW6tGaMbH46Dos94Pq9oysUYljPs4zbeDfEMRS8IR4yFodyFP0G1VI9FLWO/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=eKb75DVV; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d0cd9871b3so2685541fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 06:19:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707315555; x=1707920355; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ILWgMVro314dmhUiCh6UxBQcT1f8d7NxX/BsGCT/hZM=;
-        b=eKb75DVV8Qd00FiFEn12aPI/vM9FJRtYg4HbueN8N7x9bZC2UPgnapUBtxoaN/vevF
-         UJb/GvGkqYWFMnbG5+fpBYrJYxTl/rLqjOtbCMQwYsBTnU35C2PEKOzxpyT0FeMvZnvt
-         mX6d91qHVPcbaUw8dvULVdc3aCxBuFWnOnR3hjicX21YqU0wskhqYBucny9KiPtpb4ES
-         Yx/Bd8qDUeMOm3QlbRZao6VeWmPKjEeA33zw7/z2+sJkC1dOx6loLLUPlrlckld8SNG9
-         Iz606hhjAWL5Iq5CCk1MS2tT6Qmqbcm/BeOwHlqidRZkcX17GdRuwMtvG+cs/WVhWZP8
-         OA0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707315555; x=1707920355;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ILWgMVro314dmhUiCh6UxBQcT1f8d7NxX/BsGCT/hZM=;
-        b=I9PAqzfhULuBmYx3E0nyWU0Cvi2ZTzx4UW8BOU/3KWNYQfZD5V77rvbNs+Ic9diFJz
-         tBM0A54GdFFm16nsOrzlwa9wu7KFX3cLQSP21hIZx035W9pef+XubEOfbR842ubvxbSG
-         fuXQsGKgmUUIn+OiYjQnhz+sfbTwhaTwrDhQZ+GPvk/vGShv7I4flgPV45Ar6oDt8kVe
-         +71pRNG5sUlDg+Y+zg4h8rqQCQOfWgFrX/rzE142s0N7quc1GGK7UWkXovtLdfGWC3MZ
-         uqfvqo/Fk4F4N+VScL8TVxM6Dhgr3P+/UwRy+XXkaQUpbF8JwoxcWUf0pFsQw1WKja3l
-         q0nw==
-X-Forwarded-Encrypted: i=1; AJvYcCV4hEwJJHgMXoPKt1xgxxjGOY70EnrKPyNkvZF1Fl6yDqqUs5WLkN+DF5droBP+OixMgjUWHyw5vZUJ8Vk5ZBL04gpgWtl8+8GFJmIT
-X-Gm-Message-State: AOJu0YzqcUdmxyuuBgyT9NChNJauWUJgZhNyKQHO24sVpEguDMTICnsu
-	CaLfP8eluERC2ldH2etSMpuPhCVj9WiAx890z3A2RVMmyR9XXiWJ6aR6FuDkTAt7HkfzGTilOxd
-	nVLpvEkeKvFIGdm5PE9IxgxHxyoRxlJsKhUwR/9Z+s8tyxS1E
-X-Google-Smtp-Source: AGHT+IFfjr9Dp6bX7NVZVfUzrhPOrBXBAFSzMDuPsY9Vk33c1bMGHwminHgD/mEBhygi5I7Rp3i6pg1t4oaeS+X4e5E=
-X-Received: by 2002:a2e:988c:0:b0:2cf:57d7:6d35 with SMTP id
- b12-20020a2e988c000000b002cf57d76d35mr2094386ljj.10.1707315554797; Wed, 07
- Feb 2024 06:19:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5117C095;
+	Wed,  7 Feb 2024 14:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707315557; cv=fail; b=TJIVgjEmQDqN4MeZwfjq2FHg5X0DjzWed/S8XmYZ1FJoBJLZtdsYfjjxGGaBeJXj/T8ehbunggQMbta5MxHkHYed8o9Gr5rnC5uEX3ZT47uDhJdq/AmTyJDjd4AekogQxGyTawFnEKn9xrBOn72oVGvfdxPB5vFoduXqNcsph3I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707315557; c=relaxed/simple;
+	bh=9uBLmyoRt2NLOnzc5jwxR4F5JWZAVlez4i3ODS1OozA=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=YRXHlPzeNiGuBT76PGJ9mp/LM02ReKy3ExkGx8zWm2sC/4vAS9/nnfJ9NAuIfbs81HGOaP4a9d1YKRhBtj956lrt8J1e6wOJSu2ARiVD0M3snMJ2mm+TtQ9Gfhpg094ZtTgNwz8P9D3HnrzoT6izXnrNOelYiqC0krCNe+Q/Ogs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lah87/mU; arc=fail smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707315556; x=1738851556;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=9uBLmyoRt2NLOnzc5jwxR4F5JWZAVlez4i3ODS1OozA=;
+  b=lah87/mUt2P1ZfQd9SpJo64c1L3TlxDI3mgRs9fj60Awkgcq3W1nkgaa
+   4sZ2BBpU4JMaYeOYWaZHgLQb5vVdQZs2Vw16M+29o+QhRUniIfpUnFmkH
+   HPC7lypCo9HXvypc7UESWaenD5HhQ6O5PLOsoFgR60DwZXclZc8wKTt9N
+   jQ130Jee2FALZLaKQrpycAXKxgC3tYuyWdC9V+Hy41Vc+fa+MU3Gq+kjB
+   x5cb459AuyiQgb0aTskEzZdzQ93RVTtnAomBhHJOgR0TOqbNHMS3RsVQD
+   ssNNVWcqfGRoPuvcv6RlPIgYwwuVjqgXC3UDCQqRuIq6G2K7TzM73x1HF
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="12082862"
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="12082862"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 06:19:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="1344124"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Feb 2024 06:19:14 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 7 Feb 2024 06:19:13 -0800
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 7 Feb 2024 06:19:12 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 7 Feb 2024 06:19:12 -0800
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.40) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 7 Feb 2024 06:19:12 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c5R5fg2mV20403BMpRsQpBw3UqtzbkgrIMItng2JONK+CKqIzNIpSjm0qjuMqv9WR9GiuCSLcHahP1iKRSgWnrPiVHL8kNcUfrrdkNgEMlDsabCE02aRyRdn/o5KczhHC7Qo7ToT2/FVXxJigtA/knZidUKnTaUOW0GlwHbX1kKgOcVQ86IIT5IsEiLHG1AYx6/sN1EMx+vLwFoKuI2QFSH/E0dQeRhWP+nW6GcPmYWFQwMplfabBgnzr/77vt073/rfBB/ReiOoX+jlM28nUzSTQBKiRQ3y6RHK3SeXvRln2a300INgguZJB9H35L9KL3MBvDD6PfreGsWWA1507Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4j8d9G8K5uI59Th6VHiejzv0KwT+enGxd2paY36czzY=;
+ b=ZmAEDfPI5U4x137ev57uAka4WU0QcZP0PQl4K3UBotjTxz9t6ejy3bBN+Jqvi+e4JBkltjD/unFj/2a6NXgJxj7HrBnbt4MaW/F4LIZuivHZO7FZqXrryJFzMIjIwKUQUvy0Y9Wf5RwXGTK1oCdwTgcw8M91r657vr/pPeEeYXyjhUNMMG/xkHQ1MXJiBb69jY5FyXdD1hkDpnbdPSlfZbZerfQkaConhVyFM4lEbdAD6ffxznu3QLa2PxYektSeZNM1m7OUok+x+p1+uM9ryZOibo6+zmIqX5Ofq9gmbag9PFX4J8N8glzeRjSPdE+vSnzu9Bi6Fp6kIIvaWwwVAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6059.namprd11.prod.outlook.com (2603:10b6:208:377::9)
+ by DM4PR11MB5279.namprd11.prod.outlook.com (2603:10b6:5:38a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.38; Wed, 7 Feb
+ 2024 14:19:11 +0000
+Received: from MN0PR11MB6059.namprd11.prod.outlook.com
+ ([fe80::a7f1:384c:5d93:1d1d]) by MN0PR11MB6059.namprd11.prod.outlook.com
+ ([fe80::a7f1:384c:5d93:1d1d%4]) with mapi id 15.20.7249.035; Wed, 7 Feb 2024
+ 14:19:10 +0000
+Date: Wed, 7 Feb 2024 09:19:07 -0500
+From: Rodrigo Vivi <rodrigo.vivi@intel.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+CC: Dave Airlie <airlied@redhat.com>, DRI <dri-devel@lists.freedesktop.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Linux Next Mailing
+ List" <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the drm tree
+Message-ID: <ZcORWwiYB4srvLyE@intel.com>
+References: <20240207171719.7d15be34@canb.auug.org.au>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240207171719.7d15be34@canb.auug.org.au>
+X-ClientProxiedBy: SJ0PR13CA0015.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c0::20) To MN0PR11MB6059.namprd11.prod.outlook.com
+ (2603:10b6:208:377::9)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206-ad7944-mainline-v1-0-bf115fa9474f@baylibre.com>
- <20240206-ad7944-mainline-v1-2-bf115fa9474f@baylibre.com> <5fd17b66eab1989b9cfb874445c18480a2282809.camel@gmail.com>
-In-Reply-To: <5fd17b66eab1989b9cfb874445c18480a2282809.camel@gmail.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Wed, 7 Feb 2024 08:19:03 -0600
-Message-ID: <CAMknhBHP40uXtviZ1KCQ3ZyruaLUVrjpp573u7QqMCT1tuoYjw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] iio: adc: ad7944: add driver for AD7944/AD7985/AD7986
-To: =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
-Cc: linux-iio@vger.kernel.org, 
-	Michael Hennerich <Michael.Hennerich@analog.com>, Jonathan Cameron <jic23@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6059:EE_|DM4PR11MB5279:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3d9cc741-b28e-4353-a20b-08dc27e7c0e5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3Rgwi+PhvhQ+He5iLcWJOdO8DR5N3LkffZiXfzIILpRguqQMThXjY408nqLuLYA2Ri4fmf1AQsDoAUr949Oz61Wqnr/mtdDVZSMTd2fBS1U2nB4HB9A+IssmNj1R0UNMn7MnlrSzI+qoIfWoHYj1TlfGuqSz3z1sWr3MS/qfnfxK5ITY2Hw6mVqXvks+o6ChTQAmv2r3T6KtEnw0QSzri685F5HecOSn8Ufl5+cEVefpr4l/3kOu8vC7lTclsqtqpaF3VNt8qsztMXIIGvqXn9VcPlzaqZ1SxzrfqMzhMN4GuXCdcGOinh35fEyRQgSwvUFW2SEmGkKgZLC82ij/dvMics3s3ooJAMUHGAQggUk1l6dJIFwOtMOtV+TbUK4maHEgQ9bxVDQ489WltPTioH11yBKenJ93ONr1Y44WW7uFcSl6bntG/BbCS6o+nIJ9nLveO8SvLCkAncr2+XuUI4vgauVazfpzw/6ip3V5gEcoq60Tas1FV6z8NKUC5AS3Xal8ZYTk6JEl0JVpWSWtWrEofG2NR9cwVhgW5gZ8whwO6EUj5mR9ZPwIg9VQoSsH
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6059.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(376002)(346002)(366004)(230922051799003)(230273577357003)(1800799012)(451199024)(186009)(64100799003)(82960400001)(66556008)(66476007)(316002)(6916009)(54906003)(66946007)(8936002)(6486002)(478600001)(86362001)(5660300002)(44832011)(8676002)(4326008)(4744005)(2906002)(38100700002)(6512007)(6666004)(2616005)(6506007)(83380400001)(26005)(36756003)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HuqePgdiRc6WaLVc/aqpbHjkW0L0dnv7L2tazc8EYjdU7in/iqHcd/vxL+74?=
+ =?us-ascii?Q?Vj4d+tmbkaYL4Ap7xRlnTSLzI+KScBZoqgV2SyT8c8cPW4DMIWZCmfdb/fIc?=
+ =?us-ascii?Q?a50o3QsPKsYfiqOQHxtnxLyY6j4nzam1OC/+vJ22NTOaIfq46LTKx+QlcD+G?=
+ =?us-ascii?Q?1+gCV6n2BEnNFPjqyiDUyrQUHA3KEcOESeR6ZSI4aLIz+qw0KZDKg7moRXuW?=
+ =?us-ascii?Q?eZ8wj0llnXjFHH0aHuz98uxRSwptj+G834BJ5VKsR0aAA2hdHZFWX7L91N7X?=
+ =?us-ascii?Q?y8wHinqChwTw2cxiivccGWi3RhHFi5BNYM2Rg05y6YtFBJsDyF2Y96JM8uM7?=
+ =?us-ascii?Q?mf6PSVIfugtTHHJiAXkNX+VAtW9iPKMvPTkdtxEtYaOXMjsIw9+xvykKetJP?=
+ =?us-ascii?Q?oeJOfo2d8lusSQ8lOAYy7rhdSe57TdLDuSdXiMsVC+kT9WR1LDsXx3am8JUb?=
+ =?us-ascii?Q?Tc7Nxac014VoAOT/Il9OZbHxqXU2S5CO72pOZm2Ju2XoS7qOEsc9GWhkCbwR?=
+ =?us-ascii?Q?309UNkIwDh4jYN0y8FBE47YTYF5xwxghpY/Oxwlb3A6kYflf3X/KCviozjDi?=
+ =?us-ascii?Q?tJBSaXRxXz7ZYtXVPBckj+1x1eUn30OJBkFbUfTX2Dj09DW9am7za0G1hM/V?=
+ =?us-ascii?Q?q2uJKFFnKUEulKm91iXLJI6jzdZjAJkjSowSagvQprm3VVXkXqNi+fR8WJEC?=
+ =?us-ascii?Q?pfGUChJzPC7mm0IF3dTizO4Rhm0b/WXVt8BigqvMAYNq70S+JlEZjBKq18Ep?=
+ =?us-ascii?Q?bMy1P8+albBwih04D0wQhQrioFUnszbyXpYSe8GUnZHBiM9bC/+XYYMfSH3S?=
+ =?us-ascii?Q?2wXRRpi8Smwqc9yzowPOjEQ2h8IFwzSGsles6QJeVyxxkVDKWAzpHC1DAS7q?=
+ =?us-ascii?Q?s9jIimEGKOl1K5T2XMKUQvyylkfyz+tfGHx0EFVplddjGjbme3kdMFKMf6u2?=
+ =?us-ascii?Q?RCeWN9F+p8mHzYgVbAfwsk0JQXTOuM3nF/317Saz7l0j52G4ijg+1sjdIfnA?=
+ =?us-ascii?Q?KbfMGi24Q5LfzSuDeS5tktvqc6pUNTYDzDKLeKYo8nCdUXBt0ViaeKoKYggx?=
+ =?us-ascii?Q?JGgyUbVj7LBqB3rsIL9bim/VfCyQm3/FLBD4D5EHvTfftEgAsdHbuCxewqx7?=
+ =?us-ascii?Q?PkaqQhCM4vSO5dnUZI+jYwCYUkLJpBxLRtmUiNFmxbaa0ZRPHW1gfpjjwcB9?=
+ =?us-ascii?Q?ZqOtQcDW/xK7SoPmRXq9WNJHP19/BNZUovu2HEho9IMrUMlt0E8vE/9GF9A7?=
+ =?us-ascii?Q?SJk1F2Vfqj5pY3fiNb0PJ+waQGuSkWXeu9wJ8vWJdkpjSTKapmYBHdg0S4Aj?=
+ =?us-ascii?Q?iKyxhVFBRkxHGnXrmXsPGH/2W+5GHpuqCHfTvSt3aXvdh/tl7+x/87s/3Lcg?=
+ =?us-ascii?Q?Rw3BL16Xi3kLxZBZjaB/TmxAZyihg+GUtVCjfuhXsTcDLSvQOymbQtIYEN6w?=
+ =?us-ascii?Q?0/CC7rQsrfnWA6uTVu5199yVnVSqetBEzPfgMG/Zr/uJjH+oDGrdSDcRH2iZ?=
+ =?us-ascii?Q?5/A7AnCBBaWm7pjRBvSmpUfFTQrgVoaPqPa9RZM/Jj0KlJadO7zcOLm7G1MQ?=
+ =?us-ascii?Q?9hettry2qlYsmglKVx/7fTRhPtIGOZzjLYgHGaAh?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d9cc741-b28e-4353-a20b-08dc27e7c0e5
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6059.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2024 14:19:10.9419
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9niLodv40wHyRqkfg429pccHD+HYSWow386nXxupelERXDohQXR16l89NGZ7lhGQWKjYdnxdyPsUtKt4M/fnuw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5279
+X-OriginatorOrg: intel.com
 
-On Wed, Feb 7, 2024 at 4:07=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.com>=
- wrote:
->
-> Hi David,
->
-> The driver It's in pretty good shape... Just some comments from me
->
-> On Tue, 2024-02-06 at 11:26 -0600, David Lechner wrote:
-> > This adds a driver for the Analog Devices Inc. AD7944, AD7985, and
-> > AD7986 ADCs. These are a family of pin-compatible ADCs that can sample
-> > at rates up to 2.5 MSPS.
-> >
-> > The initial driver adds support for sampling at lower rates using the
-> > usual IIO triggered buffer and can handle all 3 possible reference
-> > voltage configurations.
-> >
-> > Signed-off-by: David Lechner <dlechner@baylibre.com>
-> > ---
-> >  MAINTAINERS              |   1 +
-> >  drivers/iio/adc/Kconfig  |  10 ++
-> >  drivers/iio/adc/Makefile |   1 +
-> >  drivers/iio/adc/ad7944.c | 397
-> > +++++++++++++++++++++++++++++++++++++++++++++++
-> >  4 files changed, 409 insertions(+)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 4f1e658e1e0d..83d8367595f1 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -458,6 +458,7 @@ R:        David Lechner <dlechner@baylibre.com>
-> >  S:   Supported
-> >  W:   https://ez.analog.com/linux-software-drivers
-> >  F:   Documentation/devicetree/bindings/iio/adc/adi,ad7944.yaml
-> > +F:   drivers/iio/adc/ad7944.c
-> >
-> >  ADAFRUIT MINI I2C GAMEPAD
-> >  M:   Anshul Dalal <anshulusr@gmail.com>
-> > diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-> > index 59ae1d17b50d..93fbe6f8e306 100644
-> > --- a/drivers/iio/adc/Kconfig
-> > +++ b/drivers/iio/adc/Kconfig
-> > @@ -280,6 +280,16 @@ config AD7923
-> >         To compile this driver as a module, choose M here: the
-> >         module will be called ad7923.
-> >
-> > +config AD7944
-> > +     tristate "Analog Devices AD7944 and similar ADCs driver"
-> > +     depends on SPI
-> > +     help
-> > +       Say yes here to build support for Analog Devices
-> > +       AD7944, AD7985, AD7986 ADCs.
-> > +
-> > +       To compile this driver as a module, choose M here: the
-> > +       module will be called ad7944
-> > +
-> >  config AD7949
-> >       tristate "Analog Devices AD7949 and similar ADCs driver"
-> >       depends on SPI
-> > diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
-> > index 5a26ab6f1109..52d803b92cd7 100644
-> > --- a/drivers/iio/adc/Makefile
-> > +++ b/drivers/iio/adc/Makefile
-> > @@ -29,6 +29,7 @@ obj-$(CONFIG_AD7780) +=3D ad7780.o
-> >  obj-$(CONFIG_AD7791) +=3D ad7791.o
-> >  obj-$(CONFIG_AD7793) +=3D ad7793.o
-> >  obj-$(CONFIG_AD7887) +=3D ad7887.o
-> > +obj-$(CONFIG_AD7944) +=3D ad7944.o
-> >  obj-$(CONFIG_AD7949) +=3D ad7949.o
-> >  obj-$(CONFIG_AD799X) +=3D ad799x.o
-> >  obj-$(CONFIG_AD9467) +=3D ad9467.o
-> > diff --git a/drivers/iio/adc/ad7944.c b/drivers/iio/adc/ad7944.c
-> > new file mode 100644
-> > index 000000000000..67b525fb8e59
-> > --- /dev/null
-> > +++ b/drivers/iio/adc/ad7944.c
-> > @@ -0,0 +1,397 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Analog Devices AD7944/85/86 PulSAR ADC family driver.
-> > + *
-> > + * Copyright 2024 Analog Devices, Inc.
-> > + * Copyright 2024 Baylibre, SAS
-> > + */
-> > +
-> > +#include <linux/bitfield.h>
-> > +#include <linux/bitops.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/device.h>
-> > +#include <linux/err.h>
-> > +#include <linux/gpio/consumer.h>
-> > +#include <linux/module.h>
-> > +#include <linux/property.h>
-> > +#include <linux/regulator/consumer.h>
-> > +#include <linux/spi/spi.h>
-> > +
-> > +#include <linux/iio/iio.h>
-> > +#include <linux/iio/sysfs.h>
-> > +#include <linux/iio/trigger_consumer.h>
-> > +#include <linux/iio/triggered_buffer.h>
-> > +
-> > +#define AD7944_INTERNAL_REF_MV               4096
-> > +
-> > +struct ad7944_timing_spec {
-> > +     /* Normal mode minimum CNV pulse width in nanoseconds. */
-> > +     unsigned int cnv_ns;
-> > +     /* TURBO mode minimum CNV pulse width in nanoseconds. */
-> > +     unsigned int turbo_cnv_ns;
-> > +};
-> > +
-> >
->
-> ...
->
-> > +}
-> > +
-> > +static int ad7944_single_conversion(struct ad7944_adc *adc,
-> > +                                 const struct iio_chan_spec *chan,
-> > +                                 int *val)
-> > +{
-> > +     int ret;
-> > +
-> > +     ret =3D ad7944_4_wire_mode_conversion(adc, chan);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     if (chan->scan_type.storagebits > 16)
-> > +             *val =3D adc->sample.raw.u32;
-> > +     else
-> > +             *val =3D adc->sample.raw.u16;
-> > +
->
-> Will this work both in big vs little endian archs? I don't think so but m=
-aybe
-> I'm missing something. At a first glance, it seems we get big endian from=
- spi so
-> shouldn't we have __be16 and __be32?
+On Wed, Feb 07, 2024 at 05:17:19PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the drm tree, today's linux-next build (htmldocs)
+> produced this warning:
+> 
+> Documentation/gpu/rfc/index.rst:35: WARNING: toctree contains reference to nonexisting document 'gpu/rfc/xe'
+> 
+> Introduced by commit
+> 
+>   d11dc7aa98e5 ("drm/doc/rfc: Remove Xe's pre-merge plan")
 
-Yes, in Linux SPI words are always CPU-endian. It is the drivers that
-use 8-bit transfers to read 16 bits that need to handle big-endian
-swapping. But here we are using 14/16/18 bit transfers.
+It should be fixed by commit 70a46e1fda3b ("drm/doc/rfc: Removing missing reference to xe.rst")
+that is part of drm-misc/drm-misc-next and drm-misc/for-linux-next
 
->
-> > +     if (chan->scan_type.sign =3D=3D 's')
-> > +             *val =3D sign_extend32(*val, chan->scan_type.realbits - 1=
-);
-> > +
-> > +     return IIO_VAL_INT;
-> > +}
-> > +
-> > +static int ad7944_read_raw(struct iio_dev *indio_dev,
-> > +                        const struct iio_chan_spec *chan,
-> > +                        int *val, int *val2, long info)
-> > +{
-> > +     struct ad7944_adc *adc =3D iio_priv(indio_dev);
-> > +     int ret;
-> > +
-> > +     switch (info) {
-> > +     case IIO_CHAN_INFO_RAW:
-> > +             ret =3D iio_device_claim_direct_mode(indio_dev);
-> > +             if (ret)
-> > +                     return ret;
-> > +
->
-> I'm not totally sure but I think Jonathan already merged his series for t=
-he
-> cleanup stuff for the claim direct mode. Maybe take a look and use it? No=
-t a big
-> win in here but I guess we could still reduce some LOC.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
 
-Yes, if it is merged already, happy to make use of it here.
 
->
-> > +             ret =3D ad7944_single_conversion(adc, chan, val);
-> > +             iio_device_release_direct_mode(indio_dev);
-> > +             return ret;
-> > +
-> > +     case IIO_CHAN_INFO_SCALE:
-> > +             switch (chan->type) {
-> > +             case IIO_VOLTAGE:
-> > +                     *val =3D adc->ref_mv;
-> > +                     *val2 =3D chan->scan_type.realbits;
-> > +
-> > +                     return IIO_VAL_FRACTIONAL_LOG2;
-> > +             default:
-> > +                     return -EINVAL;
-> > +             }
-> > +
-> > +     default:
-> > +             return -EINVAL;
-> > +     }
-> > +}
-> > +
-> > +static const struct iio_info ad7944_iio_info =3D {
-> > +     .read_raw =3D &ad7944_read_raw,
-> > +};
-> > +
-> > +static irqreturn_t ad7944_trigger_handler(int irq, void *p)
-> > +{
-> > +     struct iio_poll_func *pf =3D p;
-> > +     struct iio_dev *indio_dev =3D pf->indio_dev;
-> > +     struct ad7944_adc *adc =3D iio_priv(indio_dev);
-> > +     int ret;
-> > +
-> > +     ret =3D ad7944_4_wire_mode_conversion(adc, &indio_dev->channels[0=
-]);
-> > +     if (ret)
-> > +             goto out;
-> > +
-> > +     iio_push_to_buffers_with_timestamp(indio_dev, &adc->sample.raw,
-> > +                                        indio_dev->scan_timestamp);
-> > +
-> > +out:
-> > +     iio_trigger_notify_done(indio_dev->trig);
-> > +
-> > +     return IRQ_HANDLED;
-> > +}
-> > +
-> > +static const char * const ad7944_power_supplies[] =3D {
-> > +     "avdd", "dvdd", "bvdd", "vio"
-> > +};
-> > +
-> > +static void ad7944_ref_disable(void *ref)
-> > +{
-> > +     regulator_disable(ref);
-> > +}
-> > +
-> > +static int ad7944_probe(struct spi_device *spi)
-> > +{
-> > +     const struct ad7944_chip_info *chip_info;
-> > +     struct iio_dev *indio_dev;
-> > +     struct ad7944_adc *adc;
-> > +     struct regulator *ref;
-> > +     const char *str_val;
-> > +     int ret;
-> > +
-> > +     /* adi,spi-mode property defaults to "4-wire" if not present */
-> > +     if (device_property_read_string(&spi->dev, "adi,spi-mode", &str_v=
-al)
-> > < 0)
-> > +             str_val =3D "4-wire";
-> > +
-> > +     if (strcmp(str_val, "4-wire"))
-> > +             return dev_err_probe(&spi->dev, -EINVAL,
-> > +                                  "only \"4-wire\" mode is currently
-> > supported\n");
->
-> Did you looked at spi core? I guess the chain mode is not available but I=
-IRC spi
-> already has spi-3wire. So maybe you could just have a boolean property fo=
-r the
-> chain mode and check both that and 3wire?
-
-I used the term "3-wire" because that is what the datasheet calls it,
-but it is not the same as what the SPI core calls SPI_3WIRE. The
-former is described in the DT bindings patch in this series and the
-latter means that SDI and SDO are on the same pin, which is not the
-case here.
-
->
-> > +
-> > +     indio_dev =3D devm_iio_device_alloc(&spi->dev, sizeof(*adc));
-> > +     if (!indio_dev)
-> > +             return -ENOMEM;
-> > +
-> > +     adc =3D iio_priv(indio_dev);
-> > +     adc->spi =3D spi;
-> > +
-> > +     chip_info =3D spi_get_device_match_data(spi);
-> > +     if (!chip_info)
-> > +             return dev_err_probe(&spi->dev, -EINVAL, "no chip info\n"=
-);
-> > +
-> > +     adc->t =3D chip_info->t;
-> > +
-> > +     /*
-> > +      * Some chips use unusual word sizes, so check now instead of wai=
-ting
-> > +      * for the first xfer.
-> > +      */
-> > +     if (!spi_is_bpw_supported(spi, chip_info-
-> > >channels[0].scan_type.realbits))
-> > +             return dev_err_probe(&spi->dev, -EINVAL,
-> > +                             "SPI host does not support %d bits per
-> > word\n",
-> > +                             chip_info->channels[0].scan_type.realbits=
-);
-> > +
-> > +     ret =3D devm_regulator_bulk_get_enable(&spi->dev,
-> > +
-> > ARRAY_SIZE(ad7944_power_supplies),
-> > +                                          ad7944_power_supplies);
-> > +     if (ret)
-> > +             return dev_err_probe(&spi->dev, ret,
-> > +                                  "failed to get and enable supplies\n=
-");
-> > +
-> > +     /* adi,reference property defaults to "internal" if not present *=
-/
-> > +     if (device_property_read_string(&spi->dev, "adi,reference", &str_=
-val)
-> > < 0)
-> > +             str_val =3D "internal";
-> > +
-> > +     /* sort out what is being used for the reference voltage */
-> > +     if (strcmp(str_val, "internal") =3D=3D 0) {
->
-> Maybe you can make the code neater with match_string() and some enum...
-
-I did not know about this function. Sounds useful.
-
->
-> - Nuno S=C3=A1
->
 
