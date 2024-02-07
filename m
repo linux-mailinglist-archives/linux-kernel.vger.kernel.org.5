@@ -1,166 +1,145 @@
-Return-Path: <linux-kernel+bounces-56172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF38E84C6F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:11:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C16F784C6E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:07:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5DD21C22EBF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:11:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 362231F24633
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9365120B14;
-	Wed,  7 Feb 2024 09:11:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36AB120B03;
+	Wed,  7 Feb 2024 09:07:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pFm0o0fG"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a6zENeWd"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED72120B12;
-	Wed,  7 Feb 2024 09:11:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C604C2231F;
+	Wed,  7 Feb 2024 09:07:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707297084; cv=none; b=Isq8gawBMisMC6xKyJE0A4+ZKdOXVQ99ojKsbl9BcgISbMxd7dAxDQRhPqgP6RaQtKZ5qwlGvgjtaNB9XUrqQ6eTfgUrpqdPI1qcjL7K4XVy9cB6b2ggXiJIkPfgVxglXu9RstsqAeqlGIlXVuBr+mbYUeyzGi22F5tzBweal0E=
+	t=1707296871; cv=none; b=QOJNdndOmm/Z1vnVkgmYlhsOBhAv6YDdezFYJZtDT9JYbobosE+zUqY6u9i1TyEW11ZMJZg0cNBw92Nekn0NwMum+MQR5lpujcXUe+IOKGescmMaa9UiFuKMQAMoA57PdOWOnUqCUDoVYyyIdUpNbnpXgVzxeDqfZWrhljmNkCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707297084; c=relaxed/simple;
-	bh=ZNLMFoWciTitck67uVg21vy3FddYxalS3S4xIpSkUpA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gukTrbTMVUIRJR1HEmCC1qgknEdZCl1SfnbJpyxh6Pi6AItUkisfDQVbNlfLqHrVnm2s+1S6ELr7vL5z2P2tIraLE2wXAqX1ClWth1+fKvv+c+SdU3Cx+NqiuTO3n8u6AGC0LZuKLKcV1T/hUgp/jb8lUCfj7PdFtIm5LbMqvcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=pFm0o0fG; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4179BFoU003395;
-	Wed, 7 Feb 2024 03:11:15 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707297075;
-	bh=8+z5AzK6gRUDQ16vqNk0y0fkfcURB4sVIOGrxpLSLVQ=;
-	h=From:To:CC:Subject:Date;
-	b=pFm0o0fG+mElxBrb5cYKgYBaajTfxN6chy8yBq4qp6SAx/+VCq4LApq0ul6e8FvRT
-	 DmQsmFBnmCvrceGBbFY3mQMGameS8aTEvxqEJkLWgZX/OOjAQ/S1C8QlGlIMnBiprs
-	 3QZ4c3CJPorGxaTyWOKFHqJ24wnAOQL57g+3uOyI=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4179BFmt115582
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 7 Feb 2024 03:11:15 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 7
- Feb 2024 03:11:15 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 7 Feb 2024 03:11:15 -0600
-Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (udit-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.18])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4179BBeQ034511;
-	Wed, 7 Feb 2024 03:11:12 -0600
-From: Udit Kumar <u-kumar1@ti.com>
-To: <nm@ti.com>, <kristo@kernel.org>, <ssantosh@kernel.org>, <chandru@ti.com>,
-        <rishabh@ti.com>, <kamlesh@ti.com>
-CC: <vigneshr@ti.com>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, Udit Kumar <u-kumar1@ti.com>
-Subject: [PATCH v3] clk: keystone: sci-clk: Adding support for non contiguous clocks
-Date: Wed, 7 Feb 2024 14:41:00 +0530
-Message-ID: <20240207091100.4001428-1-u-kumar1@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707296871; c=relaxed/simple;
+	bh=eZ+JnOV19PVeH4H/+aeC4cPDspUN9ZTpPviNI/TBmgw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=IH1I1tPV5CjgpeBkUuMiD+Nt73U6dl+pk26Y1zFVlJa74qHV/SkzDa+/tiUM6K/KmgHgTLJZdHxYreEk/OXscUCI1prbzjAObH7SgR2aejgW9mDGLrtjBjab9Zn6RtveYSK5XwXstXQPyoWDT0y5+Ba0cR2tTiDlOacXWiIZJkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a6zENeWd; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-560c696ccffso1450527a12.1;
+        Wed, 07 Feb 2024 01:07:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707296868; x=1707901668; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=swJ2Qvj5Sz/5JU1GsnqjI51zR2sc49lYmmlCIIsiX7c=;
+        b=a6zENeWdAooV5hvluR/ylUlPu/mFxRKfmwVUTDM2lW1cCCkCKcYXcRUpSp9T2dOssk
+         KP/XfwfrsQmvsNOrSeN/DcVra6Hr2dc1Z1ldTwMIZYVHJXaqf8mlTbW3e+sqz8rauL1r
+         dp3udUeop7aP8ojjcQFjxFl7vgqzcv10VQfX/1mfvkUj3mHJiJopCHP2Am2j5LTHkiJM
+         kdC40PRKrRqFUpCkuqObQDp/nIgLQtyFXllLv+ZBoIxxprr7xjv6eKW+6x9gQaukGsbI
+         qXG4INvS97dZ7WnzLR7NGkL5sANzestRTzs+Canq33u26XJrt7vEf2SLouChAZSCnGwE
+         uGOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707296868; x=1707901668;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=swJ2Qvj5Sz/5JU1GsnqjI51zR2sc49lYmmlCIIsiX7c=;
+        b=WLeiirZAA8xkHqDOf35Lo99Gm6lff2vmxfuwOaskoNGZ4oNNXfLXphRGRJc+GB7s6o
+         8BT9zEM4FrD3GU50E/OpFf3t5cjmgssKCixJk7hlsIo8/3uFPWwMQop4jX6TEa7+4MzF
+         f3kkWoKDfgGMmGJX+EZEa2KcM8TkPTM4UNQsQTnoaecuRVVsdCM6nPsalVVPHhzD4jEr
+         apwno9yLVRiamAOarP5Xus8FHoP4pg2dSiCR1LstyFEdFs3UhDd9fc0dcsVTn/jo12qU
+         nx/+l5kL/qk6tfpeRRuVRN8NjyLoiEepTnfgi3UTjLnZvrldymtXT9pM42K1I+0mYst/
+         l7wg==
+X-Gm-Message-State: AOJu0Yw08IwvO5cW4pNMUyHM+7K8mrQeonCNMxZKNd5j1MJkqcBBIyV/
+	aLrIfxChdfeusa6NiYM4ml4MkYwA6q/MluKdQsi8hShP905A23E59wdbbjNWdEy4Aw==
+X-Google-Smtp-Source: AGHT+IEgatN1iB6tfJnwcFc1bwXTKl8zTQo7oXJ5BZGh/Y5IUOgLzuZVgFKqWwVuwsL/GNtlo2UJ/w==
+X-Received: by 2002:a17:906:30d2:b0:a38:4340:60d3 with SMTP id b18-20020a17090630d200b00a38434060d3mr3054335ejb.10.1707296867654;
+        Wed, 07 Feb 2024 01:07:47 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV2Smbh4V36E4jJxROqksgZUcsjMcAGfFArEA5c1SJMhRg3uFaKfqNJi8jfCitVN4A2eJ3j6U6c5h21n+x6yqpoQUuXA8VjG41JHZG5n5COqn7WoIu3iKg5nrYusRaoj8w/GQ5oZd/XfHuKmsgfphiwF737RNrKuEso3BWxzTMOoemntKqvtzvWBgY0BwJ++ILhdBmOurYG88q8zyM73SiYAFgfsSWHshvhkSymyYYUdlCDtQ==
+Received: from ?IPv6:2003:f6:ef1b:2000:15d4:fc17:481e:8afe? (p200300f6ef1b200015d4fc17481e8afe.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:15d4:fc17:481e:8afe])
+        by smtp.gmail.com with ESMTPSA id vb5-20020a170907d04500b00a388723b7a1sm211558ejc.50.2024.02.07.01.07.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 01:07:47 -0800 (PST)
+Message-ID: <9c53981719f8d44c38a5eb32e629dcec4bd2c60a.camel@gmail.com>
+Subject: Re: [PATCH 1/2] iio: accel: adxl367: fix DEVID read after reset
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Cosmin Tanislav <demonsingur@gmail.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
+ <Michael.Hennerich@analog.com>, Cosmin Tanislav
+ <cosmin.tanislav@analog.com>,  Jonathan Cameron <jic23@kernel.org>,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Wed, 07 Feb 2024 10:11:06 +0100
+In-Reply-To: <20240207033657.206171-1-demonsingur@gmail.com>
+References: <20240207033657.206171-1-demonsingur@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Most of clocks and their parents are defined in contiguous range,
-But in few cases, there is gap in clock numbers[0].
-Driver assumes clocks to be in contiguous range, and add their clock
-ids incrementally.
+On Wed, 2024-02-07 at 05:36 +0200, Cosmin Tanislav wrote:
+> regmap_read_poll_timeout() will not sleep before reading,
+> causing the first read to return -ENXIO on I2C, since the
+> chip does not respond to it while it is being reset.
+>=20
+> The datasheet specifies that a soft reset operation has a
+> latency of 7.5ms.
+>=20
+> Add a 15ms sleep between reset and reading the DEVID register,
+> and switch to a simple regmap_read() call.
+>=20
+> Signed-off-by: Cosmin Tanislav <demonsingur@gmail.com>
+> ---
 
-New firmware started returning error while calling get_freq and is_on
-API for non-available clock ids.
+This likely needs a Fixes: tag as well. With that,
 
-In this fix, driver checks and adds only valid clock ids.
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
 
-Fixes: 3c13933c6033 ("clk: keystone: sci-clk: add support for dynamically probing clocks")
-
-[0] https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j7200/clocks.html
-Section Clocks for NAVSS0_CPTS_0 Device,
-clock id 12-15 not present.
-
-Signed-off-by: Udit Kumar <u-kumar1@ti.com>
----
-Changelog
-Changes in v3
-- instead of get_freq, is_auto API is used to check validilty of clock
-- Address comments of v2, to have preindex increment
-Link to v2 https://lore.kernel.org/all/20240206104357.3803517-1-u-kumar1@ti.com/
-
-Changes in v2
-- Updated commit message
-- Simplified logic for valid clock id
-link to v1 https://lore.kernel.org/all/20240205044557.3340848-1-u-kumar1@ti.com/
-
-
-P.S
-Firmawre returns total num_parents count including non available ids.
-For above device id NAVSS0_CPTS_0, number of parents clocks are 16
-i.e from id 2 to 17. But out of these ids few are not valid.
-So driver adds only valid clock ids out ot total.
-
-Original logs
-https://gist.github.com/uditkumarti/de4b36b21247fb36725ad909ce4812f6#file-original-logs
-Line 2630 for error
-
-Logs with fix v3
-https://gist.github.com/uditkumarti/94e3e28d62282fd708dbfe37435ce1d9#file-v3
-Line 2586
-
-
- drivers/clk/keystone/sci-clk.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/clk/keystone/sci-clk.c b/drivers/clk/keystone/sci-clk.c
-index 35fe197dd303..31b7df05d7bb 100644
---- a/drivers/clk/keystone/sci-clk.c
-+++ b/drivers/clk/keystone/sci-clk.c
-@@ -516,6 +516,7 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
- 	struct sci_clk *sci_clk, *prev;
- 	int num_clks = 0;
- 	int num_parents;
-+	bool state;
- 	int clk_id;
- 	const char * const clk_names[] = {
- 		"clocks", "assigned-clocks", "assigned-clock-parents", NULL
-@@ -583,16 +584,23 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
- 					num_parents = 255;
- 				}
- 
--				clk_id = args.args[1] + 1;
-+				clk_id = args.args[1];
- 
- 				while (num_parents--) {
-+					/* Check if this clock id is valid */
-+					ret = provider->ops->is_auto(provider->sci,
-+						sci_clk->dev_id, ++clk_id, &state);
-+
-+					if (ret)
-+						continue;
-+
- 					sci_clk = devm_kzalloc(dev,
- 							       sizeof(*sci_clk),
- 							       GFP_KERNEL);
- 					if (!sci_clk)
- 						return -ENOMEM;
- 					sci_clk->dev_id = args.args[0];
--					sci_clk->clk_id = clk_id++;
-+					sci_clk->clk_id = clk_id;
- 					sci_clk->provider = provider;
- 					list_add_tail(&sci_clk->node, &clks);
- 
--- 
-2.34.1
+> =C2=A0drivers/iio/accel/adxl367.c | 8 ++++++--
+> =C2=A01 file changed, 6 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/iio/accel/adxl367.c b/drivers/iio/accel/adxl367.c
+> index 834ee6d63947..210228affb80 100644
+> --- a/drivers/iio/accel/adxl367.c
+> +++ b/drivers/iio/accel/adxl367.c
+> @@ -1368,9 +1368,11 @@ static int adxl367_verify_devid(struct adxl367_sta=
+te
+> *st)
+> =C2=A0	unsigned int val;
+> =C2=A0	int ret;
+> =C2=A0
+> -	ret =3D regmap_read_poll_timeout(st->regmap, ADXL367_REG_DEVID, val,
+> -				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 val =3D=3D ADXL367_DEVID_AD, 10=
+00, 10000);
+> +	ret =3D regmap_read(st->regmap, ADXL367_REG_DEVID, &val);
+> =C2=A0	if (ret)
+> +		return dev_err_probe(st->dev, ret, "Failed to read dev
+> id\n");
+> +
+> +	if (val !=3D ADXL367_DEVID_AD)
+> =C2=A0		return dev_err_probe(st->dev, -ENODEV,
+> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 "Invalid dev id 0x%02X, expected
+> 0x%02X\n",
+> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 val, ADXL367_DEVID_AD);
+> @@ -1449,6 +1451,8 @@ int adxl367_probe(struct device *dev, const struct
+> adxl367_ops *ops,
+> =C2=A0	if (ret)
+> =C2=A0		return ret;
+> =C2=A0
+> +	fsleep(15000);
+> +
+> =C2=A0	ret =3D adxl367_verify_devid(st);
+> =C2=A0	if (ret)
+> =C2=A0		return ret;
 
 
