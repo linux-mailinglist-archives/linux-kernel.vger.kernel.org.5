@@ -1,135 +1,143 @@
-Return-Path: <linux-kernel+bounces-56623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA6B984CCC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:31:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C58284CCC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:32:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 841E928CEF9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:31:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0C64B223BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3F77E571;
-	Wed,  7 Feb 2024 14:31:07 +0000 (UTC)
-Received: from smtpfb2-g21.free.fr (smtpfb2-g21.free.fr [212.27.42.10])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8222C374E0;
-	Wed,  7 Feb 2024 14:31:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3CC7E773;
+	Wed,  7 Feb 2024 14:31:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NGdt/vGH"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A247E587;
+	Wed,  7 Feb 2024 14:31:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707316266; cv=none; b=coH475KIczGwj5DaV74LgK1sxY1cnY+mWs3HjzgGdJqKeXQaIYVv6FQ8ZUKwMldVjx6kLYWjSUxWQl9MFYu9uHNN0kUVFrnwQM77wtXydbs3hO6kUqAryo9bq6vs+iFxn5vrUZLBD/+CAOD4BLIS3DKa0IoYnlPZf+90SL9VQaw=
+	t=1707316308; cv=none; b=c4bu/pdIZudm0w5jX4TCey5MJqDsoXIVgmaXDsKIEILQKg7/SoZi3GYcWbnIaEjE8m1TZ0fsdfeeg/n7vz2CruboFDEkTdu4xPybPH9mY2VKqVR1UpsRGPlqaYgHvbGw59UQL1BPNsBhvbh88nBmBkvx5IYLQuqrW5vR0UFBagQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707316266; c=relaxed/simple;
-	bh=y0KWZrJXOyRC5CIPTz+1fodmZg6ChjIlV0scfDMLO1g=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=vEEp8keN7P+m1ofpKFvoG2TSXdhz8LUZo3RSJtIXUx1Ku262ZToZZc8KMGHJrSIEe9vcteUKZGjUPv4L01GYUDz/1oLPzaUmWBQloDfO0NPLKvQYCm7Uq77NvlnFJ88+WFxC1L9eY7R5T0aovfG+ZUPXV4mIX+320pS5D1Tuwtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; arc=none smtp.client-ip=212.27.42.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
-Received: from smtp3-g21.free.fr (smtp3-g21.free.fr [212.27.42.3])
-	by smtpfb2-g21.free.fr (Postfix) with ESMTP id 9DE684C8FA;
-	Wed,  7 Feb 2024 15:30:54 +0100 (CET)
-Received: from zimbra-e1-03.priv.proxad.net (unknown [172.20.243.151])
-	by smtp3-g21.free.fr (Postfix) with ESMTP id AD34A13F8A7;
-	Wed,  7 Feb 2024 15:30:46 +0100 (CET)
-Date: Wed, 7 Feb 2024 15:30:46 +0100 (CET)
-From: =?utf-8?Q?Jean-Lo=C3=AFc?= Charroud <lagiraudiere+linux@free.fr>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Stefan Binding <sbinding@opensource.cirrus.com>, 
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Richard Fitzgerald <rf@opensource.cirrus.com>, 
-	linux-sound <linux-sound@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	patches <patches@opensource.cirrus.com>
-Message-ID: <1366935939.585144512.1707316246651.JavaMail.zimbra@free.fr>
-In-Reply-To: <87o7cs5r29.wl-tiwai@suse.de>
-References: <726559913.576332068.1707239153891.JavaMail.zimbra@free.fr> <87o7cs5r29.wl-tiwai@suse.de>
-Subject: Re: [PATCH v2] ALSA: hda/realtek: cs35l41: Fix internal speaker
- support for ASUS UM3402 with missing DSD
+	s=arc-20240116; t=1707316308; c=relaxed/simple;
+	bh=OPIgeCr9tX3JgphTgoxiOM/JEwMrIKmZmGk/wNxhpwk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TNiX0cEakSW2lAPMAQWooY8Gh2/DoXev0zFtn31fDAvOzAGee12gIjtUdJisE2rRm3/6vqQSOyzwWzqOwUEcm81TMQxzBRYHa+5Uwis/lFMw5f+8RWtx9jSQP+D/hnbR9cwA5GUCU5+t8p60ZTTD0odMa3CoOzHuijw6B6oI9Ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NGdt/vGH; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5d8df2edd29so439723a12.2;
+        Wed, 07 Feb 2024 06:31:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707316306; x=1707921106; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OPIgeCr9tX3JgphTgoxiOM/JEwMrIKmZmGk/wNxhpwk=;
+        b=NGdt/vGHBJwqh4gJF261gOHwnKsNfNEUT09uM0N3ujCS0XthxdaEtQC4pWAxvvRjHg
+         nYokGQtIIj9B4T64OBhxGoZYpyBGXbBYPfJYuGt/uY6/Jr05KRXzWfWazEGiqmogSyiQ
+         zw2dSUORq/z+XR/10gBLiy3YZP0sqnvZRqEGIfCAoqTSJq6kIBJ5aITp8tl0yD9y+P6E
+         D391+w8C30ZKO7SjTj+1HqeLbepefrSZFC4bMCayg+qhgBHFinEPrPOTsaviY/YPvdxk
+         5XyHGt8NqkSN9Sm3iNRvRFUrXVc64uTtOlVZhQSAQ0jubJgAoEkK7sqp2muMZ3HO0vAz
+         lKgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707316306; x=1707921106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OPIgeCr9tX3JgphTgoxiOM/JEwMrIKmZmGk/wNxhpwk=;
+        b=CUHV/XQ41yUh32ERyEyFYtNNkwxozYQiAUqecGFUrKlsBqD5FM1KUgCNfroROkMxkd
+         ujQ44F5Tf1HtciZSCZ9pWAGof1AkThrUQlfzfqcDja4CAPqxzqK4iO1XEinzKXa8K16A
+         xMJv+GuX8g9GYmmJpqA7VlDvh5442ZQb5i5MAq353GHVA5WmcejyzobKwLcyD4NCAuuC
+         p1qbcs1xJvvtMU5qjUZTjLtZMwx3O8uCcyXyV9xtjwQfjLHNCI6r7G54tlytRX6B2E1g
+         K4QDax5Ybg4jlYZdcHULvnc9H55rfFuaHIp0EOljrY3JRxUJ0lFeypdk+MxKYyx6BMD3
+         Vx/g==
+X-Forwarded-Encrypted: i=1; AJvYcCUYu7HjfKVR0HWAieW6OiUNA/HRzVhYPFoNZnQNqcJezHlJrsyz2V2sBHc9gwzr+kC/5jkFlXfLjKVjjWeFaswwRD+L51qnwGo4G34j10XMxhsgt42FWws7lvtjnkLEJd7f2YvvVDlQQxCGLoq+UXgB4Jf1L/b/GuovSfn3i4EcPw==
+X-Gm-Message-State: AOJu0YyKNgRvPuhWDpMqjnq9jYxAAWoIwzyJeMGtpb5noWghPz7qojHs
+	VArja2P89IDk59q6M1cfnLNVh+ueua7cBqWs8vWyLZQnuOrwXjnxY61eA5g4kewfWfk5B72LZ2Z
+	1ST4x8m9V29d8Nap8xygMaitbTjXZaYSk
+X-Google-Smtp-Source: AGHT+IFxgrOu+ahtaoPMOs67gwkpG6ceSI7wXNAVBWDW5vLpOtek9d22tntZIeUSdN3qHaaaghql1346fultsMOr/Hc=
+X-Received: by 2002:a05:6a21:a59b:b0:19a:4e56:d81b with SMTP id
+ gd27-20020a056a21a59b00b0019a4e56d81bmr5159619pzc.27.1707316306040; Wed, 07
+ Feb 2024 06:31:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240206010311.149103-1-jdamato@fastly.com> <7e338c2a-6091-4093-8ca2-bb3b2af3e79d@gmail.com>
+ <20240206171159.GA11565@fastly.com> <44d321bf-88a0-4d6f-8572-dfbda088dd8f@nvidia.com>
+ <20240206192314.GA11982@fastly.com> <b3c595d8-b30a-41ac-bb82-c1264678b3c4@nvidia.com>
+ <20240207142529.GA12897@fastly.com>
+In-Reply-To: <20240207142529.GA12897@fastly.com>
+From: Dave Taht <dave.taht@gmail.com>
+Date: Wed, 7 Feb 2024 09:31:33 -0500
+Message-ID: <CAA93jw6_KMR_T6vs5S40n6OGeCdxbhikE7DCEAbN1N8_nFW_5g@mail.gmail.com>
+Subject: Re: [PATCH net-next] eth: mlx5: link NAPI instances to queues and IRQs
+To: Joe Damato <jdamato@fastly.com>
+Cc: Gal Pressman <gal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, 
+	Tariq Toukan <ttoukan.linux@gmail.com>, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, rrameshbabu@nvidia.com, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Mailer: Zimbra 9.0.0_GA_1337 (ZimbraWebClient - FF122 (Linux)/9.0.0_GA_1337)
-Thread-Topic: ALSA: hda/realtek: cs35l41: Fix internal speaker support for ASUS UM3402 with missing DSD
-Thread-Index: mkayzFxE17dOTxly0rkuWXxYNN7URQ==
 
-Fix device ID for "ASUS UM3402" and "ASUS UM6702RA/RC".
-Add DSD values for "ASUS UM3402" to cs35l41_config_table[].
+On Wed, Feb 7, 2024 at 9:26=E2=80=AFAM Joe Damato <jdamato@fastly.com> wrot=
+e:
+>
+> On Wed, Feb 07, 2024 at 08:59:18AM +0200, Gal Pressman wrote:
+> > On 06/02/2024 21:23, Joe Damato wrote:
+> > >> The per queue coalesce series is going through internal code review,=
+ and is
+> > >> expected to also be ready in a matter of a few weeks.
+> > >
+> > > OK, great. Thanks for letting me know; we are definitely interested i=
+n
+> > > using this feature.
+> >
+> > Hi Joe,
+> > Can you please share some details about your usecase for this feature?
+>
+> It was outlined in the cover letter for the RFC [1].
+>
+> But, briefly: we set a number of queues (say 16) via ethtool. We then
+> create a series of n-tuple filters directing certain flows to queues 0-7
+> via a custom RSS context. The remaining queues, 8-15 are for all other
+> flows via the default RSS context.
+>
+> Queues 0-7 are used with busy polling from userland so we want those queu=
+es
+> to have a larger rx/tx-usecs rx/tx-frames than queues 8-15.
 
-Signed-off-by: Jean-Lo=C3=AFc Charroud <lagiraudiere+linux@free.fr>
----
- sound/pci/hda/cs35l41_hda_property.c | 2 ++
- sound/pci/hda/patch_realtek.c        | 4 ++--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+I am looking forward to trying this to chop some usec off of eBPF. I
+am curious as to how low can you go...
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_h=
-da_property.c
-index 923c0813fa08..d8cd62ef6afc 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -102,6 +102,7 @@ static const struct cs35l41_config cs35l41_config_table=
-[] =3D {
- =09{ "10431D1F", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1,=
- -1, 1000, 4500, 24 },
- =09{ "10431DA2", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2,=
- 0, 0, 0, 0 },
- =09{ "10431E02", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2,=
- 0, 0, 0, 0 },
-+=09{ "10431E12", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1,=
- -1, 0, 0, 0 },
- =09{ "10431EE2", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1=
-, -1, 0, 0, 0 },
- =09{ "10431F12", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1,=
- -1, 1000, 4500, 24 },
- =09{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1=
-, 0, 0, 0, 0 },
-@@ -485,6 +486,7 @@ static const struct cs35l41_prop_model cs35l41_prop_mod=
-el_table[] =3D {
- =09{ "CSC3551", "10431D1F", generic_dsd_config },
- =09{ "CSC3551", "10431DA2", generic_dsd_config },
- =09{ "CSC3551", "10431E02", generic_dsd_config },
-+=09{ "CSC3551", "10431E12", generic_dsd_config },
- =09{ "CSC3551", "10431EE2", generic_dsd_config },
- =09{ "CSC3551", "10431F12", generic_dsd_config },
- =09{ "CSC3551", "10431F1F", generic_dsd_config },
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 7aa88ed04bde..fe81a628d7c8 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9939,11 +9939,11 @@ static const struct snd_pci_quirk alc269_fixup_tbl[=
-] =3D {
- =09SND_PCI_QUIRK(0x1043, 0x16a3, "ASUS UX3402VA", ALC245_FIXUP_CS35L41_SPI=
-_2),
- =09SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602ZM", ALC245_FIXUP_CS35L41_SPI=
-_2),
- =09SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA=
-502),
--=09SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM6702RA/RC", ALC287_FIXUP_CS35L41_=
-I2C_2),
-+=09SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM3402", ALC287_FIXUP_CS35L41_I2C_2=
-),
- =09SND_PCI_QUIRK(0x1043, 0x1e51, "ASUS Zephyrus M15", ALC294_FIXUP_ASUS_GU=
-502_PINS),
- =09SND_PCI_QUIRK(0x1043, 0x1e5e, "ASUS ROG Strix G513", ALC294_FIXUP_ASUS_=
-G513_PINS),
- =09SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA=
-401),
--=09SND_PCI_QUIRK(0x1043, 0x1ee2, "ASUS UM3402", ALC287_FIXUP_CS35L41_I2C_2=
-),
-+=09SND_PCI_QUIRK(0x1043, 0x1ee2, "ASUS UM6702RA/RC", ALC287_FIXUP_CS35L41_=
-I2C_2),
- =09SND_PCI_QUIRK(0x1043, 0x1c52, "ASUS Zephyrus G15 2022", ALC289_FIXUP_AS=
-US_GA401),
- =09SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_GA=
-401),
- =09SND_PCI_QUIRK(0x1043, 0x1f12, "ASUS UM5302", ALC287_FIXUP_CS35L41_I2C_2=
-),
+> We implemented basic support for this in the RFC we sent to the mailing
+> list.
+
+thank you for re-citing this:
+
+> [1]: https://lore.kernel.org/lkml/20230823223121.58676-1-dev@nalramli.com=
+/
+
+The big feature that I hope appears in some ethernet card someday the
+ability to map (say 16k) LPMs to a hw queue, as opposed to a mere
+tuple. It's the biggest overhead operation we have (presently in
+vectoring data via ebpf) to libreqos for 10k+ ISP subscribers.
+
+>
+
+
 --=20
-2.40.1
-
+40 years of net history, a couple songs:
+https://www.youtube.com/watch?v=3DD9RGX6QFm5E
+Dave T=C3=A4ht CSO, LibreQos
 
