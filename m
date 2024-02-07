@@ -1,145 +1,94 @@
-Return-Path: <linux-kernel+bounces-56123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D636684C64E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:34:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06A2B84C64C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:33:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03A0C1C2455A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:34:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07F961C244A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:33:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACAF2208BE;
-	Wed,  7 Feb 2024 08:33:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80192033B;
+	Wed,  7 Feb 2024 08:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="dJPIS7oK"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J3TBNoXp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453F320326;
-	Wed,  7 Feb 2024 08:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B932031C;
+	Wed,  7 Feb 2024 08:33:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707294825; cv=none; b=OyHWWyM/aKIAnf+B4jKuzqEydazPIH8LgGdtQSoUZEEVFStZ/0W/EPdWVsjjvK6xNHi3GJl6+QzLaHoHAQJqn7IoCPuavsu0A2rcg1hM4fhc62gsSmSG3hKzjL4btihbBxV4JOXVr2Ia+Wq5s7/WVT+RehzzfZp8G1Hqqr0XqPI=
+	t=1707294824; cv=none; b=m9L0m8c8cvV1JBo0brQr3ORTmOn/tty9rp4dUKu2hz0YJSe8hvAwR5KxyWT8qZiEg7EmlWXbqdmgjDTV493YIUrQDIkJ4VpHmiUNj7dpEduI5QOO+KssLAC08qnFe+KEjbL2XjkdQ7kuPwKy3AVosteqfFX3j9WXUBwPRkZqFlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707294825; c=relaxed/simple;
-	bh=7ztvdRUg0JACfXTIoiFoaH+96vgsr4rkkIQHFzepryM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C3MlOOCENiWSlDCHDx73vMYms15brpDuPTiVK54bE1y0Yl763YnkKT8AG2W6a+10dIVtwiHbJboVJqnhPdZRotxtDf2+LvZzmFHbzUrpOQR7Wg2AR/VTyhK7a0LucHz2pY+HHbm7AKGdVHJeKxiIZBrH2mg7JP0Bn8WbA2xnJ14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=dJPIS7oK; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4178XZYh059943;
-	Wed, 7 Feb 2024 02:33:35 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707294815;
-	bh=M4eUFAdAMgTey1JPDnTkYph1/oLKlhyx10HZpCpSf/0=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=dJPIS7oKmbvX9rCBikNzTVMrbpoo+sq2FUSr/RcyZ6nauYAMLpbX73e56wFmmiYBQ
-	 c+pPMkOaNtVXdOdGHzWbc6z5nHafpy8C1Q+n2qAljW/wytkaOEeTkPC0SrLYxCMQVg
-	 2Ezu3OmtfQKpSab0VYprhRi444swe6JO9W3Y2D18=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4178XYNE054235
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 7 Feb 2024 02:33:35 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 7
- Feb 2024 02:33:34 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 7 Feb 2024 02:33:34 -0600
-Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4178XXrm063412;
-	Wed, 7 Feb 2024 02:33:34 -0600
-Date: Wed, 7 Feb 2024 14:03:33 +0530
-From: Dhruva Gole <d-gole@ti.com>
-To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
-CC: Mark Brown <broonie@kernel.org>, Apurva Nandan <a-nandan@ti.com>,
-        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Gregory CLEMENT
-	<gregory.clement@bootlin.com>,
-        Vladimir Kondratiev
-	<vladimir.kondratiev@mobileye.com>,
-        Thomas Petazzoni
-	<thomas.petazzoni@bootlin.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH v2 1/4] spi: cadence-qspi: put runtime in runtime PM
- hooks names
-Message-ID: <20240207083333.jqghhzihzwz5yeeq@dhruva>
-References: <20240205-cdns-qspi-pm-fix-v2-0-2e7bbad49a46@bootlin.com>
- <20240205-cdns-qspi-pm-fix-v2-1-2e7bbad49a46@bootlin.com>
+	s=arc-20240116; t=1707294824; c=relaxed/simple;
+	bh=nOhXvYmd62bYlpNUjEHdYRDD49aGBERbbiFOVhXGsDQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dqh57gHZxFxhI8Y5GMOQirDnmjezoPuagWTeG0ZYYbDcWLaxH/wRruD0VSpTZjU8bEqQvOdb4ms+uPGP82iXGpRAdEmbrlPFFpRNIFLJBmjGaj6cvvO0dh2uuX0lV6Ladi5yIiY1INGFNN751JQOvKMgs0Tz85E3Eo4sS+X5WYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J3TBNoXp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17160C433C7;
+	Wed,  7 Feb 2024 08:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707294823;
+	bh=nOhXvYmd62bYlpNUjEHdYRDD49aGBERbbiFOVhXGsDQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=J3TBNoXp51qlKOvXZvCQHMIwRALuDdMThrVpIJ5owQtLlak3vqWhHJDBg8goHcF5E
+	 qooTSk+NoQ2epPGjnrOlxFbDODkQnBPCzc51GQ5+1NpcTm5pXV8FIW6caEeuL8mFvr
+	 JshHgpSMskwo4aIUTrCwk6dS5wguUeJCQ3/hrxTb6UzHdhEPj5QIwZAShToUy93cCY
+	 x4w7c6ggD0hVdv/t7iikjJWqSHkzj+3yzxTung5rPCG6tsgcfaMO8U+1pocQiuU3KW
+	 P8Ou6YLQW3f4e9YFxUcklg8eHrtx1+mJ801SrxX9VlgR1CP/ZiJs1N326kUAcBrEEp
+	 Kveuw/BoRDmmw==
+Date: Wed, 7 Feb 2024 10:33:38 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next 0/2] RDMA/hns: Support configuring congestion
+ control algorithm with QP granularity
+Message-ID: <20240207083338.GB56027@unreal>
+References: <20240207032910.3959426-1-huangjunxian6@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240205-cdns-qspi-pm-fix-v2-1-2e7bbad49a46@bootlin.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20240207032910.3959426-1-huangjunxian6@hisilicon.com>
 
-On Feb 05, 2024 at 15:57:29 +0100, Théo Lebrun wrote:
-> Follow kernel naming convention with regards to power-management
-> callback function names.
+On Wed, Feb 07, 2024 at 11:29:08AM +0800, Junxian Huang wrote:
+> Patch #1 reverts a previous bugfix that was intended to add restriction
+> to congestion control algorithm for UD but mistakenly introduced other
+> problem.
+
+First patch shouldn't be revert but a fix to "add a restriction that only DCQCN
+is supported for UD." and second patch should be a new feature.
+
+Thanks
+
 > 
-> The convention in the kernel is:
->  - prefix_suspend means the system-wide suspend callback;
->  - prefix_runtime_suspend means the runtime PM suspend callback.
-> The same applies to resume callbacks.
+> Patch #2 adds support for configuring congestion control algorithm with
+> QP granularity. The algorithm restriction for UD is added in this patch.
 > 
-> Fixes: 0578a6dbfe75 ("spi: spi-cadence-quadspi: add runtime pm support")
-
-Not sure if it's a bug as such since there's no functional change other
-than renaming.
-
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-> ---
->  drivers/spi/spi-cadence-quadspi.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> Junxian Huang (1):
+>   RDMA/hns: Support configuring congestion control algorithm with QP
+>     granularity
 > 
-> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-> index 74647dfcb86c..720b28d2980c 100644
-> --- a/drivers/spi/spi-cadence-quadspi.c
-> +++ b/drivers/spi/spi-cadence-quadspi.c
-> @@ -1927,7 +1927,7 @@ static void cqspi_remove(struct platform_device *pdev)
->  	pm_runtime_disable(&pdev->dev);
->  }
->  
-> -static int cqspi_suspend(struct device *dev)
-> +static int cqspi_runtime_suspend(struct device *dev)
->  {
->  	struct cqspi_st *cqspi = dev_get_drvdata(dev);
->  	struct spi_controller *host = dev_get_drvdata(dev);
-> @@ -1941,7 +1941,7 @@ static int cqspi_suspend(struct device *dev)
->  	return ret;
->  }
->  
-> -static int cqspi_resume(struct device *dev)
-> +static int cqspi_runtime_resume(struct device *dev)
->  {
->  	struct cqspi_st *cqspi = dev_get_drvdata(dev);
->  	struct spi_controller *host = dev_get_drvdata(dev);
-> @@ -1956,8 +1956,8 @@ static int cqspi_resume(struct device *dev)
->  	return spi_controller_resume(host);
->  }
->  
-> -static DEFINE_RUNTIME_DEV_PM_OPS(cqspi_dev_pm_ops, cqspi_suspend,
-> -				 cqspi_resume, NULL);
-> +static DEFINE_RUNTIME_DEV_PM_OPS(cqspi_dev_pm_ops, cqspi_runtime_suspend,
-> +				 cqspi_runtime_resume, NULL);
->  
-
-
-No objections as such,
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+> Luoyouming (1):
+>   Revert "RDMA/hns: The UD mode can only be configured with DCQCN"
+> 
+>  drivers/infiniband/hw/hns/hns_roce_device.h | 26 +++++---
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 18 ++----
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  3 +-
+>  drivers/infiniband/hw/hns/hns_roce_main.c   |  3 +
+>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 71 +++++++++++++++++++++
+>  include/uapi/rdma/hns-abi.h                 | 17 +++++
+>  6 files changed, 118 insertions(+), 20 deletions(-)
+> 
+> --
+> 2.30.0
+> 
 
