@@ -1,93 +1,85 @@
-Return-Path: <linux-kernel+bounces-56386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EB7984C98D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:24:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E0DB84C98E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:24:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EF1D1C25D5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:24:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3066A287C97
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:24:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C14241B5B3;
-	Wed,  7 Feb 2024 11:23:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="jr5HHEPQ"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3374C1D535;
+	Wed,  7 Feb 2024 11:24:07 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E3C1A5BA
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AAB51D525
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 11:24:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707305037; cv=none; b=d0Q0w1y6PeB+zV6w0ZycNigrHekQnWRxISCbLEQJpKXJPjxMFwGrwd/1+m2bYsq/8ZEm26yD20/tVKaQ4ZNsqomhm1T+LkCTuV06rqo8xyN0BCvnWGBtzfRcr5YC8AOC7b6oCG3K4NVXGqsVpUqFVVqW2ryAoxCX8HAI+J0idyM=
+	t=1707305046; cv=none; b=MdVqjm5//jOIElD7QFtQ3vztNhamTDaAaAlZvbzXRaV/+f3nb0tq9hjaVppfCgkqbPA33fjuZ/UrcktsNvpjFWQtL4XeWJFX6cL8nwdMgyxVkW0kPxqqRkRIwB4q3P6iqzaMuOnS97KfVGbKNFb2PuWO2FrjuGgZC4kpKcuCrP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707305037; c=relaxed/simple;
-	bh=EP2LWSy9JtM2+WifJPVQImTTMtI7Kx6N1OY0vOyamyM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HxY8h9FsoDMtxRPESaOBE/5eqKfup9vkFLQRx7j9tvvVTy7Nx/3awxZ0foW3o5os5+fdGuQz/BzQkQQ8jGL1Y5ad/S62+VtrLp/tMcl13GJoeFB20IEj7rOYXkquahYECB5ljfy2bdg9WqxngD0jddIofpg8WJaz+1bUKffvSjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=jr5HHEPQ; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5605c7b0ca2so545587a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 03:23:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1707305033; x=1707909833; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EP2LWSy9JtM2+WifJPVQImTTMtI7Kx6N1OY0vOyamyM=;
-        b=jr5HHEPQLehSrT4xGvy7jTMaZ/rarUkeWIUEachlZY8LZ6OkTqKfgrkeGNORIT+b+S
-         YzJi67Bui5i3brMIyi4NzdtSbxzoF9A2rY8NuY6LJsl9xOlfJF3nluAj912ydmSpJBNx
-         X9xd+Rk/ksezH5ClOzoJEZW0wJyFsAzJHZwoQ=
+	s=arc-20240116; t=1707305046; c=relaxed/simple;
+	bh=PXdFhi8/+0p8RSbyrHOG/MV7coE/FuE8liBhraEn6AY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=IVUcTqbOF0uGTTzjPT/9R21J9fS9dOkJ3WGmfFHrnF8V5KeKBIzTw4PoU8YbmEYPvDwQi9AggfKeWuzWiqbpfzT8PXusxfl++7AzTKcCJGZ8611e7/56a6eAUZV+TqnyiBME3L927JVd7bTHumlu+VK52bTYkiX1ULRujKTQ+Fo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363922a1774so2563985ab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 03:24:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707305033; x=1707909833;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EP2LWSy9JtM2+WifJPVQImTTMtI7Kx6N1OY0vOyamyM=;
-        b=CzHBwY/o1qBKlUnWAWMTWuSPZclIxvDDtG/+TSEFs3jSQTusL+NkYrrCH079a3v4cE
-         mL+h+y1YtIwFNYpGR63bSHxgUL92wwdZpv2+7IR2170Y+Nk3nu21IjjfYO5w+e9NCn1n
-         VaKA1f+Gcjqj91rON3+I8y7jXw7b2VvnyA9E3qJFsli0wC7PichMLDOh7G5KXvlrwb5Y
-         ofW9mANU9HCkw1vCXB6AdWHVGnuQAeZINW4rV/juyRwXKCVJNDcibin4hyuWwlenqdlQ
-         z9uDhIuoyO3Xt5VAdLO6IUXEZwa1+NFH6c9ePAdUt1NwW9Rr1VaQHACaBdfHDZF7XaiD
-         6iig==
-X-Gm-Message-State: AOJu0YxlG0UPBG0bz/o8502X5opEkAqe35/nAN6bAVReN/a9qzkLexbm
-	erPy5igA6A5zUr1mEO/MFBQtbi/DSMyPBZjhpXYcD5e2RAYBjV+GkdHLM7TcLpUEUDyDpK9312S
-	6fNb1Yz3PpoZgJGE/2GbSGKeTHzRq3Rcj1Jf/uQ==
-X-Google-Smtp-Source: AGHT+IHC5qHRCNgF5v0mJ/NwRiwueifsHERMLDkNyQV86+XCpdNDj1A2xATEYvJmyxBcYDAPYdnjCLFWs3s1BdlDqTY=
-X-Received: by 2002:a17:906:c2d2:b0:a38:2bee:7a7b with SMTP id
- ch18-20020a170906c2d200b00a382bee7a7bmr2964809ejb.1.1707305033154; Wed, 07
- Feb 2024 03:23:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707305044; x=1707909844;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UyKvQle5+pouUIhPoej90C64GO0nhko2wK/O0ubJ9dY=;
+        b=kZ7HHnS+qrocqtSfYXnSH+8Oh8XEh6eVLqbf6e4tlX8jOLx2zqP3VD2w1R+2n8N+9S
+         tVFMfOyyEYgX8y7oh3MV35KOuEZWKwK03CWUqH6slDHogD/BGbep+ZV7ZfiCgyRrKKn6
+         ZNHzcnNXynbHsD1qefeUK15+rFpvxwZqHX0JJFLI3VWHDhDibZ5NWVOXnyHRfAnF+LHM
+         GfCc2TkI3fMJ/fnmKqvcXnPLI+ehr5Q5eADtnWEPKb7QZK/7ojSBFgXamtpaJKlJD9rj
+         1qSX5m9q7+q5hreee90BLkmB+LX8tHCVdOQR8tfDs4Z7luBJxpWj8k9UrMi5OdHAliLJ
+         h0tg==
+X-Gm-Message-State: AOJu0YzVrRj8glAHKPuOLTPfU2Cq2wtmAFW8DtSeLvU3m9rblWG107QP
+	kVnFsYQwNGUQVHoQvZEIodJnfUyAGaSwOK3jphpz3WnHPPBKxjVaUUIVyScyadwioufxrdAhiUE
+	/SIt1QftH5hfgEeFIde0dpk2wfh8W33GH5gaVWVMZCXZosokITdWDkl0=
+X-Google-Smtp-Source: AGHT+IGO2fvY4W4sQASF6ChtO3oc6KSXzdlb01OvkQrZu0qgGIw7ZyHSMOd10F6+l0feyxFaKpPue5ejFBntY3PGtpKszXsBOrdb
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJfpegtw0-88qLjy0QDLyYFZEM7PJCG3R-mBMa9s8TNSVZmJTA@mail.gmail.com>
- <20240207110041.fwypjtzsgrcdhalv@quack3>
-In-Reply-To: <20240207110041.fwypjtzsgrcdhalv@quack3>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Wed, 7 Feb 2024 12:23:41 +0100
-Message-ID: <CAJfpegvkP5dic7CXB=ZtwTF4ZhRth1xyUY36svoM9c1pcx=f+A@mail.gmail.com>
-Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] tracing the source of errors
-To: Jan Kara <jack@suse.cz>
-Cc: lsf-pc <lsf-pc@lists.linux-foundation.org>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6e02:1aa2:b0:363:b5f6:7379 with SMTP id
+ l2-20020a056e021aa200b00363b5f67379mr324012ilv.4.1707305044572; Wed, 07 Feb
+ 2024 03:24:04 -0800 (PST)
+Date: Wed, 07 Feb 2024 03:24:04 -0800
+In-Reply-To: <20240207110756.936-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b4827d0610c8eef4@google.com>
+Subject: Re: [syzbot] [usb?] [media?] possible deadlock in vb2_video_unregister_device
+From: syzbot <syzbot+3b1d4b3d5f7a358bf9a9@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 7 Feb 2024 at 12:00, Jan Kara <jack@suse.cz> wrote:
+Hello,
 
-> The problem always has been how to implement this functionality in a
-> transparent way so the code does not become a mess. So if you have some
-> idea, I'd say go for it :)
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-My first idea would be to wrap all instances of E* (e.g. ERR(E*)).
-But this could be made completely transparent by renaming current
-definition of E* to _E* and defining E* to be the wrapped ones.
-There's probably a catch (or several catches) somewhere, though.
+Reported-and-tested-by: syzbot+3b1d4b3d5f7a358bf9a9@syzkaller.appspotmail.com
 
-Thanks,
-Miklos
+Tested on:
+
+commit:         ed555127 Merge 6.8-rc3 into usb-next
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=13796624180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=28a3704ea90ef255
+dashboard link: https://syzkaller.appspot.com/bug?extid=3b1d4b3d5f7a358bf9a9
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=15126718180000
+
+Note: testing is done by a robot and is best-effort only.
 
