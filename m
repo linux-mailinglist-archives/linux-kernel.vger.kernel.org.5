@@ -1,204 +1,136 @@
-Return-Path: <linux-kernel+bounces-56064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA83E84C591
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:22:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7EF384C593
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:23:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3618EB251CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:22:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A227B1F252F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:23:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC6461F61C;
-	Wed,  7 Feb 2024 07:22:25 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21147200C1;
+	Wed,  7 Feb 2024 07:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="HUcNMVtC"
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36FF41F5F0;
-	Wed,  7 Feb 2024 07:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CC9A200A4;
+	Wed,  7 Feb 2024 07:23:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707290545; cv=none; b=j1T96wd+O0pZqkyhQOeerdLUYoGsed3tLHI/awhmZ8efW/W6thRqaeEZwc5/10b2WFCDFkmcssUnGsQCO1BWo7U/wLWnOluNBKI6qmgbSScPLvVRiq0OLHR/UxV3zwZ0k4H6iJq94IfbiMqRZ3omQr+LP5j/K3afL8qS0MdyIRs=
+	t=1707290599; cv=none; b=gEtts5N/BdfhD5+J9QhHxDOSeF4Kqiw4hGuuucnFQhYFAvurbh/ZXUVKxuTE68Qxa5IuOK/lK11AwGtpumXbk+qm4N7fHBwg4w7cfsZudxLtrdYQp7Dox+pmOxFVDHN/UT55+s06pO4v2r8qsOnHv+xI2cWircLsBz8vaMcQRYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707290545; c=relaxed/simple;
-	bh=VVvRFG/eiBuKl5tvWu7HLckqb1fOLvTugxdSX+bh1nQ=;
-	h=CC:Subject:To:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=sRKk+B9YIks+7Mh3AhlSUa5DSaflzYGQ7JNVcgOR+nLekzGTl3322sHqgqMRdsUMQl4QqNMOaNtSO8cE31HNamMHZOKKJBjVUundbFr+lbFj9N8T2leUQM5kdDdhLZVZQEQbq0w3ETqv0S3XVeWvip2L8KTrnKH0aoraio/64rI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TVBN62G5mz1gydY;
-	Wed,  7 Feb 2024 15:20:22 +0800 (CST)
-Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
-	by mail.maildlp.com (Postfix) with ESMTPS id 983AB1400CF;
-	Wed,  7 Feb 2024 15:22:18 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 7 Feb 2024 15:22:18 +0800
-CC: <yangyicong@hisilicon.com>, <gregkh@linuxfoundation.org>,
-	<jirislaby@kernel.org>, <tony@atomide.com>, <linux-kernel@vger.kernel.org>,
-	<linux-serial@vger.kernel.org>, <john.ogness@linutronix.de>,
-	<tglx@linutronix.de>, <linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
-	<jonathan.cameron@huawei.com>, <fanghao11@huawei.com>
-Subject: Re: [PATCH v2] serial: port: Don't suspend if the port is still busy
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20240206073322.5560-1-yangyicong@huawei.com>
- <ZcIvjC1qzD4atwlT@smile.fi.intel.com>
-From: Yicong Yang <yangyicong@huawei.com>
-Message-ID: <9e3d8daf-6715-bb37-125a-4141a9460417@huawei.com>
-Date: Wed, 7 Feb 2024 15:22:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+	s=arc-20240116; t=1707290599; c=relaxed/simple;
+	bh=J2jt/2fYwNXM5ff+lqyZZsvvteRbinJC2NNlRHVyYQA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=P/eR4X2g64zDBPBlyYJpLmZgiDdgKuOIKec2r0KFVvLBlcOUvkILGw/kBAp2a50pTchWN+L5OXMopVvD9AnO6DTQ/aO6kewmoZEj+Jy+hTNKI7eEpjDUKZfzYKjCDDS2Xbf58A8ipTns7TSvZTNadDoHbooLGoaFBE9R+jMQ3KQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=HUcNMVtC; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1707290579; x=1707895379; i=spasswolf@web.de;
+	bh=J2jt/2fYwNXM5ff+lqyZZsvvteRbinJC2NNlRHVyYQA=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
+	 References;
+	b=HUcNMVtCq6E/VHV70rgJHAm6KPwV+bn/NU5+I1IsCMN5rwgaVjS5cdRR0XVf5bmt
+	 3SkhqdVJexLANCejiEvvnWESLH+7oOuQAsSnwsW72SwafuC2+lZnAV+BkcXb4lZg3
+	 CAwd7E3LIV2xwj+xes3eHZvT2gwiuGIN0+gJduBiKCGboYM2QGi0fk02omTTzboZH
+	 rQruBUDRdZ8brCqsY2ulAsAaPGdCb8o1JopKSg/iK5OjZd8lDbiAzARM3HAgEFpcQ
+	 xMFsAdy1QjhrFkKGD4pT0cgKe07So/jhdrNyUV7TgJF6gWlb7gvBU11Lv3XAEH6rC
+	 VCTbQ7CEiRWRqVZaZw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from lisa.home ([84.119.92.193]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MhWkj-1r28zw19tb-00eSPJ; Wed, 07
+ Feb 2024 08:22:59 +0100
+From: Bert Karwatzki <spasswolf@web.de>
+To: Lorenzo Bianconi <lorenzo@kernel.org>,
+	Felix Fietkau <nbd@nbd.name>,
+	Ryder Lee <ryder.lee@mediatek.com>
+Cc: Bert Karwatzki <spasswolf@web.de>,
+	linux-kernel@vger.kernel.org,
+	linux-wireless@vger.kernel.org,
+	Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH] wifi: mt76: inititalize sband.band to correct value
+Date: Wed,  7 Feb 2024 08:22:53 +0100
+Message-Id: <20240207072253.4189-1-spasswolf@web.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: 87zfwchlmt.fsf@kernel.org
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZcIvjC1qzD4atwlT@smile.fi.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500009.china.huawei.com (7.192.105.203)
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ihWuM1oFPsd5oUO7Ugdyc3gHJ/MRJcaj3yk1SSNfEPysgsQprxV
+ fYh/9tX+tysSXDf9fIfrHa4zFSyjOS+Heh2Cy0upbDHPaVAU+Hg7+BM6YsLSJErta3fU7Qy
+ AoMT3iDr4P9YtwaWogne5u7SHTyJnsPO7TNDnGijIW+UwM8hcxDjDiYdSRbRJZpqWMGQB4i
+ U9Yq4rmez7JZIVdlC0k7w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ip9NZo/uNy8=;Rr8/t2RtVQbDMiM9lplEP+nfbcK
+ hHNqbivl6jERX3ZYkFswDw2fp5Xo16fb9hOf6X87ETsFG//p7Dq8fQ2VLNBAx9H7gTdp0ICjN
+ hDH2O3nxSzCUE1DMXiyDvPBrC4lsmBx7/XiYaLJ8/EBPQPvp9TIUzP0TYPDDu1UglRFDONRtD
+ 3qPG6iQhSG7g9MLd6cEVPHfh7635h0/guBDh/P01Afdjn/V+qSqIGJvrz163ZWQ2UhGIZNDLd
+ RA7k16ulyPYlwnYpxemnr+MaqxtFj25SRtcsVRpZFykVM8y+WLfJDwc5EcoiZwK/udFXX8gcS
+ CdA8H+Rp5jTSO+sg3zGu10AKDUzGiL04aT/964hK8GeWlJluAqG4N1uUDT9CjseUyJk75Ewt1
+ L2xn2wB2wmGOzAtsi1F3g/CtWA+OshVlrr0b7pzYDjk50HNF48Yc8t1ptxh9unKEO8T89NG9G
+ gixlC36Zv06eJXbMSLbX0xuoD/ZwLT1wpvJBzwAp/igCu3LEIWmDjY7ZJu20XljzMi0GIRJtB
+ GXTnZn5P6QEntlB0fGZTc6H5FW5zQRQ+YKfRWIY3Eh96Ex9Ou3FCgGiaJXbEfZDhHkzqtuuB+
+ MA3sVWpNVQQNZNqNW24WzQJSUZ0Xa+ctU7/y7KQgDiQArwuzMRnMiNG0vViSfnuKEByMRTFJO
+ 7GAM7on9487jZ36UVhdQnq/s8moGUkvph+1tsmiwonPPC6TMOu5skTirHynQcAGKDitnyXRmE
+ JA85oMSAlDe6vPXwWx7JYkamQoiQcV0I/Wo3eaiEDiDDZyn1fGhVHtO9Obv+B6Ick8sx+/+9I
+ NTX++/782cZuMhAktKOisXXzXw0+JLEeVezW6rXcZCBv4=
 
-Hi Andy,
+Set phy->sband_{2,5,6}g.sband.band to the correct enum value, otherwise
+the ieee80211_register_hw() will fail to register the device.
 
-On 2024/2/6 21:09, Andy Shevchenko wrote:
-> On Tue, Feb 06, 2024 at 03:33:22PM +0800, Yicong Yang wrote:
->> From: Yicong Yang <yangyicong@hisilicon.com>
->>
->> We accidently met the issue that the bash prompt is not shown after the
->> previous command done and until the next input if there's only one CPU
->> (In our issue other CPUs are isolated by isolcpus=). Further analysis
->> shows it's because the port entering runtime suspend even if there's
->> still pending chars in the buffer and the pending chars will only be
->> processed in next device resuming. We are using amba-pl011 and the
->> problematic flow is like below:
->>
->> Bash                                         kworker
->> tty_write()
->>   file_tty_write()
->>     n_tty_write()
->>       uart_write()
->>         __uart_start()
->>           pm_runtime_get() // wakeup waker
->>             queue_work()
->>                                              pm_runtime_work()
->>                                                rpm_resume()
->>                                                 status = RPM_RESUMING
->>                                                 serial_port_runtime_resume()
->>                                                   port->ops->start_tx()
->>                                                     pl011_tx_chars()
->>                                                       uart_write_wakeup()
->>         […]
->>         __uart_start()
->>           pm_runtime_get() < 0 // because runtime status = RPM_RESUMING
->>                                // later data are not commit to the port driver
->>                                                 status = RPM_ACTIVE
->>                                                 rpm_idle() -> rpm_suspend()
->>
->> This patch tries to fix this by checking the port busy before entering
->> runtime suspending. A runtime_suspend callback is added for the port
->> driver. When entering runtime suspend the callback is invoked, if there's
->> still pending chars in the buffer then flush the buffer.
-> 
-> ...
-> 
->> +static int serial_port_runtime_suspend(struct device *dev)
->> +{
->> +	struct serial_port_device *port_dev = to_serial_base_port_device(dev);
->> +	struct uart_port *port;
->> +	unsigned long flags;
->> +	int ret = 0;
->> +
->> +	port = port_dev->port;
->> +
->> +	if (port->flags & UPF_DEAD)
->> +		return ret;
->> +
->> +	uart_port_lock_irqsave(port, &flags);
->> +	if (__serial_port_busy(port)) {
->> +		port->ops->start_tx(port);
-> 
->> +		pm_runtime_mark_last_busy(dev);
-> 
-> Do you think we need to call this under a lock?
-> 
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D218466
 
-I just put this close to the ops->start_tx() where I used the device. Yes I have no
-strong reason to put it in/with the lock region, but pm_runtime_mark_last_busy()
-should be no costy and safe enough to put it in the spinlock region.
+Signed-off-by: Bert Karwatzki <spasswolf@web.de>
+=2D--
+ drivers/net/wireless/mediatek/mt76/mac80211.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Any thoughts?
+diff --git a/drivers/net/wireless/mediatek/mt76/mac80211.c b/drivers/net/w=
+ireless/mediatek/mt76/mac80211.c
+index 8a3a90d1bfac..6cf08446f445 100644
+=2D-- a/drivers/net/wireless/mediatek/mt76/mac80211.c
++++ b/drivers/net/wireless/mediatek/mt76/mac80211.c
+@@ -363,6 +363,7 @@ mt76_init_sband_2g(struct mt76_phy *phy, struct ieee80=
+211_rate *rates,
+ 		   int n_rates)
+ {
+ 	phy->hw->wiphy->bands[NL80211_BAND_2GHZ] =3D &phy->sband_2g.sband;
++	phy->sband_2g.sband.band =3D NL80211_BAND_2GHZ;
 
->> +		ret = -EBUSY;
->> +	}
->> +	uart_port_unlock_irqrestore(port, flags);
->> +
->> +	return ret;
->> +}
-> 
-> With the above I would rather write it as
-> 
-> static int __serial_port_busy(struct uart_port *port)
-> {
-> 	if (uart_tx_stopped(port))
-> 		return 0;
-> 
-> 	if (uart_circ_chars_pending(&port->state->xmit)
-> 		return -EBUSY;
+ 	return mt76_init_sband(phy, &phy->sband_2g, mt76_channels_2ghz,
+ 			       ARRAY_SIZE(mt76_channels_2ghz), rates,
+@@ -374,6 +375,7 @@ mt76_init_sband_5g(struct mt76_phy *phy, struct ieee80=
+211_rate *rates,
+ 		   int n_rates, bool vht)
+ {
+ 	phy->hw->wiphy->bands[NL80211_BAND_5GHZ] =3D &phy->sband_5g.sband;
++	phy->sband_5g.sband.band =3D NL80211_BAND_5GHZ;
 
-I'm not sure but EBUSY seems not quite match here. EBUSY for
-"Device or resource busy" so the device probably cannot be used
-but we're testing whether the port is busy here. Hope I understand it
-correctly.
+ 	return mt76_init_sband(phy, &phy->sband_5g, mt76_channels_5ghz,
+ 			       ARRAY_SIZE(mt76_channels_5ghz), rates,
+@@ -385,6 +387,7 @@ mt76_init_sband_6g(struct mt76_phy *phy, struct ieee80=
+211_rate *rates,
+ 		   int n_rates)
+ {
+ 	phy->hw->wiphy->bands[NL80211_BAND_6GHZ] =3D &phy->sband_6g.sband;
++	phy->sband_6g.sband.band =3D NL80211_BAND_6GHZ;
 
-> 
-> 	return 0;
-> }
-> 
-> static int serial_port_runtime_suspend(struct device *dev)
-> {
-> 	int ret;
-> 	...
-> 	uart_port_lock_irqsave(port, &flags);
-> 	ret = __serial_port_busy(port);
-> 	if (ret)
-> 		port->ops->start_tx(port);
-> 	uart_port_unlock_irqrestore(port, flags);
-> 
-> 	if (ret)
-> 		pm_runtime_mark_last_busy(dev);
-> 
-> 	return ret;
-> }
-> 
-> It also seems aligned with the resume implementation above.
-> 
-> ...
-> 
-> For the consistency's sake the resume can be refactored as
-> 
-> static int serial_port_runtime_resume(struct device *dev)
-> {
-> 	...
-> 	int ret;
-> 	...
-> 	ret = __serial_port_busy(port);
-> 	if (ret)
-> 	...
-> }
-> 
-> but this can be done later.
-> 
+ 	return mt76_init_sband(phy, &phy->sband_6g, mt76_channels_6ghz,
+ 			       ARRAY_SIZE(mt76_channels_6ghz), rates,
+=2D-
+2.39.2
 
-I agree the refactoring should go to a separate patch. But it doesn't seem
-to be more simpler or readable comparing to the current implementation? Just
-want to narrowing the spinlock region?
+It's "Fixes" for commits and "Closes" for bugs, ain't it?
 
-Thanks.
-
+Bert Karwatzki
 
