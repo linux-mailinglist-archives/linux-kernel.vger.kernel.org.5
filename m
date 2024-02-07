@@ -1,108 +1,140 @@
-Return-Path: <linux-kernel+bounces-57173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA0584D4BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:52:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7572684D4EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:56:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C529B1F223C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:52:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A88801C20DAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:56:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD49515CD66;
-	Wed,  7 Feb 2024 21:25:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EF8613541B;
+	Wed,  7 Feb 2024 21:26:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WJlCtETy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BGT73awP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 248BF15CB8E;
-	Wed,  7 Feb 2024 21:25:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDC92179A09;
+	Wed,  7 Feb 2024 21:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341156; cv=none; b=KCYmrsFLIvA3BkikUSwsd0X/gElTmWBixscVg9ADmnN8zd9IbCXs0dtUE8FiHbSn4zXgkOaNpDEiPlcEnbboYyxEl1w77BQwR0U7BbMwpuAXgndVWOwcWUSRMBtshpl4Qcivoo08Ty5qnpWCQifSx9UHvCQypKFSOrpNYUe4hHA=
+	t=1707341195; cv=none; b=VsHHX6CEXy2rwmO5B8K8paG3cd92GXZ7GwcMu7t+4jE9aEkWU+0vGVMkx+FPiuhdyG3S4/c2YRIkMB7Qcgt5YMefC9LrsQjvY4RQeZAmzknmQb2/fS2R/e2qQE+80q//tLHwCJawLUlFVr7iCIGNnRzqYIxxUGaKbltD0VIUaGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341156; c=relaxed/simple;
-	bh=o8H4o09pkLeXy0frODGluKudoPi9PzNvii1yKYW0Lj0=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=p+g+EA7jiO2bhIAtplg8e2ft8fwifKa0s6rP9AYMyUqPzNWLhHAIsDO3rlZ8Ib1GUUJ/rMJ8hsiQP3q/WauQijA8h6IP4bfsrCWUo6rf7ySLpj0/fXnSGptrC3O1RI2TOzxEg1rot5IU8oDgiYnMKiO+OlDjCxylX5c8CvszE+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WJlCtETy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 779B8C433A6;
-	Wed,  7 Feb 2024 21:25:55 +0000 (UTC)
+	s=arc-20240116; t=1707341195; c=relaxed/simple;
+	bh=Mp9Egq9jUiCzq+Q31fSaaXWLTJCV0WI3GtGR8muqObA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=WQsOycTrhZPnHhFrclelZ6Ofai1qbv0I94OHXMmEXlk8yAVbjDh4jZPlz66D3IWWSdFPcsddE2pMs95+k6AUvsY2K6Smu6Q3G0uJ9s7sQrcRD1S/VXbFMYhiaOygdKW/mQWm7gfQmDHh/RA+gJ8f5kkGTmeiuvtNEiWIyIMDqBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BGT73awP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96B18C43390;
+	Wed,  7 Feb 2024 21:26:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341156;
-	bh=o8H4o09pkLeXy0frODGluKudoPi9PzNvii1yKYW0Lj0=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=WJlCtETyglI9CUyxAiNpStKaFOkznG4fLAhkcnYvWPyUx+NxNcee6IJe7iomn2NvO
-	 9iOGfbTdAqrj+eGjS0mhBhkmW1h96EqDclNYMHjQT67YbHIaXUOs9HDPEsjpxmxmdx
-	 hDkjNALZIPL7j1Ko4fCH3pGL8Yk/rqRECsQd72uxQBWNpgBTCWE0uwYROCvz6QKzxe
-	 J7JEC4TzxR/12ND3tr4VOo8XJ/XJe1FgZ5rZxiwZhXO0zxgAaIUeFWN6saFIMgV217
-	 dbag2poBlAKhjuMPEzqK9Nivc4AHks2ZlTsll3eyMmrz021A3wFKgJaqgprYBDJz90
-	 l1IqlucNJ1Hyw==
-Date: Wed, 07 Feb 2024 21:25:53 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=k20201202; t=1707341195;
+	bh=Mp9Egq9jUiCzq+Q31fSaaXWLTJCV0WI3GtGR8muqObA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=BGT73awPkj/FLDIjrA+T3jecuuv42Y1U5NqdZBRGBXtzel9/fX/NVUjpDm7q6PWqv
+	 kezjZdFsZmOw9I40yPZANZ2a4hFt9lSdjy+cH79ScQZwSpgLTTbIwwwhE3TtS4rAgW
+	 o/ZNOs4doLxakOptnbeNizdpweo72tJttqjmEAKM5kcV1d7hWDx1B2vqqEuZMNCiBb
+	 SWmFAAH3a+uUK5MMw+Q2hI1Nd9cvD2Qkj8PwbM1AI+GkzITzZuPAIJbfEfH1Gumckh
+	 57yKf2AXnzBkLDexLHn0QuegPYx6lU4QUG0TCxjKPKQMhgUud35AKAEjBOvzx0oOfE
+	 4NFMyVTZq0eEQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Xin Long <lucien.xin@gmail.com>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Sasha Levin <sashal@kernel.org>,
+	kadlec@netfilter.org,
+	fw@strlen.de,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 12/23] netfilter: conntrack: check SCTP_CID_SHUTDOWN_ACK for vtag setting in sctp_new
+Date: Wed,  7 Feb 2024 16:25:53 -0500
+Message-ID: <20240207212611.3793-12-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240207212611.3793-1-sashal@kernel.org>
+References: <20240207212611.3793-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Dimitri Fedrau <dima.fedrau@gmail.com>
-Cc: linux-iio@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Jonathan Cameron <jic23@kernel.org>, 
- Lars-Peter Clausen <lars@metafoo.de>, Li peiyu <579lpy@gmail.com>, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>, 
- linux-kernel@vger.kernel.org, Nuno Sa <nuno.sa@analog.com>
-In-Reply-To: <20240207074758.4138724-3-dima.fedrau@gmail.com>
-References: <20240207074758.4138724-1-dima.fedrau@gmail.com>
- <20240207074758.4138724-3-dima.fedrau@gmail.com>
-Message-Id: <170734115194.3199410.700483085044705042.robh@kernel.org>
-Subject: Re: [PATCH v3 2/3] dt-bindings: iio: humidity: hdc3020: add
- interrupt bindings in example
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.15.148
+Content-Transfer-Encoding: 8bit
 
+From: Xin Long <lucien.xin@gmail.com>
 
-On Wed, 07 Feb 2024 08:47:52 +0100, Dimitri Fedrau wrote:
-> Add interrupt bindings in example.
-> 
-> Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
-> ---
->  Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+[ Upstream commit 6e348067ee4bc5905e35faa3a8fafa91c9124bc7 ]
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+The annotation says in sctp_new(): "If it is a shutdown ack OOTB packet, we
+expect a return shutdown complete, otherwise an ABORT Sec 8.4 (5) and (8)".
+However, it does not check SCTP_CID_SHUTDOWN_ACK before setting vtag[REPLY]
+in the conntrack entry(ct).
 
-yamllint warnings/errors:
+Because of that, if the ct in Router disappears for some reason in [1]
+with the packet sequence like below:
 
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.example.dts:33.34-35 syntax error
-FATAL ERROR: Unable to parse input tree
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
-make: *** [Makefile:240: __sub-make] Error 2
+   Client > Server: sctp (1) [INIT] [init tag: 3201533963]
+   Server > Client: sctp (1) [INIT ACK] [init tag: 972498433]
+   Client > Server: sctp (1) [COOKIE ECHO]
+   Server > Client: sctp (1) [COOKIE ACK]
+   Client > Server: sctp (1) [DATA] (B)(E) [TSN: 3075057809]
+   Server > Client: sctp (1) [SACK] [cum ack 3075057809]
+   Server > Client: sctp (1) [HB REQ]
+   (the ct in Router disappears somehow)  <-------- [1]
+   Client > Server: sctp (1) [HB ACK]
+   Client > Server: sctp (1) [DATA] (B)(E) [TSN: 3075057810]
+   Client > Server: sctp (1) [DATA] (B)(E) [TSN: 3075057810]
+   Client > Server: sctp (1) [HB REQ]
+   Client > Server: sctp (1) [DATA] (B)(E) [TSN: 3075057810]
+   Client > Server: sctp (1) [HB REQ]
+   Client > Server: sctp (1) [ABORT]
 
-doc reference errors (make refcheckdocs):
+when processing HB ACK packet in Router it calls sctp_new() to initialize
+the new ct with vtag[REPLY] set to HB_ACK packet's vtag.
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240207074758.4138724-3-dima.fedrau@gmail.com
+Later when sending DATA from Client, all the SACKs from Server will get
+dropped in Router, as the SACK packet's vtag does not match vtag[REPLY]
+in the ct. The worst thing is the vtag in this ct will never get fixed
+by the upcoming packets from Server.
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+This patch fixes it by checking SCTP_CID_SHUTDOWN_ACK before setting
+vtag[REPLY] in the ct in sctp_new() as the annotation says. With this
+fix, it will leave vtag[REPLY] in ct to 0 in the case above, and the
+next HB REQ/ACK from Server is able to fix the vtag as its value is 0
+in nf_conntrack_sctp_packet().
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/netfilter/nf_conntrack_proto_sctp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+diff --git a/net/netfilter/nf_conntrack_proto_sctp.c b/net/netfilter/nf_conntrack_proto_sctp.c
+index c94a9971d790..7ffd698497f2 100644
+--- a/net/netfilter/nf_conntrack_proto_sctp.c
++++ b/net/netfilter/nf_conntrack_proto_sctp.c
+@@ -299,7 +299,7 @@ sctp_new(struct nf_conn *ct, const struct sk_buff *skb,
+ 			pr_debug("Setting vtag %x for secondary conntrack\n",
+ 				 sh->vtag);
+ 			ct->proto.sctp.vtag[IP_CT_DIR_ORIGINAL] = sh->vtag;
+-		} else {
++		} else if (sch->type == SCTP_CID_SHUTDOWN_ACK) {
+ 		/* If it is a shutdown ack OOTB packet, we expect a return
+ 		   shutdown complete, otherwise an ABORT Sec 8.4 (5) and (8) */
+ 			pr_debug("Setting vtag %x for new conn OOTB\n",
+-- 
+2.43.0
 
 
