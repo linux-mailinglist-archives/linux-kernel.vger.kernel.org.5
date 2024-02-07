@@ -1,249 +1,280 @@
-Return-Path: <linux-kernel+bounces-55914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15BEF84C352
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:55:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BECF584C354
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:56:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 361481C24534
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:55:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49E991F23F7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CF131095C;
-	Wed,  7 Feb 2024 03:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 051ED10A0C;
+	Wed,  7 Feb 2024 03:55:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PVm909qd"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RyihPSvJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AA8F18B1B;
-	Wed,  7 Feb 2024 03:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1827B10949
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 03:55:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707278105; cv=none; b=jGnsRACt/YOHbUuhWAAo4khKRDgpcovHz17eUcZVu0VdsOvQ6QgW+80utROtdGQ7f9XqaFWlJ+R5RipCE3SrKnNcBYp2LclzPe1wkXGwWU/c2Drv3XAwHMXg6KRVHVRFRwfDmVWmM8af5VkmpHMu+T/JH6pd5vUZnBQxllZUXhY=
+	t=1707278157; cv=none; b=V4y5TAodyMmdjOXmxUo1PEHeHhawR/U098DKD0JS3P93vZEbNraI0FyrmM1aaIvqcNSEvSFvdshj4G5f8nKjUcExENU20LigTx6N2XNK5+aMomFKf7glpvzyXuIsH21BiKKtjM/GGe8iflJ8KwAwHBEkwYDcVHO/b3cTE7Jb3l0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707278105; c=relaxed/simple;
-	bh=alq/Epsr8DHJ6MiKVlHW4MkuUuZ14dHFXS5+zhvZRtM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TEfEG3yvIOllobNE1a1wUSeuZwiYrQNLBpukkv+buqbMzYdopktO3KEbIYapHvis16wCvzlxMY61/6LOWoNysod5e/otjtCIbLMXBFgluQHzP4xPOY0LDfirS1rz2h7DvCMfxDFNg2a2h6Ju6sDWUnlCELLBuNEb2XMep2/19pU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PVm909qd; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e0518c83c6so165111b3a.0;
-        Tue, 06 Feb 2024 19:55:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707278103; x=1707882903; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JSUyVN+zMp3raBZwXZBWBj6Uh3GxHdSlvMsi0/pJS9o=;
-        b=PVm909qdr5KX/aJqFn5Bp3f9bl/942ea1pcTOLqI7jcaVPFQSWly7veTrs4IWkf97D
-         fwAaXz3k0CU/o6E4vUJkVOdgPiPWyG4OvbXO4kEmAg3cHCikWH1J3ika9vwSH10clwGE
-         5Xyq9jPFoX6Kh2ATGgYTOqjilW6THoTfiKZBQU/K69kYs+/FnhcdLfSjDplkShq/j8Y1
-         ldbY7ajyhEUEo6OIJb+u4Gqfcc1koSJqzcx+DLpvPa53so/3kfNeJ96JxahfFHCgIL1B
-         +B9AuMC1yNytf4PJFXefN3XTmGUyA1G7Ag+QboGYX9GDSisCGQvlMsFM7ALv500WNB1r
-         0iLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707278103; x=1707882903;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JSUyVN+zMp3raBZwXZBWBj6Uh3GxHdSlvMsi0/pJS9o=;
-        b=hUskIdVp6Yps8htHuFtq8ubIXgE9gYuJ8xpEOuryfKcabAvwpcPniKt53z2w73XYvu
-         wMx91gKjk+MPxCsShHkc8aqckheXzBgIwK075icRhTvLtDQVvsW6Dyfp+zHcXrdsYSQP
-         RV7+geX4U5tclXbdIcoiRDhKw+NLrOjbzWwDEjqe2Dxq/Hpsfevk9yX4XAZWOzCM8g57
-         wahR7DjmcZAQnDz3Cz+ZbiZVZBiuobgIpki5d83tdA05r3DyNrvMHkW1mG6+79YcJORN
-         L/vC9TqqRhLftVu2fxeSGfg9uKAC2B36W2VC0mwnwmnRuSHY8Zrv29RcNCjH5XMw+lTO
-         hYXQ==
-X-Gm-Message-State: AOJu0Yyhc7U0/h11wnwEx05SdMoDAjKVZrFydILqBDaELXOVnQpHZGk3
-	kIIh/cs7VAJN5izJ+I88lPWERP4R+5gMXsV9/v1xzAULv+/fL13u
-X-Google-Smtp-Source: AGHT+IE77kv+k+lKKaVFPON9Wzu5mHAhJc9Oql5lwp9BjmydfTLfoVFhv31rzQNN9LT8w5l/k36BSA==
-X-Received: by 2002:a62:cecd:0:b0:6df:f7f3:6197 with SMTP id y196-20020a62cecd000000b006dff7f36197mr1466287pfg.34.1707278103141;
-        Tue, 06 Feb 2024 19:55:03 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVqHuxjtbSzNSU678YJfPEy0Dm3uCr7fqpRRK0RY3PTWJoBpT4vA5ftnW3BwbXhdkawge7zNn0K+3tQtp2TFkKz411lLj2fhOY1tjUhVJwTWX5aBeqr5ZBVVt3JGguGRdiiUftD4gicbv+KrELWBCXyfqg2GJHrdbGoBzSBrRQOMqZh50E5YuVWNg5hpuKKjTVuNo20dkyFzezJHUxSGAMF37r7ev1VDSkT/cbOId3939YqUL8CNTX3WL0IcA2t3WZZOzssTwMVVGieZ7aZzImmZBVpgKivuVX7
-Received: from DESKTOP-KA7F9LU.localdomain ([2406:7400:63:f7c5:bcc2:8f62:f66c:2f62])
-        by smtp.gmail.com with ESMTPSA id z1-20020aa79901000000b006e063fe6b1dsm310759pff.100.2024.02.06.19.55.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 19:55:02 -0800 (PST)
-Date: Wed, 7 Feb 2024 09:24:57 +0530
-From: Vimal Kumar <vimal.kumar32@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-	Len Brown <len.brown@intel.com>, linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, chinmoyghosh2001@gmail.com,
-	badolevishal1116@gmail.com, mintupatel89@gmail.com
-Subject: Re: [PATCH v4] PM / sleep: Mechanism to find source aborting kernel
- suspend transition
-Message-ID: <20240207035457.GA19804@DESKTOP-KA7F9LU.localdomain>
-References: <20240205170747.19748-1-vimal.kumar32@gmail.com>
- <2024020555-usable-hardy-345e@gregkh>
+	s=arc-20240116; t=1707278157; c=relaxed/simple;
+	bh=7kZpcTwOpBJsZVknIp6pf/jE4tv4HkKG1MtDV4vzq10=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=no67eEfO1wSky65zG5Uvg8XdbTo7WllFv4R1hcXh09DpisFO2X2cIo/kJZBT29mhdF4c/NIimi2vdM+f+u1ihHUbCgXjqcJotD6PkKKj/iBru2U5OOjPKtO+1rWjFr+o5ovjbeqz7lEh2XY+tJ7UrQDnIKXT+igKK4BRhK1zpdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RyihPSvJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 078A0C433C7;
+	Wed,  7 Feb 2024 03:55:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707278156;
+	bh=7kZpcTwOpBJsZVknIp6pf/jE4tv4HkKG1MtDV4vzq10=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=RyihPSvJY40VJwOTUJApVjde6sK5XNv/PxqZjQFRv32KGiU1FzOkZ1L3EKjmZrceU
+	 HXkENg39rGH6GGHyQ1lQ6QJGIRR6z1tilyqBeuQtlYLqKeK8U3ST26aph+PwuMYk3A
+	 o1+YL5Gj7nzAT3lKCKJDjeLFrMuMGnRg138EdPpDZN565PLrqY1JaPl0UrgusMF5Rs
+	 3Vu+IcbIap3B0nu2re4bR/efqn8J22rHIEUUckmGMdEQujnhkNjKYmVNolLycv0gim
+	 piiWsZNLD2HIDw5pgGauo2NeAF0BHUrWWlAeZwCBYuaBhp4GZW/UykHB5g73OJhLNh
+	 vU6qG5r5zAaHA==
+From: alexs@kernel.org
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Barry Song <song.bao.hua@hisilicon.com>,
+	Miaohe Lin <linmiaohe@huawei.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Alex Shi <alexs@kernel.org>,
+	Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+	Yicong Yang <yangyicong@hisilicon.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>
+Subject: [PATCH v4 5/5] sched: rename SD_SHARE_PKG_RESOURCES to SD_SHARE_LLC
+Date: Wed,  7 Feb 2024 11:58:40 +0800
+Message-ID: <20240207035840.936676-1-alexs@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240207034704.935774-4-alexs@kernel.org>
+References: <20240207034704.935774-4-alexs@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024020555-usable-hardy-345e@gregkh>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 05, 2024 at 07:33:17PM +0000, Greg Kroah-Hartman wrote:
-> On Mon, Feb 05, 2024 at 10:37:45PM +0530, Vimal Kumar wrote:
-> > Sometimes kernel suspend transitions can be aborted unconditionally by
-> > manipulating pm_abort_suspend value using "hard" wakeup triggers or
-> > through "pm_system_wakeup()".
-> > 
-> > There is no way to trace the source path of module or subsystem which
-> > aborted the suspend transitions. This change will create a list of
-> > wakeup sources aborting suspend in progress through "hard" events as
-> > well as subsytems aborting suspend using "pm_system_wakeup()".
-> > 
-> > Example: Existing suspend failure logs:
-> > [  349.708359] PM: Some devices failed to suspend, or early wake event detected
-> > [  350.327842] PM: suspend exit
-> > 
-> > Suspend failure logs with this change:
-> > [  518.761835] PM: Some devices failed to suspend, or early wake event detected
-> > [  519.486939] PM: wakeup source or subsystem uart_suspend_port aborted suspend
-> > [  519.500594] PM: suspend exit
-> > 
-> > Here we can clearly identify the module triggerring abort suspend.
-> > 
-> > Co-developed-by: Chinmoy Ghosh <chinmoyghosh2001@gmail.com>
-> > Signed-off-by: Chinmoy Ghosh <chinmoyghosh2001@gmail.com>
-> > Co-developed-by: Mintu Patel <mintupatel89@gmail.com>
-> > Signed-off-by: Mintu Patel <mintupatel89@gmail.com>
-> > Co-developed-by: Vishal Badole <badolevishal1116@gmail.com>
-> > Signed-off-by: Vishal Badole <badolevishal1116@gmail.com>
-> > Signed-off-by: Vimal Kumar <vimal.kumar32@gmail.com>
-> > ---
-> > Changes in v4:
-> > - Changed GFP_KERNEL flag to GFP_ATOMIC
-> > - Changed mutex_lock to raw_spin_lock
-> 
-> why raw?
->
- As mutex_lock might sleep, we need to use lock that is suitable for usages in atomic context. raw_spin_lock is already being used for other list in
-this driver, so I used the same. If suggested we can switch to spin_lock_irqsave as well.
-> 
-> > ---
-> >  drivers/base/power/wakeup.c | 100 +++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 99 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/base/power/wakeup.c b/drivers/base/power/wakeup.c
-> > index a917219feea6..b04794557eef 100644
-> > --- a/drivers/base/power/wakeup.c
-> > +++ b/drivers/base/power/wakeup.c
-> > @@ -73,6 +73,16 @@ static struct wakeup_source deleted_ws = {
-> > 
-> >  static DEFINE_IDA(wakeup_ida);
-> > 
-> > +#ifdef CONFIG_PM_DEBUG
-> > +static DEFINE_RAW_SPINLOCK(pm_abort_suspend_list_lock);
-> > +
-> > +struct pm_abort_suspend_source {
-> > +	struct list_head list;
-> > +	char *source_triggering_abort_suspend;
-> > +};
-> > +static LIST_HEAD(pm_abort_suspend_list);
-> > +#endif
-> > +
-> >  /**
-> >   * wakeup_source_create - Create a struct wakeup_source object.
-> >   * @name: Name of the new wakeup source.
-> > @@ -575,6 +585,54 @@ static void wakeup_source_activate(struct wakeup_source *ws)
-> > 	trace_wakeup_source_activate(ws->name, cec);
-> >  }
-> > 
-> > +#ifdef CONFIG_PM_DEBUG
-> 
-> Please do not add #ifdef to .c files, this makes this file even messier.
-> 
-> > @@ -590,8 +648,13 @@ static void wakeup_source_report_event(struct wakeup_source *ws, bool hard)
-> > 	if (!ws->active)
-> > 		wakeup_source_activate(ws);
-> > 
-> > -	if (hard)
-> > +	if (hard) {
-> > +#ifdef CONFIG_PM_DEBUG
-> > +		if (pm_suspend_target_state != PM_SUSPEND_ON)
-> > +			pm_abort_suspend_source_add(ws->name);
-> > +#endif
-> 
-> Especially for stuff like this, if you write your .h files properly, no
-> #ifdef are needed.
->
- Thanks. We can move it to .h file.
-> 
-> 
-> 
-> > 		pm_system_wakeup();
-> > +	}
-> >  }
-> > 
-> >  /**
-> > @@ -893,12 +956,47 @@ bool pm_wakeup_pending(void)
-> > 		pm_print_active_wakeup_sources();
-> > 	}
-> > 
-> > +#ifdef CONFIG_PM_DEBUG
-> > +	if (atomic_read(&pm_abort_suspend) > 0) {
-> > +		struct pm_abort_suspend_source *info;
-> > +
-> > +		raw_spin_lock_irqsave(&pm_abort_suspend_list_lock, flags);
-> > +		list_for_each_entry(info, &pm_abort_suspend_list, list) {
-> > +			pm_pr_dbg("wakeup source or subsystem %s aborted suspend\n",
-> > +					info->source_triggering_abort_suspend);
-> > +		}
-> > +		raw_spin_unlock_irqrestore(&pm_abort_suspend_list_lock, flags);
-> > +		pm_abort_suspend_list_clear();
-> > +	}
-> > +#endif
-> > +
-> > 	return ret || atomic_read(&pm_abort_suspend) > 0;
-> >  }
-> >  EXPORT_SYMBOL_GPL(pm_wakeup_pending);
-> > 
-> >  void pm_system_wakeup(void)
-> >  {
-> > +
-> > +#ifdef CONFIG_PM_DEBUG
-> > +#ifdef CONFIG_DEBUG_INFO
-> > +	if (pm_suspend_target_state != PM_SUSPEND_ON) {
-> > +		char *source_name = kasprintf(GFP_ATOMIC,
-> > +					"%ps",
-> > +					__builtin_return_address(0));
-> > +		if (!source_name)
-> > +			goto exit;
-> > +
-> > +		if (strcmp(source_name, "pm_wakeup_ws_event"))
-> > +			pm_abort_suspend_source_add(source_name);
-> > +
-> > +		kfree(source_name);
-> > +	}
-> > +exit:
-> > +#else
-> > +	if (pm_suspend_target_state != PM_SUSPEND_ON)
-> > +		pm_pr_dbg("Some wakeup source or subsystem aborted suspend\n");
-> > +#endif
-> > +#endif
-> 
-> Would you want to maintain this #ifdef nesting mess for the next 20
-> years?  Please do not do this.
-> 
- I was hoping if we can remove the "CONFIG_PM_DEBUG" as this functionality can exist by default as well.
- We can avoid nesting and usage for CONFIG_DEBUG_INFO move to .h files.
+From: Alex Shi <alexs@kernel.org>
 
- Please share your perspective on this.
+SD_CLUSTER shares the CPU resources like llc tags or l2 cache, that's
+easy confuse with SD_SHARE_PKG_RESOURCES. So let's specifical point
+what the latter shares: LLC. That would reduce some confusing.
 
+Suggested-by: Valentin Schneider <vschneid@redhat.com>
+Signed-off-by: Alex Shi <alexs@kernel.org>
+To: linux-kernel@vger.kernel.org
+To: linuxppc-dev@lists.ozlabs.org
+To: Miaohe Lin <linmiaohe@huawei.com>
+To: Barry Song <song.bao.hua@hisilicon.com>
+To: Mark Rutland <mark.rutland@arm.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+To: Daniel Bristot de Oliveira <bristot@redhat.com>
+To: Ben Segall <bsegall@google.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+To: Dietmar Eggemann <dietmar.eggemann@arm.com>
+To: Juri Lelli <juri.lelli@redhat.com>
+To: Ingo Molnar <mingo@redhat.com>
+To: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+To: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "Gautham R. Shenoy" <gautham.shenoy@amd.com>
+Cc: Yicong Yang <yangyicong@hisilicon.com>
+Cc: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+---
+ arch/powerpc/kernel/smp.c      |  6 +++---
+ include/linux/sched/sd_flags.h |  4 ++--
+ include/linux/sched/topology.h |  6 +++---
+ kernel/sched/fair.c            |  2 +-
+ kernel/sched/topology.c        | 16 ++++++++--------
+ 5 files changed, 17 insertions(+), 17 deletions(-)
 
-> thanks,
-> 
-> greg k-h
-
-
-
-Warm Regards,
-Vimal Kumar
+diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+index 693334c20d07..a60e4139214b 100644
+--- a/arch/powerpc/kernel/smp.c
++++ b/arch/powerpc/kernel/smp.c
+@@ -984,7 +984,7 @@ static bool shared_caches __ro_after_init;
+ /* cpumask of CPUs with asymmetric SMT dependency */
+ static int powerpc_smt_flags(void)
+ {
+-	int flags = SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES;
++	int flags = SD_SHARE_CPUCAPACITY | SD_SHARE_LLC;
+ 
+ 	if (cpu_has_feature(CPU_FTR_ASYM_SMT)) {
+ 		printk_once(KERN_INFO "Enabling Asymmetric SMT scheduling\n");
+@@ -1010,9 +1010,9 @@ static __ro_after_init DEFINE_STATIC_KEY_FALSE(splpar_asym_pack);
+ static int powerpc_shared_cache_flags(void)
+ {
+ 	if (static_branch_unlikely(&splpar_asym_pack))
+-		return SD_SHARE_PKG_RESOURCES | SD_ASYM_PACKING;
++		return SD_SHARE_LLC | SD_ASYM_PACKING;
+ 
+-	return SD_SHARE_PKG_RESOURCES;
++	return SD_SHARE_LLC;
+ }
+ 
+ static int powerpc_shared_proc_flags(void)
+diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_flags.h
+index a8b28647aafc..b04a5d04dee9 100644
+--- a/include/linux/sched/sd_flags.h
++++ b/include/linux/sched/sd_flags.h
+@@ -117,13 +117,13 @@ SD_FLAG(SD_SHARE_CPUCAPACITY, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
+ SD_FLAG(SD_CLUSTER, SDF_NEEDS_GROUPS)
+ 
+ /*
+- * Domain members share CPU package resources (i.e. caches)
++ * Domain members share CPU Last Level Caches
+  *
+  * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
+  *               the same cache(s).
+  * NEEDS_GROUPS: Caches are shared between groups.
+  */
+-SD_FLAG(SD_SHARE_PKG_RESOURCES, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
++SD_FLAG(SD_SHARE_LLC, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
+ 
+ /*
+  * Only a single load balancing instance
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index a6e04b4a21d7..191b122158fb 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -38,21 +38,21 @@ extern const struct sd_flag_debug sd_flag_debug[];
+ #ifdef CONFIG_SCHED_SMT
+ static inline int cpu_smt_flags(void)
+ {
+-	return SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES;
++	return SD_SHARE_CPUCAPACITY | SD_SHARE_LLC;
+ }
+ #endif
+ 
+ #ifdef CONFIG_SCHED_CLUSTER
+ static inline int cpu_cluster_flags(void)
+ {
+-	return SD_CLUSTER | SD_SHARE_PKG_RESOURCES;
++	return SD_CLUSTER | SD_SHARE_LLC;
+ }
+ #endif
+ 
+ #ifdef CONFIG_SCHED_MC
+ static inline int cpu_core_flags(void)
+ {
+-	return SD_SHARE_PKG_RESOURCES;
++	return SD_SHARE_LLC;
+ }
+ #endif
+ 
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 10ae28e1c088..188597640b1f 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10695,7 +10695,7 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
+ 	 */
+ 	if (local->group_type == group_has_spare) {
+ 		if ((busiest->group_type > group_fully_busy) &&
+-		    !(env->sd->flags & SD_SHARE_PKG_RESOURCES)) {
++		    !(env->sd->flags & SD_SHARE_LLC)) {
+ 			/*
+ 			 * If busiest is overloaded, try to fill spare
+ 			 * capacity. This might end up creating spare capacity
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 0b33f7b05d21..e877730219d3 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -684,7 +684,7 @@ static void update_top_cache_domain(int cpu)
+ 	int id = cpu;
+ 	int size = 1;
+ 
+-	sd = highest_flag_domain(cpu, SD_SHARE_PKG_RESOURCES);
++	sd = highest_flag_domain(cpu, SD_SHARE_LLC);
+ 	if (sd) {
+ 		id = cpumask_first(sched_domain_span(sd));
+ 		size = cpumask_weight(sched_domain_span(sd));
+@@ -1554,7 +1554,7 @@ static struct cpumask		***sched_domains_numa_masks;
+  * function. For details, see include/linux/sched/sd_flags.h.
+  *
+  *   SD_SHARE_CPUCAPACITY
+- *   SD_SHARE_PKG_RESOURCES
++ *   SD_SHARE_LLC
+  *   SD_CLUSTER
+  *   SD_NUMA
+  *
+@@ -1566,7 +1566,7 @@ static struct cpumask		***sched_domains_numa_masks;
+ #define TOPOLOGY_SD_FLAGS		\
+ 	(SD_SHARE_CPUCAPACITY	|	\
+ 	 SD_CLUSTER		|	\
+-	 SD_SHARE_PKG_RESOURCES |	\
++	 SD_SHARE_LLC		|	\
+ 	 SD_NUMA		|	\
+ 	 SD_ASYM_PACKING)
+ 
+@@ -1609,7 +1609,7 @@ sd_init(struct sched_domain_topology_level *tl,
+ 					| 0*SD_BALANCE_WAKE
+ 					| 1*SD_WAKE_AFFINE
+ 					| 0*SD_SHARE_CPUCAPACITY
+-					| 0*SD_SHARE_PKG_RESOURCES
++					| 0*SD_SHARE_LLC
+ 					| 0*SD_SERIALIZE
+ 					| 1*SD_PREFER_SIBLING
+ 					| 0*SD_NUMA
+@@ -1646,7 +1646,7 @@ sd_init(struct sched_domain_topology_level *tl,
+ 	if (sd->flags & SD_SHARE_CPUCAPACITY) {
+ 		sd->imbalance_pct = 110;
+ 
+-	} else if (sd->flags & SD_SHARE_PKG_RESOURCES) {
++	} else if (sd->flags & SD_SHARE_LLC) {
+ 		sd->imbalance_pct = 117;
+ 		sd->cache_nice_tries = 1;
+ 
+@@ -1671,7 +1671,7 @@ sd_init(struct sched_domain_topology_level *tl,
+ 	 * For all levels sharing cache; connect a sched_domain_shared
+ 	 * instance.
+ 	 */
+-	if (sd->flags & SD_SHARE_PKG_RESOURCES) {
++	if (sd->flags & SD_SHARE_LLC) {
+ 		sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
+ 		atomic_inc(&sd->shared->ref);
+ 		atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
+@@ -2446,8 +2446,8 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
+ 		for (sd = *per_cpu_ptr(d.sd, i); sd; sd = sd->parent) {
+ 			struct sched_domain *child = sd->child;
+ 
+-			if (!(sd->flags & SD_SHARE_PKG_RESOURCES) && child &&
+-			    (child->flags & SD_SHARE_PKG_RESOURCES)) {
++			if (!(sd->flags & SD_SHARE_LLC) && child &&
++			    (child->flags & SD_SHARE_LLC)) {
+ 				struct sched_domain __rcu *top_p;
+ 				unsigned int nr_llcs;
+ 
+-- 
+2.43.0
 
 
