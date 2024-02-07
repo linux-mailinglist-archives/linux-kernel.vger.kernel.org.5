@@ -1,149 +1,203 @@
-Return-Path: <linux-kernel+bounces-56995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 339EE84D278
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:56:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99D1184D283
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:59:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E51482894AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:56:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 257901F25DC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:59:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A2E126F11;
-	Wed,  7 Feb 2024 19:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4EFD84A21;
+	Wed,  7 Feb 2024 19:59:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="X/LDMUNl"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tJByh9QL"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA4086AC0
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 19:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A8685943
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 19:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707335787; cv=none; b=SUk6bYQQr2WFTVgPUH1TBWaHStZVtc33Isi7OlRDsurehU/EZkOj/uN1BjIThmOgBqu8/3IjdnQM/53Rx0xM+KTrYk7g2SIvD503nwJam77uQX8yYiF5OvZOWPGmTGk3UJczFTBwQmT5TKvQQBgXt/EipTKcvkL+oqOPwvHShsE=
+	t=1707335982; cv=none; b=iuw9JfAVV2c6dojhrKJe7fL2+ejP1ByzZMBc6rtwOf3y++s/AFnmoqG9WwWOcSi4jtUuUGDajFpnTwrXOfPOFrBkYAayUoVAmjXOXdAqv84miGPqHw/J6H/bf2MEEiRRUW6d4TVnf18usHB5U0nhPSPArFHeMIBWY8esC8+d6us=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707335787; c=relaxed/simple;
-	bh=dzgYn4bp7nr3cKM50l3TAoVq8LCXbeNtvvcBhmI+5F4=;
+	s=arc-20240116; t=1707335982; c=relaxed/simple;
+	bh=UkQx4KYTSb6zos+CY9uB4ZKRtoH3ayU53Ahbx0ztcHQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Nn5btSEkH4hkCNfzilZzrnQgq9yMVypl3F+TptCwJ1RAbgnWgO33494zFO5TXLv/IUAbTPTjlMiJkO4TALKDzzqf55OEAAhgs8UExvkgab42VFrGTKT/mY0i3dWVOkNB83SsjAKkO9FLD1+5zbYV2HH3sUaPfgsykPrOQRjp5E4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=X/LDMUNl; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d9daf74f41so17645ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 11:56:25 -0800 (PST)
+	 To:Cc:Content-Type; b=sHx6gKPCLhM8uL6F0i0BCifNLJHk2A6BUM74j/rUXh0tvCwkx2mpXRO7DLR3SU2bOdWM0P56HLSZKxmn4Dw1isjhypgQH/gNf8zZU0tGLcytm5GhkyjHuu4q1HGDfltgIngygMMa8ZuNKRmaWMoDWJyzkhgfl+FpD0uYI1mb/Xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tJByh9QL; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6047a616bfeso10447957b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 11:59:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707335785; x=1707940585; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GOFmIdHcVZFpvdlv+SwpSo0Y7EY1nbkZlWlLRqBJt6I=;
-        b=X/LDMUNl7q9r6qduvQQvW4Ck0iiopQjs1f8lsQz4dzB3rd0araf0qa5JvuZ/kNfDFU
-         gviYn784uyuu80WBVvON8JAQm09zLX1op41GCtzyCeOus5dS8dURR/lrLE6eolBcmSYB
-         49DNlVVXW/ILEwmXVA6z4KHP2ZaisphbBxUJiMLoDCXa5tCfv/G2v46gu6pf8gHaRfKB
-         GIvmH3CzJroIAFEKJchqEUNYfrcaMfL/Yh7OPgZb4Kkc1RrMo7V4DDVzN/L+A46l5BuJ
-         Ed4n6OljKwUvXGR8pW4XTBYxq6fZjLT9Ys6H0QfSxcE4jyHZZJjQIgRj16MD+WLtPHiy
-         /iEw==
+        d=linaro.org; s=google; t=1707335979; x=1707940779; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GwkfJHLn8/HfkCk/r+wwlW1fJAVG5oLG8A4VHYAkrHI=;
+        b=tJByh9QLL6QLI93LI3k+Cxp8i2axsgx29j5qZRlpKPs3LnWp20rZGaPFcYOGwDP7GD
+         7cqZ+Q9hUfGGSS3aI6MEq4zptxfymqLGCe8qg3BeSSBTKpTy1yxphkpmraN0Sq62WQru
+         Pg6+nsILS03vvprIuJQ/q/d2TygebWj5jP6OhlU++oOcqDd8okezL4xpoquahSPDul1u
+         pP1Avv4YLkYnHRLhf9jWRm9awutzptLqM/7Sz2RjIRS7EfNjaKRZCwfIOVYdiLZfvpeM
+         /X0nJWNYzuAvdJ1+beUCjF55mPOR7lxlZXoL7HxUoh5broHQ1J6Gmg97nLYuXxtW5JOo
+         btjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707335785; x=1707940585;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GOFmIdHcVZFpvdlv+SwpSo0Y7EY1nbkZlWlLRqBJt6I=;
-        b=dUvEtoY7iHuifNj6rJtPuPqnAf/yeNQgp3+cmPLYcm1iN2GqAO0V0s3Gd7yFIFV5Sh
-         SKRqNPC32AKROGeT3RAJniwN2lCbSP3dt1FRIddR7BHjbG4CosNq3fubVtE7vuGNoB0h
-         fKRL3w/e4GmrjjNOa6ylVTyiclqN3ywHo99ZNioWPvs5f5JJD7xTHl6oOAU6zKVKaeds
-         jOCwCvRqO6JCpOpI8BUh+HR6i6eZW3GBcFhu/Rh8sNTgvq5hxqQcaZiMoou1eQfoLs6v
-         1BytjG2D8Tph1hTujnEHf+g8VWn3JBo5nrGS4sXMJUaagc53ghDOwLSjL2dW0uo/a5AL
-         s83Q==
-X-Gm-Message-State: AOJu0YyyPOpinqGq2OIchFCpbKpkn4RCW8ncn5eXeWpujHkJp/XoycFg
-	CMi4fBGezUfMGUR9ZQEQ8mJeUg7AI0vvjAB/hWa7pLiIU7dfmnjSrHSqNZE64Yod1TSobbwipFo
-	swrVGcpEd7EK2X6O25rAiRvpP/Ez8+OOYc0G2
-X-Google-Smtp-Source: AGHT+IFyDmN8vpC/DtDFuDdylPr5fqRKmrKple2kR7uMrqfpHKpOh5ImkTJJ2shCLtNsUJhOZnmu0pONfefEfmA+h98=
-X-Received: by 2002:a17:903:484:b0:1d8:da36:d0ae with SMTP id
- jj4-20020a170903048400b001d8da36d0aemr215750plb.3.1707335785036; Wed, 07 Feb
- 2024 11:56:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707335979; x=1707940779;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GwkfJHLn8/HfkCk/r+wwlW1fJAVG5oLG8A4VHYAkrHI=;
+        b=lEwwojfnsMxCKfInAqW0+FDcnHJQ6BS4btQHiK4/6QMSC7prYibojF3Fm/BS9JIq3H
+         Mu1ha3qwNxKskrkisDjNjW0RU0E4kI/zwVijlm0VNBmoY1Jp1+wCfkKAnRHAIvBtp76/
+         n0htRzW/U5zd/cyDKqMptYiTnc3MA5Z+YM9X4PQal06q/2Nm0wo9B2lxITdHn1HVo7F4
+         RdBYwzqP3VZeZwKfWRT18CmxYQR1yjgUm+MxjuI2e1Gr064UQk4xvYUr7lCmro4dg5WJ
+         TtrnPvQE96qklKCaYon2ZkaMnaBsH8ET7grjO09izO8jFiVQ3Fdw3SR+W568F4xGBV4j
+         CGWA==
+X-Gm-Message-State: AOJu0Yyz9djafMp/QEd+mQom0ho/cCIMIll+iPSHpgUtFNebBEsvbvNl
+	pIjogSm1cMkneaOnxc7c7Os3GUFnF0qwSkhIKfUyhUWSHWxoGF376vBtbaud6JCEiZMDcX+5rFn
+	SHZ/8cYyXwlpNRfHPnkrDJdMmOkTlnsprOPICtA==
+X-Google-Smtp-Source: AGHT+IEuEU6FhY/I616wY+eWpvyqJscoEtGa/IwbEkSleqQN6CLz65NvHcecJWfYtSCQAm6B9A1dkykyMc95djTRxCc=
+X-Received: by 2002:a5b:c0d:0:b0:dc2:4f96:fc38 with SMTP id
+ f13-20020a5b0c0d000000b00dc24f96fc38mr5720301ybq.50.1707335979137; Wed, 07
+ Feb 2024 11:59:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202220459.527138-1-namhyung@kernel.org> <20240202220459.527138-5-namhyung@kernel.org>
- <CAP-5=fU=P-ib+n+OfqJAbm8gS2RY-W-KcBskoSHkC+aCmXYcXQ@mail.gmail.com>
- <CAM9d7chvEw6r8_7agxOpWxufTo+dLaNForSFFShCFGd9KDBtoA@mail.gmail.com>
- <CAP-5=fWx9Uub9uRgQJq_ekQScm4fJXMdr9_cr19vcckCPjPt9w@mail.gmail.com> <CAM9d7ciGna7tm5gxoVAQexj_to9sRSL-emmCTSkMbGZgY8mthw@mail.gmail.com>
-In-Reply-To: <CAM9d7ciGna7tm5gxoVAQexj_to9sRSL-emmCTSkMbGZgY8mthw@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 7 Feb 2024 11:56:13 -0800
-Message-ID: <CAP-5=fXWew4c-0zAAny-1R+6mZpfATUc8pEi0G6G79BebiaPuA@mail.gmail.com>
-Subject: Re: [PATCH 04/14] perf map: Add map__objdump_2rip()
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
-	linux-trace-devel@vger.kernel.org
+References: <20240106-fd-migrate-mdp5-v3-0-3d2750378063@linaro.org>
+ <20240106-fd-migrate-mdp5-v3-1-3d2750378063@linaro.org> <89d02d5c-4af1-9f40-483f-1efb39b2a33d@quicinc.com>
+In-Reply-To: <89d02d5c-4af1-9f40-483f-1efb39b2a33d@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 7 Feb 2024 21:59:28 +0200
+Message-ID: <CAA8EJpro3jVPDAGWdpFiukCHTVif--Y-ZhEw=ir7U3ABsa_qbA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] drm/msm/mdss: generate MDSS data for MDP5 platforms
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, 
+	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 7, 2024 at 11:04=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
-wrote:
+On Wed, 7 Feb 2024 at 20:25, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
 >
-> On Tue, Feb 6, 2024 at 3:34=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
+>
+>
+> On 1/5/2024 3:34 PM, Dmitry Baryshkov wrote:
+> > Older (mdp5) platforms do not use per-SoC compatible strings. Instead
+> > they use a single compat entry 'qcom,mdss'. To facilitate migrating
+> > these platforms to the DPU driver provide a way to generate the MDSS /
+> > UBWC data at runtime, when the DPU driver asks for it.
 > >
-> > On Tue, Feb 6, 2024 at 3:04=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
-g> wrote:
-> > >
-> > > Hi Ian,
-> > >
-> > > On Fri, Feb 2, 2024 at 5:42=E2=80=AFPM Ian Rogers <irogers@google.com=
-> wrote:
-> > > >
-> > > > On Fri, Feb 2, 2024 at 2:05=E2=80=AFPM Namhyung Kim <namhyung@kerne=
-l.org> wrote:
-> > > > >
-> > > > > Sometimes we want to convert an address in objdump output to
-> > > > > map-relative address to match with a sample data.  Let's add
-> > > > > map__objdump_2rip() for that.
-> > > >
-> > > > Hi Namhyung,
-> > > >
-> > > > I think the naming can be better here. Aren't the objdump addresses
-> > > > DSO relative offsets? Is the relative IP relative to the map or the
-> > > > DSO?
-> > >
-> > > AFAIK the objdump addresses are DSO-relative and rip is to map.
-> > > They are mostly the same but sometimes different due to kASLR
-> > > for the kernel.
+> > It is not possible to generate this data structure at the probe time,
+> > since some platforms might not have MDP_CLK enabled, which makes reading
+> > HW_REV register return 0.
 > >
-> > Perhaps we need to use names like map_rip for mapping relative and
-> > dso_rip to clean this up, or to add a different mapping_type to the
-> > enum. For non-kernel maps addresses for map are either the whole
-> > virtual address space (identity) or relative to a dso:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
-t/tree/tools/perf/util/map.h?h=3Dperf-tools-next#n115
-> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
-t/tree/tools/perf/util/map.h?h=3Dperf-tools-next#n20
-> > The dso addresses should work for objdump so perhaps the kernel
-> > addresses need map__pgoff fixing?
 >
-> I'm not sure about the vDSO case.
+> I would have expected a crash if clock was not enabled and we tried to
+> access the hw_rev register.
+
+No, for all the platforms I tested it returns 0 instead.
+However this doesn't make any difference, we don't read the register
+in MDP5 case until all clocks are enabled.
+
 >
-> By the way, I need to take a look if we can make this objdump-rip
-> thing simpler as you mentioned.  My feeling is that it can be done
-> but I'd like to do it in a separate work and to move this forward.
+> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > ---
+> >   drivers/gpu/drm/msm/msm_mdss.c | 51 ++++++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 51 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/msm/msm_mdss.c b/drivers/gpu/drm/msm/msm_mdss.c
+> > index 455b2e3a0cdd..566a5dd5b8e8 100644
+> > --- a/drivers/gpu/drm/msm/msm_mdss.c
+> > +++ b/drivers/gpu/drm/msm/msm_mdss.c
+> > @@ -3,6 +3,7 @@
+> >    * Copyright (c) 2018, The Linux Foundation
+> >    */
+> >
+> > +#include <linux/bitfield.h>
+> >   #include <linux/clk.h>
+> >   #include <linux/delay.h>
+> >   #include <linux/interconnect.h>
+> > @@ -213,6 +214,49 @@ static void msm_mdss_setup_ubwc_dec_40(struct msm_mdss *msm_mdss)
+> >       }
+> >   }
+> >
+> > +#define MDSS_HW_MAJ_MIN              GENMASK(31, 16)
+> > +
+> > +#define MDSS_HW_MSM8996              0x1007
+> > +#define MDSS_HW_MSM8937              0x100e
+> > +#define MDSS_HW_MSM8956              0x1010
+>
+> This should be 0x100B in the docs I see.
 
-Makes sense. Could we add a comment to the header file definition to
-capture some of this? Perhaps a "to be removed" to avoid later patches
-adding dependencies to the function.
+Yes, I mixed MSM8956 and MSM8953 here. The code support the latter one.
 
-Thanks,
-Ian
+>
+> > +#define MDSS_HW_MSM8998              0x3000
+> > +#define MDSS_HW_SDM660               0x3002
+> > +#define MDSS_HW_SDM630               0x3003
+> > +
+> > +/*
+> > + * MDP5 platforms use generic qcom,mdp5 compat string, so we have to generate this data
+> > + */
+> > +static const struct msm_mdss_data *msm_mdss_generate_mdp5_mdss_data(struct msm_mdss *mdss)
+> > +{
+> > +     struct msm_mdss_data *data;
+> > +     u32 hw_rev;
+> > +
+> > +     data = devm_kzalloc(mdss->dev, sizeof(*data), GFP_KERNEL);
+> > +     if (!data)
+> > +             return NULL;
+> > +
+> > +     hw_rev = readl_relaxed(mdss->mmio + HW_REV);
+> > +     hw_rev = FIELD_GET(MDSS_HW_MAJ_MIN, hw_rev);
+> > +
+> > +     if (hw_rev == MDSS_HW_MSM8996 ||
+> > +         hw_rev == MDSS_HW_MSM8937 ||
+> > +         hw_rev == MDSS_HW_MSM8956 ||
+> > +         hw_rev == MDSS_HW_MSM8998 ||
+> > +         hw_rev == MDSS_HW_SDM660 ||
+> > +         hw_rev == MDSS_HW_SDM630) {
+> > +             data->ubwc_dec_version = UBWC_1_0;
+> > +             data->ubwc_enc_version = UBWC_1_0;
+> > +     }
+> > +
+> > +     if (hw_rev == MDSS_HW_MSM8996 ||
+> > +         hw_rev == MDSS_HW_MSM8998)
+> > +             data->highest_bank_bit = 2;
+> > +     else
+> > +             data->highest_bank_bit = 1;
+> > +
+> > +     return data;
+> > +}
+> > +
+> >   const struct msm_mdss_data *msm_mdss_get_mdss_data(struct device *dev)
+> >   {
+> >       struct msm_mdss *mdss;
+> > @@ -222,6 +266,13 @@ const struct msm_mdss_data *msm_mdss_get_mdss_data(struct device *dev)
+> >
+> >       mdss = dev_get_drvdata(dev);
+> >
+> > +     /*
+> > +      * We could not do it at the probe time, since hw revision register was
+> > +      * not readable. Fill data structure now for the MDP5 platforms.
+> > +      */
+> > +     if (!mdss->mdss_data && mdss->is_mdp5)
+> > +             mdss->mdss_data = msm_mdss_generate_mdp5_mdss_data(mdss);
+> > +
+> >       return mdss->mdss_data;
+> >   }
+> >
+> >
 
-> Thanks,
-> Namhyung
+
+
+-- 
+With best wishes
+Dmitry
 
