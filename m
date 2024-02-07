@@ -1,261 +1,110 @@
-Return-Path: <linux-kernel+bounces-56437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECDEF84CA24
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:03:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35F6384CA27
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:04:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A21C3281C5D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:03:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9987F1F27DDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:04:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B6159B66;
-	Wed,  7 Feb 2024 12:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BED259B72;
+	Wed,  7 Feb 2024 12:04:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IfULpFCv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jQNjylFE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087FA5A0E9;
-	Wed,  7 Feb 2024 12:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4A5359B61;
+	Wed,  7 Feb 2024 12:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707307427; cv=none; b=Kqsr1AlpeK53sGGvFF1AL1yQ6aJSeKfJtPe+RuEIrttHE/J7NjWeWZ+XrjPzOZbh8xym53e3F0nhboUClJR5cl+L0tuM/OzSn8ImUXq/vS6UyhDUz24ZtkCT87Zj1DKurzN5o4314XKTzAmvXisYlwWovGAMjdUjZ3xWB8IWgMo=
+	t=1707307443; cv=none; b=H49MXLRN6ecpVct2DyatqDhRWzuNUopdCsDSwqproZVq5yOGqzI3lbK9oyCcGF93kJq5ZqWdh0qZynRnsZHsS9os3FvbMh6rGn8Gvc1ncvu7p0WW1EhP96aJU1/R00vFGHJ6dpW5W+NoE0t1LtsxHGRvqA3EKyMT1FHlb/0Uqek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707307427; c=relaxed/simple;
-	bh=a2Y7H1pRZaSET9eSXkWnLn1IAOa+qUY8ZdUduo6Wn/M=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R1SDMrP8Jepy0eyLHkhjhvwL123YprZaorW8eBPYjC2HbLKjpXPAj5X3UPGNZAYJJsUX7E5yxycZxFZFb7po1hKEXaOI/y2Uw9cs2u6OoCzuq/VZW1hfQWCgwVDDkHqvvs8GT9wW/C4oXaPvc6OXaSqQFhQubw+AZ7WAyDkW+9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IfULpFCv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60D79C433F1;
-	Wed,  7 Feb 2024 12:03:46 +0000 (UTC)
+	s=arc-20240116; t=1707307443; c=relaxed/simple;
+	bh=QKftlHCvnz4PA0HyFRTffsRwC4M0FHR2Bt8ifsskhn4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mPaSoaXdEC2G6b4kqa2zWtMZodDQFnlyiip1KAyJw+w8W/n0syogyxVz+bbMDsVYPjdq+x3enM0wMriR8K/whPLnlU9PKLUIyR14uUWgiPOatqInTyFjP1+tznIAye1kGISmiEGGbklhL0X2a8qJgMy9DP5O3d4ZHJwosUmY9Cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jQNjylFE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C929C433F1;
+	Wed,  7 Feb 2024 12:04:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707307426;
-	bh=a2Y7H1pRZaSET9eSXkWnLn1IAOa+qUY8ZdUduo6Wn/M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=IfULpFCvdYujQb/MqrhKnq116TrbWk3uVUVNO8cHUhx8myiFxw1DwWwPYq6EwnzNg
-	 pdYlnUn6Q6wIX91i4WFjpp76fErBFPC9C0pfXRMTDIOeDUPmzVR26Ox4X2AWM8UkeJ
-	 YBahrxcArgEcYodHo4RtIV5j47Vd16Oi2uhWpoArujTiY/olqQETVmA7Xk0YO5IZjz
-	 K0cYTqfUWm4eyCtCzxWOBv2RW2TQF3j/Ex08N0cdbjEnzPSDLEAoe9gI04JPerQ1Hh
-	 4WTUUzAa3kR1cG9y43+CU9L148r5f9BhjRpO6Io4TH6Y8WitnX2cZax4uLXdMM5vkn
-	 qLZfK84Y/lHmg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rXgeW-00177V-0o;
-	Wed, 07 Feb 2024 12:03:44 +0000
-Date: Wed, 07 Feb 2024 12:03:43 +0000
-Message-ID: <86mssc5vmo.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: "Thierry Reding" <thierry.reding@gmail.com>
-Cc: "Jon Hunter" <jonathanh@nvidia.com>,
-	"Sumit Gupta" <sumitg@nvidia.com>,
-	<treding@nvidia.com>,
-	<krzysztof.kozlowski@linaro.org>,
-	<mark.rutland@arm.com>,
-	<linux-kernel@vger.kernel.org>,
-	<linux-tegra@vger.kernel.org>,
-	<amhetre@nvidia.com>,
-	<bbasu@nvidia.com>
-Subject: Re: [Patch] memory: tegra: Skip SID override from Guest VM
-In-Reply-To: <CYY5TXBRWCVF.6KNIROYGM631@gmail.com>
-References: <20240206114852.8472-1-sumitg@nvidia.com>
-	<86wmrh6b2n.wl-maz@kernel.org>
-	<252d6094-b2d6-496d-b28f-93507a193ede@nvidia.com>
-	<86v87169g2.wl-maz@kernel.org>
-	<CYY1YXL0FWK2.1L5CRNMKUF22J@gmail.com>
-	<86sf2563u3.wl-maz@kernel.org>
-	<CYY5TXBRWCVF.6KNIROYGM631@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1707307443;
+	bh=QKftlHCvnz4PA0HyFRTffsRwC4M0FHR2Bt8ifsskhn4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jQNjylFEZqmw901m1hs3LiTkT1oSXiJzAO80rj+Je/5h03o1ZRrVaxiwdhtsr+yeh
+	 lDtAbSzzFZ0YGy9e+EknuYChS9Recc2wVCAWIUvZI4edAnTrHi1acZv5RybxYhfcR9
+	 9RI4ee09F1h3Pg+6eURw/fggXRrEMaCAz4o0jnSQDo5hduW6YCZDcnl0h0hdmuwRZK
+	 pXN6fjjtE91sg1OFQmdLgFMFGUlLOwB3dYRVWlT01/jK01G3zh8RI7ymT3j9P3GM3G
+	 str6fHBNf0uA8IG1qH5mCRcMqiwCuMVPIhIi8zz/yck0nsgb2m6Ncuz4VqOGoDAqs0
+	 DVmIgfC7FkoFA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rXgex-000000003Qa-0ZuX;
+	Wed, 07 Feb 2024 13:04:11 +0100
+Date: Wed, 7 Feb 2024 13:04:11 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Steev Klimaszewski <steev@kali.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp-x13s: correct analogue
+ microphone route
+Message-ID: <ZcNxuyRJdZCryHU_@hovoldconsulting.com>
+References: <20240125154531.417098-1-krzysztof.kozlowski@linaro.org>
+ <c34dd7ca-01b5-4424-a8ec-a525b8d722a3@linaro.org>
+ <5497d428-cdc1-4057-afda-6861d2e3860a@linaro.org>
+ <e9b6f790-831c-4df6-b16c-8d7a2f8ddc26@linaro.org>
+ <CAKXuJqjDM3P4wOKz3CaAB9DUyemqQ6ks=FPnfL7OsHnnyoyn=A@mail.gmail.com>
+ <ZcCX0hDGrWqRXr9R@hovoldconsulting.com>
+ <c075f2f8-4fbf-4309-a478-a5cfb199fdd5@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: thierry.reding@gmail.com, jonathanh@nvidia.com, sumitg@nvidia.com, treding@nvidia.com, krzysztof.kozlowski@linaro.org, mark.rutland@arm.com, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, amhetre@nvidia.com, bbasu@nvidia.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c075f2f8-4fbf-4309-a478-a5cfb199fdd5@linaro.org>
 
-On Tue, 06 Feb 2024 17:08:42 +0000,
-"Thierry Reding" <thierry.reding@gmail.com> wrote:
+On Wed, Feb 07, 2024 at 11:05:02AM +0000, Srinivas Kandagatla wrote:
+> On 05/02/2024 08:09, Johan Hovold wrote:
+> > On Sun, Feb 04, 2024 at 11:30:54PM -0600, Steev Klimaszewski wrote:
+
+> >> I somehow missed that patchset or conversation; As an owner of an
+> >> X13s, which is sc8280xp, I can say, neither pre-dts patch, nor post,
+> >> seem to do much good.  When I attempt to do a voice chat in armcord,
+> >> the responses I get to how I sound when using the mic on the X13s
+> >> itself range from "You sound like hot trash" to "You sound like a
+> >> robot with hiccups".
 > 
-> [1  <text/plain; UTF-8 (quoted-printable)>]
-> On Tue Feb 6, 2024 at 3:54 PM CET, Marc Zyngier wrote:
-> > On Tue, 06 Feb 2024 14:07:10 +0000,
-> > "Thierry Reding" <thierry.reding@gmail.com> wrote:
-> > > 
-> > > [1  <text/plain; UTF-8 (quoted-printable)>]
-> > > On Tue Feb 6, 2024 at 1:53 PM CET, Marc Zyngier wrote:
-> > > > On Tue, 06 Feb 2024 12:28:27 +0000, Jon Hunter <jonathanh@nvidia.com> wrote:
-> > > > > On 06/02/2024 12:17, Marc Zyngier wrote:
-> > > [...]
-> > > > > > - My own tegra186 HW doesn't have VHE, since it is ARMv8.0, and this
-> > > > > >    helper will always return 'false'. How could this result in
-> > > > > >    something that still works? Can I get a free CPU upgrade?
-> > > > > 
-> > > > > I thought this API just checks to see if we are in EL2?
-> > > >
-> > > > It does. And that's the problem. On ARMv8.0, we run the Linux kernel
-> > > > at EL1. Tegra186 is ARMv8.0 (Denver + A57). So as written, this change
-> > > > breaks the very platform it intends to support.
-> > > 
-> > > To clarify, the code that accesses these registers is shared across
-> > > Tegra186 and later chips. Tegra194 and later do support ARMv8.1 VHE.
-> >
-> > But even on these machines that are VHE-capable, not running at EL2
-> > doesn't mean we're running as a guest. The user can force the kernel
-> > to stick to EL1, using a command-line option such as kvm-arm.mode=nvhe
-> > which will force the kernel to stay at EL1 while deploying KVM at EL2.
-> >
-> > > Granted, if it always returns false on Tegra186 that's not what we
-> > > want.
-> >
-> > I'm glad we agree here.
-> >
-> > > > > > - If you assign this device to a VM and that the hypervisor doesn't
-> > > > > >    correctly virtualise it, then it is a different device and you
-> > > > > >    should simply advertise it something else. Or even better, fix your
-> > > > > >    hypervisor.
-> > > > > 
-> > > > > Sumit can add some more details on why we don't completely disable the
-> > > > > device for guest OSs.
-> > > >
-> > > > It's not about disabling it. It is about correctly supporting it
-> > > > (providing full emulation for it), or advertising it as something
-> > > > different so that SW can handle it differently.
-> > > 
-> > > It's really not a different device. It's exactly the same device except
-> > > that accessing some registers isn't permitted. We also can't easily
-> > > remove parts of the register region from device tree because these are
-> > > intermixed with other registers that we do want access to.
-> >
-> > But that's the definition of being a different device. It has a
-> > different programming interface, hence it is different. The fact that
-> > it is the same HW block mediated by a hypervisor doesn't really change
-> > that.
-> 
-> The programming model isn't really different in these cases, but rather
-> restricted. I think a compatible string is a suboptimal way to describe
-> this.
+> does arecord exhibit same issue?
 
-It *is* different. If it wasn't different, you wouldn't need this
-patch. I'm puzzled that we have to argue on *that*. You can call it
-restricted, I call it broken. In both case, it is a *different*
-programming interface as you can't use existing SW for it.
+I only did a quick test by switching from pulseaudio to pipewire and
+running parecord. Recording is corrupted (robot with hiccups), while it
+works fine with pulseaudio proper.
 
-> 
-> > > > Poking into the internals of how the kernel is booted for a driver
-> > > > that isn't tied to the core architecture (because it would need to
-> > > > access system registers, for example) is not an acceptable outcome.
-> > > 
-> > > So what would be the better option? Use a different compatible string to
-> > > make the driver handle the device differently? Or adding a custom
-> > > property to the device tree node to mark this as running in a
-> > > virtualized environment?
-> >
-> > A different compatible string would be my preferred option. An extra
-> > property would work as well. As far as I am concerned, these two
-> > options are the right way to express the fact that you have something
-> > that isn't quite like the real thing.
-> 
-> Coincidentally there's another discussion with a lot of similarities
-> regarding simulated platforms. For these it's usually less about the
-> register set being restricted and more about certain quirks that are
-> needed which will not ultimately be necessary for silicon.
-> 
-> This could be a timeout that's longer in simulation, or it could be
-> certain programming that would be needed in silicon but isn't necessary
-> or functional in simulation (think I/O calibration, that sort of thing).
-> One could argue that these are also different devices when in simulation
-> but they really aren't. They're more like an approximation of the actual
-> device that will be in silicon chips.
+You can also notice that something is off by looking at the pavucontrol
+volume meters which were quite active.
 
-Simulation/DV environments are a very different kettle of fish. You
-generally treat passing time with a scaling factor, and you are likely
-to run  very hacked-up SW stack anyway.
+> What is your setup looking like? I would like to reproduce this on my x13s.
 
-In any case, this is not relevant to upstream stuff, unless you plan
-to ship your emulation environment.
+I know that Steve is using pipewire (on Kali Linux I assume).
 
-> Another problem that both of the cases have in common is that they are
-> parameters that usually apply to the entire system. For some devices it
-> is easier to parameterize via DT (for example for certain devices we
-> have bindings with special register regions that are only available in
-> host OS mode), but for others this may not be true. Adding extra
-> compatible strings for virtualization/simulation is going to get quite
-> complex very quickly if we need to differentiate between all of these
-> scenarios.
+> > That's a separate issue entirely. Both the digital and analog microphone
+> > (jack) is working on the X13s as long as you use pulseaudio.
+> > 
+> > As I've mentioned before, there are problems with both playback and
+> > capture when you use pipewire however ("robot with hiccups" one could
+> > indeed describe it as).
 
-That's the price you pay for these inconsistencies. If your "HW" has a
-lot of variability and that you can't discover its capabilities from
-SW, then it either badly designed, badly implemented, badly emulated,
-or any combination thereof.
-
-In any case, you get to keep the pieces.
-
-> 
-> > > Perhaps we can reuse the top-level hypervisor node? That seems to only
-> > > ever have been used for Xen on 32-bit ARM, so not sure if that'd still
-> > > be appropriate.
-> >
-> > I'd shy away from this. You would be deriving properties from a
-> > hypervisor implementation, instead of expressing those properties
-> > directly. In my experience, the direct method is always preferable.
-> 
-> I would generally agree. However, I think especially the compatible
-> string solution could turn very ugly for this. If we express these
-> properties via compatible strings we may very well end up with many
-> different compatible strings to cover all cases.
-> 
-> Say you've got one hypervisor that changes the programming model in a
-> certain way and a second hypervisor that constrains in a different way.
-> Do we now need one compatible string for each hypervisor? Do we add
-> compatible strings for each restriction and have potentially very long
-> compatible string lists? Separate properties would work slightly better
-> for this.
-
-Again, the job of a hypervisor is to offer an architecturally correct
-view of some HW, emulated or not. If your hypervisors are implementing
-a large variety of diverging behaviours, SW needs to be able to
-distinguish between those. You can either add properties, use compat
-strings, or use a discovery protocol implemented by the device.
-
-In any case, each deviation needs to be uniquely identifiable, and be
-described either in FW or by the device itself, if only because Linux
-isn't the only game in town.
-
-> There are some cases where we can use register contents to determine
-> what the OS is allowed to do, but these registers don't exist for all HW
-> blocks. We may be able to get more added to new chips, but we obviously
-> can't retroactively add them for existing ones.
-> 
-> A central node or property would at least allow broad parameterization.
-> I would hope that at least hypervisor implementations don't vary too
-> much in terms of what they restrict and what they don't, so perhaps it
-> wouldn't be that bad. Perhaps that's also overly optimistic.
-
-Top level properties are no good unless what they express is forever
-immutable and described upfront. Identifying a hypervisor doesn't do
-that, and most of the time there will be all sorts of *variable*
-properties that need to be further discovered by a mechanism or
-another. In my (surely very limited) experience at writing hypervisors
-for some time, this eventually becomes an unmaintainable mess.
-
-You are of course free to do that in the drivers you maintain as long
-as you don't break my own toys, but I'd urge you to reconsider this
-and explore other possibilities.
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Johan
 
