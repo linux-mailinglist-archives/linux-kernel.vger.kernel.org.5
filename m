@@ -1,236 +1,463 @@
-Return-Path: <linux-kernel+bounces-56633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB33C84CD02
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:41:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D65D84CD03
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:41:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFB561C21E1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:40:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D17DB2894F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:41:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C80B76911;
-	Wed,  7 Feb 2024 14:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08CB7F465;
+	Wed,  7 Feb 2024 14:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="QgNnSXmT";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="mB9A1CyV"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SaujFH/D"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69F407C0AB;
-	Wed,  7 Feb 2024 14:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707316833; cv=fail; b=kX4xv8Rm8uE/2CN4pKla6B6n/vzlZTt1unCehUEV9vPYIdecI4685NEJLIieoY8Jn44DRauccUux0b7Vx8lY+PK3ZF3wf3fX580Ka6KL7Fq74hyj4p/bi373V5YkWO/FA7wEtdoOWysZn7DcDEHBRmF5OfLIJTlAsb/ZeG573h4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707316833; c=relaxed/simple;
-	bh=fDg3zKiup8Wc4QgQC15O9dds+ezRi+MdaLcW8t/jBDM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Z+WVCL7bESV6G9YgW9cLb2R2fFIl1zo9EWa4JBQpIPB9c/1Zy0McJWzUzvFBlijo+KmcL+jR/w5VudlSeEQwwSoEjGSpFRaNbjt5Gnt5ksFi3QTjHWx48NkuOiSnwg5P/uOYmQ/HRsdPbXWp8yxYK0+TMxD6amtfJWfzHqchx1k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=QgNnSXmT; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=mB9A1CyV; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 417DWVZ9015899;
-	Wed, 7 Feb 2024 14:40:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-11-20;
- bh=C2k+tpKTrhgD7BMx20KcuNnKcxnA6AfzSBK3Oj3U4rM=;
- b=QgNnSXmTt8Q4sJfE9l4zuX2Zsn5HLQzJIoxU14/9EH7Nkavt6Jlm88D17EXNJm8VUUfH
- 89YYqw8F2mkuWpN0PYRJiq4YWg1E8wZnw+85PG6H/RhqPRntV5TQ/KK5WDcty+wLw6Ds
- pUYNRvJJHbIrgUQJi2GZVrNC8aB7mqnyVdPQxU77pd/eGtdnl+VQo2UE3hSBwAVkvjQ+
- u9Ex+XbXjtKb0HMuLyuVfaxTrVZZWquiKr0q0rMlRCeM/nMT+5bkvke+mitlcqUFITHv
- 1XsfTJbI4/t3ELCumP9U+Xioea7NqIYYeL3bfo8LbNgz3u3O1jlnIwW3s2xpC7nRaaZ+ Zg== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w1e1v9tbd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 07 Feb 2024 14:40:21 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 417E4mYn036822;
-	Wed, 7 Feb 2024 14:40:19 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3w1bx939by-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 07 Feb 2024 14:40:19 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H/UIeE3C0DpNHJNLyFWgGAksQ74EI8905EdIMcvffOSnkx/CYjgM/asLxV8x8hOfhGWNFcHm+PHyDMRQGq/1uNbDNYkIB4rjL8Zn4PfWmNEzB+FSzn9wObtWCqKYVk+omDok3HZ5EY146q5OZz8L+7KFNGlovz3oNkOfA1AwJ57QOYWtTyYGzNy4vL3soYtem4lK7duXDUVOcx2Wegye8Q0Va92pLPhF+76B5+CNs7fp0PUcPENZSepN742thXGg1QbbxIXcJcMNss0DP4wTsMewbUlDjKwA1AqeAxPLyDys463fRN/dQV3QeV6e9lFuxfKPLZkoBaX8RuuA9bMyeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C2k+tpKTrhgD7BMx20KcuNnKcxnA6AfzSBK3Oj3U4rM=;
- b=biwLZNsR/w5u+r27SOelbpNdk29Wid+H6yhm2dG1wwjJfZ4byoQQQ6lS0C//ksnO6wD+c+DytEjjABy7Oi29nw/XIgaBCFq+DAsMYpq9DErWwvolEA4EgGse7iC3Qrjlnydxl6bNQqSUyig6m2xJ/akIuyg0syyo6fDWJu8hVLokSVYwDG4AA2xvWHl2kOuuHTZmsvWE9wlXq36axRU6CKmfAqXM1FTTj0Z8QVf/99ScZLNjH/ECO0d07H7iu56f0YxwJGJx58O0GNOXH03dl1us1A0VeDhlV/TS8zE78RixBdrCZyVMe6/isz8Vvn5L+sKUJDP7EwyxTnlr7nMHZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C2k+tpKTrhgD7BMx20KcuNnKcxnA6AfzSBK3Oj3U4rM=;
- b=mB9A1CyV9GL1BzqPdo0W/NtE2khZQEtKah3YjQjbvANX4ea/ddQtGKtOqywO/+cD7vwrB91DnXzFUdq4jziCH8t9CvHggPmhcZn6ztvO5k2JYRViMeLTF6ZHOZPKVdECfu6KNCw3PbGhmTkgsbJdcz6ySa4jKANhgOslIxHKhIU=
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by CY8PR10MB7338.namprd10.prod.outlook.com (2603:10b6:930:7e::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.38; Wed, 7 Feb
- 2024 14:40:17 +0000
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::ed:9f6b:7944:a2fa]) by BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::ed:9f6b:7944:a2fa%7]) with mapi id 15.20.7249.037; Wed, 7 Feb 2024
- 14:40:17 +0000
-Date: Wed, 7 Feb 2024 09:40:14 -0500
-From: Chuck Lever <chuck.lever@oracle.com>
-To: Christian Brauner <brauner@kernel.org>, Jeff Layton <jlayton@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        NeilBrown <neilb@suse.de>
-Subject: Re: linux-next: manual merge of the vfs-brauner tree with the nfsd
- tree
-Message-ID: <ZcOWTkR+pbQpFwvP@tissot.1015granger.net>
-References: <20240207114118.23541d8c@canb.auug.org.au>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207114118.23541d8c@canb.auug.org.au>
-X-ClientProxiedBy: CH0PR03CA0033.namprd03.prod.outlook.com
- (2603:10b6:610:b3::8) To BN0PR10MB5128.namprd10.prod.outlook.com
- (2603:10b6:408:117::24)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CF25179B1
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 14:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707316849; cv=none; b=VeR/o1GjJ3jE/LgGN/Pz5x/GcEAqOkhGkWkasK4nRlUnzS9+kSoG3H84FpOHymls4yb36K7gL7JzLPUyftXzr1BjtU/IKK8nL88wUZV/jsNnKdGpQfURPfSXDWuMW8y/12orhEZJ8vn1reqYNVFgG53zDZM0xie9kP/uaghIfd8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707316849; c=relaxed/simple;
+	bh=jpQMKikXRFTP5gQGlKg5x/X3bPGQ1hHiDiklvQdwK5U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AOvBYm6GQKlTRLvaFNFsKuTwbtsJ0t+GMGPQINT+I3/f/lBsVacxX+vSnpn+ZIVRgoJBfEntSDYUMpGRMw1DtMGqr2YKe4OkdWksPQR6lu1FwsdPFpMenX4Mie+0tUXg4S6aeZghCPdDRQmiUoWi9y/Ziu0lBLpymGmaa0ImAhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SaujFH/D; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707316847; x=1738852847;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jpQMKikXRFTP5gQGlKg5x/X3bPGQ1hHiDiklvQdwK5U=;
+  b=SaujFH/DpGnEKicWDxRfKqp5dTTg6odAUprg02GOQfryguWB9bJ6Kijc
+   Q3VE3fEF7ifQR8dOJtNWttbjBzkxfIsoZXfu+OGYnseG5V/o3kQ0DehkH
+   bsqfHmQdQm4FMlFE5T7SqQePTjkaJX9+dfQ3vz+8UguMQgZ/fbDQ4nIHm
+   cs91HzxflhjhNc4wP/Q7aQQcy2WyLuAdb2UoV95+8qhMuTra9vDkoM0Ln
+   Ko5v+Wb6jLBYD93FkfKOYxYZq03Wnupe+iwM/JgrOv1l1ZFTqf5h0/ftV
+   bw0CwwfTtN3vyXe3F1zfqTTO3wL0mAu7jFSR1TGFYSrkSx2HgGn61esJ4
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="4865341"
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="4865341"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 06:40:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="910008652"
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="910008652"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 06:40:42 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rXj6N-00000002d9v-02Uz;
+	Wed, 07 Feb 2024 16:40:39 +0200
+Date: Wed, 7 Feb 2024 16:40:38 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Shenghao Ding <shenghao-ding@ti.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
+	pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	liam.r.girdwood@intel.com, bard.liao@intel.com,
+	mengdong.lin@intel.com, yung-chuan.liao@linux.intel.com,
+	baojun.xu@ti.com, kevin-lu@ti.com, navada@ti.com, tiwai@suse.de,
+	soyer@irl.hu
+Subject: Re: [PATCH v7] ASoc: tas2783: Add tas2783 codec driver
+Message-ID: <ZcOWZlXu1fL_haFU@smile.fi.intel.com>
+References: <20240207054743.1504-1-shenghao-ding@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|CY8PR10MB7338:EE_
-X-MS-Office365-Filtering-Correlation-Id: a7fea709-858e-43f0-e7d5-08dc27eab3ee
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	YPDwjG0CLDNgqAUf5t03SmYN3/8OSlJkMIdwnjW1XXz8f5wUglldfQm0eIp5fiEAFAAZbr9NSIJPkuXLLfddR5s0NP1RFitbLKCigSuRixWh9usUZyUkL02od86orwrI5H91T8f8+8LzhqGij+hqoThHksMpYn569fyqjoh7nYLOPzJTNSUKHSNETrKYDlSjMtjgXrNsGJkhwAL7L3oqy3d/Oh/M1H7AiIxO6GBjy9wSDVemBJ18RKcpsExZ/45xTYxWFLQb1Z5GE4op4I+MzINSQ2GnqsBEx3gBFUlsl3GYWg3gE/Bz5nCFtxGzbEFJkWu9cauH0tvWYZi/1EQavBTo8/FGqwCPxB77tBjH6lWTLgATRx6JqoMuMFAPpHAKVyhezhHSeQQBMxhjpzh9j4rsT5NfOl/zG9g9YmkPG7mOyoNsLR2iXlIWNNRqF+BaRVHDnfvF0yuAjhk20qNSpUg2RXwY8/CaTp5gdKtOA/jVMgpBXQmq1u/JZezXhrXLZ186I3kEcqFFGP+0mNH021Ng54UzJiEt3GqXbOMaQ6zFTDveHfBefc9oB9ZNM+ScNT8c7ePSfBjcw21YG5wYI3BkD15PVJBsaNZmQhmZ1lw=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(136003)(346002)(366004)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(41300700001)(478600001)(6486002)(66946007)(66556008)(110136005)(6506007)(9686003)(6512007)(66476007)(54906003)(6666004)(316002)(8936002)(8676002)(4326008)(38100700002)(26005)(86362001)(83380400001)(5660300002)(44832011)(2906002)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?Mpp07OalTFvGo+DCkd3qPWC2Wn0IdJkJMZpJWidZGvWBo5ezB5zjKHrQ1esi?=
- =?us-ascii?Q?7juewEPpMFDz0NoQ4mX5hN9zZCFiazEZRwosxhvWPs1rKBgEzxkFZ+AToP3y?=
- =?us-ascii?Q?pCrOwrcPIawn9l9bOlhC3URpJ74WN0xAg5icaISq5Pt2T2p1WvVUeOK9j8hj?=
- =?us-ascii?Q?wvI1q/1biJpAjMpNgU113uvtypMptfazbpEdQYNdtH4jKgC2xQ8vfwmHNkTJ?=
- =?us-ascii?Q?ddLMV5auDghh4bNkM+RA2x55MN/lI4GMLWF8G7CJnJULkm+IgWoaRUk5GBQ6?=
- =?us-ascii?Q?Xk5vVJwKD2WyXZY+EN7xyrurGRzZeYNdAvFxcA10ffBzuhRHS3mucAvAvXf+?=
- =?us-ascii?Q?+4Z7EcY1serlYgsVlJaEfmx8/6m/RVwEypULOwCNLymiNvrX0dAh7I3UCfeJ?=
- =?us-ascii?Q?Z5SzN8O8nrKM37zlv9JaZYYJ5EkL4DXFKMOQfNQ/LtPXCqHl10Kq3SC057rL?=
- =?us-ascii?Q?J8QcvXaTpcty2d3y98iIYW0ODWzNuJTPpIP7o8xakcVLUX0fnZJSKGSLRO4n?=
- =?us-ascii?Q?MWnmuzI18/Msim9jUeN4iI0qok5mUNMebzg//K770cxDrXCGBTxf9gjCOiSP?=
- =?us-ascii?Q?oYuT67wxw1FRoolDn2bu8YIL5P2wD4ZrQdSH506vFKVaKelQKICE5mWDQ1ZQ?=
- =?us-ascii?Q?4CGzUFh9anqX0KY1+ze7h0NuSeYp35s8gXkWxunUOLBJtBHJsTlKcm8tXGgk?=
- =?us-ascii?Q?S+kA2JU/+2IsfiAINf0h9q+rbb66sN3yYuki//kh7cLCpJYH7dPG8rM5zYmn?=
- =?us-ascii?Q?HaTqxI9eg6lFqsq6Tk3v4uFXrY3n87l6qyjiGFDCUtOxujk2liQM2M9AMtXF?=
- =?us-ascii?Q?8iOL/+JrlZsFZa9SwhoViJPOUetKD43FemslafbgwHldmX0xs3M+wIsFtgMh?=
- =?us-ascii?Q?xKyKcRPyTqLo/QWow1Bg/Jb4mw5mwmGqql30YwCxcSzpZa/3VJfMQWFO1hWH?=
- =?us-ascii?Q?b9k4F9tLjq0pB467AsQF+XQrApKBdnffH+6Q8QSx5TbAfrggUmY/zJrowE9D?=
- =?us-ascii?Q?7hOEmME+hzkMmrurxjAqhqx4HDjtO9FbbewSusYnt+kalQw43qXwnhRNH5Je?=
- =?us-ascii?Q?d38IIwHjyFcnQl3PTmPP/T1+hbGREXyMg72/KuKiIRqyhQa7ALUmcXfIVznm?=
- =?us-ascii?Q?1Kzqg1eAstUJgWvTLsLTPyLOb3f4fxU4RNIOT9LtWSDt71+M4Q07G8tw65ow?=
- =?us-ascii?Q?Y2jObbfIpcXva2C/12Be78uqn1xu2rRaaQ7w4rJZDiKCDmZIUd8KzvK9FQ+J?=
- =?us-ascii?Q?HaMjrvMxoJfLD4FBHQKmpSZBC6+A09f5KJsBrZgF0njaRHrFgxRIw79Z6Edg?=
- =?us-ascii?Q?YiigAGXeGDJzLDwUHQwnQYMklA+TEz1m6LArt2Ra0qLI5sOSyhEOXktaOOO2?=
- =?us-ascii?Q?9v/PSZmzBdK6pEs8KwQ5JDWOp37k5+AkMv1JKYgrkL6iciKYZQtD8QsKVIHy?=
- =?us-ascii?Q?RZDOuV08mhLqE9s4DHrq9g+Agan/6KtF6MvKdf9QK4D/0ItDfos4zHVxeTOG?=
- =?us-ascii?Q?cAfRX73Wp2Nbea1BXCEgs5DKCuly8aJ1v/68P63acXhAlj22XO4UvVhDOxCf?=
- =?us-ascii?Q?OeHmT/lazfczaP46zO2L3hioFM1jpt9yY7J+0fiSJol+qXDLRot+YOhe1Vam?=
- =?us-ascii?Q?Xw=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	/iYGsZnD2RN6FtiIElwszXxun9BunzvXTdy8+5MkKh8zUe0ArEn/2j0Jekyk8lIZ0ACMQt/sUmPMcobzpyo1UBdJYLEnHy8PFzpgrytZzhOIEcyLeqWZFmWjj+wdWXiZR71o8uLHzJCsj1eDkjw7DcWVvgjFATgpJreNdyIa4cztwUjwDsKPpkrMO9tAlXETWeIgMC+/Idpv8HIfwVoI3SaehiWqjaJ4Lpu4I/Ji4kkqRKcylfTmUsvjhZduG0IQISyn1Sx6kFjX1UwHx7kSJClHvVphA8OrjNAY7jJT914hxC4ovlCVdy2pF/HoqZDONHMOqqV/XdfbTm+vB7UA4SkVV2jx3zQcWneEijc1dljbHgqPuaGR+CCKuKVMKXMyXG3N5vXDOR/441jJ5RGOBPTez0LcouFlRaA/KHPDxPdHHTfhKrYhx4WJf831XGKQWwHs7ylpktrKHaHzFkSEMORBeL10CC2m19mKt3kPZlX9otiTkXnVowAPTnrarkImItZl0FBdjSAJuGsStDsqvyU9Gxwgse/+0C5ya8kOAVEfIXXAhXZE4hxluDcjfn5JvcZBqUeodylqrXEJTJnVqv71mct4hWSdONrwUfFqFMc=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7fea709-858e-43f0-e7d5-08dc27eab3ee
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2024 14:40:17.5796
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zPEe/CWICwlq+AFtuwHtvZfA3Gz+9RbzYL0zZH91BQNRTYMxe7K2OEylCmjN5NYHvTrpKAQFJB+c1EkLO8xspA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB7338
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-07_05,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
- mlxlogscore=999 suspectscore=0 adultscore=0 spamscore=0 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402070109
-X-Proofpoint-GUID: 2Hly1gjroMQ2L0en_8piuWMSYntnwjON
-X-Proofpoint-ORIG-GUID: 2Hly1gjroMQ2L0en_8piuWMSYntnwjON
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207054743.1504-1-shenghao-ding@ti.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Feb 07, 2024 at 11:41:18AM +1100, Stephen Rothwell wrote:
-> Hi all,
+On Wed, Feb 07, 2024 at 01:47:42PM +0800, Shenghao Ding wrote:
+> The tas2783 is a smart audio amplifier with integrated MIPI SoundWire
+> interface (Version 1.2.1 compliant), I2C, and I2S/TDM interfaces designed
+> for portable applications. An on-chip DSP supports Texas Instruments
+> SmartAmp speaker protection algorithm. The integrated speaker voltage and
+> current sense provides for real-time monitoring of lodspeakers.
 > 
-> Today's linux-next merge of the vfs-brauner tree got a conflict in:
-> 
->   fs/nfsd/nfs4layouts.c
-> 
-> between commit:
-> 
->   b1f1961080c4 ("nfsd: allow layout state to be admin-revoked.")
-> 
-> from the nfsd tree and commit:
-> 
->   7b8001013d72 ("filelock: don't do security checks on nfsd setlease calls")
-> 
-> from the vfs-brauner tree.
+> The ASoC component provides the majority of the functionality of the
+> device, all the audio functions.
 
-Christian, Jeff -
+..
 
-For the remaining duration of v6.9 development, should I rebase
-nfsd-next on vfs-brauner ?
+> +#include <linux/crc32.h>
+> +#include <linux/efi.h>
+> +#include <linux/err.h>
+> +#include <linux/firmware.h>
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+
+> +#include <linux/of.h>
+
+Unused header. Maybe you use it as a "proxy"? Don't do this, include what you
+use directly (with some exceptions when we know that one header guarantees to
+include another).
+
+> +#include <linux/pm.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/regmap.h>
+> +#include <linux/soundwire/sdw.h>
+> +#include <linux/soundwire/sdw_registers.h>
+> +#include <linux/soundwire/sdw_type.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/sdw.h>
+> +#include <sound/soc.h>
+> +#include <sound/tlv.h>
+
++ Blank line?
+
+> +#include <sound/tas2781-tlv.h>
+> +
+> +#include "tas2783.h"
+
+..
+
+> +		/* Only reset register was volatiled.
+> +		 * Software reset. Bit is self clearing.
+> +		 * 0b = Don't reset
+> +		 * 1b = reset
+> +		 */
+
+/*
+ * The above style of the multi-line comment is used
+ * solely by net subsystem. Please, fix all comments
+ * in your driver accordingly.
+ */
+
+..
+
+> +static const struct regmap_config tasdevice_regmap = {
+> +	.reg_bits = 32,
+> +	.val_bits = 8,
+> +	.readable_reg = tas2783_readable_register,
+> +	.volatile_reg = tas2783_volatile_register,
+
+> +	.max_register = 0x44ffffff,
+
+I'm always wondering how this can work in debugfs when one tries to dump all
+registers...
+
+> +	.reg_defaults = tas2783_reg_defaults,
+> +	.num_reg_defaults = ARRAY_SIZE(tas2783_reg_defaults),
+> +	.cache_type = REGCACHE_RBTREE,
+> +	.use_single_read = true,
+> +	.use_single_write = true,
+> +};
+
+..
+
+> +static int tasdevice_clamp(int val, int max, unsigned int invert)
+> +{
+> +	/* Keep in valid area, out of range value don't care. */
+> +	if (val > max)
+> +		val = max;
+> +	if (invert)
+> +		val = max - val;
+> +	if (val < 0)
+> +		val = 0;
+> +	return val;
+
+Can it be as simple as
+
+	val = clamp(val, 0, max);
+	if (invert)
+		return max - val;
+	return val;
+
+?
+
+> +}
+
+..
+
+> +		dev_err(tas_dev->dev, "%s, wrong parameter.\n", __func__);
+
+Usually using __func__ in error messages signals about them being poorly
+written.
+
+..
+
+> +		dev_err(tas_dev->dev, "%s, get digital vol error %x.\n",
+> +			__func__, ret);
+
+Like here, you repeat __func__ contents in the message itself.
+
+..
+
+> +	mask = (1 << fls(mc->max)) - 1;
+
+Wouldn't roundup_pow_of_two() or roundown_pow_of_two() abe more explicit?
+
+..
+
+> +	mask = (1 << fls(mc->max)) - 1;
+
+Ditto.
+
+..
+
+> +	reg_start = (u8 *)(cali_data + (tas_dev->sdw_peripheral->id.unique_id
+> +		- TAS2783_ID_MIN) * sizeof(tas2783_cali_reg));
+
+Strange indentation.
+
+> +	for (int i = 0; i < ARRAY_SIZE(tas2783_cali_reg); i++) {
+> +		ret = regmap_bulk_write(map, tas2783_cali_reg[i],
+> +			&reg_start[4 * i], 4);
+
+Ditto.
+
+> +		if (ret) {
+> +			dev_err(tas_dev->dev, "Cali failed %x:%d\n",
+> +				tas2783_cali_reg[i], ret);
+> +			break;
+> +		}
+> +	}
+
+..
+
+> +	if (status != 0) {
+
+if (status)
+
+> +		/* Failed got calibration data from EFI. */
+> +		dev_dbg(tas_dev->dev, "No calibration data in UEFI.");
+> +		return 0;
+> +	}
+
+..
+
+> +		/* Date and time of calibration was done. */
+> +		time64_to_tm(tmp_val[20], 0, tm);
+> +		dev_dbg(tas_dev->dev, "%4ld-%2d-%2d, %2d:%2d:%2d\n",
+> +			tm->tm_year, tm->tm_mon, tm->tm_mday,
+> +			tm->tm_hour, tm->tm_min, tm->tm_sec);
+
+Use respective %pt
+
+..
+
+> +	img_sz = le32_to_cpup((__le32 *)&buf[offset]);
+
+Potentially broken alignment. In any case this code is bad.
+Use get_unaligned_le32() instead.
+
+..
+
+> +		dev_err(tas_dev->dev, "Size not matching, %d %u",
+> +			(int)fmw->size, img_sz);
+
+No castings in printf(). It's rarely when you need one. Here is just an
+indication of mistype.
+
+..
+
+> +		if (ret != 0) {
+
+		if (ret)
+
+> +			dev_dbg(tas_dev->dev, "Load FW fail: %d.\n", ret);
+> +			goto out;
+> +		}
+> +		offset += sizeof(unsigned int)*5 + p->length;
+
+Missing spaces around '*'. And why magic number? What is it meaning?
+
+..
+
+> +	value_sdw |= ((tas_dev->sdw_peripheral->dev_num & 1) << 4);
+
+Outer parentheses are not needed, perhaps BIT(0) instead of 1 will
+be better to understand?
+
+> +static const struct snd_soc_dapm_widget tasdevice_dapm_widgets[] = {
+> +	SND_SOC_DAPM_AIF_IN("ASI", "ASI Playback", 0, SND_SOC_NOPM, 0, 0),
+> +	SND_SOC_DAPM_AIF_OUT("ASI OUT", "ASI Capture", 0, SND_SOC_NOPM,
+> +		0, 0),
+> +	SND_SOC_DAPM_OUTPUT("OUT"),
+> +	SND_SOC_DAPM_INPUT("DMIC")
+
+Leave trailing comma as it's not a terminator.
+
+> +};
+> +
+> +static const struct snd_soc_dapm_route tasdevice_audio_map[] = {
+> +	{"OUT", NULL, "ASI"},
+> +	{"ASI OUT", NULL, "DMIC"}
+
+Ditto.
+
+> +};
+
+..
+
+> +	dev_dbg(dai->dev, "%s %s", __func__, dai->name);
+
+__func__ in dev_dbg() makes a little sense as we may enable it dynamically
+(when Dynamic Debug is on). Generally speaking no debug messages should use
+__LINE__, __FILE__, or __func__ in the modern kernel code.
+
+..
+
+> +	scnprintf(tas_dev->rca_binaryname, 64, "tas2783-%d-%x.bin",
+
+sizeof() ?
+
+> +		tas_dev->sdw_peripheral->bus->link_id,
+> +		tas_dev->sdw_peripheral->id.unique_id);
+
+..
+
+> +out:
+
+Useless label, you can return directly.
+
+> +	return ret;
+
+..
+
+> +out:
+> +	return ret;
+
+Ditto.
+
+..
+
+> +	struct  tasdevice_priv *tas_priv = dev_get_drvdata(&slave->dev);
+
+Too many spaces.
+
+..
+
+> +	tas_dev->regmap = devm_regmap_init_sdw(peripheral,
+> +		&tasdevice_regmap);
+
+One line?
+
+> +	if (IS_ERR(tas_dev->regmap)) {
+> +		ret = PTR_ERR(tas_dev->regmap);
+> +		dev_err(dev, "Failed %d of devm_regmap_init_sdw.", ret);
+> +	} else
+> +		ret = tasdevice_init(tas_dev);
+> +
+> +	return ret;
+
+	if (IS_ERR(tas_dev->regmap))
+		return dev_err_probe(dev, PTR_ERR(tas_dev->regmap),
+				     "Failed devm_regmap_init_sdw.");
+
+	return tasdevice_init(tas_dev);
+
+..
 
 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-> 
-> diff --cc fs/nfsd/nfs4layouts.c
-> index b1e585c1d9a3,4c0d00bdfbb1..4f3072b5979a
-> --- a/fs/nfsd/nfs4layouts.c
-> +++ b/fs/nfsd/nfs4layouts.c
-> @@@ -152,23 -152,6 +152,23 @@@ void nfsd4_setup_layout_type(struct svc
->   #endif
->   }
->   
->  +void nfsd4_close_layout(struct nfs4_layout_stateid *ls)
->  +{
->  +	struct nfsd_file *fl;
->  +
->  +	spin_lock(&ls->ls_stid.sc_file->fi_lock);
->  +	fl = ls->ls_file;
->  +	ls->ls_file = NULL;
->  +	spin_unlock(&ls->ls_stid.sc_file->fi_lock);
->  +
->  +	if (fl) {
->  +		if (!nfsd4_layout_ops[ls->ls_layout_type]->disable_recalls)
-> - 			vfs_setlease(fl->nf_file, F_UNLCK, NULL,
-> - 				     (void **)&ls);
-> ++			kernel_setlease(fl->nf_file, F_UNLCK, NULL,
-> ++					(void **)&ls);
->  +		nfsd_file_put(fl);
->  +	}
->  +}
->  +
->   static void
->   nfsd4_free_layout_stateid(struct nfs4_stid *stid)
->   {
+> +static int tasdevice_sdw_remove(struct sdw_slave *peripheral)
+> +{
+> +	struct tasdevice_priv *tas_dev = dev_get_drvdata(&peripheral->dev);
+> +
+> +	if (tas_dev->first_hw_init)
+> +		pm_runtime_disable(tas_dev->dev);
+> +
+> +	pm_runtime_put_noidle(tas_dev->dev);
+> +	return 0;
 
+Are you sure this is correct order of calls as we have a lot of cleaning up
+happening here?
 
+> +}
+
+..
+
+> +static const struct sdw_device_id tasdevice_sdw_id[] = {
+> +	SDW_SLAVE_ENTRY(0x0102, 0x0000, 0),
+> +	{},
+
+No comma for the terminator line.
+
+> +};
+
+> +
+
+Unneeded blank line.
+
+> +MODULE_DEVICE_TABLE(sdw, tasdevice_sdw_id);
+
+..
+
+> +#define TAS2783_PROBE_TIMEOUT 5000
+
+Missing units suffix (_US? _MS?)
+
+> +static int __maybe_unused tas2783_sdca_dev_resume(struct device *dev)
+
+No new code should use __maybe_unused for PM callbacks. Use pm_ptr() and
+respective new PM macros.
+
+..
+
+> +static const struct dev_pm_ops tas2783_sdca_pm = {
+> +	SET_SYSTEM_SLEEP_PM_OPS(tas2783_sdca_dev_suspend,
+> +		tas2783_sdca_dev_resume)
+> +	SET_RUNTIME_PM_OPS(tas2783_sdca_dev_suspend,
+> +		tas2783_sdca_dev_resume, NULL)
+> +};
+
+Use new PM macros.
+
+> +static struct sdw_driver tasdevice_sdw_driver = {
+> +	.driver = {
+> +		.name = "slave-tas2783",
+> +		.pm = &tas2783_sdca_pm,
+> +	},
+> +	.probe = tasdevice_sdw_probe,
+> +	.remove = tasdevice_sdw_remove,
+> +	.ops = &tasdevice_sdw_ops,
+> +	.id_table = tasdevice_sdw_id,
+> +};
+
+> +
+
+Unneeded blank line.
+
+> +module_sdw_driver(tasdevice_sdw_driver);
+
+..
+
+> +#ifndef __TAS2783_H__
+> +#define __TAS2783_H__
+
++ linux/bits.h
++ linux/time.h
++ linux/types.h
+
++ sound/pcm.h
+
+and so on, use IWYU (include what you use) principle.
+
+Note, for the pointers you may use forward declarations, like
+
+struct device;
+struct regmap;
+
+struct snd_soc_component;
 
 -- 
-Chuck Lever
+With Best Regards,
+Andy Shevchenko
+
+
 
