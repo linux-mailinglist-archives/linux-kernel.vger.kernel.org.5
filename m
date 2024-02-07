@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-56093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3DC584C5DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:55:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B30AF84C5DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:58:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 261391F267EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:55:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D77EE1C21F71
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:58:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D926120312;
-	Wed,  7 Feb 2024 07:55:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A60EE200BD;
+	Wed,  7 Feb 2024 07:58:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E3F0CSXH"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ec1P0rwr"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855CE200AA;
-	Wed,  7 Feb 2024 07:55:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F10200AC;
+	Wed,  7 Feb 2024 07:57:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707292503; cv=none; b=M3XbY2etKT1JyRLirnWrcDQqhoHerHq7Rn5TWuaEF7mIw53Zf/vBstTWVvgkexqseMht3z+KKaBaZtWJ0LTBA5Zb3Y32zkgEbw+WBfdR0vqnmfLXn/y6WOk27Vg7/fFZR9F6M7OCbHHGbeh9LgS079liHdL2glNdwltknaDx8ks=
+	t=1707292679; cv=none; b=XmAEhSKCFIpqDt7kFufv/prvE3YDqwAZUXWKDgEPTsw8FUSRIZ2BkPuAlB5ex+8nhb+A6+SDq+Hxt5iAuo1JeoWuP/bndcP8XflxsqgQ5S4QalIzBDhKSrl2hIPKxDOP7yCIZgETqe9FYujgErPJfxTkggqJYHrHoIBGqwKTrgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707292503; c=relaxed/simple;
-	bh=plo9ffD39AflvULKtb7V+e4QpJ5YhVSIF75AQbjiprE=;
+	s=arc-20240116; t=1707292679; c=relaxed/simple;
+	bh=rjWBgcSirSxeB63xKQnjPtAD1NzTaKfcIDTiS95daPw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=csRz/sY+mu3E/fJl3885+j+Hl4WQa09lJkP6BKe2aWwVJjH1FaNx4gbj92csokqO/qbzcDxBI5wYaBKZK8fXytcSD6tmVLp14Z1a/NUX2Z2Qk2Pl1+Bld+/CgxqHGa3mpneZ/iCWeiq9EECOa3LzQwhbPvvYXrT910KzNWfDUzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E3F0CSXH; arc=none smtp.client-ip=209.85.218.53
+	 In-Reply-To:Content-Type; b=XAJ25jSpiUHHacT6HZFWM5KqxAExBQbZnN2ss9KzNRrEAufIERz1BaiNputfnQ0YrxF4CbwaQXI5BaLy1czI0l3RiFDscUgKkYvOuin6tzo6T34uu/QjEpa5gtVaZ6D9E4GPYXF80eejJajP9KytWWFSlWpJJ4kscveEqJE+jfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ec1P0rwr; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a385fa34c66so40132766b.1;
-        Tue, 06 Feb 2024 23:55:01 -0800 (PST)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51142b5b76dso523175e87.2;
+        Tue, 06 Feb 2024 23:57:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707292500; x=1707897300; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707292676; x=1707897476; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=5siQqDPvIzVZKJKzFGz6pPdvnLjufoJPCSBU/Y3gTLQ=;
-        b=E3F0CSXHZLcQ8A3/tUgeVv/kcNG2W71aBEgEesfqz5j3kvTSUYkxd79ki7IXwSFM60
-         Wpv6/saGPlnO65d+D3TYJ3fT5eIQpYavwE3O9ZkUXNGb1jg29zO5IkuGrlkLgIR7l6zm
-         ayGLWAVqSJFEwsEJVx60bkRhuXh/sXxcFoa1y0S12Oy0JO4L7OkbJU5n+8owPBV51vUR
-         +7DA2FeSgdnVaykaPO78LeL5YRy3Qb2escLIr/XrK54Sb2HesaoeKQg7aAuaDXT6/6DK
-         ZlTZRmNGDSqY/vq0sUnMx1FhA/7SIDk3Kkcg+rATeecBkBwSK8BL1sEQ9xi7MMD1lj9z
-         bTig==
+        bh=faw62muK8rMq99LhU7XEIx44p0VAUyI8BL+QRChVvwA=;
+        b=Ec1P0rwr9lDiiDKc27yzxxzqsjJfEJ95zvePusTi2xPTaJ/e2v4WhKT8uWet+0pZ2w
+         +dvv62TqzXRTo/xRB0b/d6HUSHPYtcfTz+h8x7DCXW60QVa4L2u3TiV8nqEoJks+jQF9
+         P9NhpqiE4nhJ0VkuzLb+3JT0DIYAzKdEk0iiP+Vb6vjJgGOSnTAYqOt8shOlBK5JtZNs
+         R//DdjtFwWGVEqYNzaEFo3K82qNwGWREsdQRy4s64/UUgKtLAy7U8aZCQepVU+rJzvb5
+         p/uoA5/jiWxlfUd8BYr7rpKx3McMbROKv2ch/rRfTgwNLlIFBaBZAjk6eMoNdVBLkme8
+         geBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707292500; x=1707897300;
+        d=1e100.net; s=20230601; t=1707292676; x=1707897476;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5siQqDPvIzVZKJKzFGz6pPdvnLjufoJPCSBU/Y3gTLQ=;
-        b=owD6Bd+pAOYaYre6CkHS1RA8yod1LJXYfAeI5/eQB+hLRnKragwTbTcuhkcTdWqHow
-         6QAtkmEeFrkY+ZBi3HKDcgJ6wlcdr8LRRqWiiCkr/5uqd6mH4jcH/aJYia3ThlQVGJQs
-         RN/ti8+8qD+uEPXgtWo5LA60+cQbnkPkfdJcFMURdjdMbay1ivb2kLpRoEp0k7v3LM5k
-         Vq2x8I3YVnuiT3ohIckdxKeS9+yHcLnjM/qvjY9iNApHzN6QlXd3O3AqXmcmsK9vLR8w
-         1xZwimDEsl3PHrXrUcM+qfJSXqL2nTnTBjtfsXZGCk9aKszLx2bbqLlJ3JGThVQmP+pl
-         pzHg==
-X-Gm-Message-State: AOJu0YySuptoA4Xgl8E0YQNQD9LpefzLMkrm8ifYcF3IobxVU/9G5rBq
-	zsGxsKenD483ZBje/jAzMTTzcIKYQ73ZsWFAwbWf8anBeDmF2OfQ
-X-Google-Smtp-Source: AGHT+IGjilopHWWobuDbb4rhf8FYRAuvtIhKc0v0uJfyOtiYBgO42Q1Y0+Y8nTldOI51yZjQD6yQUA==
-X-Received: by 2002:a17:906:ecac:b0:a36:8cb6:92f7 with SMTP id qh12-20020a170906ecac00b00a368cb692f7mr3008358ejb.77.1707292499559;
-        Tue, 06 Feb 2024 23:54:59 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVu2cjRG6zO6MdctV8q8Cr2LmysVb3AReab7AY/n7DJupJ1B7/iQle9snjRmpUytzoNo1xTBrZeuRsMbvpGlxlU2KIzpeuO1bmKHOfYey09kWj78Ndh4mbK6f2jOHIE4HpN7Jdr3x03KmFBwk/6jeCsaMBSAqrZS260M2BUIKPTsuN3t/sEvGNOGO7kcfSEy425rzL2ttpuYkgWemdvsoVqT527DTCg/Rl0TrMusw+e6fvJZcswwUv4zt7mXVINphp7Pn/+7BJA182DLMCHIvkICXsGYhCEKQ/a60MN7NdTXPd/Debkp2E23DuHVbxDf9gc3V+9q8YAfXA+LVb1LKCzbzOu1m13
-Received: from [192.168.100.74] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
-        by smtp.gmail.com with ESMTPSA id vw13-20020a170907a70d00b00a37585d5dcesm456935ejc.51.2024.02.06.23.54.58
+        bh=faw62muK8rMq99LhU7XEIx44p0VAUyI8BL+QRChVvwA=;
+        b=N3TSJIMAqpz8PofcJGO32jLYA/bgMIIALGz6P06WHzwH89Kw8JgOsWe//WY2z17cyO
+         ZAooLL4Q6Uj1xvYOBDmUyTc4TgoysPNP/e0fEXpJbRmrnuEdth8k73euKJKnIkYDYRvm
+         AI3kNkTI3sRdX6LpvftgbrLrf411Xjdb3nfgEx2ajYVzVZcR/NWJmwNXDYVrPmTtoq4Y
+         dq4AHnGNFMkU2HAKgoNxm+0HLltGCksFjIYUie21g43twbJmabJ5oUrZmRWxXTJ3S4BG
+         L+UHvi+V3v92tc2k5qzYfluc1FxqgDTmFEY8aWXt2j2RtH8cAK0etMSLNQBxn0Ldtg7Q
+         DQxA==
+X-Gm-Message-State: AOJu0YywrzDTBaTKYZH41ypWR4vsIP7+as4SNwIATgQ9MDNIXdpY/srX
+	z0YQ2yZM6kVaIx7MTBYXY4cIMfM2F37fNzknEUi8K16F831ILEi8
+X-Google-Smtp-Source: AGHT+IHrOG4ej7Nc8ic00cewvUn2sqV1hsMqwojBzY8/6TzL9zMPEDbPRaGu93Tp6EIf/bcp6ZT7zw==
+X-Received: by 2002:ac2:42d5:0:b0:511:5b47:1fe8 with SMTP id n21-20020ac242d5000000b005115b471fe8mr3472289lfl.6.1707292676205;
+        Tue, 06 Feb 2024 23:57:56 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWCJTQDT9qidD5GSnJxXCfNIUbZHTrA3J5SEMhoGXkwZ8UHtixP6Uu2E0dmz4PJCKV0lED018lrWOuIW368bJFU2nzD5CDed1ZTSKe19z8Dczg0RB0oxZ18Tfzbw8jOsM3Vb4ps4gOqQxHxVRB2ycP8l0JoiKbzhUHUzu9kY77hcC/6ESLjmv6wB3ujRzYOM6FqR2iizc7p/MiKL8nGcQIzct0Kx7YECuXvtTQ9NaYsOxZ7IWQSOGJ0UUs/qUnnVg+iZGKxQ9qxnhKxDng2I6N/+oAD7xAqY6oz5HYas2dUWL2SvBTcPKkJUSKrP3NFocMBv1vjMJMPfX2e4ZOZ4mIxqR6h3uNnOeEUhALQJzGRZKTpfZ08hHuHVBkhqayVq00SB/lUS+4ITMiHqiFEm13zTZ25gt09zSGyk6LunSj+PVdw8u9Ovw4jIvD7iw75kK35MgkLo5fULXOjp3QV9olbvzUPtuN9c6s/lPW7tFOpXimlnGV/BItO7P8F3p3D9N1AgDPOCYl4+5jazyW5qGeUF53lIBl6lzWtfX2/BcIkjPP/p5Apwv7TNC21ji4rpHUfe/ZK1E+L/gXrM8DcgkQUMOIzkVQBh8bYZjJ5tOE=
+Received: from ?IPV6:2001:14ba:7426:df00::2? (drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:7426:df00::2])
+        by smtp.gmail.com with ESMTPSA id n2-20020a056512310200b0051140df84fdsm96155lfb.12.2024.02.06.23.57.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 23:54:59 -0800 (PST)
-Message-ID: <626fe429-98b3-4319-b104-ef66e4b7afdd@gmail.com>
-Date: Wed, 7 Feb 2024 08:54:57 +0100
+        Tue, 06 Feb 2024 23:57:55 -0800 (PST)
+Message-ID: <ab8d9d0a-aad4-42b7-9e24-9ae6acf7c939@gmail.com>
+Date: Wed, 7 Feb 2024 09:57:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,49 +75,93 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] dt-bindings: iio: humidity: hdc3020: add interrupt
- bindings in example
-Content-Language: en-US
-To: Dimitri Fedrau <dima.fedrau@gmail.com>
-Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen
- <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Li peiyu <579lpy@gmail.com>,
- Nuno Sa <nuno.sa@analog.com>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240207074758.4138724-1-dima.fedrau@gmail.com>
- <20240207074758.4138724-3-dima.fedrau@gmail.com>
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <20240207074758.4138724-3-dima.fedrau@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH 11/18] mfd: rohm: convert to use maple tree register cache
+Content-Language: en-US, en-GB
+To: Bo Liu <liubo03@inspur.com>, lee@kernel.org, wens@csie.org,
+ marek.vasut+renesas@gmail.com, support.opensource@diasemi.com,
+ neil.armstrong@linaro.org, ckeepax@opensource.cirrus.com,
+ rf@opensource.cirrus.com, mcoquelin.stm32@gmail.com,
+ alexandre.torgue@foss.st.com
+Cc: linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-amlogic@lists.infradead.org, patches@opensource.cirrus.com,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
+References: <20240206071314.8721-1-liubo03@inspur.com>
+ <20240206071314.8721-12-liubo03@inspur.com>
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <20240206071314.8721-12-liubo03@inspur.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi Dimitri,
-
-On 07.02.24 08:47, Dimitri Fedrau wrote:
-> Add interrupt bindings in example.
+On 2/6/24 09:13, Bo Liu wrote:
+> The maple tree register cache is based on a much more modern data structure
+> than the rbtree cache and makes optimisation choices which are probably
+> more appropriate for modern systems than those made by the rbtree cache.
 > 
-> Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
+> Signed-off-by: Bo Liu <liubo03@inspur.com>
+
+Acked-by: Matti Vaittinen <mazziesaccount@gmail.com>
+
 > ---
->  Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+>   drivers/mfd/rohm-bd71828.c | 4 ++--
+>   drivers/mfd/rohm-bd718x7.c | 2 +-
+>   drivers/mfd/rohm-bd9576.c  | 2 +-
+>   3 files changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml b/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml
-> index 7f6d0f9edc75..5b3f9670fa52 100644
-> --- a/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml
-> +++ b/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml
-> @@ -51,5 +51,7 @@ examples:
->              compatible = "ti,hdc3021", "ti,hdc3020";
->              reg = <0x47>;
->              vdd-supply = <&vcc_3v3>;
-> +            interrupt-parent = <&gpio3>;
-> +            interrupts = <23 IRQ_TYPE_EDGE_RISING>;
->          };
->      };
+> diff --git a/drivers/mfd/rohm-bd71828.c b/drivers/mfd/rohm-bd71828.c
+> index 594718f7e8e1..2f3826c7eef4 100644
+> --- a/drivers/mfd/rohm-bd71828.c
+> +++ b/drivers/mfd/rohm-bd71828.c
+> @@ -197,7 +197,7 @@ static const struct regmap_config bd71815_regmap = {
+>   	.val_bits = 8,
+>   	.volatile_table = &bd71815_volatile_regs,
+>   	.max_register = BD71815_MAX_REGISTER - 1,
+> -	.cache_type = REGCACHE_RBTREE,
+> +	.cache_type = REGCACHE_MAPLE,
+>   };
+>   
+>   static const struct regmap_config bd71828_regmap = {
+> @@ -205,7 +205,7 @@ static const struct regmap_config bd71828_regmap = {
+>   	.val_bits = 8,
+>   	.volatile_table = &bd71828_volatile_regs,
+>   	.max_register = BD71828_MAX_REGISTER,
+> -	.cache_type = REGCACHE_RBTREE,
+> +	.cache_type = REGCACHE_MAPLE,
+>   };
+>   
+>   /*
+> diff --git a/drivers/mfd/rohm-bd718x7.c b/drivers/mfd/rohm-bd718x7.c
+> index 4798bdf27afb..7755a4c073bf 100644
+> --- a/drivers/mfd/rohm-bd718x7.c
+> +++ b/drivers/mfd/rohm-bd718x7.c
+> @@ -87,7 +87,7 @@ static const struct regmap_config bd718xx_regmap_config = {
+>   	.val_bits = 8,
+>   	.volatile_table = &volatile_regs,
+>   	.max_register = BD718XX_MAX_REGISTER - 1,
+> -	.cache_type = REGCACHE_RBTREE,
+> +	.cache_type = REGCACHE_MAPLE,
+>   };
+>   
+>   static int bd718xx_init_press_duration(struct regmap *regmap,
+> diff --git a/drivers/mfd/rohm-bd9576.c b/drivers/mfd/rohm-bd9576.c
+> index bceac7016740..3a9f61961721 100644
+> --- a/drivers/mfd/rohm-bd9576.c
+> +++ b/drivers/mfd/rohm-bd9576.c
+> @@ -62,7 +62,7 @@ static struct regmap_config bd957x_regmap = {
+>   	.val_bits = 8,
+>   	.volatile_table = &volatile_regs,
+>   	.max_register = BD957X_MAX_REGISTER,
+> -	.cache_type = REGCACHE_RBTREE,
+> +	.cache_type = REGCACHE_MAPLE,
+>   };
+>   
+>   static struct regmap_irq bd9576_irqs[] = {
 
-Did you compile the example? I think this will fail because you don't
-have the include for IRQ_TYPE_EDGE_RISING.
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
 
-Best regards,
-Javier Carrasco
+~~ When things go utterly wrong vim users can always type :help! ~~
+
 
