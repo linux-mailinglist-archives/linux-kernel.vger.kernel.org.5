@@ -1,107 +1,131 @@
-Return-Path: <linux-kernel+bounces-56978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EDFE84D21E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:14:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDD5E84D220
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:15:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06B5C281A95
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:14:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18772B253C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E52085C4C;
-	Wed,  7 Feb 2024 19:14:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E2285656;
+	Wed,  7 Feb 2024 19:15:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="fZONvztv"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CDlba+cu"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43CB58562A
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 19:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63E3B85286;
+	Wed,  7 Feb 2024 19:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707333253; cv=none; b=XS2L3UPiJQsyY7UVVCFSAH2DkbgvuhppmP4MCGBEK4HoDn44NH7c08TxovlrCFAD3Ww39MTFH72g0hwD7tSmQJt0gU04nZ4XkHGD6yLMd01TTTQJCcv3zRz9FY/ZA59hJOe8vT4+hDL4YiaXn9tP4eqfafmMaOgO/jy/VNhervw=
+	t=1707333301; cv=none; b=a8LMcn8F1sZ+I8MDHknlSCyQPguuIlo7NVyuuXJ/Yci8YVNzcQsgbI+QlfA3lBfYixsyB5mgLWEak6EDZqq6NcMCLuh7FJkya2XF5S92hTPlzaYy8QWRwU4SOtur51K2xG8smr50bsVsydvnYlLND31ivD0Q7spYKHKvGqweL5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707333253; c=relaxed/simple;
-	bh=KXyViLhzEsxPVRLuCQTh8V/0OZj8FhwAW35ZH0hE6T4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sUwCKHgEp+qWiQ6/k0jI0nU5mkA/RnwOQs+Zdl0tUz/k9z31ou7YM0VQJrV0Ygt3CfDKApL8YeGIbqYiSXwP1/5v7reixcWVgPIq+cGIXtP6m2UHc5PvOKkdlxyZNdm1Y290VZWJnFyM88iS+RBmhpQ53JKWOHhHAGr/w7oI0Ig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=fZONvztv; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e06725a08dso687408b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 11:14:12 -0800 (PST)
+	s=arc-20240116; t=1707333301; c=relaxed/simple;
+	bh=W5k1pVrv5LT4aNFcxZhVlTsA53EzW+dLt1NS9jhtrtM=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=hC3782fUkmGw1IjNKPAdoXXIKi6PV3uPBpd3TCtI0pNMqPxGTBiNBCmf+ey0+o/8AHGroClt+rcWIphoYta8QyWwiUat9TLM00TLYecA4s8ruDhNDwdVpNQ/tQXnHU12kqx0LqpJ3Dg7T9zEVNVrwZ0mU0AydiaMBysHEIF76yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CDlba+cu; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5116643c64eso1784454e87.3;
+        Wed, 07 Feb 2024 11:14:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1707333251; x=1707938051; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T/rKAwAEfKEl02Xj6qqBCTszWTSTMP2vNPDD2/t6tnk=;
-        b=fZONvztvWp/mxTS/uTGQypIynf86WVnSbEmWNHzk+PaiWqyK5G/d+Yj3XU+/5BBrJl
-         EcOECn3E9BQNGwzGXP1AcygtG5IDuYYbp00qHpoUD+Ffjw+sHd5X8aD/uMAvCY64aPVR
-         cs4cYkBoNN/8yfZjLB8T/WdCCoPp6B5VKr5O8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707333251; x=1707938051;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=gmail.com; s=20230601; t=1707333297; x=1707938097; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=T/rKAwAEfKEl02Xj6qqBCTszWTSTMP2vNPDD2/t6tnk=;
-        b=BuiiZFMF+ObSOn+IUPCV7bglWSL2upceDJRbqhiKFyQrvD+yd980Dxbc1EgnMWOb8l
-         nwQPZYY6aUORI0EvnwrZFPbwEMJ9FXUqFw8M8kKp9//B63PiLiznqVqbbYtLSt5qNwmW
-         pU5vs91qJS28OnvEq63Zl4fg++njH5E0t5/Uktn12MEJ1CsfJmnb8S330dTrMN7p2l+0
-         8vD6tKSzDPmIgIZ/PAK4Kb/10B0eOeCzBdMEYX0+7qx8mLK/KcgRnKoL7R84zpJl8StW
-         x8Ylr6kfWT1k5GnFZ/4NPKDG9AYO0BFu+McDoZJDxqJShNM0q85vAZ7g4Q+cbplJ39pM
-         iWbQ==
-X-Gm-Message-State: AOJu0YxdCiXRy+3uI3CqLjOUfPxSrAL7CUSMr/u6Mt+l9PLvrX/klQOr
-	HVduThRT2/O9DvTmi8ic2qfD44WH7fOgs2hAo36A7pvbZgwl5F4kWUjudblcWuM=
-X-Google-Smtp-Source: AGHT+IF06h+4rJWxr+0ujFL55YOTd+msyLT5qWfeZkXbPmu7FfyJPyksEpShqn5A9dLfjMXWCiAePg==
-X-Received: by 2002:a05:6a20:8698:b0:19c:93c2:7ef3 with SMTP id k24-20020a056a20869800b0019c93c27ef3mr4183085pze.46.1707333251675;
-        Wed, 07 Feb 2024 11:14:11 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVG+1M2cR4xp1y1p4GRK3cgTXg3DcbRpzJZL35j2Vm4cwz7Mu6m3KbetTNBxQ0yfcUQ0B6QdBnQhYcYfXGNvcvGnukOln5ehLAoTx6v0kcWWHpMrzdj6NTydogDKldDrmIyQiKPf2DzeR5hVWjWMYRMD8BQteYm3r/cbFQ36wwpODv3aGXQKYlp/Qh58DyKHxSO2rld6GX0EbALHj6Am4Ey/O6WuoqwMxe+X81LGnF7OkJqEeNMJZNJMSJVnuMEFcCB4t8aTu+OG5Z4vqa+9T+H1EPf0rq1ZFjKVlITrpujOtfIGCwcLTYjnefAtwZtvkE+rv8FMyYcDl8hLNeBbuKg4roZEa7kh0rKW4JF6rFA4XmdhpRGPrlf30Q2Q55DGrjZ3p38U+DJ4f0RCBUmR5lTmLovGVj+7rfPOBwDp+nNgJBLsNUxjF32r58L0AywfMjppdJQMOIThgRY6LK++kDoPlmvb2G4/g2EriU8U4e5vB5tluDE+QL9xEo2EkNR0XnoRZ9bgXcqyVJH3w2svwdvpvLAT/RMhAt+c8RulCOeaa8HSuIJRh0p6LUzii9RT0JC3jGAizO8YPDw4qfVznxRvpw4niUyVmg2mjOasSvLQw==
-Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id mi7-20020a170902fcc700b001d6f8b31ddcsm1819227plb.3.2024.02.07.11.14.09
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Feb 2024 11:14:11 -0800 (PST)
-Date: Wed, 7 Feb 2024 11:14:08 -0800
-From: Joe Damato <jdamato@fastly.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	chuck.lever@oracle.com, jlayton@kernel.org,
-	linux-api@vger.kernel.org, brauner@kernel.org, edumazet@google.com,
-	davem@davemloft.net, alexander.duyck@gmail.com,
-	sridhar.samudrala@intel.com, willemdebruijn.kernel@gmail.com,
-	weiwan@google.com, David.Laight@ACULAB.COM, arnd@arndb.de,
-	sdf@google.com, amritha.nambiar@intel.com,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH net-next v6 1/4] eventpoll: support busy poll per epoll
- instance
-Message-ID: <20240207191407.GA1313@fastly.com>
-References: <20240205210453.11301-1-jdamato@fastly.com>
- <20240205210453.11301-2-jdamato@fastly.com>
- <20240207110413.0cfedc37@kernel.org>
+        bh=X+zCCH6HGB9saSmIAWX6wClWcswuwqRqYjvjldtPTEU=;
+        b=CDlba+cuUfRuJE9pqgkXHQanIQxAAJK2Lgx9mkKE7wbRUfWMCu0XMTqnHYwviioVND
+         BsY2/d1EdKOPuc5g5LAbkhqRzG7Rj+yPB1PNPCIeGgzzZlZUx8wTqbgtr/zIXs3X6Thy
+         DVNCmfvaGKHTln8qjfNCkckR3mb7VcvdK0t6wYw8j6ac4vcEmBIe9Z0EBWlv7f8Jq9eR
+         W/g+dPwPWGjp9MTiueGHrLzgmUsF0qXpJ7aQROjQ5lEZbS8XX/u1IDPQZHBLYobdzxdb
+         sAeIi9k7pVE3zTvS03IEB3YelQaJX5bdQb3d25+8oa/L8MOVSoYYIJnMUN45MA1inDrN
+         dm9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707333297; x=1707938097;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X+zCCH6HGB9saSmIAWX6wClWcswuwqRqYjvjldtPTEU=;
+        b=LYsbGNceIEJyXXinEXEdtjDC6RkGhRnkhmVZteYU2Ux1bXUJnLMx1ucwJEIpD7JEj3
+         NZe/P0E0X5KzMpNND1Nt7TN3zsHxiFWjT+8HYlZdr2UqNP7o++3kR8ia54Cmg2xHFvef
+         +DB5cY1qWYKCCR2VJqHlzQuN80OTT/dcoKOw5HgGzlS6pHotmGnZOT/RYhDcM9XKZzv1
+         Ydknn37Tv2XYidU+Z+Hqmv+HYgdOLrlPjuRvJX/FTGdiY19wX0HOhqeRTjaXp5Oj78Je
+         KPC3HYhha+YvYPdJP4zx2jOpfzoWjHNURCEaZclHm15YS4awJg6t7fLA95Bx82tDLPA7
+         Vz5A==
+X-Gm-Message-State: AOJu0YwIliP7rkaY+Rj+4rVaA2MxQp01OAkR1gaB6VND8rYCjuFFKbGp
+	Kz7rWJeCMwqfybHNszul6h9GvtC8+zE82nnKasgRA+6LUe4d4kzW
+X-Google-Smtp-Source: AGHT+IHKcU4DfAYC+ybYnEs2gLTCHxySWNSBciYIelNeHYnUZ8fPh5fzMREyBiwbBGy3clFkEm9THA==
+X-Received: by 2002:ac2:5e9b:0:b0:511:484a:dacf with SMTP id b27-20020ac25e9b000000b00511484adacfmr4036038lfq.30.1707333297152;
+        Wed, 07 Feb 2024 11:14:57 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVJaf54joY5YOnJj/Ss0Nd4hGJAqbezIWP2b1kTCrTyJg/4kpV5SggnJoOmsqVTGPnvnHvEnferyiH4GbdzBG4LQm6pn1iv5BDIMNxUvBv8VJNm5N/lsBsxwJlU2jGPAXj99f37HvrMGAhcqUqsHlqSaMLf9B9mFARdFI3KYtOcBzv2VrnLMcW1GP09qRny/f/1QMGzophtFIEHK81I9Jm+bAEUXLyGy02Cx51YApKq4yUsS6xGpdIcDZcN5uLo0nJqvgm5ffecpOmPbapHhRS6FYUFZv5zUO7xBo0pqspczxgnOn7H83ParBlVQJTnltkFQikDVnT5Caxo5F3+rDzhbqQ4kEF4fbH8Ebt9l6aVY+tqMx7MvyHX2BKeif1ecj1CUK2UZ8WaihZYC8VVckXwl6PWXhC8Go07t/NE0Jmx4rziXLS7lqofKKfwUlNYF7av+h6hnlLknUWNTKC7d/p9PE56nMIFTG6SBWwApe+Y7PyjgIw=
+Received: from [192.168.1.105] ([178.176.76.58])
+        by smtp.gmail.com with ESMTPSA id v29-20020ac25b1d000000b005115365c4aesm285924lfn.292.2024.02.07.11.14.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Feb 2024 11:14:56 -0800 (PST)
+Subject: Re: [PATCH 2/2] platform/chrome: cros_ec_typec: Make sure the USB
+ role switch has PLD
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ Prashant Malani <pmalani@chromium.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Benson Leung <bleung@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>,
+ Guenter Roeck <groeck@chromium.org>, Emilie Roberts <hadrosaur@google.com>,
+ "Nyman, Mathias" <mathias.nyman@intel.com>,
+ "Regupathy, Rajaram" <rajaram.regupathy@intel.com>,
+ "Radjacoumar, Shyam Sundar" <ssradjacoumar@google.com>,
+ Samuel Jacob <samjaco@google.com>, linux-usb@vger.kernel.org,
+ chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Uday Bhat <uday.m.bhat@intel.com>
+References: <20240207145851.1603237-1-heikki.krogerus@linux.intel.com>
+ <20240207145851.1603237-3-heikki.krogerus@linux.intel.com>
+From: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <338756c8-af83-c023-c5b7-757d57c76fa2@gmail.com>
+Date: Wed, 7 Feb 2024 22:14:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207110413.0cfedc37@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20240207145851.1603237-3-heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 07, 2024 at 11:04:13AM -0800, Jakub Kicinski wrote:
-> On Mon,  5 Feb 2024 21:04:46 +0000 Joe Damato wrote:
-> > Allow busy polling on a per-epoll context basis. The per-epoll context
-> > usec timeout value is preferred, but the pre-existing system wide sysctl
-> > value is still supported if it specified.
+On 2/7/24 5:58 PM, Heikki Krogerus wrote:
+
+> The USB role switch does not always have the _PLD (Physical
+> Location of Device) in ACPI tables. If it's missing,
+> assigning the PLD hash of the port to the switch. That
+> should guarantee that the USB Type-C port mapping code is
+> always able to find the connection between the two (the port
+> and the switch).
 > 
-> Why do we need u64 for usecs? I think u16 would do, and u32 would give
-> a very solid "engineering margin". If it was discussed in previous
-> versions I think it's worth explaining in the commit message.
+> Tested-by: Uday Bhat <uday.m.bhat@intel.com>
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> ---
+>  drivers/platform/chrome/cros_ec_typec.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index 2b2f14a1b711..5c14e8db08b5 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+[...]
+> @@ -66,6 +67,16 @@ static int cros_typec_parse_port_props(struct typec_capability *cap,
+>  		cap->prefer_role = ret;
+>  	}
+>  
+> +	/* Assing the USB role switch the correct pld_crc if it's missing. */
 
-In patch 4/4 the value is limited to U32_MAX, but if you prefer I use a u32
-here instead, I can make that change.
+   Doing what?! :-P Maybe assign?
+
+[...]
+
+MBR, Sergey
 
