@@ -1,279 +1,228 @@
-Return-Path: <linux-kernel+bounces-56225-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4EAA84C799
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:38:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC7B184C75C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:30:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7926228B5EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:38:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F06711C24DD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:30:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67F84C609;
-	Wed,  7 Feb 2024 09:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0870621112;
+	Wed,  7 Feb 2024 09:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="P+wfLnhe"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cjL/+eZH"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76D523F9D6
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:32:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0080720B37;
+	Wed,  7 Feb 2024 09:29:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707298375; cv=none; b=hwRs1cwTWGGyX8lvx4b0RASJ+asmyCb6FlIXA/mk0iysMDDsFqe3J3BPwTxnZZyRxrjUKKh4dzgZA9KfFdpMJRDF03Uq+rso7L3boJI9KhM1cumDjcmbnLHfVs/AgrcZ3yxiXyMEp1/D5Klmpuqoh3H2XrFvS4PPnqX0OL9SV8s=
+	t=1707298198; cv=none; b=bJ6pERYyNJKnlp6yrjuG2B9vmyVx2ImUohdTkQcJdhDlqAkyBtrMB2blNe5PTPtdcBcR1SCQhAuthOp2t5zCnXgXFmmhtvIjmTSvvFmxQyzpHaSt8uwkM5BW6s9d2R7UzAWtqre8I+TT6jCHhh8q/bTDvsEI8buAFqUtgaUzV6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707298375; c=relaxed/simple;
-	bh=IrjB9D7I+eQ6XxmJDoPLbOhDTNkYMgIUTaS/CiFBq2Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eb+kL0kjL50t2XiAzcWOAiSSQumajAUvcWPkLSF/hhAOlZvVbYRIdxibDJmQE1+4pC+3rWOxtzSQG7q6WeGyuvEPc67CT/2M60gj2MTLd8aaYHsB1ILgnKOUA3BxTjV6JFoeY0kZTU9Du0lUFO1EyX+1KYj5cKRwsp15ztzkZUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=P+wfLnhe; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51124d86022so661960e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:32:53 -0800 (PST)
+	s=arc-20240116; t=1707298198; c=relaxed/simple;
+	bh=MiIUUkgOurUD6m7nycDs8ZFVTmYyIlFn3pQokgM0Fiw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=jNWSMUlA19KpSDTcW7ZAD3C4whlJRGB4mU+3slGPK2qyY6SvEKIzdvsSMie7OGp7qUYCR8jeOftqeMsVgguRR1g41To8mIogDtBSBO7zvkiojDX5gLIXqOEEVs8IV9cdWpVhNse7XfRjgmk7g6AiJpRMBluVeE5LDXZLh+O7Yn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cjL/+eZH; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a370e63835cso47345866b.1;
+        Wed, 07 Feb 2024 01:29:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707298371; x=1707903171; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vyrMc5jTp9SVMayJr+6E15Cmf/hoA9mjpzLhtoAYUfo=;
-        b=P+wfLnhebTEVJE9V4wRL4x856FoM9eLNlJ/mTzOyJbRZuzDBqiQIcYQtOmv5wERqeU
-         bzAWc2t0E+AHpW+7fl6CyGIOg+WdA6QfmdIAUw9iR3nFvOrzdRwZByMOKzt18YlWCEiD
-         XejWl5EhssTxklQsAS1TQuGGANBMgeswg+vcea7KSvOVPXXOxz6J9rWKyOKbaNMXbIfX
-         PqdcpcE4fJoNLV5bgLE7WqFSnT5UBlu/Dq+b6ZNAJIk8rRZ3StwBHAoO/rUER9vquylQ
-         uj2KEyIFp87Xq3xf8twaZlYnPP0ud1YVJRAcZ9cA9rVBIpJSlPv/8KMLMgw1CNLTmXzJ
-         U4KA==
+        d=gmail.com; s=20230601; t=1707298193; x=1707902993; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=V1ZzVwcYFWNZCpenXU++NhwKm0k1ManT0kvG1W9T6Lc=;
+        b=cjL/+eZHnE0TJHU3VshiRfify8S7T+fgHbgZRoUsen/jxJhnysKKwLtXXHcRw9NR73
+         VqWEM9y7/lO8Q+c4exNa/KoL+OepM475zsDozNAC6CbSbLP6n8yew9zQ3W1zUhDh7y7H
+         duKueR3N1m9z2sI2vh66KKqG384egCjXlPNYJliXaqJ0RwdPTOAupchByxz/T4pzPABp
+         47EhbNkunSjc8l9jcqPOolNkuIcx1KrEcIjEvySj6e020X3EzyRvwO92yhicnNThRNMV
+         j7qx+GF9jau0awmXCjhsfMDnL7FPsLsoXeX9iJbgmRd2hcZoNa9U1dKjNrNfGbkwzqNa
+         dPFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707298371; x=1707903171;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vyrMc5jTp9SVMayJr+6E15Cmf/hoA9mjpzLhtoAYUfo=;
-        b=AZ2wuZ8dpy/8l6MgWfhKUwmmj1Z9MIcfjydxqaNza6dT3D2JjOd5BJtazhI2Gf+rUE
-         StM9CDPsdIHjik0oB0lqzU2ZD09RADAqkBp+4zjCwaSB2bJSfccQvsMzmNa9pM1xdaYt
-         ftVwWJ70ko7r01OmkkN/J96spE8rUqplC1BJBeC3bqRIvbzJfDiSb4NBDjkLuAIY7bPr
-         3O1wamuHwB5oj7syELT7HQgbRt4Iz1DxXv4ndB3w6wI8435KRm/32+MKKX9ejWRa77Rc
-         /bsVmUV9ge9d8+ScmNSh6DJRrPoPVn7yVZT+1s1Es8AFJYFS77DZCpUdkhNxrh6mDPpe
-         lrOA==
-X-Forwarded-Encrypted: i=1; AJvYcCVTj53pb5v8sWV/eoogYLSOZ9D/7wRjsiY9ZWCJzDZd0lL+22FdHGoPKFcl5iqGZWGxFKqCHepIg1l/Dtx9KjynYLrsH1ZCNMQG0wRS
-X-Gm-Message-State: AOJu0YwTw3LiznQdW9LFvcs/F80ZIjqYHkkvOGxL/4X9uZYINpATLwYO
-	KfzR3C3ArMojnlzgsHeoHEcaJ42gsivBbhJ+A/H5wvtg7RPfxMjoAqcyiO+RvKI=
-X-Google-Smtp-Source: AGHT+IGlyySrxZb2xCUU3NVUNF0iGN9y5kNPNUw/zgDn+20t3kXSbkZ4pfjUGMlLN2CsKy2qSf3Pgw==
-X-Received: by 2002:a05:6512:370f:b0:511:6263:408d with SMTP id z15-20020a056512370f00b005116263408dmr1649723lfr.8.1707298371575;
-        Wed, 07 Feb 2024 01:32:51 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWOWcLOLQ9J24dPnoaG8IbJC8shp1vr4lGFMt2PWDagdz+m4NS4yWhB8snlw+CumAifFUDVrlUoZQ0Q4+v/UP8wiJ6vbRLHuHPZvpoKBiPo7MLcZwoYW/a8xXdRQPbBICXOLhHiDhjAKDcNhAYomPtmipfq0dp0x9lQsHUhw03WjeaN+twKE65+wW/cfKwFDEcvgkv7x+5NmYuerBB8W/4TQxB4mvQOjIbNqje/tX5CwShlEm60Trmie5idaae4N0K9/ORgEmZNgkWFPmOPiZVpQuulZXxE9HFO8P/xxfpt+03JWR/b4wsqM6PttqvDeLX/c1+CQ+3yuMESoZ6sxSdQGO11NTGeRppTUUFU5/+UYIjVL3SMg/hWxm8nZstXMw78Y11jXsQRmFQiwEPP8pwZdCLvXjCbBXMYvEFxCq47A4Bq6jvPqjBzBUvw
-Received: from blmsp.fritz.box ([2001:4091:a246:821e:6f3b:6b50:4762:8343])
-        by smtp.gmail.com with ESMTPSA id qo9-20020a170907874900b00a388e24f533sm122336ejc.148.2024.02.07.01.32.50
+        d=1e100.net; s=20230601; t=1707298193; x=1707902993;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=V1ZzVwcYFWNZCpenXU++NhwKm0k1ManT0kvG1W9T6Lc=;
+        b=injTh1TmQd6Lvy8dIzKq/LW5aAdl7E6r00Rmt887cZDvSog/hx4numH8voE8KFnjpP
+         X2S4tcAphzgiDLRZmwp2IlHm1gsYP/UBz00QXg0XRwn7s2YTDhsXKY73Pz/Yl6BJCtRF
+         g+0NMixho2Sa+zdSsJ1QXOx+OIrB6wBHjkUW8dUkn9Tey7QiJMFoFxk6JDA5mNoU4mWp
+         jR9bERQlXSyhxBJ6dEIxRuWSOFViC9/6lmkLVHGsDgsAWgc5O3lXTZ9/+jqcDmZq6nSl
+         NA13NDmOjuftXBbPgF4D/2qUooNsoMOXDv8wPOCNJUu1SMKJiIX/KxTC4baoiiN6PLC6
+         BUbw==
+X-Gm-Message-State: AOJu0YxXuwaef/F0k61w5b2gTId4z7rNAX716bLhzN29XViPLYCuexwi
+	wayv+fXiBbms+m+suqLarDmCzWvr4YaH4rnRWkhAeUrdPHHa2pd1
+X-Google-Smtp-Source: AGHT+IGIVTu8jI5zC4yFz4+oApJFcqTFJIDJcFbMbEQbX7rhLyWEGagntNKaOHTgeQyk/Ty+RpMHKQ==
+X-Received: by 2002:a17:906:bc94:b0:a37:87e1:5929 with SMTP id lv20-20020a170906bc9400b00a3787e15929mr3856705ejb.54.1707298192178;
+        Wed, 07 Feb 2024 01:29:52 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUXwSUdRyCG3/PyNResm95wk1K06K3IOtBxNwZa0LW5uWpW+xRjglBL7YNSKHpbLLCZL4qUk4Du+gpOUys25eEcucda0hMlQGlstxuL/ztMEGNcAvgpW+fZDQkahbXM5GqpEF8YTEJEHYHXhLQmbwbhzKKXMJcjFZ0ZWeSWpik5CwjDIlDS43OjP1bOzSZIw0D9N/3Du2eU0lI=
+Received: from ?IPv6:2003:f6:ef1b:2000:15d4:fc17:481e:8afe? (p200300f6ef1b200015d4fc17481e8afe.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:15d4:fc17:481e:8afe])
+        by smtp.gmail.com with ESMTPSA id w24-20020a170906131800b00a3826954486sm549138ejb.53.2024.02.07.01.29.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 01:32:51 -0800 (PST)
-From: Markus Schneider-Pargmann <msp@baylibre.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-	Wolfgang Grandegger <wg@grandegger.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Tony Lindgren <tony@atomide.com>,
-	Judith Mendez <jm@ti.com>
-Cc: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
-	Simon Horman <horms@kernel.org>,
-	linux-can@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Julien Panis <jpanis@baylibre.com>,
-	Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH 14/14] can: m_can: Implement transmit submission coalescing
-Date: Wed,  7 Feb 2024 10:32:20 +0100
-Message-ID: <20240207093220.2681425-15-msp@baylibre.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240207093220.2681425-1-msp@baylibre.com>
-References: <20240207093220.2681425-1-msp@baylibre.com>
+        Wed, 07 Feb 2024 01:29:51 -0800 (PST)
+Message-ID: <07371805d3ec96d803a98b5735a114b3af56365a.camel@gmail.com>
+Subject: Re: [PATCH 2/2] spi: axi-spi-engine: move msg finalization out of
+ irq handler
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: David Lechner <dlechner@baylibre.com>, linux-spi@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, Michael Hennerich
+ <michael.hennerich@analog.com>, Nuno =?ISO-8859-1?Q?S=E1?=
+ <nuno.sa@analog.com>,  linux-kernel@vger.kernel.org
+Date: Wed, 07 Feb 2024 10:33:11 +0100
+In-Reply-To: <20240206-axi-spi-engine-round-2-1-v1-2-ea6eeb60f4fb@baylibre.com>
+References: 
+	<20240206-axi-spi-engine-round-2-1-v1-0-ea6eeb60f4fb@baylibre.com>
+	 <20240206-axi-spi-engine-round-2-1-v1-2-ea6eeb60f4fb@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-m_can supports submitting multiple transmits with one register write.
-This is an interesting option to reduce the number of SPI transfers for
-peripheral chips.
+On Tue, 2024-02-06 at 14:31 -0600, David Lechner wrote:
+> As a general principal, it is best to do as little as possible in an
+> interrupt handler. This patch reworks the AXI SPI Engine driver to move
+> timer_delete_sync() and spi_finalize_current_message() out of the
+> interrupt handler. Instead, spi_finalize_current_message() is moved to
+> the transfer_one_message function (similar to nearly all other SPI
+> controllers). A completion is now used to wait for the sync interrupt
+> that indicates that the message is complete. The watchdog timer is no
+> longer needed since we can use the wait_for_completion_timeout()
+> function to wait for the message to complete with the same effect.
+>=20
+> As a bonus, these changes also improve throughput of the SPI controller.
+> For example, this was tested on a ZynqMP with a 80MHz SCLK reading 4
+> byte samples from an ADC. The max measured throughput increased from
+> 26k to 28k samples per second.
+>=20
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> ---
 
-The m_can_tx_op is extended with a bool that signals if it is the last
-transmission and the submit should be executed immediately.
+Nice one...
 
-The worker then writes the skb to the FIFO and submits it only if the
-submit bool is set. If it isn't set, the worker will write the next skb
-which is waiting in the workqueue to the FIFO, etc.
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
 
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
----
- drivers/net/can/m_can/m_can.c | 56 ++++++++++++++++++++++++++++++++---
- drivers/net/can/m_can/m_can.h |  6 ++++
- 2 files changed, 58 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 48968da69ae9..b7dbce4c342a 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1539,6 +1539,9 @@ static int m_can_start(struct net_device *dev)
- 	if (ret)
- 		return ret;
- 
-+	netdev_queue_set_dql_min_limit(netdev_get_tx_queue(cdev->net, 0),
-+				       cdev->tx_max_coalesced_frames);
-+
- 	cdev->can.state = CAN_STATE_ERROR_ACTIVE;
- 
- 	m_can_enable_all_interrupts(cdev);
-@@ -1835,8 +1838,13 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev,
- 		 */
- 		can_put_echo_skb(skb, dev, putidx, frame_len);
- 
--		/* Enable TX FIFO element to start transfer  */
--		m_can_write(cdev, M_CAN_TXBAR, (1 << putidx));
-+		if (cdev->is_peripheral) {
-+			/* Delay enabling TX FIFO element */
-+			cdev->tx_peripheral_submit |= BIT(putidx);
-+		} else {
-+			/* Enable TX FIFO element to start transfer  */
-+			m_can_write(cdev, M_CAN_TXBAR, BIT(putidx));
-+		}
- 		cdev->tx_fifo_putidx = (++cdev->tx_fifo_putidx >= cdev->can.echo_skb_max ?
- 					0 : cdev->tx_fifo_putidx);
- 	}
-@@ -1849,6 +1857,17 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev,
- 	return NETDEV_TX_BUSY;
- }
- 
-+static void m_can_tx_submit(struct m_can_classdev *cdev)
-+{
-+	if (cdev->version == 30)
-+		return;
-+	if (!cdev->is_peripheral)
-+		return;
-+
-+	m_can_write(cdev, M_CAN_TXBAR, cdev->tx_peripheral_submit);
-+	cdev->tx_peripheral_submit = 0;
-+}
-+
- static void m_can_tx_work_queue(struct work_struct *ws)
- {
- 	struct m_can_tx_op *op = container_of(ws, struct m_can_tx_op, work);
-@@ -1857,11 +1876,15 @@ static void m_can_tx_work_queue(struct work_struct *ws)
- 
- 	op->skb = NULL;
- 	m_can_tx_handler(cdev, skb);
-+	if (op->submit)
-+		m_can_tx_submit(cdev);
- }
- 
--static void m_can_tx_queue_skb(struct m_can_classdev *cdev, struct sk_buff *skb)
-+static void m_can_tx_queue_skb(struct m_can_classdev *cdev, struct sk_buff *skb,
-+			       bool submit)
- {
- 	cdev->tx_ops[cdev->next_tx_op].skb = skb;
-+	cdev->tx_ops[cdev->next_tx_op].submit = submit;
- 	queue_work(cdev->tx_wq, &cdev->tx_ops[cdev->next_tx_op].work);
- 
- 	++cdev->next_tx_op;
-@@ -1872,7 +1895,17 @@ static void m_can_tx_queue_skb(struct m_can_classdev *cdev, struct sk_buff *skb)
- static netdev_tx_t m_can_start_peripheral_xmit(struct m_can_classdev *cdev,
- 					       struct sk_buff *skb)
- {
--	m_can_tx_queue_skb(cdev, skb);
-+	bool submit;
-+
-+	++cdev->nr_txs_without_submit;
-+	if (cdev->nr_txs_without_submit >= cdev->tx_max_coalesced_frames ||
-+	    !netdev_xmit_more()) {
-+		cdev->nr_txs_without_submit = 0;
-+		submit = true;
-+	} else {
-+		submit = false;
-+	}
-+	m_can_tx_queue_skb(cdev, skb, submit);
- 
- 	return NETDEV_TX_OK;
- }
-@@ -2015,6 +2048,7 @@ static int m_can_get_coalesce(struct net_device *dev,
- 
- 	ec->rx_max_coalesced_frames_irq = cdev->rx_max_coalesced_frames_irq;
- 	ec->rx_coalesce_usecs_irq = cdev->rx_coalesce_usecs_irq;
-+	ec->tx_max_coalesced_frames = cdev->tx_max_coalesced_frames;
- 	ec->tx_max_coalesced_frames_irq = cdev->tx_max_coalesced_frames_irq;
- 	ec->tx_coalesce_usecs_irq = cdev->tx_coalesce_usecs_irq;
- 
-@@ -2059,6 +2093,18 @@ static int m_can_set_coalesce(struct net_device *dev,
- 		netdev_err(dev, "tx-frames-irq and tx-usecs-irq can only be set together\n");
- 		return -EINVAL;
- 	}
-+	if (ec->tx_max_coalesced_frames > cdev->mcfg[MRAM_TXE].num) {
-+		netdev_err(dev, "tx-frames %u greater than the TX event FIFO %u\n",
-+			   ec->tx_max_coalesced_frames,
-+			   cdev->mcfg[MRAM_TXE].num);
-+		return -EINVAL;
-+	}
-+	if (ec->tx_max_coalesced_frames > cdev->mcfg[MRAM_TXB].num) {
-+		netdev_err(dev, "tx-frames %u greater than the TX FIFO %u\n",
-+			   ec->tx_max_coalesced_frames,
-+			   cdev->mcfg[MRAM_TXB].num);
-+		return -EINVAL;
-+	}
- 	if (ec->rx_coalesce_usecs_irq != 0 && ec->tx_coalesce_usecs_irq != 0 &&
- 	    ec->rx_coalesce_usecs_irq != ec->tx_coalesce_usecs_irq) {
- 		netdev_err(dev, "rx-usecs-irq %u needs to be equal to tx-usecs-irq %u if both are enabled\n",
-@@ -2069,6 +2115,7 @@ static int m_can_set_coalesce(struct net_device *dev,
- 
- 	cdev->rx_max_coalesced_frames_irq = ec->rx_max_coalesced_frames_irq;
- 	cdev->rx_coalesce_usecs_irq = ec->rx_coalesce_usecs_irq;
-+	cdev->tx_max_coalesced_frames = ec->tx_max_coalesced_frames;
- 	cdev->tx_max_coalesced_frames_irq = ec->tx_max_coalesced_frames_irq;
- 	cdev->tx_coalesce_usecs_irq = ec->tx_coalesce_usecs_irq;
- 
-@@ -2086,6 +2133,7 @@ static const struct ethtool_ops m_can_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS_IRQ |
- 		ETHTOOL_COALESCE_RX_MAX_FRAMES_IRQ |
- 		ETHTOOL_COALESCE_TX_USECS_IRQ |
-+		ETHTOOL_COALESCE_TX_MAX_FRAMES |
- 		ETHTOOL_COALESCE_TX_MAX_FRAMES_IRQ,
- 	.get_ts_info = ethtool_op_get_ts_info,
- 	.get_coalesce = m_can_get_coalesce,
-diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-index 76b1ce1b7c1b..2986c4ce0b2f 100644
---- a/drivers/net/can/m_can/m_can.h
-+++ b/drivers/net/can/m_can/m_can.h
-@@ -74,6 +74,7 @@ struct m_can_tx_op {
- 	struct m_can_classdev *cdev;
- 	struct work_struct work;
- 	struct sk_buff *skb;
-+	bool submit;
- };
- 
- struct m_can_classdev {
-@@ -102,6 +103,7 @@ struct m_can_classdev {
- 	u32 active_interrupts;
- 	u32 rx_max_coalesced_frames_irq;
- 	u32 rx_coalesce_usecs_irq;
-+	u32 tx_max_coalesced_frames;
- 	u32 tx_max_coalesced_frames_irq;
- 	u32 tx_coalesce_usecs_irq;
- 
-@@ -116,6 +118,10 @@ struct m_can_classdev {
- 	int tx_fifo_size;
- 	int next_tx_op;
- 
-+	int nr_txs_without_submit;
-+	/* bitfield of fifo elements that will be submitted together */
-+	u32 tx_peripheral_submit;
-+
- 	struct mram_cfg mcfg[MRAM_CFG_NUM];
- 
- 	struct hrtimer hrtimer;
--- 
-2.43.0
+> =C2=A0drivers/spi/spi-axi-spi-engine.c | 40 +++++++++++++++--------------=
+----------
+> -
+> =C2=A01 file changed, 15 insertions(+), 25 deletions(-)
+>=20
+> diff --git a/drivers/spi/spi-axi-spi-engine.c b/drivers/spi/spi-axi-spi-
+> engine.c
+> index 9cc602075c17..3c96aa9232b3 100644
+> --- a/drivers/spi/spi-axi-spi-engine.c
+> +++ b/drivers/spi/spi-axi-spi-engine.c
+> @@ -6,6 +6,7 @@
+> =C2=A0 */
+> =C2=A0
+> =C2=A0#include <linux/clk.h>
+> +#include <linux/completion.h>
+> =C2=A0#include <linux/fpga/adi-axi-common.h>
+> =C2=A0#include <linux/idr.h>
+> =C2=A0#include <linux/interrupt.h>
+> @@ -14,7 +15,6 @@
+> =C2=A0#include <linux/module.h>
+> =C2=A0#include <linux/platform_device.h>
+> =C2=A0#include <linux/spi/spi.h>
+> -#include <linux/timer.h>
+> =C2=A0
+> =C2=A0#define SPI_ENGINE_REG_RESET			0x40
+> =C2=A0
+> @@ -110,9 +110,7 @@ struct spi_engine {
+> =C2=A0	spinlock_t lock;
+> =C2=A0
+> =C2=A0	void __iomem *base;
+> -	struct timer_list watchdog_timer;
+> -	struct spi_controller *controller;
+> -
+> +	struct completion msg_complete;
+> =C2=A0	unsigned int int_enable;
+> =C2=A0};
+> =C2=A0
+> @@ -484,11 +482,9 @@ static irqreturn_t spi_engine_irq(int irq, void *dev=
+id)
+> =C2=A0
+> =C2=A0	if (pending & SPI_ENGINE_INT_SYNC && msg) {
+> =C2=A0		if (completed_id =3D=3D AXI_SPI_ENGINE_CUR_MSG_SYNC_ID) {
+> -			if (timer_delete_sync(&spi_engine->watchdog_timer)) {
+> -				msg->status =3D 0;
+> -				msg->actual_length =3D msg->frame_length;
+> -				spi_finalize_current_message(host);
+> -			}
+> +			msg->status =3D 0;
+> +			msg->actual_length =3D msg->frame_length;
+> +			complete(&spi_engine->msg_complete);
+> =C2=A0			disable_int |=3D SPI_ENGINE_INT_SYNC;
+> =C2=A0		}
+> =C2=A0	}
+> @@ -559,7 +555,7 @@ static int spi_engine_transfer_one_message(struct
+> spi_controller *host,
+> =C2=A0	unsigned int int_enable =3D 0;
+> =C2=A0	unsigned long flags;
+> =C2=A0
+> -	mod_timer(&spi_engine->watchdog_timer, jiffies +
+> msecs_to_jiffies(5000));
+> +	reinit_completion(&spi_engine->msg_complete);
+> =C2=A0
+> =C2=A0	spin_lock_irqsave(&spi_engine->lock, flags);
+> =C2=A0
+> @@ -581,21 +577,16 @@ static int spi_engine_transfer_one_message(struct
+> spi_controller *host,
+> =C2=A0	spi_engine->int_enable =3D int_enable;
+> =C2=A0	spin_unlock_irqrestore(&spi_engine->lock, flags);
+> =C2=A0
+> -	return 0;
+> -}
+> -
+> -static void spi_engine_timeout(struct timer_list *timer)
+> -{
+> -	struct spi_engine *spi_engine =3D from_timer(spi_engine, timer,
+> watchdog_timer);
+> -	struct spi_controller *host =3D spi_engine->controller;
+> -
+> -	if (WARN_ON(!host->cur_msg))
+> -		return;
+> +	if (!wait_for_completion_timeout(&spi_engine->msg_complete,
+> +					 msecs_to_jiffies(5000))) {
+> +		dev_err(&host->dev,
+> +			"Timeout occurred while waiting for transfer to
+> complete. Hardware is probably broken.\n");
+> +		msg->status =3D -ETIMEDOUT;
+> +	}
+> =C2=A0
+> -	dev_err(&host->dev,
+> -		"Timeout occurred while waiting for transfer to complete.
+> Hardware is probably broken.\n");
+> -	host->cur_msg->status =3D -ETIMEDOUT;
+> =C2=A0	spi_finalize_current_message(host);
+> +
+> +	return msg->status;
+> =C2=A0}
+> =C2=A0
+> =C2=A0static void spi_engine_release_hw(void *p)
+> @@ -626,8 +617,7 @@ static int spi_engine_probe(struct platform_device *p=
+dev)
+> =C2=A0	spi_engine =3D spi_controller_get_devdata(host);
+> =C2=A0
+> =C2=A0	spin_lock_init(&spi_engine->lock);
+> -	timer_setup(&spi_engine->watchdog_timer, spi_engine_timeout,
+> TIMER_IRQSAFE);
+> -	spi_engine->controller =3D host;
+> +	init_completion(&spi_engine->msg_complete);
+> =C2=A0
+> =C2=A0	spi_engine->clk =3D devm_clk_get_enabled(&pdev->dev, "s_axi_aclk")=
+;
+> =C2=A0	if (IS_ERR(spi_engine->clk))
+>=20
 
 
