@@ -1,72 +1,81 @@
-Return-Path: <linux-kernel+bounces-55893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 533F784C31A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:29:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 721E384C329
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:37:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D229B1F2860A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:29:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 294B5284CF7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:37:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACFF212B75;
-	Wed,  7 Feb 2024 03:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25CBF101DA;
+	Wed,  7 Feb 2024 03:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IjBYdx31"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mXh5Pyp7"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E88101F2
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 03:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF25FC01;
+	Wed,  7 Feb 2024 03:37:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707276542; cv=none; b=VtNZtQd5Aep8ui/5x1TGEQJaYEOdzpY/+NHBvggKCSs89uw4FYZyAoXA4bGbV09nAVLcaQwiGs4Odg81DiNNMzhibRD8hroKw8XbcYGMncAfHKEfMmL44JQRASeGCQs2lSXNt7zx/y4WjMu4ck9hVYiRBM8VFK0OwLqdWypvFYM=
+	t=1707277029; cv=none; b=NxwzWoh6li9d73Kcs43jCQyhdCwqJIzlm2fK5ySd/69QMSBRwsSPci94UGCR/fIEibkRgT+OoOCzpajlgGjKdMhIYGGdJYKHOQjADvvjm7J2WVVbsRWz86VW/UVws2zp9cFfyH0FeKh0oOx03qbHVkCLolL1IiUfUn5iTyCqZos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707276542; c=relaxed/simple;
-	bh=5z8kY6K3nvIR3A14IdHiEafFgYEBuUDMqEiZjPP8O+Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HcXD0zRMQ+BTCznDwx4UMHB3a8sM7P0/Y4rDDHvzfyTE8TVoeUVtMbvfKlYUKZp7filFDasOtgfF7f6XeibwwmnbqYbW2MNNjVJWZ7uveJ2aDC0pz3VO6FAoH/RnGe8JPkPO/yF9LL+o6B2Se8qKn+OVL/bTem49CjR6j24M3UI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IjBYdx31; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707276540; x=1738812540;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=5z8kY6K3nvIR3A14IdHiEafFgYEBuUDMqEiZjPP8O+Y=;
-  b=IjBYdx31S828hlmx7Iv+rn38BUoJPFSrirsaMhWRpoRCOsFUqx+E+eOw
-   cx26lSQfZdyQ+yBJYg9xSdjQIGaBej1/nlZ9PO9l0gIJ5BeZnLHVMn8al
-   NPXs/CF879j3PjsKTF2M3QR2uwPFAzDimJAs+PGQcI1/nVzaT+frQD3uM
-   mAzDTAVkFyN82VvpbZceiFE1stUsBkGMqSleOn/P3s7PWFN+sQGh/edbB
-   2vj1OdTcPi6wt8IjYgH/cd3KQmY5acsZrFpXooc46ER1/v0t1qR4+6PM7
-   8q+ML9wwENJ4Cy6sTVctcx5FyRLvKxEqF5CN3vp8v5Ev7zHLRzZR405os
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="26344748"
-X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
-   d="scan'208";a="26344748"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 19:28:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="824384659"
-X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
-   d="scan'208";a="824384659"
-Received: from linux-pnp-server-09.sh.intel.com ([10.239.176.190])
-  by orsmga001.jf.intel.com with ESMTP; 06 Feb 2024 19:28:52 -0800
-From: rulinhuang <rulin.huang@intel.com>
-To: akpm@linux-foundation.org
-Cc: urezki@gmail.com,
-	hch@infradead.org,
-	lstoakes@gmail.com,
-	linux-mm@kvack.org,
+	s=arc-20240116; t=1707277029; c=relaxed/simple;
+	bh=wozcyVvHzNR5E7VXBY2YzZhSgKWE1j9Dee975ulTgvY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b2uXN3NzUXocGZSDPNmU3Y8jhhI1uPfY0vHs73HjYQ+KP3Ch7SGgsdgTtfJDGEf3WtLSdfnJxYIwbj6IXtBSSiUYG6utycizaOxqa8RVV/X1EpZxBh+s66d1u70xuQUEyGCjDE/pa5Xo/9Tb6HFLydUXriEEmSeQFMV96LeBpsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mXh5Pyp7; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33b409fc4aeso135580f8f.1;
+        Tue, 06 Feb 2024 19:37:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707277026; x=1707881826; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=K0oMvXuXT/Bmvr7nKfz+tfHKE7zRujYl4odDXMOJ8fY=;
+        b=mXh5Pyp7dEVConkKN4fi+USUDQLNbA8E3PRXVsdkVH+VlGWQ9cDVwMM/F/tUebanw0
+         hU+6qSFcirzmTIG4wuvktwK+0Y9yyZGPlRK0WYCXlAAtU0RK+w36G+B/3WqC0GcP5LmU
+         t5TWwHydoA3PzcxEZs/4ayTLHQZphbo+bxiKSfk+gCm9RkhoQYu3Fb7iR7XaEL1DHb5P
+         5y0dF+GQT4rJWx4C/NiYezarF7b1f2DZM4MAPC5CQAX8rQEbGUO3TIAP9XOs8T1QbFu+
+         o4Acd/EzXZUDC7NWxmFwseu0l6BS/kopijSFMRUuOrS9/10tBDmnwZO0k+5VCc75MrrG
+         GkHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707277026; x=1707881826;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=K0oMvXuXT/Bmvr7nKfz+tfHKE7zRujYl4odDXMOJ8fY=;
+        b=BoD1pTmpgSs4E2gm4dwrHhcOJw0cQdwznsEh5DZCHWnqeeWRf4fQ1Im5joQKRAczOp
+         wrKclLvIoHCyNWKzHX2iX/clszBuOJVh1U8+I/vMcvijF5w8fbbh/Qfkxoo6J7j8Pus2
+         yDkfLs9NSLwfDbmc2yzOPmh7xc37sC/3Urb1Ogl/i6R20K/boLNfQud4DKlSn1DKxmuf
+         rxsQ2BUz/hfJO7NPmAECBtZCq1+J8q1U0/DeIcdVUPibfMIAcuFRclxmjllevBo9JWOk
+         UvUP7D3sgMZCkG+EIkxmnP8ROOetFmpVRJSS83L7Q40M7KyY0feqeH9jy8wPzEq9Yj0O
+         ShLw==
+X-Gm-Message-State: AOJu0YyJPn828ADuaKoqfHQQUkADdNd/r7KppuYzuH63Ri3EYFBAogpU
+	I3UXmSZMyby/u2oHSYLrRtuVueSL2Ooc4JWKXO9aC2YDwY2YXHDN
+X-Google-Smtp-Source: AGHT+IEC6OTMVKiiwXaTRW+EcaHTMMylrzmtal242jiHjAS9EFELdo3ZaRubLUREoBU4Ip5csdvfzQ==
+X-Received: by 2002:a5d:460b:0:b0:33b:4ebd:1462 with SMTP id t11-20020a5d460b000000b0033b4ebd1462mr147974wrq.40.1707277025582;
+        Tue, 06 Feb 2024 19:37:05 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUYQrgi4CPyFz0nIMqpFUYqmQ082XxzQPgdfQbNOWxnfpu2DyM35zyk5XvEXPVI7qgJHj5uTzqJXPfZb966sodUZNbN0qKR/TXaZWDo8iCVzhirdvZ8X/wBjb5lO2E7osceGmA5NLQkcKcB7TsBxpfaHIVq2r0uH370BoNdGhINB5iYE33oVtY+t8f3Zl9EwMPsmMG+Lp39x9FPp6mqIQm2Awq8dTtTfzlHrCxg26sN/M6W2KGib8vhsy2DzJp2R1xrmB0IBYs1f2kc
+Received: from demon-pc.localdomain ([188.24.52.65])
+        by smtp.gmail.com with ESMTPSA id p5-20020a5d4e05000000b0033b422356fbsm373447wrt.80.2024.02.06.19.37.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 19:37:05 -0800 (PST)
+From: Cosmin Tanislav <demonsingur@gmail.com>
+To: 
+Cc: Lars-Peter Clausen <lars@metafoo.de>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Cosmin Tanislav <cosmin.tanislav@analog.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	linux-iio@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	tim.c.chen@intel.com,
-	colin.king@intel.com,
-	zhiguo.zhou@intel.com,
-	rulinhuang <rulin.huang@intel.com>
-Subject: [PATCH] mm/vmalloc: lock contention optimization under multi-threading
-Date: Tue,  6 Feb 2024 22:30:59 -0500
-Message-ID: <20240207033059.1565623-1-rulin.huang@intel.com>
+	Cosmin Tanislav <demonsingur@gmail.com>
+Subject: [PATCH 1/2] iio: accel: adxl367: fix DEVID read after reset
+Date: Wed,  7 Feb 2024 05:36:50 +0200
+Message-ID: <20240207033657.206171-1-demonsingur@gmail.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -76,119 +85,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When allocating a new memory area where the mapping address range is
-known, it is observed that the vmap_area lock is acquired twice.
-The first acquisition occurs in the alloc_vmap_area() function when
-inserting the vm area into the vm mapping red-black tree. The second
-acquisition occurs in the setup_vmalloc_vm() function when updating the
-properties of the vm, such as flags and address, etc.
-Combine these two operations together in alloc_vmap_area(), which
-improves scalability when the vmap_area lock is contended. By doing so,
-the need to acquire the lock twice can also be eliminated.
-With the above change, tested on intel icelake platform(160 vcpu, kernel
-v6.7), a 6% performance improvement and a 7% reduction in overall
-spinlock hotspot are gained on
-stress-ng/pthread(https://github.com/ColinIanKing/stress-ng), which is
-the stress test of thread creations.
+regmap_read_poll_timeout() will not sleep before reading,
+causing the first read to return -ENXIO on I2C, since the
+chip does not respond to it while it is being reset.
 
-Reviewed-by: "Chen, Tim C" <tim.c.chen@intel.com>
-Reviewed-by: "King, Colin" <colin.king@intel.com>
-Signed-off-by: rulinhuang <rulin.huang@intel.com>
+The datasheet specifies that a soft reset operation has a
+latency of 7.5ms.
+
+Add a 15ms sleep between reset and reading the DEVID register,
+and switch to a simple regmap_read() call.
+
+Signed-off-by: Cosmin Tanislav <demonsingur@gmail.com>
 ---
- mm/vmalloc.c | 31 +++++++++++++++----------------
- 1 file changed, 15 insertions(+), 16 deletions(-)
+ drivers/iio/accel/adxl367.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index d12a17fc0c171..3b1f616e8ecf0 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -1577,13 +1577,13 @@ preload_this_cpu_lock(spinlock_t *lock, gfp_t gfp_mask, int node)
+diff --git a/drivers/iio/accel/adxl367.c b/drivers/iio/accel/adxl367.c
+index 834ee6d63947..210228affb80 100644
+--- a/drivers/iio/accel/adxl367.c
++++ b/drivers/iio/accel/adxl367.c
+@@ -1368,9 +1368,11 @@ static int adxl367_verify_devid(struct adxl367_state *st)
+ 	unsigned int val;
+ 	int ret;
  
- /*
-  * Allocate a region of KVA of the specified size and alignment, within the
-- * vstart and vend.
-+ * vstart and vend. If vm is passed in, the two will also be bound.
-  */
- static struct vmap_area *alloc_vmap_area(unsigned long size,
- 				unsigned long align,
- 				unsigned long vstart, unsigned long vend,
- 				int node, gfp_t gfp_mask,
--				unsigned long va_flags)
-+				unsigned long va_flags, struct vm_struct *vm)
- {
- 	struct vmap_area *va;
- 	unsigned long freed;
-@@ -1627,9 +1627,12 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
- 
- 	va->va_start = addr;
- 	va->va_end = addr + size;
--	va->vm = NULL;
-+	va->vm = vm;
- 	va->flags = va_flags;
- 
-+	if (vm != NULL)
-+		vm->addr = (void *)addr;
+-	ret = regmap_read_poll_timeout(st->regmap, ADXL367_REG_DEVID, val,
+-				       val == ADXL367_DEVID_AD, 1000, 10000);
++	ret = regmap_read(st->regmap, ADXL367_REG_DEVID, &val);
+ 	if (ret)
++		return dev_err_probe(st->dev, ret, "Failed to read dev id\n");
 +
- 	spin_lock(&vmap_area_lock);
- 	insert_vmap_area(va, &vmap_area_root, &vmap_area_list);
- 	spin_unlock(&vmap_area_lock);
-@@ -2039,7 +2042,8 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
- 	va = alloc_vmap_area(VMAP_BLOCK_SIZE, VMAP_BLOCK_SIZE,
- 					VMALLOC_START, VMALLOC_END,
- 					node, gfp_mask,
--					VMAP_RAM|VMAP_BLOCK);
-+					VMAP_RAM|VMAP_BLOCK,
-+					NULL);
- 	if (IS_ERR(va)) {
- 		kfree(vb);
- 		return ERR_CAST(va);
-@@ -2394,7 +2398,8 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
- 		struct vmap_area *va;
- 		va = alloc_vmap_area(size, PAGE_SIZE,
- 				VMALLOC_START, VMALLOC_END,
--				node, GFP_KERNEL, VMAP_RAM);
-+				node, GFP_KERNEL, VMAP_RAM,
-+				NULL);
- 		if (IS_ERR(va))
- 			return NULL;
++	if (val != ADXL367_DEVID_AD)
+ 		return dev_err_probe(st->dev, -ENODEV,
+ 				     "Invalid dev id 0x%02X, expected 0x%02X\n",
+ 				     val, ADXL367_DEVID_AD);
+@@ -1449,6 +1451,8 @@ int adxl367_probe(struct device *dev, const struct adxl367_ops *ops,
+ 	if (ret)
+ 		return ret;
  
-@@ -2548,14 +2553,6 @@ static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
- 	va->vm = vm;
- }
- 
--static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
--			      unsigned long flags, const void *caller)
--{
--	spin_lock(&vmap_area_lock);
--	setup_vmalloc_vm_locked(vm, va, flags, caller);
--	spin_unlock(&vmap_area_lock);
--}
--
- static void clear_vm_uninitialized_flag(struct vm_struct *vm)
- {
- 	/*
-@@ -2592,14 +2589,16 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
- 	if (!(flags & VM_NO_GUARD))
- 		size += PAGE_SIZE;
- 
--	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0);
-+	area->flags = flags;
-+	area->caller = caller;
-+	area->size = size;
++	fsleep(15000);
 +
-+	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0, area);
- 	if (IS_ERR(va)) {
- 		kfree(area);
- 		return NULL;
- 	}
- 
--	setup_vmalloc_vm(area, va, flags, caller);
--
- 	/*
- 	 * Mark pages for non-VM_ALLOC mappings as accessible. Do it now as a
- 	 * best-effort approach, as they can be mapped outside of vmalloc code.
-
-base-commit: de927f6c0b07d9e698416c5b287c521b07694cac
+ 	ret = adxl367_verify_devid(st);
+ 	if (ret)
+ 		return ret;
 -- 
 2.43.0
 
