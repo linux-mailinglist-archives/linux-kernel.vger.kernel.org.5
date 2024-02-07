@@ -1,163 +1,250 @@
-Return-Path: <linux-kernel+bounces-56716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69A7E84CDF7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:27:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F3F184CDFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:28:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 084A71F26853
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:27:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 209B028918A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:28:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAEDF7FBA1;
-	Wed,  7 Feb 2024 15:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DC7F7E77F;
+	Wed,  7 Feb 2024 15:28:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PdJyBcfh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RK8a8e4Z";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RK8a8e4Z"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 188BA7E775;
-	Wed,  7 Feb 2024 15:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BAAC77632;
+	Wed,  7 Feb 2024 15:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707319665; cv=none; b=LmTByKhUqqNKpGz31RkeMRlW+jCMkd9czueCLfSKefVrlF7fA2F6f1EVWNg+kYh/5lHLrfKWGqdPbr2u1J/6B0K6+w36vPzwhMXDztlxzbdsMj+ejXpNVSed9F0cjioUkjIIxw81DtcMtljI+mXgm5uCgJxDKGvKOzQk/nD8F8c=
+	t=1707319697; cv=none; b=YNBbK83ZYXMjituQwBAEsZCj2WdXMeBM+J4jErsf//tyrK+uoxQQib3vayURcxeS8FA4t3j+LmMbpQ6YzAJc3FmnBk4iB2GXcFtvOGwqq8VUBOrNqhn9glVabvP5VdxexP/nsDxDSKO7ATHp/PgxtBECNusZKXEuuEy9amWufjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707319665; c=relaxed/simple;
-	bh=Wpz6YO32Qj0aa5MgpAxe/gu7xxnOiMKkMHU89Lo/BS8=;
+	s=arc-20240116; t=1707319697; c=relaxed/simple;
+	bh=/36nrJK68EJQBsi4yiMFWfZ0Cp659YPZW57SH3sThAw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HMBRApwkpxlHc12xx0PNqglLOJ91vi1WTyhCFNSfr1lTxENDaW+mShuAWgbad6p01ibHP/LQ93uYt7fCXZUNPL9qXtiNpYNpmGMSpJ0dfPEDmUHz0ZgLpqG3k9EBCPD9F1EvlRwE8F0cVn1yiMJj3ueAw365ssRdANjpcwiv5rw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PdJyBcfh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FDCBC433C7;
-	Wed,  7 Feb 2024 15:27:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707319664;
-	bh=Wpz6YO32Qj0aa5MgpAxe/gu7xxnOiMKkMHU89Lo/BS8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PdJyBcfhBDugPqfPAHL60XArKC2R50gNcdevNydbNpntpB4hLQISmk+WvQz7ExJDC
-	 BnjEi16qiL+uUkmniRIt1RsDgBSF5k0jpliADyYSSFkFX0W/Pl2dewzvm+c8fpAvbu
-	 JQx7pQ+aXo7bsJIwGvplzWHtlbtl5mdKbGTUngISuIeYG3C/1J9eHtQqvg24oUDoJa
-	 MUuXi5UfS/5Jn1xIHp9P1A16Va9pv3WErzdoSRR6QErvLz99M99eJedf6zKHULEtww
-	 3FFY+q2LKz3vMWSnNkBQIws27BPo8ZjZejR4lUtsf7CwtDNhTLL1DvA6c/0DyKJi3X
-	 D8zf0Ses6KFCQ==
-Date: Wed, 7 Feb 2024 17:27:23 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Lokesh Gidra <lokeshgidra@google.com>
-Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, akpm@linux-foundation.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
-	surenb@google.com, kernel-team@android.com, aarcange@redhat.com,
-	peterx@redhat.com, david@redhat.com, axelrasmussen@google.com,
-	bgeffon@google.com, willy@infradead.org, jannh@google.com,
-	kaleshsingh@google.com, ngeoffray@google.com, timmurray@google.com
-Subject: Re: [PATCH v2 2/3] userfaultfd: protect mmap_changing with rw_sem in
- userfaulfd_ctx
-Message-ID: <ZcOhW8NR9XWhVnKS@kernel.org>
-References: <20240129193512.123145-1-lokeshgidra@google.com>
- <20240129193512.123145-3-lokeshgidra@google.com>
- <20240129210014.troxejbr3mzorcvx@revolver>
- <CA+EESO6XiPfbUBgU3FukGvi_NG5XpAQxWKu7vg534t=rtWmGXg@mail.gmail.com>
- <20240130034627.4aupq27mksswisqg@revolver>
- <Zbi5bZWI3JkktAMh@kernel.org>
- <20240130172831.hv5z7a7bhh4enoye@revolver>
- <CA+EESO7W=yz1DyNsuDRd-KJiaOg51QWEQ_MfpHxEL99ZeLS=AA@mail.gmail.com>
- <Zb9mgL8XHBZpEVe7@kernel.org>
- <CA+EESO7RNn0aQhLxY+NDddNNNT6586qX08=rphU1-XmyoP5mZQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qHK6cHQZP5ra+Ceb21OhxUVHjKkpv2bHZPAYVsh5CrLzULWcAW+iRF/x0NTm4t0SE1UViwF0pgim6n9B4VTL/RaWNt6uRIY2dAk/nv9kdSeIFXyw3MScHB3myCYBaNjlq9O5KGyGDIqjHY2b/JvRmWeYtRMHSVU5Lk0j6Bay1BA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RK8a8e4Z; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RK8a8e4Z; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from blackpad (unknown [10.100.12.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 572E01F78D;
+	Wed,  7 Feb 2024 15:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707319693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JG/hj8s6PyM2n6N1CqZ5VTCYc2mwIugAjTnkUwcdcHA=;
+	b=RK8a8e4Z1cunI2tPdDFEaFnnzYSULcUPJtvRoMPGmqGqp5oJelwkP28/gyweQP9ldjXZCX
+	Bl9t30qarBFPMrxG073RbyhJRFuBm1rYMlJHZUHxS/7au/8YH/2HFEwbAeyrc4PMiPNP/D
+	cDdITAmsvkMn5PRcFMl/ShLK+GzLOIc=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707319693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JG/hj8s6PyM2n6N1CqZ5VTCYc2mwIugAjTnkUwcdcHA=;
+	b=RK8a8e4Z1cunI2tPdDFEaFnnzYSULcUPJtvRoMPGmqGqp5oJelwkP28/gyweQP9ldjXZCX
+	Bl9t30qarBFPMrxG073RbyhJRFuBm1rYMlJHZUHxS/7au/8YH/2HFEwbAeyrc4PMiPNP/D
+	cDdITAmsvkMn5PRcFMl/ShLK+GzLOIc=
+Date: Wed, 7 Feb 2024 16:28:12 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc: Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Dave Airlie <airlied@redhat.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, 
+	Rob Clark <robdclark@chromium.org>, =?utf-8?B?U3TDqXBoYW5l?= Marchesin <marcheu@chromium.org>, 
+	"T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com, 
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>, Brian Welty <brian.welty@intel.com>, 
+	Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Subject: Re: [RFC 6/8] cgroup/drm: Introduce weight based drm cgroup control
+Message-ID: <lisfkz7wwhwwe3wkc76ufemlotaguuxslymtz6gxfreu62u65z@dsa3zpaxtjo3>
+References: <20231024160727.282960-1-tvrtko.ursulin@linux.intel.com>
+ <20231024160727.282960-7-tvrtko.ursulin@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="apxwvyorjkqn4u25"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+EESO7RNn0aQhLxY+NDddNNNT6586qX08=rphU1-XmyoP5mZQ@mail.gmail.com>
+In-Reply-To: <20231024160727.282960-7-tvrtko.ursulin@linux.intel.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.90
+X-Spamd-Result: default: False [-2.90 / 50.00];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-0.999];
+	 RCPT_COUNT_TWELVE(0.00)[17];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[]
+X-Spam-Flag: NO
 
-On Mon, Feb 05, 2024 at 12:53:33PM -0800, Lokesh Gidra wrote:
-> On Sun, Feb 4, 2024 at 2:27 AM Mike Rapoport <rppt@kernel.org> wrote:
-> >
-> > > 3) Based on [1] I see how mmap_changing helps in eliminating duplicate
-> > > work (background copy) by uffd monitor, but didn't get if there is a
-> > > correctness aspect too that I'm missing? I concur with Amit's point in
-> > > [1] that getting -EEXIST when setting up the pte will avoid memory
-> > > corruption, no?
-> >
-> > In the fork case without mmap_changing the child process may be get data or
-> > zeroes depending on the race for mmap_lock between the fork and
-> > uffdio_copy and -EEXIST is not enough for monitor to detect what was the
-> > ordering between fork and uffdio_copy.
-> 
-> This is extremely helpful. IIUC, there is a window after mmap_lock
-> (write-mode) is released and before the uffd monitor thread is
-> notified of fork. In that window, the monitor doesn't know that fork
-> has already happened. So, without mmap_changing it would have done
-> background copy only in the parent, thereby causing data inconsistency
-> between parent and child processes.
 
-Yes.
- 
-> It seems to me that the correctness argument for mmap_changing is
-> there in case of FORK event and REMAP when mremap is called with
-> MREMAP_DONTUNMAP. In all other cases its only benefit is by avoiding
-> unnecessary background copies, right?
+--apxwvyorjkqn4u25
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, I think you are right, but it's possible I've forgot some nasty race
-that will need mmap_changing for other events.
+Hello.
 
-> > > > > > > > > @@ -783,7 +788,9 @@ bool userfaultfd_remove(struct vm_area_struct *vma,
-> > > > > > > > >               return true;
-> > > > > > > > >
-> > > > > > > > >       userfaultfd_ctx_get(ctx);
-> > > > > > > > > +     down_write(&ctx->map_changing_lock);
-> > > > > > > > >       atomic_inc(&ctx->mmap_changing);
-> > > > > > > > > +     up_write(&ctx->map_changing_lock);
-> > > > > > > > >       mmap_read_unlock(mm);
-> > > > > > > > >
-> > > > > > > > >       msg_init(&ewq.msg);
-> > > > > >
-> > > > > > If this happens in read mode, then why are you waiting for the readers
-> > > > > > to leave?  Can't you just increment the atomic?  It's fine happening in
-> > > > > > read mode today, so it should be fine with this new rwsem.
-> > > > >
-> > > > > It's been a while and the details are blurred now, but if I remember
-> > > > > correctly, having this in read mode forced non-cooperative uffd monitor to
-> > > > > be single threaded. If a monitor runs, say uffdio_copy, and in parallel a
-> > > > > thread in the monitored process does MADV_DONTNEED, the latter will wait
-> > > > > for userfaultfd_remove notification to be processed in the monitor and drop
-> > > > > the VMA contents only afterwards. If a non-cooperative monitor would
-> > > > > process notification in parallel with uffdio ops, MADV_DONTNEED could
-> > > > > continue and race with uffdio_copy, so read mode wouldn't be enough.
-> > > > >
-> > > >
-> > > > Right now this function won't stop to wait for readers to exit the
-> > > > critical section, but with this change there will be a pause (since the
-> > > > down_write() will need to wait for the readers with the read lock).  So
-> > > > this is adding a delay in this call path that isn't necessary (?) nor
-> > > > existed before.  If you have non-cooperative uffd monitors, then you
-> > > > will have to wait for them to finish to mark the uffd as being removed,
-> > > > where as before it was a fire & forget, this is now a wait to tell.
-> > > >
-> > > I think a lot will be clearer once we get a response to my questions
-> > > above. IMHO not only this write-lock is needed here, we need to fix
-> > > userfaultfd_remove() by splitting it into userfaultfd_remove_prep()
-> > > and userfaultfd_remove_complete() (like all other non-cooperative
-> > > operations) as well. This patch enables us to do that as we remove
-> > > mmap_changing's dependency on mmap_lock for synchronization.
-> >
-> > The write-lock is not a requirement here for correctness and I don't see
-> > why we would need userfaultfd_remove_prep().
-> >
-> > As I've said earlier, having a write-lock here will let CRIU to run
-> > background copy in parallel with processing of uffd events, but I don't
-> > feel strongly about doing it.
-> >
-> Got it. Anyways, such a change needn't be part of this patch, so I'm
-> going to keep it unchanged.
+(I hope I'm replying to the latest iteration and it has some validitiy
+still. Sorry for my late reply. Few points caught my attention.)
 
-You mean with a read lock?
+On Tue, Oct 24, 2023 at 05:07:25PM +0100, Tvrtko Ursulin <tvrtko.ursulin@li=
+nux.intel.com> wrote:
+> @@ -15,10 +17,28 @@ struct drm_cgroup_state {
+>  	struct cgroup_subsys_state css;
+> =20
+>  	struct list_head clients;
+> +
+> +	unsigned int weight;
+> +
+> +	unsigned int sum_children_weights;
+> +
+> +	bool over;
+> +	bool over_budget;
+> +
+> +	u64 per_s_budget_us;
 
--- 
-Sincerely yours,
-Mike.
+Nit: sounds reversed (cf USEC_PER_SEC).
+
+> +static int drmcg_period_ms =3D 2000;
+> +module_param(drmcg_period_ms, int, 0644);
+> +
+
+cgroup subsystems as loadable modules were abandoded long time ago.
+I'm not sure if this works as expected then.
+The common way is __seutp(), see for instance __setup() in mm/memcontrol.c
+
+> +static bool __start_scanning(unsigned int period_us)
+=2E..
+> +	css_for_each_descendant_post(node, &root->css) {
+> +		struct drm_cgroup_state *drmcs =3D css_to_drmcs(node);
+> +		struct drm_cgroup_state *parent;
+> +		u64 active;
+> +
+> +		if (!css_tryget_online(node))
+> +			goto out;
+> +		if (!node->parent) {
+> +			css_put(node);
+> +			continue;
+> +		}
+
+I think the parent check can go first witout put'ting (RCU is enough for
+node).
+
+> +		if (!css_tryget_online(node->parent)) {
+> +			css_put(node);
+> +			goto out;
+> +		}
+
+Online parent is implied onlined node. So this can be removed.
+
+=2E..
+> +
+> +		css_put(node);
+> +	}
+
+I wonder if the first passes could be implemented with rstat flushing
+and then only invoke signalling based on the data. (As that's
+best-effort).
+
+> +
+> +	/*
+> +	 * 4th pass - send out over/under budget notifications.
+> +	 */
+> +	css_for_each_descendant_post(node, &root->css) {
+> +		struct drm_cgroup_state *drmcs =3D css_to_drmcs(node);
+> +
+> +		if (!css_tryget_online(node))
+> +			goto out_retry;
+> +
+> +		if (drmcs->over || drmcs->over_budget)
+> +			drmcs_signal_budget(drmcs,
+> +					    drmcs->active_us,
+> +					    drmcs->per_s_budget_us);
+> +		drmcs->over_budget =3D drmcs->over;
+> +
+> +		css_put(node);
+> +	}
+
+>  static struct cgroup_subsys_state *
+> @@ -82,6 +365,7 @@ drmcs_alloc(struct cgroup_subsys_state *parent_css)
+> =20
+>  	if (!parent_css) {
+>  		drmcs =3D &root_drmcs.drmcs;
+> +		INIT_DELAYED_WORK(&root_drmcs.scan_work, scan_worker);
+
+This reminds me discussion
+https://lore.kernel.org/lkml/rlm36iypckvxol2edyr25jyo4imvlidtepbcjdaa2ouvwh=
+3wjq@pqyuk3v2jesb/
+
+I.e. worker needn't be initialized if controller is "invisible".
+
+> +static void drmcs_attach(struct cgroup_taskset *tset)
+> +{
+> +	struct drm_cgroup_state *old =3D old_drmcs;
+> +	struct cgroup_subsys_state *css;
+> +	struct drm_file *fpriv, *next;
+> +	struct drm_cgroup_state *new;
+> +	struct task_struct *task;
+> +	bool migrated =3D false;
+> +
+> +	if (!old)
+> +		return;
+> +
+> +	task =3D cgroup_taskset_first(tset, &css);
+> +	new =3D css_to_drmcs(task_css(task, drm_cgrp_id));
+> +	if (new =3D=3D old)
+> +		return;
+> +
+> +	mutex_lock(&drmcg_mutex);
+> +
+> +	list_for_each_entry_safe(fpriv, next, &old->clients, clink) {
+> +		cgroup_taskset_for_each(task, css, tset) {
+> +			struct cgroup_subsys_state *old_css;
+> +
+> +			if (task->flags & PF_KTHREAD)
+> +				continue;
+
+I'm curious, is this because of particular kthreads? Or would it fail
+somehow below? (Like people should not migrate kthreads normally, so
+their expectation cannot be high.)
+
+Michal
+
+--apxwvyorjkqn4u25
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZcOhiQAKCRAGvrMr/1gc
+juaFAP4gCQo3QiiI2lNlSE/BJ+GheTQygLXENfdfwal35LU3EwEAo1qL7Nqz3cT2
+vM5wWH7kk9+bxFqs+xgymjg3vKXu8QU=
+=aJfV
+-----END PGP SIGNATURE-----
+
+--apxwvyorjkqn4u25--
 
