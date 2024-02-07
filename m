@@ -1,149 +1,111 @@
-Return-Path: <linux-kernel+bounces-55785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A7D284C1BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:17:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16BAA84C1C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:18:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC755B256AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:17:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49C201C246DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2573D17BB3;
-	Wed,  7 Feb 2024 01:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5CE44C94;
+	Wed,  7 Feb 2024 01:18:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ZwLqNosD"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="c71qFAMk"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B53FF10A0C;
-	Wed,  7 Feb 2024 01:15:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C06163C1
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 01:18:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707268530; cv=none; b=V+LBeqrPKTcLS1BpY/bOyDXOBTt71/bG05KvorfI+/wUhlBNEjCnTDXzlRhqgyhvh5Iq6Z9zUPw4ziTssd1jao80LdIyFMza1jPwI5uTXcBYaNrT3xnFh3pwkcbG2W1ZujA1l+GULnW4p1s4/xIe1Dc9aXEpKoR8XBF+tJ2jWvg=
+	t=1707268693; cv=none; b=D6WUUMx1Es/2vfi+H23IzD/ifkTTmC7pqX2oP4pjEocFotwE9BwKyPkCq8LDpokI3tkkhwVCV6xqLt+ULREj+zQYp3mlVryKbcTOrG0SEJQm/Go3uCC7WFK4Xk06yRjSETI6IuBOZCDA4KLNgKElK/47EB/mGMd24h45PmUvltA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707268530; c=relaxed/simple;
-	bh=YHiT0xEcQ4f4FJHj3fu8Nz28E+ZFHTQmwcpnWJft308=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DeHWzYxddzn2v+SQiYlgwzoRkBbAR6jIohcOX06SKdfS9aT2XIiHuGIsRg6U+m1Av97fj3X58y6e5WEuIXSM+yhxII1stSgCvvEpAtN/DMoEmrBG0CjzA6ErnQQ6sa9iDQYA7wQxvR+WrqSK34uUQZFruvja09RfHoGs2rTVAXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ZwLqNosD; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4171FK7f101973;
-	Tue, 6 Feb 2024 19:15:20 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707268520;
-	bh=/H3cqtffogPEOWqNzSU+l7+Onz5xPiqUXn0e1qs9DK0=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=ZwLqNosDMqImhUwbSIEDaPSl+beKTIfBCUWuozuGjWL8D4FcRkoJw4FN3C7zq/a3o
-	 bPfmx5GPIDz7gQgTUgk47oWZWsmkLX1PkwW+WM9yJcii8BDS3jKUwnO+KLpkdTONn0
-	 SkKAvRb5rrj1e+BMjU1hiW/nfTrULBqPvxcf/+L4=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4171FKoQ114481
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 6 Feb 2024 19:15:20 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 6
- Feb 2024 19:15:20 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 6 Feb 2024 19:15:20 -0600
-Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4171FKMv122103;
-	Tue, 6 Feb 2024 19:15:20 -0600
-From: Judith Mendez <jm@ti.com>
-To: Ulf Hansson <ulf.hansson@linaro.org>
-CC: Adrian Hunter <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 7/7] mmc: sdhci_am654: Fix ITAPDLY for HS400 timing
-Date: Tue, 6 Feb 2024 19:15:20 -0600
-Message-ID: <20240207011520.3128382-8-jm@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240207011520.3128382-1-jm@ti.com>
-References: <20240207011520.3128382-1-jm@ti.com>
+	s=arc-20240116; t=1707268693; c=relaxed/simple;
+	bh=wrL2jNNKKhbi8/viDh62hnYuSFxSKbu2NpzPTnqEhKQ=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=rNRxSzKLNCMyRFS2uhq1nC9kpsTXi4KGF1gYwFuYNKBcTEEJdo6GDV4WZj/+UI1uh0F6eE3wa6zPuTM9t3V9IXJeDg+Vyus+GhtJ46GMB5SF8HxJxj0wofjwtSuz91YCDiH+urmPV1spwwns/MZIKS2xZ6aVGsw2B/deo9+JlxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=c71qFAMk; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6047a047f58so2058327b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 17:18:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707268690; x=1707873490; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=UexJNRXrO9O5AbEP/1DqD+ioDnk3bGMvlBeoNd1TAjw=;
+        b=c71qFAMkYrKhLxVsq3o0RdXCYUMlDTgYxkiC/2z5wvGPfrHCtHgm+QL3VbXNpJOTEu
+         NlXk2rG4R/oTEXFz0FtaNWaiYXk55+xYn8XU3nCraDARvCeKYUWwAxzNg026qC4tJq45
+         Iy6wASKtjlKtStBf7l8ZlW//JyCXKLvUr6Tn/LuYs59LqOCVC36Avnp9pgXJWxcE/Oz6
+         /33NdXiY8fWLP/2/ClNJ/BHxK5htnRDFjXW/X/5CKg2U8Au4S/dzVGZh4PNM6MngrPQm
+         2uGAH+ElT7XPCn6jhf0KjxPcc1x4k3SBuYiGhfmmtIj6qTd5j2iRvBNA7PmXQOuEURbU
+         NOPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707268690; x=1707873490;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UexJNRXrO9O5AbEP/1DqD+ioDnk3bGMvlBeoNd1TAjw=;
+        b=Rm36KUeJoRZeqH7hBrIzGpdYCkv8yYosKaAowjaGH9Y4J9ntWM+CiUx1bQUC4EPowk
+         OgJhGNSMuYES5VyWIr7LfUJSOmn70ipBhNf7TJNYi5UIhUnLNhDz/MOdYRL1HkdacZl9
+         xSTINVBa/aNwK39inxBwF57rH1bKl8dZP2GQQ8IgJ+LZ+UPUVZ+ZPX7kOsqU1m90b/Ts
+         VXUGxM2mF0pwmQuC16aibQRY50R8lVqxASWtNBH21/LnP/nB4JSsXjnxbJAtTqF3TxN/
+         ViF6p+WBTlPWS/KK2uYeUVfc/roNAnDim1NTmvQ0uA+CxUI7CHyxAktWw09RXTasryOH
+         N8/g==
+X-Forwarded-Encrypted: i=1; AJvYcCVydXOzvTm9nePcW/cU2zuUl6XuXXTdxhoQ9O4msglFfMFNBdQcRj1oyvb95n9jmE4f9lkWXXe2eAwt5y/IZx939dxVVUj6HWSJ5ajp
+X-Gm-Message-State: AOJu0YxxyJ/AqhMFgcduHf9jaAP2mFr3fJM4ujEA4YwgQgAIONd+4FVl
+	0qinPjPwhPSQncmz0hxGYe+ihw67nQzLwfVKK9/F/lI4WjTJ2Co5PuWIR3TJ44Ykt1IhXDxfDmm
+	Mz5wruITNR0BoEA==
+X-Google-Smtp-Source: AGHT+IHfqADdfz6fZ2KpBKfhEALh227q5cvBjI3VmGcT2CqheeQtt9yLZDlPtN8WRPSmjwB7GIBnR84YC++NeT4=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:dc84:66b8:120:935a])
+ (user=saravanak job=sendgmr) by 2002:a81:4cca:0:b0:5ff:dac0:6524 with SMTP id
+ z193-20020a814cca000000b005ffdac06524mr676661ywa.3.1707268690450; Tue, 06 Feb
+ 2024 17:18:10 -0800 (PST)
+Date: Tue,  6 Feb 2024 17:17:59 -0800
+Message-Id: <20240207011803.2637531-1-saravanak@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
+Subject: [PATCH v2 0/3] Improve remote-endpoint parsing
+From: Saravana Kannan <saravanak@google.com>
+To: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Saravana Kannan <saravanak@google.com>
+Cc: Xu Yang <xu.yang_2@nxp.com>, kernel-team@android.com, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-While STRB is currently used for DATA and CRC responses, the CMD
-responses from the device to the host still require ITAPDLY for
-HS400 timing.
+Some changes to do a more accurate parsing of remote-endpoints. Making
+fw_devlink a tiny bit more efficient and the debug logs a bit cleaner when
+trying to debug fw_devlink.
 
-Currently what is stored for HS400 is the ITAPDLY from High Speed
-mode which is incorrect. The ITAPDLY for HS400 speed mode should
-be the same as ITAPDLY as HS200 timing after tuning is executed.
-Add the functionality to save ITAPDLY from HS200 tuning and save
-as HS400 ITAPDLY.
+Rob,
 
-Fixes: a161c45f2979 ("mmc: sdhci_am654: Enable DLL only for some speed modes")
-Signed-off-by: Judith Mendez <jm@ti.com>
----
- drivers/mmc/host/sdhci_am654.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Can we get this into 6.8-rcX please?
 
-diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-index f98cce69a286..280fd4c86c95 100644
---- a/drivers/mmc/host/sdhci_am654.c
-+++ b/drivers/mmc/host/sdhci_am654.c
-@@ -151,6 +151,7 @@ struct sdhci_am654_data {
- 	u32 flags;
- 	u32 quirks;
- 	bool dll_enable;
-+	bool hs200_tunning;
- 
- #define SDHCI_AM654_QUIRK_FORCE_CDTEST BIT(0)
- };
-@@ -175,6 +176,7 @@ static void sdhci_am654_setup_dll(struct sdhci_host *host, unsigned int clock)
- {
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
- 	struct sdhci_am654_data *sdhci_am654 = sdhci_pltfm_priv(pltfm_host);
-+	unsigned char timing = host->mmc->ios.timing;
- 	int sel50, sel100, freqsel;
- 	u32 mask, val;
- 	int ret;
-@@ -237,6 +239,10 @@ static void sdhci_am654_setup_dll(struct sdhci_host *host, unsigned int clock)
- 		dev_err(mmc_dev(host->mmc), "DLL failed to relock\n");
- 		return;
- 	}
-+
-+	/* HS400 ITAPDLY should be the same as HS200 ITAPDLY*/
-+	if (timing == MMC_TIMING_MMC_HS400)
-+		sdhci_am654->itap_del_sel[timing] = sdhci_am654->itap_del_sel[timing - 1];
- }
- 
- static void sdhci_am654_write_itapdly(struct sdhci_am654_data *sdhci_am654,
-@@ -310,6 +316,9 @@ static void sdhci_am654_set_clock(struct sdhci_host *host, unsigned int clock)
- 
- 	regmap_update_bits(sdhci_am654->base, PHY_CTRL5, CLKBUFSEL_MASK,
- 			   sdhci_am654->clkbuf_sel);
-+
-+	if (timing == MMC_TIMING_MMC_HS200 && sdhci_am654->dll_enable)
-+		sdhci_am654->hs200_tunning = true;
- }
- 
- static void sdhci_j721e_4bit_set_clock(struct sdhci_host *host,
-@@ -527,6 +536,10 @@ static int sdhci_am654_platform_execute_tuning(struct sdhci_host *host,
- 
- 	sdhci_am654_write_itapdly(sdhci_am654, itap, 1);
- 
-+	/* Save ITAPDLY for HS200 */
-+	if (sdhci_am654->hs200_tunning)
-+		sdhci_am654->itap_del_sel[MMC_TIMING_MMC_HS200] = itap;
-+
- 	return 0;
- }
- 
+Thanks,
+Saravana
+
+v1->v2:
+- Switched from fwnode_graph_get_port_parent() to of_graph_get_port_parent()
+- Added Patch 3
+
+Saravana Kannan (3):
+  of: property: Improve finding the consumer of a remote-endpoint
+    property
+  of: property: Improve finding the supplier of a remote-endpoint
+    property
+  of: property: Add in-ports/out-ports support to
+    of_graph_get_port_parent()
+
+ drivers/of/property.c | 63 +++++++++++++++++--------------------------
+ 1 file changed, 24 insertions(+), 39 deletions(-)
+
 -- 
-2.43.0
+2.43.0.594.gd9cf4e227d-goog
 
 
