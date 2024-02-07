@@ -1,49 +1,69 @@
-Return-Path: <linux-kernel+bounces-56171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A00684C6F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:10:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF38E84C6F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:11:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33D2F1F25138
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:10:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5DD21C22EBF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:11:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E843420B38;
-	Wed,  7 Feb 2024 09:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9365120B14;
+	Wed,  7 Feb 2024 09:11:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JpVjA9hi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pFm0o0fG"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2571922307;
-	Wed,  7 Feb 2024 09:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED72120B12;
+	Wed,  7 Feb 2024 09:11:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707297026; cv=none; b=HUyrlX/I6ag/oBuo9xGhryo4IXEjmK98H4ocwbVran26/pNpO67UD7lJ8u0QonOd4QcjslIj1FcZMGVDb/D7owWwOLcHoylgUTli06juCFnBcNU2wqSrjhr6aezhq3UK8u0sC4DKxariTe7WfEG/boNmXqWcN2hwAYWwGQt6xf8=
+	t=1707297084; cv=none; b=Isq8gawBMisMC6xKyJE0A4+ZKdOXVQ99ojKsbl9BcgISbMxd7dAxDQRhPqgP6RaQtKZ5qwlGvgjtaNB9XUrqQ6eTfgUrpqdPI1qcjL7K4XVy9cB6b2ggXiJIkPfgVxglXu9RstsqAeqlGIlXVuBr+mbYUeyzGi22F5tzBweal0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707297026; c=relaxed/simple;
-	bh=3Skvn/dUoFSwXi54r9T2MMdejeTQaB6k0PKGKLgLFW8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=OMt7jkMG2sXZ2DDxTbyjJwKhEqoBvVvUdAY0SLg2v31v5QSSTE8KHnHtpwYFM8INoqmpiYD7K1debnM07GwzKpKnmq2t/tkGogGCuvPczgVRu5l6xAqRrvtG0VYWu4hABXbIfoA4fF6uY9OR87ETcGxA+qJamjDgZcU5v5Hb+FI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JpVjA9hi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8E773C433C7;
-	Wed,  7 Feb 2024 09:10:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707297025;
-	bh=3Skvn/dUoFSwXi54r9T2MMdejeTQaB6k0PKGKLgLFW8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=JpVjA9hi1PaqsZIiPpiX1hoyJ6QubNOqHgQGqadY/ZlSwQpDZevC20ottlioalOio
-	 cpuxfbsbNgLGI7P5fvOp5m95VdLNvCcaroiZP/ZpHtbH8a1V/KPfNlIwVqoqOv/cDR
-	 zJvWYTi2j9O/6pGfnyxQiT8XE1IT+lTKY0sa2MTJ3fOERzHmL89eJUJ3YI5FFPYFZp
-	 Me2RVjPMY2VPi2RLjKXlUJ0bIsHwzUJ8c6GT8pJhR/jdYfzM5P25t5ovoA3MERwWuW
-	 fxur5Ed2er7vR/xyJnLUkeMcdXnZCm2u7/U0nPfNwEmJS73jdbjBuOJbkXNJXNbSBr
-	 rqnTjW1bObaEA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6549FD8C96E;
-	Wed,  7 Feb 2024 09:10:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1707297084; c=relaxed/simple;
+	bh=ZNLMFoWciTitck67uVg21vy3FddYxalS3S4xIpSkUpA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gukTrbTMVUIRJR1HEmCC1qgknEdZCl1SfnbJpyxh6Pi6AItUkisfDQVbNlfLqHrVnm2s+1S6ELr7vL5z2P2tIraLE2wXAqX1ClWth1+fKvv+c+SdU3Cx+NqiuTO3n8u6AGC0LZuKLKcV1T/hUgp/jb8lUCfj7PdFtIm5LbMqvcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=pFm0o0fG; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4179BFoU003395;
+	Wed, 7 Feb 2024 03:11:15 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707297075;
+	bh=8+z5AzK6gRUDQ16vqNk0y0fkfcURB4sVIOGrxpLSLVQ=;
+	h=From:To:CC:Subject:Date;
+	b=pFm0o0fG+mElxBrb5cYKgYBaajTfxN6chy8yBq4qp6SAx/+VCq4LApq0ul6e8FvRT
+	 DmQsmFBnmCvrceGBbFY3mQMGameS8aTEvxqEJkLWgZX/OOjAQ/S1C8QlGlIMnBiprs
+	 3QZ4c3CJPorGxaTyWOKFHqJ24wnAOQL57g+3uOyI=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4179BFmt115582
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 7 Feb 2024 03:11:15 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 7
+ Feb 2024 03:11:15 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 7 Feb 2024 03:11:15 -0600
+Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (udit-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.18])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4179BBeQ034511;
+	Wed, 7 Feb 2024 03:11:12 -0600
+From: Udit Kumar <u-kumar1@ti.com>
+To: <nm@ti.com>, <kristo@kernel.org>, <ssantosh@kernel.org>, <chandru@ti.com>,
+        <rishabh@ti.com>, <kamlesh@ti.com>
+CC: <vigneshr@ti.com>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, Udit Kumar <u-kumar1@ti.com>
+Subject: [PATCH v3] clk: keystone: sci-clk: Adding support for non contiguous clocks
+Date: Wed, 7 Feb 2024 14:41:00 +0530
+Message-ID: <20240207091100.4001428-1-u-kumar1@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,49 +71,96 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v3] net: stmmac: protect updates of 64-bit statistics
- counters
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170729702541.31522.8754905006786635767.git-patchwork-notify@kernel.org>
-Date: Wed, 07 Feb 2024 09:10:25 +0000
-References: <20240203190927.19669-1-petr@tesarici.cz>
-In-Reply-To: <20240203190927.19669-1-petr@tesarici.cz>
-To: Petr Tesarik <petr@tesarici.cz>
-Cc: alexandre.torgue@foss.st.com, joabreu@synopsys.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- mcoquelin.stm32@gmail.com, wens@csie.org, jernej.skrabec@gmail.com,
- samuel@sholland.org, jszhang@kernel.org, netdev@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-sunxi@lists.linux.dev, mh+netdev@zugschlus.de, andrew@lunn.ch,
- f.fainelli@gmail.com, stable@vger.kernel.org
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hello:
+Most of clocks and their parents are defined in contiguous range,
+But in few cases, there is gap in clock numbers[0].
+Driver assumes clocks to be in contiguous range, and add their clock
+ids incrementally.
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+New firmware started returning error while calling get_freq and is_on
+API for non-available clock ids.
 
-On Sat,  3 Feb 2024 20:09:27 +0100 you wrote:
-> As explained by a comment in <linux/u64_stats_sync.h>, write side of struct
-> u64_stats_sync must ensure mutual exclusion, or one seqcount update could
-> be lost on 32-bit platforms, thus blocking readers forever. Such lockups
-> have been observed in real world after stmmac_xmit() on one CPU raced with
-> stmmac_napi_poll_tx() on another CPU.
-> 
-> To fix the issue without introducing a new lock, split the statics into
-> three parts:
-> 
-> [...]
+In this fix, driver checks and adds only valid clock ids.
 
-Here is the summary with links:
-  - [net,v3] net: stmmac: protect updates of 64-bit statistics counters
-    https://git.kernel.org/netdev/net/c/38cc3c6dcc09
+Fixes: 3c13933c6033 ("clk: keystone: sci-clk: add support for dynamically probing clocks")
 
-You are awesome, thank you!
+[0] https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j7200/clocks.html
+Section Clocks for NAVSS0_CPTS_0 Device,
+clock id 12-15 not present.
+
+Signed-off-by: Udit Kumar <u-kumar1@ti.com>
+---
+Changelog
+Changes in v3
+- instead of get_freq, is_auto API is used to check validilty of clock
+- Address comments of v2, to have preindex increment
+Link to v2 https://lore.kernel.org/all/20240206104357.3803517-1-u-kumar1@ti.com/
+
+Changes in v2
+- Updated commit message
+- Simplified logic for valid clock id
+link to v1 https://lore.kernel.org/all/20240205044557.3340848-1-u-kumar1@ti.com/
+
+
+P.S
+Firmawre returns total num_parents count including non available ids.
+For above device id NAVSS0_CPTS_0, number of parents clocks are 16
+i.e from id 2 to 17. But out of these ids few are not valid.
+So driver adds only valid clock ids out ot total.
+
+Original logs
+https://gist.github.com/uditkumarti/de4b36b21247fb36725ad909ce4812f6#file-original-logs
+Line 2630 for error
+
+Logs with fix v3
+https://gist.github.com/uditkumarti/94e3e28d62282fd708dbfe37435ce1d9#file-v3
+Line 2586
+
+
+ drivers/clk/keystone/sci-clk.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/keystone/sci-clk.c b/drivers/clk/keystone/sci-clk.c
+index 35fe197dd303..31b7df05d7bb 100644
+--- a/drivers/clk/keystone/sci-clk.c
++++ b/drivers/clk/keystone/sci-clk.c
+@@ -516,6 +516,7 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
+ 	struct sci_clk *sci_clk, *prev;
+ 	int num_clks = 0;
+ 	int num_parents;
++	bool state;
+ 	int clk_id;
+ 	const char * const clk_names[] = {
+ 		"clocks", "assigned-clocks", "assigned-clock-parents", NULL
+@@ -583,16 +584,23 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
+ 					num_parents = 255;
+ 				}
+ 
+-				clk_id = args.args[1] + 1;
++				clk_id = args.args[1];
+ 
+ 				while (num_parents--) {
++					/* Check if this clock id is valid */
++					ret = provider->ops->is_auto(provider->sci,
++						sci_clk->dev_id, ++clk_id, &state);
++
++					if (ret)
++						continue;
++
+ 					sci_clk = devm_kzalloc(dev,
+ 							       sizeof(*sci_clk),
+ 							       GFP_KERNEL);
+ 					if (!sci_clk)
+ 						return -ENOMEM;
+ 					sci_clk->dev_id = args.args[0];
+-					sci_clk->clk_id = clk_id++;
++					sci_clk->clk_id = clk_id;
+ 					sci_clk->provider = provider;
+ 					list_add_tail(&sci_clk->node, &clks);
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
 
