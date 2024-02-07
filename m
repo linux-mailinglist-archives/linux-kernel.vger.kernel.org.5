@@ -1,58 +1,68 @@
-Return-Path: <linux-kernel+bounces-57208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB6384D523
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:01:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44B4E84D525
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:01:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 883BD1F23C83
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:01:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76E721C209AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:01:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D64F763F3;
-	Wed,  7 Feb 2024 21:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30D7C7641C;
+	Wed,  7 Feb 2024 21:27:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Esfgsvt4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OQU/jNlH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8099F179A1B;
-	Wed,  7 Feb 2024 21:27:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 426A16F521;
+	Wed,  7 Feb 2024 21:27:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341231; cv=none; b=EW9aAewPOQbf2bAyQ1e2Qfm7vKFlY+9aDUfWa2q99cs04De6vO+NN3sjIg+KN2lRw2GHiWxMiQYNzVsQTPhpKtIDAcrzn4jcTFarrJ4g+gtkN8chJyb2td4r8lc1/VbvT4zS3hSQqP2M7f+A6DTlcfpSrO9hcTIF7Tvk/NMuZxA=
+	t=1707341235; cv=none; b=oJsyVb/Rkv0xYlBBuH+7rkuqVHx0DUVCW9hgFNTB1P0WdlG1McARMPH/gbJDC7WceRWXSSquhpC5gW9uUOEJVNPJSBE5Pzn556f0Od5Dtm3b3umElLIakwgT++JtXERzav4bCUAhA+fzgQTEeh50VkD11YBx/2D14PS7m0PtMOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341231; c=relaxed/simple;
-	bh=PtluBwb/hTPum/AkxPGIjQDPKHKLJXdNLqHDtulcw1A=;
+	s=arc-20240116; t=1707341235; c=relaxed/simple;
+	bh=lxCjGoMz1GPeg4iphNIXQdTpaiA/vfzyJn8/wK9k3AE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SqLpJ/LeZ8wgiOy9gFyvJ4LMH0Yk6rOAjoZGAeXovpR0OiSCT3ZLiyS8cS0htTzGpi4IeAcCN50PaUsmDb8T4kUsP7YPurtF2E951waHKf0M2Jf5Rm3qGRcO4Cmxg4R+Bfs2ejA+PWUwo55Oav0yzJHfaWdtJmD3gf4acBXhJVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Esfgsvt4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 275D4C433A6;
-	Wed,  7 Feb 2024 21:27:10 +0000 (UTC)
+	 MIME-Version; b=kZdLSFaUQIXGDgWRpoiWDXWI21xD4UDE2gFKuAzSX3oIhVdHdx7xmLDPRqqhouUAuetcm3yFxOtPVu00W2/mtuMxvbpmXN0ekqzB6iCL47xzWVbwq9ojQBv1PmZHTKqN2VSw56O4C/lIGGhzYTdFPfEPqpNkgVEi2lzOLLM1OdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OQU/jNlH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81A72C433C7;
+	Wed,  7 Feb 2024 21:27:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341231;
-	bh=PtluBwb/hTPum/AkxPGIjQDPKHKLJXdNLqHDtulcw1A=;
+	s=k20201202; t=1707341234;
+	bh=lxCjGoMz1GPeg4iphNIXQdTpaiA/vfzyJn8/wK9k3AE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Esfgsvt47P4fJl4pTFUAfKeDhBRVZuk6+I0kg5LjssptfcRjeeYnazAppcwRCez6v
-	 bmxsks1nnLyJxIB5mght8eZ5rXhNUsf+9mMdE65L+VJrcz85AqZNxco5iDE5JeLAk+
-	 hP4X7kzqIYE28rwVSsRoFM8U5NL96mV0TswAFP4XW73h55kSdV+MBXTX3k6KhxA6gY
-	 Auyt34cQ17/sv647UHsqp8YUAgrX6vYhqlUiEhd9UhOvYZnP9cqclvX1bq8b29QsAj
-	 /ACXsACgYPooTCWauUVXPNbCZE+D/xMmGnQ5G54lJdApsfc5P+t9jk4Klq7ByqW/BD
-	 RVoG9SEr3dvOg==
+	b=OQU/jNlHdGNFQncLTSi/gXL3aLQsIaP6sNnfCRrjr7RIfd2KU76wr5qTQuvEAJTlk
+	 mVstpx/5IbVNDvafRHiRzyzRzS1IF12wg6qTr+Y9GwqZIb6WW83uHiPrPtN5t8Uqfp
+	 j7oS96lScIPEjMxU7vuV66b5Qegrw2WMgHUOIK4tAruEg/AfmsazsgNrSFqF1T3obY
+	 y90hw1FBrYa1E5UmnBlUuHWnvCVs7S2OWq/YtAf+O/jFYQTIzNPrGfzAZ103rnS0RG
+	 NepTZMx3dJVNavXheXMrCJUcmZMth+FwzuWNXv3STl/xK4gF4zqKTKlEEedjDwKa4m
+	 zQGZeKOpJ8rSA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Guixin Liu <kanie@linux.alibaba.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Keith Busch <kbusch@kernel.org>,
+Cc: Chen-Yu Tsai <wens@csie.org>,
+	Andre Przywara <andre.przywara@arm.com>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	sagi@grimberg.me,
-	linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 06/16] nvmet-tcp: fix nvme tcp ida memory leak
-Date: Wed,  7 Feb 2024 16:26:46 -0500
-Message-ID: <20240207212700.4287-6-sashal@kernel.org>
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	samuel@sholland.org,
+	kuninori.morimoto.gx@renesas.com,
+	nicolas.ferre@microchip.com,
+	robh@kernel.org,
+	ruanjinjie@huawei.com,
+	u.kleine-koenig@pengutronix.de,
+	linux-sound@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev
+Subject: [PATCH AUTOSEL 5.10 07/16] ASoC: sunxi: sun4i-spdif: Add support for Allwinner H616
+Date: Wed,  7 Feb 2024 16:26:47 -0500
+Message-ID: <20240207212700.4287-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212700.4287-1-sashal@kernel.org>
 References: <20240207212700.4287-1-sashal@kernel.org>
@@ -67,34 +77,43 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.209
 Content-Transfer-Encoding: 8bit
 
-From: Guixin Liu <kanie@linux.alibaba.com>
+From: Chen-Yu Tsai <wens@csie.org>
 
-[ Upstream commit 47c5dd66c1840524572dcdd956f4af2bdb6fbdff ]
+[ Upstream commit 0adf963b8463faa44653e22e56ce55f747e68868 ]
 
-The nvmet_tcp_queue_ida should be destroy when the nvmet-tcp module
-exit.
+The SPDIF hardware block found in the H616 SoC has the same layout as
+the one found in the H6 SoC, except that it is missing the receiver
+side.
 
-Signed-off-by: Guixin Liu <kanie@linux.alibaba.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
+Since the driver currently only supports the transmit function, support
+for the H616 is identical to what is currently done for the H6.
+
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Link: https://msgid.link/r/20240127163247.384439-4-wens@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/tcp.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sunxi/sun4i-spdif.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
-index 116ae6fd35e2..d70a2fa4ba45 100644
---- a/drivers/nvme/target/tcp.c
-+++ b/drivers/nvme/target/tcp.c
-@@ -1852,6 +1852,7 @@ static void __exit nvmet_tcp_exit(void)
- 	flush_scheduled_work();
- 
- 	destroy_workqueue(nvmet_tcp_wq);
-+	ida_destroy(&nvmet_tcp_queue_ida);
- }
- 
- module_init(nvmet_tcp_init);
+diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
+index 228485fe0734..6dcad1aa2503 100644
+--- a/sound/soc/sunxi/sun4i-spdif.c
++++ b/sound/soc/sunxi/sun4i-spdif.c
+@@ -464,6 +464,11 @@ static const struct of_device_id sun4i_spdif_of_match[] = {
+ 		.compatible = "allwinner,sun50i-h6-spdif",
+ 		.data = &sun50i_h6_spdif_quirks,
+ 	},
++	{
++		.compatible = "allwinner,sun50i-h616-spdif",
++		/* Essentially the same as the H6, but without RX */
++		.data = &sun50i_h6_spdif_quirks,
++	},
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, sun4i_spdif_of_match);
 -- 
 2.43.0
 
