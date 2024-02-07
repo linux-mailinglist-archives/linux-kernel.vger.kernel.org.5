@@ -1,160 +1,177 @@
-Return-Path: <linux-kernel+bounces-57250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1221684D5AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:17:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3956E84D5B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 23:19:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98CB21F21C30
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:17:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D0131C256C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:19:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2C86F519;
-	Wed,  7 Feb 2024 22:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B60F149E0E;
+	Wed,  7 Feb 2024 22:19:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="B7W6NiBy"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2052.outbound.protection.outlook.com [40.107.21.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="i9EdvZpE";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rWLYDSc1";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kfv3f70U";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+iWRhUIA"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBB5149E0F;
-	Wed,  7 Feb 2024 22:14:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707344054; cv=fail; b=uVzn/IMEhmB6h9XBMO7AnL+GIQyJ20PJ9MoWN+gQGfUjmhFEnSPW7u+5D/N7pHUOYghnfkAyF0C7gf8SMVwVYsGbyu/A41zL8eDGA8LkUuKQUXrQZohmgcga3R36phudMGtIHHROM0A2A38BdqbCpQ6Bnt5jSQG4HqLXBLnhaS8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707344054; c=relaxed/simple;
-	bh=AEluH8OaaWtedbQcoGOaUjsY/7jgcWj/UlseFMMjHsI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=csO3WHlew1zGbfJEZJ669gq6qgQQYdsVzJdUSNXcnqpNLerV12QvCF73yy44LQS6Nwgo6oSr1xnefpxc6vi82/8nIdB2oyAfdEwa5KbSyhcKG0hTtLWFsqO3r8S9P3RURIn18P5qgk7roh+LMTmjH2E2o4YgO7dZFOokeFGqxEY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=B7W6NiBy; arc=fail smtp.client-ip=40.107.21.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nhWXliAjQFQIMm0b0zLDJh5q7zwKYIq4E+cF6D+IZkYqag7T2aSeaBjqU9wqC8A+aCqZ1izCCJRkNiRQ+ptlSd4a+VZDLCKtUFs2kXZ7VDiiUP+Gil9TwSIofR7Ja8vjQVt/eefRA96vDq2DHUTe88/EoF1iOT8/cen/35p3lXGTejagXP0g+Zm/0YPxxnPXumdxGFvP8Ioz1pz3D2lF4GQvutkwfKD6s8X4SPc9uzD9v//p6aVCzk7BTJ0zE8kR0xFxb0LXWOXBbP5G2VsYCu6Fa1nZvqWPgxHtTAR5vS7h2A4BFbEmJmkpeyxvsltccf37MzUaR3w7umqHdvaHOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pz7ewzYSHGBmK2P3+LeCuxCv9HlXT8tL7paAMxDAab0=;
- b=KfPY7wKAk9dVBTusBY7sw/W+sCKe2tXK9HPXppip9n/iOO/CmMOqaeo9/NWIC/k3WDa+23s8oB693kX9E+rBRwMXYxfB1QvtHDQHbmOsUsP1+3B9iP25+i6hFrkoNy10QKgQNYSd97iRM/gSFo3h19n35W77LeOAAiigBqnDVpIkdOT4H49cLqUNI+6asJvXlrMaFfHVEz571CIqCgaeaNE/WjT2KuK+rF7hA23acF+kGo5G7OLYmCIJgx8VD0PB8q4jqK2sURxbDawIvADBvSKF4RUrLwux2bAyshYaU+0aQvm2DR9ysN8cNaf3+1IqpW5mRBaBmUVViLzFVrs7rw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pz7ewzYSHGBmK2P3+LeCuxCv9HlXT8tL7paAMxDAab0=;
- b=B7W6NiByjDk0Y4RpiPchSmgYgmVA2egGi3icpVVWgvNqYRKwWUkGtoLyUrIa+FRobsJRR3ZcCBo3KCWBVjELvYUFHMt0iqNHhdH7CHB4sIiHxY5I24XvOqGvCxnfODG3g9+3UNmOo9d8WJI2j2qlLg1uk6nCU7SEmye1YS+XNxI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DBBPR04MB7914.eurprd04.prod.outlook.com (2603:10a6:10:1f0::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.37; Wed, 7 Feb
- 2024 22:14:09 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7249.035; Wed, 7 Feb 2024
- 22:14:09 +0000
-Date: Wed, 7 Feb 2024 17:14:01 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Felipe Balbi <balbi@kernel.org>,
-	Thinh Nguyen <Thinh.Nguyen@synopsys.com>, linux-usb@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	imx@lists.linux.dev
-Subject: Re: [PATCH 0/2] usb: dwc3: drop 'quirk' suffix at
- snps,host-vbus-glitches-quirk
-Message-ID: <ZcQAqVViPHcbgn52@lizhi-Precision-Tower-5810>
-References: <20240207-vbus-glitch-v1-0-7be87099461d@nxp.com>
- <20240207-settling-drone-90e6f10a3476@spud>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207-settling-drone-90e6f10a3476@spud>
-X-ClientProxiedBy: BYAPR05CA0089.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::30) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B57149DE8;
+	Wed,  7 Feb 2024 22:18:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707344340; cv=none; b=bdhoOlgZSMAwor/ObxniBHh3H2kqbT6Pi6CMBYdkht8MQB7dE+upXnG+SXd21/i15PZX7Qgu0Fcebig6kOT0NJAy82CK5OELSWrWX+d1NLmjHsom/9sRzk+AVQvQ4GDdQAoVtG5eUnHEvDWUSmD7wrHOx6YTisMZfq8xoFPFWHg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707344340; c=relaxed/simple;
+	bh=bx+KURCYSGlETV+r29jDrgPWZ+/PJ7n49T3tpO3jhKE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K8GNTtPwNgSqmiM1Kiu3Uw77IgQB9SXh4jNrvktjdPoqXtVZ4eiA2PByyx5ZvlWja9zm3bL/XZ5C/obVWQ+ornFGrz8kOvGAXa1a4X48fNw9MFZ3ODNsTiUSJCKIvVfzGCUNBvWx7yuvFtkwulBWADG4gPN6l0QUR8WNT/BUHWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=i9EdvZpE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rWLYDSc1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kfv3f70U; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+iWRhUIA; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CFD732220A;
+	Wed,  7 Feb 2024 22:18:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707344336; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=goluLwcuX68TlGMIeX0uo6uwWYziPKeRnES2FOv7XD8=;
+	b=i9EdvZpE4brZX7uKo4nWXIlUAMiTu1g8s/GapJXkzjSPCT0IMWkIBbD0XjnIn234X7nXXU
+	+rRaF7HaNKFO4Zvi+heGJ5nblKhJUL0HEkU5SCp8KW5e3iW+GmT6i8GVNV2Hhi4eyHa94y
+	X5QxfOBJ/ALQfJ4c2norfz8JUT67wcY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707344336;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=goluLwcuX68TlGMIeX0uo6uwWYziPKeRnES2FOv7XD8=;
+	b=rWLYDSc1KHvbg0Y/VXyqlOwP9wHlTbzxiOVr2rfPbI5Ku5jRH3JX5T9y5Hd+iQWM0Dl1cy
+	w6YDf1+Oj9+hmzCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707344334; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=goluLwcuX68TlGMIeX0uo6uwWYziPKeRnES2FOv7XD8=;
+	b=kfv3f70UJdkswQswPkgWSVlK7JsruYEFaOGhCm9aPBKozXsIv68GCbciMbNx7y5TY0d+0c
+	prkIhLT7H4dWKnCTEY/jIn8hJMzqr7MyTEanFIQp/8IWJyaNCiPz4EvMjXAMcw099/nUU3
+	eK/rS52dGm7RlBmW6y3yzBjGOZ3Ob0g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707344334;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=goluLwcuX68TlGMIeX0uo6uwWYziPKeRnES2FOv7XD8=;
+	b=+iWRhUIAaw/CTSPN3xRgqLOKiY+xPI13THkHsy9on96k1Epo0A17MmiJSO3HbT1311BOlz
+	AgXfRsvrQjJ5inCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BDEE71326D;
+	Wed,  7 Feb 2024 22:18:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id RLhYLs4BxGUfJQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 07 Feb 2024 22:18:54 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 5F0BFA0809; Wed,  7 Feb 2024 23:18:50 +0100 (CET)
+Date: Wed, 7 Feb 2024 23:18:50 +0100
+From: Jan Kara <jack@suse.cz>
+To: Dave Chinner <david@fromorbit.com>
+Cc: syzbot <syzbot+53b443b5c64221ee8bad@syzkaller.appspotmail.com>,
+	axboe@kernel.dk, brauner@kernel.org, chandan.babu@oracle.com,
+	dchinner@redhat.com, djwong@kernel.org, jack@suse.cz,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [xfs?] WARNING in xfs_bmapi_convert_delalloc
+Message-ID: <20240207221850.hrqrnra4bkgjsqbg@quack3>
+References: <0000000000001bebd305ee5cd30e@google.com>
+ <00000000000032f84a0610c46f89@google.com>
+ <ZcPzZNStEgLX+bAq@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DBBPR04MB7914:EE_
-X-MS-Office365-Filtering-Correlation-Id: cdc7de4a-5a50-40be-c65b-08dc282a1b34
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ALOSiczYzg5djUBr6rA8KKN2r0irI20eGco0p3d4/Kqfsc6m1KeChpoCSZXWnReQinGFF1r5OY0K4BJvQLe2NGtrEqnWo4Mah6fUUo8YGRFnGdHAO3qK8pNt1ZNbmBuw+jdFN5wCRnto/bPDfH4QHF+XzrTFH3X1Nx0aTZnhTt8qwMKDhhue9jao3z/RzmyXQtbD85XXLBjhOETqSBf208dkwxldhGRIa9UVu3uzkmFYntiRolk8CJGsB+fIgD7Eo9aeYyI0j2qeN0If1RyhMjEMjYP9U/Vji7SGYjQ63mN61gDVjDKV7B9s/ecL9EiOm90wMhzA0j+X4optD6AoJVtTaA2SAam0GMtSNcW/0G3xLNu3wUNx5whhJRX/12qQTKv2IZ/vCYwrTONOek2RCo2vgkRcuis87r2Wi6194GjbEDWLtNy4Gp0z3LYEdzVXdX5G0FB5/Px4A/oe1+T9cjs46lI43aTbm9kYmptyE2PnORiNoBL3XphYo5NoAOkhOCfvGJuXPz1nauIiDNRnN16YWmpGiK25OkarzL3Lr2LFppOpakQszavZK8Oo9dBBqxk5ouCszUsh4t4Hk5hMlg2gzZOn4zKFMGMeHiRhzUs=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(366004)(39860400002)(136003)(396003)(346002)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(4744005)(2906002)(41300700001)(33716001)(5660300002)(38350700005)(86362001)(66946007)(966005)(6916009)(478600001)(8936002)(6486002)(7416002)(38100700002)(6506007)(6666004)(52116002)(4326008)(9686003)(316002)(66476007)(66556008)(8676002)(54906003)(6512007)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ORRe1aygBXDEHEafBW+sGZMYF/GIW17ntUORghTMZ/ENplNpRy6CeMGtFZVh?=
- =?us-ascii?Q?9ph3CIdavDvn1ybtXpwBYjmuS7Jctu2l2zWtQTRnPRapaEfegnB2KwttvBrd?=
- =?us-ascii?Q?rI6umN7CEkOQ++6DqKponPDWoqtETR6y2d4q0fmovbRStyhX9LnZwlQXEc6C?=
- =?us-ascii?Q?PkQiYT4rcltFplqdO9z1zjrwaKLjWFXhoAVjVPMXty16JodFRr2Dg/7wl9yp?=
- =?us-ascii?Q?DIRwKSzH997ctQzLFkHjn8f18B6XTxdqz4ew0MV2+4Z/J9kdihZ0IZwkW6kN?=
- =?us-ascii?Q?OHs71dq6dGMoavAY9NiNuweL4EWfeRAf4JlOQ2Sk7RlWSL+R1SuzMxOEiEIN?=
- =?us-ascii?Q?SxuLbxcGcVcljPWCwlG7AVOK2oEGBeYq43pA8r0VU446yWQJcPS+nV4lS/3r?=
- =?us-ascii?Q?mqLWd+lzsVO+pqbg4wFuNrGP5k1ZZIz0m+fwIj9+Ke7jUbpY4c6gIe88MQva?=
- =?us-ascii?Q?hfDIkBU6vmwBXq2FqCXxMgu58bIGnqVhO8zosSb5sTbPdVf8BxkdkwvgRk4P?=
- =?us-ascii?Q?URLDgXftaunC4O8y3+k39R/ZuEF66bNUsvom+MxLQ2b3MjAfMIsJCwUydOeS?=
- =?us-ascii?Q?dZp+ow4nJSIfcIK2NE4KHCN3VOsie+Q5uwsSTR4LM0z0aUKGmvegfDO8EKDW?=
- =?us-ascii?Q?T4W/wk/MAQoO1ZBm9PHETGwy9KtfCGLx1uVsA7hBI+NP6fxhjIjOCSsU9xZO?=
- =?us-ascii?Q?aIToJzeQTk5TR+FTQ2AZMNDMb7D52WwMRcPZESi6eq7xd6hvfaL6YFndBxfN?=
- =?us-ascii?Q?MX1/Yybtq0NHPcLk654vvDwEOW1GWaNpJ9OeuDTOx8JBnyaafCRNWYVcC192?=
- =?us-ascii?Q?5+OMrhAMyEqTpbpL+dtKbDECOwLQUAbzZMRb+b8AegJun5GtARfQm4pidO/7?=
- =?us-ascii?Q?wKqzl47/LyuKrxTovN84Iz7FNQebBa4gWMdRo4OnGPYIPYjzRRRh+/vqf+Eo?=
- =?us-ascii?Q?bLGt0kmTGSWpM6dvCYUs+4LQgdavBNmiK7jufHgeBqxQm3xI1FZ20cTYVj3H?=
- =?us-ascii?Q?LfcPd5NNbJ7WwVTCrWLtK+mMIBcM1rvrk5fdrECP1PYLfJR3z8teQVymuxfo?=
- =?us-ascii?Q?8KTzc31tGQNrVd32zMsvdUXwP5HflnN2Lr0BSHAUHhrsS2nobKGEZ88bt1tY?=
- =?us-ascii?Q?lu6SWCAGowAqiSwHUp5aJlpZyAXEqsuCt4LU0yfoxs7B8o26TD+NojsBnXv5?=
- =?us-ascii?Q?bGyJDrk5E5y/SohN8DEqKCgLx7iBut8iruZgoP3/DdUKwZqZjbnXAlrtseXK?=
- =?us-ascii?Q?7H1a9C+vdmUx8ap4YXCvrrn00LGh0QQFc98TQvFj6DeerD2XbD3l7GWELmiL?=
- =?us-ascii?Q?xLAefM9YOEPjQnfMaCI13LDQtYpCj9gvtP2QF0Iy9qfP8lHpwFbGHFT+2aQj?=
- =?us-ascii?Q?R3folbEo16V4uwwTeEvMSy7uKPBhV2qHoGhFMkbY4h9hqIPAThJtDR0xG85+?=
- =?us-ascii?Q?1w3yXidQVDrnYUkFM5YrtBqcBcLJzUZZgKNSulS18lCAo5ggRHhF5k8yPZA1?=
- =?us-ascii?Q?LdlgR8lvBfar/dTq9XNwTRlEb/nEZe/6XvTVBeMf43Yjyxi3wCd5bX3MruVM?=
- =?us-ascii?Q?4KL5MPIhluWOQZS3uyk=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cdc7de4a-5a50-40be-c65b-08dc282a1b34
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2024 22:14:09.1293
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 916pL/kkFPw4SpjyIYD/leYtexJeD9FtdUcwM5oDNr1BpW4peRTpzhyqmUP53qFsmD2Yn+Q+tNs8Ll3ytJx93g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7914
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcPzZNStEgLX+bAq@dread.disaster.area>
+X-Spam-Level: *
+X-Spamd-Bar: +
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=kfv3f70U;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+iWRhUIA
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [1.49 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.00)[30.60%];
+	 SUBJECT_HAS_QUESTION(0.00)[];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=11e478e28144788c];
+	 TAGGED_RCPT(0.00)[53b443b5c64221ee8bad];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,syzkaller.appspot.com:url,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 1.49
+X-Rspamd-Queue-Id: CFD732220A
+X-Spam-Flag: NO
 
-On Wed, Feb 07, 2024 at 10:05:23PM +0000, Conor Dooley wrote:
-> On Wed, Feb 07, 2024 at 05:00:17PM -0500, Frank Li wrote:
-> > Since dt maintainer give comments at old thread
-> > https://lore.kernel.org/linux-usb/20240119213130.3147517-1-Frank.Li@nxp.com/
+On Thu 08-02-24 08:17:24, Dave Chinner wrote:
+> On Tue, Feb 06, 2024 at 10:02:05PM -0800, syzbot wrote:
+> > syzbot suspects this issue was fixed by commit:
 > > 
-> > The patch v4 already merged.
-> > https://lore.kernel.org/linux-usb/20240124152525.3910311-1-Frank.Li@nxp.com/
+> > commit 6f861765464f43a71462d52026fbddfc858239a5
+> > Author: Jan Kara <jack@suse.cz>
+> > Date:   Wed Nov 1 17:43:10 2023 +0000
 > > 
-> > So submit new patch to rename snps,host-vbus-glitches-quirk to
-> > snps,host-vbus-glitches to align dt maintainer's comments.
+> >     fs: Block writes to mounted block devices
+> > 
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b0ad7be80000
+> > start commit:   e8c127b05766 Merge tag 'net-6.6-rc6' of git://git.kernel.o..
+> > git tree:       upstream
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=11e478e28144788c
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=53b443b5c64221ee8bad
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a6f291680000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=116bc355680000
+> > 
+> > If the result looks correct, please mark the issue as fixed by replying with:
+> > 
+> > #syz fix: fs: Block writes to mounted block devices
 > 
-> I thought the last comment left on the v1 was Thinh agreeing that a
-> DT property was not needed here and we should be able to apply this
-> conditionally?
+> For real? The test doesn't even open a mounted block device for
+> writes...
 
-I don't think so. This is workaround. We can use this track which chip
-actually need this. If some year later, such chips already end of life.
-We have chance to clear up these code. Otherwise, it will keep there for
-ever.
+I was also confused by this. Somehow this commit makes the reproducer stop
+working but I have no idea how that's possible.
 
-And I am not sure that the side effect for other chips. Workaround should
-be applied as less as possible.
-
-Frank
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
