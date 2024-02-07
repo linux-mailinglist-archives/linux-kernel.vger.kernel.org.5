@@ -1,101 +1,85 @@
-Return-Path: <linux-kernel+bounces-56226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4CD84C79B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:38:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AA2284C79D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:38:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 311AAB2182B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:38:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A2E51F2A25D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:38:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2C523776;
-	Wed,  7 Feb 2024 09:33:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 806E422307;
+	Wed,  7 Feb 2024 09:34:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kvj1xyNv"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="q0tCTZHz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B863F23748;
-	Wed,  7 Feb 2024 09:33:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9AA21A19;
+	Wed,  7 Feb 2024 09:34:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707298425; cv=none; b=tEXmwYU1REd95fCgmaFVeJPTgVIXuqKyJw3WMJW5jI6q8gmay7a+/mWnmcO3hb3OTA3DSqcNF0ltbjfxDFzJS1ue+RrUSkeV7/CrVl6FR9tJksEChPAv10UUTObo5SFmt0fsGSGddqvMh3qofbUxfdiDIbxFvUXucRuX/dQ3ErY=
+	t=1707298448; cv=none; b=t0nLnPPeN8ySq7vo4miutr/iaCFitPRzUcy+IFrVs2drRXdrkDQnJ5pUpfqJo2n+vQ0eNt+LcqYUU/tCDVb/XpNCL74VBPsP7w9WIDYrZFk56RxcEthCARACF68sTOYi9mPdZ0NdPffpjwKVnMV2WrHe5AaG+hxjQ7m964ElAQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707298425; c=relaxed/simple;
-	bh=JsN+70aPTg6lEAOrTx+Lx2fwdJbbiG3vSS3htAIip4A=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=o3nYkntln6ObEWUs4NRrhaTU8I8DPJl3wH34CX9a76u4rnV3c7ZeZ8y77o5jFwth5X5L7WqpBs+mI0iYzrEyyKDhy7btmjE/bM+AKQllEc9XGyjbrZHmAOy5kmeFeO8knKyZtv8864TM6XeT7dGWfG45IJTKHQtuXsMLKamV2FQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kvj1xyNv; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707298423; x=1738834423;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=JsN+70aPTg6lEAOrTx+Lx2fwdJbbiG3vSS3htAIip4A=;
-  b=kvj1xyNvu92BUmuUtWoOPnIrGfdIJOQTnhh5tFQwvaB9LNGThmUY/IAV
-   9GVbGffsEWMM1QVI1Aq93uHYLuQea8KGyOLyzXAeRo954CuQHXz9jyhKM
-   ATySjbjubFaIJ2s9PgwF2bTI8gA+jt/uymeQ/ssXnzSJJvDdjH+dfVU+n
-   bwVDJBteTCTt0Xm6WVNkAv+2+uI4lNxlaUJ8tl1UFYkMRXnCxlMn621bp
-   LhZhqBbxphjshy+pUFgjlJC2JfUFghIR5w7wuEbaMOq7jB/ZLRAM5YSNd
-   PEebjXMoqDvUqN6tg1QOE+UbeWR1XCfJsms9rBg6yfZXknLxq7H6oJcRD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="436085940"
-X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
-   d="scan'208";a="436085940"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 01:33:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,250,1701158400"; 
-   d="scan'208";a="1601780"
-Received: from mtiebout-mobl.ger.corp.intel.com (HELO localhost) ([10.252.61.65])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 01:33:37 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
- Lucas De Marchi
- <lucas.demarchi@intel.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Daniel Vetter
- <daniel.vetter@ffwll.ch>, Matthew Brost <matthew.brost@intel.com>, Rodrigo
- Vivi <rodrigo.vivi@intel.com>, Christian =?utf-8?Q?K=C3=B6nig?=
- <christian.koenig@amd.com>,
- Somalapuram Amaranath <Amaranath.Somalapuram@amd.com>, Intel Graphics
- <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, Dave Airlie <airlied@gmail.com>,
- intel-xe@lists.freedesktop.org
-Subject: Re: Re: linux-next: build failure after merge of the drm-misc tree
-In-Reply-To: <5b3adb702cfaa944fdaa1b49ee7f10e4d0e86b2f.camel@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240206122822.12a2df89@canb.auug.org.au>
- <f9a027765a3c65c69c2d49cf2964fe1155e914f4.camel@linux.intel.com>
- <tughiv3y52m6ruczgb3g6mvvek7ihfrxaxh7ovoogzqfi6jmun@jcn6xap7vwcg>
- <5b3adb702cfaa944fdaa1b49ee7f10e4d0e86b2f.camel@linux.intel.com>
-Date: Wed, 07 Feb 2024 11:33:34 +0200
-Message-ID: <87il30d3f5.fsf@intel.com>
+	s=arc-20240116; t=1707298448; c=relaxed/simple;
+	bh=9R+OqVqHBHqXShJWLZL21KpJxHNGYryJFB0/wiYofsQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mpc7nvWd8gxkRVMZMnKfzpz3ro5ADC8LHcUuxrKuhx15H+miSn8ciqR0memSUPupnD84w+2mPNHQ9TUJoA9qmVpPrIFXWlrM1T2SvsC+GeDdPV9T+v4jquroYP/FYCekmYEYtcFn+7fzTVUUhHBBex4h9kvAPIVfjXVQWN5X3HI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=q0tCTZHz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 426F5C4166B;
+	Wed,  7 Feb 2024 09:34:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707298447;
+	bh=9R+OqVqHBHqXShJWLZL21KpJxHNGYryJFB0/wiYofsQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=q0tCTZHzfz4ufqkHQuwMlNf6iCoTUGviJZAWNr6pCgQC721qmFl8AHu5w0SiUlwYJ
+	 /0/LkZWcqYDVffT+HArmOxVz5S9KqFTAd/S9Q84jwsj1/OfDRFVetlBd32odP0F800
+	 5Cp0BzeUAIswopiMKi4qo7acj20qKrzg7i7kB8FQ=
+Date: Wed, 7 Feb 2024 09:34:02 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Joy Chakraborty <joychakr@google.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	linux-kernel@vger.kernel.org, manugautam@google.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2] nvmem: rmem: Fix return value of rmem_read()
+Message-ID: <2024020734-curliness-licking-44c1@gregkh>
+References: <20240206042408.224138-1-joychakr@google.com>
+ <2024020647-submarine-lucid-ea7b@gregkh>
+ <CAOSNQF3jk+85-P+NB-1w=nQwJr1BBO9OQuLbm6s8PiXrFMQdjg@mail.gmail.com>
+ <2024020637-handpick-pamphlet-bacb@gregkh>
+ <CAOSNQF2_qy51Z01DKO1MB-d+K4EaXGDkof1T4pHNO10U_Hm0WQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOSNQF2_qy51Z01DKO1MB-d+K4EaXGDkof1T4pHNO10U_Hm0WQ@mail.gmail.com>
 
-On Wed, 07 Feb 2024, Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.co=
-m> wrote:
-> Indeed. Not even drm-misc itself compiles with xe enabled. I'll ping
-> drm-misc maintainers.
+On Tue, Feb 06, 2024 at 05:22:15PM +0530, Joy Chakraborty wrote:
+> > > Userspace will see a false error with nvmem cell reads from
+> > > nvmem_cell_attr_read() in current code, which should be fixed on
+> > > returning 0 for success.
+> >
+> > So maybe fix this all up to allow the read to return the actual amount
+> > read?  That feels more "correct" to me.
+> >
+> 
+> If I change the behavior of the nvmem_reg_read_t callback to negative
+> for error and number of bytes actually read for success then, other
+> than the core driver I would also have to change all the
+> nvmem-provider drivers.
+> Is it okay to do so ?
 
-We'll need CONFIG_DRM_XE=3Dm enabled in drm-rerere/drm-misc-*_defconfig,
-and get people to use that.
+Sure, why not?  That seems like the correct fix to me, right?
 
-BR,
-Jani.
+thanks,
 
-
---=20
-Jani Nikula, Intel
+greg k-h
 
