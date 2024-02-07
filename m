@@ -1,63 +1,62 @@
-Return-Path: <linux-kernel+bounces-57131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B26284D455
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:41:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 174DD84D457
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:41:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B60EDB22A41
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:41:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C1C82821DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:41:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E13E1509A7;
-	Wed,  7 Feb 2024 21:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DF5F1509BC;
+	Wed,  7 Feb 2024 21:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CESI6mW+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pRUUUAdR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25B514FFAC;
-	Wed,  7 Feb 2024 21:24:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C76FD151442;
+	Wed,  7 Feb 2024 21:24:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341059; cv=none; b=vFHKTdf3uZywFiMqoOBbGwTGRwX/XgXcreZQzKThTmWgMfhBngwSQoD1yzPEWaWL9Pxu54p8Cq+2iMdj9YIqwuNc6GuxCxYQI3Cdfss1xiAy7rBPXaQTZzyz9xIjSUsR+8w5TwpC2my0EqGZQGkV9Nd2e+qsOEdy36IoHdI0PGk=
+	t=1707341061; cv=none; b=Hv0OJeUHVorKxRkelx+2y1pDPb//Zusrn8viJcVGoBtLDbIb+hjVxSLcp844c6lNCNS7t3DsWtDSVbNpEgYc+iIUrD9DbAot3HBNqiGEMiTVkn2cxEBHnM7UGxX30JDz815JNX6rJCvF6VjBSRkQU8+WenOzsuoQYa7dggPp4dA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341059; c=relaxed/simple;
-	bh=mX/ebMEh7thQzNklaYbubtROwsv/Ojpwrtwuq4H+bIQ=;
+	s=arc-20240116; t=1707341061; c=relaxed/simple;
+	bh=YQMdPLT85u6VmS+BxkTgirUdZ3i3i9GOontpVmmubnY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N7sf/qHE23WbJWaBg9ri47+9zzNCojQRgc9fi+FQh8mKhlc8NJT3XujM/Hg7qLnRFNMBkAw3n0kEQOBlLPktbKsFccrP8RtkByxisOaQ6EVxrXhkkPlFl0b5ygAaGr2XDSdnCk7KMjGQVHwwCqY9IrJe3PlxtmFEoDphRfcA5Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CESI6mW+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB750C43390;
-	Wed,  7 Feb 2024 21:24:17 +0000 (UTC)
+	 MIME-Version; b=UDS3FBvxCn8S3fXbrm3ArV0Rgvw9FzgB8FesjIOQPMvLDkP2vEbUWMFCV/kUu3IOMVL/vp4qq2XN46xmslQKLL6002LWzIQw0YNAoCDQ3Swk0q2nUWfhR+5BTCXFBclOLUTL/sLgQ2SgGMWeF0LqG5d3TfFmx4aYJRuijzY5Dyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pRUUUAdR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 117F9C433F1;
+	Wed,  7 Feb 2024 21:24:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341059;
-	bh=mX/ebMEh7thQzNklaYbubtROwsv/Ojpwrtwuq4H+bIQ=;
+	s=k20201202; t=1707341061;
+	bh=YQMdPLT85u6VmS+BxkTgirUdZ3i3i9GOontpVmmubnY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CESI6mW+sEQ/70w/vTJHjqJt1puIcXNPSiYGKdGZ2xIA7fWhNTLkZwPk0gE8ptmxR
-	 OiVUPc+kVHSUSoDhHnaP7WvJXba9PpDbhDKg95te35VIk2w/fnDOJi22WNvC16c1pt
-	 ER4/Pn8gI4j2uzFRTY3E3fOfWWNJ1Kxqh4mcQrUTVK4oqySuQ0fdZkwt/RQr0m+SRO
-	 pZsILtO4remvaPLzdgghFJVIXJNwBi5mDn7jjAeNXKLgmNiktaUoFaoRita/QqS7Cn
-	 TaDbcMOPyHK6Uo/38rxGQ6Zxw/PZsuoRgtZsSn9RB8kTjAqudQnnvswF8mV1c0wM/1
-	 KQEgy/X8V76dA==
+	b=pRUUUAdRSHaOKmuS2aC2QEDDxv4j0t2lleXEqfzEf/vwKVsevOPND0QsZJwWwruVm
+	 5iwKuKwSIwKR5SCRlVjDIs5IUeEOUM3sJ7swbRoe3+TMk5f2+07pdCHGxY69ARu4PQ
+	 eH/gnij+ydCnu6aIJeRb98EIZArxvaatikixDbF5KxN8Dp+Q6jGJjAFARdTykbXiYy
+	 y5fVTMlU3dk32LvUrY9DlHSWgrmBNXgG0hn+Cgr8CHKP3Jg0/qM7tAwOaFxgdD32eC
+	 t3Elcv+FlIAUCdaoFZThYe2hblsTIVhSv1RHewY1MaWgdD271tn30rTxdyDy1CTYwL
+	 5rgcXdpruq9HA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Xin Long <lucien.xin@gmail.com>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
+Cc: Mukul Joshi <mukul.joshi@amd.com>,
+	Harish Kasiviswanathan <Harish.Kasiviswanathan@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	kadlec@netfilter.org,
-	fw@strlen.de,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 21/38] netfilter: conntrack: check SCTP_CID_SHUTDOWN_ACK for vtag setting in sctp_new
-Date: Wed,  7 Feb 2024 16:23:07 -0500
-Message-ID: <20240207212337.2351-21-sashal@kernel.org>
+	Felix.Kuehling@amd.com,
+	christian.koenig@amd.com,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.6 22/38] drm/amdkfd: Use correct drm device for cgroup permission check
+Date: Wed,  7 Feb 2024 16:23:08 -0500
+Message-ID: <20240207212337.2351-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212337.2351-1-sashal@kernel.org>
 References: <20240207212337.2351-1-sashal@kernel.org>
@@ -72,68 +71,43 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.16
 Content-Transfer-Encoding: 8bit
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Mukul Joshi <mukul.joshi@amd.com>
 
-[ Upstream commit 6e348067ee4bc5905e35faa3a8fafa91c9124bc7 ]
+[ Upstream commit 4119734e06a7f30e7e8eb666692a58b85dca0269 ]
 
-The annotation says in sctp_new(): "If it is a shutdown ack OOTB packet, we
-expect a return shutdown complete, otherwise an ABORT Sec 8.4 (5) and (8)".
-However, it does not check SCTP_CID_SHUTDOWN_ACK before setting vtag[REPLY]
-in the conntrack entry(ct).
+On GFX 9.4.3, for a given KFD node, fetch the correct drm device from
+XCP manager when checking for cgroup permissions.
 
-Because of that, if the ct in Router disappears for some reason in [1]
-with the packet sequence like below:
-
-   Client > Server: sctp (1) [INIT] [init tag: 3201533963]
-   Server > Client: sctp (1) [INIT ACK] [init tag: 972498433]
-   Client > Server: sctp (1) [COOKIE ECHO]
-   Server > Client: sctp (1) [COOKIE ACK]
-   Client > Server: sctp (1) [DATA] (B)(E) [TSN: 3075057809]
-   Server > Client: sctp (1) [SACK] [cum ack 3075057809]
-   Server > Client: sctp (1) [HB REQ]
-   (the ct in Router disappears somehow)  <-------- [1]
-   Client > Server: sctp (1) [HB ACK]
-   Client > Server: sctp (1) [DATA] (B)(E) [TSN: 3075057810]
-   Client > Server: sctp (1) [DATA] (B)(E) [TSN: 3075057810]
-   Client > Server: sctp (1) [HB REQ]
-   Client > Server: sctp (1) [DATA] (B)(E) [TSN: 3075057810]
-   Client > Server: sctp (1) [HB REQ]
-   Client > Server: sctp (1) [ABORT]
-
-when processing HB ACK packet in Router it calls sctp_new() to initialize
-the new ct with vtag[REPLY] set to HB_ACK packet's vtag.
-
-Later when sending DATA from Client, all the SACKs from Server will get
-dropped in Router, as the SACK packet's vtag does not match vtag[REPLY]
-in the ct. The worst thing is the vtag in this ct will never get fixed
-by the upcoming packets from Server.
-
-This patch fixes it by checking SCTP_CID_SHUTDOWN_ACK before setting
-vtag[REPLY] in the ct in sctp_new() as the annotation says. With this
-fix, it will leave vtag[REPLY] in ct to 0 in the case above, and the
-next HB REQ/ACK from Server is able to fix the vtag as its value is 0
-in nf_conntrack_sctp_packet().
-
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Mukul Joshi <mukul.joshi@amd.com>
+Reviewed-by: Harish Kasiviswanathan <Harish.Kasiviswanathan@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_proto_sctp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_priv.h | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nf_conntrack_proto_sctp.c b/net/netfilter/nf_conntrack_proto_sctp.c
-index c6bd533983c1..4cc97f971264 100644
---- a/net/netfilter/nf_conntrack_proto_sctp.c
-+++ b/net/netfilter/nf_conntrack_proto_sctp.c
-@@ -283,7 +283,7 @@ sctp_new(struct nf_conn *ct, const struct sk_buff *skb,
- 			pr_debug("Setting vtag %x for secondary conntrack\n",
- 				 sh->vtag);
- 			ct->proto.sctp.vtag[IP_CT_DIR_ORIGINAL] = sh->vtag;
--		} else {
-+		} else if (sch->type == SCTP_CID_SHUTDOWN_ACK) {
- 		/* If it is a shutdown ack OOTB packet, we expect a return
- 		   shutdown complete, otherwise an ABORT Sec 8.4 (5) and (8) */
- 			pr_debug("Setting vtag %x for new conn OOTB\n",
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
+index 3287a3961395..12ee273e87e1 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
+@@ -1482,10 +1482,15 @@ void kfd_dec_compute_active(struct kfd_node *dev);
+ 
+ /* Cgroup Support */
+ /* Check with device cgroup if @kfd device is accessible */
+-static inline int kfd_devcgroup_check_permission(struct kfd_node *kfd)
++static inline int kfd_devcgroup_check_permission(struct kfd_node *node)
+ {
+ #if defined(CONFIG_CGROUP_DEVICE) || defined(CONFIG_CGROUP_BPF)
+-	struct drm_device *ddev = adev_to_drm(kfd->adev);
++	struct drm_device *ddev;
++
++	if (node->xcp)
++		ddev = node->xcp->ddev;
++	else
++		ddev = adev_to_drm(node->adev);
+ 
+ 	return devcgroup_check_permission(DEVCG_DEV_CHAR, DRM_MAJOR,
+ 					  ddev->render->index,
 -- 
 2.43.0
 
