@@ -1,136 +1,118 @@
-Return-Path: <linux-kernel+bounces-56314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 768AF84C89B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 554D884C8A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:29:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B2661F23CBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:28:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0707E1F2433C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:29:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317EE2562F;
-	Wed,  7 Feb 2024 10:28:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8593E2561A;
+	Wed,  7 Feb 2024 10:29:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TQNJC3ON"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Rs13nRfU"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC2525569;
-	Wed,  7 Feb 2024 10:28:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E8342577C
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 10:29:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707301684; cv=none; b=nd9nTJ+iQROpTZ38kbFEHIyPmrtcbws0uagYdV0Ovp9s2KKYpe23Mo3KB1gpnAFnqV2lPJicW8TCTWTPOFAdyU5yjeUc8u4zxf0LGLlTaeABm1V1fjdtD60wNh/qAPNN1CN19vc1ffDXsgTE8j+d2sqhKkrwFKGz4dy096FSsUU=
+	t=1707301786; cv=none; b=j5oh1spihGgzT5zUcq6CcewszOKPu82H2Dt2wb3F7y6gQFiXOWkMDeIw+pQb8Hv7ea+Dk6enpSAd4fJRSdCftWmQYZWPbuqazmEFOum6FgdMv30Q1MIBnpZf5p/09eI/gbgJzAG3c7HOOqsv7b16rQMTehwJuOOoKM1zn6yKgF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707301684; c=relaxed/simple;
-	bh=DT7w9MrBhp7n1yTiTo1MiCoaRVJkXh7SXpN31OXBjDQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NXF75p2aCzmTDlvLm494vsz5myFk4ehufezcRsVWeszNWBOtg341X0vvIdDHcuvPBqiMLYPAsmHCpJ75gm0+A1tt19ZN08+pLNew6y2o4Z4iFLOvmxKAKMxRQ4L6aFXhuBV6RJFhnNVUw1QQ3vrWOM0DuyhD5iscN2+y/d59ON0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TQNJC3ON; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CDC7C43390;
-	Wed,  7 Feb 2024 10:28:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707301683;
-	bh=DT7w9MrBhp7n1yTiTo1MiCoaRVJkXh7SXpN31OXBjDQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TQNJC3ONzDKm6lJa6A4TcfHBsUBGETDhLRw9F9VYPhcoBu7GaO/U+VGBsvwAEBbxH
-	 jbs/NF1vJxuM0AiprfrwdtPk4pPWL/aL3YxW2Ro/4x1VvVigW9qe0Rs68hneRpE+m+
-	 5m1dA5qK5WRG1tcTAnPIpys43gSFn8h+DJ/Qb7b7EwurYJC2RBxeQtzhQgoz5F7H2y
-	 gbcV2p1rGSKFu8Kk6cxiTN48pXWEaHdWMmpVN4nu1SDTKYj81OrQFsHatlswGc1zxz
-	 YmVC4/mcJ5hsyv1lJ7hbBoliUNX91iD57qsrd9oj0I2aAbvGy3pwrhxlBR4C+TXjI2
-	 m9OujhSk6hooA==
-Date: Wed, 7 Feb 2024 10:28:01 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: "Ding, Shenghao" <shenghao-ding@ti.com>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
-	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
-	"liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
-	"lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Lu, Kevin" <kevin-lu@ti.com>, "Xu, Baojun" <baojun.xu@ti.com>,
-	"P O, Vijeth" <v-po@ti.com>,
-	"Navada Kanyana, Mukund" <navada@ti.com>,
-	"perex@perex.cz" <perex@perex.cz>,
-	"McPherson, Jeff" <j-mcpherson@ti.com>,
-	"pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
-	"13916275206@139.com" <13916275206@139.com>,
-	"Chawla, Mohit" <mohit.chawla@ti.com>,
-	"soyer@irl.hu" <soyer@irl.hu>, "Huang, Jonathan" <jkhuang3@ti.com>,
-	"tiwai@suse.de" <tiwai@suse.de>, "Djuandi, Peter" <pdjuandi@ti.com>,
-	"Agrawal, Manisha" <manisha.agrawal@ti.com>,
-	"Hari, Raj" <s-hari@ti.com>, "Yashar, Avi" <aviel@ti.com>,
-	"Nagalla, Hari" <hnagalla@ti.com>,
-	"Bajjuri, Praneeth" <praneeth@ti.com>
-Subject: Re: [EXTERNAL] Re: [PATCH v3 4/4] ASoc: dt-bindings: PCM6240: Add
- initial DT binding
-Message-ID: <ZcNbMWgcDNNXAA08@finisterre.sirena.org.uk>
-References: <20240203030504.1724-1-shenghao-ding@ti.com>
- <20240203030504.1724-4-shenghao-ding@ti.com>
- <ac4b73f6-0c2c-4586-98d6-e97c575b3df7@linaro.org>
- <8fe0b2d1990346efa056d6c2245412c3@ti.com>
- <e61999e6-8c82-40a2-a2b9-e19d636364f5@linaro.org>
+	s=arc-20240116; t=1707301786; c=relaxed/simple;
+	bh=R7H9cs6DbGLpBH+H9RkszszDtlqmhCAJkD+Ax/F7B3Y=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ixY0V/KwVlbDBy0ws103OQ3CFFfaCrqYUxDH9hfzY3jBj19ARJ231jt9ymHome+ECdxXJN1o7fh3L3oUY4UzLglPishk+JpWKHhjfs2+QT2PgXkQcyTVPiRmVV05ZNWg06zHicnSLjRVp4S/KcFSlr0V0oRKAQQsa6QmRwklPpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Rs13nRfU; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1707301785; x=1738837785;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=R7H9cs6DbGLpBH+H9RkszszDtlqmhCAJkD+Ax/F7B3Y=;
+  b=Rs13nRfUxIw/eVpl36DLb2Mk/vJSEwFvrF5HK2wbYv1KKHNDXLTpiUae
+   pakzxzAdyjXOceX1Hge1msTFf9awOvYNYTiuQ5giRFVzEjRf4J+PiD1eP
+   5u281nDpLRfILh1UVk/W2ioDUfX7tlXfQ5DaGJvdvKfoSsMvzv8X7VR3y
+   7Wm0F9ApjjAUlxMnwMG58sVODi9eHjFyu2kx1/u64F+gs0ZPFSgVYnnom
+   85yIidaSAWFYwGM/5Gi2Xc0rkfVJEddZUMK7sIkscMMH8kYsyd4Ck2NHH
+   NC/AEa85SyhawThdpG5WUg6qUnYYYcyArS/par58KNztwqb6eOXqUUqNz
+   Q==;
+X-CSE-ConnectionGUID: j4AD8RfGT+KjBzGzRGPXfg==
+X-CSE-MsgGUID: yxQHXMHUTNu7ReuQRkJiUw==
+X-IronPort-AV: E=Sophos;i="6.05,250,1701154800"; 
+   d="scan'208";a="16412544"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Feb 2024 03:29:43 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 7 Feb 2024 03:29:03 -0700
+Received: from che-lt-i70843lx.microchip.com (10.10.85.11) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Wed, 7 Feb 2024 03:28:51 -0700
+From: Dharma Balasubiramani <dharma.b@microchip.com>
+To: <andrzej.hajda@intel.com>, <neil.armstrong@linaro.org>,
+	<rfoss@kernel.org>, <Laurent.pinchart@ideasonboard.com>, <jonas@kwiboo.se>,
+	<jernej.skrabec@gmail.com>, <maarten.lankhorst@linux.intel.com>,
+	<mripard@kernel.org>, <tzimmermann@suse.de>, <airlied@gmail.com>,
+	<daniel@ffwll.ch>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <dharma.b@microchip.com>,
+	<manikandan.m@microchip.com>, <linux-kernel@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, <linux@armlinux.org.uk>,
+	<nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+	<claudiu.beznea@tuxon.dev>, <geert+renesas@glider.be>, <arnd@arndb.de>,
+	<palmer@rivosinc.com>, <akpm@linux-foundation.org>, <gerg@linux-m68k.org>,
+	<rdunlap@infradead.org>, <vbabka@suse.cz>,
+	<linux-arm-kernel@lists.infradead.org>
+CC: Hari Prasath Gujulan Elango <hari.prasathge@microchip.com>
+Subject: [PATCH v3 4/4] ARM: configs: at91: Enable LVDS serializer support
+Date: Wed, 7 Feb 2024 15:58:02 +0530
+Message-ID: <20240207102802.200220-5-dharma.b@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240207102802.200220-1-dharma.b@microchip.com>
+References: <20240207102802.200220-1-dharma.b@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="oTV3j8bX4pcDUejT"
-Content-Disposition: inline
-In-Reply-To: <e61999e6-8c82-40a2-a2b9-e19d636364f5@linaro.org>
-X-Cookie: You might have mail.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
+Enable LVDS serializer support for display pipeline.
 
---oTV3j8bX4pcDUejT
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+Acked-by: Hari Prasath Gujulan Elango <hari.prasathge@microchip.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+---
+Changelog
+v2 -> v3
+- No Changes.
+---
+ arch/arm/configs/at91_dt_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Wed, Feb 07, 2024 at 10:53:28AM +0100, Krzysztof Kozlowski wrote:
-> On 07/02/2024 10:47, Ding, Shenghao wrote:
+diff --git a/arch/arm/configs/at91_dt_defconfig b/arch/arm/configs/at91_dt_defconfig
+index 71b5acc78187..6a7714beb099 100644
+--- a/arch/arm/configs/at91_dt_defconfig
++++ b/arch/arm/configs/at91_dt_defconfig
+@@ -143,6 +143,7 @@ CONFIG_VIDEO_OV2640=m
+ CONFIG_VIDEO_OV7740=m
+ CONFIG_DRM=y
+ CONFIG_DRM_ATMEL_HLCDC=y
++CONFIG_DRM_MICROCHIP_LVDS_SERIALIZER=y
+ CONFIG_DRM_PANEL_SIMPLE=y
+ CONFIG_DRM_PANEL_EDP=y
+ CONFIG_FB_ATMEL=y
+-- 
+2.25.1
 
-> > dix4192 is not traditional ADC or DAC, but an Integrated Digital Audio =
-Interface=20
-> > Receiver and Transmitter, like an audio bridge to connect different dig=
-ital audio=20
-> > protocol, compatible with the AES3, S/PDIF, IEC 60958, and EIAJ CP-1201=
-=20
-> > interface standards, Left-Justified, Right-Justified, and Philips I2S=
-=E2=84=A2 Data Formats.=20
-> > So keep it alone for professional purpose.=20
-
-> Hm, it is a bit surprising to see some PCM6240-compatible devices 100%
-> different from other PCM6240-compatible. PCM6240 is ADC. DIX4192 is not
-> ADC, not even DAC. How can it be compatible with PCM6240 in such case?
-
-I don't know about this specific example but many modern CODECs have a
-substantial digital component which can usefully be used separately to
-the analog components in some system designs, sometimes that's still got
-the digital parts of the ADCs/DACs as PDM inputs and outputs are used
-but not always even that.  We have some devices that are just pure
-S/PDIF bridges in tree already, and the WM8996 is an example of a CODEC
-with only PDM.
-
---oTV3j8bX4pcDUejT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXDWzAACgkQJNaLcl1U
-h9AikAf9E6YxxFtH9cfyoNmKem4YvgePB6p+36Bk6BfzlKtN9niud8h1pIvqyPx4
-2Cs1luCnA3pjU6BTcpfbrlV9v0BjX2idZjw77dx587mFxyTCop3erQZfT6177pFU
-fZotjpwa4fEWbzRpXlE+X9blHrqBfMEAPf9f9eWN8kSLuSVXmQXi4by955lFGNjN
-yq9TDdO0m96Y7hWs/U645OQc50W8zcd4QDrUL1pddZP7QOWzpf6XqWATrlWCT5eh
-98z1Y9MSvX5SIoJMm1Av7NifjLLQ4Ei4Sjm1KqZylRXZSRPNzUPnbWpPu4h/7Tl/
-2fC+g2Qbw0iK2O2nJtzlooGrDUHA0Q==
-=A9CK
------END PGP SIGNATURE-----
-
---oTV3j8bX4pcDUejT--
 
