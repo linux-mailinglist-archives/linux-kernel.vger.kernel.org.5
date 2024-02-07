@@ -1,177 +1,137 @@
-Return-Path: <linux-kernel+bounces-56128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D3DB84C666
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:41:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6830284C66F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:42:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 728A21C21076
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:41:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7F2F286968
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A388F208BE;
-	Wed,  7 Feb 2024 08:40:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E68920B12;
+	Wed,  7 Feb 2024 08:42:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uo2iAS4V";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="g6lFN9sT";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uo2iAS4V";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="g6lFN9sT"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="i4H7IViN"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B81E2032B;
-	Wed,  7 Feb 2024 08:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3BA4208B9;
+	Wed,  7 Feb 2024 08:42:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707295257; cv=none; b=Cw1tXhxdyxZ2uFzIpj/gPSys0gZZJVzhHnz5b+H5Emrp2Govani6fDHl3qhkR00Ce+N8AJ+2uyhIKOToMGknfNRUaFSSNZLV5fJfaDxRdU8WFYlSprXAXEpJC30RSsomcXVks3cJSyIrQLkX8anEf6bq0X9aA+kMEFVwRS31Vtg=
+	t=1707295359; cv=none; b=kmm+C766E8y6PPcY9yuwyCffOB8P7YU6ugiZnex5Yr42sB7MG+U0UF1qpUhlSrOXZMtA3Dqg5/to5IfsC13JjlCiIJiEYOVKXuJaj31rOsnPzVY+S056DWwstdmtEnyBU29tWaJxC98/0otKLHyk/S/OfR+Q8kJ/Es0zWdITJ1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707295257; c=relaxed/simple;
-	bh=7mWCDilBtyn6a8R/MQs4iWeqLin9foUbZ3OlyKHlEtY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZvKYUbX8UkoXUFWL/V/ISV6zuVmPDadKXc8MJ3F2LNIzOP6+rJJSTwtM88HsS8wor298mBEsAlHzdVEpQwlGq+Xk+WtBblZ7GmHkU9cebOCV0/dHTNWG/+GkadlQN0ytixSjDOxSFQeO1Zht89rwwFUqY00WqIB/ZcjBSfiOAIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uo2iAS4V; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=g6lFN9sT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uo2iAS4V; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=g6lFN9sT; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 50666221D1;
-	Wed,  7 Feb 2024 08:40:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707295254; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R7q8iY10uoxfBBuRXr+Ei/C8akP0H6jzk/X1fqaQvQY=;
-	b=uo2iAS4VHfmzbP8+sGhwxwBhz+ITGZl9aP7Eg4thsPHmTH4Q4BSFt0SmR80AT8NeCxoAE+
-	ClThyH205khyJ4lwUie453vYGg/E21jtlQASqbOVwRoQtX3TbeTjfrnt6dUx5+zPfzdoDE
-	xg/ZhFcksSLcX0jP2GVJUZBpq3i1oEg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707295254;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R7q8iY10uoxfBBuRXr+Ei/C8akP0H6jzk/X1fqaQvQY=;
-	b=g6lFN9sTD/PIiY3ic7OCv2L/NLz6tjpsciHv8cGE0TTVGwwBl5WNTHRilGSwbuertuNxWz
-	/78FUB4U2yS1TMAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707295254; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R7q8iY10uoxfBBuRXr+Ei/C8akP0H6jzk/X1fqaQvQY=;
-	b=uo2iAS4VHfmzbP8+sGhwxwBhz+ITGZl9aP7Eg4thsPHmTH4Q4BSFt0SmR80AT8NeCxoAE+
-	ClThyH205khyJ4lwUie453vYGg/E21jtlQASqbOVwRoQtX3TbeTjfrnt6dUx5+zPfzdoDE
-	xg/ZhFcksSLcX0jP2GVJUZBpq3i1oEg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707295254;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R7q8iY10uoxfBBuRXr+Ei/C8akP0H6jzk/X1fqaQvQY=;
-	b=g6lFN9sTD/PIiY3ic7OCv2L/NLz6tjpsciHv8cGE0TTVGwwBl5WNTHRilGSwbuertuNxWz
-	/78FUB4U2yS1TMAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3EFF8139D8;
-	Wed,  7 Feb 2024 08:40:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pjggDxZCw2U6QwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 07 Feb 2024 08:40:54 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 9CC16A0809; Wed,  7 Feb 2024 09:40:53 +0100 (CET)
-Date: Wed, 7 Feb 2024 09:40:53 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+9924e2a08d9ba0fd4ce2@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, dan.carpenter@linaro.org,
-	dave.kleikamp@oracle.com, ghandatmanas@gmail.com, jack@suse.cz,
-	jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	linux-kernel@vger.kernel.org, lkp@intel.com, llvm@lists.linux.dev,
-	oe-kbuild-all@lists.linux.dev, oe-kbuild@lists.linux.dev,
-	shaggy@kernel.org, syzkaller-bugs@googlegroups.com,
-	syzkaller@googlegroups.com
-Subject: Re: [syzbot] [jfs?] KASAN: slab-out-of-bounds Read in dtSearch
-Message-ID: <20240207084053.ydlu3fnyzzvjpdr3@quack3>
-References: <000000000000332a2505e981f474@google.com>
- <00000000000014c9ca0610b7aec6@google.com>
+	s=arc-20240116; t=1707295359; c=relaxed/simple;
+	bh=L5ZAYEEa7bHsoxaRKBdt5ijloVJqHRjtMzafI754Dxg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jNgqhi1jra1Nk5OnOhIORwgeB0IsIX7hxMQ4NRBPUNCKEkY5o+k+uHHCDY7VJXrOBUwxACj4a5OdRwIOzjipdksFZnpcHAiT749Uc9HjK29B/Ujby/evG/VN1wW1TBae6RMNvuFJXf7ix9r5kHZPez3tXRBwxcawlEOVgN9izI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=i4H7IViN; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5602500d1a6so390492a12.3;
+        Wed, 07 Feb 2024 00:42:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1707295356; x=1707900156; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0Ek5M3wNjOz1sivJxzrJ0sajF2depyYT6ThNER2vlfk=;
+        b=i4H7IViN+zdl6/Uvl5ZUBlWQNFFvw7FLS4KdQg/S4ZCTdIiuKtXlsZCoQTnTMTRa1v
+         PkIpTnNJWIMq2hoC2ZmAu7JKD960Tl16mtZsQaL7dHhNBMt8LoWuD85HSSWXqu35hv+h
+         r7NP/xsxrVTSk2kxR63JAXlnIxNxM0YtXcSW4XXjVVT7QVIv2aRyNyFMxtEkt9jL2/pb
+         7oZ4sJ5Ix4TeClyeK9E8XGCIimoNXf8WpLRLRKMW4O7xBi4I75Jr5cZwkl1fi9fy1n7J
+         PN2lbpAHZKkTHLsmy5X9uID8Uhoxt8SNPQWITmlkKzevLuO6Y4llpycfQjniI3D+2mFc
+         8L7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707295356; x=1707900156;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0Ek5M3wNjOz1sivJxzrJ0sajF2depyYT6ThNER2vlfk=;
+        b=VRybIYTJ6kew0dT86actRHgFTfDtjmRPvVzTvsqTsvuX2VgGoXouZ4H6g93lTIDbTv
+         LBAWgz02oTUJ5rDN3w5LBj0TvUVO8jRBupVAUMKBBAWPvGaCHnS8n5/Ics0b/IIBzT3a
+         /+U/5yFu9H4jvR3FMZ7napAgzIN8CzbuqqS/LqBuD1LQawVxUe6z9qzK5lsHQywmAzjy
+         iIMTx/7TjgyhR/HtolgRSChqnnDlx3+eX+hf/Be9aDw5Pe9B7lvjisgH0aPpqs8lNWLB
+         STDDXJmO9jQGftmoDF/Yh2hBDK4LgTOE+Nq1CmU/jde4m7fZFiwiV3Fm2ezqEekI84dG
+         UddA==
+X-Forwarded-Encrypted: i=1; AJvYcCUA395t/UUl7ZSRucIjuINH9CrXsRwU0pWRbsrspBFWaX7YjHD+Gl8E4ySRTxPHRSfUebn8rquBH5N0aUXVCGdnrLjDnek86VuW48i6r0OQyyduSPaOcFZNnGfVZFgiZ3EN5IOR42VuVlg=
+X-Gm-Message-State: AOJu0YxLNOm5ZMFZP4oPjo9oS228LgZ6s63ZnAqkziknSzOnFczm31D1
+	LQbHiy2l/boXQeMdjH/gTemSRpkdNwPTRfIdK7K+Nkc=
+X-Google-Smtp-Source: AGHT+IFdQB2xybn0n2vKrK3UUqlJd/PEUpdMDZKMD+ojhh8s7yQAtrCzb8CoM0+eRv+ysLTa4WE4zg==
+X-Received: by 2002:a17:906:eb4b:b0:a37:74fe:2533 with SMTP id mc11-20020a170906eb4b00b00a3774fe2533mr3869381ejb.29.1707295355773;
+        Wed, 07 Feb 2024 00:42:35 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV7LEFvPLlx0BuKkS1/GQ5fkG8BVp1ykoUsIshWUuWsKY/TrJEtEmyrXiMEXvHAZ4k5mQJ5OxTjXJuiT3SKkbtn38ke0z2hyft3qAJX98Yxz6N0sYvF+2CJu22TJ99dchQuQ/5+Y/sHgKfFDYSGtas87sfkbDWZ1XNhggPOF4nlLixsTbJ8W5ny5+B0VUPHQxblnmaatnLkShAs1waFCM4QcmFJcfhAYtK1tvgzpDyUzNWYANE=
+Received: from lightwarsArch.plastcontrol.local (rs.plastcontrol.de. [212.185.197.58])
+        by smtp.gmail.com with ESMTPSA id hw19-20020a170907a0d300b00a376d1a18adsm500341ejc.98.2024.02.07.00.42.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 00:42:35 -0800 (PST)
+From: Sebastian Kranz <tklightforce@googlemail.com>
+To: linux@roeck-us.net
+Cc: samsagax@gmail.com,
+	derekjohn.clark@gmail.com,
+	jdelvare@suse.com,
+	linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Sebastian Kranz <tklightforce@googlemail.com>
+Subject: [PATCH] Add support for Ayaneo Air Plus 7320u.
+Date: Wed,  7 Feb 2024 09:42:06 +0100
+Message-ID: <20240207084206.2204-1-tklightforce@googlemail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000014c9ca0610b7aec6@google.com>
-X-Spam-Level: *
-X-Spamd-Bar: +
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=uo2iAS4V;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=g6lFN9sT
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [1.49 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLjmuxkameenh34oafz4d4fopd)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.00)[33.64%];
-	 SUBJECT_HAS_QUESTION(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=b45dfd882e46ec91];
-	 TAGGED_RCPT(0.00)[9924e2a08d9ba0fd4ce2];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[18];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[kernel.dk,kernel.org,linaro.org,oracle.com,gmail.com,suse.cz,lists.sourceforge.net,vger.kernel.org,lists.linuxfoundation.org,intel.com,lists.linux.dev,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 1.49
-X-Rspamd-Queue-Id: 50666221D1
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-On Tue 06-02-24 06:49:05, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13767e8fe80000
-> start commit:   bee0e7762ad2 Merge tag 'for-linus-iommufd' of git://git.ke..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=b45dfd882e46ec91
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9924e2a08d9ba0fd4ce2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=152bfc22e80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1608f4a2e80000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+---
+ drivers/hwmon/oxp-sensors.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Makes sense.
- 
-#syz fix: fs: Block writes to mounted block devices
-
-								Honza
+diff --git a/drivers/hwmon/oxp-sensors.c b/drivers/hwmon/oxp-sensors.c
+index ea9602063eab..8d3b0f86cc57 100644
+--- a/drivers/hwmon/oxp-sensors.c
++++ b/drivers/hwmon/oxp-sensors.c
+@@ -43,6 +43,7 @@ enum oxp_board {
+ 	aok_zoe_a1 = 1,
+ 	aya_neo_2,
+ 	aya_neo_air,
++	aya_neo_air_plus_mendo,
+ 	aya_neo_air_pro,
+ 	aya_neo_geek,
+ 	oxp_mini_amd,
+@@ -98,6 +99,13 @@ static const struct dmi_system_id dmi_table[] = {
+ 		},
+ 		.driver_data = (void *)aya_neo_air,
+ 	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "AYANEO"),
++			DMI_EXACT_MATCH(DMI_BOARD_NAME, "AB05-Mendocino"),
++		},
++		.driver_data = (void *)aya_neo_air_plus_mendo,
++	},
+ 	{
+ 		.matches = {
+ 			DMI_MATCH(DMI_BOARD_VENDOR, "AYANEO"),
+@@ -332,6 +340,7 @@ static int oxp_platform_read(struct device *dev, enum hwmon_sensor_types type,
+ 			switch (board) {
+ 			case aya_neo_2:
+ 			case aya_neo_air:
++			case aya_neo_air_plus_mendo:
+ 			case aya_neo_air_pro:
+ 			case aya_neo_geek:
+ 			case oxp_mini_amd:
+@@ -374,6 +383,7 @@ static int oxp_platform_write(struct device *dev, enum hwmon_sensor_types type,
+ 			switch (board) {
+ 			case aya_neo_2:
+ 			case aya_neo_air:
++			case aya_neo_air_plus_mendo:
+ 			case aya_neo_air_pro:
+ 			case aya_neo_geek:
+ 			case oxp_mini_amd:
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.43.0
+
 
