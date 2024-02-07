@@ -1,141 +1,141 @@
-Return-Path: <linux-kernel+bounces-56498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BC0D84CADA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:49:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 077F684CAE8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 13:51:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3919E287996
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:49:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A99B01F23C48
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB5C76913;
-	Wed,  7 Feb 2024 12:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FBEE76036;
+	Wed,  7 Feb 2024 12:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RLGJNQQ5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="il5d45Sw"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF28768F6
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 12:49:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6271E168DE
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 12:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707310141; cv=none; b=g20GtMUrmtMUhQDR9WiAvgaxZqZ0Ypuqss3Lg9/4OG1n5f6FpEoLP0hIS7E8Rrax8fDsJ1upmRA/2NPZ01cmaadkibkbkZTgNuChCp+0G3fqD+YbGTqemflFqu0XFG4WOKJx1DMY10O9MQV9P8jwoRujHpKyD99zaeGbiJ0oGFA=
+	t=1707310275; cv=none; b=f33cMb3jjZedhZNnXTzJEpJASUF4rCZqL4s/+8WgUC6giLOR9ZmIcyqOA/iIox2rT+kzBJEUrsTukUjDFNAnynvZQlT1buKqUBwZ3H3aBACJ3Xlpnnh2Qac7uyptq3m8g+o7XEdfLpW3o/dX3ovJTkNcWHZQNDe+OiRJK4/96G4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707310141; c=relaxed/simple;
-	bh=kpCKC3B/98YpyoP171CggRXhut1sdettn+WPRc7jzQU=;
+	s=arc-20240116; t=1707310275; c=relaxed/simple;
+	bh=sYcieujEmpCxgF5vEXlSj2YXE88YgC2yaNOOs13MyUw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r5hES3I/IQWo+f6s6HV65D4F8+Jtp/vosnylMmE8IqLvvRVqsDuppXM3y8ythSSIUo5otI5cm/Mxkd537JVyEfqnsvI30RD8ylFqQVvXEXFLKJRbPrVq4JqfT6qi8F+jeC8qlzaCRCAnIveX3S8DTymc6re8NDYOS1Ww6rYIpds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RLGJNQQ5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDB8DC433C7;
-	Wed,  7 Feb 2024 12:49:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707310141;
-	bh=kpCKC3B/98YpyoP171CggRXhut1sdettn+WPRc7jzQU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RLGJNQQ5EaQggFyKDJZDZ+vFCX0Le2fYgcxiSMcrU5YTTdBL5yjnpocSDH+eIBNl1
-	 3/3dRI9h3b04yEcdwS6h9gJFDXc1vXCaABN0PjpHlE3Alm8Bwwk+LW1VHm1mLiuaCQ
-	 9H8T64fcEiRriX+krSy18+3zXpt+zJqCexBSabV63gDPM+da6jIk2WUdl4e7itxmM1
-	 1TbSwS5BuniBUdzGzrIL7c92yzJrRzVA54ETJYu7NE+9w52DlcnZXasV0/nWYFX6P9
-	 nxXRC6HWZxt1V1yrvgc4NLaSl7mrFTdjvz0RRBgUZU0NxcJDPJISH5UTzbtp/+9D8S
-	 OTh4DGVQFml9g==
-Date: Wed, 7 Feb 2024 12:48:58 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Dave Martin <Dave.Martin@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/sve: Document that __SVE_VQ_MAX is much larger
- than needed
-Message-ID: <ZcN8OltRDUlDlTHQ@finisterre.sirena.org.uk>
-References: <20240206-arm64-sve-vl-max-comment-v1-1-dddf16414412@kernel.org>
- <ZcNxJ56+bvcUTGlT@e133380.arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=M9m6ghkAvnS/CndykEeTjGBRYsrz8bv1oVX40ZFjSg41AIDx1hisTTIjiBrv2Ax/OFGtiB/hEedJZLdFAsyuWK9MGlWRJliEFwD4B4JmNpnI9u0xZ0ENBqQwspi13YjxZuKRghpavOhTKBK0Fqpnwc3Vfe+4QoJvKgsaNXjgN90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=il5d45Sw; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5d4a1e66750so349456a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 04:51:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707310273; x=1707915073; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mGfm1xndWnQeszFHqTdhl74zkXV/pi66GxLhja0pVm4=;
+        b=il5d45SwMp/Q/1QGLW53fO4mQxBTg10wDXCLU0h/zMSK9xRCabIJ1iHcGPGO49wKvn
+         P4s/G+bcVk0b2KTxYXGcE4hBzSXGQDT41N7M3MfxuQrFXsIsY0oYXV/If4fjx5j3iEPq
+         rxVZ5BjguJmwfsrX7b6Wpa7fyUMXZ4UObYExk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707310273; x=1707915073;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mGfm1xndWnQeszFHqTdhl74zkXV/pi66GxLhja0pVm4=;
+        b=BDiCYtZEfyvYIXNkeTJ+CD+FcIx5JZ7+b1cQsbk5c+sCcvAyRU9B/a9qu19C1QGQ5N
+         NFkQKN1Tow3VImCGdRA+T/qBKckE+s/gBlPcDNYe1emDty8vBG0NqsRTAMkSs7PPQHF+
+         r8de6umxbaKQJP1nMZs2NtwR9NjbAKWQfYLRv62EXPK/e40bro/8hLUTVon6eZnuXhUY
+         6q/xx2GwrX3hNXARbgrQ2m3A34W3R609iFNV/BaXgNF96kyVrXLaJppGdNnreDV++CBc
+         QnAYXm4cw42r8ASMzOrHKs436k4GQrhdpUozuRv1R7x2CGy7HbXfS62kCV6HdUerNRth
+         fMzw==
+X-Gm-Message-State: AOJu0Yy5m6AtrHLot3DuK4do52har6Mm8Iz7Ol5eFEMwJFNpdApD/TsA
+	EbstOvRlmeY1aVub/iusUyBZPILhGpJmvtliaNiEU3lNWzd1NKgXezvsOZ+YlQ==
+X-Google-Smtp-Source: AGHT+IFiAEQfYEZQmtJtDPS0B85ifzT72QtVqlGF7ZCR4IuJ4YQhdGm/j6VyZX3n+Jpl9Mdn02Plnw==
+X-Received: by 2002:a05:6a21:3944:b0:19e:a271:ea8d with SMTP id ac4-20020a056a21394400b0019ea271ea8dmr2427775pzc.26.1707310272711;
+        Wed, 07 Feb 2024 04:51:12 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUjD0ku5e7Ty8OVFD5O38jvQ3+ALpPMfFBkjeDGHvXQk2FfuMIPKPES3cNIMYKjDLbKMucPf6ZwdKCTzuI+ueRmSqDG83mCuteoQshD+KnLD0iEsvRR78v6YIJxfEVFWRl8uHDb48LStWS//I9UeinArKefbdI+SRJJQZ1A9obzP4JzwuW2peOCdeSkjFfttoEix9ZqLphcqQNW/izeDGPAk8GMxSC6WuGjAGaM7031qbbkScQsX+HeVG8Rst4KXTWJ3T1kn/unw52rXNGqjRkYG3Cb1Y0c1J/ooJbkcPNftX1TaSNf/ybMap8bTy36wbT2d0fDdzQVeNdy
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id si9-20020a17090b528900b00296a7abe2aasm1550265pjb.8.2024.02.07.04.51.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 04:51:12 -0800 (PST)
+Date: Wed, 7 Feb 2024 04:51:11 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Yuanhe Shu <xiangzao@linux.alibaba.com>
+Cc: tony.luck@intel.com, gpiccoli@igalia.com, shuah@kernel.org,
+	corbet@lwn.net, xlpang@linux.alibaba.com,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 2/3] Documentation: adjust pstore backend related document
+Message-ID: <202402070449.3EFCB80700@keescook>
+References: <20240207021921.206425-1-xiangzao@linux.alibaba.com>
+ <20240207021921.206425-3-xiangzao@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ELNIFKK91+/JknQx"
-Content-Disposition: inline
-In-Reply-To: <ZcNxJ56+bvcUTGlT@e133380.arm.com>
-X-Cookie: You might have mail.
-
-
---ELNIFKK91+/JknQx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240207021921.206425-3-xiangzao@linux.alibaba.com>
 
-On Wed, Feb 07, 2024 at 12:01:43PM +0000, Dave Martin wrote:
-> On Tue, Feb 06, 2024 at 04:27:01PM +0000, Mark Brown wrote:
+On Wed, Feb 07, 2024 at 10:19:20AM +0800, Yuanhe Shu wrote:
+> Pstore now supports multiple backends, adjust related document.
+> 
+> Signed-off-by: Yuanhe Shu <xiangzao@linux.alibaba.com>
+> ---
+>  Documentation/ABI/testing/pstore                | 8 ++++----
+>  Documentation/admin-guide/kernel-parameters.txt | 4 +++-
+>  2 files changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/pstore b/Documentation/ABI/testing/pstore
+> index d3cff4a7ee10..2cd67b502f11 100644
+> --- a/Documentation/ABI/testing/pstore
+> +++ b/Documentation/ABI/testing/pstore
+> @@ -41,7 +41,7 @@ Description:	Generic interface to platform dependent persistent storage.
+>  		persistent storage until at least this amount is reached.
+>  		Default is 10 Kbytes.
+>  
+> -		Pstore only supports one backend at a time. If multiple
+> -		backends are available, the preferred backend may be
+> -		set by passing the pstore.backend= argument to the kernel at
+> -		boot time.
+> +		Pstore now supports multiple backends at a time. If multiple
 
-> > +/*
-> > + * Note that for future proofing __SVE_VQ_MAX is defined much larger
-> > + * than the actual architecture maximum of 16.
-> > + */
+I'd drop "now"
 
-> I think that putting shadow #defines in comments in UAPI headers is a
-> really bad idea...  is this a normative statement about the user API,
-> or what?
+> +		backends are available, the registrable backends may be
+> +		set by passing the pstore.backend= argument1, argument2...
+> +		or pstore.backend= all to the kernel at boot time.
 
-Well, the only reason I'm mentioning the constant here is that
-__SVE_VQ_MIN is defined too and has a perfectly good value, things look
-a bit neater with a shared comment block.  I'm not sure there's a hugely
-meaingful difference between having a comment adjacent to a named
-constant in a header and one a couple of lines away that mentions the
-constant by name.
+I think dropping the cases of " " after the "=" and "," above would make
+this more readable (and syntactically correct).
 
-> My concern is that if we muddy the waters here different bits of
-> software will do different things and we will get a mess with no
-> advantages.
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 31b3a25680d0..a8a109b822a9 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -4748,7 +4748,9 @@
+>  			[HW,MOUSE] Controls Logitech smartscroll autorepeat.
+>  			0 = disabled, 1 = enabled (default).
+>  
+> -	pstore.backend=	Specify the name of the pstore backend to use
+> +	pstore.backend=backend1,...,backendN
+> +			Specify the names of the pstore backends to use
+> +			or =all for all available backends
+>  
+>  	pti=		[X86-64] Control Page Table Isolation of user and
+>  			kernel address spaces.  Disabling this feature
+> -- 
+> 2.39.3
+> 
 
-> Portability issues may ensue if userspace software feels it can
-> substitute some other value for this constant, since we can't control
-> what userspace uses it for.
+Otherwise looks good.
 
-I don't think we want people using this at all, ideally we'd remove it
-but it's in the uapi.
-
-> Would it be sufficient to say something like:
-
-> /*
->  * Yes, this is 512 QUADWORDS.
->  * Never allocate memory or size structures based on the value of this
->  * constant.
->  */
-> >  #define __SVE_VQ_MAX		512
-
-I think the fact that this vector length is more than an order of
-magnitude more than is architecturally supported at present needs to be
-conveyed, it's perfectly reasonable for people to not want to do dynamic
-allocation/sizing of buffers in some applications and the above sounds
-more like stylistic guidance about using dynamic sizing to improve
-memory usage.
-
-> Though comments might be better placed alongsize SVE_VQ_MAX at al., in
-> ptrace.h and sigcontext.h rather than here.  The leading __ should at
-> least be a hint that __SVE_VQ_MAX shouldn't be used directly by
-> anyone...
-
-Yeah, the multiple layers of indirection aren't helpful here.  We
-probably need to comment it in both places TBH.
-
---ELNIFKK91+/JknQx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXDfDQACgkQJNaLcl1U
-h9DuvQf+P75jQ/P+a7LiKl/CWZZ9nAD7CK6hy2bySrvt3Cc6OPiHNPErFwrAEApn
-5uJ5WxuYCKGm5+FlxXUUMXffizaKRe2J4P3kyoBl1gKyODDAY/Iz8HrsOuLZr0YB
-pU5datvOip8ppZ+P1CcKU3+xn3moyENmTdDW0b3wxOR8d5pGoTacE4MPt526Nh3X
-1Jh9/fIjFhWq3RN6wbZ6XdWMaowcvol59tphB/lhubOO04yoAm6q8MhZUfXB9h1X
-1KEaw/4AbLW1OJOqEjdpOp5GJFpwhyq8m5V3hjK377TezXhlreytXc0SXhS0p4Ln
-yPt4cehy5zjHbNi8//mQVmWN35YHEg==
-=B1CU
------END PGP SIGNATURE-----
-
---ELNIFKK91+/JknQx--
+-- 
+Kees Cook
 
