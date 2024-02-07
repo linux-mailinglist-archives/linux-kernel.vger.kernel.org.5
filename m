@@ -1,133 +1,167 @@
-Return-Path: <linux-kernel+bounces-56010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F56A84C4E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:19:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6703284C4E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 07:19:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0159289DFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:19:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99B1B1C2532E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:19:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753F81CFB2;
-	Wed,  7 Feb 2024 06:19:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 835D21CD33;
+	Wed,  7 Feb 2024 06:19:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="a3d45aJ4"
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fd4ls4ap"
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB011CFB9
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 06:19:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C00510788;
+	Wed,  7 Feb 2024 06:19:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707286754; cv=none; b=B2ib0bjDAQyP77/Vu2ygX08t2hamP3qIVD7JolxiMrKs9WyO2nvFu43MIRBF/ssTTEfc7MX6HAVrkza1sPNuZgZAxQDrjWddnKqjdNs1ksXMJqmi/1atzpqYFtec7JemqTL5fIp5YIQ4ywY7LK0AOCEwmABd9munakOS+SAgCF0=
+	t=1707286776; cv=none; b=HBMY84p10kufaqfEyBar2sY2c/0ZQTwhz5/fQSKnPenvNRcv98Il3A2smtgrdnYpMsLfwFwC3gQemFjTrPzoPSGhN0cDeNJwNDbvC/S44lChGZnHIZYL0YPRB28WBMqJjggpNSQU47W5suKGqINj1tl88FrTWk7c0zvfMbiN8Ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707286754; c=relaxed/simple;
-	bh=h6+bbngOw6Ohz7LqsUDrGXlKkg4OzH+vEbsYAMm1fic=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=hAiJsk9lTw4GIV1KmBcV/lQZ3fJ14YCCRkcmdAy48y/THZbswmfHs99XaUZ4uklcTXDvzWNlvFrCF9vsONnw8+pWJRMYO3WQNFrRifSwUXENP02ZF+HF+cidkSmR1YWYYuRmAF77NkOs32kddwHlk9H2L5gJIia3UZJvNEa6ltM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=a3d45aJ4; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1707286749; h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type;
-	bh=7SrCJEJUbgaaO8LSY+S0f3ku7YdljvxpwznRF4B58Ig=;
-	b=a3d45aJ4HCb10DXaoslLB/5weQINaXdQn/O0C5lGgkGKEph2Xg+/4WiH8EvTcEhllA5lsXkqvTk0r1GWwpKM/eCQq79p1o7+pmXK2eA/WeNdJQ7YzFTOboo2dev0laaLmLSP5USo3v/QddDYTJHnXdaQebOA1KN0hpMdtocIzpw=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W0Fmdax_1707286737;
-Received: from 192.168.0.104(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W0Fmdax_1707286737)
-          by smtp.aliyun-inc.com;
-          Wed, 07 Feb 2024 14:19:09 +0800
-Message-ID: <92a6e940-560d-4a61-bfcd-27a2df369b0f@linux.alibaba.com>
-Date: Wed, 7 Feb 2024 14:19:08 +0800
+	s=arc-20240116; t=1707286776; c=relaxed/simple;
+	bh=Zw+zuvVKn7BHCJYKlJtcd0VYWlBnyG3eURH4PJZTXzw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bCo9rUNhYbgunmCIClXYKtCjDf2oiN99hr7/d0SDqKl5LQGKgIfTkIkGiTtK0ycIqWoezjXluslHVYI7IelO6UIG5zHqLsh1qO07Y7B8/VCp59fAIsW3Zf4//FE1c/mNRhx1jIGWjPiKoNDI0IK5JrfkUTfxHIEx0YEjSB8Pf0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fd4ls4ap; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6818f3cf00aso1797006d6.0;
+        Tue, 06 Feb 2024 22:19:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707286774; x=1707891574; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fvxHz8UI4TMnELHil0IULsGrxG7+ElSx4mu4N8xJ1KA=;
+        b=Fd4ls4apCZLNIGOwhLeHBb2VwcCzFehgFsvZl2gGdO5Z4wWMs+G7HeWlBU5QLCLUgp
+         nlnwMwqUGlQge6/u9CZ1ttHeIM5/917tGheA/uHSWJJ39yUa/DMkfpdFkJjnHl2x1e/T
+         7IWqbu1VHX+iNuzHWSbHXrwCRWwfEW2JdPOxfMkaIdLmaUan8YkiryVPDz3KI7ciBxVx
+         ahwcsikcWnNTRjxt0sAsoaHUsrsU8XZfmJV4n099HQs35+YcggKWAYd+LPij3MhLB+Km
+         /L2VH88jnDB6W8jNLoGz7NBB0VUA3O/hX0IilysOxKUxWuUdakhBsCAJBNQfwtMIRQ3d
+         EAkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707286774; x=1707891574;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fvxHz8UI4TMnELHil0IULsGrxG7+ElSx4mu4N8xJ1KA=;
+        b=IBN4e9Tr686dGsBXUGw19tdKN5QfK9S3XFzhOoG2JV98xhMIVGVv1a5SMM6eQQ6RVO
+         hUPjmwN9p6gEdGXV9ygWr4f4p6DtkbNjppXWpfmL+OnuLbcgOEhHuMG67SiXRGOeKCla
+         Qzw8TrZEjjgM7jSs7w66zoUSPImfrr2672nGG/MXNGBFPEggoAnoz7fhrt8k4X8ozFad
+         grQHCTw+vVFI9BfsjZIWN16nGdLREkt5r6Q5JmcqbhQHwAshreqGBN4yyJEyWs82Xk44
+         5QRqFBKhvc+zlH111Tau4u2xhacow3oGIvJDoueDBtFB07X9XgeX/4vnvyfA8h6d80b/
+         t2Yw==
+X-Gm-Message-State: AOJu0YyXWIDoIUbIa8lTj3WZH5rt1khUbLzIF7HYnsOKhyVcJW/XOLRI
+	vmxfQHZYHSYRuxb7tm7lqwpFZLuFUM75C7S9lptH3KjsbMSYaAJsd9Lb71ydTnZtJgecedDW8Ka
+	FFXrCeAjeS+9SC50R2judd03ToP4=
+X-Google-Smtp-Source: AGHT+IHH+mNF5lXuZAsuSpyRHnUZd/EhrIFMnrt2+Dexy3XfE0zvOhtGwBQ6/SaFaAed8UpcWIeI6mjNX75zDlSZ560=
+X-Received: by 2002:ad4:5cc6:0:b0:68c:8775:7593 with SMTP id
+ iu6-20020ad45cc6000000b0068c87757593mr5861197qvb.12.1707286774036; Tue, 06
+ Feb 2024 22:19:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Bitao Hu <yaoma@linux.alibaba.com>
-Subject: Re: [PATCHv5 3/3] watchdog/softlockup: add
- SOFTLOCKUP_DETECTOR_INTR_STORM Kconfig knob
-To: Doug Anderson <dianders@chromium.org>
-Cc: akpm@linux-foundation.org, pmladek@suse.com, kernelfans@gmail.com,
- liusong@linux.alibaba.com, linux-kernel@vger.kernel.org,
- yaoma@linux.alibaba.com
-References: <20240206095902.56406-1-yaoma@linux.alibaba.com>
- <20240206095902.56406-4-yaoma@linux.alibaba.com>
- <CAD=FV=XtZvgv8_gceKF0zztOv-yk7_0Kd19M93sWFqu-DF9V1Q@mail.gmail.com>
-Content-Language: en-US
-In-Reply-To: <CAD=FV=XtZvgv8_gceKF0zztOv-yk7_0Kd19M93sWFqu-DF9V1Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240206201858.952303-1-kent.overstreet@linux.dev>
+ <20240206201858.952303-3-kent.overstreet@linux.dev> <ZcKpSU9frvTUb2eq@dread.disaster.area>
+In-Reply-To: <ZcKpSU9frvTUb2eq@dread.disaster.area>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 7 Feb 2024 08:19:22 +0200
+Message-ID: <CAOQ4uxgMY+QeYGn5wH0N9GhJD1h-EWqrng99XxMtXXUCB8zL=g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] overlayfs: Convert to super_set_uuid()
+To: Dave Chinner <david@fromorbit.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, brauner@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Feb 6, 2024 at 11:49=E2=80=AFPM Dave Chinner <david@fromorbit.com> =
+wrote:
+>
+> On Tue, Feb 06, 2024 at 03:18:50PM -0500, Kent Overstreet wrote:
+> > We don't want to be settingc sb->s_uuid directly anymore, as there's a
+> > length field that also has to be set, and this conversion was not
+> > completely trivial.
+> >
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > Cc: Miklos Szeredi <miklos@szeredi.hu>
+> > Cc: Amir Goldstein <amir73il@gmail.com>
+> > Cc: linux-unionfs@vger.kernel.org
+> > ---
+> >  fs/overlayfs/util.c | 14 +++++++++-----
+> >  1 file changed, 9 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/fs/overlayfs/util.c b/fs/overlayfs/util.c
+> > index 0217094c23ea..f1f0ee9a9dff 100644
+> > --- a/fs/overlayfs/util.c
+> > +++ b/fs/overlayfs/util.c
+> > @@ -760,13 +760,14 @@ bool ovl_init_uuid_xattr(struct super_block *sb, =
+struct ovl_fs *ofs,
+> >                        const struct path *upperpath)
+> >  {
+> >       bool set =3D false;
+> > +     uuid_t uuid;
+> >       int res;
+> >
+> >       /* Try to load existing persistent uuid */
+> > -     res =3D ovl_path_getxattr(ofs, upperpath, OVL_XATTR_UUID, sb->s_u=
+uid.b,
+> > +     res =3D ovl_path_getxattr(ofs, upperpath, OVL_XATTR_UUID, uuid.b,
+> >                               UUID_SIZE);
+> >       if (res =3D=3D UUID_SIZE)
+> > -             return true;
+> > +             goto success;
+> >
+> >       if (res !=3D -ENODATA)
+> >               goto fail;
+> > @@ -794,14 +795,14 @@ bool ovl_init_uuid_xattr(struct super_block *sb, =
+struct ovl_fs *ofs,
+> >       }
+> >
+> >       /* Generate overlay instance uuid */
+> > -     uuid_gen(&sb->s_uuid);
+> > +     uuid_gen(&uuid);
+> >
+> >       /* Try to store persistent uuid */
+> >       set =3D true;
+> > -     res =3D ovl_setxattr(ofs, upperpath->dentry, OVL_XATTR_UUID, sb->=
+s_uuid.b,
+> > +     res =3D ovl_setxattr(ofs, upperpath->dentry, OVL_XATTR_UUID, uuid=
+b,
+> >                          UUID_SIZE);
+> >       if (res =3D=3D 0)
+> > -             return true;
+> > +             goto success;
+>
+> This is a bit weird. Normally the success case is in line, and we
+> jump out of line for the fail case. I think this is more better:
+>
+>         if (res)
+>                 goto fail;
+> success:
+>         super_set_uuid(sb, uuid.b, sizeof(uuid));
+>         return true;
+> >
+> >  fail:
+> >       memset(sb->s_uuid.b, 0, UUID_SIZE);
+>
+> And then the fail case follows naturally.
+>
 
+I agree. Please use the label name
+set_uuid:
 
-On 2024/2/7 05:42, Doug Anderson wrote:
-> Hi,
-> 
-> On Tue, Feb 6, 2024 at 1:59 AM Bitao Hu <yaoma@linux.alibaba.com> wrote:
->>
->> The interrupt storm detection mechanism we implemented requires a
->> considerable amount of global storage space when configured for
->> the maximum number of CPUs.
->> Therefore, adding a SOFTLOCKUP_DETECTOR_INTR_STORM Kconfig knob that
->> defaults to "yes" if the max number of CPUs is <= 128.
->>
->> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
->> ---
->>   kernel/watchdog.c |  2 +-
->>   lib/Kconfig.debug | 13 +++++++++++++
->>   2 files changed, 14 insertions(+), 1 deletion(-)
-> 
-> IMO this should be squashed into patch #1, though I won't insist.
-Agree.
-> 
-> 
->> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
->> index 26dc1ad86276..1595e4a94774 100644
->> --- a/kernel/watchdog.c
->> +++ b/kernel/watchdog.c
->> @@ -338,7 +338,7 @@ __setup("watchdog_thresh=", watchdog_thresh_setup);
->>
->>   static void __lockup_detector_cleanup(void);
->>
->> -#ifdef CONFIG_IRQ_TIME_ACCOUNTING
->> +#ifdef CONFIG_SOFTLOCKUP_DETECTOR_INTR_STORM
->>   #define NUM_STATS_GROUPS       5
->>   #define NUM_STATS_PER_GROUP    4
->>   enum stats_per_group {
->> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
->> index 975a07f9f1cc..74002ba7c42d 100644
->> --- a/lib/Kconfig.debug
->> +++ b/lib/Kconfig.debug
->> @@ -1029,6 +1029,19 @@ config SOFTLOCKUP_DETECTOR
->>            chance to run.  The current stack trace is displayed upon
->>            detection and the system will stay locked up.
->>
->> +config SOFTLOCKUP_DETECTOR_INTR_STORM
->> +       bool "Detect Interrupt Storm in Soft Lockups"
->> +       depends on SOFTLOCKUP_DETECTOR && IRQ_TIME_ACCOUNTING
->> +       default y if NR_CPUS <= 128
->> +       help
->> +         Say Y here to enable the kernel to detect interrupt storm
->> +         during "soft lockups".
->> +
->> +         "soft lockups" can be caused by a variety of reasons. If one is caused by
->> +         an interrupt storm, then the storming interrupts will not be on the
->> +         callstack. To detect this case, it is necessary to report the CPU stats
->> +         and the interrupt counts during the "soft lockups".
-> 
-> It's probably not terribly important, but I notice that the other help
-> text in this file is generally wrapped to 80 columns. Even though the
-> kernel has relaxed the 80 column rule a bit, it still feels like this
-> could easily be wrapped to 80 columns without sacrificing any
-> readability.
-OK.
-> 
-> In any case:
-> 
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Also the memset() in fail: case is not needed anymore, because
+with your change we do not dirty sb->s_uuid in this function.
+
+Thanks,
+Amir.
 
