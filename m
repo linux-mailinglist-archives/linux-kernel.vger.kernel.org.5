@@ -1,152 +1,209 @@
-Return-Path: <linux-kernel+bounces-55935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A7F84C39F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B08D984C3A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:36:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D59D728BDD8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:35:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6762C28CDD8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5BCA12E68;
-	Wed,  7 Feb 2024 04:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753241CD39;
+	Wed,  7 Feb 2024 04:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="IG98X5p3"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IBVlbZkC"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05BD41CD21;
-	Wed,  7 Feb 2024 04:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FDD21CD2B;
+	Wed,  7 Feb 2024 04:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707280510; cv=none; b=Sb2uXlZ/ka27NQ4NFPF9zUQpk9DHx+Z1Wm8KlRF/3MQWY6fJq3hnjQp6ZX9dtzPTfbBnVIkrjoW+q57yo5G72G3Hn/1I8X04DjPWEBP0v03UQjy0tmacP5FL37D09zVatqeGxH9dfowL69FXYyO/tt5rVz9mxqPwtJ//9Umqk5U=
+	t=1707280582; cv=none; b=o5KhN1i9cVmi/tAvuwyGhBEjnjIMYnbBBMY0gLR9QnyN/U3LQFo2zoZcG94C9uHkYGPyegb7OASAUs6wbqHrb0BfOiS9UxCzDQgh/Qo0CzfjY8FdLQknL2GTXd+3yyEUNAj9WgGRAK7Ymq8LzRg464Y8bkFST4qTWqkMUlSW0yA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707280510; c=relaxed/simple;
-	bh=qJI7eNzmomK/NonfnHIZ3Nz1afIhuI/SSIjQfFADE2s=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=lPF8rZvnFK0Khrl+p4/RZChc2Oz98zNMnquMTOUjx+9l5PIiJYlrHJTde8J+TqE+OSBPdXQ4u4jweGSP+Xx2D9HcjFAZYa0sCuCQvkoOQX7F2hh4x/RYf051i23qO+ZgYg9mbxlRLJQ29DXgUKr2BgqdeMKb8BnOeSYwa5C/0yE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=IG98X5p3; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707280504;
-	bh=z9YwpF73pwWl7HHYVgw39x1Dmvsg3FtzgmklIGeR/Z4=;
-	h=Date:From:To:Cc:Subject:From;
-	b=IG98X5p3/Ehyjs5K5dtTlF24ecrtUHZsUV1s+Iv9dfN4M5sTwqtUp+QYszveQh8Vs
-	 OvPt+BWzshGZ1JUgqZ6LSXukaPGSrq2c2+p41qjlPrAkcmtAzvLq5+h60sahmPRKTh
-	 uk55eRTJqm9iI65Zdfp82J6vBDshU/AttpQQQggCeTDEhzlJXQz96pMWRE/1yetZ44
-	 D3AXHn7UuI+6cB/23tpkEt9HJTWUWG5i2OMCGN4al/RNC0/QVtCwzBSxLm7pn+4aYt
-	 AZEy5GNWadNrXw2hNEdFl2ipRO5VzszrPFKYvuEaAMS6TfxvfMBQL6v3G3U5kXodcP
-	 7yHCm/zHh0qyQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TV6jL4qS3z4wcQ;
-	Wed,  7 Feb 2024 15:35:02 +1100 (AEDT)
-Date: Wed, 7 Feb 2024 15:35:01 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Sean Christopherson <seanjc@google.com>, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin"
- <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>
-Cc: Ashish Kalra <ashish.kalra@amd.com>, "Borislav Petkov (AMD)"
- <bp@alien8.de>, Brijesh Singh <brijesh.singh@amd.com>, Jarkko Sakkinen
- <jarkko@profian.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Michael Roth <michael.roth@amd.com>, Tom
- Lendacky <thomas.lendacky@amd.com>
-Subject: linux-next: manual merge of the kvm-x86 tree with the tip tree
-Message-ID: <20240207153501.2c575b60@canb.auug.org.au>
+	s=arc-20240116; t=1707280582; c=relaxed/simple;
+	bh=VkO7lQ0huSxCofbxzkzzcHRufI1i1PSa32W/WCf0Qng=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=WJdf0IYKNYh9iZX2tk9W3mJ8ucM9vYh8ZylD+S9oWnaKqgeGGqrXCCbbUpjJTcYEmZ71+74eld/pF1A1t1fabjukNjp58AlwNig4Z4y72eXQAjIYTAiNhZzD4aiZIVDK6wRDhj339IvPKkVJrBqQ8ywQwZzJB4MKasUDKsm1BPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=IBVlbZkC; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=VkO7lQ0huSxCofbxzkzzcHRufI1i1PSa32W/WCf0Qng=; b=IBVlbZkCxR56S2Ld9xk4EFDqN0
+	LXVk7qEu0n44xsJhwBzGy8Qu0bm4tpdm3kuJNGVVc/6GySa20cXGQ+6wpDqICsiOojbM9TcSubAee
+	72w/XHLoGElYiE9TeP1iNRmj1aT1u8onEfNeqRzXz8HwbPAt9d9LYhJQ3eYNWN85bmn8icC4405Pl
+	l0i5Ry/az6Mc7UwlZVWjoqcQK6w3T+N9o33BdfIsJrnO1zBGwMZlgIIqcXm0hxytKgoKScT4rvqZt
+	CwClJWMc6FtXbp5xyHdlNMllx0iqvH+uTpoli53KsrgNVRFu1/PvobxmeHeQW9+fOA1QKCVh6x1lE
+	zc1NglBw==;
+Received: from 72-21-198-67.amazon.com ([72.21.198.67] helo=u3832b3a9db3152.ant.amazon.com)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rXZfU-0000000ECC2-0prK;
+	Wed, 07 Feb 2024 04:36:17 +0000
+Message-ID: <3078fde54d6a4a34587cc14b286d7ad199e77dca.camel@infradead.org>
+Subject: Re: [PATCH v3] KVM: x86: Use fast path for Xen timer delivery
+From: David Woodhouse <dwmw2@infradead.org>
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm <kvm@vger.kernel.org>, Paul Durrant <paul@xen.org>, Paolo Bonzini
+ <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>,  linux-kernel@vger.kernel.org
+Date: Tue, 06 Feb 2024 20:36:12 -0800
+In-Reply-To: <ZcMG6NA63MqOR1V9@google.com>
+References: <f21ee3bd852761e7808240d4ecaec3013c649dc7.camel@infradead.org>
+	 <ZcJ9bXxU_Pthq_eh@google.com>
+	 <19a1ac538e6cb1b479122df677909fb49fedbb28.camel@infradead.org>
+	 <ZcLxzrbvSs0jNeR4@google.com>
+	 <165f07deb8d1e082756e6cae21a25b0060c18f85.camel@infradead.org>
+	 <ZcMG6NA63MqOR1V9@google.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+	boundary="=-LaIjWn1AVBplSqCox62e"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/A_aqSM6/V3s=i1Z7iKqJY9o";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
---Sig_/A_aqSM6/V3s=i1Z7iKqJY9o
-Content-Type: text/plain; charset=US-ASCII
+
+--=-LaIjWn1AVBplSqCox62e
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Tue, 2024-02-06 at 20:28 -0800, Sean Christopherson wrote:
+>=20
+> I agree that's the long term solution, but I am not entirely confident th=
+at a big
+> overhaul is 6.9 material at this point.=C2=A0 Squeezing an overhaul into =
+6.8 (and if
+> we're being nitpicky, backporting to 6.7) is out of the question.
 
-Today's linux-next merge of the kvm-x86 tree got a conflict in:
+It actually ends up being really simple. We just lift ->refresh_lock up
+and use it to protect all the activate/deactivate/refresh paths.
 
-  arch/x86/kvm/svm/sev.c
+I have a patch in my tree; just need to put it through some testing.
 
-between commit:
+(Currently stuck in a hotel room with a bunch of positive COVID tests,
+unstable wifi and no decent screen, getting a bit fractious :)
 
-  1ca5614b84ee ("crypto: ccp: Add support to initialize the AMD-SP for SEV-=
-SNP")
+--=-LaIjWn1AVBplSqCox62e
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-from the tip tree and commit:
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwMjA3MDQzNjEyWjAvBgkqhkiG9w0BCQQxIgQgE1GmVlYx
+YxeZndNrzvrBa8ONyZMqV+bcP9ehrmn09X4wgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCZ0oqps28oSPnMVjJDflyxa4lp0iLUaC5f
+UMAmEIUQ8tA68jDSnsmYBuaULTFjCaLyVPojZhUZVuRaJ59HlQzBwAA/YVMOU8xM2MPS5w0xivwU
+uqzmZkmVHFtCdWk7SgrX8VRw4csZ8A5SwKW4l35FQ1gtWc7uZ1JBEdgpEwEPkoLHzOs3bGj3hYvo
+0hFf9uiwOerW7R+RT2c1D98xHulb11cgzC7KYPPNgTEnGawAKHwDiPWef3W1ufy0HdRqdPK+yIAd
+FL2/vROqj2lay9VW6Sgw+8DzKrFUnMPPB5CXyTb+tYg8C44FnVyqEDspBzKlydH1zHGewpQ8s4Fa
+M3aAEXbxq3LN8LgJIoSbMkw51AYyC7ULmAt+BqmxmdnVM6dA7ko/IdLh7sexIhtNWlcReEtMMqvP
+OZslLWVKt89CGG6oy2akzT9HIjlaYodjL7te7r6XiTS4584k/0OnqINISTFqlg7MUZOJhDrDwg3n
+IRULJMQu05LtYiwt3gJUpuRuSBej8JvPxy30NH7/PuJpdnpUHM+GsY64LOsI6TX/zVXs5r0xLibZ
+xTl0A9Xs6qpmPHzQHqQWU4OOxIYaBy3HFsHDTd6Im2ili2R9PL0AYC4tEosd0ZZ082rAw/SC05ZU
+2W7+jsiPncNOuEzz3TCl3//T7GoG4mMXxDmq1X8D7QAAAAAAAA==
 
-  cc4ce37bed85 ("KVM: SVM: Set sev->asid in sev_asid_new() instead of overl=
-oading the return")
 
-from the kvm-x86 tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/x86/kvm/svm/sev.c
-index f99435b6648f,f06f9e51ad9d..000000000000
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@@ -246,8 -254,7 +254,8 @@@ static void sev_unbind_asid(struct kvm=20
-  static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
-  {
-  	struct kvm_sev_info *sev =3D &to_kvm_svm(kvm)->sev_info;
- +	struct sev_platform_init_args init_args =3D {0};
-- 	int asid, ret;
-+ 	int ret;
- =20
-  	if (kvm->created_vcpus)
-  		return -EINVAL;
-@@@ -258,13 -264,11 +265,12 @@@
- =20
-  	sev->active =3D true;
-  	sev->es_active =3D argp->id =3D=3D KVM_SEV_ES_INIT;
-- 	asid =3D sev_asid_new(sev);
-- 	if (asid < 0)
-+ 	ret =3D sev_asid_new(sev);
-+ 	if (ret)
-  		goto e_no_asid;
-- 	sev->asid =3D asid;
- =20
- -	ret =3D sev_platform_init(&argp->error);
- +	init_args.probe =3D false;
- +	ret =3D sev_platform_init(&init_args);
-  	if (ret)
-  		goto e_free;
- =20
-
---Sig_/A_aqSM6/V3s=i1Z7iKqJY9o
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXDCHUACgkQAVBC80lX
-0GwG0gf9ExbnjoE/XTjiMmZ7JfLwh+GLq11VlGyW51dsyURCw6jK1lt3ukR6O387
-DolkQJeb5U52V7U+weeDkoCZhNGrXjovnTXB+0CKOXno7yunkaPk6/JTk44gWC/i
-/NgoRwRAerOrhfa2ayi7bQqSqzBu2KZXgmWmcPcWonZ/N0gsNX4r3e1bUJrDDhgN
-ka2avv+G491ypfp/iUtzJ7PwrqwAVMOnJ4+iDgKpgF80XMuvGKmcMPv6tZgvmeMm
-DO5y2uneYY7PsqQ6GidOts2gcH6KDYyNU/YbD+xSznqx1AgcvMl9N9fPT8FZnjah
-S9oxMhOg7sTX+nRJ4t1n6zuGuRKouA==
-=cSPR
------END PGP SIGNATURE-----
-
---Sig_/A_aqSM6/V3s=i1Z7iKqJY9o--
+--=-LaIjWn1AVBplSqCox62e--
 
