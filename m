@@ -1,105 +1,102 @@
-Return-Path: <linux-kernel+bounces-56595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 093F384CC4D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:03:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 666BB84CC52
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:06:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8CD528C1C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:03:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CDC61F23A1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:06:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB88E23775;
-	Wed,  7 Feb 2024 14:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7387A73C;
+	Wed,  7 Feb 2024 14:06:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ci39I2UM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IV6HDBHa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127A77993B;
-	Wed,  7 Feb 2024 14:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60EDA7C088;
+	Wed,  7 Feb 2024 14:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707314578; cv=none; b=TbmXhD5vQWzLdCvdCuOTYp2fJj/9apqXzVMVopeQVb24XMN11S6ydhw81pDwOLYoutdfANw4OpUZmxrNR+i1ZQgNloLgaISEjGJFP+Tc8aqJZ5UDxPd20kI7/cl2SEGD5+QP0Ehwj3D5e0iBYYHH9Rd0kDSWMUUoYz/R1RiFZeU=
+	t=1707314801; cv=none; b=WP3HrCCQDclCRIuug6/nUu0z6cV++PMvrQ22sEmM+TY8nPhu2EsP9vWPtfSLOzVYfCIFZjJ5hjnitrUTimvRsm1oDGiwjzOvUPQusuvKXThEuNZVjKBODjQq256KVNGxBRwo4lNVHIzq683Z6XHh94BRY5oV+7FPCggb75ViABo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707314578; c=relaxed/simple;
-	bh=lBxlhXxu+GabBGVYKEg2jqp2jWZlucJFL35TxJDn30g=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=UE2CU/kzVPcWoW7rpZRWTSFGEkFkeCw+iX8WCalTWnLdPkHxORdT4FcW8sNl77VzUo7MIcAUqOdLw+glazONX10xyvmOmC+AzLxx9ekPUAIX1japYkbWSBrJHxfzCBZmAcFflQaXYphpqqHVwm+kabvUCcex4BNIj68IdUJL+WQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ci39I2UM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD24EC433C7;
-	Wed,  7 Feb 2024 14:02:53 +0000 (UTC)
+	s=arc-20240116; t=1707314801; c=relaxed/simple;
+	bh=ZZh2zTyS9CP/+FQ/BuELNpqH1LEwwITFg2cvWsaj4Zg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rL693QFCAvgs+NDTmcSkXNVQb1TuJ7m6QqtyV0Evz4dkK55n4svDmWRIC0QCzuXHfL+ncvzAzwMlMj4z60KR9gUUKYenJRXRoR32d9mkx9Lki0h90z3ggTbwlTJyhteBgCMMD2xP8zr8nvRYjrlS1BCF0Hkjdfb06HTN4iKQdm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IV6HDBHa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5518BC433C7;
+	Wed,  7 Feb 2024 14:06:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707314577;
-	bh=lBxlhXxu+GabBGVYKEg2jqp2jWZlucJFL35TxJDn30g=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ci39I2UM/1UznbgkKvJ+Pq/e4yXTdRC1m1r4sUF1lzDy9WHS0DHGYRF7/KYoCZ7mI
-	 aAGXnGZ4KUuLDGgnz7686QIXzdnOWOjfvE6pM68IZpqtgCNJ11OXxoqAZB43Y6+oy3
-	 HS+w5xemZauglfzhudqSI3/WUKl9rjo6qd01+efEnia+i7JV3eduxn6mnhqCM9TWKi
-	 pjFuRS7sJBdEuUeuqHdCjTiPWseSQj7Eo8+kdX1hDG2uaWBGF7FBlPXj8ZdNTW1/ko
-	 sY7WcmqeTZ9lnX0yFMekPHAikKn1SVqMkWWGO1GdHGzPitzbPS1ccz49HPhRSnC+Wi
-	 p7yW5KTCcX1wQ==
-Date: Wed, 7 Feb 2024 23:02:51 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v7 13/36] function_graph: Have the instances use their
- own ftrace_ops for filtering
-Message-Id: <20240207230251.48db0dd281aa13cbc223ed25@kernel.org>
-In-Reply-To: <170723219437.502590.17981699514070908579.stgit@devnote2>
-References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-	<170723219437.502590.17981699514070908579.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=k20201202; t=1707314800;
+	bh=ZZh2zTyS9CP/+FQ/BuELNpqH1LEwwITFg2cvWsaj4Zg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IV6HDBHac8FFIrL3H75dbmU7s5Cb6moJ+VkCQLwuVuDS4Fwhp498+Ux4j+8Kx226D
+	 +qY4jSwCtZ/D4cwV9kkvxql+cSTOV8vroWLaHBihJicKmifkf8CjyGVBERD6iOxZgo
+	 t9snGvsmHq6eX8mqcSbirEf6a7OPzL8aSj0yooJ5FcnTxS4oezRCw5nRndXL3wnNB7
+	 W3uhFfNGjGt4WO+CHGzKy5YA36h2d7hnKXzkd4wrfWVBOvv4CPAR+ypTNpl31pS2hj
+	 aft8nAneOjptcLMWQO/v+SB0ZuiOHfly7b93WJhWaGzGZkF0EOkbrzOqLwkzFJ3t8i
+	 E6yfcU/DCrKlQ==
+Date: Wed, 7 Feb 2024 15:06:37 +0100
+From: Vinod Koul <vkoul@kernel.org>
+To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>, Johan Jonker <jbx6244@gmail.com>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Andy Yan <andy.yan@rock-chips.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Algea Cao <algea.cao@rock-chips.com>, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-phy@lists.infradead.org, kernel@collabora.com
+Subject: Re: [PATCH v2 2/2] phy: rockchip: Add Samsung HDMI/eDP Combo PHY
+ driver
+Message-ID: <ZcOObdUvxmRzdHnE@matsya>
+References: <20240205-phy-hdptx-v2-0-a7150814c047@collabora.com>
+ <20240205-phy-hdptx-v2-2-a7150814c047@collabora.com>
+ <ZcNYlFgT0rXiCGbo@matsya>
+ <374f5069-9f3d-4ad2-a6da-b38a143a0c99@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <374f5069-9f3d-4ad2-a6da-b38a143a0c99@collabora.com>
 
-On Wed,  7 Feb 2024 00:09:54 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+On 07-02-24, 14:39, Cristian Ciocaltea wrote:
+> On 2/7/24 12:16, Vinod Koul wrote:
+> > On 05-02-24, 13:24, Cristian Ciocaltea wrote:
 
-> diff --git a/arch/loongarch/kernel/ftrace_dyn.c b/arch/loongarch/kernel/ftrace_dyn.c
-> index 73858c9029cc..81d18b911cc1 100644
-> --- a/arch/loongarch/kernel/ftrace_dyn.c
-> +++ b/arch/loongarch/kernel/ftrace_dyn.c
-> @@ -241,10 +241,17 @@ void prepare_ftrace_return(unsigned long self_addr, unsigned long *parent)
->  void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
->  		       struct ftrace_ops *op, struct ftrace_regs *fregs)
->  {
-> +	struct fgraph_ops *gops = container_of(op, struct fgraph_ops, ops);
->  	struct pt_regs *regs = &fregs->regs;
->  	unsigned long *parent = (unsigned long *)&regs->regs[1];
->  
-> -	prepare_ftrace_return(ip, (unsigned long *)parent);
-> +	if (unlikely(atomic_read(&current->tracing_graph_pause)))
-> +		return;
-> +
-> +	old = *parent;
+> >> +static u8 hdptx_grf_read(struct rockchip_hdptx_phy *hdptx, u32 reg)
+> >> +{
+> >> +	u32 val;
+> >> +
+> >> +	regmap_read(hdptx->grf, reg, &val);
+> >> +
+> >> +	return val;
+> >> +}
+> > 
+> > why use wrappers, why not call regmap_ apis directly
+> 
+> Agree, no real benefit, will drop them, except probably
+> hdptx_multi_reg_write() for the extra savings.
 
-Oops, this caused an error. 
+That one is fine as there is good logic on the helper
+ 
+> So I'd keep using that one if there's no strong reason against.
 
-> +
-> +	if (!function_graph_enter_ops(old, ip, 0, parent, gops))
-
-So this should be
-
-if (!function_graph_enter_ops(*parent, ip, 0, parent, gops))
-
-Thanks, 
+ok
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+~Vinod
 
