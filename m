@@ -1,115 +1,217 @@
-Return-Path: <linux-kernel+bounces-56771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C3D884CEF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:35:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DD2484CEF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:35:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 092DB28D245
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:35:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F9D228E191
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:35:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C7781AC0;
-	Wed,  7 Feb 2024 16:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A8D76C8B;
+	Wed,  7 Feb 2024 16:35:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c153YLC8"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="bPovcZVJ"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D591181AA2
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 16:34:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B7E1E498;
+	Wed,  7 Feb 2024 16:35:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707323672; cv=none; b=YwuZTYpf42DAsmgGNp29eErUsArsoei2XQEeS6dNTcKiM87t01DmFrGW2TvrVEsiKszjgn7j4A0xJk947ewXq8H3zYZE5a+eAj67MJHa0JmUSvpl7mbnMKjxSjr9wObquhQKzryypIH05xquyNqEfBsEf5eMLcvhIVXv5dB//jE=
+	t=1707323731; cv=none; b=Y3e3e7gFNUiosMMgiGy1oGKHijvrUCQ5QJzG79joZcxtaY7h62IbN6uUqSnmpljWxqNhtftWnIG+LMJ7Yuv8JmbXeCVyYEmqksxd/a6XJpp1CUQ1PixavrxIQlo4jBsOefLPEYvaOBKRJ/QNp/XRwi1dqVb1aGrWY+dCwcYZ5XY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707323672; c=relaxed/simple;
-	bh=oag201Dwg2R1YiuFTZ3pJhwIjzZHqggc69L2jZaITxI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tjI3LexfsZ0mIglD1oEUZ+XdSqXUTphX6XvZNV/pHqYZfnZIxDZkH9drCENccTUtqru2/Dvv0Z2RLdlT+jyxbNTNuaZEpfm56m2/TWH1eyjGWfUIpiDcUxLjc4wj+neREEVgsQpmXWmnxZGpb95oTUq6RHTWlJhKNHIsicnedjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c153YLC8; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e06725a08dso549452b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 08:34:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707323670; x=1707928470; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+qWJfZs5obAhPKW/hvHK9EKHhgFJrOCu3nsb0TTXjds=;
-        b=c153YLC8K0VLA9ww0qPgttt/R81XOQPLuwBWm1bHm/xGlVxUNto+GWFH6KQdT+lrvg
-         t2MC++EJbl1sSFX5GVgHLa85DG9dD/k6rpclsKGPLPLywr/XS8SRIMHKOeIYgsasqQvu
-         c1wtD4W33mySvA8NlOZYT4APKIXUheeS9Ra1NpYMsG53/iNqcPs431sGi3VNIfGE4+kB
-         gBSdZjOb9PEHtx8E0p0P0sfu74ihPZfAUzoH2Ms/IQi+uLu0DGR8KUJM79/B9VyY1RoM
-         EWT4+a+GT8101l2YieLy8IOeyYSMlxj2BYQyiullggU2QdjVOv1vSjXNFpcDkGKlffTt
-         YVeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707323670; x=1707928470;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+qWJfZs5obAhPKW/hvHK9EKHhgFJrOCu3nsb0TTXjds=;
-        b=DZv2bl1RVQ7Fh2JZdOLxlZ21s6e6S7xcKnTdtzV2qtIvWVgB21uRJ3scR/9QKQNuJg
-         mqS8DboGls2aFKMfdufAx0p/pypbsl/Rn4yE14uq3nVV+HI3Azlh/V8nAT72cREB8say
-         OjGiliB22EhNXwAX5AVapz562MA3/yCxbXKIvrsVVAbiuqcN4EM3RDFg89wXq+ZLV2mU
-         pQ68TvWEl8p/TP0H/iuVGRE+NXcT7nMl3bY1g97OEJDdgDyZ+AHsgZ4SPAGgxkOpKODF
-         FI0NbE09Mx1Os7EKBhRS2GlZgddorQLJL+j7k7rlLFPRiSCnzLWChgLrvicMr1APrEl1
-         XWCw==
-X-Gm-Message-State: AOJu0YxbtRYmffbHr6lZQS/S3ksFgmwptSrKdkb+BBTv6cat92Yhc9IM
-	j+KEka5e0+hhJ1RBj65kpcpVc3a5E6fsxk7FMOnmGE639M6I/XKL3Xa9pUHYDuA=
-X-Google-Smtp-Source: AGHT+IHzISXcDhzxb3uxSLeubLzvHSYCuz5U73OLZbGdn1XxCYfBWHIVlY+XBHlSSbk7QwjNU9+cvg==
-X-Received: by 2002:a05:6a20:d390:b0:19e:99f9:a91a with SMTP id iq16-20020a056a20d39000b0019e99f9a91amr6682175pzb.43.1707323669941;
-        Wed, 07 Feb 2024 08:34:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUTGPhBcSbwQ+NlNeDJuIDhKCNAJsdMLbEgPKKXkWZbNPo7sAqaHHM0shhIablUiK9LZSe0SsgbioTmm5KDQiIXp2eEzIyrWf1syfZyIXVSBhAKmRIwYhLgwMzVAkM2mTAfMS7wkSrT3ZLHHNsxRSITPZcsSl+4
-Received: from localhost ([2620:10d:c090:400::4:3c45])
-        by smtp.gmail.com with ESMTPSA id ku8-20020a170903288800b001d949e663d5sm1655342plb.31.2024.02.07.08.34.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 08:34:29 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 7 Feb 2024 06:34:27 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Ricardo B. Marliere" <ricardo@marliere.net>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] workqueue: make wq_subsys const
-Message-ID: <ZcOxE2nznfq7dcNh@slm.duckdns.org>
-References: <20240206-bus_cleanup-workqueue-v1-1-72b10d282d58@marliere.net>
- <2024020752-tannery-frozen-04ea@gregkh>
+	s=arc-20240116; t=1707323731; c=relaxed/simple;
+	bh=0+t2jHpynIpwVYxYeETKIQCXhz2HQSJ8gtu7O1J/wU8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ttX/299/isMmaEhFa+mIGKsCRaMtYkwJhMZP83E38nqrbdZkx58R8YwTbHUz4Ssbsk9Dk52lIcmQo0EyeT1Z2lSGKuS6HlxgPSurimLdQbymfY5U2IyEedaNFqdZzFMlEMMGNZonVNGe0JThh5CMPj+J07TYIAFOSALRd6FBlmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=bPovcZVJ; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707323727;
+	bh=0+t2jHpynIpwVYxYeETKIQCXhz2HQSJ8gtu7O1J/wU8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=bPovcZVJ+K2iAjxJYscrR596L3xGa9uONLtCAnz/MORgq5xjEWyHsoON40fx3TeHx
+	 S8vvwgOrGRlCZDG5ULOg6H92B3NQ2ShJ4G/D4yZuOvjKEaD9gK8MmN1awxBeY3VHQZ
+	 l9iD0+bocKFtyz3dqEbvWhoz6o9C7cB58te8moYQtS6UxxK3goSQJPIxYO87uyRFQD
+	 ezz2ghKRjp0ceFLk5NsBTReFwBSDjiV+lW2dgASpQc7DVXcm08se7hzH1HbtAwvRR2
+	 p+a84ecdKkB+25YfjGo9iChf2+FLjxsngjiMlNMD//ROzsFe/6dJWH+pG2FnEqNa0k
+	 FOtgQjZNU6TVQ==
+Received: from [100.93.89.217] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: benjamin.gaignard)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 732583780627;
+	Wed,  7 Feb 2024 16:35:27 +0000 (UTC)
+Message-ID: <10f04dfd-ce2f-42c1-b926-153f419add89@collabora.com>
+Date: Wed, 7 Feb 2024 17:35:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024020752-tannery-frozen-04ea@gregkh>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 0/9] Add DELETE_BUF ioctl
+Content-Language: en-US
+To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ kernel@collabora.com
+References: <20240206080219.11951-1-benjamin.gaignard@collabora.com>
+ <dcafb602-228f-439f-99d2-010d26a23ad1@xs4all.nl>
+ <63a46881-7fe8-4858-b0f7-cde33ffc7ea6@xs4all.nl>
+ <9fda7e17-42e8-4b2e-8daf-f0e556934356@collabora.com>
+ <0916816d-a417-420c-b8f9-26b210bd6add@xs4all.nl>
+From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+In-Reply-To: <0916816d-a417-420c-b8f9-26b210bd6add@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 07, 2024 at 10:12:34AM +0000, Greg Kroah-Hartman wrote:
-> On Tue, Feb 06, 2024 at 03:05:06PM -0300, Ricardo B. Marliere wrote:
-> > Now that the driver core can properly handle constant struct bus_type,
-> > move the wq_subsys variable to be a constant structure as well,
-> > placing it into read-only memory which can not be modified at runtime.
-> > 
-> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> > ---
-> > The maintainer asked [1] for this patch to be received through the
-> > driver-core tree.
-> > [1]: https://lore.kernel.org/all/ZcEeOueCbrltxr_b@slm.duckdns.org/
-> 
-> There is no cross-tree dependency at all, but hey, I'll take it, no
-> worries...
 
-Ah, my bad. I branched out wq/for-6.9 before rc1 and was assuming the
-dependent commit was still in the driver core branch. I should have just
-pulled linus#master. That said, that patch going through driver-core should
-still be fine.
+Le 07/02/2024 à 12:32, Hans Verkuil a écrit :
+> On 07/02/2024 12:25, Benjamin Gaignard wrote:
+>> Le 07/02/2024 à 11:28, Hans Verkuil a écrit :
+>>> On 06/02/2024 09:58, Hans Verkuil wrote:
+>>>> On 06/02/2024 09:02, Benjamin Gaignard wrote:
+>>>>> Unlike when resolution change on keyframes, dynamic resolution change
+>>>>> on inter frames doesn't allow to do a stream off/on sequence because
+>>>>> it is need to keep all previous references alive to decode inter frames.
+>>>>> This constraint have two main problems:
+>>>>> - more memory consumption.
+>>>>> - more buffers in use.
+>>>>> To solve these issue this series introduce DELETE_BUFS ioctl and remove
+>>>>> the 32 buffers limit per queue.
+>>>> This v19 looks good. There are three outstanding issues that I need to take a
+>>>> look at:
+>>>>
+>>>> 1) Can we still signal support for DELETE_BUFS in the V4L2_BUF_CAP_ caps?
+>>>>      It would be nice to have, but I'm not sure if and how that can be done.
+>>>>
+>>>> 2) I want to take another look at providing a next version of the VIDIOC_CREATE_BUFS
+>>>>      ioctl and how that would possibly influence the design of DELETE_BUFS.
+>>>>      Just to make sure we're not blocking anything or making life harder.
+>>> So I just tried creating a new version of the VIDIOC_CREATE_BUFS ioctl
+>>> that is greatly simplified. This just updates the header, no real code yet:
+>>>
+>>> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+>>> ---
+>>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+>>> index 03443833aaaa..a7398e4c85e7 100644
+>>> --- a/include/uapi/linux/videodev2.h
+>>> +++ b/include/uapi/linux/videodev2.h
+>>> @@ -2624,6 +2624,39 @@ struct v4l2_create_buffers {
+>>>        __u32            reserved[5];
+>>>    };
+>>>
+>>> +/**
+>>> + * struct v4l2_create_buffers_v2 - VIDIOC_CREATE_BUFFERS argument
+>>> + * @type:    enum v4l2_buf_type
+>>> + * @memory:    enum v4l2_memory; buffer memory type
+>>> + * @count:    entry: number of requested buffers,
+>>> + *        return: number of created buffers
+>>> + * @num_planes:    requested number of planes for each buffer
+>>> + * @sizes:    requested plane sizes for each buffer
+>>> + * @start_index:on return, index of the first created buffer
+>>> + * @total_count:on return, the total number of allocated buffers
+>>> + * @capabilities: capabilities of this buffer type.
+>>> + * @flags:    additional buffer management attributes (ignored unless the
+>>> + *        queue has V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS capability
+>>> + *        and configured for MMAP streaming I/O).
+>>> + * @max_num_buffers: if V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS capability flag is set
+>>> + *        this field indicate the maximum possible number of buffers
+>>> + *        for this queue.
+>>> + * @reserved:    future extensions
+>>> + */
+>>> +struct v4l2_create_buffers_v2 {
+>>> +    __u32            type;
+>>> +    __u32            memory;
+>>> +    __u32            count;
+>>> +    __u32            num_planes;
+>>> +    __u32            size[VIDEO_MAX_PLANES];
+>>> +    __u32            start_index;
+>>> +    __u32            total_count;
+>>> +    __u32            capabilities;
+>>> +    __u32            flags;
+>>> +    __u32            max_num_buffers;
+>>> +    __u32            reserved[7];
+>>> +};
+>>> +
+>>>    /**
+>>>     * struct v4l2_delete_buffers - VIDIOC_DELETE_BUFS argument
+>>>     * @index:    the first buffer to be deleted
+>>> @@ -2738,6 +2771,7 @@ struct v4l2_delete_buffers {
+>>>
+>>>    #define VIDIOC_QUERY_EXT_CTRL    _IOWR('V', 103, struct v4l2_query_ext_ctrl)
+>>>    #define VIDIOC_DELETE_BUFS    _IOWR('V', 104, struct v4l2_delete_buffers)
+>>> +#define VIDIOC_CREATE_BUFFERS    _IOWR('V', 105, struct v4l2_create_buffers_v2)
+>>>
+>>>
+>>>    /* Reminder: when adding new ioctls please add support for them to
+>>>
+>>>
+>>> Sadly, struct v4l2_create_buffers was already used for the existing
+>>> VIDIOC_CREATE_BUFS (I wish it was called v4l2_create_bufs...), so I did
+>>> have to add a _v2 suffix. Compared to the old struct it just moves the
+>>> type, num_planes and sizes from v4l2_format into the new struct and drops
+>>> the format field. Note that those fields are the only v4l2_format fields
+>>> that VIDIOC_CREATE_BUFS used, so getting rid of the format makes live
+>>> much easier. I also renamed 'index' to 'start_index' and added a new 'total_count'
+>>> field to report the total number of buffers.
+>>>
+>>> The reason for adding 'total_count' is that VIDIOC_CREATE_BUFS with
+>>> count == 0 would report the total number of buffers in the 'index' field,
+>>> which was rather odd. Adding a specific field for this purpose is nicer.
+>>>
+>>> One thing that might impact your series is the name of the ioctls.
+>>>
+>>> We have:
+>>>
+>>> VIDIOC_CREATE_BUFS/v4l2_create_buffers
+>>> VIDIOC_DELETE_BUFS/v4l2_delete_buffers
+>>> VIDIOC_CREATE_BUFFERS/v4l2_create_buffers_v2 (TBD)
+>>>
+>>> I'm wondering if VIDIOC_DELETE_BUFS should be renamed to
+>>> VIDIOC_DELETE_BUFFERS, that would make it more consistent with
+>>> the proposed VIDIOC_CREATE_BUFFERS.
+>>>
+>>> Alternatively, instead of calling it VIDIOC_CREATE_BUFFERS we
+>>> might call it VIDIOC_CREATE_BUFS_V2.
+>>>
+>>> Or perhaps some other naming convention?
+>> Maybe VIDIOC_NEW_BUFS/v4l2_new_buffers ?
+>>
+>> I will wait until naming convention is fixed before send v20.
+> How about VIDIOC_ADD_BUFS/REMOVE_BUFS?
+>
+> And struct v4l2_add_bufs/v4l2_remove_bufs.
 
-Thanks.
+I'm really bad from naming thing like that.
+I will until the next and, if nobody complain, I will change my code to
+use your proposal.
 
--- 
-tejun
+Regards,
+Benjamin
+
+>
+> One thing that I always found debatable about the names CREATE and DELETE
+> is that it suggests that buffer memory is also created and deleted. While
+> true for MMAP, that's not the case for DMABUF and USERPTR.
+>
+> Regards,
+>
+> 	Hans
+>
+>> Regards,
+>> Benjamin
+>>
+>>> Ideas are welcome.
+>>>
+>>> Regards,
+>>>
+>>>      Hans
+>>>
 
