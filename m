@@ -1,82 +1,87 @@
-Return-Path: <linux-kernel+bounces-56760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2591384CEB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:16:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12D2E84CEC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:18:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A63001F24A26
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:16:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E25451C265E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE45E811ED;
-	Wed,  7 Feb 2024 16:16:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8DB80BEA;
+	Wed,  7 Feb 2024 16:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="IDk+BHpz"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UiZ2f+6A"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9ED80625
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 16:16:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D518063F
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 16:18:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707322585; cv=none; b=ch0D4Ygz5NbtkHbq2lbgBIyo5E25qWm8pw4dCjan2YDrlWNByUpSeQtBobPz1PuaSW0cm/6RiH3wFol+zhLb6sYkK3bklRiX8dMSpURLjPtyIKTH5sl+25QyudobfT5KVWUhctf69wNvfCTVpijoxOnwFtvJaNI7fLHa7VTw/sc=
+	t=1707322722; cv=none; b=JcCDT3E1x0zsZmPZVeH6xaSOhitXdbyIy9ioZAji80ax7pmzUHzpc1nU+VX1/EptI22kobmDjEBMbpC5fc1F6as95uSmmbY21r+7NwiDjCld0YH9fkjK6U9Q3low311YcqQ6oEnRWUfVsUiUjn9U5n2AEo+fPJEEn0nvvKzXhYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707322585; c=relaxed/simple;
-	bh=BOKr26TfbLV5p2rMhdEIUAqtyhY8h7WzRYzgqghRnz4=;
+	s=arc-20240116; t=1707322722; c=relaxed/simple;
+	bh=sVOPThi/QUfRkmH39G9zIkjQB9aCGiSiIwNnPdKz7AI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kKhCJof4C2t9Ht6KiT9zGUp82Co0ec96QiR26NVZEiZrY+XyWp/uk7X2QTGHNAoklUNB26a1ZnsZErl0adIS4rw0gm+Zstf+3bYVwEDc/CqSwso+n1+ElT7EB14OqEkUZ/wCxmY/M4W9F9LuFcw1yolKHxZXmfRdlVdvTENot6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=IDk+BHpz; arc=none smtp.client-ip=209.85.208.178
+	 Content-Type:Content-Disposition:In-Reply-To; b=vEmIe1Bbnsep6uIcB3/jsI1EHENwUCC3OVOtNTz+grhVxSQWzF3s52007fOrmGVHim4rPExZzgHeWamUR8SY+6yc6Qj3r08gxm81MlW5k6i/1rAkJms8tCrweWYwRnU7TGxzZsfzYzhhXbhcZzcLpv99NPQUWCeLrUfsV9v1pmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UiZ2f+6A; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d0abdde3easo9954331fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 08:16:22 -0800 (PST)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56077dd7936so1010817a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 08:18:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1707322580; x=1707927380; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1707322718; x=1707927518; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/LG59njZWuFkviqiovWGZzoOS0eL7wO+Cvn37jpvLeU=;
-        b=IDk+BHpzHroffKXqrMMamnhqj8GiqecZdhbVyelKDfsY5TWZxY27PuZWuw8rDi6HaE
-         rL905ynF3y8e7HXN1Vl+CJxio0c655VCSY3H08aht+uMj6Og+I3P25SQ3sXnA7EQDJ8p
-         ho+qisVCxA5XJ5W6SKxqidixlakisxLDnlVowwVrmj7tCDyn5RQrbem1GUO7Kk4FN6fG
-         tYAXy2BJXFhwxvlxJsVLdbKIt5veBpyFHDaL06pa3G7+LIWblEBeuH1M6LSZmbOlgB7a
-         /MJsMshhuJPQbQRPJXPcJCuZmqnFNs1EochBceuAfBfs1H46G9z5KkUO22QRg9y2pp5F
-         oZSQ==
+        bh=oFVoWznFM6unJk0TCliav4VmM1lXuzkYTMWn4cMSxPo=;
+        b=UiZ2f+6A4WCyIfIAddlguVRoSgj6tOsUUt6rFznxcO4ttPkyGMedEFPJo62YXJNH4Q
+         u3cNNM7Q9XKm5+do5gUdDQ5H6x9SpM1EArPeZ15iwSkiDmi2JNrEYFr6zVaS1OAASbHm
+         sWMJhou7BXUZUHibiXnKze4PFeXMi74uFvdwaM/QlF7sIZirCRK4jQOnWaKjQ5/AzSy4
+         yuMblwBRw+ixbzwKLNhBuHMjyhgJgLbTxo5S/ypoBjRpKny/iW4ahtYZZVmOFq17iA2a
+         Qju1ByKFNzs/nA6EJAql5HimOa1QGM7V4V7D9jtQBn0xXxBKUnl1PZNmt80BpdanaSi/
+         yWxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707322580; x=1707927380;
+        d=1e100.net; s=20230601; t=1707322718; x=1707927518;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/LG59njZWuFkviqiovWGZzoOS0eL7wO+Cvn37jpvLeU=;
-        b=XYSLYPXt70W9bRcA/R8VnYEDL70pVwV5VT1lrJIXHPHhXUBKnQhN4sjvVooj6uYUZ5
-         8EDKbmMfTsOIYBLB84TDPQoOHCIaB93TEoU2xJ4+vnbWawaW4zUeXQNAmxkicsly7NtK
-         TYBLaTMgkVvpR+L2prjTxgZRqX53OVoryd1aBqlaYD1RjFZurdphTAkK9OGnivM/P80F
-         uj8n7SJiONt3iTYHe/kr+YdNfmqEimfPpsXYzN824GcNxhrifKI8ye/L8K9VlFhSmiG0
-         167mdNUvLlNQtjyv0NO8pBpEc1R0gSR7wpbQZsVKXrG3OlA3cQr5bJ9Au3iwYLvLUjT8
-         ZASg==
-X-Gm-Message-State: AOJu0YyxsfluyGizXxH3T61Y7XHdaR1LHEgqz6yQpRgcwgJH8+lcGWFf
-	4Ur8Dfcc6ZSlf+aL13V+LtTS/hixtIkiJooXcn6t3rh0LJ8o8CNvwVky/M2gXZ0+OUMEg8BITig
-	5
-X-Google-Smtp-Source: AGHT+IFpsv+TOo5kbWckN+t3UWWQ4jvzbTFlrK3LSjSsNMjTjlDJsak9Ra+d45MZmakbdFe0duZUwA==
-X-Received: by 2002:a2e:6e10:0:b0:2d0:9ced:58ec with SMTP id j16-20020a2e6e10000000b002d09ced58ecmr4098882ljc.32.1707322580462;
-        Wed, 07 Feb 2024 08:16:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVTFA5cQOEXvqd4/sNIoklXf2LGHZkbAPFWqORKIDTYzCLzXaDCF/OS6dCsvtEWOVoxGPTsGxRbTdrbQSv/oDUd9r5mTa4RYjW6Sok2p5fKwcZBpUAFP5NAePZaTtC1g7GiyArJ2dqOnpbyJ2AQt0WRQZ4p7mI=
+        bh=oFVoWznFM6unJk0TCliav4VmM1lXuzkYTMWn4cMSxPo=;
+        b=HogHJmwiz71iBuyDnRm15YXCdi0mFR/fN6/FCcQYgevMSYqKfp+yXYq9h6uBPgxXWn
+         6K9Gy3ULh4dm2BDBeuJTNY6KYPdcNyzxLPCbPzO+ne0olsSlUwLDJjBMkGVL7Ra6yO+J
+         faldW4ZG7EGAMlg+jkGjQnTO7FrKKIZizGRV0F9vvP7u35BcRmk/tluZM0Adn/COKutv
+         oN+8ONCP5o2/SAJMtdOjTCDRf6dohgs/tDNF0pKhzEY8k7q4zFlr+YmhqPDpDvCm9lKs
+         o1LS5wjRBdpBtBZHVJsnb3RpvX5jzZY6A6hwX0oG5gH/LB9ku4LiQbhuVCF+B6zhLvLB
+         UDew==
+X-Gm-Message-State: AOJu0Yx7LHOHQKE2v80e3Cit6UwXNUVebqfmShtl4vMGz3wxZBMdJqZU
+	TF+YCCRJAzmRxexwmj22yKzl6BiEoT2czbaoCDUM7xFVF3WYWuy2jvXQE0HZl+c=
+X-Google-Smtp-Source: AGHT+IEXzCHelVrZoKpz8miuL5NYQhg6Xaazxr2bpeUpHXi36Ko5Fim7WNH1whauwBHamOsBE0CEmw==
+X-Received: by 2002:a17:907:9116:b0:a38:3af4:a70a with SMTP id p22-20020a170907911600b00a383af4a70amr3125078ejq.60.1707322718368;
+        Wed, 07 Feb 2024 08:18:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUcTMKqqqLN7bzUOlV9EasExfOoRNHlobbgeoEPy82pUtythwF4HBihHdNQbvMVYIu3crzrKLcjeaTG8KiApPuAZjJITFf/xY0bm39DoF5qEUEl+8ZIWFjaAAgNA+7Mbc4gCrZqj/nhDb8DsbP3i+fdjydIZS8Sqpq0bG233Eas+H/ILkzk70GGBZ27hXTo2ry1HMCCkdG/a+SF3E1pAzB0QfRQVLNZx26Hqg/XxKisK+QH66YgKEsjtoAFc+98ZB4jcvAYBmDRHqOwaQe6idzy9x+HlU6BkZf0cK2DTVWRvD3lPbPQjp42jC9567LjsGzEUu9wmf2CCXa9oGVMBoy5yqV2hlyRrp11zFXx4ixoyjdtI4KjEDy9zJpZWMMdW2u9S2a5Z78QuNTmr7wCiSrsDUhcLggSSy8=
 Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id y11-20020a056402270b00b005606bb2cd20sm810141edd.54.2024.02.07.08.16.19
+        by smtp.gmail.com with ESMTPSA id oz14-20020a170906cd0e00b00a38620c3b3dsm902526ejb.198.2024.02.07.08.18.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 08:16:20 -0800 (PST)
-Date: Wed, 7 Feb 2024 17:16:18 +0100
+        Wed, 07 Feb 2024 08:18:38 -0800 (PST)
+Date: Wed, 7 Feb 2024 17:18:36 +0100
 From: Petr Mladek <pmladek@suse.com>
 To: John Ogness <john.ogness@linutronix.de>
 Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v4 14/14] dump_stack: Do not get cpu_sync for
- panic CPU
-Message-ID: <ZcOs0nG3KvkGKyF0@alley>
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Mukesh Ojha <quic_mojha@quicinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Arnd Bergmann <arnd@arndb.de>, Uros Bizjak <ubizjak@gmail.com>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Subject: Re: [PATCH printk v4 00/14] fix console flushing
+Message-ID: <ZcOtXKtHuVUTQNRN@alley>
 References: <20240207134103.1357162-1-john.ogness@linutronix.de>
- <20240207134103.1357162-15-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,26 +90,67 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240207134103.1357162-15-john.ogness@linutronix.de>
+In-Reply-To: <20240207134103.1357162-1-john.ogness@linutronix.de>
 
-On Wed 2024-02-07 14:47:03, John Ogness wrote:
-> dump_stack() is called in panic(). If for some reason another CPU
-> is holding the printk_cpu_sync and is unable to release it, the
-> panic CPU will be unable to continue and print the stacktrace.
+On Wed 2024-02-07 14:46:49, John Ogness wrote:
+> Hi,
 > 
-> Since non-panic CPUs are not allowed to store new printk messages
-> anyway, there is no need to synchronize the stacktrace output in
-> a panic situation.
+> While testing various flushing scenarios, I stumbled on a few
+> issues that cause console flushing to fail. While at LPC2023 in
+> Richmond, I sat down with Petr Mladek and we reviewed the
+> v2 [0] series. This series is the result of that offline
+> discussion. v3 is here [1].
 > 
-> For the panic CPU, do not get the printk_cpu_sync because it is
-> not needed and avoids a potential deadlock scenario in panic().
+> This series addresses the following issues:
 > 
-> Link: https://lore.kernel.org/lkml/ZcIGKU8sxti38Kok@alley
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> 1. The prb_next_seq() optimization caused inconsistent return
+>    values. Fix prb_next_seq() to the originally intended
+>    behavior but keep an optimization.
+> 
+> 2. pr_flush() might not wait until the most recently stored
+>    printk() message if non-finalized records precede it. Fix
+>    pr_flush() to wait for all records to print that are at
+>    least reserved at the time of the call.
+> 
+> 3. In panic, the panic messages will not print if non-finalized
+>    records precede them. Add a special condition so that
+>    readers on the panic CPU will drop records that are not in
+>    a consistent state.
+> 
+> 4. It is possible (and easy to reproduce) a scenario where the
+>    console on the panic CPU hands over to a waiter of a stopped
+>    CPU. Do not use the handover feature in panic.
+> 
+> 5. If messages are being dropped during panic, non-panic CPUs
+>    are silenced. But by then it is already too late and most
+>    likely the panic messages have been dropped. Change the
+>    non-panic CPU silencing logic to _immediately_ silence
+>    non-panic CPUs during panic. This also leads to clean panic
+>    output when many CPUs are blasting the kernel log.
+> 
+> 6. If a panic occurs in a context where printk() calls defer
+>    printing (NMI or printk_safe section), the printing of the
+>    final panic messages rely on irq_work. If that mechanism is
+>    not available, the final panic messages are not seen (even
+>    though they are finalized in the ringbuffer). Add one last
+>    explicit flush after all printk() calls are finished to
+>    ensure all available messages in the kernel log are printed.
+> 
+> 7. When dumping the stacktrace from panic(), do not use the
+>    printk_cpu_sync because it can deadlock if another CPU holds
+>    and is unable to release the printk_cpu_sync.
+> 
+> This series also performs some minor cleanups to remove open
+> coded checks about the panic context and improve documentation
+> language regarding data-less records.
+> 
+> Because of multiple refactoring done in recent history, it
+> would be helpful to provide the LTS maintainers with the proper
+> backported patches. I am happy to do this.
 
-Makes sense.
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+The series seems to be ready linux-next from my POV. I am going
+to push it there so that it gets as much testing before
+the merge window as possible.
 
 Best Regards,
 Petr
