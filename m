@@ -1,59 +1,57 @@
-Return-Path: <linux-kernel+bounces-57200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4134984D50E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:59:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDAF884D511
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:59:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED0F928C299
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:59:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94C1D28D991
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:59:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF3B6A8D9;
-	Wed,  7 Feb 2024 21:26:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A706BFAF;
+	Wed,  7 Feb 2024 21:26:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P+nPt6S1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D21jP/Ur"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD036A8C9;
-	Wed,  7 Feb 2024 21:26:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F41E1292E8;
+	Wed,  7 Feb 2024 21:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341211; cv=none; b=MC0HM0pnNZSPu+OEqzAU/A3uDp0/44uPU5IvN8y4gePH03QLe2y47U5h49Xae63mdNUCdVF+FRAmstjk5ri+CqzF6Gc8OvnoTgFuIVXpcZe6fr/iN9oEf1IzLUWiTnhlSNbVC5NUfu/NSIRM2oeVnwsvvHBex/XbjP2xwWwrps8=
+	t=1707341213; cv=none; b=uZCfynLNpGeu47WmjTazGfvL2ynT0MoA08SYbJMntoElcVCSEQn5kCI78anmjyaFK0WHoKMHWpRRTZEqaVm1bpX6ZovYezyVtG43xbKRGMRbSBpuixBBHdPUzfTthvko2gx07MF40pWGLg+BjufMhC9uCepm/84ja58J12Uf8IA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341211; c=relaxed/simple;
-	bh=eNOuZRE2WNGU6GmYQiQI123fBn0drJD/JHCLIjEM9Nk=;
+	s=arc-20240116; t=1707341213; c=relaxed/simple;
+	bh=2snEj2kC0enFNoSyzUn26Rza7/6eOb4qCdhoRdPcBrM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VfbgFDAZsfFnjmSDvJlVz/wmEstEIAuEqa3J+qz/IyNP3SufWsYVcGC2tZZyc3yvQt1V+ZwfFWiGQ6RF3eXHNSBXlRY7MdBuiYNNZ9jbeCzu+JOw3yrjoKC06WbKhPAfgIBMnb09iqK8SMuca6apTAAnI5Hkqw0MS9wKrKUeLSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P+nPt6S1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A918C433F1;
-	Wed,  7 Feb 2024 21:26:50 +0000 (UTC)
+	 MIME-Version; b=u1IQXMd4nfgX0oytAOxi3ldKGAywg9yRp7cfDKXyAwhgJ0G6pkWfYxKH+G5FMHQBHS7rTq4Lx74eJDJT4fZzoqk2pVypDGxFL02+JzHavHVuA61ALVHL+BZowIzVIqXvKmdHrDrU3NDTNkOcHSJTT1iMxM1tgbWeTIzWE3oLh0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D21jP/Ur; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA382C43390;
+	Wed,  7 Feb 2024 21:26:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341211;
-	bh=eNOuZRE2WNGU6GmYQiQI123fBn0drJD/JHCLIjEM9Nk=;
+	s=k20201202; t=1707341213;
+	bh=2snEj2kC0enFNoSyzUn26Rza7/6eOb4qCdhoRdPcBrM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=P+nPt6S1bcjKfUiYTPM6Ix8zd5cFr+VVtbw8JPDqoeEoP1F8Ra9lxf68ysdQWXkDC
-	 j/cKqWi6CwYoJT3lM6dIMPuQxBnI3hHWWwUNXDKRIfSHUiqya5HM8W5qDTGZOr93vM
-	 fTmTxztAntZLNuuoNaUcZ6pNOcFZrN7LSiHZsLtSxz2iQj0zSS0dPOoblmsWc13DQF
-	 IZesa2b5UP1ytmOdRV2SmQsxVIMcu31vBPwWbTCSnIQCJcASg7UOZZnQUqjhHQXpZ1
-	 PoRt/esdYxL5po3/D9CG7HHs09ddlhtzyDF9taLEtgFTwtKfdHaDFPHwUDQSf620ya
-	 p2PCIANGsa7UQ==
+	b=D21jP/Urfz508lQDbWEYi9VZUmf/xjPZfD44zq+fUBjlN0wgy3vsPiiFRuuiDaVsp
+	 y/9rsMPJg41wLleQ1UX0Saf80NaN3rdsKiA+BlJH1AkEvE2l0vaJHiSQSG72vYfyUV
+	 eQTTNHQfdHYcmE1bA1hG9Ls9V8y1xt3VDfLtXGThLh4oraPwbfAYQDGwDmZekwi3uM
+	 uhhZVUP4nkVIPS5+UR3mZA5NnUmvhpnhaZGDaJM8Z0n2RBF/atcMKAZhs7BLvWMq3+
+	 ENF/rJNTcgoqLla5lzijhuSqqB4IkbdkZrmGPPxppU3e7HyKgwJbCa7Kawg46do1Zi
+	 YDa4VHSYdz6Kg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Daniel Wagner <dwagner@suse.de>,
-	Christoph Hellwig <hch@lst.de>,
-	Keith Busch <kbusch@kernel.org>,
+Cc: Zhang Yi <yi.zhang@huawei.com>,
+	Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
-	james.smart@broadcom.com,
-	sagi@grimberg.me,
-	kch@nvidia.com,
-	linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.15 21/23] nvmet-fc: take ref count on tgtport before delete assoc
-Date: Wed,  7 Feb 2024 16:26:02 -0500
-Message-ID: <20240207212611.3793-21-sashal@kernel.org>
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 22/23] ext4: correct the hole length returned by ext4_map_blocks()
+Date: Wed,  7 Feb 2024 16:26:03 -0500
+Message-ID: <20240207212611.3793-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212611.3793-1-sashal@kernel.org>
 References: <20240207212611.3793-1-sashal@kernel.org>
@@ -68,102 +66,187 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.148
 Content-Transfer-Encoding: 8bit
 
-From: Daniel Wagner <dwagner@suse.de>
+From: Zhang Yi <yi.zhang@huawei.com>
 
-[ Upstream commit fe506a74589326183297d5abdda02d0c76ae5a8b ]
+[ Upstream commit 6430dea07e85958fa87d0276c0c4388dd51e630b ]
 
-We have to ensure that the tgtport is not going away
-before be have remove all the associations.
+In ext4_map_blocks(), if we can't find a range of mapping in the
+extents cache, we are calling ext4_ext_map_blocks() to search the real
+path and ext4_ext_determine_hole() to determine the hole range. But if
+the querying range was partially or completely overlaped by a delalloc
+extent, we can't find it in the real extent path, so the returned hole
+length could be incorrect.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
+Fortunately, ext4_ext_put_gap_in_cache() have already handle delalloc
+extent, but it searches start from the expanded hole_start, doesn't
+start from the querying range, so the delalloc extent found could not be
+the one that overlaped the querying range, plus, it also didn't adjust
+the hole length. Let's just remove ext4_ext_put_gap_in_cache(), handle
+delalloc and insert adjusted hole extent in ext4_ext_determine_hole().
+
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Suggested-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20240127015825.1608160-4-yi.zhang@huaweicloud.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/fc.c | 31 +++++++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+ fs/ext4/extents.c | 111 +++++++++++++++++++++++++++++-----------------
+ 1 file changed, 70 insertions(+), 41 deletions(-)
 
-diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
-index 1ef075b159b9..d3ca59ae4c7a 100644
---- a/drivers/nvme/target/fc.c
-+++ b/drivers/nvme/target/fc.c
-@@ -1092,13 +1092,28 @@ nvmet_fc_alloc_hostport(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
- }
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 592be39e3d51..cece004b32d5 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -2227,7 +2227,7 @@ static int ext4_fill_es_cache_info(struct inode *inode,
  
- static void
--nvmet_fc_delete_assoc(struct work_struct *work)
-+nvmet_fc_delete_assoc(struct nvmet_fc_tgt_assoc *assoc)
-+{
-+	nvmet_fc_delete_target_assoc(assoc);
-+	nvmet_fc_tgt_a_put(assoc);
-+}
-+
-+static void
-+nvmet_fc_delete_assoc_work(struct work_struct *work)
+ 
+ /*
+- * ext4_ext_determine_hole - determine hole around given block
++ * ext4_ext_find_hole - find hole around given block according to the given path
+  * @inode:	inode we lookup in
+  * @path:	path in extent tree to @lblk
+  * @lblk:	pointer to logical block around which we want to determine hole
+@@ -2239,9 +2239,9 @@ static int ext4_fill_es_cache_info(struct inode *inode,
+  * The function returns the length of a hole starting at @lblk. We update @lblk
+  * to the beginning of the hole if we managed to find it.
+  */
+-static ext4_lblk_t ext4_ext_determine_hole(struct inode *inode,
+-					   struct ext4_ext_path *path,
+-					   ext4_lblk_t *lblk)
++static ext4_lblk_t ext4_ext_find_hole(struct inode *inode,
++				      struct ext4_ext_path *path,
++				      ext4_lblk_t *lblk)
  {
- 	struct nvmet_fc_tgt_assoc *assoc =
- 		container_of(work, struct nvmet_fc_tgt_assoc, del_work);
-+	struct nvmet_fc_tgtport *tgtport = assoc->tgtport;
- 
--	nvmet_fc_delete_target_assoc(assoc);
--	nvmet_fc_tgt_a_put(assoc);
-+	nvmet_fc_delete_assoc(assoc);
-+	nvmet_fc_tgtport_put(tgtport);
-+}
-+
-+static void
-+nvmet_fc_schedule_delete_assoc(struct nvmet_fc_tgt_assoc *assoc)
-+{
-+	nvmet_fc_tgtport_get(assoc->tgtport);
-+	queue_work(nvmet_wq, &assoc->del_work);
+ 	int depth = ext_depth(inode);
+ 	struct ext4_extent *ex;
+@@ -2268,30 +2268,6 @@ static ext4_lblk_t ext4_ext_determine_hole(struct inode *inode,
+ 	return len;
  }
  
- static struct nvmet_fc_tgt_assoc *
-@@ -1132,7 +1147,7 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
- 	assoc->a_id = idx;
- 	INIT_LIST_HEAD(&assoc->a_list);
- 	kref_init(&assoc->ref);
--	INIT_WORK(&assoc->del_work, nvmet_fc_delete_assoc);
-+	INIT_WORK(&assoc->del_work, nvmet_fc_delete_assoc_work);
- 	atomic_set(&assoc->terminating, 0);
+-/*
+- * ext4_ext_put_gap_in_cache:
+- * calculate boundaries of the gap that the requested block fits into
+- * and cache this gap
+- */
+-static void
+-ext4_ext_put_gap_in_cache(struct inode *inode, ext4_lblk_t hole_start,
+-			  ext4_lblk_t hole_len)
+-{
+-	struct extent_status es;
+-
+-	ext4_es_find_extent_range(inode, &ext4_es_is_delayed, hole_start,
+-				  hole_start + hole_len - 1, &es);
+-	if (es.es_len) {
+-		/* There's delayed extent containing lblock? */
+-		if (es.es_lblk <= hole_start)
+-			return;
+-		hole_len = min(es.es_lblk - hole_start, hole_len);
+-	}
+-	ext_debug(inode, " -> %u:%u\n", hole_start, hole_len);
+-	ext4_es_insert_extent(inode, hole_start, hole_len, ~0,
+-			      EXTENT_STATUS_HOLE);
+-}
+-
+ /*
+  * ext4_ext_rm_idx:
+  * removes index from the index block.
+@@ -4064,6 +4040,69 @@ static int get_implied_cluster_alloc(struct super_block *sb,
+ 	return 0;
+ }
  
- 	while (needrandom) {
-@@ -1491,7 +1506,7 @@ __nvmet_fc_free_assocs(struct nvmet_fc_tgtport *tgtport)
- 	list_for_each_entry_rcu(assoc, &tgtport->assoc_list, a_list) {
- 		if (!nvmet_fc_tgt_a_get(assoc))
- 			continue;
--		queue_work(nvmet_wq, &assoc->del_work);
-+		nvmet_fc_schedule_delete_assoc(assoc);
- 		nvmet_fc_tgt_a_put(assoc);
++/*
++ * Determine hole length around the given logical block, first try to
++ * locate and expand the hole from the given @path, and then adjust it
++ * if it's partially or completely converted to delayed extents, insert
++ * it into the extent cache tree if it's indeed a hole, finally return
++ * the length of the determined extent.
++ */
++static ext4_lblk_t ext4_ext_determine_insert_hole(struct inode *inode,
++						  struct ext4_ext_path *path,
++						  ext4_lblk_t lblk)
++{
++	ext4_lblk_t hole_start, len;
++	struct extent_status es;
++
++	hole_start = lblk;
++	len = ext4_ext_find_hole(inode, path, &hole_start);
++again:
++	ext4_es_find_extent_range(inode, &ext4_es_is_delayed, hole_start,
++				  hole_start + len - 1, &es);
++	if (!es.es_len)
++		goto insert_hole;
++
++	/*
++	 * There's a delalloc extent in the hole, handle it if the delalloc
++	 * extent is in front of, behind and straddle the queried range.
++	 */
++	if (lblk >= es.es_lblk + es.es_len) {
++		/*
++		 * The delalloc extent is in front of the queried range,
++		 * find again from the queried start block.
++		 */
++		len -= lblk - hole_start;
++		hole_start = lblk;
++		goto again;
++	} else if (in_range(lblk, es.es_lblk, es.es_len)) {
++		/*
++		 * The delalloc extent containing lblk, it must have been
++		 * added after ext4_map_blocks() checked the extent status
++		 * tree, adjust the length to the delalloc extent's after
++		 * lblk.
++		 */
++		len = es.es_lblk + es.es_len - lblk;
++		return len;
++	} else {
++		/*
++		 * The delalloc extent is partially or completely behind
++		 * the queried range, update hole length until the
++		 * beginning of the delalloc extent.
++		 */
++		len = min(es.es_lblk - hole_start, len);
++	}
++
++insert_hole:
++	/* Put just found gap into cache to speed up subsequent requests */
++	ext_debug(inode, " -> %u:%u\n", hole_start, len);
++	ext4_es_insert_extent(inode, hole_start, len, ~0, EXTENT_STATUS_HOLE);
++
++	/* Update hole_len to reflect hole size after lblk */
++	if (hole_start != lblk)
++		len -= lblk - hole_start;
++
++	return len;
++}
+ 
+ /*
+  * Block allocation/map/preallocation routine for extents based files
+@@ -4181,22 +4220,12 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+ 	 * we couldn't try to create block if create flag is zero
+ 	 */
+ 	if ((flags & EXT4_GET_BLOCKS_CREATE) == 0) {
+-		ext4_lblk_t hole_start, hole_len;
++		ext4_lblk_t len;
+ 
+-		hole_start = map->m_lblk;
+-		hole_len = ext4_ext_determine_hole(inode, path, &hole_start);
+-		/*
+-		 * put just found gap into cache to speed up
+-		 * subsequent requests
+-		 */
+-		ext4_ext_put_gap_in_cache(inode, hole_start, hole_len);
++		len = ext4_ext_determine_insert_hole(inode, path, map->m_lblk);
+ 
+-		/* Update hole_len to reflect hole size after map->m_lblk */
+-		if (hole_start != map->m_lblk)
+-			hole_len -= map->m_lblk - hole_start;
+ 		map->m_pblk = 0;
+-		map->m_len = min_t(unsigned int, map->m_len, hole_len);
+-
++		map->m_len = min_t(unsigned int, map->m_len, len);
+ 		goto out;
  	}
- 	rcu_read_unlock();
-@@ -1545,7 +1560,7 @@ nvmet_fc_invalidate_host(struct nvmet_fc_target_port *target_port,
- 			continue;
- 		assoc->hostport->invalid = 1;
- 		noassoc = false;
--		queue_work(nvmet_wq, &assoc->del_work);
-+		nvmet_fc_schedule_delete_assoc(assoc);
- 		nvmet_fc_tgt_a_put(assoc);
- 	}
- 	spin_unlock_irqrestore(&tgtport->lock, flags);
-@@ -1590,7 +1605,7 @@ nvmet_fc_delete_ctrl(struct nvmet_ctrl *ctrl)
- 		nvmet_fc_tgtport_put(tgtport);
  
- 		if (found_ctrl) {
--			queue_work(nvmet_wq, &assoc->del_work);
-+			nvmet_fc_schedule_delete_assoc(assoc);
- 			nvmet_fc_tgt_a_put(assoc);
- 			return;
- 		}
-@@ -1897,7 +1912,7 @@ nvmet_fc_ls_disconnect(struct nvmet_fc_tgtport *tgtport,
- 		nvmet_fc_xmt_ls_rsp(tgtport, oldls);
- 	}
- 
--	queue_work(nvmet_wq, &assoc->del_work);
-+	nvmet_fc_schedule_delete_assoc(assoc);
- 	nvmet_fc_tgt_a_put(assoc);
- 
- 	return false;
 -- 
 2.43.0
 
