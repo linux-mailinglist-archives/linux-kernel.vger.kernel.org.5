@@ -1,114 +1,194 @@
-Return-Path: <linux-kernel+bounces-56384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DECB84C989
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:22:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D88FF84C98B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 12:23:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C072F28AE6F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:22:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C2981F25200
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:23:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A67CE1AAD3;
-	Wed,  7 Feb 2024 11:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7A231AADB;
+	Wed,  7 Feb 2024 11:22:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZuIGlB2b"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="PjisdU24"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5355F1D524;
-	Wed,  7 Feb 2024 11:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F59E182A7;
+	Wed,  7 Feb 2024 11:22:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707304933; cv=none; b=LTdKR1uy3b7l/lnPBqkLxQZbWibdQK3d4OlnnliyjdTUnHAp2448K6GPA339MGugceJgNiGP3HetCt+hXKcEMVhoqO0r+Ivp1gtmVVjPGYHaLkQtKN1bCscUM5bOiOBSQAvYKHIm8h89u9ACoP2vYB7de8UFAnVZeBra9SLlplc=
+	t=1707304971; cv=none; b=Vf0i35u3WH1U0llJcEfIsILDPtGc/sI2CEhpqovZu/M2MCekAxHZjjaNxvwdcUEh+7s433oK2cyNGnmVNQnaqp64WRI/7w54/05oJY0u9CyFhWnGdruoRfTCrwMWv5vK0tqhJsoxuc/jO/EBVKKpVq899gFv+AB3Uir7QdgWtmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707304933; c=relaxed/simple;
-	bh=lAFsxsdIlZPft8hnkICfi8w8bgkb6/ZUkvhhdX71gHE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ktGD2/9I6B37FEa0UwkwCJH6Ax0S16ZrrrO2fdxVwIfUa+q3XceKpDsUsm1gQeykhP9w3tZLQP9UntSw9RZyYOLaRVxbMa1T6w4nC7nHCkwVUEQoCuBdGRc3L645gswMM23uhsEq173daMcs7C3DQfjNbzYERvD/dtb34NiWj1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZuIGlB2b; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33b0e5d1e89so450309f8f.0;
-        Wed, 07 Feb 2024 03:22:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707304929; x=1707909729; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fe6SZmmP/zqXcfKDaAFGsJGopV6aAaohrfdr91yiNs0=;
-        b=ZuIGlB2bBkYvDbsImnw9WwowvZTdCarqxr5NOJTBiEYTewWZakWSH5MLOrJImsFIop
-         rnk/l2EilFR+INRm6/0MS8cYHVbS8PM1mvP/F2slh408aI4+IsDefpPqN7rgWha+VRBz
-         y2w7DOHPVBO73xkphkukdBS257/C0BsdPVAOpthy9QEn5NCiNGrNQSNPxFEHFWrjoWkY
-         RIIZOjc+dc0fBVS8H4ncQf2+5e1QqJCKQUXCZVnXcFzI1b3Zn6pkXfP7WEIREwrTPxJO
-         wA0mVI9IPCmYgCpy6PBPiL0IUjlUCWvo7Zn+nvWo1Z9SJ2n82HL07VVvyo4DgXnWdT6D
-         6z9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707304929; x=1707909729;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fe6SZmmP/zqXcfKDaAFGsJGopV6aAaohrfdr91yiNs0=;
-        b=h0ThpZfnKWo50c/qESVotuzRHlWf0Ie4iTi/zi6uUpsWYWy1WaDSBbjH1y6Kyv4Vug
-         bEQ950dOn4TNMjMHUo3tcj9GH11MjpAeYWyL522toa4eGO+pxSaQnllpRlN0piuF7etu
-         WCaFVzIZjZirviCibmoQT3TdlfDaGO6zek6SJJ6wwBrR8Hf2QnCZg9gXChqIChi1JnKG
-         hpmGOUUJ/XQ4kEQWxBYtpQlDpNf4WiBJsPT8wkEvkTruAiPVWEekKmnq9bAs+/tRuHG0
-         fbFczlQVskXonkiS4QqtIRtxGxU9bhP/TBXGaX7R9X/kydK5jym1yrezfSN24jdc5QTc
-         tGsQ==
-X-Gm-Message-State: AOJu0YyYB8sHm46SGOJJPD1cY25LnUZXIqGvUI7ZdttqnES4eUBXnsLT
-	ItaKZkUC2GHFVrVEEv5i4PXOwHf+X4jDJBcDpaCRgFC5yeMpdcj5yCUzNtNbveg=
-X-Google-Smtp-Source: AGHT+IGGPHCdSSr6e5ViKiCcz9bcuOkY7ZgebIUX/gxAFauciZn4jxk+qyvNU6k4pEfYGd8snIM0JA==
-X-Received: by 2002:adf:b1c3:0:b0:33b:279a:5cb1 with SMTP id r3-20020adfb1c3000000b0033b279a5cb1mr3554011wra.11.1707304929441;
-        Wed, 07 Feb 2024 03:22:09 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXid5VlkYlXypa1vZv6wwgKQJzGkoy1QHIVzTTa46oCuH2O6c7JisiUYKgsz8bhDDRGkqT28h2dW3Fg0dwGB9MjN9TaTua53IUbK0si/R2FE/owq+r9yFjATTpcHyZURbFa/5ODMsGVgSUqsaMUo7j0VAKO4fzgobxEl3WkxzunRpf+XawrgN70Upk7heW5iO9wzvJGuYUBQMMUY9sMMbWrbp7x4ecFxcddeVT7xZ/JlKuQdoB5Ys6UHUAzNRtfb7Mo
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id l1-20020a5d5601000000b0033b406bc689sm1262926wrv.75.2024.02.07.03.22.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 03:22:08 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Alan Stern <stern@rowland.harvard.edu>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org,
-	usb-storage@lists.one-eyed-alien.net
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] usb: storage: freecom: Remove redundant assignment to variable offset
-Date: Wed,  7 Feb 2024 11:22:08 +0000
-Message-Id: <20240207112208.2443237-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707304971; c=relaxed/simple;
+	bh=J35yOnxIj4zbmc/I04JW3XLI50tfpHXJ5MOqLVr19xM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=q19nUYFQpO6fCUG95ytE2LxGdz/uVuKi/jR8rpAgcDNG7ZRK0BcTFlUa20+QZc7KBftN+AW4o/p5GYqmksqF2LrfNfSQEoKXDBQqgpwfoIiFZcVk/gzDTIL1ISgd1PDl1n16/57mADHwZUu9WUGf8dfMF9pdfl/sG5Ow36G2zD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=PjisdU24; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707304967;
+	bh=J35yOnxIj4zbmc/I04JW3XLI50tfpHXJ5MOqLVr19xM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=PjisdU24hA0DWwqpNNg2aWhO7kUIgqelgh//n/DDdqu1CwcBrGC0Riu5+sfaUJuCZ
+	 Q+zmazaUVCRXHsR/8DvLl2Lb5nZp/IiKAEx6UeDxg2VVo1UwncCxdU7l64pRnBR8Fi
+	 JnsHi2fP1tqJ+VxVKGq+zTu1WAE7vC8/ZyilOxPajgv52W6vDqmvsQE4jxuhcZCmqy
+	 5NvkfQlAQb0v0Qrn+OnCyOOGymlyc24xRcwNNl/P3hbaihnQIRWiPpKMHd8+0050pS
+	 egPYP8vcoyJzietLM6+ht3+5efft5EwrH5cKIjq8za1zmpjKu6eoiAVz+GlgByIYcA
+	 M9JLSvVa6/WpA==
+Received: from [100.93.89.217] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: benjamin.gaignard)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1AC353782069;
+	Wed,  7 Feb 2024 11:22:47 +0000 (UTC)
+Message-ID: <c2c63cfd-4f43-4ecc-8258-1ba91ac39412@collabora.com>
+Date: Wed, 7 Feb 2024 12:22:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 0/9] Add DELETE_BUF ioctl
+Content-Language: en-US
+To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ kernel@collabora.com
+References: <20240206080219.11951-1-benjamin.gaignard@collabora.com>
+ <dcafb602-228f-439f-99d2-010d26a23ad1@xs4all.nl>
+ <67823e2e-9d60-4c08-bdd1-c974aaf96a93@xs4all.nl>
+ <e7420a20-b17d-493e-9b3c-bbb9314d7025@collabora.com>
+ <c2bbab59-1b07-4a3c-985c-be01836af756@xs4all.nl>
+From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+In-Reply-To: <c2bbab59-1b07-4a3c-985c-be01836af756@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-The variable offset is being assigned a value that is not being read
-afterwards, the assignment is redundant and can be removed.
 
-Cleans up clang scan warning:
-drivers/usb/storage/freecom.c:537:2: warning: Value stored to 'offset'
-is never read [deadcode.DeadStores]
+Le 07/02/2024 à 12:20, Hans Verkuil a écrit :
+> On 07/02/2024 12:15, Benjamin Gaignard wrote:
+>> Le 07/02/2024 à 10:12, Hans Verkuil a écrit :
+>>> Hi Benjamin,
+>>>
+>>> On 06/02/2024 09:58, Hans Verkuil wrote:
+>>>> On 06/02/2024 09:02, Benjamin Gaignard wrote:
+>>>>> Unlike when resolution change on keyframes, dynamic resolution change
+>>>>> on inter frames doesn't allow to do a stream off/on sequence because
+>>>>> it is need to keep all previous references alive to decode inter frames.
+>>>>> This constraint have two main problems:
+>>>>> - more memory consumption.
+>>>>> - more buffers in use.
+>>>>> To solve these issue this series introduce DELETE_BUFS ioctl and remove
+>>>>> the 32 buffers limit per queue.
+>>>> This v19 looks good. There are three outstanding issues that I need to take a
+>>>> look at:
+>>>>
+>>>> 1) Can we still signal support for DELETE_BUFS in the V4L2_BUF_CAP_ caps?
+>>>>      It would be nice to have, but I'm not sure if and how that can be done.
+>>> So, I came up with the following patch to add back the V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS
+>>> capability. If the DELETE_BUFS ioctl is valid, then it sets this capability
+>>> before calling vidioc_reqbufs or vidioc_create_bufs. So right now it will set
+>>> this for any queue. If we ever want to disable this for a specific queue, then
+>>> either the driver has to override these two ops and clear the flag, or a new
+>>> vb2_queue flag (e.g. disable_delete_bufs) is added and vb2_set_flags_and_caps()
+>>> will clear that capability based on that flag.
+>>>
+>>> In any case, for now just set it for both queues by default.
+>>>
+>>> If you agree that this is a good way to proceed, then can you incorporate this
+>>> into a v20? You can add the documentation for this cap from the v17 version.
+>> Do you want it to be a separate patch or included in the patch introducing DELETE_BUFS ioctl ?
+> Up to you, whatever makes the most sense.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/usb/storage/freecom.c | 1 -
- 1 file changed, 1 deletion(-)
+I will include it in DELETE_BUFS patch because it is strongly related to it.
 
-diff --git a/drivers/usb/storage/freecom.c b/drivers/usb/storage/freecom.c
-index 2b098b55c4cb..c3ce51c2dabd 100644
---- a/drivers/usb/storage/freecom.c
-+++ b/drivers/usb/storage/freecom.c
-@@ -534,7 +534,6 @@ static void pdump(struct us_data *us, void *ibuffer, int length)
- 	}
- 	line[offset] = 0;
- 	usb_stor_dbg(us, "%s\n", line);
--	offset = 0;
- }
- #endif
- 
--- 
-2.39.2
+Regards,
+Benjamin
 
+>
+> Regards,
+>
+> 	Hans
+>
+>>> Regards,
+>>>
+>>>      Hans
+>>>
+>>> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+>>> ---
+>>> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>> index 8e437104f9c1..64f2d662d068 100644
+>>> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>> @@ -685,7 +685,7 @@ static void vb2_set_flags_and_caps(struct vb2_queue *q, u32 memory,
+>>>            *flags &= V4L2_MEMORY_FLAG_NON_COHERENT;
+>>>        }
+>>>
+>>> -    *caps = V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS;
+>>> +    *caps |= V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS;
+>>>        if (q->io_modes & VB2_MMAP)
+>>>            *caps |= V4L2_BUF_CAP_SUPPORTS_MMAP;
+>>>        if (q->io_modes & VB2_USERPTR)
+>>> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+>>> index a172d33edd19..45bc705e171e 100644
+>>> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+>>> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+>>> @@ -2100,6 +2100,7 @@ static int v4l_overlay(const struct v4l2_ioctl_ops *ops,
+>>>    static int v4l_reqbufs(const struct v4l2_ioctl_ops *ops,
+>>>                    struct file *file, void *fh, void *arg)
+>>>    {
+>>> +    struct video_device *vfd = video_devdata(file);
+>>>        struct v4l2_requestbuffers *p = arg;
+>>>        int ret = check_fmt(file, p->type);
+>>>
+>>> @@ -2108,6 +2109,9 @@ static int v4l_reqbufs(const struct v4l2_ioctl_ops *ops,
+>>>
+>>>        memset_after(p, 0, flags);
+>>>
+>>> +    if (is_valid_ioctl(vfd, VIDIOC_DELETE_BUFS))
+>>> +        p->capabilities = V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS;
+>>> +
+>>>        return ops->vidioc_reqbufs(file, fh, p);
+>>>    }
+>>>
+>>> @@ -2141,6 +2145,7 @@ static int v4l_dqbuf(const struct v4l2_ioctl_ops *ops,
+>>>    static int v4l_create_bufs(const struct v4l2_ioctl_ops *ops,
+>>>                    struct file *file, void *fh, void *arg)
+>>>    {
+>>> +    struct video_device *vfd = video_devdata(file);
+>>>        struct v4l2_create_buffers *create = arg;
+>>>        int ret = check_fmt(file, create->format.type);
+>>>
+>>> @@ -2151,6 +2156,9 @@ static int v4l_create_bufs(const struct v4l2_ioctl_ops *ops,
+>>>
+>>>        v4l_sanitize_format(&create->format);
+>>>
+>>> +    if (is_valid_ioctl(vfd, VIDIOC_DELETE_BUFS))
+>>> +        create->capabilities = V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS;
+>>> +
+>>>        ret = ops->vidioc_create_bufs(file, fh, create);
+>>>
+>>>        if (create->format.type == V4L2_BUF_TYPE_VIDEO_CAPTURE ||
+>>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+>>> index 03443833aaaa..da307f46f903 100644
+>>> --- a/include/uapi/linux/videodev2.h
+>>> +++ b/include/uapi/linux/videodev2.h
+>>> @@ -1036,6 +1036,7 @@ struct v4l2_requestbuffers {
+>>>    #define V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF    (1 << 5)
+>>>    #define V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS        (1 << 6)
+>>>    #define V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS        (1 << 7)
+>>> +#define V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS        (1 << 8)
+>>>
+>>>    /**
+>>>     * struct v4l2_plane - plane info for multi-planar buffers
+>>>
+>>>
+>>>
 
