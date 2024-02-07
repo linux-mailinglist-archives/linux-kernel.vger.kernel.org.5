@@ -1,56 +1,63 @@
-Return-Path: <linux-kernel+bounces-57115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3A3C84D42E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:36:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1581A84D430
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:37:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 430C3B28450
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:36:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA8CCB2349F
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:37:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359AD144631;
-	Wed,  7 Feb 2024 21:23:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9E31145358;
+	Wed,  7 Feb 2024 21:23:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mo2V0+ds"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Itx20JIv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58C1014460F;
-	Wed,  7 Feb 2024 21:23:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293991419B4;
+	Wed,  7 Feb 2024 21:23:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341026; cv=none; b=dq2/3vWTUPz9HajNd4KxBrsvZSpgwi1k6SMlU6tnDvFzYb6AB3YeIbuFbBggYu14zmW0PMKlHvz1ARO+YgVsxQTzS8GCeF777kbcpLqDHswPtDpQpeeSToziHaGCeBlH/esl0SVEgvNwxrVBo0gNBln+qCZcxLnyyvIOICBZXtc=
+	t=1707341029; cv=none; b=TMLwhhDzYEFxPexPoUfzAAkUfHJxeKZDkTSzdc3IQg/v5yLjwtX7W78SpODw7vU5gc+cU0xgakpwr6B4KZPju3C/iI7GNZRCpHCiz3Q8VKveEVpwuBTpjIFg/z6YokAMdQYWHLKJ+Ms8YmfAg3W5bhLA8fu7GWU3sjPk+/P6m5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341026; c=relaxed/simple;
-	bh=0YpCKTLThLkhX4Tktw9pXYZ9gVRBvU3mBo6LJe4QwEE=;
+	s=arc-20240116; t=1707341029; c=relaxed/simple;
+	bh=e00mbdOa1NFwOxTRbyuCpa2lpR636uuZRXk0qdpnvDE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jAScUSZPW+70eC0YJO9qGhrgHw0pX8qYhXHqBgdhW7ds2anyQ4aXPhqw7+rePiiCnvgnyWxblesikd9djpOumoILqLfKqLyCce5mZ1DCyNkAs3Y+SjIDPDZzP9919txGcrmWFeSVajNV+eFZ1zZ72NCjixSa5rtzZ1dKxRoCJTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mo2V0+ds; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DB80C433F1;
-	Wed,  7 Feb 2024 21:23:45 +0000 (UTC)
+	 MIME-Version; b=Ex9izPcv+rTYw6HkvY4Ux641rL3p+8zGgTxaASmJgkiHUepZh5fVE6u1jRHjS7ZTqzf6XQIW5XW32ptWWvIWiTIPP/tlob5t5NXwUGL6E3UAIr62OzqnWxvwEXG+QI1vgBnkl1ydz2rYHB2hMIX+RVC24+BoGFM5Hs8/XPaXPLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Itx20JIv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49604C433F1;
+	Wed,  7 Feb 2024 21:23:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341026;
-	bh=0YpCKTLThLkhX4Tktw9pXYZ9gVRBvU3mBo6LJe4QwEE=;
+	s=k20201202; t=1707341029;
+	bh=e00mbdOa1NFwOxTRbyuCpa2lpR636uuZRXk0qdpnvDE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mo2V0+dsVvAAnlwUzuNggOyAVAac5YUon7+xndKjql9sweDzThVFs/T/V6c+jKPvZ
-	 R0bylp6QJnRv01oaGozkp9IJ5c+e7znMIhhmpRkQJ8I/BC7Ajv04qobBUL2V9KEMSe
-	 1oPzPE2RiMGWudqqgM2x374n+dN0ufOaNXgnsWD+8As85/DyjjEvpHRKcJOPm3aJrU
-	 gY/agjrfZ4NGrrazG6HhxGvLOPU1KeEfgTp/gMdcuWxw0swgoVc4uDkG2ItLjECxHI
-	 Hrn4W3yPsdbvBgqmBK4qlq8CgY7G2MSsVxOxl2QwOs/Iv6VdKDlJaLnJWVKHvZ/86G
-	 xfxQ+sz8WmZ/g==
+	b=Itx20JIvdLtdUHxwK/Mt33Kag66v5OahaHhITjzd1MztxAbyLhcq/JMAWp2uh4s1O
+	 5xOhvp1pGnWOLC7kL0QjzLQTyDDviTygAbBsrb//HMT4K0mR16FKl0zRx9qvlbBCnC
+	 4HRBpKWV0hC2E1Wsiq2gmxraTvLH3ikw8sqMsLfL0+hQYvIkeD8R2hXjrOIcpJZNu+
+	 k1CweOCudHtbMUCjlr0ZZsy3Rxd4jxqWQCanGvMqKpx/iURd7zwjJ10fKh2KqJ/7j+
+	 YbdHS9H48pf/9r+4lQc3JnMZnZhLnBkjywe1XhbWKgln8c5iiahieZ/0FQMRBQ3HvY
+	 wi8h7mVmWqA/Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kunwu Chan <chentao@kylinos.cn>,
-	Vinod Koul <vkoul@kernel.org>,
+Cc: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	peter.ujfalusi@gmail.com,
-	dmaengine@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 05/38] dmaengine: ti: edma: Add some null pointer checks to the edma_probe
-Date: Wed,  7 Feb 2024 16:22:51 -0500
-Message-ID: <20240207212337.2351-5-sashal@kernel.org>
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	Syed.SabaKareem@amd.com,
+	alpernebiyasak@gmail.com,
+	posteuca@mutex.one,
+	kuninori.morimoto.gx@renesas.com,
+	cristian.ciocaltea@collabora.com,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 06/38] ASoC: amd: acp: Add check for cpu dai link initialization
+Date: Wed,  7 Feb 2024 16:22:52 -0500
+Message-ID: <20240207212337.2351-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212337.2351-1-sashal@kernel.org>
 References: <20240207212337.2351-1-sashal@kernel.org>
@@ -65,50 +72,42 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.16
 Content-Transfer-Encoding: 8bit
 
-From: Kunwu Chan <chentao@kylinos.cn>
+From: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
 
-[ Upstream commit 6e2276203ac9ff10fc76917ec9813c660f627369 ]
+[ Upstream commit 6cc2aa9a75f2397d42b78d4c159bc06722183c78 ]
 
-devm_kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure. Ensure the allocation was successful
-by checking the pointer validity.
+Add condition check for cpu dai link initialization for amplifier
+codec path, as same pcm id uses for both headset and speaker path
+for RENOIR platforms.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-Link: https://lore.kernel.org/r/20240118031929.192192-1-chentao@kylinos.cn
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+Link: https://msgid.link/r/20240118143023.1903984-3-venkataprasad.potturu@amd.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/ti/edma.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/amd/acp/acp-mach-common.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dma/ti/edma.c b/drivers/dma/ti/edma.c
-index 33d6d931b33b..155c409d2b43 100644
---- a/drivers/dma/ti/edma.c
-+++ b/drivers/dma/ti/edma.c
-@@ -2404,6 +2404,11 @@ static int edma_probe(struct platform_device *pdev)
- 	if (irq > 0) {
- 		irq_name = devm_kasprintf(dev, GFP_KERNEL, "%s_ccint",
- 					  dev_name(dev));
-+		if (!irq_name) {
-+			ret = -ENOMEM;
-+			goto err_disable_pm;
+diff --git a/sound/soc/amd/acp/acp-mach-common.c b/sound/soc/amd/acp/acp-mach-common.c
+index a06af82b8056..fc4e91535578 100644
+--- a/sound/soc/amd/acp/acp-mach-common.c
++++ b/sound/soc/amd/acp/acp-mach-common.c
+@@ -1416,8 +1416,13 @@ int acp_sofdsp_dai_links_create(struct snd_soc_card *card)
+ 	if (drv_data->amp_cpu_id == I2S_SP) {
+ 		links[i].name = "acp-amp-codec";
+ 		links[i].id = AMP_BE_ID;
+-		links[i].cpus = sof_sp_virtual;
+-		links[i].num_cpus = ARRAY_SIZE(sof_sp_virtual);
++		if (drv_data->platform == RENOIR) {
++			links[i].cpus = sof_sp;
++			links[i].num_cpus = ARRAY_SIZE(sof_sp);
++		} else {
++			links[i].cpus = sof_sp_virtual;
++			links[i].num_cpus = ARRAY_SIZE(sof_sp_virtual);
 +		}
-+
- 		ret = devm_request_irq(dev, irq, dma_irq_handler, 0, irq_name,
- 				       ecc);
- 		if (ret) {
-@@ -2420,6 +2425,11 @@ static int edma_probe(struct platform_device *pdev)
- 	if (irq > 0) {
- 		irq_name = devm_kasprintf(dev, GFP_KERNEL, "%s_ccerrint",
- 					  dev_name(dev));
-+		if (!irq_name) {
-+			ret = -ENOMEM;
-+			goto err_disable_pm;
-+		}
-+
- 		ret = devm_request_irq(dev, irq, dma_ccerr_handler, 0, irq_name,
- 				       ecc);
- 		if (ret) {
+ 		links[i].platforms = sof_component;
+ 		links[i].num_platforms = ARRAY_SIZE(sof_component);
+ 		links[i].dpcm_playback = 1;
 -- 
 2.43.0
 
