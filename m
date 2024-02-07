@@ -1,71 +1,73 @@
-Return-Path: <linux-kernel+bounces-56217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3580284C77A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:35:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1661284C77E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:35:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9F0A28530A
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:35:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2F32287E5B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B0392E847;
-	Wed,  7 Feb 2024 09:32:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CF803309E;
+	Wed,  7 Feb 2024 09:32:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="ElNcL92z"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="GLQ8EsSm"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6589128DCA
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:32:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685BF2C6B0
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 09:32:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707298367; cv=none; b=hr2f4/kee3+zKyEfTLSBN+D7195CYY8q33FsxCJXNlFfKlM5RcuAerl9OX3SzrBUvuOf8r9aJr39hVuQUdRQY21au8qKPbfc5vvPmdEy/30bw1G1TPAROmOTyYBJcN8BvDSxIeJh8chDSkrVqLNPjffqin9koCkbg1opRml0k4o=
+	t=1707298368; cv=none; b=TgdpqYqwtV1E05NaXayIMtENeRP8+RsFAz50zmwHeIO4fXii7AzqS6i3zI17yYqk4XKiXhEOZmluX7XUR9dvV62MJQsshxJT0SS/JcdhEsRaNkXBHmGRwlrIZLxuImy5GbX6os7C/QmrKu/6vEcJr7Ll12ytICpQh+o58OfDF/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707298367; c=relaxed/simple;
-	bh=seS2mYXKgOsaStLXlO6Hn49jlysXxgYFKeFnkw5vJfY=;
+	s=arc-20240116; t=1707298368; c=relaxed/simple;
+	bh=3bOx6w0LTuN8pcOfYHhxFGJ5/H17MO4GBppv0GaUmBI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QtKjLcE1xELcGMGXZloM3ydn6BmCwzmt4wDLMv8RH9nRXDtmaNKtpeRLgFrb2IjBL+f6HC/WlUCHUQo43FNbtxSPzYZclsDwSFO0sDDWZ5cKrJ/k/Ta0yzfG7opMIgRILj9TEJIhqukztg3H0wI8bfx0cGxyvwk6KNbtSmjVROg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=ElNcL92z; arc=none smtp.client-ip=209.85.218.47
+	 MIME-Version; b=sY5lv+18Yp6trSryaD/W7ivVi7RHwNCicfVn1lMjKKpu1SnAyeFPjhNCAaVy+LYnbV4qbMtA5fwjQWmyLUicaE82ZIEEuHVfTLTIxogq59EJn0yxAAqpHCkuIlqvwlXOiQ1f3LfAFuRTwQpIyDsVRs1oYB/9Qt8arMgI106j4vA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=GLQ8EsSm; arc=none smtp.client-ip=209.85.218.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3864258438so85013166b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:32:45 -0800 (PST)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3566c0309fso49215966b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 01:32:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707298363; x=1707903163; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707298364; x=1707903164; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z6gvVLaAJJ5SpKKyjtFK2dGPARZlV56P68Im7wENaso=;
-        b=ElNcL92zZytcCLqFP1+TVlCj8Yovx4+m24BMXj1d58bgaxq0Qc0OezZ045zKoSb07g
-         OnvXQoL1ENdLa4OVtGc2bwtpqYqnJ6mqDWAaJimF/e9xvmTmbFhDbC+SDCcaHX7vClT2
-         V2bbHR8XU0M4faxIbli7xslXLz9dU2WbdhjzUZxb/mgrEc138v1x8PS1AnUoOJW3z6TV
-         hbLruAJ7Fpw0yeEhWe0R/KC9QCCSvu/7Qu6hl2eJlgeEcN92JHYaazweJfp7/3cWlzfQ
-         3qGTb7TOKYLKyVHKwAZBgx0UJ9xwnlKm3yy1M1zShowbQfCl88MuFnvBlzKxHMhrUhCS
-         hSUQ==
+        bh=yUP/ICSTgUrZXFT7bioEQjzIDbumAO5zjpvQT5yRgD4=;
+        b=GLQ8EsSmvQ/wXg0UiyD9zmWuiUYlHG4GHWFuQF/JhV7s/04ACU2A168Gf8t2GAM7JT
+         UclpxqvN9GK1cHyFK0yirJxqYr/30e8bXM0h/eUaltW2vkRSVibTC58XimLuK/WBtP0z
+         r8vUAAI0J5t2dsRy9vBwBFecGH5rERL7yQFLUZsBxMCzi57YZ8Gb8uUuHjMyMFJmOLRH
+         WBiEUsEEB+fjlfie64jfyd9D2SiPRvZIpop09MEq7TDjhUsiFWnMcUPYmROOP4cJJQat
+         OieqKYgPTEdPL8DJBycgMcXmb9fHPIhDdvk0Ylf0gq11iCKvYdw7g2zwlrWtIL7SN6Cp
+         zG1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707298363; x=1707903163;
+        d=1e100.net; s=20230601; t=1707298364; x=1707903164;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Z6gvVLaAJJ5SpKKyjtFK2dGPARZlV56P68Im7wENaso=;
-        b=SKT9cX9h0WIKmaITKgqlO7jmNGFBwsw258HwewfifX+5l7T9m7YjdoxdxY9C5gv+4e
-         qU3VRKRzyInyALLRGohWYVehOG+77rNqA2lozxQTVf/NLPRq9+j8XzBfIcEfm16h5zEu
-         w5NHV1/VK3l/ZN4BATVtrWuP8GVVaieiG4EwEBtAo1wWhRKiqanKbTbBmRTwx3YU6u9p
-         6A9nftVREvGTPFCbiXfOppiaTgl7YZ+y7gVhHbG6w38PtfGBBk4sLLlctteTxpGvxngI
-         IKbok/zYdTuOy8CXzIYdTZu1v8FHV2vugyXkT8GSD0LQxU+aY0c0kS4qYGstGRon+H86
-         Y6hg==
-X-Gm-Message-State: AOJu0YzkAWLYek82R00yuYQR0m8tzqsovvydixzGimP0XtrNprw/3shJ
-	lQX3YwKr9Q5VBJjWHfPaQQ+uxrVV90NWXuI59Sv+KeZ1UXlDDZYYUTgXoePzktE=
-X-Google-Smtp-Source: AGHT+IF4HNyoCZO55se0l0BPy/4YtphyGqsi+TwNxxDdF9HYXHyHZIaQGsoQ99lmVCm7Vcvr+x611A==
-X-Received: by 2002:a17:906:44:b0:a38:3e90:e1ed with SMTP id 4-20020a170906004400b00a383e90e1edmr3509955ejg.7.1707298363662;
-        Wed, 07 Feb 2024 01:32:43 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU7xANWpOEcVoy0cWd1FA3d7ebTG317SnEhRB7lk6E7hkiAm5/6uwcW/39kazc+PLqt/PycVuIndwdXlbvHklivYovFU0XLCRZolNboHaIrA+inwYWFahk3rhFF814b/f/FfsQcecFwhKMQqNpTvs0ElMJRwYC18K3nh+0NwRJOLby27hHiIHAwIKn3jTppClv9Kt8buQhwqyu+N7NhRIjKk46jsnlv5eDDrkh5H3a7F6oKNqpcSzUPwu3Zt6qx28AKc1kW7nd8tdwL0hBxPNbY/5TQOvvQqf5tBjHDTwrr7U+OoXS/Up3rNS2evgdY/iSLZtAIM6NYSg92Yr13AZvtyQ4f+t2JgzH6gIe33oitODQbP1vqNvONyuk9pI8N/8H51lk156oIVFqEaK9vdivsuKZWL02jVWzYuG6qWUCFC5V/tkQH2k5FCDBR
+        bh=yUP/ICSTgUrZXFT7bioEQjzIDbumAO5zjpvQT5yRgD4=;
+        b=M7gkwEt4WP+DVNTYoG3ibEF8wSK+ODZjW5RH7Mv0PtXXz6veNkHYs+i/UquvGbeDxZ
+         txyHQ/BakJ6juGjN3fiRdodEqPUG4+AthLgpw8Wn0GaMr8pZHxSb+5qOvoWCK2p/SZbx
+         uV0MQIPjP5SVSeEJVD768S9r4pRjbNiNs6Zmz6iGcnjjQ//Mpl66c/ahV2K+Z2h7sL5j
+         7A9RtcTLRThIdfmfeq+JzkHfNz11mK4emX4KdlQHlYHJRpv8DNuKjdOCWabJbRolGnNy
+         2PUkD/7/K5Il47FsgFJfI8haJQBdgjFF4m0M9hWaESR9L3wzCapR2kv7GJSRn+zmsJMC
+         v96g==
+X-Forwarded-Encrypted: i=1; AJvYcCUbA22NAH5Kl8rLwaRg0D1dArx93Xxc/rTeCa7Rix/pPoN2NHs3D++/vlf3hrRIYNGyCftvB3Ff5EtD8/vJSg67iMLmm1zGrFKm+RVs
+X-Gm-Message-State: AOJu0Yz3fWnt2nNznPiTGiUH4DgoZqVTVf+be7LzmXCxhp7mceuYiQQ0
+	92JSCps1et8KR5huvDEmZ9PljhZy2hkX7z5yerOjADcw3Ralgk5JC4LRzOlP5Jk4tDBd3In4AxN
+	8
+X-Google-Smtp-Source: AGHT+IHK9IPkeDp33DRPPtDCbYtIAgI9YsCp7lpP9Vaga9kbgBw5dwf1+IBv3dC54jyBLhxpaDPKGA==
+X-Received: by 2002:a17:906:7d83:b0:a37:a66b:b361 with SMTP id v3-20020a1709067d8300b00a37a66bb361mr3524242ejo.21.1707298364738;
+        Wed, 07 Feb 2024 01:32:44 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUD0fnBBAqOWKl54sKKfHDzSLNwOsuRXN4OB4P5dEQHf2+fkGuifRlm/VbppuuKAWM9Vt8pq1b/xiw+HQBKCk7yaC5en261Y/cGMsWD/PnGQae1i7il6L/81aeE44FYoTZxk2cVNpaKsxqQkRzxEaEYaBZMYAnXVfJaP9bMRabavuOiIoEy1vMMTP4daU3OGXyu9HNEqgMyrDRtN86cCKi1CR56tTCZUqHEk6sqV6UUrYuALKKnvq5HXg89NpwkSublj2cLEIVHfOk5upTf9WPhJ/S1Olt0LIJFMZDgh/srQYwyAjlI42L+OWcEk6ic4nsLoi/D/QX0pedbGjy8was/yc4gXI46JpdF/kiCLSRILLAOMtqM3nJvAsHRHars5ZsWJ6PVtw/WcDDYxNACyqmqaBnbFJy57qUbNl2N+x67sX/HBfFnhNeUh4Pd10NT6SqakjaY9PPhAHDBRMbQhVi7Qg/ilO90
 Received: from blmsp.fritz.box ([2001:4091:a246:821e:6f3b:6b50:4762:8343])
-        by smtp.gmail.com with ESMTPSA id qo9-20020a170907874900b00a388e24f533sm122336ejc.148.2024.02.07.01.32.42
+        by smtp.gmail.com with ESMTPSA id qo9-20020a170907874900b00a388e24f533sm122336ejc.148.2024.02.07.01.32.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 01:32:43 -0800 (PST)
+        Wed, 07 Feb 2024 01:32:44 -0800 (PST)
 From: Markus Schneider-Pargmann <msp@baylibre.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
 	Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
@@ -82,10 +84,11 @@ Cc: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Julien Panis <jpanis@baylibre.com>,
-	Markus Schneider-Pargmann <msp@baylibre.com>
-Subject: [PATCH 07/14] can: m_can: Add tx coalescing ethtool support
-Date: Wed,  7 Feb 2024 10:32:13 +0100
-Message-ID: <20240207093220.2681425-8-msp@baylibre.com>
+	Markus Schneider-Pargmann <msp@baylibre.com>,
+	Simon Horman <simon.horman@corigine.com>
+Subject: [PATCH 08/14] can: m_can: Use u32 for putidx
+Date: Wed,  7 Feb 2024 10:32:14 +0100
+Message-ID: <20240207093220.2681425-9-msp@baylibre.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207093220.2681425-1-msp@baylibre.com>
 References: <20240207093220.2681425-1-msp@baylibre.com>
@@ -97,86 +100,52 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add TX support to get/set functions for ethtool coalescing.
-tx-frames-irq and tx-usecs-irq can only be set/unset together.
-tx-frames-irq needs to be less than TXE and TXB.
-
-As rx and tx share the same timer, rx-usecs-irq and tx-usecs-irq can be
-enabled/disabled individually but they need to have the same value if
-enabled.
-
-Polling is excluded from TX irq coalescing.
+putidx is not an integer normally, it is an unsigned field used in
+hardware registers. Use a u32 for it.
 
 Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
 ---
- drivers/net/can/m_can/m_can.c | 38 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
+ drivers/net/can/m_can/m_can.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 6dad1f569f82..b31df3e3ceeb 100644
+index b31df3e3ceeb..1b62613f195c 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -1986,6 +1986,8 @@ static int m_can_get_coalesce(struct net_device *dev,
+@@ -486,7 +486,7 @@ static void m_can_clean(struct net_device *net)
+ 	struct m_can_classdev *cdev = netdev_priv(net);
  
- 	ec->rx_max_coalesced_frames_irq = cdev->rx_max_coalesced_frames_irq;
- 	ec->rx_coalesce_usecs_irq = cdev->rx_coalesce_usecs_irq;
-+	ec->tx_max_coalesced_frames_irq = cdev->tx_max_coalesced_frames_irq;
-+	ec->tx_coalesce_usecs_irq = cdev->tx_coalesce_usecs_irq;
+ 	if (cdev->tx_skb) {
+-		int putidx = 0;
++		u32 putidx = 0;
  
- 	return 0;
- }
-@@ -2012,16 +2014,50 @@ static int m_can_set_coalesce(struct net_device *dev,
- 		netdev_err(dev, "rx-frames-irq and rx-usecs-irq can only be set together\n");
- 		return -EINVAL;
- 	}
-+	if (ec->tx_max_coalesced_frames_irq > cdev->mcfg[MRAM_TXE].num) {
-+		netdev_err(dev, "tx-frames-irq %u greater than the TX event FIFO %u\n",
-+			   ec->tx_max_coalesced_frames_irq,
-+			   cdev->mcfg[MRAM_TXE].num);
-+		return -EINVAL;
-+	}
-+	if (ec->tx_max_coalesced_frames_irq > cdev->mcfg[MRAM_TXB].num) {
-+		netdev_err(dev, "tx-frames-irq %u greater than the TX FIFO %u\n",
-+			   ec->tx_max_coalesced_frames_irq,
-+			   cdev->mcfg[MRAM_TXB].num);
-+		return -EINVAL;
-+	}
-+	if ((ec->tx_max_coalesced_frames_irq == 0) != (ec->tx_coalesce_usecs_irq == 0)) {
-+		netdev_err(dev, "tx-frames-irq and tx-usecs-irq can only be set together\n");
-+		return -EINVAL;
-+	}
-+	if (ec->rx_coalesce_usecs_irq != 0 && ec->tx_coalesce_usecs_irq != 0 &&
-+	    ec->rx_coalesce_usecs_irq != ec->tx_coalesce_usecs_irq) {
-+		netdev_err(dev, "rx-usecs-irq %u needs to be equal to tx-usecs-irq %u if both are enabled\n",
-+			   ec->rx_coalesce_usecs_irq,
-+			   ec->tx_coalesce_usecs_irq);
-+		return -EINVAL;
-+	}
- 
- 	cdev->rx_max_coalesced_frames_irq = ec->rx_max_coalesced_frames_irq;
- 	cdev->rx_coalesce_usecs_irq = ec->rx_coalesce_usecs_irq;
-+	cdev->tx_max_coalesced_frames_irq = ec->tx_max_coalesced_frames_irq;
-+	cdev->tx_coalesce_usecs_irq = ec->tx_coalesce_usecs_irq;
-+
-+	if (cdev->rx_coalesce_usecs_irq)
-+		cdev->irq_timer_wait =
-+			ns_to_ktime(cdev->rx_coalesce_usecs_irq * NSEC_PER_USEC);
-+	else
-+		cdev->irq_timer_wait =
-+			ns_to_ktime(cdev->tx_coalesce_usecs_irq * NSEC_PER_USEC);
- 
+ 		net->stats.tx_errors++;
+ 		if (cdev->version > 30)
+@@ -1695,12 +1695,12 @@ static int m_can_close(struct net_device *dev)
  	return 0;
  }
  
- static const struct ethtool_ops m_can_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS_IRQ |
--		ETHTOOL_COALESCE_RX_MAX_FRAMES_IRQ,
-+		ETHTOOL_COALESCE_RX_MAX_FRAMES_IRQ |
-+		ETHTOOL_COALESCE_TX_USECS_IRQ |
-+		ETHTOOL_COALESCE_TX_MAX_FRAMES_IRQ,
- 	.get_ts_info = ethtool_op_get_ts_info,
- 	.get_coalesce = m_can_get_coalesce,
- 	.set_coalesce = m_can_set_coalesce,
+-static int m_can_next_echo_skb_occupied(struct net_device *dev, int putidx)
++static int m_can_next_echo_skb_occupied(struct net_device *dev, u32 putidx)
+ {
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
+ 	/*get wrap around for loopback skb index */
+ 	unsigned int wrap = cdev->can.echo_skb_max;
+-	int next_idx;
++	u32 next_idx;
+ 
+ 	/* calculate next index */
+ 	next_idx = (++putidx >= wrap ? 0 : putidx);
+@@ -1719,7 +1719,7 @@ static netdev_tx_t m_can_tx_handler(struct m_can_classdev *cdev)
+ 	u32 cccr, fdflags;
+ 	u32 txfqs;
+ 	int err;
+-	int putidx;
++	u32 putidx;
+ 
+ 	cdev->tx_skb = NULL;
+ 
 -- 
 2.43.0
 
