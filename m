@@ -1,129 +1,122 @@
-Return-Path: <linux-kernel+bounces-55902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C157884C334
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:41:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FDBF84C33B
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76EBB284055
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:41:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2DA51C248D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:44:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2364510A08;
-	Wed,  7 Feb 2024 03:41:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="T5iId62f"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65F4710940;
+	Wed,  7 Feb 2024 03:44:03 +0000 (UTC)
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E512510940;
-	Wed,  7 Feb 2024 03:40:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9657CFC05;
+	Wed,  7 Feb 2024 03:44:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707277261; cv=none; b=QlovSppfm7TSL/ms8zNAGvoDkWDuHRqIle/w7azJgLJP4areudPdW6CRxfQMojBuE216uHsKE37ijxVaW7IKAVRCpVs+r9cmCOl8WlxCcoV8gF7ODCmP2IhH02vlVO+k6GgZ7vszX8kVIxHWmKdCMpRtPZXerSTOxGIgJIwnkec=
+	t=1707277443; cv=none; b=f0wJooFac3AApD1TVReJRPbTYBZYc5MLKFADRZTn/NnV8qBPiQr0iwpdpCGb2L4iwEpn+ZVMhJ/S69iAKH5aff4mgJyhmFEkVb2+azJ9Gw2stcBcb1cSm53mzOmYEf0yVog2cmDGtL7BiMm10r9DIMqWwDSvKK76fI40E3fDCpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707277261; c=relaxed/simple;
-	bh=LxANWH1vYw6dX5u5kdpD6briQQ/+vl5yKirDmVoDrTo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=abtzxg7sLeCl0IeXw8UMr07/sQItOye0BACro8MSBOlpJToOykAF6t+bt7l7d6XmdIrEyNAJKfvFau8rVJEe5lzbK1kDvFmbZMMqKHMOoTLOTq8McY4XRygOJLdRwve9/6pKf4uLF5/A3kOuG7D/PWfeb6dridgvH3WyANcfanY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=T5iId62f; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707277255;
-	bh=Qhl9kvhzen4AmOWDzyusKX6ZmfZojpYJrrISVsS44IY=;
-	h=Date:From:To:Cc:Subject:From;
-	b=T5iId62fKtASAwGo8WF7Cmv8j8bF4l2Xw5yEWxvcKNPd+AlqnmGklaOaLTSeZM6aE
-	 xXdwNveYOQzXMRq6O9KTzCtlLtsdym5/MbLmcpWwryJhEm3cWBdoP3hzmD2nlmnSp+
-	 iUR7qYs9dedSG02ULzmzH7kzDXHEiYlH8mD4uNtuwWJEu2zKP/Rh2tZDc840/hFEnd
-	 CzasDVWOFPva1R3UHhJRw/N/m355CApyf2kqNBjiQIxSFCDorRhZQRExQvRkgRNity
-	 T9+u7dZcWY3Pdg6zK/akup+l9S5rSlhDi4h+kN+3Uc4G67gZ4hcdJOmqELoLFtVWjI
-	 5DI0TZKlcMKrw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TV5Vt5Bq7z4wb0;
-	Wed,  7 Feb 2024 14:40:54 +1100 (AEDT)
-Date: Wed, 7 Feb 2024 14:40:53 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Alasdair G Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>
-Cc: Hongyu Jin <hongyu.jin@unisoc.com>, "J. corwin Coburn"
- <corwin@hurlbutnet.net>, John Wiele <jwiele@redhat.com>, Matthew Sakai
- <msakai@redhat.com>, Michael Sclafani <vdo-devel@redhat.com>, Thomas
- Jaskiewicz <tom@jaskiewicz.us>, Yibin Ding <yibin.ding@unisoc.com>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the device-mapper tree
-Message-ID: <20240207144053.1285b3e2@canb.auug.org.au>
+	s=arc-20240116; t=1707277443; c=relaxed/simple;
+	bh=NKdGqa02hSaQu5JelJ/ksYe+zhE7UAptAzAuxtKjJc4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ph455ZGB0m/IZ1AQde7G1/9dEN7vsEiN9jVUQKWkrnWz8kEfh9Uxq0OJllmwIAODSWMHvxWM/6Bjvd2t6oubpsifSZsDcsjqYQQBT54CCHAmSexMe/Pa7y2SpRKoSbBlSZYzb9Qshexa5YsVCTE2ijhCgNcaItW60Pn++ImlfZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-296db7e258dso170255a91.0;
+        Tue, 06 Feb 2024 19:44:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707277441; x=1707882241;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GXYHBO/Sk9zqXtLS3+vl4Dw89XDk75azVHAu3XUaUas=;
+        b=PWb84E250xFohyIyh8cCXXtOtutZSakG/RsJO54gojzqopKPXVlhwYYU2mwsjnu0G0
+         cwEaoaJ1q8lE5S6ChckmM/+GzivLVvoH+lH2zK2oP5oxJHz9iqYJbNVZmgruyh9CuNtu
+         uhgddOrbW+gTeuL7olJkTmao3LUIwGCT97qh/RFMkCHbHl76oyu7gkFpKPwgXnMgwq1d
+         ZiCjHAbhTu+3pVHxJR4QnGcsufVNh5h6+XcmaVrJxzeh9xMQew5MpW4VTr2DvYXEwPeH
+         O2e7OyxxPj2OnA9xlk/kvStNs8t2WOr29GtGO7+3t7kigoabMAWkCWMjeKYD98gngQNd
+         YYfw==
+X-Gm-Message-State: AOJu0Yynh7zeCdrTfM0hU69N9p5Ny7GQXfi554K+SJUpcEniy6rn/gC8
+	i2VDtpfBkiTianGAjHxuFJtrQmow1L5HzIan7pAaSJ2U5bLmTVvXSitJwmArCsVUcAdfu/VrB48
+	+Ss7QeVumc9QXQ+cU1TuCaAi4uLw=
+X-Google-Smtp-Source: AGHT+IGEPIphPBJ3SG91ugAQu3jAc6gnya8eOCAXJm5wVKBb/y2U6JdG+iSfAZ+R+/o55W4i4WV555ctwvTj67vnkOs=
+X-Received: by 2002:a17:90a:470e:b0:296:a76a:9711 with SMTP id
+ h14-20020a17090a470e00b00296a76a9711mr2325191pjg.12.1707277440608; Tue, 06
+ Feb 2024 19:44:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ockraJ+9.X3g.iZe0NhrfV.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/ockraJ+9.X3g.iZe0NhrfV.
-Content-Type: text/plain; charset=US-ASCII
+References: <20240112231340.779469-1-namhyung@kernel.org>
+In-Reply-To: <20240112231340.779469-1-namhyung@kernel.org>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 6 Feb 2024 19:43:49 -0800
+Message-ID: <CAM9d7chHZumJ5+KHex0hkp0JsL1phMPsA_qtaVnBZXyJus5NZg@mail.gmail.com>
+Subject: Re: [PATCH] perf record: Display data size on pipe mode
+To: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Ping!
 
-After merging the device-mapper tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
-
-drivers/md/dm-vdo/io-factory.c: In function 'read_ahead':
-drivers/md/dm-vdo/io-factory.c:118:17: error: too few arguments to function=
- 'dm_bufio_prefetch'
-  118 |                 dm_bufio_prefetch(reader->client, block_number, rea=
-d_ahead);
-      |                 ^~~~~~~~~~~~~~~~~
-In file included from drivers/md/dm-vdo/io-factory.h:9,
-                 from drivers/md/dm-vdo/io-factory.c:6:
-include/linux/dm-bufio.h:86:6: note: declared here
-   86 | void dm_bufio_prefetch(struct dm_bufio_client *c,
-      |      ^~~~~~~~~~~~~~~~~
-drivers/md/dm-vdo/io-factory.c: In function 'position_reader':
-drivers/md/dm-vdo/io-factory.c:182:24: error: too few arguments to function=
- 'dm_bufio_read'
-  182 |                 data =3D dm_bufio_read(reader->client, block_number=
-, &buffer);
-      |                        ^~~~~~~~~~~~~
-include/linux/dm-bufio.h:64:7: note: declared here
-   64 | void *dm_bufio_read(struct dm_bufio_client *c, sector_t block,
-      |       ^~~~~~~~~~~~~
-
-Caused by commit
-
-  82da73bac1ee ("dm vdo: add deduplication index storage interface")
-
-interacting with commit
-
-  3be93545346e ("dm bufio: Support IO priority")
-
-I have used the device-mapper tree from next-20240206 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ockraJ+9.X3g.iZe0NhrfV.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXC+8UACgkQAVBC80lX
-0GyE6Af9G3vxUowmQfD72icXaP4q1hZbiuTAVfxmav3iu1bwQsjIt/lLZu3/uwyP
-JDFTqCwhmC/i8nb+if8iX/7DLSZNLdTOLQymSjaQWvwqr8kBgjcz6aFeVjp5yO+N
-IzRNT68TXszvy6BREleZCjZ2DK4DEYES3EbxUBHD9UJQwYDFCiKPaP12cqgTUUld
-f2YVdkcf73lhGrMaNOZFLK/kdM4UglsXJaapFpfvjDJWTtqe5aV+MNR7Ln+V7cjm
-3vIByNYRw9S0tjPrxzn+sDlvishTLumaEsogPsFjGhyAuqYzzXQy754Jw2wzD5fM
-8++mV3pIBpzyk4XAQZOg1le6zJhqjg==
-=WV7u
------END PGP SIGNATURE-----
-
---Sig_/ockraJ+9.X3g.iZe0NhrfV.--
+On Fri, Jan 12, 2024 at 3:13=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> Currently pipe mode doesn't set the file size and it results in a
+> misleading message of 0 data size at the end.  Although it might miss
+> some accounting for pipe header or more, just displaying the data size
+> would reduce the possible confusion.
+>
+> Before:
+>   $ perf record -o- perf test -w noploop | perf report -i- -q --percent-l=
+imit=3D1
+>   [ perf record: Woken up 1 times to write data ]
+>   [ perf record: Captured and wrote 0.000 MB - ]    <=3D=3D=3D=3D=3D=3D  =
+(here)
+>       99.58%  perf     perf                  [.] noploop
+>
+> After:
+>   $ perf record -o- perf test -w noploop | perf report -i- -q --percent-l=
+imit=3D1
+>   [ perf record: Woken up 1 times to write data ]
+>   [ perf record: Captured and wrote 0.229 MB - ]
+>       99.46%  perf     perf                  [.] noploop
+>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/builtin-record.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 91e6828c38cc..21ebcb04f1d8 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -1773,8 +1773,11 @@ record__finish_output(struct record *rec)
+>         struct perf_data *data =3D &rec->data;
+>         int fd =3D perf_data__fd(data);
+>
+> -       if (data->is_pipe)
+> +       if (data->is_pipe) {
+> +               /* Just to display approx. size */
+> +               data->file.size =3D rec->bytes_written;
+>                 return;
+> +       }
+>
+>         rec->session->header.data_size +=3D rec->bytes_written;
+>         data->file.size =3D lseek(perf_data__fd(data), 0, SEEK_CUR);
+> --
+> 2.43.0.275.g3460e3d667-goog
+>
+>
 
