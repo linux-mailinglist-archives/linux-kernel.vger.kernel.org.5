@@ -1,87 +1,63 @@
-Return-Path: <linux-kernel+bounces-55899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6FDB84C32B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:37:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42AB984C32C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:37:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 161E728413B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:37:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7CDD1F287DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:37:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57AC212B75;
-	Wed,  7 Feb 2024 03:37:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9080610A08;
+	Wed,  7 Feb 2024 03:37:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WqSEWnnw"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="3pF+Ll86"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AE9810A20;
-	Wed,  7 Feb 2024 03:37:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E4110949
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 03:37:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707277033; cv=none; b=sSyjrQpwv0nMGvxGzYyLkFlWCz0VS8ZQItsY9Hv8xjKmMNwD3XVFbAaNnNM+Wrh1ey7MMxW58xrCssBdJSHW5R3EBSbfI/Ml3t7XT4r6MntIkhFGPnm9GZy6rTRgUsvIwdqkxLESpUG1g+snPnke5+FevMQAahNVFQe6UpWRcwA=
+	t=1707277070; cv=none; b=cbE443m1MPRPJiyUzSwsL2GdLTzi30ZNDC1sQC8HYeCGnsV6DssZ/fXBMG7D6lfSPQmUAzwD1WvDwFnCxzrkKwkLSVVidDhGvmS2BpM0gTncxasi7sbqjD0aPZqFpbwGHpb7A2aJHDoFSFH9GudBX048RrsB3bygeYKtsw/gwAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707277033; c=relaxed/simple;
-	bh=DzXdpNk0IldplWnZUSXf8zpiuY5OZq+4Qd+G8Yan964=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=m8hYjYI55slJDDCmfh5lXGMitTtsOmKwS1WHS5PkB+3mMj1dC5CttMyedJsBk91/gS5Obaino8Ht5lAIQT2IaEcIEdV2XomNhDV1d8ZKU3bT45cTWnsW+V5/a3sRh2/du4cWkqdxOYCyYyuhz49K0QwmyDyaSvP71hZ7TF1qU3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WqSEWnnw; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40ff802496cso1369385e9.3;
-        Tue, 06 Feb 2024 19:37:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707277030; x=1707881830; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jO4v0nbCePd1+AMeAWjbKpihfEE3SN8JiqCXFyWGK0Y=;
-        b=WqSEWnnwTOD7Sz/aDQSa9U8I87Y5XN13cMnaeM1FHQz/bDyKZ1jpMMbrMq9UzBj9OF
-         ZT/1TUqYae3+LvQyggFes/9WHmKS8V231SEfoX8LmoK8RV5JVGmLLMwisNwUqnhS5+YI
-         2MTUo0xMgtNVYYNDWyMFtKsiYrTMoH38UBR5b7uSWiydKE4iYmhQLKM6Y7094rDdMhqP
-         niDwQ27XQNmhUXUedbAXXGwX6sv4qYBY55vQZVDhK6Li3jVTilHjSuSCkyK0m1obgsrL
-         yK1RBdktf2a6gRCl/3zxRvsa6qnsffvt7wtO+chfvXLfff0A67Zvji0ZwN0iqbxeO94/
-         LTGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707277030; x=1707881830;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jO4v0nbCePd1+AMeAWjbKpihfEE3SN8JiqCXFyWGK0Y=;
-        b=w2y4oIIIjr7I6IoZdETCD+VfliD6Fh8xwr9Agckgn5h9WrEnn/94uHY/AOn5V6hMB1
-         JHuw2T3MVfCfctxsq4D5M7SFpqkm5loZVaXA+ZNpHapE9OvW51tkgzvbGixMC7n/cAcx
-         bCEzOJprgh2FNBIzTCH4EBp0iL7dkyz29UesDa0byMwTE/+n5V9cejrH3rY4ZAR6wqIp
-         ygyS75CeDw+Sb9vQ8QFm5z8NGKZjTvzoCXdPSZGylMCBW6eEt6IqS3PiwKgX3ONtj1W/
-         M2OFtUvo7rnnAsjLG7g19BweYyc8/FY7TN+GMt3XQRXckcxiuu/3BdSsCeVkDmr4zbFL
-         gAtg==
-X-Forwarded-Encrypted: i=1; AJvYcCUjgMbJh4IE2ByXlgwbN8wVTtCV867K5MTDV4EU6IgJsheQxvzm1Vt2SIkWvOmz/Q480/05edI1NKAMChCTzS7t8cMWuak0V0tc0gYnBga8O5BJ/ZFu6i8qtJJKkIovxO0Mmtu+4OHQ
-X-Gm-Message-State: AOJu0Yx0IkKR2jcZdYcwVQWh0/Ogs+3u/zq8vkUyZgtc5yb0pnLLfOPI
-	a9vic4XkP3A02vOpbVUUv3JfE5WsJSSC3UkI8Y/oYec/bCFhGuco
-X-Google-Smtp-Source: AGHT+IFvuN46Yba6zvQUzA+PGsOaAcK3v+MuP3fOMQoVXxOcYEkz+hetsFuvi65WoeoI5+4gmpDMbw==
-X-Received: by 2002:a5d:59a1:0:b0:33b:48f2:13ee with SMTP id p1-20020a5d59a1000000b0033b48f213eemr3193489wrr.19.1707277030214;
-        Tue, 06 Feb 2024 19:37:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXd3JgzV+wPPM5K2DxTTdIA3ceUB2hjcCuZgwd/YIgPq3/Iqwera8AB0fFGyAlFkn2E6t99T6G9yLQ9OBR7L2+/f/7p7RmsKF3vPezfL+3HoJJd6tg4KwwKsO6AmD3HlZkPqiAb4v84wVoFQy7prDLiJV8B8V6BscaUdMPITzbA6e2/3ki8YspigCLKA384hi1q/VhQcZl5HzwHcrM5l9zQm3GmXXHl9bL1RT/ArsaI8O4x2LruKOhjpZIYII5GQ563Utj4CPxS4KcZ
-Received: from demon-pc.localdomain ([188.24.52.65])
-        by smtp.gmail.com with ESMTPSA id p5-20020a5d4e05000000b0033b422356fbsm373447wrt.80.2024.02.06.19.37.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 19:37:09 -0800 (PST)
-From: Cosmin Tanislav <demonsingur@gmail.com>
-To: 
-Cc: Lars-Peter Clausen <lars@metafoo.de>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	Cosmin Tanislav <cosmin.tanislav@analog.com>,
-	Jonathan Cameron <jic23@kernel.org>,
-	linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Cosmin Tanislav <demonsingur@gmail.com>
-Subject: [PATCH 2/2] iio: accel: adxl367: fix I2C FIFO data register
-Date: Wed,  7 Feb 2024 05:36:51 +0200
-Message-ID: <20240207033657.206171-2-demonsingur@gmail.com>
+	s=arc-20240116; t=1707277070; c=relaxed/simple;
+	bh=SJW0eAfF0ycUGsvIG/nkGrfxSElHHASfpWsfKHgu6Zs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=st2GLeTQGFtJHm3wUNXowYRnGah0PSua/2clwYwt5jBHOxOceZ7iRxbR2AVYu8ZhEGfBC2tQtzTn0Cg1m/cCRq6W+zPKJEyADubkSa64pBHgbD09jwm0D7jxtD2PDqbtLgbnHj5ft60sB6YoPBf701XBt+92O1e8Nlu06u7mijM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=3pF+Ll86; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=1V+vgE1bWgSihvPKS2sLFdir+8amFigQuNO048cKiKk=; b=3pF+Ll86oxsOYLgGR66uKpNRjm
+	3IOt8cHKIsc4d6zt5jQxiZwFWFTTSolfW4tQJ/A9JZlmCyPwi4dhx5vogW33TTOr0Nj26yuN0Xsa1
+	OgbiYtCXCFQk//r9uVASMPIPWT53d7WbpjEPUdu96uq2hsyAKJyWnJ7mZDBUJSoQFbjKo/U7P/JJK
+	HWvYX7kxDS3yES4kEx+1Pkx5ddInlaVww46RSmmpgW4MSN5Oa9vDbrAkFzJqdj+K1hcya7BxQFrKv
+	iFnD6821Xoja+aXeTMLAe0EvDz3s5L60GdJgaMXvddgABdqZz4d/AmP0nMXOVAgEOcNpBgfSIT6NJ
+	Y9WMEFkw==;
+Received: from [50.53.50.0] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rXYkt-00000009Zqt-0IUX;
+	Wed, 07 Feb 2024 03:37:47 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Geoff Levand <geoff@infradead.org>
+Subject: [PATCH] drivers/ps3: select VIDEO to provide cmdline functions
+Date: Tue,  6 Feb 2024 19:37:44 -0800
+Message-ID: <20240207033744.13028-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240207033657.206171-1-demonsingur@gmail.com>
-References: <20240207033657.206171-1-demonsingur@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,31 +66,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As specified in the datasheet, the I2C FIFO data register is
-0x18, not 0x42. 0x42 was used by mistake when adapting the
-ADXL372 driver.
+When VIDEO is not set, there is a build error. Fix that by selecting
+VIDEO for PS3_PS3AV.
 
-Fix this mistake.
+ERROR: modpost: ".video_get_options" [drivers/ps3/ps3av_mod.ko] undefined!
 
-Signed-off-by: Cosmin Tanislav <demonsingur@gmail.com>
+Fixes: dae7fbf43fd0 ("driver/ps3: Include <video/cmdline.h> for mode parsing")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
+Cc: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Geoff Levand <geoff@infradead.org>
 ---
- drivers/iio/accel/adxl367_i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/platforms/ps3/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/iio/accel/adxl367_i2c.c b/drivers/iio/accel/adxl367_i2c.c
-index b595fe94f3a3..62c74bdc0d77 100644
---- a/drivers/iio/accel/adxl367_i2c.c
-+++ b/drivers/iio/accel/adxl367_i2c.c
-@@ -11,7 +11,7 @@
- 
- #include "adxl367.h"
- 
--#define ADXL367_I2C_FIFO_DATA	0x42
-+#define ADXL367_I2C_FIFO_DATA	0x18
- 
- struct adxl367_i2c_state {
- 	struct regmap *regmap;
--- 
-2.43.0
-
+diff -- a/arch/powerpc/platforms/ps3/Kconfig b/arch/powerpc/platforms/ps3/Kconfig
+--- a/arch/powerpc/platforms/ps3/Kconfig
++++ b/arch/powerpc/platforms/ps3/Kconfig
+@@ -67,6 +67,7 @@ config PS3_VUART
+ config PS3_PS3AV
+ 	depends on PPC_PS3
+ 	tristate "PS3 AV settings driver" if PS3_ADVANCED
++	select VIDEO
+ 	select PS3_VUART
+ 	default y
+ 	help
 
