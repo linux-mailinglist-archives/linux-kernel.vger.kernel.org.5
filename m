@@ -1,149 +1,173 @@
-Return-Path: <linux-kernel+bounces-55873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2272684C2C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:55:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A74CF84C2D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:58:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDDA71F23785
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:55:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03453B2C03A
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 02:58:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF12FC0E;
-	Wed,  7 Feb 2024 02:54:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3C91FC01;
+	Wed,  7 Feb 2024 02:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z4kxnj/u"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2ukTrgd4"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B8A7F9E0;
-	Wed,  7 Feb 2024 02:54:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6145E6110
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 02:58:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707274491; cv=none; b=AqTbLgPGMXGjrsbAlJrGVrbR/Hf9YIKTjKjcd6sELKlliTdD3Dj0M1qW1Yz3hH6uIAygWJLro3jK2FnI4gKZq1VHpNuW4zpLYTp8wdx5L3aRi4af6tjM+rgFWzmFaka8uEVj8WPAwd7I0/MT1v5xQMrAPYNjwhSGGHvms/J9N68=
+	t=1707274706; cv=none; b=FEEhllAQAvNbzu2T/+WzlGI18TevKOXRxGX7TLeXlcV4RjWJ/RW/bvxgj1puHjL93QPjfDqNdpI7Lmamr6N5SPbVpasetib8iX2Zu/u2qCn202OeVPf6cNm7NIRJvMIWyfF51rVcB2XPbi07MX+Qc3Y4s/sBaMdcMVBx8kfBL8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707274491; c=relaxed/simple;
-	bh=izzKotNhl6nS4a8y+QeBVLKruDDSX4lKOD5zWyCcE1w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EfRDWzP5YD8Mj2Ea6RchZLHdPM3v7JMxP8XcrT7ACfVjkJEJhCaLwY30TrCmJXGl44Gs9qseQC2TZ/sfTb9uy6G1sUkkkxI3YLI/ChgS2G10IkoVJtNG+fEJuNqTVx9Ep3yBKs5/e/kakaGRLZ8+GckT6+uGMGOtjL8n82ISnWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z4kxnj/u; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-511616b73ddso258445e87.0;
-        Tue, 06 Feb 2024 18:54:49 -0800 (PST)
+	s=arc-20240116; t=1707274706; c=relaxed/simple;
+	bh=q0YTkLGeLiHeoMECfeW+UDyihdTziDFAXkK/gYfa6m8=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=FlEgKGJrzslQ8xNz0kRgOXHosAhy55eHGNvc8MoEHAEl/cTxhWCv6ELb2S18dbcw2YBGyI2ovxOlpRu7FpxDPtlFyhdLOdKS3f3ghnUF05y2/SpF6yr4BZBN5aiGx8H34KdzOBcurxV4EFC+XSq5frSolYcC6yQpd/EuJOhOaFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2ukTrgd4; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b26eef6cso238016276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 18:58:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707274488; x=1707879288; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XoIOOxji4pc7f3dSEqTOlg7tfxN8y/E3ioEBRG57wt4=;
-        b=Z4kxnj/uK6VQi/C2fXi1RRWS8ewFj+FPGV6v6ZUgBMwXaAn0KJQy0lBVNvzPrW6bsh
-         z8RtYpnH3MvhT3WTk0ofce0GJVG2ah8r4BU/kJ6BzuiGCJbRgfKpb0CixLw9Osibzu/J
-         jjDzpVVUmXV3VfO6xS+nhHc2OqdfcMdskxdDW/6e+x+vH78ZKbo5mCK64dQaeL3UtfIe
-         vFnhNUb0qI1U210CjCy70KVDapi3iC5Vzf+t+MYSOolxkz2QGM4N/jEvh1bPt5SvmXol
-         EZCgj/WMcPpt7PZDDzPrDnmlGBkDvHl4KHFcuBxSh6eqbXym00/ruBAVGNrcBugNRci/
-         ak9Q==
+        d=google.com; s=20230601; t=1707274704; x=1707879504; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=REgxJxxqnJ9hacBXQ6aXWZQE1YsmJHbedjyy3CiQK2A=;
+        b=2ukTrgd4q81UHPu3MI9HusimapHQFjEo5lBjX5bWkjctL09MKKHCjDtmMdzWfNJi/J
+         Q9dR+lqB2TfLA+GLQlO8wIFxHHxJB1apbcM50V6I5gVINxItxNlPOByGeu1Hs38HyKrf
+         4GQcWpBNK/fd3jKPfiXl3njfThoMpv7/fWiCdLkaSbkrcjPJeXafmsfyQPj8ql56BH8a
+         v5GbV8WVw1jHb3AQfeeiI23GvE60eOAbDjLufVUV2MEsqchIJ0Xn/wUgn0EL9vC51TcL
+         8bUfK92X3uqdT+4r/MGH7YCZw/YXA44/ULLnKSGQiFPYxwgVmB/YI7DyzvY/7BqIUOO9
+         JdTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707274488; x=1707879288;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XoIOOxji4pc7f3dSEqTOlg7tfxN8y/E3ioEBRG57wt4=;
-        b=OcJhQXpJwt4kP6+z2Uk+1AZ9VotiXLpehQ/ZzB4gbYolMi4zMyjGMwfeGMZ3EQgJa4
-         1tV7erkGHjpRz6bA3t5BpdEnxhiL4G6vIZAH3qGKfJHqrBV/8BImpOSXBTrx0ul/Idgm
-         KHXUeVclaq2XHQ2qbaa8VsiIVvW4RmV/enq1z8HSMkwXwzFIP0YcwLdJktdcnSqOzD0g
-         WEW92JXjf0OqLTJwplD0Pps/mmkAYbj3M4YDPbN1UyYvttQCwiIdGLnpwKWyxIhPxlID
-         YFwxQpxaEtwN1KFXBYfGs+IH10CwXaE8Oodty6ZDmVryMJIUsqZCf6PfwOo5MJDxcr11
-         k7OQ==
-X-Gm-Message-State: AOJu0Yx+CL/MZASiOGT3lFu9oWKKMcN+72APaoT/mhjssOeeRQptmaPW
-	rpe7mjn1eBqxq6wloLBofyB2byNstCUuX2uq7DxCotkfhZs0e1jxS5/I8G0DgPXYoB2n/CvVclh
-	QYkg0C81alatJQ4jqjKB98CAUAAI=
-X-Google-Smtp-Source: AGHT+IF3rb6fk+H3mqZLW47aVEtrxdK9lm8nOPl/s/iR0+oq5OEhMyVeZ3WfU58ADvmGaCrovLr35WO8WMCiFhtmw+o=
-X-Received: by 2002:a2e:99d1:0:b0:2d0:ab31:69e9 with SMTP id
- l17-20020a2e99d1000000b002d0ab3169e9mr2585677ljj.49.1707274487860; Tue, 06
- Feb 2024 18:54:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707274704; x=1707879504;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=REgxJxxqnJ9hacBXQ6aXWZQE1YsmJHbedjyy3CiQK2A=;
+        b=mxAOgGHWyx37fgybpQSw8f8P8izAcHj8x4Ov7ciBmBYqpW3zBr3NxR1t41UJ1he/In
+         DRvCl25wVpXu/uv7gD5/TalUDu2VhLtUs+jTu/o1tS0GJ5Q401Uahw/Uue0SxXVptAL4
+         tgMtMKQgbUmXuumBbFWxLCm57pYGY4wVUzzrYz0i1JmqApFEmAezdUSOhUT6xiKF6Jj8
+         wEtaT9tsEsIbq1FgLOJGSb6uxT2Ui5IaXPEBSLJv8Isy34W9rGk+7N/OAC3Qo0q4BzQM
+         AsHcAXMQw1/zUUetuIwUqDz5MhkWJuo3/hyQT8tiVZHQ78c+lnRXL89FG6IEsrN+tV3L
+         lS0Q==
+X-Gm-Message-State: AOJu0YwTQ/Dkfcdj7TIvD6xe5Md/PnozxpErw0rstmLPlkXTFh95gb+x
+	QoVWeO0+sOQLnHCt08sWgViktRFtf0i842y5zSGjPzLNN4uZ52LOpj48z8ozOBh9GPb1L/ce8Fc
+	ZOA==
+X-Google-Smtp-Source: AGHT+IEJ5Usl1LXo6fL+Uxm5BQe0zL0MKFLw1o5ny+TWq6aF8Z1lvB2IftryIW8cs4diMDf/g1gm2NrvVjk=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:2310:b0:dc2:3a02:4fc8 with SMTP id
+ do16-20020a056902231000b00dc23a024fc8mr146257ybb.6.1707274704457; Tue, 06 Feb
+ 2024 18:58:24 -0800 (PST)
+Date: Tue, 6 Feb 2024 18:58:22 -0800
+In-Reply-To: <19a1ac538e6cb1b479122df677909fb49fedbb28.camel@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240202121151.65710-1-liangchen.linux@gmail.com>
- <c8d59e75-d0bb-4a03-9ef4-d6de65fa9356@kernel.org> <CAKhg4tJFpG5nUNdeEbXFLonKkFUP0QCh8A9CpwU5OvtnBuz4Sw@mail.gmail.com>
- <5297dad6499f6d00f7229e8cf2c08e0eacb67e0c.camel@redhat.com>
-In-Reply-To: <5297dad6499f6d00f7229e8cf2c08e0eacb67e0c.camel@redhat.com>
-From: Liang Chen <liangchen.linux@gmail.com>
-Date: Wed, 7 Feb 2024 10:54:35 +0800
-Message-ID: <CAKhg4tLbF8SfYD4dU9U9Nhii4FY2dftjPKYz-Emrn-CRwo10mg@mail.gmail.com>
-Subject: Re: [PATCH net-next v5] virtio_net: Support RX hash XDP hint
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, mst@redhat.com, jasowang@redhat.com, 
-	xuanzhuo@linux.alibaba.com, hengqi@linux.alibaba.com, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, netdev@vger.kernel.org, 
-	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, john.fastabend@gmail.com, daniel@iogearbox.net, 
-	ast@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <f21ee3bd852761e7808240d4ecaec3013c649dc7.camel@infradead.org>
+ <ZcJ9bXxU_Pthq_eh@google.com> <19a1ac538e6cb1b479122df677909fb49fedbb28.camel@infradead.org>
+Message-ID: <ZcLxzrbvSs0jNeR4@google.com>
+Subject: Re: [PATCH v3] KVM: x86: Use fast path for Xen timer delivery
+From: Sean Christopherson <seanjc@google.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: kvm <kvm@vger.kernel.org>, Paul Durrant <paul@xen.org>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 6, 2024 at 6:44=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wrot=
+On Tue, Feb 06, 2024, David Woodhouse wrote:
+> On Tue, 2024-02-06 at 10:41 -0800, Sean Christopherson wrote:
+> >=20
+> > This has an obvious-in-hindsight recursive deadlock bug.=C2=A0 If KVM a=
+ctually needs
+> > to inject a timer IRQ, and the fast path fails, i.e. the gpc is invalid=
+,
+> > kvm_xen_set_evtchn() will attempt to acquire xen.xen_lock, which is alr=
+eady held
+>=20
+> Hm, right. In fact, kvm_xen_set_evtchn() shouldn't actually *need* the
+> xen_lock in an ideal world; it's only taking it in order to work around
+> the fact that the gfn_to_pfn_cache doesn't have its *own* self-
+> sufficient locking. I have patches for that...
+>=20
+> I think the *simplest* of the "patches for that" approaches is just to
+> use the gpc->refresh_lock to cover all activate, refresh and deactivate
+> calls. I was waiting for Paul's series to land before sending that one,
+> but I'll work on it today, and double-check my belief that we can then
+> just drop xen_lock from kvm_xen_set_evtchn().
+
+While I definitely want to get rid of arch.xen.xen_lock, I don't want to ad=
+dress
+the deadlock by relying on adding more locking to the gpc code.  I want a t=
+eeny
+tiny patch that is easy to review and backport.  Y'all are *proably* the on=
+ly
+folks that care about Xen emulation, but even so, that's not a valid reason=
+ for
+taking a roundabout way to fixing a deadlock.
+
+Can't we simply not take xen_lock in kvm_xen_vcpu_get_attr()  It holds vcpu=
+->mutex
+so it's mutually exclusive with kvm_xen_vcpu_set_attr(), and I don't see an=
+y other
+flows other than vCPU destruction that deactivate (or change) the gpc.
+
+And the worst case scenario is that if _userspace_ is being stupid, userspa=
+ce gets
+a stale GPA.
+
+diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
+index 4b4e738c6f1b..50aa28b9ffc4 100644
+--- a/arch/x86/kvm/xen.c
++++ b/arch/x86/kvm/xen.c
+@@ -973,8 +973,6 @@ int kvm_xen_vcpu_get_attr(struct kvm_vcpu *vcpu, struct=
+ kvm_xen_vcpu_attr *data)
+ {
+        int r =3D -ENOENT;
+=20
+-       mutex_lock(&vcpu->kvm->arch.xen.xen_lock);
+-
+        switch (data->type) {
+        case KVM_XEN_VCPU_ATTR_TYPE_VCPU_INFO:
+                if (vcpu->arch.xen.vcpu_info_cache.active)
+@@ -1083,7 +1081,6 @@ int kvm_xen_vcpu_get_attr(struct kvm_vcpu *vcpu, stru=
+ct kvm_xen_vcpu_attr *data)
+                break;
+        }
+=20
+-       mutex_unlock(&vcpu->kvm->arch.xen.xen_lock);
+        return r;
+ }
+=20
+=20
+
+If that seems to risky, we could go with an ugly and hacky, but conservativ=
 e:
->
-> On Sat, 2024-02-03 at 10:56 +0800, Liang Chen wrote:
-> > On Sat, Feb 3, 2024 at 12:20=E2=80=AFAM Jesper Dangaard Brouer <hawk@ke=
-rnel.org> wrote:
-> > > On 02/02/2024 13.11, Liang Chen wrote:
-> [...]
-> > > > @@ -1033,6 +1039,16 @@ static void put_xdp_frags(struct xdp_buff *x=
-dp)
-> > > >       }
-> > > >   }
-> > > >
-> > > > +static void virtnet_xdp_save_rx_hash(struct virtnet_xdp_buff *virt=
-net_xdp,
-> > > > +                                  struct net_device *dev,
-> > > > +                                  struct virtio_net_hdr_v1_hash *h=
-dr_hash)
-> > > > +{
-> > > > +     if (dev->features & NETIF_F_RXHASH) {
-> > > > +             virtnet_xdp->hash_value =3D hdr_hash->hash_value;
-> > > > +             virtnet_xdp->hash_report =3D hdr_hash->hash_report;
-> > > > +     }
-> > > > +}
-> > > > +
-> > >
-> > > Would it be possible to store a pointer to hdr_hash in virtnet_xdp_bu=
-ff,
-> > > with the purpose of delaying extracting this, until and only if XDP
-> > > bpf_prog calls the kfunc?
-> > >
-> >
-> > That seems to be the way v1 works,
-> > https://lore.kernel.org/all/20240122102256.261374-1-liangchen.linux@gma=
-il.com/
-> > . But it was pointed out that the inline header may be overwritten by
-> > the xdp prog, so the hash is copied out to maintain its integrity.
->
-> Why? isn't XDP supposed to get write access only to the pkt
-> contents/buffer?
->
 
-Normally, an XDP program accesses only the packet data. However,
-there's also an XDP RX Metadata area, referenced by the data_meta
-pointer. This pointer can be adjusted with bpf_xdp_adjust_meta to
-point somewhere ahead of the data buffer, thereby granting the XDP
-program access to the virtio header located immediately before the
-packet data.
+diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
+index 4b4e738c6f1b..456d05c5b18a 100644
+--- a/arch/x86/kvm/xen.c
++++ b/arch/x86/kvm/xen.c
+@@ -1052,7 +1052,9 @@ int kvm_xen_vcpu_get_attr(struct kvm_vcpu *vcpu, stru=
+ct kvm_xen_vcpu_attr *data)
+                 */
+                if (vcpu->arch.xen.timer_expires) {
+                        hrtimer_cancel(&vcpu->arch.xen.timer);
++                       mutex_unlock(&vcpu->kvm->arch.xen.xen_lock);
+                        kvm_xen_inject_timer_irqs(vcpu);
++                       mutex_lock(&vcpu->kvm->arch.xen.xen_lock);
+                }
+=20
+                data->u.timer.port =3D vcpu->arch.xen.timer_virq;
 
-Thanks,
-Liang
-
-> if the XDP program can really change the virtio_net_hdr, that looks
-> potentially dangerous/bug prone regardless of this patch.
->
-> Thanks,
->
-> Paolo
->
 
