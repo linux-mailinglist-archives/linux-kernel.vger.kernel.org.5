@@ -1,177 +1,129 @@
-Return-Path: <linux-kernel+bounces-55901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8800984C32E
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:39:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C157884C334
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 04:41:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AED81B22400
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:39:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76EBB284055
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 03:41:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941F410788;
-	Wed,  7 Feb 2024 03:39:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2364510A08;
+	Wed,  7 Feb 2024 03:41:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tzISHbzm"
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="T5iId62f"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A6FCFC0B
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 03:39:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E512510940;
+	Wed,  7 Feb 2024 03:40:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707277150; cv=none; b=b5lsK5+rWHwq92++AUqcMPjP5LaUU6Lj9d1BoU9PG6P2VDoSIZ7FWDDo57n9+zHTUcKClmUuxowU59igZXm+wgCyHWaKMTRly37IB/zOY33fMuqqHmB0txip92NpH/lw2wkeGCtVFrt+5BrD+7s2S7U0K0Q/XJpohoARoMHAiwM=
+	t=1707277261; cv=none; b=QlovSppfm7TSL/ms8zNAGvoDkWDuHRqIle/w7azJgLJP4areudPdW6CRxfQMojBuE216uHsKE37ijxVaW7IKAVRCpVs+r9cmCOl8WlxCcoV8gF7ODCmP2IhH02vlVO+k6GgZ7vszX8kVIxHWmKdCMpRtPZXerSTOxGIgJIwnkec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707277150; c=relaxed/simple;
-	bh=U46BdknpGfJcjwdP8dppmlrSBKTzNyeeWT870OF4bJM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aUP3qnsAl3Fnf/aRWxeDRVv/E43Lgoke0bIyre1Il4drbUT3dyUGiXYwqlzfihyY/+7M9DvoWTGczpI8fGCbF/bKkB/VuqOtpvlaWHYxoavu0atIj+JnfSPF3mbHpL9siUYVBl53jhfYHNodTNGh0QcK1FSzvd6pAZ0LlIZkxpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tzISHbzm; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707277145;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=r51ZHhQk2ZaTew8zad3jGSIvU9CtfS131K9n+R66Vck=;
-	b=tzISHbzm075OGdT/f9lsPmcEQiaosAn5+saw6etkpXkrnxxsBsgoP5jKFWsQRWogQZXMP7
-	XCz5X6x2lcU73ooaCivufa3yT4TPJgC25UqqAtDFS50jXx7YHMTcyR6CEqSanl3BSIJEK8
-	sq4uF7+m6RZYHD/nc8Hm3u6xvNITHNs=
-From: chengming.zhou@linux.dev
-To: hannes@cmpxchg.org,
-	yosryahmed@google.com,
-	nphamcs@gmail.com,
-	akpm@linux-foundation.org
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	chengming.zhou@linux.dev,
-	Chengming Zhou <zhouchengming@bytedance.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v3] mm/zswap: invalidate old entry when store fail or !zswap_enabled
-Date: Wed,  7 Feb 2024 03:38:57 +0000
-Message-Id: <20240207033857.3820921-1-chengming.zhou@linux.dev>
+	s=arc-20240116; t=1707277261; c=relaxed/simple;
+	bh=LxANWH1vYw6dX5u5kdpD6briQQ/+vl5yKirDmVoDrTo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=abtzxg7sLeCl0IeXw8UMr07/sQItOye0BACro8MSBOlpJToOykAF6t+bt7l7d6XmdIrEyNAJKfvFau8rVJEe5lzbK1kDvFmbZMMqKHMOoTLOTq8McY4XRygOJLdRwve9/6pKf4uLF5/A3kOuG7D/PWfeb6dridgvH3WyANcfanY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=T5iId62f; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707277255;
+	bh=Qhl9kvhzen4AmOWDzyusKX6ZmfZojpYJrrISVsS44IY=;
+	h=Date:From:To:Cc:Subject:From;
+	b=T5iId62fKtASAwGo8WF7Cmv8j8bF4l2Xw5yEWxvcKNPd+AlqnmGklaOaLTSeZM6aE
+	 xXdwNveYOQzXMRq6O9KTzCtlLtsdym5/MbLmcpWwryJhEm3cWBdoP3hzmD2nlmnSp+
+	 iUR7qYs9dedSG02ULzmzH7kzDXHEiYlH8mD4uNtuwWJEu2zKP/Rh2tZDc840/hFEnd
+	 CzasDVWOFPva1R3UHhJRw/N/m355CApyf2kqNBjiQIxSFCDorRhZQRExQvRkgRNity
+	 T9+u7dZcWY3Pdg6zK/akup+l9S5rSlhDi4h+kN+3Uc4G67gZ4hcdJOmqELoLFtVWjI
+	 5DI0TZKlcMKrw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TV5Vt5Bq7z4wb0;
+	Wed,  7 Feb 2024 14:40:54 +1100 (AEDT)
+Date: Wed, 7 Feb 2024 14:40:53 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Alasdair G Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>
+Cc: Hongyu Jin <hongyu.jin@unisoc.com>, "J. corwin Coburn"
+ <corwin@hurlbutnet.net>, John Wiele <jwiele@redhat.com>, Matthew Sakai
+ <msakai@redhat.com>, Michael Sclafani <vdo-devel@redhat.com>, Thomas
+ Jaskiewicz <tom@jaskiewicz.us>, Yibin Ding <yibin.ding@unisoc.com>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the device-mapper tree
+Message-ID: <20240207144053.1285b3e2@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; boundary="Sig_/ockraJ+9.X3g.iZe0NhrfV.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-From: Chengming Zhou <zhouchengming@bytedance.com>
+--Sig_/ockraJ+9.X3g.iZe0NhrfV.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-We may encounter duplicate entry in the zswap_store():
+Hi all,
 
-1. swap slot that freed to per-cpu swap cache, doesn't invalidate
-   the zswap entry, then got reused. This has been fixed.
+After merging the device-mapper tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-2. !exclusive load mode, swapin folio will leave its zswap entry
-   on the tree, then swapout again. This has been removed.
+drivers/md/dm-vdo/io-factory.c: In function 'read_ahead':
+drivers/md/dm-vdo/io-factory.c:118:17: error: too few arguments to function=
+ 'dm_bufio_prefetch'
+  118 |                 dm_bufio_prefetch(reader->client, block_number, rea=
+d_ahead);
+      |                 ^~~~~~~~~~~~~~~~~
+In file included from drivers/md/dm-vdo/io-factory.h:9,
+                 from drivers/md/dm-vdo/io-factory.c:6:
+include/linux/dm-bufio.h:86:6: note: declared here
+   86 | void dm_bufio_prefetch(struct dm_bufio_client *c,
+      |      ^~~~~~~~~~~~~~~~~
+drivers/md/dm-vdo/io-factory.c: In function 'position_reader':
+drivers/md/dm-vdo/io-factory.c:182:24: error: too few arguments to function=
+ 'dm_bufio_read'
+  182 |                 data =3D dm_bufio_read(reader->client, block_number=
+, &buffer);
+      |                        ^~~~~~~~~~~~~
+include/linux/dm-bufio.h:64:7: note: declared here
+   64 | void *dm_bufio_read(struct dm_bufio_client *c, sector_t block,
+      |       ^~~~~~~~~~~~~
 
-3. one folio can be dirtied again after zswap_store(), so need to
-   zswap_store() again. This should be handled correctly.
+Caused by commit
 
-So we must invalidate the old duplicate entry before insert the
-new one, which actually doesn't have to be done at the beginning
-of zswap_store(). And this is a normal situation, we shouldn't
-WARN_ON(1) in this case, so delete it. (The WARN_ON(1) seems want
-to detect swap entry UAF problem? But not very necessary here.)
+  82da73bac1ee ("dm vdo: add deduplication index storage interface")
 
-The good point is that we don't need to lock tree twice in the
-store success path.
+interacting with commit
 
-Note we still need to invalidate the old duplicate entry in the
-store failure path, otherwise the new data in swapfile could be
-overwrite by the old data in zswap pool when lru writeback.
+  3be93545346e ("dm bufio: Support IO priority")
 
-We have to do this even when !zswap_enabled since zswap can be
-disabled anytime. If the folio store success before, then got
-dirtied again but zswap disabled, we won't invalidate the old
-duplicate entry in the zswap_store(). So later lru writeback
-may overwrite the new data in swapfile.
+I have used the device-mapper tree from next-20240206 for today.
 
-Fixes: 42c06a0e8ebe ("mm: kill frontswap")
-Cc: <stable@vger.kernel.org>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Yosry Ahmed <yosryahmed@google.com>
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
-v3:
- - Fix a few grammatical problems in comments, per Yosry.
+--=20
+Cheers,
+Stephen Rothwell
 
-v2:
- - Change the duplicate entry invalidation loop to if, since we hold
-   the lock, we won't find it once we invalidate it, per Yosry.
- - Add Fixes tag.
----
- mm/zswap.c | 33 ++++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 17 deletions(-)
+--Sig_/ockraJ+9.X3g.iZe0NhrfV.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index cd67f7f6b302..d9d8947d6761 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1518,18 +1518,8 @@ bool zswap_store(struct folio *folio)
- 		return false;
- 
- 	if (!zswap_enabled)
--		return false;
-+		goto check_old;
- 
--	/*
--	 * If this is a duplicate, it must be removed before attempting to store
--	 * it, otherwise, if the store fails the old page won't be removed from
--	 * the tree, and it might be written back overriding the new data.
--	 */
--	spin_lock(&tree->lock);
--	entry = zswap_rb_search(&tree->rbroot, offset);
--	if (entry)
--		zswap_invalidate_entry(tree, entry);
--	spin_unlock(&tree->lock);
- 	objcg = get_obj_cgroup_from_folio(folio);
- 	if (objcg && !obj_cgroup_may_zswap(objcg)) {
- 		memcg = get_mem_cgroup_from_objcg(objcg);
-@@ -1608,14 +1598,12 @@ bool zswap_store(struct folio *folio)
- 	/* map */
- 	spin_lock(&tree->lock);
- 	/*
--	 * A duplicate entry should have been removed at the beginning of this
--	 * function. Since the swap entry should be pinned, if a duplicate is
--	 * found again here it means that something went wrong in the swap
--	 * cache.
-+	 * The folio may have been dirtied again, invalidate the
-+	 * possibly stale entry before inserting the new entry.
- 	 */
--	while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
--		WARN_ON(1);
-+	if (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
- 		zswap_invalidate_entry(tree, dupentry);
-+		VM_WARN_ON(zswap_rb_insert(&tree->rbroot, entry, &dupentry));
- 	}
- 	if (entry->length) {
- 		INIT_LIST_HEAD(&entry->lru);
-@@ -1638,6 +1626,17 @@ bool zswap_store(struct folio *folio)
- reject:
- 	if (objcg)
- 		obj_cgroup_put(objcg);
-+check_old:
-+	/*
-+	 * If the zswap store fails or zswap is disabled, we must invalidate the
-+	 * possibly stale entry which was previously stored at this offset.
-+	 * Otherwise, writeback could overwrite the new data in the swapfile.
-+	 */
-+	spin_lock(&tree->lock);
-+	entry = zswap_rb_search(&tree->rbroot, offset);
-+	if (entry)
-+		zswap_invalidate_entry(tree, entry);
-+	spin_unlock(&tree->lock);
- 	return false;
- 
- shrink:
--- 
-2.40.1
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXC+8UACgkQAVBC80lX
+0GyE6Af9G3vxUowmQfD72icXaP4q1hZbiuTAVfxmav3iu1bwQsjIt/lLZu3/uwyP
+JDFTqCwhmC/i8nb+if8iX/7DLSZNLdTOLQymSjaQWvwqr8kBgjcz6aFeVjp5yO+N
+IzRNT68TXszvy6BREleZCjZ2DK4DEYES3EbxUBHD9UJQwYDFCiKPaP12cqgTUUld
+f2YVdkcf73lhGrMaNOZFLK/kdM4UglsXJaapFpfvjDJWTtqe5aV+MNR7Ln+V7cjm
+3vIByNYRw9S0tjPrxzn+sDlvishTLumaEsogPsFjGhyAuqYzzXQy754Jw2wzD5fM
+8++mV3pIBpzyk4XAQZOg1le6zJhqjg==
+=WV7u
+-----END PGP SIGNATURE-----
+
+--Sig_/ockraJ+9.X3g.iZe0NhrfV.--
 
