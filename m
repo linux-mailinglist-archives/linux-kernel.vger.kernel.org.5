@@ -1,217 +1,131 @@
-Return-Path: <linux-kernel+bounces-56772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DD2484CEF4
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:35:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E729684CEF6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:36:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F9D228E191
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:35:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1267F1C20AE7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:36:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A8D76C8B;
-	Wed,  7 Feb 2024 16:35:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C71C28062A;
+	Wed,  7 Feb 2024 16:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="bPovcZVJ"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y56SWPo0"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B7E1E498;
-	Wed,  7 Feb 2024 16:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D96401E48F
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 16:36:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707323731; cv=none; b=Y3e3e7gFNUiosMMgiGy1oGKHijvrUCQ5QJzG79joZcxtaY7h62IbN6uUqSnmpljWxqNhtftWnIG+LMJ7Yuv8JmbXeCVyYEmqksxd/a6XJpp1CUQ1PixavrxIQlo4jBsOefLPEYvaOBKRJ/QNp/XRwi1dqVb1aGrWY+dCwcYZ5XY=
+	t=1707323769; cv=none; b=S/aX34lpqT8BNAjAmQQqfnTI7clfI2QyrEeWz7fuuenHsug1m8sXrXSrT5dRQ9V3OB97ovlskUOhFNzIjVjLU5ReFHRyYNA3LD3JJYRn26lVeVRdwL2pvbhhCBj/6EUWVEVdAYY/GU4+wPQgrSycTtPWN5kNUbJBm06RN611WO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707323731; c=relaxed/simple;
-	bh=0+t2jHpynIpwVYxYeETKIQCXhz2HQSJ8gtu7O1J/wU8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ttX/299/isMmaEhFa+mIGKsCRaMtYkwJhMZP83E38nqrbdZkx58R8YwTbHUz4Ssbsk9Dk52lIcmQo0EyeT1Z2lSGKuS6HlxgPSurimLdQbymfY5U2IyEedaNFqdZzFMlEMMGNZonVNGe0JThh5CMPj+J07TYIAFOSALRd6FBlmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=bPovcZVJ; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707323727;
-	bh=0+t2jHpynIpwVYxYeETKIQCXhz2HQSJ8gtu7O1J/wU8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bPovcZVJ+K2iAjxJYscrR596L3xGa9uONLtCAnz/MORgq5xjEWyHsoON40fx3TeHx
-	 S8vvwgOrGRlCZDG5ULOg6H92B3NQ2ShJ4G/D4yZuOvjKEaD9gK8MmN1awxBeY3VHQZ
-	 l9iD0+bocKFtyz3dqEbvWhoz6o9C7cB58te8moYQtS6UxxK3goSQJPIxYO87uyRFQD
-	 ezz2ghKRjp0ceFLk5NsBTReFwBSDjiV+lW2dgASpQc7DVXcm08se7hzH1HbtAwvRR2
-	 p+a84ecdKkB+25YfjGo9iChf2+FLjxsngjiMlNMD//ROzsFe/6dJWH+pG2FnEqNa0k
-	 FOtgQjZNU6TVQ==
-Received: from [100.93.89.217] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: benjamin.gaignard)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 732583780627;
-	Wed,  7 Feb 2024 16:35:27 +0000 (UTC)
-Message-ID: <10f04dfd-ce2f-42c1-b926-153f419add89@collabora.com>
-Date: Wed, 7 Feb 2024 17:35:26 +0100
+	s=arc-20240116; t=1707323769; c=relaxed/simple;
+	bh=VoywwgjLXTwUOhSbbLxontbmbKuuFTrPOSRwdOlJD3g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bNUvjMpqLGirmeRNngcs0vw0RebFWvUCvZKw9NQDUNMwl1jb6vSt275BpWJHteru7Fto9nxUGzav1jtVvJVL46k+qoghLhM2NqT1dcvoNtjd5vTR2g8BLxJLb1An6QkoDS9nxCQn21ugkDMgY5zTY9tVHgWd8A0TWL9Rtn5DBac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y56SWPo0; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707323765; x=1738859765;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VoywwgjLXTwUOhSbbLxontbmbKuuFTrPOSRwdOlJD3g=;
+  b=Y56SWPo0ZKQCCGz/g+f+LRv5sAgXvUVFTecKv+yqypVVNuEkd25kT+9q
+   b5qdfLeUAOal4+t3oV950nLQ7O//+LwZJm4sgOMXPHrjwhN4k1mOYfjhf
+   ziXsH8ZmlSP3YCp4mYCLvKEJlpV1M/2RmWjraIrKb0USmZjwhGYq2USMJ
+   +3KEfZL9eavUUqgiL1iSn8sJMpHMO1fVbPalSIL/mn1csiitCyUllb+CE
+   MYe4eX/ohfh3T2XI9Hlc0Vem+XHOTSZ92IIYCH/SQazkRAfdQd/jWecIz
+   uMeaKZjmUGcPihBXuMZ8U0W1tvx1kjPs2/ik+wWaVszNJ52pLwuOvuDtE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="12384561"
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="12384561"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 08:36:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="910038493"
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="910038493"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 08:35:59 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rXktw-00000002eqb-1cXu;
+	Wed, 07 Feb 2024 18:35:56 +0200
+Date: Wed, 7 Feb 2024 18:35:56 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Shenghao Ding <shenghao-ding@ti.com>, lgirdwood@gmail.com,
+	perex@perex.cz, pierre-louis.bossart@linux.intel.com,
+	13916275206@139.com, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+	bard.liao@intel.com, mengdong.lin@intel.com,
+	yung-chuan.liao@linux.intel.com, baojun.xu@ti.com, kevin-lu@ti.com,
+	navada@ti.com, tiwai@suse.de, soyer@irl.hu
+Subject: Re: [PATCH v7] ASoc: tas2783: Add tas2783 codec driver
+Message-ID: <ZcOxbA_plPDqN3YA@smile.fi.intel.com>
+References: <20240207054743.1504-1-shenghao-ding@ti.com>
+ <ZcOWZlXu1fL_haFU@smile.fi.intel.com>
+ <ZcOiCFlqsnyAEgl3@finisterre.sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 0/9] Add DELETE_BUF ioctl
-Content-Language: en-US
-To: Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- kernel@collabora.com
-References: <20240206080219.11951-1-benjamin.gaignard@collabora.com>
- <dcafb602-228f-439f-99d2-010d26a23ad1@xs4all.nl>
- <63a46881-7fe8-4858-b0f7-cde33ffc7ea6@xs4all.nl>
- <9fda7e17-42e8-4b2e-8daf-f0e556934356@collabora.com>
- <0916816d-a417-420c-b8f9-26b210bd6add@xs4all.nl>
-From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-In-Reply-To: <0916816d-a417-420c-b8f9-26b210bd6add@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcOiCFlqsnyAEgl3@finisterre.sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+
+On Wed, Feb 07, 2024 at 03:30:16PM +0000, Mark Brown wrote:
+> On Wed, Feb 07, 2024 at 04:40:38PM +0200, Andy Shevchenko wrote:
+> > On Wed, Feb 07, 2024 at 01:47:42PM +0800, Shenghao Ding wrote:
+
+..
+
+> > > +	.max_register = 0x44ffffff,
+> 
+> > I'm always wondering how this can work in debugfs when one tries to dump all
+> > registers...
+> 
+> regmap will filter out non-readable registers from what it shows in
+> debugfs so sparse regmaps will end up much smaller than they might look.
+> The debugfs code also has support for seeking into the output (since
+> each register is a fixed size) so we'll only actually render whatever is
+> being read in an individual read().
+
+Thanks, good to know.
+
+..
 
 
-Le 07/02/2024 à 12:32, Hans Verkuil a écrit :
-> On 07/02/2024 12:25, Benjamin Gaignard wrote:
->> Le 07/02/2024 à 11:28, Hans Verkuil a écrit :
->>> On 06/02/2024 09:58, Hans Verkuil wrote:
->>>> On 06/02/2024 09:02, Benjamin Gaignard wrote:
->>>>> Unlike when resolution change on keyframes, dynamic resolution change
->>>>> on inter frames doesn't allow to do a stream off/on sequence because
->>>>> it is need to keep all previous references alive to decode inter frames.
->>>>> This constraint have two main problems:
->>>>> - more memory consumption.
->>>>> - more buffers in use.
->>>>> To solve these issue this series introduce DELETE_BUFS ioctl and remove
->>>>> the 32 buffers limit per queue.
->>>> This v19 looks good. There are three outstanding issues that I need to take a
->>>> look at:
->>>>
->>>> 1) Can we still signal support for DELETE_BUFS in the V4L2_BUF_CAP_ caps?
->>>>      It would be nice to have, but I'm not sure if and how that can be done.
->>>>
->>>> 2) I want to take another look at providing a next version of the VIDIOC_CREATE_BUFS
->>>>      ioctl and how that would possibly influence the design of DELETE_BUFS.
->>>>      Just to make sure we're not blocking anything or making life harder.
->>> So I just tried creating a new version of the VIDIOC_CREATE_BUFS ioctl
->>> that is greatly simplified. This just updates the header, no real code yet:
->>>
->>> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
->>> ---
->>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
->>> index 03443833aaaa..a7398e4c85e7 100644
->>> --- a/include/uapi/linux/videodev2.h
->>> +++ b/include/uapi/linux/videodev2.h
->>> @@ -2624,6 +2624,39 @@ struct v4l2_create_buffers {
->>>        __u32            reserved[5];
->>>    };
->>>
->>> +/**
->>> + * struct v4l2_create_buffers_v2 - VIDIOC_CREATE_BUFFERS argument
->>> + * @type:    enum v4l2_buf_type
->>> + * @memory:    enum v4l2_memory; buffer memory type
->>> + * @count:    entry: number of requested buffers,
->>> + *        return: number of created buffers
->>> + * @num_planes:    requested number of planes for each buffer
->>> + * @sizes:    requested plane sizes for each buffer
->>> + * @start_index:on return, index of the first created buffer
->>> + * @total_count:on return, the total number of allocated buffers
->>> + * @capabilities: capabilities of this buffer type.
->>> + * @flags:    additional buffer management attributes (ignored unless the
->>> + *        queue has V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS capability
->>> + *        and configured for MMAP streaming I/O).
->>> + * @max_num_buffers: if V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS capability flag is set
->>> + *        this field indicate the maximum possible number of buffers
->>> + *        for this queue.
->>> + * @reserved:    future extensions
->>> + */
->>> +struct v4l2_create_buffers_v2 {
->>> +    __u32            type;
->>> +    __u32            memory;
->>> +    __u32            count;
->>> +    __u32            num_planes;
->>> +    __u32            size[VIDEO_MAX_PLANES];
->>> +    __u32            start_index;
->>> +    __u32            total_count;
->>> +    __u32            capabilities;
->>> +    __u32            flags;
->>> +    __u32            max_num_buffers;
->>> +    __u32            reserved[7];
->>> +};
->>> +
->>>    /**
->>>     * struct v4l2_delete_buffers - VIDIOC_DELETE_BUFS argument
->>>     * @index:    the first buffer to be deleted
->>> @@ -2738,6 +2771,7 @@ struct v4l2_delete_buffers {
->>>
->>>    #define VIDIOC_QUERY_EXT_CTRL    _IOWR('V', 103, struct v4l2_query_ext_ctrl)
->>>    #define VIDIOC_DELETE_BUFS    _IOWR('V', 104, struct v4l2_delete_buffers)
->>> +#define VIDIOC_CREATE_BUFFERS    _IOWR('V', 105, struct v4l2_create_buffers_v2)
->>>
->>>
->>>    /* Reminder: when adding new ioctls please add support for them to
->>>
->>>
->>> Sadly, struct v4l2_create_buffers was already used for the existing
->>> VIDIOC_CREATE_BUFS (I wish it was called v4l2_create_bufs...), so I did
->>> have to add a _v2 suffix. Compared to the old struct it just moves the
->>> type, num_planes and sizes from v4l2_format into the new struct and drops
->>> the format field. Note that those fields are the only v4l2_format fields
->>> that VIDIOC_CREATE_BUFS used, so getting rid of the format makes live
->>> much easier. I also renamed 'index' to 'start_index' and added a new 'total_count'
->>> field to report the total number of buffers.
->>>
->>> The reason for adding 'total_count' is that VIDIOC_CREATE_BUFS with
->>> count == 0 would report the total number of buffers in the 'index' field,
->>> which was rather odd. Adding a specific field for this purpose is nicer.
->>>
->>> One thing that might impact your series is the name of the ioctls.
->>>
->>> We have:
->>>
->>> VIDIOC_CREATE_BUFS/v4l2_create_buffers
->>> VIDIOC_DELETE_BUFS/v4l2_delete_buffers
->>> VIDIOC_CREATE_BUFFERS/v4l2_create_buffers_v2 (TBD)
->>>
->>> I'm wondering if VIDIOC_DELETE_BUFS should be renamed to
->>> VIDIOC_DELETE_BUFFERS, that would make it more consistent with
->>> the proposed VIDIOC_CREATE_BUFFERS.
->>>
->>> Alternatively, instead of calling it VIDIOC_CREATE_BUFFERS we
->>> might call it VIDIOC_CREATE_BUFS_V2.
->>>
->>> Or perhaps some other naming convention?
->> Maybe VIDIOC_NEW_BUFS/v4l2_new_buffers ?
->>
->> I will wait until naming convention is fixed before send v20.
-> How about VIDIOC_ADD_BUFS/REMOVE_BUFS?
->
-> And struct v4l2_add_bufs/v4l2_remove_bufs.
+> > > +static const struct dev_pm_ops tas2783_sdca_pm = {
+> > > +	SET_SYSTEM_SLEEP_PM_OPS(tas2783_sdca_dev_suspend,
+> > > +		tas2783_sdca_dev_resume)
+> > > +	SET_RUNTIME_PM_OPS(tas2783_sdca_dev_suspend,
+> > > +		tas2783_sdca_dev_resume, NULL)
+> > > +};
+> 
+> > Use new PM macros.
+> 
+> ...which are?
 
-I'm really bad from naming thing like that.
-I will until the next and, if nobody complain, I will change my code to
-use your proposal.
+SYSTEM_SLEEP_PM_OPS()
+RUNTIME_PM_OPS()
 
-Regards,
-Benjamin
+and pm_ptr() in the .driver.pm assignment.
 
->
-> One thing that I always found debatable about the names CREATE and DELETE
-> is that it suggests that buffer memory is also created and deleted. While
-> true for MMAP, that's not the case for DMABUF and USERPTR.
->
-> Regards,
->
-> 	Hans
->
->> Regards,
->> Benjamin
->>
->>> Ideas are welcome.
->>>
->>> Regards,
->>>
->>>      Hans
->>>
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
