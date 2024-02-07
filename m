@@ -1,140 +1,254 @@
-Return-Path: <linux-kernel+bounces-56914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D876484D150
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:39:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62E2984D1B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:52:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 080281C2235F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:39:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C53351F21FD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FBB484FA4;
-	Wed,  7 Feb 2024 18:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CZeFjXS2"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B3B984A38;
+	Wed,  7 Feb 2024 18:44:53 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D257CF05
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 18:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AFE482889
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 18:44:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707331181; cv=none; b=V3H25hYft9bwCHJBOV+ja1CKJ91kthrPlWMws7Yv3QVfp+c/1IGbq6vcdm3J+DLMwAPG3y5z/h/azxwSMKQL/RWMNe76XRsWS7AQmxa2w32rRzVCLvBbvXPF3vKJMzqjn45FDeri+t6VaFrRcYoIjEJwKZ1Roy/NgAoz44z7kP0=
+	t=1707331492; cv=none; b=WuHj1BJDzIkxVW7qhmE/zzMtde9WKmAIdAiV24JzVeoibc4aELxBVr1JtP9M3Zcl2kvzkvPZDIrydXLR4IbXM94RbFyr8tYi3gF+AZ2qd1gYZAh24/u8kGk5UPdAZXi1Zy5HbYs6vToo23XB7WxtljUDDSsNFMZXmqWzob3ojDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707331181; c=relaxed/simple;
-	bh=bHH03PwBsJDDFfRRWRjUDTvMo/Icvm5kxoAEQTu957U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DXKZ8bZBMedctAa5DJiXIRAeqEBvdrG/1rSMHUxUyhe81WaMLLlD2LxsozohY95YFbkCO+JLcYw7df4kqgpyHVRuYQXJVitz5lN9hhNOhcXePlW+1y60Y44DBKlrxLIr94Hkgfgf5NAr4cbB1XcTtCHfa6czZPv6BffQ4f1oZvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CZeFjXS2; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707331178;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zA3U/3AyORshqdfEbbnoh4Y8vo2HvRG4is/2gsO8esc=;
-	b=CZeFjXS2Gy3my7MoGZarzcxE0MUEbbO1x9EhE4PDlFWTZOdonBq7GOMiUHcvko/sX+ma3Q
-	kiQvTVonCO/Wf6+qanxdSFfMeV28/cJHbHCUtmYhlK57BAJYeZJ5Kx5ftVdi0br9jmjqyO
-	6C+pQdE9tcakqfYpmWA6I2M13codPMI=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-161-LuGUMTDqMvyLkqOv_pkQUw-1; Wed, 07 Feb 2024 13:39:37 -0500
-X-MC-Unique: LuGUMTDqMvyLkqOv_pkQUw-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-680b7da38bcso14518746d6.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 10:39:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707331177; x=1707935977;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zA3U/3AyORshqdfEbbnoh4Y8vo2HvRG4is/2gsO8esc=;
-        b=Rjl1AgpbHyHKlaaVHUIjL+FlypJNkIPj408LufalH5l9LNpAMKcqbsQ4iQOd5zOVbr
-         X1uxdX9VTUVfGH+t6ruEwCx2SrowYjZCEPQTAQDCU2fIptsuXslEqtqZcpe5LKNnPHbU
-         1tX5hAQq/bqSA9PW6viYF68D/cyQU7N43Fs1W8uNgnFVgIcqeKeObbsZCyLkQNMWnqln
-         84ECY33+yfv1J6zfP3RRxSeTOpYpglKuhQ1uDs1bgWl9D3QnyGlgdkZPcO3LOWkQ5Jbu
-         T61CJgw3dXn8rSVGCoPsRn6xh+yOyY+2Qk8tCtVoXGNu/6/LghKjQ8qUl8vlhmEn7L1f
-         5KcQ==
-X-Gm-Message-State: AOJu0Yxm4nLXV0ebh53dzuOfBwilP87JLvLAlfpHYXFf07wJs464kEKE
-	5XWmyf1HUXlvcmvBO/pmDNLGCTg04q6WYnPjEgh4gG+iRPDTZ6yOPgNYckpYKSB+Ns+K7P4nJCx
-	kzcDb0z7NHvx/7JVw7A6NxgPG8mffWQ0uyQZTsb1VRl3f4u9kHUxBmo0i/Qk9Lw==
-X-Received: by 2002:a05:6214:19c8:b0:685:7b4a:2fa7 with SMTP id j8-20020a05621419c800b006857b4a2fa7mr8226594qvc.33.1707331177336;
-        Wed, 07 Feb 2024 10:39:37 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEkhV8vq9uOtPlMzQmzArx41ClcZgTX4ovDF+F3bU41POaEMaTi1sWPw91DgAY/TwdnFnfIxw==
-X-Received: by 2002:a05:6214:19c8:b0:685:7b4a:2fa7 with SMTP id j8-20020a05621419c800b006857b4a2fa7mr8226571qvc.33.1707331177099;
-        Wed, 07 Feb 2024 10:39:37 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX0GzdGWjAG3uEc/8XaNsIzLnP2lCtpnJfXojYzocTRbEsdWQeAVTRu/Wpyv0z1y3wZ8mwi68/D0VcboBFxMyF56ceINGg036foh4bJ7yRyZgw+N+3LNGHF3kmR+iz3QE/mAdedoK0Y4CVOAnovVuT+iyyEuUyev3lstJWhHPOlOv1Y0UIsXOv0EnudX3m8lPVks2ynmvW/AU2NFxsm01WA0N1gNBoPzKc6McfGE/UyauLWe6cmk1WAe+FlalMfeIpLgcb4o7BzNN/a2oU5RPeJgEwDWDYSB5UDq7varlmuJUeFGGaN/xeZQOoN2RSmJO9G0serIBPXRU75yEb+oV7jOUwN40jhL4ZsPjmKcKJMllwbMYmVyXlj21SzslNNU96RqM61ELRs85vyu5tgJ4MoTgKn2lP+OMwSQj+ZFNjhR2xFOTeBUxc0iDcHvQ3Q9W4G4qRLT8jAGZb5YzOWG/FRTwZvqshltzVRcCaFpqD4Sbn7wAcrWzfdGDmdkBw39juF5d1EPBGW2NqjiIyyf0q09W2V47WN41qATWQu1g7LSK80+lPifXF3blNhT+yyh3cQZZPmG/3FvWCR6OBq9UUVc1LEOKW+wVwz7bf2f1/RuatXrztUHYgzKMsGEgQngHXEQpnThPkBU7jxm3mGeIkehamoMwndVaLfpSxWTAXuMW4jahbNFeC4fgkw7ubs87SX8VeacxexZ9OapWXaCkuw0roNJawZ01YiDdXIZ6apuvz8u98AiR7yBu1h3yTJE1qSMUVEdJlia3y1WmIiu2zI5xgDXQ==
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id ld11-20020a056214418b00b0068cbc630dc8sm835619qvb.49.2024.02.07.10.39.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 10:39:36 -0800 (PST)
-Date: Wed, 7 Feb 2024 12:39:34 -0600
-From: Andrew Halaney <ahalaney@redhat.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, 
-	Abhishek Chauhan <quic_abchauha@quicinc.com>, Vinod Koul <vkoul@kernel.org>, 
-	Bhupesh Sharma <bhupesh.sharma@linaro.org>, Andy Gross <agross@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	Prasad Sodagudi <psodagud@quicinc.com>, Rob Herring <robh@kernel.org>, kernel@quicinc.com
-Subject: Re: Re: [PATCH v2] net: stmmac: dwmac-qcom-ethqos: Enable TBS on all
- queues but 0
-Message-ID: <6ihzd33vbgvixbe54jjoaj27tc5thhaq7u6iaufbmpejrtgxol@jit6qyaxjy3y>
-References: <20240207001036.1333450-1-quic_abchauha@quicinc.com>
- <578b6a6e-83df-4113-9c1f-cdd7aa65f65e@quicinc.com>
- <20240207101934.6c0ab20b@kernel.org>
+	s=arc-20240116; t=1707331492; c=relaxed/simple;
+	bh=s51zDtEtzddF+fOLbQ8v2gtuX5PVGr2PxCfCP0eStY0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mp7oReYFgOsn65HyFPEtwYXp5qlDGm0uXia6g9EPXNQETOKrKO/A7eut4To/UK1y9bB7QOk9sS4UPwXqxco4AbATyQj9dyEK0nDZV64Pgp968JyXsVijbYBJyrxELwGntTw9MRJx8u/MgfAsV3YoSUpp6a2kCo4fgBJfPvOCiOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rXmtA-0007PF-WC; Wed, 07 Feb 2024 19:43:17 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rXmt1-0054Wo-Fo; Wed, 07 Feb 2024 19:43:07 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rXmt1-00HRrh-0y;
+	Wed, 07 Feb 2024 19:43:07 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: kernel@pengutronix.de,
+	Moritz Fischer <mdf@kernel.org>,
+	Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>,
+	linux-fpga@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexander Aring <alex.aring@gmail.com>,
+	Stefan Schmidt <stefan@datenfreihafen.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	linux-wpan@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	linux-iio@vger.kernel.org,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	linux-input@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Martin Tuma <martin.tuma@digiteqautomotive.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org,
+	Sergey Kozlov <serjk@netup.ru>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Yang Yingliang <yangyingliang@huawei.com>,
+	linux-mmc@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>,
+	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
+	linux-mtd@lists.infradead.org,
+	Simon Horman <horms@kernel.org>,
+	Ronald Wahl <ronald.wahl@raritan.com>,
+	Benson Leung <bleung@chromium.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	chrome-platform@lists.linux.dev,
+	Michal Simek <michal.simek@amd.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	linux-spi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-arm-msm@vger.kernel.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-mediatek@lists.infradead.org,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	Viresh Kumar <vireshk@kernel.org>,
+	Rui Miguel Silva <rmfrfs@gmail.com>,
+	Johan Hovold <johan@kernel.org>,
+	Alex Elder <elder@kernel.org>,
+	greybus-dev@lists.linaro.org,
+	Peter Huewe <peterhuewe@gmx.de>,
+	Jarkko Sakkinen <jarkko@kernel.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	linux-integrity@vger.kernel.org,
+	Herve Codina <herve.codina@bootlin.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-usb@vger.kernel.org,
+	Helge Deller <deller@gmx.de>,
+	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	Dmitry Antipov <dmantipov@yandex.ru>,
+	libertas-dev@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	Jonathan Corbet <corbet@lwn.net>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	James Clark <james.clark@arm.com>,
+	linux-doc@vger.kernel.org
+Subject: [PATCH v3 00/32] spi: get rid of some legacy macros
+Date: Wed,  7 Feb 2024 19:40:14 +0100
+Message-ID: <cover.1707324793.git.u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207101934.6c0ab20b@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5860; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=s51zDtEtzddF+fOLbQ8v2gtuX5PVGr2PxCfCP0eStY0=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlw86QixivRCd8jxsnKPB8Ssu0rmVV57zjiJehV Ejr/jxfufWJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZcPOkAAKCRCPgPtYfRL+ TqoZB/9v16XZw2mKXG2KBm/qLQpqoIFtAvhj1rhNwGsvXv87uFIurzYxaSWRcHnoydLYAUjcWin wLRECa33v1gti0Be6oV9BMfvx+Pvhq4lk4RnaSn96oPtZRpq+OTzE2mMSgz0Rgm3Al2XVM+wtll cMJhm+DE3KYghNi+61ohTBgmqcQSwjofaml1oAIf8F12/QJkYPMbKHLFo3eYUENR8f8KW6xfzcA Auq9djKc8DcVzUnZlQ8jFBRc78e3H4Wwojwi6fhxTf6BorMOWK2zEE8p+1QpcaPMCBrTOJnRdaw ZunuM2tkWRUATbyKWfDc9YAdTKZGkKDoDmegK95iBOzv5EQf
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Wed, Feb 07, 2024 at 10:19:34AM -0800, Jakub Kicinski wrote:
-> On Wed, 7 Feb 2024 09:26:05 -0800 Jeff Johnson wrote:
-> > > This is similar to the patch raised by NXP <3b12ec8f618e>
-> > > <"net: stmmac: dwmac-imx: set TSO/TBS TX queues default settings">  
-> > 
-> > note that there is a standard way to refer to a prior patch, in your case:
-> > 3b12ec8f618e ("net: stmmac: dwmac-imx: set TSO/TBS TX queues default
-> > settings")
-> 
-> Yes, please fix.
-> 
-> > (note this format is defined in the context of the Fixes tag at
-> > <https://www.kernel.org/doc/html/latest/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes>)
-> 
-> A fixes tag would be great. But we can't point at 3b12ec8f618e, right?
-> Can someone explain what the user-visible problem is?
-> TBS cannot be used? Device reinit is require to enable it?
-> 
+Changes since v2
+(https://lore.kernel.org/linux-spi/cover.1705944943.git.u.kleine-koenig@pengutronix.de):
 
-I'm not sure you'd consider this a fix, but yes the syntax there should
-be using that fixes style for sure.
+ - Drop patch "mtd: rawnand: fsl_elbc: Let .probe retry if local bus is
+   missing" which doesn't belong into this series.
+ - Fix a build failure noticed by the kernel build bot in
+   drivers/spi/spi-au1550.c. (I failed to catch this because this driver
+   is mips only, but not enabled in a mips allmodconfig. That's a bit
+   unfortunate, but not easily fixable.)
+ - Add the Reviewed-by: and Acked-by: tags I received for v2.
 
-This enables the ability to use TBS / etf on queues other than 0. So I'd
-consider this a new feature for the Qualcomm variant of things here
-personally.
+Mark already announced for v2 that he is willing to apply the whole
+series to his spi tree. Assuming no other show stoper are found in this
+v3, I assume that's the plan still for this series now.
 
-Longer term it would be nice to be able to change which queues can do
-what via ethtool as was discussed over here, but for now this at least
-improves things and follows suit with the imx and intel variants:
+Thanks
+Uwe
 
-    https://lore.kernel.org/netdev/c2497eef-1041-4cd0-8220-42622c8902f4@quicinc.com/
+Uwe Kleine-König (32):
+  fpga: ice40-spi: Follow renaming of SPI "master" to "controller"
+  ieee802154: ca8210: Follow renaming of SPI "master" to "controller"
+  iio: adc: ad_sigma_delta: Follow renaming of SPI "master" to "controller"
+  Input: pxspad - follow renaming of SPI "master" to "controller"
+  Input: synaptics-rmi4 - follow renaming of SPI "master" to "controller"
+  media: mgb4: Follow renaming of SPI "master" to "controller"
+  media: netup_unidvb: Follow renaming of SPI "master" to "controller"
+  media: usb/msi2500: Follow renaming of SPI "master" to "controller"
+  media: v4l2-subdev: Follow renaming of SPI "master" to "controller"
+  misc: gehc-achc: Follow renaming of SPI "master" to "controller"
+  mmc: mmc_spi: Follow renaming of SPI "master" to "controller"
+  mtd: dataflash: Follow renaming of SPI "master" to "controller"
+  net: ks8851: Follow renaming of SPI "master" to "controller"
+  net: vertexcom: mse102x: Follow renaming of SPI "master" to "controller"
+  platform/chrome: cros_ec_spi: Follow renaming of SPI "master" to "controller"
+  spi: bitbang: Follow renaming of SPI "master" to "controller"
+  spi: cadence-quadspi: Don't emit error message on allocation error
+  spi: cadence-quadspi: Follow renaming of SPI "master" to "controller"
+  spi: cavium: Follow renaming of SPI "master" to "controller"
+  spi: geni-qcom: Follow renaming of SPI "master" to "controller"
+  spi: loopback-test: Follow renaming of SPI "master" to "controller"
+  spi: slave-mt27xx: Follow renaming of SPI "master" to "controller"
+  spi: spidev: Follow renaming of SPI "master" to "controller"
+  staging: fbtft: Follow renaming of SPI "master" to "controller"
+  staging: greybus: spi: Follow renaming of SPI "master" to "controller"
+  tpm_tis_spi: Follow renaming of SPI "master" to "controller"
+  usb: gadget: max3420_udc: Follow renaming of SPI "master" to "controller"
+  video: fbdev: mmp: Follow renaming of SPI "master" to "controller"
+  wifi: libertas: Follow renaming of SPI "master" to "controller"
+  spi: fsl-lib: Follow renaming of SPI "master" to "controller"
+  spi: Drop compat layer from renaming "master" to "controller"
+  Documentation: spi: Update documentation for renaming "master" to "controller"
+
+ .../driver-api/driver-model/devres.rst        |  2 +-
+ Documentation/spi/spi-summary.rst             | 74 +++++++++----------
+ drivers/char/tpm/tpm_tis_spi_main.c           |  4 +-
+ drivers/fpga/ice40-spi.c                      |  4 +-
+ drivers/iio/adc/ad_sigma_delta.c              | 14 ++--
+ drivers/input/joystick/psxpad-spi.c           |  4 +-
+ drivers/input/rmi4/rmi_spi.c                  |  2 +-
+ drivers/media/pci/mgb4/mgb4_core.c            | 14 ++--
+ .../media/pci/netup_unidvb/netup_unidvb_spi.c | 48 ++++++------
+ drivers/media/usb/msi2500/msi2500.c           | 38 +++++-----
+ drivers/media/v4l2-core/v4l2-spi.c            |  4 +-
+ drivers/misc/gehc-achc.c                      |  8 +-
+ drivers/mmc/host/mmc_spi.c                    |  6 +-
+ drivers/mtd/devices/mtd_dataflash.c           |  2 +-
+ drivers/net/ethernet/micrel/ks8851_spi.c      |  4 +-
+ drivers/net/ethernet/vertexcom/mse102x.c      |  2 +-
+ drivers/net/ieee802154/ca8210.c               |  2 +-
+ .../net/wireless/marvell/libertas/if_spi.c    |  2 +-
+ drivers/platform/chrome/cros_ec_spi.c         |  8 +-
+ drivers/spi/spi-ath79.c                       |  4 +-
+ drivers/spi/spi-au1550.c                      |  2 +-
+ drivers/spi/spi-bitbang.c                     | 64 ++++++++--------
+ drivers/spi/spi-butterfly.c                   |  6 +-
+ drivers/spi/spi-cadence-quadspi.c             |  7 +-
+ drivers/spi/spi-cavium.c                      |  6 +-
+ drivers/spi/spi-cavium.h                      |  2 +-
+ drivers/spi/spi-davinci.c                     |  6 +-
+ drivers/spi/spi-fsl-lib.c                     | 14 ++--
+ drivers/spi/spi-geni-qcom.c                   |  2 +-
+ drivers/spi/spi-gpio.c                        |  2 +-
+ drivers/spi/spi-lm70llp.c                     |  6 +-
+ drivers/spi/spi-loopback-test.c               |  4 +-
+ drivers/spi/spi-oc-tiny.c                     |  6 +-
+ drivers/spi/spi-omap-uwire.c                  |  4 +-
+ drivers/spi/spi-sh-sci.c                      | 10 +--
+ drivers/spi/spi-slave-mt27xx.c                |  2 +-
+ drivers/spi/spi-xilinx.c                      |  4 +-
+ drivers/spi/spi-xtensa-xtfpga.c               |  2 +-
+ drivers/spi/spi.c                             |  2 +-
+ drivers/spi/spidev.c                          |  2 +-
+ drivers/staging/fbtft/fbtft-core.c            |  4 +-
+ drivers/staging/greybus/spilib.c              | 66 ++++++++---------
+ drivers/usb/gadget/udc/max3420_udc.c          |  2 +-
+ drivers/video/fbdev/mmp/hw/mmp_spi.c          | 26 +++----
+ include/linux/spi/spi.h                       | 20 +----
+ include/linux/spi/spi_bitbang.h               |  2 +-
+ include/media/v4l2-common.h                   |  6 +-
+ 47 files changed, 253 insertions(+), 272 deletions(-)
 
 
-Thanks,
-Andrew
+base-commit: b9b98f594b6f4c0b0fb2da4493453aef183bca4b
+-- 
+2.43.0
 
 
