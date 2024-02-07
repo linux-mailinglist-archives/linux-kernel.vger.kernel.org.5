@@ -1,119 +1,115 @@
-Return-Path: <linux-kernel+bounces-55988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF04284C481
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:53:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1CF84C48C
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 06:59:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CAAE1F23BCE
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:53:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36DCCB22BF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 05:59:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E36EC15E97;
-	Wed,  7 Feb 2024 05:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4F915E97;
+	Wed,  7 Feb 2024 05:59:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VWuRugET"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AZDGLJ1h"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C371CD1E
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 05:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8221CD19;
+	Wed,  7 Feb 2024 05:59:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707285187; cv=none; b=oMOLdV10HeEtgmnLbNM6efOu3lMGtH2SaVc3Pvx5V5fb/Yxeb7fTIeKic4DD5fRHDuDu+bBSi5kZUeu7B2DaxIuZeTMYvh9KmMJRfNyZuGO+3/m8HzHmfQgI50omSRrS3Z2/pQ6R8FrTGdj7hul2X864iOOtpSC2TAJeLPDkFrM=
+	t=1707285542; cv=none; b=GNVDzxF5PHGlFgNnGiKaVLPtpCWbv1kpYYJ0ZmMCP5BU9ODKgO+LjkoYSo9RsThe7y7GUEJfLqHQzN2atfaOQT/2TiEbAUfIwBFT/2jjRSa5r7AGOGUG1gg9IKPYFmmK2M8De1rFEIYrFwzqfrvzGToJq8ig4MFbJcfpkoY9haw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707285187; c=relaxed/simple;
-	bh=TByPXr7dTrWn79s6knx+N7D+PQY5JFNqw/lbqQ/BLu8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=idfckvNERy9xiT9f70qG8HA0aipd4Tgz+0jYAZgNaDO8/Yo0s2pvvNASO2U1X59i5agJqM7F6wP3WFaePLfWbvypu8VmMoRxWA7dhKmOZ/atPGUg5T7gi21atw7rABnSsENJ6NniDcXWkLCJpHwxWlkFiwFjCd0mKPhXqXS+J8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VWuRugET; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95342C433B2
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 05:53:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707285186;
-	bh=TByPXr7dTrWn79s6knx+N7D+PQY5JFNqw/lbqQ/BLu8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=VWuRugET//9iAp/Ke71ta5Mw+Tv2qJhWf15UxvbSj0TSVqxTEBbPmHLgEQ+JVkSIM
-	 kUFxfCxYrI1riZdm8Ly6YT6Y1s3tC52RZ+8Mlad9bVxVVk/l/31zDlUvC6Rv15MqMf
-	 e3ShULMeNqWM2QtQc3gUnQlWIZiiGGuS3/aG5GVbUznOQonCUGf3Gb4EAZmwQZ6L0F
-	 fPFqddC1SEczggTj5W5P0Isu67iSGaZf5mR4INZoiAO/4AKlWP9fH9twJzpQK8R/Ya
-	 dJYJpvo3qwHPmRT6miGDDhZ7dcQ2pX/yDGuUvNKPa/7sV+XAYFxIIT7J1g4vWO7p3d
-	 yyrRvl2OKUOsQ==
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-363b2cc9372so652185ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 21:53:06 -0800 (PST)
-X-Gm-Message-State: AOJu0YwxJlLaCZ43jgTa5oyD58MhZBQeOXxs1+ocwd0WbHTQ/RwuUFYl
-	RiIvN4bJs0GKhHEPNRlwsogUe+NNpojDlWM4GC3u1fHK2TUJtJ6226njlsISCDGBwu+mZ10UxAN
-	tI8gTcC9cd+WD9GBlGI8qppI+o+J9ZJ4LWCjY
-X-Google-Smtp-Source: AGHT+IEItXQ2dsvOVA3WJNrIak4YuH04DcNdDXg3J9pUKtIGPzVHGjWe8iOrcecC+5xCvWGBzwk+7+XwjhYU0roWuR4=
-X-Received: by 2002:a05:6e02:1d04:b0:363:b0fb:322 with SMTP id
- i4-20020a056e021d0400b00363b0fb0322mr6273507ila.0.1707285185861; Tue, 06 Feb
- 2024 21:53:05 -0800 (PST)
+	s=arc-20240116; t=1707285542; c=relaxed/simple;
+	bh=t+07vSCtQrMTARa0gnjUaC1zB1Rmh/ABvCeTKkGD6t8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NGKYaptVZd/cL7LKmyweSC/bHAUYCaFSRTfoxr5jYqQLr+FX9x1bUVNpdlUL5lvw8/FRRahVvPWdhSyBanaHn0auh9xIKOhydCkMPE2EID3s6UhZdcKIFk04HHRraVSzH9mnjJCI/1J6cn9VqwwlnKmTgKvLXnSyP5yX98knU4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AZDGLJ1h; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e04eca492fso202160b3a.1;
+        Tue, 06 Feb 2024 21:59:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707285540; x=1707890340; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GoTOTDguJ93aeizwcDFxhm41O6QP2z7HpzyOJGDVWFs=;
+        b=AZDGLJ1haYL1JQ7UDNsXx8LX+W780NnvXL9/mgB2/IVkUgRGBGb8j6VSMVXZTdu3WE
+         JjP1GcA/P/he1wbNS3OcvO7gR6BH1J0jgsfuDwl4CF6FhkI+ddBZa+P8M1AiavTNFT3/
+         x/ymWHh+UdgxWha05B7mXbr46IXTRyHkI3Sb/utrPbHYuwm97xwam5hCuPgzitYjd3/c
+         1AmIkqenakkb5Kdfgs3nf/gOEuVqBlBdMQMYObRMgbIJVbWHeIo4854a2N0OiUYOLx71
+         qcra1653DD7O08MDxfuYJvU5gYfh48ExkfOeUyLNjQ+f0SsX99tSHL5ldq/JnOqw2Fph
+         k6dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707285540; x=1707890340;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GoTOTDguJ93aeizwcDFxhm41O6QP2z7HpzyOJGDVWFs=;
+        b=wiW9Ig7FKHFgks3wDuZfupD/B/0zH5BgcWuJUM+MVqZMKIMaDRcTzWoWKvBRMvT/tP
+         mavhxfcZRDTuVGBfmoSBtqz6lJuO0fHfHveBZp7YAD7dC1WWh6qotUtqjcWvrJXygZDL
+         OykFHrXghJYwnDPF8yGmBWHYAx/Igfuv9KyAeWg0xJbQ3tkv666/nTridHzJ6o9MyBKl
+         7LdjlA8Te3xoRXhJX1FiWJtzkDQXa0NpNCOfd5L6gbgvj4Z0NPMmDFXg3kWrNu+VynW+
+         1ScNNVaRQqDk5m2XD7p4a4VYEVxqfDJqEdiT5gktK4InFYEmK+4K/XwncAdJJIz7qeWS
+         bGtw==
+X-Gm-Message-State: AOJu0YwprIPb9cVeRczIsu8NZAtJrnaDM0DZ0HxjiSrMnb08Mv1gL5I8
+	zpQ5UCIZYlFEJIxMpH5ehuP3fH8CjcG1betiMpBO+gRgmBpvt/8W
+X-Google-Smtp-Source: AGHT+IHouwaipBmRkx+W7KWEdUOgEFQA6s0NO3f9JB/RNKrVn2g/lBwp4jn1iD/vuXVjhqmTUQmVgA==
+X-Received: by 2002:a05:6a20:d90e:b0:19e:9c72:90ab with SMTP id jd14-20020a056a20d90e00b0019e9c7290abmr3782447pzb.18.1707285539844;
+        Tue, 06 Feb 2024 21:58:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXVPI7i3B1PMoZ1+rjTSmjarSOryk9owdORs02dNENYEWKFELT2v2icTKV3yLCHJ4v8NWtNY3IPncbQ40E6T4qmrzmazMDx/6h9QNdXlz//ZysmB/OFLojMCdAm2w+2Y/e0nHjzERO34NTK57LtWPPHpiJ1zUaxbnVts7x15Kv6RO5ljzsouWePpIwRm6EgjsnYrd8AniRDyU4kCbgQVQ9pJ9w1s9iJ01yYaUf0dO7/9n01eZBePLCcDzeOp6p3ZoG4eMol0HT0qEVXMJtFT3NqSR0+BxDEsXMHUZ8+YCcUG3KfjZNLzE83nL36kusfeL+zmmNXGklgE48gS+MtP8MiupY+KdBfEJ6KQHtT3uCMIWTSp3mLInXVBbAPi/+ovVahKwr2HykMrvk5ihR8YT/dE3ZP+ONWhbX0TsMfcIT9/XylYTPlcq3DbdBlrz/Mz4IZriiiOKQ73bBpc+oe
+Received: from localhost ([46.3.240.105])
+        by smtp.gmail.com with ESMTPSA id kk8-20020a170903070800b001d9a40f50c4sm533777plb.301.2024.02.06.21.58.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Feb 2024 21:58:59 -0800 (PST)
+From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+To: u.kleine-koenig@pengutronix.de,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu
+Cc: linux-pwm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	dlan@gentoo.org,
+	inochiama@outlook.com,
+	Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Subject: [PATCH v1 0/2] riscv: pwm: sophgo: add pwm support for CV1800
+Date: Wed,  7 Feb 2024 13:58:54 +0800
+Message-Id: <20240207055856.672184-1-qiujingbao.dlmu@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207033857.3820921-1-chengming.zhou@linux.dev>
- <CAF8kJuOCbuFemoFNUYeNGYzYJ7eGLka6Y6OvSg8h61vXUfYdLw@mail.gmail.com> <CAJD7tkbc7j8B3X8YfQ9r00D3ojJvJg+YwNuAF6P=jyCyrGy_=Q@mail.gmail.com>
-In-Reply-To: <CAJD7tkbc7j8B3X8YfQ9r00D3ojJvJg+YwNuAF6P=jyCyrGy_=Q@mail.gmail.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Tue, 6 Feb 2024 21:52:54 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuN=yN-fgv3RgQYq2kEbsUr5=bD1fbWVE5QNRTGAO9JgJg@mail.gmail.com>
-Message-ID: <CAF8kJuN=yN-fgv3RgQYq2kEbsUr5=bD1fbWVE5QNRTGAO9JgJg@mail.gmail.com>
-Subject: Re: [PATCH v3] mm/zswap: invalidate old entry when store fail or !zswap_enabled
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: chengming.zhou@linux.dev, hannes@cmpxchg.org, nphamcs@gmail.com, 
-	akpm@linux-foundation.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Chengming Zhou <zhouchengming@bytedance.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 6, 2024 at 9:46=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
-wrote:
->
-> > > @@ -1608,14 +1598,12 @@ bool zswap_store(struct folio *folio)
-> > >         /* map */
-> > >         spin_lock(&tree->lock);
-> > >         /*
-> > > -        * A duplicate entry should have been removed at the beginnin=
-g of this
-> > > -        * function. Since the swap entry should be pinned, if a dupl=
-icate is
-> > > -        * found again here it means that something went wrong in the=
- swap
-> > > -        * cache.
-> > > +        * The folio may have been dirtied again, invalidate the
-> > > +        * possibly stale entry before inserting the new entry.
-> > >          */
-> > > -       while (zswap_rb_insert(&tree->rbroot, entry, &dupentry) =3D=
-=3D -EEXIST) {
-> > > -               WARN_ON(1);
-> > > +       if (zswap_rb_insert(&tree->rbroot, entry, &dupentry) =3D=3D -=
-EEXIST) {
-> > >                 zswap_invalidate_entry(tree, dupentry);
-> > > +               VM_WARN_ON(zswap_rb_insert(&tree->rbroot, entry, &dup=
-entry));
-> >
-> > It seems there is only one path called zswap_rb_insert() and there is
-> > no loop to repeat the insert any more. Can we have the
-> > zswap_rb_insert() install the entry and return the dupentry? We can
-> > still just call zswap_invalidate_entry() on the duplicate. The mapping
-> > of the dupentry has been removed when  zswap_rb_insert() returns. That
-> > will save a repeat lookup on the duplicate case.
-> > After this change, the zswap_rb_insert() will map to the xarray
-> > xa_store() pretty nicely.
->
-> I brought this up in v1 [1]. We agreed to leave it as-is for now since
-> we expect the xarray conversion soon-ish. No need to update
-> zswap_rb_insert() only to replace it with xa_store() later anyway.
->
-> [1] https://lore.kernel.org/lkml/ZcFne336KJdbrvvS@google.com/
->
-Ah, thanks for the pointer. I miss your earlier reply.
+The Sophgo CV1800 chip provides a set of four independent
+PWM channel outputs.
+This series adds PWM controller support for Sophgo cv1800.
 
-Acked-by: Chris Li <chrisl@kernel.org>
+Jingbao Qiu (2):
+  dt-bindings: pwm: sophgo: add pwm for Sophgo CV1800 series SoC.
+  pwm: sophgo: add pwm support for Sophgo CV1800 SoC
 
-Chris
+ .../bindings/pwm/sophgo,cv1800-pwm.yaml       |  45 ++++
+ drivers/pwm/Kconfig                           |  10 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-cv1800.c                      | 218 ++++++++++++++++++
+ 4 files changed, 274 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/sophgo,cv1800-pwm.yaml
+ create mode 100644 drivers/pwm/pwm-cv1800.c
+
+
+base-commit: 7afc0e7f681e6efd6b826f003fc14c17b5093643
+-- 
+2.25.1
+
 
