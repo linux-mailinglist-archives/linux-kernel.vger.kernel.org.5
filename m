@@ -1,57 +1,63 @@
-Return-Path: <linux-kernel+bounces-57094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7661784D3FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:31:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3720384D3FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:31:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10F7E1F21B22
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:31:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE5D41F20FCC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2B113A866;
-	Wed,  7 Feb 2024 21:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161A813A88A;
+	Wed,  7 Feb 2024 21:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gN94f+Ln"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e8OiHkTG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D8A13A273;
-	Wed,  7 Feb 2024 21:22:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FA8313A872;
+	Wed,  7 Feb 2024 21:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707340974; cv=none; b=aKTfWa9C8E18Y2YXT+UHoh5QnsSXiEGhz1rqnp5VWwgo3w8cwrw3x0ZdJpyNUBm5IXY1F91LVoKGIkBsIx2EGbT8FH1iR5i4gRRmRv+65RP5plX7OhYEoE60VeWdf0H2/j2hXvqzPv5SCaFoMyJQgA++5ePshSL0ZfonzDkqiVk=
+	t=1707340977; cv=none; b=qUaIKEd8bdHzILwwR2GsiUO4RCNZefMkwX5l2VAfBghj5Wkup1RYpheLl5lGQpMiFuD0Yu38PiYA2jJKrGx5TahyVSKX9T8F0HsufoVdFCyDEfRkMxLD/vVdBuonlYwFGxa/c6a+bUgkS9nTDpfm7d50ruzErKKqMciKWlGtbZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707340974; c=relaxed/simple;
-	bh=j2pD5hUy6ikBMlbVLzADzaYatT7YY7pGsXPuO6keV1E=;
+	s=arc-20240116; t=1707340977; c=relaxed/simple;
+	bh=gDRNblByWudPqtmACzfywtYaVP/MXhvcEbDElazg6NU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pnjTN1Hj1Xan0b7NA38VG9wWghxPkf054MP8/9JqdZtHS0sTHoelHThBnQqWez7Nhj8orNv6IzdfHgALqwaUyZ8tWGfQUJs8G4U4k+dkddt0LZHy0RQ5Q9gwO7MBVClzA7i8R4chYwRWg9Z39haW5KwymuzZSdmmnKXYn1+XpyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gN94f+Ln; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 534AFC433C7;
-	Wed,  7 Feb 2024 21:22:53 +0000 (UTC)
+	 MIME-Version; b=N4ADtOSKtI3N/H7nFWE6DFsg92LVX+dVrnK/STBlqQpbuIqxWgQ09AmXo1taHj0U1YNLn73BqymncYI7XVWo703dIU4O1MmClrB+Tu+frUh7Zzge70re2+ClUizdRbXOwb/mkzoItK36BuhekJboVkDHcEq6BBTwOxbtec61ZrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e8OiHkTG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E7ADC433C7;
+	Wed,  7 Feb 2024 21:22:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707340974;
-	bh=j2pD5hUy6ikBMlbVLzADzaYatT7YY7pGsXPuO6keV1E=;
+	s=k20201202; t=1707340977;
+	bh=gDRNblByWudPqtmACzfywtYaVP/MXhvcEbDElazg6NU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gN94f+LnWsF2Or9XDDDxEX5zRfdWFzQU9AO8tbUmd9BMiNxjPWjspB2sgaJUyTjNe
-	 k7dowaxVOFAU0TWRf+h5nUQaSd6BMbPvVfj7dEZazJjylCbYSyveOWNKc0hoX1frQ5
-	 WHy2J7oqcI2pZn2drpmrWeFuWRKnlM+QDHL4F1rkIRu8U3jJ0hFCFEGAlHj+tSOZQY
-	 Sz8ogPJ4jOK6qGmIhdiW1Iv7bf31QlGyBaEuRW/oOkJJ24bkL+knpEdOwsKTnYC2on
-	 11DCzW25GUYqUGliH1IJ62jZRSNXtWLERNJ3pLThW+8vB8bLrIo5cDr/bhHghhBb6/
-	 eLmudRFJOQYpw==
+	b=e8OiHkTGxYsyzchJALLjVnXXpPvteQtYaEC6oqqod8JG+yQd/IJerhKJKjJxJ6Aim
+	 q01oL+OvkHt+tJ/VdUB+lDkz3IEJYh/hfpar0lZrXz35cD6Rq9LPvrD7REWqkmZuH/
+	 7JI11DT3z14khiUhXKjiizxCzBXx/SbmMAsKl7X/nsgXz4LuD4xIecTxwu8YIMLdoQ
+	 1jKRPEfWz9Fc7gln+CZsgvBrQl9mV2YP35c10mjxQl1uYw0Z1Z30UWbZ9naT9XxLar
+	 Cbr3p+Ueyiqu+MxUEET7OAYgB7LjRXTj6AAZMAQyo9joyYf+o7Ut9eoZGD2x+F1i3W
+	 d5LMotLHW09Fw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Shyam Prasad N <sprasad@microsoft.com>,
-	Steve French <stfrench@microsoft.com>,
+Cc: Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	sfrench@samba.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org
-Subject: [PATCH AUTOSEL 6.7 28/44] cifs: make sure that channel scaling is done only once
-Date: Wed,  7 Feb 2024 16:20:55 -0500
-Message-ID: <20240207212142.1399-28-sashal@kernel.org>
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	simont@opensource.cirrus.com,
+	kuninori.morimoto.gx@renesas.com,
+	dinghao.liu@zju.edu.cn,
+	ckeepax@opensource.cirrus.com,
+	patches@opensource.cirrus.com,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 29/44] ASoC: wm_adsp: Don't overwrite fwf_name with the default
+Date: Wed,  7 Feb 2024 16:20:56 -0500
+Message-ID: <20240207212142.1399-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212142.1399-1-sashal@kernel.org>
 References: <20240207212142.1399-1-sashal@kernel.org>
@@ -66,96 +72,100 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.4
 Content-Transfer-Encoding: 8bit
 
-From: Shyam Prasad N <sprasad@microsoft.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit ee36a3b345c433a846effcdcfba437c2298eeda5 ]
+[ Upstream commit daf3f0f99cde93a066240462b7a87cdfeedc04c0 ]
 
-Following a successful cifs_tree_connect, we have the code
-to scale up/down the number of channels in the session.
-However, it is not protected by a lock today.
+There's no need to overwrite fwf_name with a kstrdup() of the cs_dsp part
+name. It is trivial to select either fwf_name or cs_dsp.part as the string
+to use when building the filename in wm_adsp_request_firmware_file().
 
-As a result, this code can be executed by several processes
-that select the same channel. The core functions handle this
-well, as they pick chan_lock. However, we've seen cases where
-smb2_reconnect throws some warnings.
+This leaves fwf_name entirely owned by the codec driver.
 
-To fix that, this change introduces a flags bitmap inside the
-cifs_ses structure. A new flag type is used to ensure that
-only one process enters this section at any time.
+It also avoids problems with freeing the pointer. With the original code
+fwf_name was either a pointer owned by the codec driver, or a kstrdup()
+created by wm_adsp. This meant wm_adsp must free it if it set it, but not
+if the codec driver set it. The code was handling this by using
+devm_kstrdup().
+But there is no absolute requirement that wm_adsp_common_init() must be
+called from probe(), so this was a pseudo-memory leak - each new call to
+wm_adsp_common_init() would allocate another block of memory but these
+would only be freed if the owning codec driver was removed.
 
-Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Link: https://msgid.link/r/20240129162737.497-3-rf@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/smb/client/cifsglob.h |  3 +++
- fs/smb/client/smb2pdu.c  | 18 +++++++++++++++++-
- 2 files changed, 20 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 29 ++++++++++++-----------------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
 
-diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
-index 5e32c79f03a7..75ca732a1679 100644
---- a/fs/smb/client/cifsglob.h
-+++ b/fs/smb/client/cifsglob.h
-@@ -1004,6 +1004,8 @@ struct cifs_chan {
- 	__u8 signkey[SMB3_SIGN_KEY_SIZE];
- };
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index c01e31175015..9c0accf5e188 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -739,19 +739,25 @@ static int wm_adsp_request_firmware_file(struct wm_adsp *dsp,
+ 					 const char *filetype)
+ {
+ 	struct cs_dsp *cs_dsp = &dsp->cs_dsp;
++	const char *fwf;
+ 	char *s, c;
+ 	int ret = 0;
  
-+#define CIFS_SES_FLAG_SCALE_CHANNELS (0x1)
++	if (dsp->fwf_name)
++		fwf = dsp->fwf_name;
++	else
++		fwf = dsp->cs_dsp.name;
 +
- /*
-  * Session structure.  One of these for each uid session with a particular host
-  */
-@@ -1036,6 +1038,7 @@ struct cifs_ses {
- 	enum securityEnum sectype; /* what security flavor was specified? */
- 	bool sign;		/* is signing required? */
- 	bool domainAuto:1;
-+	unsigned int flags;
- 	__u16 session_flags;
- 	__u8 smb3signingkey[SMB3_SIGN_KEY_SIZE];
- 	__u8 smb3encryptionkey[SMB3_ENC_DEC_KEY_SIZE];
-diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
-index f5006aa97f5b..ab8765113392 100644
---- a/fs/smb/client/smb2pdu.c
-+++ b/fs/smb/client/smb2pdu.c
-@@ -399,6 +399,15 @@ smb2_reconnect(__le16 smb2_command, struct cifs_tcon *tcon,
- 		goto out;
+ 	if (system_name && asoc_component_prefix)
+ 		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s-%s-%s.%s", dir, dsp->part,
+-				      dsp->fwf_name, wm_adsp_fw[dsp->fw].file, system_name,
++				      fwf, wm_adsp_fw[dsp->fw].file, system_name,
+ 				      asoc_component_prefix, filetype);
+ 	else if (system_name)
+ 		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s-%s.%s", dir, dsp->part,
+-				      dsp->fwf_name, wm_adsp_fw[dsp->fw].file, system_name,
++				      fwf, wm_adsp_fw[dsp->fw].file, system_name,
+ 				      filetype);
+ 	else
+-		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s.%s", dir, dsp->part, dsp->fwf_name,
++		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s.%s", dir, dsp->part, fwf,
+ 				      wm_adsp_fw[dsp->fw].file, filetype);
+ 
+ 	if (*filename == NULL)
+@@ -863,29 +869,18 @@ static int wm_adsp_request_firmware_files(struct wm_adsp *dsp,
  	}
  
-+	spin_lock(&ses->ses_lock);
-+	if (ses->flags & CIFS_SES_FLAG_SCALE_CHANNELS) {
-+		spin_unlock(&ses->ses_lock);
-+		mutex_unlock(&ses->session_mutex);
-+		goto skip_add_channels;
-+	}
-+	ses->flags |= CIFS_SES_FLAG_SCALE_CHANNELS;
-+	spin_unlock(&ses->ses_lock);
-+
- 	if (!rc &&
- 	    (server->capabilities & SMB2_GLOBAL_CAP_MULTI_CHANNEL)) {
- 		mutex_unlock(&ses->session_mutex);
-@@ -428,15 +437,22 @@ smb2_reconnect(__le16 smb2_command, struct cifs_tcon *tcon,
- 		if (ses->chan_max > ses->chan_count &&
- 		    ses->iface_count &&
- 		    !SERVER_IS_CHAN(server)) {
--			if (ses->chan_count == 1)
-+			if (ses->chan_count == 1) {
- 				cifs_server_dbg(VFS, "supports multichannel now\n");
-+				queue_delayed_work(cifsiod_wq, &tcon->query_interfaces,
-+						 (SMB_INTERFACE_POLL_INTERVAL * HZ));
-+			}
+ 	adsp_err(dsp, "Failed to request firmware <%s>%s-%s-%s<-%s<%s>>.wmfw\n",
+-		 cirrus_dir, dsp->part, dsp->fwf_name, wm_adsp_fw[dsp->fw].file,
+-		 system_name, asoc_component_prefix);
++		 cirrus_dir, dsp->part,
++		 dsp->fwf_name ? dsp->fwf_name : dsp->cs_dsp.name,
++		 wm_adsp_fw[dsp->fw].file, system_name, asoc_component_prefix);
  
- 			cifs_try_adding_channels(ses);
- 		}
- 	} else {
- 		mutex_unlock(&ses->session_mutex);
- 	}
-+
- skip_add_channels:
-+	spin_lock(&ses->ses_lock);
-+	ses->flags &= ~CIFS_SES_FLAG_SCALE_CHANNELS;
-+	spin_unlock(&ses->ses_lock);
+ 	return -ENOENT;
+ }
  
- 	if (smb2_command != SMB2_INTERNAL_CMD)
- 		mod_delayed_work(cifsiod_wq, &server->reconnect, 0);
+ static int wm_adsp_common_init(struct wm_adsp *dsp)
+ {
+-	char *p;
+-
+ 	INIT_LIST_HEAD(&dsp->compr_list);
+ 	INIT_LIST_HEAD(&dsp->buffer_list);
+ 
+-	if (!dsp->fwf_name) {
+-		p = devm_kstrdup(dsp->cs_dsp.dev, dsp->cs_dsp.name, GFP_KERNEL);
+-		if (!p)
+-			return -ENOMEM;
+-
+-		dsp->fwf_name = p;
+-		for (; *p != 0; ++p)
+-			*p = tolower(*p);
+-	}
+-
+ 	return 0;
+ }
+ 
 -- 
 2.43.0
 
