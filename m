@@ -1,85 +1,120 @@
-Return-Path: <linux-kernel+bounces-57025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C6A84D2F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF0B484D2FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:31:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1A2E28E8F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:27:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A1B328E6A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C6E3127B55;
-	Wed,  7 Feb 2024 20:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4074C1CD25;
+	Wed,  7 Feb 2024 20:31:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TPl5b9d1"
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mgtfnZ2H"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A781272BA
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 20:27:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE2F1B942;
+	Wed,  7 Feb 2024 20:31:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707337623; cv=none; b=SKU2kDDkoUTVOmQT4ASpa/0dC9kHUDaRSR1pB1kpoRErV9XtSVAI0/8GRGuRHVh+blsvpUJcyMkzymFlzZJzq6p02wHQkVpnCYPP4UL6G3PkfMXA9cDZJw+5qvrNwprf6vuGy1tmprmf8qsYUQerYEwU7dXCFkaqXtDAU8Xt73U=
+	t=1707337901; cv=none; b=VsD90LdTGlOVD5roUm9MWkviYH6V/LzUHnL+fu/BeHL6O3iK4e7O7xvFSccWQqZzSBZ7s3T4RGZqzfkptmkTnZLVvdBOKbGpuinQA82ox6yQ14K8HJTjWGiRgGwClqD6t54ycuel8Ii/ijUujvnTW40CxEbNIyuHP3sKrWyp4Jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707337623; c=relaxed/simple;
-	bh=qtCUwIWIbC5yKsRl5nCr/tGp30Ggmi5PGWVrJfvJhZs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SYJwh2a8C8wSXhXEcYFu5X0kSa420tnYRRO8PMetALvkDNSorryw+AwRio4ZxG/OX4HkQMJIkjIxCjf3Fi/rup6eTU9iS4dpRsXhw0QMfVix1DtjLvYNOnQxn1faa2CZxzodSojoXBbTlMjZ9cuU7OqLIeybwzOTdX8kxHoxvYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TPl5b9d1; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 7 Feb 2024 15:26:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707337619;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uZPHrfKX+msQdL3rSnYcgNf84jeoY0gQzoOYJ58QxWE=;
-	b=TPl5b9d1E3b3GEVnI0pEP0cn/rhWzBDdQdlo4sUn2xcTZTVmsPIZS9vRo2fEsa1SDLY8yz
-	LhwW/w2c5x99IfRX0FzLK6Pz2JO9s91/01OSgq1ul/V6kWz/XO4tEbugRjSjUqioc8gmIW
-	Qz9kcHejHRFVNepb1zLGYZb7ZhNQ6us=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
+	s=arc-20240116; t=1707337901; c=relaxed/simple;
+	bh=SF63Uy/W6gSlPDVcToCt1nQO7SUTdRa2P7SsA0ShYjQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZZmTUmgggDswgQadpqHeAscAVBN77VO7omvG0/Rw7uscJNdpvFi0IFFFGPlzl92ftctgrqqXzxN3qS5iFjejqR9ChyhCQ5PM3iqQ4mqA5xtipwPQv7HPWZ7fAF0notebCOOgQVfd+ZyvPxfcNcaRmLCiAR+4CTVwc8cOADkw6Ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mgtfnZ2H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520F1C433C7;
+	Wed,  7 Feb 2024 20:31:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707337900;
+	bh=SF63Uy/W6gSlPDVcToCt1nQO7SUTdRa2P7SsA0ShYjQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=mgtfnZ2HwNFkfRgtZgwVLxmVy7gbrtkqYaqlJBri8LGwuN+Oczb0VxW9S4xI0Ro7B
+	 OLA5fWfLDJeod7M0QdiFlXoXFHE8WUQ0YsJafPw8451Wbm1ZfRWbv0ZqvmL8fj2WdW
+	 YSOPTnfvNxO1co5/RMQDwIRUVfRARe0qv9Z3JO5/FmFBxR0TdpxptOzSchuVRo03N/
+	 bn+hrIlWXRDBi4pOJu6AkIvsBlHClBmtDbsWAAKGP1K9yshrtCRulMj5x0nZNw0ZGJ
+	 dZKCiiQ0OVHqxAamNIHI3Krog1qMn0FsaxylaPdVKtCgikasmTboNe6yUq6mEJ0leH
+	 j2aN5mXc5STYQ==
+From: SeongJae Park <sj@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: SeongJae Park <sj@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] filesystem visibililty ioctls
-Message-ID: <kq2mh37o6goojweon37kct4r3oitiwmrbjigurc566djrdu5hd@u56irarzd452>
-References: <20240206201858.952303-1-kent.overstreet@linux.dev>
- <20240207174009.GF119530@mit.edu>
+Subject: [PATCH 0/8] selftests/damon: add more tests for core functionalities and corner cases
+Date: Wed,  7 Feb 2024 12:31:26 -0800
+Message-Id: <20240207203134.69976-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207174009.GF119530@mit.edu>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 07, 2024 at 12:40:09PM -0500, Theodore Ts'o wrote:
-> On Tue, Feb 06, 2024 at 03:18:48PM -0500, Kent Overstreet wrote:
-> > previous:
-> > https://lore.kernel.org/linux-fsdevel/20240206-aufwuchs-atomkraftgegner-dc53ce1e435f@brauner/T/
-> > 
-> > Changes since v1:
-> >  - super_set_uuid() helper, per Dave
-> > 
-> >  - nix FS_IOC_SETUUID - Al raised this and I'm in 100% agreement,
-> >    changing a UUID on an existing filesystem is a rare operation that
-> >    should only be done when the filesystem is offline; we'd need to
-> >    audit/fix a bunch of stuff if we wanted to support this
-> 
-> NAK.  First, this happens every single time a VM in the cloud starts
-> up, so it happens ZILLIONS of time a day.  Secondly, there is already
-> userspace programs --- to wit, tune2fs --- that uses this ioctl, so
-> nixing FS_IOC_SETUUID will break userspace programs.
+Continue DAMON selftests' test coverage improvement works with a trivial
+improvement of the test code itself.  The sequence of the patches in
+patchset is as follows.
 
-You've still got the ext4 version, we're not taking that away. But I
-don't think other filesystems will want to deal with the hassle of
-changing UUIDs at runtime, since that's effectively used for API access
-via sysfs and debugfs.
+The first five patches add two DAMON core functionalities tests.  Those
+begins with three patches (patches 1-3) that update the test-purpose
+DAMON sysfs interface wrapper to support DAMOS quota, stats, and apply
+interval features, respectively.  The fourth patch implements and adds a
+selftest for DAMOS quota feature, using the DAMON sysfs interface
+wrapper's newly added support of the quota and the stats feature.  The
+fifth patch further implements and adds a selftest for DAMOS apply
+interval using the DAMON sysfs interface wrapper's newly added support
+of the apply interval and the stats feature.
+
+Two patches (patches 6 and 7) for implementing and adding two corner
+cases handling selftests follow.  Those try to avoid two previously
+fixed bugs from recurring.
+
+Finally, a patch for making DAMON debugfs selftests dependency checker
+to use /proc/mounts instead of the hard-coded mount point assumption
+follows.
+
+SeongJae Park (8):
+  selftests/damon/_damon_sysfs: support DAMOS quota
+  selftests/damon/_damon_sysfs: support DAMOS stats
+  selftests/damon/_damon_sysfs: support DAMOS apply interval
+  selftests/damon: add a test for DAMOS quota
+  selftests/damon: add a test for DAMOS apply intervals
+  selftests/damon: add a test for a race between target_ids_read() and
+    dbgfs_before_terminate()
+  selftests/damon: add a test for the pid leak of
+    dbgfs_target_ids_write()
+  selftests/damon/_chk_dependency: get debugfs mount point from
+    /proc/mounts
+
+ tools/testing/selftests/damon/.gitignore      |  2 +
+ tools/testing/selftests/damon/Makefile        |  5 ++
+ .../selftests/damon/_chk_dependency.sh        |  9 ++-
+ tools/testing/selftests/damon/_damon_sysfs.py | 77 ++++++++++++++++--
+ .../selftests/damon/damos_apply_interval.py   | 67 ++++++++++++++++
+ tools/testing/selftests/damon/damos_quota.py  | 67 ++++++++++++++++
+ .../damon/debugfs_target_ids_pid_leak.c       | 68 ++++++++++++++++
+ .../damon/debugfs_target_ids_pid_leak.sh      | 22 +++++
+ ...fs_target_ids_read_before_terminate_race.c | 80 +++++++++++++++++++
+ ...s_target_ids_read_before_terminate_race.sh | 14 ++++
+ 10 files changed, 403 insertions(+), 8 deletions(-)
+ create mode 100755 tools/testing/selftests/damon/damos_apply_interval.py
+ create mode 100755 tools/testing/selftests/damon/damos_quota.py
+ create mode 100644 tools/testing/selftests/damon/debugfs_target_ids_pid_leak.c
+ create mode 100755 tools/testing/selftests/damon/debugfs_target_ids_pid_leak.sh
+ create mode 100644 tools/testing/selftests/damon/debugfs_target_ids_read_before_terminate_race.c
+ create mode 100755 tools/testing/selftests/damon/debugfs_target_ids_read_before_terminate_race.sh
+
+
+base-commit: f51e629727d8cc526a3156a2c80489b8f050410f
+-- 
+2.39.2
+
 
