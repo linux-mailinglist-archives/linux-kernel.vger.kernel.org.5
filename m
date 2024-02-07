@@ -1,79 +1,62 @@
-Return-Path: <linux-kernel+bounces-56335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A90F084C8D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:41:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9143C84C8DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 11:42:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA61C1C25B51
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:41:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8550AB263BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 10:42:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C21168DC;
-	Wed,  7 Feb 2024 10:41:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBAA214AB4;
+	Wed,  7 Feb 2024 10:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LxNtV+kb"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mO/hQ3qs"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C395B14A8E;
-	Wed,  7 Feb 2024 10:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E76E14A89;
+	Wed,  7 Feb 2024 10:42:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707302493; cv=none; b=ePcX45T09d7BhvKOh2WhO6zrjOZBQoRJYr9Vx0RUsOSOQjgDhns7cGrgYHRXGyD+LZt+wLCgZOVZlNCKQbdgZ0sgbSsoa7zzxW0Ndo4yfcMqvSPLGtk6s8YFd6UUnDNShWHAoKusJJY9OUOFUASgo5GRfeEGAhjNBD1HQNgQvBo=
+	t=1707302540; cv=none; b=r/ILn6rT0qJ2dt5gsKoKkCS+sW7tJhC4q1y0zn0qAsw4OzgxUFlnEvdwZBI3negp2ObRXWXlxrfVNtaebCNNNndsXggxbOqHul+cETrl7BAd9pZYRlKp14gVdjL0ZLhaIEbwzvucDOGpTgxqE6NxfCVeCG8+aIM06lkSW9qlGcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707302493; c=relaxed/simple;
-	bh=73vHyUOG+29DA5uwnOt78bMHxFMroG/qr4k3poT3VKc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=hXGRiAakW6PJS+a6qPYX6qsojf75LR8aYxAUaeHEUIOTYD3Vs+OsOz5f92TWrZq+xkqbz5IFNztmyL2yZrjZ9VX62QFzTeNL2UNn5gG391jdQVtsylS0VQboxsmCojzUdVozyGL6HDRvA4co/jThR9Gkz81uA0ysX6kZbTjZ67Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LxNtV+kb; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40fe59b22dbso3442805e9.3;
-        Wed, 07 Feb 2024 02:41:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707302490; x=1707907290; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IqVnOS/qUrr0zNytXzso07sG3UnG8U3+3iCgGo/2BLg=;
-        b=LxNtV+kbud0OHsnqppxd3JXlLaxv/ut/dFGPbS0/5IkFzcOmfBQhaIS45xB6hZd7UY
-         gdLjFEGfnOBPkRzHbw6pj2iQeQm1uecMOALGpRXPzDUpWvMT4zC0quetdeVgCFj3t5O5
-         iAiLxopHIkW/omEfnOUI/xGVG6VlQbhA56O5s0a+BD+7r2RTcbG8DQqyphPIzvd/B1+G
-         I1LtO61srnFHdhD2Yy04/L7GXQMY4XvIk2uhI/VG2I/GbcTBKoSa/vjEEZBdryU5E6cn
-         5HxTZC+3i0WlbpAlsYXM1+peOEycap0LUVL7HE75x4R1neyrSnqm8CWuagf9Ufj2whS/
-         c6aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707302490; x=1707907290;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IqVnOS/qUrr0zNytXzso07sG3UnG8U3+3iCgGo/2BLg=;
-        b=oBlEYoewuoKIA2d5AkhONDEWsaHD3+LPvAd2pF8hcW4HtIw7e0spTzS/sbIoc5xU4X
-         K7yavtb/k2YbNPopFJaz0JJSSkVNJQwVwBeZxmA1EeAVf4SVrotR+2zdnZ7ukn+dQd5U
-         xl73LSu6vDVD7IfgWdrhiI7JAdMvsZzq/aRcOHLf21DVi6jYntMsD878ZJqtwN3K8PLi
-         5VsBm+5CRNvP3Vo0ArZMWVDLyglv2p4F3UIjE3lrsg1YEKffJP/KD8ijUQrGB0gTX7si
-         xFgJ36sb4PypSqYBR0rDfnfHNFfyQMr4CDg1l3joTwmBrPU66J0EthRRnYhuCpSnwNHs
-         m41w==
-X-Gm-Message-State: AOJu0Ywb92g4aS4Rtbij8krbLkoYSuKzHKPz9trQxd4SJMrqkzouUtfT
-	D+P8bDDO8JKGOowgAfFGvzhRYnX5TnxL3vsy7vnd0rVQDCL1QSlt
-X-Google-Smtp-Source: AGHT+IFD7Hx6Pp9P3VacJ6jR5IgxVdtp+SBBgjfwAZd5EK3N44Et80YVhP34wnOgy+m9OVjM8vzGtQ==
-X-Received: by 2002:a05:600c:4f54:b0:40f:dc4e:69e8 with SMTP id m20-20020a05600c4f5400b0040fdc4e69e8mr4361978wmq.27.1707302489767;
-        Wed, 07 Feb 2024 02:41:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWSYi4VM0MiOa/g2nTSxfc1CWWsdwcTmlHD0B+AGbcTMrUgxQfitE7wFbTrTOiZuRRDQhxXiw0ZSmwVF1UwMY3Jui9FB84bz9G7fH1rz2Rp6JnOSpIb0v3ylQEzJBWCrKaCgwpg+ZCD907b2Q6kczuIYWabx/64C8qjMAezkCVrrGPTDdPAQENQ4AlyzMc2lsazkqjd3jojZM002A==
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id bd24-20020a05600c1f1800b0041004826669sm1923962wmb.42.2024.02.07.02.41.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 02:41:29 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Johan Hovold <johan@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] USB: serial: keyspan: Remove redundant assignment to pointer data
-Date: Wed,  7 Feb 2024 10:41:28 +0000
-Message-Id: <20240207104128.2441210-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707302540; c=relaxed/simple;
+	bh=II47jwsuZLY/0YRKVtpUI0sbrhHp7KT8QYWiYIYnm64=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=jiHJ6ngut7ABZTMl1n8IvVE53LRz+SyOKcioxGb9Z9PIvwU7oXAyMpgJjtnUcL/TjdpeEO4huNc2mKBGpYSpXiuAOJNuNHXy6slVHVEA3TCRj9qrefbWliCrWfUtIChwiB+8s5ZezqD36MtVfpQMx2e7wp741c/BylbgS43dfAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=mO/hQ3qs; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 417AQCvF013143;
+	Wed, 7 Feb 2024 10:42:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=f4a
+	6QVU4hulFuG7QklOItbrc6hHNenm18VOdI1gRvJM=; b=mO/hQ3qsZ4NCjy6vB8h
+	7a8g10w6fApuzU7RUOC6n7rJwK0gxLthGHk8qp4BDmpFkBm0fnz/9RWfN1U99xZv
+	J53BsAZ+MUndGabJzXPMMAQpI2qpEsyvnLEkPly1204TV42ytQDFyfDkTsb2Df/J
+	MSqXdLmRfuHkKny7S2XYPkMrMED71J2RbYGBTceKGSlBXdwTeyTSpKvUiKgioOhn
+	HdPchDRdi90ycMsqclDXuBdf6MJc+5Auw4qSN+YVI+kKBsVZAXsgWBfXp2CqzOGD
+	Xic0cZYQ2rgLCDFv9fj/wdmHyDZOlp4k9kQXAMQexG/A/P/afQJEyP/FDisjHxAu
+	3dA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3ub6hfnq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 Feb 2024 10:42:02 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 417Ag13b003200
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 7 Feb 2024 10:42:01 GMT
+Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 7 Feb 2024 02:41:56 -0800
+From: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Date: Wed, 7 Feb 2024 16:11:49 +0530
+Subject: [PATCH] arm64: dts: qcom: qcs6490-rb3gen2: Add PCIe nodes
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,34 +64,127 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240207-enable_pcie-v1-1-b684afa6371c@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAG1ew2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDIwNz3dS8xKSc1PiC5MxUXUvTJMMUMzNDoyQjcyWgjoKi1LTMCrBp0bG
+ 1tQDbjrJiXQAAAA==
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>,
+        "Krishna chaitanya
+ chundru" <quic_krichai@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707302517; l=2092;
+ i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
+ bh=II47jwsuZLY/0YRKVtpUI0sbrhHp7KT8QYWiYIYnm64=;
+ b=u2Wyoa7F0oRnHv37GNU4l5ZZUKYEDZyWQtH9gXoTyXrBkP3tWdwz3DG5YGmGiYGfxXGIqOQdz
+ Wu2/ku5afGnDK6vK/HMRwzBc2CIoCiER/U6gCqaKJouGC18XQcbPwnj
+X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
+ pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 8L8kUlVtulcoBfuJ32aTvlkce2y4ag-W
+X-Proofpoint-ORIG-GUID: 8L8kUlVtulcoBfuJ32aTvlkce2y4ag-W
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-07_04,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=808 adultscore=0
+ spamscore=0 bulkscore=0 priorityscore=1501 phishscore=0 clxscore=1015
+ malwarescore=0 lowpriorityscore=0 suspectscore=0 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402070079
 
-The pointer data is being assigned a value that is not being
-read afterwards, it is being re-assigned later inside a do-while
-loop. The assignment is redundant and can be removed.
+Enable PCIe1 controller and its corresponding PHY nodes on
+qcs6490-rb3g2 platform.
 
-Cleans up clang scan warning:
-drivers/usb/serial/keyspan.c:924:2: warning: Value stored to 'data'
-is never read [deadcode.DeadStores]
+PCIe switch is connected to PCIe1, PCIe switch has multiple endpoints
+connected. For each endpoint a unique BDF will be assigned and should
+assign unique smmu id. So for each BDF add smmu id.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
 ---
- drivers/usb/serial/keyspan.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 42 ++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/drivers/usb/serial/keyspan.c b/drivers/usb/serial/keyspan.c
-index 93b17e0e05a3..0a783985197c 100644
---- a/drivers/usb/serial/keyspan.c
-+++ b/drivers/usb/serial/keyspan.c
-@@ -921,7 +921,6 @@ static void usa28_indat_callback(struct urb *urb)
+diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+index 8bb7d13d85f6..0082a3399453 100644
+--- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
++++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+@@ -413,6 +413,32 @@ vreg_bob_3p296: bob {
+ 	};
+ };
  
- 	port =  urb->context;
- 	p_priv = usb_get_serial_port_data(port);
--	data = urb->transfer_buffer;
++&pcie1 {
++	perst-gpios = <&tlmm 2 GPIO_ACTIVE_LOW>;
++
++	pinctrl-0 = <&pcie1_reset_n>, <&pcie1_wake_n>;
++	pinctrl-names = "default";
++
++	iommu-map = <0x0 &apps_smmu 0x1c80 0x1>,
++		    <0x100 &apps_smmu 0x1c81 0x1>,
++		    <0x208 &apps_smmu 0x1c84 0x1>,
++		    <0x210 &apps_smmu 0x1c85 0x1>,
++		    <0x218 &apps_smmu 0x1c86 0x1>,
++		    <0x300 &apps_smmu 0x1c87 0x1>,
++		    <0x400 &apps_smmu 0x1c88 0x1>,
++		    <0x500 &apps_smmu 0x1c89 0x1>,
++		    <0x501 &apps_smmu 0x1c90 0x1>;
++
++	status = "okay";
++};
++
++&pcie1_phy {
++	vdda-phy-supply = <&vreg_l10c_0p88>;
++	vdda-pll-supply = <&vreg_l6b_1p2>;
++
++	status = "okay";
++};
++
+ &qupv3_id_0 {
+ 	status = "okay";
+ };
+@@ -420,6 +446,22 @@ &qupv3_id_0 {
+ &tlmm {
+ 	gpio-reserved-ranges = <32 2>, /* ADSP */
+ 			       <48 4>; /* NFC */
++
++	pcie1_reset_n: pcie1-reset-n-state {
++		pins = "gpio2";
++		function = "gpio";
++		drive-strength = <16>;
++		output-low;
++		bias-disable;
++	};
++
++	pcie1_wake_n: pcie1-wake-n-state {
++		pins = "gpio3";
++		function = "gpio";
++		drive-strength = <2>;
++		bias-pull-up;
++	};
++
+ };
  
- 	if (urb != p_priv->in_urbs[p_priv->in_flip])
- 		return;
+ &uart5 {
+
+---
+base-commit: 70d201a40823acba23899342d62bc2644051ad2e
+change-id: 20240207-enable_pcie-95b1d6612b27
+
+Best regards,
 -- 
-2.39.2
+Krishna chaitanya chundru <quic_krichai@quicinc.com>
 
 
