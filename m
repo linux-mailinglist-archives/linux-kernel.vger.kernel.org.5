@@ -1,90 +1,104 @@
-Return-Path: <linux-kernel+bounces-56902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42E0484D10B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A898E84D10D
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:21:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 735DD1C25FC0
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:19:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9A3B1C25F79
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 18:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFBD183CC6;
-	Wed,  7 Feb 2024 18:19:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C1082D97;
+	Wed,  7 Feb 2024 18:21:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kEGhdQDJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fdLSF95R"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0294F82C64;
-	Wed,  7 Feb 2024 18:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB571B7F0
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 18:21:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707329977; cv=none; b=AFTUmJd7vK91cl2nOYbSIc/1Y8JYHfOBndhPAWB2PezOn8lwxAWx7DaGuzDgNibwiBWEi6fZmLae9gMz9eDaLxMlJquZIjBCdRIgjA5PE1P08nXBPQH9Qafx6MS3trKKjoCH1UchPvamEGf+LuqpVbhM6XJH+aMQPFTx5dvbQaM=
+	t=1707330061; cv=none; b=lEi3G/Gw1HFyyyuMgAsgH76L5ysjTIL4eygf2dGCOz/IsHJxM8iwQaUtcF5TF5eZi9ri7azbZ51/PrM4V28wnt7d5rYRgfBR2HLMrerlO18v6n1VcO3hhDe1DxS3QCA1qwQhXQMJlni3PQf8ppjB6v6i//cM55x6RuamIQ1TviE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707329977; c=relaxed/simple;
-	bh=yzqZkWmurf1d3vXbpPSRq3flg3TmxvLtRnfELAdKB7g=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CYKtwLRpEe61L8FIgCvp+bq+TrwkLzWucmdTTMtwaSi9eM5i2BtiwHbd2qtxVG4NEBPfrsVlkZ1kSaWThL/YdY7qoDJRilHxjk4t3NoZ+H9LgDgkBoEhzySuJ1okZoLmzXReIQSwbAay3pZgb7D86j2H3AY53bG/s4WbfzIOPYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kEGhdQDJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F479C43390;
-	Wed,  7 Feb 2024 18:19:35 +0000 (UTC)
+	s=arc-20240116; t=1707330061; c=relaxed/simple;
+	bh=wLd0ptiOLe++cgHkBGPDLsldtjGM/4fSCRnqqtGdg3k=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=n5pyvTNyqDsuq5oD4MN96kY//JuIp8IDF0H3FHxodXFY3vbki6pMneIkOyZ6Gbuxd7T6flKKoYZtQkYtnmS0+ndsaphmUt+KFI2/Iw4g9wTG7UvdDmtlSXxtyN+IsP6+Smuyuj3zAL+5nZKmrpcQKDK6Ub5LZtPTWi+ZMmCZmOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fdLSF95R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3E6BC433C7;
+	Wed,  7 Feb 2024 18:20:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707329976;
-	bh=yzqZkWmurf1d3vXbpPSRq3flg3TmxvLtRnfELAdKB7g=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=kEGhdQDJzavIhJvxC2C52ffr/UE9SoJ9mSUpiZCNmq1JypOn2mgZ6hiueF8bHxcmz
-	 JPeRnosDHGyBRAaDNn/KALE4+xNTlFO7Uwq10pSMRCdC1PakuguEDBP7qR2Mab/dTy
-	 aLaAesbZaSjSnMezz+7Pjja6d1pGC7TqHrOsOu+zrDFcXJS8LRhccozlrWXUSCkbdb
-	 9nCjFktQAC3cyrJW74mDt5pmRpu3SuaKL4rAAzo81ZlKJ9O40lGgwyqUrsLwLgAjBf
-	 UU540HAIc1fpuPXdzChWcQOMrX2XMquNc120ZiWSrUYi0WsGdIu6zg1PFuTHgS5uuv
-	 zhj1lqaBMdeWw==
-Date: Wed, 7 Feb 2024 10:19:34 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Abhishek Chauhan <quic_abchauha@quicinc.com>, Vinod Koul
- <vkoul@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>, Andy Gross
- <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio
- <konrad.dybcio@linaro.org>, "David S. Miller" <davem@davemloft.net>, "Eric
- Dumazet" <edumazet@google.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
- <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
- Prasad Sodagudi <psodagud@quicinc.com>, Andrew Halaney
- <ahalaney@redhat.com>, Rob Herring <robh@kernel.org>, <kernel@quicinc.com>
-Subject: Re: [PATCH v2] net: stmmac: dwmac-qcom-ethqos: Enable TBS on all
- queues but 0
-Message-ID: <20240207101934.6c0ab20b@kernel.org>
-In-Reply-To: <578b6a6e-83df-4113-9c1f-cdd7aa65f65e@quicinc.com>
-References: <20240207001036.1333450-1-quic_abchauha@quicinc.com>
-	<578b6a6e-83df-4113-9c1f-cdd7aa65f65e@quicinc.com>
+	s=k20201202; t=1707330061;
+	bh=wLd0ptiOLe++cgHkBGPDLsldtjGM/4fSCRnqqtGdg3k=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=fdLSF95RmeFkkDcC+WiTV1CfYarJm6wO3LqG7cIywdo7f2eqcc4wnD3ZTfL+YlTrh
+	 MzbSWr5aDYLCcmW2hhLnKVbuOO1wPzaXGEjzJBU7vF37Ah8JGBBNc+Xt1V8gaDfBHp
+	 5UOSrZhiMqRtq8ybi5/nqC38wAH86H+z2w2Lzy7k+pgw3xXRyilVscjEkj09mGKULX
+	 Gp3RhYgGdGTxHl5bVxA5DE6ATQSPi0xPSKMeEluw5kzFZKKQ0eiMlRJxOwcnWPrO+e
+	 pDAdlDvFahFWDnR+5jVupNE6qndJtdcGYstA3nc8gEkgQ1pUxqscrcFP3llpRU8dDP
+	 YKISvSrxaI3Pg==
+From: Mark Brown <broonie@kernel.org>
+To: linux-kernel@vger.kernel.org, 
+ Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20240206151004.1636761-2-ben.wolsieffer@hefring.com>
+References: <20240206151004.1636761-2-ben.wolsieffer@hefring.com>
+Subject: Re: [PATCH] regmap: kunit: fix raw noinc write test wrapping
+Message-Id: <170733005913.1096790.12036692137132964034.b4-ty@kernel.org>
+Date: Wed, 07 Feb 2024 18:20:59 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
 
-On Wed, 7 Feb 2024 09:26:05 -0800 Jeff Johnson wrote:
-> > This is similar to the patch raised by NXP <3b12ec8f618e>
-> > <"net: stmmac: dwmac-imx: set TSO/TBS TX queues default settings">  
+On Tue, 06 Feb 2024 10:10:05 -0500, Ben Wolsieffer wrote:
+> The raw noinc write test places a known value in the register following
+> the noinc register to verify that it is not disturbed by the noinc
+> write. This test ensures this value is distinct by adding 100 to the
+> second element of the noinc write data.
 > 
-> note that there is a standard way to refer to a prior patch, in your case:
-> 3b12ec8f618e ("net: stmmac: dwmac-imx: set TSO/TBS TX queues default
-> settings")
+> The regmap registers are 16-bit, while the test value is stored in an
+> unsigned int. Therefore, adding 100 may cause the register to wrap while
+> the test value does not, causing the test to fail. This patch fixes this
+> by changing val_test and val_last from unsigned int to u16.
+> 
+> [...]
 
-Yes, please fix.
+Applied to
 
-> (note this format is defined in the context of the Fixes tag at
-> <https://www.kernel.org/doc/html/latest/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes>)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
 
-A fixes tag would be great. But we can't point at 3b12ec8f618e, right?
-Can someone explain what the user-visible problem is?
-TBS cannot be used? Device reinit is require to enable it?
+Thanks!
+
+[1/1] regmap: kunit: fix raw noinc write test wrapping
+      commit: 7011b51f13b391ee06708bb1f82653a2953f8cfc
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
