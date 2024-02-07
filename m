@@ -1,107 +1,101 @@
-Return-Path: <linux-kernel+bounces-56764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5E8884CECD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:22:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F75F84CECA
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 17:22:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22DE11C266E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:22:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51B631F24209
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 16:22:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD9ED811E4;
-	Wed,  7 Feb 2024 16:22:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E697D811EF;
+	Wed,  7 Feb 2024 16:21:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qTqxE3AS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U0lXzm6w"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00CB67FBBD;
-	Wed,  7 Feb 2024 16:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E7CD8120B
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 16:21:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707322963; cv=none; b=glio6f2WM5KIlCe5EmiBwpkZApjo3iz8L0jV6GrQbtIl/WdRzrmyPtDNtx80DFG4bhzZktZfE2x5ZnXThuIAr/B8Hm7uKPmZK4dunUS1MjY3BI6utJpuTlbOD1tkx6SCYJuEcjoK14uya38b1B5OC0NHv4/C0nxtMYmGI+JHiSg=
+	t=1707322901; cv=none; b=LI31ar55AykRjw57K7EgD47u0Iw8Yv1u/PkmVfi0y7Z/Ck1gUkNkKhGy2CEk2rDjoDRg+kCn7jTTFn7PO4IPzfW6BGelmcIL94P88G/cm3UhNDCz/vYzEx32nipahFj6j08F8wVEIWqP3jVjeXqK/uktoJBkd6gDpTx6pD+AnyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707322963; c=relaxed/simple;
-	bh=pMEzXXPIUcYuWpCdZv+0Vn1+7MD5FBZBfF3MLhc5cg8=;
+	s=arc-20240116; t=1707322901; c=relaxed/simple;
+	bh=Ham27Lju8X30G/Pi7G2NB/yVZZfjl/5xdSUO56dUsNk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sTw2mAQGs5+Lhzs2HEjaZLMrihB+iQ9AnWH5xjFPX1LxrA5btMVzjkizclvuKJT0n5egIq5kiJ/Ug7Nls1QUXrHqikGjqlY1shnYHCA1GIlFC9pgYYlStL9FNyDaZHZ4xnOWGiY61EHLofclfxBYv93hVaLTU78XFVLW8fQKAoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qTqxE3AS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A236BC433F1;
-	Wed,  7 Feb 2024 16:22:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707322962;
-	bh=pMEzXXPIUcYuWpCdZv+0Vn1+7MD5FBZBfF3MLhc5cg8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qTqxE3ASSOANkJoWnEcrFvIKWsHp0iuK6XxH0GlaFphdonkiWTAp2YJMACyodR2WM
-	 WrrHNgw4CFeydw6U6JA8UBHPpWGEhQFigXiqQI6qdze91FTs4LNskbdkNwOvQ/LYYv
-	 QMJparFv7hZdKWKTxikp+i1Qydwy2j2Y9pRyFEYL6cEZBh4SrgOhQY8TgJ4cBbW7lT
-	 L1Tr9krntbSmstW3rqrtPU3EdJO06os95uQO5wMpZEDxsdhCjiBEBafdJD7JQ71q+G
-	 XLLR7xNlir2mQGHrIIm8g426cAwdDFQQRZTMr+c5A9M+dvNKgpoFyKj2LA8PYqKeT/
-	 jnk2sINiEoCcw==
-Date: Wed, 7 Feb 2024 16:22:37 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Josua Mayer <josua@solid-run.com>
-Cc: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Yazan Shhady <yazan.shhady@solid-run.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
-Subject: Re: [PATCH v4 2/5] dt-bindings: rtc: abx80x: convert to yaml
-Message-ID: <20240207-astride-banister-371ce4d36edf@spud>
-References: <20240202-add-am64-som-v4-0-5f8b12af5e71@solid-run.com>
- <20240202-add-am64-som-v4-2-5f8b12af5e71@solid-run.com>
- <20240203-prolonged-backfield-c659e0016d70@spud>
- <20240203-tummy-egomaniac-5aba55889a83@spud>
- <0c784113-9288-46bd-a34e-49bf0f1651bb@solid-run.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=KTr7K/hUJNYQ2szj5wCAuheFzBG0H8vXjyPhDDWAHJ3smn65tHTds+wPBTVS+T2CtnluzaF8lwwM6BGuXYiaPVWTK1j1MRiGTUN11Q9B7FnbBHrLNWwv5NUR/Q0KgNRm+RpGOjV8TjgcaSh/1vLMMmLbj4wd6YUkwvEedsEUF+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U0lXzm6w; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707322900; x=1738858900;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Ham27Lju8X30G/Pi7G2NB/yVZZfjl/5xdSUO56dUsNk=;
+  b=U0lXzm6wYsI3tNX7Q9jxYKMir8ujFDznBHjE0aiLLbWHr5DmAeQeFzBQ
+   DIG/7/Kgg/bJpehZOJ8X0AqIGo8bWRydVndNF9ntFusbttYWNlEdxX9lb
+   gzTM4KWBj1zUXbEPvnp1KRxBTlobxAKIjJ6gx3A1VmrKJkRRpXSZLwNdW
+   nr0V8NSdl8eX9tGr7s8NgBcbVm9mmfLlEPBJv1N49vWWbjBBQYhLBELcC
+   RQdCRr9SjwYbzLlcjiO+idctD1JRi+/UDeOt3G/1gS7Tbk7nU84eKBRia
+   7fsfbl2KcztZRxpaUImaHopeBUaUBTiUtX1TyQxT1xou5vQQbUOrgk0cM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="4887758"
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="4887758"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 08:21:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,251,1701158400"; 
+   d="scan'208";a="38817515"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 08:21:37 -0800
+Date: Wed, 7 Feb 2024 08:22:55 -0800
+From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To: alexs@kernel.org
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	linux-kernel@vger.kernel.org, yangyicong@hisilicon.com
+Subject: Re: [PATCH v4 2/4] sched/fair: remove unused parameters
+Message-ID: <20240207162255.GB21939@ranerica-svr.sc.intel.com>
+References: <20240207034704.935774-1-alexs@kernel.org>
+ <20240207034704.935774-2-alexs@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DGDNYYnA7zsSAf/5"
-Content-Disposition: inline
-In-Reply-To: <0c784113-9288-46bd-a34e-49bf0f1651bb@solid-run.com>
-
-
---DGDNYYnA7zsSAf/5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240207034704.935774-2-alexs@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 
-On Tue, Feb 06, 2024 at 02:44:24PM +0000, Josua Mayer wrote:
+On Wed, Feb 07, 2024 at 11:47:02AM +0800, alexs@kernel.org wrote:
+> From: Alex Shi <alexs@kernel.org>
 
-> > Ahh I now realise what your intent was here. All you need to do is add
-> > | interrupts:
-> > |   maxItems: 1
-> > to your binding and it should do what you're looking for.
->=20
-> Yes, that is in line with everything else.
->=20
-> What bugs me is what to do about interrupt-parent,
-> and whether to include it in example.
+A few nits:
 
-I am pretty sure you don't need to add it.
+subject: s/remove/Remove/
 
---DGDNYYnA7zsSAf/5
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> sds isn't used in function sched_asym(), so remove it to cleanup code.
 
------BEGIN PGP SIGNATURE-----
+The argument sds is not used in function sched_asym(). Remove it.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcOuTQAKCRB4tDGHoIJi
-0kQvAP4m2/Ux3BhI3wLWXVa9b0iB0LDgxI9uFmlV0BgUBArVyQD9GSbbODSVJO3+
-D0qUvcwI93EzGiK7IQ78d85Ym4ljygM=
-=b7P0
------END PGP SIGNATURE-----
+> 
+> Fixes: c9ca07886aaa ("sched/fair: Do not even the number of busy CPUs via asym_packing")
+> Signed-off-by: Alex Shi <alexs@kernel.org>
+> Reviewed-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 
---DGDNYYnA7zsSAf/5--
+With that, my tag stands, FWIW.
 
