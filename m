@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-56625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E87D84CCCA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:32:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ED1984CCCE
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 15:33:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0AE8D1F22D8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:32:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68A0AB25EB0
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 14:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5BEB7E592;
-	Wed,  7 Feb 2024 14:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 108E57A723;
+	Wed,  7 Feb 2024 14:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eu++iotz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jLmYWPV6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20FB57CF16;
-	Wed,  7 Feb 2024 14:31:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ECA17D400;
+	Wed,  7 Feb 2024 14:33:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707316319; cv=none; b=mSk/Q5dDet+MrRf8/Q0n+NdXctrc5P+4Sclr99s/hmchVDuGxe/81hc7gNU9XyEqxPz7fh/Z0jJbup9h4LfYN4Mt2hmRBXjS6wqKZY46bBiW9maFzMohEG+fQdeRsmWe7h19F4hKbFC1qJM07nKWV7zm8V1d+HL5QcS43ICDgDw=
+	t=1707316381; cv=none; b=qaS8a/T5B0jyBQlRDEB/SFHFwmGgjXZznnBs5nr/cUp5yP8CCGn5it1HHeEkHbWOX+pIjPq5Sx2UKKYzeTAGZbDiy1pKQAmBiYwiVX4Lg+aHOCR4Y0y/n2K+oi3PZJJJg5naiGn5bpeFK9hduGh0Z1KA55Wu00fG0nQrXSBfQgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707316319; c=relaxed/simple;
-	bh=BruKfoYyY7uGBswpNK7x1dXk12it/S1keDjlolw+HpU=;
+	s=arc-20240116; t=1707316381; c=relaxed/simple;
+	bh=bxJjQ8zp5/wZKAbX888sLrtd1GMsGHbQwFH2TFebIu4=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=JV/0227xtqVbb1I9mipmfZNdyHp8VnLi7/JY+0lOV4+B4oCU+HIesi+mSWRFqVpSt9qBG3R0P82IkQuTiYM50S41kJ6hmoqF+slXEF+Cu7OK7omMMtKClg6AhBm698pr7SFSKq67Z22JjPCF57XJwFDxa2EQie40n9S8jsCuJrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eu++iotz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDA4DC433F1;
-	Wed,  7 Feb 2024 14:31:56 +0000 (UTC)
+	 Mime-Version:Content-Type; b=bUFjPzebDKhwJ4g84L2ogxDntnKpwMOMim9LoHc+DYoiIRPui/VFLocex3EJDIktJk/mmjCHP90vRmzvD9qnxAsW1HgUW6Y7X9SWgSF45iI0yJ68v2jBLLIg1a/r+6LrnQb1TspRmtx6yqHmEtl9YI3Pjkj7KSJnb2pByz/AGWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jLmYWPV6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 552A5C433F1;
+	Wed,  7 Feb 2024 14:32:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707316318;
-	bh=BruKfoYyY7uGBswpNK7x1dXk12it/S1keDjlolw+HpU=;
+	s=k20201202; t=1707316380;
+	bh=bxJjQ8zp5/wZKAbX888sLrtd1GMsGHbQwFH2TFebIu4=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eu++iotzh8ZoOsnE5oECtw795jbt/pfDppxw/tQsMA37shxl6kw2q8zbKFIhBmCdi
-	 rwFs13SfMyjorG1j0sSL8ddw7Wd4+vlxpPVucvXTUwCaJ036lyXHGr92IstO+pq2Kf
-	 VhUAgxBkYzzXG4YXCU37DsebfL4jVHoUvw9WEwSXplAoKiE2qz1R0Xy8tjZK/1Dj+f
-	 S8S/GW6rajbU7mjPXlXj05p8fOCu531kavN3jTY2pe9g1H7gk1P8mE2Rq97/mgCO2p
-	 azmf+6ATsW0VAYJqrgkXWQopy0Ihzkl7HBtVl9zb6GjW1eJMIfmSPYEc0rNLXHMcLI
-	 ek4WFiD0ffxvA==
-Date: Wed, 7 Feb 2024 23:31:54 +0900
+	b=jLmYWPV6/fdm2GhyY4zcVd6HgReI0ZB643YZyPfHeJFnoIVNWL8agn9BuQ0yCnF6p
+	 wth+Ov6bgfMxWLjC10FJFU/DPrOpgqTyImbfV4h52d6P/ewbfgJE7CtyB1gHLoqOBE
+	 MkmMBkDDYGwxni3Qeyoo3LjI4naUbnMiN/I4zD+eIRFlo7z08svxe9bh+QF+0ode73
+	 tkP1e7FYr4oIGEfit58tzrY4WLLDKe1H7czBjr8kBCaDHuDoJhKLYPjlb8x80PMgNL
+	 OS5bH/0hCMurWyPH/US5ZB871BiN952jcv48y1yDriT81U6IrJOrIoJxn375ijrhBs
+	 +Bkm3ZGB4JQnw==
+Date: Wed, 7 Feb 2024 23:32:56 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Ye Bin <yebin10@huawei.com>
 Cc: <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
  <linux-trace-kernel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 4/8] tracing/probes: support '%pd/%pD' type for
- fprobe
-Message-Id: <20240207233154.cd38fd0bf4891d66807c4ed9@kernel.org>
-In-Reply-To: <20240125073923.2252057-5-yebin10@huawei.com>
+Subject: Re: [PATCH v5 5/8] tracing: add new type "%pd/%pD" in readme_msg[]
+Message-Id: <20240207233256.10fe8dbc8451d5be8bb6ecd1@kernel.org>
+In-Reply-To: <20240125073923.2252057-6-yebin10@huawei.com>
 References: <20240125073923.2252057-1-yebin10@huawei.com>
-	<20240125073923.2252057-5-yebin10@huawei.com>
+	<20240125073923.2252057-6-yebin10@huawei.com>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -61,57 +60,36 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 25 Jan 2024 15:39:19 +0800
+On Thu, 25 Jan 2024 15:39:20 +0800
 Ye Bin <yebin10@huawei.com> wrote:
-
-> Support print type '%pd/%pD' for print dentry's or file's name.
-> 
-
-nit: Looks good to me. but the patch ordering seems a bit strange.
-This should be next to [2/8].
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thank you,
 
 > Signed-off-by: Ye Bin <yebin10@huawei.com>
 > ---
->  kernel/trace/trace_fprobe.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  kernel/trace/trace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
-> index 7d2ddbcfa377..988d68e906ad 100644
-> --- a/kernel/trace/trace_fprobe.c
-> +++ b/kernel/trace/trace_fprobe.c
-> @@ -976,6 +976,7 @@ static int __trace_fprobe_create(int argc, const char *argv[])
->  	char gbuf[MAX_EVENT_NAME_LEN];
->  	char sbuf[KSYM_NAME_LEN];
->  	char abuf[MAX_BTF_ARGS_LEN];
-> +	char *dbuf = NULL;
->  	bool is_tracepoint = false;
->  	struct tracepoint *tpoint = NULL;
->  	struct traceprobe_parse_context ctx = {
-> @@ -1086,6 +1087,10 @@ static int __trace_fprobe_create(int argc, const char *argv[])
->  		argv = new_argv;
->  	}
->  
-> +	ret = traceprobe_expand_dentry_args(argc, argv, &dbuf);
-> +	if (ret)
-> +		goto out;
-> +
->  	/* setup a probe */
->  	tf = alloc_trace_fprobe(group, event, symbol, tpoint, maxactive,
->  				argc, is_return);
-> @@ -1131,6 +1136,7 @@ static int __trace_fprobe_create(int argc, const char *argv[])
->  	trace_probe_log_clear();
->  	kfree(new_argv);
->  	kfree(symbol);
-> +	kfree(dbuf);
->  	return ret;
->  
->  parse_error:
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 2a7c6fd934e9..13197d3b86bd 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -5745,7 +5745,7 @@ static const char readme_msg[] =
+>  	"\t           +|-[u]<offset>(<fetcharg>), \\imm-value, \\\"imm-string\"\n"
+>  	"\t     type: s8/16/32/64, u8/16/32/64, x8/16/32/64, char, string, symbol,\n"
+>  	"\t           b<bit-width>@<bit-offset>/<container-size>, ustring,\n"
+> -	"\t           symstr, <type>\\[<array-size>\\]\n"
+> +	"\t           symstr, %pd/%pD <type>\\[<array-size>\\]\n"
+
+Almost! you missed the ',' after %pd/%pD. :)
+
+Thank you,
+
+
+>  #ifdef CONFIG_HIST_TRIGGERS
+>  	"\t    field: <stype> <name>;\n"
+>  	"\t    stype: u8/u16/u32/u64, s8/s16/s32/s64, pid_t,\n"
 > -- 
 > 2.31.1
+> 
 > 
 
 
