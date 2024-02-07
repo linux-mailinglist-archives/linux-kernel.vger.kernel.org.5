@@ -1,97 +1,193 @@
-Return-Path: <linux-kernel+bounces-56992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A573084D271
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:54:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FA2284D274
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:54:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33E051F25B5D
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:54:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDEFB287586
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:54:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF29126F03;
-	Wed,  7 Feb 2024 19:54:21 +0000 (UTC)
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAFD01272A8;
+	Wed,  7 Feb 2024 19:54:35 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E4985947;
-	Wed,  7 Feb 2024 19:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A8486AF9
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 19:54:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707335660; cv=none; b=IVf72PS93zoNmjM41Lnl2yC2lAtb4lRXRDy3p/5ryLpVpveHii/4lOC68BQssqEPRQXzFpD9DDbuSlLg3F312i10V5g0k+OUbznlq0Ph+a7GP68MiQeBTaTDHkxjgG0eANSmyInItttOAeVmqL957XyaM3i4/xZmF5DN1ZFgPfs=
+	t=1707335675; cv=none; b=EZnQ486lPvOepWgUeG2NFYdsORUZIccbK9rPk9BTcZNKWEZ3Ra6cg7c/iWLnLOdIZxI7auEoOkctoDlZZWNFywix4czwBtk52p0Y07dwpfp9vooI2QOjhrEYjfPuWQoTMgjKyx0jo9PcahSVrB28IwGOaj6y3fVNNo9kwPGu+4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707335660; c=relaxed/simple;
-	bh=wfbSmuHab0V68wnlOCcAF2SVn1m+YMVLhGtx53tD9as=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bTOl5TTiEwf7B3+qB2XYvMOskM/TA+zysdVBnHfRdvoI475aHmMa7X1Ts1jThBo+w9CF2UxvT1uKWoJ0dk0amcZwcEbHMVdhgnNoS3ZrldnCwb5PCMYVNzSdN0Wo6U6kjhfBrd50A7oJIybkJTCCNznBVd7WKq22svooOWLzaRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-59a24bf7cadso281662eaf.0;
-        Wed, 07 Feb 2024 11:54:19 -0800 (PST)
+	s=arc-20240116; t=1707335675; c=relaxed/simple;
+	bh=hYThMK1Xf4I8228RVeu4sPoLLzyiRmJ6EGR1xxc8cw8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=QnRkObLo0eD6eHL4ahi191iiozHrFatSy9f/bQpfOozAVBiHJ5aBouT2Bt14uqxZhWNN/c+lm//uW6ND1gWh5UGp/hDr+KmozFGrz6+d5idcy292eEqA6T9TbCh1YzowNYWV79OV3kWnVBfCcF6nModKOjAeBHV06Tzf9aPP+GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-363ca646a1dso8274095ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 11:54:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707335658; x=1707940458;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cxuT7grQtF6+jxH5TdI/JH0psGW02KwfjrWP6++bBUo=;
-        b=w06rFthLoRNTI9bz1WlPMh8tV51FKliOMglBEg9dHPldMMqbFelNRhldhjMpfydxs2
-         293rF6U1lzYxIbiBfNkRk7kOjYQAPUSsvb0kGf3na1Aky9mmT0nnlZvA7Um9wOUsxUd7
-         +yvfls8F2oFH39wns9/IAjrk9fY5aRNNrzOKFhklURNgWtQg3ZRgFcleP9vLR2eOB6P4
-         PwdkVcZr+xRGMptsYz1UWsdrQ2l1PReuA6eE99yPtB9NKSh8K1OiSMNv718u7DMP44Gu
-         uCC/pctXTcY9BV5i41h7kAwkejPOhhNTJOftQcEK6mp6z7cGDIxj1PIh1KJbuOdvNp5e
-         7PnA==
-X-Forwarded-Encrypted: i=1; AJvYcCVTAMzlqdm4cy8PwWn0/mrWaUvDC72Me7pTBLIpVCmTjR7c0A1yjHzKEvPUjQnRZcVq06Ssh7uLi4oNFaWkCtvGGd7Xl67+v/YofbymlClu2yZ8f3AAjR/B1B/KLxrT6vdjlLDpb3I=
-X-Gm-Message-State: AOJu0YzehGV5eToLMfaLD2nNeR8zDAzG9roXr/x5UtYvpdhbPfWRec1B
-	uay7dOJncQ+q+5LdR2ba18ZDaBndPRUKFBq1XANvnl32y4JYg1L27Rzrk+XOQ2VM7svp98063hV
-	3tjJKaG4kVVOzzeSJAF49q8EtWh4=
-X-Google-Smtp-Source: AGHT+IHv6uqRut6OHEIswNK76znrlzV3lT4SqNcMhKHeZ34sVvR2sbP99u08sL7UiuUaaUlEcG6zTPrs+2nL2EfzsG0=
-X-Received: by 2002:a05:6871:8a4:b0:219:ed95:916e with SMTP id
- r36-20020a05687108a400b00219ed95916emr77573oaq.5.1707335658402; Wed, 07 Feb
- 2024 11:54:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707335672; x=1707940472;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yXijhnJSqfNwRwrMz0wxJxUultHKEFeKw9S9BLLYx9E=;
+        b=QXzXL54a7TXNe45Faxa7WAEa/+JuFvHBlX1Z1aVsx8NHfPKyHEbFkvNMZAIYkHJOAm
+         WJvYZXSzBzn+N4jRh9eq9PCtItXhyEynH12pLsrqJRM05k0vzC+Uc6tPaiWbcNeBEYoY
+         i4rK4Vw0cPqPpZNuZTCrmQEIPf0vX52nJ5xvwoo4EC0ZZMMfWAnOjicK1X+I2W4p60Gs
+         BgKrk7hDl9w0RiLSvJMLKh6ks0eVC9y6qIlRkpWsKbDqL9rTegKDMydokhwBB/b2EL7X
+         6Xi0rZLE/CddNIqt6nFP+IOTF+Xw0AzwFwH6HCTiBOCIV12d0RJI8d3gGCJBKVpqNIVd
+         52Lw==
+X-Forwarded-Encrypted: i=1; AJvYcCWBdSRnNso91CODMns3R0YxVENTbLEaVxzLADvwB+8PLAMAImVIGTMS1tVwJZ0SwsRN/rasZitvip/DWesCjkmepVcaUOEvzQB8ZR8Z
+X-Gm-Message-State: AOJu0Yx2Fn631N8YRH6yAmFOsLUOucgDUiWmZaiHHZjr3QK4n4pW9ZIb
+	hhJ8lDd2UdK9CXkOULhWeFzLlNUba4OGtrtQwocXh+mGER6fE+l2lTZjeaDZrE/+VQdl8fV43fR
+	vXzMbRBy2OkVnDOkegr4QdOX76qvLsq+mmYv3wGywJ2gPVoVn/odnV5w=
+X-Google-Smtp-Source: AGHT+IH/XqaXynFOhnl6JjLdwgwpGFSyoyWSeUneNpuf0CWOlEs7ALO3CLjyu77yoB49oO++8shLP8/OkYyfLkMxHAQMBT2LYHVY
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CGME20240207103144eucas1p16b601a73ff347d2542f8380b25921491@eucas1p1.samsung.com>
- <10423008.nUPlyArG6x@kreacher> <708a65cc-79ec-44a6-8454-a93d0f3114c3@samsung.com>
- <CAJZ5v0hn=KgaWn9pwtLsH2a8n61BNxzb1xrNoxUfEi3o9OAZGw@mail.gmail.com>
- <4a043533-009f-4db9-b107-c8374be28d2b@samsung.com> <CAJZ5v0hDmwaFEtLc8yDc4cXn2wODXAqATe0+_Hpm9QPODUPMQw@mail.gmail.com>
- <ZcOyW_Q1FC35oxob@slm.duckdns.org> <2f125955-8c7c-465c-938c-8768f7ca360b@samsung.com>
- <ZcPSuUBoL_EDvcTF@slm.duckdns.org> <ZcPelerpp3Rr5YFW@slm.duckdns.org>
-In-Reply-To: <ZcPelerpp3Rr5YFW@slm.duckdns.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 7 Feb 2024 20:54:07 +0100
-Message-ID: <CAJZ5v0gB2h1G_0a_BAbBtib=VxnJgF9N3Sa3QYpCeURcCtKUTQ@mail.gmail.com>
-Subject: Re: [PATCH v1] PM: sleep: Restore asynchronous device resume optimization
-To: Tejun Heo <tj@kernel.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	"Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM <linux-pm@vger.kernel.org>, 
-	Ulf Hansson <ulf.hansson@linaro.org>, Nathan Chancellor <nathan@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Naohiro.Aota@wdc.com, kernel-team@meta.com
+X-Received: by 2002:a05:6e02:1bc4:b0:363:cc27:74c with SMTP id
+ x4-20020a056e021bc400b00363cc27074cmr540192ilv.4.1707335672617; Wed, 07 Feb
+ 2024 11:54:32 -0800 (PST)
+Date: Wed, 07 Feb 2024 11:54:32 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000047631d0610d010c1@google.com>
+Subject: [syzbot] [input?] [usb?] WARNING in input_register_device (2)
+From: syzbot <syzbot+8e41bb0c055b209ebbf4@syzkaller.appspotmail.com>
+To: gregkh@linuxfoundation.org, linux-input@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, rafael@kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 7, 2024 at 8:48=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> I couldn't reproduce effective max_active being pushed down to min_active
-> across suspend/resume cycles on x86. There gotta be something different.
->
-> - Can you please apply the following patch along with the WQ_DFL_MIN_ACTI=
-VE
->   bump, go through suspend/resume once and report the dmesg?
->
-> - Regardless of the root cause, I think async should switch to a dedicate=
-d
->   workqueue with explicitly raised min_active (will add an interface for
->   it).
+Hello,
 
-Agreed.
+syzbot found the following issue on:
+
+HEAD commit:    6613476e225e Linux 6.8-rc1
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=15ca9224180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=877e61347079aad5
+dashboard link: https://syzkaller.appspot.com/bug?extid=8e41bb0c055b209ebbf4
+compiler:       riscv64-linux-gnu-gcc (Debian 12.2.0-13) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: riscv64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b32118180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17dab048180000
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/a741b348759c/non_bootable_disk-6613476e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/33ea806d02dd/vmlinux-6613476e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/33195f72f823/Image-6613476e.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8e41bb0c055b209ebbf4@syzkaller.appspotmail.com
+
+WARNING: CPU: 0 PID: 8 at lib/kobject_uevent.c:671 add_uevent_var+0x282/0x296 lib/kobject_uevent.c:671
+Modules linked in:
+CPU: 0 PID: 8 Comm: kworker/0:0 Not tainted 6.8.0-rc1-syzkaller #0
+Hardware name: riscv-virtio,qemu (DT)
+Workqueue: usb_hub_wq hub_event
+epc : add_uevent_var+0x282/0x296 lib/kobject_uevent.c:671
+ ra : add_uevent_var+0x282/0x296 lib/kobject_uevent.c:671
+epc : ffffffff858325ec ra : ffffffff858325ec sp : ff20000000049b20
+ gp : ffffffff8863e320 tp : ff6000000c29ce00 t0 : ccb0ea972aeb292d
+ t1 : ffe3ffff000092d8 t2 : ff6000000c29d8f8 s0 : ff20000000049c00
+ s1 : ff60000016d76000 a0 : 0000000000000001 a1 : 0000000000000000
+ a2 : 0000000000000002 a3 : ffffffff800b66fa a4 : 0000000000000000
+ a5 : 0000000000000000 a6 : 0000000000000003 a7 : ff200000000496c7
+ s2 : 0000000000000004 s3 : 1fe4000000009368 s4 : 1fec000002daec43
+ s5 : ff60000016d76218 s6 : 0000000000000006 s7 : 00000000000007fc
+ s8 : ff60000016d76a1c s9 : 1fec000002daed43 s10: ffffffff885377c0
+ s11: ffffffff86b9c560 t3 : 0000000000000004 t4 : ffe3ffff000092d8
+ t5 : ffe3ffff000092d9 t6 : ff200000000496d8
+status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
+[<ffffffff858325ec>] add_uevent_var+0x282/0x296 lib/kobject_uevent.c:671
+[<ffffffff85833cdc>] kobject_uevent_env+0xb0c/0x1378 lib/kobject_uevent.c:602
+[<ffffffff8583456a>] kobject_uevent+0x22/0x2e lib/kobject_uevent.c:642
+[<ffffffff82542b12>] device_add+0x10d2/0x186e drivers/base/core.c:3606
+[<ffffffff837032c4>] input_register_device+0x606/0xe9a drivers/input/input.c:2379
+[<ffffffff83faba00>] hidinput_connect+0x4c72/0x88a4 drivers/hid/hid-input.c:2355
+[<ffffffff83f9d330>] hid_connect+0x11e0/0x15e0 drivers/hid/hid-core.c:2194
+[<ffffffff83f9d7e6>] hid_hw_start drivers/hid/hid-core.c:2309 [inline]
+[<ffffffff83f9d7e6>] hid_hw_start+0xb6/0x13c drivers/hid/hid-core.c:2300
+[<ffffffff840255a0>] ms_probe+0x15e/0x4f0 drivers/hid/hid-microsoft.c:391
+[<ffffffff83f9de94>] __hid_device_probe drivers/hid/hid-core.c:2633 [inline]
+[<ffffffff83f9de94>] hid_device_probe+0x2a4/0x3f2 drivers/hid/hid-core.c:2670
+[<ffffffff8254cd2e>] call_driver_probe drivers/base/dd.c:579 [inline]
+[<ffffffff8254cd2e>] really_probe+0x234/0xbbc drivers/base/dd.c:658
+[<ffffffff8254d88a>] __driver_probe_device+0x1d4/0x458 drivers/base/dd.c:800
+[<ffffffff8254db6e>] driver_probe_device+0x60/0x1ce drivers/base/dd.c:830
+[<ffffffff8254dec0>] __device_attach_driver+0x1e4/0x2fe drivers/base/dd.c:958
+[<ffffffff82547562>] bus_for_each_drv+0x142/0x1da drivers/base/bus.c:457
+[<ffffffff8254eae2>] __device_attach+0x1c4/0x462 drivers/base/dd.c:1030
+[<ffffffff8254f108>] device_initial_probe+0x1c/0x26 drivers/base/dd.c:1079
+[<ffffffff82549fe4>] bus_probe_device+0x15c/0x192 drivers/base/bus.c:532
+[<ffffffff82542b6c>] device_add+0x112c/0x186e drivers/base/core.c:3625
+[<ffffffff83f96c5c>] hid_add_device+0x374/0x9b2 drivers/hid/hid-core.c:2816
+[<ffffffff840dc3f2>] usbhid_probe+0xa50/0xf84 drivers/hid/usbhid/hid-core.c:1429
+[<ffffffff830a18c0>] usb_probe_interface+0x2d4/0x8a2 drivers/usb/core/driver.c:399
+[<ffffffff8254cd2e>] call_driver_probe drivers/base/dd.c:579 [inline]
+[<ffffffff8254cd2e>] really_probe+0x234/0xbbc drivers/base/dd.c:658
+[<ffffffff8254d88a>] __driver_probe_device+0x1d4/0x458 drivers/base/dd.c:800
+[<ffffffff8254db6e>] driver_probe_device+0x60/0x1ce drivers/base/dd.c:830
+[<ffffffff8254dec0>] __device_attach_driver+0x1e4/0x2fe drivers/base/dd.c:958
+[<ffffffff82547562>] bus_for_each_drv+0x142/0x1da drivers/base/bus.c:457
+[<ffffffff8254eae2>] __device_attach+0x1c4/0x462 drivers/base/dd.c:1030
+[<ffffffff8254f108>] device_initial_probe+0x1c/0x26 drivers/base/dd.c:1079
+[<ffffffff82549fe4>] bus_probe_device+0x15c/0x192 drivers/base/bus.c:532
+[<ffffffff82542b6c>] device_add+0x112c/0x186e drivers/base/core.c:3625
+[<ffffffff8309b2b4>] usb_set_configuration+0xfe0/0x1b10 drivers/usb/core/message.c:2207
+[<ffffffff830c3d56>] usb_generic_driver_probe+0xae/0x128 drivers/usb/core/generic.c:254
+[<ffffffff830a0606>] usb_probe_device+0xd6/0x340 drivers/usb/core/driver.c:294
+[<ffffffff8254cd2e>] call_driver_probe drivers/base/dd.c:579 [inline]
+[<ffffffff8254cd2e>] really_probe+0x234/0xbbc drivers/base/dd.c:658
+[<ffffffff8254d88a>] __driver_probe_device+0x1d4/0x458 drivers/base/dd.c:800
+[<ffffffff8254db6e>] driver_probe_device+0x60/0x1ce drivers/base/dd.c:830
+[<ffffffff8254dec0>] __device_attach_driver+0x1e4/0x2fe drivers/base/dd.c:958
+[<ffffffff82547562>] bus_for_each_drv+0x142/0x1da drivers/base/bus.c:457
+[<ffffffff8254eae2>] __device_attach+0x1c4/0x462 drivers/base/dd.c:1030
+[<ffffffff8254f108>] device_initial_probe+0x1c/0x26 drivers/base/dd.c:1079
+[<ffffffff82549fe4>] bus_probe_device+0x15c/0x192 drivers/base/bus.c:532
+[<ffffffff82542b6c>] device_add+0x112c/0x186e drivers/base/core.c:3625
+[<ffffffff830777fe>] usb_new_device+0x960/0x1648 drivers/usb/core/hub.c:2596
+[<ffffffff8307dc48>] hub_port_connect drivers/usb/core/hub.c:5465 [inline]
+[<ffffffff8307dc48>] hub_port_connect_change drivers/usb/core/hub.c:5605 [inline]
+[<ffffffff8307dc48>] port_event drivers/usb/core/hub.c:5765 [inline]
+[<ffffffff8307dc48>] hub_event+0x2954/0x4756 drivers/usb/core/hub.c:5847
+[<ffffffff801231ea>] process_one_work+0x7ce/0x179c kernel/workqueue.c:2633
+[<ffffffff80124c94>] process_scheduled_works kernel/workqueue.c:2706 [inline]
+[<ffffffff80124c94>] worker_thread+0xadc/0x10f8 kernel/workqueue.c:2787
+[<ffffffff80144154>] kthread+0x28c/0x3a6 kernel/kthread.c:388
+[<ffffffff85928722>] ret_from_fork+0xe/0x1c arch/riscv/kernel/entry.S:229
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
