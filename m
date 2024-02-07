@@ -1,179 +1,192 @@
-Return-Path: <linux-kernel+bounces-56137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4385884C683
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:45:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB1A884C67E
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 09:44:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C01E7282D64
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:45:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D49DB229D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 08:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D5D7241EC;
-	Wed,  7 Feb 2024 08:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b="Yj5qMK8F"
-Received: from whm50.louhi.net (whm50.louhi.net [77.240.19.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F0320B12;
+	Wed,  7 Feb 2024 08:44:25 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0585F20B0E
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 08:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.240.19.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0D291F615
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 08:44:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707295468; cv=none; b=PdCuQFMcv5jBFJhnn55nAzZLGEkkWVnILq08+LCGCVcvFSzWsMS7km0L8Ur1syhg6g+z7SOfSgWxJek24MwqzUUWSdsTwg5fKffOOtBZ2Z7ySzpmrrSA9vFIUZ3zaKFPILieOcKLTDccEMAI8A/uMl9Jmv2Q4HHimpT5Tiyv/tA=
+	t=1707295464; cv=none; b=bAoJXMpSk4QDltXDGjjzoMftAsCYeyHo01KpMadQi45E+ajV9r9L1qnFLpKs5XH7I6hx59fwvm8Cp+EE/tmD2IAIbHHgsaEZHZj2dS16hbBQQ3hisdUdEBeUJvzen4yLj5reS4g96l/g23M6DJ6um9pGScQjLzAEVCvOKB3YJY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707295468; c=relaxed/simple;
-	bh=PLWVHtXp1su+keqeAZfr5JdA50OHHDttPlQGFKWS0q0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=W8dACBIx9B6lHRJ1deSmWiJp814J1mlKqvfBkuaXz6i4DC5mEaIVXdS7Ol4Hk4dyzZnwmYVXc2ZPwKQOIYYIak5OOBjNCQcQImlioFyp12T45Ycnnas4b4EGcEDzVp+CBIujQy90MadPlaMq5lnbQo0k/SiH07dTdrFsp7W/kTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi; spf=pass smtp.mailfrom=haloniitty.fi; dkim=pass (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b=Yj5qMK8F; arc=none smtp.client-ip=77.240.19.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=haloniitty.fi
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=haloniitty.fi; s=default; h=Content-Type:MIME-Version:References:
-	In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=PLWVHtXp1su+keqeAZfr5JdA50OHHDttPlQGFKWS0q0=; b=Yj5qMK8Ff40MlGMbZXtV4xxuUa
-	C2ESwpngeeC9mvEVI8EseU+/oubJEKJxV35tYX0+pXK8vjyLS878XglqJ5yFAjKdLNr0/7RdHTdhG
-	x4bYGCsG1anmihKeLrPtSPLsnHciffgIkBAS3RF+RAOfc8SOAf++LtTI420ZWugjvr6NOshL/NCjr
-	LZUSOgUkTjq2M34AYtJSM7b8iN7+xVU0XH6bLt33TLh1cgKqyQ/Hf4B7ml4zS3XSAu2lb/kxQnJMr
-	wNq5D3+kA2hMtbWFIfQR1KxtAIbrg8C40dnYlc+lWIGtQVisNfEAqzPwhyWLyakkRMjZk66/1elPV
-	dKGvQlLQ==;
-Received: from [194.136.85.206] (port=41242 helo=eldfell)
-	by whm50.louhi.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <pekka.paalanen@haloniitty.fi>)
-	id 1rXdXU-0002TR-2b;
-	Wed, 07 Feb 2024 10:44:16 +0200
-Date: Wed, 7 Feb 2024 10:44:07 +0200
-From: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
-To: Arthur Grillo <arthurgrillo@riseup.net>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, =?UTF-8?B?TWHDrXJh?= Canal
- <mairacanal@riseup.net>, Maxime Ripard <mripard@kernel.org>, Louis Chauvet
- <louis.chauvet@bootlin.com>, Rodrigo Siqueira
- <rodrigosiqueiramelo@gmail.com>, Melissa Wen <melissa.srw@gmail.com>,
- Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
- <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- marcheu@google.com, seanpaul@google.com, nicolejadeyee@google.com,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH 2/2] drm/vkms: Use a simpler composition function
-Message-ID: <20240207104407.7b06bac2@eldfell>
-In-Reply-To: <d258c8dc-78e9-4509-9037-a98f7f33b3a3@riseup.net>
-References: <20240201-yuv-v1-0-3ca376f27632@bootlin.com>
-	<20240201-yuv-v1-2-3ca376f27632@bootlin.com>
-	<20240202105522.43128e19@eldfell>
-	<20240202102601.70b6d49c@xps-13>
-	<3nofkwzgnf4yva2wfogdbii47ohpi2wm5vp6aijtg3emxyoowt@twyreqz7ai3g>
-	<20240202131322.5471e184@xps-13>
-	<20240202174913.789a9db9@eldfell>
-	<20240202170734.3176dfe4@xps-13>
-	<20240202214527.1d97c881@ferris.localdomain>
-	<d258c8dc-78e9-4509-9037-a98f7f33b3a3@riseup.net>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707295464; c=relaxed/simple;
+	bh=urWyMor9PzUhawbt1aDcluue/V96UkIeCSF6aTfwkEY=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=X8UqnULMbXjVqhM5Z/KSo36CCwONNlOPjtiCiDh7/TtlPSItdRwdk939mvXg5sjjlAeTdlFG8zZV5I5DIwUfcFFMBeS7jGD/qDQO0BFTEXf8XfMmUI63sHzU0TzJtA1fT/PmsEPE87UFSiWTgPKcAffccJDFiJ+mcUYfXb0nUjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c2c96501e6so24503839f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 00:44:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707295462; x=1707900262;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9PsWuNaKPQWBOwb1Q8TS48CwB4K4Y/qGlpzzqB8naz0=;
+        b=r4iKtHDbXq8cnk72d42LF+nQPUJVt9jL0X6t/lTw+Vt8j1SzoMzbCuKUYgTvm7sb7w
+         7PWru9bnoNhPYm32I9K/eVU2Sa16SyapBc19dWy8f8EjPYddAe/9xq9waaRxNUJvKVym
+         3jVB5eXhvwdMC7HaVszqVfR27W4PXB8Vg4MfxpatwlyEWQ0tz6h/vuCOnFq5P8QEF4jm
+         T9p6zDXFVUQ0yeytcq4mqE/mg4ZXXPn7F+9mpE21AMCi0+0FI/pCGZAItkii9Qbn2vaq
+         UXnUy+AYxyebAx3RwIoaAn9pBxyoXhzjUAeJtWPKAZN6SeRPQsIks6E1Y578icRIwe+C
+         onpw==
+X-Gm-Message-State: AOJu0YzRaXDs6OXiGfvvtWqHWzGzBtJsUC8yBPZBs1gb2rVfsD3a+gzi
+	M/1/ulYbDxvpGctk9wm0nHc4GPJgoLnpYSg1t58v6UjDou4wvOQHd3RUfxpHKLwks+9Y/IyYzYV
+	JsociwZsl+ZrAjnAaIWzToPNnhVQn5AbCsIpHooIsIuzmFx1Sax/Ltuo=
+X-Google-Smtp-Source: AGHT+IHg/p0y5xPt2x4+3qbFtmEedzqTWvFWQUpezzkAqeOzs+9ZrTwRjkNRYNs0Ktt1rawFeoTL+lLXdzYwOU2vzbmXPSdfT6KT
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7U02RGhYx/VlMaBtD=1CoDj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - whm50.louhi.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - haloniitty.fi
-X-Get-Message-Sender-Via: whm50.louhi.net: authenticated_id: pekka.paalanen@haloniitty.fi
-X-Authenticated-Sender: whm50.louhi.net: pekka.paalanen@haloniitty.fi
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+X-Received: by 2002:a05:6602:15d0:b0:7bf:ffe2:3537 with SMTP id
+ f16-20020a05660215d000b007bfffe23537mr181274iow.3.1707295461875; Wed, 07 Feb
+ 2024 00:44:21 -0800 (PST)
+Date: Wed, 07 Feb 2024 00:44:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000088268a0610c6b3ae@google.com>
+Subject: [syzbot] [xfs?] INFO: task hung in xfs_inodegc_flush
+From: syzbot <syzbot+0260338e3eff65854d1f@syzkaller.appspotmail.com>
+To: chandan.babu@oracle.com, djwong@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
---Sig_/7U02RGhYx/VlMaBtD=1CoDj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-On Tue, 6 Feb 2024 14:57:48 -0300
-Arthur Grillo <arthurgrillo@riseup.net> wrote:
+syzbot found the following issue on:
 
-> On 02/02/24 16:45, Pekka Paalanen wrote:
+HEAD commit:    076d56d74f17 Add linux-next specific files for 20240202
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=173b568fe80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=428086ff1c010d9f
+dashboard link: https://syzkaller.appspot.com/bug?extid=0260338e3eff65854d1f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148b3c9fe80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13811004180000
 
-..
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/dece45d1a4b5/disk-076d56d7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4921e269b178/vmlinux-076d56d7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2a9156da9091/bzImage-076d56d7.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/9938609b8cc3/mount_0.gz
 
-> > Would it be possible to have a standardised benchmark specifically
-> > for performance rather than correctness, in IGT or where-ever it
-> > would make sense? Then it would be simple to tell contributors to
-> > run this and report the numbers before and after.
-> >=20
-> > I would propose this kind of KMS layout:
-> >=20
-> > - CRTC size 3841 x 2161
-> > - primary plane, XRGB8888, 3639 x 2161 @ 101,0
-> > - overlay A, XBGR2101010, 3033 x 1777 @ 201,199
-> > - overlay B, ARGB8888, 1507 x 1400 @ 1800,250
-> >=20
-> > The sizes and positions are deliberately odd to try to avoid happy
-> > alignment accidents. The planes are big, which should let the pixel
-> > operations easily dominate performance measurement. There are
-> > different pixel formats, both opaque and semi-transparent. There is
-> > lots of plane overlap. The planes also do not cover the whole CRTC
-> > leaving the background visible a bit.
-> >=20
-> > There should be two FBs per each plane, flipped alternatingly each
-> > frame. Writeback should be active. Run this a number of frames, say,
-> > 100, and measure the kernel CPU time taken. It's supposed to take at
-> > least several seconds in total.
-> >=20
-> > I think something like this should be the base benchmark. One can
-> > add more to it, like rotated planes, YUV planes, etc. or switch
-> > settings on the existing planes. Maybe even FB_DAMAGE_CLIPS. Maybe
-> > one more overlay that is very tall and thin.
-> >=20
-> > Just an idea, what do you all think? =20
->=20
-> Hi Pekka,
->=20
-> I just finished writing this proposal using IGT.
->=20
-> I got pretty interesting results:
->=20
-> The mentioned commit 8356b97906503a02125c8d03c9b88a61ea46a05a took
-> around 13 seconds. While drm-misc/drm-misc-next took 36 seconds.
->=20
-> I'm currently bisecting to be certain that the change to the
-> pixel-by-pixel is the culprit, but I don't see why it wouldn't be.
->=20
-> I just need to do some final touches on the benchmark code and it
-> will be ready for revision.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0260338e3eff65854d1f@syzkaller.appspotmail.com
 
-Awesome, thank you very much for doing that!
-pq
+INFO: task syz-executor218:5106 blocked for more than 143 seconds.
+      Not tainted 6.8.0-rc2-next-20240202-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor218 state:D stack:18928 pid:5106  tgid:5106  ppid:5102   flags:0x00004002
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5400 [inline]
+ __schedule+0x17df/0x4a40 kernel/sched/core.c:6727
+ __schedule_loop kernel/sched/core.c:6804 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6819
+ schedule_timeout+0xb0/0x310 kernel/time/timer.c:2159
+ do_wait_for_common kernel/sched/completion.c:95 [inline]
+ __wait_for_common kernel/sched/completion.c:116 [inline]
+ wait_for_common kernel/sched/completion.c:127 [inline]
+ wait_for_completion+0x355/0x620 kernel/sched/completion.c:148
+ __flush_workqueue+0x730/0x1630 kernel/workqueue.c:3617
+ xfs_inodegc_wait_all fs/xfs/xfs_icache.c:465 [inline]
+ xfs_inodegc_flush+0xe1/0x3e0 fs/xfs/xfs_icache.c:1912
+ xfs_unmountfs+0x25/0x200 fs/xfs/xfs_mount.c:1064
+ xfs_fs_put_super+0x65/0x140 fs/xfs/xfs_super.c:1136
+ generic_shutdown_super+0x136/0x2d0 fs/super.c:646
+ kill_block_super+0x44/0x90 fs/super.c:1680
+ xfs_kill_sb+0x15/0x50 fs/xfs/xfs_super.c:2026
+ deactivate_locked_super+0xc4/0x130 fs/super.c:477
+ cleanup_mnt+0x426/0x4c0 fs/namespace.c:1267
+ task_work_run+0x24f/0x310 kernel/task_work.c:180
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:108 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:201 [inline]
+ syscall_exit_to_user_mode+0x168/0x370 kernel/entry/common.c:212
+ do_syscall_64+0x10a/0x240 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f1a396ed8f7
+RSP: 002b:00007ffec055f888 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f1a396ed8f7
+RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffec055f940
+RBP: 00007ffec055f940 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000206 R12: 00007ffec05609b0
+R13: 000055555739d6c0 R14: 00000000000c93c9 R15: 0000000000000108
+ </TASK>
 
---Sig_/7U02RGhYx/VlMaBtD=1CoDj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Showing all locks held in the system:
+1 lock held by khungtaskd/29:
+ #0: ffffffff8e130d60 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+ #0: ffffffff8e130d60 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
+ #0: ffffffff8e130d60 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6614
+2 locks held by getty/4817:
+ #0: ffff88802a9230a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc90002f162f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b5/0x1e10 drivers/tty/n_tty.c:2201
+1 lock held by syz-executor218/5106:
+ #0: ffff88807f4d40e0 (&type->s_umount_key#48){+.+.}-{3:3}, at: __super_lock fs/super.c:56 [inline]
+ #0: ffff88807f4d40e0 (&type->s_umount_key#48){+.+.}-{3:3}, at: __super_lock_excl fs/super.c:71 [inline]
+ #0: ffff88807f4d40e0 (&type->s_umount_key#48){+.+.}-{3:3}, at: deactivate_super+0xb5/0xf0 fs/super.c:509
 
------BEGIN PGP SIGNATURE-----
+=============================================
 
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXDQtcACgkQI1/ltBGq
-qqfDMA/+OHdgULaTTkKq/qKGNggOmqKIsJHFC7spImj86x3TGqtux3BPoJx0AjfC
-DhvbCtp1lB95QdtPxDNn6IOxVLP2OEXwaqYtx7+xh3E8p+Ih4IgxeyDg+1N+jEga
-h8PEp6nq4oWC86QCv4wfe4q6fXOtS78zsSXwXaJFlc+m9LNmAfHhlfmIlEc5TUFI
-ZiaPWeRi6e6GbnAlRlMdeUlA24hnDgoDXJRy3ofADb8+zDCL5OCieCjiln3DGjH4
-qlwSVt2pi5qW3syELecQIMDfJ6m3n6eAmdaRTiRurkVniO9RFASSR0d7q9OtFHHP
-KLtzIJmDhk2i8O3dmCrVIZTK4IvOiTadSkLcZLXBct19y0v/Bj3PDcIt1vt4lwpT
-+lpxOuXs+lKXm5fleoPgW+8w/uwsLxR7JYXJ71EFLVZeFMQVOjxI+H34oivauMew
-N5pP+RSbaqIDkghCvJ2Ef1kBeUfqmce9G8rip7oPQSYgNNnozczLsXX67o+/VFOB
-m/w/5853A4kKBwgzXugSYQTA/cmPlGmtJvj6Qy3VMl7jkk13S3rtiodx5SWL2fPP
-gcZPhIBW2BFJNQjEoRgygL9FkWWyppWs0BkGIm+SjqfQnwqWifBEhdlmPKAzDj+s
-/kgrM8kx0Z0r5Q874ZwlhCKXk7RrqkbzWCtTsLS9Niyf8ZqZcjE=
-=x6Do
------END PGP SIGNATURE-----
+NMI backtrace for cpu 1
+CPU: 1 PID: 29 Comm: khungtaskd Not tainted 6.8.0-rc2-next-20240202-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+ watchdog+0xfb0/0xff0 kernel/hung_task.c:379
+ kthread+0x2f0/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:242
+ </TASK>
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:48 [inline]
+NMI backtrace for cpu 0 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:86 [inline]
+NMI backtrace for cpu 0 skipped: idling at acpi_safe_halt+0x21/0x30 drivers/acpi/processor_idle.c:112
 
---Sig_/7U02RGhYx/VlMaBtD=1CoDj--
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
