@@ -1,212 +1,176 @@
-Return-Path: <linux-kernel+bounces-55751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 848E584C12F
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 23A6C84C135
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 01:08:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 101D71F253BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:07:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9607E1F254B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 00:08:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CAE63D76;
-	Wed,  7 Feb 2024 00:07:32 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 150843C32;
+	Wed,  7 Feb 2024 00:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Y2PtoaEX"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154EE28E8
-	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 00:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC873211;
+	Wed,  7 Feb 2024 00:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707264451; cv=none; b=R0RbQkySTkwxVZ9hR9SyjUGS6SaVitGsb+SKGdwk3/5ByGt5RdpnnFKxQp/8MPiDy/SCULU5tJPB5/Oqdo+5wYz45zMwsYCSHxKdauSqcybM933cb9esDL1h1sPQLbgq9yMRl9aWevB+W+5ZjKPKWcZ8FvMU1GNnbXrbVVyArpE=
+	t=1707264514; cv=none; b=E9FV4t7npdx2jGBp7AUwUu02rGwTJVnYHsFf9chvd/1VGX3plX38O3vB7fhbmREwpV1EQJSIWKktDFH4nJqPkLKLZciyg2DXB4i0F27tAv+eRzcV8jcRfUSCXbyih1cPGuwtluJWtjPIwTbgQoX1x94D9AshGEsgJSMbm5sdzDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707264451; c=relaxed/simple;
-	bh=fzBMwjP3R+a5R2HdhiIMhtmDSAFyjPs7cnyLs+nLCOU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=PYwnPX6l3Xog3RAuvSFrhmoCEnM7diOagg5LzzSocAV2kcQDGwa85wPc6uHOH/M5USAyMOVOng8GJOPLCDpREMTrpYx3gPWr1Qn2uXW814PjQGG5afRhPTA8Rr74Mlrp2TOfunfJ47gaFKZ7CanQPZMuIBFc4WNcFIU4f90Qw1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7becfc75cd4so5886239f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 06 Feb 2024 16:07:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707264449; x=1707869249;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OEF1tKQoR2J3woTag73sOwwH7baxXxEr34WqP9038pg=;
-        b=NsA+8Btwyldq72koh2qXCH0twbpQje5DF4wbMftlXRG2AlPggdXzk+ZyMzRx0Ya/Qh
-         6CyeL+5sdjGGjSbCO93rPKfon+4y9nkaw/pwQOBx2JTngMgx2OsbYu7KgyDRBMsUMTJS
-         VEDaq3GYkDDPZBs2pVKs2bgEUPN27nWg+AII8L0tigjtEePDXUAC9t5F2+k0dej+rGG/
-         Sh6/71aZErTzHng3PhWr0i8gOD6YJ6peEw8ETSAFrC6SGOTARcEu7PRlNLGD3Dgom9fx
-         kgdU+Y4DntFqbJMDDusJaWqaztc7NxsA9XNTVHq8shhmtcA6VRj+vnCdeX3ZyfhmPyCU
-         0YAg==
-X-Gm-Message-State: AOJu0Yy67EzDYxANaesDhiF3CEYNfa0QbHZL4Obne3EqKdOSHvBWOfUT
-	1MnhqHzZ2AfHYDETyYFeOp0+tNwFOahsT5Edzs6tNlFKJ5m52O4lxT/h6zrzRgIwTenacZk0bag
-	3fkQD+SJhUvoLBg1T9ZQbUJKh9Xr2gLIUPTKxlOQKyerS2b2pVU7xsZI=
-X-Google-Smtp-Source: AGHT+IFG5NSDC+h42rp1GTbwW/E6K5b3F2dv0r7w0pkLfSL+5ZlsjoFnWtxwdMjaBhcrohwkoPjYFWEfTOMWyHaK4e9ZY8sx5o/e
+	s=arc-20240116; t=1707264514; c=relaxed/simple;
+	bh=mFIrM+Di9InkZwQXHNBXM1hyZVucQXVbLEjHXOAJ6EU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=IOlFx9aWnUTEPXOBUwVkNi1zXCh8qPxkV/BOqnRRuZZ3fYw6PTM4RHRG8jz3LhvX91f9SYy02xE1mSXpyqmP/cP5KUD00ht3mrXG9fy+0cb0ksbMpvjwjnQDbHPOL5hJUy4dkGYru6/3j7Q5/yCiSgMoNAQfHDIiKLeOsXJDQzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Y2PtoaEX; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 416NpWNL030915;
+	Wed, 7 Feb 2024 00:08:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=+D4nktpCYUtZM2am9USds2jdVYtzFu8/AHIYCkKZE+I=; b=Y2
+	PtoaEXIjnihGpiCg6oKnkBK+zLcYcdmGipTAQM46Fnqz4sDXtlGo2eaqgQgACc60
+	3Bu3KpgMW8IphxFDY35ZlAXW5aNNFnocXJ3kAEaeZbgVSpTYFsgCgwwMadCeW8L/
+	a5guZ7DLbpURgr++VkhoAoLABkLdKuuDF9gCd15VVSKycv2OR+rCyOirlw9BBc0A
+	H0V20CApS5+twrmoQs0kOlQf0efnsV44nS9poefHImTLf5Hl6cWYGQYWjo3akhC3
+	9W2v62JUrvPUu7moPtfYUazJEvnNU/obI0TYf+zffZ/ADF3vPCX5sslCuzWjLHZG
+	7XiTzbvjQ4WX0ZfD2l+w==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w3hyvhtp9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 Feb 2024 00:08:03 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4170823w004677
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 7 Feb 2024 00:08:02 GMT
+Received: from [10.110.7.251] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 6 Feb
+ 2024 16:08:01 -0800
+Message-ID: <ef83036f-6605-1db3-d962-ac28a10711ac@quicinc.com>
+Date: Tue, 6 Feb 2024 16:08:00 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:35ac:b0:471:cde:78e with SMTP id
- v44-20020a05663835ac00b004710cde078emr75269jal.3.1707264449265; Tue, 06 Feb
- 2024 16:07:29 -0800 (PST)
-Date: Tue, 06 Feb 2024 16:07:29 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000946190610bf7bd5@google.com>
-Subject: [syzbot] [dri?] [media?] inconsistent lock state in valid_state (2)
-From: syzbot <syzbot+a225ee3df7e7f9372dbe@syzkaller.appspotmail.com>
-To: christian.koenig@amd.com, dri-devel@lists.freedesktop.org, 
-	gustavo@padovan.org, linaro-mm-sig@lists.linaro.org, 
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
-	sumit.semwal@linaro.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v13 35/53] ALSA: usb-audio: Prevent starting of audio
+ stream if in use
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>
+References: <20240203023645.31105-1-quic_wcheng@quicinc.com>
+ <20240203023645.31105-36-quic_wcheng@quicinc.com>
+ <87y1bxvj0o.wl-tiwai@suse.de>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <87y1bxvj0o.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: qIQyJL9pDt7huHZmKIMEX-BC0aAcy2JV
+X-Proofpoint-GUID: qIQyJL9pDt7huHZmKIMEX-BC0aAcy2JV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-06_15,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=879
+ suspectscore=0 adultscore=0 malwarescore=0 bulkscore=0 phishscore=0
+ clxscore=1011 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402060171
 
-Hello,
+Hi Takashi,
 
-syzbot found the following issue on:
+On 2/6/2024 5:07 AM, Takashi Iwai wrote:
+> On Sat, 03 Feb 2024 03:36:27 +0100,
+> Wesley Cheng wrote:
+>>
+>> With USB audio offloading, an audio session is started from the ASoC
+>> platform sound card and PCM devices.  Likewise, the USB SND path is still
+>> readily available for use, in case the non-offload path is desired.  In
+>> order to prevent the two entities from attempting to use the USB bus,
+>> introduce a flag that determines when either paths are in use.
+>>
+>> If a PCM device is already in use, the check will return an error to
+>> userspace notifying that the stream is currently busy.  This ensures that
+>> only one path is using the USB substream.
+>>
+>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> 
+> Hm, I'm not sure whether it's safe to hold chip->mutex there for the
+> long code path.  It even kicks off the auto-resume, which may call
+> various functions at resuming, and some of them may re-hold
+> chip->mutex.
+> 
 
-HEAD commit:    021533194476 Kconfig: Disable -Wstringop-overflow for GCC ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10a82db0180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=457249c250b93697
-dashboard link: https://syzkaller.appspot.com/bug?extid=a225ee3df7e7f9372dbe
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+That's a good point.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> If it's only about the open flag, protect only the flag access with
+> the mutex, not covering the all open function.  At least the re-entry
+> can be avoided by that.
+> 
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/da8c6426660d/disk-02153319.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a866aaa09be9/vmlinux-02153319.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4a5680d805d7/bzImage-02153319.xz
+Sure, let me re-order the check/assignment and the mutex locking.  Since 
+this is now checked here in USB PCM and the QC offload driver, we want 
+to make sure that if there was some application attempting to open both 
+at the same time, we prevent any possible races.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a225ee3df7e7f9372dbe@syzkaller.appspotmail.com
+I think the best way to address this would be something like:
 
-================================
-WARNING: inconsistent lock state
-6.8.0-rc2-syzkaller-00199-g021533194476 #0 Not tainted
---------------------------------
-inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
-syz-executor.4/9508 [HC0[0]:SC0[0]:HE0:SE1] takes:
-ffffffff8ea8c5d8 (sync_timeline_list_lock){?...}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:376 [inline]
-ffffffff8ea8c5d8 (sync_timeline_list_lock){?...}-{2:2}, at: sync_info_debugfs_show+0x94/0x4d0 drivers/dma-buf/sync_debug.c:147
-{IN-HARDIRQ-W} state was registered at:
-  lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
-  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-  _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
-  sync_timeline_debug_remove+0x2c/0x150 drivers/dma-buf/sync_debug.c:31
-  sync_timeline_free drivers/dma-buf/sw_sync.c:125 [inline]
-  kref_put include/linux/kref.h:65 [inline]
-  sync_timeline_put drivers/dma-buf/sw_sync.c:137 [inline]
-  timeline_fence_release+0x204/0x250 drivers/dma-buf/sw_sync.c:165
-  kref_put include/linux/kref.h:65 [inline]
-  dma_fence_put include/linux/dma-fence.h:297 [inline]
-  dma_fence_array_release+0x13e/0x240 drivers/dma-buf/dma-fence-array.c:120
-  irq_work_single+0xe1/0x240 kernel/irq_work.c:221
-  irq_work_run_list kernel/irq_work.c:252 [inline]
-  irq_work_run+0x18b/0x350 kernel/irq_work.c:261
-  __sysvec_irq_work+0xa8/0x3e0 arch/x86/kernel/irq_work.c:22
-  sysvec_irq_work+0x8f/0xb0 arch/x86/kernel/irq_work.c:17
-  asm_sysvec_irq_work+0x1a/0x20 arch/x86/include/asm/idtentry.h:674
-  __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:160 [inline]
-  _raw_spin_unlock_irq+0x29/0x50 kernel/locking/spinlock.c:202
-  spin_unlock_irq include/linux/spinlock.h:401 [inline]
-  sw_sync_debugfs_release+0x14b/0x1d0 drivers/dma-buf/sw_sync.c:359
-  __fput+0x429/0x8a0 fs/file_table.c:376
-  task_work_run+0x24e/0x310 kernel/task_work.c:180
-  exit_task_work include/linux/task_work.h:38 [inline]
-  do_exit+0xa2c/0x2740 kernel/exit.c:871
-  do_group_exit+0x206/0x2c0 kernel/exit.c:1020
-  __do_sys_exit_group kernel/exit.c:1031 [inline]
-  __se_sys_exit_group kernel/exit.c:1029 [inline]
-  __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1029
-  do_syscall_64+0xf9/0x240
-  entry_SYSCALL_64_after_hwframe+0x6f/0x77
-irq event stamp: 364
-hardirqs last  enabled at (363): [<ffffffff8b710daf>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
-hardirqs last  enabled at (363): [<ffffffff8b710daf>] _raw_spin_unlock_irqrestore+0x8f/0x140 kernel/locking/spinlock.c:194
-hardirqs last disabled at (364): [<ffffffff8b710bdd>] __raw_spin_lock_irq include/linux/spinlock_api_smp.h:117 [inline]
-hardirqs last disabled at (364): [<ffffffff8b710bdd>] _raw_spin_lock_irq+0xad/0x120 kernel/locking/spinlock.c:170
-softirqs last  enabled at (0): [<ffffffff8156a0f3>] rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
-softirqs last  enabled at (0): [<ffffffff8156a0f3>] rcu_read_lock include/linux/rcupdate.h:750 [inline]
-softirqs last  enabled at (0): [<ffffffff8156a0f3>] copy_process+0x9c3/0x3fc0 kernel/fork.c:2366
-softirqs last disabled at (0): [<0000000000000000>] 0x0
+static int snd_usb_pcm_open(struct snd_pcm_substream *substream)
+{
+..
+	mutex_lock(&chip->mutex);
+	if (subs->opened) {
+		mutex_unlock(&chip->mutex);
+		return -EBUSY;
+	}
+	subs->opened = 1;
+	mutex_unlock(&chip->mutex);
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+//Execute bulk of PCM open routine
+..
+	return 0;
 
-       CPU0
-       ----
-  lock(sync_timeline_list_lock);
-  <Interrupt>
-    lock(sync_timeline_list_lock);
+// If any errors are seen, unwind
+err_resume:
+	snd_usb_autosuspend(subs->stream->chip);
+err_open:
+	mutex_lock(&chip->mutex);
+	subs->opened = 0;
+	mutex_unlock(&chip->mutex);
 
- *** DEADLOCK ***
+	return ret;
+}
 
-3 locks held by syz-executor.4/9508:
- #0: ffff888086cd7748 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x258/0x320 fs/file.c:1191
- #1: ffff88801f9c8448 (&p->lock){+.+.}-{3:3}, at: seq_read_iter+0xb7/0xd60 fs/seq_file.c:182
- #2: ffffffff8ea8c5d8 (sync_timeline_list_lock){?...}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:376 [inline]
- #2: ffffffff8ea8c5d8 (sync_timeline_list_lock){?...}-{2:2}, at: sync_info_debugfs_show+0x94/0x4d0 drivers/dma-buf/sync_debug.c:147
+Set the opened flag first, so that if QC offload checks it, it can exit 
+early and vice versa.  Otherwise, if we set the opened flag at the same 
+position as the previous patch, we may be calling the other routines in 
+parallel to the QC offload enable stream routine.  The only thing with 
+this patch is that we'd need some error handling unwinding.
 
-stack backtrace:
-CPU: 0 PID: 9508 Comm: syz-executor.4 Not tainted 6.8.0-rc2-syzkaller-00199-g021533194476 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- valid_state+0x13a/0x1c0 kernel/locking/lockdep.c:4013
- mark_lock_irq+0xbb/0xc20 kernel/locking/lockdep.c:4216
- mark_lock+0x223/0x350 kernel/locking/lockdep.c:4678
- mark_held_locks kernel/locking/lockdep.c:4274 [inline]
- __trace_hardirqs_on_caller kernel/locking/lockdep.c:4292 [inline]
- lockdep_hardirqs_on_prepare+0x281/0x780 kernel/locking/lockdep.c:4359
- trace_hardirqs_on+0x28/0x40 kernel/trace/trace_preemptirq.c:61
- __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:159 [inline]
- _raw_spin_unlock_irq+0x23/0x50 kernel/locking/spinlock.c:202
- spin_unlock_irq include/linux/spinlock.h:401 [inline]
- sync_print_obj drivers/dma-buf/sync_debug.c:118 [inline]
- sync_info_debugfs_show+0x158/0x4d0 drivers/dma-buf/sync_debug.c:153
- seq_read_iter+0x445/0xd60 fs/seq_file.c:230
- seq_read+0x3a3/0x4f0 fs/seq_file.c:162
- vfs_read+0x204/0xb70 fs/read_write.c:474
- ksys_read+0x1a0/0x2c0 fs/read_write.c:619
- do_syscall_64+0xf9/0x240
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7fc881e7dda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fc882b390c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-RAX: ffffffffffffffda RBX: 00007fc881fabf80 RCX: 00007fc881e7dda9
-RDX: 0000000000002020 RSI: 0000000020001b00 RDI: 0000000000000006
-RBP: 00007fc881eca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fc881fabf80 R15: 00007fc8820cfa48
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks
+Wesley Cheng
 
