@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-57174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E27A84D4BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 10EBF84D4BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 22:52:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B15391C2282C
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:52:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 431B81C21FEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 21:52:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16F615DEEB;
-	Wed,  7 Feb 2024 21:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 479FF15DF17;
+	Wed,  7 Feb 2024 21:25:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K3leUQdq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nBwVzhTQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D531015CD62;
-	Wed,  7 Feb 2024 21:25:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC9915DF03;
+	Wed,  7 Feb 2024 21:25:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707341156; cv=none; b=rZjGA2VlTzb02a2mkateiNIucjBdpBo0obi1Ebi5XbO5B2SNidpvTUfAhlDEKv10+RpOBte+u3GCyMkf8zs8SNzsfMH9pN2bjOvKZYwEKTrhXaf2p3upWxDgEOBVsfo8IrsTk3s4Js6AnDysOKQqpTRZJtdadnKqAimL+5+9t9o=
+	t=1707341158; cv=none; b=Oh+rEdOwJIdzpAlIIWY09d7jwA+6NmCPP21Gz6QmI3S5SesJaoVzPapi6dQCFKD5pIB46Mz8nR//9Pja/aJGXJYVzkIhxBbRizHVJpTMpBXffzvon6BQo3fYY68idXoiYuauvnPvXxJiKv7AT7bdvTiXviFXe6YIOO/ttO3xSYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707341156; c=relaxed/simple;
-	bh=EVJw3/SXfuBf5v9qJgE4yM7WLbNBIMe7pkiV9lhnVaQ=;
+	s=arc-20240116; t=1707341158; c=relaxed/simple;
+	bh=h79hO05xp7Yb1JfaQ+0MRJL26ORufyCzdOf24bZvOpI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SINVq84nbudo8sdZLqrUNDQeqbpK9YpgvGLw19chN5Fo5xNIWocmjHmelsqKtUMawJT75KSHUpKghSFrUc81g7pvYU4hqLMfbh4DaUlHybOhWCFvKDhsKeVPwSN/CBD+Kl1PQiLPpiH0H+u6Q4YFSWHYowmRXHoTov2TQelqtdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K3leUQdq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A4DFC43399;
-	Wed,  7 Feb 2024 21:25:55 +0000 (UTC)
+	 MIME-Version; b=Ah6xLy2ayxwfpNGyLe4v8+Z3NwRkNgC1r6tv8KUOu0NeCaHVsMAu+4t24sJOJVUaYHErZeXVV/Zj+pIviBDXMIWwWbOAyu0DEp4Qkhr3QFgPrIahnPcYmnZOa/FDwnbhRaxG7QKMSTLAarqH+Ml+ctZXNzRx35rBBsRVvm5eKB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nBwVzhTQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20EFEC43394;
+	Wed,  7 Feb 2024 21:25:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707341156;
-	bh=EVJw3/SXfuBf5v9qJgE4yM7WLbNBIMe7pkiV9lhnVaQ=;
+	s=k20201202; t=1707341158;
+	bh=h79hO05xp7Yb1JfaQ+0MRJL26ORufyCzdOf24bZvOpI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K3leUQdqB0Eu0jDo8v6f86rKd8z4N4CDGhwmhkmcSiauifKUZTAP0/jQBm/xEi3w2
-	 lDri0bv/GbmQU7WxI0MIaylOGEGh8xpfSt8rZwSFP9ISZzHSLNuDuQ3Q1DefvD2SbT
-	 Yk8Q6IC3u8NKveFKJSHo+k6eCG6WZLv+ZYKhYEr29SAo41VFxNvBjJCkCEwTfiyLLJ
-	 sLtjbR22lg2XYrNYueKXw/sSezaQCkUz6Ygl1sUXC8F9FhVARQvPrJE64usjj4Cm1j
-	 7Qvm4qAIK5qIY62ASOyjIRbafJkNtKaS6sVH/4fDv3dQEipS54w1X0LIfuIOLNodmY
-	 ma5AJBMU+3uWg==
+	b=nBwVzhTQFeCKgYCLH+yyrT7gVxkSiV9WoFtEzBE0InPNj+ygUmDsOiSFxnRH24frW
+	 mdg+VnVtTOj6n/uxsXk0vwfLTycXEpjz7fPjkOiBQD2Av6U9MrBIzGd2FgjuFwU3V1
+	 4CvQKz+PX/zV+tDm1oSDWwn87HVQzpq11XEf/eeNZ9MBF+RnlwTIgGPnWrxWwQdpoK
+	 5jv9dYBRsMpuzfVkksnw3MQ+hoqihbLXeR6B3REUw3S/LT9jRy/9hmwT9yvkPeeuSO
+	 Ga4VExLFunP2Y6o3e/nPIolzmrh34qkNnIceXK4LS7P14p5g11aYBzPN8Vt8gIkP64
+	 TG88vRFh8wacw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,9 +51,9 @@ Cc: Daniel Wagner <dwagner@suse.de>,
 	sagi@grimberg.me,
 	kch@nvidia.com,
 	linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 25/29] nvmet-fc: avoid deadlock on delete association path
-Date: Wed,  7 Feb 2024 16:24:50 -0500
-Message-ID: <20240207212505.3169-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 26/29] nvmet-fc: take ref count on tgtport before delete assoc
+Date: Wed,  7 Feb 2024 16:24:51 -0500
+Message-ID: <20240207212505.3169-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240207212505.3169-1-sashal@kernel.org>
 References: <20240207212505.3169-1-sashal@kernel.org>
@@ -70,75 +70,100 @@ Content-Transfer-Encoding: 8bit
 
 From: Daniel Wagner <dwagner@suse.de>
 
-[ Upstream commit 710c69dbaccdac312e32931abcb8499c1525d397 ]
+[ Upstream commit fe506a74589326183297d5abdda02d0c76ae5a8b ]
 
-When deleting an association the shutdown path is deadlocking because we
-try to flush the nvmet_wq nested. Avoid this by deadlock by deferring
-the put work into its own work item.
+We have to ensure that the tgtport is not going away
+before be have remove all the associations.
 
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Daniel Wagner <dwagner@suse.de>
 Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/fc.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ drivers/nvme/target/fc.c | 31 +++++++++++++++++++++++--------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
-index b4b2631eb530..36cae038eb04 100644
+index 36cae038eb04..8a02ed63b156 100644
 --- a/drivers/nvme/target/fc.c
 +++ b/drivers/nvme/target/fc.c
-@@ -111,6 +111,8 @@ struct nvmet_fc_tgtport {
- 	struct nvmet_fc_port_entry	*pe;
- 	struct kref			ref;
- 	u32				max_sg_cnt;
-+
-+	struct work_struct		put_work;
- };
- 
- struct nvmet_fc_port_entry {
-@@ -248,6 +250,13 @@ static int nvmet_fc_tgt_a_get(struct nvmet_fc_tgt_assoc *assoc);
- static void nvmet_fc_tgt_q_put(struct nvmet_fc_tgt_queue *queue);
- static int nvmet_fc_tgt_q_get(struct nvmet_fc_tgt_queue *queue);
- static void nvmet_fc_tgtport_put(struct nvmet_fc_tgtport *tgtport);
-+static void nvmet_fc_put_tgtport_work(struct work_struct *work)
-+{
-+	struct nvmet_fc_tgtport *tgtport =
-+		container_of(work, struct nvmet_fc_tgtport, put_work);
-+
-+	nvmet_fc_tgtport_put(tgtport);
-+}
- static int nvmet_fc_tgtport_get(struct nvmet_fc_tgtport *tgtport);
- static void nvmet_fc_handle_fcp_rqst(struct nvmet_fc_tgtport *tgtport,
- 					struct nvmet_fc_fcp_iod *fod);
-@@ -359,7 +368,7 @@ __nvmet_fc_finish_ls_req(struct nvmet_fc_ls_req_op *lsop)
- 
- 	if (!lsop->req_queued) {
- 		spin_unlock_irqrestore(&tgtport->lock, flags);
--		goto out_puttgtport;
-+		goto out_putwork;
- 	}
- 
- 	list_del(&lsop->lsreq_list);
-@@ -372,8 +381,8 @@ __nvmet_fc_finish_ls_req(struct nvmet_fc_ls_req_op *lsop)
- 				  (lsreq->rqstlen + lsreq->rsplen),
- 				  DMA_BIDIRECTIONAL);
- 
--out_puttgtport:
--	nvmet_fc_tgtport_put(tgtport);
-+out_putwork:
-+	queue_work(nvmet_wq, &tgtport->put_work);
+@@ -1092,13 +1092,28 @@ nvmet_fc_alloc_hostport(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
  }
  
- static int
-@@ -1404,6 +1413,7 @@ nvmet_fc_register_targetport(struct nvmet_fc_port_info *pinfo,
- 	kref_init(&newrec->ref);
- 	ida_init(&newrec->assoc_cnt);
- 	newrec->max_sg_cnt = template->max_sgl_segments;
-+	INIT_WORK(&newrec->put_work, nvmet_fc_put_tgtport_work);
+ static void
+-nvmet_fc_delete_assoc(struct work_struct *work)
++nvmet_fc_delete_assoc(struct nvmet_fc_tgt_assoc *assoc)
++{
++	nvmet_fc_delete_target_assoc(assoc);
++	nvmet_fc_tgt_a_put(assoc);
++}
++
++static void
++nvmet_fc_delete_assoc_work(struct work_struct *work)
+ {
+ 	struct nvmet_fc_tgt_assoc *assoc =
+ 		container_of(work, struct nvmet_fc_tgt_assoc, del_work);
++	struct nvmet_fc_tgtport *tgtport = assoc->tgtport;
  
- 	ret = nvmet_fc_alloc_ls_iodlist(newrec);
- 	if (ret) {
+-	nvmet_fc_delete_target_assoc(assoc);
+-	nvmet_fc_tgt_a_put(assoc);
++	nvmet_fc_delete_assoc(assoc);
++	nvmet_fc_tgtport_put(tgtport);
++}
++
++static void
++nvmet_fc_schedule_delete_assoc(struct nvmet_fc_tgt_assoc *assoc)
++{
++	nvmet_fc_tgtport_get(assoc->tgtport);
++	queue_work(nvmet_wq, &assoc->del_work);
+ }
+ 
+ static struct nvmet_fc_tgt_assoc *
+@@ -1132,7 +1147,7 @@ nvmet_fc_alloc_target_assoc(struct nvmet_fc_tgtport *tgtport, void *hosthandle)
+ 	assoc->a_id = idx;
+ 	INIT_LIST_HEAD(&assoc->a_list);
+ 	kref_init(&assoc->ref);
+-	INIT_WORK(&assoc->del_work, nvmet_fc_delete_assoc);
++	INIT_WORK(&assoc->del_work, nvmet_fc_delete_assoc_work);
+ 	atomic_set(&assoc->terminating, 0);
+ 
+ 	while (needrandom) {
+@@ -1491,7 +1506,7 @@ __nvmet_fc_free_assocs(struct nvmet_fc_tgtport *tgtport)
+ 	list_for_each_entry_rcu(assoc, &tgtport->assoc_list, a_list) {
+ 		if (!nvmet_fc_tgt_a_get(assoc))
+ 			continue;
+-		queue_work(nvmet_wq, &assoc->del_work);
++		nvmet_fc_schedule_delete_assoc(assoc);
+ 		nvmet_fc_tgt_a_put(assoc);
+ 	}
+ 	rcu_read_unlock();
+@@ -1545,7 +1560,7 @@ nvmet_fc_invalidate_host(struct nvmet_fc_target_port *target_port,
+ 			continue;
+ 		assoc->hostport->invalid = 1;
+ 		noassoc = false;
+-		queue_work(nvmet_wq, &assoc->del_work);
++		nvmet_fc_schedule_delete_assoc(assoc);
+ 		nvmet_fc_tgt_a_put(assoc);
+ 	}
+ 	spin_unlock_irqrestore(&tgtport->lock, flags);
+@@ -1590,7 +1605,7 @@ nvmet_fc_delete_ctrl(struct nvmet_ctrl *ctrl)
+ 		nvmet_fc_tgtport_put(tgtport);
+ 
+ 		if (found_ctrl) {
+-			queue_work(nvmet_wq, &assoc->del_work);
++			nvmet_fc_schedule_delete_assoc(assoc);
+ 			nvmet_fc_tgt_a_put(assoc);
+ 			return;
+ 		}
+@@ -1897,7 +1912,7 @@ nvmet_fc_ls_disconnect(struct nvmet_fc_tgtport *tgtport,
+ 		nvmet_fc_xmt_ls_rsp(tgtport, oldls);
+ 	}
+ 
+-	queue_work(nvmet_wq, &assoc->del_work);
++	nvmet_fc_schedule_delete_assoc(assoc);
+ 	nvmet_fc_tgt_a_put(assoc);
+ 
+ 	return false;
 -- 
 2.43.0
 
