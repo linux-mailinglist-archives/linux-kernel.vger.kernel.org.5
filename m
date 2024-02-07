@@ -1,154 +1,124 @@
-Return-Path: <linux-kernel+bounces-56985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-56984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D70D184D24B
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:39:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FD2784D243
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 20:35:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 749C81F240D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:39:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D88E9288502
+	for <lists+linux-kernel@lfdr.de>; Wed,  7 Feb 2024 19:35:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98F0485C5B;
-	Wed,  7 Feb 2024 19:38:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5972785C50;
+	Wed,  7 Feb 2024 19:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sandeen.net header.i=@sandeen.net header.b="dmVV8f1U"
-Received: from sandeen.net (sandeen.net [63.231.237.45])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74FE684FBD;
-	Wed,  7 Feb 2024 19:38:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.231.237.45
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707334730; cv=none; b=A932BlsTe1TM6VA/ICB2W4nqzWvlb43vpkyX1OtgpjFiJ6L0L9F6Kk+3MaSyLr0fS9eY7X2dR22nEgffcWKvEBiMyZBMLFmvgStJowKkOhqIYfS0+lb6OTkwlGdpoEknQbfPq3+RkYZ/Fa1y8k2VLPUSrAIcWsqbV5i5X7S6a8U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707334730; c=relaxed/simple;
-	bh=++MTL3pXaFGkwTrZ2UX9O8w73zELvOw8YOi00AODvIQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FYjveUd1dUhbhrLMvrsuXMhxqtlxGWG6/FeSkIjO/qzu0q+JC8ad4EsF+x3mkq0Yad1dQ3lCop8+Pq3gqfMZmSDFySpvh9fYJ7JZcAlu/JeO3fdzJJdYhNui4JEdmFA0uBM6lEbaLNwTHOdG+WfQ+RT3hbinoToiZfJ8Bx+ysAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sandeen.net; spf=pass smtp.mailfrom=sandeen.net; dkim=pass (2048-bit key) header.d=sandeen.net header.i=@sandeen.net header.b=dmVV8f1U; arc=none smtp.client-ip=63.231.237.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sandeen.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sandeen.net
-Received: from [10.0.0.71] (usg [10.0.0.1])
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="d3lBnFXA"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by sandeen.net (Postfix) with ESMTPSA id 4187B5CCFF8;
-	Wed,  7 Feb 2024 13:30:00 -0600 (CST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 sandeen.net 4187B5CCFF8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sandeen.net;
-	s=default; t=1707334200;
-	bh=ZW6Ze3ip8h0vhzwPBz1EamxDDep6suZbxAI9Ob6xCl4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dmVV8f1UphyEfiMVNtX+QL9fxRfNlyF/1ggx7ulJqu1eP4JD/dWHJIOqmdE3gqAam
-	 TyHQnNy/GKv0xbtH1ilvzag6xfkVFsp+WWlhYGx0qxL33ljRKBVbF29T92sTdLUJNi
-	 1c0E+MXl31o3TwXElyERC/sGZNPIUlwKHjziJssxHixoWUNyZIWMkSwLgdzpkSGahZ
-	 1kD2IkeZejecGEc6UIz8Nh+81hqHdJj68BlwF73XEmv3jScAcZDTIf4IBOuAvZfeZd
-	 Gjl1Ho5GsKN0lM2KFRdd3zXMP40C2q6LkV0ty7txHgmlbcZhaQTDKnXqvzH+jGP2Lu
-	 4c5ySs6tiKokw==
-Message-ID: <9f9a740f-3db5-4078-8135-0ec224b26a90@sandeen.net>
-Date: Wed, 7 Feb 2024 13:29:59 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B7485946
+	for <linux-kernel@vger.kernel.org>; Wed,  7 Feb 2024 19:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707334516; cv=none; b=AYcM7hZ4Wa1siDtEtJOp5j/Slkj0RCuKE7a2qRCsiqKF5xK1gThVhmX/XXJ2jX9JTSD4P5h+BJhXYIOxZ2oN7IS1J+NXHD/RjcyCVV422fTKfG7lTtYJXOxpoirvyU4EaZbTh3NExvD/g2SOnAisQ4QdikmZiZV0+eVL79T0/Lg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707334516; c=relaxed/simple;
+	bh=vwN+D5W7fSFBHcmU7F4lz9AR0Hav7hHZZc7DLd/55bg=;
+	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
+	 Content-Type; b=ky6sCqsbNgn8Q5TXge/ZmNAkm5qs/Aa9SB/BcG214KZe6lXt0w0WXc4sR3FtA4djGi9Wp5QECMzoPM4+FYw4Hs+q1/oHvGzYJYsqWaQvOUfYBt+yjdL1RKdNSO2+ZBElk56fKp0+/jUHP5K7DSE9NDX7NrZI207+fw2qfkJW8J8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=d3lBnFXA; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e06d2180b0so562278b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 11:35:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1707334513; x=1707939313; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5DNJ0YWZMQGJUiB/7nqMNUBTgtfVhRG2xEzHjBsppl0=;
+        b=d3lBnFXADp8WiM8tKDSQeCd8vb1Oz0nWYZCRMAuv2Qi8E/Nd2BnY7ojmTxsSaUCTop
+         Dg81afMOlsPLdY69WRo5lE5NekW1cG2eSoBLIkBqH1OEnFwMDIVFG3e1KfxS/ONc0bap
+         B3M3wwHVH2mEygswdYbhXRQMfXAy9kZkIfovwYkz5nVeBnidHqf+ssB6eKiiHE9hUHF8
+         5iRdWNsdKRn6sQLmI4Uecx6dQ3Wv468So1CQc1FLxE6litUIuMF9l/xe3oYaFbRpz4Qk
+         KGePbPsoSX4bfoOA3Ak+8ZIUIJdAvQu+ZyBL/XLvEpSlI/6ysm/9C63NuAfD5oxuPBCT
+         OehA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707334513; x=1707939313;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5DNJ0YWZMQGJUiB/7nqMNUBTgtfVhRG2xEzHjBsppl0=;
+        b=Zlb1Ce9MmWrF/tkkzYTzRCotGfO0CZcjSZiab6U0gWd9pbEfpaiE4SfknnYjtAb3zr
+         kmePsrJOSV4hoIY9t5/u0oRTfVcdMmBqh/M24BLcpi+LhjyrVFxF6iR0Ih99rghBIS/l
+         rbkaAPJ4EZauKbKklB8xuvqpGJBYSmCe1XyrKsg0PaMNn/uFcqY6zUTiGH+l3vihJGoO
+         VaEbQSTYjhBiFG0CTx9HB+3qcOfRaGhG25z0o5N3IOSQlkv1WHw+Sy8twUhqVFcv8uMt
+         bVP2PM0odnaiaw2djAA+IsM2ztj9TxwdtfVnF4KwJb6gaL1fuopwbBDYfkKw+WUxLW2y
+         L9vg==
+X-Forwarded-Encrypted: i=1; AJvYcCXFMKCYN8mdlBICFWsobYVgrydWfmfDppSiaE4KbjW3YggQzBGB9T13JFP6UAdgjQjy4DfF0R290VO/vJq0z5IO9LwkkLKTwRBLGguG
+X-Gm-Message-State: AOJu0YwiO2nSTzkSftN0WtbKs+RcmFzuVHgBu3EeQAS2WnVO2sbJgTAS
+	gDf6UNRw3JEWYdHksW5AqUueuw4ppvuTxKywx1lueDxGxbSLojwTRNv7k1DeVZw=
+X-Google-Smtp-Source: AGHT+IHecxI00C0AysG9jk2vFisMXFVveXNnX/H4oDlFL2OOUFQ/AEV1QOpSJXJ9aHab8uyRYIlfKQ==
+X-Received: by 2002:a05:6a20:a092:b0:19e:987c:78a7 with SMTP id r18-20020a056a20a09200b0019e987c78a7mr4101823pzj.32.1707334513324;
+        Wed, 07 Feb 2024 11:35:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW7PM5eZAdnwqPrU9TC7lCb+5kyWOLdybcxqg3gwdxj5FVcxgrXFDgek0GyZpZ25vYnaquKPDeXQYeJBu03dxalZ1OiLKQbCmuOYYkKi4snVeuasLujaeCS7Vdcz9MwBWHwGg/DodlOcuuV0ckC/ciHANKGB2iQrxKivw32mbrxR+7hXyb9UvMJWdF5se7BjgDEgBM2AUxmSWE/Fn2OO3Zr5GH3aigEDwVXPiaRPTJizzIP
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id j17-20020a056a00175100b006d9b35b2602sm2024683pfc.3.2024.02.07.11.35.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 11:35:12 -0800 (PST)
+Date: Wed, 07 Feb 2024 11:35:12 -0800 (PST)
+X-Google-Original-Date: Wed, 07 Feb 2024 11:35:11 PST (-0800)
+Subject:     Re: [PATCH -fixes] riscv: Fix arch_tlbbatch_flush() by clearing the batch cpumask
+In-Reply-To: <a21e4253-9ef6-4c44-917c-02742440d192@sifive.com>
+CC: alexghiti@rivosinc.com, Paul Walmsley <paul.walmsley@sifive.com>,
+  aou@eecs.berkeley.edu, jszhang@kernel.org, linux-riscv@lists.infradead.org,
+  linux-kernel@vger.kernel.org
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: samuel.holland@sifive.com
+Message-ID: <mhng-e8dda78d-2d87-403f-a969-2b5ec99da094@palmer-ri-x1c9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] tracing the source of errors
-Content-Language: en-US
-To: Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>
-Cc: lsf-pc <lsf-pc@lists.linux-foundation.org>,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CAJfpegtw0-88qLjy0QDLyYFZEM7PJCG3R-mBMa9s8TNSVZmJTA@mail.gmail.com>
- <20240207110041.fwypjtzsgrcdhalv@quack3>
- <CAJfpegvkP5dic7CXB=ZtwTF4ZhRth1xyUY36svoM9c1pcx=f+A@mail.gmail.com>
-From: Eric Sandeen <sandeen@sandeen.net>
-In-Reply-To: <CAJfpegvkP5dic7CXB=ZtwTF4ZhRth1xyUY36svoM9c1pcx=f+A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 2/7/24 5:23 AM, Miklos Szeredi wrote:
-> On Wed, 7 Feb 2024 at 12:00, Jan Kara <jack@suse.cz> wrote:
-> 
->> The problem always has been how to implement this functionality in a
->> transparent way so the code does not become a mess. So if you have some
->> idea, I'd say go for it :)
-> 
-> My first idea would be to wrap all instances of E* (e.g. ERR(E*)).
-> But this could be made completely transparent by renaming current
-> definition of E* to _E* and defining E* to be the wrapped ones.
-> There's probably a catch (or several catches) somewhere, though.
-> 
-> Thanks,
-> Miklos
-> 
+On Wed, 07 Feb 2024 11:23:55 PST (-0800), samuel.holland@sifive.com wrote:
+> Hi Alex,
+>
+> On 2024-01-30 5:55 AM, Alexandre Ghiti wrote:
+>> We must clear the cpumask once we have flushed the batch, otherwise cpus
+>> get accumulated and we end sending IPIs to more cpus than needed.
+>>
+>> Fixes: 54d7431af73e ("riscv: Add support for BATCHED_UNMAP_TLB_FLUSH")
+>> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+>> ---
+>>  arch/riscv/mm/tlbflush.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+>> index 99c3e037f127..c8efc3f87a0f 100644
+>> --- a/arch/riscv/mm/tlbflush.c
+>> +++ b/arch/riscv/mm/tlbflush.c
+>> @@ -240,4 +240,5 @@ void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
+>>  {
+>>  	__flush_tlb_range(NULL, &batch->cpumask,
+>>  			  0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
+>> +	cpumask_clear(&batch->cpumask);
+>>  }
+>
+> This patch doesn't apply to fixes -- it looks like it was based on "riscv: Call
+> secondary mmu notifier when flushing the tlb"[1], which has not been merged and
+> would go in for-next anyway. Otherwise:
+>
+> Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+>
+> [1]: https://lore.kernel.org/all/20240124080325.2324462-1-alexghiti@rivosinc.com/
 
-Just FWIW, XFS has kind of been there and back again on wrapping error returns
-with macros.
-
-Long ago, we had an XFS_ERROR() macro, i.e.
-
- 	if (error)
-		return -XFS_ERROR(error);
-
-sprinkled (randomly) throughout the code.
-
-(it didn't make it out through strace, and was pretty clunky but could printk or
-BUG based on which error you were looking for, IIRC.)
-
-In 2014(!) I removed it, pointing out that systemtap could essentially do the
-same thing, and do it more flexibly (see: [PATCH 2/2] xfs: Nuke XFS_ERROR macro):
-
-# probe module("xfs").function("xfs_*").return { if (@defined($return) &&
-$return == VALUE) { ... } }
-
-hch pointed out that systemtap was not a viable option for many, and further
-discussion turned up a slightly kludgey way to use kprobes:
-
--- from dchinner --
-#!/bin/bash
-
-TRACEDIR=/sys/kernel/debug/tracing
-
-grep -i 't xfs_' /proc/kallsyms | awk '{print $3}' ; while read F; do
-	echo "r:ret_$F $F \$retval" >> $TRACEDIR/kprobe_events
-done
-
-for E in $TRACEDIR/events/kprobes/ret_xfs_*/enable; do
-	echo 1 > $E
-done;
-
-echo 'arg1 > 0xffffffffffffff00' > $TRACEDIR/events/kprobes/filter
-
-for T in $TRACEDIR/events/kprobes/ret_xfs_*/trigger; do
-	echo 'traceoff if arg1 > 0xffffffffffffff00' > $T
-done
---------
-
-which yields i.e.:
-
-# dd if=/dev/zero of=/mnt/scratch/newfile bs=513 oflag=direct
-dd: error writing ¿/mnt/scratch/newfile¿: Invalid argument
-1+0 records in
-0+0 records out
-0 bytes (0 B) copied, 0.000259882 s, 0.0 kB/s
-root@test4:~# cat /sys/kernel/debug/tracing/trace
-# tracer: nop
-#
-# entries-in-buffer/entries-written: 1/1   #P:16
-#
-#                              _-----=> irqs-off
-#                             / _----=> need-resched
-#                            | / _---=> hardirq/softirq
-#                            || / _--=> preempt-depth
-#                            ||| /     delay
-#           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-#              | |       |   ||||       |         |
-           <...>-8073  [006] d... 145740.460546: ret_xfs_file_dio_aio_write:
-(xfs_file_aio_write+0x170/0x180 <- xfs_file_dio_aio_write) arg1=0xffffffffffffffea
-
-where that last negative number is the errno.
-
-Not the prettiest thing but something that works today and could maybe be improved?
-
--Eric
+Ya and for some reason it trips up "patch -p1", which applies it to some 
+other function.  I just merged it manually a few minutes ago and it's in 
+the tester...
 
