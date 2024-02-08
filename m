@@ -1,372 +1,211 @@
-Return-Path: <linux-kernel+bounces-57527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A916284DA3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:42:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A09984DA40
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:43:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC2C21C2353F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:42:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 520172844F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:43:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6188D67E76;
-	Thu,  8 Feb 2024 06:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D083692FB;
+	Thu,  8 Feb 2024 06:43:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eXfgqLd9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ckTQ459q"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2074.outbound.protection.outlook.com [40.107.102.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 514D367E7F;
-	Thu,  8 Feb 2024 06:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707374542; cv=none; b=U6P9CO5M6GwMzRDndVUpt62GAknglYxyxvosUJB+3VRv9OPA1BQqn4tQ8q4eNE8ABeJVBffY5DiWYh9GeCiqMMFzvNJK8xz/TGOwLF3K6CEnDDVNVpAxE9Ki5g1dboFPRGGQckKswx0aIBnAchBzAeUiGhIqOvVfZH+KTEl9yho=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707374542; c=relaxed/simple;
-	bh=Q0QBXUvi2DClMvfJ1phvhOK/w5j08YYDMbbsStc2yQY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hNQJ7DW7k9pc17yK4gF6NwJbJ3/RXP39u4t1K4kVcuiuDps8PxRESxDs8yLXyuAt93R62mHsGZCiqpUnOxI5l/fkk2y5f8q77knCDcNicVJOJrZo/8ROHTo9+8Y6+XvD7NZSwi/A/OTfLDmP4Hgru7Aipe+3bMb4cqUqPpaSbOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eXfgqLd9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F50CC433F1;
-	Thu,  8 Feb 2024 06:42:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707374541;
-	bh=Q0QBXUvi2DClMvfJ1phvhOK/w5j08YYDMbbsStc2yQY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eXfgqLd9QUTkGv1W/ehUJa6sFq/3CyaP+4cUEidecXWVvmJDu0n0P2UECcJisR0V2
-	 nnothRp+ORVk0TwoCH5+vNTVME7CguMXp89J9uvilciQbgHWYfuEWVDbdHKWwSNNqe
-	 5wbTtAY2q2gPs3rWjC7SlZQ/ijex0YMpSx+folwS99tLA9ZOiYYITQKkCrNzvOaqUn
-	 iMy2sDTQ/gPsjSG6OLfzWCW8/vPiLhkOmtQjiRoIvv2V/+O3l61ylegyS3T8TFd/bI
-	 rcGpkK9gsaHzsD813FYOI9Ou4R8DWf6hWVerVSdfv4BAO+ExblwYIjadHW9Le24NAi
-	 oMymplkqG1vyA==
-Date: Thu, 8 Feb 2024 08:41:56 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org
-Subject: Re: [PATCH v3 13/15] mm/memory: optimize fork() with PTE-mapped THP
-Message-ID: <ZcR3tBy9n0Yp5eq2@kernel.org>
-References: <20240129124649.189745-1-david@redhat.com>
- <20240129124649.189745-14-david@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C1FA67E74;
+	Thu,  8 Feb 2024 06:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.74
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707374587; cv=fail; b=hayFjqRjb/+i9zQkrdZjsKg0Fzr9PzI8/dYvCcMlTlVRyhCgAWKQR7PbO7fsd3noj1dq18xZhcYA5QbhUVIfMQJvyy1BWYrrE6BA0dEiiZUFtE3qZJ5/OvpfgRDK4HKHVZOv9153DAj4rDDHMkydt/8CBuQ+DWeYYrFZ1dGcuyY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707374587; c=relaxed/simple;
+	bh=ws22PBKfD6C5RWLL3qYQbPRvpBTxZ2eLGQIjAs9T5Ok=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=VGCWWqbSqm7HcXEGn0hayMUD2qCSz6LW7i2DU5X1G64ZVCOFcUn89BzClIpPLPVP9463CHeEc3A2Y0/zmDHFhc5Dz68oZKhzSa4Y3fNqIg7/m2+l8t1FpJkIR2LTpFVdCdpwNd2I+p6s8Zq5K1jaBw9B/jwXxi4lcAecV/EEQFE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ckTQ459q; arc=fail smtp.client-ip=40.107.102.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nt8sfHALHT23ikKD2ns8ZknjEL7ptiX7SEevDDK/tBLSj29kWXGi9aBPgDtFB5mjPYlih8lBKFJ5tXdbSZRdjR6lsqY40O3ZO2my1cqZnobu89MGWQi4yQOQwvF9hCauSuqSjQfVHxDwR/XElIl6eY2KLmkhgaK+x9JYZ6hjT+Eq1yCoTrEKJNas8pvwRRWGW5DCzIcOCpQ4t3rFE88awU/XkA5k3WjyXdoFTJrB45qxnewFfqlLGC3WeVXbBGLXQPGsfKlC+Bdh2GExyq+J7ZJHkVUihsF1BuKODS+5adTN5FkvqKCb19sRqsYl8d2kWzRbxAR7gE1IafWPlXvpoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ws22PBKfD6C5RWLL3qYQbPRvpBTxZ2eLGQIjAs9T5Ok=;
+ b=hcTYjlWW1O3Tp8RHuHBKN/6PmJiCpq9tHjgNpAAOvAhKVf1qQDG9RdySxtcsjr6umIqqQhE7miARnF67qNL8cTh2UM61RbR7FgmXLjp+elUsl7eNUgbXgBG8/fsqn3o3yBumW4WKR6jdyakNjd2geLjMJicTqsTOpitdOGre9r24438FLT7ys9IDOmOVZA1+aqJMK+R2qnrpRI7UVpV9OI9NR1xUQIkZE9kVKrTCJih69IjOSgzHIeTEsYkE8MZLj5TsQPTC/9/AJfxOWtEuCq9563K8ceh6U/ZMP7jsS9XN+fMYAbLnTq0TddEn9gzHgAf7RXE7yxvb0ObiYJYNog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ws22PBKfD6C5RWLL3qYQbPRvpBTxZ2eLGQIjAs9T5Ok=;
+ b=ckTQ459q7GYdYLA7OX/byshj3U6GtAVwhI5xskhFEoXrXyANzq/whG2aankcU/inpgCnnA8TyclO5A7ZrvfMxMCOfsj/gFowxTnDdnjA/hNMJigS+BG5qpHNK61c5VUB4hSMbBlaAFZnDjolGn2onNrXOUq5EGOuzCTrzLT2H97qoDTXS2vuLTPLa3B6/ceg51hEkUkvfO+KF/IRg2NowRvFquIfDgdzKE/WLnk4Ig8OoxiLqgchHFcPky0Kp38YiKM6vFWXMvr2PPMGcL9Ol5RaMM9nZ7XYue4m2PqMgBhsMff38QKs+SXuNeSdTGTKOGqYI7nP6ZeKFpG1K60vEw==
+Received: from SA1PR12MB7199.namprd12.prod.outlook.com (2603:10b6:806:2bc::21)
+ by CH3PR12MB8880.namprd12.prod.outlook.com (2603:10b6:610:17b::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.16; Thu, 8 Feb
+ 2024 06:43:02 +0000
+Received: from SA1PR12MB7199.namprd12.prod.outlook.com
+ ([fe80::444d:2f33:a61b:3225]) by SA1PR12MB7199.namprd12.prod.outlook.com
+ ([fe80::444d:2f33:a61b:3225%3]) with mapi id 15.20.7270.016; Thu, 8 Feb 2024
+ 06:43:02 +0000
+From: Ankit Agrawal <ankita@nvidia.com>
+To: "Tian, Kevin" <kevin.tian@intel.com>, Jason Gunthorpe <jgg@nvidia.com>,
+	"alex.williamson@redhat.com" <alex.williamson@redhat.com>, Yishai Hadas
+	<yishaih@nvidia.com>, "mst@redhat.com" <mst@redhat.com>,
+	"shameerali.kolothum.thodi@huawei.com"
+	<shameerali.kolothum.thodi@huawei.com>, "clg@redhat.com" <clg@redhat.com>,
+	"oleksandr@natalenko.name" <oleksandr@natalenko.name>, "K V P, Satyanarayana"
+	<satyanarayana.k.v.p@intel.com>, "eric.auger@redhat.com"
+	<eric.auger@redhat.com>, "brett.creeley@amd.com" <brett.creeley@amd.com>,
+	"horms@kernel.org" <horms@kernel.org>, Rahul Rameshbabu
+	<rrameshbabu@nvidia.com>
+CC: Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>, Kirti
+ Wankhede <kwankhede@nvidia.com>, "Tarun Gupta (SW-GPU)"
+	<targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>, Andy Currid
+	<acurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>, John Hubbard
+	<jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>, "Anuj Aggarwal
+ (SW-GPU)" <anuaggarwal@nvidia.com>, Matt Ochs <mochs@nvidia.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "virtualization@lists.linux-foundation.org"
+	<virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH v17 2/3] vfio/pci: rename and export range_intesect_range
+Thread-Topic: [PATCH v17 2/3] vfio/pci: rename and export range_intesect_range
+Thread-Index: AQHaWIdTXGHHJJQjakCN6ZAFUePTD7D//GeAgAAGDvc=
+Date: Thu, 8 Feb 2024 06:43:02 +0000
+Message-ID:
+ <SA1PR12MB7199AA9F83CE8E7F1E8B0022B0442@SA1PR12MB7199.namprd12.prod.outlook.com>
+References: <20240205230123.18981-1-ankita@nvidia.com>
+ <20240205230123.18981-3-ankita@nvidia.com>
+ <BN9PR11MB5276BB50143B801E8F02D9958C442@BN9PR11MB5276.namprd11.prod.outlook.com>
+In-Reply-To:
+ <BN9PR11MB5276BB50143B801E8F02D9958C442@BN9PR11MB5276.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR12MB7199:EE_|CH3PR12MB8880:EE_
+x-ms-office365-filtering-correlation-id: 1c365fdf-0c19-485c-1990-08dc2871329e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 42etadvtjpAl5I+d5npuV1EvCrsGeYxlL299yHrScZu/+4Wh7edJBOYDl3aSk3Ksdd/zoj7EXSSQcCjoVNAGZ92rX4JiCHhRhMdWpOOeAoExUpDvjHxn2IB6axCHVMBxqVyI2+eATGpaqyKdp0kCpY8waTpg+Bt1DYhVTMh1TxVOUdafVsGgyMqCB+acK9+Gwva9hmRKifdwmEr+NNYIebJ0kdwrGoRX/IU0unxDtpG2OgCzAQdsXB85JOj0mIKYob0PS7AKHLRe1ydEtpsLcAobeYqe6yi8z0B0Mkw2+DW0b6VaD/fphThlW1ZaE7Xx6QO7+RRlzmhK+CACX/7vWGUICXihinaLVP8TVr+FG8GKSetTqZ8EIKNAfNBHr1zB2SrC66yDlbhoHM4x3Kj7829imjv6ICZQmAPXvhFQ9795CAwblp/Ax1q+Sl7mGby9EvSDxO055Qgk5lmKYZV5EDO/ZUCM+GvSSFD7t65M5/s+m8V0GzFMqJWHMYuG3K4NXRZsHuLn8ONmadEWwnfJTmIqxycYuDqFNLYpD/cjWaxL72EYgj4xLJAf8OtmLEMhWQJAl7XizRSspMKtw4jHZPSTE9TPpooorTwrdbJYW2TADQOV9xQC5yg9Zlvv9+9t
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR12MB7199.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(376002)(136003)(39860400002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(921011)(55016003)(66899024)(33656002)(6636002)(478600001)(38070700009)(7696005)(6506007)(41300700001)(86362001)(122000001)(26005)(66446008)(76116006)(2906002)(5660300002)(4326008)(91956017)(8676002)(66556008)(64756008)(54906003)(9686003)(66476007)(71200400001)(110136005)(52536014)(8936002)(7416002)(38100700002)(66946007)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?FXtkQZARIIT2soSwqBgP9sk4/x7zMpvL7hcQUaLh2/AJUmSTazyEJNCi66?=
+ =?iso-8859-1?Q?fq+wmEKh3COEonaLJ8QGmEZLQnrR7o7LBumMjnzCsp1LYrx69FtTsXFkzE?=
+ =?iso-8859-1?Q?0teivCR1P/9sn+kTRaz2/byhofI6WyM5uk/SUCbo/zkJWnLwotrDYqBBmt?=
+ =?iso-8859-1?Q?Eib0EFFuDv7WWFAQXaUWJ/Q1uVdEAH8Z+jQXnHw/alEUwXGIxr5zJ2/Kxy?=
+ =?iso-8859-1?Q?MU/cUKJ9JLYQpmOViFQ5JEzxdtWcPcjH5w7/XRHbGFClEOfNYuAybv8SSJ?=
+ =?iso-8859-1?Q?B5eBcbzyTSlP90I+UZk3vRNZJacgk3MbgCB7ZVUCJtta5yZrlUW5oxvv0K?=
+ =?iso-8859-1?Q?K2dzbZ/ybMdtp3QrPA8AME8ZshxG22xUXJzzTB4VG8pmTVh6+zA+CGsDF2?=
+ =?iso-8859-1?Q?7s0rClpjydI76ujWIGiBuNqOcV9ykCiHiwu6YLTJprLax5tWvfEQGFsKGe?=
+ =?iso-8859-1?Q?eAzMqEmnFkIHrIHh3ceNSH4X/eU4dR6Rbx5uSKlVcEen1VPaygnU941Em4?=
+ =?iso-8859-1?Q?hdQ9KQw111UJ4EPnyEpXHSCqCJekKE0j09ysWoVHLBtRQ0/O2NEDfphuHg?=
+ =?iso-8859-1?Q?LOGBvT85eDaAx7icvZWM1SDNF+d+okOV6k/4P4LliIWMFwGUn6jVE0UuyU?=
+ =?iso-8859-1?Q?ah2G+WPl1UJiRIWFfgP82LXAFLIzftBawVlf13YNvVZ/QQHz8A0KxL2VoU?=
+ =?iso-8859-1?Q?0yL2VQpQTXIUU6ia6M8wmg/5sBbjWiGTi/PLTCLImd27t7Gcb9aUW1tbTU?=
+ =?iso-8859-1?Q?Q+c9XjJeAifx1s2RqGxR7JsJMAh6/YR2k+Cvi8iIBU9S/T67gQMMGeHb9b?=
+ =?iso-8859-1?Q?XmimddgxKk9Kjf4/TI2aO6ri08K0jke6vzafwqTiMpGzq0z5AqFUi+n7td?=
+ =?iso-8859-1?Q?xgVOqcXHQb6s1x7E3ujooKqEYT9t1+Da5TiBdXVcrQshBDkUjaSFcNeFBw?=
+ =?iso-8859-1?Q?xVTkIUEUtIv4c4++PZS0d33GccOaESv7dolb5p9xPCpFnsLYxdDVPjFOsa?=
+ =?iso-8859-1?Q?nHDtXVURHDilSZYDPu8XSdWs1Ghqyjuwmy4qfmwgIS/dG8Gp1OEMzpF2He?=
+ =?iso-8859-1?Q?7oxFXr8JgxNK+TiO0RBSk/Fd2NZ6Ffl9TUAYXovHyH9wEaBWOW0E9gfMa9?=
+ =?iso-8859-1?Q?VKv28bkdK95/Uu2azl2QKmAxmrc+LqsAUnmaaUMyEiaSpXiMaUDybD4XDJ?=
+ =?iso-8859-1?Q?4OV87+HYUM8ThB2nycK7sbjnmJuWayJelEyq03mgRzXnklQjD0I1K3H8IL?=
+ =?iso-8859-1?Q?FQK7PYu4MGpin8SVIkjBgvBkyTvi3xg0J7/T/tnR3nCI10nTYO6etZ2ZlL?=
+ =?iso-8859-1?Q?4KJAsILARA/H0dD7GfDl05CiGXjlbgigrC3S3qdw/1pXM8jen6k+FcQh8u?=
+ =?iso-8859-1?Q?Vj3GYamOfjRiEUFvUUwNRfLKdZRxVnabosL4uju/fyuTt8D2zTLsu/Q7LS?=
+ =?iso-8859-1?Q?6wQnQYMelNNQ8lKcDNMT8reL/ESFkvS23SUKxq/EG24AK6t8iw44MSrPML?=
+ =?iso-8859-1?Q?4/4vk9RVbncSBS/fFh0xIlmFbjhwFVlfPQoMXNmKShEVqkGyFofXfHLgbw?=
+ =?iso-8859-1?Q?RTdVw9tIhdbUjk6qOVPZ3HRfFbL/xK5cr+f334+pwG5zQ2IDaJe02Nz7PV?=
+ =?iso-8859-1?Q?Y1v4NoUdiU5Ek=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240129124649.189745-14-david@redhat.com>
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR12MB7199.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c365fdf-0c19-485c-1990-08dc2871329e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2024 06:43:02.4878
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ANEon/8bq049qnDdPUC69TRGo1DvR6NgdSoxmEY/P60KhYUWELkwBQmCpBqPx0n9D+xnqSEipZNCdWd/+4jZQQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8880
 
-On Mon, Jan 29, 2024 at 01:46:47PM +0100, David Hildenbrand wrote:
-> Let's implement PTE batching when consecutive (present) PTEs map
-> consecutive pages of the same large folio, and all other PTE bits besides
-> the PFNs are equal.
-> 
-> We will optimize folio_pte_batch() separately, to ignore selected
-> PTE bits. This patch is based on work by Ryan Roberts.
-> 
-> Use __always_inline for __copy_present_ptes() and keep the handling for
-> single PTEs completely separate from the multi-PTE case: we really want
-> the compiler to optimize for the single-PTE case with small folios, to
-> not degrade performance.
-> 
-> Note that PTE batching will never exceed a single page table and will
-> always stay within VMA boundaries.
-> 
-> Further, processing PTE-mapped THP that maybe pinned and have
-> PageAnonExclusive set on at least one subpage should work as expected,
-> but there is room for improvement: We will repeatedly (1) detect a PTE
-> batch (2) detect that we have to copy a page (3) fall back and allocate a
-> single page to copy a single page. For now we won't care as pinned pages
-> are a corner case, and we should rather look into maintaining only a
-> single PageAnonExclusive bit for large folios.
-> 
-> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-
-Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
-
-> ---
->  include/linux/pgtable.h |  31 +++++++++++
->  mm/memory.c             | 112 +++++++++++++++++++++++++++++++++-------
->  2 files changed, 124 insertions(+), 19 deletions(-)
-> 
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index 351cd9dc7194..aab227e12493 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -650,6 +650,37 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
->  }
->  #endif
->  
-> +#ifndef wrprotect_ptes
-> +/**
-> + * wrprotect_ptes - Write-protect PTEs that map consecutive pages of the same
-> + *		    folio.
-> + * @mm: Address space the pages are mapped into.
-> + * @addr: Address the first page is mapped at.
-> + * @ptep: Page table pointer for the first entry.
-> + * @nr: Number of entries to write-protect.
-> + *
-> + * May be overridden by the architecture; otherwise, implemented as a simple
-> + * loop over ptep_set_wrprotect().
-> + *
-> + * Note that PTE bits in the PTE range besides the PFN can differ. For example,
-> + * some PTEs might be write-protected.
-> + *
-> + * Context: The caller holds the page table lock.  The PTEs map consecutive
-> + * pages that belong to the same folio.  The PTEs are all in the same PMD.
-> + */
-> +static inline void wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
-> +		pte_t *ptep, unsigned int nr)
-> +{
-> +	for (;;) {
-> +		ptep_set_wrprotect(mm, addr, ptep);
-> +		if (--nr == 0)
-> +			break;
-> +		ptep++;
-> +		addr += PAGE_SIZE;
-> +	}
-> +}
-> +#endif
-> +
->  /*
->   * On some architectures hardware does not set page access bit when accessing
->   * memory page, it is responsibility of software setting this bit. It brings
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 41b24da5be38..86f8a0021c8e 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -930,15 +930,15 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
->  	return 0;
->  }
->  
-> -static inline void __copy_present_pte(struct vm_area_struct *dst_vma,
-> +static __always_inline void __copy_present_ptes(struct vm_area_struct *dst_vma,
->  		struct vm_area_struct *src_vma, pte_t *dst_pte, pte_t *src_pte,
-> -		pte_t pte, unsigned long addr)
-> +		pte_t pte, unsigned long addr, int nr)
->  {
->  	struct mm_struct *src_mm = src_vma->vm_mm;
->  
->  	/* If it's a COW mapping, write protect it both processes. */
->  	if (is_cow_mapping(src_vma->vm_flags) && pte_write(pte)) {
-> -		ptep_set_wrprotect(src_mm, addr, src_pte);
-> +		wrprotect_ptes(src_mm, addr, src_pte, nr);
->  		pte = pte_wrprotect(pte);
->  	}
->  
-> @@ -950,26 +950,93 @@ static inline void __copy_present_pte(struct vm_area_struct *dst_vma,
->  	if (!userfaultfd_wp(dst_vma))
->  		pte = pte_clear_uffd_wp(pte);
->  
-> -	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
-> +	set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
-> +}
-> +
-> +/*
-> + * Detect a PTE batch: consecutive (present) PTEs that map consecutive
-> + * pages of the same folio.
-> + *
-> + * All PTEs inside a PTE batch have the same PTE bits set, excluding the PFN.
-> + */
-> +static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
-> +		pte_t *start_ptep, pte_t pte, int max_nr)
-> +{
-> +	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
-> +	const pte_t *end_ptep = start_ptep + max_nr;
-> +	pte_t expected_pte = pte_next_pfn(pte);
-> +	pte_t *ptep = start_ptep + 1;
-> +
-> +	VM_WARN_ON_FOLIO(!pte_present(pte), folio);
-> +
-> +	while (ptep != end_ptep) {
-> +		pte = ptep_get(ptep);
-> +
-> +		if (!pte_same(pte, expected_pte))
-> +			break;
-> +
-> +		/*
-> +		 * Stop immediately once we reached the end of the folio. In
-> +		 * corner cases the next PFN might fall into a different
-> +		 * folio.
-> +		 */
-> +		if (pte_pfn(pte) == folio_end_pfn)
-> +			break;
-> +
-> +		expected_pte = pte_next_pfn(expected_pte);
-> +		ptep++;
-> +	}
-> +
-> +	return ptep - start_ptep;
->  }
->  
->  /*
-> - * Copy one pte.  Returns 0 if succeeded, or -EAGAIN if one preallocated page
-> - * is required to copy this pte.
-> + * Copy one present PTE, trying to batch-process subsequent PTEs that map
-> + * consecutive pages of the same folio by copying them as well.
-> + *
-> + * Returns -EAGAIN if one preallocated page is required to copy the next PTE.
-> + * Otherwise, returns the number of copied PTEs (at least 1).
->   */
->  static inline int
-> -copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
-> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
->  		 pte_t *dst_pte, pte_t *src_pte, pte_t pte, unsigned long addr,
-> -		 int *rss, struct folio **prealloc)
-> +		 int max_nr, int *rss, struct folio **prealloc)
->  {
->  	struct page *page;
->  	struct folio *folio;
-> +	int err, nr;
->  
->  	page = vm_normal_page(src_vma, addr, pte);
->  	if (unlikely(!page))
->  		goto copy_pte;
->  
->  	folio = page_folio(page);
-> +
-> +	/*
-> +	 * If we likely have to copy, just don't bother with batching. Make
-> +	 * sure that the common "small folio" case is as fast as possible
-> +	 * by keeping the batching logic separate.
-> +	 */
-> +	if (unlikely(!*prealloc && folio_test_large(folio) && max_nr != 1)) {
-> +		nr = folio_pte_batch(folio, addr, src_pte, pte, max_nr);
-> +		folio_ref_add(folio, nr);
-> +		if (folio_test_anon(folio)) {
-> +			if (unlikely(folio_try_dup_anon_rmap_ptes(folio, page,
-> +								  nr, src_vma))) {
-> +				folio_ref_sub(folio, nr);
-> +				return -EAGAIN;
-> +			}
-> +			rss[MM_ANONPAGES] += nr;
-> +			VM_WARN_ON_FOLIO(PageAnonExclusive(page), folio);
-> +		} else {
-> +			folio_dup_file_rmap_ptes(folio, page, nr);
-> +			rss[mm_counter_file(folio)] += nr;
-> +		}
-> +		__copy_present_ptes(dst_vma, src_vma, dst_pte, src_pte, pte,
-> +				    addr, nr);
-> +		return nr;
-> +	}
-> +
->  	folio_get(folio);
->  	if (folio_test_anon(folio)) {
->  		/*
-> @@ -981,8 +1048,9 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
->  		if (unlikely(folio_try_dup_anon_rmap_pte(folio, page, src_vma))) {
->  			/* Page may be pinned, we have to copy. */
->  			folio_put(folio);
-> -			return copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
-> -						 addr, rss, prealloc, page);
-> +			err = copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
-> +						addr, rss, prealloc, page);
-> +			return err ? err : 1;
->  		}
->  		rss[MM_ANONPAGES]++;
->  		VM_WARN_ON_FOLIO(PageAnonExclusive(page), folio);
-> @@ -992,8 +1060,8 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
->  	}
->  
->  copy_pte:
-> -	__copy_present_pte(dst_vma, src_vma, dst_pte, src_pte, pte, addr);
-> -	return 0;
-> +	__copy_present_ptes(dst_vma, src_vma, dst_pte, src_pte, pte, addr, 1);
-> +	return 1;
->  }
->  
->  static inline struct folio *folio_prealloc(struct mm_struct *src_mm,
-> @@ -1030,10 +1098,11 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
->  	pte_t *src_pte, *dst_pte;
->  	pte_t ptent;
->  	spinlock_t *src_ptl, *dst_ptl;
-> -	int progress, ret = 0;
-> +	int progress, max_nr, ret = 0;
->  	int rss[NR_MM_COUNTERS];
->  	swp_entry_t entry = (swp_entry_t){0};
->  	struct folio *prealloc = NULL;
-> +	int nr;
->  
->  again:
->  	progress = 0;
-> @@ -1064,6 +1133,8 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
->  	arch_enter_lazy_mmu_mode();
->  
->  	do {
-> +		nr = 1;
-> +
->  		/*
->  		 * We are holding two locks at this point - either of them
->  		 * could generate latencies in another task on another CPU.
-> @@ -1100,9 +1171,10 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
->  			 */
->  			WARN_ON_ONCE(ret != -ENOENT);
->  		}
-> -		/* copy_present_pte() will clear `*prealloc' if consumed */
-> -		ret = copy_present_pte(dst_vma, src_vma, dst_pte, src_pte,
-> -				       ptent, addr, rss, &prealloc);
-> +		/* copy_present_ptes() will clear `*prealloc' if consumed */
-> +		max_nr = (end - addr) / PAGE_SIZE;
-> +		ret = copy_present_ptes(dst_vma, src_vma, dst_pte, src_pte,
-> +					ptent, addr, max_nr, rss, &prealloc);
->  		/*
->  		 * If we need a pre-allocated page for this pte, drop the
->  		 * locks, allocate, and try again.
-> @@ -1119,8 +1191,10 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
->  			folio_put(prealloc);
->  			prealloc = NULL;
->  		}
-> -		progress += 8;
-> -	} while (dst_pte++, src_pte++, addr += PAGE_SIZE, addr != end);
-> +		nr = ret;
-> +		progress += 8 * nr;
-> +	} while (dst_pte += nr, src_pte += nr, addr += PAGE_SIZE * nr,
-> +		 addr != end);
->  
->  	arch_leave_lazy_mmu_mode();
->  	pte_unmap_unlock(orig_src_pte, src_ptl);
-> @@ -1141,7 +1215,7 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
->  		prealloc = folio_prealloc(src_mm, src_vma, addr, false);
->  		if (!prealloc)
->  			return -ENOMEM;
-> -	} else if (ret) {
-> +	} else if (ret < 0) {
->  		VM_WARN_ON_ONCE(1);
->  	}
->  
-> -- 
-> 2.43.0
-> 
-> 
-
--- 
-Sincerely yours,
-Mike.
+Thanks Kevin.=0A=
+=0A=
+>> range_intesect_range determines an overlap between two ranges. If an=0A=
+>=0A=
+> s/intesect/intersect/=0A=
+=0A=
+Will fix the typo.=0A=
+=0A=
+>> + * vfio_pci_core_range_intersect_range() - Determine overlap between a=
+=0A=
+>> buffer=0A=
+>> + *=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 and register offset ranges.=0A=
+>> + * @range1_start:=A0=A0=A0 start offset of the buffer=0A=
+>> + * @count1:=A0=A0=A0=A0=A0=A0 number of buffer bytes.=0A=
+>> + * @range2_start:=A0=A0=A0 start register offset=0A=
+>> + * @count2:=A0=A0=A0=A0=A0=A0 number of bytes of register=0A=
+>> + * @start_offset:=A0=A0=A0 start offset of overlap start in the buffer=
+=0A=
+>> + * @intersect_count: number of overlapping bytes=0A=
+>> + * @register_offset: start offset of overlap start in register=0A=
+>> + *=0A=
+>> + * The function determines an overlap between a register and a buffer.=
+=0A=
+>> + * range1 represents the buffer and range2 represents register.=0A=
+>> + *=0A=
+>> + * Returns: true if there is overlap, false if not.=0A=
+>> + * The overlap start and range is returned through function args.=0A=
+>> + */=0A=
+>> +bool vfio_pci_core_range_intersect_range(loff_t range1_start, size_t co=
+unt1,=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 loff_t range2_start, size_t coun=
+t2,=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 loff_t *start_offset,=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 size_t *intersect_count,=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 size_t *register_offset)=0A=
+>=0A=
+> based on description it's probably clearer to rename:=0A=
+>=0A=
+> range1_start -> buf_start=0A=
+> count1 -> buf_cnt=0A=
+> range2_start -> reg_start=0A=
+> count2 -> reg_cnt=0A=
+> start_offset -> buf_offset=0A=
+>=0A=
+> but not big deal, so:=0A=
+=0A=
+Fine by me. Will rename them.=0A=
+=0A=
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>=0A=
+=0A=
+Thanks!=
 
