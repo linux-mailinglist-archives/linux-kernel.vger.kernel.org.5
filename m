@@ -1,121 +1,107 @@
-Return-Path: <linux-kernel+bounces-58296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACC4484E42C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:42:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5530B84E42E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:42:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6942D28D842
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:42:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87D021C20E84
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:42:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040D87C6EF;
-	Thu,  8 Feb 2024 15:42:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 339B17D3ED;
+	Thu,  8 Feb 2024 15:42:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Xj7Fog8K"
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dpUTJHmm"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D96F47C0A9
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 15:42:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8FE97CF3B;
+	Thu,  8 Feb 2024 15:42:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707406926; cv=none; b=CJfZGinl46l+k8+nJJ9i0Vq+6nYaAukiXoBvFZ4Qb9HlKKuHq00YieO5MaPRfDlRuDPfb8mLgAfDW4OmApfTDhGsYaKkvUjbfz+b+zG12fVzPljFkqzH+xxgiEkRKGiuq02hlxCswexfRepSuxqB1v6inwpYv1iu9eueWllub4c=
+	t=1707406933; cv=none; b=HJ9lKbDye+VH+CKFcHh5psy+Ajg1oag8kPosmYOH+1oxL9mtxk+ZRhYdtkP12ILjSzNOfdvD/BGo9I2MFWR59WyM9dMeeh3zxXlzhZxyz76VBnZaYrBXlNdw7LGJtoQWW0aqJqjTOAtr028qDVvk1JWfa0atMr65o4+RrRmvjHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707406926; c=relaxed/simple;
-	bh=v6RY+HoEygcidTXsOrNnjWIcKG3qK9XPgGRFowXNBO8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UK1I1iRGiRyDu1Dak6SXLVOGdx0QP8DbeFnp+mX4++c6C+ng7IDkrfznYsB4hKBDINcPAftP+rmPtMDNdCD5HaaFNMAD8Heua0/7pf2cyPvPI9ZqWK4oplGETMtnuWllqJtPxbr3mRtnCdmABF6L84CLYL9iTwEt7Rp3eKVIMe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Xj7Fog8K; arc=none smtp.client-ip=209.85.222.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-7d5c25267deso662853241.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 07:42:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707406923; x=1708011723; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NKbb7p+kOEnvs7kyPggNgED1EnVbkGfw9/eZmIaWcyE=;
-        b=Xj7Fog8KLhAkpp4/Wc0oFlzrFGiLSRpvC2L/Qe6bPM6ziqFhO7ZUPgIMdKTMkHD22q
-         meEcowHCsedGQRnNLzcTCQl0e1Iqu6O2fmeWikOTxnTqo//rRMpaA7F9D3lvoxPn6ENH
-         M5YnbTQH1fzwtWayIaG4W6znLb1h5KRLrMLyFQASLVN4ubmpGIStkDi0rYoyNPR+jHXM
-         AOTvQcw/lR2TKGjkbOQShpuBHjRMunSSVII356dXolVKu3/YcC9zUGfpUYFl6sEI9c6O
-         wAZa9mmR5IbNJd3ytw7BUhmqicN+tleXvmcSInJfCuD7/B1DldCA5WTgS1MMvTzpNcEd
-         ZY3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707406923; x=1708011723;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NKbb7p+kOEnvs7kyPggNgED1EnVbkGfw9/eZmIaWcyE=;
-        b=lRiTp7A/ltyNwqMt5R3EN6UZL3S37takR9/JvCou2MQkvn115R+za8RlCqHwzyN5Ep
-         RuJfToHotEd2gxih7u0LvNmnjj2HacgN6fcBo7HhPCjYYuTjmayIVb+d7kFVFztjxSFq
-         uNF7IO7RT8GZCZG7EuyPdW+yqqHsco7D6dqC5zNGDrl+QeiWhbcZqVIT1P6MHPF9KMih
-         TyXJIx7WeYNUqjUMrKQZ7kJUnucC67QlLIyObPfHs4Sm06Dcxh53Qgw89Ah+uYqocz55
-         K2cOmd76v5IfrQFXAVi2s+55PvS2lB4ChDkuXHPec6xwT9Vz11bjcM9E6q6JgTOzZNaD
-         jQ3A==
-X-Forwarded-Encrypted: i=1; AJvYcCWgs6jYtRIFM5D7gF6wxEfHyUUTHEjPPJ3ofLmM6GVahZn+fl5sOLHIpdI6z9I0FS7VAdLjxGiX04sUPxYd27W+rZ3MwyxenbPkLtOK
-X-Gm-Message-State: AOJu0YzCAj2qDJEwNmvOLHnXbrkaPX/gJTA+TIw3PJCvS23nWjTgtBlP
-	SVd6kuDJpV3LR+ZdmdhZihZcGN6xssumsSw0I0JZLY5BriI4iRuqva5YEe3+gxZnBlGZD+b2JnN
-	dULTnaJU2oh5a3ZJL0at0qgyZmxjjg/FHkDBv
-X-Google-Smtp-Source: AGHT+IFDyVSM20AAZOqwIyb4b9dBSIPLnDvdeUdFq1ivHCsKm3z9RezCwd1Tr99hv7eVqI+4NfGUBzCublWFJ7MsYRg=
-X-Received: by 2002:a67:bd07:0:b0:46d:20a8:cb4e with SMTP id
- y7-20020a67bd07000000b0046d20a8cb4emr5871603vsq.26.1707406923533; Thu, 08 Feb
- 2024 07:42:03 -0800 (PST)
+	s=arc-20240116; t=1707406933; c=relaxed/simple;
+	bh=Gq/MeCq8tAdioyMIzNGvwfo3UL2xJNXqTKNa0zXA520=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oR0Ay0Uf6GUbOmbPKXjpw8xIzd/t2BsrGgaXV88am6Z22sUj0v0GHJn3H542bmpZYumksypHOjewchUM7G5tqCgiZ6TlmiCU3k3jK+6F7hjpu1ujRw52WlLp867g7Z2PlbhRLQ5sWxXOT96p7wQLOZLsEl6Ozt2CY4dcxNJua5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dpUTJHmm; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707406932; x=1738942932;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Gq/MeCq8tAdioyMIzNGvwfo3UL2xJNXqTKNa0zXA520=;
+  b=dpUTJHmmx+tUbSiGY3PZ+brOzgFB4qFXAT41Rq2edum36yCT/lWSJCbP
+   1TL3Rb2EviiZZ3LvvYW7SmkQ2lfi+cK+3n46gxf/O/FlBX9shEAYWtt7s
+   heskK0oTM/aczEy1lcG6RtP3u03mNkkuEeVmR125fUf6CSSYBq3huSKUp
+   CdfIUXH+DFaCEN1k41lurlQdrWx56aOXUZCscUW8O6kE2Umng+kra8kc+
+   EpAEMykH7u87Og+C77uavz4geBiG8eiDlMksmy01cXX3efy9HelexuIRS
+   7iP8WgIbXlFtEHStzQ3uvdldCp0uDPUjNsZY91CIITT3zzH2sRN53WFsw
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="23721935"
+X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
+   d="scan'208";a="23721935"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 07:42:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="934162468"
+X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
+   d="scan'208";a="934162468"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by fmsmga001.fm.intel.com with ESMTP; 08 Feb 2024 07:42:08 -0800
+Message-ID: <a026ecd8-6fba-017d-d673-0d0759a37ed8@linux.intel.com>
+Date: Thu, 8 Feb 2024 17:43:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124-alice-mm-v1-0-d1abcec83c44@google.com>
- <20240124-alice-mm-v1-1-d1abcec83c44@google.com> <CALNs47uDaD05oD8TtZoSqUBc4SaRig80u2_1P0qMCXtE3H9_Vw@mail.gmail.com>
- <CAH5fLggdwWoq4wKv7VxZ-_VbWMV_Ui03rGOCMPbWn8=ewznmvA@mail.gmail.com> <2024020859-lusty-ladylike-29d4@gregkh>
-In-Reply-To: <2024020859-lusty-ladylike-29d4@gregkh>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 8 Feb 2024 16:41:52 +0100
-Message-ID: <CAH5fLgikdGGdjEUxyMWjkfHbRmvtMavwHFDwRC+4GVt46qmHWw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] rust: add userspace pointers
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Trevor Gross <tmgross@umich.edu>, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Kees Cook <keescook@chromium.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: =?UTF-8?Q?Re=3a_This_is_the_fourth_time_I=e2=80=99ve_tried_to_find_?=
+ =?UTF-8?Q?what_led_to_the_regression_of_outgoing_network_speed_and_each_tim?=
+ =?UTF-8?Q?e_I_find_the_merge_commit_8c94ccc7cd691472461448f98e2372c75849406?=
+ =?UTF-8?Q?c?=
+Content-Language: en-US
+To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc: "Christian A. Ehrhardt" <lk@c--e.de>, niklas.neronin@linux.intel.com,
+ Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+ Greg KH <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org
+References: <CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com>
+ <Zb6D/5R8nNrxveAP@cae.in-ulm.de> <Zb/30qOGYAH4j6Mn@cae.in-ulm.de>
+ <CABXGCsPu73D+JS9dpvzX78RktK2VOv_xT8vvuVaQ=B6zs2dMNQ@mail.gmail.com>
+ <e7b96819-edf7-1f9f-7b01-e2e805c99b33@linux.intel.com>
+ <CABXGCsPjW_Gr4fGBzYSkr_4tsn0fvuT72G-YJYXcb1a4kX=CQw@mail.gmail.com>
+ <2d87509a-1515-520c-4b9e-bba4cd4fa2c6@linux.intel.com>
+ <CABXGCsPdXqRG6v97KDGy+o59xc3ayaq3rLj267veC7YcKVp8ww@mail.gmail.com>
+ <1126ed0a-bfc1-a752-1b5e-f1339d7a8aa5@linux.intel.com>
+ <CABXGCsN5_O3iKDOyYxtsGTGDA6fw4962CjzXLSnOK3rscELq+Q@mail.gmail.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+In-Reply-To: <CABXGCsN5_O3iKDOyYxtsGTGDA6fw4962CjzXLSnOK3rscELq+Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 8, 2024 at 4:35=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Feb 08, 2024 at 01:53:20PM +0100, Alice Ryhl wrote:
-> > > Is some sort of `Debug` implementation useful?
-> >
-> > Leaking pointer addresses in logs is frowned upon in the kernel, so I
-> > don't think we should include that.
->
-> s/frowned upon/forbidden/ :)
+On 8.2.2024 12.32, Mikhail Gavrilov wrote:
+> On Thu, Feb 8, 2024 at 2:23 PM Mathias Nyman
+> <mathias.nyman@linux.intel.com> wrote:
+>>
+>> My guess is that CPU0 spends more time with interrupts disabled than other CPUs.
+>> Either because it's handling interrupts from some other hardware, or running
+>> code that disables interrupts (for example kernel code inside spin_lock_irq),
+>> and thus not able to handle network adapter interrupts at the same rate as CPU23
+>>
+> 
+> Can this be fixed?
 
-:)
+Not sure, I'm not that familiar with this area.
+Maybe running irqbalance could help?
 
-> Along those lines, you all are tieing in the "I want to print a pointer,
-> so hash it properly before I do so" logic from rust like we have in c,
-> right?  Ideally you'd use the same logic if at all possible.
->
-> If not, that probably needs to be done so that you don't accidentally
-> start leaking things.
-
-I don't know what the status of this is. For anything I've added, I've
-just made it entirely impossible to print addresses, hashed or not.
-
-Alice
+Thanks
+Mathias
 
