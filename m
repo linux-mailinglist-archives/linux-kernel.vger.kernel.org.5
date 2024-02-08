@@ -1,196 +1,137 @@
-Return-Path: <linux-kernel+bounces-57730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C384E84DCC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:25:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F85084DCCC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:25:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B9D61F25E4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:25:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B797282606
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715C26E2D9;
-	Thu,  8 Feb 2024 09:22:14 +0000 (UTC)
-Received: from esa1.ltts.com (unknown [118.185.121.105])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 030416E2C7;
+	Thu,  8 Feb 2024 09:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="a69GVgQO"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13E26DCF0;
-	Thu,  8 Feb 2024 09:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=118.185.121.105
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7EF6BFA6;
+	Thu,  8 Feb 2024 09:23:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707384134; cv=none; b=BzgkJG1Opx2DjZkyy0us8w59RR2fytTc/MFboSQOmG19ZuMukGwW8Sq+tiPxA3sFT4poc4Z1xR9uGs37TA3uVhl8hhtqmbgFzd4rKJETUu0E0Q+rlRvCZ0eU6NcvRHahahOpVDT91TUXjCLFeM2lnaogX5xr299Ht1S1xI4DT6Y=
+	t=1707384189; cv=none; b=bbiGTD10VviojDU49InhDPyWy6CDmwNh3wi4arYsmzDUX0TiTbAExzkpvF0bnOHylv1N/fFvrgtxVMK+qQihYnf9wmBGmCeM7Nm1WbwYIxpqyzZYyPqdFPPl1k11IwLJeOMEABIL6V9vIPx66LiB3/0a1ieO3ugcgLu42pJ87so=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707384134; c=relaxed/simple;
-	bh=kgd5rZlmo0eQ4+URWAldLJfV0Lypdy0Upba1rC9o8CM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=I3WTi55uVmgL9pt52w56tjYj086pkiG7cH7PKQTKws0cUd3WUywUEWZQmYMUKbI9uZmdInwEzKBvCDp8R4PTLRF27VeD1noIFtDqHNnDWhEpXXxPJRl5SQGS8awZw/hxk0ZYUsEMCbdHADUhjW35O0m3wLYiekaldghi4qjOPi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com; spf=pass smtp.mailfrom=ltts.com; arc=none smtp.client-ip=118.185.121.105
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ltts.com
-IronPort-SDR: rU+DpzZ/1CEGLV2wzYkbY8STYN9oEHrTewE4f0EaDxszeTn4TIr5poME84qz1IdchsEREtE6Eu
- G6L12kpHNPjg==
-Received: from unknown (HELO localhost.localdomain) ([192.168.34.55])
-  by esa1.ltts.com with ESMTP; 08 Feb 2024 14:52:08 +0530
-From: Bhargav Raviprakash <bhargav.r@ltts.com>
-To: linux-kernel@vger.kernel.org
-Cc: m.nirmaladevi@ltts.com,
-	nm@ti.com,
-	vigneshr@ti.com,
-	kristo@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	Bhargav Raviprakash <bhargav.r@ltts.com>
-Subject: [PATCH v1 13/13] arch: arm64: dts: ti: k3-am62p5-sk: Add TPS65224 PMIC support in AM62P dts
-Date: Thu,  8 Feb 2024 14:51:53 +0530
-Message-Id: <20240208092153.1207321-1-bhargav.r@ltts.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1707384189; c=relaxed/simple;
+	bh=gdfBej27euGxJcT9NXwgasXWvHeRtnjKy2yiVwekJ4A=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:CC:References:
+	 In-Reply-To:Content-Type; b=qdi8V1UDty9CKmsFB49Rafcp6a+wBNOUvie+3WvMQuYCVCgwJJncJvINI0LOAguwPDy9r0mddbFDZNTvqTT0LedVgNM/c4K25LsVoLT9W75jnUMwZUcQGOJwQ0FPeK3c6Hfo5oDrBNKIhIzcAvxlKBQ5XDIz48AL0ogCSXVzmXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=a69GVgQO; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4185PxZ6031708;
+	Thu, 8 Feb 2024 09:22:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:from:subject:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=yIsFGzjC2AWz7C0/no0S1EAVpf2e+m6kDY2d+317iyg=; b=a6
+	9GVgQOrPS9NO26yK+GxGX1Hswx1AN7AN+g3u/2eHnUc2ui2Ylo4RSMOLe5zLBWoT
+	hMElQRCELAiAnRQCZWV5HWtbs8DfH/tknHubjr/MfftH7iDaMUAZ6tySizyo9R7+
+	jFhS/gqrOofS3tFhK4d5seIezBWXBe6t3QJRlvDhngrJe7hEDCU+VuUG6gvuUuKB
+	z9sF+Q/h5J1bdKGgldQukX2XjbqFiB/V26TKTdZ6s3/+/a9/ATi92SRHM4ZlnKJK
+	AwZe+fgndca5yvUo07C8aJHy+0Tp1phS0+hDq/uJSY4/76BOil0CLGCXYp00lEtd
+	ILWwj2Pzp81T+ar0kCXw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w44fwk7hg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 08 Feb 2024 09:22:44 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4189Mh2r025552
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 8 Feb 2024 09:22:43 GMT
+Received: from [10.239.132.50] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 8 Feb
+ 2024 01:22:36 -0800
+Message-ID: <ec99fdee-8d3f-476f-842f-f57b2b817dae@quicinc.com>
+Date: Thu, 8 Feb 2024 17:22:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: Huang Yiwei <quic_hyiwei@quicinc.com>
+Subject: Re: [PATCH v4] tracing: Support to dump instance traces by
+ ftrace_dump_on_oops
+To: Joel Fernandes <joel@joelfernandes.org>,
+        Steven Rostedt
+	<rostedt@goodmis.org>
+CC: <mhiramat@kernel.org>, <mark.rutland@arm.com>, <mcgrof@kernel.org>,
+        <keescook@chromium.org>, <j.granados@samsung.com>,
+        <mathieu.desnoyers@efficios.com>, <corbet@lwn.net>,
+        <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <quic_bjorande@quicinc.com>, <quic_tsoni@quicinc.com>,
+        <quic_satyap@quicinc.com>, <quic_aiquny@quicinc.com>,
+        <kernel@quicinc.com>, Ross Zwisler <zwisler@google.com>
+References: <20240206094650.1696566-1-quic_hyiwei@quicinc.com>
+ <50cdbe95-c14c-49db-86aa-458e87ae9513@joelfernandes.org>
+ <20240207061429.3e29afc8@rorschach.local.home>
+ <CAEXW_YSUD-CW_=BHbfrfPZAfRUtk_hys5r06uJP2TJJeYJb-1g@mail.gmail.com>
+Content-Language: en-US
+In-Reply-To: <CAEXW_YSUD-CW_=BHbfrfPZAfRUtk_hys5r06uJP2TJJeYJb-1g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Q_Xwq2R-qjMYvW3jW5NKo5PQzDK1nXS8
+X-Proofpoint-ORIG-GUID: Q_Xwq2R-qjMYvW3jW5NKo5PQzDK1nXS8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-08_01,2024-02-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 bulkscore=0 clxscore=1015 mlxscore=0
+ adultscore=0 suspectscore=0 priorityscore=1501 spamscore=0 mlxlogscore=964
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402080049
 
-Add support for TPS65224 PMIC in device tree of AM62P EVM. Adds
-regulator configuration, pinmux configurations and pmic device nodes.
 
-Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
----
- arch/arm64/boot/dts/ti/k3-am62p5-sk.dts | 95 +++++++++++++++++++++++++
- 1 file changed, 95 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-index 1773c05f7..5d8e4321b 100644
---- a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-@@ -112,6 +112,16 @@ vddshv_sdio: regulator-3 {
- 		bootph-all;
- 	};
- 
-+	vcc_3v3_main: regulator-4 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc_3v3_main";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vmain_pd>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
- 	leds {
- 		compatible = "gpio-leds";
- 		pinctrl-names = "default";
-@@ -580,6 +590,12 @@ &main_uart1 {
- &mcu_pmx0 {
- 	bootph-all;
- 
-+	pmic_irq_pins_default: pmic-irq-default-pins {
-+		pinctrl-single,pins = <
-+			AM62PX_MCU_IOPAD(0x000, PIN_INPUT, 7) /* (B10) MCU_GPIO0_0 */
-+		>;
-+	};
-+
- 	wkup_uart0_pins_default: wkup-uart0-default-pins {
- 		pinctrl-single,pins = <
- 			AM62PX_MCU_IOPAD(0x02c, PIN_INPUT, 0)	/* (C7) WKUP_UART0_CTSn */
-@@ -589,6 +605,13 @@ AM62PX_MCU_IOPAD(0x028, PIN_OUTPUT, 0)	/* (D7) WKUP_UART0_TXD */
- 		>;
- 		bootph-all;
- 	};
-+
-+	wkup_i2c0_pins_default: wkup-i2c0-default-pins {
-+		pinctrl-single,pins = <
-+			AM62PX_MCU_IOPAD(0x04c, PIN_INPUT, 0) /* (A13) WKUP_I2C0_SCL */
-+			AM62PX_MCU_IOPAD(0x050, PIN_INPUT, 0) /* (C11) WKUP_I2C0_SDA */
-+		>;
-+	};
- };
- 
- &wkup_uart0 {
-@@ -599,6 +622,78 @@ &wkup_uart0 {
- 	bootph-all;
- };
- 
-+&wkup_i2c0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&wkup_i2c0_pins_default>;
-+	clock-frequency = <400000>;
-+
-+	tps65224: pmic@48 {
-+		compatible = "ti,tps65224-q1";
-+		reg = <0x48>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pmic_irq_pins_default>;
-+		interrupt-parent = <&mcu_gpio0>;
-+		interrupts = <0 IRQ_TYPE_EDGE_FALLING>;
-+		ti,primary-pmic;
-+
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		buck12-supply = <&vcc_3v3_main>;
-+		buck3-supply = <&vcc_3v3_main>;
-+		buck4-supply = <&vcc_3v3_main>;
-+
-+		ldo1-supply = <&vcc_3v3_main>;
-+		ldo2-supply = <&vcc_3v3_main>;
-+		ldo3-supply = <&vcc1v8_sys>;
-+
-+		regulators {
-+			vcc_core: buck12 {
-+				regulator-name = "vcc_core_buck12";
-+				regulator-min-microvolt = <715000>;
-+				regulator-max-microvolt = <895000>;
-+				regulator-always-on;
-+			};
-+
-+			vcc1v8_sys: buck3 {
-+				regulator-name = "vcc1v8_sys_buck3";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-always-on;
-+			};
-+
-+			vcc1v1: buck4 {
-+				regulator-name = "vcc1v1_buck4";
-+				regulator-min-microvolt = <1100000>;
-+				regulator-max-microvolt = <1100000>;
-+				regulator-always-on;
-+			};
-+
-+			vdda1v8: ldo1 {
-+				regulator-name = "vdda1v8_ldo1";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-always-on;
-+			};
-+
-+			dvdd3v3: ldo2 {
-+				regulator-name = "dvdd3v3_ldo2";
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+			};
-+
-+			vcc_0v85: ldo3 {
-+				regulator-name = "vcc_0v85_ldo3";
-+				regulator-min-microvolt = <850000>;
-+				regulator-max-microvolt = <850000>;
-+				regulator-always-on;
-+			};
-+		};
-+	};
-+};
-+
- /* mcu_gpio0 and mcu_gpio_intr are reserved for mcu firmware usage */
- &mcu_gpio0 {
- 	status = "reserved";
--- 
-2.25.1
+On 2/7/2024 10:13 PM, Joel Fernandes wrote:
+> On Wed, Feb 7, 2024 at 6:14 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>>
+>> On Wed, 7 Feb 2024 05:24:58 -0500
+>> Joel Fernandes <joel@joelfernandes.org> wrote:
+>>
+>>> Btw, hopefully the "trace off on warning" and related boot parameters also apply
+>>> to instances, I haven't personally checked but I often couple those with the
+>>> dump-on-oops ones.
+>>
+>> Currently they do not. It would require an updated interface to do so,
+>> as sometimes instances can be used to continue tracing after a warning,
+>> so I don't want to make it for all instances.
+> 
+> Thanks for clarifying.
+> 
+>> Perhaps we need an option for these too, and have all options be
+>> updated via the command line. That way we don't need to make special
+>> boot line parameters for this. If we move these to options (keeping the
+>> proc interface for backward compatibility) it would make most features
+>> available to all with one change.
+It's a good idea that "traceoff_on_warning" also has instance support, 
+but we will use another patchset to do this, right?
 
+And for this patchset, shall I fix the typo and resend again? Thanks.
+> 
+> Agreed, that would be nice!!
+> 
+>   - Joel
+Regards,
+Huang Yiwei
 
