@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-57327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A551684D70A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:17:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3130F84D70C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:18:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4503A1F24378
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 00:17:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9241EB24060
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 00:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6655B36B16;
-	Thu,  8 Feb 2024 00:15:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4933716F;
+	Thu,  8 Feb 2024 00:15:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mgwIc1/O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T7CJ6x6X"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3725D50F;
-	Thu,  8 Feb 2024 00:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CCDE36B17;
+	Thu,  8 Feb 2024 00:15:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707351313; cv=none; b=MSzzeaCdQlIQrvsUOAwrJGyGL14wJ/kE1KBtg/6Kaldow6c71vOtAb5f6rykXe9gqwsSlMs2F7woyP5wE95tY3qFuka2RZnj26xigdPKieh+z0kPUP7GL5yZLPmwZWCYDBhYUzslDFOfRPWWl8P1vleB7t/O9WW2K4q7SFS5CyQ=
+	t=1707351314; cv=none; b=IjOl5zlWOSNbzd6+/9hebujTerZ25wJhqmOXVTCGsG7IFNxWQy+bE9xXdWDXpdPmujRnZEtUlVyCZ785CYdP070y6QH0CHxSSaIt5eJDvrYm5iukq++rAetwvtxyzwncHELHVQTEwNdlLDcp5/jK5W+KdzHTj0F9rYBBaVBGTfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707351313; c=relaxed/simple;
-	bh=5f+GlBiJxZjhDl4Rv7fblarUlgSt/9TT1t6UVb+Nqdc=;
+	s=arc-20240116; t=1707351314; c=relaxed/simple;
+	bh=CCi+rDw2ejcWvZ1EnjQItxIQNAEtlo1/MQkx4v+uHWI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=svpIGC09Sn6B+GD3W63B62c3M+JP4SRTr7ACNHq4DC+pfvTnmgDEVCId/K3wjC2//DGHATgbDXQ1L6j6ELkgCWprhuBVXvcVVjrq0K/xpU9yvbTeVcWs7MqGqPyWGGgjJlAqpEj5G/sqH5YvWagR2zYs3+s40gaNSVjbGrEeu34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mgwIc1/O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8FEBC43141;
-	Thu,  8 Feb 2024 00:15:12 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=YLqXxBF5Hp0SPIY+9f0gMiEuffrtWnIGc3V/r5H4fY5T5/HHk2nTUaO89i7Z7vQm1ou9nM28jXTImO5ZFnWB/Tt2GUImbQOnxTr09IUyS5pSLaFEoNsek12oTwjUEhdD68IBn25aIBy+TwWCrh128WecOV/qocRSJMuBOiAFKpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T7CJ6x6X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F8BBC43330;
+	Thu,  8 Feb 2024 00:15:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707351313;
-	bh=5f+GlBiJxZjhDl4Rv7fblarUlgSt/9TT1t6UVb+Nqdc=;
+	s=k20201202; t=1707351314;
+	bh=CCi+rDw2ejcWvZ1EnjQItxIQNAEtlo1/MQkx4v+uHWI=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=mgwIc1/O9w/qwjY2Nz1d8Romqbt2EbHAFJ/6zmmpqCgNTe5DRalxLnnYfMefQwKli
-	 B3nw7sJFvpibiPONx/JsIHBN8cY9/jFRJ3wJ2Dh21tQTYi7PYMl5tanvHWm4h2bXt7
-	 V5fDe2r+qW3vqibeqNDCE1z2/x2ebMHW69N4w0JtpS4pgo0AQccYAPZih4eCLD1DTB
-	 VbYlsCe0/yikg4XwZOvT6pRNOmZO6+Gsn7bmuC1Nz7B+v6lNr495Efku0xfkW4LFAU
-	 mF8B7ji1So7CRtKPcSPz1/bdeKjCgChXwGzswN9n03oEe26Ovyr0siBKpidfNlCoGB
-	 mREmo8WM1+FYw==
+	b=T7CJ6x6XIWpT6ltuWuNXD3Isgp2jG34gY6hwPmQwC59BaC9OcNZWXyf4u5j9S7ZzA
+	 dJS1H+RWe8ZGSsOw7gfvO8tebgFZGrpP+0yb6iKf45+YmT0CFD3X5TSS6eigcScAPQ
+	 fkBygchQOo5eFx1AF9/bUBSe2iTSE4HCANpCJ5gQIqC7u3Qhr0vMd3dk2gNZ30foVJ
+	 o16BsHgHhozDLipNHM+KpF5HSLDYk5cSFwdouOY3MOwtG03sq0KV9+Ds0DoH/3HVux
+	 HbfyU9UB8W/c5aGrwizpGyilUu3CVy5RYQq+TiInbcFEz6OAgq8c65y0cAVcPynUBO
+	 6SrO7tb0HW28A==
 From: Nathan Chancellor <nathan@kernel.org>
-Date: Wed, 07 Feb 2024 17:15:02 -0700
-Subject: [PATCH 10/11] s390: Select CONFIG_ARCH_WANT_LD_ORPHAN_WARN
+Date: Wed, 07 Feb 2024 17:15:03 -0700
+Subject: [PATCH 11/11] s390: Link vmlinux with '-z notext'
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,7 +51,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240207-s390-lld-and-orphan-warn-v1-10-8a665b3346ab@kernel.org>
+Message-Id: <20240207-s390-lld-and-orphan-warn-v1-11-8a665b3346ab@kernel.org>
 References: <20240207-s390-lld-and-orphan-warn-v1-0-8a665b3346ab@kernel.org>
 In-Reply-To: <20240207-s390-lld-and-orphan-warn-v1-0-8a665b3346ab@kernel.org>
 To: hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com
@@ -60,37 +60,43 @@ Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, maskray@google.com,
  linux-kernel@vger.kernel.org, llvm@lists.linux.dev, patches@lists.linux.dev, 
  Nathan Chancellor <nathan@kernel.org>
 X-Mailer: b4 0.13-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=825; i=nathan@kernel.org;
- h=from:subject:message-id; bh=5f+GlBiJxZjhDl4Rv7fblarUlgSt/9TT1t6UVb+Nqdc=;
- b=owGbwMvMwCUmm602sfCA1DTG02pJDKlHZDkOuDuKK5xpK7cUecmZlCcX4WW+zOzQ3D2LbgXrZ
- JyRVF/fUcrCIMbFICumyFL9WPW4oeGcs4w3Tk2CmcPKBDKEgYtTACbi8pGR4VfyW5ncJvPP6xxE
- Yuo+F2VcEonQ/mnCIHRP2aVSfKL7IUaG14liKw+aPtj99TTj/sTbzfeZ6hh2iyw2Ezluu4B5+mp
- bLgA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1081; i=nathan@kernel.org;
+ h=from:subject:message-id; bh=CCi+rDw2ejcWvZ1EnjQItxIQNAEtlo1/MQkx4v+uHWI=;
+ b=owGbwMvMwCUmm602sfCA1DTG02pJDKlHZDlcu6wyHtW0mmT9myax7ljYBO69LD6vjC9bn6pz7
+ 1+5ruFJRykLgxgXg6yYIkv1Y9XjhoZzzjLeODUJZg4rE8gQBi5OAZhI7lqGX8x5F768tA/muHWQ
+ 7f3Ph9aN82f9iFvVZqi6+I5f962f0SyMDHffRdYYZLmkq3zt/xzLfrH40kSl3KWyi2S0/QxDf/Q
+ s5wIA
 X-Developer-Key: i=nathan@kernel.org; a=openpgp;
  fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
 
-Now that all sections have been properly accounted for in the s390
-linker scripts, select CONFIG_ARCH_WANT_LD_ORPHAN_WARN so that
-'--orphan-handling' is added to LDFLAGS to catch any future sections
-that are added without being described in linker scripts.
+ld.bfd defaults to '-z notext' (although it is customizable with the
+'--enable-textrel-check' configure option) but ld.lld defaults to '-z
+text', which causes issues with building the kernel due to the presence
+of dynamic relocations in sections that are not writable.
+
+  ld.lld: error: relocation R_390_64 cannot be used against local symbol; recompile with -fPIC
+
+Add '-z notext' to avoid these errors, as this is expected, which
+matches other architectures.
 
 Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
- arch/s390/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/s390/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index fe565f3a3a91..771235aee6bf 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -127,6 +127,7 @@ config S390
- 	select ARCH_WANT_DEFAULT_BPF_JIT
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select ARCH_WANT_KERNEL_PMD_MKWRITE
-+	select ARCH_WANT_LD_ORPHAN_WARN
- 	select ARCH_WANT_OPTIMIZE_HUGETLB_VMEMMAP
- 	select BUILDTIME_TABLE_SORT
- 	select CLONE_BACKWARDS2
+diff --git a/arch/s390/Makefile b/arch/s390/Makefile
+index 73873e451686..994f9b3d575f 100644
+--- a/arch/s390/Makefile
++++ b/arch/s390/Makefile
+@@ -15,7 +15,7 @@ KBUILD_CFLAGS_MODULE += -fPIC
+ KBUILD_AFLAGS	+= -m64
+ KBUILD_CFLAGS	+= -m64
+ KBUILD_CFLAGS	+= -fPIE
+-LDFLAGS_vmlinux	:= -pie
++LDFLAGS_vmlinux	:= -pie -z notext
+ aflags_dwarf	:= -Wa,-gdwarf-2
+ KBUILD_AFLAGS_DECOMPRESSOR := $(CLANG_FLAGS) -m64 -D__ASSEMBLY__
+ ifndef CONFIG_AS_IS_LLVM
 
 -- 
 2.43.0
