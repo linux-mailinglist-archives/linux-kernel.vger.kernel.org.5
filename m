@@ -1,66 +1,65 @@
-Return-Path: <linux-kernel+bounces-57474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A865884D98F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:26:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D24884D990
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:30:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB7921C21BD5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 05:26:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFBCF1F232C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 05:30:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E71E267C5F;
-	Thu,  8 Feb 2024 05:26:22 +0000 (UTC)
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DEAC67C5E;
+	Thu,  8 Feb 2024 05:30:03 +0000 (UTC)
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2238767A0F;
-	Thu,  8 Feb 2024 05:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406DB67C51;
+	Thu,  8 Feb 2024 05:30:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707369982; cv=none; b=E0jkGWJhuRkDnhY9bOsqVeyQnxlaFeSL1DwjWcmA/a+2AgmyIy1l+vyXXABHXUZa3xji2YcqSXx6BwKnuN4obRkL2+ZK4DmZlCCQwt7twT8bu7aTOv7aQar/qTsL6SoxnRcnCWh5z3MMEV5XcyoHVaO/5aqCHxfaXz1UK/gwyWA=
+	t=1707370202; cv=none; b=qm1mbqY1XogGJWEZcbDcOp5y9GHo520Tu0f+jynCmmv+EdubMMYUZ/16pnqiOY+lTBf3VDSJcMRODmC70olcDL1DUfEXO1c4Hh7P82P4+rLabQg9fPqtrC+Q9NxkeaZhRDSRM9iDm8fk0PPe9/gWHsXAxR4zsSczJY7QsMkG3Xo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707369982; c=relaxed/simple;
-	bh=CYTtPNfSRJs5mB/fUFazg3aKNjzmFnV4jPoEkXWvqng=;
+	s=arc-20240116; t=1707370202; c=relaxed/simple;
+	bh=LSGhLsIEUn/a5N+Xif81iePzt9BrdznZDIftCEWCoSI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SXA2Or3MEBKSgAaNilcGXHVQ+Jd2pFXWSp+ej+KwkaoYvUhbYTHfT3qBmiIwcxczs6rGAFH7hn9ikrMQs8frU8CqMR0sqPJQU8qPpj01el2u50We86n9vEAsMqcZ+vjnik7Vp2syA+Im8BDMBgUfIETwwpFMxHaHVCs4Tfvu7dE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.45
+	 To:Cc:Content-Type; b=nn41fUP0iMJ6IHu2fE0J46QrOdv2c1agIv+FBHKIjvuwC5gCDEQq/0EdTY+oo3sshlCYuIzfAAOrWBaU/cnE7RwNaIoPahmycRRFRkWSF/BGZEENUsQug/a3EPDBdaNi7ypYN18Mv23orkhhKYbNhQ+zzc15+6lJTNlErXxzUSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2909a632e40so1040582a91.0;
-        Wed, 07 Feb 2024 21:26:20 -0800 (PST)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5d42e7ab8a9so934579a12.3;
+        Wed, 07 Feb 2024 21:30:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707369980; x=1707974780;
+        d=1e100.net; s=20230601; t=1707370200; x=1707975000;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/39RKiJJNQKtN2OpG5VKmulmLADl/ngUFHTYECJgqX0=;
-        b=vKy3PrIsf2DBFm3P8COX2Z+n6jiPnxJ/XE0Q+8nBus9Hgm9JXLvxDjb2U+2/5FAcix
-         Pt6da6mUYVH31qxFz47yhi59Ovum5cOV6mZScnp01fM2wvvfU/HCEG87WuuUqZwLZBEh
-         wQlKeq6EeurZ43X9OdR0e26AVfE9TZvSoOeHL+1Qwy7905Ycym3uiom2QvT0YtJZkZL9
-         BQ5mqCZjrQykl6yeOr8sdH6OIEYNk9gybkIy0f2dG7FYE/HcCjlYPTx7F7+BqVqBpYKN
-         4yCN6NX8kNBRx5WNsI3bTtMjoCRYyqCZFmBuOiYgXS/JaUFDk3VEs84a627J3ayL1cY+
-         GoQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWMu2Xp39BLxQeBNpfJpaxSi+BxopHtCk76D6u5jJ5MK6QSKFATOSnI3aZfoK9E96XaOs8y4up4opW4YUPkZ5Hc94hXJz0BgkHuDJJ4OSsjQuaabf8QssMBhykbwDGXzRtctNEeLKA3cvORNF9nhA==
-X-Gm-Message-State: AOJu0YxOP73autk92LZgWL+p1/jp2C8Q8uDowFtadumhHiYUrZJvRSW2
-	NE6XFE0pJSNs/zjVRV8m92jZ3RYoTTWI/ITjcbYUL99B2bA+PYoPvsw7NSsvhYJPPzwzZBCKtlV
-	oD/9bWXffERbJRdksK5DGqioohB+e0yKiVSs=
-X-Google-Smtp-Source: AGHT+IHHwstYVfAITxXLYj6k/D6aIkVoH+9yxqs36Cbh6NeMlBj6BPhM4SjkLIZTKJOZYxVcWrsO1LN5TF8UgQR6M7k=
-X-Received: by 2002:a17:90a:6f63:b0:296:2101:5d35 with SMTP id
- d90-20020a17090a6f6300b0029621015d35mr4509549pjk.44.1707369980162; Wed, 07
- Feb 2024 21:26:20 -0800 (PST)
+        bh=Np0WXML6XnfyYnvQ5Kz5GSWkppmE8CLxkStPxfJskEI=;
+        b=pSwOBaqeyJ35qoibW13y68VwiHeqzYTbKyGdvI/iH8G6sDq3VboRdLCOw/5vsLWXm4
+         ynSTPvv2Oh7Iq9vxZQFxaXxK7b5onLM+r/SfCzTgSSErr9YUmIR0AlI6kMskLNdgnV+h
+         JebF0Faw5SskWeFnkZ57T8NnDGJ1IV7hmIuifaYweX93Nir3cIAMoeJqV/lTYRnqkZQy
+         Wi2h+QZF6BrxZsFFEYp9sN/9q+MDSjRlrUbu1oi8N6AF7IaYia2Fu3C+buG4TVmfjRsU
+         1bNs1eGKBPm3v73YL1rRdc9tfw6UMcuPUN1TeTbDKdoXG68bVA4mZLTKQ54UImWg0Afr
+         +fDg==
+X-Gm-Message-State: AOJu0YxIs1RHyssvhqwC4qFTOBKo4Jw3k5j0i7I/ffSxSB6Jc4RmpZkE
+	u47aLJwRMhP7Sjq+lohqxiAdcyl8+y4tAAprrPrz/HWfq2OReLD3JhV/u7KnAYIpy5FGlUaIN5T
+	KLx/Dz3/kHS3WtlUp9OLciIp8KHs=
+X-Google-Smtp-Source: AGHT+IGvTl+ZP11IcRdz3/2WBLOG5nM8RrJ8DnAcBUA8U2fJjpj4v5W9LdevI4C7gBzBP9/uV4GBDbFfVkU60MfOKPo=
+X-Received: by 2002:a05:6300:8082:b0:19c:6b59:b9fc with SMTP id
+ ap2-20020a056300808200b0019c6b59b9fcmr7270336pzc.24.1707370200365; Wed, 07
+ Feb 2024 21:30:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206130458.8867-1-adrian.hunter@intel.com>
-In-Reply-To: <20240206130458.8867-1-adrian.hunter@intel.com>
+References: <20240206130458.8867-1-adrian.hunter@intel.com> <CAM9d7cjiCT7C=WHd9EmPRRRQY=1aq8-NAGgRcZPWz-s=7Js3mw@mail.gmail.com>
+In-Reply-To: <CAM9d7cjiCT7C=WHd9EmPRRRQY=1aq8-NAGgRcZPWz-s=7Js3mw@mail.gmail.com>
 From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 7 Feb 2024 21:26:09 -0800
-Message-ID: <CAM9d7cjiCT7C=WHd9EmPRRRQY=1aq8-NAGgRcZPWz-s=7Js3mw@mail.gmail.com>
+Date: Wed, 7 Feb 2024 21:29:49 -0800
+Message-ID: <CAM9d7ciZuHzsi+nt190GwyfGYh5txLqDq6-2hOXLzJ+sibjaMQ@mail.gmail.com>
 Subject: Re: [PATCH V2 0/2] perf symbols: Slightly improve module file
  executable section mappings
 To: Adrian Hunter <adrian.hunter@intel.com>
@@ -70,55 +69,45 @@ Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Ia
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Adrian,
-
-On Tue, Feb 6, 2024 at 5:05=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.c=
-om> wrote:
+On Wed, Feb 7, 2024 at 9:26=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
 >
-> Hi
+> Hi Adrian,
 >
-> Currently perf does not record module section addresses except for
-> the .text section. In general that means perf cannot get module section
-> mappings correct (except for .text) when loading symbols from a kernel
-> module file. (Note using --kcore does not have this issue)
->
-> Here are a couple of patches to help shed light upon and slightly improve
-> the situation.
->
->
-> Changes in V2:
->
->   perf tools: Make it possible to see perf's kernel and module memory map=
+> On Tue, Feb 6, 2024 at 5:05=E2=80=AFAM Adrian Hunter <adrian.hunter@intel=
+com> wrote:
+> >
+> > Hi
+> >
+> > Currently perf does not record module section addresses except for
+> > the .text section. In general that means perf cannot get module section
+> > mappings correct (except for .text) when loading symbols from a kernel
+> > module file. (Note using --kcore does not have this issue)
+> >
+> > Here are a couple of patches to help shed light upon and slightly impro=
+ve
+> > the situation.
+> >
+> >
+> > Changes in V2:
+> >
+> >   perf tools: Make it possible to see perf's kernel and module memory m=
+appings
+> >     - add dump to perf report (if no browser) as well as perf script
+> >     - add 'perf --debug kmaps' option also to dump kmaps
+> >
+> >
+> > Adrian Hunter (2):
+> >       perf tools: Make it possible to see perf's kernel and module memo=
+ry mappings
+> >       perf symbols: Slightly improve module file executable section map=
 pings
->     - add dump to perf report (if no browser) as well as perf script
->     - add 'perf --debug kmaps' option also to dump kmaps
 >
->
-> Adrian Hunter (2):
->       perf tools: Make it possible to see perf's kernel and module memory=
- mappings
->       perf symbols: Slightly improve module file executable section mappi=
-ngs
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Hmm.. this is not applied cleanly.  Can you please rebase
+onto the current perf-tools-next?
 
 Thanks,
 Namhyung
-
->
->  tools/perf/Documentation/perf.txt |  2 ++
->  tools/perf/builtin-report.c       |  2 ++
->  tools/perf/builtin-script.c       |  3 ++
->  tools/perf/util/debug.c           |  3 ++
->  tools/perf/util/debug.h           |  1 +
->  tools/perf/util/python.c          |  1 +
->  tools/perf/util/session.c         | 11 ++++++
->  tools/perf/util/session.h         |  2 ++
->  tools/perf/util/symbol-elf.c      | 75 +++++++++++++++++++++++++++++++++=
-++++--
->  9 files changed, 98 insertions(+), 2 deletions(-)
->
->
-> Regards
-> Adrian
 
