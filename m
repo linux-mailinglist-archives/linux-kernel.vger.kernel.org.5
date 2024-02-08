@@ -1,307 +1,261 @@
-Return-Path: <linux-kernel+bounces-57784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A37984DD68
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:56:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10E3184DD5B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:54:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 330A31C23A5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:56:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3512C1C2670D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 673E76F53F;
-	Thu,  8 Feb 2024 09:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5726B6E2DB;
+	Thu,  8 Feb 2024 09:53:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Tr2zJw3L"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RQi+rpdI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF9D6F517;
-	Thu,  8 Feb 2024 09:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A0006DD1C;
+	Thu,  8 Feb 2024 09:53:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707386066; cv=none; b=MmOfEZ8oqc9xQpGkIkOhPS4C2AuHC3oBWhG1a2QMqI7PyqQ+Qw3AkZJfb9YdGGqcehFuw0N8QrlDcR0liW0gTdUQHOAIdD0GCo8Wnl2rM5/LEMSl7VAgCmpmYgaP1144c64XrhMbS6pN3Ch2sPc4jhRwcH9cBjX3Eq3FLxYdj14=
+	t=1707386034; cv=none; b=tfRWodgIYEaa4RWzJWRxatproWMX2Z9MCg8ujnGE9EMcpCWYlp3xCxnXJzcHLyTdFu29LoTAfFeATj1REy7Px23HYcWSjYQd+N3PSOg/GCMOYAUivAEFnSQ3RJqHg2BZ3e6ceTlCKQPDOsxsn0NGI0zoRt0RbnF67HDK4WqhMZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707386066; c=relaxed/simple;
-	bh=A7EVTIDLHtGX9lO4EdDXrAGB8NfIUDtJqg9uBTSY2ak=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TJxHhdn7zQmzeN1Ugc+Tve9FQ/dIq95tdRsYQjvIp5MN9GRh7gj8Ox+FTA6Ep4BZzLHIN4YsfBj+FPFVC+oenysWEIxq6Kd7Xpbt/ibQyEllCxKqK8g6PnNNIsOWj7O0gS21AbrG7DUtm3WNL52YGaXE/WPhyMlZba0Kaik+5wE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Tr2zJw3L; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4189rbWg065688;
-	Thu, 8 Feb 2024 03:53:37 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707386017;
-	bh=i66KRsT5MXiCMeRUrNYxeiPCd7Z1pAneWKX/rWP8R50=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=Tr2zJw3LX6tOr9navFzLmdJ0kPwwGIgKXCiG0/Vrw8h3RaavRuiVnLVnwgGlCh3pz
-	 JnPLFZ3eRSWLLkF9JIUHv9uWlFBSHfmYC+6QPZYZC5T/PuddN3T78I17ioYw/SQxPL
-	 MvG3jhY2dsb93vNNHeqDV5IPbceaHHvdxEx6wpRk=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4189rblx121246
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 8 Feb 2024 03:53:37 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 8
- Feb 2024 03:53:37 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 8 Feb 2024 03:53:37 -0600
-Received: from LT5CG31242FY.dhcp.ti.com ([10.250.162.93])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4189qwg6001185;
-	Thu, 8 Feb 2024 03:53:29 -0600
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <broonie@kernel.org>, <conor+dt@kernel.org>,
-        <krzysztof.kozlowski@linaro.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <linux-sound@vger.kernel.org>, <liam.r.girdwood@intel.com>,
-        <lgirdwood@gmail.com>, <linux-kernel@vger.kernel.org>
-CC: <kevin-lu@ti.com>, <baojun.xu@ti.com>, <v-po@ti.com>, <navada@ti.com>,
-        <perex@perex.cz>, <j-mcpherson@ti.com>,
-        <pierre-louis.bossart@linux.intel.com>, <13916275206@139.com>,
-        <mohit.chawla@ti.com>, <soyer@irl.hu>, <jkhuang3@ti.com>,
-        <tiwai@suse.de>, <pdjuandi@ti.com>, <manisha.agrawal@ti.com>,
-        <s-hari@ti.com>, <aviel@ti.com>, <hnagalla@ti.com>, <praneeth@ti.com>,
-        Shenghao Ding <shenghao-ding@ti.com>
-Subject: [PATCH v4 4/4] ASoc: dt-bindings: PCM6240: Add initial DT binding
-Date: Thu, 8 Feb 2024 17:52:54 +0800
-Message-ID: <20240208095255.1508-4-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
-In-Reply-To: <20240208095255.1508-1-shenghao-ding@ti.com>
-References: <20240208095255.1508-1-shenghao-ding@ti.com>
+	s=arc-20240116; t=1707386034; c=relaxed/simple;
+	bh=nbfg0Gx52d/qcbW7/rm/yJ54WM1bD93/zqjyFrQALIQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ma8hlx4aqMAl/d09t9Q1Oi2cbxNWq7g6iSiykoXoXgoeTKU7vwXEPu5sFLe6Pqnjmp5vvvi1rP8SFgMPYdD4EhC9tZNk47fwbssgeRIa1BJjhkyXSWnU5qXSVyrB05Q92SdhMSSO1s6eHc01g86FgbFnw8TqyVo6am4F73TVR24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RQi+rpdI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A331C433C7;
+	Thu,  8 Feb 2024 09:53:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707386033;
+	bh=nbfg0Gx52d/qcbW7/rm/yJ54WM1bD93/zqjyFrQALIQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RQi+rpdI22K+N6hKk7cWedZtbH5ITgmMjh65WTq8PO30GUPourd3yKw6ZR0fH6ylw
+	 LF8N+W94jek1r8JR87VILyd0ep1JfHefWx+tzNKbQXMR7GkD6dAXY0jpcJbxhzWZD8
+	 vaG6+NWeeVgN2W2dAHuZMVkzpQN7mEJ1YuarUQ2dusR9aD5AvTU6WFcM+vPxPkjoSg
+	 56UqDsNjNYLpUb11ZvzY2McnxmcJGSnUDV75d9+UMEGLKWFaoxgOppRRaKH0xfVc63
+	 dSLqsgAxYTGXEQE3Tl2eRcsZ0N+dublcOWs2q1UuwvbALZbBZBiQTkhj7PhBF7HPc/
+	 /aL8ew+rYMBXw==
+Date: Thu, 8 Feb 2024 09:53:48 +0000
+From: Simon Horman <horms@kernel.org>
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: Furong Xu <0x1207@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Joao Pinto <jpinto@synopsys.com>,
+	Serge Semin <fancer.lancer@gmail.com>, netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	xfr@outlook.com, rock.xu@nio.com,
+	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH net v4] net: stmmac: xgmac: fix handling of DPP safety
+ error for DMA channels
+Message-ID: <20240208095348.GA1435458@kernel.org>
+References: <20240203051439.1127090-1-0x1207@gmail.com>
+ <c25eb595-8d91-40ea-9f52-efa15ebafdbc@nvidia.com>
+ <20240208092627.GP1297511@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20240208092627.GP1297511@kernel.org>
 
-PCM6240 family chips are popular among audio customers, in spite of only a
-portion of the functionality of codec, such as ADC or DAC, and so on, for
-different Specifications, range from Personal Electric to Automotive
-Electric, even some professional fields.yet their audio performance is far
-superior to the codec's, and cost is lower than codec, and much easier to
-program than codec.
+On Thu, Feb 08, 2024 at 09:26:27AM +0000, Simon Horman wrote:
+> On Wed, Feb 07, 2024 at 11:56:26AM +0000, Jon Hunter wrote:
+> > 
+> > On 03/02/2024 05:14, Furong Xu wrote:
+> > > Commit 56e58d6c8a56 ("net: stmmac: Implement Safety Features in
+> > > XGMAC core") checks and reports safety errors, but leaves the
+> > > Data Path Parity Errors for each channel in DMA unhandled at all, lead to
+> > > a storm of interrupt.
+> > > Fix it by checking and clearing the DMA_DPP_Interrupt_Status register.
+> > > 
+> > > Fixes: 56e58d6c8a56 ("net: stmmac: Implement Safety Features in XGMAC core")
+> > > Signed-off-by: Furong Xu <0x1207@gmail.com>
+> > > Reviewed-by: Simon Horman <horms@kernel.org>
+> > > Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+> > > ---
+> > > Changes in v4:
+> > >   - fix a typo name of DDPP bit, thanks Serge Semin
+> > > 
+> > > Changes in v3:
+> > >   - code style fix, thanks Paolo Abeni
+> > > 
+> > > Changes in v2:
+> > >    - explicit enable Data Path Parity Protection
+> > >    - add new counters to stmmac_safety_stats
+> > >    - add detailed log
+> > > ---
+> > >   drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
+> > >   .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |  3 +
+> > >   .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 57 ++++++++++++++++++-
+> > >   3 files changed, 60 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
+> > > index 721c1f8e892f..b4f60ab078d6 100644
+> > > --- a/drivers/net/ethernet/stmicro/stmmac/common.h
+> > > +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
+> > > @@ -216,6 +216,7 @@ struct stmmac_safety_stats {
+> > >   	unsigned long mac_errors[32];
+> > >   	unsigned long mtl_errors[32];
+> > >   	unsigned long dma_errors[32];
+> > > +	unsigned long dma_dpp_errors[32];
+> > >   };
+> > >   /* Number of fields in Safety Stats */
+> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
+> > > index 207ff1799f2c..5c67a3f89f08 100644
+> > > --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
+> > > +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
+> > > @@ -303,6 +303,8 @@
+> > >   #define XGMAC_RXCEIE			BIT(4)
+> > >   #define XGMAC_TXCEIE			BIT(0)
+> > >   #define XGMAC_MTL_ECC_INT_STATUS	0x000010cc
+> > > +#define XGMAC_MTL_DPP_CONTROL		0x000010e0
+> > > +#define XGMAC_DPP_DISABLE		BIT(0)
+> > >   #define XGMAC_MTL_TXQ_OPMODE(x)		(0x00001100 + (0x80 * (x)))
+> > >   #define XGMAC_TQS			GENMASK(25, 16)
+> > >   #define XGMAC_TQS_SHIFT			16
+> > > @@ -385,6 +387,7 @@
+> > >   #define XGMAC_DCEIE			BIT(1)
+> > >   #define XGMAC_TCEIE			BIT(0)
+> > >   #define XGMAC_DMA_ECC_INT_STATUS	0x0000306c
+> > > +#define XGMAC_DMA_DPP_INT_STATUS	0x00003074
+> > >   #define XGMAC_DMA_CH_CONTROL(x)		(0x00003100 + (0x80 * (x)))
+> > >   #define XGMAC_SPH			BIT(24)
+> > >   #define XGMAC_PBLx8			BIT(16)
+> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> > > index eb48211d9b0e..04d7c4dc2e35 100644
+> > > --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> > > +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> > > @@ -830,6 +830,43 @@ static const struct dwxgmac3_error_desc dwxgmac3_dma_errors[32]= {
+> > >   	{ false, "UNKNOWN", "Unknown Error" }, /* 31 */
+> > >   };
+> > > +static const char * const dpp_rx_err = "Read Rx Descriptor Parity checker Error";
+> > > +static const char * const dpp_tx_err = "Read Tx Descriptor Parity checker Error";
+> > > +static const struct dwxgmac3_error_desc dwxgmac3_dma_dpp_errors[32] = {
+> > > +	{ true, "TDPES0", dpp_tx_err },
+> > > +	{ true, "TDPES1", dpp_tx_err },
+> > > +	{ true, "TDPES2", dpp_tx_err },
+> > > +	{ true, "TDPES3", dpp_tx_err },
+> > > +	{ true, "TDPES4", dpp_tx_err },
+> > > +	{ true, "TDPES5", dpp_tx_err },
+> > > +	{ true, "TDPES6", dpp_tx_err },
+> > > +	{ true, "TDPES7", dpp_tx_err },
+> > > +	{ true, "TDPES8", dpp_tx_err },
+> > > +	{ true, "TDPES9", dpp_tx_err },
+> > > +	{ true, "TDPES10", dpp_tx_err },
+> > > +	{ true, "TDPES11", dpp_tx_err },
+> > > +	{ true, "TDPES12", dpp_tx_err },
+> > > +	{ true, "TDPES13", dpp_tx_err },
+> > > +	{ true, "TDPES14", dpp_tx_err },
+> > > +	{ true, "TDPES15", dpp_tx_err },
+> > > +	{ true, "RDPES0", dpp_rx_err },
+> > > +	{ true, "RDPES1", dpp_rx_err },
+> > > +	{ true, "RDPES2", dpp_rx_err },
+> > > +	{ true, "RDPES3", dpp_rx_err },
+> > > +	{ true, "RDPES4", dpp_rx_err },
+> > > +	{ true, "RDPES5", dpp_rx_err },
+> > > +	{ true, "RDPES6", dpp_rx_err },
+> > > +	{ true, "RDPES7", dpp_rx_err },
+> > > +	{ true, "RDPES8", dpp_rx_err },
+> > > +	{ true, "RDPES9", dpp_rx_err },
+> > > +	{ true, "RDPES10", dpp_rx_err },
+> > > +	{ true, "RDPES11", dpp_rx_err },
+> > > +	{ true, "RDPES12", dpp_rx_err },
+> > > +	{ true, "RDPES13", dpp_rx_err },
+> > > +	{ true, "RDPES14", dpp_rx_err },
+> > > +	{ true, "RDPES15", dpp_rx_err },
+> > > +};
+> > > +
+> > >   static void dwxgmac3_handle_dma_err(struct net_device *ndev,
+> > >   				    void __iomem *ioaddr, bool correctable,
+> > >   				    struct stmmac_safety_stats *stats)
+> > > @@ -841,6 +878,13 @@ static void dwxgmac3_handle_dma_err(struct net_device *ndev,
+> > >   	dwxgmac3_log_error(ndev, value, correctable, "DMA",
+> > >   			   dwxgmac3_dma_errors, STAT_OFF(dma_errors), stats);
+> > > +
+> > > +	value = readl(ioaddr + XGMAC_DMA_DPP_INT_STATUS);
+> > > +	writel(value, ioaddr + XGMAC_DMA_DPP_INT_STATUS);
+> > > +
+> > > +	dwxgmac3_log_error(ndev, value, false, "DMA_DPP",
+> > > +			   dwxgmac3_dma_dpp_errors,
+> > > +			   STAT_OFF(dma_dpp_errors), stats);
+> > >   }
+> > >   static int
+> > > @@ -881,6 +925,12 @@ dwxgmac3_safety_feat_config(void __iomem *ioaddr, unsigned int asp,
+> > >   	value |= XGMAC_TMOUTEN; /* FSM Timeout Feature */
+> > >   	writel(value, ioaddr + XGMAC_MAC_FSM_CONTROL);
+> > > +	/* 5. Enable Data Path Parity Protection */
+> > > +	value = readl(ioaddr + XGMAC_MTL_DPP_CONTROL);
+> > > +	/* already enabled by default, explicit enable it again */
+> > > +	value &= ~XGMAC_DPP_DISABLE;
+> > > +	writel(value, ioaddr + XGMAC_MTL_DPP_CONTROL);
+> > > +
+> > >   	return 0;
+> > >   }
+> > > @@ -914,7 +964,11 @@ static int dwxgmac3_safety_feat_irq_status(struct net_device *ndev,
+> > >   		ret |= !corr;
+> > >   	}
+> > > -	err = dma & (XGMAC_DEUIS | XGMAC_DECIS);
+> > > +	/* DMA_DPP_Interrupt_Status is indicated by MCSIS bit in
+> > > +	 * DMA_Safety_Interrupt_Status, so we handle DMA Data Path
+> > > +	 * Parity Errors here
+> > > +	 */
+> > > +	err = dma & (XGMAC_DEUIS | XGMAC_DECIS | XGMAC_MCSIS);
+> > >   	corr = dma & XGMAC_DECIS;
+> > >   	if (err) {
+> > >   		dwxgmac3_handle_dma_err(ndev, ioaddr, corr, stats);
+> > > @@ -930,6 +984,7 @@ static const struct dwxgmac3_error {
+> > >   	{ dwxgmac3_mac_errors },
+> > >   	{ dwxgmac3_mtl_errors },
+> > >   	{ dwxgmac3_dma_errors },
+> > > +	{ dwxgmac3_dma_dpp_errors },
+> > >   };
+> > >   static int dwxgmac3_safety_feat_dump(struct stmmac_safety_stats *stats,
+> > 
+> > 
+> > This change is breaking the build on some of our builders that are still using GCC 6.x ...
+> > 
+> > drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c:836:20: error: initialiser element is not constant
+> >   { true, "TDPES0", dpp_tx_err },
+> >                     ^~~~~~~~~~
+> > drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c:836:20: note: (near initialisation for ‘dwxgmac3_dma_dpp_errors[0].detailed_desc’)
+> > drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c:837:20: error: initialiser element is not constant
+> >   { true, "TDPES1", dpp_tx_err },
+> >                     ^~~~~~~~~~
+> > drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c:837:20: note: (near initialisation for ‘dwxgmac3_dma_dpp_errors[1].detailed_desc’)
+> > ...
+> > 
+> > I know that this is quite old but the minimum supported by the kernel is v5.1 ...
+> > 
+> > https://www.kernel.org/doc/html/next/process/changes.html
+> 
+> Thanks Jon,
+> 
+> I separately received a notification about this occurring with gcc 7.
+> 
+> https://lore.kernel.org/oe-kbuild-all/202402081135.lAxxBXHk-lkp@intel.com/
+> 
+> It is unclear to me why this occurs, as dpp_tx_err and dpp_tx_err are const.
+> But I do seem to be able to address this problem by using #defines for
+> these values instead.
+> 
+> I plan to post a patch shortly.
 
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
-
----
-Change in v4:
- - Rewrite the subject to match something similar to other commits.
- - And none of them are compatible with something.
- - minItems, then maxItems.
- - Drop reset-gpios description
- - Remove the repeated reg descriptions and reg constraints.
- - Drop redundant spaces.
- - Add missing line breaks between blocks and additionalProperties.
- - Correct compatibility issue on adc6120 and pcm6240.
- - All these chips have only a portion of the functionality of codec,
-   such as ADC or DAC, and so on, but their audio performance is far
-   superior to the codec's, and cost is lower than codec, and much easier
-   to program than codec. Simply one or two register settings can enable
-   them to work. Init for these chips are hardware reset or software reset.
-   As to some audio filter params for internal filters, it is up to the
-   special user cases, which can be saved into the bin file. The default
-   value also can work well.
- - Add blank line before reg.
- - remove unneeded items and if branches.
- - Add missing compatible devices, such as adc6120, etc.
- - Add necessary people into the list for DTS review
- - correct misaligned.
- - Remove dix4192
- - simplify the compatibility
----
- .../devicetree/bindings/sound/ti,pcm6240.yaml | 172 ++++++++++++++++++
- 1 file changed, 172 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ti,pcm6240.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/ti,pcm6240.yaml b/Documentation/devicetree/bindings/sound/ti,pcm6240.yaml
-new file mode 100644
-index 000000000000..05fcb5459920
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ti,pcm6240.yaml
-@@ -0,0 +1,172 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright (C) 2022 - 2024 Texas Instruments Incorporated
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/ti,pcm6240.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Texas Instruments PCM6240 Family Audio ADC/DAC
-+
-+maintainers:
-+  - Shenghao Ding <shenghao-ding@ti.com>
-+
-+description: |
-+  The PCM6240 Family is a big family of Audio ADC/DAC for
-+  different Specifications, range from Personal Electric
-+  to Automotive Electric, even some professional fields.
-+
-+  Specifications about the audio chip can be found at:
-+    https://www.ti.com/lit/gpn/tlv320adc3120
-+    https://www.ti.com/lit/gpn/tlv320adc5120
-+    https://www.ti.com/lit/gpn/tlv320adc6120
-+    https://www.ti.com/lit/gpn/pcm1690
-+    https://www.ti.com/lit/gpn/pcm3120-q1
-+    https://www.ti.com/lit/gpn/pcm3140-q1
-+    https://www.ti.com/lit/gpn/pcm5120-q1
-+    https://www.ti.com/lit/gpn/pcm6120-q1
-+    https://www.ti.com/lit/gpn/pcm6260-q1
-+    https://www.ti.com/lit/gpn/pcm9211
-+    https://www.ti.com/lit/gpn/pcmd3140
-+    https://www.ti.com/lit/gpn/pcmd3180
-+    https://www.ti.com/lit/gpn/taa5212
-+    https://www.ti.com/lit/gpn/tad5212
-+
-+properties:
-+  compatible:
-+    description: |
-+      ti,adc3120: Stereo-channel, 768-kHz, Burr-Brown™ audio analog-to-
-+      digital converter (ADC) with 106-dB SNR.
-+
-+      ti,adc5120: 2-Channel, 768-kHz, Burr-Brown™ Audio ADC with 120-dB SNR.
-+
-+      ti,adc6120: Stereo-channel, 768-kHz, Burr-Brown™ audio analog-to-
-+      digital converter (ADC) with 123-dB SNR.
-+
-+      ti,pcm1690: Automotive Catalog 113dB SNR 8-Channel Audio DAC with
-+      Differential Outputs.
-+
-+      ti,pcm3120: Automotive, stereo, 106-dB SNR, 768-kHz, low-power
-+      software-controlled audio ADC.
-+
-+      ti,pcm3140: Automotive, Quad-Channel, 768-kHz, Burr-Brown™ Audio ADC
-+      with 106-dB SNR.
-+
-+      ti,pcm5120: Automotive, stereo, 120-dB SNR, 768-kHz, low-power
-+      software-controlled audio ADC.
-+
-+      ti,pcm5140: Automotive, Quad-Channel, 768-kHz, Burr-Brown™ Audio ADC
-+      with 120-dB SNR.
-+
-+      ti,pcm6120: Automotive, stereo, 123-dB SNR, 768-kHz, low-power
-+      software-controlled audio ADC.
-+
-+      ti,pcm6140: Automotive, Quad-Channel, 768-kHz, Burr-Brown™ Audio ADC
-+      with 123-dB SNR.
-+
-+      ti,pcm6240: Automotive 4-ch audio ADC with integrated programmable mic
-+      bias, boost and input diagnostics.
-+
-+      ti,pcm6260: Automotive 6-ch audio ADC with integrated programmable mic
-+      bias, boost and input diagnostics.
-+
-+      ti,pcm9211: 216-kHz Digital Audio Interface Transceiver (DIX)
-+      With Stereo ADC and Routing.
-+
-+      ti,pcmd3140: Four-channel PDM-input to TDM or I2S output converter.
-+
-+      ti,pcmd3180: Eight-channel pulse-density-modulation input to TDM or
-+      I2S output converter.
-+
-+      ti,taa5212: Low-power high-performance stereo audio ADC with 118-dB
-+      dynamic range.
-+
-+      ti,tad5212: Low-power stereo audio DAC with 120-dB dynamic range.
-+    oneOf:
-+      - items:
-+          - enum:
-+              - ti,adc3120
-+              - ti,adc5120
-+              - ti,pcm3120
-+              - ti,pcm5120
-+              - ti,pcm6120
-+          - const: ti,adc6120
-+      - items:
-+          - enum:
-+              - ti,pcmd512x
-+              - ti,pcm9211
-+              - ti,taa5212
-+              - ti,tad5212
-+          - const: ti,adc6120
-+      - items:
-+          - enum:
-+              - ti,pcm6260
-+              - ti,pcm6140
-+              - ti,pcm3140
-+              - ti,pcm5140
-+          - const: ti,pcm6240
-+      - items:
-+          - enum:
-+              - ti,pcmd3140
-+              - ti,pcmd3180
-+              - ti,pcm1690
-+              - ti,taa5412
-+              - ti,tad5412
-+          - const: ti,pcm6240
-+      - enum:
-+          - ti,adc6120
-+          - ti,pcm6240
-+
-+  reg:
-+    description:
-+      I2C address, in multiple pcmdevices case, all the i2c address
-+      aggregate as one Audio Device to support multiple audio slots.
-+    minItems: 1
-+    maxItems: 4
-+
-+  reset-gpios:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+    description:
-+      Invalid only for ti,pcm1690 because of no INT pin.
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - ti,pcm1690
-+    then:
-+      properties:
-+        interrupts: false
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+   #include <dt-bindings/gpio/gpio.h>
-+   i2c {
-+     /* example for two devices with interrupt support */
-+     #address-cells = <1>;
-+     #size-cells = <0>;
-+     pcm6240: audio-codec@48 {
-+       compatible = "ti,pcm6240";
-+       reg = <0x48>, /* primary-device */
-+             <0x4b>; /* secondary-device */
-+       #sound-dai-cells = <0>;
-+       reset-gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
-+       interrupt-parent = <&gpio1>;
-+       interrupts = <15>;
-+     };
-+   };
-+...
--- 
-2.34.1
+Patch posted:
+- [PATCH net] net: stmmac: xgmac: use #define for string constants
+  https://lore.kernel.org/netdev/20240208-xgmac-const-v1-1-e69a1eeabfc8@kernel.org/
 
 
