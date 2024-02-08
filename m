@@ -1,148 +1,136 @@
-Return-Path: <linux-kernel+bounces-58214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10CCC84E2E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:13:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E63F84E2E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:14:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3C771F26A80
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:13:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 163262812AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:14:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BEF478B6F;
-	Thu,  8 Feb 2024 14:12:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244D67994E;
+	Thu,  8 Feb 2024 14:13:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oY7xJcdh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="ZUVlWNXx"
+Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43C387B3EE;
-	Thu,  8 Feb 2024 14:12:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB93E78B74
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 14:13:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707401549; cv=none; b=X3aOxmH4f1PwKpMc92+OhzXV2KkIlXPWqw5UIrN0IWEqXKQR5RxcNJ31YupvDjdjPceJfJumMfcLZeqrzg5vSwc6x2MuQO+MGrMB02LIBpfd0LrGuFbP+PZ7yIxU8RZ6Pd4ZtR+OUQBdQJ5h1FSRhgbP4YLWnIaoH8wnTksajD0=
+	t=1707401582; cv=none; b=Y2iWSz3IS1Vm4wlNjjMEKCIPknQjJQhKQ04THV4gqNTjdhT2/ZXgORxMf1ivjA7w7uATW28ZiiItegp4gNf1zUhDcaf5b2c88q+tb+JOp6Qil9ZkDAAUCbWb64I93O8imr4lTFLFp8GB7bTE+nPuzi8YDnb6F0e8tE6yvC4a45w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707401549; c=relaxed/simple;
-	bh=FVNjVUKh9OyW/83Ue0bZwUjdq4qIapVVOgrhdt/rjmI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s2314Ol0acq6pw7audQ1Dgb31WTuZsow2TdORfVEOW1OQQoppiInCMJD0TaywMbQ2dodlZEVfgladFqYGVDNmuAmELwdBtLg+sFJDtfvy9ujMF9gWPUc4U9V6JUjKjhVuk/X9XW3hFUUNBqTucCuAzfL2Zx3hUN6gwdkJbmO55Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oY7xJcdh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87CEDC43601;
-	Thu,  8 Feb 2024 14:12:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707401548;
-	bh=FVNjVUKh9OyW/83Ue0bZwUjdq4qIapVVOgrhdt/rjmI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oY7xJcdhY87obWJfJL9l0De+t6szN33dhakI7R4b8JejBll60yqBTRhz/FqHZjydq
-	 D34SNk5SnrlGc/RAn9usjzjbS4E1wBUWfL9UicpwBj/c6VeNL95STnL7FUzese2F0L
-	 KASwebfLvLZowxscx0R7VDy1v33DKmJEYKVijvD8Pkkmx99NrUfdWloqWhLDFv8va4
-	 62lsGndGw0obTCbyFh/XStxYcd1CjcqrwlawFhk8HLpNNzlyRP3qhS8xWhSBp/rfqu
-	 eIN+qoMcVdgxsVdx9qMp92f75Q8HwPDE8L+REmj4tj3U+XfqZQpK7zZBG0q7+TasjO
-	 QJ+dDPfyh9vaA==
-Date: Thu, 8 Feb 2024 14:12:23 +0000
-From: Lee Jones <lee@kernel.org>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	Li Zetao <lizetao1@huawei.com>, linux-leds@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] leds: trigger: netdev: Fix kernel panic on interface
- rename trig notify
-Message-ID: <20240208141223.GR689448@google.com>
-References: <20240203235413.1146-1-ansuelsmth@gmail.com>
- <8d51f09b-e6d2-4ee1-9e7d-b545d561798a@lunn.ch>
- <20240205085007.GA19855@google.com>
- <2cf84815-f9b6-4a0a-a3b4-d23628a89aa4@lunn.ch>
- <65c0e874.df0a0220.257a.43b1@mx.google.com>
- <20240205143359.GB53266@google.com>
- <65c0f2dc.050a0220.63083.8524@mx.google.com>
- <20240205150422.GC53266@google.com>
+	s=arc-20240116; t=1707401582; c=relaxed/simple;
+	bh=8FiXcO4YBknM68MAy2XQmn2iOGYzS66hc6OBpR3Wb+g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tfSTAAZXNlNjuB5cChA3Jxmzz5Xc1lO+c/z0f8bQwclGxbA3ydtNn589sTc0XM/0ISp6O+nvY/LQ5z8APYAhjPUzYMqPd161adKmeIMP6Z3AdywH3K9U/eaCOArFI2qjEtkj5KY8yadTmN0hKjW3LXgrZDftEpbh0/U/lhGQeXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZUVlWNXx; arc=none smtp.client-ip=209.85.221.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4c02af5c0b6so595965e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 06:13:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707401579; x=1708006379; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=63xtu4Y51K1k0XIMtdvcGVsuDCjTkj9dOeWaIMHJ3Ac=;
+        b=ZUVlWNXxWZ5HpgLsTPJI+O7Kbg4aM/MN2132VyxLoKtUX8wv0hI70sAiPqV7epD3dZ
+         TY/A3YrPth+HXVM7MVv2HZY2uwoRLvYZ2qDNz1QVX5jWbfzMflIrLWEb42lu9k7PCfhX
+         Dpq9s9umsblL4rVnY2ARvjW9PXhnXWchoXwYDfaKSL8X4lr3U0hJqUmlvojOTKB+pUUT
+         EuFqfL5+euPkqoP74AMrj2vTr69tzsYkIXD4sYLhIPmzi0EmPZ4dL914ickqDgF67Szy
+         yh/SjLJsXRTGdchKb44TNCQ22R0YnXWORwDlnvQ92DntVQ3pqegkel0kjRQFNyGy01BB
+         luNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707401579; x=1708006379;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=63xtu4Y51K1k0XIMtdvcGVsuDCjTkj9dOeWaIMHJ3Ac=;
+        b=B6ohZbCAUduSyoTjW7M0uYlxHUO70FmNU4z/2dDQAQpgNCV3u6fz8K/iDNrVXJW+kM
+         hbdfvRZM4CM1KuwoBbNkrJbv32vpry7dg17nV3lY8HIe9L+yOBt06/AfkSAd+chrOXL+
+         r8P1Q5+qTYZf5UdsMzFJDPdmx/bsV5rSeMgLCOqM6W898uFQ10MCA8D4T05DO+5lD8go
+         ooE8MdKfOGlvJhelqnUeaxI55VhOxz93D+/EIjdrfT61iu4YyMwZoUzbwhEPw44ssvTK
+         rzLnO0EBcRxYyt/eSDUAsjd4JsV649fb+A6WJwx/3G6ECMhlFI5JhrGLVxK2stV5yP3Y
+         0SMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVIAGtkNFkSCxqN4jV8AdsVvLXBuBM66z5RpJaEhNoB/bSggIKYe1SLcEMUWRrzjoC3D8f7ytupisqG4YSaePGvqrWV8S0+J2X5t2rO
+X-Gm-Message-State: AOJu0YyIBrnQkMaIlys3zI0MrXvKJvZxNZr2W9unVlfY+1PsZCuJVExL
+	iiSnBlC0rk8UD4X/X9cgG24hL9zw+PbH56pNesyhj3jDGeyn6OY9WR9W3cKZOdTbm4SwGbD0YfW
+	YdJcudtouxW/FyYy2AGQRRwT/jRU6mi8bMS7y
+X-Google-Smtp-Source: AGHT+IHRIxDWiY+hO499KIfcBiMXI8uEupmgp58zOyTpKkSFIk9pRhRbYoq93ffdSlLJEAko4To9vrwuCPD358UY1FA=
+X-Received: by 2002:a05:6122:268d:b0:4bf:d147:63c1 with SMTP id
+ eh13-20020a056122268d00b004bfd14763c1mr5938308vkb.6.1707401579571; Thu, 08
+ Feb 2024 06:12:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240205150422.GC53266@google.com>
+References: <20240124-alice-mm-v1-0-d1abcec83c44@google.com>
+ <20240124-alice-mm-v1-3-d1abcec83c44@google.com> <CALNs47uPgvYXxEDmwb6GKa+cw597_rDD1zaSPDa9k9D-6_qZxQ@mail.gmail.com>
+ <CGME20240208134629eucas1p2edf4cb1e50e3bb578297c33b79701574@eucas1p2.samsung.com>
+ <CAH5fLgi_iU3nDE-gJ56s8CPznWvC0T4P5M0dVx1zO61kmVGNgQ@mail.gmail.com> <87v86zrr45.fsf@samsung.com>
+In-Reply-To: <87v86zrr45.fsf@samsung.com>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Thu, 8 Feb 2024 15:12:48 +0100
+Message-ID: <CAH5fLgh2mqX7O=xWN6=wyd_4=_R63Ko-wh0bb=rXvLrrj=W-pw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] rust: add abstraction for `struct page`
+To: Andreas Hindborg <a.hindborg@samsung.com>
+Cc: Trevor Gross <tmgross@umich.edu>, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Kees Cook <keescook@chromium.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, 
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>, Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 05 Feb 2024, Lee Jones wrote:
+On Thu, Feb 8, 2024 at 3:02=E2=80=AFPM Andreas Hindborg <a.hindborg@samsung=
+com> wrote:
+>
+>
+> Alice Ryhl <aliceryhl@google.com> writes:
+>
+> > On Thu, Feb 1, 2024 at 7:02=E2=80=AFAM Trevor Gross <tmgross@umich.edu>=
+ wrote:
+> >>
+> >> On Wed, Jan 24, 2024 at 6:22=E2=80=AFAM Alice Ryhl <aliceryhl@google.c=
+om> wrote:
+> >> > +/// A pointer to a page that owns the page allocation.
+> >> > +///
+> >> > +/// # Invariants
+> >> > +///
+> >> > +/// The pointer points at a page, and has ownership over the page.
+> >> > +pub struct Page {
+> >> > +    page: NonNull<bindings::page>,
+> >> > +}
+> >>
+> >> Shouldn't this be UnsafeCell / Opaque? Since `struct page` contains lo=
+cks.
+> >
+> > That only matters when we use a reference. Here, it's behind a raw poin=
+ter.
+>
+> Why is it behind a pointer rather than being transparent over
+> `Opaque<bindings::page>` and using a `&Page` instead?
 
-> On Mon, 05 Feb 2024, Christian Marangi wrote:
-> 
-> > On Mon, Feb 05, 2024 at 02:33:59PM +0000, Lee Jones wrote:
-> > > On Mon, 05 Feb 2024, Christian Marangi wrote:
-> > > 
-> > > > On Mon, Feb 05, 2024 at 02:41:46PM +0100, Andrew Lunn wrote:
-> > > > > > > This should have 'net' in the subject line, to indicate which tree its
-> > > > > > > for.
-> > > > > > 
-> > > > > > No, it shouldn't.
-> > > > > > 
-> > > > > > Contributors aren't obliged to know anything about merging strategies.
-> > > > > 
-> > > > > With netdev, we tend to assume they do, or at least can contribute to
-> > > > > the discussion. They often know about any dependencies etc which could
-> > > > > influence the decision. When there are multiple subsystem maintainers
-> > > > > involved, i tend to use To: to indicate the maintainer i think should
-> > > > > merge the patch, and Cc: for the rest.
-> > > > >
-> > > > 
-> > > > I'm always a bit confused when I have to send patch to mixed subsystem
-> > > > (not the case but for net trigger it's almost that). Sorry for the
-> > > > confusion/noise.
-> > > 
-> > > When you have a truly cross-subsystem patch, it's up to you.
-> > > 
-> > >  - Mention both e.g. leds/net:
-> > >  - Mention neither e.g. <device>:
-> > >  - Mention the one that is most relevant
-> > > 
-> > >  An example of the last option might be when the lion's share of the
-> > >  changes occur in one subsystem and only header files are changed in the
-> > >  other.
-> > > 
-> > > In an ideal world i.e. when there are no build-time/runtime deps between
-> > > them, changes should be separated out into their own commits.
-> > >
-> > 
-> > Thanks a lot for the explaination and the examples!
-> > 
-> > > > > > Why does this need to go in via net?
-> > > > > 
-> > > > > It does not, as far as i'm aware. Christian, do you know of any
-> > > > > reason?
-> > > > > 
-> > > > 
-> > > > This is strictly a fix, no dependency or anything like that. Maybe using
-> > > > net as target would make this faster to merge (since net is for fix only
-> > > > and this has to be backported) than using leds-next?
-> > > 
-> > > We have leds-fixes for that.
-> > >
-> > 
-> > Oh! No idea, should I add a tag to the patch to target that branch
-> > specifically?
-> 
-> You don't need to do anything special.
-> 
-> The Fixes: tag is enough to let us know that this is a fix.
-> 
-> If the commit mentioned in Fixes: was accepted as part of the last
-> merge-window, it'll be sent to the -rcs in good time.  If it fixes a
-> commit which was introduced in a previous cycle, it'll be submitted
-> during the next merge-window.
+Because `&Page` would not have ownership of the page, but I need
+ownership. We also can't use `ARef<Page>` because that has a `clone`
+method.
 
-Since this patch fixes an issue that was incorporated into v6.4, we
-shall not be submitting this for the v6.8-rcs.  Instead it's heading for
-the v6.9 merge-window and will be backported to v6.6.y accordingly.
+One could introduce an Owned smart pointer and use `Owned<Page>`, but
+I think that is out of scope for this patchset.
 
--- 
-Lee Jones [李琼斯]
+Alice
 
