@@ -1,192 +1,192 @@
-Return-Path: <linux-kernel+bounces-57955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D90984DF7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:14:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 533A084DF83
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:15:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D47F1C2728B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:14:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC0332856D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:15:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493806EB51;
-	Thu,  8 Feb 2024 11:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE3066E2D1;
+	Thu,  8 Feb 2024 11:14:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="mu8dI+P0"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2050.outbound.protection.outlook.com [40.107.94.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sq04pULv"
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0A61E527;
-	Thu,  8 Feb 2024 11:13:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707390830; cv=fail; b=Imr4OD6DUASsXqnDwBqTZJeUjkVueTTo/bDz6Q613RCJOBDpZSBaIjkKFFYdEdxrn406A0sjYCgI/gHKP47kqM80g0DssfIWqwx1rk70XNzr9doJfwFFVRaC1xRwZyRuatKTUoLtwYSPLjVptyo/jB1T6UrdaRUZgQJ+jeDn3zs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707390830; c=relaxed/simple;
-	bh=dHObtsaVeZR81v3QfzgEjxtPBZ7oU/M33DAdUz7DfQY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=tpZ7n9LelYIPzgOwy/Wr2bWMAL2MsphSJBlzv7JZKznkO9lic5chAWgiAbSA1wrq7bg7CUErMugkz6sWNSWcM8x+z08coDe2W/QVjaK1/+ug6wpb82gCp4REfcL3RJsoSWp29xdvfpi8NB53FxizI9kVO25PfDk1gFW0mgKpWpk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=mu8dI+P0; arc=fail smtp.client-ip=40.107.94.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=frRmZ2AbbgRcRbGUeEPnrzd1wZdaiWfyHXH4/1pREDpE2sC4AzIgrBMRuQqqctLk7A1lNl5+4L+/r89/to9Pb4M5CaaSCdinlVGKqWAzCPvGaQXJ5WiyiMiMHp3OZ3yD4ZlFnVDvPELXbZJJjVhnRF3mVBIQeibgLxfVy6d57wrs7ljM2fxU6BBy+84vSqFdxRxvSmV+xeEnBi3Uq8aLhHxtTzX4urxR3DzIjRTe6J8PWETR3JL7EmLWxiNsN/fW0LrtZV+EhSOvqiwFbE7bE2RF94hNvgk9zWo1y+CpEH8JmEMkiNSQj5JPD1dbjDC5zl2DRIYdxS2JzNRQ4gSUuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dHObtsaVeZR81v3QfzgEjxtPBZ7oU/M33DAdUz7DfQY=;
- b=G43xqHCa6QpFSgJt7+WPn2YaXIuMO0GwZegRrkq72VoqQX2Z9r9FHCcJMDT9vGxS8i/nM8KLoKXBTJQxLiyP9/f3pm0fNPRxe4CZ3M+hyu01SqneTrn5L15j+eIOnHQX537C4O3LxEsQaDS5ArlPyZgWTGTj28Vj/5u+aH2soxP10ajamPncDexoflNnd9AUIVe4U0csTcgum+QAHIWA9zmi3vYsMFw7lV/88yM9DjY195aQIltNjrQRM0LrHh9gZ06zKEnXCnhSXZRjCtYkaojPptmECV89rCriU9JG7TDnaTrVFpBnwE2ZjzX9ZWRCC1adW35owgb3yFbSra4CAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dHObtsaVeZR81v3QfzgEjxtPBZ7oU/M33DAdUz7DfQY=;
- b=mu8dI+P0E0/zs6EWwZp4zjusRyHn4zQ9tLWTjhEvouHLSqpg218gcomEsCkFkkWnNt1D1IIJ1CCNsIET+WFn6+EyPe+GpsSwlYzTdn3Vl8Le+N+SjE0B7+R7GqUpVFTWV2D1InGuct901n3LiSYkf2LGCQ7E67FLGJKyAK3MmXd/hgIJJaqULPdoA+pDpq170vgALEKddxBf479/Yd5QJOl+6S+eRY9ZH/4Wiojk4rmPiAF/aoY2eOBQA6pvaLLbuXHNqz3SEVpHN1pPXbu+Mnr8WT2iSCEiKbMuMKJTFT/YeMa/yIhQa6LgAxsRxyX4DzzVyNbC+e4hGODlNuK0eA==
-Received: from SA1PR12MB7199.namprd12.prod.outlook.com (2603:10b6:806:2bc::21)
- by DM6PR12MB4943.namprd12.prod.outlook.com (2603:10b6:5:1bc::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.16; Thu, 8 Feb
- 2024 11:13:45 +0000
-Received: from SA1PR12MB7199.namprd12.prod.outlook.com
- ([fe80::444d:2f33:a61b:3225]) by SA1PR12MB7199.namprd12.prod.outlook.com
- ([fe80::444d:2f33:a61b:3225%3]) with mapi id 15.20.7270.016; Thu, 8 Feb 2024
- 11:13:45 +0000
-From: Ankit Agrawal <ankita@nvidia.com>
-To: "Tian, Kevin" <kevin.tian@intel.com>, Alex Williamson
-	<alex.williamson@redhat.com>, Zhi Wang <zhi.wang.linux@gmail.com>
-CC: Jason Gunthorpe <jgg@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
-	"mst@redhat.com" <mst@redhat.com>, "shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, "clg@redhat.com" <clg@redhat.com>,
-	"oleksandr@natalenko.name" <oleksandr@natalenko.name>, "K V P, Satyanarayana"
-	<satyanarayana.k.v.p@intel.com>, "eric.auger@redhat.com"
-	<eric.auger@redhat.com>, "brett.creeley@amd.com" <brett.creeley@amd.com>,
-	"horms@kernel.org" <horms@kernel.org>, Rahul Rameshbabu
-	<rrameshbabu@nvidia.com>, Aniket Agashe <aniketa@nvidia.com>, Neo Jia
-	<cjia@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>, "Tarun Gupta
- (SW-GPU)" <targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>, Andy
- Currid <acurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>, John
- Hubbard <jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>, "Anuj Aggarwal
- (SW-GPU)" <anuaggarwal@nvidia.com>, Matt Ochs <mochs@nvidia.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "virtualization@lists.linux-foundation.org"
-	<virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH v17 3/3] vfio/nvgrace-gpu: Add vfio pci variant module for
- grace hopper
-Thread-Topic: [PATCH v17 3/3] vfio/nvgrace-gpu: Add vfio pci variant module
- for grace hopper
-Thread-Index: AQHaWIdUHF93rAkYa0SGXKd0AMy8rLD/eesAgAAPggCAAHxaWIAACBUAgABAhJ8=
-Date: Thu, 8 Feb 2024 11:13:45 +0000
-Message-ID:
- <SA1PR12MB7199F11211952B27803D7194B0442@SA1PR12MB7199.namprd12.prod.outlook.com>
-References: <20240205230123.18981-1-ankita@nvidia.com>
-	<20240205230123.18981-4-ankita@nvidia.com>
-	<20240208003210.000078ba.zhi.wang.linux@gmail.com>
- <20240207162740.1d713cf0.alex.williamson@redhat.com>
- <SA1PR12MB7199A9470EC2562C5BCC2FAFB0442@SA1PR12MB7199.namprd12.prod.outlook.com>
- <BN9PR11MB527640ADE99D92210977E7CA8C442@BN9PR11MB5276.namprd11.prod.outlook.com>
-In-Reply-To:
- <BN9PR11MB527640ADE99D92210977E7CA8C442@BN9PR11MB5276.namprd11.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR12MB7199:EE_|DM6PR12MB4943:EE_
-x-ms-office365-filtering-correlation-id: fcb854af-e06d-4a06-0195-08dc289703f0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- mvOAPqfDqAYx+2sp7e6XB5PLUjGYJQkHMTODuf5Hgu7WJWameHGPIy1AlzTYssxo80bYgdIj8ignwWK7vYG/v9MIABqCLr80YLdzMq3+QLP74a3JmmOxouijn/vp7RmErzSEBYOvEmZtECc7N2UshBHnckBM9TWMvNQAuKXV158z6brfP/oeyh0pOcDREFIPuyna0qWvLeWsyeTK7vhUBV6rBai+f5lYYY8LZyBFPSRkKOShSSgoeEN2ETIgXYPloodG7WkAvKERVnRWaz007ALEW5RNWUnaMg3BTW7EQXnLKINMo76SEJLekgfOP70zfaEJ/9k+uqKahM7AhGsto+Snkzx5DEmb5hL3X5ifp7N77f+LVxV+cPXsOB59AKOe1+E0kG1IVh2RJrWBx+Hy5d8uYRYwXuEwcXsKPgPfSBgAyjGBBNSoiFboMCuKugCzK/gv9cRtTFYHb+XMVaxq58hpabDnPaEFr1yXhIYt0zlohYDv+BC2A5mBYibTSrp3RUA9xlNgvNy4xlJv+s8QzDZFQg11Iv7v1D5yfiVsyAlo+Fw+F1jqMzVDg320GGR7xTfNI8+N6zKgoIinUK9k8rnvPhBduUHcRVLHeTQsixc=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR12MB7199.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(39860400002)(366004)(396003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(71200400001)(26005)(41300700001)(55016003)(54906003)(38100700002)(38070700009)(316002)(7696005)(9686003)(122000001)(478600001)(6506007)(8936002)(64756008)(91956017)(7416002)(2906002)(33656002)(5660300002)(66476007)(66556008)(66946007)(86362001)(110136005)(8676002)(76116006)(4326008)(4744005)(52536014)(66446008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?uzoB5o/jGIcfQymgz67pxQVh7/WBmDU3KixdxvFtjS9XGyhhAtbac2UrTc?=
- =?iso-8859-1?Q?laa2rJqaZRpTfumEg5hminmUZAllK5P3LruDdruzvXu/6ldbX7/dQ7XPBj?=
- =?iso-8859-1?Q?gQ2aEGWEQA+HuqHrXAwGVF6HnEFbDK0ZAr6J4r8krTTuLVEOtK56y2ljG/?=
- =?iso-8859-1?Q?GbaQJcVoxR8AXlM2DIeA5qnhdloOvFT6nIgoCSPi/p/ly1TzZ8VC9u22b+?=
- =?iso-8859-1?Q?bHZODGv0V9weqT+Z+IZKtlV81MwZjP7dC98zzdMplfJa0z91BjP3ZCBzHA?=
- =?iso-8859-1?Q?6oypmudBJzpMVfxA+eMQy67oqcAWb6zK7JEKXVjxuzFaBX6IisVJPJfyC4?=
- =?iso-8859-1?Q?+jly1+IHp5H2qZZ6LdGZh1XjHRujSB1TjoznAoToSRDKPra0SnncnqFf3A?=
- =?iso-8859-1?Q?/p8TJHFBZwpoq2PcEDQWGEfsd7DgvrgNpydoSA9Fue9t148uMm2KNVcn76?=
- =?iso-8859-1?Q?lWluzIykIS+T+ErwKa3IU0zyrqIDyEQOV6nbYufZX0rIqC2FmPl85VGP9Z?=
- =?iso-8859-1?Q?CaXDH/7ymACYSIPr3vZe6eGmmp31BhnXwq/+24hCg+220/LskYHMwdKzyh?=
- =?iso-8859-1?Q?W2QRY4RFg+a3VRW/QxMqHgADwMwm0RVKLqhZRVifUJuiU7g+infw4l4Xr+?=
- =?iso-8859-1?Q?3Yu2SfksndneLhLNl18FNQYqnDjQxjp0VrgtAmeaD7Bf3J/sGR4MZjnJUV?=
- =?iso-8859-1?Q?2wWTkCMqM6gHxIpPjLfC8dsNxO+txFxqweJ/hQYjV1Sg8IbABPfXzSN6/H?=
- =?iso-8859-1?Q?VnX5/gHxIn642X8kWJKs9wMFZ6k+3RaonzNY1sI9ETgqmwpCzfFb8i5BCF?=
- =?iso-8859-1?Q?xg7EHrfEjyBXrNJz5cI606XEotAi+zWLWIxFLpevEoylaFh4Wlu1FRHFHk?=
- =?iso-8859-1?Q?D2mEI311ob5nV/+mdby4nAcWp9njrJR/QdGD+RU6kYpy279iaa8lQ3BLoK?=
- =?iso-8859-1?Q?R6U5H4tDDLaGC6Xr5TzBPjnI1lIHjx3pfFPexQvSlsJsq0HNqnC1q5kX7W?=
- =?iso-8859-1?Q?3LysyJEHolRKod5jOuJzjmWOb/DfkviZLcsd5dmm4zxz0CiHkEreqkwONQ?=
- =?iso-8859-1?Q?YAqH6ALA1HJQSHnv4tfezUuitaoWsCesNswVcK4OoXcWu1MWymsOgcu1r8?=
- =?iso-8859-1?Q?N0Px+dInr+KWkEVgR0o/pQeVB8XsACcpgVXtlwOFB3JlutWhZpYI22VMy/?=
- =?iso-8859-1?Q?NYLsi7LbikJHYsMybJ6LwkIbLpJjmdKUJbpBvNUAE4BE87T6EGlFdfhdEv?=
- =?iso-8859-1?Q?OwmHQG+43ZHr0aD/zLb64XQE1ZwsV0JEttCtQ+GHpcuoAFnvHNznUwrx93?=
- =?iso-8859-1?Q?ldiMMcER+8lWlzphUaRhkRIX++B44dpPPSuu0IH5IyrtQTr0slzwfExHvj?=
- =?iso-8859-1?Q?80djjtntdQbwvkIbLAxY6/H5L5lhhPN5QLsmkDELCiGALWCuJY5mLOzXvu?=
- =?iso-8859-1?Q?guxFKFV023VAjJFiBPBQ1zNY9axKFqd5cdLJIe787nu9UtU4cyZB02VvFX?=
- =?iso-8859-1?Q?v55xuwt0PegBUy7cf/rElBHuXEDPWhM9kTRAnFbUXENt9ZSB48PgTgmgwa?=
- =?iso-8859-1?Q?dppoUcMlzhHW+HsjWZHh25qNmr7aizbQPL8UB+wXpXA8Q/HHnkSDlXRJaf?=
- =?iso-8859-1?Q?m1qwQnBR1gpZs=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711366E2CB
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 11:14:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707390892; cv=none; b=CkG5J3IYyfQF35kDrtGGDSMN8WyxEfgb7j26HqF3YSrZRiqbBVvRSwijSx3+6bV3lQhbRTfQuGkBMEiLBXk7HFHTyoLaWzHtl1wjgFst8CiD2Rv6fTYg1cfBLfaBjMVWboESAMUsM7V3DrWdJuu4UQxuNZ+R3U3WiPUxuNBYnwI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707390892; c=relaxed/simple;
+	bh=YF3AwsIziMoJKgQELRqtTwJWt1NnnUaynRdJ8slMOqI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OhTNagvdCdDv/2iGgw3o7swMOXxI10FgbcztFEVCpHveMW/SNOczNf9EW3jlQwx8vDiOwNUvSKRHvZqhHxWifY+vMfxCeFP2LjAW78lnrDwHaZeUN43GfsYPrXL2kZbs33eDNJQ0HeWAcm4Wt3d+ARWAIh77Pi9VjkM0PiHL9V4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sq04pULv; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-68c431c6c91so6615126d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 03:14:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707390889; x=1707995689; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fJRRGrWXukyhlF5rwheSnxZvpxEuo/Z7R1gl3W8UWUQ=;
+        b=sq04pULvblqHu4kWBeiJdO6vHV0SKQlctGNFtwz05DF+uIcLUU/O9/yqKgJe3CQ+9p
+         CLVyjW92w/1VvphUIUBSCWfayoog/v6Vxlbnha6Tr9QYidbMjaC6jJdqU4sMKYIazfVH
+         uNflA91IVUP20ePu3FgvK/szHB57H1U7Izey7ft4Kelke7lJdN3uDZ0M8CEbgyYohL1e
+         zFSUerc81Aqbyedoz8j8zoYCjj6ARSQl67QbChgYlVPZ7E8V+e4MGcD3QHU+dp+A/0N7
+         cPZjMv5lYuFNt+Is7LXKQokl1/fG5TXu4+otcY9+nEwbightM3m/gVHQ5s2txUCC8iD5
+         FT+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707390889; x=1707995689;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fJRRGrWXukyhlF5rwheSnxZvpxEuo/Z7R1gl3W8UWUQ=;
+        b=ny++yGcKFfGCg/+KO3kKWj+xZuDL8t/QjLKkO3JHIgU2n1sat4gm+CH1YhQC5d808+
+         BGEkn1kRd8eIkZAFORJFRz3+MlKMY8zhPQiN8g83AhDmYWfhXBt7bcGM+9Cp2l6jTLVS
+         lDohziBkG7AuN4tRE9r8Wc8y71pOC/lQF2Xyj7jbLtEJT50Vu+/LXfkUsBwWWkzlOXa9
+         McfTOocpkGJFFjA5chV8clS0Kkfom9gIpfq4rSbb2J0Yo+YqMyAszmI4tnHKpX+o4lYb
+         h/brdabx4u7RXsRdPVhC5IxgFbI851oTnvU+WQYYEjGXefNYN047kLKmk3H12sGWEXQ4
+         uU7A==
+X-Gm-Message-State: AOJu0YymH5sy78RgLXgHvk8MZPUBC52SLf2Rdli7HC2f/yTtdzB9NH+5
+	99tlU3svXJ4rBVd4EWVZdlOSwB4mxFyWX7BF5PxIZWbk5esW1PF/aL7b0VShB8VojoOwz4k1DWw
+	XKY1fyQ3Z4pSHwMEhNFC3xLdhlncL5QlRWQS+Ww==
+X-Google-Smtp-Source: AGHT+IGZDj75tdfnjsfYjBWALjP4rXBAPdM4LZKlPAJGJ98niyWndw03uuCQ9KxHtey2Vh4PRD2Iwgtkrgu5pOd+iYU=
+X-Received: by 2002:a05:6214:19e7:b0:68c:96ab:5672 with SMTP id
+ q7-20020a05621419e700b0068c96ab5672mr10954168qvc.17.1707390889086; Thu, 08
+ Feb 2024 03:14:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR12MB7199.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fcb854af-e06d-4a06-0195-08dc289703f0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2024 11:13:45.0875
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ehHnZDppmdrBhHCxCBCa5AtwaJLkNh0YLm+d1oTkOq2JShaNDl0gF16F57FPe2yXXkiClTRC4VkXeEeOqvRJOw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4943
+References: <20240208105243.128875-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240208105243.128875-1-krzysztof.kozlowski@linaro.org>
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Thu, 8 Feb 2024 11:14:37 +0000
+Message-ID: <CADrjBPqscNwMpGmDiHSnAti_RzJZRCQNpcjJ+9vrPt7TAyctVQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: exynos: gs101: minor whitespace cleanup
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Alim Akhtar <alim.akhtar@samsung.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
->> >>=0A=
->> >> If mem_count =3D=3D 0, going through nvgrace_gpu_map_and_read() is no=
-t=0A=
->> >> necessary.=0A=
->> >=0A=
->> > Harmless, other than the possibly unnecessary call through to=0A=
->> > nvgrace_gpu_map_device_mem().=A0 Maybe both=0A=
->> nvgrace_gpu_map_and_read()=0A=
->> > and nvgrace_gpu_map_and_write() could conditionally return 0 as their=
-=0A=
->> > first operation when !mem_count.=A0 Thanks,=0A=
->> >=0A=
->> >Alex=0A=
->>=0A=
->> IMO, this seems like adding too much code to reduce the call length for =
-a=0A=
->> very specific case. If there aren't any strong opinion on this, I'm plan=
-ning to=0A=
->> leave this code as it is.=0A=
->=0A=
-> a slight difference. if mem_count=3D=3D0 the result should always succeed=
-=0A=
-> no matter nvgrace_gpu_map_device_mem() succeeds or not. Of course=0A=
-> if it fails it's already a big problem probably nobody cares about the su=
-btle=0A=
-> difference when reading non-exist range.=0A=
->=0A=
-> but regarding to readability it's still clearer:=0A=
->=0A=
-> if (mem_count)=0A=
->=A0=A0=A0=A0=A0=A0=A0 nvgrace_gpu_map_and_read();=0A=
-=0A=
-Makes sense. I'll change it.=
+On Thu, 8 Feb 2024 at 10:52, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> The DTS code coding style expects exactly one space before '{' and
+> around '=' characters.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+
+Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+
+>  .../boot/dts/exynos/google/gs101-pinctrl.dtsi    |  2 +-
+>  arch/arm64/boot/dts/exynos/google/gs101.dtsi     | 16 ++++++++--------
+>  2 files changed, 9 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/exynos/google/gs101-pinctrl.dtsi b/arch/arm64/boot/dts/exynos/google/gs101-pinctrl.dtsi
+> index e6a9776d4d62..a675f822acec 100644
+> --- a/arch/arm64/boot/dts/exynos/google/gs101-pinctrl.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/google/gs101-pinctrl.dtsi
+> @@ -251,7 +251,7 @@ gph1: gph1-gpio-bank {
+>                 #interrupt-cells = <2>;
+>         };
+>
+> -       pcie0_clkreq: pcie0-clkreq-pins{
+> +       pcie0_clkreq: pcie0-clkreq-pins {
+>                 samsung,pins = "gph0-1";
+>                 samsung,pin-function = <GS101_PIN_FUNC_2>;
+>                 samsung,pin-pud = <GS101_PIN_PULL_UP>;
+> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> index c7a9e81d23b9..80cc933cca3d 100644
+> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> @@ -73,7 +73,7 @@ cpu0: cpu@0 {
+>                         compatible = "arm,cortex-a55";
+>                         reg = <0x0000>;
+>                         enable-method = "psci";
+> -                       cpu-idle-states =  <&ANANKE_CPU_SLEEP>;
+> +                       cpu-idle-states = <&ANANKE_CPU_SLEEP>;
+>                         capacity-dmips-mhz = <250>;
+>                         dynamic-power-coefficient = <70>;
+>                 };
+> @@ -83,7 +83,7 @@ cpu1: cpu@100 {
+>                         compatible = "arm,cortex-a55";
+>                         reg = <0x0100>;
+>                         enable-method = "psci";
+> -                       cpu-idle-states =  <&ANANKE_CPU_SLEEP>;
+> +                       cpu-idle-states = <&ANANKE_CPU_SLEEP>;
+>                         capacity-dmips-mhz = <250>;
+>                         dynamic-power-coefficient = <70>;
+>                 };
+> @@ -93,7 +93,7 @@ cpu2: cpu@200 {
+>                         compatible = "arm,cortex-a55";
+>                         reg = <0x0200>;
+>                         enable-method = "psci";
+> -                       cpu-idle-states =  <&ANANKE_CPU_SLEEP>;
+> +                       cpu-idle-states = <&ANANKE_CPU_SLEEP>;
+>                         capacity-dmips-mhz = <250>;
+>                         dynamic-power-coefficient = <70>;
+>                 };
+> @@ -103,7 +103,7 @@ cpu3: cpu@300 {
+>                         compatible = "arm,cortex-a55";
+>                         reg = <0x0300>;
+>                         enable-method = "psci";
+> -                       cpu-idle-states =  <&ANANKE_CPU_SLEEP>;
+> +                       cpu-idle-states = <&ANANKE_CPU_SLEEP>;
+>                         capacity-dmips-mhz = <250>;
+>                         dynamic-power-coefficient = <70>;
+>                 };
+> @@ -113,7 +113,7 @@ cpu4: cpu@400 {
+>                         compatible = "arm,cortex-a76";
+>                         reg = <0x0400>;
+>                         enable-method = "psci";
+> -                       cpu-idle-states =  <&ENYO_CPU_SLEEP>;
+> +                       cpu-idle-states = <&ENYO_CPU_SLEEP>;
+>                         capacity-dmips-mhz = <620>;
+>                         dynamic-power-coefficient = <284>;
+>                 };
+> @@ -123,7 +123,7 @@ cpu5: cpu@500 {
+>                         compatible = "arm,cortex-a76";
+>                         reg = <0x0500>;
+>                         enable-method = "psci";
+> -                       cpu-idle-states =  <&ENYO_CPU_SLEEP>;
+> +                       cpu-idle-states = <&ENYO_CPU_SLEEP>;
+>                         capacity-dmips-mhz = <620>;
+>                         dynamic-power-coefficient = <284>;
+>                 };
+> @@ -133,7 +133,7 @@ cpu6: cpu@600 {
+>                         compatible = "arm,cortex-x1";
+>                         reg = <0x0600>;
+>                         enable-method = "psci";
+> -                       cpu-idle-states =  <&HERA_CPU_SLEEP>;
+> +                       cpu-idle-states = <&HERA_CPU_SLEEP>;
+>                         capacity-dmips-mhz = <1024>;
+>                         dynamic-power-coefficient = <650>;
+>                 };
+> @@ -143,7 +143,7 @@ cpu7: cpu@700 {
+>                         compatible = "arm,cortex-x1";
+>                         reg = <0x0700>;
+>                         enable-method = "psci";
+> -                       cpu-idle-states =  <&HERA_CPU_SLEEP>;
+> +                       cpu-idle-states = <&HERA_CPU_SLEEP>;
+>                         capacity-dmips-mhz = <1024>;
+>                         dynamic-power-coefficient = <650>;
+>                 };
+> --
+> 2.34.1
+>
 
