@@ -1,141 +1,93 @@
-Return-Path: <linux-kernel+bounces-57371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6921D84D794
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 02:32:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4995184D792
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 02:30:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C8381C22C33
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:32:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 555E3B227E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:30:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B6236113;
-	Thu,  8 Feb 2024 01:30:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68361EB51;
+	Thu,  8 Feb 2024 01:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="b5lnIEIn"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NUggYVTw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C4201CD19;
-	Thu,  8 Feb 2024 01:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E007C1D557;
+	Thu,  8 Feb 2024 01:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707355831; cv=none; b=jW7y5SP85li4WinZDkiV5b7OLzMWKhGExi7cuLqE1a1gjEfHvkhPcNZ99Q3XBJrNdSxP4kxuVaMbPecXlof2h0hTG9s99NZjkPsUKTQAcjSSJVHegQaGQ63GA/6dLoBeobKV3JmDo+GsdabuZTtWm5PzNeT/a3cyt7bRlcadGfo=
+	t=1707355830; cv=none; b=HSeeDCta+g6bH9H9hQkcXi0bJs7VJrj9891jserugExPm9yDa/pB34rfLsdBiCO/R3Xsug5hUUPyjCYWu/eI+PrfsITAB2Q0li9VprzAsk50Q+L6TSvFlzmvEopeo7ap0ap/kg1ASUtB9EPz/0TRrVVMyBYO8Tm8qGGUm9t836Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707355831; c=relaxed/simple;
-	bh=muz7Bui59U4LNvcntLNkBS8HDXhspLwGzQwrxYYzZi8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=p/ci6nqlX0mkoXyjd3coZtqqsxVKnIl/OtjNsenPBDDZJRz4SwB5mv49NZiqo0LzY+OJute23utlE6AA/JhGffmcEtlUHFT5int5IqZkhNccdDTo8ll/tsmXfUahDFjGjhKV3M3qNJysa9P8CBFpzqcHw/EGtJiCGu9blOKu1KE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=b5lnIEIn; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707355826;
-	bh=hdmd2hgEp/CWvvERaKzFlKQcnW3ajQj+e4t2lGrolTQ=;
-	h=Date:From:To:Cc:Subject:From;
-	b=b5lnIEInxnjfdNPfaGUWqhToOGcRFBCZhWzMv8KOSEZUxDDcwqsPFQoohpi9zd5bQ
-	 rzJasu/TR9MugR9V709RS806bLmPWVxIh9ddoTZ2Qj2DdrMy5VHjOdNcYv4qxOl2Ma
-	 OWMDrt6inda4BPgupOIUncFZSkUIzNLXFdttoE0asxHKVZOVlDtRuLHYJj7JoJoGO5
-	 i247oDdf0cfjLCF3zS/dLshHSK9YcB9TUZ/f4sutlKo1Lmq/H2t4R8G5Y2nIaAZxGF
-	 b2DLWELQnfzouRM0QMVERsElLVjMAYY68nGdXm343+PhVOkUSrrJQsRb3vair0II67
-	 rdPBwUHMxt1aw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TVfYs2J57z4wc6;
-	Thu,  8 Feb 2024 12:30:24 +1100 (AEDT)
-Date: Thu, 8 Feb 2024 12:30:22 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>, "Borislav Petkov (AMD)"
- <bp@alien8.de>, Kevin Loughlin <kevinloughlin@google.com>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Nathan Chancellor <nathan@kernel.org>, Paolo
- Bonzini <pbonzini@redhat.com>
-Subject: linux-next: manual merge of the tip tree with Linus' tree
-Message-ID: <20240208123022.272f57bd@canb.auug.org.au>
+	s=arc-20240116; t=1707355830; c=relaxed/simple;
+	bh=RMupFb4nJ/fs56B3Mp8NAVjkwclZL/zYoqXWz4mV58M=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=BQwVD9KTuTqKTGJauq1LHOG1AqP4paL28jvKmFNeUVgbTIdtRACHNJ3cjWLaelYWY7W7Kw6vTRrPTODmyOeXbOrISPVNORQfwN0MLdLXwNuu0V6okFVN9zuOqPpSU6Y9zOSJPWaupqlG8S7L1o/jVum5V4O5N+YI5SzY0yJK6ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NUggYVTw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6DB25C433B1;
+	Thu,  8 Feb 2024 01:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707355829;
+	bh=RMupFb4nJ/fs56B3Mp8NAVjkwclZL/zYoqXWz4mV58M=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=NUggYVTwasaK3+SnCqY9s1DQ8Rkt7whE+tlGoGXPUQQHxV3a/U/FiudlgRtJqnnyL
+	 YoK0u724ZuXIkgMN43WHBgAwe8VJWRVCNGKJtogCxNKdiPByDc5gPHchg3xuPtNNKA
+	 pds3VnpHYtH5Is78jCHKQJujPhHp0Rpm7sxocM5zPY5OWGtP9m5O8jv5M2BLykINi/
+	 9+laroHlcorrGptWxrx5+8JomDo2K9VELemYkrrT+jqwsTxUQu+JvkV9EsIlT+Q+TL
+	 N5nOmV8eSLnWHM8LeWY6cawc/BekQMMpt9wBGk4facBRozJMKBvc5XrbdTWXJSWo5N
+	 tJ4Oy9c9bNaNQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 53514E2F2F1;
+	Thu,  8 Feb 2024 01:30:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/XuVZMLCnqmZxo2P198xFIFs";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH -fixes] riscv: Flush the tlb when a page directory is freed
+From: patchwork-bot+linux-riscv@kernel.org
+Message-Id: 
+ <170735582932.12826.4648361824228463635.git-patchwork-notify@kernel.org>
+Date: Thu, 08 Feb 2024 01:30:29 +0000
+References: <20240128120405.25876-1-alexghiti@rivosinc.com>
+In-Reply-To: <20240128120405.25876-1-alexghiti@rivosinc.com>
+To: Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org, will@kernel.org,
+ aneesh.kumar@linux.ibm.com, akpm@linux-foundation.org, npiggin@gmail.com,
+ peterz@infradead.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+ aou@eecs.berkeley.edu, samuel.holland@sifive.com, ajones@ventanamicro.com,
+ linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
 
---Sig_/XuVZMLCnqmZxo2P198xFIFs
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This patch was applied to riscv/linux.git (fixes)
+by Palmer Dabbelt <palmer@rivosinc.com>:
 
-Today's linux-next merge of the tip tree got a conflict in:
+On Sun, 28 Jan 2024 13:04:05 +0100 you wrote:
+> The riscv privileged specification mandates to flush the TLB whenever a
+> page directory is modified, so add that to tlb_flush().
+> 
+> Fixes: c5e9b2c2ae82 ("riscv: Improve tlb_flush()")
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/tlb.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-  arch/x86/include/asm/coco.h
+Here is the summary with links:
+  - [-fixes] riscv: Flush the tlb when a page directory is freed
+    https://git.kernel.org/riscv/c/97cf301fa42e
 
-between commit:
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-  e45964771007 ("x86/coco: Define cc_vendor without CONFIG_ARCH_HAS_CC_PLAT=
-FORM")
 
-from Linus' tree and commit:
-
-  1c811d403afd ("x86/sev: Fix position dependent variable references in sta=
-rtup code")
-
-from the tip tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/x86/include/asm/coco.h
-index 76c310b19b11,21940ef8d290..000000000000
---- a/arch/x86/include/asm/coco.h
-+++ b/arch/x86/include/asm/coco.h
-@@@ -10,9 -11,15 +11,15 @@@ enum cc_vendor=20
-  	CC_VENDOR_INTEL,
-  };
- =20
- -extern enum cc_vendor cc_vendor;
-+ extern u64 cc_mask;
-+=20
-  #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
- +extern enum cc_vendor cc_vendor;
-- void cc_set_mask(u64 mask);
-+ static inline void cc_set_mask(u64 mask)
-+ {
-+ 	RIP_REL_REF(cc_mask) =3D mask;
-+ }
-+=20
-  u64 cc_mkenc(u64 val);
-  u64 cc_mkdec(u64 val);
-  #else
-
---Sig_/XuVZMLCnqmZxo2P198xFIFs
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXELq4ACgkQAVBC80lX
-0GwtfQf/RhHu9/gcivmHMxnyXeUhtCcPlPvzLuou7c7cfpbMaGLmn70w0gCN/F14
-dB5I//tUDXUnQHti4rrCTOTKrGzcWDxwMH96RWNp4lFWKpyTDmEqvR6eC9pLavTq
-gcGAP2qRrqRjIi9/hI3lXP9IGXdybIBWRLDjlxieUubsezjJw8CuBjjfIL1+NRJK
-SicGpbresO0AmT/J7UWwo05VBElefM2PL4cTHO+SUWPIwK/X0nZHY7Uy84sXmO5t
-szWTO4VmWJz09hpWMWqpyO1u+w79m00/ObdeQiw8+dILJ8NRwFtjhXpxvmOxX/fo
-ir5RHaB+lRmUKvD4tugH8LwhHcSF5g==
-=9k8H
------END PGP SIGNATURE-----
-
---Sig_/XuVZMLCnqmZxo2P198xFIFs--
 
