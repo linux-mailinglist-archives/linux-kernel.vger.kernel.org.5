@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-58014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F8A984E03C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:02:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD5FF84E03E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:02:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 448621C26B07
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:02:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A5871F2D9D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BA07EF1A;
-	Thu,  8 Feb 2024 11:57:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58FF07FBB5;
+	Thu,  8 Feb 2024 11:57:11 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4047EF01;
-	Thu,  8 Feb 2024 11:57:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B1AA7F48B;
+	Thu,  8 Feb 2024 11:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707393427; cv=none; b=TTDZW8PF7g11GqM9Ykj5u54QSBqcA/8fXFgQHoeE6eH56xG6LxXrFMLh31YQDX/146qUQBCiWLQ4GZAS6GOWOHY6tFsXM5/difGyfxh2riksJYP1CxHIxqvyzZE/Qlr2pL1Z5w+ZcFgWHADuDTraD7sNKRMCducEwRrz1NchOWU=
+	t=1707393430; cv=none; b=HXVKF0RVldHK28FWfYJVPga+SotaGaEP+byAmnGQNM9A1KpmxAQ3YjdnBinbo5P1FkaH9xNG+liOwTvmRSTI96PDyKkRnAZy4yz9nJR5MWqvBU4SP2PRg1SnttTLzyj22tIiGW5uEZTYgpXpf/1pTmezShkz7BZTdp9AgrXecIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707393427; c=relaxed/simple;
-	bh=jF9xvV+ffyDXEcEQmXtChRdRJUYNKBG4fWdMvZO8qKc=;
+	s=arc-20240116; t=1707393430; c=relaxed/simple;
+	bh=lzHdLn3RnU4KvLq9L4yLPglARNGzesbjMWjFLLMt1MQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YKM4RXpawkxUU+qbfbrJnQfClnXoG0MO36xgrwmYzWvvpsve4lmO4xR6A0ilxoQQIrqnVL3Liu8yqcosCPCwCflYHw1MLmsQUPShRSkWjEXOmlanyW8EHzvJ/ag+fBvRu1TJKmtYb6pQGm6FvSdVU4OJg1O9Cand+gSN45oiWxU=
+	 MIME-Version; b=fA0unZ3SnH+1hM/ZCfv25flhFrNcmIm0qKc50LpXBDNrMHphJ3qZC709MUkJ/Lhs+K6Y1DjgWdHavKAA5vH7hNeAa81NtufH3qljQNsoQWXiufDp14UyqivdXH8ZjPjOVrMsx8Qi2wC/Gl1aOUfTOjBl7aPLxgSS/gPTN2FRVOI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A88E3DA7;
-	Thu,  8 Feb 2024 03:57:47 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B0C31FB;
+	Thu,  8 Feb 2024 03:57:50 -0800 (PST)
 Received: from e129166.arm.com (unknown [10.57.8.23])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C8A8B3F5A1;
-	Thu,  8 Feb 2024 03:57:02 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BCACA3F5A1;
+	Thu,  8 Feb 2024 03:57:05 -0800 (PST)
 From: Lukasz Luba <lukasz.luba@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-pm@vger.kernel.org,
@@ -49,9 +49,9 @@ Cc: lukasz.luba@arm.com,
 	qyousef@layalina.io,
 	wvw@google.com,
 	xuewen.yan94@gmail.com
-Subject: [PATCH v8 20/23] PM: EM: Change debugfs configuration to use runtime EM table data
-Date: Thu,  8 Feb 2024 11:55:54 +0000
-Message-Id: <20240208115557.1273962-21-lukasz.luba@arm.com>
+Subject: [PATCH v8 21/23] PM: EM: Remove old table
+Date: Thu,  8 Feb 2024 11:55:55 +0000
+Message-Id: <20240208115557.1273962-22-lukasz.luba@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240208115557.1273962-1-lukasz.luba@arm.com>
 References: <20240208115557.1273962-1-lukasz.luba@arm.com>
@@ -63,122 +63,141 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Dump the runtime EM table values which can be modified in time. In order
-to do that allocate chunk of debug memory which can be later freed
-automatically thanks to devm_kcalloc().
-
-This design can handle the fact that the EM table memory can change
-after EM update, so debug code cannot use the pointer from initialization
-phase.
+Remove the old EM table which wasn't able to modify the data. Clean the
+unneeded function and refactor the code a bit.
 
 Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 ---
- kernel/power/energy_model.c | 67 ++++++++++++++++++++++++++++++++-----
- 1 file changed, 59 insertions(+), 8 deletions(-)
+ include/linux/energy_model.h |  2 --
+ kernel/power/energy_model.c  | 46 ++++++------------------------------
+ 2 files changed, 7 insertions(+), 41 deletions(-)
 
+diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+index aabfc26fcd31..92866a81abe4 100644
+--- a/include/linux/energy_model.h
++++ b/include/linux/energy_model.h
+@@ -53,7 +53,6 @@ struct em_perf_table {
+ 
+ /**
+  * struct em_perf_domain - Performance domain
+- * @table:		List of performance states, in ascending order
+  * @em_table:		Pointer to the runtime modifiable em_perf_table
+  * @nr_perf_states:	Number of performance states
+  * @flags:		See "em_perf_domain flags"
+@@ -69,7 +68,6 @@ struct em_perf_table {
+  * field is unused.
+  */
+ struct em_perf_domain {
+-	struct em_perf_state *table;
+ 	struct em_perf_table __rcu *em_table;
+ 	int nr_perf_states;
+ 	unsigned long flags;
 diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-index a631d7d52c40..548908e686ed 100644
+index 548908e686ed..57838d28af85 100644
 --- a/kernel/power/energy_model.c
 +++ b/kernel/power/energy_model.c
-@@ -37,20 +37,65 @@ static bool _is_cpu_device(struct device *dev)
- #ifdef CONFIG_DEBUG_FS
- static struct dentry *rootdir;
- 
--static void em_debug_create_ps(struct em_perf_state *ps, struct dentry *pd)
-+struct em_dbg_info {
-+	struct em_perf_domain *pd;
-+	int ps_id;
-+};
-+
-+#define DEFINE_EM_DBG_SHOW(name, fname)					\
-+static int em_debug_##fname##_show(struct seq_file *s, void *unused)	\
-+{									\
-+	struct em_dbg_info *em_dbg = s->private;			\
-+	struct em_perf_state *table;					\
-+	unsigned long val;						\
-+									\
-+	rcu_read_lock();						\
-+	table = em_perf_state_from_pd(em_dbg->pd);			\
-+	val = table[em_dbg->ps_id].name;				\
-+	rcu_read_unlock();						\
-+									\
-+	seq_printf(s, "%lu\n", val);					\
-+	return 0;							\
-+}									\
-+DEFINE_SHOW_ATTRIBUTE(em_debug_##fname)
-+
-+DEFINE_EM_DBG_SHOW(frequency, frequency);
-+DEFINE_EM_DBG_SHOW(power, power);
-+DEFINE_EM_DBG_SHOW(cost, cost);
-+DEFINE_EM_DBG_SHOW(performance, performance);
-+DEFINE_EM_DBG_SHOW(flags, inefficiency);
-+
-+static void em_debug_create_ps(struct em_perf_domain *em_pd,
-+			       struct em_dbg_info *em_dbg, int i,
-+			       struct dentry *pd)
- {
-+	struct em_perf_state *table;
-+	unsigned long freq;
- 	struct dentry *d;
- 	char name[24];
- 
--	snprintf(name, sizeof(name), "ps:%lu", ps->frequency);
-+	em_dbg[i].pd = em_pd;
-+	em_dbg[i].ps_id = i;
-+
-+	rcu_read_lock();
-+	table = em_perf_state_from_pd(em_pd);
-+	freq = table[i].frequency;
-+	rcu_read_unlock();
-+
-+	snprintf(name, sizeof(name), "ps:%lu", freq);
- 
- 	/* Create per-ps directory */
- 	d = debugfs_create_dir(name, pd);
--	debugfs_create_ulong("frequency", 0444, d, &ps->frequency);
--	debugfs_create_ulong("power", 0444, d, &ps->power);
--	debugfs_create_ulong("cost", 0444, d, &ps->cost);
--	debugfs_create_ulong("performance", 0444, d, &ps->performance);
--	debugfs_create_ulong("inefficient", 0444, d, &ps->flags);
-+	debugfs_create_file("frequency", 0444, d, &em_dbg[i],
-+			    &em_debug_frequency_fops);
-+	debugfs_create_file("power", 0444, d, &em_dbg[i],
-+			    &em_debug_power_fops);
-+	debugfs_create_file("cost", 0444, d, &em_dbg[i],
-+			    &em_debug_cost_fops);
-+	debugfs_create_file("performance", 0444, d, &em_dbg[i],
-+			    &em_debug_performance_fops);
-+	debugfs_create_file("inefficient", 0444, d, &em_dbg[i],
-+			    &em_debug_inefficiency_fops);
+@@ -276,17 +276,6 @@ static int em_compute_costs(struct device *dev, struct em_perf_state *table,
+ 	return 0;
  }
  
- static int em_debug_cpus_show(struct seq_file *s, void *unused)
-@@ -73,6 +118,7 @@ DEFINE_SHOW_ATTRIBUTE(em_debug_flags);
- 
- static void em_debug_create_pd(struct device *dev)
- {
-+	struct em_dbg_info *em_dbg;
- 	struct dentry *d;
- 	int i;
- 
-@@ -86,9 +132,14 @@ static void em_debug_create_pd(struct device *dev)
- 	debugfs_create_file("flags", 0444, d, dev->em_pd,
- 			    &em_debug_flags_fops);
- 
-+	em_dbg = devm_kcalloc(dev, dev->em_pd->nr_perf_states,
-+			      sizeof(*em_dbg), GFP_KERNEL);
-+	if (!em_dbg)
-+		return;
-+
- 	/* Create a sub-directory for each performance state */
- 	for (i = 0; i < dev->em_pd->nr_perf_states; i++)
--		em_debug_create_ps(&dev->em_pd->table[i], d);
-+		em_debug_create_ps(dev->em_pd, em_dbg, i, d);
- 
+-static int em_allocate_perf_table(struct em_perf_domain *pd,
+-				  int nr_states)
+-{
+-	pd->table = kcalloc(nr_states, sizeof(struct em_perf_state),
+-			    GFP_KERNEL);
+-	if (!pd->table)
+-		return -ENOMEM;
+-
+-	return 0;
+-}
+-
+ /**
+  * em_dev_update_perf_domain() - Update runtime EM table for a device
+  * @dev		: Device for which the EM is to be updated
+@@ -331,24 +320,6 @@ int em_dev_update_perf_domain(struct device *dev,
  }
+ EXPORT_SYMBOL_GPL(em_dev_update_perf_domain);
  
+-static int em_create_runtime_table(struct em_perf_domain *pd)
+-{
+-	struct em_perf_table __rcu *table;
+-	int table_size;
+-
+-	table = em_table_alloc(pd);
+-	if (!table)
+-		return -ENOMEM;
+-
+-	/* Initialize runtime table with existing data */
+-	table_size = sizeof(struct em_perf_state) * pd->nr_perf_states;
+-	memcpy(table->state, pd->table, table_size);
+-
+-	rcu_assign_pointer(pd->em_table, table);
+-
+-	return 0;
+-}
+-
+ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
+ 				struct em_perf_state *table,
+ 				struct em_data_callback *cb,
+@@ -409,6 +380,7 @@ static int em_create_pd(struct device *dev, int nr_states,
+ 			struct em_data_callback *cb, cpumask_t *cpus,
+ 			unsigned long flags)
+ {
++	struct em_perf_table __rcu *em_table;
+ 	struct em_perf_domain *pd;
+ 	struct device *cpu_dev;
+ 	int cpu, ret, num_cpus;
+@@ -435,17 +407,15 @@ static int em_create_pd(struct device *dev, int nr_states,
+ 
+ 	pd->nr_perf_states = nr_states;
+ 
+-	ret = em_allocate_perf_table(pd, nr_states);
+-	if (ret)
++	em_table = em_table_alloc(pd);
++	if (!em_table)
+ 		goto free_pd;
+ 
+-	ret = em_create_perf_table(dev, pd, pd->table, cb, flags);
++	ret = em_create_perf_table(dev, pd, em_table->state, cb, flags);
+ 	if (ret)
+ 		goto free_pd_table;
+ 
+-	ret = em_create_runtime_table(pd);
+-	if (ret)
+-		goto free_pd_table;
++	rcu_assign_pointer(pd->em_table, em_table);
+ 
+ 	if (_is_cpu_device(dev))
+ 		for_each_cpu(cpu, cpus) {
+@@ -458,7 +428,7 @@ static int em_create_pd(struct device *dev, int nr_states,
+ 	return 0;
+ 
+ free_pd_table:
+-	kfree(pd->table);
++	kfree(em_table);
+ free_pd:
+ 	kfree(pd);
+ 	return -EINVAL;
+@@ -629,7 +599,7 @@ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
+ 
+ 	dev->em_pd->flags |= flags;
+ 
+-	em_cpufreq_update_efficiencies(dev, dev->em_pd->table);
++	em_cpufreq_update_efficiencies(dev, dev->em_pd->em_table->state);
+ 
+ 	em_debug_create_pd(dev);
+ 	dev_info(dev, "EM: created perf domain\n");
+@@ -666,8 +636,6 @@ void em_dev_unregister_perf_domain(struct device *dev)
+ 	mutex_lock(&em_pd_mutex);
+ 	em_debug_remove_pd(dev);
+ 
+-	kfree(dev->em_pd->table);
+-
+ 	em_table_free(dev->em_pd->em_table);
+ 
+ 	kfree(dev->em_pd);
 -- 
 2.25.1
 
