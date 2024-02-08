@@ -1,160 +1,190 @@
-Return-Path: <linux-kernel+bounces-58342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A22AE84E4F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:21:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A13F84E4DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:19:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 598EC28EAC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:21:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4B99B20B94
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:19:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F76A7EF14;
-	Thu,  8 Feb 2024 16:21:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="J7XS626l"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31BE17E594;
+	Thu,  8 Feb 2024 16:19:32 +0000 (UTC)
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2011.outbound.protection.outlook.com [40.92.74.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898EF7E790
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 16:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707409290; cv=none; b=J0BXrq/Lo1WDwhWNT4npOJlYMqYbo78hgdYXUePNLq7xy0R00bAKsZTuPJTsDzXkSmgkSWsDOzgSYZI1IAroWMVp9AC7njR1jyZxGCFpRjDQTA7P3Mn6Mup/OOFvJ3XUsu/t/fXGaQznmV8VgD+hwEdVDBIJa/0t0jhdDOu2voI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707409290; c=relaxed/simple;
-	bh=4BFXoEKq0dKkvxzn8sylQVAACo62MxLym87l7SMkOww=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bhnWEu5fwjwyuBubavP+zy9iz41ivuVPynHIP8zyWVSAg6+GSuc4wrNGjogvZpPvYraXmLFBzDmo1UMBTPoxYY2kY4g69oKlROEjzgCiNAMsA6wFcXmnepmYlNprAW6Lc5DlAOPKC+yIdbRKynEk+d0xINCBiklMXJwPFPUC++0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=J7XS626l; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33b45e8a670so1108722f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 08:21:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707409287; x=1708014087; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nxb698xf8QkMydB4z0YB9c3r/9JegaMn6kB+mk5+8LA=;
-        b=J7XS626lTjGcri5LhjN1kT1BMZlUZlBR1M7U5MFL5DKLmZOlsVtiS1sKRFyIMDkvkh
-         Oa5Sms0tfWuLQ1M1q3YR/q/qHvqUE6MHApSzfOKXUMib2VGWhdTiSwBEmE+4I9LcdXEB
-         N8V1Ev63db+q2IqOktK3Cz3fYWHhlE5cVhgVT6kKElakAQk/1PWJIYGeaNjCGxoyXvFa
-         aPAMnUOgcJeXAeSsZI05ZgNJaoQgyKro9peSF9IVb5H6QUk+O6z1H/v6p731J9O30HnK
-         /IWDYJ/tBGe+Q3YFPiBWf994+jDbYThl/241sH/YURQJ+S9c8lxjSGB4ZqL1QGHK5dbm
-         NS4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707409287; x=1708014087;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nxb698xf8QkMydB4z0YB9c3r/9JegaMn6kB+mk5+8LA=;
-        b=hL9ykl2NZUTTGaqcIeB6ahUjxX03u8Jvjv5B1EIgHz3aDUtHsikuweoW3avXC6DNPC
-         8M7f0k/bUqpm+u/TybuK9cy5EsWWAJuWhwBOoB8IVStRoB0fIa0eKNgxwEjXncNQ42cu
-         p6Tv2oF2MzhZW44x56Xtsu1hgc8conJDKSOu+tWOUBN3/rk91ysbVVcHYvQd/mXHGxGM
-         Zvs4Vj/bshvbu2IAohRAOmsagfF6HeU5X5rn6q7jUj5Tf1nY5P/6g+HmwMO6yWkHUuk3
-         3x83n0KuN8dUiUbDfCWrI086QgXvwAtQNyZNpmcxAsh7xov4V01onYrub+jngUuvO0hl
-         5PvA==
-X-Forwarded-Encrypted: i=1; AJvYcCVIWMEylh5uEC93oKreQIb3iWbfo9rHsmTiyeUIo4rE0i/nKg+5pK5Wg0WzORcf/3amFgFFWr7JRVpdpWVU1YycFaAZrZ4g3AKr7CLZ
-X-Gm-Message-State: AOJu0Yz9vnrIQDPqXszPoJnpMfuJ5MpBxpo2G9RuJj4zvElIXkBzK+Tx
-	GSv5LLseAm5fjiBR8ZnXznJXe3AK//Tdoh+VsKBjoLxdtT7j1RSnGBlBDL6k4t4=
-X-Google-Smtp-Source: AGHT+IE9GqRr3/H8i68cQfLtU2iGCsiCKO3R5gWttUZU/5XxgjUSyD0tIivpaca4ynGb4xceQrCnNg==
-X-Received: by 2002:adf:f70a:0:b0:33b:37fd:eafe with SMTP id r10-20020adff70a000000b0033b37fdeafemr6274601wrp.69.1707409286849;
-        Thu, 08 Feb 2024 08:21:26 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW9QSqiihNfbdq7cJ4HSCgq7fx+xjvtIvCIXg1uNCblGGv7Zg6YsinZ5dEMJMj69hMDubW2XrTIRaH6V7oYBE1TZC8bkhHTFZ934qZoXq6oi9iOrCffZd40IW3EcRm+L5xkK57a7Ppt7kZeBlt+Zygiq57SPJdM37Woe2JsiCVeeDVsUZ1PoCHzxHB8fV14T1Y4zjvsLIZZ+dOzFTPdbMFOEqKU0pavc/Lohx+YQypK/LXXMPXfJQzDyOHL7J89SG4dkdanalvgC5BKGvCY/X5vTD1FzWtH9OKWfwkSTGyU1+bYYNm/uPKfETlFW3FDYzcaJTOrhjWXBxAQUxJreX/KIouUaKXP3vlto6kFlc85D4BApqOxAF6y8nrkPNe3Z+CkorGdR1jj67GzDFZ6Oqq+YR7zLHyiwktg8qnrYK9ImbMJEysPJ4Z73rPDIQ6OfMHQU4azQjrWrYCgXQURS3A7kCr0TOuRJAQPZa0jg+zadEv4d0Er4MQzyY840BGFmVxND9EZ7KD5p8b6G8m5mncaAIxZBGl4+h7lils0U0aYEGw9pNJ0HSkEe78rwZNhMgOiH1uZoKT5FOqrBWYXOeVIEIIX2DqWcvhpGGb8H80inclkduhb+myMYQxfQdW3d/Z94mtwlK/CuyzG22kzc2dlxNwiQalosE+9p0E=
-Received: from gpeter-l.lan (host-92-21-139-67.as13285.net. [92.21.139.67])
-        by smtp.gmail.com with ESMTPSA id v18-20020adfe4d2000000b0033aedaea1b2sm3915846wrm.30.2024.02.08.08.21.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 08:21:26 -0800 (PST)
-From: Peter Griffin <peter.griffin@linaro.org>
-To: arnd@arndb.de,
-	krzysztof.kozlowski@linaro.org,
-	linux@roeck-us.net,
-	wim@linux-watchdog.org,
-	alim.akhtar@samsung.com,
-	jaewon02.kim@samsung.com,
-	semen.protsenko@linaro.org
-Cc: alexey.klimov@linaro.org,
-	kernel-team@android.com,
-	peter.griffin@linaro.org,
-	tudor.ambarus@linaro.org,
-	andre.draszik@linaro.org,
-	saravanak@google.com,
-	willmcvicker@google.com,
-	linux-fsd@tesla.com,
-	linux-watchdog@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org
-Subject: [PATCH v4 2/2] watchdog: s3c2410_wdt: use exynos_get_pmu_regmap_by_phandle() for PMU regs
-Date: Thu,  8 Feb 2024 16:17:00 +0000
-Message-ID: <20240208161700.268570-3-peter.griffin@linaro.org>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <20240208161700.268570-1-peter.griffin@linaro.org>
-References: <20240208161700.268570-1-peter.griffin@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9132C7CF29;
+	Thu,  8 Feb 2024 16:19:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.74.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707409171; cv=fail; b=K3tuL4vOLB/lNW6T72r9rr1dRcdJGFu/ERD+LdqV9QdmWgLObAVfOPU8g/Etc5pyQjprAuf7nPnLtJmpQcxVjwsWLeI3BJ2XJtNh0q6kPMLwI9/bd4UEWkZKHOCocbSzFNOWfwrRmmWPmMfCWfbqKIVcOPdLENFEIUGnZJyK09k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707409171; c=relaxed/simple;
+	bh=e9PHrKhQPVwvd0TopNoGkoexbfRVEegKIthPxtPzfrw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ZNSdekYExN1mWoc5qon9sKUpjyyic5oe/8eAjUpK8MA6e2ZiwC9O0waXjLPeZpXezz8XOUnbTqFT0PLtDqJEF86mmTt+xe/pdBU8JzLhJIX0mY5YA2WgrytBx07IDqRv7ew89VkasEdeK9jQszNeC3p7cnvTu03p2Bunu+SEGpE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.it; spf=pass smtp.mailfrom=outlook.it; arc=fail smtp.client-ip=40.92.74.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.it
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hWIGKba5AKv7YUa2HzmPEY5RIx1JK+Ni9lU3kKEehhCLmIjww4+FfucqIDFNwdc2az7MK/dUQFxPXU4oiEbT+w85uOgs1CT8pJ45uSmoR1QZi5Al8fauTD9X2d3S2LfH9dWiuiG1C5+wO4KfUo5meFItRFcCN9i7xUhbjS483TpO0e9c3uWb07uKib48ubBuXEcBkqP7pSMkiTyO8Z2mceev8x742c30jl+XlvHtT21SvL3RJ0eXHNIXG6i+YfKYZiI0kHakHcAwfDTVaCzXyL8vGTGHh2Tu4gm9jPD4dIcx/e2mbrBS+AuofZu6OBhgankhl8bntZrSpUerZOAPbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EApYE4rxTpCl0B1TMZghyqcl4NNAU2KedmOOYvur6uE=;
+ b=f63RSk2Ye0DELc1YyQbRLNUFVo/lYA/+DYEDT6x/tOnttjlkNcu9b28pnbuRKIkTNhYPJIan8ZppAsorg2/nW7Qg4Y4uopEpNqRjCvUkpDhqmBzej6DDZKLqjDWj61X0VUyo9mh7zmepiCMRPMQF+LAuK2LXn3M9qKmAHn2j4CSi+11vuUXeQwIYiaARHDmAnV3VHm6IEdG5E6Zg+HeZ41txtbWFzStp1nSBxeKm0eD3pK6+eWh4h2mUlk4Q00MFuoLyGMSdgcePDqp4hqko959+P3UW7/dbU2GigNgtpZ+tUDlOShHiOWwxDF3yZst8Ho9uVMcrsR3PglZwvbGv2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from AS1PR03MB8189.eurprd03.prod.outlook.com (2603:10a6:20b:47d::10)
+ by PAXPR03MB7611.eurprd03.prod.outlook.com (2603:10a6:102:205::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.39; Thu, 8 Feb
+ 2024 16:19:27 +0000
+Received: from AS1PR03MB8189.eurprd03.prod.outlook.com
+ ([fe80::ffb3:3ff8:6ea9:52b5]) by AS1PR03MB8189.eurprd03.prod.outlook.com
+ ([fe80::ffb3:3ff8:6ea9:52b5%5]) with mapi id 15.20.7249.032; Thu, 8 Feb 2024
+ 16:19:27 +0000
+Message-ID:
+ <AS1PR03MB81891A5F3C8B1A7542746CB582442@AS1PR03MB8189.eurprd03.prod.outlook.com>
+Date: Thu, 8 Feb 2024 17:19:24 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net: sfp: add quirk for OEM DFP-34X-2C2 GPON ONU
+ SFP
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <AS1PR03MB8189B99C360FB403B8A0DD6882422@AS1PR03MB8189.eurprd03.prod.outlook.com>
+ <Zb0t+zKHx+0wTXH5@shell.armlinux.org.uk>
+ <AS1PR03MB8189D48114A559B080AF5BEA82422@AS1PR03MB8189.eurprd03.prod.outlook.com>
+ <Zb1+p6FiJwUF53xc@shell.armlinux.org.uk>
+ <f8cf41f2-4a90-4ef5-b214-906319bd82d4@outlook.it>
+ <AS1PR03MB818911164FB76698446CFEDC82472@AS1PR03MB8189.eurprd03.prod.outlook.com>
+ <ZcI+7grKa33oLtwc@shell.armlinux.org.uk>
+ <AS1PR03MB818926990092981B0E09E60B82442@AS1PR03MB8189.eurprd03.prod.outlook.com>
+ <ZcSZtLSWd09xqc10@shell.armlinux.org.uk>
+ <AS1PR03MB8189A24B92030AA8F011C7B582442@AS1PR03MB8189.eurprd03.prod.outlook.com>
+ <ZcTzMgxmA6WOoiA/@shell.armlinux.org.uk>
+Content-Language: it
+From: Sergio Palumbo <palumbo.ser@outlook.it>
+In-Reply-To: <ZcTzMgxmA6WOoiA/@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN: [SKJ2drmKx7zqFGdGXA8huUNbgN7eAgZ9EMRNtvvW93Wv05jlhIaG4eeRsHE+Ij13]
+X-ClientProxiedBy: MI1P293CA0028.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:3::20) To AS1PR03MB8189.eurprd03.prod.outlook.com
+ (2603:10a6:20b:47d::10)
+X-Microsoft-Original-Message-ID:
+ <ac202d64-1932-404d-8292-17d7d23cd249@outlook.it>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS1PR03MB8189:EE_|PAXPR03MB7611:EE_
+X-MS-Office365-Filtering-Correlation-Id: be3237a6-e3fd-4799-9170-08dc28c1b874
+X-MS-Exchange-SLBlob-MailProps:
+	AlkLxVwsndkxOEFX7LxSQcUfT4PsOD3o9hIqqxyxUDd7UIP9kMolFpukKoQ5aCEyhCTZk90Kz9k0Z0p4QfgWs1zuufM0zOW3l5C5KrCKAmkaavQskyiHrLs3X7Ra0kEZfuIf68taI9O1qwbdtuKMXM4gDCyXMW1WpUsbNKkAXWWcE/j+443SEnbi+0Xh/PzRQSmjFFf/uykCtGuWYwqJZ+gGKqCoG7j2N1D55Ca3Gqq/Ed3FOKuAaEW4JuV7InbswZkygPJ1fcW33HOs5aIEE30cGg09glhqIhwe2q728VJHF0lHhl6kEF21g8gHPRAVNQ72spNkJ8zfcXx0rg7Y3YDYJ7LSD03HKAdTyNLJ25t8a+MBdzCfjQiufSbq2UCHBzYbgbRLwcmDZBgoRzfuwLRNkghE08/GA0BGsN/WJwOunghaR6q80fopxaQCEfKiGdAQon7xZJ0ejNwqXvnCHhsZPJySyAlqev+RUJIhSDpTL+MoUTaQyGMpIf6DdTDlHHfSB4853esOjmS0RvAOnG9TSnyz/nrSIjEGRJKNe1bEesXDAotcO6OYV+crWns+S3oADjJK7uqwJ87AjAQcF8Mv759XGgyYAKu8yJM09NRUfi+qk9cTPj3KRiYW53udEyiWO1m44fO+n/qZxfIbYMB2lz5vWSAwJ0ZnSRUqa1eys0sYakJn95FcuW7c2C9TJS0ikjP4jc8UICI4bsFacTt7eW0Pa/ksmFp+uK7x8BR9ZBgfNkNArS8JwEC2Iuq1+H/jm0MGsTr0x2VW5ZfNRAK0RzlDjqnA
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	VHf3cdtQyJLIOYuNbDL9dDnOuUW0dHySFpFXRiK/XfUqwm84svN8sn/bMrhUraoMibFcs4GmPKVFXnf8R9LJuO+x0deq6keW4S1RoOppqkN3Q6DNEpwaZt04/C3hapCeVbXxEnSmCJwlP3IuSFXcA0LZ3wuL2r3mAFbn+q7NqoIEJZS9Nh2vE7tsKp6M0vXvHJMP9zn4dTyGhi5JZbmP5g7fZ62vnNVUhEdwJ8Hxe13VZHeOnwb7NnW9USmrlQnqsQNK3pWseTch6g00N5u9onOGAX7d4DlLpaMC9s94vglomtHWw+1uF8qIczf9CQHwErknnXT3NzAdE0AeSFC+zvDxpH2Gg4VA0BSUgXkk8w+4SGq64m5xPEIMKSmkY9siTHwYvSmsuOAjHl3whvIaHwlhOtzzgK82LPq1HO0RWyOHNTfWz9KJ6Ven9oiILYlckH78vBVX/NWNzx0jbKXAvuh5/bSCKZntAIGe139/Y9+9rXidIAfdnCIqTKPEOwdxL8OV+5fE6PqKsGnqsESzw8s3hXis8h9MVUp8/m9tP3ebu4Fgn0j4fdr8nIUQJveY
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?anhmZlJ3bmdlZjIyZzFvNGRtakU3VlVKeDQzWWV5WTA3cVhkWDdXbFRNTkZq?=
+ =?utf-8?B?S1h4MjZ1SytmKzRPK1pCQlRRMGRoN3ZaYnJyci9Tczd5bmk4TnJRYlRZWnpQ?=
+ =?utf-8?B?dlBHM3dJcUpNU0d4NmhCSFJubWRERWpoU0hqR3FEMW05SW83VkczUUFlMzVw?=
+ =?utf-8?B?dEMzQnRoMUxUN3VCT3ZlbGUvYUY5a1NaRlNMT2tydTRaZmVrZVFzVGMrU2lR?=
+ =?utf-8?B?cFRZUnR3aHN5dUtPcnhWWTIrUVlzWk5sQzJqL0srb2lvbWxlKzRDRnh2TmRC?=
+ =?utf-8?B?YkJtL3ovQ1hFQ0tveFRiVXQvbjgxTlp6YnJodTBHek4yVmtXYzA4N2x5bmR3?=
+ =?utf-8?B?c2FOUmJTbXpTMHowMWp4c29XVDRUUXJKQXdkRmE1RVFQQmErM3ZnOG1lZTJr?=
+ =?utf-8?B?YWNKWVEzWmxFT2tINXdiZzBiRUlrTmhTdHQyNmdFMjBnTEJtVzVXem13MlI3?=
+ =?utf-8?B?K1dmVWdlOGc5WW9sNElLU25IOGhlUnhUWW9PWGdRVFV3Q3ZjS2pkOTJzNEdu?=
+ =?utf-8?B?OXFiRVo5QlpocUhOMVVTQUNWZHVMck8xbW9XZEkvUHlqTE9LMlBGaGFtZWdl?=
+ =?utf-8?B?TkFtUWZ0R1RkL1lOMXdYbU0xOTFzZUhoY2VOWlp1OHo3RG1DSGwxOGJiQW92?=
+ =?utf-8?B?RG4zTkJXNzdSMUVKN2V5aVkweHd5T1dTVnlFTUxUanJuamRTZWppK2wrMmpz?=
+ =?utf-8?B?NUpRQUEzMVQ5K05jQzJnTmtTNVBIalpKRGc0TzZhdGc1K2RDWTREMWVua1lW?=
+ =?utf-8?B?K1dBdG5jQ3ZLd2VHRGwvVEg2c1kzM0RETG1tUEpyVlQ5cExpV0szMmtBaU5O?=
+ =?utf-8?B?RjZwSkFHMC9HbGNXVHRuZ1R3VC80dEpCWXZlY2tmZWNWam5ycE5qSSsveWVw?=
+ =?utf-8?B?MkVIVHp6eXJrL25JcWpOQWIrTlo4NzNyTFVVYlVjeStZd1FhallObTMvalhY?=
+ =?utf-8?B?RmVKRTZET3RNWExlNnp5VEdtcnNuTjVUVTFpQm1ZMU5WL2NXakpzWHBxRE9h?=
+ =?utf-8?B?Umo2endoOFEwODlBRUwwYVVFbXJvZDYxTnlvUzBwUzVpK1lFN295Mlo1dE1a?=
+ =?utf-8?B?SXNWTkp2ZjFXdmsrNXI1NXNtNEZRaFZDeU9neEl3cXZHWE9Dc0t4dDd4RUJw?=
+ =?utf-8?B?UDFXYk5HeVNPU3R4Y2RERFU4bjFDUWNRSFZTSmhUN2JFOEVEYlF3L3NDeWlI?=
+ =?utf-8?B?WGtEUWhuekFMMEh6UDFKUkRpRHVhZHRwWnMybTRjeDExMk15ZEtGbFZNSnl6?=
+ =?utf-8?B?MFMrWG05Qjh5b0diOWdDYnA0T2xMT1ZUTnB3MVNVNllWOE5uKzZ2NityWVFW?=
+ =?utf-8?B?SE9yODY4aTdCUmIycFZ5cWZiMzBNeEVXRDZuTWFPK2xBZEtLVkp0NjdEdFlO?=
+ =?utf-8?B?dlRPdm5EdnVnbGRXWVlIWHlhNFBNSFE0M2pQOGU0cW8xYzg4aVRUSlAyOWNU?=
+ =?utf-8?B?OWtTUCtIcldvVU43c0sxUEdrMW15UHZ0a0VrOURIeDExd3hEQ2dyL2tZQlpp?=
+ =?utf-8?B?UFM4dHEwUm53cllzc1BwSGtTYlJnYnp5N0pPWDJGZWo5eEdvMWtWamdzZHpR?=
+ =?utf-8?B?WTRsbmFDZG9Tb25LeVpsakVxSm0wc2UyTXJYOFFoMlJaazkrVWNyVlVKTFBp?=
+ =?utf-8?B?TU5hS1J5aDQxSldWYWlrdjlOYm9zbXIvZmNqQmZmanNzOXRhblNQak5FVjFG?=
+ =?utf-8?B?ajVQcVd0NXh4bGNXcmdxNmdkQ1dJTm5WamlJRkhQUm9HaWV6cmJUWmtzS29m?=
+ =?utf-8?Q?X48XU/waAXuEA/E4C8=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-76d7b.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: be3237a6-e3fd-4799-9170-08dc28c1b874
+X-MS-Exchange-CrossTenant-AuthSource: AS1PR03MB8189.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2024 16:19:27.0911
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR03MB7611
 
-Obtain the PMU regmap using the new API added to exynos-pmu driver rather
-than syscon_regmap_lookup_by_phandle(). As this driver no longer depends
-on mfd syscon remove that header and Kconfig dependency.
+Dear Russell,
+I understand your point, but I think ODI DFP-34X-2C2 situation is quite 
+similar to:
+FS GPON-INU-34-20BI
+HUAWEI MA5671A
+which are incorrectly reporting the speed in their EEPROM
+These modules are working at both 1000-X and 2500-X but in order to work 
+at 2500-X they need the quirk.
+Same as ODI DFP-34X-2C2
+I'm also quite sure that those modules are used and working in openwrt 
+being GPON modules.
+Was this test also done before accepting the patch/quirk for those modules?
+Thanks for your help and regards
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
----
- drivers/watchdog/Kconfig       | 1 -
- drivers/watchdog/s3c2410_wdt.c | 8 ++++----
- 2 files changed, 4 insertions(+), 5 deletions(-)
+Sergio Palumbo
 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index 7d22051b15a2..d78fe7137799 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -512,7 +512,6 @@ config S3C2410_WATCHDOG
- 	tristate "S3C6410/S5Pv210/Exynos Watchdog"
- 	depends on ARCH_S3C64XX || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
- 	select WATCHDOG_CORE
--	select MFD_SYSCON if ARCH_EXYNOS
- 	help
- 	  Watchdog timer block in the Samsung S3C64xx, S5Pv210 and Exynos
- 	  SoCs. This will reboot the system when the timer expires with
-diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-index 349d30462c8c..686cf544d0ae 100644
---- a/drivers/watchdog/s3c2410_wdt.c
-+++ b/drivers/watchdog/s3c2410_wdt.c
-@@ -24,9 +24,9 @@
- #include <linux/slab.h>
- #include <linux/err.h>
- #include <linux/of.h>
--#include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
- #include <linux/delay.h>
-+#include <linux/soc/samsung/exynos-pmu.h>
- 
- #define S3C2410_WTCON		0x00
- #define S3C2410_WTDAT		0x04
-@@ -699,11 +699,11 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	if (wdt->drv_data->quirks & QUIRKS_HAVE_PMUREG) {
--		wdt->pmureg = syscon_regmap_lookup_by_phandle(dev->of_node,
--						"samsung,syscon-phandle");
-+		wdt->pmureg = exynos_get_pmu_regmap_by_phandle(dev->of_node,
-+						 "samsung,syscon-phandle");
- 		if (IS_ERR(wdt->pmureg))
- 			return dev_err_probe(dev, PTR_ERR(wdt->pmureg),
--					     "syscon regmap lookup failed.\n");
-+					     "PMU regmap lookup failed.\n");
- 	}
- 
- 	wdt_irq = platform_get_irq(pdev, 0);
--- 
-2.43.0.594.gd9cf4e227d-goog
+
+
+
+Il 08/02/2024 16:28, Russell King (Oracle) ha scritto:
+> On Thu, Feb 08, 2024 at 03:00:08PM +0100, Sergio Palumbo wrote:
+>> Dear Russel,
+>> this is the first time I do such a test and kindly ask you to help me in
+>> preparing it.
+>> In my openwrt environment I have found phylink.c file in two different
+>> directories:
+>> /build_dir/toolchain-aarch64_cortex-a53__gcc-112.30_musl/linux-5.15.137/drivers/net/phy
+>> /build_dir/toolchain-aarch64_cortex-a53__gcc-112.30_musllinux-mediatek_filogic/linux-5.15.137/drivers/net/phy
+> Oh, openwrt. That means I need to re-understand their build system to
+> advise how to do it. I only know the mainline kernel.
+>
+>> do I have to change both adding a line:
+>> #define DEBUG
+>>
+>> before the first #define line:
+>> #define SUPPORTED_interfaces \
+> Mainline has never had "SUPPORTED_interfaces" in phylink.c, so I'm
+> wondeirng what that's about. I'm also wondering what other changes
+> there are to it. I'm also wondering whether the behaviour you're
+> seeing is somehow special to openwrt. Too many things to wonder about
+> and effectively means there's too much that I don't know.
+>
+> Therefore, I don't think I can help you, and I don't think I can
+> possibly accept your proposal for this quirk. For mainline, as far
+> as I'm aware, it will cause these modules to regress when they are
+> in the manufacturer default state when used with a host that supports
+> both 1000base-X and 2500base-X.
+>
 
 
