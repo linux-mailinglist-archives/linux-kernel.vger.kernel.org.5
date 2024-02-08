@@ -1,122 +1,105 @@
-Return-Path: <linux-kernel+bounces-57434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C25D84D908
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 04:31:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15D6584D90C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 04:42:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B53A11F23E3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 03:31:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42DCB1C22769
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 03:42:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F3E1DDD5;
-	Thu,  8 Feb 2024 03:29:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4613200AB;
+	Thu,  8 Feb 2024 03:42:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="JgT7ETV0"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="EzLCrRSN"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD0720300
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 03:29:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC121EB36;
+	Thu,  8 Feb 2024 03:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707362958; cv=none; b=WOzctoOmBLPACZKsdhNMRKu93wm+Xn5n/xybih5q0IPx/igHceegNU6bQ/vNhVTD8MCLQioFw7133mjP6qbu5xhFZy43ixT5qJ3DIxdYc6ANg9jJsUMI0SzIbv7b33mw6t7XAyvkMO79k38QV7bu6YAjI8S85Oen+W1SdY/mlyw=
+	t=1707363746; cv=none; b=KMApJzeLL5Hz9ALd/U8NoiVyG5OKVDo+2CcuM8nTfxsfvoKvTzphyt7VfED5lyV9M9Qwoa7zMFYd0ob/XmDfeu/RI5ZOxGte31i1Ko+VzxrMp1RQHbKK2CKihTA9PnF/8se30rhEI9bb7Ol5U1tLfJQArxbJRsE7xcB8aVVmRx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707362958; c=relaxed/simple;
-	bh=+RMz7BchTGB3NbO7kStTe5FPVRHU4BfvDpQ58MUHTxQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ub+MhN0QbWbLpV7i7iYQdZXBkbJQgkSkRxjM7Yy5zah68f1+7H0PYXvPfhIC+0Wa/NO+sWHMlY9bDyvCSoXwW3ZKZ7IJijTvWHPFFUUMUrR3oPErrhEFSr2LAXDsvUxIu1bZjTyu0U8+g1pdBYoW8tCPv5uO607cYgSOU7NRtH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=JgT7ETV0; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55fc7f63639so1620638a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 19:29:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1707362953; x=1707967753; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Q97AdgGADpUKr5sEUfHXMUPIzat7eITV2ZUFt3wg+fo=;
-        b=JgT7ETV0gW3FVoOvZeYb2JZhL1plMORPJ/l5ZoHhwmdE3KybF/ZszBM1k+VDW8fIqn
-         SLMUSfNb0PjNjAx8MizD9gRufrxyxQMdI/Ye27qh8rsgkud30MXxpLN9E8a0pM2gvlLz
-         DW72jil7n6DUiE8I2pKWoXIRv9yZ/oRuymN9b5a7PqdKllMYN41r9y0pUwxOSGDaZiOh
-         d78ToiffDsS+gqW5I5v7+h0p91/Fy+enXaFkjjkmPGtbIHGITFBghJ8JrBUO3rWnWf//
-         NSHY0fZaaSA59b9FZ232B1uZhxVdfMykMLvRAN5dayRKdNKOuuEEh/Vq365/HcmsDnyu
-         XWdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707362953; x=1707967753;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q97AdgGADpUKr5sEUfHXMUPIzat7eITV2ZUFt3wg+fo=;
-        b=ZnP3uJVI+okDvxhy7mQ5s2KyRsYkrDWTGa+PngdDQqjd1+bCVKTAz8VUDoZ2ly5Y+S
-         AiqX9YDbCHlphWZaGPJ1z4YJezHnaph97wPXivdehusyiZ/Kbgr+aKlVzrSjDzenvdfM
-         yMmVYo4llwCAySEJM/UYZfQ55y9d/GReK8XNhKo3qyT383SMzUakvrLQg4YZ6fdDY/i7
-         0RFPCuZGC4d2P7yTgCAc0o4wtzwUHwvWhZoaKhfpH2DkC0/WM87G72IVgVCEbC3UA3we
-         nHjWuim/K0r6gsYD+O6UWB8RjZTxnw1CEMHXMtys/nMpLzcw77DWxaZ4PAB2PDN3lhKY
-         HTMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWbCazPeFqUVbA1KT1mUE97HqS1KfwskexxEpE85x8bnq+rzrYvwTgbddvnlT/4+OIgjxORpaK4FMcBpdWMYulVbexTrtVyCmPiKZ2v
-X-Gm-Message-State: AOJu0Yzl2XXOT89BXgoMJ+ss/jmVy4650CUUvF0Q+41/OBREyi1O95pk
-	g3yKLIYdN8nNm0nVoNGqY5G2cM6CkY4WOMkrDdMluPjBInGOmD//Rhy+PoH1wTw=
-X-Google-Smtp-Source: AGHT+IGYzvXSLmylemDM1WdchwzVSHq5qTZWVDllnE8fJELaURELtDZhsVd/KF0ZXzPIft+h+B+bDQ==
-X-Received: by 2002:a17:906:3086:b0:a38:15d8:9385 with SMTP id 6-20020a170906308600b00a3815d89385mr5226208ejv.52.1707362953314;
-        Wed, 07 Feb 2024 19:29:13 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXyZKOXd+GYLf6roADIeGg3HGZIS2V2hWuBBbHKXWYiv9TArrHxBPKciwDv3ItTYyCElznAZgBPtUthdhyEnpAwEoq9fo7A4No34CyUT/a00MZ2xTvpNCGWjLy3GNppsP9bUE7TklBCNHVPr3+Q3SzzARLpGiEpHh47YMDCgkSG0ckTyV5EL+C5qIvT3LwQiKcLftsafA==
-Received: from localhost ([2a02:8071:6401:180:f8f5:527f:9670:eba8])
-        by smtp.gmail.com with ESMTPSA id op3-20020a170906bce300b00a37669280d1sm1429879ejb.141.2024.02.07.19.29.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 19:29:12 -0800 (PST)
-Date: Thu, 8 Feb 2024 04:29:08 +0100
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Zhongkun He <hezhongkun.hzk@bytedance.com>
-Cc: Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	Vitaly Wool <vitaly.wool@konsulko.com>
-Subject: Re: [External] Re: [PATCH] mm/z3fold: remove unneeded spinlock
-Message-ID: <20240208032908.GB185687@cmpxchg.org>
-References: <20240204125404.2112384-1-hezhongkun.hzk@bytedance.com>
- <Zb_bhO8Z_d7VUCdJ@casper.infradead.org>
- <CACSyD1MEM+KnNMimmbdSFXOsok9S=vN=DxzS9x90_6+pt5qjFA@mail.gmail.com>
+	s=arc-20240116; t=1707363746; c=relaxed/simple;
+	bh=qrdKBQDUnkGSa/+zMEimSjyGnwY5+Se+w3OhghHx4NM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=B+EmI2AREWZEePbhd5L0ToR1fAP1nhhE8UMu/IHd3mnuJuFQgl0VhoutDa073jFYTAj1N2b4fNCpi+KsHHwfpci2aik9HAObx6j1AGzLf6a6n23gNjXKVoGBp1NTPtu4lU83ztzlyNDDnULakXvh42ijL7LnZyw2oM6zOCOlx04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=EzLCrRSN; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707363741;
+	bh=nEzGCMQ6ri3v3t2uvyfy5c7ulw8BQ57MVRlDjVRxidQ=;
+	h=Date:From:To:Cc:Subject:From;
+	b=EzLCrRSNx+UEtrMsm+N8u6sZlTbk26L1Rc3ORcamylLb3WA0lK1KeqOmCH4jlbP3V
+	 lCmzO3FmJxVqBl9lXs/19JjUCDa/WE4lViio4bMmEof4ojRgZbPT9chp1tk+zMZDA0
+	 mCEzsF/RLdyZgBx81C7w5+v9nTTacfbGIw33nED1yuCfJJx6CTtkPOnbLkyDCVVdER
+	 aeP7kndW8bZMN8dGjZNlufJp99JYEMTVaHR2n1DGlWZChsErfr+/mUs4x50TjrAfYP
+	 xoH1s3g1Yod9ZPhUj/3U0eim5g9zBUomW6FtcHWSYYybeALYP51ChcX3vMWtCMn037
+	 osGV5Edq7HsgA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TVjV442gMz4wbk;
+	Thu,  8 Feb 2024 14:42:20 +1100 (AEDT)
+Date: Thu, 8 Feb 2024 14:42:18 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Alasdair G Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>
+Cc: "J. corwin Coburn" <corwin@hurlbutnet.net>, Matthew Sakai
+ <msakai@redhat.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the device-mapper tree
+Message-ID: <20240208144218.09346f4d@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACSyD1MEM+KnNMimmbdSFXOsok9S=vN=DxzS9x90_6+pt5qjFA@mail.gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/7P863dA3ykIq0WXDxyOaWuI";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Mon, Feb 05, 2024 at 09:08:05AM +0800, Zhongkun He wrote:
-> On Mon, Feb 5, 2024 at 2:46 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Sun, Feb 04, 2024 at 08:54:04PM +0800, Zhongkun He wrote:
-> > > There is no need to use spinlock in this section, so
-> > > remove it.
-> >
-> > I don't know this code at all, but the idiom is (relatively) common.
-> > It waits until anybody _currently_ holding the lock has released it.
-> >
-> > That would, eg, make it safe to free the 'pool' memory.
-> >
-> > > -     spin_lock(&pool->lock);
-> > > -     spin_unlock(&pool->lock);
-> >
-> 
-> no,  please see the commit 'e774a7bc7f0adb'.
-> 
->         spin_lock(&pool->lock);
-> -       if (!list_empty(&page->lru))
-> -               list_del_init(&page->lru);
->         spin_unlock(&pool->lock);
-> 
-> The original purpose of this lock was to protect  page->lru,
-> which was removed now, so the spinlock is unnecessary.
+--Sig_/7P863dA3ykIq0WXDxyOaWuI
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-But pool->lock protects other stuff too? This doesn't rule out that
-there is some other ordering dependency on cycling the lock before
-freeing the entry. The person who would know best is the maintainer of
-this code, Vitaly. Let's CC him.
+Hi all,
+
+After merging the device-mapper tree, today's linux-next build (htmldocs)
+produced this warning:
+
+Documentation/admin-guide/device-mapper/vdo.rst: WARNING: document isn't in=
+cluded in any toctree
+Documentation/admin-guide/device-mapper/vdo-design.rst: WARNING: document i=
+sn't included in any toctree
+
+Introduced by commit
+
+  7903d6d10204 ("dm: add documentation for dm-vdo target")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/7P863dA3ykIq0WXDxyOaWuI
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXETZoACgkQAVBC80lX
+0Gw+Vgf/ZZCXO+g6B75gBiRBLvUNp5xJtvxtUaniJ8yip6HcfIYF4CT32GGxJJIO
+/d32/0YSArHA17bqc362T/fVYZGvnTBK5m5XEPOisOQL6od7oJbmy/NBHLgh5qVg
+VQffoAdNIWSovz+FsHkUArviHikkmqx1KdAT7/1hisOWNdN4snK1lkxJWGMJwU+L
+kz+KfnsSHrDhYVPExZKai/CE4WCyurSVjVblBANnlu4RLOosXkfZUPPE/2hx4gLv
+4E8Uvpn8rxWGTQHlBy9ybKod7hzoT9On2tw8IWvzcOsNYkgfUlnBIaSLjrYts8C7
+QRBh3DQ1nlXcXqGbvGLsdKhu+UByog==
+=NM+D
+-----END PGP SIGNATURE-----
+
+--Sig_/7P863dA3ykIq0WXDxyOaWuI--
 
