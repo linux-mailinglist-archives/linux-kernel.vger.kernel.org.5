@@ -1,90 +1,90 @@
-Return-Path: <linux-kernel+bounces-58879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41BF784EE04
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 00:45:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFAB284EE06
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 00:45:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6713E1C25A4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 23:45:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 744CF1F24929
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 23:45:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA4851C3B;
-	Thu,  8 Feb 2024 23:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D49551C56;
+	Thu,  8 Feb 2024 23:45:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZwBUTcSH";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="P94itunw";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZwBUTcSH";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="P94itunw"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="hY9JCYvA";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="p5HZ5uBZ";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="hY9JCYvA";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="p5HZ5uBZ"
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1980750A6D
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 23:45:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683EB5101E
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 23:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707435918; cv=none; b=S6MVCsvxanm5VPbdWYQD8ViuxcSlNmpuQrLZQSxOeIBpU7tiYMNcQaERy7VEodSrPtJTrHjmceKOn16+Hu+MW35Px6Oj5f5zFj/YXkMjb7/7cub+5FS0b0irrVV+W4VncTGQUSdSCc4+vLXZv0tL0fd76e2TNwGkJ5d5feHU0bk=
+	t=1707435919; cv=none; b=TK5JoUjnSZ1zjdxo+HIfyQl3wkDCcUB5NJWXi8a8mpBCiBR8XTbXwT31HUt9GwsZFORFlvrvXb0x3HeuJH5HiCq4IeXM1mtAJABFZzuN1fLjVyT2rg0yUvI1/hL0M7oOZkYLYIBucBhaxHSSp/BvO82V/lofJ8OWRXMOREMnS0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707435918; c=relaxed/simple;
-	bh=SZfyzV7sF3kLKFjE9KI/KE075YQWak/Z7IHyRZhnK50=;
+	s=arc-20240116; t=1707435919; c=relaxed/simple;
+	bh=vD+uDbcZd1nUQSYd7TnT05L2X2yMg5F/ZdZDImKbnS0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qYk7u5NECDMcAzJDhyzZvSyC6p67BSHvmO6/SgIbEuJ12TIZqMe65NnsHRwAWlBltDRiMu6Qir44bc7rgwMZC0THrnZN7r8MpOJU3jYY3PpWhhzzbI5QpIz0A65BZJHWdmCdRtVqB3fFVR80OrCqULQ6lirG2rlah2CnwL0ZkhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZwBUTcSH; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=P94itunw; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZwBUTcSH; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=P94itunw; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=h7NUL4oEwN7ssndHREhCFuQnUcryDuWIPfmn+HlG83NBo62fiSQ/1bvG6bMMnT+0rtuxpbryrP26ayg56o9laPEMeZ2j0qU1NQwL3DN6wqUE7qnfXYDShqqXzuWqQdSk7CcwYuZCocn3BwpsMPQ5oxFbGDixI9UNXWYtwy+MJ6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=hY9JCYvA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=p5HZ5uBZ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=hY9JCYvA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=p5HZ5uBZ; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0223922315;
-	Thu,  8 Feb 2024 23:45:14 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A783422317;
+	Thu,  8 Feb 2024 23:45:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707435914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1707435915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=SOtnmJyjTMio6JnPiONHFMtYXU8AmDD2FzaIP6UxlE0=;
-	b=ZwBUTcSH+yLhiMahPKyOuS6osd4fSVbDvSv0ya9UGW8LetG88/d1KWoq3atCJvOX06Hwzy
-	xBwNVvWy/AX19x6X2g6vJmpbvfXHPxyd/hbLKimF1aN1lbKPslwvtSlUR1c71B5sF9gdOZ
-	4zAFuPrZgEa8zf1XjkjfiZ8IofdJMc4=
+	bh=1RIuerYMWRH7Xo5xR9Dr7KugCllJ88k2PizonkIPXIU=;
+	b=hY9JCYvAncAGepUu81hefJSrPIqWxz/6UK81x78gggd7DefAzQkSaFtX/UeMHzsUrsprWg
+	UnkgoUNyQrDRszamEUWOuLhaRRJBjVfAf5YiWMHqvwRf62A7ru9jv/bv/vvDNy+oUMNH+u
+	QAu0UK+6FYmPjn6QLgfthVizcCiWcww=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707435914;
+	s=susede2_ed25519; t=1707435915;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=SOtnmJyjTMio6JnPiONHFMtYXU8AmDD2FzaIP6UxlE0=;
-	b=P94itunwwRNbkd3dZY3MmvmKcwBH9vGwln8BkDZ7EFifY/wZ5ri9E0MFoYpFJKTDwXvZyN
-	KTNeSOR1XY3gdoCA==
+	bh=1RIuerYMWRH7Xo5xR9Dr7KugCllJ88k2PizonkIPXIU=;
+	b=p5HZ5uBZO2fi/Vl014Q4Qrb0lax8dsjC8lQ2L5wn/MAUf37MHid3+N7LFaSZ6Sd95BS7TW
+	b1gGtfcxLmlURUDQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707435914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1707435915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=SOtnmJyjTMio6JnPiONHFMtYXU8AmDD2FzaIP6UxlE0=;
-	b=ZwBUTcSH+yLhiMahPKyOuS6osd4fSVbDvSv0ya9UGW8LetG88/d1KWoq3atCJvOX06Hwzy
-	xBwNVvWy/AX19x6X2g6vJmpbvfXHPxyd/hbLKimF1aN1lbKPslwvtSlUR1c71B5sF9gdOZ
-	4zAFuPrZgEa8zf1XjkjfiZ8IofdJMc4=
+	bh=1RIuerYMWRH7Xo5xR9Dr7KugCllJ88k2PizonkIPXIU=;
+	b=hY9JCYvAncAGepUu81hefJSrPIqWxz/6UK81x78gggd7DefAzQkSaFtX/UeMHzsUrsprWg
+	UnkgoUNyQrDRszamEUWOuLhaRRJBjVfAf5YiWMHqvwRf62A7ru9jv/bv/vvDNy+oUMNH+u
+	QAu0UK+6FYmPjn6QLgfthVizcCiWcww=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707435914;
+	s=susede2_ed25519; t=1707435915;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=SOtnmJyjTMio6JnPiONHFMtYXU8AmDD2FzaIP6UxlE0=;
-	b=P94itunwwRNbkd3dZY3MmvmKcwBH9vGwln8BkDZ7EFifY/wZ5ri9E0MFoYpFJKTDwXvZyN
-	KTNeSOR1XY3gdoCA==
+	bh=1RIuerYMWRH7Xo5xR9Dr7KugCllJ88k2PizonkIPXIU=;
+	b=p5HZ5uBZO2fi/Vl014Q4Qrb0lax8dsjC8lQ2L5wn/MAUf37MHid3+N7LFaSZ6Sd95BS7TW
+	b1gGtfcxLmlURUDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6076D13984;
-	Thu,  8 Feb 2024 23:45:13 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1BB6413984;
+	Thu,  8 Feb 2024 23:45:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ODavFIlnxWWUfAAAD6G6ig
-	(envelope-from <osalvador@suse.de>); Thu, 08 Feb 2024 23:45:13 +0000
+	id WI3VA4tnxWWUfAAAD6G6ig
+	(envelope-from <osalvador@suse.de>); Thu, 08 Feb 2024 23:45:15 +0000
 From: Oscar Salvador <osalvador@suse.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-kernel@vger.kernel.org,
@@ -95,9 +95,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Andrey Konovalov <andreyknvl@gmail.com>,
 	Alexander Potapenko <glider@google.com>,
 	Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v7 2/4] mm,page_owner: Implement the tracking of the stacks count
-Date: Fri,  9 Feb 2024 00:45:37 +0100
-Message-ID: <20240208234539.19113-3-osalvador@suse.de>
+Subject: [PATCH v7 3/4] mm,page_owner: Display all stacks and their count
+Date: Fri,  9 Feb 2024 00:45:38 +0100
+Message-ID: <20240208234539.19113-4-osalvador@suse.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240208234539.19113-1-osalvador@suse.de>
 References: <20240208234539.19113-1-osalvador@suse.de>
@@ -109,13 +109,10 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ZwBUTcSH;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=P94itunw
-X-Spamd-Result: default: False [1.69 / 50.00];
+	none
+X-Spamd-Result: default: False [1.90 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
 	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
@@ -125,150 +122,250 @@ X-Spamd-Result: default: False [1.69 / 50.00];
 	 BROKEN_CONTENT_TYPE(1.50)[];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
 	 RCPT_COUNT_SEVEN(0.00)[9];
 	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,suse.cz,google.com,gmail.com,suse.de];
 	 RCVD_TLS_ALL(0.00)[];
 	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.69
-X-Rspamd-Queue-Id: 0223922315
 X-Spam-Level: *
+X-Spam-Score: 1.90
 X-Spam-Flag: NO
-X-Spamd-Bar: +
 
-page_owner needs to increment a stack_record refcount when a new allocation
-occurs, and decrement it on a free operation.
-In order to do that, we need to have a way to get a stack_record from a
-handle.
-Implement stack_depot_get_stack() which just does that, and make it public
-so page_owner can use it.
+This patch adds a new file called 'page_owner_stacks', which
+will show all stacks that were added by page_owner followed by
+their counting, giving us a clear overview of stack <-> count
+relationship.
 
-Also implement {inc,dec}_stack_record_count() which increments
-or decrements on respective allocation and free operations, via
-__reset_page_owner() (free operation) and __set_page_owner() (alloc
-operation).
+E.g:
+
+  prep_new_page+0xa9/0x120
+  get_page_from_freelist+0x801/0x2210
+  __alloc_pages+0x18b/0x350
+  alloc_pages_mpol+0x91/0x1f0
+  folio_alloc+0x14/0x50
+  filemap_alloc_folio+0xb2/0x100
+  __filemap_get_folio+0x14a/0x490
+  ext4_write_begin+0xbd/0x4b0 [ext4]
+  generic_perform_write+0xc1/0x1e0
+  ext4_buffered_write_iter+0x68/0xe0 [ext4]
+  ext4_file_write_iter+0x70/0x740 [ext4]
+  vfs_write+0x33d/0x420
+  ksys_write+0xa5/0xe0
+  do_syscall_64+0x80/0x160
+  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+ stack_count: 4578
+
+In order to show all the stacks, we implement stack_depot_get_next_stack(),
+which walks all buckets while retrieving the stacks stored in them.
+stack_depot_get_next_stack() will return all stacks, one at a time,
+by first finding a non-empty bucket, and then retrieving all the stacks
+stored in that bucket.
+Once we have completely gone through it, we get the next non-empty bucket
+and repeat the same steps, and so on until we have completely checked all
+buckets.
 
 Signed-off-by: Oscar Salvador <osalvador@suse.de>
 ---
- include/linux/stackdepot.h |  8 ++++++++
- lib/stackdepot.c           |  8 ++++++++
- mm/page_owner.c            | 30 ++++++++++++++++++++++++++++++
- 3 files changed, 46 insertions(+)
+ include/linux/stackdepot.h | 20 +++++++++
+ lib/stackdepot.c           | 46 +++++++++++++++++++++
+ mm/page_owner.c            | 85 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 151 insertions(+)
 
 diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
-index d0dcf4aebfb4..ac62de4d4999 100644
+index ac62de4d4999..d851ec821e6f 100644
 --- a/include/linux/stackdepot.h
 +++ b/include/linux/stackdepot.h
-@@ -175,6 +175,14 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
- depot_stack_handle_t stack_depot_save(unsigned long *entries,
- 				      unsigned int nr_entries, gfp_t gfp_flags);
+@@ -183,6 +183,26 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
+  */
+ struct stack_record *stack_depot_get_stack(depot_stack_handle_t handle);
  
 +/**
-+ * stack_depo_get_stack - Get a pointer to a stack struct
-+ * @handle: Stack depot handle
++ * stack_depot_get_next_stack - Returns all stacks, one at a time
 + *
-+ * Return: Returns a pointer to a stack struct
++ * @table:	Current table we are checking
++ * @bucket:	Current bucket we are checking
++ * @last_found:	Last stack that was found
++ *
++ * This function finds first a non-empty bucket and returns the first stack
++ * stored in it. On consequent calls, it walks the bucket to see whether
++ * it contains more stacks.
++ * Once we have walked all the stacks in a bucket, we check
++ * the next one, and we repeat the same steps until we have checked all of them
++ *
++ * Return: A pointer a to stack_record struct, or NULL when we have walked all
++ * buckets.
 + */
-+struct stack_record *stack_depot_get_stack(depot_stack_handle_t handle);
++struct stack_record *stack_depot_get_next_stack(unsigned long *table,
++						struct list_head **bucket,
++						struct stack_record **last_found);
 +
  /**
   * stack_depot_fetch - Fetch a stack trace from stack depot
   *
 diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 16c8a1bf0008..197c355601f9 100644
+index 197c355601f9..107bd0174cd6 100644
 --- a/lib/stackdepot.c
 +++ b/lib/stackdepot.c
-@@ -681,6 +681,14 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
+@@ -782,6 +782,52 @@ unsigned int stack_depot_get_extra_bits(depot_stack_handle_t handle)
  }
- EXPORT_SYMBOL_GPL(stack_depot_save);
+ EXPORT_SYMBOL(stack_depot_get_extra_bits);
  
-+struct stack_record *stack_depot_get_stack(depot_stack_handle_t handle)
++struct stack_record *stack_depot_get_next_stack(unsigned long *table,
++						struct list_head **curr_bucket,
++						struct stack_record **last_found)
 +{
-+	if (!handle)
-+		return NULL;
++	struct list_head *bucket = *curr_bucket;
++	unsigned long nr_table = *table;
++	struct stack_record *found = NULL;
++	unsigned long stack_table_entries = stack_hash_mask + 1;
 +
-+	return depot_fetch_stack(handle);
++	rcu_read_lock_sched_notrace();
++	if (!bucket) {
++		/*
++		 * Find a non-empty bucket. Once we have found it,
++		 * we will use list_for_each_entry_continue_rcu() on the next
++		 * call to keep walking the bucket.
++		 */
++new_table:
++		bucket = &stack_table[nr_table];
++		list_for_each_entry_rcu(found, bucket, hash_list) {
++			goto out;
++		}
++	} else {
++		 /* Check whether we have more stacks in this bucket */
++		found = *last_found;
++		list_for_each_entry_continue_rcu(found, bucket, hash_list) {
++			goto out;
++		}
++	}
++
++	/* No more stacks in this bucket, check the next one */
++	nr_table++;
++	if (nr_table < stack_table_entries)
++		goto new_table;
++
++	/* We are done walking all buckets */
++	found = NULL;
++
++out:
++	*table = nr_table;
++	*curr_bucket = bucket;
++	*last_found = found;
++	rcu_read_unlock_sched_notrace();
++
++	return found;
 +}
 +
- unsigned int stack_depot_fetch(depot_stack_handle_t handle,
- 			       unsigned long **entries)
+ static int stats_show(struct seq_file *seq, void *v)
  {
+ 	/*
 diff --git a/mm/page_owner.c b/mm/page_owner.c
-index 5634e5d890f8..0adf41702b9d 100644
+index 0adf41702b9d..aea212734557 100644
 --- a/mm/page_owner.c
 +++ b/mm/page_owner.c
-@@ -61,6 +61,22 @@ static __init bool need_page_owner(void)
- 	return page_owner_enabled;
- }
+@@ -749,6 +749,89 @@ static const struct file_operations proc_page_owner_operations = {
+ 	.llseek		= lseek_page_owner,
+ };
  
-+static void inc_stack_record_count(depot_stack_handle_t handle)
-+{
-+	struct stack_record *stack = stack_depot_get_stack(handle);
++struct stack_iterator {
++	unsigned long nr_table;
++	struct list_head *bucket;
++	struct stack_record *last_stack;
++};
 +
-+	if (stack)
-+		refcount_inc(&stack->count);
++static void *stack_start(struct seq_file *m, loff_t *ppos)
++{
++	struct stack_iterator *iter = m->private;
++
++	if (*ppos == -1UL)
++		return NULL;
++
++	return stack_depot_get_next_stack(&iter->nr_table,
++					  &iter->bucket,
++					  &iter->last_stack);
 +}
 +
-+static void dec_stack_record_count(depot_stack_handle_t handle)
++static void *stack_next(struct seq_file *m, void *v, loff_t *ppos)
 +{
-+	struct stack_record *stack = stack_depot_get_stack(handle);
++	struct stack_iterator *iter = m->private;
++	struct stack_record *stack;
 +
-+	if (stack)
-+		refcount_dec(&stack->count);
++	stack = stack_depot_get_next_stack(&iter->nr_table,
++					   &iter->bucket,
++					   &iter->last_stack);
++	*ppos = stack ? *ppos + 1 : -1UL;
++
++	return stack;
 +}
 +
- static __always_inline depot_stack_handle_t create_dummy_stack(void)
++static int stack_print(struct seq_file *m, void *v)
++{
++	char *buf;
++	int ret = 0;
++	struct stack_iterator *iter = m->private;
++	struct stack_record *stack = iter->last_stack;
++
++	if (!stack->size || stack->size < 0 || refcount_read(&stack->count) < 2)
++		return 0;
++
++	buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
++
++	ret += stack_trace_snprint(buf, PAGE_SIZE, stack->entries, stack->size,
++				   0);
++	if (!ret)
++		goto out;
++
++	scnprintf(buf + ret, PAGE_SIZE - ret, "stack_count: %d\n\n",
++		  refcount_read(&stack->count));
++
++	seq_printf(m, buf);
++	seq_puts(m, "\n\n");
++out:
++	kfree(buf);
++
++	return 0;
++}
++
++static void stack_stop(struct seq_file *m, void *v)
++{
++}
++
++static const struct seq_operations page_owner_stack_op = {
++	.start	= stack_start,
++	.next	= stack_next,
++	.stop	= stack_stop,
++	.show	= stack_print
++};
++
++static int page_owner_stack_open(struct inode *inode, struct file *file)
++{
++	return seq_open_private(file, &page_owner_stack_op,
++				sizeof(struct stack_iterator));
++}
++
++const struct file_operations page_owner_stack_operations = {
++	.open		= page_owner_stack_open,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++	.release	= seq_release,
++};
++
+ static int __init pageowner_init(void)
  {
- 	unsigned long entries[4];
-@@ -140,6 +156,7 @@ void __reset_page_owner(struct page *page, unsigned short order)
- 	int i;
- 	struct page_ext *page_ext;
- 	depot_stack_handle_t handle;
-+	depot_stack_handle_t alloc_handle;
- 	struct page_owner *page_owner;
- 	u64 free_ts_nsec = local_clock();
+ 	if (!static_branch_unlikely(&page_owner_inited)) {
+@@ -758,6 +841,8 @@ static int __init pageowner_init(void)
  
-@@ -147,6 +164,9 @@ void __reset_page_owner(struct page *page, unsigned short order)
- 	if (unlikely(!page_ext))
- 		return;
+ 	debugfs_create_file("page_owner", 0400, NULL, NULL,
+ 			    &proc_page_owner_operations);
++	debugfs_create_file("page_owner_stacks", 0400, NULL, NULL,
++			    &page_owner_stack_operations);
  
-+	page_owner = get_page_owner(page_ext);
-+	alloc_handle = page_owner->handle;
-+
- 	handle = save_stack(GFP_NOWAIT | __GFP_NOWARN);
- 	for (i = 0; i < (1 << order); i++) {
- 		__clear_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
-@@ -158,6 +178,15 @@ void __reset_page_owner(struct page *page, unsigned short order)
- 		page_ext = page_ext_next(page_ext);
- 	}
- 	page_ext_put(page_ext);
-+	if (alloc_handle != early_handle)
-+		/*
-+		 * early_handle is being set as a handle for all those
-+		 * early allocated pages. See init_pages_in_zone().
-+		 * Since their refcount is not being incremented because
-+		 * the machinery is not ready yet, we cannot decrement
-+		 * their refcount either.
-+		 */
-+		dec_stack_record_count(alloc_handle);
+ 	return 0;
  }
- 
- static inline void __set_page_owner_handle(struct page_ext *page_ext,
-@@ -199,6 +228,7 @@ noinline void __set_page_owner(struct page *page, unsigned short order,
- 		return;
- 	__set_page_owner_handle(page_ext, handle, order, gfp_mask);
- 	page_ext_put(page_ext);
-+	inc_stack_record_count(handle);
- }
- 
- void __set_page_owner_migrate_reason(struct page *page, int reason)
 -- 
 2.43.0
 
