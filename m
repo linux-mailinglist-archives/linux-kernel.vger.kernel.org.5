@@ -1,129 +1,150 @@
-Return-Path: <linux-kernel+bounces-58479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F35E84E700
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D562084E707
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:47:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E94CB29AEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:45:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21B0DB2565B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:46:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B0182D71;
-	Thu,  8 Feb 2024 17:45:36 +0000 (UTC)
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20B2A84FCF;
+	Thu,  8 Feb 2024 17:46:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hoaTxKRj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4227E594;
-	Thu,  8 Feb 2024 17:45:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D011182D8C
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:46:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707414336; cv=none; b=bTCqezp1qGKWIAaMdZPruRqHqF5Xdpq1k0dCFN9hcnz2tkAUhHXzEf966/M3Oik6AeN9eojWCkg5cej4WSYu7TBQChdtksDAKQmnkBm/YQVGMyvZg6QDgAAz60czsRCwHFAiYdEX/Q04zif36fVeZPmJEQM+Z5uVusZNuFLLF34=
+	t=1707414365; cv=none; b=oRR4Q7oBz5yJyjP4A51j5Lhjuib70OybIDNJ4jD835TWSAQtRro+k8s9pAY1E8UWYV+cU0t6qI3AXVuNaUwfZQTgT+LN3n/ySB7kW/HCGtShmBPrtUeLsxa+j130zZvQcRTux3ZCubXW/Eb//5FjP3FDJBb3mpJRZk4x4dfrpN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707414336; c=relaxed/simple;
-	bh=fLK3EM9FBsX7/u1ZfLjYDkw/Ej8y9+BShiUHu0d4Vc0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PwW/VlSm3zla2ki8YGsb6VhxAFumFV0K6BPdv0vjVHp3eZeips5hEng2U6V/AVWxFntOUVcNcubjeKHlHEcxoeBo66LeY4A7GfaE0dKew334bmDY9NkGwagT0KOqR1YKejWG73EAG7Z04RtvUa47/d1KycmEtXePVgE2roFOTQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rY8Sj-0006Nc-Gl; Thu, 08 Feb 2024 18:45:25 +0100
-Message-ID: <62822d22-0e0a-4a72-85d0-583d3e0e49c3@leemhuis.info>
-Date: Thu, 8 Feb 2024 18:45:24 +0100
+	s=arc-20240116; t=1707414365; c=relaxed/simple;
+	bh=f+PuXbNhXMTQKCE8D1ReIzehabsulG0iotcVaoV0u04=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rq5lX66kqhR4I6hfC+5oqAWeZJ63CeEZ0VQzFlgYXLrBNEzpJKQ9Riw5qxbNtKaGJzUSxbm5aDsZooWSYdHFRQNaY/7f4tZLbfXStGzweGGmBviB53oS7F3MwEQsoG8zqX/piYCKiH8LK+DayK1jEzdOFHiFJ8Ccq477AIyWU+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hoaTxKRj; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707414362;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y8X4EhnjHNg6ZybPIUTxfj0f8bu4Fo5AJsqmmWpX13E=;
+	b=hoaTxKRj0hwUzwSf7HfCFwO/LvcA8IkkdawWFpjk9mdfE7o2M0caeMxvcmyhLOyecE0kq9
+	5f/oSVpVAZ673+g+SMW+MVBB7S6ufqAIIEvobmjSwKRuRxfVHbUWXZYyM4EqUEOE56GeAT
+	Xv+cfOLjBM08ttCZ0uwrbiAs/gWDhI8=
+Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com
+ [209.85.217.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-385-FLVz5ynHOc-PCYrYvAPkRQ-1; Thu, 08 Feb 2024 12:45:58 -0500
+X-MC-Unique: FLVz5ynHOc-PCYrYvAPkRQ-1
+Received: by mail-vs1-f71.google.com with SMTP id ada2fe7eead31-46d2776dbc1so18629137.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 09:45:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707414357; x=1708019157;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y8X4EhnjHNg6ZybPIUTxfj0f8bu4Fo5AJsqmmWpX13E=;
+        b=nr5iNe9s22nOh3KGJ/qgYTnbTasw3PmfW0ZSY5DH7Z0dXbiMJ5+b47cWNmZ9/l+YYB
+         ydWY3GYqKuVZvjtXdkBNnGiHelOCRLx38QWtKExm3cJgxCs0XCsdlBnOresKRU3uJBVG
+         cUz0vH3UzSYCSyKvXRwDIpVxLLxjwcZ8lAHaPIsP6PccHeoutVdvN8cFy0Qcn5GdwkOz
+         uBy2zSVRleD0rMoLaFFz7RrK6RSvJCoZVaX8NJ8V6K2ZJANvvLCg4mChMTlvvQC++j8L
+         sVmP0hvBour1z3CevrTTE05Y5n9znLuMkN062Vvqi42SQZOcv2aNMxuK0j6d4l3GkQdE
+         mwtA==
+X-Gm-Message-State: AOJu0YzzphjL9jkx8/wWEYjN6oZAIGnczp74mJW+6HfmHZqq//ecYm7J
+	ke98g+YazRhpWCrs66zA5taf87XCJw7DTJKHToc8D2JrrT4SfaBG3io/blTa6OrdunNnI2agPBj
+	75LkFHnMs9ojQWllqYwOfZOt8IGruawjLeNa3WWNNtSvEY6Ko/jotv6Z8+cAoueyTrRYhSdHUqp
+	SI3LrGtsobavrib+rQBqUYMvpeoOBVTIOEJ4US
+X-Received: by 2002:a05:6102:754:b0:46d:2083:14d1 with SMTP id v20-20020a056102075400b0046d208314d1mr23911vsg.10.1707414357389;
+        Thu, 08 Feb 2024 09:45:57 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFFjZYAC+poB2A8bKFCXFb8kn7FgCzxPV6IsYhUCAgELoYofUjEzpN8/jetwu7l5YiegAIAgtJ1gKO1+GPVsjw=
+X-Received: by 2002:a05:6102:754:b0:46d:2083:14d1 with SMTP id
+ v20-20020a056102075400b0046d208314d1mr23887vsg.10.1707414357128; Thu, 08 Feb
+ 2024 09:45:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] pinctrl: amd: Add IRQF_ONESHOT to the interrupt request
-Content-Language: en-US, de-DE
-To: Linus Walleij <linus.walleij@linaro.org>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
- Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
- Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
- "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
- "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>,
- "Rafael J . Wysocki" <rafael@kernel.org>,
- Christian Heusel <christian@heusel.eu>
-References: <20240123180818.3994-1-mario.limonciello@amd.com>
- <CACRpkdZxOovTOF0rOjyU1WwaRLZqML41hfYcC7z=HsAQjY8BsA@mail.gmail.com>
- <4e9e5ec1-e040-49e0-84a4-9f86c0fcec1b@leemhuis.info>
- <CACRpkdZ4pyFh50imdgL6ZxgAyRYCxsuz0DbmssELZ0mAxVcRcA@mail.gmail.com>
-From: Thorsten Leemhuis <linux@leemhuis.info>
-Autocrypt: addr=linux@leemhuis.info; keydata=
- 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 n7RI
-In-Reply-To: <CACRpkdZ4pyFh50imdgL6ZxgAyRYCxsuz0DbmssELZ0mAxVcRcA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1707414333;bd4ef1c2;
-X-HE-SMSGID: 1rY8Sj-0006Nc-Gl
+References: <20240123001555.4168188-1-michal.wilczynski@intel.com>
+ <20240125005710.GA8443@yjiang5-mobl.amr.corp.intel.com> <CABgObfYaUHXyRmsmg8UjRomnpQ0Jnaog9-L2gMjsjkqChjDYUQ@mail.gmail.com>
+ <42d31df4-2dbf-44db-a511-a2d65324fded@intel.com>
+In-Reply-To: <42d31df4-2dbf-44db-a511-a2d65324fded@intel.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Thu, 8 Feb 2024 18:45:44 +0100
+Message-ID: <CABgObfYa5eKj_8qyRfimqG7DXpbxe-eSM6pCwR6Hq97eZEtX6A@mail.gmail.com>
+Subject: Re: [PATCH v2] KVM: x86: nSVM/nVMX: Fix handling triple fault on RSM instruction
+To: "Wilczynski, Michal" <michal.wilczynski@intel.com>
+Cc: Yunhong Jiang <yunhong.jiang@linux.intel.com>, seanjc@google.com, mlevitsk@redhat.com, 
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, dedekind1@gmail.com, 
+	yuan.yao@intel.com, Zheyu Ma <zheyuma97@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 07.02.24 11:40, Linus Walleij wrote:
-> On Wed, Feb 7, 2024 at 9:07 AM Linux regression tracking (Thorsten
-> Leemhuis) <regressions@leemhuis.info> wrote:
->>> Patch applied for fixes!
->> Hmm, Linus, that was a week ago and I still can't spot the fix in -next
->> or
->> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
->> ; am I missing something or did something come up?
-> 
-> Something came up but it's just illnesses travels and other such
-> excuses.
+On Thu, Feb 8, 2024 at 2:18=E2=80=AFPM Wilczynski, Michal
+<michal.wilczynski@intel.com> wrote:
+> Hi, I've tested the patch and it seems to work, both on Intel and AMD.
+> There was a problem with applying this chunk though:
+>
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kv=
+m-x86-ops.h
+> index ac8b7614e79d..3d18fa7db353 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -119,7 +119,8 @@ KVM_X86_OP(setup_mce)
+>  #ifdef CONFIG_KVM_SMM
+>  KVM_X86_OP(smi_allowed)
+>  KVM_X86_OP()                 // <- This shouldn't be there I guess ?
+> -KVM_X86_OP(leave_smm)
+> +KVM_X86_OP(leave_smm_prepare)
+> +KVM_X86_OP(leave_smm_commit)
+>  KVM_X86_OP(enable_smi_window)
+>  #endif
+>  KVM_X86_OP_OPTIONAL(dev_get_attr)
+>
+> Anyway I was a bit averse to this approach as I noticed in the git log
+> that callbacks like e.g post_leave_smm() used to exist, but they were lat=
+er
+> removed, so I though the maintainers don't like introducing extra
+> callbacks.
 
-Happens, no worries.
+If they are needed, it's fine. In my opinion a new callback is easier
+to handle and understand than new state.
 
-> I have merged down fixed to for-next and the patch should appear
-> in linux-next and after that I can send it to Torvalds.
+> > 2) otherwise, if the problem is that we have not gone through the
+> > vmenter yet, then KVM needs to do that and _then_ inject the triple
+> > fault. The fix is to merge the .triple_fault and .check_nested_events
+> > callbacks, with something like the second attached patch - which
+> > probably has so many problems that I haven't even tried to compile it.
+>
+> Well, in this case if we know that RSM will fail it doesn't seem to me
+> like it make sense to run vmenter just do kill the VM anyway, this would
+> be more confusing.
 
-Great, thx! Saw the pull request, so should land soon.
+Note that the triple fault must not kill the VM, it's just causing a
+nested vmexit from L2 to L1. KVM's algorithm to inject a
+vmexit-causing event is always to first ensure that the VMCS02 (VMCB02
+for AMD) is consistent, and only then trigger the vmexit. So if patch
+2 or something like it works, that would be even better.
 
-Ciao, Thorsten
+> I've made the fix this way based on our discussion with Sean in v1, and
+> tried to mark the RSM instruction with a flag, as a one that needs
+> actual HW VMenter to complete succesfully, and based on that information
+> manipulate nested_run_pending.
+
+I understand, apologies for not noticing v1. Let's wait for Sean's opinion.
+
+Paolo
+
 
