@@ -1,149 +1,248 @@
-Return-Path: <linux-kernel+bounces-57626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75C4384DB90
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:38:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3A0184DB93
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:38:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67F1E1C248A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:38:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A35A1F242C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:38:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90EF1692E6;
-	Thu,  8 Feb 2024 08:38:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B8086A8B6;
+	Thu,  8 Feb 2024 08:38:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b="ZIdG1OOD"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ieLxi5U4"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 253E267A00
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 08:38:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A482F6A8AF
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 08:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707381495; cv=none; b=iPzOSMNUG3jxA9KSlCymGRhDnUs19XeTdh+/KP0r8OtZg5N1fLO4+64fuB0+4YloUYHhJFlRhDTfzZi237FcXoWZZVcJtV7ap9RV+u3pwgLqhZzG7LIUKzc2HcoYVuWWh9tburgiVztRwyacz8GbPiGL+4eTxTkavSGvokHHV8c=
+	t=1707381522; cv=none; b=Z6aFOqcB+uBs7NWCp48FJ8gUo4Tr15OiD8JfnFh08YPaf1CEtzStcjWVEHP5a5NBASfEnVdUY3Qja3o36W5PeO25IV6y+PZ+kcUBIAUIT2C0H9Ygjx8tXfDuDDQ0P+kJJeU7bxlMzOCixSMnVL259DwTKTmPoEJ5Vtxlr+P+8rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707381495; c=relaxed/simple;
-	bh=lF1qmuDwtNui8X0ZFYNVt/ucazJB6+zf68wnH6w0jUc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KyQzJnjO4q3PkWGJ6pxWiCl0Nsqe79vN6CCvBG3OEUCDI2cneIzBJnujBNlH4CIR8WXZWfx2E0e2YqedXYr87LlUzouaiBOUNkeiLhKtnzbHI19OmfLneY09onOG/iJoUab7L+wsw0UQR2DjrLJI+DatM2Z92cX+e+Vage8bYHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org; spf=pass smtp.mailfrom=endlessos.org; dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b=ZIdG1OOD; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endlessos.org
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc34d761e2aso338168276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 00:38:13 -0800 (PST)
+	s=arc-20240116; t=1707381522; c=relaxed/simple;
+	bh=uPvI//sdUZWcQl5m+2rptWfruZeWhl6Oy+X40K4xYy0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qhL1YWUesJnUSYGIpiwXC2PO1992IobKq3N4WvByfFFXA2B80F9mo94VJZ5Zc2Dq3X15CNVXJHJb0wg3u4Rucd9q3IKekbu0SWqTni6tBSCjuCKxi0/lQOzl5iPnO3ZiHmlIRHRgCeWf9W3pyT0oNHOTgJ2VdzLzRq02hOhJCxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ieLxi5U4; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33934567777so1025498f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 00:38:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google; t=1707381493; x=1707986293; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xJjgK/86oIYgDKE/vpWS6pEJ65u/gCjBzOy2n9k26uo=;
-        b=ZIdG1OODqGuJaJXs8H41EmQ0bNAavyQGcaIO+8Qw0ubArxDacqPV2K9ahfrmZM35m4
-         O/tRdNIj/GHDwrRkzGrbi24C5qIau/sIxruXhf/mXZbsAOJKBlW7n0F1qr3/cE8L/wfn
-         cg+WN0PKcmG3qXzOXr+q6ok6ax6azW04qVBG8pINMcELfSA3Z+z0cADJ/htA87f9cB38
-         ZsQFFKmwk91yyATi4Py53ZWsBcrlE4YyRFPnA6zluRsAYXnHfwE9Q2mxRj2BKUCu1KuR
-         s0m40emk0w8GW3tuEH+zTmDEpYupavmdN1hf2rgfQI78vMH4gZFeaRlcpcv6JDERp9uS
-         ze6g==
+        d=linaro.org; s=google; t=1707381519; x=1707986319; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qr9JmnlTZM+mC+5PTeNA50C8sKbTF6tVkGIW20MXSlY=;
+        b=ieLxi5U4+66KpEzB6jQrE+LMRxelWmKP+gePgK0TEAzyEc5vE6mPHxd9a/cluzhS/q
+         ePpkVFOy15hgOlwx7sDOEomwJ7d87XXVHn3g6UhiH8DWBSoSzziTEjEFMDM4v4t+H/3F
+         9z2UcGT8ZR7viFawGDILsqSPy4pPMHhZSSdDWpwWTHNfdqoN06Y7dNCktz+14pfG0VhG
+         skm2jEMV9C+OhEJALXyFORqzbYsPr+Uw/SqjUmnZdD0JRXahlXFyzn/wXLhGXhLLQ7CZ
+         UMS255mBSQe2IMx/POURk7LMvprQmm4fowOD74nbM3Rjy4QRXlAolMkoGoZKTCutZvT9
+         FiYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707381493; x=1707986293;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xJjgK/86oIYgDKE/vpWS6pEJ65u/gCjBzOy2n9k26uo=;
-        b=oLnS6HEUdliDBfPlvtyhMGZ11xeR0SrxTGoHkP4X3SxPYgB0OO5te8Y6+5UKX+arva
-         1BQMSKGLmxRT1F4kUmROdwz0OjwQavQ08maDtPjL6Id+CU+fTo9QMMBwtaUTAzGqw+6i
-         tWt7MkapxFs/DaN15rcCG0Lfyj2euFJlFb7TTgeroYM4ks9nXhSKOkW1Zesf5qnp/aee
-         p9H+UPlwemBq16dz+zbBMmESO+ynWJSWFL6A8sGR+mBxM8rNX0Zpw+1vUjpYnw5avcjY
-         IGwHGaoizSX57+hX0DDvqFmyqVUMJMuVKSGxjiGMdvbVuN2pupqoEWBW/9GliDMUkX+7
-         sMGg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwLangAZM2+QVJYvzjk/YploRIrbn+a+l0smz5YiOvI+Un/wTPYQ1c8R/DLGxzPIVQkdtUYDyJ5bN6EA2B/ZMRTtc/i7vvqZvfeuM2
-X-Gm-Message-State: AOJu0YxxoIKHQjE2dEoOK3kRK1MWQbaDwZLRG1YSKuV3XXxCNAk0hPTC
-	0tnxdNr2lhRfEAJ5cFz9yneS1F0z8LAbGgLVf2fhTa5a8tIcsdIDfBr3o+wKsEBtMZmJ4z4qx2F
-	rlbga+RyM/V0mSJpFTPnSumXLxRa0ZIooWDY1eQ==
-X-Google-Smtp-Source: AGHT+IGMvfAD5Dwy5xHDpbIKVVXYXtthlZowYoNKU2j4hr05mPhNntdO2N44+cfCiLv/dgkt+wBOwO1Wtk1t6IMtHLg=
-X-Received: by 2002:a25:8002:0:b0:dbc:b927:c5f9 with SMTP id
- m2-20020a258002000000b00dbcb927c5f9mr7087610ybk.6.1707381492892; Thu, 08 Feb
- 2024 00:38:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707381519; x=1707986319;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qr9JmnlTZM+mC+5PTeNA50C8sKbTF6tVkGIW20MXSlY=;
+        b=ZB+WfGgd9q+9FZGVBIjO9QLibDJj5+uCAEglX5XJTbWxborlVw3u8uxdPpbTX5wgQY
+         wGDb9p6OUM5kzPn4i8FPeYefEBSqKoNHWObMs00PvwgHtObJffqteloN0z1U99Sw5J69
+         K4iKIrWFXctxgXP0qS8RZ/L3scYtQF8hk+i8BRwh0Sef+x8H6c/u0RxnDmqqwyDLuJB1
+         X8pZvBnd8tpgfPypM9pWaTZvJLUDXEPvtJ/Fbwg/BVIU0pgKOFUBnzgXBmk5Y0xYKRjE
+         TV4VzSMDjy18wixI2mqE1naDBAFBaUQOFjdRaYEfsouLBo9jkNyB3J1Dz8OvDJsLiwzp
+         MLTA==
+X-Forwarded-Encrypted: i=1; AJvYcCX5zDGodXe32XnOk2DUL47xqIt7wrUAoOx8rQ3RXscusomaBfw9lIWWuCdLRrgkOqyec4wg5/ozrpf1P5A/gRpvl+hr65tVpE3IgZzu
+X-Gm-Message-State: AOJu0YwKuklt3Xz+truufEZ3x1mkR2Pr3UasrQeyL+vvn5oJ0t6mFPIR
+	Xpl4WgAg7LOOA8DyrqJGHId62+lBMMx17SZC7paZcs7lqKimnJfUzHH14wdCMPI=
+X-Google-Smtp-Source: AGHT+IF+cukrfLPNGBJ/O00IGvwc5IG6n2Ej0mJ+11haqqjzNzNtwFvtIxcbPpAzgiPq0nol3J4Viw==
+X-Received: by 2002:a5d:5f44:0:b0:33b:2d46:74e with SMTP id cm4-20020a5d5f44000000b0033b2d46074emr6072969wrb.55.1707381518882;
+        Thu, 08 Feb 2024 00:38:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUJ/9Cq4SGjXVrt7HCYGR2R9f2GPIGSEKGJFeIoJvTxKnk7n5TGQsrE5U0d2RXOb4tahO3b5NSca1oAmzKpXDOO16/BMgJ4GuOEcgHqeJsMLmDtgv2ijvAITYUYlOcx4eVmuPG9BzzIC1iGjjTX6o9I/a6wm/EYikyRNSOd17293ELLGN+i4r4KJpc+rcUfcUIS9zJZlCf+vwuU6Pa6g8Cq7HJiILMaOtVflP+Zdj8XE86jMNiGwdjTsEnMGtSAXZTgAaDX+ZBr176JYOZ2nmNwg8rqoX/lGkxJSh1VgkZPkAyrcBhEubigCueaXi9c7wWtZkTQJWOUwoqLLsE30l4I2GskTqeyKoGfg8kkoGxs3p04knUCMXq6td5raHyjL3Zgpj32ya4bJvgQOluMhDuIuU+Ir6RKs2wgJHRwMvCjQPjnucXUYJUGx7wh6EerSEToKyi9biMivItUpDpL8qaPWAAw9jJig67pksYqrJdJzitZE9hQMWfGfuPMaUnfXvprmRFF9Tax8TotxqzHTdHLXfv7ltmO3mEnwmhcVy3RU3XuyOEhzL/v4dBmMWisjpsQkO3bWN0q+bWSc20bOtOXvty1mltLgSyc
+Received: from [192.168.1.20] ([178.197.222.62])
+        by smtp.gmail.com with ESMTPSA id bg20-20020a05600c3c9400b0040ffe1ca25bsm928058wmb.21.2024.02.08.00.38.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Feb 2024 00:38:38 -0800 (PST)
+Message-ID: <b2e4ac25-5b07-46c7-a96f-8390a95584ea@linaro.org>
+Date: Thu, 8 Feb 2024 09:38:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207084452.9597-1-drake@endlessos.org> <20240207200538.GA912749@bhelgaas>
-In-Reply-To: <20240207200538.GA912749@bhelgaas>
-From: Daniel Drake <drake@endlessos.org>
-Date: Thu, 8 Feb 2024 09:37:36 +0100
-Message-ID: <CAD8Lp47DjuAAxqwt+yKD22UNMyvqE00x0u+JeM74KO2OC+Otrg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com, 
-	david.e.box@linux.intel.com, mario.limonciello@amd.com, rafael@kernel.org, 
-	lenb@kernel.org, linux-acpi@vger.kernel.org, linux@endlessos.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 16/20] dt-bindings: crypto: meson: support new SoC's
+Content-Language: en-US
+To: Alexey Romanov <avromanov@salutedevices.com>, neil.armstrong@linaro.org,
+ clabbe@baylibre.com, herbert@gondor.apana.org.au, davem@davemloft.net,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ khilman@baylibre.com, jbrunet@baylibre.com,
+ martin.blumenstingl@googlemail.com
+Cc: linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kernel@salutedevices.com
+References: <20240205155521.1795552-1-avromanov@salutedevices.com>
+ <20240205155521.1795552-17-avromanov@salutedevices.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240205155521.1795552-17-avromanov@salutedevices.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 7, 2024 at 9:05=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org> w=
-rote:
-> Can you run "sudo lspci -vvxxxx -s00:06.0" before putting the Root
-> Port in D3hot, and then again after putting it back in D0 (when NVMe
-> is inaccessible), and attach both outputs to the bugzilla?
+On 05/02/2024 16:55, Alexey Romanov wrote:
+> Now crypto module available at G12A/G12B/S4/A1/SM1/AXG.
+> 
+> 1. Add new compatibles:
+>   - amlogic,g12a-crypto
+>   - amlogic,s4-crypto (uses g12a-crypto as fallback)
+>   - amlogic,a1-crypto (uses g12a-crypto as fallback)
+>   - amlogic,axg-crypto
+> 
+> 2. All SoC's, exclude GXL, doesn't take a clock input for
+> Crypto IP. Make it required only for amlogic,gxl-crypto.
+> 
+> 3. All SoC's, exclude GXL, uses only one interrupt flow
+> for Crypto IP.
+> 
+> 4. Add power-domains in schema.
+> 
+> Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
+> ---
+>  .../bindings/crypto/amlogic,gxl-crypto.yaml   | 44 +++++++++++++++----
+>  1 file changed, 36 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml b/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
+> index 948e11ebe4ee..62f772036b06 100644
+> --- a/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
+> @@ -11,20 +11,30 @@ maintainers:
+>  
+>  properties:
+>    compatible:
+> -    items:
+> -      - const: amlogic,gxl-crypto
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - amlogic,a1-crypto
+> +              - amlogic,s4-crypto
+> +          - const: amlogic,g12a-crypto
+> +      - items:
+> +          - const: amlogic,gxl-crypto
+> +      - items:
+> +          - const: amlogic,axg-crypto
+> +      - items:
+> +          - const: amlogic,g12a-crypto
 
-Done: https://bugzilla.kernel.org/show_bug.cgi?id=3D215742#c21
+You just ignored my comment, so repeat: that's just enum with three entries.
 
-> Given that D3cold is just "main power off," and obviously the Root
-> Port *can* transition from D3cold to D0 (at initial platform power-up
-> if nothing else), this seems kind of strange and makes me think we may
-> not completely understand the root cause, e.g., maybe some config
-> didn't get restored.
->
-> But the fact that Windows doesn't use D3cold in this case suggests
-> that either (1) Windows has a similar quirk to work around this, or
-> (2) Windows decides whether to use D3cold differently than Linux does.
->
-> I have no data, but (1) seems sort of unlikely.  In case it turns out
-> to be (2) and we figure out how to fix it that way someday, can you
-> add the output of "sudo lspci -vvxxxx" of the system to the bugzilla?
+>  
+>    reg:
+>      maxItems: 1
+>  
+> -  interrupts:
+> -    items:
+> -      - description: Interrupt for flow 0
+> -      - description: Interrupt for flow 1
+> +  interrupts: true
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D215742#c27
+No, you need widest constraints here.
 
-Some other interesting observations from Windows, observed via socwatch & V=
-Tune:
+>  
+>    clocks:
+>      maxItems: 1
+>  
+> +  power-domains:
+> +    maxItems: 1
+> +
+>    clock-names:
+>      const: blkmv
+>  
+> @@ -32,8 +42,26 @@ required:
+>    - compatible
+>    - reg
+>    - interrupts
+> -  - clocks
+> -  - clock-names
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: amlogic,gxl-crypto
+> +    then:
+> +      required:
+> +        - clocks
+> +        - clock-names
+> +      properties:
+> +        interrupts:
+> +          maxItems: 2
+> +          minItems: 2
 
-On affected BIOS versions:
-CPU does not go into the lowest power state PC10 during suspend - it
-only reaches PC8.
-SLP_S0# signal is not asserted (which follows from it not reaching PC10).
-NVMe device in D0 and the HDD LED briefly blinks every 1-2 seconds
-(can't recall if it a regular or irregular blink)
+Instead describe items like it was in original code.
 
-On latest BIOS version:
-PC10 reached and SLP_S0# asserted during suspend, but only for about
-25% of the suspend time
-NVMe device in D0 and the HDD LED briefly blinks every 1-2 seconds
-(can't recall if it a regular or irregular blink)
+> +    else:
+> +      properties:
+> +        interrupts:
+> +          maxItems: 1
+> +          minItems: 1
 
-The LED blinking leaves me wondering if there is something "using" the
-disk during suspend in Windows, so that's why it doesn't try to power
-it down even on the original version with StorageD3Enable=3D1. This HDD
-LED blinking during suspend does not happen on Linux, not even when
-NVMe device is left in D0 over suspend with the regular nvme_suspend()
-path putting the NVMe device into lower power mode at the NVMe
-protocol level.
+and what interrupt is expected here?
 
-> What would be the downside of skipping the DMI table and calling
-> pci_d3cold_disable() always?  If this truly is a Root Port defect, it
-> should affect all platforms with this device, and what's the benefit
-> of relying on BIOS to use StorageD3Enable to avoid the defect?
+>  
+>  additionalProperties: false
+>  
 
-I had more assumed that it was a platform-specific DSDT bug, in that
-PEG0.PXP._OFF is doing something that PEG0.PXP._ON is unable to
-recover from, and that other platforms might handle the suspend/resume
-of this root port more correctly. Not sure if it is reasonable to
-assume that all other platforms on the same chipset have the same bug
-(if that's what this is).
+Best regards,
+Krzysztof
 
-Daniel
 
