@@ -1,123 +1,358 @@
-Return-Path: <linux-kernel+bounces-57313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 405E484D6E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:05:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91CA884D6EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:07:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE131284B5D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 00:05:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 134251F242DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 00:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8FC41B59D;
-	Thu,  8 Feb 2024 00:04:50 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 182A51E87F
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 00:04:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7980911737;
+	Thu,  8 Feb 2024 00:07:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KtrU3Kxk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6118DF4EE
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 00:07:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707350690; cv=none; b=HR+g8YvPXakH7tjXSPrQQWw8+or1scw+Cf7e3BGiBkkq+Vy3yWOL7TsKeGwPrOhd3QKcesQzO6Zfu5c3iiOerr/vdFG8sgY3lP9qOQH+T7fvqkEqpID1EsgCY1Ht4UmXCWf3yWhvrIOau5ZtuPWjk6wcMkpB8QvqZ9CrmGFichY=
+	t=1707350857; cv=none; b=HkpCJ9LdMB6s4lXu7TDfd9y97aPeE1JIOSupY7LvF8aa4i/1aJdY+OY1ygG1PyprdIP/3MBLitdbLWTvR4HRTLx6ylbWFdNH1133KK/u2ILt4mJ5hznuVX72Ze86hj8BTjWmVvmkj37sdLYUVPVcMbGT5y1bqNl/HTkMRfo10g8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707350690; c=relaxed/simple;
-	bh=p5zVpNRV/Kw4RpQSuCTfGevl+nGajRGf+VhjwPTrxzo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Lgkc6sXF9L8WfUICr86HQuoVs4yWuDTUlolVq6KgOPIsiMMtvoDZezW600huzeHJBUcnUv0ROctPuAGxgLQPskKrC80gPKdEubyO9rsbrS/h5ltJwRik45DeE+uPBpdGTqQiJeZ5g8Z7Vw94qi1U+biQlikIYwpt4bpY1Fjk3+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 889451FB;
-	Wed,  7 Feb 2024 16:05:29 -0800 (PST)
-Received: from [10.57.49.110] (unknown [10.57.49.110])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 372A83F64C;
-	Wed,  7 Feb 2024 16:04:46 -0800 (PST)
-Message-ID: <37ab8689-5e0d-4166-bad6-84d3c51446ca@arm.com>
-Date: Thu, 8 Feb 2024 00:04:44 +0000
+	s=arc-20240116; t=1707350857; c=relaxed/simple;
+	bh=hwkLdDMjJeQwe535I6mISaHdEEZ3S9N6jpToD65gvmU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PCQ4F0Y41FkeXdNeJoMC0PUnuSSJjr/pNQRpizRglVlubDHckEK+EsVZBYTa/40wtygiQleSAYiWzGVwYgx5Da9Z6LwRbdPDG77MTb92oJmNDlLC1dwZ1yJ3hCuzD0rv+Ej/o2uhNnNkHfvVhXK4e2xC8Og0T5HpbociRrB/2mg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KtrU3Kxk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA389C433F1;
+	Thu,  8 Feb 2024 00:07:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707350856;
+	bh=hwkLdDMjJeQwe535I6mISaHdEEZ3S9N6jpToD65gvmU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KtrU3KxkhLmfGxH8uAjs4oHMdgbGUSBQtiqE6eYi2bUb9JsGsqwopCKopTPysTpcY
+	 SPSF4fi/lEkoQvtH0pDBHPX3wCw6nvFNB07ixa+KAsPyD7iaRh/1ad82tZ4jM0ndqK
+	 /YF1UHo4vjxEF8rvITofPg/6ICAg7VYDwGEqLsytwpEq+OV7v15HYfMuXb3cD4K5a1
+	 qM4HfRyDShTCva2y+O2Frpgp7S7lDNoKiadT2QkX7y8D+QpeaFp6iiZ7z1QqI4NdBr
+	 QZJLDWs+D5nEoKOQN8ED/JJzq8EXzUHxeKWupytZhPQJuc6ugtXxluQZZYPnvjWYeD
+	 ezF6WZtWv8p2w==
+Date: Wed, 7 Feb 2024 16:07:35 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Chao Yu <chao@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+	Sheng Yong <shengyong@oppo.com>
+Subject: Re: [PATCH] f2fs: support compress extension update via sysfs
+ interface
+Message-ID: <ZcQbRzyvb8MNeOMB@google.com>
+References: <20240207062546.3083870-1-chao@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] iommu: Avoid races around default domain allocations
-Content-Language: en-GB
-To: Jason Gunthorpe <jgg@ziepe.ca>, Nikhil V <quic_nprakash@quicinc.com>
-Cc: Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
- Charan Teja Kalla <quic_charante@quicinc.com>, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <e605b38a2d40b1e7589e10110c6d3ece35f6af4e.1705571894.git.quic_nprakash@quicinc.com>
- <139a9abe-75d8-3bda-3ec9-a14a493eb2a9@quicinc.com>
- <20240201162317.GI50608@ziepe.ca>
- <9ba9c4fa-3fa9-c6c4-ce77-0c6cd5e23680@quicinc.com>
- <20240207145656.GJ31743@ziepe.ca>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240207145656.GJ31743@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207062546.3083870-1-chao@kernel.org>
 
-On 2024-02-07 2:56 pm, Jason Gunthorpe wrote:
-> On Wed, Feb 07, 2024 at 07:56:25PM +0530, Nikhil V wrote:
->>
->>
->> On 2/1/2024 9:53 PM, Jason Gunthorpe wrote:
->>> On Mon, Jan 29, 2024 at 01:29:12PM +0530, Nikhil V wrote:
->>>
->>>> Gentle ping to have your valuable feedback. This fix is helping us
->>>> downstream without which we see a bunch of kernel crashes.
->>>
->>> What are you expecting here? This was fixed in Linus's tree some time
->>> ago now
->>>
->>> Are you asking for the stable team to put something weird in 6.1? I
->>> don't think they generally do that?
->>>
->>> Jason
->>
->>
->> Hi @Jason,
->>
->> Considering that the issue is reported on 6.1, which is an __LTS kernel__,
->> any suggestion to fix this issue cleanly would help us a lot. Right thing
->> here would have been propagating the changes from 6.6 (like for any
->> stability issue), but considering the intrusiveness of them, is it even
->> possible?
->>
->> Just to be open about reproducibility of the issue, a bunch of them are
->> reported, both internally and by customers.
+On 02/07, Chao Yu wrote:
+> Introduce /sys/fs/f2fs/<disk>/compress_extension to support
+> adding/deleting compress extension via sysfs interface, in
+> comparison to mount option, it's more easy to use and less
+> authority issue for applications.
 > 
-> I think you need to talk to the stable maintainers not the iommu
-> upstream folks. I don't well know their policy.
+> Usage:
+> - Query: cat /sys/fs/f2fs/<disk>/compress_extension
+> - Add: echo '[c|n]extension' > /sys/fs/f2fs/<disk>/compress_extension
+> - Del: echo '[c|n]!extension' > /sys/fs/f2fs/<disk>/compress_extension
+> - [c] means add/del compress extension
+> - [n] means add/del nocompress extension
 > 
-> Frankly, I'd suggest just proposing the necessary (and tested)
-> upstream patches to 6.1, however large they are, and see what Greg and
-> Sasha say. This is the usual working model they have, as I understand
-> it.
+> Signed-off-by: Sheng Yong <shengyong@oppo.com>
+> Signed-off-by: Chao Yu <chao@kernel.org>
+> ---
+>  Documentation/ABI/testing/sysfs-fs-f2fs | 10 ++++
+>  Documentation/filesystems/f2fs.rst      |  6 ++-
+>  fs/f2fs/compress.c                      | 61 +++++++++++++++++++++++
+>  fs/f2fs/f2fs.h                          |  4 +-
+>  fs/f2fs/sysfs.c                         | 65 +++++++++++++++++++++++--
+>  5 files changed, 139 insertions(+), 7 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+> index 48c135e24eb5..1f2cc0913e45 100644
+> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+> @@ -762,3 +762,13 @@ Date:		November 2023
+>  Contact:	"Chao Yu" <chao@kernel.org>
+>  Description:	It controls to enable/disable IO aware feature for background discard.
+>  		By default, the value is 1 which indicates IO aware is on.
+> +
+> +What:		/sys/fs/f2fs/<disk>/compress_extension
+> +Date:		October 2023
+> +Contact:	"Chao Yu" <chao@kernel.org>
+> +Description:	Used to control configure [|no]compress_extension list:
+> +		- Query: cat /sys/fs/f2fs/<disk>/compress_extension
+> +		- Add: echo '[c|n]extension' > /sys/fs/f2fs/<disk>/compress_extension
+> +		- Del: echo '[c|n]!extension' > /sys/fs/f2fs/<disk>/compress_extension
+> +		- [c] means add/del compress extension
+> +		- [n] means add/del nocompress extension
+> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+> index 32cbfa864f38..c82a8fd7316b 100644
+> --- a/Documentation/filesystems/f2fs.rst
+> +++ b/Documentation/filesystems/f2fs.rst
+> @@ -821,17 +821,19 @@ Compression implementation
+>    all logical blocks in cluster contain valid data and compress ratio of
+>    cluster data is lower than specified threshold.
+>  
+> -- To enable compression on regular inode, there are four ways:
+> +- To enable compression on regular inode, there are five ways:
+>  
+>    * chattr +c file
+>    * chattr +c dir; touch dir/file
+>    * mount w/ -o compress_extension=ext; touch file.ext
+>    * mount w/ -o compress_extension=*; touch any_file
+> +  * echo '[c]ext' > /sys/fs/f2fs/<disk>/compress_extension; touch file.ext
+>  
+> -- To disable compression on regular inode, there are two ways:
+> +- To disable compression on regular inode, there are three ways:
+>  
+>    * chattr -c file
+>    * mount w/ -o nocompress_extension=ext; touch file.ext
+> +  * echo '[n]ext' > /sys/fs/f2fs/<disk>/compress_extension; touch file.ext
+>  
+>  - Priority in between FS_COMPR_FL, FS_NOCOMP_FS, extensions:
+>  
+> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> index 3dc488ce882b..a5257882c772 100644
+> --- a/fs/f2fs/compress.c
+> +++ b/fs/f2fs/compress.c
+> @@ -20,6 +20,67 @@
+>  #include "segment.h"
+>  #include <trace/events/f2fs.h>
+>  
+> +static int is_compress_extension_exist(struct f2fs_sb_info *sbi,
+> +				unsigned char (*ext)[F2FS_EXTENSION_LEN],
+> +				int ext_cnt, unsigned char *new_ext)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ext_cnt; i++) {
+> +		if (!strcasecmp(new_ext, ext[i]))
+> +			return i;
+> +	}
+> +	return -1;
+> +}
+> +
+> +int f2fs_update_compress_extension(struct f2fs_sb_info *sbi,
+> +				unsigned char *new_ext, bool is_ext, bool set)
+> +{
+> +	unsigned char (*ext)[F2FS_EXTENSION_LEN];
+> +	unsigned char *ext_cnt;
+> +
+> +	if (is_ext) {
+> +		ext = F2FS_OPTION(sbi).extensions;
+> +		ext_cnt = &F2FS_OPTION(sbi).compress_ext_cnt;
+> +	} else {
+> +		ext = F2FS_OPTION(sbi).noextensions;
+> +		ext_cnt = &F2FS_OPTION(sbi).nocompress_ext_cnt;
+> +	}
+> +
+> +	if (set) {
+> +		if (*ext_cnt >= COMPRESS_EXT_NUM)
+> +			return -EINVAL;
+> +
+> +		if (is_compress_extension_exist(sbi,
+> +					F2FS_OPTION(sbi).extensions,
+> +					F2FS_OPTION(sbi).compress_ext_cnt,
+> +					new_ext) >= 0)
+> +			return -EEXIST;
+> +
+> +		if (is_compress_extension_exist(sbi,
+> +					F2FS_OPTION(sbi).noextensions,
+> +					F2FS_OPTION(sbi).nocompress_ext_cnt,
+> +					new_ext) >= 0)
+> +			return -EEXIST;
+> +
+> +		strcpy(ext[*ext_cnt], new_ext);
+> +		(*ext_cnt)++;
+> +	} else {
+> +		int pos = is_compress_extension_exist(sbi, ext,
+> +						*ext_cnt, new_ext);
+> +		if (pos < 0)
+> +			return -ENOENT;
+> +
+> +		if (pos < *ext_cnt - 1)
+> +			memmove(ext + pos, ext + pos + 1,
+> +				F2FS_EXTENSION_LEN * (*ext_cnt - pos - 1));
+> +		memset(ext + *ext_cnt - 1, 0, F2FS_EXTENSION_LEN);
+> +		(*ext_cnt)--;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static struct kmem_cache *cic_entry_slab;
+>  static struct kmem_cache *dic_entry_slab;
+>  
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index c5e7460d1a0a..d44e2c43d8ab 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -186,7 +186,7 @@ struct f2fs_mount_info {
+>  	unsigned char compress_level;		/* compress level */
+>  	bool compress_chksum;			/* compressed data chksum */
+>  	unsigned char compress_ext_cnt;		/* extension count */
+> -	unsigned char nocompress_ext_cnt;		/* nocompress extension count */
+> +	unsigned char nocompress_ext_cnt;	/* nocompress extension count */
+>  	int compress_mode;			/* compression mode */
+>  	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
+>  	unsigned char noextensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN]; /* extensions */
+> @@ -4273,6 +4273,8 @@ static inline bool f2fs_post_read_required(struct inode *inode)
+>   * compress.c
+>   */
+>  #ifdef CONFIG_F2FS_FS_COMPRESSION
+> +int f2fs_update_compress_extension(struct f2fs_sb_info *sbi,
+> +				unsigned char *new_ext, bool is_ext, bool set);
+>  bool f2fs_is_compressed_page(struct page *page);
+>  struct page *f2fs_compress_control_page(struct page *page);
+>  int f2fs_prepare_compress_overwrite(struct inode *inode,
+> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> index a7ec55c7bb20..a8f05a02e202 100644
+> --- a/fs/f2fs/sysfs.c
+> +++ b/fs/f2fs/sysfs.c
+> @@ -39,6 +39,7 @@ enum {
+>  	RESERVED_BLOCKS,	/* struct f2fs_sb_info */
+>  	CPRC_INFO,	/* struct ckpt_req_control */
+>  	ATGC_INFO,	/* struct atgc_management */
+> +	MOUNT_INFO,	/* struct f2fs_mount_info */
+>  };
+>  
+>  static const char *gc_mode_names[MAX_GC_MODE] = {
+> @@ -89,6 +90,8 @@ static unsigned char *__struct_ptr(struct f2fs_sb_info *sbi, int struct_type)
+>  		return (unsigned char *)&sbi->cprc_info;
+>  	else if (struct_type == ATGC_INFO)
+>  		return (unsigned char *)&sbi->am;
+> +	else if (struct_type == MOUNT_INFO)
+> +		return (unsigned char *)&F2FS_OPTION(sbi);
+>  	return NULL;
+>  }
+>  
+> @@ -358,6 +361,25 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
+>  
+>  	if (!strcmp(a->attr.name, "compr_new_inode"))
+>  		return sysfs_emit(buf, "%u\n", sbi->compr_new_inode);
+> +
+> +	if (!strcmp(a->attr.name, "compress_extension")) {
+> +		int len = 0, i;
+> +
+> +		f2fs_down_read(&sbi->sb_lock);
+> +		len += scnprintf(buf + len, PAGE_SIZE - len,
+> +						"compress extension:\n");
+> +		for (i = 0; i < F2FS_OPTION(sbi).compress_ext_cnt; i++)
+> +			len += scnprintf(buf + len, PAGE_SIZE - len, "%s\n",
+> +					F2FS_OPTION(sbi).extensions[i]);
+> +
+> +		len += scnprintf(buf + len, PAGE_SIZE - len,
+> +						"nocompress extension:\n");
+> +		for (i = 0; i < F2FS_OPTION(sbi).nocompress_ext_cnt; i++)
+> +			len += scnprintf(buf + len, PAGE_SIZE - len, "%s\n",
+> +					F2FS_OPTION(sbi).noextensions[i]);
 
-To be blunt, hell no. Stable is far enough from its namesake already; 
-the ongoing bordering-on-ridiculous brokenness of your mainline changes 
-where each "fix" keeps affecting something else is a massive NAK to 
-backporting any of it, let alone 43+ patches to achieve a 2-line fix.
+I don't think this is acceptable in sysfs.
 
-Nikhil, if this is truly sufficient to resolve the issues you see 
-(AFAICS things end up serialised by the group mutex so probably should 
-be robust enough), then I'm OK with you proposing it as a dedicated 
-stable-only fix, as an "equivalent" patch per Option 3 of 
-stable-kernel-rules.rst - I reckon your commit message is already pretty 
-good with regards to the final point there, but I'll be happy to help 
-argue the case if necessary. Just one point - is it genuinely not 
-relevant to 5.15 and earlier or is it just the case that 6.1 is the 
-oldest thing you're actively testing? (Apologies, I've already forgotten 
-where things were that far back).
-
-That said, I also don't think there would be any harm in applying this 
-to mainline as a belt-and-braces thing either, if it helps makes a 
-backport easier and Joerg doesn't mind. There's already a bunch of stuff 
-I'll be cleaning up once the underlying issue behind all of this is 
-properly fixed, so adding a couple more lines of code to that list is no 
-big deal as far as I'm concerned.
-
-Thanks,
-Robin.
+> +		f2fs_up_read(&sbi->sb_lock);
+> +		return len;
+> +	}
+>  #endif
+>  
+>  	if (!strcmp(a->attr.name, "gc_segment_mode"))
+> @@ -446,6 +468,35 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+>  		return ret ? ret : count;
+>  	}
+>  
+> +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> +	if (!strcmp(a->attr.name, "compress_extension")) {
+> +		char *name = strim((char *)buf);
+> +		bool set = true, cmpr;
+> +
+> +		if (!strncmp(name, "[c]", 3))
+> +			cmpr = true;
+> +		else if (!strncmp(name, "[n]", 3))
+> +			cmpr = false;
+> +		else
+> +			return -EINVAL;
+> +
+> +		name += 3;
+> +
+> +		if (*name == '!') {
+> +			name++;
+> +			set = false;
+> +		}
+> +
+> +		if (!strlen(name) || strlen(name) >= F2FS_EXTENSION_LEN)
+> +			return -EINVAL;
+> +
+> +		f2fs_down_write(&sbi->sb_lock);
+> +		ret = f2fs_update_compress_extension(sbi, name, cmpr, set);
+> +		f2fs_up_write(&sbi->sb_lock);
+> +		return ret ? ret : count;
+> +	}
+> +#endif
+> +
+>  	if (!strcmp(a->attr.name, "ckpt_thread_ioprio")) {
+>  		const char *name = strim((char *)buf);
+>  		struct ckpt_req_control *cprc = &sbi->cprc_info;
+> @@ -785,15 +836,16 @@ static ssize_t f2fs_sbi_store(struct f2fs_attr *a,
+>  			const char *buf, size_t count)
+>  {
+>  	ssize_t ret;
+> -	bool gc_entry = (!strcmp(a->attr.name, "gc_urgent") ||
+> -					a->struct_type == GC_THREAD);
+> +	bool need_lock = (!strcmp(a->attr.name, "gc_urgent") ||
+> +					a->struct_type == GC_THREAD ||
+> +					a->struct_type == MOUNT_INFO);
+>  
+> -	if (gc_entry) {
+> +	if (need_lock) {
+>  		if (!down_read_trylock(&sbi->sb->s_umount))
+>  			return -EAGAIN;
+>  	}
+>  	ret = __sbi_store(a, sbi, buf, count);
+> -	if (gc_entry)
+> +	if (need_lock)
+>  		up_read(&sbi->sb->s_umount);
+>  
+>  	return ret;
+> @@ -942,6 +994,9 @@ static struct f2fs_attr f2fs_attr_##name = __ATTR(name, 0444, name##_show, NULL)
+>  #define ATGC_INFO_RW_ATTR(name, elname)				\
+>  	F2FS_RW_ATTR(ATGC_INFO, atgc_management, name, elname)
+>  
+> +#define MOUNT_INFO_RW_ATTR(name, elname)			\
+> +	F2FS_RW_ATTR(MOUNT_INFO, f2fs_mount_info, name, elname)
+> +
+>  /* GC_THREAD ATTR */
+>  GC_THREAD_RW_ATTR(gc_urgent_sleep_time, urgent_sleep_time);
+>  GC_THREAD_RW_ATTR(gc_min_sleep_time, min_sleep_time);
+> @@ -1008,6 +1063,7 @@ F2FS_SBI_GENERAL_RW_ATTR(compr_saved_block);
+>  F2FS_SBI_GENERAL_RW_ATTR(compr_new_inode);
+>  F2FS_SBI_GENERAL_RW_ATTR(compress_percent);
+>  F2FS_SBI_GENERAL_RW_ATTR(compress_watermark);
+> +MOUNT_INFO_RW_ATTR(compress_extension, extensions);
+>  #endif
+>  /* atomic write */
+>  F2FS_SBI_GENERAL_RO_ATTR(current_atomic_write);
+> @@ -1181,6 +1237,7 @@ static struct attribute *f2fs_attrs[] = {
+>  	ATTR_LIST(compr_new_inode),
+>  	ATTR_LIST(compress_percent),
+>  	ATTR_LIST(compress_watermark),
+> +	ATTR_LIST(compress_extension),
+>  #endif
+>  	/* For ATGC */
+>  	ATTR_LIST(atgc_candidate_ratio),
+> -- 
+> 2.40.1
 
