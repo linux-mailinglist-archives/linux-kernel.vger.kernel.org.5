@@ -1,108 +1,113 @@
-Return-Path: <linux-kernel+bounces-58049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B29684E09D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:22:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9F6F84E0A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:25:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E236A1F22A75
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:22:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB5671C255A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:25:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F1E671B47;
-	Thu,  8 Feb 2024 12:22:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F010E74E26;
+	Thu,  8 Feb 2024 12:25:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IwemKtfd"
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="RL5gV+Yk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0696071B3D;
-	Thu,  8 Feb 2024 12:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11BA171B4F;
+	Thu,  8 Feb 2024 12:25:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707394933; cv=none; b=j6VrYUaaZ1FmTBSpDadYP+AaC7MrdcrHOBu+G+YwgVKcV1sw3a1qYC55eOmfC10U8ZP9akAyo5q+pkeo2AO2JXpbB/91jc8A8JCR3Wlu/tOoVSnPnqYcfCoI8OwF0bVrxHvwny08VWJm+7iIjHps3iJEaj8F8FyqwC9pNoF8BTI=
+	t=1707395114; cv=none; b=YhxItJFm0ZHl1s1sDkJQPQb4ngbaYB5jDW3DI8WIjM1G56O9kantCrUlqsJSRadobsRhI2m7Z5XkvTIcFqfuOzj4QNlEbLwj6y9Jlf1hzcxk3Xt4zJcXAW9dbWNlZCjZqYkJfdZbOKakK8dKVNyb2jBhQ01qU6AVsRVMmNtwyXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707394933; c=relaxed/simple;
-	bh=U+DMwyzmRR9CBmLaai/l5Kwrec1I3NSB8lkyrSvGNhI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gxb27/q1Zk1IR9eQZrJE6TuV+6ghW4QYdmuFIUG9dmA4WwT71RTsAXjRu7F+DaGd+czalH4/O8xClsb3AAk7MM2XeLPA6Jhx7gnFtTCq6mfuMogd8HX9mLLkXltsInObP2/uNN2oQzXJWWXJXXW7B0icxDJpfRzdkG1sVGtkpjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IwemKtfd; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59883168a83so730233eaf.2;
-        Thu, 08 Feb 2024 04:22:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707394931; x=1707999731; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=144DI0Veqaim/iJs6xSww4yxnMJMOZLoTbkMNqq6X2I=;
-        b=IwemKtfdD/EduiqhzSGczFRaqaD7HkNWph3RayS94+voyUO79QP84adDH03EE6vPCi
-         7/wf+0qPdAsSPlFNsrz7Y6BougHbI4rwG1gM7DpuO/mm91UDuHLMtgujPeXOIM1u/yTV
-         3RSed6DZfbFdhDCeQp7yZdS28sgPv1ClZ11dgz1TmZOlhW4FvBgGEBInwqosfhAMVYg4
-         KcSEvKGfLWvRtFaQnfA7drG/ECJjuaIoige6yS5ssvagS5SsSrLjpjkZMhxT2u/Wzhh9
-         kc6pwukF+7XpzQInJ/8VIq9j7l8nqYBHEJleUoYclp564fmINAl99HXP0WttG/MvX1wk
-         e1kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707394931; x=1707999731;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=144DI0Veqaim/iJs6xSww4yxnMJMOZLoTbkMNqq6X2I=;
-        b=dfd3aBSgAxkxifOu+Phd95ExHJaKVQ7oknm+HR4DId5k+vOnVFbLcMFOPz+TB2RkBh
-         Fp6i7GSbe9Scx/P8ODy29MG8H1O1y0RqrjLPXUrgrSQAAbrb49XIUnS2rRnJw28TqMvF
-         CJH+m7h7Nuy/vgWtwUD/PQbNKK4PZPWhufylfCpsPFffX42pStK9BnNRBEcY9YPFYYqI
-         BNLAPQ90AYxqphRmgf/VKLMjblg5jnQHuXVeoKGYq9rnjRoITkLPMDPoXHEL1JntTtWF
-         oZGJygaSUT5G5EzP8iQMBazjf13TdBFBJw1x1yNL1LdGehWkv7GXH4T4ZFTHPQy16BYX
-         Cxkw==
-X-Gm-Message-State: AOJu0YyYbSYs7vP8M6Rd9GqhI9J+Lv/vVqPw56UIT9LbAuaV6mAi1qA/
-	R7G+i4xOQ+A7uQj0hHMC1B948HmnwDNZiVZ+vgxxcUSZIQorgF3bdEabtnC28HDhwGcWQb27swF
-	nv31PUebORwlzOw0KPttd5y45XOXUXD8U
-X-Google-Smtp-Source: AGHT+IG13xHQ8kqedwCWNwc/qwyWt1WGpgo6+wuuRZvSVxqlnEmZfCjVMI7BucUhbClqS8tlT9jncicgJGayDNswwjI=
-X-Received: by 2002:a4a:850f:0:b0:59a:38b4:1038 with SMTP id
- k15-20020a4a850f000000b0059a38b41038mr2105048ooh.1.1707394930791; Thu, 08 Feb
- 2024 04:22:10 -0800 (PST)
+	s=arc-20240116; t=1707395114; c=relaxed/simple;
+	bh=k0auTRrxBqZyp0A1ddKh0do79j+T/zneuMFgZdMwvVE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KpnzVtmSiNNLxFZIR+Gr8BYdm01eA5ADmKr3C/DhzjlnD3cGJs1+tAVcDHFVz2hHrTZcKmBYeHM6uo+YusVgQSV2yrL4Uon/ToqaohdLTTba+kHKOhbBjX2BxflT7eYdz+p4I2D35XJKmBMi+LNHr8vowdCnU4SrKT7AT3W9CEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=RL5gV+Yk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 412FDC433C7;
+	Thu,  8 Feb 2024 12:25:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707395113;
+	bh=k0auTRrxBqZyp0A1ddKh0do79j+T/zneuMFgZdMwvVE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RL5gV+YkRThlSRODvgJVELiYk6P+fURNUfUXeKax0edLquUYHWFAC/8XEFYni8lJ0
+	 LR+dJ3LET8EX5yHinlzGvDJco6eHlcWgiavza82b3H+gID777V/nYklMUhh3p89JYA
+	 7tl4oCc60fYREMRxzx9hk6EOu3OPL2yA4WtyD600=
+Date: Thu, 8 Feb 2024 12:25:10 +0000
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org, rafael@kernel.org,
+	syzbot+8e41bb0c055b209ebbf4@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH riscv64] kobject: fix WARNING in input_register_device
+Message-ID: <2024020836-flypaper-relapse-5c97@gregkh>
+References: <2024020812-snowbound-version-6bfa@gregkh>
+ <tencent_6C6ACF8878B26D482FE56F649498E90EEF0A@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208120959.2513-1-ilpo.jarvinen@linux.intel.com>
-In-Reply-To: <20240208120959.2513-1-ilpo.jarvinen@linux.intel.com>
-From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date: Thu, 8 Feb 2024 13:21:59 +0100
-Message-ID: <CAMhs-H98us8rNOyQYfYsyU+Gu7pCgwOC15LaM8zfoDA2nCxOEQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] MIPS: Cleanups to PCI related code
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_6C6ACF8878B26D482FE56F649498E90EEF0A@qq.com>
 
-On Thu, Feb 8, 2024 at 1:10=E2=80=AFPM Ilpo J=C3=A4rvinen
-<ilpo.jarvinen@linux.intel.com> wrote:
->
-> Cleans up PCI related code.
->
-> v2:
-> - Convert also return 0 -> return PCIBIOS_SUCCESSFUL
->
-> Ilpo J=C3=A4rvinen (4):
->   MIPS: lantiq: Remove unused function pointer variables
->   MIPS: ath79: Don't return PCIBIOS_* code from pcibios_enable_device()
->   MIPS: PCI: Return PCIBIOS_* from tx4927_pci_config_read/write()
->   MIPS: TXx9: Use PCI_SET_ERROR_RESPONSE()
->
->  arch/mips/pci/fixup-ath79.c  |  2 +-
->  arch/mips/pci/fixup-lantiq.c |  9 ---------
->  arch/mips/pci/ops-tx4927.c   | 18 +++++++++++-------
->  3 files changed, 12 insertions(+), 17 deletions(-)
+On Thu, Feb 08, 2024 at 07:37:56PM +0800, Edward Adam Davis wrote:
+> On Thu, 8 Feb 2024 10:56:00, Greg KH wrote:
+> > > The input_add_uevent_modalias_var()->input_print_modalias() will add 1684 bytes
+> > > of data to env, which will result in insufficient memory allocated to the buf
+> > > members of env.
+> > 
+> > What is "env"?  And can you wrap your lines at 72 columns please?
+> env is an instance of struct kobj_uevent_env.
 
-For the whole series:
-Reviewed-by: Sergio Paracuellos <sergio.paracuellos@gmal.com>
+Ok, be specific please in your changelog text, otherwise we can't really
+understand what is happening.
 
-Thanks,
-     Sergio Paracuellos
+> > > Reported-and-tested-by: syzbot+8e41bb0c055b209ebbf4@syzkaller.appspotmail.com
+> > > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> > > ---
+> > >  include/linux/kobject.h | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/include/linux/kobject.h b/include/linux/kobject.h
+> > > index c30affcc43b4..74b37b6459cd 100644
+> > > --- a/include/linux/kobject.h
+> > > +++ b/include/linux/kobject.h
+> > > @@ -30,7 +30,7 @@
+> > >
+> > >  #define UEVENT_HELPER_PATH_LEN		256
+> > >  #define UEVENT_NUM_ENVP			64	/* number of env pointers */
+> > > -#define UEVENT_BUFFER_SIZE		2048	/* buffer for the variables */
+> > > +#define UEVENT_BUFFER_SIZE		2560	/* buffer for the variables */
+> > 
+> > That's an odd number, why that?  Why not just a page?  What happens if
+> > some other path wants more?
+> An increase of 512 bytes is sufficient for the current issue. Do not consider
+> the problem of hypothetical existence.
+
+Why is this 512 bytes sufficient now?  What changed to cause this?
+
+And how can we detect this automatically in the future?  Shouldn't we
+just be truncating the buffer instead of having an overflow?
+
+> > And what's causing the input stack to have so many variables all of a
+> > sudden, what changed to cause this?  Is this a bugfix for a specific
+> > commit that needs to be backported to older kernels?  Why did this
+> > buffer size all of a sudden be too small?
+> The result of my analysis is that several members of struct input_dev are too
+> large, such as its member keybit.
+
+And when did that change?  What commit id?  What prevents it from
+growing again and us needing to change this again?
+
+thanks,
+
+greg k-h
 
