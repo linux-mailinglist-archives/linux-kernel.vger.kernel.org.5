@@ -1,179 +1,130 @@
-Return-Path: <linux-kernel+bounces-58594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A7AD84E8A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:03:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E8CF84E8A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:05:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22747295D56
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:03:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DABC82853BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA9625577;
-	Thu,  8 Feb 2024 19:02:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 948E825620;
+	Thu,  8 Feb 2024 19:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="FTKS6htP";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BOcd2SgB";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="FTKS6htP";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BOcd2SgB"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CS+rhKX+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A6271D557;
-	Thu,  8 Feb 2024 19:02:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A602555F;
+	Thu,  8 Feb 2024 19:05:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707418978; cv=none; b=D2NYOdu9X/k7EqoVdBZtITc7abRJ2n5dxvirDco1UWnBV0MyKbhAjRffsBlXPj5gv407yobdjqIyaXZ8GVVHMNeB2PShxaKF3ih/OWjZO1nwuKmmmYyycA1vwxOjxiIH+mV42u197B7H1HP3c3CHa8jQO6sU8DbaZV11lnmPp/c=
+	t=1707419111; cv=none; b=IdIQontj8aq+h8DP4yMOjncajvQqIA69x9xHf+kyaTkEWcwGpD1UCgQcekfC5ViDLE6BQd7NiGTmKMngDkFC5M3+SWtZu452GbGsQpd2YQHtY6GKi/8TPAlZSZGJI6kppj9Y3OI5fLcm4SETpthIDB1CSH6us8rYqmJgU9hfsPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707418978; c=relaxed/simple;
-	bh=/YSE+gaDDx8Hjfm4z2CAlqbpuQepnagPldZO0zEkhB8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=huAhiXJH6yPwZTexfPr/5OgofV86Y4GzXhmMbG+6L3hkDOrsCeMxZuhEz3nrTNay8y9UYf/o0Ij8UhdKzx+Q85x3JzIsVjGZ7EyRm1Pc9TiWoXP26XEdVEjSlLCYD9J3pW/WRtaXgaGhXmm/1ZujPDjFhkxWjtYW3WMQf3J8XPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=FTKS6htP; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BOcd2SgB; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=FTKS6htP; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BOcd2SgB; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3D8B61FD01;
-	Thu,  8 Feb 2024 19:02:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707418973; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A4tl48kor+w9AEk22DCGxhyQHgkJ9/sl7JjncIPs25U=;
-	b=FTKS6htP6WOTy7nLhwzMaMrwe2A0f985BZTD+CGOAAQ1dw8GYU8uBuHuKaBJtpNoH0/dIX
-	sDt5O8V+KtNwoed/wW+6KkMTrnGa63KEFoK2X771qFLvxQk+E11iJP4Vhoim5qSvLWUk6M
-	R76StbIBFz57+yrnjfcNmWFCHiQ+Bds=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707418973;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A4tl48kor+w9AEk22DCGxhyQHgkJ9/sl7JjncIPs25U=;
-	b=BOcd2SgB+PsFT41UfsET58Gw1v1V9s4TIq904lcby7N+YXdoy8Ro/YfA1/Uhgkbkbu97r2
-	lcZwrlIzxhs50gAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707418973; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A4tl48kor+w9AEk22DCGxhyQHgkJ9/sl7JjncIPs25U=;
-	b=FTKS6htP6WOTy7nLhwzMaMrwe2A0f985BZTD+CGOAAQ1dw8GYU8uBuHuKaBJtpNoH0/dIX
-	sDt5O8V+KtNwoed/wW+6KkMTrnGa63KEFoK2X771qFLvxQk+E11iJP4Vhoim5qSvLWUk6M
-	R76StbIBFz57+yrnjfcNmWFCHiQ+Bds=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707418973;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A4tl48kor+w9AEk22DCGxhyQHgkJ9/sl7JjncIPs25U=;
-	b=BOcd2SgB+PsFT41UfsET58Gw1v1V9s4TIq904lcby7N+YXdoy8Ro/YfA1/Uhgkbkbu97r2
-	lcZwrlIzxhs50gAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F3F921326D;
-	Thu,  8 Feb 2024 19:02:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ZltbNVwlxWU9OAAAD6G6ig
-	(envelope-from <krisman@suse.de>); Thu, 08 Feb 2024 19:02:52 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: tytso@mit.edu,  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  kernel@collabora.co,  Gabriel Krisman
- Bertazi <krisman@collabora.com>,  Eric Biggers <ebiggers@google.com>
-Subject: Re: [RESEND PATCH v9] ext4: Log error when lookup of encoded dentry
- fails
-In-Reply-To: <20240208083511.270636-1-eugen.hristev@collabora.com> (Eugen
-	Hristev's message of "Thu, 8 Feb 2024 10:35:11 +0200")
-References: <20240208083511.270636-1-eugen.hristev@collabora.com>
-Date: Thu, 08 Feb 2024 14:02:51 -0500
-Message-ID: <87le7uvkx0.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1707419111; c=relaxed/simple;
+	bh=2qlm0ODvAMoRIMtaJwc8hZTrxizT0hsAuAgTKH9Ac6E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u4GUz/z6p0LCEYYs3h9b8FbnFuF9nwOP3HBja+fKVi3+Kq2A7fW7Rao07kxsxk85ASDu7fhTxb20qMVFbZuEt2j+8s5b8iLZX6Pz6jEs6DAj1N5QQoARjsTJi0xQaNK9mBpDWFdYIjreFK5sn3OF+Q44XZbNYc7v/UL4ehrkk+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CS+rhKX+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7FA8C433C7;
+	Thu,  8 Feb 2024 19:05:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707419111;
+	bh=2qlm0ODvAMoRIMtaJwc8hZTrxizT0hsAuAgTKH9Ac6E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CS+rhKX+zDJN3T7gIg8okrFgf1lLcVxRZ5Cz2/LEoMRiSQxKhS1AYIReNBGBrTVOa
+	 yGqJm+psHTpyryvSVn48tarXkW32jPdhOsJuUilGnCn5RyDnnW1xE+F3m6ufGOSxpY
+	 6dgpYCNtVr0JoPVCUH1dwTJp7pwPM6zLkXbZGLRjdHQgqfLmr/SiIpq6wlLl9xK8SP
+	 m+jk10SQh1NBroTiSMleSL7a5iOztf6nOKR5PJnZ5FJHfSitqkdlzKZcTSAANynisw
+	 OMLtJJ5En7QH+SIapHuil/lYGb3Kq2NHrOGS5iEHl/Vggqzzd8k1Hoc3o+w4i15teY
+	 gx/zycT4wEFVg==
+Date: Thu, 8 Feb 2024 20:05:08 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Frank Oltmanns <frank@oltmanns.dev>
+Cc: Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>, Purism Kernel Team <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-clk@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] drm/panel: st7703: Drive XBD599 panel at higher
+ clock rate
+Message-ID: <poua4bzyciiwt65sqjf2whqfdumvoe4h3bkjpf64px2vwgumrf@sai73byg2iju>
+References: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
+ <20240205-pinephone-pll-fixes-v2-5-96a46a2d8c9b@oltmanns.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=FTKS6htP;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=BOcd2SgB
-X-Spamd-Result: default: False [-2.58 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[collabora.com:email,suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.27)[73.86%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 3D8B61FD01
-X-Spam-Level: 
-X-Spam-Score: -2.58
-X-Spam-Flag: NO
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="fpufhrhdecowdrbb"
+Content-Disposition: inline
+In-Reply-To: <20240205-pinephone-pll-fixes-v2-5-96a46a2d8c9b@oltmanns.dev>
 
-Eugen Hristev <eugen.hristev@collabora.com> writes:
 
-> From: Gabriel Krisman Bertazi <krisman@collabora.com>
->
-> If the volume is in strict mode, ext4_ci_compare can report a broken
-> encoding name.  This will not trigger on a bad lookup, which is caught
-> earlier, only if the actual disk name is bad.
->
-> Reviewed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+--fpufhrhdecowdrbb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Gabriel Krisman Bertazi <krisman@suse.de>
+Hi Frank,
 
-> ---
-> Hello,
->
-> I am trying to respin the series here :
-> https://www.spinics.net/lists/linux-ext4/msg85081.html
->
-> To make it easier to apply I split it into smaller chunks which address
-> one single thing.
->
-> This patch simply adds an error message in the UNICODE path.
->
->  fs/ext4/namei.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 6e7af8dc4dde..7d357c417475 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -1477,6 +1477,9 @@ static bool ext4_match(struct inode *parent,
->  			 * only case where it happens is on a disk
->  			 * corruption or ENOMEM.
->  			 */
-> +			if (ret == -EINVAL)
-> +				EXT4_ERROR_INODE(parent,
-> +					"Directory contains filename that is invalid UTF-8");
->  			return false;
->  		}
->  		return ret;
+On Mon, Feb 05, 2024 at 04:22:28PM +0100, Frank Oltmanns wrote:
+> This panel is used in the pinephone that runs on a Allwinner A64 SOC.
+> The SOC requires pll-mipi to run at more than 500 MHz.
+>=20
+> This is the relevant clock tree:
+>  pll-mipi
+>     tcon0
+>        tcon-data-clock
+>=20
+> tcon-data-clock has to run at 1/4 the DSI per-lane bit rate. The XBD599
+> has 24 bpp and 4 lanes. Therefore, the resulting requested
+> tcon-data-clock rate is:
+>     crtc_clock * 1000 * (24 / 4) / 4
+>=20
+> tcon-data-clock runs at tcon0 / 4 (fixed divisor), so it requests a
+> parent rate of
+>     4 * (crtc_clock * 1000 * (24 / 4) / 4)
+>=20
+> Since tcon0 is a ccu_mux, the rate of tcon0 equals the rate of pll-mipi.
+>=20
+> pll-mipi's constraint to run at 500MHz or higher forces us to have a
+> crtc_clock >=3D 83333 kHz if we want a 60 Hz vertical refresh rate.
+>=20
+> Change [hv]sync_(start|end) so that we reach a clock rate of 83502 kHz
+> so that it is high enough to align with pll-pipi limits.
+>=20
+> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
 
--- 
-Gabriel Krisman Bertazi
+That commit log is great, but it's kind of off-topic. It's a panel
+driver, it can be used on any MIPI-DSI controller, the only relevant
+information there should be the panel timings required in the datasheet.
+
+The PLL setup is something for the MIPI-DSI driver to adjust, not for
+the panel to care for.
+
+Maxime
+
+--fpufhrhdecowdrbb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZcUl4wAKCRDj7w1vZxhR
+xTm0AQDNC/Tab28G6xBV/FvvVOHHELD/uZcAMloaia6Nu7yTjQD/bu1heOYZp8J7
+/+vAKLYzF/jNMgEObqQ/VnHSFbOX+Ag=
+=CNG5
+-----END PGP SIGNATURE-----
+
+--fpufhrhdecowdrbb--
 
