@@ -1,197 +1,212 @@
-Return-Path: <linux-kernel+bounces-57489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B839C84D9BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:58:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2994584D9BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:03:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69014285FB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 05:58:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84649B2236B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:03:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88A0E67C6D;
-	Thu,  8 Feb 2024 05:58:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCECB67C79;
+	Thu,  8 Feb 2024 06:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b="tpHMyee2"
-Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="OHgDqGIH"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A48A67C65
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 05:58:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.26.50.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B09867C5D;
+	Thu,  8 Feb 2024 06:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707371921; cv=none; b=cnK+rg2/jc/Q7WVr+kJnesBmB0SHWDLzBHDwFqLJH6Rf6ahYCVlODVyyHCWNCIkxuByo/C8d2b4U1veSnbgIqo+kyH4xX7N9wWsxCstei6Z/TQa6RhuBw3tzLE1Le8EgAdS8RN15Ugpu/Ux1gAwFV4PRhgathLT7eEC+fgKbBps=
+	t=1707372177; cv=none; b=pvhZ/Sw9us8al/qTh9StzXnTnIEtCnM/2W8GMyBA+bC3GMlxttBlHOaqzCbuvSfNRreXU9TPoILBffoTaeKIJyO/2XCHAHGrrohNrnl6b9KjvjnlTv38609Gve3EDanGudJyZnTz+hZ0TT7b72bMilHZFb8hpMrBy1u+Ye/RNs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707371921; c=relaxed/simple;
-	bh=vuZmv02dgek1NDNGlHYGyHlv7kNbKCbt/ogFrVSEmrE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GdNh3UUyaikQsyWOiC7i+rGvr7eslOpjRsv0h/PSVDjfyPFZOU8iiqo6n/kW4Vithc51CldqNZQaI2ua3+Tp7/2BZesXASbxfT2DH6YUbLafPkuma9SprTVsKEqon+DzvFmh/AjlIVPyx+jpjsvsDY/3gYkdJH6Zb6dAQt15XAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de; spf=pass smtp.mailfrom=phytec.de; dkim=pass (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b=tpHMyee2; arc=none smtp.client-ip=91.26.50.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.de
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-	q=dns/txt; i=@phytec.de; t=1707371909; x=1709963909;
-	h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=vuZmv02dgek1NDNGlHYGyHlv7kNbKCbt/ogFrVSEmrE=;
-	b=tpHMyee2nQ0RjIZ6DuNAznJ00uqmWPA5IQSVlruzUzX3cN+UQnYc7rWZJpksL1Ol
-	Ea7iytXeW0pzmLrCnFJO1U/v50O0uxJWU3npZCsTBe1QzvpF6yvb7dvY8L1TbIXK
-	fYjVbh+l0NcydrSSc1aNsGgY45S9u4Fkn0i1wIWyepE=;
-X-AuditID: ac14000a-fadff7000000290d-61-65c46d8490f8
-Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
-	(using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client did not present a certificate)
-	by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 13.5E.10509.48D64C56; Thu,  8 Feb 2024 06:58:28 +0100 (CET)
-Received: from [172.25.39.28] (172.25.0.11) by Berlix.phytec.de (172.25.0.12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Thu, 8 Feb 2024
- 06:58:50 +0100
-Message-ID: <033de6e2-4ca4-46bc-a0a7-e9921ed15977@phytec.de>
-Date: Thu, 8 Feb 2024 06:57:54 +0100
+	s=arc-20240116; t=1707372177; c=relaxed/simple;
+	bh=hCdityRgUs/8n4qwmql+eUGxp4yHpjYJh3eWocmqb3Q=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JEj09VV1xqVYGQFx0ZpwBVRuG9kG4CVWTBNz9FdBPxFNE5Ms6JiKJG9HaIyGimgYaQJrGpmbAmpvSYNMxIHrgrp0qSsrcfmPG2L3iAUKyTj2w7AISfdWCsJtrAiJhT4iAV4+BMoF0tik0y3Ofi5lE+R3L+Y0z/vZdnmXJLiw9s8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=OHgDqGIH; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41862WXh060454;
+	Thu, 8 Feb 2024 00:02:32 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707372152;
+	bh=WZQnBXMDi3UTGUamN7oDX+THEml/Zdj07yvVv5rZAv4=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=OHgDqGIHhsva8oOpm8F4m4RnwuD1tRMXMl3l+ego7JtajTUEicZN6S6xBghXccned
+	 0hptgHwUCDCwZMPeZOK/p3TItnrGc8kpLVkk7It3e+pQuiD3IVSncc2afx469nbyzn
+	 PmGHa6N2kgxNT7E3uDC2us1ISbDp/vdiynmAWeeU=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41862WNg003980
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 8 Feb 2024 00:02:32 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 8
+ Feb 2024 00:02:31 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 8 Feb 2024 00:02:31 -0600
+Received: from localhost (jluthra.dhcp.ti.com [172.24.227.217])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41862Ujk002881;
+	Thu, 8 Feb 2024 00:02:31 -0600
+Date: Thu, 8 Feb 2024 11:32:30 +0530
+From: Jai Luthra <j-luthra@ti.com>
+To: Nathan Morrisson <nmorrisson@phytec.com>
+CC: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <upstream@lists.phytec.de>,
+        <w.egorov@phytec.de>
+Subject: Re: [PATCH] arm64: dts: ti: am62-phyboard-lyra: Add overlay to
+ enable a GPIO fan
+Message-ID: <ynrdlauwefl6ckabxtk5qykeffcyisi6wivlforzbij3sga6uo@xdgewvanjgug>
+References: <20240207172820.478332-1-nmorrisson@phytec.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: am62-phyboard-lyra: Add overlay to enable
- a GPIO fan
-To: Andrew Davis <afd@ti.com>, Nathan Morrisson <nmorrisson@phytec.com>,
-	<nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <upstream@lists.phytec.de>
-References: <20240207172820.478332-1-nmorrisson@phytec.com>
- <acd3c7f2-930d-46c0-9924-9775e9795fca@ti.com>
-Content-Language: en-US
-From: Wadim Egorov <w.egorov@phytec.de>
-In-Reply-To: <acd3c7f2-930d-46c0-9924-9775e9795fca@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: Berlix.phytec.de (172.25.0.12) To Berlix.phytec.de
- (172.25.0.12)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDIsWRmVeSWpSXmKPExsWyRpKBR7cl90iqwZW3VhbvT01kt1iz9xyT
-	xfwj51gtln+ezW7R9+Ihs8Wmx9dYLS7vmsNm8ebHWSaLD42b2Sxa9x5ht+h+p27x/+wHdgce
-	j02rOtk87lzbw+axeUm9R393C6vHn4vvWD2O39jO5PF5k1wAexSXTUpqTmZZapG+XQJXxueO
-	GawFe2Qrfl66wdjAOFOyi5GTQ0LARGLBn4ksXYxcHEICi5kkTt9cyAjh3GGUONG/grWLkYOD
-	V8BGYt9Cd5AGFgEViUO9fSwgNq+AoMTJmU/AbFEBeYn7t2awg9jCAtESC+/MBbNFBC4xStx/
-	Uwgyk1mgjVHiycMDzCAJIYFsiZUrjoEVMQuIS9x6Mp8JxGYTUJe4s+EbK4jNKWAlcePMJUaI
-	GguJxW8OQtXLSzRvnQ01R17ixaXlLBDfyEtMO/eaGcIOldj6ZTvTBEbhWUhunYVk3SwkY2ch
-	GbuAkWUVo1BuZnJ2alFmtl5BRmVJarJeSuomRlAMijBw7WDsm+NxiJGJg/EQowQHs5IIr9mO
-	A6lCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeVd3BKcKCaQnlqRmp6YWpBbBZJk4OKUaGKfZXNX/
-	v2ypyqEGxajw9bVrv9Z06ugfOPHrb9XM+1d2nkqaG/YxmeXRRqNd5/P0Vq78YWLzIPX4LI7/
-	2j+n/bFfw/ZzxhOzglheyZYXPYdkb6WozTlpI7VrZ0nO0zT/v9M0HbREND4fzb6g4SsfrKGv
-	8Ze7+XG9e/POur62ORzLni+MsD+iG63EUpyRaKjFXFScCACWX/irrwIAAA==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="mrmu7qla3hw4wr47"
+Content-Disposition: inline
+In-Reply-To: <20240207172820.478332-1-nmorrisson@phytec.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Andrew,
+--mrmu7qla3hw4wr47
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Am 07.02.24 um 23:20 schrieb Andrew Davis:
-> On 2/7/24 11:28 AM, Nathan Morrisson wrote:
->> The phyBOARD-Lyra has a GPIO fan header. This overlay enables the fan
->> header and sets the fan to turn on at 65C.
->>
->> Signed-off-by: Nathan Morrisson <nmorrisson@phytec.com>
->> ---
->>   arch/arm64/boot/dts/ti/Makefile               |  1 +
->>   .../ti/k3-am62-phyboard-lyra-gpio-fan.dtso    | 51 +++++++++++++++++++
->>   2 files changed, 52 insertions(+)
->>   create mode 100644 
->> arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso
->>
->> diff --git a/arch/arm64/boot/dts/ti/Makefile 
->> b/arch/arm64/boot/dts/ti/Makefile
->> index 52c1dc910308..379fb4f31a1f 100644
->> --- a/arch/arm64/boot/dts/ti/Makefile
->> +++ b/arch/arm64/boot/dts/ti/Makefile
->> @@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-dev.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-mallow.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-yavia.dtb
->>   dtb-$(CONFIG_ARCH_K3) += k3-am62-lp-sk.dtb
->> +dtb-$(CONFIG_ARCH_K3) += k3-am62-phyboard-lyra-gpio-fan.dtbo
->
-> Why not call this k3-am625-phyboard-lyra-gpio-fan.dtbo to match the
-> name of the base board it applies to better?
+Hi Nathan,
 
-We are able to reuse this overlay for different SoMs (am625 and am62a) 
-that are using the same carrier board (lyra).
+Thanks for the patch.
 
-Regards,
-Wadim
+On Feb 07, 2024 at 09:28:20 -0800, Nathan Morrisson wrote:
+> The phyBOARD-Lyra has a GPIO fan header. This overlay enables the fan
+> header and sets the fan to turn on at 65C.
+>=20
+> Signed-off-by: Nathan Morrisson <nmorrisson@phytec.com>
+> ---
+>  arch/arm64/boot/dts/ti/Makefile               |  1 +
+>  .../ti/k3-am62-phyboard-lyra-gpio-fan.dtso    | 51 +++++++++++++++++++
+>  2 files changed, 52 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan=
+=2Edtso
+>=20
+> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Mak=
+efile
+> index 52c1dc910308..379fb4f31a1f 100644
+> --- a/arch/arm64/boot/dts/ti/Makefile
+> +++ b/arch/arm64/boot/dts/ti/Makefile
+> @@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_K3) +=3D k3-am625-verdin-wifi-dev.dtb
+>  dtb-$(CONFIG_ARCH_K3) +=3D k3-am625-verdin-wifi-mallow.dtb
+>  dtb-$(CONFIG_ARCH_K3) +=3D k3-am625-verdin-wifi-yavia.dtb
+>  dtb-$(CONFIG_ARCH_K3) +=3D k3-am62-lp-sk.dtb
+> +dtb-$(CONFIG_ARCH_K3) +=3D k3-am62-phyboard-lyra-gpio-fan.dtbo
 
+You can also add a compile time test, to check if this applies cleanly=20
+on your phyboard base DTB.
 
->
-> Andrew
->
->>     # Boards with AM62Ax SoC
->>   dtb-$(CONFIG_ARCH_K3) += k3-am62a7-sk.dtb
->> diff --git 
->> a/arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso 
->> b/arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso
->> new file mode 100644
->> index 000000000000..9c05748bdd9d
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso
->> @@ -0,0 +1,51 @@
->> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
->> +/*
->> + * Copyright (C) 2024 PHYTEC America LLC
->> + * Author: Garrett Giordano <ggiordano@phytec.com>
->> + */
->> +
->> +/dts-v1/;
->> +/plugin/;
->> +
->> +#include <dt-bindings/gpio/gpio.h>
->> +#include <dt-bindings/thermal/thermal.h>
->> +#include "k3-pinctrl.h"
->> +
->> +&{/} {
->> +    fan: gpio-fan {
->> +        compatible = "gpio-fan";
->> +        gpio-fan,speed-map = <0 0 8600 1>;
->> +        gpios = <&main_gpio0 40 GPIO_ACTIVE_LOW>;
->> +        #cooling-cells = <2>;
->> +        pinctrl-names = "default";
->> +        pinctrl-0 = <&gpio_fan_pins_default>;
->> +        status = "okay";
->> +    };
->> +};
->> +
->> +&main_pmx0 {
->> +    gpio_fan_pins_default: gpio-fan-default-pins {
->> +        pinctrl-single,pins = <
->> +            AM62X_IOPAD(0x0a4, PIN_OUTPUT, 7) /* (M22) 
->> GPMC0_DIR.GPIO0_40 */
->> +        >;
->> +    };
->> +};
->> +
->> +&thermal_zones {
->> +    main0_thermal: main0-thermal {
->> +        trips {
->> +            main0_thermal_trip0: main0-thermal-trip {
->> +                temperature = <65000>;  /* millicelsius */
->> +                hysteresis = <2000>;    /* millicelsius */
->> +                type = "active";
->> +            };
->> +        };
->> +
->> +        cooling-maps {
->> +            map0 {
->> +                trip = <&main0_thermal_trip0>;
->> +                cooling-device = <&fan THERMAL_NO_LIMIT 
->> THERMAL_NO_LIMIT>;
->> +            };
->> +        };
->> +    };
->> +};
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Please see the "Build time test only, enabled by CONFIG_OF_ALL_DTBS"=20
+section below in this file.
+
+> =20
+>  # Boards with AM62Ax SoC
+>  dtb-$(CONFIG_ARCH_K3) +=3D k3-am62a7-sk.dtb
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso b=
+/arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso
+> new file mode 100644
+> index 000000000000..9c05748bdd9d
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/ti/k3-am62-phyboard-lyra-gpio-fan.dtso
+> @@ -0,0 +1,51 @@
+> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
+> +/*
+> + * Copyright (C) 2024 PHYTEC America LLC
+> + * Author: Garrett Giordano <ggiordano@phytec.com>
+> + */
+> +
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/thermal/thermal.h>
+> +#include "k3-pinctrl.h"
+> +
+> +&{/} {
+> +	fan: gpio-fan {
+> +		compatible =3D "gpio-fan";
+> +		gpio-fan,speed-map =3D <0 0 8600 1>;
+> +		gpios =3D <&main_gpio0 40 GPIO_ACTIVE_LOW>;
+> +		#cooling-cells =3D <2>;
+> +		pinctrl-names =3D "default";
+> +		pinctrl-0 =3D <&gpio_fan_pins_default>;
+> +		status =3D "okay";
+> +	};
+> +};
+> +
+> +&main_pmx0 {
+> +	gpio_fan_pins_default: gpio-fan-default-pins {
+> +		pinctrl-single,pins =3D <
+> +			AM62X_IOPAD(0x0a4, PIN_OUTPUT, 7) /* (M22) GPMC0_DIR.GPIO0_40 */
+> +		>;
+> +	};
+> +};
+> +
+> +&thermal_zones {
+> +	main0_thermal: main0-thermal {
+> +		trips {
+> +			main0_thermal_trip0: main0-thermal-trip {
+> +				temperature =3D <65000>;  /* millicelsius */
+> +				hysteresis =3D <2000>;    /* millicelsius */
+> +				type =3D "active";
+> +			};
+> +		};
+> +
+> +		cooling-maps {
+> +			map0 {
+> +				trip =3D <&main0_thermal_trip0>;
+> +				cooling-device =3D <&fan THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+> +			};
+> +		};
+> +	};
+> +};
+> --=20
+> 2.25.1
+>=20
+
+--=20
+Thanks,
+Jai
+
+GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
+
+--mrmu7qla3hw4wr47
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmXEbnIACgkQQ96R+SSa
+cUUQCg/+PR53xujkTW+LArP7Z7bQT/dChxpQtnLtzYWoq5DAo3D2FoqwBmSEW5yU
++MSvUERDwPStjqL7Tru6e5ZCg0CojSdmnnz5U5yv0/cn0G6AGf3Ts3nHK8DB53My
+8rfNRhkYJG8gwUWB7TeoKlIVfPckM2ZUR1oW4K7k6mr7DpCR25FSuG0jiUNBIwXT
+THaa5WeBsa/0+r3SuFazWi/8mfnKQcl1qPUsNelb3QQZR9LOnmn7YwQuXT8DEHoH
+96hQOchdqx63wEFxkngbwEE5iN6cDjuuXDDZ9RY1xtP8lki3NU0ll3GJg6toUQez
+52zcJr6OhwkPLb6BjUnxROSVxfa17LGZRn/4hXbTqpuLsXtHmP8M8/vpiWCKRYQ8
+YEf36rKMX4xfsmvFK7Aop0R9jA/RhbKLJMQ5D0viSUHIWegA/04yTfW/jw72XZsF
+zyiYwpKYNJi8VZSynmTgH4hfLAyVBgix1HdfmPpchkrxHF5uJmrMzDd1xvfFhkNk
+sN0DsQaHXZ8u+MaIH5UcG6MxUyBCVBFRLIzETccEMNHYo2LBdhv5/a0Xhg295KiW
+EAdL7zF5AsW/rS+eKrCYvj85CTdlEWxDP4zCkcmGjhlJSWVAn12zKIU4kI0GV2ID
+gafGCjR2RtYfbnPtsBefdxEdWEt+csSjUOrN7FVElsiHfB7m6U4=
+=2LXb
+-----END PGP SIGNATURE-----
+
+--mrmu7qla3hw4wr47--
 
