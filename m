@@ -1,105 +1,136 @@
-Return-Path: <linux-kernel+bounces-57435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15D6584D90C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 04:42:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A383284D90E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 04:42:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42DCB1C22769
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 03:42:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 492801F22762
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 03:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4613200AB;
-	Thu,  8 Feb 2024 03:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC072262B;
+	Thu,  8 Feb 2024 03:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="EzLCrRSN"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="tVqWo7a5"
 Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC121EB36;
-	Thu,  8 Feb 2024 03:42:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA9220311;
+	Thu,  8 Feb 2024 03:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707363746; cv=none; b=KMApJzeLL5Hz9ALd/U8NoiVyG5OKVDo+2CcuM8nTfxsfvoKvTzphyt7VfED5lyV9M9Qwoa7zMFYd0ob/XmDfeu/RI5ZOxGte31i1Ko+VzxrMp1RQHbKK2CKihTA9PnF/8se30rhEI9bb7Ol5U1tLfJQArxbJRsE7xcB8aVVmRx0=
+	t=1707363750; cv=none; b=G4tFp06zttipj+8gBeANP02kIcYxQt4ta7XdxCQhqlsgrnaiqw29GGr/Uy/Q46ueGgR86AcjJ7ITjqRRzBR5J6ioY4w3ymCn7x+AdHXSBZOeOeJt+eo+MeXHGN6PvizFlFD5/9co5K3ZeA7ssAIibJxDdQ7YczCeWm+VNboYv10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707363746; c=relaxed/simple;
-	bh=qrdKBQDUnkGSa/+zMEimSjyGnwY5+Se+w3OhghHx4NM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=B+EmI2AREWZEePbhd5L0ToR1fAP1nhhE8UMu/IHd3mnuJuFQgl0VhoutDa073jFYTAj1N2b4fNCpi+KsHHwfpci2aik9HAObx6j1AGzLf6a6n23gNjXKVoGBp1NTPtu4lU83ztzlyNDDnULakXvh42ijL7LnZyw2oM6zOCOlx04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=EzLCrRSN; arc=none smtp.client-ip=150.107.74.76
+	s=arc-20240116; t=1707363750; c=relaxed/simple;
+	bh=lzBBRC9iLhPy2bcYVby6zuMRE3b2v79SRR4z0QBuHtc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=OMR+8mTwUmVfDl+88cYdnMBrSQk6EY9kxfjCexXakFmLoAmaNxtxF0FEtWHnLZc5f7uXXDCsBv+BZjqcDD+0qKzieEkwJM7bdA+mPFbcffozrHeG/hBICvncE3TuSeQD5iQeaCkMNomJcFwBTr+g9ROuZpiU5sK82vD2ziZvMfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=tVqWo7a5; arc=none smtp.client-ip=150.107.74.76
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707363741;
-	bh=nEzGCMQ6ri3v3t2uvyfy5c7ulw8BQ57MVRlDjVRxidQ=;
+	s=201702; t=1707363746;
+	bh=/ricgX3YbeLiF9GHdwbG+o/omDAnntZIhXV429DZHx4=;
 	h=Date:From:To:Cc:Subject:From;
-	b=EzLCrRSNx+UEtrMsm+N8u6sZlTbk26L1Rc3ORcamylLb3WA0lK1KeqOmCH4jlbP3V
-	 lCmzO3FmJxVqBl9lXs/19JjUCDa/WE4lViio4bMmEof4ojRgZbPT9chp1tk+zMZDA0
-	 mCEzsF/RLdyZgBx81C7w5+v9nTTacfbGIw33nED1yuCfJJx6CTtkPOnbLkyDCVVdER
-	 aeP7kndW8bZMN8dGjZNlufJp99JYEMTVaHR2n1DGlWZChsErfr+/mUs4x50TjrAfYP
-	 xoH1s3g1Yod9ZPhUj/3U0eim5g9zBUomW6FtcHWSYYybeALYP51ChcX3vMWtCMn037
-	 osGV5Edq7HsgA==
+	b=tVqWo7a5kdbPiIP5y6gZcCXEa8IvlTxD6iXWMUivYFz7Bc/Kk4NgXYP4Np7izfQFV
+	 ikTQk8Ns++T3jWgKoyo6Sid0r7YWYWxpv6f6WHEnBwHyVYUblJNOAe5HM1zX+8WKAH
+	 0So9UzYRZtWQcR7qqXUkff5n0tLsn2vaNEFT5yKb7IYZS1csKc64WrIsuDAXpSWeDu
+	 bqG9fZgLHouPNo0ne0LO9l3JPZdQoU9dYTSF3nOYhye/2RAOWKZ13aelRpdvi2OoSC
+	 jBMVnc+kprGm1zn6y8RFAkJbRT/hT+VNlR/8bJJYaTenFocFLmgDH8jqJ1uVWVyoUE
+	 gGldNgNhyq1iQ==
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TVjV442gMz4wbk;
-	Thu,  8 Feb 2024 14:42:20 +1100 (AEDT)
-Date: Thu, 8 Feb 2024 14:42:18 +1100
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TVjVB0lTPz4wcV;
+	Thu,  8 Feb 2024 14:42:25 +1100 (AEDT)
+Date: Thu, 8 Feb 2024 14:42:25 +1100
 From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Alasdair G Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>
-Cc: "J. corwin Coburn" <corwin@hurlbutnet.net>, Matthew Sakai
- <msakai@redhat.com>, Linux Kernel Mailing List
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Mario Limonciello <mario.limonciello@amd.com>, "Rafael J. Wysocki"
+ <rafael.j.wysocki@intel.com>, Linux Kernel Mailing List
  <linux-kernel@vger.kernel.org>, Linux Next Mailing List
  <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the device-mapper tree
-Message-ID: <20240208144218.09346f4d@canb.auug.org.au>
+Subject: linux-next: build failure after merge of the pm tree
+Message-ID: <20240208144225.3bc09ff2@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7P863dA3ykIq0WXDxyOaWuI";
+Content-Type: multipart/signed; boundary="Sig_/jFrHdLcLHIbHv2/M5avlCgK";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 
---Sig_/7P863dA3ykIq0WXDxyOaWuI
+--Sig_/jFrHdLcLHIbHv2/M5avlCgK
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
 Hi all,
 
-After merging the device-mapper tree, today's linux-next build (htmldocs)
-produced this warning:
+After merging the pm tree, today's linux-next build (i386 defconfig)
+failed like this:
 
-Documentation/admin-guide/device-mapper/vdo.rst: WARNING: document isn't in=
-cluded in any toctree
-Documentation/admin-guide/device-mapper/vdo-design.rst: WARNING: document i=
-sn't included in any toctree
+In file included from include/linux/i2c.h:13,
+                 from include/uapi/linux/fb.h:6,
+                 from include/linux/fb.h:7,
+                 from include/linux/backlight.h:13,
+                 from drivers/acpi/acpi_video.c:19:
+drivers/acpi/acpi_video.c: In function 'acpi_video_device_EDID':
+drivers/acpi/acpi_video.c:643:34: error: format '%ld' expects argument of t=
+ype 'long int', but argument 4 has type 'ssize_t' {aka 'int'} [-Werror=3Dfo=
+rmat=3D]
+  643 |                                  "Invalid _DDC data for length %ld\=
+n", length);
+      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~  ~~~~~~
+      |                                                                    =
+    |
+      |                                                                    =
+    ssize_t {aka int}
+include/linux/acpi.h:1224:56: note: in definition of macro 'acpi_handle_deb=
+ug'
+ 1224 |                 acpi_handle_printk(KERN_DEBUG, handle, fmt, ##__VA_=
+ARGS__); \
+      |                                                        ^~~
+drivers/acpi/acpi_video.c:643:66: note: format string is defined here
+  643 |                                  "Invalid _DDC data for length %ld\=
+n", length);
+      |                                                                ~~^
+      |                                                                  |
+      |                                                                  lo=
+ng int
+      |                                                                %d
 
-Introduced by commit
+Caused by commit
 
-  7903d6d10204 ("dm: add documentation for dm-vdo target")
+  9e9c41c069ce ("ACPI: video: Handle fetching EDID that is longer than 256 =
+bytes")
+
+Presumably it should be %zd.
+
+I have reverted that commit for today.
 
 --=20
 Cheers,
 Stephen Rothwell
 
---Sig_/7P863dA3ykIq0WXDxyOaWuI
+--Sig_/jFrHdLcLHIbHv2/M5avlCgK
 Content-Type: application/pgp-signature
 Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXETZoACgkQAVBC80lX
-0Gw+Vgf/ZZCXO+g6B75gBiRBLvUNp5xJtvxtUaniJ8yip6HcfIYF4CT32GGxJJIO
-/d32/0YSArHA17bqc362T/fVYZGvnTBK5m5XEPOisOQL6od7oJbmy/NBHLgh5qVg
-VQffoAdNIWSovz+FsHkUArviHikkmqx1KdAT7/1hisOWNdN4snK1lkxJWGMJwU+L
-kz+KfnsSHrDhYVPExZKai/CE4WCyurSVjVblBANnlu4RLOosXkfZUPPE/2hx4gLv
-4E8Uvpn8rxWGTQHlBy9ybKod7hzoT9On2tw8IWvzcOsNYkgfUlnBIaSLjrYts8C7
-QRBh3DQ1nlXcXqGbvGLsdKhu+UByog==
-=NM+D
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXETaEACgkQAVBC80lX
+0Gy1Jwf6AhBae1ebz1pfK2INgS/4GDPVvNuloqRi111vCAnZ3LaST0XAUow7JMy2
+DjX0PvyMDA+XART9UY4b2wsQqKg+9AqJPicvV+ENg6O+SHwMe7ioBS8B1PS5fOiC
+pDzb30nvZWhqdidV+4h8BUI11FPELVQVbGM1XI17nLN6GhwAtfMu6QLv/goKgnJ2
+7sPTuXj2zQ23xg6+4MZ6+UwHNr9WHS1d/ZV4S+kbACrhjLnw7QzlwXPTfxos1ZWt
+OPxkCHa9Ni46m36O/I+ujawQKhsFchRQHPUAN8tMA6Ldh1cQhkAOPtpQdpRl1X2L
+egnHMBNCoZrt770QxTXA3D/VWTLDiw==
+=jUx8
 -----END PGP SIGNATURE-----
 
---Sig_/7P863dA3ykIq0WXDxyOaWuI--
+--Sig_/jFrHdLcLHIbHv2/M5avlCgK--
 
