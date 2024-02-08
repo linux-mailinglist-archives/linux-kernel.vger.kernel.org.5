@@ -1,111 +1,86 @@
-Return-Path: <linux-kernel+bounces-58483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AEB884E706
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:47:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A95C84E70C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:48:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCE151C2682E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:47:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 091521F22334
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6FB86145;
-	Thu,  8 Feb 2024 17:46:11 +0000 (UTC)
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB61C12838B;
+	Thu,  8 Feb 2024 17:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ubFkWRO+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE67786124;
-	Thu,  8 Feb 2024 17:46:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373D2128370;
+	Thu,  8 Feb 2024 17:46:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707414371; cv=none; b=KlGWABkOq4lE2oSX+PLeXgfj5MosQdErITssC9/zLZAxbDMQvaJMZv+ebVIUo0UXI7wUdU3nw2OWkGF2uh4nJSKIlJNy1gehk2PfvFHCUmj/dexjhAXd0lmHSMklE9yQxth72w6uyYoYexqGgZm/fbI88eRznXrMrBrzXLMZ/QI=
+	t=1707414381; cv=none; b=OCogHSveWzLXdfmaMds6Vn4+oqKXRac8X/RVx2OrOzLdPGEkDN9fR6/6fPr4CKBSwacuaS7ejqljxjO2N31VU9OfSyDEE8npYvWq+O70kDuiW5M9QZy8SykC3sKI3TuqxLJZ3p6WhA48OU/eHXrVaqrbv6PU8lK9PhjyxTUsJX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707414371; c=relaxed/simple;
-	bh=KaV20q0GQfGnGgavViyz5KXHwueNCiLVGhY7BqMMw18=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=eeWf1FbkJj6mmlRROpKughQtIEHxJShf6MPQUP/9oYPCzeuBKbJ2SFHNIo3dz1qxoeecJmFd7ZXm2kfFSpqU13ANIDQ9V7N8y0UomuEDDIw/qBw7R9WpeeK1+//3Ul0ZptG4oqHPZ3lTm/iVXN71z30YuZ5uWc0/ParHN9bHuXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e071953676so58776b3a.2;
-        Thu, 08 Feb 2024 09:46:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707414369; x=1708019169;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tKfd7lmWIbfcamrHQWTBL8dnYP6EtyRFZjlbeDKgg2E=;
-        b=D/u2En/7VGG18JgEx6/K1bTJpOLXZQTuoi3Db3q2WN8p4DSPSTFeVLVWLF0NP9cfC6
-         HftiVg8VHXtjQFeko78gLWRBRvxOre20efyjifuWM7eqDxNw3LI+fD3Os6ahXnvt2QR0
-         xqBVlsOBEbacblQj2pFd2BzjZR2cTkDIgVpEY3dY4RRXZriloWnLMsT+dUyOVfPbxZOx
-         rvERYE+q/pJHbtNqUPSiKz1cXW5ox4dEheS27scmn2zOAqXM5u3H7/M49E8AfAjq1h/R
-         4bIsUnz8vv5GxuHouLMDlEEF3wK4NC3oRtTeDHwjK4mC9QqZauGQlNoPqIwEAWON3bAl
-         2msA==
-X-Gm-Message-State: AOJu0Yz3B6aX4iqXnCoqn6QJ+eCz7DQcMb/tD8ILQ8H4+bGkgtceYz6j
-	dhAlogssvjliN7Wi66hyHFiiC7uHusU0jLj5HrnbKcCg2p9WaL5oj7oFtBM7
-X-Google-Smtp-Source: AGHT+IFVXx5yprIFcXZZD+ButXoyZPkAGls4X6oQz0IhSiK88IfZJ0OdctI53Zra3OMb1YxpO2j1Ag==
-X-Received: by 2002:aa7:8745:0:b0:6e0:7308:7325 with SMTP id g5-20020aa78745000000b006e073087325mr3041016pfo.1.1707414368915;
-        Thu, 08 Feb 2024 09:46:08 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWiuVCKqUeskch1J4BBFbTjt+/A6f91D69wHp0wQEmpUQK1Jglrx6TUKHvJlM3AL20Bs6pd6Cbc32x1vVoMC7cWPDro0Fe+1Ege1XPRm0uY2WsFa9eYGAs2AvNGRqjdCoRbPgmco9StnyXAfV9fEg+4upNpFtubxuSwSt2aS45pDxbHRvnPH/vEVugf6QrP2mTkLpFdv8IdIfQJdXhPvnXAQFLpyhFhwZzureT0XU6wTIIZUeBLSjrMxMYAJx0nE7ZWyNBfDVZtrgC0A2aBoge4CumVLRmuHyy3HF5UpiLPtTd3FTdZsFMt/QOH/LC+aeaUlTW9rta4skTOoWq9ENLyfuGNkhR2KGEI5QrSHI21VkgZBFJBRbbT
-Received: from ?IPV6:2620:0:1000:8411:6ab9:a725:60e:97d2? ([2620:0:1000:8411:6ab9:a725:60e:97d2])
-        by smtp.gmail.com with ESMTPSA id lp20-20020a056a003d5400b006e04c3b3b58sm4191879pfb.179.2024.02.08.09.46.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 09:46:08 -0800 (PST)
-Message-ID: <5f934ebf-4e2a-44f9-993f-8b2c8d358370@acm.org>
-Date: Thu, 8 Feb 2024 09:46:06 -0800
+	s=arc-20240116; t=1707414381; c=relaxed/simple;
+	bh=gZJ1hTmX3rC/1A0BTzbCh0fkTFyn8b6e1vTOiU0fHEU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t/5xMiDTR+J/oS3ymqLJrQL5d/G12Ypw1/MjbzH/U9K6KIjceKAs9U64ZPIkez7kQumvtQUWppwtiMpLvbrFhNBhRchSyMuQjqkPQAb1IqJ3120BthFMUePlKYUgCptYBw4RM+53jPxfwTS+Rdl8X0WRpe1kbFzpVrtUrN8ghBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ubFkWRO+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50F28C43394;
+	Thu,  8 Feb 2024 17:46:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707414380;
+	bh=gZJ1hTmX3rC/1A0BTzbCh0fkTFyn8b6e1vTOiU0fHEU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ubFkWRO+Dt0b+aIf9MU5tfq9j0tuGoPJ+jJcLq5UoBglzXRgpL94u1Ao3H9LCJvd/
+	 t/c0uDSX7nq//dHreOoJPMuSLy/SLdhG0VYv7zCnsicT95CciqzuTsAtqe7jnfgGia
+	 koTLAj5i0H4jQ/2OA/5G7/06FqEnv5zO9cftMjfo8qDy+kO9JQ4Dbfqsc15pUtgGNK
+	 XM6tcnglWkfKUF10bYsAgIyvcVFra5s2bgTeEJNL3liINNiZwQxN6SllfSc5lW2F56
+	 8ofSAH3u0UvNQJ3UOkeFNhQOcvMEnyS3iXzpHQ+0319+KdOEss8Qeh+lVdlugfRcMZ
+	 eE900ZqZTj9zw==
+Date: Thu, 8 Feb 2024 17:46:16 +0000
+From: Lee Jones <lee@kernel.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: broonie@kernel.org, andy.shevchenko@gmail.com,
+	patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org
+Subject: Re: (subset) [PATCH v4 1/6] spi: cs42l43: Tidy up header includes
+Message-ID: <20240208174616.GY689448@google.com>
+References: <20240129152557.3221212-1-ckeepax@opensource.cirrus.com>
+ <170740158622.1056271.11724106959925085700.b4-ty@kernel.org>
+ <ZcUSIoAXmYsm0Lui@ediswmail9.ad.cirrus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] block: introducing a bias over deadline's fifo_time
-Content-Language: en-US
-To: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Jens Axboe
- <axboe@kernel.dk>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Yu Zhao <yuzhao@google.com>,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- Zhaoyang Huang <huangzhaoyang@gmail.com>, steve.kang@unisoc.com
-References: <20240208093136.178797-1-zhaoyang.huang@unisoc.com>
- <20240208093136.178797-3-zhaoyang.huang@unisoc.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240208093136.178797-3-zhaoyang.huang@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZcUSIoAXmYsm0Lui@ediswmail9.ad.cirrus.com>
 
-On 2/8/24 01:31, zhaoyang.huang wrote:
-> diff --git a/block/mq-deadline.c b/block/mq-deadline.c
-> index f958e79277b8..43c08c3d6f18 100644
-> --- a/block/mq-deadline.c
-> +++ b/block/mq-deadline.c
-> @@ -15,6 +15,7 @@
->   #include <linux/compiler.h>
->   #include <linux/rbtree.h>
->   #include <linux/sbitmap.h>
-> +#include "../kernel/sched/sched.h"
+On Thu, 08 Feb 2024, Charles Keepax wrote:
 
-Is kernel/sched/sched.h perhaps a private scheduler kernel header file? Shouldn't
-block layer code only include public scheduler header files?
+> On Thu, Feb 08, 2024 at 02:13:06PM +0000, Lee Jones wrote:
+> > On Mon, 29 Jan 2024 15:25:52 +0000, Charles Keepax wrote:
+> > > Including some missing headers.
+> > > 
+> > > 
+> > 
+> > Applied, thanks!
+> > 
+> > [1/6] spi: cs42l43: Tidy up header includes
+> >       commit: 0863c47b4147b948a23f03031ac880096512a878
+> 
+> Thanks all, sorry about the confusion I really should have kept
+> including the blurb I did on the first version of the patch that
+> pointed this out explicitly.
 
-> @@ -840,7 +842,9 @@ static void dd_insert_request(struct blk_mq_hw_ctx *hctx, struct request *rq,
->   		/*
->   		 * set expire time and add to fifo list
->   		 */
-> -		rq->fifo_time = jiffies + dd->fifo_expire[data_dir];
-> +		fifo_expire = task_is_realtime(current) ? dd->fifo_expire[data_dir] :
-> +			CFS_PROPORTION(current, dd->fifo_expire[data_dir]);
-> +		rq->fifo_time = jiffies + fifo_expire;
->   		insert_before = &per_prio->fifo_list[data_dir];
->   #ifdef CONFIG_BLK_DEV_ZONED
->   		/*
+No problem.  I would have probably missed it anyway!
 
-Making the mq-deadline request expiry time dependent on the task priority seems wrong
-to me.
-
-Thanks,
-
-Bart.
+-- 
+Lee Jones [李琼斯]
 
