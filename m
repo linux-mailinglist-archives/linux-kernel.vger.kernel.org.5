@@ -1,182 +1,152 @@
-Return-Path: <linux-kernel+bounces-58374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E478484E561
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:48:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8066184E565
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:49:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B2B7280A10
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:48:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07CD41F20F55
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:49:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C01667B3F7;
-	Thu,  8 Feb 2024 16:48:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC1537CF3C;
+	Thu,  8 Feb 2024 16:49:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LJ6KqaPi"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QQyfUJy4"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB7B2033E
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 16:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A067B3F7
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 16:48:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707410913; cv=none; b=ODNl1vtTRRQzX5Ai0S76n8ixrB20q+G/81k5BNgx3ozgebbslcxgezL6mnpncOB9xO+CSzg3UW28hPSVmhFqNPAHUoivKdSeLY5l1j9kjJg7bsO9rp8pelx20tJcGJRYiNzJ4GlxBykKRJ0WQthZYWlPJHSla3oNyKvZV80q0IQ=
+	t=1707410941; cv=none; b=mlgTQaF/YK7gYJ4wtcyt5venAdSaTDtnYo0ZjdSJnO0dPP+iVqXtHvLp743H0HkZ+KJ3RLQULouUy1Nh1BoGEMhJZrJmrCScFvDEH7wWYbKvgf09a/yJAZx7/uilHRSb5UIFp6jB7S+HraN1ona4gh3u1FPyZfI3v4Juraiqn9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707410913; c=relaxed/simple;
-	bh=BFcvq1pSoLqkZ4+KU1jfRH/aX9JOKK1BM22ppbYtUt0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RtTOVKg0Bbn/SMadEUEn4+X7mjqTWEEL0jg0WsTE3pN7v0sfxmi+JHlFGhrI53OqmNRgb9nVSWo2t2s7LOMHxYRM/Uo5jZlTlbmQInT/F3yEzIW7eye0qyXaKOGs5au4ETZr2CT2xjPPtqAOiEWvF1vwqijccJ2liVY+t2hXwoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LJ6KqaPi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707410911;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Q7iRmNGt3W93UVFfKwOcrmKhnYBPVT8Fkk7ZIGORewo=;
-	b=LJ6KqaPiblPkK+02b8WGPvaLXCY3YHfZ/JIrP8eo8+PO1qA3i4MPW1/8Y6kuQibmzZn13h
-	MB9hUj937Z/PuMFB9aUWAmFupZ6d8eVfRNKuv6Ka7+7/GauJVdDon54qIgq6mMw3vCO4Xq
-	NM8HJCC85WHmV3AoFMeCU1IQPbdIo88=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-657-ActtX6I-PWSdUD9IQxIE9Q-1; Thu, 08 Feb 2024 11:48:29 -0500
-X-MC-Unique: ActtX6I-PWSdUD9IQxIE9Q-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40fba0c4fbbso288895e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 08:48:29 -0800 (PST)
+	s=arc-20240116; t=1707410941; c=relaxed/simple;
+	bh=pIkQcZS9dPhEHcosG9RvWsKh81a3Ju3tnA2/A83HRUI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=vFAeZ9qciuOD0o2QVohVx1muRmSOjxZcrSbr8k+BTmqnphzwyBETIf9EhqH+actg03VCJOK0Bkz+z9TnqVgCDXaDokGi/KZXPy4noJnnhPk6nyYPJz1ve7YQpjRG24L6DF+KNiDdzPjXy84qcOsgq6tvCaEbvV8bKEuYnJpG5gk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QQyfUJy4; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc74800c869so754218276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 08:48:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707410938; x=1708015738; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lOwnn26TKMYPd0wmIeXSxvlCDp0GqmDj4OeL7dzZHIA=;
+        b=QQyfUJy4VaY6qF1ffR89eKTTiCe+wRKJS1CVSaicweFzZ8gujNbUWsiIpk2pr8ZCM8
+         mDpYZSGygkyOxefclvVCXi2ZUv1oQbD9Zww5abP1ZDYWDrAjFbovXNsrh33kSMekCdBa
+         KgoqqgekplgDRfFWHc30TZckLAL2dXATCQclEL7s5PrsHSYc0Y/2UAXYrmGS3Kxcbh6J
+         m0/CrqrXIAF6voQ3+hcjGsboPt0I84aAQ8HNdlfJsb4+pS6salKppRGpRPLW4Nabu5br
+         YS32TAGLPbH88J+JmqlKYofCPv9ynOB6HrwmuQGfLTumBrYxTn+Qb/PRoourTrBtRZoo
+         p8Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707410908; x=1708015708;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q7iRmNGt3W93UVFfKwOcrmKhnYBPVT8Fkk7ZIGORewo=;
-        b=WvSuDDgS60gMrPq/kiSwRpJvus4N0wWe/hk/NVfH369QSS+2RnedkAMRhiE84e6dB/
-         pZUYhui/9sXPHgYImC7WgS60VgomlSAI606iitrfXJmcYnEhM7+tpzs6Pn2aUoqK5+9t
-         p66cv6Mbmna1ZM7S+HKOdR3dGdq2NIdu1Qi4W9DQhC3idD7dHdSg4yTzfi93fHRejRxK
-         SuaFRmuJxvX2BcDGIBt8YhJAMzCQrpjw5AzC7bwGXrG9BMOFnV4YrS23ziHp1YVq30PN
-         YWcnmwMj/GFaXPKvLrtTiMRb3Zo9j/xgrMNB1b2UNhsUoKEoB5oz0sKXEPIvOcef9Kjb
-         9mNw==
-X-Forwarded-Encrypted: i=1; AJvYcCUWEGVWOI5Foq2Ptdgu9KxKNc44PqfH5jHd3xdCU/tJ46sp8ywwRloqNxYQ2wICaOCTzYRZbnIZKyO4YkyE4No1peq4hsVDW4RaDTx3
-X-Gm-Message-State: AOJu0Yz1cnpRIM5SSGKH87Z44inNe8Iaq5ZAaeZeSQKJZN9ugFH4m2Jb
-	kbR1Hale8Ct7nyTqAbUGuk7y2CkNkexo6HTtfJPDaDOrkL4WXNZmPz8ti7oeTpqnC9316GG1VEL
-	+8yHmoTnNeVlXN/qip3yEMLY5HXd9BYdHd5xGuy897LCtbQ3DLYDBevaet1N5VnYvGoOOn41d
-X-Received: by 2002:a05:600c:35ce:b0:40e:a3b8:a2b8 with SMTP id r14-20020a05600c35ce00b0040ea3b8a2b8mr7191206wmq.26.1707410908512;
-        Thu, 08 Feb 2024 08:48:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFYKTY1MxUtxzZJ1d4/PLs9cvlxjVLZL0kL6HVGEfXDgqgqqFif8BFLfC0Nh2g7pj8L22pL9w==
-X-Received: by 2002:a05:600c:35ce:b0:40e:a3b8:a2b8 with SMTP id r14-20020a05600c35ce00b0040ea3b8a2b8mr7191188wmq.26.1707410908118;
-        Thu, 08 Feb 2024 08:48:28 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUzDrKKFXBLqur477CGccDaqml2yYqHxzEvTTB/RcdMzy/PD5OHYVykEkCAkgQbXW2wpzvnf+3gfKLTBKERw+9eUX41iPuBeuH9HeERquQyC/48oni6USvh0TSbhrX/9d9gT45ycc3pa2iumy+/GaDHpLZd3pQUwovsMXF8qCl0
-Received: from [10.3.13.39] ([212.140.138.205])
-        by smtp.gmail.com with ESMTPSA id n17-20020a05600c4f9100b0040fc56712e8sm2133907wmq.17.2024.02.08.08.48.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 08:48:27 -0800 (PST)
-Message-ID: <fb157154-5661-4925-b2c5-7952188b28f5@redhat.com>
-Date: Thu, 8 Feb 2024 17:48:26 +0100
+        d=1e100.net; s=20230601; t=1707410938; x=1708015738;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lOwnn26TKMYPd0wmIeXSxvlCDp0GqmDj4OeL7dzZHIA=;
+        b=DqvTR5j/WsROg94KFrcMV3XmGUb7IacBU7MaY9Goj7QsSwTBkpgbT8j5QfPd23SG0s
+         2ToB941XB50PE9ZULX+5WG3wuHsmBfHxfQu4mCB8S3dH77pUUWiwLkPSemlpqguMPVT0
+         DCXL+7vipUcZBsWzks0OpfLqwBCE4U2xfkUaOsP6mX/S41WSTS7DVyTF/iwj0hw3mNHX
+         aY7zdGDjgZKZ3zP64+tNqjGfBEZazKg4LNV+tRFp0iX3xfmTd8xcT7LWb/1+6oDTVGQH
+         6QeGtbA2BAY8ntWTYh4WFV3E9eU/CKZKvhGOnPd4VxENIz9gdXxmcqJOQayi6h/EOyk+
+         Bttw==
+X-Forwarded-Encrypted: i=1; AJvYcCUcsQ1avsvPRSlnR8uXYA9yrVnHUOzYfagvLLub7UTB7vfWUayAjOqJ7knq8hSn+y+Iks9SKaL68XbVEJng8n0y6Vng3Zl9kME+K2nC
+X-Gm-Message-State: AOJu0YxqgWrQZ/AN1i/z3QY1puXgd14E+xeNDTxT9fumRGWtblw7ZnRY
+	GGR6U+S7jRcfaTV0FaYZ+a9MxN9IZNI1692A+fijRe3s1dVcQ3t0+PVaUnLrwxbW9qb0jt87iaD
+	sDQ==
+X-Google-Smtp-Source: AGHT+IFOo4ddahF0N7mDmX9X1X2sNM2ZcU+vQGm7JwWM0YenhPypIVF1WHscjjJm6Z5C2Oh/m3uaJv7ZgLM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1a48:b0:dc2:3441:897f with SMTP id
+ cy8-20020a0569021a4800b00dc23441897fmr2126896ybb.6.1707410938415; Thu, 08 Feb
+ 2024 08:48:58 -0800 (PST)
+Date: Thu, 8 Feb 2024 08:48:57 -0800
+In-Reply-To: <92918ee8-3cc9-41c3-a284-5cd6648abc05@xen.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fs/proc/task_mmu: Add display flag for VM_MAYOVERLAY
-To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org
-References: <20240208084805.1252337-1-anshuman.khandual@arm.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240208084805.1252337-1-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20240115125707.1183-1-paul@xen.org> <20240115125707.1183-12-paul@xen.org>
+ <ZcMCogbbVKuTIXWJ@google.com> <92918ee8-3cc9-41c3-a284-5cd6648abc05@xen.org>
+Message-ID: <ZcUF-TNbykWvh3r7@google.com>
+Subject: Re: [PATCH v12 11/20] KVM: xen: allow shared_info to be mapped by
+ fixed HVA
+From: Sean Christopherson <seanjc@google.com>
+To: paul@xen.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>, 
+	kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On 08.02.24 09:48, Anshuman Khandual wrote:
-> VM_UFFD_MISSING flag is mutually exclussive with VM_MAYOVERLAY flag as they
-> both use the same bit position i.e 0x00000200 in the vm_flags. Let's update
-> show_smap_vma_flags() to display the correct flags depending on CONFIG_MMU.
+On Thu, Feb 08, 2024, Paul Durrant wrote:
+> On 07/02/2024 04:10, Sean Christopherson wrote:
+> > On Mon, Jan 15, 2024, Paul Durrant wrote:
+> > > @@ -638,20 +637,32 @@ int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
+> > >   		}
+> > >   		break;
+> > > -	case KVM_XEN_ATTR_TYPE_SHARED_INFO: {
+> > > +	case KVM_XEN_ATTR_TYPE_SHARED_INFO:
+> > > +	case KVM_XEN_ATTR_TYPE_SHARED_INFO_HVA: {
+> > >   		int idx;
+> > >   		mutex_lock(&kvm->arch.xen.xen_lock);
+> > >   		idx = srcu_read_lock(&kvm->srcu);
+> > > -		if (data->u.shared_info.gfn == KVM_XEN_INVALID_GFN) {
+> > > -			kvm_gpc_deactivate(&kvm->arch.xen.shinfo_cache);
+> > > -			r = 0;
+> > > +		if (data->type == KVM_XEN_ATTR_TYPE_SHARED_INFO) {
+> > > +			if (data->u.shared_info.gfn == KVM_XEN_INVALID_GFN) {
+> > > +				kvm_gpc_deactivate(&kvm->arch.xen.shinfo_cache);
+> > > +				r = 0;
+> > > +			} else {
+> > > +				r = kvm_gpc_activate(&kvm->arch.xen.shinfo_cache,
+> > > +						     gfn_to_gpa(data->u.shared_info.gfn),
+> > > +						     PAGE_SIZE);
+> > > +			}
+> > >   		} else {
+> > > -			r = kvm_gpc_activate(&kvm->arch.xen.shinfo_cache,
+> > > -					     gfn_to_gpa(data->u.shared_info.gfn),
+> > > -					     PAGE_SIZE);
+> > > +			if (data->u.shared_info.hva == 0) {
+> > 
+> > I know I said I don't care about the KVM Xen ABI, but I still think using '0' as
+> > "invalid" is ridiculous.
+> > 
 > 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-fsdevel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> This applies on v6.8-rc3
-> 
->   fs/proc/task_mmu.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index 3f78ebbb795f..1c4eb25cfc17 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -681,7 +681,11 @@ static void show_smap_vma_flags(struct seq_file *m, struct vm_area_struct *vma)
->   		[ilog2(VM_HUGEPAGE)]	= "hg",
->   		[ilog2(VM_NOHUGEPAGE)]	= "nh",
->   		[ilog2(VM_MERGEABLE)]	= "mg",
-> +#ifdef CONFIG_MMU
->   		[ilog2(VM_UFFD_MISSING)]= "um",
-> +#else
-> +		[ilog2(VM_MAYOVERLAY)]	= "ov",
-> +#endif /* CONFIG_MMU */
->   		[ilog2(VM_UFFD_WP)]	= "uw",
->   #ifdef CONFIG_ARM64_MTE
->   		[ilog2(VM_MTE)]		= "mt",
+> With the benefit of some sleep, I'm wondering why 0 is a 'ridiculous'
+> invalid value for a *virtual* address? Surely it's essentially a numerical
+> cast of the canonically invalid NULL pointer?
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+It's legal to mmap() virtual address '0', albeit not by default:
 
--- 
-Cheers,
+  config DEFAULT_MMAP_MIN_ADDR
+	int "Low address space to protect from user allocation"
+	depends on MMU
+	default 4096
+	help
+	  This is the portion of low virtual memory which should be protected
+	  from userspace allocation.  Keeping a user from writing to low pages
+	  can help reduce the impact of kernel NULL pointer bugs.
 
-David / dhildenb
+	  For most ppc64 and x86 users with lots of address space
+	  a value of 65536 is reasonable and should cause no problems.
+	  On arm and other archs it should not be higher than 32768.
+	  Programs which use vm86 functionality or have some need to map
+	  this low address space will need CAP_SYS_RAWIO or disable this
+	  protection by setting the value to 0.
 
+	  This value can be changed after boot using the
+	  /proc/sys/vm/mmap_min_addr tunable.
+
+
+Obviously it's equally ridiculous that userspace would ever mmap() '0' and pass
+that as the shared_info, but given that this is x86-only, there are architecturally
+illegal addresses that can be used, at least until Intel adds LA64 ;-)
 
