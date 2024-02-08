@@ -1,134 +1,136 @@
-Return-Path: <linux-kernel+bounces-58093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 898D184E138
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:54:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05D9684E139
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:54:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46097283280
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:54:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D2FCB21631
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D92F762E2;
-	Thu,  8 Feb 2024 12:53:56 +0000 (UTC)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63904762D8;
+	Thu,  8 Feb 2024 12:54:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="fK2O4Syu"
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE8DD7602C;
-	Thu,  8 Feb 2024 12:53:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C565176036
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 12:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707396835; cv=none; b=fcoa0z04Fp/B+RB+ObRpW9017XxGopLc4iP1Z5mmuMViy1L9KzjtNXKDflQV2Am3jFzPsU3OjDzBeAVSiC7zmCeSUilqvaRTWoGcwNgdbWr1MVkPQm0xYOJzVSZ4AmCuFLcuEOgR7H4gqraTXuuEsTTzk9mRKvX29tlQP8yxh4s=
+	t=1707396875; cv=none; b=TIjPitjcWXxEldb5Gl4j3pX0mKmfv+FBjDgDsg7A0rL7M97jqukrRC+EvyDPfMHAzhHx45uGthJfT7BkPbS9xPYySZ67Sjttjchkb6jbxbhkaA077Y4T9W1x+3Z1FtGFpX2DO7I9a79BfL/vkUkO5C6ra8KC6+SeHn/1zmlkXk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707396835; c=relaxed/simple;
-	bh=Cli3dfHjTQg2JF+CpPCW6kjPq9xjuZ84+noWzYcT2Ec=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S5V+AmnEcndu6P+o0auq8/z8ESHjkhTZ22n0nO3ZnS5jz2xJVE2j2bbEi47syixui6X+yGWJThcT6qC4QMoniqRPWXORVrF+M0c9QVWZmeALRGBZK35LwcBFCDyzjVIfrysTZkbQmp7gW2K2LpmY0avRI/5k6Uwj4TBeSSr+O18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-604b27e3bd2so674387b3.1;
-        Thu, 08 Feb 2024 04:53:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707396831; x=1708001631;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NztMPrBdvMmS8LR3qgfsF/yKHS6WGHXK/n/wOhAxkkQ=;
-        b=D3yWNgnQmfuDtHQEgN/MgDi06Stl2jeD4EdT4R+8PxEgEiSyrL13/e3N4Y3XQGvNVQ
-         ZvtMGPuSirvmxxsFlMqKF0EwoXh3lXjZiS49Q6tvXAAwT9L/7WkzL/i1xsHQszIC7F9E
-         VRWqEchzKLEE36f7Oul7DdAGWwXyUXUeOc43PypWHz712hs8DgqM3Pv0e34KMHAxSVYF
-         SXgvstNK3o3PqkmvZcZuNHVUxzLbYQiUfWrXdRNmkt5m6hLSfHeVCtIjvmrnR2xf+qP6
-         jK4AgKADFcC2dItzjHaz7rIjtmYzmOOHrC14/gD1jfFzunxcrpJaoonsJ8NpZ5qZt60e
-         pxnA==
-X-Forwarded-Encrypted: i=1; AJvYcCWrwFgBM0CtTXpA+p1/SM2Bixjfhq6kJ9mBHoqYtOpsF1BbYN4WVPRrwVaUT7uScFULkw33qrsfqDqLQRYYrCvubc5vv7FVLRGgKXBmLWHTy76uwAvmpGgEOBgMf2ZrG/yS32jWri3ll5q37bUQzbS/KFUlVggBM3jv62jcfBnpjdnBnCmqSip/9LLp5TvXt/kgsdAsamX7IJuGELcQbRP0qeNXZg7EAsRjEUk=
-X-Gm-Message-State: AOJu0YxiL/FuLyGq9iMSAXfyv2FhWxbBvEQZ40aDm5qMVyqQvWOuLoAU
-	/iqgUVuvh7pWSE3YC+XQObpx45uykcGS2ZTdzfRpaOU8Atj9ZQKx9gLi6ZD0GdQ=
-X-Google-Smtp-Source: AGHT+IHGcKcNdmGCYkQJ34MFr8SzjnS5WA9rW1UtvmPqYfjSg2zruMJ2g7uONRrQbTwDTSFNvFDpsQ==
-X-Received: by 2002:a81:431f:0:b0:604:a51c:cbd3 with SMTP id q31-20020a81431f000000b00604a51ccbd3mr1074665ywa.15.1707396830821;
-        Thu, 08 Feb 2024 04:53:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXy893PHtyeRMfsFwW2vC40iS5aQyzlbsAW3sjpQAdedFG3yBTorjO01r38/7szW7YlNU7tN8SymExs4cR7rR0NziV+bhzP6Dz6/577hIzUOB/+36a6lkKEYvTyjWp6lY9MJnt6wHC50F4poWWUKR2qO6c/x2VDSuSwQC2eyNKm/qf6RU4IGBl2RVGujpPxmAJQwY1Rr/3QxJUa+ecmjk7WWOsLq2cWx7eIJb8=
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id t142-20020a0dea94000000b006049b905176sm505471ywe.39.2024.02.08.04.53.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 04:53:50 -0800 (PST)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dbed179f0faso625571276.1;
-        Thu, 08 Feb 2024 04:53:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX0Xe+N6h3zn5QRxl/l/uW3XtSjIArmOS8EVDT6BXiYVnbXk+G61R2mvYfdTPcDjxjbF4x2eYmg5bGDvLR7hg2Efae7c9BDX+8BI/Hsiu5em4r1B6IB/TghA6v41e4PrtBtdzEbDPNGWcH6NtRoWvqNlcAAJSSdEIyw9veRkhn/j8jWOhWckDRWI4auPnm5eOHKjaVoKdZdTIzYEYjM//MMhdTQbH21qLcmvOQ=
-X-Received: by 2002:a25:c8c3:0:b0:dc6:e7f6:254a with SMTP id
- y186-20020a25c8c3000000b00dc6e7f6254amr1664738ybf.8.1707396829937; Thu, 08
- Feb 2024 04:53:49 -0800 (PST)
+	s=arc-20240116; t=1707396875; c=relaxed/simple;
+	bh=jFdrAmmiEqaYk7GTCUNGd+77e40anha5SBREow0cYg0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=OfoUMW9/IfJn1r26Zr5eDDYL2y8tQ3X9UuKOg6ydisTMhqAcC9XmKdOj4KaoJuvVsCP9nXfsUoskazyhq245EsAxNEHGF0abcHC1lvhpNRGXLrYgp0XMatv7zDYLb38ThDhXAKLSix9t6epSjZkWQ1DD15Fuxx+QDlCcboO6Jh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=fK2O4Syu; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1707396870; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=XHK6kOnSeSKQ2zuKL97UJxePL2wg5A3NCvg/jmIvXcQ=;
+	b=fK2O4SyuYPKeNFL7eUHi5XIYPQFyax8El1UgAZr8IjCffazOZ/IDW44v8R9g/TcBIRiTyBGEHtsRIR3T5ylzjrW76PxINAHhUThTN7dYZ00DdDk/Hv/sexQ0C+fBEr+LgUKJdMIaENpEOWkeBvsK8OzOL2+MvZM+74h3LurNb/U=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W0JHSWK_1707396868;
+Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W0JHSWK_1707396868)
+          by smtp.aliyun-inc.com;
+          Thu, 08 Feb 2024 20:54:29 +0800
+From: Bitao Hu <yaoma@linux.alibaba.com>
+To: dianders@chromium.org,
+	akpm@linux-foundation.org,
+	pmladek@suse.com,
+	kernelfans@gmail.com,
+	liusong@linux.alibaba.com
+Cc: linux-kernel@vger.kernel.org,
+	yaoma@linux.alibaba.com
+Subject: [PATCHv6 0/2] *** Detect interrupt storm in softlockup ***
+Date: Thu,  8 Feb 2024 20:54:24 +0800
+Message-Id: <20240208125426.70511-1-yaoma@linux.alibaba.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208105817.2619703-1-claudiu.beznea.uj@bp.renesas.com> <20240208105817.2619703-3-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240208105817.2619703-3-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 8 Feb 2024 13:53:37 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV+CryvbFkcFGthk2VM0j7m13rQJ_0GtumPg2f-hpuMvA@mail.gmail.com>
-Message-ID: <CAMuHMdV+CryvbFkcFGthk2VM0j7m13rQJ_0GtumPg2f-hpuMvA@mail.gmail.com>
-Subject: Re: [PATCH v6 2/9] watchdog: rzg2l_wdt: Make the driver depend on PM
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: wim@linux-watchdog.org, linux@roeck-us.net, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	p.zabel@pengutronix.de, geert+renesas@glider.be, magnus.damm@gmail.com, 
-	biju.das.jz@bp.renesas.com, linux-watchdog@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Claudiu,
+Hi, guys.
+I have implemented a low-overhead method for detecting interrupt
+storm in softlockup. Please review it, all comments are welcome.
 
-On Thu, Feb 8, 2024 at 1:26=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> w=
-rote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> The rzg2l_wdt watchdog driver cannot work w/o CONFIG_PM=3Dy (e.g. the
-> clocks are enabled though pm_runtime_* specific APIs). To avoid building
-> a driver that doesn't work make explicit the dependency on CONFIG_PM.
->
-> Suggested-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->
-> Changes in v6:
-> - update patch description
-> - fixed the dependency on COMPILE_TEST previously introduced
+Changes from v5 to v6:
 
-Thanks for the update!
+- Use "./scripts/checkpatch.pl --strict" to get a few extra
+style nits and fix them.
 
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -911,6 +911,7 @@ config RENESAS_RZN1WDT
->  config RENESAS_RZG2LWDT
->         tristate "Renesas RZ/G2L WDT Watchdog"
->         depends on ARCH_RZG2L || ARCH_R9A09G011 || COMPILE_TEST
-> +       depends on PM
+- Squash patch #3 into patch #1, and wrapp the help text to
+80 columns.
 
-depends on PM || COMPILE_TEST
+- Sort existing headers alphabetically in watchdog.c
 
->         select WATCHDOG_CORE
->         help
->           This driver adds watchdog support for the integrated watchdogs =
-in the
+- Drop "softlockup_hardirq_cpus", just read "hardirq_counts"
+and see if it's non-NULL.
 
-Gr{oetje,eeting}s,
+- Store "nr_irqs" in a local variable.
 
-                        Geert
+- Simplify the calculation of "cpu_diff".
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+Changes from v4 to v5:
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+- Rearranging variable placement to make code look neater.
+
+Changes from v3 to v4:
+
+- Renaming some variable and function names to make the code logic
+more readable.
+
+- Change the code location to avoid predeclaring.
+
+- Just swap rather than a double loop in tabulate_irq_count.
+
+- Since nr_irqs has the potential to grow at runtime, bounds-check
+logic has been implemented.
+
+- Add SOFTLOCKUP_DETECTOR_INTR_STORM Kconfig knob.
+
+Changes from v2 to v3:
+
+- From Liu Song, using enum instead of macro for cpu_stats, shortening
+the name 'idx_to_stat' to 'stats', adding 'get_16bit_precesion' instead
+of using right shift operations, and using 'struct irq_counts'.
+
+- From kernel robot test, using '__this_cpu_read' and '__this_cpu_write'
+instead of accessing to an per-cpu array directly, in order to avoid
+this warning.
+'sparse: incorrect type in initializer (different modifiers)'
+
+Changes from v1 to v2:
+
+- From Douglas, optimize the memory of cpustats. With the maximum number
+of CPUs, that's now this.
+2 * 8192 * 4 + 1 * 8192 * 5 * 4 + 1 * 8192 = 237,568 bytes.
+
+- From Liu Song, refactor the code format and add necessary comments.
+
+- From Douglas, use interrupt counts instead of interrupt time to
+determine the cause of softlockup.
+
+- Remove the cmdline parameter added in PATCHv1.
+
+Bitao Hu (2):
+  watchdog/softlockup: low-overhead detection of interrupt
+  watchdog/softlockup: report the most frequent interrupts
+
+ kernel/watchdog.c | 244 +++++++++++++++++++++++++++++++++++++++++++++-
+ lib/Kconfig.debug |  13 +++
+ 2 files changed, 253 insertions(+), 4 deletions(-)
+
+-- 
+2.37.1 (Apple Git-137.1)
+
 
