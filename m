@@ -1,344 +1,241 @@
-Return-Path: <linux-kernel+bounces-57866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2D5584DE59
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:31:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFCAE84DE6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:36:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5161A1F261D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:31:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 753A31F27E3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:36:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4551D67A0A;
-	Thu,  8 Feb 2024 10:31:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Nm8ljSCJ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7EE418E07
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 10:31:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1740541A88;
+	Thu,  8 Feb 2024 10:36:39 +0000 (UTC)
+Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798F61DFC4
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 10:36:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.10.64.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707388286; cv=none; b=jpSuQ38So08h+AYolc2ZIK+R3bWgaj11zczzlasXLHFdL0WM1yPXHWtiJnIWiSFjY3ypvvlkIG/8xqtHdXVJ6Wftm5XyNEbMeCRN+R5i8nMRfarSMxeZWIaSpO1s8301Z3rh6zEhN6ol7WCuJeckR3c50LQy6/tdAI6ZfExQ1Os=
+	t=1707388598; cv=none; b=jT5HCH6SHE23qXCuxDpkOxz0GADy1jo41mYEorQHxHqdlCP2vESZVF07cdcVvoHXXedeB0De//EzcPbMocwcUDbx8LwP46VutPy+0tksJYgXcY+Y/52H4t2HGCJ8YzmoPGwVnnWhqQGyms92SMDfFIbtqX+jgGPhN8Z4JDMRVso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707388286; c=relaxed/simple;
-	bh=EvOYEv4s33rE8FzYNCNdO6OgrCDuKGHVEZY5D5FIp+Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KBsEpqO7dWJaobRhE7HKU/aT1SHKgu3QVtidOl/I0Q7LvlK9UuyKxx2nDDzdq+a4sjBLBUVvMS9E/pkpa4E8Vu1tp99IFiL/f37DzfsJrKjxdRn5EBCsC6/P29Brdf08u3KncV+X/2QQMyz/hpjIvUg3vi5NePrGuIfdAvY6j5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Nm8ljSCJ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707388283;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2FgwePHCbGVVUlY+WleABOL0dXUa4CRCA9giBrWG1GA=;
-	b=Nm8ljSCJqfTb0egYe+PTSDuuVtH/vOwlCXgKMaKPxKZfyG2y0xqX+Rl6TqOLC/5lyX+MOI
-	uFcHr0iz71yk3YmGQDnE/vcQE7YR0VS8zU+roh4kUaWi2eL1sEik5LEgkZSQTd8sLHXLX6
-	LsBjf9n1DwkhovoqfNTmIrxttB7VHl8=
-Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com
- [209.85.217.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-373-7pQxiZy4Ndap0AI7KV0jGA-1; Thu, 08 Feb 2024 05:31:18 -0500
-X-MC-Unique: 7pQxiZy4Ndap0AI7KV0jGA-1
-Received: by mail-vs1-f71.google.com with SMTP id ada2fe7eead31-46d1bae348eso512043137.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 02:31:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707388277; x=1707993077;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2FgwePHCbGVVUlY+WleABOL0dXUa4CRCA9giBrWG1GA=;
-        b=eW1blGJlMjFsZLABO9nGvq1Sgp5jYBRI0gVsWgN875/MQ/TiV5+VexG79y7g8Vk/5l
-         kburl0fvg/UsSGb4Nt4OjNLNMPUSfLLf8bBonHQIEx7oltySY0viRjeLzYt1tYTejGXO
-         6pOD8IgVAgDhxsvU/Ny6CDN0JG+Oe7hxWRkRUxU3MEEjGgirlHSyErJNSqx/qn6P1DS6
-         N1wVrty2/k2IYiOhTbjBHtbxOpM1Lb3dYldJM8/J/n3LDtCTwfHOAlfogHMv6wkEK1xG
-         If6i1iepq+VT30BIjc4+Zvl8J9zXlev2GYsgGnbytgHWKrmxPGrCwY07H0b0Y9C9Ycwe
-         PRkA==
-X-Forwarded-Encrypted: i=1; AJvYcCXo6hvWkEvBX2WpnjqDXBMzV3Ct1rC9r9JC7kmHQKiqjnwCeukDON4K3tPXYMNcysvezkyNdW3PPTqCLNuU3DKyfN/Sq+j6bgP+TpU7
-X-Gm-Message-State: AOJu0Yyccn2qRZJe/RcEV1WlFh8ykaF/XfVNzAl86dEehCvlhIGbo4Pf
-	nKk1mIoAGCr11L+kMjuamvSjsApU1Xaod36TamRiHq/sab79W+KL/OYdg5k6bmf68YsgehIUyW6
-	kOK0ppuhuwsg8VLLqo8a0yZbM9m+3KUPCM/xCEbgmMdwNjKmLr8FP1pUe7HGzy+wdcMp789F8hv
-	M2dI6Bz5CeM7ybeFY1/Y+lbQKivZh4z1PMXxvb
-X-Received: by 2002:a67:fe47:0:b0:46c:ff41:85a with SMTP id m7-20020a67fe47000000b0046cff41085amr4870621vsr.21.1707388277580;
-        Thu, 08 Feb 2024 02:31:17 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IETNfvpdUUsz5W0WduT9rVOQVUsR5A1qMH5hQAPhh8Jj0bftWqZP+F5Ylklykh6AW+l6D2Y3Ov2VoOGi917tOU=
-X-Received: by 2002:a67:fe47:0:b0:46c:ff41:85a with SMTP id
- m7-20020a67fe47000000b0046cff41085amr4870604vsr.21.1707388277288; Thu, 08 Feb
- 2024 02:31:17 -0800 (PST)
+	s=arc-20240116; t=1707388598; c=relaxed/simple;
+	bh=HEbzkWf7E48tqxLX+5DXDAgO+/sJmFhalyk/7wcrN/E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Mime-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zbbdl8Gci5iBdtTnbF5UQKde0ieIz/syM7m6OPpGmOM5JLGnjf1WewtqBx9IjHSo4khP4Zzjlwb3qqaMon5gfxYtAPiXik8jLNL66Dipy02tL9UwY3GFDqW1Ot8q2sVhycHslYdgz4UVHjc3N+HsnKT1QWOOv+IOZc9I5b9SbaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com; spf=pass smtp.mailfrom=wind.enjellic.com; arc=none smtp.client-ip=76.10.64.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wind.enjellic.com
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+	by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 418AVCnJ023148;
+	Thu, 8 Feb 2024 04:31:12 -0600
+Received: (from greg@localhost)
+	by wind.enjellic.com (8.15.2/8.15.2/Submit) id 418AVBGq023147;
+	Thu, 8 Feb 2024 04:31:11 -0600
+Date: Thu, 8 Feb 2024 04:31:11 -0600
+From: "Dr. Greg" <dg@enjellic.com>
+To: "Daniel P. Berrang??" <berrange@redhat.com>
+Cc: "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
+Message-ID: <20240208103111.GA22549@wind.enjellic.com>
+Reply-To: "Dr. Greg" <dg@enjellic.com>
+References: <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com> <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com> <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com> <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com> <Zbk6h0ogqeInLa_1@redhat.com> <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com> <20240206011247.GA29224@wind.enjellic.com> <ZcHoKUElwXGPzrWb@redhat.com> <20240206120445.GA1247@wind.enjellic.com> <ZcItU5FKlIVEEVte@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240123001555.4168188-1-michal.wilczynski@intel.com> <20240125005710.GA8443@yjiang5-mobl.amr.corp.intel.com>
-In-Reply-To: <20240125005710.GA8443@yjiang5-mobl.amr.corp.intel.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Thu, 8 Feb 2024 11:31:03 +0100
-Message-ID: <CABgObfYaUHXyRmsmg8UjRomnpQ0Jnaog9-L2gMjsjkqChjDYUQ@mail.gmail.com>
-Subject: Re: [PATCH v2] KVM: x86: nSVM/nVMX: Fix handling triple fault on RSM instruction
-To: Yunhong Jiang <yunhong.jiang@linux.intel.com>
-Cc: Michal Wilczynski <michal.wilczynski@intel.com>, seanjc@google.com, mlevitsk@redhat.com, 
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, dedekind1@gmail.com, 
-	yuan.yao@intel.com, Zheyu Ma <zheyuma97@gmail.com>
-Content-Type: multipart/mixed; boundary="000000000000c326120610dc4ff7"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcItU5FKlIVEEVte@redhat.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Thu, 08 Feb 2024 04:31:12 -0600 (CST)
 
---000000000000c326120610dc4ff7
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, Feb 06, 2024 at 01:00:03PM +0000, Daniel P. Berrang?? wrote:
 
-On Thu, Jan 25, 2024 at 1:59=E2=80=AFAM Yunhong Jiang
-<yunhong.jiang@linux.intel.com> wrote:
-> Would it be ok to move the followed emulator_leave_smm() code into
-> vmx_leave_smm, before setting nested_run_pending bit? It avoids changing
-> the generic emulator code.
->
-> #ifdef CONFIG_X86_64
->         if (guest_cpuid_has(vcpu, X86_FEATURE_LM))
->                 return rsm_load_state_64(ctxt, &smram.smram64);
->         else
-> #endif
->                 return rsm_load_state_32(ctxt, &smram.smram32);
+Good morning.
 
-I agree with Michal that vendor code should not be in charge of
-calling rsm_load_state_*.
+> On Tue, Feb 06, 2024 at 06:04:45AM -0600, Dr. Greg wrote:
+> > On Tue, Feb 06, 2024 at 08:04:57AM +0000, Daniel P. Berrang?? wrote:
+> > 
+> > Good morning to everyone.
+> > 
+> > > On Mon, Feb 05, 2024 at 07:12:47PM -0600, Dr. Greg wrote:
+> > > > 
+> > > > Actually, I now believe there is clear evidence that the problem is
+> > > > indeed Intel specific.  In light of our testing, it will be
+> > > > interesting to see what your 'AR' returns with respect to an official
+> > > > response from Intel engineering on this issue.
+> > > > 
+> > > > One of the very bright young engineers collaborating on Quixote, who
+> > > > has been following this conversation, took it upon himself to do some
+> > > > very methodical engineering analysis on this issue.  I'm the messenger
+> > > > but this is very much his work product.
+> > > > 
+> > > > Executive summary is as follows:
+> > > > 
+> > > > - No RDRAND depletion failures were observable with either the Intel
+> > > >   or AMD hardware that was load tested.
+> > > > 
+> > > > - RDSEED depletion is an Intel specific issue, AMD's RDSEED
+> > > >   implementation could not be provoked into failure.
+> > 
+> > > My colleague ran a multithread parallel stress test program on his
+> > > 16core/2HT AMD Ryzen (Zen4 uarch) and saw a 80% failure rate in
+> > > RDSEED.
+> > 
+> > Interesting datapoint, thanks for forwarding it along, so the issue
+> > shows up on at least some AMD platforms as well.
+> > 
+> > On the 18 core/socket Intel Skylake platform, the parallelized
+> > depletion test forces RDSEED success rates down to around 2%.  It
+> > would appear that your tests suggest that the AMD platform fairs
+> > better than the Intel platform.
 
-However, I don't understand the problem or the fix.
+> Yes, given the speed of the AMD RDRAND/RDSEED ops, compared to my
+> Intel test platforms, their DRBG looks better able to keep up with
+> the demand for bits.
 
-The possible causes are two, and in neither case the fix is to clear
-nested_run_pending:
+We now believe the observed resiliency of AMD's RNG infrastructure
+comes down to the fact that the completion times of their RNG
+instructions are significantly slower than Intel's.
 
-1) if the problem is that setting nested_run_pending was premature,
-the correct fix in my opinion is to split the leave_smm vendor
-callback in "prepare" and "commit" parts; not to clear it later.  See
-the attached, untested, patch.
+SkyLake and KabyLake instruction completion times are documented at
+463 clock cycles, regardless of operand size.
 
-2) otherwise, if the problem is that we have not gone through the
-vmenter yet, then KVM needs to do that and _then_ inject the triple
-fault. The fix is to merge the .triple_fault and .check_nested_events
-callbacks, with something like the second attached patch - which
-probably has so many problems that I haven't even tried to compile it.
+AMD Ryzen documents variable completion times based on operand size.
+16 and 32 bit transfers complete in 1200 clock cycles with 64 bit
+requests completing in 2500 clock cycles.
 
-The first patch should be equivalent to yours, and I guess it is
-okay-ish with a few more comments that explain what's going on.
+Given that Jason's test program was issueing 64-bit RNG requests, the
+AMD platforms are going to be approximately 5.4 times slower than
+Intel platforms, provided the results are corrected for CPU clock
+rates.
 
-Paolo
+AMD's entropy source is execution jitter time over a bank of inverter
+based ring oscillors, presumably sampled by a constant clock rate
+sampler.  Slower instruction retirement times consumes less of the
+constant rate entropy production.
 
---000000000000c326120610dc4ff7
-Content-Type: text/x-patch; charset="US-ASCII"; name="nested.patch"
-Content-Disposition: attachment; filename="nested.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lsd22eri0>
-X-Attachment-Id: f_lsd22eri0
+Intel uses thermal/quantum noise across a diode junction retrieved by
+a self-clocked sampler.  Faster instruction retirement translates into
+increased bandwidth demands on the sampler.
 
-RnJvbTogUGFvbG8gQm9uemluaSA8cGJvbnppbmlAcmVkaGF0LmNvbT4KU3ViamVjdDogW1BBVENI
-XSBLVk06IFNNTTogRG8gbm90IHNldCBuZXN0ZWRfcnVuX3BlbmRpbmcgaWYgUlNNIGNhdXNlcyB0
-cmlwbGUgZmF1bHQKClN5emthbGxlciBmb3VuZCBhIHdhcm5pbmcgdHJpZ2dlcmVkIGluIG5lc3Rl
-ZF92bXhfdm1leGl0KCkuCnZteC0+bmVzdGVkLm5lc3RlZF9ydW5fcGVuZGluZyBpcyBub24temVy
-bywgZXZlbiB0aG91Z2ggd2UncmUgaW4KbmVzdGVkX3ZteF92bWV4aXQoKS4gR2VuZXJhbGx5LCB0
-cnlpbmcgIHRvIGNhbmNlbCBhIHBlbmRpbmcgZW50cnkgaXMKY29uc2lkZXJlZCBhIGJ1Zy4gSG93
-ZXZlciBpbiB0aGlzIHBhcnRpY3VsYXIgc2NlbmFyaW8sIHRoZSBrZXJuZWwKYmVoYXZpb3Igc2Vl
-bXMgY29ycmVjdC4KClN5emthbGxlciBzY2VuYXJpbzoKMSkgU2V0IHVwIFZDUFUncwoyKSBSdW4g
-c29tZSBjb2RlIHdpdGggS1ZNX1JVTiBpbiBMMiBhcyBhIG5lc3RlZCBndWVzdAozKSBSZXR1cm4g
-ZnJvbSBLVk1fUlVOCjQpIEluamVjdCBLVk1fU01JIGludG8gdGhlIFZDUFUKNSkgQ2hhbmdlIHRo
-ZSBFRkVSIHJlZ2lzdGVyIHdpdGggS1ZNX1NFVF9TUkVHUyB0byB2YWx1ZSAweDI1MDEKNikgUnVu
-IHNvbWUgY29kZSBvbiB0aGUgVkNQVSB1c2luZyBLVk1fUlVOCjcpIE9ic2VydmUgZm9sbG93aW5n
-IGJlaGF2aW9yOgoKa3ZtX3NtbV90cmFuc2l0aW9uOiB2Y3B1IDA6IGVudGVyaW5nIFNNTSwgc21i
-YXNlIDB4MzAwMDAKa3ZtX2VudHJ5OiB2Y3B1IDAsIHJpcCAweDgwMDAKa3ZtX2VudHJ5OiB2Y3B1
-IDAsIHJpcCAweDgwMDAKa3ZtX2VudHJ5OiB2Y3B1IDAsIHJpcCAweDgwMDIKa3ZtX3NtbV90cmFu
-c2l0aW9uOiB2Y3B1IDA6IGxlYXZpbmcgU01NLCBzbWJhc2UgMHgzMDAwMAprdm1fbmVzdGVkX3Zt
-ZW50ZXI6IHJpcDogMHgwMDAwMDAwMDAwMDA4MDAyIHZtY3M6IDB4MDAwMDAwMDAwMDAwNzAwMAog
-ICAgICAgICAgICAgICAgICAgIG5lc3RlZF9yaXA6IDB4MDAwMDAwMDAwMDAwMDAwMCBpbnRfY3Rs
-OiAweDAwMDAwMDAwCiAgICAgICAgICAgICAgICAgICAgZXZlbnRfaW5qOiAweDAwMDAwMDAwIG5l
-c3RlZF9lcHQ9biBndWVzdAogICAgICAgICAgICAgICAgICAgIGNyMzogMHgwMDAwMDAwMDAwMDAy
-MDAwCmt2bV9uZXN0ZWRfdm1leGl0X2luamVjdDogcmVhc29uOiBUUklQTEVfRkFVTFQgZXh0X2lu
-ZjE6IDB4MDAwMDAwMDAwMDAwMDAwMAogICAgICAgICAgICAgICAgICAgICAgICAgIGV4dF9pbmYy
-OiAweDAwMDAwMDAwMDAwMDAwMDAgZXh0X2ludDogMHgwMDAwMDAwMAogICAgICAgICAgICAgICAg
-ICAgICAgICAgIGV4dF9pbnRfZXJyOiAweDAwMDAwMDAwCgpXaGF0IGhhcHBlbmVkIGhlcmUgaXMg
-YW4gU01JIHdhcyBpbmplY3RlZCBpbW1lZGlhdGVseSBhbmQgdGhlIGhhbmRsZXIgd2FzCmNhbGxl
-ZCBhdCBhZGRyZXNzIDB4ODAwMDsgYWxsIGlzIGdvb2QuIExhdGVyLCBhbiBSU00gaW5zdHJ1Y3Rp
-b24gaXMKZXhlY3V0ZWQgaW4gYW4gZW11bGF0b3IgdG8gcmV0dXJuIHRvIHRoZSBuZXN0ZWQgVk0u
-IGVtX3JzbSgpIGlzIGNhbGxlZCwKd2hpY2ggbGVhZHMgdG8gZW11bGF0b3JfbGVhdmVfc21tKCku
-IEEgcGFydCBvZiB0aGlzIGZ1bmN0aW9uIGNhbGxzIFZNWC9TVk0KY2FsbGJhY2ssIGluIHRoaXMg
-Y2FzZSB2bXhfbGVhdmVfc21tKCkuIEl0IGF0dGVtcHRzIHRvIHNldCB1cCBhIHBlbmRpbmcKcmVl
-bnRyeSB0byBndWVzdCBWTSBieSBjYWxsaW5nIG5lc3RlZF92bXhfZW50ZXJfbm9uX3Jvb3RfbW9k
-ZSgpIGFuZCBzZXRzCnZteC0+bmVzdGVkLm5lc3RlZF9ydW5fcGVuZGluZyB0byBvbmUuIFVuZm9y
-dHVuYXRlbHksIGxhdGVyIGluCmVtdWxhdG9yX2xlYXZlX3NtbSgpLCByc21fbG9hZF9zdGF0ZV82
-NCgpIGZhaWxzIHRvIHdyaXRlIGludmFsaWQgRUZFUiB0bwp0aGUgTVNSLiBUaGlzIHJlc3VsdHMg
-aW4gZW1fcnNtKCkgY2FsbGluZyB0cmlwbGVfZmF1bHQgY2FsbGJhY2suIEF0IHRoaXMKcG9pbnQg
-aXQncyBjbGVhciB0aGF0IHRoZSBLVk0gc2hvdWxkIGNhbGwgdGhlIHZtZXhpdCwgYnV0CnZteC0+
-bmVzdGVkLm5lc3RlZF9ydW5fcGVuZGluZyBpcyBsZWZ0IHNldCB0byAxLgoKU2ltaWxhciBmbG93
-IGdvZXMgZm9yIFNWTSwgYXMgdGhlIGJ1ZyBhbHNvIHJlcHJvZHVjZXMgb24gQU1EIHBsYXRmb3Jt
-cy4KClRvIGFkZHJlc3MgdGhpcyBpc3N1ZSwgb25seSBzZXQgdGhlIG5lc3RlZF9ydW5fcGVuZGlu
-ZyBmbGFnIGlmIFJTTQpkb2VzIG5vdCBjYXVzZSBhIHRyaXBsZSBmYXVsdC4gIFRoaXMgaXMgc3Vw
-ZXJpb3IgdG8gcmVzZXR0aW5nIHRoZQpuZXN0ZWRfcnVuX3BlbmRpbmcgZmxhZyBpbiB0aGUgdHJp
-cGxlX2ZhdWx0IGhhbmRsZXIsIGJlY2F1c2UgaW4gdGhlCnBhc3QgdGhlcmUgd2VyZSBpbnN0YW5j
-ZXMgd2hlcmUgS1ZNIHByZW1hdHVyZWx5IHN5bnRoZXNpemVkIGEgdHJpcGxlCmZhdWx0IG9uIG5l
-c3RlZCBWTS1FbnRlci4gSW4gdGhlc2UgY2FzZXMsIGl0IGlzIG5vdCBhcHByb3ByaWF0ZSB0byB6
-ZXJvCnRoZSBuZXN0ZWRfcGVuZGluZ19ydW4sIG90aGVyd2lzZSB0aGUgb3JkZXIgb2YgZXZlbnQg
-aW5qZWN0aW9uIGlzIG5vdApwcmVzZXJ2ZWQuCgpbQ29tbWl0IG1lc3NhZ2UgYnkgTWljaGFsIFdp
-bGN6eW5za2ldCgpGaXhlczogNzU5Y2JkNTk2NzRhICgiS1ZNOiB4ODY6IG5TVk0vblZNWDogc2V0
-IG5lc3RlZF9ydW5fcGVuZGluZyBvbiBWTSBlbnRyeSB3aGljaCBpcyBhIHJlc3VsdCBvZiBSU00i
-KQpSZXBvcnRlZC1ieTogWmhleXUgTWEgPHpoZXl1bWE5N0BnbWFpbC5jb20+CkNsb3NlczogaHR0
-cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsL0NBTWhVQmptWE1Zc0VvVll3X004aFNaakJNSGgyNGk4
-OFFZbS1SWTZIRHRhNVlaN1dnd0BtYWlsLmdtYWlsLmNvbQpBbmFseXplZC1ieTogTWljaGFsIFdp
-bGN6eW5za2kgPG1pY2hhbC53aWxjenluc2tpQGludGVsLmNvbT4KU2lnbmVkLW9mZi1ieTogUGFv
-bG8gQm9uemluaSA8cGJvbnppbmlAcmVkaGF0LmNvbT4KLS0tCgogaW5jbHVkZS9hc20va3ZtLXg4
-Ni1vcHMuaCB8ICAgIDMgKystCiBpbmNsdWRlL2FzbS9rdm1faG9zdC5oICAgIHwgICAgMyArKy0K
-IGt2bS9zbW0uYyAgICAgICAgICAgICAgICAgfCAgIDEzICsrKysrKysrKy0tLS0KIGt2bS9zdm0v
-c3ZtLmMgICAgICAgICAgICAgfCAgIDE2ICsrKysrKysrKysrKy0tLS0KIGt2bS92bXgvdm14LmMg
-ICAgICAgICAgICAgfCAgIDE1ICsrKysrKysrKysrKy0tLQogNSBmaWxlcyBjaGFuZ2VkLCAzNyBp
-bnNlcnRpb25zKCspLCAxMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9pbmNs
-dWRlL2FzbS9rdm0teDg2LW9wcy5oIGIvYXJjaC94ODYvaW5jbHVkZS9hc20va3ZtLXg4Ni1vcHMu
-aAppbmRleCBhYzhiNzYxNGU3OWQuLjNkMThmYTdkYjM1MyAxMDA2NDQKLS0tIGEvYXJjaC94ODYv
-aW5jbHVkZS9hc20va3ZtLXg4Ni1vcHMuaAorKysgYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9rdm0t
-eDg2LW9wcy5oCkBAIC0xMTksNyArMTE5LDggQEAgS1ZNX1g4Nl9PUChzZXR1cF9tY2UpCiAjaWZk
-ZWYgQ09ORklHX0tWTV9TTU0KIEtWTV9YODZfT1Aoc21pX2FsbG93ZWQpCiBLVk1fWDg2X09QKCkK
-LUtWTV9YODZfT1AobGVhdmVfc21tKQorS1ZNX1g4Nl9PUChsZWF2ZV9zbW1fcHJlcGFyZSkKK0tW
-TV9YODZfT1AobGVhdmVfc21tX2NvbW1pdCkKIEtWTV9YODZfT1AoZW5hYmxlX3NtaV93aW5kb3cp
-CiAjZW5kaWYKIEtWTV9YODZfT1BfT1BUSU9OQUwoZGV2X2dldF9hdHRyKQpkaWZmIC0tZ2l0IGEv
-YXJjaC94ODYvaW5jbHVkZS9hc20va3ZtX2hvc3QuaCBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL2t2
-bV9ob3N0LmgKaW5kZXggMGJjZDlhZTE2MDk3Li44ODIxY2ZlNGNlZDIgMTAwNjQ0Ci0tLSBhL2Fy
-Y2gveDg2L2luY2x1ZGUvYXNtL2t2bV9ob3N0LmgKKysrIGIvYXJjaC94ODYvaW5jbHVkZS9hc20v
-a3ZtX2hvc3QuaApAQCAtMTc2NSw3ICsxNzY1LDggQEAgc3RydWN0IGt2bV94ODZfb3BzIHsKICNp
-ZmRlZiBDT05GSUdfS1ZNX1NNTQogCWludCAoKnNtaV9hbGxvd2VkKShzdHJ1Y3Qga3ZtX3ZjcHUg
-KnZjcHUsIGJvb2wgZm9yX2luamVjdGlvbik7CiAJaW50ICgqZW50ZXJfc21tKShzdHJ1Y3Qga3Zt
-X3ZjcHUgKnZjcHUsIHVuaW9uIGt2bV9zbXJhbSAqc21yYW0pOwotCWludCAoKmxlYXZlX3NtbSko
-c3RydWN0IGt2bV92Y3B1ICp2Y3B1LCBjb25zdCB1bmlvbiBrdm1fc21yYW0gKnNtcmFtKTsKKwlp
-bnQgKCpsZWF2ZV9zbW1fcHJlcGFyZSkoc3RydWN0IGt2bV92Y3B1ICp2Y3B1LCBjb25zdCB1bmlv
-biBrdm1fc21yYW0gKnNtcmFtKTsKKwl2b2lkICgqbGVhdmVfc21tX2NvbW1pdCkoc3RydWN0IGt2
-bV92Y3B1ICp2Y3B1KTsKIAl2b2lkICgqZW5hYmxlX3NtaV93aW5kb3cpKHN0cnVjdCBrdm1fdmNw
-dSAqdmNwdSk7CiAjZW5kaWYKIApkaWZmIC0tZ2l0IGEvYXJjaC94ODYva3ZtL3NtbS5jIGIvYXJj
-aC94ODYva3ZtL3NtbS5jCmluZGV4IGRjM2Q5NWZkY2E3ZC4uYWM5NTE4OTQ2MTFlIDEwMDY0NAot
-LS0gYS9hcmNoL3g4Ni9rdm0vc21tLmMKKysrIGIvYXJjaC94ODYva3ZtL3NtbS5jCkBAIC02MzEs
-MTcgKzYzMSwyMiBAQCBpbnQgZW11bGF0b3JfbGVhdmVfc21tKHN0cnVjdCB4ODZfZW11bGF0ZV9j
-dHh0ICpjdHh0KQogI2VuZGlmCiAKIAkvKgotCSAqIEdpdmUgbGVhdmVfc21tKCkgYSBjaGFuY2Ug
-dG8gbWFrZSBJU0Etc3BlY2lmaWMgY2hhbmdlcyB0byB0aGUgdkNQVQorCSAqIEdpdmUgdmVuZG9y
-IGNvZGUgYSBjaGFuY2UgdG8gbWFrZSBJU0Etc3BlY2lmaWMgY2hhbmdlcyB0byB0aGUgdkNQVQog
-CSAqIHN0YXRlIChlLmcuIGVudGVyIGd1ZXN0IG1vZGUpIGJlZm9yZSBsb2FkaW5nIHN0YXRlIGZy
-b20gdGhlIFNNTQogCSAqIHN0YXRlLXNhdmUgYXJlYS4KIAkgKi8KLQlpZiAoc3RhdGljX2NhbGwo
-a3ZtX3g4Nl9sZWF2ZV9zbW0pKHZjcHUsICZzbXJhbSkpCisJaWYgKHN0YXRpY19jYWxsKGt2bV94
-ODZfbGVhdmVfc21tX3ByZXBhcmUpKHZjcHUsICZzbXJhbSkpCiAJCXJldHVybiBYODZFTVVMX1VO
-SEFORExFQUJMRTsKIAogI2lmZGVmIENPTkZJR19YODZfNjQKIAlpZiAoZ3Vlc3RfY3B1aWRfaGFz
-KHZjcHUsIFg4Nl9GRUFUVVJFX0xNKSkKLQkJcmV0dXJuIHJzbV9sb2FkX3N0YXRlXzY0KGN0eHQs
-ICZzbXJhbS5zbXJhbTY0KTsKKwkJcmV0ID0gcnNtX2xvYWRfc3RhdGVfNjQoY3R4dCwgJnNtcmFt
-LnNtcmFtNjQpOwogCWVsc2UKICNlbmRpZgotCQlyZXR1cm4gcnNtX2xvYWRfc3RhdGVfMzIoY3R4
-dCwgJnNtcmFtLnNtcmFtMzIpOworCQlyZXQgPSByc21fbG9hZF9zdGF0ZV8zMihjdHh0LCAmc21y
-YW0uc21yYW0zMik7CisKKwlpZiAocmV0ID09IFg4NkVNVUxfQ09OVElOVUUpCisJCXN0YXRpY19j
-YWxsKGt2bV94ODZfbGVhdmVfc21tX2NvbW1pdCkodmNwdSk7CisKKwlyZXR1cm4gcmV0OwogfQpk
-aWZmIC0tZ2l0IGEvYXJjaC94ODYva3ZtL3N2bS9zdm0uYyBiL2FyY2gveDg2L2t2bS9zdm0vc3Zt
-LmMKaW5kZXggMzkyYjljMmUyY2UxLi43NDMzYmEzMmM1ZmYgMTAwNjQ0Ci0tLSBhL2FyY2gveDg2
-L2t2bS9zdm0vc3ZtLmMKKysrIGIvYXJjaC94ODYva3ZtL3N2bS9zdm0uYwpAQCAtNDY0Miw3ICs0
-NjQyLDcgQEAgc3RhdGljIGludCBzdm1fZW50ZXJfc21tKHN0cnVjdCBrdm1fdmNwdSAqdmNwdSwg
-dW5pb24ga3ZtX3NtcmFtICpzbXJhbSkKIAlyZXR1cm4gMDsKIH0KIAotc3RhdGljIGludCBzdm1f
-bGVhdmVfc21tKHN0cnVjdCBrdm1fdmNwdSAqdmNwdSwgY29uc3QgdW5pb24ga3ZtX3NtcmFtICpz
-bXJhbSkKK3N0YXRpYyBpbnQgc3ZtX2xlYXZlX3NtbV9wcmVwYXJlKHN0cnVjdCBrdm1fdmNwdSAq
-dmNwdSwgY29uc3QgdW5pb24ga3ZtX3NtcmFtICpzbXJhbSkKIHsKIAlzdHJ1Y3QgdmNwdV9zdm0g
-KnN2bSA9IHRvX3N2bSh2Y3B1KTsKIAlzdHJ1Y3Qga3ZtX2hvc3RfbWFwIG1hcCwgbWFwX3NhdmU7
-CkBAIC00Njk1LDggKzQ2OTUsNiBAQCBzdGF0aWMgaW50IHN2bV9sZWF2ZV9zbW0oc3RydWN0IGt2
-bV92Y3B1ICp2Y3B1LCBjb25zdCB1bmlvbiBrdm1fc21yYW0gKnNtcmFtKQogCWlmIChyZXQpCiAJ
-CWdvdG8gdW5tYXBfc2F2ZTsKIAotCXN2bS0+bmVzdGVkLm5lc3RlZF9ydW5fcGVuZGluZyA9IDE7
-Ci0KIHVubWFwX3NhdmU6CiAJa3ZtX3ZjcHVfdW5tYXAodmNwdSwgJm1hcF9zYXZlLCB0cnVlKTsK
-IHVubWFwX21hcDoKQEAgLTQ3MDQsNiArNDcwMiwxNSBAQCBzdGF0aWMgaW50IHN2bV9sZWF2ZV9z
-bW0oc3RydWN0IGt2bV92Y3B1ICp2Y3B1LCBjb25zdCB1bmlvbiBrdm1fc21yYW0gKnNtcmFtKQog
-CXJldHVybiByZXQ7CiB9CiAKK3N0YXRpYyB2b2lkIHN2bV9sZWF2ZV9zbW1fY29tbWl0KHN0cnVj
-dCBrdm1fdmNwdSAqdmNwdSkKK3sKKyAJc3RydWN0IHZjcHVfc3ZtICpzdm0gPSB0b19zdm0odmNw
-dSk7CisKKwkvKiBGb3JjZSBhbnkgcGVuZGluZyBldmVudHMgdG8gY2F1c2Ugdm1leGl0cy4gICov
-CisJaWYgKGlzX2d1ZXN0X21vZGUodmNwdSkpCisJCXN2bS0+bmVzdGVkLm5lc3RlZF9ydW5fcGVu
-ZGluZyA9IDE7Cit9CisKIHN0YXRpYyB2b2lkIHN2bV9lbmFibGVfc21pX3dpbmRvdyhzdHJ1Y3Qg
-a3ZtX3ZjcHUgKnZjcHUpCiB7CiAJc3RydWN0IHZjcHVfc3ZtICpzdm0gPSB0b19zdm0odmNwdSk7
-CkBAIC01MDEwLDcgKzUwMTQsOCBAQCBzdGF0aWMgc3RydWN0IGt2bV94ODZfb3BzIHN2bV94ODZf
-b3BzIF9faW5pdGRhdGEgPSB7CiAjaWZkZWYgQ09ORklHX0tWTV9TTU0KIAkuc21pX2FsbG93ZWQg
-PSBzdm1fc21pX2FsbG93ZWQsCiAJLmVudGVyX3NtbSA9IHN2bV9lbnRlcl9zbW0sCi0JLmxlYXZl
-X3NtbSA9IHN2bV9sZWF2ZV9zbW0sCisJLmxlYXZlX3NtbV9wcmVwYXJlID0gc3ZtX2xlYXZlX3Nt
-bV9wcmVwYXJlLAorCS5sZWF2ZV9zbW1fY29tbWl0ID0gc3ZtX2xlYXZlX3NtbV9jb21taXQsCiAJ
-LmVuYWJsZV9zbWlfd2luZG93ID0gc3ZtX2VuYWJsZV9zbWlfd2luZG93LAogI2VuZGlmCiAKZGlm
-ZiAtLWdpdCBhL2FyY2gveDg2L2t2bS92bXgvdm14LmMgYi9hcmNoL3g4Ni9rdm0vdm14L3ZteC5j
-CmluZGV4IGUyNjJiYzJiYTRlNS4uZWUyYjg1MDU4NTM5IDEwMDY0NAotLS0gYS9hcmNoL3g4Ni9r
-dm0vdm14L3ZteC5jCisrKyBiL2FyY2gveDg2L2t2bS92bXgvdm14LmMKQEAgLTgxMzgsNyArODEz
-OCw3IEBAIHN0YXRpYyBpbnQgdm14X2VudGVyX3NtbShzdHJ1Y3Qga3ZtX3ZjcHUgKnZjcHUsIHVu
-aW9uIGt2bV9zbXJhbSAqc21yYW0pCiAJcmV0dXJuIDA7CiB9CiAKLXN0YXRpYyBpbnQgdm14X2xl
-YXZlX3NtbShzdHJ1Y3Qga3ZtX3ZjcHUgKnZjcHUsIGNvbnN0IHVuaW9uIGt2bV9zbXJhbSAqc21y
-YW0pCitzdGF0aWMgaW50IHZteF9sZWF2ZV9zbW1fcHJlcGFyZShzdHJ1Y3Qga3ZtX3ZjcHUgKnZj
-cHUsIGNvbnN0IHVuaW9uIGt2bV9zbXJhbSAqc21yYW0pCiB7CiAJc3RydWN0IHZjcHVfdm14ICp2
-bXggPSB0b192bXgodmNwdSk7CiAJaW50IHJldDsKQEAgLTgxNTMsMTIgKzgxNTMsMjAgQEAgc3Rh
-dGljIGludCB2bXhfbGVhdmVfc21tKHN0cnVjdCBrdm1fdmNwdSAqdmNwdSwgY29uc3QgdW5pb24g
-a3ZtX3NtcmFtICpzbXJhbSkKIAkJaWYgKHJldCkKIAkJCXJldHVybiByZXQ7CiAKLQkJdm14LT5u
-ZXN0ZWQubmVzdGVkX3J1bl9wZW5kaW5nID0gMTsKIAkJdm14LT5uZXN0ZWQuc21tLmd1ZXN0X21v
-ZGUgPSBmYWxzZTsKIAl9CiAJcmV0dXJuIDA7CiB9CiAKK3N0YXRpYyB2b2lkIHZteF9sZWF2ZV9z
-bW1fY29tbWl0KHN0cnVjdCBrdm1fdmNwdSAqdmNwdSkKK3sKKyAJc3RydWN0IHZjcHVfdm14ICp2
-bXggPSB0b192bXgodmNwdSk7CisKKwkvKiBGb3JjZSBhbnkgcGVuZGluZyBldmVudHMgdG8gY2F1
-c2Ugdm1leGl0cy4gICovCisJaWYgKGlzX2d1ZXN0X21vZGUodmNwdSkpCisJCXZteC0+bmVzdGVk
-Lm5lc3RlZF9ydW5fcGVuZGluZyA9IDE7Cit9CisKIHN0YXRpYyB2b2lkIHZteF9lbmFibGVfc21p
-X3dpbmRvdyhzdHJ1Y3Qga3ZtX3ZjcHUgKnZjcHUpCiB7CiAJLyogUlNNIHdpbGwgY2F1c2UgYSB2
-bWV4aXQgYW55d2F5LiAgKi8KQEAgLTgzODAsNyArODM4NSw4IEBAIHN0YXRpYyBzdHJ1Y3Qga3Zt
-X3g4Nl9vcHMgdm14X3g4Nl9vcHMgX19pbml0ZGF0YSA9IHsKICNpZmRlZiBDT05GSUdfS1ZNX1NN
-TQogCS5zbWlfYWxsb3dlZCA9IHZteF9zbWlfYWxsb3dlZCwKIAkuZW50ZXJfc21tID0gdm14X2Vu
-dGVyX3NtbSwKLQkubGVhdmVfc21tID0gdm14X2xlYXZlX3NtbSwKKwkubGVhdmVfc21tX3ByZXBh
-cmUgPSB2bXhfbGVhdmVfc21tX3ByZXBhcmUsCisJLmxlYXZlX3NtbV9jb21taXQgPSB2bXhfbGVh
-dmVfc21tX2NvbW1pdCwKIAkuZW5hYmxlX3NtaV93aW5kb3cgPSB2bXhfZW5hYmxlX3NtaV93aW5k
-b3csCiAjZW5kaWYKIAo=
---000000000000c326120610dc4ff7
-Content-Type: text/x-patch; charset="US-ASCII"; name="nested2.patch"
-Content-Disposition: attachment; filename="nested2.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lsd2tsri1>
-X-Attachment-Id: f_lsd2tsri1
+> > Of course, the other variable may be how the parallelized stress test
+> > is conducted.  If you would like to share your implementation source
+> > we could give it a twirl on the systems we have access to.
+> 
+> It is just Jason's earlier test program, but moved into one thread
+> for each core....
+> 
+> $ cat cpurngstress.c
+> #include <stdio.h>
+> #include <immintrin.h>
+> #include <pthread.h>
+> #include <unistd.h>
+> 
+> /*
+>  * Gives about 25 seconds walllock time on my Alderlake CPU
+>  *
+>  * Probably want to reduce this x10, or possibly even x100
+>  * on AMD due to much slower ops.
+>  */
+> #define MAX_ITER 10000000
+> 
+> #define MAX_CPUS 4096
+> 
+> void *doit(void *f) {
+>     unsigned long long rand;
+>     unsigned int i, success_rand = 0, success_seed = 0;
+> 
+>     for (i = 0; i < MAX_ITER; ++i) {
+>         success_seed += !!_rdseed64_step(&rand);
+>     }
+>     for (i = 0; i < MAX_ITER; ++i) {
+>         success_rand += !!_rdrand64_step(&rand);
+>     }
+> 
+>     fprintf(stderr,
+> 	    "RDRAND: %.2f%%, RDSEED: %.2f%%\n",
+> 	    success_rand * 100.0 / MAX_ITER,
+> 	    success_seed * 100.0 / MAX_ITER);
+> 
+>     return NULL;
+> }
+> 
+> 
+> int main(int argc, char *argv[])
+> {
+>     pthread_t th[MAX_CPUS];
+>     int nproc = sysconf(_SC_NPROCESSORS_ONLN);
+>     if (nproc > MAX_CPUS) {
+>       nproc = MAX_CPUS;
+>     }
+>     fprintf(stderr, "Stressing RDRAND/RDSEED across %d CPUs\n", nproc);
+> 
+>     for (int i = 0 ; i < nproc;i ++) {
+>       pthread_create(&th[i], NULL, doit,NULL);
+>     }
+> 
+>     for (int i = 0 ; i < nproc;i ++) {
+>       pthread_join(th[i], NULL);
+>     }
+> 
+>     return 0;
+> }
+> 
+> $ gcc -march=native -o cpurngstress cpurngstress.c
 
-ZGlmZiAtLWdpdCBhL2FyY2gveDg2L2t2bS9zdm0vbmVzdGVkLmMgYi9hcmNoL3g4Ni9rdm0vc3Zt
-L25lc3RlZC5jCmluZGV4IGRlZTYyMzYyYTM2MC4uMjQwMjllY2M3N2IxIDEwMDY0NAotLS0gYS9h
-cmNoL3g4Ni9rdm0vc3ZtL25lc3RlZC5jCisrKyBiL2FyY2gveDg2L2t2bS9zdm0vbmVzdGVkLmMK
-QEAgLTE0MzcsNiArMTQzOCwxMyBAQCBzdGF0aWMgaW50IHN2bV9jaGVja19uZXN0ZWRfZXZlbnRz
-KHN0cnVjdCBrdm1fdmNwdSAqdmNwdSkKIAlib29sIGJsb2NrX25lc3RlZF9ldmVudHMgPSBibG9j
-a19uZXN0ZWRfZXhjZXB0aW9ucyB8fAogCQkJCSAgIGt2bV9ldmVudF9uZWVkc19yZWluamVjdGlv
-bih2Y3B1KTsKIAorCWlmIChrdm1fdGVzdF9yZXF1ZXN0KEtWTV9SRVFfVFJJUExFX0ZBVUxULCB2
-Y3B1KSkgeworCQlpZiAoYmxvY2tfbmVzdGVkX2V4Y2VwdGlvbnMpIC8vIG9yIGV2ZW50cz8KKwkJ
-CXJldHVybiAtRUJVU1k7CisJCW5lc3RlZF9zdm1fdHJpcGxlX2ZhdWx0KHZjcHUpOworCQlyZXR1
-cm4gMDsKKwl9CisKIAlpZiAobGFwaWNfaW5fa2VybmVsKHZjcHUpICYmCiAJICAgIHRlc3RfYml0
-KEtWTV9BUElDX0lOSVQsICZhcGljLT5wZW5kaW5nX2V2ZW50cykpIHsKIAkJaWYgKGJsb2NrX25l
-c3RlZF9ldmVudHMpCmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9rdm0vdm14L25lc3RlZC5jIGIvYXJj
-aC94ODYva3ZtL3ZteC9uZXN0ZWQuYwppbmRleCA2MzI5YTMwNjg1NmIuLjdjYTk5ZTc0NjgwOCAx
-MDA2NDQKLS0tIGEvYXJjaC94ODYva3ZtL3ZteC9uZXN0ZWQuYworKysgYi9hcmNoL3g4Ni9rdm0v
-dm14L25lc3RlZC5jCkBAIC00MTE0LDYgKzQxMTQsMTMgQEAgc3RhdGljIGludCB2bXhfY2hlY2tf
-bmVzdGVkX2V2ZW50cyhzdHJ1Y3Qga3ZtX3ZjcHUgKnZjcHUpCiAJYm9vbCBibG9ja19uZXN0ZWRf
-ZXZlbnRzID0gYmxvY2tfbmVzdGVkX2V4Y2VwdGlvbnMgfHwKIAkJCQkgICBrdm1fZXZlbnRfbmVl
-ZHNfcmVpbmplY3Rpb24odmNwdSk7CiAKKwlpZiAoa3ZtX3Rlc3RfcmVxdWVzdChLVk1fUkVRX1RS
-SVBMRV9GQVVMVCwgdmNwdSkpIHsKKwkJaWYgKGJsb2NrX25lc3RlZF9leGNlcHRpb25zKSAvLyBv
-ciBldmVudHM/CisJCQlyZXR1cm4gLUVCVVNZOworCQluZXN0ZWRfdm14X3RyaXBsZV9mYXVsdCh2
-Y3B1KTsKKwkJcmV0dXJuIDA7CisJfQorCiAJaWYgKGxhcGljX2luX2tlcm5lbCh2Y3B1KSAmJgog
-CQl0ZXN0X2JpdChLVk1fQVBJQ19JTklULCAmYXBpYy0+cGVuZGluZ19ldmVudHMpKSB7CiAJCWlm
-IChibG9ja19uZXN0ZWRfZXZlbnRzKQpkaWZmIC0tZ2l0IGEvYXJjaC94ODYva3ZtL3g4Ni5jIGIv
-YXJjaC94ODYva3ZtL3g4Ni5jCmluZGV4IDg3NDY1MzA5MzBkNS4uOTA5NGM1ZWZkNDkzIDEwMDY0
-NAotLS0gYS9hcmNoL3g4Ni9rdm0veDg2LmMKKysrIGIvYXJjaC94ODYva3ZtL3g4Ni5jCkBAIC0x
-MDIwMywxMSArMTAyMDMsNiBAQCBzdGF0aWMgdm9pZCB1cGRhdGVfY3I4X2ludGVyY2VwdChzdHJ1
-Y3Qga3ZtX3ZjcHUgKnZjcHUpCiAKIGludCBrdm1fY2hlY2tfbmVzdGVkX2V2ZW50cyhzdHJ1Y3Qg
-a3ZtX3ZjcHUgKnZjcHUpCiB7Ci0JaWYgKGt2bV90ZXN0X3JlcXVlc3QoS1ZNX1JFUV9UUklQTEVf
-RkFVTFQsIHZjcHUpKSB7Ci0JCWt2bV94ODZfb3BzLm5lc3RlZF9vcHMtPnRyaXBsZV9mYXVsdCh2
-Y3B1KTsKLQkJcmV0dXJuIDE7Ci0JfQotCiAJcmV0dXJuIGt2bV94ODZfb3BzLm5lc3RlZF9vcHMt
-PmNoZWNrX2V2ZW50cyh2Y3B1KTsKIH0KIApAQCAtMTAyODUsNiArMTAyODAsMTIgQEAgc3RhdGlj
-IGludCBrdm1fY2hlY2tfYW5kX2luamVjdF9ldmVudHMoc3RydWN0IGt2bV92Y3B1ICp2Y3B1LAog
-CWVsc2UKIAkJciA9IDA7CiAKKwlpZiAoa3ZtX2NoZWNrX3JlcXVlc3QoS1ZNX1JFUV9UUklQTEVf
-RkFVTFQsIHZjcHUpKSB7CisJCXZjcHUtPnJ1bi0+ZXhpdF9yZWFzb24gPSBLVk1fRVhJVF9TSFVU
-RE9XTjsKKwkJdmNwdS0+bW1pb19uZWVkZWQgPSAwOworCQlyZXR1cm4gLUVOWElPOworCX0KKwog
-CS8qCiAJICogUmUtaW5qZWN0IGV4Y2VwdGlvbnMgYW5kIGV2ZW50cyAqZXNwZWNpYWxseSogaWYg
-aW1tZWRpYXRlIGVudHJ5K2V4aXQKIAkgKiB0by9mcm9tIEwyIGlzIG5lZWRlZCwgYXMgYW55IGV2
-ZW50IHRoYXQgaGFzIGFscmVhZHkgYmVlbiBpbmplY3RlZApAQCAtMTA3ODEsMTUgKzEwNzgyLDcg
-QEAgc3RhdGljIGludCB2Y3B1X2VudGVyX2d1ZXN0KHN0cnVjdCBrdm1fdmNwdSAqdmNwdSkKIAkJ
-CWdvdG8gb3V0OwogCQl9CiAJCWlmIChrdm1fdGVzdF9yZXF1ZXN0KEtWTV9SRVFfVFJJUExFX0ZB
-VUxULCB2Y3B1KSkgewotCQkJaWYgKGlzX2d1ZXN0X21vZGUodmNwdSkpCi0JCQkJa3ZtX3g4Nl9v
-cHMubmVzdGVkX29wcy0+dHJpcGxlX2ZhdWx0KHZjcHUpOwotCi0JCQlpZiAoa3ZtX2NoZWNrX3Jl
-cXVlc3QoS1ZNX1JFUV9UUklQTEVfRkFVTFQsIHZjcHUpKSB7Ci0JCQkJdmNwdS0+cnVuLT5leGl0
-X3JlYXNvbiA9IEtWTV9FWElUX1NIVVRET1dOOwotCQkJCXZjcHUtPm1taW9fbmVlZGVkID0gMDsK
-LQkJCQlyID0gMDsKLQkJCQlnb3RvIG91dDsKLQkJCX0KKwkJCWt2bV9tYWtlX3JlcXVlc3QoS1ZN
-X1JFUV9FVkVOVCwgdmNwdSk7CiAJCX0KIAkJaWYgKGt2bV9jaGVja19yZXF1ZXN0KEtWTV9SRVFf
-QVBGX0hBTFQsIHZjcHUpKSB7CiAJCQkvKiBQYWdlIGlzIHN3YXBwZWQgb3V0LiBEbyBzeW50aGV0
-aWMgaGFsdCAqLwoK
---000000000000c326120610dc4ff7--
+Thanks for forwarding your test code along, we've added it to our
+tests for comparison.
 
+> > If there is the possibility of over-harvesting randomness, why not
+> > design the implementations to be clamped at some per core value such
+> > as a megabit/second.  In the case of the documented RDSEED generation
+> > rates, that would allow the servicing of 3222 cores, if my math at
+> > 0530 in the morning is correct.
+> > 
+> > Would a core need more than 128 kilobytes of randomness, ie. one
+> > second of output, to effectively seed a random number generator?
+> > 
+> > A cynical conclusion would suggest engineering acquiesing to marketing
+> > demands... :-)
+
+> My assumption is that it was simply easier to not implement a rate
+> limiting feature at the CPU level and punt the starvation problem to
+> software :-)
+
+Could be, it does seem unlikely that random number generation speed
+would be seen as fertile ground for marketing types.
+
+Punting to software is certainly rationale, perhaps problematic in a
+CoCo environment depending on the definition of 'astronomical'.  See
+my response to Borislav who was kind enough to respond to all of this.
+
+> With regards,
+> Daniel
+
+Have a good day.
+
+As always,
+Dr. Greg
+
+The Quixote Project - Flailing at the Travails of Cybersecurity
+              https://github.com/Quixote-Project
 
