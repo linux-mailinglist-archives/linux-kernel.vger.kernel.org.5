@@ -1,137 +1,190 @@
-Return-Path: <linux-kernel+bounces-58136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B373584E1CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:20:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ED8C84E1CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:20:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42AB5285358
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:20:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF1FA1F2528C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4977D7B3E7;
-	Thu,  8 Feb 2024 13:14:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB917CF0E;
+	Thu,  8 Feb 2024 13:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="v6wGuT0P"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ivAHTSh0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F557B3EB
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 13:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56FB57CF02;
+	Thu,  8 Feb 2024 13:15:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707398064; cv=none; b=jI2J/LxAB1sDxX/X22D5BrDySjvfWdl1TIV9ZOVx0mreKoz0uXt75fDHEmZ/jvGTtbEOiP4ykugmkTfkVMeKAcD9f1qBQKq+CzMcmuL2wZgsbpMhzdVi5cuMUIegI11XfKTwKBnLqHECY7IP0DniQHKPYFkwiolQI5WMc+Max3Y=
+	t=1707398108; cv=none; b=DKDd2XgV/AuNBqhkdoKmQe6CCnqdTyLT90hLwQ/HojdrwqeQzv/kk4IO8PqW9m4yUnbMe8sp3J6jKDARUuwporEhv/BcLORoe86BnXuzOeyqpZlhg2813q9ISwtDfZ20xeBD3RGdokZ+geD9AJmY+MeczjWfNzLvde87cFzG1nY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707398064; c=relaxed/simple;
-	bh=QuMQWAnwWU8Jg8k+fqlUw7v0lstHGn7kXNGqQQEKh0s=;
+	s=arc-20240116; t=1707398108; c=relaxed/simple;
+	bh=q6awbs+YreoMeUxonom32OUjfO17lLFk08XgUb9aaMs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e/nYHwFibGKaY8IOVBAddA/MH/gzxKuAiyyORF3sxon5xPmt8WZmsiwv7TAbMGffaYXW4CxQDfOx+OOiCZ9UYdsDO9gDht3SdJdukN2Zb+hcJj/qlG6FbNpri5kvQTYKf8TIZQcT1bHRw3DlTRFkZb5mR8oeqNhCmfibtcRXUr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=v6wGuT0P; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3bbb8a0cf6so47783766b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 05:14:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1707398059; x=1708002859; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5ntukh3iLbboob5RjSi1RGWl1ttcbv304nzNTDlBnME=;
-        b=v6wGuT0PJ+N4hzmt8UaBTDv7z6pYtEDr/OMrGZNxLyrZCsSKuWL5yNRmfPSDoQy3vX
-         ZiXNNunlaPVoGRQB7Aih7Im6QtCpimTY+Nvn1HXrMNOU0IBMOyq/Ah3q2+wJJCUgXpF2
-         OTYKxr1/tQKW2q4uafhwE2CW2LAYDmGuT7NOetWEc7tyDBDsQGueTUkEh/OrklW3JC/S
-         m5/NRlI9u6qVbJVnc2NCSHScWqY5h8b2e/q7YNbGvFEEdN4IcUI1a8UmX7hOl33cmSPd
-         vf2Fo8xtKcueUt7kBD3arum/26q3DaSJ/13Fa8ytRnEfRWbLZFA5Yk7XLQcHGdImsjyT
-         iuGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707398059; x=1708002859;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5ntukh3iLbboob5RjSi1RGWl1ttcbv304nzNTDlBnME=;
-        b=HJJWmKVjvr/sQNxMvE4Buj2WeMh5ts+NkAhy0Dg1J8KrLsq0ioWzi+Di7xbAtBTPZ/
-         4suOEZzUPcUSj2CWpUvHWNeADzb20kmYK9JwerFZyUkOd8AiEvj8VDrKyP4r67GOHUWb
-         PzJvyXjyY3YHQbTpgysgogLU5eXkToZJNq1XTeGzrimO4KbM8o5Ts4AlUmldN4iW0Qyh
-         vbbMFXOWaWE5tckEo1OyDc90joio9h3Habc5DCV6Js+ekjtrO3X5swelrImkfLECDRVo
-         xvKEpqIc4ITedIPRk+i66s09tGc2jSewzHU3o91C3mUUwQero70lrEJgASu6kGPTQiE3
-         SPTw==
-X-Forwarded-Encrypted: i=1; AJvYcCWyFTCHfNc/wSL0OXqIYZawwJhkmFKX6O8XyWDGuq4kfZHwY3qaSYr/krr/PcGUOmCjYiVC4+dL2uKEoR9gF16HXdcmkR9AEWD+zoEo
-X-Gm-Message-State: AOJu0YwVkBKYBh9mBy4q/KI9E7dln6G17nkmdvSruvxQbtSDfU5l/Bxh
-	JCtmoB7OZ+h41r2VadS22BtAuc9Xv1eABqc7bnMvXpeyFWWQwCmL9kbMrBfa/rE=
-X-Google-Smtp-Source: AGHT+IFxbsmI0ElM1ZdD7KC6y7qcHLiINyUO2uqTJm0NGN+KRXLzE11VCkTZ7fcDVi5+DjtPt7PW0g==
-X-Received: by 2002:a17:906:80d3:b0:a38:4b2c:8178 with SMTP id a19-20020a17090680d300b00a384b2c8178mr4613591ejx.19.1707398059311;
-        Thu, 08 Feb 2024 05:14:19 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVug2VZ27JP6E4LkCDJegC+o/d4kAvgYornjfSyauOCXVlrxA/UD7zr8dqlDJSKtVwbL2zFzOGQp3y3dmjN4bhkknQ3BNy2Z1ZenwsiKzeSrPlPRnx/UkIsoO8Umni4njI72tzxecdB8kUQVEOK5uSM0mAN/ulw5WJtjVNghnu1uD5M1MKzZLcBGkBwMAk6ZPvcuJvebPsczrnn8PcoxxF8UPtS/9ImrEp/3IxhypYE0reubPRtmf8vQpuqdqs+Ncydn7A=
-Received: from localhost ([2a02:8071:6401:180:f8f5:527f:9670:eba8])
-        by smtp.gmail.com with ESMTPSA id z22-20020a170906669600b00a3543718f5bsm24304ejo.221.2024.02.08.05.14.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 05:14:18 -0800 (PST)
-Date: Thu, 8 Feb 2024 14:14:14 +0100
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: chengming.zhou@linux.dev
-Cc: yosryahmed@google.com, nphamcs@gmail.com, akpm@linux-foundation.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	Chengming Zhou <zhouchengming@bytedance.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH mm-hotfixes-unstable] mm/zswap: invalidate duplicate
- entry when !zswap_enabled
-Message-ID: <20240208131414.GA224435@cmpxchg.org>
-References: <20240207154308.bc275f3e72ec1c1fd06cf5a2@linux-foundation.org>
- <20240208023254.3873823-1-chengming.zhou@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oVwVVZjGhEXqkdPMryzIumqy5VcbefcfeXQupOukpp1meec42jDkpl/w4qV3SLEeIn9/VqeuWX3OY2ny963hObn6VWwjXXRWZCGJd2cGCehpxJegIIEWMDRlT1JQOxu7cbOslIq2GQAVVB+KZSU6N6nt690GMexnncO+laWwuM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ivAHTSh0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA8FC433C7;
+	Thu,  8 Feb 2024 13:15:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707398107;
+	bh=q6awbs+YreoMeUxonom32OUjfO17lLFk08XgUb9aaMs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ivAHTSh0vucBZ1Tq2ackjWXZuDD4/eQiiFSf9vMdbjln7iBq6kWbS3isQ4i1kP4B9
+	 qbmvlpUg6Z/tNvTjf2kQO98CoNsXgfQX1+uloYlJfh2kM9bzgAWOQPk5cLBmGBRT4k
+	 DXBHRqfyukUF2INxTvPGsT0jI2UxEmQYNCuJidNj/kzQlXRjU9d+G9v2ediNSyXz5W
+	 2O5mXCvBVBYR+NV1WsTSkQGZmeSBQAAyX4pbwMxNmguGPrpqu/Ow1oHsqbM7ja/PHT
+	 gUyJYm9YdqPpLbqA54DSksgfagzjkWXwWlYlOy/80X4vEYdNBxUHF0VeI0yVYWhdJR
+	 b81a5Q20Edpxg==
+Date: Thu, 8 Feb 2024 14:15:02 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Andy Lutomirski <luto@amacapital.net>, 
+	"Eric W. Biederman" <ebiederm@xmission.com>, Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pidfd: change pidfd_send_signal() to respect PIDFD_THREAD
+Message-ID: <20240208-fragt-prospekt-7866333b15f0@brauner>
+References: <20240207114549.GA12697@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240208023254.3873823-1-chengming.zhou@linux.dev>
+In-Reply-To: <20240207114549.GA12697@redhat.com>
 
-On Thu, Feb 08, 2024 at 02:32:54AM +0000, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
+On Wed, Feb 07, 2024 at 12:45:49PM +0100, Oleg Nesterov wrote:
+> Turn kill_pid_info() into kill_pid_info_type(), this allows to pass any
+> pid_type to group_send_sig_info(), despite its name it should work fine
+> even if type = PIDTYPE_PID.
 > 
-> We have to invalidate any duplicate entry even when !zswap_enabled
-> since zswap can be disabled anytime. If the folio store success before,
-> then got dirtied again but zswap disabled, we won't invalidate the old
-> duplicate entry in the zswap_store(). So later lru writeback may
-> overwrite the new data in swapfile.
+> Change pidfd_send_signal() to use PIDTYPE_PID or PIDTYPE_TGID depending
+> on PIDFD_THREAD.
 > 
-> Fixes: 42c06a0e8ebe ("mm: kill frontswap")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Nice, this is easier to backport and should be less disruptive to
-mm-unstable as well. It makes sense to me to put the optimization and
-cleanup that was cut out into a separate patch on top of mm-unstable.
-
->  mm/zswap.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> While at it kill another TODO comment in pidfd_show_fdinfo(). As Christian
+> expains fdinfo reports f_flags, userspace can already detect PIDFD_THREAD.
 > 
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index fe7ee2640c69..32633d0597dc 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -1516,7 +1516,7 @@ bool zswap_store(struct folio *folio)
->  	if (folio_test_large(folio))
->  		return false;
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>  kernel/fork.c   |  2 --
+>  kernel/signal.c | 18 ++++++++++++------
+>  2 files changed, 12 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index cd61ca87d0e6..47b565598063 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -2051,8 +2051,6 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
 >  
-> -	if (!zswap_enabled || !tree)
-> +	if (!tree)
->  		return false;
+>  	seq_put_decimal_ll(m, "Pid:\t", nr);
 >  
->  	/*
-> @@ -1531,6 +1531,10 @@ bool zswap_store(struct folio *folio)
->  		zswap_invalidate_entry(tree, dupentry);
+> -	/* TODO: report PIDFD_THREAD */
+> -
+>  #ifdef CONFIG_PID_NS
+>  	seq_put_decimal_ll(m, "\nNSpid:\t", nr);
+>  	if (nr > 0) {
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index c3fac06937e2..e3edcd784e45 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -47,6 +47,7 @@
+>  #include <linux/cgroup.h>
+>  #include <linux/audit.h>
+>  #include <linux/sysctl.h>
+> +#include <uapi/linux/pidfd.h>
+>  
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/signal.h>
+> @@ -1478,7 +1479,8 @@ int __kill_pgrp_info(int sig, struct kernel_siginfo *info, struct pid *pgrp)
+>  	return ret;
+>  }
+>  
+> -int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
+> +static int kill_pid_info_type(int sig, struct kernel_siginfo *info,
+> +				struct pid *pid, enum pid_type type)
+>  {
+>  	int error = -ESRCH;
+>  	struct task_struct *p;
+> @@ -1487,11 +1489,10 @@ int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
+>  		rcu_read_lock();
+>  		p = pid_task(pid, PIDTYPE_PID);
+>  		if (p)
+> -			error = group_send_sig_info(sig, info, p, PIDTYPE_TGID);
+> +			error = group_send_sig_info(sig, info, p, type);
+>  		rcu_read_unlock();
+>  		if (likely(!p || error != -ESRCH))
+>  			return error;
+> -
+>  		/*
+>  		 * The task was unhashed in between, try again.  If it
+>  		 * is dead, pid_task() will return NULL, if we race with
+> @@ -1500,6 +1501,11 @@ int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
 >  	}
->  	spin_unlock(&tree->lock);
+>  }
+>  
+> +int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
+> +{
+> +	return kill_pid_info_type(sig, info, pid, PIDTYPE_TGID);
+> +}
 > +
-> +	if (!zswap_enabled)
-> +		return false;
-> +
->  	objcg = get_obj_cgroup_from_folio(folio);
->  	if (objcg && !obj_cgroup_may_zswap(objcg)) {
->  		memcg = get_mem_cgroup_from_objcg(objcg);
+>  static int kill_proc_info(int sig, struct kernel_siginfo *info, pid_t pid)
+>  {
+>  	int error;
+> @@ -3890,6 +3896,7 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
+>  	struct fd f;
+>  	struct pid *pid;
+>  	kernel_siginfo_t kinfo;
+> +	enum pid_type type;
+>  
+>  	/* Enforce flags be set to 0 until we add an extension. */
+>  	if (flags)
+> @@ -3928,9 +3935,8 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
+>  		prepare_kill_siginfo(sig, &kinfo);
+>  	}
+>  
+> -	/* TODO: respect PIDFD_THREAD */
+> -	ret = kill_pid_info(sig, &kinfo, pid);
+> -
+> +	type = (f.file->f_flags & PIDFD_THREAD) ? PIDTYPE_PID : PIDTYPE_TGID;
+> +	ret = kill_pid_info_type(sig, &kinfo, pid, type);
+
+If the user doesn't provide siginfo then the kernel fills in the info in
+prepare_kill_siginfo() a few lines above. That sets info->si_code to
+SI_USER even for the PIDFD_THREAD case. Whenever the info is filled in
+by the kernel it's not exactly userspace impersonating anything plus we
+know that what we're sending to is a pidfd by the type of the pidfd. So
+it feels like we should fill in SI_TKILL here as well?
+
+I would also suggest we update the obsolete comment on top of
+pidfd_send_signal() along the lines of:
+
+diff --git a/kernel/signal.c b/kernel/signal.c
+index e3edcd784e45..40df0c17abd7 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -3878,14 +3878,10 @@ static struct pid *pidfd_to_pid(const struct file *file)
+  * @info:   signal info
+  * @flags:  future flags
+  *
+- * The syscall currently only signals via PIDTYPE_PID which covers
+- * kill(<positive-pid>, <signal>. It does not signal threads or process
+- * groups.
+- * In order to extend the syscall to threads and process groups the @flags
+- * argument should be used. In essence, the @flags argument will determine
+- * what is signaled and not the file descriptor itself. Put in other words,
+- * grouping is a property of the flags argument not a property of the file
+- * descriptor.
++ * If the @pidfd refers to a thread-group leader the signal is thread-group
++ * directed. If @pidfd referes to a thread then the signal is thread directed.
++ * In the future extension to @flags may be used to override the default scope
++ * of @pidfd.
+  *
+  * Return: 0 on success, negative errno on failure
+  */
 
