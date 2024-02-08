@@ -1,106 +1,219 @@
-Return-Path: <linux-kernel+bounces-57547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 059BE84DA91
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:12:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CC7F84DA92
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:13:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59DC8B23EAE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:12:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07A051F2341C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:13:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C67496930B;
-	Thu,  8 Feb 2024 07:12:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A826931A;
+	Thu,  8 Feb 2024 07:13:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="IeoAvghv"
-Received: from mail.avm.de (mail.avm.de [212.42.244.94])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="LHlLSOcA"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2046.outbound.protection.outlook.com [40.107.243.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C504069301;
-	Thu,  8 Feb 2024 07:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.42.244.94
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707376320; cv=none; b=qwpuuHaicrZOOJ4usk87ac1tQ9VxLDZlrZsBGqDIEfjh3lOYOdYHOB5Ox3jopaDZuGgsw1U7WA9CjIDEEYcaq8A3qDc5jZnNNph9GRofwqhOIHQIqq7mWdYC4Rkm9tMWVC6+bjSLhlJzEeKUToCsYYt4UFxNVKvoFoUqpXx5MzY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707376320; c=relaxed/simple;
-	bh=ShM33PMN46d+9yqD9fzFYzTn61mrTpXnOh8vT8+O6bg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SRKX3S9sb9zn9+XjGzls/ZWXMPgaZ3//lgqFfq4jzl7nB85w+QLBjqt2PJX8fbZJcqXb5adNtqPOKI5ruxs+JPCcmrgG/zwv3Jc7egwsmhJBNIk3eyzAugH1dOGMbsn//ctNXexi25Q+CvJpHS4DMB6S3tnY2gJruCm/lOtvv8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de; spf=pass smtp.mailfrom=avm.de; dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b=IeoAvghv; arc=none smtp.client-ip=212.42.244.94
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
-	t=1707376313; bh=ShM33PMN46d+9yqD9fzFYzTn61mrTpXnOh8vT8+O6bg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IeoAvghvH2rkGp2cI7YQXcxrS0yAvRmdb9GjZCOXtZfaioyUcgqvcLwgYbH9vsxkq
-	 j34DmjFopYNHm0eJODfRmHJ+G+GnbNXot7NltkD91Hlt/twKzYQ03mFTodB3UB403h
-	 ieB1E9k8RL2VmmS/L8YukDM6vT2NImdk6bCXPLd8=
-Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
-	by mail.avm.de (Postfix) with ESMTPS;
-	Thu,  8 Feb 2024 08:11:53 +0100 (CET)
-Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
-	by mail-auth.avm.de (Postfix) with ESMTPA id A2EEB801E8;
-	Thu,  8 Feb 2024 08:11:53 +0100 (CET)
-Received: by buildd.core.avm.de (Postfix, from userid 1000)
-	id 980E1181359; Thu,  8 Feb 2024 08:11:53 +0100 (CET)
-Date: Thu, 8 Feb 2024 08:11:53 +0100
-From: Nicolas Schier <n.schier@avm.de>
-To: William McVicker <willmcvicker@google.com>
-Cc: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	linux-kbuild@vger.kernel.org, kernel-team@android.com,
-	linux-kernel@vger.kernel.org, Nicolas Schier <nicolas@fjasle.eu>
-Subject: Re: [PATCH v2] checkpatch: allow build files to reference other
- build files
-Message-ID: <ZcR-uS3AqD8ZNG0d@buildd.core.avm.de>
-Mail-Followup-To: William McVicker <willmcvicker@google.com>,
-	Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	linux-kbuild@vger.kernel.org, kernel-team@android.com,
-	linux-kernel@vger.kernel.org
-References: <20240112221947.1950503-1-willmcvicker@google.com>
- <ZbduU15kw5R42awj@buildd.core.avm.de>
- <Zbl165bfizOauIlf@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF6D692EE;
+	Thu,  8 Feb 2024 07:13:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707376382; cv=fail; b=Osy/dzKX3psuFXMFquVYPVKE7jocUkODnm9/3hwFYkWRBq+/K4Gha5zDUgZtO8NdANXuC7OmNLHvd8OSD/xNJRwk4K7iDub3dmlvlKGQgbCwGBlSVQh7i7CVNebrVMAGZ3FUPf/V3nHrVk+umqdUieSo1A4tR3IIwXMv43GKvsE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707376382; c=relaxed/simple;
+	bh=VdUraDt8pHxtYbBYW8uy1h2bSp0nbNpOrZ98V8LFKBk=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Nw0VBjxSuPl7HhGRRxXYKxIr2+GKpf4JoYlfQTWGuPOoZdGU2MuMA9Pfffh9ciwA1ZGu+4fM5YLXpnPWBRPXFhaZKNmxhScD5HF1kXm0yMkX852mFYtgOrvsBAU+LgwxfaZLKsRNA5/vbvSn0AInUx+tr8yn3njmDyTFUHTKmQk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=LHlLSOcA; arc=fail smtp.client-ip=40.107.243.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O+Wpzpwf2t7k1sEoXICx6r7eSlqr3FeUmCTzP8G4hIfJar9U2xeMBcwqh6ssVT8dxX2Jxt+sM8W4c63BOdB7WfsbIX3M1t0BkQWpP2xVl84N5+sb3JZzBZNN+P9YZT15+SKpjYA69lA+T6knzFu01zFynzHn9ePHb5NODBcxjpM1mTeWUmqV7avPa5cQtiKyXhEC7f+dit1FdyOUapHwyK4WOyi4VD3LZAHTYhXi1H9I/fCHCUbBpvajasVcHisQkIfFxDeH8Ru8S3logoyFqfut4T7SpW/IvPucmQldXi44qXscuCwzqvSosDyvqG437fuUIF7/i+HAh/BJeouIeA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VdUraDt8pHxtYbBYW8uy1h2bSp0nbNpOrZ98V8LFKBk=;
+ b=XW6IWvkVTIbIKQGjau4Q2c52EWSdsGR/6MwblyFC0M3T/VXTA5l/piwXJloohem94V60+zGZyBMhk38mgoly82zTbRUGjIDrlNy6PzrnrSVGFdFH3tctlGKrluRnuVf2jQifNThXNklrKX7THbpwEOeyZjvw0WvGCANAJpbgTx6QlgcLNjXpDGg03LJ/0DghFQ4Jw7/2tup6yD4/4eyZSIPGvHs3fAlsC6RV2icCrwrYFxqAwJMG3UB59rBhxCL/GCYOVKRJzw5IxK8JuKTbWQp8/37jhgq97H5TuGlK1ASecsiCRLCrw/4rrDMzg0HOo1TOi6v5lIyOYJ2KVWEfsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VdUraDt8pHxtYbBYW8uy1h2bSp0nbNpOrZ98V8LFKBk=;
+ b=LHlLSOcA7x6SziiwxE/k+HHbBXcoTJlHowPSq0rpHchqfCL2LHadhR5NLl6CTgkWxB9tfxJ6wyvypVd+qQXcz9Ya6Uv34A3UvhNf/0CBxImErD3azJuP14TXCvQl/xDlbgSY8fVCarv4XnadCESlTTxzpG1ibjIalQZWn0WKZ4yxnmzgQ8a27aCuu9Tx10CKs188HKkqurlfPqqiuQpk+HsYYFa5/9uZLTeNxrFhblZ683SR5tFiEZhw+a1cDpL7rVpAEq5dwavDgmqMPRdH+Ri/3e1rLVgpR8mqYLuiigil4N5rC+/r1pweTU1LQ7yUncs28Rz73cJnKdR6kFD+Kg==
+Received: from SA1PR12MB7199.namprd12.prod.outlook.com (2603:10b6:806:2bc::21)
+ by BY5PR12MB4951.namprd12.prod.outlook.com (2603:10b6:a03:1d2::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.17; Thu, 8 Feb
+ 2024 07:12:57 +0000
+Received: from SA1PR12MB7199.namprd12.prod.outlook.com
+ ([fe80::444d:2f33:a61b:3225]) by SA1PR12MB7199.namprd12.prod.outlook.com
+ ([fe80::444d:2f33:a61b:3225%3]) with mapi id 15.20.7270.016; Thu, 8 Feb 2024
+ 07:12:57 +0000
+From: Ankit Agrawal <ankita@nvidia.com>
+To: Alex Williamson <alex.williamson@redhat.com>, Zhi Wang
+	<zhi.wang.linux@gmail.com>
+CC: Jason Gunthorpe <jgg@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
+	"mst@redhat.com" <mst@redhat.com>, "shameerali.kolothum.thodi@huawei.com"
+	<shameerali.kolothum.thodi@huawei.com>, "kevin.tian@intel.com"
+	<kevin.tian@intel.com>, "clg@redhat.com" <clg@redhat.com>,
+	"oleksandr@natalenko.name" <oleksandr@natalenko.name>,
+	"satyanarayana.k.v.p@intel.com" <satyanarayana.k.v.p@intel.com>,
+	"eric.auger@redhat.com" <eric.auger@redhat.com>, "brett.creeley@amd.com"
+	<brett.creeley@amd.com>, "horms@kernel.org" <horms@kernel.org>, Rahul
+ Rameshbabu <rrameshbabu@nvidia.com>, Aniket Agashe <aniketa@nvidia.com>, Neo
+ Jia <cjia@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>, "Tarun Gupta
+ (SW-GPU)" <targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>, Andy
+ Currid <acurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>, John
+ Hubbard <jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>, "Anuj Aggarwal
+ (SW-GPU)" <anuaggarwal@nvidia.com>, Matt Ochs <mochs@nvidia.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "virtualization@lists.linux-foundation.org"
+	<virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH v17 3/3] vfio/nvgrace-gpu: Add vfio pci variant module for
+ grace hopper
+Thread-Topic: [PATCH v17 3/3] vfio/nvgrace-gpu: Add vfio pci variant module
+ for grace hopper
+Thread-Index: AQHaWIdUHF93rAkYa0SGXKd0AMy8rLD/eesAgAAPggCAAHxaWA==
+Date: Thu, 8 Feb 2024 07:12:57 +0000
+Message-ID:
+ <SA1PR12MB7199A9470EC2562C5BCC2FAFB0442@SA1PR12MB7199.namprd12.prod.outlook.com>
+References: <20240205230123.18981-1-ankita@nvidia.com>
+	<20240205230123.18981-4-ankita@nvidia.com>
+	<20240208003210.000078ba.zhi.wang.linux@gmail.com>
+ <20240207162740.1d713cf0.alex.williamson@redhat.com>
+In-Reply-To: <20240207162740.1d713cf0.alex.williamson@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR12MB7199:EE_|BY5PR12MB4951:EE_
+x-ms-office365-filtering-correlation-id: abeb4aaf-5af0-453e-a1a9-08dc2875603c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ RVRvaMrU7qTgPtsxSNrNc30Ts6fbgEEfK0qxVTz8Mte9PFH97ZizZPW990LN+/9smDxLyLitzJ7sRQ5ztbyC4uX9IPl54eppk6zaGG/NuM5NnXLeTlL2keD1jeAbccFxIuXH+ykqs9yfdqIBvodOl7sFssgRwuxC+t/RifQPHeiNyY0W5hN9uiPUvVxcTmGfc6nHx58PoLmhHnnp9g71LMSFVM3Am81Tf0+wifTfr+ZIbucs1+7mzt8AwJI64CUY5ipV7SckNAagpR2PERRnpVI97o8ek9dKlmpt2pBp8WADAKq5q+BB26eiDG6shSs1n6l7Z5Cj75O7KODV67SaouN/ydVHDD2DUTUV0HCnnYz0cfaqak8DnrdZ9waW+iIfepzRUwB/elyDTTeKyrKXQ1wtZhBFzI3AYbQIrVZT88AdfO17c2zgLChzRWLerv7GUMk7hvImlcUB/WvC9H9Nh+i/5/TLvXBvmSnbu3ayN0d2bK+OMzmYCNyTr9NOtHU8jEIGVwYvR9mMZr3OEAh5trIUcOjSsCvGuBvhajmaTgYMOadPPWRaspUsD0wr2BLZWdCmCr5HIR52DMutjM5dg1c5mO3Ba3cNr8voX1hER75k7y+aMVwo4DV1UCOPV5Q6
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR12MB7199.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(396003)(346002)(376002)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(8676002)(8936002)(54906003)(7696005)(110136005)(91956017)(478600001)(52536014)(66446008)(66946007)(66556008)(64756008)(55016003)(66476007)(76116006)(6506007)(7416002)(5660300002)(9686003)(2906002)(316002)(26005)(71200400001)(4326008)(83380400001)(38100700002)(122000001)(38070700009)(33656002)(41300700001)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?slNbXK+iMzgy4r2QxyBngWuYpSyjy3l4DDIGFkzqHLQgtP414nCVMG1Vsr?=
+ =?iso-8859-1?Q?f4yjWn8PNdNiUD2UoC+cxtCXUI/w3KhVx0+1cZ3Nc50iyFlDcDiEG/Nbs2?=
+ =?iso-8859-1?Q?3lwNOfLeYrFALiE7OVF8sIdIHKiuzMHqK6ETtNdLBD+PlfcIhDJnLQFRdk?=
+ =?iso-8859-1?Q?L2PEeMAIk7a2GaLToEdjrioKkfq3nRbe71R/BgcPJExtCeEkDZsTHWlOlK?=
+ =?iso-8859-1?Q?jXKbTiC/dU7xPgaXheS5VteIh2c7SKgOHS//W00zzHd4Bt0PvmA3igTTuK?=
+ =?iso-8859-1?Q?SnhVNjMyUwyiHdD+uK3uU3+I/DDJ+jdWIhw3CrSnYokZcR18kLwOdWY+EL?=
+ =?iso-8859-1?Q?fOJ6U1m+r5k6W3yHs5Ev1PvTKe4kboY2/VN4ebPMzRjHnofbw/TMJp8Bw9?=
+ =?iso-8859-1?Q?HAhV+elMFK1T4aJtCwGvlC5b1k5rfN0YiwdAO2giMprVHxdWaYakabJaNl?=
+ =?iso-8859-1?Q?By57CJyef9kDihr0ZCH8pMy+ubEPX47WuteH1KXmkFerfy+1egqSzm9KTa?=
+ =?iso-8859-1?Q?lnyj21n9hyzHLKAbDy+323d0tilw4g2JzrbhlhwYhaqbqM9Jxg6ZkGzdzf?=
+ =?iso-8859-1?Q?KI8eB27QQ1MrxdK5r2HHqK8vQ1j9aQ6aSjCutXrkIp+THbWd+he9uSHtw4?=
+ =?iso-8859-1?Q?pF9C2OK7zp4Rc6UbDMpwYUvOAVoW4ZSviy4B73pEWy645hBZFjUBVVxqOH?=
+ =?iso-8859-1?Q?czpKxUDSC/if9XisyfsdhaglPN1w8U2l5Ugznx0AWqzR9zs8iAGHPyQjXh?=
+ =?iso-8859-1?Q?vi1MFZIBVYTXhIFGIwvvkXESU23AgARgDPVRZU8sL0rKHeNddtvA3drp7n?=
+ =?iso-8859-1?Q?YshuVbov4gIfL4cG65yf+qyohcX8jwyHTQ/YrKzO0PHhTUz5JVIpZM8Ffi?=
+ =?iso-8859-1?Q?ynxajVvFmQUHiyip2br/F0URNCPLpUMNQLu+OWUtKPnPf6SRZQRy2wBbpI?=
+ =?iso-8859-1?Q?DxV5On4alQAYPY5/YkNdTnX6DJ16aVbra8TLUVO0vYu7GOumqwm3oxw/AZ?=
+ =?iso-8859-1?Q?PaDaz8yh731RnTCrf6IK55GF4NDYy5yFIXpARh73p1+lF6tzTsQ/sEcADW?=
+ =?iso-8859-1?Q?oJJx7C+mV2Cn4qGNkryvEJcabVZO7fHyT9svH0ccnSB4oPUq+0XQffhUMV?=
+ =?iso-8859-1?Q?9IV6ZoduIRgEmLf4ps+OBxGcjpDzDI0PaDQw708ScHiut0WvRCqGaHVxQb?=
+ =?iso-8859-1?Q?/taHUT5n+G4BcGY3+JKT1hffvAB3b5FfyGtHREeA8P0vS5j8prR5inXi1Y?=
+ =?iso-8859-1?Q?rhm2+p8d49XUhyIgxwkz76BRbk8qS/tX8Uf0xLN7FMe4dKNmq5ZigHpS+e?=
+ =?iso-8859-1?Q?+RdcylH8lmdwNSf3/YghyTr7WggCmIxlqXKPbqDYKekuUXlDXexXxxhnoR?=
+ =?iso-8859-1?Q?ffMVApKT7kECKoywqzBUlxY7WPtIlqlCxfUfVs7wWSbM6VBHSD7llDN/J2?=
+ =?iso-8859-1?Q?yu7gKkbFFanxmIPAErTjt2GSgX8EId/1InLmmmR68CGSsT71NbhkIwRa2G?=
+ =?iso-8859-1?Q?k4GiNAR9mKnlAxr/ZGdbU9+iE09QqSy57c/hqqVB0RKRVObQq4xhEwq94L?=
+ =?iso-8859-1?Q?vldc+5h6TuVPFT3aQTn8jTPLAmpPouzK2bn3tGWTjcsdh8xS4hx1NmIENQ?=
+ =?iso-8859-1?Q?shT+8cEtxcWgM=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Zbl165bfizOauIlf@google.com>
-Organization: AVM GmbH
-X-purgate-ID: 149429::1707376313-B1632608-25043249/0/0
-X-purgate-type: clean
-X-purgate-size: 1083
-X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
-X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
-X-purgate: clean
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR12MB7199.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: abeb4aaf-5af0-453e-a1a9-08dc2875603c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Feb 2024 07:12:57.0491
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: khpESNKLiCYpZmk6gpKkmaqGfl2g0C09GvH1RDvNzmTYMafkhKB0vVqOs5trzUNGHekLae3C+25QIfqrYly5GQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4951
 
-On Tue, Jan 30, 2024 at 02:19:23PM -0800, William McVicker wrote:
-> On 01/29/2024, Nicolas Schier wrote:
-> > On Fri, Jan 12, 2024 at 02:19:46PM -0800, Will McVicker wrote:
-> > > Add an exception to the EMBEDDED_FILENAME warning for build files. This
-> > 
-> > As far as I can see, your patch fixes only the checkpatch warnings for
-> > top-level Makefile and Kconfig (and leaving out top-level Kbuild).
-> > Other build files are not affected, right?
-> 
-> Since $realfile includes the full path, I wasn't able to find a case where this
-> issue happens outside of the top-level build files. The same goes for Kbuild
-> files -- the top-level Kbuild file doesn't include other Kbuild files and the
-> other Kbuild files don't include other Kbuild files within the same directory.
-> If you prefer to protect against this warning in the future, I can include
-> Kbuild as well if you want.
-
-yes, I think it would be more complete if top-level Kbuild is also
-included.  Could you also mention 'top-level' somewhere in the commit
-message?
-
-Thanks and kind regards,
-Nicolas
+>> > +/* Memory size expected as non cached and reserved by the VM driver=
+=0A=
+>> > */ +#define RESMEM_SIZE 0x40000000=0A=
+>> > +#define MEMBLK_SIZE 0x20000000=0A=
+>> > +=0A=
+>>=0A=
+>> Maybe use SZ_* definitions in linux/size.h=0A=
+>=0A=
+> Good suggestion.=0A=
+=0A=
+Ack.=0A=
+=0A=
+>>=0A=
+>> Better move this part to the place between vfio_pci_core_enable() and=0A=
+>> vfio_pci_core_finish_enable() like others for respecting the expected=0A=
+>> device initialization sequence of life cycle.=0A=
+>>=0A=
+>> It doesn't bite something right now, but think about when someone=0A=
+>> changes the behavior of vfio_pci_core_finish_enable() in the future,=0A=
+>> they have to propose a patch for this.=0A=
+>=0A=
+> Agree.=0A=
+=0A=
+Good point, will move it.=0A=
+=0A=
+>>=0A=
+>> Wouldn't it be better to do the map in the open path?=0A=
+>=0A=
+> AIUI the device would typically be used exclusively through the mmap of=
+=0A=
+> these ranges, these mappings are only for pread/pwrite type accesses,=0A=
+> so I think it makes sense to map them on demand.=0A=
+=0A=
+That's right, agree with Alex to keep it on-demand.=0A=
+=0A=
+=0A=
+>> > +=A0=A0=A0 * Determine how many bytes to be actually read from the=0A=
+>> > device memory.=0A=
+>> > +=A0=A0=A0 * Read request beyond the actual device memory size is=0A=
+>> > filled with ~0,=0A=
+>> > +=A0=A0=A0 * while those beyond the actual reported size is skipped.=
+=0A=
+>> > +=A0=A0=A0 */=0A=
+>> > +=A0=A0 if (offset >=3D memregion->memlength)=0A=
+>> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 mem_count =3D 0;=0A=
+>>=0A=
+>> If mem_count =3D=3D 0, going through nvgrace_gpu_map_and_read() is not=
+=0A=
+>> necessary.=0A=
+>=0A=
+> Harmless, other than the possibly unnecessary call through to=0A=
+> nvgrace_gpu_map_device_mem().=A0 Maybe both nvgrace_gpu_map_and_read()=0A=
+> and nvgrace_gpu_map_and_write() could conditionally return 0 as their=0A=
+> first operation when !mem_count.=A0 Thanks,=0A=
+>=0A=
+>Alex=0A=
+=0A=
+IMO, this seems like adding too much code to reduce the call length for a=
+=0A=
+very specific case. If there aren't any strong opinion on this, I'm plannin=
+g to=0A=
+leave this code as it is.=0A=
 
