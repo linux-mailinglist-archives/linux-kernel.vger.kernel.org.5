@@ -1,182 +1,135 @@
-Return-Path: <linux-kernel+bounces-57815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CED3284DDB4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:07:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94BE484DDC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:08:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92E89B25CAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:06:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 317DA1F21C36
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:08:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F38E06E2D8;
-	Thu,  8 Feb 2024 10:02:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3893373162;
+	Thu,  8 Feb 2024 10:02:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="bLzj8ooH"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VHeqwAoN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787766D1BD;
-	Thu,  8 Feb 2024 10:01:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 641A16F52C;
+	Thu,  8 Feb 2024 10:02:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707386520; cv=none; b=rmOY4CUTBPrf0guTAwT9gsUVu3ahRHHDRTCDm0PO7F5eu/o2fWXCGPjo6RspAifWWvV0+xDSuJWExHrdmxuh2t4N+8iaDdfttE3MXkr34UHbDNEGFHyEWJDgSceqU/UtGSEmvfz2fYoba/ua1ojXgaGpXvLNudmUDn951A1vDDI=
+	t=1707386557; cv=none; b=FgJey1UN89d3gyjIm0Pyi7TlRXn9l1XxTlLRr217alcWJ45RRfMN93ciGDTWw5fxHpQ89F+udupN1MI8uzKucS6joj9Dcc2TJxhlWk5oG2Sy1oBmnNKdtdmdhp1gQI3+MEOsgoIyN7cMqzEv8J3VCTiZBBz2UO+3IwMk9TakBTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707386520; c=relaxed/simple;
-	bh=ZjTYuZI27yktivY2o1E00i2URHt1xHbHgN6Q3LlWvUI=;
+	s=arc-20240116; t=1707386557; c=relaxed/simple;
+	bh=D96AYJ0yVRf7SBQeHRHG9hGhNFiOxzG3tk5OOOiG5iI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TL/25RjoxGqw+ITI2aZkPKLUCUUj8RceMUZPEAZgo71z7P/q0yGVACsnVrSUP8rHFr3W9uBKqa3qpCLvor2quPTv2QH+raT3pCEeVXMpS24nrBd8tz3dzdsJOlJ1t6/RgH88fe08p/fAsf4RT+4PmkNOkCGVHuaCS0785fX0eac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=bLzj8ooH; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707386511;
-	bh=ZjTYuZI27yktivY2o1E00i2URHt1xHbHgN6Q3LlWvUI=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=VedGqiWrmlcm9NINqTNv0Vk2FlLSQZjDbEkyVdqyXMe/ScF1zq+KgDSurKQSIUjrUodU8EQy/zskx6a5G2dtUUwVO8vq2MdkoUsf8Ma2dLxfEXQ8nfwa+RVklqPuxHQyVjpIWItHdhgpEEKOKUDYwkV1jlZ6GjOT/hx+Z/+u+Uc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VHeqwAoN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33ADDC433F1;
+	Thu,  8 Feb 2024 10:02:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707386556;
+	bh=D96AYJ0yVRf7SBQeHRHG9hGhNFiOxzG3tk5OOOiG5iI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bLzj8ooHWv6M8Wo0jLN4HnS6vZrxTMuvLVSOVdDYjWuM/wDAXm6ZxcIOgdeKCBU9x
-	 V8l6sJ37DgW/wfiecteAzhN5YxFX+vLozXOJHzrnzU0UpIjOG1e4TqABaeKFuQ4rL/
-	 mqsUkesAckB5rqalYvcYW8UbiOMEXZWPcvGPLRjbHDsltlUJjOHBFzTCEDKsD30P4r
-	 cXKXCDFen+ZEC4+fAQA4yKA+W8WuVhMU4NXls4O5Lyr7+LjKpNOoDQlVsdhdi2BX5g
-	 hvG3iDAEVqohLtG/+0ioroGo1Az8wddNkqxIhgSGXu4qtyCRo3NQHu+HqiqidU3LD6
-	 q8VMBfDldMvrQ==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sebastianfricke)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9EDA237811CF;
-	Thu,  8 Feb 2024 10:01:50 +0000 (UTC)
-Date: Thu, 8 Feb 2024 11:01:49 +0100
-From: Sebastian Fricke <sebastian.fricke@collabora.com>
-To: Nicolas Dufresne <nicolas@ndufresne.ca>
-Cc: "jackson.lee" <jackson.lee@chipsnmedia.com>, mchehab@kernel.org,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	nas.chung@chipsnmedia.com, lafley.kim@chipsnmedia.com,
-	b-brnich@ti.com
-Subject: Re: [RESEND PATCH v0 2/5] wave5: Support to prepend sps/pps to IDR
- frame.
-Message-ID: <20240208100149.pet6em5tnunv2ome@basti-XPS-13-9310>
-References: <20240131013046.15687-1-jackson.lee@chipsnmedia.com>
- <20240131013046.15687-3-jackson.lee@chipsnmedia.com>
- <cdcf594ecaefaac748655bdcb7dcc1c4f9ad1a68.camel@ndufresne.ca>
+	b=VHeqwAoNV7C/gX+AnZEx/HQqAh/y+NET+LhOfaOfSSEWMQXVj5Y6SpJgGXjQMUeZt
+	 gFTzmmmCA5hHb/LpelrqtBl0QK1JNu/9LkP//tgwsIdySN50IBdCQW42kgDGVkwY/R
+	 AcER4mY5OQ2OHqOW1E0U+Tdo+a1Ka3IJ627Xx1TQPQKpyAS5p/ClTaWnPqGHTaR3FK
+	 w0WJ0BLvHNgNhDT/A97tMRR5d6a7/m8Dz4Nxeg2b2akfBzXYXVO9Zr4YLw3dUx4gI1
+	 k56zrnrNv8MrjhoVUTEGsV4/XrV964hS28JhP2onb8qzNxwd4UskxtVnNaTtiXajs2
+	 d/NVwAAkPydpQ==
+Date: Thu, 8 Feb 2024 11:02:33 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, andersson@kernel.org, 
+	konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, vkoul@kernel.org, quic_bjorande@quicinc.com, 
+	manivannan.sadhasivam@linaro.org, bryan.odonoghue@linaro.org, quic_msavaliy@quicinc.com, 
+	quic_vtanuku@quicinc.com
+Subject: Re: [V3] i2c: i2c-qcom-geni: Correct I2C TRE sequence
+Message-ID: <uswznu3h53gcefpdc4vxozz32ecdcjvzmr7admwc4h54o27bfy@qqoevrl3dcyt>
+References: <20240201101323.13676-1-quic_vdadhani@quicinc.com>
+ <CAA8EJpqQtHDRK2pex+5F-fMRTosJuFCx59e89MWhnie1O3dHKA@mail.gmail.com>
+ <60b5e755-352b-476d-8c6e-2170594ae80d@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cdcf594ecaefaac748655bdcb7dcc1c4f9ad1a68.camel@ndufresne.ca>
+In-Reply-To: <60b5e755-352b-476d-8c6e-2170594ae80d@quicinc.com>
 
-Hey Jackson,
+Hi Viken, Dmitry,
 
-as with the previous review, the title needs to be adjusted 'wave5:' is
-not enough.
-Also 'Support to prepend sps/pps to IDR' sounds a bit weird and doesn't
-quite match what you describe below.
-How about:
-'Support SPS/PPS generation for each IDR'
+On Fri, Feb 02, 2024 at 04:13:06PM +0530, Viken Dadhaniya wrote:
+> 
+> On 2/1/2024 5:24 PM, Dmitry Baryshkov wrote:
+> > On Thu, 1 Feb 2024 at 12:13, Viken Dadhaniya <quic_vdadhani@quicinc.com> wrote:
+> > > 
+> > > For i2c read operation in GSI mode, we are getting timeout
+> > > due to malformed TRE basically incorrect TRE sequence
+> > > in gpi(drivers/dma/qcom/gpi.c) driver.
+> > > 
+> > > TRE stands for Transfer Ring Element - which is basically an element with
+> > > size of 4 words. It contains all information like slave address,
+> > > clk divider, dma address value data size etc).
+> > > 
+> > > Mainly we have 3 TREs(Config, GO and DMA tre).
+> > > - CONFIG TRE : consists of internal register configuration which is
+> > >                 required before start of the transfer.
+> > > - DMA TRE :    contains DDR/Memory address, called as DMA descriptor.
+> > > - GO TRE :     contains Transfer directions, slave ID, Delay flags, Length
+> > >                 of the transfer.
+> > > 
+> > > Driver calls GPI driver API to config each TRE depending on the protocol.
+> > > If we see GPI driver, for RX operation we are configuring DMA tre and
+> > > for TX operation we are configuring GO tre.
+> > > 
+> > > For read operation tre sequence will be as below which is not aligned
+> > > to hardware programming guide.
+> > > 
+> > > - CONFIG tre
+> > > - DMA tre
+> > > - GO tre
+> > > 
+> > > As per Qualcomm's internal Hardware Programming Guide, we should configure
+> > > TREs in below sequence for any RX only transfer.
+> > > 
+> > > - CONFIG tre
+> > > - GO tre
+> > > - DMA tre
+> > > 
+> > > In summary, for RX only transfers, we are reordering DMA and GO TREs.
+> > > Tested covering i2c read/write transfer on QCM6490 RB3 board.
+> > 
+> > This hasn't improved. You must describe what is the connection between
+> > TRE types and the geni_i2c_gpi calls.
+> > It is not obvious until somebody looks into the GPI DMA driver.
+> > 
+> > Another point, for some reason you are still using just the patch
+> > version in email subject. Please fix your setup so that the email
+> > subject also includes the `[PATCH` part in the subject, which is there
+> > by default.
+> > Hint: git format-patch -1 -v4 will do that for you without a need to
+> > correct anything afterwards.
+> > 
+> 
+> At high level, let me explain the I2C to GPI driver flow in general.
+> 
+> I2C driver calls GPI driver exposed functions which will prepare all the
+> TREs as per programming guide and
+> queues to the GPI DMA engine for execution. Upon completion of the Transfer,
+> GPI DMA engine will generate an
+> interrupt which will be handled inside the GPIO driver. Then GPI driver will
+> call DMA framework registered callback by i2c.
+> Upon receiving this callback, i2c driver marks the transfer completion.
 
-On 07.02.2024 13:00, Nicolas Dufresne wrote:
->Hi Jackson,
->
->Le mercredi 31 janvier 2024 à 10:30 +0900, jackson.lee a écrit :
->> Indicates whether to generate SPS and PPS at every IDR. Setting it to 0 disables generating SPS and PPS at every IDR.
->> Setting it to one enables generating SPS and PPS at every IDR.
+Any news about this? Dmitry do you still have concerns? We can
+add this last description in the commit log, as well, if needed.
 
-My suggestion:
-
-Provide a control to toggle (0 = off / 1 = on), whether the SPS and PPS
-are generated for every IDR.
-
-Greetings,
-Sebastian
-
->>
->> Signed-off-by: Jackson Lee <jackson.lee@chipsnmedia.com>
->> Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
->> ---
->>  drivers/media/platform/chips-media/wave5/wave5-hw.c      | 6 ++++--
->>  drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c | 7 +++++++
->>  drivers/media/platform/chips-media/wave5/wave5-vpuapi.h  | 1 +
->>  3 files changed, 12 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/media/platform/chips-media/wave5/wave5-hw.c b/drivers/media/platform/chips-media/wave5/wave5-hw.c
->> index f1e022fb148e..8ad7f3a28ae1 100644
->> --- a/drivers/media/platform/chips-media/wave5/wave5-hw.c
->> +++ b/drivers/media/platform/chips-media/wave5/wave5-hw.c
->> @@ -1602,11 +1602,13 @@ int wave5_vpu_enc_init_seq(struct vpu_instance *inst)
->>  	if (inst->std == W_AVC_ENC)
->>  		vpu_write_reg(inst->dev, W5_CMD_ENC_SEQ_INTRA_PARAM, p_param->intra_qp |
->>  				((p_param->intra_period & 0x7ff) << 6) |
->> -				((p_param->avc_idr_period & 0x7ff) << 17));
->> +				((p_param->avc_idr_period & 0x7ff) << 17) |
->> +				(p_param->forced_idr_header_enable << 28));
->
->I can spot evident hard-coding of mask and bit shifts in here. In order to
->continuously improve this driver code, I would like to see this (and the
->following) magic number being defined with well named macros as a preparation
->patch to this feature change.
->
->regards,
->Nicolas
->
->>  	else if (inst->std == W_HEVC_ENC)
->>  		vpu_write_reg(inst->dev, W5_CMD_ENC_SEQ_INTRA_PARAM,
->>  			      p_param->decoding_refresh_type | (p_param->intra_qp << 3) |
->> -				(p_param->intra_period << 16));
->> +			      (p_param->forced_idr_header_enable << 9) |
->> +			      (p_param->intra_period << 16));
->>
->>  	reg_val = (p_param->rdo_skip << 2) |
->>  		(p_param->lambda_scaling_enable << 3) |
->> diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
->> index 0cb5bfb67258..761775216cd4 100644
->> --- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
->> +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
->> @@ -1125,6 +1125,9 @@ static int wave5_vpu_enc_s_ctrl(struct v4l2_ctrl *ctrl)
->>  	case V4L2_CID_MPEG_VIDEO_H264_ENTROPY_MODE:
->>  		inst->enc_param.entropy_coding_mode = ctrl->val;
->>  		break;
->> +	case V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR:
->> +		inst->enc_param.forced_idr_header_enable = ctrl->val;
->> +		break;
->>  	case V4L2_CID_MIN_BUFFERS_FOR_OUTPUT:
->>  		break;
->>  	default:
->> @@ -1292,6 +1295,7 @@ static void wave5_set_enc_openparam(struct enc_open_param *open_param,
->>  		else
->>  			open_param->wave_param.intra_refresh_arg = num_ctu_row;
->>  	}
->> +	open_param->wave_param.forced_idr_header_enable = input.forced_idr_header_enable;
->>  }
->>
->>  static int initialize_sequence(struct vpu_instance *inst)
->> @@ -1775,6 +1779,9 @@ static int wave5_vpu_open_enc(struct file *filp)
->>  			  0, 1, 1, 0);
->>  	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
->>  			  V4L2_CID_MIN_BUFFERS_FOR_OUTPUT, 1, 32, 1, 1);
->> +	v4l2_ctrl_new_std(v4l2_ctrl_hdl, &wave5_vpu_enc_ctrl_ops,
->> +			  V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR,
->> +			  0, 1, 1, 0);
->>
->>  	if (v4l2_ctrl_hdl->error) {
->>  		ret = -ENODEV;
->> diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
->> index 352f6e904e50..3ad6118550ac 100644
->> --- a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
->> +++ b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
->> @@ -566,6 +566,7 @@ struct enc_wave_param {
->>  	u32 lambda_scaling_enable: 1; /* enable lambda scaling using custom GOP */
->>  	u32 transform8x8_enable: 1; /* enable 8x8 intra prediction and 8x8 transform */
->>  	u32 mb_level_rc_enable: 1; /* enable MB-level rate control */
->> +	u32 forced_idr_header_enable: 1; /* enable header encoding before IDR frame */
->>  };
->>
->>  struct enc_open_param {
->
->
+Andi
 
