@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-57507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C233284D9F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:20:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4539B84D9FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:21:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E01C282D96
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:20:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAABAB242A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:21:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 551A467C7B;
-	Thu,  8 Feb 2024 06:20:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB4367C7D;
+	Thu,  8 Feb 2024 06:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sOPbdVla"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kOuzsSbB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97333679FB;
-	Thu,  8 Feb 2024 06:20:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6616467E7B;
+	Thu,  8 Feb 2024 06:21:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707373234; cv=none; b=oGGLngUKzb4uUCF8MnNS6GTBL2jyiN9Ap3955R/uQd23GuWPWFcUrSt0cXFqpAdq1nrprsm3Qovhwu9/xFqsIB7mO5UxNP7zEIaVtPJCCoMkg+08VQlQLljbQ7mLWjVsItXOr+A12Hx2+DY8P/gh/siw0Hs/dammtMOAQSOmThc=
+	t=1707373283; cv=none; b=XGdiqL8GjrKziexXeoL4VksDSXPibPwdVffppOWuDBDwldRwdWbsBtJAdcN7Eopc2ErDzAfyFq0XRgzqYFXRe6R/svTGb07i8Gj9oHoldQnK2bqRnljsAF2bjRTt2AFgUXkG0ls3cltqLqyPoyOexj058uoqYRLhY7bcXx6P/ME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707373234; c=relaxed/simple;
-	bh=7wP0q4tFEy5WW95c3el7rqakiH4FhWwfyKIVHhjI1XU=;
+	s=arc-20240116; t=1707373283; c=relaxed/simple;
+	bh=lD1lrtMMdOBpkeLYHTDECguSxgees/c78w0lL7yv0bw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DOsuH8VtQTDo0X8CcXb0YhAEuHauB9OIsrTIepseRjcMhiQbr3W8N/zW4XWcZ8kJsbCMDcEHpDIDSpStu1sTlBSXB35/DyEVEReCC8cXByXakTGE/fCg9tGNGSQrAtYmrxKkYtU3KnWDSL8MLluGfMeWbe4AmRKShX9G1DZuy+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sOPbdVla; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5F51C433C7;
-	Thu,  8 Feb 2024 06:20:24 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=BYE7gZf77QNXTKPvJtntoy9edjDckkMy2amlti7qCoPmG2IoyKDiiX8W2ub2onSBQN7wkoXZqJidNJ0EDkNDmtdON9D+wZf47cAIXrx2wYWXjfPmrZaqPfVCR/b9VOdzQt9v5mLHserrK/WQPjJdrXxJjYG3BNO3rcSajOaCBes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kOuzsSbB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FA67C433C7;
+	Thu,  8 Feb 2024 06:21:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707373234;
-	bh=7wP0q4tFEy5WW95c3el7rqakiH4FhWwfyKIVHhjI1XU=;
+	s=k20201202; t=1707373282;
+	bh=lD1lrtMMdOBpkeLYHTDECguSxgees/c78w0lL7yv0bw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sOPbdVlaZ3j/34dFxXa4vB+wTlOrsQtoASWw+x3+65jJdyyCZoBVCQttsp96W2s7h
-	 +dA1wJ8Ez9ve5rimAhiY5/4mPY3ZzWQwsKvTsF8Cxkf1yL7WeETY3nbsyR+7vIMF8Q
-	 GuW4dxu/JPlWiqXJs/DKi3m2ES/5EmCcjon1rqH0D/VCX6tV4q7cOK3KzzTX7qrvVd
-	 SaM/kU/bAIRKAwb3SSP5QVrWdMzjitoySDGdjiasABQyDO4rXXsC3R9hRw7viriNL9
-	 SVm1OEQ8+qwo3As8rwgD9NWsvKsOyP5hEKMltiXMj0Y+3MHGqcNEYmdsehVkRtlm8W
-	 KYecGRtEzfD7A==
-Date: Thu, 8 Feb 2024 08:20:09 +0200
+	b=kOuzsSbB27uwSEFp6QnBBwF4c8wSiOnHMBpoT0jJuV3IEfQ/f661CpCyRQBuvLibE
+	 lLQXgNR3XCQOOP5nvA2vnYrZmZkM/dZXQxbM9FSzlFF4YpKjZv+hycd+20Elp8ywEL
+	 LAv0lEURquSyS6AsBFqOIDxwSjBdh4LEyqj78PHMjfRFx1Z2x+WKh2zG2BJ8sNyFaF
+	 HujNOdc0xlfRqZUvzM5o9jvnfWteYJRjhw62WISYKo869NMnlPw7V7xJ1+fXv/PF/u
+	 pHUOw3YaYaqgO8HS3ztmkMy9JMAmPt1+mxKkvDu4Ht04n+bkQbqIzXeGeuiFUFesQd
+	 NG/ZDh6p/DJXg==
+Date: Thu, 8 Feb 2024 08:20:57 +0200
 From: Mike Rapoport <rppt@kernel.org>
 To: David Hildenbrand <david@redhat.com>
 Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
@@ -68,10 +68,10 @@ Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
 	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
 	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
 	sparclinux@vger.kernel.org
-Subject: Re: [PATCH v3 09/15] arm/mm: use pte_next_pfn() in set_ptes()
-Message-ID: <ZcRymY35KnPAuuzY@kernel.org>
+Subject: Re: [PATCH v3 10/15] powerpc/mm: use pte_next_pfn() in set_ptes()
+Message-ID: <ZcRyyTjbq8jxoPWC@kernel.org>
 References: <20240129124649.189745-1-david@redhat.com>
- <20240129124649.189745-10-david@redhat.com>
+ <20240129124649.189745-11-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,31 +80,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240129124649.189745-10-david@redhat.com>
+In-Reply-To: <20240129124649.189745-11-david@redhat.com>
 
-On Mon, Jan 29, 2024 at 01:46:43PM +0100, David Hildenbrand wrote:
-> Let's use our handy helper now that it's available on all archs.
+On Mon, Jan 29, 2024 at 01:46:44PM +0100, David Hildenbrand wrote:
+> Let's use our handy new helper. Note that the implementation is slightly
+> different, but shouldn't really make a difference in practice.
 > 
+> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 > Signed-off-by: David Hildenbrand <david@redhat.com>
 
 Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
 > ---
->  arch/arm/mm/mmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/powerpc/mm/pgtable.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
 > 
-> diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
-> index 674ed71573a8..c24e29c0b9a4 100644
-> --- a/arch/arm/mm/mmu.c
-> +++ b/arch/arm/mm/mmu.c
-> @@ -1814,6 +1814,6 @@ void set_ptes(struct mm_struct *mm, unsigned long addr,
->  		if (--nr == 0)
+> diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
+> index a04ae4449a02..549a440ed7f6 100644
+> --- a/arch/powerpc/mm/pgtable.c
+> +++ b/arch/powerpc/mm/pgtable.c
+> @@ -220,10 +220,7 @@ void set_ptes(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
 >  			break;
 >  		ptep++;
-> -		pte_val(pteval) += PAGE_SIZE;
-> +		pteval = pte_next_pfn(pteval);
+>  		addr += PAGE_SIZE;
+> -		/*
+> -		 * increment the pfn.
+> -		 */
+> -		pte = pfn_pte(pte_pfn(pte) + 1, pte_pgprot((pte)));
+> +		pte = pte_next_pfn(pte);
 >  	}
 >  }
+>  
 > -- 
 > 2.43.0
 > 
