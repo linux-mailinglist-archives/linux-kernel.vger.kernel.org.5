@@ -1,70 +1,151 @@
-Return-Path: <linux-kernel+bounces-58687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CBD984E9F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:54:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B34084E9FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:58:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF2731C2266A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:54:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 443EE28248D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:58:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3BD44B5A7;
-	Thu,  8 Feb 2024 20:54:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5AB44B5A7;
+	Thu,  8 Feb 2024 20:58:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="sIFC25qJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="wb4+siUb"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0300411CAF
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 20:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D7B3F9F2
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 20:58:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707425651; cv=none; b=tm33SmvoCPcBIyWIo+UkXhz091qviAxZtSXVqDr00/12JEdUYHeo4b35N9z/fv+LU8UxP9ipAd2dcBA/dWLEifGsrmF6NStkMl0TKYrKiwf9BYq90KPXJlczab6D9Ep5GlmaqGpkGYoc5T4t3jTso4PpSSbPMjuRAZAgrkXbtRo=
+	t=1707425927; cv=none; b=dQsNZKJcvI8nJpxmZO0mzrPdKML65CM4x/Z17eSo6Y956eNUMIHcCs9KmR7tftiyrYanmoDfrxwlQbOSyZpDozokRfiBgeP8pzzTkQlbOAvvd2G6hfWVntcunN/uaAyEnGpr4qxBnJmTkpf/386ZxyK7jvJSVbkFlhCSM1p2h2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707425651; c=relaxed/simple;
-	bh=lVKgetkWYnLj+KtF4Z88XXytHWtTBc7STnJTaCzNPuI=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=bOjv/zLbVa0DKwksPrWdhKh5sqydK2Vjc4QEkSr+rE13nUMKtdANGcnKLETUc1lmnnAWRUQZjRUOp5VF+YIbCeS90aQF8hJwTxtVLstC/GAKybDKj9k/IrP7A+jv9KejYPTnkggVdBWvinQ23bZhnv3aBAxapve52rTJ0duktoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=sIFC25qJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D45BFC433F1;
-	Thu,  8 Feb 2024 20:54:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1707425650;
-	bh=lVKgetkWYnLj+KtF4Z88XXytHWtTBc7STnJTaCzNPuI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=sIFC25qJpPpWXruDfNT5iyKz8ukpn+X3bfKb1vV/q8CRb5AIudAlJiqVCD/rNtO4X
-	 a2IBgZz203bWRu2JPtvlDAgpsltCGUqIrnYXL2fyfMQYw1rvIH5QNDpOBgZf/SwIOn
-	 hSk7TlEeiCY5pclrg8GCV7YTV/s2uYqGmtcJPZZE=
-Date: Thu, 8 Feb 2024 12:54:09 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Byungchul Park <byungchul@sk.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- kernel_team@skhynix.com, ying.huang@intel.com, namit@vmware.com,
- vernhao@tencent.com, mgorman@techsingularity.net, hughd@google.com,
- willy@infradead.org, david@redhat.com, peterz@infradead.org,
- luto@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, rjgolo@gmail.com
-Subject: Re: [RESEND PATCH v7 7/8] mm: Defer TLB flush by keeping both src
- and dst folios at migration
-Message-Id: <20240208125409.28d5aa60d88657405f5c8e1b@linux-foundation.org>
-In-Reply-To: <20240208062608.44351-8-byungchul@sk.com>
-References: <20240208062608.44351-1-byungchul@sk.com>
-	<20240208062608.44351-8-byungchul@sk.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707425927; c=relaxed/simple;
+	bh=e4x8s2vq5KE3tjwGiTEDVUMIN4XccFGXeubsbMX6Q10=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=mg+rhJQHPi9wqfRpLYa2elq8ajfDnXksHf/+2LcmXZsloQCMGliYsuIrO0aWqKm2V0zVnMq6KgQUgYSVNPznVV8RHdI5oHnpcxbIUvCdthMRymb13eUIdnfrDbetBkX9mU8HAGYkRGdp0vLO62Jdny/co90z7USWOPqU0Yp8JvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=wb4+siUb; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55cca88b6a5so433310a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 12:58:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1707425923; x=1708030723; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Rh0/SSQbryhTyPsEnw0NTqJHbn4oA+/xslZpcTTvvbk=;
+        b=wb4+siUbnrPnf6GvSv0dlhzU7T+ZRvQgyqonY9iZeJbg89adzWlvQoD8UaIdddb8jp
+         YK7msf7mKZIsFdPrjB9ijfNw/m0pdjcr3FJTS8sv7Wtv1Qm04vL8yb5Q6aRGcRr9Meu7
+         92hL9UUzEsQJmnFdvwPe4/stoX5GKQAmV0G1UtqRbyD/ghY0ffZHEJ4UXz5TL3MU3Kay
+         GfnBhuUoOuebM8UcaPpDsq1/766MDevOI06xWZJ6pBEsBEYwkbQxXT68e3sNj0JlPxgD
+         V30EbRT5RzVeJl66AIecRcI5TI0GPLc0hxKPYLxkRjsalvFD/R57sA6YUW49o3Fw8nXG
+         eSDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707425923; x=1708030723;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Rh0/SSQbryhTyPsEnw0NTqJHbn4oA+/xslZpcTTvvbk=;
+        b=m2QvUppJi17G5DilTzUjw/1oRm9WxWufBwS12nx+3UHKLCIw3Rywo9uBKGsBVGiJ9p
+         3NRJapPN8k1xcAHkFGR7wTqEMDf1w2FlVJUFaBn9bv8KXgUWOqQFyfSre1vtRter6gpR
+         a8ZM9dr22PcKKaRvUlDsku2PfWY1MyNYwtZFp+ZBrOpceR2KMd5DYrnV5k3APLpkBo4+
+         RmvP43bP0nCuxw8UL31sXRh2cDHnyP5+vLzSjm8prP2WAINeMd9Y041Nsqm8NdBXC1+Q
+         MZvS1oVftRvyF5P9DyDzOjRIojGCG+aCgQgdWW1BNuLjSPUg6aWvLMXCx8R/QJv3k9kz
+         MFhw==
+X-Gm-Message-State: AOJu0YyMYEsfMVdDQKHhdHINYsyPU10dV60NVnUdlRegVxFvR2zWtfv1
+	OOW22E5RTtNg9WqHy//6W/mt/YQG/x+ZOeEricWOspOsljVtKkO4bgfdpIRxdQc=
+X-Google-Smtp-Source: AGHT+IGnjsO/HQ+adVUZ8qaCgNjU0tUTH1fyVyLhCxmQ+plbar/MgANb+APLmdnJ7jgvJvsodCgmng==
+X-Received: by 2002:aa7:d0d6:0:b0:560:5f1e:f420 with SMTP id u22-20020aa7d0d6000000b005605f1ef420mr291084edo.0.1707425923471;
+        Thu, 08 Feb 2024 12:58:43 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW0Va/BM7rgZ59qsnz+o58yVnLS5n7em3Hm6fyi97lloawcwZwVz0zCmMPg+IHbPmNhdnf5uTWO4Z/3xPZlW8IpKCy9oytAlvhpKnEs3Wx0HtRedaWrqBTSRp/ox7qJEWsHpSg1/k4/eCpgOxdkMbTVuFzMKE2CYL/Mpasu2nHjTTSUrnlDRlWQxZXfNRc6HDCu2hlY
+Received: from debian.fritz.box (aftr-82-135-80-180.dynamic.mnet-online.de. [82.135.80.180])
+        by smtp.gmail.com with ESMTPSA id k24-20020aa7d8d8000000b00560e72d22b8sm112068eds.2.2024.02.08.12.58.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 12:58:43 -0800 (PST)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: corbet@lwn.net,
+	mchehab@kernel.org
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	vegard.nossum@oracle.com,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH v3] docs: scripts: sphinx-pre-install: Fix building docs with pyyaml package
+Date: Thu,  8 Feb 2024 21:55:51 +0100
+Message-Id: <20240208205550.984-1-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <ED5D37EF-B353-4EA3-8AC9-7368BDD2CFD9@toblux.com>
+References: <ED5D37EF-B353-4EA3-8AC9-7368BDD2CFD9@toblux.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu,  8 Feb 2024 15:26:07 +0900 Byungchul Park <byungchul@sk.com> wrote:
+The Python module pyyaml is required to build the docs, but it is only
+listed in Documentation/sphinx/requirements.txt and is therefore missing
+when Sphinx is installed as a package and not via pip/pypi.
 
-> Implementation of MIGRC mechanism that stands for 'Migration Read Copy'.
+Add pyyaml as an optional package for multiple distros to fix building the
+docs if you prefer to install Sphinx as a package.
 
-Oh there is it.  Please put this in the [0/N] cover letter?
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+Reviewed-by: Vegard Nossum <vegard.nossum@oracle.com>
+Tested-by: Vegard Nossum <vegard.nossum@oracle.com>
+---
+Changes in v2:
+- s/pyyaml/yaml/ as suggested by Vegard Nossum
+- Make the check require the Python module; was optional
+
+Changes in v3:
+- Preserve Reviewed-by: and Tested-by: tags
+- Add pyyaml to openSUSE as suggested by Vegard Nossum
+---
+ scripts/sphinx-pre-install | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
+index 25aefbb35377..88ae75887476 100755
+--- a/scripts/sphinx-pre-install
++++ b/scripts/sphinx-pre-install
+@@ -361,6 +361,7 @@ sub give_debian_hints()
+ {
+ 	my %map = (
+ 		"python-sphinx"		=> "python3-sphinx",
++		"yaml"			=> "python3-yaml",
+ 		"ensurepip"		=> "python3-venv",
+ 		"virtualenv"		=> "virtualenv",
+ 		"dot"			=> "graphviz",
+@@ -395,6 +396,7 @@ sub give_redhat_hints()
+ {
+ 	my %map = (
+ 		"python-sphinx"		=> "python3-sphinx",
++		"yaml"			=> "python3-pyyaml",
+ 		"virtualenv"		=> "python3-virtualenv",
+ 		"dot"			=> "graphviz",
+ 		"convert"		=> "ImageMagick",
+@@ -472,6 +474,7 @@ sub give_opensuse_hints()
+ {
+ 	my %map = (
+ 		"python-sphinx"		=> "python3-sphinx",
++		"yaml"			=> "python3-pyyaml",
+ 		"virtualenv"		=> "python3-virtualenv",
+ 		"dot"			=> "graphviz",
+ 		"convert"		=> "ImageMagick",
+@@ -951,6 +954,7 @@ sub check_needs()
+ 
+ 	# Check for needed programs/tools
+ 	check_perl_module("Pod::Usage", 0);
++	check_python_module("yaml", 0);
+ 	check_program("make", 0);
+ 	check_program("gcc", 0);
+ 	check_program("dot", 1);
+-- 
+2.39.2
+
 
