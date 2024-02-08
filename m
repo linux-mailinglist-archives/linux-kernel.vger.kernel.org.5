@@ -1,207 +1,245 @@
-Return-Path: <linux-kernel+bounces-57957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1096384DF8E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:18:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B92A84DF9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:27:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4FED28AB14
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:18:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DDA3B21E85
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEA776EB76;
-	Thu,  8 Feb 2024 11:17:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E8C6F063;
+	Thu,  8 Feb 2024 11:26:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="gDCUxCnu"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="DvawBBJb"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775D52628C;
-	Thu,  8 Feb 2024 11:17:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D1F16D1C0
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 11:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707391068; cv=none; b=tahpzv0Bcm89VBeAjw7czcIejSI1OopANju3jErS92c1KQIWo/6gRrU16qaJYMVk0nnTdtrurcDIpaUx+2/CP1MYi/wbI4uFW2S5CE4hAlytoIpPdfYaoHTAh9hAjaI3vpP8xfg3ZpeyQUSLNZc3HtujWgPJgeQCWanlU9ss4is=
+	t=1707391617; cv=none; b=d+beA4SCPeTkObs2URE5lIY2q4V6GJzmYslRjt+LzCQc8KcftBQYx1FL3VRxvGjwUPDxxaXd1hzm6Syga/TzpY3Eq3/BJZPAXRjAKVXgMjccAXVPj6lnv+4fWJTG6X/vlyEca23v3VGkmUbn8ekeXop8rmd/0yo6rqnowYGLxtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707391068; c=relaxed/simple;
-	bh=5Dk/vO8WfkPjH3MNYNEstO4x37MmshYkmWqY5gOSRmE=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=rq66CDGZQPjlyNSW6YShgccP/bg6Bldtn/9Jq6namlrt2F/xiqpe6BLw3VDRbpGBwe4AxgrdXAov4pFlZtoBAp0rLxUprvyS2cft8e5tSQS84rGC33Nx7FOr6HaUKheZjWdnQGFFkrfgbZ6+c7xjRlu+aIoXvn3r4MNkoNDBViE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=gDCUxCnu; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4188i96d025233;
-	Thu, 8 Feb 2024 11:17:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=P7rVxZZV6fmC
-	KYVVkz4X2Lp65M9s3qN4g2zODqDihLY=; b=gDCUxCnu+AseLf6oIxUMJk6RjIZd
-	STkPuSPd/K5NrZQFRJ/KfscByFBcUd3Ve+fpATEL+Y3O6PdBOM1t73jlaIkk7Ad0
-	PwzvgaS9ZHxOAuw8v0Dc4WAGL/MZY3c++EjU6mG2/7or/kciktoqGOXsQZGywYqH
-	diqi47l8RurDAA5xEFTZj9zC8Mzv6LeNhyr9u/icZJI2GqzpJzhqHSdFjxbhiEsB
-	W3uieLmo3pgS0JQQyY+9SbQRtRJkQ1+kZExS/xomlP1dk0Su9GB/M1QQv25LhNHq
-	QP4Sm4SQvs1crcCEkgH9rvUqHrehrIsRWrJupACngpHt6X1Olk8PGWtHgA==
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w4uphrdga-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 08 Feb 2024 11:17:24 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 418BHKFW002481;
-	Thu, 8 Feb 2024 11:17:20 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3w1ejkjk8v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Thu, 08 Feb 2024 11:17:20 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 418BHJOH002476;
-	Thu, 8 Feb 2024 11:17:19 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-snehshah-hyd.qualcomm.com [10.147.246.35])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 418BHJIm002475;
-	Thu, 08 Feb 2024 11:17:19 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2319345)
-	id 395085001C3; Thu,  8 Feb 2024 16:47:18 +0530 (+0530)
-From: Sneh Shah <quic_snehshah@quicinc.com>
-To: Vinod Koul <vkoul@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Sneh Shah <quic_snehshah@quicinc.com>, kernel@quicinc.com,
-        Andrew Halaney <ahalaney@redhat.com>
-Subject: [PATCH net-next v4] net: stmmac: dwmac-qcom-ethqos: Add support for 2.5G SGMII
-Date: Thu,  8 Feb 2024 16:47:14 +0530
-Message-Id: <20240208111714.11456-1-quic_snehshah@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: EhHtJoGy1q9ewg8b0xFfVo4bkyUoG0Bq
-X-Proofpoint-GUID: EhHtJoGy1q9ewg8b0xFfVo4bkyUoG0Bq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-08_03,2024-02-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- impostorscore=0 malwarescore=0 bulkscore=0 clxscore=1015 spamscore=0
- priorityscore=1501 adultscore=0 lowpriorityscore=0 mlxlogscore=999
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402080059
+	s=arc-20240116; t=1707391617; c=relaxed/simple;
+	bh=PV3Cqb0WoNn1J9rsLHGrcOE6c3VTz+5cxRIhc352BgE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YSEIm0EiN/RU5Q2wAiW5WLfEgpGR9ZjMd282VzP9aFtA6zREVFbgL2T8Fh4jXRNEs0rsTEhdZkblCe/e0yNTJluXAz4lE0XMF4sdCJDnMwU3AxxKAmPTi/gCWCnXNi974l2If+pkZ/Bjab++cAHDhlMGRzU1mHVfiw2mYz/bt6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=DvawBBJb; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41001c6e19aso4512445e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 03:26:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1707391613; x=1707996413; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ENe6a0MGhFAYwxbIJ6WLGpev+wUMn3WNP3NeinQqkpk=;
+        b=DvawBBJbCISpjxBI1dj4jmEYLEff9Igk3MG1q8XOjGaa7AAVmw6JVBoLL666nEy9hc
+         hz8cgO8ADi5swCesACf7VIRRtI1hsEEw52NmaBqyqotqY5Hd3dc/PZzGFo8bMAYPpL0M
+         qHLWPLeccsEshl500Fo6t8GmNRvoOJZ209KmgYT28gbyErK4TyABy9wg36zdHHr/1eyV
+         c8sJQyaks7TwaaKsbzMTyFO187fK1kmGH/4qXPZFLbfVqkQGbpdAeMPaBFe7wytwhac5
+         8aSi01c9T7hhrcJN9PRh7MRGkuO7ul1phMUi02WZT44G8ThBOQ169DNehhOj/AgGbzS1
+         knZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707391613; x=1707996413;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ENe6a0MGhFAYwxbIJ6WLGpev+wUMn3WNP3NeinQqkpk=;
+        b=JZvHyBPX85AECWIcx9P7FUpqQMQIf0xuC0lr6cPMGlHXW0oMXP/Q3UozZfUNOkHHcX
+         FZix/PxV16EwpaQLEKmUyEgPjaZ52KKqFBXfGTOODTVF5PuOxyLYq2MCjf5PDZihtg1n
+         GR9e0sPrJv7tDak9WVuamZTLkPUMz6HohXIADN4TaK7L6vcLoVvvgvgoZ0XfQ//pFKzX
+         xu9ZfcvOALcfk1IENCI6gcVYP00V1zxTiD2H/V7XjZwjotC4oHhPi9J+yiIpPcCAmFRw
+         nEWmU/PJNeBUmMi2CdcVrbLxLePnFo7jRw4eBfwAjojGbPYbsu3/HZwfvBosP0h8NI7o
+         cgDA==
+X-Forwarded-Encrypted: i=1; AJvYcCUk+odET+x+P33wWfSD3oJpiGvQ1D1YqIDs5GMK9OHcDPGABXdc4mZBzilL0jWLu8XpDuplqgycTzaT5DDe2ONa4Im9cnGjxADattJD
+X-Gm-Message-State: AOJu0YxP4c+hC2v4TgbtBQZtof6s4WL+i2h0yI4QDQPo8E7bkKlhsMVs
+	3BeDParzARDtQrAlUPBKUQ0LIefxIuUWvF6Arn5uPDZKaJowJxXU4FG537aRmhk=
+X-Google-Smtp-Source: AGHT+IFynlbwaELVo7GaJVr7oESUnpHbKAXacrmgWYI4W/2zafauLyOMJtviUIiHO9Q94lIKXOCKWg==
+X-Received: by 2002:a05:600c:4f85:b0:40f:cb0d:4de6 with SMTP id n5-20020a05600c4f8500b0040fcb0d4de6mr1845639wmq.5.1707391613110;
+        Thu, 08 Feb 2024 03:26:53 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVW2Sm7rwhnabfFI7IcIwsENsKhtSUWvyRauqFuYAvoIjG/4y7F+DfxNyxTxHGb0FC7lUWC4P8zebZuakFqVkSGmy2Yf/jd/UpReDdaGbvflchYAAZqAUuYSnAIDb2VJU2exvpPCNWGfX2rGUvgE8rBkOfGX+SRTzea9Mg2OFLwmhDGjQuMhoQNRQLKfwM5JwuqEKHczoxOdTo0cYNaOJo07RAeuo4yVky/5el9GY65WyIYI4jHfigrA5/+qnQUEicm1joLlowjxL8S4j3o3hiLwa315369rc07YXFhdQFksLjg9ME1WwIXXleVHWjXFGIyWpCSxam41nkLM1WNFia6/bmOSvC6hy5GTymBQ9kxL2tcgGXyM/tF/lZZRyXWFnBNJCa1g8dxOg87xmjUo5suYF9sEHQGpBQqXhMOWXaptvauVU8xFzdYoNUqQ88m+UIewxzPCoN7PC/+QzPPI2VT89k3Yrnz/Jioj/mE9Ef8IHWVyf2w0BAlWd9auzfvdA16rHTJ/dAQFDm5SKTOtSo=
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id fb12-20020a05600c520c00b004103bd6f21dsm1181908wmb.35.2024.02.08.03.26.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 03:26:52 -0800 (PST)
+Date: Thu, 8 Feb 2024 12:26:51 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Karthik Sundaravel <ksundara@redhat.com>
+Cc: jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	pmenzel@molgen.mpg.de, michal.swiatkowski@linux.intel.com,
+	rjarry@redhat.com, aharivel@redhat.com, vchundur@redhat.com,
+	cfontain@redhat.com
+Subject: Re: [PATCH v2] ice: Add get/set hw address for VFs using devlink
+ commands
+Message-ID: <ZcS6e1Z4w76Z2F_K@nanopsycho>
+References: <20240208082455.66726-1-ksundara@redhat.com>
+ <20240208082455.66726-2-ksundara@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240208082455.66726-2-ksundara@redhat.com>
 
-Serdes phy needs to operate at 2500 mode for 2.5G speed and 1000
-mode for 1G/100M/10M speed.
-Added changes to configure serdes phy and mac based on link speed.
-Changing serdes phy speed involves multiple register writes for
-serdes block. To avoid redundant write operations only update serdes
-phy when new speed is different.
+Thu, Feb 08, 2024 at 09:24:55AM CET, ksundara@redhat.com wrote:
+>Changing the MAC address of the VF ports are not available
+>via devlink. Add the function handlers to set and get
+>the HW address for the VF ports.
 
-Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
----
-v4 changelog:
-- Made cosmetic changes
-v3 changelog:
-- updated commit message
----
-v2 changelog:
-- updated stmmac_pcs_ane to support autoneg disable
-- Update serdes speed to 1000 for 100M and 10M also---
- .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 26 +++++++++++++++++++
- .../net/ethernet/stmicro/stmmac/stmmac_pcs.h  |  2 ++
- 2 files changed, 28 insertions(+)
+"VFs". Avoid the word "port" here, as it may falsely indicate you are
+talking about the eswitch representor port.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-index 31631e3f89d0..6bbdbb7bef44 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-@@ -106,6 +106,7 @@ struct qcom_ethqos {
- 	struct clk *link_clk;
- 	struct phy *serdes_phy;
- 	unsigned int speed;
-+	int serdes_speed;
- 	phy_interface_t phy_mode;
- 
- 	const struct ethqos_emac_por *por;
-@@ -606,19 +607,39 @@ static int ethqos_configure_rgmii(struct qcom_ethqos *ethqos)
-  */
- static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
- {
-+	struct net_device *dev = platform_get_drvdata(ethqos->pdev);
-+	struct stmmac_priv *priv = netdev_priv(dev);
- 	int val;
- 
- 	val = readl(ethqos->mac_base + MAC_CTRL_REG);
- 
- 	switch (ethqos->speed) {
-+	case SPEED_2500:
-+		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
-+		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-+			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
-+			      RGMII_IO_MACRO_CONFIG2);
-+		if (ethqos->serdes_speed != SPEED_2500)
-+			phy_set_speed(ethqos->serdes_phy, SPEED_2500);
-+		ethqos->serdes_speed = SPEED_2500;
-+		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 0, 0, 0);
-+		break;
- 	case SPEED_1000:
- 		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
- 		rgmii_updatel(ethqos, RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
- 			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
- 			      RGMII_IO_MACRO_CONFIG2);
-+		if (ethqos->serdes_speed != SPEED_1000)
-+			phy_set_speed(ethqos->serdes_phy, SPEED_1000);
-+		ethqos->serdes_speed = SPEED_1000;
-+		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 1, 0, 0);
- 		break;
- 	case SPEED_100:
- 		val |= ETHQOS_MAC_CTRL_PORT_SEL | ETHQOS_MAC_CTRL_SPEED_MODE;
-+		if (ethqos->serdes_speed != SPEED_1000)
-+			phy_set_speed(ethqos->serdes_phy, SPEED_1000);
-+		ethqos->serdes_speed = SPEED_1000;
-+		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 1, 0, 0);
- 		break;
- 	case SPEED_10:
- 		val |= ETHQOS_MAC_CTRL_PORT_SEL;
-@@ -627,6 +648,10 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
- 			      FIELD_PREP(RGMII_CONFIG_SGMII_CLK_DVDR,
- 					 SGMII_10M_RX_CLK_DVDR),
- 			      RGMII_IO_MACRO_CONFIG);
-+		if (ethqos->serdes_speed != SPEED_1000)
-+			phy_set_speed(ethqos->serdes_phy, ethqos->speed);
-+		ethqos->serdes_speed = SPEED_1000;
-+		stmmac_pcs_ctrl_ane(priv, priv->ioaddr, 1, 0, 0);
- 		break;
- 	}
- 
-@@ -799,6 +824,7 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 				     "Failed to get serdes phy\n");
- 
- 	ethqos->speed = SPEED_1000;
-+	ethqos->serdes_speed = SPEED_1000;
- 	ethqos_update_link_clk(ethqos, SPEED_1000);
- 	ethqos_set_func_clk_en(ethqos);
- 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h
-index aefc121464b5..13a30e6df4c1 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h
-@@ -110,6 +110,8 @@ static inline void dwmac_ctrl_ane(void __iomem *ioaddr, u32 reg, bool ane,
- 	/* Enable and restart the Auto-Negotiation */
- 	if (ane)
- 		value |= GMAC_AN_CTRL_ANE | GMAC_AN_CTRL_RAN;
-+	else
-+		value &= ~GMAC_AN_CTRL_ANE;
- 
- 	/* In case of MAC-2-MAC connection, block is configured to operate
- 	 * according to MAC conf register.
--- 
-2.17.1
 
+>
+>Signed-off-by: Karthik Sundaravel <ksundara@redhat.com>
+>---
+> drivers/net/ethernet/intel/ice/ice_devlink.c | 89 +++++++++++++++++++-
+> 1 file changed, 88 insertions(+), 1 deletion(-)
+>
+>diff --git a/drivers/net/ethernet/intel/ice/ice_devlink.c b/drivers/net/ethernet/intel/ice/ice_devlink.c
+>index 80dc5445b50d..8455fa94a687 100644
+>--- a/drivers/net/ethernet/intel/ice/ice_devlink.c
+>+++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
+>@@ -1576,6 +1576,92 @@ void ice_devlink_destroy_pf_port(struct ice_pf *pf)
+> 	devlink_port_unregister(&pf->devlink_port);
+> }
+> 
+>+/**
+>+ * ice_devlink_port_get_vf_mac_address - .port_fn_hw_addr_get devlink handler
+>+ * @port: devlink port structure
+>+ * @hw_addr: MAC address of the port
+>+ * @hw_addr_len: length of MAC address
+>+ * @extack: extended netdev ack structure
+>+ *
+>+ * Callback for the devlink .port_fn_hw_addr_get operation
+>+ * Return: zero on success or an error code on failure.
+>+ */
+>+
+>+static int ice_devlink_port_get_vf_mac_address(struct devlink_port *port,
+>+					       u8 *hw_addr, int *hw_addr_len,
+>+					       struct netlink_ext_ack *extack)
+>+{
+>+	struct devlink *devlink = port->devlink;
+>+	struct ice_pf *pf = devlink_priv(devlink);
+>+	struct device *dev = ice_pf_to_dev(pf);
+>+	struct devlink_port_attrs *attrs = &port->attrs;
+>+	struct devlink_port_pci_vf_attrs *pci_vf;
+>+	int vf_id;
+>+	struct ice_vf *vf;
+
+Reverse xmas tree:
+https://www.kernel.org/doc/html/v6.7/process/maintainer-netdev.html#tl-dr
+
+
+>+
+>+	if (attrs->flavour == DEVLINK_PORT_FLAVOUR_PCI_VF) {
+>+		pci_vf = &attrs->pci_vf;
+>+		vf_id = pci_vf->vf;
+>+	} else {
+>+		dev_err(dev, "Unable to get the vf id for PF %d\n", pf->hw.pf_id);
+
+Fill the extack message instead.
+
+
+>+		return -EADDRNOTAVAIL;
+>+	}
+>+	vf = ice_get_vf_by_id(pf, vf_id);
+>+	if (!vf) {
+>+		dev_err(dev, "Unable to get the vf for PF %d\n", pf->hw.pf_id);
+
+Fill the extack message instead.
+
+
+>+		return -EINVAL;
+>+	}
+>+	ether_addr_copy(hw_addr, vf->dev_lan_addr);
+>+	*hw_addr_len = ETH_ALEN;
+>+	return 0;
+>+}
+>+
+>+/**
+>+ * ice_devlink_port_set_vf_mac_address - .port_fn_hw_addr_set devlink handler
+>+ * @port: devlink port structure
+>+ * @hw_addr: MAC address of the port
+>+ * @hw_addr_len: length of MAC address
+>+ * @extack: extended netdev ack structure
+>+ *
+>+ * Callback for the devlink .port_fn_hw_addr_set operation
+>+ * Return: zero on success or an error code on failure.
+>+ */
+>+static int ice_devlink_port_set_vf_mac_address(struct devlink_port *port,
+>+					       const u8 *hw_addr,
+>+					       int hw_addr_len,
+>+					       struct netlink_ext_ack *extack)
+>+{
+>+	struct devlink *devlink = port->devlink;
+>+	struct ice_pf *pf = devlink_priv(devlink);
+>+	struct device *dev = ice_pf_to_dev(pf);
+>+	struct net_device *netdev = port->type_eth.netdev;
+>+	struct devlink_port_attrs *attrs = &port->attrs;
+>+	struct devlink_port_pci_vf_attrs *pci_vf;
+>+	int vf_id;
+>+	u8 mac[ETH_ALEN];
+
+Reverse xmas tree:
+https://www.kernel.org/doc/html/v6.7/process/maintainer-netdev.html#tl-dr
+
+
+>+
+>+	if (attrs->flavour == DEVLINK_PORT_FLAVOUR_PCI_VF) {
+>+		pci_vf = &attrs->pci_vf;
+>+		vf_id = pci_vf->vf;
+>+	} else {
+>+		dev_err(dev, "Unable to get the vf id for PF %d\n", pf->hw.pf_id);
+
+Fill the extack message instead.
+
+
+>+		return -EADDRNOTAVAIL;
+>+	}
+>+
+>+	if (!netdev) {
+>+		dev_err(dev, "Unable to get the netdev for PF %d\n", pf->hw.pf_id);
+
+Fill the extack message instead.
+
+
+>+		return -EADDRNOTAVAIL;
+>+	}
+>+	ether_addr_copy(mac, hw_addr);
+>+
+>+	return ice_set_vf_mac(netdev, vf_id, mac);
+>+}
+>+
+>+static const struct devlink_port_ops ice_devlink_vf_port_ops = {
+>+	.port_fn_hw_addr_get = ice_devlink_port_get_vf_mac_address,
+>+	.port_fn_hw_addr_set = ice_devlink_port_set_vf_mac_address,
+>+};
+>+
+> /**
+>  * ice_devlink_create_vf_port - Create a devlink port for this VF
+>  * @vf: the VF to create a port for
+>@@ -1611,7 +1697,8 @@ int ice_devlink_create_vf_port(struct ice_vf *vf)
+> 	devlink_port_attrs_set(devlink_port, &attrs);
+> 	devlink = priv_to_devlink(pf);
+> 
+>-	err = devlink_port_register(devlink, devlink_port, vsi->idx);
+>+	err = devlink_port_register_with_ops(devlink, devlink_port,
+>+					     vsi->idx, &ice_devlink_vf_port_ops);
+> 	if (err) {
+> 		dev_err(dev, "Failed to create devlink port for VF %d, error %d\n",
+> 			vf->vf_id, err);
+>-- 
+>2.39.3 (Apple Git-145)
+>
 
