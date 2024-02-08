@@ -1,260 +1,139 @@
-Return-Path: <linux-kernel+bounces-57603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5699484DB47
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:22:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE57384DB49
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:23:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE593B2114B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:22:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D18A1C25B4D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CEE6A33F;
-	Thu,  8 Feb 2024 08:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3326A33D;
+	Thu,  8 Feb 2024 08:23:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YvOZuqj1"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OmvzCBQ8"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893DF6A03F;
-	Thu,  8 Feb 2024 08:22:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B286A325;
+	Thu,  8 Feb 2024 08:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707380553; cv=none; b=OLKE3JdIqfvPhjacAKQ4UVvwflt8F7+iVfb+sy8BKEi9XJKa6cImBtrQ5O3TfE7rLC8vmWzTmV/ZUBWzMrxQNnKc1akAFAOlw4bH9XMq1lLS5tiZAwM48g0B0GCWvocGkZX4+K6UZTgKS/V8RQOArS7vyvg1Mq5kztFjyPbl3Kw=
+	t=1707380592; cv=none; b=hlGpGg0Imfi4+IkMlrneKMqBCw3khEGOtXkDz3/5/yn4T2+iGbqiqENo7xapA79PY+Kxn3GSL17TzNXgsjaZ+sIMMgsdAo0Yg/CKFYV3wEHW5OF4mmKjB9v1cxN4UjBLoghC2VzA7fwKBF9/SzGP2Hn4YBI6yHMrqrkjDX6AEPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707380553; c=relaxed/simple;
-	bh=qOZaEMdkcUVVl1kqdqTAfhJZVkgvdp0nC1uG5eTs4ho=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QJtkOo9x+3NaFGxmKiZ5PW8Y+jqCcdHIvgNRDZ8mDiBNJ3qMxiBw+13JA66pZfm0EjsTBSk5LpO0NQUO+gIe3u2TKFH+5NglxBDMx7QYhxxQ3AeIbWunlld8lLwAR5nHtBAG+2gbLjsZahL+0HqQPw1LHTLdQ0iLwI1faILNjsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YvOZuqj1; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1707380592; c=relaxed/simple;
+	bh=dw1iWzN0+Odaehn3lAl74xWZ5i8sPOjzK50me6Uozys=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=P9FrwFb+L811bFW+wL6FXC/qsCCNsr2a7ZshEkM4twQjqLXmELcKNP6gbI2CPT+9lFGDyEkEw00oaloMcqiezOFNlD5d8bAWFRzrL/BtpE8TPJvwL3jQTqCvqG2dgZ0zTv9Ff308qvCSHfy+XnAsXSovV5vYH9GqbGbCW8E4XIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OmvzCBQ8; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707380551; x=1738916551;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qOZaEMdkcUVVl1kqdqTAfhJZVkgvdp0nC1uG5eTs4ho=;
-  b=YvOZuqj19IMQkQXkPVtC03oYZgW4zsCvkOJhSpna/f63G0vkb8duRBv5
-   v60wctykBuuOamz2mwTxpnqFZkTUyEPnMj5WzH8dqJlqJmoRfcsonT9L9
-   6q7jK9ajj1T4Ke39aBOxCtOHSxSeHOC1vtwana0CohdUAjFlVGbCgzPVQ
-   JfGKpkJ+bEY1iin1FaU5e4hd0PQ8iOLZ7lB0rLlyhEz2pD+xCZ15f+kI1
-   ZPm89dbjX9ZRbwUR4AT3sXECOgfNZ+4ppG4e46xUqLI9xI8xwE2+C7ZAe
-   uHqBbzRhLYB8liQ9MEPHvViXlZCRw/6rSPapNK5gkdaj++9L8+erGi9JN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="4953401"
+  t=1707380591; x=1738916591;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=dw1iWzN0+Odaehn3lAl74xWZ5i8sPOjzK50me6Uozys=;
+  b=OmvzCBQ83RRQeRHZaQe3x2vAUzlyLTVfMs/gByFiFrMAvj6JO7u5+wdr
+   /7DiQ+DAm1L9Sa5jYIeGtxLG8gl1pSlZ2HQ5vQkT6J00S4QqFZgmmD1hy
+   +T/81i60ZAIHvVhvTAdjgcnWmN/ECmGmrnYoss3sMOjOdL+ynLKwrKkbE
+   QBe/g6r1Pj+ALrbfBV8VtlJHzwFpls7NpPtX8c3iuIYdKXFzfVKUl7Tcq
+   VP5mrg5Ei0FlxV9gggrz0kQXGA4AoO671K3xn4Zcr9PTe0qh2l+OvNO8o
+   uelUFi18FNwH09L+ne3EB2QVkrVGYn0LVd/CXAD7NZ1bSEE+FYJemEXSs
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="5036295"
 X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="4953401"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 00:22:30 -0800
+   d="scan'208";a="5036295"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 00:23:10 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="39014953"
-Received: from sgruszka-mobl.ger.corp.intel.com (HELO localhost) ([10.252.43.105])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 00:22:28 -0800
-Date: Thu, 8 Feb 2024 09:22:25 +0100
-From: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Linux PM <linux-pm@vger.kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Linux ACPI <linux-acpi@vger.kernel.org>,
-	Lukasz Luba <lukasz.luba@arm.com>, Zhang Rui <rui.zhang@intel.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v1 2/6] thermal: ACPI: Discard trip table after zone
- registration
-Message-ID: <ZcSPQW0VF8ooBxOR@linux.intel.com>
-References: <2728491.mvXUDI8C0e@kreacher>
- <4905992.31r3eYUQgx@kreacher>
+   d="scan'208";a="6252080"
+Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
+  by orviesa003.jf.intel.com with ESMTP; 08 Feb 2024 00:23:09 -0800
+From: Yi Liu <yi.l.liu@intel.com>
+To: joro@8bytes.org,
+	jgg@nvidia.com,
+	kevin.tian@intel.com,
+	baolu.lu@linux.intel.com
+Cc: alex.williamson@redhat.com,
+	robin.murphy@arm.com,
+	eric.auger@redhat.com,
+	nicolinc@nvidia.com,
+	kvm@vger.kernel.org,
+	chao.p.peng@linux.intel.com,
+	yi.l.liu@intel.com,
+	yi.y.sun@linux.intel.com,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	zhenzhong.duan@intel.com,
+	joao.m.martins@oracle.com
+Subject: [PATCH rc 0/8] Add missing cache flush and dirty tracking set for nested parent domain
+Date: Thu,  8 Feb 2024 00:22:59 -0800
+Message-Id: <20240208082307.15759-1-yi.l.liu@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4905992.31r3eYUQgx@kreacher>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 05, 2024 at 10:15:50PM +0100, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Because the thermal core creates and uses its own copy of the trips
-> table passed to thermal_zone_device_register_with_trips(), it is not
-> necessary to hold on to a local copy of it any more after the given
-> thermal zone has been registered.
-> 
-> Accordingly, modify the ACPI thermal driver to store the trips table
-> passed to thermal_zone_device_register_with_trips() in a local variable
-> which is automatically discarded after the zone registration.
-> 
-> Also make some additional code simplifications unlocked by the above
-> change.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+This series adds the missing cache flush and dirty track set for nested
+parent domain (it's s2_domain but used as parent) which has no insight
+into devices/DID's under the nested domain (a.k.a s1_domain). This
+results in missing cache flush per parent domain change and incomplete
+dirty tracking set on the parent domain. There was a discussion about
+this in the mailing list [1].
 
-> ---
->  drivers/acpi/thermal.c |   57 +++++++++++++++++--------------------------------
->  1 file changed, 20 insertions(+), 37 deletions(-)
-> 
-> Index: linux-pm/drivers/acpi/thermal.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/thermal.c
-> +++ linux-pm/drivers/acpi/thermal.c
-> @@ -47,6 +47,8 @@
->  
->  #define ACPI_THERMAL_TRIP_PASSIVE	(-1)
->  
-> +#define ACPI_THERMAL_MAX_NR_TRIPS	(ACPI_THERMAL_MAX_ACTIVE + 3)
-> +
->  /*
->   * This exception is thrown out in two cases:
->   * 1.An invalid trip point becomes invalid or a valid trip point becomes invalid
-> @@ -112,7 +114,6 @@ struct acpi_thermal {
->  	unsigned long polling_frequency;
->  	volatile u8 zombie;
->  	struct acpi_thermal_trips trips;
-> -	struct thermal_trip *trip_table;
->  	struct thermal_zone_device *thermal_zone;
->  	int kelvin_offset;	/* in millidegrees */
->  	struct work_struct thermal_check_work;
-> @@ -451,26 +452,19 @@ fail:
->  	return false;
->  }
->  
-> -static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
-> +static void acpi_thermal_get_trip_points(struct acpi_thermal *tz)
->  {
-> -	unsigned int count = 0;
->  	int i;
->  
-> -	if (acpi_thermal_init_trip(tz, ACPI_THERMAL_TRIP_PASSIVE))
-> -		count++;
-> +	acpi_thermal_init_trip(tz, ACPI_THERMAL_TRIP_PASSIVE);
->  
->  	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
-> -		if (acpi_thermal_init_trip(tz, i))
-> -			count++;
-> -		else
-> +		if (!acpi_thermal_init_trip(tz, i))
->  			break;
-> -
->  	}
->  
->  	while (++i < ACPI_THERMAL_MAX_ACTIVE)
->  		tz->trips.active[i].trip.temp_dk = THERMAL_TEMP_INVALID;
-> -
-> -	return count;
->  }
->  
->  /* sys I/F for generic thermal sysfs support */
-> @@ -662,13 +656,14 @@ static void acpi_thermal_zone_sysfs_remo
->  }
->  
->  static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz,
-> +					      const struct thermal_trip *trip_table,
->  					      unsigned int trip_count,
->  					      int passive_delay)
->  {
->  	int result;
->  
->  	tz->thermal_zone = thermal_zone_device_register_with_trips("acpitz",
-> -								   tz->trip_table,
-> +								   trip_table,
->  								   trip_count,
->  								   0, tz,
->  								   &acpi_thermal_zone_ops,
-> @@ -823,10 +818,10 @@ static void acpi_thermal_free_thermal_zo
->  
->  static int acpi_thermal_add(struct acpi_device *device)
->  {
-> +	struct thermal_trip trip_table[ACPI_THERMAL_MAX_NR_TRIPS] = { 0 };
->  	struct acpi_thermal_trip *acpi_trip;
->  	struct thermal_trip *trip;
->  	struct acpi_thermal *tz;
-> -	unsigned int trip_count;
->  	int crit_temp, hot_temp;
->  	int passive_delay = 0;
->  	int result;
-> @@ -848,21 +843,10 @@ static int acpi_thermal_add(struct acpi_
->  	acpi_thermal_aml_dependency_fix(tz);
->  
->  	/* Get trip points [_CRT, _PSV, etc.] (required). */
-> -	trip_count = acpi_thermal_get_trip_points(tz);
-> +	acpi_thermal_get_trip_points(tz);
->  
->  	crit_temp = acpi_thermal_get_critical_trip(tz);
-> -	if (crit_temp != THERMAL_TEMP_INVALID)
-> -		trip_count++;
-> -
->  	hot_temp = acpi_thermal_get_hot_trip(tz);
-> -	if (hot_temp != THERMAL_TEMP_INVALID)
-> -		trip_count++;
-> -
-> -	if (!trip_count) {
-> -		pr_warn(FW_BUG "No valid trip points!\n");
-> -		result = -ENODEV;
-> -		goto free_memory;
-> -	}
->  
->  	/* Get temperature [_TMP] (required). */
->  	result = acpi_thermal_get_temperature(tz);
-> @@ -881,13 +865,7 @@ static int acpi_thermal_add(struct acpi_
->  
->  	acpi_thermal_guess_offset(tz, crit_temp);
->  
-> -	trip = kcalloc(trip_count, sizeof(*trip), GFP_KERNEL);
-> -	if (!trip) {
-> -		result = -ENOMEM;
-> -		goto free_memory;
-> -	}
-> -
-> -	tz->trip_table = trip;
-> +	trip = trip_table;
->  
->  	if (crit_temp != THERMAL_TEMP_INVALID) {
->  		trip->type = THERMAL_TRIP_CRITICAL;
-> @@ -923,9 +901,17 @@ static int acpi_thermal_add(struct acpi_
->  		trip++;
->  	}
->  
-> -	result = acpi_thermal_register_thermal_zone(tz, trip_count, passive_delay);
-> +	if (trip == trip_table) {
-> +		pr_warn(FW_BUG "No valid trip points!\n");
-> +		result = -ENODEV;
-> +		goto free_memory;
-> +	}
-> +
-> +	result = acpi_thermal_register_thermal_zone(tz, trip_table,
-> +						    trip - trip_table,
-> +						    passive_delay);
->  	if (result)
-> -		goto free_trips;
-> +		goto free_memory;
->  
->  	refcount_set(&tz->thermal_check_count, 3);
->  	mutex_init(&tz->thermal_check_lock);
-> @@ -944,8 +930,6 @@ static int acpi_thermal_add(struct acpi_
->  flush_wq:
->  	flush_workqueue(acpi_thermal_pm_queue);
->  	acpi_thermal_unregister_thermal_zone(tz);
-> -free_trips:
-> -	kfree(tz->trip_table);
->  free_memory:
->  	acpi_thermal_free_thermal_zone(tz);
->  
-> @@ -966,7 +950,6 @@ static void acpi_thermal_remove(struct a
->  
->  	flush_workqueue(acpi_thermal_pm_queue);
->  	acpi_thermal_unregister_thermal_zone(tz);
-> -	kfree(tz->trip_table);
->  	acpi_thermal_free_thermal_zone(tz);
->  }
->  
-> 
-> 
-> 
+This series adds a s1_domains list in the parent domain to track the nested
+domains. Hence, the driver can loop the nested domains and use the DIDs of
+the nested domain to flush iotlb. The driver can also loop the nested domains
+and nested domain's devices list to flush device iotlb and set the dirty
+tracking completely.
+
+This series doesn't touch the pasid iotlb or the pasid devtlb as there is
+no support of attaching pasid to nested domain yet. It will be covered when
+that feature is enabled.
+
+The complete code can be found at[2], this has been tested with a hacky
+Qemu[3] to test the unmap on parent domain and dirty tracking set on parent
+domain. This just verifies the new path. So appreciated to see t-b with
+regression tests.
+
+This aims to the 6.8 rc#, so your special attention is welcomed.
+
+[1] https://lore.kernel.org/linux-iommu/92f8aaca-093d-4161-b8f2-5ab1680df769@intel.com/
+[2] https://github.com/yiliu1765/iommufd/tree/vtd_nesting_fixes
+[3] https://github.com/yiliu1765/qemu/tree/tmp/for-testing-unmap-and-dirty-set-on-parent
+
+base commit: 547ab8fc4cb04a1a6b34377dd8fad34cd2c8a8e3
+
+Regards,
+	Yi Liu
+
+Yi Liu (8):
+  iommu/vt-d: Track nested domains in parent
+  iommu/vt-d: Add __iommu_flush_iotlb_psi()
+  iommu/vt-d: Add missing iotlb flush for parent domain
+  iommu/vt-d: Update iotlb in nested domain attach
+  iommu/vt-d: Add missing device iotlb flush for parent domain
+  iommu/vt-d: Remove @domain parameter from
+    intel_pasid_setup_dirty_tracking()
+  iommu/vt-d: Wrap the dirty tracking loop to be a helper
+  iommu/vt-d: Add missing dirty tracking set for parent domain
+
+ drivers/iommu/intel/iommu.c  | 213 ++++++++++++++++++++++++++---------
+ drivers/iommu/intel/iommu.h  |   7 ++
+ drivers/iommu/intel/nested.c |  12 ++
+ drivers/iommu/intel/pasid.c  |   3 +-
+ drivers/iommu/intel/pasid.h  |   1 -
+ 5 files changed, 182 insertions(+), 54 deletions(-)
+
+-- 
+2.34.1
+
 
