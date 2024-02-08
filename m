@@ -1,163 +1,147 @@
-Return-Path: <linux-kernel+bounces-58476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DE4584E6F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:42:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18AB984E6F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:42:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A116291163
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:42:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 922781F22D29
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:42:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46BB983CD5;
-	Thu,  8 Feb 2024 17:42:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C99823D2;
+	Thu,  8 Feb 2024 17:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ODmKEHzt"
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hTYvaocI"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE9883CD1
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:42:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBB34823C2
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707414160; cv=none; b=MFqc7ythdUqjE5GAA1YDjPNCUgQX+d1Zn6Mli+N+G/oURbu53WRQKV2zqbp3pg//hXw4JtZ6CchqkDq+d1XlGL/Vpu+VLpO7eaJ9sWPLPHpA3XcdZtD/gdFdjxWne1p8a0oL4GypLHytzip6VuOuVjdljmQZo6vBNfGGNt3Dw/U=
+	t=1707414151; cv=none; b=ObNX3zU3duxsdCGyFNq0pRlXOphH3CZHmocgbBN6FcJsFUNxeVyMPgr6GXLwVMryXJjwjcRUMMpSLmEZ9uJ6XdhhG+wqYKQuTgb5DJhQzoIg1pxBAXm1lUjvBkOt6t/fGfYIHW2RQzRZr40amAhNTHARxLq0iy013tdI4SxHJjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707414160; c=relaxed/simple;
-	bh=jTyqq1McBzhXuBGoQDTNsRl0bVoBKu3QPqRS+ZSe964=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G8ofc3azzWKwSKgpg8hnUwfSb5z+JWQKB+qL0WejbePoYqjqAqgK698XYsmcsIIig45A5gd83EJL+SP2is7O+KkYNKQY2RMrvInnQlhzrlTpOhHuTL49C7zj1kg3UZKqVy/mVmC3jJMantXd2PKYSKTd8IQTlQu7iTgla/G71jU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ODmKEHzt; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-6818f3cf00aso565296d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 09:42:38 -0800 (PST)
+	s=arc-20240116; t=1707414151; c=relaxed/simple;
+	bh=r3ot4oF1LX3nA6eTOhVf+jyF+CVFFa7172oMKsIh+b4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ih1Uxj2C7358to0hVFD2BJEAcn9rV0bV4wRpJy1pxMlRPuMvzB4eJQFyvSiHsoJe3smLLhA/mDPmjQ93NKYToMUUAPU/8d7f85YhcghbaeHRkh37CRZVEV+ftRuBGzFsU9yJZe81r69Zq8sYPuyGFp9hIbS9Fun7KiD10XWQ76U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hTYvaocI; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d944e8f367so339385ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 09:42:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707414158; x=1708018958; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qE9yJofYcIrp+q8fl2NtOvzDEIFhiUUc4detkUYKRUo=;
-        b=ODmKEHzt3IVRk9s32gldWB8tCYoD1x7ROFpCAFaY0kCxCj1+OaGZJ9/nEATY0jCirB
-         D0xzDilAaLkVd+aY1yUqSbsIMOTfmtRYo9o12oKtYFfp4ch5bs+UJrD0D3uQTUjSd6k3
-         hVot2f+yitilQxsdjf0ybbKptSug95aUbdozzHRuRMCGPqVVi8Qk3GyNT7Yvij2DPh7P
-         RHNcAo8ZWrAcfEdSjPXeQ1sA4Rqcyf+5MhtI/18MxrI5UVfHWj+a2x0Lft6j86eHxb7F
-         SKsFNKeWCovD7j6ah6RCEAL3eThKvP01fR1834yKVPUpGS5ByW2nny0Sin5/qXtvGpMo
-         cVPw==
+        d=gmail.com; s=20230601; t=1707414149; x=1708018949; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kbA8ylbFRlKyg5U453MmfWxg4qPQ1odWQVw3a/yjMMA=;
+        b=hTYvaocIehF1NJeE88McVIzur5iFgb2oJkcoUJv7bWzCGSgK77SJWluiqUgwBgXTqb
+         Y8unvikmGPK8RjBTj9/gBWptfUMApx030JNmaC63qU/VksrsLrY1+I0pwXdtYnOQOPSu
+         NlC9P/F4Oy80Z1MwjTBjt8Iu/GEht6mPm7RBEj966of7Wi/QU1Cq1Ovw+Ym4z3p44D5x
+         eQp+B/9cZy1ZtBOTWHuu97/h86LOYNC2zzNoHeoUdKcOV5O/TMhlgBXekDbPnD3AZEdS
+         quGV+j4foPNS/gLh0KD/Tl9SoOEcTMBjvdsgmLCYnRcGJKMeWs9re906NOrCxQcZJYHP
+         /TMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707414158; x=1708018958;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707414149; x=1708018949;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qE9yJofYcIrp+q8fl2NtOvzDEIFhiUUc4detkUYKRUo=;
-        b=CKdc48KbE7J+jubkyCW7DqA2N3Q6AHUIwqlkI9yI3RiGXI+eCRI0Cv4fsLIbohRvXi
-         53JFng8s2qrGIufuOKVWvIsILRi9Rr8xhyaPa6h/WtixC05YYIjtd9jUi79J+NZ9oYA6
-         UMOGWT3nASTryTYUuzbY5JX9Fsyvif9sJ1k8Ap096wDNZNnfPqB6D9VZPaIyT3zfIfkh
-         08EELAxKQHPoR8A425a7XHYqXTQdfES+CNHLfgTC5kHrhPGycuBf+KsoStbj1+EU2syR
-         Fnu53ty9ZRLyHFgruStFVgVAb0aoUm96Z/LLE+3+8bfloUsTCtSH/ofiHgpBGlZMd7Dc
-         l27g==
-X-Forwarded-Encrypted: i=1; AJvYcCV8nD8Fqpq+h3HfTJpfZSdj/JRw35siRpVpTYkbj9Q+v0oANpzaNmwdSBAGJ5/niRyPGsHvolHCv31DpIr0noezWjvCmGZ8ZPDKVu4c
-X-Gm-Message-State: AOJu0Yz9P4yzF11nng5tGngAbZFl0We4bo3wdJuj5ZqFWbouaLfV5sPs
-	VWTHlN6qldOGvtmRnsR/1GpcQHBlYryvUXBV7ieY/OdDo5Wbg4XfSodRGE/fgA0HeZCz7FQZwsa
-	igKyOzTudWYnOxr5umatVRrxZypadvQtyiPjZ
-X-Google-Smtp-Source: AGHT+IHisO4YeJ4HMjJTJ7Pa6g2UoWbHmyDF6/F8nMdBmOGtjRmAF7AXJRfz3Lb4ftoWcIr8EGxQVdi4TlQ13SQyHQk=
-X-Received: by 2002:a05:6214:258b:b0:681:78cf:3920 with SMTP id
- fq11-20020a056214258b00b0068178cf3920mr12087645qvb.25.1707414157664; Thu, 08
- Feb 2024 09:42:37 -0800 (PST)
+        bh=kbA8ylbFRlKyg5U453MmfWxg4qPQ1odWQVw3a/yjMMA=;
+        b=adhJ4u+rrRDcF/irbY/DvVg/VuzZGyQRWDZ0sIlnF1Cc2uACPiASromse1n5ZqPS2O
+         MALHp2KH4tvmTchbGL/xal/4vj1koyhd1vuHSdteLTSDmcaHXGnHFNGG5YZkqMVfeIec
+         9ujnIpiipUb0/JlGtm5agU0Tqj3YLEe22xuQH+s+Ctk6LTiUE/x5gcBpteNpLIUNFsXT
+         +tI5vq8KFburqOjHRFVnwXGQtMHBmLfLTQCNOQTCuuSooxM4v7oDhyz2IY/xK/sLzvFM
+         ivBcvlYECb8MYdDV8NAigWN5DiK48BF9J3mJ22/RyyvfSAbmv5Sybsyj3S5bL4SNXBnP
+         /+0g==
+X-Gm-Message-State: AOJu0YwudnhDee/fEntCOQAv5SOzMgAh/TVc+3AzMVkVPyXZl2P3ap8s
+	3ERvjpTuFRxMjQVH6EEp9X2n6Fm7dq9UsOcs+UqgthslURi+msng
+X-Google-Smtp-Source: AGHT+IFk6ER52uITpm87v07bgASXvVurZymY4H4FuFh2fytCLhYBydXqnDqjV2kf0JSjDzbU5vhyNQ==
+X-Received: by 2002:a17:902:e548:b0:1d8:fafa:f923 with SMTP id n8-20020a170902e54800b001d8fafaf923mr10701826plf.10.1707414149142;
+        Thu, 08 Feb 2024 09:42:29 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUuLQdpMvgMSpEolg7dRZzQIMALmahYAibXzcxpqNiziqewujlGdkHkym2hAvMMGY12mwW2XKyEI6yKivy7gXcvR4pMRzr8XGLB2mXBa1nYCHldWUX7LdBN/+/wZP7kBHiAXG8A7+Elrkn7ezrDZK0gzging/43et5msVEXE9xfCdR45gSRc9pL3RONG7dF6qQlnEuQsruPByqcT1a4DiPBD+nw9J4fPAP7uVeEP3I5AyULM+s/Q3lfDctjgV9RuBF/ycxQIw==
+Received: from localhost ([2620:10d:c090:400::4:3c45])
+        by smtp.gmail.com with ESMTPSA id mn7-20020a1709030a4700b001d8aa88f59esm15975plb.110.2024.02.08.09.42.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 09:42:28 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 8 Feb 2024 07:42:27 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
+	Costa Shulyupin <cshulyup@redhat.com>
+Subject: Re: [PATCH wq/for-6.9 v5 2/4] workqueue: Enable unbound cpumask
+ update on ordered workqueues
+Message-ID: <ZcUSg1t-hXbZXsKj@slm.duckdns.org>
+References: <20240208161014.1084943-1-longman@redhat.com>
+ <20240208161014.1084943-3-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <38f51dbb-65aa-4ec2-bed2-e914aef27d25@vrvis.at>
- <ZcNdzZVPD76uSbps@eldamar.lan> <CADKFtnRfqi-A_Ak_S-YC52jPn604+ekcmCmNoTA_yEpAcW4JJg@mail.gmail.com>
- <1d4c7d06-0c02-4adb-a2a3-ec85fd802ddb@vrvis.at>
-In-Reply-To: <1d4c7d06-0c02-4adb-a2a3-ec85fd802ddb@vrvis.at>
-From: Jordan Rife <jrife@google.com>
-Date: Thu, 8 Feb 2024 09:42:24 -0800
-Message-ID: <CADKFtnQUQt=M32tYhcutP0q6exOgk9R6xgxddDdewbms+7xwTQ@mail.gmail.com>
-Subject: Re: [regression 6.1.76] dlm: cannot start dlm midcomms -97 after
- backport of e9cdebbe23f1 ("dlm: use kernel_connect() and kernel_bind()")
-To: Valentin Kleibel <valentin@vrvis.at>
-Cc: Salvatore Bonaccorso <carnil@debian.org>, David Teigland <teigland@redhat.com>, 
-	Alexander Aring <aahringo@redhat.com>, 1063338@bugs.debian.org, gfs2@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	gregkh@linuxfoundation.org, regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240208161014.1084943-3-longman@redhat.com>
 
-On Thu, Feb 8, 2024 at 3:37=E2=80=AFAM Valentin Kleibel <valentin@vrvis.at>=
- wrote:
->
-> Hi Jordan, hi all
->
-> > Just a quick look comparing dlm_tcp_listen_bind between the latest 6.1
-> > and 6.6 stable branches,
-> > it looks like there is a mismatch here with the dlm_local_addr[0] param=
-eter.
-> >
-> > 6.1
-> > ----
-> >
-> > static int dlm_tcp_listen_bind(struct socket *sock)
-> > {
-> > int addr_len;
-> >
-> > /* Bind to our port */
-> > make_sockaddr(dlm_local_addr[0], dlm_config.ci_tcp_port, &addr_len);
-> > return kernel_bind(sock, (struct sockaddr *)&dlm_local_addr[0],
-> >     addr_len);
-> > }
-> >
-> > 6.6
-> > ----
-> > static int dlm_tcp_listen_bind(struct socket *sock)
-> > {
-> > int addr_len;
-> >
-> > /* Bind to our port */
-> > make_sockaddr(&dlm_local_addr[0], dlm_config.ci_tcp_port, &addr_len);
-> > return kernel_bind(sock, (struct sockaddr *)&dlm_local_addr[0],
-> >     addr_len);
-> > }
-> >
-> > 6.6 contains commit c51c9cd8 (fs: dlm: don't put dlm_local_addrs on hea=
-p) which
-> > changed
-> >
-> > static struct sockaddr_storage *dlm_local_addr[DLM_MAX_ADDR_COUNT];
-> >
-> > to
-> >
-> > static struct sockaddr_storage dlm_local_addr[DLM_MAX_ADDR_COUNT];
-> >
-> > It looks like kernel_bind() in 6.1 needs to be modified to match.
->
-> We tried to apply commit c51c9cd8 (fs: dlm: don't put dlm_local_addrs on
-> heap) to the debian kernel 6.1.76 and came up with the attached patch.
-> Besides the different offsets there is a slight change dlm_tcp_bind()
-> where in 6.1.76 kernel_bind() is used instead of sock->ops->bind() in
-> the original commit.
->
-> This patch solves the issue we experienced.
->
-> Thanks for your help,
-> Valentin
+Hello,
 
-Good to hear that works for you! We should fix this in the 6.1 stable
-kernel as well.
+Generally looks good to me. Minor nits below:
 
-IMO it may be less risky and simpler to fix the backport of my patch
-e9cdebbe23f1 ("dlm: use kernel_connect() and
-kernel_bind()") and just switch (struct sockaddr *)&dlm_local_addr[0]
-to (struct sockaddr *)dlm_local_addr[0]
-in the call to kernel_bind() rather than backporting c51c9cd8 (fs:
-dlm: don't put dlm_local_addrs on
-heap) to 6.1.
+On Thu, Feb 08, 2024 at 11:10:12AM -0500, Waiman Long wrote:
+> +static void unplug_oldest_pwq(struct workqueue_struct *wq)
+> +{
+> +	struct pool_workqueue *pwq;
+> +	unsigned long flags;
+> +
+> +	lockdep_assert_held(&wq->mutex);
+> +
+> +	pwq = list_first_entry_or_null(&wq->pwqs, struct pool_workqueue,
+> +				       pwqs_node);
+> +	if (WARN_ON_ONCE(!pwq))
+> +		return;
+> +	raw_spin_lock_irqsave(&pwq->pool->lock, flags);
 
-I will have some time soon to fix the 6.1 backport, but it may make
-sense just to revert in the meantime.
+Can we do raw_spin_lock_irq() instead?
 
--Jordan
+> @@ -4740,6 +4784,13 @@ static void pwq_release_workfn(struct kthread_work *work)
+>  		mutex_lock(&wq->mutex);
+>  		list_del_rcu(&pwq->pwqs_node);
+>  		is_last = list_empty(&wq->pwqs);
+> +
+> +		/*
+> +		 * For ordered workqueue with a plugged dfl_pwq, restart it now.
+> +		 */
+> +		if (!is_last && (wq->flags & __WQ_ORDERED))
+> +			unplug_oldest_pwq(wq);
+
+I'm not so sure about is_last test here. unplug_oldest_pwq() is testing for
+NULL anyway, so maybe just drop this test here and drop WARN_ON_ONCE()
+there?
+
+> @@ -4966,6 +5017,15 @@ apply_wqattrs_prepare(struct workqueue_struct *wq,
+>  	cpumask_copy(new_attrs->__pod_cpumask, new_attrs->cpumask);
+>  	ctx->attrs = new_attrs;
+>  
+> +	/*
+> +	 * For initialized ordered workqueues, there is only one pwq (dfl_pwq).
+> +	 * Set the plugged flag of ctx->dfl_pwq to suspend execution of newly
+> +	 * queued work items until execution of older work items in the old
+> +	 * pwq's have completed.
+> +	 */
+> +	if (!list_empty(&wq->pwqs) && (wq->flags & __WQ_ORDERED))
+> +		ctx->dfl_pwq->plugged = true;
+
+Can we test __WQ_ORDERED first?
+
+Thanks.
+
+-- 
+tejun
 
