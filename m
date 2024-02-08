@@ -1,135 +1,104 @@
-Return-Path: <linux-kernel+bounces-57820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94BE484DDC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 67B8684DDC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:08:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 317DA1F21C36
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:08:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06A8F1F22079
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:08:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3893373162;
-	Thu,  8 Feb 2024 10:02:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VHeqwAoN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE3573196;
+	Thu,  8 Feb 2024 10:03:15 +0000 (UTC)
+Received: from davidv.dev (mail.davidv.dev [78.46.233.60])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 641A16F52C;
-	Thu,  8 Feb 2024 10:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85CD56DCEA
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 10:03:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.46.233.60
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707386557; cv=none; b=FgJey1UN89d3gyjIm0Pyi7TlRXn9l1XxTlLRr217alcWJ45RRfMN93ciGDTWw5fxHpQ89F+udupN1MI8uzKucS6joj9Dcc2TJxhlWk5oG2Sy1oBmnNKdtdmdhp1gQI3+MEOsgoIyN7cMqzEv8J3VCTiZBBz2UO+3IwMk9TakBTE=
+	t=1707386595; cv=none; b=S2hCSOB/FRrlRGmWSc6dyZ32VV3zu5bgLTL+AV4PByTOWWoqcf7ew/8noh/3P2O83WCwbc4F1UTnJkKfp6HNmUTxnyQcgAETyzpfTjgvheOwlbeaOOyGFs8sxNL1YuDFRbiHE/+uVquu+XKs3J3giGk0ytIPvhcfGdM8O0cn648=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707386557; c=relaxed/simple;
-	bh=D96AYJ0yVRf7SBQeHRHG9hGhNFiOxzG3tk5OOOiG5iI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VedGqiWrmlcm9NINqTNv0Vk2FlLSQZjDbEkyVdqyXMe/ScF1zq+KgDSurKQSIUjrUodU8EQy/zskx6a5G2dtUUwVO8vq2MdkoUsf8Ma2dLxfEXQ8nfwa+RVklqPuxHQyVjpIWItHdhgpEEKOKUDYwkV1jlZ6GjOT/hx+Z/+u+Uc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VHeqwAoN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33ADDC433F1;
-	Thu,  8 Feb 2024 10:02:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707386556;
-	bh=D96AYJ0yVRf7SBQeHRHG9hGhNFiOxzG3tk5OOOiG5iI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VHeqwAoNV7C/gX+AnZEx/HQqAh/y+NET+LhOfaOfSSEWMQXVj5Y6SpJgGXjQMUeZt
-	 gFTzmmmCA5hHb/LpelrqtBl0QK1JNu/9LkP//tgwsIdySN50IBdCQW42kgDGVkwY/R
-	 AcER4mY5OQ2OHqOW1E0U+Tdo+a1Ka3IJ627Xx1TQPQKpyAS5p/ClTaWnPqGHTaR3FK
-	 w0WJ0BLvHNgNhDT/A97tMRR5d6a7/m8Dz4Nxeg2b2akfBzXYXVO9Zr4YLw3dUx4gI1
-	 k56zrnrNv8MrjhoVUTEGsV4/XrV964hS28JhP2onb8qzNxwd4UskxtVnNaTtiXajs2
-	 d/NVwAAkPydpQ==
-Date: Thu, 8 Feb 2024 11:02:33 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, andersson@kernel.org, 
-	konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, vkoul@kernel.org, quic_bjorande@quicinc.com, 
-	manivannan.sadhasivam@linaro.org, bryan.odonoghue@linaro.org, quic_msavaliy@quicinc.com, 
-	quic_vtanuku@quicinc.com
-Subject: Re: [V3] i2c: i2c-qcom-geni: Correct I2C TRE sequence
-Message-ID: <uswznu3h53gcefpdc4vxozz32ecdcjvzmr7admwc4h54o27bfy@qqoevrl3dcyt>
-References: <20240201101323.13676-1-quic_vdadhani@quicinc.com>
- <CAA8EJpqQtHDRK2pex+5F-fMRTosJuFCx59e89MWhnie1O3dHKA@mail.gmail.com>
- <60b5e755-352b-476d-8c6e-2170594ae80d@quicinc.com>
+	s=arc-20240116; t=1707386595; c=relaxed/simple;
+	bh=WTA+UDK0EaxEUPjb7YY9WTShoJNOU9Pzb4SP9T7Km8k=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=S6pDFM1RD9aF/WMJQjXqaTRjEihujuJvLqnhvRFUkuSxoXsOiQ1AskNp46FV2IK0UuUqgpQa8Ji3fgi7mKZ4IvSFvZn0naAiPIMsDhnsdxnEb8hCa7pxgGkutnLlK+bzGvJSzawnKuhNZYc6gyzx4QrTtRWqsh6k3A7UzedTtBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidv.dev; spf=pass smtp.mailfrom=davidv.dev; arc=none smtp.client-ip=78.46.233.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidv.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=davidv.dev
+Received: from framework.labs
+	by mail.davidv.dev (chasquid) with ESMTPSA
+	tls TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+	(over submission+TLS, TLS-1.2, envelope from "david@davidv.dev")
+	; Thu, 08 Feb 2024 11:03:11 +0100
+From: David Ventura <david@davidv.dev>
+To: david@davidv.dev
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH v2 2/2] net: Change default delay on IP autoconfig to 0ms
+Date: Thu,  8 Feb 2024 11:03:04 +0100
+Message-Id: <20240208100304.253337-1-david@davidv.dev>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240208093722.246930-1-david@davidv.dev>
+References: <20240208093722.246930-1-david@davidv.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <60b5e755-352b-476d-8c6e-2170594ae80d@quicinc.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Viken, Dmitry,
+Reduce the default settle time from 10ms to 0ms, based on previous discussions (
+https://lore.kernel.org/netdev/1305696161-18277-1-git-send-email-micha@neli.hopto.org/t/
+https://lore.kernel.org/netdev/580001e3-17ef-4f24-8fd8-bc14110e874e@lunn.ch/
+) ARP and DHCP retries are expected to handle any lost transmissions.
 
-On Fri, Feb 02, 2024 at 04:13:06PM +0530, Viken Dadhaniya wrote:
-> 
-> On 2/1/2024 5:24 PM, Dmitry Baryshkov wrote:
-> > On Thu, 1 Feb 2024 at 12:13, Viken Dadhaniya <quic_vdadhani@quicinc.com> wrote:
-> > > 
-> > > For i2c read operation in GSI mode, we are getting timeout
-> > > due to malformed TRE basically incorrect TRE sequence
-> > > in gpi(drivers/dma/qcom/gpi.c) driver.
-> > > 
-> > > TRE stands for Transfer Ring Element - which is basically an element with
-> > > size of 4 words. It contains all information like slave address,
-> > > clk divider, dma address value data size etc).
-> > > 
-> > > Mainly we have 3 TREs(Config, GO and DMA tre).
-> > > - CONFIG TRE : consists of internal register configuration which is
-> > >                 required before start of the transfer.
-> > > - DMA TRE :    contains DDR/Memory address, called as DMA descriptor.
-> > > - GO TRE :     contains Transfer directions, slave ID, Delay flags, Length
-> > >                 of the transfer.
-> > > 
-> > > Driver calls GPI driver API to config each TRE depending on the protocol.
-> > > If we see GPI driver, for RX operation we are configuring DMA tre and
-> > > for TX operation we are configuring GO tre.
-> > > 
-> > > For read operation tre sequence will be as below which is not aligned
-> > > to hardware programming guide.
-> > > 
-> > > - CONFIG tre
-> > > - DMA tre
-> > > - GO tre
-> > > 
-> > > As per Qualcomm's internal Hardware Programming Guide, we should configure
-> > > TREs in below sequence for any RX only transfer.
-> > > 
-> > > - CONFIG tre
-> > > - GO tre
-> > > - DMA tre
-> > > 
-> > > In summary, for RX only transfers, we are reordering DMA and GO TREs.
-> > > Tested covering i2c read/write transfer on QCM6490 RB3 board.
-> > 
-> > This hasn't improved. You must describe what is the connection between
-> > TRE types and the geni_i2c_gpi calls.
-> > It is not obvious until somebody looks into the GPI DMA driver.
-> > 
-> > Another point, for some reason you are still using just the patch
-> > version in email subject. Please fix your setup so that the email
-> > subject also includes the `[PATCH` part in the subject, which is there
-> > by default.
-> > Hint: git format-patch -1 -v4 will do that for you without a need to
-> > correct anything afterwards.
-> > 
-> 
-> At high level, let me explain the I2C to GPI driver flow in general.
-> 
-> I2C driver calls GPI driver exposed functions which will prepare all the
-> TREs as per programming guide and
-> queues to the GPI DMA engine for execution. Upon completion of the Transfer,
-> GPI DMA engine will generate an
-> interrupt which will be handled inside the GPIO driver. Then GPI driver will
-> call DMA framework registered callback by i2c.
-> Upon receiving this callback, i2c driver marks the transfer completion.
+This patch depends on 1f0aa0c947eeb4edb60add141a5bc2309f2dc8dd ("
+net: make driver settling time configurable").
 
-Any news about this? Dmitry do you still have concerns? We can
-add this last description in the commit log, as well, if needed.
+Signed-off-by: David Ventura <david@davidv.dev>
+---
+ Documentation/admin-guide/nfs/nfsroot.rst | 2 +-
+ net/ipv4/ipconfig.c                       | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Andi
+diff --git a/Documentation/admin-guide/nfs/nfsroot.rst b/Documentation/admin-guide/nfs/nfsroot.rst
+index f26f7a342af6..fce610a4ec54 100644
+--- a/Documentation/admin-guide/nfs/nfsroot.rst
++++ b/Documentation/admin-guide/nfs/nfsroot.rst
+@@ -225,7 +225,7 @@ ip=<client-ip>:<server-ip>:<gw-ip>:<netmask>:<hostname>:<device>:<autoconf>:<dns
+ 
+ ip.dev_wait_ms=<value>
+   Set the number of milliseconds to delay after opening the network device
+-  which will be autoconfigured. Defaults to 10 milliseconds.
++  which will be autoconfigured. Defaults to 0 milliseconds.
+ 
+ nfsrootdebug
+   This parameter enables debugging messages to appear in the kernel
+diff --git a/net/ipv4/ipconfig.c b/net/ipv4/ipconfig.c
+index cbf35163b973..8b7d08649b09 100644
+--- a/net/ipv4/ipconfig.c
++++ b/net/ipv4/ipconfig.c
+@@ -99,7 +99,7 @@
+ 
+ /* Wait for carrier timeout default in seconds */
+ static unsigned int carrier_timeout = 120;
+-static unsigned int dev_wait_ms = 10;
++static unsigned int dev_wait_ms = 0;
+ 
+ /*
+  * Public IP configuration
+-- 
+2.39.2
+
 
