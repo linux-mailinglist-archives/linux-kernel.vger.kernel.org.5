@@ -1,215 +1,168 @@
-Return-Path: <linux-kernel+bounces-57613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37F0D84DB64
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:26:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2611484DB66
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:27:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 571C61C21D30
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:26:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF33128B28F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC28B6A35E;
-	Thu,  8 Feb 2024 08:23:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B46EB6A8DC;
+	Thu,  8 Feb 2024 08:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ujWyTSR6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dxJaOvPk"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 006FF6A03F;
-	Thu,  8 Feb 2024 08:23:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C7E069305
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 08:25:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707380622; cv=none; b=hSfMFrEhAq3L7+5Te01OTdKpinAZkSJdEpAXH5MkUlTA0VwjUXvsaGQOgvrGYfTt7pRffuV5C8WTtUfYvjmpBh5+WsYIDNuWeh36gEkRad0l/upENa8845UXWPGofaDH0/hISHbRf2EGtSblR1A5t+8hN4teGqLib6QgsT89QOg=
+	t=1707380711; cv=none; b=P6+ZdRUPqC0MSFTRZ7ajjFupiljpdRBqkxNXKD2hXjc4rOdqaky2HMVSaaoqIMZjp0P6Cuz0tT8En9skTR0H8kuwoagZvBzsvt5sA5Ygzwg0Kcp+YKBqeS6iw3Wqkz0bWMOPNDHIu4KNuvr7XdCUW9//vNgvt+omUI1Ah6KfXZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707380622; c=relaxed/simple;
-	bh=yNox0Rvrke1TK9bvylXp7lj6RMB3YMY6EmLiHoovj74=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BOHOEHxRQwvsx3TcHeC3RQNSc/ujI86O/rHucYfhVdmURd+CU27mnQxMs+HdbHVg8zVOznLmHE73nMZNVFCQESE0gFZMqRX0AudtkGmwkdoOYAjOz/TQYkH7+qtCLUHrGTEJc2lXQ6/WwNIQgnS4ZV2M98JE1ZvCz/tDmvQe0v0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ujWyTSR6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1FE9C433C7;
-	Thu,  8 Feb 2024 08:23:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707380621;
-	bh=yNox0Rvrke1TK9bvylXp7lj6RMB3YMY6EmLiHoovj74=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ujWyTSR69cvBIEjMA6VF+800AGAB5hUvP7a/PQGvQVgh1lAWgWt22OYbaR87SABQt
-	 QnZn76mUoHGi7rfWsdwNGQHKPG0TRSGI9Zv3c1MfUx4wbzbT37GFPL3wmEDg5zLmv/
-	 rXuLhIUILb8PD9EoqGIjnpsdhJi+UzEjSGzCTvESTq8jETnPvE6Gyt1SS9LvkHBYy7
-	 8cTjNLBK14KyohT4mG3KqmaSTXHGxxy9xcBKiqYrcms0ScrXdKlob1JFmULgYKyOBm
-	 VOlI5NX+qAZh9JXMRdk5H4Tilt6XLMegvKbPxCD08R2fmQs+n/R7e+P/SVa9jQnT4y
-	 4uhSZjn8SCyAQ==
-Date: Thu, 8 Feb 2024 10:23:36 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>
-Cc: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
-	jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	s=arc-20240116; t=1707380711; c=relaxed/simple;
+	bh=O2IKBBmeitmD4XG1lBAjgSZnpt0IxoMEUP0YLEVDT4w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FAn25SJXSolAve9CNNHc17yU3KV2vwhVieQF/W1qJFEHU4YltEg4lEQJszdf+D16NlslgtJjzDkxjU0DqmWlTSn394B2AnWJJ/LuTCv4jn5tM04o9QrYT5aUyVNuq9XQeTXSTL9Fbhhf0ir4pg1jRTLdQB18+Euq2lN/oBEklxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dxJaOvPk; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707380708;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=SAalLMEPsSD/09IiHiwS+PzKyKGItg6LwK/MHBE68Iw=;
+	b=dxJaOvPktBwEQtt20GFB8OtKTSo0C+/Yi37OGxU58WJBuLvxTdmfOCQ0LUBqg9E9zY1sIN
+	u3vGAgkAjxaAxwD4RfNEBPqCQcQYSmol6GymvoiqBK6KOlMuMVjVrhBQFLDCAtfQTFsVK8
+	Po3EZbYYdMpiuA6Wu95eT8Rt6vYXZb8=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-5--56nbYMXOe67JYmp2I98qA-1; Thu,
+ 08 Feb 2024 03:25:05 -0500
+X-MC-Unique: -56nbYMXOe67JYmp2I98qA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 81FAE38143B7;
+	Thu,  8 Feb 2024 08:25:04 +0000 (UTC)
+Received: from ksundara-mac.redhat.com (unknown [10.74.17.171])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 597301103A;
+	Thu,  8 Feb 2024 08:24:58 +0000 (UTC)
+From: Karthik Sundaravel <ksundara@redhat.com>
+To: jesse.brandeburg@intel.com,
+	anthony.l.nguyen@intel.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 1/1] RDMA/mana_ib: Fix bug in creation of
- dma regions
-Message-ID: <20240208082336.GE56027@unreal>
-References: <1707318566-3141-1-git-send-email-kotaranov@linux.microsoft.com>
+Cc: pmenzel@molgen.mpg.de,
+	jiri@resnulli.us,
+	michal.swiatkowski@linux.intel.com,
+	rjarry@redhat.com,
+	aharivel@redhat.com,
+	vchundur@redhat.com,
+	ksundara@redhat.com,
+	cfontain@redhat.com
+Subject: [PATCH v2] ice: Add get/set hw address for VFs using devlink commands
+Date: Thu,  8 Feb 2024 13:54:54 +0530
+Message-Id: <20240208082455.66726-1-ksundara@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1707318566-3141-1-git-send-email-kotaranov@linux.microsoft.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Wed, Feb 07, 2024 at 07:09:26AM -0800, Konstantin Taranov wrote:
-> From: Konstantin Taranov <kotaranov@microsoft.com>
-> 
-> Dma registration was ignoring virtual addresses by setting it to 0.
-> As a result, mana_ib could only register page-aligned memory.
-> As well as, it could fail to produce dma regions with zero offset
-> for WQs and CQs (e.g., page size is 8192 but address is only 4096
-> bytes aligned), which is required by hardware.
-> 
-> This patch takes into account the virtual address, allowing to create
-> a dma region with any offset. For queues (e.g., WQs, CQs) that require
-> dma regions with zero offset we add a flag to ensure zero offset.
-> 
-> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-> ---
->  drivers/infiniband/hw/mana/cq.c      |  3 ++-
->  drivers/infiniband/hw/mana/main.c    | 16 +++++++++++++---
->  drivers/infiniband/hw/mana/mana_ib.h |  2 +-
->  drivers/infiniband/hw/mana/mr.c      |  2 +-
->  drivers/infiniband/hw/mana/qp.c      |  4 ++--
->  drivers/infiniband/hw/mana/wq.c      |  3 ++-
->  6 files changed, 21 insertions(+), 9 deletions(-)
 
-You definitely advised to look at the Documentation/process/submitting-patches.rst guide.
-1. First revision doesn't need to be v1.
-2. One logical fix/change == one patch.
-3. Fixes should have Fixes: tag in the commit message.
 
-And I'm confident that the force_zero_offset change is not correct.
+Thanks for the review comments and suggestions.
+In the V2 version of the patch, I have called ice_set_vf_mac() directly from the devlink port function handlers.
 
-Thanks
+I did the following testing to verify the changes.
 
-> 
-> diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
-> index 83d20c3f0..e35de6b92 100644
-> --- a/drivers/infiniband/hw/mana/cq.c
-> +++ b/drivers/infiniband/hw/mana/cq.c
-> @@ -48,7 +48,8 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->  		return err;
->  	}
->  
-> -	err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq->gdma_region);
-> +	err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq->gdma_region,
-> +					   ucmd.buf_addr, true);
->  	if (err) {
->  		ibdev_dbg(ibdev,
->  			  "Failed to create dma region for create cq, %d\n",
-> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-> index 29dd2438d..13a4d5ab4 100644
-> --- a/drivers/infiniband/hw/mana/main.c
-> +++ b/drivers/infiniband/hw/mana/main.c
-> @@ -302,7 +302,7 @@ mana_ib_gd_add_dma_region(struct mana_ib_dev *dev, struct gdma_context *gc,
->  }
->  
->  int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-> -				 mana_handle_t *gdma_region)
-> +				 mana_handle_t *gdma_region, u64 virt, bool force_zero_offset)
->  {
->  	struct gdma_dma_region_add_pages_req *add_req = NULL;
->  	size_t num_pages_processed = 0, num_pages_to_handle;
-> @@ -324,11 +324,21 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
->  	hwc = gc->hwc.driver_data;
->  
->  	/* Hardware requires dma region to align to chosen page size */
-> -	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, 0);
-> +	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, virt);
->  	if (!page_sz) {
->  		ibdev_dbg(&dev->ib_dev, "failed to find page size.\n");
->  		return -ENOMEM;
->  	}
-> +
-> +	if (force_zero_offset) {
-> +		while (ib_umem_dma_offset(umem, page_sz) && page_sz > PAGE_SIZE)
-> +			page_sz /= 2;
-> +		if (ib_umem_dma_offset(umem, page_sz) != 0) {
-> +			ibdev_dbg(&dev->ib_dev, "failed to find page size to force zero offset.\n");
-> +			return -ENOMEM;
-> +		}
-> +	}
-> +
->  	num_pages_total = ib_umem_num_dma_blocks(umem, page_sz);
->  
->  	max_pgs_create_cmd =
-> @@ -348,7 +358,7 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
->  			     sizeof(struct gdma_create_dma_region_resp));
->  
->  	create_req->length = umem->length;
-> -	create_req->offset_in_page = umem->address & (page_sz - 1);
-> +	create_req->offset_in_page = ib_umem_dma_offset(umem, page_sz);
->  	create_req->gdma_page_type = order_base_2(page_sz) - PAGE_SHIFT;
->  	create_req->page_count = num_pages_total;
->  
-> diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-> index 6a03ae645..0a5a8f3f8 100644
-> --- a/drivers/infiniband/hw/mana/mana_ib.h
-> +++ b/drivers/infiniband/hw/mana/mana_ib.h
-> @@ -161,7 +161,7 @@ static inline struct net_device *mana_ib_get_netdev(struct ib_device *ibdev, u32
->  int mana_ib_install_cq_cb(struct mana_ib_dev *mdev, struct mana_ib_cq *cq);
->  
->  int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-> -				 mana_handle_t *gdma_region);
-> +				 mana_handle_t *gdma_region, u64 virt, bool force_zero_offset);
->  
->  int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
->  				  mana_handle_t gdma_region);
-> diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
-> index ee4d4f834..856d73ea2 100644
-> --- a/drivers/infiniband/hw/mana/mr.c
-> +++ b/drivers/infiniband/hw/mana/mr.c
-> @@ -127,7 +127,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
->  		goto err_free;
->  	}
->  
-> -	err = mana_ib_gd_create_dma_region(dev, mr->umem, &dma_region_handle);
-> +	err = mana_ib_gd_create_dma_region(dev, mr->umem, &dma_region_handle, iova, false);
->  	if (err) {
->  		ibdev_dbg(ibdev, "Failed create dma region for user-mr, %d\n",
->  			  err);
-> diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-> index 5d4c05dcd..02de90317 100644
-> --- a/drivers/infiniband/hw/mana/qp.c
-> +++ b/drivers/infiniband/hw/mana/qp.c
-> @@ -357,8 +357,8 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
->  	}
->  	qp->sq_umem = umem;
->  
-> -	err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem,
-> -					   &qp->sq_gdma_region);
-> +	err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem, &qp->sq_gdma_region,
-> +					   ucmd.sq_buf_addr, true);
->  	if (err) {
->  		ibdev_dbg(&mdev->ib_dev,
->  			  "Failed to create dma region for create qp-raw, %d\n",
-> diff --git a/drivers/infiniband/hw/mana/wq.c b/drivers/infiniband/hw/mana/wq.c
-> index 372d36151..d9c1a2d5d 100644
-> --- a/drivers/infiniband/hw/mana/wq.c
-> +++ b/drivers/infiniband/hw/mana/wq.c
-> @@ -46,7 +46,8 @@ struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
->  	wq->wq_buf_size = ucmd.wq_buf_size;
->  	wq->rx_object = INVALID_MANA_HANDLE;
->  
-> -	err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq->gdma_region);
-> +	err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq->gdma_region,
-> +					   ucmd.wq_buf_addr, true);
->  	if (err) {
->  		ibdev_dbg(&mdev->ib_dev,
->  			  "Failed to create dma region for create wq, %d\n",
-> 
-> base-commit: aafe4cc5096996873817ff4981a3744e8caf7808
-> -- 
-> 2.43.0
-> 
+root@10:~# ethtool -i enp8s0f0np0 | grep bus
+bus-info: 0000:08:00.0
+
+root@10:~# devlink dev eswitch set pci/0000:08:00.0 mode switchdev
+Warning: ice: Changed eswitch mode to switchdev.
+
+root@10:~# echo 4 > /sys/class/net/enp8s0f0np0/device/sriov_numvfs 
+
+root@10:~# devlink port show
+pci/0000:08:00.0/0: type eth netdev enp8s0f0np0 flavour physical port 0 splittable true lanes 8
+pci/0000:08:00.0/2: type eth netdev enp8s0f0npf0vf0 flavour pcivf controller 0 pfnum 0 vfnum 0 external false splittable false
+  function:
+    hw_addr 1a:33:f2:e7:64:d8
+pci/0000:08:00.0/3: type eth netdev enp8s0f0npf0vf3 flavour pcivf controller 0 pfnum 0 vfnum 3 external false splittable false
+  function:
+    hw_addr 4e:ef:ca:9e:e7:5d
+pci/0000:08:00.0/4: type eth netdev enp8s0f0npf0vf1 flavour pcivf controller 0 pfnum 0 vfnum 1 external false splittable false
+  function:
+    hw_addr 5a:f0:e3:f8:41:93
+pci/0000:08:00.0/5: type eth netdev enp8s0f0npf0vf2 flavour pcivf controller 0 pfnum 0 vfnum 2 external false splittable false
+  function:
+    hw_addr 1a:62:c6:4b:d2:f0
+pci/0000:08:00.1/0: type eth netdev enp8s0f1np1 flavour physical port 1 splittable false
+
+root@10:~# devlink port function set  pci/0000:08:00.0/5 hw_addr 00:11:22:33:44:55
+
+root@10:~# devlink port show
+pci/0000:08:00.0/0: type eth netdev enp8s0f0np0 flavour physical port 0 splittable true lanes 8
+pci/0000:08:00.0/2: type eth netdev enp8s0f0npf0vf0 flavour pcivf controller 0 pfnum 0 vfnum 0 external false splittable false
+  function:
+    hw_addr 1a:33:f2:e7:64:d8
+pci/0000:08:00.0/3: type eth netdev enp8s0f0npf0vf3 flavour pcivf controller 0 pfnum 0 vfnum 3 external false splittable false
+  function:
+    hw_addr 4e:ef:ca:9e:e7:5d
+pci/0000:08:00.0/4: type eth netdev enp8s0f0npf0vf1 flavour pcivf controller 0 pfnum 0 vfnum 1 external false splittable false
+  function:
+    hw_addr 5a:f0:e3:f8:41:93
+pci/0000:08:00.0/5: type eth netdev enp8s0f0npf0vf2 flavour pcivf controller 0 pfnum 0 vfnum 2 external false splittable false
+  function:
+    hw_addr 00:11:22:33:44:55
+pci/0000:08:00.1/0: type eth netdev enp8s0f1np1 flavour physical port 1 splittable false
+
+root@10:~# ip link show enp8s0f0np0
+12: enp8s0f0np0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 40:a6:b7:18:dd:68 brd ff:ff:ff:ff:ff:ff
+    vf 0     link/ether 1a:33:f2:e7:64:d8 brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state enable, trust off
+    vf 1     link/ether 5a:f0:e3:f8:41:93 brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state enable, trust off
+    vf 2     link/ether 00:11:22:33:44:55 brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state enable, trust off
+    vf 3     link/ether 4e:ef:ca:9e:e7:5d brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state enable, trust off
+    
+root@10:~# ip link set dev enp8s0f0np0 vf 2 mac AA:BB:CC:DD:EE:FF
+
+root@10:~# ip link show enp8s0f0np0
+12: enp8s0f0np0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 40:a6:b7:18:dd:68 brd ff:ff:ff:ff:ff:ff
+    vf 0     link/ether 1a:33:f2:e7:64:d8 brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state enable, trust off
+    vf 1     link/ether 5a:f0:e3:f8:41:93 brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state enable, trust off
+    vf 2     link/ether aa:bb:cc:dd:ee:ff brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state enable, trust off
+    vf 3     link/ether 4e:ef:ca:9e:e7:5d brd ff:ff:ff:ff:ff:ff, spoof checking on, link-state enable, trust off
+
+root@10:~# devlink port show
+pci/0000:08:00.0/0: type eth netdev enp8s0f0np0 flavour physical port 0 splittable true lanes 8
+pci/0000:08:00.0/2: type eth netdev enp8s0f0npf0vf0 flavour pcivf controller 0 pfnum 0 vfnum 0 external false splittable false
+  function:
+    hw_addr 1a:33:f2:e7:64:d8
+pci/0000:08:00.0/3: type eth netdev enp8s0f0npf0vf3 flavour pcivf controller 0 pfnum 0 vfnum 3 external false splittable false
+  function:
+    hw_addr 4e:ef:ca:9e:e7:5d
+pci/0000:08:00.0/4: type eth netdev enp8s0f0npf0vf1 flavour pcivf controller 0 pfnum 0 vfnum 1 external false splittable false
+  function:
+    hw_addr 5a:f0:e3:f8:41:93
+pci/0000:08:00.0/5: type eth netdev enp8s0f0npf0vf2 flavour pcivf controller 0 pfnum 0 vfnum 2 external false splittable false
+  function:
+    hw_addr aa:bb:cc:dd:ee:ff
+pci/0000:08:00.1/0: type eth netdev enp8s0f1np1 flavour physical port 1 splittable false
+
 
