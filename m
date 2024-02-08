@@ -1,147 +1,130 @@
-Return-Path: <linux-kernel+bounces-57754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07EA084DD07
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCD7E84DD0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:35:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 844EAB22CD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:33:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44FB4B24578
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:35:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80C9A6BFB2;
-	Thu,  8 Feb 2024 09:33:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64E296D1A0;
+	Thu,  8 Feb 2024 09:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YQ8tcAwC"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b="25vftL2u"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7BF6BB3D;
-	Thu,  8 Feb 2024 09:33:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049A66BB4F
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 09:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707384814; cv=none; b=lRYhWDv1u0NYZniUGGnuWqZcmKHtxVYS345FrJTQ19CwTCfo+gVCEIK2jJUy85/Ront3x0jr63+r7Wug3+fLCIOvh1kPYenr1UFtqaf8vaVCvb/W8a6KnSPy1SRf0kS9K2hLMPoIQ2/Z1LcRdh6S0Q+C8YETmYy1Z93h7PQckuE=
+	t=1707384909; cv=none; b=fZsiEInKVgsFy8xZJD6wbrthrtNcMYy/zEPsGpcSBYqPwy44g61bReMi623RwKEJbzRQExYEl//i+C/k804mPU0DxU9uZFjj2MWixHB2kxiwkVRKldPphfSSfBhplM89KhTh8E3CPwG9RgR0iUNrxdwvzk4UiRsdQ8P8ZGj2b7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707384814; c=relaxed/simple;
-	bh=lhwPUoYyro9oaMp2bVStAN7YAQl8rqdb9WH7FoKshb8=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=WCTwrIR4e/J1OpI8+PboEb6VLDy/GpxYj2La5EAmxhUT83+TiM/yBpYDdkNpWssDm+Htwz4uNgaVfvf8ixTPLIxj8KZBj4N/raQxcxCLWMn8+9lpQYAv0iDJH0UJ5xjIxl3TxT5V8J3Gx6QnyTb5ish85EmKSagtSaGp3iiUlUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YQ8tcAwC; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5600d950442so1836317a12.1;
-        Thu, 08 Feb 2024 01:33:32 -0800 (PST)
+	s=arc-20240116; t=1707384909; c=relaxed/simple;
+	bh=PL4bURsXss2T7/h04cdjZreNU22ZlKTVyPSJ+8zE40c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EBNIx8zVp+HwTL24HR1ZYyyJc7z+Hk5baaLkENy80/EwiIyrZjuBTilU7h9fIoqAKxlpHxu8k9KC1acGbx5UhAoj9I7bZZC3bCINJLPO+4HlIeNpleK+oAKtyggnv8lbQhlIZUEDmiegq9I1J42N1PB0y5XBubRtRx1X7FXKQfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=daynix.com; spf=none smtp.mailfrom=daynix.com; dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b=25vftL2u; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=daynix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=daynix.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5114c05806eso2386595e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 01:35:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707384811; x=1707989611; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1707384906; x=1707989706; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ClZxZfA/V4+BWFkj7VuhiD7elrfOXLoTCprCHq1vgfU=;
-        b=YQ8tcAwClVvjy+k2Q+WJX85DK4XdAaZtvkGLnC+BiphLi8q9RW73aLrIfno6MombQ/
-         tEpwQ5RZrbLjaa6wy/SzpsfZwdVmCPIssGuWC7Bwmw8Bh6iUSbJ/D0sa/CHEFM+92/jI
-         9qgnQST6J4UB63qmdf+hv75ZrtP85Pj5EhjQlaTU2ieGHcYaoyLEKrBTwXu0tJoQ36Yj
-         pIFCqOXmvJZKbcJvUQH1rqtlPEPv+LWyc10TFfdM7pqJ6qHXn9LS6l/RNf8ZJLUfdI8q
-         w0vpuhICBMvIaNnDQlFITEDxUYIbeJ3B69iKdS0NZzCsVHN2YxExEbZAc47j1Umf/9dB
-         4IAQ==
+        bh=8o7bUDuGuu2YaKsxQ+9DhHSbmvO5ysjRunyhwVyAC5o=;
+        b=25vftL2u489vuD0qEkL8zYrgDNocyALeu8iRRrS+EBV5H/Wa76XA2SWCZywpvkFrss
+         21dGwNjDQAH/O+mhYIyHadweU7te0FolLEhuJuOnDAg8rws4eJGGgelDxHWsnh0qEo8y
+         mU8iyuL8Q0R5EBEDPte5a9eO0QBUt8jM0zQLh0hSKecymXyofWTAouvOJmlxz8uGwhb1
+         Z6yo3Z+H6aIAX6RQzSEbXfhlQ7CXtgZLTeWTBs99K7smDKBk0l0/4g6NlFmt3RCp2u94
+         yYGAWzILL8qRa4OcIxCBIMiDdchAX58Hm/NVU/wPAL2hNjYjznL8UNYsyBP8m7uY/D9t
+         Vcdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707384811; x=1707989611;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707384906; x=1707989706;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ClZxZfA/V4+BWFkj7VuhiD7elrfOXLoTCprCHq1vgfU=;
-        b=P+kGpQi2cctzGuTBHJRtBHwgti/3kxp7qybeLs09QRIzR9GWPS6SIVv/VLK4dyNYW7
-         43xcjfhlsYO0LV97AbzGrb1TqJbUsoY1xbif5knE5isb1Ct5eYhfsBMCs9+DdLPjwrlt
-         CabJt86y/2puXau9rgvp5Wh8ag8g1IbzfWnhuS6aIlja9RP/UBrtd8v0onwJV92pyAMH
-         9LdABit6aUfXgA8mpyMKFqMMnoOwXWXaPKA5yfjKkoLiTrXiN6q10Fu7JlFbZmsuERQV
-         C8jCHMceZrb/+qcLNUzVeAnOyyKS5YrYLGXborMBXoA/7ri5+UR7QDOD5nyoAR0cRp3L
-         DH5g==
-X-Gm-Message-State: AOJu0YwdyaPfqxH+FeHcrxa1dub54Qk6xJwf2/hvQmSFIMQISfsJAmT7
-	hXAN6nc4gQRXADKxF1lSnFgbFpWttlKv20d3rmiF1yKECPWFJ9eQ
-X-Google-Smtp-Source: AGHT+IEZDOgle6xEeOkEl/5TlUMHh/sDQAV3pdX3MQSmWUeItHW9uH8U0Gszb+dGZ3njJ8RK0BuGYQ==
-X-Received: by 2002:aa7:d95a:0:b0:561:1484:8cc5 with SMTP id l26-20020aa7d95a000000b0056114848cc5mr534673eds.39.1707384811049;
-        Thu, 08 Feb 2024 01:33:31 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWdxX+Z5XfKi+0hB9EUdd/yz/n0ff5bWnTmPCM6KditwXe7kyb9xF7fGlJmcG7Qutlb6Zwco9744h+P0R8Mh3V5IizY3BIrOoHEtGdMCAxw3iNiFEJ6ZE0Ircd68BY0c0RPoaEQ5u0hDZPGt8BBJrNNcxPmMYtPEnvrJgXSBTCJbaLJ9NC74eviKltzeqexGBn/S36ZNGaeOxF8FUNB9tCQQx9o8Lhh/k7AB+Q1wXbeFm5VCM/Ac5Ii8CyDqo+b3A==
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:f81c:5b24:d269:24d])
-        by smtp.gmail.com with ESMTPSA id dk5-20020a0564021d8500b0055c97f940fcsm628306edb.81.2024.02.08.01.33.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 01:33:30 -0800 (PST)
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To: Danny Tsen <dtsen@linux.ibm.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	linux-crypto@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v2] MAINTAINERS: adjust file entries after crypto vmx file movement
-Date: Thu,  8 Feb 2024 10:33:27 +0100
-Message-Id: <20240208093327.23926-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        bh=8o7bUDuGuu2YaKsxQ+9DhHSbmvO5ysjRunyhwVyAC5o=;
+        b=scaGxLAGXGYGhCrOytjNdbOFbiLaLvEGThBnmASIp68Suo6yj7IrR9BbnkVQq995UA
+         v7P/9UcMTnV4HgppCHPJ5vQayauppavEvJ3tCHsB7E1jXPyWGjGAnQ9G8SfImdVCf1MK
+         +hL9QtmOnZKHGG3J5yShJ7oUeI10f0g/NEYtNovtau71jAWxdsDKTY43najTbd33+m2h
+         0gTGkMGsUBchHvC6fPS0do5DUiwBhgeG6FNysHWWo9nNL6qTBhnER0SefarliRkJN1E2
+         W+IilYvm81ZFf4kRtNZiB50hc3v9rZ0OWotVaueQluagUlHkWDdRpwW36R6+c45S6Duh
+         81tA==
+X-Gm-Message-State: AOJu0Yy6T48IdiAhOd66mqnztehhWqtjUw96gGhjOSaOUEvAzLwHMDW3
+	hdJUDHmVjbcopBh5cb+IgcItGK0DoaOI4PuRduEKn3vnAQiwPW3+kD1lR/og+whmDiGsMki12lW
+	30czqxh/kDo0H1of3oSJWwtjb36lC20tWt6wA4g==
+X-Google-Smtp-Source: AGHT+IEoQSQjo9erO6Il084RgQafaf4DUGfU2yCLEOnMeOlg/r958bA/YMsX95xq7vDLb2BC2YRvJwvjNWwiPA+eBhc=
+X-Received: by 2002:a05:6512:3c88:b0:50d:f81e:6872 with SMTP id
+ h8-20020a0565123c8800b0050df81e6872mr8479864lfv.10.1707384905935; Thu, 08 Feb
+ 2024 01:35:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240115194840.1183077-1-andrew@daynix.com> <20240115172837-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20240115172837-mutt-send-email-mst@kernel.org>
+From: Yuri Benditovich <yuri.benditovich@daynix.com>
+Date: Thu, 8 Feb 2024 11:34:53 +0200
+Message-ID: <CAOEp5OfKUs+Q+Nq3YywYR=oihSw8Nr=jYSC6a7CN1MTMzJVtHQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] vhost: Added pad cleanup if vnet_hdr is not present.
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Andrew Melnychenko <andrew@daynix.com>, jasowang@redhat.com, kvm@vger.kernel.org, 
+	virtualization@lists.linux.dev, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, yan@daynix.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Commit 109303336a0c ("crypto: vmx - Move to arch/powerpc/crypto") moves the
-crypto vmx files to arch/powerpc, but misses to adjust the file entries for
-IBM Power VMX Cryptographic instructions and LINUX FOR POWERPC.
+Just polite ping
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about
-broken references.
-
-Adjust these file entries accordingly. To keep the matched files exact
-after the movement, spell out each file name in the new directory.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-v1: https://lore.kernel.org/lkml/20240129131729.4311-1-lukas.bulwahn@gmail.com/
-
-v1 -> v2:
-  - address Herbert Xu's feedback:
-  keep the matched files exactly those which were in the vmx directory
-
-Danny, please ack.
-Herbert, please pick this minor clean-up patch on your -next tree.
-
- MAINTAINERS | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 58845a852ab1..1820f661bfe1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10329,12 +10329,17 @@ M:	Nayna Jain <nayna@linux.ibm.com>
- M:	Paulo Flabiano Smorigo <pfsmorigo@gmail.com>
- L:	linux-crypto@vger.kernel.org
- S:	Supported
--F:	drivers/crypto/vmx/Kconfig
--F:	drivers/crypto/vmx/Makefile
--F:	drivers/crypto/vmx/aes*
--F:	drivers/crypto/vmx/ghash*
--F:	drivers/crypto/vmx/ppc-xlate.pl
--F:	drivers/crypto/vmx/vmx.c
-+F:	arch/powerpc/crypto/Kconfig
-+F:	arch/powerpc/crypto/Makefile
-+F:	arch/powerpc/crypto/aes.c
-+F:	arch/powerpc/crypto/aes_cbc.c
-+F:	arch/powerpc/crypto/aes_ctr.c
-+F:	arch/powerpc/crypto/aes_xts.c
-+F:	arch/powerpc/crypto/aesp8-ppc.*
-+F:	arch/powerpc/crypto/ghash.c
-+F:	arch/powerpc/crypto/ghashp8-ppc.pl
-+F:	arch/powerpc/crypto/ppc-xlate.pl
-+F:	arch/powerpc/crypto/vmx.c
- 
- IBM ServeRAID RAID DRIVER
- S:	Orphan
-@@ -12428,7 +12433,6 @@ F:	drivers/*/*/*pasemi*
- F:	drivers/*/*pasemi*
- F:	drivers/char/tpm/tpm_ibmvtpm*
- F:	drivers/crypto/nx/
--F:	drivers/crypto/vmx/
- F:	drivers/i2c/busses/i2c-opal.c
- F:	drivers/net/ethernet/ibm/ibmveth.*
- F:	drivers/net/ethernet/ibm/ibmvnic.*
--- 
-2.17.1
-
+On Tue, Jan 16, 2024 at 12:32=E2=80=AFAM Michael S. Tsirkin <mst@redhat.com=
+> wrote:
+>
+> On Mon, Jan 15, 2024 at 09:48:40PM +0200, Andrew Melnychenko wrote:
+> > When the Qemu launched with vhost but without tap vnet_hdr,
+> > vhost tries to copy vnet_hdr from socket iter with size 0
+> > to the page that may contain some trash.
+> > That trash can be interpreted as unpredictable values for
+> > vnet_hdr.
+> > That leads to dropping some packets and in some cases to
+> > stalling vhost routine when the vhost_net tries to process
+> > packets and fails in a loop.
+> >
+> > Qemu options:
+> >   -netdev tap,vhost=3Don,vnet_hdr=3Doff,...
+> >
+> > Signed-off-by: Andrew Melnychenko <andrew@daynix.com>
+> > ---
+> >  drivers/vhost/net.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+> > index f2ed7167c848..57411ac2d08b 100644
+> > --- a/drivers/vhost/net.c
+> > +++ b/drivers/vhost/net.c
+> > @@ -735,6 +735,9 @@ static int vhost_net_build_xdp(struct vhost_net_vir=
+tqueue *nvq,
+> >       hdr =3D buf;
+> >       gso =3D &hdr->gso;
+> >
+> > +     if (!sock_hlen)
+> > +             memset(buf, 0, pad);
+> > +
+> >       if ((gso->flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) &&
+> >           vhost16_to_cpu(vq, gso->csum_start) +
+> >           vhost16_to_cpu(vq, gso->csum_offset) + 2 >
+>
+>
+> Hmm need to analyse it to make sure there are no cases where we leak
+> some data to guest here in case where sock_hlen is set ...
+> > --
+> > 2.43.0
+>
 
