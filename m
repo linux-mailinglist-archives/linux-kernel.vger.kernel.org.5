@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-58405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17EFD84E61C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:05:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02EA984E605
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:04:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9748E1F264F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:05:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34FDE1C2420D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:04:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B14C86AD9;
-	Thu,  8 Feb 2024 17:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC597FBA3;
+	Thu,  8 Feb 2024 17:04:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Fu8d2p1S"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kcj8dII9"
 Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D29282D8A;
-	Thu,  8 Feb 2024 17:04:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A2FA77F33;
+	Thu,  8 Feb 2024 17:04:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707411877; cv=none; b=HzTp0BNOx9j5wLR2WryZDPjfDZ1Bb/GAb5I3L9YC/xQiU77Paz48/sbzFSLU6oKZDpZ4SuKyNojuZ+7e+swWaOvUkyqgCYUobiOxiC4EfwTJQvlL/f9vLvi3LYRYfLbaaq41rBYdnZo+7P2riY82zR7MnQ2XF8b8DVyag8YjBeM=
+	t=1707411870; cv=none; b=sUPZfsf8VKtxZrVEUw/5NEb9HCk3SCedNEO3PvqMkxEsedOLFhO+j6aRfIOtD9+5n30Fy8bOYuMjpU6BtK/kjqoeZb6ps+0G8RiY/STgYmTS54m98iEL+lGolXrQQUfq560b8qk3lTdYo5Quw43Yno4OPpT+nMuUDfgmP8LyyUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707411877; c=relaxed/simple;
-	bh=Lm8ufyWOJHp/dqvPwPh3Hgph+gKZYEOGeH+5IYuik28=;
+	s=arc-20240116; t=1707411870; c=relaxed/simple;
+	bh=cM1cFjnSzQs76i3u0egboaHOZ+8JvQ6u6lgJc80Opuw=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cC0S6sluTzTnysAo02d7BDEGq/91P8d5BBVKqBpw0xFEKDuuLBcH/avPnGAmn/gkIT41uE2lvypvwIVoc+3yy8J3depBu24XVCRK4aUBaDDlqAJf34aB/5V2t5MKcQ3Wrbiizqidf5d15gRGxAjjT0MXyL5W938ZJnp3wRMXPEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Fu8d2p1S; arc=none smtp.client-ip=198.47.19.142
+	 MIME-Version:Content-Type; b=Z+bfqvmWGMmI/pMGLAXFTYmEfYLRc+f+KkRunOlrTJ2zoe2jgEmthqjr8Qe0iA4GN+HSoGJRKLRChfStqMZmVoCDV50OO6/xWCC5UcNJrsVgYjDoeDax8IdcqpB5S0Y1cd8BsvTaKb+aquD8MbvmlPmd3SmIe+sCc4lyOYmD22o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=kcj8dII9; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 418H4FXa051756;
-	Thu, 8 Feb 2024 11:04:15 -0600
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 418H4G01051761;
+	Thu, 8 Feb 2024 11:04:16 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1707411856;
-	bh=WrDlA3MVIblMNMt/x1ENZcDUaj6UX9hq3LACckiD2VI=;
+	bh=awh4L/FvuKTUk4LCovxuQcQcm/YmAlMhgCuKLpIU3pA=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=Fu8d2p1Sefem4TwIQKrgN2gVrLjnyMWmo+jl/9sigcdvC4U7nnRA/cslNlpHCWjuy
-	 APwKkdKN4EPi/IXqcCzGyrO//R1Kme3nFQki/Uy4tFsd8hctkU0C5zd75sD1JPD1Yq
-	 V7TeYo7U5L/YAIS38oeAnM9ZjxIJxThkMnf+Ji+w=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 418H4F6I035248
+	b=kcj8dII9QoOlZVJGFigZCr9UIY50auj4ATVfaBhVmO84SjDZC5UAyju7eTilQ21Ft
+	 szYI7O5h67Lbsvt4UztSC/YbYjHIcw9PnXTWs97NhHmBM2HvKP7jzDjoBAqmnzJfsh
+	 DGtm4g+bbhEWmdFNgaLPj1ws3uZbFhhSMxFLk+mc=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 418H4GSo054075
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 8 Feb 2024 11:04:15 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 8 Feb 2024 11:04:16 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 8
- Feb 2024 11:04:15 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2024 11:04:16 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 8 Feb 2024 11:04:15 -0600
+ Frontend Transport; Thu, 8 Feb 2024 11:04:16 -0600
 Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 418H4B67091006;
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 418H4B68091006;
 	Thu, 8 Feb 2024 11:04:15 -0600
 From: Andrew Davis <afd@ti.com>
 To: Sebastian Reichel <sre@kernel.org>,
@@ -76,9 +76,9 @@ CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-actions@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v3 05/19] power: reset: tps65086-restart: Use devm_register_sys_off_handler(RESTART)
-Date: Thu, 8 Feb 2024 11:03:56 -0600
-Message-ID: <20240208170410.67975-6-afd@ti.com>
+Subject: [PATCH v3 06/19] power: reset: tps65086-restart: Remove unneeded device data struct
+Date: Thu, 8 Feb 2024 11:03:57 -0600
+Message-ID: <20240208170410.67975-7-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240208170410.67975-1-afd@ti.com>
 References: <20240208170410.67975-1-afd@ti.com>
@@ -92,87 +92,75 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Use device life-cycle managed register function to simplify probe and
-exit paths.
+We only need one member of the struct tps65086_restart, pass that
+tps65086_restart_notify() directly. Remove that struct and its
+allocation.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
  drivers/power/reset/tps65086-restart.c | 35 ++++++--------------------
- 1 file changed, 7 insertions(+), 28 deletions(-)
+ 1 file changed, 8 insertions(+), 27 deletions(-)
 
 diff --git a/drivers/power/reset/tps65086-restart.c b/drivers/power/reset/tps65086-restart.c
-index ee8e9f4b837ea..82d7a761a0385 100644
+index 82d7a761a0385..6976dbcac74fa 100644
 --- a/drivers/power/reset/tps65086-restart.c
 +++ b/drivers/power/reset/tps65086-restart.c
-@@ -10,15 +10,12 @@
+@@ -9,19 +9,14 @@
+ #include <linux/platform_device.h>
  #include <linux/reboot.h>
  
- struct tps65086_restart {
--	struct notifier_block handler;
- 	struct device *dev;
- };
- 
--static int tps65086_restart_notify(struct notifier_block *this,
--				   unsigned long mode, void *cmd)
-+static int tps65086_restart_notify(struct sys_off_data *data)
+-struct tps65086_restart {
+-	struct device *dev;
+-};
+-
+ static int tps65086_restart_notify(struct sys_off_data *data)
  {
--	struct tps65086_restart *tps65086_restart =
--		container_of(this, struct tps65086_restart, handler);
-+	struct tps65086_restart *tps65086_restart = data->cb_data;
- 	struct tps65086 *tps65086 = dev_get_drvdata(tps65086_restart->dev->parent);
+-	struct tps65086_restart *tps65086_restart = data->cb_data;
+-	struct tps65086 *tps65086 = dev_get_drvdata(tps65086_restart->dev->parent);
++	struct tps65086 *tps65086 = data->cb_data;
  	int ret;
  
-@@ -46,13 +43,13 @@ static int tps65086_restart_probe(struct platform_device *pdev)
- 	if (!tps65086_restart)
- 		return -ENOMEM;
- 
--	platform_set_drvdata(pdev, tps65086_restart);
--
--	tps65086_restart->handler.notifier_call = tps65086_restart_notify;
--	tps65086_restart->handler.priority = 192;
- 	tps65086_restart->dev = &pdev->dev;
- 
--	ret = register_restart_handler(&tps65086_restart->handler);
-+	ret = devm_register_sys_off_handler(&pdev->dev,
-+					    SYS_OFF_MODE_RESTART,
-+					    SYS_OFF_PRIO_HIGH,
-+					    tps65086_restart_notify,
-+					    tps65086_restart);
+ 	ret = regmap_write(tps65086->regmap, TPS65086_FORCESHUTDN, 1);
  	if (ret) {
- 		dev_err(&pdev->dev, "%s: cannot register restart handler: %d\n",
+-		dev_err(tps65086_restart->dev, "%s: error writing to tps65086 pmic: %d\n",
++		dev_err(tps65086->dev, "%s: error writing to tps65086 pmic: %d\n",
  			__func__, ret);
-@@ -62,23 +59,6 @@ static int tps65086_restart_probe(struct platform_device *pdev)
- 	return 0;
- }
+ 		return NOTIFY_DONE;
+ 	}
+@@ -36,27 +31,13 @@ static int tps65086_restart_notify(struct sys_off_data *data)
  
--static void tps65086_restart_remove(struct platform_device *pdev)
--{
--	struct tps65086_restart *tps65086_restart = platform_get_drvdata(pdev);
+ static int tps65086_restart_probe(struct platform_device *pdev)
+ {
+-	struct tps65086_restart *tps65086_restart;
 -	int ret;
 -
--	ret = unregister_restart_handler(&tps65086_restart->handler);
--	if (ret) {
--		/*
--		 * tps65086_restart_probe() registered the restart handler. So
--		 * unregistering should work fine. Checking the error code
--		 * shouldn't be needed, still doing it for completeness.
--		 */
--		dev_err(&pdev->dev, "%s: cannot unregister restart handler: %d\n",
--			__func__, ret);
--	}
--}
+-	tps65086_restart = devm_kzalloc(&pdev->dev, sizeof(*tps65086_restart), GFP_KERNEL);
+-	if (!tps65086_restart)
+-		return -ENOMEM;
 -
+-	tps65086_restart->dev = &pdev->dev;
+-
+-	ret = devm_register_sys_off_handler(&pdev->dev,
+-					    SYS_OFF_MODE_RESTART,
+-					    SYS_OFF_PRIO_HIGH,
+-					    tps65086_restart_notify,
+-					    tps65086_restart);
+-	if (ret) {
+-		dev_err(&pdev->dev, "%s: cannot register restart handler: %d\n",
+-			__func__, ret);
+-		return -ENODEV;
+-	}
++	struct tps65086 *tps65086 = dev_get_drvdata(pdev->dev.parent);
+ 
+-	return 0;
++	return devm_register_sys_off_handler(&pdev->dev,
++					     SYS_OFF_MODE_RESTART,
++					     SYS_OFF_PRIO_HIGH,
++					     tps65086_restart_notify,
++					     tps65086);
+ }
+ 
  static const struct platform_device_id tps65086_restart_id_table[] = {
- 	{ "tps65086-reset", },
- 	{ /* sentinel */ }
-@@ -90,7 +70,6 @@ static struct platform_driver tps65086_restart_driver = {
- 		.name = "tps65086-restart",
- 	},
- 	.probe = tps65086_restart_probe,
--	.remove_new = tps65086_restart_remove,
- 	.id_table = tps65086_restart_id_table,
- };
- module_platform_driver(tps65086_restart_driver);
 -- 
 2.39.2
 
