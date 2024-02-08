@@ -1,153 +1,101 @@
-Return-Path: <linux-kernel+bounces-58642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4BF984E93F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:01:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64BD284E953
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:05:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 152BA1C2419A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:01:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 022E91F21DD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:05:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2E3E383AC;
-	Thu,  8 Feb 2024 20:01:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4C45383AE;
+	Thu,  8 Feb 2024 20:04:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="Hkh51lOG"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YsulmrBi"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F076381C5;
-	Thu,  8 Feb 2024 20:01:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECBC38384
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 20:04:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707422494; cv=none; b=oZjDvKp8FU7Z9iYJTxGeuiUzmNxsh3Y+hdkHfTG0oSluUULrp585sadl32xhNUkme5aV9KeMHwwgyU44g/3pA8jZhxLaIkTyfE7gpWj5WRXbtLPAKrpDIuDNtpvYtWRPlF+HnaYK3OknaJyT+29jIlxHNYe+qN0LYmAxJfj/o90=
+	t=1707422696; cv=none; b=Ig5XSyQXpSYvdHoYXy1aHNRf+sw27PnnzMmqqUfPC8M6B91u/IBGLpKbNvOFXS3ESwtwAXPjypxYhnIzsZ/7sqSPSK23Q63rF9IeenxQ2mefY+x0fJ1CMIwHueCOLnnAYLhAhiUdP38mUTZuOollOIwbNlPbOXV1lVOad8WxLvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707422494; c=relaxed/simple;
-	bh=P0NUudkhr32cG7/aid0oQ2TiIP175J8zDSv6y5I26BM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Ne03fWTQIoVz/152JQvhoGlwfUFDic+hdW/lG++cMYkrz7R3aMuaAb3HnOZRSllnPCAFb36OISNMJ5GOgs2bK1sjNb6KmiuznoHzgm25mEHRgTWyq36tB84vozoY4TGOJNwDLs3R7NoEUhzlWvJiB6nCV2FYLvCXMkTGy/qqt5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=Hkh51lOG; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e065098635so167256b3a.3;
-        Thu, 08 Feb 2024 12:01:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707422493; x=1708027293;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yEe9Wy1b0zH9GvqFkXuxdhjDPzE0yMoBbpTR7V7GZ+M=;
-        b=kx6/QMVvTjLGOAMc1iHITR0snnHgjpbKmP5PB9JDkbfjyZPugecN546DX9Jdxsk2Jn
-         pFJdSXKjL0P0YHDQLSQoy5RnUxlY+gG+jOY04zKbbTeoBp64bwgVF2cj2aCSgHOCWKt+
-         1kESPQXX2GogEoEWcAz2wi7qInH5RH9zAFljDIidWfElv9lIaqmc/mbT7wWMyaUe3Rie
-         RFwXG9w9pYFdWyx81SLJSUaELm0FZMZ5aeGlomLivcYgUdbtfF7lSz2GAeG2SSHBCr0s
-         EMkR6YG4tHp+EVZPYNtcu5In3UuPZoFEgOfeJD86XxU1UyWOVoVrGhtwvNrLEZxpRwyq
-         L5NQ==
-X-Gm-Message-State: AOJu0Yx87d8D+ZDnmcN6lP7+bZjNhZCkZVLKMY7l5G+4O7zt7m4vrHJ6
-	6YqjiHdZcfiY7lXgA6xgh/GbIYnPyEPAfleXJ0PpHuQyDSOSBNk1C4livddzCs/AXA==
-X-Google-Smtp-Source: AGHT+IEdFuOSZPTmTCOIjavGlgR76B9t4zAWCQCY+b4ZxidrE7wzmSWOUsl0//iL9GF9gykM2am09Q==
-X-Received: by 2002:a62:d450:0:b0:6e0:527f:fe6e with SMTP id u16-20020a62d450000000b006e0527ffe6emr289512pfl.0.1707422492815;
-        Thu, 08 Feb 2024 12:01:32 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXKpvKr+7nwxl7LHNfoIKyuuyHKjzm8XigDNZzmVwjCKI9BdAfGYdiKUnIl/2xW4GRU5LDbX8ysVf7O46knTYHIDAG7cDi6TyhTf2ra47C6dKkqVmaETuwdMcVWHWFkCtZTfg1ijRMDPH8yMSwNy9n8X2eqd1IQsHCEwBxIJyCqA7rF6ko=
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id gx14-20020a056a001e0e00b006e03efbcb3esm137792pfb.73.2024.02.08.12.01.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 12:01:31 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1707422490;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=yEe9Wy1b0zH9GvqFkXuxdhjDPzE0yMoBbpTR7V7GZ+M=;
-	b=Hkh51lOG0vEMTR6k4TMpp5P4/a1/5aKcnp4xHR32wiRjP7yUIyTcCU95N1nHy8cnLzMaVH
-	qKT2PmHYo6NjfQyFQM0/vrKa3bh0BVOS46oVciaoO91/u3w2RX18AbTigXjOFPx/e2/Qgy
-	zW6kOXG9dL0cGSRZ4X19Y5EAd7GZV9+m8sUuYTmbUdn+qWhQCKPCj5JxqEipqv/kmvof/F
-	PyfD/ECipdwYqv/xb0es+0KiL4fJjDXbmbgj7sX+2ZgD/XfxdAJNOsPx7YC0l2voHCfg4k
-	vCygefUCA/xHs71Pa/ZNgamtiLeFSMpLUiTOltjtUapQ0wzB6wSQu/5UW4ffJg==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Thu, 08 Feb 2024 17:02:04 -0300
-Subject: [PATCH] vfio: mdev: make mdev_bus_type const
+	s=arc-20240116; t=1707422696; c=relaxed/simple;
+	bh=3z64KEFV+ywZgeTSGpLc92WSDJ22y1rSBk7p5RJceio=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dCYwLRYM2uFYaQvdaUEKBxussWZM+ceTlhTOq/ZVCla9NDW/DqQU/QTOVSf1OlA0pCV7q6L5+pGak9PlkyeBVNg+/pZ01GEdykfdxdYLOYuvrQTCxekUOLawAixXu2uj+SfzC8JVHfSJwnyGlfDi4pVXiATY6Ib39L7CUBlEDZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YsulmrBi; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707422696; x=1738958696;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3z64KEFV+ywZgeTSGpLc92WSDJ22y1rSBk7p5RJceio=;
+  b=YsulmrBiJURUTiaY24gdse/X4MlLvV6EzVijVrpAHwj35axDf8nwyrRS
+   O172im+nct3MJD1eG9M9OOIHMBLP0Gohpwq9sg9J6iSGJejhcDZZpNz8q
+   jq6/0DW8X+N8soYJ/rk/uNZoHMAmQ2SOHadB40jHy/ttOo22AhGdfF/Po
+   R/7uAWgdH/Z91TWdkXTFsv6SJXmJIqCzsfYm8eZsrIaLmY1airsWD4eS3
+   UPGQbzodKekz9ZQTJF8DnWongbCT++hh7OAxiXZUTu31J2iUY4whmfoom
+   rBQfsOed3O96dgh01zmyN+nJ7nl+CZIYM7gX5U++0jp3qBjNrYJDraW9r
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="12675169"
+X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
+   d="scan'208";a="12675169"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 12:04:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
+   d="scan'208";a="6409306"
+Received: from udig-mobl1.ger.corp.intel.com (HELO intel.com) ([10.246.32.229])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 12:04:48 -0800
+Date: Thu, 8 Feb 2024 21:04:45 +0100
+From: Andi Shyti <andi.shyti@linux.intel.com>
+To: Lucas De Marchi <lucas.demarchi@intel.com>
+Cc: Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	intel-xe@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+	Jani Nikula <jani.nikula@intel.com>
+Subject: Re: [PATCH v3 2/3] bits: Introduce fixed-type BIT
+Message-ID: <ZcUz3V56qNeTVq66@ashyti-mobl2.lan>
+References: <20240208074521.577076-1-lucas.demarchi@intel.com>
+ <20240208074521.577076-3-lucas.demarchi@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240208-bus_cleanup-vfio-v1-1-ed5da3019949@marliere.net>
-X-B4-Tracking: v=1; b=H4sIADszxWUC/x3MQQqAIBBA0avIrBNUsqKrRITVWAOhohiBdPek5
- Vv8XyBhJEwwsgIRb0rkXYVsGGyncQdy2qtBCdUKJQa+5rRsFxqXA78ted5r08lBrBotQs1CREv
- Pv5zm9/0AgaM6qGIAAAA=
-To: Kirti Wankhede <kwankhede@nvidia.com>, 
- Alex Williamson <alex.williamson@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1646; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=P0NUudkhr32cG7/aid0oQ2TiIP175J8zDSv6y5I26BM=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlxTM8DUjxBAKGg8kKde2XCEznhpTh+wTFuCoZv
- fGzHUAgeTyJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcUzPAAKCRDJC4p8Y4ZY
- psZuD/9bh3JFq/UYSclCldBhiv4hq59N6gkvalm2HNd0afNc10oNRrki7h0OzJdX//D7TPGsrG4
- z7nF60uFQ8r/DIVRw7FMf5tQKpw6gsla1MesFrZdc+FqWxZuElUSopV5TZeJ/2ahyoQy4XeQHgY
- ES9+xxeBGyYUjjD7Kpm2sCELN243O80leyhsqageCIwatWvimankkhI7FmkbyYNPTWriIQazq95
- 8eTmejxdHHUaK53QWVs5g8LaULizdwmPiemfGMgIGlcv20mZQ3EpHw6AoA4eGXuKO0/wynkZuMe
- sVISMN7FO2DHQj3Ri6jrnB5vyX7Shrk+ilVOKMvZf+vZ2C2VNCXRTjyNntoBShH0TOjsNRFF8ay
- VUa2Pd2uVLJTzhbNLGQ7xsL/Dr8wAq//kVg9cmI1YY7OKG0JTcfYQly1jZ+BqTRcklqfFd8F8DE
- BZ0e6iVYuJ1+i6iJkb0M/EsieME5jp2FZw1m/nnG8o67FlMvpYvzMvWJITTmYtI1O1Iq4sQUm6+
- T50aa1PWCiSGYlzDBNY6AlN2pLZM6WSkRskBjrHYrTu7lwvJsCiuhA4HV/S0ahpoiOO7tSKMYIY
- dPDwchf6ZfJFX86FCb3pIzKYH2JQFRezp/LN6kS4j8x4hGAeUNTn39Z/fqv1ThrE8FQfwxMgxmL
- C2jUzInNsT2TXKw==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240208074521.577076-3-lucas.demarchi@intel.com>
 
-Now that the driver core can properly handle constant struct bus_type,
-move the mdev_bus_type variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+Hi Lucas,
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/vfio/mdev/mdev_driver.c  | 2 +-
- drivers/vfio/mdev/mdev_private.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+looks good, just one idea...
 
-diff --git a/drivers/vfio/mdev/mdev_driver.c b/drivers/vfio/mdev/mdev_driver.c
-index 7825d83a55f8..b98322966b3e 100644
---- a/drivers/vfio/mdev/mdev_driver.c
-+++ b/drivers/vfio/mdev/mdev_driver.c
-@@ -40,7 +40,7 @@ static int mdev_match(struct device *dev, struct device_driver *drv)
- 	return 0;
- }
- 
--struct bus_type mdev_bus_type = {
-+const struct bus_type mdev_bus_type = {
- 	.name		= "mdev",
- 	.probe		= mdev_probe,
- 	.remove		= mdev_remove,
-diff --git a/drivers/vfio/mdev/mdev_private.h b/drivers/vfio/mdev/mdev_private.h
-index af457b27f607..63a1316b08b7 100644
---- a/drivers/vfio/mdev/mdev_private.h
-+++ b/drivers/vfio/mdev/mdev_private.h
-@@ -13,7 +13,7 @@
- int  mdev_bus_register(void);
- void mdev_bus_unregister(void);
- 
--extern struct bus_type mdev_bus_type;
-+extern const struct bus_type mdev_bus_type;
- extern const struct attribute_group *mdev_device_groups[];
- 
- #define to_mdev_type_attr(_attr)	\
+..
 
----
-base-commit: 78f70c02bdbccb5e9b0b0c728185d4aeb7044ace
-change-id: 20240208-bus_cleanup-vfio-75a6180b5efe
+> +#define BIT_U8(b)		((u8)(BIT_INPUT_CHECK(u8, b) + BIT(b)))
+> +#define BIT_U16(b)		((u16)(BIT_INPUT_CHECK(u16, b) + BIT(b)))
+> +#define BIT_U32(b)		((u32)(BIT_INPUT_CHECK(u32, b) + BIT(b)))
+> +#define BIT_U64(b)		((u64)(BIT_INPUT_CHECK(u64, b) + BIT(b)))
 
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
+considering that BIT defines are always referred to unsigned
+types, I would just call them
 
+#define BIT8
+#define BIT16
+#define BIT32
+#define BIT64
+
+what do you think?
+
+Andi
 
