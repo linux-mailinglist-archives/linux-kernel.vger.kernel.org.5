@@ -1,139 +1,105 @@
-Return-Path: <linux-kernel+bounces-58528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 283FF84E7A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:24:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBAA284E7A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:25:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A5E61C25149
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:24:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 588231F29755
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:25:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6529C86ACC;
-	Thu,  8 Feb 2024 18:24:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9749286145;
+	Thu,  8 Feb 2024 18:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qvQo1cpI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zmpBl/Mj"
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A8DC86AE0;
-	Thu,  8 Feb 2024 18:24:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551ED85C72
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 18:24:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707416658; cv=none; b=Pj3aOgk3hyFkg84J2B6t16Y0iBaR7VKsjl7oDF+ZhOJh6sY6n2RxKxyjpeqeBAdC+sd6QhoyI9XYtoJUA4Jx8//9XOw9BHIFvtWeEc9Bg8LPZ8T4xEJsnfjgmICrON0nBQlmH8gQzHur6IOpTzw6F4rzpBdCGbqtJLwIjQi6Sw4=
+	t=1707416691; cv=none; b=oYgQQRWfyE3UwIQE22rBka4I75LP3IfwnV1PHex/M3rqVVTWFU4zAAOowsC2jZUk2uJ29bdTLmwBEZSAdjquek0gbOUMdJjbeTeAkkCSjyVkRW7K7c/QQo3KrQYWbVsInnwuMACtHmgbB4+JCXTQi1md0i9V7WjZbmzXVG2DPSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707416658; c=relaxed/simple;
-	bh=NhYY0t1oDuUXa7DHyLNcCO0JhwCrsEO5ZObT6pq9Q+0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NxJEnHRK+zh72xommWHJowQxwFvmeRytaUPAYU5MlOpbo4isb7aWmTGo0n7qKqHu+hkxYbK/WcOgMnoliQva1+Qd0E5O1EAQCBwc3rLWEyu3K6qiTzp2xD2C1R+IIHznuzR82W2gKlCoBpLoogmegLjLdmhdSc2gobE8gk5AUBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qvQo1cpI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5C38C43394;
-	Thu,  8 Feb 2024 18:24:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707416658;
-	bh=NhYY0t1oDuUXa7DHyLNcCO0JhwCrsEO5ZObT6pq9Q+0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qvQo1cpIymsOA3kSoD0y9VckEBA+Ta+ycoUt9JP9dXHWQegPw+LvQ7lTUnEoSz9pm
-	 qVv+/+yxOqlislPjf/Hh8DaDtdRBCY/MvP3eZw//elsZFexiUmgy8RChjf2wd1ZBbl
-	 U0ehVQ6CYlQeKUwb5g7F7HuedHsUDkQfB+gl+WmCO2eXaUEi+2Bb1Z2zBdhOvvWWSD
-	 3zYjziw72b9zDuJhm2pjpmctQfBCGzJHgviJC+/R3AP02hCDV2nCiopFXWEZxuA1fa
-	 qaM5rdwdsKWq6y66H7CRgsxfy0FRVvgrz/4MjsZ6BsIgVk/G4ZXyQD4hsLz4agi/hg
-	 OaWLO72DWW5Gw==
-Date: Thu, 8 Feb 2024 18:24:12 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: broonie@kernel.org, robh@kernel.org, andi.shyti@kernel.org,
-	semen.protsenko@linaro.org, krzysztof.kozlowski@linaro.org,
-	alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	andre.draszik@linaro.org, peter.griffin@linaro.org,
-	kernel-team@android.com, willmcvicker@google.com,
-	conor+dt@kernel.org, devicetree@vger.kernel.org, arnd@arndb.de
-Subject: Re: [PATCH 01/12] spi: dt-bindings: introduce the ``fifo-depth``
- property
-Message-ID: <20240208-grating-legwarmer-0a04cfb04d61@spud>
-References: <20240208135045.3728927-1-tudor.ambarus@linaro.org>
- <20240208135045.3728927-2-tudor.ambarus@linaro.org>
+	s=arc-20240116; t=1707416691; c=relaxed/simple;
+	bh=yWMQ80cejQiWbJt/Fr1QdvyZpIohGyasm9xWmdOoJSk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BsOr7SIzGze4eh+AKWGaJBnXs0L/a5SlrQepQaQhKgE74zHnI8k3LAwBi8WQPPkmHwmQw2NbfnjZm+7UZfnAG883pRa5r8zRLe9tUIi9GYQ6grvpOA778bylM+bdt3EX/frE100w9Zq3KbKt9kKI08fZVKb0GNJgqmchLW9LU4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zmpBl/Mj; arc=none smtp.client-ip=209.85.217.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vs1-f49.google.com with SMTP id ada2fe7eead31-46d37c74f53so34115137.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 10:24:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707416689; x=1708021489; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KFHM46XvieWty5cjkhjt6QqDgG336hB1BzTOOfIZ13M=;
+        b=zmpBl/MjyFlZ9KRIRCNgZstkU8+W5DKeUS/cXnDT8ZBMrTYIuw7TFhXCoo+Ov99AGO
+         P+U7Uu/uUfhcl+nNTUmw43qtXx0tduzhTnh3R41AfkeIVXUF27LiNinD0ZpXUoDopYiw
+         KbfgnY99bEaCzpiz7levzq6Qc/d85aVpbTZNvZmyaRVEfqHBcyg8l+ds3Oq1sljqC+XF
+         mCNQQfGIjY69FQ2Imfd5Iye1pefAwmghPjXRS0zq+fGf3Wu8iXFrByQY+hwgJth1/vqF
+         5mJQBcBV3t87vCJmvdsMld42L+xU6Wg88pUsyFctYB7ty/cDG/6EAitGJCD0gCu2laXP
+         zj2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707416689; x=1708021489;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KFHM46XvieWty5cjkhjt6QqDgG336hB1BzTOOfIZ13M=;
+        b=baCEovIsjCIWIBUxtaHUyPsJqfXTMUQ4UdRLkB+/zdQ4KbRnM9rV4LgJQde58VGJJ8
+         jR1cXJ1GsDLL6BNOjUNAvgKC2GoPMIgeNc3WCpie8Gm6j4dI/PLaZqcERbSwrTL8FB7h
+         K6MzlDW6h7lrWWUM61jJBKYUAKbKqos8zonyajdU4A/nwoRQs0zVCJ8+1cobPanYr/LS
+         qfpmHgNnwzNVOC/cU2m5lomQJLE9j/MRaf5cUoHBHlJcO7Ggg6ToCqXzqEVR1I9PgWmO
+         mhyzICcpSnzUkI22yNdTniOJZE5B1U8akCDBXjavohuN/OWu/aP6VppnFMJo03KQePzv
+         P+hQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWqS4Mvua239tm/yMfA5+RIN88N6AhvbwmuoDb9PYUx4mRnYLKKvlJDKAtD6Yt5bEZjPs6zIgwt9Q7T47PoG7S6cDAbME6KbrHMbGju
+X-Gm-Message-State: AOJu0Yxvuw41pObibMtv3byEdiuu+OjScsNKvnlUNuLxWr3qhmVZ38Hv
+	uILm2owDxxVpnA0lEq7WoWAY3wza/L4C5gQOF7d3++f2tWtRSBOhMA0zpTSPdRI=
+X-Google-Smtp-Source: AGHT+IFwGL3vq5/38zSa2CyV8OxDqy0RxXpRamOL+kxkz7rK+carlQoUhdjRFT7uFbBrX0RW5KcB/g==
+X-Received: by 2002:a05:6102:2925:b0:46d:3eb2:5d54 with SMTP id cz37-20020a056102292500b0046d3eb25d54mr177122vsb.1.1707416689142;
+        Thu, 08 Feb 2024 10:24:49 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWzB2X/GzY5BrDX8P2pIc2GP6GSVQ3w2E2sFR3L4MS995omOy+pAIG7GvMikxPqhrXJQOObPgOYQPGlIPTVWH+eQdIF2C5QDliZadzcjIkPjf1OJh/cQLTHLMa2rROLGMv7LeGChMLsdc4xDxwPJmxXMOr5yhPWnTEMHojRlXUTwbmslQ==
+Received: from ishi.. (072-189-067-006.res.spectrum.com. [72.189.67.6])
+        by smtp.gmail.com with ESMTPSA id hz14-20020a0561024a8e00b00469ada55019sm36349vsb.13.2024.02.08.10.24.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 10:24:48 -0800 (PST)
+From: William Breathitt Gray <william.gray@linaro.org>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: William Breathitt Gray <william.gray@linaro.org>,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] counter: make counter_bus_type const
+Date: Thu,  8 Feb 2024 13:24:18 -0500
+Message-ID: <170741658084.77291.12361784723046781637.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240204-bus_cleanup-counter-v1-1-cef9dd719bdc@marliere.net>
+References: <20240204-bus_cleanup-counter-v1-1-cef9dd719bdc@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rPlINU3cZvGxB9hH"
-Content-Disposition: inline
-In-Reply-To: <20240208135045.3728927-2-tudor.ambarus@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
 
---rPlINU3cZvGxB9hH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sun, 04 Feb 2024 13:02:30 -0300, Ricardo B. Marliere wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the counter_bus_type variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
+> 
+> 
 
-On Thu, Feb 08, 2024 at 01:50:34PM +0000, Tudor Ambarus wrote:
-> There are instances of the same IP that are configured by the integrator
-> with different FIFO depths. Introduce the fifo-depth property to allow
-> such nodes to specify their FIFO depth.
->=20
-> We haven't seen SPI IPs with different FIFO depths for RX and TX, thus
-> introduce a single property.
+Applied, thanks!
 
-Some citation attached to this would be nice. "We haven't seen" offers
-no detail as to what IPs that allow this sort of configuration of FIFO
-size that you have actually checked.
+[1/1] counter: make counter_bus_type const
+      commit: 856132743893a977fe1f1103b3f51b7f0984c2f1
 
-I went and checked our IP that we use in FPGA fabric, which has a
-configurable fifo depth. It only has a single knob for both RX and TX
-FIFOs. The Xilinx xps spi core also has configurable FIFOs, but again RX
-and TX sizes are tied there. At least that's a sample size of three.
-
-One of our guys is working on support for the IP I just mentioned and
-would be defining a vendor property for this, so
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
->=20
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
->  Documentation/devicetree/bindings/spi/spi-controller.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/spi/spi-controller.yaml b/=
-Documentation/devicetree/bindings/spi/spi-controller.yaml
-> index 524f6fe8c27b..99272e6f115e 100644
-> --- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
-> +++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
-> @@ -69,6 +69,11 @@ properties:
->           Should be generally avoided and be replaced by
->           spi-cs-high + ACTIVE_HIGH.
-> =20
-> +  fifo-depth:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Size of the data FIFO in bytes.
-> +
->    num-cs:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      description:
-> --=20
-> 2.43.0.687.g38aa6559b0-goog
->=20
-
---rPlINU3cZvGxB9hH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcUcTAAKCRB4tDGHoIJi
-0j4tAP9wfGzupRs/uJ9s16k8o3KzbLzjn/TaEfWzAuiE4hxX4wEA5U1nuuXWBR0x
-gYqzzLuJIoHfQ4vImDfzN6zyxv0HEAA=
-=glJv
------END PGP SIGNATURE-----
-
---rPlINU3cZvGxB9hH--
+William Breathitt Gray <william.gray@linaro.org>
 
