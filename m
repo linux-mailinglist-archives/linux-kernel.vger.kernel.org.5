@@ -1,269 +1,200 @@
-Return-Path: <linux-kernel+bounces-58388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34EF584E5B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:58:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F07884E5D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:00:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59C621C25B74
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:58:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35FF328F11E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436F98121B;
-	Thu,  8 Feb 2024 16:58:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A285981AAE;
+	Thu,  8 Feb 2024 17:00:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bz/TewRj";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="nIQFLhzf";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bz/TewRj";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="nIQFLhzf"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Xso+MMgb"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4919C73164;
-	Thu,  8 Feb 2024 16:58:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BCC27F7FE;
+	Thu,  8 Feb 2024 17:00:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707411494; cv=none; b=ThUeZzGSkjC3fyFQtejkMdnSuf65WK1YjdFfS3Gf8X4klrx4h0Y6QxCcc0CbtoWXmkoTVQQIL9Adm1rBuIH70aUvfwQeICERGv04weeRslbk7xiyBmYZc1AOMLvL4rvWJWNKzqs8ctkoQ2w4IHtkAnUkQ7fFr95185sDxza8iKQ=
+	t=1707411603; cv=none; b=nCd/78q7dljoXkKLl4P7XNlkGdBnCsQLFgMNphMO9Ynv+T/rzf7sEbd4SJPGh/1O8r2yg7c6g+cmrNMPUa+D0lrWKS8n1vXQW0ZuB6ULljwRvTge0JGqc3KfkP8QEe9nkI3MNox2FWn3VbK7YKGR/PLYgfENg5BsmevbMWWXHps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707411494; c=relaxed/simple;
-	bh=/H4JDepbabc9q49WGUHSfSWdZExqVMaCPHCVozpHu0E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Di/ZTWIURKWOhDFtHEiVhjs9gSx0izrkX+LTvYkDqgpiPCJfZ17IutIso5bPnAzv26HeO1XBxpSD90Va6JCByF/GnDMuNMk73DuUbI3N8dPuY3oDug60kgWCc78ZwA4JpCoDdRuMSM8GFYzvkh//kfyDV9562itdTXN0x4TKoz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bz/TewRj; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=nIQFLhzf; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bz/TewRj; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=nIQFLhzf; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6E9D021F60;
-	Thu,  8 Feb 2024 16:58:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707411490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=4ZgXjD6osKpD5V9BCXa39jxK5ZSPDcRIhG5CJmbbskg=;
-	b=bz/TewRjkqpTmUZKQKCJP7eJSNDfp5FqxBpIpMxhQmVM4rpuvoBvXS2YhB79C/Cmw6+YqD
-	G0AERVZHLw9Ozz9DoetzgMpEOLotRXUOWNSQKT0K0F4XZcCEPTaU9lIBOrKHjj6fqJNFTs
-	p2XZk8DAxt3Ywpg1kAJiokZXagBgPOs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707411490;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=4ZgXjD6osKpD5V9BCXa39jxK5ZSPDcRIhG5CJmbbskg=;
-	b=nIQFLhzfT80Hm9wpwCMZJQCuCM56tJTjzU4H6yRCztaPh0Kzt0ZQuzDsmE2UQiyQ0YPT3Y
-	jEetek3XjewewQCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707411490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=4ZgXjD6osKpD5V9BCXa39jxK5ZSPDcRIhG5CJmbbskg=;
-	b=bz/TewRjkqpTmUZKQKCJP7eJSNDfp5FqxBpIpMxhQmVM4rpuvoBvXS2YhB79C/Cmw6+YqD
-	G0AERVZHLw9Ozz9DoetzgMpEOLotRXUOWNSQKT0K0F4XZcCEPTaU9lIBOrKHjj6fqJNFTs
-	p2XZk8DAxt3Ywpg1kAJiokZXagBgPOs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707411490;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=4ZgXjD6osKpD5V9BCXa39jxK5ZSPDcRIhG5CJmbbskg=;
-	b=nIQFLhzfT80Hm9wpwCMZJQCuCM56tJTjzU4H6yRCztaPh0Kzt0ZQuzDsmE2UQiyQ0YPT3Y
-	jEetek3XjewewQCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ECFCA1326D;
-	Thu,  8 Feb 2024 16:58:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9wqANiEIxWW2FAAAD6G6ig
-	(envelope-from <lhenriques@suse.de>); Thu, 08 Feb 2024 16:58:09 +0000
-Received: from localhost (brahms.olymp [local])
-	by brahms.olymp (OpenSMTPD) with ESMTPA id 5e47eb05;
-	Thu, 8 Feb 2024 16:58:09 +0000 (UTC)
-From: Luis Henriques <lhenriques@suse.de>
-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Luis Henriques <lhenriques@suse.de>,
-	Daniel Dawson <danielcdawson@gmail.com>
-Subject: [RFC PATCH] ext4: destroy inline data immediately when converting to extent
-Date: Thu,  8 Feb 2024 16:58:07 +0000
-Message-ID: <20240208165808.5494-1-lhenriques@suse.de>
+	s=arc-20240116; t=1707411603; c=relaxed/simple;
+	bh=VDndyaYeLSFQsPXNAP4dS8n7FchbSz5Kp9PJZapzE+w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=DrfFKvFF/uAlz6QUqDyDAl32NjE1s4LBp1ZecHDske07e3NlWE0tgrUW5JTmmgjHjRIU8YqECh/8Wo+bZEhb8xXmJyQBf7ej75BN59gkYs1E+Ug8RFB1FovxJKm1ZcTyVB0v5dX50BSgJdYNqSVaZZ0aRcnECzYuhd0No3VGtv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Xso+MMgb; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 418FR5Yv021218;
+	Thu, 8 Feb 2024 16:59:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=vJ0Ng4GpEOGSL5tkjSsKqvDm5yvMqpG8nwhhwyAVv08=; b=Xs
+	o+MMgbMSB8SPIwYQA4mp1kEIQsT4hfWJQy+7LhSav2nSphTQtHiizceK/WvkdS+C
+	+aJg9KtGt7NcG+f8/4zkTQmCdgG1/hpJCXJXa3wgfHbhv8KYchWVfRzZRS/R0D39
+	mJUWuXAFNUcl9+otbzZ13kvydue+NLjMrueBEWcNzRr0Zh3c1hsRu8bzolj1U5IA
+	vZkRwWpCxTRTPmpmXCcd2aMUQwMTIJAOskQXDKQqWOkUUA5WE5Y77ZUt2siCeoV2
+	ZPjrkpW+pEE9cdaCzl3mXf1/VCChIjGRPQR7o+9W3Yn2lmpi7xL2CNlcCc9YYoJU
+	hmseroI4JV/KNVIOB3MA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w4rk81sre-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 08 Feb 2024 16:59:46 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 418GxjS3006929
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 8 Feb 2024 16:59:45 GMT
+Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 8 Feb
+ 2024 08:59:44 -0800
+Message-ID: <66ecb179-a878-bfe0-af8d-0640560e0a9b@quicinc.com>
+Date: Thu, 8 Feb 2024 08:59:43 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.30
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[4];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_LAST(0.00)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,suse.de,gmail.com];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 3/5] drm/msm: mdss: Add X1E80100 support
+Content-Language: en-US
+To: Abel Vesa <abel.vesa@linaro.org>,
+        Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>
+CC: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn
+ Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240129-x1e80100-display-v1-0-0d9eb8254df0@linaro.org>
+ <20240129-x1e80100-display-v1-3-0d9eb8254df0@linaro.org>
+ <CAA8EJponbo2vvuj2ftCQuxtrZp0w7JQqJ_ADF80Wd2y1V74BzA@mail.gmail.com>
+ <ZcTZL+fls7A8O9P0@linaro.org>
+ <CAA8EJpr3p286ff1pHhhBdF7GA=g8Pnv9yWDukwnnNaOuykPcTQ@mail.gmail.com>
+ <ZcTbNGVGT/Kwtc68@linaro.org>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <ZcTbNGVGT/Kwtc68@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: QP1-8XBNzTm3HdoaeKnLEIa-nx0-FWo1
+X-Proofpoint-ORIG-GUID: QP1-8XBNzTm3HdoaeKnLEIa-nx0-FWo1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-08_07,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ phishscore=0 priorityscore=1501 adultscore=0 bulkscore=0 suspectscore=0
+ spamscore=0 impostorscore=0 mlxlogscore=999 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402080090
 
-When writing to an inode that has inline data and the amount of data written
-exceeds the maximum inline data length, that data is un-inlined, i.e. it is
-converted into an extent.  However, when delayed allocation is enabled the
-destruction of the data is postponed until the data writeback.  This causes
-consistency problems.  Here's a very simple test case, run on a filesystem
-with delayed allocation and inline data features enabled:
 
- $ dd if=/dev/zero of=test-file bs=64 count=3 status=none
- $ lsattr test-file
- ------------------N--- test-file
 
-The 'lsattr' command shows that the file has data stored inline.  However,
-that is not correct because writing 192 bytes (3 * 64) has forced the data
-to be un-inlined.  Doing a 'sync' before running the 'lsattr' fixes it.
+On 2/8/2024 5:46 AM, Abel Vesa wrote:
+> On 24-02-08 15:42:04, Dmitry Baryshkov wrote:
+>> On Thu, 8 Feb 2024 at 15:37, Abel Vesa <abel.vesa@linaro.org> wrote:
+>>>
+>>> On 24-01-29 17:11:25, Dmitry Baryshkov wrote:
+>>>> On Mon, 29 Jan 2024 at 15:19, Abel Vesa <abel.vesa@linaro.org> wrote:
+>>>>>
+>>>>> Add support for MDSS on X1E80100.
+>>>>>
+>>>>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+>>>>> ---
+>>>>>   drivers/gpu/drm/msm/msm_mdss.c | 10 ++++++++++
+>>>>>   1 file changed, 10 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/msm/msm_mdss.c b/drivers/gpu/drm/msm/msm_mdss.c
+>>>>> index 455b2e3a0cdd..eddf7fdbb60a 100644
+>>>>> --- a/drivers/gpu/drm/msm/msm_mdss.c
+>>>>> +++ b/drivers/gpu/drm/msm/msm_mdss.c
+>>>>> @@ -564,6 +564,15 @@ static const struct msm_mdss_data sdm670_data = {
+>>>>>          .highest_bank_bit = 1,
+>>>>>   };
+>>>>>
+>>>>> +static const struct msm_mdss_data x1e80100_data = {
+>>>>> +       .ubwc_enc_version = UBWC_4_0,
+>>>>> +       .ubwc_dec_version = UBWC_4_3,
+>>>>> +       .ubwc_swizzle = 6,
+>>>>> +       .ubwc_static = 1,
+>>>>> +       .highest_bank_bit = 2,
+>>>>> +       .macrotile_mode = 1,
+>>>>
+>>>> Missing .reg_bus_bw, LGTM otherwise
+>>>
+>>> Dmitry, I do not have the exact value yet.
+>>>
+>>> Can I come back with a subsequent (different) patch to add it at a later stage
+>>> when I have that information?
+>>>
+>>> I see no point in holding display support any further since it works
+>>> fine with the default bandwith.
+>>>
+>>> If yes, I'll respin this series right away, but without the reg_bus_bw.
+>>
+>> Please add a TODO or FIXME comment there.
+> 
+> Sure thing. Thanks.
+> 
 
-Note that this bug doesn't happen if the filesytems is mount using the
-'nodelalloc' option.
+I have not heard back from the clock team on the values.
 
-(There's a similar test case using read() instead in the bugzilla linked
-bellow.)
+But, what I can confirm at this point is for basic functional display 
+support, we could let it go back to the default value which we have 
+hard-coded and fill up this entry later.
 
-This patch fixes the issue in the delayed allocation path by destroying the
-inline data immediately after converting it to an extent instead of delaying
-that operation until the writeback.  This is done by invoking function
-ext4_destroy_inline_data_nolock(), which is going to clean-up all the
-missing data structures, including clearing ĨNLINE_DATA and setting the
-EXTENTS inode flags.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=200681
-Cc: Daniel Dawson <danielcdawson@gmail.com>
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
----
-Hi!
-
-I'm sending this patch as an RFC because, although I've done a good amount
-of testing, I'm still not convinced it is correct.  I.e. there may exist a
-good reason for postponing the call to ext4_destroy_inline_data_nolock() and
-that I'm failing to see it.  Please let me know what you think.
-
- fs/ext4/inline.c | 20 ++++++++++----------
- fs/ext4/inode.c  | 18 +-----------------
- 2 files changed, 11 insertions(+), 27 deletions(-)
-
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index d5bd1e3a5d36..e19a176cfc93 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -830,11 +830,12 @@ int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
-  *    update and dirty so that ext4_da_writepages can handle it. We don't
-  *    need to start the journal since the file's metadata isn't changed now.
-  */
--static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
-+static int ext4_da_convert_inline_data_to_extent(handle_t *handle,
-+						 struct address_space *mapping,
- 						 struct inode *inode,
- 						 void **fsdata)
- {
--	int ret = 0, inline_size;
-+	int ret = 0, inline_size, no_expand;
- 	struct folio *folio;
- 
- 	folio = __filemap_get_folio(mapping, 0, FGP_WRITEBEGIN,
-@@ -842,7 +843,7 @@ static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
- 	if (IS_ERR(folio))
- 		return PTR_ERR(folio);
- 
--	down_read(&EXT4_I(inode)->xattr_sem);
-+	ext4_write_lock_xattr(inode, &no_expand);
- 	if (!ext4_has_inline_data(inode)) {
- 		ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
- 		goto out;
-@@ -859,20 +860,18 @@ static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
- 	ret = __block_write_begin(&folio->page, 0, inline_size,
- 				  ext4_da_get_block_prep);
- 	if (ret) {
--		up_read(&EXT4_I(inode)->xattr_sem);
-+		ext4_write_unlock_xattr(inode, &no_expand);
- 		folio_unlock(folio);
- 		folio_put(folio);
- 		ext4_truncate_failed_write(inode);
- 		return ret;
- 	}
- 
--	folio_mark_dirty(folio);
--	folio_mark_uptodate(folio);
--	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
-+	ret = ext4_destroy_inline_data_nolock(handle, inode);
- 	*fsdata = (void *)CONVERT_INLINE_DATA;
- 
- out:
--	up_read(&EXT4_I(inode)->xattr_sem);
-+	ext4_write_unlock_xattr(inode, &no_expand);
- 	if (folio) {
- 		folio_unlock(folio);
- 		folio_put(folio);
-@@ -916,10 +915,11 @@ int ext4_da_write_inline_data_begin(struct address_space *mapping,
- 		goto out_journal;
- 
- 	if (ret == -ENOSPC) {
--		ext4_journal_stop(handle);
--		ret = ext4_da_convert_inline_data_to_extent(mapping,
-+		ret = ext4_da_convert_inline_data_to_extent(handle,
-+							    mapping,
- 							    inode,
- 							    fsdata);
-+		ext4_journal_stop(handle);
- 		if (ret == -ENOSPC &&
- 		    ext4_should_retry_alloc(inode->i_sb, &retries))
- 			goto retry_journal;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 2ccf3b5e3a7c..43fa930fafa0 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -2548,23 +2548,7 @@ static int ext4_do_writepages(struct mpage_da_data *mpd)
- 		goto out_writepages;
- 	}
- 
--	/*
--	 * If we have inline data and arrive here, it means that
--	 * we will soon create the block for the 1st page, so
--	 * we'd better clear the inline data here.
--	 */
--	if (ext4_has_inline_data(inode)) {
--		/* Just inode will be modified... */
--		handle = ext4_journal_start(inode, EXT4_HT_INODE, 1);
--		if (IS_ERR(handle)) {
--			ret = PTR_ERR(handle);
--			goto out_writepages;
--		}
--		BUG_ON(ext4_test_inode_state(inode,
--				EXT4_STATE_MAY_INLINE_DATA));
--		ext4_destroy_inline_data(handle, inode);
--		ext4_journal_stop(handle);
--	}
-+	WARN_ON_ONCE(ext4_has_inline_data(inode));
- 
- 	/*
- 	 * data=journal mode does not do delalloc so we just need to writeout /
+>>
+>>>
+>>>>
+>>>>> +};
+>>>>> +
+>>>>>   static const struct msm_mdss_data sdm845_data = {
+>>>>>          .ubwc_enc_version = UBWC_2_0,
+>>>>>          .ubwc_dec_version = UBWC_2_0,
+>>>>> @@ -655,6 +664,7 @@ static const struct of_device_id mdss_dt_match[] = {
+>>>>>          { .compatible = "qcom,sm8450-mdss", .data = &sm8350_data },
+>>>>>          { .compatible = "qcom,sm8550-mdss", .data = &sm8550_data },
+>>>>>          { .compatible = "qcom,sm8650-mdss", .data = &sm8550_data},
+>>>>> +       { .compatible = "qcom,x1e80100-mdss", .data = &x1e80100_data},
+>>>>>          {}
+>>>>>   };
+>>>>>   MODULE_DEVICE_TABLE(of, mdss_dt_match);
+>>>>>
+>>>>> --
+>>>>> 2.34.1
+>>>>>
+>>>>
+>>>>
+>>>> --
+>>>> With best wishes
+>>>> Dmitry
+>>
+>>
+>>
+>> -- 
+>> With best wishes
+>> Dmitry
 
