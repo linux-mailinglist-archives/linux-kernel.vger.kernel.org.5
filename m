@@ -1,220 +1,112 @@
-Return-Path: <linux-kernel+bounces-58344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48AA784E4F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EE0BC84E4F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:23:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F259F28EBCA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:23:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5858328EC39
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:23:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C4C7EF09;
-	Thu,  8 Feb 2024 16:22:49 +0000 (UTC)
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF3D7E774;
+	Thu,  8 Feb 2024 16:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G+i050Xj"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057E27E59F;
-	Thu,  8 Feb 2024 16:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D0987D41A;
+	Thu,  8 Feb 2024 16:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707409369; cv=none; b=NaUMK85qnUK62ESXVTjo7+wOMakWPpjS4sKznXmOQ8NN36JAPFmLHrIpiGEcv1l447Kv7AkwO2I7Uc4o+lYHOMNUtUdas1Q19mGDi/AEDtBu2jeJcDFxaKXPfiS9z9s5v6Jcwu2OU3DNzOkOp0Ca10F9Nc3NKd2VvHaVfQwBb+A=
+	t=1707409406; cv=none; b=cbvA5MzLEjDMWyLAYm/u7L98QxFfaT3WO0MsjfZRIxvEd95jH6EjPCxXzZkhBrWn1+23gKe6yMpy7hbA8+SutC88u9uPyb38p1BQ5aUdm61qQbSyafN3f/cRywdh8KQZgdmxIbBdNNsgqOUqidl95ekp9kbq/akGZtlFM0vnbPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707409369; c=relaxed/simple;
-	bh=MBrKiKWR78aRQohSnwR71yciqdbXWCE/pYxZWoLdR1Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KccLj+Le0SxzuOuy/WWuLfLWmK6w01yZozEQgZ4GWwDGQ23Z7xPKlEIA7UUdNpHWtzw2pQiylCfC+Qooj95PQ4edehvrNevVR9WFMitWswzZ8Si0hu1aiwqvmjZoOhY0s517dWuSWCx16GSdKNUTV7Dl5kCmweyCg/bpg5kDE2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96.2)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1rY7AH-0004wG-0D;
-	Thu, 08 Feb 2024 16:22:17 +0000
-Date: Thu, 8 Feb 2024 16:22:07 +0000
-From: Daniel Golle <daniel@makrotopia.org>
-To: arinc.unal@arinc9.com
-Cc: DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Russell King <linux@armlinux.org.uk>, mithat.guner@xeront.com,
-	erkin.bozoglu@xeront.com,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH netnext 8/8] net: dsa: mt7530: simplify link operations
- and force link down on all ports
-Message-ID: <ZcT_r68mStRAC3Uk@makrotopia.org>
-References: <20240208-for-netnext-mt7530-improvements-3-v1-0-d7c1cfd502ca@arinc9.com>
- <20240208-for-netnext-mt7530-improvements-3-v1-8-d7c1cfd502ca@arinc9.com>
+	s=arc-20240116; t=1707409406; c=relaxed/simple;
+	bh=XSbI4p8cfTNAnfz90m6UvSOBjVQtI0cNaq7RlLExBCg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mebO0nT/p9bBydCzmktVsSIm8AZLLM5SfXj/gbujdt3HeHvhtvd0OIcmLArTDlGQjESX8+gLpQcwqSxRZ/TvDjJEOZ7PURdXlD+pfyWDo1hTOi2mK7JenKKVmo2ftxc43vwCCNuotaK3GfCjcQZi5Jx/8Xkhj7aOssiqGvRgJW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G+i050Xj; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5116bf4dcf4so1472005e87.0;
+        Thu, 08 Feb 2024 08:23:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707409402; x=1708014202; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5fHV9+zIO+0IkutaijdwO8mXBVrGFAikLKk07NhjxfQ=;
+        b=G+i050Xjlk0K3h9yeQM9B+cRyjdmeJZwIL27BW2PM91J7Gh2rrTB0qin4ZqMODF9x4
+         Rgrq9JGivqRMFwE0noPGTIpYt3JiZOH6DwLIBtYLO4UIS8rhFRWX1v5yYRh7cjKFuNO2
+         rZ4X1KJi/7Ny7nnlCftzTJDlnYPpxtDzh/B/Chs7QxJMHb+2vI2gkjp/7vvm6wE5hmQp
+         Tj4NBS6NyhLPxSTs3Qspu7UQA2pzqAL4yFwYDtEdDq3niI/EARZmZu/QRA/ucmJmTG0I
+         pr4HiQgq5WU2shitKtg2dv64cLcN58iKKUUlBNZpYqIuo1h5gSFktkv5aSZ5b3fcqpAV
+         f/ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707409402; x=1708014202;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5fHV9+zIO+0IkutaijdwO8mXBVrGFAikLKk07NhjxfQ=;
+        b=Uq7qHIja1/CuGECOc9lnzka+bZFO7qtnUtlsCgSUeuVC8y5Dt4AmB38swarr4pZHcG
+         nyObuDu1IhADLeWsMXFK99fBBEgsqbfAEJTLoZ4bVFeaasuZVlYZXyjs8wS2PzOd4qOE
+         /go+6JlWYXGqGQX6EMqj8lwMM1M9u6XdPtPC8L03urJUB948HzxflxmKmEYUAthSrtGu
+         gJpb5te2+Zyt7f2FcfefIyakjcwPfuEjb2dw4zKC5cIOSegZdzyBabbeaFo65iM3YeKN
+         A9fWAmVriuUiluKiLtcOyHHAntklLt0LKXtn+eVZBIMfQrFGqETO+uSXu+ub4MZMXml3
+         jZNQ==
+X-Gm-Message-State: AOJu0YzZttofHuGAdJmiBV8U8ybv1ZStdwoE5HIitvPlYu577Yw9nh0Q
+	nOb6+Pd8MmyTa+biyVNgu9JjBp/OCoSR5epus+nrgYn1PtZJs5qL
+X-Google-Smtp-Source: AGHT+IEVDNJO8itB6REMJMyJRNrZeTPaWCuL8J2Q9W8E0E24Ms2e7G7zRtB9CXlYio2hR2dXhiAmpg==
+X-Received: by 2002:ac2:46cc:0:b0:511:42b5:5616 with SMTP id p12-20020ac246cc000000b0051142b55616mr6494596lfo.17.1707409402301;
+        Thu, 08 Feb 2024 08:23:22 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXFYwmNfpCeGaVHYlN/mOivVUxMbr4GNh5eUn02YEfoPQEsPWeL8onjqmzuDEyJxGWo30hl3t4Yv8l1O+WP2WPrKiBIjFwLKwfpcmSPETHNi0Sgi4Rrc40rM8Unsl8RaqFf8YFeOQSUSxtCH61fftK+wX/KaEQFoNzZpK+fqr3ujYDjpg==
+Received: from sacco-Inspiron-5559.. (88-160-103-158.subs.proxad.net. [88.160.103.158])
+        by smtp.gmail.com with ESMTPSA id x5-20020ac24885000000b0051152c32fdfsm39852lfc.267.2024.02.08.08.23.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 08:23:21 -0800 (PST)
+From: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+To: mchehab@kernel.org
+Cc: linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+Subject: [PATCH] docs: media: fix typo in docs
+Date: Thu,  8 Feb 2024 17:23:17 +0100
+Message-Id: <20240208162317.109915-1-vincenzo.mezzela@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240208-for-netnext-mt7530-improvements-3-v1-8-d7c1cfd502ca@arinc9.com>
 
-On Thu, Feb 08, 2024 at 08:51:36AM +0300, Arınç ÜNAL via B4 Relay wrote:
-> From: Arınç ÜNAL <arinc.unal@arinc9.com>
-> 
-> Currently, the link operations for switch MACs are scattered across
-> port_enable, port_disable, phylink_mac_config, phylink_mac_link_up, and
-> phylink_mac_link_down.
-> 
-> port_enable and port_disable clears the link settings. Move that to
-> mt7530_setup() and mt7531_setup_common() which set up the switches. This
-> way, the link settings are cleared on all ports at setup, and then only
-> once with phylink_mac_link_down() when a link goes down.
-> 
-> Enable force mode at setup to apply the force part of the link settings.
-> This ensures that only active ports will have their link up.
-> 
-> Now that the bit for setting the port on force mode is done on
-> mt7530_setup() and mt7531_setup_common(), get rid of PMCR_FORCE_MODE_ID()
-> which helped determine which bit to use for the switch model.
-> 
-> The "MT7621 Giga Switch Programming Guide v0.3", "MT7531 Reference Manual
-> for Development Board v1.0", and "MT7988A Wi-Fi 7 Generation Router
-> Platform: Datasheet (Open Version) v0.1" documents show that these bits are
-> enabled at reset:
-> 
-> PMCR_IFG_XMIT(1) (not part of PMCR_LINK_SETTINGS_MASK)
-> PMCR_MAC_MODE (not part of PMCR_LINK_SETTINGS_MASK)
-> PMCR_TX_EN
-> PMCR_RX_EN
-> PMCR_BACKOFF_EN (not part of PMCR_LINK_SETTINGS_MASK)
-> PMCR_BACKPR_EN (not part of PMCR_LINK_SETTINGS_MASK)
-> PMCR_TX_FC_EN
-> PMCR_RX_FC_EN
-> 
-> These bits also don't exist on the MT7530_PMCR_P(6) register of the switch
-> on the MT7988 SoC:
-> 
-> PMCR_IFG_XMIT()
-> PMCR_MAC_MODE
-> PMCR_BACKOFF_EN
-> PMCR_BACKPR_EN
-> 
-> Remove the setting of the bits not part of PMCR_LINK_SETTINGS_MASK on
-> phylink_mac_config as they're already set.
-> 
-> Suggested-by: Vladimir Oltean <olteanv@gmail.com>
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> ---
->  drivers/net/dsa/mt7530.c | 26 +++++++++++++-------------
->  drivers/net/dsa/mt7530.h |  2 --
->  2 files changed, 13 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-> index 5c8ad41ce8cd..f67db577d1c0 100644
-> --- a/drivers/net/dsa/mt7530.c
-> +++ b/drivers/net/dsa/mt7530.c
-> @@ -1018,7 +1018,6 @@ mt7530_port_enable(struct dsa_switch *ds, int port,
->  	priv->ports[port].enable = true;
->  	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_MATRIX_MASK,
->  		   priv->ports[port].pm);
-> -	mt7530_clear(priv, MT7530_PMCR_P(port), PMCR_LINK_SETTINGS_MASK);
->  
->  	mutex_unlock(&priv->reg_mutex);
->  
-> @@ -1038,7 +1037,6 @@ mt7530_port_disable(struct dsa_switch *ds, int port)
->  	priv->ports[port].enable = false;
->  	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_MATRIX_MASK,
->  		   PCR_MATRIX_CLR);
-> -	mt7530_clear(priv, MT7530_PMCR_P(port), PMCR_LINK_SETTINGS_MASK);
->  
->  	mutex_unlock(&priv->reg_mutex);
->  }
-> @@ -2257,6 +2255,12 @@ mt7530_setup(struct dsa_switch *ds)
->  	mt7530_mib_reset(ds);
->  
->  	for (i = 0; i < MT7530_NUM_PORTS; i++) {
-> +		/* Clear link settings and enable force mode to force link down
-> +		 * on all ports until they're enabled later.
-> +		 */
-> +		mt7530_clear(priv, MT7530_PMCR_P(i), PMCR_LINK_SETTINGS_MASK);
-> +		mt7530_set(priv, MT7530_PMCR_P(i), PMCR_FORCE_MODE);
+This patch resolves a spelling error in the documentation.
 
-Any reason to not combine the two lines above into a single call:
+It is submitted as part of my application to the "Linux Kernel Bug
+Fixing Spring Unpaid 2024" mentorship program of the Linux Kernel
+Foundation.
 
-mt7530_rmw(priv, MT7530_PMCR_P(i),
-	   PMCR_LINK_SETTINGS_MASK | PMCR_FORCE_MODE,
-	   PMCR_FORCE_MODE);
+Signed-off-by: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+---
+ Documentation/driver-api/media/v4l2-subdev.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +
->  		/* Disable forwarding by default on all ports */
->  		mt7530_rmw(priv, MT7530_PCR_P(i), PCR_MATRIX_MASK,
->  			   PCR_MATRIX_CLR);
-> @@ -2359,6 +2363,12 @@ mt7531_setup_common(struct dsa_switch *ds)
->  		     UNU_FFP_MASK);
->  
->  	for (i = 0; i < MT7530_NUM_PORTS; i++) {
-> +		/* Clear link settings and enable force mode to force link down
-> +		 * on all ports until they're enabled later.
-> +		 */
-> +		mt7530_clear(priv, MT7530_PMCR_P(i), PMCR_LINK_SETTINGS_MASK);
-> +		mt7530_set(priv, MT7530_PMCR_P(i), MT7531_FORCE_MODE);
-> +
+diff --git a/Documentation/driver-api/media/v4l2-subdev.rst b/Documentation/driver-api/media/v4l2-subdev.rst
+index 1db2ba27c54c..13aec460e802 100644
+--- a/Documentation/driver-api/media/v4l2-subdev.rst
++++ b/Documentation/driver-api/media/v4l2-subdev.rst
+@@ -229,7 +229,7 @@ Asynchronous sub-device notifier for sub-devices
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+ A driver that registers an asynchronous sub-device may also register an
+-asynchronous notifier. This is called an asynchronous sub-device notifier andthe
++asynchronous notifier. This is called an asynchronous sub-device notifier and the
+ process is similar to that of a bridge driver apart from that the notifier is
+ initialised using :c:func:`v4l2_async_subdev_nf_init` instead. A sub-device
+ notifier may complete only after the V4L2 device becomes available, i.e. there's
+-- 
+2.34.1
 
-Same here obviously.
-
->  		/* Disable forwarding by default on all ports */
->  		mt7530_rmw(priv, MT7530_PCR_P(i), PCR_MATRIX_MASK,
->  			   PCR_MATRIX_CLR);
-> @@ -2657,23 +2667,13 @@ mt753x_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
->  			  const struct phylink_link_state *state)
->  {
->  	struct mt7530_priv *priv = ds->priv;
-> -	u32 mcr_cur, mcr_new;
->  
->  	if ((port == 5 || port == 6) && priv->info->mac_port_config)
->  		priv->info->mac_port_config(ds, port, mode, state->interface);
->  
-> -	mcr_cur = mt7530_read(priv, MT7530_PMCR_P(port));
-> -	mcr_new = mcr_cur;
-> -	mcr_new &= ~PMCR_LINK_SETTINGS_MASK;
-> -	mcr_new |= PMCR_IFG_XMIT(1) | PMCR_MAC_MODE | PMCR_BACKOFF_EN |
-> -		   PMCR_BACKPR_EN | PMCR_FORCE_MODE_ID(priv->id);
-> -
->  	/* Are we connected to external phy */
->  	if (port == 5 && dsa_is_user_port(ds, 5))
-> -		mcr_new |= PMCR_EXT_PHY;
-> -
-> -	if (mcr_new != mcr_cur)
-> -		mt7530_write(priv, MT7530_PMCR_P(port), mcr_new);
-> +		mt7530_set(priv, MT7530_PMCR_P(port), PMCR_EXT_PHY);
->  }
->  
->  static void mt753x_phylink_mac_link_down(struct dsa_switch *ds, int port,
-> diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-> index 8a8144868eaa..a71166e0a7fc 100644
-> --- a/drivers/net/dsa/mt7530.h
-> +++ b/drivers/net/dsa/mt7530.h
-> @@ -304,8 +304,6 @@ enum mt7530_vlan_port_acc_frm {
->  					 MT7531_FORCE_DPX | \
->  					 MT7531_FORCE_RX_FC | \
->  					 MT7531_FORCE_TX_FC)
-> -#define  PMCR_FORCE_MODE_ID(id)		((((id) == ID_MT7531) || ((id) == ID_MT7988)) ?	\
-> -					 MT7531_FORCE_MODE : PMCR_FORCE_MODE)
->  #define  PMCR_LINK_SETTINGS_MASK	(PMCR_TX_EN | PMCR_FORCE_SPEED_1000 | \
->  					 PMCR_RX_EN | PMCR_FORCE_SPEED_100 | \
->  					 PMCR_TX_FC_EN | PMCR_RX_FC_EN | \
-> 
-> -- 
-> 2.40.1
-> 
 
