@@ -1,190 +1,240 @@
-Return-Path: <linux-kernel+bounces-58137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ED8C84E1CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:20:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A221884E1D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:20:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF1FA1F2528C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:20:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DF49289B95
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB917CF0E;
-	Thu,  8 Feb 2024 13:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC0BC763E7;
+	Thu,  8 Feb 2024 13:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ivAHTSh0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cAgQpn/0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56FB57CF02;
-	Thu,  8 Feb 2024 13:15:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5E277621;
+	Thu,  8 Feb 2024 13:15:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707398108; cv=none; b=DKDd2XgV/AuNBqhkdoKmQe6CCnqdTyLT90hLwQ/HojdrwqeQzv/kk4IO8PqW9m4yUnbMe8sp3J6jKDARUuwporEhv/BcLORoe86BnXuzOeyqpZlhg2813q9ISwtDfZ20xeBD3RGdokZ+geD9AJmY+MeczjWfNzLvde87cFzG1nY=
+	t=1707398144; cv=none; b=XGgF8QhMk30ywY+Ik03lRi/QMnMjm7SBA6plkfJnRiaarkE6TiK55Cnzu64pzS2Wm1sAgmFZetuJmI9yIRQHqiH3uXijKXyiFpsOZSoJG/fe6M7Lf2HDJ4qY+OtOYLkKA5LtGL8mAkv1S2lPwPiS2xrCgsZueZg+HllDwTnmK0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707398108; c=relaxed/simple;
-	bh=q6awbs+YreoMeUxonom32OUjfO17lLFk08XgUb9aaMs=;
+	s=arc-20240116; t=1707398144; c=relaxed/simple;
+	bh=KFgrJViWvgwiOzgjsLdG7QKsqaf3QTYl4byPlFWT/Zg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oVwVVZjGhEXqkdPMryzIumqy5VcbefcfeXQupOukpp1meec42jDkpl/w4qV3SLEeIn9/VqeuWX3OY2ny963hObn6VWwjXXRWZCGJd2cGCehpxJegIIEWMDRlT1JQOxu7cbOslIq2GQAVVB+KZSU6N6nt690GMexnncO+laWwuM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ivAHTSh0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA8FC433C7;
-	Thu,  8 Feb 2024 13:15:05 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=FhZPFmvsAnuhAmRfv+ggNXJGSMc3rnxOHjdL+rtsOP8aGRzrsk5yd8ggZHZDrVtOwJ1OTIc7pZo/RkwoaDH/OfnSrAq2rMJ4S6+oJPsOW4mjOUojoCYpXNGaKEqlIO2SEORFPar+ObkbAF3S98y7B+MyvOAZs9gg4Q0cNVHCKvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cAgQpn/0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45069C433F1;
+	Thu,  8 Feb 2024 13:15:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707398107;
-	bh=q6awbs+YreoMeUxonom32OUjfO17lLFk08XgUb9aaMs=;
+	s=k20201202; t=1707398143;
+	bh=KFgrJViWvgwiOzgjsLdG7QKsqaf3QTYl4byPlFWT/Zg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ivAHTSh0vucBZ1Tq2ackjWXZuDD4/eQiiFSf9vMdbjln7iBq6kWbS3isQ4i1kP4B9
-	 qbmvlpUg6Z/tNvTjf2kQO98CoNsXgfQX1+uloYlJfh2kM9bzgAWOQPk5cLBmGBRT4k
-	 DXBHRqfyukUF2INxTvPGsT0jI2UxEmQYNCuJidNj/kzQlXRjU9d+G9v2ediNSyXz5W
-	 2O5mXCvBVBYR+NV1WsTSkQGZmeSBQAAyX4pbwMxNmguGPrpqu/Ow1oHsqbM7ja/PHT
-	 gUyJYm9YdqPpLbqA54DSksgfagzjkWXwWlYlOy/80X4vEYdNBxUHF0VeI0yVYWhdJR
-	 b81a5Q20Edpxg==
-Date: Thu, 8 Feb 2024 14:15:02 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Andy Lutomirski <luto@amacapital.net>, 
-	"Eric W. Biederman" <ebiederm@xmission.com>, Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pidfd: change pidfd_send_signal() to respect PIDFD_THREAD
-Message-ID: <20240208-fragt-prospekt-7866333b15f0@brauner>
-References: <20240207114549.GA12697@redhat.com>
+	b=cAgQpn/02Ce0EuLcjlfLihZIB3OhExW3yYI8rOXdBEBFBEiFNhpcpNjRXoLKLec/Z
+	 7XOdn9o3BD4e/HgeolBNIahh/GIxR6aPxlY7l69VyRkKSPLuBBfyM4HQEGlpb4zLkH
+	 2nl6mp7YVjznZgaothn67LBqjFWnwc/sBr9CMYRjlc8lmIMI+rQdz2/Ke7ab0Fo5YL
+	 bjmo7wczvwJ2S7dUPLZxjA/U0mgrX1gzLvg6YFkMoWjexmYxKsF29sfWx1jxzx7nEy
+	 sEN/9kSbwebiTRm1RscPABaTywqQeksYvBjeJSn/YZhEkIkd+s323tQjo0QKJNMUoV
+	 2OOt2K+oQMLQw==
+Date: Thu, 8 Feb 2024 14:15:40 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>, 
+	amd-gfx@lists.freedesktop.org, "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>, 
+	"open list:ACPI" <linux-acpi@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	Melissa Wen <mwen@igalia.com>, Dave Airlie <airlied@redhat.com>, 
+	Daniel Vetter <daniel.vetter@ffwll.ch>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: Re: [PATCH v4 1/3] drm: Add drm_get_acpi_edid() helper
+Message-ID: <ysm2e3vczov7z7vezmexe35fjnkhsakud3elsgggedhk2lknlz@cx7j44y354db>
+References: <20240207224429.104625-1-mario.limonciello@amd.com>
+ <20240207224429.104625-2-mario.limonciello@amd.com>
+ <87y1bvb7ns.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="wuwkuftvercgjsvr"
 Content-Disposition: inline
-In-Reply-To: <20240207114549.GA12697@redhat.com>
+In-Reply-To: <87y1bvb7ns.fsf@intel.com>
 
-On Wed, Feb 07, 2024 at 12:45:49PM +0100, Oleg Nesterov wrote:
-> Turn kill_pid_info() into kill_pid_info_type(), this allows to pass any
-> pid_type to group_send_sig_info(), despite its name it should work fine
-> even if type = PIDTYPE_PID.
-> 
-> Change pidfd_send_signal() to use PIDTYPE_PID or PIDTYPE_TGID depending
-> on PIDFD_THREAD.
-> 
-> While at it kill another TODO comment in pidfd_show_fdinfo(). As Christian
-> expains fdinfo reports f_flags, userspace can already detect PIDFD_THREAD.
-> 
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-> ---
->  kernel/fork.c   |  2 --
->  kernel/signal.c | 18 ++++++++++++------
->  2 files changed, 12 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index cd61ca87d0e6..47b565598063 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -2051,8 +2051,6 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
->  
->  	seq_put_decimal_ll(m, "Pid:\t", nr);
->  
-> -	/* TODO: report PIDFD_THREAD */
-> -
->  #ifdef CONFIG_PID_NS
->  	seq_put_decimal_ll(m, "\nNSpid:\t", nr);
->  	if (nr > 0) {
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index c3fac06937e2..e3edcd784e45 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -47,6 +47,7 @@
->  #include <linux/cgroup.h>
->  #include <linux/audit.h>
->  #include <linux/sysctl.h>
-> +#include <uapi/linux/pidfd.h>
->  
->  #define CREATE_TRACE_POINTS
->  #include <trace/events/signal.h>
-> @@ -1478,7 +1479,8 @@ int __kill_pgrp_info(int sig, struct kernel_siginfo *info, struct pid *pgrp)
->  	return ret;
->  }
->  
-> -int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
-> +static int kill_pid_info_type(int sig, struct kernel_siginfo *info,
-> +				struct pid *pid, enum pid_type type)
->  {
->  	int error = -ESRCH;
->  	struct task_struct *p;
-> @@ -1487,11 +1489,10 @@ int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
->  		rcu_read_lock();
->  		p = pid_task(pid, PIDTYPE_PID);
->  		if (p)
-> -			error = group_send_sig_info(sig, info, p, PIDTYPE_TGID);
-> +			error = group_send_sig_info(sig, info, p, type);
->  		rcu_read_unlock();
->  		if (likely(!p || error != -ESRCH))
->  			return error;
-> -
->  		/*
->  		 * The task was unhashed in between, try again.  If it
->  		 * is dead, pid_task() will return NULL, if we race with
-> @@ -1500,6 +1501,11 @@ int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
->  	}
->  }
->  
-> +int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
-> +{
-> +	return kill_pid_info_type(sig, info, pid, PIDTYPE_TGID);
-> +}
-> +
->  static int kill_proc_info(int sig, struct kernel_siginfo *info, pid_t pid)
->  {
->  	int error;
-> @@ -3890,6 +3896,7 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
->  	struct fd f;
->  	struct pid *pid;
->  	kernel_siginfo_t kinfo;
-> +	enum pid_type type;
->  
->  	/* Enforce flags be set to 0 until we add an extension. */
->  	if (flags)
-> @@ -3928,9 +3935,8 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
->  		prepare_kill_siginfo(sig, &kinfo);
->  	}
->  
-> -	/* TODO: respect PIDFD_THREAD */
-> -	ret = kill_pid_info(sig, &kinfo, pid);
-> -
-> +	type = (f.file->f_flags & PIDFD_THREAD) ? PIDTYPE_PID : PIDTYPE_TGID;
-> +	ret = kill_pid_info_type(sig, &kinfo, pid, type);
 
-If the user doesn't provide siginfo then the kernel fills in the info in
-prepare_kill_siginfo() a few lines above. That sets info->si_code to
-SI_USER even for the PIDFD_THREAD case. Whenever the info is filled in
-by the kernel it's not exactly userspace impersonating anything plus we
-know that what we're sending to is a pidfd by the type of the pidfd. So
-it feels like we should fill in SI_TKILL here as well?
+--wuwkuftvercgjsvr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I would also suggest we update the obsolete comment on top of
-pidfd_send_signal() along the lines of:
+On Thu, Feb 08, 2024 at 11:57:11AM +0200, Jani Nikula wrote:
+> On Wed, 07 Feb 2024, Mario Limonciello <mario.limonciello@amd.com> wrote:
+> > Some manufacturers have intentionally put an EDID that differs from
+> > the EDID on the internal panel on laptops.  Drivers can call this
+> > helper to attempt to fetch the EDID from the BIOS's ACPI _DDC method.
+> >
+> > Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> > ---
+> >  drivers/gpu/drm/Kconfig    |  5 +++
+> >  drivers/gpu/drm/drm_edid.c | 77 ++++++++++++++++++++++++++++++++++++++
+> >  include/drm/drm_edid.h     |  1 +
+> >  3 files changed, 83 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> > index 6ec33d36f3a4..ec2bb71e8b36 100644
+> > --- a/drivers/gpu/drm/Kconfig
+> > +++ b/drivers/gpu/drm/Kconfig
+> > @@ -21,6 +21,11 @@ menuconfig DRM
+> >  	select KCMP
+> >  	select VIDEO_CMDLINE
+> >  	select VIDEO_NOMODESET
+> > +	select ACPI_VIDEO if ACPI
+> > +	select BACKLIGHT_CLASS_DEVICE if ACPI
+> > +	select INPUT if ACPI
+> > +	select X86_PLATFORM_DEVICES if ACPI && X86
+> > +	select ACPI_WMI if ACPI && X86
+>=20
+> I think I'll defer to drm maintainers on whether this is okay or
+> something to be avoided.
+>=20
+>=20
+> >  	help
+> >  	  Kernel-level support for the Direct Rendering Infrastructure (DRI)
+> >  	  introduced in XFree86 4.0. If you say Y here, you need to select
+> > diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> > index 923c4423151c..c649b4f9fd8e 100644
+> > --- a/drivers/gpu/drm/drm_edid.c
+> > +++ b/drivers/gpu/drm/drm_edid.c
+> > @@ -28,6 +28,7 @@
+> >   * DEALINGS IN THE SOFTWARE.
+> >   */
+> > =20
+> > +#include <acpi/video.h>
+> >  #include <linux/bitfield.h>
+> >  #include <linux/cec.h>
+> >  #include <linux/hdmi.h>
+> > @@ -2188,6 +2189,49 @@ drm_do_probe_ddc_edid(void *data, u8 *buf, unsig=
+ned int block, size_t len)
+> >  	return ret =3D=3D xfers ? 0 : -1;
+> >  }
+> > =20
+> > +/**
+> > + * drm_do_probe_acpi_edid() - get EDID information via ACPI _DDC
+> > + * @data: struct drm_device
+> > + * @buf: EDID data buffer to be filled
+> > + * @block: 128 byte EDID block to start fetching from
+> > + * @len: EDID data buffer length to fetch
+> > + *
+> > + * Try to fetch EDID information by calling acpi_video_get_edid() func=
+tion.
+> > + *
+> > + * Return: 0 on success or error code on failure.
+> > + */
+> > +static int
+> > +drm_do_probe_acpi_edid(void *data, u8 *buf, unsigned int block, size_t=
+ len)
+> > +{
+> > +	struct drm_device *ddev =3D data;
+> > +	struct acpi_device *acpidev =3D ACPI_COMPANION(ddev->dev);
+> > +	unsigned char start =3D block * EDID_LENGTH;
+> > +	void *edid;
+> > +	int r;
+> > +
+> > +	if (!acpidev)
+> > +		return -ENODEV;
+> > +
+> > +	/* fetch the entire edid from BIOS */
+> > +	r =3D acpi_video_get_edid(acpidev, ACPI_VIDEO_DISPLAY_LCD, -1, &edid);
+> > +	if (r < 0) {
+> > +		DRM_DEBUG_KMS("Failed to get EDID from ACPI: %d\n", r);
+> > +		return -EINVAL;
+> > +	}
+> > +	if (len > r || start > r || start + len > r) {
+> > +		r =3D -EINVAL;
+> > +		goto cleanup;
+> > +	}
+> > +
+> > +	memcpy(buf, edid + start, len);
+> > +	r =3D 0;
+> > +
+> > +cleanup:
+> > +	kfree(edid);
+> > +
+> > +	return r;
+> > +}
+> > +
+> >  static void connector_bad_edid(struct drm_connector *connector,
+> >  			       const struct edid *edid, int num_blocks)
+> >  {
+> > @@ -2643,6 +2687,39 @@ struct edid *drm_get_edid(struct drm_connector *=
+connector,
+> >  }
+> >  EXPORT_SYMBOL(drm_get_edid);
+> > =20
+> > +/**
+> > + * drm_get_acpi_edid - get EDID data, if available
+>=20
+> I'd prefer all the new EDID API to be named drm_edid_*. Makes a clean
+> break from the old API, and is more consistent.
+>=20
+> So perhaps drm_edid_read_acpi() to be in line with all the other struct
+> drm_edid based EDID reading functions.
+>=20
+> > + * @connector: connector we're probing
+> > + *
+> > + * Use the BIOS to attempt to grab EDID data if possible.
+> > + *
+> > + * The returned pointer must be freed using drm_edid_free().
+> > + *
+> > + * Return: Pointer to valid EDID or NULL if we couldn't find any.
+> > + */
+> > +const struct drm_edid *drm_get_acpi_edid(struct drm_connector *connect=
+or)
+> > +{
+> > +	const struct drm_edid *drm_edid;
+> > +
+> > +	switch (connector->connector_type) {
+> > +	case DRM_MODE_CONNECTOR_LVDS:
+> > +	case DRM_MODE_CONNECTOR_eDP:
+> > +		break;
+> > +	default:
+> > +		return NULL;
+> > +	}
+> > +
+> > +	if (connector->force =3D=3D DRM_FORCE_OFF)
+> > +		return NULL;
+> > +
+> > +	drm_edid =3D drm_edid_read_custom(connector, drm_do_probe_acpi_edid, =
+connector->dev);
+> > +
+> > +	/* Note: Do *not* call connector updates here. */
+> > +
+> > +	return drm_edid;
+> > +}
+> > +EXPORT_SYMBOL(drm_get_acpi_edid);
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index e3edcd784e45..40df0c17abd7 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -3878,14 +3878,10 @@ static struct pid *pidfd_to_pid(const struct file *file)
-  * @info:   signal info
-  * @flags:  future flags
-  *
-- * The syscall currently only signals via PIDTYPE_PID which covers
-- * kill(<positive-pid>, <signal>. It does not signal threads or process
-- * groups.
-- * In order to extend the syscall to threads and process groups the @flags
-- * argument should be used. In essence, the @flags argument will determine
-- * what is signaled and not the file descriptor itself. Put in other words,
-- * grouping is a property of the flags argument not a property of the file
-- * descriptor.
-+ * If the @pidfd refers to a thread-group leader the signal is thread-group
-+ * directed. If @pidfd referes to a thread then the signal is thread directed.
-+ * In the future extension to @flags may be used to override the default scope
-+ * of @pidfd.
-  *
-  * Return: 0 on success, negative errno on failure
-  */
+Why shouldn't we use the BIOS/UEFI to retrieve them if it's available?
+
+I guess what I'm asking is why should we make this an exported function
+that drivers would have to call explicitly, instead of just making it
+part of the usual EDID retrieval interface.
+
+Maxime
+
+--wuwkuftvercgjsvr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZcTT/AAKCRDj7w1vZxhR
+xWUaAQD6cN2OZLS2on0CdvI61erefZfBVEzfJKIbzj+zTy36EgD/Tp/fQ9Ez18hY
+ZDmNNTVz7c/J4H5FwzAHoiHDwQDEJQE=
+=/woU
+-----END PGP SIGNATURE-----
+
+--wuwkuftvercgjsvr--
 
