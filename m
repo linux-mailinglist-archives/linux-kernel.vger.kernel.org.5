@@ -1,127 +1,114 @@
-Return-Path: <linux-kernel+bounces-58338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDD5584E4E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:20:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCED784E4E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:20:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D959EB24821
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:20:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7170E1F28F99
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:20:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B69507E56D;
-	Thu,  8 Feb 2024 16:19:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC7237E570;
+	Thu,  8 Feb 2024 16:20:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QNqfu+Sy"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A0NDLlb3"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C00D87EEF8;
-	Thu,  8 Feb 2024 16:19:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 803C37D41A;
+	Thu,  8 Feb 2024 16:20:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707409179; cv=none; b=VLzcDaf9I19japxnwwOBSrQr+P8ty3KdVDPgWfyLSfjMYDa2mIU94duIVx0SlLGJbGgGHt6kNUKZ9m0hEkcLv0FUi91DrnfyVvFHy/rTOL5xMy2ampzSLYZYjoKEGaG6wmSP2DO0E1cExFahFzFLhbG2B+rv8jxy8OOZRrqgfJw=
+	t=1707409242; cv=none; b=VnclOdDDuftRO0Mw2g7XIADsKLkI8TbQezXk9h819BA16ZWiPaa70VhSnMQVH98qdnE9CDhpfdZx8D0zyBbT0gIn8zE3Pz+F//jraUOsBmdijfMQ46SxKrFYyhv2yb6kUnlZafa99zc8TfIrnGlUsTIHtrE2sj4EqJ8ZT+3TA1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707409179; c=relaxed/simple;
-	bh=VvSGNV6b13e7HPMqih9K802mDaoqJaDzuGfo7FTl4pk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OHyUTYygUbpYb7FmfF/SFRfxOVta4A1S975ZOX0XFX5GGynlhcx8XdFT4EzsE/HV+jgZXGrqwn+J2rDp5pjv8PGukLojFeEebpxcF1BrapmZvLMfzJlbGsiVenLcCQiKc3ml97GVHztmADOm60J+VgYjUnxGcj59wSEz3GPOaNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QNqfu+Sy; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1ECA340004;
-	Thu,  8 Feb 2024 16:19:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707409168;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U2TLPkr/TOdJMNowIWx3rjtlSXIwzGhq1RSaqhd7JXE=;
-	b=QNqfu+SyJHYhyGlvwAZsb9NUhHgTVxE3ArJ09CQwC/vdWPX0zKeI6EiZWzY9kjfvj8COxc
-	RbVvS+FPBwH6mVflj/a+xeG6nBzagrBVOnxsuU1P4ftNAozaKHz6E94P7KM+5I5Xt+irc2
-	wVoDH5jtXIVQgw7ZR3xpEG3vNPmPUv+EgoX/4Oq0rFASzSzplEiqpIioYDlta0lHCcr6DQ
-	WXWQ8BNt0m5cWKAP8ne7CScpygoxdJgtMpDfKE6ZJMiuRBWU55NuCOj/AtC3kEzTZ/ZJRq
-	Ie5Ym+Lj8MKHGPDFZBwc5YwnluGyQkVPvx03Mn35D4XW7GHaAPo7708x1Ks4VQ==
-Message-ID: <95032042-787e-494a-bad9-81b62653de52@bootlin.com>
-Date: Thu, 8 Feb 2024 17:19:25 +0100
+	s=arc-20240116; t=1707409242; c=relaxed/simple;
+	bh=1SkKkWhTJGgzD/ZccxzkHHOYAO7VIBbYNXc5kKSdiX8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L1c2WtK1QUMBmCO0UcbMGwXUlvSklkPbyOpu6Ih983zUJRolB2PrOdEnkTm+9eLMJ6inNPh1v9n4EoSX3bMfp0qcSD7cs2HXjIX6s51XApK6zY4FRQ1X+zO6gf+A8gJallkiJ9tdiERM/CiqMCS5v+uS1/WWOiw1To2QZHAm8TY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A0NDLlb3; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d0aabed735so644861fa.0;
+        Thu, 08 Feb 2024 08:20:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707409238; x=1708014038; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=e6z/JgST9no8pB5BzZG8Bf892TgUvHGoWpZKJQHLBUs=;
+        b=A0NDLlb3woGug/QcLj+DYNkLjHZPJu6upK94VOQq9jtFka55LKGJkVCWGZ3CxzwsSC
+         TDqBW6+i2dp0AbJiXHxwHmWVi+QEwnk1akhHE0HZ17bIIVbNV1WLu9J0pzyleM82kjzl
+         RoY94Oesmm37jLvLyJkdnt8EFApJSOgEcMwo94fIn7EtCdJJ+52D8nJ67mBTDd0fB9Kk
+         /4KzAxAbLED3VTKEhBHYX98sbNv5RmBFhrPUn2QsJRNa67/kmZKmZo33CO3mLhLnKbOo
+         ksloqlWqMYIFXhisss7St14G0TQhWipOMeXBEu3IQBjo1ZteZNx1aQFHTBt1qJY9w72Y
+         EE3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707409238; x=1708014038;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e6z/JgST9no8pB5BzZG8Bf892TgUvHGoWpZKJQHLBUs=;
+        b=Lh6YMeS+ljClWwwB7B8J98sVuF4r7lOkixCb91p5JtXmSJFb+mkE/1BF05cCsDe1I+
+         U77C4ZpN0D+vMc7KJrAvNNaShtigB5eVorJpvI7WcvB4n42Q6uQDZWmRFKrrHTgpG41g
+         sI7j3RR9fGpkK9OyYzXllSyIp/sHYOq6n/aW274JGHTsnCY3hrXlwO56hNFxCYDlz08L
+         D7MdKGUUUgFenxrMVjDm4IyZ7XwuHXayjLGQLckmdtmRImNG1Fw7tSmr8DlKkDVjFtaw
+         ziP1pQdhRkfPns/XNFjFRvWnpNRAjrWW589QqlIHmOlLc0OTSAejtwVERlEerU7vpLKN
+         Vltg==
+X-Forwarded-Encrypted: i=1; AJvYcCXn4MZG0x4qr/trc1h/ysUqOPjcB8szOiM7IqgGUDf562ENAg3rBz6f/vZ4Owmn6wWXruOSDXaPkv5BcnrKheBenGwTxaF6Tqje4BVh
+X-Gm-Message-State: AOJu0Yy05r77gwxHbJf2pNTyUcVv9XbxVGmEiFj38zks8n419f+7TByb
+	pYwGv3pbkg2FvJJUemg3yRcbvRC8S3n1NHolz2P/qaMefrD4viuaJd4P33vUc0HpUg==
+X-Google-Smtp-Source: AGHT+IGDdyQrjW70/yoOIesZPrmMmLqZxw1T4h2r0rU4q651bv7Yt0+mV7hIObQB93hclj7kuftHew==
+X-Received: by 2002:a05:651c:2224:b0:2d0:c95a:f3c2 with SMTP id y36-20020a05651c222400b002d0c95af3c2mr5008473ljq.10.1707409238195;
+        Thu, 08 Feb 2024 08:20:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX8aL6LQtpi6UgyYDitfO/Mndjn0RbURdnY2o6bUZCmPBSbZ2QHoFyVc5Sjg5Z+I4ZlR64Q0VC2HTm9BazU0ciJHY2MN/VZrJlVsmI0zg7Nh5oPF34z+ahgHs3ljTVKclHGZiXXeJ74JHsSOBF2rXnUDjinBTrPMb4jv8UF48uAb81VdqCMKoAMGxq9Q2x8kd9BzPARb+RL
+Received: from sacco-Inspiron-5559.. (88-160-103-158.subs.proxad.net. [88.160.103.158])
+        by smtp.gmail.com with ESMTPSA id e7-20020a2e8ec7000000b002d0cff1016asm32369ljl.51.2024.02.08.08.20.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 08:20:37 -0800 (PST)
+From: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+To: corbet@lwn.net,
+	brauner@kernel.org
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+Subject: [PATCH] docs: filesystems: fix typo in docs
+Date: Thu,  8 Feb 2024 17:20:32 +0100
+Message-Id: <20240208162032.109184-1-vincenzo.mezzela@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/14] gpio: pca953x: move suspend/resume to
- suspend_noirq/resume_noirq
-Content-Language: en-US
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Tony Lindgren <tony@atomide.com>, Bartosz Golaszewski <brgl@bgdev.pl>,
- Andy Shevchenko <andy@kernel.org>, Haojian Zhuang
- <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
- <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, Tom Joseph <tjoseph@cadence.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com>
- <20240102-j7200-pcie-s2r-v1-1-84e55da52400@bootlin.com>
- <20240116074333.GO5185@atomide.com>
- <31c42f08-7d5e-4b91-87e9-bfc7e2cfdefe@bootlin.com>
- <CACRpkdYUVbFoDq91uLbUy8twtG_AiD+CY2+nqzCyHV7ZyBC3sA@mail.gmail.com>
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <CACRpkdYUVbFoDq91uLbUy8twtG_AiD+CY2+nqzCyHV7ZyBC3sA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: thomas.richard@bootlin.com
 
-On 1/28/24 01:12, Linus Walleij wrote:
-> On Fri, Jan 19, 2024 at 6:01 PM Thomas Richard
-> <thomas.richard@bootlin.com> wrote:
->> On 1/16/24 08:43, Tony Lindgren wrote:
->>> * Thomas Richard <thomas.richard@bootlin.com> [240115 16:16]:
->>>> Some IOs can be needed during suspend_noirq/resume_noirq.
->>>> So move suspend/resume callbacks to noirq.
->>>
->>> So have you checked that the pca953x_save_context() and restore works
->>> this way? There's i2c traffic and regulators may sleep.. I wonder if
->>> you instead just need to leave gpio-pca953x enabled in some cases
->>> instead?
->>>
->>
->> Yes I tested it, and it works (with my setup).
->> But this patch may have an impact for other people.
->> How could I leave it enabled in some cases ?
-> 
-> I guess you could define both pca953x_suspend() and
-> pca953x_suspend_noirq() and selectively bail out on one
-> path on some systems?
+This patch resolves a spelling error in the filesystem documentation.
 
-Yes.
+It is submitted as part of my application to the "Linux Kernel Bug
+Fixing Spring Unpaid 2024" mentorship program of the Linux Kernel
+Foundation.
 
-What do you think if I use a property like for example "ti,pm-noirq" to
-select the right path ?
-Is a property relevant for this use case ?
+Signed-off-by: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+---
+ Documentation/filesystems/files.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-
-> 
-> Worst case using if (of_machine_is_compatible("my,machine"))...
-> 
-> Yours,
-> Linus Walleij
+diff --git a/Documentation/filesystems/files.rst b/Documentation/filesystems/files.rst
+index 9e38e4c221ca..eb770f891b27 100644
+--- a/Documentation/filesystems/files.rst
++++ b/Documentation/filesystems/files.rst
+@@ -116,7 +116,7 @@ before and after the reference count increment. This pattern can be seen
+ in get_file_rcu() and __files_get_rcu().
+ 
+ In addition, it isn't possible to access or check fields in struct file
+-without first aqcuiring a reference on it under rcu lookup. Not doing
++without first acquiring a reference on it under rcu lookup. Not doing
+ that was always very dodgy and it was only usable for non-pointer data
+ in struct file. With SLAB_TYPESAFE_BY_RCU it is necessary that callers
+ either first acquire a reference or they must hold the files_lock of the
 -- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.34.1
 
 
