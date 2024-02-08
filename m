@@ -1,162 +1,175 @@
-Return-Path: <linux-kernel+bounces-58160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9821784E212
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0240D84E215
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 102C71F231CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:38:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6A301F2377C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D6576406;
-	Thu,  8 Feb 2024 13:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932FF6F097;
+	Thu,  8 Feb 2024 13:38:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IJE+vHof"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ro5S3DMY"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA86763EF
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 13:37:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F116776418;
+	Thu,  8 Feb 2024 13:38:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707399476; cv=none; b=GxC0SN/GRfeD+woiyI8h/meMpVTurL5O666EB0EI0XV0ypsjxY1DBCyy4XhsyccCI5ufOw9IJGZFtPb6Be5eGpByq9HLi2zxtTg/u/5Hj/S7OUn2Vgsf3kvID7FVzEgZzopFbJfnY3tXChb2fsSo48K2fc0pW7N3pTBVjtF536E=
+	t=1707399489; cv=none; b=QsggaMKfDdGoT6H+Cn8ERwqHK3UQ7lgOil7ILm2zEMWvH0nm/IEjv2r3jd5edBDh11qUHmbttkAIpfmp8DN9p6bhaj3/oGkL51vLX1BnrmvNgZcHFJCEVSEkFO10L97kPUaPb3vB4jUbnr7JU0+z89/MC+TiTydAdY7yj1IA3Kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707399476; c=relaxed/simple;
-	bh=sLHaNsZhVrwA4g8QeNjpXSri5z5j7yj78v7VenZiXNI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BtuHslErWxKdhaXe7irGxmNptrG9HBZmuNprcqQBHzS7n88BhamS/eQ4AEWykj10MvTl3SB5948y8BPlrk9f6XUxZdKWJ9h4NYayKH/GMSFRzXujQp8W3kY1o53FiQO29pu5Lp5++3P4Xcq1hqMF9Gb+15leBLh37VXhHs5gnD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IJE+vHof; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55cca88b6a5so2140191a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 05:37:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707399473; x=1708004273; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=p28vv63s2/cv9zUdQKuXCFX/dJkkk/3pPlOtbrZYMXE=;
-        b=IJE+vHofhGlBr+vp8qPSVHcKSUA1Ab9fBb5P0Oi4rW8PTMKrT+K1H8L4w8RIFqTJ2q
-         MmPrAa0DJGXZDbYFKBfB3HkmTOXu97UL7Z6S0PrXK7V0NrSkJ8HlRufDrypU14C9BC3N
-         bSs0XFsPdD4zXLEM4mxB452ckpTseQH0Gc3XUI0EvKqw7yYzGHNWCrS0CKm9sAjvEkoJ
-         c/QnOrgA3XTLEsyTOvAwb5lq9C383dTylAbSZ7oGu5HHZxR29t19Ucx1j/RtHPba49Er
-         XpbSfWIXXEVw99OUrJpi8eju3tk8lQlITEWve2ztWPJeydeY1MnxNKJu04AsL6QZc+3F
-         5RXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707399473; x=1708004273;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p28vv63s2/cv9zUdQKuXCFX/dJkkk/3pPlOtbrZYMXE=;
-        b=jVq4xatNlyCUQWQGv34WDgk2ymfYqBuiLShrHzgctkyao7sH2o+/21DN6M7gKmaHQ9
-         kJZs2gETrkdeSMfwq7Kfp9JL1aI5Ga+bqQJjNI3c5yoi5Lh7Rs5/tvHzoSAAgtmLMouB
-         /bAyzosuje59yKnroGf1fFz2tTKafaPePO6gkPGK8dr5GZ97YZCqaxAkWXL1REoClrV5
-         BkC+q4a8BbfhAZwkM7YBgs7UjihM2rcwgoE91SGns1RYSJ6ypwkwgtXlEEjuF7HM6GjT
-         nxtMDICRZw4kydonTV7WibNFsDX0uzf5+K7UYaveaR6cj8IT52h19DBxeE/HWoZUMhRf
-         bWvg==
-X-Gm-Message-State: AOJu0YwSv5FpucrVqPQbjkTrTZ+GvpzSghCw2JuflFrdzl6ppRqj4bgU
-	oTzO0ydyal0tkkR1NfHbsehCC2kujNfIWxqx0/Va7VbkYIa8hbo98mAH9567s5I=
-X-Google-Smtp-Source: AGHT+IGp93U2IHf7DpwYHNPt1pK52y49QAMI+oxxjZGbDXXT5TsL+pX9I6v9sXTEdNzAMlaNpb7vXg==
-X-Received: by 2002:a05:6402:322:b0:561:123f:a98f with SMTP id q2-20020a056402032200b00561123fa98fmr1059559edw.24.1707399473378;
-        Thu, 08 Feb 2024 05:37:53 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXRIw9jXsWnTERowFWcTJ0k/8IDzNxP1SXRPVN3mJF3KKZEqIsZc0PMSakI45/4EZJ0p3Mgc4IhE0Ye3F2hvLSYLGrWdUJyA6cYS+kqh0dp7G4e9IbWst4U9GW9yemCzPUhZW4PpkN8ZZiSMMrzjNcVeOO+mFyO+vlX3PcQcHOT6CcFs6qsAt2iHlFU/G0x9/SqyMQM5QuHpAOLN0cvW03GUFNcuc4qux9c4/zdghGh186h537IYCtYA+Tqr4vLFHnytths282McRT+p4Oyfsu853wSYw4pBSEZNn1Je+kZdw7QjwitwhOkuuugDQMxXLddDQthywjrNS9LkHim7ZauTOpCa8cLs7EE/asP+4Inc3N0B48isV0so6q+nYdUjnDKNtDRlr/ANc18VzrIrZUhH/zDdjsUF0DTKK4G1NrvjEcCRlC6Od1inTZPw//0lHbHTkp8MJu39aatmMXowyyy3pCRKfBDa9xjQVvdKV4B/eRLwVX33eYZprycBpdniM31hbBJgU1onF180ALj47HGFPA/ez/DMepBiVbelzpbcFKzZMT77MEma4SWhdL9EHBHJ85rCpiHRZAWTZZPmxpZJdzkXEmWfo5KXfdz1RZ5FVbD0MzCQBNNFsEgJNw3CBpk0Vvfo86oOXWcIw==
-Received: from linaro.org ([62.231.97.49])
-        by smtp.gmail.com with ESMTPSA id ev12-20020a056402540c00b00560f611ce2bsm813058edb.10.2024.02.08.05.37.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 05:37:52 -0800 (PST)
-Date: Thu, 8 Feb 2024 15:37:51 +0200
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Rob Clark <robdclark@gmail.com>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Sean Paul <sean@poorly.run>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] drm/msm: mdss: Add X1E80100 support
-Message-ID: <ZcTZL+fls7A8O9P0@linaro.org>
-References: <20240129-x1e80100-display-v1-0-0d9eb8254df0@linaro.org>
- <20240129-x1e80100-display-v1-3-0d9eb8254df0@linaro.org>
- <CAA8EJponbo2vvuj2ftCQuxtrZp0w7JQqJ_ADF80Wd2y1V74BzA@mail.gmail.com>
+	s=arc-20240116; t=1707399489; c=relaxed/simple;
+	bh=jw39fEdEP2aNbkYoy9T3GNQq4OS2fFirdRfXrG9yQG4=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=kmZAF7jPLguWafGyus9Dd5OrPO11Pns06b9AhJOSfsRniNcDX53LB0u6I1Zu8Sbk0fWMNZCkFS91MJ68ju7XK45l3NKz3XkDVyb0HsfNiTCKishMncl5i3Nv3kFhJtK6ELlrzLmWMQROYVmwACfWNKHatx5qor6kR0zIEldsPiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ro5S3DMY; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707399488; x=1738935488;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=jw39fEdEP2aNbkYoy9T3GNQq4OS2fFirdRfXrG9yQG4=;
+  b=Ro5S3DMYSb/NgjuenzbZKRWXpQJma8940oV4TxX0gnYj2KrX1K/0Kp70
+   l1ZxYhNAygrIJ2wOYhibLR5bzE3hnFICjFyZFDSrHYIM4YTRh6Uggkm81
+   vQ86Gcgc49UR+I0KbsfRrFdT9u72TxQTkxGXUV2cVBw4LANA8m1+7eVbq
+   71dJ7WotiFeRL6uQzk2VTw2c8cGzOZRd8RT9gzRS39LXBHDxokblWWacq
+   Dphhl1EnPBbWgy+Up8LvQRU4JLuLG4brnH5Mi0+f3GDSgtG1AfAK3CxlW
+   NRWLCypiVYvM0Ua3Cddxc1tO1jjxxPtAFyi7lkPA1sr0xM4Wg9EKmumW4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="26660912"
+X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
+   d="scan'208";a="26660912"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 05:38:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
+   d="scan'208";a="1889294"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.52.95])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 05:38:05 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Thu, 8 Feb 2024 15:38:01 +0200 (EET)
+To: "David E. Box" <david.e.box@linux.intel.com>
+cc: Netdev <netdev@vger.kernel.org>, 
+    sathyanarayanan.kuppuswamy@linux.intel.com, 
+    LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 2/8] platform/x86/intel/sdsi: Combine read and write
+ mailbox flows
+In-Reply-To: <20240201010747.471141-3-david.e.box@linux.intel.com>
+Message-ID: <bc0fbe53-3eeb-26cb-ba91-c5fc238cb1b8@linux.intel.com>
+References: <20240201010747.471141-1-david.e.box@linux.intel.com> <20240201010747.471141-3-david.e.box@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJponbo2vvuj2ftCQuxtrZp0w7JQqJ_ADF80Wd2y1V74BzA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 
-On 24-01-29 17:11:25, Dmitry Baryshkov wrote:
-> On Mon, 29 Jan 2024 at 15:19, Abel Vesa <abel.vesa@linaro.org> wrote:
-> >
-> > Add support for MDSS on X1E80100.
-> >
-> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> > ---
-> >  drivers/gpu/drm/msm/msm_mdss.c | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/msm/msm_mdss.c b/drivers/gpu/drm/msm/msm_mdss.c
-> > index 455b2e3a0cdd..eddf7fdbb60a 100644
-> > --- a/drivers/gpu/drm/msm/msm_mdss.c
-> > +++ b/drivers/gpu/drm/msm/msm_mdss.c
-> > @@ -564,6 +564,15 @@ static const struct msm_mdss_data sdm670_data = {
-> >         .highest_bank_bit = 1,
-> >  };
-> >
-> > +static const struct msm_mdss_data x1e80100_data = {
-> > +       .ubwc_enc_version = UBWC_4_0,
-> > +       .ubwc_dec_version = UBWC_4_3,
-> > +       .ubwc_swizzle = 6,
-> > +       .ubwc_static = 1,
-> > +       .highest_bank_bit = 2,
-> > +       .macrotile_mode = 1,
+On Wed, 31 Jan 2024, David E. Box wrote:
+
+> The current mailbox commands are either read-only or write-only and the
+> flow is different for each. New commands will need to send and receive
+> data. In preparation for these commands, create a common polling function
+> to handle sending data and receiving in the same transaction.
 > 
-> Missing .reg_bus_bw, LGTM otherwise
-
-Dmitry, I do not have the exact value yet.
-
-Can I come back with a subsequent (different) patch to add it at a later stage
-when I have that information?
-
-I see no point in holding display support any further since it works
-fine with the default bandwith.
-
-If yes, I'll respin this series right away, but without the reg_bus_bw.
-
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>  drivers/platform/x86/intel/sdsi.c | 79 +++++++++++++++++--------------
+>  1 file changed, 44 insertions(+), 35 deletions(-)
 > 
-> > +};
-> > +
-> >  static const struct msm_mdss_data sdm845_data = {
-> >         .ubwc_enc_version = UBWC_2_0,
-> >         .ubwc_dec_version = UBWC_2_0,
-> > @@ -655,6 +664,7 @@ static const struct of_device_id mdss_dt_match[] = {
-> >         { .compatible = "qcom,sm8450-mdss", .data = &sm8350_data },
-> >         { .compatible = "qcom,sm8550-mdss", .data = &sm8550_data },
-> >         { .compatible = "qcom,sm8650-mdss", .data = &sm8550_data},
-> > +       { .compatible = "qcom,x1e80100-mdss", .data = &x1e80100_data},
-> >         {}
-> >  };
-> >  MODULE_DEVICE_TABLE(of, mdss_dt_match);
-> >
-> > --
-> > 2.34.1
-> >
-> 
-> 
-> -- 
-> With best wishes
-> Dmitry
+> diff --git a/drivers/platform/x86/intel/sdsi.c b/drivers/platform/x86/intel/sdsi.c
+> index a70c071de6e2..05a35f2f85b6 100644
+> --- a/drivers/platform/x86/intel/sdsi.c
+> +++ b/drivers/platform/x86/intel/sdsi.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/iopoll.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> +#include <linux/overflow.h>
+>  #include <linux/pci.h>
+>  #include <linux/slab.h>
+>  #include <linux/sysfs.h>
+> @@ -156,8 +157,8 @@ static int sdsi_status_to_errno(u32 status)
+>  	}
+>  }
+>  
+> -static int sdsi_mbox_cmd_read(struct sdsi_priv *priv, struct sdsi_mbox_info *info,
+> -			      size_t *data_size)
+> +static int sdsi_mbox_poll(struct sdsi_priv *priv, struct sdsi_mbox_info *info,
+> +			  size_t *data_size)
+>  {
+>  	struct device *dev = priv->dev;
+>  	u32 total, loop, eom, status, message_size;
+> @@ -166,18 +167,10 @@ static int sdsi_mbox_cmd_read(struct sdsi_priv *priv, struct sdsi_mbox_info *inf
+>  
+>  	lockdep_assert_held(&priv->mb_lock);
+>  
+> -	/* Format and send the read command */
+> -	control = FIELD_PREP(CTRL_EOM, 1) |
+> -		  FIELD_PREP(CTRL_SOM, 1) |
+> -		  FIELD_PREP(CTRL_RUN_BUSY, 1) |
+> -		  FIELD_PREP(CTRL_PACKET_SIZE, info->size);
+> -	writeq(control, priv->control_addr);
+> -
+>  	/* For reads, data sizes that are larger than the mailbox size are read in packets. */
+>  	total = 0;
+>  	loop = 0;
+>  	do {
+> -		void *buf = info->buffer + (SDSI_SIZE_MAILBOX * loop);
+>  		u32 packet_size;
+>  
+>  		/* Poll on ready bit */
+> @@ -195,6 +188,11 @@ static int sdsi_mbox_cmd_read(struct sdsi_priv *priv, struct sdsi_mbox_info *inf
+>  		if (ret)
+>  			break;
+>  
+> +		if (!packet_size) {
+> +			sdsi_complete_transaction(priv);
+> +			break;
+> +		}
+> +
+>  		/* Only the last packet can be less than the mailbox size. */
+>  		if (!eom && packet_size != SDSI_SIZE_MAILBOX) {
+>  			dev_err(dev, "Invalid packet size\n");
+> @@ -208,9 +206,13 @@ static int sdsi_mbox_cmd_read(struct sdsi_priv *priv, struct sdsi_mbox_info *inf
+>  			break;
+>  		}
+>  
+> -		sdsi_memcpy64_fromio(buf, priv->mbox_addr, round_up(packet_size, SDSI_SIZE_CMD));
+> +		if (packet_size && info->buffer) {
+
+Why you check for packet_size here if you break earlier for !packet_size?
+
+> +			void *buf = info->buffer + array_size(SDSI_SIZE_MAILBOX, loop);
+>  
+> -		total += packet_size;
+> +			sdsi_memcpy64_fromio(buf, priv->mbox_addr,
+> +					     round_up(packet_size, SDSI_SIZE_CMD));
+> +			total += packet_size;
+> +		}
+>  
+>  		sdsi_complete_transaction(priv);
+>  	} while (!eom && ++loop < MBOX_MAX_PACKETS);
+> @@ -230,16 +232,33 @@ static int sdsi_mbox_cmd_read(struct sdsi_priv *priv, struct sdsi_mbox_info *inf
+>  		dev_warn(dev, "Read count %u differs from expected count %u\n",
+>  			 total, message_size);
+>  
+> -	*data_size = total;
+> +	if (data_size)
+> +		*data_size = total;
+>  
+>  	return 0;
+>  }
+
+
+-- 
+ i.
+
 
