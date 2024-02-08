@@ -1,108 +1,140 @@
-Return-Path: <linux-kernel+bounces-57564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D880384DAC6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:39:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FAD484DAC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:42:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16CC31C20A3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:39:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22B011F22C94
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:42:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B87D69D0D;
-	Thu,  8 Feb 2024 07:39:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443AD69970;
+	Thu,  8 Feb 2024 07:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A7WBWboF"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b="HFF2JT2k"
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 451866930E
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 07:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBEBF6A024;
+	Thu,  8 Feb 2024 07:42:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.156.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707377974; cv=none; b=IT8AGz9qJqCZyP9478slH+Qy2g5eIb/LC0MZN0A/zyDbUh6afVUb+T2c37NJJCB0eeIQizuNJOsaMSZ/0RSvwcmbtdqlD8wc+12yBa9g6NR2yq+g6FEX8z4aE1pRRrKnDC3WncK0rRpBXRFGHQjo9pQ7N9/uCSDNrGkPeDcSzGI=
+	t=1707378152; cv=none; b=MWuTqHIL9CV2kKYAJj90BUbO1DwKESYVQSj/YZrsYznoKlkZM6kofkuB+gOdYUA+/i83SPCiJ19s8SBWF8mVjZ5svy7/vc4ZDSgyOTaB1NCu9je7gmRhyWB+1jzoe+4yVsHygS9D5pLEnCkP50zDH1700RsFhCcdhN4+afl3jzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707377974; c=relaxed/simple;
-	bh=0dlhmOrAsjot9hqzrREwQEhMHkM8Iw4JOs3yaHEvtPI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=SBNA6Kzt4sSHkvfwzkM6geTPkzG6+cPTj/4EKh8KqHmzR1Iqidy76B9WzuP+iYfSTO2zAdoAjXAZvcUz7lkpdjw3thDTkSYUROpFM0wFOu6KdkM6reMSExUAvdULZmdCb09w2O9EAOzWcB/XwFVRJIfL5+4j6ZexlyHydXv4WZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A7WBWboF; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707377973; x=1738913973;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=0dlhmOrAsjot9hqzrREwQEhMHkM8Iw4JOs3yaHEvtPI=;
-  b=A7WBWboFpC54ksmQehMLMKRggHau8spUJvBiAGlYo7JHDDHK4Al/TxnB
-   CdBvmghi7PBwQMrgp3wTAb7hr+CISvygm7Udb9fqBF1SuykD2GV4dt3bL
-   uSMj6eMKzOe1N3aSM9X+gsgny4PQ35bMwZgkXUbC3/lWE1M7W/kZ2QMSo
-   hjfbTLMUkt57PX/XXt1/zEy36Yqx8NUasgr3YUvQnWxqN8IaUypKQySvf
-   tysdsIsLrjqkezB5qloBRky2kb9pplBraYw4jzjklcSbG3o/M8ItRyeLx
-   icEwDAgekemenLHQye5+lgNsbwylDA2HARoKFCN0GDkkrE5FeBwedKns7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="23643111"
-X-IronPort-AV: E=Sophos;i="6.05,252,1701158400"; 
-   d="scan'208";a="23643111"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 23:39:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,252,1701158400"; 
-   d="scan'208";a="6237225"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 07 Feb 2024 23:39:31 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rXz0L-0003Ua-0Z;
-	Thu, 08 Feb 2024 07:39:29 +0000
-Date: Thu, 8 Feb 2024 15:39:21 +0800
-From: kernel test robot <lkp@intel.com>
-To: Zhen Lei <thunder.leizhen@huawei.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Luis Chamberlain <mcgrof@kernel.org>
-Subject: ld.lld: error: vmlinux.a(kernel/kallsyms.o):(function
- kallsyms_sym_address: .text+0x10): relocation R_RISCV_PCREL_HI20 out of
- range: -524416 is not in [-524288, 524287]; references
- kallsyms_relative_base
-Message-ID: <202402081521.N9jn64eP-lkp@intel.com>
+	s=arc-20240116; t=1707378152; c=relaxed/simple;
+	bh=4kwN6kbUMPfDh8Daeh4OSPI9rA8xZ0ThDzZtBhr0M38=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=stG44ETv7Uidvg55WC2a7InRh7EEeu4hhN44E1xpqa3271WqT/jUWXC//JahFJtMJ6J9Lx+04AAJY4ZhpVdr03kdHMgAplIwlpNB2b5iXPPDdRik8pXl+4z1Pe8MX0EAKS6enjtU/UU7vqgG0m2tGns1zm4YZqLAFI6MmAl7l6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net; spf=pass smtp.mailfrom=bewilderbeest.net; dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b=HFF2JT2k; arc=none smtp.client-ip=71.19.156.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bewilderbeest.net
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:712b:6300::2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: zev)
+	by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 42776B20;
+	Wed,  7 Feb 2024 23:42:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+	s=thorn; t=1707378149;
+	bh=nc6/jWnwLX397A9Ey6yCLTE82wXsWB+Hnpcpb6UbAaM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HFF2JT2kZMnF214qt6j38Xz6hmZbZihcccEsXXLVpOZge0Y+/IFzMg908eI0wbIV7
+	 YXtGEDNHiBGpRa8I/5d46CgHNKKNxsl9z5aeMrfLDPQ/eBeQ8KHqpzb4vVZKFcJl+7
+	 t5j2ipv2LWbAGVn8TTcMYKOsCE+Hbi5BrgLIhoYo=
+Date: Wed, 7 Feb 2024 23:42:27 -0800
+From: Zev Weiss <zev@bewilderbeest.net>
+To: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Florent Revest <revest@chromium.org>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	"Mike Rapoport (IBM)" <rppt@kernel.org>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Yang Shi <yang@os.amperecomputing.com>,
+	Stefan Roesch <shr@devkernel.io>, Oleg Nesterov <oleg@redhat.com>,
+	David Hildenbrand <david@redhat.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Miguel Ojeda <ojeda@kernel.org>, openbmc@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+	Sam James <sam@gentoo.org>, stable@vger.kernel.org
+Subject: Re: [PATCH 0/2] ARM: prctl: Reject PR_SET_MDWE where not supported
+Message-ID: <aee52007-b805-40a0-976b-eee52c98099c@hatter.bewilderbeest.net>
+References: <20240208012620.32604-4-zev@bewilderbeest.net>
+ <385d72eb-2443-42e5-858d-0cc083a29a26@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
+In-Reply-To: <385d72eb-2443-42e5-858d-0cc083a29a26@gmx.de>
 
-Hi Zhen,
+Hi Helge,
 
-FYI, the error/warning still remains.
+Thanks for taking a look!
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   547ab8fc4cb04a1a6b34377dd8fad34cd2c8a8e3
-commit: 30f3bb09778de64ef9f23fb4bb5f868c4728a071 kallsyms: Add self-test facility
-date:   1 year, 3 months ago
-config: riscv-randconfig-r064-20240120 (https://download.01.org/0day-ci/archive/20240208/202402081521.N9jn64eP-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240208/202402081521.N9jn64eP-lkp@intel.com/reproduce)
+On Wed, Feb 07, 2024 at 11:02:24PM PST, Helge Deller wrote:
+>Hi Zev,
+>
+>On 2/8/24 02:26, Zev Weiss wrote:
+>>Hello,
+>>
+>>I noticed after a recent kernel update that my ARM926 system started
+>>segfaulting on any execve() after calling prctl(PR_SET_MDWE).  After
+>>some investigation it appears that ARMv5 is incapable of providing the
+>>appropriate protections for MDWE, since any readable memory is also
+>>implicitly executable.
+>>
+>>(Note that I'm not an expert in either ARM arch details or the mm
+>>subsystem, so please bear with me if I've botched something in the
+>>above analysis.)
+>>
+>>The prctl_set_mdwe() function already had some special-case logic
+>>added disabling it on PARISC (commit 793838138c15, "prctl: Disable
+>>prctl(PR_SET_MDWE) on parisc"); this patch series (1) generalizes that
+>>check to use an arch_*() function, and (2) adds a corresponding
+>>override for ARM to disable MDWE on pre-ARMv6 CPUs.
+>
+>Instead of splitting it out to a new function in mman.h,
+>I'd prefer having it as config option, e.g. ARCH_HAS_NO_MDWE_SUPPORT (?)
+>which could be checked instead.
+>For parisc we still want to allow mdwe in the future, we just have
+>to wait until most user-space programs have updated to the latest
+>binaries which don't need an executable stack any longer.
+>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402081521.N9jn64eP-lkp@intel.com/
+I considered that, but it seems that ARM kernels at least may not know 
+the answer to that question at compile-time -- see patch 2, where the 
+ARM implementation does a runtime check on cpu_architecture().
 
-All errors (new ones prefixed by >>):
+>>With the series applied, prctl(PR_SET_MDWE) is rejected on ARMv5 and
+>>subsequent execve() calls (as well as mmap(PROT_READ|PROT_WRITE)) can
+>>succeed instead of unconditionally failing; on ARMv6 the prctl works
+>>as it did previously.
+>>
+>>Since this was effectively a userspace-breaking change in v6.3 (with
+>>newer MDWE-aware userspace on older pre-MDWE kernels the prctl would
+>>simply fail safely) I've CCed -stable for v6.3+, though since the
+>>patches depend on the PARISC one above it will only apply cleanly on
+>>the linux-6.6.y and linux-6.7.y branches, since at least at time of
+>>writing the 6.3 through 6.5 branches don't have that patch backported
+>>(due to further missing dependencies [0]).
+>>[0] https://lore.kernel.org/all/2023112456-linked-nape-bf19@gregkh/
+>
+>I think you don't need to worry about that, since stable kernel series
+>for 6.3 up to 6.5 were stopped...
+>
 
->> ld.lld: error: vmlinux.a(kernel/kallsyms.o):(function kallsyms_sym_address: .text+0x10): relocation R_RISCV_PCREL_HI20 out of range: -524416 is not in [-524288, 524287]; references kallsyms_relative_base
-   >>> referenced by kallsyms.c
-   >>> defined in vmlinux.a(kernel/kallsyms.o)
---
->> ld.lld: error: vmlinux.a(kernel/kallsyms.o):(function kallsyms_sym_address: .text+0x20): relocation R_RISCV_PCREL_HI20 out of range: -524416 is not in [-524288, 524287]; references kallsyms_offsets
-   >>> referenced by kallsyms.c
-   >>> defined in vmlinux.a(kernel/kallsyms.o)
+Ah, hadn't realized that -- thanks for the tip.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+Zev
+
 
