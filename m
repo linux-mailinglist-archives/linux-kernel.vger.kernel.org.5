@@ -1,136 +1,197 @@
-Return-Path: <linux-kernel+bounces-57876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2384684DE7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:40:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF30884DE82
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:43:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 565B21C2446E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:40:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB182285287
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC8DE67E85;
-	Thu,  8 Feb 2024 10:40:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACEE56A335;
+	Thu,  8 Feb 2024 10:43:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="Z9TpARIu"
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GvWQ4xVs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BAC11E884
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 10:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E48821DFF2;
+	Thu,  8 Feb 2024 10:43:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707388837; cv=none; b=kI2x6xT8IFtBohajCKkt+M8R4wQdHXOuwAg21VU5P9Ls+8DkiaQuhyqipUxhU0A/D3qV/ZKqqAqc5tNSbrxiV/LvYbDCAaSpoTuRxDifFLB/EpyEF921lnqxSvP8YSxNwtaBh0EcJ5znVtRAsAAalzFdbtgFbT40G7RL7U+W5Qs=
+	t=1707388994; cv=none; b=cHKo9pE/RfHHX8cUULhrGSOk2eugeqBDlS7ldtSrPcSrRSewrV3pxLXD8ycZpfM/+tZqfVCR5+vdIa8V7vHJhVQXtENH4lSmNjryqNIqNO+Yq4h703Ey85LatBRcjFjFIsnYUU4Y4pzyqScDrqiONWDENIPGgSFK76W/sIAVf20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707388837; c=relaxed/simple;
-	bh=iJZj3a2A37Yc2+UbCcT708fFiaad1lyduEVZ2e9J9os=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rwzDlRp1JwaiQI9/JCO3/szu1UusKGp7boMr7/m/43V4q0IY2kllUB2qHjx9AM7FV6M5NhSjZTSfuaqg68iSw1CIlzpwb/UmSSRIrSpSyr5pK7FYevmbarlf1Nh1muXrcvaFoZDf+a6R+Nb7uV/hv45jRN27YNdgCsh/eU3OcUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=Z9TpARIu; arc=none smtp.client-ip=209.85.167.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3be6df6bc9bso1017980b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 02:40:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tweaklogic.com; s=google; t=1707388834; x=1707993634; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ovh33pxfI8P/Sa+5KCuYC2GFDU346PqyTe6ORiybvcM=;
-        b=Z9TpARIuN4o6WDVy/IX9xCy/rLoQf/0eFBAP1xGnaU4iJf6TZst7nmd4IDkuUu1N8q
-         9xYSeaCanmqWLQ2n4YapCz9pntpc6BoJn+FttAi559QjaHn13aFgSJOU4EibmpwFZBdd
-         sI1BSIA31m0jChuqD1DHN6HGgGjXzff3ctGoObMCE8+AcumrSVkCoeo9NMZ7HwGBG6hm
-         fizKubrkh2GxP22kMPY0qQ1Ub+vjWGExh/8Irx95efeuD44dI8U+wgtHn4gSCwfJy2ZO
-         938fUAkzxbyukOmF8jJD8tBnA4BxFPu6pKnyixaxI2hyyZndNAEq+gU957LfEVyudrgZ
-         LhHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707388834; x=1707993634;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ovh33pxfI8P/Sa+5KCuYC2GFDU346PqyTe6ORiybvcM=;
-        b=rTicAkPyMK7os4idjNJt6BXQIs7Gv4hGQUJSa2PuIUixYIxC2YhhAtDLR45p/Cj6KF
-         w/SD2OTmnUZoowTKepn15n/h82wudldGoGxcXwI3bXZKEogLwEKE8G2c8KaJNUnjfM1i
-         GFu6TqhhDwAql6/G0U6uu6uLPXpTxw1smEbQ0R3ltn6oBckSVmAjEUaLbuZPvHdxXsyy
-         RxBl6yKyBy2fXYIU06wW+HUzeKCGCgHWXgPkud9YbVwMwtU1hcP+RE8NDnzMdZsZSWgC
-         8yxGOO4/AEDZnlGrZnLg1itJwMN1bXhP/DVI8U3QIAFirzb17wD+D8Nbqkkj/duvrRNa
-         hpHw==
-X-Gm-Message-State: AOJu0Yw9zL7pXvxsRy9heSRzdqedgs3B21fNZ2yhnnO/5RZC9tZJm5BY
-	WmJs2kB/g31q810HKS9ooOa7bNw9yK/28AEFAztEIF9eTHqS8fcg+vdkHHn0ckw=
-X-Google-Smtp-Source: AGHT+IFPgSwcGTkRc6XoMyUTVPv29LV1357qIzDt3rcTIlrqnUrpFzLDGx7+ulkb4Hy7vZXonzOOIw==
-X-Received: by 2002:a05:6808:ec2:b0:3bd:c146:5444 with SMTP id q2-20020a0568080ec200b003bdc1465444mr9826422oiv.51.1707388834544;
-        Thu, 08 Feb 2024 02:40:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUI/U8Wrq0Y3XuS3yK7Em2IDVV/HYjo2hYUJd2IrowVuHRl898Aq57w7GvWMP/MtuydUgWPTliuy7ac1AsrNwXHUZwIMKHjKq4+3lQZAGR/2aS0hSxjcOpQraw6jZqdp9BEJrk/IRspax9qZSY0ptrR0gGLQ1tP18OTxixODz63K8WY7Ooc8GFPw64th1hNAFlUWV9sFf3DhpzUrfjGhn5wQAf+rNedBZrFUvWZQwbLy8WPpZa/dJNztu+ct2juKktPK0b0mr7QuvjYFzVGQqlfbPYdTTngVLfj/TzoRAzWCg65abkYuJcB2ZlA5uJY+0j834mpzRSAeOvKaNQCweDvS9wuYFMVn9ii3kqyPj4G+g/QX4PJwnKBA7Gd87fu/rke7n3hxsCOKX3ogkdSAZrgzqYuW0xtM0YUTpLEm8PmpeQr6GLn7JBbr07NkZBrtQIHMzy3IUG6O+Budsx2huVhpKRSb/MgS1zaUQZrNeFBiA4=
-Received: from [192.168.20.11] ([180.150.113.62])
-        by smtp.gmail.com with ESMTPSA id lo19-20020a056a003d1300b006da19433468sm3347516pfb.61.2024.02.08.02.40.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 02:40:34 -0800 (PST)
-Message-ID: <84591019-6958-4685-8830-54260aadd26b@tweaklogic.com>
-Date: Thu, 8 Feb 2024 21:10:25 +1030
+	s=arc-20240116; t=1707388994; c=relaxed/simple;
+	bh=iOCEBde5YbT1K2IfyXz3DE1Ta6qmjsnHDk4nzvRYcvQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tkd2ENWHFv8SK7iALgexbmR12cDcdyuPZOzPu+HEwWRwGbkD3U1UKHOzNBZbNrb/6wus69gAjmOxdXZev6dQXmCvIhJNfJWlQGG0qanZ/sBuYWvJcXXYlxm2VIwERB+KAynEp8iW4XxKx7Z4sQO0BTCnjF4o80IxuURTh11nLBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GvWQ4xVs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4696C433C7;
+	Thu,  8 Feb 2024 10:43:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707388993;
+	bh=iOCEBde5YbT1K2IfyXz3DE1Ta6qmjsnHDk4nzvRYcvQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GvWQ4xVs30uQsyDRhy2StCPlc2GlE2b9LvsVXJuAqA8gD6xKbB/oZUQ8qhwMpsVUo
+	 Jlt9yShDwNJV0jhJ9i8tQmxFf3mmVOiVwukNgruEJicqQvXsI4+wr0Ob6bG6mpdtbD
+	 C0r/EzPqneVD4JLYc3Fd1u/Tfh3pRuQEt4Py+eh0tWi7MkD8ZStqYoRQ4DeNNYwytE
+	 T3pjpUxzsVoNGAQG/uE1htxE3OPnrUzMy6jbNJIEv/vrVsBZ847teXZRtbuonjupae
+	 KPZzCECiOJuyWIq7w6xYQko9u6lntV7OYWCSVvUM5mzmhUj7c0ghexxGEBfsQT3krR
+	 QYw83XHNUCm4w==
+Date: Thu, 8 Feb 2024 11:43:10 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+	Chen Zhongjin <chenzhongjin@huawei.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Heiko Carstens <hca@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Peng Zhang <zhangpeng.00@bytedance.com>
+Subject: Re: [PATCH 2/2] rcu-tasks: Eliminate deadlocks involving do_exit()
+ and RCU tasks
+Message-ID: <ZcSwPifss+ho3hRt@lothringen>
+References: <20240129225730.3168681-1-boqun.feng@gmail.com>
+ <20240129225730.3168681-3-boqun.feng@gmail.com>
+ <ZcQJ2Vec1_b5ooS_@pavilion.home>
+ <ZcQzyhcaRUSRo8a9@pavilion.home>
+ <ZcQ4GMEbLFtkCZXw@pavilion.home>
+ <cc25e968-6f43-453e-be9e-2851db39218f@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/5] dt-bindings: iio: light: adps9300: Add property
- vdd-supply
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Matti Vaittinen <mazziesaccount@gmail.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Marek Vasut <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>,
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: Matt Ranostay <matt@ranostay.sg>,
- Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240206130017.7839-1-subhajit.ghosh@tweaklogic.com>
- <20240206130017.7839-3-subhajit.ghosh@tweaklogic.com>
- <dbfde067-50b8-4f86-a098-0fc160114854@linaro.org>
-Content-Language: en-US
-From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-In-Reply-To: <dbfde067-50b8-4f86-a098-0fc160114854@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc25e968-6f43-453e-be9e-2851db39218f@paulmck-laptop>
 
-Hi Krzysztof,
+On Thu, Feb 08, 2024 at 01:56:10AM -0800, Paul E. McKenney wrote:
+> On Thu, Feb 08, 2024 at 03:10:32AM +0100, Frederic Weisbecker wrote:
+> This ordering is not needed.  The lock orders addition to this
+> list against removal from tasklist.  If we hold this lock, either
+> the task is already on this list or our holding this lock prevents
+> it from removing itself from the tasklist.
+> 
+> We have already scanned the task list, and we have already done
+> whatever update we are worried about.
+> 
+> So, if the task was on the tasklist when we scanned, well and
+> good.  If the task was created after we scanned the tasklist,
+> then it cannot possibly access whatever we removed.
+> 
+> But please double-check!!!
 
-On 8/2/24 18:47, Krzysztof Kozlowski wrote:
-> On 06/02/2024 14:00, Subhajit Ghosh wrote:
->> Add vdd-supply property which is valid and useful for all the
->> devices in this schema.
-> 
-> Why is it useful? How is it useful? DT describes the hardware, not
-> because something is "useful".
-I am adding this property based on a previous review:
-https://lore.kernel.org/all/20240121153655.5f734180@jic23-huawei/
+Heh, right, another new pattern for me to discover :-/
 
-Does the below commit message in this context make sense to you?
-"Add vdd-supply property for all the devices in this schema."
-> 
->>
->> this patch depends on patch:
->> "dt-bindings: iio: light: Merge APDS9300 and APDS9960 schemas"
-> 
-> This is unrelated and does not make any sense in commit msg. Drop.
-Apologies for the silly questions:
-What does the "Drop" signify? Are you asking me to drop/delete the above
-"...patch depends..." message or does it have any other meaning?
+C r-LOCK
 
-In the next version, do I include the ack tag by Conor for this commit?
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
-Thank you for reviewing.
-Regards,
-Subhajit Ghosh
+{
+}
 
+P0(spinlock_t *LOCK, int *X, int *Y)
+{
+	int r1;
+	int r2;
+	
+	r1 = READ_ONCE(*X);
+
+	spin_lock(LOCK);
+	r2 = READ_ONCE(*Y);
+	spin_unlock(LOCK);
+}
+
+P1(spinlock_t *LOCK, int *X, int *Y)
+{
+	spin_lock(LOCK);
+	WRITE_ONCE(*Y, 1);
+	spin_unlock(LOCK);
+	WRITE_ONCE(*X, 1);
+}
+
+exists (0:r1=1 /\ 0:r2=0) (* never *)
+
+
+> 
+> > > synchronize_rcu_tasks()                       do_exit()
+> > > ----------------------                        ---------
+> > > //for_each_process_thread()
+> > > READ tasklist                                 WRITE rtpcp->rtp_exit_list
+> > > LOCK rtpcp->lock                              UNLOCK rtpcp->lock
+> > > smp_mb__after_unlock_lock()                   WRITE tasklist //unhash_process()
+> > > READ rtpcp->rtp_exit_list
+> > > 
+> > > Does this work? Hmm, I'll play with litmus once I have a fresh brain...
+> 
+> First, thank you very much for the review!!!
+> 
+> > ie: does smp_mb__after_unlock_lock() order only what precedes the UNLOCK with
+> > the UNLOCK itself? (but then the UNLOCK itself can be reordered with anything
+> > that follows)? Or does it also order what follows the UNLOCK with the UNLOCK
+> > itself? If both, then it looks ok, otherwise...
+> 
+> If you have this:
+> 
+> 	earlier_accesses();
+> 	spin_lock(...);
+> 	ill_considered_memory_accesses();
+> 	smp_mb__after_unlock_lock();
+> 	later_accesses();
+> 
+> Then earlier_accesses() will be ordered against later_accesses(), but
+> ill_considered_memory_accesses() won't necessarily be ordered.  Also,
+> any accesses before any prior release of that same lock will be ordered
+> against later_accesses().
+> 
+> (In real life, ill_considered_memory_accesses() will be fully ordered
+> against either spin_lock() on the one hand or smp_mb__after_unlock_lock()
+> on the other, with x86 doing the first and PowerPC doing the second.
+> So please try to avoid any ill_considered_memory_accesses().)
+
+Thanks a lot for that explanation!
+
+
+> 
+> > Also on the other end, does LOCK/smp_mb__after_unlock_lock() order against what
+> > precedes the LOCK? That also is necessary for the above to work.
+> 
+> It looks like an smp_mb__after_spinlock() would also be needed, for
+> example, on ARMv8.
+> 
+> > Of course by the time I'm writing this email, litmus would have told me
+> > already...
+> 
+> ;-) ;-) ;-)
+> 
+> But I believe that simple locking covers this case.  Famous last words...
+
+Indeed, looks right!
+
+Thanks!
+> 							Thanx, Paul
 
