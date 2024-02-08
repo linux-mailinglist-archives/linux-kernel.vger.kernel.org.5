@@ -1,57 +1,53 @@
-Return-Path: <linux-kernel+bounces-58031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97A7E84E071
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:11:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66CEF84E130
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:50:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 325B31F26F6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:11:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BDF51F2BAE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:50:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B2F971B41;
-	Thu,  8 Feb 2024 12:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uz3QtunK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81D36BFC2;
-	Thu,  8 Feb 2024 12:11:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2404E763F8;
+	Thu,  8 Feb 2024 12:49:57 +0000 (UTC)
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2736F763E4;
+	Thu,  8 Feb 2024 12:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707394292; cv=none; b=bsFLrpSBr4vefHzr671qyQRGapRZ3m+80RpnnIjRQg/nAkLPN7eHHAbBIduhTNeGwnC5nMtSz45N6L7S8/gBqs0Om4IJgQtzgSHdrCVQL8FaRMboz2NhV/2evWnqwd1+LhzjIcxp7I1k0xdypAG4SGeYl8eAmCCvc+SysnxrExk=
+	t=1707396596; cv=none; b=d0Nr/f+7ma081radKxGGQCHdVceTUse6PkxPQQhCU0n5BCdms3KnbBZCv6l4k2tzwLdw40tseht9PoccG3//b2j9KYE3DaY/boWrus0U2EwrS9bxYxfItbc/fxtXbnvfjcIwH1+FGpQdyZQT3pcpiQ4yQ/C3hmLvhDC0ZAtOPIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707394292; c=relaxed/simple;
-	bh=Y5mb87bfIecKDPigGFFDcBn7FIohiyxS2vG0T0P/zF0=;
+	s=arc-20240116; t=1707396596; c=relaxed/simple;
+	bh=/raue+ELhkH2hPh2pJ5EPvccB2rMfZ0AyREnP0RN1h4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ibGpJ7ruDywLsw8yBtJRP5ft6A3iT8WKGmbE4Ngue/2seQ0l+djIKUkA5f1CluTjPa2iXPoB03zEaa80fzd+SO1Y8dW6Us6q9s5u8PudUSqkdOe6+I4+FlZu3k4QW6sfUczWhEpeG5pGp1MXTSFrYwL51dNpnX+HtMT98JsZK/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uz3QtunK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EAF6C433F1;
-	Thu,  8 Feb 2024 12:11:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707394292;
-	bh=Y5mb87bfIecKDPigGFFDcBn7FIohiyxS2vG0T0P/zF0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uz3QtunKhCW+rx23zeGl0a4Y4+yjbToRCKcnRHh2AozrVZQrrWiBeSm7Z4WquCNCq
-	 qrsXs2xfQK4+Gn/QtbtJXDPToZC2wW/xbA8G8kg7S6DMOAqFH1iFdjC6jptoCq8wur
-	 PVK4Q9XEwL2o1B7CKe2AUsgJBZYdzYBc+g/HmfV0rCx5cc8Mi+pL4/wqTNr+NK1JYw
-	 jVd5rsJNyZ7gC8Rh4499PzBTdkJ4Lfbt8Qx1mn9WMYYdzUgcrYq/hviJOBslUKoHpn
-	 dfFpeSqXB4rGxHHXJrOMfM+7rBY7F5onzltGhLph5tzJlzUa0UPwZiL8Y/kdPQDnEK
-	 S+TKnYexIh4Pw==
-Date: Thu, 8 Feb 2024 12:11:28 +0000
-From: Simon Horman <horms@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Sam Creasey <sammy@sammy.net>, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] net/sun3_82586: Avoid reading past buffer in debug output
-Message-ID: <20240208121128.GI1435458@kernel.org>
-References: <20240206161651.work.876-kees@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PuBEsCiJOflRC6iThJPN6gDHJcbZCEyOvBc54MZc0KVzffFSlGX/EGyEUX91lN6FP1X3B1XsLXsS1hYei0sS8oEiXAFk9XlYfKNy1AL4EtmZKEPlxIMAq5rrTYFl7JTAQBgl8+AnillPd+GTvP+eu3Sbjhp22GDbMueGchjlEK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1rY3Mr-000327-00; Thu, 08 Feb 2024 13:19:01 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 71A38C0267; Thu,  8 Feb 2024 13:11:30 +0100 (CET)
+Date: Thu, 8 Feb 2024 13:11:30 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc: Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v7 03/14] MIPS: Allows relocation exception vectors
+ everywhere
+Message-ID: <ZcTE8nKCaKuaUvAe@alpha.franken.de>
+References: <20240205153503.574468-1-gregory.clement@bootlin.com>
+ <20240205153503.574468-4-gregory.clement@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,34 +56,96 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240206161651.work.876-kees@kernel.org>
+In-Reply-To: <20240205153503.574468-4-gregory.clement@bootlin.com>
 
-On Tue, Feb 06, 2024 at 08:16:54AM -0800, Kees Cook wrote:
-> Since NUM_XMIT_BUFFS is always 1, building m68k with sun3_defconfig and
-> -Warraybounds, this build warning is visible[1]:
+On Mon, Feb 05, 2024 at 04:34:49PM +0100, Gregory CLEMENT wrote:
+> From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > 
-> drivers/net/ethernet/i825xx/sun3_82586.c: In function 'sun3_82586_timeout':
-> drivers/net/ethernet/i825xx/sun3_82586.c:990:122: warning: array subscript 1 is above array bounds of 'volatile struct transmit_cmd_struct *[1]' [-Warray-bounds=]
->   990 |                 printk("%s: command-stats: %04x %04x\n",dev->name,swab16(p->xmit_cmds[0]->cmd_status),swab16(p->xmit_cmds[1]->cmd_status));
->       |                                                                                                               ~~~~~~~~~~~~^~~
-> ...
-> drivers/net/ethernet/i825xx/sun3_82586.c:156:46: note: while referencing 'xmit_cmds'
->   156 |         volatile struct transmit_cmd_struct *xmit_cmds[NUM_XMIT_BUFFS];
+> Now the exception vector for CPS systems are allocated on-fly
+> with memblock as well.
 > 
-> Avoid accessing index 1 since it doesn't exist.
+> It will try to allocate from KSEG1 first, and then try to allocate
+> in low 4G if possible.
 > 
-> Link: https://github.com/KSPP/linux/issues/325 [1]
-> Cc: Sam Creasey <sammy@sammy.net>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> The main reset vector is now generated by uasm, to avoid tons
+> of patches to the code. Other vectors are copied to the location
+> later.
+> 
+> gc: use the new macro CKSEG[0A1]DDR_OR_64BIT()
+>     move 64bits fix in an other patch
+>     fix cache issue with mips_cps_core_entry
+>     rewrite the patch to reduce the diff stat
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+> ---
+>  arch/mips/include/asm/mips-cm.h |   1 +
+>  arch/mips/include/asm/smp-cps.h |   4 +-
+>  arch/mips/kernel/cps-vec.S      |  48 ++-------
+>  arch/mips/kernel/smp-cps.c      | 171 +++++++++++++++++++++++++++-----
+>  4 files changed, 157 insertions(+), 67 deletions(-)
+> [..]
+> diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+> index dd55d59b88db3..f4cdd50177e0b 100644
+> --- a/arch/mips/kernel/smp-cps.c
+> +++ b/arch/mips/kernel/smp-cps.c
+> @@ -7,6 +7,7 @@
+>  #include <linux/cpu.h>
+>  #include <linux/delay.h>
+>  #include <linux/io.h>
+> +#include <linux/memblock.h>
+>  #include <linux/sched/task_stack.h>
+>  #include <linux/sched/hotplug.h>
+>  #include <linux/slab.h>
+> @@ -25,7 +26,34 @@
+>  #include <asm/time.h>
+>  #include <asm/uasm.h>
+>  
+> +#define BEV_VEC_SIZE	0x500
+> +#define BEV_VEC_ALIGN	0x1000
+> +
+> +#define A0		4
+> +#define A1		5
+> +#define T9		25
+> +#define K0		26
+> +#define K1		27
+> +
+> +#define C0_STATUS	12, 0
+> +#define C0_CAUSE	13, 0
+> +
+> +#define ST0_NMI_BIT	19
+> +#ifdef CONFIG_64BIT
+> +#define ST0_KX_IF_64	ST0_KX
+> +#else
+> +#define ST0_KX_IF_64	0
+> +#endif
 
-Reviewed-by: Simon Horman <horms@kernel.org>
-Tested-by: Simon Horman <horms@kernel.org> # build-tested
+please move this together with the other defines in arch/mips/kvm/entry.c
+to a header file (arch/mips/include/asm/uasm.h sounds like a good fit).
 
-..
+> +static void __init setup_cps_vecs(void)
+> +{
+> +	extern void excep_tlbfill(void);
+> +	extern void excep_xtlbfill(void);
+> +	extern void excep_cache(void);
+> +	extern void excep_genex(void);
+> +	extern void excep_intex(void);
+> +	extern void excep_ejtag(void);
+
+I know this used a lot in arch/mips, but don't add another one and
+put this to a header file. IMHO checkpatch should have warned you about
+that.
+
+> +	/* We want to ensure cache is clean before writing uncached mem */
+> +	blast_dcache_range(CKSEG0ADDR_OR_64BIT(cps_vec_pa), CKSEG0ADDR_OR_64BIT(cps_vec_pa) + BEV_VEC_SIZE);
+> +	bc_wback_inv(CKSEG0ADDR_OR_64BIT(cps_vec_pa), BEV_VEC_SIZE);
+> +	__sync();
+
+how about doint the generation with cached memory and flush caches
+after that ?
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
 
