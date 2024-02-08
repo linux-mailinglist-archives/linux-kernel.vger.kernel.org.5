@@ -1,144 +1,151 @@
-Return-Path: <linux-kernel+bounces-57983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12FB884DFF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:46:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9C9A84E004
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:50:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE1E8B28065
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:44:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60A08283FCA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:50:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 802F96F095;
-	Thu,  8 Feb 2024 11:44:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jTMkDEc+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AF41DFCE;
-	Thu,  8 Feb 2024 11:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E44E571B54;
+	Thu,  8 Feb 2024 11:49:45 +0000 (UTC)
+Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5F16EB54
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 11:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.10.64.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707392655; cv=none; b=LWOuUkfSJFkAGB0vI8kQos0v47tqXaw72mbOm4FjzFa4J1/c6RSwBmdd7shBVx+w+8FknijKIYoRiujkfLHmKYOtOG0Kocbb3Gg8eeR4jUxmSJh8Mq2rfTU+LaCOBSXq91GOF+Ctbf7ZAoRN+i9m8mITSHWplmNahngfHZGpOZM=
+	t=1707392985; cv=none; b=lMYpSmv3HVItDj8ZKLsyn90bNYJb+WsOro5T7A+RXCcOEkdSvEfT/UC123gkPf7cxgscO8VGgSs3I91BvcQ9QSueC3ZuQZn6FVhanXaQAdQ4ksycTib4CiT2KueJVvyWsB9iz+v9uKq7GITVa3CF2OEB6UES2sSv/x74XEltp0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707392655; c=relaxed/simple;
-	bh=yTjseaYVw0yF5zP6CGXqUmZUSPFs3w8SZduU+tXhSIk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=glz3/WeAaL2fyN0Av1DQEoT+AXYZhKKeG3sI3uPK7tyuk0gAfTY8mu8/Zjrx9F6LYzDlgtrtsSO+Loh1y27+Xet/ceLRKGBpWGG9guVx8+uMuiVBuPAZyU+jMtjJGgPD8FWvVN/U9Zhxwf4MhNLQh9/vfRqARYkR8NmPmH42cvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jTMkDEc+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC644C433C7;
-	Thu,  8 Feb 2024 11:44:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707392655;
-	bh=yTjseaYVw0yF5zP6CGXqUmZUSPFs3w8SZduU+tXhSIk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jTMkDEc+AVCeQA5FQ+dvJWvaP7Ooj+9838vMpKbAYHqtrgXszANRMAkhPuTWyGAVT
-	 2e9yPGMJHM9foZw40JzjPDDKd7pB0haqtDgMbDihQNWr939v1yabMEaXSaiEaA2ziF
-	 kjkBztORC/swU8+kRjv+AMIsF94HLF4KvU9F29Jp0/OyiBELf5C+zOoGM5Nv/uIlaw
-	 EhHHmPYTeHn5jKUnd9Kk5Qk54tjPwKMbFjH5LIcoDUgI0dD8w+wGyGgRQQuqI/CemB
-	 4m9neYEUnaRWDQ3gLAdT19t80Jh+K6P+2mYcJ2yhhJ0KCgcHapjUJP15KH/pRio3/6
-	 mRd6E6TQwSJbg==
-From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-To: daniel@ffwll.ch
-Cc: linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Ubisectech Sirius <bugreport@ubisectech.com>,
-	Helge Deller <deller@gmx.de>
-Subject: [PATCH] fbcon: always restore the old font data in fbcon_do_set_font()
-Date: Thu,  8 Feb 2024 12:44:11 +0100
-Message-ID: <20240208114411.14604-1-jirislaby@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707392985; c=relaxed/simple;
+	bh=W8hh8SVXTKvD7eEwi7WV4j5y4uSnRC+F/4neJBDMh5U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Mime-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jf3Dons3usBZ1kKwoUrnE78bxUfZzzgDkOrdiPLBARFTrJQ6yULqSOQ+qUKHBw2+xh6VZlnCLiX114aLGisnFRoL4HxUsH1NyI7050xgPhNIGwREqA2pFC8qHuP8SsUSjF1oWu7PzFIkrX1dzopjrLbdxSBD/TYZPplEpPY3pOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com; spf=pass smtp.mailfrom=wind.enjellic.com; arc=none smtp.client-ip=76.10.64.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wind.enjellic.com
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+	by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 418BijxE023873;
+	Thu, 8 Feb 2024 05:44:45 -0600
+Received: (from greg@localhost)
+	by wind.enjellic.com (8.15.2/8.15.2/Submit) id 418BiiQW023872;
+	Thu, 8 Feb 2024 05:44:44 -0600
+Date: Thu, 8 Feb 2024 05:44:44 -0600
+From: "Dr. Greg" <greg@enjellic.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: "Daniel P. Berrang??" <berrange@redhat.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
+Message-ID: <20240208114444.GA23164@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <CAHmME9qsfOdOEHHw_MOBmt6YAtncbbqP9LPK2dRjuOp1CrHzRA@mail.gmail.com> <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com> <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com> <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com> <Zbk6h0ogqeInLa_1@redhat.com> <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com> <20240206011247.GA29224@wind.enjellic.com> <ZcHoKUElwXGPzrWb@redhat.com> <20240206120445.GA1247@wind.enjellic.com> <20240206153529.GHZcJRwTdDkWXuopOQ@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240206153529.GHZcJRwTdDkWXuopOQ@fat_crate.local>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Thu, 08 Feb 2024 05:44:45 -0600 (CST)
 
-Commit a5a923038d70 (fbdev: fbcon: Properly revert changes when
-vc_resize() failed) started restoring old font data upon failure (of
-vc_resize()). But it performs so only for user fonts. It means that the
-"system"/internal fonts are not restored at all. So in result, the very
-first call to fbcon_do_set_font() performs no restore at all upon
-failing vc_resize().
+On Tue, Feb 06, 2024 at 04:35:29PM +0100, Borislav Petkov wrote:
 
-This can be reproduced by Syzkaller to crash the system on the next
-invocation of font_get(). It's rather hard to hit the allocation failure
-in vc_resize() on the first font_set(), but not impossible. Esp. if
-fault injection is used to aid the execution/failure. It was
-demonstrated by Sirius:
-  BUG: unable to handle page fault for address: fffffffffffffff8
-  #PF: supervisor read access in kernel mode
-  #PF: error_code(0x0000) - not-present page
-  PGD cb7b067 P4D cb7b067 PUD cb7d067 PMD 0
-  Oops: 0000 [#1] PREEMPT SMP KASAN
-  CPU: 1 PID: 8007 Comm: poc Not tainted 6.7.0-g9d1694dc91ce #20
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-  RIP: 0010:fbcon_get_font+0x229/0x800 drivers/video/fbdev/core/fbcon.c:2286
-  Call Trace:
-   <TASK>
-   con_font_get drivers/tty/vt/vt.c:4558 [inline]
-   con_font_op+0x1fc/0xf20 drivers/tty/vt/vt.c:4673
-   vt_k_ioctl drivers/tty/vt/vt_ioctl.c:474 [inline]
-   vt_ioctl+0x632/0x2ec0 drivers/tty/vt/vt_ioctl.c:752
-   tty_ioctl+0x6f8/0x1570 drivers/tty/tty_io.c:2803
-   vfs_ioctl fs/ioctl.c:51 [inline]
-  ...
+Good morning, or perhaps afternoon, thanks for taking the time to
+reply.
 
-So restore the font data in any case, not only for user fonts. Note the
-later 'if' is now protected by 'old_userfont' and not 'old_data' as the
-latter is always set now. (And it is supposed to be non-NULL. Otherwise
-we would see the bug above again.)
+> On Tue, Feb 06, 2024 at 06:04:45AM -0600, Dr. Greg wrote:
+> > The silence appears to be deafening out of the respective engineering
+> > camps... :-)
 
-Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Fixes: a5a923038d70 ("fbdev: fbcon: Properly revert changes when vc_resize() failed")
-Cc: Ubisectech Sirius <bugreport@ubisectech.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-fbdev@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
----
- drivers/video/fbdev/core/fbcon.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+> I usually wait for those threads to "relax" themselves first. :)
 
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 17a9fc80b4e4..98d0e2dbcd2f 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -2395,11 +2395,9 @@ static int fbcon_do_set_font(struct vc_data *vc, int w, int h, int charcount,
- 	struct fbcon_ops *ops = info->fbcon_par;
- 	struct fbcon_display *p = &fb_display[vc->vc_num];
- 	int resize, ret, old_userfont, old_width, old_height, old_charcount;
--	char *old_data = NULL;
-+	u8 *old_data = vc->vc_font.data;
- 
- 	resize = (w != vc->vc_font.width) || (h != vc->vc_font.height);
--	if (p->userfont)
--		old_data = vc->vc_font.data;
- 	vc->vc_font.data = (void *)(p->fontdata = data);
- 	old_userfont = p->userfont;
- 	if ((p->userfont = userfont))
-@@ -2433,13 +2431,13 @@ static int fbcon_do_set_font(struct vc_data *vc, int w, int h, int charcount,
- 		update_screen(vc);
- 	}
- 
--	if (old_data && (--REFCOUNT(old_data) == 0))
-+	if (old_userfont && (--REFCOUNT(old_data) == 0))
- 		kfree(old_data - FONT_EXTRA_WORDS * sizeof(int));
- 	return 0;
- 
- err_out:
- 	p->fontdata = old_data;
--	vc->vc_font.data = (void *)old_data;
-+	vc->vc_font.data = old_data;
- 
- 	if (userfont) {
- 		p->userfont = old_userfont;
--- 
-2.43.0
+Indeed, my standard practice is to wait 24 hours before replying to
+any public e-mail, hence the delay in my response.
 
+> So, what do you wanna know?
+
+I guess a useful starting point would be if AMD would like to offer
+any type of quantification for 'astronomically small' when it comes to
+the probability of failure over 10 RDRAND attempts... :-)
+
+Secondly, given our test findings and those of RedHat, would it be
+safe to assume that EPYC has engineering that prevents RDSEED failures
+that Ryzen does not?
+
+Given HPA's response in this thread, I do appreciate that all of this
+may be shrouded in trade secrets and other issues.  With an
+acknowledgement to that fact, let me see if I can extend the
+discussion in a generic manner that may prove useful to the community
+without being 'abusive'.
+
+Both AMD and Intel designs start with a hardware based entropy source.
+Intel samples thermal/quantum junction noise, AMD samples execution
+jitter over a bank of inverter based oscillators.  An assumption of
+constant clocked sampling implies a maximum randomness bandwidth
+limit.
+
+None of this implies that randomness is a finite resource, it will
+always become available, with the caveat that a core may have to stand
+in line, cup in hand, waiting for a dollop.
+
+So this leaves the fundamental question of what does an RDRAND or
+RDSEED failure return actually imply?
+
+Silicon is a expensive resource, which would imply a queue depth
+limitation for access to the socket common RNG infastructure.  If the
+queue is full when an instruction issues, it would be a logical
+response to signal an instruction failure quickly and let software try
+again.
+
+An alternate theory would be a requirement for constant instruction
+time completion.  In that case a 'buffer' of cycles would be included
+in the RNG instruction cycle allocation count.  If the instruction
+would need to 'sleep', waiting for randomness, beyond this cycle
+buffer, a failure would be returned.
+
+Absent broken hardware, astronomical then becomes the probability of a
+core being unlucky enough to run into these or alternate
+implementation scenarios 10 times in a row.  Particularly given the
+recommendation to sleep between attempts, which implies getting
+scheduled onto different cores for the attempts.
+
+Any enlightenment along these lines would seem to be useful in
+facilitating an understanding of the issues at hand.
+
+Given the time and engineering invested in the engineering behind both
+TDX and SEV-SNP, it would seem unlikely that really smart engineers at
+both Intel and AMD didn't anticipate this issue and its proper
+resolution for CoCo environments.
+
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+All the best from the Upper Midwest.
+
+As always,
+Dr. Greg
+
+The Quixote Project - Flailing at the Travails of Cybersecurity
+              https://github.com/Quixote-Project
 
