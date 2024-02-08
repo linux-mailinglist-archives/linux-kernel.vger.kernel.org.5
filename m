@@ -1,154 +1,177 @@
-Return-Path: <linux-kernel+bounces-58517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D17884E76F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:11:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C22884E777
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:14:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBB961F25FF7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:11:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E4061C21676
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:14:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3BEB85299;
-	Thu,  8 Feb 2024 18:11:00 +0000 (UTC)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000C48562A;
+	Thu,  8 Feb 2024 18:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="oWNaOguX"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F48182D6A;
-	Thu,  8 Feb 2024 18:10:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC8983CD5;
+	Thu,  8 Feb 2024 18:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707415860; cv=none; b=k+LAicHO6oNtL+8CnI1jrAUg1TfC8OgBIsMXd7UQ/CKt79nfokGboMOEybf5UWF+OW8o4y4oVVk/Z/j2TviFuhwUf3qShR5Ri8w9YDGIx2np31gaYBBw6vmX6Nn1F8Y0eiCSJuCybW6YPPOIXvRUXUIQwQoecg4wKvGEAFR5Lk8=
+	t=1707416039; cv=none; b=CryG6i/1DLp67AidZSjE+BnngQeby0c7J7viqXgFTW9zhHfuhKeDgTe6FIXsaexT+L+lxgdUIllqgVbbSTlNwx3TG9ami8wfrf689kcgD0QDFJ6NpIX8o2I6slEw7EBxASXA2QpVU3l2d6mvc8t3b+Cs9zyijKi3QHoo1SBxATA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707415860; c=relaxed/simple;
-	bh=qdQGrkyG00CdRQsmlmIAsh4C3EmiSMmlMAnAKqZBcHA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZxQnkwluSyxHDVDNeOTaeMG8tGpHAnecbgYAu9tOcnB9YqG40gE8DDLNbVvZ8ImIOFzZK8TpGlZVZ6fl1rWIHNkuL5NiI9b6fuKn4Z9Qfky5WHxXMATQh24hY6IJzzmNVhoTEbz7NDeeZ2PaquoL7P0Gx6M4SqqZHNM/mJ9wnXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-604ac794c01so1453087b3.2;
-        Thu, 08 Feb 2024 10:10:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707415855; x=1708020655;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dNi0JU1w1S3j627lW71M/tpho72s+VxwyeKQBKOV30M=;
-        b=wjVZ6yYLF63fQTYXJACWPrHQiA2Vsu2g6H2JpgbXgGmw5n67LzkwDOjGvbUWzLdTzS
-         N0cBiRpXt+ndaCjBpW+3nkXg0r+3nABx1ymxa0y5coPKaqKrlgRdvOMza/gbzXScj+Jz
-         H+gMC3rir8mzE5FoYAfVqb/8dQP5IhO8evTJwdc5BGyN7n2cmobGaT/dB3sgslCO4Fri
-         kcftLd+lUQYvV0S7/uZ8/d7yxFbDZ54HUz8svDXTBaTHWnUhpsPAbr6i5fder9S/v//x
-         XzhvNTBfjRXqoFYR+GXXnDyss43i2/XDvhiFUWEi0ccElybpw3F7gUFeSWgIySU7VWl5
-         2djQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWgId6SIGLQd3UQQz6ekHSzkjMZPsZgElt1/kGzAuSm5S1dn9XT+PoGb6AOXXG4ia0hghni5q5oIIyFq4mAv7mn8W/BuI5nZmg3A7sCVIR9OhQw5so1vb8mK4Y+mYYk6X1+v3aEAvc00w==
-X-Gm-Message-State: AOJu0YzpTeWSJY6SAPvXHMYzbKKN1RRBQiKDXmj8UoJg+LkJasfNjGAl
-	nPLmCod4qggBLiHglB+Xdl5i6uU4u7CX86tSzNJIBS+tDI9f6jlYzJchoTSbR2o=
-X-Google-Smtp-Source: AGHT+IGdUU3TTDbk/MynXhJi34rhfmEesWmfLyRMtnxb9vqXiEfyhbNeFgV0lcANnJZNnh4MMiw6Rg==
-X-Received: by 2002:a81:5c88:0:b0:5ff:4959:1da8 with SMTP id q130-20020a815c88000000b005ff49591da8mr97836ywb.50.1707415854667;
-        Thu, 08 Feb 2024 10:10:54 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWEIy6Tp/R4hHRyLSG1CBYlO1dP+OonyN3ke/gjo43OX92p+RKAgfOg4Mi2BhkVqhhMXe/UHKzjdO5UFGwFihGSLrebsFZXwg2ecoKclGjv8Z61ttBT5hb1FR5FaW/gsI4k5bQBVYHyUw==
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
-        by smtp.gmail.com with ESMTPSA id bh12-20020a05690c038c00b006047e932385sm784068ywb.95.2024.02.08.10.10.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 10:10:54 -0800 (PST)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-604ac794c01so1452627b3.2;
-        Thu, 08 Feb 2024 10:10:54 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW6aXjGABMC+3tqkDb7k+xqMGAGlKmtjFNpcz36N4BuFoSAW+46JZFnKQLMp4FzlaibjZluHxp7J5/sBWs8dYCL7CSenTUal3sH8ngknMuJ+dw7rYeDF5Os88bCYYBrP9iRxKbmIgkzAQ==
-X-Received: by 2002:a0d:c604:0:b0:5ff:91d8:42b0 with SMTP id
- i4-20020a0dc604000000b005ff91d842b0mr127588ywd.46.1707415853936; Thu, 08 Feb
- 2024 10:10:53 -0800 (PST)
+	s=arc-20240116; t=1707416039; c=relaxed/simple;
+	bh=ysgMn0ZRWUYT/Hge0FlA9uwr6TJWomFtNilVmXv2T/w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cZo5n1dPBeqOCmJ1V3uvXbM5Ps660KtcfT9IyNdphaP3kKI5RPS8tdsWu1KAGAdhBcWBCrHSac+OpZcn6tns/9fyg4HBHWtH+Xb9ZcI69EubyG/5kC37QKYc9JtpDtVt6nafJl7X8kL98sKGSaWGehsrDSC6VoUqImgeZuOXMqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b=oWNaOguX; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1707416015; x=1708020815; i=erick.archer@gmx.com;
+	bh=ysgMn0ZRWUYT/Hge0FlA9uwr6TJWomFtNilVmXv2T/w=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=oWNaOguXBS+OEugqNs5oiSX4ERBLtaNWdXGAmpmbvCulbsGo2Vly8ueemgf/tuFm
+	 ArLtR0+CyRhfuf17Io0mpxoI6Gr4sKh3eIrbd1hMx7+dUfudz4FLpk5mmdh1AHc3/
+	 J7HKmXQvJ0WII92bM9Braws0HJBi8mDF0phAC0goZiSGRa/4rNI/ffTt04oxDQp/g
+	 YWu9HbWSoYuKuAd6TIGS45tGwv17HOFB4tN/Kdac7/jFQUPXf76Q+5I3oC2F0gB8D
+	 jwb8RjPYxqKVcxZ69zzUZbjQlMk9OZSUf+MA5tGvl5lougAf5RRBodg8USxxWLYn+
+	 nncympLAZejWAvsTUg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
+ (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1M7b6l-1rdLQw2iQn-0081qr; Thu, 08 Feb 2024 19:13:35 +0100
+From: Erick Archer <erick.archer@gmx.com>
+To: Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Erick Archer <erick.archer@gmx.com>,
+	intel-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] drm/i915: Add flex arrays to struct i915_syncmap
+Date: Thu,  8 Feb 2024 19:13:18 +0100
+Message-Id: <20240208181318.4259-1-erick.archer@gmx.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208165937.2221193-1-andriy.shevchenko@linux.intel.com> <20240208-drearily-carwash-60e4ba70a559@spud>
-In-Reply-To: <20240208-drearily-carwash-60e4ba70a559@spud>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 8 Feb 2024 19:10:40 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWBbjHe8D+sn94wMqXy3Rv-VU2CDWca=fJKyH+=G_ngmw@mail.gmail.com>
-Message-ID: <CAMuHMdWBbjHe8D+sn94wMqXy3Rv-VU2CDWca=fJKyH+=G_ngmw@mail.gmail.com>
-Subject: Re: [PATCH v1 00/15] auxdisplay: linedisp: Clean up and add new driver
-To: Conor Dooley <conor@kernel.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Robin van der Gracht <robin@protonic.nl>, 
-	Paul Burton <paulburton@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:pfHdlpNnJigTy8aCxrOPtJDMrJKf0ixBybkrQ5Vv5mXAzAOCOce
+ kE/56VgSJ24fEWyckAkZBiWw31er/4+LJmrLfiKbxBq0xz8Hfrzpel9d0ON3gwuUpxPyHbE
+ rdS3TQvdJZV2shpo3dlarUHJyNmnOMWYszl8ojPossp4pbrgBMG/j9ZA3TOBvkYMcVXSjOq
+ g75Q7z0uPqbDs2hAyGnmQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ppjXGd503ms=;sjS14y9jdFkBR6vOViIScjo85yN
+ KfTKdz2Fv9Nbq/W5Jqvf4xxfnQ1w2GCFByHAxdDUY2RP7202k2ZAWvlSM0urrJigc9CxXV/JG
+ fwSSv9Au+xgAUGBhSRXmXrGNBw8Mpxjcx2Cxu7ylwNVU5BryCPLJrVN1Kqr/X8LQciF4Z98SU
+ u88Pc8e3boUUlXoMAj7mDdqiUG7huRaG78K0QJj9+F/Dl+lblSDEpN22wsSlwHg1zrNgdWZy8
+ /ArZ65G8ejLxWZylem8Z3we7BgCej3GduFX1U+GV41Mr00zND7V7nXX6Ka3P8uf+XK+kdTYAe
+ 9zQ8hT9cZA+dkXBzt9xVlH+YIbD4AVS5yYU5IaIyW4l9aavPNbB5UbUYXi5qzST8PlXIO5z10
+ TPrJi6LF3FumJcdFR7qWBiXWqGCZj+pvj2C9rbh07K5CVN/isEh4GKm+EkV78vuPIi8vWx0fm
+ mTH59jiovQSkRvF4G0a/OVh8s0h5GrRQU0hAkfdEByT9MwE4ECYbRukwShgl0krjkngxES3X1
+ ph/FZa0bB7UifadOOCFDrdIr/Om8JNwTNjAPFHHCaQK5x/w8HukWSkvmHmqzC9pQ13wCV459x
+ lNuIoZ1rjwixYJlqDV6UUL5kIy6td/X87DNG9qUvbTyMEIU+2jzCrmHMcDfLDticHuHkHgd4j
+ hAHgq9zmV+EtfmhjBu9DZAuUCYzc58MiDGmXFhndtGgPfIFi3/ESTTct2RyTjOmOAUE3Xn0WX
+ HByY3J1zQo5Kiwqs36sScHeLnEIn8r1m9RBOFbbUyd6imT6SCGyF5Mj01+RhT6tW0DSWQXmoJ
+ Yo+WE7vkwJAAKwVZx6Sh83FtKOewKbNxiCF4OQ2vcaKJ0=
 
-On Thu, Feb 8, 2024 at 6:52=E2=80=AFPM Conor Dooley <conor@kernel.org> wrot=
-e:
-> On Thu, Feb 08, 2024 at 06:58:43PM +0200, Andy Shevchenko wrote:
-> > Add a new initial driver for Maxim MAX6958/6959 chips.
-> > While developing that driver I realised that there is a lot
-> > of duplication between ht16k33 and a new one. Hence set of
-> > cleanups and refactorings.
-> >
-> > Note, the new driver has minimum support of the hardware and
-> > I have plans to cover more features in the future.
-> >
-> > Andy Shevchenko (15):
-> >   auxdisplay: img-ascii-lcd: Make container_of() no-op for struct
-> >     linedisp
-> >   auxdisplay: linedisp: Free allocated resources in ->release()
-> >   auxdisplay: linedisp: Use unique number for id
-> >   auxdisplay: linedisp: Unshadow error codes in ->store()
-> >   auxdisplay: linedisp: Add missing header(s)
-> >   auxdisplay: linedisp: Move exported symbols to a namespace
-> >   auxdisplay: linedisp: Group line display drivers together
-> >   auxdisplay: linedisp: Provide struct linedisp_ops for future extensio=
-n
-> >   auxdisplay: linedisp: Add support for overriding character mapping
-> >   auxdisplay: linedisp: Provide a small buffer in the struct linedisp
-> >   auxdisplay: ht16k33: Move ht16k33_linedisp_ops down
-> >   auxdisplay: ht16k33: Switch to use line display character mapping
-> >   auxdisplay: ht16k33: Use buffer from struct linedisp
-> >   dt-bindings: auxdisplay: Add Maxim MAX6958/6959
-> >   auxdisplay: Add driver for MAX695x 7-segment LED controllers
->
-> Not all of these patches have made their way to the lists FYI:
-> 2024-02-08 16:58 Andy Shevchenko [this message]
-> 2024-02-08 16:58 ` [PATCH v1 01/15] auxdisplay: img-ascii-lcd: Make conta=
-iner_of() no-op for struct linedisp Andy Shevchenko
-> 2024-02-08 16:58 ` [PATCH v1 02/15] auxdisplay: linedisp: Free allocated =
-resources in ->release() Andy Shevchenko
-> 2024-02-08 16:58 ` [PATCH v1 03/15] auxdisplay: linedisp: Use unique numb=
-er for id Andy Shevchenko
-> 2024-02-08 16:58 ` [PATCH v1 06/15] auxdisplay: linedisp: Move exported s=
-ymbols to a namespace Andy Shevchenko
-> 2024-02-08 16:58 ` [PATCH v1 07/15] auxdisplay: linedisp: Group line disp=
-lay drivers together Andy Shevchenko
-> 2024-02-08 16:58 ` [PATCH v1 08/15] auxdisplay: linedisp: Provide struct =
-linedisp_ops for future extension Andy Shevchenko
-> 2024-02-08 16:58 ` [PATCH v1 09/15] auxdisplay: linedisp: Add support for=
- overriding character mapping Andy Shevchenko
-> 2024-02-08 16:58 ` [PATCH v1 10/15] auxdisplay: linedisp: Provide a small=
- buffer in the struct linedisp Andy Shevchenko
-> 2024-02-08 16:58 ` [PATCH v1 14/15] dt-bindings: auxdisplay: Add Maxim MA=
-X6958/6959 Andy Shevchenko
-> 2024-02-08 16:58 ` [PATCH v1 15/15] auxdisplay: Add driver for MAX695x 7-=
-segment LED controllers Andy Shevchenko
-> https://lore.kernel.org/all/20240208165937.2221193-1-andriy.shevchenko@li=
-nux.intel.com/
+The "struct i915_syncmap" uses a dynamically sized set of trailing
+elements. It can use an "u32" array or a "struct i915_syncmap *"
+array.
 
-Same for my mailbox.
+So, use the preferred way in the kernel declaring flexible arrays [1].
+Because there are two possibilities for the trailing arrays, it is
+necessary to declare a union and use the DECLARE_FLEX_ARRAY macro.
 
-Gr{oetje,eeting}s,
+The comment can be removed as the union is now clear enough.
 
-                        Geert
+Also, avoid the open-coded arithmetic in the memory allocator functions
+[2] using the "struct_size" macro.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+Moreover, refactor the "__sync_seqno" and "__sync_child" functions due
+to now it is possible to use the union members added to the structure.
+This way, it is also possible to avoid the open-coded arithmetic in
+pointers.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Link: https://www.kernel.org/doc/html/next/process/deprecated.html#zero-le=
+ngth-and-one-element-arrays [1]
+Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-co=
+ded-arithmetic-in-allocator-arguments [2]
+Signed-off-by: Erick Archer <erick.archer@gmx.com>
+=2D--
+ drivers/gpu/drm/i915/i915_syncmap.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/i915_syncmap.c b/drivers/gpu/drm/i915/i9=
+15_syncmap.c
+index 60404dbb2e9f..df6437c37373 100644
+=2D-- a/drivers/gpu/drm/i915/i915_syncmap.c
++++ b/drivers/gpu/drm/i915/i915_syncmap.c
+@@ -75,13 +75,10 @@ struct i915_syncmap {
+ 	unsigned int height;
+ 	unsigned int bitmap;
+ 	struct i915_syncmap *parent;
+-	/*
+-	 * Following this header is an array of either seqno or child pointers:
+-	 * union {
+-	 *	u32 seqno[KSYNCMAP];
+-	 *	struct i915_syncmap *child[KSYNCMAP];
+-	 * };
+-	 */
++	union {
++		DECLARE_FLEX_ARRAY(u32, seqno);
++		DECLARE_FLEX_ARRAY(struct i915_syncmap *, child);
++	};
+ };
+
+ /**
+@@ -99,13 +96,13 @@ void i915_syncmap_init(struct i915_syncmap **root)
+ static inline u32 *__sync_seqno(struct i915_syncmap *p)
+ {
+ 	GEM_BUG_ON(p->height);
+-	return (u32 *)(p + 1);
++	return p->seqno;
+ }
+
+ static inline struct i915_syncmap **__sync_child(struct i915_syncmap *p)
+ {
+ 	GEM_BUG_ON(!p->height);
+-	return (struct i915_syncmap **)(p + 1);
++	return p->child;
+ }
+
+ static inline unsigned int
+@@ -200,7 +197,7 @@ __sync_alloc_leaf(struct i915_syncmap *parent, u64 id)
+ {
+ 	struct i915_syncmap *p;
+
+-	p =3D kmalloc(sizeof(*p) + KSYNCMAP * sizeof(u32), GFP_KERNEL);
++	p =3D kmalloc(struct_size(p, seqno, KSYNCMAP), GFP_KERNEL);
+ 	if (unlikely(!p))
+ 		return NULL;
+
+@@ -282,7 +279,7 @@ static noinline int __sync_set(struct i915_syncmap **r=
+oot, u64 id, u32 seqno)
+ 			unsigned int above;
+
+ 			/* Insert a join above the current layer */
+-			next =3D kzalloc(sizeof(*next) + KSYNCMAP * sizeof(next),
++			next =3D kzalloc(struct_size(next, child, KSYNCMAP),
+ 				       GFP_KERNEL);
+ 			if (unlikely(!next))
+ 				return -ENOMEM;
+=2D-
+2.25.1
+
 
