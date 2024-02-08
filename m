@@ -1,177 +1,96 @@
-Return-Path: <linux-kernel+bounces-58036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A34A084E086
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:17:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 406E084E08A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:18:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6E631C2466B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:17:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F08E1284214
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEFB971B45;
-	Thu,  8 Feb 2024 12:17:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C90871B3D;
+	Thu,  8 Feb 2024 12:18:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iILUfuwv"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CNzUK9Rv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FAB771B30
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 12:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB5171B30;
+	Thu,  8 Feb 2024 12:18:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707394645; cv=none; b=kLqnnM0/01cxIbuaRkIY66823zpN9H9dxO0fbMgVOX1V9pqvU4OX82RC6t5Yr77K2jKgwHzpJ4DZx3ceI0J4Pvf0lYVXE53lD/KQ596oHfXAgrCJJHxYwIIHSlfjR1jum5buv57XPgM4EUEWtgCBKh/wTRQq8mBucLQEELqJUDI=
+	t=1707394683; cv=none; b=u4DP3tQLfc7lfwlqmSxTDGpmKflSP3ohPiYs0C5YI9L98RUQr/MsOK/OhIwauWwkzp7FhlbK7j88V4MnXb+yuaG9+IBmXDCAkRuf4OOkA1VicIKpI8aMTtTITFtEigXB6vN7jmPlF506fQnZ0Ar9AZ43Dc01+BEMXnNLMZX+8Lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707394645; c=relaxed/simple;
-	bh=SDnWvrHwmJuabSaX8EENCVvt2o1aCWKM+am/6SnCsUI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W1L+tkgEJp0Tc2kFBspWZ5e+Y5/cLu6GUg6fbWwMHuUOJDp+/YKr4xoe9z8DPCKbd5XeJBjDdN0N3AwDcCcQRJCPfOUWAV6jkQjN2hEHRfCCVAYwd4kQdZy7xN7nYMkQRgZOUAmv58r+od+F+RQn6oDRXZJb56XFl/Zaz2rCTRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iILUfuwv; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-604b23d91afso839317b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 04:17:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707394643; x=1707999443; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W3fTgipKA1mJUXQgJrotu1G7J3bgKYDJrXjgYc5OGnw=;
-        b=iILUfuwvqOJAOhIZ6E2NT1GVm4gnXkfOQkP3MpgHfRT6vx042QILCOoaYBJTDN/PY0
-         0jZO9yYJ41at8si+56yNziOd9xqbNA6McKdXP6cuq0NYJykgfONwzeNuzkD0L8MztNAF
-         v4zIRTZN3kdT2J2tQVo8kCk3Ong6ONGYFpck6M6SxsPSMaPYe5OSvml0XofjvVea+HTD
-         a2KKQX4Qp8QVZ3/AG2Ww5ere2H7vTFosrEEHeibrV8+2V0FoyM2zj/+gawjtpJWf7wCR
-         PK1JMgGWR0R3UEgeDKKw4ze6g8B/BYch8Tu9cY7in7hmE+iziv1kEXFqZ+vgaju15Kg1
-         EWdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707394643; x=1707999443;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W3fTgipKA1mJUXQgJrotu1G7J3bgKYDJrXjgYc5OGnw=;
-        b=KbXzwiFkSW0Hh3f2q8v9Ow+pQSIi7i8cqhVTngRBoB8WJZL8GpB+OQWk3p5CJabWto
-         vDkhDGPnYM20hfa6LuFfRGDszxmDcppi83fizSunK4N9WbUXWy3HXLc38QxYxBRZ1L2R
-         pH8l9UVG5ZDd9NCc95B7l5LJrTmqHDGwSdw1UxrjQZ1Rw0aywm3eIDI0TP7WYzCGv6gU
-         4bxOm5JVQyH4DyUsBbs87y9FlJT2IJ2pS1/Z+qsq6zA8KlpL4RI/jmDCQpUtbheZM/Bx
-         IEP4AEcR/xkbuU/eAmW1AnIn4XBiOxkvb3l71lPHr2NLjg1ZMtuU2odZEc1oVII07ydI
-         7Vdw==
-X-Gm-Message-State: AOJu0YxPOji2Pmh4+0YXVg2SlEQ2oZxjGQPb7EO2/K4pgEL/JWZeije2
-	wadT4+moXub2TeHKiciUnM56NvlYw1nAJAU00AuTS4k0av95R6OmCkI3kYrTj+SyEI9GcXeKxy4
-	ikijXxh1e38VDDl7jno4LsAP76KXiAuE3ai05dw==
-X-Google-Smtp-Source: AGHT+IFONrZpY1udiH7GcMjBcvJphOhY9RJjFSlOalpp3vCebWgXF4IJOzDsqHtiVRo+/UzSburpcEr9MeKGwCIf1QA=
-X-Received: by 2002:a0d:ec43:0:b0:603:fd67:a5aa with SMTP id
- r3-20020a0dec43000000b00603fd67a5aamr8835247ywn.19.1707394643231; Thu, 08 Feb
- 2024 04:17:23 -0800 (PST)
+	s=arc-20240116; t=1707394683; c=relaxed/simple;
+	bh=vlMeIXt8ifiopSXwgt29frglOiKdPC8TfKie08iAiqE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D7Vgn3zirufHME7p722Qp10Rk04xgenK11Guv/lf3AaI1i13AFN506dSnTTV5L8aEMQm3pl6n7cJOCJ0IiOv6FPr7KV+CwttfePKw5F59PO9OBVGLNKDhxhVo+XhCS563+eASf9V2ChAKJjDzbsl6tRKEJERp12ZLnxLYrMhOvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CNzUK9Rv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 101F8C433F1;
+	Thu,  8 Feb 2024 12:17:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707394682;
+	bh=vlMeIXt8ifiopSXwgt29frglOiKdPC8TfKie08iAiqE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=CNzUK9Rvo6u7WhIyz3ev1ouEu88GNkkm/9d+qW+tFOeEYCzEybDoZ5DY2dd6tV140
+	 UxOfjdRHuz6mugw2o/rLMGUgCDzfOT1yVVvVzUKt8JU4pQyAk1IPcnwZzEyHTROXib
+	 OzzaoH+3ohuMyk6ohmxVg7DrsHsZRIXI7yD943/MCMz+D5frXbCldRmhn39p21qeS/
+	 SQve1rNBTrR8CBhQmXI0utqkNrpyVBrtlglupJlXPR8mQa7Zae1r1Nm1a5ZNyIdRb2
+	 8b0jSuzvS90IwTYI7QAvW9gyRv5GSFZSSdqfTDVHathgViK/tPq1C9D/LzT41ln4Sc
+	 bPajP1EKdZIkA==
+Message-ID: <daec387f-987e-43c6-a9d4-caa4580d1113@kernel.org>
+Date: Thu, 8 Feb 2024 14:17:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240121-pinctrl-scmi-v3-0-8d94ba79dca8@nxp.com>
- <f88d07ef-83b2-4d14-976a-6dbbd71e036f@oss.nxp.com> <CACRpkdYV=qYQ9qDUWYTLDAV1niay30gYH5S=zjfi31GpeY5o-A@mail.gmail.com>
- <DU0PR04MB9417A9074C5DC49AE689E65288432@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <Zbt-QkWhz5d9P-v6@pluto> <DU0PR04MB9417CA6CF089B264112C32A088402@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <CACRpkdYCrbNB8wu4rO3Yx0qomxR3kTt0P7YH7kc2HPCbrgt=tg@mail.gmail.com> <DU0PR04MB9417335A3A41BE4E373B915188472@DU0PR04MB9417.eurprd04.prod.outlook.com>
-In-Reply-To: <DU0PR04MB9417335A3A41BE4E373B915188472@DU0PR04MB9417.eurprd04.prod.outlook.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 8 Feb 2024 13:17:11 +0100
-Message-ID: <CACRpkdbguqMvx5w2fEDaNkNTmNtwphns-W1c2i+ntoi1CHqaVg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-To: Peng Fan <peng.fan@nxp.com>
-Cc: Cristian Marussi <cristian.marussi@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, 
-	"Peng Fan (OSS)" <peng.fan@oss.nxp.com>, 
-	"souvik.chakravarty@arm.com" <Souvik.Chakravarty@arm.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>, 
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, AKASHI Takahiro <takahiro.akashi@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Nitin Garg <nitin.garg_3@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/3] arm64: dts: ti: k3-am642-evm: add overlay for
+ icssg1 2nd port
+Content-Language: en-US
+To: MD Danish Anwar <danishanwar@ti.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Tero Kristo <kristo@kernel.org>, srk@ti.com, r-gunasekaran@ti.com
+References: <20240205090546.4000446-1-danishanwar@ti.com>
+ <20240205090546.4000446-4-danishanwar@ti.com>
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20240205090546.4000446-4-danishanwar@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 5, 2024 at 10:11=E2=80=AFAM Peng Fan <peng.fan@nxp.com> wrote:
-> [Me]
 
-> > This is very much to the core of the problem isn't it?
->
-> Yes. Code size should be as small as possible.
 
-This is a valid argument, I don't know how big your SCMI FW is, or
-if it has to fit into some on-chip memory or so.
+On 05/02/2024 11:05, MD Danish Anwar wrote:
+> The am642-evm doesn't allow to enable 2 x CPSW3g ports and 2 x ICSSG1 ports
+> all together, so base k3-am642-evm.dts enables by default 2 x CPSW3g ports
+> and 1 x ICSSG1 ports, but it is also possible to support 1 x CPSW3g ports
+> and 2 x ICSSG1 ports configuration.
+> 
+> This patch adds overlay to support 1 x CPSW3g ports and 2 x ICSSG1 ports
+> configuration:
+> - Renames 'mdio-mux-1' node to 'mdio-mux@1'
+> - Add label name 'mdio_mux_1' for 'mdio-mux@1' node so that the node
+>   'mdio-mux@1' can be disabled in the overlay using the label name.
+> - disable 2nd CPSW3g port
+> - update CPSW3g pinmuxes to not use RGMII2
+> - disable mdio-mux-1 and define mdio-mux-2 to route ICSSG1 MDIO to the
+>   shared DP83869 PHY
+> - add and enable ICSSG1 RGMII2 pinmuxes
+> - enable ICSSG1 MII1 port
 
-> And using SCMI generic pinconf, there will be multiple
-> SCMI calls(not MMIO access), such as setting mux(ops->set_mux)
-> needs an SCMI call, pad settings(ops->pin_config_set) needs an SCMI call.
-> And maybe ops->get_function_name  needs an extra SCMI call.
->
-> With current i.MX design, only one SCMI call is used, which
-> use less time.
+/icssg1/ICSSG1 in subject
 
-I think this could be fixed in the spec, let's see what the spec author say=
-s.
+> 
+> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+> Reviewed-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
 
-In any case: pin control is pretty much never on a hot path, a few
-microseconds more or less doesn't matter. It's usually just used
-and probe, suspend/resume and maybe shutdown. All usecases on
-the slowpath, so I think it's a premature optimization.
-
-> > Over the years I have come to regret it a bit, I think insisting on gro=
-ups and
-> > functions as strings is better for abstraction. And the point of firmwa=
-re is to
-> > abstract things so they work the same on all systems.
->
-> With current:
->         pinctrl_uart1: uart1grp {
->                 fsl,pins =3D <
->                         IMX95_PAD_UART1_RXD__AONMIX_TOP_LPUART1_RX      0=
-x31e
->                         IMX95_PAD_UART1_TXD__AONMIX_TOP_LPUART1_TX      0=
-x31e
->                 >;
->         };
->
-> It is very easy for people to know the meaning from reading reference man=
-ual.
-
-Yes If the defines are provided it's quite readable. And I think Freescale
-people really get used to it.
-
-But from a maintenance and standardization point of view, it's nice if
-everything works the same way and looks the same.
-
-> If using generic pinconf, the dt node will be like
-> Uartgrp {
->         pins =3D "uart1txd", "uart1rxd";
->         functions =3D "uart1";
->         bias-xx
->         drive-strength =3D
-> };
-
-Well that looks good to me :)
-
-It looks the same as e.g. Qualcomm or nVidia pins. So it's easy for me
-to read and understand, and that's my perspective as a maintainer.
-
-> The firmware needs add more code to export functions, pack the conf setti=
-ngs,
-> each pins needs a function name per current i.MX HW logic.
-
-Indeed, but I think any standard requires a bit of code to implement.
-How much is "too much" code is a matter of taste and physical contraints.
-(A PC UEFI BIOS isn't exactly small either.)
-
-I understand your point of view, and I think it is pretty much
-the same stance that the Freescale maintainers put forward for the DT
-bindings for Freescale.
-
-Yours,
-Linus Walleij
+Reviewed-by: Roger Quadros <rogerq@kernel.org>
 
