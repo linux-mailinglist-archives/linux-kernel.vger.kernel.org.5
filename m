@@ -1,132 +1,171 @@
-Return-Path: <linux-kernel+bounces-58628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07F2684E901
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:35:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E994084E904
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:36:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7789296D71
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:35:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5812A1F2155D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:36:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 080CB3839C;
-	Thu,  8 Feb 2024 19:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9554B381BF;
+	Thu,  8 Feb 2024 19:36:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="TmrFHOol"
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="nghsWFai"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEFF9383A1
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 19:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D93936B0A;
+	Thu,  8 Feb 2024 19:36:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707420909; cv=none; b=OPsumbom4+gl7XU2SPFdmxqHzTBWj3+HMbjHtSRLsD1azgfCd9BcwrR5xCobUuv4GnaydOXxTwh2betgbkVG8CARMMY0glqA1XlBi3+h+6Cv8AEiruUAfGRPZW2kRtAx3S4NVgaOt2o++tuHcoXBNDVicXWla6CooAYiV5bUUQY=
+	t=1707420966; cv=none; b=oIi7KRADUJ4RJ4aE+kpj9IpuyZ3TPe5Yhl0Xp2pZ30MAbnQ1n9chBJKiwGAfigo9UdqO2QVek/eDzlseCT9EulwbT8yHeHKPsf9kYSFDO6LvpP5qaNP58x2HcYCft2gyB/QZC7TqSo25Vl4SySaKL5m/6S0kRbsGGOVrJLZbvaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707420909; c=relaxed/simple;
-	bh=49ZmMXs52sNHDqMkM1lTtLl7A2faEk+okVH4w0xg/Rc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rDA2XdlYazcW0XlXN5+TtrUECPwHikmdGsbcDKn8MiyloZ7AZdr1NkT5Ytd1oBGVRASWByemHMx4J8AQ2ceQ986tFWYtwVtCx2prpx3bIU0XhT0souNEVlDdktBNe8fSWom/WcIeKY8YkJAhBKxoUZ5bEcSD/L3TYlWYEw+hgXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=TmrFHOol; arc=none smtp.client-ip=209.85.222.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-7d6a772e08dso42684241.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 11:35:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707420907; x=1708025707; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pmA2415mqll/My0qNi8647dwajjmJqUb2r+iKelLxdQ=;
-        b=TmrFHOolcKpOuTjNn9YG7SOckAcl/yyMU4MZcmbrM0628/LK1h/oYb7SCWd+Vd+YT/
-         Wiot9hv7XOXX6FMuyjxB2da4cmDXey6fuIwrehTLbp87629kF4jHx9U5bN9y8xf8Gl3v
-         aKdfJ/Aygfz5y1N9YSyYOolSnqlrgFtxCd/Hj80zdFRe1kXJYbaHVaRXtI+QRL9k/eY5
-         DM86Xihb6ur/VG0l4q2oikPxLMp85o3do50SiqFTrwlX/eEIAO2dNLMgB+dQJQCr1tmQ
-         v4UYPbbXAUVYTLY7nN1XeuLcEcZqJ30tvQnP21wGKeS4RqBjf9fMTY8diKXzI06Alaoh
-         mMjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707420907; x=1708025707;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pmA2415mqll/My0qNi8647dwajjmJqUb2r+iKelLxdQ=;
-        b=AKV/1Qng7lCB5hqYMNnhYffRiP3zNgO2hwvyyGwcoE4NVVOE39Ak5bTV9k9BKzzsU6
-         S6mmhQflqRfw3JBqKapID7rjNbQ/Szr50eZ9+PyAJb70wFJVXgXjrOUoOSx63+XNYbXJ
-         qj+kWJx1RogGQbXrGgOX/mcPe4Kv4Y+16B9km/Uo1MDLlrnGdvNbXwNUPVHPH4NQXmEX
-         xQASgKKQaRLosLAsTYHovLl+EBnYXoxACQviE0vjnC4QqkZ6Hwps9lj0GGHEk74J35cZ
-         4xEotiOSNT9uH7CKeUpMvxmiCUZJ6KNl9x486DuTD/PAi0a8PosUzTLQBAlamVpAfxsO
-         esfg==
-X-Forwarded-Encrypted: i=1; AJvYcCXs7b+lL4zM9YH7HUGKlGDDnMnTKZ/FMSfrDqyBGSWglRViaWgKs3JeB3nVKNiqfeutnzaZqdhlmvWF/qUEGCaLTCV8EXsHye8fzZ64
-X-Gm-Message-State: AOJu0Yw3G1C19DeD9coRF8kzg2rJatGFFjf9lBu3hJ/2QgOojaUEanoP
-	DqKfoU9IT4/ZIKoXAWVxuipW0A8vlUXOb62i88m3fJ9rMiMDAfTtVMVKEmRq3XuJPtr88kEjHaa
-	O0Ka/oM6h36vef7cZz2fJ9ht0eT5EDx+WOtEApw==
-X-Google-Smtp-Source: AGHT+IGMJWFdJBtDJw2nuq+Tc10l8gxwOAqqBaCaLXfg49jg7duuQITeryaa1iMz1zlg9PJAshT/cXnHy6978emBRSI=
-X-Received: by 2002:a1f:da44:0:b0:4bd:3606:c7aa with SMTP id
- r65-20020a1fda44000000b004bd3606c7aamr597594vkg.5.1707420906766; Thu, 08 Feb
- 2024 11:35:06 -0800 (PST)
+	s=arc-20240116; t=1707420966; c=relaxed/simple;
+	bh=5lZgy15lyjC3SHCmPGyg/uVp5XyWug9UfglmY/G6ex4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sb+sTYaL4GpV13ro3x/tPnvh5/SGbGUeyt115GyRyiCsdXfuSe5Ky6sl+3iyiCyJC7ziqndg2pkmd5jnEeMg/NScqdlsDlAv7IfYTEs+UfCukUF3cXPpMZm103GXDPIu5zQQ7kmPHbi+1DAHXG2341d2YDL359wcs1VjBL0Q56U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=nghsWFai; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3C11B1BF207;
+	Thu,  8 Feb 2024 19:35:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1707420958;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ddz8Sv+QlYT5INqMFfFhMaDjWIdMDNTLjt/Wj7ITUr8=;
+	b=nghsWFaikliESs/fO8r46x5t8cVB/B+0wrV0kdwuHfqtdxFbxnOj36IIpcEDKDvErggVne
+	Qg4XiFACEowYkf02TO0897fWCBHQNG+iINuFD3b0wK0vQDM1Palyk4GdWK0P7yZaCiDgrt
+	hI5ScCCJZY88D3teO70p343rCtIYwizwh7Acj+kNv5MCO5LzNnNWq2udd2PrTSkWNO4YhD
+	dtFTnyavm/on7eUzWUjCv3LQWl8x8nJ5s+OAi5AXg04pBCunytKhBh52q3pv0YLk9uvTrJ
+	hPY/C8NtqMDBDyGuwg/IPcPFmfW8kUhMNpnvLz7nerfL55pQg8T93IC0XisgIQ==
+Message-ID: <2a6a8d93-beae-4bec-a792-0e093b4c4ecd@arinc9.com>
+Date: Thu, 8 Feb 2024 22:35:53 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208095920.8035-1-brgl@bgdev.pl> <20240208095920.8035-20-brgl@bgdev.pl>
- <ZcURtLZoEftBDpsy@smile.fi.intel.com> <CAMRc=MdaxrjKVoBe92ci+4U-VbxyuxMVu30-m2E3My0k7KN65A@mail.gmail.com>
- <ZcUqWy34Z_QGutNn@smile.fi.intel.com>
-In-Reply-To: <ZcUqWy34Z_QGutNn@smile.fi.intel.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 8 Feb 2024 20:34:56 +0100
-Message-ID: <CAMRc=Me75F3KmTJbiNZKXNpwU0a_fSd3UffWORwXzDLKAMcXag@mail.gmail.com>
-Subject: Re: [PATCH v3 19/24] gpio: remove unnecessary checks from gpiod_to_chip()
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Kent Gibson <warthog618@gmail.com>, 
-	Alex Elder <elder@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	"Paul E . McKenney" <paulmck@kernel.org>, Wolfram Sang <wsa@the-dreams.de>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH netnext 8/8] net: dsa: mt7530: simplify link operations
+ and force link down on all ports
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
+ Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+ Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Russell King <linux@armlinux.org.uk>, mithat.guner@xeront.com,
+ erkin.bozoglu@xeront.com, Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240208-for-netnext-mt7530-improvements-3-v1-0-d7c1cfd502ca@arinc9.com>
+ <20240208-for-netnext-mt7530-improvements-3-v1-8-d7c1cfd502ca@arinc9.com>
+ <ZcT_r68mStRAC3Uk@makrotopia.org>
+Content-Language: en-US
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <ZcT_r68mStRAC3Uk@makrotopia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-On Thu, Feb 8, 2024 at 8:24=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Feb 08, 2024 at 08:17:14PM +0100, Bartosz Golaszewski wrote:
-> > On Thu, Feb 8, 2024 at 6:39=E2=80=AFPM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Thu, Feb 08, 2024 at 10:59:15AM +0100, Bartosz Golaszewski wrote:
->
-> ...
->
-> > > > -     if (!desc || IS_ERR(desc) || !desc->gdev || !desc->gdev->chip=
-)
-> > > > +     if (!desc || IS_ERR(desc))
-> > >
-> > > IS_ERR_OR_NULL()
-> >
-> > Ah, good point. It's a small nit though so I'll fix it when applying
-> > barring some major objections for the rest.
-> >
-> > > >               return -EINVAL;
->
-> thinking more about it, shouldn't we return an actual error to the caller=
- which
-> is in desc?
->
->      if (!desc)
->                return -EINVAL;
->      if (IS_ERR(desc))
->         return PTR_ERR(desc);
->
-> ?
+On 8.02.2024 19:22, Daniel Golle wrote:
+> On Thu, Feb 08, 2024 at 08:51:36AM +0300, Arınç ÜNAL via B4 Relay wrote:
+>> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+>>
+>> Currently, the link operations for switch MACs are scattered across
+>> port_enable, port_disable, phylink_mac_config, phylink_mac_link_up, and
+>> phylink_mac_link_down.
+>>
+>> port_enable and port_disable clears the link settings. Move that to
+>> mt7530_setup() and mt7531_setup_common() which set up the switches. This
+>> way, the link settings are cleared on all ports at setup, and then only
+>> once with phylink_mac_link_down() when a link goes down.
+>>
+>> Enable force mode at setup to apply the force part of the link settings.
+>> This ensures that only active ports will have their link up.
+>>
+>> Now that the bit for setting the port on force mode is done on
+>> mt7530_setup() and mt7531_setup_common(), get rid of PMCR_FORCE_MODE_ID()
+>> which helped determine which bit to use for the switch model.
+>>
+>> The "MT7621 Giga Switch Programming Guide v0.3", "MT7531 Reference Manual
+>> for Development Board v1.0", and "MT7988A Wi-Fi 7 Generation Router
+>> Platform: Datasheet (Open Version) v0.1" documents show that these bits are
+>> enabled at reset:
+>>
+>> PMCR_IFG_XMIT(1) (not part of PMCR_LINK_SETTINGS_MASK)
+>> PMCR_MAC_MODE (not part of PMCR_LINK_SETTINGS_MASK)
+>> PMCR_TX_EN
+>> PMCR_RX_EN
+>> PMCR_BACKOFF_EN (not part of PMCR_LINK_SETTINGS_MASK)
+>> PMCR_BACKPR_EN (not part of PMCR_LINK_SETTINGS_MASK)
+>> PMCR_TX_FC_EN
+>> PMCR_RX_FC_EN
+>>
+>> These bits also don't exist on the MT7530_PMCR_P(6) register of the switch
+>> on the MT7988 SoC:
+>>
+>> PMCR_IFG_XMIT()
+>> PMCR_MAC_MODE
+>> PMCR_BACKOFF_EN
+>> PMCR_BACKPR_EN
+>>
+>> Remove the setting of the bits not part of PMCR_LINK_SETTINGS_MASK on
+>> phylink_mac_config as they're already set.
+>>
+>> Suggested-by: Vladimir Oltean <olteanv@gmail.com>
+>> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+>> ---
+>>   drivers/net/dsa/mt7530.c | 26 +++++++++++++-------------
+>>   drivers/net/dsa/mt7530.h |  2 --
+>>   2 files changed, 13 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+>> index 5c8ad41ce8cd..f67db577d1c0 100644
+>> --- a/drivers/net/dsa/mt7530.c
+>> +++ b/drivers/net/dsa/mt7530.c
+>> @@ -1018,7 +1018,6 @@ mt7530_port_enable(struct dsa_switch *ds, int port,
+>>   	priv->ports[port].enable = true;
+>>   	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_MATRIX_MASK,
+>>   		   priv->ports[port].pm);
+>> -	mt7530_clear(priv, MT7530_PMCR_P(port), PMCR_LINK_SETTINGS_MASK);
+>>   
+>>   	mutex_unlock(&priv->reg_mutex);
+>>   
+>> @@ -1038,7 +1037,6 @@ mt7530_port_disable(struct dsa_switch *ds, int port)
+>>   	priv->ports[port].enable = false;
+>>   	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_MATRIX_MASK,
+>>   		   PCR_MATRIX_CLR);
+>> -	mt7530_clear(priv, MT7530_PMCR_P(port), PMCR_LINK_SETTINGS_MASK);
+>>   
+>>   	mutex_unlock(&priv->reg_mutex);
+>>   }
+>> @@ -2257,6 +2255,12 @@ mt7530_setup(struct dsa_switch *ds)
+>>   	mt7530_mib_reset(ds);
+>>   
+>>   	for (i = 0; i < MT7530_NUM_PORTS; i++) {
+>> +		/* Clear link settings and enable force mode to force link down
+>> +		 * on all ports until they're enabled later.
+>> +		 */
+>> +		mt7530_clear(priv, MT7530_PMCR_P(i), PMCR_LINK_SETTINGS_MASK);
+>> +		mt7530_set(priv, MT7530_PMCR_P(i), PMCR_FORCE_MODE);
+> 
+> Any reason to not combine the two lines above into a single call:
+> 
+> mt7530_rmw(priv, MT7530_PMCR_P(i),
+> 	   PMCR_LINK_SETTINGS_MASK | PMCR_FORCE_MODE,
+> 	   PMCR_FORCE_MODE);
 
-Hmm... maybe but that's out of the scope of this series.
+No reason whatsoever, I'll do this. Thanks!
 
-Bart
-
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Arınç
 
