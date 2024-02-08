@@ -1,147 +1,117 @@
-Return-Path: <linux-kernel+bounces-58647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BECE84E963
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:09:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D8B984E96F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:15:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1B2F1F28150
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:09:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 733B6B27FB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0A5383B0;
-	Thu,  8 Feb 2024 20:09:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E9238DF7;
+	Thu,  8 Feb 2024 20:15:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="brhehB14"
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="MRbtKWwk"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A5E383A1
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 20:09:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87CB738DE7
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 20:15:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707422979; cv=none; b=f0/+B4E4hZgfU5vLN6URqvwjOr8wkD81RzFNT0Kl2mUqrFw2+S29f2jqVpFc6pX+V3vioqSbgyeiiAwzELNtkuqvpfTwv47Pf53jQVcywedPAJxtLUfzhWJglFPEr+98iIS28pAgNu/jG5ZDf+VHAxRMUM1+HwLMhdKLkMaS3yk=
+	t=1707423317; cv=none; b=pA6aC3YbA9Qsu2wNbzXcpn0AXb4/DuW5k9qPuCkKfhkrmHift0Gqd4dWdcZQ2Y9RAMvsMeaWAoH2VLavU1qytMbPYzo+7RKSqjqWnBd6ZzcZKumQha2zUtHm1bpKBrjRS1GJ55nH5JeKD3MHD00AjuqiRulNpXsbETBBMatKQG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707422979; c=relaxed/simple;
-	bh=l+1KqC6Vl2SkwwuqrNnRTCCETZjGFHvF2DQF/YLmkdw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rh0UjaNAzk19nCR88X5Y82bEiINez4h+G1bBIsoN59uE9itmX+cnXrtulbgpLyAic0+SL3JxmX6aHMBP+nEhVVWJfB+IRs+HUe0hMwJn+8eup3QG3Pnf1pOOkcPFxjUJ6BwsrcYIipNn0osE50duvGJnRtwLx66WU40NRPriuwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=brhehB14; arc=none smtp.client-ip=209.85.161.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-599f5e71d85so124415eaf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 12:09:36 -0800 (PST)
+	s=arc-20240116; t=1707423317; c=relaxed/simple;
+	bh=w95z9LtvdNkUpKjwrkQVtuE+C6gu5L1A3XgFY1DPBwQ=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=e795cyP7l+p/rmCP1k2CmETmzuISFN0jj41R0Pa/bPLuK6dub4A9H6PinDmnqOSNYOsb+fYKMiJGfls6HAVDyrLFsoaASJbVJxQ8xAxVRNuEQEOC68SpxfVrBSf+8aziTDo4y5J9EbTka8DCoAhESkn9UiJXubk/1ZvnztbF0C8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=MRbtKWwk; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a36126ee41eso26870366b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 12:15:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1707422976; x=1708027776; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xKH5oL1qOtseBqZb3p5hrNYkk6e1TeAsUmuoiqUhVVg=;
-        b=brhehB14elahD2RnvVywbjIocZnnmKZMqJABY6IH0S5WXtih0zdeM+45ikdUcxAm4z
-         8s6PRwy9+Qa9r+L4m+FcRLoqFfJovBwxOnj7XfTcKTY6ZltuYq7voHPbNHXDLdIVoHq+
-         Tnml/IcA0rqaHWU+Dv84bliGTviG0kwtzSzaW8dPGtXiNOKeJ6qMLsrbj0kFzUAVOk/p
-         BZSVsKzJ1TUZNIQIHImWJBI/G9s3tLEkGy++wp393O8ZMYzJkF0WE4hpzoCeaZ0JB5LM
-         VAiIP/bsF29BCD7r/s/PBHifxNYYnYcjVmoXYpiq39X8FQWX2ajSmgcFOS230lDIw70d
-         lQCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707422976; x=1708027776;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1707423314; x=1708028114; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xKH5oL1qOtseBqZb3p5hrNYkk6e1TeAsUmuoiqUhVVg=;
-        b=XCQA0TG60Yqd3cbWGfJ64L5yoYi+c6uZKxpjhNBC+ZDxHnQCxQbSiURixmr+t16mLR
-         iReoDKiahp6ZlECDmdhqVDxXrfqLqgao7qiYXCFHY4SxqYfDKR6iG5h/5tVg5QQZInLn
-         CvQCcJpQgLpwthNFs21MgKWZuO+AdOax4HgouPahYPljOsDrL3pfsbt87VXqTqIHQsD2
-         8NUrBryxlmE36WWyNkEVyFUikp4toUHXhhNsPskWofmESIu5HqTAK363prrzMr07+OCm
-         wkXxytfuyj8JxOO1JaWXjrwVQ34MJ+OX+dGte+saw81vDeJRx7nhJumgRLXcmuOmSNQU
-         V3yw==
-X-Forwarded-Encrypted: i=1; AJvYcCX5JD4KWlfSnOUEV4gOpx/NywU1hYXKavrhKTohcnXqJSKBJxru8UuEkIKxS+chdFurZTTz5dNLX7g1SjX6NZ/sx3Y6f0PKjok1t4L3
-X-Gm-Message-State: AOJu0Yzgu5TlwodLcdgfCuZMt5Z4sYG6L/dQnomLmfXhtdAPGGesL+zD
-	rTXGpKoIAp498hvU9or2nnW/LyIr8TSWdW4kuuJMA4oXB4MgCgCa1u6uN4egExo=
-X-Google-Smtp-Source: AGHT+IHFmNpn6XpoGIwKx18m1L6l5JmRvvKkW0jLey0DFlmC56UDIGJDO0U2nyZRwnPn7Uge6WANkg==
-X-Received: by 2002:a05:6358:4b52:b0:178:76f8:e626 with SMTP id ks18-20020a0563584b5200b0017876f8e626mr272975rwc.6.1707422976113;
-        Thu, 08 Feb 2024 12:09:36 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXRlyEdfx+fWPYruL/qI3BcMAJJMRQUs49pDJut0FU5xDtv8mHS/ckCTwpemCT7yIXD13P6GPwrEGsRzVl/+f1LTZFOnhfCmYhE9xCXl7BojJ19ZY9QPgNBBc32ygIi9fKtAAtCS+JzChvYt5TVs9VkTHjhMRSvVCfNVPM=
-Received: from ghost (mobile-166-137-160-039.mycingular.net. [166.137.160.39])
-        by smtp.gmail.com with ESMTPSA id i2-20020a639d02000000b005b7dd356f75sm241326pgd.32.2024.02.08.12.09.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 12:09:35 -0800 (PST)
-Date: Thu, 8 Feb 2024 12:09:33 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: David Laight <David.Laight@aculab.com>
-Cc: Guenter Roeck <linux@roeck-us.net>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Message-ID: <ZcU0/ZsCAwxW/oTo@ghost>
-References: <20240130-fix_sparse_errors_checksum_tests-v5-0-4d8a0a337e5e@rivosinc.com>
- <20240130-fix_sparse_errors_checksum_tests-v5-2-4d8a0a337e5e@rivosinc.com>
- <ec44bf32-8b66-40c4-bc62-4deed3702f99@roeck-us.net>
- <ZcQeyigDWwvnc4Nu@ghost>
- <0b78e69bf4ef4e52a61ffe21d2c08c96@AcuMS.aculab.com>
+        bh=ov/TBvm47kxw1jS/iQPYWi8WL4vb2WCyBo35udeJE6w=;
+        b=MRbtKWwkRWsMKPi3841ZliDeW18Tem4/NCIEFIUnoXsexbmGroufL+Bbq5ZKzdtdt9
+         jVQQEVnbW/lWnjTdFqlg/DA52iyZOKx/HT6FPuE094AWXeingIFoaApfl2FRqkfnwaLi
+         E8fORyPcyNVBt9ebxYBxgwaF16+02xzgiVHosB0KtoMa17C5ofKk5a1VBWf4QH4tlt+X
+         vdlwidwMpEseZgCBhFUtpmp+7X7N9HVuAn4xnbU4NtulWKiSs5EWLrVWd3GjZuBbrpbu
+         hV+0UfqWygftBC2MGkK+LYhGOJEXDI4/LnqU+gFuUgEmsFEWQYJ5cftvWcE962nqLlN1
+         gCxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707423314; x=1708028114;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ov/TBvm47kxw1jS/iQPYWi8WL4vb2WCyBo35udeJE6w=;
+        b=WIASetJGyCkZ3Kxj7EqalMS7oCugGctcDZzEVRvMDp9dR5muvwknNnKxRexXHdIwyT
+         o1w2PYNvFBTPTlKsAwmgDmPKm6llWa+ZauCY1vSjgVr9n6pyi+h3nxJReg5PEgE/PYiZ
+         1fiLBFlkH0hZ54N4S9ehzOQhotWIG+/MvIotOcCHJK9zNF+SUVCLPZ4+C1ahWz5RuINw
+         fLwXLSRmHafQ2EU4/8Vv4WAnDWfeSTsbJQDjAgB850UpulwiaORl35kso8e6GYKcgctj
+         2VubB+FyCVL5+7in7+O1SZnraFnZVjCyvK2slONG3yLvGLNlxF9XcbSfdaShe/vfFX6h
+         YTMg==
+X-Forwarded-Encrypted: i=1; AJvYcCUQoqRLHgNU9rwuWVMmZbAp05lHxRizBQ4TIYtdl24JbLltCfY2KUX/Fkyz9weApFG/57QfJ/932YPozhRllgxxWFscMwH9/vLK04YM
+X-Gm-Message-State: AOJu0YwRuep3Z7qh18EN4mM8ASpcpTkKXreP8P8unoPkZjo6w9G6Vuy8
+	uK806AXTnt+wsMjnL6RJPrxYP71SnUIDi/ROCWt18jRbELeOvO/LRM+OUr8nMpAOy+zLlfX869s
+	azAE=
+X-Google-Smtp-Source: AGHT+IEAdr88Gx/+vICgsj6ceeYZa3r+T0nuN2k07Ys1Uwbj6Q/O10AooapmOoQ1CFOIybiV97uVbA==
+X-Received: by 2002:a17:906:b51:b0:a37:ee9c:273e with SMTP id v17-20020a1709060b5100b00a37ee9c273emr253338ejg.53.1707423313736;
+        Thu, 08 Feb 2024 12:15:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUg4HE8l91/ZXCuypMsN86/4IlT7/vecXHWD7KIlb0DK0wt/C1cneb9b0Ejy3CraINpVMRizIFiwLLrplw/qtzbFrAUn9qppoSxLonsM/bYFj0hfqc3Mck0COTvrevbA1kofGCa1NgLXaIGe6tPNrJEEMoK3kzJJwqB66o=
+Received: from smtpclient.apple ([2001:a61:1048:a501:d86e:8719:82c4:70b9])
+        by smtp.gmail.com with ESMTPSA id q9-20020a17090622c900b00a3848ed2ef6sm22679eja.201.2024.02.08.12.15.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 08 Feb 2024 12:15:13 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0b78e69bf4ef4e52a61ffe21d2c08c96@AcuMS.aculab.com>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: Re: [PATCH v2] docs: scripts: sphinx-pre-install: Fix building docs
+ with pyyaml package
+From: Thorsten Blum <thorsten.blum@toblux.com>
+In-Reply-To: <4c297f67-72e1-44d7-acb0-462ac261640d@oracle.com>
+Date: Thu, 8 Feb 2024 21:15:01 +0100
+Cc: corbet@lwn.net,
+ linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ mchehab@kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <ED5D37EF-B353-4EA3-8AC9-7368BDD2CFD9@toblux.com>
+References: <c6555e01-1945-410e-9950-53c40052626a@oracle.com>
+ <20240208131305.52577-1-thorsten.blum@toblux.com>
+ <4c297f67-72e1-44d7-acb0-462ac261640d@oracle.com>
+To: Vegard Nossum <vegard.nossum@oracle.com>
+X-Mailer: Apple Mail (2.3774.400.31)
 
-On Thu, Feb 08, 2024 at 09:54:39AM +0000, David Laight wrote:
-> From: Charlie Jenkins
-> > Sent: 08 February 2024 00:23
-> > 
-> > On Sun, Feb 04, 2024 at 09:41:56AM -0800, Guenter Roeck wrote:
-> > > Hi,
-> > >
-> > > On Tue, Jan 30, 2024 at 11:10:04AM -0800, Charlie Jenkins wrote:
-> > > > The test cases for ip_fast_csum and csum_ipv6_magic were using arbitrary
-> > > > alignment of data to iterate through random inputs. ip_fast_csum should
-> > > > have the data aligned along (14 + NET_IP_ALIGN) bytes and
-> > > > csum_ipv6_magic should have data aligned along 32-bit boundaries.
-> > > >
-> > > >
-> ...
-> > >
-> > > So this works on little endian systems. Unfortunately, I still get
-> > >
-> ...
-> > >
-> > > when running the test on big endian systems such as hppa/parisc or sparc.
-> > 
-> > Hmm okay it was easy to get this to work on big endian for
-> > test_ip_fast_csum but test_csum_ipv6_magic was trickier. I will send out
-> > a new version with the changes.
-> 
-> Instead of trying to save the expected results why not just
-> calculate them with a 'really dumb' implementation.
-> (eg: Add 16bit items and then fold.)
-> 
-> For the generic tests, IIRC:
-> Your test vectors looked random.
-> They should probably contain some very specific tests cases.
-> eg:
-> - Zero length and all zeros - checksum should be zero (not 0xffff).
-> - Buffers where the final 'fold' needs the carry added in.
 
-The existing csum test cases have three tests, one for random and then
-one for each of the two specific test cases you mentioned. I figured
-having the random test case would most likely catch an error if one
-existed.
-
-The additional tests can be added in a future patch but I would like to
-make sure the existing test cases work first.
-
-- Charlie
-
+> On Feb 8, 2024, at 17:37, Vegard Nossum <vegard.nossum@oracle.com> wrote:
 > 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
+> On 08/02/2024 14:13, Thorsten Blum wrote:
+>> The Python module pyyaml is required to build the docs, but it is only
+>> listed in Documentation/sphinx/requirements.txt and is therefore missing
+>> when Sphinx is installed as a package and not via pip/pypi.
+>> Add pyyaml as an optional package for Debian- and Red Hat-based distros to
+> s/optional/required/ ? Given...
+
+The commit message should be correct. The system package is optional, but the
+Python module itself is required.
+
+> Can/should we add it to give_opensuse_hints() as well, given that it
+> also apparently allows you to install Sphinx via the distro package
+> manager? (Not sure about mageia/arch/gentoo.)
+
+Yes, I'll submit a v3 shortly.
+
+Thanks,
+Thorsten
 
