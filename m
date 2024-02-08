@@ -1,158 +1,146 @@
-Return-Path: <linux-kernel+bounces-57486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0579E84D9B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:55:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F50884D9A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:52:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5C011F235EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 05:55:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA1FB285D0C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 05:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 452C367C7E;
-	Thu,  8 Feb 2024 05:53:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54FF467E83;
+	Thu,  8 Feb 2024 05:51:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="hTH1fYzn"
-Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bXQaJ5dW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389772C6BA;
-	Thu,  8 Feb 2024 05:53:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0B567C5B;
+	Thu,  8 Feb 2024 05:51:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707371610; cv=none; b=Vd/91b6rYNXAV2Dpg2N8CgpbJ1dfecRpdWg6SrlrohcQGJ8uSh/0JeMzzcHy1V1XNlRogOOuMIroMwKM/TXe8YCS6Bfmef34iZXXahIJC3gEouBdFa+3bwHxDYfNLrx+Eehjo+IgARLM3s5RrWIRkCAtSd7m+NdlX/NOU7fJuEA=
+	t=1707371493; cv=none; b=JdvIuARQI6doigHhhPTGJHnYAyfAJBZTfC0m9Fi/d4Sf78DMVlUshytzf+7gTzam4fIESSPw3Pf4Tn884TPq0yJak8siUef9qvcNPWwAQLd1gRNQKji4uhvtMR9qyrtjuO4bUTNWJjsW4fAu7IREgTcGVX+vckz13rliAWeARLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707371610; c=relaxed/simple;
-	bh=XJbCPDjfMjOfSQEBoqY2Y9QX28Ux2kDGK4gtMZN7IcE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p2q8Vry3MQ9dzWnrESN2WZyX8Rq/WI1+qaLozeTlqR7neTX6gC6TNXaS9wcdWs6qRlX22ORWbdOwRTXig0hpfe5504ywK1lejbRkyDiljfR3pJUlNdhRSKGGufI0EN67uCbq55kRgbwYXXa3FVvUQ5b72AbqJMEaRQdol0XKjEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=hTH1fYzn; arc=none smtp.client-ip=162.62.58.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1707371297;
-	bh=HeD4MdsWZP+nT6F3x0Ch5xUnu4rjQuX4K7nZXpOagJk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=hTH1fYznOrzJXqu9F0ny1lu8dRelTtxLwwtYi6bgGNnAAFaP7Zt1NCt99IVdxgnUk
-	 Kn0B0n5/8QhSxSnYI7U1HSfP31ilQbunsvJ+985d5K/VMQZNGEdksUhrcA2lavtySa
-	 4sw85yrygj5SCLt94K/JGz6kufAxe0ccNeMfyDt8=
-Received: from [192.168.0.101] ([175.152.81.97])
-	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
-	id 8ADA76B3; Thu, 08 Feb 2024 13:34:45 +0800
-X-QQ-mid: xmsmtpt1707370485tafmacghl
-Message-ID: <tencent_1D3AC867D2233D8E19C8CFF3B9A8AA893A05@qq.com>
-X-QQ-XMAILINFO: M58CI+QHpTskpw88BVg3fOVTznYDaB5PMTU1xQCVQ0f/DjnnKFFh97qCwRQr/o
-	 W9CZnMdZmDFcRREruZVUKNwTRvBkSNZcqz8bHVXpanUOWXAAeTbwRA6p61Y9pt3SjLK/BRdeyDRC
-	 MJ+6xpxNrwm9tJEAmIY6JFiYTR00MK5h6f1nNzU5XIZ8N1qiySOZFufSTh6Vbpzg21896en6IfNR
-	 sGRKWH85htqY3tHjSwk4RB5qv3a8zGmOVzEKo8ClnXdttMMg6nPf0TincVPmMRxDkVGCIaN2nwP2
-	 zdw1NX/kZIgO0kD6yjwDW0fVh9wPS9wx95xoHLDtcaVgsDbKIM0Xzblc+R8a1SkRjyCYlRsHLI3l
-	 l+fsbe266Kyytz2pFg0HfIxfnc5Q9uPvFrhNWKEld1WBr1RwyiNEqyoCbafu9QZTNOmQCCYap3aL
-	 sZ/9FkOTq2ffANnpn9nddlWSqGOmQ9UyHCmq0inY6EQCMGxJNA5CAKtjjYhxTc2YAq/R3KYXaALz
-	 z/JdIo4q93dzN3SN1RZZVUwBQwBMaSEqlPAa2HdIFp87BRK3ZhsvPEGYMm1WLkc1+am6jKj2ihzo
-	 /jGBGlDnTxGGkGkVI9AIMRJHq+avSzgjmf+PO9RRmlbctXZknX23q/2B4D3fiU88xvDDr4SPDaCq
-	 QwTzlthFIdGw2AbKAMyyBfDATdr+jiW+Fq4WJcMqCiV5gVwB7x2a1q4PoHzNI6RvV2dx6KI/CzaW
-	 qROvMjWOho6jcMzED706SOkHVO4fly0STeXx2rHYIL9AH60LRDqORMduXvEhfzKTPCPiwFjl9FgJ
-	 HFlNcMYgiKj8bKwbdrHVY4RMgGWVXWOWIsV62kOk1E96Q6HK80I43VhLMTWmieFJqX+G+Cprq34m
-	 ITeCUU+bqtxEbwwOeKQBujuPyBuTssYkOark6W3Vq2rR3St+vWIBZm61UyN2oeNAwo3kAwZILXd5
-	 XuuV/3ybG/VKzhkd1fPw==
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-X-OQ-MSGID: <4c493a71-ab68-b7f2-101b-85cefe0e6659@foxmail.com>
-Date: Thu, 8 Feb 2024 13:34:45 +0800
+	s=arc-20240116; t=1707371493; c=relaxed/simple;
+	bh=I2UVkBodmGXTC+p0Zlh/FVxtZDkiUUj9lE/paljIZ4w=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ishbzlaZDbnSvDRIyYeynEjizrmMhLFV2Bp8m6Z95ZJSERCWlYwt1Rg1HsrX5RTXErL1vfKUKhz0bzGeXiDJare+F9l8XZk1eKmx7pG9557hiiR9R/na3/XbQE2LgmEEOwZeAGOuR0SYsg0Z1oGSqfqp+JLcsNgHVRVLbQzkOY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bXQaJ5dW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 07E17C433C7;
+	Thu,  8 Feb 2024 05:51:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707371493;
+	bh=I2UVkBodmGXTC+p0Zlh/FVxtZDkiUUj9lE/paljIZ4w=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=bXQaJ5dWtdrWjG8LMbp5m9oHuBabawzd8ujdrFYy1NjcZtge84V3zjSXtwlOqIakA
+	 felOo0ULu8IcsZUKHDjaZr/CFTvW8INc0vkQ9YV3+CjosAJljagDcnrxaMoH19USud
+	 ZvrklD7xDj6RdhLWN+qrP5wz1EmNf+P88se3z93mbF4q84N7QxfSzXsN3QwBw/IDMh
+	 pT6u9UD4j4eUY5RSaWQA//GwbJA2BeWpLUeN26j0LowRS5jYWn6dbiq/z0ODdvK0mN
+	 gN1kfLCr/RgGmcFrnqCyfZtzmWf/iZ9xLBHLJOnU+/gVDTObEH0D4c2ELQuuwIOcD8
+	 3Xqc2p4tTamYQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEB12C48260;
+	Thu,  8 Feb 2024 05:51:32 +0000 (UTC)
+From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= via B4 Relay
+ <devnull+arinc.unal.arinc9.com@kernel.org>
+Subject: [PATCH netnext 0/8] MT7530 DSA Subdriver Improvements Act III
+Date: Thu, 08 Feb 2024 08:51:28 +0300
+Message-Id:
+ <20240208-for-netnext-mt7530-improvements-3-v1-0-d7c1cfd502ca@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] eventfd: strictly check the count parameter of
- eventfd_write to avoid inputting illegal strings
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, Jens Axboe <axboe@kernel.dk>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
- David Woodhouse <dwmw@amazon.co.uk>, Matthew Wilcox <willy@infradead.org>,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <tencent_10AAA44731FFFA493F9F5501521F07DD4D0A@qq.com>
- <20240208043354.GA85799@sol.localdomain>
-Content-Language: en-US
-From: Wen Yang <wenyang.linux@foxmail.com>
-In-Reply-To: <20240208043354.GA85799@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAOFrxGUC/y2NywrCMBAAf6Xs2YW8pOqviIeQbnQP2ZRNKIXSf
+ zeIxznMzAGNlKnBYzpAaePGVQbYywTpE+VNyMtgcMYFY73FXBWFutDesfT56g1yWbVuVEh6Q4/
+ xFlO4LyHPycHorEqZ99/jCX8VXuf5BUHoZvJ8AAAA
+To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>, 
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
+ Florian Fainelli <f.fainelli@gmail.com>, 
+ Vladimir Oltean <olteanv@gmail.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Russell King <linux@armlinux.org.uk>
+Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com, 
+ Bartel Eerdekens <bartel.eerdekens@constell8.be>, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-mediatek@lists.infradead.org, 
+ =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707371489; l=2294;
+ i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
+ bh=I2UVkBodmGXTC+p0Zlh/FVxtZDkiUUj9lE/paljIZ4w=;
+ b=gq8GQghr0FGsPzjbmq9kPreygfY7mL8WiuYJbQrwOEuogZBn/bTXHNUUorfkvS7eFAu+kWIP/
+ 67NXsEcSVHSA/CX13VqxyEx1+G4HAGa0wU9MdkVsEHSexcJwFBqHgg5
+X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
+ pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
+X-Endpoint-Received:
+ by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt with auth_id=115
+X-Original-From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Reply-To: <arinc.unal@arinc9.com>
 
+Hello!
 
-On 2024/2/8 12:33, Eric Biggers wrote:
-> On Wed, Feb 07, 2024 at 12:35:18AM +0800, wenyang.linux@foxmail.com wrote:
->> By checking whether count is equal to sizeof(ucnt), such errors
->> could be detected. It also follows the requirements of the manual.
-> Does it?  This is what the eventfd manual page says:
->
->       A write(2) fails with the error EINVAL if the size of the supplied buffer
->       is less than 8 bytes, or if an attempt is made to write the value
->       0xffffffffffffffff.
->
-> So, *technically* it doesn't mention the behavior if the size is greater than 8
-> bytes.  But one might assume that such writes are accepted, since otherwise it
-> would have been mentioned that they're rejected, just like writes < 8 bytes.
+This is the third patch series with the goal of simplifying the MT7530 DSA
+subdriver and improving support for MT7530, MT7531, and the switch on the
+MT7988 SoC.
 
+I have done a simple ping test to confirm basic communication on all switch
+ports on MCM and standalone MT7530, and MT7531 switch with this patch
+series applied.
 
-Thank you for your commtents.
-Although this behavior was not mentioned, it may indeed lead to
-undefined performance, such as (we changed char [] to char *):
+MT7621 Unielec, MCM MT7530:
 
-#include <sys/eventfd.h>
+rgmii-only-gmac0-mt7621-unielec-u7621-06-16m.dtb
+gmac0-and-gmac1-mt7621-unielec-u7621-06-16m.dtb
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+tftpboot 0x80008000 mips-uzImage.bin; tftpboot 0x83000000 mips-rootfs.cpio.uboot; tftpboot 0x83f00000 $dtb; bootm 0x80008000 0x83000000 0x83f00000
 
-int main()
-{
-     //char str[32] = "hello world";
-     char *str = "hello world";
-     uint64_t value;
-     ssize_t size;
-     int fd;
+MT7622 Bananapi, MT7531:
 
-     fd = eventfd(0, 0);
-     size = write(fd, &str, strlen(str));
-     printf("eventfd: test writing a string:%s, size=%ld\n", str, size);
-     size = read(fd, &value, sizeof(value));
-     printf("eventfd: test reading as uint64, size=%ld, value=0x%lX\n", 
-size, value);
-     close(fd);
+gmac0-and-gmac1-mt7622-bananapi-bpi-r64.dtb
 
-     return 0;
-}
+tftpboot 0x40000000 arm64-Image; tftpboot 0x45000000 arm64-rootfs.cpio.uboot; tftpboot 0x4a000000 $dtb; booti 0x40000000 0x45000000 0x4a000000
 
+MT7623 Bananapi, standalone MT7530:
 
-$ ./a.out
-eventfd: test writing a string:hello world, size=8
-eventfd: test reading as uint64, size=8, value=0x560CC0134008
+rgmii-only-gmac0-mt7623n-bananapi-bpi-r2.dtb
+gmac0-and-gmac1-mt7623n-bananapi-bpi-r2.dtb
 
-$ ./a.out
-eventfd: test writing a string:hello world, size=8
-eventfd: test reading as uint64, size=8, value=0x55A3CD373008
+tftpboot 0x80008000 arm-zImage; tftpboot 0x83000000 arm-rootfs.cpio.uboot; tftpboot 0x83f00000 $dtb; bootz 0x80008000 0x83000000 0x83f00000
 
-$ ./a.out
-eventfd: test writing a string:hello world, size=8
-eventfd: test reading as uint64, size=8, value=0x55B8D7B99008
+This patch series is the continuation of the patch series linked below.
 
+https://lore.kernel.org/r/20230522121532.86610-1-arinc.unal@arinc9.com
 
---
+Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+---
+Arınç ÜNAL (8):
+      net: dsa: mt7530: remove .mac_port_config for MT7988 and make it optional
+      net: dsa: mt7530: set interrupt register only for MT7530
+      net: dsa: mt7530: do not use SW_PHY_RST to reset MT7531 switch
+      net: dsa: mt7530: get rid of useless error returns on phylink code path
+      net: dsa: mt7530: get rid of priv->info->cpu_port_config()
+      net: dsa: mt7530: get rid of mt753x_mac_config()
+      net: dsa: mt7530: put initialising PCS devices code back to original order
+      net: dsa: mt7530: simplify link operations and force link down on all ports
 
-Best wishes,
+ drivers/net/dsa/mt7530.c | 259 ++++++++---------------------------------------
+ drivers/net/dsa/mt7530.h |  19 +---
+ 2 files changed, 47 insertions(+), 231 deletions(-)
+---
+base-commit: b6b614558ed5b2ca50edacc0f2fbf5f52158c86c
+change-id: 20240131-for-netnext-mt7530-improvements-3-a8ac49d4f7c2
 
-Wen
-
-
->
-> If the validation is indeed going to be made more strict, the manual page will
-> need to be fixed alongside it.
->
-> - Eric
+Best regards,
+-- 
+Arınç ÜNAL <arinc.unal@arinc9.com>
 
 
