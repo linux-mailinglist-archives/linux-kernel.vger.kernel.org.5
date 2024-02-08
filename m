@@ -1,107 +1,136 @@
-Return-Path: <linux-kernel+bounces-58750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2869B84EB07
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 23:00:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7F9584EB11
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 23:01:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49D301C24B5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:00:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B3DFB25E0E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:00:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6873250261;
-	Thu,  8 Feb 2024 21:59:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 930C94F61D;
+	Thu,  8 Feb 2024 22:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="tDFPPyG+"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HAC18m2n"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 928004F5EF;
-	Thu,  8 Feb 2024 21:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B46C24F88C;
+	Thu,  8 Feb 2024 22:00:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707429581; cv=none; b=V4YzA1cgw57QU5f9NE0Y63YReZHuAKi4v2YnlZv/ItnezzdCvrzZEsRzG+G1gi8lvskyOFmPWMttiIp/ca9cttlbgo/mr9M+lmhuIeNEGBGHLCENr6W3jKtzgNaWn9RUsenkb96S0PokJFUqsdMg16hlXubcCqEbpJJ7rFdPEPA=
+	t=1707429629; cv=none; b=usY3ZjjJJF+U/UqXsL9ezCcgR7i5T2bF3VLWRe7mRj201kSABElhFOpiqymgErla+LdeKnUErbW43MO5tn62J7ifOS8tviX5ET0gmFcfC1F+ZcYOcEU5LL56RnU8DIUcRgZt90v/fMlisfjjEDWpZMioaBVh3AyhMFsnMiT9n34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707429581; c=relaxed/simple;
-	bh=UO7OBKW8qlkR32LtezaT9Qi3ivmkVEpFv1RuDTfkUMM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XDtZOhUJRaQtncXdyQdQdv0nBQWGQYYSePFsvGNLtZRGTW6feqNj0xVf6MRrITO9iN1zzy9gYKVl+DpyUVFH/zOH9LokORYIepbMJSK0yCgWBUgfUT2n4f4gTzCxE2wl64bcaNb1Owlc5BDWtsJCFtmtK7P85vQhkzWcJuMUDsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=tDFPPyG+; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707429574;
-	bh=UO7OBKW8qlkR32LtezaT9Qi3ivmkVEpFv1RuDTfkUMM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=tDFPPyG+Mau7Otuti88UvrNR+ye8pPLDG0v3xcZceaUKrFj7Uw8XnkzSdy1y5VaYQ
-	 6Vfi/VkeYrCYI8009gZh0IHfpvUyqwRR0PuV4uPZITpK8PuVBJF7pzyy0PesemWeXJ
-	 wPW1PqSZ27l9ywF5mLOXEglmOoWREpVwjibyUZau7wRowzTPs78nkxqHH+FZupn5Sf
-	 lg2ADYGGLsaLEfRsZXuGvEKURHXbRYXwlsoAMZghFk/qq9i7isj1dZfi7zIjkAXong
-	 +maazbzAtXFv8n5Jc/+x1SD4RYS/VyrvQXxeIO78tyq/yGs68pMgmBb7ppOkPQPyI4
-	 XpqozCW/Vxe1g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TW9r63kbkz4wby;
-	Fri,  9 Feb 2024 08:59:34 +1100 (AEDT)
-Date: Fri, 9 Feb 2024 08:59:32 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?=
- <amadeuszx.slawinski@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, Cezary Rojewski
- <cezary.rojewski@intel.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the spi tree
-Message-ID: <20240209085932.6d4f09b6@canb.auug.org.au>
-In-Reply-To: <6a129c31-54c0-4671-a8d4-dc0f72e60154@linux.intel.com>
-References: <20240208145200.7590dc62@canb.auug.org.au>
-	<6a129c31-54c0-4671-a8d4-dc0f72e60154@linux.intel.com>
+	s=arc-20240116; t=1707429629; c=relaxed/simple;
+	bh=sfqU/s/3SiEvSEePFviZWJkwmQb3jHOvGvS8pWeeXZU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=A3A5BErObC8r9ZetdIXrVz26z/wDsfWeMl7U9X4cuZvB5DuDuZllu9ELW1hv/ur6YfXosKj1KcqsB0yz9Rjxyl9TO7AgptTCIZP1U/w1/LSeUYmJOe+mYIkAMgtyaT+PqP7fa/aWr3QNt636jk3LZuofLaIgn4JT3SoEw3NbfMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HAC18m2n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45EA6C433C7;
+	Thu,  8 Feb 2024 22:00:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707429629;
+	bh=sfqU/s/3SiEvSEePFviZWJkwmQb3jHOvGvS8pWeeXZU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=HAC18m2ncaPmq5J7DCM9ZqsPgRFcSlY9RiD20SThR76iZUy348j/TuwqqdfxdQ9u1
+	 WmjqgY7vOj2hJ1j7KW6M1bnJddK7MWjWSy8KNt7lnqICugcvxM6Rjo+tKjR/t9ncKy
+	 l1l8hL91Rqx7ufOWymvpq6esMakpcr/F9Jh86t98kC1KA2Kpj2jQUx1/+gsPD5Ku2+
+	 c274pG+q4NzJsUw3WczdAt9TbFozmyCXAOTiI2KcAuUvnzxmsDAxjWvK+NPLfS3Wii
+	 9qjKFQRVYY6geRg+oy3FWZj53OX6raJRGiEHcBzi2uIhfdT8J0U+6/bPEtyP5Sti4G
+	 9J/1G2LlMmD+A==
+Date: Thu, 8 Feb 2024 16:00:27 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Alexey Kardashevskiy <aik@amd.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH kernel 2/4] pci/doe: Support discovery version
+Message-ID: <20240208220027.GA975008@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/3zWY=LTl157.ex/Zj=/EWz2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240201060228.3070928-3-aik@amd.com>
 
---Sig_/3zWY=LTl157.ex/Zj=/EWz2
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Thu, Feb 01, 2024 at 05:02:26PM +1100, Alexey Kardashevskiy wrote:
+> PCIe spec v6.1 defines a "DOE Discovery Version" field in the DOE Discovery
+> Request Data Object Contents (3rd DW) as:
 
-Hi Amadeusz,
+Please include spec section number, e.g., "PCIe r6.1, sec xx.xx".
 
-On Thu, 8 Feb 2024 14:32:15 +0100 Amadeusz S=C5=82awi=C5=84ski <amadeuszx.s=
-lawinski@linux.intel.com> wrote:
->
-> Ah! The avs path should've been:
-> /sys/devices/pci0000:00/<dev>/avs/fw_version
-> Will "avs/" in path this fix the error?
+(Also note PCI-SIG uses "revision" as the major, "version" as the
+minor, so this would be "PCIe r6.1", not "PCIe v6.1".)
 
-Presumably, since the path string will then be unique.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/3zWY=LTl157.ex/Zj=/EWz2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXFTsQACgkQAVBC80lX
-0Gy95gf+NuxonBpSfH7ev4FGkl6QQ27l8AQC2iAEnH6e2sg1AnsuWepZ2BKpVv0s
-3JitCnaGE6mInSGS3pYzcjF6MMeVe+N0i7LtnOBuXLTny2JCx8kzVmwmdQquS5xL
-oMpSK4LWoqTKhQepcIlWnXpDWMGUgS+xXfmDU+K4ChZqfwTJzcCp8cdNlIN4+bEo
-pNzeJqIWtsucfBIJoH825ZDbCEUoU6LjdCoahyaorbs7cTdbnOvGqKoh25X5w8Mz
-Lfe/TuTzaliNCEWZiBZ2MOVKYWZJef8Ngz4RD9no9j4lv49mbgcZt+Eo6mjYR1iP
-/TOP/tEpIqx2YLDVNkX4kYny/pAT6w==
-=URXK
------END PGP SIGNATURE-----
-
---Sig_/3zWY=LTl157.ex/Zj=/EWz2--
+> 15:8 DOE Discovery Version – must be 02h if the Capability Version in
+> the Data Object Exchange Extended Capability is 02h or greater.
+> 
+> Add support for the version on devices with the DOE v2 capability.
+> 
+> Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
+> ---
+>  include/uapi/linux/pci_regs.h |  1 +
+>  drivers/pci/doe.c             | 11 ++++++++---
+>  2 files changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+> index a39193213ff2..b9c681f14181 100644
+> --- a/include/uapi/linux/pci_regs.h
+> +++ b/include/uapi/linux/pci_regs.h
+> @@ -1144,6 +1144,7 @@
+>  #define PCI_DOE_DATA_OBJECT_HEADER_2_LENGTH		0x0003ffff
+>  
+>  #define PCI_DOE_DATA_OBJECT_DISC_REQ_3_INDEX		0x000000ff
+> +#define PCI_DOE_DATA_OBJECT_DISC_REQ_3_DISCOVER_VER	0x0000ff00
+>  #define PCI_DOE_DATA_OBJECT_DISC_RSP_3_VID		0x0000ffff
+>  #define PCI_DOE_DATA_OBJECT_DISC_RSP_3_PROTOCOL		0x00ff0000
+>  #define PCI_DOE_DATA_OBJECT_DISC_RSP_3_NEXT_INDEX	0xff000000
+> diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
+> index 61f0531d2b1d..f57def002175 100644
+> --- a/drivers/pci/doe.c
+> +++ b/drivers/pci/doe.c
+> @@ -381,11 +381,13 @@ static void pci_doe_task_complete(struct pci_doe_task *task)
+>  	complete(task->private);
+>  }
+>  
+> -static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 *index, u16 *vid,
+> +static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 capver, u8 *index, u16 *vid,
+>  			     u8 *protocol)
+>  {
+> +	u32 disver = FIELD_PREP(PCI_DOE_DATA_OBJECT_DISC_REQ_3_DISCOVER_VER,
+> +				(capver >= 2) ? 2 : 0);
+>  	u32 request_pl = FIELD_PREP(PCI_DOE_DATA_OBJECT_DISC_REQ_3_INDEX,
+> -				    *index);
+> +				    *index) | disver;
+>  	__le32 request_pl_le = cpu_to_le32(request_pl);
+>  	__le32 response_pl_le;
+>  	u32 response_pl;
+> @@ -419,13 +421,16 @@ static int pci_doe_cache_protocols(struct pci_doe_mb *doe_mb)
+>  {
+>  	u8 index = 0;
+>  	u8 xa_idx = 0;
+> +	u32 hdr = 0;
+> +
+> +	pci_read_config_dword(doe_mb->pdev, doe_mb->cap_offset, &hdr);
+>  
+>  	do {
+>  		int rc;
+>  		u16 vid;
+>  		u8 prot;
+>  
+> -		rc = pci_doe_discovery(doe_mb, &index, &vid, &prot);
+> +		rc = pci_doe_discovery(doe_mb, PCI_EXT_CAP_VER(hdr), &index, &vid, &prot);
+>  		if (rc)
+>  			return rc;
+>  
+> -- 
+> 2.41.0
+> 
 
