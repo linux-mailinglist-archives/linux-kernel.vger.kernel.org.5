@@ -1,158 +1,170 @@
-Return-Path: <linux-kernel+bounces-58653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67C8684E97C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:16:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A6FB84E991
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:21:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F361A1F2E1B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:16:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6B25B2DE2E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFBFC3C48C;
-	Thu,  8 Feb 2024 20:16:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 517DD36B0A;
+	Thu,  8 Feb 2024 20:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CVSC5H8G"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="XjAIgW0Y"
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B818383BA;
-	Thu,  8 Feb 2024 20:16:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E568A3839C
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 20:16:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707423367; cv=none; b=p5BJW/ZmkTf2PgOBp6RzVrXL+mK0cbKnxRfHfZPBNKW5fSa9hUfLIjan9uFT2I3Dr2Cpp/W4HxZ1mM05mg/omexcJVi5KFBkc7LPM3dr6n0aQWHM+d+Uc8Y6NxyPQEqEbUhyJRZ8hSXkiNT4Knnpxq6v6kk8xhw5vN1hxYSKKmM=
+	t=1707423403; cv=none; b=XDWPveuf1IazSGWveXmnkb8y44X/fXfb5c14SoMG1noTfWzGP6ACWv8e65tOoUYkCVz3oUMT4Ll/Lmf7dXtdk0gZo9k169UGGGNDTnePlRZltv1+NkREJfKqccjD4rDg/zqPBISwToi/BH8VScEIXoiclnHXjDXIsnfeuEEYcsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707423367; c=relaxed/simple;
-	bh=KheXcUzlMOfoXsfF8fLTK+gIOCd+wehX9PQD4vTnt7w=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BmyRPRzDmuv6VeInQl+MmwCZ+k8Gnu+wLY4hbAiy49ZqtOSo3QnYRcKMpsUHZIjg8kr8HwK/veycWxmWUwXfKeFBuMV56IxGRi/zVjd4w7XHgBreYNe1QSykx/50s30FjfYGqlsIA+YWM18QhfZpJ0HdmDicJd00n2eiHHN9r60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CVSC5H8G; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 418K2Dw7018455;
-	Thu, 8 Feb 2024 20:15:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=Zow24WyxPBCa3qs5bHb+5ubemW+MG+lG4ez4A7Taqgk=;
- b=CVSC5H8GS2fmMF76PkHCGq/213ANGAUNsHN0LSX9JHjqq8Wk/yeBQxyqeN0VSt6VELTO
- ATtkkIdt9aHKZsY9hl74YuIXO0f0A0VDSeT7mtjDp3k/N9lC38rlAnuElWlTFtc9quHD
- KF2lFIvBQKQNAtDwfA5dOr14EZCsLGdXGl5a2cqK5tjWOvghLL6XXZQNveNUNnaEQeQS
- DcCH0MJc4Oa8TUorCHFwWV7pzstEwb4SqCAaGHUZJjPmupUjf+Gh1/kKEoFHZbT8rGts
- OZDa6HTskpmfzLJfDQE+vIGLMbzEPlOTWY/54thQn42eAJGCgUf0d6Mt6QfeCO0PCq2S fQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w55mu8c7j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 08 Feb 2024 20:15:55 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 418K2ufF020018;
-	Thu, 8 Feb 2024 20:15:54 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w55mu8c6v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 08 Feb 2024 20:15:54 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 418IR1GN008494;
-	Thu, 8 Feb 2024 20:15:53 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w221kejv5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 08 Feb 2024 20:15:53 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 418KFocK21496320
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 8 Feb 2024 20:15:50 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EE8062004B;
-	Thu,  8 Feb 2024 20:15:49 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DD48C20040;
-	Thu,  8 Feb 2024 20:15:49 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu,  8 Feb 2024 20:15:49 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55669)
-	id 8119FE1541; Thu,  8 Feb 2024 21:15:49 +0100 (CET)
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v2 5/5] sched/vtime: do not include <asm/vtime.h> header
-Date: Thu,  8 Feb 2024 21:15:49 +0100
-Message-Id: <e0827ac2f96d87f623575098f9d55e77351b63c6.1707422448.git.agordeev@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1707422448.git.agordeev@linux.ibm.com>
-References: <cover.1707422448.git.agordeev@linux.ibm.com>
+	s=arc-20240116; t=1707423403; c=relaxed/simple;
+	bh=flHsUzAN1b+v0w8PvGBjhwVSZ3GxquBnNsjj8HFsyAE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BG6j8JW6PbgyY1Kge7HFIFvJ419FUhSjk0BOLZxIkeidmfdfNdcTXkqcP7bZTfevMMX2Cg+7zgn7xm1L/Iwhmz8djMmdwtxfaSEpjksR3jBxrK6Rff0/PgxC0mOSWG6Mq9u9SfWlJ580qL6K8MMYaMYaQcdy6NXPg66ZkcId/Zs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=XjAIgW0Y; arc=none smtp.client-ip=209.85.167.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bff5e9ccdeso62138b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 12:16:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1707423401; x=1708028201; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h8E10FDOpzIm5efl0mA2CAXdhkpGX2Vqi/2VCns5LkQ=;
+        b=XjAIgW0YnUCBJ2RazjHePnx33WK/v2HoD5SM/bdyzw1NDZg12yX39qjcDbcJcTdMuF
+         OwDytEtyDE5IMfkWRd+2f66dB08rSbWgYAefnAWcgRefj0UPG1zU78COjG2/vzz9sPZf
+         /pHkvZOlvhtrgJ39zOhIKOBjwHlumZh///VPd2UZbM1fcXPHtB2aku4KfzY3QPeYXmFI
+         yNxFbO6Ra9GAijhZMrjipHBX1ztrXvyzcMwAwCqEtGY747dO/hrZCGBpLwdDUtHEQ03z
+         V8EljbluGjg9Vr/dKTpdJOGRVPfB5aFq+bu1JDoDHvU6FlPn86QpAFcVkNMu2eTlsFF0
+         uixw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707423401; x=1708028201;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h8E10FDOpzIm5efl0mA2CAXdhkpGX2Vqi/2VCns5LkQ=;
+        b=OWsF9Q/Q51jLg3Y7xDAgUMq0TnKWKuLGJFSNfqDybumO2EF2Y1belAEQl/WnO+h7lt
+         EoM7P8GRbdEGMV4/7/3uq95mwQZ4+B48FGW0XjFifGUxKfg5MsaV3sTDvZozqJiJfnxt
+         l2Qpx6k7sOPJqDS/rrA1z9LzYuELyz9aiXFKORHIAhUpbTSawfobyNjJjibo3QxRZ5h3
+         iL3ExmDBQTa1v/BvpcGNWpcjFDiU4dn5TltOCWutO4aw6veHFUuoTEa0gikM83Ub6tf2
+         i4mUEWcwDYe1HYQfk6YPVldqVizNggFT+9V8NMZ1HrQoZ2Rw928TyqRXUwFzBFD8mqYW
+         ZN6A==
+X-Gm-Message-State: AOJu0Yyv+cRraSHVnrV3Ic6akNLfAkS8OeKehGd3cvztGZePlxjH9tD1
+	o26sEJH5nOHFUVX5YoEeHel5/zUxsCed7szENphsVXVAcbFkE8WJHpfDtllWZhU=
+X-Google-Smtp-Source: AGHT+IFEuLQHZc5btsZ/uqjXHRIUkAW7oW5rYUvJEBiWUqNUOi2rC577wNrZPjlPjqutpn/yuOwDlg==
+X-Received: by 2002:a05:6808:2e8c:b0:3bd:36fc:1c1e with SMTP id gt12-20020a0568082e8c00b003bd36fc1c1emr673830oib.44.1707423400843;
+        Thu, 08 Feb 2024 12:16:40 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXIrODRyJcaN5pdqZBtOjmf2iFFQUJa2vBW2Jn+j9PQuQBTyzXAHfDo6M+CJICY6m0fWttc9YwoH+40lDg/E3ibTXAbeZZXkTmm8HMcgdAfSkf6GapjHtBcVEHKtNOuPOj/VIqKK6C6+Qo1YOiyntjobxxy8QqGXUVd6mM+2f6Lr3gsBUw1oDd9ULOddvUtjOoGT1E9YVjdn7zJbAVl/m4rpcx73WSnOqE/XWPtO6JaM8dl
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id dz2-20020a056808438200b003bff074dd43sm14449oib.58.2024.02.08.12.16.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 12:16:39 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rYAp5-00FyMn-0D;
+	Thu, 08 Feb 2024 16:16:39 -0400
+Date: Thu, 8 Feb 2024 16:16:38 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Konstantin Taranov <kotaranov@microsoft.com>
+Cc: Long Li <longli@microsoft.com>,
+	Konstantin Taranov <kotaranov@linux.microsoft.com>,
+	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
+	"leon@kernel.org" <leon@kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v1 1/1] RDMA/mana_ib: Fix bug in creation of
+ dma regions
+Message-ID: <20240208201638.GZ31743@ziepe.ca>
+References: <1707318566-3141-1-git-send-email-kotaranov@linux.microsoft.com>
+ <PH7PR21MB326394A06EF49FF286D57B63CE442@PH7PR21MB3263.namprd21.prod.outlook.com>
+ <PAXPR83MB0557C2779B1485277FD7E417B4442@PAXPR83MB0557.EURPRD83.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: cE_iiBipX1nKYHLnLpahvenDMlutxuTG
-X-Proofpoint-ORIG-GUID: AAm_5AQcNpyFHo9NGIHcHS2xdJMFOVU-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-08_08,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=333 malwarescore=0 phishscore=0 mlxscore=0 clxscore=1015
- lowpriorityscore=0 suspectscore=0 adultscore=0 priorityscore=1501
- spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402080108
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PAXPR83MB0557C2779B1485277FD7E417B4442@PAXPR83MB0557.EURPRD83.prod.outlook.com>
 
-There is no architecture-specific code or data left
-that generic <linux/vtime.h> needs to know about.
-Thus, avoid the inclusion of <asm/vtime.h> header.
+On Thu, Feb 08, 2024 at 06:53:05PM +0000, Konstantin Taranov wrote:
+> > From: Long Li <longli@microsoft.com>
+> > Sent: Thursday, 8 February 2024 19:43
+> > To: Konstantin Taranov <kotaranov@linux.microsoft.com>; Konstantin
+> > Taranov <kotaranov@microsoft.com>; sharmaajay@microsoft.com;
+> > jgg@ziepe.ca; leon@kernel.org
+> > Cc: linux-rdma@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Subject: RE: [PATCH rdma-next v1 1/1] RDMA/mana_ib: Fix bug in creation of
+> > dma regions
+> > 
+> > >
+> > >  	/* Hardware requires dma region to align to chosen page size */
+> > > -	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, 0);
+> > > +	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, virt);
+> > >  	if (!page_sz) {
+> > >  		ibdev_dbg(&dev->ib_dev, "failed to find page size.\n");
+> > >  		return -ENOMEM;
+> > >  	}
+> > 
+> > How about doing:
+> > page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, force_zero_offset
+> > ? 0 : virt);
+> > 
+> > Will this work? This can get rid of the following while loop.
+> > 
+> 
+> I do not think so. I mentioned once, that it was failing for me with existing code
+> with the 4K-aligned addresses and 8K pages. In this case, we miscalculate the 
+> number of pages. So, we think that it is one 8K page, but it is in fact two.
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
----
- arch/powerpc/include/asm/Kbuild | 1 -
- include/asm-generic/vtime.h     | 1 -
- include/linux/vtime.h           | 4 ----
- 3 files changed, 6 deletions(-)
- delete mode 100644 include/asm-generic/vtime.h
+That is a confusing statement.. What is "we" here?
 
-diff --git a/arch/powerpc/include/asm/Kbuild b/arch/powerpc/include/asm/Kbuild
-index 61a8d5555cd7..e5fdc336c9b2 100644
---- a/arch/powerpc/include/asm/Kbuild
-+++ b/arch/powerpc/include/asm/Kbuild
-@@ -6,5 +6,4 @@ generic-y += agp.h
- generic-y += kvm_types.h
- generic-y += mcs_spinlock.h
- generic-y += qrwlock.h
--generic-y += vtime.h
- generic-y += early_ioremap.h
-diff --git a/include/asm-generic/vtime.h b/include/asm-generic/vtime.h
-deleted file mode 100644
-index b1a49677fe25..000000000000
---- a/include/asm-generic/vtime.h
-+++ /dev/null
-@@ -1 +0,0 @@
--/* no content, but patch(1) dislikes empty files */
-diff --git a/include/linux/vtime.h b/include/linux/vtime.h
-index 593466ceebed..29dd5b91dd7d 100644
---- a/include/linux/vtime.h
-+++ b/include/linux/vtime.h
-@@ -5,10 +5,6 @@
- #include <linux/context_tracking_state.h>
- #include <linux/sched.h>
- 
--#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
--#include <asm/vtime.h>
--#endif
--
- /*
-  * Common vtime APIs
-  */
--- 
-2.40.1
+ib_umem_dma_offset() is not always guaranteed to be zero, with a 0
+iova. With higher order pages the offset can be within the page, it
+generates
 
+  offset = IOVA % pgsz
+
+There are a couple places that do want the offset to be fixed to zero
+and have the loop, at this point it would be good to consolidate them
+into some common ib_umem_find_best_pgsz_zero_offset() or something.
+
+> > > +
+> > > +	if (force_zero_offset) {
+> > > +		while (ib_umem_dma_offset(umem, page_sz) && page_sz >
+> > > PAGE_SIZE)
+> > > +			page_sz /= 2;
+> > > +		if (ib_umem_dma_offset(umem, page_sz) != 0) {
+> > > +			ibdev_dbg(&dev->ib_dev, "failed to find page size to
+> > > force zero offset.\n");
+> > > +			return -ENOMEM;
+> > > +		}
+> > > +	}
+> > > +
+
+Yes this doesn't look quite right..
+
+It should flow from the HW capability, the helper you call should be
+tightly linked to what the HW can do.
+
+ib_umem_find_best_pgsz() is used for MRs that have the usual
+  offset = IOVA % pgsz
+
+We've always created other helpers for other restrictions.
+
+So you should move your "force_zero_offset" into another helper and
+describe exactly how the HW works to support the calculation
+
+It is odd to have the offset loop and be using
+ib_umem_find_best_pgsz() with some iova, usually you'd use
+ib_umem_find_best_pgoff() in those cases, see the other callers.
+
+Jason
 
