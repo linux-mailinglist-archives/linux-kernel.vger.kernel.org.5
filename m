@@ -1,113 +1,132 @@
-Return-Path: <linux-kernel+bounces-57408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ABDE84D835
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 04:10:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF4C584D846
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 04:19:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFDA2281C09
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 03:10:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9665C1F2348A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 03:18:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9164A1DA2F;
-	Thu,  8 Feb 2024 03:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D551E89E;
+	Thu,  8 Feb 2024 03:18:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gsMbSDfe"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="RBYcfQLZ"
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B5F1D52C;
-	Thu,  8 Feb 2024 03:10:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B1321D52D
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 03:18:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707361831; cv=none; b=LthZ5AbWL2L659oSHR6Zc6NtLbElIhCCdfWk6oTBRkWk1UNcbSUsPJMuqNq6rc0y3feVTc/busIHjX+Mvp42QHe9iqbZ6L24Zq2x1GCH3zNp3O+E/iy5wacoTayKJXXhmEaoM/QJEpS5NQ6VFO7AYYDN0XEOXgbq5uoPmlUWEVk=
+	t=1707362315; cv=none; b=P/DH8MCbu4AKf6Z3Mn28sZm8phhfoJHu0zopwto9tYW4CxnYYBa+Jjcjn1HkX85i6BukBlKKPoyMGXZoRkZF0+0YVTXY9D8fH1C8+Uf4jLkJFeEAqfenu81peFU3h5RprqZlkL7A/1z0FCRpWYvSYPjeFtT/b9Hb30dPomppnCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707361831; c=relaxed/simple;
-	bh=QPH1yr6VHuRyaB6xH/FtQKMvMHLE/l58r4MMmJTwfmo=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Uu7TlnvwGbQ1JOpxVQBjmvYWpKLk7+r8BkVr6vFj975pDlvzxVuDDtPrufNnK/2tTDd8n22FgkbEjet3EZsfIeiFU0Jzz4jJJydgwKYOvRoa1FbL7xzXaqYhg1zflQoMWajuOCIC9WIpCWPZ0o3kIpsVtL18lod7r0VJa/Od+ZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gsMbSDfe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 453E0C43394;
-	Thu,  8 Feb 2024 03:10:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707361831;
-	bh=QPH1yr6VHuRyaB6xH/FtQKMvMHLE/l58r4MMmJTwfmo=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=gsMbSDfezpPDvaH2NSZJXCJjbnoFukNxn4keKuVYtZzd3ZZbWV4NKGYtqxx+ujeiE
-	 omGPpuHZtb/K1O6rZoESp9YcgrQ47/kZ6QWzcT/bjw/olF6td4Ia4DACQtJe8CxjZW
-	 a2erQRvQFpDlE7uJhSoZIaiMEULipED8ibrd211ppS8b4rbiWMz0vn0qULIAg1elLy
-	 vt2hUgmc2eO/a/zCeYgPKslzVR43JGZwxi1BuqHsxGJLu7c63xsatwTUkXSRIQG5TS
-	 ogya1HH+8DPWjHSRvMJrwsjYZB7ZeESUrr5CWEAE+jdmfo/vGy3QtBf/kELl11DOrE
-	 naz30cauu+0kA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1F27AD8C97D;
-	Thu,  8 Feb 2024 03:10:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1707362315; c=relaxed/simple;
+	bh=CwXu+mEYRI9NtMHVFqk3Ff2/WozQDRsM1R/qG5WWA8w=;
+	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
+	 From:To:Cc:Subject:References:In-Reply-To; b=bcJ7/vLExo6K1CGoOHYITDAazgrTvGhQ9oZEufpaTvP9w7XTpDSKNif5w0/zytu8RCUZKXINJ7ZPcGSCICQPbyUjUxTU3ANAj/6+JTyUL5tEaVEVVbo+uEL9R0dU5ySZF81G5OmtYTSkZlxB4fnT3e2Uu3klcpqS131ZYFIl5+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=RBYcfQLZ; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-42a9f0f1d40so6301131cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 19:18:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1707362312; x=1707967112; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hK0BeESH0EV8j47xzGv04cLJ4LIyRw2g36A76+PXBk8=;
+        b=RBYcfQLZMf5lpVN7fxjLnX2DoVMoSKm+6dNz3zT+9CR45fEDT0NAvMtZmSWYMD0WS4
+         Nuz1VPnBK2CSkLuq60y0qaUkH5HMvOqNC4oQDKnBTNQzgRohE84R1wN8HCGtViitA/Ka
+         RPdOOsnku53l5/uKuBYdU9Jl7s3PAkEz+Hzb/FsdU036fCh0i0h4VlL4TeOi5v23o4eX
+         K3lfzFTFg5KVng1ZPqzn1qT09KT/mFOyo7RBmSYBBIczy7V3B1qvf7RhqyQc2piqrP86
+         Um5G5MhCFleg+gSRquvszS0DeHmMIfWHIIRmdhfgQaY5mzE4EfVCfHFdvo6QuVXyOW06
+         3uMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707362312; x=1707967112;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hK0BeESH0EV8j47xzGv04cLJ4LIyRw2g36A76+PXBk8=;
+        b=nb0A2LSIWeKfnnF1Fm2gEZPTkn6EopnwbWD3d2PqIcdGQLZwbKY69KpCf3bai9HGrg
+         q1xfdOvs0rIzg9scjvutkREWlWKN+AevGWD/Eowi/Czjooapdh4jjs+BgHBuyCI2uq2Q
+         dENwcTVlWIg8WFPXwhZea6v41OKR4PQA7oi7TcbDpi2Fp4rAImIK66cX9DWDhWJntmec
+         WeLMHnkunL9XOI8ldVQIy0A92XBLWSH63HJx9gx5Sk62tR/x1skAa1yWe4nXOFifFHdb
+         JgU6A1OpKnSjswnZpyuC8MqO6FT7cP7LniuEZcw7LB284VWHd04hP4eFIK4r11Oj6a3d
+         r1Wg==
+X-Gm-Message-State: AOJu0YzP76f+wU/GVFIDKP9r6z4VhYtJb8KvR0qMAy1PtCNHk4LwvDCn
+	DzxeLJf65+K66VFlu6rba/9+DK7RWYfbZkewI7hc42tITsG12Xbr71z26qr5Eg==
+X-Google-Smtp-Source: AGHT+IGpZWRS7BciYc0E1wVHDo3UpmFl3VgGAmCTU/eLWbmLvCNB5DRi1BbJML+2QLswaRfYEk1Scg==
+X-Received: by 2002:a05:622a:5094:b0:42a:8a40:e33c with SMTP id fp20-20020a05622a509400b0042a8a40e33cmr7154113qtb.57.1707362312345;
+        Wed, 07 Feb 2024 19:18:32 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUevVJKwGdSjfdxiP74JGQH+dsVjTsQ22eS+EDgBhq5kdojHKMCot0Gi/z8CEm12WoDxxkC3fcVtiK1dC0B3jq9yqLGeT5IFivl8m7XQJWgO55sQ9GXn1H7Ahms5bxBd6ZCyxKAdFNl2BYS72MgAwJD8S9UW4n1izwi2zeo/x/6ETDHNdxssLHxhaFub0YwbvtgYkQ+Ts4QIs7hmF61Y0SEo7j5ZG0Xamly6PoTUHvENvAy+ub6SJ4HG1A22OmY8yClktBlY+zrwL3Ab0EVQ+0lI+ybXc96Pd02q8LtBA9SI8XhGCFyO4N68F6edRmx6KaVTqS3OPyjAl2iOkAN2e3UnfK9zHTj/4KCXUV9tyxtLZ9dbGoCXN1hn+ZmobXJRfCWvYks8nMbQXj8Wc/kf7EB42miI/kXnvD8VqHV5+s51PqtdtyrqA5Gz2WNVfPSdGXsBW0LACDd760AbQCozTmHErxN6lEAyEBt03J7rcruNSyNpM6Wn+umVt7c7/VVoivjVOXcU+sxKnheAA2vtSugW1dN38s2OpNzvrFgApBY/MxAf4nddsTPkXLHFoiA6ZYqJJm6Da0e955UOduupoYwOoj0vZF4IZQ8xNOty6rkZ5kRzAGJWo3Paz4OmvTnMBQ+nvI/304hJMLv9S+syJjaw7s9Ze27m3HM28DvziGUmI8ETXbrbIMjexxmysGJIMnpQa3tif2wEvfrl2D6BkN7Dh4pYcvIqjIkwq0sZLEIggav8FBhb83axn0lwmF0E59LNP182o3Lbhyu3ia5Liy98P3Ihe7jst+qOisYHc6KBfQD70sSyyITvsLhAF8CSzxECMO+c1DJ0NNdDiISpQJlXVfA1iJUidOs2SNjtGWBHBJ5cu10lvsZQwX6TACxjEwZhJo+WXEuJQIWx5uasUCUwLZyA6h3QHchFf9sBvNtRjPwoGvF
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id b24-20020ac86bd8000000b0042bed7dc558sm1071255qtt.6.2024.02.07.19.18.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 19:18:31 -0800 (PST)
+Date: Wed, 07 Feb 2024 22:18:31 -0500
+Message-ID: <d54ca249c3071522218c7ba7b4984bab@paul-moore.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Disposition: inline 
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v5 0/7] MT7530 DSA Subdriver Improvements Act II
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170736183112.28016.638375642700204813.git-patchwork-notify@kernel.org>
-Date: Thu, 08 Feb 2024 03:10:31 +0000
-References: <20240206-for-netnext-mt7530-improvements-2-v5-0-d7d92a185cb1@arinc9.com>
-In-Reply-To: <20240206-for-netnext-mt7530-improvements-2-v5-0-d7d92a185cb1@arinc9.com>
-To: =?utf-8?b?QXLEsW7DpyDDnE5BTCB2aWEgQjQgUmVsYXkgPGRldm51bGwrYXJpbmMudW5hbC5h?=@codeaurora.org,
-	=?utf-8?b?cmluYzkuY29tQGtlcm5lbC5vcmc+?=@codeaurora.org
-Cc: daniel@makrotopia.org, dqfext@gmail.com, sean.wang@mediatek.com,
- andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
- linux@armlinux.org.uk, mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
- bartel.eerdekens@constell8.be, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, arinc.unal@arinc9.com,
- rmk+kernel@armlinux.org.uk
+From: Paul Moore <paul@paul-moore.com>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk, brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org, stephen.smalley.work@gmail.com, eparis@parisplace.org, casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, keyrings@vger.kernel.org, selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v9 0/25] security: Move IMA and EVM to the LSM
+ infrastructure
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Tue, 06 Feb 2024 01:08:01 +0300 you wrote:
-> Hello!
+On Jan 15, 2024 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
 > 
-> This is the second patch series with the goal of simplifying the MT7530 DSA
-> subdriver and improving support for MT7530, MT7531, and the switch on the
-> MT7988 SoC.
+> IMA and EVM are not effectively LSMs, especially due to the fact that in
+> the past they could not provide a security blob while there is another LSM
+> active.
 > 
-> I have done a simple ping test to confirm basic communication on all switch
-> ports on MCM and standalone MT7530, and MT7531 switch with this patch
-> series applied.
+> That changed in the recent years, the LSM stacking feature now makes it
+> possible to stack together multiple LSMs, and allows them to provide a
+> security blob for most kernel objects. While the LSM stacking feature has
+> some limitations being worked out, it is already suitable to make IMA and
+> EVM as LSMs.
 > 
-> [...]
+> The main purpose of this patch set is to remove IMA and EVM function calls,
+> hardcoded in the LSM infrastructure and other places in the kernel, and to
+> register them as LSM hook implementations, so that those functions are
+> called by the LSM infrastructure like other regular LSMs.
 
-Here is the summary with links:
-  - [net-next,v5,1/7] net: dsa: mt7530: empty default case on mt7530_setup_port5()
-    https://git.kernel.org/netdev/net-next/c/01fc42942e30
-  - [net-next,v5,2/7] net: dsa: mt7530: move XTAL check to mt7530_setup()
-    https://git.kernel.org/netdev/net-next/c/fd7929095a52
-  - [net-next,v5,3/7] net: dsa: mt7530: simplify mt7530_pad_clk_setup()
-    https://git.kernel.org/netdev/net-next/c/4eec447ef640
-  - [net-next,v5,4/7] net: dsa: mt7530: call port 6 setup from mt7530_mac_config()
-    https://git.kernel.org/netdev/net-next/c/4ea4c040ddc8
-  - [net-next,v5,5/7] net: dsa: mt7530: remove pad_setup function pointer
-    https://git.kernel.org/netdev/net-next/c/8c2703f55837
-  - [net-next,v5,6/7] net: dsa: mt7530: correct port capabilities of MT7988
-    https://git.kernel.org/netdev/net-next/c/c9d70a1d3d64
-  - [net-next,v5,7/7] net: dsa: mt7530: do not clear config->supported_interfaces
-    https://git.kernel.org/netdev/net-next/c/b43990bc552e
+Thanks Roberto, this is looking good.  I appreciate all the work you've
+put into making this happen; when I first mentioned this idea I figured
+it would be something that would happen much farther into the future, I
+wasn't expecting to see you pick this up and put in the work to make it
+happen - thank you.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I had some pretty minor comments but I think the only thing I saw that
+I think needs a change/addition is a comment in the Makefile regarding
+the IMA/EVM ordering; take a look and let me know what you think.
 
+There are also a few patches in the patchset that don't have an
+ACK/review tag from Mimi, although now that you are co-maininting IMA/EVM
+with Mimi I don't know if that matters.  If the two of you can let me
+know how you want me to handle LSM patches that are IMA/EVM related I
+would appreciate it (two ACKs, one or other, something else?).
 
+Once you add a Makefile commane and we sort out the IMA/EVM approval
+process I think we're good to get this into linux-next.  A while back
+Mimi and I had a chat offline and if I recall everything correctly she
+preferred that I take this patchset via the LSM tree.  I don't have a
+problem with that, and to be honest I would probably prefer
+that too, but I wanted to check with everyone that is still the case.
+Just in case, I've added my ACKs/reviews to this patchset in case this
+needs to be merged via the integrity tree.
+
+--
+paul-moore.com
 
