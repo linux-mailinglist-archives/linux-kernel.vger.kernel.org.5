@@ -1,111 +1,103 @@
-Return-Path: <linux-kernel+bounces-58195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93B5584E295
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B8AB584E293
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:56:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6F091C28679
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:56:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBEBD1C25918
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0674378B4D;
-	Thu,  8 Feb 2024 13:55:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2D978B44;
+	Thu,  8 Feb 2024 13:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bNn39s19"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UGggg9Fo"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616BB763EF
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 13:55:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C7F576414
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 13:54:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707400514; cv=none; b=hLG0mnlbaTE8ebuiqATwdgBm7/E+U1+RIzMh9tMSCHxsudF9iG9xioFZxFGVrmyxwo8rmNAhFwrPVooTqSJqWI+rFiMlAkb+xOpGxLi/LflzPizm0vk0tK77GbLtr0xH0heUi1IqG3TIjWEmGRfIwOuRl04Keqy68YtflinBxr0=
+	t=1707400460; cv=none; b=uaKHOEL+fA5pgqpsLLVFUHFV0CQE9PFNqY9AGZz8psqUc6IfqXMIR+myJoXaPd1Pm9YsqGh1YYPZ6Yxx/taXM7wbf17bsZteDUAX85opLdonrSFQZytRiTL7nEvJ9ZNLvhTJOXuMI19q4Fh5PcXeQRbxU1Rb5aY+wbZPbss7uMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707400514; c=relaxed/simple;
-	bh=eBOpj9vr+ze6ckMI+1qnwlUv9z5G8N5Eo92iW2xOv04=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ewqn34X8L7FXQmoSLEiY0Iv4okuFAj+N68/EknyXGJnVEv2CitlfQUHsX3gOHQdmRDM/t8ypsBffklz4El1v3PvCuiAlz3KqzNp5kBe8fsLLKaYgSVVv7A1yt0AIXXKMwzndgeZjBjldcrN1GEY1vahcwfvt8AuRJ+8/crK8C4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bNn39s19; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707400510;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/fcEFVTR0rsXTj+Grlw2xqYc8J4he9PWeVGkbhbY1/Q=;
-	b=bNn39s19j2a+J156nRCkJ+ocxuXh6wEja8IIxklRUP2mX6fH0+rQw/BUftwS3nmaYw86RJ
-	4vwKpz9atUbTXrwmrA6i0Q1v10C62KYfXTg4V09VtZ4Cqwk36bm3DkBcVfUJXKam+tYYfB
-	recHLQDTnl2j23DQHoDL8TjvDP8jBg0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-177-PD0hYRglPcifZwAOdlIWrQ-1; Thu,
- 08 Feb 2024 08:55:03 -0500
-X-MC-Unique: PD0hYRglPcifZwAOdlIWrQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 19F061C09839;
-	Thu,  8 Feb 2024 13:55:03 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.158])
-	by smtp.corp.redhat.com (Postfix) with SMTP id A1D01492BC7;
-	Thu,  8 Feb 2024 13:55:01 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu,  8 Feb 2024 14:53:47 +0100 (CET)
-Date: Thu, 8 Feb 2024 14:53:45 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andy Lutomirski <luto@amacapital.net>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pidfd: change pidfd_send_signal() to respect PIDFD_THREAD
-Message-ID: <20240208135344.GD19801@redhat.com>
-References: <20240207114549.GA12697@redhat.com>
- <20240208-fragt-prospekt-7866333b15f0@brauner>
+	s=arc-20240116; t=1707400460; c=relaxed/simple;
+	bh=sAPBOJTqt0Eux7mZyQPffvBf26VAhOH69akvvfeddOw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UfN8iVLmK8SSB/8xfsnST3CeTX9u+BlsLEyL0YnmxSMEJ/W5xfuEZYxBiSh+7IhYkpDcc0FeLotjSfuMR6QHuAhcfOmkAq/UAu+fxBbWJZGxRjaGAvmsbS4no19JBF9cCXuAV8LN0wq4JU2/v6d4tOaar9SmLX+oRE/DB1ZwKXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UGggg9Fo; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-60492003050so17800937b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 05:54:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707400458; x=1708005258; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sAPBOJTqt0Eux7mZyQPffvBf26VAhOH69akvvfeddOw=;
+        b=UGggg9FoknxkVTBo3XyTIcoMSgPxsGAIkGqo7suhPJZI8qWpn/cpgKkoobrS23XoDi
+         sDvwR3/ywrrQmp+KT7GlNBOOEbKOyoPaQm1/nCMXi8ojVtQEfMqKDwH6VfVrQSUH3ZBK
+         TZReHWyQ7dEroLQwQ1P0rfkz/dmlkpqkOVDtLdcHNllSRvq9t5RzB//MP/pADzCw+ZxF
+         hZxc1s9a3Q2RQcRrPrXzgWnpDUSP4M2M4RLQQGWKOFq//2BJflrENrhEHWToGstD0Nh4
+         EOxe3XUUHn2S0gJ/5S0SPmmxXiHvO1//Fa6L0XfJxssZodEN396zJQxXylp8oaOXvqBr
+         K1Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707400458; x=1708005258;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sAPBOJTqt0Eux7mZyQPffvBf26VAhOH69akvvfeddOw=;
+        b=qRaS3KZKY10mdSSRpYRpUVutqJJP9UVMnF58/dbhOSU7KNE9N7nRt29RII2Th+jvXm
+         lCxGFqhtfDE/dPwzksf/EVo/E4+Qz95DbiHUYa+bQzBn6XiPRtkon9TGgKlagFgdo3mD
+         6Wg8U2ouv0ORW9ntGLDTS4aXO0CUjk3/Ialo/kNNQCEaG2/9EhXhy0U91f8r8rwF2Qsj
+         ASEDt6Tsu9dV1MRGY3jcIUVUlpoabiBHzw5p29ZuQ3MZSnHFADBIvLecYKmznym3G+7l
+         Yndetc5OWaAqIN6AMw6pG3GgCB6/AaEC8pDi1xFc55/ciOjYKCEoIyUAHPnCf73ABD+0
+         CDBw==
+X-Forwarded-Encrypted: i=1; AJvYcCWhaQnpD1QbnhOAOO4X6Acn2QosdBUpeFPlISj06v8zjRXF1Zn42liMR+Urq2J0vV/o/zKfCM4AehioDAG6PMMj6yonj5VXmMVRKrMr
+X-Gm-Message-State: AOJu0YzDnON3RtgsqAGvsoU5IZEK1YMb3FRdW8fsp4t16F0Bm7GZ9AHL
+	JpmIZq2iPj0hmbv0Usfujl030imNP7SQp06mMqQiLdjdPIr0ZgFhaFqVB6bSbH6svbGxh6sAI+K
+	B+MCM7kVuE97ALshkjqkzCDCEUu/LZ2GFQ765f7QMhrEEUGC9rOHGwQ==
+X-Google-Smtp-Source: AGHT+IGDiOneyfJfxmHJsx95/Io/iJWK5Htw1Hg2MZmkBm+216Ld2xxxMuBHMFUPV7I9NJDT+pGjYE+Cddkb3IyflOI=
+X-Received: by 2002:a05:690c:f8a:b0:603:ebf7:947b with SMTP id
+ df10-20020a05690c0f8a00b00603ebf7947bmr9533612ywb.48.1707400458134; Thu, 08
+ Feb 2024 05:54:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240208-fragt-prospekt-7866333b15f0@brauner>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+References: <20240207104604.174843-1-antonio.borneo@foss.st.com>
+In-Reply-To: <20240207104604.174843-1-antonio.borneo@foss.st.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 8 Feb 2024 14:54:07 +0100
+Message-ID: <CACRpkdZ=Lf+Db7-QwM-X1RqqRJUNH20Yc6tJYjz9DK4RDxP6-w@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: stm32: fix PM support for stm32mp257
+To: Antonio Borneo <antonio.borneo@foss.st.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-gpio@vger.kernel.org, 
+	linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 02/08, Christian Brauner wrote:
+On Wed, Feb 7, 2024 at 11:46=E2=80=AFAM Antonio Borneo
+<antonio.borneo@foss.st.com> wrote:
+
+> The driver for stm32mp257 is missing the suspend callback in
+> struct dev_pm_ops.
 >
-> On Wed, Feb 07, 2024 at 12:45:49PM +0100, Oleg Nesterov wrote:
-> > +	type = (f.file->f_flags & PIDFD_THREAD) ? PIDTYPE_PID : PIDTYPE_TGID;
-> > +	ret = kill_pid_info_type(sig, &kinfo, pid, type);
+> Add the callback, using the common stm32_pinctrl_suspend()
+> function.
 >
-> If the user doesn't provide siginfo then the kernel fills in the info in
-> prepare_kill_siginfo() a few lines above. That sets info->si_code to
-> SI_USER even for the PIDFD_THREAD case. Whenever the info is filled in
-> by the kernel it's not exactly userspace impersonating anything plus we
-> know that what we're sending to is a pidfd by the type of the pidfd. So
-> it feels like we should fill in SI_TKILL here as well?
+> Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
+> Fixes: 619f8ca4a73d ("pinctrl: stm32: add stm32mp257 pinctrl support")
 
-Hmm. Agreed, will do, thanks.
+Patch applied!
 
-But then I think this needs another preparational 1/2 patch.
-prepare_kill_siginfo() should have a new arg so that do_tkill() could
-use it too.
-
-(offtopic, but may be the "Only allow sending arbitrary signals to yourself"
- check in pidfd_send_signal() needs another helper, do_rt_sigqueueinfo()
- does the same check).
-
-> I would also suggest we update the obsolete comment on top of
-> pidfd_send_signal() along the lines of:
-
-Ah, indeed, thanks.
-
-Oleg.
-
+Yours,
+Linus Walleij
 
