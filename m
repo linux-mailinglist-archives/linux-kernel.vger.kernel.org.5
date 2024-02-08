@@ -1,113 +1,95 @@
-Return-Path: <linux-kernel+bounces-58491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4749F84E716
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:50:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4EDA84E721
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:51:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5A611F24F1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:50:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C82FB2E94C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789911272AD;
-	Thu,  8 Feb 2024 17:48:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AC7283CD1;
+	Thu,  8 Feb 2024 17:49:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="I314OgUw"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FLCHoYZu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B5F376416
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:48:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788FB7B3C2;
+	Thu,  8 Feb 2024 17:49:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707414491; cv=none; b=IbYru4lmZ+QfNFv5HoThf7tYz0b8rjZ1cdvMsrQSVe3zsa/5gj1RREnnxs4lttb4HN9zbfiRK+lUgvFJCW7CITj5oc1r1FVOyVtZNCP/iFW4uN+TjkDN+NrsYFRvS4vybRquuWpRwisSIjGzZbfVzOZcEYtq4xKmEeZsQDlGHtA=
+	t=1707414560; cv=none; b=uueJL2vDInCBX+J25cgyOKdRT5OZUlP8qvORbEkw/FhAGy8Qjyx8lVu0lGZFPEuXVAukWXpEq2D0ai3zfmzGkaFYDmCbGaU/4TyEYXIl29zkiFsYypgT15YugOZrFEwGTXMiLAU5NDZImEXM9m0aEl1QlvZGaSZRjtoclR9AgOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707414491; c=relaxed/simple;
-	bh=z4H3q+V584X3cloLoQL4z7W9A39ryrm0xdBvifZpO/k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WGPd3IRkGdRKfLGKNpLvIP9MDky1Fne1GIJ3tPD3HdPVdMOUnilyGTvZtq1FBsMmlORdX87mEnc6vHr0/VV6yI2keJTFV/pvOymf8SOcv841RzAHgJyAsy4kMwZD5bxIdwt6v0JYs5pk4nUfviF9a7+2DXx/Oi1+k4rq61Xa9u8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=I314OgUw; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56037115bb8so15647a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 09:48:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707414487; x=1708019287; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S2CdXbb7WVGaal0hzp3f8lJdjgHwhFUuWNRhD/Ru7SU=;
-        b=I314OgUwNasim2y3Bv0LjVyVJWpF9z9HVY4Ut50y6BCu5UZKylGtEd5f7GVRLWr3wH
-         aOhD8srKNPfAY2lAQTbZ/eLFTBvuojpaHZdEcpDHplyUr+ssx7BPiU87zI3Rh3PIdoML
-         7MwkiWm2QnItoSwuzx7NO5Pd8lK4NdlzpuLzb9VZeXS9mOdBQeGDkhX3GhmhK1DcdIzv
-         TnNwnur2vp+D2KLESJFhKs845jicVEiJB8TXpivqRoqvBXxCEm2T0c2xxyX29Dob8RaB
-         rjYmIuibPORxTVn5ImgfXr901CD3y0JTVSAwxNeXIkFexkq8/RnuuNXqS+dPWshQx8LR
-         zBDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707414487; x=1708019287;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S2CdXbb7WVGaal0hzp3f8lJdjgHwhFUuWNRhD/Ru7SU=;
-        b=O4hrwWrLf63zeefywDgGrhE5yAEZaaaPCy2DHs6hMT3d9ELmH4ibI3YD0vba3Vfy+N
-         xn1qJVnCHmEdZZk7yZAQvIzcbnz19l8mA/IMNGYg3MQLmrGqfbv7IJlEIicQDvxnu+yM
-         XHNf1C2vN6nL+5wW4fzm3I+OKuyVMl2DB4EK7tB70dn7KHofowk3AOGSYTjL9HXttDTm
-         SGju+dQCSvPmHt945j2jPueGYBTqahQyq/BTLpzYNCjxBLdsJ38qUpDXnwbIQhB6VJJN
-         JA6CLMJbc36/XbcV/zFqjJ4M3mzMcynQ4tYPHF4DQEf+3sCzw5DF9lqb1tMmu/lPQW2O
-         6NQg==
-X-Gm-Message-State: AOJu0YxncDWN0YxgYsrtT5bs/YNO6wYok93h/DPWEnUK0yhfoE5lMN6U
-	ayfEybNeeScAKb+kgmbiJiZg5ldbfl2v0hG8ZvybUsk/Z5nNQ2+YJYze583CCpG2gBI4Et18Fa2
-	9PRzZHAOcNm8p13z73Yf0hQJs4o7cVJlZRHWE
-X-Google-Smtp-Source: AGHT+IFx6D9+1QvqcwypiSW4MNJJCbBsNotpLlHoiufV7R69opJf1sckm7W6l77vtmstilA8dQaKIFFUNabofjpkE64=
-X-Received: by 2002:a50:9e45:0:b0:55f:a1af:bade with SMTP id
- z63-20020a509e45000000b0055fa1afbademr418410ede.4.1707414487236; Thu, 08 Feb
- 2024 09:48:07 -0800 (PST)
+	s=arc-20240116; t=1707414560; c=relaxed/simple;
+	bh=cUlzWJZIGqNIKI5dwygE++YzgRhCS9mE4C/8W+hc7no=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IH6atazC00QCeb1UObIguDRDk25hWlcSCZVl9YiV81TnNfyg4SZGSHUopp7+sh+YO6BD01Y4+DDfo7dEU6bRYwwXKk2eBMROsdcCbXqkplY4s4G6YdDUgRoN1ApaUp/9jwibi8eOWlSIBABN17s1CvPeYYJUrK9YyTwcc2iVoJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FLCHoYZu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01A38C433F1;
+	Thu,  8 Feb 2024 17:49:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707414560;
+	bh=cUlzWJZIGqNIKI5dwygE++YzgRhCS9mE4C/8W+hc7no=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FLCHoYZuLz/ZxYoFOli5AfVt6L6NAnEQ4hUKl6INUpMysLLhpAre0tt/mOAHV/p/e
+	 j6brqfNgPy5HSnrk0e8sSOsYfNif7vS/nUdTja81IihfnJZ/eGK1QCbmzxuhgE3Ovc
+	 fNdONplRH+8ICQc2cTt7X2gJdqsPqfDG1ovdLRmeCd7ZiuqIdwotqdYMi+d6JXwTnE
+	 8A+geo+EgJku3OA9irYAZkhTmpOVLpZj3Rh4Oyk81L1VzIORM6qfwbqQGbbDjaxLkF
+	 zm6LdpP/7lA9vGtXEpayDPD0YP3NK+PT8ejR2bEMQ9Hc3y3Hv4dIIEaLBCPmy7YP+G
+	 zNkFr8ldPRSBA==
+Date: Thu, 8 Feb 2024 17:49:12 +0000
+From: Lee Jones <lee@kernel.org>
+To: Bart Van Assche <bvanassche@acm.org>
+Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Adam Radford <aradford@gmail.com>,
+	Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+	Andre Hedrick <andre@suse.com>, de Melo <acme@conectiva.com.br>,
+	drew@colorado.edu, Finn Thain <fthain@linux-m68k.org>,
+	Hannes Reinecke <hare@suse.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	Joel Jacobson <linux@3ware.com>,
+	John Garry <john.g.garry@oracle.com>, linux-scsi@vger.kernel.org,
+	Luben Tuikov <luben_tuikov@adaptec.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Michael Schmitz <schmitzmic@gmail.com>,
+	"PMC-Sierra, Inc" <aacraid@pmc-sierra.com>,
+	Richard Hirst <rhirst@linuxcare.com>, support@areca.com.tw,
+	Tnx to <Thomas_Roesch@m2.maus.de>
+Subject: Re: [PATCH 00/10] scsi: Replace {v}snprintf() variants with safer
+ alternatives
+Message-ID: <20240208174912.GZ689448@google.com>
+References: <20240208084512.3803250-1-lee@kernel.org>
+ <c9129b08-50fb-4371-aa05-6f6c7cd7acfa@acm.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205210453.11301-1-jdamato@fastly.com> <20240205210453.11301-3-jdamato@fastly.com>
- <20240207110429.7fbf391e@kernel.org>
-In-Reply-To: <20240207110429.7fbf391e@kernel.org>
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 8 Feb 2024 18:47:54 +0100
-Message-ID: <CANn89iKVoGUKZSBHanZ8zksmpnnysH1jng4KMgGpaqoyrP06Aw@mail.gmail.com>
-Subject: Re: [PATCH net-next v6 2/4] eventpoll: Add per-epoll busy poll packet budget
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Joe Damato <jdamato@fastly.com>, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, chuck.lever@oracle.com, jlayton@kernel.org, 
-	linux-api@vger.kernel.org, brauner@kernel.org, davem@davemloft.net, 
-	alexander.duyck@gmail.com, sridhar.samudrala@intel.com, 
-	willemdebruijn.kernel@gmail.com, weiwan@google.com, David.Laight@aculab.com, 
-	arnd@arndb.de, sdf@google.com, amritha.nambiar@intel.com, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c9129b08-50fb-4371-aa05-6f6c7cd7acfa@acm.org>
 
-On Wed, Feb 7, 2024 at 8:04=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wro=
-te:
->
-> On Mon,  5 Feb 2024 21:04:47 +0000 Joe Damato wrote:
-> > When using epoll-based busy poll, the packet budget is hardcoded to
-> > BUSY_POLL_BUDGET (8). Users may desire larger busy poll budgets, which
-> > can potentially increase throughput when busy polling under high networ=
-k
-> > load.
-> >
-> > Other busy poll methods allow setting the busy poll budget via
-> > SO_BUSY_POLL_BUDGET, but epoll-based busy polling uses a hardcoded
-> > value.
-> >
-> > Fix this edge case by adding support for a per-epoll context busy poll
-> > packet budget. If not specified, the default value (BUSY_POLL_BUDGET) i=
-s
-> > used.
->
-> Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+On Thu, 08 Feb 2024, Bart Van Assche wrote:
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+> On 2/8/24 00:44, Lee Jones wrote:
+> > Cc: Andre Hedrick <andre@suse.com>
+> 
+> Please take a look at https://lwn.net/Articles/508222/.
+
+get_maintainer.pl pulled it from here:
+
+https://github.com/torvalds/linux/blob/master/drivers/scsi/3w-xxxx.c#L11
+
+I like to involve the people who take the time to list themselves as
+authors.  I guess these are likely to go out of date at one point or
+another, especially in such a long standing subsystem such as SCSI.  Not
+as big of an issue in NFC!
+
+-- 
+Lee Jones [李琼斯]
 
