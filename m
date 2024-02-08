@@ -1,92 +1,84 @@
-Return-Path: <linux-kernel+bounces-57440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4460C84D918
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 04:45:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BD7B84D91C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 04:51:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 717691C22CE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 03:45:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E86951F22B6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 03:51:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6534B2E637;
-	Thu,  8 Feb 2024 03:44:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A75CF2C6A7;
+	Thu,  8 Feb 2024 03:50:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="ZF/FY+Wj"
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="U/WKWA6w"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2084.outbound.protection.outlook.com [40.107.220.84])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453032E847
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 03:44:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707363884; cv=none; b=mMlW5xzspOP2Gqsxr1/0AOcFKC1ARr/RsMCFDe3WIZWHW3cHHah37db8wrKVKDT8jACQf9HG9yvFpRTKXUF8Bl16OFtdMHJpt8WDu0lZ9VlZ3gfAH6ABqwXI5c3GP3/Sg3+Yip5GzIPOg64jY33UehC1mrJw5KMj2pbHNvZIo9g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707363884; c=relaxed/simple;
-	bh=k//nL0O52r0Pst+dMnarHtp2qW40QOxuRpgoBz8kxz4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Qtw1q1BIaPwMAwBIhDLH9llUOm3gt1M0yIZKB2Hi4Slwzy0e2ldLSMsPnWX0ei8ccs+8V2kt9kjFDmcT7gBL7b2yx8MxZIknTtgiSH9NbAyV8lwE2+e2oDZTJW06snIO1ZCbtcjMek3rCarmUxmdotBuKPvh9sZxVetDICT2h5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=ZF/FY+Wj; arc=none smtp.client-ip=209.85.160.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-218eea4f1a7so751939fac.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 19:44:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1707363882; x=1707968682; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pHHbaCQ0poyIlU4NNDp8/EJ+oDcSBjCEciZfSlQAroE=;
-        b=ZF/FY+WjnT3ygBMUPf6UDktNH+t5dSGZi617TrWm/5EmMUQmaKakp99wR7Q2hyZRtu
-         oNgrqOifXttQaI9RzNJ4ay3MKfYrflfpcR8bPsr5FLeMANJ4wJ8JxQ3Xl/qVzykjgQKN
-         04f00ErSBBM+FGGlrI6lQAzdw3OeFgxsIR/bTfEBZeYSOJcORX2T2oH+1OQDlP8z+Alf
-         V7pqgocVhcsh9WjCkyaK4tZ+u8Cofbnse0SuuTD4GaW4nwkQLQQbWyJ1CG7sNDEjdUns
-         8A5GmRHlsGd/FNQgqkBZbJQCzaved9w090gzAsUmHy7YqGRNF+mfYrsvldB48sC2HreU
-         98wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707363882; x=1707968682;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pHHbaCQ0poyIlU4NNDp8/EJ+oDcSBjCEciZfSlQAroE=;
-        b=T6tTk3pmVZUqTDZQIHLdlSLnAJ7JC6Y5qHO8seYM10/vQr+kCtt43WzY3HDDlT+tuq
-         4AhKJO88V/jm6x/xJUWvYiAnN4UE4Ata+61g3RMo7hGnun0gN96htvfADSKuJPn2EXi6
-         +O4VxW4++PeQegQbDAONbocLQrmQ79dKJOAKQu8XnjX+uD6Kh2OnvchTuglvtvHmK3xz
-         futkAuLRy4ganmlanrM8XMzIDIO6xJlTRNd3nYBLw39hcohpzI3TEtLi3TDwL7yaQOFA
-         WKQyhfc/CYhRHcEE5njYOeoE/79ivTvDV1wtfRB+g2GwsCsUt5TJjjG9CtTZDJ4VTrxe
-         DY9g==
-X-Gm-Message-State: AOJu0YyGhzlDUURw0dRONk6igy6pY/y2PHrInNgMa5SjUs64EVaoeznh
-	6XDyR5PNj1WSo0m7sGvigN/F4gUXbReKuK4ZpaCLo7iijeLNXISjjcP1aHvZDKs=
-X-Google-Smtp-Source: AGHT+IF8S/sWdD2/t/IehosLthOGcp9RQPnzkTr2qd4mbuxfbLO4HkNLnW4usy2ZbfgHlv8pV/ejiA==
-X-Received: by 2002:a05:6870:5aa6:b0:219:efcf:4566 with SMTP id dt38-20020a0568705aa600b00219efcf4566mr608603oab.13.1707363882197;
-        Wed, 07 Feb 2024 19:44:42 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVh/Tfazr2HX3H9HLVSgqn2h5sWZF5zZ5Zu3TylAEJBkg6WlJX4/E7mdRNyYeqRzmewuTn9VXmXv1FtoOtXhtlcOre2zou7FFXQUDmY6pI/9p/FsbwVr0+8GGlVgHQ9AYdz6tBzr5/i8hIFf+7EspTg8jBmrbfhdhTP3qiwyFvjpwO2in0n4qTOitGh8nK7brPcNu/Kvh21nlOV/qTSz2Rnp1Gbk49vPosP7AWKXM6PoV/qytusk6FagZIAGKefqaqZynnwmgekry/tFV+XDLPJWXhLi4W2ycmDpIRCad/Huk1Yjxqhm2F7DjWvdLC3aIgaUNaY9EbYeOBLtVswBA3q71Sj1eHrmp9KORNCA/U8M8UAnDOI4Yp334RzlA1isNR7FePtaKlAYAN/Vo8T3HErx+2vd6HLGUiyszV6wXoj9Hcm2pveNgVjS2wxW6nYATvDx94n
-Received: from sunil-laptop.dc1.ventanamicro.com ([106.51.83.242])
-        by smtp.gmail.com with ESMTPSA id g10-20020a056830160a00b006ddbfc37c87sm443595otr.49.2024.02.07.19.44.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 19:44:41 -0800 (PST)
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: linux-riscv@lists.infradead.org,
-	linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Sunil V L <sunilvl@ventanamicro.com>
-Subject: [PATCH v1 -next 3/3] RISC-V: defconfig: Enable CONFIG_ACPI_CPPC_CPUFREQ
-Date: Thu,  8 Feb 2024 09:14:14 +0530
-Message-Id: <20240208034414.22579-4-sunilvl@ventanamicro.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FAAA26AEA;
+	Thu,  8 Feb 2024 03:50:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.84
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707364254; cv=fail; b=GWAH5T7y2HUonDn8tz6JdWxWH5ZyV22W1PcLimhb8V9to37ArfmeVfPk9Xf8Ve5XCtuYTJYXlpw3TvIi+x+bkvurIi/kbR2fD7xh7GI8N4jdabxbAoJ+/Px4lOQx+9AfLAndw3R8Db1l128ukA/MomvpAsKRdTmtqQbQ2vuuUWs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707364254; c=relaxed/simple;
+	bh=mF1R+Xse0YZ12BmmCLWxCQZ9w+7fdN0fOdELvVrzDhs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bz60w0AZ6/3t8cHndNmZjwih5CmRdg7baC1BJ5pPjHSrIbPeFYCUgd72mqGO/cpGLezQqBJZiCxpX2HVJlkxbG36nHgBhIW/O2XiurELv7s5RoKx/spr3e9r7DKoaDcpacrZ4F/sadPPEowkQ6SpW71Vl6+ZrrADaSyXtMGbceg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=U/WKWA6w; arc=fail smtp.client-ip=40.107.220.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F8oPGZcsEGODn5DI85GsNfpsRtl5Fs03xGknGjmkrvEJm0FQLbLfoO6oM4nj9xLWdRNv5Hlw9+d6+xNzf9PE9/FMrF8/bH9pB9DkTrL2zPK2x5jZybL/LY9wsSk6WnoJERxEQCJipYiY2I1D19e3esZri3vwcXO0WNkfUrKiWwPa40h+HH7jME/a/r5OPvoERdGHhAArERJrHqHnp5igOND1pP3VVB3Ke5CuHELEOilgOAk1zOoyRh3RucTUtVDt61d4uBq38IWBn5ajw6bIkPyW5LY0IBeLCcQJmL2UDps2XZrT5ixf6042UuBUddPiasNOn0ehgIqCfv0wEyKM8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JhU4oM1vfsXHB8Pbj9j+MboBU+5Ozp0MS+arm8gOzSQ=;
+ b=DYjMH04drX5zy9tF0sGG+t1TGbx1Wjgb+Zn5cRfhVg0Nc2XTp8cc8FLaK7yVCfrd4lxY0zF4zuEu9r/o83feBPnBmxfb+LMhZxtMYbdruoziHlWuIXKIU6rCAViPbdPlFyvO72s2YNdQoxOl9emcLHVCrY+4/1Co0hPzi+SdNcbyW1ZwK15T64Dusl/YqXVWbx+deOC/S5YJE6KPyeMuu4Ku6nV7nO47Jbo+h0/Dyqqa1tl/vujpDBHDZYCpoCxbhq47xYWMRmChHmz/nNpRKrvtgLlBgLAoiz10EnLRYvceEQLuiPwuJ7zINS2mZopUDW9Qxl6qxkTEvbDBYlHtXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JhU4oM1vfsXHB8Pbj9j+MboBU+5Ozp0MS+arm8gOzSQ=;
+ b=U/WKWA6wUYxLIRzW0I5nXG1lFlpcwt99aSvzLbaqJlHbc7O0mS7YwUiimoisyMmRvXZiO20wQLpt+PXNwRHY1fJEK697r69Fn/EUWj4bS6+Bf8db5vxF4BQrRWpqkdaQzD17P7efQUzcGu+utaVeea2Oi7wQByPfGTJPgdyKtUk=
+Received: from BL1PR13CA0131.namprd13.prod.outlook.com (2603:10b6:208:2bb::16)
+ by PH7PR12MB7377.namprd12.prod.outlook.com (2603:10b6:510:20c::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.17; Thu, 8 Feb
+ 2024 03:50:50 +0000
+Received: from BL6PEPF0001AB54.namprd02.prod.outlook.com
+ (2603:10b6:208:2bb:cafe::8d) by BL1PR13CA0131.outlook.office365.com
+ (2603:10b6:208:2bb::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.17 via Frontend
+ Transport; Thu, 8 Feb 2024 03:50:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL6PEPF0001AB54.mail.protection.outlook.com (10.167.241.6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7249.19 via Frontend Transport; Thu, 8 Feb 2024 03:50:49 +0000
+Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 7 Feb 2024 21:50:46 -0600
+From: Perry Yuan <perry.yuan@amd.com>
+To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
+	<viresh.kumar@linaro.org>, <Ray.Huang@amd.com>, <gautham.shenoy@amd.com>,
+	<Borislav.Petkov@amd.com>
+CC: <Alexander.Deucher@amd.com>, <Xinmei.Huang@amd.com>,
+	<Xiaojian.Du@amd.com>, <Li.Meng@amd.com>, <linux-pm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v6 0/6] AMD Pstate Fixes And Enhancements
+Date: Thu, 8 Feb 2024 11:46:27 +0800
+Message-ID: <cover.1707363758.git.perry.yuan@amd.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240208034414.22579-1-sunilvl@ventanamicro.com>
-References: <20240208034414.22579-1-sunilvl@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,26 +86,98 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB54:EE_|PH7PR12MB7377:EE_
+X-MS-Office365-Filtering-Correlation-Id: 114d361b-4da0-4889-525b-08dc285923e4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	NB578bs2Ax94Pdv8bgkRhe3Qy2tmUZcKia/8DrBYEE5GPOcIoW8eTMDcbmdVHgLcSAhMUuMdb4/jtwxaYWYzhNSVQw4wEE17IVCz2DZ2Wxqnvh/LndecGp5/ax3ReFW0V4QQmc0E3Y9hvdl9E3SAZRaqeIj9R+jO84dL9H/8wnNf1YdQXcvo63Rx4RZnj1RCmLjo9SVG4ulyQE0L+StQw5BbKvFV8WkfEjsn4vf48hIDAmTMx7lpj28JrncAZ1V2nNJU8Hh2qb3ocbmtnG/IpbPKIpqSvbrF+LZ73ir7X1wtEjl3OZMfclaPpHfhcY50tsltwM8PbnYIuZKDmMHCaibCfjKTKaLrA5ygaSKpvzR+kOxiG/+Trf9C9R3bqOYjF5Kc1ialXxBSQ/uHYAMLVGaPJ3P1+AALJst2XIyrpE9rPNfd3wmhV498bTcBGbSwONX8vdXtqIAmCCRDM3DYbUoJINmDjIj9mBDPRy8pd7qIhMD08KEDftHT/zR7h2SGWLxPISGF6qQYwy2Z4749+WtSjHGYwk9qiQ7RQVLvqB32qoY+Af+qsfn8OEjqc0YxrfrmzaOi4UC9NrkulgoOBdt7k4evgo0OaAMsNI6U5iZKsKHm3XIv+18PI1ifjj0Z
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(39860400002)(396003)(136003)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(82310400011)(46966006)(36840700001)(40470700004)(2906002)(6666004)(83380400001)(86362001)(7696005)(2616005)(426003)(16526019)(26005)(41300700001)(336012)(36756003)(966005)(478600001)(82740400003)(356005)(81166007)(54906003)(316002)(70586007)(70206006)(110136005)(5660300002)(44832011)(4326008)(6636002)(8936002)(8676002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2024 03:50:49.8665
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 114d361b-4da0-4889-525b-08dc285923e4
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB54.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7377
 
-CONFIG_ACPI_CPPC_CPUFREQ is required to enable CPPC for RISC-V.
+The patch series adds some fixes and enhancements to the AMD pstate
+driver.
+It enables CPPC v2 for certain processors in the family 17H, as
+requested
+by TR40 processor users who expect improved performance and lower system
+temperature.
 
-Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
----
- arch/riscv/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Additionally, it fixes the initialization of nominal_freq for each
+cpudata
+and changes latency and delay values to be read from platform firmware
+firstly
+for more accurate timing.
 
-diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-index eaf34e871e30..2988ecd3eb4d 100644
---- a/arch/riscv/configs/defconfig
-+++ b/arch/riscv/configs/defconfig
-@@ -44,6 +44,7 @@ CONFIG_CPU_FREQ_GOV_USERSPACE=y
- CONFIG_CPU_FREQ_GOV_ONDEMAND=y
- CONFIG_CPU_FREQ_GOV_CONSERVATIVE=m
- CONFIG_CPUFREQ_DT=y
-+CONFIG_ACPI_CPPC_CPUFREQ=m
- CONFIG_VIRTUALIZATION=y
- CONFIG_KVM=m
- CONFIG_ACPI=y
+A new quirk is also added for legacy processors that lack CPPC
+capabilities which caused the pstate driver to fail loading.
+
+I would greatly appreciate any feedbacks.
+
+Thank you!
+
+Changes from v5:
+ * rebased to linux-pm v6.8
+ * pick up RB flag from for patch 6(Mario)
+
+Changes from v4:
+ * improve the dmi matching rule with zen2 flag only
+
+Changes from v3:
+ * change quirk matching broken BIOS with family/model ID and Zen2
+   flag to fix the CPPC definition issue
+ * fix typo in quirk
+
+Changes from v2:
+ * change quirk matching to BIOS version and release (Mario)
+ * pick up RB flag from Mario
+
+Changes from v1:
+ * pick up the RB flags from Mario
+ * address review comment of patch #6 for amd_get_nominal_freq()
+ * rebased the series to linux-pm/bleeding-edge v6.8.0-rc2
+ * update debug log for patch #5 as Mario suggested.
+ * fix some typos and format problems
+ * tested on 7950X platform
+
+
+V1: https://lore.kernel.org/lkml/63c2b3d7-083a-4daa-ba40-629b3223a92d@mailbox.org/
+V2: https://lore.kernel.org/all/cover.1706863981.git.perry.yuan@amd.com/
+v3: https://lore.kernel.org/lkml/cover.1707016927.git.perry.yuan@amd.com/
+v4: https://lore.kernel.org/lkml/cover.1707193566.git.perry.yuan@amd.com/
+v5: https://lore.kernel.org/lkml/cover.1707273526.git.perry.yuan@amd.com/
+
+Perry Yuan (6):
+  ACPI: CPPC: enable AMD CPPC V2 support for family 17h processors
+  cpufreq:amd-pstate: fix the nominal freq value set
+  cpufreq:amd-pstate: initialize nominal_freq of each cpudata
+  cpufreq:amd-pstate: get pstate transition delay and latency value from
+    ACPI tables
+  cppc_acpi: print error message if CPPC is unsupported
+  cpufreq:amd-pstate: add quirk for the pstate CPPC capabilities missing
+
+ arch/x86/kernel/acpi/cppc.c  |   2 +-
+ drivers/acpi/cppc_acpi.c     |   4 +-
+ drivers/cpufreq/amd-pstate.c | 116 ++++++++++++++++++++++++++++++-----
+ include/linux/amd-pstate.h   |   6 ++
+ 4 files changed, 109 insertions(+), 19 deletions(-)
+
 -- 
 2.34.1
 
