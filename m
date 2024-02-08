@@ -1,88 +1,103 @@
-Return-Path: <linux-kernel+bounces-58211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4916984E2C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:04:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C59A384E2CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:07:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05BA2287111
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:04:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03D7E1C272C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:07:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C2B7869D;
-	Thu,  8 Feb 2024 14:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE0178678;
+	Thu,  8 Feb 2024 14:07:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X7U4hszY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Mp9jYl3e"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6BCB7640A;
-	Thu,  8 Feb 2024 14:04:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD1E768E5
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 14:07:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707401076; cv=none; b=J7qQKflWvqlrclfFBi4Jy8VLYF+RYTl1Cw+QincI2bVu00pWmHT4ZFTcPJeiieK0tP9dm4zi0Z7j331+v6RRqsO3WtqONxpIv1PjWeObexRxonxZzUtOVAcwOlAVZ35veL/o0/4QtT61QWibE9ufEKnFED362D6HhKBMzfrNK7Q=
+	t=1707401256; cv=none; b=V2ywGt3Fjy+Ssmr6sEtxkz/qgIJYb/CbACV7nNgy/KuYy32FIXT9c3KvIZi3UdTcnWmPsj0ZM/YBAYQHxuKz0jo9DtRbqAU368CMIbuALWzdIDZj5P9NlEt4dod486o35x3/SaWyq00lvIKvxZOfK1L8VKcQgqBu6sVx0DmxyKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707401076; c=relaxed/simple;
-	bh=2hms3TPwr8f/X4oq2c4MaDQ1qmoGBSzkbH2R7hmgcsQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=n5bLHOPPitnZ3UahOx/vPTIpuHQf+bjnQtQmUQpOueIPaGrZd0bKbg2nhD8ajifPBmRbDA6w6lrK1B50iZ0zXCndOk51fa6YgPqOKxZzGEJmZKDET0miSxfxVjC4K4WMXtu+3aC9WCXJbCpl6uLpP57dLlTjEPhIH+InW6dAhv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X7U4hszY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD8CEC433F1;
-	Thu,  8 Feb 2024 14:04:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707401076;
-	bh=2hms3TPwr8f/X4oq2c4MaDQ1qmoGBSzkbH2R7hmgcsQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=X7U4hszYYIGuPdTJiWEfdww+3wccTo4vUAcwy/kRbUjPmJRy8C0bAttEpTo66YDsI
-	 KcJtQufUqI6EGMANuhxHo2Hua1CbyXozK8VwL4Z4/z/aH/LiiEg65OS5TnUze4z4up
-	 3ufLPaHOuPFzVceNuQfWkApK2h0SAyKo7N0fuVtUdqHMT33kYXIwqC9EmqczjD0WNN
-	 acG19aft04xQdpM9z3b0C4ShtpWPqMQMU//1z4LDORfk75zMDbQefcaXtI9KmBv9dI
-	 6uSsvXPIoz8/NE+JbYAUrqyo6DEPAEY8EeXImy1klrWh93iu5AzvK8WY+w6cUUD0tY
-	 7Q/xtCg2c8Kwg==
-From: Lee Jones <lee@kernel.org>
-To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
- Andrew Lunn <andrew@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
- Jakub Kicinski <kuba@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>, 
- Daniel Golle <daniel@makrotopia.org>, Li Zetao <lizetao1@huawei.com>, 
- linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Christian Marangi <ansuelsmth@gmail.com>
-Cc: stable@vger.kernel.org
-In-Reply-To: <20240203235413.1146-1-ansuelsmth@gmail.com>
-References: <20240203235413.1146-1-ansuelsmth@gmail.com>
-Subject: Re: (subset) [PATCH] leds: trigger: netdev: Fix kernel panic on
- interface rename trig notify
-Message-Id: <170740107363.1051506.1320961736541911295.b4-ty@kernel.org>
-Date: Thu, 08 Feb 2024 14:04:33 +0000
+	s=arc-20240116; t=1707401256; c=relaxed/simple;
+	bh=kdkN1666dxlYpFN1wkFyWk+HZr9DG034hODU02ZZMnc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NUaNlkKN6cSsNaGNlRJrNVv4+OXAVgLJ+t69tEnB7unrCruw55VwxieOtckqZ39IR9qTNNC1k8PlVm12Ln60xUkPm9hpFa/KUUy98qsnsKaBI7noNYgN+AMRpbUEj5ZiICiVOjBTKcsaf5i1TAcvI7r1sRWityW7hEMfNdE+CsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Mp9jYl3e; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707401252;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kdkN1666dxlYpFN1wkFyWk+HZr9DG034hODU02ZZMnc=;
+	b=Mp9jYl3eobex8M2Cgsm9Dl2VTRIqs8aB6YmHe7GjX9wHHveEdnNhnwN2T4pEjTFE/Pgpn5
+	LjjPGeE8/IhhbyceJcOv0k1WKByCoGDN/rbi79X0ju8mF8fxDXzJjUcWmFXRldE4KSSFoj
+	2wQPEKWghLBuZI94olDY7bKK6vrybaA=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-581-RINaUWZCONCKEsYUTXb-Yg-1; Thu,
+ 08 Feb 2024 09:07:29 -0500
+X-MC-Unique: RINaUWZCONCKEsYUTXb-Yg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 829053C13AAC;
+	Thu,  8 Feb 2024 14:07:28 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.158])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 3A7662026D06;
+	Thu,  8 Feb 2024 14:07:27 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu,  8 Feb 2024 15:06:12 +0100 (CET)
+Date: Thu, 8 Feb 2024 15:06:10 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pidfd: change pidfd_send_signal() to respect PIDFD_THREAD
+Message-ID: <20240208140610.GE19801@redhat.com>
+References: <20240207114549.GA12697@redhat.com>
+ <20240208-fragt-prospekt-7866333b15f0@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240208-fragt-prospekt-7866333b15f0@brauner>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Sun, 04 Feb 2024 00:54:01 +0100, Christian Marangi wrote:
-> Commit d5e01266e7f5 ("leds: trigger: netdev: add additional specific link
-> speed mode") in the various changes, reworked the way to set the LINKUP
-> mode in commit cee4bd16c319 ("leds: trigger: netdev: Recheck
-> NETDEV_LED_MODE_LINKUP on dev rename") and moved it to a generic function.
-> 
-> This changed the logic where, in the previous implementation the dev
-> from the trigger event was used to check if the carrier was ok, but in
-> the new implementation with the generic function, the dev in
-> trigger_data is used instead.
-> 
-> [...]
+On 02/08, Christian Brauner wrote:
+>
+> I would also suggest we update the obsolete comment on top of
+> pidfd_send_signal() along the lines of:
 
-Applied, thanks!
+Yes, but...
 
-[1/1] leds: trigger: netdev: Fix kernel panic on interface rename trig notify
-      commit: db36d7d45d191879ec4dd1535fbf04ee4ac28711
+> + * If the @pidfd refers to a thread-group leader the signal is thread-group
+> + * directed. If @pidfd referes to a thread then the signal is thread directed.
 
---
-Lee Jones [李琼斯]
+No, this depends on PIDFD_THREAD only.
+
+If it is set then the signal is always "thread directed" even if @pidfd refers
+to a thread-group leader.
+
+Otherwise the target task must be a group leader and the signal will be
+"thread-group directed".
+
+Right?
+
+Oleg.
 
 
