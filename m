@@ -1,284 +1,125 @@
-Return-Path: <linux-kernel+bounces-58063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CBFD84E0C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:35:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F169E84E0C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:35:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 499091C24F60
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:35:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A50CC283F3E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:35:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BAA779942;
-	Thu,  8 Feb 2024 12:33:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5621D76045;
+	Thu,  8 Feb 2024 12:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="aNoHhLTh"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="f8W0zxW0"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D680A79926;
-	Thu,  8 Feb 2024 12:33:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB59F1D525;
+	Thu,  8 Feb 2024 12:35:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707395606; cv=none; b=EzKWFmxTvQB06qHvJgExEqNkS1eckTYp1FU3fH89mxrKFcdd6mBSBUQiKDj7i9tyeENjWLpsViwR4zXYtTO2RzNt7TimpjL+rPI1BVY2DdrjiHVGgd4GW0jvVzVGVkMueAlu+8C1JqVBIbjd9k4nwsHqIXTPMj5QHZwpcX1yQZg=
+	t=1707395740; cv=none; b=mo9xmzYWM5Mlw+klxu1jm9A3LO+50P+hfHZaVcCuOKd2KyTou2hJerNpuUeDkJ4E26yMJi0mzueqOIsNAHZ4LrWsBI4iXrY55pbAL3tH+aeqwsyl7B0N6mv3WM18yYjAYLRExXz13/ScqQzVOxTqBgyUkZ2ZsUMMEuBAJtP5EkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707395606; c=relaxed/simple;
-	bh=eNTcIObMf/q45FYvwmDqKsuA2sHLvYtXbCyfb+wVdkk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mfD8o6yizzphUR1xQUIE30uudc76T5F4YoZ7WtZ+Zq0aGydsKNcM4oCVqdUD8o9NAOepxaVB5AyNtdanxIQ1QyrGvkL36YClI/NreQQm/v9cnrrDdRMWvgyMsHzkncR6wYkqSSa0SYyc8ShXEs5RrYUgJEyogc0NpBcyx/LhCbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=aNoHhLTh; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 418CXHOH070537;
-	Thu, 8 Feb 2024 06:33:17 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707395597;
-	bh=1IZI7B5jRtA0PzruzWX7lCDktTKGOjR+xwqH1FgjTcQ=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=aNoHhLThTw5bTb+VhrTVv+x2zhoNOaNHHVSnwjoDFwQL5Orkfc16QzF5QWgkK1mPT
-	 Yaw8RSs6GNKK2nOt7yqpGRyHGLBZxcXfjpkl3I1VB8aJ7TG9ESGr8IgAxf5nhCvJS9
-	 ctugaja40BC0jEP3CRw/uPG9wge1PGeE2U653b7M=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 418CXHcx014010
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 8 Feb 2024 06:33:17 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 8
- Feb 2024 06:33:16 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 8 Feb 2024 06:33:16 -0600
-Received: from uda0490681.. ([10.24.69.142])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 418CWY1Q074789;
-	Thu, 8 Feb 2024 06:33:12 -0600
-From: Vaishnav Achath <vaishnav.a@ti.com>
-To: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <kernel@pengutronix.de>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <vaishnav.a@ti.com>, <u-kumar1@ti.com>, <j-choudhary@ti.com>,
-        <j-luthra@ti.com>, <afd@ti.com>
-Subject: [PATCH v3 9/9] arm64: dts: ti: k3-j721e-sk: Add overlay for IMX219
-Date: Thu, 8 Feb 2024 18:02:33 +0530
-Message-ID: <20240208123233.391115-10-vaishnav.a@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240208123233.391115-1-vaishnav.a@ti.com>
-References: <20240208123233.391115-1-vaishnav.a@ti.com>
+	s=arc-20240116; t=1707395740; c=relaxed/simple;
+	bh=yfrto/Me4qW2MHQY54SNciFA0kVeMHFuyf7ci+k9tSY=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=rzmIr3h/Ps6SHBp22Nur5Q4qpyrvaVWgESapIXlA82Ox11rwZzGI8z788dVzm+CcKbeCE9gmD4HZ7uwv9kuNXyFX0AL+k0oknR4c3+6S0+GoEfKOBSPjv8wGng1YuKjsg9rY/Cy1fl6b4dXNi9I0Ej1H0JTaRrdF+kPY+Gu01tE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=f8W0zxW0; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 418Akbvd028072;
+	Thu, 8 Feb 2024 12:35:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=ikMJYK2WAvNN
+	KXWt0Hgg52AE4P+Ye/pJr8QAkUFv0NQ=; b=f8W0zxW08WbA/IprkZBzMd5VuzhS
+	+H15aAaaoFyuRBbGE1QfjXEcyu78EXwkrotzaBLZR2OWZDBTJRS62MNYXZQJap6c
+	Mv0VBajbBOdXDnQ//mHn3bOvQ3xEBvbkKM05CzOPjMqtbyUDYoyECPhoATdji0sN
+	JqTr/bt8PS6IbTgLOCbTzgAu9V8A94vf0nOzaZqV/AIfgrEC1yFkXaqO0wOvCqlr
+	HilALapNQhAgNDwRJPEwfh8mwriUfWSh75iU+UgNkuhphzhNXDotsXWtS6qQ2kFP
+	M0yr8f1QnmafH51pU7RnHcqpP6sDz9NOAxmtQfvhmC0ViAXUPnTwPm4s2A==
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w4pavhcun-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 08 Feb 2024 12:35:34 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 418CZVVs014362;
+	Thu, 8 Feb 2024 12:35:31 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3w1ejm9s7a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+	Thu, 08 Feb 2024 12:35:31 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 418CZVNP014356;
+	Thu, 8 Feb 2024 12:35:31 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-audityab-hyd.qualcomm.com [10.147.244.159])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 418CZUqm014355;
+	Thu, 08 Feb 2024 12:35:31 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 207879)
+	id 9BC3E5001CE; Thu,  8 Feb 2024 18:05:29 +0530 (+0530)
+From: Auditya Bhattaram <quic_audityab@quicinc.com>
+To: andersson@kernel.org, konrad.dybcio@linaro.org
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Auditya Bhattaram <quic_audityab@quicinc.com>
+Subject: [PATCH v3] soc: qcom: mdt_loader: Add Upperbounds check for program header access
+Date: Thu,  8 Feb 2024 18:05:27 +0530
+Message-Id: <20240208123527.19725-1-quic_audityab@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Z6aUr7cHfi8mP0tq78xzmvJYc9DNKQLd
+X-Proofpoint-GUID: Z6aUr7cHfi8mP0tq78xzmvJYc9DNKQLd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-08_03,2024-02-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 adultscore=0 clxscore=1011
+ suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2401310000 definitions=main-2402080066
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-RPi v2 Camera (IMX219) is an 8MP camera that can be used with SK-AM69,
-J721E SK, and AM68 SK through the 22-pin CSI-RX connector.
+hash_index is evaluated by looping phdrs till QCOM_MDT_TYPE_HASH
+is found. Add an upperbound check to phdrs to access within elf size.
 
-Add a reference overlay for dual IMX219 RPI camera v2 modules
-which can be used across AM68 SK, AM69 SK, TDA4VM SK boards
-that have a 15/22-pin FFC connector. Also enable build testing
-and symbols for all the three platforms.
-
-Reviewed-by: Jai Luthra <j-luthra@ti.com>
-Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
+Fixes: 64fb5eb87d58 ("soc: qcom: mdt_loader: Allow hash to reside in any segment")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Auditya Bhattaram <quic_audityab@quicinc.com>
 ---
+Changes in v3:
+ - Corrected wrong patch versioning in the Subject.
+ - Added error prints for Invalid access.
+Link to v2 https://lore.kernel.org/linux-arm-msm/9773d189-c896-d5c5-804c-e086c24987b4@quicinc.com/T/#t
+Link to v1 https://lore.kernel.org/linux-arm-msm/5d7a3b97-d840-4863-91a0-32c1d8e7532f@linaro.org/T/#t
+---
+ drivers/soc/qcom/mdt_loader.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-V1->V2:
- * Rename overlays to indicate first platform (j721e-sk) supported
-   and dual camera.
- * Add missed build test, fix missing newline.
+diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
+index 6f177e46fa0f..61e2377cc5c3 100644
+--- a/drivers/soc/qcom/mdt_loader.c
++++ b/drivers/soc/qcom/mdt_loader.c
+@@ -145,6 +145,11 @@ void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len,
+ 	if (phdrs[0].p_type == PT_LOAD)
+ 		return ERR_PTR(-EINVAL);
 
- arch/arm64/boot/dts/ti/Makefile               |  13 ++
- .../dts/ti/k3-j721e-sk-csi2-dual-imx219.dtso  | 125 ++++++++++++++++++
- 2 files changed, 138 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-j721e-sk-csi2-dual-imx219.dtso
-
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 4a570dffb638..e019efd3ce94 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -69,6 +69,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm-gesi-exp-board.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm-pcie0-ep.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-sk.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-j721e-sk-csi2-dual-imx219.dtbo
- 
- # Boards with J721s2 SoC
- dtb-$(CONFIG_ARCH_K3) += k3-am68-sk-base-board.dtb
-@@ -106,8 +107,14 @@ k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
- 	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
- k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
- 	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
-+k3-am68-sk-base-board-csi2-dual-imx219-dtbs := k3-am68-sk-base-board.dtb \
-+	k3-j721e-sk-csi2-dual-imx219.dtbo
-+k3-am69-sk-csi2-dual-imx219-dtbs := k3-am69-sk.dtb \
-+	k3-j721e-sk-csi2-dual-imx219.dtbo
- k3-j721e-evm-pcie0-ep-dtbs := k3-j721e-common-proc-board.dtb \
- 	k3-j721e-evm-pcie0-ep.dtbo
-+k3-j721e-sk-csi2-dual-imx219-dtbs := k3-j721e-sk.dtb \
-+	k3-j721e-sk-csi2-dual-imx219.dtbo
- k3-j721s2-evm-pcie1-ep-dtbs := k3-j721s2-common-proc-board.dtb \
- 	k3-j721s2-evm-pcie1-ep.dtbo
- dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
-@@ -122,7 +129,10 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
- 	k3-am62a7-sk-hdmi-audio.dtb \
- 	k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb \
- 	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb \
-+	k3-am68-sk-base-board-csi2-dual-imx219-dtbs \
-+	k3-am69-sk-csi2-dual-imx219-dtbs \
- 	k3-j721e-evm-pcie0-ep.dtb \
-+	k3-j721e-sk-csi2-dual-imx219-dtbs \
- 	k3-j721s2-evm-pcie1-ep.dtb
- 
- # Enable support for device-tree overlays
-@@ -132,5 +142,8 @@ DTC_FLAGS_k3-am62-lp-sk += -@
- DTC_FLAGS_k3-am62a7-sk += -@
- DTC_FLAGS_k3-am642-tqma64xxl-mbax4xxl += -@
- DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
-+DTC_FLAGS_k3-am68-sk-base-board += -@
-+DTC_FLAGS_k3-am69-sk += -@
- DTC_FLAGS_k3-j721e-common-proc-board += -@
-+DTC_FLAGS_k3-j721e-sk += -@
- DTC_FLAGS_k3-j721s2-common-proc-board += -@
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-sk-csi2-dual-imx219.dtso b/arch/arm64/boot/dts/ti/k3-j721e-sk-csi2-dual-imx219.dtso
-new file mode 100644
-index 000000000000..65d7cefb6063
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-sk-csi2-dual-imx219.dtso
-@@ -0,0 +1,125 @@
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
-+/**
-+ * DT Overlay for dual RPi Camera V2.1 (Sony IMX219) interfaced with CSI2
-+ * on J721E SK, AM68 SK or AM69-SK board.
-+ * https://datasheets.raspberrypi.org/camera/camera-v2-schematic.pdf
-+ *
-+ * Copyright (C) 2024 Texas Instruments Incorporated - https://www.ti.com/
-+ */
++	if (((size_t)(phdrs + ehdr->e_phnum)) > ((size_t)ehdr + fw->size)) {
++		dev_err(dev, "Invalid phdrs access: %s\n", fw_name);
++		return ERR_PTR(-EINVAL);
++	}
 +
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include "k3-pinctrl.h"
-+
-+&{/} {
-+	clk_imx219_fixed: imx219-xclk {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <24000000>;
-+	};
-+};
-+
-+&csi_mux {
-+	idle-state = <1>;
-+};
-+
-+/* CAM0 I2C */
-+&cam0_i2c {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	imx219_0: imx219_0@10 {
-+		compatible = "sony,imx219";
-+		reg = <0x10>;
-+
-+		clocks = <&clk_imx219_fixed>;
-+		clock-names = "xclk";
-+
-+		port {
-+			csi2_cam0: endpoint {
-+				remote-endpoint = <&csi2rx0_in_sensor>;
-+				link-frequencies = /bits/ 64 <456000000>;
-+				clock-lanes = <0>;
-+				data-lanes = <1 2>;
-+			};
-+		};
-+	};
-+};
-+
-+/* CAM1 I2C */
-+&cam1_i2c {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	imx219_1: imx219_1@10 {
-+		compatible = "sony,imx219";
-+		reg = <0x10>;
-+
-+		clocks = <&clk_imx219_fixed>;
-+		clock-names = "xclk";
-+
-+		port {
-+			csi2_cam1: endpoint {
-+				remote-endpoint = <&csi2rx1_in_sensor>;
-+				link-frequencies = /bits/ 64 <456000000>;
-+				clock-lanes = <0>;
-+				data-lanes = <1 2>;
-+			};
-+		};
-+	};
-+};
-+
-+
-+&cdns_csi2rx0 {
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		csi0_port0: port@0 {
-+			reg = <0>;
-+			status = "okay";
-+
-+			csi2rx0_in_sensor: endpoint {
-+				remote-endpoint = <&csi2_cam0>;
-+				bus-type = <4>; /* CSI2 DPHY. */
-+				clock-lanes = <0>;
-+				data-lanes = <1 2>;
-+			};
-+		};
-+	};
-+};
-+
-+&dphy0 {
-+	status = "okay";
-+};
-+
-+&ti_csi2rx0 {
-+	status = "okay";
-+};
-+
-+&cdns_csi2rx1 {
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		csi1_port0: port@0 {
-+			reg = <0>;
-+			status = "okay";
-+
-+			csi2rx1_in_sensor: endpoint {
-+				remote-endpoint = <&csi2_cam1>;
-+				bus-type = <4>; /* CSI2 DPHY. */
-+				clock-lanes = <0>;
-+				data-lanes = <1 2>;
-+			};
-+		};
-+	};
-+};
-+
-+&dphy1 {
-+	status = "okay";
-+};
-+
-+&ti_csi2rx1 {
-+	status = "okay";
-+};
--- 
-2.34.1
+ 	for (i = 1; i < ehdr->e_phnum; i++) {
+ 		if ((phdrs[i].p_flags & QCOM_MDT_TYPE_MASK) == QCOM_MDT_TYPE_HASH) {
+ 			hash_segment = i;
+--
+2.17.1
 
 
