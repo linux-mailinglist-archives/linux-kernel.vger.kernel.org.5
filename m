@@ -1,118 +1,97 @@
-Return-Path: <linux-kernel+bounces-58350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A34D84E50A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:30:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64EAE84E50C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:33:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7184A1C21E3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:30:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A16991C21924
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:33:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08436186F;
-	Thu,  8 Feb 2024 16:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBF877E771;
+	Thu,  8 Feb 2024 16:33:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A08evnEq"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YA+ccIpL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0857149E04;
-	Thu,  8 Feb 2024 16:30:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E022256B67;
+	Thu,  8 Feb 2024 16:33:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707409847; cv=none; b=TajsMk7uZSYe83/o+LJwcy+ZudYU00KmZnu+b5sCxgF3r1bS/To/OdL7C99JIuPT7ygmjSBDH8p1Yo45Lcp51/8URfdwWWG19l4FxMO1s7HSGnY2yVtDW3z+6YnX355MOqfGNYhTake85FoY9DmTiGvQ7uNYZM6NSIRF7ktFwZY=
+	t=1707409992; cv=none; b=j4Hvf74YsohMk0UABj5iWYm1IL2QSXuG5zf3t3+GuuZk4pFzRsHuFWZpyhrMuzXdKwsnA5lXfjp21XPM3fN07WcWdSBTZ5sInu+2yRKlKaw26OaMmfO040D4eSWf3SeYozzfFrXvixpCWRs8h6Zkj7xfg7YQDyAWPHvnBEh1ylI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707409847; c=relaxed/simple;
-	bh=3bilr2S0udUPWaP4Keb7VMbboD+4Al1FIMWs8mnwqSk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FKvStHMRVLRg2JUxr0hxiyJ7voGRweunqZ5G3ESkO0th1nsrCslDOmbX8jVYozmZzpFUXFTRUKYFnF4h3QNRXixLL+uDWYyipQHxs8k/oa1DnJZv05bu+HUFXfwRkyotWEt7xce/V63w0h9N7x98Rumw4kEOhfmcOvuJSLItqrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A08evnEq; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51168addef1so2966235e87.1;
-        Thu, 08 Feb 2024 08:30:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707409844; x=1708014644; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uxa9gRUyNtVY4d25DKEEurdVqxnFvTfKyQlJDNPyYRI=;
-        b=A08evnEqdvI3vGJ0ya35Dz9W4rc37Nen/QPR0eRntd8TVMmVxfthLYwguMshYYuVi2
-         xL0CU0ZiS1SJ5jThQ06DrEvV+E6Vy4KGDPHouVrRTNzmXklDemwE8X/JP8Z5a0Qv12Q5
-         l/eRrg/3Kk9By4y7QwElwFYNPNmpBmwX7gEfyymp0iDLODq5lJUuV8C9BXYR5vtuQwkV
-         oFcPw18h+U/IfAtGw9wtdt+wjlotmovt8nEObvWApo3pimfIKIXDz4CRWcgp3yDW0Inp
-         PpQPVVv6bC8LMo+IyNQlc2Sy8fvB6tNOx+3+H8v1gnqgSRe+M7FLxDzd6I9/eV2se24B
-         BKUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707409844; x=1708014644;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Uxa9gRUyNtVY4d25DKEEurdVqxnFvTfKyQlJDNPyYRI=;
-        b=eRWgHP8z5plBN2Jbo+O8fwTPeEegHw37EiAKG6SxJWVwASwv6iIvhHXQMq0uGJEAOJ
-         Re/gR71KnM6fCYrgjbYJDFPAFrfyqxmD5KN6jqZ2vnjWxo8d19fpCKXjFez+zoe8iJkf
-         XAnAYIlBz5U93rYO3SwPpEACoDvkoZAXbmsrSTkMdp6yJD47HZtLJ7ZCGaPDP9CnqGuN
-         yCuhK2gPtHgHZstpam4f5icMSQoZ1h2cViQNMfJKMig9CkjwGSDMhc8HbzLjaNnhiQ2g
-         QzjiryNqo91nzHKhsz5PhlDaq4cQqoOelh2XiRZb8XNf+YlVO2XmH9R9llnHPmvJ3PDC
-         mBQA==
-X-Forwarded-Encrypted: i=1; AJvYcCW8ce+uuEI562s4ky7tF7wPjfzuoIJqbf4aTMCq6l3f+kY7/kzv3AecOQlMbwbXMUfIOfepXv3fA+N4xk1V2lG9Gh7cvYI/pk4yTFX1
-X-Gm-Message-State: AOJu0Yyp9CmLh4SF6d0RPrTltUWpt9PAqzGShmKrU+rCuUGILFxohGvL
-	AXUU3xlK9JYZZ5EQntQlrbNywZe3qJE9ObS01KOvZkeU/OLlIrfT
-X-Google-Smtp-Source: AGHT+IFRTrNOiDNAkl7Kzj4zgqs01IlH1M12+NivZvsOx6PgF9lvS4AmTO6WrVnxxrDOhESB0Ar3tA==
-X-Received: by 2002:a05:6512:3d0f:b0:511:1038:dcde with SMTP id d15-20020a0565123d0f00b005111038dcdemr7983918lfv.52.1707409843453;
-        Thu, 08 Feb 2024 08:30:43 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVvGrDev/EPYsh966CkRHUxwlOXevKgPlp3sqo3VizOgc2NpvOBmUvJLBI5hJmW0zdG8Yr2SIoOBsXAFdieoDkwBoAGLnQQCyFnEAeAY0XqqnamRlVIpT4NW4hEPETqusq51faVejps82QtAKqHDNfJk7cgB6Ob6sLfRobRGN0FQr3HgR+jWdHPmuv0l1J6D7E9IFoZ2zCNvYhOWyL51Ce6cXTRM51dLBpWsDEvcjq1rRZjf8sJa1vBRHt0YFMO4N182mC3P/bpeeLKRoEPHTIOC3rHQWJWJJqFzlkhfL8UL+6dRbGUAM4sSytqeu2d
-Received: from sacco-Inspiron-5559.. (88-160-103-158.subs.proxad.net. [88.160.103.158])
-        by smtp.gmail.com with ESMTPSA id d5-20020a056512368500b00511602c50cesm41809lfs.277.2024.02.08.08.30.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 08:30:43 -0800 (PST)
-From: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
-To: ardb@kernel.org,
-	bp@alien8.de,
-	kirill.shutemov@linux.intel.com,
-	alexghiti@rivosinc.com,
-	palmer@rivosinc.com,
-	arnd@arndb.de
-Cc: linux-efi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
-Subject: [PATCH] drivers: efistub: fix typo in docs
-Date: Thu,  8 Feb 2024 17:30:38 +0100
-Message-Id: <20240208163038.111870-1-vincenzo.mezzela@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707409992; c=relaxed/simple;
+	bh=U2h6ifeTXfp7OttADtuI4LwK9zFHLvjT3WhsVAKEzwU=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=PtrGHbGZhuWzW8BJItNxAYil5wOlJDl5abV8OLQ9KZ/dN02E3+0BYXehZl+zpWR5UtKdQ5g0nPBtb+XHRGnbuLk6fCqIqjIW408tYbFVvWeDsBzSZA5ZObxWbxncX28GNHpZABD/KotHfdD1B3fNOGzU+Fj6nuds+Ahus9TAUxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YA+ccIpL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A134C433F1;
+	Thu,  8 Feb 2024 16:33:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707409991;
+	bh=U2h6ifeTXfp7OttADtuI4LwK9zFHLvjT3WhsVAKEzwU=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=YA+ccIpLfMKbG95rD80swyjPLGgz6tnxxQQHF9rAY2r6HQ9irarVLaXuMSJxUoMfw
+	 6+oL6T7vplA0dyUrWIV5bYf6P6V9iyF7+SJvhb3fJ5UBVDvRfRTdTXDla3z6l7s9hK
+	 jhiToqEYAcGYVZgAyCFt5FWsjlCC3elTeeHGKlYAyV5Qydo8aVWFVZ4fESWbQPAC+W
+	 KA/AsOFyII3x46nk/7sjJla8lNDQ/V3MnMhMXnbL95iNy5qcvG7BAynfqWvYe0rT+F
+	 LO5bt+FBWy+B5Z2yRWCtaHuYYDGBINFamFI9JEwTah9jQwR2mx7L0VAORZtFH0uVTs
+	 CCM4kUaHKpDbw==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, Oder Chiou <oder_chiou@realtek.com>, 
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240208105011.128294-1-krzysztof.kozlowski@linaro.org>
+References: <20240208105011.128294-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] ASoC: codecs: constify static sdw_slave_ops struct
+Message-Id: <170740998921.1643172.8207372175499167352.b4-ty@kernel.org>
+Date: Thu, 08 Feb 2024 16:33:09 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
 
-This patch resolves a spelling error in the documentation.
+On Thu, 08 Feb 2024 11:50:11 +0100, Krzysztof Kozlowski wrote:
+> The struct sdw_slave_ops is not modified and sdw_driver takes pointer to
+> const, so make it a const for code safety.
+> 
+> 
 
-It is submitted as part of my application to the "Linux Kernel Bug
-Fixing Spring Unpaid 2024" mentorship program of the Linux Kernel
-Foundation.
+Applied to
 
-Signed-off-by: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
----
- drivers/firmware/efi/libstub/efistub.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
-index 212687c30d79..8369f3adcb37 100644
---- a/drivers/firmware/efi/libstub/efistub.h
-+++ b/drivers/firmware/efi/libstub/efistub.h
-@@ -221,7 +221,7 @@ typedef void (__efiapi *efi_event_notify_t)(efi_event_t, void *);
-  *
-  * @events:	array of UEFI events
-  * @ids:	index where to put the event in the array
-- * @event:	event to add to the aray
-+ * @event:	event to add to the array
-  *
-  * boottime->wait_for_event() takes an array of events as input.
-  * Provide a helper to set it up correctly for mixed mode.
--- 
-2.34.1
+Thanks!
+
+[1/1] ASoC: codecs: constify static sdw_slave_ops struct
+      commit: fd38b4e41096f5c72a1623ba5984e2d4d2a799c4
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 
