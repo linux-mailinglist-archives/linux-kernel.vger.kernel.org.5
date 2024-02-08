@@ -1,135 +1,133 @@
-Return-Path: <linux-kernel+bounces-57555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 099C784DAAB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:26:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41C5E84DAAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:27:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 320701C25051
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:26:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B0E71C2190A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:27:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35576931C;
-	Thu,  8 Feb 2024 07:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D55C69317;
+	Thu,  8 Feb 2024 07:27:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="lcNZ7+7W"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X071AJi6"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25FA3692E6;
-	Thu,  8 Feb 2024 07:25:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED3D692EB;
+	Thu,  8 Feb 2024 07:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707377151; cv=none; b=DRAnvyPk2pkDLthuxvuwbgk+34nAobi3zmslo1MSdjK6Jhw0LppExceAi1F5kI1LY33b0N/idXBAA8Jcm+UHluF4coAar9qRLba2CGlNtQowDQfP1S7N0ZEIFna9pW1c51xkD4ipZb/Aoso///5Ytv+lJmHn4kS1DoalFN6rg9k=
+	t=1707377245; cv=none; b=buKvon12U9lz9RzXmuxvKj1Cg86OgpyVEQCeiEYCsDx9cS83TijBqIIhXI4+rzpshZyT1RcQPmJFVwLzELVaF94h1cNfzrhiiankXzO0ahyKgqXPhDRxI0jvwiNREGs5NFjtBRXMQkUgvgYDW7Yb1RQtfcabhx3P13yjodLhMNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707377151; c=relaxed/simple;
-	bh=41KwG3vJADHMuHujGJyY2jjsxuWXKTjEMonTcvE50ZQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RLRj0zZ0v3aK8uz7rr1twtp1T2QsCTsAHyKshYJrKHfFC4QTmUtDDmSMG+czD1Vo8wAXeqvTf8vElWuwANrpXuRo61/ok6jooCadQeaYtpEQZX/8MGDfBswND/tr+PFEyhaQDEfHAWoygW7z9ZmLtnLB4cihxGYV1ZBjPsovaWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=lcNZ7+7W; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from gaggiata.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id 9666B22B38;
-	Thu,  8 Feb 2024 08:25:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1707377137;
-	bh=TNDCcfkk7812zjJTBuRizX3i5SwZAFC4qeTbhvgpvqU=;
-	h=Received:From:To:Subject;
-	b=lcNZ7+7W1Ah6LrSqZz7ISDobRfE5LIKYfi+pmjqeTkngTqVCCQkfyAc4SLqvqpfnb
-	 XukL50J/4tQtjL1w570FKj45x/BUUd26e3e8AQFLeJRLiZPWE05HEjdNyIiC/e038O
-	 pLvJozMXWbWpewjqcl220TCD9ZHz+mbWGk5pZa+pOOO3/qd0QuEwEfMktfAFHIktkK
-	 7SWtBqKt6KO4y4E8N+EpiSvCWKbrKcM2ZE7om/ed0z+Tsd4uE+m2fvG8patee+Ga0x
-	 EY/KS8jpgFKpHCgKL+H7r1s9JzIh1vL4yoJKe30GLJ5IW7uIzuetJhn+nNY81clnzu
-	 y1NW3L1cB5aLA==
-Received: by gaggiata.pivistrello.it (Postfix, from userid 1000)
-	id B4C527F9D7; Thu,  8 Feb 2024 08:25:19 +0100 (CET)
-Date: Thu, 8 Feb 2024 08:25:19 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Rafael Beims <rafael@beims.me>
-Cc: David Lin <yu-hao.lin@nxp.com>,
-	"linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"briannorris@chromium.org" <briannorris@chromium.org>,
-	"kvalo@kernel.org" <kvalo@kernel.org>,
-	"francesco@dolcini.it" <francesco@dolcini.it>,
-	Pete Hsieh <tsung-hsien.hsieh@nxp.com>
-Subject: Re: [EXT] Re: [PATCH v8 0/2] wifi: mwifiex: add code to support host
- mlme
-Message-ID: <ZcSB3_16C6JTgBJB@gaggiata.pivistrello.it>
-References: <20231222032123.1036277-1-yu-hao.lin@nxp.com>
- <97bb3869-3b82-4b64-87cd-9b63d4516649@beims.me>
- <PA4PR04MB96389A5DDB41DFF80CBB4738D17D2@PA4PR04MB9638.eurprd04.prod.outlook.com>
- <48364f66-99b4-40ca-b4b2-4adf1071960f@beims.me>
+	s=arc-20240116; t=1707377245; c=relaxed/simple;
+	bh=u31cVU7vA1tnHuIzBIyG6VOgMkY/co8xvbVMDp2qiCw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=I9/VHNAGx1wiAX4yru6TAiGgbLujQ3bXpuhbWUsA3Nm5mwWdBknG8nlCPY9vHtxBdGG3hMSmrdn1lszcjS/lrw86uwkZ/vYfjGoyHN/p9oDDrgKkgNkIlp/vxSbWFKEeeBBMqn2AAu4nmIxPq8+htY1uDSKMvtiOjA4jp090Kbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X071AJi6; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-6002317a427so14177937b3.2;
+        Wed, 07 Feb 2024 23:27:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707377243; x=1707982043; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=e/dz85B0nMFX0Scf/g5jiTejJQE4PEr9XcCOai7UJic=;
+        b=X071AJi6/WzIH9kpP5kt3yFTnSkE3IXtXe0Wmbr4rb4rkpjopAhn98lmNxgoHWdcM4
+         Sw+jzk3dLnEU28UAFTTCT5GtavUO1nWgKbzAX7qHSCbAQGIYRf3aweEhJQ8Yaz4GtH3Z
+         GZUK+cUm3SwEQR1kXZoEJwPPk47Eg/vYh46k92DPGaH8lTCko1HP2Ieji3w8L5DERRf+
+         cv/yH5Hu+utigpsTzEMNjifDq/cctnbKbqJ8E0jiwiiDS1AVaIYJECkyGwcP2k4hO/9a
+         nYKiwssE4FXzIJ7EeYmsHzs6Xx4KgLMZIMwr0EXVGb77O6h0ZjEGpnZUQZ40ANVIPR1X
+         PaFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707377243; x=1707982043;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e/dz85B0nMFX0Scf/g5jiTejJQE4PEr9XcCOai7UJic=;
+        b=MQqwl1epkjja4I6l7qkhy1ezIfPdKhAkuBYhzlGW73XAeOONiwBDZCRkk8WuKoSwyT
+         8PryeiE8NWhhIUfxqu9PanfkrY4AY24LDmb9MB+GOZIhZJw85Wd6/nTEx6/N2ONZqTvS
+         HPZrcjwUkyOgB7Cd98wDrSIKeQS4p/6M2KtaoqEFke9xepA2QdtHIT6Hz1U3S3THok1B
+         2IPoHsTGzs/mZ6WLFEkqdlvbhT2YqtoCQEHKojBn8U+1ZR6gQ6AFxh1VLtICkhWFdbw2
+         UuTbGlZWT6CWY0CtWIic2aHeWbg1mH8cmImAMLb0gvDRg+U+Wn39I9oZaL/S9K6B3p7r
+         aYQA==
+X-Forwarded-Encrypted: i=1; AJvYcCWwrWwXPdOusfKawCiBz4WCE4BWlfx946xDZkljqb12BLoaGQMIwB4OEO1m3HKpeEXA7iVEVkdqazTHAAF2F84O+9/gnijhpSUKIy2A
+X-Gm-Message-State: AOJu0Yyz+W/6GtXa+etN3OY/7CEaGyi0JzIRpzHSOqWQod5FFhNnnFSH
+	9HkqbAYPoTJDY0srt5dj0tWT6BtqGUym8fOgR2Mrw3+ROCCUr0RuPHjqxBSqbhnHdhfMX3tzJD+
+	52/vWEoernFi8WlckhvmFOX4E2t4=
+X-Google-Smtp-Source: AGHT+IFtcTE1bYpwq0zBYgaJE5AvknbVaYvnzfBR9OzRJNSRdDQiwDWo9Qh4UEg1b8Lmdoz8WIAk8f59RZwy7eS74FU=
+X-Received: by 2002:a81:ef04:0:b0:602:d01a:ea9a with SMTP id
+ o4-20020a81ef04000000b00602d01aea9amr7603581ywm.15.1707377242715; Wed, 07 Feb
+ 2024 23:27:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <48364f66-99b4-40ca-b4b2-4adf1071960f@beims.me>
+References: <vbpzr7uqpfemb3qa6xy2fxioct44l5vugg2wkywyolfpzqcmau@jgrrhmk2scaj> <7559d940-f191-4fe0-e147-17ffa6c1dfc4@gmail.com>
+In-Reply-To: <7559d940-f191-4fe0-e147-17ffa6c1dfc4@gmail.com>
+From: Andrey Melnikov <temnota.am@gmail.com>
+Date: Thu, 8 Feb 2024 10:27:11 +0300
+Message-ID: <CA+PODjpOE=LGPi1G1ebvEwGeXAfpuZ+s_k4uMUwu3i6st9y--g@mail.gmail.com>
+Subject: Re: [PATCH] ahci: asm1064: correct count of reported ports
+To: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc: linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dlemoal@kernel.org, hdegoede@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Feb 07, 2024 at 06:30:03PM -0300, Rafael Beims wrote:
-> On 30/01/2024 04:19, David Lin wrote:
-> > > From: Rafael Beims <rafael@beims.me>
-> > > On 22/12/2023 00:21, David Lin wrote:
-> > > > This series add host based MLME support to the mwifiex driver, this
-> > > > enables WPA3 support in both client and AP mode.
-> > > > To enable WPA3, a firmware with corresponding V2 Key API support is
-> > > > required.
-> > > > The feature is currently only enabled on NXP IW416 (SD8978), and it
-> > > > was internally validated by the NXP QA team. Other NXP Wi-Fi chips
-> > > > supported in current mwifiex are not affected by this change.
+> On 2/7/24 12:58 PM, Andrey Jr. Melnikov wrote:
+>
+> > The ASM1064 SATA host controller always reports wrongly,
+> > that it has 24 ports. But in reality, it only has four ports.
+> >
+> > before:
+> > ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
+> > ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xffff0f impl SATA mode
+> > ahci 0000:04:00.0: flags: 64bit ncq sntf stag pm led only pio sxs deso sadm sds apst
+> >
+> > after:
+> > ahci 0000:04:00.0: ASM1064 has only four ports
+> > ahci 0000:04:00.0: forcing port_map 0xffff0f -> 0xf
+> > ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
+> > ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xf impl SATA mode
+> > ahci 0000:04:00.0: flags: 64bit ncq sntf stag pm led only pio sxs deso sadm sds apst
+> >
+> >
+> > Signed-off-by: Andrey Jr. Melnikov <temnota.am@gmail.com>
+> >
+> > diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+> > index da2e74fce2d9..ec30d8330d16 100644
+> > --- a/drivers/ata/ahci.c
+> > +++ b/drivers/ata/ahci.c
+> > @@ -671,9 +671,14 @@ MODULE_PARM_DESC(mobile_lpm_policy, "Default LPM policy for mobile chipsets");
+> >  static void ahci_pci_save_initial_config(struct pci_dev *pdev,
+> >                                        struct ahci_host_priv *hpriv)
+> >  {
+> > -     if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA && pdev->device == 0x1166) {
+> > -             dev_info(&pdev->dev, "ASM1166 has only six ports\n");
+> > -             hpriv->saved_port_map = 0x3f;
+> > +     if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA) {
+> > +             if (pdev->device == 0x1166) {
+>
+>    Maybe *switch* instead?
 
-..
+Ok.
+Can someone explain to me - which method I should use here - override
+portmap via hpriv->saved_port_map or mask it via hpriv->mask_port_map
+?
 
-> > > > David Lin (2):
-> > > >     wifi: mwifiex: add host mlme for client mode
-> > > >     wifi: mwifiex: add host mlme for AP mode
-
-..
-
-> > > I applied the two commits of this series on top of v6.7 but unfortunately the AP
-> > > is failing to start with the patches. I get this output from "hostapd -d" (running
-> > > on a Verdin AM62 with IW416):
-> > > 
-> > > nl80211: kernel reports: Match already configured
-> > > nl80211: Register frame command failed (type=176): ret=-114 (Operation
-> > > already in progress)
-> > > nl80211: Register frame match - hexdump(len=0): [NULL]
-> > > 
-> > > If I run the same hostapd on v6.7 without the patches, the AP is started with no
-> > > issues.
-> > > 
-> > > Is there anything else that should be done in order to test this?
-> > > 
-> > > 
-> > I applied patch v8 (mbox from patch work) to Linux stable repository (tag v6.7.2).
-> > Both client and AP mode can work with and without WPA3.
-> > 
-> I went back and executed the tests again. I re-applied the pach on top of
-> tag v6.7.2 to make sure we're seeing exactly the same thing.
-> 
-> At first, the behavior I was seeing was exactly the same I reported before.
-> Upon starting hostapd with our basic example configuration, it would fail to
-> start the AP with the error:
-> 
-> nl80211: kernel reports: Match already configured
-> nl80211: Could not configure driver mode
-> 
-> After some investigation of what could cause this error, I found out that it
-> was connman that was interfering with this somehow. After killing the
-> connman service, the AP would start correctly.
-> 
-> I want to point out that this behavior is different from the unpatched
-> driver. With that one we don't need to kill connman in order to start the AP
-> with hostapd.
-
-Any idea what's going on in this regard? Is such a change in behavior expected?
-
-Francesco
-
+> > +                     dev_info(&pdev->dev, "ASM1166 has only six ports\n");
+> > +                     hpriv->saved_port_map = 0x3f;
+> > +             } else if (pdev->device == 0x1064) {
+> > +                     dev_info(&pdev->dev, "ASM1064 has only four ports\n");
+> > +                     hpriv->saved_port_map = 0xf;
+> > +             }
+> >       }
+> >
+> >       if (pdev->vendor == PCI_VENDOR_ID_JMICRON && pdev->device == 0x2361) {
 
