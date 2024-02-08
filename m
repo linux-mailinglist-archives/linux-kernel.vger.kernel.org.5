@@ -1,134 +1,170 @@
-Return-Path: <linux-kernel+bounces-58592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 175F984E8A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:02:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2F1584E8A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:01:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FEC6B2D292
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:01:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 988BF29566F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:01:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5CA25605;
-	Thu,  8 Feb 2024 18:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A378A2421D;
+	Thu,  8 Feb 2024 19:01:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="amTihs91"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CkNYqr66"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E81F0208C6
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 18:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 363F54C7C;
+	Thu,  8 Feb 2024 19:01:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707418775; cv=none; b=e+OcpPgF1PpbCh45wP2x7kiPN3ZkAnJ7tsy5kerxIHi39FLJCzbZ4JTMQZulSt6On25uKD5g5jp+6uxU32364OGghIHk/2TcMWmb3ZKrDDBBfyoGipDpXP0I88DQr5fIAx8KDYZ/Mf12k1CojqcN2bkzwkhT4BrOPsz0oV9s7oA=
+	t=1707418902; cv=none; b=CpFAyelcAZGPOFgn2nn0OucC5wPLskG3cHC91EFqh5B7/n8s6JSdnMuohIO2PonuDkqRcSPL9WtGWVug+JM1ZS9Kfddj0mQSXzzE3WcyFVnOY/9rxWq0boEzl9lXThqG4hVJEemI9hksbetg0e16CeJmxRCnQRvYXW38kzngXjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707418775; c=relaxed/simple;
-	bh=d06JzZrfurSH+GFP3SQuBGIsqzlybDAxzcTr5jKLY9g=;
+	s=arc-20240116; t=1707418902; c=relaxed/simple;
+	bh=a8sPLE7pdODqfSJcbtUZGOPnrgiMMh49Z7XQoNEAkYw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hGvaKVPa/uSQe6Qyo6zCs5XMffpwF70Bf04qnddmLkqFVMHVSHy+nKejp0URFRBV3Nkhgpqkx5Upqe5COMJJSI0l06ueI8ZUKhRoKpjjoqlWZEOfiKnOPvBkMFpJriGZ6VXcXnGWpW/X7Y5m1nUTjPjdwI2fQO8y4s/Gw953g2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=amTihs91; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d93b982761so301065ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 10:59:33 -0800 (PST)
+	 To:Cc:Content-Type; b=HFMrK0jeEGwqjSpmTJ5H/DHEaVq7skqHFsgpKZmCQzPqPT1emmp9qY+vzCa9aJI9jniQc8qaPU/sr0nvdh2qCLvXg67FYF3O2OLLXPXwAUm0fI43zzz3zTsrD8WRhogxZxn3qJibsO8GO/xHU4rJtVqMhq3B4OXDIPmDiGNGV2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CkNYqr66; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d0c7e6b240so2634141fa.0;
+        Thu, 08 Feb 2024 11:01:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707418773; x=1708023573; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707418899; x=1708023699; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fYaw+GihRftYikU7DfbOWB/C78nj3a8FEHBnrx9ij7U=;
-        b=amTihs912hJO0demSPKwaW41tSyihjs5qBwhDWHJwnnfoZZzqdkmhATwkJoDEhGvPw
-         aKdyEyoH8V4tiE72urlbAFf+8nn824Xc8z1Kdm0gj7uaGZcIWFmEacNsi99OfJ+KVxOB
-         mzd1XbNusXwUz2+xTgfuaJafDGKz4vWr7JwNx7flmRAXQQfuYGgbA4iHFb/wtaCPHesl
-         hz5kC0GPjXxzkf5p2EdzVwkCfhungBypcIPKTb/BtAUd9L/ksa4dQgHJKHsxwpj8e4tU
-         48FB5AzvEoIb3KH2QbcyOaaJW6pAbpNygyDvz8XrvTI5K241L5LTIleacX+bE+j+RizB
-         Bp3Q==
+        bh=a8sPLE7pdODqfSJcbtUZGOPnrgiMMh49Z7XQoNEAkYw=;
+        b=CkNYqr66mlM5ITF3Jci5sJqDz+sAvUWamAB2GWhicO9QZBG0LDb0dLLMyF9rzv++B5
+         6wEKCoxN4mbsO/Hq94+B3+H+fxUBbuuBw250MCFcvHtnxZakJ1z1KW4tI1CAsR+liWAr
+         QPdR8jxsgiDoEqhr5XMxcmRosWO7lFT8WY1wGKVMo4aXH0AWDabAIAO71w2ooc30bIub
+         4Jb6H1p3LOtn1/yB0PvaDccOp26VwpxgQ5wlACDkGw0VlQkTqrMuIfNpgtJ7U0/c08T5
+         Jork8OhPP+NvbGBf31PQNU/4atrPAZRklFLHIY8x0Q3pubV61UmwUCcGj9+RLVPO2pcj
+         FSJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707418773; x=1708023573;
+        d=1e100.net; s=20230601; t=1707418899; x=1708023699;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fYaw+GihRftYikU7DfbOWB/C78nj3a8FEHBnrx9ij7U=;
-        b=Tq1bogmW9nrpKElsJ09CIC4D/lVcjHwqp2tvcfibAI+0FiMPab6LQwdzhGmAjTi7vI
-         G+6xbh2/4b0lsjMtRY7b7L6TzAFIdMH1HiVtzz2stnr7/HVbEsCFeqBQA/SWM1/LX/ea
-         FLSJDsWKROBKK6CIf+yZwCRkFBRsTU3PvM2Pyutct58p0fpiuzseZoY1atwdzFZ31mCV
-         B9KBs8iiGZ/Mej5pkrr6+khbqSuvZ2RJy3D748PAyZ5imfXYObltWI5Z9MKgF+JtoBHl
-         2++N89NT6RvHMiP/AuluFhs7UgNRRhnhxaFEpH8iHOZbf0lQkGFpq/04xG5DIFZnXyMO
-         52Ow==
-X-Gm-Message-State: AOJu0YygiAabvY87CDRXHAC+PFHyM6m6bzZNQrxQUU6InN/cFCz/7dAD
-	S3HvgqPKr1imrI3ZccFW1ZXaXReLdjyVhjpPHCi7LFLb0aFjHCih4sWlr7Zpr59x2DD4DfUxPCU
-	9RySDnC0v+O2m9U1LoH73qlYxcNNmMl+4Xtpu
-X-Google-Smtp-Source: AGHT+IFTwdSwfGYFj/VgADwqwvcCIqKE1CYVed0IKqT7KajXxjer4g8JkZ5gqBkz6LfIjIKi1PRFJyKSgxkBBTZHAiA=
-X-Received: by 2002:a17:902:f98e:b0:1d8:eac9:bbfc with SMTP id
- ky14-20020a170902f98e00b001d8eac9bbfcmr13038plb.15.1707418772905; Thu, 08 Feb
- 2024 10:59:32 -0800 (PST)
+        bh=a8sPLE7pdODqfSJcbtUZGOPnrgiMMh49Z7XQoNEAkYw=;
+        b=qRQ55A1kXNikNysZJR+gB922x9MEPHhxRdG0LSxiCyZ2RI1V+b/WaNODeNWSk56Jfi
+         RFyvkE+8TYekFGbaSxpD0J6FJDhCcAeQSIY0aIe7wf3P02txgwpuQfuK/D4gnoNq1cMS
+         fpv6hGmA/WraSmnA8nws9vKDmutLFSYzu3H9zs50pyLR85m79rFw/WDxny8H2WLAOJQz
+         1UX+nNHKPoK1Rb1WvQOtevIvmyLQ+u/F2LCOw6/AZz9W5Q5RwCyXJrEQOvc5Je70Z/vS
+         szL5lE39P5CdgIaVkFQz/uhkLN0DWWJS4/IJTw4MyPl6WyPG7xDYjLbzFE8oMLlCBLyL
+         py1g==
+X-Gm-Message-State: AOJu0YxWRw3Dib1ldK1vbIS5QPmnkf53UvWFb+iSO+MRpD9nWUKzH/gL
+	5NakG1otaMh8hDDAb45owFDP5UrEhBHM59CafDom6OZeeUYkiFstCv+EQ8MXTWf8C7dhtwMq3LS
+	GPgxMXjacvD8h2pA0Q482brQUEeM=
+X-Google-Smtp-Source: AGHT+IGiCf1xJW70ovof+reQWmPl2n3Fs3lRMMDNhultrmK35DvsStw9uBA2U2cf4tCfU0543zggc7bJDTh6YzOtQtE=
+X-Received: by 2002:a05:651c:1505:b0:2d0:9a29:f849 with SMTP id
+ e5-20020a05651c150500b002d09a29f849mr185898ljf.29.1707418898907; Thu, 08 Feb
+ 2024 11:01:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208181025.1329645-1-namhyung@kernel.org>
-In-Reply-To: <20240208181025.1329645-1-namhyung@kernel.org>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 8 Feb 2024 10:59:21 -0800
-Message-ID: <CAP-5=fWj+zMX9NRge5i=CF4945Tbv81oEqU2o87MWYuxqSMP5w@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: Remove misleading comments on map functions
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org
+References: <20240206182559.32264-1-ryncsn@gmail.com> <CAF8kJuMe7MYsAhwX804jZfO4w6kt74YMZXuz+FqUbZEt70p7Rg@mail.gmail.com>
+ <CAGsJ_4zF+U5JG8XYANe2x0VbjovokFCirf=YLHOfO3E-U8b4sg@mail.gmail.com>
+ <CAF8kJuOBtT+n5CM2s1Mobk5fzpgetCSMTZ-nb8+0KUj1W5f+Mw@mail.gmail.com>
+ <CAMgjq7CV-Cxar8cRj1SxB4ZtO8QPTUuA5mj9_vQro7sm+eFH=w@mail.gmail.com>
+ <CAF8kJuOQqqqM6MvOvo4PyOhT9eyNFreQjWC+TybGYDgXRfpweA@mail.gmail.com>
+ <CAMgjq7CBV4dVo7ETr0K1VbLE=M7T0Go5=7pHBUY6=o0cuXaZXg@mail.gmail.com>
+ <ZcPMi6DX5PN4WwHr@google.com> <CAMgjq7AJo1SKzRc-w5UuK3Ojk5PaXxRV2_G2Ww9BGgiNRp_5Eg@mail.gmail.com>
+ <87eddnxy47.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87eddnxy47.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Fri, 9 Feb 2024 03:01:20 +0800
+Message-ID: <CAMgjq7Cg+8zy25Cif2DJ0Qey3bC=Ni0q7xHNO9ka+ezoK1rgxA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/swap: fix race when skipping swapcache
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Minchan Kim <minchan@kernel.org>, Chris Li <chrisl@kernel.org>, 
+	Barry Song <21cnbao@gmail.com>, linux-mm@kvack.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Yu Zhao <yuzhao@google.com>, 
+	Barry Song <v-songbaohua@oppo.com>, SeongJae Park <sj@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, David Hildenbrand <david@redhat.com>, stable@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 8, 2024 at 10:10=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
-wrote:
+On Thu, Feb 8, 2024 at 2:36=E2=80=AFPM Huang, Ying <ying.huang@intel.com> w=
+rote:
 >
-> When it converts sample IP to or from objdump-capable one, there's a
-> comment saying that kernel modules have DSO_SPACE__USER.  But commit
-> 02213cec64bb ("perf maps: Mark module DSOs with kernel type") changed
-> it and makes the comment confusing.  Let's get rid of it.
+> Kairui Song <ryncsn@gmail.com> writes:
 >
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > On Thu, Feb 8, 2024 at 2:31=E2=80=AFAM Minchan Kim <minchan@kernel.org>=
+ wrote:
+> >>
+> >> On Wed, Feb 07, 2024 at 12:06:15PM +0800, Kairui Song wrote:
+>
+> [snip]
+>
+> >> >
+> >> > So I think the thing is, it's getting complex because this patch
+> >> > wanted to make it simple and just reuse the swap cache flags.
+> >>
+> >> I agree that a simple fix would be the important at this point.
+> >>
+> >> Considering your description, here's my understanding of the other ide=
+a:
+> >> Other method, such as increasing the swap count, haven't proven effect=
+ive
+> >> in your tests. The approach risk forcing racers to rely on the swap ca=
+che
+> >> again and the potential performance loss in race scenario.
+> >>
+> >> While I understand that simplicity is important, and performance loss
+> >> in this case may be infrequent, I believe swap_count approach could be=
+ a
+> >> suitable solution. What do you think?
+> >
+> > Hi Minchan
+> >
+> > Yes, my main concern was about simplicity and performance.
+> >
+> > Increasing swap_count here will also race with another process from
+> > releasing swap_count to 0 (swapcache was able to sync callers in other
+> > call paths but we skipped swapcache here).
+>
+> What is the consequence of the race condition?
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+Hi Ying,
 
-Thanks,
-Ian
+It will increase the swap count of an already freed entry, this race
+with multiple swap free/alloc logic that checks if count =3D=3D
+SWAP_HAS_CACHE or sets count to zero, or repeated free of an entry,
+all result in random corruption of the swap map. This happens a lot
+during stress testing.
 
-> ---
->  tools/perf/util/map.c | 8 --------
->  1 file changed, 8 deletions(-)
 >
-> diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
-> index cf5a15db3a1f..14a5ea70d81e 100644
-> --- a/tools/perf/util/map.c
-> +++ b/tools/perf/util/map.c
-> @@ -553,10 +553,6 @@ u64 map__rip_2objdump(struct map *map, u64 rip)
->         if (dso->rel)
->                 return rip - map__pgoff(map);
+> > So the right step is: 1. Lock the cluster/swap lock; 2. Check if still
+> > have swap_count =3D=3D 1, bail out if not; 3. Set it to 2;
+> > __swap_duplicate can be modified to support this, it's similar to
+> > existing logics for SWAP_HAS_CACHE.
+> >
+> > And swap freeing path will do more things, swapcache clean up needs to
+> > be handled even in the bypassing path since the racer may add it to
+> > swapcache.
+> >
+> > Reusing SWAP_HAS_CACHE seems to make it much simpler and avoided many
+> > overhead, so I used that way in this patch, the only issue is
+> > potentially repeated page faults now.
+> >
+> > I'm currently trying to add a SWAP_MAP_LOCK (or SWAP_MAP_SYNC, I'm bad
+> > at naming it) special value, so any racer can just spin on it to avoid
+> > all the problems, how do you think about this?
 >
-> -       /*
-> -        * kernel modules also have DSO_TYPE_USER in dso->kernel,
-> -        * but all kernel modules are ET_REL, so won't get here.
-> -        */
->         if (dso->kernel =3D=3D DSO_SPACE__USER)
->                 return rip + dso->text_offset;
->
-> @@ -585,10 +581,6 @@ u64 map__objdump_2mem(struct map *map, u64 ip)
->         if (dso->rel)
->                 return map__unmap_ip(map, ip + map__pgoff(map));
->
-> -       /*
-> -        * kernel modules also have DSO_TYPE_USER in dso->kernel,
-> -        * but all kernel modules are ET_REL, so won't get here.
-> -        */
->         if (dso->kernel =3D=3D DSO_SPACE__USER)
->                 return map__unmap_ip(map, ip - dso->text_offset);
->
-> --
-> 2.43.0.687.g38aa6559b0-goog
->
+> Let's try some simpler method firstly.
+
+Another simpler idea is, add a schedule() or
+schedule_timeout_uninterruptible(1) in the swapcache_prepare failure
+path before goto out (just like __read_swap_cache_async). I think this
+should ensure in almost all cases, PTE is ready after it returns, also
+yields more CPU.
 
