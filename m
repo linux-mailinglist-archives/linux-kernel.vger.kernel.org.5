@@ -1,118 +1,118 @@
-Return-Path: <linux-kernel+bounces-58624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 553F484E8F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:32:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 774C484E8F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:34:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87E561C20D88
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:32:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C3F82839AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:34:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03865381BD;
-	Thu,  8 Feb 2024 19:32:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C4CE381D2;
+	Thu,  8 Feb 2024 19:33:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gNHfjcP+"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EjKhU40J"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED86A374C3;
-	Thu,  8 Feb 2024 19:32:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF05374C3
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 19:33:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707420733; cv=none; b=pSy4RLmeV/7AEQt1quaTbb/FJ+xrOSmCLsk1IhGRrh3nT/yfMwtmLhSSj7ayPsh/5Z1Dj3bOEcu/BBKKLvbMNbPzuZ9ttjm8BgE0/l6YzePHcvS4q1bYlOvAt3EW5Qx6I4nJ7yKOBDe7a2S030mK45drEwbAhBX5qfxtuhAZoao=
+	t=1707420837; cv=none; b=FtTHxm45xnN3vxslCo6cb0QZdXQrA3l2mHYEEiV3WtnFSHWLQRnRe/WDQWN/M9/o2pYEtBkCaIbpX8aSSsWzCmJwbKllMGfwiM0cNJ3CbHybq0dsSGIDhIjirhKwTMej2K82lLsuVMyj57Y9WUEbL4lRzDqai+wXbQcMw/f39w0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707420733; c=relaxed/simple;
-	bh=StmfRvVFHB61GvrwpRMVoEigPV+RQzGMP6z/i0RiVlc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HSJPOFEt5h4U+FUU3qqJvoEcAuhUZadSIA/PzY5WKxCZ/556xR5qlU/L3wvQN73y71aaGypBa4zOYQJOqJlkCdl/UeUu1x6trz2fayzKOfRkgQVNoVe8BxzL5XbJ3vTmEv28OZq1bZXMDmMdPWzXLGjnqcJun4NPlGesUYTPWMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gNHfjcP+; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5d8df2edd29so83832a12.2;
-        Thu, 08 Feb 2024 11:32:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707420731; x=1708025531; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w3bEV6G7AILHzWRDb6GXrkF6SdkK3/w9panlonnMl9o=;
-        b=gNHfjcP+Up2LGLmoWKn7qucWrkNBqzkt0dOKWsNZRBmUe7i7Y3I36RWEN4uziqvOoP
-         1oz6zBytMQ/mUnNlBpm6lu3ljyWhVODn+OEUEib3I2K3l8befD7RZxuURmq1cfDDC2rv
-         iwZ/SjV2B+KMjbfbvotY9dsGKx/7jk7TJBYsTEiwEdUnn6ZjAimijy9veCQiNy5tGABn
-         yzB6+LVCVVBoaZN+rzsOs0U7Rpd7tngCgajC4wwCQ9U98oxl05aevBfy9XuIjqRbEYE1
-         5+QRArsordsoOVD2MQ2KY4pOveL3Cecvrnz2nwb3AqfLXuPgFMWtYBD+xwPrG2y1ahj2
-         pzCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707420731; x=1708025531;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w3bEV6G7AILHzWRDb6GXrkF6SdkK3/w9panlonnMl9o=;
-        b=jeGTB2qUeBjPbb+h1TPWDd2oHzRac11HxAIBB5cNj1UrtRvb20EOunKyYbhz4dJ3vd
-         BlUeVi2ktIrEZvqhGsrTXSq1R3WVeTi4jbkVFdA7cTvxJfOCY7h5FRDP8gjtIdpBNi1E
-         VUmwrdu3KBlUTHjDcGd9VACoa/zDwle5f9BaZnc0tA1rePuyb3oLu/XZLdQRv3et4wZC
-         MWh39XMHYNYQdtPqafWOB28kdbARXZ1ij3BWo736lP/qOvxJceeWR1HgtVT8rpIAyyeD
-         wIF/KuVnAdhS36aZqKxysS70e7TwOvjN1y6K0NmCCVhgZL9O9EO23hFaYeF9q2Xr0Tf5
-         1+kQ==
-X-Gm-Message-State: AOJu0Yyk8ujyLaxKM0IznIq2ET1iLl8TlZLGk563+rhmsb9P839pzKxQ
-	r7WdF3qEsKphoV8VzkTbCncGx7497u0qlpIJvGfhzFsQFeDBsbMcL2522H+YqtQ=
-X-Google-Smtp-Source: AGHT+IFUFtBkgN+XYjnOixZNsmqmk71LfGanz5wkj3aYHGe4rvLwzdB8rEWYqLYv0r00wRAB8jL57g==
-X-Received: by 2002:a05:6a20:9753:b0:19e:a85b:854b with SMTP id hs19-20020a056a20975300b0019ea85b854bmr428329pzc.48.1707420730987;
-        Thu, 08 Feb 2024 11:32:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWXucN7a4KrzdxMiZ9FwIbyeCimIkQ5zGfEKnCcFqDC+Zwl9Hd4VhfAD3KVXDu+16ImUOx7wwor0VQkK/PB9gg5lMggl14EScXE3NpTyWL7pQHW08DcLOdjYpUUZPxhwkv23Qkj1tGM8HSwFPn3Dn0GClUTkkz1uMFjAqQGaEe4aTRzox7DlLh1ONRhQh9SV+/B1DfSDEJml4YN3l9ak42liXHGMhsuZPvzJOc87DmQLk90ez173/Cc5RcL03849dtAgVUJ6NAR4X6zZjp0LJmiGq5Pd65x6YmZ7WOEi7OaM2Z9piTTY5zm+PTP2p4=
-Received: from localhost ([2620:10d:c090:400::4:3c45])
-        by smtp.gmail.com with ESMTPSA id t6-20020a62d146000000b006db05eb1301sm119360pfl.21.2024.02.08.11.32.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 11:32:10 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 8 Feb 2024 09:32:09 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: willy@infradead.org, akpm@linux-foundation.org,
-	hcochran@kernelspring.com, mszeredi@redhat.com, axboe@kernel.dk,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] mm: correct calculation of cgroup wb's bg_thresh in
- wb_over_bg_thresh
-Message-ID: <ZcUsOb_fyvYr-zZ-@slm.duckdns.org>
-References: <20240123183332.876854-1-shikemeng@huaweicloud.com>
- <20240123183332.876854-3-shikemeng@huaweicloud.com>
- <ZbAk8HfnzHoSSFWC@slm.duckdns.org>
- <a747dc7d-f24a-08bd-d969-d3fb35e151b7@huaweicloud.com>
- <ZbgR5-yOn7f5MtcD@slm.duckdns.org>
- <ad794d74-5f58-2fed-5a04-2c50c8594723@huaweicloud.com>
+	s=arc-20240116; t=1707420837; c=relaxed/simple;
+	bh=NqMEuaRPqrpIwVbPtLtad8belPEZHetFsrcHU0a/9bw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uHEPYA6GI8VmEBwiLmAiiUn4ewogq0wX/+wpk1MFr8CMMKX222u0kyEbssJfSo6vK9FgLJdQ+0FTN+yRlMI/9Zi2XA8STcUywE7D2rb9MRF0O4akH1SyWfw35SjnzfxWPi2qzcZjYuZ6o4OP7az5a9UqSSD+x4c1nAO5piECV7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EjKhU40J; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707420834;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M3FC5ULp5dMmlADJ+vyVgtloEuiTVNBG5B3TkU5Z6UM=;
+	b=EjKhU40JPiWDwv3LZQ66pkQaikY2PYfLvCoAOlvYFhWf0q4VBJsVX9AwrWjz2x8pd/v0O0
+	FVldQREjtERiWPN4jzUlF/5p+Fwdawha4xWIGpWEdlWgraHvgPaWqxwVy4tuXYr/slo6JZ
+	hoJDfvaCeWR1Y0dMsXIRvTlV3IUTFCc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-657-OvhzvZPUND-rvhiidWXQ3Q-1; Thu,
+ 08 Feb 2024 14:33:51 -0500
+X-MC-Unique: OvhzvZPUND-rvhiidWXQ3Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1DF303C0BE4D;
+	Thu,  8 Feb 2024 19:33:51 +0000 (UTC)
+Received: from [10.22.8.4] (unknown [10.22.8.4])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id A84A72028CD2;
+	Thu,  8 Feb 2024 19:33:50 +0000 (UTC)
+Message-ID: <d9319087-1e97-4a55-aaed-dbce8fe3b0f7@redhat.com>
+Date: Thu, 8 Feb 2024 14:33:50 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad794d74-5f58-2fed-5a04-2c50c8594723@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH wq/for-6.9 v5 0/4] workqueue: Enable unbound cpumask
+ update on ordered workqueues
+Content-Language: en-US
+To: Tejun Heo <tj@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
+ Juri Lelli <juri.lelli@redhat.com>, Cestmir Kalina <ckalina@redhat.com>,
+ Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
+ Costa Shulyupin <cshulyup@redhat.com>
+References: <20240208161014.1084943-1-longman@redhat.com>
+ <ZcUq3VnputFml3LK@slm.duckdns.org>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ZcUq3VnputFml3LK@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-Hello, Kemeng.
 
-On Thu, Feb 08, 2024 at 05:26:10PM +0800, Kemeng Shi wrote:
-> Hi Tejun, sorry for the delay as I found there is a issue that keep triggering
-> writeback even the dirty page is under dirty background threshold. The issue
-> make it difficult to observe the expected improvment from this patch. I try to
-> fix it in [1] and test this patch based on the fix patches.
-> Run test as following:
+On 2/8/24 14:26, Tejun Heo wrote:
+> On Thu, Feb 08, 2024 at 11:10:10AM -0500, Waiman Long wrote:
+>>   v5:
+>>    - [v4] https://lore.kernel.org/lkml/20240207011911.975608-1-longman@redhat.com/
+>>    - Streamline patch 2 by simplifying unplug_oldest_pwq() and calling it
+>>      only in pwq_release_workfn().
+>>
+>>   v4:
+>>    - [v3] https://lore.kernel.org/lkml/20240205194602.871505-1-longman@redhat.com/
+>>    - Rebase on the latest for-6.9 branch again & discard the use of
+>>      __WQ_ORDERED_EXPLICIT and resetting of __WQ_ORDERED.
+>>    - Add a new patch 1 to change the ordering of pwq's in wq->pwqs from
+>>      oldest to newest.
+>>    - Change the terminalogy from freeze/thaw to plug/unplug.
+>>    - Allow more than 2 pwq's in wq->pwqs of ordered workqueue but only the
+>>      oldest one is unplugged. This eliminates the need to wait for
+>>      the draining of extra pwq in workqueue_apply_unbound_cpumask().
+>>
+>>   v3:
+>>    - [v2] https://lore.kernel.org/lkml/20240203154334.791910-1-longman@redhat.com/
+>>    - Drop patch 1 as it has been merged into the for-6.9 branch.
+>>    - Use rcu_access_pointer() to access wq->dfl_pwq.
+>>    - Use RCU protection instead of acquiring wq->mutex in
+>>      apply_wqattrs_cleanup().
+> Applied the series w/ (w/ the updated second patch) to wq/for-6.9.
+>
+> Thanks for working on this. It's really great that this got solved finally.
 
-Ah, that looks promising and thanks a lot for looking into this. It's great
-to have someone actually poring over the code and behavior. Understanding
-the wb and cgroup wb behaviors have always been challenging because the only
-thing we have is the tracepoints and it's really tedious and difficult to
-build an overall understanding from the trace outputs. Can I persuade you
-into writing a drgn monitoring script similar to e.g.
-tools/workqueues/wq_monitor.py? I think there's a pretty good chance the
-visibility can be improved substantially.
+Me too. Thanks for all the good suggestions that you had given me as I 
+don't have a full understanding of all the different pieces of the 
+workqueue code.
 
-Thanks.
+Cheers,
+Longman
 
--- 
-tejun
 
