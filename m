@@ -1,167 +1,269 @@
-Return-Path: <linux-kernel+bounces-58387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0920C84E5AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:57:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34EF584E5B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:58:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62C91B294BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:57:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59C621C25B74
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A289F1E485;
-	Thu,  8 Feb 2024 16:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436F98121B;
+	Thu,  8 Feb 2024 16:58:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QMZ5PSoR"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bz/TewRj";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="nIQFLhzf";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bz/TewRj";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="nIQFLhzf"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A957EEE9;
-	Thu,  8 Feb 2024 16:57:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4919C73164;
+	Thu,  8 Feb 2024 16:58:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707411435; cv=none; b=RyxM55HpxRalyz96SC2NbVls3DTBWBPCYO7RZ8IyFsPjTWWnPeSQ1LzDzYRGwu/7SAi8dhoyRxFk6mtOpbVzFJtrdVHOi8DzHJROta8vmQmxZ+ZA9qoKu+uf6jpZAKtT7Y7c6Rl+aRjjw4kRC60FYR81hwtAQyXHd/jcpIiHT+k=
+	t=1707411494; cv=none; b=ThUeZzGSkjC3fyFQtejkMdnSuf65WK1YjdFfS3Gf8X4klrx4h0Y6QxCcc0CbtoWXmkoTVQQIL9Adm1rBuIH70aUvfwQeICERGv04weeRslbk7xiyBmYZc1AOMLvL4rvWJWNKzqs8ctkoQ2w4IHtkAnUkQ7fFr95185sDxza8iKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707411435; c=relaxed/simple;
-	bh=oupV3kTT50Gb/TGEGdVzk1Z4pRuREEf427kVS39VzdQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=SJf3F650l/OBYIg/udlfYPIEKyyR36di7CERG6DyjRVEhbyV3REQHKWSxTO+e06abAbtuJGUZnXM+8rrSwSWP9pubPYJTBInJmKE4uqTCLd6dR659uBnMYTzZJyUamqLiVoYhhETcoImTN6cS8uiBxLKhgoPJdhqyYGlpxfEboQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QMZ5PSoR; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707411435; x=1738947435;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=oupV3kTT50Gb/TGEGdVzk1Z4pRuREEf427kVS39VzdQ=;
-  b=QMZ5PSoRCbKfK8Gme951C45eUBpfyQCmg9JfTPM/s0WNmnDHZMZpqTDl
-   1TvCEVlBByIWDR2EAnIHUNic/OwHm+sm7ARxGCUG7/5EaSCaFtGB0Vv/M
-   MT6cu4UIPJHaRfVLG/KdMi8IyaaEF90Yhbneci44nex8cTHACKqKLlM5C
-   65XAJ1DuPV30FNCtpviiewRzgKz0pjR7Dd2TwWlKzdH+SSgGQoxOsAWzb
-   N8invHlQ1ymtmJb+l3+aUk8NwnTOu7TO3Y57OrKBQpt6TKD0Hk+VggqJq
-   1n1M7sxUzKTdRgKd/kuZj/7gAQy9gnpq794OARJtZ6ftX5SD3er7I5k+1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="1557693"
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="1557693"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 08:57:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="2072780"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 08:57:14 -0800
-Received: from ricardo2-mobl.amr.corp.intel.com (ricardo2-mobl.amr.corp.intel.com [10.209.74.190])
-	by linux.intel.com (Postfix) with ESMTP id DA4F1580C9A;
-	Thu,  8 Feb 2024 08:57:12 -0800 (PST)
-Message-ID: <9654146ac849bb00faf2fe963d3da94ad65003b8.camel@linux.intel.com>
-Subject: Re: [PATCH v2 1/2] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
-From: "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To: Daniel Drake <drake@endlessos.org>, Bjorn Helgaas <helgaas@kernel.org>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
- dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- bhelgaas@google.com,  mario.limonciello@amd.com, rafael@kernel.org,
- lenb@kernel.org,  linux-acpi@vger.kernel.org, linux@endlessos.org
-Date: Thu, 08 Feb 2024 08:57:12 -0800
-In-Reply-To: <CAD8Lp44-8WhPyOrd2dCWyG3rRuCqzJ-aZCH6b1r0kyhfcXJ8xg@mail.gmail.com>
-References: <20240207084452.9597-1-drake@endlessos.org>
-	 <20240207200538.GA912749@bhelgaas>
-	 <CAD8Lp47DjuAAxqwt+yKD22UNMyvqE00x0u+JeM74KO2OC+Otrg@mail.gmail.com>
-	 <CAD8Lp44-8WhPyOrd2dCWyG3rRuCqzJ-aZCH6b1r0kyhfcXJ8xg@mail.gmail.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1707411494; c=relaxed/simple;
+	bh=/H4JDepbabc9q49WGUHSfSWdZExqVMaCPHCVozpHu0E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Di/ZTWIURKWOhDFtHEiVhjs9gSx0izrkX+LTvYkDqgpiPCJfZ17IutIso5bPnAzv26HeO1XBxpSD90Va6JCByF/GnDMuNMk73DuUbI3N8dPuY3oDug60kgWCc78ZwA4JpCoDdRuMSM8GFYzvkh//kfyDV9562itdTXN0x4TKoz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bz/TewRj; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=nIQFLhzf; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bz/TewRj; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=nIQFLhzf; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6E9D021F60;
+	Thu,  8 Feb 2024 16:58:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707411490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=4ZgXjD6osKpD5V9BCXa39jxK5ZSPDcRIhG5CJmbbskg=;
+	b=bz/TewRjkqpTmUZKQKCJP7eJSNDfp5FqxBpIpMxhQmVM4rpuvoBvXS2YhB79C/Cmw6+YqD
+	G0AERVZHLw9Ozz9DoetzgMpEOLotRXUOWNSQKT0K0F4XZcCEPTaU9lIBOrKHjj6fqJNFTs
+	p2XZk8DAxt3Ywpg1kAJiokZXagBgPOs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707411490;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=4ZgXjD6osKpD5V9BCXa39jxK5ZSPDcRIhG5CJmbbskg=;
+	b=nIQFLhzfT80Hm9wpwCMZJQCuCM56tJTjzU4H6yRCztaPh0Kzt0ZQuzDsmE2UQiyQ0YPT3Y
+	jEetek3XjewewQCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707411490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=4ZgXjD6osKpD5V9BCXa39jxK5ZSPDcRIhG5CJmbbskg=;
+	b=bz/TewRjkqpTmUZKQKCJP7eJSNDfp5FqxBpIpMxhQmVM4rpuvoBvXS2YhB79C/Cmw6+YqD
+	G0AERVZHLw9Ozz9DoetzgMpEOLotRXUOWNSQKT0K0F4XZcCEPTaU9lIBOrKHjj6fqJNFTs
+	p2XZk8DAxt3Ywpg1kAJiokZXagBgPOs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707411490;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=4ZgXjD6osKpD5V9BCXa39jxK5ZSPDcRIhG5CJmbbskg=;
+	b=nIQFLhzfT80Hm9wpwCMZJQCuCM56tJTjzU4H6yRCztaPh0Kzt0ZQuzDsmE2UQiyQ0YPT3Y
+	jEetek3XjewewQCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ECFCA1326D;
+	Thu,  8 Feb 2024 16:58:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 9wqANiEIxWW2FAAAD6G6ig
+	(envelope-from <lhenriques@suse.de>); Thu, 08 Feb 2024 16:58:09 +0000
+Received: from localhost (brahms.olymp [local])
+	by brahms.olymp (OpenSMTPD) with ESMTPA id 5e47eb05;
+	Thu, 8 Feb 2024 16:58:09 +0000 (UTC)
+From: Luis Henriques <lhenriques@suse.de>
+To: "Theodore Y. Ts'o" <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Luis Henriques <lhenriques@suse.de>,
+	Daniel Dawson <danielcdawson@gmail.com>
+Subject: [RFC PATCH] ext4: destroy inline data immediately when converting to extent
+Date: Thu,  8 Feb 2024 16:58:07 +0000
+Message-ID: <20240208165808.5494-1-lhenriques@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.30
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[4];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_LAST(0.00)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,suse.de,gmail.com];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-On Thu, 2024-02-08 at 10:52 +0100, Daniel Drake wrote:
-> On Thu, Feb 8, 2024 at 9:37=E2=80=AFAM Daniel Drake <drake@endlessos.org>=
- wrote:
-> > > What would be the downside of skipping the DMI table and calling
-> > > pci_d3cold_disable() always?=C2=A0 If this truly is a Root Port defec=
-t, it
-> > > should affect all platforms with this device, and what's the benefit
-> > > of relying on BIOS to use StorageD3Enable to avoid the defect?
-> >=20
-> > I had more assumed that it was a platform-specific DSDT bug, in that
-> > PEG0.PXP._OFF is doing something that PEG0.PXP._ON is unable to
-> > recover from, and that other platforms might handle the suspend/resume
-> > of this root port more correctly. Not sure if it is reasonable to
-> > assume that all other platforms on the same chipset have the same bug
-> > (if that's what this is).
+When writing to an inode that has inline data and the amount of data written
+exceeds the maximum inline data length, that data is un-inlined, i.e. it is
+converted into an extent.  However, when delayed allocation is enabled the
+destruction of the data is postponed until the data writeback.  This causes
+consistency problems.  Here's a very simple test case, run on a filesystem
+with delayed allocation and inline data features enabled:
 
-This does look like a firmware bug. We've had reports of D3cold support mis=
-sing
-when running in non-VMD mode on systems that were designed with VMD for Win=
-dows.
-These issues have been caught and addressed by OEMs during enabling of Linu=
-x
-systems. Does D3cold work in VMD mode?
+ $ dd if=/dev/zero of=test-file bs=64 count=3 status=none
+ $ lsattr test-file
+ ------------------N--- test-file
 
-David
+The 'lsattr' command shows that the file has data stored inline.  However,
+that is not correct because writing 192 bytes (3 * 64) has forced the data
+to be un-inlined.  Doing a 'sync' before running the 'lsattr' fixes it.
 
->=20
-> Just realised my main workstation (Dell XPS) has the same chipset.
->=20
-> The Dell ACPI table has the exact same suspect-buggy function, which
-> the affected Asus system calls from PEG0.PXP._OFF:
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Method (DL23, 0, Serialized)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 L23E =
-=3D One
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Sleep =
-(0x10)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Local0=
- =3D Zero
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 While =
-(L23E)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 If ((Local0 > 0x04))
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Break
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 }
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 Sleep (0x10)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 Local0++
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SCB0 =
-=3D One
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->=20
-> (the "L23E =3D One" line is the one that writes a value to config offset
-> 0xe2, if you comment out this line then everything works)
->=20
-> However, on the Dell XPS system, nothing calls DL23() i.e. it is dead cod=
-e.
->=20
-> Comparing side by side:
-> Asus root port (PC00.PEG0) has the PXP power resource which gets
-> powered down during D3cold transition as it becomes unused. Dell root
-> port has no power resources (no _PR0).
-> Asus NVM device sitting under that root port (PC00.PEG0.PEGP) has
-> no-op _PS3 method, but Dell does not have _PS3. This means that Dell
-> doesn't attempt D3cold on NVMe nor the parent root port during suspend
-> (both go to D3hot only).
->=20
-> Let me know if you have any ideas for other useful comparative experiment=
-s.
-> Daniel
+Note that this bug doesn't happen if the filesytems is mount using the
+'nodelalloc' option.
 
+(There's a similar test case using read() instead in the bugzilla linked
+bellow.)
+
+This patch fixes the issue in the delayed allocation path by destroying the
+inline data immediately after converting it to an extent instead of delaying
+that operation until the writeback.  This is done by invoking function
+ext4_destroy_inline_data_nolock(), which is going to clean-up all the
+missing data structures, including clearing ĨNLINE_DATA and setting the
+EXTENTS inode flags.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=200681
+Cc: Daniel Dawson <danielcdawson@gmail.com>
+Signed-off-by: Luis Henriques <lhenriques@suse.de>
+---
+Hi!
+
+I'm sending this patch as an RFC because, although I've done a good amount
+of testing, I'm still not convinced it is correct.  I.e. there may exist a
+good reason for postponing the call to ext4_destroy_inline_data_nolock() and
+that I'm failing to see it.  Please let me know what you think.
+
+ fs/ext4/inline.c | 20 ++++++++++----------
+ fs/ext4/inode.c  | 18 +-----------------
+ 2 files changed, 11 insertions(+), 27 deletions(-)
+
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index d5bd1e3a5d36..e19a176cfc93 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -830,11 +830,12 @@ int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
+  *    update and dirty so that ext4_da_writepages can handle it. We don't
+  *    need to start the journal since the file's metadata isn't changed now.
+  */
+-static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
++static int ext4_da_convert_inline_data_to_extent(handle_t *handle,
++						 struct address_space *mapping,
+ 						 struct inode *inode,
+ 						 void **fsdata)
+ {
+-	int ret = 0, inline_size;
++	int ret = 0, inline_size, no_expand;
+ 	struct folio *folio;
+ 
+ 	folio = __filemap_get_folio(mapping, 0, FGP_WRITEBEGIN,
+@@ -842,7 +843,7 @@ static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
+ 	if (IS_ERR(folio))
+ 		return PTR_ERR(folio);
+ 
+-	down_read(&EXT4_I(inode)->xattr_sem);
++	ext4_write_lock_xattr(inode, &no_expand);
+ 	if (!ext4_has_inline_data(inode)) {
+ 		ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
+ 		goto out;
+@@ -859,20 +860,18 @@ static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
+ 	ret = __block_write_begin(&folio->page, 0, inline_size,
+ 				  ext4_da_get_block_prep);
+ 	if (ret) {
+-		up_read(&EXT4_I(inode)->xattr_sem);
++		ext4_write_unlock_xattr(inode, &no_expand);
+ 		folio_unlock(folio);
+ 		folio_put(folio);
+ 		ext4_truncate_failed_write(inode);
+ 		return ret;
+ 	}
+ 
+-	folio_mark_dirty(folio);
+-	folio_mark_uptodate(folio);
+-	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
++	ret = ext4_destroy_inline_data_nolock(handle, inode);
+ 	*fsdata = (void *)CONVERT_INLINE_DATA;
+ 
+ out:
+-	up_read(&EXT4_I(inode)->xattr_sem);
++	ext4_write_unlock_xattr(inode, &no_expand);
+ 	if (folio) {
+ 		folio_unlock(folio);
+ 		folio_put(folio);
+@@ -916,10 +915,11 @@ int ext4_da_write_inline_data_begin(struct address_space *mapping,
+ 		goto out_journal;
+ 
+ 	if (ret == -ENOSPC) {
+-		ext4_journal_stop(handle);
+-		ret = ext4_da_convert_inline_data_to_extent(mapping,
++		ret = ext4_da_convert_inline_data_to_extent(handle,
++							    mapping,
+ 							    inode,
+ 							    fsdata);
++		ext4_journal_stop(handle);
+ 		if (ret == -ENOSPC &&
+ 		    ext4_should_retry_alloc(inode->i_sb, &retries))
+ 			goto retry_journal;
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 2ccf3b5e3a7c..43fa930fafa0 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -2548,23 +2548,7 @@ static int ext4_do_writepages(struct mpage_da_data *mpd)
+ 		goto out_writepages;
+ 	}
+ 
+-	/*
+-	 * If we have inline data and arrive here, it means that
+-	 * we will soon create the block for the 1st page, so
+-	 * we'd better clear the inline data here.
+-	 */
+-	if (ext4_has_inline_data(inode)) {
+-		/* Just inode will be modified... */
+-		handle = ext4_journal_start(inode, EXT4_HT_INODE, 1);
+-		if (IS_ERR(handle)) {
+-			ret = PTR_ERR(handle);
+-			goto out_writepages;
+-		}
+-		BUG_ON(ext4_test_inode_state(inode,
+-				EXT4_STATE_MAY_INLINE_DATA));
+-		ext4_destroy_inline_data(handle, inode);
+-		ext4_journal_stop(handle);
+-	}
++	WARN_ON_ONCE(ext4_has_inline_data(inode));
+ 
+ 	/*
+ 	 * data=journal mode does not do delalloc so we just need to writeout /
 
