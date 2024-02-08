@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-57483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4794184D9B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:54:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 130E784D9B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:53:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B24401F2381C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 05:54:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B92961F23801
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 05:53:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3346B6A8B0;
-	Thu,  8 Feb 2024 05:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF11D6A35D;
+	Thu,  8 Feb 2024 05:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FUFfIFnv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MlAu9uzJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2A067C72;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE26667C71;
 	Thu,  8 Feb 2024 05:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707371494; cv=none; b=g6vx3CPvtH0r0kT3BCkGyL4IouZB1cBo0ei41E/d1/nZO0af0Rqjdb4w7ZMng+AvScTbS94WhpNSRM9/dn0A+o3yUt0QAAIlfCfAnBl3GODIKUVAtvI/NgcGLMMCsp9GnMZxq2VAZidsaTPLT1ZqP2GTZn13wRo4NL77dC4NOJk=
+	t=1707371494; cv=none; b=RIwR8KPf63Slf7WjqnnQd0sLb7bOEgpZZZJ2IxnDEsAx8FjaB405zu+9LeIq2H5NiRRrdaG9JbeNf9BNy1GjZZuAodfq+7PFKRcBKG185iv0Z9cIgsrQx2cOIpIAVNggNR8LeyIrfCu8fi/roQesJbKY+2mF6ZhVSND5459Rlxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707371494; c=relaxed/simple;
-	bh=DR53Fwp6HNZjxK1JVF84xhxkGcyxADr/AxiABLJCtN8=;
+	bh=kX85+BHUILFIoP4X6xIr9jJ6kAHMS4KcDN2tshuSuHQ=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=qqpOIoqEUMuQxq0lyvejIsHcJHkjRUGRkcmzFzcAzHBXbvn3O7mOjwArei1DynwKUoNIhoBkvYcwPLDgsOLoVwRlc0PtnImJZo+/zqjbqfU4C2CjSxoIFx0/JlwR3hcZ0x7C6Os3hONQ5VsKjgV1FKIPSn3H68bN+D6OrnKgFBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FUFfIFnv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 625B6C43601;
+	 In-Reply-To:To:Cc; b=bWZO57fNjy080PYC3W08YoH0dQccwIUqLVgkjbQ1WqqwUFz1NQiAlAE1fKC0wTR6ok0Leblb0Lc09GZTlh8NuJzT7fSGT4WRg5DKMga0vCR1DUZhPswHMbjfu5GpqnTufrcnl2lGkQe7vgZuJGEJ9GD/ed5FLdMmUX0K7NR0HlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MlAu9uzJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7581AC43141;
 	Thu,  8 Feb 2024 05:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1707371493;
-	bh=DR53Fwp6HNZjxK1JVF84xhxkGcyxADr/AxiABLJCtN8=;
+	bh=kX85+BHUILFIoP4X6xIr9jJ6kAHMS4KcDN2tshuSuHQ=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=FUFfIFnv+UIzG2PMEy6gbyu0y9Pi0O299Ing9VtgpDrR8rHTiYGrTGevxU8JUanX0
-	 CjKFPOjOuE47PoS5+GzTajbg5dgLr0C4u7943mn8A3ujtFjdTSt/KwPKxWbl7OCl1b
-	 26gZRcJWycGYqDjuxAH/X9hOIt6bDyOK9TV+dba5W0LMyfbuFBZvoPehRCcmgGN5EQ
-	 3AY669kCc2k3PbeVZC1PE+YnrhGM+lRk9xWW1bvxwZMeOSuMij4B/Tz8hg3lLOSpQr
-	 iTsjEyo4YH68dxzDFahnDoUKXXH3nUtG/dGG7RhEWGTeziXmIA+CBMPEhX2I/iIS8N
-	 wgGKXnUwdTZbA==
+	b=MlAu9uzJin7f1o87GBKgOjfj6XVr+CikDH4dyTs1M/Q6R6CaAygiBsiY5D7XvSx1l
+	 BaNtM4NZiiv88M2FhOEUsTLtbvh5DrN9n59qQdCyqZaFDooj9U7OEvjsSn2Sc/uG/q
+	 beCGtW5hitKuNE2qPyuqIUkDFoOUXDfOMJf2D+IAn+WM6BaTjrhiKc31wi0kg4cE4H
+	 jhktwSGCEgH0nv7oKIYUk7TEBdVcmVLzAohK2jilYTZaQK8cumr1Y2Tr+jQy1eLYZl
+	 V4ty3HLrxkQ5ho/4vBWiR2rpvXRz8ND8EUKuSrflWzrUmU+GZluQL0hRz0kyz6p2gt
+	 pSoHj2role8/g==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 505E9C48260;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60B51C4829E;
 	Thu,  8 Feb 2024 05:51:33 +0000 (UTC)
 From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= via B4 Relay
  <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Thu, 08 Feb 2024 08:51:33 +0300
-Subject: [PATCH netnext 5/8] net: dsa: mt7530: get rid of
- priv->info->cpu_port_config()
+Date: Thu, 08 Feb 2024 08:51:34 +0300
+Subject: [PATCH netnext 6/8] net: dsa: mt7530: get rid of
+ mt753x_mac_config()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,7 +57,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Message-Id:
- <20240208-for-netnext-mt7530-improvements-3-v1-5-d7c1cfd502ca@arinc9.com>
+ <20240208-for-netnext-mt7530-improvements-3-v1-6-d7c1cfd502ca@arinc9.com>
 References:
  <20240208-for-netnext-mt7530-improvements-3-v1-0-d7c1cfd502ca@arinc9.com>
 In-Reply-To:
@@ -77,11 +77,11 @@ Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
  linux-mediatek@lists.infradead.org, 
  =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707371489; l=10123;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707371489; l=1494;
  i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=Y1TCfcdqvG7M9i52Rn8kNxeSZjlmBTTpQoxELLR7z1I=;
- b=ihIoISyGi+OBQeR6/jTPw+SUuqJU7oravDpf2NQJR5o1P80VYo6nl2N5TQxbbB+8NtxO22LNz
- JiD7ljGfdWhBdwokwkDpBWk57aPmKu/XKOuHrGx4kklTyQrYxpTF2A7
+ bh=8u7euwYTcc58UJEZ934iSyhrRKaOIduS6lOdsKOd2oQ=;
+ b=4kXZwrGfjQOP/O9zg/NSniCnR4s8JpB6Wq32o9H3OeS/SQbaUVeLD1kCRlsgJBEeBsabQ6bAE
+ 4nvyQ4j5XXyBTtoQDmIykCTp5YlEDVAD1MYjb83pgx6d2n6a0RFzb1G
 X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
  pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
 X-Endpoint-Received:
@@ -91,305 +91,47 @@ Reply-To: <arinc.unal@arinc9.com>
 
 From: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-priv->info->cpu_port_config() is used for MT7531 and the switch on the
-MT7988 SoC. It sets up the ports described as a CPU port earlier than the
-phylink code path would do.
+There is no need for a separate function to call
+priv->info->mac_port_config(). Call it from mt753x_phylink_mac_config()
+instead and remove mt753x_mac_config().
 
-This function is useless as:
-- Configuring the MACs can be done from the phylink_mac_config code path
-  instead.
-- All the link configuration it does on the CPU ports are later undone with
-  the port_enable, phylink_mac_config, and then phylink_mac_link_up code
-  path [1].
-
-priv->p5_interface and priv->p6_interface were being used to prevent
-configuring the MACs from the phylink_mac_config code path. Remove them now
-that they hold no purpose.
-
-Remove priv->info->cpu_port_config(). On mt753x_phylink_mac_config, switch
-to if statements to simplify the code.
-
-Remove the overwriting of the speed and duplex interfaces for certain
-interface modes. Phylink already provides the speed and duplex variables
-with proper values. Phylink already sets the max speed of TRGMII to
-SPEED_1000. Add SPEED_2500 for PHY_INTERFACE_MODE_2500BASEX to where the
-speed and EEE bits are set instead.
-
-On the switch on the MT7988 SoC, PHY_INTERFACE_MODE_INTERNAL is being used
-to describe the interface mode of the 10G MAC, which is of port 6. On
-mt7988_cpu_port_config() PMCR_FORCE_SPEED_1000 was set via the
-PMCR_CPU_PORT_SETTING() mask. Add SPEED_10000 case to where the speed bits
-are set to cover this. No need to add it to where the EEE bits are set as
-the "MT7988A Wi-Fi 7 Generation Router Platform: Datasheet (Open Version)
-v0.1" document shows that these bits don't exist on the MT7530_PMCR_P(6)
-register.
-
-Remove the definition of PMCR_CPU_PORT_SETTING() now that it holds no
-purpose.
-
-Change mt753x_cpu_port_enable() to void now that there're no error cases
-left.
-
-Link: https://lore.kernel.org/netdev/ZHy2jQLesdYFMQtO@shell.armlinux.org.uk/ [1]
-Suggested-by: Russell King (Oracle) <linux@armlinux.org.uk>
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 ---
- drivers/net/dsa/mt7530.c | 114 +++--------------------------------------------
- drivers/net/dsa/mt7530.h |  11 -----
- 2 files changed, 7 insertions(+), 118 deletions(-)
+ drivers/net/dsa/mt7530.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index c069bf273733..80b65f064310 100644
+index 80b65f064310..e353c03dd1db 100644
 --- a/drivers/net/dsa/mt7530.c
 +++ b/drivers/net/dsa/mt7530.c
-@@ -966,18 +966,10 @@ mt753x_trap_frames(struct mt7530_priv *priv)
- 		   MT753X_R0E_PORT_FW(MT753X_BPDU_CPU_ONLY));
+@@ -2634,16 +2634,6 @@ mt7531_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+ 	}
  }
  
--static int
-+static void
- mt753x_cpu_port_enable(struct dsa_switch *ds, int port)
- {
- 	struct mt7530_priv *priv = ds->priv;
--	int ret;
+-static void
+-mt753x_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+-		  const struct phylink_link_state *state)
+-{
+-	struct mt7530_priv *priv = ds->priv;
 -
--	/* Setup max capability of CPU port at first */
--	if (priv->info->cpu_port_config) {
--		ret = priv->info->cpu_port_config(ds, port);
--		if (ret)
--			return ret;
--	}
- 
- 	/* Enable Mediatek header mode on the cpu port */
- 	mt7530_write(priv, MT7530_PVC_P(port),
-@@ -1003,8 +995,6 @@ mt753x_cpu_port_enable(struct dsa_switch *ds, int port)
- 	/* Set to fallback mode for independent VLAN learning */
- 	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
- 		   MT7530_PORT_FALLBACK_MODE);
+-	if (priv->info->mac_port_config)
+-		priv->info->mac_port_config(ds, port, mode, state->interface);
+-}
 -
--	return 0;
- }
- 
- static int
-@@ -2261,8 +2251,6 @@ mt7530_setup(struct dsa_switch *ds)
- 	val |= MHWTRAP_MANUAL;
- 	mt7530_write(priv, MT7530_MHWTRAP, val);
- 
--	priv->p6_interface = PHY_INTERFACE_MODE_NA;
--
- 	mt753x_trap_frames(priv);
- 
- 	/* Enable and reset MIB counters */
-@@ -2277,9 +2265,7 @@ mt7530_setup(struct dsa_switch *ds)
- 		mt7530_set(priv, MT7530_PSC_P(i), SA_DIS);
- 
- 		if (dsa_is_cpu_port(ds, i)) {
--			ret = mt753x_cpu_port_enable(ds, i);
--			if (ret)
--				return ret;
-+			mt753x_cpu_port_enable(ds, i);
- 		} else {
- 			mt7530_port_disable(ds, i);
- 
-@@ -2383,9 +2369,7 @@ mt7531_setup_common(struct dsa_switch *ds)
- 		mt7530_set(priv, MT7531_DBG_CNT(i), MT7531_DIS_CLR);
- 
- 		if (dsa_is_cpu_port(ds, i)) {
--			ret = mt753x_cpu_port_enable(ds, i);
--			if (ret)
--				return ret;
-+			mt753x_cpu_port_enable(ds, i);
- 		} else {
- 			mt7530_port_disable(ds, i);
- 
-@@ -2474,10 +2458,6 @@ mt7531_setup(struct dsa_switch *ds)
- 	mt7530_rmw(priv, MT7531_GPIO_MODE0, MT7531_GPIO0_MASK,
- 		   MT7531_GPIO0_INTERRUPT);
- 
--	/* Let phylink decide the interface later. */
--	priv->p5_interface = PHY_INTERFACE_MODE_NA;
--	priv->p6_interface = PHY_INTERFACE_MODE_NA;
--
- 	/* Enable PHY core PLL, since phy_device has not yet been created
- 	 * provided for phy_[read,write]_mmd_indirect is called, we provide
- 	 * our own mt7531_ind_mmd_phy_[read,write] to complete this
-@@ -2689,26 +2669,9 @@ mt753x_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+ static struct phylink_pcs *
+ mt753x_phylink_mac_select_pcs(struct dsa_switch *ds, int port,
+ 			      phy_interface_t interface)
+@@ -2669,8 +2659,8 @@ mt753x_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
  	struct mt7530_priv *priv = ds->priv;
  	u32 mcr_cur, mcr_new;
  
--	switch (port) {
--	case 5:
--		if (priv->p5_interface == state->interface)
--			break;
--
-+	if (port == 5 || port == 6)
- 		mt753x_mac_config(ds, port, mode, state);
- 
--		if (priv->p5_intf_sel != P5_DISABLED)
--			priv->p5_interface = state->interface;
--		break;
--	case 6:
--		if (priv->p6_interface == state->interface)
--			break;
--
+-	if (port == 5 || port == 6)
 -		mt753x_mac_config(ds, port, mode, state);
--
--		priv->p6_interface = state->interface;
--		break;
--	}
--
++	if ((port == 5 || port == 6) && priv->info->mac_port_config)
++		priv->info->mac_port_config(ds, port, mode, state->interface);
+ 
  	mcr_cur = mt7530_read(priv, MT7530_PMCR_P(port));
  	mcr_new = mcr_cur;
- 	mcr_new &= ~PMCR_LINK_SETTINGS_MASK;
-@@ -2744,17 +2707,10 @@ static void mt753x_phylink_mac_link_up(struct dsa_switch *ds, int port,
- 
- 	mcr = PMCR_RX_EN | PMCR_TX_EN | PMCR_FORCE_LNK;
- 
--	/* MT753x MAC works in 1G full duplex mode for all up-clocked
--	 * variants.
--	 */
--	if (interface == PHY_INTERFACE_MODE_TRGMII ||
--	    (phy_interface_mode_is_8023z(interface))) {
--		speed = SPEED_1000;
--		duplex = DUPLEX_FULL;
--	}
--
- 	switch (speed) {
- 	case SPEED_1000:
-+	case SPEED_2500:
-+	case SPEED_10000:
- 		mcr |= PMCR_FORCE_SPEED_1000;
- 		break;
- 	case SPEED_100:
-@@ -2772,6 +2728,7 @@ static void mt753x_phylink_mac_link_up(struct dsa_switch *ds, int port,
- 	if (mode == MLO_AN_PHY && phydev && phy_init_eee(phydev, false) >= 0) {
- 		switch (speed) {
- 		case SPEED_1000:
-+		case SPEED_2500:
- 			mcr |= PMCR_FORCE_EEE1G;
- 			break;
- 		case SPEED_100:
-@@ -2783,61 +2740,6 @@ static void mt753x_phylink_mac_link_up(struct dsa_switch *ds, int port,
- 	mt7530_set(priv, MT7530_PMCR_P(port), mcr);
- }
- 
--static int
--mt7531_cpu_port_config(struct dsa_switch *ds, int port)
--{
--	struct mt7530_priv *priv = ds->priv;
--	phy_interface_t interface;
--	int speed;
--
--	switch (port) {
--	case 5:
--		if (!priv->p5_sgmii)
--			interface = PHY_INTERFACE_MODE_RGMII;
--		else
--			interface = PHY_INTERFACE_MODE_2500BASEX;
--
--		priv->p5_interface = interface;
--		break;
--	case 6:
--		interface = PHY_INTERFACE_MODE_2500BASEX;
--
--		priv->p6_interface = interface;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	if (interface == PHY_INTERFACE_MODE_2500BASEX)
--		speed = SPEED_2500;
--	else
--		speed = SPEED_1000;
--
--	mt7531_mac_config(ds, port, MLO_AN_FIXED, interface);
--
--	mt7530_write(priv, MT7530_PMCR_P(port),
--		     PMCR_CPU_PORT_SETTING(priv->id));
--	mt753x_phylink_mac_link_up(ds, port, MLO_AN_FIXED, interface, NULL,
--				   speed, DUPLEX_FULL, true, true);
--
--	return 0;
--}
--
--static int
--mt7988_cpu_port_config(struct dsa_switch *ds, int port)
--{
--	struct mt7530_priv *priv = ds->priv;
--
--	mt7530_write(priv, MT7530_PMCR_P(port),
--		     PMCR_CPU_PORT_SETTING(priv->id));
--
--	mt753x_phylink_mac_link_up(ds, port, MLO_AN_FIXED,
--				   PHY_INTERFACE_MODE_INTERNAL, NULL,
--				   SPEED_10000, DUPLEX_FULL, true, true);
--
--	return 0;
--}
--
- static void mt753x_phylink_get_caps(struct dsa_switch *ds, int port,
- 				    struct phylink_config *config)
- {
-@@ -3096,7 +2998,6 @@ const struct mt753x_info mt753x_table[] = {
- 		.phy_write_c22 = mt7531_ind_c22_phy_write,
- 		.phy_read_c45 = mt7531_ind_c45_phy_read,
- 		.phy_write_c45 = mt7531_ind_c45_phy_write,
--		.cpu_port_config = mt7531_cpu_port_config,
- 		.mac_port_get_caps = mt7531_mac_port_get_caps,
- 		.mac_port_config = mt7531_mac_config,
- 	},
-@@ -3108,7 +3009,6 @@ const struct mt753x_info mt753x_table[] = {
- 		.phy_write_c22 = mt7531_ind_c22_phy_write,
- 		.phy_read_c45 = mt7531_ind_c45_phy_read,
- 		.phy_write_c45 = mt7531_ind_c45_phy_write,
--		.cpu_port_config = mt7988_cpu_port_config,
- 		.mac_port_get_caps = mt7988_mac_port_get_caps,
- 	},
- };
-diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-index b1665de7f640..8a8144868eaa 100644
---- a/drivers/net/dsa/mt7530.h
-+++ b/drivers/net/dsa/mt7530.h
-@@ -311,13 +311,6 @@ enum mt7530_vlan_port_acc_frm {
- 					 PMCR_TX_FC_EN | PMCR_RX_FC_EN | \
- 					 PMCR_FORCE_FDX | PMCR_FORCE_LNK | \
- 					 PMCR_FORCE_EEE1G | PMCR_FORCE_EEE100)
--#define  PMCR_CPU_PORT_SETTING(id)	(PMCR_FORCE_MODE_ID((id)) | \
--					 PMCR_IFG_XMIT(1) | PMCR_MAC_MODE | \
--					 PMCR_BACKOFF_EN | PMCR_BACKPR_EN | \
--					 PMCR_TX_EN | PMCR_RX_EN | \
--					 PMCR_TX_FC_EN | PMCR_RX_FC_EN | \
--					 PMCR_FORCE_SPEED_1000 | \
--					 PMCR_FORCE_FDX | PMCR_FORCE_LNK)
- 
- #define MT7530_PMEEECR_P(x)		(0x3004 + (x) * 0x100)
- #define  WAKEUP_TIME_1000(x)		(((x) & 0xFF) << 24)
-@@ -724,7 +717,6 @@ struct mt753x_info {
- 			    int regnum);
- 	int (*phy_write_c45)(struct mt7530_priv *priv, int port, int devad,
- 			     int regnum, u16 val);
--	int (*cpu_port_config)(struct dsa_switch *ds, int port);
- 	void (*mac_port_get_caps)(struct dsa_switch *ds, int port,
- 				  struct phylink_config *config);
- 	void (*mac_port_validate)(struct dsa_switch *ds, int port,
-@@ -750,7 +742,6 @@ struct mt753x_info {
-  * @ports:		Holding the state among ports
-  * @reg_mutex:		The lock for protecting among process accessing
-  *			registers
-- * @p6_interface	Holding the current port 6 interface
-  * @p5_intf_sel:	Holding the current port 5 interface select
-  * @p5_sgmii:		Flag for distinguishing if port 5 of the MT7531 switch
-  *			has got SGMII
-@@ -772,8 +763,6 @@ struct mt7530_priv {
- 	const struct mt753x_info *info;
- 	unsigned int		id;
- 	bool			mcm;
--	phy_interface_t		p6_interface;
--	phy_interface_t		p5_interface;
- 	enum p5_interface_select p5_intf_sel;
- 	bool			p5_sgmii;
- 	u8			mirror_rx;
 
 -- 
 2.40.1
