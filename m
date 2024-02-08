@@ -1,231 +1,167 @@
-Return-Path: <linux-kernel+bounces-57984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D202584DFF4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:47:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A74A384DFE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:44:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 595A6B22921
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:45:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B059FB279C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:43:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4275D6F516;
-	Thu,  8 Feb 2024 11:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AFE371B2E;
+	Thu,  8 Feb 2024 11:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="RmnrDl+N"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KUh8YOkj"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1A386EB70;
-	Thu,  8 Feb 2024 11:44:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D2D36F513;
+	Thu,  8 Feb 2024 11:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707392698; cv=none; b=F9v2WfOkPCrlNTrxzgXrqpnNOqIRIj3HyWEHEf/mseb/FmLfMUW58svpcAVJIO6WEU3zLWqdTrPq8lgoEfemnQMhA5cZuBCJZ7B3BjLUygcefG7ElDp+Oa4p+/aTvFNBk4fJznXDnEaeRQ9SceaZu+Pgk0wL1zG3nbV5O0+07KI=
+	t=1707392544; cv=none; b=K9arlzFN/IifpopyRz5wez1Pgq4u/FX73/phkAL/tLkIy9wYcYBQW9xLnfZwjuu0lM/D87rVeTGJZIemLquKCEA311JLzPtpejIOIvIVzGRUGYUCknS9RyhDUbB/Y5h2KRVqoy1ZWm9PcVTgOd+NQtMJ3CS5f4LQKP/RYJhWa54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707392698; c=relaxed/simple;
-	bh=4RLrpLO9Lr9DKthkMv9dYVS7bKcH7m8SKjLUBGgExck=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=ASgQq/bIsgpv7sDXYsZBvh4yYwX9ZMpQFEm2XcoJh0Ez8jjAEWBIwCYOJrHlKqXauQNiagNSKLCgkUBiWRfUYgGwThRGKcswV80/f6I1LpyyAE2ylMU2zNF7NQeMte5VUYsEPPNQUOmKxGwhuz23g76aezGv2Kge+D1FsQZbH1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=RmnrDl+N; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1707392695; x=1738928695;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=4RLrpLO9Lr9DKthkMv9dYVS7bKcH7m8SKjLUBGgExck=;
-  b=RmnrDl+N3xQJo69LYDdDZp96I3eMI5CMPAYOtEdqt1lvjX8G1xX42JWo
-   YR1QbtVoEcZSLBCTf9ogl7yfDGSetakXSdmcYmdY27XFoMBamYVP0fBRP
-   HcLc295vQv3k8isqxvN92DQYa1uTh7Ez+aEBpX4DJXcXbrxmVRm0gR9Bf
-   g8XKeSK9CJI62k4rfA1tB4aCpcDnaPsM1nKmmYaxx1ZRrWHy01f2nJxSx
-   kRn6dmKAUALxa+ugEvMjxGRfGuXcBkF+5LrPVOqX31uW517ZiZUAB4OgU
-   za7xO7LgqEJDEVtxShZxqE7uDq6rPw8r200UcLMI4Bz4mspx/7ZWi44zD
-   g==;
-X-CSE-ConnectionGUID: 1FvkdppZRHmt/Dzk9vusdQ==
-X-CSE-MsgGUID: OJNdQtm/SPKx55/Ftri+9A==
-X-IronPort-AV: E=Sophos;i="6.05,253,1701154800"; 
-   d="scan'208";a="15964774"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Feb 2024 04:44:54 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 8 Feb 2024 04:44:34 -0700
-Received: from [10.40.56.22] (10.10.85.11) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Thu, 8 Feb 2024 04:44:29 -0700
-From: Nayab Sayed <nayabbasha.sayed@microchip.com>
-Date: Thu, 8 Feb 2024 17:12:12 +0530
-Subject: [PATCH] dt-bindings: mtd: update references from partition.txt to
- mtd.yaml
+	s=arc-20240116; t=1707392544; c=relaxed/simple;
+	bh=aEQ478SuaY6VmhEfhHXJw2WnDBxJM3W5d9Q2bW0sw+k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fCIVEBkyF6gc7cRdnOaiz4aa5egPLyLkSpthSc9QAO2tORdFDqPar+zGR+jEbf5ic7XAdJaTeWNmAvN9Ti/guBrT+QyOn/4SH/BYJwvCSiC1kdrBUv+8bUafx4BE9SqqJpmP7edGFo27c7FhwM88PGBHL9FlNNHcTxkop/iaV54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KUh8YOkj; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a389ea940f1so137484966b.3;
+        Thu, 08 Feb 2024 03:42:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707392541; x=1707997341; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uJx67bcvbAo9zHf0ymAdxOGvHwHm6HIalhNV9TyZktU=;
+        b=KUh8YOkjcg2BhgaCu24iNDqUNjQPM1vPLVc6prWRUhCIimEvq99LTwbQpYWQM1Cd2i
+         WvIaWjWISh1sr/e2w4/bVnBqZr4M20wncCFCH7McS8ShIOn3a5tBQpdw5dcQDLQWi+Wg
+         EimMbcfIi0fdr68lFBpbMPViWJq8CUzns9JmQ4fwyORapXaMdv/OmCA5a3skHCqFja6k
+         hZWQFtHIrS2oPp8GZ7doiFvKaJ4OtfH2BjHyz+O/iIPyab/bKZ/t9jXJ1MwJTTrfzGA4
+         JQlY5fTWxuOXtOU0MS+byO2p39JQ5VeodxB7VodQYeVO4nJgCUaMwNOEYsw/ueoevojs
+         KHVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707392541; x=1707997341;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uJx67bcvbAo9zHf0ymAdxOGvHwHm6HIalhNV9TyZktU=;
+        b=YuPErl8f19A8/yEG5b03eGygR5lNYz1xY/Q5xSrBqXpdizmB5g/BE45esMW0Bn/RET
+         x0pQJv8MK/NZ2CSik/kgm7z6bgXSuC6y/C51hRYWDSrmXdWYKTZo0ETfYrzMuozM9OTe
+         AKKVcsTdxZtSXdnOgpOppCiEL4sE15VoCpauaikLZz0mYSjFC2lOPdMKINCF/hxyF0iA
+         O+umrTFSHcHPbti878o0v5YFidL+PJh2/QsS4VdNEem3joHLop7HxgsT4yD+DSYykhLN
+         vbfWov3pWalVg/WEfJXcwvuuH69aS4yBmL87a5WqoHzxuGOv7XlKLw5jA1OkfGxWtbYa
+         O4yA==
+X-Forwarded-Encrypted: i=1; AJvYcCVTij1mvMDrFIdiEjbmkzw93CwoGcH8dx0h/U/V7ggv8pltNT5I/7zb21+dTemJGK2pUZvxRMZWHm/QtfS07tySAmRdtIsiLX+3e3r3w0Ik9YDRVTnmCjEiaxv7GUngfsnxmHmSNsTLmJbqNVgH6eqe
+X-Gm-Message-State: AOJu0YwHMIRhVH0TgPcAmWx6EwIFH9jPGKFpxEDcb0YvSWTNBn1hFAxN
+	WhS+QioHAjmYir0gNsyGuUmyYYGSgN8fSywRaUEoleqEEkRZwm03
+X-Google-Smtp-Source: AGHT+IEiPm4u84iqFSB/UQg6ibdfUKzGrLkfL1m3NTh0SS5++/aHuKt3pBw9YrhOY1kilrXZeG6DMg==
+X-Received: by 2002:a17:906:d10d:b0:a38:948e:85d3 with SMTP id b13-20020a170906d10d00b00a38948e85d3mr2932904ejz.71.1707392541302;
+        Thu, 08 Feb 2024 03:42:21 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVISQGNJhcgRfbCljEvw7EzsND50WXxUpC4wFphSMcBvdzRIwbL7Ryz518AMPWPM8jSxRs0KB7Ropazpm8LjMrbZ8JFStTaDPeC1LQt2v8Ut06vT2nk2yiRzB5u5BwQ6VPecfYcJUZUnj3snDHe3u9fyFsYjU5QawLERsKuJF3YAWRNgL06iSOJ8SPb2oNBunViYzVACgOdN48RvE7Hab7wmi+qh1B5Nbs2VlDSJozNfZ03T/pWq1SaHNkIxG5Q1zGeZjK0WpttiduQo/fpQFRK/Y9Xow6QVEftEVQPw0jypU8d5Z2nQ9sWPbOADDjT9FKF4/yr8KIWAAGqCvHzPUSg1bgl+GaQv2Y+z41S38/k3qowiSDXHmU5a4279KlMRbSCw/LNpg==
+Received: from andrea ([31.189.46.254])
+        by smtp.gmail.com with ESMTPSA id qc12-20020a170906d8ac00b00a28f6294233sm1784541ejb.76.2024.02.08.03.42.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 03:42:20 -0800 (PST)
+Date: Thu, 8 Feb 2024 12:42:16 +0100
+From: Andrea Parri <parri.andrea@gmail.com>
+To: Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Anup Patel <anup@brainfault.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>
+Subject: Re: [PATCH] riscv: Fix text patching when icache flushes use IPIs
+Message-ID: <ZcS+GAaM25LXsBOl@andrea>
+References: <20240206204607.527195-1-alexghiti@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-ID: <20240208-partition-txt-v1-1-4398af3b7bb2@microchip.com>
-X-B4-Tracking: v=1; b=H4sIABO+xGUC/x2MQQqAIBAAvxJ7TjATsb4SHUy32ouJSgji35OOA
- zNTIWEkTLAOFSK+lOjxHaZxAHsbfyEj1xkEF5ILrlkwMVPuFsslM6cQudWHVMsMvQkRTyr/b9t
- b+wD7YKiJXwAAAA==
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Stefan Agner <stefan@agner.ch>, Lucas Stach <dev@lynxeye.de>, Thierry Reding
-	<thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Han Xu
-	<han.xu@nxp.com>
-CC: <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>, Nayab Sayed
-	<nayabbasha.sayed@microchip.com>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240206204607.527195-1-alexghiti@rivosinc.com>
 
-Commit f902baa917b6 ("dt-bindings: mtd: Remove useless file about
-partitions") removed the file partition.txt. Hence, in this commit, the
-lines mentioning this file are updated to reference mtd.yaml, which now
-includes partition{,s}.yaml.
+> +static int __ftrace_modify_code(void *data)
+> +{
+> +	struct ftrace_modify_param *param = data;
+> +
+> +	if (atomic_inc_return(&param->cpu_count) == num_online_cpus()) {
+> +		ftrace_modify_all_code(param->command);
+> +		atomic_inc(&param->cpu_count);
 
-Signed-off-by: Nayab Sayed <nayabbasha.sayed@microchip.com>
----
- Documentation/devicetree/bindings/mtd/davinci-nand.txt        | 2 +-
- Documentation/devicetree/bindings/mtd/flctl-nand.txt          | 2 +-
- Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt        | 2 +-
- Documentation/devicetree/bindings/mtd/gpio-control-nand.txt   | 2 +-
- Documentation/devicetree/bindings/mtd/gpmi-nand.yaml          | 2 +-
- Documentation/devicetree/bindings/mtd/hisi504-nand.txt        | 2 +-
- Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt | 2 +-
- Documentation/devicetree/bindings/mtd/orion-nand.txt          | 2 +-
- Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt     | 2 +-
- 9 files changed, 9 insertions(+), 9 deletions(-)
+I stared at ftrace_modify_all_code() for a bit but honestly I don't see
+what prevents the ->cpu_count increment from being reordered before the
+insn write(s) (architecturally) now that you have removed the IPI dance:
+perhaps add an smp_wmb() right before the atomic_inc() (or promote this
+latter to a (void)atomic_inc_return_release()) and/or an inline comment
+saying why such reordering is not possible?
 
-diff --git a/Documentation/devicetree/bindings/mtd/davinci-nand.txt b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
-index edebeae1f5b3..eb8e2ff4dbd2 100644
---- a/Documentation/devicetree/bindings/mtd/davinci-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
-@@ -68,7 +68,7 @@ Deprecated properties:
- 				false.
- 
- Nand device bindings may contain additional sub-nodes describing partitions of
--the address space. See partition.txt for more detail. The NAND Flash timing
-+the address space. See mtd.yaml for more detail. The NAND Flash timing
- values must be programmed in the chip select’s node of AEMIF
- memory-controller (see Documentation/devicetree/bindings/memory-controllers/
- davinci-aemif.txt).
-diff --git a/Documentation/devicetree/bindings/mtd/flctl-nand.txt b/Documentation/devicetree/bindings/mtd/flctl-nand.txt
-index 427f46dc60ad..51518399d737 100644
---- a/Documentation/devicetree/bindings/mtd/flctl-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/flctl-nand.txt
-@@ -15,7 +15,7 @@ The DMA fields are not used yet in the driver but are listed here for
- completing the bindings.
- 
- The device tree may optionally contain sub-nodes describing partitions of the
--address space. See partition.txt for more detail.
-+address space. See mtd.yaml for more detail.
- 
- Example:
- 
-diff --git a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-index 25f07c1f9e44..530c017e014e 100644
---- a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
-@@ -22,7 +22,7 @@ Deprecated properties:
- 	(R/B# pins not connected).
- 
- Each flash chip described may optionally contain additional sub-nodes
--describing partitions of the address space. See partition.txt for more
-+describing partitions of the address space. See mtd.yaml for more
- detail.
- 
- Examples:
-diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-index 486a17d533d7..0edf55d47ea8 100644
---- a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-@@ -26,7 +26,7 @@ Optional properties:
-   read to ensure that the GPIO accesses have completed.
- 
- The device tree may optionally contain sub-nodes describing partitions of the
--address space. See partition.txt for more detail.
-+address space. See mtd.yaml for more detail.
- 
- Examples:
- 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
-index ba086c34626d..021c0da0b072 100644
---- a/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.yaml
-@@ -12,7 +12,7 @@ maintainers:
- description: |
-   The GPMI nand controller provides an interface to control the NAND
-   flash chips. The device tree may optionally contain sub-nodes
--  describing partitions of the address space. See partition.txt for
-+  describing partitions of the address space. See mtd.yaml for
-   more detail.
- 
- properties:
-diff --git a/Documentation/devicetree/bindings/mtd/hisi504-nand.txt b/Documentation/devicetree/bindings/mtd/hisi504-nand.txt
-index 8963983ae7cb..362203e7d50e 100644
---- a/Documentation/devicetree/bindings/mtd/hisi504-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/hisi504-nand.txt
-@@ -22,7 +22,7 @@ The following ECC strength and step size are currently supported:
-  - nand-ecc-strength = <16>, nand-ecc-step-size = <1024>
- 
- Flash chip may optionally contain additional sub-nodes describing partitions of
--the address space. See partition.txt for more detail.
-+the address space. See mtd.yaml for more detail.
- 
- Example:
- 
-diff --git a/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt b/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
-index e737e5beb7bf..4a00ec2b2540 100644
---- a/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
-@@ -39,7 +39,7 @@ Optional children node properties:
- - wp-gpios: GPIO specifier for the write protect pin.
- 
- Optional child node of NAND chip nodes:
--Partitions: see partition.txt
-+Partitions: see mtd.yaml
- 
-   Example:
- 	nand-controller@70008000 {
-diff --git a/Documentation/devicetree/bindings/mtd/orion-nand.txt b/Documentation/devicetree/bindings/mtd/orion-nand.txt
-index 2d6ab660e603..b9997b1f13ac 100644
---- a/Documentation/devicetree/bindings/mtd/orion-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/orion-nand.txt
-@@ -13,7 +13,7 @@ Optional properties:
-                registers in usecs
- 
- The device tree may optionally contain sub-nodes describing partitions of the
--address space. See partition.txt for more detail.
-+address space. See mtd.yaml for more detail.
- 
- Example:
- 
-diff --git a/Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt b/Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
-index 09815c40fc8a..635455350660 100644
---- a/Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
-+++ b/Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
-@@ -19,7 +19,7 @@ Optional child properties:
- 
- Each child device node may optionally contain a 'partitions' sub-node,
- which further contains sub-nodes describing the flash partition mapping.
--See partition.txt for more detail.
-+See mtd.yaml for more detail.
- 
- Example:
- 
 
----
-base-commit: 547ab8fc4cb04a1a6b34377dd8fad34cd2c8a8e3
-change-id: 20240208-partition-txt-d6ee0c8b4693
+> +	} else {
+> +		while (atomic_read(&param->cpu_count) <= num_online_cpus())
+> +			cpu_relax();
+> +		smp_mb();
 
-Best regards,
--- 
-Nayab Sayed <nayabbasha.sayed@microchip.com>
+I see that you've lifted/copied the memory barrier from patch_text_cb():
+what's its point?  AFAIU, the barrier has no ordering effect on program
+order later insn fetches; perhaps the code was based on some legacy/old
+version of Zifencei?  IAC, comments, comments, ... or maybe just remove
+that memory barrier?
 
+
+> +	}
+> +
+> +	local_flush_icache_all();
+> +
+> +	return 0;
+> +}
+
+[...]
+
+
+> @@ -232,8 +230,7 @@ static int patch_text_cb(void *data)
+>  	if (atomic_inc_return(&patch->cpu_count) == num_online_cpus()) {
+>  		for (i = 0; ret == 0 && i < patch->ninsns; i++) {
+>  			len = GET_INSN_LENGTH(patch->insns[i]);
+> -			ret = patch_text_nosync(patch->addr + i * len,
+> -						&patch->insns[i], len);
+> +			ret = patch_insn_write(patch->addr + i * len, &patch->insns[i], len);
+>  		}
+>  		atomic_inc(&patch->cpu_count);
+>  	} else {
+> @@ -242,6 +239,8 @@ static int patch_text_cb(void *data)
+>  		smp_mb();
+>  	}
+>  
+> +	local_flush_icache_all();
+> +
+>  	return ret;
+>  }
+>  NOKPROBE_SYMBOL(patch_text_cb);
+
+My above remarks/questions also apply to this function.
+
+
+On a last topic, although somehow orthogonal to the scope of this patch,
+I'm not sure the patch_{map,unmap}() dance in our patch_insn_write() is
+correct: I can see why we may want (need to do) the local TLB flush be-
+fore returning from patch_{map,unmap}(), but does a local flush suffice?
+For comparison, arm64 seems to go through a complete dsb-tlbi-dsb(-isb)
+sequence in their unmapping stage (and apparently relying on "no caching
+of invalid ptes" in their mapping stage).  Of course, "broadcasting" our
+(riscv's) TLB invalidations will necessary introduce some complexity...
+
+Thoughts?
+
+  Andrea
 
