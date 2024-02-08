@@ -1,125 +1,221 @@
-Return-Path: <linux-kernel+bounces-58429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D3E084E669
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:13:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 574E684E671
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:15:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58BDC2853FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:13:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD5F4B24BAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BE4C84A25;
-	Thu,  8 Feb 2024 17:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7074E81AD7;
+	Thu,  8 Feb 2024 17:14:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="NCkfAQFd"
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K1Y+ZDZr"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E5881AC6
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:12:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF53C7C0AA
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:14:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707412369; cv=none; b=tRSCtP0OtGkMObYDBB6PINudgb8etTPdkbf1P1PD4gHhnl5M/Gk+SDd4UqHfdeZgOY5z30vaHI16vnY9dlTYGiWU9RywFw2Z07ugwY3OneUBGKAqN0oz5p4j7M2ZpcwHWZiTruaEe92Qm701vdkuLB+huQL/S8dv7Mwa9f1OnVk=
+	t=1707412498; cv=none; b=tar5YgUStEwL9SjyLox7LsrK1lZh486Q3PINs26uEPYkQcIjoxhjhUIUKO7TRscnoFYLeo2oqPeUiYgFElzvv5GoxfZm3kLOWFki1+/fhekU+DJpyOn+09foW2QWNYBnvlLQxH3VwbKGm4PBFf5TYC2iWOnz1F+P/zNJIy8ZXOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707412369; c=relaxed/simple;
-	bh=AIEgU0V1g1nSho2UWkRURvPzJPm9oPVlHGX6wRLgm6E=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=uMjj6IFWVLWSjQeromzjn5DQdZYzeE1z/ulem1LsVJXpRoSV+sMNFAEezannc1/Lzj5ewd7WlWOBjmlfi0RETpoejZI7YWrZjPg2v7mUWgo4XG42X8xOM2dVnTxmNuq7vg+k3ql0s9ZNnUyhBPHUDaTRp0cw6Il6jWDR2U30VR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=NCkfAQFd; arc=none smtp.client-ip=209.85.166.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7c00a2cbcf6so4132539f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 09:12:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707412367; x=1708017167; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nsCIZkl0nmR84Phg+akbf2xIXLOesyEDRMsbgKsDjIo=;
-        b=NCkfAQFdqMH9ohzyEphPAE2XdnKgwOnqg3lFy9X1l1AcYjXq8XWw75LsOCGOwMcBFh
-         M0wuCnuSLfgELfIKmxOONPNxlOwBU+5LZMTXR735BvRSIBJCQRV0L6eVtweVeuZxx6MP
-         dnfeVNsn3/n21on4WaRPk1aSzgfnIU7ohWdxtdXOYb5BrxV8z9S1FYQBqZQ/a3SkFM2E
-         FqJFYbOey5BSaMFCKSPamrkoCS6/shD1bXgv4Ed0GqnkJ9i6ARj2a/IBieQra7i3m1/Y
-         oGb02vihDIsgfrSH5dro+FtE1f8dCBVnwC/3n3gji+HfjV9saqvmTMBI5shapfRBCcb4
-         hlqw==
+	s=arc-20240116; t=1707412498; c=relaxed/simple;
+	bh=Y0r4zejSC9VWwc8OnukUl3cp4kpBgPxtHcTOZAILMWY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jzShFq0gwAyyzlxTioYiR2pCDsjS1EyM03DmKPXEbBrr9UrfjGYLHPIvIJV1bMTGW00mjJW4v+v8Lw6h6YhMGd2hoJCPlDuv8zqVlL+iI4Klb5Rzbk0fmpIA8q+ztmkz7+CmVuI+wuJpWODh9BNGzBbVWlrkHAWYOQoA31zfmr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=K1Y+ZDZr; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707412496;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xR4RHbfkwYwkWKAZQm9GK8FwvPGu1EB/xVzVABSRZsI=;
+	b=K1Y+ZDZrXwp0Xcp3L51IpqKSn9EP+r2CuBbPGiaHWxVESRHVqhelq5L7Xdh+9PNsElRP6V
+	BKJ0xPRCZ5Ea1MPdXaZHcTBsbZSCxJW+f5M+YyUG4D0SQHEG7ptFB1AW5dlBPxiwk7VM3t
+	arcew2E6w5mFatS2Uk3ar50rzaLH20Y=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-520-p0VCTRwNP3i9r1DVNpoROQ-1; Thu, 08 Feb 2024 12:14:54 -0500
+X-MC-Unique: p0VCTRwNP3i9r1DVNpoROQ-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-68cbfe09cb6so345456d6.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 09:14:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707412367; x=1708017167;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nsCIZkl0nmR84Phg+akbf2xIXLOesyEDRMsbgKsDjIo=;
-        b=n87fw2Y5pd40wpnj+6MVEulqRwllYLlfYZFtQ0JtjmOsCo/TcucWs5FraGRHJCfO3k
-         wFrKUBEOV2NSHUiRNGOAzWnI/VrNrRbLXttIhq/Y03LtWdLh7F+1GrGHWgTB84RYkcq0
-         azAqAL+0HG7cNNwPPTCyv6EeqWt4p+u6iQd+yH8ASha1VIHN3DY2P6r8sxG9CAl2/rrD
-         ygyjs3pug7fAwwwtIRMXNabCTppZDmFssO/LWP5ykgHrhdTRa1W6REKPr4khtfb/SllY
-         K/6lE7b3i3VVJ1+wCOTU4TFIAws9nZiusfDN+cYtsDahXsSLx+Gt/w5rGQVX8jWeS+e4
-         g5HQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWdbWmrlm6nvo09OOczQmc2qnp9ypE4+/3O0I0gVvv3TJTN+1A3kIvQoM8WH9k10FNHPYXixWVX2kkpwwaQfvckFdR6KG/pr7ShLBoo
-X-Gm-Message-State: AOJu0YyTmGCq8DYSSOi7x3V217vA/5u7hiPDIqmzj9c+y1yBAVMAHI4y
-	RnM3sfKN96VwKMVNUjmcOIZksI+DIALiv3IFTGQTWojYB5QsNfU1gqPppzXnu4o=
-X-Google-Smtp-Source: AGHT+IHTeFLLa4+D4qPa0huYZiUSegoj8zJfG3N22QhdohjlsQlehD4ZYeolut4A2dGViw77zuv9yg==
-X-Received: by 2002:a6b:671c:0:b0:7c3:f955:ada6 with SMTP id b28-20020a6b671c000000b007c3f955ada6mr245680ioc.1.1707412366769;
-        Thu, 08 Feb 2024 09:12:46 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV0zKLtzwp/gGBW9veUdkDIdKwee5n7OzI3gMx5Q9bg40rPF69E8Bm9vIFHoLqjjYIl7jEQ+5PndyCFlXnS0JYJa5qhRvtoP7vF8F5Ds4ZhCrxwwXPDjZ7qlIhjDMDG/wb2Y21heBXXuEM=
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id b23-20020a05663801b700b004713f3c2831sm993173jaq.61.2024.02.08.09.12.46
+        d=1e100.net; s=20230601; t=1707412494; x=1708017294;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xR4RHbfkwYwkWKAZQm9GK8FwvPGu1EB/xVzVABSRZsI=;
+        b=Q5YXMYL/UdtRdQqQZTL2d5JypLet8HiTSLDQzYA0k1RXUcb8kLEU4jc5tPxHfi9GYa
+         ODW9pQYurSG7O+A8NocXzj9HULLS0xp/ZC41cssuJOsChtuoXl+hS/w0ETa9SRJ1Y/Fd
+         BqtfUvc7Pu6hEsN8gkpJqZmGAKIuug2qPigs5MZVdT9rVOLFH11S1RblHmfqv9Ux306H
+         4jDWIjd2FB//RMm2ACvqKsm3tciWX/eBFHc+1P1BLeBhFJxJvpWQMTVnzwdqXE8bwd2S
+         owkprXEL8ijIJxxkcduUC9QaDODp/gGiGs1sNv4jdLLXyayrpXonOHT1fBIg36VRQfwk
+         TxEA==
+X-Gm-Message-State: AOJu0YwZxwAknl9C3GBZjc8mPCUo0pKyH0U3g4oa/s9f06J4ZyFhF/SW
+	RB4hZ/oIYihaS0ICMq2vVFAcMebyn24xzY8drUVSrKTW5XGCoOqXK0gjhBIiLAzueBSJWd6Cxcu
+	0hsREjviRwCPnZ5wO8uSUJ2BlnotZkuItrlZj/7mBhduQArB+V+Ppbs6lWCb4jg==
+X-Received: by 2002:a05:6214:500a:b0:68c:ae6d:2959 with SMTP id jo10-20020a056214500a00b0068cae6d2959mr11937107qvb.26.1707412493938;
+        Thu, 08 Feb 2024 09:14:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHYuXqpva6SZF2Aah0b10Z312RBpdPeN2QIUsmjUHlOSOk360M3rZ+hHlv/zNdE9PGoJ1Y3cg==
+X-Received: by 2002:a05:6214:500a:b0:68c:ae6d:2959 with SMTP id jo10-20020a056214500a00b0068cae6d2959mr11937077qvb.26.1707412493654;
+        Thu, 08 Feb 2024 09:14:53 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXW7BwTvO0LbHhIp+FRYAMN4I1CMQF/dqmLhHe7tOe54hdTsWbldG7uky9/bU9LCt1W82/+dMh5+gRXTTqdxrEDBJQSbajdk9cUrtCVRRyNqAWQ8M2cJyA+4RA1OqgKOgHonSrfWg0qz+WugtkkqaF85XXcF4A/7wT2FUVjBYE4Mq3yphlZkq19xh1rc9BIvRDqlsAxWOzkLGaTcMXB3gFx+JN9atuoB4ZzFoxTHM80OZOltLKZjQ7oQ8JQ3O/oaDB1Wcxu7Bjr2N7njyZXGDK/vrou9bJ+59FHxVCbciOpAsLKoemgggI0AwntEP1A/dEB5yj96hCqZ0GCtaksVg5sLCcsqB3DjzCvnvNZ4OhnYKYddoHyY5HXsT8jJlq5HNqE9qQqMmYTk1/p8J/3R3kcr3D/+Pv5UHuDOsA4us6a1YbC1hmTTyHhmAVCMSNSlps=
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id ly6-20020a0562145c0600b0068caacd861fsm176128qvb.25.2024.02.08.09.14.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 09:12:46 -0800 (PST)
-From: Jens Axboe <axboe@kernel.dk>
-To: Tejun Heo <tj@kernel.org>
-Cc: =?utf-8?q?Breno_Leit=C3=A3o?= <leitao@debian.org>, 
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <ZVvc9L_CYk5LO1fT@slm.duckdns.org>
-References: <ZVvc9L_CYk5LO1fT@slm.duckdns.org>
-Subject: Re: [PATCH block-6.7] blk-iocost: Fix an UBSAN shift-out-of-bounds
- warning
-Message-Id: <170741236605.1366825.11529079339239149351.b4-ty@kernel.dk>
-Date: Thu, 08 Feb 2024 10:12:46 -0700
+        Thu, 08 Feb 2024 09:14:53 -0800 (PST)
+Date: Thu, 8 Feb 2024 11:14:51 -0600
+From: Andrew Halaney <ahalaney@redhat.com>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: neil.armstrong@linaro.org, 
+	Krishna Kurapati <quic_kriskura@quicinc.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, quic_ppratap@quicinc.com, 
+	quic_jackp@quicinc.com
+Subject: Re: Re: [PATCH 3/3] arm64: dts: qcom: sa8540-ride: Enable first port
+ of tertiary usb controller
+Message-ID: <baw3wxbdvzpkqqb6a7iut2wpt6jgzyqii5uyfkzptzt4ryjvao@4tpee6nqup5w>
+References: <20240206114745.1388491-1-quic_kriskura@quicinc.com>
+ <20240206114745.1388491-4-quic_kriskura@quicinc.com>
+ <23824242-1b37-4544-ae9a-0a5a0582580e@linaro.org>
+ <CAA8EJpqbXvKMQktGsxMFJnR+fXoOz8hFmm+E3ROPTjjiD0QLvg@mail.gmail.com>
+ <6q2ocvrujbli42rjddflyol74xianr7j47jwcgdnnmwjanv25d@uw2da7zulqqd>
+ <CAA8EJpr6k8c5C54S9xxQgZvd9NYFoxi5qQrOTz2AMrp0xeZZpw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.5-dev-2aabd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJpr6k8c5C54S9xxQgZvd9NYFoxi5qQrOTz2AMrp0xeZZpw@mail.gmail.com>
 
-
-On Mon, 20 Nov 2023 12:25:56 -1000, Tejun Heo wrote:
-> When iocg_kick_delay() is called from a CPU different than the one which set
-> the delay, @now may be in the past of @iocg->delay_at leading to the
-> following warning:
+On Wed, Feb 07, 2024 at 03:32:03AM +0200, Dmitry Baryshkov wrote:
+> On Wed, 7 Feb 2024 at 02:10, Andrew Halaney <ahalaney@redhat.com> wrote:
+> >
+> > On Tue, Feb 06, 2024 at 03:30:32PM +0200, Dmitry Baryshkov wrote:
+> > > On Tue, 6 Feb 2024 at 15:28, <neil.armstrong@linaro.org> wrote:
+> > > >
+> > > > On 06/02/2024 12:47, Krishna Kurapati wrote:
+> > > > > From: Andrew Halaney <ahalaney@redhat.com>
+> > > > >
+> > > > > There is now support for the multiport USB controller this uses so
+> > > > > enable it.
+> > > > >
+> > > > > The board only has a single port hooked up (despite it being wired up to
+> > > > > the multiport IP on the SoC). There's also a USB 2.0 mux hooked up,
+> > > > > which by default on boot is selected to mux properly. Grab the gpio
+> > > > > controlling that and ensure it stays in the right position so USB 2.0
+> > > > > continues to be routed from the external port to the SoC.
+> > >
+> > > What is connected to the other port of the MUX?
+> >
+> > /me blows off the dust on the schematic
+> >
+> > It's a 1:2 mux, and one option is the out the board, the other
+> > is a test point I believe if I'm reading things right, although its not
+> > labeled so I'm not sure anyone would actually find it on the board.
 > 
->   UBSAN: shift-out-of-bounds in block/blk-iocost.c:1359:23
->   shift exponent 18446744073709 is too large for 64-bit type 'u64' (aka 'unsigned long long')
->   ...
->   Call Trace:
->    <TASK>
->    dump_stack_lvl+0x79/0xc0
->    __ubsan_handle_shift_out_of_bounds+0x2ab/0x300
->    iocg_kick_delay+0x222/0x230
->    ioc_rqos_merge+0x1d7/0x2c0
->    __rq_qos_merge+0x2c/0x80
->    bio_attempt_back_merge+0x83/0x190
->    blk_attempt_plug_merge+0x101/0x150
->    blk_mq_submit_bio+0x2b1/0x720
->    submit_bio_noacct_nocheck+0x320/0x3e0
->    __swap_writepage+0x2ab/0x9d0
+> Ack, this definitely looks like a static configuration.
+
+Krishna, when you make v2 can you update the wording about the USB 2.0
+mux? Maybe something like "which by default on boot is selected to mux
+to the external port on the board (with the other option being a test
+point)." instead of the wording I originally had? That way the
+information Dmitry requested here is easily accessible in the future.
+
 > 
-> [...]
+> >
+> > >
+> > > > >
+> > > > > Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> > > > > Co-developed-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> > > > > Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> > > > > ---
+> > > > >   arch/arm64/boot/dts/qcom/sa8540p-ride.dts | 21 +++++++++++++++++++++
+> > > > >   1 file changed, 21 insertions(+)
+> > > > >
+> > > > > diff --git a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> > > > > index b04f72ec097c..eed1ddc29bc1 100644
+> > > > > --- a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> > > > > +++ b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+> > > > > @@ -503,6 +503,18 @@ &usb_2_qmpphy0 {
+> > > > >       status = "okay";
+> > > > >   };
+> > > > >
+> > > > > +&usb_2 {
+> > > > > +     pinctrl-0 = <&usb2_en>;
+> > > > > +     pinctrl-names = "default";
+> > > > > +
+> > > > > +     status = "okay";
+> > > > > +};
+> > > > > +
+> > > > > +&usb_2_dwc3 {
+> > > > > +     phy-names = "usb2-port0", "usb3-port0";
+> > > > > +     phys = <&usb_2_hsphy0>, <&usb_2_qmpphy0>;
+> > > > > +};
+> > > > > +
+> > > > >   &xo_board_clk {
+> > > > >       clock-frequency = <38400000>;
+> > > > >   };
+> > > > > @@ -655,4 +667,13 @@ wake-pins {
+> > > > >                       bias-pull-up;
+> > > > >               };
+> > > > >       };
+> > > > > +
+> > > > > +     usb2_en: usb2-en-state {
+> > > > > +             /* TS3USB221A USB2.0 mux select */
+> > > > > +             pins = "gpio24";
+> > > > > +             function = "gpio";
+> > > > > +             drive-strength = <2>;
+> > > > > +             bias-disable;
+> > > > > +             output-low;
+> > > > > +     };
+> > > > >   };
+> > > >
+> > > > Isn't gpio-hog the preferred way to describe that ?
+> > >
+> > > That depends. As this pinctrl describes board configuration, I'd agree
+> > > with Neil.
+> >
+> > I unfortunately don't have the experience with gpio-hog to weigh in
+> > here, but wouldn't be opposed to Krishna switching it if that's what's
+> > recommended for this type of thing.
+> 
+> Quoting gpio.txt:
+> 
+> The GPIO chip may contain GPIO hog definitions. GPIO hogging is a mechanism
+> providing automatic GPIO request and configuration as part of the
+> gpio-controller's driver probe function.
+> 
+> See sdm845-pinctrl.yaml for an example of the gpio-hog node.
 
-Applied, thanks!
+Thanks, that seems like the way to go. Krishna please take note of this
+for v2!
 
-[1/1] blk-iocost: Fix an UBSAN shift-out-of-bounds warning
-      (no commit info)
-
-Best regards,
--- 
-Jens Axboe
-
-
+> 
+> >
+> > >
+> > >
+> > > --
+> > > With best wishes
+> > > Dmitry
+> > >
+> >
+> 
+> 
+> -- 
+> With best wishes
+> Dmitry
+> 
 
 
