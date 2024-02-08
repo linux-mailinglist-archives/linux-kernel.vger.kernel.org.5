@@ -1,153 +1,235 @@
-Return-Path: <linux-kernel+bounces-58600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C99984E8BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:12:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94B8784E8C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:14:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50F061F2FD6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:12:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A858BB2BF72
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:13:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B86536114;
-	Thu,  8 Feb 2024 19:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF59364AC;
+	Thu,  8 Feb 2024 19:12:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="YN+LF18Z"
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lo7R4CcH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ABA733CCF
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 19:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BCA436121;
+	Thu,  8 Feb 2024 19:12:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707419513; cv=none; b=fsQdUuIzQWRFqcOaZaRQT2kPiCB5xK0MFfiYqNQ2e/DicvJ/m+eRnZjzNyHQNXe1iGJ9oxD+oJTqxMy6uAcVEqQUwTOCCAcpBJeAHmnh6u8L73/f6odlMNaLitQQ4SrBANA4QAmOygmit3ZsIC4FH1OyMFShs/7MG81WAabCq4w=
+	t=1707419573; cv=none; b=ib/lOUYYUEKCIvTEgDPWFutZmp3Vt40A9sToHGOo3b/bSMoJrlYlW7u20aUFJ2LeyfBJkJhsrh8n1T6D9Xpg9M3LEK4WPygg38Qic6zGRmUcZvTIuzf/qmmgOrC4BDiwayUXecjnIlXXFKcqxZN1bVYU36g4Wk6AoOYeotDSu+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707419513; c=relaxed/simple;
-	bh=blCSza5TQ+iFiMNQqLUeTbweD6hh0a+7uJXycqjiFEA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=TbKZW5N1EDkBDHLrolhWNSAb19uzC9Vm/L0xsBzjlqW8gYyyAnS6BDanVdxTmndDGM7TSVI3CwpPBZQxneIKQsgeXjGE+IBbRdR+2uk9WaltSHvzpKcKA4oZ70ft4XN5/AO0LHahNjLUYe1DhYpxe72cIwajbwjNG4S80/Y8168=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=YN+LF18Z; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-295c8b795e2so150848a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 11:11:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707419511; x=1708024311;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vITTCQqApfqjUncYWpsTg5mOxYlUOY7+4BnAfOQ/uHo=;
-        b=pLAMkyQHJgCiz1WZTMAc2fo2Vab/VwE/96UihdLyqTfzpmyeDeK19CrzL5DmeH98pg
-         nMEy7V0I+dxJtMtXoDJ2oArl0UWwTAyX5UZ/t+HsUnOS6OQlM9GwBAFXKDiCZaiVi76j
-         ARsJTNzoGhmH1rcaAXjxGF8XmGufmpUk//lZjSMTLzJBuiVooehgBJt/3n0GGRBvNjzT
-         BjPBlUUd2UuLvLHYZC28Uh7ONeY+KjAspJXOUOyNS+K7F9d1ru5CEzjcMieaWwzpYozl
-         LYreiYLMM3qruYWDKcXmynRELddtAg6J3eXSZf1W5RZJGCVek1w+3Pg5R9fuvvr/Y6Gx
-         D6bQ==
-X-Gm-Message-State: AOJu0YxesA2AVFb7s4xClsDdlmvzu/cI5ccsXlLluzkNxgSwlq1dqjIg
-	OVxp9Z36WMPc/LlfbSSfYOx3riz4AGZ0QubjQFl51iMDmG+AVUXo
-X-Google-Smtp-Source: AGHT+IFhXj2F4FBpzHtVsotxqIVbnXL/PpzrBW1Ump4XU6GNW2ecnGoDhT/7Hx0qMHs2Z4XzFmfKtg==
-X-Received: by 2002:a17:90b:1bd2:b0:296:ee58:646a with SMTP id oa18-20020a17090b1bd200b00296ee58646amr200982pjb.25.1707419511349;
-        Thu, 08 Feb 2024 11:11:51 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUY4S0sLUZjN2ovwW7PLWe3UO8nP0LEwoLuUEXHTO20z0JBxoat9cWr349Vtg4Rh1niL0Z2sVyPCr2JagSfW47ae4aQ46wcHBdbKzPEmNsTv2fIDeMWe6/IuIPpCRo6WQ==
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id gd13-20020a17090b0fcd00b00296dd7eff41sm132586pjb.9.2024.02.08.11.11.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 11:11:50 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1707419508;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=vITTCQqApfqjUncYWpsTg5mOxYlUOY7+4BnAfOQ/uHo=;
-	b=YN+LF18ZU5JEJ2YJPkrdhV5nLL8tK5b7OA+HDEgyfcrvbQ3f+utGpnfHQ4kosRFFgkq2HC
-	STcK+M88+9g9DUTPr5AcuvIF/ZCZG7S76IJNN+M87ww+GwS/LKdDPjVNUsckMblrTITfQI
-	Ffymj35G9pEz1aVSH1S9aeyR33MDJ94oC1ANZliF8AeVWUkzjrFAwNmewcddBFYr3+PnDJ
-	/+QjeglPe8SGAO+5qQOfS3aQtA45O4w32UhnAdO3jrJ3cgBox7aeKC1ojkQjK+JNODsguB
-	YRBdaybSjZBrugWSi2u0vMGz5jCBRFVe97UOHmpIu6hOpqrBBhjG+A5EN0/nvg==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Thu, 08 Feb 2024 16:12:21 -0300
-Subject: [PATCH] rapidio: make rio_bus_type const
+	s=arc-20240116; t=1707419573; c=relaxed/simple;
+	bh=qxWxhPD5BRxGx/8XjhWHfoKRfl1hlFiGpqLEiC51qZg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KCngwToU292RZEhw8KAdzyd+YxE++hMYWhMnXWpuYPH5JDHmvSdpettBE5BXSW/bdBDfdFxMHJ9pNnc29AgVsYA/yged/DiZKKIL20b/7zL/r0qngwED0x5OE0+BkhVXggyrC3xsZRO2LJ+h81+xA+q2Cnx43RNo+7yMLP22AJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lo7R4CcH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 506BBC433F1;
+	Thu,  8 Feb 2024 19:12:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707419572;
+	bh=qxWxhPD5BRxGx/8XjhWHfoKRfl1hlFiGpqLEiC51qZg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Lo7R4CcHxQOs7jopOpFDfOJl/mXi7YjRJaUBLFVVrbjbqkJnBLIo0D892ioPXPsT1
+	 D8TyFzhjX0ub3cvDhGf4OAMpQI/WRa8+WZ80lRvQ5NllZQ3UPOy4LEZIDYK0OLYfzh
+	 HmaK6zQ6ql5IMXE9r6+sskT9iSNTD+QCYSl7UP6hQBS6ZnfaPWQzXvRZXLfeTTmLJd
+	 NWGm6e4k7WenEMiWxXVO6SXrKoCoofDnKLrwvFimENLNyuoEd/tGFBy54YVd4Jt5Dl
+	 FrQErSW/Zb4K3hi68BZEfnMLg6dYbZozsatEGYyxl0sIfYg86ty1PKOZBWkujePgWw
+	 PfFdLemuhaoOg==
+Date: Thu, 8 Feb 2024 19:12:47 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
+Subject: Re: [PATCH 1/1] dt-bindings: pci: layerscape-pci: Convert to yaml
+ file
+Message-ID: <20240208-jarring-frolic-8d4c9b409127@spud>
+References: <20240207062403.304367-1-Frank.Li@nxp.com>
+ <20240207-yoga-mobility-90a728f6342c@spud>
+ <ZcPCn8q7viB/qcOH@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240208-bus_cleanup-rapidio-v1-1-c69040ab0151@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAJQnxWUC/x3MQQqAIBBA0avIrBPMCqqrRITmVAOh4mAE0d2Tl
- m/x/wOMiZBhFA8kvIgp+IK6ErAexu8oyRWDVrpVWvXSZl7WE43PUSYTyVGQQ2ObXjlr0XRQyph
- wo/u/TvP7fjaax7ZlAAAA
-To: Matt Porter <mporter@kernel.crashing.org>, 
- Alexandre Bounine <alex.bou9@gmail.com>
-Cc: linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1589; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=blCSza5TQ+iFiMNQqLUeTbweD6hh0a+7uJXycqjiFEA=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlxSeVXQp/RxgRS56sAed4O3A59pqAUVLSBeCiR
- AdLM/KgJh6JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcUnlQAKCRDJC4p8Y4ZY
- pnpZD/wO02U2hQnGoQr8Oez5m4Fq0b4U1RWQxorc4KUQuNxbX5P903j6zGCQ/ti4czpG7Qkn6bQ
- O2tV6LhU3AP3uL5rFniJZQ1HvvDoPHfBJjjkCGnX3c9y9o+/+rngl/qn3DmL5ytT9pru7dw0iGw
- afWmzgbIwlopOpt+rV4rjbCV7w2nT9OfrT+UZJiXt5TKoFaUj6kGA7lkMuafVaSqYWuigUicCKo
- v+VjZiwnvM/JbXmkjRJN36LfnNAiRu0HEUcx4qDVaIy/RNti/tnFVAV6O/gRWvSH9fh3eibzqEE
- 4MJGysNmhc7rJUPBEFUfJ1+CcnZ5uLcG3vQNwLZqiQqO+ChXwlya4dtZX21PgGxBIptE5dkz0N6
- KrMMnQfoFXIEdaGsBYWxveQMaOBUdEXgS+CCr0H3P/jF+3y34ly/6fKkr1mAaEs6HsjbUgRF79V
- 3JvZJTTYuWEe1dEdcH6QktZqlqzMWvitC7+seUjViLq3Ug6TdNbs/c6p91ePoEUuyqLO+07g9NP
- shGD9b6Aoah1fKCX3r0MNoBdysR/jTHTEB06fT2JF8EWkk06PiAmiGSFyCQNavusghnW/vptOPt
- 32g0U4TC08qGpvGUmQsK1p5Rn13rYbg31jt1wL1avW2AFgEu9BD0I+WCMvZzosBxJERzEXFVGrn
- VZqrjnTd2c+HFSw==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="SRpmeCfQQ7dek33O"
+Content-Disposition: inline
+In-Reply-To: <ZcPCn8q7viB/qcOH@lizhi-Precision-Tower-5810>
 
-Now that the driver core can properly handle constant struct bus_type,
-move the rio_bus_type variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/rapidio/rio-driver.c | 2 +-
- include/linux/rio.h          | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+--SRpmeCfQQ7dek33O
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/rapidio/rio-driver.c b/drivers/rapidio/rio-driver.c
-index 1b3b4c2e015d..2baef45ee5ff 100644
---- a/drivers/rapidio/rio-driver.c
-+++ b/drivers/rapidio/rio-driver.c
-@@ -227,7 +227,7 @@ struct class rio_mport_class = {
- };
- EXPORT_SYMBOL_GPL(rio_mport_class);
- 
--struct bus_type rio_bus_type = {
-+const struct bus_type rio_bus_type = {
- 	.name = "rapidio",
- 	.match = rio_match_bus,
- 	.dev_groups = rio_dev_groups,
-diff --git a/include/linux/rio.h b/include/linux/rio.h
-index 2cd637268b4f..e9ca2fb7133f 100644
---- a/include/linux/rio.h
-+++ b/include/linux/rio.h
-@@ -78,7 +78,7 @@
- #define RIO_CTAG_RESRVD	0xfffe0000 /* Reserved */
- #define RIO_CTAG_UDEVID	0x0001ffff /* Unique device identifier */
- 
--extern struct bus_type rio_bus_type;
-+extern const struct bus_type rio_bus_type;
- extern struct class rio_mport_class;
- 
- struct rio_mport;
+On Wed, Feb 07, 2024 at 12:49:19PM -0500, Frank Li wrote:
+> On Wed, Feb 07, 2024 at 05:17:55PM +0000, Conor Dooley wrote:
+> > Hey Frank,
+> >=20
+> > On Wed, Feb 07, 2024 at 01:24:02AM -0500, Frank Li wrote:
+> > > Convert layerscape pcie bind document to yaml file.
+> > >=20
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > ---
+> > >  .../bindings/pci/fsl,layerscape-pcie-ep.yaml  |  84 +++++++++
+> > >  .../bindings/pci/fsl,layerscape-pcie.yaml     | 163 ++++++++++++++++=
+++
+> > >  .../bindings/pci/layerscape-pci.txt           |  79 ---------
+> > >  3 files changed, 247 insertions(+), 79 deletions(-)
+> > >  create mode 100644 Documentation/devicetree/bindings/pci/fsl,layersc=
+ape-pcie-ep.yaml
+> > >  create mode 100644 Documentation/devicetree/bindings/pci/fsl,layersc=
+ape-pcie.yaml
+> > >  delete mode 100644 Documentation/devicetree/bindings/pci/layerscape-=
+pci.txt
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pci=
+e-ep.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.ya=
+ml
+> > > new file mode 100644
+> > > index 0000000000000..3b592c820eb4c
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.ya=
+ml
+> > > @@ -0,0 +1,84 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie-ep.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Freescale Layerscape PCIe controller
+> > > +
+> > > +maintainers:
+> > > +  - Frank Li <Frank.Li@nxp.com>
+> > > +
+> > > +description: |+
+> >=20
+> > Are you sure that you need this chomping operator?
+> >=20
+> > > +  This PCIe endpoint controller is based on the Synopsys DesignWare =
+PCIe IP
+> >=20
+> > > +  and thus inherits all the common properties defined in snps,dw-pci=
+e-ep.yaml.
+> >=20
+> > You shouldn't need this statement given you have the ref: below.
+> >=20
+> > > +
+> > > +  This controller derives its clocks from the Reset Configuration Wo=
+rd (RCW)
+> > > +  which is used to describe the PLL settings at the time of chip-res=
+et.
+> > > +
+> > > +  Also as per the available Reference Manuals, there is no specific =
+'version'
+> > > +  register available in the Freescale PCIe controller register set,
+> > > +  which can allow determining the underlying DesignWare PCIe control=
+ler version
+> > > +  information.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - fsl,ls2088a-pcie-ep
+> > > +      - fsl,ls1088a-pcie-ep
+> > > +      - fsl,ls1046a-pcie-ep
+> > > +      - fsl,ls1028a-pcie-ep
+> > > +      - fsl,lx2160ar2-pcie-ep
+> >=20
+> > Where did the fallback compatible go?
+>=20
+> So far, no fallback compatible needed now. each devices already have its
+> compatible string.
 
----
-base-commit: 547ab8fc4cb04a1a6b34377dd8fad34cd2c8a8e3
-change-id: 20240208-bus_cleanup-rapidio-93b380dbbea5
+It used to exist though, have you checked that u-boot or *bsd etc do not
+use the fallback compatible? You also need to mention your justification
+for removing it in the commit message.
 
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
+> > > +
+> > > +  reg:
+> > > +    maxItems: 2
+> > > +
+> > > +  reg-names:
+> > > +    items:
+> > > +      - const: regs
+> > > +      - const: addr_space
+> >=20
+> > The example uses "regs" and "config". Where did addr_space come from?
+>=20
+> Example just show pcie-host part. Not show pcie-ep part.
+> pcie-ep part need 'addr_space'.
 
+Okay. Again, please mention where this is coming from.
+
+>=20
+> >=20
+> > > +  fsl,pcie-scfg:
+> > > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > > +    description: A phandle to the SCFG device node. The second entry=
+ is the
+> > > +      physical PCIe controller index starting from '0'. This is used=
+ to get
+> > > +      SCFG PEXN registers.
+> > > +
+> > > +  dma-coherent:
+> >=20
+> > dma-coherent: true
+> >=20
+> > > +    $ref: /schemas/types.yaml#/definitions/flag
+> > > +    description: Indicates that the hardware IP block can ensure the=
+ coherency
+> > > +      of the data transferred from/to the IP block. This can avoid t=
+he software
+> > > +      cache flush/invalid actions, and improve the performance signi=
+ficantly.
+> > > +
+> > > +  big-endian:
+> > > +    $ref: /schemas/types.yaml#/definitions/flag
+> > > +    description: If the PEX_LUT and PF register block is in big-endi=
+an, specify
+> > > +      this property.
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - reg-names
+> >=20
+> > This was not previously required, why is it required now?
+>=20
+> Actually its needed.
+
+Well, if it wasn't, I'd hope that you wouldn't be making it required.
+But I asked /why/ and you've not given a reason. Please mention the why
+in your commit message for v2.
+
+Cheers,
+Conor.
+
+
+--SRpmeCfQQ7dek33O
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcUnrwAKCRB4tDGHoIJi
+0mtuAP9E4kgj16HNkIGd1VacL4AXJRLPuj/WspJh0e0xb9YX7wD+I6Mvg4AGjDL0
+57vFoWWJHnkFY8XXol6QAMWynXGjggg=
+=XvWb
+-----END PGP SIGNATURE-----
+
+--SRpmeCfQQ7dek33O--
 
