@@ -1,156 +1,184 @@
-Return-Path: <linux-kernel+bounces-58019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB0FC84E049
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:03:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 618E984E04B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:04:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85A0428275C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:03:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F7A0286B10
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4001F71B4F;
-	Thu,  8 Feb 2024 11:59:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EAEF7318B;
+	Thu,  8 Feb 2024 12:02:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JmlVmKcj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bpG0u926"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CE8871B31;
-	Thu,  8 Feb 2024 11:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0BBD5427E;
+	Thu,  8 Feb 2024 12:01:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707393564; cv=none; b=SJp8JjPe+9Gt7j+Lwa6x2QNL/WhNDDLme4wo+q7Z/nBLX16gwDuCfcOMfIwHp881aszZKnz3bzs3TReCnAa9DXKj7Ql4OBiNlMTUQrjTjZ80MWwu+676OYBzkR1956yfgUI7Mo3NicVcX8JpJ3mhbuLOuR+EzAKmQ2mU4Q4TpCA=
+	t=1707393719; cv=none; b=uL+d/OQFxL7F3f/ln2lrehzPmcROT6d2O7tCLHVsBYBm+dRxksXd7/VpnO0jWeaAqbvfkGwofwEzhyJ2Ff28zZWyZi8TdO1i8vWKQQcILUE+0UXfPjvlLMuHxATBfH8vwg7nEA5BTyAiVBUbIgSMKBSygKji9NG89L92yTOJpIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707393564; c=relaxed/simple;
-	bh=hOz4D9QVROMnk+YobsB5SY6criPkFQ4Mk/iTZIxP7dc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aRna0GZmYjNnaaW0up6G6vgv4bOWJkcQXTvtFGsW0mGUeefGLJhPohevkB6u54dktBFRLFUYAFHYeHrXiXMVzStVWNl38miSCiP8RNq4PZFqRmya0BA26TfILENC5d7vSNCO3evp2wBuxsahWjKCjfU4WpEw24Ud/Efq7ZGKoLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JmlVmKcj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19DCEC43390;
-	Thu,  8 Feb 2024 11:59:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707393563;
-	bh=hOz4D9QVROMnk+YobsB5SY6criPkFQ4Mk/iTZIxP7dc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JmlVmKcjBmEmzvStnviibNXMQt0NnfZxJid7cqNo/Iv9Q9XkTpA+LQGAge7b1jU3F
-	 rdv6k9R8InvXTR2VHDBMWDFhb9C0ENzjgEAzo24E9Ngt2np5GUI9K6+rZiMKZwdPEK
-	 0Kdt0VA32ul5LahcbKR9uDRC9FSkZl+VWoshMADNfZjXcMEv5UD2WHEdJ9n8kaQ7ST
-	 92KRw2WL0WCKo/ZmG1jd0aR3aRYe1fJVl45y6fjQmCe8TpxV/XEMrxSR3DDCv6+B7R
-	 ykHxCNaRrQPGZrPfWh6d540CGpk8qrAinS0hbWoj+uCdI0GuWxK6wi9AAsO0vK7BA1
-	 yKSe/FsSj3YBA==
-Date: Thu, 8 Feb 2024 12:59:19 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Viken Dadhaniya <quic_vdadhani@quicinc.com>, andersson@kernel.org, 
-	konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, vkoul@kernel.org, quic_bjorande@quicinc.com, 
-	manivannan.sadhasivam@linaro.org, bryan.odonoghue@linaro.org, quic_msavaliy@quicinc.com, 
-	quic_vtanuku@quicinc.com
-Subject: Re: [V3] i2c: i2c-qcom-geni: Correct I2C TRE sequence
-Message-ID: <cvzyvgb6vahlmrhaijsuyaosdl2p4q5cxhipmu4tujnkpjlbpm@6yu3sbpqha4m>
-References: <20240201101323.13676-1-quic_vdadhani@quicinc.com>
- <CAA8EJpqQtHDRK2pex+5F-fMRTosJuFCx59e89MWhnie1O3dHKA@mail.gmail.com>
- <60b5e755-352b-476d-8c6e-2170594ae80d@quicinc.com>
- <uswznu3h53gcefpdc4vxozz32ecdcjvzmr7admwc4h54o27bfy@qqoevrl3dcyt>
- <CAA8EJpqzdp4xYSp+JCExP+Oeu9KhLpsXNUbDxfZ0g+C07xR6dg@mail.gmail.com>
+	s=arc-20240116; t=1707393719; c=relaxed/simple;
+	bh=Bp2axIzpydbDdzx7rIR662PM0ZeEAlhqHzC3pxDKkJc=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Z3QXvi9dvWtzaCMJSmJJ+j8xL82RVkMWtbNcJUJFVx/00Yf06knXiXeWF8zYCL2sZ658chiC2glxbR2+EUeE4rrAUkcoC2d6MZO8OYVqbFC/dFnhosYda7BppQtzwYYDsdaOCq2EkmBJiPVyfarVWWI8bv5NJZUo22XgxUAlEGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bpG0u926; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707393718; x=1738929718;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=Bp2axIzpydbDdzx7rIR662PM0ZeEAlhqHzC3pxDKkJc=;
+  b=bpG0u926YOglxvMhvWgFZHwJzVDFmEcICdESJp9d2C8Dif0iOeh5nvCF
+   o7hejSfRqLpFEtWL1WeIOcL1P2xadDrtJR0Y3uPpps5f0sVLMZN35Vu5a
+   LtLFZ72jsTiC753N7KJ4zyh8eSMewZpobrzI474mxbvWduBRXYUjXKgAJ
+   kBIDwZwD+vf1a9J9XKgnuZIgDwG7GepilNiODsfRtKK4bgDMWknOj1fmd
+   dLwTUBrCjX9bsMeq9nnby3RuzYkBlC50d2jJJUAR6FaQH+jLaAETtxGFA
+   OBqWpXMfDdpl9Z2NgW6YN/I6ExoCmP/2tlynWKi0PIMaR6O0VFGqZIYu7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="1101908"
+X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
+   d="scan'208";a="1101908"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 04:01:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
+   d="scan'208";a="6405159"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.52.95])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 04:01:52 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Thu, 8 Feb 2024 14:01:49 +0200 (EET)
+To: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+cc: linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+    Bjorn Helgaas <bhelgaas@google.com>, 
+    Mahesh J Salgaonkar <mahesh@linux.ibm.com>, Lukas Wunner <lukas@wunner.de>, 
+    Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH v9] PCI/DPC: Ignore Surprise Down error on hot removal
+In-Reply-To: <20240207181854.121335-1-Smita.KoralahalliChannabasappa@amd.com>
+Message-ID: <3c5da397-6d72-26cd-7204-4388ff3da1dd@linux.intel.com>
+References: <20240207181854.121335-1-Smita.KoralahalliChannabasappa@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpqzdp4xYSp+JCExP+Oeu9KhLpsXNUbDxfZ0g+C07xR6dg@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="8323328-1029937450-1707393709=:1104"
 
-Hi Dmitry,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On Thu, Feb 08, 2024 at 01:04:14PM +0200, Dmitry Baryshkov wrote:
-> On Thu, 8 Feb 2024 at 12:02, Andi Shyti <andi.shyti@kernel.org> wrote:
-> >
-> > Hi Viken, Dmitry,
-> >
-> > On Fri, Feb 02, 2024 at 04:13:06PM +0530, Viken Dadhaniya wrote:
-> > >
-> > > On 2/1/2024 5:24 PM, Dmitry Baryshkov wrote:
-> > > > On Thu, 1 Feb 2024 at 12:13, Viken Dadhaniya <quic_vdadhani@quicinc.com> wrote:
-> > > > >
-> > > > > For i2c read operation in GSI mode, we are getting timeout
-> > > > > due to malformed TRE basically incorrect TRE sequence
-> > > > > in gpi(drivers/dma/qcom/gpi.c) driver.
-> > > > >
-> > > > > TRE stands for Transfer Ring Element - which is basically an element with
-> > > > > size of 4 words. It contains all information like slave address,
-> > > > > clk divider, dma address value data size etc).
-> > > > >
-> > > > > Mainly we have 3 TREs(Config, GO and DMA tre).
-> > > > > - CONFIG TRE : consists of internal register configuration which is
-> > > > >                 required before start of the transfer.
-> > > > > - DMA TRE :    contains DDR/Memory address, called as DMA descriptor.
-> > > > > - GO TRE :     contains Transfer directions, slave ID, Delay flags, Length
-> > > > >                 of the transfer.
-> > > > >
-> > > > > Driver calls GPI driver API to config each TRE depending on the protocol.
-> > > > > If we see GPI driver, for RX operation we are configuring DMA tre and
-> > > > > for TX operation we are configuring GO tre.
-> > > > >
-> > > > > For read operation tre sequence will be as below which is not aligned
-> > > > > to hardware programming guide.
-> > > > >
-> > > > > - CONFIG tre
-> > > > > - DMA tre
-> > > > > - GO tre
-> > > > >
-> > > > > As per Qualcomm's internal Hardware Programming Guide, we should configure
-> > > > > TREs in below sequence for any RX only transfer.
-> > > > >
-> > > > > - CONFIG tre
-> > > > > - GO tre
-> > > > > - DMA tre
-> > > > >
-> > > > > In summary, for RX only transfers, we are reordering DMA and GO TREs.
-> > > > > Tested covering i2c read/write transfer on QCM6490 RB3 board.
-> > > >
-> > > > This hasn't improved. You must describe what is the connection between
-> > > > TRE types and the geni_i2c_gpi calls.
-> > > > It is not obvious until somebody looks into the GPI DMA driver.
-> > > >
-> > > > Another point, for some reason you are still using just the patch
-> > > > version in email subject. Please fix your setup so that the email
-> > > > subject also includes the `[PATCH` part in the subject, which is there
-> > > > by default.
-> > > > Hint: git format-patch -1 -v4 will do that for you without a need to
-> > > > correct anything afterwards.
-> > > >
-> > >
-> > > At high level, let me explain the I2C to GPI driver flow in general.
-> > >
-> > > I2C driver calls GPI driver exposed functions which will prepare all the
-> > > TREs as per programming guide and
-> > > queues to the GPI DMA engine for execution. Upon completion of the Transfer,
-> > > GPI DMA engine will generate an
-> > > interrupt which will be handled inside the GPIO driver. Then GPI driver will
-> > > call DMA framework registered callback by i2c.
-> > > Upon receiving this callback, i2c driver marks the transfer completion.
-> >
-> > Any news about this? Dmitry do you still have concerns? We can
-> > add this last description in the commit log, as well, if needed.
-> 
-> I was looking for pretty simple addition to the commit message, that
-> links existing commit message to the actual source code change: that
-> geni_i2c_gpi(I2C_WRITE) results in the GO TRE and
-> geni_i2c_gpi(I2C_READ) generates DMA TRE. But I haven't seen anything
-> sensible up to now. So far we have a nice description of required
-> programming sequence in terms of CONFIG, GO, DMA TREs and then source
-> code change that seems completely unrelated to the commit message,
-> unless one actually goes deep into the corresponding GPI DMA driver.
+--8323328-1029937450-1707393709=:1104
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Agree. I can't take this patch until the commit message has a
-proper description and until Dmitry doesn't have any concerns
-pending.
+On Wed, 7 Feb 2024, Smita Koralahalli wrote:
 
-Thanks,
-Andi
+> According to PCIe r6.0 sec 6.7.6 [1], async removal with DPC may result i=
+n
+> surprise down error. This error is expected and is just a side-effect of
+> async remove.
+>=20
+> Ignore surprise down error generated as a side-effect of async remove.
+> Typically, this error is benign as the pciehp handler invoked by PDC
+> or/and DLLSC alongside DPC, de-enumerates and brings down the device
+> appropriately. But the error messages might confuse users. Get rid of
+> these irritating log messages with a 1s delay while pciehp waits for
+> dpc recovery.
+>=20
+> The implementation is as follows: On an async remove a DPC is triggered
+> along with a Presence Detect State change and/or DLL State Change.
+> Determine it's an async remove by checking for DPC Trigger Status in DPC
+> Status Register and Surprise Down Error Status in AER Uncorrected Error
+> Status to be non-zero. If true, treat the DPC event as a side-effect of
+> async remove, clear the error status registers and continue with hot-plug
+> tear down routines. If not, follow the existing routine to handle AER and
+> DPC errors.
+>=20
+> Please note that, masking Surprise Down Errors was explored as an
+> alternative approach, but left due to the odd behavior that masking only
+> avoids the interrupt, but still records an error per PCIe r6.0.1 Section
+> 6.2.3.2.2. That stale error is going to be reported the next time some
+> error other than Surprise Down is handled.
+>=20
+> Dmesg before:
+>=20
+>   pcieport 0000:00:01.4: DPC: containment event, status:0x1f01 source:0x0=
+000
+>   pcieport 0000:00:01.4: DPC: unmasked uncorrectable error detected
+>   pcieport 0000:00:01.4: PCIe Bus Error: severity=3DUncorrected (Fatal), =
+type=3DTransaction Layer, (Receiver ID)
+>   pcieport 0000:00:01.4:   device [1022:14ab] error status/mask=3D0000002=
+0/04004000
+>   pcieport 0000:00:01.4:    [ 5] SDES (First)
+>   nvme nvme2: frozen state error detected, reset controller
+>   pcieport 0000:00:01.4: DPC: Data Link Layer Link Active not set in 1000=
+ msec
+>   pcieport 0000:00:01.4: AER: subordinate device reset failed
+>   pcieport 0000:00:01.4: AER: device recovery failed
+>   pcieport 0000:00:01.4: pciehp: Slot(16): Link Down
+>   nvme2n1: detected capacity change from 1953525168 to 0
+>   pci 0000:04:00.0: Removing from iommu group 49
+>=20
+> Dmesg after:
+>=20
+>  pcieport 0000:00:01.4: pciehp: Slot(16): Link Down
+>  nvme1n1: detected capacity change from 1953525168 to 0
+>  pci 0000:04:00.0: Removing from iommu group 37
+>=20
+> [1] PCI Express Base Specification Revision 6.0, Dec 16 2021.
+>     https://members.pcisig.com/wg/PCI-SIG/document/16609
+>=20
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+> Reviewed-by: Lukas Wunner <lukas@wunner.de>
+> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux=
+=2Eintel.com>
+
+> +static void pci_clear_surpdn_errors(struct pci_dev *pdev)
+> +{
+> +=09if (pdev->dpc_rp_extensions)
+> +=09=09pci_write_config_dword(pdev, pdev->dpc_cap +
+> +=09=09=09=09       PCI_EXP_DPC_RP_PIO_STATUS, ~0);
+> +
+> +=09/*
+> +=09 * In practice, Surprise Down errors have been observed to also set
+> +=09 * error bits in the Status Register as well as the Fatal Error
+> +=09 * Detected bit in the Device Status Register.
+> +=09 */
+> +=09pci_write_config_word(pdev, PCI_STATUS, 0xffff);
+
+Nit: one of these is using ~0 and the other 0xffff which is a bit=20
+inconsistent.
+
+> +static bool dpc_is_surprise_removal(struct pci_dev *pdev)
+> +{
+> +=09u16 status;
+> +
+> +=09if (!pdev->is_hotplug_bridge)
+> +=09=09return false;
+> +
+> +=09if (pci_read_config_word(pdev, pdev->aer_cap + PCI_ERR_UNCOR_STATUS,
+> +=09=09=09=09 &status))
+> +=09=09return false;
+
+Since you need a line split, I'd have used:
+=09ret =3D pci_read_config_word(...
+=09=09=09=09   ...);
+=09if (ret !=3D PCIBIOS_SUCCESSFUL)
+=09=09return false;
+
+Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+
+
+--=20
+ i.
+
+--8323328-1029937450-1707393709=:1104--
 
