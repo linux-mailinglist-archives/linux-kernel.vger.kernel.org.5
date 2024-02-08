@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-58302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F4A584E447
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:49:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A561284E449
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:49:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F4E1285855
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:49:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CAA5288676
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:49:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39307E569;
-	Thu,  8 Feb 2024 15:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3937EEF3;
+	Thu,  8 Feb 2024 15:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mhcle2eZ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="d86CKmSX"
 Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC4F17D3F6
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 15:48:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E0A7D41C
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 15:48:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707407329; cv=none; b=IKXT+sMeVdMeoGX7hLgpPT4sRXWnItzkFwEN9VfHzxrSpxgL8sRO9+SCg5ch+Q2dtnTSX/DU8yYhrK6CgOp76heSV05XDYGKoGtY+AVaTio1xtmzFNG9u+NMTnYJblLqwdMCKyqtS88igzI+mxeXDqnvWUrWtNeoTpzQzwPIe0w=
+	t=1707407332; cv=none; b=SvYdKrvC6T751MQl3tPW0M7RkfYfMQq+DkCynz35+EWfceR/tAbMm7OUAYixCG8AO+Y7POWhBEcvhJxwfFoRn4WMrB9tGpJHg8WARe6MmHiUxykT+K3PensXjG+GCw5g8nH6JTlxNeiorll7zHF2ojlFiywXNyCQIv6JBUgbR3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707407329; c=relaxed/simple;
-	bh=JiNY7UD5yChmAMASqdU3YDYjcAqL6joPoUB8j2lzZeY=;
+	s=arc-20240116; t=1707407332; c=relaxed/simple;
+	bh=0g42SIX3ikqPGex8zhN70IRWhPIkHg4UCYLIFxFrPfU=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=NtaWVYqmfCS+cKFoahN8/MINzKLOtIGkMRxWV8Jvej8kizhSFA9s53k7We/gxZjrElJWwoztTiTvL2p00dq2GtbHvbx6xvcmNbjNcIP6ZC7dMy/a4fJX/VOQjdTjGkuseVAPXpemsG4ItdeEbxUAstAbHfaJKAnWsBv+DYDUphw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mhcle2eZ; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=K++eTKJW/gBp/jKvP0jus/mhyipTYDcT+FF+qEntDFcQzhAyl4BT9fYKj40rgN+psAN2pwJa3T5MFswJBUkZO78vGTbWzzM4VTb7Zq1cNozNbeEUMIkfsNg9GG3akSV99e8NTM7OnOppSKjsBIpHuIm5z6Xu/oauugir6bbpdug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=d86CKmSX; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc74ac7d015so302251276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 07:48:46 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbe9e13775aso3330566276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 07:48:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707407326; x=1708012126; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707407328; x=1708012128; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1MPoST0g8AYkDBhG2VsbV1sslw+0urv81QcaeUn+juw=;
-        b=mhcle2eZCdtlsc9l4HKuZLLrbhdElCfqlSSGlxuTHyUP2BtmZ7p5AU0/XAD3sUDP5p
-         u9bTEkLBQoOOPkSRAdoTWHRxwZpsK+7guY5NPpB3rMJSh3fSnPVAr2hT7Ddrz56yZk4G
-         DNi+4+GaQuUZv8oul/z5l12kkLF7XXIphLgBIGVE4TafxE4izKiHQOcD0A6PDWSKKaj+
-         jrgpOBsFxB5rg0mSuS9nHwcpARZTnqmBB0QrchKn1U6UpW8tyYvTA9USN7ejt4Ww4PiI
-         l2JdWLDXvXhkVWx+jF1sFcDNNpTrQTrB6SVJCgbAVyepNaLwr6F0+BMx3ukzQugPyx1U
-         elJQ==
+        bh=flngb/LA8uzIdl5igbJEwBtu/PZHJPBIGQxF8CY4PhE=;
+        b=d86CKmSXMLMGUgnIQBGcw6GrfKSqp1/AoVlpRNQmakY/I3lwnBiJu09CCTPKS2c2Nn
+         BYTnfFrCPHim7XpzxHH6nwmFwFP7orFH4NoPt3haSXpbRfRZS5+G6yaoNA7yCmwaVq9O
+         4RC+Q1ieT6fHkp0WqcZBLKEdPbSL3Wuxq6dIf5lnybgGkBQCNnSM3B+VSq2ZSTRVov0n
+         9JnExyda+TZxgQISJS0E3eD7N258qcPpvjKVCQ+a8FVDZ84Qt0OzexJt84fLEVIYunfI
+         1mfUoIU+t0/8y5vpS+iA3OtkkHuASBfdqM1Eb86Y7Cvp+GXWwERHJiwxPCX4ufwq76BU
+         TvgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707407326; x=1708012126;
+        d=1e100.net; s=20230601; t=1707407328; x=1708012128;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1MPoST0g8AYkDBhG2VsbV1sslw+0urv81QcaeUn+juw=;
-        b=vnEdLScBDriw7gvyxiIj8e6BjiMyKP0sHt3VJ96zPbRor71SZCSQ3S+bCRJ2YeQ3BG
-         aYmynycneEw5oFQwJxeCGvS+eBQJY50PrBfJqbhWRpTMGvfZaR9LYBQ49swozdsUVg4P
-         Qh0vQw+mKT0EeJR0aVocnmBNA5LMqyTPpH76813uWZZIILyzMOWMoGYMA88u+etfcLMf
-         dsPDmip8NpDxCOOPoH89U2eTidxpTcHPgKEIIvzGlxIYH02Wl3SKlTpiYA2AG0uV1V8t
-         nQ1OO8Gt7VKKyCZ94kOLfFmZ9t6rkOXOMbEl4EPxgrX7e6oiZNASAFxfcuyiy5L+diSw
-         UMVw==
-X-Forwarded-Encrypted: i=1; AJvYcCXGv9O/C6J3mkE+DMBi9GnfD1MiecFkbglClZpOq/CszXgTdPD+8l7OE6DLXvc91ccIj7JKBOkZ5diL1t3rZy9XNgiLrOEI0L4q7FbE
-X-Gm-Message-State: AOJu0YzU4IiJofZhPTPml3hrV2FUOlmGWGWbTJ8eM1U5mb1W8px1xWZy
-	PrNIe2XsEM1MkEo0y1hCtppuuVsAFKLzguDJ4yt5pwNJSl9vVyJhs/fwqAAFhmA1GqjF1VflF5d
-	xT43zYmgj8oA/Zg==
-X-Google-Smtp-Source: AGHT+IE8Nan1uCaJHug2RBjceERk4R9+9qTdLW2q08muXcPrNhxeAussQfhnPOBYaHjyNRTtMgh/P0qbCDqR2bA=
+        bh=flngb/LA8uzIdl5igbJEwBtu/PZHJPBIGQxF8CY4PhE=;
+        b=p3HgdUU3snERyy06QAuprbSQdxZfTSvmackMWNqdDlqvDho13JKnyRM0hrVuWVKv0I
+         kJhI5phsq5OQ5LG9EcmmjJRh2LAd6RuACdE3XeVqbHuAGMyDzdCF6qRF6b90efnjcNZ/
+         HU6m+vaYoKeyN9DA6N1VmbF1pmbgJaU+KXMQRL3haS4Yz53/KeEj8GbuwvVsc6/a68pu
+         8ZPUNLifNUTq9l9mUDNi8G0xCM6KTT/9ARgcYoXrTIwlcTpccIFJ3oRXpCd0bMIs5Ade
+         nukSNVafo3l7vbCQCdtZBr809Ze7VaQYYbnRVBQ2V6mgGAR/QGgsixeMvvQUyINc7OoH
+         dDdA==
+X-Forwarded-Encrypted: i=1; AJvYcCU8cGIZ3cUgfaKWdYzcDtJdfCOzXZ5v3uqIWbksYrBwI72NNiaIlfAutYNGHYiX8h8tqWUyoMI8kF6Hm1FexL7crfd7v7z9L2ANrKoT
+X-Gm-Message-State: AOJu0YxhyXz6IQvzKLdBfgIO502fL2HLW8zlCtAjx8w/M7sjpEc9SrFa
+	RrtrB59nc+2AtUbwyFeYPzyJw3PSgb7CEOHuNytVola1kGlZnc2cg3wffMn+jPESvYC40ZeU33S
+	5adjQJlFDG8BsKA==
+X-Google-Smtp-Source: AGHT+IHMYibPwpZ1RVGfZRX8AKyfUjB+V8DP1294a1PT4LdcHAG0vKr/hwfx2FdORpWP56VfcaTlftChXStJdqM=
 X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6902:1b88:b0:dc6:ec15:5f6f with SMTP
- id ei8-20020a0569021b8800b00dc6ec155f6fmr340204ybb.6.1707407325732; Thu, 08
- Feb 2024 07:48:45 -0800 (PST)
-Date: Thu, 08 Feb 2024 15:47:52 +0000
+ (user=aliceryhl job=sendgmr) by 2002:a05:6902:2186:b0:dc6:eea0:1578 with SMTP
+ id dl6-20020a056902218600b00dc6eea01578mr2142900ybb.13.1707407328528; Thu, 08
+ Feb 2024 07:48:48 -0800 (PST)
+Date: Thu, 08 Feb 2024 15:47:53 +0000
 In-Reply-To: <20240208-alice-mm-v2-0-d821250204a6@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,22 +73,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240208-alice-mm-v2-0-d821250204a6@google.com>
 X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4643; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=5Gt2wgkxBTJYGkfZMpeUeH1SE3k+76BKAUtR156EeQ0=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlxPfTuQDsKBYaMhTNxSmNY7PLIkKVkVnXBgh2h
- FRUyBw0ZDOJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZcT30wAKCRAEWL7uWMY5
- RrCTEAC0DaTqeHguZBQPjq0PPyT3rF4dgf8yp7QxrvoiztTXntK43kWYjtU6x4CoxRG+Lfp6NCx
- ahAklS4wQAQLPnwFB7n84XdxDQiFmRKJNiDdfrZtYj9+37q3KZnmt4B0N9TU2/tv2596QUrr7g5
- 8FHFh2cgpuJV3O8Gb9U2movzF0Y0EBrHeg7p8AhkHNs9taPgH7S885BL8gs2rLzgkPYKf1sNY/C
- 5hA4aJH/a9yzOjOWaRmFlkB1kZRm4KiftHLzWE3u3ZMHhfwXiLR9fMIvCjoKUcGfYAYHunM3gkc
- guKnoQhyh9Jo/b2AwXr5KVNQFbWpKIpRAFkieNgtgtxoFyYag+hQzN+8zEukWaMv/Tcw5nn2l7G
- fTgEJjZLgfS18WZg8tIiwBGCpb7CGApvnSE6czD3O116L7MaFZgsyQ18xEcrnwnisEh8jGkEpRS
- mcAYoaxEnBgCGDCF7wRrOWQGk60Sl2TD38A8wJYuhuz/XZ5kzXa0TAu7H4id2ZqjQ2Vt4E+07s6
- ObN4KfrT1dPCAm9M80Bn1u4Emonb0v4S5nykU0Awlen1fu+wttxiLdNlG+zwcaHELAt39pm2Spf
- PfDE4plBBAgcYG75I1TyaKWvyIb0JcNlLzTdXEskioQXW+n0ByNOrNohTMoZoXiY2vxVWX0YcK/ CE7RtNd2PYweYRQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8719; i=aliceryhl@google.com;
+ h=from:subject:message-id; bh=0g42SIX3ikqPGex8zhN70IRWhPIkHg4UCYLIFxFrPfU=;
+ b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlxPfTuOB96U/Lj40fHe9/xmDSElLomqfJO0cdJ
+ oS0DmyNDKGJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZcT30wAKCRAEWL7uWMY5
+ RhsAEACE9BLmNvDC79FcWLHl6NT6PpjTFGYzMx6E6caaaLeVuWDJ6hhRZ+WM5x1fY68NMh4jTze
+ sSCcxDNl9i1VJtQx5DN5Dvxw8ZOheHmix6sYH2u6nzHLQB+ka5eT56u/j1JvtGhjDE+JN/FtLLi
+ Ku7kHIhYAmrNWQ71Ccpdl9TmLyg9b+F3CewVZsPpMR8BiA7M8IMyElJgb2Qy8QK+2UyagQNkNck
+ vUAOTl7XVhllYkzh7aNkH++irEYMD7l1Pzq6i0ark1Oh5QLENHbz6p9GrtKtibC8Y31d+5ahqGQ
+ ofpIQmg4DLhYUbcdbSgHuvaSvA2aNvb3I4hI/CHF3ItH5GKHeZ1II37sZzwtQIDhW/jx3tI7cM7
+ 8fyu+b1eAvqo91GJyU9GKh6nyq+s/ft37vk5y7EsOCZVStX5wJkMW/fhvtHOQOQhIYU+yta/+3l
+ gstUIDdyj8IP4sslt6FxHuMV/LEvQYzA/gw6mcz3plT02alcLP8CCjofOcmuw2A0U4BQkqvt4vf
+ gdBiHa/nU9fHplEV10UtrZrwIchhpw29NoAzW9Log+xqOYBfvEJED/LBawfR0KQXivClAID7XvG
+ 9u9w6oeJ6ZDYHCsI/brqznI4Um6gkWFG6YsPqFD1HyYPlG6VCo28FcfELn8as/Nz5rkkkTm8zjW 7WgDIC5F4sLMOdA==
 X-Mailer: b4 0.13-dev-26615
-Message-ID: <20240208-alice-mm-v2-2-d821250204a6@google.com>
-Subject: [PATCH v2 2/4] uaccess: always export _copy_[from|to]_user with CONFIG_RUST
+Message-ID: <20240208-alice-mm-v2-3-d821250204a6@google.com>
+Subject: [PATCH v2 3/4] rust: uaccess: add typed accessors for userspace pointers
 From: Alice Ryhl <aliceryhl@google.com>
 To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
 	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
@@ -103,152 +103,215 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Alice Ryhl <aliceryhl@google.com>, Christian Brauner <brauner@kernel.org>
 Content-Type: text/plain; charset="utf-8"
 
-From: Arnd Bergmann <arnd@arndb.de>
+Add safe methods for reading and writing Rust values to and from
+userspace pointers.
 
-Rust code needs to be able to access _copy_from_user and _copy_to_user
-so that it can skip the check_copy_size check in cases where the length
-is known at compile-time, mirroring the logic for when C code will skip
-check_copy_size. To do this, we ensure that exported versions of these
-methods are available when CONFIG_RUST is enabled.
+The C methods for copying to/from userspace use a function called
+`check_object_size` to verify that the kernel pointer is not dangling.
+However, this check is skipped when the length is a compile-time
+constant, with the assumption that such cases trivially have a correct
+kernel pointer.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+In this patch, we apply the same optimization to the typed accessors.
+For both methods, the size of the operation is known at compile time to
+be size_of of the type being read or written. Since the C side doesn't
+provide a variant that skips only this check, we create custom helpers
+for this purpose.
+
+The majority of reads and writes to userspace pointers in the Rust
+Binder driver uses these accessor methods. Benchmarking has found that
+skipping the `check_object_size` check makes a big difference for the
+cases being skipped here. (And that the check doesn't make a difference
+for the cases that use the raw read/write methods.)
+
+This code is based on something that was originally written by Wedson on
+the old rust branch. It was modified by Alice to skip the
+`check_object_size` check, and to update various comments, including the
+notes about kernel pointers in `WritableToBytes`.
+
+Co-developed-by: Wedson Almeida Filho <wedsonaf@gmail.com>
+Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
 Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 ---
- include/linux/uaccess.h | 37 +++++++++++++++++++++++--------------
- lib/usercopy.c          | 30 ++++--------------------------
- 2 files changed, 27 insertions(+), 40 deletions(-)
+ rust/kernel/types.rs   | 67 ++++++++++++++++++++++++++++++++++++++++++++
+ rust/kernel/uaccess.rs | 75 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 141 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index 3064314f4832..835aa175d0ee 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -138,13 +138,18 @@ __copy_to_user(void __user *to, const void *from, unsigned long n)
- 	return raw_copy_to_user(to, from, n);
+diff --git a/rust/kernel/types.rs b/rust/kernel/types.rs
+index fdb778e65d79..33d175a3a6ed 100644
+--- a/rust/kernel/types.rs
++++ b/rust/kernel/types.rs
+@@ -387,3 +387,70 @@ pub enum Either<L, R> {
+     /// Constructs an instance of [`Either`] containing a value of type `R`.
+     Right(R),
  }
- 
--#ifdef INLINE_COPY_FROM_USER
- static inline __must_check unsigned long
--_copy_from_user(void *to, const void __user *from, unsigned long n)
-+_inline_copy_from_user(void *to, const void __user *from, unsigned long n)
- {
- 	unsigned long res = n;
- 	might_fault();
- 	if (!should_fail_usercopy() && likely(access_ok(from, n))) {
-+		/*
-+		 * Ensure that bad access_ok() speculation will not
-+		 * lead to nasty side effects *after* the copy is
-+		 * finished:
-+		 */
-+		barrier_nospec();
- 		instrument_copy_from_user_before(to, from, n);
- 		res = raw_copy_from_user(to, from, n);
- 		instrument_copy_from_user_after(to, from, n, res);
-@@ -153,14 +158,11 @@ _copy_from_user(void *to, const void __user *from, unsigned long n)
- 		memset(to + (n - res), 0, res);
- 	return res;
- }
--#else
- extern __must_check unsigned long
- _copy_from_user(void *, const void __user *, unsigned long);
--#endif
- 
--#ifdef INLINE_COPY_TO_USER
- static inline __must_check unsigned long
--_copy_to_user(void __user *to, const void *from, unsigned long n)
-+_inline_copy_to_user(void __user *to, const void *from, unsigned long n)
- {
- 	might_fault();
- 	if (should_fail_usercopy())
-@@ -171,25 +173,32 @@ _copy_to_user(void __user *to, const void *from, unsigned long n)
- 	}
- 	return n;
- }
--#else
- extern __must_check unsigned long
- _copy_to_user(void __user *, const void *, unsigned long);
--#endif
- 
- static __always_inline unsigned long __must_check
- copy_from_user(void *to, const void __user *from, unsigned long n)
- {
--	if (check_copy_size(to, n, false))
--		n = _copy_from_user(to, from, n);
--	return n;
-+	if (!check_copy_size(to, n, false))
-+		return n;
-+#ifdef INLINE_COPY_FROM_USER
-+	return _inline_copy_from_user(to, from, n);
-+#else
-+	return _copy_from_user(to, from, n);
-+#endif
- }
- 
- static __always_inline unsigned long __must_check
- copy_to_user(void __user *to, const void *from, unsigned long n)
- {
--	if (check_copy_size(from, n, true))
--		n = _copy_to_user(to, from, n);
--	return n;
-+	if (!check_copy_size(from, n, true))
-+		return n;
 +
-+#ifdef INLINE_COPY_TO_USER
-+	return _inline_copy_to_user(to, from, n);
-+#else
-+	return _copy_to_user(to, from, n);
-+#endif
++/// Types for which any bit pattern is valid.
++///
++/// Not all types are valid for all values. For example, a `bool` must be either
++/// zero or one, so reading arbitrary bytes into something that contains a
++/// `bool` is not okay.
++///
++/// It's okay for the type to have padding, as initializing those bytes has no
++/// effect.
++///
++/// # Safety
++///
++/// All bit-patterns must be valid for this type.
++pub unsafe trait FromBytes {}
++
++// SAFETY: All bit patterns are acceptable values of the types below.
++unsafe impl FromBytes for u8 {}
++unsafe impl FromBytes for u16 {}
++unsafe impl FromBytes for u32 {}
++unsafe impl FromBytes for u64 {}
++unsafe impl FromBytes for usize {}
++unsafe impl FromBytes for i8 {}
++unsafe impl FromBytes for i16 {}
++unsafe impl FromBytes for i32 {}
++unsafe impl FromBytes for i64 {}
++unsafe impl FromBytes for isize {}
++// SAFETY: If all bit patterns are acceptable for individual values in an array,
++// then all bit patterns are also acceptable for arrays of that type.
++unsafe impl<T: FromBytes> FromBytes for [T] {}
++unsafe impl<T: FromBytes, const N: usize> FromBytes for [T; N] {}
++
++/// Types that can be viewed as an immutable slice of initialized bytes.
++///
++/// If a struct implements this trait, then it is okay to copy it byte-for-byte
++/// to userspace. This means that it should not have any padding, as padding
++/// bytes are uninitialized. Reading uninitialized memory is not just undefined
++/// behavior, it may even lead to leaking sensitive information on the stack to
++/// userspace.
++///
++/// The struct should also not hold kernel pointers, as kernel pointer addresses
++/// are also considered sensitive. However, leaking kernel pointers is not
++/// considered undefined behavior by Rust, so this is a correctness requirement,
++/// but not a safety requirement.
++///
++/// # Safety
++///
++/// Values of this type may not contain any uninitialized bytes.
++pub unsafe trait AsBytes {}
++
++// SAFETY: Instances of the following types have no uninitialized portions.
++unsafe impl AsBytes for u8 {}
++unsafe impl AsBytes for u16 {}
++unsafe impl AsBytes for u32 {}
++unsafe impl AsBytes for u64 {}
++unsafe impl AsBytes for usize {}
++unsafe impl AsBytes for i8 {}
++unsafe impl AsBytes for i16 {}
++unsafe impl AsBytes for i32 {}
++unsafe impl AsBytes for i64 {}
++unsafe impl AsBytes for isize {}
++unsafe impl AsBytes for bool {}
++unsafe impl AsBytes for char {}
++unsafe impl AsBytes for str {}
++// SAFETY: If individual values in an array have no uninitialized portions, then
++// the the array itself does not have any uninitialized portions either.
++unsafe impl<T: AsBytes> AsBytes for [T] {}
++unsafe impl<T: AsBytes, const N: usize> AsBytes for [T; N] {}
+diff --git a/rust/kernel/uaccess.rs b/rust/kernel/uaccess.rs
+index f07821184bd6..71a00177a4b9 100644
+--- a/rust/kernel/uaccess.rs
++++ b/rust/kernel/uaccess.rs
+@@ -4,9 +4,15 @@
+ //!
+ //! C header: [`include/linux/uaccess.h`](srctree/include/linux/uaccess.h)
+ 
+-use crate::{bindings, error::code::*, error::Result};
++use crate::{
++    bindings,
++    error::code::*,
++    error::Result,
++    types::{AsBytes, FromBytes},
++};
+ use alloc::vec::Vec;
+ use core::ffi::{c_ulong, c_void};
++use core::mem::{size_of, MaybeUninit};
+ 
+ /// A pointer to an area in userspace memory, which can be either read-only or
+ /// read-write.
+@@ -237,6 +243,41 @@ pub unsafe fn read_raw(&mut self, out: *mut u8, len: usize) -> Result {
+         Ok(())
+     }
+ 
++    /// Reads a value of the specified type.
++    ///
++    /// Fails with `EFAULT` if the read encounters a page fault.
++    pub fn read<T: FromBytes>(&mut self) -> Result<T> {
++        let len = size_of::<T>();
++        if len > self.length {
++            return Err(EFAULT);
++        }
++        let Ok(len_ulong) = c_ulong::try_from(len) else {
++            return Err(EFAULT);
++        };
++        let mut out: MaybeUninit<T> = MaybeUninit::uninit();
++        // SAFETY: The local variable `out` is valid for writing `size_of::<T>()` bytes.
++        //
++        // By using the _copy_from_user variant, we skip the check_object_size
++        // check that verifies the kernel pointer. This mirrors the logic on the
++        // C side that skips the check when the length is a compile-time
++        // constant.
++        let res = unsafe {
++            bindings::_copy_from_user(out.as_mut_ptr().cast::<c_void>(), self.ptr, len_ulong)
++        };
++        if res != 0 {
++            return Err(EFAULT);
++        }
++        // Since this is not a pointer to a valid object in our program,
++        // we cannot use `add`, which has C-style rules for defined
++        // behavior.
++        self.ptr = self.ptr.wrapping_byte_add(len);
++        self.length -= len;
++        // SAFETY: The read above has initialized all bytes in `out`, and since
++        // `T` implements `FromBytes`, any bit-pattern is a valid value for this
++        // type.
++        Ok(unsafe { out.assume_init() })
++    }
++
+     /// Reads the entirety of the user slice, appending it to the end of the
+     /// provided buffer.
+     ///
+@@ -311,4 +352,36 @@ pub fn write_slice(&mut self, data: &[u8]) -> Result {
+         // `len`, so the pointer is valid for reading `len` bytes.
+         unsafe { self.write_raw(ptr, len) }
+     }
++
++    /// Writes the provided Rust value to this userspace pointer.
++    ///
++    /// Fails with `EFAULT` if the write encounters a page fault.
++    pub fn write<T: AsBytes>(&mut self, value: &T) -> Result {
++        let len = size_of::<T>();
++        if len > self.length {
++            return Err(EFAULT);
++        }
++        let Ok(len_ulong) = c_ulong::try_from(len) else {
++            return Err(EFAULT);
++        };
++        // SAFETY: The reference points to a value of type `T`, so it is valid
++        // for reading `size_of::<T>()` bytes.
++        //
++        // By using the _copy_to_user variant, we skip the check_object_size
++        // check that verifies the kernel pointer. This mirrors the logic on the
++        // C side that skips the check when the length is a compile-time
++        // constant.
++        let res = unsafe {
++            bindings::_copy_to_user(self.ptr, (value as *const T).cast::<c_void>(), len_ulong)
++        };
++        if res != 0 {
++            return Err(EFAULT);
++        }
++        // Since this is not a pointer to a valid object in our program,
++        // we cannot use `add`, which has C-style rules for defined
++        // behavior.
++        self.ptr = self.ptr.wrapping_byte_add(len);
++        self.length -= len;
++        Ok(())
++    }
  }
- 
- #ifndef copy_mc_to_kernel
-diff --git a/lib/usercopy.c b/lib/usercopy.c
-index d29fe29c6849..de7f30618293 100644
---- a/lib/usercopy.c
-+++ b/lib/usercopy.c
-@@ -7,40 +7,18 @@
- 
- /* out-of-line parts */
- 
--#ifndef INLINE_COPY_FROM_USER
-+#if !defined(INLINE_COPY_FROM_USER) || defined(CONFIG_RUST)
- unsigned long _copy_from_user(void *to, const void __user *from, unsigned long n)
- {
--	unsigned long res = n;
--	might_fault();
--	if (!should_fail_usercopy() && likely(access_ok(from, n))) {
--		/*
--		 * Ensure that bad access_ok() speculation will not
--		 * lead to nasty side effects *after* the copy is
--		 * finished:
--		 */
--		barrier_nospec();
--		instrument_copy_from_user_before(to, from, n);
--		res = raw_copy_from_user(to, from, n);
--		instrument_copy_from_user_after(to, from, n, res);
--	}
--	if (unlikely(res))
--		memset(to + (n - res), 0, res);
--	return res;
-+	return _inline_copy_from_user(to, from, n);
- }
- EXPORT_SYMBOL(_copy_from_user);
- #endif
- 
--#ifndef INLINE_COPY_TO_USER
-+#if !defined(INLINE_COPY_TO_USER) || defined(CONFIG_RUST)
- unsigned long _copy_to_user(void __user *to, const void *from, unsigned long n)
- {
--	might_fault();
--	if (should_fail_usercopy())
--		return n;
--	if (likely(access_ok(to, n))) {
--		instrument_copy_to_user(to, from, n);
--		n = raw_copy_to_user(to, from, n);
--	}
--	return n;
-+	return _inline_copy_to_user(to, from, n);
- }
- EXPORT_SYMBOL(_copy_to_user);
- #endif
 
 -- 
 2.43.0.594.gd9cf4e227d-goog
