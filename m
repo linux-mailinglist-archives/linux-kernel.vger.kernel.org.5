@@ -1,150 +1,154 @@
-Return-Path: <linux-kernel+bounces-58481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D562084E707
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:47:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5821984E705
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:47:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21B0DB2565B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:46:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 819AD1C214D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:47:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20B2A84FCF;
-	Thu,  8 Feb 2024 17:46:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hoaTxKRj"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8565586133;
+	Thu,  8 Feb 2024 17:46:11 +0000 (UTC)
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D011182D8C
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:46:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3440B85C7F
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707414365; cv=none; b=oRR4Q7oBz5yJyjP4A51j5Lhjuib70OybIDNJ4jD835TWSAQtRro+k8s9pAY1E8UWYV+cU0t6qI3AXVuNaUwfZQTgT+LN3n/ySB7kW/HCGtShmBPrtUeLsxa+j130zZvQcRTux3ZCubXW/Eb//5FjP3FDJBb3mpJRZk4x4dfrpN0=
+	t=1707414371; cv=none; b=WKUxVYAraMVU4NZHjDAXdQqFXJcvCBHZhTOjSWByQTvhtGmOvr5oYRfhvbP4nDOjq6rS5L0hy+HUavNKXMctz3iahJ9ZAz8ShlZSbpX+J7AyPtQcJ3DbYIcMz5p8KEFxwV66GsK/KO7xJgy+iNRr7Kl3DBCWLKUKIrv2tQz5r1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707414365; c=relaxed/simple;
-	bh=f+PuXbNhXMTQKCE8D1ReIzehabsulG0iotcVaoV0u04=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rq5lX66kqhR4I6hfC+5oqAWeZJ63CeEZ0VQzFlgYXLrBNEzpJKQ9Riw5qxbNtKaGJzUSxbm5aDsZooWSYdHFRQNaY/7f4tZLbfXStGzweGGmBviB53oS7F3MwEQsoG8zqX/piYCKiH8LK+DayK1jEzdOFHiFJ8Ccq477AIyWU+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hoaTxKRj; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707414362;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y8X4EhnjHNg6ZybPIUTxfj0f8bu4Fo5AJsqmmWpX13E=;
-	b=hoaTxKRj0hwUzwSf7HfCFwO/LvcA8IkkdawWFpjk9mdfE7o2M0caeMxvcmyhLOyecE0kq9
-	5f/oSVpVAZ673+g+SMW+MVBB7S6ufqAIIEvobmjSwKRuRxfVHbUWXZYyM4EqUEOE56GeAT
-	Xv+cfOLjBM08ttCZ0uwrbiAs/gWDhI8=
-Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com
- [209.85.217.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-385-FLVz5ynHOc-PCYrYvAPkRQ-1; Thu, 08 Feb 2024 12:45:58 -0500
-X-MC-Unique: FLVz5ynHOc-PCYrYvAPkRQ-1
-Received: by mail-vs1-f71.google.com with SMTP id ada2fe7eead31-46d2776dbc1so18629137.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 09:45:57 -0800 (PST)
+	s=arc-20240116; t=1707414371; c=relaxed/simple;
+	bh=TovmD2j51jtTM66hpCFmsorXcQli9Xe6IuYTQkybXjc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PVg2fciNgdgs+v1u5PADaeCW+1eLkWJX4kG7LndOBZLP4g3hInrnvfljTnymoLWDaUH/8s0FqRbPn8SoVDiGx4sh7ZiYnunXqKuo/BYQ0Ee+N2Knex4L6oLVJEPkZAGbr5f0dqoTRWwcA1P9CtmX5EjPm3Q4WPKFC2UiBwgM8kQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a389a3b9601so6183266b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 09:46:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707414357; x=1708019157;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y8X4EhnjHNg6ZybPIUTxfj0f8bu4Fo5AJsqmmWpX13E=;
-        b=nr5iNe9s22nOh3KGJ/qgYTnbTasw3PmfW0ZSY5DH7Z0dXbiMJ5+b47cWNmZ9/l+YYB
-         ydWY3GYqKuVZvjtXdkBNnGiHelOCRLx38QWtKExm3cJgxCs0XCsdlBnOresKRU3uJBVG
-         cUz0vH3UzSYCSyKvXRwDIpVxLLxjwcZ8lAHaPIsP6PccHeoutVdvN8cFy0Qcn5GdwkOz
-         uBy2zSVRleD0rMoLaFFz7RrK6RSvJCoZVaX8NJ8V6K2ZJANvvLCg4mChMTlvvQC++j8L
-         sVmP0hvBour1z3CevrTTE05Y5n9znLuMkN062Vvqi42SQZOcv2aNMxuK0j6d4l3GkQdE
-         mwtA==
-X-Gm-Message-State: AOJu0YzzphjL9jkx8/wWEYjN6oZAIGnczp74mJW+6HfmHZqq//ecYm7J
-	ke98g+YazRhpWCrs66zA5taf87XCJw7DTJKHToc8D2JrrT4SfaBG3io/blTa6OrdunNnI2agPBj
-	75LkFHnMs9ojQWllqYwOfZOt8IGruawjLeNa3WWNNtSvEY6Ko/jotv6Z8+cAoueyTrRYhSdHUqp
-	SI3LrGtsobavrib+rQBqUYMvpeoOBVTIOEJ4US
-X-Received: by 2002:a05:6102:754:b0:46d:2083:14d1 with SMTP id v20-20020a056102075400b0046d208314d1mr23911vsg.10.1707414357389;
-        Thu, 08 Feb 2024 09:45:57 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFFjZYAC+poB2A8bKFCXFb8kn7FgCzxPV6IsYhUCAgELoYofUjEzpN8/jetwu7l5YiegAIAgtJ1gKO1+GPVsjw=
-X-Received: by 2002:a05:6102:754:b0:46d:2083:14d1 with SMTP id
- v20-20020a056102075400b0046d208314d1mr23887vsg.10.1707414357128; Thu, 08 Feb
- 2024 09:45:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707414367; x=1708019167;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8mdU4S5Z5jADGob+hYKZdQF6w6k19+tD96wjo2aggCI=;
+        b=K93zVtk5TqIwATKVIZx2obDuK4bk/Dbq1WH0TGil0G4BVpsYE7a6EUMaCUHdCQ2BOY
+         tBlfHysKW4ZMphPry7Iulv57J0PbF6C58G/Tfjnmzrq6Skejp1X5QD/6WMTLMhMHyB8Q
+         cBTf6fIewkt8dDHEHXFhS18Ss2TyQZ0zg288KCt1y65w32vvGamcvIdDG6cm/S9kaOL5
+         DHTlTtXVdDIB3nbNhFFMobTGTfdgo89FLRDn15Ycb2Ry5KQvEANUTfxny/9yFPco9eeP
+         UoE0DqD+Nwy8iUFCidPDRq56nSTkM8Oe/byg1Hu3RkFjpHt8dG28gQhnNtAXFuVTisfz
+         Fo6w==
+X-Forwarded-Encrypted: i=1; AJvYcCXirlOU99A8mkFvhp8AmI0aKWQzE1L0jkam6c3KNgOFFnVo7gyli9pdccM8QaDe5nOPOMj0VZd7Ggogi5p5ZVXxFH091PNUr2G7Q/QE
+X-Gm-Message-State: AOJu0YzIaZQVkgm8EBaAY6pBYtd2WrIAIHmWoah0/ncvM3p0FsjXu51s
+	9pOmYKoYi60kAektelw37maaJ28m3OsO6CFPs/+XklYVfVQe1ObX
+X-Google-Smtp-Source: AGHT+IE/NGUmUZa1HOZoJhtbMvfFj82zgAdXKstcjYYV4edhyWYdVIS+isjB8QkNSHWH4ayteQ4bNg==
+X-Received: by 2002:a17:906:513:b0:a35:85b7:560a with SMTP id j19-20020a170906051300b00a3585b7560amr21260eja.46.1707414367231;
+        Thu, 08 Feb 2024 09:46:07 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWmKYaA/lT6du156ic13GRUErnXvg5MDe93/akcNihhYG03c7fEkUS2f0KLeffbHrs8qj1W2rNwSfEEjq68sjdpFxjrEkuOFEfXvznYm8GA2n26J6cE46c4Qnc+3GeH8OepnJ2Awe0eq8ZROFKUQuoMOtNzdDdZJSpDOhaBnBEMst6WzYCIX2sUTflrJSweHviUpY8aw65t6gAxqn69VBpzxw==
+Received: from localhost (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
+        by smtp.gmail.com with ESMTPSA id jx21-20020a170906ca5500b00a371a1b40c1sm281935ejb.23.2024.02.08.09.46.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 09:46:06 -0800 (PST)
+From: Breno Leitao <leitao@debian.org>
+To: mingo@redhat.com
+Cc: jpoimboe@kernel.org,
+	x86@kernel.org,
+	tglx@linutronix.de,
+	bp@alien8.de,
+	linux-kernel@vger.kernel.org,
+	pawan.kumar.gupta@linux.intel.com
+Subject: [PATCH v2 0/3] x86/bugs: Separate config for mitigations (part 2)
+Date: Thu,  8 Feb 2024 09:45:52 -0800
+Message-Id: <20240208174555.44200-1-leitao@debian.org>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123001555.4168188-1-michal.wilczynski@intel.com>
- <20240125005710.GA8443@yjiang5-mobl.amr.corp.intel.com> <CABgObfYaUHXyRmsmg8UjRomnpQ0Jnaog9-L2gMjsjkqChjDYUQ@mail.gmail.com>
- <42d31df4-2dbf-44db-a511-a2d65324fded@intel.com>
-In-Reply-To: <42d31df4-2dbf-44db-a511-a2d65324fded@intel.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Thu, 8 Feb 2024 18:45:44 +0100
-Message-ID: <CABgObfYa5eKj_8qyRfimqG7DXpbxe-eSM6pCwR6Hq97eZEtX6A@mail.gmail.com>
-Subject: Re: [PATCH v2] KVM: x86: nSVM/nVMX: Fix handling triple fault on RSM instruction
-To: "Wilczynski, Michal" <michal.wilczynski@intel.com>
-Cc: Yunhong Jiang <yunhong.jiang@linux.intel.com>, seanjc@google.com, mlevitsk@redhat.com, 
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, dedekind1@gmail.com, 
-	yuan.yao@intel.com, Zheyu Ma <zheyuma97@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 8, 2024 at 2:18=E2=80=AFPM Wilczynski, Michal
-<michal.wilczynski@intel.com> wrote:
-> Hi, I've tested the patch and it seems to work, both on Intel and AMD.
-> There was a problem with applying this chunk though:
->
-> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kv=
-m-x86-ops.h
-> index ac8b7614e79d..3d18fa7db353 100644
-> --- a/arch/x86/include/asm/kvm-x86-ops.h
-> +++ b/arch/x86/include/asm/kvm-x86-ops.h
-> @@ -119,7 +119,8 @@ KVM_X86_OP(setup_mce)
->  #ifdef CONFIG_KVM_SMM
->  KVM_X86_OP(smi_allowed)
->  KVM_X86_OP()                 // <- This shouldn't be there I guess ?
-> -KVM_X86_OP(leave_smm)
-> +KVM_X86_OP(leave_smm_prepare)
-> +KVM_X86_OP(leave_smm_commit)
->  KVM_X86_OP(enable_smi_window)
->  #endif
->  KVM_X86_OP_OPTIONAL(dev_get_attr)
->
-> Anyway I was a bit averse to this approach as I noticed in the git log
-> that callbacks like e.g post_leave_smm() used to exist, but they were lat=
-er
-> removed, so I though the maintainers don't like introducing extra
-> callbacks.
+The current CONFIG_SPECULATION_MITIGATIONS namespace is only
+halfway populated, where some mitigations have entries in Kconfig, and
+they could be modified, while others mitigations do not have Kconfig
+entries, and can not be controlled at build time.
 
-If they are needed, it's fine. In my opinion a new callback is easier
-to handle and understand than new state.
+Fine-grained control over these Kconfig entries can help in a number of ways:
 
-> > 2) otherwise, if the problem is that we have not gone through the
-> > vmenter yet, then KVM needs to do that and _then_ inject the triple
-> > fault. The fix is to merge the .triple_fault and .check_nested_events
-> > callbacks, with something like the second attached patch - which
-> > probably has so many problems that I haven't even tried to compile it.
->
-> Well, in this case if we know that RSM will fail it doesn't seem to me
-> like it make sense to run vmenter just do kill the VM anyway, this would
-> be more confusing.
+1) Users can choose and pick only mitigations that are important for
+ their workloads.
 
-Note that the triple fault must not kill the VM, it's just causing a
-nested vmexit from L2 to L1. KVM's algorithm to inject a
-vmexit-causing event is always to first ensure that the VMCS02 (VMCB02
-for AMD) is consistent, and only then trigger the vmexit. So if patch
-2 or something like it works, that would be even better.
+2) Users and developers can choose to disable mitigations that mangle
+ the assembly code generation, making it hard to read.
 
-> I've made the fix this way based on our discussion with Sean in v1, and
-> tried to mark the RSM instruction with a flag, as a one that needs
-> actual HW VMenter to complete succesfully, and based on that information
-> manipulate nested_run_pending.
+3) Separate Kconfigs for just source code readability,
+ so that we see *which* butt-ugly piece of crap code is for what
+ reason...
 
-I understand, apologies for not noticing v1. Let's wait for Sean's opinion.
+In most cases, if a mitigation is disabled at compilation time, it
+can still be enabled at runtime using kernel command line arguments.
 
-Paolo
+This is the second part of the initial patchset[1] that got half landed.
+The first patch did some code re-organization. This second part
+contains the exact missing patches from the initial patchset, and
+basically adds build-time configuration for the other mitigations that
+are currently only disabled at boot time.
+
+Here is a detailed view of each patch:
+
+Patch 1: Create a Kconfig to disable GDS mitigation.
+Patch 2: Make spectre v2 userspace mitigation dependent on kernel
+         mitigations.
+Patch 3: Add a Kconfig entry for each mitigation that doesn't have such
+
+With this patch applied, setting CONFIG_SPECULATION_MITIGATIONS=n, a
+simple script[2] shows that all the mitigations are disabled:
+
+  spectre_v2_user_stibp   	 SPECTRE_V2_USER_NONE
+  spectre_v2_user_ibpb    	 SPECTRE_V2_USER_NONE
+  spectre_v2_cmd          	 SPECTRE_V2_CMD_NONE
+  ssb_mode                	 SPEC_STORE_BYPASS_NONE
+  l1tf_mitigation         	 L1TF_MITIGATION_OFF
+  srso_mitigation         	 SRSO_MITIGATION_NONE
+  srso_cmd                	 SRSO_CMD_SAFE_RET
+  mds_mitigation          	 MDS_MITIGATION_OFF
+  taa_mitigation          	 TAA_MITIGATION_OFF
+  mmio_mitigation         	 MMIO_MITIGATION_OFF
+  srbds_mitigation        	 SRBDS_MITIGATION_OFF
+  gds_mitigation          	 GDS_MITIGATION_OFF
+  spectre_v1_mitigation   	 SPECTRE_V1_MITIGATION_NONE
+  spectre_v2_enabled      	 SPECTRE_V2_NONE
+  retbleed_mitigation     	 RETBLEED_MITIGATION_NONE
+
+[1] https://lore.kernel.org/all/ZZ7c9EbJ71zU5TOF@gmail.com/#t
+[2] https://github.com/leitao/debug/blob/main/spec/dump_speculation.py
+
+Changelog:
+
+v1:
+  * https://lore.kernel.org/all/20240118173213.2008115-1-leitao@debian.org/
+
+v2:
+  * Patch 2: Changed `mode` type from int to `enum spectre_v2_user_cmd`
+    as suggested by Pawan Gupta
+  * Patch 3: Change MITIGATION_RETBLEED dependency to match the code.
+
+PS: This patchset is against tip/x86/bugs branch.
+
+Breno Leitao (3):
+  x86/bugs: Create a way to disable GDS mitigation
+  x86/bugs: spectre_v2_user default mode depends on main default
+  x86/bugs: Add a separate config for missing mitigation
+
+ arch/x86/Kconfig           | 117 +++++++++++++++++++++++++++++++++++--
+ arch/x86/kernel/cpu/bugs.c |  56 +++++++++++-------
+ 2 files changed, 147 insertions(+), 26 deletions(-)
+
+-- 
+2.39.3
 
 
