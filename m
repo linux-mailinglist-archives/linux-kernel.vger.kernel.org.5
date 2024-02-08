@@ -1,153 +1,147 @@
-Return-Path: <linux-kernel+bounces-57332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF5F984D715
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:21:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90CD384D718
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:22:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66EF3B23310
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 00:21:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4328D1F229EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 00:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E557BF4EE;
-	Thu,  8 Feb 2024 00:21:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68240FC18;
+	Thu,  8 Feb 2024 00:22:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="VKuZlJ7S"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02olkn2053.outbound.protection.outlook.com [40.92.15.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="egi9dPin"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 328401E496;
-	Thu,  8 Feb 2024 00:21:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.15.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707351692; cv=fail; b=Xcnn8vH+wO7sDVkLgmJLrJ2El4LEkf1xJGHV0VGvPmByrndSSWc5sZDFFF+BRI0dMaw0ZnoDq/VzJfVdP24mzg0hl2U/yBCidIhP8Vidmx1+6YYsUXCzW5Q61S6Cee/w5/1u0h+eS5w6Xdo4xOBQ5HFscizHK8ygqlD/vDin3UU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707351692; c=relaxed/simple;
-	bh=x7FOsXNNfa6ZgLkKQNDoVAqKgR+K/OAPwMv9L/AcCIM=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=OkSY0mo7COL6wSAIcEnhVtMUiglYa1funKc3Pt+HyqrePwg2MinN0tJBg1uXUdTZLOJbf46Ho7Mf3qkmdT2qPkkD4jDdSsyvHySTqdW9Xuk3X8ptbdghJUn6RYNsOYPmSe/4ZrCdgQbaUJvJ7yVbyGo8/P8/E79pDd4x/h5vYb4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=VKuZlJ7S; arc=fail smtp.client-ip=40.92.15.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cvJjwZzCaVhlvTzJbKq8DJOZCUQmmZbl57SHmkb29mO9KkZmOnMKbfmaj7A7IFzFCXLjGOx4FjfDVZj8qfWzN9eCX8iLJmXkYjXjftkUpCtECfcEuWM7Y7EfhgQAFqCKERpyCqHrW8cyiHdzFuPJdbRKjN87kmYN6yMVfXlG3DjkbBcMcAwfRwZWXE8k9CUhRztciHPiYGLNpaAPpLGAsLspsnKZd9bihfmqHbfzf0yf1ZHiK9OlTOMYT+XSFhPbRJ3m9mLs1xxFy8h/N/SVaprkfJFTj+YCSSpdZyiHAaGgpWx4OMFlmJV2/9/MkqbCNINFpLpFA60dREdS7YhgOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gGezQzUhQovpjvb7TPzDYs19/RhPOvl3Wlec5xnoyM4=;
- b=UHMMsRhrrLKtidOnbOj3EtV6tAApoNbpzYxPzAghcGVMYQ362/XH5PWyRznGiSAG/3I2PxQr4Q3a59JDHH30ZUgXjUWZuDdXCxY2UWHC16L6IiCvRXlHBs3I/jYIfBMjWCdWw6odkeN2Mg+u6C49hK8zG48ldq59w2PUcRqn5dVGhc6TK47hjr5OWDqu3bOuM9bwu9/pkZSMmLiDbuAomcDNdiH8Og3ud1iAXvq4RqMtCo59U/qdAIlSkgGnaMSdolDuxdJ0DkFdSFBTLNdrJV/Kc83GcOmCeIn+AF1L06dhbgW7OKW+r1noHp39Ex26grrLbdYoKhphpcRPz7MUeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gGezQzUhQovpjvb7TPzDYs19/RhPOvl3Wlec5xnoyM4=;
- b=VKuZlJ7ShvQsWA8Y1v6a4iFg5MovAPFSl45J5ub8AiigJSOHaSLOnRuqwSZyh8+J2LtCLTHLMSIg3RROwyRgEMKb6EgMH6Qr2xkdjgM6Dwtw5ExU456I4le81CvlSQlpWRjlJpDqnGky1NmKrJTN62g+wvQTNQn9azJTZGpwmutf2KBhXuQvBwuV779Vh+h+1pFq7lNpJcsWXI3rMl8d3GbMY0FaT6vqj2eAZFLIYVEmowUQvLScBlinrMASqkuGcE61EUyKt9SxtYKNvOxyPr5f9jadNjOPeeOLyZnrRioOXoYQeGgEqlN2OdgQpwXOGmAzU4hIGqX7Vyt1wJFVjA==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by SA1PR20MB6986.namprd20.prod.outlook.com (2603:10b6:806:3ad::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Thu, 8 Feb
- 2024 00:21:28 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::406a:664b:b8bc:1e6b]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::406a:664b:b8bc:1e6b%2]) with mapi id 15.20.7249.035; Thu, 8 Feb 2024
- 00:21:28 +0000
-From: Inochi Amaoto <inochiama@outlook.com>
-To: Chen Wang <unicorn_wang@outlook.com>,
-	Conor Dooley <conor@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: Jisheng Zhang <jszhang@kernel.org>,
-	Liu Gui <kenneth.liu@sophgo.com>,
-	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
-	dlan@gentoo.org,
-	Inochi Amaoto <inochiama@outlook.com>,
-	linux-riscv@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/2] riscv: sophgo: add i2c and spi device to CV180x/SG2000x SoCs
-Date: Thu,  8 Feb 2024 08:21:29 +0800
-Message-ID:
- <IA1PR20MB49539A9C5F5CFF6644ED2C2ABB442@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.43.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [bJWcXTvnHmTI6UHIS+vfUDyU80EOX8KESFfzyIaYk9cTTUUUwEUf+hJmjTCUXlnL]
-X-ClientProxiedBy: TYCPR01CA0189.jpnprd01.prod.outlook.com
- (2603:1096:400:2b0::14) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID:
- <20240208002131.162432-1-inochiama@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15BB91E49D;
+	Thu,  8 Feb 2024 00:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707351731; cv=none; b=gxNg+YGudU93AKDOlqiTJTCX8PVx9ez2J6THIirCHDP1rraUyf1X5Tupt1C99wqHKD7cOVBzIO/8kjYQIURsezo+9g+f+GpSqR8RQkZm+colvSiNJAnKuXZ4Ui0jwCQ1DUlU62aSjEIraJ6bsama2yVt4Tm3zSEFBZuqEh09hgU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707351731; c=relaxed/simple;
+	bh=p4IzyDPH59zg0aZOLIL/Gv3EduhzP79O9vaHv5fMEys=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Cb9auktRHY6UyMa3lzCgodXN3gJB+TM6eSjtSTn/6PzkyGix266LgsTW5dDfL3WlHwgbRqORnBJqmRgLmGgu8sLX3/eOnURvq4HcTnsPP0TtB7Rl9WW41lbL9+VCyUuX8AyD20R7wOXrp1D+O+JyC6t1XHevlJeekR2+ai97KZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=egi9dPin; arc=none smtp.client-ip=209.85.161.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-59883168a83so536733eaf.2;
+        Wed, 07 Feb 2024 16:22:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707351729; x=1707956529; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mfVSYGmYGYF0vwybF6QFj3Ki6AjcQEFcATXJTrLCvQI=;
+        b=egi9dPinJABBMTrzTwEwvAtlFY8Z/VxZoDwlf0U5xaZy+yYxLpp6OyGoJY5KSFm2sq
+         a8o4H6Tb4uDIhNmg5FpiTriSy3WpkL1OUw/II4TVjJvnIbEZiJTWGOkLGerMolpXzeSi
+         W0Dazp3n0Rz4GSWaemT5ax74vUgQ06HbzzpyUvTzURP0yXjNMjkadsxV/5sbgSDGWQCI
+         kPmUVtfbxTNWctgGYlWNZz43pK1FL2Pos+KMIyTHZlRjqzWbqJ/tWm5oJjaMV7bA1mTg
+         ipRcjuax2qqMVU+wwk+e/eP53rK4wpKtSlMKSga1FEB7hBrUqJNuIpMRSP2T6oud81ux
+         lmFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707351729; x=1707956529;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mfVSYGmYGYF0vwybF6QFj3Ki6AjcQEFcATXJTrLCvQI=;
+        b=uRdA9qusmhGywMkYVLD5DlIMwsYoReNn8N2TVB5MCC+xXMoezyGxzHCNA3zY0mHEw6
+         Bftt88BaS+UBNcJtf4/242PMKIk4hhQHPkkt0KJEO2aHMygoxCXmSMKF6iQr0mD9r0sg
+         tZkhhYQan8AkBD/eEs0frfpUPg8De1ISbiF2evckc7qjKc95Ta7HdD9pzEuaZSJrPOdB
+         E9SYRjLKfNAV2go7tSmvyPEEdg/HXcwJB5ZOaEnUPJ7kz6ZzKtTKqtibs9MakUT3NBsO
+         07z8kkLyWNV3nCjju+C1DfvTjlVITlBJiN7Bmd7IywKS2Gcu514xyNLWreizZt0Fe5LY
+         JGvg==
+X-Gm-Message-State: AOJu0Yydzw0NHiOsK6N9QQZ6uLeMfinlHdDZxMakQkWgbtLExwd1U8Ri
+	tXoEBhtPOwB3+Jr/ZDUwWfTCOnzknIILYFjz08vhiErCuZMtnpueUgIbL4mMXdNe9V7s7J4C2/6
+	ZtY5GFBeMN8ZRPWJYC+Oa8Ounc8I=
+X-Google-Smtp-Source: AGHT+IEGR1t1Xw+DlUF4mrZJ86FLolejaoxPZSNWkPCEkGDxE1kI5zrulvwraF0elKWCk6JARiJPjdzqzrxELqS20EI=
+X-Received: by 2002:a4a:7650:0:b0:599:7389:967b with SMTP id
+ w16-20020a4a7650000000b005997389967bmr7394200ooe.4.1707351728876; Wed, 07 Feb
+ 2024 16:22:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|SA1PR20MB6986:EE_
-X-MS-Office365-Filtering-Correlation-Id: 59c308ba-baef-431f-425d-08dc283be476
-X-MS-Exchange-SLBlob-MailProps:
-	Om8TgR6f4EBS2ftQVFRXvBH1S2ebRITSsr5Ej2yRezSpnOKhlTFTpDa7AkzAJNH2Wu60oFK5OWM86lEQU7+sFIOpv5HFAyPGqpQnpH5r9t0+tfVTiXYJojBvo7sIkmbDBpAcIK/Sw9HWxv+TUqSGbzUd05ynFIOOp9Un/aEI7N42ZhQHpdhuw3bh2GaZ3jBkROnfTptBcz0Q90OQ/nm4aPWQP5SxJM74wlSVzOO1zW7IFdO9MSqCtjgPMN8GK2qENkFTwoGsrOTxODpaI0VgmzR80KtoGjtr6XgL9M6bonQNjo+IksqkAjonqVY5JcDSFDlrLF+Lx63WLlZgR194IRt1SM0MHuBVH1WugIEnNwS98jrAbNAp60LpyqGcLoxgSyXfUFfzxPZGOLBB0bwW53NTyJxNAhvmqDF9zvY+JzKhl3O1fuO3YExGYNFVpgsjPi5gFSbxW16Mimwm+abfOAEH0b47Spqj5Kk9KLznmG6FRhKnn40dfDYdtZmiOG2vdEuCIoSYLgzBokmg1poyV10skJrmROPdNFf27WKLrPc8ai4oHS/PpCPn12GAHmhtt9ud+bxGZ5ZFJk6l64IWP0JgFVCMnLu0jVyQnYx4W7R7CQACWaowZu1nG8b48zDnaCQw+cKCQaxdecwaBzruOuc3CZlGQmZfqNWko+ssU3+QFs/3iBdMNtz1fk1UZpjXDkN5818noeUnjCwSWtxkYORC12iTBEjF6UcmGkbL4fIT9Nme+dghcFq6BvY+AkC7FdORbK5p+3Siv6N+jv697bVXmtvSzOGvVer5vF6PmvrrrEI0rG/oG9AtZSYDVj1Sq+5WPCtrT0XumJad/0MDSRlpISoc3MxI
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	m+I/0QrCtuzxGlsotQs/ujGS3I1GSQ0nwvZ5V7/chSnhdVeEz6GwXCipZsOZTALh0QkS+ULRLWiYJ3iEwITiAJ/il2UL7KtmEa3UoQSAyPFxjai/tHiiAw9UbJRU0rsXLx0WO4uLnSjGQdGFeHGW+KRl9ZFL2grNd0mr55rdltxRraMl5qABzkBM3chu4aVWGpeuFQ8QxdDSZQVqYaI4XsbExOMcLzaU1IUtmdiOh2A158H9Nyze4nwkpzEN/MAogHJEjeeQ4AzoYzWQGGq6G5XJuilcO4QNoeZNObvre1lI12wB3dattcliMKMsqfDM+w+OE0JI+/dALoRh1DMq893Eu0/vv56yZ5XedlFcweinubfBGCCRjYlqByL408xsp9KCrnBJYFvXInKVtafnnhe/0CwY7/xNcCR/5N2VQW4yOZbggLDEZy0ltY+yfr/B+KEcMhXUKC5RcOdvzPs3U5Ei+A/eJzIL7bHnmDFMViIdErWhEl1TLsrDdtW9jca0d+DOffXQgt+Kdvi+uDQNViqNcwiwpitNLp1VmdhbwPN4y8uegDmguwZZR3ux26Yi8CvbAPy6yhEi4b2vFrl74TiSqUmaEt9JJRrd6F9jMMq3b1WA3RHmfo7ZsTBg57/k
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?cBTMRBNrDkL7sNPWEI5b5puQKg71j/Qrnh91IiH7XyvuQ/Nns9tOSy2g0Mz3?=
- =?us-ascii?Q?NMXxj8CmUVj5mIU3llap6zMX+yVG9rFTRjzBHijc1hfRXua4IBQgiGKVGv5L?=
- =?us-ascii?Q?htSeaQOZUS6hGD8yQeMkjAJJRT6u7HD9mXsTJxLEXhCLSFOG27HWz/W8b5vC?=
- =?us-ascii?Q?vk3kv5937fNqgroXbu/8aRSrjadIU1abYgz30WuV6UQju24N3YDDzPmovMGF?=
- =?us-ascii?Q?RMnM4BLMf6wG/0o8ja7NzEWYZvY2V5jbtiYIGkVQpIAAS1fES1kObKb25bLe?=
- =?us-ascii?Q?VzIHTRb9pv6Z0iisK46yAEnKUhm+s08IwbFfYOgtYm1rzQEJ715IMdiisV7P?=
- =?us-ascii?Q?dXPMj4MbrxDFUcGDO7h1HMZR7iBUEWtS73jbQuahqQAmysjndgRbC3jaY5IL?=
- =?us-ascii?Q?3v7VzeNNMfhit+i6pV8BCJ71kXhed3l/KMVtfZ6BHYAz/r2F5dLYvLdxAjY8?=
- =?us-ascii?Q?t12wwPzaItuTTocWxQNywnu7XeJHlkxbKFrONztzs6JwjV45yhqZ9qWT39om?=
- =?us-ascii?Q?XydtwVefGjK6XOoZjcQSpqCWOOg3fEMId8/40kUVzRDzAQcHzS+w2TXFeDSh?=
- =?us-ascii?Q?inzYjH0W3yx6iktQzNV2dKOUiPqQqv4t0ktx3L+oxy3SKr8jlzDS2fpwO6Wj?=
- =?us-ascii?Q?5C05M0sA84PnLSF8qsYNkE0kNZOtjhCLjvBPZEpw6nzffXzB+kEXD5l8osjV?=
- =?us-ascii?Q?L/IBRSHqSxOdFiD4hIo/dKwGYM/ms1Sczbt78rm2T/rkb16xm88/wbdWJVMf?=
- =?us-ascii?Q?4O/QNc1NMYb3J1FYRm7uL3ScbZcM2CNS2gyLlPVgXS6ouEqm/tBbVzNsppfU?=
- =?us-ascii?Q?wjQaMLL60tyjKU4YXa8y7UDrxOsXeg+EgFOqV+jHwXfHjzOeDGBhKQb7t166?=
- =?us-ascii?Q?lgQWD4vkYOi8qCbCSXl6m4x7dIad9hid+HYGoqNjSQ5ILdA/uJwSYGQd/kpi?=
- =?us-ascii?Q?uiarhSfwJRMVSQAHbBNW2he4Y2B+CC4+B850yK1tv7UTaeW+66ttkdZuQSHS?=
- =?us-ascii?Q?PtwSO7VogkL2TmaLWIIBpAbBRxx7gHF9yNTqB0fYymihuSLZHZczt2/iFujr?=
- =?us-ascii?Q?g4uWQjifqEp2qEldV/RiHx3uh9kcVQp8GyqgMHfla/OMrEsHm/jDz5xYifNG?=
- =?us-ascii?Q?6Lvy47CGKrB84MKw6P1MjEqEfwXDgu+PftDlT1p9mxKc6FI1KZXw3f9kJ8/K?=
- =?us-ascii?Q?SIsonGQE2wN3nryLuVodmonNcsp/zWPHGJw9n1KgbvCv/ZGWxYt8S5tpiqrz?=
- =?us-ascii?Q?ZwN95+EqnGaj09Bt0horRVrkRpoJI+UMRPdkiKHRjg=3D=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59c308ba-baef-431f-425d-08dc283be476
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2024 00:21:28.3906
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR20MB6986
+References: <20240207230430.82801-1-jmaxwell37@gmail.com> <36a95b38-99c5-4fda-b9bf-8b9fb3b67e1c@lunn.ch>
+In-Reply-To: <36a95b38-99c5-4fda-b9bf-8b9fb3b67e1c@lunn.ch>
+From: Jonathan Maxwell <jmaxwell37@gmail.com>
+Date: Thu, 8 Feb 2024 11:21:33 +1100
+Message-ID: <CAGHK07Dwv_fkP222WtMeH-E+bqOG8CFGQyNObDtkYbmeD4LELQ@mail.gmail.com>
+Subject: Re: [net-next] intel: make module parameters readable in sys filesystem
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add i2c and spi devices
+On Thu, Feb 8, 2024 at 11:04=E2=80=AFAM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Thu, Feb 08, 2024 at 10:04:30AM +1100, Jon Maxwell wrote:
+> > Linux users sometimes need an easy way to check current values of modul=
+e
+> > parameters. For example the module may be manually reloaded with differ=
+ent
+> > parameters. Make these visible and readable in the /sys filesystem to a=
+llow
+> > that.
+> >
+> > Signed-off-by: Jon Maxwell <jmaxwell37@gmail.com>
+> > ---
+> >  drivers/net/ethernet/intel/e100.c                 | 6 +++---
+> >  drivers/net/ethernet/intel/e1000/e1000_main.c     | 2 +-
+> >  drivers/net/ethernet/intel/e1000e/netdev.c        | 2 +-
+> >  drivers/net/ethernet/intel/i40e/i40e_main.c       | 2 +-
+> >  drivers/net/ethernet/intel/igb/igb_main.c         | 4 ++--
+> >  drivers/net/ethernet/intel/igbvf/netdev.c         | 2 +-
+> >  drivers/net/ethernet/intel/igc/igc_main.c         | 2 +-
+> >  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c     | 6 +++---
+> >  drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c | 2 +-
+> >  9 files changed, 14 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/i=
+ntel/e100.c
+> > index 01f0f12035caeb7ca1657387538fcebf5c608322..2d879579fc888abda880e71=
+05304941db5d4e263 100644
+> > --- a/drivers/net/ethernet/intel/e100.c
+> > +++ b/drivers/net/ethernet/intel/e100.c
+> > @@ -170,9 +170,9 @@ MODULE_FIRMWARE(FIRMWARE_D102E);
+> >  static int debug =3D 3;
+> >  static int eeprom_bad_csum_allow =3D 0;
+> >  static int use_io =3D 0;
+> > -module_param(debug, int, 0);
+> > -module_param(eeprom_bad_csum_allow, int, 0);
+> > -module_param(use_io, int, 0);
+> > +module_param(debug, int, 0444);
+>
+> ethtool should show you debug. And it is pretty much standardized, it
+> should work for most ethernet interfaces which support msglvl. So i
+> would say it is better to teach your Linux users how to use ethtool
+> for this.
 
-The patch depends on the clk patch:
-https://lore.kernel.org/all/IA1PR20MB4953C774D41EDF1EADB6EC18BB6D2@IA1PR20MB4953.namprd20.prod.outlook.com/
+Yes they know about that. But take the scenario where  allow_unsupported_sf=
+p
+is set 0 after it was set to 1 at boot. That won't be logged.
 
-Changed from v1:
-1. adjust the order of properties in dts.
+>
+> There might be some value in this change for module parameters which
+> are not standardised, but i suggest you drop debug from the patchset.
+>
 
-Inochi Amaoto (2):
-  riscv: dts: sophgo: cv18xx: Add spi devices
-  riscv: dts: sophgo: cv18xx: Add i2c devices
+Fair enough makes sense seeing that it can be controlled by ethtool.
+I'll submit a v2 with that change.
 
- arch/riscv/boot/dts/sophgo/cv18xx.dtsi | 99 ++++++++++++++++++++++++++
- 1 file changed, 99 insertions(+)
+Regards
 
---
-2.43.0
+Jon
 
+>     Andrew
 
