@@ -1,140 +1,113 @@
-Return-Path: <linux-kernel+bounces-57565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FAD484DAC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:42:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA54F84DACC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:45:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22B011F22C94
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:42:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46687B21C51
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:45:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443AD69970;
-	Thu,  8 Feb 2024 07:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83216997A;
+	Thu,  8 Feb 2024 07:44:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b="HFF2JT2k"
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GhmnxkKq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBEBF6A024;
-	Thu,  8 Feb 2024 07:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.156.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0CFE69312;
+	Thu,  8 Feb 2024 07:44:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707378152; cv=none; b=MWuTqHIL9CV2kKYAJj90BUbO1DwKESYVQSj/YZrsYznoKlkZM6kofkuB+gOdYUA+/i83SPCiJ19s8SBWF8mVjZ5svy7/vc4ZDSgyOTaB1NCu9je7gmRhyWB+1jzoe+4yVsHygS9D5pLEnCkP50zDH1700RsFhCcdhN4+afl3jzo=
+	t=1707378295; cv=none; b=j0xf3vozDToM7Tt1hrUVanA0uNfhJEkkkbwEgw5DDh6vsYH1ozW4rW9F+OMPEXUOQFu1qfyMz5JCXQ3sZreY87c6mfVWlZCYTp2O7D7pqeE63z9eUKKeb01yO5pC/iJzoPzny7Nkx2sJHw0BvZAuxFlptIiGZd5PUi20Cj+aUkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707378152; c=relaxed/simple;
-	bh=4kwN6kbUMPfDh8Daeh4OSPI9rA8xZ0ThDzZtBhr0M38=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=stG44ETv7Uidvg55WC2a7InRh7EEeu4hhN44E1xpqa3271WqT/jUWXC//JahFJtMJ6J9Lx+04AAJY4ZhpVdr03kdHMgAplIwlpNB2b5iXPPDdRik8pXl+4z1Pe8MX0EAKS6enjtU/UU7vqgG0m2tGns1zm4YZqLAFI6MmAl7l6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net; spf=pass smtp.mailfrom=bewilderbeest.net; dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b=HFF2JT2k; arc=none smtp.client-ip=71.19.156.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bewilderbeest.net
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:712b:6300::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: zev)
-	by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 42776B20;
-	Wed,  7 Feb 2024 23:42:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-	s=thorn; t=1707378149;
-	bh=nc6/jWnwLX397A9Ey6yCLTE82wXsWB+Hnpcpb6UbAaM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HFF2JT2kZMnF214qt6j38Xz6hmZbZihcccEsXXLVpOZge0Y+/IFzMg908eI0wbIV7
-	 YXtGEDNHiBGpRa8I/5d46CgHNKKNxsl9z5aeMrfLDPQ/eBeQ8KHqpzb4vVZKFcJl+7
-	 t5j2ipv2LWbAGVn8TTcMYKOsCE+Hbi5BrgLIhoYo=
-Date: Wed, 7 Feb 2024 23:42:27 -0800
-From: Zev Weiss <zev@bewilderbeest.net>
-To: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Florent Revest <revest@chromium.org>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	"Mike Rapoport (IBM)" <rppt@kernel.org>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Yang Shi <yang@os.amperecomputing.com>,
-	Stefan Roesch <shr@devkernel.io>, Oleg Nesterov <oleg@redhat.com>,
-	David Hildenbrand <david@redhat.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Miguel Ojeda <ojeda@kernel.org>, openbmc@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-	Sam James <sam@gentoo.org>, stable@vger.kernel.org
-Subject: Re: [PATCH 0/2] ARM: prctl: Reject PR_SET_MDWE where not supported
-Message-ID: <aee52007-b805-40a0-976b-eee52c98099c@hatter.bewilderbeest.net>
-References: <20240208012620.32604-4-zev@bewilderbeest.net>
- <385d72eb-2443-42e5-858d-0cc083a29a26@gmx.de>
+	s=arc-20240116; t=1707378295; c=relaxed/simple;
+	bh=w0JYTTbDylhH/2WBOTyAoRBXLxPATEaGQ6QDR/k3++A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Yqz9V89t7yIINWeU0o6iCE8mIeTuTXQWY0SaZJa0raOd0eLToGpSufm4nL29J8Sgf5JQrKDfT4utviYRcjBelgdWAhK+PAfYpwFY0CkxCcS40MCLydaWrGxbRb03JmSXFdPTBrSIIEXFRfVnNwBtJWcgfT9YtI7EeFks9FjJRAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GhmnxkKq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84CADC433F1;
+	Thu,  8 Feb 2024 07:44:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707378294;
+	bh=w0JYTTbDylhH/2WBOTyAoRBXLxPATEaGQ6QDR/k3++A=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=GhmnxkKqQ94zEoh0hLGsKyGG6s4MP7qMAcF/Tlz5ok1tg5gE4xLZlFpB5CWLoq4Cr
+	 p/rMvudaqPULSzRiOXW592ZJRs0c7L/DRu563zCvTgYmwJWFtRZ1yYWenno1VpmFty
+	 fznb2+zWC66vimbWjYKrhu7W8C06RmIZcQpZnvrG+FxKauEkK/X4LytC5V3KU/3afJ
+	 vIXfUJzrD4e68+8FI4rhyWPi6ncqlFG2qMdUdI23O1PVSc7pT8cljs+M1KQzqFdcJx
+	 pi34b0+qfjl0A+0vOYbmxlT9cAykyex9zVks4z7suydtsznh8pGAHQSJ5hvsH+3nZD
+	 x3xlt8yXWQNUg==
+Message-ID: <d10350d1-11e6-497f-9e81-d484bc0aece1@kernel.org>
+Date: Thu, 8 Feb 2024 16:44:51 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <385d72eb-2443-42e5-858d-0cc083a29a26@gmx.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ahci: asm1064: correct count of reported ports
+Content-Language: en-US
+To: Andrey Melnikov <temnota.am@gmail.com>,
+ Hans de Goede <hdegoede@redhat.com>
+Cc: linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <vbpzr7uqpfemb3qa6xy2fxioct44l5vugg2wkywyolfpzqcmau@jgrrhmk2scaj>
+ <31d9b48d-320b-44b6-9ab5-d53f741dcc72@redhat.com>
+ <CA+PODjozWG6iXcR01KE4N1DyTKeKXtravwanWS3Gtq8mEqutuA@mail.gmail.com>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <CA+PODjozWG6iXcR01KE4N1DyTKeKXtravwanWS3Gtq8mEqutuA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Helge,
-
-Thanks for taking a look!
-
-On Wed, Feb 07, 2024 at 11:02:24PM PST, Helge Deller wrote:
->Hi Zev,
->
->On 2/8/24 02:26, Zev Weiss wrote:
->>Hello,
+On 2/8/24 16:21, Andrey Melnikov wrote:
 >>
->>I noticed after a recent kernel update that my ARM926 system started
->>segfaulting on any execve() after calling prctl(PR_SET_MDWE).  After
->>some investigation it appears that ARMv5 is incapable of providing the
->>appropriate protections for MDWE, since any readable memory is also
->>implicitly executable.
+>> Hi Andrey
 >>
->>(Note that I'm not an expert in either ARM arch details or the mm
->>subsystem, so please bear with me if I've botched something in the
->>above analysis.)
+>> On 2/7/24 10:58, Andrey Jr. Melnikov wrote:
+>>> The ASM1064 SATA host controller always reports wrongly,
+>>> that it has 24 ports. But in reality, it only has four ports.
+>>>
+>>> before:
+>>> ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
+>>> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xffff0f impl SATA mode
+>>> ahci 0000:04:00.0: flags: 64bit ncq sntf stag pm led only pio sxs deso sadm sds apst
+>>>
+>>> after:
+>>> ahci 0000:04:00.0: ASM1064 has only four ports
+>>> ahci 0000:04:00.0: forcing port_map 0xffff0f -> 0xf
+>>> ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
+>>> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xf impl SATA mode
 >>
->>The prctl_set_mdwe() function already had some special-case logic
->>added disabling it on PARISC (commit 793838138c15, "prctl: Disable
->>prctl(PR_SET_MDWE) on parisc"); this patch series (1) generalizes that
->>check to use an arch_*() function, and (2) adds a corresponding
->>override for ARM to disable MDWE on pre-ARMv6 CPUs.
->
->Instead of splitting it out to a new function in mman.h,
->I'd prefer having it as config option, e.g. ARCH_HAS_NO_MDWE_SUPPORT (?)
->which could be checked instead.
->For parisc we still want to allow mdwe in the future, we just have
->to wait until most user-space programs have updated to the latest
->binaries which don't need an executable stack any longer.
->
+>> This still says 24 ports, is that a copy & paste error in the commit msg ?
+> 
+> This is the raw value of the read-only Host Capability register, how
+> should it be changed here? If silicon lies about its configuration -
+> kerel prints what it sees from silicon.
 
-I considered that, but it seems that ARM kernels at least may not know 
-the answer to that question at compile-time -- see patch 2, where the 
-ARM implementation does a runtime check on cpu_architecture().
+This should print the actual number of ports that you forced with the port map
+change:
 
->>With the series applied, prctl(PR_SET_MDWE) is rejected on ARMv5 and
->>subsequent execve() calls (as well as mmap(PROT_READ|PROT_WRITE)) can
->>succeed instead of unconditionally failing; on ARMv6 the prctl works
->>as it did previously.
->>
->>Since this was effectively a userspace-breaking change in v6.3 (with
->>newer MDWE-aware userspace on older pre-MDWE kernels the prctl would
->>simply fail safely) I've CCed -stable for v6.3+, though since the
->>patches depend on the PARISC one above it will only apply cleanly on
->>the linux-6.6.y and linux-6.7.y branches, since at least at time of
->>writing the 6.3 through 6.5 branches don't have that patch backported
->>(due to further missing dependencies [0]).
->>[0] https://lore.kernel.org/all/2023112456-linked-nape-bf19@gregkh/
->
->I think you don't need to worry about that, since stable kernel series
->for 6.3 up to 6.5 were stopped...
->
+diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
+index 1a63200ea437..7cb3f137bc1b 100644
+--- a/drivers/ata/libahci.c
++++ b/drivers/ata/libahci.c
+@@ -2637,7 +2637,7 @@ void ahci_print_info(struct ata_host *host, const char *scc_s)
+                vers & 0xff,
 
-Ah, hadn't realized that -- thanks for the tip.
+                ((cap >> 8) & 0x1f) + 1,
+-               (cap & 0x1f) + 1,
++               (cap & hpriv->saved_port_map) + 1,
+                speed_s,
+                impl,
+                scc_s);
 
 
-Zev
+-- 
+Damien Le Moal
+Western Digital Research
 
 
