@@ -1,131 +1,220 @@
-Return-Path: <linux-kernel+bounces-58246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A063A84E36F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:45:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6216B84E372
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:46:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F994B2317B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:45:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FF891C23D59
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E96FB79DD8;
-	Thu,  8 Feb 2024 14:45:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 103287A713;
+	Thu,  8 Feb 2024 14:46:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="GsyBZ8Du"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E1lymJLx"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9685178B4A;
-	Thu,  8 Feb 2024 14:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C011D69300;
+	Thu,  8 Feb 2024 14:46:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707403502; cv=none; b=aqZzIU2yJAPZ8JKM0ctoHGZzzSe2uk3yzhj+EzHJ7DlLbNyCisl2EB5xSXQc6K99qch1o5HJEQ6LzXu3vwFaSKg0iwvg6xk6H54HDyZnGygYKvHHU0/sW7Hjk4JWwO4vDwWvZ9UiEWbD/ou4gDBCwpUE5KVPFbx0yV+B3Wfyvh0=
+	t=1707403573; cv=none; b=L/xALv6rolQ69/W74oWyJAIYU/7SDcOdMFUAROaLhgwZ3SKpF4X4S16pmmokteSSZQMXw56BGthWB7psWid+sI949ReMXzGhb7rYDvYs+hRnbscGl5QiXOFnlEC7xM6Rh4lreonLj5aFJxIQO5ywPaZ2c18zJ/9wu9jiTvBTImU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707403502; c=relaxed/simple;
-	bh=Xm7DzbnQu2Q8/mxLnKdHxr/2KsYmswX72X95G2g9xgg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=baBkULZJ39EAuLU4j+oXglcRm/KSoiA4l2S/TqyKGEsyG5IZC8EVOORlTsjAs7decH5J4Gank6Jo5wYlkNNogouh3cMz5RhZ9q6Gc31Wxw13ccvb/ZoWjbpSMNC7+DVig4GLu1hHKaz62MoLKa+G8SxXrMMa98dNinIRkog/Y6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=GsyBZ8Du; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1707403499; x=1738939499;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=hH9tUy1Ax16/EICUN8RJkG7wisVKzi/kLqYs+DajzB0=;
-  b=GsyBZ8DuRDobwSmomC0BvS9LRDeLRgrGgj3m5ZWsTMq3kw1Cy5addMtJ
-   kDnageym2vGnn3LStv1WOy8Wf+LDzBSe/u5oP80dBBcPJk4se2n3KMqD1
-   nn/TvtybxRaIvEt6Fvg5k9LeLmhKok9cBhh4QJrUE8P8SKhnmaFFrY/9q
-   nveB3gvpI1Pe2ImHmDVEerFVCvzxQMgbFQya4bIah78TIE0FkSgiWbRDd
-   7U6gvJfWgQkYYaRTxQDKFVEyOLhvFoawhZI5ny6FPMRfn5+ZalgySq3Ue
-   USZkQqu/bzMrXzfsx6PIUkeRrSmK8+VwQvBsdL6mDlGAR1H21l9ErM8Wp
-   g==;
-X-IronPort-AV: E=Sophos;i="6.05,254,1701126000"; 
-   d="scan'208";a="35319043"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 08 Feb 2024 15:43:47 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 0541D280075;
-	Thu,  8 Feb 2024 15:43:47 +0100 (CET)
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Conor Dooley <conor@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux@ew.tq-group.com" <linux@ew.tq-group.com>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] arm64: dts: freescale: minor whitespace cleanup
-Date: Thu, 08 Feb 2024 15:43:47 +0100
-Message-ID: <3548464.iIbC2pHGDl@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <20240208105217.128748-1-krzysztof.kozlowski@linaro.org>
-References: <20240208105217.128748-1-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1707403573; c=relaxed/simple;
+	bh=Ycp/275UvtnRb1jLK/6lublEGbsUfigtHuXe5sUsrlI=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=A+E5FrtAJi0oe7Be2vdejpyAPThaUF8v8mC+8WsmYXeBuxB/G6VYtkd5qqxM6xSwdgfWbhYlfKHTwYfWxnYDu1E9WmXyrlzdzyyITpeSELdmtFwx2d4EsD9/Qsa6X1TAO2pUEae3lc+wgVAkhS0PTpC7I9xISLwDqwJb+NPAZdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E1lymJLx; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707403571; x=1738939571;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=Ycp/275UvtnRb1jLK/6lublEGbsUfigtHuXe5sUsrlI=;
+  b=E1lymJLxAtmSs/6pRzof05u+1YvHlW4FqiNduLF7XIk8prQx059lDx6u
+   fbt4o09nD7jGwBDvB+kMsvnJDoA149BwltG08NVjO9b5s3eDUI9mt7Dnd
+   hPtEhjeDyM5CTc1UgImHEKeOzOJ6YTHK3DmXfKQblLaaQAygCzF1ipOHI
+   22cX6U+wvdXb+d3W1CEzmpVfX/3M9M0NQQq2J6+w1xejU0/7k+WMPhsBq
+   AlkbpB3X3eaZJvc6+dHdKG411eCeH2bPtDL3gu9vfwXmJVbKOqkG3qxrX
+   AoUbVnsd8xIW3pP+sBKhLto0s7XBSM7fbRsNhuZpQQcIV4D8iv9k3rOf9
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="1384812"
+X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
+   d="scan'208";a="1384812"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 06:46:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
+   d="scan'208";a="1658892"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.52.95])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 06:46:08 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Thu, 8 Feb 2024 16:46:04 +0200 (EET)
+To: "David E. Box" <david.e.box@linux.intel.com>
+cc: Netdev <netdev@vger.kernel.org>, 
+    sathyanarayanan.kuppuswamy@linux.intel.com, 
+    LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 7/8] tools: Fix errors in meter_certificate display
+In-Reply-To: <20240201010747.471141-8-david.e.box@linux.intel.com>
+Message-ID: <654cf0d5-e6c4-ac98-154a-29c0536ae2a4@linux.intel.com>
+References: <20240201010747.471141-1-david.e.box@linux.intel.com> <20240201010747.471141-8-david.e.box@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 
-Hi Krzysztof,
+On Wed, 31 Jan 2024, David E. Box wrote:
 
-Am Donnerstag, 8. Februar 2024, 11:52:26 CET schrieb Krzysztof Kozlowski:
-> The DTS code coding style expects exactly one space before '{'
-> character.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> The maximum number of bundles in the meter certificate was hardcoded to
+> 8 which caused extra bundles not to display. Instead, since the bundles
+> appear at the end of the file, set it to the remaining size from where
+> the bundles start.
+> 
+> Add missing 'version' field to struct meter_certificate.
+> 
+> Fix errors in the calculation of the start position of the counters and
+> in the display loop.
 
-Thanks.
-Reviewed-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Why are all these bundled into a single commit? They sound like 
+independent changes.
 
+-- 
+ i.
+
+> Fixes: aad129780bae ("platform/x86/intel/sdsi: Add support for reading the current meter state")
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 > ---
->  arch/arm64/boot/dts/freescale/imx8ulp-evk.dts | 2 +-
->  arch/arm64/boot/dts/freescale/mba8xx.dtsi     | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
-> b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts index
-> 69dd8e31027c..24bb253b938d 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
-> @@ -37,7 +37,7 @@ m33_reserved: noncacheable-section@a8600000 {
->  			no-map;
->  		};
->=20
-> -		rsc_table: rsc-table@1fff8000{
-> +		rsc_table: rsc-table@1fff8000 {
->  			reg =3D <0 0x1fff8000 0 0x1000>;
->  			no-map;
->  		};
-> diff --git a/arch/arm64/boot/dts/freescale/mba8xx.dtsi
-> b/arch/arm64/boot/dts/freescale/mba8xx.dtsi index
-> 6164fefb9218..3b4c5fa21f31 100644
-> --- a/arch/arm64/boot/dts/freescale/mba8xx.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/mba8xx.dtsi
-> @@ -466,7 +466,7 @@ pinctrl_pca9538: pca9538grp {
->  		fsl,pins =3D <IMX8QXP_USDHC1_RESET_B_LSIO_GPIO4_IO19=09
-0x00000020>;
->  	};
->=20
-> -	pinctrl_pcieb: pcieagrp{
-> +	pinctrl_pcieb: pcieagrp {
->  		fsl,pins =3D <IMX8QXP_PCIE_CTRL0_PERST_B_LSIO_GPIO4_IO00=09
-0x06000041>,
->  			   <IMX8QXP_PCIE_CTRL0_CLKREQ_B_LSIO_GPIO4_IO01=09
-0x06000041>,
->  			   <IMX8QXP_PCIE_CTRL0_WAKE_B_LSIO_GPIO4_IO02=09
-0x04000041>;
-
-
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
-
+>  tools/arch/x86/intel_sdsi/intel_sdsi.c | 51 +++++++++++++++-----------
+>  1 file changed, 30 insertions(+), 21 deletions(-)
+> 
+> diff --git a/tools/arch/x86/intel_sdsi/intel_sdsi.c b/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> index 2cd92761f171..a8fb6d17405f 100644
+> --- a/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> +++ b/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> @@ -43,7 +43,6 @@
+>  #define METER_CERT_MAX_SIZE	4096
+>  #define STATE_MAX_NUM_LICENSES	16
+>  #define STATE_MAX_NUM_IN_BUNDLE	(uint32_t)8
+> -#define METER_MAX_NUM_BUNDLES	8
+>  
+>  #define __round_mask(x, y) ((__typeof__(x))((y) - 1))
+>  #define round_up(x, y) ((((x) - 1) | __round_mask(x, y)) + 1)
+> @@ -154,11 +153,12 @@ struct bundle_encoding {
+>  };
+>  
+>  struct meter_certificate {
+> -	uint32_t block_signature;
+> +	uint32_t signature;
+> +	uint32_t version;
+> +	uint64_t ppin;
+>  	uint32_t counter_unit;
+> -	uint64_t ppin;
+>  	uint32_t bundle_length;
+> -	uint32_t reserved;
+> +	uint64_t reserved;
+>  	uint32_t mmrc_encoding;
+>  	uint32_t mmrc_counter;
+>  };
+> @@ -167,6 +167,9 @@ struct bundle_encoding_counter {
+>  	uint32_t encoding;
+>  	uint32_t counter;
+>  };
+> +#define METER_MAX_NUM_BUNDLES							\
+> +		(METER_CERT_MAX_SIZE - sizeof(struct meter_certificate) /	\
+> +		 sizeof(struct bundle_encoding_counter))
+>  
+>  struct sdsi_dev {
+>  	struct sdsi_regs regs;
+> @@ -334,6 +337,7 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
+>  	uint32_t count = 0;
+>  	FILE *cert_ptr;
+>  	int ret, size;
+> +	char name[4];
+>  
+>  	ret = sdsi_update_registers(s);
+>  	if (ret)
+> @@ -375,32 +379,39 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
+>  	printf("\n");
+>  	printf("Meter certificate for device %s\n", s->dev_name);
+>  	printf("\n");
+> -	printf("Block Signature:       0x%x\n", mc->block_signature);
+> -	printf("Count Unit:            %dms\n", mc->counter_unit);
+> -	printf("PPIN:                  0x%lx\n", mc->ppin);
+> -	printf("Feature Bundle Length: %d\n", mc->bundle_length);
+> -	printf("MMRC encoding:         %d\n", mc->mmrc_encoding);
+> -	printf("MMRC counter:          %d\n", mc->mmrc_counter);
+> +
+> +	get_feature(mc->signature, name);
+> +	printf("Signature:                    %.4s\n", name);
+> +
+> +	printf("Version:                      %d\n", mc->version);
+> +	printf("Count Unit:                   %dms\n", mc->counter_unit);
+> +	printf("PPIN:                         0x%lx\n", mc->ppin);
+> +	printf("Feature Bundle Length:        %d\n", mc->bundle_length);
+> +
+> +	get_feature(mc->mmrc_encoding, name);
+> +	printf("MMRC encoding:                %.4s\n", name);
+> +
+> +	printf("MMRC counter:                 %d\n", mc->mmrc_counter);
+>  	if (mc->bundle_length % 8) {
+>  		fprintf(stderr, "Invalid bundle length\n");
+>  		return -1;
+>  	}
+>  
+>  	if (mc->bundle_length > METER_MAX_NUM_BUNDLES * 8)  {
+> -		fprintf(stderr, "More than %d bundles: %d\n",
+> +		fprintf(stderr, "More than %ld bundles: actual %d\n",
+>  			METER_MAX_NUM_BUNDLES, mc->bundle_length / 8);
+>  		return -1;
+>  	}
+>  
+> -	bec = (void *)(mc) + sizeof(mc);
+> +	bec = (void *)(mc) + sizeof(*mc);
+>  
+> -	printf("Number of Feature Counters:          %d\n", mc->bundle_length / 8);
+> -	while (count++ < mc->bundle_length / 8) {
+> -		char feature[5];
+> +	printf("Number of Feature Counters:   %d\n", mc->bundle_length / 8);
+> +	while (count < mc->bundle_length / 8) {
+> +		char feature[4];
+>  
+> -		feature[4] = '\0';
+>  		get_feature(bec[count].encoding, feature);
+> -		printf("    %s:          %d\n", feature, bec[count].counter);
+> +		printf("    %.4s:          %d\n", feature, bec[count].counter);
+> +		++count;
+>  	}
+>  
+>  	return 0;
+> @@ -480,7 +491,7 @@ static int sdsi_state_cert_show(struct sdsi_dev *s)
+>  			sizeof(*lki) +			// size of the license key info
+>  			offset;				// offset to this blob content
+>  		struct bundle_encoding *bundle = (void *)(lbc) + sizeof(*lbc);
+> -		char feature[5];
+> +		char feature[4];
+>  		uint32_t i;
+>  
+>  		printf("     Blob %d:\n", count - 1);
+> @@ -493,11 +504,9 @@ static int sdsi_state_cert_show(struct sdsi_dev *s)
+>  		printf("        Blob revision ID:           %u\n", lbc->rev_id);
+>  		printf("        Number of Features:         %u\n", lbc->num_bundles);
+>  
+> -		feature[4] = '\0';
+> -
+>  		for (i = 0; i < min(lbc->num_bundles, STATE_MAX_NUM_IN_BUNDLE); i++) {
+>  			get_feature(bundle[i].encoding, feature);
+> -			printf("                 Feature %d:         %s\n", i, feature);
+> +			printf("                 Feature %d:         %.4s\n", i, feature);
+>  		}
+>  
+>  		if (lbc->num_bundles > STATE_MAX_NUM_IN_BUNDLE)
+> 
 
