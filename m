@@ -1,76 +1,73 @@
-Return-Path: <linux-kernel+bounces-58380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7952984E576
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:52:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B71E684E581
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E47A1C20FD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:52:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BAE2B28967
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:53:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D06682C64;
-	Thu,  8 Feb 2024 16:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102FF7EF1F;
+	Thu,  8 Feb 2024 16:53:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AxBJ0I4B"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="X8AVj6qI"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF07D81ABC;
-	Thu,  8 Feb 2024 16:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59CFB7D406
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 16:53:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707411090; cv=none; b=DeDhzhkdbNK24hZmMw651lCwRdZyAcgdc2vFH+13T5vi0Yq8ShF5dE7RJt+fRcfqXBkZ6QH9a9MgCQLX/Jyl6RoWzDr1bhYxY4h0R0yWRdWFRa07XXrfBfqtnr8AO4EW2cuq7KD6jHJR6SuQtI6axlGTNMbo4d+xBoA4Ol7AnEs=
+	t=1707411193; cv=none; b=EB+7yv1jnFjoC0/h3L/0Hoordy8CAAwnnLG2oXb4xBHcpJ/TL89vho5qeQiKIEVsLo/yt7LAuKo4AX1j8EyIWd9nrjXarijkj4408McPICsXozufzjKRxsE+uK5RlAlOEa00wrfp5qBnBx+TdNEfSF2qzmRUOXp87nhbf3+22LQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707411090; c=relaxed/simple;
-	bh=xzC243P64BD4dxu+mYtwLuALx8x8SKQa6GlBkvYhvAY=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=UqXeq/Gy3RgrhA+L3yMBL8Wz4UfSPj+SokVYQyMeiiMWLHlz9tLx6DGTc5K/2eJr4Ay+38mmouqnLkehr5qzA4ra/Sn9pVP2GiQyKLoLM7iux1tfDL1p9uBlb3Nxgx7SE8hHvmXCWnwcWea2fJJb2XhaS0bkZe3SsR7Q1Z9YEjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AxBJ0I4B; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41008ab427fso651315e9.0;
-        Thu, 08 Feb 2024 08:51:28 -0800 (PST)
+	s=arc-20240116; t=1707411193; c=relaxed/simple;
+	bh=yc6Zt2hehyFqKBwoD6aZdoobJ4fIeVmjIGmLwx90QIs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MrFVTu/D5HhVSUohYafQIeuJxnnBc7VigkeV9BcSst3r9Y5i2xKI6NLS7ANSn2rUhZ2/YSKPjDmg3OZrSH4ikHCTfDTWGp5haAVa4kU1cplmFk//sfJRNc9maK1EzXPcdv1EDvhCoy7XSskLg7lzipxJgAQoBLYoRt58QssGSaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=X8AVj6qI; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40f033c2e30so682345e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 08:53:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707411087; x=1708015887; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BKmRKXQ4Jb/UJrwbolAziRwHoP1CqWPr7lokSDT3Zv8=;
-        b=AxBJ0I4Bnv52AE55DZtgtZxJHwKo/GIRiGc8t1xnQyxVx3S3XQParJyOXx/5/1hv2b
-         S/emQJ46s0iAf/KpWVxCmd2mRDOOGv+2KUkH5J7TWU+lY663+oubSjODcxk02sJp2qV0
-         BaZMH5L2xG18WW5h9Q7PhtVT7Q9t9s06dY17kwBUQyjRVv1wq5NQmoKrAxgZI7W5tbyN
-         B3z0N24lnWtBFl1wTl/YxwM/n2HUZhx6hlrUEJuvelCRbZFDgIbkrHDVL5Y1cOnLYGFm
-         FXoCZyAGJ8Gn5TCXvEVd4LUGKI4zjTc4PkXH17ydoqGpaFk4+HQf7IiVwFlOOPeanAFa
-         oX2g==
+        d=tuxon.dev; s=google; t=1707411189; x=1708015989; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZT1UxOiVrDHIynryw4Nlj/MmW/BLc7DWyJF67SG4DDA=;
+        b=X8AVj6qIxtUh5A39tiEOM1S3akLDAyhFWKNx3eZIQ/5NKt0Sp6fo60VFIfyzzx5RJL
+         RZEJCHPpJKcC3Z6YEimgYv/U9wFNXwxNmHgK7KzUcpk6e+kW1EShKHG3slSH0LzOoZFI
+         vPdQt53myF+VQ6O1T2az2hPY0qQmNO3ZX8xF10cGWZPrPPx30VU/6G7+Czfk4q/zt1B2
+         tT7483pyDY7bnsbaegQXVO5g/MiLkP5s3VZbCjGbr/n4UgAa84WcZv+f/uZvNW7PL9IE
+         3NCv9x2U3sle3itNSaE+82szPf3Q8FB9VuWeojx8a4ytebax+KqsjgZa315LWlZiQNUe
+         Bj9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707411087; x=1708015887;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BKmRKXQ4Jb/UJrwbolAziRwHoP1CqWPr7lokSDT3Zv8=;
-        b=S7HPzEcnhNg2A8p0Si+5N0rVoo5HJWuLPQukbeDc3YDUx6mfeGgrB8XJcamDn73cHR
-         LhPgOzCbE4YLkGqxFmxptAMOXkLkdsr1pdluudBKzqfIdafD3uSG7mP/S6uIUxdJ45cL
-         UmZPrez1gu7dgQdDLUPSSPcL2WT40Ibxr36hAYapPxH7PLDLMz5dUXmkuk0WoNaw/T4J
-         sHteQLwjH0oGIdNES5qD9q32U5Vr9A6pjaGXSC8k78p+5Y+x67HIwXlL6v7LgxM4uTRs
-         s8QLvOeYmGHRzoYOnwA+VSgWfrFSoDONFdwhj6W+3gF1FLXpfKyRH26AuXrTevXWDrFM
-         5bHQ==
-X-Gm-Message-State: AOJu0YxiCvj0cENuzlczYdma9ZQn4qat0E0zvoauuVyOVZkF2l48kVXw
-	UJmkijSLbxUCZiY8vl9if9gPmm6pBW/S9mUrYinlU/TkpiQKT1cM
-X-Google-Smtp-Source: AGHT+IG98zrnkTg7fNviSPhs9dA5QQKDFf0R75aZSaa7TrzSaBD5iM3Z4iLKBGwnVTuNoUDV2ArfTA==
-X-Received: by 2002:a05:600c:1390:b0:40e:a569:3555 with SMTP id u16-20020a05600c139000b0040ea5693555mr7176214wmf.35.1707411086636;
-        Thu, 08 Feb 2024 08:51:26 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUJGeVnGM1lvv2MH7XIj5f2p/JxGIGtjAiHNgpy9kBet5NobTXGQKb1AyMzKpLypnfjDu2z/xOytq/bA3PTsVPLibIpy2/fyDpBXD56ZMBYTRhfcA2QFMblj68MYTjaxxPNPPWEXt8Zr8AppKd9iM2RPeCiu5mUh37nMJPRuii360LL3VYh5FmOCgJJIrcVmCNN1Nj7EHkJkUSeUbO+3SSYcCh2/SAO13fZQnQuw0v1wtAGXK79i0kbUBHtgeuaS9xz6FHIzipQI5nVfuNExrF0VQNRFUWK5OfMmW4ukVdepViLHCuha0TEp0AlPm06TmMjGntWiOtEU+xGMg3E4AnMy71lQSqJjgT1ZoqBjNA9hkBxGrGAvOiuN7dcFhvuBoae38d6MS2ds0+OtDbZo/AjpGGz8L7SJJ2ByFzpJSLM++X2vaw=
-Received: from [192.168.10.199] (54-240-197-239.amazon.com. [54.240.197.239])
-        by smtp.gmail.com with ESMTPSA id m33-20020a05600c3b2100b004100826da82sm2153919wms.21.2024.02.08.08.51.25
+        d=1e100.net; s=20230601; t=1707411189; x=1708015989;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZT1UxOiVrDHIynryw4Nlj/MmW/BLc7DWyJF67SG4DDA=;
+        b=o2sDyScw/AWrv1hvuuXQ7mpbfZnnnlVqe5vxNw6RdMxSknms0lfJ6U4G2FDWLcFpJu
+         wj+xTu5I8ex8cIFn/RLDFRWwYZWKPVAjzP63/2jbn1Og356VikJCvO+NUCxGw5S/HWkv
+         Zpf8NdE32cH84W7MH1PWtiHZtoI7QCcacc04tRnH6mXgTuD3McqsWtpetuOFrll2Ptf+
+         ok8jNewPCAz+qpC/OAhJU2aYJ7laiWqvljzRlOoKxorTeA0J0MSQjdJ0OjCM5AByQ4Ew
+         HBCM/gzEqDyLzXEM42URdzap7yIS9C9iOPMZx3mtfR8PFtgAMfSabiixmcJMaJhYdKVQ
+         U9lA==
+X-Gm-Message-State: AOJu0YwxYf3T/5XJSd7Osr1PJrkT6V/71MLyd5xPD2xfWXyzxVplPaOO
+	pb90/azRd2GpAwkauWM8mCQIjrOiBkzWJ749hGK1Ck10urjRtN2RBntMNfkkcUs=
+X-Google-Smtp-Source: AGHT+IGBr22Z6ACQ9/w6ayyS+L6lXv2vUq3SiUpYMPUXFdY2V/aOAsEGvexJMJND+A7XxxQshZubFQ==
+X-Received: by 2002:a05:600c:1c21:b0:40d:3fee:97f6 with SMTP id j33-20020a05600c1c2100b0040d3fee97f6mr7052850wms.34.1707411189516;
+        Thu, 08 Feb 2024 08:53:09 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUCgbPZZ7zko4xImgI2de22H1Di8bnfniBlBZIeaYI1LCjutMSi4sL6loFFjSpUFYZdxHJ0oybDuTKnjTzavVMSE6mMXMkjuQgSRsipSN7J6QywmpRRcH21+l184D+5wMDh9ub7KkiYhlpI5Uk6pr4l09W2TDTD1vDAptzP4tRj1AkHRkZ+5nydwjKXE8zWV5LjbRGLwaBLKhWGWjTs77OfO5DJdFiPA3pUvbDbI9xohrxZbmNdn/yAqsRAxv5VGL6agf6Xre+F0FrNhbM6dL4yzJjqrAH6dVjBQZFfEEwv2ARhDqBKmizytiyBHsDxrxSZJCHmAKNnLE2x29ylkXN6T02i1p4R1Mdu/xk1+b4weFjFHsrq3es0LrUKYWfvApdFc/Fobab4yml/rVEVmCBD0xGtXcbAG8li8mIVXywL0Kn1040Q3v69VJrHwxeZ2XhDwzotc6EljttdTaPsHG2qfeipA8D6AySJ4GVA/h/D2yBK/8Dg1k+oo6cDljTReVA6KRcp9cU9+XVXo5nuf3x+ebXVTYqOr3+uD/PDI515LRJ7Z2ys/ROQLA+9hg9dpLEt87qLjQ+4Epf8OmL6+6VZOhzlIbevgGa6
+Received: from [192.168.50.4] ([82.78.167.45])
+        by smtp.gmail.com with ESMTPSA id u7-20020a05600c19c700b004101e93d276sm2162175wmq.14.2024.02.08.08.53.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 08:51:26 -0800 (PST)
-From: Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <148d903c-fcc5-4a6a-aef1-c1e77e74d0fc@xen.org>
-Date: Thu, 8 Feb 2024 16:51:18 +0000
+        Thu, 08 Feb 2024 08:53:08 -0800 (PST)
+Message-ID: <e170f5f8-f95c-4553-b088-1072345fae53@tuxon.dev>
+Date: Thu, 8 Feb 2024 18:53:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,91 +75,178 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH v12 11/20] KVM: xen: allow shared_info to be mapped by
- fixed HVA
+Subject: Re: [PATCH 01/17] dt-bindings: clock: r9a07g043-cpg: Add power domain
+ IDs
 Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>,
- kvm@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240115125707.1183-1-paul@xen.org>
- <20240115125707.1183-12-paul@xen.org> <ZcMCogbbVKuTIXWJ@google.com>
- <92918ee8-3cc9-41c3-a284-5cd6648abc05@xen.org> <ZcUF-TNbykWvh3r7@google.com>
-Organization: Xen Project
-In-Reply-To: <ZcUF-TNbykWvh3r7@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Biju Das <biju.das.jz@bp.renesas.com>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "mturquette@baylibre.com" <mturquette@baylibre.com>,
+ "sboyd@kernel.org" <sboyd@kernel.org>, "robh@kernel.org" <robh@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+ "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+ "palmer@dabbelt.com" <palmer@dabbelt.com>,
+ "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>
+Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+ "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240208124300.2740313-2-claudiu.beznea.uj@bp.renesas.com>
+ <TYCPR01MB11269DEA9261CA594EECC949686442@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <67ad8052-1406-4dcb-9e35-5c42ada28797@tuxon.dev>
+ <TYCPR01MB112698AB206332D13105C064186442@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <TYCPR01MB112698AB206332D13105C064186442@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 08/02/2024 16:48, Sean Christopherson wrote:
-> On Thu, Feb 08, 2024, Paul Durrant wrote:
->> On 07/02/2024 04:10, Sean Christopherson wrote:
->>> On Mon, Jan 15, 2024, Paul Durrant wrote:
->>>> @@ -638,20 +637,32 @@ int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
->>>>    		}
->>>>    		break;
->>>> -	case KVM_XEN_ATTR_TYPE_SHARED_INFO: {
->>>> +	case KVM_XEN_ATTR_TYPE_SHARED_INFO:
->>>> +	case KVM_XEN_ATTR_TYPE_SHARED_INFO_HVA: {
->>>>    		int idx;
->>>>    		mutex_lock(&kvm->arch.xen.xen_lock);
->>>>    		idx = srcu_read_lock(&kvm->srcu);
->>>> -		if (data->u.shared_info.gfn == KVM_XEN_INVALID_GFN) {
->>>> -			kvm_gpc_deactivate(&kvm->arch.xen.shinfo_cache);
->>>> -			r = 0;
->>>> +		if (data->type == KVM_XEN_ATTR_TYPE_SHARED_INFO) {
->>>> +			if (data->u.shared_info.gfn == KVM_XEN_INVALID_GFN) {
->>>> +				kvm_gpc_deactivate(&kvm->arch.xen.shinfo_cache);
->>>> +				r = 0;
->>>> +			} else {
->>>> +				r = kvm_gpc_activate(&kvm->arch.xen.shinfo_cache,
->>>> +						     gfn_to_gpa(data->u.shared_info.gfn),
->>>> +						     PAGE_SIZE);
->>>> +			}
->>>>    		} else {
->>>> -			r = kvm_gpc_activate(&kvm->arch.xen.shinfo_cache,
->>>> -					     gfn_to_gpa(data->u.shared_info.gfn),
->>>> -					     PAGE_SIZE);
->>>> +			if (data->u.shared_info.hva == 0) {
->>>
->>> I know I said I don't care about the KVM Xen ABI, but I still think using '0' as
->>> "invalid" is ridiculous.
->>>
+
+
+On 08.02.2024 18:28, Biju Das wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: claudiu beznea <claudiu.beznea@tuxon.dev>
+>> Sent: Thursday, February 8, 2024 3:46 PM
+>> Subject: Re: [PATCH 01/17] dt-bindings: clock: r9a07g043-cpg: Add power
+>> domain IDs
 >>
->> With the benefit of some sleep, I'm wondering why 0 is a 'ridiculous'
->> invalid value for a *virtual* address? Surely it's essentially a numerical
->> cast of the canonically invalid NULL pointer?
+>> Hi, Biju,
+>>
+>> On 08.02.2024 16:30, Biju Das wrote:
+>>> Hi Claudiu,
+>>>
+>>> Thanks for the patch.
+>>>
+>>>> -----Original Message-----
+>>>> From: Claudiu <claudiu.beznea@tuxon.dev>
+>>>> Sent: Thursday, February 8, 2024 12:43 PM
+>>>> Subject: [PATCH 01/17] dt-bindings: clock: r9a07g043-cpg: Add power
+>>>> domain IDs
+>>>>
+>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>
+>>>> Add power domain IDs for RZ/G2UL (R9A07G043) SoC.
+>>>>
+>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>> ---
+>>>>  include/dt-bindings/clock/r9a07g043-cpg.h | 48
+>>>> +++++++++++++++++++++++
+>>>>  1 file changed, 48 insertions(+)
+>>>>
+>>>> diff --git a/include/dt-bindings/clock/r9a07g043-cpg.h b/include/dt-
+>>>> bindings/clock/r9a07g043-cpg.h index 77cde8effdc7..eabfeec7ac37
+>>>> 100644
+>>>> --- a/include/dt-bindings/clock/r9a07g043-cpg.h
+>>>> +++ b/include/dt-bindings/clock/r9a07g043-cpg.h
+>>>> @@ -200,5 +200,53 @@
+>>>>  #define R9A07G043_AX45MP_CORE0_RESETN	78	/* RZ/Five Only */
+>>>>  #define R9A07G043_IAX45_RESETN		79	/* RZ/Five Only */
+>>>>
+>>>> +/* Power domain IDs. */
+>>>> +#define R9A07G043_PD_ALWAYS_ON		0
+>>>> +#define R9A07G043_PD_GIC		1
+>>>> +#define R9A07G043_PD_IA55		2
+>>>> +#define R9A07G043_PD_MHU		3
+>>>> +#define R9A07G043_PD_CORESIGHT		4
+>>>> +#define R9A07G043_PD_SYC		5
+>>>> +#define R9A07G043_PD_DMAC		6
+>>>> +#define R9A07G043_PD_GTM0		7
+>>>> +#define R9A07G043_PD_GTM1		8
+>>>> +#define R9A07G043_PD_GTM2		9
+>>>> +#define R9A07G043_PD_MTU		10
+>>>> +#define R9A07G043_PD_POE3		11
+>>>> +#define R9A07G043_PD_WDT0		12
+>>>> +#define R9A07G043_PD_SPI		13
+>>>> +#define R9A07G043_PD_SDHI0		14
+>>>> +#define R9A07G043_PD_SDHI1		15
+>>>> +#define R9A07G043_PD_ISU		16
+>>>> +#define R9A07G043_PD_CRU		17
+>>>> +#define R9A07G043_PD_LCDC		18
+>>>> +#define R9A07G043_PD_SSI0		19
+>>>> +#define R9A07G043_PD_SSI1		20
+>>>> +#define R9A07G043_PD_SSI2		21
+>>>> +#define R9A07G043_PD_SSI3		22
+>>>> +#define R9A07G043_PD_SRC		23
+>>>> +#define R9A07G043_PD_USB0		24
+>>>> +#define R9A07G043_PD_USB1		25
+>>>> +#define R9A07G043_PD_USB_PHY		26
+>>>> +#define R9A07G043_PD_ETHER0		27
+>>>> +#define R9A07G043_PD_ETHER1		28
+>>>> +#define R9A07G043_PD_I2C0		29
+>>>> +#define R9A07G043_PD_I2C1		30
+>>>> +#define R9A07G043_PD_I2C2		31
+>>>> +#define R9A07G043_PD_I2C3		32
+>>>> +#define R9A07G043_PD_SCIF0		33
+>>>> +#define R9A07G043_PD_SCIF1		34
+>>>> +#define R9A07G043_PD_SCIF2		35
+>>>> +#define R9A07G043_PD_SCIF3		36
+>>>> +#define R9A07G043_PD_SCIF4		37
+>>>> +#define R9A07G043_PD_SCI0		38
+>>>> +#define R9A07G043_PD_SCI1		39
+>>>> +#define R9A07G043_PD_IRDA		40
+>>>> +#define R9A07G043_PD_RSPI0		41
+>>>> +#define R9A07G043_PD_RSPI1		42
+>>>> +#define R9A07G043_PD_RSPI2		43
+>>>> +#define R9A07G043_PD_CANFD		44
+>>>> +#define R9A07G043_PD_ADC		45
+>>>> +#define R9A07G043_PD_TSU		46
+>>>
+>>> Not sure from "Table 42.3 Registers for Module Standby Mode"
+>>>
+>>> Power domain ID has to be based on CPG_BUS_***_MSTOP or CPG_CLKON_***
+>>> As former reduces number of IDs??
+>>
+>> If I understand correctly your point here, you want me to describe PM
+>> domain in DT with something like:
+>>
+>> power-domains = <&cpg CPG_BUS_X_MSTOP>;
 > 
-> It's legal to mmap() virtual address '0', albeit not by default:
+> MSTOP bits are distinct for each IP.
 > 
->    config DEFAULT_MMAP_MIN_ADDR
-> 	int "Low address space to protect from user allocation"
-> 	depends on MMU
-> 	default 4096
-> 	help
-> 	  This is the portion of low virtual memory which should be protected
-> 	  from userspace allocation.  Keeping a user from writing to low pages
-> 	  can help reduce the impact of kernel NULL pointer bugs.
+> <&cpg CPG_BUS_MCPU1_MSTOP x>; x =1..9
 > 
-> 	  For most ppc64 and x86 users with lots of address space
-> 	  a value of 65536 is reasonable and should cause no problems.
-> 	  On arm and other archs it should not be higher than 32768.
-> 	  Programs which use vm86 functionality or have some need to map
-> 	  this low address space will need CAP_SYS_RAWIO or disable this
-> 	  protection by setting the value to 0.
+> 2=MTU IP
 > 
-> 	  This value can be changed after boot using the
-> 	  /proc/sys/vm/mmap_min_addr tunable.
+> 4= GPT
 > 
+> etc...
 > 
-> Obviously it's equally ridiculous that userspace would ever mmap() '0' and pass
-> that as the shared_info, but given that this is x86-only, there are architecturally
-> illegal addresses that can be used, at least until Intel adds LA64 ;-)
+> Is it something work??
 
-Ok. Thanks for the reference.
+It might work. But:
 
+- you have to consider that some IPs have more than one MSTOP bit, thus, do
+  we want to uniquely identify these with all MSTOP bits (thus the 2nd cell
+  being a bitmask) or only one is enough?
+- some HW blocks (e.g. OTFDE_DDR) have no MSTOP bits associated (as of my
+  current research), so, only PWRDN
+- some HW blocks have both MSTOP and PWRDN
+- if future hardware implementation will spread the MSTOP bits for one IP
+  to more than one register then this proposal will not work
+
+Having a unique identified decoupled from MSTOP registers or PWRDN offers
+support to use the same code base for future usage. This is what I can tell
+at the moment.
+
+> 
+>>
+>> where X={ACPU, PERI_CPU, PERI_CPU2, REG0, REG1} ?
+>>
+>> With this, I still see the necessity of a 3rd identifier that will be IP
+>> specific to be able to uniquely match b/w DT description and registered
+>> power domain. FMPOV, this will lead to a more complicated implementation.
+>>
+>> We need a unique ID that the pm domain xlate will use to xlate the DT
+>> binding to driver data structures.
+> 
+> Ok.
+> 
+> Cheers,
+> Biju
+> 
 
