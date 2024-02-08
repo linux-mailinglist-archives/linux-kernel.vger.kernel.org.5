@@ -1,144 +1,160 @@
-Return-Path: <linux-kernel+bounces-57774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AA5C84DD4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:53:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFCF584DD5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:55:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46EDD2832B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:53:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F21111C24E1A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E656D1A6;
-	Thu,  8 Feb 2024 09:52:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b="tudDLVEs"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 903AA6EB4C;
+	Thu,  8 Feb 2024 09:54:11 +0000 (UTC)
+Received: from davidv.dev (mail.davidv.dev [78.46.233.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B454F6BFC5
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 09:52:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB4E6BFD7
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 09:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.46.233.60
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707385974; cv=none; b=RD6KKOydq0VU+cqjm0moHwwKP6NCT4bOqYE+fOrBFlA6DqBWBLYzzW7KUJWLaTr0bMJZpbR9a9cXXC/8Y6LIk4x0U8LeiHVTN9aQsNLtMH2xS86Vjj/pWovhybgUCEB0zt6G2QzcxrjsxlRknNqu2ZQ6mZkhrB1LJ382VZjhTa8=
+	t=1707386051; cv=none; b=i768Mq3mZhJXO14F2kgNT8ElG6zRO8+moJ+X9p9kiaAZL0swQE9QSF0Kz369y+I+5IGTuHCn7a9qFIt63o3QDiV+84h8HF9p8GDm5zYMPZxhWFh09RhmQ4jdCcReAk7uUG3eIFOBKI7VcZYrpySIv0xAll+/6fBa4CLfiGfCO+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707385974; c=relaxed/simple;
-	bh=HHlgklhEHH9O7ta3u1cLYxPyu4OGTsMH97Y+4IfEOao=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZnTl94ndbmDtvMunhQpUeQdcadADLkJlUxQXfdggln7JBud4G3okSh3m4A9ehfIE9bkB0dnXMUb+3LwlRtUxMMM8n8CYVwgZf3IyF9/ElGK/zPhNz2Yzze59LT+2A7z2ZpMYYWMGpQYWCfjVge9wt+s2hU0Qtnsn4Q5nl/fsGM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org; spf=pass smtp.mailfrom=endlessos.org; dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b=tudDLVEs; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endlessos.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc34d761e2aso352991276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 01:52:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google; t=1707385971; x=1707990771; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FVZrDw08jx/+WS3cBHZbP06Mv/MXnXO3+N5Y9WPwJKc=;
-        b=tudDLVEsisWPpzROJ05zczqStpTC8X0SOAFddSbSaxuZFzK1SN/PbP/b0CuNcjcure
-         z/SOjMtL7nbtokwWJvW3aEWZm5fynOYSJ59tSRxrLZo569vUaljHRd7XCi+Kn/OK6KEQ
-         nUmxS6bdU1/lYN/Bl4uHc50YKB35J5aOERL+Y4zfVXdI0npdohoCRQXXcI2AY9tk5EUG
-         feuH5oNF/rVaPZ3w3TAkbEpC7CjkcuNvfvWES33iVXe+cKKmu04wVQ6HPulxAoYi+LEg
-         uHDEandfUYdKuu87QdwCPM/rEBYNNMNWncjl9r5SZg83warV24aZ7mYoEknN43qnvSHh
-         Kcrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707385971; x=1707990771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FVZrDw08jx/+WS3cBHZbP06Mv/MXnXO3+N5Y9WPwJKc=;
-        b=VSSTGMyg24Mp0FQ8cHZ1qjumargJtUry5WxEI/TLFv05cEYzAlTYUA2cCjU58NIK51
-         Jl0XWftGoUHwDuoLii0xX7CWyE+5DZJZnttERrs58W0EjwJTr7TFgPAYNN/MkZJOGXpt
-         h4I9tI0IvVTE2oMy8l+KWqvVz7To7lL1EUpPk8sDgSpM3uGp1z1l4qsJNK8w7hs9INlh
-         O70e5dPf/HFV/+pmiBE6Lhvv2kITIdqwOn00bXh9cOjcWTSwtD5buMuJMWnShlDXmHww
-         etEHHcw3abTiKTvu+tgLdm8Mr3Lltx+6AdkRKApfSIN7oe2dDLCP7iygrd+tLEfMEO6d
-         ryXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXXPdIqE9FTPY0tPqvjpjBgXgWq71uQJYogXgseFRgJuTTFw9HxC6hAaHqbeOgvxL+/k6n1my6zXDz+S08R+Bh6QVap99c7EIamV3L7
-X-Gm-Message-State: AOJu0YxmKu/PoOMBdL8uuLxXtWZMc+HU77OEP6sF8PoilwXlSg5iLjvj
-	PiabVDBQx1Oh66+vVjDRYoji5/m/wSMxfBCvKtN0Eld/fGAr28J2HsDOm/d8Axyw5wDbsmbBdr3
-	frD/DDn8rBgqKJsw1DwSnB0Rr9jHo1m0zOkJMjg==
-X-Google-Smtp-Source: AGHT+IHznbxnmQ2a9sE2uljICDUHwGrSmpOZeuPsWRerpchjYqZKcjzMU9+eJU7z/zz7WRh/gKnst+hmhjZTufwjTUc=
-X-Received: by 2002:a25:8002:0:b0:dbc:b927:c5f9 with SMTP id
- m2-20020a258002000000b00dbcb927c5f9mr7187786ybk.6.1707385971607; Thu, 08 Feb
- 2024 01:52:51 -0800 (PST)
+	s=arc-20240116; t=1707386051; c=relaxed/simple;
+	bh=zquoTPDiDMopq79YAJN8pFBJInmPfdGsBn+pPQU1BdE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=f7LdLmtyj97PvMJGMQHqnnYM1w1wClRH0H3t0V/TcpRmPSPir6ZNzql6LPZAaxmdIriTjFRdmr+Y7wg+VcrTxCsjbJeshgioN9Y8ANeg1CpRfGy8kFi9wpDYbF5SN8zc9yN6n2hkdtiICCzpoo1KzfKKwUxQV5PtsJnLiHMO1Es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidv.dev; spf=pass smtp.mailfrom=davidv.dev; arc=none smtp.client-ip=78.46.233.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidv.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=davidv.dev
+Received: from framework.labs
+	by mail.davidv.dev (chasquid) with ESMTPSA
+	tls TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+	(over submission+TLS, TLS-1.2, envelope from "david@davidv.dev")
+	; Thu, 08 Feb 2024 10:54:06 +0100
+From: David Ventura <david@davidv.dev>
+To: david@davidv.dev
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Xiongwei Song <xiongwei.song@windriver.com>,
+	linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+	linux-kernel@vger.kernel.org (open list),
+	netdev@vger.kernel.org (open list:NETWORKING [IPv4/IPv6])
+Subject: [PATCH v2 1/2] net: make driver settling time configurable
+Date: Thu,  8 Feb 2024 10:52:29 +0100
+Message-Id: <20240208095358.251381-1-david@davidv.dev>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240208093722.246930-1-david@davidv.dev>
+References: <20240208093722.246930-1-david@davidv.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207084452.9597-1-drake@endlessos.org> <20240207200538.GA912749@bhelgaas>
- <CAD8Lp47DjuAAxqwt+yKD22UNMyvqE00x0u+JeM74KO2OC+Otrg@mail.gmail.com>
-In-Reply-To: <CAD8Lp47DjuAAxqwt+yKD22UNMyvqE00x0u+JeM74KO2OC+Otrg@mail.gmail.com>
-From: Daniel Drake <drake@endlessos.org>
-Date: Thu, 8 Feb 2024 10:52:15 +0100
-Message-ID: <CAD8Lp44-8WhPyOrd2dCWyG3rRuCqzJ-aZCH6b1r0kyhfcXJ8xg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com, 
-	david.e.box@linux.intel.com, mario.limonciello@amd.com, rafael@kernel.org, 
-	lenb@kernel.org, linux-acpi@vger.kernel.org, linux@endlessos.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 8, 2024 at 9:37=E2=80=AFAM Daniel Drake <drake@endlessos.org> w=
-rote:
-> > What would be the downside of skipping the DMI table and calling
-> > pci_d3cold_disable() always?  If this truly is a Root Port defect, it
-> > should affect all platforms with this device, and what's the benefit
-> > of relying on BIOS to use StorageD3Enable to avoid the defect?
->
-> I had more assumed that it was a platform-specific DSDT bug, in that
-> PEG0.PXP._OFF is doing something that PEG0.PXP._ON is unable to
-> recover from, and that other platforms might handle the suspend/resume
-> of this root port more correctly. Not sure if it is reasonable to
-> assume that all other platforms on the same chipset have the same bug
-> (if that's what this is).
+During IP auto configuration, some drivers apparently need to wait a
+certain length of time to settle; as this is not true for all drivers,
+make this length of time configurable.
 
-Just realised my main workstation (Dell XPS) has the same chipset.
+Signed-off-by: David Ventura <david@davidv.dev>
+---
+ .../admin-guide/kernel-parameters.txt         |  4 ++++
+ Documentation/admin-guide/nfs/nfsroot.rst     |  3 +++
+ net/ipv4/ipconfig.c                           | 23 ++++++++++++++++---
+ 3 files changed, 27 insertions(+), 3 deletions(-)
 
-The Dell ACPI table has the exact same suspect-buggy function, which
-the affected Asus system calls from PEG0.PXP._OFF:
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index b47940577c10..b07a035642fa 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -2291,6 +2291,10 @@
+ 
+ 	ip=		[IP_PNP]
+ 			See Documentation/admin-guide/nfs/nfsroot.rst.
++	ip.dev_wait_ms=
++			[IP_PNP]
++			See Documentation/admin-guide/nfs/nfsroot.rst.
++
+ 
+ 	ipcmni_extend	[KNL,EARLY] Extend the maximum number of unique System V
+ 			IPC identifiers from 32,768 to 16,777,216.
+diff --git a/Documentation/admin-guide/nfs/nfsroot.rst b/Documentation/admin-guide/nfs/nfsroot.rst
+index 135218f33394..f26f7a342af6 100644
+--- a/Documentation/admin-guide/nfs/nfsroot.rst
++++ b/Documentation/admin-guide/nfs/nfsroot.rst
+@@ -223,6 +223,9 @@ ip=<client-ip>:<server-ip>:<gw-ip>:<netmask>:<hostname>:<device>:<autoconf>:<dns
+   /proc/net/ipconfig/ntp_servers to an NTP client before mounting the real
+   root filesystem if it is on NFS).
+ 
++ip.dev_wait_ms=<value>
++  Set the number of milliseconds to delay after opening the network device
++  which will be autoconfigured. Defaults to 10 milliseconds.
+ 
+ nfsrootdebug
+   This parameter enables debugging messages to appear in the kernel
+diff --git a/net/ipv4/ipconfig.c b/net/ipv4/ipconfig.c
+index c56b6fe6f0d7..cbf35163b973 100644
+--- a/net/ipv4/ipconfig.c
++++ b/net/ipv4/ipconfig.c
+@@ -82,8 +82,6 @@
+ #define IPCONFIG_DYNAMIC
+ #endif
+ 
+-/* Define the friendly delay before and after opening net devices */
+-#define CONF_POST_OPEN		10	/* After opening: 10 msecs */
+ 
+ /* Define the timeout for waiting for a DHCP/BOOTP/RARP reply */
+ #define CONF_OPEN_RETRIES 	2	/* (Re)open devices twice */
+@@ -101,6 +99,7 @@
+ 
+ /* Wait for carrier timeout default in seconds */
+ static unsigned int carrier_timeout = 120;
++static unsigned int dev_wait_ms = 10;
+ 
+ /*
+  * Public IP configuration
+@@ -1516,7 +1515,8 @@ static int __init ip_auto_config(void)
+ 		return err;
+ 
+ 	/* Give drivers a chance to settle */
+-	msleep(CONF_POST_OPEN);
++	if(dev_wait_ms > 0)
++		msleep(dev_wait_ms);
+ 
+ 	/*
+ 	 * If the config information is insufficient (e.g., our IP address or
+@@ -1849,3 +1849,20 @@ static int __init set_carrier_timeout(char *str)
+ 	return 1;
+ }
+ __setup("carrier_timeout=", set_carrier_timeout);
++
++
++static int __init set_dev_wait_ms(char *str)
++{
++	ssize_t ret;
++
++	if (!str)
++		return 0;
++
++	ret = kstrtouint(str, 0, &dev_wait_ms);
++	if (ret)
++		return 0;
++
++	return 1;
++}
++
++__setup("ip.dev_wait_ms=", set_dev_wait_ms);
+-- 
+2.39.2
 
-        Method (DL23, 0, Serialized)
-        {
-            L23E =3D One
-            Sleep (0x10)
-            Local0 =3D Zero
-            While (L23E)
-            {
-                If ((Local0 > 0x04))
-                {
-                    Break
-                }
-
-                Sleep (0x10)
-                Local0++
-            }
-
-            SCB0 =3D One
-        }
-
-(the "L23E =3D One" line is the one that writes a value to config offset
-0xe2, if you comment out this line then everything works)
-
-However, on the Dell XPS system, nothing calls DL23() i.e. it is dead code.
-
-Comparing side by side:
-Asus root port (PC00.PEG0) has the PXP power resource which gets
-powered down during D3cold transition as it becomes unused. Dell root
-port has no power resources (no _PR0).
-Asus NVM device sitting under that root port (PC00.PEG0.PEGP) has
-no-op _PS3 method, but Dell does not have _PS3. This means that Dell
-doesn't attempt D3cold on NVMe nor the parent root port during suspend
-(both go to D3hot only).
-
-Let me know if you have any ideas for other useful comparative experiments.
-
-Daniel
 
