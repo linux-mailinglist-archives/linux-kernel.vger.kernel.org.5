@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-57370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4995184D792
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 02:30:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A13784D78E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 02:30:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 555E3B227E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:30:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA9D0284297
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:30:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68361EB51;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F8441E897;
 	Thu,  8 Feb 2024 01:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NUggYVTw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bgDQTMtP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E007C1D557;
-	Thu,  8 Feb 2024 01:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C095C1CF91
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 01:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707355830; cv=none; b=HSeeDCta+g6bH9H9hQkcXi0bJs7VJrj9891jserugExPm9yDa/pB34rfLsdBiCO/R3Xsug5hUUPyjCYWu/eI+PrfsITAB2Q0li9VprzAsk50Q+L6TSvFlzmvEopeo7ap0ap/kg1ASUtB9EPz/0TRrVVMyBYO8Tm8qGGUm9t836Q=
+	t=1707355829; cv=none; b=RQj2INxHw9+BY1aqhP0BNyx47XCzY9GX/gHANV67f/qCbRJ51puLt1JxKgFcV+AVqtypX6PD5kZD6HBo2Eo9cOfOSLq6eAxV8itSOcBq1CRJiBYu0jrSDmCOrU+bur61RSaqRnZ+JnmcejxVFE44knwBT64TGUj1LW+KUUccfPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707355830; c=relaxed/simple;
-	bh=RMupFb4nJ/fs56B3Mp8NAVjkwclZL/zYoqXWz4mV58M=;
+	s=arc-20240116; t=1707355829; c=relaxed/simple;
+	bh=LM9rriYZStkud30VJaubR5guh0n/IwnZmlpk5h5RwCY=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=BQwVD9KTuTqKTGJauq1LHOG1AqP4paL28jvKmFNeUVgbTIdtRACHNJ3cjWLaelYWY7W7Kw6vTRrPTODmyOeXbOrISPVNORQfwN0MLdLXwNuu0V6okFVN9zuOqPpSU6Y9zOSJPWaupqlG8S7L1o/jVum5V4O5N+YI5SzY0yJK6ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NUggYVTw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6DB25C433B1;
+	 In-Reply-To:To:Cc; b=dVFV1UzCOQRsejtgReQqaTZI1C3P1XQIuuwBNqNi08IgEH8wLVTsOl/OWnpXyhRKVLtfEIYLaXxMjdezg8fdSZJm/EMoU5D8XW6g9IJz1/vmaF+GEcs1rGrx6A37oDAvcMnQ3bRmrGETdZqUEzcMevoZEs3zCbOWC2SYAWTArsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bgDQTMtP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 63569C433B2;
 	Thu,  8 Feb 2024 01:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1707355829;
-	bh=RMupFb4nJ/fs56B3Mp8NAVjkwclZL/zYoqXWz4mV58M=;
+	bh=LM9rriYZStkud30VJaubR5guh0n/IwnZmlpk5h5RwCY=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=NUggYVTwasaK3+SnCqY9s1DQ8Rkt7whE+tlGoGXPUQQHxV3a/U/FiudlgRtJqnnyL
-	 YoK0u724ZuXIkgMN43WHBgAwe8VJWRVCNGKJtogCxNKdiPByDc5gPHchg3xuPtNNKA
-	 pds3VnpHYtH5Is78jCHKQJujPhHp0Rpm7sxocM5zPY5OWGtP9m5O8jv5M2BLykINi/
-	 9+laroHlcorrGptWxrx5+8JomDo2K9VELemYkrrT+jqwsTxUQu+JvkV9EsIlT+Q+TL
-	 N5nOmV8eSLnWHM8LeWY6cawc/BekQMMpt9wBGk4facBRozJMKBvc5XrbdTWXJSWo5N
-	 tJ4Oy9c9bNaNQ==
+	b=bgDQTMtPRgF2FFfkL82Uhv8R185R3Ak4jsEKvagyrfNdEIcmeFNq1ufMbkCCrRXpv
+	 is/VDTHrzXW7aEpIq7NcXlE5f7d3KeepQXY8zH95fT29sbtev3Sr7GBK8lGtzR2yoX
+	 W2NwnieCz/m+2EOrsyF0tmQdgkUwjrFrXCfLuja6w0urv6VmEP/VkCnFTLRqE8z2Iy
+	 A+36FAa0hIUxUhKBS+UofXPcDoRKQYJtkU8cSSg8BOJvuPWLYpAmgcinLaErPOwEDt
+	 y/lU9wIRsAsbW+lfa+SNwtJukqHG6ee/xbpRimFd9+O8kKW4ZnsRAb59fGG33ju44u
+	 hgL2oM5qzvrDw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 53514E2F2F1;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 46AD2D8C97E;
 	Thu,  8 Feb 2024 01:30:29 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,38 +51,41 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH -fixes] riscv: Flush the tlb when a page directory is freed
+Subject: Re: [PATCH -fixes 0/2] svnapot fixes
 From: patchwork-bot+linux-riscv@kernel.org
 Message-Id: 
- <170735582932.12826.4648361824228463635.git-patchwork-notify@kernel.org>
+ <170735582928.12826.2812001497496359961.git-patchwork-notify@kernel.org>
 Date: Thu, 08 Feb 2024 01:30:29 +0000
-References: <20240128120405.25876-1-alexghiti@rivosinc.com>
-In-Reply-To: <20240128120405.25876-1-alexghiti@rivosinc.com>
+References: <20240117195741.1926459-1-alexghiti@rivosinc.com>
+In-Reply-To: <20240117195741.1926459-1-alexghiti@rivosinc.com>
 To: Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc: linux-riscv@lists.infradead.org, will@kernel.org,
- aneesh.kumar@linux.ibm.com, akpm@linux-foundation.org, npiggin@gmail.com,
- peterz@infradead.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
- aou@eecs.berkeley.edu, samuel.holland@sifive.com, ajones@ventanamicro.com,
- linux-arch@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, panqinglin2020@iscas.ac.cn,
+ ajones@ventanamicro.com, linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to riscv/linux.git (fixes)
+This series was applied to riscv/linux.git (fixes)
 by Palmer Dabbelt <palmer@rivosinc.com>:
 
-On Sun, 28 Jan 2024 13:04:05 +0100 you wrote:
-> The riscv privileged specification mandates to flush the TLB whenever a
-> page directory is modified, so add that to tlb_flush().
+On Wed, 17 Jan 2024 20:57:39 +0100 you wrote:
+> While merging riscv napot and arm64 contpte support, I noticed we did
+> not abide by the specification which states that we should clear a
+> napot mapping before setting a new one, called "break before make" in
+> arm64 (patch 1). And also that we did not add the new hugetlb page size
+> added by napot in hugetlb_mask_last_page() (patch 2).
 > 
-> Fixes: c5e9b2c2ae82 ("riscv: Improve tlb_flush()")
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> ---
->  arch/riscv/include/asm/tlb.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Alexandre Ghiti (2):
+>   riscv: Fix set_huge_pte_at() for NAPOT mapping
+>   riscv: Fix hugetlb_mask_last_page() when NAPOT is enabled
+> 
+> [...]
 
 Here is the summary with links:
-  - [-fixes] riscv: Flush the tlb when a page directory is freed
-    https://git.kernel.org/riscv/c/97cf301fa42e
+  - [1/2] riscv: Fix set_huge_pte_at() for NAPOT mapping
+    https://git.kernel.org/riscv/c/1458eb2c9d88
+  - [2/2] riscv: Fix hugetlb_mask_last_page() when NAPOT is enabled
+    https://git.kernel.org/riscv/c/a179a4bfb694
 
 You are awesome, thank you!
 -- 
