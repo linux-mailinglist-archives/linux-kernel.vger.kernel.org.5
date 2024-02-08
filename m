@@ -1,158 +1,126 @@
-Return-Path: <linux-kernel+bounces-58676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5746B84E9D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:48:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72E3F84E9E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:50:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BF561C225CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:48:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FB76B233DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:49:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6B74C60F;
-	Thu,  8 Feb 2024 20:47:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035C84EB40;
+	Thu,  8 Feb 2024 20:48:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="gt1M55oz";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="PtdZev2i";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="SYpV4XDJ";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="MohuNapO"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KHz2HL8O"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B25D4C3AF;
-	Thu,  8 Feb 2024 20:47:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2056381D1
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 20:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707425273; cv=none; b=IXNO9RAUx8oJ3wer8sv7ORiJRWr/43U5EingG5xpwsN/+y7iB7IQKdBC2ffdlMFw5sp8lZpR56eJXAS38Vye5fsRjsFJ1K8A10ESFsX6PliZip9ZiVNtQfDThjTD3JhwjMHUd4xNGK/eqKR2Yt9fHgoZKVBNeV9ufEsyIv9CCZA=
+	t=1707425335; cv=none; b=ld2Qg+PzfC3uldJPPeHkXfZqJm2NNVsP4SQODfZp+Xe8y3of/cVkh+qNLphRf0AoEfQlGpAhAHwD6mWdohKaSEEPcev6xG1ExDISrj7NaPwFmFiN2WHhk8H0uZgKfNJyAeqnjHJtUosmOQs+kQiAjQ0ToUMLAqXXO/yWwlUdcuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707425273; c=relaxed/simple;
-	bh=Edoq6qlCuEE8lhkVt0dBMDKtW3Gi9GyrTEQ52bDIJn4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=cW3PrwImmMJMGcwmf9FBs0w6M1zCM2LAzXlsvDq156/HJKNjuJ/aBOHxgzaOZQPn3OWdR15mcB/E/pGQrIdCt+iIU/tNSQ7SeWl0XfTOz9xE4dASGpqJhV/fnbi0NPIacrKwA7KwIRygoZ1peOMCnNJZ5D4mZnWwAWUZsYX+nC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=gt1M55oz; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=PtdZev2i; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=SYpV4XDJ; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=MohuNapO; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	s=arc-20240116; t=1707425335; c=relaxed/simple;
+	bh=hQPpfJEcu1TBw9wCkVbp3RFuJW56wCEGbFWMn8aip4k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=knFq5pAetdILysBs1DWaRv5aYUJ2tt1trmpbFEH0f/wzhvE4XIUvV3ROEsM7T9MEHBZAyCzaqbn/LL0/vPd5kQOyJkQcLiGfQEdajBHLTF+JRarWLB8B40OD01oXMVV1QOcBX7RXmNqaP5i03e4RLk3YVfPs0hYTGj1xMM9pPGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KHz2HL8O; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707425332;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=NjzbgvZWqOOP842jfLLt5QLs4+yDffYTw25/cut6/mc=;
+	b=KHz2HL8ODyL8fe7OC3vB+LtiD8YGb10Eu2kOW7ku4G+GZR7Mv6Zrglbb8WU7rzCarHPxT9
+	kTJyqk5Bf3GCVXy1NciQevPmKWZJ5od2kz5p7p6U3SV77fWNz0iJRRYq/260L7Jl5YXqfW
+	c+OX0dyKxPb3Ei+O0A1ff+pLf/lntG0=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-604-Zf_C2lMwNNSk9wblRrq7XQ-1; Thu,
+ 08 Feb 2024 15:48:48 -0500
+X-MC-Unique: Zf_C2lMwNNSk9wblRrq7XQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9273F1FD0A;
-	Thu,  8 Feb 2024 20:47:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707425269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rE8RUdn/aeq63WE6iVzbD2tDvcz4pM7Qsls3FAl7II0=;
-	b=gt1M55ozaQcVtcd2AymPxq3Oq218g2iD1/8MLGcgtK9yQ6YLKOlJXHVde2EbMvMJYMjLgG
-	RWZ9fmXiMbQbLIf/CRx1FCl8a3CKWjDR8Htan38VwNDflPDscsCyoKg1UCvoylDpYiDGwq
-	kznorajoik9CSZwkuEeAeIOOuWgYMUQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707425269;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rE8RUdn/aeq63WE6iVzbD2tDvcz4pM7Qsls3FAl7II0=;
-	b=PtdZev2ixGKkZYUWbADShB6LZecRG/Jr2CXWCEcY/kNRV5yWXpcPz4QVh/8ItFYiyHe2B9
-	hQj6hhGAqJruWuBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707425267; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rE8RUdn/aeq63WE6iVzbD2tDvcz4pM7Qsls3FAl7II0=;
-	b=SYpV4XDJ60eOky7gycfe9sH6VsmLhrQ0pW53bIyzFMccfvSgqJtBvucJ4uxFYL2bzViGBC
-	2DtFCwBxfAaJmJUR8OQS8D8WncWqDXpxrAp/jrz7KRbcfR7KKA4UfMtGV0GVYW+pmOYs6B
-	gzs7Pvx6KIMHLeKkqCNT228ECqBqhoU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707425267;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rE8RUdn/aeq63WE6iVzbD2tDvcz4pM7Qsls3FAl7II0=;
-	b=MohuNapO357Yir7Nsu2JcYL3ktRCiYj62ovkoUmiCRDjxd3+tY4G4QlwaWd5aXoseSRBDv
-	sFERAKAYqABzJIAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4D50A1326D;
-	Thu,  8 Feb 2024 20:47:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id WiuaDPM9xWXZUgAAD6G6ig
-	(envelope-from <krisman@suse.de>); Thu, 08 Feb 2024 20:47:47 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Miklos Szeredi <miklos@szeredi.hu>,  Jan Kara <jack@suse.cz>,  lsf-pc
- <lsf-pc@lists.linux-foundation.org>,  linux-fsdevel@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] tracing the source of errors
-In-Reply-To: <ZcNw-ek8s3AHxxCB@casper.infradead.org> (Matthew Wilcox's message
-	of "Wed, 7 Feb 2024 12:00:57 +0000")
-References: <CAJfpegtw0-88qLjy0QDLyYFZEM7PJCG3R-mBMa9s8TNSVZmJTA@mail.gmail.com>
-	<20240207110041.fwypjtzsgrcdhalv@quack3>
-	<CAJfpegvkP5dic7CXB=ZtwTF4ZhRth1xyUY36svoM9c1pcx=f+A@mail.gmail.com>
-	<ZcNw-ek8s3AHxxCB@casper.infradead.org>
-Date: Thu, 08 Feb 2024 15:47:38 -0500
-Message-ID: <871q9mvg2d.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 886B73810790;
+	Thu,  8 Feb 2024 20:48:47 +0000 (UTC)
+Received: from thuth-p1g4.redhat.com (unknown [10.39.192.46])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D81121C10C0C;
+	Thu,  8 Feb 2024 20:48:45 +0000 (UTC)
+From: Thomas Huth <thuth@redhat.com>
+To: kvm@vger.kernel.org,
+	Sean Christopherson <seanjc@google.com>
+Cc: linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Andrew Jones <ajones@ventanamicro.com>
+Subject: [PATCH v3 0/8] Use TAP in some more x86 KVM selftests
+Date: Thu,  8 Feb 2024 21:48:36 +0100
+Message-ID: <20240208204844.119326-1-thuth@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-0.52 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.42)[78.19%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.52
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-Matthew Wilcox <willy@infradead.org> writes:
+Basic idea of this series is now to use the kselftest_harness.h
+framework to get TAP output in the tests, so that it is easier
+for the user to see what is going on, and e.g. to be able to
+detect whether a certain test is part of the test binary or not
+(which is useful when tests get extended in the course of time).
 
-> Option (b)
->
-> -#define EINVAL		22
-> +#define E_INVAL	22
-> +#define EINVAL		ERR(E_INVAL)
+Since most tests also need a vcpu, we introduce our own macros
+to define such tests, so we don't have to repeat this code all
+over the place.
 
-Note there will surely be cases where EINVAL is used as a soft failure
-and the kernel will just try something else, instead of propagating the
-error up the stack.  In this case, there is no point in logging the
-first case of error, as it will just be expected behavior.
+v3:
+- Add patch from Sean to allow setting vCPU's entry points seperately
+- Let each test define the entry point via KVM_ONE_VCPU_TEST(), don't
+  do it globally from KVM_ONE_VCPU_TEST_SUITE()
 
-So there's really no way around explicitly annotating (ERR (EINVAL))
-in place where it really matters, instead of changing the definition
-of -EINVAL itself or automatically converting check sites.
+v2:
+- Dropped the "Rename the ASSERT_EQ macro" patch (already merged)
+- Split the fixes in the sync_regs_test into separate patches
+  (see the first two patches)
+- Introduce the KVM_ONE_VCPU_TEST_SUITE() macro as suggested
+  by Sean (see third patch) and use it in the following patches
+- Add a new patch to convert vmx_pmu_caps_test.c, too
 
->
-> and then change all code that does something like:
->
-> 	if (err == -EINVAL)
-> to
-> 	if (err == -E_INVAL)
->
-> Or have I misunderstood?
+Sean Christopherson (1):
+  KVM: selftests: Move setting a vCPU's entry point to a dedicated API
 
+Thomas Huth (7):
+  KVM: selftests: x86: sync_regs_test: Use vcpu_run() where appropriate
+  KVM: selftests: x86: sync_regs_test: Get regs structure before
+    modifying it
+  KVM: selftests: Add a macro to define a test with one vcpu
+  KVM: selftests: x86: Use TAP interface in the sync_regs test
+  KVM: selftests: x86: Use TAP interface in the fix_hypercall test
+  KVM: selftests: x86: Use TAP interface in the vmx_pmu_caps test
+  KVM: selftests: x86: Use TAP interface in the userspace_msr_exit test
 
+ .../selftests/kvm/include/kvm_test_harness.h  |  36 ++++++
+ .../selftests/kvm/include/kvm_util_base.h     |  11 +-
+ .../selftests/kvm/lib/aarch64/processor.c     |  23 +++-
+ .../selftests/kvm/lib/riscv/processor.c       |   9 +-
+ .../selftests/kvm/lib/s390x/processor.c       |  13 +-
+ .../selftests/kvm/lib/x86_64/processor.c      |  13 +-
+ .../selftests/kvm/x86_64/fix_hypercall_test.c |  27 ++--
+ .../selftests/kvm/x86_64/sync_regs_test.c     | 121 +++++++++++++-----
+ .../kvm/x86_64/userspace_msr_exit_test.c      |  52 ++------
+ .../selftests/kvm/x86_64/vmx_pmu_caps_test.c  |  50 ++------
+ 10 files changed, 215 insertions(+), 140 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/include/kvm_test_harness.h
 
 -- 
-Gabriel Krisman Bertazi
+2.43.0
+
 
