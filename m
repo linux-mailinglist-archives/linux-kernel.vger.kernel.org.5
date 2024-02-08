@@ -1,98 +1,118 @@
-Return-Path: <linux-kernel+bounces-58349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 928C284E508
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:29:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A34D84E50A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:30:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44726281E90
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:29:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7184A1C21E3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:30:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D747E789;
-	Thu,  8 Feb 2024 16:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08436186F;
+	Thu,  8 Feb 2024 16:30:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="DJcRibhC"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A08evnEq"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 960617D416;
-	Thu,  8 Feb 2024 16:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0857149E04;
+	Thu,  8 Feb 2024 16:30:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707409739; cv=none; b=DbB7ZVuFkdS9ljavumoIWrHEytf5hf2kU7i2copehy2UkQDBqw6x9yEC0JFaxPxKDr8vo9cP+LA5y0uGoIrhz+BzXRSuRL9u61P+QR2RHujT8LzTJI59E2wwQDBfyul/NtYJ/Yr1AxoIopDJCo0W5uAjTlJtjMeYJN/8Rs73NO8=
+	t=1707409847; cv=none; b=TajsMk7uZSYe83/o+LJwcy+ZudYU00KmZnu+b5sCxgF3r1bS/To/OdL7C99JIuPT7ygmjSBDH8p1Yo45Lcp51/8URfdwWWG19l4FxMO1s7HSGnY2yVtDW3z+6YnX355MOqfGNYhTake85FoY9DmTiGvQ7uNYZM6NSIRF7ktFwZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707409739; c=relaxed/simple;
-	bh=pG3hD7BNqQBz51nLa5LhJvaNVAFxuXxojG2yZf3XVxA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HQccSj41gAOhG2lQ+oW89hqiHuolKfTSJjkcbLaSAeq9SQJNkNCMyGzoBbKWWMCSlik1J6NcwXp2CiqAMoKgBsuxCvf3cyIU6G9XYy0nT68ls/LMah8YQOkrUTRJBUgekBkbd2vYDuEfUNMOOuT49IfUKf+/Ei6jsQv7XU8wwAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=DJcRibhC; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=h216siugj8ahtN6cphm3ZoqpCGaHT/mNmdUJWUfGAwQ=; b=DJcRibhCc+zxmCGRMgGLdNdhwb
-	NhneNQ67Yj0Uj/SDaxKWs2Qo7SezhwM/fPX76yWwtIDRjSnMywM1gy8Nk0fAy8a3uZVvAYHxy6os2
-	+G1YaNbxoMBUkxAk6C5QBJ+wAnn+sijMfuGABaFmjrVigEFUW+2bEHf27dcg0skVJVcLVRsP/uZZG
-	wvqEv6WqWfHPeMzBvHnT57OaX3e0HlAsnERwmwHwU8peH0bm8ydnlW0gu37W6lP6hFbhaeR1lh32+
-	VaOAc1MbBGhneWPDEjuuGn57uAbr7ZTla6iQzggmWg/aR6a1BTnh4yXZaU8YLi9421dACz4dZpkvY
-	0ARSFxcw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57080)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rY7Gc-0004fQ-0P;
-	Thu, 08 Feb 2024 16:28:50 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rY7GZ-0005eG-5L; Thu, 08 Feb 2024 16:28:47 +0000
-Date: Thu, 8 Feb 2024 16:28:47 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Sergio Palumbo <palumbo.ser@outlook.it>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: sfp: add quirk for OEM DFP-34X-2C2 GPON
- ONU SFP
-Message-ID: <ZcUBP3g0XNMG/aU2@shell.armlinux.org.uk>
-References: <AS1PR03MB8189D48114A559B080AF5BEA82422@AS1PR03MB8189.eurprd03.prod.outlook.com>
- <Zb1+p6FiJwUF53xc@shell.armlinux.org.uk>
- <f8cf41f2-4a90-4ef5-b214-906319bd82d4@outlook.it>
- <AS1PR03MB818911164FB76698446CFEDC82472@AS1PR03MB8189.eurprd03.prod.outlook.com>
- <ZcI+7grKa33oLtwc@shell.armlinux.org.uk>
- <AS1PR03MB818926990092981B0E09E60B82442@AS1PR03MB8189.eurprd03.prod.outlook.com>
- <ZcSZtLSWd09xqc10@shell.armlinux.org.uk>
- <AS1PR03MB8189A24B92030AA8F011C7B582442@AS1PR03MB8189.eurprd03.prod.outlook.com>
- <ZcTzMgxmA6WOoiA/@shell.armlinux.org.uk>
- <AS1PR03MB81891A5F3C8B1A7542746CB582442@AS1PR03MB8189.eurprd03.prod.outlook.com>
+	s=arc-20240116; t=1707409847; c=relaxed/simple;
+	bh=3bilr2S0udUPWaP4Keb7VMbboD+4Al1FIMWs8mnwqSk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FKvStHMRVLRg2JUxr0hxiyJ7voGRweunqZ5G3ESkO0th1nsrCslDOmbX8jVYozmZzpFUXFTRUKYFnF4h3QNRXixLL+uDWYyipQHxs8k/oa1DnJZv05bu+HUFXfwRkyotWEt7xce/V63w0h9N7x98Rumw4kEOhfmcOvuJSLItqrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A08evnEq; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51168addef1so2966235e87.1;
+        Thu, 08 Feb 2024 08:30:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707409844; x=1708014644; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uxa9gRUyNtVY4d25DKEEurdVqxnFvTfKyQlJDNPyYRI=;
+        b=A08evnEqdvI3vGJ0ya35Dz9W4rc37Nen/QPR0eRntd8TVMmVxfthLYwguMshYYuVi2
+         xL0CU0ZiS1SJ5jThQ06DrEvV+E6Vy4KGDPHouVrRTNzmXklDemwE8X/JP8Z5a0Qv12Q5
+         l/eRrg/3Kk9By4y7QwElwFYNPNmpBmwX7gEfyymp0iDLODq5lJUuV8C9BXYR5vtuQwkV
+         oFcPw18h+U/IfAtGw9wtdt+wjlotmovt8nEObvWApo3pimfIKIXDz4CRWcgp3yDW0Inp
+         PpQPVVv6bC8LMo+IyNQlc2Sy8fvB6tNOx+3+H8v1gnqgSRe+M7FLxDzd6I9/eV2se24B
+         BKUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707409844; x=1708014644;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uxa9gRUyNtVY4d25DKEEurdVqxnFvTfKyQlJDNPyYRI=;
+        b=eRWgHP8z5plBN2Jbo+O8fwTPeEegHw37EiAKG6SxJWVwASwv6iIvhHXQMq0uGJEAOJ
+         Re/gR71KnM6fCYrgjbYJDFPAFrfyqxmD5KN6jqZ2vnjWxo8d19fpCKXjFez+zoe8iJkf
+         XAnAYIlBz5U93rYO3SwPpEACoDvkoZAXbmsrSTkMdp6yJD47HZtLJ7ZCGaPDP9CnqGuN
+         yCuhK2gPtHgHZstpam4f5icMSQoZ1h2cViQNMfJKMig9CkjwGSDMhc8HbzLjaNnhiQ2g
+         QzjiryNqo91nzHKhsz5PhlDaq4cQqoOelh2XiRZb8XNf+YlVO2XmH9R9llnHPmvJ3PDC
+         mBQA==
+X-Forwarded-Encrypted: i=1; AJvYcCW8ce+uuEI562s4ky7tF7wPjfzuoIJqbf4aTMCq6l3f+kY7/kzv3AecOQlMbwbXMUfIOfepXv3fA+N4xk1V2lG9Gh7cvYI/pk4yTFX1
+X-Gm-Message-State: AOJu0Yyp9CmLh4SF6d0RPrTltUWpt9PAqzGShmKrU+rCuUGILFxohGvL
+	AXUU3xlK9JYZZ5EQntQlrbNywZe3qJE9ObS01KOvZkeU/OLlIrfT
+X-Google-Smtp-Source: AGHT+IFRTrNOiDNAkl7Kzj4zgqs01IlH1M12+NivZvsOx6PgF9lvS4AmTO6WrVnxxrDOhESB0Ar3tA==
+X-Received: by 2002:a05:6512:3d0f:b0:511:1038:dcde with SMTP id d15-20020a0565123d0f00b005111038dcdemr7983918lfv.52.1707409843453;
+        Thu, 08 Feb 2024 08:30:43 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVvGrDev/EPYsh966CkRHUxwlOXevKgPlp3sqo3VizOgc2NpvOBmUvJLBI5hJmW0zdG8Yr2SIoOBsXAFdieoDkwBoAGLnQQCyFnEAeAY0XqqnamRlVIpT4NW4hEPETqusq51faVejps82QtAKqHDNfJk7cgB6Ob6sLfRobRGN0FQr3HgR+jWdHPmuv0l1J6D7E9IFoZ2zCNvYhOWyL51Ce6cXTRM51dLBpWsDEvcjq1rRZjf8sJa1vBRHt0YFMO4N182mC3P/bpeeLKRoEPHTIOC3rHQWJWJJqFzlkhfL8UL+6dRbGUAM4sSytqeu2d
+Received: from sacco-Inspiron-5559.. (88-160-103-158.subs.proxad.net. [88.160.103.158])
+        by smtp.gmail.com with ESMTPSA id d5-20020a056512368500b00511602c50cesm41809lfs.277.2024.02.08.08.30.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 08:30:43 -0800 (PST)
+From: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+To: ardb@kernel.org,
+	bp@alien8.de,
+	kirill.shutemov@linux.intel.com,
+	alexghiti@rivosinc.com,
+	palmer@rivosinc.com,
+	arnd@arndb.de
+Cc: linux-efi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+Subject: [PATCH] drivers: efistub: fix typo in docs
+Date: Thu,  8 Feb 2024 17:30:38 +0100
+Message-Id: <20240208163038.111870-1-vincenzo.mezzela@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AS1PR03MB81891A5F3C8B1A7542746CB582442@AS1PR03MB8189.eurprd03.prod.outlook.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 08, 2024 at 05:19:24PM +0100, Sergio Palumbo wrote:
-> Dear Russell,
-> I understand your point, but I think ODI DFP-34X-2C2 situation is quite
-> similar to:
-> FS GPON-INU-34-20BI
-> HUAWEI MA5671A
+This patch resolves a spelling error in the documentation.
 
-MA5671A is configured by the OLT. The user can't configure it.
+It is submitted as part of my application to the "Linux Kernel Bug
+Fixing Spring Unpaid 2024" mentorship program of the Linux Kernel
+Foundation.
 
+Signed-off-by: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+---
+ drivers/firmware/efi/libstub/efistub.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
+index 212687c30d79..8369f3adcb37 100644
+--- a/drivers/firmware/efi/libstub/efistub.h
++++ b/drivers/firmware/efi/libstub/efistub.h
+@@ -221,7 +221,7 @@ typedef void (__efiapi *efi_event_notify_t)(efi_event_t, void *);
+  *
+  * @events:	array of UEFI events
+  * @ids:	index where to put the event in the array
+- * @event:	event to add to the aray
++ * @event:	event to add to the array
+  *
+  * boottime->wait_for_event() takes an array of events as input.
+  * Provide a helper to set it up correctly for mixed mode.
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.34.1
+
 
