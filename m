@@ -1,407 +1,208 @@
-Return-Path: <linux-kernel+bounces-57719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F4BA84DCB4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 092CD84DCAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:21:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E22C1C223E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:22:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D3E11C21965
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:21:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 619226F06B;
-	Thu,  8 Feb 2024 09:21:00 +0000 (UTC)
-Received: from esa1.ltts.com (unknown [118.185.121.105])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5BC36BB4F;
+	Thu,  8 Feb 2024 09:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="BIq10Xut";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kkVFonMY"
+Received: from fhigh1-smtp.messagingengine.com (fhigh1-smtp.messagingengine.com [103.168.172.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183486D1B6
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 09:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=118.185.121.105
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688246BB55;
+	Thu,  8 Feb 2024 09:20:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707384059; cv=none; b=BGSpZHhbDp1sJ1DYBXYF6zijm926EdqAh7y7SpLUbeIkbcgmRbjtINcQ2wooVX8Mu9AJQbid5ULyRgyUxbRMYFlCpDv8yUNkISndrJIIa5VCSQnyKZMGaCIuV96XXoCSMIpJN96v5bLlUy5nstumjE8/TRw/6WsEUCP5kqBk8ss=
+	t=1707384054; cv=none; b=aCt/SftxJVUqiEuD3QpNVBa0oEh83mrMlWcUbdey9jQxv/k6k+z6HsczGbKWH0dXMG5w8hzrQvE1rMNIzJJQGskSaNDA6Kea2O/PBQKGjVBJf7oK8hJyt2TGAd2yJtHShuN5YHWu2xjMvWSUCtvi3dRR65D4F3EGodoM/RCKHRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707384059; c=relaxed/simple;
-	bh=GHYK6mFzUra8Yd8rf22zLOOAA40YaDEussQSw3ynuRM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=I3osdYbWJZDLG3ch4QUYaw4c5QK0mm0vF9nOkilkOTS/qVdCtI6NcnJkwwQzfVEwzm1TmWMHcyRaAVIXOAyMJtut6nu5VkpgI46HgzOdD262wETBzJJW24bb8bRaWH7hYYyw4qXtJfv8A9tGqhzSJ+Ea7+9FLEYD0j/BSiBrPLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com; spf=pass smtp.mailfrom=ltts.com; arc=none smtp.client-ip=118.185.121.105
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ltts.com
-IronPort-SDR: dVqFlGoOApsBqjjjS8EXcBj3nQc3UEoPOJ9nMbUw3GTF4TKWYFkBpUXzdRUH3EFLYUN460/4BO
- NIhYZwoq9wOw==
-Received: from unknown (HELO localhost.localdomain) ([192.168.34.55])
-  by esa1.ltts.com with ESMTP; 08 Feb 2024 14:50:48 +0530
-From: Bhargav Raviprakash <bhargav.r@ltts.com>
-To: linux-kernel@vger.kernel.org
-Cc: m.nirmaladevi@ltts.com,
-	lee@kernel.org,
-	Bhargav Raviprakash <bhargav.r@ltts.com>
-Subject: [PATCH v1 06/13] mfd: tps6594-core: Add TI TPS65224 PMIC core
-Date: Thu,  8 Feb 2024 14:50:34 +0530
-Message-Id: <20240208092034.1207057-3-bhargav.r@ltts.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240208092034.1207057-1-bhargav.r@ltts.com>
-References: <20240208092034.1207057-1-bhargav.r@ltts.com>
+	s=arc-20240116; t=1707384054; c=relaxed/simple;
+	bh=UmsQQy0GxSUlPjTMxhqBJwATE/FEB2iKU59BoDw0V7c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=utiH12Ff/7BQcD2ds06mdsZbvWBC1kU5S7kvugKjYSGmpyFUUGWx+5Ph6hcGykk998vC9DUwYONMqWgstSD43LienNfymqQAeO8i8xO3tHPAUP9lVFRG1OblD40Rj4BaMCq0IGdeNLOrjuqB4541HEYOPUpN35b3B9o/fzr+jL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=BIq10Xut; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kkVFonMY; arc=none smtp.client-ip=103.168.172.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 2FAD911400B0;
+	Thu,  8 Feb 2024 04:20:51 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 08 Feb 2024 04:20:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1707384051;
+	 x=1707470451; bh=uj690mHzuaDMd47zJhc5iPw+H6HEefWEcHIBsad9VjU=; b=
+	BIq10Xut73VD6H6regi/+2wPfSkPy33QTMhOMs081bX2aSkLfge28ftOpCpNcVI2
+	ioH86AUrNsJ9REbkbiCoc49gWt7zOLHld7xp3GGPe6TaKoclkdVOZU4zPn94coOt
+	JO/wH6Hg06UYXeo9YGe5AiKAPZnx3XKi5wUILe5l9JImxi7Z1Yeiabg4e47ox3Jj
+	71mxi3a2GEm1GeJZSj512dHK+E7cAjBrr4nZBNk06RMF9hVaZy6VgnXd2NFoUG3Q
+	FiH8zTKOkMVDgZk1RFLDYPoJU1GrafCi8pCYo+ly/AlZgctW3kDslPWRCiuhjqX2
+	rsqiLxPxpBLwRQ7h+VJ7GQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1707384051; x=
+	1707470451; bh=uj690mHzuaDMd47zJhc5iPw+H6HEefWEcHIBsad9VjU=; b=k
+	kVFonMYqFfhH5K+T2CBvJRzN6ZPX0ewEW3DIIlx7YfKeJCTw13ZBdN/APNyo5pQE
+	t+LPjd9mVFmr33xqdmrsjhI3IkBYBG3XZkl08Vhu/1+6XffMjklgzxG5SC2sXVPg
+	I3LGMML+Lauf52ZeXZyc16/PuK+s2dGx/3nEY68y0tDCjyZ5iJAf6ncvP2YLV9Nw
+	KLaSdr4OO+lmGIDXN/Jxc8gJ6vg/EnpcHdwDTKG0wgammD/+EoilBNd6jSNLChsk
+	wFzIbLNcYL8km6ExbO/rDorefjYKjICktt8uIz2U5WO8xK5wZfsWpChoxW21VApn
+	bp/+2W2flP9BSX+jmBdFQ==
+X-ME-Sender: <xms:8pzEZVkGgZ-MoLxVaht4XIv4j6w1hm57B3fq4ugNjg4LUh6Fw1pcCA>
+    <xme:8pzEZQ3GpSXmw4TKLwizOVFU7PmYNeJLN1ehhkdu9tt6_IlrKcJXsoip2xp-couGw
+    bFSFXPZfBQjWJkXeM8>
+X-ME-Received: <xmr:8pzEZbpZ4chCQfKlby_RlrcmBBpJIgF_4fIAYFkyEiSWqwsz5X6XJpYV5BvyPywjYOXsmwiN1qydEh6PyE_uBQf-wQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtdeggddtudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfuvfevfhfhjggtgfesthekredttddvjeenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeduheejgfetvdekvedvveeikeelkefhveekveelheeikeefudet
+    ueffudfhhedtheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghes
+    fhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:8pzEZVm860aT6mMJSJVgqE2cTq1Bjw4_kfXQdas5mc5jMWFBM-vmQQ>
+    <xmx:8pzEZT3s5gmfppZZSAGFVhHfpj2oacryALtPFZRBiz5mosesSubb3A>
+    <xmx:8pzEZUsAtN7fzXnAfeoEEvspZw_ZexqTrnv311CAG7fdEq3Lj0qCHw>
+    <xmx:85zEZcsHhc1dBbznnJqztiirRSmeltrJyv4kFaomgWnMaiRwH5rpCw>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 8 Feb 2024 04:20:49 -0500 (EST)
+Message-ID: <63a1738c-5755-4c2e-a4d4-f5047cdb3660@flygoat.com>
+Date: Thu, 8 Feb 2024 09:20:47 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] Handle delay slot for extable lookup
+To: Oleg Nesterov <oleg@redhat.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Ben Hutchings <ben@decadent.org.uk>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-mm@kvack.org,
+ Xi Ruoyao <xry111@xry111.site>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+References: <20240202-exception_ip-v2-0-e6894d5ce705@flygoat.com>
+Content-Language: en-US
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Autocrypt: addr=jiaxun.yang@flygoat.com;
+ keydata= xsFNBFnp/kwBEADEHKlSYJNLpFE1HPHfvsxjggAIK3ZtHTj5iLuRkEHDPiyyiLtmIgimmD3+
+ XN/uu2k1FFbrYiYgMjpGCXeRtdCLqkd+g9V4kYMlgi4MPHLt3XEuHcoKD1Yd2qYPT/OiQeGM
+ 6bPtGUZlgfOpze1XuqHQ2VMWATL+kLYzk6FUUL715t8J5J9TgZBvSy8zc6gvpp3awsCwjFSv
+ X3fiPMTC2dIiiMh4rKQKGboI1c7svgu6blHpy/Q5pXlEVqfLc7tFTGnvUp95jsK639GD8Ht3
+ 0fSBxHGrTslrT775Aqi+1IsbJKBOmxIuU9eUGBUaZ00beGE09ovxiz2n2JKXKKZklNqhzifb
+ 6uyVCOKdckR8uGqzRuohxDS7vlDZfFD5Z5OhplFY/9q+2IjCrWMmbHGSWYs9VV52XGM+wiEG
+ sM5bup03N2q1kDXUWJ+zNNYowuOJKN9uxF3jBjdXSDi3uJu/ZUL/mBqI58SkHq5NTaHypRoE
+ 5BxVmgDMCGQe93adKHUNmt4HK28R506S7019+umg1bq5vA/ncmh/J2k8MFGPXqO8t1xVI2O5
+ qrRheRKu1oST46ZJ7vKET1UwgcXTZ1iwqFlA26/iKxXoL7R7/AqWrapokEsUzRblGcutGZ/b
+ 4lJVOxxAWaRcajpWvwqscI2mUF++O7DxYbhOJ/EFY2rv0i6+/QARAQABzSVKaWF4dW4gWWFu
+ ZyA8amlheHVuLnlhbmdAZmx5Z29hdC5jb20+wsGRBBMBCAA7AhsjAh4BAheABQsJCAcCBhUK
+ CQgLAgQWAgMBFiEEmAN5vv6/v0d+oE75wRGUkHP8D2cFAmKcjj8CGQEACgkQwRGUkHP8D2fx
+ LxAAuNjknjfMBXIwEDpY+L2KMMU4V5rvTBATQ0dHZZzTlmTJuEduj/YdlVo0uTClRr9qkfEr
+ Nfdr/YIS6BN6Am1x6nF2PAqHu/MkTNNFSAFiABh35hcm032jhrZVqLgAPLeydwQguIR8KXQB
+ pP6S/jL3c7mUvVkoYy2g5PE1eH1MPeBwkg/r/ib9qNJSTuJH3SXnfZ4zoynvf3ipqnHsn2Sa
+ 90Ta0Bux6ZgXIVlTL+LRDU88LISTpjBITyzn5F6fNEArxNDQFm4yrbPNbpWJXml50AWqsywp
+ q9jRpu9Ly4qX2szkruJ/EnnAuS/FbEd4Agx2KZFb6LxxGAr4useXn6vab9p1bwRVBzfiXzqR
+ WeTRAqwmJtdvzyo3tpkLmNC/jC3UsjqgfyBtiDSQzq0pSu7baOjvCGiRgeDCRSWq/T3HGZug
+ 02QAi0Wwt/k5DX7jJS4Z5AAkfimXG3gq2nhiA6R995bYRyO8nIa+jmkMlYRFkwWdead3i/a0
+ zrtUyfZnIyWxUOsqHrfsN45rF2b0wHGpnFUfnR3Paa4my1uuwfp4BI6ZDVSVjz0oFBJ5y39A
+ DCvFSpJkiJM/q71Erhyqn6c1weRnMok3hmG0rZ8RCSh5t7HllmyUUWe4OT97d5dhI7K/rnhc
+ ze8vkrTNT6/fOvyPFqpSgYRDXGz2qboX/P6MG3zOOARlnqgjEgorBgEEAZdVAQUBAQdAUBqi
+ bYcf0EGVya3wlwRABMwYsMimlsLEzvE4cKwoZzEDAQgHwsF2BBgBCAAgFiEEmAN5vv6/v0d+
+ oE75wRGUkHP8D2cFAmWeqCMCGwwACgkQwRGUkHP8D2dXlw/8CGKNXDloh1d7v/jDgcPPmlXd
+ lQ4hssICgi6D+9aj3qYChIyuaNncRsUEOYvTmZoCHgQ6ymUUUBDuuog1KpuP3Ap8Pa3r5Tr6
+ TXtOl6Zi23ZWsrmthuYtJ8Yn5brxs6KQ5k4vCTkbF8ukue4Xl4O0RVlaIgJihJHZTfd9rUZy
+ QugM8X98iLuUqYHCq2bAXHOq9h+mTLrhdy09dUalFyhOVejWMftULGfoXnRVz6OaHSBjTz5P
+ HwZDAFChOUUR6vh31Lac2exTqtY/g+TjiUbXUPDEzN4mENACF/Aw+783v5CSEkSNYNxrCdt8
+ 5+MRdhcj7y1wGfnSsKubHTOkBQJSanNr0cZZlPsJK0gxB2YTG6Nin13oX8mV7sAa3vBqqwfj
+ ZtjNA+Up9IJY4Iz5upykUDAtCcvm82UnJoe5bMuoiyVccuqd5K/058AAxWv8fIvB4bSgmGMM
+ aAN9l7GLyi4NhsKCCcAGSc2YAsxFrH6whVqY6JIF+08n1kur5ULrEKHpTTeffwajCgZPWpFc
+ 7Mg2PDpoOwdpKLKlmIpyDexGVH0Lj/ycBL8ujDYZ2tA9HhEaO4dW6zsQyt1v6mZffpWK+ZXb
+ Cs8oFeACbrtNFF0nhNI6LUPH3oaVOkUoRQUYDuX6mIc4VTwMA8EoZlueKEHfZIKrRf2QYbOZ
+ HVO98ZmbMeg=
+In-Reply-To: <20240202-exception_ip-v2-0-e6894d5ce705@flygoat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Add functionality of the TPS65224 PMIC to the TPS6594 core driver. This
-includes adding IRQ resource, MFD cells, and device initialization for
-TPS65224.
 
-Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
----
- drivers/mfd/tps6594-core.c | 242 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 228 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mfd/tps6594-core.c b/drivers/mfd/tps6594-core.c
-index 089ab8cc8..f18663560 100644
---- a/drivers/mfd/tps6594-core.c
-+++ b/drivers/mfd/tps6594-core.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * Core functions for TI TPS6594/TPS6593/LP8764 PMICs
-+ * Core functions for TI TPS65224/TPS6594/TPS6593/LP8764 PMICs
-  *
-  * Copyright (C) 2023 BayLibre Incorporated - https://www.baylibre.com/
-  */
-@@ -278,16 +278,172 @@ static const unsigned int tps6594_irq_reg[] = {
- 	TPS6594_REG_RTC_STATUS,
- };
- 
-+/* TPS65224 Resources */
-+
-+static const struct resource tps65224_regulator_resources[] = {
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_BUCK1_UVOV, TPS65224_IRQ_NAME_BUCK1_UVOV),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_BUCK2_UVOV, TPS65224_IRQ_NAME_BUCK2_UVOV),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_BUCK3_UVOV, TPS65224_IRQ_NAME_BUCK3_UVOV),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_BUCK4_UVOV, TPS65224_IRQ_NAME_BUCK4_UVOV),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_LDO1_UVOV, TPS65224_IRQ_NAME_LDO1_UVOV),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_LDO2_UVOV, TPS65224_IRQ_NAME_LDO2_UVOV),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_LDO3_UVOV, TPS65224_IRQ_NAME_LDO3_UVOV),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_VCCA_UVOV, TPS65224_IRQ_NAME_VCCA_UVOV),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_VMON1_UVOV, TPS65224_IRQ_NAME_VMON1_UVOV),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_VMON2_UVOV, TPS65224_IRQ_NAME_VMON2_UVOV),
-+};
-+
-+static const struct resource tps65224_pinctrl_resources[] = {
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_GPIO1, TPS65224_IRQ_NAME_GPIO1),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_GPIO2, TPS65224_IRQ_NAME_GPIO2),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_GPIO3, TPS65224_IRQ_NAME_GPIO3),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_GPIO4, TPS65224_IRQ_NAME_GPIO4),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_GPIO5, TPS65224_IRQ_NAME_GPIO5),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_GPIO6, TPS65224_IRQ_NAME_GPIO6),
-+};
-+
-+static const struct resource tps65224_pfsm_resources[] = {
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_VSENSE, TPS65224_IRQ_NAME_VSENSE),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_ENABLE, TPS65224_IRQ_NAME_ENABLE),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_PB_SHORT, TPS65224_IRQ_NAME_PB_SHORT),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_FSD, TPS65224_IRQ_NAME_FSD),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_SOFT_REBOOT, TPS65224_IRQ_NAME_SOFT_REBOOT),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_BIST_PASS, TPS65224_IRQ_NAME_BIST_PASS),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_EXT_CLK, TPS65224_IRQ_NAME_EXT_CLK),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_REG_UNLOCK, TPS65224_IRQ_NAME_REG_UNLOCK),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_TWARN, TPS65224_IRQ_NAME_TWARN),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_PB_LONG, TPS65224_IRQ_NAME_PB_LONG),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_PB_FALL, TPS65224_IRQ_NAME_PB_FALL),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_PB_RISE, TPS65224_IRQ_NAME_PB_RISE),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_TSD_ORD, TPS65224_IRQ_NAME_TSD_ORD),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_BIST_FAIL, TPS65224_IRQ_NAME_BIST_FAIL),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_REG_CRC_ERR, TPS65224_IRQ_NAME_REG_CRC_ERR),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_RECOV_CNT, TPS65224_IRQ_NAME_RECOV_CNT),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_TSD_IMM, TPS65224_IRQ_NAME_TSD_IMM),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_VCCA_OVP, TPS65224_IRQ_NAME_VCCA_OVP),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_PFSM_ERR, TPS65224_IRQ_NAME_PFSM_ERR),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_BG_XMON, TPS65224_IRQ_NAME_BG_XMON),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_IMM_SHUTDOWN, TPS65224_IRQ_NAME_IMM_SHUTDOWN),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_ORD_SHUTDOWN, TPS65224_IRQ_NAME_ORD_SHUTDOWN),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_MCU_PWR_ERR, TPS65224_IRQ_NAME_MCU_PWR_ERR),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_SOC_PWR_ERR, TPS65224_IRQ_NAME_SOC_PWR_ERR),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_COMM_ERR, TPS65224_IRQ_NAME_COMM_ERR),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_I2C2_ERR, TPS65224_IRQ_NAME_I2C2_ERR),
-+};
-+
-+static const struct resource tps65224_esm_resources[] = {
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_ESM_MCU_PIN, TPS65224_IRQ_NAME_ESM_MCU_PIN),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_ESM_MCU_FAIL, TPS65224_IRQ_NAME_ESM_MCU_FAIL),
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_ESM_MCU_RST, TPS65224_IRQ_NAME_ESM_MCU_RST),
-+};
-+
-+static const struct resource tps65224_adc_resources[] = {
-+	DEFINE_RES_IRQ_NAMED(TPS65224_IRQ_ADC_CONV_READY, TPS65224_IRQ_NAME_ADC_CONV_READY),
-+};
-+
-+static const struct mfd_cell tps65224_common_cells[] = {
-+	MFD_CELL_RES("tps65224-adc", tps65224_adc_resources),
-+	MFD_CELL_RES("tps6594-esm", tps65224_esm_resources),
-+	MFD_CELL_RES("tps6594-pfsm", tps65224_pfsm_resources),
-+	MFD_CELL_RES("tps6594-pinctrl", tps65224_pinctrl_resources),
-+	MFD_CELL_RES("tps6594-regulator", tps65224_regulator_resources),
-+};
-+
-+static const struct regmap_irq tps65224_irqs[] = {
-+	/* INT_BUCK register */
-+	REGMAP_IRQ_REG(TPS65224_IRQ_BUCK1_UVOV, 0, TPS65224_BIT_BUCK1_UVOV_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_BUCK2_UVOV, 0, TPS65224_BIT_BUCK2_UVOV_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_BUCK3_UVOV, 0, TPS65224_BIT_BUCK3_UVOV_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_BUCK4_UVOV, 0, TPS65224_BIT_BUCK4_UVOV_INT),
-+
-+	/* INT_VMON_LDO register */
-+	REGMAP_IRQ_REG(TPS65224_IRQ_LDO1_UVOV, 1, TPS65224_BIT_LDO1_UVOV_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_LDO2_UVOV, 1, TPS65224_BIT_LDO2_UVOV_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_LDO3_UVOV, 1, TPS65224_BIT_LDO3_UVOV_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_VCCA_UVOV, 1, TPS65224_BIT_VCCA_UVOV_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_VMON1_UVOV, 1, TPS65224_BIT_VMON1_UVOV_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_VMON2_UVOV, 1, TPS65224_BIT_VMON2_UVOV_INT),
-+
-+	/* INT_GPIO register */
-+	REGMAP_IRQ_REG(TPS65224_IRQ_GPIO1, 2, TPS65224_BIT_GPIO1_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_GPIO2, 2, TPS65224_BIT_GPIO2_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_GPIO3, 2, TPS65224_BIT_GPIO3_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_GPIO4, 2, TPS65224_BIT_GPIO4_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_GPIO5, 2, TPS65224_BIT_GPIO5_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_GPIO6, 2, TPS65224_BIT_GPIO6_INT),
-+
-+	/* INT_STARTUP register */
-+	REGMAP_IRQ_REG(TPS65224_IRQ_VSENSE, 3, TPS65224_BIT_VSENSE_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_ENABLE, 3, TPS6594_BIT_ENABLE_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_PB_SHORT, 3, TPS65224_BIT_PB_SHORT_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_FSD, 3, TPS6594_BIT_FSD_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_SOFT_REBOOT, 3, TPS6594_BIT_SOFT_REBOOT_INT),
-+
-+	/* INT_MISC register */
-+	REGMAP_IRQ_REG(TPS65224_IRQ_BIST_PASS, 4, TPS6594_BIT_BIST_PASS_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_EXT_CLK, 4, TPS6594_BIT_EXT_CLK_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_REG_UNLOCK, 4, TPS65224_BIT_REG_UNLOCK_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_TWARN, 4, TPS6594_BIT_TWARN_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_PB_LONG, 4, TPS65224_BIT_PB_LONG_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_PB_FALL, 4, TPS65224_BIT_PB_FALL_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_PB_RISE, 4, TPS65224_BIT_PB_RISE_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_ADC_CONV_READY, 4, TPS65224_BIT_ADC_CONV_READY_INT),
-+
-+	/* INT_MODERATE_ERR register */
-+	REGMAP_IRQ_REG(TPS65224_IRQ_TSD_ORD, 5, TPS6594_BIT_TSD_ORD_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_BIST_FAIL, 5, TPS6594_BIT_BIST_FAIL_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_REG_CRC_ERR, 5, TPS6594_BIT_REG_CRC_ERR_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_RECOV_CNT, 5, TPS6594_BIT_RECOV_CNT_INT),
-+
-+	/* INT_SEVERE_ERR register */
-+	REGMAP_IRQ_REG(TPS65224_IRQ_TSD_IMM, 6, TPS6594_BIT_TSD_IMM_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_VCCA_OVP, 6, TPS6594_BIT_VCCA_OVP_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_PFSM_ERR, 6, TPS6594_BIT_PFSM_ERR_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_BG_XMON, 6, TPS65224_BIT_BG_XMON_INT),
-+
-+	/* INT_FSM_ERR register */
-+	REGMAP_IRQ_REG(TPS65224_IRQ_IMM_SHUTDOWN, 7, TPS6594_BIT_IMM_SHUTDOWN_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_ORD_SHUTDOWN, 7, TPS6594_BIT_ORD_SHUTDOWN_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_MCU_PWR_ERR, 7, TPS6594_BIT_MCU_PWR_ERR_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_SOC_PWR_ERR, 7, TPS6594_BIT_SOC_PWR_ERR_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_COMM_ERR, 7, TPS6594_BIT_COMM_ERR_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_I2C2_ERR, 7, TPS65224_BIT_I2C2_ERR_INT),
-+
-+	/* INT_ESM register */
-+	REGMAP_IRQ_REG(TPS65224_IRQ_ESM_MCU_PIN, 8, TPS6594_BIT_ESM_MCU_PIN_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_ESM_MCU_FAIL, 8, TPS6594_BIT_ESM_MCU_FAIL_INT),
-+	REGMAP_IRQ_REG(TPS65224_IRQ_ESM_MCU_RST, 8, TPS6594_BIT_ESM_MCU_RST_INT),
-+};
-+
-+static const unsigned int tps65224_irq_reg[] = {
-+	TPS6594_REG_INT_BUCK,
-+	TPS6594_REG_INT_LDO_VMON,
-+	TPS6594_REG_INT_GPIO,
-+	TPS6594_REG_INT_STARTUP,
-+	TPS6594_REG_INT_MISC,
-+	TPS6594_REG_INT_MODERATE_ERR,
-+	TPS6594_REG_INT_SEVERE_ERR,
-+	TPS6594_REG_INT_FSM_ERR,
-+	TPS6594_REG_INT_ESM,
-+};
-+
- static inline unsigned int tps6594_get_irq_reg(struct regmap_irq_chip_data *data,
- 					       unsigned int base, int index)
- {
- 	return tps6594_irq_reg[index];
- };
- 
-+static inline unsigned int tps65224_get_irq_reg(struct regmap_irq_chip_data *data,
-+						unsigned int base, int index)
-+{
-+	return tps65224_irq_reg[index];
-+};
-+
- static int tps6594_handle_post_irq(void *irq_drv_data)
- {
- 	struct tps6594 *tps = irq_drv_data;
- 	int ret = 0;
-+	unsigned int regmap_reg, mask_val;
- 
- 	/*
- 	 * When CRC is enabled, writing to a read-only bit triggers an error,
-@@ -299,10 +455,17 @@ static int tps6594_handle_post_irq(void *irq_drv_data)
- 	 * COMM_ADR_ERR_INT bit set. Clear immediately this bit to avoid raising
- 	 * a new interrupt.
- 	 */
--	if (tps->use_crc)
--		ret = regmap_write_bits(tps->regmap, TPS6594_REG_INT_COMM_ERR,
--					TPS6594_BIT_COMM_ADR_ERR_INT,
--					TPS6594_BIT_COMM_ADR_ERR_INT);
-+	if (tps->use_crc) {
-+		if (tps->chip_id == TPS65224) {
-+			regmap_reg = TPS6594_REG_INT_FSM_ERR;
-+			mask_val = TPS6594_BIT_COMM_ERR_INT;
-+		} else {
-+			regmap_reg = TPS6594_REG_INT_COMM_ERR;
-+			mask_val = TPS6594_BIT_COMM_ADR_ERR_INT;
-+		}
-+
-+		ret = regmap_write_bits(tps->regmap, regmap_reg, mask_val, mask_val);
-+	}
- 
- 	return ret;
- };
-@@ -319,6 +482,18 @@ static struct regmap_irq_chip tps6594_irq_chip = {
- 	.handle_post_irq = tps6594_handle_post_irq,
- };
- 
-+static struct regmap_irq_chip tps65224_irq_chip = {
-+	.ack_base = TPS6594_REG_INT_BUCK,
-+	.ack_invert = 1,
-+	.clear_ack = 1,
-+	.init_ack_masked = 1,
-+	.num_regs = ARRAY_SIZE(tps65224_irq_reg),
-+	.irqs = tps65224_irqs,
-+	.num_irqs = ARRAY_SIZE(tps65224_irqs),
-+	.get_irq_reg = tps65224_get_irq_reg,
-+	.handle_post_irq = tps6594_handle_post_irq,
-+};
-+
- static const struct regmap_range tps6594_volatile_ranges[] = {
- 	regmap_reg_range(TPS6594_REG_INT_TOP, TPS6594_REG_STAT_READBACK_ERR),
- 	regmap_reg_range(TPS6594_REG_RTC_STATUS, TPS6594_REG_RTC_STATUS),
-@@ -330,17 +505,35 @@ const struct regmap_access_table tps6594_volatile_table = {
- };
- EXPORT_SYMBOL_GPL(tps6594_volatile_table);
- 
-+static const struct regmap_range tps65224_volatile_ranges[] = {
-+	regmap_reg_range(TPS6594_REG_INT_TOP, TPS6594_REG_STAT_SEVERE_ERR),
-+};
-+
-+const struct regmap_access_table tps65224_volatile_table = {
-+	.yes_ranges = tps65224_volatile_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(tps65224_volatile_ranges),
-+};
-+EXPORT_SYMBOL_GPL(tps65224_volatile_table);
-+
- static int tps6594_check_crc_mode(struct tps6594 *tps, bool primary_pmic)
- {
- 	int ret;
-+	unsigned int regmap_reg, mask_val;
-+
-+	if (tps->chip_id == TPS65224) {
-+		regmap_reg = TPS6594_REG_CONFIG_2;
-+		mask_val = TPS65224_BIT_I2C1_SPI_CRC_EN;
-+	} else {
-+		regmap_reg = TPS6594_REG_SERIAL_IF_CONFIG;
-+		mask_val = TPS6594_BIT_I2C1_SPI_CRC_EN;
-+	};
- 
- 	/*
- 	 * Check if CRC is enabled.
- 	 * Once CRC is enabled, it can't be disabled until next power cycle.
- 	 */
- 	tps->use_crc = true;
--	ret = regmap_test_bits(tps->regmap, TPS6594_REG_SERIAL_IF_CONFIG,
--			       TPS6594_BIT_I2C1_SPI_CRC_EN);
-+	ret = regmap_test_bits(tps->regmap, regmap_reg, mask_val);
- 	if (ret == 0) {
- 		ret = -EIO;
- 	} else if (ret > 0) {
-@@ -355,6 +548,15 @@ static int tps6594_check_crc_mode(struct tps6594 *tps, bool primary_pmic)
- static int tps6594_set_crc_feature(struct tps6594 *tps)
- {
- 	int ret;
-+	unsigned int regmap_reg, mask_val;
-+
-+	if (tps->chip_id == TPS65224) {
-+		regmap_reg = TPS6594_REG_CONFIG_2;
-+		mask_val = TPS65224_BIT_I2C1_SPI_CRC_EN;
-+	} else {
-+		regmap_reg = TPS6594_REG_FSM_I2C_TRIGGERS;
-+		mask_val = TPS6594_BIT_TRIGGER_I2C(2);
-+	}
- 
- 	ret = tps6594_check_crc_mode(tps, true);
- 	if (ret) {
-@@ -363,8 +565,7 @@ static int tps6594_set_crc_feature(struct tps6594 *tps)
- 		 * on primary PMIC.
- 		 */
- 		tps->use_crc = false;
--		ret = regmap_write_bits(tps->regmap, TPS6594_REG_FSM_I2C_TRIGGERS,
--					TPS6594_BIT_TRIGGER_I2C(2), TPS6594_BIT_TRIGGER_I2C(2));
-+		ret = regmap_write_bits(tps->regmap, regmap_reg, mask_val, mask_val);
- 		if (ret)
- 			return ret;
- 
-@@ -420,6 +621,9 @@ int tps6594_device_init(struct tps6594 *tps, bool enable_crc)
- {
- 	struct device *dev = tps->dev;
- 	int ret;
-+	struct regmap_irq_chip *irq_chip;
-+	const struct mfd_cell *cells;
-+	int n_cells;
- 
- 	if (enable_crc) {
- 		ret = tps6594_enable_crc(tps);
-@@ -440,19 +644,28 @@ int tps6594_device_init(struct tps6594 *tps, bool enable_crc)
- 	if (!tps6594_irq_chip.name)
- 		return -ENOMEM;
- 
-+	if (tps->chip_id == TPS65224) {
-+		irq_chip = &tps65224_irq_chip;
-+		n_cells = ARRAY_SIZE(tps65224_common_cells);
-+		cells = tps65224_common_cells;
-+	} else {
-+		irq_chip = &tps6594_irq_chip;
-+		n_cells = ARRAY_SIZE(tps6594_common_cells);
-+		cells = tps6594_common_cells;
-+	}
-+
- 	ret = devm_regmap_add_irq_chip(dev, tps->regmap, tps->irq, IRQF_SHARED | IRQF_ONESHOT,
--				       0, &tps6594_irq_chip, &tps->irq_data);
-+				       0, irq_chip, &tps->irq_data);
- 	if (ret)
- 		return dev_err_probe(dev, ret, "Failed to add regmap IRQ\n");
- 
--	ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_AUTO, tps6594_common_cells,
--				   ARRAY_SIZE(tps6594_common_cells), NULL, 0,
-+	ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_AUTO, cells, n_cells, NULL, 0,
- 				   regmap_irq_get_domain(tps->irq_data));
- 	if (ret)
- 		return dev_err_probe(dev, ret, "Failed to add common child devices\n");
- 
--	/* No RTC for LP8764 */
--	if (tps->chip_id != LP8764) {
-+	/* No RTC for LP8764 and TPS65224 */
-+	if (tps->chip_id != LP8764 && tps->chip_id != TPS65224) {
- 		ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_AUTO, tps6594_rtc_cells,
- 					   ARRAY_SIZE(tps6594_rtc_cells), NULL, 0,
- 					   regmap_irq_get_domain(tps->irq_data));
-@@ -465,5 +678,6 @@ int tps6594_device_init(struct tps6594 *tps, bool enable_crc)
- EXPORT_SYMBOL_GPL(tps6594_device_init);
- 
- MODULE_AUTHOR("Julien Panis <jpanis@baylibre.com>");
-+MODULE_AUTHOR("Bhargav Raviprakash <bhargav.r@ltts.com");
- MODULE_DESCRIPTION("TPS6594 Driver");
- MODULE_LICENSE("GPL");
+在 2024/2/2 12:30, Jiaxun Yang 写道:
+> Hi all,
+>
+> This series fixed extable handling for architecture delay slot (MIPS).
+>
+> Please see previous discussions at [1].
+>
+> There are some other places in kernel not handling delay slots properly,
+> such as uprobe and kgdb, I'll sort them later.
+
+A gentle ping :-)
+
+This series fixes a regression, perhaps it should go through fixes tree.
+
+Thanks
+- Jiaxun
+
+>
+> Thanks!
+>
+> [1]: https://lore.kernel.org/lkml/75e9fd7b08562ad9b456a5bdaacb7cc220311cc9.camel@xry111.site
+>
+> To: Oleg Nesterov <oleg@redhat.com>
+>
+> To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+>
+> To: Andrew Morton <akpm@linux-foundation.org>
+> To: Ben Hutchings <ben@decadent.org.uk>
+>
+> Cc:  <linux-arch@vger.kernel.org>
+> Cc:  <linux-kernel@vger.kernel.org>
+>
+> Cc:  <linux-mips@vger.kernel.org>
+>
+> Cc:  <linux-mm@kvack.org>
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+> Changes in v2:
+> - Reduce diffstat by implemente fallback macro in linux/ptrace.h (linus)
+> - Link to v1: https://lore.kernel.org/r/20240201-exception_ip-v1-0-aa26ab3ee0b5@flygoat.com
+>
+> ---
+> Jiaxun Yang (3):
+>        ptrace: Introduce exception_ip arch hook
+>        MIPS: Clear Cause.BD in instruction_pointer_set
+>        mm/memory: Use exception ip to search exception tables
+>
+>   arch/mips/include/asm/ptrace.h | 3 +++
+>   arch/mips/kernel/ptrace.c      | 7 +++++++
+>   include/linux/ptrace.h         | 4 ++++
+>   mm/memory.c                    | 4 ++--
+>   4 files changed, 16 insertions(+), 2 deletions(-)
+> ---
+> base-commit: 06f658aadff0e483ee4f807b0b46c9e5cba62bfa
+> change-id: 20240131-exception_ip-194e4ad0e6ca
+>
+> Best regards,
+
 -- 
-2.25.1
+---
+Jiaxun Yang
 
 
