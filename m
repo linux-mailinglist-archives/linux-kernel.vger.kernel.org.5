@@ -1,56 +1,71 @@
-Return-Path: <linux-kernel+bounces-58202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F38784E2A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:58:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 045CE84E2AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:59:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5535D292D18
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:58:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5E692930DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:59:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6F5878B6F;
-	Thu,  8 Feb 2024 13:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E998E77F33;
+	Thu,  8 Feb 2024 13:58:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nI7bLWpB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KeB/kC8e"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3474A78B43;
-	Thu,  8 Feb 2024 13:57:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2676076417;
+	Thu,  8 Feb 2024 13:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707400636; cv=none; b=RUlh0MMW4RE7iRnyG9Xn+ArG7I2LhTG+kx0lPG66oaGcx23u19x2D1FaIx/qLet21W/6muRaxZglTEDWcFj8/iwGXwCI7R6mru+MibCsrnuo63fFTahgQTkBj15kixHbLDv1Mceo7tN+G0uHH98elSwQ4uDShiCvU/K5uJKfK2A=
+	t=1707400734; cv=none; b=gzEbOFlyNkpnKvqiZ+6flX5pJmaoC/emODy1s5/LfpCjTE4ZNrPKlrS5tyF2myVwX1TIwE22ycv4N1+MhrinFsj6c7gPWqDeXKi9jJc9TcUwQHUlZIuw4zlq4bxoi3S2K7zhEof3lsNEQLOLjYslwg5h0zKqteQQiUi3sqzVXwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707400636; c=relaxed/simple;
-	bh=ESrUmfo/ZX4uBY/0ol0jgHD3Zqoak75Rank2w+OqQBk=;
+	s=arc-20240116; t=1707400734; c=relaxed/simple;
+	bh=ll0dar8cNCeW9SvNKADTETzN3jimsD0cr4E8aRV6sng=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WbpW9TPGzu4JGF4qzxlMtbUWHbtKrYnVHP8JSJUA42LMCKW1R4hTGFMOJ2cxRdVRK/6aXqe45QRsAUaq1v6TnO1z6xmwQ46c2ghfsF/SDvJF9basHsEQYs1sR7jOZWQ3kem6RWL1uV6n3wF+yfpwBvS+uZLD7pCKTkAlEtx71s8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nI7bLWpB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36DD8C433F1;
-	Thu,  8 Feb 2024 13:57:14 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=eXkmqwAlRtLhIyaCL+qb471zK7QZoobCM+pBWZDqISTTTrd7dmr5WYMxNAT1X4a821sEWu/aUXRMrBXlup6wsnU6OUQK8wPhmgsmhPzF9wwcdqswI4fFofU3m0hPBCrTOFDdc2i2f2Ke7dzyyncAba5bOnIx+1TW3XVGvYEpW14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KeB/kC8e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9CD6C433F1;
+	Thu,  8 Feb 2024 13:58:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707400635;
-	bh=ESrUmfo/ZX4uBY/0ol0jgHD3Zqoak75Rank2w+OqQBk=;
+	s=k20201202; t=1707400733;
+	bh=ll0dar8cNCeW9SvNKADTETzN3jimsD0cr4E8aRV6sng=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nI7bLWpBmO+OYuR2UTxJAGDK7hB+c79O+YFXKa5DUo7VMgKCHNU/yAUEvk4CaWQ+b
-	 3ReU6g2yUkegtPR9GK7/3rBNYQvJXx5FOb8WJ+z+dy/yKOBm55y/mUk4p1nmAf8L66
-	 jyYAsrizURwntFX5I1j23qFmdPaBwLBQXl4lKOt4YrRGioyJcljvasdXXt+21oAcBI
-	 5cBYn+9p2MLqOYkH3iPjCiGvCj192LjZWSDjvmckZbEGi7d1avofsF2WgAiq6oXw9g
-	 1PMeke4nQmX7Qeng5RP7X35VWKncdmP5nzt+hxkzKHZpgDazqESFz3oXUtFXxFl57D
-	 v3g0PUxSBqJ/w==
-Date: Thu, 8 Feb 2024 13:57:11 +0000
+	b=KeB/kC8eS9lFq7WL1GePLNR2AttRt0VbcbJGS2fImIqe2w8JqS7qeqX63KbzsHwsb
+	 Kuv0mqym8BhobYBLPF2f0UZ1Y8Olje9owlwwa4QnLMxdZzVYymsg1VqdvObnndz/cH
+	 U5rTOdtos9LtcuPa+kj173umTLsTL5Cj6iO7O/dyB+ygNtIoDkVYInR/i+cDH3KZZv
+	 +a25L/rc4aBUTCleEpmSg+D0EkALXmksk7Oy1zfWy0xViR7ebcoAdAKtWSLhiyGMxv
+	 ORR5lTzb5JugyH/P709EE6OjJ4WwXvVFSMk9p3hSJRDnk32Bf1hfjGyFu+g3bL3Q4S
+	 t6Pg/RXHwkY0g==
+Date: Thu, 8 Feb 2024 13:58:47 +0000
 From: Lee Jones <lee@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: broonie@kernel.org, andy.shevchenko@gmail.com,
-	patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-	linux-spi@vger.kernel.org
-Subject: Re: (subset) [PATCH v4 1/6] spi: cs42l43: Tidy up header includes
-Message-ID: <20240208135711.GO689448@google.com>
-References: <20240129152557.3221212-1-ckeepax@opensource.cirrus.com>
- <170738736196.904064.7729211182384063971.b4-ty@kernel.org>
- <ZcTYift6P9KkiI7g@ediswmail9.ad.cirrus.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Pavel Machek <pavel@ucw.cz>,
+	Martin Kurbanov <mmkurbanov@salutedevices.com>,
+	Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+	kernel@salutedevices.com
+Subject: Re: [PATCH v1 1/2] leds: aw200xx: support for hw pattern controllers
+Message-ID: <20240208135847.GP689448@google.com>
+References: <20231207125938.175119-1-mmkurbanov@salutedevices.com>
+ <20231207125938.175119-2-mmkurbanov@salutedevices.com>
+ <20231221161011.GO10102@google.com>
+ <85c89859-ae03-4692-9c09-5779e4c40eae@salutedevices.com>
+ <20240125130049.GF74950@google.com>
+ <20240126122310.hrs37vybo2wnxto3@CAB-WSD-L081021>
+ <2024012643-safeness-stipulate-153f@gregkh>
+ <20240129141339.vvqi5z7ta7jkhvxy@CAB-WSD-L081021>
+ <20240205105717.bmppb3xalmmqapqg@CAB-WSD-L081021>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,39 +75,18 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZcTYift6P9KkiI7g@ediswmail9.ad.cirrus.com>
+In-Reply-To: <20240205105717.bmppb3xalmmqapqg@CAB-WSD-L081021>
 
-On Thu, 08 Feb 2024, Charles Keepax wrote:
+On Mon, 05 Feb 2024, Dmitry Rokosov wrote:
 
-> On Thu, Feb 08, 2024 at 10:16:01AM +0000, Lee Jones wrote:
-> > On Mon, 29 Jan 2024 15:25:52 +0000, Charles Keepax wrote:
-> > > Including some missing headers.
-> > > 
-> > > 
-> > 
-> > Applied, thanks!
-> > 
-> > [2/6] mfd: cs42l43: Tidy up header includes
-> >       commit: a5bc1c6c93853fb1026fb5feb6c36c9cd9512724
-> > [3/6] mfd: cs42l43: Use __u8 type rather than u8 for firmware interface
-> >       commit: eb40e181cc480c89b906aca1f29ff6f6df6b66b9
-> > [4/6] mfd: cs42l43: Add time postfixes on defines
-> >       commit: 43a94a8cf0fa136d5fc726121ff7a602754c9680
-> > [5/6] mfd: cs42l43: Add some missing dev_err_probe()s
-> >       commit: 104c68194edbe0e8c3036ce283a3f69434415be2
-> > [6/6] mfd: cs42l43: Handle error from devm_pm_runtime_enable()
-> >       commit: 8716f2c79eb82bd4dc5d7f9523a560e35efe0795
-> > 
-> > --
-> > Lee Jones [李琼斯]
-> > 
+> Hello Greg, Lee and Pavel,
 > 
-> The SPI one needs to be applied along with these, otherwise
-> this will cause build breakage in the SPI driver.
+> Apologies for the ping, but I would appreciate it if you could spare a
+> couple of minutes to decide on the next steps. From my perspective, the
+> problems I previously described persist, and we need to discuss the
+> possible solutions.
 
-Okay.
-
-Mark, can I just take it without sending a PR?
+I thought you were going to use hw_pattern?
 
 -- 
 Lee Jones [李琼斯]
