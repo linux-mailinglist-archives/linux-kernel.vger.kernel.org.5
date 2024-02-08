@@ -1,184 +1,99 @@
-Return-Path: <linux-kernel+bounces-58634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7C0084E919
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:45:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AF9684E91E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:48:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02FA91C221B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:45:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 121AB1F313EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BA25381D3;
-	Thu,  8 Feb 2024 19:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B34F381D4;
+	Thu,  8 Feb 2024 19:48:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l85qlyGz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WmFpBefF"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D92F381BE;
-	Thu,  8 Feb 2024 19:45:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF633714C
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 19:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707421504; cv=none; b=fGqdYxudkqiyXvBBWcTasEcFVQjUW7uEpVIwQJLn44IXX6POegrI8fnt454pORubgo14ewWQ31GN9tWjxHlCIDPqaPC7J9snA2sMaF3r/FRsz11G20tBzu0Jz5jcoQyhmV0O3fPy5vALXMJHq3ajKvumAI1B/3+Wf6MxDjACMog=
+	t=1707421723; cv=none; b=MpckdFnbylUKZh0r4ZffbE0or0OUuTvzEce362atVC6bB4zegtJl5asaNGaDypILuw0TGZ7LU562TN6SEPO8lMBAB4ZNYgxx+ASlyRDGujxCL+/sfP/XQ4Q/hZ4RiDBjnE+1SDwak8DFBnVWSbF7Hcmu0vQMwxAYFDd3R1LvvZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707421504; c=relaxed/simple;
-	bh=2l1tUOHCZWdiX/9Elx5aQIoUXcEcudfp7fVDeYyh7Sk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gn0chvp5evJsW6zgtZotWbXere7NZSH2s9RxpGSMB1T/X8em6hseokTycO/lwANilp8GWBtegBciT5LxdubVl2Vq9k6mcvIG9hqk/soJAyOF4bGZBg9cXXXw0rmxuiFy/qruQpOoJ1Mta+k3/CBxwxKZIy+5/gjAwBJO7ZxylbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l85qlyGz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C054FC433F1;
-	Thu,  8 Feb 2024 19:45:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707421504;
-	bh=2l1tUOHCZWdiX/9Elx5aQIoUXcEcudfp7fVDeYyh7Sk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=l85qlyGzwjrx1J9QVyRPLQdeZ97wSwh5w19HA0aHLOEKbmgVfa4vLLCxL8TNeQoX9
-	 X3BlxdpOtNHmUujbHeBXC/YeSYhf10TkjgUdt+7Tq9LQMCz00URsdXTNHa/OtY4RR0
-	 OcpqXaNmnAUATC3w8YNaYj6w8SydUoFBx2js+0kvzNCHTLllxEArCRJp0E8ZHkdk+L
-	 iPw+yO/I7fcS3iKjQ+8Pq1CgQFrkaM9lbr38wPnH9+jS6D8VlHE72fss6oYXPqVWG9
-	 NYJ8JP0qIUJKwcVZKcPZkO1/NhjtZdCtKjb5XtfQd0/CicsI0dQQlDBamW5mHtwCva
-	 TZ69Rfze9uq7A==
-Date: Thu, 8 Feb 2024 19:44:59 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH 1/1] dt-bindings: pci: layerscape-pci: Convert to yaml
- file
-Message-ID: <20240208-revoke-doorman-5ba34f39c743@spud>
-References: <20240207062403.304367-1-Frank.Li@nxp.com>
- <20240207-yoga-mobility-90a728f6342c@spud>
- <ZcPCn8q7viB/qcOH@lizhi-Precision-Tower-5810>
- <20240208-jarring-frolic-8d4c9b409127@spud>
- <ZcUs16+Z+I4m4q00@lizhi-Precision-Tower-5810>
+	s=arc-20240116; t=1707421723; c=relaxed/simple;
+	bh=QRHcsfNL5CodrBloEE4Fot31u6FMaHiMM28bKZysteY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JdXdfwVJwL5xXZYPYRFcMn58RksK0tgZ9G9fGzugR9nhAXkXnKGd940e+xrdRFjTW9LPzOIL7SVhWk63hbvKDtQQw3gMw7xKmnMolDIxgMlzU6ti+O0GW4vjq+0cSJ0DTFWEYC0U1RUt2P/n/bjZj41Usaq+IpqU7vQq0C1R9mc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WmFpBefF; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40ef9382752so103665e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 11:48:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707421720; x=1708026520; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0o3ZX+cYKVcvLxzGSXiG/iTbM06IS54gjI2VxBYvRQQ=;
+        b=WmFpBefFfkZZ9ZjvABNEvdDOkxlO1c87CBrbzhYQnkbeQbfG7Lo8jusUCajauY2Mtz
+         B/xgIgVce59JHg1b6MZA76IHWs5IgAviUlc3VfTdKoRm8s0q8y9xH0Hl9stg0lnMkPOz
+         +vXSOkLblssh5RCkhAsuZGEWuJeXvARk5IwgndcavQjxyVKAO3zOQ/UyTmWBIflR4quT
+         MLiCXRjVa2b4vOq3WzcjifG4oe9cdOi7g0acXQdQfsgbnGyDswV16nuP/Pqy7WrYDIPH
+         llrPYqgzsw0MnbRR9g/zMozvQjHbmm7mohBTdMKPkr8SnZIW6he3gFd5CWC/fzot9dRx
+         R5gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707421720; x=1708026520;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0o3ZX+cYKVcvLxzGSXiG/iTbM06IS54gjI2VxBYvRQQ=;
+        b=sDlh/3iSULSvvY/0APlUygw7czIKcIfe1DtCnpgVRnPGIOfV4D+E61dywgUWPzdjh9
+         MBAoAd07tXls3Y3IgPrL0WwEw0w9bofjnn8QubaJvZWDy941vEfLQYP0ZAYx3Pir2X4O
+         qqClb+PlvhzUcz0EH+U5TprfpABOlUyiqcC4M3Lik+4vNcHsE4h21PPONCpBdj3kap2k
+         oJquHahlf2fQpkipn+SEAvgMdT7CYNvddaUYuXfuirXRZ9U5jcyk83QDALjPMeku7bVm
+         m2nIrbs/eT9B9UP/cTXYI+DRSq6ZEk3qL5v83EAb/PBDzf7LG4C4w4ZozjGJr0wAX2+Z
+         KQrA==
+X-Forwarded-Encrypted: i=1; AJvYcCWatBGb4Cr5tdIfo+kXbp9CASyscGnOq4GbOtO26QAy4cp6+dD0nGfKXfaoqfM6EbzVs8b32+5kB7BCjaubYLvrkYx5vNq9BQltQJDu
+X-Gm-Message-State: AOJu0YzL0l0SD+cDmg+YWyYRXqxlztfhZZFq0YZh0fQMNr6ceK3PPeq5
+	WhxvHe5ImXV+mqFMZUW22NE5sV4dO6ADL3srzX8LZpqGVeu0uLrKKBCCMa6e4tarhduzu/LAE1q
+	M1+jtbgnOk1I4em9KhTUTJOTwc5Mw2p4mgU1g
+X-Google-Smtp-Source: AGHT+IEXamVgx0wZWlhAd5Fj3QmrOnuWMtU8C9KH0ASLbQMIPjYokiSlmVY0iMyuos0B8k3rP6Ck4ssoLiC5dnkJmi8=
+X-Received: by 2002:a05:600c:1e08:b0:410:2267:47c7 with SMTP id
+ ay8-20020a05600c1e0800b00410226747c7mr25521wmb.3.1707421720329; Thu, 08 Feb
+ 2024 11:48:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rMxUxceKvHhVm2vW"
-Content-Disposition: inline
-In-Reply-To: <ZcUs16+Z+I4m4q00@lizhi-Precision-Tower-5810>
+References: <20240125004456.575891-1-abhishekpandit@google.com> <20240124164443.v2.2.I3d909e3c9a200621e3034686f068a3307945fd87@changeid>
+In-Reply-To: <20240124164443.v2.2.I3d909e3c9a200621e3034686f068a3307945fd87@changeid>
+From: Jameson Thies <jthies@google.com>
+Date: Thu, 8 Feb 2024 11:48:28 -0800
+Message-ID: <CAMFSARfCPbbDviaVoZMvftp1PdXFHKv9ouzG==XnCP9Wrzuv-Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] usb: typec: ucsi: Update connector cap and status
+To: Abhishek Pandit-Subedi <abhishekpandit@google.com>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-usb@vger.kernel.org, 
+	pmalani@chromium.org, Abhishek Pandit-Subedi <abhishekpandit@chromium.org>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Rajaram Regupathy <rajaram.regupathy@intel.com>, Saranya Gopal <saranya.gopal@intel.com>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Abhishek,
 
---rMxUxceKvHhVm2vW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> +#define UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV_AS_BCD(_f_) \
+> +       (UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV(_f_) << 8)
 
-On Thu, Feb 08, 2024 at 02:34:47PM -0500, Frank Li wrote:
-> On Thu, Feb 08, 2024 at 07:12:47PM +0000, Conor Dooley wrote:
-> > On Wed, Feb 07, 2024 at 12:49:19PM -0500, Frank Li wrote:
-> > > On Wed, Feb 07, 2024 at 05:17:55PM +0000, Conor Dooley wrote:
-> > > > On Wed, Feb 07, 2024 at 01:24:02AM -0500, Frank Li wrote:
-
-> > > > > +
-> > > > > +  This controller derives its clocks from the Reset Configuratio=
-n Word (RCW)
-> > > > > +  which is used to describe the PLL settings at the time of chip=
--reset.
-> > > > > +
-> > > > > +  Also as per the available Reference Manuals, there is no speci=
-fic 'version'
-> > > > > +  register available in the Freescale PCIe controller register s=
-et,
-> > > > > +  which can allow determining the underlying DesignWare PCIe con=
-troller version
-> > > > > +  information.
-> > > > > +
-> > > > > +properties:
-> > > > > +  compatible:
-> > > > > +    enum:
-> > > > > +      - fsl,ls2088a-pcie-ep
-> > > > > +      - fsl,ls1088a-pcie-ep
-> > > > > +      - fsl,ls1046a-pcie-ep
-> > > > > +      - fsl,ls1028a-pcie-ep
-> > > > > +      - fsl,lx2160ar2-pcie-ep
-> > > >=20
-> > > > Where did the fallback compatible go?
-> > >=20
-> > > So far, no fallback compatible needed now. each devices already have =
-its
-> > > compatible string.
-> >=20
-> > It used to exist though, have you checked that u-boot or *bsd etc do not
-> > use the fallback compatible? You also need to mention your justification
-> > for removing it in the commit message.
->=20
-> This commit just convert binding doc from txt to yaml. I just make sure
-> which equal to what descript in txt.
-
-The text binding does have a fallback compatible though:
-  EP mode:
-	"fsl,ls1028a-pcie-ep", "fsl,ls-pcie-ep"
-So this is a change compared to the text binding, without any
-justification for it being okay to do.
-
-> If there are someting wrong in "uboot"
-> or "bsd", we can fixed it later.
-
-If other bits of software are using the fallback, you cannot remove it.
-
-> I checked driver code. exited dts tree
-> under kernel, which use unexited fallback compatible string
-> "fsl, lx-pcie-ep", which should be removed at dts file.
-
-What do you mean by "unexisted"? It was in the text binding, so it is
-perfectly fine to have it in the dts. Given it has users, I don't think
-you should be removing the fallback without a very good justification.
-
-> > > > > +  reg:
-> > > > > +    maxItems: 2
-> > > > > +
-> > > > > +  reg-names:
-> > > > > +    items:
-> > > > > +      - const: regs
-> > > > > +      - const: addr_space
-> > > >=20
-> > > > The example uses "regs" and "config". Where did addr_space come fro=
-m?
-> > >=20
-> > > Example just show pcie-host part. Not show pcie-ep part.
-> > > pcie-ep part need 'addr_space'.
-> >=20
-> > Okay. Again, please mention where this is coming from.
->=20
-> Ideally it comes from snsp,dwc-pcie-ep.yaml. but it is use 'dbi' instead
-> of 'regs'. It needs extra effort to make driver code algin common
-> snps,dwc-pcie-ep.yaml, and update exist all dts files.
->=20
-> I think it will be deleted soon.=20
-
-What I am looking for here is you to explain in the commit message that
-the endpoint driver in linux and the dts have always used "addr_space".
-Checking that there's not a u-boot or *bsd that uses "config" would also
-be very helpful.
+Can you replace this with a common HEADER_REV_AS_BCD macro that can be
+used for both GET_CONNECTOR_CAPABILTY and GET_CABLE_PROPERTY?
+Also, the USB PD major revision value in the message header is one less than the
+revision (PD Spec section 6.2.1.1.5). So, we need to add 1 before shifting.
 
 Thanks,
-Conor.
-
-
---rMxUxceKvHhVm2vW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcUvOwAKCRB4tDGHoIJi
-0pEOAQC+6pG9TSecqqT+uAlpAWFYvajdjJeRy9uODgGeXd24MgEA2eU3EIx1Ow4G
-bun7vzHAbXh2WeyPo16JHqUZjTFBRAQ=
-=Du8B
------END PGP SIGNATURE-----
-
---rMxUxceKvHhVm2vW--
+Jameson
 
