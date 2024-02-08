@@ -1,109 +1,99 @@
-Return-Path: <linux-kernel+bounces-58736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B541784EACC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:45:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C2CE84EACE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:48:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E46CB27796
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:45:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37C661C22846
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 014824F21E;
-	Thu,  8 Feb 2024 21:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TZX63bl3"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 921314F5EC;
+	Thu,  8 Feb 2024 21:48:33 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADBA74F1EB
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 21:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD28C4F1EB
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 21:48:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707428718; cv=none; b=eKPuGGBK1ez7IfTQR5pcfVEorNh/fVMLdYdHSPFUUolBW8WanlhRqeZz50w9qGL9rwFXW9+s4RH+kUfTV41wTdfgoduuZSMQUNtoMqJXPVwExFEDsTK8wMDDsl6e2XsgGJJYIj06ILZbVMe5vLqSXb8cyvzgZ/1hizgc2B44GP0=
+	t=1707428913; cv=none; b=DSmJuP3dBjjGcmOY+n396oQUXfAVhoHJvIbKKpfUPsLlfZk/2m5U2n2GoQ2bXSsaIVqtfICj3oWTZF62NkaTud1yAB1mXq3ySjpZofRQY9RS4nef+Ew+nHOdP0BNt0olbyKqe5z4T9nEnvSkhIOYuoNys41Hdwpa3zsaNGIq/F0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707428718; c=relaxed/simple;
-	bh=Zsg3OhFHOjZClNrv0wJ/6M8UkH0ZEjz2XLVeVSR2fks=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=fCTfCrd9cVbUA9yWIcOkzwHqndOjHsaeewxKKRcwgPKw3KBZ53gELapNN2CXnEwa0/noXybzdW3ldAfVJZQCMp9jOhhvBz7RDIBETi/hUkyT3mWaBN71+aFLesZfZ1i/KLKJ+GnTuoFA8fplhiUk6hXgP2jqlIiKAjDv3pXk8T4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TZX63bl3; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e0518c83c6so213184b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 13:45:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707428716; x=1708033516; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=r12B6iMDcbLF268BqC/QcI4CqA5RhxZKMKRxOEIxFcw=;
-        b=TZX63bl3WE7yasqkTZlhXWcvwxQhRAihjRv8SdKuoZbUsLU41+ZQ+vbe5eVrsNRaWf
-         74OMAkXhjOH9WgaqKC8i1pEGccw3s5G9rwiQwqpv6fgc0rejTxd9OfoApuEVzrKJAnM9
-         TCqtWkgaNTFXKYBkoLFGCmtENE7XTn9XUTLUGtUMp0tZEE6PPVZRzZ6TkmikFH2G/4LQ
-         i1vH60iw/qQpf/O8E27mwQ4TOTTrD1CqU46SjAoSuQmbRWZX7x9jbIprLDE1WBjhnDmL
-         iu7m2n8LTm3/E8zP2XKBHSV3F11l7kBWdHKiGcOwo8yASP5sxAWwfszb/+D7ZcUxf1k7
-         wUVw==
+	s=arc-20240116; t=1707428913; c=relaxed/simple;
+	bh=x5X/SpXcWWm2drcgwtU8g/8NQadRYVVVLQ/7tbIX2x8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rxhSviuxdmUGfBPlGIqi+Q52MBzJEPOL9r9Cq5f8crLJhh4+EWamOI8VW2Mmz7qXn3rOrlwA4anLTFS+m9ahd7dRHoS57zo86cGyzLGDwsEGJBV68IpCtAvhP2sHlXY0a+/CXQBh12dxu0au1873m84+Ropa4xNzky2AFnH5sgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-360c3346ecbso1724505ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 13:48:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707428716; x=1708033516;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=r12B6iMDcbLF268BqC/QcI4CqA5RhxZKMKRxOEIxFcw=;
-        b=SH5xoLhMHZ5kGndU08EcfwYer0+uM6IwQhxInTKRUtwQuu8jgFwgprEQy8gDxDsBmD
-         rRGLqPiGlgTm301gzIchopmMvIBRK5kywOtdwl0QovI/uK6wilanPiGPckS8y7HJ1BnM
-         Ku42csw3uq3W8ox/9DI9EzRvZvJn5kSWrZ/bYOmCeUu2YLVam8hFerfFH0B5Fprxmmjx
-         9zn+0UeOu06/jLvHRpoZICsIGYPcsVMZvwCj9dAGbPYjdfUTAY0eX4h35z9wtMZjsaZT
-         0Di11HdWdWmmZdUa4Qw26cdikiLQP/doEKxpLnorsxgR6i9xS2rDvZsvBgydM/01jrPh
-         f9CA==
-X-Gm-Message-State: AOJu0YyUBGTPfhnztckUpltI4d80qvQ5lN9KdwdLx5Z3UtAQoBlEcmwS
-	WfAAukCZovmI3KEZCOeRrfXtLoh2KQz+aGjci3OKwmE6ibsaT1F/ZeSmtGSx
-X-Google-Smtp-Source: AGHT+IGKn+PJBm91hwlkMXMFW73ySOhCGfRxZUEu7NuCxzGb7RnIRkiuMD2YJWr/LNRcoMYOlw9D8w==
-X-Received: by 2002:a05:6a00:23c9:b0:6e0:5960:861f with SMTP id g9-20020a056a0023c900b006e05960861fmr616185pfc.17.1707428715890;
-        Thu, 08 Feb 2024 13:45:15 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e14-20020a056a0000ce00b006e08202b5c3sm228725pfj.183.2024.02.08.13.45.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 13:45:14 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Thu, 8 Feb 2024 13:45:13 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: Sporadic regmap unit test failure in raw_sync
-Message-ID: <dc5e573d-0979-4d7e-ab4a-de18a4711385@roeck-us.net>
+        d=1e100.net; s=20230601; t=1707428911; x=1708033711;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rcy+RP+3gbw7fm5zCL72DPRbjcLix4B+pCNRB7ycwkg=;
+        b=KSIwY4615wFtWCDyJ0Dy5c0Uhe1cHRmx5gAlSRkjTpFeJ+2Z6hBdgCg1lG0JSiy2JZ
+         eAtUwFMOHJLNHREuZsNy7y49zaw15jL58fbbNPcgdHhKBQlLcqbgjzJlk//Dyx6PEibz
+         7FdbU7iW6li2CNMrBibafoTXYFcyTVrlFwX/b7nv74KMmqZ/vH64GZ8/F+KaWBR3imJX
+         vqMVVlT+LCxHBQEtigTxzQ9Vwbt3PMvRbRCl9MlAcbVSDqnYsh/bupH1TuWgVsmSzNUs
+         kFk5hLd3JWMFQFc9gQ0si5BNWWwkICtiCBgU4Mh3oJ+5yOVPYVrt4EFMcyp+tcoEOXNk
+         8deA==
+X-Forwarded-Encrypted: i=1; AJvYcCXawsroYKhxMagTtLwcG2ePTIjPukRTz4bpnFLd/eQPEep7ci5hy3ie7tVYXppgZ0cIEGGCvOeEfz6r1Ey3XSPmvGfGjT46ymTZzvlr
+X-Gm-Message-State: AOJu0YxohCR2dPJqSB6tVmehkHaFL8gKpEQg+waMTzD11Udm3KcOIAGt
+	ksZ5HmqDSnXco7somnE4dd1pj6jiEC0BXBIQ/p0h9EV1Q0jp2Sy8yKYMgxmbQ9lt6UWsz89t7gk
+	Uk0viLcs/DcvL7IDui/tqhuMZ5f1E/W+0W0hH8TDPkyeAdEo/2Mqq1L8=
+X-Google-Smtp-Source: AGHT+IFtte76dKULRywQHjdaJAxVanDStW7HCAN6er85mHH1lSIM/J8p9GOwTK8goVs8+X1JMOEuYkNw0BKCgSWTuzSleIkfJafB
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Received: by 2002:a05:6e02:2199:b0:363:c1c5:79da with SMTP id
+ j25-20020a056e02219900b00363c1c579damr43586ila.4.1707428911094; Thu, 08 Feb
+ 2024 13:48:31 -0800 (PST)
+Date: Thu, 08 Feb 2024 13:48:31 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b9aa8e0610e5c55c@google.com>
+Subject: [syzbot] Monthly bpf report (Feb 2024)
+From: syzbot <syzbot+listb6955cf0d43f0daabf0c@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Mark,
+Hello bpf maintainers/developers,
 
-I have seen the following error with the regmap unit tests:
+This is a 31-day syzbot report for the bpf subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/bpf
 
-        KTAP version 1
-        # Subtest: raw_sync
-        ok 1 flat-little
-        ok 2 flat-big
-        ok 3 rbtree-little
-    # raw_sync: EXPECTATION FAILED at drivers/base/regmap/regmap-kunit.c:1305
-    Expected &hw_buf[6] != val, but
-        &hw_buf[6] ==
-         57  30 
-        val ==
-         57  30 
-        not ok 4 rbtree-big
-        ok 5 maple-little
-        ok 6 maple-big
-    # raw_sync: pass:5 fail:1 skip:0 total:6
-    not ok 25 raw_sync
+During the period, 0 new issues were detected and 1 were fixed.
+In total, 9 issues are still open and 205 have been fixed so far.
 
-This is with regmap: 'kunit: fix raw noinc write test wrapping'
-applied on top of the upstream kernel (v6.8-rc3-47-g047371968ffc).
-So far I have seen it only once, with the x86_64:q35 emulation in qemu.
+Some of the still happening issues:
 
-Guenter
+Ref Crashes Repro Title
+<1> 164     No    KMSAN: uninit-value in bpf_prog_run_generic_xdp
+                  https://syzkaller.appspot.com/bug?extid=0e6ddb1ef80986bdfe64
+<2> 34      Yes   BUG: unable to handle kernel NULL pointer dereference in sk_msg_recvmsg
+                  https://syzkaller.appspot.com/bug?extid=84f695756ed0c4bb3aba
+<3> 5       Yes   BUG: unable to handle kernel NULL pointer dereference in sk_psock_verdict_data_ready
+                  https://syzkaller.appspot.com/bug?extid=fd7b34375c1c8ce29c93
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
