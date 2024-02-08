@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-58604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D37584E8CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:16:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 731F184E8D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:18:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AED581F224E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:16:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C120B2DE0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:16:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4320036B17;
-	Thu,  8 Feb 2024 19:16:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 871A8374EA;
+	Thu,  8 Feb 2024 19:16:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="geHfwa9B"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="mVhRmfC8"
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3067136AF5
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 19:16:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F96D37167
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 19:16:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707419774; cv=none; b=N033c45e3w1R9kq7lT4sJApoZusmUhoJvS+4SrJ43I4FZkSWLCso2wRcfoADPI4NuRD7XKVRuP2Qh+VsQRYFQFSGw+IOq3Oe0W913Y8vRFYjUYD70UTLqdOL5cxn++OTgdXh7UwC9UyB+EaIzg51GUQhI9DHgRnlbearqXCuy54=
+	t=1707419779; cv=none; b=Eu4U0+XdJAJuF+DS2gyRfQ5a3nK/OahKKgmBEL4LM7QpfG8qJQ4QkrgqZqmU2jkzemuTvtxqohfkNZRicfXs2tFYcxehCYEBqwsAsObmt+97KzZH4BK52bHmh8+Tr66SjFAHbYVaWCLpOsmFndapDZkZM/OAMYbHXw6RhGbwI5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707419774; c=relaxed/simple;
-	bh=eAlBG3F5We9GYEnpd8ZGWflzwz8JVxeSAkyDu+z1g0o=;
+	s=arc-20240116; t=1707419779; c=relaxed/simple;
+	bh=b6c2t9B/pfloTiLl3QpaQz8LmLqZFIjOHYHcQTLOATY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JMEuWznc26cg7+8coAHAp/40GAiuWg96eviw+Nbpt5A1+/n0vEO2o8wyfHtIWGAWdTcvBzcmhy5/PbVYUksc5GhKwHcjBk0xbUSsUq806NFEKdGtLKMPYXrAmbLE4FP7e2YFKzE7X8rJ9xvrA2gi++RFIIrnRlpGh/9krZC3f+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=geHfwa9B; arc=none smtp.client-ip=13.77.154.182
+	 In-Reply-To:Content-Type; b=ODmthx2uahpy8beSCzveYpOBlpTWTi00whZMHOrFqFuqpUjhye5LNfG8rRkZulh+yOOCYt4kGr7L74v2NdM81vOmM+SIvxDpFjXD01cC6sYznWdrsZI7PSHuIz/QI6V5MYAbgW3GXoXawWaJi01ZC421TUFAG8Go7yR0sUB/1Ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=mVhRmfC8; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from [100.64.216.206] (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 4AF49207E717;
-	Thu,  8 Feb 2024 11:16:07 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4AF49207E717
+	by linux.microsoft.com (Postfix) with ESMTPSA id 03A0D207E718;
+	Thu,  8 Feb 2024 11:16:10 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 03A0D207E718
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1707419767;
-	bh=53VQ1wtJ3Bp3ZW1pWDvdrXvcvOq5kb+U1QAHuljf+Ro=;
+	s=default; t=1707419771;
+	bh=u7Sr1GivyYQRssWu9Sxm5FwiQjNYTxwfTxEdxVnZrog=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=geHfwa9Bi304IDw5TFIdHLnslxTlMpaAbDY02K8ezt1SN6vO1huHrI4j2PNrcqNqx
-	 h3IaJxy0EVDhJZ2xj2i4jP4eKF/7nNu0RSOdKPtO6FuL2GI5fh7YNzcwWcL4Rdvksj
-	 ajoLDo5KRXT/M7OVhNpMhx75deLRwdGUXHofMeCY=
-Message-ID: <7e6add2c-f519-4838-9dd9-57841c50e538@linux.microsoft.com>
-Date: Thu, 8 Feb 2024 11:16:06 -0800
+	b=mVhRmfC8kQaVixsTdXy+xkNZpGrlA/MqXeC1o5PHI3bMWayHqbVhTVa+eNbHRSGKG
+	 LnHztq2MuuhiV41949Vmm2cz5jd2l7OiC2Zygyt545g873v1mN3H59AWkn3C47z4lY
+	 jeic5HaEFHEdLqFsoDO/GZe3uOKEnkkok1uiYnkY=
+Message-ID: <ed6c25dc-d5c7-4f15-8fdc-f2adf209e638@linux.microsoft.com>
+Date: Thu, 8 Feb 2024 11:16:10 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,13 +51,13 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [RFC PATCH] KVM: arm64: Override Microsoft Azure Cobalt 100 MIDR
  value with ARM Neoverse N2
 Content-Language: en-US
-To: Marc Zyngier <maz@kernel.org>
+To: Mark Rutland <mark.rutland@arm.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
- <yuzenghui@huawei.com>, Andre Przywara <andre.przywara@arm.com>,
- Rob Herring <robh@kernel.org>, Fuad Tabba <tabba@google.com>,
- Joey Gouly <joey.gouly@arm.com>,
+ Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>,
+ James Morse <james.morse@arm.com>, Suzuki K Poulose
+ <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>,
+ Andre Przywara <andre.przywara@arm.com>, Rob Herring <robh@kernel.org>,
+ Fuad Tabba <tabba@google.com>, Joey Gouly <joey.gouly@arm.com>,
  Kristina Martsenko <kristina.martsenko@arm.com>,
  "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)"
  <linux-arm-kernel@lists.infradead.org>,
@@ -65,16 +65,14 @@ Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
  "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)"
  <kvmarm@lists.linux.dev>
 References: <20240206195819.1146693-1-eahariha@linux.microsoft.com>
- <86r0ho61ta.wl-maz@kernel.org>
+ <ZcNSI089xqia6lho@FVFF77S0Q05N.cambridge.arm.com>
 From: Easwar Hariharan <eahariha@linux.microsoft.com>
-In-Reply-To: <86r0ho61ta.wl-maz@kernel.org>
+In-Reply-To: <ZcNSI089xqia6lho@FVFF77S0Q05N.cambridge.arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2/7/2024 1:50 AM, Marc Zyngier wrote:
-> On Tue, 06 Feb 2024 19:58:16 +0000,
-> Easwar Hariharan <eahariha@linux.microsoft.com> wrote:
->>
+On 2/7/2024 1:49 AM, Mark Rutland wrote:
+> On Tue, Feb 06, 2024 at 07:58:16PM +0000, Easwar Hariharan wrote:
 >> Several workload optimizations and errata depend on validating that the
 >> optimization or errata are applicable to the particular CPU by checking
 >> the MIDR_EL1 system register value. With the Microsoft implementer ID
@@ -83,26 +81,29 @@ On 2/7/2024 1:50 AM, Marc Zyngier wrote:
 >> value and replace it with the default ARM Neoverse N2 value that Azure
 >> Cobalt 100 is based on.
 > 
-> Since you don't disclose *why* this particular value should have any
-> impact on the behaviour of the kernel, the answer should be "Thanks,
-> but no, thanks".
+> NAK to rewriting the MIDR in the kernel; we do not lie to userspace about the
+> MIDR, and this is not a can of worms we're going to open.
+> 
+> If you desire some microarchitectural performance optimizations in particular
+> projects, please submit patches to those projects to understand your MIDR
+> value.
+
+Understood.
+
+> 
+> Further, if Azure Cobalt 100 is based on ARM Neoverse N2, you presumably suffer
+> from the same errata; can you comment on that at all? e.g. are there any
+> changes in this part that *might* lead to differences in errata and/or
+> workarounds? How do the MIDR_EL1.{Variant,Revision} values compare to that of
+> Neoverse N2?
 >
 
-The optimizations mentioned in the commit message reside in userspace
-and depend on the MIDR value exposed to userspace by the kernel. As
-mentioned in my response to Anshuman, this patch was a proof of concept
-to have userspace apply the Neoverse N2 optimizations to Azure Cobalt 100
-as well.
+Yes, Azure Cobalt 100 suffers from the same errata as Neoverse N2. We had changes
+in the implementation, but according to our hardware folks, the Neoverse N2 errata
+we are affected by so far aren't affected by the changes made for Azure Cobalt 100.
 
-> Whatever the reason is for doing so, you should make it plain what you
-> are working around. Blindly overriding ID registers is not an option,
-> and you should simply add your MIDR value to whatever errata list that
-> actually matches your implementation.
->
-
-Thank you, I will do that.
-
->>
+> Mark.
+> 
 >> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 >> ---
 >>  arch/arm64/include/asm/cputype.h   | 3 ++-
@@ -154,19 +155,15 @@ Thank you, I will do that.
 >> +	((struct sys_reg_desc *)r)->val = read_sysreg(midr_el1);
 >> +	if (((struct sys_reg_desc *)r)->val == 0x6D0FD490)
 >> +		((struct sys_reg_desc *)r)->val == 0x410FD490;
-> 
-> As pointed out to me by Joey, this line is really interesting, and
-> shows that you didn't really test this patch.
->
-
-That has clearly escaped my notice, but we did test the patch and
-validate that the Neoverse N2 MIDR value showed up where we looked.
-Being new to arch/arm64, it's very possible that I may have modified
-this hunk without needing to.
-
-> Thanks,
-> 
-> 	M.
-> 
+>> +	return ((struct sys_reg_desc *)r)->val;
+>> +}
+>> +
+>>  FUNCTION_INVARIANT(revidr_el1)
+>>  FUNCTION_INVARIANT(aidr_el1)
+>>  
+>> -- 
+>> 2.34.1
+>>
+>>
 
 
