@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-58013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24CE784E05D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:07:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F8A984E03C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:02:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04EE1B256D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:02:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 448621C26B07
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:02:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 365F674E36;
-	Thu,  8 Feb 2024 11:57:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BA07EF1A;
+	Thu,  8 Feb 2024 11:57:08 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC2F07E761;
-	Thu,  8 Feb 2024 11:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4047EF01;
+	Thu,  8 Feb 2024 11:57:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707393424; cv=none; b=NYGGLXOPm6jOIZv5aMIQOlLZ8gYa4xUWWLS6KF4Lc/kCwsl99mXvbfl7uLLThpcrHzsSzR20iEP6dmrWIKY5E7CwOTWPYlsusEEhhpvlomEVkXnnvzlw8sW3DUCRTXpudvGLhmPyoZL7qQfC+EHcnDZFuyK8/lQbQsUNIztREl8=
+	t=1707393427; cv=none; b=TTDZW8PF7g11GqM9Ykj5u54QSBqcA/8fXFgQHoeE6eH56xG6LxXrFMLh31YQDX/146qUQBCiWLQ4GZAS6GOWOHY6tFsXM5/difGyfxh2riksJYP1CxHIxqvyzZE/Qlr2pL1Z5w+ZcFgWHADuDTraD7sNKRMCducEwRrz1NchOWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707393424; c=relaxed/simple;
-	bh=wkTlNeA3yVySpfdCDKAwYbrsIV5UQmUrBVPxFwqVSSo=;
+	s=arc-20240116; t=1707393427; c=relaxed/simple;
+	bh=jF9xvV+ffyDXEcEQmXtChRdRJUYNKBG4fWdMvZO8qKc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LbhQ/wMVVff/bLlrpsEwbOmBTXh/XMx21ZH4cQyaKHvtposSQmPLuvR4oLMjOwcJ3S0Q9PS3lDsRVGo8/FdvQgHe921GdAf08npJV/boAwLE5MJDWvH9doBo1HGSQ/WmDq9yr8O7K7aj6Q9pczN0SB18Q/s8un4YcaaAj2vmk6k=
+	 MIME-Version; b=YKM4RXpawkxUU+qbfbrJnQfClnXoG0MO36xgrwmYzWvvpsve4lmO4xR6A0ilxoQQIrqnVL3Liu8yqcosCPCwCflYHw1MLmsQUPShRSkWjEXOmlanyW8EHzvJ/ag+fBvRu1TJKmtYb6pQGm6FvSdVU4OJg1O9Cand+gSN45oiWxU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B5D031FB;
-	Thu,  8 Feb 2024 03:57:44 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A88E3DA7;
+	Thu,  8 Feb 2024 03:57:47 -0800 (PST)
 Received: from e129166.arm.com (unknown [10.57.8.23])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D750A3F5A1;
-	Thu,  8 Feb 2024 03:56:59 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C8A8B3F5A1;
+	Thu,  8 Feb 2024 03:57:02 -0800 (PST)
 From: Lukasz Luba <lukasz.luba@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-pm@vger.kernel.org,
@@ -49,9 +49,9 @@ Cc: lukasz.luba@arm.com,
 	qyousef@layalina.io,
 	wvw@google.com,
 	xuewen.yan94@gmail.com
-Subject: [PATCH v8 19/23] drivers/thermal/devfreq_cooling: Use new Energy Model interface
-Date: Thu,  8 Feb 2024 11:55:53 +0000
-Message-Id: <20240208115557.1273962-20-lukasz.luba@arm.com>
+Subject: [PATCH v8 20/23] PM: EM: Change debugfs configuration to use runtime EM table data
+Date: Thu,  8 Feb 2024 11:55:54 +0000
+Message-Id: <20240208115557.1273962-21-lukasz.luba@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240208115557.1273962-1-lukasz.luba@arm.com>
 References: <20240208115557.1273962-1-lukasz.luba@arm.com>
@@ -63,151 +63,122 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Energy Model framework support modifications at runtime of the power
-values. Use the new EM table which is protected with RCU. Align the
-code so that this RCU read section is short.
+Dump the runtime EM table values which can be modified in time. In order
+to do that allocate chunk of debug memory which can be later freed
+automatically thanks to devm_kcalloc().
 
-This change is not expected to alter the general functionality.
+This design can handle the fact that the EM table memory can change
+after EM update, so debug code cannot use the pointer from initialization
+phase.
 
 Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 ---
- drivers/thermal/devfreq_cooling.c | 49 +++++++++++++++++++++++++------
- 1 file changed, 40 insertions(+), 9 deletions(-)
+ kernel/power/energy_model.c | 67 ++++++++++++++++++++++++++++++++-----
+ 1 file changed, 59 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-index 262e62ab6cf2..50dec24e967a 100644
---- a/drivers/thermal/devfreq_cooling.c
-+++ b/drivers/thermal/devfreq_cooling.c
-@@ -87,6 +87,7 @@ static int devfreq_cooling_set_cur_state(struct thermal_cooling_device *cdev,
- 	struct devfreq_cooling_device *dfc = cdev->devdata;
- 	struct devfreq *df = dfc->devfreq;
- 	struct device *dev = df->dev.parent;
-+	struct em_perf_state *table;
- 	unsigned long freq;
- 	int perf_idx;
+diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+index a631d7d52c40..548908e686ed 100644
+--- a/kernel/power/energy_model.c
++++ b/kernel/power/energy_model.c
+@@ -37,20 +37,65 @@ static bool _is_cpu_device(struct device *dev)
+ #ifdef CONFIG_DEBUG_FS
+ static struct dentry *rootdir;
  
-@@ -100,7 +101,11 @@ static int devfreq_cooling_set_cur_state(struct thermal_cooling_device *cdev,
- 
- 	if (dfc->em_pd) {
- 		perf_idx = dfc->max_state - state;
--		freq = dfc->em_pd->table[perf_idx].frequency * 1000;
+-static void em_debug_create_ps(struct em_perf_state *ps, struct dentry *pd)
++struct em_dbg_info {
++	struct em_perf_domain *pd;
++	int ps_id;
++};
 +
-+		rcu_read_lock();
-+		table = em_perf_state_from_pd(dfc->em_pd);
-+		freq = table[perf_idx].frequency * 1000;
-+		rcu_read_unlock();
- 	} else {
- 		freq = dfc->freq_table[state];
- 	}
-@@ -123,14 +128,21 @@ static int devfreq_cooling_set_cur_state(struct thermal_cooling_device *cdev,
-  */
- static int get_perf_idx(struct em_perf_domain *em_pd, unsigned long freq)
++#define DEFINE_EM_DBG_SHOW(name, fname)					\
++static int em_debug_##fname##_show(struct seq_file *s, void *unused)	\
++{									\
++	struct em_dbg_info *em_dbg = s->private;			\
++	struct em_perf_state *table;					\
++	unsigned long val;						\
++									\
++	rcu_read_lock();						\
++	table = em_perf_state_from_pd(em_dbg->pd);			\
++	val = table[em_dbg->ps_id].name;				\
++	rcu_read_unlock();						\
++									\
++	seq_printf(s, "%lu\n", val);					\
++	return 0;							\
++}									\
++DEFINE_SHOW_ATTRIBUTE(em_debug_##fname)
++
++DEFINE_EM_DBG_SHOW(frequency, frequency);
++DEFINE_EM_DBG_SHOW(power, power);
++DEFINE_EM_DBG_SHOW(cost, cost);
++DEFINE_EM_DBG_SHOW(performance, performance);
++DEFINE_EM_DBG_SHOW(flags, inefficiency);
++
++static void em_debug_create_ps(struct em_perf_domain *em_pd,
++			       struct em_dbg_info *em_dbg, int i,
++			       struct dentry *pd)
  {
--	int i;
 +	struct em_perf_state *table;
-+	int i, idx = -EINVAL;
++	unsigned long freq;
+ 	struct dentry *d;
+ 	char name[24];
  
+-	snprintf(name, sizeof(name), "ps:%lu", ps->frequency);
++	em_dbg[i].pd = em_pd;
++	em_dbg[i].ps_id = i;
++
 +	rcu_read_lock();
 +	table = em_perf_state_from_pd(em_pd);
- 	for (i = 0; i < em_pd->nr_perf_states; i++) {
--		if (em_pd->table[i].frequency == freq)
--			return i;
-+		if (table[i].frequency != freq)
-+			continue;
-+
-+		idx = i;
-+		break;
- 	}
++	freq = table[i].frequency;
 +	rcu_read_unlock();
++
++	snprintf(name, sizeof(name), "ps:%lu", freq);
  
--	return -EINVAL;
-+	return idx;
+ 	/* Create per-ps directory */
+ 	d = debugfs_create_dir(name, pd);
+-	debugfs_create_ulong("frequency", 0444, d, &ps->frequency);
+-	debugfs_create_ulong("power", 0444, d, &ps->power);
+-	debugfs_create_ulong("cost", 0444, d, &ps->cost);
+-	debugfs_create_ulong("performance", 0444, d, &ps->performance);
+-	debugfs_create_ulong("inefficient", 0444, d, &ps->flags);
++	debugfs_create_file("frequency", 0444, d, &em_dbg[i],
++			    &em_debug_frequency_fops);
++	debugfs_create_file("power", 0444, d, &em_dbg[i],
++			    &em_debug_power_fops);
++	debugfs_create_file("cost", 0444, d, &em_dbg[i],
++			    &em_debug_cost_fops);
++	debugfs_create_file("performance", 0444, d, &em_dbg[i],
++			    &em_debug_performance_fops);
++	debugfs_create_file("inefficient", 0444, d, &em_dbg[i],
++			    &em_debug_inefficiency_fops);
  }
  
- static unsigned long get_voltage(struct devfreq *df, unsigned long freq)
-@@ -181,6 +193,7 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
- 	struct devfreq_cooling_device *dfc = cdev->devdata;
- 	struct devfreq *df = dfc->devfreq;
- 	struct devfreq_dev_status status;
-+	struct em_perf_state *table;
- 	unsigned long state;
- 	unsigned long freq;
- 	unsigned long voltage;
-@@ -204,7 +217,11 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
- 			state = dfc->capped_state;
+ static int em_debug_cpus_show(struct seq_file *s, void *unused)
+@@ -73,6 +118,7 @@ DEFINE_SHOW_ATTRIBUTE(em_debug_flags);
  
- 			/* Convert EM power into milli-Watts first */
--			dfc->res_util = dfc->em_pd->table[state].power;
-+			rcu_read_lock();
-+			table = em_perf_state_from_pd(dfc->em_pd);
-+			dfc->res_util = table[state].power;
-+			rcu_read_unlock();
-+
- 			dfc->res_util /= MICROWATT_PER_MILLIWATT;
- 
- 			dfc->res_util *= SCALE_ERROR_MITIGATION;
-@@ -225,7 +242,11 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
- 		_normalize_load(&status);
- 
- 		/* Convert EM power into milli-Watts first */
--		*power = dfc->em_pd->table[perf_idx].power;
-+		rcu_read_lock();
-+		table = em_perf_state_from_pd(dfc->em_pd);
-+		*power = table[perf_idx].power;
-+		rcu_read_unlock();
-+
- 		*power /= MICROWATT_PER_MILLIWATT;
- 		/* Scale power for utilization */
- 		*power *= status.busy_time;
-@@ -245,13 +266,19 @@ static int devfreq_cooling_state2power(struct thermal_cooling_device *cdev,
- 				       unsigned long state, u32 *power)
+ static void em_debug_create_pd(struct device *dev)
  {
- 	struct devfreq_cooling_device *dfc = cdev->devdata;
-+	struct em_perf_state *table;
- 	int perf_idx;
- 
- 	if (state > dfc->max_state)
- 		return -EINVAL;
- 
- 	perf_idx = dfc->max_state - state;
--	*power = dfc->em_pd->table[perf_idx].power;
-+
-+	rcu_read_lock();
-+	table = em_perf_state_from_pd(dfc->em_pd);
-+	*power = table[perf_idx].power;
-+	rcu_read_unlock();
-+
- 	*power /= MICROWATT_PER_MILLIWATT;
- 
- 	return 0;
-@@ -264,6 +291,7 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
- 	struct devfreq *df = dfc->devfreq;
- 	struct devfreq_dev_status status;
- 	unsigned long freq, em_power_mw;
-+	struct em_perf_state *table;
- 	s32 est_power;
++	struct em_dbg_info *em_dbg;
+ 	struct dentry *d;
  	int i;
  
-@@ -288,13 +316,16 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
- 	 * Find the first cooling state that is within the power
- 	 * budget. The EM power table is sorted ascending.
- 	 */
-+	rcu_read_lock();
-+	table = em_perf_state_from_pd(dfc->em_pd);
- 	for (i = dfc->max_state; i > 0; i--) {
- 		/* Convert EM power to milli-Watts to make safe comparison */
--		em_power_mw = dfc->em_pd->table[i].power;
-+		em_power_mw = table[i].power;
- 		em_power_mw /= MICROWATT_PER_MILLIWATT;
- 		if (est_power >= em_power_mw)
- 			break;
- 	}
-+	rcu_read_unlock();
+@@ -86,9 +132,14 @@ static void em_debug_create_pd(struct device *dev)
+ 	debugfs_create_file("flags", 0444, d, dev->em_pd,
+ 			    &em_debug_flags_fops);
  
- 	*state = dfc->max_state - i;
- 	dfc->capped_state = *state;
++	em_dbg = devm_kcalloc(dev, dev->em_pd->nr_perf_states,
++			      sizeof(*em_dbg), GFP_KERNEL);
++	if (!em_dbg)
++		return;
++
+ 	/* Create a sub-directory for each performance state */
+ 	for (i = 0; i < dev->em_pd->nr_perf_states; i++)
+-		em_debug_create_ps(&dev->em_pd->table[i], d);
++		em_debug_create_ps(dev->em_pd, em_dbg, i, d);
+ 
+ }
+ 
 -- 
 2.25.1
 
