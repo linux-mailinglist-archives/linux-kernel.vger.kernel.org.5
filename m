@@ -1,212 +1,144 @@
-Return-Path: <linux-kernel+bounces-58703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17D8F84EA2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC12184EA34
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:20:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 970551F2BACD
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:17:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FE081F21F2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:20:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D68644C618;
-	Thu,  8 Feb 2024 21:17:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4F64EB5E;
+	Thu,  8 Feb 2024 21:20:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Dc+D0yd3"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XnjmVS27"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE9E4F1E7
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 21:17:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670AE4EB2B;
+	Thu,  8 Feb 2024 21:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707427050; cv=none; b=S6a0BT3/1AZ7t1Ayw4vnmfNHlaIdh0XcrjRDrxQEZdb8wpicduQ21odyH+FOYzo6YZWTlU2LO/xIoUnB4oYaWXbXDqmtEjIhjM5suOJXuY/W9EsthegdtNGuMh2lwPa40VJ4EW6ez0LeTLdec9ZzlnXme4BQJq5cfjz51xPPYkI=
+	t=1707427213; cv=none; b=dmeIXo94Lrz8gNUyVyPBP4ndmo/HYgFr7IlCVq9jJDGIbbUqz2qIzTjvIC0yIzxzstOAv4bbN017QyYZjmMKa9o7xRg4yjyU49ICBG15K1EJkoKksveURVyhQKiDmDE1Hi7C6WHaFA2ZU4ER4wkEjJFapd9mpq53BtKY1CQ2SDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707427050; c=relaxed/simple;
-	bh=lR1vqEr+NUueGl/+e/z1Y6yt2E6StmXXzwjSE/g3B3w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k/XvIZjBx+XaZziiLC94hLjuB33vOrW9Th40Aq9+b6XWssaDLK7wtY07prwjM0jSJNb2GAe2fsaN0dTsLV0PY6Fo3t+AuWpzmulhBYHwbC7mhxzYHPpDmXQVYuqGPIz/Nu2K+SVgmpBZ/w7urdVgh5wJ5QH0yRjNsFK3spUOxQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Dc+D0yd3; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51167e470f7so320471e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 13:17:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707427045; x=1708031845; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1FFveSw5oBTNx3rWpSsAiIZo1mBSaoRlz6hNqseCzfQ=;
-        b=Dc+D0yd3Um2nfU2XTvkktgvitiknX1q7p6DxSk+6A2aK9UyiMWrn7QPTo4OKEaJzMX
-         TnhoGDGeWLEK/X0mMQJaHxeC6VeeGv0UlCXz/G8GTpWI0lFIxZ4cDGKLvf2Kh6GPGrIA
-         CaQp1oOMiVCVkN0eLZFxtIlkwGwdmDy6uOqyy4Ql4v42q4yORAGYUb98YUOS+NGFdsBi
-         nVGUpvMgDQo3/sMxbIKc0GhUnR0Q1l53JMhO7JMeGCcX9Fq6TQep2l5qofQ8CJGZu5hw
-         uj1rBeWMjK/0mb1t4AaOxVhel/a0SkMq2JWQixKthCCsUG8clKOlq2hHcM848c4oYyll
-         Vlnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707427045; x=1708031845;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1FFveSw5oBTNx3rWpSsAiIZo1mBSaoRlz6hNqseCzfQ=;
-        b=n3mbhHflnNj6s/ZPG9DhkfEKQUTkU0DW4j3cZfjuyE9b0oBRnioLdfkS2M7BPAC070
-         hsIi0w97RtJvZz4MkC8fjTcyRmRWt3PA2fAYfXTFsxkt9QGReBZ8+sf5xnX5LGE3G2oV
-         TuX95vYUI6odain1PvJ+C4jz7KNd1D1FBhPuXahdEi49ZNDrqbu85JaMS84Uda9ioGwx
-         eiRRVSdxQdVC5UEz6d3Om0TS0NGYUKO8g/60+/PJAduSTcg3+gSINagVZM3ElCRJfz1W
-         Je23lceVC5KWPDq9L8BfK35yM7sVxDy2sUQV/9vELl4oZyCGiiN1RIop0Ar3NI976NRG
-         oq3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVABpKDSnvSCYL1pCMbk+Nr/ICOCdYQ/v8ImXihA7Z3PMSj5+tfNWqJkAKBrFFYUUORNTitCM3SK7MV3zr8BOpLWPbowUfIvmgsLkFr
-X-Gm-Message-State: AOJu0Yz4WXMSzPPm4ziG2QyGZgeQtiniSW23Lvd5ieA9SqQGRUIjyRbc
-	c14Iio7LdBkqQXwofunHg/mf8FZI4JBVXjjG2CN/R2n/KwYusNZlEQmAAbYwKclQfXY59kUAF4j
-	2rdatAb4A+Pia+1YLUC4cNb9NxN41/OVZUrWQcwlALezlMv5wtg==
-X-Google-Smtp-Source: AGHT+IFUT+yk7OEqssxrpi3LSHxTbminq8y5LqPkLQXJRWvFrrIlVrH0pgnS5fcRPsLiDNUbal7egDc8/ZLhSb8mf28=
-X-Received: by 2002:ac2:447a:0:b0:511:454d:25e3 with SMTP id
- y26-20020ac2447a000000b00511454d25e3mr265348lfl.41.1707427044605; Thu, 08 Feb
- 2024 13:17:24 -0800 (PST)
+	s=arc-20240116; t=1707427213; c=relaxed/simple;
+	bh=0wWe0YAzwZgyv/3+8weFv30HET9B4Cd2WgTwkK3SakI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=suo2fmeQpgJlpx20hQsTNcZN0CB/cF1IIqYuxmpkX0Fa9MN3yHH22k6AVB7fogcKYP86ggg+SR3hohAAmZFAl6XBK1LS5gQjzpHufiM+256Od4Tn2cCAnvc3eCvWG8Lwun/s3IrskzDJmsCKGktxqMcGksZrOvLQL/PvrHTsrHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XnjmVS27; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC03BC433F1;
+	Thu,  8 Feb 2024 21:20:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707427212;
+	bh=0wWe0YAzwZgyv/3+8weFv30HET9B4Cd2WgTwkK3SakI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XnjmVS27glab5wa0li66EW96HAkQDCAhBiyH29TYFhy29nAcK/5BhDaJFbWoaCjhj
+	 uVw4X2CYYZCDBRVmHl0T9Z/2qfBm5ZWrtfZqDdQsNbPl9vghfAwICGDMLvvn6tWjVz
+	 D/HPwODfh8kD2e359ph+RiDuXWZEXJ4tSJSBTXYYIQ1CrVAH3CUV/GYAUFbGUrsXwb
+	 awQOO4R442XqoSaI8D5kiwo7XoP1r7aPL2hZ/7p4fqEjSwwbOIsMo8QKVxFz6+fSEa
+	 7l35MmM1yClqLti6/QPyeV4fLNCKYhDEfEf4AAVicgm9EelSRA/UEfN164aNIenyZr
+	 ly4JxZeLc07EA==
+Date: Thu, 8 Feb 2024 21:20:08 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
+Subject: Re: [PATCH 1/1] dt-bindings: pci: layerscape-pci: Convert to yaml
+ file
+Message-ID: <20240208-outing-nature-74b6fab0cdea@spud>
+References: <20240207062403.304367-1-Frank.Li@nxp.com>
+ <20240207-yoga-mobility-90a728f6342c@spud>
+ <ZcPCn8q7viB/qcOH@lizhi-Precision-Tower-5810>
+ <20240208-jarring-frolic-8d4c9b409127@spud>
+ <ZcUs16+Z+I4m4q00@lizhi-Precision-Tower-5810>
+ <20240208-revoke-doorman-5ba34f39c743@spud>
+ <ZcU3ohEg5Z1ky+/W@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <38f51dbb-65aa-4ec2-bed2-e914aef27d25@vrvis.at>
- <ZcNdzZVPD76uSbps@eldamar.lan> <CADKFtnRfqi-A_Ak_S-YC52jPn604+ekcmCmNoTA_yEpAcW4JJg@mail.gmail.com>
- <1d4c7d06-0c02-4adb-a2a3-ec85fd802ddb@vrvis.at> <CADKFtnQUQt=M32tYhcutP0q6exOgk9R6xgxddDdewbms+7xwTQ@mail.gmail.com>
-In-Reply-To: <CADKFtnQUQt=M32tYhcutP0q6exOgk9R6xgxddDdewbms+7xwTQ@mail.gmail.com>
-From: Jordan Rife <jrife@google.com>
-Date: Thu, 8 Feb 2024 13:17:11 -0800
-Message-ID: <CADKFtnQnz0NEWQT2K1AGARY5=_o2dhS3gRyMo-=9kuxqeQvcqQ@mail.gmail.com>
-Subject: Re: [regression 6.1.76] dlm: cannot start dlm midcomms -97 after
- backport of e9cdebbe23f1 ("dlm: use kernel_connect() and kernel_bind()")
-To: Valentin Kleibel <valentin@vrvis.at>
-Cc: Salvatore Bonaccorso <carnil@debian.org>, David Teigland <teigland@redhat.com>, 
-	Alexander Aring <aahringo@redhat.com>, 1063338@bugs.debian.org, gfs2@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	gregkh@linuxfoundation.org, regressions@lists.linux.dev
-Content-Type: multipart/mixed; boundary="0000000000007a52e50610e556ed"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="BkMhcd+HVPXZrhES"
+Content-Disposition: inline
+In-Reply-To: <ZcU3ohEg5Z1ky+/W@lizhi-Precision-Tower-5810>
 
---0000000000007a52e50610e556ed
-Content-Type: text/plain; charset="UTF-8"
+
+--BkMhcd+HVPXZrhES
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Valentin,
+On Thu, Feb 08, 2024 at 03:20:50PM -0500, Frank Li wrote:
 
-Would you be able to confirm that the attached patch fixes your issue as we=
-ll?
+> > > > > > > +  reg:
+> > > > > > > +    maxItems: 2
+> > > > > > > +
+> > > > > > > +  reg-names:
+> > > > > > > +    items:
+> > > > > > > +      - const: regs
+> > > > > > > +      - const: addr_space
+> > > > > >=20
+> > > > > > The example uses "regs" and "config". Where did addr_space come=
+ from?
+> > > > >=20
+> > > > > Example just show pcie-host part. Not show pcie-ep part.
+> > > > > pcie-ep part need 'addr_space'.
+> > > >=20
+> > > > Okay. Again, please mention where this is coming from.
+> > >=20
+> > > Ideally it comes from snsp,dwc-pcie-ep.yaml. but it is use 'dbi' inst=
+ead
+> > > of 'regs'. It needs extra effort to make driver code algin common
+> > > snps,dwc-pcie-ep.yaml, and update exist all dts files.
+> > >=20
+> > > I think it will be deleted soon.=20
+> >=20
+> > What I am looking for here is you to explain in the commit message that
+> > the endpoint driver in linux and the dts have always used "addr_space".
+> > Checking that there's not a u-boot or *bsd that uses "config" would also
+> > be very helpful.
+>=20
+> I confused. Actually this two part PCIE-RC and PCIE-EP.
+> PCIE-RC using 'config'
+> PCIE-EP using 'addr_spcae'
 
--Jordan
+Yeah, I get this. The text binding makes it seem like "config" should be
+used for both RC and EP, so I am just asking you to check that there are
+no drivers in other kernels or bootloaders that use "config" for EP
+mode.
 
-On Thu, Feb 8, 2024 at 9:42=E2=80=AFAM Jordan Rife <jrife@google.com> wrote=
-:
->
-> On Thu, Feb 8, 2024 at 3:37=E2=80=AFAM Valentin Kleibel <valentin@vrvis.a=
-t> wrote:
-> >
-> > Hi Jordan, hi all
-> >
-> > > Just a quick look comparing dlm_tcp_listen_bind between the latest 6.=
-1
-> > > and 6.6 stable branches,
-> > > it looks like there is a mismatch here with the dlm_local_addr[0] par=
-ameter.
-> > >
-> > > 6.1
-> > > ----
-> > >
-> > > static int dlm_tcp_listen_bind(struct socket *sock)
-> > > {
-> > > int addr_len;
-> > >
-> > > /* Bind to our port */
-> > > make_sockaddr(dlm_local_addr[0], dlm_config.ci_tcp_port, &addr_len);
-> > > return kernel_bind(sock, (struct sockaddr *)&dlm_local_addr[0],
-> > >     addr_len);
-> > > }
-> > >
-> > > 6.6
-> > > ----
-> > > static int dlm_tcp_listen_bind(struct socket *sock)
-> > > {
-> > > int addr_len;
-> > >
-> > > /* Bind to our port */
-> > > make_sockaddr(&dlm_local_addr[0], dlm_config.ci_tcp_port, &addr_len);
-> > > return kernel_bind(sock, (struct sockaddr *)&dlm_local_addr[0],
-> > >     addr_len);
-> > > }
-> > >
-> > > 6.6 contains commit c51c9cd8 (fs: dlm: don't put dlm_local_addrs on h=
-eap) which
-> > > changed
-> > >
-> > > static struct sockaddr_storage *dlm_local_addr[DLM_MAX_ADDR_COUNT];
-> > >
-> > > to
-> > >
-> > > static struct sockaddr_storage dlm_local_addr[DLM_MAX_ADDR_COUNT];
-> > >
-> > > It looks like kernel_bind() in 6.1 needs to be modified to match.
-> >
-> > We tried to apply commit c51c9cd8 (fs: dlm: don't put dlm_local_addrs o=
-n
-> > heap) to the debian kernel 6.1.76 and came up with the attached patch.
-> > Besides the different offsets there is a slight change dlm_tcp_bind()
-> > where in 6.1.76 kernel_bind() is used instead of sock->ops->bind() in
-> > the original commit.
-> >
-> > This patch solves the issue we experienced.
-> >
-> > Thanks for your help,
-> > Valentin
->
-> Good to hear that works for you! We should fix this in the 6.1 stable
-> kernel as well.
->
-> IMO it may be less risky and simpler to fix the backport of my patch
-> e9cdebbe23f1 ("dlm: use kernel_connect() and
-> kernel_bind()") and just switch (struct sockaddr *)&dlm_local_addr[0]
-> to (struct sockaddr *)dlm_local_addr[0]
-> in the call to kernel_bind() rather than backporting c51c9cd8 (fs:
-> dlm: don't put dlm_local_addrs on
-> heap) to 6.1.
->
-> I will have some time soon to fix the 6.1 backport, but it may make
-> sense just to revert in the meantime.
->
-> -Jordan
+> I check old txt file, which have not mention it. I can remove it.
 
---0000000000007a52e50610e556ed
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-dlm-Treat-dlm_local_addr-0-as-sockaddr_storage.patch"
-Content-Disposition: attachment; 
-	filename="0001-dlm-Treat-dlm_local_addr-0-as-sockaddr_storage.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lsdpwbpg0>
-X-Attachment-Id: f_lsdpwbpg0
+if you drop "addr_space", you'll need to update the endpoint driver so
+that it supports both "addr_space" and "config". If there are no
+endpoint drivers using "config" in other operating systems, and all the
+dts files use "addr_space", documenting "reg" and "addr_space" for
+endpoint mode seems fair to me.
 
-RnJvbSBkZWM1ZmZkMzA5OTY3ZTQyOWI2MTZhOWQ0OTgwMzdhNWViNDM3YzU0IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBKb3JkYW4gUmlmZSA8anJpZmVAZ29vZ2xlLmNvbT4KRGF0ZTog
-VGh1LCA4IEZlYiAyMDI0IDEyOjA5OjU1IC0wNjAwClN1YmplY3Q6IFtQQVRDSF0gZGxtOiBUcmVh
-dCBkbG1fbG9jYWxfYWRkclswXSBhcyBzb2NrYWRkcl9zdG9yYWdlICoKCkJhY2twb3J0IGUxMWRl
-YTggKCJkbG06IHVzZSBrZXJuZWxfY29ubmVjdCgpIGFuZCBrZXJuZWxfYmluZCgpIikgdG8KTGlu
-dXggc3RhYmxlIDYuMSBjYXVzZWQgYSByZWdyZXNzaW9uLiBUaGUgb3JpZ2luYWwgcGF0Y2ggZXhw
-ZWN0ZWQKZGxtX2xvY2FsX2FkZHJzWzBdIHRvIGJlIG9mIHR5cGUgc29ja2FkZHJfc3RvcmFnZSwg
-YmVjYXVzZSBjNTFjOWNkICgiZnM6CmRsbTogZG9uJ3QgcHV0IGRsbV9sb2NhbF9hZGRycyBvbiBo
-ZWFwIikgY2hhbmdlZCBpdHMgdHlwZSBmcm9tCnNvY2thZGRyX3N0b3JhZ2UqIHRvIHNvY2thZGRy
-X3N0b3JhZ2UgaW4gTGludXggNi41KyB3aGlsZSBpbiBvbGRlciBMaW51eAp2ZXJzaW9ucyB0aGlz
-IGlzIHN0aWxsIHRoZSBvcmlnaW5hbCBzb2NrYWRkcl9zdG9yYWdlKi4KCkxpbms6IGh0dHBzOi8v
-YnVncy5kZWJpYW4ub3JnL2NnaS1iaW4vYnVncmVwb3J0LmNnaT9idWc9MTA2MzMzOApGaXhlczog
-ZTExZGVhOCAoImRsbTogdXNlIGtlcm5lbF9jb25uZWN0KCkgYW5kIGtlcm5lbF9iaW5kKCkiKQpT
-aWduZWQtb2ZmLWJ5OiBKb3JkYW4gUmlmZSA8anJpZmVAZ29vZ2xlLmNvbT4KLS0tCiBmcy9kbG0v
-bG93Y29tbXMuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxl
-dGlvbigtKQoKZGlmZiAtLWdpdCBhL2ZzL2RsbS9sb3djb21tcy5jIGIvZnMvZGxtL2xvd2NvbW1z
-LmMKaW5kZXggNzJmMzRmOTZkMDE1NS4uODQyNjA3M2U3M2NmMiAxMDA2NDQKLS0tIGEvZnMvZGxt
-L2xvd2NvbW1zLmMKKysrIGIvZnMvZGxtL2xvd2NvbW1zLmMKQEAgLTE5MDAsNyArMTkwMCw3IEBA
-IHN0YXRpYyBpbnQgZGxtX3RjcF9saXN0ZW5fYmluZChzdHJ1Y3Qgc29ja2V0ICpzb2NrKQogCiAJ
-LyogQmluZCB0byBvdXIgcG9ydCAqLwogCW1ha2Vfc29ja2FkZHIoZGxtX2xvY2FsX2FkZHJbMF0s
-IGRsbV9jb25maWcuY2lfdGNwX3BvcnQsICZhZGRyX2xlbik7Ci0JcmV0dXJuIGtlcm5lbF9iaW5k
-KHNvY2ssIChzdHJ1Y3Qgc29ja2FkZHIgKikmZGxtX2xvY2FsX2FkZHJbMF0sCisJcmV0dXJuIGtl
-cm5lbF9iaW5kKHNvY2ssIChzdHJ1Y3Qgc29ja2FkZHIgKilkbG1fbG9jYWxfYWRkclswXSwKIAkJ
-CSAgIGFkZHJfbGVuKTsKIH0KIAotLSAKMi40My4wLjY4Ny5nMzhhYTY1NTliMC1nb29nCgo=
---0000000000007a52e50610e556ed--
+Thanks,
+Conor.
+
+--BkMhcd+HVPXZrhES
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcVFiAAKCRB4tDGHoIJi
+0ncZAP426ohLG4dEVQblOtRj+sLza17dCRAZyQZGHBrzsJo9nAD+PL9tt9coV6Vx
+iDk3vgPZfq9rP5eThu72FRj53o6qtg0=
+=NA3v
+-----END PGP SIGNATURE-----
+
+--BkMhcd+HVPXZrhES--
 
