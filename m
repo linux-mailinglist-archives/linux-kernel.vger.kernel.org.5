@@ -1,233 +1,153 @@
-Return-Path: <linux-kernel+bounces-58601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C061B84E8BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:13:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C99984E8BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:12:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74A7E293049
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:12:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50F061F2FD6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:12:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96AB736118;
-	Thu,  8 Feb 2024 19:12:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B86536114;
+	Thu,  8 Feb 2024 19:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="A90XOS4+"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="YN+LF18Z"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86652562E
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 19:12:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ABA733CCF
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 19:11:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707419571; cv=none; b=mO0M4tiO4m4Hp9wPFdzpbF1sQ3IcSfekJcR3A5Ob/NtwNwWT7BYxBrldRU9JtIa6E00eklKsTpKDM5+EFtn6JFrm21aoEt9imP2XNDb/Sl52Y5tkbqD1l2B8yty69kTunuXgGRAHi0hix3/RlFJRC+YtGWC3QqQueEznsOR3WSY=
+	t=1707419513; cv=none; b=fsQdUuIzQWRFqcOaZaRQT2kPiCB5xK0MFfiYqNQ2e/DicvJ/m+eRnZjzNyHQNXe1iGJ9oxD+oJTqxMy6uAcVEqQUwTOCCAcpBJeAHmnh6u8L73/f6odlMNaLitQQ4SrBANA4QAmOygmit3ZsIC4FH1OyMFShs/7MG81WAabCq4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707419571; c=relaxed/simple;
-	bh=506h+I6jENuIwHl/+l3GqWz/VJuMQboUBhmMK6kLGrk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oyViu9OPoViZ5GqpPQ11qZB2/s7JalZhVvEE3AEPi1FhXZmtit8u8hoQ8Ey6F0mBNw7dP9GL/Fr1yYk1Re1HFV25bmhOArIbj75+2S/15ZEIHtOJSdUVgSze8U5dxxNvSY63L7S0MZjyh+/6NFbPYpsHCEzteV0ZHvCujd4ZPgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=A90XOS4+; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707419568;
+	s=arc-20240116; t=1707419513; c=relaxed/simple;
+	bh=blCSza5TQ+iFiMNQqLUeTbweD6hh0a+7uJXycqjiFEA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=TbKZW5N1EDkBDHLrolhWNSAb19uzC9Vm/L0xsBzjlqW8gYyyAnS6BDanVdxTmndDGM7TSVI3CwpPBZQxneIKQsgeXjGE+IBbRdR+2uk9WaltSHvzpKcKA4oZ70ft4XN5/AO0LHahNjLUYe1DhYpxe72cIwajbwjNG4S80/Y8168=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=YN+LF18Z; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-295c8b795e2so150848a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 11:11:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707419511; x=1708024311;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vITTCQqApfqjUncYWpsTg5mOxYlUOY7+4BnAfOQ/uHo=;
+        b=pLAMkyQHJgCiz1WZTMAc2fo2Vab/VwE/96UihdLyqTfzpmyeDeK19CrzL5DmeH98pg
+         nMEy7V0I+dxJtMtXoDJ2oArl0UWwTAyX5UZ/t+HsUnOS6OQlM9GwBAFXKDiCZaiVi76j
+         ARsJTNzoGhmH1rcaAXjxGF8XmGufmpUk//lZjSMTLzJBuiVooehgBJt/3n0GGRBvNjzT
+         BjPBlUUd2UuLvLHYZC28Uh7ONeY+KjAspJXOUOyNS+K7F9d1ru5CEzjcMieaWwzpYozl
+         LYreiYLMM3qruYWDKcXmynRELddtAg6J3eXSZf1W5RZJGCVek1w+3Pg5R9fuvvr/Y6Gx
+         D6bQ==
+X-Gm-Message-State: AOJu0YxesA2AVFb7s4xClsDdlmvzu/cI5ccsXlLluzkNxgSwlq1dqjIg
+	OVxp9Z36WMPc/LlfbSSfYOx3riz4AGZ0QubjQFl51iMDmG+AVUXo
+X-Google-Smtp-Source: AGHT+IFhXj2F4FBpzHtVsotxqIVbnXL/PpzrBW1Ump4XU6GNW2ecnGoDhT/7Hx0qMHs2Z4XzFmfKtg==
+X-Received: by 2002:a17:90b:1bd2:b0:296:ee58:646a with SMTP id oa18-20020a17090b1bd200b00296ee58646amr200982pjb.25.1707419511349;
+        Thu, 08 Feb 2024 11:11:51 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUY4S0sLUZjN2ovwW7PLWe3UO8nP0LEwoLuUEXHTO20z0JBxoat9cWr349Vtg4Rh1niL0Z2sVyPCr2JagSfW47ae4aQ46wcHBdbKzPEmNsTv2fIDeMWe6/IuIPpCRo6WQ==
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id gd13-20020a17090b0fcd00b00296dd7eff41sm132586pjb.9.2024.02.08.11.11.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 11:11:50 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1707419508;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cSqFDht9oqySGNbtHUWvob5GvrVsWMq1FrhWjgIOu+Y=;
-	b=A90XOS4+ohy8ukS65g6+RjJNcvxJed/DXeJfc6TKJcKg0fvHX0/KnluGj/UPurhyBBY14J
-	KedE0d/tvz87sLoKrU5LB7ypxW/OKPI76uWuoryYNmyYS0CfjEM1H4hzpE4AsASJu5fenc
-	kYzNlp1s8/b3ZomiLmGmiW08yNDjde0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-626-Jnbb78LxNU-dulUcC3EUvQ-1; Thu,
- 08 Feb 2024 14:12:47 -0500
-X-MC-Unique: Jnbb78LxNU-dulUcC3EUvQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0BB4229AA3AF;
-	Thu,  8 Feb 2024 19:12:47 +0000 (UTC)
-Received: from llong.com (unknown [10.22.8.4])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 77BA14011FF1;
-	Thu,  8 Feb 2024 19:12:46 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Alex Gladkov <agladkov@redhat.com>,
-	Phil Auld <pauld@redhat.com>,
-	Costa Shulyupin <cshulyup@redhat.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH wq/for-6.9 v6 2/4] workqueue: Enable unbound cpumask update on ordered workqueues
-Date: Thu,  8 Feb 2024 14:12:20 -0500
-Message-Id: <20240208191220.1094426-1-longman@redhat.com>
-In-Reply-To: <20240208161014.1084943-1-longman@redhat.com>
-References: <20240208161014.1084943-1-longman@redhat.com>
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=vITTCQqApfqjUncYWpsTg5mOxYlUOY7+4BnAfOQ/uHo=;
+	b=YN+LF18ZU5JEJ2YJPkrdhV5nLL8tK5b7OA+HDEgyfcrvbQ3f+utGpnfHQ4kosRFFgkq2HC
+	STcK+M88+9g9DUTPr5AcuvIF/ZCZG7S76IJNN+M87ww+GwS/LKdDPjVNUsckMblrTITfQI
+	Ffymj35G9pEz1aVSH1S9aeyR33MDJ94oC1ANZliF8AeVWUkzjrFAwNmewcddBFYr3+PnDJ
+	/+QjeglPe8SGAO+5qQOfS3aQtA45O4w32UhnAdO3jrJ3cgBox7aeKC1ojkQjK+JNODsguB
+	YRBdaybSjZBrugWSi2u0vMGz5jCBRFVe97UOHmpIu6hOpqrBBhjG+A5EN0/nvg==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Thu, 08 Feb 2024 16:12:21 -0300
+Subject: [PATCH] rapidio: make rio_bus_type const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240208-bus_cleanup-rapidio-v1-1-c69040ab0151@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAJQnxWUC/x3MQQqAIBBA0avIrBPMCqqrRITmVAOh4mAE0d2Tl
+ m/x/wOMiZBhFA8kvIgp+IK6ErAexu8oyRWDVrpVWvXSZl7WE43PUSYTyVGQQ2ObXjlr0XRQyph
+ wo/u/TvP7fjaax7ZlAAAA
+To: Matt Porter <mporter@kernel.crashing.org>, 
+ Alexandre Bounine <alex.bou9@gmail.com>
+Cc: linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1589; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=blCSza5TQ+iFiMNQqLUeTbweD6hh0a+7uJXycqjiFEA=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlxSeVXQp/RxgRS56sAed4O3A59pqAUVLSBeCiR
+ AdLM/KgJh6JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcUnlQAKCRDJC4p8Y4ZY
+ pnpZD/wO02U2hQnGoQr8Oez5m4Fq0b4U1RWQxorc4KUQuNxbX5P903j6zGCQ/ti4czpG7Qkn6bQ
+ O2tV6LhU3AP3uL5rFniJZQ1HvvDoPHfBJjjkCGnX3c9y9o+/+rngl/qn3DmL5ytT9pru7dw0iGw
+ afWmzgbIwlopOpt+rV4rjbCV7w2nT9OfrT+UZJiXt5TKoFaUj6kGA7lkMuafVaSqYWuigUicCKo
+ v+VjZiwnvM/JbXmkjRJN36LfnNAiRu0HEUcx4qDVaIy/RNti/tnFVAV6O/gRWvSH9fh3eibzqEE
+ 4MJGysNmhc7rJUPBEFUfJ1+CcnZ5uLcG3vQNwLZqiQqO+ChXwlya4dtZX21PgGxBIptE5dkz0N6
+ KrMMnQfoFXIEdaGsBYWxveQMaOBUdEXgS+CCr0H3P/jF+3y34ly/6fKkr1mAaEs6HsjbUgRF79V
+ 3JvZJTTYuWEe1dEdcH6QktZqlqzMWvitC7+seUjViLq3Ug6TdNbs/c6p91ePoEUuyqLO+07g9NP
+ shGD9b6Aoah1fKCX3r0MNoBdysR/jTHTEB06fT2JF8EWkk06PiAmiGSFyCQNavusghnW/vptOPt
+ 32g0U4TC08qGpvGUmQsK1p5Rn13rYbg31jt1wL1avW2AFgEu9BD0I+WCMvZzosBxJERzEXFVGrn
+ VZqrjnTd2c+HFSw==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-Ordered workqueues does not currently follow changes made to the
-global unbound cpumask because per-pool workqueue changes may break
-the ordering guarantee. IOW, a work function in an ordered workqueue
-may run on an isolated CPU.
+Now that the driver core can properly handle constant struct bus_type,
+move the rio_bus_type variable to be a constant structure as well,
+placing it into read-only memory which can not be modified at runtime.
 
-This patch enables ordered workqueues to follow changes made to the
-global unbound cpumask by temporaily plug or suspend the newly allocated
-pool_workqueue from executing newly queued work items until the old
-pwq has been properly drained. For ordered workqueues, there should
-only be one pwq that is unplugged, the rests should be plugged.
-
-This enables ordered workqueues to follow the unbound cpumask changes
-like other unbound workqueues at the expense of some delay in execution
-of work functions during the transition period.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
- kernel/workqueue.c | 69 +++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 59 insertions(+), 10 deletions(-)
+ drivers/rapidio/rio-driver.c | 2 +-
+ include/linux/rio.h          | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index fa7bd3b34f52..da124859a691 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -255,6 +255,7 @@ struct pool_workqueue {
- 	int			refcnt;		/* L: reference count */
- 	int			nr_in_flight[WORK_NR_COLORS];
- 						/* L: nr of in_flight works */
-+	bool			plugged;	/* L: execution suspended */
+diff --git a/drivers/rapidio/rio-driver.c b/drivers/rapidio/rio-driver.c
+index 1b3b4c2e015d..2baef45ee5ff 100644
+--- a/drivers/rapidio/rio-driver.c
++++ b/drivers/rapidio/rio-driver.c
+@@ -227,7 +227,7 @@ struct class rio_mport_class = {
+ };
+ EXPORT_SYMBOL_GPL(rio_mport_class);
  
- 	/*
- 	 * nr_active management and WORK_STRUCT_INACTIVE:
-@@ -1708,6 +1709,9 @@ static bool pwq_tryinc_nr_active(struct pool_workqueue *pwq, bool fill)
- 		goto out;
- 	}
+-struct bus_type rio_bus_type = {
++const struct bus_type rio_bus_type = {
+ 	.name = "rapidio",
+ 	.match = rio_match_bus,
+ 	.dev_groups = rio_dev_groups,
+diff --git a/include/linux/rio.h b/include/linux/rio.h
+index 2cd637268b4f..e9ca2fb7133f 100644
+--- a/include/linux/rio.h
++++ b/include/linux/rio.h
+@@ -78,7 +78,7 @@
+ #define RIO_CTAG_RESRVD	0xfffe0000 /* Reserved */
+ #define RIO_CTAG_UDEVID	0x0001ffff /* Unique device identifier */
  
-+	if (unlikely(pwq->plugged))
-+		return false;
-+
- 	/*
- 	 * Unbound workqueue uses per-node shared nr_active $nna. If @pwq is
- 	 * already waiting on $nna, pwq_dec_nr_active() will maintain the
-@@ -1782,6 +1786,43 @@ static bool pwq_activate_first_inactive(struct pool_workqueue *pwq, bool fill)
- 	}
- }
+-extern struct bus_type rio_bus_type;
++extern const struct bus_type rio_bus_type;
+ extern struct class rio_mport_class;
  
-+/**
-+ * unplug_oldest_pwq - restart an oldest plugged pool_workqueue
-+ * @wq: workqueue_struct to be restarted
-+ *
-+ * pwq's are linked into wq->pwqs with the oldest first. For ordered
-+ * workqueues, only the oldest pwq is unplugged, the others are plugged to
-+ * suspend execution until the oldest one is drained. When this happens, the
-+ * next oldest one (first plugged pwq in iteration) will be unplugged to
-+ * restart work item execution to ensure proper work item ordering.
-+ *
-+ *    dfl_pwq --------------+     [P] - plugged
-+ *                          |
-+ *                          v
-+ *    pwqs -> A -> B [P] -> C [P] (newest)
-+ *            |    |        |
-+ *            1    3        5
-+ *            |    |        |
-+ *            2    4        6
-+ */
-+static void unplug_oldest_pwq(struct workqueue_struct *wq)
-+{
-+	struct pool_workqueue *pwq;
-+
-+	lockdep_assert_held(&wq->mutex);
-+
-+	/* Caller should make sure that pwqs isn't empty before calling */
-+	pwq = list_first_entry_or_null(&wq->pwqs, struct pool_workqueue,
-+				       pwqs_node);
-+	raw_spin_lock_irq(&pwq->pool->lock);
-+	if (pwq->plugged) {
-+		pwq->plugged = false;
-+		if (pwq_activate_first_inactive(pwq, true))
-+			kick_pool(pwq->pool);
-+	}
-+	raw_spin_unlock_irq(&pwq->pool->lock);
-+}
-+
- /**
-  * node_activate_pending_pwq - Activate a pending pwq on a wq_node_nr_active
-  * @nna: wq_node_nr_active to activate a pending pwq for
-@@ -4740,6 +4781,13 @@ static void pwq_release_workfn(struct kthread_work *work)
- 		mutex_lock(&wq->mutex);
- 		list_del_rcu(&pwq->pwqs_node);
- 		is_last = list_empty(&wq->pwqs);
-+
-+		/*
-+		 * For ordered workqueue with a plugged dfl_pwq, restart it now.
-+		 */
-+		if (!is_last && (wq->flags & __WQ_ORDERED))
-+			unplug_oldest_pwq(wq);
-+
- 		mutex_unlock(&wq->mutex);
- 	}
- 
-@@ -4966,6 +5014,15 @@ apply_wqattrs_prepare(struct workqueue_struct *wq,
- 	cpumask_copy(new_attrs->__pod_cpumask, new_attrs->cpumask);
- 	ctx->attrs = new_attrs;
- 
-+	/*
-+	 * For initialized ordered workqueues, there should only be one pwq
-+	 * (dfl_pwq). Set the plugged flag of ctx->dfl_pwq to suspend execution
-+	 * of newly queued work items until execution of older work items in
-+	 * the old pwq's have completed.
-+	 */
-+	if ((wq->flags & __WQ_ORDERED) && !list_empty(&wq->pwqs))
-+		ctx->dfl_pwq->plugged = true;
-+
- 	ctx->wq = wq;
- 	return ctx;
- 
-@@ -5006,10 +5063,6 @@ static int apply_workqueue_attrs_locked(struct workqueue_struct *wq,
- 	if (WARN_ON(!(wq->flags & WQ_UNBOUND)))
- 		return -EINVAL;
- 
--	/* creating multiple pwqs breaks ordering guarantee */
--	if (!list_empty(&wq->pwqs) && WARN_ON(wq->flags & __WQ_ORDERED))
--		return -EINVAL;
--
- 	ctx = apply_wqattrs_prepare(wq, attrs, wq_unbound_cpumask);
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
-@@ -6489,9 +6542,6 @@ static int workqueue_apply_unbound_cpumask(const cpumask_var_t unbound_cpumask)
- 	list_for_each_entry(wq, &workqueues, list) {
- 		if (!(wq->flags & WQ_UNBOUND) || (wq->flags & __WQ_DESTROYING))
- 			continue;
--		/* creating multiple pwqs breaks ordering guarantee */
--		if (wq->flags & __WQ_ORDERED)
--			continue;
- 
- 		ctx = apply_wqattrs_prepare(wq, wq->unbound_attrs, unbound_cpumask);
- 		if (IS_ERR(ctx)) {
-@@ -7006,9 +7056,8 @@ int workqueue_sysfs_register(struct workqueue_struct *wq)
- 	int ret;
- 
- 	/*
--	 * Adjusting max_active or creating new pwqs by applying
--	 * attributes breaks ordering guarantee.  Disallow exposing ordered
--	 * workqueues.
-+	 * Adjusting max_active breaks ordering guarantee.  Disallow exposing
-+	 * ordered workqueues.
- 	 */
- 	if (WARN_ON(wq->flags & __WQ_ORDERED))
- 		return -EINVAL;
+ struct rio_mport;
+
+---
+base-commit: 547ab8fc4cb04a1a6b34377dd8fad34cd2c8a8e3
+change-id: 20240208-bus_cleanup-rapidio-93b380dbbea5
+
+Best regards,
 -- 
-2.39.3
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
