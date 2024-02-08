@@ -1,157 +1,221 @@
-Return-Path: <linux-kernel+bounces-57601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D766F84DB41
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:20:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 870E184DB44
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:22:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3986CB23826
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:20:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC2C61C21A22
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:22:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633F26A334;
-	Thu,  8 Feb 2024 08:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7966A336;
+	Thu,  8 Feb 2024 08:22:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="x/v1NGfl"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mXdm7Kpr"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0387F6A320
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 08:20:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7C16A327;
+	Thu,  8 Feb 2024 08:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707380413; cv=none; b=P22nSE75wIV/QTGtXgDNCqY1zwYR4ASjBtyBkrfd3aXbvOxlwQ0LfksbPXHISJHSWmQugfk+io8x1uNVxJUyb0TK9rfkfNs4XQJi5TD4F20nZ4EbXDTNEG4rak9Cu29yv9jPPAJN0hgqQptazKgvcZFAv5JYv11xxdjZ+uLrzHg=
+	t=1707380538; cv=none; b=AcM23LdPdGbK9xG+rFKbCyPUdQAT7k6zbZOVjv6R7fA2vlCXeGVs/0xAj2mmTHK/DqShMkqSEwGzsdPtpcyLonV1mJFBlRTOHAyTieQGDn0Ep61EQDdy2qqgLNRkkUN9oa5rOn9jQE8AxYpecYdbugDDBVX4G5ei0kt/8psQ2nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707380413; c=relaxed/simple;
-	bh=DC8QwyYyPRHm/TlNRlGL0sH5e3TC/GILV1OYtK/te3o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OeAFRGHKO4gudD0HdwLEqyPAUCHEheifn4fzChzOojvW8G2y2RJmXM5gRPJUMcouiYi5+9Jt0+uP09LgCQzPV4oK1u5YrKLUU7y1bM8nW6WCxmim8MBQL3fqC1XYD0WmWG6P/gnVU81NKAuTO+fWG0y0X3kjF4JV2OFWyXdW4cQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=x/v1NGfl; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33aea66a31cso930666f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 00:20:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707380410; x=1707985210; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jIOIft8KnFzWtuRL8KYkbQwBLhkW8ybQTTPohMHfZ5Y=;
-        b=x/v1NGfl9/rN0W82kIRNf5YUdt12E9U+G0hAml5KIO78dh9MHXXDuBR5oH5+tKoolI
-         rf/pERhzFzx6y6Bk3jjoaEmxA/8JATFlaRJXdrOfWX3Skh8XCyKvtK4IXvEGRxleDk+D
-         pDc6MCBQicye6xo0cxBJ9XmavrEuxP7AbidaEJDKeNcb/KdLKK6e5l4ed8Oa3jDjTBNi
-         qgmsyWu/x0uTpY/Cup1LzDJAEyXxAZDohmv4XgxMIV/8vrtyuD1x334NSvGs/KQ2hsZV
-         v9Eoos90tZT7tdmVp5Xsjur04ee5kQVSITsBpJ32bc5DC0ctPO75Eo6M3at5MKtX2/EM
-         unjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707380410; x=1707985210;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jIOIft8KnFzWtuRL8KYkbQwBLhkW8ybQTTPohMHfZ5Y=;
-        b=BY1J7jFljySMkAJJqrtvvRhUYUqijO+Tc9ZZrwnrOLeV/F/GPgQt1wltNsG4dcjbj2
-         I23E5uFZVWMEvliMzJhGzIC4RsFg7/A0cEBy439hxlZKENdqNl0lsQkOr72ev5NI3Xxm
-         YJhrFgFiEIb9skHxn7HVQR3BF/DHw6Uyf+wCu9PsMfON7gtTgvfWo2IxVUs84sGIAeBY
-         zVlb/DANPaU8R6VytIQD/OPLjO+hk5nNoggLOa8xZEHcbjyldQ2gcTTzO7YTA52gemyQ
-         soq8JObJwwS4lh5zFrpue3nBEWmL+jtg2LPQY4kFmoDA3pKCUvnpmGFhVS8ig2EaAuDS
-         CZxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX+HgxP6cUtanzg946xB+CpFRdKtUauP8E77vlnmn/bGPqLNZAqJi/y/lXXfsOtFDrHPlqlxdobDREn2u/GtLyO0LsLnCRKuv3J0YCQ
-X-Gm-Message-State: AOJu0YzoI9mzZPzEsi8A3b7jyI2Ythk2WRTZSNZVco1k4Bq8YBN7NPrs
-	KA59bsSeIxQkRMBy1kj6BFphg5f7TUPbrVC/5X/aC0yZEgQlJLGJusBlY7DFoXI=
-X-Google-Smtp-Source: AGHT+IFjGCO6+8oIO4SWmt/OcbsoaBOmdhytrRg/6oVRaCjbdzNyG32UGzNW60LUcBoIy2zAVl1yEA==
-X-Received: by 2002:a05:6000:14d:b0:33b:178a:6715 with SMTP id r13-20020a056000014d00b0033b178a6715mr5741893wrx.24.1707380410340;
-        Thu, 08 Feb 2024 00:20:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU7vYRonzxMr2QzJL4uVagWPRNmkJmFjVP5H4EO2WrpMgi80T4FfqLzs+E+luacVTKvmUbrrgiF8M6XRlR0aErExN3Bb0x42dxia37PK+9EGXZmgBi7BOsA/p4eMNL1nypPsWwwp2VuKfcdsDXRM78KihzBhGNBBDL57NOCLtuxegMEI8twy9GcI4cT2aMc38/9iVDG4KqYgVE99jE18Ygn1TEboBhNgw9sUv3bcV1iGhY9vuAXOH2rTr5d1m8pMY7h1McMUCSBnvPCXAyKtdp8v3pFnBxLoghjbLmGTZ11wRPjgbEtppETkep0Brq77+lkqLLWlTncUfWS/YnzuTT9jC8ka+qrcvUtpu1+6VZPmlqseSIwhHxvGzacfCjbOLIJ8VlPxEwN5KscCEq0RltCemMSpgXiOLGPhskYH0bQ0eH3wzweihXNJyZoOygzbExm0avVs2QKKZ+efHDEHb4vMtIPFKAeImDnOu+MBOTeijnjQ63NFW6bUBU0QGfafR73AZypkjeXvt0Ezf6fg7gOaA==
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id r20-20020adfb1d4000000b00337d6f0013esm3099374wra.107.2024.02.08.00.20.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 00:20:09 -0800 (PST)
-Message-ID: <7546ebef-c616-440b-ac63-4864fab83838@linaro.org>
-Date: Thu, 8 Feb 2024 09:20:08 +0100
+	s=arc-20240116; t=1707380538; c=relaxed/simple;
+	bh=SE/s3lYJpb9Q+n9pVf/ojtKtqy8zqqmwKN+tZ8ySURE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ArCNjTKBDyk6KwLa1qedSVVCOrU+cjH6OMASOHJP9p11uMT0jxkcf24fmhS9zOqYktuFQ7jxGkbyzSIt7HmqXalrVReH+o1nbLw5qAm8rqc8bK2T0nAszBwTvWz8wHbEJ5PbiOg4qEpn7HCT9GPXf2fsaVr7Hjf867xkZ1LbqoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mXdm7Kpr; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707380536; x=1738916536;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SE/s3lYJpb9Q+n9pVf/ojtKtqy8zqqmwKN+tZ8ySURE=;
+  b=mXdm7KprdbcG7Pi4CYJBAujOFoQYrwuB54H3xliX4sH9i8E40crKwk0j
+   Pihaw1wgIjlKJ7bCpH6ccd6rbUcrJsAjFhtxo8kc+c2/Hs0aG0ionxlmZ
+   AnE6NKwTMuAj6tSxbrQ/iLs1fJgGHbVZCRPKXb/FFMfG+f0HIhoFzvTTJ
+   +tDDks+EwvjwxWSTncD29SyETAoG6k9YT83O9damAwywL7SznjaU6qeY/
+   K8FbWG6AL0ouvVZMiMHUtP4cU5zR5Abpz4eNyRRbLgbqvgWvBRynr8cOK
+   3/a8ZSp5HA2DvE8+gSwwDy5FSfWWteVDvbjzrtZVJQzl/al6lzMEI46RB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="4953284"
+X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
+   d="scan'208";a="4953284"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 00:22:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
+   d="scan'208";a="39014851"
+Received: from sgruszka-mobl.ger.corp.intel.com (HELO localhost) ([10.252.43.105])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 00:22:12 -0800
+Date: Thu, 8 Feb 2024 09:22:09 +0100
+From: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Linux PM <linux-pm@vger.kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Linux ACPI <linux-acpi@vger.kernel.org>,
+	Lukasz Luba <lukasz.luba@arm.com>, Zhang Rui <rui.zhang@intel.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v1 1/6] thermal: core: Store zone trips table in struct
+ thermal_zone_device
+Message-ID: <ZcSPMRH34M5yG/IU@linux.intel.com>
+References: <2728491.mvXUDI8C0e@kreacher>
+ <5762433.DvuYhMxLoT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/5] dt-bindings: clock: qcom: Add SM8650 camera clock
- controller
-Content-Language: en-US
-To: Jagadeesh Kona <quic_jkona@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
- Taniya Das <quic_tdas@quicinc.com>, linux-arm-msm@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Imran Shaik <quic_imrashai@quicinc.com>,
- Ajit Pandey <quic_ajipan@quicinc.com>
-References: <20240206113145.31096-1-quic_jkona@quicinc.com>
- <20240206113145.31096-4-quic_jkona@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240206113145.31096-4-quic_jkona@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5762433.DvuYhMxLoT@kreacher>
 
-On 06/02/2024 12:31, Jagadeesh Kona wrote:
-> Add device tree bindings for the camera clock controller on
-> Qualcomm SM8650 platform.
+On Mon, Feb 05, 2024 at 10:14:31PM +0100, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+> The current code requires thermal zone creators to pass a pointer to a
+> writable trips table to thermal_zone_device_register_with_trips() and
+> that trips table is then used by the thermal core going forward.
+> 
+> Consequently, the callers of thermal_zone_device_register_with_trips()
+> are required to hold on to the trips table passed to it until the given
+> thermal zone is unregistered, at which point the trips table can be
+> freed, but at the same time they are not allowed to access the cells in
+> that table directly.  This is both error prone and confusing.
+> 
+> To address it, turn the trips table pointer in struct thermal_zone_device
+> into a flex array (counted by its num_trips field), allocate it during
+> thermal zone device allocation and copy the contents of the trips table
+> supplied by the zone creator (which can be const now) into it.
+> 
+> This allows the callers of thermal_zone_device_register_with_trips() to
+> drop their trip tables right after the zone registration.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+
 > ---
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+>  drivers/thermal/thermal_core.c |   16 +++++++++-------
+>  include/linux/thermal.h        |   10 +++++-----
+>  2 files changed, 14 insertions(+), 12 deletions(-)
+> 
+> Index: linux-pm/include/linux/thermal.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/thermal.h
+> +++ linux-pm/include/linux/thermal.h
+> @@ -130,7 +130,6 @@ struct thermal_cooling_device {
+>   * @trip_hyst_attrs:	attributes for trip points for sysfs: trip hysteresis
+>   * @mode:		current mode of this thermal zone
+>   * @devdata:	private pointer for device private data
+> - * @trips:	an array of struct thermal_trip
+>   * @num_trips:	number of trip points the thermal zone supports
+>   * @passive_delay_jiffies: number of jiffies to wait between polls when
+>   *			performing passive cooling.
+> @@ -160,6 +159,7 @@ struct thermal_cooling_device {
+>   * @poll_queue:	delayed work for polling
+>   * @notify_event: Last notification event
+>   * @suspended: thermal zone suspend indicator
+> + * @trips:	array of struct thermal_trip objects
+>   */
+>  struct thermal_zone_device {
+>  	int id;
+> @@ -172,7 +172,6 @@ struct thermal_zone_device {
+>  	struct thermal_attr *trip_hyst_attrs;
+>  	enum thermal_device_mode mode;
+>  	void *devdata;
+> -	struct thermal_trip *trips;
+>  	int num_trips;
+>  	unsigned long passive_delay_jiffies;
+>  	unsigned long polling_delay_jiffies;
+> @@ -193,10 +192,11 @@ struct thermal_zone_device {
+>  	struct list_head node;
+>  	struct delayed_work poll_queue;
+>  	enum thermal_notify_event notify_event;
+> +	bool suspended;
+>  #ifdef CONFIG_THERMAL_DEBUGFS
+>  	struct thermal_debugfs *debugfs;
+>  #endif
+> -	bool suspended;
+> +	struct thermal_trip trips[] __counted_by(num_trips);
+>  };
+>  
+>  /**
+> @@ -315,7 +315,7 @@ int thermal_zone_get_crit_temp(struct th
+>  #ifdef CONFIG_THERMAL
+>  struct thermal_zone_device *thermal_zone_device_register_with_trips(
+>  					const char *type,
+> -					struct thermal_trip *trips,
+> +					const struct thermal_trip *trips,
+>  					int num_trips, int mask,
+>  					void *devdata,
+>  					struct thermal_zone_device_ops *ops,
+> @@ -375,7 +375,7 @@ void thermal_zone_device_critical(struct
+>  #else
+>  static inline struct thermal_zone_device *thermal_zone_device_register_with_trips(
+>  					const char *type,
+> -					struct thermal_trip *trips,
+> +					const struct thermal_trip *trips,
+>  					int num_trips, int mask,
+>  					void *devdata,
+>  					struct thermal_zone_device_ops *ops,
+> Index: linux-pm/drivers/thermal/thermal_core.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_core.c
+> +++ linux-pm/drivers/thermal/thermal_core.c
+> @@ -1272,10 +1272,13 @@ EXPORT_SYMBOL_GPL(thermal_zone_get_crit_
+>   * IS_ERR*() helpers.
+>   */
+>  struct thermal_zone_device *
+> -thermal_zone_device_register_with_trips(const char *type, struct thermal_trip *trips, int num_trips, int mask,
+> -					void *devdata, struct thermal_zone_device_ops *ops,
+> -					const struct thermal_zone_params *tzp, int passive_delay,
+> -					int polling_delay)
+> +thermal_zone_device_register_with_trips(const char *type,
+> +					const struct thermal_trip *trips,
+> +					int num_trips, int mask,
+> +					void *devdata,
+> +					struct thermal_zone_device_ops *ops,
+> +					const struct thermal_zone_params *tzp,
+> +					int passive_delay, int polling_delay)
+>  {
+>  	struct thermal_zone_device *tz;
+>  	int id;
+> @@ -1322,7 +1325,7 @@ thermal_zone_device_register_with_trips(
+>  	if (!thermal_class)
+>  		return ERR_PTR(-ENODEV);
+>  
+> -	tz = kzalloc(sizeof(*tz), GFP_KERNEL);
+> +	tz = kzalloc(struct_size(tz, trips, num_trips), GFP_KERNEL);
+>  	if (!tz)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> @@ -1344,7 +1347,6 @@ thermal_zone_device_register_with_trips(
+>  		result = id;
+>  		goto free_tzp;
+>  	}
+> -
+>  	tz->id = id;
+>  	strscpy(tz->type, type, sizeof(tz->type));
+>  
+> @@ -1354,7 +1356,7 @@ thermal_zone_device_register_with_trips(
+>  	tz->ops = ops;
+>  	tz->device.class = thermal_class;
+>  	tz->devdata = devdata;
+> -	tz->trips = trips;
+> +	memcpy(tz->trips, trips, num_trips * sizeof(trips[0]));
+>  	tz->num_trips = num_trips;
+>  
+>  	thermal_set_delay_jiffies(&tz->passive_delay_jiffies, passive_delay);
+> 
+> 
+> 
+> 
 
