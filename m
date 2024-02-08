@@ -1,183 +1,153 @@
-Return-Path: <linux-kernel+bounces-57884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEAE784DE9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:50:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63FE284DE9D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:51:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 156CCB21A11
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:50:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87EE01C26357
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:51:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 907956DCF9;
-	Thu,  8 Feb 2024 10:50:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="p3vp6zyT"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A216DCEC;
+	Thu,  8 Feb 2024 10:50:54 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E1D3399F
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 10:50:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F8E23399F
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 10:50:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707389418; cv=none; b=T5vWp76yneYOG+or+9tIAtTqh42Y/vNAWg6RDwnvUciLBwc3oJhcMDWadXnUjZNnfqxMHPTxlYyKnUBtj09V8HPZz84iqBlMgo0JquTT5awe2zen0dPYFCdsd1dXDA2KZ6S/a8AGwH9aXSw3eyNCr5z1q3d5+zOSEyljGhr8LEs=
+	t=1707389453; cv=none; b=leQ9kkStNpBDWMrKnE5x5MgjZ4QoAw3TtK3PicKVVirjRcS3qvqNR340GraJN68Pg8zQu7oT5fZOPGxrDa7xghevRoYTw7H6vYdqA8hpoGDvREDU09nFl7ecoUdQbv+e+SoRvfuwzyU/9u7vmWyEs9dHHph5js2KQVq2H4/MC80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707389418; c=relaxed/simple;
-	bh=Sr8P3Tf0FtXDhvOXC3tlRbWTdTHoLpFXu5pFKXCOKKc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PWn+/FV9zoiX0mg5XKVCz2u6X4iSfWqeM9qofiNT4Y/HUNw2o4Mk2ZuKUTwBkprHzrlqututOGBcAQcvq6/nbNTSStCO77QVvMAY8yBum9Lyb3abnUSkERQ2yhgSIF13l9GtfIOq8qMhIZoFuvawrczhA+ZN0OjkhWk/O6RXWNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=p3vp6zyT; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3392b045e0aso1033008f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 02:50:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707389415; x=1707994215; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rYKL8XFcoc0FjbT81AR/diSA8dcgkvpQY9lcUzsv4wE=;
-        b=p3vp6zyTc74gIhPCtOLZZbNERKtkHvdFp7rWFHLI5BdUlsg296Q2y8CQ5w2MoOuLuH
-         g/8S87XkRFok8osNlM5qo3jXsTBliev19gcSbi/N23QXKRZt36n6KQLC9XEDYB69UXsO
-         vuwLgAOTgDMBz2QUBGXf98ITtzHrkEor2ECdI3HKZAajHB2lq0HVN47E0hV/JJP5myb0
-         +KhsQvPGJAafVcndx2ntsM/899YO5MMOxW/+9hRy0HoXuiHdneqQkrbqn3aDF6ksOCTH
-         sO9kzhookNDg4n+LEjW9Wda4YH6So/ifl4ykY/8mSyrOkZJgrer18rjwtBAaZ3RUyZU+
-         wd8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707389415; x=1707994215;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rYKL8XFcoc0FjbT81AR/diSA8dcgkvpQY9lcUzsv4wE=;
-        b=erOU7S2c3Sk6jCg1GIA1qk0pEU+4NnAjRP2+PYFMv6Uk7HuivDcxEKugU/seyxF1ts
-         8NgwFobQNL4pxedJiWzCyw6fMjfgnwFkCS6eHD5TYZoH+54hs+Qqy5tjAjRgld9xmt/k
-         WEn16bjQl0nBvLl77mz1iy/YQUbn1AT3fLMs/Ptr7IgYciz3+0VvlK6kv0mTNIf26LZV
-         an/jSw7gB8u06+o2q+QjvXpLvax9CgMIsHF9KJHI/KdgwjaUSV1AbIGHKSmMVqtmNLMU
-         22MJFcDwfsnTGn0cgV2dTvZbY4ehMhIc/r/HTAqQSDMrG2pwHSsg0jZVTx+j3+CgJV9g
-         JVkA==
-X-Forwarded-Encrypted: i=1; AJvYcCWHhtKjHOEsAUbAWm0THjwa4EvfUzSw9bm5htFFuGL/n1serh8tzak8/KR+qRyoPFEuTqxMqLbzqKqZONwEl+CZ8lClTbu15r/MGkUD
-X-Gm-Message-State: AOJu0YydfgMpKwXcu5PH06hSW8VkXWJrTMaIsAGBdOp4mmLOaFEaEhK8
-	aR0ayeEMjYsdaGuv5d+mkxT+bIYZSooLxhC+nY+6YCJ6MShgQRa+RMtFqqYKCu0=
-X-Google-Smtp-Source: AGHT+IEEuMT7A2nJGQWYBalYGGYOIwae7inq6feMGMtSTWH2xCiM9iHS4TySWCsfLuKrtMpmaDEYYw==
-X-Received: by 2002:a5d:4a10:0:b0:33b:160a:e506 with SMTP id m16-20020a5d4a10000000b0033b160ae506mr5292110wrq.33.1707389415079;
-        Thu, 08 Feb 2024 02:50:15 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWA9m5ZfSTHk3Jq/wjFol8kRR0Pq/+E3mXtw8zvgNXA1G+UB7Ve5DF8yrIa89TNqhFg/ErIEfMEJVLB3AUOFg1hWjtB6RqYscUQx4uQBRawryx2/5a6gXsAlJap9K9ee4On4MiX65eBqHpYHqNJ5atwkbTJA5PI+Iy4P9TttFdFsO/pdc2ORbqoLnDpBCy6QvHNKgIcOJa/PveAgoB/aDnYJP+BiU/+1Qc9GfkOnj90gNn13mpR
-Received: from krzk-bin.. ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id bu14-20020a056000078e00b0033b59f4d46esm743211wrb.108.2024.02.08.02.50.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 02:50:14 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Oder Chiou <oder_chiou@realtek.com>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] ASoC: codecs: constify static sdw_slave_ops struct
-Date: Thu,  8 Feb 2024 11:50:11 +0100
-Message-Id: <20240208105011.128294-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707389453; c=relaxed/simple;
+	bh=/PSBCDalkGpt8rR1NUbQW00MuwRTUbAdd2X4QSlT568=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Q4+4eI8tXq5XshUWrq8zYKHmFgEhSbdVJ/GYt9r6eOm9rwzpTlH0PaVeRcfj7THxRJ0NiXb3BfgqRjlJBff1+duTygVQQcrqhu4pIwX0iaRfYF6+xi5ZZ7gftuh+hRyUMVDmKdPaUMySgoGFSIvgBh7J9sqXV8na9kO+UaCcYRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TVtwg0HC7z6K8yL;
+	Thu,  8 Feb 2024 18:47:31 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id DCC94140595;
+	Thu,  8 Feb 2024 18:50:48 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 8 Feb
+ 2024 10:50:48 +0000
+Date: Thu, 8 Feb 2024 10:50:47 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Junhao He <hejunhao3@huawei.com>
+CC: <will@kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>,
+	<yangyicong@huawei.com>, <prime.zeng@hisilicon.com>
+Subject: Re: [PATCH] drivers/perf: hisi: Enable HiSilicon Erratum 162700402
+ quirk for UC PMU
+Message-ID: <20240208105047.000023c7@Huawei.com>
+In-Reply-To: <20240207094245.34195-1-hejunhao3@huawei.com>
+References: <20240207094245.34195-1-hejunhao3@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-The struct sdw_slave_ops is not modified and sdw_driver takes pointer to
-const, so make it a const for code safety.
+On Wed, 7 Feb 2024 17:42:45 +0800
+Junhao He <hejunhao3@huawei.com> wrote:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- sound/soc/codecs/max98363.c        | 2 +-
- sound/soc/codecs/max98373-sdw.c    | 2 +-
- sound/soc/codecs/rt1017-sdca-sdw.c | 2 +-
- sound/soc/codecs/rt712-sdca-dmic.c | 2 +-
- sound/soc/codecs/rt712-sdca-sdw.c  | 2 +-
- sound/soc/codecs/rt722-sdca-sdw.c  | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
+> HiSilicon UC PMU v2 suffers the erratum 162700402 that the PMU counter
+> cannot be set due to the lack of clock under power saving mode. This will
+> lead to error or inaccurate counts. The clock can be enabled by the PMU
+> global enabling control.
+> 
+> This patch tries to fix this by set the UC PMU enable before set event
+> period to turn on the clock, and then restore the UC PMU configuration.
+> The counter register can hold its value without a clock.
+> 
+> Signed-off-by: Junhao He <hejunhao3@huawei.com>
 
-diff --git a/sound/soc/codecs/max98363.c b/sound/soc/codecs/max98363.c
-index a2cca3436c68..950105e5bffd 100644
---- a/sound/soc/codecs/max98363.c
-+++ b/sound/soc/codecs/max98363.c
-@@ -314,7 +314,7 @@ static int max98363_update_status(struct sdw_slave *slave,
- 	return max98363_io_init(slave);
- }
- 
--static struct sdw_slave_ops max98363_slave_ops = {
-+static const struct sdw_slave_ops max98363_slave_ops = {
- 	.read_prop = max98363_read_prop,
- 	.update_status = max98363_update_status,
- };
-diff --git a/sound/soc/codecs/max98373-sdw.c b/sound/soc/codecs/max98373-sdw.c
-index b5cb951af570..383e551f3bc7 100644
---- a/sound/soc/codecs/max98373-sdw.c
-+++ b/sound/soc/codecs/max98373-sdw.c
-@@ -821,7 +821,7 @@ static int max98373_bus_config(struct sdw_slave *slave,
-  * slave_ops: callbacks for get_clock_stop_mode, clock_stop and
-  * port_prep are not defined for now
-  */
--static struct sdw_slave_ops max98373_slave_ops = {
-+static const struct sdw_slave_ops max98373_slave_ops = {
- 	.read_prop = max98373_read_prop,
- 	.update_status = max98373_update_status,
- 	.bus_config = max98373_bus_config,
-diff --git a/sound/soc/codecs/rt1017-sdca-sdw.c b/sound/soc/codecs/rt1017-sdca-sdw.c
-index 7295f44c77eb..4dbbd8bdaaac 100644
---- a/sound/soc/codecs/rt1017-sdca-sdw.c
-+++ b/sound/soc/codecs/rt1017-sdca-sdw.c
-@@ -520,7 +520,7 @@ static const struct snd_soc_dapm_route rt1017_sdca_dapm_routes[] = {
- 	{ "DP2TX", NULL, "V Sense" },
- };
- 
--static struct sdw_slave_ops rt1017_sdca_slave_ops = {
-+static const struct sdw_slave_ops rt1017_sdca_slave_ops = {
- 	.read_prop = rt1017_sdca_read_prop,
- 	.update_status = rt1017_sdca_update_status,
- };
-diff --git a/sound/soc/codecs/rt712-sdca-dmic.c b/sound/soc/codecs/rt712-sdca-dmic.c
-index ba08d03e717c..0926b26619bd 100644
---- a/sound/soc/codecs/rt712-sdca-dmic.c
-+++ b/sound/soc/codecs/rt712-sdca-dmic.c
-@@ -944,7 +944,7 @@ static const struct dev_pm_ops rt712_sdca_dmic_pm = {
- };
- 
- 
--static struct sdw_slave_ops rt712_sdca_dmic_slave_ops = {
-+static const struct sdw_slave_ops rt712_sdca_dmic_slave_ops = {
- 	.read_prop = rt712_sdca_dmic_read_prop,
- 	.update_status = rt712_sdca_dmic_update_status,
- };
-diff --git a/sound/soc/codecs/rt712-sdca-sdw.c b/sound/soc/codecs/rt712-sdca-sdw.c
-index 6b644a89c589..01ac555cd79b 100644
---- a/sound/soc/codecs/rt712-sdca-sdw.c
-+++ b/sound/soc/codecs/rt712-sdca-sdw.c
-@@ -331,7 +331,7 @@ static int rt712_sdca_interrupt_callback(struct sdw_slave *slave,
- 	return ret;
- }
- 
--static struct sdw_slave_ops rt712_sdca_slave_ops = {
-+static const struct sdw_slave_ops rt712_sdca_slave_ops = {
- 	.read_prop = rt712_sdca_read_prop,
- 	.interrupt_callback = rt712_sdca_interrupt_callback,
- 	.update_status = rt712_sdca_update_status,
-diff --git a/sound/soc/codecs/rt722-sdca-sdw.c b/sound/soc/codecs/rt722-sdca-sdw.c
-index e24b9cbdc10c..eb76f4c675b6 100644
---- a/sound/soc/codecs/rt722-sdca-sdw.c
-+++ b/sound/soc/codecs/rt722-sdca-sdw.c
-@@ -362,7 +362,7 @@ static int rt722_sdca_interrupt_callback(struct sdw_slave *slave,
- 	return ret;
- }
- 
--static struct sdw_slave_ops rt722_sdca_slave_ops = {
-+static const struct sdw_slave_ops rt722_sdca_slave_ops = {
- 	.read_prop = rt722_sdca_read_prop,
- 	.interrupt_callback = rt722_sdca_interrupt_callback,
- 	.update_status = rt722_sdca_update_status,
--- 
-2.34.1
+Hi.
+
+Some very minor comments about the comments inline.
+
+Jonathan
+
+> ---
+>  drivers/perf/hisilicon/hisi_uncore_uc_pmu.c | 40 ++++++++++++++++++++-
+>  1 file changed, 39 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c b/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
+> index 636fb79647c8..8e7a9e1f419a 100644
+> --- a/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
+> +++ b/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
+> @@ -287,10 +287,48 @@ static u64 hisi_uc_pmu_read_counter(struct hisi_pmu *uc_pmu,
+>  	return readq(uc_pmu->base + HISI_UC_CNTR_REGn(hwc->idx));
+>  }
+>  
+> -static void hisi_uc_pmu_write_counter(struct hisi_pmu *uc_pmu,
+> +static bool hisi_uc_pmu_get_glb_en_state(struct hisi_pmu *uc_pmu)
+> +{
+> +	u32 val;
+> +
+> +	val = readl(uc_pmu->base + HISI_UC_EVENT_CTRL_REG);
+> +	return !!FIELD_GET(HISI_UC_EVENT_GLB_EN, val);
+> +}
+> +
+> +static void hisi_uc_pmu_write_counter_quirk_hip09(struct hisi_pmu *uc_pmu,
+>  				      struct hw_perf_event *hwc, u64 val)
+>  {
+> +	bool enable = hisi_uc_pmu_get_glb_en_state(uc_pmu);
+> +
+> +	/* Set the UC PMU enable to turn on the clock. */
+
+Comment from below here but adjusted to say which path has the device
+already enabled.
+
+> +	if (!enable)
+> +		hisi_uc_pmu_start_counters(uc_pmu);
+> +
+>  	writeq(val, uc_pmu->base + HISI_UC_CNTR_REGn(hwc->idx));
+> +
+> +	/*
+> +	 * The counter register can hold its value without a clock. We need
+> +	 * restore the UC PMU configuration. The irq handler will also call
+> +	 * the function to set period. At this time, PMU is still enabled and
+> +	 * we cannot directly disable the PMU.
+I think the comment is more relevant above...
+> +	 */
+> +	if (!enable)
+> +		hisi_uc_pmu_stop_counters(uc_pmu);
+> +}
+> +
+> +static void hisi_uc_pmu_write_counter(struct hisi_pmu *uc_pmu,
+> +				      struct hw_perf_event *hwc, u64 val)
+> +{
+> +	/*
+> +	 * HiSilicon UC PMU v2 suffers the erratum 162700402 that the PMU
+> +	 * counter cannot be set due to the lack of clock under power saving
+> +	 * mode. This will lead to error or inaccurate counts. The clock can
+> +	 * be enabled by the PMU global enabling control.
+
+I'd move the comment to next to the quirk function so that people can immediately
+see what is being done.  Down here we just need to know there is a quirk.
+
+> +	 */
+> +	if (uc_pmu->identifier == HISI_PMU_V2)
+> +		hisi_uc_pmu_write_counter_quirk_hip09(uc_pmu, hwc, val);
+> +	else
+> +		writeq(val, uc_pmu->base + HISI_UC_CNTR_REGn(hwc->idx));
+>  }
+>  
+>  static void hisi_uc_pmu_enable_counter_int(struct hisi_pmu *uc_pmu,
 
 
