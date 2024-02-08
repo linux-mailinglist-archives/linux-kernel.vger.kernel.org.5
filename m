@@ -1,125 +1,187 @@
-Return-Path: <linux-kernel+bounces-57775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76C1B84DD4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:53:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47E5784DD48
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:52:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA971B23727
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:53:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBFEE282D69
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:52:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC93B6D1BB;
-	Thu,  8 Feb 2024 09:53:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="dZiajh4e"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350E56BFD9;
+	Thu,  8 Feb 2024 09:52:34 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1C46BB2F
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 09:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EAB26BFB2
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 09:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707385996; cv=none; b=arf0S3+gLtZjMXxGmu64qtq589yUMt5I9bvQnFaQPF+5w8Vrq+GCK2GZN+D8uTf9HFXBLvSG1WY3Z1VD6nrjzxfJnixHPZxOliDnH9m654myEqKUXqf1xkvx98YLPq9XJ9wvPmpkIQ5RR4e+oP/YF/VzwszX5lFHkCyKGMNh4OM=
+	t=1707385953; cv=none; b=sK9KpXyS78GrS/X4VT9QXsJoObVwHNfChqMf+NzdyS2hGzgYwmIAb3IshVfMm3Y8tKBHTu+zcqHW7a8MrpqT2U7c1zPheLUOxBi5yiUaLGeycP0o093zzvSF3nJ8cRLD++6ZJi8yu+wBBhmMzrXTyd/ksUVl55Qn6oXPU3lcynY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707385996; c=relaxed/simple;
-	bh=18SG6NUCNLXQLNqsHtsTIjssjOlE4YxcB1dl/F3+n7I=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=D2Pu6V+zXinkwcGwHdnqituzpezleYi2HKB24/xfTbzCBHPyqj0F62ZHRc+QlzURi7wmqxHHtYtlsJNnFjQeRA8JYKl8ri6pYYmD+1/+6xXpS6YQCfTOIdaiOTUcYbIpDZ8jeQwReX6TliAeXWOcK48aUW+mgu5y6lV3CQBqrl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=dZiajh4e; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d0d100336cso7459361fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 01:53:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1707385992; x=1707990792; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MMggITsyUYXMSRsj+SW8m9RDh5vOxy0FBhM5/mNSO2c=;
-        b=dZiajh4eiJ0thdU632hgS3e1Q+TVpkryOPbvlK1Mzx/RQItTRNWuHzXtH37fgMaBdq
-         zxhtu6AsHsxz1ZQLWLx9kRSAGKbw2WBpdE55Vy+ICnNxYtnrEWw5ChnZC4lrLZwb1IGN
-         X/n7sNQKJtoHsgbydiOqAOFpdXlz+M8DXBeikg8JSGPjL3BqEZJPdoLGHE+k1DMnxFHJ
-         XCkFz3JM0LmMHGQJtBDq2xvFpUwMzdhsmlkcAvr6K7zxe+nJXwuszbCzFD4OlVnyoTW5
-         raDxG6oNWjdN49yNnbUUzd8xGk1SYD4xvkDDiOB/9Sh/ysHPo4bpeekf/cUARY7rbbMW
-         xHqg==
+	s=arc-20240116; t=1707385953; c=relaxed/simple;
+	bh=2w4AWd2vd+J4/iZZi2T1fGQLpqiDUh6qJPxmeFNh5rw=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=WbD2FCwJVKeAAbAFyWI1UzIH2YHm66Z9QqLVfsQhT7+KfmxqQtGu0tpIdLZDSAloeiVPexgiPAjOK6fuckObcGdQJQBCzHjAQwInVZnmEBINQWXCVx0dzkSHkDKNrf6vu2LwztBs04tYiL74u2Ofh4d6HUggu+cbcGXfauh31eI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-363b161279aso12427995ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 01:52:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707385992; x=1707990792;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MMggITsyUYXMSRsj+SW8m9RDh5vOxy0FBhM5/mNSO2c=;
-        b=ncQwgUvQZ2dEwfqb66b4JWJbk2LI7gK4lT1pUY3jGer0SyP8DxHp36vco7sm57NIAC
-         F3me7v3WNCm7FqHiUgYUTbZNnoM3PH4kOOtcZuWLzeuNm37SlFkhHBFmsfD+dIH9WGua
-         NW/eKucCtd96q1y+opphFd5z4i9bumQKu1TzLGa2ifXCIYZSZXJosj0eAo2u6TE2nyor
-         ny5JY0QCIykGJvYdkz/+FVXQiOOjSoLfB+GZ4XKEmEPaiDyqRniCzoj0r1BHy07+9ax2
-         Kix1ZVPxSzv42hvodKs/BewuOiaP9kJmt7JY3M+EZcbMNMNlptEv9D0mAFbjQLpYYO2H
-         XdlA==
-X-Forwarded-Encrypted: i=1; AJvYcCVkidZr3F4BWblkSDr5inQpVAUVIir9gzafju6SYvYUWu8TBT7j4LTlS2Y2O1piO71PRRUKg5qgh3gR4Xh28KYpHvDQ7+UeFRzDMzXi
-X-Gm-Message-State: AOJu0YzVkdP1Iiq2oep3jnEoj+X7mWDVwcujpWAxSWjjuVNhzOkA2tND
-	pmC/kSes933i4dhXbS/uOOFkYTSwPj4xuVcWtfQu55gS44kCDFP8FjEdLwzrfsk=
-X-Google-Smtp-Source: AGHT+IHTG9d+/k61DJi/OYmrjvhF8N+qrNdTM1lT+zbdR8F2YzeqnMoHHX0Vopf1tTkA2OP4lzO/nQ==
-X-Received: by 2002:a2e:be0f:0:b0:2d0:ca58:c434 with SMTP id z15-20020a2ebe0f000000b002d0ca58c434mr3365433ljq.21.1707385991846;
-        Thu, 08 Feb 2024 01:53:11 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVq4867nsyS3k44XuZpjhQuprdpRzUlIs5dAgaRGDus76kjjj+vmZhE1+mUV8ttj4EivYRE9/IHF5TW/u0vU8blw58Iv4bwiQ9DNkkZ7BG+al1DgK7cZ6esd66HSuXwDNg5MtTJigxvgBqP8BwRbo/f/p7FpSskyVueyck7uBZrD4Ivhaiquty0L9CRwoqqUhBF81oEG8EPpSSyYqKGEaf7TsEa2mS38UuL4TX1HM+HOPWUwG2CHXbFcIAzT0d5XkqIU/82QEH/8BMTjo8pYKF59r01FlUGL66vC18MnR/PAFv6SOOAA8M27EN85L5i1lH7nVTwSo/74mZ1uG01DWJ9iiLCGzf4P2t8Fdgl/Yj+L21TIJuIt93zBmnF8E4UZe9R5NW3+fz4sa2kDP71I1uXFuQjhk28frJgqDGC22K4otGaeGqtoU8lp9ebCG2V4UXcMehqvM6KGCq5YU0+NB9Z1ibwO9m76PfGAO6uTJlgQj9dIUPgT2804uSFjrPMInB14nZ0fPeEDhuLZ7g4CTnf9nMFDwR6DcPYR7BMr7PlwYfNm6MHYeT5dT1h8kAGgE3rfccbquMVi/18FSj//v/SWcjTNsq/Sw+0D892+gX/LmOmuW2pRGuD5oQxsLcw5u2FyxwxgzN3+L5zP3EJOAQ=
-Received: from otso.luca.vpn.lucaweiss.eu (ip-185-104-137-32.ptr.icomera.net. [185.104.137.32])
-        by smtp.gmail.com with ESMTPSA id d20-20020a170903209400b001d8f111804asm2956685plc.113.2024.02.08.01.52.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 01:53:11 -0800 (PST)
-From: Luca Weiss <luca.weiss@fairphone.com>
-Subject: [PATCH v2 0/2] Fairphone 5 PMIC-GLINK support (USB-C, charger,
- fuel gauge)
-Date: Thu, 08 Feb 2024 10:52:31 +0100
-Message-Id: <20240208-fp5-pmic-glink-v2-0-4837d4abd5a4@fairphone.com>
+        d=1e100.net; s=20230601; t=1707385951; x=1707990751;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=agQyetsj5naa/u7LOwWHOmeV9dXsFEVSAys3SKLyAf0=;
+        b=MLiR4ACH9Twi9Fq0uWU54ZOzzkAawbO5xlsbi9MjjUGUIchaVTByitNCvT5Cdo/Eq4
+         JBgns5phig0f+45x0GNxjfKMYx7A8mdRAFh4EJ+ScwAua4W2zryLNc6qZG18Qc5Z74uO
+         /huRONCUIIP7MWoL4fjXxhu+tcBJ5mDCItnEqxOyc+SbtbhsWISrMlxyEf8KCRredv0Q
+         dvX6WKNMwO4r7lc66ebO1aWDDMCkK+Ikd9G8z6DvbbMjRkwkMjMCVsbhHTncksiTL9vB
+         Wt4hJpAXcQ/AodGjNh0IkHrPUTChq/Iz0rwaWdwgAY+TbD4shdUjM8LE2tvLNrZW0mdh
+         4a3A==
+X-Gm-Message-State: AOJu0YwxP8vmdezFwuw1OUGjhftuNLQJC89U9iOyZsNNc++qhLzulA/c
+	nh0P8kiZ+FSWEw/P9IdDPx70f6dc6jGwjUBbrr+/iqYoEjwajh4Ov5Sbbw+nfhIT8alHTse9Ixj
+	3Deb1rAIXq58YJIB/L0MeYSnQr7tUUVshjpnE+ccvufJ2jjAj0sfoV+Y=
+X-Google-Smtp-Source: AGHT+IGWYxfQPLsa25LGD4+WQy0pE/USEZf+EiCyvM8r6ZTVij5TJyJaUxV0twsV1+rYk36RCsZp/nMhCkzKf5Y4ssU8fLTgCeMW
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAGCkxGUC/3XMQQrCMBCF4auUWTuSSbWKK+8hXcR00g7aJCRSl
- JK7G7t3+T943wqZk3CGS7NC4kWyBF9D7xqwk/Ejowy1QSvdktYKXTxinMXi+BT/wLui4eAM2RM
- bqKeY2Ml7A2997UnyK6TP5i/0W/9SC6FCbcidubVdR/bqjKQ4Bc97G2boSylf5oBZKrAAAAA=
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- cros-qcom-dts-watchers@chromium.org, Rob Herring <robh@kernel.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
- Luca Weiss <luca.weiss@fairphone.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-X-Mailer: b4 0.12.4
+X-Received: by 2002:a05:6e02:219a:b0:361:9a73:5a8f with SMTP id
+ j26-20020a056e02219a00b003619a735a8fmr561612ila.5.1707385951240; Thu, 08 Feb
+ 2024 01:52:31 -0800 (PST)
+Date: Thu, 08 Feb 2024 01:52:31 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001e48350610dbc5c5@google.com>
+Subject: [syzbot] [gfs2?] general protection fault in gfs2_rindex_update
+From: syzbot <syzbot+74edb1a3ea8f1c65a086@syzkaller.appspotmail.com>
+To: agruenba@redhat.com, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-This series adds all the necessary bits to enable USB-C role switching,
-charger and fuel gauge (all via pmic-glink) on Fairphone 5.
+Hello,
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+syzbot found the following issue on:
+
+HEAD commit:    547ab8fc4cb0 Merge tag 'loongarch-fixes-6.8-2' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1461a16c180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=89a5d896b14c4565
+dashboard link: https://syzkaller.appspot.com/bug?extid=74edb1a3ea8f1c65a086
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/a8d318be4c39/disk-547ab8fc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8178462cbfb5/vmlinux-547ab8fc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/62939e7c5fbb/bzImage-547ab8fc.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+74edb1a3ea8f1c65a086@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000097: 0000 [#1] PREEMPT SMP KASAN PTI
+KASAN: null-ptr-deref in range [0x00000000000004b8-0x00000000000004bf]
+CPU: 1 PID: 10382 Comm: syz-executor.0 Not tainted 6.8.0-rc3-syzkaller-00041-g547ab8fc4cb0 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+RIP: 0010:gfs2_rindex_update+0xbc/0x3d0 fs/gfs2/rgrp.c:1037
+Code: e8 f9 65 1d fe 4c 8d 74 24 60 48 8b 03 48 89 44 24 38 48 8d 98 b8 04 00 00 48 89 d8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c 08 00 74 08 48 89 df e8 c6 65 1d fe 48 8b 03 48 89 44 24 20
+RSP: 0018:ffffc900030af1a0 EFLAGS: 00010202
+RAX: 0000000000000097 RBX: 00000000000004b8 RCX: dffffc0000000000
+RDX: ffffc90004a81000 RSI: 0000000000029498 RDI: 0000000000029499
+RBP: ffffc900030af2b0 R08: ffffffff83cb50d7 R09: 1ffff110078e74f8
+R10: dffffc0000000000 R11: ffffed10078e74f9 R12: 1ffff92000615e3c
+R13: ffff8880110c8000 R14: ffffc900030af200 R15: 0000000000000001
+FS:  00007f9d475ff6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f81d7dff000 CR3: 0000000045cb6000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ punch_hole+0xe7b/0x3a30 fs/gfs2/bmap.c:1809
+ gfs2_truncatei_resume+0x3c/0x70 fs/gfs2/bmap.c:2159
+ gfs2_glock_holder_ready fs/gfs2/glock.c:1336 [inline]
+ gfs2_glock_wait+0x1df/0x2b0 fs/gfs2/glock.c:1356
+ gfs2_glock_nq_init fs/gfs2/glock.h:238 [inline]
+ init_statfs fs/gfs2/ops_fstype.c:694 [inline]
+ init_journal+0x1680/0x23f0 fs/gfs2/ops_fstype.c:816
+ init_inodes+0xdc/0x320 fs/gfs2/ops_fstype.c:884
+ gfs2_fill_super+0x1edb/0x26c0 fs/gfs2/ops_fstype.c:1263
+ get_tree_bdev+0x3f7/0x570 fs/super.c:1619
+ gfs2_get_tree+0x54/0x220 fs/gfs2/ops_fstype.c:1341
+ vfs_get_tree+0x90/0x2a0 fs/super.c:1784
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3352
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
+ do_syscall_64+0xf9/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7f9d4827f4aa
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9d475feef8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f9d475fef80 RCX: 00007f9d4827f4aa
+RDX: 0000000020000040 RSI: 0000000020000100 RDI: 00007f9d475fef40
+RBP: 0000000020000040 R08: 00007f9d475fef80 R09: 0000000000008c1b
+R10: 0000000000008c1b R11: 0000000000000202 R12: 0000000020000100
+R13: 00007f9d475fef40 R14: 0000000000012789 R15: 0000000020000140
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:gfs2_rindex_update+0xbc/0x3d0 fs/gfs2/rgrp.c:1037
+Code: e8 f9 65 1d fe 4c 8d 74 24 60 48 8b 03 48 89 44 24 38 48 8d 98 b8 04 00 00 48 89 d8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c 08 00 74 08 48 89 df e8 c6 65 1d fe 48 8b 03 48 89 44 24 20
+RSP: 0018:ffffc900030af1a0 EFLAGS: 00010202
+RAX: 0000000000000097 RBX: 00000000000004b8 RCX: dffffc0000000000
+RDX: ffffc90004a81000 RSI: 0000000000029498 RDI: 0000000000029499
+RBP: ffffc900030af2b0 R08: ffffffff83cb50d7 R09: 1ffff110078e74f8
+R10: dffffc0000000000 R11: ffffed10078e74f9 R12: 1ffff92000615e3c
+R13: ffff8880110c8000 R14: ffffc900030af200 R15: 0000000000000001
+FS:  00007f9d475ff6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb3c42d56c6 CR3: 0000000045cb6000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	e8 f9 65 1d fe       	call   0xfe1d65fe
+   5:	4c 8d 74 24 60       	lea    0x60(%rsp),%r14
+   a:	48 8b 03             	mov    (%rbx),%rax
+   d:	48 89 44 24 38       	mov    %rax,0x38(%rsp)
+  12:	48 8d 98 b8 04 00 00 	lea    0x4b8(%rax),%rbx
+  19:	48 89 d8             	mov    %rbx,%rax
+  1c:	48 c1 e8 03          	shr    $0x3,%rax
+  20:	48 b9 00 00 00 00 00 	movabs $0xdffffc0000000000,%rcx
+  27:	fc ff df
+* 2a:	80 3c 08 00          	cmpb   $0x0,(%rax,%rcx,1) <-- trapping instruction
+  2e:	74 08                	je     0x38
+  30:	48 89 df             	mov    %rbx,%rdi
+  33:	e8 c6 65 1d fe       	call   0xfe1d65fe
+  38:	48 8b 03             	mov    (%rbx),%rax
+  3b:	48 89 44 24 20       	mov    %rax,0x20(%rsp)
+
+
 ---
-Changes in v2:
-- Rebase on -next, drop applied patch
-- Pick up tags
-- Link to v1: https://lore.kernel.org/r/20231220-fp5-pmic-glink-v1-0-2a1f8e3c661c@fairphone.com
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
----
-Luca Weiss (2):
-      dt-bindings: soc: qcom: qcom,pmic-glink: document QCM6490 compatible
-      usb: typec: ucsi: Add qcm6490-pmic-glink as needing PDOS quirk
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
- Documentation/devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml | 1 +
- drivers/usb/typec/ucsi/ucsi_glink.c                             | 1 +
- 2 files changed, 2 insertions(+)
----
-base-commit: d36e89e4c25c15302eb1820d45680f765847dad9
-change-id: 20231220-fp5-pmic-glink-b01d4fa1c7ea
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Best regards,
--- 
-Luca Weiss <luca.weiss@fairphone.com>
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
