@@ -1,97 +1,74 @@
-Return-Path: <linux-kernel+bounces-58471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C88B84E6ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:41:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B30484E6F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:41:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DA612845D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:41:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 548411C260DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:41:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59E382874;
-	Thu,  8 Feb 2024 17:41:03 +0000 (UTC)
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40FEC8565B;
+	Thu,  8 Feb 2024 17:41:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HNILuT/b"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26BFA125DA;
-	Thu,  8 Feb 2024 17:41:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E31481AC7;
+	Thu,  8 Feb 2024 17:41:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707414063; cv=none; b=WyeNzmGQ9nq+qU4ndAW/ltsH1+fnGKdwmuGJpZAXGT+euHRS0h6cpn5cNyPwpZhOxUZZIUwd+futzoU2X1gILCGs28yswVUS2coCQL1QfY6uy48jJQzKn4D88KUyCSHiZEVJjEdMHxGzgINtrADoQixDxTfM+Cd6ESFDTDdlGoY=
+	t=1707414080; cv=none; b=ZDwZmESg5F4k1dm76urOSB1GYPoisEafnSpV85EOGes4D4EMCGN7GG9yNw0XOK3dHCKK2jrEMoLOXzbHnZDQX1rROPVmOsyPFnGNP2GDC3S2iMMAfnN4E4rrcI7oSaOVVW0H4oBE9X25VE4HOceuhcEAtalmSPJNjfGInOkWwL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707414063; c=relaxed/simple;
-	bh=JDlxEd4DUAltJgPtyMqh2rUgGaRPVzcz0OjIShKXtIA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qr7s4Viewurt7bQgXiLhTKfSFhy9c8F5yoUjEikwct8IaH3OM/qfDnHYhq4BUhpR/Lcpdw/OW2L8DesuOHXgc2rJDRti8NNXqRFG2n7EWok+ZBScgsOE3H2l6IEdTHe0g4DD+wJ/0AV7/RT5xNtDsSF1r/MafXRG4e3N/Ai/aMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d73066880eso153715ad.3;
-        Thu, 08 Feb 2024 09:41:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707414061; x=1708018861;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JDlxEd4DUAltJgPtyMqh2rUgGaRPVzcz0OjIShKXtIA=;
-        b=Jq2rvyGUVo3NBnO27UpwBVPLO4sjCa/URCATcRE0zyvCopx6kIOdRpIxPzlUm67vqp
-         +N8sMd8nRVrTiuoToBb8TvQvkommp7bSTovBRIjZhdwWljgxCAAvAi+usS2MxrF+dC1z
-         yNY4dDCVrTEJtPdur8eeW5LLNl785V2PF4PvC8fF0HGePokMwn30CJiDpIxwDHkELqx4
-         EbzxGuKI/diNn3nom6GRNGeFyszxIGULBm8n6EXiOYnShYqGz7d8QEqKtMgRqJQWR2xN
-         egc6jZULCyHqOU3mppGKD/diUAdb1D85IAlKuOBJpCz9OILSpUcD9vzACdhSictIoNVV
-         ibrQ==
-X-Gm-Message-State: AOJu0YyZZYGzd2UIh4EJZS8mS5qyFh3JOoVKGfDFV3P03CLAwZxZley7
-	z80g02efr4G8j82mRe4RmvpCn6pij0atrpjnk57kNlmpTSRrxEBB
-X-Google-Smtp-Source: AGHT+IFqbBBf6L/TNgl9ud++eiJTxjSFTetMmFD3k56FU/BMtYyyW70vU5kc2Vv9Z8vtEXTsgQRdTw==
-X-Received: by 2002:a17:903:1c3:b0:1d9:6895:81c3 with SMTP id e3-20020a17090301c300b001d9689581c3mr10652820plh.22.1707414060984;
-        Thu, 08 Feb 2024 09:41:00 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWwjeR7M737s3YhNB8/OXBJ/YXwSu9RCoYeW2dKcndfY2WOZwrqMkODdN7ilPpGQw5lK3nvu+szGFUZIxSQ2ybJTxDZ8uZz3qzlgWHOIBhl8g5GS/coMsWQb13qveBsmfhspOO3IUE7hQwvdwRRrU/JhEUVKbedMJu8qZHEdtrYv8iJ2YFZFHTSBgiFSjNLVmSv4xYyweIy7p+5DybJBdtO/fqCwR4mH4fde0BktHj5NUiBf6GdRz6H/NbgSoX6Qu/x4rYUu86wC6Vw4an0aGhF2DqQBff9j202E9WX/Wz4HgbaDq8ZIIE6W5uRqRCgoMR/QI71vSkiVJ3aC17+ozL0b3cThc36+NIZfO6euMCxM+uHC9SCc1ovwKGvanjnO82FWHJW2xk3gEW0Dan66v9wTQt9t8QYJJOmjWS7uT7cXlVj5VuDU6Qcw7FZIemJQ8fiLoke7LGh24wWCOos2aZ51NKjhNipZ/+l6I9uQbTfLC29kIrV/XrwkfvgQxELkVQTY+LcXI9q0r+gSkJoXgfMwwX5q491x1zxEOBDQyEZ4ToWgMPzZl4bmoGj8MzcRemj8wzOheYD9EBjfUrDS08WDO+qudgq9BL/+CPurFWY1qMMpVFI1Brr7qRMTdno
-Received: from ?IPV6:2620:0:1000:8411:6ab9:a725:60e:97d2? ([2620:0:1000:8411:6ab9:a725:60e:97d2])
-        by smtp.gmail.com with ESMTPSA id g5-20020a170902740500b001d7439bf914sm5255pll.235.2024.02.08.09.40.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 09:41:00 -0800 (PST)
-Message-ID: <c9129b08-50fb-4371-aa05-6f6c7cd7acfa@acm.org>
-Date: Thu, 8 Feb 2024 09:40:55 -0800
+	s=arc-20240116; t=1707414080; c=relaxed/simple;
+	bh=zE4ayhFFYfUDtHfPqiCEReBzVlFLFlP5UT0Q/CEWF0Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jQKVY3ScbPMDWEBFJtDRSMS71kq3ngOiiTdahSpNWPoRZEJVanrJwNV6sXE8oPC7NKUXROo9rI7t3KENrNHqzWCXZGJ1TP9z3zZed0xL6nCtkF6AGIVbfK57DX4iNQkVqDHkRdngYBFIjA2Cqn0fHLUwmxnQ6uhPSF+caNiwMz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HNILuT/b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CD68C433C7;
+	Thu,  8 Feb 2024 17:41:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707414080;
+	bh=zE4ayhFFYfUDtHfPqiCEReBzVlFLFlP5UT0Q/CEWF0Y=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=HNILuT/bOnIxnBOONTmETYLb7XVvN00ysIs/QVFbjYMyq8alZ1Owti/YEDJqdHb38
+	 te+OUrj20aU2R9NTMM5tzDBRUuu1oKxVWBaKve5Pv/lDZIzdrTG7/rluP7AulciOAJ
+	 7KoXTdIsuLrhYeDz7HOge6fhmP9u8SEFRH9dZd0TomdZ+iHwz76YnP12th/DyNcG9o
+	 qIqxp3NuzwNpFHSidQQYxwX/hmWMAmhn+57IGjYDlvSDFicIJ1AyG1FgjIREZ9qotd
+	 arx04erUjonACvwh7/jFlDRc/ad/yg0PG9sveOJx/LBUe82csxmL6zdbcyFQDnqimA
+	 TpzEe121juV0g==
+Date: Thu, 8 Feb 2024 09:41:18 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: tariqt@nvidia.com, rrameshbabu@nvidia.com
+Cc: Joe Damato <jdamato@fastly.com>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
+ <leon@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Richard Cochran
+ <richardcochran@gmail.com>, Gal Pressman <gal@nvidia.com>, Vadim Fedorenko
+ <vadim.fedorenko@linux.dev>, linux-rdma@vger.kernel.org (open list:MELLANOX
+ MLX5 core VPI driver)
+Subject: Re: [PATCH net-next v3] net/mlx5e: link NAPI instances to queues
+ and IRQs
+Message-ID: <20240208094118.0b74bbcf@kernel.org>
+In-Reply-To: <20240208030702.27296-1-jdamato@fastly.com>
+References: <20240208030702.27296-1-jdamato@fastly.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/10] scsi: Replace {v}snprintf() variants with safer
- alternatives
-Content-Language: en-US
-To: Lee Jones <lee@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
- Adam Radford <aradford@gmail.com>,
- Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
- Andre Hedrick <andre@suse.com>, de Melo <acme@conectiva.com.br>,
- drew@colorado.edu, Finn Thain <fthain@linux-m68k.org>,
- Hannes Reinecke <hare@suse.com>, "James E.J. Bottomley"
- <jejb@linux.ibm.com>, Joel Jacobson <linux@3ware.com>,
- John Garry <john.g.garry@oracle.com>, linux-scsi@vger.kernel.org,
- Luben Tuikov <luben_tuikov@adaptec.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Michael Schmitz <schmitzmic@gmail.com>,
- "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>,
- Richard Hirst <rhirst@linuxcare.com>, support@areca.com.tw,
- Tnx to <Thomas_Roesch@m2.maus.de>
-References: <20240208084512.3803250-1-lee@kernel.org>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240208084512.3803250-1-lee@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 2/8/24 00:44, Lee Jones wrote:
-> Cc: Andre Hedrick <andre@suse.com>
+On Thu,  8 Feb 2024 03:07:00 +0000 Joe Damato wrote:
+> Make mlx5 compatible with the newly added netlink queue GET APIs.
+> 
+> Signed-off-by: Joe Damato <jdamato@fastly.com>
 
-Please take a look at https://lwn.net/Articles/508222/.
-
-Thanks,
-
-Bart.
-
+nVidia folks, I'm also waiting to use this, so I'd like to apply
+this directly. Please review.
 
