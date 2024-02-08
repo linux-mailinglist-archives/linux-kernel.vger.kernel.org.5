@@ -1,93 +1,118 @@
-Return-Path: <linux-kernel+bounces-57503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D2FE84D9E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:18:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02FC184D9EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:19:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D032B1F23BF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:18:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B336428295C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EBEC67C7E;
-	Thu,  8 Feb 2024 06:18:50 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF7D67C70
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 06:18:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C97E67E61;
+	Thu,  8 Feb 2024 06:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jIr3HcQ5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA74167E7B;
+	Thu,  8 Feb 2024 06:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707373129; cv=none; b=DYa6ivFnb19gySzfmFwyyiooe1p28kWyKoN84qgf46wihTgrvp0BpCtYD8JKq9uUpJN6NfXOAfbqdVVvB9gnThJitt+Dz2myZAeePeQBjHx44rSYpIG1KI3fidIWP8pVqFLEOjOKNDcfiTlreevirPdqM3+lbLdlhWoyyCzM3Go=
+	t=1707373160; cv=none; b=IFHmM4X+kLSW8XfOcS/ZsF3m1sMABzAbkhDef4i2yQAgHTMY96TRXeZ0sEpSyo5U3/5WRtFLYtPnDpLhTUBme+uIZ15GToOzqrMfylqVPhoDUI8bUVQXEcJomB7iRS31jslX45ljWYd/uPnMv9plq2OG1XJYfoXLCcYwAHaDrE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707373129; c=relaxed/simple;
-	bh=jrWzJay/sTsuzrPvK8L2TqysXsAVN52IkjoORxSCyoc=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=C+u7d8nvzz+xzGqzEmccynIHnwzH4Gev4JRDNGQJzfZZdIoJnu7kTFX+6dR8HWLfMmFtnIsDL32Mw8endgCsQd95GhMU6mDo7xQpdpxYOxwnppGLCpW+iww//oBXudfdWGvsyMtzMw/NakZFPVCSeCVLdP3aw/VnH34cMRpHGHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-2b-65c4723b6356
-From: Byungchul Park <byungchul@sk.com>
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	kernel_team@skhynix.com
-Subject: [PATCH] mm, vmscan: Don't turn on cache_trim_mode at the highest scan priority
-Date: Thu,  8 Feb 2024 15:18:25 +0900
-Message-Id: <20240208061825.36640-1-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFJMWRmVeSWpSXmKPExsXC9ZZnka5N0ZFUg1UfJCzmrF/DZnF51xw2
-	i3tr/rM6MHts+jSJ3ePEjN8sHp83yQUwR3HZpKTmZJalFunbJXBlHJu8jr3gCkfFod4zTA2M
-	vexdjJwcEgImEjOm9MHZ6+eeZwWx2QTUJW7c+MkMYosIyEpM/XueBcRmFgiUWH5oDVhcWCBc
-	Ysm9TkYQm0VAVeLB0+Ngc3gFTCWu/v7MCjFTXmL1hgNA9VxA9jpWiQffT7FAJCQlDq64wTKB
-	kXsBI8MqRqHMvLLcxMwcE72MyrzMCr3k/NxNjEAfL6v9E72D8dOF4EOMAhyMSjy8J8oPpwqx
-	JpYVV+YeYpTgYFYS4TXbcSBViDclsbIqtSg/vqg0J7X4EKM0B4uSOK/Rt/IUIYH0xJLU7NTU
-	gtQimCwTB6dUA6ON5jHj7zvaa002/furxs4g9rbkQf+cmC+JpfENlXLTXD/82N36YGJJZ/Oa
-	eSsfVh7vivDMCJjEIMn1rWFlX8yPpikngtJt+TTOKMhanz7OUrlH8sUvHe0XaS+5u5dfTD6f
-	p5Gmr58Qk+qhZTDT1iBFSPra5kU7765o/al/kX9O9BeZbg1eEyWW4oxEQy3mouJEAIWV+Ert
-	AQAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrIJMWRmVeSWpSXmKPExsXC5WfdrGtddCTVYM05OYs569ewWRyee5LV
-	4vKuOWwW99b8Z3Vg8dj0aRK7x4kZv1k8Fr/4wOTxeZNcAEsUl01Kak5mWWqRvl0CV8axyevY
-	C65wVBzqPcPUwNjL3sXIySEhYCKxfu55VhCbTUBd4saNn8wgtoiArMTUv+dZQGxmgUCJ5YfW
-	gMWFBcIlltzrZASxWQRUJR48PQ42h1fAVOLq78+sEDPlJVZvOMA8gZFjASPDKkaRzLyy3MTM
-	HFO94uyMyrzMCr3k/NxNjECPLav9M3EH45fL7ocYBTgYlXh4T5QfThViTSwrrsw9xCjBwawk
-	wmu240CqEG9KYmVValF+fFFpTmrxIUZpDhYlcV6v8NQEIYH0xJLU7NTUgtQimCwTB6dUA6PF
-	05Ip4pI/TQUn5RtKPZt3KYdnUirbYhurZNYkxw+3XvbV5ske+K15iedigu/M6qKUtC+xO4x2
-	PpNeVO4lqDyj9/yGZ3qnu8Xfnd1zLvDhqZOVi1ZImWawKV9WEcuUKIgylsm4lb+CLzwk7UVA
-	bekXiZsb5xyRjHO9bbH0aPLZZ0/POMQ/jFViKc5INNRiLipOBAC6SBcS1AEAAA==
-X-CFilter-Loop: Reflected
+	s=arc-20240116; t=1707373160; c=relaxed/simple;
+	bh=sykn19xSWWObW9qLEcBLaerZOcbUqhpMGC17aR+qXjA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e02FKEkE/TU0Q/Yow4pde60lkq6r2YdBWvGx5Dc1V4+mwdrML08RemCkcAukewPWgWR+RVQTAU2waXLMAd2ELGv4qJ64ot5J9zl4HRY8EpyB6+QKOWjaEJaG6VxqpmLYq+bHusaaOuvRH4pKAY9XQRQYSAt5U58TipPNCPbJr9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jIr3HcQ5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E073C433C7;
+	Thu,  8 Feb 2024 06:19:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707373160;
+	bh=sykn19xSWWObW9qLEcBLaerZOcbUqhpMGC17aR+qXjA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jIr3HcQ5b0bG8W1uCJ8Xs3AwCdkv1B8MN9avDtnOskKLP0MGsSA5FdVe/qlbwHlcW
+	 ij75Se4Sr0M/mlXPbTkg0ExM3s0WbaPDmBB2z0afJU/DgLRzJylJTpMBlkaFq6genb
+	 UGrNOEd0VDk8McWIYbPInEhmtVwApod8E7+c/sGa2tGsu8eSLCSRKoYuzxYXt8WRCQ
+	 9cQouplzvU1R7Agn51n6p8mDjqipAaZ8nccLsae0oyB1d4PDPTePnX+SGrmuqMGd6I
+	 jV18g7gasEz+BfWfvdqPK2SfzN57x1dswOCBjsVrob3m65Q37nQIWq9pBNrosyAwa/
+	 8XrfQqz5PFmrw==
+Date: Thu, 8 Feb 2024 08:18:55 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org
+Subject: Re: [PATCH v3 07/15] sparc/pgtable: define PFN_PTE_SHIFT
+Message-ID: <ZcRyT9qil3f-Jot5@kernel.org>
+References: <20240129124649.189745-1-david@redhat.com>
+ <20240129124649.189745-8-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129124649.189745-8-david@redhat.com>
 
-With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
-pages. However, it should be more careful to turn on the mode because
-it's going to prevent anon pages from reclaimed even if there are huge
-ammount of anon pages that are very cold so should be reclaimed. Even
-worse, that can lead kswapd_failures to be MAX_RECLAIM_RETRIES and stop
-until direct reclaim eventually works to resume kswapd.
+On Mon, Jan 29, 2024 at 01:46:41PM +0100, David Hildenbrand wrote:
+> We want to make use of pte_next_pfn() outside of set_ptes(). Let's
+> simply define PFN_PTE_SHIFT, required by pte_next_pfn().
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-Signed-off-by: Byungchul Park <byungchul@sk.com>
----
- mm/vmscan.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index bba207f41b14..25b55fdc0d41 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2268,7 +2268,8 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
- 	 * anonymous pages.
- 	 */
- 	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
--	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
-+	if (sc->priority != 1 && file >> sc->priority &&
-+	    !(sc->may_deactivate & DEACTIVATE_FILE))
- 		sc->cache_trim_mode = 1;
- 	else
- 		sc->cache_trim_mode = 0;
+> ---
+>  arch/sparc/include/asm/pgtable_64.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
+> index a8c871b7d786..652af9d63fa2 100644
+> --- a/arch/sparc/include/asm/pgtable_64.h
+> +++ b/arch/sparc/include/asm/pgtable_64.h
+> @@ -929,6 +929,8 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+>  	maybe_tlb_batch_add(mm, addr, ptep, orig, fullmm, PAGE_SHIFT);
+>  }
+>  
+> +#define PFN_PTE_SHIFT		PAGE_SHIFT
+> +
+>  static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+>  		pte_t *ptep, pte_t pte, unsigned int nr)
+>  {
+> -- 
+> 2.43.0
+> 
+> 
+
 -- 
-2.17.1
-
+Sincerely yours,
+Mike.
 
