@@ -1,177 +1,141 @@
-Return-Path: <linux-kernel+bounces-58518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C22884E777
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:14:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CABC784E787
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:16:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E4061C21676
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:14:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C71CCB25182
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:14:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000C48562A;
-	Thu,  8 Feb 2024 18:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 126BD84FA3;
+	Thu,  8 Feb 2024 18:14:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b="oWNaOguX"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EOloWcLe"
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC8983CD5;
-	Thu,  8 Feb 2024 18:13:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D215C81AAB
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 18:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707416039; cv=none; b=CryG6i/1DLp67AidZSjE+BnngQeby0c7J7viqXgFTW9zhHfuhKeDgTe6FIXsaexT+L+lxgdUIllqgVbbSTlNwx3TG9ami8wfrf689kcgD0QDFJ6NpIX8o2I6slEw7EBxASXA2QpVU3l2d6mvc8t3b+Cs9zyijKi3QHoo1SBxATA=
+	t=1707416075; cv=none; b=BH8/CWShmqaLa8yn14w12oUnI2QhaGSbFs+NU5qSzT+pmb6Ivb64k5m7RLh3rr7wcWZPqgE/ETXkKSKWYYPa6pruQqAiD8j4RJtSk4Qnu2FhD0V+lMgcQGSzRw4K5vl2kMg9qIMfqWi2hLgos+Q/EdqXjUyxIEoz+Ru6/vyFtag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707416039; c=relaxed/simple;
-	bh=ysgMn0ZRWUYT/Hge0FlA9uwr6TJWomFtNilVmXv2T/w=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cZo5n1dPBeqOCmJ1V3uvXbM5Ps660KtcfT9IyNdphaP3kKI5RPS8tdsWu1KAGAdhBcWBCrHSac+OpZcn6tns/9fyg4HBHWtH+Xb9ZcI69EubyG/5kC37QKYc9JtpDtVt6nafJl7X8kL98sKGSaWGehsrDSC6VoUqImgeZuOXMqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=erick.archer@gmx.com header.b=oWNaOguX; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1707416015; x=1708020815; i=erick.archer@gmx.com;
-	bh=ysgMn0ZRWUYT/Hge0FlA9uwr6TJWomFtNilVmXv2T/w=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=oWNaOguXBS+OEugqNs5oiSX4ERBLtaNWdXGAmpmbvCulbsGo2Vly8ueemgf/tuFm
-	 ArLtR0+CyRhfuf17Io0mpxoI6Gr4sKh3eIrbd1hMx7+dUfudz4FLpk5mmdh1AHc3/
-	 J7HKmXQvJ0WII92bM9Braws0HJBi8mDF0phAC0goZiSGRa/4rNI/ffTt04oxDQp/g
-	 YWu9HbWSoYuKuAd6TIGS45tGwv17HOFB4tN/Kdac7/jFQUPXf76Q+5I3oC2F0gB8D
-	 jwb8RjPYxqKVcxZ69zzUZbjQlMk9OZSUf+MA5tGvl5lougAf5RRBodg8USxxWLYn+
-	 nncympLAZejWAvsTUg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1M7b6l-1rdLQw2iQn-0081qr; Thu, 08 Feb 2024 19:13:35 +0100
-From: Erick Archer <erick.archer@gmx.com>
-To: Jani Nikula <jani.nikula@linux.intel.com>,
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Erick Archer <erick.archer@gmx.com>,
-	intel-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] drm/i915: Add flex arrays to struct i915_syncmap
-Date: Thu,  8 Feb 2024 19:13:18 +0100
-Message-Id: <20240208181318.4259-1-erick.archer@gmx.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1707416075; c=relaxed/simple;
+	bh=raktRbRT/30YboSLtBUFxeNmuuB0czI5c0h//xAnajU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pbHNfVL6GJKUQVn/jG3YrnFWD+HSuBaaCKED79xOGCpDjw0dvRUqcquRJPTVJYkD1Y+Xf4jIGxVgZLeShhgCU2hjDgrjmHQrhB5k3cQKMqwOrmuMDNn9JqWZV8b7egXLmLwvS5bfzELztWmI6XjcbrmlNKHYdwCV7LVpKyVLI9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=EOloWcLe; arc=none smtp.client-ip=209.85.210.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e0f43074edso38400a34.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 10:14:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707416073; x=1708020873; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XP2DrPejZ4y9GWeuess5B/7wBkV0f7f91rTBUzRBkq8=;
+        b=EOloWcLe2sSpma/uytSR9jojn0HW5vuD6NvtwWR08B+qRnuhO/4aeo+46IzydWlxvs
+         zL/5M6+7AkxfZyXpCspWs8xYyM4beU+aXcPISD/NJ2mq6JV63ZvrrALbKwahBhZy16p+
+         f5jmdV2aHMM47buGbIzRZd7upOKm8qbODDyO0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707416073; x=1708020873;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XP2DrPejZ4y9GWeuess5B/7wBkV0f7f91rTBUzRBkq8=;
+        b=NyiTYRVsNVwf1sPBkfixhWrVNgbnWnv0J2Sd1hnXa9iV3fTvmpu/8nuZuqCmtVTP35
+         5A5wt2UWb+QRMpnYR0HNa3fP+dA7VJnP5O+cMV2lHysGfBVjNCzDZTzmPwaSE/gWC5RY
+         odZVJQ4IhK0cyg2nK6bjPXTk3Mwpv0EyqpY2tLZF/JAw2X7XtUDIClYOdlyTSw2xuXYi
+         y3jqNYYJWgGMwno43r+QrNGqi5pFIX90gBONDku+8vsjiRn0iMVVTNXtEA8l+vYlzcEl
+         RzCdz5PiAabyfpvhJsn3WPbSW0gQjkFd459GYs4fB5OLIYu2m4gRUGiLV7p6dOnyUOT5
+         H1zA==
+X-Gm-Message-State: AOJu0Yz3F7v65my3pwMaJbEpNaxaN6PZbqL0nWTgmkJZfTzhXX9YHs2Y
+	6Mmb/t/EI+NrvAHrd7Ndqj85+Iql7FZ1AguQugMQQYiiyeYraIOY7DkcqvRyV7ltmz2SyNGyFGL
+	Unodjx0M9FVXJhcu8xpAGIQu8qkyxY6pIO82n
+X-Google-Smtp-Source: AGHT+IH+qDHRnUdLJutzlN4b7pMy+thkGoe7hkl8pgXZ0zfa7tKazwCMgVBQmcEjJITTaGbfbAm+SCOgcOTd2UDmzy0=
+X-Received: by 2002:a05:6830:1248:b0:6e1:d90:c429 with SMTP id
+ s8-20020a056830124800b006e10d90c429mr323749otp.7.1707416072966; Thu, 08 Feb
+ 2024 10:14:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240207145851.1603237-1-heikki.krogerus@linux.intel.com> <20240207145851.1603237-3-heikki.krogerus@linux.intel.com>
+In-Reply-To: <20240207145851.1603237-3-heikki.krogerus@linux.intel.com>
+From: Prashant Malani <pmalani@chromium.org>
+Date: Thu, 8 Feb 2024 10:14:21 -0800
+Message-ID: <CACeCKaffZBPA0Q_Bqs1hjKJB4HCj=VKrqO21dXj4AF5C5VwtVQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] platform/chrome: cros_ec_typec: Make sure the USB
+ role switch has PLD
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Benson Leung <bleung@chromium.org>, 
+	Tzung-Bi Shih <tzungbi@kernel.org>, Guenter Roeck <groeck@chromium.org>, 
+	Emilie Roberts <hadrosaur@google.com>, "Nyman, Mathias" <mathias.nyman@intel.com>, 
+	"Regupathy, Rajaram" <rajaram.regupathy@intel.com>, 
+	"Radjacoumar, Shyam Sundar" <ssradjacoumar@google.com>, Samuel Jacob <samjaco@google.com>, linux-usb@vger.kernel.org, 
+	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	Uday Bhat <uday.m.bhat@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pfHdlpNnJigTy8aCxrOPtJDMrJKf0ixBybkrQ5Vv5mXAzAOCOce
- kE/56VgSJ24fEWyckAkZBiWw31er/4+LJmrLfiKbxBq0xz8Hfrzpel9d0ON3gwuUpxPyHbE
- rdS3TQvdJZV2shpo3dlarUHJyNmnOMWYszl8ojPossp4pbrgBMG/j9ZA3TOBvkYMcVXSjOq
- g75Q7z0uPqbDs2hAyGnmQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ppjXGd503ms=;sjS14y9jdFkBR6vOViIScjo85yN
- KfTKdz2Fv9Nbq/W5Jqvf4xxfnQ1w2GCFByHAxdDUY2RP7202k2ZAWvlSM0urrJigc9CxXV/JG
- fwSSv9Au+xgAUGBhSRXmXrGNBw8Mpxjcx2Cxu7ylwNVU5BryCPLJrVN1Kqr/X8LQciF4Z98SU
- u88Pc8e3boUUlXoMAj7mDdqiUG7huRaG78K0QJj9+F/Dl+lblSDEpN22wsSlwHg1zrNgdWZy8
- /ArZ65G8ejLxWZylem8Z3we7BgCej3GduFX1U+GV41Mr00zND7V7nXX6Ka3P8uf+XK+kdTYAe
- 9zQ8hT9cZA+dkXBzt9xVlH+YIbD4AVS5yYU5IaIyW4l9aavPNbB5UbUYXi5qzST8PlXIO5z10
- TPrJi6LF3FumJcdFR7qWBiXWqGCZj+pvj2C9rbh07K5CVN/isEh4GKm+EkV78vuPIi8vWx0fm
- mTH59jiovQSkRvF4G0a/OVh8s0h5GrRQU0hAkfdEByT9MwE4ECYbRukwShgl0krjkngxES3X1
- ph/FZa0bB7UifadOOCFDrdIr/Om8JNwTNjAPFHHCaQK5x/w8HukWSkvmHmqzC9pQ13wCV459x
- lNuIoZ1rjwixYJlqDV6UUL5kIy6td/X87DNG9qUvbTyMEIU+2jzCrmHMcDfLDticHuHkHgd4j
- hAHgq9zmV+EtfmhjBu9DZAuUCYzc58MiDGmXFhndtGgPfIFi3/ESTTct2RyTjOmOAUE3Xn0WX
- HByY3J1zQo5Kiwqs36sScHeLnEIn8r1m9RBOFbbUyd6imT6SCGyF5Mj01+RhT6tW0DSWQXmoJ
- Yo+WE7vkwJAAKwVZx6Sh83FtKOewKbNxiCF4OQ2vcaKJ0=
 
-The "struct i915_syncmap" uses a dynamically sized set of trailing
-elements. It can use an "u32" array or a "struct i915_syncmap *"
-array.
+Hi Heikki,
 
-So, use the preferred way in the kernel declaring flexible arrays [1].
-Because there are two possibilities for the trailing arrays, it is
-necessary to declare a union and use the DECLARE_FLEX_ARRAY macro.
+On Wed, Feb 7, 2024 at 6:59=E2=80=AFAM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> The USB role switch does not always have the _PLD (Physical
+> Location of Device) in ACPI tables. If it's missing,
+> assigning the PLD hash of the port to the switch. That
+> should guarantee that the USB Type-C port mapping code is
+> always able to find the connection between the two (the port
+> and the switch).
+>
+> Tested-by: Uday Bhat <uday.m.bhat@intel.com>
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> ---
+>  drivers/platform/chrome/cros_ec_typec.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/c=
+hrome/cros_ec_typec.c
+> index 2b2f14a1b711..5c14e8db08b5 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -28,6 +28,7 @@ static int cros_typec_parse_port_props(struct typec_cap=
+ability *cap,
+>                                        struct fwnode_handle *fwnode,
+>                                        struct device *dev)
+>  {
+> +       struct fwnode_handle *sw_fwnode;
+>         const char *buf;
+>         int ret;
+>
+> @@ -66,6 +67,16 @@ static int cros_typec_parse_port_props(struct typec_ca=
+pability *cap,
+>                 cap->prefer_role =3D ret;
+>         }
+>
+> +       /* Assing the USB role switch the correct pld_crc if it's missing=
+ */
+> +       sw_fwnode =3D fwnode_find_reference(fwnode, "usb-role-switch", 0)=
+;
+> +       if (!IS_ERR_OR_NULL(sw_fwnode)) {
+> +               struct acpi_device *adev =3D to_acpi_device_node(sw_fwnod=
+e);
+> +
+> +               if (adev && !adev->pld_crc)
+> +                       adev->pld_crc =3D to_acpi_device_node(fwnode)->pl=
+d_crc;
+> +               fwnode_handle_put(sw_fwnode);
+Can this be in common Type-C code (maybe typec_register_port())?
+It doesn't strike me as ChromeOS specific, but perhaps I am missing somethi=
+ng.
 
-The comment can be removed as the union is now clear enough.
-
-Also, avoid the open-coded arithmetic in the memory allocator functions
-[2] using the "struct_size" macro.
-
-Moreover, refactor the "__sync_seqno" and "__sync_child" functions due
-to now it is possible to use the union members added to the structure.
-This way, it is also possible to avoid the open-coded arithmetic in
-pointers.
-
-Link: https://www.kernel.org/doc/html/next/process/deprecated.html#zero-le=
-ngth-and-one-element-arrays [1]
-Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-co=
-ded-arithmetic-in-allocator-arguments [2]
-Signed-off-by: Erick Archer <erick.archer@gmx.com>
-=2D--
- drivers/gpu/drm/i915/i915_syncmap.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/i915_syncmap.c b/drivers/gpu/drm/i915/i9=
-15_syncmap.c
-index 60404dbb2e9f..df6437c37373 100644
-=2D-- a/drivers/gpu/drm/i915/i915_syncmap.c
-+++ b/drivers/gpu/drm/i915/i915_syncmap.c
-@@ -75,13 +75,10 @@ struct i915_syncmap {
- 	unsigned int height;
- 	unsigned int bitmap;
- 	struct i915_syncmap *parent;
--	/*
--	 * Following this header is an array of either seqno or child pointers:
--	 * union {
--	 *	u32 seqno[KSYNCMAP];
--	 *	struct i915_syncmap *child[KSYNCMAP];
--	 * };
--	 */
-+	union {
-+		DECLARE_FLEX_ARRAY(u32, seqno);
-+		DECLARE_FLEX_ARRAY(struct i915_syncmap *, child);
-+	};
- };
-
- /**
-@@ -99,13 +96,13 @@ void i915_syncmap_init(struct i915_syncmap **root)
- static inline u32 *__sync_seqno(struct i915_syncmap *p)
- {
- 	GEM_BUG_ON(p->height);
--	return (u32 *)(p + 1);
-+	return p->seqno;
- }
-
- static inline struct i915_syncmap **__sync_child(struct i915_syncmap *p)
- {
- 	GEM_BUG_ON(!p->height);
--	return (struct i915_syncmap **)(p + 1);
-+	return p->child;
- }
-
- static inline unsigned int
-@@ -200,7 +197,7 @@ __sync_alloc_leaf(struct i915_syncmap *parent, u64 id)
- {
- 	struct i915_syncmap *p;
-
--	p =3D kmalloc(sizeof(*p) + KSYNCMAP * sizeof(u32), GFP_KERNEL);
-+	p =3D kmalloc(struct_size(p, seqno, KSYNCMAP), GFP_KERNEL);
- 	if (unlikely(!p))
- 		return NULL;
-
-@@ -282,7 +279,7 @@ static noinline int __sync_set(struct i915_syncmap **r=
-oot, u64 id, u32 seqno)
- 			unsigned int above;
-
- 			/* Insert a join above the current layer */
--			next =3D kzalloc(sizeof(*next) + KSYNCMAP * sizeof(next),
-+			next =3D kzalloc(struct_size(next, child, KSYNCMAP),
- 				       GFP_KERNEL);
- 			if (unlikely(!next))
- 				return -ENOMEM;
-=2D-
-2.25.1
-
+Thanks,
 
