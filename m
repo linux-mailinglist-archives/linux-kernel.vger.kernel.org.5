@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-58498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE5D884E72D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:57:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F22884E731
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:58:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A0FD289160
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:57:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B28201C20E9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:58:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76B782D9A;
-	Thu,  8 Feb 2024 17:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB3482D84;
+	Thu,  8 Feb 2024 17:58:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="mbWBWlHt"
-Received: from smtp.smtpout.orange.fr (smtp-17.smtpout.orange.fr [80.12.242.17])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="jx3B3nH8"
+Received: from smtp.smtpout.orange.fr (smtp-18.smtpout.orange.fr [80.12.242.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852F081ABC
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:57:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8FF882D8C
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:57:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707415056; cv=none; b=AsnLlULNR+i2z8c/Xm+jGidth/hJu6PZlQ++sd46qbpkekGD4yOP9rohYkj1p5tfwRDpzXthJFyAgsBtVD8TnwVk6GeXlbzIY9iuRrtpd+JBvDgtW6gMg+0KzadP6SZa09CQHo9/wgDQG3dMv30yUvBrHMFNpaiPH6CWWMvXufg=
+	t=1707415080; cv=none; b=JgOVCZ/cxXjSXQpbDN2pl3yPbw4X7INdHvvuIFPs0R4mHE51i5Ntbjz5kBP2QdOAyF60l/v0kWD0uTtbZ2vXliD7qlGzkN2t0aB9EXhKpmjw07cpwXvT7u3LXpQAtp7U/renv0C8wMPBJxAv0ahsqXhr5OqPDwlyu9OfjZGYy8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707415056; c=relaxed/simple;
-	bh=OYQ6fSLDTbrX/LcV5tmTCwtLEwd9EfqoZckoJw1jeJI=;
+	s=arc-20240116; t=1707415080; c=relaxed/simple;
+	bh=mlzSsxdtZ/mZwlydoevQ77DWBoBEsbLh2I2hxtpi99I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PDOk7j14+2YUp3GvSBoQrxrrN1EAiKJ4XVxW4emewgxm6YgROh/5o+bpOeuxOrznIZvVws0TiVyIduZp5I9ZeggNFfLsTmM2BAW0NhIvsOTp+AQnombR6L5Hbvz+1Ty1VyfLr9Hge2PhoepTQP12FDeVKROsfyze52lR79Z3uqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=mbWBWlHt; arc=none smtp.client-ip=80.12.242.17
+	 In-Reply-To:Content-Type; b=aRY3rupPMFa/XZUULrJwXV2qXbnecAxGnHNt9AC82EGd8j3GqmFesnzcT+a9bmqCua5DtC3bzsC05iU0HPGarH5PEugjQIMxJ8f3x0YfJ+6gcebz++GZCqHW1p1KT8Nr4kOLSm4/uUNq9hROYYI8gD9bo+FvtoGdzcDOutUIpDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=jx3B3nH8; arc=none smtp.client-ip=80.12.242.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
 Received: from [192.168.1.18] ([92.140.202.140])
 	by smtp.orange.fr with ESMTPA
-	id Y8eLrzbSOF1QfY8eMrnOgi; Thu, 08 Feb 2024 18:57:26 +0100
+	id Y8eLrzbSOF1QfY8ejrnOjq; Thu, 08 Feb 2024 18:57:50 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1707415046;
-	bh=StYx6cdxFN3sZvaIFDCxDFiMycoWZLuLfXg6qeKwdK8=;
+	s=t20230301; t=1707415070;
+	bh=xci4tTQfFKq/dKg3RhVGpoWQha/pOdoQ6ebkp71BpNo=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=mbWBWlHtGozE7RI5T4pA2/cxh7XdA4ll46icA+RKYiZ1mFrjICnX7KSHja+xsFgH8
-	 gh6j6hywBm5yA5oQAbOtwS0nWI2tXWEbQx+8mn0MuTthMO9sngKps4If3GJB+5Mz5i
-	 HVcLXH68lTqtBzir46pNdD98CUgp26zb5M8jtneG3Chc5WQr0ImChmd/Goa+wttRD6
-	 YBteRfRiSb7jAKFIaVUBnAOdBO6fA2xkpzQsDV7sbVjSDhAHHCrEJ0jY84PMH7r5+x
-	 7gBs47MMSDoFFrPVygpMvmla5IavP8UpX7omBgaYD9+S2Obf2nD/0AqglLbKMRRBR6
-	 z2Z4AwaEfzHsA==
+	b=jx3B3nH8XGFIAyvZOv52qb/+8CvZ9a049RR+5VOZGEyD6aaksQUbMpiEXV9Mq5+Ya
+	 W4g+3sb6EXkOg2w5+AI5HD2rxNDxXxmm9OVex+bl5DQjQsf4DV9fWjxA7uQdl1mChv
+	 Ze2ASZzmu5TErVLPLvvsHtFcc758YN3dWfr4dQn0mFLA0BkjU75Zn26s/4SS7TISCy
+	 QIoNYHKlDJKDO4ZTTqLqgzmy7SzPFYe285YGhFCGGSDlHtE+YvlEWG5Y2bsvrNx/IU
+	 9PINukpNDlf+BOA11PeftS70q5QJ0G3585OfpHE/F2mvMw149k+fhuYVnzDib0eaos
+	 caUONNN3QAuUA==
 X-ME-Helo: [192.168.1.18]
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 08 Feb 2024 18:57:26 +0100
+X-ME-Date: Thu, 08 Feb 2024 18:57:50 +0100
 X-ME-IP: 92.140.202.140
-Message-ID: <9edc26e9-4f31-496a-969d-0edc33ef6f01@wanadoo.fr>
-Date: Thu, 8 Feb 2024 18:57:25 +0100
+Message-ID: <9bfe4d6b-d289-40bc-b9fa-bd34c08e6e03@wanadoo.fr>
+Date: Thu, 8 Feb 2024 18:57:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,18 +56,17 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mux: Remove usage of the deprecated ida_simple_xx() API
-To: Peter Rosin <peda@axentia.se>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Newsgroups: gmane.linux.kernel.janitors,gmane.linux.kernel
-References: <727714bdfcd69d21e7f2a0c5c7426fcb70439b91.1702228605.git.christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] pps: Remove usage of the deprecated ida_simple_xx() API
 Content-Language: en-MW
+To: Rodolfo Giometti <giometti@enneenne.com>
+Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <5065a9fe3101dcb7ee0a79bde0ec84de03c637ec.1702230047.git.christophe.jaillet@wanadoo.fr>
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <727714bdfcd69d21e7f2a0c5c7426fcb70439b91.1702228605.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <5065a9fe3101dcb7ee0a79bde0ec84de03c637ec.1702230047.git.christophe.jaillet@wanadoo.fr>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Le 10/12/2023 à 18:17, Christophe JAILLET a écrit :
+Le 10/12/2023 à 18:41, Christophe JAILLET a écrit :
 > ida_alloc() and ida_free() should be preferred to the deprecated
 > ida_simple_get() and ida_simple_remove().
 > 
@@ -75,30 +74,39 @@ Le 10/12/2023 à 18:17, Christophe JAILLET a écrit :
 > 
 > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->   drivers/mux/core.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>   drivers/pps/clients/pps_parport.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/mux/core.c b/drivers/mux/core.c
-> index 775816112932..78c0022697ec 100644
-> --- a/drivers/mux/core.c
-> +++ b/drivers/mux/core.c
-> @@ -64,7 +64,7 @@ static void mux_chip_release(struct device *dev)
->   {
->   	struct mux_chip *mux_chip = to_mux_chip(dev);
+> diff --git a/drivers/pps/clients/pps_parport.c b/drivers/pps/clients/pps_parport.c
+> index 42f93d4c6ee3..af972cdc04b5 100644
+> --- a/drivers/pps/clients/pps_parport.c
+> +++ b/drivers/pps/clients/pps_parport.c
+> @@ -148,7 +148,7 @@ static void parport_attach(struct parport *port)
+>   		return;
+>   	}
 >   
-> -	ida_simple_remove(&mux_ida, mux_chip->id);
-> +	ida_free(&mux_ida, mux_chip->id);
->   	kfree(mux_chip);
+> -	index = ida_simple_get(&pps_client_index, 0, 0, GFP_KERNEL);
+> +	index = ida_alloc(&pps_client_index, GFP_KERNEL);
+>   	memset(&pps_client_cb, 0, sizeof(pps_client_cb));
+>   	pps_client_cb.private = device;
+>   	pps_client_cb.irq_func = parport_irq;
+> @@ -188,7 +188,7 @@ static void parport_attach(struct parport *port)
+>   err_unregister_dev:
+>   	parport_unregister_device(device->pardev);
+>   err_free:
+> -	ida_simple_remove(&pps_client_index, index);
+> +	ida_free(&pps_client_index, index);
+>   	kfree(device);
 >   }
 >   
-> @@ -111,7 +111,7 @@ struct mux_chip *mux_chip_alloc(struct device *dev,
->   	mux_chip->dev.of_node = dev->of_node;
->   	dev_set_drvdata(&mux_chip->dev, mux_chip);
->   
-> -	mux_chip->id = ida_simple_get(&mux_ida, 0, 0, GFP_KERNEL);
-> +	mux_chip->id = ida_alloc(&mux_ida, GFP_KERNEL);
->   	if (mux_chip->id < 0) {
->   		int err = mux_chip->id;
+> @@ -208,7 +208,7 @@ static void parport_detach(struct parport *port)
+>   	pps_unregister_source(device->pps);
+>   	parport_release(pardev);
+>   	parport_unregister_device(pardev);
+> -	ida_simple_remove(&pps_client_index, device->index);
+> +	ida_free(&pps_client_index, device->index);
+>   	kfree(device);
+>   }
 >   
 
 Hi,
