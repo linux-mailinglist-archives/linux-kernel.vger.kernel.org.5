@@ -1,91 +1,180 @@
-Return-Path: <linux-kernel+bounces-57493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 360EE84D9C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:09:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F83284D9CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:11:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA85DB20D23
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:09:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D04811C23145
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A1C367C76;
-	Thu,  8 Feb 2024 06:09:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB43867C7B;
+	Thu,  8 Feb 2024 06:11:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b="Ln/L/3GZ"
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HFaz8r46"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4288A67C6D
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 06:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 305C867C72;
+	Thu,  8 Feb 2024 06:11:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707372559; cv=none; b=Tv+5VoA9qtjOYQ4Mygg6kRIe9hqeB1172lQ/aHaWndI135y1LJViVm9j9PQA4KYZZy8sEdNpGPG8i5kZmxOLQEgzihDXTX3ZqGrAHLgZ/rZjcgdwV8EWGjVjvMQyaY+k0lnuYb86+cg3NY6VCM0VhJjDyfiCtkm3RDul9/hdVS0=
+	t=1707372685; cv=none; b=iheXGJ64L/iVsoY4EaADTpM4lcsoS7AgNyXSBFrj4yP8dfccLAlRd7yW3BGF71umjbWFL4b/Y7eLeOyuTE2VXb/Jy/foAkvOIB4DkuGtL4G7lmrYSWlhHK2MDhJq/0NgLBgW1JmXmA4kGMz1Ob0MfJLNP953cyKlU1zd9jVkEzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707372559; c=relaxed/simple;
-	bh=0WaGRdQieP8qPB7+5tY1vVKpStuQmtRJ+UA4eW449ew=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=U8PamgCdCMBh8fCLGQfGOdYyoBVrGBFq7TSlRZgB+iskqFAmNKrBUtbp7nbBLIoSZG6Pad5c1PzEm6f99HKsduJgWrjWTyBjw/lDkWlX7Gp8Sh/cbSuwDK1LHYVFj8qyOH/dn7Q9FsiqAFYeMq9ad0D1iQdsHqbmCXizpnctCrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org; spf=pass smtp.mailfrom=cu-phil.org; dkim=pass (2048-bit key) header.d=cu-phil.org header.i=@cu-phil.org header.b=Ln/L/3GZ; arc=none smtp.client-ip=194.63.252.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cu-phil.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cu-phil.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cu-phil.org
-	; s=ds202401; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
-	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=JyvnIF9FYHi9SWlvwYfcXiPQ2MgiofrtBswlBFpdQy0=; b=Ln/L/3GZFT3b5QIfIG7FewI8Ip
-	L6Aplddp7+AqDOjJTZ3Zl8xcW8PjdAwfCl+imm79u09jvOU5mxBzOAL5uh7iiFiQ5hAEtQjIFXR1y
-	1ac926SNe4EZ/6wW5LTUwJ+EZLzPLbli2BAJk8Paz79pfnJP3ibmf6xRhyjFECGtkumNgDxBIyekx
-	WQSh21EAIL4/umaTNG4yTqeHhedxrMqXYbZkJ4FD4TCpsdJZGDSD8x+SwQX/6kF0CIWZpAQtrqzgJ
-	fii5zlY06wz0NRPhQ+GfYlmulOO/RXRfxjFQDKtCNdJHq77vC4AekASVwMfJgGF/YV8sfbJvskKm7
-	2a3O9F+w==;
-Received: from [2a02:fe1:7001:f100:ed4f:49c3:4264:fc12] (port=57001)
-	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <Ywe_Caerlyn@cu-phil.org>)
-	id 1rXxb0-000AH2-9a
-	for linux-kernel@vger.kernel.org;
-	Thu, 08 Feb 2024 07:09:14 +0100
-Message-ID: <88f10ec3-0cfc-40db-99f4-06916c0ac7d0@cu-phil.org>
-Date: Thu, 8 Feb 2024 07:09:13 +0100
+	s=arc-20240116; t=1707372685; c=relaxed/simple;
+	bh=P03Ra6tKJeIfMl5vzZANDer57SEANPUYFQQ4fYeImD4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YlGEShY2FkDan++b5GXFcG9/18W1DXg6I0pSTh3+ADrp83/ykO/arVSERawKNKk1cBgEB3F2AVyecpowPjYAtzs7NzI32vMVJnGQLuHQHAzkpQkWhDQmfxjfwblZwLf2PrBf9ffIUbS2K2PcYDgQVLtSZcmC8wg3muPaTcj+XwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HFaz8r46; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2565C43390;
+	Thu,  8 Feb 2024 06:11:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707372684;
+	bh=P03Ra6tKJeIfMl5vzZANDer57SEANPUYFQQ4fYeImD4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HFaz8r46F2yMGhc4eChQ1bdDMIG2SJbZeO1JsISVjZZY5/QxNPEU574sO9dknngXq
+	 YVgyAOL6RSp2qvuoFw3QAZnOLGr4cDN/wpbTmNQ58lmjGGeuChQIAye3TRo4TxFy79
+	 V7xNv4sfFz+z0Vk0ON1uEn4vvWgR1e3+QhjIlA+1LT/Ifdm5+CkutQDtm79R+RIM1n
+	 4OE0Gfs2UAKksR/gYZdixvQn5xW9+A4inVRJwU+VYyn9RWTX93+YzHhWEvbOkcDwIJ
+	 h9Gt9Ms2CBz13jyRvnX4bzQn20gjiMAXZmHcQEZQTyBICBjNVu3/zFAWUGyA2x/MG4
+	 oI4EjuUTX0bdA==
+Date: Thu, 8 Feb 2024 08:10:59 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org
+Subject: Re: [PATCH v3 01/15] arm64/mm: Make set_ptes() robust when OAs cross
+ 48-bit boundary
+Message-ID: <ZcRwc2mEDHIXxgGa@kernel.org>
+References: <20240129124649.189745-1-david@redhat.com>
+ <20240129124649.189745-2-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-kernel@vger.kernel.org
-From: Ywe Caerlyn <Ywe_Caerlyn@cu-phil.org>
-Subject: @ X Referance Concept (Was Fair Source Philosophy, Low Jitter
- Configuration)
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240129124649.189745-2-david@redhat.com>
 
-I found a common concept for both russian script and italic, Geo (The 
-Grand The Good). This also factions the popular "God", which is 
-desirable aswell.
+On Mon, Jan 29, 2024 at 01:46:35PM +0100, David Hildenbrand wrote:
+> From: Ryan Roberts <ryan.roberts@arm.com>
+> 
+> Since the high bits [51:48] of an OA are not stored contiguously in the
+> PTE, there is a theoretical bug in set_ptes(), which just adds PAGE_SIZE
+> to the pte to get the pte with the next pfn. This works until the pfn
+> crosses the 48-bit boundary, at which point we overflow into the upper
+> attributes.
+> 
+> Of course one could argue (and Matthew Wilcox has :) that we will never
+> see a folio cross this boundary because we only allow naturally aligned
+> power-of-2 allocation, so this would require a half-petabyte folio. So
+> its only a theoretical bug. But its better that the code is robust
+> regardless.
+> 
+> I've implemented pte_next_pfn() as part of the fix, which is an opt-in
+> core-mm interface. So that is now available to the core-mm, which will
+> be needed shortly to support forthcoming fork()-batching optimizations.
+> 
+> Link: https://lkml.kernel.org/r/20240125173534.1659317-1-ryan.roberts@arm.com
+> Fixes: 4a169d61c2ed ("arm64: implement the new page table range API")
+> Closes: https://lore.kernel.org/linux-mm/fdaeb9a5-d890-499a-92c8-d171df43ad01@arm.com/
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-This is max Fair Source Philosophy, keeps what is of it, of established 
-religion in both russia and the west, compatible with the east.
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-Mistranslation of Allah is also now Ale on the Ban Bukhari channel.
-I grew up with Ale, and anyone recognizing this, will probably recognize 
-the humour aswell. (Only possible in a "christian" society).
+> ---
+>  arch/arm64/include/asm/pgtable.h | 28 +++++++++++++++++-----------
+>  1 file changed, 17 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index b50270107e2f..9428801c1040 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -341,6 +341,22 @@ static inline void __sync_cache_and_tags(pte_t pte, unsigned int nr_pages)
+>  		mte_sync_tags(pte, nr_pages);
+>  }
+>  
+> +/*
+> + * Select all bits except the pfn
+> + */
+> +static inline pgprot_t pte_pgprot(pte_t pte)
+> +{
+> +	unsigned long pfn = pte_pfn(pte);
+> +
+> +	return __pgprot(pte_val(pfn_pte(pfn, __pgprot(0))) ^ pte_val(pte));
+> +}
+> +
+> +#define pte_next_pfn pte_next_pfn
+> +static inline pte_t pte_next_pfn(pte_t pte)
+> +{
+> +	return pfn_pte(pte_pfn(pte) + 1, pte_pgprot(pte));
+> +}
+> +
+>  static inline void set_ptes(struct mm_struct *mm,
+>  			    unsigned long __always_unused addr,
+>  			    pte_t *ptep, pte_t pte, unsigned int nr)
+> @@ -354,7 +370,7 @@ static inline void set_ptes(struct mm_struct *mm,
+>  		if (--nr == 0)
+>  			break;
+>  		ptep++;
+> -		pte_val(pte) += PAGE_SIZE;
+> +		pte = pte_next_pfn(pte);
+>  	}
+>  }
+>  #define set_ptes set_ptes
+> @@ -433,16 +449,6 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+>  	return clear_pte_bit(pte, __pgprot(PTE_SWP_EXCLUSIVE));
+>  }
+>  
+> -/*
+> - * Select all bits except the pfn
+> - */
+> -static inline pgprot_t pte_pgprot(pte_t pte)
+> -{
+> -	unsigned long pfn = pte_pfn(pte);
+> -
+> -	return __pgprot(pte_val(pfn_pte(pfn, __pgprot(0))) ^ pte_val(pte));
+> -}
+> -
+>  #ifdef CONFIG_NUMA_BALANCING
+>  /*
+>   * See the comment in include/linux/pgtable.h
+> -- 
+> 2.43.0
+> 
+> 
 
-https://www.youtube.com/channel/UCR6KAPt98kGaXbfa7enQ_KA
-
-This was the result of "Al Ghazali" "finalizing interpretation" for the 
-related sects. (The Kuran was already finalized, so this is nonsense 
-aswell).
-
-- Did you know Git seems to be based on St. Bit aswell?
-
-https://www.youtube.com/channel/UCS62KrskrKNLLtryqB6F-nw
-
-Serenity.
-Ywe.
-
+-- 
+Sincerely yours,
+Mike.
 
