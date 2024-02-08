@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-57431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CAFA84D901
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 04:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1814484D903
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 04:27:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21221289563
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 03:27:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B65CE289621
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 03:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F13A4383B4;
-	Thu,  8 Feb 2024 03:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 142754597D;
+	Thu,  8 Feb 2024 03:19:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="JtHStRyA"
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="BbjyjKNh"
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1BC3383B0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67AE338F84
 	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 03:18:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707362341; cv=none; b=aefGUv3GNt0RHYtbwTt4Poh8WfwKi/f1qsClz6qBAXM6CUxFklAGOeqjePnQTFAE3Ig822Z+2xRtRsrYfTdC4kIWwlhQJrhHmNzYe3YISIhzVKeYK7XP27T6o07AuS0T6krdaB5pmbZBijQpBFYtbmFCa0vgM4b9NkntPKnAoWg=
+	t=1707362342; cv=none; b=R/DUh95ZvCvcjRbTvWMfuN6O9k7o3LPf1RRNWOC6DABzku0YD3QMul6ZlBpBy5yZv6yACI598ZvvuV0Eoo8m8i3Cd9pks7rTbs5oQNBz5CIIfH9lQMJgWmq2uOdMQWUDMuf0783j1rwOjf+W0XYdyQO87MhdzQoGCWCtCwuop0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707362341; c=relaxed/simple;
-	bh=KQUeyHRjjjfkXBsIEL6L0ca2YK2iVKA66TMwHDEgJLc=;
+	s=arc-20240116; t=1707362342; c=relaxed/simple;
+	bh=+w3nNF6uogpeOgLKn6Je5uKi9bCs3moV2vFFqe7Bbh8=;
 	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
-	 From:To:Cc:Subject:References:In-Reply-To; b=YN8sKbXyydqWWokUmmlCNIQBudhg7eOkV7afPZbZnZOZNFBvh5G21+F6vDrlvr1BTd+KgNqfHV9Im9S2T8gHyizU+5fY/7Sh5TKDgdQw0N9+TE+jNNtotFAG4Fnn4nqwFxjEBRDEoxxBECKV5iF7yJQNSRWGx7IQdZgBfh1q6a8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=JtHStRyA; arc=none smtp.client-ip=209.85.222.182
+	 From:To:Cc:Subject:References:In-Reply-To; b=Iox/jTilCtsAArxmx3P/D3Jbn5B++TV0lwkxx8KmlHf/VdtyTGmj+pueaQ4JxQd35doz5lEVFMYi+CXab2yoJBW58Y2EUwv/NYHgJar6nPoW3dj28NK7H9+PR7JlxNX7RVmvABsaVxlsI8ccfDzJcdcHF5MOFCnWGNXU6226oAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=BbjyjKNh; arc=none smtp.client-ip=209.85.219.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-785388b3281so59324785a.2
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-68c813ba956so6520436d6.3
         for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 19:18:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1707362335; x=1707967135; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1707362336; x=1707967136; darn=vger.kernel.org;
         h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
          :content-disposition:mime-version:message-id:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=8HbV6n5Xe+U9VQs15xw8hF94WBGgVQ6IqJUpf4t2Cj8=;
-        b=JtHStRyArAV6qXTZYie2SEnksCji8DH/VPNUvL9PJbBrnCY5PT5dBlpudfwIqKPyU0
-         JSZXEA8+V+Yybsl7AxVJdOxWP/kGIdHaxmxpQRlkL5hDSC290Z2TfN0OkTeIs3MqMm80
-         tjV4sSRK/Jd/XPIqvN8ea/JmbEyE2iDQZ2HbcRA1whA2a09LnmEO3H1RrSPwgzobnJUE
-         L9fu3EMdTdFzgy0DXJrlCk7+AvWsG6psbyQ1ZwPLZxwi6oN5Sgxpj4wZ1qLkm4t1Fs/l
-         SDjNCq7EY+OmtNwJg72N8v+ULxjvZzpXa+dbEGXfasp2+n7zaF6I+qALktENuqaR63AL
-         BrzQ==
+        bh=q3KhjY53aOKiu/8dSgqk45G/A+W+yYQLdqnafjFGGWk=;
+        b=BbjyjKNhCJDIHDULzdrz3cMP5t5gjTQfPqZ4qw2zZH9jzGH7XOQSUOR+4ShxssiHKv
+         me+rCLneCG5198J8hWoEX4VQPqUVhx8c595aKcRDLEDjPTmKVP02S96nqfzmAq65Y9Ou
+         NWk0pqmz5ccLuh7xWJ3XC+r935s8TGLlGFFu/UCdUNLs6MUBq9aBu/UVPRfNif9MFYO+
+         Ud5SI1+Ddn49eoyujsW0dy87ayIMqCq+oR5WNwKJGWMF5j2au6g6oej3bhNaqkilum/I
+         WuljElJXHqkwYt/3/JkzU+uFq8N1YguZfoVbvvwlmAs98YaPyryAsFuSPg08Lt7QhSoe
+         vGmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707362335; x=1707967135;
+        d=1e100.net; s=20230601; t=1707362336; x=1707967136;
         h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
          :content-disposition:mime-version:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8HbV6n5Xe+U9VQs15xw8hF94WBGgVQ6IqJUpf4t2Cj8=;
-        b=VXFRHungoOGtgQHv9KAZmH/amSa1D7X5q5IOlHkWsZ0lCr27DL1/BcBTUG2SUA2rbe
-         P5ow0fdd2cla20u5//N7ua76y4edhuHqyAU7SvcnubbkGoPTMqMMQGyu7+VJIze0Vc+i
-         288Ins8U9YY2TJt97M+ANbIsSX7shoIx1fTv7FAEwkGBpBujxxka3t7WHW+Ae+J7lpb8
-         B9/B6FPUIUUZWRJKZL2KK6+hR1KV70al678FaHe5xklf/jCsMoOFvkey5nfm9Kt4Uo3r
-         N7TW8tcbSBKutIK9aku3uu05wdS+PseJaJkiP0YQGQwbUiDNOuueHo8+Qz9ORIttA7pb
-         DOKA==
-X-Gm-Message-State: AOJu0YxzieiQSGCaMAjCNSJSsBThZy41DlX0kZi2HtAEQH9B1mAHT4xI
-	pYer7hgXcnRfsLgaSma6adBFh6jqzYZQRzRLDki0aL9wcMsJZX0CKCKcDCf4Kg==
-X-Google-Smtp-Source: AGHT+IFe+/APvbCWtvo7N2W3i0NQXu9Gs9w9JTuWRhznOkmr7yr1wYV203/mfil2cu0WaHv52vgoUQ==
-X-Received: by 2002:ae9:f409:0:b0:785:5f32:740 with SMTP id y9-20020ae9f409000000b007855f320740mr7838921qkl.39.1707362335378;
-        Wed, 07 Feb 2024 19:18:55 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVtN17sT+I6NFUtc9YVAcwA/4nOIepBd/awHURKOWvyqf2iOPCRYu/xZo61LlW3PhbEnlpAugC7HczUqpDrtk7am8fPE2Qoc5nUQ/6krZlIkRXgGvestiiELaxdSTnxpfY7nBv24MWpdo9LxdvsHoRbn8snPMxGOyo4EzhJs0Ev5wJS8M+DiT8VE351BE0VKs06oc2/yjcqOnsOSLj6KjmoDDeTj8lUpEdr7an/glsFlcSjYyEL/ngVvYhDUNGKR6TUV6IAqV7mw3eDfvEXjHgxYrqHvuKKUAvkJcp/Ojp/bygVXNunH7dJpdbB0YDqnpAMJV/yaOwMtvbJ2bNW4gPy5lOQk9kgFht9tMCzxHQ3t+tzVrUa/25LWHWShk38RB2KhRiH6xgBvVDhiQpBo8fep5YrMciQ7PJpD2xyPvZTVML727aa90umcYe9FqvbFUkT819euC3EJDsTAvLMSol6Y5wbdlHEV71uop/E/lKZ1d0wKYDJWQX7med93AHe46EgaqBdlUjnY+KVJNrXqeCJAvq88LIbQj3Isw2126nGqSvPEizprgpxphO27igaPJIkrb30HQh6o2NpsUjQJkRaC7/0kQ3uWs2iQgvmvO4PU/IcsqmoWquKh5yixMCUMbg5G60hQHVfedFGwQW0T/xAcE5jXAem2FFxcjPydtdiPVMIg3Ej2QZQA8XWwdGCxV/RrgX11tPEtYE9ZvPRl+9o2HzhNz4DqR+aK4ksKhL3uH9B9I8pSDMywMm7ZZDagJnrCwoa5nZaR8rAtjyS6O4FZl7+Ui8h48ysagamh/D4PPjMshNo8+GiKPGTEs3Kws9tsJTyMh1v1rnIy4J8BqmOy1fR6DlauNkcSi7uFhxBZ71752s7HaHMNzB4pm0Xpknb8R0PGYWGzhsbX2KQ44GvfMXWEs6gdD4csl2jHSmhmAc19LlA
+        bh=q3KhjY53aOKiu/8dSgqk45G/A+W+yYQLdqnafjFGGWk=;
+        b=pFwk9+8MYIQLR+OOCwJyAP+oMRMxmXtlJZtb/DGTxKsjIcGVfGAkKfmgVz3mItzSD5
+         3/ixDHNlJ49RAXQl909CFwRLQptGew8t38GIUaNJDcoujZeWYiMkcme784HPkhQmEd2o
+         cwyW+O2Nuq9kEdGT4Bkn2DVzF0MII6Xcyb4noDfqiFu/tAFJTJkjUkOpl8gVb9H2zrt0
+         wq916iNzP3mlKm2FbJy4kvQSf9vahN91C+5I5QXc54jfSTtoj4DBrf4HDlsS3V1YBMx3
+         TF8vvLKSvrKccY9rlyTBA/fzLLLiZsiri6mk/7J6f+fNjOuMYJ9/WI4NAJJ2Ls2tWPOx
+         KoGw==
+X-Gm-Message-State: AOJu0YxYVawBbHGhpOggEWH/P9JB0uSNgQOO+syL9NKuAyEQ3YMSWkld
+	ctbmLSIBM/e4xF49S5GV4fjIGfCWmCUGIn84MZQMIUlF0iZ5pkUkVKc55TMl/A==
+X-Google-Smtp-Source: AGHT+IFL6fTS6/mCqmxtrEurBQ1YLFaYPk8pHqOxQig2U4D4mABu+nKwfCflbWupUKFaexfjmEf5MQ==
+X-Received: by 2002:a05:6214:226f:b0:68c:ae97:5d2d with SMTP id gs15-20020a056214226f00b0068cae975d2dmr8628414qvb.5.1707362336476;
+        Wed, 07 Feb 2024 19:18:56 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV7SeR66wpk7vEz605tS3+9PYtlauZrG75cpDzlb05xTOauWAwy4Wn9+jXkF75tW5kHvEjbNHcm2b2o1nOyKsggFYVhJDjvQY9NxaQBpQs5Kg4fePQ7MxHNDeAw+cFjuF+jnP/IrX6y8MyLmEI5ql2uwSdwv/bzVN9X2CXtVj2Af3Af2/7TvTJHTpE7RfhLRnq734aBmdJZWm/qCBR9X8n7mxmk7rsml08IdqkvHjvsv8BWXQr2JxNL/brtxVG0nzML+ubCIAi5Hgvl1HD7gxV/vM0xXiVU25XR6Nx2bXihTh9/K1WjFq6GmuBCFZ7G66Nl+DTYytQYUl1c1TxC5fjELwzhqSKkNX5Z/+NC40A+OAFtlnkWwjqsN4x+TbUGQg0Mxd4WiUOeUZo9HN+KnRRKq9Z/GWF3uXcqVVCrUMOifdmDi0YVKYnMPyVdjJ6mY807Z0Om6pTwCqgKeXSVB/BJFuN4nygX0Z2VU+CSAUpLdyOOFA2YDJocOz5QBwP+PuT3ELRMjiGYDobr9fWxvMRbBN/3XhRmnwFVuBz0MY/xngJQyq6vkA9lUjg7j7m8Y4SZlHfZo7P19l1FKdOCliTMUZ6G2IUUKlpVO5ovECcU+eLElDLgGHEa5mNEc/ZAFEd/eiOS3G3g1jq1OX5yNa88vwVjUdEjahb9uPLGXJjiGwUFgt6NLF61zPGLQUIYBbvPxi44m8RonkGQEIYw/DI6Axxcc/0iDVXYf8LXAkS46GNigfwtaX+c4q9upYbjhBYwFZXSGynEW4g80lhxAlXTYsPIxObPfJGGZbZFTC9k/dAH2m2dGt2T0R8fjuWsGq7ITidT963I4doJ2k4E59ecnU8RgTE0bNlNB3zlHRURuP8kgHQa2koxsiBCOkRpx5XFKkPXh/FNtUTQUhPmzjDe78M0bD13cC2NC+Wz3WtHe8uxdY8C
 Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id l5-20020ae9f005000000b00783d75b2335sm1071913qkg.11.2024.02.07.19.18.54
+        by smtp.gmail.com with ESMTPSA id mb10-20020a056214550a00b0068cc0b46682sm893264qvb.4.2024.02.07.19.18.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 19:18:54 -0800 (PST)
-Date: Wed, 07 Feb 2024 22:18:54 -0500
-Message-ID: <1c6b3d9d21242d63937668e8cbfb3c75@paul-moore.com>
+        Wed, 07 Feb 2024 19:18:56 -0800 (PST)
+Date: Wed, 07 Feb 2024 22:18:55 -0500
+Message-ID: <e549d87d37bbd859be59acd4fab85b43@paul-moore.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,63 +80,27 @@ Content-Transfer-Encoding: 8bit
 From: Paul Moore <paul@paul-moore.com>
 To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk, brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org, stephen.smalley.work@gmail.com, eparis@parisplace.org, casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
 Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, keyrings@vger.kernel.org, selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Subject: Re: [PATCH v9 23/25] evm: Make it independent from 'integrity' LSM
-References: <20240115181809.885385-24-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20240115181809.885385-24-roberto.sassu@huaweicloud.com>
+Subject: Re: [PATCH v9 25/25] integrity: Remove LSM
+References: <20240115181809.885385-26-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20240115181809.885385-26-roberto.sassu@huaweicloud.com>
 
 On Jan 15, 2024 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
 > 
-> Define a new structure for EVM-specific metadata, called evm_iint_cache,
-> and embed it in the inode security blob. Introduce evm_iint_inode() to
-> retrieve metadata, and register evm_inode_alloc_security() for the
-> inode_alloc_security LSM hook, to initialize the structure (before
-> splitting metadata, this task was done by iint_init_always()).
+> Since now IMA and EVM use their own integrity metadata, it is safe to
+> remove the 'integrity' LSM, with its management of integrity metadata.
 > 
-> Keep the non-NULL checks after calling evm_iint_inode() except in
-> evm_inode_alloc_security(), to take into account inodes for which
-> security_inode_alloc() was not called. When using shared metadata,
-> obtaining a NULL pointer from integrity_iint_find() meant that the file
-> wasn't in the IMA policy. Now, because IMA and EVM use disjoint metadata,
-> the EVM status has to be stored for every inode regardless of the IMA
-> policy.
-> 
-> Given that from now on EVM relies on its own metadata, remove the iint
-> parameter from evm_verifyxattr(). Also, directly retrieve the iint in
-> evm_verify_hmac(), called by both evm_verifyxattr() and
-> evm_verify_current_integrity(), since now there is no performance penalty
-> in retrieving EVM metadata (constant time).
-> 
-> Replicate the management of the IMA_NEW_FILE flag, by introducing
-> evm_post_path_mknod() and evm_file_release() to respectively set and clear
-> the newly introduced flag EVM_NEW_FILE, at the same time IMA does. Like for
-> IMA, select CONFIG_SECURITY_PATH when EVM is enabled, to ensure that files
-> are marked as new.
-> 
-> Unlike ima_post_path_mknod(), evm_post_path_mknod() cannot check if a file
-> must be appraised. Thus, it marks all affected files. Also, it does not
-> clear EVM_NEW_FILE depending on i_version, but that is not a problem
-> because IMA_NEW_FILE is always cleared when set in ima_check_last_writer().
-> 
-> Move the EVM-specific flag EVM_IMMUTABLE_DIGSIG to
-> security/integrity/evm/evm.h, since that definition is now unnecessary in
-> the common integrity layer.
-> 
-> Finally, switch to the LSM reservation mechanism for the EVM xattr, and
-> consequently decrement by one the number of xattrs to allocate in
-> security_inode_init_security().
+> Keep the iint.c file only for loading IMA and EVM keys at boot, and for
+> creating the integrity directory in securityfs (we need to keep it for
+> retrocompatibility reasons).
 > 
 > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 > Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
 > ---
->  include/linux/evm.h                   |  8 +--
->  security/integrity/evm/Kconfig        |  1 +
->  security/integrity/evm/evm.h          | 19 +++++++
->  security/integrity/evm/evm_crypto.c   |  4 +-
->  security/integrity/evm/evm_main.c     | 76 ++++++++++++++++++++-------
->  security/integrity/ima/ima_appraise.c |  2 +-
->  security/integrity/integrity.h        |  1 -
->  security/security.c                   |  4 +-
->  8 files changed, 83 insertions(+), 32 deletions(-)
+>  include/linux/integrity.h      |  14 ---
+>  security/integrity/iint.c      | 197 +--------------------------------
+>  security/integrity/integrity.h |  25 -----
+>  security/security.c            |   2 -
+>  4 files changed, 2 insertions(+), 236 deletions(-)
 
 Acked-by: Paul Moore <paul@paul-moore.com>
 
