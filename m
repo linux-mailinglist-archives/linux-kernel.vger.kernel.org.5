@@ -1,151 +1,87 @@
-Return-Path: <linux-kernel+bounces-58091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66CEF84E130
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:50:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E42C584E078
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:14:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BDF51F2BAE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:50:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0C04283555
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:14:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2404E763F8;
-	Thu,  8 Feb 2024 12:49:57 +0000 (UTC)
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2736F763E4;
-	Thu,  8 Feb 2024 12:49:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9AC371B48;
+	Thu,  8 Feb 2024 12:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kvxcGrGP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022E171B30;
+	Thu,  8 Feb 2024 12:13:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707396596; cv=none; b=d0Nr/f+7ma081radKxGGQCHdVceTUse6PkxPQQhCU0n5BCdms3KnbBZCv6l4k2tzwLdw40tseht9PoccG3//b2j9KYE3DaY/boWrus0U2EwrS9bxYxfItbc/fxtXbnvfjcIwH1+FGpQdyZQT3pcpiQ4yQ/C3hmLvhDC0ZAtOPIQ=
+	t=1707394436; cv=none; b=tZtZYyjy9u1r5jdkM8+Sv8d0yFawwAkMUiMSZB4OeM37w2dtwyJ2st7e1DUN2yNQDgf45d1l8BsKLD/Kr9aWMKnTGEA/wE/1GX7SIhgFZzpsDyVLPBLfFogwyne+WSXznSc7gh1NpKJtWlLUg/5LhHnaKksBbv3s6peHRd4n/D4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707396596; c=relaxed/simple;
-	bh=/raue+ELhkH2hPh2pJ5EPvccB2rMfZ0AyREnP0RN1h4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PuBEsCiJOflRC6iThJPN6gDHJcbZCEyOvBc54MZc0KVzffFSlGX/EGyEUX91lN6FP1X3B1XsLXsS1hYei0sS8oEiXAFk9XlYfKNy1AL4EtmZKEPlxIMAq5rrTYFl7JTAQBgl8+AnillPd+GTvP+eu3Sbjhp22GDbMueGchjlEK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rY3Mr-000327-00; Thu, 08 Feb 2024 13:19:01 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 71A38C0267; Thu,  8 Feb 2024 13:11:30 +0100 (CET)
-Date: Thu, 8 Feb 2024 13:11:30 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v7 03/14] MIPS: Allows relocation exception vectors
- everywhere
-Message-ID: <ZcTE8nKCaKuaUvAe@alpha.franken.de>
-References: <20240205153503.574468-1-gregory.clement@bootlin.com>
- <20240205153503.574468-4-gregory.clement@bootlin.com>
+	s=arc-20240116; t=1707394436; c=relaxed/simple;
+	bh=MvlH4ndOdSzFUwm8GqHry7TYNDj279G1o15aCH4zOkA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Djr/dd1jwSwWVrAdb//mnYsTeP97yZ1dztaUsLb8xpRIwHEhkvDEmPoZxcGny9mT59Rve5JG241sRBlmh+fiftEXxF8EG8bUToGnEyGViybzilL0tVAEEBlhX+QJy+/adV7/ES+26HtpmKjrbH6ri5JZnh/fb7mxqwRq8IAw4Fw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kvxcGrGP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFCBCC433C7;
+	Thu,  8 Feb 2024 12:13:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707394435;
+	bh=MvlH4ndOdSzFUwm8GqHry7TYNDj279G1o15aCH4zOkA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=kvxcGrGPAHDxiZe0WrrziSYopGe/0VsWAgEupIYMX7sLnATKYvGNzjPxxJVJz8rE7
+	 pjT2bHgHcIe9y7iHY3SerQzs2qBTx4iw/C81t0nuAEWIcZUC+XnE0BI2F391CO//mf
+	 g0e9iKQJkMImxQ94APAbY0Ml4kSbTgQIDeU4kRi8chMtVkpaKUNZ0qMQb1xbXWihhe
+	 RkDHhYNDGd1EuAp2hbDjXifLkvw69KhCAyGbFTdx1BRu9WnNesr2s6ssgx+lh8p12z
+	 UXiMsbxViyQbcRkBBES+AXuOyCwS1Hc0KOrH1OVEy/C4K7SDSp4nFwbDy9rJ86oloj
+	 vkgccAmOSvixw==
+From: Lee Jones <lee@kernel.org>
+To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
+ Marijn Suijten <marijn.suijten@somainline.org>
+Cc: linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org, 
+ Bjorn Andersson <andersson@kernel.org>, Johan Hovold <johan@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@somainline.org>, 
+ Martin Botka <martin.botka@somainline.org>, 
+ Jami Kettunen <jami.kettunen@somainline.org>, 
+ ~postmarketos/upstreaming@lists.sr.ht, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>, 
+ Bjorn Andersson <andersson@kernel.org>
+In-Reply-To: <20240204-pm660l-lpg-v5-1-2f54d1a0894b@somainline.org>
+References: <20240204-pm660l-lpg-v5-1-2f54d1a0894b@somainline.org>
+Subject: Re: (subset) [PATCH v5] leds: qcom-lpg: Add PM660L configuration
+ and compatible
+Message-Id: <170739443256.968294.11874564929033098601.b4-ty@kernel.org>
+Date: Thu, 08 Feb 2024 12:13:52 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240205153503.574468-4-gregory.clement@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.3
 
-On Mon, Feb 05, 2024 at 04:34:49PM +0100, Gregory CLEMENT wrote:
-> From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+On Sun, 04 Feb 2024 18:24:20 +0100, Marijn Suijten wrote:
+> Inherit PM660L PMIC LPG/triled block configuration from downstream
+> drivers and DT sources, consisting of a triled block with automatic
+> trickle charge control and source selection, three colored led channels
+> belonging to the synchronized triled block and one loose PWM channel.
 > 
-> Now the exception vector for CPS systems are allocated on-fly
-> with memblock as well.
 > 
-> It will try to allocate from KSEG1 first, and then try to allocate
-> in low 4G if possible.
-> 
-> The main reset vector is now generated by uasm, to avoid tons
-> of patches to the code. Other vectors are copied to the location
-> later.
-> 
-> gc: use the new macro CKSEG[0A1]DDR_OR_64BIT()
->     move 64bits fix in an other patch
->     fix cache issue with mips_cps_core_entry
->     rewrite the patch to reduce the diff stat
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> ---
->  arch/mips/include/asm/mips-cm.h |   1 +
->  arch/mips/include/asm/smp-cps.h |   4 +-
->  arch/mips/kernel/cps-vec.S      |  48 ++-------
->  arch/mips/kernel/smp-cps.c      | 171 +++++++++++++++++++++++++++-----
->  4 files changed, 157 insertions(+), 67 deletions(-)
-> [..]
-> diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-> index dd55d59b88db3..f4cdd50177e0b 100644
-> --- a/arch/mips/kernel/smp-cps.c
-> +++ b/arch/mips/kernel/smp-cps.c
-> @@ -7,6 +7,7 @@
->  #include <linux/cpu.h>
->  #include <linux/delay.h>
->  #include <linux/io.h>
-> +#include <linux/memblock.h>
->  #include <linux/sched/task_stack.h>
->  #include <linux/sched/hotplug.h>
->  #include <linux/slab.h>
-> @@ -25,7 +26,34 @@
->  #include <asm/time.h>
->  #include <asm/uasm.h>
->  
-> +#define BEV_VEC_SIZE	0x500
-> +#define BEV_VEC_ALIGN	0x1000
-> +
-> +#define A0		4
-> +#define A1		5
-> +#define T9		25
-> +#define K0		26
-> +#define K1		27
-> +
-> +#define C0_STATUS	12, 0
-> +#define C0_CAUSE	13, 0
-> +
-> +#define ST0_NMI_BIT	19
-> +#ifdef CONFIG_64BIT
-> +#define ST0_KX_IF_64	ST0_KX
-> +#else
-> +#define ST0_KX_IF_64	0
-> +#endif
 
-please move this together with the other defines in arch/mips/kvm/entry.c
-to a header file (arch/mips/include/asm/uasm.h sounds like a good fit).
+Applied, thanks!
 
-> +static void __init setup_cps_vecs(void)
-> +{
-> +	extern void excep_tlbfill(void);
-> +	extern void excep_xtlbfill(void);
-> +	extern void excep_cache(void);
-> +	extern void excep_genex(void);
-> +	extern void excep_intex(void);
-> +	extern void excep_ejtag(void);
+[1/1] leds: qcom-lpg: Add PM660L configuration and compatible
+      commit: 0e848bb4630e12099636fde050cadad33221045f
 
-I know this used a lot in arch/mips, but don't add another one and
-put this to a header file. IMHO checkpatch should have warned you about
-that.
+--
+Lee Jones [李琼斯]
 
-> +	/* We want to ensure cache is clean before writing uncached mem */
-> +	blast_dcache_range(CKSEG0ADDR_OR_64BIT(cps_vec_pa), CKSEG0ADDR_OR_64BIT(cps_vec_pa) + BEV_VEC_SIZE);
-> +	bc_wback_inv(CKSEG0ADDR_OR_64BIT(cps_vec_pa), BEV_VEC_SIZE);
-> +	__sync();
-
-how about doint the generation with cached memory and flush caches
-after that ?
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
 
