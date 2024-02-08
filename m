@@ -1,91 +1,113 @@
-Return-Path: <linux-kernel+bounces-58616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 160B884E8E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:25:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F97884E8E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:26:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62C0CB2E6BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:25:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D7141F31A1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:26:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8279374EB;
-	Thu,  8 Feb 2024 19:25:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cxt+cCfT"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8D2376E4;
+	Thu,  8 Feb 2024 19:25:58 +0000 (UTC)
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F4D5374D2
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 19:25:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57050374EB;
+	Thu,  8 Feb 2024 19:25:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707420304; cv=none; b=UVHBiWtIIC0DZd/Ev19f/kG/Iz9Qm5br7+zjnJLAotq1NKoUOW2E4YDKuNv2p1BbubMH19TW0NMsZ6MU5Ep3vzHqzf7E+bQPlaqxpqgeBn5+BWAkkeSx8vSSqm8/EvXqHEa0X1ZDXHhs/HSdZlGIrBxQ2j3fW4EQfpNEufPpiks=
+	t=1707420357; cv=none; b=YU4wvRo/JxG5ZaTQJtAWLav+m/9KaZjoKbvqxu2bi91eYp9Th3QYqQuxDEOobECKNvBuFAi4tTpG8wxOLs7nhqlZjCvtqc/M40a/H+GAHUtM2X1z1sK1sRjCU4SyJpLfdPW0XQUTcvMWQMLjOWCV26PIJ8tSIpg3L+ffeQZQTYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707420304; c=relaxed/simple;
-	bh=C/qhpvQ1U/IGPG9Q/4H48Jyadfqklag1ncD0iP9AUlU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ikBdzle8SX4neJRNNmkwRhJy7e3ZK9iK0JkU9TYMIAxl+A37gO4nmSWcGAX0MNLFZ2hi/0jeds8/e/XuElVcLeMujaOc/Dj/Go8PMFORpzgMz5nGlDeBb9wDFfJMbuUccSF9+JqWz1QYg9X/3ZKo5PKx+czhpxFpm5c4tZB/q94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Cxt+cCfT; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707420303; x=1738956303;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=C/qhpvQ1U/IGPG9Q/4H48Jyadfqklag1ncD0iP9AUlU=;
-  b=Cxt+cCfTX2ASH+KuJOLY1m0D8OhJAUADUcDkQZS4KJYU+Hs2mrBsETB7
-   639FZkGREp21YR5WHRBguN88PMj9oL/bws66eNWa59yxjPZb8vEuxw3vz
-   twzgTPPbsWzpxKOqr+HF7la66LcwvAg1oR+Zlta9gkmz//lpPydKtN/iG
-   w7cN+iLt+JHyvHFANVGcvO8YvbZNjhJ1ZqjOBHP/h0c/jBQNACQOUHu78
-   I9gIHpVcxbRk6H//ToXeo5Lk0E8F5O+w9K7s5hcOVDbkfSDWiOAThdlGP
-   cLz/Pnaz5a+SYVoJ/5RbuO+55Q03mYwfHA5hZvzJMKsTnH8pDyZkyD1Qe
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="1202720"
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="1202720"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 11:25:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="934228592"
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="934228592"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 11:25:00 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rYA14-00000002yGc-0sDF;
-	Thu, 08 Feb 2024 21:24:58 +0200
-Date: Thu, 8 Feb 2024 21:24:57 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: linux-kernel@vger.kernel.org
-Cc: MyungJoo Ham <myungjoo.ham@samsung.com>,
-	Chanwoo Choi <cw00.choi@samsung.com>
-Subject: Re: [PATCH v1 1/1] extcon: intel-mrfld: Don't shadow error from
- devm_extcon_dev_allocate()
-Message-ID: <ZcUqiaGI8N-FLijJ@smile.fi.intel.com>
-References: <20231222161854.2955859-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1707420357; c=relaxed/simple;
+	bh=+YxRwLnaWql45Og/uBWyYcb3+6fMBdrqBtTSrgZdyPg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XSOIKdcvFo0VBdVLPLnlzfIosKh8nuKgs4QqG5W6uoxzlpsC0zqeC9Azu5FGAID5Bs3pGDc9D3okhz8McQekGZ7dQYdpz+3ebyXAHkwNwYbCcQh2CXrcTGtG+rpnOPSu0FsipCXNLQoa2j5015UhbxqklEW8YmbbbP176BZ59Is=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e2be7b83b2so12068a34.1;
+        Thu, 08 Feb 2024 11:25:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707420355; x=1708025155;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Tb13rhuW8544qF8dDhm649NVENoNwfXmctODywQIT9g=;
+        b=EjvD5wFU+1SSJ94m0sfzv8grdOJCUQz6h+PYY+IIgc8sDbaD3p3VrWBJY4iFDMJ2ZH
+         O16jIX5PJ1SzB+S2QEMgmqKuVbgUT/mop0SUSecJ3mbw50J571WKRPBn7g+GT6FG4CXi
+         u0EnE+ZN2ZdJr9Bv+2u1XtBog33JkAKx4iU7HUGJKaOrzIHSr5E/WYUunmkmulMPQZly
+         T0GG27iYqBkkknBzliBrIPO+Sw8WCipeZBx4l+3k/EKGguwGnp0vyUKKloHLiAhfL+Ah
+         muOwW+7b62njpONr8kBdfvAl7qQqJUZZ5qMpbUOsKW3ydxtoqtuzCrkj7Bj1sP8ceSVi
+         QoEA==
+X-Forwarded-Encrypted: i=1; AJvYcCUb70/dXogFlTqZR74589E+KsK7FNC7Pf7q0UdiamPZCv9qCTf5NNJtilgeAkiDA6p2FLhVCt3MEPWYU61LG1rsH4vuaona3BVMgEhO5IGA6HgrrWCFOSu1aoiP+F4FQhpO0AkAvrPg9TGXMzuDzOLzxWo0pPgroWEqVpiQBoejtbCH
+X-Gm-Message-State: AOJu0Yxuh1EM4+LZAi+nqIlQPgtot73NlCXxrEII2P8ryA+A/PvYH3N0
+	94iJKmKj24Jrb2ceJIWdMM7El2q8yG+VlF7N/xJk1kUxNjOpSh6bcEDbU0pyKchroPpTGPBCmdd
+	1jbZP0Yj3O0x/C/9Owp5ghJBAoYLDVFC7
+X-Google-Smtp-Source: AGHT+IFc86hHi76bIJAGJOwHBORpUhjaiDBoTVniHGjNFTBpmS81Ejjw3qUL6lWrbyu/lSuj+y/tCssE7XkUmp6KBS4=
+X-Received: by 2002:a05:6871:e40b:b0:21a:cf0:2478 with SMTP id
+ py11-20020a056871e40b00b0021a0cf02478mr166961oac.4.1707420355197; Thu, 08 Feb
+ 2024 11:25:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231222161854.2955859-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <2728491.mvXUDI8C0e@kreacher> <5762433.DvuYhMxLoT@kreacher> <ZcSPMRH34M5yG/IU@linux.intel.com>
+In-Reply-To: <ZcSPMRH34M5yG/IU@linux.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 8 Feb 2024 20:25:43 +0100
+Message-ID: <CAJZ5v0jfUKFo-MDVU7i+yvfk=f_65Unat6715S6kuqvRX9eQLA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/6] thermal: core: Store zone trips table in struct thermal_zone_device
+To: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM <linux-pm@vger.kernel.org>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Linux ACPI <linux-acpi@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>, 
+	Zhang Rui <rui.zhang@intel.com>, 
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 22, 2023 at 06:18:54PM +0200, Andy Shevchenko wrote:
-> Don't shadow error from devm_extcon_dev_allocate() and return it as is.
+On Thu, Feb 8, 2024 at 9:22=E2=80=AFAM Stanislaw Gruszka
+<stanislaw.gruszka@linux.intel.com> wrote:
+>
+> On Mon, Feb 05, 2024 at 10:14:31PM +0100, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > The current code requires thermal zone creators to pass a pointer to a
+> > writable trips table to thermal_zone_device_register_with_trips() and
+> > that trips table is then used by the thermal core going forward.
+> >
+> > Consequently, the callers of thermal_zone_device_register_with_trips()
+> > are required to hold on to the trips table passed to it until the given
+> > thermal zone is unregistered, at which point the trips table can be
+> > freed, but at the same time they are not allowed to access the cells in
+> > that table directly.  This is both error prone and confusing.
+> >
+> > To address it, turn the trips table pointer in struct thermal_zone_devi=
+ce
+> > into a flex array (counted by its num_trips field), allocate it during
+> > thermal zone device allocation and copy the contents of the trips table
+> > supplied by the zone creator (which can be const now) into it.
+> >
+> > This allows the callers of thermal_zone_device_register_with_trips() to
+> > drop their trip tables right after the zone registration.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
 
-Any comment on this?
+Thanks a lot for all of the reviews, much appreciated, especially
+regarding the Intel drivers changes.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Unfortunately, this patch series, and the first half of it in
+particular, is somewhat premature, because a couple of thermal drivers
+do unexpected things to their trip point tables and they need to be
+modified to stop accessing the trip tables directly before the core
+can start using internal copies of them.
 
-
+I'm going to save the tags for the future, however.
 
