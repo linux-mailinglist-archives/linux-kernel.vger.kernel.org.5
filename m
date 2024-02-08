@@ -1,203 +1,165 @@
-Return-Path: <linux-kernel+bounces-57580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5813984DAF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:05:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB34A84DAFE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1DA71F235CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:05:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0A091C2149D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDBF6A00A;
-	Thu,  8 Feb 2024 08:05:16 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 824186A038;
+	Thu,  8 Feb 2024 08:06:22 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FFBA69E1E
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 08:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1700569E00;
+	Thu,  8 Feb 2024 08:06:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707379515; cv=none; b=VLYWA+M71mY6o2jsQNCbOxp55wMRsB6UVCvIbG4+/fhdegg2Rz8DR/E+H4/DWDVVX1wOZ7q0PVLEDy20AERLyQfe/GN637ow4FLDfZXOH0AQCfhmvDRSGqbDsXF3XO6+4sciiqBFmil1wl7F1bZlXCmRAu+zII0jU6X6ce+PrhY=
+	t=1707379582; cv=none; b=cjYZLj4kTYs4VdNSoShp7XqcaKzv0uX7qIhNPixldXSvlHZtJF7SI3nnPM7UOjXALHwCucZtFLOCOM63uWwXiZ2WNgMn0FIMRXbk4oL8exKB3lKbk2k81gEUrGXI/FEQdiOgwCZYFJHDGeOYYRRXdNLl0yc1cHY9HNl7O+l9W1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707379515; c=relaxed/simple;
-	bh=XVKk8mNNyH2W2TKyOl5UrYU3KaPEK8JC6mLhXHUYDbU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kTNV752o1jdLIBBNJHLvJ6gIRBKyFziFnoCZGYzfGlqmmKyUPP912l/0JV/hNfv+7hOdQm8LmYox0z/0aHYd7fXPXQi1HWLq14q5Qi8TZA3AJtKcX3PpxUG7L7yJ5vc1syheIFxPK1HLIVX96+lcntMDlrtC04IA57oRgUqTTF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rXzP7-0008V1-CL; Thu, 08 Feb 2024 09:05:05 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rXzP6-005Amy-Bf; Thu, 08 Feb 2024 09:05:04 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rXzP6-000D8b-0o;
-	Thu, 08 Feb 2024 09:05:04 +0100
-Date: Thu, 8 Feb 2024 09:05:04 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Finn Behrens <me@kloenk.de>
-Cc: Thierry Reding <thierry.reding@gmail.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, linux-pwm@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, Heisath <jannis@imserv.org>, 
-	Yureka Lilian <yuka@yuka.dev>
-Subject: Re: [PATCH] gpio-mvebu: no hardcoded timer assignment for pwm
-Message-ID: <6chccjdn3yidi7rodcledxx7czt3adjxvaeeneii5ghfiw4oc3@t5qtmnlasvlo>
-References: <20240130105515.30258-1-me@kloenk.de>
+	s=arc-20240116; t=1707379582; c=relaxed/simple;
+	bh=/zEYUb4yL29+qOwYug6IGb0qmLwNiMesnkRiO3l7WEE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=qzpLo+dt2SJzSDf5lkyUu+2LfuulHqzH8Vq7eDBHH6NjDuap0SLXVbzLeKfDETWstDkwhx5JGoRJ0xSj5rQBbaDHFfO9IF4KzgtkRYEHvGjh583SvU+pkeHdMWZQd24DInM/KGwlyawv6h6OZTLabzQtcNJf7k4yArC9+tavq0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TVq144pfPzB0Mbw;
+	Thu,  8 Feb 2024 15:51:04 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id D29E2140595;
+	Thu,  8 Feb 2024 16:06:13 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwAXEBlli8RlWRYaAg--.2529S2;
+	Thu, 08 Feb 2024 09:06:13 +0100 (CET)
+Message-ID: <dd8a979df500489c0d8595f9a3f89c801ce6f1c2.camel@huaweicloud.com>
+Subject: Re: [PATCH v9 0/25] security: Move IMA and EVM to the LSM
+ infrastructure
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Paul Moore <paul@paul-moore.com>, viro@zeniv.linux.org.uk, 
+ brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+ neilb@suse.de,  kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+ jmorris@namei.org,  serge@hallyn.com, zohar@linux.ibm.com,
+ dmitry.kasatkin@gmail.com,  eric.snowberg@oracle.com, dhowells@redhat.com,
+ jarkko@kernel.org,  stephen.smalley.work@gmail.com, eparis@parisplace.org,
+ casey@schaufler-ca.com,  shuah@kernel.org, mic@digikod.net
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-integrity@vger.kernel.org, keyrings@vger.kernel.org, 
+	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, Roberto Sassu
+	 <roberto.sassu@huawei.com>
+Date: Thu, 08 Feb 2024 09:05:54 +0100
+In-Reply-To: <d54ca249c3071522218c7ba7b4984bab@paul-moore.com>
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+	 <d54ca249c3071522218c7ba7b4984bab@paul-moore.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="365ufzjbjxz7grxt"
-Content-Disposition: inline
-In-Reply-To: <20240130105515.30258-1-me@kloenk.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-CM-TRANSID:LxC2BwAXEBlli8RlWRYaAg--.2529S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw17AFy8Jry7Kr13Cw1DGFg_yoW5ZrWrpF
+	Z5tayfCF4qqF1I93s7Ar47WrW0kw4kKFyUJFy5Xryvy3Z8GryxJrZ7KFWUZFWDWr4rXayI
+	qw17Kr9xZ3WkZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAHBF1jj5opbgADst
 
-
---365ufzjbjxz7grxt
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-On Tue, Jan 30, 2024 at 11:55:13AM +0100, Finn Behrens wrote:
-> Removes the hardcoded timer assignment of timers to pwm controllers.
-> This allows to use more than one pwm per gpio bank.
+On Wed, 2024-02-07 at 22:18 -0500, Paul Moore wrote:
+> On Jan 15, 2024 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
+> >=20
+> > IMA and EVM are not effectively LSMs, especially due to the fact that i=
+n
+> > the past they could not provide a security blob while there is another =
+LSM
+> > active.
+> >=20
+> > That changed in the recent years, the LSM stacking feature now makes it
+> > possible to stack together multiple LSMs, and allows them to provide a
+> > security blob for most kernel objects. While the LSM stacking feature h=
+as
+> > some limitations being worked out, it is already suitable to make IMA a=
+nd
+> > EVM as LSMs.
+> >=20
+> > The main purpose of this patch set is to remove IMA and EVM function ca=
+lls,
+> > hardcoded in the LSM infrastructure and other places in the kernel, and=
+ to
+> > register them as LSM hook implementations, so that those functions are
+> > called by the LSM infrastructure like other regular LSMs.
 >=20
-> Original patch with chip_data interface by Heisath <jannis@imserv.org>
->=20
-> Link: https://wiki.kobol.io/helios4/pwm/#patch-requirement
-> Co-developed-by: Yureka Lilian <yuka@yuka.dev>
-> Signed-off-by: Yureka Lilian <yuka@yuka.dev>
-> Signed-off-by: Finn Behrens <me@kloenk.de>
+> Thanks Roberto, this is looking good.  I appreciate all the work you've
+> put into making this happen; when I first mentioned this idea I figured
+> it would be something that would happen much farther into the future, I
+> wasn't expecting to see you pick this up and put in the work to make it
+> happen - thank you.
 
-I find this patch hard to understand and I hope it's more complicated
-than it could be. I wonder if it would be beneficial to split this patch
-in two. In the first patch just introduce the new structures with all
-the necessary renaming and only in the second patch implement the added
-flexibility.
+Thanks! I also appreciate a lot your guidance and suggestions.
 
-Some more details below.
+> I had some pretty minor comments but I think the only thing I saw that
+> I think needs a change/addition is a comment in the Makefile regarding
+> the IMA/EVM ordering; take a look and let me know what you think.
 
->  drivers/gpio/gpio-mvebu.c | 223 ++++++++++++++++++++++++--------------
->  1 file changed, 139 insertions(+), 84 deletions(-)
->=20
-> diff --git a/drivers/gpio/gpio-mvebu.c b/drivers/gpio/gpio-mvebu.c
-> index a13f3c18ccd4..303ea3be0b69 100644
-> --- a/drivers/gpio/gpio-mvebu.c
-> +++ b/drivers/gpio/gpio-mvebu.c
-> @@ -94,21 +94,43 @@
-> =20
->  #define MVEBU_MAX_GPIO_PER_BANK		32
-> =20
-> -struct mvebu_pwm {
-> +enum mvebu_pwm_ctrl {
-> +	MVEBU_PWM_CTRL_SET_A =3D 0,
-> +	MVEBU_PWM_CTRL_SET_B,
-> +	MVEBU_PWM_CTRL_MAX
-> +};
-> +
-> +struct mvebu_pwmchip {
->  	struct regmap		*regs;
->  	u32			 offset;
->  	unsigned long		 clk_rate;
-> -	struct gpio_desc	*gpiod;
-> -	struct pwm_chip		 chip;
->  	spinlock_t		 lock;
-> -	struct mvebu_gpio_chip	*mvchip;
-> +	bool			 in_use;
-> =20
->  	/* Used to preserve GPIO/PWM registers across suspend/resume */
-> -	u32			 blink_select;
->  	u32			 blink_on_duration;
->  	u32			 blink_off_duration;
->  };
-> =20
-> +struct mvebu_pwm_chip_drv {
-> +	enum mvebu_pwm_ctrl	 ctrl;
-> +	struct gpio_desc	*gpiod;
-> +	bool			 master;
-> +};
-> +
-> +struct mvebu_pwm {
-> +	struct pwm_chip		 chip;
-> +	struct mvebu_gpio_chip	*mvchip;
-> +	struct mvebu_pwmchip	 controller;
-> +	enum mvebu_pwm_ctrl	 default_controller;
-> +
-> +	/* Used to preserve GPIO/PWM registers across suspend/resume */
-> +	u32				 blink_select;
-> +	struct mvebu_pwm_chip_drv	 drv[];
-> +};
+Oh, I remember well, it is there but difficult to spot...
 
-So we have three different structures related to pwm. Some highlevel
-description (in a comment or at least the commit log) about how the
-hardware works and which struct describes what would be helpful. I gave
-up after 15 min of reading this patch and trying to understand it.
+--- a/security/integrity/Makefile
++++ b/security/integrity/Makefile
+@@ -18,5 +18,6 @@ integrity-$(CONFIG_LOAD_IPL_KEYS) +=3D platform_certs/loa=
+d_ipl_s390.o
+ integrity-$(CONFIG_LOAD_PPC_KEYS) +=3D platform_certs/efi_parser.o \
+                                      platform_certs/load_powerpc.o \
+                                      platform_certs/keyring_handler.o
++# The relative order of the 'ima' and 'evm' LSMs depends on the order belo=
+w.
+ obj-$(CONFIG_IMA)			+=3D ima/
+ obj-$(CONFIG_EVM)			+=3D evm/
 
-> +static struct mvebu_pwmchip  *mvebu_pwm_list[MVEBU_PWM_CTRL_MAX];
+> There are also a few patches in the patchset that don't have an
+> ACK/review tag from Mimi, although now that you are co-maininting IMA/EVM
+> with Mimi I don't know if that matters.  If the two of you can let me
+> know how you want me to handle LSM patches that are IMA/EVM related I
+> would appreciate it (two ACKs, one or other, something else?).
 
-Huh, a static variable. Does that mean we can only have one mvebu_gpio
-device?
+Ok, we will come back to you about this.
 
-> +
->  struct mvebu_gpio_chip {
->  	struct gpio_chip   chip;
->  	struct regmap     *regs;
-> @@ -285,12 +307,12 @@ mvebu_gpio_write_level_mask(struct mvebu_gpio_chip =
-*mvchip, u32 val)
->   * Functions returning offsets of individual registers for a given
->   * PWM controller.
->   */
-> -static unsigned int mvebu_pwmreg_blink_on_duration(struct mvebu_pwm *mvp=
-wm)
-> +static unsigned int mvebu_pwmreg_blink_on_duration(struct mvebu_pwmchip =
-*mvpwm)
+> Once you add a Makefile commane and we sort out the IMA/EVM approval
+> process I think we're good to get this into linux-next.  A while back
+> Mimi and I had a chat offline and if I recall everything correctly she
+> preferred that I take this patchset via the LSM tree.  I don't have a
+> problem with that, and to be honest I would probably prefer
+> that too, but I wanted to check with everyone that is still the case.
+> Just in case, I've added my ACKs/reviews to this patchset in case this
+> needs to be merged via the integrity tree.
 
-I'm a fan of picking always the same variable name for the same thing
-and different names for different things. "mvpwm" is used for variables
-of type struct mvebu_pwmchip and struct mvebu_pwm.
+Ok, given that there is the comment in the Makefile, the last thing to
+do from your side is to remove the vague comment in the file_release
+patch.
 
->  {
->  	return mvpwm->offset + PWM_BLINK_ON_DURATION_OFF;
->  }
+Other than that, I think Mimi wanted to give a last look. If that is
+ok, then the patches should be ready for your repo and linux-next.
 
-Best regards
-Uwe
+Thanks
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Roberto
 
---365ufzjbjxz7grxt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXEiy8ACgkQj4D7WH0S
-/k5ugQf+OkUaqWRhVyLcaDS6bt0BlPaDfFGG5XGSJ4EFd2g0a3kSQbzJvbwuUw8T
-RfNfNV0jsjfD0M9IHAcCMwTQqK84zBkVJjcj3YtWnp0g0jeGJR8p7EfGBuLFVIBD
-4X+ERnlo6fXwvXGC+y9APhR8254LRo76Jg6Me8RtI+5L8VuTVtBbm1s3M7chM81N
-Ki/4lGRZfUhLQ0nRcaJ3Z82dcfqW6taaNwH7/tYLJ/QJ2x1aelxu8FwnBCjg/sRe
-JlLn+todDMLP2c0Am2y6lxRiCQVwPmo0pRBBkKpQ2ML3uxyMRaO0BZKc2UxL9MGC
-9s//pu6e7mtNE/5Kc4tokjAcxqNF4w==
-=lVsG
------END PGP SIGNATURE-----
-
---365ufzjbjxz7grxt--
 
