@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-58484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAFF884E708
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:47:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 114E684E726
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:54:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 193FE1C2501C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:47:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA15CB2D73D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:47:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78FF31272AA;
-	Thu,  8 Feb 2024 17:46:13 +0000 (UTC)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D32382D8F;
+	Thu,  8 Feb 2024 17:46:15 +0000 (UTC)
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4667782D61
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:46:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6726C1272A6
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:46:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707414373; cv=none; b=HZbZKj/FAK6mDSdgJxX0QcTKhb36bU+bbQivptypq4ttq2lY30whOfd20iRky65o00l/y5RN8PMNLmd+oLUziSAX4yvohphl0xHl9BgWyN3i2+JL9sAWGHgsngWzUaYu6fIBq9iZBy746YvdJK9OJ80QPjhiX+lO9onREvD4SZM=
+	t=1707414375; cv=none; b=FYPVm3uIKNDIoNhpv/oCaZCMduWFfxaI6DH6OHvzpNvROVC6VbeuwTVESwb20mVLeNY7ociu4kz4CN+czeRxWvsaG7fx5M8MTjZyz9Z1FilkKElbvm43LtGnm7RLHY+kZ7D7JrQEhYy0N6RbU3wMxc2Eo+nkMCtDUAFYT/MJb5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707414373; c=relaxed/simple;
-	bh=q2dr7c/QVHh7zHm5CcoMvsNU3SwZfRo9G63HVxFAciY=;
+	s=arc-20240116; t=1707414375; c=relaxed/simple;
+	bh=V6SJDYhhfbsgsjuFz/DKNz7pq99SHkkbulZQPMkGtL0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pAZJQ5qLAvjsdT6bf8owT5jzUs+jIU7OCeGcefEdu3P0eZrapplldPtb2Rnotuk86j5tAzGD7CdV99dQVP2HpGJ8+95XmLcOa49NOU02+n6bH6jQETk/48V/TtDIhBMKoSseshXTc7eKPxNBw/sd6QH6OuKu53FuyHpHQJZBpHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.48
+	 MIME-Version; b=MXuxegUXIwYEOqKjKDfQz0AkrxAvDfd7G871uno95QltSRiolFPv61dlSjLjChAsCRtv3OGtc/c4ql/rpRpSCIhktclv5SBHHHOn/7VZnheoboizdzu3wS5rnSr1GQ4d1ymZALosLW1OVkf0trseCwUBwRguK+3xhrCIq6ZVsRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a389a3b9601so6188866b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 09:46:11 -0800 (PST)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a3850ce741bso3522866b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 09:46:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707414369; x=1708019169;
+        d=1e100.net; s=20230601; t=1707414371; x=1708019171;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ih/jBTnio5/IZQFOp461sTdF+T+V2d6Zsp9b1u0NxxA=;
-        b=aZ+bEJJ3nc1naSYGJcIRvxnny9pnYfPf1qUaZJzk3BHDr94lV4EsCSUPHr29XDZnEU
-         XmxK6aqrfNZXg3E9J86310GpIhIjCf1fmytFvzw6/UoaZV24KtSJlVyNW/ky1ZWYc6q5
-         HcZXi7TOz9uGzbYm1a6C54hOoOUgCnN/FikebztQhYfITwvuv84q8mMuJuYTz1/Oujx/
-         L1r+MM6Wtbg1qYz/5haw7Mi3XSDs3obsNCefx3YUznsB1JMs8GS35Zg3bFvNO1DCdHtT
-         OEXkADLdbeu4pMdNQLNCkn82sEaoO2+fzPzoIRyMewg0C2CrA1B0CHeA358GaDIngSWt
-         O1Bg==
-X-Gm-Message-State: AOJu0YwNnOjlHnV9kmQTWIvQ/ll2pUEtOSl2FuvFr/p0PJRf6hwAsD3B
-	D+Qxwin+NqOspzpXOgNboDtMwdfp8BMdhVax1tWkRrPgtlMAXdGw
-X-Google-Smtp-Source: AGHT+IEKtNoKw4R184/7V5YL9rQl71ykoPGcBgHJApsExsGFxa67cXAV4Maf9i6avJVHypObaqZjeA==
-X-Received: by 2002:a17:906:80ca:b0:a36:fc15:c6b2 with SMTP id a10-20020a17090680ca00b00a36fc15c6b2mr32370ejx.35.1707414369418;
-        Thu, 08 Feb 2024 09:46:09 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWGQH8vx/d3kKVONIuJf8EGl3CmpVDMrfLZsOC9xxQc/X9ietRvOGVnfbaSwPLtfg2ltfyRqyZcBsYqZeRsQmQROgQZ07KNMI6lbs5z3QSQpeMhYfaSEiE2vqJFVTXM2e3CPPUyqqSZlGy2stdgrDkxYSjN4oVdKrX3YsAcI1r3tSfYUAEWimZyTaZ0QLE06sq+RlIwrBQWfV37sQjfj5UHgT4j+1YPW5phHG5uE9r5WRe+4BLyXeQ5tO5se7kn/iUpGMR14LegMhO2Z3t0HdRwPal02xQW0C8rOw==
-Received: from localhost (fwdproxy-lla-004.fbsv.net. [2a03:2880:30ff:4::face:b00c])
-        by smtp.gmail.com with ESMTPSA id en14-20020a056402528e00b0055fe55441cbsm1045813edb.40.2024.02.08.09.46.08
+        bh=eurgVuL7EUuY+oG8xpKQlX9DZHWLlE9++VG+SZQp61g=;
+        b=NSrmLr8GTlWyr+bWQX/yn78yNrPdefeU5e0nHV/qtMSxPnmXmL6uAE2HXns3JHwYpj
+         kfps+0kbPBzn93+D+t+NWtVWfxEjQVmi39ytUZcolg5TpSHpNF74ijRwC3mLH+73oK+v
+         sGsGN/Ubf+eP+FZuiKbdsBR5f2muTYlVwjkbUlHY/ndwPZJTQFCk10+U8gjPEJDQZV26
+         QZY6DFOf9sxxzFLoEkIksmAf5NA4JsRsxZyQm9qU+sbdShGsAsXW5DD6t7jeKeqrVNNz
+         +G0wBLZSOLQKWUaDE855NxNaDgjX2Dm5NiUuNjS9VdmUcK0/ifJC3QY+DJMp1Vqxjlie
+         y2Qg==
+X-Gm-Message-State: AOJu0YzGIdTaB9YYhiaKF3UvBOVLj07bz7JztkescmVaNctsnaqGdA46
+	z6hESw53Bhq1eaWOR15x8QYEtIR/DgP//8GMi2arg8ckn3iNWixf
+X-Google-Smtp-Source: AGHT+IE6H0+FCCdYFwlmbVyFqBn0xr4HtQx1wpphU6Nn0EvHm73s1Y/cR6ujxAMQL6+jqztC0j4i1g==
+X-Received: by 2002:a17:906:3b5a:b0:a38:9148:60b4 with SMTP id h26-20020a1709063b5a00b00a38914860b4mr42920ejf.15.1707414371674;
+        Thu, 08 Feb 2024 09:46:11 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWosqUu7ZF8tg2bRvkHwtsUbVs7AsjtbExYllIJYitSBxYagJ1OyCHKOZdsyPNpYWxE8fpEAOnb1lg68QkuQk5wTOk7WJkdRqx6im+HdGnAaD3jI+i5Uxlz2PN8JafDnTZniB9rBiBA0DQ+QqNi7a1DHm2Hev6CjZALWtL6XmQHwR7DLc0TbyIrZwewuOn/HeFbso9IkH83XpRZhLiz0k9yz1A4WJxFrKw7spr4NqCUE7KKqAAZLwsk3rROhPkROQOl5NY0InkYzBN3+DLmLQCvudpZRNYCjVVcCg==
+Received: from localhost (fwdproxy-lla-009.fbsv.net. [2a03:2880:30ff:9::face:b00c])
+        by smtp.gmail.com with ESMTPSA id ew8-20020a056402538800b0055c9280dc51sm1033142edb.14.2024.02.08.09.46.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 09:46:08 -0800 (PST)
+        Thu, 08 Feb 2024 09:46:10 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: mingo@redhat.com,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/3] x86/bugs: Create a way to disable GDS mitigation
-Date: Thu,  8 Feb 2024 09:45:53 -0800
-Message-Id: <20240208174555.44200-2-leitao@debian.org>
+Subject: [PATCH v2 2/3] x86/bugs: spectre_v2_user default mode depends on main default
+Date: Thu,  8 Feb 2024 09:45:54 -0800
+Message-Id: <20240208174555.44200-3-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240208174555.44200-1-leitao@debian.org>
 References: <20240208174555.44200-1-leitao@debian.org>
@@ -77,72 +77,64 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently there is no way to disable GDS mitigation at build time.
-The current config option (GDS_MITIGATION_FORCE) just enables a more
-drastic mitigation.
+Change the default value of spectre v2 in user mode to respect the
+CONFIG_MITIGATION_SPECTRE_V2 config option.
 
-Create a new kernel config that allows GDS to be completely disabled,
-similarly to the "gather_data_sampling=off" or "mitigations=off" kernel
-command-line. Move the GDS_MITIGATION_FORCE under this new mitigation.
+Currently, user mode spectre v2 is set to auto
+(SPECTRE_V2_USER_CMD_AUTO) by default, even if
+CONFIG_MITIGATION_SPECTRE_V2 is disabled.
 
-Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Set the Spectre_v2 value to auto (SPECTRE_V2_USER_CMD_AUTO) if the
+Spectre v2 config (CONFIG_MITIGATION_SPECTRE_V2) is enabled, otherwise
+set the value to none (SPECTRE_V2_USER_CMD_NONE).
+
+Important to say the command line argument "spectre_v2_user" overwrites
+the default value in both cases.
+
 Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- arch/x86/Kconfig           | 16 +++++++++++-----
- arch/x86/kernel/cpu/bugs.c |  7 ++++---
- 2 files changed, 15 insertions(+), 8 deletions(-)
+ arch/x86/kernel/cpu/bugs.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 0a9fea390ef3..d5e3f1a8cacd 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2587,15 +2587,21 @@ config MITIGATION_SLS
- 	  against straight line speculation. The kernel image might be slightly
- 	  larger.
- 
-+config MITIGATION_GDS
-+	bool "Mitigate Gather Data Sampling"
-+	depends on CPU_SUP_INTEL
-+	default y
-+	help
-+	  Enable mitigation for Gather Data Sampling (GDS). GDS is a hardware
-+	  vulnerability which allows unprivileged speculative access to data
-+	  which was previously stored in vector registers. The attacker uses gather
-+	  instructions to infer the stale vector register data.
-+
- config MITIGATION_GDS_FORCE
- 	bool "Force GDS Mitigation"
--	depends on CPU_SUP_INTEL
-+	depends on MITIGATION_GDS
- 	default n
- 	help
--	  Gather Data Sampling (GDS) is a hardware vulnerability which allows
--	  unprivileged speculative access to data which was previously stored in
--	  vector registers.
--
- 	  This option is equivalent to setting gather_data_sampling=force on the
- 	  command line. The microcode mitigation is used if present, otherwise
- 	  AVX is disabled as a mitigation. On affected systems that are missing
 diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index f2775417bda2..0172bb0f61fe 100644
+index 0172bb0f61fe..1fe2e939c0b3 100644
 --- a/arch/x86/kernel/cpu/bugs.c
 +++ b/arch/x86/kernel/cpu/bugs.c
-@@ -671,10 +671,11 @@ enum gds_mitigations {
- 	GDS_MITIGATION_HYPERVISOR,
- };
+@@ -1216,9 +1216,13 @@ static __ro_after_init enum spectre_v2_mitigation_cmd spectre_v2_cmd;
+ static enum spectre_v2_user_cmd __init
+ spectre_v2_parse_user_cmdline(void)
+ {
++	enum spectre_v2_user_cmd mode;
+ 	char arg[20];
+ 	int ret, i;
  
--#if IS_ENABLED(CONFIG_MITIGATION_GDS_FORCE)
--static enum gds_mitigations gds_mitigation __ro_after_init = GDS_MITIGATION_FORCE;
-+#if IS_ENABLED(CONFIG_MITIGATION_GDS)
-+static enum gds_mitigations gds_mitigation __ro_after_init =
-+	IS_ENABLED(CONFIG_MITIGATION_GDS_FORCE) ? GDS_MITIGATION_FORCE : GDS_MITIGATION_FULL;
- #else
--static enum gds_mitigations gds_mitigation __ro_after_init = GDS_MITIGATION_FULL;
-+static enum gds_mitigations gds_mitigation __ro_after_init = GDS_MITIGATION_OFF;
- #endif
++	mode = IS_ENABLED(CONFIG_MITIGATION_SPECTRE_V2) ?
++		SPECTRE_V2_USER_CMD_AUTO : SPECTRE_V2_USER_CMD_NONE;
++
+ 	switch (spectre_v2_cmd) {
+ 	case SPECTRE_V2_CMD_NONE:
+ 		return SPECTRE_V2_USER_CMD_NONE;
+@@ -1231,7 +1235,7 @@ spectre_v2_parse_user_cmdline(void)
+ 	ret = cmdline_find_option(boot_command_line, "spectre_v2_user",
+ 				  arg, sizeof(arg));
+ 	if (ret < 0)
+-		return SPECTRE_V2_USER_CMD_AUTO;
++		return mode;
  
- static const char * const gds_strings[] = {
+ 	for (i = 0; i < ARRAY_SIZE(v2_user_options); i++) {
+ 		if (match_option(arg, ret, v2_user_options[i].option)) {
+@@ -1241,8 +1245,8 @@ spectre_v2_parse_user_cmdline(void)
+ 		}
+ 	}
+ 
+-	pr_err("Unknown user space protection option (%s). Switching to AUTO select\n", arg);
+-	return SPECTRE_V2_USER_CMD_AUTO;
++	pr_err("Unknown user space protection option (%s). Switching to default\n", arg);
++	return mode;
+ }
+ 
+ static inline bool spectre_v2_in_ibrs_mode(enum spectre_v2_mitigation mode)
 -- 
 2.39.3
 
