@@ -1,135 +1,132 @@
-Return-Path: <linux-kernel+bounces-58105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5876D84E158
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:05:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF92684E15B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:05:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAECD1F24A70
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:05:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 079D41C26E48
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF8876C8C;
-	Thu,  8 Feb 2024 13:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7751878696;
+	Thu,  8 Feb 2024 13:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iRH+1aka"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DYBW9kB0";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MYw7lRvL"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A880768F9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7677691F;
 	Thu,  8 Feb 2024 13:04:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707397482; cv=none; b=SZYIY/oczyBX/SX5jCYht/i7vfj+j8gBWli5w8DCzzQ4V4lClEc4Tzbi9Q9DnCIVNeVsJa1LKqo3+4BRhNVDrIiBdvXgQ4tlKru5aWmAMpq3KJF4eJONcfqB6VpeIS475sSzscX2uehtrdaR5nINYKFUhuVCaVlT3/TbwnCwJ1k=
+	t=1707397483; cv=none; b=keBPSVsbQ39cQZfj5bkq7fkSFwM0qQDlIk8SLtSkRc3TWasQr0JDhS6S49YRgevSZYVfGYCiskEaXs6oJbpybXOxmEIm24OXL/wdw7xHy5E7AtddfX0mlDeiuNPWTbj5yo4p82k+VXwCr7GHg9MiA+ZANYt5s9xRA3qSc+eq6aU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707397482; c=relaxed/simple;
-	bh=Lo4kkB4jLMq5jqNhPrPQyqJPfLO752skAxdfFETkocA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ImK1WwAzEfoUJal+iXfuD/KvAiDysjwFPCrR8+8pWwdiPOZ1smWRhDKNi9v+8AhaRkGyZEBOv/tkAFBgVqxl89JB+ybZOhE54b4KceWp9YE2LmpMdGiS/VyfG+gBw2BzMBM1qfsw6+BQXXOj1YWKuDL9fM9e/EL3RoT/eK/VkEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iRH+1aka; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707397481; x=1738933481;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Lo4kkB4jLMq5jqNhPrPQyqJPfLO752skAxdfFETkocA=;
-  b=iRH+1akabI2fEvTiYXbDXnzCAom0tYcKswMYM2ilvOqFHLIZ1m8Di/1E
-   fWBxX4lVzPFatiCOrVHn5tT6RAJMRcONVFCURp64R+uYavtvQK7ssgLP6
-   XNd5JqXCWZMd2QIj9lkpZgoi9CtJKZ1tAyFwOopFI7QfNPPc8VYFC3uXs
-   BRtKNWzS2+JQ9NrZHJhXin5Yt/YC9KJR6d54QcgMEq1S4QEShq9wXxun8
-   4kP7vFgTXE2t3aAZN8cMBJI7S0MEOWMPwgpMP4ZFDGYCo1Xq0A+Ew3wgj
-   mCzf3VpeMjrhIHuhe6eH5Lvtds5/m/+VMBUMLK2Q9+jwm3j01yo3IC8Lr
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="1354956"
-X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="1354956"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 05:04:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="1884047"
-Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.intel.com) ([10.213.2.200])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 05:04:37 -0800
-From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	linux-kernel@vger.kernel.org
-Cc: linux-cxl@vger.kernel.org,
-	Ingo Molnar <mingo@kernel.org>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Ira Weiny <ira.weiny@intel.com>,
-	"Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-Subject: [PATCH 2/2 v4] cxl/region: Use cond_guard() in show_targetN()
-Date: Thu,  8 Feb 2024 14:04:24 +0100
-Message-ID: <20240208130424.59568-3-fabio.maria.de.francesco@linux.intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240208130424.59568-1-fabio.maria.de.francesco@linux.intel.com>
-References: <20240208130424.59568-1-fabio.maria.de.francesco@linux.intel.com>
+	s=arc-20240116; t=1707397483; c=relaxed/simple;
+	bh=r0jE77rdo6Ue1DCrYWr0IcRSr6YcbHSatdaQvJjCqVU=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=dX1f6i/DZSpDQQRLphv6HFzIbnglb9QcmK5nx6KipVgBK1k56bRm3rroa7IUCFot8UDuqb62muTDDfE3zbd2CZmFxyeaRtNYqZef3vAXE8BKvbWHEuYsjYWk/JX0KG74chEHAFGV6bUORxYZ4tu0A6DqdPWZMZ3lDHCL1EWST8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DYBW9kB0; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MYw7lRvL; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 08 Feb 2024 13:04:39 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707397479;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zPbC25vg+lLa3ZBFGl4Zq+FRf4XhtPbXYIWS+Q2MVhs=;
+	b=DYBW9kB0Pg+Oni4fYFcLTUCbQ/+x1yYFKtEt9OJzNasq0GsNU8UO7rHto3voNch1fSXL8y
+	BfAuJY5JXl4kvH1cQ9u2S1vhhj1fbI5cKFs6N/AR9oK/6WSuO9/HhgcNAZ+2gKfSe55NPw
+	1r7nHxg92yFTfCQ548O6Trt2LLPslS35jgOKjeLgzaFBYdVd+YoBG+gxxQLiyzEayNjR1x
+	m7NbpSkhGfoqBBusA4eekO/cxA8zQQgqGlRlZkrwGQpHJ6KYFS2g0jjBx+EgH9dJef8DTo
+	DNG2SjHzHtxcxI1ni2U0WYGvx1WcKiSwYSv2ouUs8PhO4DBirVdbqicBtI0OeQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707397479;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zPbC25vg+lLa3ZBFGl4Zq+FRf4XhtPbXYIWS+Q2MVhs=;
+	b=MYw7lRvLVjLyd9kEbx4+6y1RSwhqJTLW6t4LgogHqFbWBLfRobGd7MvomgGZv+9qoBkF6k
+	zKIFD22XSPnXjZAQ==
+From: "tip-bot2 for Masahiro Yamada" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/vdso] x86/vdso: Use CONFIG_COMPAT_32 to specify vdso32
+Cc: Masahiro Yamada <masahiroy@kernel.org>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20231121235701.239606-5-masahiroy@kernel.org>
+References: <20231121235701.239606-5-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <170739747901.398.12579593288355831715.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Use cond_guard() in show_target() to not open code an up_read() in an 'out'
-block. If the down_read_interruptible() fails, the statement passed to the
-second argument of cond_guard() returns -EINTR.
+The following commit has been merged into the x86/vdso branch of tip:
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Suggested-by: Dan Williams <dan.j.williams@intel.com>
-Suggested-by: Ira Weiny <ira.weiny@intel.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
+Commit-ID:     289d0a475c3e5be42315376d08e0457350fb8e9c
+Gitweb:        https://git.kernel.org/tip/289d0a475c3e5be42315376d08e0457350fb8e9c
+Author:        Masahiro Yamada <masahiroy@kernel.org>
+AuthorDate:    Wed, 22 Nov 2023 08:57:01 +09:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Thu, 08 Feb 2024 13:23:14 +01:00
+
+x86/vdso: Use CONFIG_COMPAT_32 to specify vdso32
+
+In arch/x86/Kconfig, COMPAT_32 is defined as (IA32_EMULATION || X86_32).
+Use it to eliminate redundancy in Makefile.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20231121235701.239606-5-masahiroy@kernel.org
 ---
- drivers/cxl/core/region.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+ arch/x86/Makefile            | 3 +--
+ arch/x86/entry/vdso/Makefile | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-index ce0e2d82bb2b..704102f75c14 100644
---- a/drivers/cxl/core/region.c
-+++ b/drivers/cxl/core/region.c
-@@ -666,28 +666,20 @@ static size_t show_targetN(struct cxl_region *cxlr, char *buf, int pos)
- {
- 	struct cxl_region_params *p = &cxlr->params;
- 	struct cxl_endpoint_decoder *cxled;
--	int rc;
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 2264db1..f2260ac 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -296,8 +296,7 @@ install:
  
--	rc = down_read_interruptible(&cxl_region_rwsem);
--	if (rc)
--		return rc;
-+	cond_guard(rwsem_read_intr, return -EINTR, &cxl_region_rwsem);
+ vdso-install-$(CONFIG_X86_64)		+= arch/x86/entry/vdso/vdso64.so.dbg
+ vdso-install-$(CONFIG_X86_X32_ABI)	+= arch/x86/entry/vdso/vdsox32.so.dbg
+-vdso-install-$(CONFIG_X86_32)		+= arch/x86/entry/vdso/vdso32.so.dbg
+-vdso-install-$(CONFIG_IA32_EMULATION)	+= arch/x86/entry/vdso/vdso32.so.dbg
++vdso-install-$(CONFIG_COMPAT_32)	+= arch/x86/entry/vdso/vdso32.so.dbg
  
- 	if (pos >= p->interleave_ways) {
- 		dev_dbg(&cxlr->dev, "position %d out of range %d\n", pos,
- 			p->interleave_ways);
--		rc = -ENXIO;
--		goto out;
-+		return -ENXIO;
- 	}
+ archprepare: checkbin
+ checkbin:
+diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+index 439b527..7a97b17 100644
+--- a/arch/x86/entry/vdso/Makefile
++++ b/arch/x86/entry/vdso/Makefile
+@@ -35,8 +35,7 @@ OBJECT_FILES_NON_STANDARD_extable.o	:= n
+ # vDSO images to build
+ obj-$(CONFIG_X86_64)		+= vdso-image-64.o
+ obj-$(CONFIG_X86_X32_ABI)	+= vdso-image-x32.o
+-obj-$(CONFIG_X86_32)		+= vdso-image-32.o vdso32-setup.o
+-obj-$(CONFIG_IA32_EMULATION)	+= vdso-image-32.o vdso32-setup.o
++obj-$(CONFIG_COMPAT_32)		+= vdso-image-32.o vdso32-setup.o
  
- 	cxled = p->targets[pos];
- 	if (!cxled)
--		rc = sysfs_emit(buf, "\n");
--	else
--		rc = sysfs_emit(buf, "%s\n", dev_name(&cxled->cxld.dev));
--out:
--	up_read(&cxl_region_rwsem);
-+		return sysfs_emit(buf, "\n");
+ OBJECT_FILES_NON_STANDARD_vdso32-setup.o := n
  
--	return rc;
-+	return sysfs_emit(buf, "%s\n", dev_name(&cxled->cxld.dev));
- }
- 
- static int match_free_decoder(struct device *dev, void *data)
--- 
-2.43.0
-
 
