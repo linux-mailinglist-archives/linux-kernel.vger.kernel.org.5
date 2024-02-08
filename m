@@ -1,161 +1,102 @@
-Return-Path: <linux-kernel+bounces-58046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CFDD84E097
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:21:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D18284E09B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C27211F263F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:21:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C06741F2A987
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:21:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41FC671B4F;
-	Thu,  8 Feb 2024 12:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FBAD7603E;
+	Thu,  8 Feb 2024 12:21:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L5M0RFSU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nmr8nhgL"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02D2071B5F;
-	Thu,  8 Feb 2024 12:20:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E9C7604D
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 12:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707394857; cv=none; b=LkmMfOFD8J9kKaunQTcAuuRwHWhRitRHjxzAr5UJInlR9HJNx1/F4M2HWETDZCkyc/m3CFvUmcYxh7R6YKNVM6ljibFivUde5ZoZ9IOts4sOZywo/IDitRABBkTNAnPHHuOwwWbcxqYMlJNUW2SjJXP1D192RnpgxN8K/nB78Yw=
+	t=1707394890; cv=none; b=gH1pNJjJ+5/P34iR6rwF3Enc7/n3Lg+nUvFhKEiE8XWUE1Wn1Qmr1R5izBSdDRVXpWEgZY9mbKLBVaJUPAe34sCCJ/HNAwezOhkBa9djT+AbYvjyW8riUuF3TbwlVMDJLROxIlNucwtFNw/EkV11HIwZgKUMH5xvB5uzmyIMQ9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707394857; c=relaxed/simple;
-	bh=lgNfawRxjPeDnbNa3ygdNz7JsFcsmkcaB+u6Dl+NOSk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NCQNUlJonk+ZB8vtmWNHSG/OctZXC5KjpuTaPXvkKNA1XiNVjMNxNi+cHxwHQqwq1+R6pyldFVpZ7jNMQFcwFcXy2M8EkC9/IiuaM4SZhc9Xp+tUnq9PLjBNt0NbN1QHXa1222ErTKypbop7x7Hx1F7sq+fpangh6HeZDBfQvXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L5M0RFSU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 745ECC43390;
-	Thu,  8 Feb 2024 12:20:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707394856;
-	bh=lgNfawRxjPeDnbNa3ygdNz7JsFcsmkcaB+u6Dl+NOSk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=L5M0RFSU2Yb7jH0fuf+OPPgiuxxpsfegXJkM9reYUVVkccOujc+2JFTTvq1Gqo8y4
-	 i2wvMTByERe2+nYPMLG7TPGEqLG3k9gR5DhCs9nm3nRabKGiUXc5Ada4b4wvfsRGR+
-	 mLVnIOaSdE+h5laHqzITyO3Hvb06NHaWIu0lF+7LaqO6jcMROuEU5gbildI2umj+tg
-	 LfqhZUsgk2bGlBI6k6kpwBK8IRy+TAMMJrAu1sifu72jHFhGPZljB4YV5AAwpHszkk
-	 A6mCAXFA3oX7bMjBKGuFdVylDi2KGG0dsaw5M12LWPwk/mz7lDMTgrDchWTB6D2WPL
-	 h4mwK1oW6pMJg==
-Message-ID: <330f901c-2d69-4666-90ed-9c558a4b3dfe@kernel.org>
-Date: Thu, 8 Feb 2024 14:20:50 +0200
+	s=arc-20240116; t=1707394890; c=relaxed/simple;
+	bh=c7XAvXW3JqDQu3a1gMUnXDEqNL5QzKj2+D77O+/2mAI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZptWK3si7HnrWYpe8m1ZEYhs8APz2vZcnZsOLMsmo8wrg3EcDkwURZ1em82jzEpV21QsocWZz7VR2wDAwlQnhGih68HgDtMQPJYwLvXodqnTI/dwMAOMR0KJjCvPQWVfSwXOGwZQSxXDanBliuv7R0DkACRTK38h2psjIMtAzj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nmr8nhgL; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-604ab54bb83so3845027b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 04:21:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707394887; x=1707999687; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c7XAvXW3JqDQu3a1gMUnXDEqNL5QzKj2+D77O+/2mAI=;
+        b=nmr8nhgLZPJ++N2Jp7Q0EweSK3WAkfvn7DK8N5vw5hOeM/cAIIuS8/C5xfpTrOZkPX
+         5pxp3Swlj4UBdLR9M8AEkePwJhNQcKsx7sv0sG+OBEGep5QNu5BJGOhs8QXCXwtS/6qX
+         pSYfN3nD14pZZZX8x8IR6WkfKl0FG6THUQmaYeqB1InNUqIO2KnXMimEt+DU+r98iF8i
+         k+kRCewlC87n6N/5iTkAfnwlXxfDhe8rhipFvm+joU9cYWhMR9J88KhJKCv2RfTVAlTy
+         1NbvsW7p5Wvq//ASOwdC1haSjfkM3HOj7S3XB4N1haDkq4vL4n/7E/1hviTs2HKQ+AI0
+         uO/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707394887; x=1707999687;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c7XAvXW3JqDQu3a1gMUnXDEqNL5QzKj2+D77O+/2mAI=;
+        b=vt/nJDJjrZuMqjOJQ6MSVsm5ya7Xk5uOU+ofEfU+sbWLsvlA1sBJB2ZdaL1JFbdlcp
+         xUPp4hy3Qz1WJ7PDfCfceYHpIBgXLFIXN1KY80hK1j5wf6mf5Atw/a+wag5kGFNheRUy
+         OcL6dk6XzPqqLlCChFED7Tr2TTDMJXjn6NkiNEpmB7abWDNQHwe7aW5BDhqenhIsxIZH
+         l6fG396KgF3Lnb6RxVyOly9m4dlDgSARg+xrASZfpBwsodASzvkjdKNxYzyfICoFu7JW
+         z1C7MAR3sfDj7o3wJJmN/y+sFvCDmgon0XhPXzpmHflnlnKBEc31UQnP+8+MtcG89k3X
+         jp2Q==
+X-Gm-Message-State: AOJu0Yw8V85VlKPz7YRQoG/aXMs31XfgKDDjFRcJ27MQd5IMwwlIW5Ot
+	b+HNeqrk1HabEl3rcdRm9tDuBx+/ov3macvu4HuAe0cUmo8ZtyyqpVhMTqA1qvF1UApPdqwS9+i
+	O2xlRpu6PBYhYexeR/Nx/Q8DFc/Mz+VUDhAJGeQ==
+X-Google-Smtp-Source: AGHT+IH+rdYwt1V9v42o57rZ+obkKonh/gd6tgsKYiHOCD7690dxOjHGrL+EaoIIsJbBelNWioDPFHCf8ZENSVttMvw=
+X-Received: by 2002:a81:e443:0:b0:5ff:9676:3658 with SMTP id
+ t3-20020a81e443000000b005ff96763658mr7587421ywl.48.1707394887647; Thu, 08 Feb
+ 2024 04:21:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/5] usb: dwc3-am62: add workaround for Errata i2409
-Content-Language: en-US
-To: Andrew Davis <afd@ti.com>, Thinh.Nguyen@synopsys.com
-Cc: gregkh@linuxfoundation.org, r-gunasekaran@ti.com, b-liu@ti.com,
- nm@ti.com, srk@ti.com, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-References: <20240205141221.56076-1-rogerq@kernel.org>
- <20240205141221.56076-6-rogerq@kernel.org>
- <05a3ef7e-b4d6-4f87-b34d-cec5f4ecfb9f@ti.com>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <05a3ef7e-b4d6-4f87-b34d-cec5f4ecfb9f@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240208095920.8035-1-brgl@bgdev.pl> <20240208095920.8035-18-brgl@bgdev.pl>
+In-Reply-To: <20240208095920.8035-18-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 8 Feb 2024 13:21:16 +0100
+Message-ID: <CACRpkdZOzekCQ44Mx8ruQsx70Z6ZZtAOxxr6hy0PSQGqB2T=0w@mail.gmail.com>
+Subject: Re: [PATCH v3 17/24] gpio: don't dereference gdev->chip in gpiochip_setup_dev()
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Feb 8, 2024 at 10:59=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> We don't need to dereference gdev->chip in gpiochip_setup_dev() as at
+> the time it's called, the label in the associated struct gpio_device is
+> already set.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-On 05/02/2024 20:07, Andrew Davis wrote:
-> On 2/5/24 8:12 AM, Roger Quadros wrote:
->> All AM62 devices have Errata i2409 [1] due to which
->> USB2 PHY may lock up due to short suspend.
->>
->> Workaround involves setting bit 5 and 4 PLL_REG12
->> in PHY2 register space after USB controller is brought
->> out of LPSC reset but before controller initialization.
->>
->> Handle this workaround.
->>
->> [1] - https://www.ti.com/lit/er/sprz487d/sprz487d.pdf
->>
->> Cc: Rob Herring <robh+dt@kernel.org>
->> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
->> Cc: Conor Dooley <conor+dt@kernel.org>
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->> ---
->>
->> Notes:
->>      Changelog:
->>           v2:
->>      - don't add phy read/write helpers or add phy to private data
->>           v1: https://lore.kernel.org/all/20240201121220.5523-5-rogerq@kernel.org/
->>
->>   drivers/usb/dwc3/dwc3-am62.c | 21 ++++++++++++++++++++-
->>   1 file changed, 20 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/usb/dwc3/dwc3-am62.c b/drivers/usb/dwc3/dwc3-am62.c
->> index af1ce934e7fb..5ae5c3087b0f 100644
->> --- a/drivers/usb/dwc3/dwc3-am62.c
->> +++ b/drivers/usb/dwc3/dwc3-am62.c
->> @@ -101,6 +101,11 @@
->>   #define PHY_CORE_VOLTAGE_MASK    BIT(31)
->>   #define PHY_PLL_REFCLK_MASK    GENMASK(3, 0)
->>   +/* USB PHY2 register offsets */
->> +#define    USB_PHY_PLL_REG12        0x130
->> +#define    USB_PHY_PLL_LDO_REF_EN        BIT(5)
->> +#define    USB_PHY_PLL_LDO_REF_EN_EN    BIT(4)
->> +
->>   #define DWC3_AM62_AUTOSUSPEND_DELAY    100
->>     struct dwc3_am62 {
->> @@ -184,8 +189,9 @@ static int dwc3_ti_probe(struct platform_device *pdev)
->>       struct device *dev = &pdev->dev;
->>       struct device_node *node = pdev->dev.of_node;
->>       struct dwc3_am62 *am62;
->> -    int i, ret;
->>       unsigned long rate;
->> +    void __iomem *phy;
->> +    int i, ret;
->>       u32 reg;
->>         am62 = devm_kzalloc(dev, sizeof(*am62), GFP_KERNEL);
->> @@ -201,6 +207,12 @@ static int dwc3_ti_probe(struct platform_device *pdev)
->>           return PTR_ERR(am62->usbss);
->>       }
->>   +    phy = devm_platform_ioremap_resource(pdev, 1);
->> +    if (IS_ERR(phy)) {
->> +        dev_err(dev, "can't map PHY IOMEM resource. Won't apply i2409 fix.\n");
->> +        phy = NULL;
->> +    }
-> 
-> Why not move this down to where you use it below, then just have
-> it be an if/else with the work around in the if (!IS_ERR(phy))
-> and the warning in the else.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Seems reasonable. Will fix.
-
-> 
-> Andrew
-> 
->> +
->>       am62->usb2_refclk = devm_clk_get(dev, "ref");
->>       if (IS_ERR(am62->usb2_refclk)) {
->>           dev_err(dev, "can't get usb2_refclk\n");
->> @@ -227,6 +239,13 @@ static int dwc3_ti_probe(struct platform_device *pdev)
->>       if (ret)
->>           return ret;
->>   +    /* Workaround Errata i2409 */
->> +    if (phy) {
->> +        reg = readl(phy + USB_PHY_PLL_REG12);
->> +        reg |= USB_PHY_PLL_LDO_REF_EN | USB_PHY_PLL_LDO_REF_EN_EN;
->> +        writel(reg, phy + USB_PHY_PLL_REG12);
->> +    }
->> +
->>       /* VBUS divider select */
->>       am62->vbus_divider = device_property_read_bool(dev, "ti,vbus-divider");
->>       reg = dwc3_ti_readl(am62, USBSS_PHY_CONFIG);
-
--- 
-cheers,
--roger
+Yours,
+Linus Walleij
 
