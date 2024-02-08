@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-57800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC8E284DD8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B944284DD93
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:02:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 785B2288F64
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:02:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7682F2895CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:02:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E61AE73184;
-	Thu,  8 Feb 2024 09:59:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60CB974E27;
+	Thu,  8 Feb 2024 09:59:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="CeO8e5Gs"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="WyJCJQpv"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A770271B26
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 09:59:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D713B6F52A
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 09:59:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707386380; cv=none; b=iMq/l6iTS3dZgmcYdJ7PkXN5QYSWGT7fyWE5XSQSR6SBFCqeF6jxWvN1qfs67gwV61HTd3NIio6K4bimjztQB79LHhjiO4zDqN0A7x8cd5DvppV+XJ7OtsyXlRjCN2bzJul3YXa7QnIBrTWyMNR2x5iVP9EAos3eTx84Ah+gJkM=
+	t=1707386381; cv=none; b=UFxD1eIKwgxiwmquHXv/gUIpSmoMMyAeNblKNj6HiWi0YQFh9GSm1t5EpanAb4L08Q1ssJABQkcH8LDmdq/A0uHfve2bU1x0QtR2qIJKK4jRVJiF/e1MIkCTm5bSyqXmZEmxPYcyBN7lTcqGg0BPWgdDRHmr4OoXV7/VkhoCIS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707386380; c=relaxed/simple;
-	bh=44Khv6FYuGS4iTpA4mYtVBSUOUtv1cSVLwwGoaAVCzc=;
+	s=arc-20240116; t=1707386381; c=relaxed/simple;
+	bh=rpFcXuoa7XEKWGrXP4ohioPaux3+8YRMAEzyUwG0HNg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZMzFfbaJAIUIVjz7igbyrWLsglddLt07kqaRpcuSSwloLrNoHoOKisC40gI+Yk58KR73Xl2xtw0cXRpQ+qgjCflsRFFJXLeduE9Yl79Gw+VumOsSuuu7I0T2RmhPjjU40rO/aYky8cr2w+IRtJDLYgdgF3TgdTKsY/vK2u075Qc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=CeO8e5Gs; arc=none smtp.client-ip=209.85.221.41
+	 MIME-Version; b=VOsOfk6+hD5GxYMW54dJf58qJxiY4xKfXBYVzz0H7ql5ma3YLVQjYkyNva7oeeLRkbtggfFZkmyIq7gdcvyPLZKFIYXtvhipqg1rOJX90UDpnm/Knoa0/39vP8F2aYIV/RgxvrytZKCRzMWXeRtnkStgXO8NUfXQlGhDuurwFz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=WyJCJQpv; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3394ca0c874so1215969f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 01:59:38 -0800 (PST)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33b58ddefd3so285535f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 01:59:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707386377; x=1707991177; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707386378; x=1707991178; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SDH9FjcEQjELl5YLDi/Mv6f4/sVoNw9s95JjQsJXfFU=;
-        b=CeO8e5GstTxMGUOLdzSfOQiUUopuo7gqO519aKHVbA+HzDDtzMlm/SDx3YMpFe6xYT
-         Fpn2Pwat2iAaaTYZH4lj/hZY8DE8+ZyA9wbqXNWi6VSr2cbT/Q+DDjEjhF7E3h7UEz+W
-         FkvFTMZeB53BL8uQzokgQtLUauLB7DeehEhPAgDZJ4oczK5uOkjT5aNyJDRWNpZdRUP1
-         nBUExk5TDkylBXU53SuqGXUU5OolxtGhCzH3IBJabzu2qUy/ee32tsURcrdWgkk3SsF0
-         iD1XH5/5Sf5MKTGNv+tgEfeXAYQae5IJ8j8srfDOS0ftaVkmYUuQLv5lz/F+gMI4zX9H
-         GgCA==
+        bh=neaBFQruxVCvpnyb2xKS7yjOVX4paD5qlj8wJKLSUU4=;
+        b=WyJCJQpveKpvfVnQ5i0/55XAJZn/fJedelS35oAVVgIuawGEpoaOlbBSVGKgV/CbIe
+         Vw3tp6uRE0Qb7A0nBU+hiGGb8ScEzRcB9sdxckoufLQETzC/ylA1PS/Nm6aNYvJwNMHd
+         yBuM4k0g6p0RHKkMZFnyw9uadXfHkgtL2YtnUYAsSSFQSffTh+qRLUhtr2CaV3NIHFYJ
+         gBblmJHbEFyHlg4uwkn1xaxrjr4aRkuhIDuNiwL4pDRLdiQLdegel4g0FED0tuvhwtwf
+         Xmj1uSolhprMurv8qBFrPUbXXlmEmvsFRMGCidRP3Z8so/yJSVhSSalWbDQ+XrfYQDcn
+         X8Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707386377; x=1707991177;
+        d=1e100.net; s=20230601; t=1707386378; x=1707991178;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SDH9FjcEQjELl5YLDi/Mv6f4/sVoNw9s95JjQsJXfFU=;
-        b=nQvh4f4q1C9vkr9C4fWAMPLoNVa79fbqN7qB/7AB84R9m2tOnziGxU/PgAE87AwT4e
-         5VoxNjyYE8w4JxyQR5L2EDA1Ow/YcwIO7y3iHLESsUfRJSBlfXNtebWloLdU7TZYrXqD
-         zY8ODuUHw5e2TbY9r29bIjgLAvDlPlZgO3SjL0dK3LUJFVdjIsyAkl84OZTTkSrE+bhn
-         5V/tA6AjmqupTTclLpSzo5CaXiTn/wSRKgiKDkdfOwT1KMLmKWUfiJVQQalQ2ObtdFR4
-         rFJRbgdxr2r46/0YZN6LWXs0LBoynY9Tqs9RW/2GLGVEaOfAc3J43dQJVvPbevB/qC/B
-         zy1Q==
-X-Gm-Message-State: AOJu0Yw32JINui5VOAVecB2Ctf2VbQ41rOywiGwbZcUCs1y8Bwz69hy5
-	7cXSM2oIuAlxQxtmk+qNYxw3sYwCgrOrBpIL/FpLKK/tJiG8Rgi7YgVQq1yzWZA=
-X-Google-Smtp-Source: AGHT+IHJPGmnwEdCYIiqnvuMa3t/IOLS1maS1ioSsM1EpsF7be0KRjYGP2fIM9FXq373ezuSkLBcjg==
-X-Received: by 2002:a05:6000:1246:b0:33b:2fba:1eab with SMTP id j6-20020a056000124600b0033b2fba1eabmr4879005wrx.30.1707386377087;
-        Thu, 08 Feb 2024 01:59:37 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXq7h4bUJb5LA5R2LqcyELd/oIeGfFD2bNctDA2TxzEqtFJBWk+P0wU6OZJVnPvgbai7uKrmYFQJSLqXEGY8CJYRCtr9JwUu5SJWW8dppJDNLwOycExWIPo9jzONi7Zug/weFuuzjkFJGXxeFOB8h0nP7E4GsTu0eaEjEEoryvy0aoN+PhrkweLHW5at77c49Tmqn72lILU4D0+K6zmllrGbfdn/kp3co4XPTL5C1JLG6B0z0ckw9R49y5rw3mM6O0CikB6dXtYKOHEB6dg6r/sibA9U4tL8ZHkrkUml969HJA5uGDVqudw+OWwxTDEtg5fmzcuWzSSY8xmyYJyc0fTlgo76fxepw==
+        bh=neaBFQruxVCvpnyb2xKS7yjOVX4paD5qlj8wJKLSUU4=;
+        b=C3W2SAw1jtbA33LR6WUJwSImEsR4hDkjUU4X+lL0WQCdLYrHhUAhUA6YrvrBh1BrjB
+         xsJDgFvLVMzDs4Ca2g7XuQ1fJmocNPNaUSGduh+Xk7+jr1Z7WfF3QcWe+BTRQQ5PCJIB
+         OGMtoIXvzeX5i8RxXlFAAOmo4ycI+UcdZcSbCsKtUOKzYlbVAVext2WcqerCyG2eVa8e
+         +FmNtVIO84+P80sp0SNW0T3xY5y1ts6iz4V9q2Mu7vdwZ89h/ixVa3ww00xSjkIswykn
+         MVLwCY/17ypEeNTKuKzRl9LF5afZMemeucrs+hINpqXpGPqnCF1dDXJSoWfVh+AFJKDo
+         V+cw==
+X-Gm-Message-State: AOJu0Yy0zzkXSubFnKtBxxHSAzsdhOa3YYKldTjGU6uIQdujUBfm//d5
+	NZieP7nO0JLt2nGpymOWP/jPWGYlocMJrkCEG012NzEgcTLjm9yzxcy3UfejeCM=
+X-Google-Smtp-Source: AGHT+IG5jjUfQYqv8znpCpV5fwqXcxf1zcotF07Cq8PbCeS4wyDBbWS19Fu1H0O0M9nxqnNYUZPQ6w==
+X-Received: by 2002:a5d:6651:0:b0:33b:1a71:a8ef with SMTP id f17-20020a5d6651000000b0033b1a71a8efmr5180258wrw.26.1707386378172;
+        Thu, 08 Feb 2024 01:59:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV4ST4VWVARTxh1vhyL+FYq91ffSkWIvf/1bkmhFgsy+vx6xsriKtI97qtYme/BPcerdpi/CirADryYQaFPFVCUhzKmZIgTbsYyJ4pOUDvix5hq2SXz2Cw/DzajqtVLr1ymDaSVkA5ckKgeiAv5Duzjps/gQgpx+TGMSf2qV7/Acx4O8RN0DimP947K085ktak2dW9XXjbzvlKilQnDp7z/TPd1kNQsyGHAI6dwuE/OuwVZ8r7stfYQqu+9abynimPqh2JjR2wxYEeVMp7BdNKVeEMrTYvgnmzqK6VVkNQml0n9QzlRTvGYt6+iNSsbTBYjgxerTdpM7pBPzdNkDgaBxDZ7ae9U4w==
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:44bd:e160:131:19a4])
-        by smtp.gmail.com with ESMTPSA id x17-20020a5d60d1000000b0033af5086c2dsm3265963wrt.58.2024.02.08.01.59.36
+        by smtp.gmail.com with ESMTPSA id x17-20020a5d60d1000000b0033af5086c2dsm3265963wrt.58.2024.02.08.01.59.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 01:59:36 -0800 (PST)
+        Thu, 08 Feb 2024 01:59:37 -0800 (PST)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Linus Walleij <linus.walleij@linaro.org>,
 	Kent Gibson <warthog618@gmail.com>,
@@ -77,9 +77,9 @@ To: Linus Walleij <linus.walleij@linaro.org>,
 Cc: linux-gpio@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v3 11/24] gpio: remove unneeded code from gpio_device_get_desc()
-Date: Thu,  8 Feb 2024 10:59:07 +0100
-Message-Id: <20240208095920.8035-12-brgl@bgdev.pl>
+Subject: [PATCH v3 12/24] gpio: sysfs: extend the critical section for unregistering sysfs devices
+Date: Thu,  8 Feb 2024 10:59:08 +0100
+Message-Id: <20240208095920.8035-13-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240208095920.8035-1-brgl@bgdev.pl>
 References: <20240208095920.8035-1-brgl@bgdev.pl>
@@ -93,35 +93,50 @@ Content-Transfer-Encoding: 8bit
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-The GPIO chip pointer is unused. Let's remove it.
+Checking the gdev->mockdev pointer for NULL must be part of the critical
+section.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/gpio/gpiolib.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ drivers/gpio/gpiolib-sysfs.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 5e098a7816bd..939ae167244c 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -184,16 +184,6 @@ EXPORT_SYMBOL_GPL(gpiochip_get_desc);
- struct gpio_desc *
- gpio_device_get_desc(struct gpio_device *gdev, unsigned int hwnum)
- {
--	struct gpio_chip *gc;
--
--	/*
--	 * FIXME: This will be locked once we protect gdev->chip everywhere
--	 * with SRCU.
--	 */
--	gc = gdev->chip;
--	if (!gc)
--		return ERR_PTR(-ENODEV);
--
- 	if (hwnum >= gdev->ngpio)
- 		return ERR_PTR(-EINVAL);
+diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
+index 3fe740b7d84d..fce4ef9754af 100644
+--- a/drivers/gpio/gpiolib-sysfs.c
++++ b/drivers/gpio/gpiolib-sysfs.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
  
+ #include <linux/bitops.h>
++#include <linux/cleanup.h>
+ #include <linux/device.h>
+ #include <linux/idr.h>
+ #include <linux/init.h>
+@@ -768,15 +769,15 @@ void gpiochip_sysfs_unregister(struct gpio_device *gdev)
+ 	struct gpio_desc *desc;
+ 	struct gpio_chip *chip = gdev->chip;
+ 
+-	if (!gdev->mockdev)
+-		return;
++	scoped_guard(mutex, &sysfs_lock) {
++		if (!gdev->mockdev)
++			return;
+ 
+-	device_unregister(gdev->mockdev);
++		device_unregister(gdev->mockdev);
+ 
+-	/* prevent further gpiod exports */
+-	mutex_lock(&sysfs_lock);
+-	gdev->mockdev = NULL;
+-	mutex_unlock(&sysfs_lock);
++		/* prevent further gpiod exports */
++		gdev->mockdev = NULL;
++	}
+ 
+ 	/* unregister gpiod class devices owned by sysfs */
+ 	for_each_gpio_desc_with_flag(chip, desc, FLAG_SYSFS) {
 -- 
 2.40.1
 
