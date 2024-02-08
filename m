@@ -1,191 +1,78 @@
-Return-Path: <linux-kernel+bounces-58837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2545D84ED76
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 00:27:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 009C084EDF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 00:41:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4341E1C21B65
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 23:27:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF6CEB28EB1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 23:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F40605A2;
-	Thu,  8 Feb 2024 23:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D49E52F96;
+	Thu,  8 Feb 2024 23:16:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cnGFaOVR"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e+xo+lV2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD6885465D
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 23:14:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C1752F6A;
+	Thu,  8 Feb 2024 23:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707434088; cv=none; b=XroHNfDhwV1+2tTFyQCcFHge2MkJgY9I3l0gu9l9Lqd/C4YPtbY63eeYUzaWZdxjhgIYRwsV3RUbW4PAfJBPfwPa8FxEpU0lo+nEhYEzB5ofoGm9wRqut3snMPRDXMd3DPEQedx5sZC/DCVqWVuiIFVmjnsi54XohkYW8UrTun8=
+	t=1707434173; cv=none; b=ERSMmCxpAs1nvMhOqgL6XpgkVdPFeVH3QiC9LLW8YhBVWl9VqM5XyYy0mrKRu6GraznuVT0dorIIeKq6LW2Nzs1GwkjCYp6EiKQUS7YkinRgiVJvzHtfxyEUin3MJFdV4q44W+D9xMWGcSTLL6Rg5HNoxD26OmtTZai1j+jIcMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707434088; c=relaxed/simple;
-	bh=9j5r/pr1EIliO35fXmzoIikYmXFewW/u7vlCgIYiELg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qSuRa+zCXFz1tFepATYRqiqQUZ1jNfPqUMxaGaxmSl6RRS7fASIg0u1zz3Z13s8d4owps3a8gF/3KFFCxHJMrhuHRGkhLSzF3e27vxptFKhpDFZiwTCa1nJksjsORWO8QGT8Hb71CorCJkEEYkD3I2ZmS/lkrgVCl5ZQHOxLbX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cnGFaOVR; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56001b47285so581312a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 15:14:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707434082; x=1708038882; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZNufXJXCKu6+G1nHJMEy9AFU0fyk63nw9WZ1UB/GpnQ=;
-        b=cnGFaOVRSWOtJfe434/CQ2t6Nr2eirVoCSSIggffwo6eLIGkZX7m7/KhjO9t0+/SqO
-         hs2l1YfoAmeijkAeeA9TGwiQgVYWFv4mPoKGOr8x67JzZH48FzxBLOwvAmi28p1DRjST
-         lQGru7OUtrWIV+F8E5tjDH8gZE9rCjL8w8SricabFq7l2/ugVVSJUULsjly2xcnMlvjR
-         xclLKxbniCFBP/iDfSgfVuXfMqabjpcynvWOXg2eAk5Ncnp/qCVe2KRI/HzJZ3EB6J/0
-         zGkRwDiO29h+YtXNAyJgi49xvflFC2GY7xeB0q9deg5EbnnpI6FXEA4e/lGs+60a3OYw
-         VqtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707434082; x=1708038882;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZNufXJXCKu6+G1nHJMEy9AFU0fyk63nw9WZ1UB/GpnQ=;
-        b=qqj319uDOFnXP4aI3jFqAAuThBcGFqxG4vd36G5p6dDzFopDS6zrgxQg8tF+QVqT48
-         kQWI5ng+cQs12LDpec5qPwmZgxniBgl+4oU2/usVdn2dojMqvHivpgLLFP0khLjVfdG8
-         YnwRIKOqT6Pu9Blrg5gmft+Yp/BXy72mB0PWSxtVLMo0HlIyht69IkCM636Y9goJw8+4
-         71F5Pvdrlj6lYkWl5diS7EqnRGVZNI+UxYuWTcxz02wKhOlZJzVwraX9RFTTYey/v+wE
-         mdB7pjAfmX3pyQJmAgUvgG2BXTdHYYVt7KCS59OZtY4+JQ60lM098TqSBhFrs2E9hCJ8
-         fDFg==
-X-Gm-Message-State: AOJu0Yy+T/t3qq153nNbXVNfvNY2exttZ65nAmGvsbtKzQ5qmWBhdFzc
-	wYSiQ+VFYxo7vgtmpiGNeAAdjPJFGBTOOoAlHdr05AYQ/HVEIluCd//kib1yNYg=
-X-Google-Smtp-Source: AGHT+IHZzrDF1dJO86+ZGoeaHkZw5DV0jHxccZc5eSvLiRCNDIi3uZOYz1gZpe26W/rxoaQcSgZDWg==
-X-Received: by 2002:a17:906:f1d7:b0:a3b:cc20:31c with SMTP id gx23-20020a170906f1d700b00a3bcc20031cmr479225ejb.41.1707434082406;
-        Thu, 08 Feb 2024 15:14:42 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWWmSWUK4/G7m3o2+LOVGKHhZ3XPSDr841nYQGWd66xixk2rLM9ESv4ajmt1Vqc3S/aAuj93G/FgdTSZh5iQLBEfI5nUqml6+qS0cMtNqZG0VPjm/BQRIMSwuqcq9abhkEXwsi2ijX2L2Vq1a5/e9Qz0iC5oVtJ3y1jEaqHs26iGr1k8r5xCR+f3hPODIe017eLInuE2IWQyaznZoHAgjhJTFsaC6fbEZ03LUB7pW4mKvz7XFm7sZvEW/CMlRCnivlIpzI4V+aPX6Qw77JMAX/2oW9qFa2sAf7On/3PF0aB7QhYkC4Yz59VNeRLn3VPzUZbuWyvyAvqOz1z+eguJcgVOqfLWZm96yxSPF15wdFP+LYSHU6D6fKtFf19eQZ7jZv3nU5jxIaxTZW+OXYSEoRQKLFHjcDetXY/rnnMNdOTv/0QMb5n4xkYE+JM
-Received: from [192.168.192.207] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
-        by smtp.gmail.com with ESMTPSA id rf22-20020a1709076a1600b00a3bb26bd7afsm161577ejc.38.2024.02.08.15.14.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 15:14:42 -0800 (PST)
-Message-ID: <7b294518-9d4b-4648-a2b7-3843aca033a1@linaro.org>
-Date: Fri, 9 Feb 2024 00:14:38 +0100
+	s=arc-20240116; t=1707434173; c=relaxed/simple;
+	bh=WwRsAGRyMOkVqfIJK6eEDbJqNUNUm6yEHpdbYl/k6kM=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=VCkMRH19xgnNz0g2M6yETlXwPv7+ipiDOStfkDr6wI6utr5u2POoIyopxKbNkPHHpDtV9Fwn7AvR/3j/R/6Z1PSLmV3BuNdQ70T5eyrJoxzYdLc8F0KygtbxPYAe2eqemJPXx1YW1GRbQvvqXfqTcueWMxVf6sczgAJ3gVwnhfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e+xo+lV2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D4C50C433F1;
+	Thu,  8 Feb 2024 23:16:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707434172;
+	bh=WwRsAGRyMOkVqfIJK6eEDbJqNUNUm6yEHpdbYl/k6kM=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=e+xo+lV2pZ3CfeaaatcqP/pNk9YdxeFlvHMX8z67WJ9SOJwGZXYe/eqglgixyBX3z
+	 wWZ8Kxdz/5ZINYqtV4s73Ji+VdxZCFy+WFdYlH/m2ki19Y+vJFDbSvo//RCXJwGBcG
+	 yftLAv93J13GaNDf1y8pn51t4cV/JO9Z2Ey247lVGAfQGSN5/47KDGMMhElRdpQyfD
+	 kP7Dj8i70ZGAfHtVQ0vXZFfb+8PyKdup7Yg/02xs0pwrLhl7iEaWzdlIv0W0/fr3F9
+	 pKOhnYUjSZxKUKpMdv1+xm3fYUn1a1ndjQ94I8p9QNMEBEcMJ/86qZer8Qo9NQQnI8
+	 jxiQ79f34Yo6g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C16FEE2F2FC;
+	Thu,  8 Feb 2024 23:16:12 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for v6.8-rc4
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240208151237.48692-1-pabeni@redhat.com>
+References: <20240208151237.48692-1-pabeni@redhat.com>
+X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240208151237.48692-1-pabeni@redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.8-rc4
+X-PR-Tracked-Commit-Id: 63e4b9d693e0f8c28359c7ea81e1ee510864c37b
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 1f719a2f3fa67665578c759ac34fd3d3690c1a20
+Message-Id: <170743417278.5821.13222503852884384390.pr-tracker-bot@kernel.org>
+Date: Thu, 08 Feb 2024 23:16:12 +0000
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: torvalds@linux-foundation.org, kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 1/7] dt-bindings: mailbox: qcom: Add CPUCP mailbox
- controller bindings
-To: Sibi Sankar <quic_sibis@quicinc.com>, sudeep.holla@arm.com,
- cristian.marussi@arm.com, andersson@kernel.org, jassisinghbrar@gmail.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
-Cc: linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, quic_rgottimu@quicinc.com,
- quic_kshivnan@quicinc.com, conor+dt@kernel.org
-References: <20240117173458.2312669-1-quic_sibis@quicinc.com>
- <20240117173458.2312669-2-quic_sibis@quicinc.com>
- <7bf729a4-f3ac-4751-9275-a2aa4d62c036@linaro.org>
- <1f0c2767-c489-58a6-e5ba-9f1974072bb7@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1f0c2767-c489-58a6-e5ba-9f1974072bb7@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-On 8.02.2024 11:22, Sibi Sankar wrote:
-> 
-> 
-> On 1/18/24 01:23, Konrad Dybcio wrote:
->>
->>
->> On 1/17/24 18:34, Sibi Sankar wrote:
->>> Add devicetree binding for CPUSS Control Processor (CPUCP) mailbox
->>> controller.
->>>
->>> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
->>> ---
->>
-> 
-> Hey Konrad,
-> 
-> Thanks for taking time to review the series.
-> 
->> [...]
->>
->>> +  - |
->>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->>> +
->>> +    mailbox@17430000 {
->>> +        compatible = "qcom,x1e80100-cpucp-mbox", "qcom,cpucp-mbox";
->>> +        reg = <0x17430000 0x10000>, <0x18830000 0x300>;
->>
->> These reg spaces are quite far apart.. On 7280-8550, a similar
->> mailbox exists, although it's dubbed RIMPS-mbox instead. In
->> that case, I separated the mbox into tx (via
->> qcom-apcs-ipc-mailbox.c) and rx (with a simple driver). Still
->> haven't pushed or posted that anywhere, I'd need to access
->> another machine..
->>
->> On (some of) these SoCs, one of the channels (rx[1], iirc?) clearly
->> bleeds into the CPUFREQ_HW/OSM register region, which gives an
->> impression of misrepresenting the hardware. X1E doesn't have a
->> node for cpufreq_hw defined, so I can't tell whether it's also the
->> case here.
-> 
-> I am aware of ^^ discussion and the X1E doesn't have this problem.
-> Both the regions described are only used for mailbox communication.
-> X1E uses the scmi perf protocol for cpu dvfs.
+The pull request you sent on Thu,  8 Feb 2024 16:12:37 +0100:
 
-Yes, that's clear.
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.8-rc4
 
-I am however asking for something different: I presume the CPUSS
-IP hasn't changed too much on this SoC, other than having new cores and
-OSM now being controlled through a different firmware interface, and I'd
-like to keep the hardware description in our DT as close to the metal as
-possible.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/1f719a2f3fa67665578c759ac34fd3d3690c1a20
 
-In other words, if the good ol' OSM hardware is indeed there under however
-many layers of firmware, and if RX does indeed bleed into its register
-space, I'd prefer there be at least a syscon node describing the actual
-block, and not a magic hwio entry that's many zeroes away.
+Thank you!
 
-Konrad
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
