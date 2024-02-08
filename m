@@ -1,204 +1,108 @@
-Return-Path: <linux-kernel+bounces-57563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3021384DAC4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:38:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D880384DAC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:39:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54FFD1C232D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:38:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16CC31C20A3E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E93C69D13;
-	Thu,  8 Feb 2024 07:38:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B87D69D0D;
+	Thu,  8 Feb 2024 07:39:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JC/0kMyP"
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A7WBWboF"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F1869317
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 07:38:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 451866930E
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 07:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707377883; cv=none; b=FFQMAQYYCKNqTLfs5MxbNPfAQenMWwmWBXAJKj/W4AWCj/oIDIgF/40L2lNOiR/etkeEKYfyBRZ0Zj3DtRr4xnJGDLD+9le7tLc7LFZlsKYd9E+4JjYab++bCpOuHBmOiJKAAmssB0DXIBRg6K73TZxeUquB4vwaJXuKerwA2N4=
+	t=1707377974; cv=none; b=IT8AGz9qJqCZyP9478slH+Qy2g5eIb/LC0MZN0A/zyDbUh6afVUb+T2c37NJJCB0eeIQizuNJOsaMSZ/0RSvwcmbtdqlD8wc+12yBa9g6NR2yq+g6FEX8z4aE1pRRrKnDC3WncK0rRpBXRFGHQjo9pQ7N9/uCSDNrGkPeDcSzGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707377883; c=relaxed/simple;
-	bh=C8eAIQ3ydyM/HUmEtB8c0Bl+XbiKqgz8XlTsRr8n+Is=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=a6HwMW8csy6lt6DHPJHyZoPNSSsWATG54UHwXYAKwKQG9Y5k2jcSV3cK3uHpwzzd+OimIBwk0vtn35uHokSc3wCXRpd0IMsNufICgkiYwTk4jVOAqVGK8xKF/oVI7g2++9WwpCRS8UGasc6San+yxpjFNCe6/48M1YmXkjOLNMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JC/0kMyP; arc=none smtp.client-ip=209.85.222.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7d625a3ace6so386339241.0
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 23:38:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707377880; x=1707982680; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IA6p3n1ZEVVHs3Sv4vYngSUcXEgK4Am17fVh3dyRzrg=;
-        b=JC/0kMyPEhGGwCwThybdC3/9WWbX6khEWbxqgpbgzqe1MIM2vxEB+Mls9Q0kJPJVoM
-         a3r6VLGsA/evZ94w0mkidItgvtQxaLHuQxsFYGUK7FzDfAT4fk9b6VkL5YPizkET09sl
-         q16j99j2ePxi9asjTnpLkxzq3b4VQW+9PUIDrnsaDWkKp0YFPel1sazw0uYpLB08en3H
-         /p3GoWA3kd9Jx1CxSGBqY7hmuuM7qHHlyP++n6nvAluvh/A3zHpv4pVWF013vAMAPWZt
-         emZMMVzJ/LAzbe0w/JpVXQ4FA0Z00aV+1wXKDsw+7KOWnrMSBCI+ThRnbswzIGJ8LFlP
-         oJqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707377880; x=1707982680;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IA6p3n1ZEVVHs3Sv4vYngSUcXEgK4Am17fVh3dyRzrg=;
-        b=B1HaOa+YyVubvT+PFKnECr0EIAmoDYwmWa4VdJ/9kurbjr4iNVg5KHTVZljnKzKng0
-         cLTzZLerAOv7x+DSuNNO+zoDtz0pr2xhqJLmK7XzvbIyFtxLui3tC/c1rhs/znRs9uHd
-         s7kNn3H30c4PtjPLYg4NZbnz8Q9POB6+kPauDuMBK9gt/N2hXEcrpTl9IENol6sfeREI
-         lIQkpcVqXhS7lNRrIBk5eFEN5Y2rBz/rx8gRDxxN5zDzRkr4ZVp5a8pFPBNTp72AIWjq
-         /wlejJOv+JZ8I1C5Gr/3ZZ6s624lwoapWlodpH+QkxVDwcadRXn8T8BnNTnwdP+y5hWy
-         IuGQ==
-X-Gm-Message-State: AOJu0YxQVPuciANHYqPX7srNJo0fdHaGXuT5zcsExA09u1TcrRMj7nLH
-	yms0vjI/TKG2HRZt5yU1H081tYSeoH+QvV46LSZxITWz0Af3pRUUsOsCZdZdBokpSNvI6JZ2CT5
-	vXDaOOczCfVaRKEdUr+afhzfq9ZLmVUmF5Z2Z
-X-Google-Smtp-Source: AGHT+IGwehdbiBvQCcs6QZkWZe4e4Jn5FvUrhyusbCezIHg5mRJvrwONdsjgCpmFZtBMzqb7AaGiRH9mgYQJuk1i2YU=
-X-Received: by 2002:a05:6102:5589:b0:46d:28a6:6e10 with SMTP id
- dc9-20020a056102558900b0046d28a66e10mr2094170vsb.12.1707377880392; Wed, 07
- Feb 2024 23:38:00 -0800 (PST)
+	s=arc-20240116; t=1707377974; c=relaxed/simple;
+	bh=0dlhmOrAsjot9hqzrREwQEhMHkM8Iw4JOs3yaHEvtPI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=SBNA6Kzt4sSHkvfwzkM6geTPkzG6+cPTj/4EKh8KqHmzR1Iqidy76B9WzuP+iYfSTO2zAdoAjXAZvcUz7lkpdjw3thDTkSYUROpFM0wFOu6KdkM6reMSExUAvdULZmdCb09w2O9EAOzWcB/XwFVRJIfL5+4j6ZexlyHydXv4WZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A7WBWboF; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707377973; x=1738913973;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=0dlhmOrAsjot9hqzrREwQEhMHkM8Iw4JOs3yaHEvtPI=;
+  b=A7WBWboFpC54ksmQehMLMKRggHau8spUJvBiAGlYo7JHDDHK4Al/TxnB
+   CdBvmghi7PBwQMrgp3wTAb7hr+CISvygm7Udb9fqBF1SuykD2GV4dt3bL
+   uSMj6eMKzOe1N3aSM9X+gsgny4PQ35bMwZgkXUbC3/lWE1M7W/kZ2QMSo
+   hjfbTLMUkt57PX/XXt1/zEy36Yqx8NUasgr3YUvQnWxqN8IaUypKQySvf
+   tysdsIsLrjqkezB5qloBRky2kb9pplBraYw4jzjklcSbG3o/M8ItRyeLx
+   icEwDAgekemenLHQye5+lgNsbwylDA2HARoKFCN0GDkkrE5FeBwedKns7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="23643111"
+X-IronPort-AV: E=Sophos;i="6.05,252,1701158400"; 
+   d="scan'208";a="23643111"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2024 23:39:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,252,1701158400"; 
+   d="scan'208";a="6237225"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 07 Feb 2024 23:39:31 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rXz0L-0003Ua-0Z;
+	Thu, 08 Feb 2024 07:39:29 +0000
+Date: Thu, 8 Feb 2024 15:39:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: Zhen Lei <thunder.leizhen@huawei.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Luis Chamberlain <mcgrof@kernel.org>
+Subject: ld.lld: error: vmlinux.a(kernel/kallsyms.o):(function
+ kallsyms_sym_address: .text+0x10): relocation R_RISCV_PCREL_HI20 out of
+ range: -524416 is not in [-524288, 524287]; references
+ kallsyms_relative_base
+Message-ID: <202402081521.N9jn64eP-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207122626.3508658-1-elver@google.com> <289242c3-052b-436d-8c7c-b0fa5ae45bce@linux.dev>
-In-Reply-To: <289242c3-052b-436d-8c7c-b0fa5ae45bce@linux.dev>
-From: Marco Elver <elver@google.com>
-Date: Thu, 8 Feb 2024 08:37:24 +0100
-Message-ID: <CANpmjNMGW3zTGOn_69=+KjE4Txik8aQBbdefeo0GuVOkqjgV6Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: Allow compiler to inline most of bpf_local_storage_lookup()
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, Ilya Leoshkevich <iii@linux.ibm.com>, 
-	Yafang Shao <laoar.shao@gmail.com>, Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu, 8 Feb 2024 at 00:58, Yonghong Song <yonghong.song@linux.dev> wrote:
-> On 2/7/24 4:26 AM, Marco Elver wrote:
-> > In various performance profiles of kernels with BPF programs attached,
-> > bpf_local_storage_lookup() appears as a significant portion of CPU
-> > cycles spent. To enable the compiler generate more optimal code, turn
-> > bpf_local_storage_lookup() into a static inline function, where only the
-> > cache insertion code path is outlined
-> >
-> > Notably, outlining cache insertion helps avoid bloating callers by
-> > duplicating setting up calls to raw_spin_{lock,unlock}_irqsave() (on
-> > architectures which do not inline spin_lock/unlock, such as x86), which
-> > would cause the compiler produce worse code by deciding to outline
-> > otherwise inlinable functions. The call overhead is neutral, because we
-> > make 2 calls either way: either calling raw_spin_lock_irqsave() and
-> > raw_spin_unlock_irqsave(); or call __bpf_local_storage_insert_cache(),
-> > which calls raw_spin_lock_irqsave(), followed by a tail-call to
-> > raw_spin_unlock_irqsave() where the compiler can perform TCO and (in
-> > optimized uninstrumented builds) turns it into a plain jump. The call to
-> > __bpf_local_storage_insert_cache() can be elided entirely if
-> > cacheit_lockit is a false constant expression.
-> >
-> > Based on results from './benchs/run_bench_local_storage.sh' (21 trials,
-> > reboot between each trial; x86 defconfig + BPF, clang 16) this produces
-> > improvements in throughput and latency in the majority of cases, with an
-> > average (geomean) improvement of 8%:
-[...]
-> >   include/linux/bpf_local_storage.h             | 30 ++++++++++-
-> >   kernel/bpf/bpf_local_storage.c                | 52 +++++--------------
-> >   .../bpf/prog_tests/task_local_storage.c       |  6 ---
-> >   .../selftests/bpf/progs/cgrp_ls_recursion.c   | 26 ----------
-> >   .../selftests/bpf/progs/task_ls_recursion.c   | 17 ------
-> >   5 files changed, 41 insertions(+), 90 deletions(-)
-> >
-> > diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-> > index 173ec7f43ed1..dcddb0aef7d8 100644
-> > --- a/include/linux/bpf_local_storage.h
-> > +++ b/include/linux/bpf_local_storage.h
-> > @@ -129,10 +129,36 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
-> >                           struct bpf_local_storage_cache *cache,
-> >                           bool bpf_ma);
-> >
-> > -struct bpf_local_storage_data *
-> > +void __bpf_local_storage_insert_cache(struct bpf_local_storage *local_storage,
-> > +                                   struct bpf_local_storage_map *smap,
-> > +                                   struct bpf_local_storage_elem *selem);
-> > +/* If cacheit_lockit is false, this lookup function is lockless */
-> > +static inline struct bpf_local_storage_data *
-> >   bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
-> >                        struct bpf_local_storage_map *smap,
-> > -                      bool cacheit_lockit);
-> > +                      bool cacheit_lockit)
-> > +{
-> > +     struct bpf_local_storage_data *sdata;
-> > +     struct bpf_local_storage_elem *selem;
-> > +
-> > +     /* Fast path (cache hit) */
-> > +     sdata = rcu_dereference_check(local_storage->cache[smap->cache_idx],
-> > +                                   bpf_rcu_lock_held());
-> > +     if (sdata && rcu_access_pointer(sdata->smap) == smap)
-> > +             return sdata;
->
-> I think we should focus on fast path (your v1 patch)
-> and I suppose most production environments
-> want to hit fast path in most times. In your production environment did
-> you see more than 16 local storage maps per entity (task/sk/inode)?
+Hi Zhen,
 
-I think having more than 16 local storage maps isn't entirely unlikely
-as eBPF usage grows. But at the moment, it should be rare.
+FYI, the error/warning still remains.
 
-> In the fast path, the memory accesses are
->    two from local_storage->cache[smap->cache_idx] and
->    one from sdata->smap
->
->
-> > +
-> > +     /* Slow path (cache miss) */
-> > +     hlist_for_each_entry_rcu(selem, &local_storage->list, snode,
-> > +                               rcu_read_lock_trace_held())
-> > +             if (rcu_access_pointer(SDATA(selem)->smap) == smap)
-> > +                     break;
->
-> But if we reach slow path here which means we have more than 16 local
-> storage maps, then traversing the list and getting SDATA(selem)->smap
-> will be very expensive, in addition to memory accesses in fast path.
->
-> I suppose here we mostly care about socket local storage since it is
-> totally possible for a production workload to have millions of sockets.
-> To improve performance, fast path should hit in most cases.
-> If there are too many sk local storage maps, some kind of sharing
-> can be done so multiple applications might be using a single sk
-> local storage.
->
-> Your above inlining/outlining analysis also show how tricky it is
-> for compilation optimization. Without profiling, it is totally
-> possible that compiler might do optimization differently in
-> the future.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   547ab8fc4cb04a1a6b34377dd8fad34cd2c8a8e3
+commit: 30f3bb09778de64ef9f23fb4bb5f868c4728a071 kallsyms: Add self-test facility
+date:   1 year, 3 months ago
+config: riscv-randconfig-r064-20240120 (https://download.01.org/0day-ci/archive/20240208/202402081521.N9jn64eP-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240208/202402081521.N9jn64eP-lkp@intel.com/reproduce)
 
-Sure, but it's usually the case that we have to help the compiler a
-little to produce more optimal code - if the compiler becomes stupid
-in future, we need either fix the compiler or help it some more.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402081521.N9jn64eP-lkp@intel.com/
 
-> So here is my suggestion, let us do inlining
-> for fast path and focus on performance of fast path.
+All errors (new ones prefixed by >>):
 
-The slow-path (iterate list w/o cache insertion) is still relatively
-small (it's a pointer-chasing loop and a compare), and I decided that
-it can be justified inlining it. Martin asked in v1 why there were
-slowdowns above 16 local maps, and I analyzed, and concluded that
-inlining most is needed to fix and does not hurt performance: in fact,
-the current version is better than v1 in all cases (even for 16 maps
-or below).
+>> ld.lld: error: vmlinux.a(kernel/kallsyms.o):(function kallsyms_sym_address: .text+0x10): relocation R_RISCV_PCREL_HI20 out of range: -524416 is not in [-524288, 524287]; references kallsyms_relative_base
+   >>> referenced by kallsyms.c
+   >>> defined in vmlinux.a(kernel/kallsyms.o)
+--
+>> ld.lld: error: vmlinux.a(kernel/kallsyms.o):(function kallsyms_sym_address: .text+0x20): relocation R_RISCV_PCREL_HI20 out of range: -524416 is not in [-524288, 524287]; references kallsyms_offsets
+   >>> referenced by kallsyms.c
+   >>> defined in vmlinux.a(kernel/kallsyms.o)
 
-Let me know which version you prefer, and I'll change it. However,
-based on the results, I would prefer the current version.
-
-Thanks,
--- Marco
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
