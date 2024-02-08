@@ -1,147 +1,197 @@
-Return-Path: <linux-kernel+bounces-58147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0E0284E1E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:23:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C97EB84E1E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:23:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58F7428D346
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:23:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DED91F281E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:23:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC5976C72;
-	Thu,  8 Feb 2024 13:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DCD763EC;
+	Thu,  8 Feb 2024 13:23:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aabiwvK7"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="MpcQQGFt"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC7376C61;
-	Thu,  8 Feb 2024 13:22:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF2876402
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 13:23:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707398538; cv=none; b=JrJFcGRpA6iHN8XTajWVZJU39H6xBu+CxXN7Ew/DVD1WMkFJBJrHBMPc3omkU4hkUshMx14xHa91/dopLtk0kYkGYM5uSdGVJHa+JxGdxYcF2gM6ewAmXXRIBCIjy+5DYWuq99D3ar5TM/jv8ASqOI2gyrFFYJDnuvQeBUYBWk8=
+	t=1707398598; cv=none; b=o7N6kBM+Hj3dPJvv8bGGe2tCfGXTqTgbjU/rj3W2Ws8FLWNtT+tUOQTfgMvty8uKz7zDoi1rN8FJkyUKKWuT1YmgcYgUYTy7Fj5IAed/CMQnC/DXE9IsMLZROUOtOuqdkGw0f8rQIY+elx9bMiutsufJ4/jh/u/+3/vAQFTEU4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707398538; c=relaxed/simple;
-	bh=0bEAZsh/lFxSAyJ510AR/UirgS012kNEN7t1uDTzmew=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=YbDOkn58EwLUafgPD81SY9CbsagV8L2lGgiGrLEoUjveULcfTS+MFJXrRezlMLPiWM6mIqIBT8x2zGLJlFH6+Ym2/sSb9vPKME/Duv7ecS+RYjKb3XQYMS/4oD+x0CAUNT+gzq7UarfPQ/JayWP+s1+ud3bmwKYGW0IsGX4KR1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aabiwvK7; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707398537; x=1738934537;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=0bEAZsh/lFxSAyJ510AR/UirgS012kNEN7t1uDTzmew=;
-  b=aabiwvK7XjXuMBCpr2YeUwnNbMQ+W8Oy5bPUN1sFHmKiTX44CJwwYFTx
-   8ReK5/r0ZP4sa9iWjjV5XLTj8rGoG4PbepidZ5+NCpLo+TaheOGg6GuBF
-   EqzVCM33fnymLRACqmoqIeJEdIhMceJ3sbdrqaYBAneB1ZzNsZCoa4sfY
-   CC1a+P2hVKNvCZ49rdsrnKnT/0dzxRbkuXjn70lSuk7GRV795QycsZBHv
-   +apCBJveCaOstPN0jp+VtEueMDo6sUcI9Ht9Q/9X53UDssixuCp/Rc8A9
-   Xc1YL4U9M8jPMcmHMlYYgdyW93ItkdvUCrAY/OICW1iUchTAg3Q2ROwIN
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="26657874"
-X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="26657874"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 05:22:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="6307827"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.52.95])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 05:22:13 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org,
-	"Maciej W . Rozycki" <macro@orcam.me.uk>,
-	linux-kernel@vger.kernel.org
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v2 1/1] PCI: Fix link activation wait logic
-Date: Thu,  8 Feb 2024 15:22:04 +0200
-Message-Id: <20240208132205.4550-1-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707398598; c=relaxed/simple;
+	bh=OuNCUz52dZoeKZCssECX7LECAYjAN81wWrFdpWXkTcg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=L3bttQX1ksas5/1XljSkyrINWF+/AGfpubu03dFwL11teilqND1zC7R8682cuH6AncmL7hKGqWOGL30Kd3ffgzCK6UQjoeC2hK3dIr6oAwq0w5m1fJ4gBJuPj3UfV/1838XGGKMOI5hkt/Kp3lW46qlsnEAVAJpo7WilEGh4Rm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=MpcQQGFt; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a3916c1f9b0so136021766b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 05:23:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1707398593; x=1708003393; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g2zpgdujj1gYFQCxpzgk3AGLL3hOuoYEj3pj3VOmX9g=;
+        b=MpcQQGFt5nZ56LXM/FpKp1OO1eC6PdSXWMUwlPP+k1acYTaB7N94uaMhp0kb65uQnp
+         HJA6r4Mfp9nWqivNhipv6BkUq1OFyuFjX+UIjLFG0CipXIocf3wt87ox8UhJid+LbX37
+         ecL3uVhw9xTo9fvoEU4YgGBgafzxe1o5x+y8ZHHvl+HEoqSezBesUqB8taU4ig88EcZz
+         AZdvkFoYKF5efgild4maX8RqWjE7+iMIY9IUvoBrq3aibh+7lbiYTTabE+2v1QO2a7P1
+         qvm19N8KH9df7ozxN9YzyGR/Ui+gaGQ1NpWfh3KQ/76cfLRxxdtPdwpaYe5vua/Qpqsx
+         ssnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707398593; x=1708003393;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g2zpgdujj1gYFQCxpzgk3AGLL3hOuoYEj3pj3VOmX9g=;
+        b=oET7jgzFH8TfhmCHTXtaTr/xa5/5Rm2sPEl8FKxqL1mUxT+Px7FDFBev5UnMBjzRX8
+         RYb9zl6j56A7uHaO/doa1lTnw3VH97JIiAtWj9iO0VRLfNjty+GiqU1N3GYX4fyAUcrg
+         H86KPazge6VdmoxKJ8YqNAv02sJJaCSm0OeCel64QKWUagdKaqyGtpjlRY66JIQ/LzZs
+         WmLi4D+XxjxCr0RWNkZwukmkl8crYx/3M61I/y1GCyfgHpkzWO3CFAiQWVq6Gi+GS1wk
+         C4EiQ8a3ekGofBDHyp3RtitV6r1TX7p4Ya2aslgOI7yTJFeAzpzUJfGJeTWCVjDU21+G
+         DoEA==
+X-Forwarded-Encrypted: i=1; AJvYcCUm9cDTvn+2thCpdHi9s1pfXdtAZBHw6gyIP87dp6xd3uRQAnefnmQQyIT1lWlvArgtAfrVa1a8bpOlWG1VVssxosKXDLFeqF36KhRW
+X-Gm-Message-State: AOJu0YyJfGv36xISQw42VLeej83UIcUdS9GdD59NB+JLqytJ7xGqRml/
+	A5767XMlBtE8nCqVhiCVzIOws1pkUmw+B4xd0BMBPX93FTMo/1Ga1zzgOg4qbYgsobdmL+KHeDE
+	N7tFuHxEflvHaNv5koL99UVyu6A9FIP9DfwQQ5w==
+X-Google-Smtp-Source: AGHT+IEc4w81N06k/dJCCWI/8ie/Uaz6Jb1ky5A9KAQW2kGf8+rE4iLeOHNbonyyyUv3nuMoSXMDNxqjJlJT0K+Lu+s=
+X-Received: by 2002:a17:906:dce:b0:a3b:a4e6:f83e with SMTP id
+ p14-20020a1709060dce00b00a3ba4e6f83emr1277933eji.20.1707398593065; Thu, 08
+ Feb 2024 05:23:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240206204607.527195-1-alexghiti@rivosinc.com> <ZcS+GAaM25LXsBOl@andrea>
+In-Reply-To: <ZcS+GAaM25LXsBOl@andrea>
+From: Alexandre Ghiti <alexghiti@rivosinc.com>
+Date: Thu, 8 Feb 2024 14:23:02 +0100
+Message-ID: <CAHVXubj7ChgpvN4F_QO0oASaT5WC2VS0Q-bEqhnmF8z8QV=yDQ@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Fix text patching when icache flushes use IPIs
+To: Andrea Parri <parri.andrea@gmail.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Anup Patel <anup@brainfault.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-If link retraining fails in pcie_failed_link_retrain() it returns false
-but the wrong logic in pcie_wait_for_link_delay() translates this into
-success by returning true after a delay.
+Hi Andrea,
 
-As a result, pci_bridge_wait_for_secondary_bus() does not print out a
-message and return failure but goes into pci_dev_wait() which just
-spends >60s waiting for a device that will not come up.
+On Thu, Feb 8, 2024 at 12:42=E2=80=AFPM Andrea Parri <parri.andrea@gmail.co=
+m> wrote:
+>
+> > +static int __ftrace_modify_code(void *data)
+> > +{
+> > +     struct ftrace_modify_param *param =3D data;
+> > +
+> > +     if (atomic_inc_return(&param->cpu_count) =3D=3D num_online_cpus()=
+) {
+> > +             ftrace_modify_all_code(param->command);
+> > +             atomic_inc(&param->cpu_count);
+>
+> I stared at ftrace_modify_all_code() for a bit but honestly I don't see
+> what prevents the ->cpu_count increment from being reordered before the
+> insn write(s) (architecturally) now that you have removed the IPI dance:
+> perhaps add an smp_wmb() right before the atomic_inc() (or promote this
+> latter to a (void)atomic_inc_return_release()) and/or an inline comment
+> saying why such reordering is not possible?
 
-The long resume delay problem has been observed to occur when resuming
-devices that got disconnected while suspended:
+I did not even think of that, and it actually makes sense so I'll go
+with what you propose: I'll replace atomic_inc() with
+atomic_inc_return_release(). And I'll add the following comment if
+that's ok with you:
 
-pcieport 0000:00:07.2: power state changed by ACPI to D3cold
-..
-thunderbolt 1-701: device disconnected
-pcieport 0000:00:07.2: power state changed by ACPI to D0
-pcieport 0000:00:07.2: waiting 100 ms for downstream link
-pcieport 0000:57:03.0: waiting 100 ms for downstream link, after activation
-pcieport 0000:57:03.0: broken device, retraining non-functional downstream link at 2.5GT/s
-pcieport 0000:57:03.0: retraining failed
-pcieport 0000:57:03.0: broken device, retraining non-functional downstream link at 2.5GT/s
-pcieport 0000:57:03.0: retraining failed
-pcieport 0000:73:00.0: not ready 1023ms after resume; waiting
-pcieport 0000:73:00.0: not ready 2047ms after resume; waiting
-pcieport 0000:73:00.0: not ready 4095ms after resume; waiting
-pcieport 0000:73:00.0: not ready 8191ms after resume; waiting
-pcieport 0000:73:00.0: not ready 16383ms after resume; waiting
-pcieport 0000:73:00.0: not ready 32767ms after resume; waiting
-pcieport 0000:73:00.0: not ready 65535ms after resume; giving up
-pcieport 0000:57:03.0: pciehp: pciehp_check_link_active: lnk_status = 5041
-pcieport 0000:73:00.0: Unable to change power state from D3cold to D0, device inaccessible
-pcieport 0000:57:03.0: pciehp: Slot(3): Card not present
+"Make sure the patching store is effective *before* we increment the
+counter which releases all waiting cpus"
 
-Fix the logic error by returning false immediately if
-pcie_failed_link_retrain() fails.
+>
+>
+> > +     } else {
+> > +             while (atomic_read(&param->cpu_count) <=3D num_online_cpu=
+s())
+> > +                     cpu_relax();
+> > +             smp_mb();
+>
+> I see that you've lifted/copied the memory barrier from patch_text_cb():
+> what's its point?  AFAIU, the barrier has no ordering effect on program
+> order later insn fetches; perhaps the code was based on some legacy/old
+> version of Zifencei?  IAC, comments, comments, ... or maybe just remove
+> that memory barrier?
 
-Fixes: 1abb47390350 ("Merge branch 'pci/enumeration'")
-Link: https://lore.kernel.org/linux-pci/a0b070b7-14ce-7cc5-4e6c-6e15f3fcab75@linux.intel.com/T/#t
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
+Honestly, I looked at it one minute, did not understand its purpose
+and said to myself "ok that can't hurt anyway, I may be missing
+something".
 
-I think this change should be made in the same change as the Target
-Speed quirk fix (make it return false when no retraining was
-attempted) because otherwise there are additional logic troubles
-in the intermediate state.
+FWIW,  I see that arm64 uses isb() here. If you don't see its purpose,
+I'll remove it (here and where I copied it).
 
-v2:
-- Removed quirks part (still needed but Maciej planned to test and send
-  another patch for that)
-- Improved commit message
+>
+>
+> > +     }
+> > +
+> > +     local_flush_icache_all();
+> > +
+> > +     return 0;
+> > +}
+>
+> [...]
+>
+>
+> > @@ -232,8 +230,7 @@ static int patch_text_cb(void *data)
+> >       if (atomic_inc_return(&patch->cpu_count) =3D=3D num_online_cpus()=
+) {
+> >               for (i =3D 0; ret =3D=3D 0 && i < patch->ninsns; i++) {
+> >                       len =3D GET_INSN_LENGTH(patch->insns[i]);
+> > -                     ret =3D patch_text_nosync(patch->addr + i * len,
+> > -                                             &patch->insns[i], len);
+> > +                     ret =3D patch_insn_write(patch->addr + i * len, &=
+patch->insns[i], len);
+> >               }
+> >               atomic_inc(&patch->cpu_count);
+> >       } else {
+> > @@ -242,6 +239,8 @@ static int patch_text_cb(void *data)
+> >               smp_mb();
+> >       }
+> >
+> > +     local_flush_icache_all();
+> > +
+> >       return ret;
+> >  }
+> >  NOKPROBE_SYMBOL(patch_text_cb);
+>
+> My above remarks/questions also apply to this function.
+>
+>
+> On a last topic, although somehow orthogonal to the scope of this patch,
+> I'm not sure the patch_{map,unmap}() dance in our patch_insn_write() is
+> correct: I can see why we may want (need to do) the local TLB flush be-
+> fore returning from patch_{map,unmap}(), but does a local flush suffice?
+> For comparison, arm64 seems to go through a complete dsb-tlbi-dsb(-isb)
+> sequence in their unmapping stage (and apparently relying on "no caching
+> of invalid ptes" in their mapping stage).  Of course, "broadcasting" our
+> (riscv's) TLB invalidations will necessary introduce some complexity...
+>
+> Thoughts?
 
----
- drivers/pci/pci.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+To avoid remote TLBI, could we simply disable the preemption before
+the first patch_map()? arm64 disables the irqs, but that seems
+overkill to me, but maybe I'm missing something again?
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index d8f11a078924..ca4159472a72 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -5068,9 +5068,7 @@ static bool pcie_wait_for_link_delay(struct pci_dev *pdev, bool active,
- 		msleep(20);
- 	rc = pcie_wait_for_link_status(pdev, false, active);
- 	if (active) {
--		if (rc)
--			rc = pcie_failed_link_retrain(pdev);
--		if (rc)
-+		if (rc < 0 && !pcie_failed_link_retrain(pdev))
- 			return false;
- 
- 		msleep(delay);
--- 
-2.39.2
+Thanks for your comments Andrea,
 
+Alex
+
+>
+>   Andrea
 
