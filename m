@@ -1,90 +1,173 @@
-Return-Path: <linux-kernel+bounces-57873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCBAB84DE71
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:38:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 610C984DE78
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:39:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEF721C22C40
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:38:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91EEC1C22C65
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:39:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E118E67E83;
-	Thu,  8 Feb 2024 10:38:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LUgcpQKR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDB0267E83;
+	Thu,  8 Feb 2024 10:39:25 +0000 (UTC)
+Received: from esa2.ltts.com (unknown [14.140.155.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6BE2E3F2;
-	Thu,  8 Feb 2024 10:38:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33FD441A88
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 10:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.140.155.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707388706; cv=none; b=VFaNlU9Dyt9xeOinkrn9iLurR4eaGa7hjXAybRqIJkr5yQ0Zcr5w3ewu+9hsrVP8bVH63ZJgQ37J+FtFWYJYpOVgcgKD6TJZ8qwwvsYZraTJEjAwgrutRm0Yra07nF95JLZvj1N+e9TvGglwfmTssikgL/p7IBnI1s52pdgLN4c=
+	t=1707388765; cv=none; b=C74Q/DL7qXO0TNPTdY0o9BYCFc3+izNwaz0EIgtqtnj5jMSMiZ7iV9uRkclKCFAubu/doiMqjGyk7ywQQef7CEH6ZHWh419VQXBViRjd4cmVPsIetyWjhdryYEkjftgPs+l4um/KGh4vbkzhn0GTh0ulCLQ9Qpl9JjQgQxUTStQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707388706; c=relaxed/simple;
-	bh=3AETScruqkniEwNPSQ+NMaYC/8cwISq036PBk0cTtnU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=fkLrVqi+TYRGem9bn0ciCnXE1N7K4R7pSn9MVasbfQ1yBTwvTqdngP8YyK3HGPdx1J/D8WN6iNYREtBcY6vKfiXEMZAE9ZKiFZogegESxN1bGt6IX0LItk9mr/bPYUlSyv7TgGNmEHhcFa/U6tIjZSo5Cqo4YVtqbgDxsC+ICSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LUgcpQKR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50626C43390;
-	Thu,  8 Feb 2024 10:38:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707388705;
-	bh=3AETScruqkniEwNPSQ+NMaYC/8cwISq036PBk0cTtnU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=LUgcpQKRtuhjFJDiKTqdPWjCsggDpcTwYXQhj03kzMUMieEg6DLASSrp5Jjl5S8jM
-	 auS6Q2sRso+iCGkthVdLHM+tfFixhfn90rBxv+nPxszTUUL9J1WvYt9GQ7CsbGdyWf
-	 efkKt5wNFFRPBeZnuoqICx6JtNtNx8g6me+g08gm+hpr8Cc+vgUDb5ul88Wd74fmHb
-	 2caj3zysLIDePMJTgWBjOvn6+lp9VJa/uSqBBmRp8GJiMuXe04QlY0RCTqq9Mn15mn
-	 7N4AWuCIj4Smb5sD2KYetGz/DmVEFNhDQJgnBuILiEYB6y8r1E2G2EadPQO8K7tEPf
-	 KxKWKNWvx7T0Q==
-From: Lee Jones <lee@kernel.org>
-To: sam@ravnborg.org, bbrezillon@kernel.org, 
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de, 
- airlied@gmail.com, daniel@ffwll.ch, robh+dt@kernel.org, 
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
- nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, 
- claudiu.beznea@tuxon.dev, dri-devel@lists.freedesktop.org, 
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, lee@kernel.org, thierry.reding@gmail.com, 
- u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org, 
- Dharma Balasubiramani <dharma.b@microchip.com>
-Cc: hari.prasathge@microchip.com, manikandan.m@microchip.com
-In-Reply-To: <20240131033523.577450-4-dharma.b@microchip.com>
-References: <20240131033523.577450-1-dharma.b@microchip.com>
- <20240131033523.577450-4-dharma.b@microchip.com>
-Subject: Re: (subset) [linux][PATCH v5 3/3] dt-bindings: mfd: atmel,hlcdc:
- Convert to DT schema format
-Message-Id: <170738870103.916068.17422553727568917627.b4-ty@kernel.org>
-Date: Thu, 08 Feb 2024 10:38:21 +0000
+	s=arc-20240116; t=1707388765; c=relaxed/simple;
+	bh=uuZUc5/bStUBBFvA6FpAi/msK+Mtr2MZzsPpEsU0W0E=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qGbYcrRHTpHIGpB+ilzQmfRtIZ211sOIgv6ttuHDMS3zJRBndeZePl5sgFEY/JfLKqDo0k8/mGrk4qBKUIGSHrEuBkhg1amKgsF7BrQDG/V+37/hu75Kt88g48IoM5w6w0gUYlvfXMHauXcBq+eFjTvFQ+oIzHQDQi4QzGZYlIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com; spf=pass smtp.mailfrom=ltts.com; arc=none smtp.client-ip=14.140.155.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ltts.com
+IronPort-SDR: JUXvMWBuNUUlufPqTdUUCNu/a+SoloYiq+G0CHjUqa1fCicCecUaZPj/eDBdgNNq7Gslq5F5od
+ RgWYTo4LxrJg==
+Received: from unknown (HELO localhost.localdomain) ([192.168.34.55])
+  by esa2.ltts.com with ESMTP; 08 Feb 2024 16:09:19 +0530
+From: Bhargav Raviprakash <bhargav.r@ltts.com>
+To: lee@kernel.org
+Cc: bhargav.r@ltts.com,
+	linux-kernel@vger.kernel.org,
+	m.nirmaladevi@ltts.com
+Subject: Re :  Re: [PATCH v1 00/13]  Add support for TI TPS65224 PMIC
+Date: Thu,  8 Feb 2024 16:08:53 +0530
+Message-Id: <20240208103853.1212108-1-bhargav.r@ltts.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240208101912.GD689448@google.com>
+References: <20240208101912.GD689448@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.3
 
-On Wed, 31 Jan 2024 09:05:23 +0530, Dharma Balasubiramani wrote:
-> Convert the atmel,hlcdc binding to DT schema format.
+Hi,
+
+On Thu 2/8/2024 3:49 PM, Lee Jones wrote:
+> On Thu, 08 Feb 2024, Bhargav Raviprakash wrote:
 > 
-> Align clocks and clock-names properties to clearly indicate that the LCD
-> controller expects lvds_pll_clk when interfaced with the lvds display. This
-> alignment with the specific hardware requirements ensures accurate device tree
-> configuration for systems utilizing the HLCDC IP.
+> > This series modifies the existing TPS6594 drivers to add support for the
+> > TPS65224 PMIC device that is a derivative of TPS6594. TPS65224 has a
+> > similar register map to TPS6594 with a few differences. SPI, I2C, ESM,
+> > PFSM, Regulators and GPIO features overlap between the two devices.
+> > 
+> > TPS65224 is a Power Management IC (PMIC) which provides regulators and
+> > other features like GPIOs, Watchdog, Error Signal Monitor (ESM) and
+> > Pre-configurable Finite State Machine (PFSM). The SoC and the PMIC can
+> > communicate through the I2C or SPI interfaces. The PMIC TPS65224
+> > additionally has a 12-bit ADC.
+> > Data Sheet for TPS65224: https://www.ti.com/product/TPS65224-Q1
+> > 
+> > Driver re-use is applied following the advice of the following series:
+> > https://lore.kernel.org/lkml/2f467b0a-1d11-4ec7-8ca6-6c4ba66e5887@baylibre.com/
+> > 
+> > The features implemented in this series are:
+> > - TPS65224 Register definitions
+> > - Core (MFD I2C and SPI entry points)
+> > - PFSM	
+> > - ESM
+> > - Regulators
+> > - Pinctrl
+> > 
+> > TPS65224 Register definitions:
+> > This patch adds macros for register field definitions of TPS65224
+> > to the existing TPS6594 driver.  
+> > 
+> > Core description:
+> > I2C and SPI interface protocols are implemented, with and without
+> > the bit-integrity error detection feature (CRC mode).
+> > 
+> > PFSM description:
+> > Strictly speaking, PFSM is not hardware. It is a piece of code.
+> > PMIC integrates a state machine which manages operational modes.
+> > Depending on the current operational mode, some voltage domains
+> > remain energized while others can be off.
+> > PFSM driver can be used to trigger transitions between configured
+> > states.
+> > 
+> > ESM description:
+> > This device monitors the SoC error output signal at its nERR_MCU
+> > input pin. On error detection, ESM driver toggles the PMIC nRSTOUT pin
+> > to reset the SoC.
+> > 
+> > Regulators description:
+> > 4 BUCKs and 3 LDOs.
+> > BUCK12 can be used in dual-phase mode.
+> > 
+> > Pinctrl description:
+> > TPS65224 family has 6 GPIOs. Those GPIOs can also serve different
+> > functions such as I2C or SPI interface or watchdog disable functions.
+> > The driver provides both pinmuxing for the functions and GPIO capability.
+> > 
+> > This series was tested on linux-next tag: next-20240118
+> > 
+> > Test logs can be found here:
+> > https://gist.github.com/LeonardMH/58ec135921fb1062ffd4a8b384831eb0
+> > 
+> > Bhargav Raviprakash (10):
+> >   mfd: tps6594: use volatile_table instead of volatile_reg
+> >   dt-bindings: mfd: ti,tps6594: Add TI TPS65224 PMIC
+> >   mfd: tps6594-i2c: Add TI TPS65224 PMIC I2C
+> >   mfd: tps6594-spi: Add TI TPS65224 PMIC SPI
+> >   mfd: tps6594-core: Add TI TPS65224 PMIC core
+> >   misc: tps6594-pfsm: Add TI TPS65224 PMIC PFSM
+> >   misc: tps6594-esm: reversion check limited to TPS6594 family
+> >   misc: tps6594-esm: use regmap_field
+> >   misc: tps6594-esm: Add TI TPS65224 PMIC ESM
+> >   arch: arm64: dts: ti: k3-am62p5-sk: Add TPS65224 PMIC support in AM62P
+> >     dts
 > 
-> [...]
+> How did you send this set?
+> 
+> Any idea how it ended up in 3 separate threads?
+> 
+> Tracking this set is going to cause issues.
+> 
+> Also, please send all patches to all maintainers.
+>
 
-Applied, thanks!
+Thanks for the feedback.
+I will resend all the patches to all maintainers. While sending I did not do this,
+this might have caused the patch-set to end up in three different threads.
 
-[3/3] dt-bindings: mfd: atmel,hlcdc: Convert to DT schema format
-      commit: 7dd93269787781869d3dbb23138ec1455d26b047
+> > Nirmala Devi Mal Nadar (3):
+> >   mfd: tps6594: Add register definitions for TI TPS65224 PMIC
+> >   regulator: tps6594-regulator: Add TI TPS65224 PMIC regulators
+> >   pinctrl: pinctrl-tps6594: Add TPS65224 PMIC pinctrl and GPIO
+> > 
+> >  .../devicetree/bindings/mfd/ti,tps6594.yaml   |   1 +
+> >  arch/arm64/boot/dts/ti/k3-am62p5-sk.dts       |  95 +++++
+> >  drivers/mfd/tps6594-core.c                    | 258 ++++++++++++-
+> >  drivers/mfd/tps6594-i2c.c                     |  20 +-
+> >  drivers/mfd/tps6594-spi.c                     |  18 +-
+> >  drivers/misc/tps6594-esm.c                    |  89 +++--
+> >  drivers/misc/tps6594-pfsm.c                   |  55 ++-
+> >  drivers/pinctrl/pinctrl-tps6594.c             | 287 ++++++++++++--
+> >  drivers/regulator/Kconfig                     |   4 +-
+> >  drivers/regulator/tps6594-regulator.c         | 244 ++++++++++--
+> >  include/linux/mfd/tps6594.h                   | 358 +++++++++++++++++-
+> >  11 files changed, 1272 insertions(+), 157 deletions(-)
+> > 
+> > 
+> > base-commit: 2863b714f3ad0a9686f2de1b779228ad8c7a8052
+> > -- 
+> > 2.25.1
+> > 
+> 
+> -- 
+> Lee Jones [李琼斯]
 
---
-Lee Jones [李琼斯]
-
+Regards,
+Bhargav
 
