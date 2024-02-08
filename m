@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-58507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61FE484E74A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:05:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D66EA84E755
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:06:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2F051F25B09
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:05:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADBB1B27ED9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:05:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DFD82D9A;
-	Thu,  8 Feb 2024 18:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E3C127B51;
+	Thu,  8 Feb 2024 18:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l1F8eMVe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XgTGszmx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECA5B86AF2;
-	Thu,  8 Feb 2024 18:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C26AA1272D0;
+	Thu,  8 Feb 2024 18:04:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707415470; cv=none; b=CnTImYcMA611CxzsuVjnnQukd31Lu/IjMR1VKDPV7ghVJMvHVns6h1Ix6PDtqfP1k0fUp8LOdiXjymOG0hpxyY8T0RmbwYBdDuyJacvezJxOa6McTyFDbj5WvJDglAMwKx3WRxGeAMB35Y3UaE/d4R+B0S6CqOqBsov6AqOFL3M=
+	t=1707415473; cv=none; b=DFOTLBnaELzmalUXhQaba24NkPcs2eeu13GpFT30PE0N/EONLX9fbFZqNeuyjVW5g7NDCgwFATyxTWmFNV7P1uTUwS/mTGLTTRj+fG6PdLaCuDC2UT8LuKCyoflar8vGp328En2A2k34ndy/+hFNIXvyZDEy4SzlzivlwJaUz1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707415470; c=relaxed/simple;
-	bh=EOoPTeNnER7i43iXou7ntTSk1e6l39fVUtsHySrh3Fo=;
+	s=arc-20240116; t=1707415473; c=relaxed/simple;
+	bh=yHJvs4che6WyhYHzxH8wT4v6HXxxwDmE2feB06/a0QY=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=sxCD8k/sE7AIzjrxu2JJYw8uyooKNO78UfQfmixD8U6Agr1nOLzr3Th3omF/hSg4961T3xacMd7SNsZRF5khdFyWfl2VWHJaFCnD3IUijP4tw2ZpvVPtHeF+tvRKdPd/Tq5hNR2/h5G34GthWdD0Qn8FPMBcJeDeDNDxrXIEQHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l1F8eMVe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EAFDC433B1;
-	Thu,  8 Feb 2024 18:04:25 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=ZjdbcoLH/sI9CqBMT0MHRx50sftmfYjbbWSsZ4ERbd4FOeBd3zznCA8TLmHsWCn8B+VF8O+mbnX2u95CC5IRtXh0gK0rmBpCBV9VTCsqrGiHCOuUM3s2mScRQ5lNr5lneFgWX0l7AQMXmknY0YFbX0Wv3S+dpjpVKQB7RvfY8hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XgTGszmx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA1A0C43390;
+	Thu,  8 Feb 2024 18:04:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707415469;
-	bh=EOoPTeNnER7i43iXou7ntTSk1e6l39fVUtsHySrh3Fo=;
+	s=k20201202; t=1707415473;
+	bh=yHJvs4che6WyhYHzxH8wT4v6HXxxwDmE2feB06/a0QY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=l1F8eMVeUYOlgnfTDTMEH1O2giWk7wFtGNmQdlYAymbpn9WE713UNZY8ljtaxMjjS
-	 FKQn+8/jsAIsSY+fq2sDx/IA6jwML3ajY2x2KonSUaaRdM8jGMoMM0y2mn7b+p9zP3
-	 cPmeHIDp6C1p6h4crEa9FhoiYIixn9bdv+2ADhS0fmEoTYZhh7Y/qXxYgPKwI+4ho3
-	 v574ndktvL0G8hAS92XEMyq1ahMNWupijfzJ44Z072/R4s/9kpr+uHQcCwXH9fSXIB
-	 iqKRcrCEvG8SE+vF0G+ULFmFi0/zEUGL5wvkKell8FnWunudNqm8TdjYeWk/T7F7II
-	 63PiboTeUjHCA==
+	b=XgTGszmxQE3Wk32I7duZggjSPhqW9GNMht/S90Hhce0HOgMMHTmCh5iagf56vS/RQ
+	 lsZwnH+UjSh+9IT3ANTzDVZlhgnzBh9zs9XiOoknlEZklSFA7SjGWUOJZZVm6VrhC3
+	 gkSlatMe561yStwVPFXfsmaPDASjbNC3vOtwoaAudkjDLZZi+oME5s5VAYZNn83MCM
+	 DkFRtvUtsjld5/Ifxyh0KsqB+UJ5WMgOQJ9hQKAbxNkka6TMaS5xQrL7R1w1pjEfUs
+	 ufGPyojuVBURq4kQe5Mzs3oLsIAVxjFFLNdOZ+rxa3oVyfpDdXBAwnnBzffx3Dz4t6
+	 KnGsKJJV74ueQ==
 From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-Date: Thu, 08 Feb 2024 19:03:50 +0100
-Subject: [PATCH net 2/7] mptcp: fix rcv space initialization
+Date: Thu, 08 Feb 2024 19:03:51 +0100
+Subject: [PATCH net 3/7] mptcp: fix more tx path fields initialization
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,7 +51,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240208-upstream-net-20240202-locking-cleanup-misc-v1-2-f75cc5b97e5a@kernel.org>
+Message-Id: <20240208-upstream-net-20240202-locking-cleanup-misc-v1-3-f75cc5b97e5a@kernel.org>
 References: <20240208-upstream-net-20240202-locking-cleanup-misc-v1-0-f75cc5b97e5a@kernel.org>
 In-Reply-To: <20240208-upstream-net-20240202-locking-cleanup-misc-v1-0-f75cc5b97e5a@kernel.org>
 To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
@@ -66,144 +66,89 @@ Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
  Christoph Paasch <cpaasch@apple.com>, 
  "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, stable@vger.kernel.org
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4231; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=u459/uEWds6unUKdxrBRK9kc4LzzOSdfJrTQrb3+BUo=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBlxReh66G8XYWqiDsnrvH7A+T0+wCScbecigzt8
- f6bvzZYXauJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZcUXoQAKCRD2t4JPQmmg
- c8ZHD/9fQ9GFtFA+opHpLjjxDQhx+9qRdYgaO/d07oA3asjxIH0a7bEW3hF3T8zW2GchvdYjPew
- lln3UQvrNrZitHWpfXiBSmEyWQSzo3+027w0wqiCOUH/mMKDv6zHVaUMNatzrd/uxRqC1KLhbbD
- NTEn3f16j3uo6N0v5MdK2R+4t7C1OOYyBASNbfna+P5Tx2MKTXd2kbcOUtvMhT72g03a2Vfm2F8
- oB9Vt5Jp5FtzKvQrGqnUjwG1ahwoQW53U48l1bILHICl72xYWtfWyVdaV8GEgO42FPEp5TSAE8g
- sssrhYT5z5T3eMCK81q27+Nflr0YDS3dyvWx1NeZLUpJajbBqznDUoBT1mOZ+BULayyHue6S9MT
- 0MzC+CvYZ33QC9zq3E9UrmYdsdM1DSU/cPEsm6ZA3t8/eo6fqHp0P7s9CZhprP/1h5jPCoWvb/k
- pH+pty8cLODZbhAMAgeBB98/6ytSuBIxvZ3AgSkyEQYEtKxDQ4m00y2xpx0VD5FO8y//cp2Kw+D
- tofIUHbqHyMVvO714CXGvZ1187d9zR9BjGrVSxNzppMwVwCb+X1VQ5jIQUUcONjv2FeN6ztwj4x
- H3BuCbO4VvsWvamW1U62Pzwg620fUXs4ZBTmw0Js67Zcjzgp5z23IsHsWg0dGKVF3frYOuc9cbB
- 1vs8YAOhSNXFVZQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2392; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=BH9JwtYC2RN/3BDjjpe9vHZJy5WVFOfYRfxZhvGrfHM=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBlxRehoTpOkhQagMNL0KqONyCoHfQC3+GgB+o7X
+ hLmr9ahZ5KJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZcUXoQAKCRD2t4JPQmmg
+ c6QsD/9+sUDZ1mdnC9h189TtEe7cUCxjSjCf2hgQZ6q5p9UWmq8m/CkIkxsyi0S37ONi2QSE/sq
+ kDVg0zfgcA3HnVdGJYZ219wpOWcSTT5O6TPAot3vre7gzOFtIiiHXK0QfpuhTquTQC697z4IUIh
+ LhBpYK6uoDZH6ezQje3PKwddcA5v3XGtCQgEfUJRfn8+pbhFcZzsUZlyxhHFHRsO1hQJohYZon8
+ CRfdsk8BXLvyJODr6zpN/A/BzxJYk1eOFfn1TegSKHGVYBJ/QxKT34uxw8l5p5AHojkvp8BP5yW
+ t2ozFgG4qcKOp/28LzMPCmszncJKvXWLluI03czeiu5GefBw7tVkEFZr1NMBZvIPoDDoa5Hw+5S
+ s/p1mQ0EWqp0Dg5d8SrzfwghkRUkyPWMYWTAat2oy7Eo+RF3cqVFmvM5sDl/yY8ILm12GRQoEbd
+ y7LIUzCl1MK0VjhFlsoyY5MBUYSy+20awY7muTWX6mGnO1VP5cmrmC91f2NVeU4douFSbNY2VC6
+ f0c9FAcFIZawV9V/+42VCGL5bGoEMfjW3a1We+e7mvY4EcK84Vnkku/uJjN7OepjpGXd2PWEO/s
+ xbtAsNle5kH1n0seFi6FOenAvNeAyHS+ob2ee8F9JJNZHvkdemZCbKjJxcoSwyq6NOC16S1NbvC
+ knAdu5d97NpXbfw==
 X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
  fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
 From: Paolo Abeni <pabeni@redhat.com>
 
-mptcp_rcv_space_init() is supposed to happen under the msk socket
-lock, but active msk socket does that without such protection.
+The 'msk->write_seq' and 'msk->snd_nxt' are always updated under
+the msk socket lock, except at MPC handshake completiont time.
 
-Leverage the existing mptcp_propagate_state() helper to that extent.
-We need to ensure mptcp_rcv_space_init will happen before
-mptcp_rcv_space_adjust(), and the release_cb does not assure that:
-explicitly check for such condition.
+Builds-up on the previous commit to move such init under the relevant
+lock.
 
-While at it, move the wnd_end initialization out of mptcp_rcv_space_init(),
-it never belonged there.
+There are no known problems caused by the potential race, the
+primary goal is consistency.
 
-Note that the race does not produce ill effect in practice, but
-change allows cleaning-up and defying better the locking model.
-
-Fixes: a6b118febbab ("mptcp: add receive buffer auto-tuning")
+Fixes: 6d0060f600ad ("mptcp: Write MPTCP DSS headers to outgoing data packets")
 Cc: stable@vger.kernel.org
 Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Reviewed-by: Mat Martineau <martineau@kernel.org>
 Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
 ---
- net/mptcp/protocol.c | 10 ++++++----
- net/mptcp/protocol.h |  3 ++-
- net/mptcp/subflow.c  |  4 ++--
- 3 files changed, 10 insertions(+), 7 deletions(-)
+ net/mptcp/protocol.c |  6 ++----
+ net/mptcp/subflow.c  | 13 +++++++++++--
+ 2 files changed, 13 insertions(+), 6 deletions(-)
 
 diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-index 2111819016af..7632eafb683b 100644
+index 7632eafb683b..8cb6a873dae9 100644
 --- a/net/mptcp/protocol.c
 +++ b/net/mptcp/protocol.c
-@@ -1963,6 +1963,9 @@ static void mptcp_rcv_space_adjust(struct mptcp_sock *msk, int copied)
- 	if (copied <= 0)
- 		return;
- 
-+	if (!msk->rcvspace_init)
-+		mptcp_rcv_space_init(msk, msk->first);
-+
- 	msk->rcvq_space.copied += copied;
- 
- 	mstamp = div_u64(tcp_clock_ns(), NSEC_PER_USEC);
-@@ -3160,6 +3163,7 @@ static int mptcp_disconnect(struct sock *sk, int flags)
- 	msk->bytes_received = 0;
- 	msk->bytes_sent = 0;
- 	msk->bytes_retrans = 0;
-+	msk->rcvspace_init = 0;
- 
- 	WRITE_ONCE(sk->sk_shutdown, 0);
- 	sk_error_report(sk);
-@@ -3247,6 +3251,7 @@ void mptcp_rcv_space_init(struct mptcp_sock *msk, const struct sock *ssk)
- {
- 	const struct tcp_sock *tp = tcp_sk(ssk);
- 
-+	msk->rcvspace_init = 1;
- 	msk->rcvq_space.copied = 0;
- 	msk->rcvq_space.rtt_us = 0;
- 
-@@ -3257,8 +3262,6 @@ void mptcp_rcv_space_init(struct mptcp_sock *msk, const struct sock *ssk)
- 				      TCP_INIT_CWND * tp->advmss);
- 	if (msk->rcvq_space.space == 0)
- 		msk->rcvq_space.space = TCP_INIT_CWND * TCP_MSS_DEFAULT;
--
+@@ -3478,10 +3478,8 @@ void mptcp_finish_connect(struct sock *ssk)
+ 	 * accessing the field below
+ 	 */
+ 	WRITE_ONCE(msk->local_key, subflow->local_key);
+-	WRITE_ONCE(msk->write_seq, subflow->idsn + 1);
+-	WRITE_ONCE(msk->snd_nxt, msk->write_seq);
+-	WRITE_ONCE(msk->snd_una, msk->write_seq);
 -	WRITE_ONCE(msk->wnd_end, msk->snd_nxt + tcp_sk(ssk)->snd_wnd);
- }
- 
- void mptcp_destroy_common(struct mptcp_sock *msk, unsigned int flags)
-@@ -3478,10 +3481,9 @@ void mptcp_finish_connect(struct sock *ssk)
- 	WRITE_ONCE(msk->write_seq, subflow->idsn + 1);
- 	WRITE_ONCE(msk->snd_nxt, msk->write_seq);
- 	WRITE_ONCE(msk->snd_una, msk->write_seq);
-+	WRITE_ONCE(msk->wnd_end, msk->snd_nxt + tcp_sk(ssk)->snd_wnd);
++	WRITE_ONCE(msk->snd_una, subflow->idsn + 1);
++	WRITE_ONCE(msk->wnd_end, subflow->idsn + 1 + tcp_sk(ssk)->snd_wnd);
  
  	mptcp_pm_new_connection(msk, ssk, 0);
--
--	mptcp_rcv_space_init(msk, ssk);
  }
- 
- void mptcp_sock_graft(struct sock *sk, struct socket *parent)
-diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
-index b905f1868298..9f5ee82e3473 100644
---- a/net/mptcp/protocol.h
-+++ b/net/mptcp/protocol.h
-@@ -304,7 +304,8 @@ struct mptcp_sock {
- 			nodelay:1,
- 			fastopening:1,
- 			in_accept_queue:1,
--			free_first:1;
-+			free_first:1,
-+			rcvspace_init:1;
- 	struct work_struct work;
- 	struct sk_buff  *ooo_last_skb;
- 	struct rb_root  out_of_order_queue;
 diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
-index 0dcb721c89d1..56b2ac2f2f22 100644
+index 56b2ac2f2f22..c2df34ebcf28 100644
 --- a/net/mptcp/subflow.c
 +++ b/net/mptcp/subflow.c
-@@ -424,6 +424,8 @@ void __mptcp_sync_state(struct sock *sk, int state)
- 	struct mptcp_sock *msk = mptcp_sk(sk);
+@@ -421,12 +421,21 @@ static bool subflow_use_different_dport(struct mptcp_sock *msk, const struct soc
  
- 	__mptcp_propagate_sndbuf(sk, msk->first);
-+	if (!msk->rcvspace_init)
-+		mptcp_rcv_space_init(msk, msk->first);
+ void __mptcp_sync_state(struct sock *sk, int state)
+ {
++	struct mptcp_subflow_context *subflow;
+ 	struct mptcp_sock *msk = mptcp_sk(sk);
++	struct sock *ssk = msk->first;
+ 
+-	__mptcp_propagate_sndbuf(sk, msk->first);
++	subflow = mptcp_subflow_ctx(ssk);
++	__mptcp_propagate_sndbuf(sk, ssk);
+ 	if (!msk->rcvspace_init)
+-		mptcp_rcv_space_init(msk, msk->first);
++		mptcp_rcv_space_init(msk, ssk);
++
  	if (sk->sk_state == TCP_SYN_SENT) {
++		/* subflow->idsn is always available is TCP_SYN_SENT state,
++		 * even for the FASTOPEN scenarios
++		 */
++		WRITE_ONCE(msk->write_seq, subflow->idsn + 1);
++		WRITE_ONCE(msk->snd_nxt, msk->write_seq);
  		mptcp_set_state(sk, state);
  		sk->sk_state_change(sk);
-@@ -545,7 +547,6 @@ static void subflow_finish_connect(struct sock *sk, const struct sk_buff *skb)
- 		}
- 	} else if (mptcp_check_fallback(sk)) {
- fallback:
--		mptcp_rcv_space_init(msk, sk);
- 		mptcp_propagate_state(parent, sk);
  	}
- 	return;
-@@ -1744,7 +1745,6 @@ static void subflow_state_change(struct sock *sk)
- 	msk = mptcp_sk(parent);
- 	if (subflow_simultaneous_connect(sk)) {
- 		mptcp_do_fallback(sk);
--		mptcp_rcv_space_init(msk, sk);
- 		pr_fallback(msk);
- 		subflow->conn_finished = 1;
- 		mptcp_propagate_state(parent, sk);
 
 -- 
 2.43.0
