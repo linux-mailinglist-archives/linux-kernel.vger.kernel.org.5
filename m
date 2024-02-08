@@ -1,163 +1,215 @@
-Return-Path: <linux-kernel+bounces-57612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE07384DB61
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:25:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37F0D84DB64
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:26:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A20041F249FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:25:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 571C61C21D30
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9A2B6E2D2;
-	Thu,  8 Feb 2024 08:23:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC28B6A35E;
+	Thu,  8 Feb 2024 08:23:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ltPA6O/S"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ujWyTSR6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5122D6BFA3;
-	Thu,  8 Feb 2024 08:23:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 006FF6A03F;
+	Thu,  8 Feb 2024 08:23:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707380598; cv=none; b=CWZweU2swfNSkMj3/jD9ojKm/YR1MYup0JluspCyJd+fsjONwawUaJrzWbEaAZPT1MlK6IOWKsSacM6R/+AmAX9TPPX2f1EL1eUDUquqLmOLM+7JzRHn76Q1QANLLRfPqn6lXAye2QDmltefFyEG32hfGYK36y1aO5R8KbsA/fs=
+	t=1707380622; cv=none; b=hSfMFrEhAq3L7+5Te01OTdKpinAZkSJdEpAXH5MkUlTA0VwjUXvsaGQOgvrGYfTt7pRffuV5C8WTtUfYvjmpBh5+WsYIDNuWeh36gEkRad0l/upENa8845UXWPGofaDH0/hISHbRf2EGtSblR1A5t+8hN4teGqLib6QgsT89QOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707380598; c=relaxed/simple;
-	bh=thi2b5CgZH40iDhft4tiI0ilUOViNb/SOYwiICBayms=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZTcwP2kpHgqn4PwwFBhkx8jtVO+C9TXe4Z8HJdwJrFfxzPfS22o8A93XN19k+wSA6kagGSikhBoHd5DesJIBNTVQ66gwxDsopzt+JEJuybOTDYMPiUV7OondZ942x/zfI46nMdWliDjltQKrwRlS7gggNCFM6FCOIhFHNTfX/IQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ltPA6O/S; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707380597; x=1738916597;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=thi2b5CgZH40iDhft4tiI0ilUOViNb/SOYwiICBayms=;
-  b=ltPA6O/Sy9TUw9S9HAt2bF6AyypG9EvXnvaBlP2+rkLUw7EXFBh4TEuK
-   DnsWmj597SvZjYjvIo6b8on0Kq+xrambj7Q5ph1dMRRiAYfn7YP5nZaE0
-   89Y4VMF/LnU58RpZT5jXuJASfxTnZ57kR4S8iogVA/EbEcfVFPaBYIyDr
-   I8rIFpTUY1XecRZcKLnVGhmAHMvTyjZ4Q9QZ5VFhPh+y9g7vbM97yfK5G
-   vnkIgUlAAShpDuUvy06wL9iI7hr8DQubTduCKvL0/yAo45YHdTIrglMF3
-   sISOj7f/mnfa4Tl5ollbWUz1PywV5TKkzyFDOzyL0Zn+GWiHT3JiKeCI+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="5036360"
-X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="5036360"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 00:23:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="6252142"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by orviesa003.jf.intel.com with ESMTP; 08 Feb 2024 00:23:15 -0800
-From: Yi Liu <yi.l.liu@intel.com>
-To: joro@8bytes.org,
-	jgg@nvidia.com,
-	kevin.tian@intel.com,
-	baolu.lu@linux.intel.com
-Cc: alex.williamson@redhat.com,
-	robin.murphy@arm.com,
-	eric.auger@redhat.com,
-	nicolinc@nvidia.com,
-	kvm@vger.kernel.org,
-	chao.p.peng@linux.intel.com,
-	yi.l.liu@intel.com,
-	yi.y.sun@linux.intel.com,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	zhenzhong.duan@intel.com,
-	joao.m.martins@oracle.com
-Subject: [PATCH rc 8/8] iommu/vt-d: Add missing dirty tracking set for parent domain
-Date: Thu,  8 Feb 2024 00:23:07 -0800
-Message-Id: <20240208082307.15759-9-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240208082307.15759-1-yi.l.liu@intel.com>
-References: <20240208082307.15759-1-yi.l.liu@intel.com>
+	s=arc-20240116; t=1707380622; c=relaxed/simple;
+	bh=yNox0Rvrke1TK9bvylXp7lj6RMB3YMY6EmLiHoovj74=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BOHOEHxRQwvsx3TcHeC3RQNSc/ujI86O/rHucYfhVdmURd+CU27mnQxMs+HdbHVg8zVOznLmHE73nMZNVFCQESE0gFZMqRX0AudtkGmwkdoOYAjOz/TQYkH7+qtCLUHrGTEJc2lXQ6/WwNIQgnS4ZV2M98JE1ZvCz/tDmvQe0v0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ujWyTSR6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1FE9C433C7;
+	Thu,  8 Feb 2024 08:23:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707380621;
+	bh=yNox0Rvrke1TK9bvylXp7lj6RMB3YMY6EmLiHoovj74=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ujWyTSR69cvBIEjMA6VF+800AGAB5hUvP7a/PQGvQVgh1lAWgWt22OYbaR87SABQt
+	 QnZn76mUoHGi7rfWsdwNGQHKPG0TRSGI9Zv3c1MfUx4wbzbT37GFPL3wmEDg5zLmv/
+	 rXuLhIUILb8PD9EoqGIjnpsdhJi+UzEjSGzCTvESTq8jETnPvE6Gyt1SS9LvkHBYy7
+	 8cTjNLBK14KyohT4mG3KqmaSTXHGxxy9xcBKiqYrcms0ScrXdKlob1JFmULgYKyOBm
+	 VOlI5NX+qAZh9JXMRdk5H4Tilt6XLMegvKbPxCD08R2fmQs+n/R7e+P/SVa9jQnT4y
+	 4uhSZjn8SCyAQ==
+Date: Thu, 8 Feb 2024 10:23:36 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>
+Cc: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
+	jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rdma-next v1 1/1] RDMA/mana_ib: Fix bug in creation of
+ dma regions
+Message-ID: <20240208082336.GE56027@unreal>
+References: <1707318566-3141-1-git-send-email-kotaranov@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1707318566-3141-1-git-send-email-kotaranov@linux.microsoft.com>
 
-Setting dirty tracking for a s2 domain requires to loop all the related
-devices and set the dirty tracking enable bit in the PASID table entry.
-This includes the devices that are attached to the nested domains of a
-s2 domain if this s2 domain is used as parent. However, the existing dirty
-tracking set only loops s2 domain's own devices. It will miss dirty page
-logs in the parent domain.
+On Wed, Feb 07, 2024 at 07:09:26AM -0800, Konstantin Taranov wrote:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
+> 
+> Dma registration was ignoring virtual addresses by setting it to 0.
+> As a result, mana_ib could only register page-aligned memory.
+> As well as, it could fail to produce dma regions with zero offset
+> for WQs and CQs (e.g., page size is 8192 but address is only 4096
+> bytes aligned), which is required by hardware.
+> 
+> This patch takes into account the virtual address, allowing to create
+> a dma region with any offset. For queues (e.g., WQs, CQs) that require
+> dma regions with zero offset we add a flag to ensure zero offset.
+> 
+> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> ---
+>  drivers/infiniband/hw/mana/cq.c      |  3 ++-
+>  drivers/infiniband/hw/mana/main.c    | 16 +++++++++++++---
+>  drivers/infiniband/hw/mana/mana_ib.h |  2 +-
+>  drivers/infiniband/hw/mana/mr.c      |  2 +-
+>  drivers/infiniband/hw/mana/qp.c      |  4 ++--
+>  drivers/infiniband/hw/mana/wq.c      |  3 ++-
+>  6 files changed, 21 insertions(+), 9 deletions(-)
 
-Now, the parent domain tracks the nested domains, so it can loop the
-nested domains and the devices attached to the nested domains to ensure
-dirty tracking on the parent is set completely.
+You definitely advised to look at the Documentation/process/submitting-patches.rst guide.
+1. First revision doesn't need to be v1.
+2. One logical fix/change == one patch.
+3. Fixes should have Fixes: tag in the commit message.
 
-Fixes: b41e38e22539 ("iommu/vt-d: Add nested domain allocation")
-Signed-off-by: Yi Sun <yi.y.sun@linux.intel.com>
-Signed-off-by: Yi Liu <yi.l.liu@intel.com>
----
- drivers/iommu/intel/iommu.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+And I'm confident that the force_zero_offset change is not correct.
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 7636d3f03905..b4101712a0c3 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -4746,6 +4746,36 @@ device_set_dirty_tracking(struct list_head *devices, bool enable)
- 	return ret;
- }
- 
-+static int
-+parent_domain_set_dirty_tracking(struct dmar_domain *domain,
-+				 bool enable)
-+{
-+	struct dmar_domain *s1_domain;
-+	unsigned long flags;
-+	int ret;
-+
-+	spin_lock(&domain->s1_lock);
-+	list_for_each_entry(s1_domain, &domain->s1_domains, s2_link) {
-+		spin_lock_irqsave(&s1_domain->lock, flags);
-+		ret = device_set_dirty_tracking(&s1_domain->devices, enable);
-+		spin_unlock_irqrestore(&s1_domain->lock, flags);
-+		if (ret)
-+			goto err_unwind;
-+	}
-+	spin_unlock(&domain->s1_lock);
-+	return 0;
-+
-+err_unwind:
-+	list_for_each_entry(s1_domain, &domain->s1_domains, s2_link) {
-+		spin_lock_irqsave(&s1_domain->lock, flags);
-+		device_set_dirty_tracking(&s1_domain->devices,
-+					  domain->dirty_tracking);
-+		spin_unlock_irqrestore(&s1_domain->lock, flags);
-+	}
-+	spin_unlock(&domain->s1_lock);
-+	return ret;
-+}
-+
- static int intel_iommu_set_dirty_tracking(struct iommu_domain *domain,
- 					  bool enable)
- {
-@@ -4760,6 +4790,12 @@ static int intel_iommu_set_dirty_tracking(struct iommu_domain *domain,
- 	if (ret)
- 		goto err_unwind;
- 
-+	if (dmar_domain->nested_parent) {
-+		ret = parent_domain_set_dirty_tracking(dmar_domain, enable);
-+		if (ret)
-+			goto err_unwind;
-+	}
-+
- 	dmar_domain->dirty_tracking = enable;
- out_unlock:
- 	spin_unlock(&dmar_domain->lock);
--- 
-2.34.1
+Thanks
 
+> 
+> diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
+> index 83d20c3f0..e35de6b92 100644
+> --- a/drivers/infiniband/hw/mana/cq.c
+> +++ b/drivers/infiniband/hw/mana/cq.c
+> @@ -48,7 +48,8 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+>  		return err;
+>  	}
+>  
+> -	err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq->gdma_region);
+> +	err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq->gdma_region,
+> +					   ucmd.buf_addr, true);
+>  	if (err) {
+>  		ibdev_dbg(ibdev,
+>  			  "Failed to create dma region for create cq, %d\n",
+> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
+> index 29dd2438d..13a4d5ab4 100644
+> --- a/drivers/infiniband/hw/mana/main.c
+> +++ b/drivers/infiniband/hw/mana/main.c
+> @@ -302,7 +302,7 @@ mana_ib_gd_add_dma_region(struct mana_ib_dev *dev, struct gdma_context *gc,
+>  }
+>  
+>  int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+> -				 mana_handle_t *gdma_region)
+> +				 mana_handle_t *gdma_region, u64 virt, bool force_zero_offset)
+>  {
+>  	struct gdma_dma_region_add_pages_req *add_req = NULL;
+>  	size_t num_pages_processed = 0, num_pages_to_handle;
+> @@ -324,11 +324,21 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+>  	hwc = gc->hwc.driver_data;
+>  
+>  	/* Hardware requires dma region to align to chosen page size */
+> -	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, 0);
+> +	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, virt);
+>  	if (!page_sz) {
+>  		ibdev_dbg(&dev->ib_dev, "failed to find page size.\n");
+>  		return -ENOMEM;
+>  	}
+> +
+> +	if (force_zero_offset) {
+> +		while (ib_umem_dma_offset(umem, page_sz) && page_sz > PAGE_SIZE)
+> +			page_sz /= 2;
+> +		if (ib_umem_dma_offset(umem, page_sz) != 0) {
+> +			ibdev_dbg(&dev->ib_dev, "failed to find page size to force zero offset.\n");
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +
+>  	num_pages_total = ib_umem_num_dma_blocks(umem, page_sz);
+>  
+>  	max_pgs_create_cmd =
+> @@ -348,7 +358,7 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+>  			     sizeof(struct gdma_create_dma_region_resp));
+>  
+>  	create_req->length = umem->length;
+> -	create_req->offset_in_page = umem->address & (page_sz - 1);
+> +	create_req->offset_in_page = ib_umem_dma_offset(umem, page_sz);
+>  	create_req->gdma_page_type = order_base_2(page_sz) - PAGE_SHIFT;
+>  	create_req->page_count = num_pages_total;
+>  
+> diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
+> index 6a03ae645..0a5a8f3f8 100644
+> --- a/drivers/infiniband/hw/mana/mana_ib.h
+> +++ b/drivers/infiniband/hw/mana/mana_ib.h
+> @@ -161,7 +161,7 @@ static inline struct net_device *mana_ib_get_netdev(struct ib_device *ibdev, u32
+>  int mana_ib_install_cq_cb(struct mana_ib_dev *mdev, struct mana_ib_cq *cq);
+>  
+>  int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+> -				 mana_handle_t *gdma_region);
+> +				 mana_handle_t *gdma_region, u64 virt, bool force_zero_offset);
+>  
+>  int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
+>  				  mana_handle_t gdma_region);
+> diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
+> index ee4d4f834..856d73ea2 100644
+> --- a/drivers/infiniband/hw/mana/mr.c
+> +++ b/drivers/infiniband/hw/mana/mr.c
+> @@ -127,7 +127,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
+>  		goto err_free;
+>  	}
+>  
+> -	err = mana_ib_gd_create_dma_region(dev, mr->umem, &dma_region_handle);
+> +	err = mana_ib_gd_create_dma_region(dev, mr->umem, &dma_region_handle, iova, false);
+>  	if (err) {
+>  		ibdev_dbg(ibdev, "Failed create dma region for user-mr, %d\n",
+>  			  err);
+> diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+> index 5d4c05dcd..02de90317 100644
+> --- a/drivers/infiniband/hw/mana/qp.c
+> +++ b/drivers/infiniband/hw/mana/qp.c
+> @@ -357,8 +357,8 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
+>  	}
+>  	qp->sq_umem = umem;
+>  
+> -	err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem,
+> -					   &qp->sq_gdma_region);
+> +	err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem, &qp->sq_gdma_region,
+> +					   ucmd.sq_buf_addr, true);
+>  	if (err) {
+>  		ibdev_dbg(&mdev->ib_dev,
+>  			  "Failed to create dma region for create qp-raw, %d\n",
+> diff --git a/drivers/infiniband/hw/mana/wq.c b/drivers/infiniband/hw/mana/wq.c
+> index 372d36151..d9c1a2d5d 100644
+> --- a/drivers/infiniband/hw/mana/wq.c
+> +++ b/drivers/infiniband/hw/mana/wq.c
+> @@ -46,7 +46,8 @@ struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
+>  	wq->wq_buf_size = ucmd.wq_buf_size;
+>  	wq->rx_object = INVALID_MANA_HANDLE;
+>  
+> -	err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq->gdma_region);
+> +	err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq->gdma_region,
+> +					   ucmd.wq_buf_addr, true);
+>  	if (err) {
+>  		ibdev_dbg(&mdev->ib_dev,
+>  			  "Failed to create dma region for create wq, %d\n",
+> 
+> base-commit: aafe4cc5096996873817ff4981a3744e8caf7808
+> -- 
+> 2.43.0
+> 
 
