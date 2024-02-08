@@ -1,176 +1,92 @@
-Return-Path: <linux-kernel+bounces-58766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 082D684EB5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 23:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B9A884EB67
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 23:12:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BBD71F2A0BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:12:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBB8F1F2AE1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:12:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E3E55025E;
-	Thu,  8 Feb 2024 22:11:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B6554F8AB;
+	Thu,  8 Feb 2024 22:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ezKlEX8z"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="R1wYTsHn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8843F51018;
-	Thu,  8 Feb 2024 22:11:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 410794F219;
+	Thu,  8 Feb 2024 22:12:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707430286; cv=none; b=Emkemasj4Kn9B0hsBTBmdVAI4xJKjLewIw4pLIn9Rj8NjAft3Ov4exq55Cl9dO749fk/GSmLAkm1EwRXA5jONPcxnKldOLs2gRcO5mfj/CEx7Gg50bM0CSf4KeWXPu2xpI6QRw3sGeWYy/1rZk3pyURy1jeGyO7oxc5XDRqoKpU=
+	t=1707430331; cv=none; b=n6/9Fvsr6UsWth95eECdrhoN0oo+iBWhKjT6f8r9/nyfzCCalFikpCtXcirvflZd3Mf8k098e1RQy8ySziwubnqQlnz5CHeafNh+l9UvRGjy7rXY1PQyagcNkHsVP/DeI5o9H4JvO3nebz11N+PunrZ4PvjPkyamzKROuRRGWjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707430286; c=relaxed/simple;
-	bh=sUvaMWVgfLPM3IN3kP/Sfp4tQsrwPgz8kE7lgIpeMlQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Uctg8Ba5+Ya0ApxmoLyh3l5uFxC3YkUF1sIY34fgxmXIrT9m4MdffCRsMPfPYwQKgnlLBeEoqNJVye3o8EpODxQYrmXPt+urZV9vrmOAMEfY+kzUuh0ot/6o2V0pC7fbmZ6FIdI6CLxIzrRxlbNcCxjtSOVjnXwzu3lVjUqWWgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ezKlEX8z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A895C433C7;
-	Thu,  8 Feb 2024 22:11:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707430285;
-	bh=sUvaMWVgfLPM3IN3kP/Sfp4tQsrwPgz8kE7lgIpeMlQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ezKlEX8zXSUDJqybqX+QHV4c2jcM/bJJNBIrg2J/YRLTPCdoyujq3V6ofrwZmRhuv
-	 34m6lynRMNqP2vmpOMzgXyEdF+AnVKnDg0oY0qC/ZAfLJSTFz/Utl2UO7kfo6Fp1YL
-	 R/sDB/yKvsIZ9jOOsUc/s3euwlWCfQkwZF1sHVx0L+kUlwBkhtmgGgyWIsI3u5phT5
-	 ZWwe6ZXuCcvxrvu+idHaE6wRo/wx7RxYuOv+3pfyIuhfsNNLIEuAg6y9bz3c5oI/z3
-	 vRFoFGIyk6XpHps2Zm5SyO4AKiwfsYiyppsx0jkEqXnydb2o69eDvmMOnFGetMRmj+
-	 uqDOCCYq+iskQ==
-Date: Thu, 8 Feb 2024 22:11:20 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH 1/1] dt-bindings: pci: layerscape-pci: Convert to yaml
- file
-Message-ID: <20240208-nanometer-coke-07811889bafc@spud>
-References: <20240207062403.304367-1-Frank.Li@nxp.com>
- <20240207-yoga-mobility-90a728f6342c@spud>
- <ZcPCn8q7viB/qcOH@lizhi-Precision-Tower-5810>
- <20240208-jarring-frolic-8d4c9b409127@spud>
- <ZcUs16+Z+I4m4q00@lizhi-Precision-Tower-5810>
- <20240208-revoke-doorman-5ba34f39c743@spud>
- <ZcU3ohEg5Z1ky+/W@lizhi-Precision-Tower-5810>
- <20240208-outing-nature-74b6fab0cdea@spud>
- <ZcVI23X4T04cFyJL@lizhi-Precision-Tower-5810>
+	s=arc-20240116; t=1707430331; c=relaxed/simple;
+	bh=Fyeg55YvWWKTvSypIQeno+CRzpBsW/T+sUqfpxDTOKY=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=K4qBsSezGh941TPQdkTDNye9tyLmwuJjsL4kng9ki25tExZ1s2c1q/F8bAQkmTSyFbrYhuEkRyjj4/LnS+/uuzyZjSZ+ffraCDRirWiATaXNuGGSxrRNKbMcMw2IOG4gS2OceWh2c0BZWAbaREE9tZkydQh1B9EPvcylIESJDII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=R1wYTsHn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A1EDC433C7;
+	Thu,  8 Feb 2024 22:12:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1707430330;
+	bh=Fyeg55YvWWKTvSypIQeno+CRzpBsW/T+sUqfpxDTOKY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=R1wYTsHnJ7RwWXrnxfaVjjAZ3dexKuAEngkW/Ur8FsjgjOv5LrCVxgG63mCt5S1bW
+	 xOR1+Rk9+QWXFTmjstP5rxW0/Q24vkNWH3xlEPrzniqmidjCYVebtwTR99k/1VS4BP
+	 4Jgrk1wSFLa1obPh5VAEEXPyNFSRObXoKwidxpvg=
+Date: Thu, 8 Feb 2024 14:12:09 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Dan Williams <dan.j.williams@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org, Linus
+ Torvalds <torvalds@linux-foundation.org>, Vishal Verma
+ <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, Matthew
+ Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
+ linux-arch@vger.kernel.org, linux-cxl@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-xfs@vger.kernel.org, dm-devel@lists.linux.dev,
+ nvdimm@lists.linux.dev, linux-s390@vger.kernel.org, Alasdair Kergon
+ <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka
+ <mpatocka@redhat.com>
+Subject: Re: [PATCH v4 01/12] nvdimm/pmem: Fix leak on dax_add_host()
+ failure
+Message-Id: <20240208141209.a73f4d3221f9573468729b8f@linux-foundation.org>
+In-Reply-To: <acb2ca39-412a-4115-95c5-f15e979a43bb@efficios.com>
+References: <20240208184913.484340-1-mathieu.desnoyers@efficios.com>
+	<20240208184913.484340-2-mathieu.desnoyers@efficios.com>
+	<20240208132112.b5e82e1720e80da195ef0927@linux-foundation.org>
+	<acb2ca39-412a-4115-95c5-f15e979a43bb@efficios.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="1wFBWAeU2OQ4hQEl"
-Content-Disposition: inline
-In-Reply-To: <ZcVI23X4T04cFyJL@lizhi-Precision-Tower-5810>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Thu, 8 Feb 2024 17:04:52 -0500 Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
---1wFBWAeU2OQ4hQEl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > The series seems useful but is at v4 without much sign of review
+> > activity.  I think I'll take silence as assent and shall slam it all
+> > into -next and see who shouts at me.
+> > 
+> 
+> Thanks Andrew for picking it up! Dan just reacted with feedback that
+> will help reducing the patch series size by removing intermediate
+> commits. I'll implement the requested changes and post a v5 in a few
+> days.
 
-On Thu, Feb 08, 2024 at 04:34:19PM -0500, Frank Li wrote:
-> On Thu, Feb 08, 2024 at 09:20:08PM +0000, Conor Dooley wrote:
-> > On Thu, Feb 08, 2024 at 03:20:50PM -0500, Frank Li wrote:
-> >=20
-> > > > > > > > > +  reg:
-> > > > > > > > > +    maxItems: 2
-> > > > > > > > > +
-> > > > > > > > > +  reg-names:
-> > > > > > > > > +    items:
-> > > > > > > > > +      - const: regs
-> > > > > > > > > +      - const: addr_space
-> > > > > > > >=20
-> > > > > > > > The example uses "regs" and "config". Where did addr_space =
-come from?
-> > > > > > >=20
-> > > > > > > Example just show pcie-host part. Not show pcie-ep part.
-> > > > > > > pcie-ep part need 'addr_space'.
-> > > > > >=20
-> > > > > > Okay. Again, please mention where this is coming from.
-> > > > >=20
-> > > > > Ideally it comes from snsp,dwc-pcie-ep.yaml. but it is use 'dbi' =
-instead
-> > > > > of 'regs'. It needs extra effort to make driver code algin common
-> > > > > snps,dwc-pcie-ep.yaml, and update exist all dts files.
-> > > > >=20
-> > > > > I think it will be deleted soon.=20
-> > > >=20
-> > > > What I am looking for here is you to explain in the commit message =
-that
-> > > > the endpoint driver in linux and the dts have always used "addr_spa=
-ce".
-> > > > Checking that there's not a u-boot or *bsd that uses "config" would=
- also
-> > > > be very helpful.
-> > >=20
-> > > I confused. Actually this two part PCIE-RC and PCIE-EP.
-> > > PCIE-RC using 'config'
-> > > PCIE-EP using 'addr_spcae'
-> >=20
-> > Yeah, I get this. The text binding makes it seem like "config" should be
-> > used for both RC and EP, so I am just asking you to check that there are
-> > no drivers in other kernels or bootloaders that use "config" for EP
-> > mode.
->=20
-> There are not 'config' concept for EP mode. Only RC mode have 'config'
-> space concept to get PCIe device's config space. EP mode only have
-> "add_space" for outbound windows. If other place using "config" for EP, it
-> is totally wrong, they should fix it.
+Yup.  I'll leave v4 out there for testers to bet on.
 
-It might be a totally wrong concept, but it is what the binding said, so
-they are within their rights to use that name.
+> So far there are not behavior changes requested in Dan's feedback.
+> 
+> Should I keep this patch 01/12 within the series for v5 or should I
+> send it separately ?
 
->=20
-> >=20
-> > > I check old txt file, which have not mention it. I can remove it.
-> >=20
-> > if you drop "addr_space", you'll need to update the endpoint driver so
-> > that it supports both "addr_space" and "config". If there are no
-> > endpoint drivers using "config" in other operating systems, and all the
-> > dts files use "addr_space", documenting "reg" and "addr_space" for
-> > endpoint mode seems fair to me.
->=20
-> It is up to how to create patches. "addr_space" needs. If you want me to
-> create one version, which 100% match original txt. I can do that. Then
-> create increment patch to fix the problem.
->=20
-> If want to create a basic work version like this, which included some min=
-us
-> fixes. =20
->=20
-> The both method is fine for me. Second method just need more efforts.
-
-I don't have a problem with you making it "addr_space" as long as you
-check to make sure that there are no users of "config" outside the
-kernel and you mention in the commit message that this is a difference
-=66rom the text binding (and why).
-
-Thanks,
-Conor.
-
---1wFBWAeU2OQ4hQEl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcVRiAAKCRB4tDGHoIJi
-0jBnAQCTnRYkic8ytH+lBjI2iV6es96Hip0STSW/bDe2HdeSmAEA9DDxK8QheU2Q
-BzbwvLnS5EhLH7ofoK7nlfCGHTwkHw4=
-=lYmd
------END PGP SIGNATURE-----
-
---1wFBWAeU2OQ4hQEl--
+Doesn't matter much, but perfectionism does say "standalone patch please".
 
