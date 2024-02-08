@@ -1,182 +1,162 @@
-Return-Path: <linux-kernel+bounces-58159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB63184E20D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:37:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9821784E212
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:38:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 310AEB212AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:37:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 102C71F231CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:38:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ABFB6E2CB;
-	Thu,  8 Feb 2024 13:36:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D6576406;
+	Thu,  8 Feb 2024 13:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tKwmC7YX"
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IJE+vHof"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12EDD6F097
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 13:36:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA86763EF
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 13:37:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707399412; cv=none; b=fyYyHbypW6eiF9rh8K02tMeA08Qp5cxse8fBTEkE+PUqHgStot8thUAiLK8YE4GZ0+D54JPRq1MnYu3GN1pqDJ9oGnEOG56Swgs03X2lG5XXmHvwyvJi/8AUDK7UFPq57aPRFxJArqndNX1eYg8lzqKQBo5ckRFkHGgtkHOsszU=
+	t=1707399476; cv=none; b=GxC0SN/GRfeD+woiyI8h/meMpVTurL5O666EB0EI0XV0ypsjxY1DBCyy4XhsyccCI5ufOw9IJGZFtPb6Be5eGpByq9HLi2zxtTg/u/5Hj/S7OUn2Vgsf3kvID7FVzEgZzopFbJfnY3tXChb2fsSo48K2fc0pW7N3pTBVjtF536E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707399412; c=relaxed/simple;
-	bh=J2YJPekikVaCmqI0KXV0F0E6DUM9ftaGqx+AFjmHblA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OXbpZRJI6QYv+V7z2XssInmPDZNgYGU8ErxKim3zkAZNK0jYkHjiR/14THq3pXmQxt4XT1PixpV4Dh+vdDZgUuLKOjou+/vSHx89W8BleEcbgO2R2ZgUFJjTX0nLAKT4HiXSfu1BzwPXC0sinKUjKK65k+kIKNZbD6zkhcGNg3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tKwmC7YX; arc=none smtp.client-ip=209.85.222.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7ce603b9051so726093241.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 05:36:50 -0800 (PST)
+	s=arc-20240116; t=1707399476; c=relaxed/simple;
+	bh=sLHaNsZhVrwA4g8QeNjpXSri5z5j7yj78v7VenZiXNI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BtuHslErWxKdhaXe7irGxmNptrG9HBZmuNprcqQBHzS7n88BhamS/eQ4AEWykj10MvTl3SB5948y8BPlrk9f6XUxZdKWJ9h4NYayKH/GMSFRzXujQp8W3kY1o53FiQO29pu5Lp5++3P4Xcq1hqMF9Gb+15leBLh37VXhHs5gnD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IJE+vHof; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55cca88b6a5so2140191a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 05:37:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707399410; x=1708004210; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Kn/V3vxoIjIUSC8M3Y2S4b8UAF5QxV/6wcQ3800sVJE=;
-        b=tKwmC7YXP1Y8YTo7bUND3f1dhw02PJxnwaeftM9a++O4D6Tk5NnrbJvun+9lDNeEC5
-         /P6ELx1a3U/W/pRsDUWp9MaXkPn3We1tCouNJaCfTTu3FepntxvbBaGhI0lkd4VYLme0
-         czkcM1YA3MN2aPIOrn4AlWSkC3M6Coa7D+dxsaixZdkBk1YpLcvkf16l9Ao1SDd0WoZu
-         hKz8Lm6ukv54027RdtaqRn7+NKL1Y8/SVGDgMtvYgMz7ZoVyW/VrnrD5vkwjbcusExEY
-         z6fmttZGwY4P0UsEyqhEJeQo4wFQ4QffPjmd400NNAHxLtShEWnt3PqMu+u1KPK41cVi
-         DGvQ==
+        d=linaro.org; s=google; t=1707399473; x=1708004273; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=p28vv63s2/cv9zUdQKuXCFX/dJkkk/3pPlOtbrZYMXE=;
+        b=IJE+vHofhGlBr+vp8qPSVHcKSUA1Ab9fBb5P0Oi4rW8PTMKrT+K1H8L4w8RIFqTJ2q
+         MmPrAa0DJGXZDbYFKBfB3HkmTOXu97UL7Z6S0PrXK7V0NrSkJ8HlRufDrypU14C9BC3N
+         bSs0XFsPdD4zXLEM4mxB452ckpTseQH0Gc3XUI0EvKqw7yYzGHNWCrS0CKm9sAjvEkoJ
+         c/QnOrgA3XTLEsyTOvAwb5lq9C383dTylAbSZ7oGu5HHZxR29t19Ucx1j/RtHPba49Er
+         XpbSfWIXXEVw99OUrJpi8eju3tk8lQlITEWve2ztWPJeydeY1MnxNKJu04AsL6QZc+3F
+         5RXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707399410; x=1708004210;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Kn/V3vxoIjIUSC8M3Y2S4b8UAF5QxV/6wcQ3800sVJE=;
-        b=qwO2OVYh6QyECMtd86JjP/DVe7m36+YBFeli514ft0Lojl7W73wayS4Jk2VCBvQAc0
-         NaaBya4l4MPLRjcFelMZPBbK6mloJzQsHGyjvQ0wJxRrwzElLMh7cgoHaqRQAJYAr/Hp
-         N5PeHzs0+BnuPVQoOaH8YpPkDEv3sAW6G7TzimdHz+sWBm9mrp1fm9+qHTJCvain6BeX
-         TmgzIYjv+VHfEG+6kJS6cthZ0DEOCnGaXG1a8yk7N8eu7E4CAKsmQJnuSIyt2P/z1p9/
-         iC48m4wC2SlFe/TqlryvP+i86NzKXMXAayx8Cex+2kx9ydy+W3UVL88O+7ybmK+Ca5Mp
-         Lpvw==
-X-Gm-Message-State: AOJu0Yx3JtiDiMnEKSwTW/BFHOt52ew6rFH8AaMQp8E+UFTp0Ggfini5
-	qAsxadKcsT49CDvMHRrx1FlO0zxEwAjqdUJBhdH3OY79AEtYqWQSuvQwT10UR3dG/joWAUDFmgE
-	ITRGCTLRXA0cl2Z4kMolOEgzOfpC6uSie5Sp6
-X-Google-Smtp-Source: AGHT+IF9Fvq5IrgEGgEG+1r7dMwVzweHbYqlYapUQEoUpjqP9B/NinoiHrV94HMpa24eTruhWvgZvbZdVK8ImcRm0vM=
-X-Received: by 2002:a05:6102:a05:b0:46d:2a90:f8ce with SMTP id
- t5-20020a0561020a0500b0046d2a90f8cemr5223903vsa.28.1707399409792; Thu, 08 Feb
- 2024 05:36:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707399473; x=1708004273;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p28vv63s2/cv9zUdQKuXCFX/dJkkk/3pPlOtbrZYMXE=;
+        b=jVq4xatNlyCUQWQGv34WDgk2ymfYqBuiLShrHzgctkyao7sH2o+/21DN6M7gKmaHQ9
+         kJZs2gETrkdeSMfwq7Kfp9JL1aI5Ga+bqQJjNI3c5yoi5Lh7Rs5/tvHzoSAAgtmLMouB
+         /bAyzosuje59yKnroGf1fFz2tTKafaPePO6gkPGK8dr5GZ97YZCqaxAkWXL1REoClrV5
+         BkC+q4a8BbfhAZwkM7YBgs7UjihM2rcwgoE91SGns1RYSJ6ypwkwgtXlEEjuF7HM6GjT
+         nxtMDICRZw4kydonTV7WibNFsDX0uzf5+K7UYaveaR6cj8IT52h19DBxeE/HWoZUMhRf
+         bWvg==
+X-Gm-Message-State: AOJu0YwSv5FpucrVqPQbjkTrTZ+GvpzSghCw2JuflFrdzl6ppRqj4bgU
+	oTzO0ydyal0tkkR1NfHbsehCC2kujNfIWxqx0/Va7VbkYIa8hbo98mAH9567s5I=
+X-Google-Smtp-Source: AGHT+IGp93U2IHf7DpwYHNPt1pK52y49QAMI+oxxjZGbDXXT5TsL+pX9I6v9sXTEdNzAMlaNpb7vXg==
+X-Received: by 2002:a05:6402:322:b0:561:123f:a98f with SMTP id q2-20020a056402032200b00561123fa98fmr1059559edw.24.1707399473378;
+        Thu, 08 Feb 2024 05:37:53 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXRIw9jXsWnTERowFWcTJ0k/8IDzNxP1SXRPVN3mJF3KKZEqIsZc0PMSakI45/4EZJ0p3Mgc4IhE0Ye3F2hvLSYLGrWdUJyA6cYS+kqh0dp7G4e9IbWst4U9GW9yemCzPUhZW4PpkN8ZZiSMMrzjNcVeOO+mFyO+vlX3PcQcHOT6CcFs6qsAt2iHlFU/G0x9/SqyMQM5QuHpAOLN0cvW03GUFNcuc4qux9c4/zdghGh186h537IYCtYA+Tqr4vLFHnytths282McRT+p4Oyfsu853wSYw4pBSEZNn1Je+kZdw7QjwitwhOkuuugDQMxXLddDQthywjrNS9LkHim7ZauTOpCa8cLs7EE/asP+4Inc3N0B48isV0so6q+nYdUjnDKNtDRlr/ANc18VzrIrZUhH/zDdjsUF0DTKK4G1NrvjEcCRlC6Od1inTZPw//0lHbHTkp8MJu39aatmMXowyyy3pCRKfBDa9xjQVvdKV4B/eRLwVX33eYZprycBpdniM31hbBJgU1onF180ALj47HGFPA/ez/DMepBiVbelzpbcFKzZMT77MEma4SWhdL9EHBHJ85rCpiHRZAWTZZPmxpZJdzkXEmWfo5KXfdz1RZ5FVbD0MzCQBNNFsEgJNw3CBpk0Vvfo86oOXWcIw==
+Received: from linaro.org ([62.231.97.49])
+        by smtp.gmail.com with ESMTPSA id ev12-20020a056402540c00b00560f611ce2bsm813058edb.10.2024.02.08.05.37.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 05:37:52 -0800 (PST)
+Date: Thu, 8 Feb 2024 15:37:51 +0200
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Sean Paul <sean@poorly.run>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/5] drm/msm: mdss: Add X1E80100 support
+Message-ID: <ZcTZL+fls7A8O9P0@linaro.org>
+References: <20240129-x1e80100-display-v1-0-0d9eb8254df0@linaro.org>
+ <20240129-x1e80100-display-v1-3-0d9eb8254df0@linaro.org>
+ <CAA8EJponbo2vvuj2ftCQuxtrZp0w7JQqJ_ADF80Wd2y1V74BzA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124-alice-mm-v1-0-d1abcec83c44@google.com>
- <20240124-alice-mm-v1-3-d1abcec83c44@google.com> <ZbMA1yiM6Bqv9Sqg@boqun-archlinux>
- <CAH5fLgiNphSebaG82XkQHGFPFp1Mf1egyaiX6MFzsU2X3-Ni8w@mail.gmail.com>
- <ZbP50nEIMqULfVuj@Boquns-Mac-mini.home> <CALNs47uy5rQ15wByzQA0_YzORM0nTFdi9-TvwyC4+ZTXVQBj4g@mail.gmail.com>
-In-Reply-To: <CALNs47uy5rQ15wByzQA0_YzORM0nTFdi9-TvwyC4+ZTXVQBj4g@mail.gmail.com>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 8 Feb 2024 14:36:38 +0100
-Message-ID: <CAH5fLggA1MxtR-H5454X_mkQW-E=ZHnE6iYbbLyXGzp6wg5kDQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] rust: add abstraction for `struct page`
-To: Trevor Gross <tmgross@umich.edu>
-Cc: Boqun Feng <boqun.feng@gmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Kees Cook <keescook@chromium.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJponbo2vvuj2ftCQuxtrZp0w7JQqJ_ADF80Wd2y1V74BzA@mail.gmail.com>
 
-On Thu, Feb 1, 2024 at 7:51=E2=80=AFAM Trevor Gross <tmgross@umich.edu> wro=
-te:
->
-> On Fri, Jan 26, 2024 at 1:28=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com>=
- wrote:
+On 24-01-29 17:11:25, Dmitry Baryshkov wrote:
+> On Mon, 29 Jan 2024 at 15:19, Abel Vesa <abel.vesa@linaro.org> wrote:
 > >
-> > On Fri, Jan 26, 2024 at 01:33:46PM +0100, Alice Ryhl wrote:
-> > > On Fri, Jan 26, 2024 at 1:47=E2=80=AFAM Boqun Feng <boqun.feng@gmail.=
-com> wrote:
-> > > >
-> > > > On Wed, Jan 24, 2024 at 11:20:23AM +0000, Alice Ryhl wrote:
-> > > > > [...]
-> > > > > +    /// Maps the page and writes into it from the given buffer.
-> > > > > +    ///
-> > > > > +    /// # Safety
-> > > > > +    ///
-> > > > > +    /// Callers must ensure that `src` is valid for reading `len=
-` bytes.
-> > > > > +    pub unsafe fn write(&self, src: *const u8, offset: usize, le=
-n: usize) -> Result {
-> > > >
-> > > > Use a slice like type as `src` maybe? Then the function can be safe=
-:
-> > > >
-> > > >         pub fn write<S: AsRef<[u8]>>(&self, src: S, offset: usize) =
--> Result
-> > > >
-> > > > Besides, since `Page` impl `Sync`, shouldn't this `write` and the
-> > > > `fill_zero` be a `&mut self` function? Or make them both `unsafe`
-> > > > because of potential race and add some safety requirement?
-> > >
-> > > Ideally, we don't want data races with these methods to be UB. They
+> > Add support for MDSS on X1E80100.
 > >
-> > I understand that, but in the current code, you can write:
+> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > ---
+> >  drivers/gpu/drm/msm/msm_mdss.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
 > >
-> >         CPU 0                   CPU 1
-> >         =3D=3D=3D=3D=3D                   =3D=3D=3D=3D=3D
+> > diff --git a/drivers/gpu/drm/msm/msm_mdss.c b/drivers/gpu/drm/msm/msm_mdss.c
+> > index 455b2e3a0cdd..eddf7fdbb60a 100644
+> > --- a/drivers/gpu/drm/msm/msm_mdss.c
+> > +++ b/drivers/gpu/drm/msm/msm_mdss.c
+> > @@ -564,6 +564,15 @@ static const struct msm_mdss_data sdm670_data = {
+> >         .highest_bank_bit = 1,
+> >  };
 > >
-> >         page.write(src1, 0, 8);
-> >                                 page.write(src2, 0, 8);
-> >
-> > and it's a data race at kernel end. So my question is more how we can
-> > prevent the UB ;-)
->
-> Hm. Would the following work?
->
->     // Change existing functions to work with references, meaning they ne=
-ed an
->     // exclusive &mut self
->     pub fn with_page_mapped<T>(
->         &mut self,
->         f: impl FnOnce(&mut [u8; PAGE_SIZE]) -> T
->     ) -> T
->
->     pub fn with_pointer_into_page<T>(
->         &mut self,
->         off: usize,
->         len: usize,
->         f: impl FnOnce(&mut [u8]) -> Result<T>,
->     ) -> Result<T>
->
->     // writing methods now take &mut self
->     pub fn write(&mut self ...)
->     pub fn fill_zero(&mut self ...)
->     pub fn copy_into_page(&mut self ...)
->
->     // Add two new functions that take &self, but return shared access
->     pub fn with_page_mapped_raw<T>(
->         &self,
->         f: impl FnOnce(&UnsafeCell<[u8; PAGE_SIZE]>) -> T
->     ) -> T
->
->     pub fn with_pointer_into_page_raw<T>(
->         &self,
->         off: usize,
->         len: usize,
->         f: impl FnOnce(&[UnsafeCell<u8>]) -> Result<T>,
->     ) -> Result<T>
->
-> This would mean that anyone who can obey rust's mutability rules can
-> use a page without any safety or race conditions to worry about, much
-> better for usability.
+> > +static const struct msm_mdss_data x1e80100_data = {
+> > +       .ubwc_enc_version = UBWC_4_0,
+> > +       .ubwc_dec_version = UBWC_4_3,
+> > +       .ubwc_swizzle = 6,
+> > +       .ubwc_static = 1,
+> > +       .highest_bank_bit = 2,
+> > +       .macrotile_mode = 1,
+> 
+> Missing .reg_bus_bw, LGTM otherwise
 
-The methods can't be `&mut self` because I need the ability to perform
-concurrent writes to disjoint subsets of the page.
+Dmitry, I do not have the exact value yet.
+
+Can I come back with a subsequent (different) patch to add it at a later stage
+when I have that information?
+
+I see no point in holding display support any further since it works
+fine with the default bandwith.
+
+If yes, I'll respin this series right away, but without the reg_bus_bw.
+
+> 
+> > +};
+> > +
+> >  static const struct msm_mdss_data sdm845_data = {
+> >         .ubwc_enc_version = UBWC_2_0,
+> >         .ubwc_dec_version = UBWC_2_0,
+> > @@ -655,6 +664,7 @@ static const struct of_device_id mdss_dt_match[] = {
+> >         { .compatible = "qcom,sm8450-mdss", .data = &sm8350_data },
+> >         { .compatible = "qcom,sm8550-mdss", .data = &sm8550_data },
+> >         { .compatible = "qcom,sm8650-mdss", .data = &sm8550_data},
+> > +       { .compatible = "qcom,x1e80100-mdss", .data = &x1e80100_data},
+> >         {}
+> >  };
+> >  MODULE_DEVICE_TABLE(of, mdss_dt_match);
+> >
+> > --
+> > 2.34.1
+> >
+> 
+> 
+> -- 
+> With best wishes
+> Dmitry
 
