@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-57651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C782084DBCD
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:48:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C22484DBD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:49:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06AED1C24BE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:48:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E8C01C24E9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:49:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F9E71B2A;
-	Thu,  8 Feb 2024 08:45:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD4B71B5A;
+	Thu,  8 Feb 2024 08:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oj59yN2b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JYv3wWWf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9E76F50B;
-	Thu,  8 Feb 2024 08:45:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC7371B4D;
+	Thu,  8 Feb 2024 08:45:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707381930; cv=none; b=pRNvSYdpR6WtHe0ixlMojdHwOLJw2ek08pdHY5Gh/THdpAHUK0RktIrMgFf4ETHlQvyCHYMf0eYDQwP6ccsLhYhAPHOVHcO47NPJcyVbhzRRdxCO/7xqPIvqELZ0TfzyOcYK1d/Z+m7/6g0mXEg1AsCfNK9zopYMVjv7taI6kRA=
+	t=1707381933; cv=none; b=mBW3B3d6pI8fMVCqMGsEJ1yCBoWlnRRpAhNhmUckW6SKupjNUijJkYQxxs39wFTbEFdyitu/mLXzWpCxKKlsk7uwoXybugGl/0xrnX8Rb2jRCG2hcjfldQEREL4NdFwbK4iihNJ4WiFjD9c+gpicmKEgotfOD9xJ2VLKEtRJx5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707381930; c=relaxed/simple;
-	bh=POI6uCurjz7K0SS0gUH7C3Dj3W11IBfcHS/B+rMzmkI=;
+	s=arc-20240116; t=1707381933; c=relaxed/simple;
+	bh=PbzPd7ROc5va5PvBniGi9yT6iZxcViGR7FsGtUiYZPQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MzKDprN1HdM+KjIMnES3wfAaXrhCWSlkBmRcPwwVZw9/u8IcUpH6K1vPXoVcp7QdC+67ffTUJJJoqHccse8M3njbSqeJCH8e+DF5U2RsRHSwnl5KNwOH7OQycsLSUV43WqbMp/tD/LGNY5ReMtcRSS2D43o0Hjd4mg/NbVmXItY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oj59yN2b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35D6BC43390;
-	Thu,  8 Feb 2024 08:45:29 +0000 (UTC)
+	 MIME-Version; b=Ax340BOOpImeQx4RMtE5KZ8gORbhvmtEyCceuXWAQwz3GV7QtcS30zAWS+bcRwBA5XxycrFrx15NGfQn+J5vBYHk+TDHnePeltwPi1rdUfYYr1ZqmmbiKz9P3eYhzaqEmtjPrdyiUiG2gb9k7RacFeGdEGDdUh2zy8MvBFhXLJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JYv3wWWf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECCBEC43394;
+	Thu,  8 Feb 2024 08:45:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707381930;
-	bh=POI6uCurjz7K0SS0gUH7C3Dj3W11IBfcHS/B+rMzmkI=;
+	s=k20201202; t=1707381932;
+	bh=PbzPd7ROc5va5PvBniGi9yT6iZxcViGR7FsGtUiYZPQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Oj59yN2bU3sJBgizsn6x4fu41c/QIs6ntSTGN6Z6dvCS6XlPGrpVhwSHlXNhm9jYA
-	 BBwC+V2MHkoX+xdCMOcKeEIgSyivDMoGE33cZyG8h5dsmw80W5L7ddNrgWnq+JOGOY
-	 hVto3EU37cOv/sJvJH7tQRWIIqxk9tMHVc0myon3u/a8NBRPOaPeZVHf3dGTA/3YYl
-	 RzeI1rmPJ/BZHLFQx9+ctK99WAV7ebDzgMq9h7lQULRsUzX6IvJzq3SpsaZ8uOUMzL
-	 TkZe+CbIPCDJmesRHbtfmWSdsLeR2vbt0ClkeMbRGCnu0VDW4/w3fLJIgkg53EXybs
-	 pXeitHIQV0JkQ==
+	b=JYv3wWWfitgg/S4wiWCNHUkrl6YEq7UHvBTMANfUjrWE6exn3/m3eE4TUhkWPXN+Y
+	 rRCC2FVaAkQZqV1mHCuFnaHh1E4JzU8l38xR/iT/qXy3v/vrN2OxQVG3lrZhMJjvCx
+	 o4T+oxyev2+cxar+vWyjTi6fPg7ODFt8JIJFQLVx0HGBORpVmo99miUmNAWAEXz00J
+	 mMdCOBIQwXoI84M6/sfhzlFbrNwoOdvX9cGpijg9bbVq5vEsPeuulOXxkJeOp03YD5
+	 OMN6+cLmOLws/InUorErs1VlC3zfGGKrspeOEalGaY6iN4L2ycp8QkTyggjGOJ6JbQ
+	 S9VvuxHfX7/Ug==
 From: Lee Jones <lee@kernel.org>
 To: lee@kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	linux-hardening@vger.kernel.org,
-	Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
 	"James E.J. Bottomley" <jejb@linux.ibm.com>,
 	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"PMC-Sierra, Inc" <aacraid@pmc-sierra.com>,
 	linux-scsi@vger.kernel.org
-Subject: [PATCH 05/10] scsi: aacraid: linit: Replace snprintf() with the safer scnprintf() variant
-Date: Thu,  8 Feb 2024 08:44:17 +0000
-Message-ID: <20240208084512.3803250-6-lee@kernel.org>
+Subject: [PATCH 06/10] scsi: aha1542: Replace snprintf() with the safer scnprintf() variant
+Date: Thu,  8 Feb 2024 08:44:18 +0000
+Message-ID: <20240208084512.3803250-7-lee@kernel.org>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
 In-Reply-To: <20240208084512.3803250-1-lee@kernel.org>
 References: <20240208084512.3803250-1-lee@kernel.org>
@@ -76,44 +74,26 @@ Link: https://lwn.net/Articles/69419/
 Link: https://github.com/KSPP/linux/issues/105
 Signed-off-by: Lee Jones <lee@kernel.org>
 ---
-Cc: Adaptec OEM Raid Solutions <aacraid@microsemi.com>
 Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
 Cc: linux-scsi@vger.kernel.org
 ---
- drivers/scsi/aacraid/linit.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/scsi/aha1542.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/aacraid/linit.c b/drivers/scsi/aacraid/linit.c
-index 69526e2bd2e78..0e47d9c4cff23 100644
---- a/drivers/scsi/aacraid/linit.c
-+++ b/drivers/scsi/aacraid/linit.c
-@@ -583,7 +583,7 @@ static ssize_t aac_show_unique_id(struct device *dev,
- 	if (sdev_channel(sdev) == CONTAINER_CHANNEL)
- 		memcpy(sn, aac->fsa_dev[sdev_id(sdev)].identifier, sizeof(sn));
+diff --git a/drivers/scsi/aha1542.c b/drivers/scsi/aha1542.c
+index 9503996c63256..b5ec7887801a5 100644
+--- a/drivers/scsi/aha1542.c
++++ b/drivers/scsi/aha1542.c
+@@ -772,7 +772,7 @@ static struct Scsi_Host *aha1542_hw_init(const struct scsi_host_template *tpnt,
+ 		goto unregister;
  
--	return snprintf(buf, 16 * 2 + 2,
-+	return scnprintf(buf, 16 * 2 + 2,
- 		"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X\n",
- 		sn[0], sn[1], sn[2], sn[3],
- 		sn[4], sn[5], sn[6], sn[7],
-@@ -1302,13 +1302,13 @@ static ssize_t aac_show_serial_number(struct device *device,
- 	int len = 0;
- 
- 	if (le32_to_cpu(dev->adapter_info.serial[0]) != 0xBAD0)
--		len = snprintf(buf, 16, "%06X\n",
-+		len = scnprintf(buf, 16, "%06X\n",
- 		  le32_to_cpu(dev->adapter_info.serial[0]));
- 	if (len &&
- 	  !memcmp(&dev->supplement_adapter_info.mfg_pcba_serial_no[
- 	    sizeof(dev->supplement_adapter_info.mfg_pcba_serial_no)-len],
- 	  buf, len-1))
--		len = snprintf(buf, 16, "%.*s\n",
-+		len = scnprintf(buf, 16, "%.*s\n",
- 		  (int)sizeof(dev->supplement_adapter_info.mfg_pcba_serial_no),
- 		  dev->supplement_adapter_info.mfg_pcba_serial_no);
- 
+ 	if (sh->dma_channel != 0xFF)
+-		snprintf(dma_info, sizeof(dma_info), "DMA %d", sh->dma_channel);
++		scnprintf(dma_info, sizeof(dma_info), "DMA %d", sh->dma_channel);
+ 	shost_printk(KERN_INFO, sh, "Adaptec AHA-1542 (SCSI-ID %d) at IO 0x%x, IRQ %d, %s\n",
+ 				sh->this_id, base_io, sh->irq, dma_info);
+ 	if (aha1542->bios_translation == BIOS_TRANSLATION_25563)
 -- 
 2.43.0.594.gd9cf4e227d-goog
 
