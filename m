@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-58435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96CAD84E680
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:18:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F27CC84E7F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:46:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E9C31F28589
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:18:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C11F1F22570
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 717528565B;
-	Thu,  8 Feb 2024 17:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 923FB2562C;
+	Thu,  8 Feb 2024 18:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T1oRVPtq"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PL5U/jqa"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12954823B8;
-	Thu,  8 Feb 2024 17:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AFB0208DC;
+	Thu,  8 Feb 2024 18:45:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707412654; cv=none; b=UbND9KlPvWqeFLDbN6qs7FfXiTY/lG1gLKcCF8n7f9OPKhzszMUjHJbViBK0kzaqItMjHaUuZPx45gHfoUwPd9F8nIoGQ4FpypgcRjUSv8PiHuuiJkfPpDEv9/YssuQ/O8bo3gZdPvSzthF4c5hnUsfYxX4ydwuFnZYh+j91Pzw=
+	t=1707417955; cv=none; b=sl2PvgEX4Cuoo4LSgTFfpXY8qCcKD+bsyxzZFc0WkO7ACFkL85KASlRWqRQpaLVMSDokCtX56hc7SVqRGjJGJ8XdzMk+0Y5KtSR+lw11bBqGO6yedaH0tQK80+S3cEmG3qSHhj+n0JCIGWdtCDJFnAEb7agtXUy5FGvZrCml7zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707412654; c=relaxed/simple;
-	bh=T8KmXvh0YgA9eNWvtIJ49Y3WYjlHB5MaL3TkD79lAqw=;
+	s=arc-20240116; t=1707417955; c=relaxed/simple;
+	bh=5fFTptxgaNSrb8/J39Uzrc6cETbfYvICnOp+m4GRuCg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZN7TqNnLOXUJ/ITgc3mNzcpePZjLGMBTq0zwmOVmn27rbhjq7UlPzx+XSa6zSpX/lwAsKJZy0/PxPd6pOUHRUHSDsyocD/Mg03vUo8//jxz9WpIlIVez/OC5kDGgAr01hjJb2UnPrWGNLNPe8nwfMm/pWUxZz+C3r0TeZ4EAdZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=T1oRVPtq; arc=none smtp.client-ip=192.198.163.16
+	 MIME-Version; b=YZaSlBxmJnSFOYEpWp+yfwccduVqjtuQZeM3B99CAYFG3wjeA27fUf2X33lPfaqhfETU/hPp321wL9jujhYzyctZeNU0tYYyjuw9+u8vSrMWIjGL5Kw3SOjU/E8gvSvvzzhhUgLEQezMe1olGS0NIRup7gMMYYxGGGM/2HyMaDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PL5U/jqa; arc=none smtp.client-ip=192.198.163.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707412653; x=1738948653;
+  t=1707417954; x=1738953954;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=T8KmXvh0YgA9eNWvtIJ49Y3WYjlHB5MaL3TkD79lAqw=;
-  b=T1oRVPtq7PMGIWzM+VknHMyrmM8jSHoSGWQxn4tPpEpwMCLJl1Ze0qhs
-   b3tixGLW7UwH22X4IfcDjs0B+LNCIDFVq2qaJIoRARgu1m2MzyOV/0S45
-   NXsDiVfXjJ0R/Pk+dxtPyVy08Tj9UDPvuLt/3q6dJgIuuLYB3wEa71VKu
-   5WwOZtkwP2/qwYDghRdPprJkl6qo/vDT4w97WIyM5LKfZ1egD1vXzCvnc
-   7oETkAUuHOTytJWvN+eYt6WYlnG/E7pVSsFHGiYiQUooRQ6dBWHM+qLa8
-   rrR5Ym4x41GBru/EvSd6VJ/Vzryb5104S3RgniCsRyRSuRizWfS/JLYug
+  bh=5fFTptxgaNSrb8/J39Uzrc6cETbfYvICnOp+m4GRuCg=;
+  b=PL5U/jqaYvanJNb1WeP9R17EfjaHTUI9mCROp5OAvtmcR/gim5r68/9q
+   rk9Dvuti3lnxUJayJhC6+kRrTgY9lo+tHcVOiDKkhxSA9TKuh7pkm/KSR
+   /GUQ7ZU4Fq0Hd4ibtKOExn7lbBbipDC4GgZ8EDs6+ywcC0NEfpxfL4027
+   YvBrj5I1t88BQvVg40HYUH+GuRTmvpBxMGIHQNPhjz/+YaEgazxKXQzqz
+   jKGwTJxT8QJzgCq1IM6MwGKxi0iMWvR5dzkq/MJDuPT7xjr/1NO9uykCy
+   /kWTZQXW5qId6StBSOg0PHfYqetH1rdG71h2b78R+5W4sGEQzZBI9oASf
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="1565648"
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="1185242"
 X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="1565648"
+   d="scan'208";a="1185242"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 09:17:28 -0800
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 10:45:52 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="934195357"
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="934214462"
 X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="934195357"
+   d="scan'208";a="934214462"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Feb 2024 09:17:26 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 08 Feb 2024 10:45:49 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 78AF314B3; Thu,  8 Feb 2024 18:59:41 +0200 (EET)
+	id 82899157E; Thu,  8 Feb 2024 18:59:41 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	devicetree@vger.kernel.org,
@@ -67,9 +67,9 @@ Cc: Miguel Ojeda <ojeda@kernel.org>,
 	Robin van der Gracht <robin@protonic.nl>,
 	Paul Burton <paulburton@kernel.org>,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v1 10/15] auxdisplay: linedisp: Provide a small buffer in the struct linedisp
-Date: Thu,  8 Feb 2024 18:58:53 +0200
-Message-ID: <20240208165937.2221193-11-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 11/15] auxdisplay: ht16k33: Move ht16k33_linedisp_ops down
+Date: Thu,  8 Feb 2024 18:58:54 +0200
+Message-ID: <20240208165937.2221193-12-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20240208165937.2221193-1-andriy.shevchenko@linux.intel.com>
 References: <20240208165937.2221193-1-andriy.shevchenko@linux.intel.com>
@@ -81,60 +81,57 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There is a driver that uses small buffer for the string, when we
-add a new one, we may avoid duplication and use one provided by
-the line display library. Allow user to skip buffer pointer when
-registering a device.
+We will need the update functions to be defined before
+ht16k33_linedisp_ops. Move the latter down in the code.
+No functional change intended.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/auxdisplay/line-display.c | 4 ++--
- drivers/auxdisplay/line-display.h | 4 ++++
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ drivers/auxdisplay/ht16k33.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/auxdisplay/line-display.c b/drivers/auxdisplay/line-display.c
-index da47fc59f6cb..a3c706e1739d 100644
---- a/drivers/auxdisplay/line-display.c
-+++ b/drivers/auxdisplay/line-display.c
-@@ -330,8 +330,8 @@ int linedisp_register(struct linedisp *linedisp, struct device *parent,
- 	linedisp->dev.parent = parent;
- 	linedisp->dev.type = &linedisp_type;
- 	linedisp->ops = ops;
--	linedisp->buf = buf;
--	linedisp->num_chars = num_chars;
-+	linedisp->buf = buf ? buf : linedisp->curr;
-+	linedisp->num_chars = buf ? num_chars : min(num_chars, LINEDISP_DEFAULT_BUF_SZ);
- 	linedisp->scroll_rate = DEFAULT_SCROLL_RATE;
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index 0cdf3fbdf81e..75c4a8d31642 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -440,18 +440,6 @@ static void ht16k33_keypad_stop(struct input_dev *dev)
+ 	disable_irq(keypad->client->irq);
+ }
  
- 	err = ida_alloc(&linedisp_id, GFP_KERNEL);
-diff --git a/drivers/auxdisplay/line-display.h b/drivers/auxdisplay/line-display.h
-index 65d782111f53..4c354b8f376e 100644
---- a/drivers/auxdisplay/line-display.h
-+++ b/drivers/auxdisplay/line-display.h
-@@ -54,12 +54,15 @@ struct linedisp_ops {
- 	void (*update)(struct linedisp *linedisp);
- };
+-static void ht16k33_linedisp_update(struct linedisp *linedisp)
+-{
+-	struct ht16k33_priv *priv = container_of(linedisp, struct ht16k33_priv,
+-						 seg.linedisp);
+-
+-	schedule_delayed_work(&priv->work, 0);
+-}
+-
+-static const struct linedisp_ops ht16k33_linedisp_ops = {
+-	.update = ht16k33_linedisp_update,
+-};
+-
+ static void ht16k33_seg7_update(struct work_struct *work)
+ {
+ 	struct ht16k33_priv *priv = container_of(work, struct ht16k33_priv,
+@@ -489,6 +477,18 @@ static void ht16k33_seg14_update(struct work_struct *work)
+ 	i2c_smbus_write_i2c_block_data(priv->client, 0, ARRAY_SIZE(buf), buf);
+ }
  
-+#define LINEDISP_DEFAULT_BUF_SZ		8u
++static void ht16k33_linedisp_update(struct linedisp *linedisp)
++{
++	struct ht16k33_priv *priv = container_of(linedisp, struct ht16k33_priv,
++						 seg.linedisp);
 +
- /**
-  * struct linedisp - character line display private data structure
-  * @dev: the line display device
-  * @id: instance id of this display
-  * @timer: timer used to implement scrolling
-  * @ops: character line display operations
-+ * @curr: fallback buffer for the string
-  * @buf: pointer to the buffer for the string currently displayed
-  * @message: the full message to display or scroll on the display
-  * @num_chars: the number of characters that can be displayed
-@@ -73,6 +76,7 @@ struct linedisp {
- 	struct timer_list timer;
- 	const struct linedisp_ops *ops;
- 	struct linedisp_map *map;
-+	char curr[LINEDISP_DEFAULT_BUF_SZ];
- 	char *buf;
- 	char *message;
- 	unsigned int num_chars;
++	schedule_delayed_work(&priv->work, 0);
++}
++
++static const struct linedisp_ops ht16k33_linedisp_ops = {
++	.update = ht16k33_linedisp_update,
++};
++
+ static int ht16k33_led_probe(struct device *dev, struct led_classdev *led,
+ 			     unsigned int brightness)
+ {
 -- 
 2.43.0.rc1.1.gbec44491f096
 
