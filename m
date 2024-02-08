@@ -1,116 +1,94 @@
-Return-Path: <linux-kernel+bounces-57687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D08684DC52
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:03:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0055384DCA0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:17:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1DCFB25547
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:03:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90F2E1F25096
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:17:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A708B6BB53;
-	Thu,  8 Feb 2024 09:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E6D66BFA6;
+	Thu,  8 Feb 2024 09:17:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cNzZe7oH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="qp3HMjv/"
+Received: from out203-205-221-236.mail.qq.com (out203-205-221-236.mail.qq.com [203.205.221.236])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79B76A354;
-	Thu,  8 Feb 2024 09:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AAA56BB3E
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 09:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.236
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707382979; cv=none; b=bmXtePPtTNYuIluYtrLOpkwyXv1WirWuIVnzSwhrXIDRBdT229BSprkrEsQjbMp4e0sQdKbvvFDYqE67UkIYdjbVjAucuvqVdVo9REsPGm+IzLnTgcd8qII6pHat0oYlf8EH/dv46NV04l0Kk2BQF4ikVXA+IgYmhUHWslE8j3U=
+	t=1707383851; cv=none; b=OLDBUm9sGc9YSABYxlJWGOuU/wqofKsanknBHAuCpcPJRNlFs6CwUy4QUDVAwLrfRU5M50lTGiT7fRDhUZpoHNqGWOn6C/kFNfhSxGoeSrlE3rJdLrpVGHTDkV5hSdTptf+pmdlywYrlYJM+rmXQ6pmLCZWii4RESxNdpH1IDCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707382979; c=relaxed/simple;
-	bh=zLpZpsLNQEvYaAF+kQ5AZa9kkVgTiY2crC+gZ8/1q9M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YaRoVWKIFAKw1QTdKR7nYvOkQE97bjTlBKATFCAtYNnhkTA+d4gxM0cMFxQc16/To0T4jRuHOy2Q949Ih7ydb4Rwizv/NtokRJPEZBv1H7jBSt53eVXTdSvg8kgw2jYfyQHj5WIIJZDbleX5ItOcA3ee702Cw/eNAnh/ma+jg7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cNzZe7oH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05CE2C433F1;
-	Thu,  8 Feb 2024 09:02:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707382979;
-	bh=zLpZpsLNQEvYaAF+kQ5AZa9kkVgTiY2crC+gZ8/1q9M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cNzZe7oHDWzkcGidOFjY7sae2sK44ms00jR2FldQtLWYcHwcmhLyax8ehHm34HRer
-	 q6B3t8PBMtIqP3pNJqvS0gtvmcRnmWZrr1LP1/XPUyNCMf7RtX+Z9hdXBG3sSIXmnn
-	 x1A2BoRVGgnFdpKYJ43/YFruNjt8N23sRWaBuedIOMvnDjKLJmgh/mQhKgVZgpCZvv
-	 EZvnM+1KVgnHS/xnNJEtLUJ20dfUR6d7k+cgOgMXG8QsjdqDetkvP2HkyJ5DRjYRLi
-	 YYR5+Ma3bCv7vrHGN2uoGsssmGVFbEIlfVBzDo3gzeOXxk38X6ho+mf3gSVwF37UGF
-	 wCuzWKK4T+TEQ==
-Date: Thu, 8 Feb 2024 10:02:39 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>, 
-	Jan Kara <jack@suse.cz>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Sean Christopherson <seanjc@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, David Woodhouse <dwmw2@infradead.org>, 
-	Paul Durrant <paul@xen.org>, Oded Gabbay <ogabbay@kernel.org>, Wu Hao <hao.wu@intel.com>, 
-	Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>, 
-	Zhenyu Wang <zhenyuw@linux.intel.com>, Zhi Wang <zhi.a.wang@intel.com>, 
-	Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
-	Rodrigo Vivi <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Frederic Barrat <fbarrat@linux.ibm.com>, Andrew Donnellan <ajd@linux.ibm.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Eric Farman <farman@linux.ibm.com>, Matthew Rosato <mjrosato@linux.ibm.com>, 
-	Halil Pasic <pasic@linux.ibm.com>, Vineeth Vijayan <vneethv@linux.ibm.com>, 
-	Peter Oberparleiter <oberpar@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
-	Tony Krowiak <akrowiak@linux.ibm.com>, Jason Herne <jjherne@linux.ibm.com>, 
-	Harald Freudenberger <freude@linux.ibm.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
-	Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
-	Diana Craciun <diana.craciun@oss.nxp.com>, Alex Williamson <alex.williamson@redhat.com>, 
-	Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>, Benjamin LaHaise <bcrl@kvack.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-fpga@vger.kernel.org, 
-	intel-gvt-dev@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-usb@vger.kernel.org, 
-	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, linux-aio@kvack.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, Jens Axboe <axboe@kernel.dk>, 
-	Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] eventfd: simplify eventfd_signal()
-Message-ID: <20240208-stemmen-wohlauf-ed1b4571e9a8@brauner>
-References: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
- <20231122-vfs-eventfd-signal-v2-2-bd549b14ce0c@kernel.org>
- <CABgObfaSVv=TFmwh+bxjaw3fpWAnemnf1Z5Us5kJtNN=oeGrag@mail.gmail.com>
+	s=arc-20240116; t=1707383851; c=relaxed/simple;
+	bh=jl1qFn7KygfZP7XYH22ByoKZ29rrLk8m8y9vBun5BHY=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=LGaRIOjBs3jAuBcomuEGSXvfEXa1GUSqrKc5V9NCd7e4+sZkSFL6/knrUZsmqbnHLBOj6DJde/ZQ/EQAwX3SkC6xlDnscXb+b2RXfa2HQn8SY1TwTKpbLi6BPWHkr1dR5RB45APdG6vzBHDohy82QfMknC+DCjcmVsChok+GaIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=qp3HMjv/; arc=none smtp.client-ip=203.205.221.236
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1707383840; bh=KgD99Zm00rPH/pUVtHezKrRTRH7/qWomVrVQedM9/E0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=qp3HMjv/c/iEGphtLTRRY47Lz6dCTR0H7iz8BvMYnOR+rN4nCC5M7mbglntK1V5Or
+	 xmUjI03KYrM7M/oT0PC9de15zhP7FrOQlyl/LLKqvKvjFqi+5fexJyVMELnhvCJOyR
+	 xUMJDmcI3FgvF46jYSkWfNO0c3MYqUw7GW+EflaQ=
+Received: from pek-lxu-l1.wrs.com ([117.61.184.234])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id E333D057; Thu, 08 Feb 2024 16:56:51 +0800
+X-QQ-mid: xmsmtpt1707382611tdkfr7iz1
+Message-ID: <tencent_E9DD8E5D8799084FFF8DBA25EC0D84921407@qq.com>
+X-QQ-XMAILINFO: NyTsQ4JOu2J2HboevtdY5IQaJqgvOoXehTYjJvo1eNu1tXQGPZL+GV6A4iO1Dz
+	 XoXhfH6UlMjkteJKBmyOFDIvyzXyAqpTyO4QNP/0yPehqgB2U+MVJzGlKf7U6V9ldyyCw4Urf6f+
+	 zIMHAQRqUwKPhqasj4Fj95gLRzsrjBAPovV0XeFXf0IBWOuVkvmk7DwmLWr7bVGZTAr2g5zfa4QR
+	 vpfXw1bvJfizOrXfKIn2LI458PMROaBW5sLTOfIE9pcYtUdOjW0O82PjWqwj1jo0J1Uu7CNUegrs
+	 26IPJcpb1oh1Aj4Ugo5JyKqmiyz39yEI4TXc823LB8HIX/Vl+tKqLJajSggfGP87ADAk9WwMfhLU
+	 l5g0diAHDBtG4qB2FFuTgRPpe+g1fpwDoO2i/gmk+9wdLaHiWy7YQMaz7JmLDDoIgQQYWdZIuCNb
+	 6ZQgaGnARhz8EVHORd+pysFRUkflh+aZorFg/apqSPDG7SZLfvsI23HqXjMAtT65L1BWm4nDRN/M
+	 +AeH12sGMbgWVSLNuNkpL0QhJh6Obpa4ADZv+21FM3Gi0DO76fEVmxlcOlm6uctrw0IgGVaZsDzM
+	 8UlGJfcla2e8r6sjr8rN1SsCtX9+zXigByo6gm6MGgTOO+ym1WtlprPRCsHPECY24VUS/mhPRP/W
+	 6gxsCAC961zCc3NdcvoC5SFHLv7TFlbqviYCQ3iCx8izoOmU/WmHlbrKHa28qnallgfgNxFhj8EG
+	 ASxATc32Sh4AY9VoDXtTw6h6ECor4doGSUW3Gez1ixIEYoEI4KjsFgJpyXWKO3liuwwkqGn3lSbU
+	 2SF3FkJCvInOoPNmdux1begVOYHKDt5hfbmGjTPTADUeVVE2T8nmoedRC+yqY7M6JbeO0IlQA3Kh
+	 I3OKF1HCJCIYfja6iw/JkBAUdjq6kkD0Jm/TpOPgBIQEiG7xYLU1p4WpfKF2pR5A==
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+8e41bb0c055b209ebbf4@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [input?] [usb?] WARNING in input_register_device (2)
+Date: Thu,  8 Feb 2024 16:56:51 +0800
+X-OQ-MSGID: <20240208085650.3654140-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000047631d0610d010c1@google.com>
+References: <00000000000047631d0610d010c1@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgObfaSVv=TFmwh+bxjaw3fpWAnemnf1Z5Us5kJtNN=oeGrag@mail.gmail.com>
 
-On Wed, Feb 07, 2024 at 03:34:59PM +0100, Paolo Bonzini wrote:
-> On Wed, Nov 22, 2023 at 1:49 PM Christian Brauner <brauner@kernel.org> wrote:
-> >
-> > Ever since the evenfd type was introduced back in 2007 in commit
-> > e1ad7468c77d ("signal/timer/event: eventfd core") the eventfd_signal()
-> > function only ever passed 1 as a value for @n. There's no point in
-> > keeping that additional argument.
-> >
-> > Signed-off-by: Christian Brauner <brauner@kernel.org>
-> > ---
-> >  arch/x86/kvm/hyperv.c                     |  2 +-
-> >  arch/x86/kvm/xen.c                        |  2 +-
-> >  virt/kvm/eventfd.c                        |  4 ++--
-> >  30 files changed, 60 insertions(+), 63 deletions(-)
-> 
-> For KVM:
-> 
-> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+please test oob
 
-I really appreciate all of the ACKs but just fyi that this was merged
-for v6.8-rc1. Just so that there's no confusion!
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+
+diff --git a/include/linux/kobject.h b/include/linux/kobject.h
+index c30affcc43b4..74b37b6459cd 100644
+--- a/include/linux/kobject.h
++++ b/include/linux/kobject.h
+@@ -30,7 +30,7 @@
+ 
+ #define UEVENT_HELPER_PATH_LEN		256
+ #define UEVENT_NUM_ENVP			64	/* number of env pointers */
+-#define UEVENT_BUFFER_SIZE		2048	/* buffer for the variables */
++#define UEVENT_BUFFER_SIZE		2560	/* buffer for the variables */
+ 
+ #ifdef CONFIG_UEVENT_HELPER
+ /* path to the userspace helper executed on an event */
+
 
