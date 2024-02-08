@@ -1,160 +1,125 @@
-Return-Path: <linux-kernel+bounces-57892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCA5184DEB4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:53:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0898E84DEBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:53:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFA531C22075
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:53:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9E2B2881AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:53:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A778A6E2B3;
-	Thu,  8 Feb 2024 10:51:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ADB66A347;
+	Thu,  8 Feb 2024 10:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WnZep+P1"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="gWyHURHL"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E4571B33
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 10:51:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097DF6D1CB
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 10:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707389473; cv=none; b=oby6ybdsC2WXwQESWxZWKTVHwSqfgYTSkuBegNmdYJjrw6Ev1ZCC34dcqDayfjHgqRUHVE87+fV5nXZxNDOzHnUOZpSNJa0e4rSaZhF00CTbAWfqYiqCiAXL3avLecMIo9E3BiKxJW4/9xmBAM98zC00FZUFD8BVnIFsDQX7o7A=
+	t=1707389488; cv=none; b=GVpHeuMRUjbS2jw42XToDPFucYvnOJXwQMrQupxqCymoSHMrftJwCfws6TkyaTZteQBrotXTJHeds9mYWIF6oIpLG2DOoQHbaVSShBy4o/OcSIKOMXyMD/r5rmfXLROCVlrKV2ab0RCnkKHDqNiDqEtiQSOc9jaq5l8Dxlkleb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707389473; c=relaxed/simple;
-	bh=xJfnEJ+zVsCbj3Czpg60LPhMDPo5+HXP6lXubKlhf+E=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GtV0OfFgVBDDad1ppVXuxJL00VvZBnoJZTZgJwHLYFWD8ovGwkGnamvzrvVCqU9Qcup6UhSWvgwx5FoL53BRgCunPdQBK36dqQHzVO2ytKdGIdtzEsc39YLMx22Csl2y1n1sZhOaDa7jMXUvD/sOnkfjIMkQLdLeGS46vme/gMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WnZep+P1; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4102eae7e6aso6602775e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 02:51:10 -0800 (PST)
+	s=arc-20240116; t=1707389488; c=relaxed/simple;
+	bh=bc0FK8CLAJw7fRwrx3DNZEXzs5rQi3YK7pzMVlHS+P0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EwwlBQ8EzEfLPMt9ILUcDd1xHOwQD5Zl08LTjrwqFDLdDqGWe3vG+2lIRrLylcTFmyp7p7J+estMDDs5/aAVpjO9VsPP3UYq6jbgYc3zKCxyVcsEVyj1BGe3HtTf0pr4pftJ4vGpjpYQ2ZKRQUiO5hX/OM9d+UvR7e7bESdmO3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=gWyHURHL; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5d8b70b39efso1394541a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 02:51:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707389469; x=1707994269; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lkWzwIjo/uZaIYjgKgDNcnhcc1cwlKLdvZXvoZJLBm8=;
-        b=WnZep+P1F4+Nsn24SCC7jw8PnKUaajsse5HmxzZGZUM6Ye058QFnSXydVHVWcUkFax
-         oZhe5S/sPfWSN6QKYmUtDnBQIZJnEs4Z4f5kWGxSWSYvyfFyqCx/sF6w4NL4AsObpgJ+
-         wMvRChH86mLXAsEQkayxx8GYVc7DXOiad3/aDRH06NA/S6BAB7GIdCv2ZF6046n+d2CP
-         XeGzLpH434DX3b6Gq6/NnY38f69jBjBCsL9ndwZUhPlYZNaTOTtwdpE5S1GORK1BgHZr
-         eQwT3O9zc9xG4FncJbSRIn3D/UiEGo0zwPq/pqN+sFd3L1a0VnS0dXHbmEs4oZxwfQgn
-         l79g==
+        d=tweaklogic.com; s=google; t=1707389486; x=1707994286; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=U81mhrQtXLSRhyU8Eow+19b7E6wnZMxfsagdIxnP7q8=;
+        b=gWyHURHLRi8RwXbjaQhpuaWsSkfwBnVALTZxxyF/OQG8PMsRlgtpWMYCyZy6I5/GiX
+         aLPTuiL1pzu5NUjvnSJGGb2KKnJ6eghqfrheuNOXZlxIfCfoPIUZdNuSc27QZs1JCJZr
+         8NI7qPi5h4bc5pWNVv/tkg3WE2jszTc5UkngB5VeR5qwqYr5iWUaI5h38bNrs0rKLwyk
+         jGTO4wPsG7+0LvMdMOO5TfntkcoN8MvtdaGDETpd8u3wXxC4mdjYPmuWROQuODOVqLUx
+         eIa9buW43/HzyqlDlaVQJFuVJoylNCcVdRjQwZRmR0Xeksd9m6KmRKf3BuN6Y7EYsZ8L
+         js/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707389469; x=1707994269;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lkWzwIjo/uZaIYjgKgDNcnhcc1cwlKLdvZXvoZJLBm8=;
-        b=FJUW+INcSNJCkTBOJr7YMs7UXHvk514VIvm4H/ouurmogz6k+QXYLW5oKCAA7cgEL8
-         tkYCIjEOTuSQjp8oP/7oHhaH4OTMlSY3E1Pm88WG3BkHB0nPcO2b75ugErGfDdmJIEcH
-         O0jUfDBV7MFMX/yOGDCVD3wOXtiTFKtzIBHTMu/pHFT+zreI+cJ5/6XNGK1zn4Xw0YvS
-         PEMUEiNCcRH/QtRg0DcVLTwTN7fCEkbYjYxPABvFK06sIU9gMyyaHhMxavKGHzQVZUMo
-         H1WKGjDrMAIho4kxZ+ph2oT334jD+14Lm1DCA10x3Wm9gRW21Rz/6x+ow+PjZ1E/Z75V
-         FJuw==
-X-Forwarded-Encrypted: i=1; AJvYcCXUx2LqRA2ZqFmr0rCao7mZkB7+aUrBgrBcKJpWY7laqS3VFIrnh/fWQvDbjCxdqVe7sbivjJF3n0xEMEpmR4VtoL4Jj14UPIU/PEFG
-X-Gm-Message-State: AOJu0Yy/t2irCxzY6V49NgBtZKywKzSVTerF49ZJSpvcIzW0Sl7qIKB/
-	PI72f/0kAx0SME6hwdxf3qY4KDLISVtSerTT0dcSWRQh2uidbzWfS+vQb6fhfIQ=
-X-Google-Smtp-Source: AGHT+IEDQm5VMj88QgMa7T2443WaR0z1L0cupYZAj6nJd5Y/yuIH6Y5K3aV/K/rbrptqrKJPbyMfpw==
-X-Received: by 2002:adf:a3d0:0:b0:33b:2100:3a44 with SMTP id m16-20020adfa3d0000000b0033b21003a44mr5785649wrb.39.1707389469321;
-        Thu, 08 Feb 2024 02:51:09 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXXdJz84ovdU6pVqpNw60wd7HVwL15lYcM+n6oKgtk++P2/cWs0wiEm4kCDeoSC295ABHv6ze6F0PqI/Vog2Kl9f5nws8pWwqCTIDOdU3oqLsabsMlEJt3WF7y93IGweLBiR6AAK3/44S/b9d9jJwhVUl0Gwp1olFjo978YBfnrMyvovgy4r9By/4HqInf/JKChViz9WnRTL4m5SbOAmlSP1O+CicgzP78T8B9TiCk/JRJ8
-Received: from krzk-bin.. ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id s1-20020a5d69c1000000b0033b4719eb6esm3308283wrw.27.2024.02.08.02.51.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 02:51:08 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Georgi Djakov <djakov@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 6/6] interconnect: qcom: x1e80100: constify pointer to qcom_icc_bcm
-Date: Thu,  8 Feb 2024 11:50:56 +0100
-Message-Id: <20240208105056.128448-7-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240208105056.128448-1-krzysztof.kozlowski@linaro.org>
-References: <20240208105056.128448-1-krzysztof.kozlowski@linaro.org>
+        d=1e100.net; s=20230601; t=1707389486; x=1707994286;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U81mhrQtXLSRhyU8Eow+19b7E6wnZMxfsagdIxnP7q8=;
+        b=SG24SFljG0pe/9S/I+CoGvzWNPj56BP1Q3Yi9x4dm7rNDCftqN3r1hPLxu4IViZZ6m
+         QSiSg39Hrj9qMwJkxzB+za8I+9BwKlZOH2CWqASi0yW6p+98gYm+lEuOKGmVPUpoFzc3
+         bUZwnsq1qzmkc4EefJjjOcSGv+0Njta+MScYfVCL18YD2oQTOqpQagIXUPEIuUgdDSS8
+         eLeG5pXnRer9K9s43dIG1JW4hQp7gu8Wpa6YRNP2C6V5H1OPKwoDGl/dPMsYCo7TtwzK
+         /bOGGus3cB1KKIQIdheKH0ffGlvjGMbkPWrKOlSgiSvOdlfYZlFPDuY4tec2gdcuv6ra
+         dPtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWisr2vOZCkSdGzS+JCw0svW/BkOKQdactpFaz3PgGTXC3yFQCTnuXqMTWE3oVCRy+8nDTdO3WxMjPSrQZDeAU8hFlQMHLAVMre/h09
+X-Gm-Message-State: AOJu0YxK+9iAK4C14iygP0YM2tb53yus2szAQzJqMrhrR/uaS2WDSkTt
+	Tsv/VXEhnDj6hXDymXFQ1CviFY2gLVujSmmsICRovUlr90zEgx5ZHZbUzYi8zz8=
+X-Google-Smtp-Source: AGHT+IEkG8Cewlu3zaq01ZBUh30BUa4UE+D0bA+40onlZOyJWUK+AQj8qO02AeoTl1g6mcod6qtB6Q==
+X-Received: by 2002:a05:6a20:760a:b0:19e:9967:4e0b with SMTP id m10-20020a056a20760a00b0019e99674e0bmr5896921pze.14.1707389486153;
+        Thu, 08 Feb 2024 02:51:26 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUqFcz3QpdPEjofG5XyYyb7LWORJeKeHYvfeN5ybE5e+ptGzdLAik/1N20M5LmNlFP5LB89gyYLbgS3c8v2aaPvEBscpyZXHhw8jIT1YLSc/kb7f13Qupw4OumrF/LsQSb/IwNEVn6+KDyXlmgpIIEEDmZi3/uXO2p+92MgNz/f6mkl+lCd8PwrrkiZ6sdBV5mzotQZS6bqz6hH5E674l1QiUf3D3JuRQL+v5PcdNioxyLpCPVTGcmtsbtRgbF/qQmQ8y1xwC9GA6amK74w9MxsilweCTNA4FHkCWFDAXY2FDgdMXVanjL3CJXnYrra066H70fP07rqhSHNhBAT9hYCgFPk+UJo1PhLDlih9Bwq1jy+NEHN8r8ITjM5zKrpwRI9nORCh0eSnLg7sv3X5NhEMQis2U67URDh/D4WEuIXGMT34GFJMJl0VE2ylTHbqRmBrfWTIxP9yPTUBLJTKOpx3ClGvyhSiwxKBDb3Ozxcp90=
+Received: from [192.168.20.11] ([180.150.113.62])
+        by smtp.gmail.com with ESMTPSA id o1-20020a17090ab88100b00296b2f99946sm1165917pjr.30.2024.02.08.02.51.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Feb 2024 02:51:24 -0800 (PST)
+Message-ID: <f7c18fca-2a85-46b2-a671-2409e662520f@tweaklogic.com>
+Date: Thu, 8 Feb 2024 21:21:17 +1030
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 4/5] dt-bindings: iio: light: Avago APDS9306
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Matti Vaittinen <mazziesaccount@gmail.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Marek Vasut <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>,
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Matt Ranostay <matt@ranostay.sg>,
+ Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240206130017.7839-1-subhajit.ghosh@tweaklogic.com>
+ <20240206130017.7839-5-subhajit.ghosh@tweaklogic.com>
+ <80e58f2f-b98b-46de-bcd4-fccbab11422a@linaro.org>
+From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <80e58f2f-b98b-46de-bcd4-fccbab11422a@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Pointers to struct qcom_icc_bcm are const.
+Hi Krzysztof,
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/interconnect/qcom/x1e80100.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/interconnect/qcom/x1e80100.c b/drivers/interconnect/qcom/x1e80100.c
-index 281295a9a077..99824675ee3f 100644
---- a/drivers/interconnect/qcom/x1e80100.c
-+++ b/drivers/interconnect/qcom/x1e80100.c
-@@ -1542,7 +1542,7 @@ static struct qcom_icc_bcm bcm_sn4 = {
- 	.nodes = { &qnm_usb_anoc },
- };
- 
--static struct qcom_icc_bcm *aggre1_noc_bcms[] = {
-+static struct qcom_icc_bcm * const aggre1_noc_bcms[] = {
- };
- 
- static struct qcom_icc_node * const aggre1_noc_nodes[] = {
-@@ -1730,7 +1730,7 @@ static const struct qcom_icc_desc x1e80100_gem_noc = {
- 	.num_bcms = ARRAY_SIZE(gem_noc_bcms),
- };
- 
--static struct qcom_icc_bcm *lpass_ag_noc_bcms[] = {
-+static struct qcom_icc_bcm * const lpass_ag_noc_bcms[] = {
- };
- 
- static struct qcom_icc_node * const lpass_ag_noc_nodes[] = {
-@@ -1871,7 +1871,7 @@ static const struct qcom_icc_desc x1e80100_pcie_north_anoc = {
- 	.num_bcms = ARRAY_SIZE(pcie_north_anoc_bcms),
- };
- 
--static struct qcom_icc_bcm *pcie_south_anoc_bcms[] = {
-+static struct qcom_icc_bcm * const pcie_south_anoc_bcms[] = {
- };
- 
- static struct qcom_icc_node * const pcie_south_anoc_nodes[] = {
-@@ -1890,7 +1890,7 @@ static const struct qcom_icc_desc x1e80100_pcie_south_anoc = {
- 	.num_bcms = ARRAY_SIZE(pcie_south_anoc_bcms),
- };
- 
--static struct qcom_icc_bcm *system_noc_bcms[] = {
-+static struct qcom_icc_bcm * const system_noc_bcms[] = {
- 	&bcm_sn0,
- 	&bcm_sn2,
- 	&bcm_sn3,
-@@ -1928,7 +1928,7 @@ static const struct qcom_icc_desc x1e80100_usb_center_anoc = {
- 	.num_bcms = ARRAY_SIZE(usb_center_anoc_bcms),
- };
- 
--static struct qcom_icc_bcm *usb_north_anoc_bcms[] = {
-+static struct qcom_icc_bcm * const usb_north_anoc_bcms[] = {
- };
- 
- static struct qcom_icc_node * const usb_north_anoc_nodes[] = {
-@@ -1944,7 +1944,7 @@ static const struct qcom_icc_desc x1e80100_usb_north_anoc = {
- 	.num_bcms = ARRAY_SIZE(usb_north_anoc_bcms),
- };
- 
--static struct qcom_icc_bcm *usb_south_anoc_bcms[] = {
-+static struct qcom_icc_bcm * const usb_south_anoc_bcms[] = {
- };
- 
- static struct qcom_icc_node * const usb_south_anoc_nodes[] = {
--- 
-2.34.1
-
+On 8/2/24 18:48, Krzysztof Kozlowski wrote:
+> On 06/02/2024 14:00, Subhajit Ghosh wrote:
+>> Driver support for Avago (Broadcom) APDS9306 Ambient Light Sensor.
+>> Extend avago,apds9300.yaml schema file to support apds9306 device.
+>>
+>> this patch depends on patch:
+>> "dt-bindings: iio: light: adps9300: Update interrupt definitions"
+> 
+> Drop the paragraph, not helping. There is no dependency here.
+In the submitting patches guide, I read that if one patch depends
+on another, it should be mentioned.
+If I try to apply this patch with "git am", it fails without
+first applying the patch dependency mentioned above. Is that fine?
+Again, sorry about the silly questions, just don't want to assume stuff!
+> 
+> Best regards,
+> Krzysztof
+> 
+Thank you for reviewing.
+Regards,
+Subhajit Ghosh
 
