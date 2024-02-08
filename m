@@ -1,155 +1,112 @@
-Return-Path: <linux-kernel+bounces-58045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C36D84E095
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:21:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 535E684E094
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:21:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6E8028DF1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:21:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 084751F2AA6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51CA8762D5;
-	Thu,  8 Feb 2024 12:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="lK6jO+qp"
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333597319C;
+	Thu,  8 Feb 2024 12:20:35 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0580971B5F
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 12:20:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5982873182
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 12:20:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707394841; cv=none; b=A8z1GM3cjhEFljhM7ryrN2a+6+JIx58wOIEEqE7hysvanONCImZn+5AI2QSxGQwWdYotFqZuQ6FzIY2fWkJr4XnA6CM3wUv25rve3VwqOOtS8H5JjyhhzKtSsePkgFw1OA8Zu/R0qUyPR7oWDmzjAhpQGQg/N2uECVQgui0/C60=
+	t=1707394834; cv=none; b=sUJJ0jTDOSenM7OobmwHkleseD3uuEuK8P9tuvcn2bAPzhQSBP6ltaKDLqYE8qYABGeAAaAji2FMZQc4a2i3feqPFX/QKny8vqP5crEHLScwjNshGc0sXG+sA059SKnJbodtG/1JVaYCIkHaeIEQPUem5dNQ8+sEf3rH54bVVxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707394841; c=relaxed/simple;
-	bh=3JyyPHDywY0DWXt/HZUqe0GH7KV9wdeM+NZ7Y9F6MdU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c4M39vpQQ3OEP/VnGsafYdaQFJ9BLpoUXQzm8r+vUvvgSCnhpkMJ/ez1LBQLw/8I2oo8/t48bWCE68Lsv2k6nCwh+IOJ3QTT9Nh/qUUaUfo41eoXOpPEn5ztsG7lKdL5qWFiTgt4tX4E7ouiNIDgeAAAQa2zo5BWNqYsBr9NHqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lK6jO+qp; arc=none smtp.client-ip=209.85.222.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7d5c514944fso417562241.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 04:20:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707394839; x=1707999639; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bf7m/USDjz7kE2FE9CQHR/aM8ZK7eKAJ6zNf2AmjvPo=;
-        b=lK6jO+qpiz7Dz9zsibMBe0G6Xhgti5BjVZZEhrSbWOPjFXVq1LNCV2ezC4LE7TA7Zh
-         qHoGNfvRUT/MH9/1yxRmjdjfz+GQAwSeyGdJU4PMLnZqGrDcFfTrs/Tdf0948IKDt3xt
-         CX8TzjI8NrWh5WmugssPxPBW9iq27e1Jy73KV+smHBEKYrsueaMtKc6dOjc5jnnMKfgU
-         QQH5zYJJ5o5N1G+c4Q+cWKhq3xuwwjXshKu9LvfSP3Gky5nCyed8BGQCmJQ+t2QwMSTR
-         yskXrOLu5ZBPwsv1xes2TL2ghZ0v43veKoT5J5LZTuqRaOX/IQhDVN7kj9TZghm67w3D
-         v7xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707394839; x=1707999639;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Bf7m/USDjz7kE2FE9CQHR/aM8ZK7eKAJ6zNf2AmjvPo=;
-        b=FxLn1IBDSTNId6mRkQdK+EvafPPjqKJZ/RdQPI+YPTLp35EoOsBLjLfupEBkDKR07i
-         VhAVKH2/RtCMdEkgmAI+0AFmIWeML6mWEFdmOU+phjWvEp8GLrhmjE0E15UpziwdFIxq
-         gn87H9ezEVJvTkqJuR0wHfveXhpJWi6blohFJ0sLSg+WdePcAOEFY0L5IjEjijMRi8ix
-         7F2uxaPk5SffVTyrCv2fvB7e4nf2zOjouWz8RD+QatV4wT5pwSl96K1i5TPZQ+BJC8ZY
-         FG7YPR2xQEWsRl5LewTP0BdnxYfKlalX0WSBuTyN4Nm3YeHzWV+vZzA8MsaIzB1vAbWp
-         lcIA==
-X-Forwarded-Encrypted: i=1; AJvYcCWAs2vIvu5cCG0QwLCpFsZm8bbo7UK/MjOtZN5CiSozqZX2tCCwpb0rJiw8CTOY4y84eVjVjBangYE8twcj7neUkAsbfwYQy0dwbIFK
-X-Gm-Message-State: AOJu0YzTLMYDXwwHOUjwlXACcLhPesgzk2iBw0k6/M1tyGPtu1eUhZZg
-	P3ZN3OqpWMCsCBWHMlm1SIX1HWUIoR4UC/uhiO4gjZ/y+k+vDGKMRqy+eWId13aA2C+PQsBgnSD
-	LLObq+D6W/lRqL9mJbZF+RcG26sIyJJcCoEcf
-X-Google-Smtp-Source: AGHT+IGlL86D1Ci5269kTzm8XhRyortv2UdzEszE/4vmPzP7uLriXUhvD14B2r1rBQ/5VXy4f5o9FdDQRR6VTHNU/Uo=
-X-Received: by 2002:a05:6122:1c86:b0:4c0:3929:2748 with SMTP id
- eu6-20020a0561221c8600b004c039292748mr1987582vkb.7.1707394838719; Thu, 08 Feb
- 2024 04:20:38 -0800 (PST)
+	s=arc-20240116; t=1707394834; c=relaxed/simple;
+	bh=r+hfrA5qEDDdPsVezjcdkRd1w6ruSzwoWLPssdSs50o=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qua8jVDjJ5eg7jehyWWj3b79WqF65ziWBOjV0b85iNiX0v9eVHxs7tvxe/05NDfqa0tTSQjb7Nt2lmg/pkL2Haa9+yBWcZyzs7J+RGvXjAduu8aENFFPjt8tQ7yISduiZxVyLnp0rTlF6/HBUeba6NzRuNkCLLwA9vbl0LCzOM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TVww84svfz6K98Q;
+	Thu,  8 Feb 2024 20:17:12 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9EA0A140136;
+	Thu,  8 Feb 2024 20:20:30 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 8 Feb
+ 2024 12:20:30 +0000
+Date: Thu, 8 Feb 2024 12:20:29 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Yicong Yang <yangyicong@huawei.com>
+CC: <will@kernel.org>, <mark.rutland@arm.com>, <hejunhao3@huawei.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<yangyicong@hisilicon.com>, <linuxarm@huawei.com>,
+	<prime.zeng@hisilicon.com>, <fanghao11@huawei.com>
+Subject: Re: [PATCH 3/7] drivers/perf: hisi_pcie: Add more events for
+ counting TLP bandwidth
+Message-ID: <20240208122029.000005e1@Huawei.com>
+In-Reply-To: <20240204074527.47110-4-yangyicong@huawei.com>
+References: <20240204074527.47110-1-yangyicong@huawei.com>
+	<20240204074527.47110-4-yangyicong@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124-alice-mm-v1-1-d1abcec83c44@google.com> <20240124231235.6183-1-kernel@valentinobst.de>
-In-Reply-To: <20240124231235.6183-1-kernel@valentinobst.de>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 8 Feb 2024 13:20:28 +0100
-Message-ID: <CAH5fLghRiVGWr--9hqwr4Cg4anaKWVqZA0D65DgJzLPPOAvNgg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] rust: add userspace pointers
-To: Valentin Obst <kernel@valentinobst.de>
-Cc: a.hindborg@samsung.com, akpm@linux-foundation.org, alex.gaynor@gmail.com, 
-	arnd@arndb.de, arve@android.com, benno.lossin@proton.me, 
-	bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org, 
-	cmllamas@google.com, gary@garyguo.net, gregkh@linuxfoundation.org, 
-	joel@joelfernandes.org, keescook@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, maco@android.com, ojeda@kernel.org, 
-	rust-for-linux@vger.kernel.org, surenb@google.com, tkjos@android.com, 
-	viro@zeniv.linux.org.uk, wedsonaf@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Thu, Jan 25, 2024 at 12:13=E2=80=AFAM Valentin Obst <kernel@valentinobst=
-de> wrote:
->
-> > +//! User pointers.
-> > +//!
-> > +//! C header: [`include/linux/uaccess.h`](../../../../include/linux/ua=
-ccess.h)
-> > +
->
-> nit: could this be using srctree-relative links?
->
-> > +/// The maximum length of a operation using `copy_[from|to]_user`.
->
-> nit: 'a' -> 'an'
->
-> > +///
-> > +/// If a usize is not greater than this constant, then casting it to `=
-c_ulong`
-> > +/// is guaranteed to be lossless.
->
-> nit: could this be `usize` or [`usize`]. Maybe would also be clearer to
-> say "... a value of type [`usize`] is smaller than ..."
->
-> > +///
-> > +/// These APIs are designed to make it difficult to accidentally write=
- TOCTOU
-> > +/// bugs. Every time you read from a memory location, the pointer is a=
-dvanced by
->
-> Maybe makes sense to also introduce the abbreviation TOCTOU in the type
-> documentation when it is first used.
->
-> > +    /// Reads the entirety of the user slice.
-> > +    ///
-> > +    /// Returns `EFAULT` if the address does not currently point to
-> > +    /// mapped, readable memory.
-> > +    pub fn read_all(self) -> Result<Vec<u8>> {
-> > +        self.reader().read_all()
-> > +    }
->
-> If I understand it correctly, the function will return `EFAULT` if _any_
-> address in the interval `[self.0, self.0 + self.1)` does not point to
-> mapped, readable memory. Maybe the docs could be more explicit.
->
-> > +        // Since this is not a pointer to a valid object in our progra=
-m,
-> > +        // we cannot use `add`, which has C-style rules for defined
-> > +        // behavior.
-> > +        self.0 =3D self.0.wrapping_add(len);
->
-> If I understand it correctly, you are using 'valid object' to refer to
-> an 'allocated object' [1] as this is what the `add` method's docs
-> refer to [2]. In that case it might be better to use the latter term as
-> it has a defined meaning. Also see [3] and [4] which are about making it
-> more precise.
->
-> [1]: https://doc.rust-lang.org/core/ptr/index.html#allocated-object
-> [2]: https://doc.rust-lang.org/core/primitive.pointer.html#method.add
-> [3]: https://github.com/rust-lang/rust/pull/116675
-> [4]: https://github.com/rust-lang/unsafe-code-guidelines/issues/465
+On Sun, 4 Feb 2024 15:45:23 +0800
+Yicong Yang <yangyicong@huawei.com> wrote:
 
-Thanks. I'll include all of your suggestions in my next version.
+> From: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> A typical PCIe transaction is consisted of various TLP packets in both
+> direction. For counting bandwidth only memory read events are exported
+> currently. Add memory write and completion counting events of both
+> direction to complementation.
 
-Alice
+complementation?
+
+> 
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  drivers/perf/hisilicon/hisi_pcie_pmu.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> index 9623bed93876..83be3390686c 100644
+> --- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> +++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> @@ -726,10 +726,18 @@ static struct attribute *hisi_pcie_pmu_events_attr[] = {
+>  	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_cnt, 0x10210),
+>  	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_latency, 0x0011),
+>  	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_cnt, 0x10011),
+> +	HISI_PCIE_PMU_EVENT_ATTR(rx_mwr_flux, 0x0104),
+> +	HISI_PCIE_PMU_EVENT_ATTR(rx_mwr_time, 0x10104),
+>  	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_flux, 0x0804),
+>  	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_time, 0x10804),
+> +	HISI_PCIE_PMU_EVENT_ATTR(rx_cpl_flux, 0x2004),
+> +	HISI_PCIE_PMU_EVENT_ATTR(rx_cpl_time, 0x12004),
+> +	HISI_PCIE_PMU_EVENT_ATTR(tx_mwr_flux, 0x0105),
+> +	HISI_PCIE_PMU_EVENT_ATTR(tx_mwr_time, 0x10105),
+>  	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_flux, 0x0405),
+>  	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_time, 0x10405),
+> +	HISI_PCIE_PMU_EVENT_ATTR(tx_cpl_flux, 0x1005),
+> +	HISI_PCIE_PMU_EVENT_ATTR(tx_cpl_time, 0x11005),
+>  	NULL
+>  };
+>  
+
 
