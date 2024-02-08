@@ -1,123 +1,214 @@
-Return-Path: <linux-kernel+bounces-58522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 017B784E78C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 555B384E793
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:21:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7F661F26379
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:17:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF1311F27195
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:21:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7CE286AD7;
-	Thu,  8 Feb 2024 18:17:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 177288613E;
+	Thu,  8 Feb 2024 18:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nBupX1nZ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="P6cJ9wjF"
+Received: from relay.smtp-ext.broadcom.com (unknown [192.19.166.228])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1234C84FBD;
-	Thu,  8 Feb 2024 18:17:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A6983CD5;
+	Thu,  8 Feb 2024 18:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.228
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707416225; cv=none; b=Iw9ssOwUqL1ra9/z0YAz1fWdzgyMPHh9M1gmrfutUzu+JQ1rGZRjUarhh9GM59NBnL+lJuCKSexPhuNY2auaK7uzYw+z1Q87V8KIR6fj2elCOFlgJ0I0/uWd2Qd7Xq+a+4Dtk3/4x3jkqtDfCP9Kn1ioOpTEVa5vHES0doMseQU=
+	t=1707416451; cv=none; b=B+0qIT+vlnb42eqXhJcgGKon6I8vMZFR+yhX/bZoOmEAQiuA3mze+uzMV/VBZTbAfueDpxffpVbM35WsqKSsR7daLh8XkCe6nbnOPMlGJl2zd9rHSXNm9X2Ee394sklOlCFeXH8sI1OQDslA0C5DyO32D6DRWdpKwRrdoWf+U34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707416225; c=relaxed/simple;
-	bh=CCGL2Pl/BCg3YNBXmBuwxZ7UZxA+L40il8xtdEW8TZM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R2YCDxdutTuHKcVv5HgKAud6dW3gxX/dfnUEwRru8c2YBLouoKcDs2/1omY5LBF9o3M1kNuvDLIiKEafSznbDczJuee8wJCfnJdwOKr8tY5981EwO+DKT26cl308LYmUbTV5BQGwBbnqwGCiOlyXOmcvcRoVS9uyco4Rvwfj5v4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nBupX1nZ; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707416223; x=1738952223;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CCGL2Pl/BCg3YNBXmBuwxZ7UZxA+L40il8xtdEW8TZM=;
-  b=nBupX1nZfCmIP/IMKj+uGNoGArEoSA4Tr5VTW0MxNq5+jE1+ssfypmgK
-   szLSuyleFJURzBmC5sCiuSo/eiSQgBKyYYJUXd3lXwdQZhzbttKaL8vjk
-   BYaHVMc8yeGfhkO6HVtToRTyWssRhtO6txEopkQGgbhIqbq81IXw81fMn
-   olIEfinGfSkuYz6vAH55KIsljihRsG1wnufoRTRRslxCqvDhML5p+LjG9
-   Bf72L+5Y8M08clxtpnKRYs2P7xze9vm7LOxaMrX/BqSJqPt75OL8B09F6
-   NfWZopdP5vncV1z2HPkBrjNZg6Mk19on1bNn9pasq9qAjtxauQEqJHfQM
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="1440135"
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="1440135"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 10:17:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="910459977"
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="910459977"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 10:16:59 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rY8xE-00000002wkn-2bXG;
-	Thu, 08 Feb 2024 20:16:56 +0200
-Date: Thu, 8 Feb 2024 20:16:56 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Robin van der Gracht <robin@protonic.nl>,
-	Paul Burton <paulburton@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH v1 14/15] dt-bindings: auxdisplay: Add Maxim MAX6958/6959
-Message-ID: <ZcUamOqKUuA-ahRY@smile.fi.intel.com>
-References: <20240208165937.2221193-1-andriy.shevchenko@linux.intel.com>
- <20240208165937.2221193-15-andriy.shevchenko@linux.intel.com>
- <20240208-chute-bacteria-75425bd34dc9@spud>
+	s=arc-20240116; t=1707416451; c=relaxed/simple;
+	bh=3DhEN22lmOWhxC+qxvJ3t5FlzdbECygh0mh33F0j8to=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Kc/JKngr3wF0hXbE1d3eBEuX1Slzmz4QOj+s1N3b2+vVVpjpA7A2Ky98sEhSjaCg7XrCjQniBe8OY0FCY61qHKov/mguBKdzavgss0XW3ppcuoHsLJJHKMqxYozc7ILfeBKLmq/oIs87hFnsb5nnBS3QjMa46A30NUi9SiZvbDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=P6cJ9wjF; arc=none smtp.client-ip=192.19.166.228
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id B6FFCC002E47;
+	Thu,  8 Feb 2024 10:20:48 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com B6FFCC002E47
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1707416448;
+	bh=3DhEN22lmOWhxC+qxvJ3t5FlzdbECygh0mh33F0j8to=;
+	h=From:To:Cc:Subject:Date:From;
+	b=P6cJ9wjF3OdWzzOTxverzTBk09CfD3FgoPi8ETN0iIrHZStgdPnmvPqUvzC1koaw4
+	 fQmg3aRNeS6jenN28xePfqLLEAPd+DcpMVHeKBMemb1VC7nywMBf7qxJ3bFsMJJP82
+	 Sz03//zB2cltCGN3AuA9Oc2Xv+vWdNTO7Jm0RBYE=
+Received: from stbirv-lnx-1.igp.broadcom.net (stbirv-lnx-1.igp.broadcom.net [10.67.48.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 31D3518041CAC4;
+	Thu,  8 Feb 2024 10:20:47 -0800 (PST)
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+To: stable@vger.kernel.org
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
+	Russell King <rmk+kernel@armlinux.org.uk>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Doug Berger <opendmb@gmail.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM GENET ETHERNET DRIVER),
+	netdev@vger.kernel.org (open list:BROADCOM GENET ETHERNET DRIVER),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH stable 5.4] net: bcmgenet: Fix EEE implementation
+Date: Thu,  8 Feb 2024 10:20:40 -0800
+Message-Id: <20240208182041.3228898-1-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240208-chute-bacteria-75425bd34dc9@spud>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 08, 2024 at 05:50:51PM +0000, Conor Dooley wrote:
-> On Thu, Feb 08, 2024 at 06:58:57PM +0200, Andy Shevchenko wrote:
-> > Add initial device tree documentation for Maxim MAX6958/6959.
-> 
-> Why "initial"? Are there elements this display that you've not
-> documented yet? 
+commit a9f31047baca57d47440c879cf259b86f900260c upstream
 
-s/documented/implemented/
+We had a number of short comings:
 
-There are features of the hardware that may need additional properties.
+- EEE must be re-evaluated whenever the state machine detects a link
+  change as wight be switching from a link partner with EEE
+  enabled/disabled
 
-> > +title: MAX6958/6959 7-segment LED display controller with keyscan
-> 
-> > +properties:
-> > +  compatible:
-> > +    const: maxim,max6959
-> 
-> Where's the max6958's compatible? I don't see it in your driver either.
+- tx_lpi_enabled controls whether EEE should be enabled/disabled for the
+  transmit path, which applies to the TBUF block
 
-For now, see above, there is no need. Moreover, there is no need at all
-as we have autodetection mechanism. I don't see why we should have two
-compatible strings just for the sake of having them.
+- We do not need to forcibly enable EEE upon system resume, as the PHY
+  state machine will trigger a link event that will do that, too
 
-> It seems that the max6959 has some interrupt capabilities that are not
-> available on the max6958, so a dedicated compatible seems suitable to
-> me.
+Fixes: 6ef398ea60d9 ("net: bcmgenet: add EEE support")
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Link: https://lore.kernel.org/r/20230606214348.2408018-1-florian.fainelli@broadcom.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Change-Id: I9e9d9d9e10817c7fcf3d9cde2389a1f6fe42a2ba
+---
+ .../net/ethernet/broadcom/genet/bcmgenet.c    | 22 +++++++------------
+ .../net/ethernet/broadcom/genet/bcmgenet.h    |  3 +++
+ drivers/net/ethernet/broadcom/genet/bcmmii.c  |  6 +++++
+ 3 files changed, 17 insertions(+), 14 deletions(-)
 
-So, please clarify the DT's p.o.v. on the hardware that can be autodetected.
-Do we need to still have different compatible strings? What for? I don't
-see the need, sorry for my (silly) questions.
-
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index eeadeeec17ba..380bf7a328ba 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -1018,7 +1018,8 @@ static void bcmgenet_get_ethtool_stats(struct net_device *dev,
+ 	}
+ }
+ 
+-static void bcmgenet_eee_enable_set(struct net_device *dev, bool enable)
++void bcmgenet_eee_enable_set(struct net_device *dev, bool enable,
++			     bool tx_lpi_enabled)
+ {
+ 	struct bcmgenet_priv *priv = netdev_priv(dev);
+ 	u32 off = priv->hw_params->tbuf_offset + TBUF_ENERGY_CTRL;
+@@ -1038,7 +1039,7 @@ static void bcmgenet_eee_enable_set(struct net_device *dev, bool enable)
+ 
+ 	/* Enable EEE and switch to a 27Mhz clock automatically */
+ 	reg = bcmgenet_readl(priv->base + off);
+-	if (enable)
++	if (tx_lpi_enabled)
+ 		reg |= TBUF_EEE_EN | TBUF_PM_EN;
+ 	else
+ 		reg &= ~(TBUF_EEE_EN | TBUF_PM_EN);
+@@ -1059,6 +1060,7 @@ static void bcmgenet_eee_enable_set(struct net_device *dev, bool enable)
+ 
+ 	priv->eee.eee_enabled = enable;
+ 	priv->eee.eee_active = enable;
++	priv->eee.tx_lpi_enabled = tx_lpi_enabled;
+ }
+ 
+ static int bcmgenet_get_eee(struct net_device *dev, struct ethtool_eee *e)
+@@ -1074,6 +1076,7 @@ static int bcmgenet_get_eee(struct net_device *dev, struct ethtool_eee *e)
+ 
+ 	e->eee_enabled = p->eee_enabled;
+ 	e->eee_active = p->eee_active;
++	e->tx_lpi_enabled = p->tx_lpi_enabled;
+ 	e->tx_lpi_timer = bcmgenet_umac_readl(priv, UMAC_EEE_LPI_TIMER);
+ 
+ 	return phy_ethtool_get_eee(dev->phydev, e);
+@@ -1083,7 +1086,6 @@ static int bcmgenet_set_eee(struct net_device *dev, struct ethtool_eee *e)
+ {
+ 	struct bcmgenet_priv *priv = netdev_priv(dev);
+ 	struct ethtool_eee *p = &priv->eee;
+-	int ret = 0;
+ 
+ 	if (GENET_IS_V1(priv))
+ 		return -EOPNOTSUPP;
+@@ -1094,16 +1096,11 @@ static int bcmgenet_set_eee(struct net_device *dev, struct ethtool_eee *e)
+ 	p->eee_enabled = e->eee_enabled;
+ 
+ 	if (!p->eee_enabled) {
+-		bcmgenet_eee_enable_set(dev, false);
++		bcmgenet_eee_enable_set(dev, false, false);
+ 	} else {
+-		ret = phy_init_eee(dev->phydev, 0);
+-		if (ret) {
+-			netif_err(priv, hw, dev, "EEE initialization failed\n");
+-			return ret;
+-		}
+-
++		p->eee_active = phy_init_eee(dev->phydev, false) >= 0;
+ 		bcmgenet_umac_writel(priv, e->tx_lpi_timer, UMAC_EEE_LPI_TIMER);
+-		bcmgenet_eee_enable_set(dev, true);
++		bcmgenet_eee_enable_set(dev, p->eee_active, e->tx_lpi_enabled);
+ 	}
+ 
+ 	return phy_ethtool_set_eee(dev->phydev, e);
+@@ -3688,9 +3685,6 @@ static int bcmgenet_resume(struct device *d)
+ 	if (!device_may_wakeup(d))
+ 		phy_resume(dev->phydev);
+ 
+-	if (priv->eee.eee_enabled)
+-		bcmgenet_eee_enable_set(dev, true);
+-
+ 	bcmgenet_netif_start(dev);
+ 
+ 	netif_device_attach(dev);
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.h b/drivers/net/ethernet/broadcom/genet/bcmgenet.h
+index 5b7c2f9241d0..29bf256d13f6 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.h
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.h
+@@ -736,4 +736,7 @@ int bcmgenet_wol_power_down_cfg(struct bcmgenet_priv *priv,
+ void bcmgenet_wol_power_up_cfg(struct bcmgenet_priv *priv,
+ 			       enum bcmgenet_power_mode mode);
+ 
++void bcmgenet_eee_enable_set(struct net_device *dev, bool enable,
++			     bool tx_lpi_enabled);
++
+ #endif /* __BCMGENET_H__ */
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmmii.c b/drivers/net/ethernet/broadcom/genet/bcmmii.c
+index 2fbec2acb606..026f00ccaa0c 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmmii.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmmii.c
+@@ -25,6 +25,7 @@
+ 
+ #include "bcmgenet.h"
+ 
++
+ /* setup netdev link state when PHY link status change and
+  * update UMAC and RGMII block when link up
+  */
+@@ -96,6 +97,11 @@ void bcmgenet_mii_setup(struct net_device *dev)
+ 			       CMD_RX_PAUSE_IGNORE | CMD_TX_PAUSE_IGNORE);
+ 		reg |= cmd_bits;
+ 		bcmgenet_umac_writel(priv, reg, UMAC_CMD);
++
++		priv->eee.eee_active = phy_init_eee(phydev, 0) >= 0;
++		bcmgenet_eee_enable_set(dev,
++					priv->eee.eee_enabled && priv->eee.eee_active,
++					priv->eee.tx_lpi_enabled);
+ 	} else {
+ 		/* done if nothing has changed */
+ 		if (!status_changed)
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
 
