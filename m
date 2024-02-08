@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-58768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 528D284EB6D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 23:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C99C584EB7C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 23:16:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E64711F2C4D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:13:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65D201F2D5EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:16:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09FB350252;
-	Thu,  8 Feb 2024 22:12:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A464F60E;
+	Thu,  8 Feb 2024 22:16:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="iWWcaxmc"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="unli8gQl"
 Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBC2D4F88C;
-	Thu,  8 Feb 2024 22:12:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E7FF4F613;
+	Thu,  8 Feb 2024 22:16:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707430360; cv=none; b=GR1hBmBihmNmE9pLOnOjoqX4dsK2G3Ko0wyVIsnjBw/YqYmTTL7Iuif1ekYY/bhAFjf6Ew8tstXlMqXy4VJ+DGSDwqfYPxoKnk/JKAmBlQAjhxE7VD5d+zi7ai827gXtxGPOHwG7tjJ2VcKGPPdIkzb2sesk6G8vrXoonoV/3Z0=
+	t=1707430596; cv=none; b=r4nBLofj7DmyDee9m5rqZ0nisKv7NiLVD7jYR5tvO7K9fGI8RH3RrvUcTaieBhpCWbdpGH8h47zbN/W8xDRqW41B/FAup9UDBkb2p5A3w5N2XxazefpitvBwejpjQeALWr4GTBmYs3WL99v3oaKz3G9ACgwOSOwGu6jHW8xkaT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707430360; c=relaxed/simple;
-	bh=SaWM1q3KRwkuItGeKAM3LJGUjBgBF2JdvDnT+CbIZAY=;
+	s=arc-20240116; t=1707430596; c=relaxed/simple;
+	bh=kqCS9Thshp0iE8PcR/yVThjuePxfrFwB07IeI7fP/OE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SItVJQ1lZmOtIV3WwNo84Zc57wUBRh4OuuIuYTDDGOI7BddaD88e8f/WGHN8wzIkFuUUz0nL4NVYWmNzqvqtNBjwqGo+lH8ctuTSTkVBDknJBjn85PFbwaUUG5Zztl/qI+o8Z5/qrtc29QC78/rsxUz1oqUvq6qqWuIZ0VQtPMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=iWWcaxmc; arc=none smtp.client-ip=167.114.26.122
+	 In-Reply-To:Content-Type; b=TF4nHK25mHS5E9NmomnXb8nBJ4K5JNOLNv6U9TzQHyPXZqKpUPon59PhVo3mQeGmCHsNsTk3oftJIgLBE8PEPABUIEh238Z1VvzDWYTx+GtyQ1ZNm3t5tJkHF3xDQ0Z75cPRdZZMJ7p0cAniMFAmxgRynouR4eE23C0jI1vhaV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=unli8gQl; arc=none smtp.client-ip=167.114.26.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1707430358;
-	bh=SaWM1q3KRwkuItGeKAM3LJGUjBgBF2JdvDnT+CbIZAY=;
+	s=smtpout1; t=1707430593;
+	bh=kqCS9Thshp0iE8PcR/yVThjuePxfrFwB07IeI7fP/OE=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=iWWcaxmcWqoFAauOWqJqBCtLndtPt2l1BF+/ArVLyJihI6jbAHHUucumYgk+xw26N
-	 P3551E3iLtytFyzNQ69/j79OQKihodE5Fy/KSJIyqxv9qWGTnoF3a2LECcmwNBAKsb
-	 vcuhi79H9kIfGII2z8Ch9d9dMrCGPMpALLzCh98wCC8UUrH+mYLPkfIrKgMgbmV3zj
-	 e9NjeD9+6oFTo+WC/aQYnTqK6LrY8dMHC22nBsHC2Ca7Caib+wQPYkyZsQDs3EMdOn
-	 D4/1Ir30vdpd7VyniS+hEcxrCgA7LJR68oCAt+hx0zvvwO/dVzklnH0e+sH9habPdl
-	 PmEhO2iFFQnqA==
+	b=unli8gQlUjWoGhpCcGsqDZavVQBelWtdA1krO4EBFVLQLK53/4n/DlHkutP2lizzM
+	 R9KSI7dt0IeHHqRJfBo/FPWAuEvHbUjqhTxc7fE1Y5TXLbM7yvHI4pcDi5q6xbqXl6
+	 +N3/n+LNGGFcSIjmrzFvCNBmxlMQ93n8JzNzlbRZZ/RItzkgakmq3XpW9L/SDtFvwR
+	 KSewUrPzDb6wNunUKpZkSjQ31YYkpeGFmEPFKD9V4HQqg+5auIGVNbzP3874hgu7xJ
+	 OKSJSGcJupcf+82TnWOUDw/lmdlDOYuDtuNnV8AsaMK0DC9fTADI2PzFBAQ5qHDJSJ
+	 cMxVXu5ce1Kmg==
 Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TWB795fqgzYGM;
-	Thu,  8 Feb 2024 17:12:37 -0500 (EST)
-Message-ID: <3fd6615a-a17e-4c68-9e92-fd1a6939fdfe@efficios.com>
-Date: Thu, 8 Feb 2024 17:12:43 -0500
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TWBCj2xVYzY0Q;
+	Thu,  8 Feb 2024 17:16:33 -0500 (EST)
+Message-ID: <646293de-608c-497f-9beb-d5da38b3cd3a@efficios.com>
+Date: Thu, 8 Feb 2024 17:16:39 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,11 +52,11 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 09/12] nvdimm/pmem: Cleanup alloc_dax() error handling
+Subject: Re: [PATCH v4 01/12] nvdimm/pmem: Fix leak on dax_add_host() failure
 Content-Language: en-US
-To: Dan Williams <dan.j.williams@intel.com>, Arnd Bergmann <arnd@arndb.de>,
- Dave Chinner <david@fromorbit.com>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
  Linus Torvalds <torvalds@linux-foundation.org>,
  Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
  Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
@@ -66,26 +66,32 @@ Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
  linux-s390@vger.kernel.org, Alasdair Kergon <agk@redhat.com>,
  Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>
 References: <20240208184913.484340-1-mathieu.desnoyers@efficios.com>
- <20240208184913.484340-10-mathieu.desnoyers@efficios.com>
- <65c54dc181e01_afa429468@dwillia2-xfh.jf.intel.com.notmuch>
+ <20240208184913.484340-2-mathieu.desnoyers@efficios.com>
+ <20240208132112.b5e82e1720e80da195ef0927@linux-foundation.org>
+ <acb2ca39-412a-4115-95c5-f15e979a43bb@efficios.com>
+ <20240208141209.a73f4d3221f9573468729b8f@linux-foundation.org>
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <65c54dc181e01_afa429468@dwillia2-xfh.jf.intel.com.notmuch>
+In-Reply-To: <20240208141209.a73f4d3221f9573468729b8f@linux-foundation.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 2024-02-08 16:55, Dan Williams wrote:
-[...]
-> 
-> Oh... I see you cleanup what I was talking about later in the series.
-> 
-> For my taste I don't like to see tech-debt added and then removed later
-> in the series. The whole series would appear to get smaller by removing
-> the alloc_dax() returning NULL case from the beginning, and then doing
-> the EOPNOTSUPP fixups.
-> 
-> ...repeat this comment for patch 10, 11, 12.
+On 2024-02-08 17:12, Andrew Morton wrote:
+> On Thu, 8 Feb 2024 17:04:52 -0500 Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-Done.
+[...]
+
+>> Should I keep this patch 01/12 within the series for v5 or should I
+>> send it separately ?
+> 
+> Doesn't matter much, but perfectionism does say "standalone patch please".
+
+Will do. I plan to add the following statement to the commit message
+to make it clear that there is a dependency between the patch series
+and this fix:
+
+[ Based on commit "nvdimm/pmem: Fix leak on dax_add_host() failure". ]
+
+Thanks,
 
 Mathieu
 
