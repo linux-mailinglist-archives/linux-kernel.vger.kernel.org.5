@@ -1,145 +1,145 @@
-Return-Path: <linux-kernel+bounces-58228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EAB784E31F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E603884E32A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:30:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B744291BCA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:26:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 783A529219E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:29:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8573C6A347;
-	Thu,  8 Feb 2024 14:26:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF5C78B75;
+	Thu,  8 Feb 2024 14:29:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mzw/vndl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hGdscU2q"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0BD87640C;
-	Thu,  8 Feb 2024 14:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4EA02EB14;
+	Thu,  8 Feb 2024 14:29:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707402393; cv=none; b=tlz6hkSdKcJfHYhlqJFDgpdpnHlwp6m050Jppd3NDlgFh1lh0J+BZi3M0S14I/ufxPEgGZA4cFEupbp3xo0VTgT/V2yyRpeZWD1/l58FgqnGED2Kr7bGUV3WPmvsmHBWDiT53BsTvPbPsXbMc3q8rNwHgyTPDml5TSx5Cu4lhPk=
+	t=1707402589; cv=none; b=bCrK7KS6qBfsGgdG6SdsrV5IbStYNXGvPp8Uw7AFYVF4zf12ZZxIcZGwYznsMDhRMk0snkf/FLVuq3HkhFptTsqJqwUCCf/53ixf81/wMffVCNK5+QToXEAHbNQVudPq9gxFqLvfvYWOFHEWPLdobxoxtxCoCyTkJix99bzfi7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707402393; c=relaxed/simple;
-	bh=74U9Xloo387R0IhhlVAzj5N29H04adqCBrWyKIMXu3M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k/WvXwMtpKcnYRnCPiJqYELkliSDxNTMD+GN2uMpiPhj7NCp+tdiyQmj4Iwbv88wqyntQprCYPUPhen1CiW6YSXNAId/sRHAAJjIJyIGPHGxuQktbf5t7+Riuxhx3OLVIZLlIlVVY/CdrN0ilsDsGkrrv6En//LXMpBQ/d8cHBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mzw/vndl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33F4AC433F1;
-	Thu,  8 Feb 2024 14:26:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707402393;
-	bh=74U9Xloo387R0IhhlVAzj5N29H04adqCBrWyKIMXu3M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Mzw/vndl+wVBmlcMrrQ6MYI78PsADo5rR8uoj68ZNXw/NrF9o5nTp7XYuH6HTgK0n
-	 jFeOWrfo/nwQxR9yDFbQjDt+JofvgkZV0ucOyYg2CrUud1DdUJ1obso7IFHeHZuGu1
-	 eomDGKLh35kpPO50ozRxObPv9r5bO66fgYTyvWEFExv6bbYpzYkqVK6CcWMPvY7L7o
-	 7w0xqajOLC6/p2eDjdicKoQNVtYF9CgK3vvbxL10bZ+WjeXI1E5rRDMdH8Se5GHDaw
-	 dPZ0GPRl7DgR8fD5gJ9QFHs7xpyfzTPHggI5eMvjmA6CPOkRgDDW+c+ixrlHqfH23L
-	 +KDraKyxtNoaA==
-Date: Thu, 8 Feb 2024 14:26:27 +0000
-From: Lee Jones <lee@kernel.org>
-To: wens@csie.org, marek.vasut+renesas@gmail.com,
-	support.opensource@diasemi.com, neil.armstrong@linaro.org,
-	ckeepax@opensource.cirrus.com, rf@opensource.cirrus.com,
-	mazziesaccount@gmail.com, mcoquelin.stm32@gmail.com,
-	alexandre.torgue@foss.st.com, Bo Liu <liubo03@inspur.com>
-Cc: linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-amlogic@lists.infradead.org, patches@opensource.cirrus.com,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 00/18] mfd: convert to use maple tree register cache
-Message-ID: <20240208142627.GT689448@google.com>
-References: <20240206071314.8721-1-liubo03@inspur.com>
- <170740229742.1068783.15434523911244194304.b4-ty@kernel.org>
+	s=arc-20240116; t=1707402589; c=relaxed/simple;
+	bh=BjhD4pm+ohrOgBwpHnJBgVialPzyURLLtifb2JZRcvA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=npotn9jDbR/d0NKX9u0O4rwBu4lVFC2lwENvTkOzCzNCE5c14/t5lslbunDGeEE0VyGWmxvUhDe6T1ggeDjx6bAOk988eLKd7YpYU828pvO/IdXQGv9Dfftkl6IHP/O1mB5vNhN8q8yZsSiWWE1gdS7BawQVWc0x8A4yHGvVfDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hGdscU2q; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4185Do4c025038;
+	Thu, 8 Feb 2024 14:29:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=pqOQ0pk1w4ZIPMpcW3wgFsiH/QfkfRueUw7WRbNFp/8=; b=hG
+	dscU2qq7Ic0Y0NtjNeSa5QCTQrb6PSzTkJHnr++4IRXVWAGLEwcktx0Bth5QEkG0
+	XlywtN8eNwDRmcn6V9mv93s2hvmy7JRxdTlsV2hgdtfsZ/nIeT7pHOccUwFjToZ2
+	AMHMtViXlNVCdQ6BgJB8HPINcmQtNeqJo3FjdR6PvIObwoj6WsiVRqDToxv69jE8
+	522tK+6nBeMFNAtZjMmrM8KEygaMZksuyIOel49kcdLBceSAvy5fsCrANKelj47r
+	MQjMviUCYMDTYKoHGlmB4+8yzk4EX0dg0t7EoYnLWC+PbfjKuDPuLp7vr/fc49QN
+	FLKDH7BN9CFNobwpbQSg==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w4h0uj6h7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 08 Feb 2024 14:29:37 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 418ETbXG005314
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 8 Feb 2024 14:29:37 GMT
+Received: from [10.216.60.50] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 8 Feb
+ 2024 06:29:34 -0800
+Message-ID: <b1991baf-e642-f811-14b0-ccd7c0cd56ec@quicinc.com>
+Date: Thu, 8 Feb 2024 19:59:20 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <170740229742.1068783.15434523911244194304.b4-ty@kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3] soc: qcom: mdt_loader: Add Upperbounds check for
+ program header access
+Content-Language: en-US
+To: Auditya Bhattaram <quic_audityab@quicinc.com>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+References: <20240208123527.19725-1-quic_audityab@quicinc.com>
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20240208123527.19725-1-quic_audityab@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: KxJzfQkUXXq8Ut2NX3OHB5BcGof4Gp04
+X-Proofpoint-GUID: KxJzfQkUXXq8Ut2NX3OHB5BcGof4Gp04
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-08_05,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ spamscore=0 mlxscore=0 suspectscore=0 phishscore=0 malwarescore=0
+ bulkscore=0 mlxlogscore=999 priorityscore=1501 clxscore=1011
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402080077
 
-On Thu, 08 Feb 2024, Lee Jones wrote:
 
-> On Tue, 06 Feb 2024 02:12:56 -0500, Bo Liu wrote:
-> > The maple tree register cache is based on a much more modern data structure
-> > than the rbtree cache and makes optimisation choices which are probably
-> > more appropriate for modern systems than those made by the rbtree cache.
-> > 
-> > Bo Liu (18):
-> >   mfd: ac100: convert to use maple tree register cache
-> >   mfd: as3711: convert to use maple tree register cache
-> >   mfd: as3722: convert to use maple tree register cache
-> >   mfd: axp20x: convert to use maple tree register cache
-> >   mfd: bcm590xx: convert to use maple tree register cache
-> >   mfd: bd9571mwv: convert to use maple tree register cache
-> >   mfd: dialog: convert to use maple tree register cache
-> >   mfd: khadas-mcu: convert to use maple tree register cache
-> >   mfd: lochnagar-i2c: convert to use maple tree register cache
-> >   mfd: wolfson: convert to use maple tree register cache
-> >   mfd: rohm: convert to use maple tree register cache
-> >   mfd: rk8xx: convert to use maple tree register cache
-> >   mfd: rn5t618: convert to use maple tree register cache
-> >   mfd: rsmu_i2c: convert to use maple tree register cache
-> >   mfd: si476x: convert to use maple tree register cache
-> >   mfd: stmfx: convert to use maple tree register cache
-> >   mfd: stpmic1: convert to use maple tree register cache
-> >   mfd: rc5t583: convert to use maple tree register cache
-> > 
-> > [...]
+
+On 2/8/2024 6:05 PM, Auditya Bhattaram wrote:
+> hash_index is evaluated by looping phdrs till QCOM_MDT_TYPE_HASH
+> is found. Add an upperbound check to phdrs to access within elf size.
 > 
-> Applied, thanks!
+> Fixes: 64fb5eb87d58 ("soc: qcom: mdt_loader: Allow hash to reside in any segment")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Auditya Bhattaram <quic_audityab@quicinc.com>
+> ---
+> Changes in v3:
+>   - Corrected wrong patch versioning in the Subject.
+>   - Added error prints for Invalid access.
+> Link to v2 https://lore.kernel.org/linux-arm-msm/9773d189-c896-d5c5-804c-e086c24987b4@quicinc.com/T/#t
+> Link to v1 https://lore.kernel.org/linux-arm-msm/5d7a3b97-d840-4863-91a0-32c1d8e7532f@linaro.org/T/#t
+> ---
+>   drivers/soc/qcom/mdt_loader.c | 5 +++++
+>   1 file changed, 5 insertions(+)
 > 
-> [01/18] mfd: ac100: convert to use maple tree register cache
->         commit: 8745a81ac22f42c7233fbddc6aa5922b231aac2a
-> [02/18] mfd: as3711: convert to use maple tree register cache
->         commit: 780b1aa441a3d64e400cb2ea96bc3e162322eb31
-> [03/18] mfd: as3722: convert to use maple tree register cache
->         commit: aea5c3cbc51eee3ac25ff8f936252901c4549011
-> [04/18] mfd: axp20x: convert to use maple tree register cache
->         commit: 009073d504f67146d936cc45f21cc27c1bc15490
-> [05/18] mfd: bcm590xx: convert to use maple tree register cache
->         commit: 684c1f0b79417cf08810dfd57c5a549a9741ad7a
-> [06/18] mfd: bd9571mwv: convert to use maple tree register cache
->         commit: 35b1b8622ca3172b3c6b2a377e5913bac0367634
-> [07/18] mfd: dialog: convert to use maple tree register cache
->         commit: 1cb7a3bca56c124ca9e5c13fcac7de884c195c5c
-> [08/18] mfd: khadas-mcu: convert to use maple tree register cache
->         commit: 5f734f5f374f68960afd2130a5ce982912c14c15
-> [09/18] mfd: lochnagar-i2c: convert to use maple tree register cache
->         commit: 8881896e05b6a91251dde0ce21ce79c2c201888d
-> [10/18] mfd: wolfson: convert to use maple tree register cache
->         commit: f353b2c639e4f4ac9831d94c8237026cebaa8e73
-> [11/18] mfd: rohm: convert to use maple tree register cache
->         commit: aabd38f3779b8108b65cc7ae8b5c20a6c352b0a2
-> [12/18] mfd: rk8xx: convert to use maple tree register cache
->         commit: 08aa1e797a5cc97d2106476263f938342e72015e
-> [13/18] mfd: rn5t618: convert to use maple tree register cache
->         commit: a011cacb63c3ff6562bd86afae8cdd49d0f075c9
-> [14/18] mfd: rsmu_i2c: convert to use maple tree register cache
->         commit: b85821cecdf933420a6ba93658e1e4710644f5c1
-> [15/18] mfd: si476x: convert to use maple tree register cache
->         commit: 030473871c3f4f126bd43018517abfcb070f6b95
-> [16/18] mfd: stmfx: convert to use maple tree register cache
->         commit: 87a48e35ce2ef992287b828b1268bedc7415d2de
-> [17/18] mfd: stpmic1: convert to use maple tree register cache
->         commit: ab993d2d68951db3ebfeaa44567a790ec566526d
-> [18/18] mfd: rc5t583: convert to use maple tree register cache
->         commit: d5132d176d6f21742ac67fd311ccc61fe830e999
+> diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
+> index 6f177e46fa0f..61e2377cc5c3 100644
+> --- a/drivers/soc/qcom/mdt_loader.c
+> +++ b/drivers/soc/qcom/mdt_loader.c
+> @@ -145,6 +145,11 @@ void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len,
+>   	if (phdrs[0].p_type == PT_LOAD)
+>   		return ERR_PTR(-EINVAL);
+> 
+> +	if (((size_t)(phdrs + ehdr->e_phnum)) > ((size_t)ehdr + fw->size)) {
 
-Next time you send a large patch-set, could you please ensure the
-subject line format matches that of the subsystem you're submitting to
-please?  It would have a saved me from a whole bunch of fix-ups.
+This change is valid only if somehow, ehdr->e_phnum gets corrupted or 
+changed via some engineering means and results in out-of-bounds access.
 
-Thanks.
+Acked-by: Mukesh Ojha <quic_mojha@quicinc.com>
 
--- 
-Lee Jones [李琼斯]
+> +		dev_err(dev, "Invalid phdrs access: %s\n", fw_name);
+
+Should it print ehdr->e_phnum as well to be more valid?
+
+-Mukesh
+
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+>   	for (i = 1; i < ehdr->e_phnum; i++) {
+>   		if ((phdrs[i].p_flags & QCOM_MDT_TYPE_MASK) == QCOM_MDT_TYPE_HASH) {
+>   			hash_segment = i;
+> --
+> 2.17.1
+> 
+> 
 
