@@ -1,108 +1,126 @@
-Return-Path: <linux-kernel+bounces-58746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC89A84EAFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:58:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1136584EB00
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:59:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC6A7B236F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:57:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD796285A66
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:59:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730B84F5F4;
-	Thu,  8 Feb 2024 21:57:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B20F4F60C;
+	Thu,  8 Feb 2024 21:59:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZGctrAou"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ux8XM/HR"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABB3E4F885;
-	Thu,  8 Feb 2024 21:57:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6D2A4F21A;
+	Thu,  8 Feb 2024 21:59:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707429457; cv=none; b=nhRC52xEhp5orzJfc/dBqv9fxCthgtAzrCxdLaXHSHGTRhNSolNT6TdgQ4TGLYQDd8S8un8tYzfp7wmpUyWiktl4F+1vF/wu5Ubv5e+/xsr7YuEqg+5j2Ey+HHdhPjU7uNLPq55RKyUHZzHDfHDuFmhDftz1XoMboYU1Nn1ARqg=
+	t=1707429577; cv=none; b=oTfBwVeboL64phwslwy7J1StCXro7rD/9eC3k5pxwOtOcWXCMGqSBMxTqCrQX7etISiGg/AkgOpLnhYU1bWJtB6+6xLpE8V+gTE91yzPABA2se80wGIigcbR3gByiO/C9QXHQXX54+stjE0N5E6wGo6CsjDgGD6aiRKmRyfWcIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707429457; c=relaxed/simple;
-	bh=HftUjZe8zdQu5bvekNzog4DkTT2SHRvwYBgyzTRkxJU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=GoTGNByGWHWWKxsLvXnzMf3ulam9MUBnutTC5aHW+wT4pikdgC+ezWNrhb7yJuj3pYZ0FrBqudYngSZnucfsndHLP3x1HnhNXBPZPSnh8DvK9eqh6+GA6QNgSsSAOp//F8ioIdAomg0R+/okkCAc87pWpK2bzdNy6DG8gqgrQuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZGctrAou; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06B6AC433C7;
-	Thu,  8 Feb 2024 21:57:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707429457;
-	bh=HftUjZe8zdQu5bvekNzog4DkTT2SHRvwYBgyzTRkxJU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=ZGctrAou9JG5M6V0CymnRb6LFCt+WhxzPzRqTPws3CNX7O+wxt+yiZjjeMbZ9ucRk
-	 smf5RObRDnHLuE8IpypO9vYQ/zt+l+VLdFzSpJ0OvY8/juyydBFnZ/1AVS+ieSKTn3
-	 AU7C3GrhKSu6d5pftC0Hqc7Fm5k8AslMIXS767+nH1CQ/JHje+Fq6lrwWkb6XJAIcS
-	 IHH7toapd2SYFlD/I2QOZ+GYD6mCgCeY5N5c39i78cnhuHufYEtmMdkD5mLUyG1GFM
-	 4yOnCnqPfcuOs7GJSz/nFVrLSfPEqXFhWp7m3UO1MPS6PS8Rjm6ALsYem/1ZJ7T25W
-	 9lo3puM0VveVw==
-Date: Thu, 8 Feb 2024 15:57:35 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Alexey Kardashevskiy <aik@amd.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Lukas Wunner <lukas@wunner.de>
-Subject: Re: [PATCH kernel 1/4] pci/doe: Define protocol types and make those
- public
-Message-ID: <20240208215735.GA974931@bhelgaas>
+	s=arc-20240116; t=1707429577; c=relaxed/simple;
+	bh=uHyXa92dUIhERG1ew5gLbhZiePw643woFrYt8y0H3do=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=dUDEPeCi6YH5q58OhAyEhhs96GZ3adzn9TjA9SZWoAX+4xx9GmjYi1M0iaFDaNUM6C1j8bRSllR6E5OOqkmNhdzeLqeNm5bnGJtGy5a5AgqnsVRMRofxJ5MSfH0uFy5qhBuEcoP8X8Y/q0ZlsnQwruLYlvIGruP0xDLMRNYSuag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ux8XM/HR; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a36126ee41eso38747166b.2;
+        Thu, 08 Feb 2024 13:59:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707429574; x=1708034374; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AVepR+rGi9qP7QecZrVNZGxlAacyZEcN1GI2ljcPknM=;
+        b=Ux8XM/HRLzBSRUK/Y1OSjRgYNQuYdEF7RFjJsAXOWQLtaZT2DJPwuqNntuAyElpZIF
+         dlLfJT6DsAEljz/O99B5PebUA7y264vjPI/Sm9fSQP0+wE9F1sEApSFLkS7OjxX6p8Ol
+         er70KDKPg3WRSd/oKSKBFfqV1kp4hlg9QLCa837CN17CtZWTOXAGtnhoEIPFDc6NOmVC
+         snIR/LchcZeHoZnQeLR6hQJAEtXYIwh9XoL7bs+sBhgOjxRKONqAfJXQJc0n/jvkbmAt
+         CiJfo+URgyEfqQT7fbTLctsi5lBrHo8Fh+rgI7YetlTkvSInZBrPDjwqAlb0xgN8ZP18
+         CvIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707429574; x=1708034374;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AVepR+rGi9qP7QecZrVNZGxlAacyZEcN1GI2ljcPknM=;
+        b=aYyW06PJTeweerWkSL50IbQmMSqKjvaxzwIt3JWcf4zFnHwXw9j6gdXjBb+MoZDfgx
+         //up8oa0dIPfoo6+1KqBdVDyo6c7CPUR9/Egk3PNQa6oFI9O+r/zVO5iOZkCS192SGyi
+         btfweaiGx3GIiKgy8CUjaen54ZYhMV+gUbUs++lXK6lu2Vcw0jJxOF1F1Tg1Qm/coc4y
+         oO783jyydusFovU8D0yeoaPMnC/V/iZm4KhlDppYtE6hHUlTefJmlRaixwLsB/v7FugA
+         OgHiJnVCgeMdAneFJVBo7gPHQmjS1rgVi6dHrQxoGu2DK6DMbA993EnHnO+efvXI82Gn
+         BsAg==
+X-Gm-Message-State: AOJu0Yzm8ahNhb7puysph9LYdEBYI650KWiekzsmo8n1/F9+R2j2g4MC
+	XyFL0L9KfJZ5aR88RMzvzG6YA+ZMmOr7m6HzHZ2oDs06FEhoYJ7j
+X-Google-Smtp-Source: AGHT+IEVbsowZHNTpuOZoU601hiKKk3mWRkCBHnoXB13FY31HnF9RpvsMi6ycgM1IRowDJQTYenTMA==
+X-Received: by 2002:a17:906:4acf:b0:a38:350:bbdd with SMTP id u15-20020a1709064acf00b00a380350bbddmr425752ejt.48.1707429573863;
+        Thu, 08 Feb 2024 13:59:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWqyCuLpoE7cM/3uLYgV4UJ6clpSsEYm9CsGZNT7AzfgdOIJKirfgJjt5TTDl9Q/ltRUhJeYTh5pPtgzcOrivc0ClfGBRijNGIHSuqKR4HnIgGQe1agfegzSFID9YemtwFA6UWyURUCozfrantbxlEyXTO0ZhQreQ2sbOsKiXTcvCZeBEJw5un3ygPl5uEOXbc9RNrRsQ+b5r6jUCPWfL6jYF2SfzkKLdK/2160WkZmrv1wV86qZ6fxVMJCNuTkAP9MaHtPuVe3uqARUqVhdnMo7CbEYVmcU3NC8IA6DmvC9cTUs1Cbt+k3HbKdFzNG3k0MVPD0hoRkCdqCPejsjfqU0yhIcOf/fdvAvJcY2uUVDbxnauh1Cy16FsAAoXwkNaq9Zmd5Fi9hDy5+kMfXAQJEXBTV0guJolL09hmmLAFsd8SsC9NKQc5ois0CmbWuzp5XGBa0zDwwfBGPIlXHdTbkq7ubFP8pAlicSYb5brBE745Ir5uiBAdNI2GuajblMfc3ZVo=
+Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.gmail.com with ESMTPSA id rf19-20020a1709076a1300b00a3743142429sm108255ejc.39.2024.02.08.13.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 13:59:33 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Russell King <linux@armlinux.org.uk>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	devicetree@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH V2 0/3] dt-bindings: arm: mediatek: convert MT7622-related bindings to the json-schema
+Date: Thu,  8 Feb 2024 22:59:23 +0100
+Message-Id: <20240208215926.10085-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240201060228.3070928-2-aik@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 01, 2024 at 05:02:25PM +1100, Alexey Kardashevskiy wrote:
-> Already public pci_doe() takes a protocol type argument.
-> PCIe 6.0 defines three, define them in a header for use with pci_doe().
-> 
-> Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
-> ---
->  include/linux/pci-doe.h | 4 ++++
->  drivers/pci/doe.c       | 2 --
->  2 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/pci-doe.h b/include/linux/pci-doe.h
-> index 1f14aed4354b..5c33f7dc978b 100644
-> --- a/include/linux/pci-doe.h
-> +++ b/include/linux/pci-doe.h
-> @@ -13,6 +13,10 @@
->  #ifndef LINUX_PCI_DOE_H
->  #define LINUX_PCI_DOE_H
->  
-> +#define PCI_DOE_PROTOCOL_DISCOVERY		0
-> +#define PCI_DOE_PROTOCOL_CMA_SPDM		1
-> +#define PCI_DOE_PROTOCOL_SECURED_CMA_SPDM	2
+From: Rafał Miłecki <rafal@milecki.pl>
 
-So far these are only needed inside drivers/pci/.  I don't want to
-expose them to the rest of the kernel via include/linux/pci-doe.h
-until they're needed elsewhere.
+There are more MediaTek bindings to convert but for now I focused on
+those used by MT7622.
 
->  struct pci_doe_mb;
->  
->  struct pci_doe_mb *pci_find_doe_mailbox(struct pci_dev *pdev, u16 vendor,
-> diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
-> index e3aab5edaf70..61f0531d2b1d 100644
-> --- a/drivers/pci/doe.c
-> +++ b/drivers/pci/doe.c
-> @@ -22,8 +22,6 @@
->  
->  #include "pci.h"
->  
-> -#define PCI_DOE_PROTOCOL_DISCOVERY 0
-> -
->  /* Timeout of 1 second from 6.30.2 Operation, PCI Spec r6.0 */
->  #define PCI_DOE_TIMEOUT HZ
->  #define PCI_DOE_POLL_INTERVAL	(PCI_DOE_TIMEOUT / 128)
-> -- 
-> 2.41.0
-> 
+V2: Move bindings to /clock/
+    Use clock-controller@ nodenames
+    Drop incorrectly specified "syscon"
+
+Rafał Miłecki (3):
+  dt-bindings: arm: mediatek: convert hifsys to the json-schema clock
+  dt-bindings: arm: mediatek: convert PCIESYS to the json-schema clock
+  dt-bindings: arm: mediatek: convert SSUSBSYS to the json-schema clock
+
+ .../bindings/arm/mediatek/mediatek,hifsys.txt | 26 ----------
+ .../arm/mediatek/mediatek,pciesys.txt         | 25 ---------
+ .../arm/mediatek/mediatek,ssusbsys.txt        | 25 ---------
+ .../clock/mediatek,mt2701-hifsys.yaml         | 51 +++++++++++++++++++
+ .../clock/mediatek,mt7622-pciesys.yaml        | 45 ++++++++++++++++
+ .../clock/mediatek,mt7622-ssusbsys.yaml       | 45 ++++++++++++++++
+ 6 files changed, 141 insertions(+), 76 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt
+ delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,pciesys.txt
+ delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,ssusbsys.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7622-pciesys.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7622-ssusbsys.yaml
+
+-- 
+2.35.3
+
 
