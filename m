@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-58406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E014884E61D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:05:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE54A84E634
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:07:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DBDB28DBDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:05:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8F5C1C20ABD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8460286AEB;
-	Thu,  8 Feb 2024 17:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D64129A8B;
+	Thu,  8 Feb 2024 17:04:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="q89z0bL9"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jffJY8Iu"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C7EF82D8F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6380F82D8B;
 	Thu,  8 Feb 2024 17:04:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707411878; cv=none; b=A5mFwVcy4IOFytT/lgE01ClqDy7VBzCJtBkGPdqRRhF/ion+2nX6lJiQdKoFAH6z5TxA8e3MGY/Zoqmqpj2eNaoY0guBOZ00Z+BHbALBrcX0vMsHc3fG4y/JkGkGEL/MqaGInnOFFyF4puNknSWw9BramSL76X8q5ZtAKITRuyI=
+	t=1707411878; cv=none; b=rbHjILEcD54oDKjRw+FM1MbGt9N83IqJDfHL9S1Zo0iNYUku4TW1efgue7pMU31/h3M39O03szeYXPFUEqBX3M3Fd0Fkn7BlUS27tRzYOtJtRPJCN7Rtkl4TOTPqEWT6fV1JsK38gqK3BYwm1v99ki3MlJu9hB5cnjLTJrh5u10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707411878; c=relaxed/simple;
-	bh=BDfN2nf0FtNoFJUROgfPRBi9IPv21+42h664up+VGOs=;
+	bh=sRckxtSDsCpf73zR+jB6R7mpE9gOvaxLiRmboePNvtg=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ugRYY7rPAUq0dyWqFtNa94cHCRMV1abdY9a2dIFtbfqJzeOAoSRn6tVwHyJlWWANIlE7/IKAQSO0RzK3iLej/Qg9huwtFzj+1i/inuT7SzwuusLiyWV+xEDfroDOZV7DMnTBFxW06Ubj858ahx8ykuqAOrYPE76USY0wxHXZP1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=q89z0bL9; arc=none smtp.client-ip=198.47.19.142
+	 MIME-Version:Content-Type; b=hkQ/moTFUxsYivOspne4uu+vns/PEGCulwLAsgqDhpOabrVDMUmbTvPNaHWwIiSF4mQuuadZTBSkBGWcK9/D8EPxKUQoy0udc1a7mkRZf8Fi0+mkl2h7/NJnxBh21qLti85CnUyul7yhoxfzw/igF99TNDzHP/DbDRVeffNnMQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=jffJY8Iu; arc=none smtp.client-ip=198.47.23.248
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 418H4JMQ051771;
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 418H4JkL018161;
 	Thu, 8 Feb 2024 11:04:19 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1707411859;
-	bh=xaEkc9P0QHDNnu0iRVj8KaMT84h1o2uYT86tsdK5kok=;
+	bh=YZPa9ZZEbQI9MSRPlkSzDWGxamhkq1zsmhD46HzU6Hs=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=q89z0bL9PINA/Da9vIykPVPRmIO7Y2mnCGE6IWrudkQiAuCr4gSLaBd0tJtjSkQFj
-	 NaH031nWIUGtsRMyivNWw5YgQjXOCfLVkA8WT/RNSvOmrgEarO+Mup/G56/Moohwwm
-	 1jl9hULsmBU5nJ8dn9KLP3LsFlCwyiJfQsYIomX4=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 418H4JNq023368
+	b=jffJY8Iu8YZwiGU0xFKp8gz4B2jzlRGKHRetBItcdMu6BLFk+u1rc2EfBwBFzv4cp
+	 uGQAA93F3k4vwaTXcLeCuz2RxKZN7qb1P2rnyRxDhv+2F+DxWcLqyCNMtQFl3ljjA3
+	 cD+o2s82cdsMcNFGLf3GNKqAfvZOiIMDgeY6wrOQ=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 418H4Jkb054113
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
 	Thu, 8 Feb 2024 11:04:19 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 8
- Feb 2024 11:04:18 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2024 11:04:19 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 8 Feb 2024 11:04:18 -0600
+ Frontend Transport; Thu, 8 Feb 2024 11:04:19 -0600
 Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 418H4B6C091006;
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 418H4B6D091006;
 	Thu, 8 Feb 2024 11:04:18 -0600
 From: Andrew Davis <afd@ti.com>
 To: Sebastian Reichel <sre@kernel.org>,
@@ -76,9 +76,9 @@ CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-actions@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v3 10/19] power: reset: rmobile-reset: Use devm_register_sys_off_handler(RESTART)
-Date: Thu, 8 Feb 2024 11:04:01 -0600
-Message-ID: <20240208170410.67975-11-afd@ti.com>
+Subject: [PATCH v3 11/19] power: reset: mt6323-poweroff: Use devm_register_sys_off_handler(POWER_OFF)
+Date: Thu, 8 Feb 2024 11:04:02 -0600
+Message-ID: <20240208170410.67975-12-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240208170410.67975-1-afd@ti.com>
 References: <20240208170410.67975-1-afd@ti.com>
@@ -97,70 +97,87 @@ exit paths.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/power/reset/rmobile-reset.c | 22 ++++++----------------
- 1 file changed, 6 insertions(+), 16 deletions(-)
+ drivers/power/reset/mt6323-poweroff.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/power/reset/rmobile-reset.c b/drivers/power/reset/rmobile-reset.c
-index 29c17ed2d4de9..80265608c18e0 100644
---- a/drivers/power/reset/rmobile-reset.c
-+++ b/drivers/power/reset/rmobile-reset.c
-@@ -21,22 +21,14 @@
+diff --git a/drivers/power/reset/mt6323-poweroff.c b/drivers/power/reset/mt6323-poweroff.c
+index 57a63c0ab7fb7..c663347547f97 100644
+--- a/drivers/power/reset/mt6323-poweroff.c
++++ b/drivers/power/reset/mt6323-poweroff.c
+@@ -14,6 +14,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/mfd/mt6397/core.h>
+ #include <linux/mfd/mt6397/rtc.h>
++#include <linux/reboot.h>
  
- static void __iomem *sysc_base2;
+ struct mt6323_pwrc {
+ 	struct device *dev;
+@@ -21,11 +22,9 @@ struct mt6323_pwrc {
+ 	u32 base;
+ };
  
--static int rmobile_reset_handler(struct notifier_block *this,
--				 unsigned long mode, void *cmd)
-+static int rmobile_reset_handler(struct sys_off_data *data)
- {
--	pr_debug("%s %lu\n", __func__, mode);
+-static struct mt6323_pwrc *mt_pwrc;
 -
- 	/* Let's assume we have acquired the HPB semaphore */
- 	writel(RESCNT2_PRES, sysc_base2 + RESCNT2);
+-static void mt6323_do_pwroff(void)
++static int mt6323_do_pwroff(struct sys_off_data *data)
+ {
+-	struct mt6323_pwrc *pwrc = mt_pwrc;
++	struct mt6323_pwrc *pwrc = data->cb_data;
+ 	unsigned int val;
+ 	int ret;
  
- 	return NOTIFY_DONE;
+@@ -44,6 +43,8 @@ static void mt6323_do_pwroff(void)
+ 	mdelay(1000);
+ 
+ 	WARN_ONCE(1, "Unable to power off system\n");
++
++	return NOTIFY_DONE;
  }
  
--static struct notifier_block rmobile_reset_nb = {
--	.notifier_call = rmobile_reset_handler,
--	.priority = 192,
--};
--
- static int rmobile_reset_probe(struct platform_device *pdev)
- {
- 	int error;
-@@ -45,7 +37,11 @@ static int rmobile_reset_probe(struct platform_device *pdev)
- 	if (IS_ERR(sysc_base2))
- 		return PTR_ERR(sysc_base2);
+ static int mt6323_pwrc_probe(struct platform_device *pdev)
+@@ -51,6 +52,7 @@ static int mt6323_pwrc_probe(struct platform_device *pdev)
+ 	struct mt6397_chip *mt6397_chip = dev_get_drvdata(pdev->dev.parent);
+ 	struct mt6323_pwrc *pwrc;
+ 	struct resource *res;
++	int ret;
  
--	error = register_restart_handler(&rmobile_reset_nb);
-+	error = devm_register_sys_off_handler(&pdev->dev,
-+					      SYS_OFF_MODE_RESTART,
-+					      SYS_OFF_PRIO_HIGH,
-+					      rmobile_reset_handler,
-+					      NULL);
- 	if (error) {
- 		dev_err(&pdev->dev,
- 			"cannot register restart handler (err=%d)\n", error);
-@@ -55,11 +51,6 @@ static int rmobile_reset_probe(struct platform_device *pdev)
+ 	pwrc = devm_kzalloc(&pdev->dev, sizeof(*pwrc), GFP_KERNEL);
+ 	if (!pwrc)
+@@ -63,19 +65,18 @@ static int mt6323_pwrc_probe(struct platform_device *pdev)
+ 	pwrc->base = res->start;
+ 	pwrc->regmap = mt6397_chip->regmap;
+ 	pwrc->dev = &pdev->dev;
+-	mt_pwrc = pwrc;
+ 
+-	pm_power_off = &mt6323_do_pwroff;
++	ret = devm_register_sys_off_handler(pwrc->dev,
++					    SYS_OFF_MODE_POWER_OFF,
++					    SYS_OFF_PRIO_DEFAULT,
++					    mt6323_do_pwroff,
++					    pwrc);
++	if (ret)
++		return dev_err_probe(pwrc->dev, ret, "failed to register power-off handler\n");
+ 
  	return 0;
  }
  
--static void rmobile_reset_remove(struct platform_device *pdev)
+-static void mt6323_pwrc_remove(struct platform_device *pdev)
 -{
--	unregister_restart_handler(&rmobile_reset_nb);
+-	if (pm_power_off == &mt6323_do_pwroff)
+-		pm_power_off = NULL;
 -}
 -
- static const struct of_device_id rmobile_reset_of_match[] = {
- 	{ .compatible = "renesas,sysc-rmobile", },
- 	{ /* sentinel */ }
-@@ -68,7 +59,6 @@ MODULE_DEVICE_TABLE(of, rmobile_reset_of_match);
+ static const struct of_device_id mt6323_pwrc_dt_match[] = {
+ 	{ .compatible = "mediatek,mt6323-pwrc" },
+ 	{},
+@@ -84,7 +85,6 @@ MODULE_DEVICE_TABLE(of, mt6323_pwrc_dt_match);
  
- static struct platform_driver rmobile_reset_driver = {
- 	.probe = rmobile_reset_probe,
--	.remove_new = rmobile_reset_remove,
- 	.driver = {
- 		.name = "rmobile_reset",
- 		.of_match_table = rmobile_reset_of_match,
+ static struct platform_driver mt6323_pwrc_driver = {
+ 	.probe          = mt6323_pwrc_probe,
+-	.remove_new     = mt6323_pwrc_remove,
+ 	.driver         = {
+ 		.name   = "mt6323-pwrc",
+ 		.of_match_table = mt6323_pwrc_dt_match,
 -- 
 2.39.2
 
