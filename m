@@ -1,252 +1,148 @@
-Return-Path: <linux-kernel+bounces-58382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B71E684E581
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:53:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C603C84E588
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:54:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BAE2B28967
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:53:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8300B28409F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102FF7EF1F;
-	Thu,  8 Feb 2024 16:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48AAD7EF14;
+	Thu,  8 Feb 2024 16:54:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="X8AVj6qI"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="ybhq7Kd4"
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59CFB7D406
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 16:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1554573164
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 16:54:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707411193; cv=none; b=EB+7yv1jnFjoC0/h3L/0Hoordy8CAAwnnLG2oXb4xBHcpJ/TL89vho5qeQiKIEVsLo/yt7LAuKo4AX1j8EyIWd9nrjXarijkj4408McPICsXozufzjKRxsE+uK5RlAlOEa00wrfp5qBnBx+TdNEfSF2qzmRUOXp87nhbf3+22LQ=
+	t=1707411244; cv=none; b=Z4uyFmEZJqg6AkqR9q5Fz8YTpt2f1hFySXRVospZFRkqpwP/FKuDjB6Q6P1uS+stDI3g4+wo7WawNWh2Q+ZxOYVqjli2kRhX9LER1QznP+mk1gwYRvpeClKDmCHAp4TQA8DNbpQsd42FGtplSK+uj4sf9PhTGYOJUtSkOzWkE3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707411193; c=relaxed/simple;
-	bh=yc6Zt2hehyFqKBwoD6aZdoobJ4fIeVmjIGmLwx90QIs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MrFVTu/D5HhVSUohYafQIeuJxnnBc7VigkeV9BcSst3r9Y5i2xKI6NLS7ANSn2rUhZ2/YSKPjDmg3OZrSH4ikHCTfDTWGp5haAVa4kU1cplmFk//sfJRNc9maK1EzXPcdv1EDvhCoy7XSskLg7lzipxJgAQoBLYoRt58QssGSaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=X8AVj6qI; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40f033c2e30so682345e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 08:53:10 -0800 (PST)
+	s=arc-20240116; t=1707411244; c=relaxed/simple;
+	bh=+WnqOpqwrKMN/Ii8lvXs8Tih6LFYmoJMhLY7pjgCWgA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oQMzAwaFl8A8rfyJMzCe9IG6RG2BK5yK9xmDghTD1cCrepD/94OIhkpJQ4CCQVf9OCcii+85mBhKMLyOCBskOh96pAD2TdYo0Tk7GthwcY/xeOiYi7TeUvsxt0Nt2SrRFCFY4U88a84kNj+PZNnIXSroH5bCq3qqVNtvd9DbY0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=ybhq7Kd4; arc=none smtp.client-ip=209.85.221.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-4c02779e68cso720988e0c.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 08:54:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1707411189; x=1708015989; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZT1UxOiVrDHIynryw4Nlj/MmW/BLc7DWyJF67SG4DDA=;
-        b=X8AVj6qIxtUh5A39tiEOM1S3akLDAyhFWKNx3eZIQ/5NKt0Sp6fo60VFIfyzzx5RJL
-         RZEJCHPpJKcC3Z6YEimgYv/U9wFNXwxNmHgK7KzUcpk6e+kW1EShKHG3slSH0LzOoZFI
-         vPdQt53myF+VQ6O1T2az2hPY0qQmNO3ZX8xF10cGWZPrPPx30VU/6G7+Czfk4q/zt1B2
-         tT7483pyDY7bnsbaegQXVO5g/MiLkP5s3VZbCjGbr/n4UgAa84WcZv+f/uZvNW7PL9IE
-         3NCv9x2U3sle3itNSaE+82szPf3Q8FB9VuWeojx8a4ytebax+KqsjgZa315LWlZiQNUe
-         Bj9A==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707411242; x=1708016042; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+WnqOpqwrKMN/Ii8lvXs8Tih6LFYmoJMhLY7pjgCWgA=;
+        b=ybhq7Kd4EMNxKxmH4ppuNsp011IeTINhTWm2q7GuUWAv5EqZBIkATzyQ9VKsHy1R/A
+         KoNAq5/5s9fWZdWz2IE4LwathQ79bUe8E4PRhfXAFm+Jwy01C5eoS5LXtfgsgqRDXfJP
+         J+UmGtPyvWe9VPaqJeqUgqyWY8R0LtYHN/c2gnoXv4bs2qWlZNTAY6Irczsgi2MitD2c
+         ZttpnCpa6Qs+GdkJYreRIgbblmOckIg/yEViEx29BV5Pip2kkZnpYFLGtCg8K989IzdA
+         sXJuRd7Pqb1z0d1iTKQzilqo+71GswvYS3E4Pvk8FqkeocxGFcCSZVmWFxx96kgmdOYl
+         cG7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707411189; x=1708015989;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZT1UxOiVrDHIynryw4Nlj/MmW/BLc7DWyJF67SG4DDA=;
-        b=o2sDyScw/AWrv1hvuuXQ7mpbfZnnnlVqe5vxNw6RdMxSknms0lfJ6U4G2FDWLcFpJu
-         wj+xTu5I8ex8cIFn/RLDFRWwYZWKPVAjzP63/2jbn1Og356VikJCvO+NUCxGw5S/HWkv
-         Zpf8NdE32cH84W7MH1PWtiHZtoI7QCcacc04tRnH6mXgTuD3McqsWtpetuOFrll2Ptf+
-         ok8jNewPCAz+qpC/OAhJU2aYJ7laiWqvljzRlOoKxorTeA0J0MSQjdJ0OjCM5AByQ4Ew
-         HBCM/gzEqDyLzXEM42URdzap7yIS9C9iOPMZx3mtfR8PFtgAMfSabiixmcJMaJhYdKVQ
-         U9lA==
-X-Gm-Message-State: AOJu0YwxYf3T/5XJSd7Osr1PJrkT6V/71MLyd5xPD2xfWXyzxVplPaOO
-	pb90/azRd2GpAwkauWM8mCQIjrOiBkzWJ749hGK1Ck10urjRtN2RBntMNfkkcUs=
-X-Google-Smtp-Source: AGHT+IGBr22Z6ACQ9/w6ayyS+L6lXv2vUq3SiUpYMPUXFdY2V/aOAsEGvexJMJND+A7XxxQshZubFQ==
-X-Received: by 2002:a05:600c:1c21:b0:40d:3fee:97f6 with SMTP id j33-20020a05600c1c2100b0040d3fee97f6mr7052850wms.34.1707411189516;
-        Thu, 08 Feb 2024 08:53:09 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUCgbPZZ7zko4xImgI2de22H1Di8bnfniBlBZIeaYI1LCjutMSi4sL6loFFjSpUFYZdxHJ0oybDuTKnjTzavVMSE6mMXMkjuQgSRsipSN7J6QywmpRRcH21+l184D+5wMDh9ub7KkiYhlpI5Uk6pr4l09W2TDTD1vDAptzP4tRj1AkHRkZ+5nydwjKXE8zWV5LjbRGLwaBLKhWGWjTs77OfO5DJdFiPA3pUvbDbI9xohrxZbmNdn/yAqsRAxv5VGL6agf6Xre+F0FrNhbM6dL4yzJjqrAH6dVjBQZFfEEwv2ARhDqBKmizytiyBHsDxrxSZJCHmAKNnLE2x29ylkXN6T02i1p4R1Mdu/xk1+b4weFjFHsrq3es0LrUKYWfvApdFc/Fobab4yml/rVEVmCBD0xGtXcbAG8li8mIVXywL0Kn1040Q3v69VJrHwxeZ2XhDwzotc6EljttdTaPsHG2qfeipA8D6AySJ4GVA/h/D2yBK/8Dg1k+oo6cDljTReVA6KRcp9cU9+XVXo5nuf3x+ebXVTYqOr3+uD/PDI515LRJ7Z2ys/ROQLA+9hg9dpLEt87qLjQ+4Epf8OmL6+6VZOhzlIbevgGa6
-Received: from [192.168.50.4] ([82.78.167.45])
-        by smtp.gmail.com with ESMTPSA id u7-20020a05600c19c700b004101e93d276sm2162175wmq.14.2024.02.08.08.53.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 08:53:08 -0800 (PST)
-Message-ID: <e170f5f8-f95c-4553-b088-1072345fae53@tuxon.dev>
-Date: Thu, 8 Feb 2024 18:53:06 +0200
+        d=1e100.net; s=20230601; t=1707411242; x=1708016042;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+WnqOpqwrKMN/Ii8lvXs8Tih6LFYmoJMhLY7pjgCWgA=;
+        b=GtbGQ4iJXWr9q6OlGCoetpFCcxOpl4IDEO9QxTJ9hr/lou4UkXf2mVKx2AGTcFzWsG
+         R8C5+Xvs5OJAXp3j0LJu6MjpX5LruC1MdVYC6/7m8YUPeFjZ2k+xJ1LbTiFEuYLWbEd0
+         RIDEAR5gOCLvw07NkjH7sGHYPLnmfKNk+SH5sCreukY1FuVknGXqKLZU/HaMFZNZxh9q
+         zKboceb+3sEj5/QSt7Av+mqpOibfDVJczFr1bqT+DdPqK0bOXxmFFsbTbW1cwIqAun3y
+         FLCloJ0d+9MkUqrGyYY/O5GvefNf7jCMyM6YIvx5Obojw1I45PJjZCaKcROe3ZBmx1jj
+         FJaA==
+X-Gm-Message-State: AOJu0YzxyK9pHEdwyJV5VVc4jasZ08hEqgy1W4TUkDbzaHWs57zKvPeY
+	EZyuKzw4Wim2KIeap1f2ZVijOqo/TtLpo7RMwF3nJMoaBNzZlLWdobRrWc+obfNb2ZqkNLq473V
+	jZQOF7+EwZuwQ9WVWwhd366emaj6nJwDUKPXkQQ==
+X-Google-Smtp-Source: AGHT+IHz0CjsWbNfwLVsvbsu2GnwvD6mVTutx2G227R7kTzOxqJNrEtSn6iMso2qq7PPj4o9RHpX9LDEy5dwka8VO8g=
+X-Received: by 2002:a1f:e681:0:b0:4c0:2416:6fc2 with SMTP id
+ d123-20020a1fe681000000b004c024166fc2mr161766vkh.5.1707411241926; Thu, 08 Feb
+ 2024 08:54:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/17] dt-bindings: clock: r9a07g043-cpg: Add power domain
- IDs
-Content-Language: en-US
-To: Biju Das <biju.das.jz@bp.renesas.com>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "mturquette@baylibre.com" <mturquette@baylibre.com>,
- "sboyd@kernel.org" <sboyd@kernel.org>, "robh@kernel.org" <robh@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
- "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
- "palmer@dabbelt.com" <palmer@dabbelt.com>,
- "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>
-Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
- "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com>
- <20240208124300.2740313-2-claudiu.beznea.uj@bp.renesas.com>
- <TYCPR01MB11269DEA9261CA594EECC949686442@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <67ad8052-1406-4dcb-9e35-5c42ada28797@tuxon.dev>
- <TYCPR01MB112698AB206332D13105C064186442@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <TYCPR01MB112698AB206332D13105C064186442@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com>
+ <20240102-j7200-pcie-s2r-v1-1-84e55da52400@bootlin.com> <20240116074333.GO5185@atomide.com>
+ <31c42f08-7d5e-4b91-87e9-bfc7e2cfdefe@bootlin.com> <CACRpkdYUVbFoDq91uLbUy8twtG_AiD+CY2+nqzCyHV7ZyBC3sA@mail.gmail.com>
+ <95032042-787e-494a-bad9-81b62653de52@bootlin.com>
+In-Reply-To: <95032042-787e-494a-bad9-81b62653de52@bootlin.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 8 Feb 2024 17:53:50 +0100
+Message-ID: <CAMRc=MfSkuYocKMGyVjqQ5qk=MSkR_W4F5PNs+M6HwBkmjcK0Q@mail.gmail.com>
+Subject: Re: [PATCH 01/14] gpio: pca953x: move suspend/resume to suspend_noirq/resume_noirq
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Tony Lindgren <tony@atomide.com>, 
+	Andy Shevchenko <andy@kernel.org>, Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
+	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
+	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
+	thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Feb 8, 2024 at 5:19=E2=80=AFPM Thomas Richard
+<thomas.richard@bootlin.com> wrote:
+>
+> On 1/28/24 01:12, Linus Walleij wrote:
+> > On Fri, Jan 19, 2024 at 6:01=E2=80=AFPM Thomas Richard
+> > <thomas.richard@bootlin.com> wrote:
+> >> On 1/16/24 08:43, Tony Lindgren wrote:
+> >>> * Thomas Richard <thomas.richard@bootlin.com> [240115 16:16]:
+> >>>> Some IOs can be needed during suspend_noirq/resume_noirq.
+> >>>> So move suspend/resume callbacks to noirq.
+> >>>
+> >>> So have you checked that the pca953x_save_context() and restore works
+> >>> this way? There's i2c traffic and regulators may sleep.. I wonder if
+> >>> you instead just need to leave gpio-pca953x enabled in some cases
+> >>> instead?
+> >>>
+> >>
+> >> Yes I tested it, and it works (with my setup).
+> >> But this patch may have an impact for other people.
+> >> How could I leave it enabled in some cases ?
+> >
+> > I guess you could define both pca953x_suspend() and
+> > pca953x_suspend_noirq() and selectively bail out on one
+> > path on some systems?
+>
+> Yes.
+>
+> What do you think if I use a property like for example "ti,pm-noirq" to
+> select the right path ?
+> Is a property relevant for this use case ?
+>
 
+I prefer a new property than calling of_machine_is_compatible().
+Please do run it by the DT maintainers, I think it should be fine.
+Maybe even don't limit it to TI but make it a generic property.
 
-On 08.02.2024 18:28, Biju Das wrote:
-> 
-> 
->> -----Original Message-----
->> From: claudiu beznea <claudiu.beznea@tuxon.dev>
->> Sent: Thursday, February 8, 2024 3:46 PM
->> Subject: Re: [PATCH 01/17] dt-bindings: clock: r9a07g043-cpg: Add power
->> domain IDs
->>
->> Hi, Biju,
->>
->> On 08.02.2024 16:30, Biju Das wrote:
->>> Hi Claudiu,
->>>
->>> Thanks for the patch.
->>>
->>>> -----Original Message-----
->>>> From: Claudiu <claudiu.beznea@tuxon.dev>
->>>> Sent: Thursday, February 8, 2024 12:43 PM
->>>> Subject: [PATCH 01/17] dt-bindings: clock: r9a07g043-cpg: Add power
->>>> domain IDs
->>>>
->>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>
->>>> Add power domain IDs for RZ/G2UL (R9A07G043) SoC.
->>>>
->>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>> ---
->>>>  include/dt-bindings/clock/r9a07g043-cpg.h | 48
->>>> +++++++++++++++++++++++
->>>>  1 file changed, 48 insertions(+)
->>>>
->>>> diff --git a/include/dt-bindings/clock/r9a07g043-cpg.h b/include/dt-
->>>> bindings/clock/r9a07g043-cpg.h index 77cde8effdc7..eabfeec7ac37
->>>> 100644
->>>> --- a/include/dt-bindings/clock/r9a07g043-cpg.h
->>>> +++ b/include/dt-bindings/clock/r9a07g043-cpg.h
->>>> @@ -200,5 +200,53 @@
->>>>  #define R9A07G043_AX45MP_CORE0_RESETN	78	/* RZ/Five Only */
->>>>  #define R9A07G043_IAX45_RESETN		79	/* RZ/Five Only */
->>>>
->>>> +/* Power domain IDs. */
->>>> +#define R9A07G043_PD_ALWAYS_ON		0
->>>> +#define R9A07G043_PD_GIC		1
->>>> +#define R9A07G043_PD_IA55		2
->>>> +#define R9A07G043_PD_MHU		3
->>>> +#define R9A07G043_PD_CORESIGHT		4
->>>> +#define R9A07G043_PD_SYC		5
->>>> +#define R9A07G043_PD_DMAC		6
->>>> +#define R9A07G043_PD_GTM0		7
->>>> +#define R9A07G043_PD_GTM1		8
->>>> +#define R9A07G043_PD_GTM2		9
->>>> +#define R9A07G043_PD_MTU		10
->>>> +#define R9A07G043_PD_POE3		11
->>>> +#define R9A07G043_PD_WDT0		12
->>>> +#define R9A07G043_PD_SPI		13
->>>> +#define R9A07G043_PD_SDHI0		14
->>>> +#define R9A07G043_PD_SDHI1		15
->>>> +#define R9A07G043_PD_ISU		16
->>>> +#define R9A07G043_PD_CRU		17
->>>> +#define R9A07G043_PD_LCDC		18
->>>> +#define R9A07G043_PD_SSI0		19
->>>> +#define R9A07G043_PD_SSI1		20
->>>> +#define R9A07G043_PD_SSI2		21
->>>> +#define R9A07G043_PD_SSI3		22
->>>> +#define R9A07G043_PD_SRC		23
->>>> +#define R9A07G043_PD_USB0		24
->>>> +#define R9A07G043_PD_USB1		25
->>>> +#define R9A07G043_PD_USB_PHY		26
->>>> +#define R9A07G043_PD_ETHER0		27
->>>> +#define R9A07G043_PD_ETHER1		28
->>>> +#define R9A07G043_PD_I2C0		29
->>>> +#define R9A07G043_PD_I2C1		30
->>>> +#define R9A07G043_PD_I2C2		31
->>>> +#define R9A07G043_PD_I2C3		32
->>>> +#define R9A07G043_PD_SCIF0		33
->>>> +#define R9A07G043_PD_SCIF1		34
->>>> +#define R9A07G043_PD_SCIF2		35
->>>> +#define R9A07G043_PD_SCIF3		36
->>>> +#define R9A07G043_PD_SCIF4		37
->>>> +#define R9A07G043_PD_SCI0		38
->>>> +#define R9A07G043_PD_SCI1		39
->>>> +#define R9A07G043_PD_IRDA		40
->>>> +#define R9A07G043_PD_RSPI0		41
->>>> +#define R9A07G043_PD_RSPI1		42
->>>> +#define R9A07G043_PD_RSPI2		43
->>>> +#define R9A07G043_PD_CANFD		44
->>>> +#define R9A07G043_PD_ADC		45
->>>> +#define R9A07G043_PD_TSU		46
->>>
->>> Not sure from "Table 42.3 Registers for Module Standby Mode"
->>>
->>> Power domain ID has to be based on CPG_BUS_***_MSTOP or CPG_CLKON_***
->>> As former reduces number of IDs??
->>
->> If I understand correctly your point here, you want me to describe PM
->> domain in DT with something like:
->>
->> power-domains = <&cpg CPG_BUS_X_MSTOP>;
-> 
-> MSTOP bits are distinct for each IP.
-> 
-> <&cpg CPG_BUS_MCPU1_MSTOP x>; x =1..9
-> 
-> 2=MTU IP
-> 
-> 4= GPT
-> 
-> etc...
-> 
-> Is it something work??
+Bart
 
-It might work. But:
-
-- you have to consider that some IPs have more than one MSTOP bit, thus, do
-  we want to uniquely identify these with all MSTOP bits (thus the 2nd cell
-  being a bitmask) or only one is enough?
-- some HW blocks (e.g. OTFDE_DDR) have no MSTOP bits associated (as of my
-  current research), so, only PWRDN
-- some HW blocks have both MSTOP and PWRDN
-- if future hardware implementation will spread the MSTOP bits for one IP
-  to more than one register then this proposal will not work
-
-Having a unique identified decoupled from MSTOP registers or PWRDN offers
-support to use the same code base for future usage. This is what I can tell
-at the moment.
-
-> 
->>
->> where X={ACPU, PERI_CPU, PERI_CPU2, REG0, REG1} ?
->>
->> With this, I still see the necessity of a 3rd identifier that will be IP
->> specific to be able to uniquely match b/w DT description and registered
->> power domain. FMPOV, this will lead to a more complicated implementation.
->>
->> We need a unique ID that the pm domain xlate will use to xlate the DT
->> binding to driver data structures.
-> 
-> Ok.
-> 
-> Cheers,
-> Biju
-> 
+> Regards,
+>
+> >
+> > Worst case using if (of_machine_is_compatible("my,machine"))...
+> >
+> > Yours,
+> > Linus Walleij
+> --
+> Thomas Richard, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
+>
 
