@@ -1,199 +1,175 @@
-Return-Path: <linux-kernel+bounces-57749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E54484DCF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:31:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A14C84DCFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:31:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B7681C269AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:31:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D54B52846A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D646BFCD;
-	Thu,  8 Feb 2024 09:30:37 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4749667C72;
+	Thu,  8 Feb 2024 09:31:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="Y12m14dD";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="v5eGdUQ3"
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56256BFC8
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 09:30:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35AC26BB42;
+	Thu,  8 Feb 2024 09:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707384636; cv=none; b=aSuaJW9+pVmd7+EagGkWE2gHHjjJJ1zQEKkoLZy8cVk2PbSxG3zKszfxEHZLFUaRDA+LnODPe2nVJVAQp7bdxv7vF4xYBs2pL53lojvGmbsPNNA7jDS1pFdY6yuo/w7GnJUa4nQUtG3t9xP/wMTzlgMf8OP1yjFVypM+pzP7f88=
+	t=1707384691; cv=none; b=ncJBrqXxD74bNiYmSp6TPHT4AH10Jd5rLzQMjGxpOOPUdFyKMSSsqnqB5jH8re4Va+DNee5iSw7J3NZnpDV0sgbyB/ReOkVqwu+Oiar38bBcwFHPHAiQPL442LT29E9PVY9RV2dguvE3wxyN2lOjkh7vtS4RiAMtera3cWQ7UQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707384636; c=relaxed/simple;
-	bh=5C6sJ4Hr7tt9D4Dgm04VuiGy5wshhvDFlkBHWWCFKEw=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=TxUy2NG7aZqMT9KTdlOhw7pz6QaR5J2H5G56y75h4eD7imxX0ZtfGX/GnPMvOWfGNT2F0g549PLPcDlemruJxCqWqGDazJFeqCRfabSBWx38oBebjKlDZ+BEj1gnixGIAcZdlHmNyoUbUFIiISnOy4QbBgp28WbfBhX9J8td4uc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TVsBV0TYwz1xnS0;
-	Thu,  8 Feb 2024 17:29:22 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
-	by mail.maildlp.com (Postfix) with ESMTPS id 95E17140336;
-	Thu,  8 Feb 2024 17:30:30 +0800 (CST)
-Received: from [10.174.179.79] (10.174.179.79) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 8 Feb 2024 17:30:29 +0800
-Subject: Re: [PATCH v3 2/3] arm64: mm: HVO: support BBM of vmemmap pgtable
- safely
-To: Mark Rutland <mark.rutland@arm.com>
-CC: <catalin.marinas@arm.com>, <will@kernel.org>, <mike.kravetz@oracle.com>,
-	<muchun.song@linux.dev>, <akpm@linux-foundation.org>,
-	<anshuman.khandual@arm.com>, <willy@infradead.org>,
-	<wangkefeng.wang@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20240113094436.2506396-1-sunnanyong@huawei.com>
- <20240113094436.2506396-3-sunnanyong@huawei.com>
- <ZcN13R1L1CYu9gs1@FVFF77S0Q05N.cambridge.arm.com>
-From: Nanyong Sun <sunnanyong@huawei.com>
-Message-ID: <2372364b-d02a-9082-de6b-d17655ad229a@huawei.com>
-Date: Thu, 8 Feb 2024 17:30:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+	s=arc-20240116; t=1707384691; c=relaxed/simple;
+	bh=IlQBt5ebpX3rwAe1JJmrdRp8ZYh3Sd+NBJTigxQ+X0w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nbZPOerdAxMClA7BXTjmqArS1mVCvlMSCXuYbW8si0mRKxCPiQ/zvJ2tWVcpJcGdCX6W+wShV2YGfSxZry7Tvy9xrOtqs2RhfGfbWmNowhNDIbIhwfgjufE661tHlsxYvcoDbbibBn/0qH7cJs57bt+87abGObwqQcZVEEgHVDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=Y12m14dD; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=v5eGdUQ3; arc=none smtp.client-ip=66.111.4.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.nyi.internal (Postfix) with ESMTP id 0683D5C006A;
+	Thu,  8 Feb 2024 04:31:28 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Thu, 08 Feb 2024 04:31:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1707384688;
+	 x=1707471088; bh=kuEW1rpMwiKWoxW/OF1OAVriE1FGgfZTm7jP2rc40xY=; b=
+	Y12m14dDvFHfLMvP1O/DQi12gUuaXtTtTjZF4YNHWHUeJ9iFFW5z70JytBnlvKiY
+	xczZVlGb4zkSYOcVSlBDzLMEzA/CYejnKBIRmusZr2qvqDvknMPLtcu8Y1bTWjaa
+	EbM7sdpULu7graK6STBa8MbYhuAkiC06BO90KhZYmjrHcb8/DTlX9sj82x9K/bkF
+	tUwL7z5TryIeZnd9D/wxks6BNzJbT8eOSATeSP5H+kOEWGZwz3n1rYNkMvclGf8F
+	Wl3QudHXbdWeWuxhZTU2vxTYFJRPn2boZSO+Bw/cLGk9e9nONmu3d2Yfl/iwmw1W
+	jxiGK+LPQUUTW0AicvKYqg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1707384688; x=
+	1707471088; bh=kuEW1rpMwiKWoxW/OF1OAVriE1FGgfZTm7jP2rc40xY=; b=v
+	5eGdUQ3SuJni2CDQQwGCnY1FKoBHDE2CwIpxJJdszS9U4/QsUatR/ZP+uvPficTn
+	jPorgjXX6DCWSiaHDpWirVA49k27Rqkjwtzo2nJzN70+RUhLcjlnjGKD2FdwZMT9
+	SC74FY7ufZgZ6BsgT8nKRVrNtu1nlk7PqZhwQzBugvnGQ1K1sEYASfkWhcUs0/+k
+	YChxskxHrFZ4nacTXeNI4UeKT8Oua8a2fuHodRNmJoXRYvYKmGHni45LU84cweId
+	LTE4dVU8fnM8YnMl3qwDAhj56csh6GPasf6+aeEk/W1HHBynptTfvrSiQGJqJHFY
+	Lkr7Pog1uNlQXO80+PK1g==
+X-ME-Sender: <xms:b5_EZTDZEZlteRCk8oHFU2EAHxVfvIfSL_xa3URH20daLiJZW6nH8g>
+    <xme:b5_EZZi18FVY508JkUUQb-KFbRXC0pZfgN1MEc2ltvv_wL8pZ-SgEgHrZh5dsh5nL
+    DxkwIfikRhPqPbGlPc>
+X-ME-Received: <xmr:b5_EZek5JApq5xTrqHdIeWMPSyiavXFa8aEKh28fWSxwPfFlLHAek2d8kJub5wyIYcXndsLovnDIgQT8xcz_W5Gkqw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtdeggddtfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfuvfevfhfhjggtgfesthekredttddvjeenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeelueffheehgeeluedvlefghfeukeejteeuveeuhffftdfguefh
+    gefgueekffeftdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:b5_EZVxqI5OxaC4dkeendZ17SLEkT7BidT65ig34mtLFspWIQiDJbA>
+    <xmx:b5_EZYS1togzAX8jtB0ptlbcdFkm8qjSe6tfJ5Ib6JsuzSPcGOhMbA>
+    <xmx:b5_EZYZ9dqtJfHI6KwCtpGnb-gDM15ULwJZ-yCb8Cq4l4R1wL6qKFw>
+    <xmx:cJ_EZR_al3FMdHvPEtGvJUggOeFxU0qIqG-MHf-khclEAN-Cw1Ko7g>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 8 Feb 2024 04:31:26 -0500 (EST)
+Message-ID: <1e9e4b8c-4e80-4126-9204-fa66049c084e@flygoat.com>
+Date: Thu, 8 Feb 2024 09:31:25 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZcN13R1L1CYu9gs1@FVFF77S0Q05N.cambridge.arm.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600003.china.huawei.com (7.193.23.202)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] Handle delay slot for extable lookup
+Content-Language: en-US
+To: Xi Ruoyao <xry111@xry111.site>, Oleg Nesterov <oleg@redhat.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Ben Hutchings <ben@decadent.org.uk>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-mm@kvack.org,
+ Linus Torvalds <torvalds@linux-foundation.org>
+References: <20240202-exception_ip-v2-0-e6894d5ce705@flygoat.com>
+ <63a1738c-5755-4c2e-a4d4-f5047cdb3660@flygoat.com>
+ <7636b9072f2b72f6079a65d456c561716c5d90a3.camel@xry111.site>
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Autocrypt: addr=jiaxun.yang@flygoat.com;
+ keydata= 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
+ HVO98ZmbMeg=
+In-Reply-To: <7636b9072f2b72f6079a65d456c561716c5d90a3.camel@xry111.site>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 2024/2/7 20:21, Mark Rutland wrote:
 
-> On Sat, Jan 13, 2024 at 05:44:35PM +0800, Nanyong Sun wrote:
->> Implement vmemmap_update_pmd and vmemmap_update_pte on arm64 to do
->> BBM(break-before-make) logic when change the page table of vmemmap
->> address, they will under the init_mm.page_table_lock.
->> If a translation fault of vmemmap address concurrently happened after
->> pte/pmd cleared, vmemmap page fault handler will acquire the
->> init_mm.page_table_lock to wait for vmemmap update to complete,
->> by then the virtual address is valid again, so PF can return and
->> access can continue.
-> Is that wait bounded? ... and is it event guaranteed to make progress?
->
-> Under a hypervisor, the vCPU doing the BBM could be preempted between the break
-> and the make, so the thread waiting might be waiting a long time for that to
-> come back and finish the make step.
->
-> Further, under PREEMPT_RT regular spinlocks don't inhibit preemption, and I suspect
-> that means this can deadlock on RT -- the thread doing the BBM could be
-> preempted, the newly-scheduled thread could try to access the vmemmap, and then
-> get stuck in the fault handler (e.g. on a single CPU system). There's nothing
-> below describing how that's prevented.
->
-> I've concerned this may be subtly broken, and it feels like this is going to be
-> *very* painful to maintain and test. IMO this is trying to be overly clever and
-> I'd much rather that we avoided the transient broken step. On CPUs with
-> FEAT_BBM level 2 we can avoid that broken step, can we make this depend
-> dynamically on whether the CPU has FEAT_BBM?
-If I understand correctly, FEAT_BBM is only used for changing block 
-size. But in HVO
-we not only need changing block size in vmemmap_split_pmd(), but also 
-need changing
-output address of PTE in vmemmap_remap_pte().
-So I would like to ask if FEAT_BBM can cover these scenarios?
->
->> In other case, do the traditional kernel fault.
+
+在 2024/2/8 09:23, Xi Ruoyao 写道:
+> On Thu, 2024-02-08 at 09:20 +0000, Jiaxun Yang wrote:
 >>
->> Implement vmemmap_flush_tlb_all/range on arm64 with nothing
->> to do because tlb already flushed in every single BBM.
+>> 在 2024/2/2 12:30, Jiaxun Yang 写道:
+>>> Hi all,
+>>>
+>>> This series fixed extable handling for architecture delay slot (MIPS).
+>>>
+>>> Please see previous discussions at [1].
+>>>
+>>> There are some other places in kernel not handling delay slots properly,
+>>> such as uprobe and kgdb, I'll sort them later.
+>> A gentle ping :-)
 >>
->> Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
->> ---
->>
->> +
->> +/*
->> + * PMD mapped vmemmap should has been split as PTE mapped
->> + * by HVO now, here we only check this case, other cases
->> + * should fail.
-> Sorry, I can't parse what this is trying to say.
->
->> + * Also should check the addr is healthy enough that will not cause
->> + * a level2 or level3 translation fault again after page fault
->> + * handled with success, so we need check both bits[1:0] of PMD and
->> + * PTE as ARM Spec mentioned below:
-> Which spec? Iassume you mean the ARM ARM? Are you referring to a specific part
-> within that?
+>> This series fixes a regression, perhaps it should go through fixes tree.
+> If you have Fixes: {sha} and Cc: stable@vger.kernel.org Greg will pick
+> it up once it's in Linus tree.
 
-Yes, I referenced section D5.8.1 "Types of MMU faults" from Arm ARM.
+In this case I'd like to backport it manually, as there is only one 
+patch in this series
+actually fixing the problem.
 
+Thanks
+- Jiaxun
 >
->> + * A Translation fault is generated if bits[1:0] of a translation
->> + * table descriptor identify the descriptor as either a Fault
->> + * encoding or a reserved encoding.
->> + */
->> +static inline bool vmemmap_addr_healthy(unsigned long addr)
->> +{
->> +	pmd_t *pmdp, pmd;
->> +	pte_t *ptep, pte;
->> +
->> +	pmdp = pmd_off_k(addr);
->> +	pmd = pmdp_get(pmdp);
->> +	if (!pmd_table(pmd))
->> +		return false;
-> Is a block (i.e. hugetlb) entry not considered healthy? I thought the whole
-> point of this optimization was that you'd use a block PMD entry?
-Yes, this patch only condiser the user is HVO and then recheck here, and 
-in HVO, only PMD split and
-PTE remap can happen. Any other scenarios should be treated as regular 
-kernel fault and then panic.
->
->> +
->> +	ptep = pte_offset_kernel(pmdp, addr);
->> +	pte = ptep_get(ptep);
->> +	return (pte_val(pte) & PTE_TYPE_MASK) == PTE_TYPE_PAGE;
->> +}
->> +
->> +static bool vmemmap_handle_page_fault(unsigned long addr,
->> +				      unsigned long esr)
->> +{
->> +	bool ret;
->> +
->> +	if (likely(!vmemmap_fault_may_fixup(addr, esr)))
->> +		return false;
->> +
->> +	spin_lock(&init_mm.page_table_lock);
->> +	ret = vmemmap_addr_healthy(addr);
->> +	spin_unlock(&init_mm.page_table_lock);
-> As above, I'm pretty sure this is only safe is the code doing the BBM has IRQs
-> disabled, otherwise the thread can be preempted, and we can get stuck in here
-> while the entry is broken.
->
-> So at minimum this needs some explanation of why that doesn't happen in a
-> comment.
->
->
-> As above, if this happens with IRQs unmasked, the thread can potentially be
-> preempted and we can get stuck in the fault handler (at least on RT).
->
-> I can't tell whether this is safe, and I think that at minimum this needs
-> comments and/or lockdep assertions, but I'd much rather we didn't try to play
-> this sort of game.
->
-> Mark.
->
-> .
 
-For IRQ context problem, I wonder if take a new spin lock with irq 
-disabled can solve it?
-
-eg.
-
-+void vmemmap_update_pte(unsigned long addr, pte_t *ptep, pte_t pte)
-+{
-+	spin_lock_irq(NEW_LOCK);
-+	pte_clear(&init_mm, addr, ptep);
-+	flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
-+	set_pte_at(&init_mm, addr, ptep, pte);
-+	spin_unlock_irq(NEW_LOCK);
-+}
+-- 
+---
+Jiaxun Yang
 
 
