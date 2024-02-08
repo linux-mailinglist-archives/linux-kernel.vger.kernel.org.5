@@ -1,243 +1,250 @@
-Return-Path: <linux-kernel+bounces-57786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F72884DD6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:57:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3021884DD70
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:57:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D67E91F24B40
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:57:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5050A1C2502D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:57:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5526BB5B;
-	Thu,  8 Feb 2024 09:56:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4F336BFCD;
+	Thu,  8 Feb 2024 09:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j4QUWqg/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jrMazt4N"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A484E6BFC2;
-	Thu,  8 Feb 2024 09:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E7EE6A8A1;
+	Thu,  8 Feb 2024 09:57:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707386176; cv=none; b=XcpGc01KrwX8MinADVI+qJFqXuzV7cll84j4FxpgWlahq4MluQhy1iUyYZxQzN6W3kl7GbwV74EqwzIGkuq3VQuHYWxXNvkWdaUB1tSD545eJPoW2i+kUfGyTcgmOIapC+LPzs9sSKIMHPYPXE/wCfWZb8OhL/sPMi2vFWa1als=
+	t=1707386242; cv=none; b=prp0JelMl2+a7C3Dj3Q3qsCNcVpEdhXQCbZ6kgbvUTcB/1ysKHFTQjno4SvGJ731bTcdc/3bIMubidbgyWW3RJEqMRL/wm9lmPEABvFZ61K+aUBZsxqhK9vNA2trBXR6VJehTjZvdg1tt7fcQNL8KE0Qhe4IISkmX16nM3V+ENI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707386176; c=relaxed/simple;
-	bh=pI96dSbkNKLYSAg0+ABcQxmr+LG94uf+cIdsQ/kLDNU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OYDDzA5PiRItZAEDrEejLaLrszXCrnwXUcSnU3yu3XQewt8TXtzZ0jjhCn8RhChVwIBanQOdqPgoqw7EiXF4ryZDQdEMZRypIDN9HyHPVQpivlJpYTThv2Z4YTHy2gQnWIRgdVBb3APaDnlJ+fm68v6BmDyB+5vevsAg8w4pDQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j4QUWqg/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03CC9C433C7;
-	Thu,  8 Feb 2024 09:56:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707386176;
-	bh=pI96dSbkNKLYSAg0+ABcQxmr+LG94uf+cIdsQ/kLDNU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=j4QUWqg/dV79oP672v3MjWMvIEJaCzuUCrdwE8uZantuURqnvfJ9NxElFqQqkcapj
-	 ROmegF3zQmbWl9hBGrhQgECJOcDsQp9NfyF7NOl2jZ20M+8f12YljwWVOV5kIDgW9C
-	 WOth72NFCrDe2y31DPV2vFnJaku+30owqyNNeHOfegYezy3aX69Tu7qag9BRm68bLv
-	 2Lch8pz1siC+LGe7+gnWOB8C51TVcJE9XlzynSlXO4DPISjtrCU/2Sd3/2ENos57Pb
-	 loiy9yi9eZoE92UP4GBzEtRSvjFDkV358PdITAMjbjChH46CPaJEAlRSxOxLv+NKiB
-	 7ybRrWet+WteA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4FA5DCE14F0; Thu,  8 Feb 2024 01:56:10 -0800 (PST)
-Date: Thu, 8 Feb 2024 01:56:10 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-	Chen Zhongjin <chenzhongjin@huawei.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Mike Christie <michael.christie@oracle.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Mateusz Guzik <mjguzik@gmail.com>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Peng Zhang <zhangpeng.00@bytedance.com>
-Subject: Re: [PATCH 2/2] rcu-tasks: Eliminate deadlocks involving do_exit()
- and RCU tasks
-Message-ID: <cc25e968-6f43-453e-be9e-2851db39218f@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240129225730.3168681-1-boqun.feng@gmail.com>
- <20240129225730.3168681-3-boqun.feng@gmail.com>
- <ZcQJ2Vec1_b5ooS_@pavilion.home>
- <ZcQzyhcaRUSRo8a9@pavilion.home>
- <ZcQ4GMEbLFtkCZXw@pavilion.home>
+	s=arc-20240116; t=1707386242; c=relaxed/simple;
+	bh=HRn9JBFXL0AcaL15UpPEuHqSF/Q9gIFidqcgHAOPWQc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=HQDSWuoWX5Y+jDdtmSGoYfOFBMsGqOcxH55qbkY6TJg0I0h9H6BWnha+eeFKRRQmjNvCGrAKOHYK8QlRy7ex+Z+iwdu6MsX9MbRTnQ9seHtaF+ZojHczf57xcFRqt6Mz+OaNU3bzbL/sahonddAmSQvOg5fv2jHtOL38NHLfThw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jrMazt4N; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707386240; x=1738922240;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=HRn9JBFXL0AcaL15UpPEuHqSF/Q9gIFidqcgHAOPWQc=;
+  b=jrMazt4N+kKTER3Bns87XllX2QqQIbLqT2NUFK2fq3lVLTPAUUkbbOOf
+   2OVec4DqM1jSOlNEF/sVg6YDXtCSCVdMtxYka2KidxxMCdr3k42v8eT0f
+   SS98jpIR+srCHEsFbTozf+NPpC+mQzOm7TpmI8Wy/VW4Nl/7lfMRj5gH6
+   ylK0cSu+KmAoChiNLB8nh/NbD0wvM2eUttN769EGw7IUZxZvL7a8SfYFn
+   trUD+8HplCO2S7Utk8sTko9mpy3w5lprt9WBaSVrP7Y5RZT7wBj0GMThU
+   dWt8whvAzx0u89DIpoTq6rypGVLS9akxENi4zAEaRHdlIMcgMf67NpP+x
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="1068834"
+X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
+   d="scan'208";a="1068834"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 01:57:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
+   d="scan'208";a="24858667"
+Received: from aavzirov-mobl.ger.corp.intel.com (HELO localhost) ([10.252.61.13])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 01:57:15 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Mario Limonciello <mario.limonciello@amd.com>,
+ amd-gfx@lists.freedesktop.org, "open list:DRM DRIVERS"
+ <dri-devel@lists.freedesktop.org>
+Cc: "open list:ACPI" <linux-acpi@vger.kernel.org>, open list
+ <linux-kernel@vger.kernel.org>, Melissa Wen <mwen@igalia.com>, Mario
+ Limonciello <mario.limonciello@amd.com>, Dave Airlie <airlied@redhat.com>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: [PATCH v4 1/3] drm: Add drm_get_acpi_edid() helper
+In-Reply-To: <20240207224429.104625-2-mario.limonciello@amd.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240207224429.104625-1-mario.limonciello@amd.com>
+ <20240207224429.104625-2-mario.limonciello@amd.com>
+Date: Thu, 08 Feb 2024 11:57:11 +0200
+Message-ID: <87y1bvb7ns.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZcQ4GMEbLFtkCZXw@pavilion.home>
+Content-Type: text/plain
 
-On Thu, Feb 08, 2024 at 03:10:32AM +0100, Frederic Weisbecker wrote:
-> Le Thu, Feb 08, 2024 at 02:52:10AM +0100, Frederic Weisbecker a écrit :
-> > Le Wed, Feb 07, 2024 at 11:53:13PM +0100, Frederic Weisbecker a écrit :
-> > > Le Mon, Jan 29, 2024 at 02:57:27PM -0800, Boqun Feng a écrit :
-> > > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > 
-> > > > Holding a mutex across synchronize_rcu_tasks() and acquiring
-> > > > that same mutex in code called from do_exit() after its call to
-> > > > exit_tasks_rcu_start() but before its call to exit_tasks_rcu_stop()
-> > > > results in deadlock.  This is by design, because tasks that are far
-> > > > enough into do_exit() are no longer present on the tasks list, making
-> > > > it a bit difficult for RCU Tasks to find them, let alone wait on them
-> > > > to do a voluntary context switch.  However, such deadlocks are becoming
-> > > > more frequent.  In addition, lockdep currently does not detect such
-> > > > deadlocks and they can be difficult to reproduce.
-> > > > 
-> > > > In addition, if a task voluntarily context switches during that time
-> > > > (for example, if it blocks acquiring a mutex), then this task is in an
-> > > > RCU Tasks quiescent state.  And with some adjustments, RCU Tasks could
-> > > > just as well take advantage of that fact.
-> > > > 
-> > > > This commit therefore eliminates these deadlock by replacing the
-> > > > SRCU-based wait for do_exit() completion with per-CPU lists of tasks
-> > > > currently exiting.  A given task will be on one of these per-CPU lists for
-> > > > the same period of time that this task would previously have been in the
-> > > > previous SRCU read-side critical section.  These lists enable RCU Tasks
-> > > > to find the tasks that have already been removed from the tasks list,
-> > > > but that must nevertheless be waited upon.
-> > > > 
-> > > > The RCU Tasks grace period gathers any of these do_exit() tasks that it
-> > > > must wait on, and adds them to the list of holdouts.  Per-CPU locking
-> > > > and get_task_struct() are used to synchronize addition to and removal
-> > > > from these lists.
-> > > > 
-> > > > Link: https://lore.kernel.org/all/20240118021842.290665-1-chenzhongjin@huawei.com/
-> > > > 
-> > > > Reported-by: Chen Zhongjin <chenzhongjin@huawei.com>
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > 
-> > > With that, I think we can now revert 28319d6dc5e2 (rcu-tasks: Fix
-> > > synchronize_rcu_tasks() VS zap_pid_ns_processes()). Because if the task
-> > > is in rcu_tasks_exit_list, it's treated just like the others and must go
-> > > through check_holdout_task(). Therefore and unlike with the previous srcu thing,
-> > > a task sleeping between exit_tasks_rcu_start() and exit_tasks_rcu_finish() is
-> > > now a quiescent state. And that kills the possible deadlock.
-> > > 
-> > > > -void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
-> > > > +void exit_tasks_rcu_start(void)
-> > > >  {
-> > > > -	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
-> > > > +	unsigned long flags;
-> > > > +	struct rcu_tasks_percpu *rtpcp;
-> > > > +	struct task_struct *t = current;
-> > > > +
-> > > > +	WARN_ON_ONCE(!list_empty(&t->rcu_tasks_exit_list));
-> > > > +	get_task_struct(t);
-> > > 
-> > > Is this get_task_struct() necessary?
+On Wed, 07 Feb 2024, Mario Limonciello <mario.limonciello@amd.com> wrote:
+> Some manufacturers have intentionally put an EDID that differs from
+> the EDID on the internal panel on laptops.  Drivers can call this
+> helper to attempt to fetch the EDID from the BIOS's ACPI _DDC method.
+>
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+>  drivers/gpu/drm/Kconfig    |  5 +++
+>  drivers/gpu/drm/drm_edid.c | 77 ++++++++++++++++++++++++++++++++++++++
+>  include/drm/drm_edid.h     |  1 +
+>  3 files changed, 83 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> index 6ec33d36f3a4..ec2bb71e8b36 100644
+> --- a/drivers/gpu/drm/Kconfig
+> +++ b/drivers/gpu/drm/Kconfig
+> @@ -21,6 +21,11 @@ menuconfig DRM
+>  	select KCMP
+>  	select VIDEO_CMDLINE
+>  	select VIDEO_NOMODESET
+> +	select ACPI_VIDEO if ACPI
+> +	select BACKLIGHT_CLASS_DEVICE if ACPI
+> +	select INPUT if ACPI
+> +	select X86_PLATFORM_DEVICES if ACPI && X86
+> +	select ACPI_WMI if ACPI && X86
 
-Now that you mention it, I think not!
+I think I'll defer to drm maintainers on whether this is okay or
+something to be avoided.
 
-Each task will remove itself from this list before going away, and if
-we put it on the holdout list (where it might stay for longer), there
-will be a get_task_struct() there.
 
-Good catch, thank you!
+>  	help
+>  	  Kernel-level support for the Direct Rendering Infrastructure (DRI)
+>  	  introduced in XFree86 4.0. If you say Y here, you need to select
+> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> index 923c4423151c..c649b4f9fd8e 100644
+> --- a/drivers/gpu/drm/drm_edid.c
+> +++ b/drivers/gpu/drm/drm_edid.c
+> @@ -28,6 +28,7 @@
+>   * DEALINGS IN THE SOFTWARE.
+>   */
+>  
+> +#include <acpi/video.h>
+>  #include <linux/bitfield.h>
+>  #include <linux/cec.h>
+>  #include <linux/hdmi.h>
+> @@ -2188,6 +2189,49 @@ drm_do_probe_ddc_edid(void *data, u8 *buf, unsigned int block, size_t len)
+>  	return ret == xfers ? 0 : -1;
+>  }
+>  
+> +/**
+> + * drm_do_probe_acpi_edid() - get EDID information via ACPI _DDC
+> + * @data: struct drm_device
+> + * @buf: EDID data buffer to be filled
+> + * @block: 128 byte EDID block to start fetching from
+> + * @len: EDID data buffer length to fetch
+> + *
+> + * Try to fetch EDID information by calling acpi_video_get_edid() function.
+> + *
+> + * Return: 0 on success or error code on failure.
+> + */
+> +static int
+> +drm_do_probe_acpi_edid(void *data, u8 *buf, unsigned int block, size_t len)
+> +{
+> +	struct drm_device *ddev = data;
+> +	struct acpi_device *acpidev = ACPI_COMPANION(ddev->dev);
+> +	unsigned char start = block * EDID_LENGTH;
+> +	void *edid;
+> +	int r;
+> +
+> +	if (!acpidev)
+> +		return -ENODEV;
+> +
+> +	/* fetch the entire edid from BIOS */
+> +	r = acpi_video_get_edid(acpidev, ACPI_VIDEO_DISPLAY_LCD, -1, &edid);
+> +	if (r < 0) {
+> +		DRM_DEBUG_KMS("Failed to get EDID from ACPI: %d\n", r);
+> +		return -EINVAL;
+> +	}
+> +	if (len > r || start > r || start + len > r) {
+> +		r = -EINVAL;
+> +		goto cleanup;
+> +	}
+> +
+> +	memcpy(buf, edid + start, len);
+> +	r = 0;
+> +
+> +cleanup:
+> +	kfree(edid);
+> +
+> +	return r;
+> +}
+> +
+>  static void connector_bad_edid(struct drm_connector *connector,
+>  			       const struct edid *edid, int num_blocks)
+>  {
+> @@ -2643,6 +2687,39 @@ struct edid *drm_get_edid(struct drm_connector *connector,
+>  }
+>  EXPORT_SYMBOL(drm_get_edid);
+>  
+> +/**
+> + * drm_get_acpi_edid - get EDID data, if available
 
-> > > > +	preempt_disable();
-> > > > +	rtpcp = this_cpu_ptr(rcu_tasks.rtpcpu);
-> > > > +	t->rcu_tasks_exit_cpu = smp_processor_id();
-> > > > +	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> > > 
-> > > Do we really need smp_mb__after_unlock_lock() ?
+I'd prefer all the new EDID API to be named drm_edid_*. Makes a clean
+break from the old API, and is more consistent.
 
-Not on this acquisition we don't.  But each lock must be all one way
-or the other.  Yes, extra overhead on PowerPC, but this is nowhere near
-a fastpath.
+So perhaps drm_edid_read_acpi() to be in line with all the other struct
+drm_edid based EDID reading functions.
 
-The needed ordering is provided by simple locking.
+> + * @connector: connector we're probing
+> + *
+> + * Use the BIOS to attempt to grab EDID data if possible.
+> + *
+> + * The returned pointer must be freed using drm_edid_free().
+> + *
+> + * Return: Pointer to valid EDID or NULL if we couldn't find any.
+> + */
+> +const struct drm_edid *drm_get_acpi_edid(struct drm_connector *connector)
+> +{
+> +	const struct drm_edid *drm_edid;
+> +
+> +	switch (connector->connector_type) {
+> +	case DRM_MODE_CONNECTOR_LVDS:
+> +	case DRM_MODE_CONNECTOR_eDP:
+> +		break;
+> +	default:
+> +		return NULL;
+> +	}
+> +
+> +	if (connector->force == DRM_FORCE_OFF)
+> +		return NULL;
+> +
+> +	drm_edid = drm_edid_read_custom(connector, drm_do_probe_acpi_edid, connector->dev);
+> +
+> +	/* Note: Do *not* call connector updates here. */
+> +
+> +	return drm_edid;
+> +}
+> +EXPORT_SYMBOL(drm_get_acpi_edid);
+> +
+>  /**
+>   * drm_edid_read_custom - Read EDID data using given EDID block read function
+>   * @connector: Connector to use
+> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
+> index 7923bc00dc7a..ca41be289fc6 100644
+> --- a/include/drm/drm_edid.h
+> +++ b/include/drm/drm_edid.h
+> @@ -410,6 +410,7 @@ struct edid *drm_do_get_edid(struct drm_connector *connector,
+>  	void *data);
+>  struct edid *drm_get_edid(struct drm_connector *connector,
+>  			  struct i2c_adapter *adapter);
+> +const struct drm_edid *drm_get_acpi_edid(struct drm_connector *connector);
 
-> > Or maybe it orders add into rtpcp->rtp_exit_list VS
-> > main tasklist's removal? Such that:
+There's a comment
 
-This ordering is not needed.  The lock orders addition to this
-list against removal from tasklist.  If we hold this lock, either
-the task is already on this list or our holding this lock prevents
-it from removing itself from the tasklist.
+/* Interface based on struct drm_edid */
 
-We have already scanned the task list, and we have already done
-whatever update we are worried about.
+towards the end of the file, gathering all the new API under it.
 
-So, if the task was on the tasklist when we scanned, well and
-good.  If the task was created after we scanned the tasklist,
-then it cannot possibly access whatever we removed.
+Other than that, LGTM,
 
-But please double-check!!!
+BR,
+Jani.
 
-> > synchronize_rcu_tasks()                       do_exit()
-> > ----------------------                        ---------
-> > //for_each_process_thread()
-> > READ tasklist                                 WRITE rtpcp->rtp_exit_list
-> > LOCK rtpcp->lock                              UNLOCK rtpcp->lock
-> > smp_mb__after_unlock_lock()                   WRITE tasklist //unhash_process()
-> > READ rtpcp->rtp_exit_list
-> > 
-> > Does this work? Hmm, I'll play with litmus once I have a fresh brain...
+>  u32 drm_edid_get_panel_id(struct i2c_adapter *adapter);
+>  struct edid *drm_get_edid_switcheroo(struct drm_connector *connector,
+>  				     struct i2c_adapter *adapter);
 
-First, thank you very much for the review!!!
-
-> ie: does smp_mb__after_unlock_lock() order only what precedes the UNLOCK with
-> the UNLOCK itself? (but then the UNLOCK itself can be reordered with anything
-> that follows)? Or does it also order what follows the UNLOCK with the UNLOCK
-> itself? If both, then it looks ok, otherwise...
-
-If you have this:
-
-	earlier_accesses();
-	spin_lock(...);
-	ill_considered_memory_accesses();
-	smp_mb__after_unlock_lock();
-	later_accesses();
-
-Then earlier_accesses() will be ordered against later_accesses(), but
-ill_considered_memory_accesses() won't necessarily be ordered.  Also,
-any accesses before any prior release of that same lock will be ordered
-against later_accesses().
-
-(In real life, ill_considered_memory_accesses() will be fully ordered
-against either spin_lock() on the one hand or smp_mb__after_unlock_lock()
-on the other, with x86 doing the first and PowerPC doing the second.
-So please try to avoid any ill_considered_memory_accesses().)
-
-> Also on the other end, does LOCK/smp_mb__after_unlock_lock() order against what
-> precedes the LOCK? That also is necessary for the above to work.
-
-It looks like an smp_mb__after_spinlock() would also be needed, for
-example, on ARMv8.
-
-> Of course by the time I'm writing this email, litmus would have told me
-> already...
-
-;-) ;-) ;-)
-
-But I believe that simple locking covers this case.  Famous last words...
-
-							Thanx, Paul
+-- 
+Jani Nikula, Intel
 
