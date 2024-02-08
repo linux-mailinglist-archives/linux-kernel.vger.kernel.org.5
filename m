@@ -1,170 +1,179 @@
-Return-Path: <linux-kernel+bounces-58593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2F1584E8A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A7AD84E8A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:03:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 988BF29566F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:01:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22747295D56
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A378A2421D;
-	Thu,  8 Feb 2024 19:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA9625577;
+	Thu,  8 Feb 2024 19:02:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CkNYqr66"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="FTKS6htP";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BOcd2SgB";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="FTKS6htP";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BOcd2SgB"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 363F54C7C;
-	Thu,  8 Feb 2024 19:01:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A6271D557;
+	Thu,  8 Feb 2024 19:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707418902; cv=none; b=CpFAyelcAZGPOFgn2nn0OucC5wPLskG3cHC91EFqh5B7/n8s6JSdnMuohIO2PonuDkqRcSPL9WtGWVug+JM1ZS9Kfddj0mQSXzzE3WcyFVnOY/9rxWq0boEzl9lXThqG4hVJEemI9hksbetg0e16CeJmxRCnQRvYXW38kzngXjg=
+	t=1707418978; cv=none; b=D2NYOdu9X/k7EqoVdBZtITc7abRJ2n5dxvirDco1UWnBV0MyKbhAjRffsBlXPj5gv407yobdjqIyaXZ8GVVHMNeB2PShxaKF3ih/OWjZO1nwuKmmmYyycA1vwxOjxiIH+mV42u197B7H1HP3c3CHa8jQO6sU8DbaZV11lnmPp/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707418902; c=relaxed/simple;
-	bh=a8sPLE7pdODqfSJcbtUZGOPnrgiMMh49Z7XQoNEAkYw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HFMrK0jeEGwqjSpmTJ5H/DHEaVq7skqHFsgpKZmCQzPqPT1emmp9qY+vzCa9aJI9jniQc8qaPU/sr0nvdh2qCLvXg67FYF3O2OLLXPXwAUm0fI43zzz3zTsrD8WRhogxZxn3qJibsO8GO/xHU4rJtVqMhq3B4OXDIPmDiGNGV2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CkNYqr66; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d0c7e6b240so2634141fa.0;
-        Thu, 08 Feb 2024 11:01:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707418899; x=1708023699; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a8sPLE7pdODqfSJcbtUZGOPnrgiMMh49Z7XQoNEAkYw=;
-        b=CkNYqr66mlM5ITF3Jci5sJqDz+sAvUWamAB2GWhicO9QZBG0LDb0dLLMyF9rzv++B5
-         6wEKCoxN4mbsO/Hq94+B3+H+fxUBbuuBw250MCFcvHtnxZakJ1z1KW4tI1CAsR+liWAr
-         QPdR8jxsgiDoEqhr5XMxcmRosWO7lFT8WY1wGKVMo4aXH0AWDabAIAO71w2ooc30bIub
-         4Jb6H1p3LOtn1/yB0PvaDccOp26VwpxgQ5wlACDkGw0VlQkTqrMuIfNpgtJ7U0/c08T5
-         Jork8OhPP+NvbGBf31PQNU/4atrPAZRklFLHIY8x0Q3pubV61UmwUCcGj9+RLVPO2pcj
-         FSJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707418899; x=1708023699;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a8sPLE7pdODqfSJcbtUZGOPnrgiMMh49Z7XQoNEAkYw=;
-        b=qRQ55A1kXNikNysZJR+gB922x9MEPHhxRdG0LSxiCyZ2RI1V+b/WaNODeNWSk56Jfi
-         RFyvkE+8TYekFGbaSxpD0J6FJDhCcAeQSIY0aIe7wf3P02txgwpuQfuK/D4gnoNq1cMS
-         fpv6hGmA/WraSmnA8nws9vKDmutLFSYzu3H9zs50pyLR85m79rFw/WDxny8H2WLAOJQz
-         1UX+nNHKPoK1Rb1WvQOtevIvmyLQ+u/F2LCOw6/AZz9W5Q5RwCyXJrEQOvc5Je70Z/vS
-         szL5lE39P5CdgIaVkFQz/uhkLN0DWWJS4/IJTw4MyPl6WyPG7xDYjLbzFE8oMLlCBLyL
-         py1g==
-X-Gm-Message-State: AOJu0YxWRw3Dib1ldK1vbIS5QPmnkf53UvWFb+iSO+MRpD9nWUKzH/gL
-	5NakG1otaMh8hDDAb45owFDP5UrEhBHM59CafDom6OZeeUYkiFstCv+EQ8MXTWf8C7dhtwMq3LS
-	GPgxMXjacvD8h2pA0Q482brQUEeM=
-X-Google-Smtp-Source: AGHT+IGiCf1xJW70ovof+reQWmPl2n3Fs3lRMMDNhultrmK35DvsStw9uBA2U2cf4tCfU0543zggc7bJDTh6YzOtQtE=
-X-Received: by 2002:a05:651c:1505:b0:2d0:9a29:f849 with SMTP id
- e5-20020a05651c150500b002d09a29f849mr185898ljf.29.1707418898907; Thu, 08 Feb
- 2024 11:01:38 -0800 (PST)
+	s=arc-20240116; t=1707418978; c=relaxed/simple;
+	bh=/YSE+gaDDx8Hjfm4z2CAlqbpuQepnagPldZO0zEkhB8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=huAhiXJH6yPwZTexfPr/5OgofV86Y4GzXhmMbG+6L3hkDOrsCeMxZuhEz3nrTNay8y9UYf/o0Ij8UhdKzx+Q85x3JzIsVjGZ7EyRm1Pc9TiWoXP26XEdVEjSlLCYD9J3pW/WRtaXgaGhXmm/1ZujPDjFhkxWjtYW3WMQf3J8XPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=FTKS6htP; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BOcd2SgB; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=FTKS6htP; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BOcd2SgB; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3D8B61FD01;
+	Thu,  8 Feb 2024 19:02:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707418973; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A4tl48kor+w9AEk22DCGxhyQHgkJ9/sl7JjncIPs25U=;
+	b=FTKS6htP6WOTy7nLhwzMaMrwe2A0f985BZTD+CGOAAQ1dw8GYU8uBuHuKaBJtpNoH0/dIX
+	sDt5O8V+KtNwoed/wW+6KkMTrnGa63KEFoK2X771qFLvxQk+E11iJP4Vhoim5qSvLWUk6M
+	R76StbIBFz57+yrnjfcNmWFCHiQ+Bds=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707418973;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A4tl48kor+w9AEk22DCGxhyQHgkJ9/sl7JjncIPs25U=;
+	b=BOcd2SgB+PsFT41UfsET58Gw1v1V9s4TIq904lcby7N+YXdoy8Ro/YfA1/Uhgkbkbu97r2
+	lcZwrlIzxhs50gAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707418973; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A4tl48kor+w9AEk22DCGxhyQHgkJ9/sl7JjncIPs25U=;
+	b=FTKS6htP6WOTy7nLhwzMaMrwe2A0f985BZTD+CGOAAQ1dw8GYU8uBuHuKaBJtpNoH0/dIX
+	sDt5O8V+KtNwoed/wW+6KkMTrnGa63KEFoK2X771qFLvxQk+E11iJP4Vhoim5qSvLWUk6M
+	R76StbIBFz57+yrnjfcNmWFCHiQ+Bds=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707418973;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A4tl48kor+w9AEk22DCGxhyQHgkJ9/sl7JjncIPs25U=;
+	b=BOcd2SgB+PsFT41UfsET58Gw1v1V9s4TIq904lcby7N+YXdoy8Ro/YfA1/Uhgkbkbu97r2
+	lcZwrlIzxhs50gAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F3F921326D;
+	Thu,  8 Feb 2024 19:02:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ZltbNVwlxWU9OAAAD6G6ig
+	(envelope-from <krisman@suse.de>); Thu, 08 Feb 2024 19:02:52 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Eugen Hristev <eugen.hristev@collabora.com>
+Cc: tytso@mit.edu,  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  kernel@collabora.co,  Gabriel Krisman
+ Bertazi <krisman@collabora.com>,  Eric Biggers <ebiggers@google.com>
+Subject: Re: [RESEND PATCH v9] ext4: Log error when lookup of encoded dentry
+ fails
+In-Reply-To: <20240208083511.270636-1-eugen.hristev@collabora.com> (Eugen
+	Hristev's message of "Thu, 8 Feb 2024 10:35:11 +0200")
+References: <20240208083511.270636-1-eugen.hristev@collabora.com>
+Date: Thu, 08 Feb 2024 14:02:51 -0500
+Message-ID: <87le7uvkx0.fsf@mailhost.krisman.be>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206182559.32264-1-ryncsn@gmail.com> <CAF8kJuMe7MYsAhwX804jZfO4w6kt74YMZXuz+FqUbZEt70p7Rg@mail.gmail.com>
- <CAGsJ_4zF+U5JG8XYANe2x0VbjovokFCirf=YLHOfO3E-U8b4sg@mail.gmail.com>
- <CAF8kJuOBtT+n5CM2s1Mobk5fzpgetCSMTZ-nb8+0KUj1W5f+Mw@mail.gmail.com>
- <CAMgjq7CV-Cxar8cRj1SxB4ZtO8QPTUuA5mj9_vQro7sm+eFH=w@mail.gmail.com>
- <CAF8kJuOQqqqM6MvOvo4PyOhT9eyNFreQjWC+TybGYDgXRfpweA@mail.gmail.com>
- <CAMgjq7CBV4dVo7ETr0K1VbLE=M7T0Go5=7pHBUY6=o0cuXaZXg@mail.gmail.com>
- <ZcPMi6DX5PN4WwHr@google.com> <CAMgjq7AJo1SKzRc-w5UuK3Ojk5PaXxRV2_G2Ww9BGgiNRp_5Eg@mail.gmail.com>
- <87eddnxy47.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87eddnxy47.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Fri, 9 Feb 2024 03:01:20 +0800
-Message-ID: <CAMgjq7Cg+8zy25Cif2DJ0Qey3bC=Ni0q7xHNO9ka+ezoK1rgxA@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/swap: fix race when skipping swapcache
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Minchan Kim <minchan@kernel.org>, Chris Li <chrisl@kernel.org>, 
-	Barry Song <21cnbao@gmail.com>, linux-mm@kvack.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Yu Zhao <yuzhao@google.com>, 
-	Barry Song <v-songbaohua@oppo.com>, SeongJae Park <sj@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, David Hildenbrand <david@redhat.com>, stable@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=FTKS6htP;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=BOcd2SgB
+X-Spamd-Result: default: False [-2.58 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[collabora.com:email,suse.de:dkim,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.27)[73.86%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 3D8B61FD01
+X-Spam-Level: 
+X-Spam-Score: -2.58
+X-Spam-Flag: NO
 
-On Thu, Feb 8, 2024 at 2:36=E2=80=AFPM Huang, Ying <ying.huang@intel.com> w=
-rote:
->
-> Kairui Song <ryncsn@gmail.com> writes:
->
-> > On Thu, Feb 8, 2024 at 2:31=E2=80=AFAM Minchan Kim <minchan@kernel.org>=
- wrote:
-> >>
-> >> On Wed, Feb 07, 2024 at 12:06:15PM +0800, Kairui Song wrote:
->
-> [snip]
->
-> >> >
-> >> > So I think the thing is, it's getting complex because this patch
-> >> > wanted to make it simple and just reuse the swap cache flags.
-> >>
-> >> I agree that a simple fix would be the important at this point.
-> >>
-> >> Considering your description, here's my understanding of the other ide=
-a:
-> >> Other method, such as increasing the swap count, haven't proven effect=
-ive
-> >> in your tests. The approach risk forcing racers to rely on the swap ca=
-che
-> >> again and the potential performance loss in race scenario.
-> >>
-> >> While I understand that simplicity is important, and performance loss
-> >> in this case may be infrequent, I believe swap_count approach could be=
- a
-> >> suitable solution. What do you think?
-> >
-> > Hi Minchan
-> >
-> > Yes, my main concern was about simplicity and performance.
-> >
-> > Increasing swap_count here will also race with another process from
-> > releasing swap_count to 0 (swapcache was able to sync callers in other
-> > call paths but we skipped swapcache here).
->
-> What is the consequence of the race condition?
+Eugen Hristev <eugen.hristev@collabora.com> writes:
 
-Hi Ying,
-
-It will increase the swap count of an already freed entry, this race
-with multiple swap free/alloc logic that checks if count =3D=3D
-SWAP_HAS_CACHE or sets count to zero, or repeated free of an entry,
-all result in random corruption of the swap map. This happens a lot
-during stress testing.
-
+> From: Gabriel Krisman Bertazi <krisman@collabora.com>
 >
-> > So the right step is: 1. Lock the cluster/swap lock; 2. Check if still
-> > have swap_count =3D=3D 1, bail out if not; 3. Set it to 2;
-> > __swap_duplicate can be modified to support this, it's similar to
-> > existing logics for SWAP_HAS_CACHE.
-> >
-> > And swap freeing path will do more things, swapcache clean up needs to
-> > be handled even in the bypassing path since the racer may add it to
-> > swapcache.
-> >
-> > Reusing SWAP_HAS_CACHE seems to make it much simpler and avoided many
-> > overhead, so I used that way in this patch, the only issue is
-> > potentially repeated page faults now.
-> >
-> > I'm currently trying to add a SWAP_MAP_LOCK (or SWAP_MAP_SYNC, I'm bad
-> > at naming it) special value, so any racer can just spin on it to avoid
-> > all the problems, how do you think about this?
+> If the volume is in strict mode, ext4_ci_compare can report a broken
+> encoding name.  This will not trigger on a bad lookup, which is caught
+> earlier, only if the actual disk name is bad.
 >
-> Let's try some simpler method firstly.
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
 
-Another simpler idea is, add a schedule() or
-schedule_timeout_uninterruptible(1) in the swapcache_prepare failure
-path before goto out (just like __read_swap_cache_async). I think this
-should ensure in almost all cases, PTE is ready after it returns, also
-yields more CPU.
+Reviewed-by: Gabriel Krisman Bertazi <krisman@suse.de>
+
+> ---
+> Hello,
+>
+> I am trying to respin the series here :
+> https://www.spinics.net/lists/linux-ext4/msg85081.html
+>
+> To make it easier to apply I split it into smaller chunks which address
+> one single thing.
+>
+> This patch simply adds an error message in the UNICODE path.
+>
+>  fs/ext4/namei.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index 6e7af8dc4dde..7d357c417475 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -1477,6 +1477,9 @@ static bool ext4_match(struct inode *parent,
+>  			 * only case where it happens is on a disk
+>  			 * corruption or ENOMEM.
+>  			 */
+> +			if (ret == -EINVAL)
+> +				EXT4_ERROR_INODE(parent,
+> +					"Directory contains filename that is invalid UTF-8");
+>  			return false;
+>  		}
+>  		return ret;
+
+-- 
+Gabriel Krisman Bertazi
 
