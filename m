@@ -1,202 +1,122 @@
-Return-Path: <linux-kernel+bounces-58717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2293C84EA70
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:26:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF76D84EA71
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:26:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F779B2D60E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:25:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B933282EC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A704F1EA;
-	Thu,  8 Feb 2024 21:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 386264F8AC;
+	Thu,  8 Feb 2024 21:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QKLhUvec"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b="RmTV4/cP"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C464A4EB2B;
-	Thu,  8 Feb 2024 21:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 150B84F1E8
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 21:24:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707427459; cv=none; b=Q4EdPhtX/CJbKWmGiqoocnuNDZe5K6ze1iOHLWbWpjQMHUBrjHdJXcrLsRkxICpXueNGlsZ8eONARQN1elPpOj9PH9DryTcgtuq5w1jAX53XeiM1RD1M9iu2WTjrr9f0DH3fWB9Nv3PwyKY9iHs/wdmdMwrST22K0awkBOmaYH4=
+	t=1707427491; cv=none; b=Aj6qYxmlYWU84Q9USbY1HrPi+fe0zJIJL4i17NnIwC4D+QmuNJ9us2CjG9VyuePXVyiJjkcpQGEoOy6VsUEgkwSBe8UUMow7W9CfFmt0C1XV82+qsf8l6kBDOSxpG1XgSuHaCYOsMQJhVvSoKg90p9txSHl1SsJkik5vRhCfPPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707427459; c=relaxed/simple;
-	bh=frPdqqG1YKNdtIk5CAd6WN9XFfSGVfMUkf3tKpexX44=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WWMJMf/OEAWh4M6uCkTzGqxmlhWLx6untMM4Q4H5MSVJGTvl/wtpgt77yh/zIHx/0r6IwtF2SyF2zMgWDmViU6DtOvbWUcJvyRv93k6exwc9YqxQlXcLonfv6ukawiPkQcHbcCqxvp1/kFo8LSLKXCgmjBM7zjBtvDuUKJWMWMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QKLhUvec; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707427458; x=1738963458;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=frPdqqG1YKNdtIk5CAd6WN9XFfSGVfMUkf3tKpexX44=;
-  b=QKLhUvec/FQpJBX6R323X91MIO2dviOko1FLedF/d5DKdfm0tOxuOEsW
-   FQjKZd6gbzkNTJeb28Thjf8VxJ1KwK/BRTyvWyUlliRBOjsPDvqvEeUEK
-   ePOnXuXfklV34vDBWvLcwZIemNuP8LIigdLaGi3b5iqEQknFkqE7n6A5y
-   cGIyTgTl7+RjNG7S4bw/Ru3kee40IhjR4DVLABT3DtCOd2bi5vVA08+oY
-   mPkn8cctJWLgzSXZnF/M6AFytpuCh0TYsSJJ7rdaR938ci8/ulzjw0NEy
-   3G1T1SwfUSfd7h4XvyEy5KatcqxoQw6aXtqYBumGFjC9qHEZYN1VE+PzR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="5115478"
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="5115478"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 13:24:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="1744220"
-Received: from millermi-mobl1.amr.corp.intel.com (HELO [10.255.229.182]) ([10.255.229.182])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 13:24:16 -0800
-Message-ID: <b1a8dbe8-a5c1-4462-993e-ba0888c5b23c@linux.intel.com>
-Date: Thu, 8 Feb 2024 13:24:15 -0800
+	s=arc-20240116; t=1707427491; c=relaxed/simple;
+	bh=Bjsp+KZtyL8O80qh9O9Z57mm54YKxPF3W3gwM9bSRzs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jWeXiKZTjaN4lawR7INvfbUgc4n7x2uZCWRkwc/XAOHg2drRT9cAUp6ti+USDNm9RfGawgVpqobDupL9yMlyt0brZfYGr/aqJ9RVST3GoMJfkmO8J/B/3BNsgX09VC0s5eE5gSKfPg5CPsdj2AHGEzQFd4fTr00AoaFQzWjzSiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr; spf=pass smtp.mailfrom=smile.fr; dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b=RmTV4/cP; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smile.fr
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33b2960ff60so826377f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 13:24:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1707427486; x=1708032286; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ue3Hv5Tp9scHSTy47Ds5eoq01BRybMaUAWCl5QsfxDE=;
+        b=RmTV4/cPY9B4pJbvERfOm8xMTHvqQyul3UIKMTnpCyBMObx+w+ujJal6PfOHt97ksg
+         cJJpO12nIGStey7m2F0/bpmdLQu0Je/SbOJlSM1S9ZpzcaRsdiug/QvlbVL7Bsv1u2du
+         BD1J6sHpfKLTblJK7nULgPUpkWSNII2BmxpdLvATNieSmcxYkIANeu23eyUEzFVBuZfD
+         aB5CDmUeBMP33+kySp7q3z+oFMzECK77RMzlgliCZYma7cuJ1XIV437WPrDgke1r4Hhd
+         6oo0bhb7AkfC5aA2tVVjuSPeUazUwveBwPxMdpJovowSL7IwjfHIT9ItzR8/SptzemFg
+         eENQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707427486; x=1708032286;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ue3Hv5Tp9scHSTy47Ds5eoq01BRybMaUAWCl5QsfxDE=;
+        b=O+h5o+dkVaWFDM90b8mJ8X+aAqsx/AImB06AkbqSXsnAtwHHSZrCijrLWUcO5v4/w0
+         NYsBZJjq1tl8PhFUj6koniU0cARMfU48Q/4YNDz8KKA1QW8JYz5WVC57va6Noz3y075V
+         nAJUvUKt6Q6dKqHraIO0xezifixEzjWGO0ciqYzP75ElTklerFslLGcJrW49pHwotd+n
+         HhhmDJ+zjIpci6I9tqkMp4y8D6nqpQCThmsOQSyWoV63Tv1ZOQKg5SRVuttxJWfZWrU6
+         3Pr+cvlZPsWETqHZoUD/QNKTw7Za9sV8S6dAaninjF5fGTV/o3LR7MOylNzqqRegZEd4
+         gtQw==
+X-Gm-Message-State: AOJu0YyYllNjO7F2NUAYPApFPSly9W+7S4wz+8faivvj6FGWtUF/MFNX
+	HGi3T+r3zAqeB6fgxqd5bcJmIqeHTWib87Wwt2wm6+5Xxvk3kVFRz4g2Kka8el4nFaCr6xPyGku
+	N
+X-Google-Smtp-Source: AGHT+IEvfGlve63gugRzGCdewUU1Q9SjV28hrhTqbwiN23IJqj3Jpckw6XciNmP2H+uqsNHmTASxsg==
+X-Received: by 2002:a5d:62c4:0:b0:33b:3c97:b4b1 with SMTP id o4-20020a5d62c4000000b0033b3c97b4b1mr553797wrv.15.1707427486146;
+        Thu, 08 Feb 2024 13:24:46 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXh3K2bsuSwpkElhnbrJDcTvK5Iz1X+GamWvtivXCO7NT78ivnWDiWl3FbUmfFUrvU8mDR+FlI0/Kj9yzvLZ2eJ8ziT7g0s0FhJJe5AYtORrSh37sz3HJYKGeKI/6xr2PE0p5XiL8RwNSRaROWF2eoRV+twcT30lpipb/CNCvFBV1g6wDjZgA6kTc22a//L1Q83+dS5lGkXG9P69RrnERwfc3ipXird2sv70Va3TJYhIC/urY+XItIEngGGHP4z00z2V+5nS2cXiTnvrojOc4UCZ26GwUmATjlAHHtt2DppeiL0goD+rvQUY3Lv0BKqGEdVMjLLF5vaRnIHjtKR
+Received: from P-NTS-Evian.home (2a01cb05945b7e009bdc688723a24f31.ipv6.abo.wanadoo.fr. [2a01:cb05:945b:7e00:9bdc:6887:23a2:4f31])
+        by smtp.gmail.com with ESMTPSA id bk27-20020a0560001d9b00b0033b55661f32sm228721wrb.9.2024.02.08.13.24.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 13:24:45 -0800 (PST)
+From: Romain Naour <romain.naour@smile.fr>
+To: linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	conor+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	robh+dt@kernel.org,
+	kristo@kernel.org,
+	vigneshr@ti.com,
+	nm@ti.com
+Cc: Romain Naour <romain.naour@smile.fr>,
+	Neha Malcom Francis <n-francis@ti.com>
+Subject: [PATCH 1/2] arm64: dts: ti: k3-am69-sk: fix PMIC interrupt number
+Date: Thu,  8 Feb 2024 22:24:21 +0100
+Message-ID: <20240208212422.213693-1-romain.naour@smile.fr>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: wmi: Make input buffer madatory when
- evaulating methods
-Content-Language: en-US
-To: Armin Wolf <W_Armin@gmx.de>, hdegoede@redhat.com,
- ilpo.jarvinen@linux.intel.com
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240207202012.3506-1-W_Armin@gmx.de>
- <6360f90f-1aca-4355-aa19-661c2925dd24@linux.intel.com>
- <d82f47fa-a126-4242-b4c3-83ba2c37fd95@gmx.de>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <d82f47fa-a126-4242-b4c3-83ba2c37fd95@gmx.de>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+The tps659413 node set WKUP_GPIO0_83 (AA37) pin as input to be used as
+PMIC interrupt but uses 39 (WKUP_GPIO0_39) as "interrupts" property.
 
-On 2/8/24 10:22 AM, Armin Wolf wrote:
-> Am 08.02.24 um 03:41 schrieb Kuppuswamy Sathyanarayanan:
->
->> On 2/7/24 12:20 PM, Armin Wolf wrote:
->>> The ACPI-WMI specification declares that a WMxx control method takes
->>> 3 arguments: instance, method id and argument buffer. This is also
->>> the case even when the underlying WMI method does not have any
->>> input arguments.
->> It would be better if you include specification version and section
->> title for reference.
->
-> The ACPI-WMI specification is not part of the ACPI specification. It
-> consists of a single whitepaper published by Microsoft:
->
-> https://github.com/microsoft/Windows-driver-samples/blob/main/wmi/wmiacpi/wmi-acpi.htm
->
-> The section describing the ACPI control methods is called
-> "ACPI Control Method Naming Conventions and Functionality for Windows 2000 Instrumentation".
->
-> I do not thing that mentioning this in the commit message would be of any use.
+Replace 39 by 83 after checking in the board schematic [1].
 
-I think it is better to include this detail. But, since it is not a standard specification,
-I will let maintainer make this call.
+[1] https://www.ti.com/tool/SK-AM69
 
->
->>> So if a WMI driver evaluates a WMI method without passing an input
->>> buffer, ACPICA will log a warning complaining that the third argument
->>> is missing.
->> I assume it is a compile warning. Can you copy the warning message?
->
-> Its not a compiler warning.
->
-> The ACPI control method is being evaluated at runtime, so the warning message
-> will also be generated at runtime (when interpreting the AML bytecode).
->
+Fixes: 865a1593bf99 ("arm64: dts: ti: k3-am69-sk: Add support for TPS6594 PMIC")
+Cc: Neha Malcom Francis <n-francis@ti.com>
+Signed-off-by: Romain Naour <romain.naour@smile.fr>
+---
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Got it.
-
-> Thanks,
-> Armin Wolf
->
->>> Prevent this by checking that a input buffer was passed, and return
->>> an error if this was not the case.
->>>
->>> Tested on a Asus PRIME B650-Plus.
->>>
->>> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
->>> ---
->>
->> With above fixed,
->>
->> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->>
->>>   drivers/platform/x86/wmi.c | 21 ++++++++++-----------
->>>   1 file changed, 10 insertions(+), 11 deletions(-)
->>>
->>> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
->>> index 63906fdd0abf..f9e23d491dd9 100644
->>> --- a/drivers/platform/x86/wmi.c
->>> +++ b/drivers/platform/x86/wmi.c
->>> @@ -296,7 +296,7 @@ EXPORT_SYMBOL_GPL(wmidev_instance_count);
->>>    * @guid_string: 36 char string of the form fa50ff2b-f2e8-45de-83fa-65417f2f49ba
->>>    * @instance: Instance index
->>>    * @method_id: Method ID to call
->>> - * @in: Buffer containing input for the method call
->>> + * @in: Mandatory buffer containing input for the method call
->>>    * @out: Empty buffer to return the method results
->>>    *
->>>    * Call an ACPI-WMI method, the caller must free @out.
->>> @@ -326,7 +326,7 @@ EXPORT_SYMBOL_GPL(wmi_evaluate_method);
->>>    * @wdev: A wmi bus device from a driver
->>>    * @instance: Instance index
->>>    * @method_id: Method ID to call
->>> - * @in: Buffer containing input for the method call
->>> + * @in: Mandatory buffer containing input for the method call
->>>    * @out: Empty buffer to return the method results
->>>    *
->>>    * Call an ACPI-WMI method, the caller must free @out.
->>> @@ -347,26 +347,25 @@ acpi_status wmidev_evaluate_method(struct wmi_device *wdev, u8 instance, u32 met
->>>       block = &wblock->gblock;
->>>       handle = wblock->acpi_device->handle;
->>>
->>> +    if (!in)
->>> +        return AE_BAD_DATA;
->>> +
->>>       if (!(block->flags & ACPI_WMI_METHOD))
->>>           return AE_BAD_DATA;
->>>
->>>       if (block->instance_count <= instance)
->>>           return AE_BAD_PARAMETER;
->>>
->>> -    input.count = 2;
->>> +    input.count = 3;
->>>       input.pointer = params;
->>> +
->>>       params[0].type = ACPI_TYPE_INTEGER;
->>>       params[0].integer.value = instance;
->>>       params[1].type = ACPI_TYPE_INTEGER;
->>>       params[1].integer.value = method_id;
->>> -
->>> -    if (in) {
->>> -        input.count = 3;
->>> -
->>> -        params[2].type = get_param_acpi_type(wblock);
->>> -        params[2].buffer.length = in->length;
->>> -        params[2].buffer.pointer = in->pointer;
->>> -    }
->>> +    params[2].type = get_param_acpi_type(wblock);
->>> +    params[2].buffer.length = in->length;
->>> +    params[2].buffer.pointer = in->pointer;
->>>
->>>       get_acpi_method_name(wblock, 'M', method);
->>>
->>> -- 
->>> 2.39.2
->>>
->>>
->
+diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+index 8da591579868..95c9d3da59d3 100644
+--- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+@@ -646,7 +646,7 @@ tps659413: pmic@48 {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pmic_irq_pins_default>;
+ 		interrupt-parent = <&wkup_gpio0>;
+-		interrupts = <39 IRQ_TYPE_EDGE_FALLING>;
++		interrupts = <83 IRQ_TYPE_EDGE_FALLING>;
+ 		gpio-controller;
+ 		#gpio-cells = <2>;
+ 		ti,primary-pmic;
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.43.0
 
 
