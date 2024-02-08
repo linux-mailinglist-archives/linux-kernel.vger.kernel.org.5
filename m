@@ -1,59 +1,55 @@
-Return-Path: <linux-kernel+bounces-58745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D06584EAFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:57:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC89A84EAFC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:58:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1315D28B201
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:57:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC6A7B236F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:57:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A59334F60B;
-	Thu,  8 Feb 2024 21:57:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730B84F5F4;
+	Thu,  8 Feb 2024 21:57:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ciA597Dv"
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZGctrAou"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A05F04F5E9
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 21:57:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABB3E4F885;
+	Thu,  8 Feb 2024 21:57:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707429430; cv=none; b=KP2+xn/LBVDjU2MuAwdG/XzbXp02jEmt/PNciNXZ7IRtYIHTwwL35DKBdeGl1+2xzm7gBbugWS2eehj9ihjAiFEOT9lghH5gVd9sp7QS1saZa+ec6a8DC6RYyCrpgjKbl05ypcEfH/XubYYb2ZwOZ6/8FUhdo7N98t16QiXQWbo=
+	t=1707429457; cv=none; b=nhRC52xEhp5orzJfc/dBqv9fxCthgtAzrCxdLaXHSHGTRhNSolNT6TdgQ4TGLYQDd8S8un8tYzfp7wmpUyWiktl4F+1vF/wu5Ubv5e+/xsr7YuEqg+5j2Ey+HHdhPjU7uNLPq55RKyUHZzHDfHDuFmhDftz1XoMboYU1Nn1ARqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707429430; c=relaxed/simple;
-	bh=526f+OIfR5lt7kk3+KKqpP0mRWkrmTnf4eSgFYgV+j8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uG08TFTDQs7/I2M52umtXOPqNT9zmVPUJb/9w7yxuvfyiXnMTRYnT/umW+VGnDAYt6dddtFrTsVD9zK43plkgr19la/lkCfNxqOQnnz9IKxVtNIE79r5Bw9/y4S3WrYKboCQh5T2k0emnQDZPm4E4hCd7SV/aqwEdsdfL2nRlcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ciA597Dv; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 8 Feb 2024 16:57:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707429426;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uuBkW91bKSdtv/qP/AAZDiygwHtnsXoTG5ybHQAGsCM=;
-	b=ciA597DvX/DbqrTOLewrCkHfHBc/438L8b8bIJN6CwD5wXKHgud0/jNmgQd8T0Vhq5sRMM
-	DY9x3M/y9L9tfX6w9wgoyPrzZZVj1tYtot8PgdAvz9gONZyuRvVtX0FcVjBeVBtSxccL1v
-	5x4xoLO0gU3MmkLq/DnwI/tXqKf2PFg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Brian Foster <bfoster@redhat.com>
-Cc: Dave Chinner <david@fromorbit.com>, brauner@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>, 
-	Dave Chinner <dchinner@redhat.com>, "Darrick J. Wong" <djwong@kernel.org>, 
-	Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH v2 3/7] fs: FS_IOC_GETUUID
-Message-ID: <krc2udjtkvylugzuledk7hre7rizmiajrgkiwvwcmsxtgxobyz@miqndphw7uhi>
-References: <20240206201858.952303-1-kent.overstreet@linux.dev>
- <20240206201858.952303-4-kent.overstreet@linux.dev>
- <ZcKsIbRRfeXfCObl@dread.disaster.area>
- <cm4wbdmpuq6mlyfqrb3qqwyysa3qao6t5sc2eq3ykmgb4ptpab@qkyberqtvrtt>
- <ZcN+8iOBR97t451x@bfoster>
+	s=arc-20240116; t=1707429457; c=relaxed/simple;
+	bh=HftUjZe8zdQu5bvekNzog4DkTT2SHRvwYBgyzTRkxJU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=GoTGNByGWHWWKxsLvXnzMf3ulam9MUBnutTC5aHW+wT4pikdgC+ezWNrhb7yJuj3pYZ0FrBqudYngSZnucfsndHLP3x1HnhNXBPZPSnh8DvK9eqh6+GA6QNgSsSAOp//F8ioIdAomg0R+/okkCAc87pWpK2bzdNy6DG8gqgrQuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZGctrAou; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06B6AC433C7;
+	Thu,  8 Feb 2024 21:57:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707429457;
+	bh=HftUjZe8zdQu5bvekNzog4DkTT2SHRvwYBgyzTRkxJU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=ZGctrAou9JG5M6V0CymnRb6LFCt+WhxzPzRqTPws3CNX7O+wxt+yiZjjeMbZ9ucRk
+	 smf5RObRDnHLuE8IpypO9vYQ/zt+l+VLdFzSpJ0OvY8/juyydBFnZ/1AVS+ieSKTn3
+	 AU7C3GrhKSu6d5pftC0Hqc7Fm5k8AslMIXS767+nH1CQ/JHje+Fq6lrwWkb6XJAIcS
+	 IHH7toapd2SYFlD/I2QOZ+GYD6mCgCeY5N5c39i78cnhuHufYEtmMdkD5mLUyG1GFM
+	 4yOnCnqPfcuOs7GJSz/nFVrLSfPEqXFhWp7m3UO1MPS6PS8Rjm6ALsYem/1ZJ7T25W
+	 9lo3puM0VveVw==
+Date: Thu, 8 Feb 2024 15:57:35 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Alexey Kardashevskiy <aik@amd.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH kernel 1/4] pci/doe: Define protocol types and make those
+ public
+Message-ID: <20240208215735.GA974931@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,81 +58,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZcN+8iOBR97t451x@bfoster>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240201060228.3070928-2-aik@amd.com>
 
-On Wed, Feb 07, 2024 at 08:05:29AM -0500, Brian Foster wrote:
-> On Tue, Feb 06, 2024 at 05:37:22PM -0500, Kent Overstreet wrote:
-> > On Wed, Feb 07, 2024 at 09:01:05AM +1100, Dave Chinner wrote:
-> > > On Tue, Feb 06, 2024 at 03:18:51PM -0500, Kent Overstreet wrote:
-> > > > +static int ioctl_getfsuuid(struct file *file, void __user *argp)
-> > > > +{
-> > > > +	struct super_block *sb = file_inode(file)->i_sb;
-> > > > +
-> > > > +	if (!sb->s_uuid_len)
-> > > > +		return -ENOIOCTLCMD;
-> > > > +
-> > > > +	struct fsuuid2 u = { .len = sb->s_uuid_len, };
-> > > > +	memcpy(&u.uuid[0], &sb->s_uuid, sb->s_uuid_len);
-> > > > +
-> > > > +	return copy_to_user(argp, &u, sizeof(u)) ? -EFAULT : 0;
-> > > > +}
-> > > 
-> > > Can we please keep the declarations separate from the code? I always
-> > > find this sort of implicit scoping of variables both difficult to
-> > > read (especially in larger functions) and a landmine waiting to be
-> > > tripped over. This could easily just be:
-> > > 
-> > > static int ioctl_getfsuuid(struct file *file, void __user *argp)
-> > > {
-> > > 	struct super_block *sb = file_inode(file)->i_sb;
-> > > 	struct fsuuid2 u = { .len = sb->s_uuid_len, };
-> > > 
-> > > 	....
-> > > 
-> > > and then it's consistent with all the rest of the code...
-> > 
-> > The way I'm doing it here is actually what I'm transitioning my own code
-> > to - the big reason being that always declaring variables at the tops of
-> > functions leads to separating declaration and initialization, and worse
-> > it leads people to declaring a variable once and reusing it for multiple
-> > things (I've seen that be a source of real bugs too many times).
-> > 
+On Thu, Feb 01, 2024 at 05:02:25PM +1100, Alexey Kardashevskiy wrote:
+> Already public pci_doe() takes a protocol type argument.
+> PCIe 6.0 defines three, define them in a header for use with pci_doe().
 > 
-> I still think this is of questionable value. I know I've mentioned
-> similar concerns to Dave's here on the bcachefs list, but still have not
-> really seen any discussion other than a bit of back and forth on the
-> handful of generally accepted (in the kernel) uses of this sort of thing
-> for limiting scope in loops/branches and such.
+> Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
+> ---
+>  include/linux/pci-doe.h | 4 ++++
+>  drivers/pci/doe.c       | 2 --
+>  2 files changed, 4 insertions(+), 2 deletions(-)
 > 
-> I was skimming through some more recent bcachefs patches the other day
-> (the journal write pipelining stuff) where I came across one or two
-> medium length functions where this had proliferated, and I found it kind
-> of annoying TBH. It starts to almost look like there are casts all over
-> the place and it's a bit more tedious to filter out logic from the
-> additional/gratuitous syntax, IMO.
+> diff --git a/include/linux/pci-doe.h b/include/linux/pci-doe.h
+> index 1f14aed4354b..5c33f7dc978b 100644
+> --- a/include/linux/pci-doe.h
+> +++ b/include/linux/pci-doe.h
+> @@ -13,6 +13,10 @@
+>  #ifndef LINUX_PCI_DOE_H
+>  #define LINUX_PCI_DOE_H
+>  
+> +#define PCI_DOE_PROTOCOL_DISCOVERY		0
+> +#define PCI_DOE_PROTOCOL_CMA_SPDM		1
+> +#define PCI_DOE_PROTOCOL_SECURED_CMA_SPDM	2
+
+So far these are only needed inside drivers/pci/.  I don't want to
+expose them to the rest of the kernel via include/linux/pci-doe.h
+until they're needed elsewhere.
+
+>  struct pci_doe_mb;
+>  
+>  struct pci_doe_mb *pci_find_doe_mailbox(struct pci_dev *pdev, u16 vendor,
+> diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
+> index e3aab5edaf70..61f0531d2b1d 100644
+> --- a/drivers/pci/doe.c
+> +++ b/drivers/pci/doe.c
+> @@ -22,8 +22,6 @@
+>  
+>  #include "pci.h"
+>  
+> -#define PCI_DOE_PROTOCOL_DISCOVERY 0
+> -
+>  /* Timeout of 1 second from 6.30.2 Operation, PCI Spec r6.0 */
+>  #define PCI_DOE_TIMEOUT HZ
+>  #define PCI_DOE_POLL_INTERVAL	(PCI_DOE_TIMEOUT / 128)
+> -- 
+> 2.41.0
 > 
-> That's still just my .02, but there was also previous mention of
-> starting/having discussion on this sort of style change. Is that still
-> the plan? If so, before or after proliferating it throughout the
-> bcachefs code? ;) I am curious if there are other folks in kernel land
-> who think this makes enough sense that they'd plan to adopt it. Hm?
-
-That was the discussion :)
-
-bcachefs is my codebase, so yes, I intend to do it there. I really think
-this is an instance where you and Dave are used to the way C has
-historically forced us to do things; our brains get wired to read code a
-certain way and changes are jarring.
-
-But take a step back; if we were used to writing code the way I'm doing
-it, and you were arguing for putting declarations at the tops of
-functions, what would the arguments be?
-
-I would say you're just breaking up the flow of ideas for no reason; a
-chain of related statements now includes a declaration that isn't with
-the actual logic.
-
-And bugs due to variable reuse, missed initialization - there's real
-reasons not to do it that way.
 
