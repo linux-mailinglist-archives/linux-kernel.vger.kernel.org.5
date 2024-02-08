@@ -1,340 +1,327 @@
-Return-Path: <linux-kernel+bounces-58586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA39284E88D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:56:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A539A84E7FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:48:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D0CB287905
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:56:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C98941C272CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560354F1F2;
-	Thu,  8 Feb 2024 18:49:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C1020DCD;
+	Thu,  8 Feb 2024 18:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LIFY9hXr"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="F7H2h5Ry"
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2080.outbound.protection.outlook.com [40.107.100.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 467AE3F9DF;
-	Thu,  8 Feb 2024 18:49:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707418182; cv=none; b=TZqOtM/ZLUya46DgOmyKHth9nHNSw3XgKjVUL1uVaEU3yLNNR7L81X/S44e/4MHJ1p7dZycbqlvegwYuLMYcSf5GyByJb269NsdBRk6GAuAkiZiq49R/xHhDGUsGzpsuLfadhg6Hz9LHmSuV8L8Zp/p4pjOAiaRycYmFhldruGo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707418182; c=relaxed/simple;
-	bh=v6wTWOcgnBbdVRVq0vTx2zi8kxA67Ld9K3m1TKyiM1Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tZcl5XkVj8K/XqmtFayXVE9qsKH7n9505Sh2QQCrQZQ1C91Hu+6tPeDqK23i9eUT+CS4ddYVd1VjXk44MAdq9D/zJcqRIEISiQw+ZXXYJqErZ8AKMHs6vU7Uv8anSnqG665zkbYC+fDzxmHzCg3h4WxAFbd68kPDteS7uOdrIVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LIFY9hXr; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707418180; x=1738954180;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=v6wTWOcgnBbdVRVq0vTx2zi8kxA67Ld9K3m1TKyiM1Q=;
-  b=LIFY9hXr4ZonEoYdzXaF1hVI877SOcxjlIxB/T+8ia+89IBz7IknZpUk
-   EAzT3+qkQc9l+YvqwFtGH52wBxRYakg6Pw3l1BW9qkK5PEiMdfuET/F9T
-   oOo9j57L0J33KbgfKL4SQJBR+O+GTFqXSqDhp01SY47MZpg38uVFzif72
-   l0eRXX6H6TVE3Ea4lT77YWobMmOdxD1qPKXecbxzaprLcW/ixFMLGLPMO
-   6VZ26U6MLjF0JfxRw5a0Es3u4zfOEBGzRmMBf594gb5Yf10rBp60pYQeq
-   aSevGCP4S+/W6LBIFKtPyC9ksgSPd0mSVASzcjJLl9mmJ2Mrqf/BCCJS3
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="1186177"
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="1186177"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 10:49:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="934215554"
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="934215554"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Feb 2024 10:49:29 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id C14AE1043; Thu,  8 Feb 2024 20:49:21 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Miguel Ojeda <ojeda@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Robin van der Gracht <robin@protonic.nl>,
-	Paul Burton <paulburton@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v1 15/15] auxdisplay: Add driver for MAX695x 7-segment LED controllers
-Date: Thu,  8 Feb 2024 20:48:13 +0200
-Message-ID: <20240208184919.2224986-16-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
-In-Reply-To: <20240208184919.2224986-1-andriy.shevchenko@linux.intel.com>
-References: <20240208184919.2224986-1-andriy.shevchenko@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0488208C6;
+	Thu,  8 Feb 2024 18:48:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.80
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707418126; cv=fail; b=Z1R2BwXb11DrlLFogmRzJo01Sg2HdPo6aZxhb1XFpviqYVFs9LkRsi4hO9VxLtPgW0qrT1oBDMGrudxyf/IruFwkv1Kyk+2x1kOlCLIZ1ajrCK7evOhYpObswhk2bPoO115/v6ZcfwuJTYzbD8xIySL+N76tuw1BvP3SrNL3Gok=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707418126; c=relaxed/simple;
+	bh=uecLHweqW5jmUR59wHguUvdw1kF75fy81ATIaWB3Fmo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=s3tveV0qvwnWuamZOGlueaBl96v47ZSvHa7lVTSXGJhn+mJeGgZ7VC73IEdMtqKDF1SPVAc80uztEFEDFbHPlNSZEga0c5sDQqXs+E7QChBKbnjcbIcl/vFHaTibxoUqwV6g12+U4KLiRaIJutqLLqCS8flff22op35KQopqEEk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=F7H2h5Ry; arc=fail smtp.client-ip=40.107.100.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nG2dNd2rEY7Ww9D0zWiZVnXDAfxSgeeh6AkpsmdNGircqkHPAIrVnpl+61MHmm/5+krGRUwJa0xxFKE7wpnPGfSkERWgVKyB4Nyvl+4+yjXJSYudCCkpab3uN1kY++i3GHDsXOwKs/TG2/GNOs7TYpl6tnBP4bn2xSvhCI+fbhzRcIWKyD+5BWx6X3G22znyDdVfn09SeWuABAuQNuz7K88yoiKCeusunaGnJyRmLQ7UHFSs/k6Vg0wkGhHu/12GTkYQj3Vkn5uusl0FRTO/izKGEalYG/dc0Ek6MRi/LZQK+AKHEPgFmC4wdUbd2dXVFDuVF6m1Rctn7tooda2DJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NqNIM+7E9RN52RQqYZVmvOGnzBPRJcnusawxDFKy46A=;
+ b=kaxC3VLJy39rCgh9yW0qGke7kuIiNUyhn/MSxJG3U7W692Txutp9NILfSKPbLMtfdhJOFOj7yI9L1N88wcP0l8fMLtqeLyyZTMvcqB9m+zAW+3qGMfA9unHXIFRTXsue1usPcbUBKaJkaLxPIJbQKio8cu8rKJskkc3o4irLtF+c9CaV0PPAqXX4funGyaI+eBjdAfuP6Cbny2jczrtPL5w3TpnbOiknwrJbCSW+TY5ol7/PnkxoryOvhQTR/7i3FtlXZNcDHs2EWn2WHp5eFOI+bSJSnOkam442WicnL7RZEGcIUuHL80nyxA0V6Oho5yQGQmVJORn+RDIdht87Ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NqNIM+7E9RN52RQqYZVmvOGnzBPRJcnusawxDFKy46A=;
+ b=F7H2h5Ryr0F6MQTtFYL6dcWOYr0H47PtOszVRBoaFuxj5BnQXOWqCiYAEd9bSOzpLaCrpj0rGZ94Ruf5Olm3uRStvnWwFqBk1cgP1FKIIVtMuXQGZV8B8hBGwlQM94LyenMkmwWcETEnBcfSxjDcImnbQGSi4EdiULZIIXVvcJE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by LV3PR12MB9215.namprd12.prod.outlook.com (2603:10b6:408:1a0::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.14; Thu, 8 Feb
+ 2024 18:48:41 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::f6d2:541d:5eda:d826]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::f6d2:541d:5eda:d826%5]) with mapi id 15.20.7270.016; Thu, 8 Feb 2024
+ 18:48:41 +0000
+Message-ID: <70c1b737-d4f5-4e66-8ee5-c9af22cec85c@amd.com>
+Date: Thu, 8 Feb 2024 12:48:38 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/3] drm: Add drm_get_acpi_edid() helper
+Content-Language: en-US
+To: Jani Nikula <jani.nikula@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>
+Cc: amd-gfx@lists.freedesktop.org,
+ "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+ "open list:ACPI" <linux-acpi@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>, Melissa Wen <mwen@igalia.com>,
+ Dave Airlie <airlied@redhat.com>, Daniel Vetter <daniel.vetter@ffwll.ch>,
+ Thomas Zimmermann <tzimmermann@suse.de>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+References: <20240207224429.104625-1-mario.limonciello@amd.com>
+ <20240207224429.104625-2-mario.limonciello@amd.com>
+ <87y1bvb7ns.fsf@intel.com>
+ <ysm2e3vczov7z7vezmexe35fjnkhsakud3elsgggedhk2lknlz@cx7j44y354db>
+ <87sf23auxv.fsf@intel.com>
+From: Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <87sf23auxv.fsf@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM6PR02CA0039.namprd02.prod.outlook.com
+ (2603:10b6:5:177::16) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|LV3PR12MB9215:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9d0ce743-e4e0-41f6-58e2-08dc28d691de
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	U87DmfugsBJA99/khL/IWd+/XfynsfpMwVhr84BeZIhVgbHWRc9/32DOLxDinstruLU62NT5IvMqTAnWz1ziJ+CD59tPu0KrzsdQ9YY2LjY8027R8fHHl6eGigQKr0c5HRFMzrs0q0I23tyeW5EDqJn+XPZ72u17xR1zTVJbPm2Ukl8hbA0cPMK7W/Hcd2fH9FMtHDAmTzQTunt3KxEx6kT5V+y0AxeJxVUl8rSwrlXL0BfXQUM2cGPD3ELFkrbO/brfjfvbo2nzx1k51zT6nrYn9bVetT4WtTHgRHzEthxRP15ioEGRiAW+HGjt40C2ImnyGKJMp+R3wpxQMjOn4HUjY6I+KNWSCcV+4TbDmppbdqJh6CJ1rwQ91HbAWtFRMdEiIgaVOLYsfsw+e1qqdPW1I22+OFAwIHEu0J1bqFlN+R6QcivC5oENXqWrm9+Ryr4qMOA4Rlf0SH3FrYINLaYyRyFUZYOHlswnlE5nDE3lNMjyMxVc7gxIg9XeCgXBbsz2oTzUwBTszl16BrCx2ZEL1mpwRDs86IKWNB1AoqWcEOt0OU4OCio1K4ZI0sUw
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(136003)(396003)(39860400002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(31686004)(36756003)(66899024)(26005)(53546011)(41300700001)(6486002)(54906003)(86362001)(478600001)(6512007)(5660300002)(66476007)(2616005)(31696002)(66946007)(8936002)(44832011)(8676002)(66556008)(38100700002)(4326008)(6666004)(83380400001)(110136005)(7416002)(2906002)(6506007)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?d2wwRGpWSGtRNzVRSkF2UDRObXliZDFuSTlmUEtzditZcVE5VFdCQUgxQmor?=
+ =?utf-8?B?T2JOZ0dFVU50ZllqVUppcXlNSHQ2cVA2ajl2NHV5djIwY3VvampIdE9rYmVM?=
+ =?utf-8?B?bG1UcWMrYklya3hzTzg3ME1NMU5PaTNNWlRmODVnTUdFNnBtK0hHbHEyUlJU?=
+ =?utf-8?B?Vklva0hueVlGcVJtLy85SS9BSGdZVkFUOXQyZ1hYSGw4bkdvMzFQSHBURmg4?=
+ =?utf-8?B?Z3ZsK0dNbmVGd0tveG1jTXJ4eElIMFpmbWZFR2F3MXVCMWdxNXM0bXpJdnNS?=
+ =?utf-8?B?RzQrMkJRbWFmaS9EM1NCZnR3dFFHYVM4cDNxTEtDdFJFWkUxNk5tWVY1RkVa?=
+ =?utf-8?B?c0hGMks3M1NOTXZTamZWWUtMNUtlejRrY0xLalBDZHd0S0xJZkRnaEpaTUsr?=
+ =?utf-8?B?bzNwdXFtZ1NyakNCdUY0NmJ1dDc1YkR3dStiL1JpNUYrWUlWajF0d0huVVND?=
+ =?utf-8?B?Y3VHa0p1VjBBWExPUDJ2YVdNcDc5ellXYXB5WXo4VjdaUnBVZ1lrTFNKajdK?=
+ =?utf-8?B?UnZUcnl0WS9GSnJVVVAzeDNRTHRhK3E1em9vVmdBQ2ZyN296dkxzTi9wRTlW?=
+ =?utf-8?B?dUF2T3kvNEtid1JrZFA3c2xmenNjYWJwZGFXTDFlWmJpWnhGblNiOTdlcGJT?=
+ =?utf-8?B?cnNrcDI4S1QxV2tES1grZzR0aEFDV3lxYTZvMkNDOWVsdndhdFlQVmVWaTZ1?=
+ =?utf-8?B?RTZOTWpZZHBPc3U2ZU8rdGJETnROTmFtaFZLSUpDNW82YjlueWtBeER0RlRS?=
+ =?utf-8?B?cStNQTJFcWQyL1Z0dlVXekw4ZHBDbEhhVEpOdzdoZ2UrUERBWEszNjRqeFp1?=
+ =?utf-8?B?aExodG9wbUNPUjBtQ3lWdXpmMlVqQVZIOVR2OGZyNit3cDRVYXQyRmhUZENF?=
+ =?utf-8?B?cU9IV09qSGdOWGErd2xTVlZNUE5CbGtaVkcrRWUvVkhsOXhRM3FOZnJkaG82?=
+ =?utf-8?B?VytMd2c0RFlwNFhrMnJQV2xRalpuVXBJSVJxWjJVM0s0S1NqYmFlZGozYnlU?=
+ =?utf-8?B?TVl5VlZrR204aGpxNkhQdVRPdGVQbG5pTVhLZVdqaHJHWm1NMU5Laktuc0Fx?=
+ =?utf-8?B?WExUalgrSFBYSVhaZ0ExSEl2OUVjeUNwZUJJRis0M1Y3VEhOYkEvYnpXYWlG?=
+ =?utf-8?B?Z2dMcUVSNGFLRkorcFZIdHVsTFl1blpyOE5vdStFZ2Fkejk4ZURWUDNzSUhj?=
+ =?utf-8?B?d0Z5MVVOTHdNaGZnN2FQaXl2NWVXS1VaQW0rS3Y0TnpqNVc1azZjL0xOSWta?=
+ =?utf-8?B?OFJKSDN0S1lnYk9ZYkErK2dTRVdYNlI5djNxQWFleDZ2U2pLOGFPZHNMT0xq?=
+ =?utf-8?B?Mk4vRy83S1NhK2VRZkN2aTlYdTU1ZnlRd1Q1cHRrVGtHTzdGS3plOXBob21V?=
+ =?utf-8?B?Y2p5WHQrdU9UYmowM2R4a0V1NlJJWXgvKzAzWjN2QkNMRlZqTGVXQ3JCR1A2?=
+ =?utf-8?B?R0ZGMVp1QTE5eVJBSEh2am1xTHF3V1NtUnpZdGloNUYxM1ZQaUxlU2lsVDZa?=
+ =?utf-8?B?QVBQcGRQZjdzYThoSlVtOHhHM0tBZlhta2EyU2FUZk4xeFFUQWx2N3VHWW55?=
+ =?utf-8?B?bThoS094UUt2UHk0U2NEbms4OFRHT0dTNzRPMnBEODNlbGlJWXBFSUZSNVBV?=
+ =?utf-8?B?SDJieVptMzVEU2NhclRvd2JWRnVsd1hZQWYyeGh2SUJLa2ZjdGxNWHZPaVZK?=
+ =?utf-8?B?WDMvL3ppRDVPVnMxUzk5Nk5FcmY5YWNjdUJrSEYwTjBRRk11Q1pGZWZZdlJ0?=
+ =?utf-8?B?eWZNaVhBU3pLeTNaby9MaHNkcTFqcC96SVNETXB0KzNKR3hqeWt0OEEybGVj?=
+ =?utf-8?B?Rm8wbXROd2N1RGs4YlhVYkliNHVocysrRXBQZHRyR1NHd3BpbXIvZkVSZHpi?=
+ =?utf-8?B?QzM2UXpIdjZsMXgyZHhwYWlyYTZHVjFSck4weGcxekRyazN1Ni91L3pxRU1R?=
+ =?utf-8?B?SGRnbmo1QVV5TGQrZlh3TnJ2dnlwblZCMWU1Wk9GVEw2QktJWGJzMWNPUnpp?=
+ =?utf-8?B?SE1jeW5BdEZXcFVaRkl5OGdoanY4aG1ldVd3K29uQ1lDcTRkb1R2NFhDSStN?=
+ =?utf-8?B?SzE3ekJDM0gvdnluRFZJSWl1R0JRRGltVGRiNzJVR3ArWFg2S1A2NGlkWHdz?=
+ =?utf-8?Q?csDBJ3/v/imTsMVuR0RG4KVBe?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d0ce743-e4e0-41f6-58e2-08dc28d691de
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2024 18:48:41.6427
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sR0DrMyqOlE4nMR0hbh+g5xx+G6Hm9Yp2r9cbp4+Exydmt1jluqLStaruzwwEWt7HFqbJTiWpHsmslgRt1W87w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9215
 
-Add initial driver for the MAX6958 and MAX6959 7-segment LED
-controllers.
+On 2/8/2024 08:31, Jani Nikula wrote:
+> On Thu, 08 Feb 2024, Maxime Ripard <mripard@kernel.org> wrote:
+>> On Thu, Feb 08, 2024 at 11:57:11AM +0200, Jani Nikula wrote:
+>>> On Wed, 07 Feb 2024, Mario Limonciello <mario.limonciello@amd.com> wrote:
+>>>> Some manufacturers have intentionally put an EDID that differs from
+>>>> the EDID on the internal panel on laptops.  Drivers can call this
+>>>> helper to attempt to fetch the EDID from the BIOS's ACPI _DDC method.
+>>>>
+>>>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+>>>> ---
+>>>>   drivers/gpu/drm/Kconfig    |  5 +++
+>>>>   drivers/gpu/drm/drm_edid.c | 77 ++++++++++++++++++++++++++++++++++++++
+>>>>   include/drm/drm_edid.h     |  1 +
+>>>>   3 files changed, 83 insertions(+)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+>>>> index 6ec33d36f3a4..ec2bb71e8b36 100644
+>>>> --- a/drivers/gpu/drm/Kconfig
+>>>> +++ b/drivers/gpu/drm/Kconfig
+>>>> @@ -21,6 +21,11 @@ menuconfig DRM
+>>>>   	select KCMP
+>>>>   	select VIDEO_CMDLINE
+>>>>   	select VIDEO_NOMODESET
+>>>> +	select ACPI_VIDEO if ACPI
+>>>> +	select BACKLIGHT_CLASS_DEVICE if ACPI
+>>>> +	select INPUT if ACPI
+>>>> +	select X86_PLATFORM_DEVICES if ACPI && X86
+>>>> +	select ACPI_WMI if ACPI && X86
+>>>
+>>> I think I'll defer to drm maintainers on whether this is okay or
+>>> something to be avoided.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/auxdisplay/Kconfig   |  14 +++
- drivers/auxdisplay/Makefile  |   1 +
- drivers/auxdisplay/max6959.c | 200 +++++++++++++++++++++++++++++++++++
- 3 files changed, 215 insertions(+)
- create mode 100644 drivers/auxdisplay/max6959.c
+It's pretty much the same thing that all the other drivers do right now.
+Because the symbol is now used by DRM it needs to do this.
 
-diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
-index a34a9a52158f..079d58bb0293 100644
---- a/drivers/auxdisplay/Kconfig
-+++ b/drivers/auxdisplay/Kconfig
-@@ -187,6 +187,20 @@ config HT16K33
- 	  Say yes here to add support for Holtek HT16K33, RAM mapping 16*8
- 	  LED controller driver with keyscan.
- 
-+config MAX6959
-+	tristate "Maxim MAX6958/6959 7-segment LED controller with keyscan"
-+	depends on I2C
-+	select REGMAP_I2C
-+	select LINEDISP
-+	help
-+	  If you say yes here you get support for the following Maxim chips
-+	  (I2C 7-segment LED display controller with keyscan):
-+	  - MAX6958
-+	  - MAX6959 (debounce support)
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called max6959.
-+
- config ARM_CHARLCD
- 	bool "ARM Ltd. Character LCD Driver"
- 	depends on PLAT_VERSATILE
-diff --git a/drivers/auxdisplay/Makefile b/drivers/auxdisplay/Makefile
-index 43bad850481c..f62a258809ef 100644
---- a/drivers/auxdisplay/Makefile
-+++ b/drivers/auxdisplay/Makefile
-@@ -12,5 +12,6 @@ obj-$(CONFIG_CFAG12864B)	+= cfag12864b.o cfag12864bfb.o
- obj-$(CONFIG_LINEDISP)		+= line-display.o
- obj-$(CONFIG_IMG_ASCII_LCD)	+= img-ascii-lcd.o
- obj-$(CONFIG_HT16K33)		+= ht16k33.o
-+obj-$(CONFIG_MAX6959)		+= max6959.o
- obj-$(CONFIG_ARM_CHARLCD)	+= arm-charlcd.o
- obj-$(CONFIG_PARPORT_PANEL)	+= panel.o
-diff --git a/drivers/auxdisplay/max6959.c b/drivers/auxdisplay/max6959.c
-new file mode 100644
-index 000000000000..0c5cbd16c3fe
---- /dev/null
-+++ b/drivers/auxdisplay/max6959.c
-@@ -0,0 +1,200 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * MAX6958/6959 7-segment LED display controller with keyscan
-+ * Datasheet:
-+ * https://www.analog.com/media/en/technical-documentation/data-sheets/MAX6958-MAX6959.pdf
-+ *
-+ * Copyright (c) 2024, Intel Corporation.
-+ * Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-+ */
-+#include <linux/array_size.h>
-+#include <linux/bitrev.h>
-+#include <linux/bits.h>
-+#include <linux/container_of.h>
-+#include <linux/err.h>
-+#include <linux/i2c.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/pm.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/types.h>
-+#include <linux/workqueue.h>
-+
-+#include <linux/map_to_7segment.h>
-+
-+#include "line-display.h"
-+
-+/* Registers */
-+#define REG_DECODE_MODE			0x01
-+#define REG_INTENSITY			0x02
-+#define REG_SCAN_LIMIT			0x03
-+#define REG_CONFIGURATION		0x04
-+#define REG_CONFIGURATION_S_BIT		BIT(0)
-+
-+#define REG_DIGIT(x)			(0x20 + (x))
-+#define REG_DIGIT0			0x20
-+#define REG_DIGIT1			0x21
-+#define REG_DIGIT2			0x22
-+#define REG_DIGIT3			0x23
-+
-+#define REG_SEGMENTS			0x24
-+#define REG_MAX				REG_SEGMENTS
-+
-+/* Defines */
-+#define MIN_BRIGHTNESS			0x01
-+#define MAX_BRIGHTNESS			0x40
-+
-+struct max6959_priv {
-+	struct linedisp linedisp;
-+
-+	struct delayed_work work;
-+
-+	struct regmap *regmap;
-+};
-+
-+static void max6959_disp_update(struct work_struct *work)
-+{
-+	struct max6959_priv *priv = container_of(work, struct max6959_priv, work.work);
-+	struct linedisp *linedisp = &priv->linedisp;
-+	struct linedisp_map *map = linedisp->map;
-+	char *s = linedisp->curr;
-+	u8 buf[4];
-+
-+	/* Map segments according to datasheet */
-+	buf[0] = bitrev8(map_to_seg7(&map->map.seg7, *s++)) >> 1;
-+	buf[1] = bitrev8(map_to_seg7(&map->map.seg7, *s++)) >> 1;
-+	buf[2] = bitrev8(map_to_seg7(&map->map.seg7, *s++)) >> 1;
-+	buf[3] = bitrev8(map_to_seg7(&map->map.seg7, *s++)) >> 1;
-+
-+	regmap_bulk_write(priv->regmap, REG_DIGIT(0), buf, ARRAY_SIZE(buf));
-+}
-+
-+static int max6959_linedisp_get_map_type(struct linedisp *linedisp)
-+{
-+	struct max6959_priv *priv = container_of(linedisp, struct max6959_priv, linedisp);
-+
-+	INIT_DELAYED_WORK(&priv->work, max6959_disp_update);
-+	return LINEDISP_MAP_SEG7;
-+}
-+
-+static void max6959_linedisp_update(struct linedisp *linedisp)
-+{
-+	struct max6959_priv *priv = container_of(linedisp, struct max6959_priv, linedisp);
-+
-+	schedule_delayed_work(&priv->work, 0);
-+}
-+
-+static const struct linedisp_ops max6959_linedisp_ops = {
-+	.get_map_type = max6959_linedisp_get_map_type,
-+	.update = max6959_linedisp_update,
-+};
-+
-+static int max6959_enable(struct max6959_priv *priv, bool enable)
-+{
-+	u8 mask = REG_CONFIGURATION_S_BIT;
-+	u8 value = enable ? mask : 0;
-+
-+	return regmap_update_bits(priv->regmap, REG_CONFIGURATION, mask, value);
-+}
-+
-+static void max6959_power_off(void *priv)
-+{
-+	max6959_enable(priv, false);
-+}
-+
-+static int max6959_power_on(struct max6959_priv *priv)
-+{
-+	struct device *dev = regmap_get_device(priv->regmap);
-+	int ret;
-+
-+	ret = max6959_enable(priv, true);
-+	if (ret)
-+		return ret;
-+
-+	return devm_add_action_or_reset(dev, max6959_power_off, priv);
-+}
-+
-+static const struct regmap_config max6959_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+
-+	.max_register = REG_MAX,
-+	.cache_type = REGCACHE_MAPLE,
-+};
-+
-+static int max6959_i2c_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct max6959_priv *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->regmap = devm_regmap_init_i2c(client, &max6959_regmap_config);
-+	if (IS_ERR(priv->regmap))
-+		return PTR_ERR(priv->regmap);
-+
-+	ret = max6959_power_on(priv);
-+	if (ret)
-+		return ret;
-+
-+	ret = linedisp_register(&priv->linedisp, dev, 4, NULL, &max6959_linedisp_ops);
-+	if (ret)
-+		return ret;
-+
-+	i2c_set_clientdata(client, priv);
-+
-+	return 0;
-+}
-+
-+static void max6959_i2c_remove(struct i2c_client *client)
-+{
-+	struct max6959_priv *priv = i2c_get_clientdata(client);
-+
-+	cancel_delayed_work_sync(&priv->work);
-+	linedisp_unregister(&priv->linedisp);
-+}
-+
-+static int max6959_suspend(struct device *dev)
-+{
-+	return max6959_enable(dev_get_drvdata(dev), false);
-+}
-+
-+static int max6959_resume(struct device *dev)
-+{
-+	return max6959_enable(dev_get_drvdata(dev), true);
-+}
-+
-+static DEFINE_SIMPLE_DEV_PM_OPS(max6959_pm_ops, max6959_suspend, max6959_resume);
-+
-+static const struct i2c_device_id max6959_i2c_id[] = {
-+	{ "max6959" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, max6959_i2c_id);
-+
-+static const struct of_device_id max6959_of_table[] = {
-+	{ .compatible = "maxim,max6959" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, max6959_of_table);
-+
-+static struct i2c_driver max6959_i2c_driver = {
-+	.driver = {
-+		.name = "max6959",
-+		.pm = pm_sleep_ptr(&max6959_pm_ops),
-+		.of_match_table = max6959_of_table,
-+	},
-+	.probe = max6959_i2c_probe,
-+	.remove = max6959_i2c_remove,
-+	.id_table = max6959_i2c_id,
-+};
-+module_i2c_driver(max6959_i2c_driver);
-+
-+MODULE_DESCRIPTION("MAX6958/6959 7-segment LED controller with keyscan");
-+MODULE_AUTHOR("Andy Shevchenko <andriy.shevchenko@linux.intel.com>");
-+MODULE_LICENSE("GPL");
-+MODULE_IMPORT_NS(LINEDISP);
--- 
-2.43.0.rc1.1.gbec44491f096
+Patch 3 in this version of the series tears it out from all the drivers.
 
+>>>
+>>>
+>>>>   	help
+>>>>   	  Kernel-level support for the Direct Rendering Infrastructure (DRI)
+>>>>   	  introduced in XFree86 4.0. If you say Y here, you need to select
+>>>> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+>>>> index 923c4423151c..c649b4f9fd8e 100644
+>>>> --- a/drivers/gpu/drm/drm_edid.c
+>>>> +++ b/drivers/gpu/drm/drm_edid.c
+>>>> @@ -28,6 +28,7 @@
+>>>>    * DEALINGS IN THE SOFTWARE.
+>>>>    */
+>>>>   
+>>>> +#include <acpi/video.h>
+>>>>   #include <linux/bitfield.h>
+>>>>   #include <linux/cec.h>
+>>>>   #include <linux/hdmi.h>
+>>>> @@ -2188,6 +2189,49 @@ drm_do_probe_ddc_edid(void *data, u8 *buf, unsigned int block, size_t len)
+>>>>   	return ret == xfers ? 0 : -1;
+>>>>   }
+>>>>   
+>>>> +/**
+>>>> + * drm_do_probe_acpi_edid() - get EDID information via ACPI _DDC
+>>>> + * @data: struct drm_device
+>>>> + * @buf: EDID data buffer to be filled
+>>>> + * @block: 128 byte EDID block to start fetching from
+>>>> + * @len: EDID data buffer length to fetch
+>>>> + *
+>>>> + * Try to fetch EDID information by calling acpi_video_get_edid() function.
+>>>> + *
+>>>> + * Return: 0 on success or error code on failure.
+>>>> + */
+>>>> +static int
+>>>> +drm_do_probe_acpi_edid(void *data, u8 *buf, unsigned int block, size_t len)
+>>>> +{
+>>>> +	struct drm_device *ddev = data;
+>>>> +	struct acpi_device *acpidev = ACPI_COMPANION(ddev->dev);
+>>>> +	unsigned char start = block * EDID_LENGTH;
+>>>> +	void *edid;
+>>>> +	int r;
+>>>> +
+>>>> +	if (!acpidev)
+>>>> +		return -ENODEV;
+>>>> +
+>>>> +	/* fetch the entire edid from BIOS */
+>>>> +	r = acpi_video_get_edid(acpidev, ACPI_VIDEO_DISPLAY_LCD, -1, &edid);
+>>>> +	if (r < 0) {
+>>>> +		DRM_DEBUG_KMS("Failed to get EDID from ACPI: %d\n", r);
+>>>> +		return -EINVAL;
+>>>> +	}
+>>>> +	if (len > r || start > r || start + len > r) {
+>>>> +		r = -EINVAL;
+>>>> +		goto cleanup;
+>>>> +	}
+>>>> +
+>>>> +	memcpy(buf, edid + start, len);
+>>>> +	r = 0;
+>>>> +
+>>>> +cleanup:
+>>>> +	kfree(edid);
+>>>> +
+>>>> +	return r;
+>>>> +}
+>>>> +
+>>>>   static void connector_bad_edid(struct drm_connector *connector,
+>>>>   			       const struct edid *edid, int num_blocks)
+>>>>   {
+>>>> @@ -2643,6 +2687,39 @@ struct edid *drm_get_edid(struct drm_connector *connector,
+>>>>   }
+>>>>   EXPORT_SYMBOL(drm_get_edid);
+>>>>   
+>>>> +/**
+>>>> + * drm_get_acpi_edid - get EDID data, if available
+>>>
+>>> I'd prefer all the new EDID API to be named drm_edid_*. Makes a clean
+>>> break from the old API, and is more consistent.
+>>>
+>>> So perhaps drm_edid_read_acpi() to be in line with all the other struct
+>>> drm_edid based EDID reading functions.
+>>>
+
+Roger that.  Even if it ends up not being exported out will rename as such.
+
+>>>> + * @connector: connector we're probing
+>>>> + *
+>>>> + * Use the BIOS to attempt to grab EDID data if possible.
+>>>> + *
+>>>> + * The returned pointer must be freed using drm_edid_free().
+>>>> + *
+>>>> + * Return: Pointer to valid EDID or NULL if we couldn't find any.
+>>>> + */
+>>>> +const struct drm_edid *drm_get_acpi_edid(struct drm_connector *connector)
+>>>> +{
+>>>> +	const struct drm_edid *drm_edid;
+>>>> +
+>>>> +	switch (connector->connector_type) {
+>>>> +	case DRM_MODE_CONNECTOR_LVDS:
+>>>> +	case DRM_MODE_CONNECTOR_eDP:
+>>>> +		break;
+>>>> +	default:
+>>>> +		return NULL;
+>>>> +	}
+>>>> +
+>>>> +	if (connector->force == DRM_FORCE_OFF)
+>>>> +		return NULL;
+>>>> +
+>>>> +	drm_edid = drm_edid_read_custom(connector, drm_do_probe_acpi_edid, connector->dev);
+>>>> +
+>>>> +	/* Note: Do *not* call connector updates here. */
+>>>> +
+>>>> +	return drm_edid;
+>>>> +}
+>>>> +EXPORT_SYMBOL(drm_get_acpi_edid);
+>>
+>> Why shouldn't we use the BIOS/UEFI to retrieve them if it's available?
+>>
+>> I guess what I'm asking is why should we make this an exported function
+>> that drivers would have to call explicitly, instead of just making it
+>> part of the usual EDID retrieval interface.
+> 
+> Two main questions:
+> 
+> What if the EDID from ACPI is bogus? Needs to be configurable in the
+> connector somehow?
+
+In the earlier versions of the patch that touched amdgpu I left a knob 
+in the amdgpu kernel module to let users turn this off.  Whenever a 
+variation of this hits amdgpu I'm planning to keep that there unless 
+Alex or Christian have opinions against it.
+
+> 
+> What if you have multiple local panels? This seems to only support one,
+> and would return the same EDID for both.
+> 
+
+The GPU driver should know best how many panels it's dealing with.
+
+How about if we make it "opt-out" by the connector?  The connector can 
+set a flag before it tries to get the EDID that it doesn't want one from 
+the BIOS for any reason (module parameter, too many eDP etc).
 
