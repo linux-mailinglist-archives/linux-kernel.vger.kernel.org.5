@@ -1,151 +1,103 @@
-Return-Path: <linux-kernel+bounces-58689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B34084E9FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:58:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13A9184E9F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:56:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 443EE28248D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:58:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4F901F23EFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5AB44B5A7;
-	Thu,  8 Feb 2024 20:58:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE8CC3F9F2;
+	Thu,  8 Feb 2024 20:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="wb4+siUb"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e+3Bx4Xa"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D7B3F9F2
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 20:58:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04B048CD1;
+	Thu,  8 Feb 2024 20:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707425927; cv=none; b=dQsNZKJcvI8nJpxmZO0mzrPdKML65CM4x/Z17eSo6Y956eNUMIHcCs9KmR7tftiyrYanmoDfrxwlQbOSyZpDozokRfiBgeP8pzzTkQlbOAvvd2G6hfWVntcunN/uaAyEnGpr4qxBnJmTkpf/386ZxyK7jvJSVbkFlhCSM1p2h2M=
+	t=1707425787; cv=none; b=tdlfi/mG8gdJmXG8qiX4A32DT6YvqDyGI6yCpChjWuOfMh4qLL31kYSwAtE3Qsm66pzNzESR8+2CgJldtnNEs4h6ZuW/stdUrsIrYsmr284HtdxlW9G/x4pV+eqRphurKvkbX2c1uQs460P4udnywxdYzHgc5Xp6PE1AW3sgAV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707425927; c=relaxed/simple;
-	bh=e4x8s2vq5KE3tjwGiTEDVUMIN4XccFGXeubsbMX6Q10=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mg+rhJQHPi9wqfRpLYa2elq8ajfDnXksHf/+2LcmXZsloQCMGliYsuIrO0aWqKm2V0zVnMq6KgQUgYSVNPznVV8RHdI5oHnpcxbIUvCdthMRymb13eUIdnfrDbetBkX9mU8HAGYkRGdp0vLO62Jdny/co90z7USWOPqU0Yp8JvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=wb4+siUb; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55cca88b6a5so433310a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 12:58:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1707425923; x=1708030723; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rh0/SSQbryhTyPsEnw0NTqJHbn4oA+/xslZpcTTvvbk=;
-        b=wb4+siUbnrPnf6GvSv0dlhzU7T+ZRvQgyqonY9iZeJbg89adzWlvQoD8UaIdddb8jp
-         YK7msf7mKZIsFdPrjB9ijfNw/m0pdjcr3FJTS8sv7Wtv1Qm04vL8yb5Q6aRGcRr9Meu7
-         92hL9UUzEsQJmnFdvwPe4/stoX5GKQAmV0G1UtqRbyD/ghY0ffZHEJ4UXz5TL3MU3Kay
-         GfnBhuUoOuebM8UcaPpDsq1/766MDevOI06xWZJ6pBEsBEYwkbQxXT68e3sNj0JlPxgD
-         V30EbRT5RzVeJl66AIecRcI5TI0GPLc0hxKPYLxkRjsalvFD/R57sA6YUW49o3Fw8nXG
-         eSDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707425923; x=1708030723;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rh0/SSQbryhTyPsEnw0NTqJHbn4oA+/xslZpcTTvvbk=;
-        b=m2QvUppJi17G5DilTzUjw/1oRm9WxWufBwS12nx+3UHKLCIw3Rywo9uBKGsBVGiJ9p
-         3NRJapPN8k1xcAHkFGR7wTqEMDf1w2FlVJUFaBn9bv8KXgUWOqQFyfSre1vtRter6gpR
-         a8ZM9dr22PcKKaRvUlDsku2PfWY1MyNYwtZFp+ZBrOpceR2KMd5DYrnV5k3APLpkBo4+
-         RmvP43bP0nCuxw8UL31sXRh2cDHnyP5+vLzSjm8prP2WAINeMd9Y041Nsqm8NdBXC1+Q
-         MZvS1oVftRvyF5P9DyDzOjRIojGCG+aCgQgdWW1BNuLjSPUg6aWvLMXCx8R/QJv3k9kz
-         MFhw==
-X-Gm-Message-State: AOJu0YyMYEsfMVdDQKHhdHINYsyPU10dV60NVnUdlRegVxFvR2zWtfv1
-	OOW22E5RTtNg9WqHy//6W/mt/YQG/x+ZOeEricWOspOsljVtKkO4bgfdpIRxdQc=
-X-Google-Smtp-Source: AGHT+IGnjsO/HQ+adVUZ8qaCgNjU0tUTH1fyVyLhCxmQ+plbar/MgANb+APLmdnJ7jgvJvsodCgmng==
-X-Received: by 2002:aa7:d0d6:0:b0:560:5f1e:f420 with SMTP id u22-20020aa7d0d6000000b005605f1ef420mr291084edo.0.1707425923471;
-        Thu, 08 Feb 2024 12:58:43 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW0Va/BM7rgZ59qsnz+o58yVnLS5n7em3Hm6fyi97lloawcwZwVz0zCmMPg+IHbPmNhdnf5uTWO4Z/3xPZlW8IpKCy9oytAlvhpKnEs3Wx0HtRedaWrqBTSRp/ox7qJEWsHpSg1/k4/eCpgOxdkMbTVuFzMKE2CYL/Mpasu2nHjTTSUrnlDRlWQxZXfNRc6HDCu2hlY
-Received: from debian.fritz.box (aftr-82-135-80-180.dynamic.mnet-online.de. [82.135.80.180])
-        by smtp.gmail.com with ESMTPSA id k24-20020aa7d8d8000000b00560e72d22b8sm112068eds.2.2024.02.08.12.58.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 12:58:43 -0800 (PST)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: corbet@lwn.net,
-	mchehab@kernel.org
-Cc: linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	vegard.nossum@oracle.com,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH v3] docs: scripts: sphinx-pre-install: Fix building docs with pyyaml package
-Date: Thu,  8 Feb 2024 21:55:51 +0100
-Message-Id: <20240208205550.984-1-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <ED5D37EF-B353-4EA3-8AC9-7368BDD2CFD9@toblux.com>
-References: <ED5D37EF-B353-4EA3-8AC9-7368BDD2CFD9@toblux.com>
+	s=arc-20240116; t=1707425787; c=relaxed/simple;
+	bh=T8EwgSBfhLdOsFciFuw6X5d9/0+41gQ0AA16Ecb/rcU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=HChk7CWgexCAMfVxKLcNaNCdLGG3xcYgE93T9sSc3VHHsdhz+Q6VVCDsv888kZT3cu+1XyDbiRH4aTRfApGb/6vVB0LKnM35uuMWzN+kq3kFGcPkpfY1UbK55vKZ/1685ktTyncmchJ3wTmWmIWpfZS7GHjdn5y9QJArIYj9ioA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e+3Bx4Xa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B0D7C433C7;
+	Thu,  8 Feb 2024 20:56:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707425786;
+	bh=T8EwgSBfhLdOsFciFuw6X5d9/0+41gQ0AA16Ecb/rcU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=e+3Bx4Xa4325tK8mGNO/Jhz450pjYzUveah8U9GEFNEVNETIXzBDCIL0hMqyJRNMp
+	 hkMIKP8aTyBdPP6zXFrfShdRBFeVDyoNM/E4fdxxSVpKon/5Gs1K0NWcyqqOMwsjOf
+	 l+imnJ7ff+linFqmKB9Hy1V1B1y/kJ2hfwBvv1X9N+Caq/VIxA1e5uRHfCHs+pDDsN
+	 Bd+BT4sgZbHkbxypldvwp2Kd4SXmciQ3dT67PqSC31WwgOQhWaFNB0J1A8CPwVSQLg
+	 LTZ4RNobnmr70yKt/r30QM4wBiIpWDQ1z7KQ88kBKzPFEs1pHUtHN0J+j87J0EDBDM
+	 g4eha5M4qEqWg==
+From: Mark Brown <broonie@kernel.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+In-Reply-To: <20240208123742.1278104-1-rf@opensource.cirrus.com>
+References: <20240208123742.1278104-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH v2] ASoC: cs35l56: Fix deadlock in ASP1 mixer register
+ initialization
+Message-Id: <170742578487.2206785.11509531249240507855.b4-ty@kernel.org>
+Date: Thu, 08 Feb 2024 20:56:24 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
 
-The Python module pyyaml is required to build the docs, but it is only
-listed in Documentation/sphinx/requirements.txt and is therefore missing
-when Sphinx is installed as a package and not via pip/pypi.
+On Thu, 08 Feb 2024 12:37:42 +0000, Richard Fitzgerald wrote:
+> Rewrite the handling of ASP1 TX mixer mux initialization to prevent a
+> deadlock during component_remove().
+> 
+> The firmware can overwrite the ASP1 TX mixer registers with
+> system-specific settings. This is mainly for hardware that uses the
+> ASP as a chip-to-chip link controlled by the firmware. Because of this
+> the driver cannot know the starting state of the ASP1 mixer muxes until
+> the firmware has been downloaded and rebooted.
+> 
+> [...]
 
-Add pyyaml as an optional package for multiple distros to fix building the
-docs if you prefer to install Sphinx as a package.
+Applied to
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-Reviewed-by: Vegard Nossum <vegard.nossum@oracle.com>
-Tested-by: Vegard Nossum <vegard.nossum@oracle.com>
----
-Changes in v2:
-- s/pyyaml/yaml/ as suggested by Vegard Nossum
-- Make the check require the Python module; was optional
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Changes in v3:
-- Preserve Reviewed-by: and Tested-by: tags
-- Add pyyaml to openSUSE as suggested by Vegard Nossum
----
- scripts/sphinx-pre-install | 4 ++++
- 1 file changed, 4 insertions(+)
+Thanks!
 
-diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
-index 25aefbb35377..88ae75887476 100755
---- a/scripts/sphinx-pre-install
-+++ b/scripts/sphinx-pre-install
-@@ -361,6 +361,7 @@ sub give_debian_hints()
- {
- 	my %map = (
- 		"python-sphinx"		=> "python3-sphinx",
-+		"yaml"			=> "python3-yaml",
- 		"ensurepip"		=> "python3-venv",
- 		"virtualenv"		=> "virtualenv",
- 		"dot"			=> "graphviz",
-@@ -395,6 +396,7 @@ sub give_redhat_hints()
- {
- 	my %map = (
- 		"python-sphinx"		=> "python3-sphinx",
-+		"yaml"			=> "python3-pyyaml",
- 		"virtualenv"		=> "python3-virtualenv",
- 		"dot"			=> "graphviz",
- 		"convert"		=> "ImageMagick",
-@@ -472,6 +474,7 @@ sub give_opensuse_hints()
- {
- 	my %map = (
- 		"python-sphinx"		=> "python3-sphinx",
-+		"yaml"			=> "python3-pyyaml",
- 		"virtualenv"		=> "python3-virtualenv",
- 		"dot"			=> "graphviz",
- 		"convert"		=> "ImageMagick",
-@@ -951,6 +954,7 @@ sub check_needs()
- 
- 	# Check for needed programs/tools
- 	check_perl_module("Pod::Usage", 0);
-+	check_python_module("yaml", 0);
- 	check_program("make", 0);
- 	check_program("gcc", 0);
- 	check_program("dot", 1);
--- 
-2.39.2
+[1/1] ASoC: cs35l56: Fix deadlock in ASP1 mixer register initialization
+      commit: c14f09f010cc569ae7e2f6ef02374f6bfef9917e
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 
