@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-57960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CEC484DFC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:32:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A66F084DFC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:32:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6762EB26036
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:32:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 312681F2849C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:32:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B916F52A;
-	Thu,  8 Feb 2024 11:31:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431BE6F51E;
+	Thu,  8 Feb 2024 11:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ym9f7o9C"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ihNFAZ8u"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5019A6F51E;
-	Thu,  8 Feb 2024 11:31:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A30F6F532;
+	Thu,  8 Feb 2024 11:31:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707391913; cv=none; b=N1HlWQ0QBVP/v04oZCvgA68Dc2osuYbPzQ8O34xDrxGLeJ/rYawVqsLWZz4vhy64erF4HhMQn9xO+n4UPsyCyhnpW+8/A+2OtKn1pj7ernocTNWEwQo9OBDSwZZhGIo0Lu0IrY40NHbz5pGBNdo0j33rh6bYjIhhDRpMEKY4c3Q=
+	t=1707391918; cv=none; b=S385zmfrbhBRA6b+DpsTkjHfS92280XShXBdLODWP61gsTtsHqAg6vZ0xa+7sW9B+37kDKOqYi32EtauBziAxsFbOqaWWbub+97ftQ4ZfMPa/PzKT8h1YXKfIE1wMxnEvzbAxzn/9E2WRNfD62Q8a2zKLWNCNIQ9AcDIDF7fug8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707391913; c=relaxed/simple;
-	bh=cZM1w1SKDny69+A93iB/1D8/a1VKdkgLdhEhZzavNc0=;
+	s=arc-20240116; t=1707391918; c=relaxed/simple;
+	bh=dfTBIiFpANJlz5aBagh7IAvClVgFJ19Fw8e6sothvfM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qePgojdxx/ssQq4tm0Qitl4b6frZ8B06R2rAoaDubtf9M1OOpSQG7vVRB8sSJNiXZ8gwjJk2yctEhj5tkg2f9jwct/Utesb3eas0YUb2ufSYk7h/tAXEYX0qETltPb98KTPpWbY0WOVjjSftedAFgA7pzw1QoOvRQp6meM6UB8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ym9f7o9C; arc=none smtp.client-ip=192.198.163.15
+	 MIME-Version; b=TPyc9J7TvV4r0uQ9KMM20WcPLFpZxl/nlJGyEd+uf5J7Od8s1999Co2hnnyDCnrSihgAkaUVUh9iV+hcVnq+ewwK4a++Mu9cuPlRh8H3j3s/uVb2zOUCNAlviqu7I7B3ASCW53t10D2H7rYeYIWjHJXqoLgBdLBv0tdondnnG8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ihNFAZ8u; arc=none smtp.client-ip=192.198.163.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707391912; x=1738927912;
+  t=1707391917; x=1738927917;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=cZM1w1SKDny69+A93iB/1D8/a1VKdkgLdhEhZzavNc0=;
-  b=Ym9f7o9CPWXb7bFgrXzPy9uaPMRqR+uRdTyBDMrvdHkeEQe+O7SWfpdn
-   8vE13xqxl2CPN1stG4LOMcmOY4FPnDzkgLKwJ5bxOgpzmPOnjCYpfwCXb
-   Mb2fqW81TWupOdxVyeQJj/W8CHzHwKKDO0iuo1vPZKrT/rlW57QCSPslB
-   KOjOF7mXSquFEp3Ck0FMJFLzgDXKfqwZTVfw1dDWw7emXIrBc5IfePwOU
-   C5Zt7l2T6gWsWHF0Bqoo7Ym8/c8uicfGKEyRG+CZO/rgGlpKntNMd4dmK
-   cuSWs8l65nWIVE24vql+0Vi8FRSuIOt9wnNfIx0vzBRSIiLDs6HAevfPZ
+  bh=dfTBIiFpANJlz5aBagh7IAvClVgFJ19Fw8e6sothvfM=;
+  b=ihNFAZ8uMJv+JUJrwgkq4PV0WW4bMn4npY4loQ+lc6M21vpgdSk13SyD
+   ns2Cc4BpvuTazfKep/tR5wYimU6C+qc/nRXKATSQaRU07FmnJ/2r2QtPG
+   ValUcCEAo4uLdNUNVsah3gQgTDHUixYHB8CZxv9L5NyZ5lcCBPF2Pgdhw
+   66ERWwLTDryWanqmbjRj5jN1PLOX8hQfjC5fedBbvohZ1LV2UNKX80waV
+   TzvhPSzAwkwm58fdju0jniYcwgSd8YEOHDwa41jiAAAe5GDs/9AuFTmYO
+   7pat5a0YPG7x7XQFm7ordpv8xlvVZ6yeamyQEwbu/aWB6yZOiWXJlYTxK
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="1345428"
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="1345467"
 X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="1345428"
+   d="scan'208";a="1345467"
 Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 03:31:50 -0800
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 03:31:56 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="1957425"
+   d="scan'208";a="1957440"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.251.219.88])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 03:31:44 -0800
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 03:31:50 -0800
 From: Adrian Hunter <adrian.hunter@intel.com>
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: Ingo Molnar <mingo@redhat.com>,
@@ -76,9 +76,9 @@ Cc: Ingo Molnar <mingo@redhat.com>,
 	Andi Kleen <ak@linux.intel.com>,
 	linux-kernel@vger.kernel.org,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH V5 01/12] perf/core: Add aux_pause, aux_resume, aux_start_paused
-Date: Thu,  8 Feb 2024 13:31:16 +0200
-Message-Id: <20240208113127.22216-2-adrian.hunter@intel.com>
+Subject: [PATCH V5 02/12] perf/x86/intel/pt: Add support for pause / resume
+Date: Thu,  8 Feb 2024 13:31:17 +0200
+Message-Id: <20240208113127.22216-3-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240208113127.22216-1-adrian.hunter@intel.com>
 References: <20240208113127.22216-1-adrian.hunter@intel.com>
@@ -91,314 +91,173 @@ MIME-Version: 1.0
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
 
-Hardware traces, such as instruction traces, can produce a vast amount of
-trace data, so being able to reduce tracing to more specific circumstances
-can be useful.
+Prevent tracing to start if aux_paused.
 
-The ability to pause or resume tracing when another event happens, can do
-that.
-
-Add ability for an event to "pause" or "resume" AUX area tracing.
-
-Add aux_pause bit to perf_event_attr to indicate that, if the event
-happens, the associated AUX area tracing should be paused. Ditto
-aux_resume. Do not allow aux_pause and aux_resume to be set together.
-
-Add aux_start_paused bit to perf_event_attr to indicate to an AUX area
-event that it should start in a "paused" state.
-
-Add aux_paused to struct perf_event for AUX area events to keep track of
-the "paused" state. aux_paused is initialized to aux_start_paused.
-
-Add PERF_EF_PAUSE and PERF_EF_RESUME modes for ->stop() and ->start()
-callbacks. Call as needed, during __perf_event_output(). Add
-aux_in_pause_resume to struct perf_buffer to prevent races with the NMI
-handler. Pause/resume in NMI context will miss out if it coincides with
-another pause/resume.
-
-To use aux_pause or aux_resume, an event must be in a group with the AUX
-area event as the group leader.
-
-Example (requires Intel PT and tools patches also):
-
- $ perf record --kcore -e intel_pt/aux-action=start-paused/k,syscalls:sys_enter_newuname/aux-action=resume/,syscalls:sys_exit_newuname/aux-action=pause/ uname
- Linux
- [ perf record: Woken up 1 times to write data ]
- [ perf record: Captured and wrote 0.043 MB perf.data ]
- $ perf script --call-trace
- uname   30805 [000] 24001.058782799: name: 0x7ffc9c1865b0
- uname   30805 [000] 24001.058784424:  psb offs: 0
- uname   30805 [000] 24001.058784424:  cbr: 39 freq: 3904 MHz (139%)
- uname   30805 [000] 24001.058784629: ([kernel.kallsyms])        debug_smp_processor_id
- uname   30805 [000] 24001.058784629: ([kernel.kallsyms])        __x64_sys_newuname
- uname   30805 [000] 24001.058784629: ([kernel.kallsyms])            down_read
- uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                __cond_resched
- uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                preempt_count_add
- uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                    in_lock_functions
- uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                preempt_count_sub
- uname   30805 [000] 24001.058784629: ([kernel.kallsyms])            up_read
- uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                preempt_count_add
- uname   30805 [000] 24001.058784838: ([kernel.kallsyms])                    in_lock_functions
- uname   30805 [000] 24001.058784838: ([kernel.kallsyms])                preempt_count_sub
- uname   30805 [000] 24001.058784838: ([kernel.kallsyms])            _copy_to_user
- uname   30805 [000] 24001.058784838: ([kernel.kallsyms])        syscall_exit_to_user_mode
- uname   30805 [000] 24001.058784838: ([kernel.kallsyms])            syscall_exit_work
- uname   30805 [000] 24001.058784838: ([kernel.kallsyms])                perf_syscall_exit
- uname   30805 [000] 24001.058784838: ([kernel.kallsyms])                    debug_smp_processor_id
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                    perf_trace_buf_alloc
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                        perf_swevent_get_recursion_context
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                            debug_smp_processor_id
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                        debug_smp_processor_id
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                    perf_tp_event
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                        perf_trace_buf_update
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                            tracing_gen_ctx_irq_test
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                        perf_swevent_event
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                            __perf_event_account_interrupt
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                __this_cpu_preempt_check
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                            perf_event_output_forward
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                perf_event_aux_pause
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                    ring_buffer_get
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                        __rcu_read_lock
- uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                        __rcu_read_unlock
- uname   30805 [000] 24001.058785254: ([kernel.kallsyms])                                    pt_event_stop
- uname   30805 [000] 24001.058785254: ([kernel.kallsyms])                                        debug_smp_processor_id
- uname   30805 [000] 24001.058785254: ([kernel.kallsyms])                                        debug_smp_processor_id
- uname   30805 [000] 24001.058785254: ([kernel.kallsyms])                                        native_write_msr
- uname   30805 [000] 24001.058785463: ([kernel.kallsyms])                                        native_write_msr
- uname   30805 [000] 24001.058785639: 0x0
+Implement support for PERF_EF_PAUSE / PERF_EF_RESUME. When aux_paused, stop
+tracing. When not aux_paused, only start tracing if it isn't currently
+meant to be stopped.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Acked-by: James Clark <james.clark@arm.com>
 ---
+ arch/x86/events/intel/pt.c | 63 ++++++++++++++++++++++++++++++++++++--
+ arch/x86/events/intel/pt.h |  4 +++
+ 2 files changed, 64 insertions(+), 3 deletions(-)
 
-
-Changes in V5:
-	Added James' Ack
-
-Changes in V4:
-	Rename aux_output_cfg -> aux_action
-	Reorder aux_action bits from:
-		aux_pause, aux_resume, aux_start_paused
-	to:
-		aux_start_paused, aux_pause, aux_resume
-	Fix aux_action bits __u64 -> __u32
-
-
- include/linux/perf_event.h      | 15 +++++++
- include/uapi/linux/perf_event.h | 11 ++++-
- kernel/events/core.c            | 72 +++++++++++++++++++++++++++++++--
- kernel/events/internal.h        |  1 +
- 4 files changed, 95 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index d2a15c0c6f8a..6c1600b9bdb3 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -291,6 +291,7 @@ struct perf_event_pmu_context;
- #define PERF_PMU_CAP_NO_EXCLUDE			0x0040
- #define PERF_PMU_CAP_AUX_OUTPUT			0x0080
- #define PERF_PMU_CAP_EXTENDED_HW_TYPE		0x0100
-+#define PERF_PMU_CAP_AUX_PAUSE			0x0200
+diff --git a/arch/x86/events/intel/pt.c b/arch/x86/events/intel/pt.c
+index 8e2a12235e62..b6e838f2c6d5 100644
+--- a/arch/x86/events/intel/pt.c
++++ b/arch/x86/events/intel/pt.c
+@@ -418,6 +418,9 @@ static void pt_config_start(struct perf_event *event)
+ 	struct pt *pt = this_cpu_ptr(&pt_ctx);
+ 	u64 ctl = event->hw.config;
  
- struct perf_output_handle;
- 
-@@ -363,6 +364,8 @@ struct pmu {
- #define PERF_EF_START	0x01		/* start the counter when adding    */
- #define PERF_EF_RELOAD	0x02		/* reload the counter when starting */
- #define PERF_EF_UPDATE	0x04		/* update the counter when stopping */
-+#define PERF_EF_PAUSE	0x08		/* AUX area event, pause tracing */
-+#define PERF_EF_RESUME	0x10		/* AUX area event, resume tracing */
- 
- 	/*
- 	 * Adds/Removes a counter to/from the PMU, can be done inside a
-@@ -402,6 +405,15 @@ struct pmu {
- 	 *
- 	 * ->start() with PERF_EF_RELOAD will reprogram the counter
- 	 *  value, must be preceded by a ->stop() with PERF_EF_UPDATE.
-+	 *
-+	 * ->stop() with PERF_EF_PAUSE will stop as simply as possible. Will not
-+	 * overlap another ->stop() with PERF_EF_PAUSE nor ->start() with
-+	 * PERF_EF_RESUME.
-+	 *
-+	 * ->start() with PERF_EF_RESUME will start as simply as possible but
-+	 * only if the counter is not otherwise stopped. Will not overlap
-+	 * another ->start() with PERF_EF_RESUME nor ->stop() with
-+	 * PERF_EF_PAUSE.
- 	 */
- 	void (*start)			(struct perf_event *event, int flags);
- 	void (*stop)			(struct perf_event *event, int flags);
-@@ -798,6 +810,9 @@ struct perf_event {
- 	/* for aux_output events */
- 	struct perf_event		*aux_event;
- 
-+	/* for AUX area events */
-+	unsigned int			aux_paused;
++	if (READ_ONCE(event->aux_paused))
++		return;
 +
- 	void (*destroy)(struct perf_event *);
- 	struct rcu_head			rcu_head;
+ 	ctl |= RTIT_CTL_TRACEEN;
+ 	if (READ_ONCE(pt->vmx_on))
+ 		perf_aux_output_flag(&pt->handle, PERF_AUX_FLAG_PARTIAL);
+@@ -534,7 +537,20 @@ static void pt_config(struct perf_event *event)
+ 	reg |= (event->attr.config & PT_CONFIG_MASK);
  
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index 3a64499b0f5d..0c557f0a17b3 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -511,7 +511,16 @@ struct perf_event_attr {
- 	__u16	sample_max_stack;
- 	__u16	__reserved_2;
- 	__u32	aux_sample_size;
--	__u32	__reserved_3;
+ 	event->hw.config = reg;
 +
-+	union {
-+		__u32	aux_action;
-+		struct {
-+			__u32	aux_start_paused :  1, /* start AUX area tracing paused */
-+				aux_pause        :  1, /* on overflow, pause AUX area tracing */
-+				aux_resume       :  1, /* on overflow, resume AUX area tracing */
-+				__reserved_3     : 29;
-+		};
-+	};
++	/*
++	 * Allow resume before starting so as not to overwrite a value set by a
++	 * PMI.
++	 */
++	WRITE_ONCE(pt->resume_allowed, 1);
++
+ 	pt_config_start(event);
++
++	/*
++	 * Allow pause after starting so its pt_config_stop() doesn't race with
++	 * pt_config_start().
++	 */
++	WRITE_ONCE(pt->pause_allowed, 1);
+ }
  
- 	/*
- 	 * User provided data if sigtrap=1, passed back to user via
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index f0f0f71213a1..00f6d0a327e8 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -2097,7 +2097,8 @@ static void perf_put_aux_event(struct perf_event *event)
+ static void pt_config_stop(struct perf_event *event)
+@@ -1511,6 +1527,7 @@ void intel_pt_interrupt(void)
+ 		buf = perf_aux_output_begin(&pt->handle, event);
+ 		if (!buf) {
+ 			event->hw.state = PERF_HES_STOPPED;
++			pt->resume_allowed = 0;
+ 			return;
+ 		}
  
- static bool perf_need_aux_event(struct perf_event *event)
+@@ -1519,6 +1536,7 @@ void intel_pt_interrupt(void)
+ 		ret = pt_buffer_reset_markers(buf, &pt->handle);
+ 		if (ret) {
+ 			perf_aux_output_end(&pt->handle, 0);
++			pt->resume_allowed = 0;
+ 			return;
+ 		}
+ 
+@@ -1573,6 +1591,26 @@ static void pt_event_start(struct perf_event *event, int mode)
+ 	struct pt *pt = this_cpu_ptr(&pt_ctx);
+ 	struct pt_buffer *buf;
+ 
++	if (mode & PERF_EF_RESUME) {
++		if (READ_ONCE(pt->resume_allowed)) {
++			u64 status;
++
++			/*
++			 * Only if the trace is not active and the error and
++			 * stopped bits are clear, is it safe to start, but a
++			 * PMI might have just cleared these, so resume_allowed
++			 * must be checked again also.
++			 */
++			rdmsrl(MSR_IA32_RTIT_STATUS, status);
++			if (!(status & (RTIT_STATUS_TRIGGEREN |
++					RTIT_STATUS_ERROR |
++					RTIT_STATUS_STOPPED)) &&
++			   READ_ONCE(pt->resume_allowed))
++				pt_config_start(event);
++		}
++		return;
++	}
++
+ 	buf = perf_aux_output_begin(&pt->handle, event);
+ 	if (!buf)
+ 		goto fail_stop;
+@@ -1601,6 +1639,16 @@ static void pt_event_stop(struct perf_event *event, int mode)
  {
--	return !!event->attr.aux_output || !!event->attr.aux_sample_size;
-+	return event->attr.aux_output || event->attr.aux_sample_size ||
-+	       event->attr.aux_pause || event->attr.aux_resume;
- }
+ 	struct pt *pt = this_cpu_ptr(&pt_ctx);
  
- static int perf_get_aux_event(struct perf_event *event,
-@@ -2122,6 +2123,10 @@ static int perf_get_aux_event(struct perf_event *event,
- 	    !perf_aux_output_match(event, group_leader))
- 		return 0;
- 
-+	if ((event->attr.aux_pause || event->attr.aux_resume) &&
-+	    !(group_leader->pmu->capabilities & PERF_PMU_CAP_AUX_PAUSE))
-+		return 0;
-+
- 	if (event->attr.aux_sample_size && !group_leader->pmu->snapshot_aux)
- 		return 0;
- 
-@@ -7854,6 +7859,47 @@ void perf_prepare_header(struct perf_event_header *header,
- 	WARN_ON_ONCE(header->size & 7);
- }
- 
-+static void __perf_event_aux_pause(struct perf_event *event, bool pause)
-+{
-+	if (pause) {
-+		if (!READ_ONCE(event->aux_paused)) {
-+			WRITE_ONCE(event->aux_paused, 1);
-+			event->pmu->stop(event, PERF_EF_PAUSE);
-+		}
-+	} else {
-+		if (READ_ONCE(event->aux_paused)) {
-+			WRITE_ONCE(event->aux_paused, 0);
-+			event->pmu->start(event, PERF_EF_RESUME);
-+		}
-+	}
-+}
-+
-+static void perf_event_aux_pause(struct perf_event *event, bool pause)
-+{
-+	struct perf_buffer *rb;
-+	unsigned long flags;
-+
-+	if (WARN_ON_ONCE(!event))
++	if (mode & PERF_EF_PAUSE) {
++		if (READ_ONCE(pt->pause_allowed))
++			pt_config_stop(event);
 +		return;
-+
-+	rb = ring_buffer_get(event);
-+	if (!rb)
-+		return;
-+
-+	local_irq_save(flags);
-+	/* Guard against NMI, NMI loses here */
-+	if (READ_ONCE(rb->aux_in_pause_resume))
-+		goto out_restore;
-+	WRITE_ONCE(rb->aux_in_pause_resume, 1);
-+	barrier();
-+	__perf_event_aux_pause(event, pause);
-+	barrier();
-+	WRITE_ONCE(rb->aux_in_pause_resume, 0);
-+out_restore:
-+	local_irq_restore(flags);
-+	ring_buffer_put(rb);
-+}
-+
- static __always_inline int
- __perf_event_output(struct perf_event *event,
- 		    struct perf_sample_data *data,
-@@ -7867,6 +7913,9 @@ __perf_event_output(struct perf_event *event,
- 	struct perf_event_header header;
- 	int err;
- 
-+	if (event->attr.aux_pause)
-+		perf_event_aux_pause(event->aux_event, true);
-+
- 	/* protect the callchain buffers */
- 	rcu_read_lock();
- 
-@@ -7883,6 +7932,10 @@ __perf_event_output(struct perf_event *event,
- 
- exit:
- 	rcu_read_unlock();
-+
-+	if (event->attr.aux_resume)
-+		perf_event_aux_pause(event->aux_event, false);
-+
- 	return err;
- }
- 
-@@ -12036,10 +12089,23 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
- 	}
- 
- 	if (event->attr.aux_output &&
--	    !(pmu->capabilities & PERF_PMU_CAP_AUX_OUTPUT)) {
-+	    (!(pmu->capabilities & PERF_PMU_CAP_AUX_OUTPUT) ||
-+	     event->attr.aux_pause || event->attr.aux_resume)) {
-+		err = -EOPNOTSUPP;
-+		goto err_pmu;
 +	}
 +
-+	if (event->attr.aux_pause && event->attr.aux_resume) {
-+		err = -EINVAL;
-+		goto err_pmu;
-+	}
++	/* Protect against racing */
++	WRITE_ONCE(pt->pause_allowed, 0);
++	WRITE_ONCE(pt->resume_allowed, 0);
 +
-+	if (event->attr.aux_start_paused &&
-+	    !(pmu->capabilities & PERF_PMU_CAP_AUX_PAUSE)) {
- 		err = -EOPNOTSUPP;
- 		goto err_pmu;
- 	}
-+	event->aux_paused = event->attr.aux_start_paused;
- 
- 	if (cgroup_fd != -1) {
- 		err = perf_cgroup_connect(cgroup_fd, event, attr, group_leader);
-@@ -12836,7 +12902,7 @@ perf_event_create_kernel_counter(struct perf_event_attr *attr, int cpu,
- 	 * Grouping is not supported for kernel events, neither is 'AUX',
- 	 * make sure the caller's intentions are adjusted.
+ 	/*
+ 	 * Protect against the PMI racing with disabling wrmsr,
+ 	 * see comment in intel_pt_interrupt().
+@@ -1659,8 +1707,12 @@ static long pt_event_snapshot_aux(struct perf_event *event,
+ 	/*
+ 	 * Here, handle_nmi tells us if the tracing is on
  	 */
--	if (attr->aux_output)
-+	if (attr->aux_output || attr->aux_action)
- 		return ERR_PTR(-EINVAL);
+-	if (READ_ONCE(pt->handle_nmi))
++	if (READ_ONCE(pt->handle_nmi)) {
++		/* Protect against racing */
++		WRITE_ONCE(pt->pause_allowed, 0);
++		WRITE_ONCE(pt->resume_allowed, 0);
+ 		pt_config_stop(event);
++	}
  
- 	event = perf_event_alloc(attr, cpu, task, NULL, NULL,
-diff --git a/kernel/events/internal.h b/kernel/events/internal.h
-index 5150d5f84c03..3320f78117dc 100644
---- a/kernel/events/internal.h
-+++ b/kernel/events/internal.h
-@@ -51,6 +51,7 @@ struct perf_buffer {
- 	void				(*free_aux)(void *);
- 	refcount_t			aux_refcount;
- 	int				aux_in_sampling;
-+	int				aux_in_pause_resume;
- 	void				**aux_pages;
- 	void				*aux_priv;
+ 	pt_read_offset(buf);
+ 	pt_update_head(pt);
+@@ -1677,8 +1729,11 @@ static long pt_event_snapshot_aux(struct perf_event *event,
+ 	 * Compiler barrier not needed as we couldn't have been
+ 	 * preempted by anything that touches pt->handle_nmi.
+ 	 */
+-	if (pt->handle_nmi)
++	if (pt->handle_nmi) {
++		WRITE_ONCE(pt->resume_allowed, 1);
+ 		pt_config_start(event);
++		WRITE_ONCE(pt->pause_allowed, 1);
++	}
  
+ 	return ret;
+ }
+@@ -1794,7 +1849,9 @@ static __init int pt_init(void)
+ 	if (!intel_pt_validate_hw_cap(PT_CAP_topa_multiple_entries))
+ 		pt_pmu.pmu.capabilities = PERF_PMU_CAP_AUX_NO_SG;
+ 
+-	pt_pmu.pmu.capabilities	|= PERF_PMU_CAP_EXCLUSIVE | PERF_PMU_CAP_ITRACE;
++	pt_pmu.pmu.capabilities		|= PERF_PMU_CAP_EXCLUSIVE |
++					   PERF_PMU_CAP_ITRACE |
++					   PERF_PMU_CAP_AUX_PAUSE;
+ 	pt_pmu.pmu.attr_groups		 = pt_attr_groups;
+ 	pt_pmu.pmu.task_ctx_nr		 = perf_sw_context;
+ 	pt_pmu.pmu.event_init		 = pt_event_init;
+diff --git a/arch/x86/events/intel/pt.h b/arch/x86/events/intel/pt.h
+index 96906a62aacd..b9527205e028 100644
+--- a/arch/x86/events/intel/pt.h
++++ b/arch/x86/events/intel/pt.h
+@@ -117,6 +117,8 @@ struct pt_filters {
+  * @filters:		last configured filters
+  * @handle_nmi:		do handle PT PMI on this cpu, there's an active event
+  * @vmx_on:		1 if VMX is ON on this cpu
++ * @pause_allowed:	PERF_EF_PAUSE is allowed to stop tracing
++ * @resume_allowed:	PERF_EF_RESUME is allowed to start tracing
+  * @output_base:	cached RTIT_OUTPUT_BASE MSR value
+  * @output_mask:	cached RTIT_OUTPUT_MASK MSR value
+  */
+@@ -125,6 +127,8 @@ struct pt {
+ 	struct pt_filters	filters;
+ 	int			handle_nmi;
+ 	int			vmx_on;
++	int			pause_allowed;
++	int			resume_allowed;
+ 	u64			output_base;
+ 	u64			output_mask;
+ };
 -- 
 2.34.1
 
