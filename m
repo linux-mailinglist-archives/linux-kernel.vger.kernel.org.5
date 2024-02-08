@@ -1,216 +1,129 @@
-Return-Path: <linux-kernel+bounces-58881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C39C84EE08
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 00:46:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D841484EE12
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 00:52:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 592E0B2A521
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 23:46:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9648C2884BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 23:52:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99784524BD;
-	Thu,  8 Feb 2024 23:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3FC50A8C;
+	Thu,  8 Feb 2024 23:52:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ICG5MFU6";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="QnlWa4ie";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ICG5MFU6";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="QnlWa4ie"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cH4ZUeii"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1988051C3D
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 23:45:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97541E883;
+	Thu,  8 Feb 2024 23:52:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707435920; cv=none; b=I+l3TRIc0QnlGEvnXdbvXKE0FVxWdJalBBy0H7lqJcMr/l3rjf3eEJN9xPv2FIcibHVQD7CzWv9JChsAZ6vzyv7ewP8WY4nv+SwSaxmqMENBm19Pq4q/hqVbNj7y5g1FubijTPjsunVGA69e5+inoi3WTgejwDXrT1Ef8QzcnKw=
+	t=1707436356; cv=none; b=la15E18EcX6vkFM3pqrBZlVLnmEflK5V4U4K5Pj7dVez3lIbcB3pfFMAvTtkGesBaq0A1Zzn8ffk+Wh4RO087yqgOBRD980kYiTb0ceaGCDc6AOi0CRLDgkANjUgmqu86zJwR8Loax0b6UlxD9DSTwL6QKYYXMd/3NQ93j8osCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707435920; c=relaxed/simple;
-	bh=iZR/cSUAPw61zT2l0lvV0xr2ZHSjmz6eg0cTSrld+h0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=I/tL3W5qxwWyPseg+Xu9aXMuZ7dTLN7MDlNsqJHnmTyhNq3UoPwF/RA1Kdb8VzIZmJkTC7XtrN/dHArovi3z2d5+iFDxWwA6MYeKGZd6f7wcmtL9I8hu59PUVbArqJvB8pUdyyZyd508/SG5RjynRXB4OzTpZ7EfRsMo1gtnQZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ICG5MFU6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=QnlWa4ie; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ICG5MFU6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=QnlWa4ie; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 56E6F1F7AB;
-	Thu,  8 Feb 2024 23:45:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707435917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5Ny8/gais+bfRbc1kxGSF6BydkfkKmZPjGNqn+J3Zwo=;
-	b=ICG5MFU6nDqsx4akax9QFJCZ0gtmoOaumfOV5ciFWe3dszk6jCbvNQweZcREVQQQQtV1CE
-	+EFKutBxG92XfUBOsAlfYK87ItwpTFKkaSkxdax8JJkZYqj3wQry0zfFawbVfIhdFBFGQe
-	3OvPAm+/b+WN2TdWWdBp/ppLPLkEm7E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707435917;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5Ny8/gais+bfRbc1kxGSF6BydkfkKmZPjGNqn+J3Zwo=;
-	b=QnlWa4ieMNxaHh1lPaByAiwWzG4twvBtatrUDg7Kfyqlf/+raHbjXP5l93h60PpXsRrbOg
-	PCDMFPgk9mg4gTCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707435917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5Ny8/gais+bfRbc1kxGSF6BydkfkKmZPjGNqn+J3Zwo=;
-	b=ICG5MFU6nDqsx4akax9QFJCZ0gtmoOaumfOV5ciFWe3dszk6jCbvNQweZcREVQQQQtV1CE
-	+EFKutBxG92XfUBOsAlfYK87ItwpTFKkaSkxdax8JJkZYqj3wQry0zfFawbVfIhdFBFGQe
-	3OvPAm+/b+WN2TdWWdBp/ppLPLkEm7E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707435917;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5Ny8/gais+bfRbc1kxGSF6BydkfkKmZPjGNqn+J3Zwo=;
-	b=QnlWa4ieMNxaHh1lPaByAiwWzG4twvBtatrUDg7Kfyqlf/+raHbjXP5l93h60PpXsRrbOg
-	PCDMFPgk9mg4gTCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C9CAA13984;
-	Thu,  8 Feb 2024 23:45:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id KDmJLoxnxWWUfAAAD6G6ig
-	(envelope-from <osalvador@suse.de>); Thu, 08 Feb 2024 23:45:16 +0000
-From: Oscar Salvador <osalvador@suse.de>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	Michal Hocko <mhocko@suse.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v7 4/4] mm,page_owner: Filter out stacks by a threshold
-Date: Fri,  9 Feb 2024 00:45:39 +0100
-Message-ID: <20240208234539.19113-5-osalvador@suse.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240208234539.19113-1-osalvador@suse.de>
-References: <20240208234539.19113-1-osalvador@suse.de>
+	s=arc-20240116; t=1707436356; c=relaxed/simple;
+	bh=0TuJ81rwQVLgk6bEkwPrrgalWDSWS4LrIpoBucqU9M8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E8o4Y1bBt9KD1/qKMbjlyllmVTWl5CawhRQygGVRgvZLcaMmTUah8c88ilZ3OL1/Zf+aPMyEfXNLJN6yEKdrTY5Yc8sCMDN4JKykhsFjpDR+Yw/oQOxDaKVQkBgJ3hjONFvDD1zqfhUfd2AMH3sd6EyCwgC67wGpI5A0shTjMxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cH4ZUeii; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d09cf00214so4980671fa.0;
+        Thu, 08 Feb 2024 15:52:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707436353; x=1708041153; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m6wMFe6NQrnI4rL+5ph8w/QElo3FYa1DxN0fAFRr46I=;
+        b=cH4ZUeiiWrerqbW+vDPe10V8AziGwv2IS5ecDT3/EXRM60hEdkycCfcJi+Urz/h7j0
+         0IqEWja/nfaO9T0LeaR991lmUKpEF4K1T5evKL9o/+t4X69qLFTF4+Y1auA/MjsR7Gcu
+         eYutEAkt9lhP7TKnHAVgnrizEAyGNXUyLF87/UzICmvzu/DXNexxl+AKSOHQC9IEI1h5
+         Cbi6Z/DvmmliO+8J/riVvgnGNq+W+n8MA8j9ZXiXAKJgXQvkRRQOR2OTqPXHWb149HVr
+         FfMtAHCnyRuWKRT564kEmC8aICiunDHizU6cTUbXEJMeHy9Sjsbf33HFqlC0S/wJAcTs
+         LX5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707436353; x=1708041153;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m6wMFe6NQrnI4rL+5ph8w/QElo3FYa1DxN0fAFRr46I=;
+        b=PZ6x4iW1Mx5j3p8r8qq/yFIUGDnub2RWuFi8cmeMPCsSZq1EgK92tKbfxNQbVOq5Bm
+         WItbP3fG3BzHXg3F6bp0fBv+J2JhkF3DxMsOALZbz2XGO0uiYUc10R83ExulntXBQNIN
+         ZnKa17Untc9xbSt3Bjw+cVA1JPr8qK1grqNauqUIkqeQD1qK8trAyeuhYZM311rI/F45
+         8nBHqFVXOZ4n7pGwEk78DWbEZq4aQivu+heixfRA4XgYT0g63y9zIUozFV3hlE422Bib
+         eFYD/N7MtezcKx2ztDy5i++WZgPstuRDJIrP8x+axIMovkG32UXU7uK/Z9NVsMDND1Gl
+         YfKw==
+X-Gm-Message-State: AOJu0YwlDSYmLMXNy+mHpekWkl9fVyaSQ/oE5XaDfqr17BpEDcqhz6jo
+	pScGXYECC6ET2ra8sgOaTpGE+zVCZHEAPCmKLZ7exH3Jo3RdWparR+GqDuQZA6rtluR5qLL1mQy
+	YmuSkgHIgHonkxHhW9Bv3BXC9/eg=
+X-Google-Smtp-Source: AGHT+IFPcxdRVAxjhMcMjYR3MMd5br9sMGHnjaUL+RmdGQeL+yFqdWj56QUVnvIu5llXHFQLjelSsJmy6JIpifSUWS0=
+X-Received: by 2002:a2e:a9a2:0:b0:2d0:c0d0:d4ed with SMTP id
+ x34-20020a2ea9a2000000b002d0c0d0d4edmr94867ljq.0.1707436352580; Thu, 08 Feb
+ 2024 15:52:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: ***
-X-Spamd-Bar: +++
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ICG5MFU6;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=QnlWa4ie
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [3.49 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.00)[17.25%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,suse.cz,google.com,gmail.com,suse.de];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: 3.49
-X-Rspamd-Queue-Id: 56E6F1F7AB
-X-Spam-Flag: NO
+References: <20240208093136.178797-1-zhaoyang.huang@unisoc.com>
+ <20240208093136.178797-3-zhaoyang.huang@unisoc.com> <5f934ebf-4e2a-44f9-993f-8b2c8d358370@acm.org>
+In-Reply-To: <5f934ebf-4e2a-44f9-993f-8b2c8d358370@acm.org>
+From: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date: Fri, 9 Feb 2024 07:52:21 +0800
+Message-ID: <CAGWkznGvwBZWv+g7=0JxRpeQ+chMoN27TDmuSAVU2O37fGNCDg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] block: introducing a bias over deadline's fifo_time
+To: Bart Van Assche <bvanassche@acm.org>
+Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Jens Axboe <axboe@kernel.dk>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Yu Zhao <yuzhao@google.com>, linux-block@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, steve.kang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We want to be able to filter out the stacks based on
-a threshold we can tune.
-By writing to 'page_owner_threshold' file, we can adjust
-the threshold value.
-
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
----
- mm/page_owner.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
-
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index aea212734557..d95a73cf2581 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -780,14 +780,18 @@ static void *stack_next(struct seq_file *m, void *v, loff_t *ppos)
- 	return stack;
- }
- 
-+static unsigned long page_owner_stack_threshold;
-+
- static int stack_print(struct seq_file *m, void *v)
- {
- 	char *buf;
- 	int ret = 0;
- 	struct stack_iterator *iter = m->private;
- 	struct stack_record *stack = iter->last_stack;
-+	int stack_count = refcount_read(&stack->count);
- 
--	if (!stack->size || stack->size < 0 || refcount_read(&stack->count) < 2)
-+	if (!stack->size || stack->size < 0 || stack_count < 2 ||
-+	    stack_count < page_owner_stack_threshold)
- 		return 0;
- 
- 	buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
-@@ -832,6 +836,21 @@ const struct file_operations page_owner_stack_operations = {
- 	.release	= seq_release,
- };
- 
-+static int page_owner_threshold_get(void *data, u64 *val)
-+{
-+	*val = page_owner_stack_threshold;
-+	return 0;
-+}
-+
-+static int page_owner_threshold_set(void *data, u64 val)
-+{
-+	page_owner_stack_threshold = val;
-+	return 0;
-+}
-+
-+DEFINE_SIMPLE_ATTRIBUTE(proc_page_owner_threshold, &page_owner_threshold_get,
-+			&page_owner_threshold_set, "%llu");
-+
- static int __init pageowner_init(void)
- {
- 	if (!static_branch_unlikely(&page_owner_inited)) {
-@@ -843,6 +862,8 @@ static int __init pageowner_init(void)
- 			    &proc_page_owner_operations);
- 	debugfs_create_file("page_owner_stacks", 0400, NULL, NULL,
- 			    &page_owner_stack_operations);
-+	debugfs_create_file("page_owner_threshold", 0600, NULL, NULL,
-+			    &proc_page_owner_threshold);
- 
- 	return 0;
- }
--- 
-2.43.0
-
+On Fri, Feb 9, 2024 at 1:46=E2=80=AFAM Bart Van Assche <bvanassche@acm.org>=
+ wrote:
+>
+> On 2/8/24 01:31, zhaoyang.huang wrote:
+> > diff --git a/block/mq-deadline.c b/block/mq-deadline.c
+> > index f958e79277b8..43c08c3d6f18 100644
+> > --- a/block/mq-deadline.c
+> > +++ b/block/mq-deadline.c
+> > @@ -15,6 +15,7 @@
+> >   #include <linux/compiler.h>
+> >   #include <linux/rbtree.h>
+> >   #include <linux/sbitmap.h>
+> > +#include "../kernel/sched/sched.h"
+>
+> Is kernel/sched/sched.h perhaps a private scheduler kernel header file? S=
+houldn't
+> block layer code only include public scheduler header files?
+>
+> > @@ -840,7 +842,9 @@ static void dd_insert_request(struct blk_mq_hw_ctx =
+*hctx, struct request *rq,
+> >               /*
+> >                * set expire time and add to fifo list
+> >                */
+> > -             rq->fifo_time =3D jiffies + dd->fifo_expire[data_dir];
+> > +             fifo_expire =3D task_is_realtime(current) ? dd->fifo_expi=
+re[data_dir] :
+> > +                     CFS_PROPORTION(current, dd->fifo_expire[data_dir]=
+);
+> > +             rq->fifo_time =3D jiffies + fifo_expire;
+> >               insert_before =3D &per_prio->fifo_list[data_dir];
+> >   #ifdef CONFIG_BLK_DEV_ZONED
+> >               /*
+>
+> Making the mq-deadline request expiry time dependent on the task priority=
+ seems wrong
+> to me.
+But bio_set_ioprio has done this before
+>
+> Thanks,
+>
+> Bart.
 
