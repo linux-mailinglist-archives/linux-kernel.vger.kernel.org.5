@@ -1,168 +1,69 @@
-Return-Path: <linux-kernel+bounces-58520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38E3684E782
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:15:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CB4384E78A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:17:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E7681C209B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:15:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68A2D1C21714
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63CB085C56;
-	Thu,  8 Feb 2024 18:15:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7E4C85C6C;
+	Thu,  8 Feb 2024 18:16:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RiZmpKyy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mFIO8uGd"
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983DB823C2;
-	Thu,  8 Feb 2024 18:15:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E1E08528E
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 18:16:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707416100; cv=none; b=afITs8kgI26TNwJdnwXyo4upZjP/VEeNLFemnknhT77j/B5Zh3hKz5YKevAjY4f8944NADa6PIULqXePW6W9xlOE0oEYBZ62ObFksh+leLF3k86PJazLIBwZxNLTnKmi0diKiaMuEFA7wdxPyerUZHxoCof672C4/V93nyEo/f0=
+	t=1707416217; cv=none; b=QkU/mMhki8rFXJlWZVhY5ORxVjxi2nT0JNntg4O+YGQeo4mhA2Iv6TeLv6tEvlKWXUG9NNRwib3AyG5TRGiKlIw2ix5eqodjw7UseKvF2XKXXyHT4WpEPfJxxEv0GePlJecWqAckv5P0PKX24dOSv/NrQWtUIykDU/ac+/0d6YM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707416100; c=relaxed/simple;
-	bh=aIG2zX5DjtaY+olsfT6pZkv89oJjkPLs6D2/TaAxBPI=;
+	s=arc-20240116; t=1707416217; c=relaxed/simple;
+	bh=rNIUCtETKvDI8Hv/odLDvKRUeV4HCM5UfBToRIWw2l8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MsLoz1vW/Eg1rCIWE6MmbwSiAwwt3zvbFSF4PBgIZdFxU66JxU+Jr5axOyJ6ob3dUGikusKjr8UtOCL32nrEWhtGesswKyMGNxtlu2XgGNgcHZ4LumLoj3a6Qd1TCRMO6S0YziT9X4yekdMcj7+qtCY1pUbmW8+dwa2Wg42KnYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RiZmpKyy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65972C433C7;
-	Thu,  8 Feb 2024 18:14:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707416100;
-	bh=aIG2zX5DjtaY+olsfT6pZkv89oJjkPLs6D2/TaAxBPI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RiZmpKyye/Vj5bRmKHgM0QYV+JJZNz7rU1CKKb3W9g+os4nMuORfFutfy9QOyM+OJ
-	 xDnMSOZ5k8c6ZxGpTPY38tHfwm+9Ril+24u4p9Acrb2bXIR4vPjlfgOvx3gk/JvY8V
-	 s7/tnCrqfLFSws4DGI3sWTRSfWV8rBwilJjZKYW/jDfGSMZ/DRSahVf7HySUDxPmR1
-	 LtIswGErNeR+z0ohtzGwsm+6pNeUdFNNyixjhiRkY6fBnSI3BaxGOHjPtxn6/4WNXs
-	 CsoIcyltVUukepzC6Xca1UjDCgLyDq1oMyHJBKUwt9l4D4bv9M4ZdABwqWZpF12+hO
-	 8By4XeBj1GkUg==
-Date: Thu, 8 Feb 2024 18:14:55 +0000
-From: Lee Jones <lee@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Flavio Suligoi <f.suligoi@asem.it>, dri-devel@lists.freedesktop.org,
-	linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Daniel Thompson <daniel.thompson@linaro.org>,
-	Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH v2 0/3] backlight: mp3309c: Allow to use on non-OF
- platforms
-Message-ID: <20240208181455.GA689448@google.com>
-References: <20240201151537.367218-1-andriy.shevchenko@linux.intel.com>
- <20240208113425.GK689448@google.com>
- <ZcUMMyV_vBTNw8Rz@smile.fi.intel.com>
- <20240208173946.GX689448@google.com>
- <ZcUYZRDVmHhKQu9j@smile.fi.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jFhDA0N6M98GjAL0dRUevis0P4WrSxydy/jN5Qr/VMeahBFCTHVnEtxoMwKlxVBKmRTPkScj5GQYjFrggoQKxgd1TzoA0uFSU7PjMR541OLoK2Oqn+wOzdCyOcfc/bEtPsriZzwsCLazCWWehchFNCLRj4MGj7U/QwUN0MEI5h8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mFIO8uGd; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 8 Feb 2024 13:16:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707416213;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ohRz5RiPMWtF4kQys3+fHCi2fJWaQsjPzFcmqjjn6uQ=;
+	b=mFIO8uGdB89nmUic8AwkwN/N7++x061NZ24AL5tSHcH20Bn48dQ0aCv55vQ+DPZgSka/d/
+	O97djDj+V69+bOVgngSYsLduPsvSQL+2wjDGJ+vSerWricoq3Dg4Cvs75I/gPLqF/zhGHQ
+	eBOJfNpCxn0YhcEG9yW+iZxlh87LweM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/7] filesystem visibililty ioctls
+Message-ID: <udx7fz67ooha5cv3hkphb5pyuoqefgqzrr27at76beixeofqgv@hfsqreh2ozlt>
+References: <20240206201858.952303-1-kent.overstreet@linux.dev>
+ <20240208-bachforelle-teilung-f5f2301e5acc@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZcUYZRDVmHhKQu9j@smile.fi.intel.com>
+In-Reply-To: <20240208-bachforelle-teilung-f5f2301e5acc@brauner>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, 08 Feb 2024, Andy Shevchenko wrote:
-
-> On Thu, Feb 08, 2024 at 05:39:46PM +0000, Lee Jones wrote:
-> > On Thu, 08 Feb 2024, Andy Shevchenko wrote:
-> > > On Thu, Feb 08, 2024 at 11:34:25AM +0000, Lee Jones wrote:
-> > > > On Thu, 01 Feb 2024, Andy Shevchenko wrote:
+On Thu, Feb 08, 2024 at 10:48:31AM +0100, Christian Brauner wrote:
+> > Christain, if nothing else comes up, are you ready to take this?
 > 
-> ...
-> 
-> > > > >   backlight: mp3309c: Utilise temporary variable for struct device
-> > > 
-> > > (1)
-> > > 
-> > > > Set no longer applies.  Please rebase, thanks.
-> > > 
-> > > I got a contradictory messages:
-> > > 1) email that says that all had been applied;
-> > > 2) this email (that tells the complete opposite);
-> > > 3) the repository where the first two were applied.
-> > > 
-> > > While you can amend your scripts, I think I need to rebase only the last patch
-> > 
-> > This is what I assume happened:
-> > 
-> > 1. Attempted to apply the set (as a set)
-> > 2. 2 commits applied cleanly
-> > 3. The final commit conflicted
-> 
-> Which is really strange. I have just applied (with b4) on top of your changes
-> and no complains so far.
-> 
-> $ git am ./v2_20240201_andriy_shevchenko_backlight_mp3309c_allow_to_use_on_non_of_platforms.mbx
-> Applying: backlight: mp3309c: Make use of device properties
-> Applying: backlight: mp3309c: use dev_err_probe() instead of dev_err()
-> Applying: backlight: mp3309c: Utilise temporary variable for struct device
-> 
-> Can you show what b4 tells you about this?
+> I'm amazed how consistently you mistype my name. Sorry, I just read
+> that. Yep, I'm about to pick this up.
 
-Fetching patch(es)
-Analyzing 14 messages in the thread
-Checking attestation on all messages, may take a moment...
----
-  ✓ [PATCH v2 1/3] backlight: mp3309c: Make use of device properties
-    + Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org> (✓ DKIM/linaro.org)
-    + Link: https://lore.kernel.org/r/20240201151537.367218-2-andriy.shevchenko@linux.intel.com
-    + Signed-off-by: Lee Jones <lee@kernel.org>
-  ✓ [PATCH v2 2/3] backlight: mp3309c: use dev_err_probe() instead of dev_err()
-    + Tested-by: Flavio Suligoi <f.suligoi@asem.it> (✗ DKIM/asem.it)
-    + Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org> (✓ DKIM/linaro.org)
-    + Link: https://lore.kernel.org/r/20240201151537.367218-3-andriy.shevchenko@linux.intel.com
-    + Signed-off-by: Lee Jones <lee@kernel.org>
-  ✓ [PATCH v2 3/3] backlight: mp3309c: Utilise temporary variable for struct device
-    + Link: https://lore.kernel.org/r/20240201151537.367218-4-andriy.shevchenko@linux.intel.com
-    + Signed-off-by: Lee Jones <lee@kernel.org>
-  ---
-  ✓ Signed: DKIM/intel.com (From: andriy.shevchenko@linux.intel.com)
----
-Total patches: 3
-Prepared a fake commit range for 3-way merge (672ecc5199b5..d507b9f4c5b9)
----
- Link: https://lore.kernel.org/r/20240201151537.367218-1-andriy.shevchenko@linux.intel.com
- Base: not specified
-
-Running through checkpatch.pl
-total: 0 errors, 0 warnings, 103 lines checked
-
-"[PATCH v2 1/3] backlight: mp3309c: Make use of device properties" has no obvious style problems and is ready for submission.
-total: 0 errors, 0 warnings, 41 lines checked
-
-"[PATCH v2 2/3] backlight: mp3309c: use dev_err_probe() instead of" has no obvious style problems and is ready for submission.
-total: 0 errors, 0 warnings, 81 lines checked
-
-"[PATCH v2 3/3] backlight: mp3309c: Utilise temporary variable for" has no obvious style problems and is ready for submission.
-
-Check the results (hit return to continue or Ctrl+c to exit)
-
-
-Applying patch(es)
-Applying: backlight: mp3309c: Make use of device properties
-Applying: backlight: mp3309c: use dev_err_probe() instead of dev_err()
-Applying: backlight: mp3309c: Utilise temporary variable for struct device
-Using index info to reconstruct a base tree...
-M	drivers/video/backlight/mp3309c.c
-Checking patch drivers/video/backlight/mp3309c.c...
-Applied patch drivers/video/backlight/mp3309c.c cleanly.
-Falling back to patching base and 3-way merge...
-error: Your local changes to the following files would be overwritten by merge:
-	drivers/video/backlight/mp3309c.c
-Please commit your changes or stash them before you merge.
-Aborting
-error: Failed to merge in the changes.
-Patch failed at 0003 backlight: mp3309c: Utilise temporary variable for struct device
-hint: Use 'git am --show-current-patch=diff' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
-
--- 
-Lee Jones [李琼斯]
+Gah, am I becoming dyslexic in my old age...
 
