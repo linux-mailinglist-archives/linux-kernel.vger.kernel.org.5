@@ -1,235 +1,200 @@
-Return-Path: <linux-kernel+bounces-58602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94B8784E8C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:14:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 255B484E8C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:13:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A858BB2BF72
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:13:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EE241F2FF72
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:13:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF59364AC;
-	Thu,  8 Feb 2024 19:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292B7364B6;
+	Thu,  8 Feb 2024 19:13:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lo7R4CcH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FngW70EH"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BCA436121;
-	Thu,  8 Feb 2024 19:12:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F33D36135;
+	Thu,  8 Feb 2024 19:13:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707419573; cv=none; b=ib/lOUYYUEKCIvTEgDPWFutZmp3Vt40A9sToHGOo3b/bSMoJrlYlW7u20aUFJ2LeyfBJkJhsrh8n1T6D9Xpg9M3LEK4WPygg38Qic6zGRmUcZvTIuzf/qmmgOrC4BDiwayUXecjnIlXXFKcqxZN1bVYU36g4Wk6AoOYeotDSu+8=
+	t=1707419613; cv=none; b=p0a6PhncTvR2byMcip2AmxLdGZUhqe4+CtXCarI+/zeTAkWISD89ENYUVLX/g6VCcRvo3+Bf/xkpnQhHC74Q73Viv0cwg5SNu8UK+H3ikQ6YPGFXu7bQHeqmX/wqStvX2UFM4GyX6sM4WHG8WjC0IStnFc5KmbssTi2+MUa4XJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707419573; c=relaxed/simple;
-	bh=qxWxhPD5BRxGx/8XjhWHfoKRfl1hlFiGpqLEiC51qZg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KCngwToU292RZEhw8KAdzyd+YxE++hMYWhMnXWpuYPH5JDHmvSdpettBE5BXSW/bdBDfdFxMHJ9pNnc29AgVsYA/yged/DiZKKIL20b/7zL/r0qngwED0x5OE0+BkhVXggyrC3xsZRO2LJ+h81+xA+q2Cnx43RNo+7yMLP22AJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lo7R4CcH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 506BBC433F1;
-	Thu,  8 Feb 2024 19:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707419572;
-	bh=qxWxhPD5BRxGx/8XjhWHfoKRfl1hlFiGpqLEiC51qZg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Lo7R4CcHxQOs7jopOpFDfOJl/mXi7YjRJaUBLFVVrbjbqkJnBLIo0D892ioPXPsT1
-	 D8TyFzhjX0ub3cvDhGf4OAMpQI/WRa8+WZ80lRvQ5NllZQ3UPOy4LEZIDYK0OLYfzh
-	 HmaK6zQ6ql5IMXE9r6+sskT9iSNTD+QCYSl7UP6hQBS6ZnfaPWQzXvRZXLfeTTmLJd
-	 NWGm6e4k7WenEMiWxXVO6SXrKoCoofDnKLrwvFimENLNyuoEd/tGFBy54YVd4Jt5Dl
-	 FrQErSW/Zb4K3hi68BZEfnMLg6dYbZozsatEGYyxl0sIfYg86ty1PKOZBWkujePgWw
-	 PfFdLemuhaoOg==
-Date: Thu, 8 Feb 2024 19:12:47 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH 1/1] dt-bindings: pci: layerscape-pci: Convert to yaml
- file
-Message-ID: <20240208-jarring-frolic-8d4c9b409127@spud>
-References: <20240207062403.304367-1-Frank.Li@nxp.com>
- <20240207-yoga-mobility-90a728f6342c@spud>
- <ZcPCn8q7viB/qcOH@lizhi-Precision-Tower-5810>
+	s=arc-20240116; t=1707419613; c=relaxed/simple;
+	bh=ovZDng+f/vHeCIzq6U1R9kC9DqAVybcrZB884WwhFuw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LW17zKbsWhN9ggm74bWAo7T+feNx5YLC5y9nQyTtvygFzOUOgeFkhWah7tzTr2Uj9YOOVDH9I4hAmFKfAKjlLC2NLD3O28hTjCQg/OZlySOumAygGI7df77jWN6y1H9CBKH41AgQ/oEmIX6HGXpepETr4et65MAOkhYmXLNRoqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FngW70EH; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-511234430a4so240344e87.3;
+        Thu, 08 Feb 2024 11:13:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707419609; x=1708024409; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1Z2Tgq+yhFEGtSct2g2RKezuAvdTXR2joIPN6UJv5oY=;
+        b=FngW70EH9nqLClUmr+L/W0otRgsdu7zMtRYD81FiO7vPd6U4xRlh+LJJTRnMfE7R54
+         uwDnH4zhUOBXmPXHnYR9ySaqLvKd9oOYO7ACjLQ/lPjWOEXNsXCzURA2KRG/HKuxoYx/
+         YK7zzsWZhblsvFNWCedznvHLGH5WgjfCdOwr3YaIQr4q+xEgYXAMpbTt7dICcq6VBR9o
+         EnsTZd+XwI/N+B1b9VdmPjDW87K0jmaHRuCXT67whkyBzk8hKzfII7+rmWbYdEae8S69
+         B8+5kk4A1eo0KVuZxdFEOIbhdwLKKPgOt4vwg+kH5cRaD+FUNBlsPIfGMSzWLxGjHHGU
+         5waw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707419609; x=1708024409;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Z2Tgq+yhFEGtSct2g2RKezuAvdTXR2joIPN6UJv5oY=;
+        b=bbvNdbBtMOjSep4T2AplFN5vLiyjjJlpvqWlpKRrW10w7kfOhSUjcM1MqxiLcWBrUX
+         LiWYld1NNGVCC1rHm8/nWHoQpLXB7w/KsQvS7rK7hnL//a0ad1PsTgVq43Z43g9xjTRR
+         SUrlqcE/ClEBGqqKV5iMy7cfW8nLaqmESOUBbzkhsU9ploJCMyxMbgb4vQOt7d/Qb+pN
+         xAcCaQpUWVubTXeiDp2w8DSNrvn2EWXtc90q9fqPJY2STpOI003I5SlFAEMYioAQ5B0h
+         Hg+01XizpF2W9a6R/sSMNuKdwAMVQUwdxwpgCGXtxPtI6ooTYuLPHPh8lBFyzMbF2pho
+         9W2g==
+X-Forwarded-Encrypted: i=1; AJvYcCVFQR5CWWx3QC+Wgx+rn1mQvd/SN3XB9Y5PFIpXduTgfg9bRsJk6EPAQdL69LpXORBVtlWa0ZPXquEMgoylP4Nuproz45f9gI6cOKg2PrdtITHwUtEI5yE/yEXGnvVRQs+r2dn9vBVbTCEhXte/TMqR0O1c0dzqJbg45TQHTLhm/w==
+X-Gm-Message-State: AOJu0YxPo63bNYVq6mB3JSNPWwqFXjsDNvp3gvBAc3RIf4zZz6lxSSeX
+	0MrW3GKJYs8wbK8k0TgBdcPsQY4SL4e+M+fSU8Sv/KFSxAllkwrKthJHf4/K
+X-Google-Smtp-Source: AGHT+IG6dVjdWC91sREU5P2lPymWB21BsWD4YkaniTfQpYg9w5KAHPC0OOb2o35JP9txZM9Mq/kCHw==
+X-Received: by 2002:ac2:5b02:0:b0:511:3a13:158 with SMTP id v2-20020ac25b02000000b005113a130158mr139563lfn.35.1707419608522;
+        Thu, 08 Feb 2024 11:13:28 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWP7KTbYpV3kKHJPEOQWgT+nFLxrcnL0QM+KfA8WEUQYezUAXs6PKmTOaOGDMoNKrL7YtBwazKF9JMRTGujMe3+EsMcg60IT9f8jElWCI9OIcAdgtTJDE8POn9KISVkHAhbpUJb9dtDczns8eqwIzNOEAQTLeTd4dk+7p0gsf0jkXNldTsW5/fXgY59/BvVQdfFis42v050gHIKro1a/9yrd7t6ymTMynoiLzSRBSCEIOkJnE2zhFsG251HruSGOtKMy1x2wI6b3uL3q4U1vzKodghjLi3NWEFMWDh3yTDQ2k6X5IVVGqTTApGtSr1AtDrYmnDzHLtqTCJoMUAS6Vv+44ARmDGRDAO2QPdgchrTO+hsmmKVG9LBiZzE9FcD+9Ewdk6jgUK2ZqJhn7sbwE7fsjf8iPOlg1opULkZ9Vvs7iyTXMTAV4y/0WrJuHRzMQ==
+Received: from [172.27.55.67] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id v5-20020adff685000000b0033b3ceda5dbsm4214681wrp.44.2024.02.08.11.13.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Feb 2024 11:13:28 -0800 (PST)
+Message-ID: <8c083e6d-5fcd-4557-88dd-0f95acdbc747@gmail.com>
+Date: Thu, 8 Feb 2024 21:13:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="SRpmeCfQQ7dek33O"
-Content-Disposition: inline
-In-Reply-To: <ZcPCn8q7viB/qcOH@lizhi-Precision-Tower-5810>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3] net/mlx5e: link NAPI instances to queues and
+ IRQs
+Content-Language: en-US
+To: Joe Damato <jdamato@fastly.com>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org
+Cc: tariqt@nvidia.com, rrameshbabu@nvidia.com,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Richard Cochran <richardcochran@gmail.com>, Gal Pressman <gal@nvidia.com>,
+ Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+ "open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
+References: <20240208030702.27296-1-jdamato@fastly.com>
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20240208030702.27296-1-jdamato@fastly.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
---SRpmeCfQQ7dek33O
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 07, 2024 at 12:49:19PM -0500, Frank Li wrote:
-> On Wed, Feb 07, 2024 at 05:17:55PM +0000, Conor Dooley wrote:
-> > Hey Frank,
-> >=20
-> > On Wed, Feb 07, 2024 at 01:24:02AM -0500, Frank Li wrote:
-> > > Convert layerscape pcie bind document to yaml file.
-> > >=20
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > >  .../bindings/pci/fsl,layerscape-pcie-ep.yaml  |  84 +++++++++
-> > >  .../bindings/pci/fsl,layerscape-pcie.yaml     | 163 ++++++++++++++++=
-++
-> > >  .../bindings/pci/layerscape-pci.txt           |  79 ---------
-> > >  3 files changed, 247 insertions(+), 79 deletions(-)
-> > >  create mode 100644 Documentation/devicetree/bindings/pci/fsl,layersc=
-ape-pcie-ep.yaml
-> > >  create mode 100644 Documentation/devicetree/bindings/pci/fsl,layersc=
-ape-pcie.yaml
-> > >  delete mode 100644 Documentation/devicetree/bindings/pci/layerscape-=
-pci.txt
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pci=
-e-ep.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.ya=
-ml
-> > > new file mode 100644
-> > > index 0000000000000..3b592c820eb4c
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.ya=
-ml
-> > > @@ -0,0 +1,84 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie-ep.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Freescale Layerscape PCIe controller
-> > > +
-> > > +maintainers:
-> > > +  - Frank Li <Frank.Li@nxp.com>
-> > > +
-> > > +description: |+
-> >=20
-> > Are you sure that you need this chomping operator?
-> >=20
-> > > +  This PCIe endpoint controller is based on the Synopsys DesignWare =
-PCIe IP
-> >=20
-> > > +  and thus inherits all the common properties defined in snps,dw-pci=
-e-ep.yaml.
-> >=20
-> > You shouldn't need this statement given you have the ref: below.
-> >=20
-> > > +
-> > > +  This controller derives its clocks from the Reset Configuration Wo=
-rd (RCW)
-> > > +  which is used to describe the PLL settings at the time of chip-res=
-et.
-> > > +
-> > > +  Also as per the available Reference Manuals, there is no specific =
-'version'
-> > > +  register available in the Freescale PCIe controller register set,
-> > > +  which can allow determining the underlying DesignWare PCIe control=
-ler version
-> > > +  information.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    enum:
-> > > +      - fsl,ls2088a-pcie-ep
-> > > +      - fsl,ls1088a-pcie-ep
-> > > +      - fsl,ls1046a-pcie-ep
-> > > +      - fsl,ls1028a-pcie-ep
-> > > +      - fsl,lx2160ar2-pcie-ep
-> >=20
-> > Where did the fallback compatible go?
->=20
-> So far, no fallback compatible needed now. each devices already have its
-> compatible string.
+On 08/02/2024 5:07, Joe Damato wrote:
+> Make mlx5 compatible with the newly added netlink queue GET APIs.
+> 
+> Signed-off-by: Joe Damato <jdamato@fastly.com>
+> ---
+> v2 -> v3:
+>    - Fix commit message subject
+>    - call netif_queue_set_napi in mlx5e_ptp_activate_channel and
+>      mlx5e_ptp_deactivate_channel to enable/disable NETDEV_QUEUE_TYPE_RX for
+>      the PTP channel.
+>    - Modify mlx5e_activate_txqsq and mlx5e_deactivate_txqsq to set
+>      NETDEV_QUEUE_TYPE_TX which should take care of all TX queues including
+>      QoS/HTB and PTP.
+>    - Rearrange mlx5e_activate_channel and mlx5e_deactivate_channel for
+>      better ordering when setting and unsetting NETDEV_QUEUE_TYPE_RX NAPI
+>      structs
+> 
+> v1 -> v2:
+>    - Move netlink NULL code to mlx5e_deactivate_channel
+>    - Move netif_napi_set_irq to mlx5e_open_channel and avoid storing the
+>      irq, after netif_napi_add which itself sets the IRQ to -1
+> 
+>   drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c  | 3 +++
+>   drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 7 +++++++
+>   2 files changed, 10 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+> index 078f56a3cbb2..fbbc287d924d 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+> @@ -927,6 +927,8 @@ void mlx5e_ptp_activate_channel(struct mlx5e_ptp *c)
+>   	int tc;
+>   
+>   	napi_enable(&c->napi);
+> +	netif_queue_set_napi(c->netdev, c->rq.ix, NETDEV_QUEUE_TYPE_RX,
+> +			     &c->napi);
+>   
+>   	if (test_bit(MLX5E_PTP_STATE_TX, c->state)) {
+>   		for (tc = 0; tc < c->num_tc; tc++)
+> @@ -951,6 +953,7 @@ void mlx5e_ptp_deactivate_channel(struct mlx5e_ptp *c)
+>   			mlx5e_deactivate_txqsq(&c->ptpsq[tc].txqsq);
+>   	}
+>   
+> +	netif_queue_set_napi(c->netdev, c->rq.ix, NETDEV_QUEUE_TYPE_RX, NULL);
+>   	napi_disable(&c->napi);
+>   }
+>   
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index c8e8f512803e..2f1792854dd5 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -1806,6 +1806,7 @@ void mlx5e_activate_txqsq(struct mlx5e_txqsq *sq)
+>   	set_bit(MLX5E_SQ_STATE_ENABLED, &sq->state);
+>   	netdev_tx_reset_queue(sq->txq);
+>   	netif_tx_start_queue(sq->txq);
+> +	netif_queue_set_napi(sq->channel->netdev, sq->txq_ix, NETDEV_QUEUE_TYPE_TX, &sq->channel->napi);
 
-It used to exist though, have you checked that u-boot or *bsd etc do not
-use the fallback compatible? You also need to mention your justification
-for removing it in the commit message.
+Might be called with channel==NULL.
+For example for PTP.
 
-> > > +
-> > > +  reg:
-> > > +    maxItems: 2
-> > > +
-> > > +  reg-names:
-> > > +    items:
-> > > +      - const: regs
-> > > +      - const: addr_space
-> >=20
-> > The example uses "regs" and "config". Where did addr_space come from?
->=20
-> Example just show pcie-host part. Not show pcie-ep part.
-> pcie-ep part need 'addr_space'.
+Prefer sq->netdev and sq->cq.napi.
 
-Okay. Again, please mention where this is coming from.
+>   }
+>   
+>   void mlx5e_tx_disable_queue(struct netdev_queue *txq)
+> @@ -1819,6 +1820,7 @@ void mlx5e_deactivate_txqsq(struct mlx5e_txqsq *sq)
+>   {
+>   	struct mlx5_wq_cyc *wq = &sq->wq;
+>   
+> +	netif_queue_set_napi(sq->channel->netdev, sq->txq_ix, NETDEV_QUEUE_TYPE_TX, NULL);
 
->=20
-> >=20
-> > > +  fsl,pcie-scfg:
-> > > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > > +    description: A phandle to the SCFG device node. The second entry=
- is the
-> > > +      physical PCIe controller index starting from '0'. This is used=
- to get
-> > > +      SCFG PEXN registers.
-> > > +
-> > > +  dma-coherent:
-> >=20
-> > dma-coherent: true
-> >=20
-> > > +    $ref: /schemas/types.yaml#/definitions/flag
-> > > +    description: Indicates that the hardware IP block can ensure the=
- coherency
-> > > +      of the data transferred from/to the IP block. This can avoid t=
-he software
-> > > +      cache flush/invalid actions, and improve the performance signi=
-ficantly.
-> > > +
-> > > +  big-endian:
-> > > +    $ref: /schemas/types.yaml#/definitions/flag
-> > > +    description: If the PEX_LUT and PF register block is in big-endi=
-an, specify
-> > > +      this property.
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - reg-names
-> >=20
-> > This was not previously required, why is it required now?
->=20
-> Actually its needed.
+Same here.
 
-Well, if it wasn't, I'd hope that you wouldn't be making it required.
-But I asked /why/ and you've not given a reason. Please mention the why
-in your commit message for v2.
-
-Cheers,
-Conor.
-
-
---SRpmeCfQQ7dek33O
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcUnrwAKCRB4tDGHoIJi
-0mtuAP9E4kgj16HNkIGd1VacL4AXJRLPuj/WspJh0e0xb9YX7wD+I6Mvg4AGjDL0
-57vFoWWJHnkFY8XXol6QAMWynXGjggg=
-=XvWb
------END PGP SIGNATURE-----
-
---SRpmeCfQQ7dek33O--
+>   	clear_bit(MLX5E_SQ_STATE_ENABLED, &sq->state);
+>   	synchronize_net(); /* Sync with NAPI to prevent netif_tx_wake_queue. */
+>   
+> @@ -2560,6 +2562,7 @@ static int mlx5e_open_channel(struct mlx5e_priv *priv, int ix,
+>   	c->lag_port = mlx5e_enumerate_lag_port(priv->mdev, ix);
+>   
+>   	netif_napi_add(netdev, &c->napi, mlx5e_napi_poll);
+> +	netif_napi_set_irq(&c->napi, irq);
+>   
+>   	err = mlx5e_open_queues(c, params, cparam);
+>   	if (unlikely(err))
+> @@ -2602,12 +2605,16 @@ static void mlx5e_activate_channel(struct mlx5e_channel *c)
+>   		mlx5e_activate_xsk(c);
+>   	else
+>   		mlx5e_activate_rq(&c->rq);
+> +
+> +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, &c->napi);
+>   }
+>   
+>   static void mlx5e_deactivate_channel(struct mlx5e_channel *c)
+>   {
+>   	int tc;
+>   
+> +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, NULL);
+> +
+>   	if (test_bit(MLX5E_CHANNEL_STATE_XSK, c->state))
+>   		mlx5e_deactivate_xsk(c);
+>   	else
 
