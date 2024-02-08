@@ -1,107 +1,345 @@
-Return-Path: <linux-kernel+bounces-58697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFE0B84EA15
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:06:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2FB484EA18
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:08:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0FAB1F2B42B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:06:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53E35B25CA3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:08:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686DD4F211;
-	Thu,  8 Feb 2024 21:06:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66D874C3A9;
+	Thu,  8 Feb 2024 21:08:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="J61Jenx/"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Xkk7e6Fk"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 374B94C3C6
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 21:06:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86CED44C96
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 21:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707426373; cv=none; b=t06I85ONtwIg1PjTMv8yJnDMUniWsycgnpkQ7CIHO2qk7hQoTwaZGjsTZZpBwgFCDWhq8KT0JmiFqGKICn/muMEt8/JYUUi5fOfd9naxab8ZKDKqGnIpH23HwnXhtqnfKMDcXFBdxGf4olBWPZyWW5KRkxYvmqceYOmrJO0IjhY=
+	t=1707426524; cv=none; b=ckB/550sK6XDCT5QSj6bd/8Sc/qhdPO7ysHLXE34Dzu5XMpEZDHpgndhVL3MOi+Q7t2chE7bLnkqT4fOFdKZQ/3f6eGUIytJzwy8r0yOtT4ThJwoIOBlp12K5vr+LwIOm0Aa2fLgI4Cmkg/uT3C7j98jLK/9d5lUSYBrjCT4lkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707426373; c=relaxed/simple;
-	bh=y80heCwbhAQqqtJAfYk/nrQDwtR1qybFYBcIOVhCOMA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JGaW/D34mWl26ScK+avBQ0w6/g0yCLtbug23VW5OkjuN4BSzVa58QXHvVbBaS7gxMaNK/1uMzIuXAYjR5QURUWyq6spXUnvS7HRSJVL1tLRst8Er0LElVS3UELAQxxY/GrkS8d+KHWRn7EAEiRJ+X+L32d7wSuxyqYHFNa4tFVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=J61Jenx/; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:
-	In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=yRF44PAwuObJjETXmhstoHPr/yI6S4jcqxgx+14ydL0=; b=J61Jenx/HaJYWYqd/VGI/U5XXh
-	5tMpKP4qZHsUksJhROrMMPNBUbz3Usk08vFTccJIUnbR60OuXjjwR2kZBYw/Ef3Fub8zGvV26dl12
-	gVu5GM+vv1Kavx3MYD3ieYb/3MOhMvfIU4rJS8gL9Jm0Mvj3XWR0VjFfUWhMybgL/smWHnRyQenk5
-	anlb+6wQNeGtEyNk91yEdt6MpbG6NdQ8gAqtaNgcfTb/EdH7jc2SC2nrxxjfUrGTk/29VDON+zNYO
-	ahkoCaDLKBlsYbqr4MWIqAz2HmYlu8LHtKGRiV9MQ5iqsdxiz1/NYKWis5vrDY8IJk52BZg5/vA0F
-	op0SNmgg==;
-Received: from [177.45.63.184] (helo=steammachine.lan)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rYBax-00FMBk-3H; Thu, 08 Feb 2024 22:06:07 +0100
-From: =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-To: dri-devel@lists.freedesktop.org,
-	amd-gfx@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Cc: kernel-dev@igalia.com,
-	alexander.deucher@amd.com,
-	christian.koenig@amd.com,
-	Simon Ser <contact@emersion.fr>,
-	Pekka Paalanen <ppaalanen@gmail.com>,
-	daniel@ffwll.ch,
-	Daniel Stone <daniel@fooishbar.org>,
-	=?UTF-8?q?=27Marek=20Ol=C5=A1=C3=A1k=27?= <maraeo@gmail.com>,
-	Dave Airlie <airlied@gmail.com>,
-	ville.syrjala@linux.intel.com,
-	Xaver Hugl <xaver.hugl@gmail.com>,
-	Joshua Ashton <joshua@froggi.es>,
-	=?UTF-8?q?Michel=20D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
-	=?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-Subject: [PATCH v4 3/3] drm/amdgpu: Make it possible to async flip overlay planes
-Date: Thu,  8 Feb 2024 18:05:42 -0300
-Message-ID: <20240208210542.550626-4-andrealmeid@igalia.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240208210542.550626-1-andrealmeid@igalia.com>
-References: <20240208210542.550626-1-andrealmeid@igalia.com>
+	s=arc-20240116; t=1707426524; c=relaxed/simple;
+	bh=NJd5ro/Dk6gqk+wousDZO3e2YpebOtIF9SpkKM9kPs8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=H/yq8VBnloQ60DG5eNcY3TeK7xySVT0CY9YgOgwx29FdiW3L2lrCA4X+mqvS9UQT4RxRhhsdgg+XHjkRKs5WGYbxGUaaFQatScsDUia55ZdYnjgxNcpVUpYUOiSvmhCJge/EuReafxeM6k9UaugaxDQRzIun+20JmjiECKAm848=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Xkk7e6Fk; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707426521;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=n6Lom6fJfEX98E0m960fMPaVVmvrlkRK2vpWlXZeIZM=;
+	b=Xkk7e6Fkt3X6ZAIzAlBK4b8o06d+M2+XrRgQwX2Psn8cnj7obEuKzZYmBjrawXD9RfpIKY
+	qG7TGGTx5NtZ7q5wqPMjlNSBTFL/+DzZspZJE3LFHngU2v9qUARus4elw6f/fUjtpBbgHQ
+	CJzvzMCbutcWlU16Tv6EuKefveRmb68=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-529-Pr9rRWDWOmibIdjUTfSo4g-1; Thu, 08 Feb 2024 16:08:40 -0500
+X-MC-Unique: Pr9rRWDWOmibIdjUTfSo4g-1
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c02ed38aa5so14897839f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 13:08:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707426519; x=1708031319;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n6Lom6fJfEX98E0m960fMPaVVmvrlkRK2vpWlXZeIZM=;
+        b=mrv4/pg5x4l3wCqdqJnsjkDiMSn3iL1vrtM8pZlw7+tbvsAD1zzsn3ArFdIW2hG5Cy
+         BExza7zfF/69cSIVnR9DHM5kUQJHyp9YGw5e4lXuzzrEd2sJBtNMsJXpzpDeeOr/eSMy
+         un3J7oLfi/wQzIWV/5fDJXgd3lNXQC557jZ4S1jhSp5m/ZfM4ZL2hx8iKjCxDgmfBaVp
+         TNdIAd8bbytvK1cOVYQR/ZmSH6PdBajeU0qH61Wffu7jGpUldj0zfLRVLiKNaPEf6kpH
+         l0aymyBpIc0pZmzD7iYwRYU8ucSPYL5p2iKgdjKUSxIRLWZvAhfTGZrfJ1t6s0qJ9SRp
+         7X7g==
+X-Forwarded-Encrypted: i=1; AJvYcCW0NwCsfoa2GOC8toHlAHH6CFhuq32rGSHImTRg5CKFT9hDxZnIqQ6MEFzxNNZadLt7xNte/bptWRlbLnbq9Syt5D+2pp34jgt6xeho
+X-Gm-Message-State: AOJu0YwT7UQssF3l+vn5WVbwlqbGftoMzeoZj1hy246hiAVDdArihhP7
+	rdoc2oB1kkvRAhynhjBapOmJ9Uk95LieNh1b0P2nfRXWCf1sSaU86JMhk2qZgbZMOjC9HCknXYf
+	sGrUHhv569lsnkjNPXlmdt/AbtDWHvLiKMCrBwcl+wjwMGN/rEU/rwN5xa5kYIw==
+X-Received: by 2002:a6b:5b14:0:b0:7c3:f542:66d5 with SMTP id v20-20020a6b5b14000000b007c3f54266d5mr1049997ioh.4.1707426519212;
+        Thu, 08 Feb 2024 13:08:39 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFZQ2zdMK0ogtlSgUF6h1GEGSod27Nz77anah68mxU9CUZ87LOYvVB84P/FMytNVpRB3ljpww==
+X-Received: by 2002:a6b:5b14:0:b0:7c3:f542:66d5 with SMTP id v20-20020a6b5b14000000b007c3f54266d5mr1049975ioh.4.1707426518924;
+        Thu, 08 Feb 2024 13:08:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW38rfROHn9z/eBTCsfQUaiaXUIqanljDwgob2akrCPyr+WOFBAFABd+odnSrd6cPEvclnjvROBSHS110I8o6p9P/wPhNFNLMzz9GGLdVTYdaxQg5pja5pGlpI2ajqQrYPVS4+BjWWqhw/sXlmmRuDVf/JAqowZMOBkG2pi5xgyEEVMWCpRB/b9NakJUVwT4CnVKSx4HZX/E/I6pMhBAQhVkFNQx4hLFRxBSAJxwxEpLfrZ58LeLu89A1LQKQlNKYasInlDHIK3VpaPkW0jNm1X3g6axL+QO1yWhWYO0Q65brwkOY68iiT9tcaLBF1UWQx3qZfUuA==
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id m7-20020a02c887000000b00470f2874365sm46817jao.137.2024.02.08.13.08.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 13:08:38 -0800 (PST)
+Date: Thu, 8 Feb 2024 14:08:36 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: <jgg@nvidia.com>, <yishaih@nvidia.com>,
+ <shameerali.kolothum.thodi@huawei.com>, <kevin.tian@intel.com>,
+ <kvm@vger.kernel.org>, <dave.jiang@intel.com>, <ashok.raj@intel.com>,
+ <linux-kernel@vger.kernel.org>, <patches@lists.linux.dev>
+Subject: Re: [PATCH 15/17] vfio/pci: Let enable and disable of interrupt
+ types use same signature
+Message-ID: <20240208140836.76a212d3.alex.williamson@redhat.com>
+In-Reply-To: <63ba0079-a035-4595-a40e-8c063b4a59eb@intel.com>
+References: <cover.1706849424.git.reinette.chatre@intel.com>
+	<bf87e46c249941ebbfacb20ee9ff92e8efd2a595.1706849424.git.reinette.chatre@intel.com>
+	<20240205153542.0883e2ff.alex.williamson@redhat.com>
+	<5784cc9b-697a-40fa-99b0-b75530f51214@intel.com>
+	<20240206150341.798bb9fe.alex.williamson@redhat.com>
+	<ce617344-ab6e-49f3-adbd-47be9fb87bf9@intel.com>
+	<20240206161934.684237d3.alex.williamson@redhat.com>
+	<63ba0079-a035-4595-a40e-8c063b4a59eb@intel.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-amdgpu can handle async flips on overlay planes, so mark it as true
-during the plane initialization.
+On Wed, 7 Feb 2024 15:30:15 -0800
+Reinette Chatre <reinette.chatre@intel.com> wrote:
 
-Signed-off-by: André Almeida <andrealmeid@igalia.com>
----
-v4: new patch
+> Hi Alex,
+> 
+> On 2/6/2024 3:19 PM, Alex Williamson wrote:
+> > On Tue, 6 Feb 2024 14:22:04 -0800
+> > Reinette Chatre <reinette.chatre@intel.com> wrote:  
+> >> On 2/6/2024 2:03 PM, Alex Williamson wrote:  
+> >>> On Tue, 6 Feb 2024 13:46:37 -0800
+> >>> Reinette Chatre <reinette.chatre@intel.com> wrote:  
+> >>>> On 2/5/2024 2:35 PM, Alex Williamson wrote:    
+> >>>>> On Thu,  1 Feb 2024 20:57:09 -0800
+> >>>>> Reinette Chatre <reinette.chatre@intel.com> wrote:      
+> >>>>
+> >>>> ..
+> >>>>    
+> >>>>>> @@ -715,13 +724,13 @@ static int vfio_pci_set_intx_trigger(struct vfio_pci_core_device *vdev,
+> >>>>>>  		if (is_intx(vdev))
+> >>>>>>  			return vfio_irq_set_block(vdev, start, count, fds, index);
+> >>>>>>  
+> >>>>>> -		ret = vfio_intx_enable(vdev);
+> >>>>>> +		ret = vfio_intx_enable(vdev, start, count, index);      
+> >>>>>
+> >>>>> Please trace what happens when a user calls SET_IRQS to setup a trigger
+> >>>>> eventfd with start = 0, count = 1, followed by any other combination of
+> >>>>> start and count values once is_intx() is true.  vfio_intx_enable()
+> >>>>> cannot be the only place we bounds check the user, all of the INTx
+> >>>>> callbacks should be an error or nop if vector != 0.  Thanks,
+> >>>>>       
+> >>>>
+> >>>> Thank you very much for catching this. I plan to add the vector
+> >>>> check to the device_name() and request_interrupt() callbacks. I do
+> >>>> not think it is necessary to add the vector check to disable() since
+> >>>> it does not operate on a range and from what I can tell it depends on
+> >>>> a successful enable() that already contains the vector check. Similar,
+> >>>> free_interrupt() requires a successful request_interrupt() (that will
+> >>>> have vector check in next version).
+> >>>> send_eventfd() requires a valid interrupt context that is only
+> >>>> possible if enable() or request_interrupt() succeeded.    
+> >>>
+> >>> Sounds reasonable.
+> >>>     
+> >>>> If user space creates an eventfd with start = 0 and count = 1
+> >>>> and then attempts to trigger the eventfd using another combination then
+> >>>> the changes in this series will result in a nop while the current
+> >>>> implementation will result in -EINVAL. Is this acceptable?    
+> >>>
+> >>> I think by nop, you mean the ioctl returns success.  Was the call a
+> >>> success?  Thanks,    
+> >>
+> >> Yes, I mean the ioctl returns success without taking any
+> >> action (nop).
+> >>
+> >> It is not obvious to me how to interpret "success" because from what I
+> >> understand current INTx and MSI/MSI-x are behaving differently when
+> >> considering this flow. If I understand correctly, INTx will return
+> >> an error if user space attempts to trigger an eventfd that has not
+> >> been set up while MSI and MSI-x will return 0.
+> >>
+> >> I can restore existing INTx behavior by adding more logic and a return
+> >> code to the send_eventfd() callback so that the different interrupt types
+> >> can maintain their existing behavior.  
+> > 
+> > Ah yes, I see the dilemma now.  INTx always checked start/count were
+> > valid but MSI/X plowed through regardless, and with this series we've
+> > standardized the loop around the MSI/X flow.
+> > 
+> > Tricky, but probably doesn't really matter.  Unless we break someone.
+> > 
+> > I can ignore that INTx can be masked and signaling a masked vector
+> > doesn't do anything, but signaling an unconfigured vector feels like an
+> > error condition and trying to create verbiage in the uAPI header to
+> > weasel out of that error and unconditionally return success makes me
+> > cringe.
+> > 
+> > What if we did this:
+> > 
+> >         uint8_t *bools = data;
+> > 	...
+> >         for (i = start; i < start + count; i++) {
+> >                 if ((flags & VFIO_IRQ_SET_DATA_NONE) ||
+> >                     ((flags & VFIO_IRQ_SET_DATA_BOOL) && bools[i - start])) {
+> >                         ctx = vfio_irq_ctx_get(vdev, i);
+> >                         if (!ctx || !ctx->trigger)
+> >                                 return -EINVAL;
+> >                         intr_ops[index].send_eventfd(vdev, ctx);
+> >                 }
+> >         }
+> >   
+> 
+> This looks good. Thank you very much. Will do.
+> 
+> I studied the code more and have one more observation related to this portion
+> of the flow:
+> From what I can tell this change makes the INTx code more robust. If I
+> understand current implementation correctly it seems possible to enable
+> INTx but not have interrupt allocated. In this case the interrupt context
+> (ctx) will exist but ctx->trigger will be NULL. Current
+> vfio_pci_set_intx_trigger()->vfio_send_intx_eventfd() only checks if
+> ctx is valid. It looks like it may call eventfd_signal(NULL) where
+> pointer is dereferenced.
+> 
+> If this is correct then I think a separate fix that can easily be
+> backported may be needed. Something like:
 
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c | 1 +
- 1 file changed, 1 insertion(+)
+Good find.  I think it's a bit more complicated though.  There are
+several paths to vfio_send_intx_eventfd:
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-index 8a4c40b4c27e..dc5392c08a87 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-@@ -1708,6 +1708,7 @@ int amdgpu_dm_plane_init(struct amdgpu_display_manager *dm,
- 	} else if (plane->type == DRM_PLANE_TYPE_OVERLAY) {
- 		unsigned int zpos = 1 + drm_plane_index(plane);
- 		drm_plane_create_zpos_property(plane, zpos, 1, 254);
-+		plane->async_flip = true;
- 	} else if (plane->type == DRM_PLANE_TYPE_CURSOR) {
- 		drm_plane_create_zpos_immutable_property(plane, 255);
+ - vfio_intx_handler
+
+	This can only be called between request_irq() and free_irq()
+	where trigger is always valid.  igate is not held.
+
+ - vfio_pci_intx_unmask
+
+	Callers hold igate, additional test of ctx->trigger makes this
+	safe.
+
+ - vfio_pci_set_intx_trigger
+
+	Same as above.
+
+ - Through unmask eventfd (virqfd)
+
+	Here be dragons.
+
+In the virqfd case, a write to the eventfd calls virqfd_wakeup() where
+we'll call the handler, vfio_pci_intx_unmask_handler(), and based on
+the result schedule the thread, vfio_send_intx_eventfd().  Both of
+these look suspicious.  They're not called under igate, so testing
+ctx->trigger doesn't resolve the race.
+
+I think an option is to wrap the virqfd entry points in igate where we
+can then do something similar to your suggestion.  I don't think we
+want to WARN_ON(!ctx->trigger) because that's then a user reachable
+condition.  Instead we can just quietly follow the same exit paths.
+
+I think that means we end up with something like this:
+
+diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
+index 237beac83809..ace7e1dbc607 100644
+--- a/drivers/vfio/pci/vfio_pci_intrs.c
++++ b/drivers/vfio/pci/vfio_pci_intrs.c
+@@ -92,12 +92,21 @@ static void vfio_send_intx_eventfd(void *opaque, void *unused)
+ 		struct vfio_pci_irq_ctx *ctx;
+ 
+ 		ctx = vfio_irq_ctx_get(vdev, 0);
+-		if (WARN_ON_ONCE(!ctx))
++		if (WARN_ON_ONCE(!ctx) || !ctx->trigger)
+ 			return;
+ 		eventfd_signal(ctx->trigger);
  	}
--- 
-2.43.0
+ }
+ 
++static void vfio_send_intx_eventfd_virqfd(void *opaque, void *unused)
++{
++	struct vfio_pci_core_device *vdev = opaque;
++
++	mutex_lock(&vdev->igate);
++	vfio_send_intx_eventfd(opaque, unused);
++	mutex_unlock(&vdev->igate);
++}
++
+ /* Returns true if the INTx vfio_pci_irq_ctx.masked value is changed. */
+ bool vfio_pci_intx_mask(struct vfio_pci_core_device *vdev)
+ {
+@@ -170,7 +179,7 @@ static int vfio_pci_intx_unmask_handler(void *opaque, void *unused)
+ 	}
+ 
+ 	ctx = vfio_irq_ctx_get(vdev, 0);
+-	if (WARN_ON_ONCE(!ctx))
++	if (WARN_ON_ONCE(!ctx) || !ctx->trigger)
+ 		goto out_unlock;
+ 
+ 	if (ctx->masked && !vdev->virq_disabled) {
+@@ -194,6 +203,18 @@ static int vfio_pci_intx_unmask_handler(void *opaque, void *unused)
+ 	return ret;
+ }
+ 
++static int vfio_pci_intx_unmask_handler_virqfd(void *opaque, void *unused)
++{
++	struct vfio_pci_core_device *vdev = opaque;
++	int ret;
++
++	mutex_lock(&vdev->igate);
++	ret = vfio_pci_intx_unmask_handler(opaque, unused);
++	mutex_unlock(&vdev->igate);
++
++	return ret;
++}
++
+ void vfio_pci_intx_unmask(struct vfio_pci_core_device *vdev)
+ {
+ 	if (vfio_pci_intx_unmask_handler(vdev, NULL) > 0)
+@@ -572,10 +593,10 @@ static int vfio_pci_set_intx_unmask(struct vfio_pci_core_device *vdev,
+ 		if (WARN_ON_ONCE(!ctx))
+ 			return -EINVAL;
+ 		if (fd >= 0)
+-			return vfio_virqfd_enable((void *) vdev,
+-						  vfio_pci_intx_unmask_handler,
+-						  vfio_send_intx_eventfd, NULL,
+-						  &ctx->unmask, fd);
++			return vfio_virqfd_enable((void *)vdev,
++					vfio_pci_intx_unmask_handler_virqfd,
++					vfio_send_intx_eventfd_virqfd, NULL,
++					&ctx->unmask, fd);
+ 
+ 		vfio_virqfd_disable(&ctx->unmask);
+ 	}
+
+
+WDYT?
+ 
+> > And we note the behavior change for MSI/X in the commit log and if
+> > someone shouts that we broke them, we can make that an -errno or
+> > continue based on is_intx().  Sound ok?  Thanks,  
+> 
+> I'll be sure to highlight the impact on MSI/MSI-x. Please do expect this
+> in the final patch "vfio/pci: Remove duplicate interrupt management flow"
+> though since that is where the different flows are merged.
+> 
+> I am not familiar with how all user space interacts with this flow and if/how
+> this may break things. I did look at Qemu code and I was not able to find
+> where it intentionally triggers MSI/MSI-x interrupts, I could only find it
+> for INTx.
+
+Being able to trigger the interrupt via ioctl is more of a diagnostic
+feature, not typically used in production.
+ 
+> If this does break things I would like to also consider moving the
+> different behavior into the interrupt type's respective send_eventfd()
+> callback instead of adding interrupt type specific code (like
+> is_intx()) into the shared flow.
+
+Sure, we can pick the best option in the slim (imo) chance the change
+affects anyone.  Thanks,
+
+Alex
 
 
