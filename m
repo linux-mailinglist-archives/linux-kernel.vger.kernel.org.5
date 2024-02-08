@@ -1,126 +1,203 @@
-Return-Path: <linux-kernel+bounces-57579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB08B84DAF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:05:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5813984DAF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:05:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A1F31C20C5C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:05:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1DA71F235CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61BA26A025;
-	Thu,  8 Feb 2024 08:05:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C1kKwziR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDBF6A00A;
+	Thu,  8 Feb 2024 08:05:16 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2E166A00C;
-	Thu,  8 Feb 2024 08:04:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FFBA69E1E
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 08:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707379499; cv=none; b=iVZ+XzGAIZk4najzX85ZnMI+Q9zZRayAgHkfPFvM2SlDyrB7DVUbS6Qhi9StQ1PLDjIy3pMCm5/TFQpMmG1cb9sUd5g+20ZG8HJq7s8caq98fywtK2zDt+22xo+fmtC20cuwOeRt45XIMAuBQCIJF0tCe4jWNxT6HxfN/L2A2xU=
+	t=1707379515; cv=none; b=VLYWA+M71mY6o2jsQNCbOxp55wMRsB6UVCvIbG4+/fhdegg2Rz8DR/E+H4/DWDVVX1wOZ7q0PVLEDy20AERLyQfe/GN637ow4FLDfZXOH0AQCfhmvDRSGqbDsXF3XO6+4sciiqBFmil1wl7F1bZlXCmRAu+zII0jU6X6ce+PrhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707379499; c=relaxed/simple;
-	bh=987LamE2hoEYsIxcVaDf9AVrqwlJJKTBlW3xcybR3jg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PPPbJYiC+KSoa6aMYprxU5kPq3uMtOLsQZCHSW6Gcc5oplobUmQacz4uvzYwKk+fTLz/siXeSduqr8Dcbuoj0p7ZNixWddqgdmdzxY/ZxnWtZ+ZoRiDyGeL3kgG5Ocrlp/7GBh10smfFRDmjDJbOpOKMG3niTLJp+eKBzemzWOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C1kKwziR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32D8FC433B1;
-	Thu,  8 Feb 2024 08:04:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707379499;
-	bh=987LamE2hoEYsIxcVaDf9AVrqwlJJKTBlW3xcybR3jg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=C1kKwziRE6HLVhmLLbdOQ3JMdqicW+jaEj3q+lJ05NQnFdvYOLaItsZQlpE61LS6S
-	 w+ApCHpbSVO/5Ll9XC/tDvBPyXsO9CxRHzzpEnYKYqPO1dgl9nKq45vA7EhwuuUKvk
-	 aWjNsK83+i6lvTPF0DYAz9lwDp/s7lyBxtu/wJCUivAs9hmQ4GXJs/5JMrXhRpNgR5
-	 vW8a9Lj2Kwoq+c1B/S0mC25j2vNv/j38ELT3gN6P/uUVYVFFckOzVBkIxaN7XXIiVA
-	 NdmZTHHfxgHV6KhD5A1/JnwGtrGSs7DdpO6x5yCWYTf2MTJdcIV9SeQ/Ib/JtWFgbr
-	 ttgQ5YcqKVosA==
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d0a0873404so16253971fa.2;
-        Thu, 08 Feb 2024 00:04:59 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVgygSlLDzD03NZVTBrxWCsuy09ZdryNuzdMWVx7Poj43eIkOMg90p0gxeq4dSDRawL+hG3EUw/S5tM1cynzA81A+dQ3T9Eg3/Xflwp4uNtHdEsUAfg+ka93TmLBzpeSQvXI6nc74LfPQ==
-X-Gm-Message-State: AOJu0YyBzH7k4ezdXeTdbhgg4jvkU/yQrCvGu7YwYeEHvV1JBTOY39Pt
-	kM0IEwgGFunRk29aYO2dz8+dZ21qOsyFNJ750dacpUaUXMT+UFuLNVuO65yyrHhdAP5hzL54YV+
-	Q6vUDI+OGIfMOME52lCsx0krhRVc=
-X-Google-Smtp-Source: AGHT+IHhd7nYhLwZxzPnQ41aIE/TXjpjTzflGJ8ROY9ZKiYoUkmqdPeIHXnD3Bvvo4wnv41GIfnQ9bykXZu4mR1vI84=
-X-Received: by 2002:a05:651c:210d:b0:2d0:bf38:d2d6 with SMTP id
- a13-20020a05651c210d00b002d0bf38d2d6mr5970301ljq.48.1707379497350; Thu, 08
- Feb 2024 00:04:57 -0800 (PST)
+	s=arc-20240116; t=1707379515; c=relaxed/simple;
+	bh=XVKk8mNNyH2W2TKyOl5UrYU3KaPEK8JC6mLhXHUYDbU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kTNV752o1jdLIBBNJHLvJ6gIRBKyFziFnoCZGYzfGlqmmKyUPP912l/0JV/hNfv+7hOdQm8LmYox0z/0aHYd7fXPXQi1HWLq14q5Qi8TZA3AJtKcX3PpxUG7L7yJ5vc1syheIFxPK1HLIVX96+lcntMDlrtC04IA57oRgUqTTF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rXzP7-0008V1-CL; Thu, 08 Feb 2024 09:05:05 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rXzP6-005Amy-Bf; Thu, 08 Feb 2024 09:05:04 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rXzP6-000D8b-0o;
+	Thu, 08 Feb 2024 09:05:04 +0100
+Date: Thu, 8 Feb 2024 09:05:04 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Finn Behrens <me@kloenk.de>
+Cc: Thierry Reding <thierry.reding@gmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, linux-pwm@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, Heisath <jannis@imserv.org>, 
+	Yureka Lilian <yuka@yuka.dev>
+Subject: Re: [PATCH] gpio-mvebu: no hardcoded timer assignment for pwm
+Message-ID: <6chccjdn3yidi7rodcledxx7czt3adjxvaeeneii5ghfiw4oc3@t5qtmnlasvlo>
+References: <20240130105515.30258-1-me@kloenk.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
- <Zb2wxIpf7uYV6Vya@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
- <528ce926-6f17-c1ea-8e77-c7d5d7f56022@huaweicloud.com> <ZcE4mGXCDwjqBXgf@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
- <1fdbfcf8-1ee9-4079-e84e-6e2c1121491b@huaweicloud.com> <ZcGuRIrZJaEtXjPh@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
-In-Reply-To: <ZcGuRIrZJaEtXjPh@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
-From: Song Liu <song@kernel.org>
-Date: Thu, 8 Feb 2024 00:04:45 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6arbEmRUK3xG1XVjra3BtSx9_wFe+QKDBbTgb3DgYXig@mail.gmail.com>
-Message-ID: <CAPhsuW6arbEmRUK3xG1XVjra3BtSx9_wFe+QKDBbTgb3DgYXig@mail.gmail.com>
-Subject: Re: [PATCH v5 00/14] dm-raid/md/raid: fix v6.7 regressions
-To: Benjamin Marzinski <bmarzins@redhat.com>
-Cc: Yu Kuai <yukuai1@huaweicloud.com>, mpatocka@redhat.com, heinzm@redhat.com, 
-	xni@redhat.com, blazej.kucman@linux.intel.com, agk@redhat.com, 
-	snitzer@kernel.org, dm-devel@lists.linux.dev, jbrassow@f14.redhat.com, 
-	neilb@suse.de, shli@fb.com, akpm@osdl.org, linux-kernel@vger.kernel.org, 
-	linux-raid@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com, 
-	"yukuai (C)" <yukuai3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="365ufzjbjxz7grxt"
+Content-Disposition: inline
+In-Reply-To: <20240130105515.30258-1-me@kloenk.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+
+
+--365ufzjbjxz7grxt
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Benjamin,
+Hello,
 
-On Mon, Feb 5, 2024 at 7:58=E2=80=AFPM Benjamin Marzinski <bmarzins@redhat.=
-com> wrote:
->
-> On Tue, Feb 06, 2024 at 09:36:18AM +0800, Yu Kuai wrote:
-> > Hi!
-> >
-> > =E5=9C=A8 2024/02/06 3:35, Benjamin Marzinski =E5=86=99=E9=81=93:
-> > > Could you run the test with something like
-> > >
-> > > # make check_local T=3Dlvconvert-repair-raid.sh VERBOSE=3D1 > out 2>&=
-1
-> > >
-> > > and post the output.
-> >
-> > Attached is the output from my VM.
->
-> Instead of running the tests from the lvm2 git repo, if you run
->
-> # make -C test install
->
-> to install the tests, and then create a results directory and run the
-> test from there, do you still see the error in the 6.6 kernel?
->
-> # make ~/results
-> # cd ~/results
-> # lvm2-testsuite --only lvconvert-repair-raid.sh
->
-> Running the tests this way will test the installed lvm2 binaries on your
-> system, instead of the ones in the lvm2 git repo. They may be compiled
-> differently.
+On Tue, Jan 30, 2024 at 11:55:13AM +0100, Finn Behrens wrote:
+> Removes the hardcoded timer assignment of timers to pwm controllers.
+> This allows to use more than one pwm per gpio bank.
+>=20
+> Original patch with chip_data interface by Heisath <jannis@imserv.org>
+>=20
+> Link: https://wiki.kobol.io/helios4/pwm/#patch-requirement
+> Co-developed-by: Yureka Lilian <yuka@yuka.dev>
+> Signed-off-by: Yureka Lilian <yuka@yuka.dev>
+> Signed-off-by: Finn Behrens <me@kloenk.de>
 
-I am not able to get reliable results from shell/lvconvert-repair-raid.sh
-either. For 6.6.0 kernel, the test fails. On 6.8-rc1 kernel, the test fails
-sometimes.
+I find this patch hard to understand and I hope it's more complicated
+than it could be. I wonder if it would be beneficial to split this patch
+in two. In the first patch just introduce the new structures with all
+the necessary renaming and only in the second patch implement the added
+flexibility.
 
-Could you please share more information about your test setup?
-Specifically:
-1. Which tree/branch/tag are you testing?
-2. What's the .config used in the tests?
-3. How do you run the test suite? One test at a time, or all of them
-together?
-4. How do you handle "test passes sometimes" cases?
+Some more details below.
 
-Thanks,
-Song
+>  drivers/gpio/gpio-mvebu.c | 223 ++++++++++++++++++++++++--------------
+>  1 file changed, 139 insertions(+), 84 deletions(-)
+>=20
+> diff --git a/drivers/gpio/gpio-mvebu.c b/drivers/gpio/gpio-mvebu.c
+> index a13f3c18ccd4..303ea3be0b69 100644
+> --- a/drivers/gpio/gpio-mvebu.c
+> +++ b/drivers/gpio/gpio-mvebu.c
+> @@ -94,21 +94,43 @@
+> =20
+>  #define MVEBU_MAX_GPIO_PER_BANK		32
+> =20
+> -struct mvebu_pwm {
+> +enum mvebu_pwm_ctrl {
+> +	MVEBU_PWM_CTRL_SET_A =3D 0,
+> +	MVEBU_PWM_CTRL_SET_B,
+> +	MVEBU_PWM_CTRL_MAX
+> +};
+> +
+> +struct mvebu_pwmchip {
+>  	struct regmap		*regs;
+>  	u32			 offset;
+>  	unsigned long		 clk_rate;
+> -	struct gpio_desc	*gpiod;
+> -	struct pwm_chip		 chip;
+>  	spinlock_t		 lock;
+> -	struct mvebu_gpio_chip	*mvchip;
+> +	bool			 in_use;
+> =20
+>  	/* Used to preserve GPIO/PWM registers across suspend/resume */
+> -	u32			 blink_select;
+>  	u32			 blink_on_duration;
+>  	u32			 blink_off_duration;
+>  };
+> =20
+> +struct mvebu_pwm_chip_drv {
+> +	enum mvebu_pwm_ctrl	 ctrl;
+> +	struct gpio_desc	*gpiod;
+> +	bool			 master;
+> +};
+> +
+> +struct mvebu_pwm {
+> +	struct pwm_chip		 chip;
+> +	struct mvebu_gpio_chip	*mvchip;
+> +	struct mvebu_pwmchip	 controller;
+> +	enum mvebu_pwm_ctrl	 default_controller;
+> +
+> +	/* Used to preserve GPIO/PWM registers across suspend/resume */
+> +	u32				 blink_select;
+> +	struct mvebu_pwm_chip_drv	 drv[];
+> +};
+
+So we have three different structures related to pwm. Some highlevel
+description (in a comment or at least the commit log) about how the
+hardware works and which struct describes what would be helpful. I gave
+up after 15 min of reading this patch and trying to understand it.
+
+> +static struct mvebu_pwmchip  *mvebu_pwm_list[MVEBU_PWM_CTRL_MAX];
+
+Huh, a static variable. Does that mean we can only have one mvebu_gpio
+device?
+
+> +
+>  struct mvebu_gpio_chip {
+>  	struct gpio_chip   chip;
+>  	struct regmap     *regs;
+> @@ -285,12 +307,12 @@ mvebu_gpio_write_level_mask(struct mvebu_gpio_chip =
+*mvchip, u32 val)
+>   * Functions returning offsets of individual registers for a given
+>   * PWM controller.
+>   */
+> -static unsigned int mvebu_pwmreg_blink_on_duration(struct mvebu_pwm *mvp=
+wm)
+> +static unsigned int mvebu_pwmreg_blink_on_duration(struct mvebu_pwmchip =
+*mvpwm)
+
+I'm a fan of picking always the same variable name for the same thing
+and different names for different things. "mvpwm" is used for variables
+of type struct mvebu_pwmchip and struct mvebu_pwm.
+
+>  {
+>  	return mvpwm->offset + PWM_BLINK_ON_DURATION_OFF;
+>  }
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--365ufzjbjxz7grxt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXEiy8ACgkQj4D7WH0S
+/k5ugQf+OkUaqWRhVyLcaDS6bt0BlPaDfFGG5XGSJ4EFd2g0a3kSQbzJvbwuUw8T
+RfNfNV0jsjfD0M9IHAcCMwTQqK84zBkVJjcj3YtWnp0g0jeGJR8p7EfGBuLFVIBD
+4X+ERnlo6fXwvXGC+y9APhR8254LRo76Jg6Me8RtI+5L8VuTVtBbm1s3M7chM81N
+Ki/4lGRZfUhLQ0nRcaJ3Z82dcfqW6taaNwH7/tYLJ/QJ2x1aelxu8FwnBCjg/sRe
+JlLn+todDMLP2c0Am2y6lxRiCQVwPmo0pRBBkKpQ2ML3uxyMRaO0BZKc2UxL9MGC
+9s//pu6e7mtNE/5Kc4tokjAcxqNF4w==
+=lVsG
+-----END PGP SIGNATURE-----
+
+--365ufzjbjxz7grxt--
 
