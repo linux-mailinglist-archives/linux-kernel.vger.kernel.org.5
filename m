@@ -1,121 +1,106 @@
-Return-Path: <linux-kernel+bounces-58531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA06A84E7AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ADC584E7B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:33:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 890A81F2AEB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:29:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28D5F1F2C612
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:33:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF4686AC7;
-	Thu,  8 Feb 2024 18:29:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9511E89E;
+	Thu,  8 Feb 2024 18:32:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nRc+TAnK"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="V7f0Fo8O"
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B46C85C77;
-	Thu,  8 Feb 2024 18:29:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F3C1C6A8
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 18:32:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707416968; cv=none; b=tj1c4GAWJKkDU5s7CJgV5l6AMrpcRgK+MewyjcCNDpkM4JhDp4tScsam32a+VSLMfTZHYTB9MDFLcU3qfyo3aClmJXsHmRddUX1w1APxymiU4H+QVFDUuIJcTkAYuLil2jGb0kC2hWIIfy8WQACvf6HiItk+zSeeD/ZVqbsCRJM=
+	t=1707417169; cv=none; b=X21hEhZHshIRobepP8AHwgTsydBsOOcYxfjTuCQER5qm2/6oSfTGtQEU4qJlKJRnzF9P8ZgIwTatR1LOBa0iA7hlftDdbXpZzZxdSNG4GbxEtuzA+A+o+bvDEIYMIyTeQU++VYEd3dYgq6b8YePKwTneyPXf2IQVajRxcO153Gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707416968; c=relaxed/simple;
-	bh=+Mgb9O8JxfiO2LjvLytloVwnGb5SjOO6d7SN0mzNpYo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=pdg9zGJTZh21QSEOWprCkPAKZh7yidddzhGrBy3Km7nHShv7FXxrGRxtVmcHPwmEGjNbm97/jaYMla2k2iAHAnDRCS3pb1+n76admvZWFOrfYla4oJsZD/kf5aEDcpFsy25x4r7gM1Vu2n1Zp+ELvgknE7/7Nc8XWzswQhQADf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nRc+TAnK; arc=none smtp.client-ip=134.134.136.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707416967; x=1738952967;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=+Mgb9O8JxfiO2LjvLytloVwnGb5SjOO6d7SN0mzNpYo=;
-  b=nRc+TAnKfsQRnfRNWfILQg0ohJ6GGIGpbNzsiSFnsq+vqTOxcEDjzf/e
-   YMdRFhDXlPn1d0rd5hB2hGwWpe1elwGhCh3hgTNZUiRGAweisQUH4QEzG
-   ubBQFUC1ZPn9m0MHBkDSexgGKU19QP+QdWuMyP9XNBHmwBPYnwC8Rd7PW
-   DLzQyQZFc4iqTmuoLA56AZlU/BCyGF5fb77MZKdp+Gm/OAX7C7n0Ei+PY
-   IbwSRBAYxS+hPNfxAxWUUtx5yzivVmBYU4NzQjcVlaNH5kcJPSb/Z1o4u
-   8H9uCl21OxqO8gANj7s+pnGkIu2cefepH9Rwjiv8sJYaBEv32g09u9ijM
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="395702300"
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="395702300"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 10:29:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="2099541"
-Received: from ercutler-mobl.amr.corp.intel.com (HELO [10.209.94.1]) ([10.209.94.1])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 10:29:26 -0800
-Message-ID: <ba75294dfb5bf4dd046d54de6c3e57698592dacc.camel@linux.intel.com>
-Subject: Re: [PATCH 1/7] fs/writeback: avoid to writeback non-expired inode
- in kupdate writeback
-From: Tim Chen <tim.c.chen@linux.intel.com>
-To: Kemeng Shi <shikemeng@huaweicloud.com>, viro@zeniv.linux.org.uk, 
-	brauner@kernel.org, jack@suse.cz
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Thu, 08 Feb 2024 10:29:26 -0800
-In-Reply-To: <20240208172024.23625-2-shikemeng@huaweicloud.com>
-References: <20240208172024.23625-1-shikemeng@huaweicloud.com>
-	 <20240208172024.23625-2-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+	s=arc-20240116; t=1707417169; c=relaxed/simple;
+	bh=tPG2L0PFFFvPH17p6jT3vsgyDqO0Ow7iaEmNEza7wAk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=RhKif5cl2DnyuFUybhkzRRVrm+UC3US04Bb5SEDX4oGoOEVAitW20BkollWPkHxFxmilGrINPtAwWbh0CWV6CwrA2AjSXlLvysPq7ESrMXMfJGqXu7YGw+fgQHj+Vg5iAsPw8KYG45zWzw4VXGt57NFT1b8GElqq2GDp8FgcSbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=V7f0Fo8O; arc=none smtp.client-ip=209.85.166.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-363ce7a4823so87175ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 10:32:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707417167; x=1708021967; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nr00YgHg0eap+hVTbhFLAb3+BozI0aJmEwESPqYLYlk=;
+        b=V7f0Fo8OOABrGFSz1LmIa4jFGuYKc0Kl7JpYBNI4TTsR3u+A1NuGXYOIdTIc9w1kRW
+         pHoUTVCxJnWOmvtG7eWj/fFliCBHfCDSf38Q5X1l0VIjIkFCg2Y8Ii2cH+loo4VQkhZ+
+         ABl6xYZDqD/7YLUB/17Xnv2PhPWrlXcrk5h90j+P3QCHeQv3QXZbvpgCOJeIP0aJux6T
+         SvgyPv++nev0ATApZT+QhC07yxUN6aDLB3t5eYICftcZIZNI+MjEAv3n/SnJNEnK2Mo6
+         jsdp+zOA3LHTHhNDaLyz/JEtyPUgRsemAsuy9ma/UyMAWfPGbevivA2KTV1HFpfXn+XV
+         I1Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707417167; x=1708021967;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Nr00YgHg0eap+hVTbhFLAb3+BozI0aJmEwESPqYLYlk=;
+        b=UyZWSBqLfcVxj2Seg70kEIsCduRU0abrInlMO5wGPOQst1obknpjZ6NCENYePdAYEx
+         SH1TqEALD62bGHEgEBe7nscNALSXxHzvtLxAd5Y7LINvtPFFYvUOaCNNyM/lFDVpp9lA
+         kn2I4N+xlPP8xmVoR6crTBgp5j0Gapu5ypRLwXN9cGbHGlvOeFw1q2ECZjg/a6qGETaN
+         Vru1zqE8ZkCMxyA0i7FF3vlxO88qOgOowwKpwtfB0K0ljmuN14IiqhTeWYPQANn4vt2C
+         Ur1rPkCY9aEdJnjoMFaKNm06TySfeQ4qbgnoGyxah6zug4RbfWt0KgJTKwUoGfVmx6PN
+         7q5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW05lhAXcf+v37MUusBpXRa3shMmldAaTLIwykapk9bnnXyvHyr66dEMea/9HPV6uExkanII2cxV4GbpqxGdIWTvDP4eIMRUTQzgu9x
+X-Gm-Message-State: AOJu0YxukUnvRB+4+fePz2K8/4il2DMZhzXUDm4uKimSUrbjKxYnFQZx
+	RjrhnB9tEUv8iEMDkztaQ+vorez0KredXSdBmD7mtPgEKobUAIyixfRgaV78iac=
+X-Google-Smtp-Source: AGHT+IFAvqlSrBCQWpuejC3u4ynmLUFR513jOu3UsTa/NZ/FzFI6YPc3xiUkiJmHYAWGWy+VajjAaQ==
+X-Received: by 2002:a5e:9409:0:b0:7c4:965:f8c0 with SMTP id q9-20020a5e9409000000b007c40965f8c0mr424407ioj.2.1707417166776;
+        Thu, 08 Feb 2024 10:32:46 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX5+2PSYipu58OQZUMJJN8fnU2HCB8D8EcGHMM3AVBOVRYlAJguXndVTBIvBchiOORXCFtdNsK4Blm9wUOZJKiheWWbUgJxs47TgaZB
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id t13-20020a6bdb0d000000b007c3fbe781f2sm50823ioc.5.2024.02.08.10.32.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 10:32:46 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: Kunwu Chan <chentao@kylinos.cn>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240131094323.146659-1-chentao@kylinos.cn>
+References: <20240131094323.146659-1-chentao@kylinos.cn>
+Subject: Re: [PATCH] block: Simplify the allocation of slab caches
+Message-Id: <170741716606.1391883.6304906990225431733.b4-ty@kernel.dk>
+Date: Thu, 08 Feb 2024 11:32:46 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.5-dev-2aabd
 
-On Fri, 2024-02-09 at 01:20 +0800, Kemeng Shi wrote:
->=20
-> =20
-> +static void filter_expired_io(struct bdi_writeback *wb)
-> +{
-> +	struct inode *inode, *tmp;
-> +	unsigned long expired_jiffies =3D jiffies -
-> +		msecs_to_jiffies(dirty_expire_interval * 10);
 
-We have kupdate trigger time hard coded with a factor of 10 to expire inter=
-val here.
-The kupdate trigger time "mssecs_to_jiffies(dirty_expire_interval * 10)" is
-also used in wb_writeback().  It will be better to have a macro or #define
-to encapsulate the trigger time so if for any reason we need
-to tune the trigger time, we just need to change it at one place.
+On Wed, 31 Jan 2024 17:43:23 +0800, Kunwu Chan wrote:
+> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+> to simplify the creation of SLAB caches.
+> 
+> 
 
-Tim
+Applied, thanks!
 
-> +
-> +	spin_lock(&wb->list_lock);
-> +	list_for_each_entry_safe(inode, tmp, &wb->b_io, i_io_list)
-> +		if (inode_dirtied_after(inode, expired_jiffies))
-> +			redirty_tail(inode, wb);
-> +
-> +	list_for_each_entry_safe(inode, tmp, &wb->b_more_io, i_io_list)
-> +		if (inode_dirtied_after(inode, expired_jiffies))
-> +			redirty_tail(inode, wb);
-> +	spin_unlock(&wb->list_lock);
-> +}
-> +
->  /*
->   * Explicit flushing or periodic writeback of "old" data.
->   *
-> @@ -2070,6 +2087,9 @@ static long wb_writeback(struct bdi_writeback *wb,
->  	long progress;
->  	struct blk_plug plug;
-> =20
-> +	if (work->for_kupdate)
-> +		filter_expired_io(wb);
-> +
->  	blk_start_plug(&plug);
->  	for (;;) {
->  		/*
+[1/1] block: Simplify the allocation of slab caches
+      commit: 48ff13a618b54aabc447659a9016068cf0cae322
+
+Best regards,
+-- 
+Jens Axboe
+
+
 
 
