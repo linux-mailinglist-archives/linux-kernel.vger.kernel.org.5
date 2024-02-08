@@ -1,152 +1,120 @@
-Return-Path: <linux-kernel+bounces-57972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B143A84DFCF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 08ED684DFC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:33:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EB07281C7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:35:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8E44283C78
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:33:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF1178B46;
-	Thu,  8 Feb 2024 11:32:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AFC67319C;
+	Thu,  8 Feb 2024 11:32:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EkO1fpun"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lcDdQ1ts"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD6178B49;
-	Thu,  8 Feb 2024 11:32:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AABF974E01;
+	Thu,  8 Feb 2024 11:32:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707391977; cv=none; b=bWM/vVSMPtbYWZosnVOHohrwnTOPly8BUwIoGisCE8QuLJhq5KLieMHXDQXFS6MRfpMoMTDLUg7rGEH1Kd1IlP9IGt20FJMA+XH0kbrlW5S0fvzKLdgHIz/PdrvcpLvHvkL0/cMlCdinsp4rfZkJzIL4D7HrsIC7FyHsIUt9UzI=
+	t=1707391932; cv=none; b=sr6+85z/A9Q1kCbg6V53wAH906/nCVSEhw5joRBH4DA9QmJiVVrx+AbEU9JuM26N4exY3saw6i/Q53HLF9X8nZ911NYBhEOIGO126AV0E7altK0WUVOijaKk7orL13/WT/d6krfkUIdCf6ny/8xjPm+6xqF7myKZ8Wr4BFhBhdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707391977; c=relaxed/simple;
-	bh=z/v40T43ha2hX1e8ZimPBiWM40ccC7SzSxwOXcvZwoA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sG1P5PrHXXTW5UMt0/gcLF9jtYmdrEttCx0BeKNef24hVoE3LO8XzYUgM0jar/6zUusRKA47coqPTnyV3tOkvw+GWtTyfFCVZASczlZUg2tUx0dYWtqwJQ2q969PsHC+WOqNjNQN/pdtvqiLZhi9pV7de5gN0+UmJECSmPXcRAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EkO1fpun; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707391976; x=1738927976;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=z/v40T43ha2hX1e8ZimPBiWM40ccC7SzSxwOXcvZwoA=;
-  b=EkO1fpunqnrk9NBrQ1Tw5QA47SX4ICesqZYz2m5pSZtzPWaW6ppjw9pn
-   XzzDXHhRZwxLu05c/SQCngpyQ7bswb8q6FkgJint9lguBuL4vOlwUtatX
-   m3I/YG68DIyN2z7Nf5lxqp3cnj5CPhIY1j0wHoV5x/3R4iWIT/n7VDClv
-   Z6kihpieUEQmjMXynEMBBif2xMQX+67fl7DJD565+69eCvrCfJhkxO6Jr
-   j+5Fyzr+f5XaOCiXM6miB3VRFXEFpM6Hoh3B8VoILYN/VXzpN7LhgnTq2
-   kpRx3McM5l4lmUBp6w9CCBoHrirqvZ2OiMcfalsNS9uhqTmWiHzWQvFOT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="1345804"
-X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="1345804"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 03:32:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="1957927"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.251.219.88])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 03:32:50 -0800
-From: Adrian Hunter <adrian.hunter@intel.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Hendrik Brueckner <brueckner@linux.ibm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	James Clark <james.clark@arm.com>,
-	coresight@lists.linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	Yicong Yang <yangyicong@hisilicon.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Will Deacon <will@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Andi Kleen <ak@linux.intel.com>,
-	linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Subject: [PATCH V5 12/12] perf intel-pt: Add a test for pause / resume
-Date: Thu,  8 Feb 2024 13:31:27 +0200
-Message-Id: <20240208113127.22216-13-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240208113127.22216-1-adrian.hunter@intel.com>
-References: <20240208113127.22216-1-adrian.hunter@intel.com>
+	s=arc-20240116; t=1707391932; c=relaxed/simple;
+	bh=c9feIDL+wPu/P9Bna8cXPwQm7UA/Zrt/xWP3vAOeFJA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MKJfjefEXgmJnBX4Tau8VhRNIPMoSw1U6jduvvYUbkshDNbEZ3Vhz6mmjJ5OC1Wi/Xj1GvXh05B5FZbke1SjRFHVjoePuSexj3/L2Hts8p2lY2pSQEAZ2QfipTvsM88klrYTGIO6pNtVMvQsdrJtq+IAEuOuniMI785n04H/kKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lcDdQ1ts; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 200A5C433A6;
+	Thu,  8 Feb 2024 11:32:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707391932;
+	bh=c9feIDL+wPu/P9Bna8cXPwQm7UA/Zrt/xWP3vAOeFJA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lcDdQ1tssINDor/7etReaO6E+9DfS2U0syvI4DfMpqc3+QOLm5aprQYxRD/6AK67M
+	 +bEsLNXQAMBw4VCZTq9Zu5niqscpAGJCnGO4WBdTewPVexU6muSYVo8Ej/FFQsHn4C
+	 fl6XQCdSrir1oEEE99jplnpAj32ST8aBicm0HTb/W1Ttbb+AcEvynDNvcqhfgJGFRU
+	 Ah4wbmaRVjvxFrISW7ADjV2pvNrQYeP8iBbObZ9ohLM3Ty4qQhVdKcYCf+5jE/IUFu
+	 0bbyptByWK1UMrkv9KBxSmXcKkkV96jpUkrAMw+/yHOj55NJS7EUx120sUZbZRkw8p
+	 KjkOCp3oPkzjg==
+Date: Thu, 8 Feb 2024 17:02:01 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Alex Elder <elder@linaro.org>,
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Arnd Bergmann <arnd@arndb.de>, Abel Vesa <abel.vesa@linaro.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Lukas Wunner <lukas@wunner.de>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-bluetooth@vger.kernel.org, linux-pci@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: Re: [RFC 8/9] PCI/pwrctl: add PCI power control core code
+Message-ID: <20240208113201.GA17587@thinkpad>
+References: <20240201155532.49707-1-brgl@bgdev.pl>
+ <20240201155532.49707-9-brgl@bgdev.pl>
+ <7tbhdkqpl4iuaxmc73pje2nbbkarxxpgmabc7j4q26d2rhzrv5@ltu6niel5eb4>
+ <CAMRc=Md1oTrVMjZRH+Ux3JJKYeficKMYh+8V7ZA=Xz_X1hNd1g@mail.gmail.com>
+ <2q5vwm7tgmpgbrm4dxfhypbs5pdggprxouvzfcherqeevpjhrj@6wtkv4za2gg5>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <2q5vwm7tgmpgbrm4dxfhypbs5pdggprxouvzfcherqeevpjhrj@6wtkv4za2gg5>
 
-Add a simple sub-test to the "Miscellaneous Intel PT testing" test to
-check pause / resume.
+On Fri, Feb 02, 2024 at 10:52:11AM -0600, Bjorn Andersson wrote:
+> On Fri, Feb 02, 2024 at 10:11:42AM +0100, Bartosz Golaszewski wrote:
+> > On Fri, Feb 2, 2024 at 4:53 AM Bjorn Andersson <andersson@kernel.org> wrote:
+> [..]
+> > > > +             break;
+> > > > +     }
+> > > > +
+> > > > +     return NOTIFY_DONE;
+> > > > +}
+> > > > +
+> > > > +int pci_pwrctl_device_enable(struct pci_pwrctl *pwrctl)
+> > >
+> > > This function doesn't really "enable the device", looking at the example
+> > > driver it's rather "device_enabled" than "device_enable"...
+> > >
+> > 
+> > I was also thinking about pci_pwrctl_device_ready() or
+> > pci_pwrctl_device_prepared().
+> 
+> I like both of these.
+> 
+> I guess the bigger question is how the flow would look like in the event
+> that we need to power-cycle the attached PCIe device, e.g. because
+> firmware has gotten into a really bad state.
+> 
+> Will we need an operation that removes the device first, and then cut
+> the power, or do we cut the power and then call unprepared()?
+> 
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Acked-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/shell/test_intel_pt.sh | 28 +++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+Currently, we don't power cycle while resetting the devices. Most of the drivers
+just do a software reset using some register writes. Part of the reason for
+that is, the drivers themselves don't control the power to the devices and there
+would be no way to let the parent know about the firmware crash.
 
-diff --git a/tools/perf/tests/shell/test_intel_pt.sh b/tools/perf/tests/shell/test_intel_pt.sh
-index 723ec501f99a..e359db0d0ff2 100755
---- a/tools/perf/tests/shell/test_intel_pt.sh
-+++ b/tools/perf/tests/shell/test_intel_pt.sh
-@@ -644,6 +644,33 @@ test_pipe()
- 	return 0
- }
- 
-+test_pause_resume()
-+{
-+	echo "--- Test with pause / resume ---"
-+	if ! perf_record_no_decode -o "${perfdatafile}" -e intel_pt/aux-action=start-paused/u uname ; then
-+		echo "SKIP: pause / resume is not supported"
-+		return 2
-+	fi
-+	if ! perf_record_no_bpf -o "${perfdatafile}" \
-+			-e intel_pt/aux-action=start-paused/u \
-+			-e instructions/period=50000,aux-action=resume,name=Resume/u \
-+			-e instructions/period=100000,aux-action=pause,name=Pause/u uname  ; then
-+		echo "perf record with pause / resume failed"
-+		return 1
-+	fi
-+	if ! perf script -i "${perfdatafile}" --itrace=b -Fperiod,event | \
-+			awk 'BEGIN {paused=1;branches=0}
-+			     /Resume/ {paused=0}
-+			     /branches/ {if (paused) exit 1;branches=1}
-+			     /Pause/ {paused=1}
-+			     END {if (!branches) exit 1}' ; then
-+		echo "perf record with pause / resume failed"
-+		return 1
-+	fi
-+	echo OK
-+	return 0
-+}
-+
- count_result()
- {
- 	if [ "$1" -eq 2 ] ; then
-@@ -672,6 +699,7 @@ test_power_event			|| ret=$? ; count_result $ret ; ret=0
- test_no_tnt				|| ret=$? ; count_result $ret ; ret=0
- test_event_trace			|| ret=$? ; count_result $ret ; ret=0
- test_pipe				|| ret=$? ; count_result $ret ; ret=0
-+test_pause_resume			|| ret=$? ; count_result $ret ; ret=0
- 
- cleanup
- 
+- Mani
+
 -- 
-2.34.1
-
+மணிவண்ணன் சதாசிவம்
 
