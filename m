@@ -1,145 +1,113 @@
-Return-Path: <linux-kernel+bounces-57767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A74184DD2E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:44:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B74F84DD33
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:45:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0432F1F26AA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:44:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE43D1C25800
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:45:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B65046BFC2;
-	Thu,  8 Feb 2024 09:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b1VVWaRQ"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9F1F6BFBB;
+	Thu,  8 Feb 2024 09:44:56 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A956BB2F;
-	Thu,  8 Feb 2024 09:43:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54BC66BB2F
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 09:44:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707385440; cv=none; b=T1WSsmLGM8Tz/NNh5zq8JS2N5lU5trJA3GainDHuh3Ts6pWcSNyH0/NEXetqxsyDO7PTm1RTdojvrMt1Ed+zFd17ZFlLeZ/0FM0TR3sH7ApmHQ/UT88ATP/zKutDeWo7jkF+vdosskvRJRfzdPnVBlK6Vx93fd+180F3JrDjOLo=
+	t=1707385496; cv=none; b=G//XuTJBizkYuRFsvuD/C0AW3yYCbafGz93upZwR5voFVBJKZ+e5KaGuSf1UpOtkBCPDqyLX9Kv59yQ7JQ5AzfuSK3neNRO6+27/AAvP9jOpHz25l4U4etVPHaIrRKCSr9ZD16Typyy+WEqbYtUAKXZlVx5jLezPbXMCpWRKEQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707385440; c=relaxed/simple;
-	bh=4tBQV8gIEupd+sa2dqqJq1oLCjTr6Cb01Cl4c1CjyP8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=r6OmEf1t2SUdTW74iUGJ8Ezp023+HaTXVPzJZHjgeSCakLckA9ETt52JOyWjYsCIFKX4ES+eegnvcP/CbMbuOh9ZfBWE8/RSjWVVIbXjfZ/R78HvGFgkK7iDZeGK4Jc+ihX8KqQ0PYwMwyWWaoA1yYYf9zXVso5wvGl5rs+a26o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b1VVWaRQ; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-556c3f0d6c5so1914055a12.2;
-        Thu, 08 Feb 2024 01:43:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707385436; x=1707990236; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=X7p3K02PhD++htjnyCnKJ+dGMFyKbZmZX7f+kzBf0cY=;
-        b=b1VVWaRQ6jWv3rC5gs1fcsAqAuYhioNHnyhMjEtieVEK1NljC8MpkSNAwlDMseO5EQ
-         qszNe2AyP5SeWYqdDHaAS31moaAJhTCDdBqeCHVjqvnW94QRiim+icTfAX0VE5niWH1/
-         KTLQ6/zx0oTqWhA0PtYzq7ByItgKqDYuoMJrj/6VkmrC5GYVVu1N3J9wiCTCk4hyk6Qk
-         x0GF3zCYH115PpG/W6T4j4gYo+sisrMCHS/SmnItD0tn9Y6QkwBcA9R2kdeWN49J0+Wz
-         HxTBOooAJ5fQnKdoOY0d/qYmnzgPMzTAFXJOIc0WjzvyiRmeIRGUdpdVqEAqCCSiEBV2
-         bApg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707385436; x=1707990236;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X7p3K02PhD++htjnyCnKJ+dGMFyKbZmZX7f+kzBf0cY=;
-        b=eOfJX/rhg4jh32E9pCV4IBpiYpWWCcripE7MeF30EluzxwMM2M1/KDg0oRQCWwJ7yq
-         MVb9xphZxmMcLN8uUsphDZZH/Uuo7eFX0FE1eg3syaKp1tpWf88aAvMQZsw2kDX5hHl/
-         bJSxy1+CvliDy47dkGa22dqShTj/uuARO+Ea5qZjbirOCWemymX8JS9DWp1qksX2I2SK
-         2VqkkCZ080COohSlSWSvmX1AUDrmaM5/Q1bcNZRRT06f2/04DphuLnazuieEPZwIp3RV
-         jtZIIOOav3REQIU7EVafbIq6fy3UF/5XaaI7ORqv+XpIr/EJ1zsm/SH+RpVxZhitMX5i
-         vtxg==
-X-Gm-Message-State: AOJu0Yz0JfU9db+3IigZ7l9FjZj0hBPhNpQiVMycaRIHS9O1sH+O9wQC
-	NzLDmBI78QFc9BO2XPiIS9HsWpHMBPzBB5cxa+w0Q7QlTm9AmZQ9
-X-Google-Smtp-Source: AGHT+IFeHhhLNi2XeEumL9GDfE4RisQS+7reTda1BObqjiO4TLk3jTgKVSzd8zhevxE2kWJweaXyJQ==
-X-Received: by 2002:a17:906:c456:b0:a38:a6a1:3d7f with SMTP id ck22-20020a170906c45600b00a38a6a13d7fmr1796806ejb.4.1707385436404;
-        Thu, 08 Feb 2024 01:43:56 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVMoZI4ou2aBBrPumIZDMSRTKAFeKwfzIrh7D56ujwnwLWECa4iZOeT0bATYWr6fPPAcus0BELZ1fjuT8YlRSs/8ysR7CphdSk6Nq5utClc9c8ASG9IjHFuYXtzJWIt4J0O8qLf31IW2Dk4qTQqFlJlMnBWd1JBlFmGjyCPJO68NxMYwznfmCi6lK3nRxkCATprpqKbIok6y5MzgsnQujUTyuvf
-Received: from localhost.localdomain (IN-84-15-188-071.bitemobile.lt. [84.15.188.71])
-        by smtp.gmail.com with ESMTPSA id tj7-20020a170907c24700b00a38a2fa2d4bsm937211ejc.45.2024.02.08.01.43.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 01:43:55 -0800 (PST)
-From: Arturas Moskvinas <arturas.moskvinas@gmail.com>
-To: Jonathan.Cameron@huawei.com,
-	oskar.andero@gmail.com,
-	lars@metafoo.de,
-	lukas@wunner.de
-Cc: linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Arturas Moskvinas <arturas.moskvinas@gmail.com>
-Subject: [PATCH] iio: adc: mcp320x: Simplify device removal logic
-Date: Thu,  8 Feb 2024 11:43:39 +0200
-Message-ID: <20240208094339.82633-1-arturas.moskvinas@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707385496; c=relaxed/simple;
+	bh=STtoSs5arH7Z7B6o8Jc5vxJ2oW35KHtTibhQ7eD7N+k=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=JV+uC4W3Zt3bus7bObf0i9NWDUsI82RU3gwhXgslP+KP0gt97upjt/pT7IzvdGWLbPnf2Uqgjyfau3wWwYVkM6J4iyAbyPyskKLtxfRuZdNYJKVTueXKmXGrD0f13cJJLIoIPJFUEdHh7LYZyONB5cHnaEjsPTU0yMo4ijX6kkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TVsR03SlZz1FKPw;
+	Thu,  8 Feb 2024 17:40:12 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
+	by mail.maildlp.com (Postfix) with ESMTPS id 23F7518001A;
+	Thu,  8 Feb 2024 17:44:50 +0800 (CST)
+Received: from [10.174.179.79] (10.174.179.79) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 8 Feb 2024 17:44:48 +0800
+Subject: Re: [PATCH v3 0/3] A Solution to Re-enable hugetlb vmemmap optimize
+To: Catalin Marinas <catalin.marinas@arm.com>, Matthew Wilcox
+	<willy@infradead.org>
+CC: Will Deacon <will@kernel.org>, <mike.kravetz@oracle.com>,
+	<muchun.song@linux.dev>, <akpm@linux-foundation.org>,
+	<anshuman.khandual@arm.com>, <wangkefeng.wang@huawei.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mm@kvack.org>
+References: <20240113094436.2506396-1-sunnanyong@huawei.com>
+ <ZbKjHHeEdFYY1xR5@arm.com> <d1671959-74a4-8ea5-81f0-539df8d9c0f0@huawei.com>
+ <20240207111252.GA22167@willie-the-truck>
+ <ZcNnrdlb3fe0kGHK@casper.infradead.org> <ZcN1hTrAhy-B1P2_@arm.com>
+From: Nanyong Sun <sunnanyong@huawei.com>
+Message-ID: <44075bc2-ac5f-ffcd-0d2f-4093351a6151@huawei.com>
+Date: Thu, 8 Feb 2024 17:44:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <ZcN1hTrAhy-B1P2_@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
 
-Use devm_* APIs to enable regulator and to register in IIO infrastructure.
 
-Signed-off-by: Arturas Moskvinas <arturas.moskvinas@gmail.com>
----
- drivers/iio/adc/mcp320x.c | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
+在 2024/2/7 20:20, Catalin Marinas 写道:
+> On Wed, Feb 07, 2024 at 11:21:17AM +0000, Matthew Wilcox wrote:
+>> On Wed, Feb 07, 2024 at 11:12:52AM +0000, Will Deacon wrote:
+>>> On Sat, Jan 27, 2024 at 01:04:15PM +0800, Nanyong Sun wrote:
+>>>> On 2024/1/26 2:06, Catalin Marinas wrote:
+>>>>> On Sat, Jan 13, 2024 at 05:44:33PM +0800, Nanyong Sun wrote:
+>>>>>> HVO was previously disabled on arm64 [1] due to the lack of necessary
+>>>>>> BBM(break-before-make) logic when changing page tables.
+>>>>>> This set of patches fix this by adding necessary BBM sequence when
+>>>>>> changing page table, and supporting vmemmap page fault handling to
+>>>>>> fixup kernel address translation fault if vmemmap is concurrently accessed.
+>>>>> I'm not keen on this approach. I'm not even sure it's safe. In the
+>>>>> second patch, you take the init_mm.page_table_lock on the fault path but
+>>>>> are we sure this is unlocked when the fault was taken?
+>>>> I think this situation is impossible. In the implementation of the second
+>>>> patch, when the page table is being corrupted
+>>>> (the time window when a page fault may occur), vmemmap_update_pte() already
+>>>> holds the init_mm.page_table_lock,
+>>>> and unlock it until page table update is done.Another thread could not hold
+>>>> the init_mm.page_table_lock and
+>>>> also trigger a page fault at the same time.
+>>>> If I have missed any points in my thinking, please correct me. Thank you.
+>>> It still strikes me as incredibly fragile to handle the fault and trying
+>>> to reason about all the users of 'struct page' is impossible. For example,
+>>> can the fault happen from irq context?
+>> The pte lock cannot be taken in irq context (which I think is what
+>> you're asking?)
+> With this patchset, I think it can: IRQ -> interrupt handler accesses
+> vmemmap -> faults -> fault handler in patch 2 takes the
+> init_mm.page_table_lock to wait for the vmemmap rewriting to complete.
+> Maybe it works if the hugetlb code disabled the IRQs but, as Will said,
+> such fault in any kernel context looks fragile.
+How about take a new lock with irq disabled during BBM, like:
 
-diff --git a/drivers/iio/adc/mcp320x.c b/drivers/iio/adc/mcp320x.c
-index f3b81798b3c9..4685eed35271 100644
---- a/drivers/iio/adc/mcp320x.c
-+++ b/drivers/iio/adc/mcp320x.c
-@@ -388,7 +388,6 @@ static int mcp320x_probe(struct spi_device *spi)
- 	indio_dev->name = spi_get_device_id(spi)->name;
- 	indio_dev->modes = INDIO_DIRECT_MODE;
- 	indio_dev->info = &mcp320x_info;
--	spi_set_drvdata(spi, indio_dev);
- 
- 	device_index = spi_get_device_id(spi)->driver_data;
- 	chip_info = &mcp320x_chip_infos[device_index];
-@@ -441,31 +440,17 @@ static int mcp320x_probe(struct spi_device *spi)
- 	if (IS_ERR(adc->reg))
- 		return PTR_ERR(adc->reg);
- 
--	ret = regulator_enable(adc->reg);
-+	ret = devm_regulator_get_enable(&spi->dev, "vref");
- 	if (ret < 0)
- 		return ret;
- 
- 	mutex_init(&adc->lock);
- 
--	ret = iio_device_register(indio_dev);
--	if (ret < 0)
--		goto reg_disable;
--
--	return 0;
--
--reg_disable:
--	regulator_disable(adc->reg);
--
--	return ret;
-+	return devm_iio_device_register(&spi->dev, indio_dev);
- }
- 
- static void mcp320x_remove(struct spi_device *spi)
- {
--	struct iio_dev *indio_dev = spi_get_drvdata(spi);
--	struct mcp320x *adc = iio_priv(indio_dev);
--
--	iio_device_unregister(indio_dev);
--	regulator_disable(adc->reg);
- }
- 
- static const struct of_device_id mcp320x_dt_ids[] = {
-
-base-commit: 047371968ffc470769f541d6933e262dc7085456
--- 
-2.43.0
-
++void vmemmap_update_pte(unsigned long addr, pte_t *ptep, pte_t pte)
++{
++    spin_lock_irq(NEW_LOCK);
++    pte_clear(&init_mm, addr, ptep);
++    flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
++    set_pte_at(&init_mm, addr, ptep, pte);
++    spin_unlock_irq(NEW_LOCK);
++}
 
