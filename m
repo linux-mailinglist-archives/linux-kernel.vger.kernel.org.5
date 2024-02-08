@@ -1,120 +1,243 @@
-Return-Path: <linux-kernel+bounces-57785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8332484DD69
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:57:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F72884DD6C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:57:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B35691C24A00
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:57:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D67E91F24B40
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C0A16D1A0;
-	Thu,  8 Feb 2024 09:55:13 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5526BB5B;
+	Thu,  8 Feb 2024 09:56:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j4QUWqg/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92BC36BFDC
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 09:55:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A484E6BFC2;
+	Thu,  8 Feb 2024 09:56:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707386112; cv=none; b=UJubNJN9np72ya+4mZkbhUPyecGDbaUkH9j7GxOt6F8LzMZrmCDucgRGRIZMjfy8kQLgqMLLd2ZWpx5mXjX05B4ylCoW6UfGB+fZVrMIlNgmIVXQrCtP1vNP4cnoC6YcQYGX2Fvfq8d/hkpYXme92ouqesEB7+2WrZ1f5bOfWcE=
+	t=1707386176; cv=none; b=XcpGc01KrwX8MinADVI+qJFqXuzV7cll84j4FxpgWlahq4MluQhy1iUyYZxQzN6W3kl7GbwV74EqwzIGkuq3VQuHYWxXNvkWdaUB1tSD545eJPoW2i+kUfGyTcgmOIapC+LPzs9sSKIMHPYPXE/wCfWZb8OhL/sPMi2vFWa1als=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707386112; c=relaxed/simple;
-	bh=A5u3bJpWdZ5zza7OgZpzC7vZ3+2py5aXPKSGlD4Yvac=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=t6CYoFjcy1ykV9nAH5o23PmLxCh5Vd8Tsh7epAkqtrvf9j/jXQWvg+mJtlTy3CHSIUIcf6pG8eX2vAsnhBPlMukCSTnxEBEqSV4/L2oSrzbvri5F1DtwS+Z9UFlNJkw2idOHX/C5NcHyCiaZAtLpkyjTCRqZfPX28m/ynTmzzVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-152-XpH53RNmNBOBYoAZQ70Org-1; Thu, 08 Feb 2024 09:54:59 +0000
-X-MC-Unique: XpH53RNmNBOBYoAZQ70Org-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 8 Feb
- 2024 09:54:39 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 8 Feb 2024 09:54:39 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Charlie Jenkins' <charlie@rivosinc.com>, Guenter Roeck
-	<linux@roeck-us.net>
-CC: Palmer Dabbelt <palmer@dabbelt.com>, Andrew Morton
-	<akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v5 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Thread-Topic: [PATCH v5 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Thread-Index: AQHaWiTi9Vrw8P9Q6kGXDnUtGZ/kaLEAM1Og
-Date: Thu, 8 Feb 2024 09:54:39 +0000
-Message-ID: <0b78e69bf4ef4e52a61ffe21d2c08c96@AcuMS.aculab.com>
-References: <20240130-fix_sparse_errors_checksum_tests-v5-0-4d8a0a337e5e@rivosinc.com>
- <20240130-fix_sparse_errors_checksum_tests-v5-2-4d8a0a337e5e@rivosinc.com>
- <ec44bf32-8b66-40c4-bc62-4deed3702f99@roeck-us.net> <ZcQeyigDWwvnc4Nu@ghost>
-In-Reply-To: <ZcQeyigDWwvnc4Nu@ghost>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1707386176; c=relaxed/simple;
+	bh=pI96dSbkNKLYSAg0+ABcQxmr+LG94uf+cIdsQ/kLDNU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OYDDzA5PiRItZAEDrEejLaLrszXCrnwXUcSnU3yu3XQewt8TXtzZ0jjhCn8RhChVwIBanQOdqPgoqw7EiXF4ryZDQdEMZRypIDN9HyHPVQpivlJpYTThv2Z4YTHy2gQnWIRgdVBb3APaDnlJ+fm68v6BmDyB+5vevsAg8w4pDQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j4QUWqg/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03CC9C433C7;
+	Thu,  8 Feb 2024 09:56:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707386176;
+	bh=pI96dSbkNKLYSAg0+ABcQxmr+LG94uf+cIdsQ/kLDNU=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=j4QUWqg/dV79oP672v3MjWMvIEJaCzuUCrdwE8uZantuURqnvfJ9NxElFqQqkcapj
+	 ROmegF3zQmbWl9hBGrhQgECJOcDsQp9NfyF7NOl2jZ20M+8f12YljwWVOV5kIDgW9C
+	 WOth72NFCrDe2y31DPV2vFnJaku+30owqyNNeHOfegYezy3aX69Tu7qag9BRm68bLv
+	 2Lch8pz1siC+LGe7+gnWOB8C51TVcJE9XlzynSlXO4DPISjtrCU/2Sd3/2ENos57Pb
+	 loiy9yi9eZoE92UP4GBzEtRSvjFDkV358PdITAMjbjChH46CPaJEAlRSxOxLv+NKiB
+	 7ybRrWet+WteA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 4FA5DCE14F0; Thu,  8 Feb 2024 01:56:10 -0800 (PST)
+Date: Thu, 8 Feb 2024 01:56:10 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+	Chen Zhongjin <chenzhongjin@huawei.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Heiko Carstens <hca@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Peng Zhang <zhangpeng.00@bytedance.com>
+Subject: Re: [PATCH 2/2] rcu-tasks: Eliminate deadlocks involving do_exit()
+ and RCU tasks
+Message-ID: <cc25e968-6f43-453e-be9e-2851db39218f@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240129225730.3168681-1-boqun.feng@gmail.com>
+ <20240129225730.3168681-3-boqun.feng@gmail.com>
+ <ZcQJ2Vec1_b5ooS_@pavilion.home>
+ <ZcQzyhcaRUSRo8a9@pavilion.home>
+ <ZcQ4GMEbLFtkCZXw@pavilion.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZcQ4GMEbLFtkCZXw@pavilion.home>
 
-From: Charlie Jenkins
-> Sent: 08 February 2024 00:23
->=20
-> On Sun, Feb 04, 2024 at 09:41:56AM -0800, Guenter Roeck wrote:
-> > Hi,
-> >
-> > On Tue, Jan 30, 2024 at 11:10:04AM -0800, Charlie Jenkins wrote:
-> > > The test cases for ip_fast_csum and csum_ipv6_magic were using arbitr=
-ary
-> > > alignment of data to iterate through random inputs. ip_fast_csum shou=
-ld
-> > > have the data aligned along (14 + NET_IP_ALIGN) bytes and
-> > > csum_ipv6_magic should have data aligned along 32-bit boundaries.
-> > >
-> > >
-..
-> >
-> > So this works on little endian systems. Unfortunately, I still get
-> >
-..
-> >
-> > when running the test on big endian systems such as hppa/parisc or spar=
-c.
->=20
-> Hmm okay it was easy to get this to work on big endian for
-> test_ip_fast_csum but test_csum_ipv6_magic was trickier. I will send out
-> a new version with the changes.
+On Thu, Feb 08, 2024 at 03:10:32AM +0100, Frederic Weisbecker wrote:
+> Le Thu, Feb 08, 2024 at 02:52:10AM +0100, Frederic Weisbecker a écrit :
+> > Le Wed, Feb 07, 2024 at 11:53:13PM +0100, Frederic Weisbecker a écrit :
+> > > Le Mon, Jan 29, 2024 at 02:57:27PM -0800, Boqun Feng a écrit :
+> > > > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > > > 
+> > > > Holding a mutex across synchronize_rcu_tasks() and acquiring
+> > > > that same mutex in code called from do_exit() after its call to
+> > > > exit_tasks_rcu_start() but before its call to exit_tasks_rcu_stop()
+> > > > results in deadlock.  This is by design, because tasks that are far
+> > > > enough into do_exit() are no longer present on the tasks list, making
+> > > > it a bit difficult for RCU Tasks to find them, let alone wait on them
+> > > > to do a voluntary context switch.  However, such deadlocks are becoming
+> > > > more frequent.  In addition, lockdep currently does not detect such
+> > > > deadlocks and they can be difficult to reproduce.
+> > > > 
+> > > > In addition, if a task voluntarily context switches during that time
+> > > > (for example, if it blocks acquiring a mutex), then this task is in an
+> > > > RCU Tasks quiescent state.  And with some adjustments, RCU Tasks could
+> > > > just as well take advantage of that fact.
+> > > > 
+> > > > This commit therefore eliminates these deadlock by replacing the
+> > > > SRCU-based wait for do_exit() completion with per-CPU lists of tasks
+> > > > currently exiting.  A given task will be on one of these per-CPU lists for
+> > > > the same period of time that this task would previously have been in the
+> > > > previous SRCU read-side critical section.  These lists enable RCU Tasks
+> > > > to find the tasks that have already been removed from the tasks list,
+> > > > but that must nevertheless be waited upon.
+> > > > 
+> > > > The RCU Tasks grace period gathers any of these do_exit() tasks that it
+> > > > must wait on, and adds them to the list of holdouts.  Per-CPU locking
+> > > > and get_task_struct() are used to synchronize addition to and removal
+> > > > from these lists.
+> > > > 
+> > > > Link: https://lore.kernel.org/all/20240118021842.290665-1-chenzhongjin@huawei.com/
+> > > > 
+> > > > Reported-by: Chen Zhongjin <chenzhongjin@huawei.com>
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > 
+> > > With that, I think we can now revert 28319d6dc5e2 (rcu-tasks: Fix
+> > > synchronize_rcu_tasks() VS zap_pid_ns_processes()). Because if the task
+> > > is in rcu_tasks_exit_list, it's treated just like the others and must go
+> > > through check_holdout_task(). Therefore and unlike with the previous srcu thing,
+> > > a task sleeping between exit_tasks_rcu_start() and exit_tasks_rcu_finish() is
+> > > now a quiescent state. And that kills the possible deadlock.
+> > > 
+> > > > -void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
+> > > > +void exit_tasks_rcu_start(void)
+> > > >  {
+> > > > -	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
+> > > > +	unsigned long flags;
+> > > > +	struct rcu_tasks_percpu *rtpcp;
+> > > > +	struct task_struct *t = current;
+> > > > +
+> > > > +	WARN_ON_ONCE(!list_empty(&t->rcu_tasks_exit_list));
+> > > > +	get_task_struct(t);
+> > > 
+> > > Is this get_task_struct() necessary?
 
-Instead of trying to save the expected results why not just
-calculate them with a 'really dumb' implementation.
-(eg: Add 16bit items and then fold.)
+Now that you mention it, I think not!
 
-For the generic tests, IIRC:
-Your test vectors looked random.
-They should probably contain some very specific tests cases.
-eg:
-- Zero length and all zeros - checksum should be zero (not 0xffff).
-- Buffers where the final 'fold' needs the carry added in.
+Each task will remove itself from this list before going away, and if
+we put it on the holdout list (where it might stay for longer), there
+will be a get_task_struct() there.
 
-=09David
+Good catch, thank you!
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+> > > > +	preempt_disable();
+> > > > +	rtpcp = this_cpu_ptr(rcu_tasks.rtpcpu);
+> > > > +	t->rcu_tasks_exit_cpu = smp_processor_id();
+> > > > +	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+> > > 
+> > > Do we really need smp_mb__after_unlock_lock() ?
 
+Not on this acquisition we don't.  But each lock must be all one way
+or the other.  Yes, extra overhead on PowerPC, but this is nowhere near
+a fastpath.
+
+The needed ordering is provided by simple locking.
+
+> > Or maybe it orders add into rtpcp->rtp_exit_list VS
+> > main tasklist's removal? Such that:
+
+This ordering is not needed.  The lock orders addition to this
+list against removal from tasklist.  If we hold this lock, either
+the task is already on this list or our holding this lock prevents
+it from removing itself from the tasklist.
+
+We have already scanned the task list, and we have already done
+whatever update we are worried about.
+
+So, if the task was on the tasklist when we scanned, well and
+good.  If the task was created after we scanned the tasklist,
+then it cannot possibly access whatever we removed.
+
+But please double-check!!!
+
+> > synchronize_rcu_tasks()                       do_exit()
+> > ----------------------                        ---------
+> > //for_each_process_thread()
+> > READ tasklist                                 WRITE rtpcp->rtp_exit_list
+> > LOCK rtpcp->lock                              UNLOCK rtpcp->lock
+> > smp_mb__after_unlock_lock()                   WRITE tasklist //unhash_process()
+> > READ rtpcp->rtp_exit_list
+> > 
+> > Does this work? Hmm, I'll play with litmus once I have a fresh brain...
+
+First, thank you very much for the review!!!
+
+> ie: does smp_mb__after_unlock_lock() order only what precedes the UNLOCK with
+> the UNLOCK itself? (but then the UNLOCK itself can be reordered with anything
+> that follows)? Or does it also order what follows the UNLOCK with the UNLOCK
+> itself? If both, then it looks ok, otherwise...
+
+If you have this:
+
+	earlier_accesses();
+	spin_lock(...);
+	ill_considered_memory_accesses();
+	smp_mb__after_unlock_lock();
+	later_accesses();
+
+Then earlier_accesses() will be ordered against later_accesses(), but
+ill_considered_memory_accesses() won't necessarily be ordered.  Also,
+any accesses before any prior release of that same lock will be ordered
+against later_accesses().
+
+(In real life, ill_considered_memory_accesses() will be fully ordered
+against either spin_lock() on the one hand or smp_mb__after_unlock_lock()
+on the other, with x86 doing the first and PowerPC doing the second.
+So please try to avoid any ill_considered_memory_accesses().)
+
+> Also on the other end, does LOCK/smp_mb__after_unlock_lock() order against what
+> precedes the LOCK? That also is necessary for the above to work.
+
+It looks like an smp_mb__after_spinlock() would also be needed, for
+example, on ARMv8.
+
+> Of course by the time I'm writing this email, litmus would have told me
+> already...
+
+;-) ;-) ;-)
+
+But I believe that simple locking covers this case.  Famous last words...
+
+							Thanx, Paul
 
