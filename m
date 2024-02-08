@@ -1,140 +1,120 @@
-Return-Path: <linux-kernel+bounces-58465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF52884E6D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:34:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 543ED84E6DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:34:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 834322825C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:33:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 873BE1C25108
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:34:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B648823CD;
-	Thu,  8 Feb 2024 17:33:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZCxgwkhG"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6380A76416
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED69823DB;
+	Thu,  8 Feb 2024 17:34:46 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99991823B6
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707413633; cv=none; b=qB7x0I0j2tsrGwQ5SaEHxGjykeSCFe3OQwegLUMfO155/Amc+C/lvzHYyrROvqUIUegibNIhAZ2ekfdIuFwgmOUyqBqBQQ2ldufGr8ARgjcGvgh1ZyUyEnYw9/RkN/JIkufOieYa49xxml/vp+kYWRUththN1fp/CEFwwdSO29k=
+	t=1707413686; cv=none; b=kubAcmav2aGrP9QGX5wknDmH/TovXpF/OCj1K/761i7fDSOcYG6H5wiHepxFC7qdNma/1QzbvrkT6wzh8oN80ufUelBKvxWdHYwcaSCsJSn1kdGRhklUm/OwBmnPNmyEtq5k5RCkscp1qwZL9xBd7j4cTVhDowDJtzQhADzbzNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707413633; c=relaxed/simple;
-	bh=D9ZR//xJdvKdHMg46MrHr4eqP0WZAvuqR1WUb+gTQp0=;
+	s=arc-20240116; t=1707413686; c=relaxed/simple;
+	bh=us+HXIhb+brAc8aA7ceSijkcMv7baS1+59jso/r/a58=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QzeigSy9WiwBHi8leiVb8T9jZyCRuCc1sLGvLjwOwe1hVEX10bvgv44TxrFI6xQiG2WZxvcRpObYEq1gfJDmEDRO4JfLjs+Ku83FyxIkyaTtNNxvWUSmNegvH+UlCBrufUwA2HYQanNp0T4CM6NRbFT8qUdbWBiB3QAy6v8Q5Xk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZCxgwkhG; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707413632; x=1738949632;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=D9ZR//xJdvKdHMg46MrHr4eqP0WZAvuqR1WUb+gTQp0=;
-  b=ZCxgwkhGkCG6Cdge5i4BUstkJug2tA03Z7xJPVMP7CfY7aDwrIdH2e3y
-   4WRWT1xbCE10OPAh4sLTzKzrh1a9QElxw/DGsBc95aCaITst/1T16ABx7
-   +ji7lFjZNL+l/gWB8xWQJpfHX5dgaJbAt5ltq4Bl71SG1WS6vc3T9O/Au
-   E7T13ZyB0zhXZoesUOyoC9fbmF6AwFeTIvrgUrR13AJBe9IRyjosYQ+MY
-   3cclOJwwBNka7i4nLcthZ9jCmMlyN/hWw0o8iVK3FvquKxjd1hQpbWmDc
-   bA5Q5h+ovCqcXwogqwQhoGBF4VqmLyLV5tRePwhTzkM3SSLj2awi/RBXz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="1429203"
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="1429203"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 09:33:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="910438208"
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="910438208"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 09:33:49 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rY8HS-00000002wDP-2BMX;
-	Thu, 08 Feb 2024 19:33:46 +0200
-Date: Thu, 8 Feb 2024 19:33:46 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Lee Jones <lee@kernel.org>
-Cc: Paul Menzel <pmenzel@molgen.mpg.de>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: `intel_lpss_pci_driver_init` takes 23.8 ms
-Message-ID: <ZcUQen0nYAAtZVw8@smile.fi.intel.com>
-References: <ebd4dd9d-3710-4cbb-92d1-c3f73b66bc97@molgen.mpg.de>
- <20240208085928.GB689448@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TYWPgWzJoUfyvDKNVfD6r+trrlbLsfIVkGOonWrec3DoKIp5VbabwcomZQT41T2MOVvJFCJcl4U5+V8cLWt2F4BJ+wFwEG9OhqUZ/cKUi5UlnAA/+4nqWYQy94OhCcFHOh007HVBfb+u6ckObuNIDHyzV02igtTaK8AlhrUCwLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC798DA7;
+	Thu,  8 Feb 2024 09:35:24 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.33.184])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E6E443F64C;
+	Thu,  8 Feb 2024 09:34:38 -0800 (PST)
+Date: Thu, 8 Feb 2024 17:34:33 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+	Barry Song <21cnbao@gmail.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 00/25] Transparent Contiguous PTEs for User Mappings
+Message-ID: <ZcUQqfg39zCS2BAv@FVFF77S0Q05N.cambridge.arm.com>
+References: <20240202080756.1453939-1-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240208085928.GB689448@google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240202080756.1453939-1-ryan.roberts@arm.com>
 
-On Thu, Feb 08, 2024 at 08:59:28AM +0000, Lee Jones wrote:
-> On Tue, 06 Feb 2024, Paul Menzel wrote:
+On Fri, Feb 02, 2024 at 08:07:31AM +0000, Ryan Roberts wrote:
+> Hi All,
 
-> > On the Dell XPS 13 9360 and Linux 6.8-rc3+, `intel_lpss_pci_driver_init()`
-> > takes 23.8 ms, making it one of Linux’ longer init functions on this device:
+Hi Ryan,
 
-Does it mean on the previous releases it was different?
-I mean is it a regression or always was like this?
+I assume this is the same as your 'features/granule_perf/contpte-lkml_v' branch
+on https://gitlab.arm.com/linux-arm/linux-rr/
 
-> > 
-> > ```
-> > [    0.000000] Linux version 6.8.0-rc3
-> > (build@bohemianrhapsody.molgen.mpg.de) (gcc (Debian 13.2.0-13) 13.2.0, GNU
-> > ld (GNU Binutils for Debian) 2.42) #13 SMP PREEMPT_DYNAMIC Tue Feb 6
-> > 08:07:48 CET 2024
-> > [    0.000000] Command line: BOOT_IMAGE=/vmlinuz-6.8.0-rc3
-> > root=UUID=32e29882-d94d-4a92-9ee4-4d03002bfa29 ro quiet pci=noaer
-> > mem_sleep_default=deep log_buf_len=8M cryptomgr.notests initcall_debug
-> > […]
-> > [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
-> > […]
-> > [    0.785696] calling  intel_lpss_pci_driver_init+0x0/0xff0
-> > [intel_lpss_pci] @ 153
-> > [    0.785704] calling  crct10dif_intel_mod_init+0x0/0xff0
-> > [crct10dif_pclmul] @ 163
-> > [    0.785796] calling  drm_core_init+0x0/0xff0 [drm] @ 161
-> > [    0.785880] ACPI: bus type drm_connector registered
-> > [    0.785887] initcall drm_core_init+0x0/0xff0 [drm] returned 0 after 25
-> > usecs
-> > [    0.785936] intel-lpss 0000:00:15.0: enabling device (0000 -> 0002)
-> > [    0.786210] idma64 idma64.0: Found Intel integrated DMA 64-bit
-> > [    0.786221] probe of idma64.0 returned 0 after 81 usecs
-> > […]
-> > [    0.801676] probe of i2c_designware.0 returned 0 after 15424 usecs
-> > [    0.801691] probe of 0000:00:15.0 returned 0 after 15973 usecs
-> > [    0.801870] intel-lpss 0000:00:15.1: enabling device (0000 -> 0002)
-> > [    0.802116] idma64 idma64.1: Found Intel integrated DMA 64-bit
-> > [    0.802123] probe of idma64.1 returned 0 after 55 usecs
-> > [    0.819818] probe of i2c_designware.1 returned 0 after 17646 usecs
-> > [    0.819832] probe of 0000:00:15.1 returned 0 after 18137 usecs
-> > [    0.819852] initcall intel_lpss_pci_driver_init+0x0/0xff0
-> > [intel_lpss_pci] returned 0 after 23842 usecs
-> > ```
-> > 
-> > Is this expected, that probing
-> > 
-> >     00:15.1 Signal processing controller [1180]: Intel Corporation Sunrise
-> > Point-LP Serial IO I2C Controller #1 [8086:9d61] (rev 21)
-> > 
-> > takes 18 ms?
+I've taken a quick look, and I have a few initial/superficial comments before
+digging into the detail on the important changes.
 
-And it seems that the real culprit is the DesingWare driver itself, am I wrong?
+> Patch Layout
+> ============
+> 
+> In this version, I've split the patches to better show each optimization:
+> 
+>   - 1-2:    mm prep: misc code and docs cleanups
 
--- 
-With Best Regards,
-Andy Shevchenko
+I'm not confident enough to comment on patch 2, but these look reasonable to
+me.
 
+>   - 3-8:    mm,arm,arm64,powerpc,x86 prep: Replace pte_next_pfn() with more
+>             general pte_advance_pfn()
 
+These look fine to me.
+
+>   - 9-18:   arm64 prep: Refactor ptep helpers into new layer
+
+The result of patches 9-17 looks good to me, but the intermediate stages where
+some functions are converted is a bit odd, and it's a bit painful for review
+since you need to skip ahead a few patches to see the end result to tell that
+the conversions are consistent and complete.
+
+IMO it'd be easier for review if that were three patches:
+
+1) Convert READ_ONCE() -> ptep_get()
+2) Convert set_pte_at() -> set_ptes()
+3) All the "New layer" renames and addition of the trivial wrappers
+
+Patch 18 looks fine to me.
+
+>   - 19:     functional contpte implementation
+>   - 20-25:  various optimizations on top of the contpte implementation
+
+I'll try to dig into these over the next few days.
+
+Mark.
 
