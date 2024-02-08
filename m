@@ -1,143 +1,87 @@
-Return-Path: <linux-kernel+bounces-58220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3EAF84E2FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:17:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95D4D84E304
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:21:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A228F29062F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:17:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A8521F23021
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:21:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C0A79928;
-	Thu,  8 Feb 2024 14:17:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD1B478B63;
+	Thu,  8 Feb 2024 14:21:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="cpIHrnvw"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fn+y3RHy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80824768E9
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 14:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057F076C61;
+	Thu,  8 Feb 2024 14:21:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707401823; cv=none; b=OHUoNjjN5L1Ynp+zMlahPau5hNuh7q4X8yLutFSeXEsO99xr0MpMJ/f8SMWlfM3baolaWsVZm0k9JJwTChB18O0TjhEGyXlMofjS5ZKyGCk9EEOewnQX0aGYx2Pa4zzrvxS8SksrDFJkm5bWy/SV0ZfYs0vpujXP0hUEVy7Yy6I=
+	t=1707402073; cv=none; b=fAfvDVagsLu0v9glVxyLSEDZ4TVLyxMt6bV7pCkBKTcGXESX7Dj7RfEYRiA/Gb75K+d0uk8aQpxcreibYfgY4hayWCyoYE1mrD55JXgVzB6APH27EuMRF2J5vDN8dNNV07Cdin8Xi5TzJLxQLUzgo2qTitAgoS/5HSohGQdweT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707401823; c=relaxed/simple;
-	bh=ujj/RLFDfuqS7PIZP68+3l/KZkd1KHttxlgRuGySCOs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RPyEUhMrnMaU/PzhU6zxxx2CCRt2xYdUTnvXfjcCbhcqhO6iYdofknFotR/olgs0rPKQl/5vUSW9ONOtcwudoqfKPaj1w6TPRRo4So+HlVSPWc3whXcUleGSUD2M4tlKS5oYqWY3hEad0O5xdsxWaAAHJ67n/JzgoTy7YppfdFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=cpIHrnvw; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6043d9726adso7521117b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 06:17:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1707401819; x=1708006619; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5rHe4xV1s4X4NVlAmyq1Fqck0kWWWvVIv4qB+Ky5Oo4=;
-        b=cpIHrnvwduqrSfAbUDvwcTPVwb8rM5uk1zLq3xwzi1+jkLLXKNesv/zHRV50VOFZaB
-         mjlVz2xq0Xc8wRbbScpCr3Wh5pqRY9CZuD3kTn2yTGmzl+o8rE0z/xm05jjVGkOWGawM
-         Xxxv8E2Gc9w3bLvEcWitgQLLWHaZUaDvduZSg9GuLo7L3cKhJ5uJxf6emmisiriIiips
-         pdVU8EKnp07svFd9da5oSFwwvxUFKN4N4Lb4ISOGhVuRuy+FWj1WfqwXv6Nb3t+CYuAw
-         QNYIU7wJoFpclTxaQAF4DVT9S3X15ml/BEDGJMv/ATW8HrjwHnYfPjXqKrRyICCe0GOf
-         InRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707401819; x=1708006619;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5rHe4xV1s4X4NVlAmyq1Fqck0kWWWvVIv4qB+Ky5Oo4=;
-        b=ZAZ5tXFevaw6DnPvikPmSxIpPQWqVe0UVQuvF5eMUB9oNh1YRFRAaURyWq2oeCY8Pg
-         1w0WZOT45JX9+/wUy9QvVETB475b8m4EZluvGutuyF+f6LJJR5GDgQxW3myrFFXf0DRe
-         MJaHlTilteSA+9Hrojvm15RV1jmizy518Es0wjmVO4mUUyNZ0B5ZwKbt9hpfC6vFJlKy
-         MlQcp6YLJF01rwyVyJ0VFdehjpTVZUw3SuF3PFLcRcZbYA7ILvEfTSdhhJ9Xa0w5jzqx
-         2Oibk8GtjL4e1IpZXo8JvK9m2EtD40R3r2fZSdkArJhOlZRgATOimI2QBb3h4oMjQTf6
-         HDnA==
-X-Forwarded-Encrypted: i=1; AJvYcCWXKwvvteXPDmD6vWCTlpjoBtH6cct4eKHptooI33aadO7UaEelGbX53yn9hjP+v3YLv7nVO+Mvrk+d0qPcOQCPK8hvjRlT7cMRj+5e
-X-Gm-Message-State: AOJu0YzAJsdUA52PX1XRxEBOh7qolti1+nev+BmRavIJTQbww4LMLsoO
-	oXdMkeOeRb5pm7LmHktXPAWNWco4w3io45i5sWl+T/Ta/Mr/59v7sulljkpsHU88qDXinlS6yQq
-	kaUiMvIPncE+VDLx7nSizF2LrJOAs7WT6IUQi
-X-Google-Smtp-Source: AGHT+IF4KdKYv/i3KNL4LQkNiYFcff3UiechbnntE/n8lsxGtDCyAecpPgauuzlLRFB/79dZx13Kgoa30gmOFF58owY=
-X-Received: by 2002:a25:7483:0:b0:dc6:c2ec:ff4c with SMTP id
- p125-20020a257483000000b00dc6c2ecff4cmr1925355ybc.6.1707401819151; Thu, 08
- Feb 2024 06:16:59 -0800 (PST)
+	s=arc-20240116; t=1707402073; c=relaxed/simple;
+	bh=GaDeZXV4dc2OYZJzYMgwmK8hKNrvFyr+yDQf6sSNIXk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lCCV9vlR24Kl6rill2lyCySG363Csm2T8eupiJbaOiCoMZ9YYEaSu+jOCHWnlp7u/ctPKO8cSR3dG452JVozh5K8Z/Nzz5E4T9kH5RaBL7t9oJL8rFgPu9EqCqp0pGQl74/RWaoiAhEe6uUtjA6EL5Cj47BRptJKhkPu9kJ7bEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fn+y3RHy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C2CFC433C7;
+	Thu,  8 Feb 2024 14:21:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707402072;
+	bh=GaDeZXV4dc2OYZJzYMgwmK8hKNrvFyr+yDQf6sSNIXk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fn+y3RHysctmIDC/Do1HGOtjfDSDwnnGT/+4hKdAUbqXwI42Okt5iVA9d8JKOBfTB
+	 frBD078E/+EK9IAWGrB2QygvqVUmBvI70OsNNS7VoSLA4lLmqnuPoul2m8DLC814gE
+	 NtT1SM4eWSeDtFqbHL+Z11mu7CYa5wf4O//ucVWOvDE5cPNWAtPg2vEmJAPKb8B8EC
+	 d5meRShQhNULpoh/V+32qAyPvYxO4clH7XKyw86EnHTR4GXl8LZ0JxXn1yefGKRhOy
+	 +H1TghCxlEbaP58TGSi0VUnN4KN14vWFGoV6GbAcybe5ZYTkJvGCUklc33lYVpDxCW
+	 nMJ6ui9A6t97A==
+Date: Thu, 8 Feb 2024 14:21:08 +0000
+From: Lee Jones <lee@kernel.org>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
+	Anjelique Melendez <quic_amelende@quicinc.com>
+Subject: Re: linux-next: Tree for Feb 5 (drivers/leds/rgb/leds-qcom-lpg.o)
+Message-ID: <20240208142108.GS689448@google.com>
+References: <20240205162653.32ca0d08@canb.auug.org.au>
+ <c50e4e60-8e4b-406f-9bac-6a45c083a41c@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
- <d54ca249c3071522218c7ba7b4984bab@paul-moore.com> <dd8a979df500489c0d8595f9a3f89c801ce6f1c2.camel@huaweicloud.com>
-In-Reply-To: <dd8a979df500489c0d8595f9a3f89c801ce6f1c2.camel@huaweicloud.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Thu, 8 Feb 2024 09:16:48 -0500
-Message-ID: <CAHC9VhRu-_v19zWS0Pm0-4E-PWONcfR1-=Ekz9ObuOAgL0Y+sA@mail.gmail.com>
-Subject: Re: [PATCH v9 0/25] security: Move IMA and EVM to the LSM infrastructure
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, chuck.lever@oracle.com, 
-	jlayton@kernel.org, neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, 
-	tom@talpey.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
-	dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, dhowells@redhat.com, 
-	jarkko@kernel.org, stephen.smalley.work@gmail.com, eparis@parisplace.org, 
-	casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-integrity@vger.kernel.org, keyrings@vger.kernel.org, 
-	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c50e4e60-8e4b-406f-9bac-6a45c083a41c@infradead.org>
 
-On Thu, Feb 8, 2024 at 3:06=E2=80=AFAM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
-> On Wed, 2024-02-07 at 22:18 -0500, Paul Moore wrote:
+On Mon, 05 Feb 2024, Randy Dunlap wrote:
 
-..
+> 
+> 
+> On 2/4/24 21:26, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Changes since 20240202:
+> > 
+> 
+> on riscv 64-bit:
+> 
+> riscv64-linux-ld: drivers/leds/rgb/leds-qcom-lpg.o: in function `.L0 ':
+> leds-qcom-lpg.c:(.text+0x106e): undefined reference to `get_pbs_client_device'
+> riscv64-linux-ld: drivers/leds/rgb/leds-qcom-lpg.o: in function `.L468':
+> leds-qcom-lpg.c:(.text+0x1d64): undefined reference to `qcom_pbs_trigger_event'
 
-> > I had some pretty minor comments but I think the only thing I saw that
-> > I think needs a change/addition is a comment in the Makefile regarding
-> > the IMA/EVM ordering; take a look and let me know what you think.
->
-> Oh, I remember well, it is there but difficult to spot...
->
-> --- a/security/integrity/Makefile
-> +++ b/security/integrity/Makefile
-> @@ -18,5 +18,6 @@ integrity-$(CONFIG_LOAD_IPL_KEYS) +=3D platform_certs/l=
-oad_ipl_s390.o
->  integrity-$(CONFIG_LOAD_PPC_KEYS) +=3D platform_certs/efi_parser.o \
->                                       platform_certs/load_powerpc.o \
->                                       platform_certs/keyring_handler.o
-> +# The relative order of the 'ima' and 'evm' LSMs depends on the order be=
-low.
->  obj-$(CONFIG_IMA)                      +=3D ima/
->  obj-$(CONFIG_EVM)                      +=3D evm/
+Fixed by: https://lore.kernel.org/r/20240208110748.GJ689448@google.com
 
-Great, thanks for that.  Not sure how I missed that ... ?
-
-> > Once you add a Makefile commane and we sort out the IMA/EVM approval
-> > process I think we're good to get this into linux-next.  A while back
-> > Mimi and I had a chat offline and if I recall everything correctly she
-> > preferred that I take this patchset via the LSM tree.  I don't have a
-> > problem with that, and to be honest I would probably prefer
-> > that too, but I wanted to check with everyone that is still the case.
-> > Just in case, I've added my ACKs/reviews to this patchset in case this
-> > needs to be merged via the integrity tree.
->
-> Ok, given that there is the comment in the Makefile, the last thing to
-> do from your side is to remove the vague comment in the file_release
-> patch.
->
-> Other than that, I think Mimi wanted to give a last look. If that is
-> ok, then the patches should be ready for your repo and linux-next.
-
-If Mimi is okay with the patchset as-is, and both of you would prefer
-this to in via the LSM tree, don't worry about the file_release
-comment, I'll just remove that when merging.
-
---=20
-paul-moore.com
+-- 
+Lee Jones [李琼斯]
 
