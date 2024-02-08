@@ -1,218 +1,251 @@
-Return-Path: <linux-kernel+bounces-58311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F17B284E46C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9694F84E474
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:56:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67F261F24266
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:53:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F06341F23C36
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2483B7CF36;
-	Thu,  8 Feb 2024 15:53:36 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABCDB7D3ED;
+	Thu,  8 Feb 2024 15:56:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Ku88jgjg"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D0F7B3FF;
-	Thu,  8 Feb 2024 15:53:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B157CF39
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 15:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707407615; cv=none; b=moCGLEsh45TwQBk6rHvC+PfmIXqAHUss0U0sK+A5IpR8ms8Wn/xiX9vQEeXJd9YM/6e0mOBav63Cbf4sVVC9etazvL9UnrH8GNisrCwzpYsHiluCMz2zBqfzTXWYaWa3bVVPKdZx9Ce9Nwcpuial7oPPjiV8WOnlTHBURjISiV4=
+	t=1707407759; cv=none; b=BTtPmIxDKC/kFYu0ZavN7efYP/MnqwglHF9XLHwqzGNhH8VWq2YyLchKt3kQZKfLk6+VDeEIEdS8t0fDjc13sWddAMwNXVlI0vHyQSzzYl7OluiIHl/n47tXpG8R/I/+v8W+c5G08aQmDnvxVAQLBITq0zpO4wVxhmdcMREEKKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707407615; c=relaxed/simple;
-	bh=riINGfnd79EnQpYg7CsqL7ovhf6cZK3lm1VIv8aEOk4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=fd5ncBapaIt/snW3YlN4837xim0L9AG/36UVprbkRXz4ZBUw2JR9+n3jZQvhVb5Io3gKighIKejLb8wqhhWO5G2EWWJlQUurw/S5M5P5Gq5GHMtkpBazr9OEGNbDttBV/Kk5Ldkwl85ZeiyzLxQsjLebZ6XAiMwYTRrf6SPCLYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95C57C433F1;
-	Thu,  8 Feb 2024 15:53:32 +0000 (UTC)
-Date: Thu, 8 Feb 2024 10:53:28 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Vincent Donnefort
- <vdonnefort@google.com>, Sven Schnelle <svens@linux.ibm.com>, Mete Durlu
- <meted@linux.ibm.com>, stable <stable@vger.kernel.org>
-Subject: [PATCH] tracing: Fix wasted memory in saved_cmdlines logic
-Message-ID: <20240208105328.7e73f71d@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707407759; c=relaxed/simple;
+	bh=VxRJGKaYXSRYdovy63fzI0ASEaNdAGwALPigMzGJrG8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qsShKf0KJ6mEVfGn3IOPVvrR1lgT55CyM9sbz61YUjpzmWh3XuliseiNawvzA14ClkphTvppGzJnHBYCM3itfqEkTaKv0sPQ4T8GwjU4lH/806kLAFqKCA22fmgtxRGdZZGIeAxQA0Pkyg14NMXQ8snvCJt8T/IqMYuTUbIfLPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=Ku88jgjg; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33b1d7f736bso1375177f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 07:55:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1707407756; x=1708012556; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jwj187v5DmD95irFdBgTanplv+ZSPDewhhqQqZrj+18=;
+        b=Ku88jgjgigv/7hXHH5pvyCXBDd7haFMI+DznB49JMHo/JZO2YfqIkQRE/+1EOKBSK3
+         kFwBZOI8Jq/mjZsGqzBqiskJBuZGWYlsFxInR719+tDZYC/ZrOwJTItoA8q4a76+jVmh
+         WxkKJmWwXUc3YypNRyULcjDUy24pM0twQ5SjHQZY3rCb2SMEkVfbaGyH3709Z19tQTkJ
+         HL/32NjTTBvLgLgziQmNRD79A4TQQy6CNFwCYOXOS+1pRXog5YmsNqhOv9ig+DrpzjkI
+         aD6r5Mwsta0Z91tWLkjAY0woYrAXlm/3o20FasAhSgSv1ncs5qC2wBOMuV2Imc9R6Qj2
+         l2Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707407756; x=1708012556;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jwj187v5DmD95irFdBgTanplv+ZSPDewhhqQqZrj+18=;
+        b=vdSwPgPVDeQ/+/9xnnbx4/3n57wXjTRSnbJca51GChF6muioZ1ep/4FMGPWeZJRHtp
+         TynmlB2+6gk1pUKqUVuKf/8BvZRBJDOitsCG4QToezvDVZQw4uFrtKZQw8JGBvrFGHKG
+         zzopfdupa1x7cwW0FNNuGLW+1OqPpiuByuEevpC+FT0BX5O+DPfAzyFekNhtnESBsdY7
+         LJ969AvzpVkjZzZArqbSP67RHZHpBXjcjavcgfUx5cI8v1sle7uUdeHHbqvxvZOn6YYy
+         JscA591tsxRIVtLxWf9fscOBivb04NxFw/eeJqVCqQYFDEMrPATf8Fs5ZHEM1yLaLaJw
+         8bzQ==
+X-Gm-Message-State: AOJu0YwlM6JvRztegsunNHDxDF83midlE4CG+EEbRbMgojbF3SoteMwr
+	pcMJtkUJ353wnc1/37mwpkBS+LJuyuxEdyntNjdeZ4oNIVS6S3sAzH7VnyoLiZE=
+X-Google-Smtp-Source: AGHT+IFfdq3GR+jNAtlGIoRDXvcR8MQLIIZqMZPsMrgv6b4NoWs3p8MQUDAlqRR3ToqtEy/wPcKNIg==
+X-Received: by 2002:a5d:4dcc:0:b0:33b:4d13:3e91 with SMTP id f12-20020a5d4dcc000000b0033b4d133e91mr3820391wru.45.1707407756251;
+        Thu, 08 Feb 2024 07:55:56 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCULtDWAiTDbRxR7h0kvcsiu+OwZWCxku0b5SYZAaErDiFKeCuOOEqPUGLCtZgOuCtf8Ip8AbJdxJssk7bBOvR3rBCFEgHHjk2EYqEyBNOoBHo5KhtPaw9ZubnDqy5qaaePhYqDWQaoGgWY2JjEIPecqTMFop0/ZLyoCjIZ7KFaYo4dsW7LP3+CmmpalQje2sv1+lnZkGXX4bseVubc+J8Ius9BpkVWiCN/Ju0Fnw50gR2O/U13W6a+T7sJGHU28QuhAPqT1fLAp3DtFBMJCeSk6wWkwon1PZgYBm/lvKAUwYEUlmsRwZorlOWqlGaYxenBRQqZERJ3QZ7PFihZ4Mh6Id0bMDxzgRREJC/x3YR7pmrn3yU6Y7138sx4gwvJJ6DeyuC4Xf0d/zuu/HD0NBfPWt62HdnQdGoBpM7OP1ifpDE+M/aZR8SPVf/FUN07kd8JpQHQSAIsB8bzUfTS0AsK/y5hHU1Gnw2aXnsbsraqBpD0aKw7loIPDQOQWjrNrzG3X5wZgvEmlEYHhNlmzKcZHNWO5g5w+eQO23Gwg6TrsHQyOEda3pdXae2MPThgDDRiw2tIdPPkZB1+1sgQcH+ch5DIzgBVaEegH
+Received: from [192.168.50.4] ([82.78.167.45])
+        by smtp.gmail.com with ESMTPSA id m25-20020a056000181900b0033b4235b155sm3852770wrh.48.2024.02.08.07.55.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Feb 2024 07:55:55 -0800 (PST)
+Message-ID: <0e45aef2-5fc5-4677-9370-b9e565f0767b@tuxon.dev>
+Date: Thu, 8 Feb 2024 17:55:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/17] dt-bindings: clock: r9a07g044-cpg: Add power domain
+ IDs
+Content-Language: en-US
+To: Biju Das <biju.das.jz@bp.renesas.com>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "mturquette@baylibre.com" <mturquette@baylibre.com>,
+ "sboyd@kernel.org" <sboyd@kernel.org>, "robh@kernel.org" <robh@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+ "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+ "palmer@dabbelt.com" <palmer@dabbelt.com>,
+ "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>
+Cc: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+ "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240208124300.2740313-3-claudiu.beznea.uj@bp.renesas.com>
+ <TYCPR01MB1126925EE70DA30AC2662862686442@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <TYCPR01MB1126925EE70DA30AC2662862686442@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hi, Biju,
 
-While looking at improving the saved_cmdlines cache I found a huge amount
-of wasted memory that should be used for the cmdlines.
+On 08.02.2024 16:39, Biju Das wrote:
+> Hi Claudiu,
+> 
+>> -----Original Message-----
+>> From: Claudiu <claudiu.beznea@tuxon.dev>
+>> Sent: Thursday, February 8, 2024 12:43 PM
+>> Subject: [PATCH 02/17] dt-bindings: clock: r9a07g044-cpg: Add power domain
+>> IDs
+>>
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> Add power domain IDs for RZ/G2L (R9A07G044) SoC.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> ---
+>>  include/dt-bindings/clock/r9a07g044-cpg.h | 58 +++++++++++++++++++++++
+>>  1 file changed, 58 insertions(+)
+>>
+>> diff --git a/include/dt-bindings/clock/r9a07g044-cpg.h b/include/dt-
+>> bindings/clock/r9a07g044-cpg.h
+>> index 0bb17ff1a01a..e209f96f92b7 100644
+>> --- a/include/dt-bindings/clock/r9a07g044-cpg.h
+>> +++ b/include/dt-bindings/clock/r9a07g044-cpg.h
+>> @@ -217,4 +217,62 @@
+>>  #define R9A07G044_ADC_ADRST_N		82
+>>  #define R9A07G044_TSU_PRESETN		83
+>>
+>> +/* Power domain IDs. */
+>> +#define R9A07G044_PD_ALWAYS_ON		0
+>> +#define R9A07G044_PD_GIC		1
+>> +#define R9A07G044_PD_IA55		2
+>> +#define R9A07G044_PD_MHU		3
+>> +#define R9A07G044_PD_CORESIGHT		4
+>> +#define R9A07G044_PD_SYC		5
+>> +#define R9A07G044_PD_DMAC		6
+>> +#define R9A07G044_PD_GTM0		7
+>> +#define R9A07G044_PD_GTM1		8
+>> +#define R9A07G044_PD_GTM2		9
+>> +#define R9A07G044_PD_MTU		10
+>> +#define R9A07G044_PD_POE3		11
+>> +#define R9A07G044_PD_GPT		12
+>> +#define R9A07G044_PD_POEGA		13
+>> +#define R9A07G044_PD_POEGB		14
+>> +#define R9A07G044_PD_POEGC		15
+>> +#define R9A07G044_PD_POEGD		16
+>> +#define R9A07G044_PD_WDT0		17
+>> +#define R9A07G044_PD_WDT1		18
+>> +#define R9A07G044_PD_SPI		19
+>> +#define R9A07G044_PD_SDHI0		20
+>> +#define R9A07G044_PD_SDHI1		21
+>> +#define R9A07G044_PD_3DGE		22
+>> +#define R9A07G044_PD_ISU		23
+>> +#define R9A07G044_PD_VCPL4		24
+>> +#define R9A07G044_PD_CRU		25
+>> +#define R9A07G044_PD_MIPI_DSI		26
+>> +#define R9A07G044_PD_LCDC		27
+>> +#define R9A07G044_PD_SSI0		28
+>> +#define R9A07G044_PD_SSI1		29
+>> +#define R9A07G044_PD_SSI2		30
+>> +#define R9A07G044_PD_SSI3		31
+>> +#define R9A07G044_PD_SRC		32
+>> +#define R9A07G044_PD_USB0		33
+>> +#define R9A07G044_PD_USB1		34
+>> +#define R9A07G044_PD_USB_PHY		35
+>> +#define R9A07G044_PD_ETHER0		36
+>> +#define R9A07G044_PD_ETHER1		37
+>> +#define R9A07G044_PD_I2C0		38
+>> +#define R9A07G044_PD_I2C1		39
+>> +#define R9A07G044_PD_I2C2		40
+>> +#define R9A07G044_PD_I2C3		41
+>> +#define R9A07G044_PD_SCIF0		42
+>> +#define R9A07G044_PD_SCIF1		43
+>> +#define R9A07G044_PD_SCIF2		44
+>> +#define R9A07G044_PD_SCIF3		45
+>> +#define R9A07G044_PD_SCIF4		46
+>> +#define R9A07G044_PD_SCI0		47
+>> +#define R9A07G044_PD_SCI1		48
+>> +#define R9A07G044_PD_IRDA		49
+>> +#define R9A07G044_PD_RSPI0		50
+>> +#define R9A07G044_PD_RSPI1		51
+>> +#define R9A07G044_PD_RSPI2		52
+>> +#define R9A07G044_PD_CANFD		53
+>> +#define R9A07G044_PD_ADC		54
+>> +#define R9A07G044_PD_TSU		55
+> 
+> Not sure these PD id's can be generic and used across all RZ/G2L family
+> devices and RZ/V2M?
 
-The tracing data saves pids during the trace. At sched switch, if a trace
-occurred, it will save the comm of the task that did the trace. This is
-saved in a "cache" that maps pids to comms and exposed to user space via
-the /sys/kernel/tracing/saved_cmdlines file. Currently it only caches by
-default 128 comms.
+That may be another approach. I chose this one to have everything SoC
+specific in a single place. With this, e.g., we can have all the SCIF
+related IDs grouped together (as we know from the beginning how many SCIF
+blocks a SoC has):
 
-The structure that uses this creates an array to store the pids using
-PID_MAX_DEFAULT (which is usually set to 32768). This causes the structure
-to be of the size of 131104 bytes on 64 bit machines.
++#define R9A07G044_PD_SCIF0		42
++#define R9A07G044_PD_SCIF1		43
++#define R9A07G044_PD_SCIF2		44
++#define R9A07G044_PD_SCIF3		45
++#define R9A07G044_PD_SCIF4		46
 
-In hex: 131104 = 0x20020, and since the kernel allocates generic memory in
-powers of two, the kernel would allocate 0x40000 or 262144 bytes to store
-this structure. That leaves 131040 bytes of wasted space.
+If a single file with all the IDs for all the SoC will be used then, as
+every SoC will have a different number of SCIFs, I2Cs, RSPIs, to keep the
+DT binding backward compatibility, we will end up with these IDs not being
+grouped on functionality, e.g., we may end up with something like:
 
-Worse, the structure points to an allocated array to store the comm names,
-which is 16 bytes times the amount of names to save (currently 128), which
-is 2048 bytes. Instead of allocating a separate array, make the structure
-end with a variable length string and use the extra space for that.
++#define R9A07G044_PD_I2C0		38
++#define R9A07G044_PD_I2C1		39
++#define R9A07G044_PD_I2C2		40
++#define R9A07G044_PD_I2C3		41
++#define R9A07G044_PD_SCIF0		42
++#define R9A07G044_PD_SCIF1		43
++#define R9A07G044_PD_SCIF2		44
++#define R9A07G044_PD_SCIF3		45
++#define R9A07G044_PD_SCIF4		46
++#define R9A07G044_PD_SCI0		47
++#define R9A07G044_PD_SCI1		48
++#define R9A07G044_PD_IRDA		49
++#define R9A07G044_PD_RSPI0		50
++#define R9A07G044_PD_RSPI1		51
++#define R9A07G044_PD_RSPI2		52
++#define R9A07G044_PD_CANFD		53
++#define R9A07G044_PD_ADC		54
++#define R9A07G044_PD_TSU		55
 
-This is similar to a recommendation that Linus had made about eventfs_inode names:
++#define R9A07G044_PD_SCIF5		56
++#define R9A07G044_PD_SCIF6		57
++#define R9A07G044_PD_I2C4		58
++#define R9A07G044_PD_RSPI3		58
++#define R9A07G044_PD_RSPI4		59
 
-  https://lore.kernel.org/all/20240130190355.11486-5-torvalds@linux-foundation.org/
+Of course, I can adjust it if Geert wants it differently.
 
-Instead of allocating a separate string array to hold the saved comms,
-have the structure end with: char saved_cmdlines[]; and round up to the
-next power of two over sizeof(struct saved_cmdline_buffers) + num_cmdlines * TASK_COMM_LEN
-It will use this extra space for the saved_cmdline portion.
+Thank you,
+Claudiu Beznea
 
-Now, instead of saving only 128 comms by default, by using this wasted
-space at the end of the structure it can save over 8000 comms and even
-saves space by removing the need for allocating the other array.
-
-Cc: stable@vger.kernel.org
-Fixes: 939c7a4f04fcd ("tracing: Introduce saved_cmdlines_size file")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/trace.c | 73 +++++++++++++++++++++-----------------------
- 1 file changed, 34 insertions(+), 39 deletions(-)
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 2a7c6fd934e9..0b3e60b827f7 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2320,7 +2320,7 @@ struct saved_cmdlines_buffer {
- 	unsigned *map_cmdline_to_pid;
- 	unsigned cmdline_num;
- 	int cmdline_idx;
--	char *saved_cmdlines;
-+	char saved_cmdlines[];
- };
- static struct saved_cmdlines_buffer *savedcmd;
- 
-@@ -2334,47 +2334,54 @@ static inline void set_cmdline(int idx, const char *cmdline)
- 	strncpy(get_saved_cmdlines(idx), cmdline, TASK_COMM_LEN);
- }
- 
--static int allocate_cmdlines_buffer(unsigned int val,
--				    struct saved_cmdlines_buffer *s)
-+static void free_saved_cmdlines_buffer(struct saved_cmdlines_buffer *s)
-+{
-+	int order = get_order(sizeof(*s) + s->cmdline_num * TASK_COMM_LEN);
-+
-+	kfree(s->map_cmdline_to_pid);
-+	free_pages((unsigned long)s, order);
-+}
-+
-+static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
- {
-+	struct saved_cmdlines_buffer *s;
-+	struct page *page;
-+	int orig_size, size;
-+	int order;
-+
-+	/* Figure out how much is needed to hold the given number of cmdlines */
-+	orig_size = sizeof(*s) + val * TASK_COMM_LEN;
-+	order = get_order(orig_size);
-+	size = 1 << (order + PAGE_SHIFT);
-+	page = alloc_pages(GFP_KERNEL, order);
-+	if (!page)
-+		return NULL;
-+
-+	s = page_address(page);
-+	memset(s, 0, sizeof(*s));
-+
-+	/* Round up to actual allocation */
-+	val = (size - sizeof(*s)) / TASK_COMM_LEN;
-+	s->cmdline_num = val;
-+
- 	s->map_cmdline_to_pid = kmalloc_array(val,
- 					      sizeof(*s->map_cmdline_to_pid),
- 					      GFP_KERNEL);
--	if (!s->map_cmdline_to_pid)
--		return -ENOMEM;
--
--	s->saved_cmdlines = kmalloc_array(TASK_COMM_LEN, val, GFP_KERNEL);
--	if (!s->saved_cmdlines) {
--		kfree(s->map_cmdline_to_pid);
--		return -ENOMEM;
--	}
- 
- 	s->cmdline_idx = 0;
--	s->cmdline_num = val;
- 	memset(&s->map_pid_to_cmdline, NO_CMDLINE_MAP,
- 	       sizeof(s->map_pid_to_cmdline));
- 	memset(s->map_cmdline_to_pid, NO_CMDLINE_MAP,
- 	       val * sizeof(*s->map_cmdline_to_pid));
- 
--	return 0;
-+	return s;
- }
- 
- static int trace_create_savedcmd(void)
- {
--	int ret;
--
--	savedcmd = kmalloc(sizeof(*savedcmd), GFP_KERNEL);
--	if (!savedcmd)
--		return -ENOMEM;
--
--	ret = allocate_cmdlines_buffer(SAVED_CMDLINES_DEFAULT, savedcmd);
--	if (ret < 0) {
--		kfree(savedcmd);
--		savedcmd = NULL;
--		return -ENOMEM;
--	}
-+	savedcmd = allocate_cmdlines_buffer(SAVED_CMDLINES_DEFAULT);
- 
--	return 0;
-+	return savedcmd ? 0 : -ENOMEM;
- }
- 
- int is_tracing_stopped(void)
-@@ -6056,26 +6063,14 @@ tracing_saved_cmdlines_size_read(struct file *filp, char __user *ubuf,
- 	return simple_read_from_buffer(ubuf, cnt, ppos, buf, r);
- }
- 
--static void free_saved_cmdlines_buffer(struct saved_cmdlines_buffer *s)
--{
--	kfree(s->saved_cmdlines);
--	kfree(s->map_cmdline_to_pid);
--	kfree(s);
--}
--
- static int tracing_resize_saved_cmdlines(unsigned int val)
- {
- 	struct saved_cmdlines_buffer *s, *savedcmd_temp;
- 
--	s = kmalloc(sizeof(*s), GFP_KERNEL);
-+	s = allocate_cmdlines_buffer(val);
- 	if (!s)
- 		return -ENOMEM;
- 
--	if (allocate_cmdlines_buffer(val, s) < 0) {
--		kfree(s);
--		return -ENOMEM;
--	}
--
- 	preempt_disable();
- 	arch_spin_lock(&trace_cmdline_lock);
- 	savedcmd_temp = savedcmd;
--- 
-2.43.0
-
+> 
+> Cheers,
+> Biju
+> 
+>> +
+>>  #endif /* __DT_BINDINGS_CLOCK_R9A07G044_CPG_H__ */
+>> --
+>> 2.39.2
+>>
+> 
 
