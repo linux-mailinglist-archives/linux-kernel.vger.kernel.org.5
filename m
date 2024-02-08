@@ -1,65 +1,69 @@
-Return-Path: <linux-kernel+bounces-58523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 555B384E793
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:21:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB02184E796
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:21:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF1311F27195
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:21:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 440841F27533
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:21:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 177288613E;
-	Thu,  8 Feb 2024 18:20:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C2586AFD;
+	Thu,  8 Feb 2024 18:20:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="P6cJ9wjF"
-Received: from relay.smtp-ext.broadcom.com (unknown [192.19.166.228])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="pg7JONnp"
+Received: from relay.smtp-ext.broadcom.com (unknown [192.19.166.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A6983CD5;
-	Thu,  8 Feb 2024 18:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.228
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E89DC823C2;
+	Thu,  8 Feb 2024 18:20:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707416451; cv=none; b=B+0qIT+vlnb42eqXhJcgGKon6I8vMZFR+yhX/bZoOmEAQiuA3mze+uzMV/VBZTbAfueDpxffpVbM35WsqKSsR7daLh8XkCe6nbnOPMlGJl2zd9rHSXNm9X2Ee394sklOlCFeXH8sI1OQDslA0C5DyO32D6DRWdpKwRrdoWf+U34=
+	t=1707416452; cv=none; b=JK/GtQ+MrbmdEIqpl3KjH16WYIDSzU3Qoh/16zSnZGFsrGTZcuLa8zxCAFXmJi1JZ78iC35Mly5R+kkrba5mfYmqA7VBuxgnziOe98D6QAWbwGJKCmnKYJKt1i/F+hXdaXZtCpGw1IF6XoDS+yam/yjLYtkN/yMEjVHKH4+t7xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707416451; c=relaxed/simple;
-	bh=3DhEN22lmOWhxC+qxvJ3t5FlzdbECygh0mh33F0j8to=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Kc/JKngr3wF0hXbE1d3eBEuX1Slzmz4QOj+s1N3b2+vVVpjpA7A2Ky98sEhSjaCg7XrCjQniBe8OY0FCY61qHKov/mguBKdzavgss0XW3ppcuoHsLJJHKMqxYozc7ILfeBKLmq/oIs87hFnsb5nnBS3QjMa46A30NUi9SiZvbDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=P6cJ9wjF; arc=none smtp.client-ip=192.19.166.228
+	s=arc-20240116; t=1707416452; c=relaxed/simple;
+	bh=oSNraDIjNZgqeOB4YZoeNAkbN+8dHm4kET6YmMe3Bl8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=fFTzUt22xlKM5WlXiNzQaefobO4J6hSZngRLYbPnKLJJMdLQpdvWB7jpyOqNumkKroazO/bZBlJSxP5715Pdk9Dl4R1DQ7fQGMo/dWNrQgt4JRWIkNc++0D9+xrkvHBXXjsNG8E76EQpxj21Cf4MPFYmZQPuR6u0Q0moLwpBn8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=pg7JONnp; arc=none smtp.client-ip=192.19.166.231
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id B6FFCC002E47;
-	Thu,  8 Feb 2024 10:20:48 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com B6FFCC002E47
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 1F7ABC00167E;
+	Thu,  8 Feb 2024 10:20:50 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 1F7ABC00167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1707416448;
-	bh=3DhEN22lmOWhxC+qxvJ3t5FlzdbECygh0mh33F0j8to=;
-	h=From:To:Cc:Subject:Date:From;
-	b=P6cJ9wjF3OdWzzOTxverzTBk09CfD3FgoPi8ETN0iIrHZStgdPnmvPqUvzC1koaw4
-	 fQmg3aRNeS6jenN28xePfqLLEAPd+DcpMVHeKBMemb1VC7nywMBf7qxJ3bFsMJJP82
-	 Sz03//zB2cltCGN3AuA9Oc2Xv+vWdNTO7Jm0RBYE=
+	s=dkimrelay; t=1707416450;
+	bh=oSNraDIjNZgqeOB4YZoeNAkbN+8dHm4kET6YmMe3Bl8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=pg7JONnp28Gi/i148JjkxuqoXC9IcR0ehy0tZrOjiCFxQTQe//qZH4JQolvvCwca3
+	 Ia/t3vrWxeJEyDHwYl7jLfjlVVmkdK+HJzLOaRPr19grj6KYAvRgL4Q4t0XI9ixNyr
+	 iCDG3sFIXNZym9pcQnIGQQKeDkG0SK6W7mQWjC9g=
 Received: from stbirv-lnx-1.igp.broadcom.net (stbirv-lnx-1.igp.broadcom.net [10.67.48.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 31D3518041CAC4;
-	Thu,  8 Feb 2024 10:20:47 -0800 (PST)
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 7A72B18041CAC4;
+	Thu,  8 Feb 2024 10:20:48 -0800 (PST)
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 To: stable@vger.kernel.org
 Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
 	Russell King <rmk+kernel@armlinux.org.uk>,
 	Jakub Kicinski <kuba@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
 	Doug Berger <opendmb@gmail.com>,
 	Florian Fainelli <f.fainelli@gmail.com>,
 	"David S. Miller" <davem@davemloft.net>,
 	bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM GENET ETHERNET DRIVER),
 	netdev@vger.kernel.org (open list:BROADCOM GENET ETHERNET DRIVER),
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH stable 5.4] net: bcmgenet: Fix EEE implementation
-Date: Thu,  8 Feb 2024 10:20:40 -0800
-Message-Id: <20240208182041.3228898-1-florian.fainelli@broadcom.com>
+Subject: [PATCH stable 5.15] net: bcmgenet: Fix EEE implementation
+Date: Thu,  8 Feb 2024 10:20:41 -0800
+Message-Id: <20240208182041.3228898-2-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240208182041.3228898-1-florian.fainelli@broadcom.com>
+References: <20240208182041.3228898-1-florian.fainelli@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,7 +72,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-commit a9f31047baca57d47440c879cf259b86f900260c upstream
+[ Upstream commit a9f31047baca57d47440c879cf259b86f900260c ]
 
 We had a number of short comings:
 
@@ -87,19 +91,19 @@ Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Link: https://lore.kernel.org/r/20230606214348.2408018-1-florian.fainelli@broadcom.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
-Change-Id: I9e9d9d9e10817c7fcf3d9cde2389a1f6fe42a2ba
 ---
  .../net/ethernet/broadcom/genet/bcmgenet.c    | 22 +++++++------------
  .../net/ethernet/broadcom/genet/bcmgenet.h    |  3 +++
- drivers/net/ethernet/broadcom/genet/bcmmii.c  |  6 +++++
- 3 files changed, 17 insertions(+), 14 deletions(-)
+ drivers/net/ethernet/broadcom/genet/bcmmii.c  |  5 +++++
+ 3 files changed, 16 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index eeadeeec17ba..380bf7a328ba 100644
+index 66f0c28298bf..7327a8d5dc75 100644
 --- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
 +++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -1018,7 +1018,8 @@ static void bcmgenet_get_ethtool_stats(struct net_device *dev,
+@@ -1318,7 +1318,8 @@ static void bcmgenet_get_ethtool_stats(struct net_device *dev,
  	}
  }
  
@@ -109,7 +113,7 @@ index eeadeeec17ba..380bf7a328ba 100644
  {
  	struct bcmgenet_priv *priv = netdev_priv(dev);
  	u32 off = priv->hw_params->tbuf_offset + TBUF_ENERGY_CTRL;
-@@ -1038,7 +1039,7 @@ static void bcmgenet_eee_enable_set(struct net_device *dev, bool enable)
+@@ -1338,7 +1339,7 @@ static void bcmgenet_eee_enable_set(struct net_device *dev, bool enable)
  
  	/* Enable EEE and switch to a 27Mhz clock automatically */
  	reg = bcmgenet_readl(priv->base + off);
@@ -118,7 +122,7 @@ index eeadeeec17ba..380bf7a328ba 100644
  		reg |= TBUF_EEE_EN | TBUF_PM_EN;
  	else
  		reg &= ~(TBUF_EEE_EN | TBUF_PM_EN);
-@@ -1059,6 +1060,7 @@ static void bcmgenet_eee_enable_set(struct net_device *dev, bool enable)
+@@ -1359,6 +1360,7 @@ static void bcmgenet_eee_enable_set(struct net_device *dev, bool enable)
  
  	priv->eee.eee_enabled = enable;
  	priv->eee.eee_active = enable;
@@ -126,7 +130,7 @@ index eeadeeec17ba..380bf7a328ba 100644
  }
  
  static int bcmgenet_get_eee(struct net_device *dev, struct ethtool_eee *e)
-@@ -1074,6 +1076,7 @@ static int bcmgenet_get_eee(struct net_device *dev, struct ethtool_eee *e)
+@@ -1374,6 +1376,7 @@ static int bcmgenet_get_eee(struct net_device *dev, struct ethtool_eee *e)
  
  	e->eee_enabled = p->eee_enabled;
  	e->eee_active = p->eee_active;
@@ -134,7 +138,7 @@ index eeadeeec17ba..380bf7a328ba 100644
  	e->tx_lpi_timer = bcmgenet_umac_readl(priv, UMAC_EEE_LPI_TIMER);
  
  	return phy_ethtool_get_eee(dev->phydev, e);
-@@ -1083,7 +1086,6 @@ static int bcmgenet_set_eee(struct net_device *dev, struct ethtool_eee *e)
+@@ -1383,7 +1386,6 @@ static int bcmgenet_set_eee(struct net_device *dev, struct ethtool_eee *e)
  {
  	struct bcmgenet_priv *priv = netdev_priv(dev);
  	struct ethtool_eee *p = &priv->eee;
@@ -142,7 +146,7 @@ index eeadeeec17ba..380bf7a328ba 100644
  
  	if (GENET_IS_V1(priv))
  		return -EOPNOTSUPP;
-@@ -1094,16 +1096,11 @@ static int bcmgenet_set_eee(struct net_device *dev, struct ethtool_eee *e)
+@@ -1394,16 +1396,11 @@ static int bcmgenet_set_eee(struct net_device *dev, struct ethtool_eee *e)
  	p->eee_enabled = e->eee_enabled;
  
  	if (!p->eee_enabled) {
@@ -162,7 +166,7 @@ index eeadeeec17ba..380bf7a328ba 100644
  	}
  
  	return phy_ethtool_set_eee(dev->phydev, e);
-@@ -3688,9 +3685,6 @@ static int bcmgenet_resume(struct device *d)
+@@ -4219,9 +4216,6 @@ static int bcmgenet_resume(struct device *d)
  	if (!device_may_wakeup(d))
  		phy_resume(dev->phydev);
  
@@ -173,41 +177,33 @@ index eeadeeec17ba..380bf7a328ba 100644
  
  	netif_device_attach(dev);
 diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.h b/drivers/net/ethernet/broadcom/genet/bcmgenet.h
-index 5b7c2f9241d0..29bf256d13f6 100644
+index d111af605c44..95b3db100af6 100644
 --- a/drivers/net/ethernet/broadcom/genet/bcmgenet.h
 +++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.h
-@@ -736,4 +736,7 @@ int bcmgenet_wol_power_down_cfg(struct bcmgenet_priv *priv,
- void bcmgenet_wol_power_up_cfg(struct bcmgenet_priv *priv,
- 			       enum bcmgenet_power_mode mode);
+@@ -735,4 +735,7 @@ int bcmgenet_wol_power_down_cfg(struct bcmgenet_priv *priv,
+ int bcmgenet_wol_power_up_cfg(struct bcmgenet_priv *priv,
+ 			      enum bcmgenet_power_mode mode);
  
 +void bcmgenet_eee_enable_set(struct net_device *dev, bool enable,
 +			     bool tx_lpi_enabled);
 +
  #endif /* __BCMGENET_H__ */
 diff --git a/drivers/net/ethernet/broadcom/genet/bcmmii.c b/drivers/net/ethernet/broadcom/genet/bcmmii.c
-index 2fbec2acb606..026f00ccaa0c 100644
+index 32fc845ade9e..72bb9364a471 100644
 --- a/drivers/net/ethernet/broadcom/genet/bcmmii.c
 +++ b/drivers/net/ethernet/broadcom/genet/bcmmii.c
-@@ -25,6 +25,7 @@
- 
- #include "bcmgenet.h"
- 
+@@ -87,6 +87,11 @@ static void bcmgenet_mac_config(struct net_device *dev)
+ 		reg |= CMD_TX_EN | CMD_RX_EN;
+ 	}
+ 	bcmgenet_umac_writel(priv, reg, UMAC_CMD);
 +
++	priv->eee.eee_active = phy_init_eee(phydev, 0) >= 0;
++	bcmgenet_eee_enable_set(dev,
++				priv->eee.eee_enabled && priv->eee.eee_active,
++				priv->eee.tx_lpi_enabled);
+ }
+ 
  /* setup netdev link state when PHY link status change and
-  * update UMAC and RGMII block when link up
-  */
-@@ -96,6 +97,11 @@ void bcmgenet_mii_setup(struct net_device *dev)
- 			       CMD_RX_PAUSE_IGNORE | CMD_TX_PAUSE_IGNORE);
- 		reg |= cmd_bits;
- 		bcmgenet_umac_writel(priv, reg, UMAC_CMD);
-+
-+		priv->eee.eee_active = phy_init_eee(phydev, 0) >= 0;
-+		bcmgenet_eee_enable_set(dev,
-+					priv->eee.eee_enabled && priv->eee.eee_active,
-+					priv->eee.tx_lpi_enabled);
- 	} else {
- 		/* done if nothing has changed */
- 		if (!status_changed)
 -- 
 2.34.1
 
