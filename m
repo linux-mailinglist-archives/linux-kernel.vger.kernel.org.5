@@ -1,128 +1,106 @@
-Return-Path: <linux-kernel+bounces-57702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 265AD84DC8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:13:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69D1484DC96
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:15:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 599F11C24DA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:13:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E5611F25B40
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E55EA6BB47;
-	Thu,  8 Feb 2024 09:13:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2D26BB49;
+	Thu,  8 Feb 2024 09:15:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F4KF6dyu"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="msIZuXzG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 533D4535DC;
-	Thu,  8 Feb 2024 09:13:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F257B6BB3B;
+	Thu,  8 Feb 2024 09:15:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707383588; cv=none; b=BlLLLg2HUbur/+8pDhma5fLvQGW/hFhHVZA+U97pWO1lNqkkdDihlXTjmDY24Z5iBHEoAdeSidHhQuOosasMDlBXiFhi0ui32r2LIu04uPD8fdHFcKz7YtCoym5XaIt/zQIzlb21wkLyo41tP0Iv7vg+wYPcn80CGgu99eyZcpM=
+	t=1707383711; cv=none; b=q1/NBsutSXJBm8bNF5xCTuTPkFhSXbmyPhSsMI6O+Mh8ivu5j0nkbKqJu7Soh7mNBLk9WyNMn5HhVfRzQ6xSJ9efdCX6JdQuB+hGxq6h+70KLyqyRlIqgkb7KG7OieVaJZAXtygZNSw/OyJYA/vbovtBNEbVwbHYXmlkFwukAZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707383588; c=relaxed/simple;
-	bh=Cmqaj8sgs7iWeMHaQKt5n5zPWvccQgeBanow+ePMb3Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BXvy99I2z1QIpn/8DHDvDaPlOC+cemSjPcwgCvL97pel8/Rl1xw0sM3suvqqIkNsRKq/TWl7z27plZKRXalJyWMPutDqIZ1TSrpiRIW2cE3Ic9pE1+vMZXYMu1VV6BImGG5fy7raxExzCtC24MeKeS/CII7gynZER4PfNIDbTto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F4KF6dyu; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707383586; x=1738919586;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Cmqaj8sgs7iWeMHaQKt5n5zPWvccQgeBanow+ePMb3Y=;
-  b=F4KF6dyuNauh0LweZ+0DfDPDsgalwXU1HdCHOVxkh9KkQ5l5bE7YzKem
-   NRZ4cjtQzVhhMW/XvRFtXts3+yt9dCft4z2u+JilLvWBOLksnPH1jOTW3
-   QjGhk6kw1aaIHaW7V0V+FSr2cxI/bz9ay5Dp2X+RzxDM6rGmXoD+SnzS+
-   ChDK3zg1upIglslv2h2ePGohBt3+3JEzPJ46M2YrT6gswK7Licdv2eBZW
-   O/PEFpHDhY0hBmhRSeCJBh76jl0YoiER10FF/3CsHtvAluyQwH0JYaV7e
-   YJAaMWu+nUKrkBWoQcAdt32Vdg7j58iZr1KDj67t38+QN4thCXFt5j6zW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="1324250"
-X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="1324250"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 01:13:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="934072190"
-X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="934072190"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 08 Feb 2024 01:12:57 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 08 Feb 2024 11:12:56 +0200
-Date: Thu, 8 Feb 2024 11:12:56 +0200
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Prashant Malani <pmalani@chromium.org>,
-	Uday Bhat <uday.m.bhat@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	oe-kbuild-all@lists.linux.dev, Benson Leung <bleung@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Guenter Roeck <groeck@chromium.org>,
-	Emilie Roberts <hadrosaur@google.com>,
-	"Nyman, Mathias" <mathias.nyman@intel.com>,
-	"Regupathy, Rajaram" <rajaram.regupathy@intel.com>,
-	"Radjacoumar, Shyam Sundar" <ssradjacoumar@google.com>,
-	Samuel Jacob <samjaco@google.com>, linux-usb@vger.kernel.org,
-	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] platform/chrome: cros_ec_typec: Make sure the USB
- role switch has PLD
-Message-ID: <ZcSbGIBt1BtFQd36@kuha.fi.intel.com>
-References: <20240207145851.1603237-3-heikki.krogerus@linux.intel.com>
- <202402081136.sve0cViZ-lkp@intel.com>
+	s=arc-20240116; t=1707383711; c=relaxed/simple;
+	bh=waw1SbJdDbiBjHm/aT/t/Wf0N1njTMQj7zIlzg9utqI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rkLWl3kLhnkxllFbZw7zG/GB8ftr2NDqlmim/zmWvfIuTau4/L+ZfJ8J7k000MrFMIrRALcj6+aWOYtf1oXm/Zr5X08X01xaZ8aMIc4BooBwBhTVBvHM0nLNL4Xn4s5tm57SsIj2GSRHaS4RCrJfXlNBBNTeQNZGOQNrDNMU5WM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=msIZuXzG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91B53C433F1;
+	Thu,  8 Feb 2024 09:15:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707383710;
+	bh=waw1SbJdDbiBjHm/aT/t/Wf0N1njTMQj7zIlzg9utqI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=msIZuXzGftHuaITYOsOoFfZ37ykrtsaxq/mTvuOtKsD9UHgETeS1paD+D2C65o5KN
+	 nLEV9lzy9EWLLek2zKYpNXn8LMNliTbJC0BkP+opHd/Qf+s96D/ZrQqMCslj4yJZcI
+	 +tgLB1jV6ika/Q7zcba0s0RANjQCtixj10+dAQ7QUrH+zv818fTj8aBj3meWZUYPxu
+	 gJ8XrSg+Fdm7l0r5vsUsvFjB1vct7jRXjavYv5C4qqH6fc3jCGiAO4jT8qzI1zffwn
+	 nZF+P+Y2838ZBtQbpW6HCqCoOOQFrtI31F7K+2L4NwoWy2NmBaeHsYEcSIJlGs+ajl
+	 Fsxmuh7YC6L/A==
+From: Christian Brauner <brauner@kernel.org>
+To: Taylor Jackson <taylor.a.jackson@me.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>,
+	Seth Forshee <sforshee@kernel.org>
+Subject: Re: [PATCH v2] fs/mnt_idmapping.c: Return -EINVAL when no map is written
+Date: Thu,  8 Feb 2024 10:13:06 +0100
+Message-ID: <20240208-homogen-faszination-3740f9dc34b3@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240208-mnt-idmap-inval-v2-1-58ef26d194e0@me.com>
+References: <20240208-mnt-idmap-inval-v2-1-58ef26d194e0@me.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202402081136.sve0cViZ-lkp@intel.com>
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1593; i=brauner@kernel.org; h=from:subject:message-id; bh=waw1SbJdDbiBjHm/aT/t/Wf0N1njTMQj7zIlzg9utqI=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQemT39Lt/xWY88dpuYLxQxdnq+o0tiWr7riT9+Eq8sk jcJ5m007ihlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjIgQ+MDD0fi26u11t2Uu3J 0hcSjW/WmorXb1Q9Vbno/b7DpVP9drQx/LPVfrCBOXkFOzMzT3nAy/5yLZX2ZT4bZTVO3V21dao QLw8A
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 08, 2024 at 12:07:40PM +0800, kernel test robot wrote:
-> Hi Heikki,
+On Thu, 08 Feb 2024 03:02:54 +0000, Taylor Jackson wrote:
+> Currently, it is possible to create an idmapped mount using a user
+> namespace without any mappings. However, this yields an idmapped
+> mount that doesn't actually map the ids. With the following change,
+> it will no longer be possible to create an idmapped mount when using
+> a user namespace with no mappings, and will instead return EINVAL,
+> an “invalid argument” error code.
 > 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on usb/usb-testing]
-> [also build test ERROR on usb/usb-next usb/usb-linus chrome-platform/for-next chrome-platform/for-firmware-next driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.8-rc3 next-20240207]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Heikki-Krogerus/usb-roles-Link-the-switch-to-its-connector/20240207-230017
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-> patch link:    https://lore.kernel.org/r/20240207145851.1603237-3-heikki.krogerus%40linux.intel.com
-> patch subject: [PATCH 2/2] platform/chrome: cros_ec_typec: Make sure the USB role switch has PLD
-> config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20240208/202402081136.sve0cViZ-lkp@intel.com/config)
-> compiler: m68k-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240208/202402081136.sve0cViZ-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202402081136.sve0cViZ-lkp@intel.com/
-> 
-> All errors (new ones prefixed by >>):
-> 
->    drivers/platform/chrome/cros_ec_typec.c: In function 'cros_typec_parse_port_props':
-> >> drivers/platform/chrome/cros_ec_typec.c:75:34: error: invalid use of undefined type 'struct acpi_device'
->       75 |                 if (adev && !adev->pld_crc)
->          |                                  ^~
->    drivers/platform/chrome/cros_ec_typec.c:76:29: error: invalid use of undefined type 'struct acpi_device'
->       76 |                         adev->pld_crc = to_acpi_device_node(fwnode)->pld_crc;
->          |                             ^~
->    drivers/platform/chrome/cros_ec_typec.c:76:68: error: invalid use of undefined type 'struct acpi_device'
->       76 |                         adev->pld_crc = to_acpi_device_node(fwnode)->pld_crc;
->          |                                                                    ^~
+> [...]
 
-Oh, so this has to be wrapped in ifdef CONFIG_ACPI :(
+Thanks for the fix!
+In case you're interested, it would be worth expanding
+tool/testing/selftests/mount_setattr to verify that it's now impossible to use
+an empty idmapping.
 
--- 
-heikki
+But note, that currently tool/testing/selftests/mount_setattr/ is broken
+because the tests assume that tmpfs cannot be idmapped which hasn't been true
+for a long time.
+
+---
+
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] fs/mnt_idmapping.c: Return -EINVAL when no map is written
+      https://git.kernel.org/vfs/vfs/c/b4291c7fd9e5
 
