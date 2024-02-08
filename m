@@ -1,245 +1,194 @@
-Return-Path: <linux-kernel+bounces-57958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B92A84DF9A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4287584DFBE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:32:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DDA3B21E85
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:27:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 680D8B25880
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:31:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E8C6F063;
-	Thu,  8 Feb 2024 11:26:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08771DFCE;
+	Thu,  8 Feb 2024 11:31:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="DvawBBJb"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A6syVpbv"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D1F16D1C0
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 11:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8E51E884;
+	Thu,  8 Feb 2024 11:31:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707391617; cv=none; b=d+beA4SCPeTkObs2URE5lIY2q4V6GJzmYslRjt+LzCQc8KcftBQYx1FL3VRxvGjwUPDxxaXd1hzm6Syga/TzpY3Eq3/BJZPAXRjAKVXgMjccAXVPj6lnv+4fWJTG6X/vlyEca23v3VGkmUbn8ekeXop8rmd/0yo6rqnowYGLxtk=
+	t=1707391907; cv=none; b=AGGBaKBQeMMtSNivEowB9KJp8rDZ48ln3MzCYwC0wqHgwt7wn3vRTOi/8PUKwOtNscuXYRS2Edg7Cg6R5co9+BSaeZ7igIg9xYSiJNqPO2A4kngoRC+n1uSM8QW3ruqiKRQ4UG/d/sULpmm264gFOz3tbSmDmhNHRMIszbTB/Lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707391617; c=relaxed/simple;
-	bh=PV3Cqb0WoNn1J9rsLHGrcOE6c3VTz+5cxRIhc352BgE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YSEIm0EiN/RU5Q2wAiW5WLfEgpGR9ZjMd282VzP9aFtA6zREVFbgL2T8Fh4jXRNEs0rsTEhdZkblCe/e0yNTJluXAz4lE0XMF4sdCJDnMwU3AxxKAmPTi/gCWCnXNi974l2If+pkZ/Bjab++cAHDhlMGRzU1mHVfiw2mYz/bt6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=DvawBBJb; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41001c6e19aso4512445e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 03:26:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1707391613; x=1707996413; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ENe6a0MGhFAYwxbIJ6WLGpev+wUMn3WNP3NeinQqkpk=;
-        b=DvawBBJbCISpjxBI1dj4jmEYLEff9Igk3MG1q8XOjGaa7AAVmw6JVBoLL666nEy9hc
-         hz8cgO8ADi5swCesACf7VIRRtI1hsEEw52NmaBqyqotqY5Hd3dc/PZzGFo8bMAYPpL0M
-         qHLWPLeccsEshl500Fo6t8GmNRvoOJZ209KmgYT28gbyErK4TyABy9wg36zdHHr/1eyV
-         c8sJQyaks7TwaaKsbzMTyFO187fK1kmGH/4qXPZFLbfVqkQGbpdAeMPaBFe7wytwhac5
-         8aSi01c9T7hhrcJN9PRh7MRGkuO7ul1phMUi02WZT44G8ThBOQ169DNehhOj/AgGbzS1
-         knZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707391613; x=1707996413;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ENe6a0MGhFAYwxbIJ6WLGpev+wUMn3WNP3NeinQqkpk=;
-        b=JZvHyBPX85AECWIcx9P7FUpqQMQIf0xuC0lr6cPMGlHXW0oMXP/Q3UozZfUNOkHHcX
-         FZix/PxV16EwpaQLEKmUyEgPjaZ52KKqFBXfGTOODTVF5PuOxyLYq2MCjf5PDZihtg1n
-         GR9e0sPrJv7tDak9WVuamZTLkPUMz6HohXIADN4TaK7L6vcLoVvvgvgoZ0XfQ//pFKzX
-         xu9ZfcvOALcfk1IENCI6gcVYP00V1zxTiD2H/V7XjZwjotC4oHhPi9J+yiIpPcCAmFRw
-         nEWmU/PJNeBUmMi2CdcVrbLxLePnFo7jRw4eBfwAjojGbPYbsu3/HZwfvBosP0h8NI7o
-         cgDA==
-X-Forwarded-Encrypted: i=1; AJvYcCUk+odET+x+P33wWfSD3oJpiGvQ1D1YqIDs5GMK9OHcDPGABXdc4mZBzilL0jWLu8XpDuplqgycTzaT5DDe2ONa4Im9cnGjxADattJD
-X-Gm-Message-State: AOJu0YxP4c+hC2v4TgbtBQZtof6s4WL+i2h0yI4QDQPo8E7bkKlhsMVs
-	3BeDParzARDtQrAlUPBKUQ0LIefxIuUWvF6Arn5uPDZKaJowJxXU4FG537aRmhk=
-X-Google-Smtp-Source: AGHT+IFynlbwaELVo7GaJVr7oESUnpHbKAXacrmgWYI4W/2zafauLyOMJtviUIiHO9Q94lIKXOCKWg==
-X-Received: by 2002:a05:600c:4f85:b0:40f:cb0d:4de6 with SMTP id n5-20020a05600c4f8500b0040fcb0d4de6mr1845639wmq.5.1707391613110;
-        Thu, 08 Feb 2024 03:26:53 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVW2Sm7rwhnabfFI7IcIwsENsKhtSUWvyRauqFuYAvoIjG/4y7F+DfxNyxTxHGb0FC7lUWC4P8zebZuakFqVkSGmy2Yf/jd/UpReDdaGbvflchYAAZqAUuYSnAIDb2VJU2exvpPCNWGfX2rGUvgE8rBkOfGX+SRTzea9Mg2OFLwmhDGjQuMhoQNRQLKfwM5JwuqEKHczoxOdTo0cYNaOJo07RAeuo4yVky/5el9GY65WyIYI4jHfigrA5/+qnQUEicm1joLlowjxL8S4j3o3hiLwa315369rc07YXFhdQFksLjg9ME1WwIXXleVHWjXFGIyWpCSxam41nkLM1WNFia6/bmOSvC6hy5GTymBQ9kxL2tcgGXyM/tF/lZZRyXWFnBNJCa1g8dxOg87xmjUo5suYF9sEHQGpBQqXhMOWXaptvauVU8xFzdYoNUqQ88m+UIewxzPCoN7PC/+QzPPI2VT89k3Yrnz/Jioj/mE9Ef8IHWVyf2w0BAlWd9auzfvdA16rHTJ/dAQFDm5SKTOtSo=
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id fb12-20020a05600c520c00b004103bd6f21dsm1181908wmb.35.2024.02.08.03.26.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 03:26:52 -0800 (PST)
-Date: Thu, 8 Feb 2024 12:26:51 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Karthik Sundaravel <ksundara@redhat.com>
-Cc: jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	pmenzel@molgen.mpg.de, michal.swiatkowski@linux.intel.com,
-	rjarry@redhat.com, aharivel@redhat.com, vchundur@redhat.com,
-	cfontain@redhat.com
-Subject: Re: [PATCH v2] ice: Add get/set hw address for VFs using devlink
- commands
-Message-ID: <ZcS6e1Z4w76Z2F_K@nanopsycho>
-References: <20240208082455.66726-1-ksundara@redhat.com>
- <20240208082455.66726-2-ksundara@redhat.com>
+	s=arc-20240116; t=1707391907; c=relaxed/simple;
+	bh=+Lq1+Yjwc1/TnXA6RrghdQBok9enssN3fOFULsujD9Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iWKb0seoD7Ia5DH0Tames/GJbtD3osetNhZtUkC5puzjlmkYVe1FwgEIMJVEvaHkLSeHWnvQ3Euq5bYEvsPe0aNujzQHopW66WBmc9O46gt05t0lrE6P05NXchbtPqyn/WIGr3e2plZCs5mqXIzyAb3U0LTg+2SZPpFdbXjWAmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A6syVpbv; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707391905; x=1738927905;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+Lq1+Yjwc1/TnXA6RrghdQBok9enssN3fOFULsujD9Y=;
+  b=A6syVpbv4AH0Fpe8JEDyPRVaAV+wYdmIox2EbSmoezPdPUoga+mSz+c8
+   JRaKRCfR7xuj7R7RoszdkDMMCs3bRZUykeQHPJnzy6E8lziCnoTygsIji
+   19Su1G2NgoYvP4rmkz0i4WYtEjHlVA+AfgzkrHUdHULYYBkZLNU8VfXfk
+   M5/310i5CeJHUi6JCdFWpcdEPhb7cD07OwyiyWZEBz7Igx2/yUEkFRbqK
+   QOzOw3BtckUsbUpy3ffiCQasSaoXEqm0P/i92rSqPefuUybap6Y2LZ+y5
+   9z/WC+2J0lUyEtuHzMM994QwyMdhmnxxboq4anHsw6IIuX9E1pXSaJ6AJ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="1345406"
+X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
+   d="scan'208";a="1345406"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 03:31:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
+   d="scan'208";a="1957417"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.251.219.88])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 03:31:38 -0800
+From: Adrian Hunter <adrian.hunter@intel.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Thomas Richter <tmricht@linux.ibm.com>,
+	Hendrik Brueckner <brueckner@linux.ibm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Mike Leach <mike.leach@linaro.org>,
+	James Clark <james.clark@arm.com>,
+	coresight@lists.linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	Yicong Yang <yangyicong@hisilicon.com>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Will Deacon <will@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Andi Kleen <ak@linux.intel.com>,
+	linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH V5 00/12] perf/core: Add ability for an event to "pause" or "resume" AUX area tracing
+Date: Thu,  8 Feb 2024 13:31:15 +0200
+Message-Id: <20240208113127.22216-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240208082455.66726-2-ksundara@redhat.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Content-Transfer-Encoding: 8bit
 
-Thu, Feb 08, 2024 at 09:24:55AM CET, ksundara@redhat.com wrote:
->Changing the MAC address of the VF ports are not available
->via devlink. Add the function handlers to set and get
->the HW address for the VF ports.
+Hi
 
-"VFs". Avoid the word "port" here, as it may falsely indicate you are
-talking about the eswitch representor port.
+Hardware traces, such as instruction traces, can produce a vast amount of
+trace data, so being able to reduce tracing to more specific circumstances
+can be useful.
 
+The ability to pause or resume tracing when another event happens, can do
+that.
 
->
->Signed-off-by: Karthik Sundaravel <ksundara@redhat.com>
->---
-> drivers/net/ethernet/intel/ice/ice_devlink.c | 89 +++++++++++++++++++-
-> 1 file changed, 88 insertions(+), 1 deletion(-)
->
->diff --git a/drivers/net/ethernet/intel/ice/ice_devlink.c b/drivers/net/ethernet/intel/ice/ice_devlink.c
->index 80dc5445b50d..8455fa94a687 100644
->--- a/drivers/net/ethernet/intel/ice/ice_devlink.c
->+++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
->@@ -1576,6 +1576,92 @@ void ice_devlink_destroy_pf_port(struct ice_pf *pf)
-> 	devlink_port_unregister(&pf->devlink_port);
-> }
-> 
->+/**
->+ * ice_devlink_port_get_vf_mac_address - .port_fn_hw_addr_get devlink handler
->+ * @port: devlink port structure
->+ * @hw_addr: MAC address of the port
->+ * @hw_addr_len: length of MAC address
->+ * @extack: extended netdev ack structure
->+ *
->+ * Callback for the devlink .port_fn_hw_addr_get operation
->+ * Return: zero on success or an error code on failure.
->+ */
->+
->+static int ice_devlink_port_get_vf_mac_address(struct devlink_port *port,
->+					       u8 *hw_addr, int *hw_addr_len,
->+					       struct netlink_ext_ack *extack)
->+{
->+	struct devlink *devlink = port->devlink;
->+	struct ice_pf *pf = devlink_priv(devlink);
->+	struct device *dev = ice_pf_to_dev(pf);
->+	struct devlink_port_attrs *attrs = &port->attrs;
->+	struct devlink_port_pci_vf_attrs *pci_vf;
->+	int vf_id;
->+	struct ice_vf *vf;
+These patches add such a facilty and show how it would work for Intel
+Processor Trace.
 
-Reverse xmas tree:
-https://www.kernel.org/doc/html/v6.7/process/maintainer-netdev.html#tl-dr
+Maintainers of other AUX area tracing implementations are requested to
+consider if this is something they might employ and then whether or not
+the ABI would work for them.  Note, thank you to James Clark (ARM) for
+evaluating the API for Coresight.  Suzuki K Poulose (ARM) also responded
+positively to the RFC.
+
+Changes to perf tools are now (since V4) fleshed out.
 
 
->+
->+	if (attrs->flavour == DEVLINK_PORT_FLAVOUR_PCI_VF) {
->+		pci_vf = &attrs->pci_vf;
->+		vf_id = pci_vf->vf;
->+	} else {
->+		dev_err(dev, "Unable to get the vf id for PF %d\n", pf->hw.pf_id);
+Changes in V5:
 
-Fill the extack message instead.
+    perf/core: Add aux_pause, aux_resume, aux_start_paused
+	Added James' Ack
 
+    perf/x86/intel: Do not enable large PEBS for events with aux actions or aux sampling
+	New patch
 
->+		return -EADDRNOTAVAIL;
->+	}
->+	vf = ice_get_vf_by_id(pf, vf_id);
->+	if (!vf) {
->+		dev_err(dev, "Unable to get the vf for PF %d\n", pf->hw.pf_id);
+    perf tools
+	Added Ian's Ack
 
-Fill the extack message instead.
+Changes in V4:
 
+    perf/core: Add aux_pause, aux_resume, aux_start_paused
+	Rename aux_output_cfg -> aux_action
+	Reorder aux_action bits from:
+		aux_pause, aux_resume, aux_start_paused
+	to:
+		aux_start_paused, aux_pause, aux_resume
+	Fix aux_action bits __u64 -> __u32
 
->+		return -EINVAL;
->+	}
->+	ether_addr_copy(hw_addr, vf->dev_lan_addr);
->+	*hw_addr_len = ETH_ALEN;
->+	return 0;
->+}
->+
->+/**
->+ * ice_devlink_port_set_vf_mac_address - .port_fn_hw_addr_set devlink handler
->+ * @port: devlink port structure
->+ * @hw_addr: MAC address of the port
->+ * @hw_addr_len: length of MAC address
->+ * @extack: extended netdev ack structure
->+ *
->+ * Callback for the devlink .port_fn_hw_addr_set operation
->+ * Return: zero on success or an error code on failure.
->+ */
->+static int ice_devlink_port_set_vf_mac_address(struct devlink_port *port,
->+					       const u8 *hw_addr,
->+					       int hw_addr_len,
->+					       struct netlink_ext_ack *extack)
->+{
->+	struct devlink *devlink = port->devlink;
->+	struct ice_pf *pf = devlink_priv(devlink);
->+	struct device *dev = ice_pf_to_dev(pf);
->+	struct net_device *netdev = port->type_eth.netdev;
->+	struct devlink_port_attrs *attrs = &port->attrs;
->+	struct devlink_port_pci_vf_attrs *pci_vf;
->+	int vf_id;
->+	u8 mac[ETH_ALEN];
+    coresight: Have a stab at support for pause / resume
+	Dropped
 
-Reverse xmas tree:
-https://www.kernel.org/doc/html/v6.7/process/maintainer-netdev.html#tl-dr
+    perf tools
+	All new patches
+
+Changes in RFC V3:
+
+    coresight: Have a stab at support for pause / resume
+	'mode' -> 'flags' so it at least compiles
+
+Changes in RFC V2:
+
+	Use ->stop() / ->start() instead of ->pause_resume()
+	Move aux_start_paused bit into aux_output_cfg
+	Tighten up when Intel PT pause / resume is allowed
+	Add an example of how it might work for CoreSight
 
 
->+
->+	if (attrs->flavour == DEVLINK_PORT_FLAVOUR_PCI_VF) {
->+		pci_vf = &attrs->pci_vf;
->+		vf_id = pci_vf->vf;
->+	} else {
->+		dev_err(dev, "Unable to get the vf id for PF %d\n", pf->hw.pf_id);
+Adrian Hunter (12):
+      perf/core: Add aux_pause, aux_resume, aux_start_paused
+      perf/x86/intel/pt: Add support for pause / resume
+      perf/x86/intel: Do not enable large PEBS for events with aux actions or aux sampling
+      perf tools: Enable evsel__is_aux_event() to work for ARM/ARM64
+      perf tools: Enable evsel__is_aux_event() to work for S390_CPUMSF
+      perf tools: Add aux_start_paused, aux_pause and aux_resume
+      perf tools: Add aux-action config term
+      perf tools: Parse aux-action
+      perf tools: Add missing_features for aux_start_paused, aux_pause, aux_resume
+      perf intel-pt: Improve man page format
+      perf intel-pt: Add documentation for pause / resume
+      perf intel-pt: Add a test for pause / resume
 
-Fill the extack message instead.
+ arch/x86/events/intel/core.c               |  10 +-
+ arch/x86/events/intel/pt.c                 |  63 ++-
+ arch/x86/events/intel/pt.h                 |   4 +
+ include/linux/perf_event.h                 |  15 +
+ include/uapi/linux/perf_event.h            |  11 +-
+ kernel/events/core.c                       |  72 +++-
+ kernel/events/internal.h                   |   1 +
+ tools/include/uapi/linux/perf_event.h      |  11 +-
+ tools/perf/Documentation/perf-intel-pt.txt | 596 ++++++++++++++++++-----------
+ tools/perf/Documentation/perf-record.txt   |   4 +
+ tools/perf/arch/arm/util/pmu.c             |   3 +
+ tools/perf/builtin-record.c                |   4 +-
+ tools/perf/tests/shell/test_intel_pt.sh    |  28 ++
+ tools/perf/util/auxtrace.c                 |  67 +++-
+ tools/perf/util/auxtrace.h                 |   6 +-
+ tools/perf/util/evsel.c                    |  13 +-
+ tools/perf/util/evsel.h                    |   1 +
+ tools/perf/util/evsel_config.h             |   1 +
+ tools/perf/util/parse-events.c             |  10 +
+ tools/perf/util/parse-events.h             |   1 +
+ tools/perf/util/parse-events.l             |   1 +
+ tools/perf/util/perf_event_attr_fprintf.c  |   3 +
+ tools/perf/util/pmu.c                      |   6 +-
+ 23 files changed, 691 insertions(+), 240 deletions(-)
 
 
->+		return -EADDRNOTAVAIL;
->+	}
->+
->+	if (!netdev) {
->+		dev_err(dev, "Unable to get the netdev for PF %d\n", pf->hw.pf_id);
-
-Fill the extack message instead.
-
-
->+		return -EADDRNOTAVAIL;
->+	}
->+	ether_addr_copy(mac, hw_addr);
->+
->+	return ice_set_vf_mac(netdev, vf_id, mac);
->+}
->+
->+static const struct devlink_port_ops ice_devlink_vf_port_ops = {
->+	.port_fn_hw_addr_get = ice_devlink_port_get_vf_mac_address,
->+	.port_fn_hw_addr_set = ice_devlink_port_set_vf_mac_address,
->+};
->+
-> /**
->  * ice_devlink_create_vf_port - Create a devlink port for this VF
->  * @vf: the VF to create a port for
->@@ -1611,7 +1697,8 @@ int ice_devlink_create_vf_port(struct ice_vf *vf)
-> 	devlink_port_attrs_set(devlink_port, &attrs);
-> 	devlink = priv_to_devlink(pf);
-> 
->-	err = devlink_port_register(devlink, devlink_port, vsi->idx);
->+	err = devlink_port_register_with_ops(devlink, devlink_port,
->+					     vsi->idx, &ice_devlink_vf_port_ops);
-> 	if (err) {
-> 		dev_err(dev, "Failed to create devlink port for VF %d, error %d\n",
-> 			vf->vf_id, err);
->-- 
->2.39.3 (Apple Git-145)
->
+Regards
+Adrian
 
