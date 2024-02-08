@@ -1,150 +1,150 @@
-Return-Path: <linux-kernel+bounces-58052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F0E384E0A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:26:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D38EA84E0A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:29:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98DE9B25C6D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:26:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8703C1F23697
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:29:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 389357318E;
-	Thu,  8 Feb 2024 12:25:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="ViLUOT9J"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE0E73164;
+	Thu,  8 Feb 2024 12:29:15 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8E871B57;
-	Thu,  8 Feb 2024 12:25:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16EF071B42
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 12:29:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707395146; cv=none; b=H4jnQj+sIKh6m0hICla0Z+3QfdnZm84DqFGbuRxYHY8decXCVg7OWmS5V0rZcBqtK1v4eJ926wpuM/7JMWujxEDrKHOBr3G98VNQF6R4bgXahdFf57xCDCzo0642l1HPGEFKYSFZh3M6GZ17qSTxowZe6Xo6JOk3OQ57R6iuc/A=
+	t=1707395354; cv=none; b=up/U4HAgHBr0DeIoJrQfwpA9/M9vISEFSPOW5YpORTpBR9XD2OU/o08KOFetcen7sz7Zvk+sih6NVGtfI7T63mBf2slreVbEQyklNvZ2euq88K49i73yk0sq+O50lGIjS/suLAeRiJTWGALCMadulUKkTRn3IKu0DIgBvrsn28M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707395146; c=relaxed/simple;
-	bh=ya00qK6ZrbbH8bfPz6OV3tDxIjKH3/JzCbz4vmNTj80=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=OSrxFlq6d59wFHCr7DAsshpLCIhqhCg7BxrALBPQYiuKkSHSHKIKU07VK8LgxxzwFnf/5KQ6TUl0R+iXavYaQoB9b8Mifze47F9ermLvm0TBVjXo+ICI9XfJ6tVMGzCKv/AXRjZFW/ed3HM6ze+Gsizk6sdvDbCWDkJp01vET2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=ViLUOT9J; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40fc6343bd2so15224795e9.1;
-        Thu, 08 Feb 2024 04:25:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1707395143; x=1707999943; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2lk6lDhH+jNgP8E7fUtyDWqSj9xlcIvyWHBnZhCdRQI=;
-        b=ViLUOT9JQZaoqBzdu3nXPDYbfutkJN+oCD590c86Iyk/QU52uLOICqrhyitEUG8+q4
-         +TZ9znpaTo21fh34q+b1rqYxOeZqHvYHcqCZzT3DyASs/TP3r8tG/l/f6bkxw/LfA4xE
-         kttb0aH+2R7m1JcEifiSYZ7ctody8uFAd621wIxNlN48ydb1YrFa5NNecReuProfJwoS
-         EPd17k52gFBWNMH4CwEreS6cA+zJw0veNWeIUrlWaIXk4JS8vAWUkFKg6sKaxQI+G1yI
-         71T258uvGYkM8KYZeFg01ghQtd67GElPCJrCLoh6jUvF8t13a1QF+q9CYm2y0rTq2zy4
-         8k7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707395143; x=1707999943;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2lk6lDhH+jNgP8E7fUtyDWqSj9xlcIvyWHBnZhCdRQI=;
-        b=F17CJMB8v5EjGwpDPQVMMgiKxxatnrJ1pPp6EBdOEKiiAV8yYjRCDEM7Qn2rxw1Viu
-         nVDxGnC5TsoHIsj8OXXOOO+bKTlI5U2HHUbVwUp6Zmc9FMVV/m1qZdOgHulgDNpBE5P8
-         y0uw9HnZA35Io08+n8cxoQdnl3TmwXRaXs5q3CX34os+ZYqVaQCRO7teH6CTVx5ttqXX
-         VZr5yXUKIWile29l85iVIRnjO6Bn6FdJ4yvrCfkzce02sxBgbp2vOjUemwDwfrIi9X1E
-         DZcTV296Oh8lGciP8XOmJPfCB42zpZLAHhkYB3YHvmPELmWtnS4Rta0jWQbZ4z0gjm3l
-         0Zxw==
-X-Gm-Message-State: AOJu0Yx00xZgsdTIWCcLw9rWgM2SBb67ai4eD/riMewWFM9sULKh9Ios
-	DLg6aKPUfWjqQOwt05TbSL+w8OfuAeZi3PAV4cl0pN8=
-X-Google-Smtp-Source: AGHT+IFGH6T4iO9ag7ISjbx4h+kJpA2XiUkJ3nfZ64ZG/Vae7LcVOF2Ucgwc7VdG90/hrVU1dSD7sA==
-X-Received: by 2002:a05:600c:1e1d:b0:40f:f4b2:b26 with SMTP id ay29-20020a05600c1e1d00b0040ff4b20b26mr5693676wmb.25.1707395142880;
-        Thu, 08 Feb 2024 04:25:42 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV5523syL23ya7l/XdgTOkpd24c+X2e1oo9RsaaVKfqzxRGvzyVjpt7TZwFOhUqQDFnelJ8oJx6vQoff8S/sC2uuW30hUh6e8kugSF0uU3jVy7NY/4cQHBAS7szwmkKXICuGeFWdfwgYr2F+xaboE/TFGbVSFABwHCcqTBCrtwCPQWlwgVoTeKFTTwaWmMd09z3uCE8TzpW
-Received: from ?IPv6:::1? (p200300c85f11e2005dd582a67e0023fd.dip0.t-ipconnect.de. [2003:c8:5f11:e200:5dd5:82a6:7e00:23fd])
-        by smtp.googlemail.com with ESMTPSA id p4-20020a05600c204400b0040fa661ee82sm1433984wmg.44.2024.02.08.04.25.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 04:25:42 -0800 (PST)
-Date: Thu, 08 Feb 2024 13:25:41 +0100
-From: Sebastian Kranz <tklightforce@googlemail.com>
-To: Guenter Roeck <linux@roeck-us.net>
-CC: samsagax@gmail.com, derekjohn.clark@gmail.com, jdelvare@suse.com,
- linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Add support for Ayaneo Air Plus 7320u.
-In-Reply-To: <099bc4e3-ec08-4604-90cf-5691a98441b2@roeck-us.net>
-References: <20240207084206.2204-1-tklightforce@googlemail.com> <099bc4e3-ec08-4604-90cf-5691a98441b2@roeck-us.net>
-Message-ID: <332FEE3F-E07C-4144-933B-E085C2CB4E57@googlemail.com>
+	s=arc-20240116; t=1707395354; c=relaxed/simple;
+	bh=/T5gwMhLhg9+ijzK45R5rq+3HpzHEmkJtwlkUz9BCFc=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=l5Y4CGDOY7w38EmDekJwBubQQUWg6z5MzRfDeNiVMvq+d52QcWSf3LdT2QQzWbk9bGtk5Fr2lagk33T4GDpCXWt3Pto2GEscpWRdCaz+TYFV+0t6S6GaARO73cSMsAl+IZgzZAJdhUA2Dz0nhHjrVVSLRmsSm6WRS3o0H4nT07k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TVx614rwNz6K98T;
+	Thu,  8 Feb 2024 20:25:45 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id A3D611400D9;
+	Thu,  8 Feb 2024 20:29:03 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 8 Feb
+ 2024 12:29:03 +0000
+Date: Thu, 8 Feb 2024 12:29:02 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Yicong Yang <yangyicong@huawei.com>
+CC: <will@kernel.org>, <mark.rutland@arm.com>, <hejunhao3@huawei.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<yangyicong@hisilicon.com>, <linuxarm@huawei.com>,
+	<prime.zeng@hisilicon.com>, <fanghao11@huawei.com>
+Subject: Re: [PATCH 4/7] drivers/perf: hisi_pcie: Check the target filter
+ properly
+Message-ID: <20240208122902.0000768f@Huawei.com>
+In-Reply-To: <20240204074527.47110-5-yangyicong@huawei.com>
+References: <20240204074527.47110-1-yangyicong@huawei.com>
+	<20240204074527.47110-5-yangyicong@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Subject: [PATCH] hwmon: (oxp-sensors) Add Ayaneo Air Plus 7320u
+On Sun, 4 Feb 2024 15:45:24 +0800
+Yicong Yang <yangyicong@huawei.com> wrote:
 
-Am 7=2E Februar 2024 15:55:39 MEZ schrieb Guenter Roeck <linux@roeck-us=2E=
-net>:
->On 2/7/24 00:42, Sebastian Kranz wrote:
->> ---
->
->Patch description missing=2E
->
->>   drivers/hwmon/oxp-sensors=2Ec | 10 ++++++++++
->>   1 file changed, 10 insertions(+)
->>=20
->> diff --git a/drivers/hwmon/oxp-sensors=2Ec b/drivers/hwmon/oxp-sensors=
-=2Ec
->> index ea9602063eab=2E=2E8d3b0f86cc57 100644
->> --- a/drivers/hwmon/oxp-sensors=2Ec
->> +++ b/drivers/hwmon/oxp-sensors=2Ec
->> @@ -43,6 +43,7 @@ enum oxp_board {
->>   	aok_zoe_a1 =3D 1,
->>   	aya_neo_2,
->>   	aya_neo_air,
->> +	aya_neo_air_plus_mendo,
->>   	aya_neo_air_pro,
->>   	aya_neo_geek,
->>   	oxp_mini_amd,
->> @@ -98,6 +99,13 @@ static const struct dmi_system_id dmi_table[] =3D {
->>   		},
->>   		=2Edriver_data =3D (void *)aya_neo_air,
->>   	},
->> +	{
->> +		=2Ematches =3D {
->> +			DMI_MATCH(DMI_BOARD_VENDOR, "AYANEO"),
->> +			DMI_EXACT_MATCH(DMI_BOARD_NAME, "AB05-Mendocino"),
->> +		},
->> +		=2Edriver_data =3D (void *)aya_neo_air_plus_mendo,
->> +	},
->>   	{
->>   		=2Ematches =3D {
->>   			DMI_MATCH(DMI_BOARD_VENDOR, "AYANEO"),
->> @@ -332,6 +340,7 @@ static int oxp_platform_read(struct device *dev, en=
-um hwmon_sensor_types type,
->>   			switch (board) {
->>   			case aya_neo_2:
->>   			case aya_neo_air:
->> +			case aya_neo_air_plus_mendo:
->>   			case aya_neo_air_pro:
->>   			case aya_neo_geek:
->>   			case oxp_mini_amd:
->> @@ -374,6 +383,7 @@ static int oxp_platform_write(struct device *dev, e=
-num hwmon_sensor_types type,
->>   			switch (board) {
->>   			case aya_neo_2:
->>   			case aya_neo_air:
->> +			case aya_neo_air_plus_mendo:
->>   			case aya_neo_air_pro:
->>   			case aya_neo_geek:
->>   			case oxp_mini_amd:
->
+> From: Junhao He <hejunhao3@huawei.com>
+> 
+> The PMU can monitor traffic of certain target Root Port or downstream
+> target Endpoint. User can specify the target filter by the "port" or
+> "bdf" option respectively. The PMU can only monitor the Root Port or
+> Endpoint on the same PCIe core so the value of "port" or "bdf" should
+> be valid and will be checked by the driver.
+> 
+> Currently at least and only one of "port" and "bdf" option must be set.
+> If "port" filter is not set or is set explicitly to zero (default),
+> driver will regard the user specifies a "bdf" option since "port" option
+> is a bitmask of the target Root Ports and zero is not a valid
+> value.
+> 
+> If user not explicitly set "port" or "bdf" filter, the driver uses "bdf"
+> default value (zero) to set target filter, but driver will skip the
+> check of bdf=0, although it's a valid value (meaning 0000:000:00.0).
+> Then the user just gets zero.
+> 
+> Therefore, we need to check if both "port" and "bdf" are invalid, then
+> return failure and report warning.
+> 
+> Testing:
+> before the patch:
+>                    0      hisi_pcie0_core1/rx_mrd_flux/
+>                    0      hisi_pcie0_core1/rx_mrd_flux,port=0/
+>               24,124      hisi_pcie0_core1/rx_mrd_flux,port=1/
+>                    0      hisi_pcie0_core1/rx_mrd_flux,bdf=0/
+>      <not supported>      hisi_pcie0_core1/rx_mrd_flux,bdf=1/
 
---=20
-Diese Nachricht wurde von meinem Android-Ger=C3=A4t mit K-9 Mail gesendet=
-=2E
+Nice to include an example that works for bdf
+			    hisi_pcie0_core1/rx_mrd_flux,bdf=1,port=0 
+or something like that?
+> 
+> after the patch:
+>      <not supported>      hisi_pcie0_core1/rx_mrd_flux/
+>      <not supported>      hisi_pcie0_core1/rx_mrd_flux,port=0/
+>               24,153      hisi_pcie0_core1/rx_mrd_flux,port=1/
+>      <not supported>      hisi_pcie0_core1/rx_mrd_flux,bdf=0/
+>      <not supported>      hisi_pcie0_core1/rx_mrd_flux,bdf=1/
+> 
+> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+
+Clearly the current situation is wrong, but perhaps we can
+have a more intuitive scheme (could be added as a follow up patch)
+and have the driver figure out which port the bdf lies below?
+
+Maybe that's a job for userspace tooling rather than the driver, but
+the driver already has verification code and it wouldn't be hard
+to not just check the rp is ours, but also set the filter to specify
+that rp, or maybe just set the mask to include them all?
+
+Jonathan
+
+
+> ---
+>  drivers/perf/hisilicon/hisi_pcie_pmu.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> index 83be3390686c..b91f03c02c57 100644
+> --- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> +++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> @@ -306,10 +306,10 @@ static bool hisi_pcie_pmu_valid_filter(struct perf_event *event,
+>  	if (hisi_pcie_get_trig_len(event) > HISI_PCIE_TRIG_MAX_VAL)
+>  		return false;
+>  
+> -	if (requester_id) {
+> -		if (!hisi_pcie_pmu_valid_requester_id(pcie_pmu, requester_id))
+> -			return false;
+> -	}
+> +	/* Need to explicitly set filter of "port" or "bdf" */
+> +	if (!hisi_pcie_get_port(event) &&
+> +	    !hisi_pcie_pmu_valid_requester_id(pcie_pmu, requester_id))
+> +		return false;
+>  
+>  	return true;
+>  }
+
 
