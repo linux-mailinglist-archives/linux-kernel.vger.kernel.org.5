@@ -1,106 +1,103 @@
-Return-Path: <linux-kernel+bounces-57363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCEF184D787
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 02:26:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07E9184D783
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 02:26:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 764E71F234EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:26:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2BC228428D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8BD81DFE8;
-	Thu,  8 Feb 2024 01:26:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b="WE/8Lz4f"
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72E114267;
+	Thu,  8 Feb 2024 01:26:28 +0000 (UTC)
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982781DFC9;
-	Thu,  8 Feb 2024 01:26:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.156.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6DA533EC
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 01:26:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707355597; cv=none; b=td1B8pyCURM0Bs9/QwDOuvLIEmpImmlLO57zsx4T6QYfIN9psv0sdW5vVs1PjeVSpXUiEAndZir8gqgTrH2IQMYVzut1b9AMEd7bEEuYG5IdVvGPWiaDA1wbA1oI2im+ljmBVu4dI7QagZJJ+vBzQkmiGeCTUkADeuK3wyP+Tmk=
+	t=1707355588; cv=none; b=YA7bXUNJz2KST3iO1/hL4J0JHW6GkxQPzgo+XWjUQZWhgLjnqiXjLeFwJM5Hn5LLDZXoXpM1InABQGVicQEKR+SU19aPlM8nHfLj7cpYEQh3ORzYhPyMy9f3DtmqSgoLG9y4pM3zPd9IyBtIgEaMNyvHljIi/swIjUvaRZv54uI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707355597; c=relaxed/simple;
-	bh=OLe7cAlE7GWmn6Aw0nOYxdFDKvQ+HmBGQMrUtAdT8nM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pbYAdsZJd353StdQ1d4jrmMrmbILiRlVyOfRBYvrgl2tk/aHp3PBMEjQnwOCvfOp2eJvzw8m0VsLtmM/Oy4IHgnTpynlq7Xc/glLkCCyM6fJOm9IUUWat9XZYqSenohIru6SY/hjUfcK7xYw7GEDEYLMPRdv1KRHZxWI4+w5eq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net; spf=pass smtp.mailfrom=bewilderbeest.net; dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b=WE/8Lz4f; arc=none smtp.client-ip=71.19.156.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bewilderbeest.net
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:712b:6300::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: zev)
-	by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 90C25DD9;
-	Wed,  7 Feb 2024 17:26:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-	s=thorn; t=1707355589;
-	bh=jCfZxrSPfJRHCvrnkx78xqXBFO8QXL5lwiLPbS+xTAw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WE/8Lz4fbNW5hsXgLypZFn60E7qq3727+grkoIAgUAZO+kPRV+GimPEAfRtWnfs8N
-	 BHEObsnhOydmXdgmSyMAojdnhwMYrIFvSnPrwMl8MGW8gyVf330s4rIozE0T5/dEE9
-	 47SLwGlLubpXFlRqB6hCTSQk3VHSnmIl2CW0Z4oQ=
-From: Zev Weiss <zev@bewilderbeest.net>
-To: Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org
-Cc: Zev Weiss <zev@bewilderbeest.net>,
-	openbmc@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH 2/2] ARM: prctl: Reject PR_SET_MDWE on pre-ARMv6
-Date: Wed,  7 Feb 2024 17:26:20 -0800
-Message-ID: <20240208012620.32604-6-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240208012620.32604-4-zev@bewilderbeest.net>
-References: <20240208012620.32604-4-zev@bewilderbeest.net>
+	s=arc-20240116; t=1707355588; c=relaxed/simple;
+	bh=3LdDc0P1I1qPCW8EeOKAPUsdUPuJFgjm90Igx+uG7vs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=HEX6B7LqCHhUDHOGvJDsjMAFstfRpTuCqRN+nW8WbNutX7WeTp5jXnAhGSOOENxRgcSQ4MG5Llfu3QCv//h0WQ/d29zK/qCWkiTF8lf8PvO+KO2ZzHiRDx2KSGA8P88KN1140QYBclItrXxlJQT1brVTmmLwu+IQmNy8sfRPoaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bff34ff1b0so137925b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 17:26:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707355586; x=1707960386;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z+sMWjkrvn254ZBwpCLOdzMUBS2BcELxfGOsGSPNqxM=;
+        b=NIk7LuMkT/JjKQ4s4ZLdqpD1mHhY5QqHXl+Z+LepvQ2fBS5b9F8t+2OSgnjmLT2XId
+         4GUTZral9HmpwX8u5aqdnuZj1zrisrGNob2RWlrgaRufYW6NAoOOX4RxFr1bQWis2wPH
+         qsXOeznAbyPWMDlHl+FW5aa2YH5ffRiLUoXPqvafpKJjMX9rdOxR/midBOepCnQF0cRg
+         Y1oLW2nGHlswYZgslZtQKIFLrvjwecpy+JtLuBXWGy8vqi3DG3DbqrloXmCam6Hgcsu5
+         c4Qf5Ipjy5VoYfSjcDshBTZVvXH4nxJOPAYjG5AoYHbvfx2Ros1c3vld33sjsOKfmCfL
+         l4vQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX+HnEaKWRdRu1xWiR42jGL4uZxqzui/advCclE5welbM5IgZPMsUM6gYmK8gsAthdXBvsM8/nk36OkypXDvesjWd27BCYirpEgCbE+
+X-Gm-Message-State: AOJu0YwY278V+gi+dVYfCWrMNQP5sxDMLdmwvwG4iiIXcY1Z1k4slJzS
+	Dn4qlzNWXXEb+q2PRrI+7rO+xUpvuTdgFmF4edzpWFxrI1gX1NpR
+X-Google-Smtp-Source: AGHT+IFzzMXQx7kYJ1+CJC5KcZeIoTI5ev4Xhf5fdJtlHRRVWNpAd1dWrRW3hCFcX2Ko6jGY/EPW4Q==
+X-Received: by 2002:a05:6808:14c2:b0:3bf:baf5:851b with SMTP id f2-20020a05680814c200b003bfbaf5851bmr8505794oiw.8.1707355585851;
+        Wed, 07 Feb 2024 17:26:25 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUJLgXTCopez17dUHy7qqoXJn6ZMBfHsjX4nk5JgzgQW8c1txS4Q1NKtRuzcrfuLbuS1o2VF20umFTTC/YWql881R59vDrs8hQhy3dF8w7J51ve4W3Vj4INK4glrbkY/3qpRA9rmypryGLWx2J65qY0l8xzn7zFdCfHV32O3oJiAWBmnsWifRX4A65uil93Buj4hxkeHJ4O6c3MJnPtDD9uL6/HBhdwHPi8+uCZ56pd9bmXqJ9Bqpfoy0fn
+Received: from snowbird (136-25-84-117.cab.webpass.net. [136.25.84.117])
+        by smtp.gmail.com with ESMTPSA id a24-20020aa78658000000b006da96503d9fsm2340336pfo.109.2024.02.07.17.26.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 17:26:25 -0800 (PST)
+Date: Wed, 7 Feb 2024 17:26:22 -0800
+From: Dennis Zhou <dennis@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>, linux-mm@kvack.org,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] percpu changes for v6.8-rc4
+Message-ID: <ZcQtvkrWhIkRVfS9@snowbird>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On v5 and lower CPUs we can't provide MDWE protection, so ensure we
-fail any attempt to enable it via prctl(PR_SET_MDWE).
+Hi Linus,
 
-Previously such an attempt would misleadingly succeed, leading to any
-subsequent mmap(PROT_READ|PROT_WRITE) or execve() failing
-unconditionally (the latter somewhat violently via
-force_fatal_sig(SIGSEGV) due to READ_IMPLIES_EXEC).
+The PR to enable the percpu page allocator had a tlb flush parameter
+mixup of end vs size.. This contains the fix.
 
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-Cc: <stable@vger.kernel.org> # v6.3+
----
- arch/arm/include/asm/mman.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
- create mode 100644 arch/arm/include/asm/mman.h
+Thanks,
+Dennis
 
-diff --git a/arch/arm/include/asm/mman.h b/arch/arm/include/asm/mman.h
-new file mode 100644
-index 000000000000..2189e507c8e0
---- /dev/null
-+++ b/arch/arm/include/asm/mman.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_MMAN_H__
-+#define __ASM_MMAN_H__
-+
-+#include <asm/system_info.h>
-+#include <uapi/asm/mman.h>
-+
-+static inline bool arch_memory_deny_write_exec_supported(void)
-+{
-+	return cpu_architecture() >= CPU_ARCH_ARMv6;
-+}
-+#define arch_memory_deny_write_exec_supported arch_memory_deny_write_exec_supported
-+
-+#endif /* __ASM_MMAN_H__ */
--- 
-2.43.0
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git tags/percpu-for-6.8-rc4
+
+for you to fetch changes up to ebd4acc0cbeae9efea15993b11b05bd32942f3f0:
+
+  riscv: Fix wrong size passed to local_flush_tlb_range_asid() (2024-01-29 00:53:19 -0800)
+
+----------------------------------------------------------------
+percpu:
+ - fix riscv wrong size passed to local_flush_tlb_range_asid()
+
+----------------------------------------------------------------
+Alexandre Ghiti (1):
+      riscv: Fix wrong size passed to local_flush_tlb_range_asid()
+
+ arch/riscv/mm/tlbflush.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
