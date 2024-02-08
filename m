@@ -1,207 +1,330 @@
-Return-Path: <linux-kernel+bounces-57924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C24F84DF10
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:01:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B3FF84DF13
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:02:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6E6F282F06
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:01:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAB7BB23634
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:02:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D93823B3;
-	Thu,  8 Feb 2024 10:54:24 +0000 (UTC)
-Received: from esa2.ltts.com (unknown [14.140.155.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D4F4763E0;
+	Thu,  8 Feb 2024 10:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Jh7w1I82"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5C97FBAE;
-	Thu,  8 Feb 2024 10:54:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.140.155.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC8B763E1
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 10:54:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707389664; cv=none; b=SXIuDUxCfvIx987W8xGuJeV+4RnibLVg23ziqVIWSoLw7nUVALPqyB/Pn4dVjLW1shyvz7fN38Ltr9GKyR4ZZRDznBUp1eNejzayN90xbeGbWA6Iz5Y/bOCpAMhmLjjr5lQsG/uJ8u44FAzom0m8tFFyHOhWTM7PxdN5HGOTqI4=
+	t=1707389678; cv=none; b=H53QkLZ7yXPZ5vDvLRxY6jhmMLUxXbt5O5ZUzLJG9Q5LnvynUhfxPExRHy01+2HrlbkSkBXPuyHD8CoO+P4sJSdFAYf1Qpd/KIo4Ppo/2UjLYIt9bOkKs/H5Om+Wfkb5JMKjGir2kG4enfL9jY0NT8ABrgV0z71eKIkPAkPGn2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707389664; c=relaxed/simple;
-	bh=kgd5rZlmo0eQ4+URWAldLJfV0Lypdy0Upba1rC9o8CM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sdtvZ1CHQ7Y86IrtaA+H3ZSlXk8C96IbMiyH5KpahhAw6an+ot3kt4p2DmR6YopvflrNB5lk4gg2EiIIjoCLlhHqzyLaHE60MpU7EsbW0G58x5uncYmaSjFjJlI+tmoxK4z4XQ2sG43hxYdtrB2F9A6QpmPOEdVEWGaK/meVS6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com; spf=pass smtp.mailfrom=ltts.com; arc=none smtp.client-ip=14.140.155.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ltts.com
-IronPort-SDR: R0DtpPjLAh82lOe3mGq11I3ZrAlFCB6t1Ge+7e5B6Z2Lo3cWwkeCDMUN1fwZm9mUKQEI7klZBW
- pBmflfnr74Aw==
-Received: from unknown (HELO localhost.localdomain) ([192.168.34.55])
-  by esa2.ltts.com with ESMTP; 08 Feb 2024 16:24:11 +0530
-From: Bhargav Raviprakash <bhargav.r@ltts.com>
-To: linux-kernel@vger.kernel.org
-Cc: m.nirmaladevi@ltts.com,
-	lee@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	jpanis@baylibre.com,
-	devicetree@vger.kernel.org,
-	arnd@arndb.de,
-	gregkh@linuxfoundation.org,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	linus.walleij@linaro.org,
-	linux-gpio@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	nm@ti.com,
-	vigneshr@ti.com,
-	kristo@kernel.org,
-	Bhargav Raviprakash <bhargav.r@ltts.com>
-Subject: [RESEND PATCH v1 13/13] arch: arm64: dts: ti: k3-am62p5-sk: Add TPS65224 PMIC support in AM62P dts
-Date: Thu,  8 Feb 2024 16:23:43 +0530
-Message-Id: <20240208105343.1212902-14-bhargav.r@ltts.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240208105343.1212902-1-bhargav.r@ltts.com>
-References: <20240208105343.1212902-1-bhargav.r@ltts.com>
+	s=arc-20240116; t=1707389678; c=relaxed/simple;
+	bh=t4jjhQCQU5K2RcQenB+fy1X5o6Y7FBupo8tnX6DuXkk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=khF14qX3fXaQz5cnLczrZnqDReENFgU04pMOWyyXs44XYkRKX7xfV146FaS1UzqLfSuBdZQhSl/RKnC0j3G9Lts+/oPD8sl94Qt5xNmaHMo/kDwDCawwXU4MidSW8Cde1jPDE2V7WWAnXvcHHktgmD2aXCqqpkbNE55ca33N+tI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Jh7w1I82; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33adec41b55so903028f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 02:54:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707389674; x=1707994474; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S/kb+gyU3Rtfx6Hm+9IXxrBKwcOt1NhZJ++2tQxBh8Y=;
+        b=Jh7w1I82iPCbA9wvE0wqHlimKp5H6YkSqa/l7xHuvSDUxsqsFR7AsGBeAyqW3qPo2B
+         XzIk118w0bK25v1u/uuaKfZExtsKH2Y3r0Pjvmss4b41loMxqX04Tsffszy+ATXaaDYF
+         W3oYdDmLnLb9inMSlBlnQBr210U+l88EJpUNpLOfVEjQMdIbWIBonweAHsEYqbGvyhQm
+         8ARNT4CRVDxG7UQNM0WMsPSevcWR6ZtRl9b3Bve0dWYrdMXZA4elIcvxmW3vFi2270C2
+         DksNz5lz9t6OuzAqBHRTmObdRNR4WrDgaRFy1iMoQFYYVA2Fdz5WFwCaSxQJ1YMWM7bY
+         xkPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707389674; x=1707994474;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S/kb+gyU3Rtfx6Hm+9IXxrBKwcOt1NhZJ++2tQxBh8Y=;
+        b=mIsiEZlzpjdUZMpVD3Xa7xndoMMdD7zIBQerRf/mgYqVbWcUqiqbozgvfJLkUiV1Fu
+         gdmzrYwlWcRuP7ZamfEuIag62jnRHFvD867COEq0WDLpKjBrswEN8U/FlQ1CA6qJNsOY
+         cgxPLfR8ZRqVwnCPe5ReX3Gfrk0AuP1cqZEmbK6ueZfHL4PaV3I2xOM479wPTmkMjbYI
+         CjIZBU9qfV3Uwvp0g8Qmo4AFns/YRW6xCayuUZejTeuTeqU1yYbs54Mv3FXRv3DpHNUQ
+         j/yYasX1FptruuPK4kfTr78XuqSPgNiBKzmoKPo8NcWLc4WHPF7Hfl3aR7Ws2UG0AyRv
+         utDA==
+X-Forwarded-Encrypted: i=1; AJvYcCVtvXLkZG39PZmPqsoFOm163cLAXPr0K9Ib1hmc84LN+Fd8VRpJZYOHfsdd+B4cfEI8FfMs1PUS5VWSR4K41quu97za3CSXLLcvhpaT
+X-Gm-Message-State: AOJu0Ywu1ODL7SFxARYZMH+yca28wGDXmaZbreWGLM5eCAGbLn0ODUqm
+	4oC4jacNer1vJUZ3mRHfsRkIr7RvfUTk/N60imVPT2EHDa+ZiE3TI7WwudGoHQ==
+X-Google-Smtp-Source: AGHT+IF+IJpnfbvbF0ih1s0lb4YYEYsUqwWNm9pfTy93m/cXmHg332cMznQi4soNtyqci/EWTd0Tpg==
+X-Received: by 2002:a05:6000:110b:b0:33b:4f08:ac9e with SMTP id z11-20020a056000110b00b0033b4f08ac9emr3510758wrw.34.1707389673485;
+        Thu, 08 Feb 2024 02:54:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWuwHeFPV3uIlxqCtv9KzsVgdLmeMJHm3Ze9vu5+QmqRFygR7ZCD03KV7KqDAq8m7x7sxwo3BHEvysqkMFRYouCWqwZkw3b0Gg2bv8zdGiVG6SQXi7lKback5OGEPJOG/+rPklOk7EHN4f25fAqLffIKhYm3R247FJxDfJSiE/VuLtuPwF4rjVkdvfLihUDod9wJ7Gfi1njCJx5dPfLtfSFdRB6BDCuYKF4HvSotYt87aOXLhwZ/3j3q91rpXl4/zkBrmYnzcNng2ro85Rl0CSK+PhD5y7B4z+Ev1LXD0pSIeOZLWTGuf4NBWfK0DiW2Luj0wWp4JXjraAhinaAJV8ffhCY93fgViwxZVM/rkhj6CX7XpLUxT4yuYbIEKdRZClvgHRk5t6lJbvxgWkwSxUmlPXnNPfij1JkWpjIGyoCECASIpQ8OhVs5FsQBQsvAi83NCZ0nGqbvqZPkYd7EhLRHkfG4NlnDPUOabhzZ1zLaOYMnzBxUV0jr2kMt0TckKH7eWf5da9Vp/eFNHY5Wpo=
+Received: from elver.google.com ([2a00:79e0:9c:201:d242:69f5:cb36:120])
+        by smtp.gmail.com with ESMTPSA id c13-20020a056000184d00b0033b07f428b6sm3382401wri.0.2024.02.08.02.54.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 02:54:32 -0800 (PST)
+Date: Thu, 8 Feb 2024 11:54:27 +0100
+From: Marco Elver <elver@google.com>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
+	Yafang Shao <laoar.shao@gmail.com>, Tejun Heo <tj@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2] bpf: Allow compiler to inline most of
+ bpf_local_storage_lookup()
+Message-ID: <ZcSy49GKt3EWIdbK@elver.google.com>
+References: <20240207122626.3508658-1-elver@google.com>
+ <289242c3-052b-436d-8c7c-b0fa5ae45bce@linux.dev>
+ <CANpmjNMGW3zTGOn_69=+KjE4Txik8aQBbdefeo0GuVOkqjgV6Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNMGW3zTGOn_69=+KjE4Txik8aQBbdefeo0GuVOkqjgV6Q@mail.gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-Add support for TPS65224 PMIC in device tree of AM62P EVM. Adds
-regulator configuration, pinmux configurations and pmic device nodes.
+On Thu, Feb 08, 2024 at 08:37AM +0100, Marco Elver wrote:
+> On Thu, 8 Feb 2024 at 00:58, Yonghong Song <yonghong.song@linux.dev> wrote:
+> > On 2/7/24 4:26 AM, Marco Elver wrote:
+> > > In various performance profiles of kernels with BPF programs attached,
+> > > bpf_local_storage_lookup() appears as a significant portion of CPU
+> > > cycles spent. To enable the compiler generate more optimal code, turn
+> > > bpf_local_storage_lookup() into a static inline function, where only the
+> > > cache insertion code path is outlined
+> > >
+> > > Notably, outlining cache insertion helps avoid bloating callers by
+> > > duplicating setting up calls to raw_spin_{lock,unlock}_irqsave() (on
+> > > architectures which do not inline spin_lock/unlock, such as x86), which
+> > > would cause the compiler produce worse code by deciding to outline
+> > > otherwise inlinable functions. The call overhead is neutral, because we
+> > > make 2 calls either way: either calling raw_spin_lock_irqsave() and
+> > > raw_spin_unlock_irqsave(); or call __bpf_local_storage_insert_cache(),
+> > > which calls raw_spin_lock_irqsave(), followed by a tail-call to
+> > > raw_spin_unlock_irqsave() where the compiler can perform TCO and (in
+> > > optimized uninstrumented builds) turns it into a plain jump. The call to
+> > > __bpf_local_storage_insert_cache() can be elided entirely if
+> > > cacheit_lockit is a false constant expression.
+> > >
+> > > Based on results from './benchs/run_bench_local_storage.sh' (21 trials,
+> > > reboot between each trial; x86 defconfig + BPF, clang 16) this produces
+> > > improvements in throughput and latency in the majority of cases, with an
+> > > average (geomean) improvement of 8%:
+> [...]
+> > >   include/linux/bpf_local_storage.h             | 30 ++++++++++-
+> > >   kernel/bpf/bpf_local_storage.c                | 52 +++++--------------
+> > >   .../bpf/prog_tests/task_local_storage.c       |  6 ---
+> > >   .../selftests/bpf/progs/cgrp_ls_recursion.c   | 26 ----------
+> > >   .../selftests/bpf/progs/task_ls_recursion.c   | 17 ------
+> > >   5 files changed, 41 insertions(+), 90 deletions(-)
+> > >
+> > > diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
+> > > index 173ec7f43ed1..dcddb0aef7d8 100644
+> > > --- a/include/linux/bpf_local_storage.h
+> > > +++ b/include/linux/bpf_local_storage.h
+> > > @@ -129,10 +129,36 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
+> > >                           struct bpf_local_storage_cache *cache,
+> > >                           bool bpf_ma);
+> > >
+> > > -struct bpf_local_storage_data *
+> > > +void __bpf_local_storage_insert_cache(struct bpf_local_storage *local_storage,
+> > > +                                   struct bpf_local_storage_map *smap,
+> > > +                                   struct bpf_local_storage_elem *selem);
+> > > +/* If cacheit_lockit is false, this lookup function is lockless */
+> > > +static inline struct bpf_local_storage_data *
+> > >   bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
+> > >                        struct bpf_local_storage_map *smap,
+> > > -                      bool cacheit_lockit);
+> > > +                      bool cacheit_lockit)
+> > > +{
+> > > +     struct bpf_local_storage_data *sdata;
+> > > +     struct bpf_local_storage_elem *selem;
+> > > +
+> > > +     /* Fast path (cache hit) */
+> > > +     sdata = rcu_dereference_check(local_storage->cache[smap->cache_idx],
+> > > +                                   bpf_rcu_lock_held());
+> > > +     if (sdata && rcu_access_pointer(sdata->smap) == smap)
+> > > +             return sdata;
+> >
+> > I think we should focus on fast path (your v1 patch)
+> > and I suppose most production environments
+> > want to hit fast path in most times. In your production environment did
+> > you see more than 16 local storage maps per entity (task/sk/inode)?
+> 
+> I think having more than 16 local storage maps isn't entirely unlikely
+> as eBPF usage grows. But at the moment, it should be rare.
+> 
+> > In the fast path, the memory accesses are
+> >    two from local_storage->cache[smap->cache_idx] and
+> >    one from sdata->smap
+> >
+> >
+> > > +
+> > > +     /* Slow path (cache miss) */
+> > > +     hlist_for_each_entry_rcu(selem, &local_storage->list, snode,
+> > > +                               rcu_read_lock_trace_held())
+> > > +             if (rcu_access_pointer(SDATA(selem)->smap) == smap)
+> > > +                     break;
+> >
+> > But if we reach slow path here which means we have more than 16 local
+> > storage maps, then traversing the list and getting SDATA(selem)->smap
+> > will be very expensive, in addition to memory accesses in fast path.
+> >
+> > I suppose here we mostly care about socket local storage since it is
+> > totally possible for a production workload to have millions of sockets.
+> > To improve performance, fast path should hit in most cases.
+> > If there are too many sk local storage maps, some kind of sharing
+> > can be done so multiple applications might be using a single sk
+> > local storage.
+> >
+> > Your above inlining/outlining analysis also show how tricky it is
+> > for compilation optimization. Without profiling, it is totally
+> > possible that compiler might do optimization differently in
+> > the future.
+> 
+> Sure, but it's usually the case that we have to help the compiler a
+> little to produce more optimal code - if the compiler becomes stupid
+> in future, we need either fix the compiler or help it some more.
+> 
+> > So here is my suggestion, let us do inlining
+> > for fast path and focus on performance of fast path.
+> 
+> The slow-path (iterate list w/o cache insertion) is still relatively
+> small (it's a pointer-chasing loop and a compare), and I decided that
+> it can be justified inlining it. Martin asked in v1 why there were
+> slowdowns above 16 local maps, and I analyzed, and concluded that
+> inlining most is needed to fix and does not hurt performance: in fact,
+> the current version is better than v1 in all cases (even for 16 maps
+> or below).
+> 
+> Let me know which version you prefer, and I'll change it. However,
+> based on the results, I would prefer the current version.
 
-Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
----
- arch/arm64/boot/dts/ti/k3-am62p5-sk.dts | 95 +++++++++++++++++++++++++
- 1 file changed, 95 insertions(+)
+FTR, these were the results going from v1 (before) -> v2 (after):
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-index 1773c05f7..5d8e4321b 100644
---- a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-@@ -112,6 +112,16 @@ vddshv_sdio: regulator-3 {
- 		bootph-all;
- 	};
- 
-+	vcc_3v3_main: regulator-4 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc_3v3_main";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vmain_pd>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
- 	leds {
- 		compatible = "gpio-leds";
- 		pinctrl-names = "default";
-@@ -580,6 +590,12 @@ &main_uart1 {
- &mcu_pmx0 {
- 	bootph-all;
- 
-+	pmic_irq_pins_default: pmic-irq-default-pins {
-+		pinctrl-single,pins = <
-+			AM62PX_MCU_IOPAD(0x000, PIN_INPUT, 7) /* (B10) MCU_GPIO0_0 */
-+		>;
-+	};
-+
- 	wkup_uart0_pins_default: wkup-uart0-default-pins {
- 		pinctrl-single,pins = <
- 			AM62PX_MCU_IOPAD(0x02c, PIN_INPUT, 0)	/* (C7) WKUP_UART0_CTSn */
-@@ -589,6 +605,13 @@ AM62PX_MCU_IOPAD(0x028, PIN_OUTPUT, 0)	/* (D7) WKUP_UART0_TXD */
- 		>;
- 		bootph-all;
- 	};
-+
-+	wkup_i2c0_pins_default: wkup-i2c0-default-pins {
-+		pinctrl-single,pins = <
-+			AM62PX_MCU_IOPAD(0x04c, PIN_INPUT, 0) /* (A13) WKUP_I2C0_SCL */
-+			AM62PX_MCU_IOPAD(0x050, PIN_INPUT, 0) /* (C11) WKUP_I2C0_SDA */
-+		>;
-+	};
- };
- 
- &wkup_uart0 {
-@@ -599,6 +622,78 @@ &wkup_uart0 {
- 	bootph-all;
- };
- 
-+&wkup_i2c0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&wkup_i2c0_pins_default>;
-+	clock-frequency = <400000>;
-+
-+	tps65224: pmic@48 {
-+		compatible = "ti,tps65224-q1";
-+		reg = <0x48>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pmic_irq_pins_default>;
-+		interrupt-parent = <&mcu_gpio0>;
-+		interrupts = <0 IRQ_TYPE_EDGE_FALLING>;
-+		ti,primary-pmic;
-+
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		buck12-supply = <&vcc_3v3_main>;
-+		buck3-supply = <&vcc_3v3_main>;
-+		buck4-supply = <&vcc_3v3_main>;
-+
-+		ldo1-supply = <&vcc_3v3_main>;
-+		ldo2-supply = <&vcc_3v3_main>;
-+		ldo3-supply = <&vcc1v8_sys>;
-+
-+		regulators {
-+			vcc_core: buck12 {
-+				regulator-name = "vcc_core_buck12";
-+				regulator-min-microvolt = <715000>;
-+				regulator-max-microvolt = <895000>;
-+				regulator-always-on;
-+			};
-+
-+			vcc1v8_sys: buck3 {
-+				regulator-name = "vcc1v8_sys_buck3";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-always-on;
-+			};
-+
-+			vcc1v1: buck4 {
-+				regulator-name = "vcc1v1_buck4";
-+				regulator-min-microvolt = <1100000>;
-+				regulator-max-microvolt = <1100000>;
-+				regulator-always-on;
-+			};
-+
-+			vdda1v8: ldo1 {
-+				regulator-name = "vdda1v8_ldo1";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-always-on;
-+			};
-+
-+			dvdd3v3: ldo2 {
-+				regulator-name = "dvdd3v3_ldo2";
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+			};
-+
-+			vcc_0v85: ldo3 {
-+				regulator-name = "vcc_0v85_ldo3";
-+				regulator-min-microvolt = <850000>;
-+				regulator-max-microvolt = <850000>;
-+				regulator-always-on;
-+			};
-+		};
-+	};
-+};
-+
- /* mcu_gpio0 and mcu_gpio_intr are reserved for mcu firmware usage */
- &mcu_gpio0 {
- 	status = "reserved";
--- 
-2.25.1
-
++---- Local Storage ----------------------
+|
+| + num_maps: 1
+| :                                         <before>             | <after>
+| +-+ local_storage cache sequential get  +----------------------+----------------------
+|   +- hits throughput                    | 38.593 M ops/s       | 39.068 M ops/s (+1.2%)
+|   +- hits latency                       | 25.913 ns/op         | 25.598 ns/op   (-1.2%)
+|   +- important_hits throughput          | 38.593 M ops/s       | 39.068 M ops/s (+1.2%)
+| :
+| :                                         <before>             | <after>
+| +-+ local_storage cache interleaved get +----------------------+----------------------
+|   +- hits throughput                    | 44.406 M ops/s       | 44.926 M ops/s (+1.2%)
+|   +- hits latency                       | 22.521 ns/op         | 22.259 ns/op   (-1.2%)
+|   +- important_hits throughput          | 44.406 M ops/s       | 44.926 M ops/s (+1.2%)
+|
+| + num_maps: 10
+| :                                         <before>             | <after>
+| +-+ local_storage cache sequential get  +----------------------+----------------------
+|   +- hits throughput                    | 37.583 M ops/s       | 38.099 M ops/s (+1.4%)
+|   +- hits latency                       | 26.609 ns/op         | 26.248 ns/op   (-1.4%)
+|   +- important_hits throughput          | 3.758 M ops/s        | 3.810 M ops/s  (+1.4%)
+| :
+| :                                         <before>             | <after>
+| +-+ local_storage cache interleaved get +----------------------+----------------------
+|   +- hits throughput                    | 40.698 M ops/s       | 41.145 M ops/s (+1.1%)
+|   +- hits latency                       | 24.573 ns/op         | 24.307 ns/op   (-1.1%)
+|   +- important_hits throughput          | 14.535 M ops/s       | 14.695 M ops/s (+1.1%)
+|
+| + num_maps: 16
+| :                                         <before>             | <after>
+| +-+ local_storage cache sequential get  +----------------------+----------------------
+|   +- hits throughput                    | 38.061 M ops/s       | 38.341 M ops/s (  ~  )
+|   +- hits latency                       | 26.275 ns/op         | 26.083 ns/op   (  ~  )
+|   +- important_hits throughput          | 2.379 M ops/s        | 2.396 M ops/s  (  ~  )
+| :
+| :                                         <before>             | <after>
+| +-+ local_storage cache interleaved get +----------------------+----------------------
+|   +- hits throughput                    | 40.890 M ops/s       | 41.338 M ops/s (+1.1%)
+|   +- hits latency                       | 24.458 ns/op         | 24.193 ns/op   (-1.1%)
+|   +- important_hits throughput          | 13.010 M ops/s       | 13.153 M ops/s (+1.1%)
+|
+| + num_maps: 17
+| :                                         <before>             | <after>
+| +-+ local_storage cache sequential get  +----------------------+----------------------
+|   +- hits throughput                    | 31.799 M ops/s       | 32.756 M ops/s (+3.0%)
+|   +- hits latency                       | 31.448 ns/op         | 30.530 ns/op   (-2.9%)
+|   +- important_hits throughput          | 1.873 M ops/s        | 1.929 M ops/s  (+3.0%)
+| :
+| :                                         <before>             | <after>
+| +-+ local_storage cache interleaved get +----------------------+----------------------
+|   +- hits throughput                    | 35.284 M ops/s       | 36.110 M ops/s (+2.3%)
+|   +- hits latency                       | 28.343 ns/op         | 27.697 ns/op   (-2.3%)
+|   +- important_hits throughput          | 10.742 M ops/s       | 10.993 M ops/s (+2.3%)
+|
+| + num_maps: 24
+| :                                         <before>             | <after>
+| +-+ local_storage cache sequential get  +----------------------+----------------------
+|   +- hits throughput                    | 17.947 M ops/s       | 19.937 M ops/s (+11.1%)
+|   +- hits latency                       | 55.725 ns/op         | 50.166 ns/op   (-10.0%)
+|   +- important_hits throughput          | 0.748 M ops/s        | 0.831 M ops/s  (+11.1%)
+| :
+| :                                         <before>             | <after>
+| +-+ local_storage cache interleaved get +----------------------+----------------------
+|   +- hits throughput                    | 21.379 M ops/s       | 23.332 M ops/s (+9.1%)
+|   +- hits latency                       | 46.775 ns/op         | 42.865 ns/op   (-8.4%)
+|   +- important_hits throughput          | 6.014 M ops/s        | 6.564 M ops/s  (+9.1%)
+|
+| + num_maps: 32
+| :                                         <before>             | <after>
+| +-+ local_storage cache sequential get  +----------------------+----------------------
+|   +- hits throughput                    | 13.279 M ops/s       | 14.626 M ops/s (+10.1%)
+|   +- hits latency                       | 75.317 ns/op         | 68.381 ns/op   (-9.2%)
+|   +- important_hits throughput          | 0.416 M ops/s        | 0.458 M ops/s  (+10.2%)
+| :
+| :                                         <before>             | <after>
+| +-+ local_storage cache interleaved get +----------------------+----------------------
+|   +- hits throughput                    | 16.444 M ops/s       | 17.906 M ops/s (+8.9%)
+|   +- hits latency                       | 60.816 ns/op         | 55.865 ns/op   (-8.1%)
+|   +- important_hits throughput          | 4.590 M ops/s        | 4.998 M ops/s  (+8.9%)
+|
+| + num_maps: 100
+| :                                         <before>             | <after>
+| +-+ local_storage cache sequential get  +----------------------+----------------------
+|   +- hits throughput                    | 4.912 M ops/s        | 5.528 M ops/s  (+12.5%)
+|   +- hits latency                       | 207.291 ns/op        | 183.059 ns/op  (-11.7%)
+|   +- important_hits throughput          | 0.049 M ops/s        | 0.055 M ops/s  (+12.7%)
+| :
+| :                                         <before>             | <after>
+| +-+ local_storage cache interleaved get +----------------------+----------------------
+|   +- hits throughput                    | 6.039 M ops/s        | 6.498 M ops/s  (+7.6%)
+|   +- hits latency                       | 167.325 ns/op        | 152.877 ns/op  (-8.6%)
+|   +- important_hits throughput          | 1.577 M ops/s        | 1.697 M ops/s  (+7.6%)
+|
+| + num_maps: 1000
+| :                                         <before>             | <after>
+| +-+ local_storage cache sequential get  +----------------------+----------------------
+|   +- hits throughput                    | 0.342 M ops/s        | 0.354 M ops/s  (+3.6%)
+|   +- hits latency                       | 2930.550 ns/op       | 2827.139 ns/op (-3.5%)
+|   +- important_hits throughput          | 0.000 M ops/s        | 0.000 M ops/s  (  ~  )
+| :
+| :                                         <before>             | <after>
+| +-+ local_storage cache interleaved get +----------------------+----------------------
+|   +- hits throughput                    | 0.413 M ops/s        | 0.403 M ops/s  (-2.5%)
+|   +- hits latency                       | 2427.830 ns/op       | 2487.555 ns/op (+2.5%)
+|   +- important_hits throughput          | 0.104 M ops/s        | 0.101 M ops/s  (-2.6%)
+|
+| Geomean:
+| hits throughput: 102.93%
+| hits latency: 97.11%
+| important_hits throughput: 102.77%
 
