@@ -1,366 +1,213 @@
-Return-Path: <linux-kernel+bounces-58066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EF9F84E0CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:38:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC7F184E0CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:38:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91B631F22E26
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:38:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A33CF2826A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:38:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC24E6EB4D;
-	Thu,  8 Feb 2024 12:38:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA548762C0;
+	Thu,  8 Feb 2024 12:38:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="bDjnh/MN"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b="MP3uOHKf"
+Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C6A2EB1A;
-	Thu,  8 Feb 2024 12:38:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4525B6EB4B;
+	Thu,  8 Feb 2024 12:38:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707395883; cv=none; b=J4mmiXc5ziXSQ3KbO2k+k4Nsm5J8/2DMLlAgeYcGkgiJ3cLeXrqGNxIP02n9fEnkI7ZL+CAum2Rv7J05Btyf3KdFwGUwGavBX97Yt0TdYB95Xn+k46LF4mG8QqE7k+MBSsIpMX/RgILkT/oTKG9hfHd7TCrrfrJK59LsmjxK/wo=
+	t=1707395921; cv=none; b=OAvLcAVJbz/2XS4vjtEkGug2YANv/D4fzrlJbDUGGUIXjRw9rBM17o965pNpUmRCwFcPlmT+PvcDqkksIDtz+SXzi1OJwmiZu58vTZQG/zE1DVI44LxuropdaNEolvAfFSyJoIl/U/WJGY5DLYR1QkoyL/6FkkUoM7RFEYlpuag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707395883; c=relaxed/simple;
-	bh=HZzncMa1loKAptgv6gflUpOFjRo79b9uJM1kXN47xGc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oIQvGxFRowCvzVu6vBdVrWLts/Jc8paWJcPa5jDu19UrLEhsIn4v6sT+w7nFNN9yCppSKZm28WEwF9LnJNPDRxYuMf6a9DoCg9kL878Vp1E2rUf5xz7Zw32ofYS4UZwrwetm2RnPRhkvrUQj8TNctx99orTu5gSoCPWifQt7qNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=bDjnh/MN; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4186JW3N008734;
-	Thu, 8 Feb 2024 06:37:45 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=7
-	4XCr7k1XvhAmhVcog1O5kNHi22exXfgDeHijOgc4xY=; b=bDjnh/MN29+klW2+e
-	Ew+M9lPoQZTWpD7dAijxTDK3j51ix1yw542icHT4JnmCmjnTy/DAnEBs7Zgnnos8
-	1W8nErV5Bj2IrQL/yAMFSuTgBNGMuXbAVzd5bvBtOds0TchdSWad2um66V5fKmPJ
-	L9IgQX/aufrhe4KiYatryn1ODFyE9YL22/y5eq6gKDwB1mRqlt2IAQheGOsVzRR3
-	FrlODMi9qZwzfTabB8akyp4vE7B20teBQKs3NiyRmGEvLksmaCu3uqc/HzJS06Sw
-	8rFFNaQhXWir/MugUVEXU8I6ycD+Db++iRP2SQLFhUCxYhTTeNnUmYnLmclvEvPC
-	G0saA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3w1ks2efqd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 08 Feb 2024 06:37:45 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 8 Feb
- 2024 12:37:43 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+	s=arc-20240116; t=1707395921; c=relaxed/simple;
+	bh=v6ar3XL4NmldOxqy4tm/6Yg673Ym1vs13mSEDPytD2Y=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gSbu483/+5U61Foq+2Hznj3gGqQaU5BdiqLo1+rFaEULARByakSXBarr47FDcEbdwy9oU1eWXQkxvEx54FDJMArVlB4enL9paVcDwnCYBz1oP10JCr0CKn9mKFAwwwUm3zgsWJXEFiL1M9s9nx/lJxY8WePS2fBaBFUnaXTR/s8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b=MP3uOHKf; arc=none smtp.client-ip=99.78.197.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1707395919; x=1738931919;
+  h=date:from:to:subject:message-id:references:mime-version:
+   in-reply-to;
+  bh=XpaOl328Z0sK2jVAZ5hfANv8ZvM8k9ggJCj6QG2taxk=;
+  b=MP3uOHKfPOwlCftpmBijdPejoXr0QS0VOehEbfzK884JVMThBPCR7cfH
+   2U4AbmLJz+ToGAqeRHadOUChb9wKMUrIx0IA4MlT0Ik2u7mC6aDdsHph9
+   THw4FHwPJq7QW63U5wtdMSFDj3wCQEmVPre0YIRRF2T40huCqEF2vvCa1
+   s=;
+X-IronPort-AV: E=Sophos;i="6.05,253,1701129600"; 
+   d="scan'208";a="64637088"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 12:38:36 +0000
+Received: from EX19MTAUEA002.ant.amazon.com [10.0.44.209:48592]
+ by smtpin.naws.us-east-1.prod.farcaster.email.amazon.dev [10.0.4.133:2525] with esmtp (Farcaster)
+ id 8f6b3cd2-68f2-4838-a80e-f09091bf4d06; Thu, 8 Feb 2024 12:38:35 +0000 (UTC)
+X-Farcaster-Flow-ID: 8f6b3cd2-68f2-4838-a80e-f09091bf4d06
+Received: from EX19D008UEC002.ant.amazon.com (10.252.135.242) by
+ EX19MTAUEA002.ant.amazon.com (10.252.134.9) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40 via Frontend Transport; Thu, 8 Feb 2024 12:37:43 +0000
-Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 03891820243;
-	Thu,  8 Feb 2024 12:37:43 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Richard
- Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH v2] ASoC: cs35l56: Fix deadlock in ASP1 mixer register initialization
-Date: Thu, 8 Feb 2024 12:37:42 +0000
-Message-ID: <20240208123742.1278104-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+ 15.2.1118.40; Thu, 8 Feb 2024 12:38:32 +0000
+Received: from EX19MTAUWA001.ant.amazon.com (10.250.64.204) by
+ EX19D008UEC002.ant.amazon.com (10.252.135.242) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 8 Feb 2024 12:38:32 +0000
+Received: from dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (10.15.57.183)
+ by mail-relay.amazon.com (10.250.64.204) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Thu, 8 Feb 2024 12:38:31 +0000
+Received: by dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (Postfix, from userid 5466572)
+	id 67924956; Thu,  8 Feb 2024 12:38:31 +0000 (UTC)
+Date: Thu, 8 Feb 2024 12:38:31 +0000
+From: Maximilian Heyne <mheyne@amazon.de>
+To: Julien Grall <jgrall@amazon.com>, <stable@vger.kernel.org>, "Andrew
+ Panyakin" <apanyaki@amazon.com>, Juergen Gross <jgross@suse.com>, "Stefano
+ Stabellini" <sstabellini@kernel.org>, Oleksandr Tyshchenko
+	<oleksandr_tyshchenko@epam.com>, Rahul Singh <rahul.singh@arm.com>, "David
+ Woodhouse" <dwmw@amazon.co.uk>, Viresh Kumar <viresh.kumar@linaro.org>,
+	"Konrad Rzeszutek Wilk" <konrad.wilk@oracle.com>, Jeremy Fitzhardinge
+	<jeremy.fitzhardinge@citrix.com>, <xen-devel@lists.xenproject.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] xen/events: close evtchn after mapping cleanup
+Message-ID: <ZcTLR9uUyfy9cNUk@amazon.de>
+References: <20240124163130.31324-1-mheyne@amazon.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: OhepnhnjI61Oe4jBOFSHOemIu85yXJzc
-X-Proofpoint-ORIG-GUID: OhepnhnjI61Oe4jBOFSHOemIu85yXJzc
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240124163130.31324-1-mheyne@amazon.de>
 
-Rewrite the handling of ASP1 TX mixer mux initialization to prevent a
-deadlock during component_remove().
+On Wed, Jan 24, 2024 at 04:31:28PM +0000, Maximilian Heyne wrote:
+> shutdown_pirq and startup_pirq are not taking the
+> irq_mapping_update_lock because they can't due to lock inversion. Both
+> are called with the irq_desc->lock being taking. The lock order,
+> however, is first irq_mapping_update_lock and then irq_desc->lock.
+> 
+> This opens multiple races:
+> - shutdown_pirq can be interrupted by a function that allocates an event
+>   channel:
+> 
+>   CPU0                        CPU1
+>   shutdown_pirq {
+>     xen_evtchn_close(e)
+>                               __startup_pirq {
+>                                 EVTCHNOP_bind_pirq
+>                                   -> returns just freed evtchn e
+>                                 set_evtchn_to_irq(e, irq)
+>                               }
+>     xen_irq_info_cleanup() {
+>       set_evtchn_to_irq(e, -1)
+>     }
+>   }
+> 
+>   Assume here event channel e refers here to the same event channel
+>   number.
+>   After this race the evtchn_to_irq mapping for e is invalid (-1).
+> 
+> - __startup_pirq races with __unbind_from_irq in a similar way. Because
+>   __startup_pirq doesn't take irq_mapping_update_lock it can grab the
+>   evtchn that __unbind_from_irq is currently freeing and cleaning up. In
+>   this case even though the event channel is allocated, its mapping can
+>   be unset in evtchn_to_irq.
+> 
+> The fix is to first cleanup the mappings and then close the event
+> channel. In this way, when an event channel gets allocated it's
+> potential previous evtchn_to_irq mappings are guaranteed to be unset already.
+> This is also the reverse order of the allocation where first the event
+> channel is allocated and then the mappings are setup.
+> 
+> On a 5.10 kernel prior to commit 3fcdaf3d7634 ("xen/events: modify internal
+> [un]bind interfaces"), we hit a BUG like the following during probing of NVMe
+> devices. The issue is that during nvme_setup_io_queues, pci_free_irq
+> is called for every device which results in a call to shutdown_pirq.
+> With many nvme devices it's therefore likely to hit this race during
+> boot because there will be multiple calls to shutdown_pirq and
+> startup_pirq are running potentially in parallel.
+> 
+>   ------------[ cut here ]------------
+>   blkfront: xvda: barrier or flush: disabled; persistent grants: enabled; indirect descriptors: enabled; bounce buffer: enabled
+>   kernel BUG at drivers/xen/events/events_base.c:499!
+>   invalid opcode: 0000 [#1] SMP PTI
+>   CPU: 44 PID: 375 Comm: kworker/u257:23 Not tainted 5.10.201-191.748.amzn2.x86_64 #1
+>   Hardware name: Xen HVM domU, BIOS 4.11.amazon 08/24/2006
+>   Workqueue: nvme-reset-wq nvme_reset_work
+>   RIP: 0010:bind_evtchn_to_cpu+0xdf/0xf0
+>   Code: 5d 41 5e c3 cc cc cc cc 44 89 f7 e8 2b 55 ad ff 49 89 c5 48 85 c0 0f 84 64 ff ff ff 4c 8b 68 30 41 83 fe ff 0f 85 60 ff ff ff <0f> 0b 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 0f 1f 44 00 00
+>   RSP: 0000:ffffc9000d533b08 EFLAGS: 00010046
+>   RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000006
+>   RDX: 0000000000000028 RSI: 00000000ffffffff RDI: 00000000ffffffff
+>   RBP: ffff888107419680 R08: 0000000000000000 R09: ffffffff82d72b00
+>   R10: 0000000000000000 R11: 0000000000000000 R12: 00000000000001ed
+>   R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000002
+>   FS:  0000000000000000(0000) GS:ffff88bc8b500000(0000) knlGS:0000000000000000
+>   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   CR2: 0000000000000000 CR3: 0000000002610001 CR4: 00000000001706e0
+>   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>   Call Trace:
+>    ? show_trace_log_lvl+0x1c1/0x2d9
+>    ? show_trace_log_lvl+0x1c1/0x2d9
+>    ? set_affinity_irq+0xdc/0x1c0
+>    ? __die_body.cold+0x8/0xd
+>    ? die+0x2b/0x50
+>    ? do_trap+0x90/0x110
+>    ? bind_evtchn_to_cpu+0xdf/0xf0
+>    ? do_error_trap+0x65/0x80
+>    ? bind_evtchn_to_cpu+0xdf/0xf0
+>    ? exc_invalid_op+0x4e/0x70
+>    ? bind_evtchn_to_cpu+0xdf/0xf0
+>    ? asm_exc_invalid_op+0x12/0x20
+>    ? bind_evtchn_to_cpu+0xdf/0xf0
+>    ? bind_evtchn_to_cpu+0xc5/0xf0
+>    set_affinity_irq+0xdc/0x1c0
+>    irq_do_set_affinity+0x1d7/0x1f0
+>    irq_setup_affinity+0xd6/0x1a0
+>    irq_startup+0x8a/0xf0
+>    __setup_irq+0x639/0x6d0
+>    ? nvme_suspend+0x150/0x150
+>    request_threaded_irq+0x10c/0x180
+>    ? nvme_suspend+0x150/0x150
+>    pci_request_irq+0xa8/0xf0
+>    ? __blk_mq_free_request+0x74/0xa0
+>    queue_request_irq+0x6f/0x80
+>    nvme_create_queue+0x1af/0x200
+>    nvme_create_io_queues+0xbd/0xf0
+>    nvme_setup_io_queues+0x246/0x320
+>    ? nvme_irq_check+0x30/0x30
+>    nvme_reset_work+0x1c8/0x400
+>    process_one_work+0x1b0/0x350
+>    worker_thread+0x49/0x310
+>    ? process_one_work+0x350/0x350
+>    kthread+0x11b/0x140
+>    ? __kthread_bind_mask+0x60/0x60
+>    ret_from_fork+0x22/0x30
+>   Modules linked in:
+>   ---[ end trace a11715de1eee1873 ]---
+> 
+> Fixes: d46a78b05c0e ("xen: implement pirq type event channels")
+> Cc: stable@vger.kernel.org
+> Co-debugged-by: Andrew Panyakin <apanyaki@amazon.com>
+> Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
 
-The firmware can overwrite the ASP1 TX mixer registers with
-system-specific settings. This is mainly for hardware that uses the
-ASP as a chip-to-chip link controlled by the firmware. Because of this
-the driver cannot know the starting state of the ASP1 mixer muxes until
-the firmware has been downloaded and rebooted.
+Friendly ping. Did anyone find time to look at this?
 
-The original workaround for this was to queue a work function from the
-dsp_work() job. This work then read the register values (populating the
-regmap cache the first time around) and then called
-snd_soc_dapm_mux_update_power(). The problem with this is that it was
-ultimately triggered by cs35l56_component_probe() queueing dsp_work,
-which meant that it would be running in parallel with the rest of the
-ASoC component and card initialization. To prevent accessing DAPM before
-it was fully initialized the work function took the card mutex. But this
-would deadlock if cs35l56_component_remove() was called before the work job
-had completed, because ASoC calls component_remove() with the card mutex
-held.
 
-This new version removes the work function. Instead the regmap cache and
-DAPM mux widgets are initialized the first time any of the associated ALSA
-controls is read or written.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 07f7d6e7a124 ("ASoC: cs35l56: Fix for initializing ASP1 mixer registers")
----
-Change from V1:
-Move the check of asp1_mixer_widgets_initialized into
-cs35l56_sync_asp1_mixer_widgets_with_firmware().
----
- sound/soc/codecs/cs35l56.c | 157 +++++++++++++++++--------------------
- sound/soc/codecs/cs35l56.h |   2 +-
- 2 files changed, 75 insertions(+), 84 deletions(-)
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
 
-diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index ebed5ab1245b..98d3957c66e7 100644
---- a/sound/soc/codecs/cs35l56.c
-+++ b/sound/soc/codecs/cs35l56.c
-@@ -68,6 +68,66 @@ static const char * const cs35l56_asp1_mux_control_names[] = {
- 	"ASP1 TX1 Source", "ASP1 TX2 Source", "ASP1 TX3 Source", "ASP1 TX4 Source"
- };
- 
-+static int cs35l56_sync_asp1_mixer_widgets_with_firmware(struct cs35l56_private *cs35l56)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(cs35l56->component);
-+	const char *prefix = cs35l56->component->name_prefix;
-+	char full_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+	const char *name;
-+	struct snd_kcontrol *kcontrol;
-+	struct soc_enum *e;
-+	unsigned int val[4];
-+	int i, item, ret;
-+
-+	if (cs35l56->asp1_mixer_widgets_initialized)
-+		return 0;
-+
-+	/*
-+	 * Resume so we can read the registers from silicon if the regmap
-+	 * cache has not yet been populated.
-+	 */
-+	ret = pm_runtime_resume_and_get(cs35l56->base.dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Wait for firmware download and reboot */
-+	cs35l56_wait_dsp_ready(cs35l56);
-+
-+	ret = regmap_bulk_read(cs35l56->base.regmap, CS35L56_ASP1TX1_INPUT,
-+			       val, ARRAY_SIZE(val));
-+
-+	pm_runtime_mark_last_busy(cs35l56->base.dev);
-+	pm_runtime_put_autosuspend(cs35l56->base.dev);
-+
-+	if (ret) {
-+		dev_err(cs35l56->base.dev, "Failed to read ASP1 mixer regs: %d\n", ret);
-+		return ret;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(cs35l56_asp1_mux_control_names); ++i) {
-+		name = cs35l56_asp1_mux_control_names[i];
-+
-+		if (prefix) {
-+			snprintf(full_name, sizeof(full_name), "%s %s", prefix, name);
-+			name = full_name;
-+		}
-+
-+		kcontrol = snd_soc_card_get_kcontrol(dapm->card, name);
-+		if (!kcontrol) {
-+			dev_warn(cs35l56->base.dev, "Could not find control %s\n", name);
-+			continue;
-+		}
-+
-+		e = (struct soc_enum *)kcontrol->private_value;
-+		item = snd_soc_enum_val_to_item(e, val[i] & CS35L56_ASP_TXn_SRC_MASK);
-+		snd_soc_dapm_mux_update_power(dapm, kcontrol, item, e, NULL);
-+	}
-+
-+	cs35l56->asp1_mixer_widgets_initialized = true;
-+
-+	return 0;
-+}
-+
- static int cs35l56_dspwait_asp1tx_get(struct snd_kcontrol *kcontrol,
- 				      struct snd_ctl_elem_value *ucontrol)
- {
-@@ -78,9 +138,9 @@ static int cs35l56_dspwait_asp1tx_get(struct snd_kcontrol *kcontrol,
- 	unsigned int addr, val;
- 	int ret;
- 
--	/* Wait for mux to be initialized */
--	cs35l56_wait_dsp_ready(cs35l56);
--	flush_work(&cs35l56->mux_init_work);
-+	ret = cs35l56_sync_asp1_mixer_widgets_with_firmware(cs35l56);
-+	if (ret)
-+		return ret;
- 
- 	addr = cs35l56_asp1_mixer_regs[index];
- 	ret = regmap_read(cs35l56->base.regmap, addr, &val);
-@@ -106,9 +166,9 @@ static int cs35l56_dspwait_asp1tx_put(struct snd_kcontrol *kcontrol,
- 	bool changed;
- 	int ret;
- 
--	/* Wait for mux to be initialized */
--	cs35l56_wait_dsp_ready(cs35l56);
--	flush_work(&cs35l56->mux_init_work);
-+	ret = cs35l56_sync_asp1_mixer_widgets_with_firmware(cs35l56);
-+	if (ret)
-+		return ret;
- 
- 	addr = cs35l56_asp1_mixer_regs[index];
- 	val = snd_soc_enum_item_to_val(e, item);
-@@ -124,70 +184,6 @@ static int cs35l56_dspwait_asp1tx_put(struct snd_kcontrol *kcontrol,
- 	return changed;
- }
- 
--static void cs35l56_mark_asp1_mixer_widgets_dirty(struct cs35l56_private *cs35l56)
--{
--	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(cs35l56->component);
--	const char *prefix = cs35l56->component->name_prefix;
--	char full_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
--	const char *name;
--	struct snd_kcontrol *kcontrol;
--	struct soc_enum *e;
--	unsigned int val[4];
--	int i, item, ret;
--
--	/*
--	 * Resume so we can read the registers from silicon if the regmap
--	 * cache has not yet been populated.
--	 */
--	ret = pm_runtime_resume_and_get(cs35l56->base.dev);
--	if (ret < 0)
--		return;
--
--	ret = regmap_bulk_read(cs35l56->base.regmap, CS35L56_ASP1TX1_INPUT,
--			       val, ARRAY_SIZE(val));
--
--	pm_runtime_mark_last_busy(cs35l56->base.dev);
--	pm_runtime_put_autosuspend(cs35l56->base.dev);
--
--	if (ret) {
--		dev_err(cs35l56->base.dev, "Failed to read ASP1 mixer regs: %d\n", ret);
--		return;
--	}
--
--	snd_soc_card_mutex_lock(dapm->card);
--	WARN_ON(!dapm->card->instantiated);
--
--	for (i = 0; i < ARRAY_SIZE(cs35l56_asp1_mux_control_names); ++i) {
--		name = cs35l56_asp1_mux_control_names[i];
--
--		if (prefix) {
--			snprintf(full_name, sizeof(full_name), "%s %s", prefix, name);
--			name = full_name;
--		}
--
--		kcontrol = snd_soc_card_get_kcontrol(dapm->card, name);
--		if (!kcontrol) {
--			dev_warn(cs35l56->base.dev, "Could not find control %s\n", name);
--			continue;
--		}
--
--		e = (struct soc_enum *)kcontrol->private_value;
--		item = snd_soc_enum_val_to_item(e, val[i] & CS35L56_ASP_TXn_SRC_MASK);
--		snd_soc_dapm_mux_update_power(dapm, kcontrol, item, e, NULL);
--	}
--
--	snd_soc_card_mutex_unlock(dapm->card);
--}
--
--static void cs35l56_mux_init_work(struct work_struct *work)
--{
--	struct cs35l56_private *cs35l56 = container_of(work,
--						       struct cs35l56_private,
--						       mux_init_work);
--
--	cs35l56_mark_asp1_mixer_widgets_dirty(cs35l56);
--}
--
- static DECLARE_TLV_DB_SCALE(vol_tlv, -10000, 25, 0);
- 
- static const struct snd_kcontrol_new cs35l56_controls[] = {
-@@ -936,14 +932,6 @@ static void cs35l56_dsp_work(struct work_struct *work)
- 	else
- 		cs35l56_patch(cs35l56, firmware_missing);
- 
--
--	/*
--	 * Set starting value of ASP1 mux widgets. Updating a mux takes
--	 * the DAPM mutex. Post this to a separate job so that DAPM
--	 * power-up can wait for dsp_work to complete without deadlocking
--	 * on the DAPM mutex.
--	 */
--	queue_work(cs35l56->dsp_wq, &cs35l56->mux_init_work);
- err:
- 	pm_runtime_mark_last_busy(cs35l56->base.dev);
- 	pm_runtime_put_autosuspend(cs35l56->base.dev);
-@@ -989,6 +977,13 @@ static int cs35l56_component_probe(struct snd_soc_component *component)
- 	debugfs_create_bool("can_hibernate", 0444, debugfs_root, &cs35l56->base.can_hibernate);
- 	debugfs_create_bool("fw_patched", 0444, debugfs_root, &cs35l56->base.fw_patched);
- 
-+	/*
-+	 * The widgets for the ASP1TX mixer can't be initialized
-+	 * until the firmware has been downloaded and rebooted.
-+	 */
-+	regcache_drop_region(cs35l56->base.regmap, CS35L56_ASP1TX1_INPUT, CS35L56_ASP1TX4_INPUT);
-+	cs35l56->asp1_mixer_widgets_initialized = false;
-+
- 	queue_work(cs35l56->dsp_wq, &cs35l56->dsp_work);
- 
- 	return 0;
-@@ -999,7 +994,6 @@ static void cs35l56_component_remove(struct snd_soc_component *component)
- 	struct cs35l56_private *cs35l56 = snd_soc_component_get_drvdata(component);
- 
- 	cancel_work_sync(&cs35l56->dsp_work);
--	cancel_work_sync(&cs35l56->mux_init_work);
- 
- 	if (cs35l56->dsp.cs_dsp.booted)
- 		wm_adsp_power_down(&cs35l56->dsp);
-@@ -1070,10 +1064,8 @@ int cs35l56_system_suspend(struct device *dev)
- 
- 	dev_dbg(dev, "system_suspend\n");
- 
--	if (cs35l56->component) {
-+	if (cs35l56->component)
- 		flush_work(&cs35l56->dsp_work);
--		cancel_work_sync(&cs35l56->mux_init_work);
--	}
- 
- 	/*
- 	 * The interrupt line is normally shared, but after we start suspending
-@@ -1224,7 +1216,6 @@ static int cs35l56_dsp_init(struct cs35l56_private *cs35l56)
- 		return -ENOMEM;
- 
- 	INIT_WORK(&cs35l56->dsp_work, cs35l56_dsp_work);
--	INIT_WORK(&cs35l56->mux_init_work, cs35l56_mux_init_work);
- 
- 	dsp = &cs35l56->dsp;
- 	cs35l56_init_cs_dsp(&cs35l56->base, &dsp->cs_dsp);
-diff --git a/sound/soc/codecs/cs35l56.h b/sound/soc/codecs/cs35l56.h
-index 596b141e3f96..b000e7365e40 100644
---- a/sound/soc/codecs/cs35l56.h
-+++ b/sound/soc/codecs/cs35l56.h
-@@ -34,7 +34,6 @@ struct cs35l56_private {
- 	struct wm_adsp dsp; /* must be first member */
- 	struct cs35l56_base base;
- 	struct work_struct dsp_work;
--	struct work_struct mux_init_work;
- 	struct workqueue_struct *dsp_wq;
- 	struct snd_soc_component *component;
- 	struct regulator_bulk_data supplies[CS35L56_NUM_BULK_SUPPLIES];
-@@ -52,6 +51,7 @@ struct cs35l56_private {
- 	u8 asp_slot_count;
- 	bool tdm_mode;
- 	bool sysclk_set;
-+	bool asp1_mixer_widgets_initialized;
- 	u8 old_sdw_clock_scale;
- };
- 
--- 
-2.30.2
+
 
 
