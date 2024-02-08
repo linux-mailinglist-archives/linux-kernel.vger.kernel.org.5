@@ -1,71 +1,73 @@
-Return-Path: <linux-kernel+bounces-58362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 168CE84E534
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 28DC684E549
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:44:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A5C928C711
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:43:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D904F287C7C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:44:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97E881AC7;
-	Thu,  8 Feb 2024 16:43:00 +0000 (UTC)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1007F85943;
+	Thu,  8 Feb 2024 16:43:03 +0000 (UTC)
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98B4C81AC6;
-	Thu,  8 Feb 2024 16:42:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD102823DE;
+	Thu,  8 Feb 2024 16:43:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707410580; cv=none; b=aIZsMbt9shikMSEqW4R0Cb23OYhWs9nuNuOcS8svSQQypeG3aXmLzgtDqlOl8FbyL4LRRnehM9Svj9L/To/KKquFYS70K59kpOtpggx+U0owwXcHRVoq/VOvWe1a7gNUNN2W1jOR9MiI9TuzqxWPmpndvmcpd5pw02CEQ/3Iv/c=
+	t=1707410582; cv=none; b=CNgRxSgG9kNnMTTO8Qsd2sbjB4mvoueyNmY2vfZsfmuCVbvtrrudP17c9QaLiHYE3ytUtbfAvu7CRxgcqp9DJXrImB+qEGEo7k6jjlf9Tx7bpm15sX6hKS8RRXzHM5nhZIHk8xcvCeR6Zh4/c3iAhfyywTz41TFavbA/kfHDWUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707410580; c=relaxed/simple;
-	bh=AF9MRNHP4Zfbum3O37Vqta3MLkTQ94Fd3K1qg6GP2pA=;
+	s=arc-20240116; t=1707410582; c=relaxed/simple;
+	bh=qGprDF5yFbJMMfvwg7rlQsZq1GoMUYoBgio5pa7q6nY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=X7XnbYULyE48YG5/LaBNL/UyF7ghUua1uL4Y7IM/4GxiJqVfxtjwxTPuAgWhQXSine/61Ody7Im55gsElRDYG2rWmCsIg4OXBAFFTY65TUgY1jNGf45Jw8iPEz0ZMbTYvBnvqcMe4U/7I7YtDSuVwu5DpC6Je5A/WUpmhnvXPkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.42
+	 MIME-Version; b=KWUA9zIIiob1xKtGUOgGLX5MWogUx+Znnk72IkyWheNgEoMt7vCEamnXEVwJapbH1H6OVhx/w2/4n98wwcx3DLc+YcG7HlukOzpV6nl+NMe5xxEwua7aJ0ypXXP7J455EfZwB6memV6Gcve3vL7anVSUwOHsqcCr1xGn4pWr7jE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a30e445602cso220270766b.0;
-        Thu, 08 Feb 2024 08:42:58 -0800 (PST)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so277239666b.1;
+        Thu, 08 Feb 2024 08:43:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707410577; x=1708015377;
+        d=1e100.net; s=20230601; t=1707410579; x=1708015379;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=q9t/Fs6sg6uNWFkbyktvvrK9s3ApKdOAXQbX21ZqRtc=;
-        b=v35h5U+blWIeqVyhKcvTEQrgqSU7+til6gnOB7LQXVDwiSuJolGkDIEByvpperEPnH
-         VJ/E0+0gM93OY4BeX9gl/uO5ZShvfqBuCqvj8AAVe0hATLTESo+zgC5YUQBCa+t7n/TC
-         h2dOtxA+Nv3QsS9pNtGYbEpuFdWpVK7NUojqpPLdeGeGxdun1miawwdKTE8tXBhEXwLh
-         M6QUTuetzDMKSbeE4E+6TxBdqEsi5N58tB60OfVeD4HuBki4+wlOIGKUV+sEJBVnqg9p
-         P9mJWq+bL1PlrOOP5Xo1FdpJb8HFeQLOh0pYGKlQQ9uS6HwkL/VTxIZXVQ4riPbomBVL
-         HT5Q==
-X-Gm-Message-State: AOJu0Yxzjp0sxP+gpG7jGggP15SYPaBIREFxXCGRLxCWjewyn5YwsSty
-	aAdmj3pfyrU2qr5wrO7JpuSA7vJndohUfJiM/VXV7f8KlybIihLA41Zk5BEO
-X-Google-Smtp-Source: AGHT+IERRL63Q47T75PpVu9CMoD3HAIwZ74VoE9kqsmhPZF9NaORsNSg0UHHgMMAPr7SdYZ3e8DJrA==
-X-Received: by 2002:a17:906:2b16:b0:a3b:adff:85d9 with SMTP id a22-20020a1709062b1600b00a3badff85d9mr1574474ejg.15.1707410577018;
-        Thu, 08 Feb 2024 08:42:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVqIU44hjF4Z77alKakWDUy4GiNfrqYDYHQVuhKYrcyDyCNiKzwbVdN/vMqMb5l+dnM3WJ2CnPmck5cVV5Z4sPh54WQFsQwpSr5CCg0ob2j+CCg0fLUQ1ENwbR9DQySAtDjM3Oy/jkJqnsHmc7y1avSVjFTtrdEHlv1lQesbbuRCl7YWFhj/ykRO6NRElNy6an6kBrbedJ0/M2LQ6OzYLcZE1bsASIByw2eeDlFqNCtftNfi4piyoN1mxZustBIfaHvUmibN/YGzhnz+qeSr0oSE+WU
-Received: from localhost (fwdproxy-lla-004.fbsv.net. [2a03:2880:30ff:4::face:b00c])
-        by smtp.gmail.com with ESMTPSA id jp9-20020a170906f74900b00a396186396dsm226166ejb.54.2024.02.08.08.42.56
+        bh=UkvYXjV87q8WCwTxmNUx3QJd5xc/NdLDoxk8vLpDGEA=;
+        b=Vf/kDJohlg29qvceV7jqLKfW2+aTMtDzywL0QQk3ynp8lFAhzGUJUobDwN8KGhWHu4
+         CVt3EVG8J1vtb5DLR3K+OcVPUp6WVlJOKDJ+O4f2nZueof0H0s+rppb/qmkrDdyIsUpI
+         98jQF/LUnX261xfBYRtOOS+oZcPN5+GxY3CrLFJJqMRJ6T4BmDo1T++iIrifmZqXi2LU
+         w96TnjNXvQtOGr7sxrsRxQ74oHO7oSL4ZAAk0j6FYI35L2//jO5bW5RBqBClFAS9OPUu
+         Wu/Xg+NB0M5xATWBK06Z994nvgePTfL3tSy8YszEBZ+tzNEHDgPOcMKO9k4IjMJHO8xV
+         ovXA==
+X-Gm-Message-State: AOJu0YwKj/QfM96PRCCY8wy3TL+BHeDPzNDFF3NUodaGf5oxoimqi+PL
+	Yv+6VDDlcyVagnh0hbFOGTX6BNGYi6evspMEeSJJLVkGuAHaa4Su
+X-Google-Smtp-Source: AGHT+IH7ul2dwGNdIAq2sUTLqGxn7/5daggKuKE43x4OoCRAWkWcVU9P7X773u77bNYzZvgdaLmiCw==
+X-Received: by 2002:a17:907:60ce:b0:a30:db53:5bb5 with SMTP id hv14-20020a17090760ce00b00a30db535bb5mr7824145ejc.58.1707410578667;
+        Thu, 08 Feb 2024 08:42:58 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUQrK1ranyGnGRRYBkuusGjrMs1eFVK06hmGga+H28lThOLY1h43LOZcusK6oOQj8opMl5tr06R4oVZZai9/Njfz4ly3DZ6KRpeGo0mvPsB17wxAfgG78gNPS9vfgc2T4rzWnJTcbmdZkpXDewmMijLRqzIy10Eads3sJp7Ksw0ROLTupzuM9sFs5q7++igGDBgnw/uFFdGhfGcMz0DtovykDdEZUc1QFdu0u5SOpo5sNLClHYeJDrIAV7QVb7ZgLbmbKkq5YUVlxAs84LBPu2cRGDRA2dEmP3oj9V41KsBqix6d3MQvYoR+QXdEGegboUL0TOtoAsPJb8pZq3KBW+Nl6i+KHB3awHT/9JaRyQ=
+Received: from localhost (fwdproxy-lla-000.fbsv.net. [2a03:2880:30ff::face:b00c])
+        by smtp.gmail.com with ESMTPSA id u18-20020a170906069200b00a3522154450sm227959ejb.12.2024.02.08.08.42.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 08:42:56 -0800 (PST)
+        Thu, 08 Feb 2024 08:42:58 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
 	pabeni@redhat.com,
-	edumazet@google.com
+	edumazet@google.com,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>
 Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	horms@kernel.org,
 	andrew@lunn.ch,
 	f.fainelli@gmail.com,
 	jhs@mojatatu.com
-Subject: [PATCH net v3 2/9] net: fill in MODULE_DESCRIPTION()s for mpoa
-Date: Thu,  8 Feb 2024 08:42:37 -0800
-Message-Id: <20240208164244.3818498-3-leitao@debian.org>
+Subject: [PATCH net v3 3/9] net: fill in MODULE_DESCRIPTION()s for af_key
+Date: Thu,  8 Feb 2024 08:42:38 -0800
+Message-Id: <20240208164244.3818498-4-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240208164244.3818498-1-leitao@debian.org>
 References: <20240208164244.3818498-1-leitao@debian.org>
@@ -78,24 +80,25 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-Add descriptions to the Multi-Protocol Over ATM (MPOA) driver.
+Add descriptions to the PF_KEY socket helpers.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 Reviewed-by: Simon Horman <horms@kernel.org>
 ---
- net/atm/mpc.c | 1 +
+ net/key/af_key.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/net/atm/mpc.c b/net/atm/mpc.c
-index 033871e718a3..324e3ab96bb3 100644
---- a/net/atm/mpc.c
-+++ b/net/atm/mpc.c
-@@ -1532,4 +1532,5 @@ static void __exit atm_mpoa_cleanup(void)
- module_init(atm_mpoa_init);
- module_exit(atm_mpoa_cleanup);
+diff --git a/net/key/af_key.c b/net/key/af_key.c
+index d68d01804dc7..f79fb99271ed 100644
+--- a/net/key/af_key.c
++++ b/net/key/af_key.c
+@@ -3924,5 +3924,6 @@ static int __init ipsec_pfkey_init(void)
  
-+MODULE_DESCRIPTION("Multi-Protocol Over ATM (MPOA) driver");
+ module_init(ipsec_pfkey_init);
+ module_exit(ipsec_pfkey_exit);
++MODULE_DESCRIPTION("PF_KEY socket helpers");
  MODULE_LICENSE("GPL");
+ MODULE_ALIAS_NETPROTO(PF_KEY);
 -- 
 2.39.3
 
