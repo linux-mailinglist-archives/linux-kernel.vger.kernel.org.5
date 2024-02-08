@@ -1,112 +1,103 @@
-Return-Path: <linux-kernel+bounces-58044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 535E684E094
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:21:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C71E84E099
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:21:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 084751F2AA6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:21:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48CA2286CD5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333597319C;
-	Thu,  8 Feb 2024 12:20:35 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 413C974E01;
+	Thu,  8 Feb 2024 12:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K8GvBnLw"
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5982873182
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 12:20:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0DA476021
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 12:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707394834; cv=none; b=sUJJ0jTDOSenM7OobmwHkleseD3uuEuK8P9tuvcn2bAPzhQSBP6ltaKDLqYE8qYABGeAAaAji2FMZQc4a2i3feqPFX/QKny8vqP5crEHLScwjNshGc0sXG+sA059SKnJbodtG/1JVaYCIkHaeIEQPUem5dNQ8+sEf3rH54bVVxU=
+	t=1707394859; cv=none; b=qqYHTgytXb1OK02pywX7gDraiYkpKJLITyHIpGZmY6/AkvU2czH7HL1qLcSpJIfBdMlLEe4R36ddyi2Cl6HInjf3W3F/wr7t+jZ9Ul0ydFNP1hqgUSRUeZF1ZvJHMGsLD65BlWtfFLkv43NOkBWkaw+F+qrRN2EPDNH3CAoVUvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707394834; c=relaxed/simple;
-	bh=r+hfrA5qEDDdPsVezjcdkRd1w6ruSzwoWLPssdSs50o=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qua8jVDjJ5eg7jehyWWj3b79WqF65ziWBOjV0b85iNiX0v9eVHxs7tvxe/05NDfqa0tTSQjb7Nt2lmg/pkL2Haa9+yBWcZyzs7J+RGvXjAduu8aENFFPjt8tQ7yISduiZxVyLnp0rTlF6/HBUeba6NzRuNkCLLwA9vbl0LCzOM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TVww84svfz6K98Q;
-	Thu,  8 Feb 2024 20:17:12 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9EA0A140136;
-	Thu,  8 Feb 2024 20:20:30 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 8 Feb
- 2024 12:20:30 +0000
-Date: Thu, 8 Feb 2024 12:20:29 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Yicong Yang <yangyicong@huawei.com>
-CC: <will@kernel.org>, <mark.rutland@arm.com>, <hejunhao3@huawei.com>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<yangyicong@hisilicon.com>, <linuxarm@huawei.com>,
-	<prime.zeng@hisilicon.com>, <fanghao11@huawei.com>
-Subject: Re: [PATCH 3/7] drivers/perf: hisi_pcie: Add more events for
- counting TLP bandwidth
-Message-ID: <20240208122029.000005e1@Huawei.com>
-In-Reply-To: <20240204074527.47110-4-yangyicong@huawei.com>
-References: <20240204074527.47110-1-yangyicong@huawei.com>
-	<20240204074527.47110-4-yangyicong@huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1707394859; c=relaxed/simple;
+	bh=iBRxCFNg530HZ3mowLtmdXeppw43BoOmKkPx98+KxGQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KvFd9jSAcrCqe53L9vkpGdR3xA0ROES9Oab+eu33hmOUxzRcZpl86s6ymhcycaCeq86gVzfyxqq40PJbX+5tEg0wXVIGpc3E+fan2mWkiIS6p0Rp+124WWti0dPpQhOw2T6E6J77a63BxitEKPcWn4E+klGfbBbkGu6kwM4Dh/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K8GvBnLw; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-604b0ae6babso1581767b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 04:20:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707394856; x=1707999656; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iBRxCFNg530HZ3mowLtmdXeppw43BoOmKkPx98+KxGQ=;
+        b=K8GvBnLwHDN4ObdcyJyFaoH9q+VbIqnV8NsNRrlyp58VcSfxZMGELlSZF45/KXtbx9
+         qCJK5qlXOeFGVP2fL0KJeboSCqV0mit4eQ5ofcOWREo+cdmzcubPlKbGxpCortBifVch
+         il2W/xp68lTaFbrOvKMoEF++Xsqir1pHh+wnty2utmZrqHH/sgn7nwaFh43+tHWoc/6k
+         o9Ll1eU8Jo4FHthMwC6UHUOwKlZSSRhGcNN+cM7svR9WXa4yUzAfCusHM3hunkOkms/p
+         c/B5TpVaqHTwUd3xxNeeHPxa/BJ/PK/TnVz2Yht5T+/0WJSTTvKE9QSFLhSw20zGHFij
+         8wAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707394856; x=1707999656;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iBRxCFNg530HZ3mowLtmdXeppw43BoOmKkPx98+KxGQ=;
+        b=dpIwoq9oP1/Dw160rrmhE8JELPx92HKIiNYkYxUXIN+jupzly7zJo/G77/wDhgxRmA
+         83TGRRvlIvd2smwkHb6BSQAJR+3TOnGGADLi7aEYt0/mxUAK8U9CeCwONPDBxX7cHf14
+         d9UAOTQjaMSD1g3ipHqqJzVw9PXYel8Jq64Xr+uwKdYmfkcHcl1kKKOokqSstit4eQXF
+         Hzan2llsG7pAFTFRlm5OmtDAE2wvFtMEdmswpukMBovTU81tIsAvghZ4v0LtX9TuhSFX
+         NrAt/NhL0o51dbeSmR2XLAUeHWSWFACiTbZ6Qhh4BWughNOqVGwKOluQYOk0YuqIqIzN
+         lsTw==
+X-Forwarded-Encrypted: i=1; AJvYcCVMUun2oVgcEEg3p+LpABMypZ6Tdyrp7VnsdaLhmQr9i6wFs9u8o0z+FgRgzyHnwLFMKzBrAr2xvsa0sr9GNEKDuyMersFBQ/lf1l6e
+X-Gm-Message-State: AOJu0YyzfFQ7VIEkqGscCLM9CRyQ7DUdFwqsmdGz/m4QIUOM64QrhmRM
+	/tvg3RDwhMebBncxGfzHms/S6HPrw1OfrCyOd6gsBNpujfNLDs9IPWgq2iHKIvf6maqxxgyfnmq
+	/46p3o9RauMqPClhJMjAlwNyl7BJgcQm5cB+9Lw==
+X-Google-Smtp-Source: AGHT+IHKhaZnnM7h0sNB0ERbnAD1jv4LPYRxgzkjQ5lvuf4L29l+0F15fpZHLoEl+PkN17TnOypsBH/bxF0yT9EzVQ4=
+X-Received: by 2002:a81:b3c1:0:b0:604:7a6a:9d58 with SMTP id
+ r184-20020a81b3c1000000b006047a6a9d58mr8271515ywh.25.1707394856481; Thu, 08
+ Feb 2024 04:20:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+References: <20240208095920.8035-1-brgl@bgdev.pl> <20240208095920.8035-17-brgl@bgdev.pl>
+In-Reply-To: <20240208095920.8035-17-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 8 Feb 2024 13:20:45 +0100
+Message-ID: <CACRpkdYV8Q9LRdZ4A4hGUmWsyEFkOeMkCOv1_nyPZS4ccpeY6A@mail.gmail.com>
+Subject: Re: [PATCH v3 16/24] gpio: sysfs: don't access gdev->chip if it's not needed
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 4 Feb 2024 15:45:23 +0800
-Yicong Yang <yangyicong@huawei.com> wrote:
+On Thu, Feb 8, 2024 at 10:59=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 
-> From: Yicong Yang <yangyicong@hisilicon.com>
-> 
-> A typical PCIe transaction is consisted of various TLP packets in both
-> direction. For counting bandwidth only memory read events are exported
-> currently. Add memory write and completion counting events of both
-> direction to complementation.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> Don't dereference gdev->chip if the same information can be obtained
+> from struct gpio_device.
+>
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-complementation?
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> 
-> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> ---
->  drivers/perf/hisilicon/hisi_pcie_pmu.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-> index 9623bed93876..83be3390686c 100644
-> --- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
-> +++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-> @@ -726,10 +726,18 @@ static struct attribute *hisi_pcie_pmu_events_attr[] = {
->  	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_cnt, 0x10210),
->  	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_latency, 0x0011),
->  	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_cnt, 0x10011),
-> +	HISI_PCIE_PMU_EVENT_ATTR(rx_mwr_flux, 0x0104),
-> +	HISI_PCIE_PMU_EVENT_ATTR(rx_mwr_time, 0x10104),
->  	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_flux, 0x0804),
->  	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_time, 0x10804),
-> +	HISI_PCIE_PMU_EVENT_ATTR(rx_cpl_flux, 0x2004),
-> +	HISI_PCIE_PMU_EVENT_ATTR(rx_cpl_time, 0x12004),
-> +	HISI_PCIE_PMU_EVENT_ATTR(tx_mwr_flux, 0x0105),
-> +	HISI_PCIE_PMU_EVENT_ATTR(tx_mwr_time, 0x10105),
->  	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_flux, 0x0405),
->  	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_time, 0x10405),
-> +	HISI_PCIE_PMU_EVENT_ATTR(tx_cpl_flux, 0x1005),
-> +	HISI_PCIE_PMU_EVENT_ATTR(tx_cpl_time, 0x11005),
->  	NULL
->  };
->  
-
+Yours,
+Linus Walleij
 
