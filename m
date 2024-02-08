@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-58307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FE5784E45B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:51:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C83F84E45F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:51:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29D7528EB8B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:51:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52C3028F2EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:51:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FC97CF23;
-	Thu,  8 Feb 2024 15:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 823CF7E116;
+	Thu,  8 Feb 2024 15:51:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DPxKZofX"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mAjaHjvE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41FFD7C092;
-	Thu,  8 Feb 2024 15:51:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B42117D3EF;
+	Thu,  8 Feb 2024 15:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707407494; cv=none; b=IVmIveWH+2TnyEYvrbwiiMSfSDQYdsWKizbznlI1eJxmf3KstKIJzl9FpVTG2qx02KHVb/Ov5QVSvkyYNVJvOu6zmodiTkLmyGTCEuB1A+LGsQEgvZ63MTM4uovsT6qZKX96n7aKdFoBRXXRtvuWEYUSlqv8w2tRDryBMsOg0wk=
+	t=1707407497; cv=none; b=Mh4qSkxqz+jVVpDqgf557UHp8L4vNAqpR4okaSENyhXoPX24PPh6IIi3ar3cqD6jQxkbYN4VtWaGacye//itkorCWTt81BNGt0yzLo7fVaNVRDqryET0Gl21+Q9EW4doM+8YRla8BuVNsFQkjLHIJlgrLki6RDIUzkEh0wdssEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707407494; c=relaxed/simple;
-	bh=dY3ivW7oyb3B7jFVkS5ngpYankgTPC7k5Q2CbzlAn7Q=;
+	s=arc-20240116; t=1707407497; c=relaxed/simple;
+	bh=pZfXrBkwGay5L9BMtIlCVo0mfp2MwiUrwSuB47mE3nw=;
 	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=ALbdYNYRm3xmisCmrh2laVeqkyo2eV3GkRwsAZZK2zprJ+2wO6gi/kuL06duY0lpWY3TZn666gJ7ej1bag6+yruYRRkgkaLl8KhXH1QIpDBDcTeViVwzk8B0txVUUioUbYDRjdPh7PYylGoQ5tQXVqeqqdY4aJgGnKwRIRHzcms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DPxKZofX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45694C43390;
-	Thu,  8 Feb 2024 15:51:33 +0000 (UTC)
+	 Message-Id:Subject; b=jonjDM4WB6BRNPKpn0N+T/D/QWO3/6bPaVO70/IQdJmjx5J3gC7BdWi1uEw7YYJYmDMe36j/5Eh+j7he9qFLkSqKenE0YonCbUV8E8KgkDBUPUsSNpnVwfhFcDQYd6Qoitt1adQsLPkMiziTIPpvXGR8UTEvot3HtRkghpq6q8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mAjaHjvE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4177C433F1;
+	Thu,  8 Feb 2024 15:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707407493;
-	bh=dY3ivW7oyb3B7jFVkS5ngpYankgTPC7k5Q2CbzlAn7Q=;
+	s=k20201202; t=1707407497;
+	bh=pZfXrBkwGay5L9BMtIlCVo0mfp2MwiUrwSuB47mE3nw=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=DPxKZofXQ/J7LPUoKQjbBrGn/h0YFIE1167UfXqQEK7YYfwL96opX+2lSt04xXaDA
-	 W6eMYCwHi0ZHUQxt+7pg8c7uVzzlpovziieR5qm3z4ag0ngvFhwtF4bYPspc1UYR1g
-	 vbdrclxrmUkNw85mMoVJ0pwuTa5S/fwqMQ01YD8nhJ3mZv0h/9yuCW1tz/Mt87JM3e
-	 /c/b6q/n8CJaGZXro1mLAJ0TNeyp1leOx93tLd7dvu/koSg0d6t23Chh8uddPs8a45
-	 KdVQyre8Wa+jQPX/3sl/sBt71YJhiKnccT7newpt8O2pM5/GHkRHi+tXqeh/fjEVRP
-	 IuB/Ejotwta+g==
-Date: Thu, 08 Feb 2024 15:51:31 +0000
+	b=mAjaHjvERjl4qwIpijalwfrTU7vg66Vk6ElIpkZ5fqnM0e3gFhG/OTwtpp1GM/T53
+	 o945l9J7uXnt6sg2wUkv7DT/x80n2QWnlt4sAzb0469yjdhuOuf3ikkbTWnhzXjhs+
+	 QpkLOsp05LvLG2L0z3ixQDe8fck1buWnV1U9/BL3WTbhWS1ZbhIH3NnsOqi+R3kcPF
+	 GKTgEKNQi1IUr3un61uaseuqU0LV1elp1pd/ihVo8R5RlUd4Z79NOjoEIWe4cDJvrk
+	 V8bLMhSEa1GBDMjZKoVMOqESYLhX5D5DkFpZAI7o8qwdc18fINO1wcX7mykrwxwJTd
+	 MMu4TlI0bBEQA==
+Date: Thu, 08 Feb 2024 15:51:35 +0000
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -50,49 +50,70 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
-To: Dharma Balasubiramani <dharma.b@microchip.com>
-Cc: alexandre.belloni@bootlin.com, conor+dt@kernel.org, 
- linux-kernel@vger.kernel.org, tglx@linutronix.de, 
- nicolas.ferre@microchip.com, linux-arm-kernel@lists.infradead.org, 
- robh+dt@kernel.org, claudiu.beznea@tuxon.dev, devicetree@vger.kernel.org, 
- krzysztof.kozlowski+dt@linaro.org
-In-Reply-To: <20240208092015.263210-1-dharma.b@microchip.com>
-References: <20240208092015.263210-1-dharma.b@microchip.com>
-Message-Id: <170740748922.3230402.17318224112819715619.robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: interrupt-controller: Convert Atmel AIC
- to json-schema
+To: Kory Maincent <kory.maincent@bootlin.com>
+Cc: Conor Dooley <conor+dt@kernel.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Dent Project <dentproject@linuxfoundation.org>, 
+ Jakub Kicinski <kuba@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, 
+ Mark Brown <broonie@kernel.org>, Russell King <linux@armlinux.org.uk>, 
+ Russ Weight <russ.weight@linux.dev>, linux-doc@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org, 
+ Oleksij Rempel <o.rempel@pengutronix.de>, 
+ "David S. Miller" <davem@davemloft.net>, devicetree@vger.kernel.org, 
+ Eric Dumazet <edumazet@google.com>, Rob Herring <robh+dt@kernel.org>, 
+ Frank Rowand <frowand.list@gmail.com>, Paolo Abeni <pabeni@redhat.com>, 
+ linux-kernel@vger.kernel.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Andrew Lunn <andrew@lunn.ch>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Jonathan Corbet <corbet@lwn.net>
+In-Reply-To: <20240208-feature_poe-v3-10-531d2674469e@bootlin.com>
+References: <20240208-feature_poe-v3-0-531d2674469e@bootlin.com>
+ <20240208-feature_poe-v3-10-531d2674469e@bootlin.com>
+Message-Id: <170740748991.3230450.367502029480356760.robh@kernel.org>
+Subject: Re: [PATCH net-next v3 10/17] dt-bindings: net: pse-pd: Add
+ another way of describing several PSE PIs
 
 
-On Thu, 08 Feb 2024 14:50:15 +0530, Dharma Balasubiramani wrote:
-> Convert the Atmel AIC binding document to DT schema format using
-> json-schema.
+On Thu, 08 Feb 2024 14:08:47 +0100, Kory Maincent wrote:
+> Before hand we set "#pse-cell" to 1 to define a PSE controller with
+> several PIs (Power Interface). The drawback of this was that we could not
+> have any information on the PI except its number.
+> Add support for pse_pis and pse_pi node to be able to have more information
+> on the PI like the number of pairset used and the pairset pinout.
 > 
-> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+> Sponsored-by: Dent Project <dentproject@linuxfoundation.org>
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 > ---
-> Note: I get the following warnings on latest kernel but not in 6.7.
-> Should I be worried?
 > 
-> usage: yamllint [-h] [-] [-c CONFIG_FILE | -d CONFIG_DATA] [--list-files] [-f {parsable,standard,colored,github,auto}] [-s] [--no-warnings] [-v] [FILE_OR_DIR [FILE_OR_DIR ...]]
-> yamllint: error: one of the arguments FILE_OR_DIR - is required
-> 
->  .../interrupt-controller/atmel,aic.txt        | 43 ---------
->  .../interrupt-controller/atmel,aic.yaml       | 88 +++++++++++++++++++
->  2 files changed, 88 insertions(+), 43 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/atmel,aic.txt
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/atmel,aic.yaml
+> Changes in v3:
+> - New patch
+> ---
+>  .../bindings/net/pse-pd/pse-controller.yaml        | 101 ++++++++++++++++++++-
+>  1 file changed, 98 insertions(+), 3 deletions(-)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:80:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:80:15: [error] string value is redundantly quoted with any quotes (quoted-strings)
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:81:15: [error] string value is redundantly quoted with any quotes (quoted-strings)
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/interrupt-controller/atmel,aic.example.dtb: /example-1/dma-controller@ffffec00: failed to match any schema with compatible: ['atmel,at91sam9g45-dma']
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml: $defs:pse_pi:properties:pairset-names: {'description': 'Names of the pairsets as per IEEE 802.3-2022, Section 145.2.4. Valid values are "alternative-a" and "alternative-b". Each name should correspond to a phandle in the \'pairset\' property pointing to the power supply for that pairset.', '$ref': '/schemas/types.yaml#/definitions/string-array', 'minItems': 1, 'maxItems': 2, 'items': [{'enum': ['alternative-a', 'alternative-b']}]} should not be valid under {'required': ['maxItems']}
+	hint: "maxItems" is not needed with an "items" list
+	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml: $defs:pse_pi:properties:pairset-names: 'oneOf' conditional failed, one must be fixed:
+	[{'enum': ['alternative-a', 'alternative-b']}] is too short
+	False schema does not allow 1
+	hint: "minItems" is only needed if less than the "items" list length
+	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240208092015.263210-1-dharma.b@microchip.com
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240208-feature_poe-v3-10-531d2674469e@bootlin.com
 
 The base for the series is generally the latest rc1. A different dependency
 should be noted in *this* patch.
