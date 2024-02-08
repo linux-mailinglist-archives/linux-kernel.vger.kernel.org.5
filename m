@@ -1,73 +1,92 @@
-Return-Path: <linux-kernel+bounces-57855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DEE184DE3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:26:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DEA384DE40
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:26:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F14B41F25CF9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:26:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B28D11C2722B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:26:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41DC6DD0A;
-	Thu,  8 Feb 2024 10:26:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678F46EB70;
+	Thu,  8 Feb 2024 10:26:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="lEtSp19+"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YmAP94Zg";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="vYGXMgZZ";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YmAP94Zg";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="vYGXMgZZ"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D1CC6DCFE;
-	Thu,  8 Feb 2024 10:26:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B1CA6DCFE;
+	Thu,  8 Feb 2024 10:26:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707387962; cv=none; b=USfXGi2Oi28oV6wNkOfdczBaeVD20r1VqwxtApC5VD3ohcvKscI/Zn3J2yC1NKwfIqSrwSCyIxV9GEUhdg34HxMYMLmZeeS6gnNwnAJgXPXGB3ilZmuO0P5ubhM1GBgjbBGtWS5AdRzUmrWt4n37Hx4L63IUUl4Wn0A/q1G1Grw=
+	t=1707387975; cv=none; b=uaJ/aMZfkN2MXXro3y/G7E61c3ldhm8fWABiSJwzMhMVqYNrntOihWnk16DGNkx6XH9SL/SCg+5oM4woO60XpO0irPAoAovwvo9aHKh9oRo6cDoqVc8J/bqhceWeRn/hBthQS4uFjcKtqIks/Mb44iCNNu+/mUerGiCeGNrGu2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707387962; c=relaxed/simple;
-	bh=emnpEIwAYGIHVgid4NR926MQK2rJE8cWMDX2nfQ2l5A=;
+	s=arc-20240116; t=1707387975; c=relaxed/simple;
+	bh=k9/QmS/ylPFheQDtEbsOTzpU8sUoCUqGH8YOPR3OWvc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iR7boCyUt53PGZYwf8MIOdMmzNm9Qus/U3ZShTYQo8u8gNZjKRkIKQo1bQKy7yUzOIYx+viFzmU9LnUHrEmCiPyHkpnyQzUvCbfaDsjpEAuajTf5EGRUVGlU9HgGmgjyXiYkoABfxx73zs1egHJuWq239i7IFAzogmh2sMTAjAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=lEtSp19+; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4189cIFV002468;
-	Thu, 8 Feb 2024 10:25:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=xKeQ9fcUMgud2iiOOvuDdu/2E6NwbXSOAkdeYBuJopc=;
- b=lEtSp19+zrRLKzGQUc/SipIlMgyHTz/orTtxhwvfTnkCZq2UuKrZ/OBDBE+OHofSMKjl
- vhwEBWdjArjFk3TVoO042zEgBASib9TCUvuCkLka/C3EKbUjCp4++FnUwgSl59n/UA7G
- BBp/ccpZXJ+rEGEQg+dyXMyIopeUPfyXDT9RWAif2RdvYBxiv6SHj7rN0qHy8b7HQSIQ
- 9IqRlAAxmH5Z7iZxp9a74rrRFCu9g+UYB7lsDmVDXhIVunJTBa6fMF1Ccbrdil42TtDo
- AZHjRA3YZoaOj7VvAHYJiJvlHVpISsXseSKXXOp4NNteFJ8+i3rIiXJgrmYtaLGYbZRd wQ== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w4vg9h24c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 08 Feb 2024 10:25:53 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4189xAxG005430;
-	Thu, 8 Feb 2024 10:25:53 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w21akuk8p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 08 Feb 2024 10:25:53 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 418APpbs44499240
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 8 Feb 2024 10:25:51 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 309EA2004B;
-	Thu,  8 Feb 2024 10:25:51 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BE67E20040;
-	Thu,  8 Feb 2024 10:25:50 +0000 (GMT)
-Received: from [9.171.57.15] (unknown [9.171.57.15])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu,  8 Feb 2024 10:25:50 +0000 (GMT)
-Message-ID: <8c986cb3-61b3-4f65-81c9-ffcfa994390f@linux.ibm.com>
-Date: Thu, 8 Feb 2024 11:25:50 +0100
+	 In-Reply-To:Content-Type; b=Alx3FOXTgOd49h/X/SRj1vAKK71tIVpVx0PBslIJjenxrEOCxUm3xWYoxZeai5dmCJw0T5b+ArLBi3iYtUQJ2D5nSBGUY3BmcfjJTVz4islFA3iq/BpoqoB0SOJN2rIe/LoEx64J1OM9RZnLFfeYiVaaAIcT176OnR+M6XotZGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YmAP94Zg; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=vYGXMgZZ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YmAP94Zg; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=vYGXMgZZ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 954A61FCDA;
+	Thu,  8 Feb 2024 10:26:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707387971; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LZzZ9jLIvRqAb77M6zja7IcHKFPoI8mCipcHtHdDUmA=;
+	b=YmAP94ZgNzOuL5wWhPGJjHIoTA5de5g9eIboAI6viu6kay5cQIrnpFCMYWS477J9yLHw6d
+	BDyKEoAHN0mYGCKVf/3dMmEWkqdzpJ3xFqPq4O0GaSNfUxXG+VdqdXmOQkNG1cVhC4SIj6
+	We5ewc/jBMQoqwm9g7EwW8v9K7wcfC4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707387971;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LZzZ9jLIvRqAb77M6zja7IcHKFPoI8mCipcHtHdDUmA=;
+	b=vYGXMgZZsMsfnFTr49UoTz5Wo9gJf4Dwj2yDMi/jn5rX1zpgkMsSr7tzPOFzICvWvhwxBO
+	lwW5Bj3AkcozGsBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707387971; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LZzZ9jLIvRqAb77M6zja7IcHKFPoI8mCipcHtHdDUmA=;
+	b=YmAP94ZgNzOuL5wWhPGJjHIoTA5de5g9eIboAI6viu6kay5cQIrnpFCMYWS477J9yLHw6d
+	BDyKEoAHN0mYGCKVf/3dMmEWkqdzpJ3xFqPq4O0GaSNfUxXG+VdqdXmOQkNG1cVhC4SIj6
+	We5ewc/jBMQoqwm9g7EwW8v9K7wcfC4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707387971;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LZzZ9jLIvRqAb77M6zja7IcHKFPoI8mCipcHtHdDUmA=;
+	b=vYGXMgZZsMsfnFTr49UoTz5Wo9gJf4Dwj2yDMi/jn5rX1zpgkMsSr7tzPOFzICvWvhwxBO
+	lwW5Bj3AkcozGsBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B84621326D;
+	Thu,  8 Feb 2024 10:26:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id BDLUKUKsxGUJKAAAD6G6ig
+	(envelope-from <dkirjanov@suse.de>); Thu, 08 Feb 2024 10:26:10 +0000
+Message-ID: <0e129417-53c8-4931-af76-a37762472fb0@suse.de>
+Date: Thu, 8 Feb 2024 13:26:05 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,103 +94,153 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tracing: use ring_buffer_record_is_set_on() in
- tracer_tracing_is_on()
+Subject: Re: [PATCH v2 1/2] net: make driver settling time configurable
 Content-Language: en-US
-To: Steven Rostedt <rostedt@goodmis.org>, Sven Schnelle <svens@linux.ibm.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-References: <20240205065340.2848065-1-svens@linux.ibm.com>
- <20240205075504.1b55f29c@rorschach.local.home>
- <yt9djznj3vbl.fsf@linux.ibm.com>
- <20240205092353.523cc1ef@rorschach.local.home>
- <yt9d34u63xxz.fsf@linux.ibm.com> <yt9dsf262d2n.fsf@linux.ibm.com>
- <20240206060113.39c0f5bc@rorschach.local.home>
- <yt9deddovn3w.fsf@linux.ibm.com>
- <20240207060923.182ecb55@rorschach.local.home>
- <9a062196-ccbe-440e-a2f9-23eb8c5eb837@linux.ibm.com>
- <20240207072812.4a29235f@rorschach.local.home>
- <yt9dzfwch00u.fsf@linux.ibm.com>
- <20240207104703.071ee985@rorschach.local.home>
-From: Mete Durlu <meted@linux.ibm.com>
-In-Reply-To: <20240207104703.071ee985@rorschach.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: David Ventura <david@davidv.dev>
+Cc: Jonathan Corbet <corbet@lwn.net>, "David S. Miller"
+ <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Randy Dunlap
+ <rdunlap@infradead.org>, Xiongwei Song <xiongwei.song@windriver.com>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:NETWORKING [IPv4/IPv6]" <netdev@vger.kernel.org>
+References: <20240208093722.246930-1-david@davidv.dev>
+ <20240208095358.251381-1-david@davidv.dev>
+From: Denis Kirjanov <dkirjanov@suse.de>
+In-Reply-To: <20240208095358.251381-1-david@davidv.dev>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: sxZlMAMX3gmObfvP11ERkPRy8Nj5sqUe
-X-Proofpoint-GUID: sxZlMAMX3gmObfvP11ERkPRy8Nj5sqUe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-08_01,2024-02-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- phishscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=984 suspectscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402080054
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=YmAP94Zg;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=vYGXMgZZ
+X-Spamd-Result: default: False [-0.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[davidv.dev:email,suse.de:dkim];
+	 TO_DN_ALL(0.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -0.30
+X-Rspamd-Queue-Id: 954A61FCDA
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-On 2/7/24 16:47, Steven Rostedt wrote:
-> On Wed, 07 Feb 2024 14:33:21 +0100
-> Sven Schnelle <svens@linux.ibm.com> wrote:
+
+
+On 2/8/24 12:52, David Ventura wrote:
+> During IP auto configuration, some drivers apparently need to wait a
+> certain length of time to settle; as this is not true for all drivers,
+> make this length of time configurable.
 > 
->> My assumption without reading the code is that something like this
->> happens:
->>
->> CPU0                             CPU1
->> [ringbuffer enabled]
->>                                   ring_buffer_write()
->>                                       if (atomic_read(&buffer->record_disabled))
->>                                              goto out;
->> echo 0 > tracing_on
->> record_disabled |= RB_BUFFER_OFF
->> csum1=`md5sum trace`
+> Signed-off-by: David Ventura <david@davidv.dev>
+> ---
+>  .../admin-guide/kernel-parameters.txt         |  4 ++++
+>  Documentation/admin-guide/nfs/nfsroot.rst     |  3 +++
+>  net/ipv4/ipconfig.c                           | 23 ++++++++++++++++---
+>  3 files changed, 27 insertions(+), 3 deletions(-)
 > 
-> Note, the CPU1 is performing with preemption disabled, so for this to
-> happen, something really bad happened on CPU0 to delay preempt disabled
-> section so long to allow the trace to be read. Perhaps we should have
-> the return of the echo 0 > tracing_on require a synchronize_rcu() to
-> make sure all ring buffers see it disabled before it returns.
-> 
-> But unless your system is doing something really stressed to cause the
-> preempt disabled section to take so long, I highly doubt this was the
-> race.
-> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index b47940577c10..b07a035642fa 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -2291,6 +2291,10 @@
+>  
+>  	ip=		[IP_PNP]
+>  			See Documentation/admin-guide/nfs/nfsroot.rst.
+> +	ip.dev_wait_ms=
+> +			[IP_PNP]
+> +			See Documentation/admin-guide/nfs/nfsroot.rst.
+> +
+>  
+>  	ipcmni_extend	[KNL,EARLY] Extend the maximum number of unique System V
+>  			IPC identifiers from 32,768 to 16,777,216.
+> diff --git a/Documentation/admin-guide/nfs/nfsroot.rst b/Documentation/admin-guide/nfs/nfsroot.rst
+> index 135218f33394..f26f7a342af6 100644
+> --- a/Documentation/admin-guide/nfs/nfsroot.rst
+> +++ b/Documentation/admin-guide/nfs/nfsroot.rst
+> @@ -223,6 +223,9 @@ ip=<client-ip>:<server-ip>:<gw-ip>:<netmask>:<hostname>:<device>:<autoconf>:<dns
+>    /proc/net/ipconfig/ntp_servers to an NTP client before mounting the real
+>    root filesystem if it is on NFS).
+>  
+> +ip.dev_wait_ms=<value>
+> +  Set the number of milliseconds to delay after opening the network device
+> +  which will be autoconfigured. Defaults to 10 milliseconds.
+>  
+>  nfsrootdebug
+>    This parameter enables debugging messages to appear in the kernel
+> diff --git a/net/ipv4/ipconfig.c b/net/ipv4/ipconfig.c
+> index c56b6fe6f0d7..cbf35163b973 100644
+> --- a/net/ipv4/ipconfig.c
+> +++ b/net/ipv4/ipconfig.c
+> @@ -82,8 +82,6 @@
+>  #define IPCONFIG_DYNAMIC
+>  #endif
+>  
+> -/* Define the friendly delay before and after opening net devices */
+> -#define CONF_POST_OPEN		10	/* After opening: 10 msecs */
+>  
+>  /* Define the timeout for waiting for a DHCP/BOOTP/RARP reply */
+>  #define CONF_OPEN_RETRIES 	2	/* (Re)open devices twice */
+> @@ -101,6 +99,7 @@
+>  
+>  /* Wait for carrier timeout default in seconds */
+>  static unsigned int carrier_timeout = 120;
+> +static unsigned int dev_wait_ms = 10;
+>  
+>  /*
+>   * Public IP configuration
+> @@ -1516,7 +1515,8 @@ static int __init ip_auto_config(void)
+>  		return err;
+>  
+>  	/* Give drivers a chance to settle */
+> -	msleep(CONF_POST_OPEN);
+> +	if(dev_wait_ms > 0)
+> +		msleep(dev_wait_ms);
 
-I have been only able to reliably reproduce this issue when the system
-is under load from stressors. But I am not sure if it can be considered
-as *really stressed*.
+What's the point to wait more than CONF_POST_OPEN with the change?
 
-system : 8 cpus (4 physical cores)
-load   : stress-ng --fanotify 1 (or --context 2)
-result : ~5/10 test fails
-
-of course as load increases test starts to fail more often, but a
-single stressor doesn't seem like much to me for a 4 core machine.
-
-after adding synchronize_rcu() + patch from Sven, I am no longer seeing
-failures with the setup above. So it seems like synchronize_rcu() did
-the trick(or at least it helps a lot) for the case described on the
-previous mail. I couldn't trigger the failure yet, not even with
-increased load(but now the test case takes > 5mins to finish :) ).
-
-Here is the diff:
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-@@ -9328,10 +9328,12 @@ rb_simple_write(struct file *filp, const char 
-__user *ubuf,
-                         val = 0; /* do nothing */
-                 } else if (val) {
-                         tracer_tracing_on(tr);
-+                       synchronize_rcu();
-                         if (tr->current_trace->start)
-                                 tr->current_trace->start(tr);
-                 } else {
-                         tracer_tracing_off(tr);
-+                       synchronize_rcu();
-                         if (tr->current_trace->stop)
-                                 tr->current_trace->stop(tr);
-
-Not 100% sure if these were the correct places to add them.
-
-
+>  
+>  	/*
+>  	 * If the config information is insufficient (e.g., our IP address or
+> @@ -1849,3 +1849,20 @@ static int __init set_carrier_timeout(char *str)
+>  	return 1;
+>  }
+>  __setup("carrier_timeout=", set_carrier_timeout);
+> +
+> +
+> +static int __init set_dev_wait_ms(char *str)
+> +{
+> +	ssize_t ret;
+> +
+> +	if (!str)
+> +		return 0;
+> +
+> +	ret = kstrtouint(str, 0, &dev_wait_ms);
+> +	if (ret)
+> +		return 0;
+> +
+> +	return 1;
+> +}
+> +
+> +__setup("ip.dev_wait_ms=", set_dev_wait_ms);
 
