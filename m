@@ -1,54 +1,59 @@
-Return-Path: <linux-kernel+bounces-58743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3CF584EAEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:55:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D06584EAFA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:57:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55CD2B21562
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:55:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1315D28B201
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:57:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67A04F602;
-	Thu,  8 Feb 2024 21:55:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A59334F60B;
+	Thu,  8 Feb 2024 21:57:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sjeZhXif"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ciA597Dv"
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 217094F5EC;
-	Thu,  8 Feb 2024 21:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A05F04F5E9
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 21:57:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707429320; cv=none; b=UwVw7IDCqfwKj01+pms34coBKV9GrkQSVfDlUbFeT+3Hhne6bwY46SU6xzr3tP+UHBhP0SkW6v8hwMD8O2rC9IBtc2yoV9qjd2SGjFno9I7GlLKrFYfxZwIW0UB0UGWVXmUxb8ABGij4ybqz45ZofV+6NR3mteI5lsIbJ8Ao8mQ=
+	t=1707429430; cv=none; b=KP2+xn/LBVDjU2MuAwdG/XzbXp02jEmt/PNciNXZ7IRtYIHTwwL35DKBdeGl1+2xzm7gBbugWS2eehj9ihjAiFEOT9lghH5gVd9sp7QS1saZa+ec6a8DC6RYyCrpgjKbl05ypcEfH/XubYYb2ZwOZ6/8FUhdo7N98t16QiXQWbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707429320; c=relaxed/simple;
-	bh=qpe/bk740xF6+TArsiyZ/Gghuo9KZRMRpbOgjwEkEhk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=chdeUDKndjvDbH+iAxT29EUt/BX2YW75JWoYCW7xNqH1wo3eQXeT/fHaBWZT8F1CmMgJRqtJw+c3h71taweupnb6EvFfDklOL1t7dYD22nZzOk3C4DdFX8ksfYVlyWuq6z+ecqzQKwlzKuSf2385Z94G9qGY7ajMqgNpfJfXxMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sjeZhXif; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46884C433C7;
-	Thu,  8 Feb 2024 21:55:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707429319;
-	bh=qpe/bk740xF6+TArsiyZ/Gghuo9KZRMRpbOgjwEkEhk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=sjeZhXifEJf/k4TsbGWdWut7BtgKYaxXZTB2KxSyor/EiRbh4Wi8Etc4GihBCJALM
-	 qGKELDZB4EgLn2olUjTypzSXJABv6zajA+bLz9kfJVUCgxn4aC7Tc3osufJIolTQum
-	 1MEvWxoK3fRQQX+gjLiJmxFy2WER2Ck+aItjkbNrXTUklHsSU+/jWuuaYr67AROwOk
-	 6I2TRda4viTydGv80rvQy3xocF2HepUYHPHQkh6LNXJ0al/yEBFlukwfzTkVqaWqDM
-	 6XZGJqllN5SsGCW9yPpRCp5HH4YqX2F8X4tAgvYwxJlkvAtKGDS9+XjrPOm24B93Fx
-	 493bpwVyMdI9A==
-Date: Thu, 8 Feb 2024 15:55:17 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Alexey Kardashevskiy <aik@amd.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Lukas Wunner <lukas@wunner.de>
-Subject: Re: [PATCH kernel 0/4] pci/doe/ide: Capabilities, protocols
-Message-ID: <20240208215517.GA974726@bhelgaas>
+	s=arc-20240116; t=1707429430; c=relaxed/simple;
+	bh=526f+OIfR5lt7kk3+KKqpP0mRWkrmTnf4eSgFYgV+j8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uG08TFTDQs7/I2M52umtXOPqNT9zmVPUJb/9w7yxuvfyiXnMTRYnT/umW+VGnDAYt6dddtFrTsVD9zK43plkgr19la/lkCfNxqOQnnz9IKxVtNIE79r5Bw9/y4S3WrYKboCQh5T2k0emnQDZPm4E4hCd7SV/aqwEdsdfL2nRlcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ciA597Dv; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 8 Feb 2024 16:57:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707429426;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uuBkW91bKSdtv/qP/AAZDiygwHtnsXoTG5ybHQAGsCM=;
+	b=ciA597DvX/DbqrTOLewrCkHfHBc/438L8b8bIJN6CwD5wXKHgud0/jNmgQd8T0Vhq5sRMM
+	DY9x3M/y9L9tfX6w9wgoyPrzZZVj1tYtot8PgdAvz9gONZyuRvVtX0FcVjBeVBtSxccL1v
+	5x4xoLO0gU3MmkLq/DnwI/tXqKf2PFg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Brian Foster <bfoster@redhat.com>
+Cc: Dave Chinner <david@fromorbit.com>, brauner@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>, 
+	Dave Chinner <dchinner@redhat.com>, "Darrick J. Wong" <djwong@kernel.org>, 
+	Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH v2 3/7] fs: FS_IOC_GETUUID
+Message-ID: <krc2udjtkvylugzuledk7hre7rizmiajrgkiwvwcmsxtgxobyz@miqndphw7uhi>
+References: <20240206201858.952303-1-kent.overstreet@linux.dev>
+ <20240206201858.952303-4-kent.overstreet@linux.dev>
+ <ZcKsIbRRfeXfCObl@dread.disaster.area>
+ <cm4wbdmpuq6mlyfqrb3qqwyysa3qao6t5sc2eq3ykmgb4ptpab@qkyberqtvrtt>
+ <ZcN+8iOBR97t451x@bfoster>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,23 +62,81 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240201060228.3070928-1-aik@amd.com>
+In-Reply-To: <ZcN+8iOBR97t451x@bfoster>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Feb 01, 2024 at 05:02:24PM +1100, Alexey Kardashevskiy wrote:
-> Here are 4 small independent patches defining new PCIe caps and bits and
-> protocols, I am using them with my test device so they are real :)
+On Wed, Feb 07, 2024 at 08:05:29AM -0500, Brian Foster wrote:
+> On Tue, Feb 06, 2024 at 05:37:22PM -0500, Kent Overstreet wrote:
+> > On Wed, Feb 07, 2024 at 09:01:05AM +1100, Dave Chinner wrote:
+> > > On Tue, Feb 06, 2024 at 03:18:51PM -0500, Kent Overstreet wrote:
+> > > > +static int ioctl_getfsuuid(struct file *file, void __user *argp)
+> > > > +{
+> > > > +	struct super_block *sb = file_inode(file)->i_sb;
+> > > > +
+> > > > +	if (!sb->s_uuid_len)
+> > > > +		return -ENOIOCTLCMD;
+> > > > +
+> > > > +	struct fsuuid2 u = { .len = sb->s_uuid_len, };
+> > > > +	memcpy(&u.uuid[0], &sb->s_uuid, sb->s_uuid_len);
+> > > > +
+> > > > +	return copy_to_user(argp, &u, sizeof(u)) ? -EFAULT : 0;
+> > > > +}
+> > > 
+> > > Can we please keep the declarations separate from the code? I always
+> > > find this sort of implicit scoping of variables both difficult to
+> > > read (especially in larger functions) and a landmine waiting to be
+> > > tripped over. This could easily just be:
+> > > 
+> > > static int ioctl_getfsuuid(struct file *file, void __user *argp)
+> > > {
+> > > 	struct super_block *sb = file_inode(file)->i_sb;
+> > > 	struct fsuuid2 u = { .len = sb->s_uuid_len, };
+> > > 
+> > > 	....
+> > > 
+> > > and then it's consistent with all the rest of the code...
+> > 
+> > The way I'm doing it here is actually what I'm transitioning my own code
+> > to - the big reason being that always declaring variables at the tops of
+> > functions leads to separating declaration and initialization, and worse
+> > it leads people to declaring a variable once and reusing it for multiple
+> > things (I've seen that be a source of real bugs too many times).
+> > 
 > 
+> I still think this is of questionable value. I know I've mentioned
+> similar concerns to Dave's here on the bcachefs list, but still have not
+> really seen any discussion other than a bit of back and forth on the
+> handful of generally accepted (in the kernel) uses of this sort of thing
+> for limiting scope in loops/branches and such.
 > 
-> Please comment. Thanks.
+> I was skimming through some more recent bcachefs patches the other day
+> (the journal write pipelining stuff) where I came across one or two
+> medium length functions where this had proliferated, and I found it kind
+> of annoying TBH. It starts to almost look like there are casts all over
+> the place and it's a bit more tedious to filter out logic from the
+> additional/gratuitous syntax, IMO.
 > 
-> 
-> 
-> Alexey Kardashevskiy (4):
->   pci/doe: Define protocol types and make those public
->   pci/doe: Support discovery version
->   pci: Define TEE-IO bit in PCIe device capabilities
->   pci: Define Integrity and Data Encryption (IDE) extended capability
+> That's still just my .02, but there was also previous mention of
+> starting/having discussion on this sort of style change. Is that still
+> the plan? If so, before or after proliferating it throughout the
+> bcachefs code? ;) I am curious if there are other folks in kernel land
+> who think this makes enough sense that they'd plan to adopt it. Hm?
 
-For changes in drivers/pci and related files, follow the subject line
-convention (learn from "git log --oneline drivers/pci/").
+That was the discussion :)
+
+bcachefs is my codebase, so yes, I intend to do it there. I really think
+this is an instance where you and Dave are used to the way C has
+historically forced us to do things; our brains get wired to read code a
+certain way and changes are jarring.
+
+But take a step back; if we were used to writing code the way I'm doing
+it, and you were arguing for putting declarations at the tops of
+functions, what would the arguments be?
+
+I would say you're just breaking up the flow of ideas for no reason; a
+chain of related statements now includes a declaration that isn't with
+the actual logic.
+
+And bugs due to variable reuse, missed initialization - there's real
+reasons not to do it that way.
 
