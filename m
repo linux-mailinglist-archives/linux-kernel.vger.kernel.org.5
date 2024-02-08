@@ -1,218 +1,180 @@
-Return-Path: <linux-kernel+bounces-58299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FE7684E440
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:46:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 613BE84E445
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:48:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD0261F27EF4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:46:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8575D1C224E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13EDC7CF15;
-	Thu,  8 Feb 2024 15:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF6317CF13;
+	Thu,  8 Feb 2024 15:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b="OwuBULeb"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2127.outbound.protection.outlook.com [40.107.22.127])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nDunHfpW"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BACD7B3C8;
-	Thu,  8 Feb 2024 15:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.127
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707407185; cv=fail; b=Qpo8BbuS1uWyixYFj8i+PxTxtPa0NvBClQgnX37VANROqkcGxqQDrpckEqOVC/75elyBf0UagHoj7LUb64vEtVJzu9T4tbFSyyb4dX6NSFDpRfqi0i/2rheHZr1A7jxauQxAnkeORz8mvC647hixtXl3koXZJbiHhsPm6u9FO1I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707407185; c=relaxed/simple;
-	bh=vfI9vsopVcN40cRol2E2WXFCpZQaU7ALGL+hksIw7Rg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=tdW6cv8319DeQgwQk9cNQurZmjlhmySv4jETP3+jpgYLVSby+VMXzkO6YoN7lPVEB5yMhMkcmGfUiMgnPNvoj7ZwDznn0hB1eL9ecmYHWXnMLTgcSlvAeCiWhGbIy2m26lDeNlQT13JiMq/BmwM08na4JdQsmhsUiD7SKgrN16Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com; spf=pass smtp.mailfrom=theobroma-systems.com; dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b=OwuBULeb; arc=fail smtp.client-ip=40.107.22.127
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=theobroma-systems.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YA12bv19AiCIMvGLCLsKJDtIYX1hAgCA53mO4QN2HbAUwNrNwvcMxJbCseLcaFZTX+AWzuajVodgGmOz357O/PYAcI9w7Bv6hqzWujYCLvMiMBdS2ugORALuBxlzaN8zoNKCRDP2JLTgefVf8Ds6zcSzADW8P1LLlfMOABEyaWDeFjLZd2k1aNFvgcg8fJrWHfcCW2mSQ0mdKjsEax8XY4+2y2Bjot9KR7Oxbip7Cl+Ul+L1kWIm1AGjcoRR9UWxzRy6Ia0jf75AW3//uptpR9jd+qWmtSGpU/wkujgfEY32ZNz8Py8MMcEeN3jyRoDUMVIB0mxoLUpA49qSY1kjAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vfI9vsopVcN40cRol2E2WXFCpZQaU7ALGL+hksIw7Rg=;
- b=TQmB3OneXRInfTcS62orWX4+Zi2hU4Xl22kdgdsdMbbsUTC+yv64wcQPmotGgLdqW77r9qVj1RsX7UY+MBhlFEwyN6sqbtDbKbfJinTmG87GLXd0u4np+f2jnvA5O6r1W3lwWpfYI1KbA973oqJxxCcOGf/ma3JBYiHI1VwjBLOEnrw8UXdVRppiNeVqCn1U5SjwdFULN2Yr0swBtrzH3Nhiezw4MO54gJfW9fKgw8R0VCBCfYXjM4GStEnjj9v2+zqmmU4Xv5NTreS7inKuGEf+wkC15Ldr/0KuRhHPUkMY8JUbxhKHKPRRB2hx9XUczz2kDDrYudH+PNstrv6Sfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=theobroma-systems.com; dmarc=pass action=none
- header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vfI9vsopVcN40cRol2E2WXFCpZQaU7ALGL+hksIw7Rg=;
- b=OwuBULebIqGo1GhsO6SYjng804nt/eEspTthPc1RdNQ6HcxsxZRf3L5+L3ZYbfdXPxVIsnblWEMi7nq4lkVu+MUJuyrDPULyhbIQQ4uH5Q1cIF5KoVye2Bk9B3rWNuPQz0jQabOHzLL/htCLgxk3pcyXn8HRIQ4l+E1WAIdlq+0HRretqR7TpnOcTovLJWTUFC+kf5BbdmTFSaljXDmA9Mz8LPCh1uR1wYwhw5vNJAPKtSHf61u2cQRfsaFHWNZR5kbOi3g7WeL2gr8K+rb+n40fK74XnrEgpoKK8xNeB8557q5oYU91s378fBAgcsJwxErlCm272cQ4jttYWS76Rw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
-Received: from VE1PR04MB6382.eurprd04.prod.outlook.com (2603:10a6:803:122::31)
- by AS8PR04MB7621.eurprd04.prod.outlook.com (2603:10a6:20b:299::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.39; Thu, 8 Feb
- 2024 15:46:20 +0000
-Received: from VE1PR04MB6382.eurprd04.prod.outlook.com
- ([fe80::d4b1:cea8:7085:ec50]) by VE1PR04MB6382.eurprd04.prod.outlook.com
- ([fe80::d4b1:cea8:7085:ec50%4]) with mapi id 15.20.7249.035; Thu, 8 Feb 2024
- 15:46:20 +0000
-Message-ID: <af4d5f3a-b514-47f9-9a8c-54d7bfd565f2@theobroma-systems.com>
-Date: Thu, 8 Feb 2024 16:46:18 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/6] serial: 8250: Support separate rs485 rx-enable
- GPIO
-To: Christoph Niedermaier <cniedermaier@dh-electronics.com>,
- Lino Sanfilippo <LinoSanfilippo@gmx.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc: Rob Herring <robh@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-rockchip@lists.infradead.org" <linux-rockchip@lists.infradead.org>,
- "quentin.schulz@theobroma-systems.com"
- <quentin.schulz@theobroma-systems.com>,
- Heiko Stuebner <heiko.stuebner@cherry.de>
-References: <20240126-dev-rx-enable-v5-0-5d934eda05ca@theobroma-systems.com>
- <20240126-dev-rx-enable-v5-2-5d934eda05ca@theobroma-systems.com>
- <098216ce-50b3-43e4-ad1a-42228c58b761@gmx.de>
- <37522087-d3ac-4cc7-b11b-c844d36206ba@theobroma-systems.com>
- <3d31b17ffd4a4f02aaaa1b6c33a09009@dh-electronics.com>
-Content-Language: en-US
-From: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
-In-Reply-To: <3d31b17ffd4a4f02aaaa1b6c33a09009@dh-electronics.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR0P281CA0135.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:97::7) To VE1PR04MB6382.eurprd04.prod.outlook.com
- (2603:10a6:803:122::31)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB74C7C0A5
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 15:48:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707407323; cv=none; b=mRgHjwsDXk57IjQmdJSsR8lTylzIntukuahM9SUXBe7oniO/RU7GfaOftLt2+UIxZZpZZn1LBYzOmwNR5cmrg+6nu6K8roBXLm7JA/+H/wy/NzehpU0d9OESaAuvIpF9l9yTwxhYSR0seTzZ2/Bq4yZ0+HaJPL416VNsoRcTOrA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707407323; c=relaxed/simple;
+	bh=p4H6OppwPLzivo83Hr2g72Avg5StT4o8YtOOlH08jJM=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Hrlgbms7WtJbJA7Ra/qAGOviDfIBQRbJAgmKhBblfD4D5I9EH2aCxMvlGCfZGd+7H4+pEViGtxmpMpMgPn2Ez5XPqmaJYX4ki9p1wj5TnmEFlCqfvYSeJpD2ccx93hROZqEnuQL4jkgypuIrrjuNQulmKh1CLOKpXvqZAFVEYpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nDunHfpW; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6047a047f4cso49165027b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 07:48:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707407320; x=1708012120; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zhocXZ6cl9/R8sKVq7H2EWpDfoTTOkJP066TsAIK9Rk=;
+        b=nDunHfpWKmH4ezyPpzXmVL9P4d5OG9E/DjVDlFjds0ZeheB0hq6eODt7h/8HZ+tMh0
+         69FPdmLiu+dwYdHABw5fqxhQvu06uMmjMfvHSH5dsOnuFthckYdKMUBpoFHM+CNake/S
+         4s2MP8ZIyGNi/UWCvhc64PxGR4vF3TKfwgN1rJJzlHBuavk6+EeMwU3CxyUsrYCbqwyN
+         SiERQx3lBZSjtoQZdShF8f0TsRaVHMqM0qNBBVEjLNOozi8ft1KX0d7fN30ATfiviWVu
+         HetWLtiDlm6GdW/t2Z/GpRZYsFP5TYQW3X8wXEiIzib5FFx5RddtBwpKXn5YOqLdcjuI
+         65GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707407320; x=1708012120;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zhocXZ6cl9/R8sKVq7H2EWpDfoTTOkJP066TsAIK9Rk=;
+        b=hEzrhCTFJHjHKfepA6jPcOcCZiJtE4C29Tq2GSZnQU3xQ90C2sKATbBfpDFS7RZ/qH
+         dCdBea0g1nzXzTni2t3gwYbalW45rB7EJTL66sEP5wO3zi2hY2qeMWLrKzNYnMcEKbSR
+         Ag6t8SaAJje7MqUgyWvBmK+NaveoOiWrxLRzk//lu3T0Z7NO/zmzR5+oShRF3kYUd+LN
+         Nh+PQAMPxQSdzgaQIWCfybGdTEyiFQRS6y1m99RaAYwiO438Jvuzv02s16s5osz1wnbw
+         223elyhT/mZbef8Rmhy13TMJMlvOMQccZ0zwQFAxle9tXqkO0cVyNbK/v/83EpY+cyuU
+         GE1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWTBI/MRcOAQ5SnL0Xo8LWOyCEQgg1yvL/hfo0FaxfqpepuEW39YYGeglD5+YCI8rRk1S2+Rh6AD0F9k2nIUqtSR3OOTuwqvcDNqpXP
+X-Gm-Message-State: AOJu0Yym+KwK0yvsNYyD5QS2miKppAQ19qLY1cNyyJ3/oUIcItHri+g5
+	w1d+0WiPid8MumyvqHQPu7vHtcJUVr65Vl1rFTmuTQjBodiWMkebnM3x/8X+kv42gr8FoYzhhT1
+	3KLQuG/kDxE4K2A==
+X-Google-Smtp-Source: AGHT+IGB69IIhFNwxRPtvZcnZuA13Du//6/DSbGdfYAKGD+kDxJ1iEF81gU+wMSoEaws5eDyArLbmGlsrf6877I=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a81:9ac5:0:b0:5fc:d439:4936 with SMTP id
+ r188-20020a819ac5000000b005fcd4394936mr1831732ywg.8.1707407319906; Thu, 08
+ Feb 2024 07:48:39 -0800 (PST)
+Date: Thu, 08 Feb 2024 15:47:50 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR04MB6382:EE_|AS8PR04MB7621:EE_
-X-MS-Office365-Filtering-Correlation-Id: 260b75b6-bb47-44a7-1c4e-08dc28bd1879
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	VRFB6ZP68T+zB9uUB7+04SXvJPk2gremO/7BoUUeBUmHS5Jhlx8rcwTZLPuE7G2jel6ZbzLn/OHLbXr/rVsE0d0pHC5nPfQhI08rMru/Vb0SskAzzmD2MarTSM58PrmqspfiN79eU5VWFfc/Ym0ZEc2MgS70rkv1dpao/q0j2rEdl0LkyLHGXeNGnGynnSQiTm2YHc+/B8yidBqwFHAiJDnJdillY8gdjVPFYAcru+2VRkP+8do2qr524/enQ2g4GrTqyagT4/EEJURO+vpbH89YoDt3rr5tvnBhBqXXcAvGSfcEdR+ils3UTctUr2jMnA7eq40QaLuz9XIuPgnxIBK085BxGH7tmPbGbv1trvni4RBmpIti0jC11/PA2BpiT+bs5+iOoOdp+Wre2v6BFStboiJNqpcGw4nSzelQNoTYCSEkEB5k5CRRxuLz49Zk95r8c/pfmnVPH0/FV1YR8PnStYnwC4F3RFFCnYLuiZj2xGZHJwBh/IILLYPH57ZMA7peYzZ7G1X4uEtei4Ws2NP+Qn3pfIu9XawaCzMUOw4dAnl/1lmkg5wuHyZXNwWC
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6382.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(396003)(136003)(346002)(366004)(376002)(230922051799003)(230273577357003)(186009)(64100799003)(1800799012)(451199024)(38100700002)(6506007)(53546011)(31686004)(83380400001)(31696002)(41300700001)(26005)(86362001)(107886003)(66574015)(2616005)(4326008)(8936002)(36756003)(8676002)(6512007)(5660300002)(478600001)(6486002)(7416002)(966005)(44832011)(66556008)(66476007)(316002)(54906003)(66946007)(2906002)(110136005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NDIvYmI1VmVpVkkrclptYWYrMnVaU3Z6bFlPOWE4UDFrZFkwL3hZNytNdGwv?=
- =?utf-8?B?bkRISFNFUWhvajVKZWJFcEFpR2dUWGZ0MWNNNnBPSVNEb2JvcEcvMk9LYVRU?=
- =?utf-8?B?YzBCWWc4SjN5V0xjNjRSS3FEM1ZBeExOYlpva0pKVFd3Z21ZUVg3T3N2azlD?=
- =?utf-8?B?cGM1Ny9aWEFvSVFkbitNVkhDZG1YTHBiOEVwanZTOEhYOHNpeER4Q2M0d3hZ?=
- =?utf-8?B?M29HbTdDRW9uU1d6NHpWZVZKSFM0ejY0TXBBU2RRZGdkWWpFMHRaczEyQU85?=
- =?utf-8?B?b29UQjZmWjhEQWlDaENUZkRhWkhFOWNwRElUMyt4STBjWmlKVTJQOGNkeU1W?=
- =?utf-8?B?WGh6czBIeDhnNFJMbkNrRVVkalRsQW9ZL3VidnZHcXRXb0cvZEUxYW13TW93?=
- =?utf-8?B?ZjFueFRsdGdxb2p1a2JVWjZzRGdBNkNRa2cvdWNzeEtFbWN0WEc2UU9qdlZk?=
- =?utf-8?B?d2pmN0ZXN3phUHZTY1VYMXVvb3NNVWQxY2FyNlhyV09janQ4S04vV0k0em1R?=
- =?utf-8?B?UzhCMVRKZDN4Vlg5TE1pNDd0OUVDV3lSeGxNVFpzOUVFQThzNnJGY1V3ZkRV?=
- =?utf-8?B?U3dMbDl0QnlQU29leE4rTUJ0bXdjOStXbDVLdFB3SC92dC91R25wY0hZV2hV?=
- =?utf-8?B?dzR3N1g5d1NBMmRUZE9wM3B1OHlwTFI4SXorMjhtVCtnaU0zdFhzVDVOelNv?=
- =?utf-8?B?clRsL1g2V0xrWEE3UlNLT2pRRnpUdzJNUmZBT2wwcFFwWWhTakJNWVNwMThE?=
- =?utf-8?B?WVg0SUFhME10Nm5BYkpZZUtNVFlsdmJrWmlEbHloeGhxQi9DaXlZdXg2RVA2?=
- =?utf-8?B?dVpraUtEWEg2VVJReGJuMmNKcXdPbUttdEFmVEVNN3pQM1RqOU1hc3U2WkUz?=
- =?utf-8?B?S1hRUDA2MlR2R0pXWStXVjBlaDcvVWdITWw2Y3NtZGdPVUNUTDg1SitQVXpE?=
- =?utf-8?B?OXpKUHZiNXBsQlRDOG9HR1M0V1d5TFI5Q2ZiWUVsVjNTODdYNmFNdDA4U3FH?=
- =?utf-8?B?cklRZHdRdys5UEtmUnB5cWhyNjdZc29mdlg1TklkZGFRZnJPcDcxV3FEamN4?=
- =?utf-8?B?WnB1OVVHeHFHc0J4MUlJWnlNZzh2bU83SGdYZzhRZ1hlYTJBSkJrb2VtbFho?=
- =?utf-8?B?MlN0NlY2dVRrUWxVVjNFWk0wUXpSZlByNjQyZXNWUUsyVWpwZjU0TGN0QUdw?=
- =?utf-8?B?aG1uNDdHd0ZybWViSGpDV09tMytPVjFJb3RlcFFQMDdIOVB3OUlva3FZdHJJ?=
- =?utf-8?B?VUh2bFhlTDlUREt1Z2hqdnc1QzJEbGM3RDlrM3plaVVJRFJVb2YrOEg4NUVO?=
- =?utf-8?B?aXM0aE9tZkQ3VHk1RXZXZVMxL1I4bCtPS0lwU0IwZDFRTnlIOW5YTVlncHNX?=
- =?utf-8?B?VEFvUEd3VEo4eGJ1ZmlWT1RYTGZUOVJnTFgyMHNVRHhGMTFPM3VINnlHb1Qw?=
- =?utf-8?B?bHFOaS9yZ2RqSElwNS9DSmdodGlGM1c4c1habFhyV3JudEtIaUdSUE9FWlFx?=
- =?utf-8?B?YjJ0dDdBN3hCNUN1aWJ0TUdaOHY4OGhTSy9GMUJzOUE3Z1M5WXh4SnN2b2Y3?=
- =?utf-8?B?WW5HUk5ZSWJ0eXJpUlRoZW9kRE5OMDQvM2I4SXVRUU5BUDdSNXlta3ovamNv?=
- =?utf-8?B?dk1FUmw2aklpU1FQdGd1OTlNTzBGdWJXbURTTFdoS2V4OXh4SkEyTjJNVVBr?=
- =?utf-8?B?cHQrSUNiM2l4T1hRNE1ubjY1MlZHRU9BQTlIc1FjZzBYN3p1QXd4VzQzZEoy?=
- =?utf-8?B?emNVRUVQKzFONmJ6MGltaHhudmhhalFnVVdrZGJlcW9JSlZPL2YrbjhzZnFw?=
- =?utf-8?B?OWp6TDVRa0dkNjR0NzQyblVydXFNTXcrMU1wRjdPMDFwSndvSHRvWlZVMzN3?=
- =?utf-8?B?Zk1mOXhCK0VSSnhFTzJ6T1JTRXdpN015aHJMQllOSXVscFVUQUtWaHZBQUZR?=
- =?utf-8?B?aWZmYUQwRVZjVkF6THlGR2RjV2JjUHVCRGphZHBBMFZsaGw3SS9sVUpFRlRy?=
- =?utf-8?B?SUNNelNIcHBCandnNCs1V0lsK2REZEpMd3IvWjljYzR6U2dwVlhuKzB1T0po?=
- =?utf-8?B?TFZEYmhsLzY4UkRMUW12clNVN0VWOGh3UmRVQ3JkaFVDd3NSVlRVbUluanJi?=
- =?utf-8?B?d0pSRUhqWWJKYmZwVlRmTDZZc285MzNIeU1GeTdWSTFGQUR4STAyTHJyRmpK?=
- =?utf-8?Q?2eJLYCCxO8+urHuimQJcyA4=3D?=
-X-OriginatorOrg: theobroma-systems.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 260b75b6-bb47-44a7-1c4e-08dc28bd1879
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6382.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2024 15:46:20.5934
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2NTsCoofuF+v/q+gMH06P14jC6fQ89U3evfbKGllhUzJXBc2NIzsWen8MAkWTJUuCci4V2OWy7YEmlS9bLM7kCUljY/ka/sAeoX/uaKDXq1bxFsdVYXUs8nhlzL+Bbpc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7621
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAKb3xGUC/0XMQQqDMBCF4avIrJviJLFIV72HuIjjVAeMKUmRF
+ sndG910+T8e3w6Jo3CCe7VD5E2ShLWEvlRAs1snVjKWBl1rg6hb5RYhVt6rgRpjbHMj5hbK/RX 5KZ+T6vrSs6R3iN9T3vBYD8TWqO0f2VDVakQ3EFNryNrHFMK08JWChz7n/AO+yW7goQAAAA==
+X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2872; i=aliceryhl@google.com;
+ h=from:subject:message-id; bh=p4H6OppwPLzivo83Hr2g72Avg5StT4o8YtOOlH08jJM=;
+ b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlxPfP5S5v2aYkxsj2q/BsmpS4ZQZHpliZ9Y9nN
+ zdV3J5MPXeJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZcT3zwAKCRAEWL7uWMY5
+ Ro/ND/4l4hC9FDoEPydpei/6vNJcR8jmD06FC/VgU+GAa3Q5g4EziSs6o6T9aaQah9bAW2TRkQb
+ Xx4btpXW8yE641R6Vtn9DwIHFgF0DsBPknXyUI3KANWo4QcJ8mt7moHllQyX/8Kh/nTv71rOTUH
+ JD6SWPgSvqFEfS4BB81C7ypAlPPQB8GX0j/V5Hp9tI+4F/Lt1mtdo74KiB/h8d5mbb6ZJNByHDi
+ 5Gx0qj4kldEFqb1f5n38/mRuVYDJdarqTmNr+Qk2lEw3E36d43Hab0hietJGpsmzF9lQlPnT0O9
+ gM0CgHV8aduedSp/wOb6OaYNmmW4rB3Qic+IkTyf6vdnSW1HA+eysjDPZnA5r+5He9mqDeEtkDN
+ 22NQ7SajRh4JF59ueakxKXHs5nFef68LYntvHg4dyqKLVXX+31uqqUPbijmhFlRUYwGMd/aqRKm
+ vjshrpPeZ+1v1LfsUoZWKvMlb+eN+nNZqAlR3wsdUz/WaXs1tjL3EvVRrwfN94bnOW6PFt3MTK0
+ DEvuw8hzkjMfSglFQa3zilwIZkGF+oDYg7YQwBit4xw4vTRTGlXzi7FSBYHjDyG23HtE6+QDZo6
+ lquy26SR5FxigoHSo9F5gJN7RkKarjuHd0a1wcpvAxqnuYF3fxlaOkcunuedbGO9yYsJVX615tI doaejU59PxEaQRw==
+X-Mailer: b4 0.13-dev-26615
+Message-ID: <20240208-alice-mm-v2-0-d821250204a6@google.com>
+Subject: [PATCH v2 0/4] Memory management patches needed by Rust Binder
+From: Alice Ryhl <aliceryhl@google.com>
+To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	"=?utf-8?q?Bj=C3=B6rn_Roy_Baron?=" <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Kees Cook <keescook@chromium.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"=?utf-8?q?Arve_Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	Alice Ryhl <aliceryhl@google.com>, Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 
-Hi Christoph,
+This patchset contains some abstractions needed by the Rust
+implementation of the Binder driver for passing data between userspace,
+kernelspace, and directly into other processes.
 
+These abstractions do not exactly match what was included in the Rust
+Binder RFC - I have made various improvements and simplifications since
+then. Nonetheless, please see the Rust Binder RFC [1] to get an
+understanding for how this will be used:
 
-On 30.01.24 13:29, Christoph Niedermaier wrote:
-> [Einige Personen, die diese Nachricht erhalten haben, erhalten häufig keine E-Mails von cniedermaier@dh-electronics.com. Weitere Informationen, warum dies wichtig ist, finden Sie unter https://aka.ms/LearnAboutSenderIdentification ]
->
-> From: Farouk Bouabid
-> Sent: Monday, January 29, 2024 9:57 AM
->
-> Hi,
->
->> On 26.01.24 20:58, Lino Sanfilippo wrote:
->>> [Some people who received this message don't often get email from linosanfilippo@gmx.de. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
->>>
->>> Hi,
->>>
->>> On 26.01.24 18:27, Farouk Bouabid wrote:
->>>> From: Heiko Stuebner <heiko.stuebner@cherry.de>
->>>>
->>>> The RE signal is used to control the duplex mode of transmissions,
->>>> aka receiving data while sending in full duplex mode, while stopping
->>>> receiving data in half-duplex mode.
->>>>
->>>> On a number of boards the !RE signal is tied to ground so reception
->>>> is always enabled except if the UART allows disabling the receiver.
->>>> This can be taken advantage of to implement half-duplex mode - like
->>>> done on 8250_bcm2835aux.
->>>>
->>>> Another solution is to tie !RE to RTS always forcing half-duplex mode.
->>>>
->>>> And finally there is the option to control the RE signal separately,
->>>> like done here by introducing a new rs485-specific gpio that can be
->>>> set depending on the RX_DURING_TX setting in the common em485 callbacks.
->>>>
->>> we just added the rx_during_tx_gpio to the serial core.
->>> Why cant you use this GPIO for your purpose?
->>>
->>> Regards,
->>> Lino.
->> What we are trying to implement is a gpio that emulates the RTS signal
->> itself as we do not have a dedicated RTS signal that can be controlled
->> through MCR. The rx during tx state in our case is a fixed state of
->> "NO_RX_WHILE_TX"
-> Why can't the property rts-gpios be used here for this purpose?
+Users of "rust: add userspace pointers"
+     and "rust: add typed accessors for userspace pointers":
+	rust_binder: add binderfs support to Rust binder
+	rust_binder: add threading support
+	rust_binder: add nodes and context managers
+	rust_binder: add oneway transactions
+	rust_binder: add death notifications
+	rust_binder: send nodes in transactions
+	rust_binder: add BINDER_TYPE_PTR support
+	rust_binder: add BINDER_TYPE_FDA support
+	rust_binder: add process freezing
 
+Users of "rust: add abstraction for `struct page`":
+	rust_binder: add oneway transactions
+	rust_binder: add vma shrinker
 
-Yes that indeed serves our purpose. Thank you for the suggestion.
+Especially the second patch with typed accessors needs review. It
+contains a Rust analogy for when the C-side skips `check_object_size`,
+and I would be very happy to receive feedback about whether I am going
+about this in a reasonable way.
 
+Links: https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-0-08ba9197f637@google.com/ [1]
+Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+---
+Changes in v2:
+- Rename user_ptr module to uaccess.
+- Use srctree-relative links.
+- Improve documentation.
+- Rename UserSlicePtr to UserSlice.
+- Make read_to_end append to the buffer.
+- Use named fields for uaccess types.
+- Add examples.
+- Use _copy_from/to_user to skip check_object_size.
+- Rename traits and move to kernel::types.
+- Remove PAGE_MASK constant.
+- Rename page methods to say _raw.
+- Link to v1: https://lore.kernel.org/r/20240124-alice-mm-v1-0-d1abcec83c44@google.com
 
-Regards
+---
+Alice Ryhl (2):
+      rust: uaccess: add typed accessors for userspace pointers
+      rust: add abstraction for `struct page`
 
-Farouk
+Arnd Bergmann (1):
+      uaccess: always export _copy_[from|to]_user with CONFIG_RUST
 
->
->
-> Regards
-> Christoph
+Wedson Almeida Filho (1):
+      rust: uaccess: add userspace pointers
+
+ include/linux/uaccess.h         |  37 ++--
+ lib/usercopy.c                  |  30 +---
+ rust/bindings/bindings_helper.h |   1 +
+ rust/helpers.c                  |  34 ++++
+ rust/kernel/lib.rs              |   2 +
+ rust/kernel/page.rs             | 209 ++++++++++++++++++++++
+ rust/kernel/types.rs            |  67 +++++++
+ rust/kernel/uaccess.rs          | 387 ++++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 727 insertions(+), 40 deletions(-)
+---
+base-commit: f090f0d0eea9666a96702b29bc9a64cbabee85c5
+change-id: 20231128-alice-mm-bc533456cee8
+
+Best regards,
+-- 
+Alice Ryhl <aliceryhl@google.com>
+
 
