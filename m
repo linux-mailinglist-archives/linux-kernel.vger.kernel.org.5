@@ -1,130 +1,122 @@
-Return-Path: <linux-kernel+bounces-58140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59F5B84E1D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:21:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E5A984E1D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:21:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D3221C26103
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:21:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 018161F22ED5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:21:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2C0D763EC;
-	Thu,  8 Feb 2024 13:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF9D0763EB;
+	Thu,  8 Feb 2024 13:17:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZqE0hvwG"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nGYDgmKZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF797D410
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 13:15:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D34A7640E
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 13:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707398161; cv=none; b=t+i1xOrNim6Z1TyHCTzMr3sJ85V7Nh765M0ErOkphFwvDmKUdP9wJXqgstDAtm66CC6LsSsfSe0QBSX/E/Lg2OMS/8IRrmoiADOB91ze7F6P9UKAoFhl3C5NjKZXriDHVLNrxy6woXJ9h2RqyGGk9E+gvjrkhRIFX4JPLZRIIiE=
+	t=1707398261; cv=none; b=Gy7Z2Odz84kxRBxfmO4eJQdHJDAE+zc180hckjbnZincKjPlMU+6+NrG7A/M3Uk/VKnDJA2Jm88+aYiGRDaUNxg2V6vyESmWeN7uCSdwyccGywrjUkfC4bJr7O4tvfC15/U+RmPyILp1QfZYig6yq9YeffIbQPD7rKV1CULL8qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707398161; c=relaxed/simple;
-	bh=JYAXOHhijzGveTgLECFMxWt2hP1TLJVns/dJDsdVzn4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rb4AC5w2qJhYNCZ1HmRLfEzF4d7jGZlR67uaI9592iH85qPNamToO5s12VRhnozPhpZis9ZYT6hwbDHv98igIEtzl1z41ocbCCS5+N8+2czCqNHu1BAVmJeFYeA403EwzP5pbNpTIAfKa9YNFLlKFDgvM/rwjoVE9maILyAEr7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZqE0hvwG; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5cddc5455aeso1302627a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 05:15:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707398159; x=1708002959; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D8Dp3BKeiZZKDAqJdXYO0Ke5gALNhbM/RCCF/9rM4yU=;
-        b=ZqE0hvwGedeTUAog3feEeY1ZxJ4BlHJrsA4Qto3fDpjVSdq46VHr58S9EifnAaLLEG
-         QfyZKhPhlC86wBzDeqNwF1ht5+tDRpoLZ4BXVoYqVCfZncyXya0Ei4ctInW/bed1s5k5
-         CTcXzTfzs0b4RxAvyes8Akoo6abPdHlcqANVQv6PQdDH7qBo0Y3Y27Sv9RRl7FJlvpeN
-         t+oOk5IgTEaKjusZdb5t18wLiNcAacOtw3ubxKgZY5q20/s4IG2UpXokvmTdaHitjzsq
-         SrWFJkH6jcm+2o/jNtthwoN86u4bOekL7+IdS2oGtu9FRYGB/p3aommI2YmsZsHOPZPH
-         CtQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707398159; x=1708002959;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D8Dp3BKeiZZKDAqJdXYO0Ke5gALNhbM/RCCF/9rM4yU=;
-        b=DM5A1xWvCCMQedQsBJ+Yqvr2FmnKz7khtUewDj04ivd7UURWLzCVnOb2/3EyFDFlYt
-         za3wRUCNUDqxZOwRQ+lbDJnDvgvnaRVTbzB9k4eUbsVKQE44w3JS82lAbVG/dlrOhi7x
-         pSs/m2ivh/IR59gHg+vo3OB3o2pO4h8/phm2kTXAkMc5MGa0+QjdwD0ctO/pJ7uts3/M
-         fkNukVVV/jH7cf058vjh8MHAxOdFUO95GYwMyO0d+aEFzmyhuRY7MhxnbMzftP40R75y
-         Of3tww7RecKCvya6Xrv80fMvPsWn2SEIl2Z5bfUw9URidLGucSAyD3GVFKhPWBaqsVp6
-         ZBGg==
-X-Gm-Message-State: AOJu0YzsUC3BPlAmFrstnPrUoJQMQzA839cAG+ojKFkVFKr5nIeeymP7
-	RThThz45ordIl3mcvg567RviEy10VJEA2KnsmE2dv0MzE6kalaBrfbAUDMc9DV+jpiCGC5zI5U4
-	vH9B0+AZv7OyScgaPkPCUwu4FdpY=
-X-Google-Smtp-Source: AGHT+IE/CAKMPbroR8bnQix8tNmZwX1tZA2jxbhk7gQBcadNJRAkSVcjp7iPkE/azE/A4cvEvq7A64+NprUUb0rHG5w=
-X-Received: by 2002:a17:90a:e2c2:b0:296:f9e9:5d45 with SMTP id
- fr2-20020a17090ae2c200b00296f9e95d45mr1709115pjb.32.1707398158977; Thu, 08
- Feb 2024 05:15:58 -0800 (PST)
+	s=arc-20240116; t=1707398261; c=relaxed/simple;
+	bh=rfFaoOvWoMWSRfibASMU8lqwrNttyoGnh9WN0nUfRvI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R0mGqgc2HDtPbZJ5VT0o4ClTsDi1UwFeeB1e+YIGo/a1beQJx+v4jCMgg3c1tOpAUlR5fyEA67ZnkLVncoGqZQvMlECg5GX/iJ9ndEDfteunFTiTSaAZA9HuAh0O15ojoENeDUz6Yshd1lyThHLLJIVCT/eCbroHLHk9FYuSTTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nGYDgmKZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A9B3C433F1;
+	Thu,  8 Feb 2024 13:17:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707398260;
+	bh=rfFaoOvWoMWSRfibASMU8lqwrNttyoGnh9WN0nUfRvI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nGYDgmKZzTJAEXufSJ0dOeZAyQAONBsR9/SAw+vl5F8ERqrCbEpJkqTMwF0zkzc0W
+	 jzSpVHSejeScDQRRgqvCstV7TrHY127o5Qz63TGko1dOvXIpCe5Hjn8yWH4lDSBXs4
+	 u8/c8f2p6WH3XHdlsalrCB9o6VyzuZi5H9cnwt9qV51FXTdIIc6ne2e73OkJpJrCNd
+	 108tuwuNs3Zcl0vhpuwIKh3mvxX8ajmT+lTwx3Ip2wlMusbkyBwfd+uDvYFA+Ti1Jt
+	 tdFMpN8HzubOZ8oyUgCRMMQMGZceF5eF6Mnb3brXtoroqh7R9zS/x8CoAjnbCpAkCr
+	 hgWZ0F0CjT4xg==
+Date: Thu, 8 Feb 2024 13:17:34 +0000
+From: Will Deacon <will@kernel.org>
+To: Nanyong Sun <sunnanyong@huawei.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Matthew Wilcox <willy@infradead.org>, mike.kravetz@oracle.com,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	anshuman.khandual@arm.com, wangkefeng.wang@huawei.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH v3 0/3] A Solution to Re-enable hugetlb vmemmap optimize
+Message-ID: <20240208131734.GA23428@willie-the-truck>
+References: <20240113094436.2506396-1-sunnanyong@huawei.com>
+ <ZbKjHHeEdFYY1xR5@arm.com>
+ <d1671959-74a4-8ea5-81f0-539df8d9c0f0@huawei.com>
+ <20240207111252.GA22167@willie-the-truck>
+ <ZcNnrdlb3fe0kGHK@casper.infradead.org>
+ <ZcN1hTrAhy-B1P2_@arm.com>
+ <44075bc2-ac5f-ffcd-0d2f-4093351a6151@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231212033259.189718-1-aford173@gmail.com> <20231212033259.189718-2-aford173@gmail.com>
- <CAHCN7xKKMzOtVaEXzgTgsO4yZF0JZ6=o+TFJOeTCza0fMGss2w@mail.gmail.com> <e2688a01-47d2-4f89-ab92-252f378d37ba@kontron.de>
-In-Reply-To: <e2688a01-47d2-4f89-ab92-252f378d37ba@kontron.de>
-From: Adam Ford <aford173@gmail.com>
-Date: Thu, 8 Feb 2024 07:15:47 -0600
-Message-ID: <CAHCN7xL-a9EK0Zk4K8k4Eiktsop9+KN34rY=yOvjN_==WTqULw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/bridge: samsung-dsim: Fix porch calcalcuation rounding
-To: Frieder Schrempf <frieder.schrempf@kontron.de>
-Cc: dri-devel@lists.freedesktop.org, aford@beaconembedded.com, 
-	Inki Dae <inki.dae@samsung.com>, Jagan Teki <jagan@amarulasolutions.com>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, Andrzej Hajda <andrzej.hajda@intel.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Michael Tretter <m.tretter@pengutronix.de>, Marco Felsch <m.felsch@pengutronix.de>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <44075bc2-ac5f-ffcd-0d2f-4093351a6151@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Mon, Jan 29, 2024 at 2:17=E2=80=AFAM Frieder Schrempf
-<frieder.schrempf@kontron.de> wrote:
->
-> On 25.01.24 19:44, Adam Ford wrote:
-> > On Mon, Dec 11, 2023 at 9:33=E2=80=AFPM Adam Ford <aford173@gmail.com> =
-wrote:
-> >>
-> >> When using video sync pulses, the HFP, HBP, and HSA are divided betwee=
-n
-> >> the available lanes if there is more than one lane.  For certain
-> >> timings and lane configurations, the HFP may not be evenly divisible.
-> >> If the HFP is rounded down, it ends up being too small which can cause
-> >> some monitors to not sync properly. In these instances, adjust htotal
-> >> and hsync to round the HFP up, and recalculate the htotal.
-> >>
-> >> Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> # Kontron BL=
- i.MX8MM with HDMI monitor
-> >> Signed-off-by: Adam Ford <aford173@gmail.com>
-> >
-> > Gentle nudge on this one.  Basically this fixes an issue with the 8MP,
-> > but it's still unknown why it doesn't work on 8MM or 8MN, but Frieder
-> > confirmed there are no regressions on 8MM or 8MN.
->
+On Thu, Feb 08, 2024 at 05:44:48PM +0800, Nanyong Sun wrote:
+> 
+> 在 2024/2/7 20:20, Catalin Marinas 写道:
+> > On Wed, Feb 07, 2024 at 11:21:17AM +0000, Matthew Wilcox wrote:
+> > > On Wed, Feb 07, 2024 at 11:12:52AM +0000, Will Deacon wrote:
+> > > > On Sat, Jan 27, 2024 at 01:04:15PM +0800, Nanyong Sun wrote:
+> > > > > On 2024/1/26 2:06, Catalin Marinas wrote:
+> > > > > > On Sat, Jan 13, 2024 at 05:44:33PM +0800, Nanyong Sun wrote:
+> > > > > > > HVO was previously disabled on arm64 [1] due to the lack of necessary
+> > > > > > > BBM(break-before-make) logic when changing page tables.
+> > > > > > > This set of patches fix this by adding necessary BBM sequence when
+> > > > > > > changing page table, and supporting vmemmap page fault handling to
+> > > > > > > fixup kernel address translation fault if vmemmap is concurrently accessed.
+> > > > > > I'm not keen on this approach. I'm not even sure it's safe. In the
+> > > > > > second patch, you take the init_mm.page_table_lock on the fault path but
+> > > > > > are we sure this is unlocked when the fault was taken?
+> > > > > I think this situation is impossible. In the implementation of the second
+> > > > > patch, when the page table is being corrupted
+> > > > > (the time window when a page fault may occur), vmemmap_update_pte() already
+> > > > > holds the init_mm.page_table_lock,
+> > > > > and unlock it until page table update is done.Another thread could not hold
+> > > > > the init_mm.page_table_lock and
+> > > > > also trigger a page fault at the same time.
+> > > > > If I have missed any points in my thinking, please correct me. Thank you.
+> > > > It still strikes me as incredibly fragile to handle the fault and trying
+> > > > to reason about all the users of 'struct page' is impossible. For example,
+> > > > can the fault happen from irq context?
+> > > The pte lock cannot be taken in irq context (which I think is what
+> > > you're asking?)
+> > With this patchset, I think it can: IRQ -> interrupt handler accesses
+> > vmemmap -> faults -> fault handler in patch 2 takes the
+> > init_mm.page_table_lock to wait for the vmemmap rewriting to complete.
+> > Maybe it works if the hugetlb code disabled the IRQs but, as Will said,
+> > such fault in any kernel context looks fragile.
+> How about take a new lock with irq disabled during BBM, like:
+> 
+> +void vmemmap_update_pte(unsigned long addr, pte_t *ptep, pte_t pte)
+> +{
+> +    spin_lock_irq(NEW_LOCK);
+> +    pte_clear(&init_mm, addr, ptep);
+> +    flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+> +    set_pte_at(&init_mm, addr, ptep, pte);
+> +    spin_unlock_irq(NEW_LOCK);
+> +}
 
-Inki,
+I really think the only maintainable way to achieve this is to avoid the
+possibility of a fault altogether.
 
-Is there something you need which is holding this back?  It's been
-nearly two months since I posted the initial patch.
-
-Thank you,
-
-adam
-
-> I only tested two specific display setups on i.MX8MM. So of course I
-> can't confirm the absence of regressions in general.
->
-> Anyway, I think this should be applied.
+Will
 
