@@ -1,83 +1,91 @@
-Return-Path: <linux-kernel+bounces-57459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 955F584D954
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 05:15:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3AC084D957
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 05:17:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EB75286551
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 04:15:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E06B01C22EE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 04:17:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3829C2D629;
-	Thu,  8 Feb 2024 04:15:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CB62E62C;
+	Thu,  8 Feb 2024 04:17:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N4Pc700o"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (2048-bit key) header.d=pdp7-com.20230601.gappssmtp.com header.i=@pdp7-com.20230601.gappssmtp.com header.b="nud4MXKj"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E0402C6B0
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 04:15:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFD1D2E3F9
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 04:17:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707365748; cv=none; b=ILxyrpvYFeGvIhqoo4FqKYTH7XpsrP8kIyrhCQW2fkk1MWyeonqceneBgniMv23g5DeCpbC1jeOLPeHPwioWG5t6AobvFUMCNbvMun1NlDGpXMsgBApa4pTRlkmaa7uQphgS0yaSMn8yKsEtYjdIBW6NG/Pp+RVZt2Nb5NUq6qo=
+	t=1707365852; cv=none; b=VNbWhH7qUGT1+io1gmmZKal7MKjV6hL+yq7/O8cdVg+o9ZiW7DszrZ5zpJnbPlUmuPx8aB5NXWoLoLouqaIs8mn7XE+QO6c9qtRg7LBHSI5nzEzM05uWx/2vbR2wl8LRKlx4wAgBBoIR3/9dZlpb+bC7MKKaGG2qE/1qvLZxlW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707365748; c=relaxed/simple;
-	bh=fXJ1U4znUAesFmq+SCaeRK3D4NwCokYqr0BJo/UwXqM=;
+	s=arc-20240116; t=1707365852; c=relaxed/simple;
+	bh=cAHh4xjhBUsUvi6dV0lRc25LSMG4QeXOE/23496L/SI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XcflLzjSTFLB7MmUf6yyXQSSPoqYOFCjLQ1rr077+KPQvWS5vaPbHZWuBMdDPU7GZz7N7UffeyFpHKQSv3d2y3k1kUzOHznF3Ex4BzEApa5HC3nFXlR0K27nr/J+D8Er7w1C7u7Yu0edXY9h32/YKYt+Bz50ezPtXRtEB8F37nE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N4Pc700o; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d71cb97937so14198545ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 20:15:46 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=HtX0gbZEojpYY0xLJA8LWYFvVqO+zeS810UdwhYltbvkpTfatzFu8bA3c4Kwdu0+ETLi8focZ2lIWiN+eMnFopXT4SpFg0iFplVDWX/8bTkdXYBGrXcTbWu9mGhSqO0UYPjp0ksJYvDwLMBpPR1BSlpmt0Wjq8PI4Blieyn+ZcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pdp7.com; spf=none smtp.mailfrom=pdp7.com; dkim=pass (2048-bit key) header.d=pdp7-com.20230601.gappssmtp.com header.i=@pdp7-com.20230601.gappssmtp.com header.b=nud4MXKj; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pdp7.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=pdp7.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e054f674b3so1029384b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Feb 2024 20:17:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707365746; x=1707970546; darn=vger.kernel.org;
+        d=pdp7-com.20230601.gappssmtp.com; s=20230601; t=1707365849; x=1707970649; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ntEdgcmlHw0HjM3ZhwHaoBbzKmjR4GIJzvlcv9x+2HY=;
-        b=N4Pc700oKBcvaHg0IKnP3r3UCvQLEys4Q5dfY7B3C20O8zP/QjUuduQb2My+arBltH
-         aKwLX+C3MjHifQ7PnEmhsNqP7MEMsZC3L/VJpHqhnLatPBwCN0n/foFkkVIoWGdvAfB7
-         NHo4dzJC7wzKxXUl7jsV5qnF8F57M+6sR3a3jaDnrUKgg3MlKGZF7iW1ZRQig4DXNMpu
-         Jg+BdvAqAFNTKWt0wu+NXi7yPvLYqp3r+aKH9wPRp/SARlOq5If6blyz5HOl15qSi+Dn
-         WO3oZncLHdNq043HFePEvr/ysoUn9sugTdXaV8Cm12mS82ig6urXHGlS/k2OSBuYy+yV
-         6BXQ==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VMfM6tLjsjGv++dP9ohEDO8bzLO9AXA9FZHQRHDHuD0=;
+        b=nud4MXKj8JDgAKaSMtBUg0URbf0yf4kvrvH8dd9wxm1t+a7/fX7t5X/Etg7oWHCSBn
+         Ygi21z+n/ONyW9ewy7qC6wnWQMosUfxJVYDYsHUVx8BpMJJQYunY0hBG60CcZTj/tSm5
+         7UmF6ywFFf3nAU9T3QQ6Wgggl2ZHFDgkHcGranLt6XFti5wCfHCDuYlsZaaz2OfNWwiQ
+         GSHejnSZmNwwoWzTLcFww0EY9j5DPMaXyzEauOtMXixSfnQptLvjuzDGW/RpmJwSEz0B
+         L6eoAzS/R1a8WoJlmxxDsPEERknrzIHxmKdnjDZ1A+QkNUJT/on761N2v8+YoqQjhmO8
+         pdWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707365746; x=1707970546;
+        d=1e100.net; s=20230601; t=1707365849; x=1707970649;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ntEdgcmlHw0HjM3ZhwHaoBbzKmjR4GIJzvlcv9x+2HY=;
-        b=UzN0cxh86xqtGkaxjLb5tL8rpOv0HwCEGUF1mtBaCoiY+mZDDSSiTg21WGyLb5Fk/X
-         1gYNC031BpTBWGIOs4B1NsfUupmkchdEJP+T2l8ymb9qT8aSb6sZFWstTkMEpN5sgTM1
-         iINswcIihx8X2h4NjZZSJQwFs8J5yV3el7sB86vgdG2wOM7a4fXKhB5dZUjyuD+8+NC5
-         stxaIXwDyYZSG/naXsX4bJ0uGz30uKU2a97Vbmu+HdE3mE4Sdcw9h1qJDAqrCi1khwTW
-         TEJ8V9wNU2KV5T1OjFpwBwQQXpt8Ib+pSgxJDJNec96ijw51aqdm+8enAV9yM8iU9AWD
-         17rQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUcSV4cc1uoUtsSVp5oOsbKfb/4uXAsg9kxE0EtN4Xtcyx6EHlFR3BeKVz48rjUkQ+9+vBZjDkM50BOWs+CtO2gqkFvgqAq4JKOyyh0
-X-Gm-Message-State: AOJu0Yww2diKWcODFRT9EfjVL6xGxex5GNwzJSB3ucaVDYJE0xdHrzfv
-	gPihbfk0Tg/iBAD7PuHr4rydECFNNT1licbN6ScErit35MZ9c3WiTObOjU2l
-X-Google-Smtp-Source: AGHT+IHsvO+olhXAjGTIUu7MdW4r8uMQIcm05AXARx6zPFFufK9OK+HKwvLEMl4zSXaTF3CMwmcLMQ==
-X-Received: by 2002:a17:902:e802:b0:1d9:24cb:3cdd with SMTP id u2-20020a170902e80200b001d924cb3cddmr8618147plg.46.1707365745807;
-        Wed, 07 Feb 2024 20:15:45 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUA+ofJTOxb91SNGlg6guIYUOFvYsDS9GGn2EnjZRXiCqeGx3nVCMMW1C93OtJ+ZQuzxbAOQKpmH2fo5JJd0o8OKKg73SAlZbIwtXnxiiYTo3s9t1ZGqmQXFSryHQENNPu63y6ZcFvQBQWiuWY84z0gLSJL23bZve1sTLooFhKKifRboNQAojMPfzU=
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id la14-20020a170902fa0e00b001d083fed5f3sm2304977plb.60.2024.02.07.20.15.44
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VMfM6tLjsjGv++dP9ohEDO8bzLO9AXA9FZHQRHDHuD0=;
+        b=J/U9eMR+gkNtXfCpLipS87FeXSLpSdBri1V5tS92Cr7884OVluUbakH4E+GXjTbcfc
+         BrgqSBihYkkyL2ar2fqdqg0KSAi+nRnly10sRRMb9I9rkrPvclwv2dg2hEn/HwoYWlwY
+         V4C17G2wZyOnb0+nIXr0N6txPU+NiqbJvqcwAnYTiebTvi5gOwYEobCevhZXnfqg8GaN
+         0ttBnjL+7upJHiq+cboeJCGdeMn+NC5vR41YKYLCC1lJ+8aP7it2ReSKIMrgBNh0bdTo
+         hNOLP8NIZD0rsuGm9NGyCnnBlSIPF6rUNRILWuDZE8MEnMffRcID6q9hdaJUAnQSlDII
+         l8AA==
+X-Forwarded-Encrypted: i=1; AJvYcCWCxPaIg+upeWqn8T+H1HIWP7NjJJaXWRIzrRvJG2rQp/vXoX8r39mOlBq3UzWvCwdUCsF9MkhkUO+tTW+HUG1dOahqNdvRgSSfdz0U
+X-Gm-Message-State: AOJu0Yxd+/6q/EQPzHm6q461AL+n1IA4ollfF+FfIZeIOBy3owEIuXM5
+	lC9jNzj7g180IRep+4csJBP5qm37NT6hxFntZHA7d6kq9XU9Sq6xBBA2HY3Cb6g=
+X-Google-Smtp-Source: AGHT+IGy56Ygai1gEesu11gcC5X7oygZYFdrRpd1VgYGiAFJeE0xjOR3DXoJ2a9vLefMqnwckTySXA==
+X-Received: by 2002:a05:6a21:9214:b0:19c:5ae6:4425 with SMTP id tl20-20020a056a21921400b0019c5ae64425mr8350230pzb.59.1707365848984;
+        Wed, 07 Feb 2024 20:17:28 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXWeDIoarGsQx3+UKEz2tEshr1jtFWhOljZpJblOlXsUweFB7dY+oThk+1y+Uw/fQWVuSyPNYrKLJ5eq0PdMVe1Tatbj8GTEK9MG0UfNls1BEwdwsc93HkJDUXV1CX0PP7N4Du2STjp+fU4OslOUawzmCn67uTAQ6p7/7vyZymWNQ+RKGnISD5lsF6xJI2MtRIH3rdbZSMlDMW5fGF18O+Bh0tOBcmemCm63n65N7Ze1V9FR8cfmCYPFW7OLTwro/yrfouI+AemQx+cnDlhVHZh8t9GQtavASrrdOq4PTKYhlZXhlBqZOV/2nr6vMPSOal2MeECG3/DBHzfZ5LpnQ6+0TuUWjkUtnb9TiaCtYa+ROQeiLpPqsldrnzZxH0jMu1LYcDlwGzxiG3G3ZE7x8P0cliIh8+fln/sdIL253DhGUvTQv7yrUV42VsD45tS6GFFQdqAx/dUV5Jmk91NcC5qQdBO6/CXEcxpD7Cc/PfaSbmqxBnA0pw=
+Received: from x1 ([2601:1c2:1800:f680:3e6:72a3:7bf1:6e29])
+        by smtp.gmail.com with ESMTPSA id q11-20020a170902c74b00b001d9ef367c85sm2171292plq.104.2024.02.07.20.17.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 20:15:44 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 7 Feb 2024 20:15:43 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: David Laight <David.Laight@aculab.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v6 0/2] lib: checksum: Fix issues with checksum tests
-Message-ID: <9b004c45-45f8-4abb-a24e-bb47b369b1a5@roeck-us.net>
-References: <20240207-fix_sparse_errors_checksum_tests-v6-0-4caa9629705b@rivosinc.com>
+        Wed, 07 Feb 2024 20:17:28 -0800 (PST)
+Date: Wed, 7 Feb 2024 20:17:25 -0800
+From: Drew Fustini <drew@pdp7.com>
+To: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>,
+	Reinette Chatre <reinette.chatre@intel.com>,
+	Peter Newman <peternewman@google.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+	Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+	James Morse <james.morse@arm.com>,
+	Jamie Iles <quic_jiles@quicinc.com>,
+	Babu Moger <babu.moger@amd.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Drew Fustini <dfustini@baylibre.com>, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, patches@lists.linux.dev
+Subject: Re: [PATCH v15-RFC 0/8] Add support for Sub-NUMA cluster (SNC)
+ systems
+Message-ID: <ZcRVZYtmFMz0fdjU@x1>
+References: <20240126223837.21835-1-tony.luck@intel.com>
+ <20240130222034.37181-1-tony.luck@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,89 +94,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240207-fix_sparse_errors_checksum_tests-v6-0-4caa9629705b@rivosinc.com>
+In-Reply-To: <20240130222034.37181-1-tony.luck@intel.com>
 
-On Wed, Feb 07, 2024 at 04:22:49PM -0800, Charlie Jenkins wrote:
-> The ip_fast_csum and csum_ipv6_magic tests did not have the data
-> types properly casted, and improperly misaligned data.
+On Tue, Jan 30, 2024 at 02:20:26PM -0800, Tony Luck wrote:
+> This is the re-worked version of this series that I promised to post
+> yesterday. Check that e-mail for the arguments for this alternate
+> approach.
 > 
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> https://lore.kernel.org/all/ZbhLRDvZrxBZDv2j@agluck-desk3/
+> 
+> Apologies to Drew Fustini who I'd somehow dropped from later versions
+> of this series. Drew: you had made a comment at one point that having
+> different scopes within a single resource may be useful on RISC-V.
+> Version 14 included that, but it's gone here. Maybe multiple resctrl
+> "struct resource" for a single h/w entity like L3 as I'm doing in this
+> version could work for you too?
 
-I still get:
+Sorry for the latency.
 
-Failed unit tests:
-	mips:malta:checksum
-	mips64:malta:checksum
-	mipsel:malta:checksum
-	mipsel64:malta:checksum
-	parisc:B160L:checksum
-	parisc:C3700:checksum
-	parisc64:C3700:checksum
-	sh:rts7751r2dplus_defconfig:checksum
+The RISC-V CBQRI specification [1] describes a bandwidth controller
+register interface [2]. It allows a controller to implement both
+bandwidth allocation and bandwidth usage monitoring.
 
-on parisc/parisc64:
+The proof-of-concept resctrl implementation [3] that I worked on created
+two domains for each memory controller in the example SoC. One domain
+would contain the MBA resource and the other would contain the L3
+resource to represent MBM files like local_bytes:
 
-    # test_ip_fast_csum: ASSERTION FAILED at lib/checksum_kunit.c:463
-    Expected ( u64)csum_result == ( u64)expected, but
-        ( u64)csum_result == 33754 (0x83da)
-        ( u64)expected == 10946 (0x2ac2)
-    not ok 4 test_ip_fast_csum
-    ok 5 test_csum_ipv6_magic
-# checksum: pass:4 fail:1 skip:0 total:5
-# Totals: pass:4 fail:1 skip:0 total:5
+  # cat /sys/fs/resctrl/schemata
+  MB:4=  80;6=  80;8=  80
+  L2:0=0fff;1=0fff
+  L3:2=ffff;3=0000;5=0000;7=0000
 
-mipsel/mipsel64 (little endian):
+Where:
 
-    # test_csum_ipv6_magic: ASSERTION FAILED at lib/checksum_kunit.c:506
-    Expected ( u64)csum_result == ( u64)expected, but
-        ( u64)csum_result == 18588 (0x489c)
-        ( u64)expected == 12357 (0x3045)
-    not ok 5 test_csum_ipv6_magic
-# checksum: pass:4 fail:1 skip:0 total:5
-# Totals: pass:4 fail:1 skip:0 total:5
+  Domain 0 is L2 cache controller 0 capacity allocation
+  Domain 1 is L2 cache controller 1 capacity allocation
+  Domain 2 is L3 cache controller capacity allocation
 
-mips (big endian):
+  Domain 4 is Memory controller 0 bandwidth allocation
+  Domain 6 is Memory controller 1 bandwidth allocation
+  Domain 8 is Memory controller 2 bandwidth allocation
 
-    # test_csum_ipv6_magic: ASSERTION FAILED at lib/checksum_kunit.c:506
-    Expected ( u64)csum_result == ( u64)expected, but
-        ( u64)csum_result == 59728 (0xe950)
-        ( u64)expected == 12357 (0x3045)
-    not ok 5 test_csum_ipv6_magic
-# checksum: pass:4 fail:1 skip:0 total:5
-# Totals: pass:4 fail:1 skip:0 total:5
+  Domain 3 is Memory controller 0 bandwidth monitoring
+  Domain 5 is Memory controller 1 bandwidth monitoring
+  Domain 7 is Memory controller 2 bandwidth monitoring
 
-I noticed that csum_result varies across tests for some reason. On parisc/parisc64
-the value is unexpected but always the same.
+I think this scheme is confusing but I wasn't able to find a better
+way to do it at the time.
 
-sh (little endian; ok, this isn't entirely fair, this test wasn't enabled before):
+> Patches 1-5 are almost completely rewritten based around the new
+> idea to give CMT and MBM their own "resource" instead of sharing
+> one with L3 CAT. This removes the need for separate domain lists,
+> and thus most of the churn of the previous version of this series.
 
-    KTAP version 1
-    # Subtest: checksum
-    # module: checksum_kunit
-    1..5
-    # test_csum_fixed_random_inputs: ASSERTION FAILED at lib/checksum_kunit.c:370
-    Expected ( u64)result == ( u64)expec, but
-        ( u64)result == 53378 (0xd082)
-        ( u64)expec == 33488 (0x82d0)
-    not ok 1 test_csum_fixed_random_inputs
-    # test_csum_all_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:395
-    Expected ( u64)result == ( u64)expec, but
-        ( u64)result == 65281 (0xff01)
-        ( u64)expec == 65280 (0xff00)
-    not ok 2 test_csum_all_carry_inputs
-    # test_csum_no_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:443
-    Expected ( u64)result == ( u64)expec, but
-        ( u64)result == 65535 (0xffff)
-        ( u64)expec == 65534 (0xfffe)
-    not ok 3 test_csum_no_carry_inputs
-    ok 4 test_ip_fast_csum
-    ok 5 test_csum_ipv6_magic
-# checksum: pass:2 fail:3 skip:0 total:5
-# Totals: pass:2 fail:3 skip:0 total:5
+Very interesting. Do you think I would be able to create MBM files for
+each memory controller without creating pointless L3 domains that show
+up in schemata?
 
-The result/expected values are always the same in the sh4 tests.
-I'd take the test results for sh4 with a grain of salt; there is
-at least some possibility that this is an emulation problem.
+Thanks,
+Drew
 
-Guenter
+[1] https://github.com/riscv-non-isa/riscv-cbqri/releases/tag/v1.0-rc1
+[2] https://github.com/riscv-non-isa/riscv-cbqri/blob/main/qos_bandwidth.adoc
+[3] https://lore.kernel.org/linux-riscv/20230419111111.477118-1-dfustini@baylibre.com/
 
