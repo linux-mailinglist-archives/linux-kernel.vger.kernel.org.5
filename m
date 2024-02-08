@@ -1,156 +1,148 @@
-Return-Path: <linux-kernel+bounces-58213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0080184E2DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:12:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10CCC84E2E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:13:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 525A9B27D2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:12:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3C771F26A80
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:13:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06C5579DD6;
-	Thu,  8 Feb 2024 14:12:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BEF478B6F;
+	Thu,  8 Feb 2024 14:12:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="pig0KT9B"
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oY7xJcdh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEFA776C61
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 14:12:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43C387B3EE;
+	Thu,  8 Feb 2024 14:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707401544; cv=none; b=oasaXc8CTX0aFLgPIpCFzp/eSFdcSwkakF2DiFiq3MvyPACOVzpj5HqOVlVxwJq5LiCSMG1DvIM/TV8/NsU8+UO91aj7EZUFGfNDjZoA6PEnz7w7LdcaZUOksQpxj9dzKBkl14eL1fUe9H48uxkuITEZBn1BMvOug3YQzDqnANo=
+	t=1707401549; cv=none; b=X3aOxmH4f1PwKpMc92+OhzXV2KkIlXPWqw5UIrN0IWEqXKQR5RxcNJ31YupvDjdjPceJfJumMfcLZeqrzg5vSwc6x2MuQO+MGrMB02LIBpfd0LrGuFbP+PZ7yIxU8RZ6Pd4ZtR+OUQBdQJ5h1FSRhgbP4YLWnIaoH8wnTksajD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707401544; c=relaxed/simple;
-	bh=3ik1VeqZqvrBk+hkQ4LISwGyPWvT053eJy+F7I6/4gI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aY7KEjwfyzyoYSLXoIYMEyWFAr8Rw8fPCrSsF/FUZsk+JS6n7MMucO00PDP9hMOoio9bAkISmG8d2pUoj2c4swC6fRZ2Yh0dCWNTsaS0gX0AgJIlrXqG3RVCL+CRjN/G++PJFIvlNEP+g2M7wMnBF8MZB/ehhlj+Hy6tvGNmlU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=pig0KT9B; arc=none smtp.client-ip=44.202.169.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5002a.ext.cloudfilter.net ([10.0.29.215])
-	by cmsmtp with ESMTPS
-	id Y4j8rHcFh9gG6Y58OrqrUk; Thu, 08 Feb 2024 14:12:12 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id Y58Nr494NL5RlY58Nra9vh; Thu, 08 Feb 2024 14:12:12 +0000
-X-Authority-Analysis: v=2.4 cv=NfZF1HD4 c=1 sm=1 tr=0 ts=65c4e13c
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=avmgtr1mAAAA:8 a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8
- a=20KFwNOVAAAA:8 a=cm27Pg_UAAAA:8 a=9s2EZlhbFvVYUlpcnmcA:9 a=QEXdDO2ut3YA:10
- a=8jQmqnmTF30O56MVTtdJ:22 a=y1Q9-5lHfBjTkpIzbSAN:22 a=AjGcO6oz07-iQ99wixmX:22
- a=xmb-EsYY8bH0VWELuYED:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=NdzT1jnddPo3C2ofpdSb1STcn6/8gN+XK0UoGk/aM80=; b=pig0KT9BGEQTUgiqFgvo34xd5R
-	92e52VRIZKp8OxiD9dXKPNQyP1uBFPWMorhd9dNeZDgQb+Q8bvvwjmm+DZUywpzQFlkPKFaDB1vfY
-	frmH3A4pz5IDFDDDHuum4RjmBoeiOoC2FqCkLNj5zULzptXcZuOVNxbMuBgWwpAOxH6Ew2cqKNfSU
-	t31rJYBL0q2FdSvmJMab8qCaLAKFGbe9iRfJa1uT72N9FrMmTStNIrFa1CsufQVZN+JSoSwWoPnqH
-	/Im9Rc+aVHhmF+Fzlxr3TVGaNQuTMTqpBL4i1+CIG5MVoPuRLnDfN9nDC8aEs1Ua9KiJJ8vafRPUD
-	y44VAjvA==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:48510 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rY58M-003UCd-2o;
-	Thu, 08 Feb 2024 08:12:10 -0600
-Message-ID: <98572347-e83b-41bf-aad0-08ed8e967431@embeddedor.com>
-Date: Thu, 8 Feb 2024 08:12:09 -0600
+	s=arc-20240116; t=1707401549; c=relaxed/simple;
+	bh=FVNjVUKh9OyW/83Ue0bZwUjdq4qIapVVOgrhdt/rjmI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s2314Ol0acq6pw7audQ1Dgb31WTuZsow2TdORfVEOW1OQQoppiInCMJD0TaywMbQ2dodlZEVfgladFqYGVDNmuAmELwdBtLg+sFJDtfvy9ujMF9gWPUc4U9V6JUjKjhVuk/X9XW3hFUUNBqTucCuAzfL2Zx3hUN6gwdkJbmO55Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oY7xJcdh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87CEDC43601;
+	Thu,  8 Feb 2024 14:12:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707401548;
+	bh=FVNjVUKh9OyW/83Ue0bZwUjdq4qIapVVOgrhdt/rjmI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oY7xJcdhY87obWJfJL9l0De+t6szN33dhakI7R4b8JejBll60yqBTRhz/FqHZjydq
+	 D34SNk5SnrlGc/RAn9usjzjbS4E1wBUWfL9UicpwBj/c6VeNL95STnL7FUzese2F0L
+	 KASwebfLvLZowxscx0R7VDy1v33DKmJEYKVijvD8Pkkmx99NrUfdWloqWhLDFv8va4
+	 62lsGndGw0obTCbyFh/XStxYcd1CjcqrwlawFhk8HLpNNzlyRP3qhS8xWhSBp/rfqu
+	 eIN+qoMcVdgxsVdx9qMp92f75Q8HwPDE8L+REmj4tj3U+XfqZQpK7zZBG0q7+TasjO
+	 QJ+dDPfyh9vaA==
+Date: Thu, 8 Feb 2024 14:12:23 +0000
+From: Lee Jones <lee@kernel.org>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	Li Zetao <lizetao1@huawei.com>, linux-leds@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] leds: trigger: netdev: Fix kernel panic on interface
+ rename trig notify
+Message-ID: <20240208141223.GR689448@google.com>
+References: <20240203235413.1146-1-ansuelsmth@gmail.com>
+ <8d51f09b-e6d2-4ee1-9e7d-b545d561798a@lunn.ch>
+ <20240205085007.GA19855@google.com>
+ <2cf84815-f9b6-4a0a-a3b4-d23628a89aa4@lunn.ch>
+ <65c0e874.df0a0220.257a.43b1@mx.google.com>
+ <20240205143359.GB53266@google.com>
+ <65c0f2dc.050a0220.63083.8524@mx.google.com>
+ <20240205150422.GC53266@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net/sun3_82586: Avoid reading past buffer in debug output
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>, Sam Creasey <sammy@sammy.net>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- "Gustavo A . R . Silva" <gustavoars@kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20240206161651.work.876-kees@kernel.org>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240206161651.work.876-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1rY58M-003UCd-2o
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:48510
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfK50ypFJih4BNgOwzNJq3q+ZfM45rNU0pRjJy6P9sLhC4MfEpIcQCpMYNndAA3ynBEpXwJGpNK7ytyrcWqfNCRg5W3SFFeK7P/R5ECif6jxrdYlxh4TT
- P8xdw6eLeRCJWVaeIpDHdBJRfbg08OvZgyksovrd3brdojx/Guod8TU0XoFNS1PiO8s7TjKWf0Lto86zm60fvJWBcNRKKzug6JyyfKE/aoXiFkasmyzo8CUc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240205150422.GC53266@google.com>
 
+On Mon, 05 Feb 2024, Lee Jones wrote:
 
-
-On 2/6/24 10:16, Kees Cook wrote:
-> Since NUM_XMIT_BUFFS is always 1, building m68k with sun3_defconfig and
-> -Warraybounds, this build warning is visible[1]:
+> On Mon, 05 Feb 2024, Christian Marangi wrote:
 > 
-> drivers/net/ethernet/i825xx/sun3_82586.c: In function 'sun3_82586_timeout':
-> drivers/net/ethernet/i825xx/sun3_82586.c:990:122: warning: array subscript 1 is above array bounds of 'volatile struct transmit_cmd_struct *[1]' [-Warray-bounds=]
->    990 |                 printk("%s: command-stats: %04x %04x\n",dev->name,swab16(p->xmit_cmds[0]->cmd_status),swab16(p->xmit_cmds[1]->cmd_status));
->        |                                                                                                               ~~~~~~~~~~~~^~~
-> ...
-> drivers/net/ethernet/i825xx/sun3_82586.c:156:46: note: while referencing 'xmit_cmds'
->    156 |         volatile struct transmit_cmd_struct *xmit_cmds[NUM_XMIT_BUFFS];
+> > On Mon, Feb 05, 2024 at 02:33:59PM +0000, Lee Jones wrote:
+> > > On Mon, 05 Feb 2024, Christian Marangi wrote:
+> > > 
+> > > > On Mon, Feb 05, 2024 at 02:41:46PM +0100, Andrew Lunn wrote:
+> > > > > > > This should have 'net' in the subject line, to indicate which tree its
+> > > > > > > for.
+> > > > > > 
+> > > > > > No, it shouldn't.
+> > > > > > 
+> > > > > > Contributors aren't obliged to know anything about merging strategies.
+> > > > > 
+> > > > > With netdev, we tend to assume they do, or at least can contribute to
+> > > > > the discussion. They often know about any dependencies etc which could
+> > > > > influence the decision. When there are multiple subsystem maintainers
+> > > > > involved, i tend to use To: to indicate the maintainer i think should
+> > > > > merge the patch, and Cc: for the rest.
+> > > > >
+> > > > 
+> > > > I'm always a bit confused when I have to send patch to mixed subsystem
+> > > > (not the case but for net trigger it's almost that). Sorry for the
+> > > > confusion/noise.
+> > > 
+> > > When you have a truly cross-subsystem patch, it's up to you.
+> > > 
+> > >  - Mention both e.g. leds/net:
+> > >  - Mention neither e.g. <device>:
+> > >  - Mention the one that is most relevant
+> > > 
+> > >  An example of the last option might be when the lion's share of the
+> > >  changes occur in one subsystem and only header files are changed in the
+> > >  other.
+> > > 
+> > > In an ideal world i.e. when there are no build-time/runtime deps between
+> > > them, changes should be separated out into their own commits.
+> > >
+> > 
+> > Thanks a lot for the explaination and the examples!
+> > 
+> > > > > > Why does this need to go in via net?
+> > > > > 
+> > > > > It does not, as far as i'm aware. Christian, do you know of any
+> > > > > reason?
+> > > > > 
+> > > > 
+> > > > This is strictly a fix, no dependency or anything like that. Maybe using
+> > > > net as target would make this faster to merge (since net is for fix only
+> > > > and this has to be backported) than using leds-next?
+> > > 
+> > > We have leds-fixes for that.
+> > >
+> > 
+> > Oh! No idea, should I add a tag to the patch to target that branch
+> > specifically?
 > 
-> Avoid accessing index 1 since it doesn't exist.
+> You don't need to do anything special.
 > 
-> Link: https://github.com/KSPP/linux/issues/325 [1]
-> Cc: Sam Creasey <sammy@sammy.net>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> The Fixes: tag is enough to let us know that this is a fix.
+> 
+> If the commit mentioned in Fixes: was accepted as part of the last
+> merge-window, it'll be sent to the -rcs in good time.  If it fixes a
+> commit which was introduced in a previous cycle, it'll be submitted
+> during the next merge-window.
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Since this patch fixes an issue that was incorporated into v6.4, we
+shall not be submitting this for the v6.8-rcs.  Instead it's heading for
+the v6.9 merge-window and will be backported to v6.6.y accordingly.
 
-Thanks!
 -- 
-Gustavo
-
-> ---
->   drivers/net/ethernet/i825xx/sun3_82586.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/i825xx/sun3_82586.c b/drivers/net/ethernet/i825xx/sun3_82586.c
-> index 5e27470c6b1e..f2d4669c81cf 100644
-> --- a/drivers/net/ethernet/i825xx/sun3_82586.c
-> +++ b/drivers/net/ethernet/i825xx/sun3_82586.c
-> @@ -987,7 +987,7 @@ static void sun3_82586_timeout(struct net_device *dev, unsigned int txqueue)
->   	{
->   #ifdef DEBUG
->   		printk("%s: xmitter timed out, try to restart! stat: %02x\n",dev->name,p->scb->cus);
-> -		printk("%s: command-stats: %04x %04x\n",dev->name,swab16(p->xmit_cmds[0]->cmd_status),swab16(p->xmit_cmds[1]->cmd_status));
-> +		printk("%s: command-stats: %04x\n", dev->name, swab16(p->xmit_cmds[0]->cmd_status));
->   		printk("%s: check, whether you set the right interrupt number!\n",dev->name);
->   #endif
->   		sun3_82586_close(dev);
+Lee Jones [李琼斯]
 
