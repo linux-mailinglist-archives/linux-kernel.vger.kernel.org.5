@@ -1,208 +1,200 @@
-Return-Path: <linux-kernel+bounces-57615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6985884DB68
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:27:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D949784DB6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:28:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBBC0B25953
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:27:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 095AC1C22F32
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D4F6BB47;
-	Thu,  8 Feb 2024 08:25:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hoSVrYLZ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218CF6A334;
+	Thu,  8 Feb 2024 08:28:04 +0000 (UTC)
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91A6267C71
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 08:25:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E81569E19;
+	Thu,  8 Feb 2024 08:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707380719; cv=none; b=XoDsmYmNqF8DnJiENInuZyES/6B3SLfJO4joaXo14h5FoQ4xqTNxclJyhZh0wez7c1A0KR9DS2SVfyi2uzf2LZKjRiJdgc/XvZGv0hdAkKpv/xY3Dfu0PaL5Y5HDZPH2e4G5UFoxm9rX3jHWBO8k55M4rWl5a870XnA2l9NrKa8=
+	t=1707380883; cv=none; b=H/mtn8LHGQHqJBwUb8oygrBjWXpmSpkiwMsCwQ4NQN38RiqI4glrCJGhKbus60lYOY0oQN4xmS/uM0pKWhSFqP7ugS1IPFRmyOAwHxrRUuKfo9B9xxqRlf1Y/b/6bg2iPJmSEzIMwp0B9DX41BBkNyNJ6gaVnmwNWr29xFJD1Iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707380719; c=relaxed/simple;
-	bh=IEidakVDTZ8Ejt2cZ7lVVYaAg1F/lqJZ86OjIL9IDlM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Lb2DSFbJRsD3R6DCp53tc+qyRK/B2ZwkampqgD2FduKR0JHHRgQ+BocjM4Ciavg6CtMO1NvIGPOootlo0g6dIvcHrjdnbKxWypu+8uBthJ5xqrJILAcj26jO5BRwiAVtTJXmJo38zIHY6LlykkF/zEx+aEeWIc2AtSGSwSSZlkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hoSVrYLZ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707380716;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m2b1cGoGE6O9wuUG9B9+7/YSXWO8H0LBstm+bY//wdM=;
-	b=hoSVrYLZrEEEc9G6pk+N2R+hcTpajJvHmVPZEAy5T/SjzWOmwme8ckqNBwOTOLWzceVAIw
-	AJVMGwR4r1pVCOL6pwCSZK3jBaw0Ig4AROWOqiFRHxw92yZjoiSiFjfcm6rmxfqquw4XnT
-	a1tcLywGnldghrhjfi3T6V0zMZdPhYQ=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-537-8Ve1q2OOOySylLJQVxvjlw-1; Thu,
- 08 Feb 2024 03:25:12 -0500
-X-MC-Unique: 8Ve1q2OOOySylLJQVxvjlw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4C6D229AA2D2;
-	Thu,  8 Feb 2024 08:25:12 +0000 (UTC)
-Received: from ksundara-mac.redhat.com (unknown [10.74.17.171])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id BB8BA111F9;
-	Thu,  8 Feb 2024 08:25:06 +0000 (UTC)
-From: Karthik Sundaravel <ksundara@redhat.com>
-To: jesse.brandeburg@intel.com,
-	anthony.l.nguyen@intel.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: pmenzel@molgen.mpg.de,
-	jiri@resnulli.us,
-	michal.swiatkowski@linux.intel.com,
-	rjarry@redhat.com,
-	aharivel@redhat.com,
-	vchundur@redhat.com,
-	ksundara@redhat.com,
-	cfontain@redhat.com
-Subject: [PATCH v2] ice: Add get/set hw address for VFs using devlink commands
-Date: Thu,  8 Feb 2024 13:54:55 +0530
-Message-Id: <20240208082455.66726-2-ksundara@redhat.com>
-In-Reply-To: <20240208082455.66726-1-ksundara@redhat.com>
-References: <20240208082455.66726-1-ksundara@redhat.com>
+	s=arc-20240116; t=1707380883; c=relaxed/simple;
+	bh=Hwq9yOi7lEEwol8ReKQt8DR4NwTOqg+StGLb5yhhHh4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=P9rTH0TyO/UnOToc5SUF4PwZLtvHUCfEyMYMhnya0aThyjUi4cOFP2PMi8DM5flP1EERDZxh93sZCeyCn+DVFjD4xWeYYLDfhz+7qU8GETJyxrq3+yTyw+FbGG/ImhD/038OlpyS6uX9ctm5qHB34ta9ntWSNNoDiIxceolqeZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a383016f428so165709466b.2;
+        Thu, 08 Feb 2024 00:28:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707380880; x=1707985680;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E3J6JVDLj3OBm0DJVE2MBrRYH5ybiC+R9pZpfi4H1hU=;
+        b=U28aG/TqEWtO+KZ9+GXBU7CWUGBexJl5U4qWA0DeG2KmRN7p/tyxVSBA1e4DC88IrR
+         a4w6mdWkc5oYwgJKs9OkUEM8HJQOkMP8dgK8uY0cPYydnb5Piss/D5TI+S55nSuO2uEc
+         i8nM/cuyh6AZRvITWpKG+53eWptIceWz9YRToBQDc/R0fS810dfQMiM+BpgkN/n+wIU7
+         sM/ql1aPGkf7RYwq+oxmn0QcsnrgWj2/c/dEQ9fuz020DbvcI5YnhuYEPvcsQQc5JTMy
+         ecSjYWR29fZMhCSxcHbSa01MgzFuPf5DKUwfyiWaBwOn5QDNY129wBsJghnqOlo8nNzO
+         CRYQ==
+X-Gm-Message-State: AOJu0YxrKL1gi5hZ+0qNN4Dz+0dxGhu2pgKb5enr+6CqN2RVzE4hv2o8
+	EJVEjpb0c813FWt91oFfydnqdFw3owDkXnvURB7NEN0tic62ON/4
+X-Google-Smtp-Source: AGHT+IEQJ4eiihqNCqjO7DCJyd6GBR3isw4XzGXBKDH8Sa4hM1JWV5fejo1NO24Mez9cRT5S+la1RA==
+X-Received: by 2002:a17:906:a213:b0:a36:3806:8911 with SMTP id r19-20020a170906a21300b00a3638068911mr7007534ejy.43.1707380879456;
+        Thu, 08 Feb 2024 00:27:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVeejN98P8Sxgk9QklCeEnAeSxfOUjfH4tqMGE9bk4aYYqm5IrlSikzQamURwd4o3K7JJj0pLgqm9swvzVCESJpm7TCRkgSVCm/x9XqJPuvwF5sGetLkCGC/pSXGUbuNnQDGbWvi9vQ0myQO279uVsEoh3lS5aYDRJjqfowA8yfzuXurT+D8XAteQyc4pkTlZXyy+sGmfxpOb1/PGfxw5B79+OFsdhFJtEDl0qpmUOG9cuLhPgLVuMBCsBAVdeLBGP5mrmz5jTUp0Fr6EV9E18K1gAZc0toGJ+//B3bh+0VQk5iRLrb4RFWuknHcEUUj6nAmyA1X2bLiSMG3yL2h2leU9oxg8UmX/1tQdcIDsj6lmerAcrqTUiMQarv/I47KgYkKRR8WJNzrGztsIyGRiiTL0cFJ85CJxq5PNSLFugSDgwcL/wnIARPIMSG
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id i17-20020a170906265100b00a38576aefabsm1635151ejc.161.2024.02.08.00.27.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Feb 2024 00:27:58 -0800 (PST)
+Message-ID: <beb599e2-ebc5-4b26-82c3-908830effd5a@kernel.org>
+Date: Thu, 8 Feb 2024 09:27:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] serial: port: Don't suspend if the port is still busy
+Content-Language: en-US
+To: Yicong Yang <yangyicong@huawei.com>, gregkh@linuxfoundation.org,
+ tony@atomide.com, linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Cc: john.ogness@linutronix.de, andriy.shevchenko@linux.intel.com,
+ tglx@linutronix.de, yangyicong@hisilicon.com, linuxarm@huawei.com,
+ prime.zeng@hisilicon.com, jonathan.cameron@huawei.com, fanghao11@huawei.com
+References: <20240208075216.48915-1-yangyicong@huawei.com>
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20240208075216.48915-1-yangyicong@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Changing the MAC address of the VF ports are not available
-via devlink. Add the function handlers to set and get
-the HW address for the VF ports.
+Hi,
 
-Signed-off-by: Karthik Sundaravel <ksundara@redhat.com>
----
- drivers/net/ethernet/intel/ice/ice_devlink.c | 89 +++++++++++++++++++-
- 1 file changed, 88 insertions(+), 1 deletion(-)
+On 08. 02. 24, 8:52, Yicong Yang wrote:
+> From: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> We accidently met the issue that the bash prompt is not shown after the
+> previous command done and until the next input if there's only one CPU
+> (In our issue other CPUs are isolated by isolcpus=). Further analysis
+> shows it's because the port entering runtime suspend even if there's
+> still pending chars in the buffer and the pending chars will only be
+> processed in next device resuming. We are using amba-pl011 and the
+> problematic flow is like below:
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_devlink.c b/drivers/net/ethernet/intel/ice/ice_devlink.c
-index 80dc5445b50d..8455fa94a687 100644
---- a/drivers/net/ethernet/intel/ice/ice_devlink.c
-+++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
-@@ -1576,6 +1576,92 @@ void ice_devlink_destroy_pf_port(struct ice_pf *pf)
- 	devlink_port_unregister(&pf->devlink_port);
- }
- 
-+/**
-+ * ice_devlink_port_get_vf_mac_address - .port_fn_hw_addr_get devlink handler
-+ * @port: devlink port structure
-+ * @hw_addr: MAC address of the port
-+ * @hw_addr_len: length of MAC address
-+ * @extack: extended netdev ack structure
-+ *
-+ * Callback for the devlink .port_fn_hw_addr_get operation
-+ * Return: zero on success or an error code on failure.
-+ */
-+
-+static int ice_devlink_port_get_vf_mac_address(struct devlink_port *port,
-+					       u8 *hw_addr, int *hw_addr_len,
-+					       struct netlink_ext_ack *extack)
-+{
-+	struct devlink *devlink = port->devlink;
-+	struct ice_pf *pf = devlink_priv(devlink);
-+	struct device *dev = ice_pf_to_dev(pf);
-+	struct devlink_port_attrs *attrs = &port->attrs;
-+	struct devlink_port_pci_vf_attrs *pci_vf;
-+	int vf_id;
-+	struct ice_vf *vf;
-+
-+	if (attrs->flavour == DEVLINK_PORT_FLAVOUR_PCI_VF) {
-+		pci_vf = &attrs->pci_vf;
-+		vf_id = pci_vf->vf;
-+	} else {
-+		dev_err(dev, "Unable to get the vf id for PF %d\n", pf->hw.pf_id);
-+		return -EADDRNOTAVAIL;
-+	}
-+	vf = ice_get_vf_by_id(pf, vf_id);
-+	if (!vf) {
-+		dev_err(dev, "Unable to get the vf for PF %d\n", pf->hw.pf_id);
-+		return -EINVAL;
-+	}
-+	ether_addr_copy(hw_addr, vf->dev_lan_addr);
-+	*hw_addr_len = ETH_ALEN;
-+	return 0;
-+}
-+
-+/**
-+ * ice_devlink_port_set_vf_mac_address - .port_fn_hw_addr_set devlink handler
-+ * @port: devlink port structure
-+ * @hw_addr: MAC address of the port
-+ * @hw_addr_len: length of MAC address
-+ * @extack: extended netdev ack structure
-+ *
-+ * Callback for the devlink .port_fn_hw_addr_set operation
-+ * Return: zero on success or an error code on failure.
-+ */
-+static int ice_devlink_port_set_vf_mac_address(struct devlink_port *port,
-+					       const u8 *hw_addr,
-+					       int hw_addr_len,
-+					       struct netlink_ext_ack *extack)
-+{
-+	struct devlink *devlink = port->devlink;
-+	struct ice_pf *pf = devlink_priv(devlink);
-+	struct device *dev = ice_pf_to_dev(pf);
-+	struct net_device *netdev = port->type_eth.netdev;
-+	struct devlink_port_attrs *attrs = &port->attrs;
-+	struct devlink_port_pci_vf_attrs *pci_vf;
-+	int vf_id;
-+	u8 mac[ETH_ALEN];
-+
-+	if (attrs->flavour == DEVLINK_PORT_FLAVOUR_PCI_VF) {
-+		pci_vf = &attrs->pci_vf;
-+		vf_id = pci_vf->vf;
-+	} else {
-+		dev_err(dev, "Unable to get the vf id for PF %d\n", pf->hw.pf_id);
-+		return -EADDRNOTAVAIL;
-+	}
-+
-+	if (!netdev) {
-+		dev_err(dev, "Unable to get the netdev for PF %d\n", pf->hw.pf_id);
-+		return -EADDRNOTAVAIL;
-+	}
-+	ether_addr_copy(mac, hw_addr);
-+
-+	return ice_set_vf_mac(netdev, vf_id, mac);
-+}
-+
-+static const struct devlink_port_ops ice_devlink_vf_port_ops = {
-+	.port_fn_hw_addr_get = ice_devlink_port_get_vf_mac_address,
-+	.port_fn_hw_addr_set = ice_devlink_port_set_vf_mac_address,
-+};
-+
- /**
-  * ice_devlink_create_vf_port - Create a devlink port for this VF
-  * @vf: the VF to create a port for
-@@ -1611,7 +1697,8 @@ int ice_devlink_create_vf_port(struct ice_vf *vf)
- 	devlink_port_attrs_set(devlink_port, &attrs);
- 	devlink = priv_to_devlink(pf);
- 
--	err = devlink_port_register(devlink, devlink_port, vsi->idx);
-+	err = devlink_port_register_with_ops(devlink, devlink_port,
-+					     vsi->idx, &ice_devlink_vf_port_ops);
- 	if (err) {
- 		dev_err(dev, "Failed to create devlink port for VF %d, error %d\n",
- 			vf->vf_id, err);
+..
+> --- a/drivers/tty/serial/serial_port.c
+> +++ b/drivers/tty/serial/serial_port.c
+> @@ -19,8 +19,13 @@
+>   /* Only considers pending TX for now. Caller must take care of locking */
+>   static int __serial_port_busy(struct uart_port *port)
+>   {
+> -	return !uart_tx_stopped(port) &&
+> -		uart_circ_chars_pending(&port->state->xmit);
+> +	if (uart_tx_stopped(port))
+> +		return 0;
+> +
+> +	if (uart_circ_chars_pending(&port->state->xmit))
+> +		return -EBUSY;
+
+Why do you do this change at all? If anything, __serial_port_busy() 
+should be made to return a bool and not to return an error. Look how it 
+is named -- returning EBUSY is sort of unexpected in my eyes. And if 
+this needed to be done, it should have been in a separate patch anyway.
+
+And then:
+
+> @@ -46,8 +51,33 @@ static int serial_port_runtime_resume(struct device *dev)
+>   	return 0;
+>   }
+>   
+> +static int serial_port_runtime_suspend(struct device *dev)
+> +{
+> +	struct serial_port_device *port_dev = to_serial_base_port_device(dev);
+> +	struct uart_port *port;
+> +	unsigned long flags;
+> +	int ret;
+
+bool busy;
+
+> +
+> +	port = port_dev->port;
+> +
+> +	if (port->flags & UPF_DEAD)
+> +		return 0;
+> +
+> +	uart_port_lock_irqsave(port, &flags);
+> +	ret = __serial_port_busy(port);
+> +	if (ret)
+
+busy = ...
+if (busy)
+
+> +		port->ops->start_tx(port);
+> +	uart_port_unlock_irqrestore(port, flags);
+> +
+> +	if (ret)
+
+if (busy)
+
+> +		pm_runtime_mark_last_busy(dev);
+> +
+> +	return ret;
+
+return busy ? -EBUSY : 0;
+
+> +}
+
+thanks,
 -- 
-2.39.3 (Apple Git-145)
+js
+suse labs
 
 
