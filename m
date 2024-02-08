@@ -1,225 +1,186 @@
-Return-Path: <linux-kernel+bounces-57355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3626F84D74C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:50:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1AF184D752
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 01:56:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0CB2CB232A5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 00:50:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58202B20ACD
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 00:56:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC3F11CAB;
-	Thu,  8 Feb 2024 00:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F1A1CD19;
+	Thu,  8 Feb 2024 00:56:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bv4AqPGC"
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="MjOOxirL"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D920214267;
-	Thu,  8 Feb 2024 00:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BCC5156CF
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 00:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707353430; cv=none; b=N0/1c0/80JhMrcSZdWxSaeH6kgS0DPsE5HmZnTVRmMWH7Rsd5gJxUGY9ESJZiB+fWiudofmbOdy4HKohUbrvb5ODRHm/R/TPHx8W+YrqXq5GK0M863arHQnId101AFkOllXt1mlSJbvIQuY86H3sQTUwUiqmrmrKXwVfRIZJJy0=
+	t=1707353774; cv=none; b=bhfYBRNwr23pIwsnRdRbGHjS2Gqt9GDDN4ekrNj7EQ+dVhIHgh3U+vumqpmEUiI4M5p/k7CC6qrGukJHhksdvQert1uSB3PDZ+QcbKsMQeQbVxcQC1j+wKHanTI0ejxXpVNiin0wPyFaHcUzQvMhptTT6ocNLQe5gLQRIh8am7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707353430; c=relaxed/simple;
-	bh=nXpn5BlvGSY0sc64IXz6i7AkTu8HDnw+rRcIZuYB39M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PUHcbecSn9astc/NfXDvETA+VG7/iTg2TEzAkNOI2bel/9BOgwjMwkXQhGNo4vf58RN3DLMMHaW5YkoJW9NayrPgBwo/1sHZ6w4OKTdOdSdjgIGcVsNLB8/vA4LI+mGO2aNfYkmtFGAUxoCNa3gEw9nBtZs7458ySz/lRVs2nKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bv4AqPGC; arc=none smtp.client-ip=209.85.167.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bfedaaeeacso675466b6e.0;
-        Wed, 07 Feb 2024 16:50:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707353428; x=1707958228; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XhnRrncVP4lzPLUrvGryxvbt7W38XLsNAzwHJ2tdxwE=;
-        b=bv4AqPGC104QzX5+m5JWIuEtk1ITVITOczNCVZQuc0ix0puVrBkSGGEYLFhB50lEv9
-         oR7d6K0MogepQQcsyRL8mSdOx8dzHo1cSdqE8+b03pFrQM6K+m8g8L8KfvrsKZzsDf5H
-         GcV3fc/RKRmHxQouydKa13aPtTO0pG5ohct0iAxUG7SZ2WXO2dDqdqmPPGgQjeU3vXoH
-         LMDjJ0U8KzH0t9NAmvB56dSrDzhA3AEewMXK/r9UUkWfcAaZptQQganeLFQLGhOP6+N2
-         tW1CZ9zZYK1GwJZNqope5x5z6v0j9k76PgU8GFjDEFhJC63Vp0HfdI2G5xiZDxt/VDVD
-         dP9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707353428; x=1707958228;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XhnRrncVP4lzPLUrvGryxvbt7W38XLsNAzwHJ2tdxwE=;
-        b=o/DNrr6A35XBuJXoA7DzaTwc8Z+FEsxEtrdVOIh2kRG4zkLDZftp4ZOhCZzUKvosSn
-         vgPZjPV16Jo0Rw9wQbMf7JeUOoRXhEXvbojizkyEGyRbPmNwwQ/o9rZFoEzYW7EUn+KU
-         IKIvff6oZ3HOSg+aGH24EBC49Znhorr9h0aU1vmQrYEzuWTjqC5ggbc4lXGa3r0ePOGu
-         yo17eZrVt/EetAgHZ7D65/LX6keHvzbMMPsgBMNYHhF0n+/PtVcEEBlRqH0Tg7YbmTHC
-         dJ/hr7CsvgUXYzTqJAfpGHrMDCfXB9Ih35+Aibgx6P/DGuDtCh/KQ2S1YcUgCNbpa1jU
-         ZCxg==
-X-Forwarded-Encrypted: i=1; AJvYcCX0t+aycd2gi1kWQ+0cd3WUSFGAT0Vg0bs29I0Bji+VPntxWRMggYB1sCwx0pgKU1NmiIxRfQx3NoWw0ULRoxBhdq0iV3BdHJDrOpCP9EZadAXe7hKzixvI5+95UvOEsL5g
-X-Gm-Message-State: AOJu0YwRs3XGRaaQBFDlal7m+u3JmhRQ1dJUEOX0PD4rYvuEaTfGMySo
-	Nue8H1523632apJtBKKCetJDwfoZxWv2BQtx3s1UqBZ/JCMDwvh3yf0sbISbrn4zoEji/VkW90V
-	+7K2iYkiEDbbhmNss4rT9/WxDa9Y=
-X-Google-Smtp-Source: AGHT+IEUlO2zukqDSovYWf07rNVodK+7DJ9CthjKAroh1jaO14yZj9yENxACYznvsy5rK6d2wuYPvIevh8czG1Byig4=
-X-Received: by 2002:a05:6808:22a5:b0:3bf:e45c:cd6 with SMTP id
- bo37-20020a05680822a500b003bfe45c0cd6mr8387192oib.26.1707353427806; Wed, 07
- Feb 2024 16:50:27 -0800 (PST)
+	s=arc-20240116; t=1707353774; c=relaxed/simple;
+	bh=Z2ICpOVItjLSZvYCOOuIUl8jQTYpEGryfXq5XQgGzxg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qk+KjO7zSoDyJRG1NvW2g+DzRSODXALnEvwiLT2SxQ74e6To0UjLsjD1/sSWzsQglP7sr+FPZ4Xt4srxDiU4dJEpwU7Mv5PU96X/WUGzY18Bx4aCgWT0Z2gMRZhRIQjnI9HXIZ6ssAUUlBSnSHOuX79g8gqUjtBbKVF2p95mTiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=MjOOxirL; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=mqwy
+	z219YogV29u1ps30jsIFNgrWScVT17DNSwGPVi4=; b=MjOOxirLJzsd819/J/U1
+	5GLpFRfogtw/xMcPwb/Eu6oHDPHUrWNfsioM8r3NKOeftKRjJ7THPgI1hqYkF47X
+	p/vfujhgyNNJrmuw0V8EySjr7DzEOF3GeTXQs86BksvK6ThWAwG2VQ02Ct5rzKEO
+	Qog60FdSM9T47XEZx1T0VrLVxbEXbrqHO3180UGVNWPU4dmqLQLMArpNGteDE/uT
+	jlFO66Mjvv59135iaCndKQhjUBCRLsb6GD/KYi+A6Y4Tq8oJu0ZZioS+hiEvacvW
+	+8pVn4DhLH6qNR7JU4LQcvG7DXqYAQtu5d3v57+U2n1TpENXmHw5ycXJmYcDnEmw
+	Zw==
+Received: (qmail 2159446 invoked from network); 8 Feb 2024 01:56:00 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 8 Feb 2024 01:56:00 +0100
+X-UD-Smtp-Session: l3s3148p1@ahxpRtQQ8uUujnsZ
+Date: Thu, 8 Feb 2024 01:56:00 +0100
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: claudiu beznea <claudiu.beznea@tuxon.dev>
+Cc: ulf.hansson@linaro.org, yoshihiro.shimoda.uh@renesas.com,
+	masaharu.hayakawa.ry@renesas.com, takeshi.saito.xv@renesas.com,
+	linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: Re: [PATCH v3] mmc: renesas_sdhi: Fix change point of data handling
+Message-ID: <ZcQmoEkv_1PVURrT@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	claudiu beznea <claudiu.beznea@tuxon.dev>, ulf.hansson@linaro.org,
+	yoshihiro.shimoda.uh@renesas.com, masaharu.hayakawa.ry@renesas.com,
+	takeshi.saito.xv@renesas.com, linux-mmc@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240205112702.213050-1-claudiu.beznea.uj@bp.renesas.com>
+ <ZcDdn2AVz8FIXzak@shikoro>
+ <237bd5c8-184d-4e46-ba66-253e3ef0c895@tuxon.dev>
+ <ZcD17mTRnfIaueAW@shikoro>
+ <63e1eabd-a484-48ee-b8db-1e460bce70ab@tuxon.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1707080349.git.dxu@dxuuu.xyz> <9b8ebd13300e28bd92a2e6de4fb04f85c1b6ce7c.1707080349.git.dxu@dxuuu.xyz>
-In-Reply-To: <9b8ebd13300e28bd92a2e6de4fb04f85c1b6ce7c.1707080349.git.dxu@dxuuu.xyz>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 7 Feb 2024 16:50:15 -0800
-Message-ID: <CAEf4BzaSSTY0KTBYACvvVUeKVWd9wO+FM91E-9ES4dHwY-wX+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] bpftool: Support dumping kfunc prototypes
- from BTF
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: quentin@isovalent.com, daniel@iogearbox.net, ast@kernel.org, 
-	andrii@kernel.org, olsajiri@gmail.com, alan.maguire@oracle.com, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="SUT9mnFBoIjH0mM+"
+Content-Disposition: inline
+In-Reply-To: <63e1eabd-a484-48ee-b8db-1e460bce70ab@tuxon.dev>
+
+
+--SUT9mnFBoIjH0mM+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 4, 2024 at 1:07=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> This patch enables dumping kfunc prototypes from bpftool. This is useful
-> b/c with this patch, end users will no longer have to manually define
-> kfunc prototypes. For the kernel tree, this also means we can drop
-> kfunc prototypes from:
->
->         tools/testing/selftests/bpf/bpf_kfuncs.h
->         tools/testing/selftests/bpf/bpf_experimental.h
->
-> Example usage:
->
->         $ make PAHOLE=3D/home/dxu/dev/pahole/build/pahole -j30 vmlinux
->
->         $ ./tools/bpf/bpftool/bpftool btf dump file ./vmlinux format c | =
-rg "__ksym;" | head -3
->         extern void cgroup_rstat_updated(struct cgroup *cgrp, int cpu) __=
-weak __ksym;
->         extern void cgroup_rstat_flush(struct cgroup *cgrp) __weak __ksym=
-;
->         extern struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags)=
- __weak __ksym;
->
-> Note that this patch is only effective after the enabling pahole [0]
-> change is merged and the resulting feature enabled with
-> --btf_features=3Ddecl_tag_kfuncs.
->
-> [0]: https://lore.kernel.org/bpf/cover.1707071969.git.dxu@dxuuu.xyz/
->
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  tools/bpf/bpftool/btf.c | 45 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
->
-> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-> index 91fcb75babe3..0fd78a476286 100644
-> --- a/tools/bpf/bpftool/btf.c
-> +++ b/tools/bpf/bpftool/btf.c
-> @@ -20,6 +20,8 @@
->  #include "json_writer.h"
->  #include "main.h"
->
-> +#define KFUNC_DECL_TAG         "bpf_kfunc"
-> +
->  static const char * const btf_kind_str[NR_BTF_KINDS] =3D {
->         [BTF_KIND_UNKN]         =3D "UNKNOWN",
->         [BTF_KIND_INT]          =3D "INT",
-> @@ -454,6 +456,39 @@ static int dump_btf_raw(const struct btf *btf,
->         return 0;
->  }
->
-> +static int dump_btf_kfuncs(struct btf_dump *d, const struct btf *btf)
-> +{
-> +       DECLARE_LIBBPF_OPTS(btf_dump_emit_type_decl_opts, opts);
+Hi Claudiu,
 
-nit: use shorter LIBBPF_OPTS, DECLARE_LIBBPF_OPTS is a "deprecated"
-macro name I hid, but didn't remove
+I got more information about SMPCMP now. I had a misunderstanding there.
+According to your patch description, you might have the same
+misunderstanding? Let me quote again:
 
-> +       int cnt =3D btf__type_cnt(btf);
-> +       int i;
-> +
-> +       for (i =3D 1; i < cnt; i++) {
-> +               const struct btf_type *t =3D btf__type_by_id(btf, i);
-> +               const struct btf_type *kft;
-> +               const char *name;
-> +               int err;
-> +
-> +               if (!btf_is_decl_tag(t))
-> +                       continue;
-> +
-> +               name =3D btf__name_by_offset(btf, t->name_off);
-> +               if (strncmp(name, KFUNC_DECL_TAG, sizeof(KFUNC_DECL_TAG))=
-)
-> +                       continue;
+=3D=3D=3D
+RZ hardware manual are similar on this chapter), at the time of tuning,
+data is captured by the previous and next TAPs and the result is stored in
+the SMPCMP register (previous TAP in bits 22..16, next TAP in bits 7..0).
+=3D=3D=3D
 
-should we do a bit more sanity checking here? Check that component_idx
-=3D -1 (entire func) and pointee type is FUNC?
+It is not the previous and next TAP but the previous and next clock
+cycle using the *same* TAP. And the bits in the register describe if
+there was a mismatch in the data bits across these clock cycles.
 
-> +
-> +               printf("extern ");
-> +
-> +               kft =3D btf__type_by_id(btf, t->type);
+So, we really want SMPCMP to be 0 because the data should be stable
+across all three clock cycles of the same TAP.
 
-nit: reuse t?
+> As of my understanding the TAP where cmpngu =3D 0x0e and cmpngd=3D0x0e is=
+ not
+> considered change point of the input data. For that to happen it would me=
+an
+> that cmpngu !=3D cmpngd.
 
-> +               opts.field_name =3D btf__name_by_offset(btf, kft->name_of=
-f);
-> +               err =3D btf_dump__emit_type_decl(d, kft->type, &opts);
-> +               if (err)
-> +                       return err;
-> +
-> +               printf(" __weak __ksym;\n\n");
+I am not sure you can assume that cmpngu !=3D cmpngd is always true for a
+change point. I'd think it is likely often the case. But always? I am
+not convinced. But I am convinced that if SMPCMP is 0, this is a good
+TAP because it was stable over these clock cycles.
 
-why extra endline?
+> From this snapshot, datasheet and our discussions:
+>=20
+> i=3D0, cmpngu=3D00000000, cmpngd=3D00000000, smpcmp=3D00000000
+> i=3D1, cmpngu=3D00000000, cmpngd=3D00000000, smpcmp=3D00000000
+> i=3D2, cmpngu=3D0000000e, cmpngd=3D0000000e, smpcmp=3D000e000e
+> i=3D3, cmpngu=3D00000000, cmpngd=3D00000000, smpcmp=3D00000000
+> *i=3D4, cmpngu=3D00000000, cmpngd=3D00000002, smpcmp=3D00000002*
+> *i=3D5, cmpngu=3D00000000, cmpngd=3D000000ff, smpcmp=3D000001ff*
+> *i=3D6, cmpngu=3D000000ff, cmpngd=3D00000000, smpcmp=3D01ff0000*
+> i=3D7, cmpngu=3D00000000, cmpngd=3D00000000, smpcmp=3D00000000
+> i=3D8, cmpngu=3D00000000, cmpngd=3D00000000, smpcmp=3D00000000
+> i=3D9, cmpngu=3D00000000, cmpngd=3D00000000, smpcmp=3D00000000
+> i=3D10, cmpngu=3D00000000, cmpngd=3D00000000, smpcmp=3D00000000
+> i=3D11, cmpngu=3D00000000, cmpngd=3D00000000, smpcmp=3D00000000
+> *i=3D12, cmpngu=3D00000000, cmpngd=3D00000002, smpcmp=3D00000002*
+> *i=3D13, cmpngu=3D00000000, cmpngd=3D000000ff, smpcmp=3D000001ff*
+> *i=3D14, cmpngu=3D000000ff, cmpngd=3D00000000, smpcmp=3D01ff0000*
+> i=3D15, cmpngu=3D00000000, cmpngd=3D00000000, smpcmp=3D00000000
+>=20
+> I understand that TAP4,5,6 are change point of the input data and
+> TAP8,0,1,2,3 are candidates for being selected, TAP 1,2 being the best
+> (please correct me if I'm wrong).
 
-though I'd ensure two empty lines before the first kfunc declaration
-to visually separate it from other type. Maybe even add a comment like
-`/* BPF kfuncs */` or something like that?
+I agree that TAP4-6 are the change point. TAP2 could be a candidate. I
+dunno why SMPCMP is non-zero at i =3D=3D 2, maybe some glitch due to noise
+on the board?
 
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static void __printf(2, 0) btf_dump_printf(void *ctx,
->                                            const char *fmt, va_list args)
->  {
-> @@ -476,6 +511,12 @@ static int dump_btf_c(const struct btf *btf,
->         printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
->         printf("#pragma clang attribute push (__attribute__((preserve_acc=
-ess_index)), apply_to =3D record)\n");
->         printf("#endif\n\n");
-> +       printf("#ifndef __ksym\n");
-> +       printf("#define __ksym __attribute__((section(\".ksyms\")))\n");
-> +       printf("#endif\n\n");
-> +       printf("#ifndef __weak\n");
-> +       printf("#define __weak __attribute__((weak))\n");
-> +       printf("#endif\n\n");
->
->         if (root_type_cnt) {
->                 for (i =3D 0; i < root_type_cnt; i++) {
-> @@ -491,6 +532,10 @@ static int dump_btf_c(const struct btf *btf,
->                         if (err)
->                                 goto done;
->                 }
-> +
-> +               err =3D dump_btf_kfuncs(d, btf);
-> +               if (err)
-> +                       goto done;
->         }
->
->         printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
-> --
-> 2.42.1
->
+I do really wonder why probing failed, though? TAP1 sounds like a good
+choice as well. I mean we consider SMPCMP only if all TAPs are good. So,
+if probing fails, that means that SMPCMP was non-zero all the time?
+
+That being said, our code to select the best TAP from SMPCMP is really
+not considering the change point :( It just picks the first one where
+SMPCMP is 0. We are not checking where the change point is and try to be
+as far away as possible.
+
+> root@smarc-rzg3s:~# md5sum out test
+> b053723af63801e665959d48cb7bd8e6  out
+> b053723af63801e665959d48cb7bd8e6  test
+>=20
+> Do yo consider this enough?
+
+Yes, if done 100 times ;)
+
+I hope this mail was helpful?
+
+Thanks and happy hacking,
+
+   Wolfram
+
+
+--SUT9mnFBoIjH0mM+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXEJqAACgkQFA3kzBSg
+KbbJjA//f78KW4RL6ZMw+SWo1hQv3MKE3O7tqm8UYY6OBFSWNNSyGE6BDnw3AyZJ
+7DnskBvXLjlPWi1m+De/il+6vUUKQZ/xup1cCjQEYr4IpFOKYQQVH6g+K6l6FJVj
+ZDoqi6pHocY2sPyURZebfOdz+ynuFzZXGqsnc8HLEiaX/Gy1vm8O8taO4L6zYfT4
+RmSGP5nU3zm7C/BbreupPvPQpEMwHxQgMz4mtiC5MlaVqVI0Vc+fICUO2NlNjYpz
+33cDVBfbmceVw6DqddPRPPPnAuSV21MhwoA6Cdvj/VzzXG2I+ZDZsBtPAPVDfY1H
+G8rbyb3FUwhu+7mhNoNgA00vnP82M7GADMCQX3usElqNjxtbPB+2NrF99QOGTnQn
+hC5lQdX6J56ZGllJaEG/M/xKKnZPhEpn9ISwxqUlUzsmzicEsGjIgpbtn4k6lg7Y
+o4bHCDZQfFIP1rHOPjMUuGNTVt+7r9qC/Litwl1utiJ/u4vZEDfeDYIo7qVlg1Ly
+kvtQw4n6YKQUd1sobcmHkC6IKfh2JyX+VxczgdTuqWQ41LizjtMFNdXH+IrZ485W
+fw0mX9AsCSQHXdAIUgHrLJ7naKVIL6GPjsC2nBgTut0JpLnIxFvVQ1qrD/AmsHe5
+cWSNYhh9wocFt9jZ22DtVF1evm6s7fgzACndkJVcCSuxk7JFG8s=
+=BsWR
+-----END PGP SIGNATURE-----
+
+--SUT9mnFBoIjH0mM+--
 
