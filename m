@@ -1,210 +1,125 @@
-Return-Path: <linux-kernel+bounces-58503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C144484E73D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:02:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6491E84E73F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEFC31C2485C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:02:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20D982832D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C17D87B3C2;
-	Thu,  8 Feb 2024 18:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0006584FA4;
+	Thu,  8 Feb 2024 18:03:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XA9aUMSv"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UbbMaIqH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8081482D6E
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 18:02:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB8B82D6E;
+	Thu,  8 Feb 2024 18:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707415369; cv=none; b=PssAeMR3SKkNlTqzNaCuwS4/aCqzzHPrvskZB79Cw7l9drQrPTcfGE9LPIk9TUS6xBsRLIBGwppQnKkrOgsrX8SGPXk/lbFwpPoY3t6pqlDckUpklEYLfIXSqJMBZxHhey1WOHtC3Wtm4B1C9KFPABOfo5Yfol87FWyKiN2q+/8=
+	t=1707415401; cv=none; b=Swlf8UC9aOcVZQZqdXiUSVjVzJWl8pDOwx06kWaTL0uPiBGCp1/rKq+li09fjRvvYoa6Bsa0g/HBJbfF3CWj7hlUY/FCT4qgHe6nT3ohUG9nnMwiz4bl1YySuUFSi4ERCmYlgs0OUChlfmPZl040FFM/dcct73Do29sdyAZRTyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707415369; c=relaxed/simple;
-	bh=FuQ27L0U872pyEj2Fitay1U8Ho3dI8X/cvhNZEhe4Lg=;
+	s=arc-20240116; t=1707415401; c=relaxed/simple;
+	bh=SflXpkK8SwfV6EA0RSn49xTMuoxJ95n7w6hQuP1ovoA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ocaHtHvzaJpq84k3CZSTRMbv5MWzatSHCOAomor1Rt1D4Eg2t4F/P58MYCpk4/j6iWxj5nsEbPjvcfoxt9wdfGEyfyzDTZWlUnji8kTGJ2wfdukU6ywF20YHw3BwIUekAlMV6fbBZwGKsmt/slzIMGFarw9qJFmvAwgnFRmFDjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XA9aUMSv; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707415367; x=1738951367;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FuQ27L0U872pyEj2Fitay1U8Ho3dI8X/cvhNZEhe4Lg=;
-  b=XA9aUMSvXUAUPCQMKCx2BFxxgADZIREzcf2oZ6TkhxOBQc938UAoTi8D
-   1rE/Jz++CGYGnlnGcAt5xGxqxFqVUcZfMxNXGJ37XwpNYgl+XRQjrNZ9p
-   OWhrpd+jvTrqfiUcAgQmnSQ/cw4ZVHHR2kPZyMQ4M54p3Nw6exo/5IocJ
-   frXBRKfJ0UtK38y6qIXWNQo1dKYNGJMTA1t+smo5ko+Ww9LOKECAo8f+w
-   Bvm2tu6tNrRqZT0vZcUYLdlEhe6zz96nNdQbykc5xEQ36ZRgXP3ze0WUe
-   XG0IRwPVl3LnI+4CzzigzKVqXWRVksB2G2gvVlUp7H9R6YFH5JFrb6D7Q
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="1436673"
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="1436673"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 10:02:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="910449233"
-X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
-   d="scan'208";a="910449233"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 10:02:43 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rY8jQ-00000002wZp-0qwz;
-	Thu, 08 Feb 2024 20:02:40 +0200
-Date: Thu, 8 Feb 2024 20:02:39 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Howard Yen <howardyen@google.com>
-Cc: hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-	gregkh@linuxfoundation.org, rafael@kernel.org, broonie@kernel.org,
-	james@equiv.tech, james.clark@arm.com, masahiroy@kernel.org,
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev
-Subject: Re: [PATCH v3] dma-coherent: add support for multi coherent rmems
- per dev
-Message-ID: <ZcUXP14Ng8g5vw1j@smile.fi.intel.com>
-References: <20240208152808.3712149-1-howardyen@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WqQDRfHwjRZBCmpzuFPDGVPxXy+h25vEMaAYkbSXcXdvdmirzDnRNxwexPTh+qQwsiA6t6kUOGYfyYFl1gvq0fLzvB0lq5Q2Cz6zgPcBClst05PT9OTec9cyPoLG8b7yVOfpUvQKd//Uj9MwcGCIIAba6p4rkYnRBgW53Ubdnag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UbbMaIqH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBE3AC433F1;
+	Thu,  8 Feb 2024 18:03:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707415400;
+	bh=SflXpkK8SwfV6EA0RSn49xTMuoxJ95n7w6hQuP1ovoA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UbbMaIqHXQgLF2N3WdPp7XnxKM1r58M64i0EGmKM4Z/JSbAjw1OYE2czzzdru5sJW
+	 ZVFIpda5xLbbOuvw3soXdKhsRtVD68ZqsZaUUVzti9lWga5ZQUU2WkTzL6MJv/pBl8
+	 QRe6T2u9ZnyNktHTeqqswLct5MTVvKHLxsi0fzVk5N3DxM7jODRZrCXzKh83bkOR5c
+	 usKz4FivKf7DRzua/9FFbsIiNdfeLnv9yosO4c0JvFDnlasejjxtRPlLslcxrAatva
+	 8LmeopxvFw4XJbeaHuq8XqtXhrnie7dfqg1s5kfyQSjk3nn69j0cNXhZgFoqexuLvk
+	 tN5SFYD6XM0lA==
+Date: Thu, 8 Feb 2024 18:03:15 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Alisa-Dariana Roman <alisadariana@gmail.com>
+Cc: alexandru.tachici@analog.com, alisa.roman@analog.com,
+	conor+dt@kernel.org, devicetree@vger.kernel.org,
+	dlechner@baylibre.com, jic23@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
+	lars@metafoo.de, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org, michael.hennerich@analog.com,
+	robh+dt@kernel.org
+Subject: Re: [PATCH v3 4/5] dt-bindings: iio: adc: ad7192: Add AD7194 support
+Message-ID: <20240208-occupancy-shudder-514d8569e261@spud>
+References: <20240208172459.280189-1-alisa.roman@analog.com>
+ <20240208172459.280189-5-alisa.roman@analog.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Rp3tYQwRmI9LNr60"
+Content-Disposition: inline
+In-Reply-To: <20240208172459.280189-5-alisa.roman@analog.com>
+
+
+--Rp3tYQwRmI9LNr60
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240208152808.3712149-1-howardyen@google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Feb 08, 2024 at 03:28:05PM +0000, Howard Yen wrote:
-> Add support for multiple coherent rmems per device. This patch replaces
-> original dma_mem with dma_mems list in device structure to store multiple
-> rmems.
-> 
-> These multiple rmems can be assigned to the device one by one by
-> of_reserved_mem_device_init_by_idx() with the memory-region
-> declaration in device tree as below and store the rmem to the dma_mems
-> list.
-> 
-> 	device1@0 {
-> 		...
-> 		memory-region = <&reserved_mem0>, <&reserved_mem1>;
-> 		...
-> 	};
-> 
-> When driver tries to allocate memory from the rmems, looks for the first
-> available rmem and allocates the memory from this rmem.
-> 
-> Then if driver removed, of_reserved_mem_device_release() needs to be
-> invoked to release all the rmems assigned to the device.
+Hey,
 
-..
+On Thu, Feb 08, 2024 at 07:24:58PM +0200, Alisa-Dariana Roman wrote:
 
->  	struct dma_coherent_mem *mem;
-> -	int ret;
-> +	int retval;
->  
->  	mem = dma_init_coherent_memory(phys_addr, device_addr, size, false);
->  	if (IS_ERR(mem))
->  		return PTR_ERR(mem);
->  
-> -	ret = dma_assign_coherent_memory(dev, mem);
-> -	if (ret)
-> +	retval = dma_assign_coherent_memory(dev, mem);
-> +	if (retval)
->  		_dma_release_coherent_memory(mem);
-> -	return ret;
-> +	return retval;
-
-This is unrelated change.
-
-But why? Do you have retval in the _existing_ code elsewhere?
-
-
-..
-
->  int dma_alloc_from_dev_coherent(struct device *dev, ssize_t size,
->  		dma_addr_t *dma_handle, void **ret)
->  {
-> -	struct dma_coherent_mem *mem = dev_get_coherent_memory(dev);
-> +	struct dma_coherent_mem *mem_tmp;
->  
-> -	if (!mem)
-> +	if (list_empty(&dev->dma_mems))
->  		return 0;
->  
-> -	*ret = __dma_alloc_from_coherent(dev, mem, size, dma_handle);
-> +	list_for_each_entry(mem_tmp, &dev->dma_mems, node) {
-> +		*ret = __dma_alloc_from_coherent(dev, mem_tmp, size, dma_handle);
-> +		if (*ret)
-> +			break;
-
-This bails out on the first success. Moreover, if one calls this function
-again, it will rewrite the existing allocation. Is this all expected?
-
-OTOH, if you add multiple entries and bailing out on error condition it should
-be clear if the previous allocations have to be released.
-
-> +	}
-
->  	return 1;
-
->  }
-
-..
-
->  int dma_release_from_dev_coherent(struct device *dev, int order, void *vaddr)
->  {
-> -	struct dma_coherent_mem *mem = dev_get_coherent_memory(dev);
-> +	struct dma_coherent_mem *mem_tmp;
-> +	int retval = 0;
+> +patternProperties:
+> +  "^channel@([0-7a-f])$":
+> +    type: object
+> +    $ref: adc.yaml
+> +    unevaluatedProperties: false
 > +
-> +	list_for_each_entry(mem_tmp, &dev->dma_mems, node) {
-> +		retval = __dma_release_from_coherent(mem_tmp, order, vaddr);
-> +		if (retval == 1)
-> +			break;
+> +    properties:
+> +      reg:
+> +        description: The channel index.
+> +        minimum: 0
+> +        maximum: 7
 
-Same Q here.
+There are only 8 possible channels, at indices 0 to 7, so why is the
+pattern property more permissive than that? Shouldn't "^channel@[0-7]$"
+suffice?
 
-> +	}
->  
-> -	return __dma_release_from_coherent(mem, order, vaddr);
-> +	return retval;
->  }
-
-..
-
->  int dma_mmap_from_dev_coherent(struct device *dev, struct vm_area_struct *vma,
->  			   void *vaddr, size_t size, int *ret)
->  {
-> -	struct dma_coherent_mem *mem = dev_get_coherent_memory(dev);
-> +	struct dma_coherent_mem *mem_tmp;
-> +	int retval = 0;
->  
-> -	return __dma_mmap_from_coherent(mem, vma, vaddr, size, ret);
-> +	list_for_each_entry(mem_tmp, &dev->dma_mems, node) {
-> +		retval = __dma_mmap_from_coherent(mem_tmp, vma, vaddr, size, ret);
-> +		if (retval == 1)
-> +			break;
-
-And here.
-
-> +	}
 > +
-> +	return retval;
->  }
+> +       diff-channels:
 
-..
+> +        description: |
+> +          The differential channel pair for Ad7194 configurable channels. The
+> +          first channel is the positive input, the second channel is the
+> +          negative input.
 
-With the above Q in mind, here is another one: Why can't we allocate all at once?
+This duplicates the description in adc.yaml
 
--- 
-With Best Regards,
-Andy Shevchenko
+> +        items:
+> +          minimum: 1
+> +          maximum: 16
 
+Hmm, this makes me wonder: why doesn't this match the number of channels
+available and why is 0 not a valid channel for differential measurements?
 
+Thanks,
+Conor.
+
+--Rp3tYQwRmI9LNr60
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcUXYwAKCRB4tDGHoIJi
+0kl+AQC98IfDjABHtVsFckhffOx27fA9Ms+JQBbJ5iVop4SrEwEAkr5hI1PonKfm
+IEj2BwHwm0qUl7HTq928BlyZg9nkHgo=
+=qjtc
+-----END PGP SIGNATURE-----
+
+--Rp3tYQwRmI9LNr60--
 
