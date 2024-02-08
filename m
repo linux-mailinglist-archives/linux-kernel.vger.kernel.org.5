@@ -1,81 +1,110 @@
-Return-Path: <linux-kernel+bounces-58742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92FF184EAEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:54:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 069A884EAD1
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:49:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44625B21951
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:54:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 382D41C21B9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BA04F5F3;
-	Thu,  8 Feb 2024 21:54:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF3034F5F2;
+	Thu,  8 Feb 2024 21:49:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="ZfWN5SAa"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Epw1u4gG"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2634F219;
-	Thu,  8 Feb 2024 21:54:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256184F1FA;
+	Thu,  8 Feb 2024 21:49:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707429264; cv=none; b=gh5zPf8u5p+O6n+QJheohe/U6sYyyC1r1sS3WrWSQDyGPIkUWyK0fBaVGuOU0/Du8aoDVNgzlQTaDbeuLgoJQJKUNmStUEQyOoAT8urLp5+4vEhatUFJfC8fomXXp3viNYOj07gYzzbwdviASdQghcL/vP6zxzDRIBcSkddd4K8=
+	t=1707428953; cv=none; b=EPTPEyUUdIq5BwSbQAQp8A1WCLRdzN5JzwFpwlEiDW6qPnKVVcSxniPqFl9YxVALXWo/6KPRZU/xEgzuOzfpvk5K6kPDXjeDSSoC16gIqR63B0v67Zg4hzCnt9xYrakExdGfWMGePPsPMH2LkiodH23B1dgZMGzGLKmbZYazWss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707429264; c=relaxed/simple;
-	bh=78OlWKA8etugimLgU7LOFg8JohEzP01qVuc5Gal/3PE=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Ld8FZuNuRks/AAYjtYx+9epzCn6YjQpV1rE/Cu7ZFxrthKy0X1TV/YeZhuiAdO7HoqXUgwsgc3N4cTqC2/24puJbl9An4NGhFZV2TMWuYiCX7CHZaitV6pqFMVMLicQmX+zHVmSFLAhauRpQsgY192LbeP1YXJqJUiLjODuNntA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=ZfWN5SAa; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from [192.168.68.112] (ppp118-210-182-175.adl-adc-lon-bras34.tpg.internode.on.net [118.210.182.175])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id DA2DA200DB;
-	Fri,  9 Feb 2024 05:48:55 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1707428937;
-	bh=78OlWKA8etugimLgU7LOFg8JohEzP01qVuc5Gal/3PE=;
-	h=Subject:From:To:Date:In-Reply-To:References;
-	b=ZfWN5SAaLQLAwMnWoCYSgD6iqURUOgdTNIkdCkqNrx5U5B80lHFXAJIzRb+qn1jc7
-	 K3rm2BEm1lTXvVe5zgsXUp3APyUZzLVm4dNJThFG2vOuksDysx5EhSIWcfZ0Ex3nTn
-	 m+nm06OKO4Oa7LEInZDnLb0LT/DsdjWDQ+BzMUOsGLS7fKDk4Ps+37g2aQpNBQgD7d
-	 RSiGYlsmA257KG7mh9H5TacHKhg3moWEwC/MT7Xwg7ynnMiQOrPxICLzFgXFZCC70s
-	 v7kRnz+bQ1yx0A45B0n72yT2dPXPCsK5IsHdmDDciTD1+aSZDxUYLgEXUpkytrgTGK
-	 btQfOFzoRcgLw==
-Message-ID: <d5d488f2777b34d744d07fbd94f525ae381dca44.camel@codeconstruct.com.au>
-Subject: Re: [PATCH 1/1] ARM:dts:aspeed: Initial device tree for AMD Onyx
- Platform
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: Supreeth Venkatesh <supvenka@amd.com>, Supreeth Venkatesh
-	 <supreeth.venkatesh@amd.com>, joel@jms.id.au, andrew@aj.id.au, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
-	openbmc@lists.ozlabs.org, robh+dt@kernel.org
-Date: Fri, 09 Feb 2024 08:18:54 +1030
-In-Reply-To: <d4fe8b55-a1ea-4ce7-89ac-ce17e8ff4e45@amd.com>
-References: <20240110033543.799919-1-supreeth.venkatesh@amd.com>
-	 <d4fe8b55-a1ea-4ce7-89ac-ce17e8ff4e45@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1707428953; c=relaxed/simple;
+	bh=W9H1dMPgPIL5i1UR+hwxooAFq6EmFfqz+7/zm6pmdQQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AWcNLucocmUeWRLP9VYe3gIErxFY1B0j2QTbZH3yfvrn2lSF9YDo7qYaLLBFvyr1MC/EwViP+2ud2K5ail9dEU1OOkMr+FLgUERfPJRCYpPOMB0OS5mUSjvpz05ns3TfmkbmunWt5v0McogeMUV0iWSmFc5PM+Ahr36KAHzLlC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Epw1u4gG; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707428951; x=1738964951;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=W9H1dMPgPIL5i1UR+hwxooAFq6EmFfqz+7/zm6pmdQQ=;
+  b=Epw1u4gGWLBr7Nd+OqgUYmFhoEYBpFrbFJczibMFYnLcAOiaSVXCCPqA
+   WJBEdg5CHO/2G/gLuFu3fp/7RYS6mN8BpS8J02YulKyJSUPIYYTX7JhcT
+   qBT4PgLFXUT6i49jg/uz5S9KTyWkatMFSdbH1yj3KKrdKn/5WWwgHoAjo
+   5yFt76O2bzt4cgC0eNCrrkwuVOnY0YEBNF0fcvcMw5dGGXv/nxWq0Cxqb
+   c6MmgF53ftbgXlfLL6wL1woTDE9svfz6T1ywd7JIORHHxqFwUgbN61Bva
+   kB97HqhXN9DiAv/kbwnaObWOYksD4WIoZP+P6MdtM5YolHIhfH8iAqQu1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="1212227"
+X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
+   d="scan'208";a="1212227"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 13:49:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,254,1701158400"; 
+   d="scan'208";a="6543608"
+Received: from millermi-mobl1.amr.corp.intel.com (HELO [10.255.229.182]) ([10.255.229.182])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 13:49:09 -0800
+Message-ID: <fa57daac-c59f-4d4a-a4bf-83cf584dc099@linux.intel.com>
+Date: Thu, 8 Feb 2024 13:49:09 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/8] platform/x86/intel/sdsi: Set message size during
+ writes
+Content-Language: en-US
+To: "David E. Box" <david.e.box@linux.intel.com>, netdev@vger.kernel.org,
+ ilpo.jarvinen@linux.intel.com
+Cc: linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+References: <20240201010747.471141-1-david.e.box@linux.intel.com>
+ <20240201010747.471141-2-david.e.box@linux.intel.com>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240201010747.471141-2-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, 2024-02-08 at 08:57 -0600, Supreeth Venkatesh wrote:
-> This patch is pending for a month now.
->=20
-> Can DT maintainers please help review this and provide feedback?
 
-Joel's on leave and I'm having to manage some personal concerns as well
-as other professional priorities.
+On 1/31/24 5:07 PM, David E. Box wrote:
+> New mailbox commands will support sending multi packet writes and updated
+> firmware now requires that the message size be written for all commands
+> along with the packet size. Since the driver doesn't perform writes larger
+> than the packet size, set the message size to the same value.
+>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
 
-I'm trying to find time to address the BMC patch backlog but it really
-is a best-effort thing at the moment.
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-Andrew
+>  drivers/platform/x86/intel/sdsi.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/platform/x86/intel/sdsi.c b/drivers/platform/x86/intel/sdsi.c
+> index 556e7c6dbb05..a70c071de6e2 100644
+> --- a/drivers/platform/x86/intel/sdsi.c
+> +++ b/drivers/platform/x86/intel/sdsi.c
+> @@ -252,6 +252,7 @@ static int sdsi_mbox_cmd_write(struct sdsi_priv *priv, struct sdsi_mbox_info *in
+>  		  FIELD_PREP(CTRL_SOM, 1) |
+>  		  FIELD_PREP(CTRL_RUN_BUSY, 1) |
+>  		  FIELD_PREP(CTRL_READ_WRITE, 1) |
+> +		  FIELD_PREP(CTRL_MSG_SIZE, info->size) |
+>  		  FIELD_PREP(CTRL_PACKET_SIZE, info->size);
+>  	writeq(control, priv->control_addr);
+>  
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
+
 
