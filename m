@@ -1,118 +1,100 @@
-Return-Path: <linux-kernel+bounces-57496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A39284D9D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:13:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A79684D9D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 07:13:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 177921F23BD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:13:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C363BB215FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:13:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C5BD67C7D;
-	Thu,  8 Feb 2024 06:13:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7DA67E61;
+	Thu,  8 Feb 2024 06:13:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jdIp4XnV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p+XQ4ddG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5CA149E1B;
-	Thu,  8 Feb 2024 06:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A8D1B7E4;
+	Thu,  8 Feb 2024 06:13:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707372790; cv=none; b=cUA7oTMWFnx7tiU+Gapil9F1WwR/ZCb6DDU0qVtcSf+tL3L+0HyLaU5cQHSFNo50Hs0dIoqymsnqz7lygU26pTqyY7iOi33gqqburCdqcb0C5eKtRi8SSh+8vgveDGvtmaXtwowuhHyEZBxyKAGOwaXHtU2kotssRd0oVEOUJAM=
+	t=1707372811; cv=none; b=qgcjipoW2u5D8oWIIW4wrB1VOyZWLBr7qzPj2Q7iGqyFW5SyDTUxJCmrNCSp90O8n/7YMfEV3Vakqk4G5ziPWVbkRb8ZqoVZEopkArFGYc5sJv9a5Y0D/nCLrNF5izLrDmebKgdwX5N8OpHKMZjCyGjVjr+KdqezJBvkRzaoYFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707372790; c=relaxed/simple;
-	bh=GM6dCu14KCN1BOx/s18QrtfrcQp10p30WtEoq/gOMJc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZWrZNngueczW1yqh1tx8DSln6EV3NYwu0AzARlEJcOJHDSV1zItsqY/Ko0nMNRXaZJk4jdMxsbJo/rY2eymUjAruiAqR2ByWkF8JfNxVYAf0q3wMmNEkI2PlN4ZJ8VoWoZ7slXVqfYDiqyt3hyluRDq862BUMZduy3akjzcc1p4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jdIp4XnV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14665C433F1;
-	Thu,  8 Feb 2024 06:12:59 +0000 (UTC)
+	s=arc-20240116; t=1707372811; c=relaxed/simple;
+	bh=nsCkbUSpn4ND+bMVOeVBw6ofU7yKaK/RS9W+GLDO+A0=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=S3QCLYMPFHEskLB7iL81CFAW2fI/o00wK8hh5IxDb5M17qL2Xy6X/DOX9Ek8YwtVVch3V3g9nP9kZT+n285We0ZC6Xk19vDz+FZcPz8iMrnDATwKsJ/riSL6C4G1gnkuSvi2JqesKIxs1jGWRFNfOS1Vbr7+vhCVP9zxu++B32w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p+XQ4ddG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB152C433C7;
+	Thu,  8 Feb 2024 06:13:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707372790;
-	bh=GM6dCu14KCN1BOx/s18QrtfrcQp10p30WtEoq/gOMJc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jdIp4XnVq2YCQ14TsRYu7WYNhoVL6BtKWfrsAzOeRc9Q/LguXmaF83ZhM1oP2znC0
-	 siSpiD4L44v0Kuav3FN/xGm6jWEBJo8+TeNLIF+gp4XZpws4AEcgm0b+gUqDsD4nu/
-	 mPww9jaa2QmsL/6Blxo4KILZsLAhwPAv4xojEYk8GtoK6rqv3I2dTvyt0zotDTLn03
-	 pIyzShY74h7lo4nvR7U7/QBb8+rwHG007doptEwwKyv2ORXjLL3eJOGKQzSrpnI7gO
-	 7Geegg/lj6oFSJVhLduHTHpZgQcBaQWBYS5ib3MOz3fvWQ50+I2DUGSCC0ku6pAFSO
-	 q8ndS3rQIwGZA==
-Date: Thu, 8 Feb 2024 08:12:44 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org
-Subject: Re: [PATCH v3 03/15] nios2/pgtable: define PFN_PTE_SHIFT
-Message-ID: <ZcRw3GoICHW_KgT4@kernel.org>
-References: <20240129124649.189745-1-david@redhat.com>
- <20240129124649.189745-4-david@redhat.com>
+	s=k20201202; t=1707372810;
+	bh=nsCkbUSpn4ND+bMVOeVBw6ofU7yKaK/RS9W+GLDO+A0=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=p+XQ4ddGNkKzd/pkWukSVBmefz9cJUMcZHu94mL8HEGBafi6UHdqxTAKPzJMkKyfV
+	 lIwBHrVTH+HB+3cWxE8ppy0jFMDvmW2gC2wCB7r5iTTCDMmRZoF107Mbv6L2WoxHVg
+	 poYeWZcuvSGCvWQcODOtduX2TqME7Zp1kOyevLRRXWJ18f70kVFrPMYPKrfz7ivROQ
+	 yCGsDW9KusRqQLMhzD8fFEm2oeRXwCEz9vqtve3x6KxkmrRPf9CKjV0toT89vLAAf7
+	 E7V/mRtAhMloK5YX7b3uDnWDtOW0uqDWYr3zIC+sT9bdmu6as17z7KrkFtVPGrv/to
+	 pAH2gZZ/mcaiQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Linux PM <linux-pm@vger.kernel.org>,  Gregory Greenman
+ <gregory.greenman@intel.com>,  Miri Korenblit
+ <miriam.rachel.korenblit@intel.com>,  Johannes Berg
+ <johannes.berg@intel.com>,  linux-wireless@vger.kernel.org,  LKML
+ <linux-kernel@vger.kernel.org>,  Daniel Lezcano
+ <daniel.lezcano@linaro.org>,  Stanislaw Gruszka
+ <stanislaw.gruszka@linux.intel.com>
+Subject: Re: [PATCH v1 0/3] iwlwifi: mvm: Thermal management fixes
+References: <1892445.tdWV9SEqCh@kreacher>
+Date: Thu, 08 Feb 2024 08:13:26 +0200
+In-Reply-To: <1892445.tdWV9SEqCh@kreacher> (Rafael J. Wysocki's message of
+	"Wed, 07 Feb 2024 20:08:18 +0100")
+Message-ID: <875xyzh4ah.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240129124649.189745-4-david@redhat.com>
+Content-Type: text/plain
 
-On Mon, Jan 29, 2024 at 01:46:37PM +0100, David Hildenbrand wrote:
-> We want to make use of pte_next_pfn() outside of set_ptes(). Let's
-> simply define PFN_PTE_SHIFT, required by pte_next_pfn().
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+"Rafael J. Wysocki" <rjw@rjwysocki.net> writes:
 
-Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> There are a few thermal management shortcomings in the iwlwifi driver that are
+> addressed by this series.
+>
+> First off, the fw_trips_index[] array field in struct iwl_mvm_thermal_device
+> is only populated and never read, and the code populating it has problems,
+> so patch [1/3] removes it.
+>
+> Second, iwl_mvm_thermal_zone_register() populates the trip table after passing
+> it to thermal_zone_device_register_with_trips() which is too late, because it
+> can get used before it is populated.  It also may as well use THERMAL_TEMP_INVALID
+> as the "invalid temperature" value.  Both these issues are addressed by patch [2/3].
+>
+> Finally, iwl_mvm_send_temp_report_ths_cmd() accesses the trip tables used during
+> thermal zone registration directly in order to obtain the current trip point
+> temperature values, which is not guaranteed to work in the future, because the
+> core will store the trips information in its own copy of the trip table - see
+> this patch series:
+>
+> https://lore.kernel.org/linux-pm/2728491.mvXUDI8C0e@kreacher/
+>
+> If possible, I'd like to route the $subject series through the thermal tree,
+> it is requisite for the above one.
 
-> ---
->  arch/nios2/include/asm/pgtable.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/nios2/include/asm/pgtable.h b/arch/nios2/include/asm/pgtable.h
-> index 5144506dfa69..d052dfcbe8d3 100644
-> --- a/arch/nios2/include/asm/pgtable.h
-> +++ b/arch/nios2/include/asm/pgtable.h
-> @@ -178,6 +178,8 @@ static inline void set_pte(pte_t *ptep, pte_t pteval)
->  	*ptep = pteval;
->  }
->  
-> +#define PFN_PTE_SHIFT		0
-> +
->  static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
->  		pte_t *ptep, pte_t pte, unsigned int nr)
->  {
-> -- 
-> 2.43.0
-> 
-> 
+iwlwifi is getting a lot of patches lately, though I don't know if any
+of them touch the thermal stuff. But if this patchset goes to the
+thermal I am a bit worried about conflicts.
 
 -- 
-Sincerely yours,
-Mike.
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
