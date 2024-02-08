@@ -1,125 +1,110 @@
-Return-Path: <linux-kernel+bounces-58692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2AF884EA08
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:02:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A31784EBE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 23:50:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 545FC1F2C325
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:02:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0623B28AADC
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B73EC4C3D0;
-	Thu,  8 Feb 2024 21:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCAC850261;
+	Thu,  8 Feb 2024 22:50:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gWLEbdJl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BgBNulay"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED68D149DF8;
-	Thu,  8 Feb 2024 21:02:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0FFF50256;
+	Thu,  8 Feb 2024 22:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707426163; cv=none; b=PyHDmeuqRxIYx2YR8jIpGnZtsqA0Ax7zNdml1LM2n/xs3PCNWUpmftw1S1JruptprmwxQEmxPB2cA0sLrdsXyysL6UprhV0DLsSFB3sT98ujJzCfkJmrZ/PBAjIZqrcg+F6GiCYBJGnUIiSGIt7ucOjGmkEtcyuixr83FA30G4M=
+	t=1707432623; cv=none; b=PEMBB5qAVUQINRX9DWGmy/iUMmDPPES/5h77UzTuz9ay2J9xpAHyow1qhB+NvOmMZotOlYvJMp3LKwqFvw8U14q/R/WQeOA3R6sI1USe0EvRxCnV/dU639C6DD8t85TVrEl1a89sV7+BMNRgkMC80rFFQbeIUKEl6rrX6FKAQ/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707426163; c=relaxed/simple;
-	bh=9o+cviq5kEoHDzHUTgK5/QBBVE/KPaRbFcYqh1I4jLM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S3K5D8xAlNgRm/dLjrsaBYyC3Sr5QSD6kzJ6oYYPqL9w8GcNXch4tVrwhtX6MQf6MYDi4MV7j5Xiqn33kfp4R4aNIvCFyJDjJ85nuLe9jhyAt4QYvIZFdHpC/4MRIzqqtFXtQrol5M8MWgEyP32ujNOK8/mhBsnjBAtlZUJl9Us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gWLEbdJl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40310C433C7;
-	Thu,  8 Feb 2024 21:02:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707426162;
-	bh=9o+cviq5kEoHDzHUTgK5/QBBVE/KPaRbFcYqh1I4jLM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gWLEbdJlYl/ZYqS0IDroMY0q3MKyhayNdE3lxjCV8DseZVr0HAsMYVgBIPZthF6Ni
-	 cG/kZeF5dWlyRKgqKZx6Je1i1hcYG9HM3k+P+qqNipRim4O9xo9wNbEVLr9k22Kr/m
-	 N+lrEYH6s1yHBLpEryXvwY6+6yFYdjP6dlBS0btEgPDSjAyi8GdGwqc2X1Er4S4sp0
-	 Qb6IGt2czmBZPofBcQ/nigwIEGHl6QEvZGdkuHfj1QWjM00H/4Bqk/NnlVBx5Nx2TD
-	 1JQJgvR1Od4cUoha3xUzYs2A/s90HvVLmmfSxenzeB/4maAo2LjoDWKALPUocwje4o
-	 m5H6LmzdLQaAQ==
-Date: Thu, 8 Feb 2024 21:02:37 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH v2 1/1] dt-bindings: pci: layerscape-pci: Convert to yaml
- file
-Message-ID: <20240208-moisten-jaws-35a4935dca44@spud>
-References: <20240207231550.2663689-1-Frank.Li@nxp.com>
- <20240208-subfloor-polka-96bbbbc27fb0@spud>
- <ZcUyqaxf52GivQnd@lizhi-Precision-Tower-5810>
+	s=arc-20240116; t=1707432623; c=relaxed/simple;
+	bh=QQbWm1vnzLUS1txRr9hch/TyTh+VOwAmW8Axv2tX8O8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=YcMCp/jlSLdQ8TR/nGHiMu5yezQPDnymWVi2nb4SMCv6/jkvLMLVsKzL9CiGs4ynev/gUVBsc0Maj3rey6Y8+1BSv+uaQrvPhX1I7QzOoJIVGCLJa1ueOFl794jTrPiGT0XPxipPtqr6oJ/2oQoWXXUY1zo0/0YWoELfUbO6lrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BgBNulay; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3bfeb155d31so144132b6e.1;
+        Thu, 08 Feb 2024 14:50:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707432620; x=1708037420; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MGoqD8TT68ixzRNm3vNixXDLMpdkKEucKJo6ktMulao=;
+        b=BgBNulay1MXMfxpqEYVvKTuArU58i7RXPInBmj5ZkrsFnzBdvx4eSJCACHSsm3m01M
+         lLfOPwtqP5yp1MXmLcQ3V2uBsgaxm9qR5MMiI+38ZENrg7yXs2HnQS17fbAom7a8DMeV
+         hUW5CvsHUZSO3iNVzzs0uGyMEZFHRmuT2LLbJhG/+o7gTI2omc/Eps9Sx+X8tBb3VAkm
+         t8Do2h/ziUOoAv9/GvbywmCPJ/V+H4Zl1mW5qyWGWSEjuqkGdkCShELnYeT4hIMxsY5D
+         ivPO23GJUou+w9EOXGME75XT7MF/JcNlYLKAUvt3A/m2sYEHeyXYFzuHdF9BWNbBK66k
+         05oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707432620; x=1708037420;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MGoqD8TT68ixzRNm3vNixXDLMpdkKEucKJo6ktMulao=;
+        b=QAPdCyQc0Tf5eQvdLa2UaFcXY85rpBAykkZYzA9hy0haWjfkqfGgwdU/NkaYBR4p/b
+         Acr0C+dlFgTeHLEeqTOeiViH1Rj7VDn9jwL10eRYCue+aS5TiWRBuIY93cmrDyZ2o9KU
+         EyVXvISBsdWI1TXVLApdXvGGNiSoKfHrAvkOQyzcv9dat/uXCywaUPlvb7T2qrm3+W+w
+         6uWShJuUj2pGb+fUs1V7/gTh7kyiKb2VV51aOriY3FLpTdmXI3E28fHrGhkotlarNACk
+         oaaF7DZjBGO2YRR49ufKi7X0Ql13vZB7JYKr94Fol8PtOponSlmDqfgee/TkRD2bfqtp
+         fy4A==
+X-Gm-Message-State: AOJu0Yz381/sl2dEE5wgDPX0LWnS552G8JZGj1LTCCci6T7IruX6RfJP
+	DJMNIskxZ9+Ii9AGpo+5mhesBNCXcHK28cR9xi59pQk6GIGFIZWY
+X-Google-Smtp-Source: AGHT+IERRUQ4GDpJ49o40yXi6V2s2n9mKovBi13RS4qwlL6Kk00nSycdLPKOBYqEZOIxw7iA9TiRMQ==
+X-Received: by 2002:a05:6808:99a:b0:3bd:ca59:8f4 with SMTP id a26-20020a056808099a00b003bdca5908f4mr916041oic.33.1707432620697;
+        Thu, 08 Feb 2024 14:50:20 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWrdk7DGYjpSsbeF/CgHLCOVICu4qBMhDjjrKtVyldYxtifcOf07d0ouGzEjpLXZ5mVm6b8OoijaNmq/HpEx5rG3bzdDTCuOU8vUh9qWs0XkgRw+waz+bGhJAwsKpp42NKCfI+ngQlscsrpBrLHSzJ2vLhwLQnKlFbuY+/ZMknZ1lz/pcv8+FvxrVDqvgTY97EKCDc+EyQQXyAnK61fIEoDb7kuoH4RPwrodzx9kG/7Ao3tIR+cpEdPPXpB+qt+3xP8p96jB5BQiWEa0tztZE9swmqRsG67+MRscBVLrxCkXFspkOjdB1Dx/N1V3DbBEtpXMd7xIrELRbycb7r0ickyjQ4J0ZkZTwzDNKeP/VADxmtA9cbi7I8k
+Received: from localhost ([2601:8c:502:14f0:acdd:1182:de4a:7f88])
+        by smtp.gmail.com with ESMTPSA id e2-20020ac84b42000000b0042c3bb838cdsm173488qts.90.2024.02.08.14.50.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 14:50:20 -0800 (PST)
+Date: Thu, 8 Feb 2024 12:50:18 -0500
+From: Oliver Crumrine <ozlinuxc@gmail.com>
+To: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: remove check before __cgroup_bpf_run_filter_skb
+Message-ID: <ngc7klapduckb67tsymb3blu2wlmdsjo4pa4gbaivgxezbwzxp@v7akqu7gbwl4>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="WmaGg2xNACeUW1/d"
-Content-Disposition: inline
-In-Reply-To: <ZcUyqaxf52GivQnd@lizhi-Precision-Tower-5810>
-
-
---WmaGg2xNACeUW1/d
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 08, 2024 at 02:59:37PM -0500, Frank Li wrote:
-> On Thu, Feb 08, 2024 at 07:26:15PM +0000, Conor Dooley wrote:
-> > On Wed, Feb 07, 2024 at 06:15:49PM -0500, Frank Li wrote:
-> > > Convert layerscape pcie bind document to yaml file.
-> > >=20
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> >=20
-> > Please don't send new versions before giving people a chance to finish
-> > the discussion on the existing ones. This is not the first time in the
-> > last few days I am asking you this. Nobody pays me to review DT
-> > bindings, so you'll have to accept that I will take some time to reply.
->=20
-> Usb-glitch patch
-> v1, I sent at Jan 19.=20
-> v2, I sent at Jan 21.
-> v4, at Jan 24.=20
+Checking if __sk is a full socket in macro 
+BPF_CGROUP_RUN_PROG_INET_EGRESS is redundant, as the same check is 
+done in function __cgroup_bpf_run_filter_skb, called as part of the 
+macro.
 
-Actually, I think I need to apologise. My first reply to you on v1 came
-after you send the v4, so you didn't send new versions in that case
-during a conversation - but sending 4 versions in 5 days is just going
-to lead to people reviewing the old versions of a series. Please just
-take a little more time between versions :)
+Signed-off-by: Oliver Crumrine <ozlinuxc@gmail.com>
+---
+ include/linux/bpf-cgroup.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Generally, I send patch quick because I accepted their suggestion. It will
-> be clear base on the new version. There are not big dissension need be
-> discussed.=20
->=20
-> About this one, I think first one have bigger problem because just convert
-> txt to yaml file. Base on this version will be easy to discuss futher.
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index a789266feac3..95b4a4715d60 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -208,7 +208,7 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+ 	int __ret = 0;							       \
+ 	if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk) {		       \
+ 		typeof(sk) __sk = sk_to_full_sk(sk);			       \
+-		if (sk_fullsock(__sk) && __sk == skb_to_full_sk(skb) &&	       \
++		if (__sk == skb_to_full_sk(skb) &&			       \
+ 		    cgroup_bpf_sock_enabled(__sk, CGROUP_INET_EGRESS))	       \
+ 			__ret = __cgroup_bpf_run_filter_skb(__sk, skb,	       \
+ 						      CGROUP_INET_EGRESS); \
+-- 
+2.43.0
 
-> The samething for me, nobody pays me to work this patch, which is my extra
-> work.
-
-Thanks for spending your free time working on binding conversions :)
-
---WmaGg2xNACeUW1/d
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcVBbQAKCRB4tDGHoIJi
-0un1AP9TsH6E9Z5p9TZzobwdGratw7ep4NgGW8SdqVgfGcKhzwD/VoMWX8J7YO+m
-oh7+i17+eYHwZ6LfCUlirk576gpNTQ4=
-=5N4M
------END PGP SIGNATURE-----
-
---WmaGg2xNACeUW1/d--
 
