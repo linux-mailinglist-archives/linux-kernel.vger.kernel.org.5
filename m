@@ -1,214 +1,114 @@
-Return-Path: <linux-kernel+bounces-58597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D65484E8AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE02A84E8B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:07:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A559C1F2DA05
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:06:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9288D1F2F883
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:07:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26AB28DBF;
-	Thu,  8 Feb 2024 19:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A513288A7;
+	Thu,  8 Feb 2024 19:07:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="OeX9dN8p"
-Received: from relay.smtp-ext.broadcom.com (unknown [192.19.166.231])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YV61E/ar"
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA7725601;
-	Thu,  8 Feb 2024 19:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.166.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C6CD25601;
+	Thu,  8 Feb 2024 19:07:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707419171; cv=none; b=AZRNKJGrTRkADU3QGsJi6VlnoaolYwnz3+7lCXtwQjU4N0XRhq7W4UjQfThoiKbjK+Zv5drDM4bdvO7RVT6xcT8p03Kksd0Cb3k3YAMXA7pv11kQXVaxQkpWeOwLh4FnxBNC8k73Uhe4g/Z5arjnq4jyuu3rUcASkpyUodTh2+E=
+	t=1707419242; cv=none; b=hEhN33kDsnNUtUKFEDeVDdrD6KsMoZEAjR6+JXInJMtvwJn5vaKECSLsIG1I9UfkhrieCgOoV9ZgjKhpF5EpnIM/EUceb/+wUcg5zkbEWzoWc+IcOrPUndCzc2MCjPSmgwREkX+Y/hBz6jQrhk7Sjiv9FwfiSj1UtxG5phwbGOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707419171; c=relaxed/simple;
-	bh=pyH+Ue54Wg/q6X3n+rbfohcY/QkgjD9zNm2XlWtPMdQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kDnfp6/uKe0rtmq6vpk5yolOPrbEIQzCxzJpMsbXdaUk/HZApA4u/3Zqv72DGSXHtYYDBb+sXKligw8RFzlsPAydvY+wp0qCCIG/yilALjM29Lvi/hPj1fZu8dGmXsEGVjxANKhH/PtGvGZ6z4Ga5/ZcIxP7EM9axtYlqdY/JYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=OeX9dN8p; arc=none smtp.client-ip=192.19.166.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 9FA97C001CAD;
-	Thu,  8 Feb 2024 11:06:08 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 9FA97C001CAD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1707419168;
-	bh=pyH+Ue54Wg/q6X3n+rbfohcY/QkgjD9zNm2XlWtPMdQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OeX9dN8pKGCF8ytWIGGd88VHSocOFcVKIRUqTrA7UjTLXtlOOC0xpldeiWbsOYznB
-	 rohTCl1F3LmGoT7quZb4COL3x6uoUBxd9gyUaPZ8cat3WOWJYN/qREOBvvwSz2U8qi
-	 pa+To89xhUqa0JrIUOi3fWHn/fWdYNrp69tOayHA=
-Received: from stbirv-lnx-1.igp.broadcom.net (stbirv-lnx-1.igp.broadcom.net [10.67.48.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 1E08918041CAC4;
-	Thu,  8 Feb 2024 11:06:07 -0800 (PST)
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-To: stable@vger.kernel.org
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
-	Russell King <rmk+kernel@armlinux.org.uk>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	Doug Berger <opendmb@gmail.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM GENET ETHERNET DRIVER),
-	netdev@vger.kernel.org (open list:BROADCOM GENET ETHERNET DRIVER),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH stable 5.15 v2] net: bcmgenet: Fix EEE implementation
-Date: Thu,  8 Feb 2024 11:06:05 -0800
-Message-Id: <20240208190605.3341379-2-florian.fainelli@broadcom.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240208190605.3341379-1-florian.fainelli@broadcom.com>
-References: <20240208190605.3341379-1-florian.fainelli@broadcom.com>
+	s=arc-20240116; t=1707419242; c=relaxed/simple;
+	bh=AZ6nQb+M1vD/2zX5upW9ouxqeYE6QGKcCE/8DY0UebQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Wst6HFgdfQKja+5yM+pEqcU4pN9446gke8AYKiCpQiEUmYMRF8GAJfMjecXX7J2Q1RoN/c9WI5nAFtVVM8ZROsSPovZdopksDQTO5uTlx0ZmbyzzVhBrHMiQXp1yX/aW56HgiQ2Kzoidhrou8yqeG91v3CmJkYU7Gnm/2XeJyJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YV61E/ar; arc=none smtp.client-ip=209.85.167.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3bd4e6a7cb0so45045b6e.3;
+        Thu, 08 Feb 2024 11:07:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707419240; x=1708024040; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=202GKaA8C1i5cx4LlHBZXcPKNf6nXe/ES82zbqrpd+0=;
+        b=YV61E/ara/kkIUYAtCwjGjxniHntVcIzrVYz5b4hqEJ4ZmRn+FZaUIRTqPgIU/+GrP
+         QcandcyNGWP9rhwxWDSDTtH29qD+MLjipibhJQ7wivhwc/fRQdm0fT7ocenbU33HQphj
+         8mPuMPIZuXFE/d0ifYto7fQYq9PAU3n5LcOACf9HikgMoBILfJmD56deF8DeF2pOFjeS
+         Z8AMeknTM+aQMqRgnKVs3O9N5TnunnvYmZeizDBGPTOixieEBQ68OPrZ0LzL1AZYAUh7
+         /oO105E6pnBuWn1cpcfzUpNDGsZni8qpT6Wx7Hi9lnPV9xnzbRgJ4xuMAvRckCNUii3O
+         kOkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707419240; x=1708024040;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=202GKaA8C1i5cx4LlHBZXcPKNf6nXe/ES82zbqrpd+0=;
+        b=BQ0NSpkz58zjBywW7gUcFBIBK6A5XX7QOhulBvH0DvFNnLrQm5E6hj8ycxQRs4Qftd
+         5DipMG97Z4wOdziS44KSMRPIY8TeucGNNIaoZd+g7v0uWHFmMm/3WrargbNVaY94sPY1
+         4qGhrSMJRWvUtfDJX8oIT0g2DC8Q8feEKvUNaUdZ7HTpnaTs5h48j8W0940leArl7XGY
+         +iEDs2wHluJi2kjI4rNjclTxNVJ4QdyjnxbxDZCqonjdLkL+w7MGMoSUs80zv3CZiKbi
+         glrT6b1K9vNlPaSSK6ZMtXFb5FoHR8EeOVVz3wTRZiJXhpYC3UzZbDW3IgxgnWfg1otT
+         w2Cw==
+X-Gm-Message-State: AOJu0YxjxD7vgis1xDDHhb31uxoONYTHzilTEOPbQXEM7tP0v0TSrmPG
+	d9oq63k6UCZ7sB8NFNZoCflti5Ic1m33OvSIawIr95qndEglGRA8OUUrNoXiNgtIltVfKMfifmP
+	BPqFegD9mazxdbt6C0ulYvDe+zp0=
+X-Google-Smtp-Source: AGHT+IF9hg109QvfX/FVAlSXVFZcAMD4vHPe8lrRCgMgpJ1NJrDk5BP2mYMHYbEPaTJSq92jJEG9nWdXOHPoWqKh+5s=
+X-Received: by 2002:a05:6808:1524:b0:3bf:f3a2:cd8f with SMTP id
+ u36-20020a056808152400b003bff3a2cd8fmr279809oiw.41.1707419240598; Thu, 08 Feb
+ 2024 11:07:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240130091300.2968534-1-tj@kernel.org> <ZcACvVz83QFuSLR6@slm.duckdns.org>
+ <CAOMdWSLNMqsZNJ-oCLN2RjckZmJSvdU_Yq0F0frmqMqa67Oy1g@mail.gmail.com>
+ <ZcFPKaWwxJhgy8HQ@slm.duckdns.org> <CAOMdWSKQC4UWXp57qubcSOHmPj0E7wHZWWbCz+yCZqROhoPSGw@mail.gmail.com>
+ <CAOMdWSLF9AaQF0ux03-tonw-Jy+4rXdKEZGzPrp_v+fnas6SnQ@mail.gmail.com> <ZcUHsHzlLpE7meaW@slm.duckdns.org>
+In-Reply-To: <ZcUHsHzlLpE7meaW@slm.duckdns.org>
+From: Allen <allen.lkml@gmail.com>
+Date: Thu, 8 Feb 2024 11:07:09 -0800
+Message-ID: <CAOMdWSLP1HxnD9JsQMk7ZU6fvLfUmWz1CywqY5ZkyiUFUTALoQ@mail.gmail.com>
+Subject: Re: [PATCHSET wq/for-6.9] workqueue: Implement BH workqueue and
+ convert several tasklet users
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, mpatocka@redhat.com, 
+	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, msnitzer@redhat.com, 
+	ignat@cloudflare.com, damien.lemoal@wdc.com, bob.liu@oracle.com, 
+	houtao1@huawei.com, peterz@infradead.org, mingo@kernel.org, 
+	netdev@vger.kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[ Upstream commit a9f31047baca57d47440c879cf259b86f900260c ]
+On Thu, Feb 8, 2024 at 8:56=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> On Wed, Feb 07, 2024 at 11:02:37AM -0800, Allen wrote:
+> > https://github.com/allenpais/for-6.9-bh-conversions
+> >
+> >  I am holding on to the patch that converts drivers/media/*, as I haven=
+'t found
+> > a right way to replace tasklet_[disable/enable] api's. The rest should =
+be ready
+> > in a day or two.
+>
+> Yeah, we'll need to add something to workqueue to support that. As for th=
+e
+> rest, looking at the code, I think tasklet_kill() should be converted to
+> cancel_work_sync(), not flush_work().
+>
 
-We had a number of short comings:
+  Ah, Thanks for pointing that out. I will update it and get that fixed.
 
-- EEE must be re-evaluated whenever the state machine detects a link
-  change as wight be switching from a link partner with EEE
-  enabled/disabled
+Thanks for the review.
 
-- tx_lpi_enabled controls whether EEE should be enabled/disabled for the
-  transmit path, which applies to the TBUF block
-
-- We do not need to forcibly enable EEE upon system resume, as the PHY
-  state machine will trigger a link event that will do that, too
-
-Fixes: 6ef398ea60d9 ("net: bcmgenet: add EEE support")
-Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Link: https://lore.kernel.org/r/20230606214348.2408018-1-florian.fainelli@broadcom.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
----
-Changes in v2:
-
-- none
-
- .../net/ethernet/broadcom/genet/bcmgenet.c    | 22 +++++++------------
- .../net/ethernet/broadcom/genet/bcmgenet.h    |  3 +++
- drivers/net/ethernet/broadcom/genet/bcmmii.c  |  5 +++++
- 3 files changed, 16 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index 66f0c28298bf..7327a8d5dc75 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -1318,7 +1318,8 @@ static void bcmgenet_get_ethtool_stats(struct net_device *dev,
- 	}
- }
- 
--static void bcmgenet_eee_enable_set(struct net_device *dev, bool enable)
-+void bcmgenet_eee_enable_set(struct net_device *dev, bool enable,
-+			     bool tx_lpi_enabled)
- {
- 	struct bcmgenet_priv *priv = netdev_priv(dev);
- 	u32 off = priv->hw_params->tbuf_offset + TBUF_ENERGY_CTRL;
-@@ -1338,7 +1339,7 @@ static void bcmgenet_eee_enable_set(struct net_device *dev, bool enable)
- 
- 	/* Enable EEE and switch to a 27Mhz clock automatically */
- 	reg = bcmgenet_readl(priv->base + off);
--	if (enable)
-+	if (tx_lpi_enabled)
- 		reg |= TBUF_EEE_EN | TBUF_PM_EN;
- 	else
- 		reg &= ~(TBUF_EEE_EN | TBUF_PM_EN);
-@@ -1359,6 +1360,7 @@ static void bcmgenet_eee_enable_set(struct net_device *dev, bool enable)
- 
- 	priv->eee.eee_enabled = enable;
- 	priv->eee.eee_active = enable;
-+	priv->eee.tx_lpi_enabled = tx_lpi_enabled;
- }
- 
- static int bcmgenet_get_eee(struct net_device *dev, struct ethtool_eee *e)
-@@ -1374,6 +1376,7 @@ static int bcmgenet_get_eee(struct net_device *dev, struct ethtool_eee *e)
- 
- 	e->eee_enabled = p->eee_enabled;
- 	e->eee_active = p->eee_active;
-+	e->tx_lpi_enabled = p->tx_lpi_enabled;
- 	e->tx_lpi_timer = bcmgenet_umac_readl(priv, UMAC_EEE_LPI_TIMER);
- 
- 	return phy_ethtool_get_eee(dev->phydev, e);
-@@ -1383,7 +1386,6 @@ static int bcmgenet_set_eee(struct net_device *dev, struct ethtool_eee *e)
- {
- 	struct bcmgenet_priv *priv = netdev_priv(dev);
- 	struct ethtool_eee *p = &priv->eee;
--	int ret = 0;
- 
- 	if (GENET_IS_V1(priv))
- 		return -EOPNOTSUPP;
-@@ -1394,16 +1396,11 @@ static int bcmgenet_set_eee(struct net_device *dev, struct ethtool_eee *e)
- 	p->eee_enabled = e->eee_enabled;
- 
- 	if (!p->eee_enabled) {
--		bcmgenet_eee_enable_set(dev, false);
-+		bcmgenet_eee_enable_set(dev, false, false);
- 	} else {
--		ret = phy_init_eee(dev->phydev, 0);
--		if (ret) {
--			netif_err(priv, hw, dev, "EEE initialization failed\n");
--			return ret;
--		}
--
-+		p->eee_active = phy_init_eee(dev->phydev, false) >= 0;
- 		bcmgenet_umac_writel(priv, e->tx_lpi_timer, UMAC_EEE_LPI_TIMER);
--		bcmgenet_eee_enable_set(dev, true);
-+		bcmgenet_eee_enable_set(dev, p->eee_active, e->tx_lpi_enabled);
- 	}
- 
- 	return phy_ethtool_set_eee(dev->phydev, e);
-@@ -4219,9 +4216,6 @@ static int bcmgenet_resume(struct device *d)
- 	if (!device_may_wakeup(d))
- 		phy_resume(dev->phydev);
- 
--	if (priv->eee.eee_enabled)
--		bcmgenet_eee_enable_set(dev, true);
--
- 	bcmgenet_netif_start(dev);
- 
- 	netif_device_attach(dev);
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.h b/drivers/net/ethernet/broadcom/genet/bcmgenet.h
-index d111af605c44..95b3db100af6 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.h
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.h
-@@ -735,4 +735,7 @@ int bcmgenet_wol_power_down_cfg(struct bcmgenet_priv *priv,
- int bcmgenet_wol_power_up_cfg(struct bcmgenet_priv *priv,
- 			      enum bcmgenet_power_mode mode);
- 
-+void bcmgenet_eee_enable_set(struct net_device *dev, bool enable,
-+			     bool tx_lpi_enabled);
-+
- #endif /* __BCMGENET_H__ */
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmmii.c b/drivers/net/ethernet/broadcom/genet/bcmmii.c
-index 32fc845ade9e..72bb9364a471 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmmii.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmmii.c
-@@ -87,6 +87,11 @@ static void bcmgenet_mac_config(struct net_device *dev)
- 		reg |= CMD_TX_EN | CMD_RX_EN;
- 	}
- 	bcmgenet_umac_writel(priv, reg, UMAC_CMD);
-+
-+	priv->eee.eee_active = phy_init_eee(phydev, 0) >= 0;
-+	bcmgenet_eee_enable_set(dev,
-+				priv->eee.eee_enabled && priv->eee.eee_active,
-+				priv->eee.tx_lpi_enabled);
- }
- 
- /* setup netdev link state when PHY link status change and
--- 
-2.34.1
-
+--=20
+       - Allen
 
