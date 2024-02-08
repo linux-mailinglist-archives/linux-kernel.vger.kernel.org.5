@@ -1,222 +1,174 @@
-Return-Path: <linux-kernel+bounces-58208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E4A384E2C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:02:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCBCC84E2C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:03:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4136429367F
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:02:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 482CC1F290BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:03:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5207978B44;
-	Thu,  8 Feb 2024 14:02:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3172D79923;
+	Thu,  8 Feb 2024 14:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SwXYHYRp"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="b4667edO"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C5D76C79;
-	Thu,  8 Feb 2024 14:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD19178696
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 14:02:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707400958; cv=none; b=leoIXon4evGK2TBSUGloslgUNeS3PFRS/mXZnayuiTxaJfzEg643LhGyU6ICGW2nI6cARBEg/Mzu4+O+1JVi/TuoNvrJBkJVZLwWH99pq4BZfEizNPdejSbJz2fvSm8nf13U1xLZUPm3EGMnPgdaSZA1BXUbkE6ZQ4sl95XduPg=
+	t=1707400976; cv=none; b=r72frv9NEfJdLfBM2wefFjm2gx1RYoerLcu7rPm7vcKiAE9QJjenvWA6jCTHd23zk7yYGqKEQMIHsf/S/hszCMs1akplTtlOdHrVNTPDzUsSuBWhzgDyOL5EZS+b/ODIQedfLw7CCQgwC2UvzQhOk8U9LTY1enSU8O8YiMenL/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707400958; c=relaxed/simple;
-	bh=umeZgszej+9+nlhawL9gGz8MqAnrmt2tAS0zlXcFnA0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cpwF0w0wpvd5QKdswoYf6tzfRFanXClWonRWItuDDjr6BiWu1MdKbEmPoPrqZVxbEyB2rTRy+ggumcRbHk2agIVgu1ghEAV7Yw+odMqvVgv6A+4+/Da70y/jQxoIPIex5WdP81zWbwfy4gvZAUjp27vgmwhZ1md52fcERLdhehc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SwXYHYRp; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so247354466b.2;
-        Thu, 08 Feb 2024 06:02:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707400955; x=1708005755; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xfZFtQ2+pP05qvZsJg/nXDMvuPggRgolLgTJFuLApQA=;
-        b=SwXYHYRpealOTDWu4KtU+kHuz4aqPBhsSg/I6tgSfFC2vAJfNepYZwffgyW1M/EllL
-         F4moasTq/l1SrwWF4aFckCT4K0sjWZuatofstmc3bH4l3xv2OpgcKe1c+Cv+dHNpcjZS
-         fDSc6Az+1iPynrNLp91zFHWg7shXPtn4wkKjYtK1x3O9uieQCBKdRO8KOdve7Dn5MXed
-         KCwNVEq43w60U0xNtpnDwB6v6QpLddekYTxz4vY+F/bn4cppLNjpaKglK0rFyEiJ4r/4
-         2WuRXFyn+l3oRo8MqwaK8meFvjNdk/BpBC8aKTQb1jm/P8VYjYf68QM5Y+KmyQkr19DY
-         cKRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707400955; x=1708005755;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xfZFtQ2+pP05qvZsJg/nXDMvuPggRgolLgTJFuLApQA=;
-        b=Uya6rZ1mWW7wZuB9i20nc4fSxNhHP171nsDib2nPU2UIzo7liVmUoYDyBIA3YwlbK5
-         T0aPuDGiaffdOdQpW9xgFJOt6z/msWdbbGTzNj5nVjM78UrqI110IxZJaMY6Mr/e/CaJ
-         62E0Hy5WoZfDXVXTnrdjGogB+jCQIqeIEATP7/GpueYiLHDNnp5ulzh+Lj1Q+DbHUj4/
-         Ryhh6hf6SrGVlWe+/8qhNWKVTb1CmMPJ13s/6R/BmWOTelz4OB6Fm9kzSF4Q2auKKEYN
-         Y/vO7weIU5Hv+WW3F/be8epsJf77tIfd7Z+be5VX1vjemzGvyfkJ7zWQnBYtuJyGbZn7
-         6i1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVpm2c1Swp50VhVsfm45nhM9f/oqr1xjHf0u/cUgWOX6/s4w73v/7RPRnhQ681q5fgHz8To36/NGOMvxQ07FJhgGKEV4T+9WS0XodKR
-X-Gm-Message-State: AOJu0Yxz3Z3cga9bEBDomk5ZfTvbusTWxczPbj9+yhHlfJ6BTn6M5A7/
-	JDH76j64QWqvr0wJAxkRaU+ih0yADl+SYpKuwFjx5T4q1d/FCEdkfwjnBhxA
-X-Google-Smtp-Source: AGHT+IE01pa/eOm3afiZ/mr8l5gzBO4XU0w/bCpy1rIIXp4mBM84j/Rolju1WUzHhxtt1PMe9Uas8g==
-X-Received: by 2002:a17:906:895:b0:a37:9bae:ee09 with SMTP id n21-20020a170906089500b00a379baeee09mr6557718eje.11.1707400954432;
-        Thu, 08 Feb 2024 06:02:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX4akIVlp+d4aB2HOCHqSRQTZ8VNDszLOvo16qdyMC8Urz8EzdZQfE0ANlRcaAJ8x7U+C49IikNr1gmZDDxok63dP14NA9V8m2vm5RLsC1bfQHTyXfWVVPYoDABLAmfJX27YHEalbzUXVu2indORih/SyR1YzIMgw2XKAhTNW0RVECQWObR352bantG5Rp+MocWSurn8oUnaUHIG7bn6XUx
-Received: from ?IPV6:2a01:c23:c599:8500:99e8:d59b:f0fa:1092? (dynamic-2a01-0c23-c599-8500-99e8-d59b-f0fa-1092.c23.pool.telefonica.de. [2a01:c23:c599:8500:99e8:d59b:f0fa:1092])
-        by smtp.googlemail.com with ESMTPSA id r5-20020a170906350500b00a3bb41034adsm74602eja.81.2024.02.08.06.02.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 06:02:34 -0800 (PST)
-Message-ID: <47987433-7d56-483e-a0fc-38140cc17448@gmail.com>
-Date: Thu, 8 Feb 2024 15:02:34 +0100
+	s=arc-20240116; t=1707400976; c=relaxed/simple;
+	bh=kEceGURTSCLX1LnHfzyT42pz7RXLd+AthgwrbZcGAGQ=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:Content-Type:
+	 MIME-Version:References; b=a953a4KK1wupbER1C8+agbypEqiNeQoNz6CcxH8jBfh45y9YZkrbJcnADMeDhQUO1Sq04kGUYhn+Tg4B4CxSZsfJvHhtnqAKl0+DdlJvQQgkAmwT56vvNrhJn/yvfmTpATd/Wk/WBJp9NxTjX8V5nk2Fsk7F/EILcsjSiVq/eGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=b4667edO; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240208140245euoutp02f9a2a91d7312ef972ee4828ecefb8d21~x6CHYxETJ3141231412euoutp02S
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 14:02:45 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240208140245euoutp02f9a2a91d7312ef972ee4828ecefb8d21~x6CHYxETJ3141231412euoutp02S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1707400965;
+	bh=kEceGURTSCLX1LnHfzyT42pz7RXLd+AthgwrbZcGAGQ=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+	b=b4667edOsAP6VVgelN+jEIx5AoXUUpyUMNGD89kol2ShCgaRqdm/4HQ2GoRWERwwe
+	 fSUih/K0WgZHVNCRkmOk7lx+c69NSZKECAf9+m6EuoFXXcgEWM9F0Z6/heGdoKJUbg
+	 yunDXY1oi0KXwCA4vqlPZfwalAvupd8q1UrNq/T0=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240208140245eucas1p125409710592f469f6554eff90efb96aa~x6CG4gXAp0794807948eucas1p1k;
+	Thu,  8 Feb 2024 14:02:45 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges1new.samsung.com (EUCPMTA) with SMTP id 5E.62.09539.50FD4C56; Thu,  8
+	Feb 2024 14:02:45 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240208140244eucas1p1308da6aac688043b2064e91a5e38b34e~x6CGZ4mGq0581005810eucas1p1n;
+	Thu,  8 Feb 2024 14:02:44 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240208140244eusmtrp1a05a67bc02bd29117a0f6de2f9c2d4ea~x6CGYIzDj3025730257eusmtrp1Q;
+	Thu,  8 Feb 2024 14:02:44 +0000 (GMT)
+X-AuditID: cbfec7f2-52bff70000002543-7a-65c4df053775
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id 04.DC.10702.40FD4C56; Thu,  8
+	Feb 2024 14:02:44 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240208140244eusmtip129c48709c307eee724c0c1e6de2a9a6c~x6CGManwp3240532405eusmtip16;
+	Thu,  8 Feb 2024 14:02:44 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) by
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) with Microsoft SMTP
+	Server (TLS) id 15.0.1497.2; Thu, 8 Feb 2024 14:02:43 +0000
+Received: from CAMSVWEXC02.scsc.local ([::1]) by CAMSVWEXC02.scsc.local
+	([fe80::3c08:6c51:fa0a:6384%13]) with mapi id 15.00.1497.012; Thu, 8 Feb
+	2024 14:02:43 +0000
+From: Andreas Hindborg <a.hindborg@samsung.com>
+To: Alice Ryhl <aliceryhl@google.com>
+CC: Trevor Gross <tmgross@umich.edu>, Miguel Ojeda <ojeda@kernel.org>, "Alex
+ Gaynor" <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+	=?utf-8?B?QmrDtnJuIFJveSBCYXJvbg==?= <bjorn3_gh@protonmail.com>, Benno
+	Lossin <benno.lossin@proton.me>, Kees Cook <keescook@chromium.org>, Al Viro
+	<viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, "Greg
+ Kroah-Hartman" <gregkh@linuxfoundation.org>,
+	=?utf-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, Todd Kjos
+	<tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes
+	<joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, "Suren
+ Baghdasaryan" <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "rust-for-linux@vger.kernel.org"
+	<rust-for-linux@vger.kernel.org>, Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH 3/3] rust: add abstraction for `struct page`
+Thread-Topic: [PATCH 3/3] rust: add abstraction for `struct page`
+Thread-Index: AQHaVNQ8VXQbcxmBfkinu8UJuZg2mrEAgLOAgAAEAwA=
+Date: Thu, 8 Feb 2024 14:02:43 +0000
+Message-ID: <87v86zrr45.fsf@samsung.com>
+In-Reply-To: <CAH5fLgi_iU3nDE-gJ56s8CPznWvC0T4P5M0dVx1zO61kmVGNgQ@mail.gmail.com>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <657A913530B0754F8DBFB2EBCA6CB2FE@scsc.local>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next20240208: tg3 driver nw interfaces not getting
- configured
-Content-Language: en-US
-To: "Aithal, Srikanth" <sraithal@amd.com>,
- Stephen Rothwell <sfr@canb.auug.org.au>, andrew@lunn.ch,
- Jakub Kicinski <kuba@kernel.org>
-Cc: Linux Next Mailing List <linux-next@vger.kernel.org>,
- Linux Regressions <regressions@lists.linux.dev>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240208155740.24c6ada7@canb.auug.org.au>
- <ce7150b7-b6f1-4635-ba5f-fdfda84a6e2f@amd.com>
- <fd72544a-f3ed-44bb-86e3-bdfa4fca720e@gmail.com>
- <8a59f072-4a71-4662-bfde-308b81e4ce88@amd.com>
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Autocrypt: addr=hkallweit1@gmail.com; keydata=
- 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
-In-Reply-To: <8a59f072-4a71-4662-bfde-308b81e4ce88@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0xTZxje19NzoUpyWpR+somjG8t0jMsk89slTsmWnMRlQrIbu6hdOcEG
+	WlkPBWbcVjGjgqyr2G1SLkVEsVhSUmtxTFErs8WCDDCFmSG6NVMoBmxxc2WwjZ5d+Pe87/u8
+	z/O8Xz4Kk5wiEiilupjVqOWFMkIkdF3+feBpfLyHTW+8JkL1dhuB5us6SeQdKRei+ZrLJJqe
+	HyfQjL8cR6Pfn8eQzblXgIKXQgDNXhgi0WBfEKB9R+0EOq5LRn0HVGi4q55AN2x/4shl0+HI
+	amkFyP7LJQwdGmoiUJM/QqJ+1xUSDcx7cNRxvB1sgozrWxfOzEVqAFOnGxQyLZURAfONeYxk
+	mhxa5kjoPs442ioJxhGqIRnv4Tkhc77BRjK/6c8STHWFQ8Dc9RpwJuxIZByBu4Js+h3Ri3ls
+	obKE1aRt3CHaeVXvI4pMVNnsCT2mAw/IKhBDQToTNo79SlQBESWhTwDoH7lD8sUsgDM/WvBF
+	loQOA9j51RNVgIpu3Duyjue0AmiwLeB8scgx2ABf+AAcHPAI/9Md9C5gi1IEnQb9Nn8Ur6CT
+	Yd91XdQcowMkPGg9Fk0VR2+C/olrQp60GXYYhggePw+nQ5bospB+HDrN1dF8sfST0Nc2EuXE
+	0DmwI7wv2gf0aviTNRLVxGgpvB6wCPirxbC57izG43i40HWL4HEK7B8JAB6nw9PHuoU8ToL+
+	6h/A4v0YvRbau9J4yedg+GYE8DgJmg7cIvk4YthbG/hn9fAy2H3uBf7pXoaj/jS+HQcnPU7S
+	CFLMS8KZ/zcwLzEwLzEwLzFoAngbkLJaTpXPchlqtjSVk6s4rTo/VbFL5QB//2vfgid0BjRM
+	3kt1AwEF3ABSmGxF7OstPawkNk/+0W5Ws2u7RlvIcm7wMCWUSWOT89awEjpfXswWsGwRq/l3
+	KqBiEnSC5kruETerBPajiSdhOWmwrjVOKRRu7+fSSW5oQ837n752UoKxr4zs/fJm/JWpYUpp
+	mlKNBhOz1F/cOZe9Pv2qdL1zi+uz08uX7X+pseyP9zZsnfr5qbmulRK/O9v0IdDqWj54SLzj
+	/qr94kBKBW61JuVZ+08VnTH2ZvgCD4LOiUlT2Fir31rxxtsbLdxbjVlbmsty3kxvvZjgqZzZ
+	k5CfOTbdsW14YuHjbTmMs0fpre/vXLl9zWPdF0pur2oo2FNgMYzry3o/MU4abvt2l7KeZy52
+	H2rJLv1axr767rPe3Bura32KRrO8JDMlqzhzpq9Z0S5rt8eLlj+amxusi9v8XbdYJuR2yjPW
+	YRpO/hcnBtPERgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHc+69vfeCwVwe4oE4nI0swFhLee2UMOJmMu+cIXNZzTZGoOIN
+	OGmLLZ3MzKXDKbM8ouAeVOQxQR4pFpva8RBUMIgrykvLwCETGBkjjAHdpsXqoJdl/Pf9nXw/
+	v9/5/nIOjft0kIH0QWU2p1bKM4WkJ2F7dmvsFWL8JhexVBuCykxGErnO/UChnuFcArmKuyk0
+	7xon0Z/2XAH6qf8ajoyWLzA027UIkOP6IIUGemcBOn7BRKKLumDUm69AQ61lJHpofC5AVqNO
+	gOoragEyTXfhqGSwkkSVdieF7lh/pFCf65YANV1sBDsga22zCthlZzFgz+kGCLb6lBNjWwxj
+	FFtp1rJVi38JWHPDKZI1LxZTbM93ywR77byRYv/Ju0qyBSfNGDvXUyRgl8xBrHlqDnuH+VAU
+	r1Zps7kXM1Sa7NeESRIUKZJIkSgyWiqSRL2aHBcZIxQnxB/gMg9+wqnFCamijLt5NjLrLJ3j
+	qMvDdeAxpQc0DZlouFAVpgeetA9TA+AVYwmuBx4r51vgZcd9Aa994VO7nuRNCwCWtBSuFTYA
+	nWMOwBd1ADaP1GCrCMmIod1od7fyY4Jh76jOTeDMFAV/njzh7uvL7ID2mXsEb3odNhUNkryO
+	g/OLFW6YYLZDi6HA7fdiQqCtYXht9AAGXY3z7mkezF7YtHTcbQLMC3Ci3kmtapzZDEenKjA+
+	BAOrr/athdsEZyafrYULh3eGpwCvI+CVmg6C19ugvWAErC4JZ0KhqVXMt5TCpV+cgNfb4Nn8
+	RxR/N294u3SKOA22GNZNNvxPG9bRhnW0YR1dCQQNwI/TahTpCk2kSCNXaLTKdFGaSmEGKw/Z
+	2v3E0gzqf18QdQKMBp0A0rjQz+u96pucj9cB+adHObUqRa3N5DSdIGZldWfwwE1pqpWfoMxO
+	kcRGxEiiY6URMdLYKOFmr7eyvpL7MOnybO4Qx2Vx6v84jPYI1GH7hmf3w7kv78X3bT/v6d/W
+	dokunNx5KbQq+sb0y/7f+B8L3U8YvEfD4fzDE40DTPCI96Oop06vN9JSqj5KNcap7tdOHMFm
+	Tu6BybL59ijL8sj3yiAmM6gj0QnD/v62JTfxa22DKWBC8KBbMfmrQx/QdCQ1zcdWpu+6sKtU
+	HjIp6RcnCRVoJudJ2eHdlowa2/WW5/ml5b6uEWpi63jkS0NDR2+8v0FWt4e9XNmsHJLmE2D3
+	RkK2NzDpcXDe9LsBHxdVFbarEj7X7NspCz8WmGA/tEHO9RfqcxIPB/fINqa/XSC7S1vG3rx9
+	urj2j3LVma2jrfWxCb+VJz8QN/q1f7Yr6AMhocmQS8JwtUb+L/fPdy5RBAAA
+X-CMS-MailID: 20240208140244eucas1p1308da6aac688043b2064e91a5e38b34e
+X-Msg-Generator: CA
+X-RootMTR: 20240208134629eucas1p2edf4cb1e50e3bb578297c33b79701574
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240208134629eucas1p2edf4cb1e50e3bb578297c33b79701574
+References: <20240124-alice-mm-v1-0-d1abcec83c44@google.com>
+	<20240124-alice-mm-v1-3-d1abcec83c44@google.com>
+	<CALNs47uPgvYXxEDmwb6GKa+cw597_rDD1zaSPDa9k9D-6_qZxQ@mail.gmail.com>
+	<CGME20240208134629eucas1p2edf4cb1e50e3bb578297c33b79701574@eucas1p2.samsung.com>
+	<CAH5fLgi_iU3nDE-gJ56s8CPznWvC0T4P5M0dVx1zO61kmVGNgQ@mail.gmail.com>
 
-On 08.02.2024 12:05, Aithal, Srikanth wrote:
-> On 2/8/2024 4:16 PM, Heiner Kallweit wrote:
->> On 08.02.2024 09:30, Aithal, Srikanth wrote:
->>> Hi,
->>>
->>> On 6.8.0-rc3-next-20240208, the network interfaces are not getting configured.
->>>
->> Thanks for the report. Could you please elaborate on what "not getting
->> configured" means in detail?
->> - Any error in any log?
->> - Any other error message?
->> - Interface doesn't come up or which specific configuration are you missing?
->>
-> I am not seeing any errors in the dmesg,
-> 
-> [    4.019383] tg3 0000:c1:00.0 eth0: Tigon3 [partno(BCM95720) rev 5720000] (PCI Express) MAC address d0:8e:79:bb:95:90
-> [    4.019391] tg3 0000:c1:00.0 eth0: attached PHY is 5720C (10/100/1000Base-T Ethernet) (WireSpeed[1], EEE[1])
-> [    4.019394] tg3 0000:c1:00.0 eth0: RXcsums[1] LinkChgREG[0] MIirq[0] ASF[1] TSOcap[1]
-> [    4.019397] tg3 0000:c1:00.0 eth0: dma_rwctrl[00000001] dma_mask[64-bit]
-> [    4.041082] tg3 0000:c1:00.1 eth1: Tigon3 [partno(BCM95720) rev 5720000] (PCI Express) MAC address d0:8e:79:bb:95:91
-> [    4.041087] tg3 0000:c1:00.1 eth1: attached PHY is 5720C (10/100/1000Base-T Ethernet) (WireSpeed[1], EEE[1])
-> [    4.041090] tg3 0000:c1:00.1 eth1: RXcsums[1] LinkChgREG[0] MIirq[0] ASF[1] TSOcap[1]
-> [    4.041092] tg3 0000:c1:00.1 eth1: dma_rwctrl[00000001] dma_mask[64-bit]
-> [    4.077483] tg3 0000:c1:00.1 eno8403: renamed from eth1
-> [    4.124657] tg3 0000:c1:00.0 eno8303: renamed from eth0
-> 
-> nmcli says interfaces are disconnected:
-> 
-> [root@localhost ~]# nmcli
-> eno8303: disconnected
->         "Broadcom and subsidiaries NetXtreme BCM5720"
->         ethernet (tg3), D0:8E:79:BB:95:90, hw, mtu 1500
-> 
-> eno8403: disconnected
->         "Broadcom and subsidiaries NetXtreme BCM5720"
->         ethernet (tg3), D0:8E:79:BB:95:91, hw, mtu 1500
-> 
-> I am attaching host dmesg.
-> 
-
-Thanks. dmesg lists no error. Please send output from the following commands.
-
-ip link
-ethtool <if>
-ethtool --show-eee <if>
-
-If the interfaces aren't up, please try to bring them up manually and see what happens.
-ip link set <if> up
-
-
->>> I have 'NetXtreme BCM5720 Gigabit Ethernet PCIe'
->>>         configuration: autonegotiation=on broadcast=yes driver=tg3
->>>
->>> If I revert below commit I am able to get back the interfaces mentioned.
->>>
->>> commit 9bc791341bc9a5c22b94889aa37993bb69faa317
->>> Author: Heiner Kallweit <hkallweit1@gmail.com>
->>> Date:   Sat Feb 3 22:12:50 2024 +0100
->>>
->>>      tg3: convert EEE handling to use linkmode bitmaps
->>>
->>>      Convert EEE handling to use linkmode bitmaps. This prepares for
->>>      removing the legacy bitmaps from struct ethtool_keee.
->>>      No functional change intended.
->>>
->>>      Note: The change to mii_eee_cap1_mod_linkmode_t(tp->eee.advertised, val)
->>>      in tg3_phy_autoneg_cfg() isn't completely obvious, but it doesn't change
->>>      the current functionality.
->>>
->>>      Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
->>>      Reviewed-by: Andrew Lunn <andrew@lunn.ch>
->>>      Link: https://lore.kernel.org/r/0652b910-6bcc-421f-8769-38f7dae5037e@gmail.com
->>>      Signed-off-by: Jakub Kicinski <kuba@kernel.org>
->>>
->>>
->>> The same works fine on 6.8.0-rc3-next-20240207.
->>>
->>> Thanks,
->>> Srikanth Aithal
->>> sraithal@amd.com
->> Heiner
-
+DQpBbGljZSBSeWhsIDxhbGljZXJ5aGxAZ29vZ2xlLmNvbT4gd3JpdGVzOg0KDQo+IE9uIFRodSwg
+RmViIDEsIDIwMjQgYXQgNzowMuKAr0FNIFRyZXZvciBHcm9zcyA8dG1ncm9zc0B1bWljaC5lZHU+
+IHdyb3RlOg0KPj4NCj4+IE9uIFdlZCwgSmFuIDI0LCAyMDI0IGF0IDY6MjLigK9BTSBBbGljZSBS
+eWhsIDxhbGljZXJ5aGxAZ29vZ2xlLmNvbT4gd3JvdGU6DQo+PiA+ICsvLy8gQSBwb2ludGVyIHRv
+IGEgcGFnZSB0aGF0IG93bnMgdGhlIHBhZ2UgYWxsb2NhdGlvbi4NCj4+ID4gKy8vLw0KPj4gPiAr
+Ly8vICMgSW52YXJpYW50cw0KPj4gPiArLy8vDQo+PiA+ICsvLy8gVGhlIHBvaW50ZXIgcG9pbnRz
+IGF0IGEgcGFnZSwgYW5kIGhhcyBvd25lcnNoaXAgb3ZlciB0aGUgcGFnZS4NCj4+ID4gK3B1YiBz
+dHJ1Y3QgUGFnZSB7DQo+PiA+ICsgICAgcGFnZTogTm9uTnVsbDxiaW5kaW5nczo6cGFnZT4sDQo+
+PiA+ICt9DQo+Pg0KPj4gU2hvdWxkbid0IHRoaXMgYmUgVW5zYWZlQ2VsbCAvIE9wYXF1ZT8gU2lu
+Y2UgYHN0cnVjdCBwYWdlYCBjb250YWlucyBsb2Nrcy4NCj4NCj4gVGhhdCBvbmx5IG1hdHRlcnMg
+d2hlbiB3ZSB1c2UgYSByZWZlcmVuY2UuIEhlcmUsIGl0J3MgYmVoaW5kIGEgcmF3IHBvaW50ZXIu
+DQoNCldoeSBpcyBpdCBiZWhpbmQgYSBwb2ludGVyIHJhdGhlciB0aGFuIGJlaW5nIHRyYW5zcGFy
+ZW50IG92ZXINCmBPcGFxdWU8YmluZGluZ3M6OnBhZ2U+YCBhbmQgdXNpbmcgYSBgJlBhZ2VgIGlu
+c3RlYWQ/DQoNCkJSIEFuZHJlYXM=
 
