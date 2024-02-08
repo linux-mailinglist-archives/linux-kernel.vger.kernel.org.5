@@ -1,103 +1,118 @@
-Return-Path: <linux-kernel+bounces-58688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13A9184E9F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:56:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6EC384EA01
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 22:01:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4F901F23EFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:56:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8CF71C23325
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE8CC3F9F2;
-	Thu,  8 Feb 2024 20:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60A4B4BABE;
+	Thu,  8 Feb 2024 21:01:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e+3Bx4Xa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t9x3rqPP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04B048CD1;
-	Thu,  8 Feb 2024 20:56:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E9B94C3A9;
+	Thu,  8 Feb 2024 21:01:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707425787; cv=none; b=tdlfi/mG8gdJmXG8qiX4A32DT6YvqDyGI6yCpChjWuOfMh4qLL31kYSwAtE3Qsm66pzNzESR8+2CgJldtnNEs4h6ZuW/stdUrsIrYsmr284HtdxlW9G/x4pV+eqRphurKvkbX2c1uQs460P4udnywxdYzHgc5Xp6PE1AW3sgAV0=
+	t=1707426060; cv=none; b=E7+j4R9+F/v/aiUwfcODQKxz9XnVuOM1Dgk/qB11kQS8Fjagmi6WXEk0xVAsxiGwKlHSoLaOv/fXBv2FhrQdvLbEbkfvwNCMt92dnNPoyx6DbQ9cLtsdaREX1jFJ1cidm25NLOhMzIroBm6u4fmicNkeik9eOtDhpI7mNsm/V+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707425787; c=relaxed/simple;
-	bh=T8EwgSBfhLdOsFciFuw6X5d9/0+41gQ0AA16Ecb/rcU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=HChk7CWgexCAMfVxKLcNaNCdLGG3xcYgE93T9sSc3VHHsdhz+Q6VVCDsv888kZT3cu+1XyDbiRH4aTRfApGb/6vVB0LKnM35uuMWzN+kq3kFGcPkpfY1UbK55vKZ/1685ktTyncmchJ3wTmWmIWpfZS7GHjdn5y9QJArIYj9ioA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e+3Bx4Xa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B0D7C433C7;
-	Thu,  8 Feb 2024 20:56:24 +0000 (UTC)
+	s=arc-20240116; t=1707426060; c=relaxed/simple;
+	bh=Hdoe7W5c920HPkuwxWkQyZB/vC/76N9PRpNeiD5BvEo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=SJBakot1ENu3WUZtqf5O3ZeMXo5oM3b3hSo5OCl5A/Sk+y5Dva/q2Tnxfd0hdmAccGFBoOKt3O1QV0ZlP0n4tijyye7cXX0rNmLwzotfnrZBN+RoETTtPyUFwT2G/aCIxeLWgSKguuL5LUDHYJQdPbFwkAPiG/HgnnR6STo/PQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t9x3rqPP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFAD2C433C7;
+	Thu,  8 Feb 2024 21:00:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707425786;
-	bh=T8EwgSBfhLdOsFciFuw6X5d9/0+41gQ0AA16Ecb/rcU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=e+3Bx4Xa4325tK8mGNO/Jhz450pjYzUveah8U9GEFNEVNETIXzBDCIL0hMqyJRNMp
-	 hkMIKP8aTyBdPP6zXFrfShdRBFeVDyoNM/E4fdxxSVpKon/5Gs1K0NWcyqqOMwsjOf
-	 l+imnJ7ff+linFqmKB9Hy1V1B1y/kJ2hfwBvv1X9N+Caq/VIxA1e5uRHfCHs+pDDsN
-	 Bd+BT4sgZbHkbxypldvwp2Kd4SXmciQ3dT67PqSC31WwgOQhWaFNB0J1A8CPwVSQLg
-	 LTZ4RNobnmr70yKt/r30QM4wBiIpWDQ1z7KQ88kBKzPFEs1pHUtHN0J+j87J0EDBDM
-	 g4eha5M4qEqWg==
-From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20240208123742.1278104-1-rf@opensource.cirrus.com>
-References: <20240208123742.1278104-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH v2] ASoC: cs35l56: Fix deadlock in ASP1 mixer register
- initialization
-Message-Id: <170742578487.2206785.11509531249240507855.b4-ty@kernel.org>
-Date: Thu, 08 Feb 2024 20:56:24 +0000
+	s=k20201202; t=1707426060;
+	bh=Hdoe7W5c920HPkuwxWkQyZB/vC/76N9PRpNeiD5BvEo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=t9x3rqPPMMn0xcWH0z4XlHF1UauZWQQsMIeEY4HwjWbpHdw/Vvm8c69J5nLVsbH4I
+	 5gdSykPN5GcJJaJlQ/HmF0Mbazk/WKx2EP6EK1wNhHdkBPDGZXlXx3QCTtCm+oBXJm
+	 XRbb9au99XPAmEgfpnrDWtBxejN9/39M4ZrDVnFDrLeOE6rE/Lu7AiJO9FH+hg6xiO
+	 1SRQNbsUNtl1TpaaGq4Krcprk6ah/skw+txj28l6saPwAgonU0EJZHhuqDAJikV/Bu
+	 9s+QZnZzMjw6y0dLxuiCJMSF1cy9favxsCt7PwPpi+0PMGiDSZ4xr7wrxaETTGshSv
+	 WFfcSy7LTfeHA==
+Date: Thu, 8 Feb 2024 15:00:58 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] PCI: make pcie_port_bus_type const
+Message-ID: <20240208210058.GA971698@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240208-bus_cleanup-pci2-v1-1-5e578210b6f2@marliere.net>
 
-On Thu, 08 Feb 2024 12:37:42 +0000, Richard Fitzgerald wrote:
-> Rewrite the handling of ASP1 TX mixer mux initialization to prevent a
-> deadlock during component_remove().
+On Thu, Feb 08, 2024 at 04:41:46PM -0300, Ricardo B. Marliere wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the pcie_port_bus_type variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
 > 
-> The firmware can overwrite the ASP1 TX mixer registers with
-> system-specific settings. This is mainly for hardware that uses the
-> ASP as a chip-to-chip link controlled by the firmware. Because of this
-> the driver cannot know the starting state of the ASP1 mixer muxes until
-> the firmware has been downloaded and rebooted.
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+
+Applied to pci/misc for v6.9, thanks!
+
+Subject line adjusted to:
+
+  PCI: Make pcie_port_bus_type const
+
+to match history.
+
+> ---
+>  drivers/pci/pci-driver.c   | 2 +-
+>  drivers/pci/pcie/portdrv.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> [...]
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: cs35l56: Fix deadlock in ASP1 mixer register initialization
-      commit: c14f09f010cc569ae7e2f6ef02374f6bfef9917e
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+> diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
+> index ec838f2e892e..a29098e24683 100644
+> --- a/drivers/pci/pci-driver.c
+> +++ b/drivers/pci/pci-driver.c
+> @@ -1705,7 +1705,7 @@ static int pcie_port_bus_match(struct device *dev, struct device_driver *drv)
+>  	return 1;
+>  }
+>  
+> -struct bus_type pcie_port_bus_type = {
+> +const struct bus_type pcie_port_bus_type = {
+>  	.name		= "pci_express",
+>  	.match		= pcie_port_bus_match,
+>  };
+> diff --git a/drivers/pci/pcie/portdrv.h b/drivers/pci/pcie/portdrv.h
+> index 1f3803bde7ee..12c89ea0313b 100644
+> --- a/drivers/pci/pcie/portdrv.h
+> +++ b/drivers/pci/pcie/portdrv.h
+> @@ -96,7 +96,7 @@ struct pcie_port_service_driver {
+>  int pcie_port_service_register(struct pcie_port_service_driver *new);
+>  void pcie_port_service_unregister(struct pcie_port_service_driver *new);
+>  
+> -extern struct bus_type pcie_port_bus_type;
+> +extern const struct bus_type pcie_port_bus_type;
+>  
+>  struct pci_dev;
+>  
+> 
+> ---
+> base-commit: cc24b2d080dca2ce1c89a8a71c00bdf21155f357
+> change-id: 20240208-bus_cleanup-pci2-61fe9c495d08
+> 
+> Best regards,
+> -- 
+> Ricardo B. Marliere <ricardo@marliere.net>
+> 
 
