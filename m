@@ -1,113 +1,158 @@
-Return-Path: <linux-kernel+bounces-57475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D24884D990
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:30:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0579E84D9B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 06:55:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFBCF1F232C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 05:30:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5C011F235EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 05:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DEAC67C5E;
-	Thu,  8 Feb 2024 05:30:03 +0000 (UTC)
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 452C367C7E;
+	Thu,  8 Feb 2024 05:53:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="hTH1fYzn"
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406DB67C51;
-	Thu,  8 Feb 2024 05:30:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389772C6BA;
+	Thu,  8 Feb 2024 05:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707370202; cv=none; b=qm1mbqY1XogGJWEZcbDcOp5y9GHo520Tu0f+jynCmmv+EdubMMYUZ/16pnqiOY+lTBf3VDSJcMRODmC70olcDL1DUfEXO1c4Hh7P82P4+rLabQg9fPqtrC+Q9NxkeaZhRDSRM9iDm8fk0PPe9/gWHsXAxR4zsSczJY7QsMkG3Xo=
+	t=1707371610; cv=none; b=Vd/91b6rYNXAV2Dpg2N8CgpbJ1dfecRpdWg6SrlrohcQGJ8uSh/0JeMzzcHy1V1XNlRogOOuMIroMwKM/TXe8YCS6Bfmef34iZXXahIJC3gEouBdFa+3bwHxDYfNLrx+Eehjo+IgARLM3s5RrWIRkCAtSd7m+NdlX/NOU7fJuEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707370202; c=relaxed/simple;
-	bh=LSGhLsIEUn/a5N+Xif81iePzt9BrdznZDIftCEWCoSI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nn41fUP0iMJ6IHu2fE0J46QrOdv2c1agIv+FBHKIjvuwC5gCDEQq/0EdTY+oo3sshlCYuIzfAAOrWBaU/cnE7RwNaIoPahmycRRFRkWSF/BGZEENUsQug/a3EPDBdaNi7ypYN18Mv23orkhhKYbNhQ+zzc15+6lJTNlErXxzUSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5d42e7ab8a9so934579a12.3;
-        Wed, 07 Feb 2024 21:30:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707370200; x=1707975000;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Np0WXML6XnfyYnvQ5Kz5GSWkppmE8CLxkStPxfJskEI=;
-        b=pSwOBaqeyJ35qoibW13y68VwiHeqzYTbKyGdvI/iH8G6sDq3VboRdLCOw/5vsLWXm4
-         ynSTPvv2Oh7Iq9vxZQFxaXxK7b5onLM+r/SfCzTgSSErr9YUmIR0AlI6kMskLNdgnV+h
-         JebF0Faw5SskWeFnkZ57T8NnDGJ1IV7hmIuifaYweX93Nir3cIAMoeJqV/lTYRnqkZQy
-         Wi2h+QZF6BrxZsFFEYp9sN/9q+MDSjRlrUbu1oi8N6AF7IaYia2Fu3C+buG4TVmfjRsU
-         1bNs1eGKBPm3v73YL1rRdc9tfw6UMcuPUN1TeTbDKdoXG68bVA4mZLTKQ54UImWg0Afr
-         +fDg==
-X-Gm-Message-State: AOJu0YxIs1RHyssvhqwC4qFTOBKo4Jw3k5j0i7I/ffSxSB6Jc4RmpZkE
-	u47aLJwRMhP7Sjq+lohqxiAdcyl8+y4tAAprrPrz/HWfq2OReLD3JhV/u7KnAYIpy5FGlUaIN5T
-	KLx/Dz3/kHS3WtlUp9OLciIp8KHs=
-X-Google-Smtp-Source: AGHT+IGvTl+ZP11IcRdz3/2WBLOG5nM8RrJ8DnAcBUA8U2fJjpj4v5W9LdevI4C7gBzBP9/uV4GBDbFfVkU60MfOKPo=
-X-Received: by 2002:a05:6300:8082:b0:19c:6b59:b9fc with SMTP id
- ap2-20020a056300808200b0019c6b59b9fcmr7270336pzc.24.1707370200365; Wed, 07
- Feb 2024 21:30:00 -0800 (PST)
+	s=arc-20240116; t=1707371610; c=relaxed/simple;
+	bh=XJbCPDjfMjOfSQEBoqY2Y9QX28Ux2kDGK4gtMZN7IcE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p2q8Vry3MQ9dzWnrESN2WZyX8Rq/WI1+qaLozeTlqR7neTX6gC6TNXaS9wcdWs6qRlX22ORWbdOwRTXig0hpfe5504ywK1lejbRkyDiljfR3pJUlNdhRSKGGufI0EN67uCbq55kRgbwYXXa3FVvUQ5b72AbqJMEaRQdol0XKjEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=hTH1fYzn; arc=none smtp.client-ip=162.62.58.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1707371297;
+	bh=HeD4MdsWZP+nT6F3x0Ch5xUnu4rjQuX4K7nZXpOagJk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=hTH1fYznOrzJXqu9F0ny1lu8dRelTtxLwwtYi6bgGNnAAFaP7Zt1NCt99IVdxgnUk
+	 Kn0B0n5/8QhSxSnYI7U1HSfP31ilQbunsvJ+985d5K/VMQZNGEdksUhrcA2lavtySa
+	 4sw85yrygj5SCLt94K/JGz6kufAxe0ccNeMfyDt8=
+Received: from [192.168.0.101] ([175.152.81.97])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 8ADA76B3; Thu, 08 Feb 2024 13:34:45 +0800
+X-QQ-mid: xmsmtpt1707370485tafmacghl
+Message-ID: <tencent_1D3AC867D2233D8E19C8CFF3B9A8AA893A05@qq.com>
+X-QQ-XMAILINFO: M58CI+QHpTskpw88BVg3fOVTznYDaB5PMTU1xQCVQ0f/DjnnKFFh97qCwRQr/o
+	 W9CZnMdZmDFcRREruZVUKNwTRvBkSNZcqz8bHVXpanUOWXAAeTbwRA6p61Y9pt3SjLK/BRdeyDRC
+	 MJ+6xpxNrwm9tJEAmIY6JFiYTR00MK5h6f1nNzU5XIZ8N1qiySOZFufSTh6Vbpzg21896en6IfNR
+	 sGRKWH85htqY3tHjSwk4RB5qv3a8zGmOVzEKo8ClnXdttMMg6nPf0TincVPmMRxDkVGCIaN2nwP2
+	 zdw1NX/kZIgO0kD6yjwDW0fVh9wPS9wx95xoHLDtcaVgsDbKIM0Xzblc+R8a1SkRjyCYlRsHLI3l
+	 l+fsbe266Kyytz2pFg0HfIxfnc5Q9uPvFrhNWKEld1WBr1RwyiNEqyoCbafu9QZTNOmQCCYap3aL
+	 sZ/9FkOTq2ffANnpn9nddlWSqGOmQ9UyHCmq0inY6EQCMGxJNA5CAKtjjYhxTc2YAq/R3KYXaALz
+	 z/JdIo4q93dzN3SN1RZZVUwBQwBMaSEqlPAa2HdIFp87BRK3ZhsvPEGYMm1WLkc1+am6jKj2ihzo
+	 /jGBGlDnTxGGkGkVI9AIMRJHq+avSzgjmf+PO9RRmlbctXZknX23q/2B4D3fiU88xvDDr4SPDaCq
+	 QwTzlthFIdGw2AbKAMyyBfDATdr+jiW+Fq4WJcMqCiV5gVwB7x2a1q4PoHzNI6RvV2dx6KI/CzaW
+	 qROvMjWOho6jcMzED706SOkHVO4fly0STeXx2rHYIL9AH60LRDqORMduXvEhfzKTPCPiwFjl9FgJ
+	 HFlNcMYgiKj8bKwbdrHVY4RMgGWVXWOWIsV62kOk1E96Q6HK80I43VhLMTWmieFJqX+G+Cprq34m
+	 ITeCUU+bqtxEbwwOeKQBujuPyBuTssYkOark6W3Vq2rR3St+vWIBZm61UyN2oeNAwo3kAwZILXd5
+	 XuuV/3ybG/VKzhkd1fPw==
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+X-OQ-MSGID: <4c493a71-ab68-b7f2-101b-85cefe0e6659@foxmail.com>
+Date: Thu, 8 Feb 2024 13:34:45 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206130458.8867-1-adrian.hunter@intel.com> <CAM9d7cjiCT7C=WHd9EmPRRRQY=1aq8-NAGgRcZPWz-s=7Js3mw@mail.gmail.com>
-In-Reply-To: <CAM9d7cjiCT7C=WHd9EmPRRRQY=1aq8-NAGgRcZPWz-s=7Js3mw@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 7 Feb 2024 21:29:49 -0800
-Message-ID: <CAM9d7ciZuHzsi+nt190GwyfGYh5txLqDq6-2hOXLzJ+sibjaMQ@mail.gmail.com>
-Subject: Re: [PATCH V2 0/2] perf symbols: Slightly improve module file
- executable section mappings
-To: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Like Xu <like.xu.linux@gmail.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] eventfd: strictly check the count parameter of
+ eventfd_write to avoid inputting illegal strings
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+ David Woodhouse <dwmw@amazon.co.uk>, Matthew Wilcox <willy@infradead.org>,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <tencent_10AAA44731FFFA493F9F5501521F07DD4D0A@qq.com>
+ <20240208043354.GA85799@sol.localdomain>
+Content-Language: en-US
+From: Wen Yang <wenyang.linux@foxmail.com>
+In-Reply-To: <20240208043354.GA85799@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 7, 2024 at 9:26=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> Hi Adrian,
->
-> On Tue, Feb 6, 2024 at 5:05=E2=80=AFAM Adrian Hunter <adrian.hunter@intel=
-com> wrote:
-> >
-> > Hi
-> >
-> > Currently perf does not record module section addresses except for
-> > the .text section. In general that means perf cannot get module section
-> > mappings correct (except for .text) when loading symbols from a kernel
-> > module file. (Note using --kcore does not have this issue)
-> >
-> > Here are a couple of patches to help shed light upon and slightly impro=
-ve
-> > the situation.
-> >
-> >
-> > Changes in V2:
-> >
-> >   perf tools: Make it possible to see perf's kernel and module memory m=
-appings
-> >     - add dump to perf report (if no browser) as well as perf script
-> >     - add 'perf --debug kmaps' option also to dump kmaps
-> >
-> >
-> > Adrian Hunter (2):
-> >       perf tools: Make it possible to see perf's kernel and module memo=
-ry mappings
-> >       perf symbols: Slightly improve module file executable section map=
-pings
->
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Hmm.. this is not applied cleanly.  Can you please rebase
-onto the current perf-tools-next?
+On 2024/2/8 12:33, Eric Biggers wrote:
+> On Wed, Feb 07, 2024 at 12:35:18AM +0800, wenyang.linux@foxmail.com wrote:
+>> By checking whether count is equal to sizeof(ucnt), such errors
+>> could be detected. It also follows the requirements of the manual.
+> Does it?  This is what the eventfd manual page says:
+>
+>       A write(2) fails with the error EINVAL if the size of the supplied buffer
+>       is less than 8 bytes, or if an attempt is made to write the value
+>       0xffffffffffffffff.
+>
+> So, *technically* it doesn't mention the behavior if the size is greater than 8
+> bytes.  But one might assume that such writes are accepted, since otherwise it
+> would have been mentioned that they're rejected, just like writes < 8 bytes.
 
-Thanks,
-Namhyung
+
+Thank you for your commtents.
+Although this behavior was not mentioned, it may indeed lead to
+undefined performance, such as (we changed char [] to char *):
+
+#include <sys/eventfd.h>
+
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+     //char str[32] = "hello world";
+     char *str = "hello world";
+     uint64_t value;
+     ssize_t size;
+     int fd;
+
+     fd = eventfd(0, 0);
+     size = write(fd, &str, strlen(str));
+     printf("eventfd: test writing a string:%s, size=%ld\n", str, size);
+     size = read(fd, &value, sizeof(value));
+     printf("eventfd: test reading as uint64, size=%ld, value=0x%lX\n", 
+size, value);
+     close(fd);
+
+     return 0;
+}
+
+
+$ ./a.out
+eventfd: test writing a string:hello world, size=8
+eventfd: test reading as uint64, size=8, value=0x560CC0134008
+
+$ ./a.out
+eventfd: test writing a string:hello world, size=8
+eventfd: test reading as uint64, size=8, value=0x55A3CD373008
+
+$ ./a.out
+eventfd: test writing a string:hello world, size=8
+eventfd: test reading as uint64, size=8, value=0x55B8D7B99008
+
+
+--
+
+Best wishes,
+
+Wen
+
+
+>
+> If the validation is indeed going to be made more strict, the manual page will
+> need to be fixed alongside it.
+>
+> - Eric
+
 
