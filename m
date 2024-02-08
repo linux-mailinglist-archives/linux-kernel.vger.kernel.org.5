@@ -1,153 +1,142 @@
-Return-Path: <linux-kernel+bounces-58674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0EDB84E9D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:44:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5508384E9CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 21:44:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3C841C24079
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:44:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 406D5B231A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 20:44:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 229F84F21A;
-	Thu,  8 Feb 2024 20:44:20 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C353487B8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFA964EB38;
 	Thu,  8 Feb 2024 20:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AN9toC51"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281F64A990;
+	Thu,  8 Feb 2024 20:44:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707425059; cv=none; b=ailrq4Qe60yPaq1T/qOT+gidEFBuslC2oWXzl6YRUz679FFklCAb8PmTma9MnU5bTFeVqW661mD1WTJ1rmr+xQCgOGRvcixAxYWi42pq0M1oTKiwXZCAih5djM+x6/fz9qGokFhIMh852FAnSThWotZGfY3pk0DqGapGA5kyVZw=
+	t=1707425057; cv=none; b=Qvd5hw1utsXT92zqUIR16R4YYcdOnv2FngbRJJu6zfCa1pom7ojuF23Ap6TwkTGNX1W3WK8y/+vT7Kp5TiPC8RAfhSU2kOwDSBQmANT+GdUb6UHO0HsqhEBVwfU/py2Mk0wGhNn2wc+CGWnuzrkqxV+Ez7q6bFJTasL/BOHDoTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707425059; c=relaxed/simple;
-	bh=Y1YO1yeJfR//2U1rH7TemWwVUP+2PWnGC2CmS8SSITk=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=p0w1fCQJoQAka+KrumKg71pvUx8rx5XYiD/7IPXPBg8RWSJxj2rY9n33SE5azG2ON7ef4k/RezjARE6ScPsSOxeah2mskMym6oom3JY40MxnTjNsx1hKS0koVDiae+mgcFoKEz+yDmbyoiJLkjS5GnxT3Hx5/EQUfU1y/rk072U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (178.176.74.49) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 8 Feb
- 2024 23:44:10 +0300
-Subject: Re: [PATCH net-next 1/5] net: ravb: Get rid of the temporary variable
- irq
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20240207120733.1746920-1-claudiu.beznea.uj@bp.renesas.com>
- <20240207120733.1746920-2-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <d348420d-59a0-f869-061d-5a1d736e12d5@omp.ru>
-Date: Thu, 8 Feb 2024 23:44:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	s=arc-20240116; t=1707425057; c=relaxed/simple;
+	bh=qRU3iyaNpE+Rb447l6RJ0FET7PNDqULjkzw4mJQ4ng8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=madKijA0jtsrbsnZok+lSbLNBiDT5Ybn6Sg2vIIsWGYIB8HC2KZIFRTOiCJTLWnZ/P+xdTTJcpvMjnaoWVkblFtC7b0nPS2FV96LaC7uIhVa2xUW60cbCKFLCP/CmvXVFVxiXUkXF9mKCd2O1gVXgzcrLC/XWnLlCZu4dx57wtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AN9toC51; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A7D5C433F1;
+	Thu,  8 Feb 2024 20:44:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707425055;
+	bh=qRU3iyaNpE+Rb447l6RJ0FET7PNDqULjkzw4mJQ4ng8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AN9toC51pq/9x8QIWVxF4buscSvG4ysb+w20x6vnPRzxQsjRq1o6Adm/kO4s0vT7h
+	 H83rkBpj/4M+Go3njXtX08ASUQLDhlyklHa2woNAuwe9iarkgYoM6kOpnsZXuUMvfE
+	 IZujNzlLudUhADK9j8uWViZFmNJdh6PgXroB8trZD41s97ztXeLzZzTNVZn/GY75R8
+	 3SewPmB3dvUHOyxj3hv2Y5NjynVxSarYvitpX2IvVJd0j8ZmFnfJ62+kicZVyMzhSN
+	 b3rbYOKJqdFH8BZzNOVc0eBecHxrPpava3AjXVQSjQjrwpMJKHesnZPOL0evariV/J
+	 HyJh+lwB5J2gA==
+Date: Thu, 8 Feb 2024 20:44:11 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Robin van der Gracht <robin@protonic.nl>,
+	Paul Burton <paulburton@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH v1 14/15] dt-bindings: auxdisplay: Add Maxim MAX6958/6959
+Message-ID: <20240208-morbidly-submerge-fcafe85bffc9@spud>
+References: <20240208165937.2221193-1-andriy.shevchenko@linux.intel.com>
+ <20240208165937.2221193-15-andriy.shevchenko@linux.intel.com>
+ <20240208-chute-bacteria-75425bd34dc9@spud>
+ <ZcUamOqKUuA-ahRY@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240207120733.1746920-2-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 02/08/2024 20:24:37
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 183308 [Feb 08 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.49 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.49 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.74.49
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 02/08/2024 20:30:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 2/8/2024 4:38:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="sxJRa8heXZCzXt88"
+Content-Disposition: inline
+In-Reply-To: <ZcUamOqKUuA-ahRY@smile.fi.intel.com>
 
-On 2/7/24 3:07 PM, Claudiu wrote:
 
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> The 4th argument of ravb_setup_irq() is used to save the IRQ number that
-> will be further used by the driver code. Not all ravb_setup_irqs() calls
-> need to save the IRQ number. The previous code used to pass a dummy
-> variable as the 4th argument in case the IRQ is not needed for further
-> usage. That is not necessary as the code from ravb_setup_irq() can detect
-> by itself if the IRQ needs to be saved. Thus, get rid of the code that is
-> not needed.
-> 
-> Reported-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-[...]
+--sxJRa8heXZCzXt88
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index 9521cd054274..e235342e0827 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -2611,17 +2611,20 @@ static int ravb_setup_irq(struct ravb_private *priv, const char *irq_name,
->  		if (!dev_name)
->  			return -ENOMEM;
->  
-> -		*irq = platform_get_irq_byname(pdev, irq_name);
-> +		error = platform_get_irq_byname(pdev, irq_name);
->  		flags = 0;
->  	} else {
->  		dev_name = ndev->name;
-> -		*irq = platform_get_irq(pdev, 0);
-> +		error = platform_get_irq(pdev, 0);
->  		flags = IRQF_SHARED;
->  	}
-> -	if (*irq < 0)
-> -		return *irq;
-> +	if (error < 0)
-> +		return error;
->  
-> -	error = devm_request_irq(dev, *irq, handler, flags, dev_name, ndev);
-> +	if (irq)
-> +		*irq = error;
-> +
-> +	error = devm_request_irq(dev, error, handler, flags, dev_name, ndev);
->  	if (error)
->  		netdev_err(ndev, "cannot request IRQ %s\n", dev_name);
->  
+On Thu, Feb 08, 2024 at 08:16:56PM +0200, Andy Shevchenko wrote:
+> On Thu, Feb 08, 2024 at 05:50:51PM +0000, Conor Dooley wrote:
+> > On Thu, Feb 08, 2024 at 06:58:57PM +0200, Andy Shevchenko wrote:
+> > > Add initial device tree documentation for Maxim MAX6958/6959.
+> >=20
+> > Why "initial"? Are there elements this display that you've not
+> > documented yet?=20
+>=20
+> s/documented/implemented/
 
-   Thanks for addressing my IRC comment! Tho the naming seems awful. :-)
-   I'd suggest to add a local variable (named e.g. irq_num) and use it to
-store the result of platform_get_irq[_byname]().
+Oh no, I meant documented. Whether or not you implement support in the
+driver doesn't really matter, but you should endeavour to document as
+much of the hardware as possible. Certainly simple things like
+interrupts.
 
-[...]
+> There are features of the hardware that may need additional properties.
+>=20
+> > > +title: MAX6958/6959 7-segment LED display controller with keyscan
+> >=20
+> > > +properties:
+> > > +  compatible:
+> > > +    const: maxim,max6959
+> >=20
+> > Where's the max6958's compatible? I don't see it in your driver either.
+>=20
+> For now, see above, there is no need.=20
 
-MBR, Sergey
+I don't know what I am supposed to see above.
+
+> Moreover, there is no need at all
+> as we have autodetection mechanism. I don't see why we should have two
+> compatible strings just for the sake of having them.
+>=20
+> > It seems that the max6959 has some interrupt capabilities that are not
+> > available on the max6958, so a dedicated compatible seems suitable to
+> > me.
+>=20
+> So, please clarify the DT's p.o.v. on the hardware that can be autodetect=
+ed.
+> Do we need to still have different compatible strings? What for? I don't
+> see the need, sorry for my (silly) questions.
+
+If there's an auto-detection mechanism, which is a valid justification,
+you need to put it in the commit message. If you don't it just looks
+like you're missing a compatible.
+The advantage of a dedicated compatible is restricting the properties
+that would only apply to either the 6958 or 6959 to just that device.
+
+You've only partially documented these devices though, so it is not
+clear how much of a divergence there'd actually be.
+
+cheers,
+Conor
+
+--sxJRa8heXZCzXt88
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcU9GwAKCRB4tDGHoIJi
+0hs+AQDCko8IQ57nsKd0xBsoOxTDO7hnzRgkrEyfG9eQFeWRpQEA78y+k53qmS8I
+JdySkG1FA4lAUXaiepc4F+RFVXbhYgo=
+=HrI2
+-----END PGP SIGNATURE-----
+
+--sxJRa8heXZCzXt88--
 
