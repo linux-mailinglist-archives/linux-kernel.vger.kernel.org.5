@@ -1,143 +1,116 @@
-Return-Path: <linux-kernel+bounces-57674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B7A084DC14
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:56:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77B1584DC16
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:56:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C3D2B25E16
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:55:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A84591C25D9D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 08:56:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7006BFB2;
-	Thu,  8 Feb 2024 08:52:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256466D1B6;
+	Thu,  8 Feb 2024 08:53:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K4/Fie8p"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MoaB5s/c"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCE8A6BB5B;
-	Thu,  8 Feb 2024 08:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA36535DC;
+	Thu,  8 Feb 2024 08:53:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707382338; cv=none; b=XXwB3BC3CjJHr4lDbgsBwiKQjlItWwF4m1Kkkw4yykevsfavZbEMTKdkQidA7eeCQzrh0NQHc5S0cTdfWvpsx0+yoTTorD3EyKVlyLE2eRezscojYVQiWewscH7ZW6PL9e2114+JmbpwGWICn7ADezzfc6iKEuKQfchPJ3OQOdI=
+	t=1707382422; cv=none; b=X5Yq3IRvUYGAF3t4l8QIsxn93gKGLUTEYXWu/qNgLbud0AreM5F88WKkK3YfqgBmbaEJSpJBX5Z8iqvXXUxPWB04Pt93nvTyDinobDOL9Oxc+4qpiCy3iBPT+v+APeRxUtlDUz/++natbKcGerIrv/uLMvQ65tFEl9CTjNhOQvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707382338; c=relaxed/simple;
-	bh=nsYgwYdoCf/v23CMHkRT2qhweno5Q0SXZJgI7dMic6A=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=qbuLSb4e2cRxwvlq7+g9HRgA2QafUwEiIURul/MRRReaAkl0FHlCvSS0pP4Jw38yXfAtSCsJ8Z2W+3PIvKy7299S/hL1xO74DBrEMR0sEtAwVEQkPDlSCRBhRGjgsiWQhzlA3Ca9eniFnOtTaOd5bID5kcemYsTg51Rpghc2t8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K4/Fie8p; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-337d05b8942so1154669f8f.3;
-        Thu, 08 Feb 2024 00:52:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707382335; x=1707987135; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZLijPkNPZl+6L/SNv7KMroW42WvF577+ZBffRW12WRY=;
-        b=K4/Fie8p2dbJtsglNr3D9Zfe/IO5JJlq2HUkmRbox1W2Aca6I3UAYmA8lfRs7oXrzs
-         BgnUyUfLA27WnfgAwQ/fGnfAn/pOxv32oRDpU1WnLsAX8Jg2P6YB/gVBs6QxlCQNa7gh
-         DLmZj2WcxeP5GjyjpS6JicryortXoQvBi0hjGdTLP5uvEQznG0wiAoYym5YfcO6wmEL2
-         b6SuXFcg2IJvka5vapB5rzUDXTEvGZfUPgCwvon7HHeJTwTarGxFMl3WGM5LEsVfjGxR
-         J3r2YNajDLCWPzh1kYpWKc+9Irtm+j7l8FHIcVP3KIsf/64C00QNEoMxEobh6IqbdeUL
-         SDxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707382335; x=1707987135;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZLijPkNPZl+6L/SNv7KMroW42WvF577+ZBffRW12WRY=;
-        b=HG8mcd+psIBixo8BC39rUDU9lNwO8Y4tiB7TrhZZ0Rd8dxRfODHne8B0/4n1S1iMgi
-         YWwNZGUEo6Q8LzqjpBoSVZswx0O2ZBxVeOJyB9oZpaxFOrVDD/9tF/++Dr2UpwFNXrlP
-         wHpRsgxMJhVKP/QslNJRPYJKqywbl0Wi7Bx55u51P7Su+scXmHtMboF8EDfElCLrBpc/
-         V9BHhY6lTQ8D0mJmBqV44aoFByxCxqTbnUiMKaUJCnfhyQkJXp5A2Iq9JdfRTH5lpC2l
-         04s8f+uI1FGccWEBi1wxnuBm0Mo24Rv3fIZBqWUlA4y0QdN6i3QNXSDgS33riH1XN6fH
-         m8Ag==
-X-Forwarded-Encrypted: i=1; AJvYcCWXwjJemMRRs2uNf0KoZDXmZuWdqy2vIo9z0HWqghOT4Z7N/YWJzpTQwJg20XTTCiOyZwhnr2kJ9NX003XN/CU2zROrrHwHoqpXRSkefRicUM3NqYDGF02CRek/1osH7k5fY4teRatgaS0PyN7lR4taDB/q0mPorGKCtDkbnxEIkk1tsSQNRMPZNxDqtDgm6JEBRluhzXpIjIr7aB0o
-X-Gm-Message-State: AOJu0Yy5mv/6vzP3/h23J6SALH+k/MlChyr7KBNgbchGwnptQwQc8edn
-	2ogp5bl8OMkAkfu8OsbavRcj6PGcewz+R+MDkaoneoO6LP5A4c3/
-X-Google-Smtp-Source: AGHT+IG2lAcMdFKBZ5vcEaLKD/Wi/8gZcHvjnvfWa8YHRbWGT4Dmq2v32/8oBzuewudCDRhlB3OTzw==
-X-Received: by 2002:a5d:558e:0:b0:33a:fe3b:b2ae with SMTP id i14-20020a5d558e000000b0033afe3bb2aemr4867695wrv.66.1707382334630;
-        Thu, 08 Feb 2024 00:52:14 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX9mTO16tkOA+8xvP3tdKoS2oQCC+t3nSnWwQABs6FQGzpVYvQOZaC7FjLZFFYgdXcHeFSK05gT+W1HEMCFcxyowCXGEHrjTN5FKbkjXhfV7Mc5SmfmHswNmCKppsmvv4C7BlOxgJrs60HUV9feZcl88lnXvfNPfYqBbA5F4/L2eIV9bOK9F/kVLlMOLei+eF7IR/VLDL7k+nd9XSWn2onJqY4WS3+MzIcaik3H/9LEXLXISqI1ZrOX5KyB+1rl2IsBrPFPFdM/598+CkR2XRHmedDdI/WJdAAZ7Zdavo9EVAw2xIy97yqJVe+APv7Uh0RFEirn/tn9n4zbbLKxRrA6IShxK+GDlZOWEVg4hUFPZHmQJCTv4g9JTTEnDBU71YWsOKPnCLuRCgDaf3Yp/XQhHO+0mD1yHKdekPoAWJoM1ghNTwQ=
-Received: from [192.168.10.199] (54-240-197-239.amazon.com. [54.240.197.239])
-        by smtp.gmail.com with ESMTPSA id bo16-20020a056000069000b0033b0d2ba3a1sm941262wrb.63.2024.02.08.00.52.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 00:52:14 -0800 (PST)
-From: Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <92918ee8-3cc9-41c3-a284-5cd6648abc05@xen.org>
-Date: Thu, 8 Feb 2024 08:52:06 +0000
+	s=arc-20240116; t=1707382422; c=relaxed/simple;
+	bh=UQNJ3qjwLz7Jv4K3EqKF8D67gnCfaH98/kcXiVcl2Tg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m/1LmOcCI1GB8MbSzIkmM56RL4HYigdOGvAk4vpfMGS/l65USqNVNpJDr9UdzCBjC78yrjqSvLQQtXEAwqdCr+HIdaqO8QV39WEphb7sehJ72JPqSr+OpYO2RVGMCwM4S3pp3j2YHZWeXH5x8YrhrlUY5FEy8QbOQxlc7RyWYsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MoaB5s/c; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707382420; x=1738918420;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=UQNJ3qjwLz7Jv4K3EqKF8D67gnCfaH98/kcXiVcl2Tg=;
+  b=MoaB5s/clY7z6IwuIvDxOyZQXqTmw16ot7UqXjxwIFNrv2zP/cvkwojH
+   omygfNmHfCiH3XEQQFIi1eJVK5STqKw+CQWOUF3fcKUuu4EYdZlQD/RYV
+   t734rrDF4Ur4bXfKrmTJ4sVdzfl9uZrsEENxQhZS+Boi1/ea/uBLbSeLJ
+   9yyi5Ufr0gVo3OAHc0TOr6gcgOzJ7XVrooSbNvi0e6w2WyRRUTnU09ktz
+   Os92Qogrr1r+mdnuR78t7L/hMJxzWPCTN1A4mxhAaAWcAY8kqYYXxiSKs
+   tbou+t/rEUypwHyq1xfq2S5S3+AQ6eAqQkt6L/XqQCcuCdg7hy3kgcsvB
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="1329186"
+X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
+   d="scan'208";a="1329186"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 00:53:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
+   d="scan'208";a="1589475"
+Received: from lnielsex-mobl.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.251.219.88])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 00:53:37 -0800
+From: Adrian Hunter <adrian.hunter@intel.com>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Like Xu <like.xu.linux@gmail.com>,
+	linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH V3 0/2] perf symbols: Slightly improve module file executable section mappings
+Date: Thu,  8 Feb 2024 10:53:24 +0200
+Message-Id: <20240208085326.13432-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH v12 11/20] KVM: xen: allow shared_info to be mapped by
- fixed HVA
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>,
- kvm@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240115125707.1183-1-paul@xen.org>
- <20240115125707.1183-12-paul@xen.org> <ZcMCogbbVKuTIXWJ@google.com>
-Organization: Xen Project
-In-Reply-To: <ZcMCogbbVKuTIXWJ@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Content-Transfer-Encoding: 8bit
 
-On 07/02/2024 04:10, Sean Christopherson wrote:
-> On Mon, Jan 15, 2024, Paul Durrant wrote:
->> @@ -638,20 +637,32 @@ int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
->>   		}
->>   		break;
->>   
->> -	case KVM_XEN_ATTR_TYPE_SHARED_INFO: {
->> +	case KVM_XEN_ATTR_TYPE_SHARED_INFO:
->> +	case KVM_XEN_ATTR_TYPE_SHARED_INFO_HVA: {
->>   		int idx;
->>   
->>   		mutex_lock(&kvm->arch.xen.xen_lock);
->>   
->>   		idx = srcu_read_lock(&kvm->srcu);
->>   
->> -		if (data->u.shared_info.gfn == KVM_XEN_INVALID_GFN) {
->> -			kvm_gpc_deactivate(&kvm->arch.xen.shinfo_cache);
->> -			r = 0;
->> +		if (data->type == KVM_XEN_ATTR_TYPE_SHARED_INFO) {
->> +			if (data->u.shared_info.gfn == KVM_XEN_INVALID_GFN) {
->> +				kvm_gpc_deactivate(&kvm->arch.xen.shinfo_cache);
->> +				r = 0;
->> +			} else {
->> +				r = kvm_gpc_activate(&kvm->arch.xen.shinfo_cache,
->> +						     gfn_to_gpa(data->u.shared_info.gfn),
->> +						     PAGE_SIZE);
->> +			}
->>   		} else {
->> -			r = kvm_gpc_activate(&kvm->arch.xen.shinfo_cache,
->> -					     gfn_to_gpa(data->u.shared_info.gfn),
->> -					     PAGE_SIZE);
->> +			if (data->u.shared_info.hva == 0) {
-> 
-> I know I said I don't care about the KVM Xen ABI, but I still think using '0' as
-> "invalid" is ridiculous.
-> 
+Hi
 
-With the benefit of some sleep, I'm wondering why 0 is a 'ridiculous' 
-invalid value for a *virtual* address? Surely it's essentially a 
-numerical cast of the canonically invalid NULL pointer?
+Currently perf does not record module section addresses except for
+the .text section. In general that means perf cannot get module section
+mappings correct (except for .text) when loading symbols from a kernel
+module file. (Note using --kcore does not have this issue)
 
-   Paul
+Here are a couple of patches to help shed light upon and slightly improve
+the situation.
+
+
+Changes in V3:
+
+  Re-base
+
+Changes in V2:
+
+  perf tools: Make it possible to see perf's kernel and module memory mappings
+    - add dump to perf report (if no browser) as well as perf script
+    - add 'perf --debug kmaps' option also to dump kmaps
+
+
+Adrian Hunter (2):
+      perf tools: Make it possible to see perf's kernel and module memory mappings
+      perf symbols: Slightly improve module file executable section mappings
+
+ tools/perf/Documentation/perf.txt |  2 ++
+ tools/perf/builtin-report.c       |  2 ++
+ tools/perf/builtin-script.c       |  3 ++
+ tools/perf/util/debug.c           |  3 ++
+ tools/perf/util/debug.h           |  1 +
+ tools/perf/util/python.c          |  1 +
+ tools/perf/util/session.c         | 11 ++++++
+ tools/perf/util/session.h         |  2 ++
+ tools/perf/util/symbol-elf.c      | 75 +++++++++++++++++++++++++++++++++++++--
+ 9 files changed, 98 insertions(+), 2 deletions(-)
+
+
+Regards
+Adrian
 
