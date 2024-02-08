@@ -1,68 +1,71 @@
-Return-Path: <linux-kernel+bounces-57946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E85684DF60
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:09:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 845A384DF65
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:09:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A17B61C29052
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:09:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F7C61F2BE14
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 11:09:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C51A74E06;
-	Thu,  8 Feb 2024 11:06:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB646763F8;
+	Thu,  8 Feb 2024 11:06:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="JizZmGwh"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="x3JSS1o/"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D28D474E0F;
-	Thu,  8 Feb 2024 11:06:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518BE7602B;
+	Thu,  8 Feb 2024 11:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707390372; cv=none; b=Sd4KkvKhtYhtdB4FEdyV6nSSq31yQELsEL0CDxBP5Uty7WOGTagh7dYXfL1au/wDGBtqk5JjJ2CYFF77gGpI0fAiqL0qBoKCSMU0cOMb7XGIS/QUgs1brMgGgp+P6fjLNBF5+YYzWA0eBRq6iQpTYW2cQZmFwinOOgX+F1VPL3M=
+	t=1707390378; cv=none; b=ZBHxDVdJ9hcY6g08dEhKmUYP1Hr7Vxk4ydA3/3Ydi6Esg57SrV345tEtV6WI6YQ6sDVAl4BRL/ig3xs8CiRjGyutc3ybc4QS6szPtHRuQ3Mhxmjpor6bxDNIPGgClgF3tKbEAVE8QPPOuyeoSkPvn8Q513e6b3i5kje1aVpjoAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707390372; c=relaxed/simple;
-	bh=yKIQgx1tYl4N66xn4SONCewxCyLnmqBgU2OMAGJKi54=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bzgr5glAIcF3r2O4TSsxrRVeQ50CASwUsn0CNlnf28GhKZfpzgkNAh1vertatsX4zofLKzedfkFeh0YRZZtgqSqJ3NxeXD/ic7NNrJQl4nL3fkT/aoXPSzyuBvg8ABpDzo/Ybj0pTRbqcH0AMTxa90REjMTfGmk5mHV7cbXaztU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=JizZmGwh; arc=none smtp.client-ip=198.47.19.141
+	s=arc-20240116; t=1707390378; c=relaxed/simple;
+	bh=8NRSiZVkkl3lh/MRCcP5v3kJHexKIIms0YJTvzaQl4Q=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Q9n2WdMt14vRHeU5b+UTj5tcIJhHe5A7HC/fHYvZOlWMWx73+JOvnOnplfxwoj1XSTfsuGjcCXoRbyCZ7GhD8mYMTiJO3WAbLJ1fAaCy4virnLOoPqrpompbSBFJMav2gS2bvZnkHKKMMXzofiQBYl6r56okjO+5pr4p6dtNXmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=x3JSS1o/; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 418B64X1051890;
-	Thu, 8 Feb 2024 05:06:04 -0600
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 418B662x083887;
+	Thu, 8 Feb 2024 05:06:06 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707390364;
-	bh=JXXVu22Eoc25d5j9Jp3/5JtdcHkgF5s1mAQEELWRls0=;
-	h=From:To:CC:Subject:Date;
-	b=JizZmGwhTJVBUdyW1LRioWhgbQWevYQg5RHjgvK80mPCvaUTKMTmAkuo4htd/eChY
-	 SxB2FqVnFHG81rJWNTzf7jptY5388MxwIMJRYegdISyqRC/uFpoKN4zembzlSUVgeR
-	 7c0vNF/eL4W0wxMHS7bmyscih3R4xPXMII1JL4Is=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 418B64aH022899
+	s=ti-com-17Q1; t=1707390366;
+	bh=QXuk50433xsIuuLNqWvfYOf5mc2kL1jE9kluYU6GUH8=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=x3JSS1o/SlCvYBpQOF/0C2qy2pD+OAtowUTsXITL1QV8ekR8ORWLlLyCTtkSX6uY+
+	 gFueDc64b/zF+xWLdhjPN/frMo2Ie8qd5d615qItIdOTnMbW6uw0UWskwiPDg5t9dV
+	 GmKx5wBAn/B49hgVHhZGwMYnzZlT63m87+4G/MLA=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 418B65s5022931
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 8 Feb 2024 05:06:04 -0600
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 8 Feb 2024 05:06:05 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 8
- Feb 2024 05:06:04 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2024 05:06:05 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 8 Feb 2024 05:06:04 -0600
+ Frontend Transport; Thu, 8 Feb 2024 05:06:05 -0600
 Received: from localhost (a0498981-hp-z2-tower-g5-workstation.dhcp.ti.com [10.24.68.216])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 418B63nP096123;
-	Thu, 8 Feb 2024 05:06:03 -0600
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 418B64PA038099;
+	Thu, 8 Feb 2024 05:06:05 -0600
 From: Bhavya Kapoor <b-kapoor@ti.com>
 To: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, <b-kapoor@ti.com>
-Subject: [PATCH 0/3] arm64: dts: ti: Modify pinmux for wakeup and mcu uart
-Date: Thu, 8 Feb 2024 16:35:59 +0530
-Message-ID: <20240208110602.931573-1-b-kapoor@ti.com>
+Subject: [PATCH 1/3] arm64: dts: ti: k3-j7200-common-proc-board: Modify Pinmux for wakeup and mcu uart
+Date: Thu, 8 Feb 2024 16:36:00 +0530
+Message-ID: <20240208110602.931573-2-b-kapoor@ti.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240208110602.931573-1-b-kapoor@ti.com>
+References: <20240208110602.931573-1-b-kapoor@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,26 +80,57 @@ WKUP_PADCONFIG registers for wakeup and mcu uart lies
 under wkup_pmx2 for J7200. Thus, modify pinmux for both
 of them.
 
-Only Tx and Rx Signal lines for wakeup uart are brought out on
-J721S2 Common Proc Board and J784S4 EVM, but CTS and RTS signal
-lines are not brought out. Thus, remove pinmux for CTS and RTS signal
-lines for wake up uart in J721S2 and J784S4.
-
-Rebased to 20240208
-
-Bhavya Kapoor (3):
-  arm64: dts: ti: k3-j7200-common-proc-board: Modify Pinmux for wakeup
-    and mcu uart
-  arm64: dts: ti: k3-j721s2-common-proc-board: Remove Pinmux for CTS and
-    RTS in Wakeup Uart
-  arm64: dts: ti: k3-j784s4-evm: Remove Pinmux for CTS and RTS in Wakeup
-    Uart
-
+Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
+---
  .../boot/dts/ti/k3-j7200-common-proc-board.dts | 18 +++++++++---------
- .../dts/ti/k3-j721s2-common-proc-board.dts     |  2 --
- arch/arm64/boot/dts/ti/k3-j784s4-evm.dts       |  2 --
- 3 files changed, 9 insertions(+), 13 deletions(-)
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+index 1d8bddcae90e..6593c5da82c0 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+@@ -119,24 +119,25 @@ transceiver3: can-phy3 {
+ };
+ 
+ &wkup_pmx0 {
++};
++
++&wkup_pmx2 {
+ 	mcu_uart0_pins_default: mcu-uart0-default-pins {
+ 		pinctrl-single,pins = <
+-			J721E_WKUP_IOPAD(0xf4, PIN_INPUT, 0) /* (D20) MCU_UART0_RXD */
+-			J721E_WKUP_IOPAD(0xf0, PIN_OUTPUT, 0) /* (D19) MCU_UART0_TXD */
+-			J721E_WKUP_IOPAD(0xf8, PIN_INPUT, 0) /* (E20) MCU_UART0_CTSn */
+-			J721E_WKUP_IOPAD(0xfc, PIN_OUTPUT, 0) /* (E21) MCU_UART0_RTSn */
++			J721E_WKUP_IOPAD(0x90, PIN_INPUT, 0) /* (E20) MCU_UART0_CTSn */
++			J721E_WKUP_IOPAD(0x94, PIN_OUTPUT, 0) /* (E21) MCU_UART0_RTSn */
++			J721E_WKUP_IOPAD(0x8c, PIN_INPUT, 0) /* (D20) MCU_UART0_RXD */
++			J721E_WKUP_IOPAD(0x88, PIN_OUTPUT, 0) /* (D19) MCU_UART0_TXD */
+ 		>;
+ 	};
+ 
+ 	wkup_uart0_pins_default: wkup-uart0-default-pins {
+ 		pinctrl-single,pins = <
+-			J721E_WKUP_IOPAD(0xb0, PIN_INPUT, 0) /* (B14) WKUP_UART0_RXD */
+-			J721E_WKUP_IOPAD(0xb4, PIN_OUTPUT, 0) /* (A14) WKUP_UART0_TXD */
++			J721E_WKUP_IOPAD(0x48, PIN_INPUT, 0) /* (B14) WKUP_UART0_RXD */
++			J721E_WKUP_IOPAD(0x4c, PIN_OUTPUT, 0) /* (A14) WKUP_UART0_TXD */
+ 		>;
+ 	};
+-};
+ 
+-&wkup_pmx2 {
+ 	mcu_cpsw_pins_default: mcu-cpsw-default-pins {
+ 		pinctrl-single,pins = <
+ 			J721E_WKUP_IOPAD(0x0000, PIN_OUTPUT, 0) /* MCU_RGMII1_TX_CTL */
+@@ -272,7 +273,6 @@ &mcu_uart0 {
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&mcu_uart0_pins_default>;
+-	clock-frequency = <96000000>;
+ };
+ 
+ &main_uart0 {
 -- 
 2.34.1
 
