@@ -1,167 +1,101 @@
-Return-Path: <linux-kernel+bounces-58457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 200EB84E6C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:28:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E67484E6C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:29:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB08C2954AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:28:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40B911C2480F
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 17:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE48A86AC8;
-	Thu,  8 Feb 2024 17:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA052823AB;
+	Thu,  8 Feb 2024 17:28:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Gn175dGl"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="mH1dGVaF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0ABC85C53
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:27:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081B373164
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 17:28:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707413226; cv=none; b=plVMxxia2Qgz7ZK6m9HxrhiDuzXTPlFHm45ouM8oe5FQTv8sqsSrOjC3mhhs88mdxV6sNKtH1RJO3p8i8cT6ckIGnySNFngP11BcrWxa1wzPqbuL9qQBvcOOv+1jzBB8RWJQh0YPeIPMy/n0PPcX3AR3TPuI6964pCa1i+eHqNI=
+	t=1707413288; cv=none; b=EUGM4bfVtqZHvbrtUfeC8UkVXBIcTq5iIsCRADoqM8TYUzlUYrXd7R0oLN0MmEvRamgI1GMOtees+HPTJ8kbkkGZB0KZNK3vdkMrZiuKbvMNiJJjzlT/9U9h79yNLf4slzcGuqTPGdB4xcXiQXbCOo5qfqp2uJhBbhSNN8yx+SE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707413226; c=relaxed/simple;
-	bh=sx6KhQk9Is/4dxTU8a0rjN3JOBcYjPFn14qRnNkA5SY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=IbGtbyuqsshB3Z0u/HEPSTRmNsP5nsBqyfg1Y74NkwDnNWIrpdoiDgMWzmkq9YJVsdq8O/1w6LBRSHzsVOWsu+vdQGp8r5a+owgDsSIyLcou0FtM5vBsaEZlmxKYZF10BbmYpez5i89/6U9TKicje+UIAjI2PMt7LZY1OQSArfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Gn175dGl; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e05b360ecdso52548b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 09:27:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707413224; x=1708018024; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gBwp2cY+kDK1oMSufcYCS0Brw297vTH+3c3ODiiUoog=;
-        b=Gn175dGli9LztjZ+EVogEBA46VYuRBuiuZ4zQYf0EVSw8NFYfO/rGT1H8cFWX/5aVE
-         U1ykf89PUDhWzmLxcblWZIpkvewo+/sszS80JcQnsl0vOX1+2MejjTBe2rU0fa2lR2/+
-         qPAPbn5+weGildRfWjvYbrsrKP8OybaRpOVE5hQ+beBS6nuUkj8R2XSAOLvnoqiL++MC
-         cNjBWWFIGPR9wmoxqOFw7FQvMur61sOxID6kjJqQkv0MOK+y6P3UMawwO6D1tJ44boJn
-         6RDI0Fd00H2tx1CEIXuRVnqo0h7+AZbSi2HVbEazMVZzLd1SS6KPJvDMFWlpRVb3cx0Q
-         NCiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707413224; x=1708018024;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gBwp2cY+kDK1oMSufcYCS0Brw297vTH+3c3ODiiUoog=;
-        b=X02HT/GOFbQN80/xP1TtGnZtVSzoOOu5LXQiCMZEOZGjJDmxe1cE51cLkAYLJ/aDnN
-         JwugvEnTIolOC261bE5cD70RCp505xZmn3Yn/dpYoEwaMO4oT7Yi/osHh2Ja4P/Yoqvp
-         sfV0TJCZzbXLtpNvRUuWbcA+gVjFWA2ZoH2zLVnVJa9Eg2y0ItIU5qtA7L54PQUM59yE
-         KcW0PCDEBjAd6I4vg+5PugDKEGpOlCLQywv0MAszplF9Nr8qlGCyMthVvzcR5nx8dW6E
-         HaCBsRdChMaJh6rdPjLy/HYuQDSMXW76iYqpoMO+B3g6ORRJC9EZYSG26XGZxKQNa9i1
-         p2gA==
-X-Gm-Message-State: AOJu0YwcoBud0I0wBB9lSSNK8WN0ncKVZPOkKtWFc9Zvgfaj8qEGgm4N
-	s9M7Ox64hvYXp7R3v0Ei+nCudwrWT6XdH1UXHhjtl9q0u9StAtSttCf6PzMVS6MQdlZctKBeAja
-	oYw==
-X-Google-Smtp-Source: AGHT+IF6y2Fj9Q0xzklv4qNxJB4M0iqYnYF4z+RAImjVdV5uh7OyzZLHK0LW86J/FLUDUS/+nQQagI/rkCc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:2281:b0:6df:e3d1:dd0f with SMTP id
- f1-20020a056a00228100b006dfe3d1dd0fmr365573pfe.4.1707413224273; Thu, 08 Feb
- 2024 09:27:04 -0800 (PST)
-Date: Thu, 8 Feb 2024 09:27:02 -0800
-In-Reply-To: <20240208002420.34mvemnzrwwsaesw@amd.com>
+	s=arc-20240116; t=1707413288; c=relaxed/simple;
+	bh=PbK9lZkGvTCDpgvmYCYNtp1ktrj17ouTcNWuLsrQ2To=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tLaMRGN13TMb/nBLSLZ1sRBz2FY5Dcb6tnNIz2rEw9Z+pbKexmdvUNdoJ9loUQU0tsV0tqcAPXu5luBjK5WY/rqYusBFLL4Uends9XPNSM6apbHxUwzpmLPiBT7gUcLA8vRzerOYcfl1TFlxKOk+TKMnDGpCkw6Z/YR6RdH4Fcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=mH1dGVaF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15C73C433F1;
+	Thu,  8 Feb 2024 17:28:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707413287;
+	bh=PbK9lZkGvTCDpgvmYCYNtp1ktrj17ouTcNWuLsrQ2To=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mH1dGVaFvNzPLCkvgXp9aFMLOiqI1A0jvrVFS0q4TmJhJQuR1p6BbVSVTiaH4SC5T
+	 q9j+yd9CqMfmphaB2UiczhFy/BiMU5HMcM7GAj5cRK9qLtj5Xj6THfCHimnC+pQL0f
+	 6r/FxE2Tfyf/Ekel3kQQTXlKuExESL7Ee6r5/iyE=
+Date: Thu, 8 Feb 2024 17:28:04 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: "Ricardo B. Marliere" <ricardo@marliere.net>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] workqueue: make wq_subsys const
+Message-ID: <2024020820-chaos-scale-33cf@gregkh>
+References: <20240206-bus_cleanup-workqueue-v1-1-72b10d282d58@marliere.net>
+ <2024020752-tannery-frozen-04ea@gregkh>
+ <ZcOxE2nznfq7dcNh@slm.duckdns.org>
+ <2024020813-wool-haste-fe6d@gregkh>
+ <ZcUHYUVnVTwb_ZSF@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231016115028.996656-1-michael.roth@amd.com> <20231016115028.996656-9-michael.roth@amd.com>
- <ZbmenP05fo8hZU8N@google.com> <20240208002420.34mvemnzrwwsaesw@amd.com>
-Message-ID: <ZcUO5sFEAIH68JIA@google.com>
-Subject: Re: [PATCH RFC gmem v1 8/8] KVM: x86: Determine shared/private faults
- based on vm_type
-From: Sean Christopherson <seanjc@google.com>
-To: Michael Roth <michael.roth@amd.com>
-Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
-	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, pbonzini@redhat.com, isaku.yamahata@intel.com, 
-	ackerleytng@google.com, vbabka@suse.cz, ashish.kalra@amd.com, 
-	nikunj.dadhania@amd.com, jroedel@suse.de, pankaj.gupta@amd.com, 
-	thomas.lendacky@amd.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcUHYUVnVTwb_ZSF@slm.duckdns.org>
 
-On Wed, Feb 07, 2024, Michael Roth wrote:
-> On Tue, Jan 30, 2024 at 05:13:00PM -0800, Sean Christopherson wrote:
-> > On Mon, Oct 16, 2023, Michael Roth wrote:
-> > > For KVM_X86_SNP_VM, only the PFERR_GUEST_ENC_MASK flag is needed to
-> > > determine with an #NPF is due to a private/shared access by the guest.
-> > > Implement that handling here. Also add handling needed to deal with
-> > > SNP guests which in some cases will make MMIO accesses with the
-> > > encryption bit.
+On Thu, Feb 08, 2024 at 06:54:57AM -1000, Tejun Heo wrote:
+> On Thu, Feb 08, 2024 at 10:10:56AM +0000, Greg Kroah-Hartman wrote:
+> > On Wed, Feb 07, 2024 at 06:34:27AM -1000, Tejun Heo wrote:
+> > > On Wed, Feb 07, 2024 at 10:12:34AM +0000, Greg Kroah-Hartman wrote:
+> > > > On Tue, Feb 06, 2024 at 03:05:06PM -0300, Ricardo B. Marliere wrote:
+> > > > > Now that the driver core can properly handle constant struct bus_type,
+> > > > > move the wq_subsys variable to be a constant structure as well,
+> > > > > placing it into read-only memory which can not be modified at runtime.
+> > > > > 
+> > > > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> > > > > ---
+> > > > > The maintainer asked [1] for this patch to be received through the
+> > > > > driver-core tree.
+> > > > > [1]: https://lore.kernel.org/all/ZcEeOueCbrltxr_b@slm.duckdns.org/
+> > > > 
+> > > > There is no cross-tree dependency at all, but hey, I'll take it, no
+> > > > worries...
+> > > 
+> > > Ah, my bad. I branched out wq/for-6.9 before rc1 and was assuming the
+> > > dependent commit was still in the driver core branch. I should have just
+> > > pulled linus#master.
 > > 
-> > ...
-> > 
-> > > @@ -4356,12 +4357,19 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
-> > >  			return RET_PF_EMULATE;
-> > >  	}
-> > >  
-> > > -	if (fault->is_private != kvm_mem_is_private(vcpu->kvm, fault->gfn)) {
-> > > +	/*
-> > > +	 * In some cases SNP guests will make MMIO accesses with the encryption
-> > > +	 * bit set. Handle these via the normal MMIO fault path.
-> > > +	 */
-> > > +	if (!slot && private_fault && kvm_is_vm_type(vcpu->kvm, KVM_X86_SNP_VM))
-> > > +		private_fault = false;
-> > 
-> > Why?  This is inarguably a guest bug.
+> > The dependent changes are in 6.4, so before -rc1 would have been ok as
+> > well :)
 > 
-> AFAICT this isn't explicitly disallowed by the SNP spec.
-
-There are _lots_ of things that aren't explicitly disallowed by the APM, that
-doesn't mean that _KVM_ needs to actively support them.
-
-I am *not* taking on more broken crud in KVM to workaround OVMF's stupidity, the
-KVM_X86_QUIRK_CD_NW_CLEARED has taken up literally days of my time at this point.
-
-> So KVM would need to allow for these cases in order to be fully compatible
-> with existing SNP guests that do this.
-
-No.  KVM does not yet support SNP, so as far as KVM's ABI goes, there are no
-existing guests.  Yes, I realize that I am burying my head in the sand to some
-extent, but it is simply not sustainable for KVM to keep trying to pick up the
-pieces of poorly defined hardware specs and broken guest firmware.
-
-> > > +static bool kvm_mmu_fault_is_private(struct kvm *kvm, gpa_t gpa, u64 err)
-> > > +{
-> > > +	bool private_fault = false;
-> > > +
-> > > +	if (kvm_is_vm_type(kvm, KVM_X86_SNP_VM)) {
-> > > +		private_fault = !!(err & PFERR_GUEST_ENC_MASK);
-> > > +	} else if (kvm_is_vm_type(kvm, KVM_X86_SW_PROTECTED_VM)) {
-> > > +		/*
-> > > +		 * This handling is for gmem self-tests and guests that treat
-> > > +		 * userspace as the authority on whether a fault should be
-> > > +		 * private or not.
-> > > +		 */
-> > > +		private_fault = kvm_mem_is_private(kvm, gpa >> PAGE_SHIFT);
-> > > +	}
-> > 
-> > This can be more simply:
-> > 
-> > 	if (kvm_is_vm_type(kvm, KVM_X86_SNP_VM))
-> > 		return !!(err & PFERR_GUEST_ENC_MASK);
-> > 
-> > 	if (kvm_is_vm_type(kvm, KVM_X86_SW_PROTECTED_VM))
-> > 		return kvm_mem_is_private(kvm, gpa >> PAGE_SHIFT);
-> > 
+> Hmmm....
 > 
-> Yes, indeed. But TDX has taken a different approach for SW_PROTECTED_VM
-> case where they do this check in kvm_mmu_page_fault() and then synthesize
-> the PFERR_GUEST_ENC_MASK into error_code before calling
-> kvm_mmu_do_page_fault(). It's not in the v18 patchset AFAICT, but it's
-> in the tdx-upstream git branch that corresponds to it:
-> 
->   https://github.com/intel/tdx/commit/3717a903ef453aa7b62e7eb65f230566b7f158d4
-> 
-> Would you prefer that SNP adopt the same approach?
+>  > git log -1 --oneline 32f78abe59c7
+>  32f78abe59c7 driver core: bus: constantify subsys_register() calls
+>  > git describe --contains 32f78abe59c7
+>  v6.8-rc1~61^2~10
 
-Ah, yes, 'twas my suggestion in the first place.  FWIW, I was just reviewing the
-literal code here and wasn't paying much attention to the content.
+Ugh, sorry, you are totally right.  Too many different "make X const"
+series are floating around now, my fault.  I'll go suck this in now to
+end the pointless discussion where I am proven wrong multiple times :)
 
-https://lore.kernel.org/all/f474282d701aca7af00e4f7171445abb5e734c6f.1689893403.git.isaku.yamahata@intel.com
+greg k-h
 
