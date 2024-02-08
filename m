@@ -1,71 +1,79 @@
-Return-Path: <linux-kernel+bounces-58315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F88184E48C
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:59:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B534E84E48E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 16:59:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F5CDB28F52
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:59:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7C771C23BAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 15:59:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C337D3ED;
-	Thu,  8 Feb 2024 15:58:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 349D07CF3E;
+	Thu,  8 Feb 2024 15:59:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="flpjLXso"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l08614JF"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DEAE7CF13
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 15:58:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A347CF3A;
+	Thu,  8 Feb 2024 15:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707407936; cv=none; b=hnCFl+1XyIZu8Nt3UsLYer6+It/qd5+fxot+Q4m/Qt68in1kN0xoyeGOeUBeRUQMKfhbKdPtLvoZKDAKxqjYw59WR+vceutJACRRMRxwlnRU7vp257a8tyzcylKI4qVeX+iSxl5UNAWdv33qbq6Sp7IKenTJJBWENozaL02CLzQ=
+	t=1707407953; cv=none; b=HtMcajswqOX5arCpoD12NVkNwVVNFhsNJkuwG3z1RzV+CSxUJ5LsjVSiE2OC6GRwJZhHqwlARpWJVCvXSTBMSsCHQT32dQeUee0DCNYGCT8iDTsDCJeZGCz9dRo9BXD3Sb9Wy6NrSbim36whMluWCwy4atNfTajvlCmHqNARqV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707407936; c=relaxed/simple;
-	bh=8oJy4Kfei28svL0fI4SkUs4fm5SgdA1bndhR0xQYe7k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hu8X+Ae7+9aOFS9iLHQ4gNSUwRdq7I1Tf4+yhe2zAGzyj4Xp14MOfVPNRxgN28XNFcG8FxQtloszcIWtPMa8wc+0xYbF0GCiqPsHnfJ/sa1yEDNdF4m0gDK/QG94BWW21S65CVxfcpuQGELFTLMivDsc4YQJHbjuQAF+t0pEUVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=flpjLXso; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707407933;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e+3BZHF1qWhvPf5pTxNj3ZoKVEMefGkuazF41aVOoNk=;
-	b=flpjLXsoXAJPD+GXVWgsM0/mrt0Sl0aLTbyPXg2LbtPvsYGqE85Br6N7xXeIJSBWvogW6D
-	NPAG4I7eBu8krHkb4lIV4Kxf7aSki3SvnRaDajEfUTq01BbyAPMxkJovO4OPNQ3Jbwa9Au
-	qWAqISiYN+i1tVdIYiAOtip3Y8vlOiE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-472-i0aRowXuP9KsXO5z6OR4Gw-1; Thu, 08 Feb 2024 10:58:50 -0500
-X-MC-Unique: i0aRowXuP9KsXO5z6OR4Gw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C0ED510201EA;
-	Thu,  8 Feb 2024 15:58:49 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.158])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 29551112132A;
-	Thu,  8 Feb 2024 15:58:47 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu,  8 Feb 2024 16:57:34 +0100 (CET)
-Date: Thu, 8 Feb 2024 16:57:31 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Andy Lutomirski <luto@amacapital.net>,
-	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
+	s=arc-20240116; t=1707407953; c=relaxed/simple;
+	bh=92/zBLiDqGl0yNbZXLAAVGbATRsISNLm+Yc9FNwOrXc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ey/PKDxjvvZRJK4322m/H8gcZEmy3EysTl/yeEITuPn3wh+63VAo0M2TcqXLwibkCsVaxlFZY+sJ3HlPULm5drZJurvH9mslPxe/Dj6pntAk6B77zRh7U8Y4bICaaYzAjzEyWFCwNL5WEXtj6wjwlA3ERve3xMBNbWdRyjWmpVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l08614JF; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d746856d85so15644585ad.0;
+        Thu, 08 Feb 2024 07:59:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707407951; x=1708012751; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/UkasknRx/MidvQOJkmoofU2A+zo1MZfchNN3vbBj50=;
+        b=l08614JFOWFv9Uhz3SCYVdzVpSY87tnNGhQTwUqosj3lpT8kV4zshDaVGYcqhb/w+x
+         pY/9gEUBgq3RwB04ndmIznrWcIujnyhxm6vjPJ6FRVg1xj5xY048+zB4otG67Q2jcppo
+         Z+0ekM07xrPAJqn362N4ZrBe4yBAMqRRk/IwYhyhOa8EPae3FUucE2ORFsTkeNHWeuX1
+         OyYTH4wG/+I/xIhMA17hYy+MFP17k+qymNM+9+Sirob1j0Jf5SdrKBeynF+PShef64Ta
+         POZX5C0EyHZfi6nHZTOIR8VHRO1imPJRs+n5u7SO1Q6fVVfjj9ZOsFiKY7W3Cc0VKyGP
+         GVPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707407951; x=1708012751;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/UkasknRx/MidvQOJkmoofU2A+zo1MZfchNN3vbBj50=;
+        b=ReQTFCIwO8xTyuQ5HmqVz+6jU6MK/+S4h9dAojODBJCJaIjJurLXCcM5+YjR9zU9qh
+         nDVVUN3OvGyAkYd7FHoF52UAXPDNedO8JJ4UL4TvSLy62DiJRz2VVp0L+zi5DATHtk9p
+         kwVr34DYxNLuHz43A8ojuYKviIhOloeUKGdnJ3JnPrXfbdsnCrS9fsSqlB3PNkWapNpU
+         v/LLmHXjL6veO5qxVr70nZCImohsLf5G+9QiAKOnJnZCG1kfz74lgB8aAthMTwJM4scH
+         7aMG/LBNcTV4FCgETAfjPUVmViK9X4MOxGaWF0ZUHDHvo93d16aOu7foMtLO1sklkhlq
+         hBOA==
+X-Gm-Message-State: AOJu0YxxLyUWdnimvSfKgtzBKXQRGJlQMy3KIuve70MySbzhTHSSWum4
+	V5Z3p1FoVClt8jmToHWedD9kwVyX/4klv/yZXBil05knbm4ghn7V6vjIOgB9nRM=
+X-Google-Smtp-Source: AGHT+IGm26flaODwILEs377DOWF7gf2yBRM1VJeNDFyz4e42ANl9iL6maaca5aRO6j3uV08HiDyVmA==
+X-Received: by 2002:a17:902:d2c4:b0:1d9:5ef3:e5ea with SMTP id n4-20020a170902d2c400b001d95ef3e5eamr10470840plc.50.1707407951209;
+        Thu, 08 Feb 2024 07:59:11 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUnkx8QcLgJcxAcwfW2AqPOmi73QJUYw5evFy3JQJ74xZdb+LCPzzZK71yjmgughBTxzUSp2jxR2WIMgGbu9SQpP2Jk9ZcJ4Wi7qRuAXsuGD+3Kn/kTsD3jtqkyHJ7JAWjSDiJExNpxIoFCCWCZMoqB7dRHc+YJkkVN71T5Y516TP8qG9W+AcFPQjJg5mIQ/bRzyBwI2AYaSj36LAoYqAa46YjX7Ee6ALxPk5za++3Vs1RhGsKXUGUAvWagduniikxVJ45ssQ//0Q4fmZtYy7d3+RBY3Bz/dX3+BQbbvSIGvVhKb2xTebZjyG2yLxrQd2cdDEvUwD+bRcEotVqdnydzKOuDJZWDRQ==
+Received: from hdebian ([201.82.41.210])
+        by smtp.gmail.com with ESMTPSA id jv11-20020a170903058b00b001d9a146907dsm3557638plb.11.2024.02.08.07.59.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 07:59:10 -0800 (PST)
+Date: Thu, 8 Feb 2024 12:58:02 -0300
+From: Hiago De Franco <hiagofranco@gmail.com>
+To: Marco Felsch <m.felsch@pengutronix.de>, 
+	Roland Hieber <rhi@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pidfd: change pidfd_send_signal() to respect PIDFD_THREAD
-Message-ID: <20240208155731.GH19801@redhat.com>
-References: <20240207114549.GA12697@redhat.com>
- <8734u32co5.fsf@email.froward.int.ebiederm.org>
+Subject: MXSFB error: -ENODEV: Cannot connect bridge
+Message-ID: <34yzygh3mbwpqr2re7nxmhyxy3s7qmqy4vhxvoyxnoguktriur@z66m7gvpqlia>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,51 +82,83 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8734u32co5.fsf@email.froward.int.ebiederm.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On 02/08, Eric W. Biederman wrote:
->
-> Oleg Nesterov <oleg@redhat.com> writes:
->
-> > Turn kill_pid_info() into kill_pid_info_type(), this allows to pass any
-> > pid_type to group_send_sig_info(), despite its name it should work fine
-> > even if type = PIDTYPE_PID.
-> >
-> > Change pidfd_send_signal() to use PIDTYPE_PID or PIDTYPE_TGID depending
-> > on PIDFD_THREAD.
-> >
-> > While at it kill another TODO comment in pidfd_show_fdinfo(). As Christian
-> > expains fdinfo reports f_flags, userspace can already detect PIDFD_THREAD.
-> >
->
-> I have a question here.
->
-> Why is this based on group_send_sig_info instead of send_sig_info?
+Hello all,
 
-Well. send_sig_info() accepts "struct task_struct *", not "struct pid *",
-it doesn't do check_kill_permission(), and it doesn't handle the possible
-race with mt-exec.
+while doing some tests with kernel v6.8-rc3 and Colibri iMX7D, we
+noticed the following error:
 
-> In particular I am asking are the intended semantics that the signal is
-> sent to a single thread in a thread group and placed in the per thread
-> queue, or is the signal sent to the entire thread group and placed
-> in the thread group signal queue?
+[    0.432547] mxsfb 30730000.lcdif: error -ENODEV: Cannot connect bridge
 
-This depends on PIDFD_THREAD. If it is set then the signal goes to
-the per thread queue.
+This was introduced by commit edbbae7fba495284f72f05768696572691231558
+("ARM: dts: imx7: add MIPI-DSI support"). This patch is routing the
+lcdif to the mipi_dsi_in_lcdif endpoint, however we do not have the DSI
+pins available in our edge connector. Instead, we use the parallel RGB
+LCD interface directly with, as example, an external LVDS transmitter:
 
-> Because honestly right now using group_send_sig_info when
-> the intended target of the signal is not the entire thread
-> group is very confusing when reading your change.
+&lcdif {
+..
+	status = "disabled";
 
-Agreed, so perhaps it makes sense to rename it later. See
+	port {
+		lcdif_out: endpoint {
+			remote-endpoint = <&lcd_panel_in>;
+		};
+	};
+};
 
-	despite its name it should work fine even if type = PIDTYPE_PID.
+By applying the following patch, the issue is gone and the LVDS works
+again:
 
-in the changelog above.
+diff --git a/arch/arm/boot/dts/nxp/imx/imx7s.dtsi b/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
+index ebf7befcc11e..9c81c6baa2d3 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
+@@ -834,16 +834,6 @@ lcdif: lcdif@30730000 {
+ 					<&clks IMX7D_LCDIF_PIXEL_ROOT_CLK>;
+ 				clock-names = "pix", "axi";
+ 				status = "disabled";
+-
+-				port {
+-					#address-cells = <1>;
+-					#size-cells = <0>;
+-
+-					lcdif_out_mipi_dsi: endpoint@0 {
+-						reg = <0>;
+-						remote-endpoint = <&mipi_dsi_in_lcdif>;
+-					};
+-				};
+ 			};
+ 
+ 			mipi_csi: mipi-csi@30750000 {
+@@ -895,22 +885,6 @@ mipi_dsi: dsi@30760000 {
+ 				samsung,esc-clock-frequency = <20000000>;
+ 				samsung,pll-clock-frequency = <24000000>;
+ 				status = "disabled";
+-
+-				ports {
+-					#address-cells = <1>;
+-					#size-cells = <0>;
+-
+-					port@0 {
+-						reg = <0>;
+-						#address-cells = <1>;
+-						#size-cells = <0>;
+-
+-						mipi_dsi_in_lcdif: endpoint@0 {
+-							reg = <0>;
+-							remote-endpoint = <&lcdif_out_mipi_dsi>;
+-						};
+-					};
+-				};
+ 			};
+ 		};
 
-Oleg.
+I would like to know your opinion about this patch before sending it,
+does it makes sense for you? I understand that routing to endpoint
+should be done in the SoM device tree, so we are free to rout other
+endpoint without issues.
 
+Regards,
+Hiago.
 
