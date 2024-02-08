@@ -1,96 +1,137 @@
-Return-Path: <linux-kernel+bounces-58038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 406E084E08A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:18:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D26484E08B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:18:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F08E1284214
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:18:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B07A51C239C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 12:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C90871B3D;
-	Thu,  8 Feb 2024 12:18:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CNzUK9Rv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5864671B5B;
+	Thu,  8 Feb 2024 12:18:24 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB5171B30;
-	Thu,  8 Feb 2024 12:18:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6FDF71B38
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 12:18:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707394683; cv=none; b=u4DP3tQLfc7lfwlqmSxTDGpmKflSP3ohPiYs0C5YI9L98RUQr/MsOK/OhIwauWwkzp7FhlbK7j88V4MnXb+yuaG9+IBmXDCAkRuf4OOkA1VicIKpI8aMTtTITFtEigXB6vN7jmPlF506fQnZ0Ar9AZ43Dc01+BEMXnNLMZX+8Lo=
+	t=1707394703; cv=none; b=lMmVeCSADOJLnxu1OZX92Sp/9WgOtmvO8XomiTZwN3x8E631t2NVLSVg/4a4tPQ+VqdlD9Ew6YNqr6NPiTVeouyz0xyWsu50RMDsHWsAuRqynhatnYzHHPjc1WMH8GFwBfTLYpN6CsLBH09ixrkMqxH0o7LlsVjpejfV4LYN8f4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707394683; c=relaxed/simple;
-	bh=vlMeIXt8ifiopSXwgt29frglOiKdPC8TfKie08iAiqE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=D7Vgn3zirufHME7p722Qp10Rk04xgenK11Guv/lf3AaI1i13AFN506dSnTTV5L8aEMQm3pl6n7cJOCJ0IiOv6FPr7KV+CwttfePKw5F59PO9OBVGLNKDhxhVo+XhCS563+eASf9V2ChAKJjDzbsl6tRKEJERp12ZLnxLYrMhOvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CNzUK9Rv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 101F8C433F1;
-	Thu,  8 Feb 2024 12:17:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707394682;
-	bh=vlMeIXt8ifiopSXwgt29frglOiKdPC8TfKie08iAiqE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=CNzUK9Rvo6u7WhIyz3ev1ouEu88GNkkm/9d+qW+tFOeEYCzEybDoZ5DY2dd6tV140
-	 UxOfjdRHuz6mugw2o/rLMGUgCDzfOT1yVVvVzUKt8JU4pQyAk1IPcnwZzEyHTROXib
-	 OzzaoH+3ohuMyk6ohmxVg7DrsHsZRIXI7yD943/MCMz+D5frXbCldRmhn39p21qeS/
-	 SQve1rNBTrR8CBhQmXI0utqkNrpyVBrtlglupJlXPR8mQa7Zae1r1Nm1a5ZNyIdRb2
-	 8b0jSuzvS90IwTYI7QAvW9gyRv5GSFZSSdqfTDVHathgViK/tPq1C9D/LzT41ln4Sc
-	 bPajP1EKdZIkA==
-Message-ID: <daec387f-987e-43c6-a9d4-caa4580d1113@kernel.org>
-Date: Thu, 8 Feb 2024 14:17:57 +0200
+	s=arc-20240116; t=1707394703; c=relaxed/simple;
+	bh=qtnI6BGXHO3AVAHJ49HQILg9aj6RlmZTx69g5+BjnjM=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DTL+NnTKkrOCZnL6K+XkvAcqXKTSaOzTTD+f8PRuxvrOuQLjcdN9Syl9AoUXr0wC0LSLxPGqzgjU7FqutoHTJx3m2PjLD29t+kG6uTJelM0stEfZ3cJip5DWRY8JYnCnG16/YeRm9jpdX2XOLHU0nB0mLePqZY5UN0Fc0/h/dvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TVwsX3m0Qz6K62J;
+	Thu,  8 Feb 2024 20:14:56 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0F23F140DDF;
+	Thu,  8 Feb 2024 20:18:18 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 8 Feb
+ 2024 12:18:17 +0000
+Date: Thu, 8 Feb 2024 12:18:15 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Yicong Yang <yangyicong@huawei.com>, <linuxarm@huawei.com>
+CC: <will@kernel.org>, <mark.rutland@arm.com>, <hejunhao3@huawei.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<yangyicong@hisilicon.com>, <prime.zeng@hisilicon.com>,
+	<fanghao11@huawei.com>
+Subject: Re: [PATCH 1/7] drivers/perf: hisi_pcie: Introduce
+ hisi_pcie_pmu_get_filter()
+Message-ID: <20240208121800.000057a2@huawei.com>
+In-Reply-To: <20240208120643.000042fa@Huawei.com>
+References: <20240204074527.47110-1-yangyicong@huawei.com>
+	<20240204074527.47110-2-yangyicong@huawei.com>
+	<20240208120643.000042fa@Huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/3] arm64: dts: ti: k3-am642-evm: add overlay for
- icssg1 2nd port
-Content-Language: en-US
-To: MD Danish Anwar <danishanwar@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Tero Kristo <kristo@kernel.org>, srk@ti.com, r-gunasekaran@ti.com
-References: <20240205090546.4000446-1-danishanwar@ti.com>
- <20240205090546.4000446-4-danishanwar@ti.com>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20240205090546.4000446-4-danishanwar@ti.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
+On Thu, 8 Feb 2024 12:06:43 +0000
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 
-
-On 05/02/2024 11:05, MD Danish Anwar wrote:
-> The am642-evm doesn't allow to enable 2 x CPSW3g ports and 2 x ICSSG1 ports
-> all together, so base k3-am642-evm.dts enables by default 2 x CPSW3g ports
-> and 1 x ICSSG1 ports, but it is also possible to support 1 x CPSW3g ports
-> and 2 x ICSSG1 ports configuration.
+> On Sun, 4 Feb 2024 15:45:21 +0800
+> Yicong Yang <yangyicong@huawei.com> wrote:
 > 
-> This patch adds overlay to support 1 x CPSW3g ports and 2 x ICSSG1 ports
-> configuration:
-> - Renames 'mdio-mux-1' node to 'mdio-mux@1'
-> - Add label name 'mdio_mux_1' for 'mdio-mux@1' node so that the node
->   'mdio-mux@1' can be disabled in the overlay using the label name.
-> - disable 2nd CPSW3g port
-> - update CPSW3g pinmuxes to not use RGMII2
-> - disable mdio-mux-1 and define mdio-mux-2 to route ICSSG1 MDIO to the
->   shared DP83869 PHY
-> - add and enable ICSSG1 RGMII2 pinmuxes
-> - enable ICSSG1 MII1 port
+> > From: Yicong Yang <yangyicong@hisilicon.com>
+> > 
+> > Factor out retrieving of the register value for the
+> > corresponding event from hisi_pcie_config_filter() into a
+> > new function hisi_pcie_pmu_get_filter() allowing future reuse.
+> > 
+> > Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>  
+> 
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-/icssg1/ICSSG1 in subject
+On second thoughts, this might benefit from a clearer name.
+Perhaps just call it exactly what it is
+hisi_pcie_pmu_get_ctrl_reg_val_to_set()
+
+It incorporates the event code as well as the filter.
+Maybe we want to rename pmu_config_filter() as well to
+pmu_config_counter() which I think is the real meaning?
+
 
 > 
-> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-> Reviewed-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
+> > ---
+> >  drivers/perf/hisilicon/hisi_pcie_pmu.c | 13 ++++++++++---
+> >  1 file changed, 10 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> > index b90ba8aca3fa..11a819cd07f2 100644
+> > --- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> > +++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+> > @@ -216,10 +216,8 @@ static void hisi_pcie_pmu_writeq(struct hisi_pcie_pmu *pcie_pmu, u32 reg_offset,
+> >  	writeq_relaxed(val, pcie_pmu->base + offset);
+> >  }
+> >  
+> > -static void hisi_pcie_pmu_config_filter(struct perf_event *event)
+> > +static u64 hisi_pcie_pmu_get_filter(struct perf_event *event)
+> >  {
+> > -	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
+> > -	struct hw_perf_event *hwc = &event->hw;
+> >  	u64 port, trig_len, thr_len, len_mode;
+> >  	u64 reg = HISI_PCIE_INIT_SET;
+> >  
+> > @@ -256,6 +254,15 @@ static void hisi_pcie_pmu_config_filter(struct perf_event *event)
+> >  	else
+> >  		reg |= FIELD_PREP(HISI_PCIE_LEN_M, HISI_PCIE_LEN_M_DEFAULT);
+> >  
+> > +	return reg;
+> > +}
+> > +
+> > +static void hisi_pcie_pmu_config_filter(struct perf_event *event)
+> > +{
+> > +	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
+> > +	struct hw_perf_event *hwc = &event->hw;
+> > +	u64 reg = hisi_pcie_pmu_get_filter(event);
+> > +
+> >  	hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EVENT_CTRL, hwc->idx, reg);
+> >  }
+> >    
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
-Reviewed-by: Roger Quadros <rogerq@kernel.org>
 
