@@ -1,416 +1,313 @@
-Return-Path: <linux-kernel+bounces-57765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-57766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C60E84DD28
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:40:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F87D84DD2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 10:42:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C73E8288220
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:40:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E34451F2681B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 09:42:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B1A56BB5C;
-	Thu,  8 Feb 2024 09:40:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AACFF6BFC8;
+	Thu,  8 Feb 2024 09:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b="e40Vp8Y3"
-Received: from whm50.louhi.net (whm50.louhi.net [77.240.19.51])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="0FF/uE1N"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6AA6A03A
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 09:40:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.240.19.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFAF069300;
+	Thu,  8 Feb 2024 09:42:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707385215; cv=none; b=qjIIwaPTcro28fc9SArFryQLdPpXThRDhJoUviuuZrp8KYdCqWjHE7ZI20RLZACKWJhvYs5ibNWroMwDv+Ogi00BC1Qddzxr1NkYhpEPIw36ynelMKLBTYfFzYs5uNvnqBP6Aolj5s7O3MG7IEPaDvQzHke0PPXf1B3u0vrAftM=
+	t=1707385342; cv=none; b=g0Bop1VCIfzfFBYeQ6Pvb1AaqLD5bOCTzevfxAR0b0HCKBUJE7G15gGu4QKfDvi1WrLODK0fLFdHM9OCjf1K7tVn0NaspVxoByVLGTYAFTbTssRmt1Z/PdIXk5wR942AbD/JuUmu+jUEs1aYQZACVJslgNe4Ha52ArkRbzbe9Q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707385215; c=relaxed/simple;
-	bh=fO0HQHa0JbfSMM7k3kQc0ThNhFbkO9cQk/Kni3FA2ts=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GawJsDBmh8aeKVfbUg4sDrRbzpJbNNrEkFQroaN1hAb2dCQVxj2QskNgi1obYa7EGud1cmUnoO03tYjAvSrDOCxq9uK0VDGF8nXEgxiOuaMqYMq3s2KbUT1Us4x4UEi6IjJDOgVFyAEMnKadRgXjKCo4lyMGbmNU9FTvVoBHzjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi; spf=pass smtp.mailfrom=haloniitty.fi; dkim=pass (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b=e40Vp8Y3; arc=none smtp.client-ip=77.240.19.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=haloniitty.fi
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=haloniitty.fi; s=default; h=Content-Type:MIME-Version:References:
-	In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=RsyuEJcIq9uxUv9TZ3/vzUqTZoTz8iHFtMHbuYDtRL0=; b=e40Vp8Y3qq6UEQtnukPuIlMv1t
-	Ntu4QsD1Fj5NdwPe10J89VYk8Dhme3io/CAQKi1AZootvMEmFGclJAW9jdyGGiHNJe0Ckd96Yuva5
-	o9iaEDFoD3VwJEHh1bKcmk/jD4mq/gRry3OrnGNA9o6bmZygeHO3uwwij9kh+ZDQnV90wEb2C+sW1
-	ffSXvPWmhn1huiGejsweZMCwDm+SpETProjcboW+z4uo0utUmCJ0qtGjPd+84AIjDzBxc6qOAI/j/
-	olzQXFCd6EKxUdJWdkMSW3hPVjg6wz+zYwYBSSO9yZjNIBTGCbv/ccvxSO//Vzoi1WeBWF/kXh8C/
-	N8wYSE6Q==;
-Received: from [194.136.85.206] (port=42524 helo=eldfell)
-	by whm50.louhi.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <pekka.paalanen@haloniitty.fi>)
-	id 1rY0t0-0001Y0-2E;
-	Thu, 08 Feb 2024 11:40:02 +0200
-Date: Thu, 8 Feb 2024 11:39:51 +0200
-From: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: arthurgrillo@riseup.net, miquel.raynal@bootlin.com, mripard@kernel.org,
- rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
- mairacanal@riseup.net, hamohammed.sa@gmail.com, daniel@ffwll.ch,
- maarten.lankhorst@linux.intel.com, tzimmermann@suse.de, airlied@gmail.com,
- marcheu@google.com, seanpaul@google.com, nicolejadeyee@google.com,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH 2/2] drm/vkms: Use a simpler composition function
-Message-ID: <20240208113951.1f5f9f40@eldfell>
-In-Reply-To: <ZcOmpInszAOVeKes@localhost.localdomain>
-References: <20240205121913.379e28a4@eldfell>
-	<ZcOmpInszAOVeKes@localhost.localdomain>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707385342; c=relaxed/simple;
+	bh=kEoPO4lzGFJXsKVlv3cGLfhAw7EqukJVsoGKDJfDJqk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hJbx/2Kvl2mYfMCeaMREYwDe9NiM0swenjqEv8aV8ilEg1WN/H8l6o4aZaG+sbuqulL4HoHRwj6UX5PU/29ztOL68+AexYR8HBirGnNRBRZa7vDVzBCGYgS928fZxRlBQiMV3qAcSzoG3pT27Uc3+07IwpIfOXGxk/amIJCmPDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=0FF/uE1N; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707385339;
+	bh=kEoPO4lzGFJXsKVlv3cGLfhAw7EqukJVsoGKDJfDJqk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=0FF/uE1NNmbAKwmLHTJl6bVHoWzBDcZEYLKe9ocgaIYsoCWfJ8K63SwnGl6Yg4s9g
+	 1W55eL5oMuXmzEoiCX1Ov82dmGHRSFMscQGrLBMa8V2WaE+hvP8ulfk7ZWy38tqot+
+	 1VJu+oMz5VcXVHJacisNbtah2XJWIEhzlfudYep/Y/qbimQes/UZA1LqgyxDMKrMXN
+	 Wz77KdGzFVq+sJQrD58ndEW1Q2Xwj+hF57orSeccvMLmojUXHEuD7qrUuTxZbcs5SW
+	 0mERyJa8OKLW6HE4TX4F1gMJzkIQ/ym0dW30/H3JwwuyFf9FxXQxpH6I4X+sKOG0/Z
+	 pF8Vz4e91J+VA==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sebastianfricke)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9AD843780624;
+	Thu,  8 Feb 2024 09:42:18 +0000 (UTC)
+Date: Thu, 8 Feb 2024 10:42:17 +0100
+From: Sebastian Fricke <sebastian.fricke@collabora.com>
+To: Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc: "jackson.lee" <jackson.lee@chipsnmedia.com>, mchehab@kernel.org,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	nas.chung@chipsnmedia.com, lafley.kim@chipsnmedia.com,
+	b-brnich@ti.com
+Subject: Re: [RESEND PATCH v0 1/5] wave5 : Support yuv422 input format for
+ encoder.
+Message-ID: <20240208094217.ipkbk5ixsvavnf26@basti-XPS-13-9310>
+References: <20240131013046.15687-1-jackson.lee@chipsnmedia.com>
+ <20240131013046.15687-2-jackson.lee@chipsnmedia.com>
+ <baa85477b241880e1cf96efd7037fc1b2423fab5.camel@ndufresne.ca>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/HIpi0=kZuRyS8Mj77A1H+/H";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - whm50.louhi.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - haloniitty.fi
-X-Get-Message-Sender-Via: whm50.louhi.net: authenticated_id: pekka.paalanen@haloniitty.fi
-X-Authenticated-Sender: whm50.louhi.net: pekka.paalanen@haloniitty.fi
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <baa85477b241880e1cf96efd7037fc1b2423fab5.camel@ndufresne.ca>
 
---Sig_/HIpi0=kZuRyS8Mj77A1H+/H
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hey Jackson,
 
-On Wed, 7 Feb 2024 16:49:56 +0100
-Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+a few additional comments ...
 
-> Hello Pekka, Arthur, Maxime,
+Please extend the patch title a bit, the title has to clearly indicate
+where the driver can be found, so the correct title is:
 
-Hi all
+media: chips-media: wave5: Support yuv422 input format for encoder.
 
-> > > > >>>>>> Change the composition algorithm to iterate over pixels inst=
-ead of lines.
-> > > > >>>>>> It allows a simpler management of rotation and pixel access =
-for complex formats.
-> > > > >>>>>>
-> > > > >>>>>> This new algorithm allows read_pixel function to have access=
- to x/y
-> > > > >>>>>> coordinates and make it possible to read the correct thing i=
-n a block
-> > > > >>>>>> when block_w and block_h are not 1.
-> > > > >>>>>> The iteration pixel-by-pixel in the same method also allows =
-a simpler
-> > > > >>>>>> management of rotation with drm_rect_* helpers. This way it'=
-s not needed
-> > > > >>>>>> anymore to have misterious switch-case distributed in multip=
-le places.           =20
-> > > > >>>>>
-> > > > >>>>> Hi,
-> > > > >>>>>
-> > > > >>>>> there was a very good reason to write this code using lines:
-> > > > >>>>> performance. Before lines, it was indeed operating on individ=
-ual pixels.
-> > > > >>>>>
-> > > > >>>>> Please, include performance measurements before and after thi=
-s series
-> > > > >>>>> to quantify the impact on the previously already supported pi=
-xel
-> > > > >>>>> formats, particularly the 32-bit-per-pixel RGB variants.
-> > > > >>>>>
-> > > > >>>>> VKMS will be used more and more in CI for userspace projects,=
- and
-> > > > >>>>> performance actually matters there.
-> > > > >>>>>
-> > > > >>>>> I'm worrying that this performance degradation here is signif=
-icant. I
-> > > > >>>>> believe it is possible to keep blending with lines, if you ad=
-d new line
-> > > > >>>>> getters for reading from rotated, sub-sampled etc. images. Th=
-at way you
-> > > > >>>>> don't have to regress the most common formats' performance.  =
-       =20
->=20
-> I tested, and yes, it's significant for most of the tests. None of them=20
-> timed out on my machine, but I agree that I have to improve this. Do you=
-=20
-> know which tests are the more "heavy"?
+and even better might be:
 
-I don't, but considering that various userspace projects (e.g. Wayland
-compositors) want to use VKMS more and more in their own CI, looking
-only at IGT is not enough. Every second saved per run is a tiny bit of
-data center energy saved, or developers waiting less for results.
+media: chips-media: wave5: Support YUV422 raw pixel-formats on the encoder 
 
-I do have some expectations that for each KMS property, Wayland
-compositors tend to use the "normal" property value more than any other
-value. So if you test different pixel formats, you probably set
-rotation to normal, since it's completely orthogonal in userspace. And
-then you would test different rotations with just one pixel format.
+Notice that you do not need punctuation and no space before the ':'.
 
-At least I would personally leave it to IGT to test all the possible
-combinations of pixel formats + rotations + odd sizes + odd positions.
-Wayland compositor CI wants to test the compositor internals, not VKMS
-internals.
+On 07.02.2024 12:55, Nicolas Dufresne wrote:
+>Hi Jackson,
+>
+>Le mercredi 31 janvier 2024 à 10:30 +0900, jackson.lee a écrit :
+>> Encoder supports the following formats.
+>> YUV422P, NV16, NV61, NV16M, NV61M
 
-> > > > >>>> While I understand performance is important and should be take=
-n into
-> > > > >>>> account seriously, I cannot understand how broken testing coul=
-d be
-> > > > >>>> considered better. Fast but inaccurate will always be signific=
-antly
-> > > > >>>> less attractive to my eyes.         =20
-> > > > >>>
-> > > > >>> AFAIK, neither the cover letter nor the commit log claimed it w=
-as fixing
-> > > > >>> something broken, just that it was "better" (according to what
-> > > > >>> criteria?).       =20
->=20
-> Sorry Maxime for this little missunderstanding, I will improve the commit=
-=20
-> message and cover letter for the v2.
->=20
-> > > > >> Today's RGB implementation is only optimized in the line-by-line=
- case
-> > > > >> when there is no rotation. The logic is bit convoluted and may p=
-ossibly
-> > > > >> be slightly clarified with a per-format read_line() implementati=
-on,
-> > > > >> at a very light performance cost. Such an improvement would defi=
-nitely
-> > > > >> benefit to the clarity of the code, especially when transformati=
-ons
-> > > > >> (especially the rotations) come into play because they would be =
-clearly
-> > > > >> handled differently instead of being "hidden" in the optimized l=
-ogic.
-> > > > >> Performances would not change much as this path is not optimized=
- today
-> > > > >> anyway (the pixel-oriented logic is already used in the rotation=
- case). =20
->=20
-> [...]
->=20
-> > > > > I think it would, if I understand what you mean. Ever since I pro=
-posed
-> > > > > a line-by-line algorithm to improve the performance, I was thinki=
-ng of
-> > > > > per-format read_line() functions that would be selected outside o=
-f any
-> > > > > loops. =20
->=20
-> [...]
->=20
-> > > > > I haven't looked at VKMS in a long time, and I am disappointed to=
- find
-> > > > > that vkms_compose_row() is calling plane->pixel_read() pixel-by-p=
-ixel.
-> > > > > The reading vfunc should be called with many pixels at a time whe=
-n the
-> > > > > source FB layout allows it. The whole point of the line-based fun=
-ctions
-> > > > > was that they repeat the innermost loop in every function body to=
- make
-> > > > > the per-pixel overhead as small as possible. The VKMS implementat=
-ions
-> > > > > benchmarked before and after the original line-based algorithm sh=
-owed
-> > > > > that calling a function pointer per-pixel is relatively very expe=
-nsive.
-> > > > > Or maybe it was a switch-case.     =20
->=20
-> [...]
->=20
-> > > > But, I agree with Miquel that the rotation logic is easier to imple=
-ment
-> > > > in a pixel-based way. So going pixel-by-pixel only when rotation oc=
-curs
-> > > > would be great.   =20
-> > >=20
-> > > Yes, and I think that can very well be done in the line-based framewo=
-rk
-> > > still that existed in the old days before any rotation support was
-> > > added. Essentially a plug-in line-getter function that then calls a
-> > > format-specific line-getter pixel-by-pixel while applying the rotatio=
-n.
-> > > It would be simple, it would leave unrotated performance unharmed (use
-> > > format-specific line-getter directly with lines), but it might be
-> > > somewhat less performant for rotated KMS planes. I suspect that might
-> > > be a good compromise.
-> > >=20
-> > > Format-specific line-getters could also be parameterized by
-> > > pixel-to-pixel offset in bytes. Then they could directly traverse FB
-> > > rows forward and backward, and even FB columns. It may or may not have
-> > > a penalty compared to the original line-getters, so it would have to
-> > > be benchmarked. =20
-> >=20
-> > Oh, actually, since the byte offset depends on format, it might be
-> > better to parametrize by direction and compute the offset in the
-> > format-specific line-getter before the loop.
-> >  =20
->=20
-> I'm currently working on this implementation. The algorithm would look=20
-> like:
->=20
->     void blend(...) {
->         for(int y =3D 0; y < height; y++) {
-> 		for(int plane =3D 0; plane < nb_planes; plane++) {
-> 			if(planes[plane].read_line && planes[plane].rotation =3D=3D DRM_ROTATI=
-ON_0) {
+I would slightly reword this, the way it is written now is a bit
+confusing.
+First of all, when I look into the encoder, I can see support for the
+following formats:
+V4L2_PIX_FMT_YUV420
+V4L2_PIX_FMT_NV12
+V4L2_PIX_FMT_NV21
+V4L2_PIX_FMT_YUV420M
+V4L2_PIX_FMT_NV12M
+V4L2_PIX_FMT_NV21M
+V4L2_PIX_FMT_YUV422P
+V4L2_PIX_FMT_NV16
+V4L2_PIX_FMT_NV61
+V4L2_PIX_FMT_NV16M
+V4L2_PIX_FMT_NV61M
 
-I would try to drop the rotation check here completely. Instead, when
-choosing the function pointer to call here, outside of *all* loops, you
-would check the rotation property. If rotation is a no-op, pick the
-read_line function directly. If rotation/reflection is needed, pick a
-rotation function that will then call read_line function pixel-by-pixel.
+which is clearly more than would you provide, so your patch adds support
+for a couple of new formats but the encoder supports more formats.
 
-So planes[plane] would have two vfuncs, one with a plain read_line that
-assumes normal orientation and can return a line of arbitrary length
-from arbitrary x,y position, and another vfunc that this loop here will
-call which is either some rotation handling function or just the same
-function as the first vfunc.
+Secondly, the commit message should shortly explain what happens in the
+patch and the reason for doing it. Stating what the encoder supports
+doesn't explain both of these things.
 
-The two function pointers might well need different signatures, meaning
-you need a simple wrapper for the rotation=3Dnormal case too.
+My suggestion for the commit message would be something like:
 
-I believe that could result in cleaner code.
+Add support for the YUV422P, NV16, NV61, NV16M & NV61M raw pixel-formats
+to the Wave5 encoder. All these formats have a chroma subsampling ratio
+of 4:2:0 and therefore require a new image size calculation as the
+driver previously only handled a ratio of 4:2:0.
 
-> 				[...] /* Small common logic to manage REFLECT_X/Y and translations */
-> 				planes[plane].read_line(....);
-> 			} else {
-> 				[...] /* v1 of my patch, pixel by pixel read */
-> 			}
-> 		}
-> 	}
->     }
->=20
-> where read_line is:
->   void read_line(frame_info *src, int y, int x_start, int x_stop, pixel_a=
-rgb16 *dts[])
->  - y is the line to read (so the caller need to compute the correct offse=
-t)
->  - x_start/x_stop are the start and stop column, but they may be not=20
->    ordered properly (i.e DRM_REFLECT_X will make x_start greater than=20
->    x_stop)
->  - src/dst are source and destination buffers
+And when you switch to v4l2_fill_pixfmt_mp please note that in the
+commit message as well.
 
-This sounds ok. An alternative would be something like
+more below ..
 
-enum direction {
-        RIGHT,
-        LEFT,
-        UP,
-        DOWN,
-};
+>>
+>> Signed-off-by: Jackson Lee <jackson.lee@chipsnmedia.com>
+>> Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
+>> ---
+>>  .../chips-media/wave5/wave5-vpu-enc.c         | 79 ++++++++++++++++++-
+>>  1 file changed, 76 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+>> index f29cfa3af94a..0cb5bfb67258 100644
+>> --- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+>> +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+>> @@ -70,6 +70,41 @@ static const struct vpu_format enc_fmt_list[FMT_TYPES][MAX_FMTS] = {
+>>  			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+>>  			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+>>  		},
+>> +		{
+>> +			.v4l2_pix_fmt = V4L2_PIX_FMT_YUV422P,
+>> +			.max_width = W5_MAX_ENC_PIC_WIDTH,
+>> +			.min_width = W5_MIN_ENC_PIC_WIDTH,
+>> +			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+>> +			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+>> +		},
+>
+>During upstreaming, we discussed the lack of usage of v4l2-common in this driver
+>and agreed that future updates such as this one should first port the driver to
+>use the common helpers instead.
+>
+>This implies dropping this custom made structure in favour of
+>v4l2_frmsize_stepwise structure. Unlike yours, you can encoded the needed
+>padding, allowing to encode this in one place instead of spreading it across
+>numerous formulas in the code.
+>
+>With this information, you will be able to use:
+>
+>  v4l2_apply_frmsize_constraints()
+>  v4l2_fill_pixfmt_mp()
+>
+>To adjust your dimensions to padded dimensions and compute your bytesperline
+>(stride) and sizeimage. You can of course increase the size image after this
+>call. You can have a look at rkvdec driver as an example.
+>
+>Please port existing set of pixel formats support, and then add the new pixel
+>formats. This should remove about 3/4 of this patch and remove that huge risk of
+>miss-computing a size.
 
-void read_line(frame_info *src, int start_x, int start_y, enum direction di=
-r,
-               int count_pixels, pixel_argb16 *dst);
+Please have a look at:
+https://elixir.bootlin.com/linux/latest/source/drivers/staging/media/rkvdec/rkvdec.c#L257
 
-Based on dir, before the inner loop this function would compute the
-byte offset between the pixels to be read. If the format is multiplanar
-YUV, it can compute the offset per plane. And the starting pointers per
-pixel plane, of course, and one end pointer for the loop stop condition
-maybe from dst.
+There you see a nice example of how that can look.
 
-This might make all the other directions than RIGHT much faster than
-calling read_line one pixel at a time to achieve the same.
+>
+>> +		{
+>> +			.v4l2_pix_fmt = V4L2_PIX_FMT_NV16,
+>> +			.max_width = W5_MAX_ENC_PIC_WIDTH,
+>> +			.min_width = W5_MIN_ENC_PIC_WIDTH,
+>> +			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+>> +			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+>> +		},
+>> +		{
+>> +			.v4l2_pix_fmt = V4L2_PIX_FMT_NV61,
+>> +			.max_width = W5_MAX_ENC_PIC_WIDTH,
+>> +			.min_width = W5_MIN_ENC_PIC_WIDTH,
+>> +			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+>> +			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+>> +		},
+>> +		{
+>> +			.v4l2_pix_fmt = V4L2_PIX_FMT_NV16M,
+>> +			.max_width = W5_MAX_ENC_PIC_WIDTH,
+>> +			.min_width = W5_MIN_ENC_PIC_WIDTH,
+>> +			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+>> +			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+>> +		},
+>> +		{
+>> +			.v4l2_pix_fmt = V4L2_PIX_FMT_NV61M,
+>> +			.max_width = W5_MAX_ENC_PIC_WIDTH,
+>> +			.min_width = W5_MIN_ENC_PIC_WIDTH,
+>> +			.max_height = W5_MAX_ENC_PIC_HEIGHT,
+>> +			.min_height = W5_MIN_ENC_PIC_HEIGHT,
+>> +		},
+>>  	}
+>>  };
+>>
+>> @@ -136,6 +171,23 @@ static void wave5_update_pix_fmt(struct v4l2_pix_format_mplane *pix_mp, unsigned
+>>  		pix_mp->plane_fmt[1].bytesperline = round_up(width, 32);
+>>  		pix_mp->plane_fmt[1].sizeimage = round_up(width, 32) * height / 2;
+>>  		break;
+>> +	case V4L2_PIX_FMT_YUV422P:
+>> +	case V4L2_PIX_FMT_NV16:
+>> +	case V4L2_PIX_FMT_NV61:
+>> +		pix_mp->width = width;
+>> +		pix_mp->height = height;
+>> +		pix_mp->plane_fmt[0].bytesperline = round_up(width, 32);
+>> +		pix_mp->plane_fmt[0].sizeimage = round_up(width, 32) * height * 2;
+>> +		break;
+>> +	case V4L2_PIX_FMT_NV16M:
+>> +	case V4L2_PIX_FMT_NV61M:
+>> +		pix_mp->width = width;
+>> +		pix_mp->height = height;
+>> +		pix_mp->plane_fmt[0].bytesperline = round_up(width, 32);
+>> +		pix_mp->plane_fmt[0].sizeimage = round_up(width, 32) * height;
+>> +		pix_mp->plane_fmt[1].bytesperline = round_up(width, 32);
+>> +		pix_mp->plane_fmt[1].sizeimage = round_up(width, 32) * height;
+>> +		break;
+>>  	default:
+>>  		pix_mp->width = width;
+>>  		pix_mp->height = height;
+>> @@ -155,11 +207,19 @@ static int start_encode(struct vpu_instance *inst, u32 *fail_res)
+>>  	struct enc_param pic_param;
+>>  	u32 stride = ALIGN(inst->dst_fmt.width, 32);
+>>  	u32 luma_size = (stride * inst->dst_fmt.height);
+>> -	u32 chroma_size = ((stride / 2) * (inst->dst_fmt.height / 2));
+>> +	u32 chroma_size;
+>>
+>>  	memset(&pic_param, 0, sizeof(struct enc_param));
+>>  	memset(&frame_buf, 0, sizeof(struct frame_buffer));
+>>
+>> +	if (inst->src_fmt.pixelformat == V4L2_PIX_FMT_YUV420 ||
+>> +	    inst->src_fmt.pixelformat == V4L2_PIX_FMT_YUV420M)
+>> +		chroma_size = ((stride / 2) * (inst->dst_fmt.height / 2));
+>> +	else if (inst->src_fmt.pixelformat == V4L2_PIX_FMT_YUV422P)
+>> +		chroma_size = ((stride) * (inst->dst_fmt.height / 2));
+>> +	else
+>> +		chroma_size = 0;
 
-Would need to benchmark if this is significantly slower than your
-suggestion for dir=3DRIGHT, though. If it's roughly the same, then it
-would probably be worth it.
+Just making sure, with the previous calculation the chroma size was
+unable to ever be 0 and here you say that:
+V4L2_PIX_FMT_NV12
+V4L2_PIX_FMT_NV21
+V4L2_PIX_FMT_NV12M
+V4L2_PIX_FMT_NV21M
+V4L2_PIX_FMT_NV16
+V4L2_PIX_FMT_NV61
+V4L2_PIX_FMT_NV16M
+V4L2_PIX_FMT_NV61M
 
+All have a chroma size of 0, that seems odd to me as these formats have
+a chroma part. Maybe I am misunderstanding something, please provide a
+little explanation as a comment on top of that block.
 
-> This way:
-> - It's simple to read for the general case (usage of drm_rect_* instead o=
-f=20
->   manually rewriting the logic)
-> - Each pixel format can be quickly implemented with "pixel-by-pixel"=20
->   methods
-> - The performances should be good if no rotation is implied for some=20
->   formats
->=20
-> I also created some helpers for conversions between formats to avoid code=
-=20
-> duplication between pixel and line algorithms (and also between argb and=
-=20
-> xrgb variants).
->=20
-> The only flaw with this, is that most of the read_line functions will=20
-> look like:
->=20
->     void read_line(...) {
-> 	int increment =3D x_start < x_stop ? 1: -1;
-> 	while(x_start !=3D x_stop) {
-> 		out +=3D 1;
-> 		[...] /* color conversion */
-> 		x_start +=3D increment;
-> 	}
->     }
->=20
-> But as Pekka explained, it's probably the most efficient way to do it.
+Greetings,
+Sebastian
 
-Yes, I expect them to look roughly like that. It's necessary for moving
-as much of the setup computations and real function calls out of the
-inner-most loop as possible. The middle (over KMS planes) and outer
-(over y) loops are less sensitive to wasted cycles on redundant
-computations.
-
-> Is there a way to save the output of vkms to a folder (something like=20
-> "one image per frame")? It's a bit complex to debug graphics without=20
-> seeing them.
->=20
-> I have something which (I think) should work, but some tests are failing=
-=20
-> and I don't find why in my code (I don't find the reason why the they are=
-=20
-> failing and the hexdump I added to debug seems normal).
->=20
-> I think my issue is a simple mistake in the "translation managment" or=20
-> maybe just a wrong offset, but I don't see my error in the code. I think =
-a=20
-> quick look on the final image would help me a lot.
-
-I don't know anything about the kernel unit testing frameworks, maybe
-they could help?
-
-But if you drive the test through UAPI from userspace, use a writeback
-connector to fetch the resulting image. I'm sure IGT has code doing
-that somewhere, although many IGT tests rely on CRC instead because CRC
-is more widely available in hardware.
-
-Arthur's new benchmark seems to be using writeback, you just need to
-make it save to file:
-https://lore.kernel.org/all/20240207-bench-v1-1-7135ad426860@riseup.net/
-
-
-Thanks,
-pq
-
---Sig_/HIpi0=kZuRyS8Mj77A1H+/H
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXEoWcACgkQI1/ltBGq
-qqddjA//VG6lspeHj6uR8yVaHPt5gdG/b5bzpHpGROPkU5ZU+dsVeJqEfLPN8L2k
-ln9BzAYgbEuk1q1g6d/hidpq4SBc02tuZ09hm9MOaDQn4OSxMu96LvfAvJp5/g1D
-AV5Q9ezDw5phv+yIdrHww6dTqRkI56GeCur337tg+tcH1iF48x2LcS9Yldic/vAC
-b8tZjHckQQdevJdpfRaxg252Z3jigrYsukH+3BIyfhOxGf0ZMNbzJV2mFoKO4bcn
-NONix4huoFRA6XuLGYE2QMejz03u6D+5oCIrCQar1TxUBkhnlXR4C5VRnZCARFzh
-hPMSGL+Y60xPz4LazNyT8bUKc2XYFzr+FZRLsfaPcLnUnrhkcJHoPdeMq8SolDgv
-FbJhfM4ASqfbSNTq3HQS+PlUvdh27lr0bU3es5Xu0GD+iCfYfC2MBQYKBTtEr5sn
-ZheUyGJsMdtJjlISmbXjbiticH4YEIz+HvXqmCqNVTebZezQrb1ZMy8VdVrb2y4D
-noVQTa4DEeswZo5D21wB5JNEzNlKqncg66Ws78kU4/AXDJ+ZeL1zdJ2I1IHbExkS
-nYSP03FagE0BPcTCclv3M/rhvNSWoUEQsDfmzoheX0KT1fdHMid1C9siEaIchkRz
-YxJbQqxrALXtYtGLa5z60n/YmdA0557pTKZm0FzqMXphWE44xlE=
-=9D23
------END PGP SIGNATURE-----
-
---Sig_/HIpi0=kZuRyS8Mj77A1H+/H--
+>> +
+>>  	dst_buf = v4l2_m2m_next_dst_buf(m2m_ctx);
+>>  	if (!dst_buf) {
+>>  		dev_dbg(inst->dev->dev, "%s: No destination buffer found\n", __func__);
+>> @@ -550,11 +610,15 @@ static int wave5_vpu_enc_s_fmt_out(struct file *file, void *fh, struct v4l2_form
+>>  	}
+>>
+>>  	if (inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV12 ||
+>> -	    inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV12M) {
+>> +	    inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV12M ||
+>> +	    inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV16 ||
+>> +	    inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV16M) {
+>>  		inst->cbcr_interleave = true;
+>>  		inst->nv21 = false;
+>>  	} else if (inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV21 ||
+>> -		   inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV21M) {
+>> +		   inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV21M ||
+>> +		   inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV61 ||
+>> +		   inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV61M) {
+>>  		inst->cbcr_interleave = true;
+>>  		inst->nv21 = true;
+>>  	} else {
+>> @@ -1132,6 +1196,15 @@ static void wave5_set_enc_openparam(struct enc_open_param *open_param,
+>>  	u32 num_ctu_row = ALIGN(inst->dst_fmt.height, 64) / 64;
+>>  	u32 num_mb_row = ALIGN(inst->dst_fmt.height, 16) / 16;
+>>
+>> +	if (inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV16 ||
+>> +	    inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV61 ||
+>> +	    inst->src_fmt.pixelformat == V4L2_PIX_FMT_YUV422P ||
+>> +	    inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV16M ||
+>> +	    inst->src_fmt.pixelformat == V4L2_PIX_FMT_NV61M)
+>> +		open_param->src_format = FORMAT_422;
+>> +	else
+>> +		open_param->src_format = FORMAT_420;
+>> +
+>>  	open_param->wave_param.gop_preset_idx = PRESET_IDX_IPP_SINGLE;
+>>  	open_param->wave_param.hvs_qp_scale = 2;
+>>  	open_param->wave_param.hvs_max_delta_qp = 10;
+>
+>
 
