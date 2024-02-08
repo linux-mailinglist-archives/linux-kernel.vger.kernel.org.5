@@ -1,171 +1,123 @@
-Return-Path: <linux-kernel+bounces-58150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C1FA84E1E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:23:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EDC584E1F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:25:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D986828339D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:23:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CF9FB24504
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:25:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A6276402;
-	Thu,  8 Feb 2024 13:23:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CC9877628;
+	Thu,  8 Feb 2024 13:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NpZX0UV4"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Tvi1paTT"
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5DE763EC;
-	Thu,  8 Feb 2024 13:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8086E76416
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 13:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707398613; cv=none; b=POK7zLP10BsEvmWstPMJbeaV7cDckPuDlVWVMKE/Cwgc+CXgyXQ9VCUca2HIjxnF0HdvYniUMl7bMlCc6Acxn2NMSCpNgRE+EKaY5R7FenqxlCUFdTNNqpRcOdRLo21SEFAKoqmp2calZyr9gPjqm45F86io1DsRnIlBqw4Vr/I=
+	t=1707398709; cv=none; b=k7sjPqWx8+19O/mdxPY5UmlpqZwC4Sx0Tsc5Bwr9Yhg4PPy5QplXPcu7QEBkZuOBQRdNAw4doNfNZ8MYxmhgrKG6NuulKn/Pe9zwuQxpsS/2ObZGqGRY3IItmVh1ECTVIxqUSji3j328MCnOjNoZ9Qy1oxkZrS4kgBz56/pYa4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707398613; c=relaxed/simple;
-	bh=6GyLDB0Ktv9rLaR9FABPsKSQQBcO299HdLT77EeYMjI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=KRR/rfCDtb+nhf55pdPSVqfx2rM2hFwUUzNOFcG3TU1W7pijOMyTByYeHzGHtUQbLKV/iJDECJ2ZWp6vCeLHzZdcIN4RCOAA6FfH8odB9tOsQxIsv8BboR4jQ1PnUOvPPdP+tYMqIZ+SFEyZvX1dj+JdnfocQceMrmk/JpqjpN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NpZX0UV4; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707398612; x=1738934612;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=6GyLDB0Ktv9rLaR9FABPsKSQQBcO299HdLT77EeYMjI=;
-  b=NpZX0UV4dVJV3uHkK5ZMr3qZinr2SdsXNQNYVziMQvVxu0DKJDyK4Lz8
-   F6plFLamQQ9OKHtRHU7L2WvGoDNWlD/zktF6NBTvd/fDL6jnana6DJHuu
-   dukEfNHsxBQXcsHHvWZFivfIvyK2N2o6TrqpiD0P6/8isuFdjXWXSMBos
-   UjIHV4tiLJDoTCk3dkh9fd5qt/eh4TQ3ztDg1PCWOCg5I4d3Q9wkhnOwM
-   aLDO5VDRakZoIO5qqegiV7fGNXryY7CgP1iVsk+2SokhwEuW5xnWNqYwO
-   ADvGT56MIrHXXejmQ5brGoLuT1S6xCpmXiyeQjQXfXMeUd3yiDVnGqitE
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10977"; a="1083702"
-X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="1083702"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 05:23:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,253,1701158400"; 
-   d="scan'208";a="6279804"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.52.95])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 05:23:28 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org,
-	"Maciej W . Rozycki" <macro@orcam.me.uk>,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH v2 1/1] PCI: Do not wait for disconnected devices when resuming
-Date: Thu,  8 Feb 2024 15:23:21 +0200
-Message-Id: <20240208132322.4811-1-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707398709; c=relaxed/simple;
+	bh=zDFq8JwWXF7RSRVmF1+WH9VzX61GkH5t4YUYqcHQ/1Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dzlXhnFKgGGYA3CK0mOUzLnFLG3hNqysT6S/shJbnN+HGX14mIb5Ed17iHrNF/W2qeS6ViG9vvUf2ggfe0KkiG37DdvZGniNv/bMwJQlaVjJxYIMDyf7NZatWMb9OPLbhIpOZFs4xOevZeerZU32N/MSsBORJfxuq189U8OqEpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Tvi1paTT; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 8 Feb 2024 13:24:59 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707398704;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7lGdYQhRSSfN0dykRkya8P4upBClWyVoqhyocRgWZ8E=;
+	b=Tvi1paTTnVNkLWQ4FgCp0lp4590qKyU+DMW/1tenbAuA71NOiHdT0sIcFrHjZZt6+qnifI
+	OGwMwmpbvxHwN3YvP4Eb1gWO9mMevwVbdsnC658WCysAX7SkPT2Rjxj3cs1498TfKkffbf
+	f0PZpFefakmGx/dYyp3yTn8u6VLlMLg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: ankita@nvidia.com, jgg@nvidia.com, maz@kernel.org, james.morse@arm.com,
+	suzuki.poulose@arm.com, yuzenghui@huawei.com,
+	reinette.chatre@intel.com, surenb@google.com, stefanha@redhat.com,
+	brauner@kernel.org, will@kernel.org, mark.rutland@arm.com,
+	alex.williamson@redhat.com, kevin.tian@intel.com,
+	yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org,
+	andreyknvl@gmail.com, wangjinchao@xfusion.com, gshan@redhat.com,
+	ricarkol@google.com, linux-mm@kvack.org, lpieralisi@kernel.org,
+	rananta@google.com, ryan.roberts@arm.com, aniketa@nvidia.com,
+	cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
+	vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
+	jhubbard@nvidia.com, danw@nvidia.com, kvmarm@lists.linux.dev,
+	mochs@nvidia.com, zhiw@nvidia.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 1/4] kvm: arm64: introduce new flag for non-cacheable
+ IO memory
+Message-ID: <ZcTWK6TksvugSlI-@linux.dev>
+References: <20240207204652.22954-1-ankita@nvidia.com>
+ <20240207204652.22954-2-ankita@nvidia.com>
+ <ZcTQi0wWZgvl05LB@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcTQi0wWZgvl05LB@arm.com>
+X-Migadu-Flow: FLOW_OUT
 
-On runtime resume, pci_dev_wait() is called:
-  pci_pm_runtime_resume()
-    pci_pm_bridge_power_up_actions()
-      pci_bridge_wait_for_secondary_bus()
-        pci_dev_wait()
+On Thu, Feb 08, 2024 at 01:00:59PM +0000, Catalin Marinas wrote:
+> On Thu, Feb 08, 2024 at 02:16:49AM +0530, ankita@nvidia.com wrote:
+> > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> > index c651df904fe3..2a893724ee9b 100644
+> > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > @@ -717,15 +717,28 @@ void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> >  static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot prot,
+> >  				kvm_pte_t *ptep)
+> >  {
+> > -	bool device = prot & KVM_PGTABLE_PROT_DEVICE;
+> > -	kvm_pte_t attr = device ? KVM_S2_MEMATTR(pgt, DEVICE_nGnRE) :
+> > -			    KVM_S2_MEMATTR(pgt, NORMAL);
+> > +	kvm_pte_t attr;
+> >  	u32 sh = KVM_PTE_LEAF_ATTR_LO_S2_SH_IS;
+> >  
+> > +	switch (prot & (KVM_PGTABLE_PROT_DEVICE |
+> > +			KVM_PGTABLE_PROT_NORMAL_NC)) {
+> > +	case 0:
+> > +		attr = KVM_S2_MEMATTR(pgt, NORMAL);
+> > +		break;
+> > +	case KVM_PGTABLE_PROT_DEVICE:
+> > +		if (prot & KVM_PGTABLE_PROT_X)
+> > +			return -EINVAL;
+> > +		attr = KVM_S2_MEMATTR(pgt, DEVICE_nGnRE);
+> > +		break;
+> > +	case KVM_PGTABLE_PROT_NORMAL_NC:
+> > +		attr = KVM_S2_MEMATTR(pgt, NORMAL_NC);
+> > +		break;
+> 
+> Does it make sense to allow executable here as well? I don't think it's
+> harmful but not sure there's a use-case for it either.
 
-While a device is runtime suspended along with its PCI hierarchy, the
-device could get disconnected. In such case, the link will not come up
-no matter how long pci_dev_wait() waits for it.
+Ah, we should just return EINVAL for that too.
 
-Besides the above mentioned case, there could be other ways to get the
-device disconnected while pci_dev_wait() is waiting for the link to
-come up.
+I get that the memory attribute itself is not problematic, but since
+we're only using this thing for MMIO it'd be a rather massive
+bug in KVM... We reject attempts to do this earlier in user_mem_abort().
 
-Make pci_dev_wait() to exit if the device is already disconnected to
-avoid unnecessary delay.
+If, for some reason, we wanted to do Normal-NC actual memory then we
+would need to make sure that KVM does the appropriate cache maintenance
+at map / unmap.
 
-The use cases of pci_dev_wait() boil down to two:
-  1. Waiting for the device after reset
-  2. pci_bridge_wait_for_secondary_bus()
-
-The callers in both cases seem to benefit from propagating the
-disconnection as error even if device disconnection would be more
-analoguous to the case where there is no device in the first place
-which return 0 from pci_dev_wait(). In the case 2, it results in
-unnecessary marking of the devices disconnected again but that is
-just harmless extra work.
-
-Also make sure compiler does not become too clever with
-dev->error_state and use READ_ONCE() to force a fetch for the
-up-to-date value.
-
-Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
-
-v2:
-
-Sent independent of the other patch.
-
-Return -ENOTTY instead of 0 because it aligns better with the
-expecations of the reset use case and only causes unnecessary
-disconnect marking in the pci_bridge_wait_for_secondary_bus()
-case for devices that are already marked disconnected.
-
- drivers/pci/pci.c | 5 +++++
- drivers/pci/pci.h | 9 ++++++++-
- 2 files changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index ca4159472a72..14c57296a0aa 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -1250,6 +1250,11 @@ static int pci_dev_wait(struct pci_dev *dev, char *reset_type, int timeout)
- 	for (;;) {
- 		u32 id;
- 
-+		if (pci_dev_is_disconnected(dev)) {
-+			pci_dbg(dev, "disconnected; not waiting\n");
-+			return -ENOTTY;
-+		}
-+
- 		pci_read_config_dword(dev, PCI_COMMAND, &id);
- 		if (!PCI_POSSIBLE_ERROR(id))
- 			break;
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 2336a8d1edab..58a32d2d2e96 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -4,6 +4,8 @@
- 
- #include <linux/pci.h>
- 
-+#include <asm/rwonce.h>
-+
- /* Number of possible devfns: 0.0 to 1f.7 inclusive */
- #define MAX_NR_DEVFNS 256
- 
-@@ -370,7 +372,12 @@ static inline int pci_dev_set_disconnected(struct pci_dev *dev, void *unused)
- 
- static inline bool pci_dev_is_disconnected(const struct pci_dev *dev)
- {
--	return dev->error_state == pci_channel_io_perm_failure;
-+	/*
-+	 * error_state is set in pci_dev_set_io_state() using xchg/cmpxchg()
-+	 * and read w/o common lock. READ_ONCE() ensures compiler cannot cache
-+	 * the value (e.g. inside the loop in pci_dev_wait()).
-+	 */
-+	return READ_ONCE(dev->error_state) == pci_channel_io_perm_failure;
- }
- 
- /* pci_dev priv_flags */
 -- 
-2.39.2
-
+Thanks,
+Oliver
 
