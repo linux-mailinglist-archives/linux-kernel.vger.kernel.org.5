@@ -1,85 +1,81 @@
-Return-Path: <linux-kernel+bounces-58535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2652384E7B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:33:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A94E484E7BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 19:34:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A664E28EBCB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:33:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5628F1F2C65E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 18:34:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBC3722307;
-	Thu,  8 Feb 2024 18:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA5D02562A;
+	Thu,  8 Feb 2024 18:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="HdjSLlSo"
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="sjF1HrDY"
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C3744C7C
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 18:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88FE210F2
+	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 18:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707417170; cv=none; b=Cz77X8O8p/eoq9tfTGkj02QQuMPZPLq88ym5/89ksqMuH0lefe1cv2Vf/C0UHgNnjuQf71S7ktwdOEDIK7bNdHCsVdRPwk8OQxGxsGzmPDfUDa9YRUgGr/RcOyWZaFoTpbrnoATviqLSWSoOKliBu74wjRbYbGInNsXyKSP1UBM=
+	t=1707417172; cv=none; b=DVzl7bqC/WmElVGnf2gRIvBd/QsM09Wt8nLsCpFy1Bz20bHZzVHihJy1HWYYcotrp4D6skOOWenNirb4indWcWyyCZwL4mnmaBLO9wHq8RZxRGGrMpEExmMuJurCvrjzg2mJvw97HQfgazW+l8Pp6J2kkGilaYsETy9v4j+anII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707417170; c=relaxed/simple;
-	bh=wHrLFJRfnNXUeGVogN8+9OPpwE8Sci1mCOxtvg4QYxM=;
+	s=arc-20240116; t=1707417172; c=relaxed/simple;
+	bh=woNnQGq8KF73U0rUgmmvSqIGXrgJUS6t/kmFbP8Hyh8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=tWDUYl+m56OgOvETNgW93SzGR0L53ydb7Ho9P+lhP0D0ixsyz6iK4WPVt4Q7QKFpxBSmYZbPpBgho31Svp80whNeiB+XH/lmt4xukEQBJzejZKxbyeFTS0SvUU48xW4va0++V1EXFFut7mTQ5GOCggQrwdgUEnp0ljnnO4PPtcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=HdjSLlSo; arc=none smtp.client-ip=209.85.166.42
+	 MIME-Version:Content-Type; b=keWwW2xAzYDXCaKvpeds0jkrV+VSPrLPXG6oHDVulLuPBiG6sesAb6aRjWWzZ3YPklVMkeGGeJAMZa8esWchIDV3HNagv3L/NvQq/6TAh2/Lb7yPciAy9J1ud8IrZfertJEhIoOOHR16+yMomMNWXvKjmFLiLMatXSF1qF6jDJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=sjF1HrDY; arc=none smtp.client-ip=209.85.166.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7c427cba7a0so906339f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 10:32:48 -0800 (PST)
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7bbdd28a52aso755039f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 10:32:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707417168; x=1708021968; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707417169; x=1708021969; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mOhSHI8k2xKwemaGiMogUyPw3fznz8Z4LeXfby4qFPk=;
-        b=HdjSLlSowB6EaPGTBSkJxvmtcH53csRnXfB3MTItR/HL0drWyrhznWOkzGRovoZ+Sw
-         PTdh73RmckYlm8bjG3nQD5Aw07+mMyVmnlA++4N1Pr/Q6Kb+VGRZxTRMQCw+Cu16ZWUd
-         056x3ilF2gA/BlSTYWiombr5Zy0qZAkpfREZglO6yEnSMgdzE2MMjV1Bk3DG7fdaSNCp
-         Cr+tSloTqUyerCV0LIE+sUJC0pK02Uaqo5Po22ZLWa8yaQaoH+zR0JC1KGS2YrgcqJF+
-         AUM5tmCjd8ZyNsuSeq0h7EeInGNSV63m0WY9uQADLBCsNxqo/DY9K6Md5onzbFcQ50wX
-         IHcg==
+        bh=X6dtiWjV75xos+bwFCftGuaDZ6uwiHOZu2lkmp/4iss=;
+        b=sjF1HrDY8sG/gMilcrcBWyxaMky6UUfV81BEYiudnHKBL6eFpeO3euujDrrY4+h1Mc
+         X6smgf3AL8bjCIo4TAM4uCmlLa+1rOYt8WCCG7t9XGOc6JHHASpYEVYtpwy0CYOd06x2
+         6JE1iTQPcFEFgU5Tbarr9MmHd7IAy0CTFgM4NsB2jgupOg+D7jxSoufYgCj9RS3w2G18
+         CYzV1opRh/i6rU+V2XJY2eS7jfAh8nhykIb6gqBAym6LCOWjSbrocct4AFKzCsnJZVXg
+         x11UGMtSgBdAk7Bkoi16ssJ9T214JzQYNmyYFc1TUOyYCx2hzi+ei6NnNezsnV8ukL1d
+         sFFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707417168; x=1708021968;
+        d=1e100.net; s=20230601; t=1707417169; x=1708021969;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mOhSHI8k2xKwemaGiMogUyPw3fznz8Z4LeXfby4qFPk=;
-        b=hSaxK9RqZKLRbCNBnP1b/Kc90XrK+shZgn6LtaHsMd/7IL9VQJzxJckJsaXUqPgRO0
-         HEZVEe8d0cpoRqG4GoveoxuM6HVMTKoVROMQyl9XdQeYx0OteLuZECW/nitVPNZm/Nx2
-         jtzqmxwHrKcxJtQfiiIq85n7cIYBUoocUUBA3rVyqG3iSPTWOvOrRRA88vRgIGZLAeBu
-         RHOHFbHvJ4K+XFS5zTjsbuOGgCdfE1oeIKj80CbHoP2Mij2AZDICYLLu1Mqpve3KGacd
-         /pL565Ap7BG4gwxloPclmPYDIoYsjOOez5/XaWafWARvFPDdIxA+34AIY/Zeb3XeiYGD
-         q+kw==
-X-Forwarded-Encrypted: i=1; AJvYcCXZb1Fs9FCVTM9hFFh2IqT7XoHZzAHxWXdVU+vAI1EJH+m0vEpMEoTb3NFvsk9CFkX/EIZqfalwnasMMSHMLeqBpybE6wYQK5tigQet
-X-Gm-Message-State: AOJu0YymKzwKnFoGmbtj7I3Byr2cf/gXw/P3g9/O/0Zo1choc2jGMn3G
-	p9tcXZEaLMFC7JRT7B0L49G52V/q4PCx8NOFv41pAD8jz6HOHqP7LQWhAAz0H30=
-X-Google-Smtp-Source: AGHT+IFUz3Bw6ISDd3GciQ1PkFFh8jMes3QifdbnhSrBnemaIeE1jkbp9UgMWYTHjwPHgVAExcNiZg==
-X-Received: by 2002:a5e:c00f:0:b0:7c3:f2c1:e8aa with SMTP id u15-20020a5ec00f000000b007c3f2c1e8aamr525375iol.0.1707417167749;
-        Thu, 08 Feb 2024 10:32:47 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUFN35oyK3P1Kl19g4DVSeOHdJqd7hNO/fEF+Zn4banyLzmAsUB9dGTmHJlmPGk8rbasaMLmyBct6zafrB+IPmSrFNfMSJmIjvgqC6BIW/sXung/TkbPIraqxtSnUKoxgCzcR1eTIU2rXeLNPkRpe+cBazdeEfW3xUzPh50tskx/g83+xSWNhgagQt8yuHn0rXntnK3Hom2LBu+VnXBS1N6c9T8kjDFqLuqg0OPZQtOqUj4jiLTWT2sLAdc7ngzJBCXRJoTClL/ugYT05us0HGmMECzo0pJ6mIeZnRw6bKwhdGg7yG7Qu64tHQhCjlYr8CdWDwNWF5cl8j0vwggM4B50jjH0wskBEp31CDh/xkNOz6MhRJ0GX6rk+Dv+jWMWPU=
+        bh=X6dtiWjV75xos+bwFCftGuaDZ6uwiHOZu2lkmp/4iss=;
+        b=kp1q8HrY+T5WvoGAxprPwXGripf/VsNLO8wgUNhMkHNPEvPEyS7mZnysNHpvC5MWz5
+         rnBcYQxdKER4K8mo02k6fpOm25ZNrc8YTWhnSOeNtoRaIonvOJbpZSumil4sSV0+Ml0X
+         DW9GjxhzMS3dVYL3+/rCTQla7B4P06yMoEjyK62QMz3B/sLGVCWEWPazk5QEE6+2PQPN
+         aa3BnN9OSuBTEBemZSg6PCv3LVbJPHZ79NE6o3QYZUQor0fwT1xmS6onQs65VlATf+s1
+         yMFwED0jiY0C/O6rymJbXELS2iUYvWthA0JICLnOHvfutxTaKt5fZ2guAYl4Hzja/Ngh
+         iiMg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZIYbD54CERsAMuXviJk9mYdLFslmxxm9n51eCVAi35/VjgxptFa0neQTMb8w8qAkjTt82RvfgEG1A7FDsFXUYniX4VEP2v9LtwT86
+X-Gm-Message-State: AOJu0Yy7KBw9iihuMlCE44jcNdbiKUuNpbSTVI7U7fZdm6pSmax9mIwM
+	BhWNXzpkWOcVNSO/rMnCJUxEGCUBZBODg0GMLChLOyIb7X2EY1RWCtYAIoSSM70ujYvMB2BEMlh
+	lQFg=
+X-Google-Smtp-Source: AGHT+IEQKXkAiR5J5W5468WwCC3LL3QIPk7bvGywaj7Fg8ctV7l13AgBaBz/5zKcIZpzmTfI1HVmLQ==
+X-Received: by 2002:a05:6602:164b:b0:7c4:2fdd:548a with SMTP id y11-20020a056602164b00b007c42fdd548amr133607iow.0.1707417169407;
+        Thu, 08 Feb 2024 10:32:49 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWCeXuMsAfVTxQW+tSaJD1qVAPpQddaLN2+5TiqhcQNeXDacDlN+e9re8GAQODK73vOqbSsXdOhHxuF82rBUbVQQvpV7xkWES9bTv/nV/eWljgJlu9XIuBAMmKwfTUIwAU=
 Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id t13-20020a6bdb0d000000b007c3fbe781f2sm50823ioc.5.2024.02.08.10.32.46
+        by smtp.gmail.com with ESMTPSA id t13-20020a6bdb0d000000b007c3fbe781f2sm50823ioc.5.2024.02.08.10.32.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 10:32:47 -0800 (PST)
+        Thu, 08 Feb 2024 10:32:48 -0800 (PST)
 From: Jens Axboe <axboe@kernel.dk>
-To: stefanha@redhat.com, mst@redhat.com, jasowang@redhat.com, 
- Yi Sun <yi.sun@unisoc.com>
-Cc: sunyibuaa@gmail.com, hongyu.jin@unisoc.com, zhiguo.niu@unisoc.com, 
- xuanzhuo@linux.alibaba.com, pbonzini@redhat.com, 
- virtualization@lists.linux.dev, linux-block@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240129085250.1550594-1-yi.sun@unisoc.com>
-References: <20240129085250.1550594-1-yi.sun@unisoc.com>
-Subject: Re: [PATCH V2] virtio-blk: Ensure no requests in virtqueues before
- deleting vqs.
-Message-Id: <170741716688.1391883.2946265788968193577.b4-ty@kernel.dk>
-Date: Thu, 08 Feb 2024 11:32:46 -0700
+To: asml.silence@gmail.com, Kunwu Chan <chentao@kylinos.cn>
+Cc: io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240130100247.81460-1-chentao@kylinos.cn>
+References: <20240130100247.81460-1-chentao@kylinos.cn>
+Subject: Re: [PATCH] io_uring: Simplify the allocation of slab caches
+Message-Id: <170741716788.1391883.13253521338686491529.b4-ty@kernel.dk>
+Date: Thu, 08 Feb 2024 11:32:47 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,22 +87,18 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.5-dev-2aabd
 
 
-On Mon, 29 Jan 2024 16:52:50 +0800, Yi Sun wrote:
-> Ensure no remaining requests in virtqueues before resetting vdev and
-> deleting virtqueues. Otherwise these requests will never be completed.
-> It may cause the system to become unresponsive.
+On Tue, 30 Jan 2024 18:02:47 +0800, Kunwu Chan wrote:
+> commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
+> introduces a new macro.
+> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+> to simplify the creation of SLAB caches.
 > 
-> Function blk_mq_quiesce_queue() can ensure that requests have become
-> in_flight status, but it cannot guarantee that requests have been
-> processed by the device. Virtqueues should never be deleted before
-> all requests become complete status.
 > 
-> [...]
 
 Applied, thanks!
 
-[1/1] virtio-blk: Ensure no requests in virtqueues before deleting vqs.
-      (no commit info)
+[1/1] io_uring: Simplify the allocation of slab caches
+      commit: 898e3028588e3b6d789774af623d419295c75257
 
 Best regards,
 -- 
