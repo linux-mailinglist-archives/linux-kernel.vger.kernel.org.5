@@ -1,118 +1,167 @@
-Return-Path: <linux-kernel+bounces-58110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E82884E161
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:06:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BFE084E182
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 14:11:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 516141C28E70
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:06:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D657528B2E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Feb 2024 13:11:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 538B4763F9;
-	Thu,  8 Feb 2024 13:05:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E75F79936;
+	Thu,  8 Feb 2024 13:10:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LNt0guO+"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="aFIVupUA"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E402A763E7
-	for <linux-kernel@vger.kernel.org>; Thu,  8 Feb 2024 13:05:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A233574E16;
+	Thu,  8 Feb 2024 13:10:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707397536; cv=none; b=dHzdHIMVMexJmEDC4/Yxhay65HEiWrD/7Ox8e6lw90BuFl1Oq6CFRSiSvF06rIJ9WFCyIsUmVSiE0j5wOW8IlpITqixN9+Tx1j+H9hvR9bfiouP33+csMvqCiRDwhwXdOiqtD1N7aKfpL+AVi9KEhT4owUrTU/NruW5PqmHrvDc=
+	t=1707397806; cv=none; b=a/8vWOkxboawhohvJcFWM3Q5R3jeN+jg9PG/ess151KovvwWKyznpCGS39NkcvDuAhK0GzgqXR0ZRsQkwMDIA8Bn+Jws48hN1JMzB7ckdmZLycCqmRdOVmjRIelxV19Fnh+p7iV1/Tup4ByNhMt8xsKj/TAErKwO9HwtR89THRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707397536; c=relaxed/simple;
-	bh=OOm3KwQlSkpx/aQ0RD1Q/n3/Iu+q+deGUZmDwakoQcE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pzPM3Njj0uesk+iYAOVGDrO5RV6dSpO61q4w9ydBB3pCydWEWfPoPcZj4GcYfVsFmTDNhnIwF14yeBHpR+xvnT0PhdIGQ6zfAXBccqfusjZASm+Z89CRVEjHD/uqfcbDxWQUlC2gvpqJ3+k0wzhPPLyNv4hfS8iyqG7sk/coKog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LNt0guO+; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60492a2593fso17289797b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 05:05:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707397534; x=1708002334; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yaonEZUtkmkL4+4T+nM7QfSGszePSMsGy31jLocXPig=;
-        b=LNt0guO+zv8N1hp1QGPKyIX2TOshE8/9Sz7v+1IQDLCx1F9j1tv33TSSgeyxeWUVgl
-         ak3B2gzAKOeK8z5JlQvUxng39OusDMd/IN7Lz7yr+1v6D3bysAZ81xZlMGA2MG2kCktR
-         lvqeHM2zia7I0/PloRbzLKN/tFbawD1wO3OtjnVH/Unv6PaUWIk7ho6qrBxiVcLRscMI
-         +mkSsx1d/VPAhrGk79dDhfAgiclb6BTAsMx2UdT9AkQiad+bZneN1TJweJDgilTXFfAc
-         FTypQZj6pvj5YXamY/Q+hX2YX317WoMZh8g7Ni9zVGABCP0k822JWFlmpla8fCzTVfl9
-         qnVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707397534; x=1708002334;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yaonEZUtkmkL4+4T+nM7QfSGszePSMsGy31jLocXPig=;
-        b=gW1o4gMwpSdisv4ViIgSrzA34xuqeTghX5yyOWGakHvkpKu53wdx1IBn2H8W1OEIrB
-         muhhvYdYrxsnO5qGKvXTfd2ZnQFLNlTgvAF/13PimB/CpxqcFL4wePajCL/iJNkZTXCr
-         lhn2JxPUKiHUUout6YpnJhpMYdNJGTM5ZkbkMeNCwOuQqVByDb0sNSwWgjQs2X7lENNC
-         dt7S55oMURn8dZiBmNGst8zefWGG2Ey8v3B593UM2zMLVkPSmvjzpbY+4EeESrR1cpPf
-         jh6aYNDloUQkkUK1P4d0faR04VnZIKHl2jyFpPNTzD64XXiaY0aVypZQwnJLHoYrq+sZ
-         gLjg==
-X-Gm-Message-State: AOJu0Yxd2NPN8lDMDGNs4EkEfjNIfnQzgzbL0KV1GxoFZUbJjTR1/FwC
-	vhgXyI70Hlyk/FbC3lB3JfoVjiKajAa2z4nu0ZYKdAXdcPSOWR+5ZYdBD4+bpqbf4t40py8MOYM
-	aYTmn874MmQWAkRJw8Jxn+BKZjb7jQYWgNSm3L9ExsQb119RL
-X-Google-Smtp-Source: AGHT+IGfphzyQv/EWtNvXSUhZkKTokLhrAXhw2QIgrex5Lkm5/2iiFvKEz8iowkI5t4PsE48NVTAvoH79ulzgHlzIPY=
-X-Received: by 2002:a0d:c545:0:b0:604:71b3:2021 with SMTP id
- h66-20020a0dc545000000b0060471b32021mr8488916ywd.3.1707397533831; Thu, 08 Feb
- 2024 05:05:33 -0800 (PST)
+	s=arc-20240116; t=1707397806; c=relaxed/simple;
+	bh=6ljt3iLa1k5EaaTfYjzMvfAkx/XmTBtdjgtg/PsRZvI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ItAQU2AKt4kHtyKrxXHERGhjyb2xQt90wha0rGVM1f5cILvcCj6yrj5Z6AZxWxHfHCi6+iRv8njJUEUFvFaxS5NMcyCWIPrhH6aYojmkL6+Ud+48saRKLxF89vae2Dm2bIRpKQtKxpkVAdBKUj0GlYPodR4Ylo3KI5VZgemTNio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=aFIVupUA; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3440E1BF20A;
+	Thu,  8 Feb 2024 13:09:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707397792;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=awG7COaY5LB3i7Ks32m7L3WnMQtbwasRGppvFBPBHLs=;
+	b=aFIVupUA1IGNffKpX6lp8PcRaIZoDYSAzq6E0M+65DP/wdPoeUMLWNXeuSKqeRhIHrd2pk
+	UJl8ThqeXCGkIFLF5/3mgk8QrGmhW6Yc0pc46NDJY0tSQf+Hgkpc5S2z7jOJXmkCPWQREv
+	3okNTUuWecf4AZnpJVKo2fK+7pL/jgpHvOo6dofQ2S1OfY4cuP9ZgnVTcY+vnEjd9zbiiS
+	6aHdgbKX1ekjGjpFJfLoX9pUG0ghHP1JN0XXa+OADazFnXsbc9q8QxQlZ4q/XkokeyToFD
+	bDUCaVrjX3Mba+Rqgm5TKvkA1k28gMpjBvMVfgnQvRXixgSTjLKA55QSmzZhuQ==
+From: Kory Maincent <kory.maincent@bootlin.com>
+Subject: [PATCH net-next v3 00/17] net: Add support for Power over Ethernet
+ (PoE)
+Date: Thu, 08 Feb 2024 14:08:37 +0100
+Message-Id: <20240208-feature_poe-v3-0-531d2674469e@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130-pmi632-typec-v3-0-b05fe44f0a51@linaro.org>
- <20240130-pmi632-typec-v3-3-b05fe44f0a51@linaro.org> <CAA8EJpqhfWsmUxwmBLtdtx-aFOmTo24erdNfRyz2ymi_y=yidw@mail.gmail.com>
- <ZcTA5hbcladmKuLh@kuha.fi.intel.com>
-In-Reply-To: <ZcTA5hbcladmKuLh@kuha.fi.intel.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 8 Feb 2024 15:05:22 +0200
-Message-ID: <CAA8EJpqf_iQz5JWwEsZmUOV=VSY5y_RrO6JqEztr9Q2Fc2J-FA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/6] usb: typec: qcom-pmic-typec: add support for
- PMI632 PMIC
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Wesley Cheng <quic_wcheng@quicinc.com>, "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guenter Roeck <linux@roeck-us.net>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-usb@vger.kernel.org, 
-	Luca Weiss <luca.weiss@fairphone.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAFbSxGUC/1WNyw7CIBQFf8WwFnN52Icr/8MYQ+nFkig0gKSm6
+ b9L2JguJyczZyURg8VILoeVBMw2Wu8KiOOB6Em5J1I7FiYcuGDAJTWo0ifgY/ZImehlD9gKCYI
+ UYw5o7FJrN+IwUYdLIveyTDYmH771JrO61yJjza6YGQU6oOxAysFw2V8H79PLupP271rK/G9zY
+ HubF/vcjJ1WuoHWqL29bdsP7EiHvvAAAAA=
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+ Luis Chamberlain <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>, 
+ Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>, 
+ Heiner Kallweit <hkallweit1@gmail.com>, 
+ Russell King <linux@armlinux.org.uk>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+ devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>, 
+ Kory Maincent <kory.maincent@bootlin.com>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: kory.maincent@bootlin.com
 
-On Thu, 8 Feb 2024 at 13:54, Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> On Wed, Feb 07, 2024 at 11:54:50AM +0200, Dmitry Baryshkov wrote:
-> > On Tue, 30 Jan 2024 at 21:33, Dmitry Baryshkov
-> > <dmitry.baryshkov@linaro.org> wrote:
-> > >
-> > > The PMI632 PMIC support Type-C port handling, but lacks USB
-> > > PowerDelivery support. The TCPM requires all callbacks to be provided
-> > > by the implementation. Implement a special, 'stub' Qcom PD PHY
-> > > implementation to enable the PMI632 support.
-> > >
-> > > Acked-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> > > Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > > Tested-by: Luca Weiss <luca.weiss@fairphone.com> # sdm632-fairphone-fp3
-> > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> >
-> > Heikki, Gunter, Gret, is there anything left on my side to get these patches in?
->
-> Nothing from me. Do you want Greg to pick these?
+This patch series aims at adding support for PoE (Power over Ethernet),
+based on the already existing support for PoDL (Power over Data Line)
+implementation. In addition, it adds support for two specific PoE
+controller, the Microchip PD692x0 and the TI TPS23881.
 
-Yes, please.
+In detail:
+- Patch 1 to 13 prepare net to support PoE devices.
+- Patch 14 and 15 add PD692x0 PoE PSE controller driver and its binding.
+- Patch 16 and 17 add TI TPS23881 PSE controller driver and its binding.
 
+Changes in v2:
+- Extract "firmware_loader: Expand Firmware upload error codes patches" to
+  send it alone and get it merge in an immutable branch.
+- Add "c33" prefix for PoE variables and enums.
+- Enhance few comments.
+- Add PSE Documentation.
+- Make several changes in pd692x0 driver, mainly for readibility.
+- Link to v1: https://lore.kernel.org/r/20231116-feature_poe-v1-0-be48044bf249@bootlin.com
+
+Changes in v3:
+- Add patches to add Oleksij and myself to PSE MAINTAINERS.
+- Add patches to add pse devlink.
+- Add TI TPS23881 PSE controller driver with its binding.
+- Replace pse_get_types helper by pse_has_podl and pse_has_c33
+- Changed the PSE core bindings.
+- Add a setup_pi_matrix callback.
+- Register regulator for each PSE PI (Power Interface).
+- Changed the PD692x0 bindings.
+- Updated PD692x0 drivers to new bindings and PSE PI description.
+- Updated PD692x0 drivers according to the reviews and made fixes.
+- Link to v2: https://lore.kernel.org/r/20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com
+
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
+Kory Maincent (17):
+      MAINTAINERS: net: Add Oleksij to pse-pd maintainers
+      of: property: Add fw_devlink support for pse parent
+      net: pse-pd: Rectify and adapt the naming of admin_cotrol member of struct pse_control_config
+      ethtool: Expand Ethernet Power Equipment with c33 (PoE) alongside PoDL
+      net: pse-pd: Introduce PSE types enumeration
+      net: ethtool: pse-pd: Expand pse commands with the PSE PoE interface
+      netlink: specs: Modify pse attribute prefix
+      netlink: specs: Expand the pse netlink command with PoE interface
+      MAINTAINERS: Add myself to pse networking maintainer
+      dt-bindings: net: pse-pd: Add another way of describing several PSE PIs
+      net: pse-pd: Add support for PSE PIs
+      net: pse-pd: Add support for setup_pi_matrix callback
+      net: pse-pd: Use regulator framework within PSE framework
+      dt-bindings: net: pse-pd: Add bindings for PD692x0 PSE controller
+      net: pse-pd: Add PD692x0 PSE controller driver
+      dt-bindings: net: pse-pd: Add bindings for TPS23881 PSE controller
+      net: pse-pd: Add TI TPS23881 PSE controller driver
+
+ .../bindings/net/pse-pd/microchip,pd692x0.yaml     |  157 +++
+ .../bindings/net/pse-pd/pse-controller.yaml        |  101 +-
+ .../bindings/net/pse-pd/ti,tps2388x.yaml           |  112 ++
+ Documentation/netlink/specs/ethtool.yaml           |   33 +-
+ Documentation/networking/ethtool-netlink.rst       |   20 +
+ Documentation/networking/index.rst                 |    1 +
+ Documentation/networking/pse-pd/index.rst          |    9 +
+ Documentation/networking/pse-pd/introduction.rst   |   73 ++
+ MAINTAINERS                                        |    8 +
+ drivers/net/mdio/fwnode_mdio.c                     |   29 +-
+ drivers/net/pse-pd/Kconfig                         |   20 +
+ drivers/net/pse-pd/Makefile                        |    2 +
+ drivers/net/pse-pd/pd692x0.c                       | 1223 ++++++++++++++++++++
+ drivers/net/pse-pd/pse_core.c                      |  491 +++++++-
+ drivers/net/pse-pd/pse_regulator.c                 |   49 +-
+ drivers/net/pse-pd/tps23881.c                      |  818 +++++++++++++
+ drivers/of/property.c                              |    2 +
+ include/linux/pse-pd/pse.h                         |   89 +-
+ include/uapi/linux/ethtool.h                       |   43 +
+ include/uapi/linux/ethtool_netlink.h               |    3 +
+ include/uapi/linux/pse.h                           |   23 +
+ net/ethtool/pse-pd.c                               |   60 +-
+ 22 files changed, 3246 insertions(+), 120 deletions(-)
+---
+base-commit: 05f5c48cfac2335df9bb76fb6d49703670ce8b00
+change-id: 20231024-feature_poe-139490e73403
+
+Best regards,
 -- 
-With best wishes
-Dmitry
+Köry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
 
