@@ -1,194 +1,124 @@
-Return-Path: <linux-kernel+bounces-59838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85E0784FC5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 590D984FC62
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:56:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3E8C1F223A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:56:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E441D1F21533
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2243E81ACB;
-	Fri,  9 Feb 2024 18:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2713980C1C;
+	Fri,  9 Feb 2024 18:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ua2s416p"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kwtDETOR"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7BA50241;
-	Fri,  9 Feb 2024 18:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3707F57339;
+	Fri,  9 Feb 2024 18:56:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707504960; cv=none; b=MOAu86qaxeLLAH+LhXXFJdbiAKmWa9YVEFH/fdYwIw16tfmPQc0qv7POMK6f69VtS0FRbeliaXNq4Eq5viaY8MW82UmwTecmlKrTWk9uWsTxMRiK0e/ut3Ws7f6pJNVEMQG8Pybj4OCKdTQQxIjgS2nMkyWsWeuZT69eeBa0AFM=
+	t=1707504976; cv=none; b=GqlqHyjkt12yZtaKi1zL0HZPr18JsI8pOxAYjVtRHb0nvZTzKdgG5wrsUyU157mbFdbggWfmiAb4Mi7S6mqbUH83GV4rGNh9HVKoEgea5bnExAM3/Am/jIRoNDbj5auBZRbGl63nA0LTSEnG8mVC/1b6e6I+de8KO1FtYKnhzeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707504960; c=relaxed/simple;
-	bh=718c/meOqiOwvZMPuz8c8BgGWyDlkajC+GqTBbpRz44=;
-	h=From:To:CC:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=u8FPw8wCAuBUNB17ex1FMva3ggzcGToe8yEFu5hFJRoF3P1nnta/po57ef5nD+kC0DNxlwfwJV1Sf/PxAnD9N87P319r3+Y6fSzbwmxuTObS9PNF6kLGADGettm7KF7MHHC0up//1lfdvV6os9L3icAGjZ+pIkbWvmyfNBCHLmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ua2s416p; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 419ItluH058094;
-	Fri, 9 Feb 2024 12:55:47 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707504947;
-	bh=ZizTx1uK/wrfr2SSrP0MYYokmhKwqiFDbgxDTx6rvbY=;
-	h=From:To:CC:Subject:In-Reply-To:References:Date;
-	b=ua2s416pqUvhfNJgcHeDqSKGXdJlHeCBxH8X4I/GzSK5H4OT4Av2heBnKWRfBn+hv
-	 wP9j2R257WdBmbM8N9uK6mTGv/8kVrcduBR84hvTsOTzS79TE+V8KZVfsnXp5aD1ds
-	 zXQ36haYvsSNj3ZzmUZpmEwBSpIlwkPxAOgiWm6c=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 419Itlw3118636
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 9 Feb 2024 12:55:47 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 9
- Feb 2024 12:55:47 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 9 Feb 2024 12:55:47 -0600
-Received: from localhost (kamlesh.dhcp.ti.com [172.24.227.123])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 419Itk1Q122386;
-	Fri, 9 Feb 2024 12:55:46 -0600
-From: Kamlesh Gurudasani <kamlesh@ti.com>
-To: Nishanth Menon <nm@ti.com>, "Kumar, Udit" <u-kumar1@ti.com>
-CC: <kristo@kernel.org>, <ssantosh@kernel.org>, <chandru@ti.com>,
-        <rishabh@ti.com>, <vigneshr@ti.com>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH v3] clk: keystone: sci-clk: Adding support for non
- contiguous clocks
-In-Reply-To: <20240209172555.fxlxijhhbgrkyibo@agreeing>
-References: <20240207091100.4001428-1-u-kumar1@ti.com>
- <20240207125410.r2q3jcplvif7dvt2@tumbling>
- <3a7c4a18-5463-414f-82df-39aaed861148@ti.com>
- <20240209172555.fxlxijhhbgrkyibo@agreeing>
-Date: Sat, 10 Feb 2024 00:25:45 +0530
-Message-ID: <87y1btlb66.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
+	s=arc-20240116; t=1707504976; c=relaxed/simple;
+	bh=C9S2oNwOOfhw1Ocskog3nsge/HD81Vm1NImbMpSpgYY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FQZvggnW/tNJ0o5wTvHps0TZ7SkTjL1iANhg65Np1Xayao1YSmr2kvAaQu36/o97KaFPypm4IAzTloXPxW+TC7tp209eL0fyHQQQwJ2ml4RPMJzoKbxuw/Lia3H+St8YIeWufNYncyc+EWUjgFjadWApg023FPbYODIRJY2fTDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kwtDETOR; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d944e8f367so10694845ad.0;
+        Fri, 09 Feb 2024 10:56:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707504974; x=1708109774; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=56hgMqr3mswCnWTmMb87WQwpoLmhLltp/8RI39azy0Q=;
+        b=kwtDETORaeIZyJ5GswVr2CPfFgdFKIhkh/HlZhwqphJGaZhMSEXEDVgRm/rItcetBq
+         4jOvmh+oCVkVboXWIwdCro15yk1YUTDZN/+SIxz3ruaSCDbN3t2pUp/BaYC9cjlu6siD
+         85SwZH+4jlTCDluHpPyqg7p/Jrf6AXyyyDF71nktLhyiMxofNPg7n99l1+4tMz8tEQzE
+         11kMbCf49BKcFAiL+yjT42iyfBcvoJTY1DtEEAiZarEWA85RV9gnuqxVrgntVv1evoxL
+         ESQpFHAgzQNmq5NSBUs7m1EWAa5SNjODQZAn63BcpbcwBRHG4wL1vkTZ1cR9RDQxLaPM
+         dh6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707504974; x=1708109774;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=56hgMqr3mswCnWTmMb87WQwpoLmhLltp/8RI39azy0Q=;
+        b=qtIL1cVPRhopNidwNHS2Q2vxbOxln7qP4kIX+vsPNyUXtCx1wkFNhyLbfG+FsaeTG5
+         DjE8Lj6nUbXjnbQn9sxEMAKHf/tspMZUnMT7zx7kmnqQlU6jOQc1oh0Cmx9ql8a8fr+r
+         2F1kkAnnJOuSlzKfVLdUZFU6Pdi6B8gCyIJtatbtHKZWUXf8i7evkNKQRcKGl7Cs39BH
+         4EgO/YQbXM8rX0PkTNm3Tuoruibn+PkCdCDClqZagIFgaB0e0BUre3t/gu+/65Pq0gSi
+         1LW2hygi1PjQgV9x8PM/LixDPBAEWwrhbrMMo1vuE38I226drTtkQMvHPRi3/E1klBuP
+         CPgQ==
+X-Gm-Message-State: AOJu0YyStg0jbn8cjl8uunSxYyIolhvQHFpgDWE/4VSRUU77dYfnIhvE
+	f6RxVG4O3hFigJCD+IAGJvK/SA1Dvsq2CVmFeTAHCWVXFxj4nPEZ
+X-Google-Smtp-Source: AGHT+IEfTKQr1tJLEw0FhCX2wQeGeOD8/LznWPv9wkv7W5WtuaR7MMqHEGB5GTH/HFZP71SmkqHDFQ==
+X-Received: by 2002:a17:902:9f87:b0:1d9:657c:2769 with SMTP id g7-20020a1709029f8700b001d9657c2769mr119939plq.19.1707504974268;
+        Fri, 09 Feb 2024 10:56:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWYlk1nnzdg273wMBD0TlhR6Ex1Db4qqsAlWzgp9N2xrKjlR4Z3Ll4QNQmgN1UgNggrDZ2kvKKro10zHppccIWiEj8o/FJjRXuwADw5+rKMOsUplakT4BPh613rrk2Rw31w9nr8i+Z4fbrev7ADEXGvqqrqq00BGkKS95jNo4R4VOa/Xt+wW5YKr4jTIvET9SN/kqULLfb9YmFgr5LzxQoGscyAGHdLfVxpikYJP7P3LUeVpKvuVreBQONCZcj2XCGLlAjPwyLJ0s3rG1yg5hqJ227QE0/293fthgV0KxI969k8fDWhMWebhI9LX7MH+sT/eTXnCoKXiv2qCk6AJmrnyPblLouVywWif/iu7EDuh5SGOLv3r2eWC7oUSh59iMMV5w81eWwa/IFBZS+H84FCL//AQoG8tzkM5GRxlLt2Tl0KpwrNrut/7rvABggTmdJi2eZBnZo0cZEX8Hr3
+Received: from google.com ([2620:15c:9d:2:9ec:8b78:c8c:fc9])
+        by smtp.gmail.com with ESMTPSA id jh21-20020a170903329500b001d9609f2e30sm1843385plb.1.2024.02.09.10.56.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 10:56:13 -0800 (PST)
+Date: Fri, 9 Feb 2024 10:56:10 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Brenton Simpson <appsforartists@google.com>
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Cameron Gutman <aicommander@gmail.com>,
+	Erica Taylor <rickytaylor26@gmail.com>,
+	Ismael Ferreras Morezuelas <swyterzone@gmail.com>,
+	Jonathan Frederick <doublej472@gmail.com>,
+	Matthias Benkmann <matthias.benkmann@gmail.com>,
+	Matthias Berndt <matthias_berndt@gmx.de>, nate@yocom.org,
+	Sam Lantinga <slouken@libsdl.org>, Vicki Pfau <vi@endrift.com>,
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+	trivial@kernel.org
+Subject: Re: [PATCH] Input: xpad - sort xpad_device by vendor and product ID
+Message-ID: <ZcZ1Sn_iPwlgfI3s@google.com>
+References: <Zbl49VAMZx2qrz-p@google.com>
+ <20240130231903.293265-1-appsforartists@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240130231903.293265-1-appsforartists@google.com>
 
-Nishanth Menon <nm@ti.com> writes:
+Hi Brenton,
 
-> On 19:53-20240207, Kumar, Udit wrote:
->> Hi=A0Nishanth,
->>=20
->> On 2/7/2024 6:24 PM, Nishanth Menon wrote:
->> > On 14:41-20240207, Udit Kumar wrote:
->> > > Most of clocks and their parents are defined in contiguous range,
->> > > But in few cases, there is gap in clock numbers[0].
->> > > Driver assumes clocks to be in contiguous range, and add their clock
->> > > ids incrementally.
->> > >=20
->> > > New firmware started returning error while calling get_freq and is_on
->> > > API for non-available clock ids.
->> > >=20
->> > > In this fix, driver checks and adds only valid clock ids.
->> > >=20
->> > > Fixes: 3c13933c6033 ("clk: keystone: sci-clk: add support for dynami=
-cally probing clocks")
->> > >=20
->> > > [0] https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/j7200/cloc=
-ks.html
->> > > Section Clocks for NAVSS0_CPTS_0 Device,
->> > > clock id 12-15 not present.
->> > >=20
->> > > Signed-off-by: Udit Kumar <u-kumar1@ti.com>
->> > > ---
->> > > Changelog
->> > > Changes in v3
->> > > - instead of get_freq, is_auto API is used to check validilty of clo=
-ck
->> > > - Address comments of v2, to have preindex increment
->> > > Link to v2 https://lore.kernel.org/all/20240206104357.3803517-1-u-ku=
-mar1@ti.com/
->> > >=20
->> > > Changes in v2
->> > > - Updated commit message
->> > > - Simplified logic for valid clock id
->> > > link to v1 https://lore.kernel.org/all/20240205044557.3340848-1-u-ku=
-mar1@ti.com/
->> > >=20
->> > >=20
->> > > P.S
->> > > Firmawre returns total num_parents count including non available ids.
->> > > For above device id NAVSS0_CPTS_0, number of parents clocks are 16
->> > > i.e from id 2 to 17. But out of these ids few are not valid.
->> > > So driver adds only valid clock ids out ot total.
->> > >=20
->> > > Original logs
->> > > https://gist.github.com/uditkumarti/de4b36b21247fb36725ad909ce4812f6=
-#file-original-logs
->> > > Line 2630 for error
->> > >=20
->> > > Logs with fix v3
->> > > https://gist.github.com/uditkumarti/94e3e28d62282fd708dbfe37435ce1d9=
-#file-v3
->> > > Line 2586
->> > >=20
->> > >=20
->> > >   drivers/clk/keystone/sci-clk.c | 12 ++++++++++--
->> > >   1 file changed, 10 insertions(+), 2 deletions(-)
->> > >=20
->> > > diff --git a/drivers/clk/keystone/sci-clk.c b/drivers/clk/keystone/s=
-ci-clk.c
->> > > index 35fe197dd303..31b7df05d7bb 100644
->> > > --- a/drivers/clk/keystone/sci-clk.c
->> > > +++ b/drivers/clk/keystone/sci-clk.c
->> > > @@ -516,6 +516,7 @@ static int ti_sci_scan_clocks_from_dt(struct sci=
-_clk_provider *provider)
->> > >   	struct sci_clk *sci_clk, *prev;
->> > >   	int num_clks =3D 0;
->> > >   	int num_parents;
->> > > [..]					/* Check if this clock id is valid */
->> > > +					ret =3D provider->ops->is_auto(provider->sci,
->> > > +						sci_clk->dev_id, ++clk_id, &state);
->> > A bit too nice coding ;) =3D> I had been confused momentarily by clk_i=
-d =3D args.args[1]
->> > change just above till I saw that you are pre-incrementing
->> > clk_id - Is there a harm in leaving the original clk_id increment logic
->> > alone (it was much simpler to read up)?
->>=20
->> No warm in using original code but want to avoid, two statement for
->> increment in case of failure and success.
->>=20
->> Let me know, if i need to add few comments around this
->>=20
->> or if you think, code is confusing I can move to original one
->
-> Yes, please drop the un-necessary changes. In this case, original
-> increment code should work just fine.
-I wouldn't call it unnecessary, If I have to track increment/addition at
-3 different places just to understand the loop, it is hard. On other
-hand, pre-increment code is solving the problem by having increment at
-only one place(easier to track). On the plus side, every clk_id belonging to
-parent is handled completely inside the loop.
+On Tue, Jan 30, 2024 at 11:19:03PM +0000, Brenton Simpson wrote:
+> Signed-off-by: Brenton Simpson <appsforartists@google.com>
 
-For a new person looking at this code, pre-increment code would be
-actually easier to undertsand.
+Empty patch descriptions are frowned upon. You should be able to add at
+least a single sentence why the change is being made.
 
-Also, Udit feels the same.
+..
 
-Would you please explain why do you think the original increment code
-make more sense? It's not simple to understand or track, that's for sure.
+>  
+>  static const struct usb_device_id xpad_table[] = {
+> +	/* Please keep this list sorted by vendor ID.  Because the lines use different
+> +	 * macros, you may need to sort it by hand.
+> +	 */
 
-Kamlesh
->\
-> --=20
-> Regards,
-> Nishanth Menon
-> Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DD=
-B5 849D 1736 249D
+Kernel style of multi-line comments is:
+
+	/*
+	 * line 1
+	 * line 2.
+	 */
+
+I adjusted and applied, thank you.
+
+Thanks.
+
+-- 
+Dmitry
 
