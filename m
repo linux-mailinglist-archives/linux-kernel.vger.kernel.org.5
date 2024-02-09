@@ -1,226 +1,210 @@
-Return-Path: <linux-kernel+bounces-59376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A284A84F610
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:35:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5818084F613
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:37:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A934B233F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:35:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 702421C223DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:37:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF54383BD;
-	Fri,  9 Feb 2024 13:35:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01AB43C46A;
+	Fri,  9 Feb 2024 13:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="EVLsxpc3"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VaA0JUn9"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7186F36B1A
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 13:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EADD20311;
+	Fri,  9 Feb 2024 13:36:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707485735; cv=none; b=De67jKW90k7pTudEAigEydYzQj4aNECDbrGQCmD2XiUsHiWBiyyMYxlabsIHKi3MOmiTEyrnW3w0ynWdQHDyfggjlAY2oCunsZBefiwqaLOBiRropcw/7G47rG3x3nefCLUAwuJTIiRC8Cr9C1hKi2tQhE2qa+KGyodabTQMKh0=
+	t=1707485819; cv=none; b=p9EJ2We1Y0xtNGC8QXojTHZpwu0dC3yjUc6/1hVwHv4oJonkIHo/HfcoOrv9UdLAFlA04t/34VSPpNtLidrM0Usr5W/hvVCBr4adVY6qPYWEF6P+mdARLVemYIKKRfwJm5bltFwc9/JrEqRFT0Od8c16hnA21yVuIaPA3tHqFXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707485735; c=relaxed/simple;
-	bh=dt9m9H2DRW05eyF8R8+WGFp5UfGYaHRVdh2uDT3OeWQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bqQcljrjx4lZlnKWchiqyi8XFMmcp2FcB3kz6Jygtk77Qp1qR5Kckyw4cOIExeXYOE7sjLm/GknpTFAtZb2ly5c6KW9UHTzMNVRyNFPinj6TVTo8a/Yu7QOmHUVZWfIye7J9Van15mVwPEPRmhBoai89KoiAok6LFkbseQ0xgVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=EVLsxpc3; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so129490166b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 05:35:32 -0800 (PST)
+	s=arc-20240116; t=1707485819; c=relaxed/simple;
+	bh=3vm8auiZrQRj+iHUNDAT7zCm22vZjMeBQJLQWdgtyVA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BEqCjnOHqTbg0mCK1akmQcSfjUpnx9FwB3qgHD9WDiswbhChTqWpo6XBjzAAsdli/6JG7JAEDvCxpKtV5v7sF8h8f2Afm9fgEVIykURvZriwxEti5j4PO0GPPYFeeTAzKcw5KPYTlPQok6ECvLs8msdAHvOZ+RGBiwP0ZIOHdSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VaA0JUn9; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf206e4d56so11692181fa.3;
+        Fri, 09 Feb 2024 05:36:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1707485730; x=1708090530; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XVyl43zesoomQ88MtJroVLddAINUcyBQuMjqSxAYLXI=;
-        b=EVLsxpc38Pp4bgUQxxQA2WrWEnDQ9Hsb8WS9hFyOzsJrXBkaq0w4NGDQjOiDfviWZk
-         CzmpMhqiCLUYn9lh2SEyZuaSL+Nv9i3AeSqMGDZy/jqDV7oh2FQ2vArQ4MIL9Uf5LuFP
-         hU9JI0Wv/jvifYn/Hvl65AI4I2msLfaH0qfx0i26IpdriIuVglHltVNoNTthyLYHY42H
-         52dbLWUV1vAieHrQhc99/ZpxqiE2XEpfNVzY1qZsvdfxyTQ4TEBNQs/SaCHc6UptEWCu
-         jx8Z1LEGcQxVZr4KuSFI6XPFxvG8CxW5MQfqUj1f2mlLvsT4nqzueP+hz6l/UXnb2QFf
-         fSPA==
+        d=gmail.com; s=20230601; t=1707485815; x=1708090615; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5YBOdfp2b7bzt886CyrnblZUzTFAd78HV3pYIFWbcGE=;
+        b=VaA0JUn9Rz93z+O7P62bdIoxH6zBKeD/WcxRaYDBqkqqpRzW66kL/Ng+GaKnfccXIO
+         CZwVPvu2nQTWcl9ATsw1koPcAQC5STtXvy4eqilG7tFVdh01aqlSmDoi94p+/LJ6xKQ7
+         HbC8iMQ+SJonFbAp8hXf4wfpHJZsBiv01POv8DOdzE+L6Eb4mkrvKztnMfLxwFZfIBwL
+         I11GdZJoW917tFmNQFLDm89Zsso5gHOKzahWZIe2t8cViu2h7xv19wKsivM656Cvdqkd
+         d7c8O1uf4n5Vr5HlLWV0x0gajZNUo6NEDylQxMZ64gUaepQSsssPErqVLDvV44lukyD4
+         Gt6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707485730; x=1708090530;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XVyl43zesoomQ88MtJroVLddAINUcyBQuMjqSxAYLXI=;
-        b=L4IId+b4adqJXlvqvZV4tLx0/p1YujgpEzpfdUSnlqB/XFujSMJoUvvsUNiXvDwaga
-         Odmxen1d7udPGR5/LR8lUAGL6bvXuny4xibRPCgjTZW5lotJJpQjdGwUWXVzGyuc7S48
-         y2YwUo3I5o6wcoS2hhzCEvuAOxzg29GVk9cA9dnZe/hL9G7thgSrCk0QhmvXhAN2ilYb
-         CrcUG2SbkA4O+Nrjl7g79eeqNMcwymqIgcIOBwJPvTlOfE9icYQLTnHvfRG1Rmk8WJL1
-         jedUuItNbJVGtE49DOA4HbKxgmlbYMleo/xotkyBe3uOWOCMbVfN7voOLEW75LzTtXm6
-         xtKg==
-X-Gm-Message-State: AOJu0YzcOV1tTLMDKdURKsdgfufSfmJhtElMtSO9n8xmfgGWmlgS+NbF
-	4s/XFgGcs+5bnjQpgDO29p+DAgameRjS4iiDXbFKV9QFF8wPv/2v4ABGH8jMsYg=
-X-Google-Smtp-Source: AGHT+IFdeaMUVDJjwVRlbNscJ26z7/Y8PIhI6TxMtgwTpZzHCit5+rnQB5n2ZbiyKU4OD/j4swoANg==
-X-Received: by 2002:a17:906:2491:b0:a3c:d92:8ec4 with SMTP id e17-20020a170906249100b00a3c0d928ec4mr139704ejb.45.1707485730617;
-        Fri, 09 Feb 2024 05:35:30 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXEEbySux81R7VE440MdrwX1W6jrbbsUwjIW0xMho+6rOQlMINrrc8mBCLCKO20PVS+zGF31t4VpcppxgUX911ZyjqNmE5jW9DWiZlLuqdwzTxw3dyQQKXmXsNfSfSZKrME0uLuxWYICm1IyUeCDj6TAg+9OyAAFP+i6Aj5riha6aozPgJw6/PoCIgg/+nt8vJiAZb7fLMFmA==
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id s6-20020a1709060c0600b00a3af8158bd7sm766756ejf.67.2024.02.09.05.35.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 05:35:30 -0800 (PST)
-Date: Fri, 9 Feb 2024 14:35:28 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: Bitao Hu <yaoma@linux.alibaba.com>
-Cc: dianders@chromium.org, akpm@linux-foundation.org, kernelfans@gmail.com,
-	liusong@linux.alibaba.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv6 1/2] watchdog/softlockup: low-overhead detection of
- interrupt
-Message-ID: <ZcYqIOR17BHJyHbx@alley>
-References: <20240208125426.70511-1-yaoma@linux.alibaba.com>
- <20240208125426.70511-2-yaoma@linux.alibaba.com>
+        d=1e100.net; s=20230601; t=1707485815; x=1708090615;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5YBOdfp2b7bzt886CyrnblZUzTFAd78HV3pYIFWbcGE=;
+        b=Ij4QdTLy31LbkOreHZPPcRzN2XZdYg2utKByl0imn5JHbjy7seezMhKqlyUm9H5w0m
+         8r8pZlIPNNSblMIhs/w04v0sBJkqwOHgEqPhWLPTiyN7MEJErIe7sd+9rRGm9GHLhctR
+         IywsK2eN+mn35+poZqmZjEK45lIxrnu5ZvRrpwYi1wf7MBdjJcGEpjz4mjwAZ0OvcCk3
+         7Kb4l9vwRs5orcGtXyV1UU9G8TEwjtsOndRbdGP4/3thF7fcBp0bUWB9IWDf3ydKKbMh
+         YGB8Xzbvo/wEDGJ6NfZBjezPVAKszObCOKSdKQXSnjfwgjUUiC+JpRNCqyUyIMdTPPiY
+         q0zw==
+X-Gm-Message-State: AOJu0Yx0uSyIBoCkTwqGPrj1bzMfWZXz0xvTVau/sIq9JkuG+FAqb4yT
+	9i6ebk7p9/8cMzlAc8PyXCUduFXki71mwy6cSeDPB7KBdiuGrhG7cMtcyptEyixfFYp88Uw4MOh
+	zwQ4inTxsLI+WA/eLuhT8+cKa+zI=
+X-Google-Smtp-Source: AGHT+IFWbfm8yzzLHy8h1HaTWTuCPBjb9QKibp82QsvcenBLb2iBnaU79IcF9ZxbCy7QaaBICwG9tXFYPNNOE8TcwCo=
+X-Received: by 2002:a2e:9813:0:b0:2cf:5119:95cb with SMTP id
+ a19-20020a2e9813000000b002cf511995cbmr1267882ljj.26.1707485815098; Fri, 09
+ Feb 2024 05:36:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240208125426.70511-2-yaoma@linux.alibaba.com>
+References: <0000000000007cea730610e083e8@google.com> <216c95d9-db1f-487a-bf3d-17a496422485@v0yd.nl>
+In-Reply-To: <216c95d9-db1f-487a-bf3d-17a496422485@v0yd.nl>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Fri, 9 Feb 2024 08:36:42 -0500
+Message-ID: <CABBYNZKPaMLK5+HnsRWR9jwpdZWvbbai6p9XbePhMYdKSYUPPg@mail.gmail.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in __hci_acl_create_connection_sync
+To: =?UTF-8?Q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc: syzbot <syzbot+3f0a39be7a2035700868@syzkaller.appspotmail.com>, 
+	davem@davemloft.net, edumazet@google.com, johan.hedberg@gmail.com, 
+	kuba@kernel.org, linux-bluetooth@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, luiz.von.dentz@intel.com, marcel@holtmann.org, 
+	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi Jonas,
 
-I am sorry for jouning this game so late. But honestly, it went
-forward too quickly. A good practice is to wait a week before
-sending new version so that you give a chance more people
-to provide some feedback.
+On Fri, Feb 9, 2024 at 7:37=E2=80=AFAM Jonas Dre=C3=9Fler <verdre@v0yd.nl> =
+wrote:
+>
+> Hi everyone!
+>
+> On 08.02.24 16:32, syzbot wrote:
+> > syzbot has bisected this issue to:
+> >
+> > commit 456561ba8e495e9320c1f304bf1cd3d1043cbe7b
+> > Author: Jonas Dre=C3=9Fler <verdre@v0yd.nl>
+> > Date:   Tue Feb 6 11:08:13 2024 +0000
+> >
+> >      Bluetooth: hci_conn: Only do ACL connections sequentially
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D154f8550=
+180000
+> > start commit:   b1d3a0e70c38 Add linux-next specific files for 20240208
+> > git tree:       linux-next
+> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D174f8550=
+180000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D134f8550180=
+000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dbb693ba1956=
+62a06
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D3f0a39be7a203=
+5700868
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D11d95147e=
+80000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D107c2d8fe80=
+000
+> >
+> > Reported-by: syzbot+3f0a39be7a2035700868@syzkaller.appspotmail.com
+> > Fixes: 456561ba8e49 ("Bluetooth: hci_conn: Only do ACL connections sequ=
+entially")
+> >
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bise=
+ction
+>
+> Hmm, looking at the backtraces, I think the issue that the introduction o=
+f the
+> sequential connect has introduced another async case: In hci_connect_acl(=
+), when
+> we call hci_acl_create_connection_sync(), the conn state no longer immedi=
+ately
+> gets set to BT_CONNECT, but remains in BT_OPEN or BT_CLOSED until the hci=
+_sync
+> queue actually executes __hci_acl_create_connection_sync().
 
-The only exception might be when you know exactly who could
-review it because the area in not interesting for anyone else.
-But this is typicall not the case for kernel core code.
+Need to double check but I think we do set BT_CONNECT in case of LE
+when it is queued so which shall prevent it to be queued multiple
+times.
 
+> This means that now hci_connect_acl() is happy to do multiple
+> hci_acl_create_connection_sync calls, and the hci_sync machinery will hap=
+pily
+> execute them right after each other. Then the newly introduced hci_abort_=
+conn_sync()
+> in __hci_acl_create_connection_sync() calls hci_conn_del() and frees the =
+conn
+> object, so the second time we enter __hci_acl_create_connection_sync(),
+> things blow up.
+>
+> It looks to me like in theory the hci_connect_le_sync() logic is prone to=
+ a
+> similar issue, but in practice that's prohibited because in hci_connect_l=
+e_sync()
+> we lookup whether the conn object still exists and bail out if it doesn't=
+.
+>
+> Even for LE though I think we can queue multiple hci_connect_le_sync() ca=
+lls
+> and those will happily send HCI_OP_LE_CREATE_CONN no matter what the conn=
+ection
+> state actually is?
+>
+> So assuming this analysis is correct, what do we do to fix this? It seems=
+ to me
+> that
+>
+> 1) we want a BT_CONNECT_QUEUED state for connections, so that the state
+> machine covers this additional stage that we have for ACL and LE connecti=
+ons now.
 
-On Thu 2024-02-08 20:54:25, Bitao Hu wrote:
-> The following softlockup is caused by interrupt storm, but it cannot be
-> identified from the call tree. Because the call tree is just a snapshot
-> and doesn't fully capture the behavior of the CPU during the soft lockup.
->   watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
->   ...
->   Call trace:
->     __do_softirq+0xa0/0x37c
->     __irq_exit_rcu+0x108/0x140
->     irq_exit+0x14/0x20
->     __handle_domain_irq+0x84/0xe0
->     gic_handle_irq+0x80/0x108
->     el0_irq_naked+0x50/0x58
-> 
-> Therefore，I think it is necessary to report CPU utilization during the
-> softlockup_thresh period (report once every sample_period, for a total
-> of 5 reportings), like this:
->   watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
->   CPU#28 Utilization every 4s during lockup:
->     #1: 0% system, 0% softirq, 100% hardirq, 0% idle
->     #2: 0% system, 0% softirq, 100% hardirq, 0% idle
->     #3: 0% system, 0% softirq, 100% hardirq, 0% idle
->     #4: 0% system, 0% softirq, 100% hardirq, 0% idle
->     #5: 0% system, 0% softirq, 100% hardirq, 0% idle
+BT_CONNECT already indicates that connection procedure is in progress.
 
-I like this. IMHO, it might be really useful.
+> 2) the conn object can still disappear while the __hci_acl_create_connect=
+ion_sync()
+> is queued, so we need something like the "if conn doesn't exist anymore, =
+bail out"
+> check from hci_connect_le_sync() in __hci_acl_create_connection_sync(), t=
+oo.
 
-> --- a/kernel/watchdog.c
-> +++ b/kernel/watchdog.c
-> @@ -333,6 +335,92 @@ __setup("watchdog_thresh=", watchdog_thresh_setup);
->  
->  static void __lockup_detector_cleanup(void);
->  
-> +#ifdef CONFIG_SOFTLOCKUP_DETECTOR_INTR_STORM
-> +#define NUM_STATS_GROUPS	5
+Btw, I'd probably clean up the connect function and create something
+like hci_connect/hci_connect_sync which takes care of the details
+internally like it was done to abort.
 
-It would be nice to synchronize this with the hardcoded 5 in:
+> That said, the current check in hci_connect_le_sync() that's using the co=
+nnection
+> handle to lookup the conn does not seem great, aren't these handles re-us=
+ed
+> after connections are torn down?
 
-static void set_sample_period(void)
-{
-	/*
-	 * convert watchdog_thresh from seconds to ns
-	 * the divide by 5 is to give hrtimer several chances (two
-	 * or three with the current relation between the soft
-	 * and hard thresholds) to increment before the
-	 * hardlockup detector generates a warning
-	 */
-	sample_period = get_softlockup_thresh() * ((u64)NSEC_PER_SEC / 5);
+Well we could perhaps do a lookup by pointer to see if the connection
+hasn't been removed in the meantime, that said to force a clash on the
+handles it need to happen in between abort, which frees the handle,
+and connect, anyway the real culprit here is that we should be able to
+abort the cmd_sync callback like we do in LE:
 
-For exmaple, define and use the following in both situations:
+https://github.com/bluez/bluetooth-next/blob/master/net/bluetooth/hci_conn.=
+c#L2943
 
-#define NUM_SAMPLE_PERIODS	5
+That way we stop the connect callback to run and don't have to worry
+about handle re-use.
 
-> +enum stats_per_group {
-> +	STATS_SYSTEM,
-> +	STATS_SOFTIRQ,
-> +	STATS_HARDIRQ,
-> +	STATS_IDLE,
-> +	NUM_STATS_PER_GROUP,
-> +};
-> +
-> +static const enum cpu_usage_stat tracked_stats[NUM_STATS_PER_GROUP] = {
-> +	CPUTIME_SYSTEM,
-> +	CPUTIME_SOFTIRQ,
-> +	CPUTIME_IRQ,
-> +	CPUTIME_IDLE,
-> +};
-> +
-> +static DEFINE_PER_CPU(u16, cpustat_old[NUM_STATS_PER_GROUP]);
-> +static DEFINE_PER_CPU(u8, cpustat_util[NUM_STATS_GROUPS][NUM_STATS_PER_GROUP]);
-> +static DEFINE_PER_CPU(u8, cpustat_tail);
-> +
-> +/*
-> + * We don't need nanosecond resolution. A granularity of 16ms is
-> + * sufficient for our precision, allowing us to use u16 to store
-> + * cpustats, which will roll over roughly every ~1000 seconds.
-> + * 2^24 ~= 16 * 10^6
-> + */
-> +static u16 get_16bit_precision(u64 data_ns)
-> +{
-> +	return data_ns >> 24LL; /* 2^24ns ~= 16.8ms */
-
-I would personally use
-
-    delta_ns >> 20  /* 2^20ns ~= 1ms */
-
-to make it easier for debugging by a human. It would support
-the sample period up to 65s which might be enough.
-
-But I do not resirt on it. ">> 24" provides less granularity
-but it supports longer sample periods.
-
-> +static void print_cpustat(void)
-> +{
-> +	int i, group;
-> +	u8 tail = __this_cpu_read(cpustat_tail);
-> +	u64 sample_period_second = sample_period;
-> +
-> +	do_div(sample_period_second, NSEC_PER_SEC);
-> +	/*
-> +	 * We do not want the "watchdog: " prefix on every line,
-> +	 * hence we use "printk" instead of "pr_crit".
-> +	 */
-> +	printk(KERN_CRIT "CPU#%d Utilization every %llus during lockup:\n",
-> +	       smp_processor_id(), sample_period_second);
-> +	for (i = 0; i < NUM_STATS_GROUPS; i++) {
-
-This starts with the 1st group in the array. Is it the oldest one?
-It should take into account cpustat_tail.
+> Cheers,
+> Jonas
 
 
-> +		group = (tail + i) % NUM_STATS_GROUPS;
-> +		printk(KERN_CRIT "\t#%d: %3u%% system,\t%3u%% softirq,\t"
-> +			"%3u%% hardirq,\t%3u%% idle\n", i + 1,
-> +			__this_cpu_read(cpustat_util[group][STATS_SYSTEM]),
-> +			__this_cpu_read(cpustat_util[group][STATS_SOFTIRQ]),
-> +			__this_cpu_read(cpustat_util[group][STATS_HARDIRQ]),
-> +			__this_cpu_read(cpustat_util[group][STATS_IDLE]));
-> +	}
-> +}
-> +
 
-Best Regards,
-Petr
+--=20
+Luiz Augusto von Dentz
 
