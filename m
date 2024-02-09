@@ -1,141 +1,356 @@
-Return-Path: <linux-kernel+bounces-60017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05F7B84FE92
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:20:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC04484FE9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:20:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92E1AB23699
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:20:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0A541C2493E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:20:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD9E38DEA;
-	Fri,  9 Feb 2024 21:15:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9F739AFA;
+	Fri,  9 Feb 2024 21:15:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OvaBsloV"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="lZW3FPx7"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B800338DE2;
-	Fri,  9 Feb 2024 21:15:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5464D39857
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 21:15:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707513320; cv=none; b=UcfA5qZii5+mfjiZQNAUGYc+04M+em+2OR3+j6hLDBCLpKPvxLijhnZ28Bhd0H9xO3LQswxsgvY6geeE0mciLxfa8nGXw11Ikn/a8hisseHWoA8Fq2kqtf1K4eJ27II8+KfNFhZZxBMo+/ocEiAlBrNLKNdJ1HcWZA/KFX7tn+k=
+	t=1707513348; cv=none; b=C9lButI4lB+h8iVlMbZKgpE8URrkOOD4OooQNVTJ+PT3mDFgIRikMtF2avMndbh0kDjL/krBGss70JykslWeYgiydITIYNAOLxJtM3XPYfyPLoyZa5AzBMxQ1Ni7V8W0uJTtWUy9ZdkBTboHoGKR0rcnp5K9FidhzLQMO/E5498=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707513320; c=relaxed/simple;
-	bh=bLwLDRiLrzzncRfUt2Z3stvU75dWY+MU+xvqYW1SNpU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sHfEY+8tImKFfsVOqvfit7bNrye46rH3wNCmvDJU9UkVqNDdxAmQA/RfQPFM3s1YsGQo38qhxqgnvBKMAe5h7TM0qYmj0CttSRKVTFTuwUk/TDv1nUU1uDWkuUqu8LIhWjfF4uzw69P64wsGJJmbT8DFbBufYIVQbYezH/FkNrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OvaBsloV; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707513319; x=1739049319;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bLwLDRiLrzzncRfUt2Z3stvU75dWY+MU+xvqYW1SNpU=;
-  b=OvaBsloVLCE8ixZC+8KKieRUyKdn1TvRdPFvQ3ECZvJhWoFKp2TCrUa/
-   7ksNZF4hf3pgN4K5NVopfgjZBFBvCfpAL4WUCfLwsOKRxGpgA3t9uecy9
-   4wNgs7hsAaHm1IyjCek0d8A8Xm4pMr+7eYcFkZC8TFw0nQXKQq3UeFhKs
-   BcQL0dMyb9z7XZlTbgcvwR0rUqshOXj438Q+JgAWDfS2V6REj2QgJXGbL
-   GWdgVMAQt27HMGpXF4F3pKXksGaBRFVsyeRnowD4RtYTQ4RIbaArusKvw
-   UuaDShzcIyTyhHBhnCi+fgqv/i0sXFKujTksKDpT0bRr/wgwe2NOL9wa9
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1818608"
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="1818608"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 13:15:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="6646939"
-Received: from karenaba-mobl1.amr.corp.intel.com (HELO desk) ([10.209.64.107])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 13:15:16 -0800
-Date: Fri, 9 Feb 2024 13:15:15 -0800
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Andy Lutomirski <luto@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-	ak@linux.intel.com, tim.c.chen@linux.intel.com,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org,
-	Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	antonio.gomez.iglesias@linux.intel.com,
-	Alyssa Milburn <alyssa.milburn@intel.com>, stable@kernel.org
-Subject: Re: [PATCH  v7 1/6] x86/bugs: Add asm helpers for executing VERW
-Message-ID: <20240209211515.kvpnka7znwkcpokf@desk>
-References: <20240204-delay-verw-v7-0-59be2d704cb2@linux.intel.com>
- <20240204-delay-verw-v7-1-59be2d704cb2@linux.intel.com>
- <20240209172843.GUZcZgy7EktXgKZQoc@fat_crate.local>
- <20240209190602.skqahxhgbdc5b2ax@desk>
- <20240209195704.GEZcaDkMUR560qafaI@fat_crate.local>
+	s=arc-20240116; t=1707513348; c=relaxed/simple;
+	bh=BptRnluT67ciQ8DWYhQvTIkSDEbsug1Ak3UtlQFX8y0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iCvsEoNtRD3nmpWTS5LQLy7EDRM2bF3/qlM4ViF40ny2iTQST/ebA7yRVzfqHArr1WTS81XrANbC5rV838zVU7n5pMULx3X8p7ojTqe+OR5VSOvmQ5bXCFeezok+A3sJoxjRZcxQlaoijubUp00WWI9itJzV7aGUw2wz6sShRqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=lZW3FPx7; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e06d2180b0so1149271b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 13:15:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1707513344; x=1708118144; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=D2/+3vYZtbSbyQ5e2W9c0pD7gI0eBd/PvDW5PTU7kMg=;
+        b=lZW3FPx799FJRHUApGVLFtZziw7+oBnGKmBmZeeNCDej0JT7AxI2k0sKu7l2E5aOcc
+         TY5CswEXAwTqj0QczRe/9Q1E4HR83RGK1LzmX/nExOCF5hroYAgiMJcW+9/seJ3G5Wjy
+         vHiBJOYaLG6J+7FSXkxkWRWdam5/kiwSa4480=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707513344; x=1708118144;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D2/+3vYZtbSbyQ5e2W9c0pD7gI0eBd/PvDW5PTU7kMg=;
+        b=O5i91mRlNP8PdKuPQk4gFpDNEIrYU3nXfHQhpR3GWgdMfwKR3JbrUa8W2UMvaIRwK0
+         WP+6vVMYo2OEF85CxriT2wOMPqd6+s7F+wIUkJEg0Z731+TlvJjN5IgNtorCmL7aApQ7
+         oxifcl9i0mtbjhDsqpZuE7ao5KgH9nevACHxm0jMyTNH6W9uS1ogXPJ6SKljdXOKq7wy
+         KW2o0tHGZvqAobSDCVmJ2i2ZwBYfTQPSPJJQ9zsMDd8EiRIhNC53JQ22nZ+zAz0wDcJG
+         trowE2sk4OBfRwns8/l6glL6ab3fHlt6zxVW1mSQPiV7SiLGr3aiJjqWtj4q4WcUdrIZ
+         ZaBg==
+X-Gm-Message-State: AOJu0YwJfX9zv8QM0yvQe3XlATk1RXJJuWYq5jmfYQo7foXkrrmBFbDX
+	AItKrwmX13TVETHVP/5hDm0rHkcsX58JCEBpKtB90YKq/Hyuu50f96gLwavDa7LRmSUJmn9utUa
+	vtUIlGQvsrX0JiOYoc1xaqs0KtuTL2sQt4JilwKbznsbpdjVMkGPw0EsXIbBszyTqlrfb4zGGAM
+	y+Jlizocy+/LkHMnNs28FWg4GwaKKIUOjG1vwL+mEQB7x/9A==
+X-Google-Smtp-Source: AGHT+IGRP21snVtoXmtHShQmOca/chEsTDn4V0cJCAy9E+uKPapg2/rVB54xC+c9EmMEE/L+5fmzsg==
+X-Received: by 2002:a05:6a20:3a82:b0:19e:a36c:36ef with SMTP id d2-20020a056a203a8200b0019ea36c36efmr262408pzh.48.1707513343476;
+        Fri, 09 Feb 2024 13:15:43 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVX7pIzrHeFHIfwvhVjO0EBysDPtzzfm03AT3WWQrPPgBCChi3ibn1HbKwtqK7QoDflkL5uo8KQBDJM0OhNUMisTzUAzXKzRGmh5A0++rgUtL41c8bMhrLmtbxHXY23XI+FpmYoPgtemV5FgUP2RvDauk2TSzdFO/odhX1gkyq4oRPJCgoT+YhOCj7NwOmYbRnbDY133EK1l1kKoZvqcURf2nCTuVB9X/F/EzeaKajF4sa5w2ekjFXhuafgsp7fVWkq+QsLjmBVHbSBl7biYhI8ngBw4uZrfLZXKe/14TfPQcw6J0Hm3wyAI/g7sqGXtTy/L0hP6T/F5/0Cs4JazENrsN0BrkaqiTiqQ6j0x68uIW+Il2YtR69NDSXA5bOHGUrZUZDIWFVPAtL0CTHy69jQsLSHCLyD3ebkqUHmC63DhChS71JXJ8lL5w91OXWlRFywHjhMl6UY8sMfr/5AD466OjYeH+/ttb2Znio7pU+3SXAuqtUsu73sg0R4Rsh0kYBg3N+AxEj/DTYA33GbBLnUEwoX+/0/hFVBB7nzVivbSqd25EltDuPtra7Zh3BQDAl6ELfBOyz2dvjjoLwAs1s95clOKntpy1ZYJxx/Ckftyd2M8EYcD0HrGFicwcNdzEyKbPDBigiYunx7yZiHxngBS4nNqELltdghSBL5j9GFpy7Di3Bz3S+ZEyjRjgMUKa8w8NJOy5O6ZufMWOfBWR0IcSK3db9Y7vHM+j8HaBuJA3AqisWzja0vTTUoIQkqj21bm1LsNqmzkHnMyBTOBwp7CVE9q/90hwA5WTJlpJX5f7ZdYwV6TUyX5oZaik0rH9Gxg0oHBxdWMuCzzaTCgr3N09+GtNk3rd/vKyxKJkhyE6BV44vjY9m1g2oJTVyspfHziCuceqG7JGUNZULRBkn7sHw4oDSauzkb+UZ+3d0Xfbd89nSVpPZiNN40fH0jjTyZb4
+ ouMMKbQs4fK9CLJ6zMc5t2fPcmqLr7wSlkYwWoT+xXUX11oou4vS7rqJMrHKa+4iTLtpz4ECBuTtv5jVI=
+Received: from localhost.localdomain ([2620:11a:c018:0:ea8:be91:8d1:f59b])
+        by smtp.gmail.com with ESMTPSA id x23-20020aa79197000000b006e05c801748sm969629pfa.199.2024.02.09.13.15.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 13:15:42 -0800 (PST)
+From: Joe Damato <jdamato@fastly.com>
+To: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: chuck.lever@oracle.com,
+	jlayton@kernel.org,
+	linux-api@vger.kernel.org,
+	brauner@kernel.org,
+	edumazet@google.com,
+	davem@davemloft.net,
+	alexander.duyck@gmail.com,
+	sridhar.samudrala@intel.com,
+	kuba@kernel.org,
+	willemdebruijn.kernel@gmail.com,
+	weiwan@google.com,
+	David.Laight@ACULAB.COM,
+	arnd@arndb.de,
+	sdf@google.com,
+	amritha.nambiar@intel.com,
+	Joe Damato <jdamato@fastly.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Andrew Waterman <waterman@eecs.berkeley.edu>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Helge Deller <deller@gmx.de>,
+	Jan Kara <jack@suse.cz>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Julien Panis <jpanis@baylibre.com>,
+	linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+	linux-fsdevel@vger.kernel.org (open list:FILESYSTEMS (VFS and infrastructure)),
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nathan Lynch <nathanl@linux.ibm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Steve French <stfrench@microsoft.com>,
+	Thomas Huth <thuth@redhat.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH net-next v7 0/4] Per epoll context busy poll support
+Date: Fri,  9 Feb 2024 21:15:20 +0000
+Message-Id: <20240209211528.51234-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240209195704.GEZcaDkMUR560qafaI@fat_crate.local>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 09, 2024 at 08:57:04PM +0100, Borislav Petkov wrote:
-> On Fri, Feb 09, 2024 at 11:06:02AM -0800, Pawan Gupta wrote:
-> > (Though, there was a comment on avoiding the macro alltogether, to which
-> > I replied that it complicates 32-bit.)
-> 
-> Hmm, so this seems to build the respective entry_{32,64}.S TUs fine:
-> 
-> ---
-> diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-> index e81cabcb758f..7d1e5fe66495 100644
-> --- a/arch/x86/include/asm/nospec-branch.h
-> +++ b/arch/x86/include/asm/nospec-branch.h
-> @@ -313,12 +313,9 @@
->   *
->   * Note: Only the memory operand variant of VERW clears the CPU buffers.
->   */
-> -.macro EXEC_VERW
-> -	verw _ASM_RIP(mds_verw_sel)
-> -.endm
->  
->  .macro CLEAR_CPU_BUFFERS
-> -	ALTERNATIVE "", __stringify(EXEC_VERW), X86_FEATURE_CLEAR_CPU_BUF
-> +	ALTERNATIVE "",  __stringify(verw _ASM_RIP(mds_verw_sel)), X86_FEATURE_CLEAR_CPU_BUF
->  .endm
+Greetings:
 
-> +.macro CLEAR_CPU_BUFFERS
-> +     ALTERNATIVE "", __stringify(EXEC_VERW), X86_FEATURE_CLEAR_CPU_BUF
-> +.endm
+Welcome to v7. See changelog below for minor functional change and cosmetic
+cleanup details.
 
-This works, thanks.
+TL;DR This builds on commit bf3b9f6372c4 ("epoll: Add busy poll support to
+epoll with socket fds.") by allowing user applications to enable
+epoll-based busy polling, set a busy poll packet budget, and enable or
+disable prefer busy poll on a per epoll context basis.
 
-My mistake that I tried your earlier suggestion without playing with it:
+This makes epoll-based busy polling much more usable for user
+applications than the current system-wide sysctl and hardcoded budget.
 
-  > > +.macro CLEAR_CPU_BUFFERS
-  > > +   ALTERNATIVE "", __stringify(EXEC_VERW), X86_FEATURE_CLEAR_CPU_BUF
-  > > +.endm
-  >
-  > Why can't this simply be:
-  >
-  > .macro CLEAR_CPU_BUFFERS
-  >         ALTERNATIVE "", "verw mds_verw_sel(%rip)", X86_FEATURE_CLEAR_CPU_BUF
-  > .endm
-  >
-  > without that silly EXEC_VERW macro?
-  >
-  > --
-  > Regards/Gruss,
-  >     Boris.
+To allow for this, two ioctls have been added for epoll contexts for
+getting and setting a new struct, struct epoll_params.
+
+ioctl was chosen vs a new syscall after reviewing a suggestion by Willem
+de Bruijn [1]. I am open to using a new syscall instead of an ioctl, but it
+seemed that: 
+  - Busy poll affects all existing epoll_wait and epoll_pwait variants in
+    the same way, so new verions of many syscalls might be needed. It
+    seems much simpler for users to use the correct
+    epoll_wait/epoll_pwait for their app and add a call to ioctl to enable
+    or disable busy poll as needed. This also probably means less work to
+    get an existing epoll app using busy poll.
+
+  - previously added epoll_pwait2 helped to bring epoll closer to
+    existing syscalls (like pselect and ppoll) and this busy poll change
+    reflected as a new syscall would not have the same effect.
+
+Note: patch 1/4 as of v4 uses an or (||) instead of an xor. I thought about
+it some more and I realized that if the user enables both the per-epoll
+context setting and the system wide sysctl, then busy poll should be
+enabled and not disabled. Using xor doesn't seem to make much sense after
+thinking through this a bit.
+
+Longer explanation:
+
+Presently epoll has support for a very useful form of busy poll based on
+the incoming NAPI ID (see also: SO_INCOMING_NAPI_ID [2]).
+
+This form of busy poll allows epoll_wait to drive NAPI packet processing
+which allows for a few interesting user application designs which can
+reduce latency and also potentially improve L2/L3 cache hit rates by
+deferring NAPI until userland has finished its work.
+
+The documentation available on this is, IMHO, a bit confusing so please
+allow me to explain how one might use this:
+
+1. Ensure each application thread has its own epoll instance mapping
+1-to-1 with NIC RX queues. An n-tuple filter would likely be used to
+direct connections with specific dest ports to these queues.
+
+2. Optionally: Setup IRQ coalescing for the NIC RX queues where busy
+polling will occur. This can help avoid the userland app from being
+pre-empted by a hard IRQ while userland is running. Note this means that
+userland must take care to call epoll_wait and not take too long in
+userland since it now drives NAPI via epoll_wait.
+
+3. Optionally: Consider using napi_defer_hard_irqs and gro_flush_timeout to
+further restrict IRQ generation from the NIC. These settings are
+system-wide so their impact must be carefully weighed against the running
+applications.
+
+4. Ensure that all incoming connections added to an epoll instance
+have the same NAPI ID. This can be done with a BPF filter when
+SO_REUSEPORT is used or getsockopt + SO_INCOMING_NAPI_ID when a single
+accept thread is used which dispatches incoming connections to threads.
+
+5. Lastly, busy poll must be enabled via a sysctl
+(/proc/sys/net/core/busy_poll).
+
+Please see Eric Dumazet's paper about busy polling [3] and a recent
+academic paper about measured performance improvements of busy polling [4]
+(albeit with a modification that is not currently present in the kernel)
+for additional context.
+
+The unfortunate part about step 5 above is that this enables busy poll
+system-wide which affects all user applications on the system,
+including epoll-based network applications which were not intended to
+be used this way or applications where increased CPU usage for lower
+latency network processing is unnecessary or not desirable.
+
+If the user wants to run one low latency epoll-based server application
+with epoll-based busy poll, but would like to run the rest of the
+applications on the system (which may also use epoll) without busy poll,
+this system-wide sysctl presents a significant problem.
+
+This change preserves the system-wide sysctl, but adds a mechanism (via
+ioctl) to enable or disable busy poll for epoll contexts as needed by
+individual applications, making epoll-based busy poll more usable.
+
+Note that this change includes an or (as of v4) instead of an xor. If the
+user has enabled both the system-wide sysctl and also the per epoll-context
+busy poll settings, then epoll should probably busy poll (vs being
+disabled). 
+
+Thanks,
+Joe
+
+v6 -> v7:
+   - Acked-by tags from Stanislav Fomichev applied to commit messages of
+     all patches.
+   - Reviewed-by tags from Jakub Kicinski, Eric Dumazet applied to commit
+     messages of patches 2 and 3. Jiri Slaby's Reviewed-by applied to patch
+     4.
+
+   - patch 1/4:
+     - busy_poll_usecs reduced from u64 to u32.
+     - Unnecessary parens removed (via netdev/checkpatch)
+     - Wrapped long line (via netdev/checkpatch)
+     - Remove inline from busy_loop_ep_timeout as objdump suggests the
+       function is already inlined
+     - Moved struct eventpoll assignment to declaration
+     - busy_loop_ep_timeout is moved within CONFIG_NET_RX_BUSY_POLL and the
+       ifdefs internally have been removed as per Eric Dumazet's review
+     - Removed ep_busy_loop_on from the !defined CONFIG_NET_RX_BUSY_POLL
+       section as it is only called when CONFIG_NET_RX_BUSY_POLL is
+       defined
+
+   - patch 3/4: 
+     - Fix whitespace alignment issue (via netdev/checkpatch)
+
+   - patch 4/4:
+     - epoll_params.busy_poll_usecs has been reduced to u32
+     - epoll_params.busy_poll_usecs is now checked to ensure it is <=
+       S32_MAX
+     - __pad has been reduced to a single u8
+     - memchr_inv has been dropped and replaced with a simple check for the
+       single __pad byte
+     - Removed space after cast (via netdev/checkpatch)
+     - Wrap long line (via netdev/checkpatch)
+     - Move struct eventpoll *ep assignment to declaration as per Jiri
+       Slaby's review
+     - Remove unnecessary !! as per Jiri Slaby's review
+     - Reorganized variables to be reverse christmas tree order
+
+v5 -> v6:
+  - patch 1/3 no functional change, but commit message corrected to explain
+    that an or (||) is being used instead of xor.
+
+  - patch 3/4 is a new patch which adds support for per epoll context
+    prefer busy poll setting.
+
+  - patch 4/4 updated to allow getting/setting per epoll context prefer
+    busy poll setting; this setting is limited to either 0 or 1.
+
+v4 -> v5:
+  - patch 3/3 updated to use memchr_inv to ensure that __pad is zero for
+    the EPIOCSPARAMS ioctl. Recommended by Greg K-H [5], Dave Chinner [6],
+    and Jiri Slaby [7].
+
+v3 -> v4:
+  - patch 1/3 was updated to include an important functional change:
+    ep_busy_loop_on was updated to use or (||) instead of xor (^). After
+    thinking about it a bit more, I thought xor didn't make much sense.
+    Enabling both the per-epoll context and the system-wide sysctl should
+    probably enable busy poll, not disable it. So, or (||) makes more
+    sense, I think.
+
+  - patch 3/3 was updated:
+    - to change the epoll_params fields to be __u64, __u16, and __u8 and
+      to pad the struct to a multiple of 64bits. Suggested by Greg K-H [8]
+      and Arnd Bergmann [9].
+    - remove an unused pr_fmt, left over from the previous revision.
+    - ioctl now returns -EINVAL when epoll_params.busy_poll_usecs >
+      U32_MAX.
+
+v2 -> v3:
+  - cover letter updated to mention why ioctl seems (to me) like a better
+    choice vs a new syscall.
+
+  - patch 3/4 was modified in 3 ways:
+    - when an unknown ioctl is received, -ENOIOCTLCMD is returned instead
+      of -EINVAL as the ioctl documentation requires.
+    - epoll_params.busy_poll_budget can only be set to a value larger than
+      NAPI_POLL_WEIGHT if code is run by privileged (CAP_NET_ADMIN) users.
+      Otherwise, -EPERM is returned.
+    - busy poll specific ioctl code moved out to its own function. On
+      kernels without busy poll support, -EOPNOTSUPP is returned. This also
+      makes the kernel build robot happier without littering the code with
+      more #ifdefs.
+
+  - dropped patch 4/4 after Eric Dumazet's review of it when it was sent
+    independently to the list [10].
+
+v1 -> v2:
+  - cover letter updated to make a mention of napi_defer_hard_irqs and
+    gro_flush_timeout as an added step 3 and to cite both Eric Dumazet's
+    busy polling paper and a paper from University of Waterloo for
+    additional context. Specifically calling out the xor in patch 1/4
+    incase it is missed by reviewers.
+
+  - Patch 2/4 has its commit message updated, but no functional changes.
+    Commit message now describes that allowing for a settable budget helps
+    to improve throughput and is more consistent with other busy poll
+    mechanisms that allow a settable budget via SO_BUSY_POLL_BUDGET.
+
+  - Patch 3/4 was modified to check if the epoll_params.busy_poll_budget
+    exceeds NAPI_POLL_WEIGHT. The larger value is allowed, but an error is
+    printed. This was done for consistency with netif_napi_add_weight,
+    which does the same.
+
+  - Patch 3/4 the struct epoll_params was updated to fix the type of the
+    data field; it was uint8_t and was changed to u8.
+
+  - Patch 4/4 added to check if SO_BUSY_POLL_BUDGET exceeds
+    NAPI_POLL_WEIGHT. The larger value is allowed, but an error is
+    printed. This was done for consistency with netif_napi_add_weight,
+    which does the same.
+
+[1]: https://lore.kernel.org/lkml/65b1cb7f73a6a_250560294bd@willemb.c.googlers.com.notmuch/
+[2]: https://lore.kernel.org/lkml/20170324170836.15226.87178.stgit@localhost.localdomain/
+[3]: https://netdevconf.info/2.1/papers/BusyPollingNextGen.pdf
+[4]: https://dl.acm.org/doi/pdf/10.1145/3626780
+[5]: https://lore.kernel.org/lkml/2024013001-prison-strum-899d@gregkh/
+[6]: https://lore.kernel.org/lkml/Zbm3AXgcwL9D6TNM@dread.disaster.area/
+[7]: https://lore.kernel.org/lkml/efee9789-4f05-4202-9a95-21d88f6307b0@kernel.org/
+[8]: https://lore.kernel.org/lkml/2024012551-anyone-demeaning-867b@gregkh/
+[9]: https://lore.kernel.org/lkml/57b62135-2159-493d-a6bb-47d5be55154a@app.fastmail.com/
+[10]: https://lore.kernel.org/lkml/CANn89i+uXsdSVFiQT9fDfGw+h_5QOcuHwPdWi9J=5U6oLXkQTA@mail.gmail.com/
+
+
+Subject: [PATCH net-next v7 0/4] *** SUBJECT HERE ***
+
+*** BLURB HERE ***
+
+Joe Damato (4):
+  eventpoll: support busy poll per epoll instance
+  eventpoll: Add per-epoll busy poll packet budget
+  eventpoll: Add per-epoll prefer busy poll option
+  eventpoll: Add epoll ioctl for epoll_params
+
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ fs/eventpoll.c                                | 130 +++++++++++++++++-
+ include/uapi/linux/eventpoll.h                |  13 ++
+ 3 files changed, 137 insertions(+), 7 deletions(-)
+
+-- 
+2.25.1
+
 
