@@ -1,176 +1,182 @@
-Return-Path: <linux-kernel+bounces-59440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D88584F726
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:21:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CB0184F675
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:05:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 937951C224EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:21:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3480D2869A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 632E27EEE7;
-	Fri,  9 Feb 2024 14:14:54 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3575A664AA;
+	Fri,  9 Feb 2024 14:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="kVB7zAJP"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2044.outbound.protection.outlook.com [40.107.92.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5653B79941;
-	Fri,  9 Feb 2024 14:14:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707488093; cv=none; b=tzlA8DMQEwHP6OK3JhcXlheBXT522+P8n8kmysO4m027DaUZ24u39qLLod1kLjF6hR7J4qstabZnYwhA4/m2vsE9dXNCtkUTbqht38q4FkmldqUqNeVpDMZv21ZYgLLlRd3DIYqYc7dmX9QgO+Z2XECd7Nj3lv5QVDCdc8wDV/I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707488093; c=relaxed/simple;
-	bh=7P1hI9/Ao5J67cYY+F3SHkarvsguRNc1kwQUZSw4MpI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Aa8BDgQAVuhVnpG0D09r0kSWccrWTkyr/xqKKqdp7qxKZH4cHITFtAuN2wCCBYlAOd9GHRE1ZUxdvlwoQPFuU9MxnwlqQWTghv2r0kf6paNeN/F1Cs9B2c/Q3yY2n8L5KHUVw7j5CWWLKsouKQyobIOQOj2MN9qY9+U1XRjoBkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 4bb44e534049fc2e; Fri, 9 Feb 2024 15:14:48 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id DDFB6669C4D;
-	Fri,  9 Feb 2024 15:14:47 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: Lukasz Luba <lukasz.luba@arm.com>, LKML <linux-kernel@vger.kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Zhang Rui <rui.zhang@intel.com>, netdev@vger.kernel.org,
- Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
- Miri Korenblit <miriam.rachel.korenblit@intel.com>,
- linux-wireless@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-Subject: [PATCH v1 1/9] thermal: Get rid of CONFIG_THERMAL_WRITABLE_TRIPS
-Date: Fri, 09 Feb 2024 15:05:25 +0100
-Message-ID: <1809389.VLH7GnMWUR@kreacher>
-In-Reply-To: <3232442.5fSG56mABF@kreacher>
-References: <3232442.5fSG56mABF@kreacher>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA0ED59169;
+	Fri,  9 Feb 2024 14:05:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707487540; cv=fail; b=O7IHzzZ23fTOg8/OyJYDz4+KpINgrG6VVq1lCj/0WY/rb2QqF7qxwUksFtSkmC7zfBJcihbtt+pDKSyTti0aRaPbFq28UTt8gEyKSUlaeGMHjSD2SDLM4ya35i+zibKLuHDh8pFMCA5Xhi4KbphQNOcOnY7l12CWUcVZRx/M6AY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707487540; c=relaxed/simple;
+	bh=VnaVAgshA1xZ1/RgmEZrF2afxeGxJx7M+PSzcz9nhG4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=GGSEBQ+VOGqYUVtSKbkGgk9gr4dyHmJgIP2OrXwuYW4xMk8g7kPIeAX/z+TAREUQq2Oxi1RlryLM5mwkoFT2cHu/uzI9V6Xr/mWPSGb8UJ59XaIwOWo0EXAfHX5kSWE+Y2yi44V/th+WLgX+y22G0HNN4ozFzzpUCY3A7N0Rk9M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=kVB7zAJP; arc=fail smtp.client-ip=40.107.92.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H+ANe1hV4AAi3f0VYiuwFBGcQfRSwJLpqytYBmhl1HwaWBkiG2TwunkA3fZFGgYTMU5T0/GzBMCDzXs7IJvcpeH4nQR476vcwO9sll7666aEETYxK/13Wf6u2Y6F5dAnI3RtHZM5cfJXmPAw57TQwRG7exGCaPqy/7P+bBxL/USuKpbfCbTaZt4iuwvsFmQfeWC8kG7N2lxcoTkbuaSoiWGxlXtUnnPeTgOWQe8kVf/M5SwFO1G12hfMy5oCGrrzPhBAnke2PDVPhs5IiIBFpn4k7xQcn00h1N6lIR3+4WgmAR6MJE7h0CpxljT2MGn2kDdEY0ZVYdElCF/P2/pRww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8uQNLn4OM8ezhV5TqT3ehCuqDqCjcuma6wUWcIdI+2o=;
+ b=OZgQdkF1kCCUdt9GXW2r8GFIaIDAOy0PSPXea0PJWHXJpiGsn+i5p7CJz40BqZibLmsllGk9TB5PYliM5/H7VGvuSciftrBTwgQVmr3iPH5qD7VBP5WGepRwBtbrlm+vYj45XVNb4P6VtQffdEjPsv906ictvL3eKXOUdncTYrmoovdBGwNREa1yFXl7V889wgJQ38IE3WwKmY5vEmkQu0t7fnBd8pqDBJeX5/zJy1r4RNYMNrwPxSnjcoo/YoZ69N9azf7yFQnYEKpx0p5yTcJ6KkjNv+HxEQkyLojNPBNnjbx4rTWQMQL10ASuV6iCEAdmV+XX9DNwIf/3XWDUIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8uQNLn4OM8ezhV5TqT3ehCuqDqCjcuma6wUWcIdI+2o=;
+ b=kVB7zAJPVLyGXthYUSHmivSoWw6q7zXbNoQGvhjp/0FpFoLP5aRdQCHjaVJflpGpWK9REw16XSE7r3Tf68ClAqWKOvF+MvS5++B8NG/MYPuflasNnSLjvKcBQIc2SKfo9rodH7UyEfgAgNeRpHRVWk/BYGu+wFpsGnFXHOUHgOvifFDfoReFxfArbKVLg92K7n4kYryD4g16/E48yCkbbeHRbdT5OjtcLmt5ahGLbwjNoKCSlVpNscEEKgbLQJ/4w2W2k20FlTbiq8VRDv0t4OVLJGPFtCIUIDm/8acGej+9f1ng8pE+4NscUAjsZhmpPEL/rQycRR57igeYFBlu+w==
+Received: from MW4PR12MB7213.namprd12.prod.outlook.com (2603:10b6:303:22a::18)
+ by DS0PR12MB7928.namprd12.prod.outlook.com (2603:10b6:8:14c::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.15; Fri, 9 Feb
+ 2024 14:05:33 +0000
+Received: from MW4PR12MB7213.namprd12.prod.outlook.com
+ ([fe80::b68c:1caf:4ca5:b0a7]) by MW4PR12MB7213.namprd12.prod.outlook.com
+ ([fe80::b68c:1caf:4ca5:b0a7%6]) with mapi id 15.20.7270.012; Fri, 9 Feb 2024
+ 14:05:33 +0000
+From: Ankit Agrawal <ankita@nvidia.com>
+To: Catalin Marinas <catalin.marinas@arm.com>
+CC: Jason Gunthorpe <jgg@nvidia.com>, "maz@kernel.org" <maz@kernel.org>,
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>, "james.morse@arm.com"
+	<james.morse@arm.com>, "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+	"yuzenghui@huawei.com" <yuzenghui@huawei.com>, "reinette.chatre@intel.com"
+	<reinette.chatre@intel.com>, "surenb@google.com" <surenb@google.com>,
+	"stefanha@redhat.com" <stefanha@redhat.com>, "brauner@kernel.org"
+	<brauner@kernel.org>, "will@kernel.org" <will@kernel.org>,
+	"mark.rutland@arm.com" <mark.rutland@arm.com>, "alex.williamson@redhat.com"
+	<alex.williamson@redhat.com>, "kevin.tian@intel.com" <kevin.tian@intel.com>,
+	"yi.l.liu@intel.com" <yi.l.liu@intel.com>, "ardb@kernel.org"
+	<ardb@kernel.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"andreyknvl@gmail.com" <andreyknvl@gmail.com>, "wangjinchao@xfusion.com"
+	<wangjinchao@xfusion.com>, "gshan@redhat.com" <gshan@redhat.com>,
+	"ricarkol@google.com" <ricarkol@google.com>, "linux-mm@kvack.org"
+	<linux-mm@kvack.org>, "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
+	"rananta@google.com" <rananta@google.com>, "ryan.roberts@arm.com"
+	<ryan.roberts@arm.com>, Aniket Agashe <aniketa@nvidia.com>, Neo Jia
+	<cjia@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>, "Tarun Gupta
+ (SW-GPU)" <targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>, Andy
+ Currid <acurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>, John
+ Hubbard <jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>,
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, Matt Ochs
+	<mochs@nvidia.com>, Zhi Wang <zhiw@nvidia.com>, "kvm@vger.kernel.org"
+	<kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v6 3/4] kvm: arm64: set io memory s2 pte as normalnc for
+ vfio pci device
+Thread-Topic: [PATCH v6 3/4] kvm: arm64: set io memory s2 pte as normalnc for
+ vfio pci device
+Thread-Index: AQHaWgbqzxp12E+Dp0ie5adhqGIMC7EAiIsAgAGE4n0=
+Date: Fri, 9 Feb 2024 14:05:32 +0000
+Message-ID:
+ <MW4PR12MB7213AB84261541A75F88FBFBB04B2@MW4PR12MB7213.namprd12.prod.outlook.com>
+References: <20240207204652.22954-1-ankita@nvidia.com>
+ <20240207204652.22954-4-ankita@nvidia.com> <ZcTqcqE69zkLZgQx@arm.com>
+In-Reply-To: <ZcTqcqE69zkLZgQx@arm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW4PR12MB7213:EE_|DS0PR12MB7928:EE_
+x-ms-office365-filtering-correlation-id: caff373f-60c2-4853-2e5e-08dc29782e50
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Ksprs2g/kKYxTjwbnOEXoE/BC6jU8W9P8eGEar53VCggClLgcKwCI5hwkV/3vOrBPAeWJKaEHjaz2y+HRRBaz3+52rQ88mtd8RoMbZkje5HxDyco3M/1U8BSDMlX/yvPjVAlpOIaYRlEISmXgpAcBwSulxRFo8Jf6CRjP9/QwPSCmfw6RJRs2q/zNL9ZJwbAVxWxO7ckzjdbmBhAI2q1uoMXT9HL5kSgyOB3fNnAbSctSS/RrjIxYGd1Ano+sbt0JYCNdStBjKYzU5lt4iWeZqavGSKMrQBw6flJi065jAoAFqa8eq2MTQgQD1BRUuGlxB7pEccIGDfVlYvefqA/w/vIkmiUWG2+xHI5VZP3Vt/HLJiu0EfZ2ecVYWRo9BEVs2HY0G7K/rhDM7Kf8EfRBMx1PrvIuIS954IsklnvRRTCz02c0Lwnx2/ad2I55blGD4DhLXp24GCHyPGWvcdS9HApNbAZht7TD1IEWxXJmFlvy5Guq0oPGHh9ZVmpnRsGWFRJt/zAP31VEno6m1iVF4hy04e1zdQfL1652mczya1j+TfoQCCR4onNxHjoJzKd9fwHTAd5pk1NGygy24nGfFUKfdDk2a3HF2xHf3163jTGmUsYvo6NE626VraugeJg
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7213.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(39860400002)(396003)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(52536014)(7416002)(2906002)(5660300002)(41300700001)(4744005)(38070700009)(55016003)(86362001)(122000001)(26005)(33656002)(9686003)(478600001)(7696005)(6506007)(38100700002)(71200400001)(76116006)(66476007)(66946007)(66556008)(66446008)(6916009)(8936002)(91956017)(316002)(54906003)(64756008)(4326008)(8676002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?jPxiGhFH+Hw9pmYRBwzdlAVCfcMhUKzEYqBWwzlhrfoErghK3YHN+CNOMv?=
+ =?iso-8859-1?Q?J99q32N8BgtO/5Dbj10GnnGt+I3joJyf7Uq+Qzp0gnVCMgLQ85gaaNdqHW?=
+ =?iso-8859-1?Q?FS2jPgNQtEpb3E2a8SbDCdDqIncqaxUly1pUYrx61OwE5XkYgqWhbK+Xoi?=
+ =?iso-8859-1?Q?CM/R2MMwYLY2pLja3TyPORUNr3dO3AnILFOTX2TPH6ZMd3OVUb4/FcCa+n?=
+ =?iso-8859-1?Q?UXnymplzpI10tBUUIeC4vx+XAolzBikWtcgsDtUN3jSaVzBekZ2VJHv9x0?=
+ =?iso-8859-1?Q?hlu/i2Zy26tOY3Zouvrw7NYzDNc1ZZEL+PikxlRl8BgkZCC8GLEGt3EKIQ?=
+ =?iso-8859-1?Q?/jerygSlrMEpbNlcwqCiAWaNn/0MAqopSdM1haBBXVQa2wUOqjboe+Qipj?=
+ =?iso-8859-1?Q?EXzJ4m6Aw+BynJXhfMslGYheS9CTc/vKXYAAJTcrcQzHgy44ZqGI5djMLi?=
+ =?iso-8859-1?Q?W2qGKYpcrljoYyoypMP0vKK4JIKVpHGZNrtXXIiUkebtPdcc9F+DupFKzk?=
+ =?iso-8859-1?Q?SsxsJ7JmaDg8F7/R63SLnikdb8sn/OzsNpCq/xGIx41qWN/Lk7G88bsYhn?=
+ =?iso-8859-1?Q?0aSvMbKsbuZPntBSVLA2JjbyqFUmQr5/Hu0YTbxLTrtDBK8dhMDyA1XxAl?=
+ =?iso-8859-1?Q?lqi6sU6C6rq5CafcfjQbqjMzSrAdbewQbeMIR7rOVHgMD6Nzal8hjITQx/?=
+ =?iso-8859-1?Q?yj0SHh6xkdSdVBTHqZDnMReK7DQPaTM3ofN15lqEsxjInwMqzv5EVDC7fk?=
+ =?iso-8859-1?Q?wwr65ZPcz0PFVhWcd8xEhC2+Vy0L+pVf78PHup6yy1bRe4XKyfLrThlJP1?=
+ =?iso-8859-1?Q?dqGVaDxO6nF9I7DGWKUh5Fr5Dgbiv6vr7aPVENa0aZbaZ0w/sCgMhWkoI/?=
+ =?iso-8859-1?Q?hV0KMmuNd0jnn5TPt0/Y/P6ltR2ganUwt1g5lLticoEXK8/yw6RwqyIrmC?=
+ =?iso-8859-1?Q?i945/PI+RXH6OZCo/MrAgF8+ZNd+yLa4GKJpGwX21lBcsL2yv4iNFZ2v/Z?=
+ =?iso-8859-1?Q?rbUboZGJz45IJOVYuoMHJGn2v6wei6LnaZGUg0ZhxP6JQ0ucxymEQvJJBh?=
+ =?iso-8859-1?Q?L9Ri9pXEowtaYDJLn2aMvj+5gJua5XoPT9zf0gFzzrI5psfiM38MtXuuTs?=
+ =?iso-8859-1?Q?Aui3Ndsk+tQ86UB+g+C979Pmjv5J3Q3GUdKt9nUvRwuNoRMeMC1DR2vnxs?=
+ =?iso-8859-1?Q?pr2nofFVn51O4xXKHSRbVnBUjPxnJW8k1xjSC0H3phPaUmOPFv/Lzl65fJ?=
+ =?iso-8859-1?Q?JyhaCxSnm76GLAAs3NXE3PCtPMwGDIhulUJ6m3dHGiA3s9Z9JIujrl/tLM?=
+ =?iso-8859-1?Q?AEbivdPO9fCGJgSIafRgSawN3Lhgc3ufpZRk+oMCkuhF6QwBhhO+PW7tN+?=
+ =?iso-8859-1?Q?zWVidHO2bFshEAORsWl5Gi++opmgiOVEg9ihFdbZYnvxId9cUhWb5YytPi?=
+ =?iso-8859-1?Q?VOnAvmMrmsDJEKM2b5Xv7hVCnflbR9ANbcapZz5dy7Zp7vwRkkPx8aS+rh?=
+ =?iso-8859-1?Q?Q9Btd5wYVdaQqnR+rce/FbYd2WX24+T+vH2Vl8QBG+CZkfkI/dyC2bxQUU?=
+ =?iso-8859-1?Q?8N05T6pLi88fkMI+rS0V8FcuDAcyl1yESad2nOmoadqWX1sBavO8LQrune?=
+ =?iso-8859-1?Q?rLIg5LkBlaRjo=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrtdeigdeitdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeduiedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgr
- nhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=16 Fuz1=16 Fuz2=16
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7213.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: caff373f-60c2-4853-2e5e-08dc29782e50
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2024 14:05:32.9239
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: B7dSH0bZftPm9hjnEx6BBnK8butiWhrwIUmQqmVSCjEWMdyX4IZqZeBHqIUULhjPUy4NE1pGVIvA7xG0aR+l3A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7928
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-The only difference made by CONFIG_THERMAL_WRITABLE_TRIPS is whether or
-not the writable trips mask passed during thermal zone registration
-will take any effect, but whoever passes a non-zero writable trips mask
-to thermal_zone_device_register_with_trips() can be forgiven thinking
-that it will always work.
-
-Moreover, some thermal drivers expect user space to set trip temperature
-values, so they select CONFIG_THERMAL_WRITABLE_TRIPS, possibly overriding
-a manual choice to unset it and going against the design purportedly
-allowing system integrators to decide on the writability of trip points
-for the given kernel build.  It is also set in one platform's defconfig.
-
-Forthermore, CONFIG_THERMAL_WRITABLE_TRIPS only affects trip temperature,
-because trip hysteresis is writable as long as the thermal zone provides
-a callback to update it, regardless of the CONFIG_THERMAL_WRITABLE_TRIPS
-value.
-
-The above means that the symbol in question is used inconsistently and
-its purpose is at least moot, so remove it and always take the writable
-trip mask passed to thermal_zone_device_register_with_trips() into
-account.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- arch/arm/configs/imx_v6_v7_defconfig |    1 -
- drivers/thermal/Kconfig              |   11 -----------
- drivers/thermal/intel/Kconfig        |    2 --
- drivers/thermal/thermal_sysfs.c      |    8 +++-----
- 4 files changed, 3 insertions(+), 19 deletions(-)
-
-Index: linux-pm/drivers/thermal/Kconfig
-===================================================================
---- linux-pm.orig/drivers/thermal/Kconfig
-+++ linux-pm/drivers/thermal/Kconfig
-@@ -83,17 +83,6 @@ config THERMAL_OF
- 	  Say 'Y' here if you need to build thermal infrastructure
- 	  based on device tree.
- 
--config THERMAL_WRITABLE_TRIPS
--	bool "Enable writable trip points"
--	help
--	  This option allows the system integrator to choose whether
--	  trip temperatures can be changed from userspace. The
--	  writable trips need to be specified when setting up the
--	  thermal zone but the choice here takes precedence.
--
--	  Say 'Y' here if you would like to allow userspace tools to
--	  change trip temperatures.
--
- choice
- 	prompt "Default Thermal governor"
- 	default THERMAL_DEFAULT_GOV_STEP_WISE
-Index: linux-pm/drivers/thermal/thermal_sysfs.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_sysfs.c
-+++ linux-pm/drivers/thermal/thermal_sysfs.c
-@@ -458,8 +458,7 @@ static int create_trip_attrs(struct ther
- 						tz->trip_temp_attrs[indx].name;
- 		tz->trip_temp_attrs[indx].attr.attr.mode = S_IRUGO;
- 		tz->trip_temp_attrs[indx].attr.show = trip_point_temp_show;
--		if (IS_ENABLED(CONFIG_THERMAL_WRITABLE_TRIPS) &&
--		    mask & (1 << indx)) {
-+		if (mask & (1 << indx)) {
- 			tz->trip_temp_attrs[indx].attr.attr.mode |= S_IWUSR;
- 			tz->trip_temp_attrs[indx].attr.store =
- 							trip_point_temp_store;
-Index: linux-pm/drivers/thermal/intel/Kconfig
-===================================================================
---- linux-pm.orig/drivers/thermal/intel/Kconfig
-+++ linux-pm/drivers/thermal/intel/Kconfig
-@@ -23,7 +23,6 @@ config X86_PKG_TEMP_THERMAL
- 	tristate "X86 package temperature thermal driver"
- 	depends on X86_THERMAL_VECTOR
- 	select THERMAL_GOV_USER_SPACE
--	select THERMAL_WRITABLE_TRIPS
- 	select INTEL_TCC
- 	default m
- 	help
-@@ -47,7 +46,6 @@ config INTEL_SOC_DTS_THERMAL
- 	tristate "Intel SoCs DTS thermal driver"
- 	depends on X86 && PCI && ACPI
- 	select INTEL_SOC_DTS_IOSF_CORE
--	select THERMAL_WRITABLE_TRIPS
- 	help
- 	  Enable this to register Intel SoCs (e.g. Bay Trail) platform digital
- 	  temperature sensor (DTS). These SoCs have two additional DTSs in
-Index: linux-pm/arch/arm/configs/imx_v6_v7_defconfig
-===================================================================
---- linux-pm.orig/arch/arm/configs/imx_v6_v7_defconfig
-+++ linux-pm/arch/arm/configs/imx_v6_v7_defconfig
-@@ -228,7 +228,6 @@ CONFIG_SENSORS_IIO_HWMON=y
- CONFIG_SENSORS_PWM_FAN=y
- CONFIG_SENSORS_SY7636A=y
- CONFIG_THERMAL_STATISTICS=y
--CONFIG_THERMAL_WRITABLE_TRIPS=y
- CONFIG_CPU_THERMAL=y
- CONFIG_IMX_THERMAL=y
- CONFIG_WATCHDOG=y
-
-
-
+>> +		/*=0A=
+>> +		 * To provide VM with the ability to get device IO memory=0A=
+>> +		 * with NormalNC property, map device MMIO as NormalNC in S2.=0A=
+>> +		 */=0A=
+>=0A=
+> nit: the comment doesn't provide anything of value, the logic is rather=
+=0A=
+> straightforward here.=0A=
+=0A=
+Sure, will remove it.=0A=
+=0A=
+>>=0A=
+>> +=A0=A0=A0=A0 vfio_allow_wc =3D (vma->vm_flags & VM_VFIO_ALLOW_WC);=0A=
+>=0A=
+> Nitpick: no need for brackets, '=3D' has a pretty low precedence.=0A=
+> =0A=
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>=0A=
+=0A=
+Will change it. Thanks for the review.=
 
