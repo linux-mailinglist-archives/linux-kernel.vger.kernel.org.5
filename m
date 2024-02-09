@@ -1,432 +1,140 @@
-Return-Path: <linux-kernel+bounces-59762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C4D084FB82
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:07:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E6BD84FB86
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:07:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B274F290C0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:07:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 408011F22D2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:07:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168A57F491;
-	Fri,  9 Feb 2024 18:07:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RoMQDEB4"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2DB680BF2;
+	Fri,  9 Feb 2024 18:07:49 +0000 (UTC)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 072B67BB1C;
-	Fri,  9 Feb 2024 18:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B186B7EEE7;
+	Fri,  9 Feb 2024 18:07:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707502035; cv=none; b=s8l6oo/r1ed7Pj2VkEAj9Wm631Merhp2MqrfK0uEcD6SM4LoF7YVL0CXz0eF6B72uhhgsZ7bAw1PCMIfj4595qmlopq5+EpY4C7PCMA+HoPJ+VGWdUVRbn+lFghpbuMuhXzjrzOZ/3pSZmiQC4q00zJHeF0h75HCTuFi6xyfvSc=
+	t=1707502069; cv=none; b=TvrHhth7LXMArAVBjc2aISGEP9gmdeJrWeYFk91D7hNVc2XHF8o1De93VIYeJvTJqxOufKjTC4IaE1EdzKtDsCuyxrtjula2Nt2Z3gBCptf6V9/ORCkfB7hgMVyYS7bL/2QczMmi/wJQaJ7P31PDCkRBVTkgcLc70SJ87e2r8QQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707502035; c=relaxed/simple;
-	bh=Ngv1x6ieRVx+BX8M/kVpUPLzSNbknuTzCXdefJob5Ag=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Im0lvC6b3qEhKQxpSQDxmJlS91Y0CHW5xNR7cCQUinhDOhe3ljLT7vNuteZGz+z/pTHJk0nEIswkQEe8XEm3NjOjOZacddbQxlY2wBA3/tZpRKd0LFK7yHMzN23OScHd/Ng4LU6mMkOnJgrXpILGhxovD/KsMENblCiSWyEMwtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=RoMQDEB4; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 419Hh7Fb004803;
-	Fri, 9 Feb 2024 18:07:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:content-transfer-encoding:in-reply-to; s=
-	qcppdkim1; bh=vnF6cW9AwSEXpnrdJ2qBgomPvqggGqG2cuf4kWBk5Uc=; b=Ro
-	MQDEB47m2seA8mQkVIgg+SPE2vzrOaVcjMFhtZWlv7HLrO2Wmn2WNin0kM6FTOsU
-	EWHXBoWXXbIn7zOkLVKNF0uBfla2kTDnUzA/rdCHggc1kTCeL3PyEu2qYNPbrC9e
-	A3l8M7g159i7M91h6iGLlblAzurIjq97xrQv9NtLX12mfr2Gri4qcaj5QsyXHLeK
-	W1ghXlLSv9V5kzNnQrFEokHmleRCQ5Xl4RA8JGXZJYp7duWVyE0lbXAe92H5SOP9
-	P7P4L9SQf/ZmKSYlTErG97++FjgpzRoLxx6S5ziCJ9bGqH2p+cvbVRHWvRfq+upy
-	ihXvVt+RgUXMHBuI22IQ==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w5gk2h67p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Feb 2024 18:07:08 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 419I770i008104
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 9 Feb 2024 18:07:07 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 9 Feb 2024 10:06:59 -0800
-Date: Fri, 9 Feb 2024 10:06:59 -0800
-From: Elliot Berman <quic_eberman@quicinc.com>
-To: Dibakar Singh <quic_dibasing@quicinc.com>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <krzysztof.kozlowski@linaro.org>, <luzmaximilian@gmail.com>,
-        <bartosz.golaszewski@linaro.org>, <quic_gurus@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_guptap@quicinc.com>, <quic_pkondeti@quicinc.com>,
-        <quic_pheragu@quicinc.com>
-Subject: Re: [PATCH] firmware: qcom_scm: Introduce batching of hyp assign
- calls
-Message-ID: <7fhl7uvhl26whumcl3f5hxflczws67lg3yq4gb5fyrig2ziux6@chft6orl6xne>
-Mail-Followup-To: Dibakar Singh <quic_dibasing@quicinc.com>, 
-	andersson@kernel.org, konrad.dybcio@linaro.org, krzysztof.kozlowski@linaro.org, 
-	luzmaximilian@gmail.com, bartosz.golaszewski@linaro.org, quic_gurus@quicinc.com, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, quic_guptap@quicinc.com, 
-	quic_pkondeti@quicinc.com, quic_pheragu@quicinc.com
-References: <20240209112536.2262967-1-quic_dibasing@quicinc.com>
+	s=arc-20240116; t=1707502069; c=relaxed/simple;
+	bh=MX0tzE8nnND6hj2IoJyHqla21d5eDqH6UJy0UtwJC/g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TQvsTjPGIOoVM8BsvYZAodunsZGcrT2hqFj/6UxcJDFoFyiPUtKMM0aWX0fDaUVZFP9oTsUDExhrhBS5OLLe2NhAjg/PPOKFNYvxVy1ASetaZ5YAi9k2m1biTm+Zk1WlAjLCgWvfGaAIfMX/qYScmJyYNNZaGKUFaBOT03JzU+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D283A1F821;
+	Fri,  9 Feb 2024 18:07:45 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 098AC139E7;
+	Fri,  9 Feb 2024 18:07:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jiAoM+9pxmVHNgAAD6G6ig
+	(envelope-from <leeman.duncan@gmail.com>); Fri, 09 Feb 2024 18:07:43 +0000
+From: Lee Duncan <leeman.duncan@gmail.com>
+To: linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Chengfeng Ye <dg573847474@gmail.com>,
+	hare@suse.de,
+	Satish Kharat <satishkh@cisco.com>,
+	Sesidhar Baddela <sebaddel@cisco.com>,
+	Karan Tilak Kumar <kartilak@cisco.com>,
+	Lee Duncan <lduncan@suse.com>
+Subject: [PATCH v4 0/2] Ensure FCoE target interrupts work correctly
+Date: Fri,  9 Feb 2024 10:07:33 -0800
+Message-Id: <cover.1707500786.git.lduncan@suse.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240209112536.2262967-1-quic_dibasing@quicinc.com>
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 7mq0R81Q7yvKRh_wT5wB9Gn-SiC55-0n
-X-Proofpoint-GUID: 7mq0R81Q7yvKRh_wT5wB9Gn-SiC55-0n
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-09_15,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- phishscore=0 malwarescore=0 mlxlogscore=999 spamscore=0 impostorscore=0
- suspectscore=0 clxscore=1011 bulkscore=0 priorityscore=1501 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
- definitions=main-2402090130
+X-Spam-Level: **
+X-Spamd-Bar: ++
+Authentication-Results: smtp-out2.suse.de;
+	dkim=none
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [2.39 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_FROM(0.50)[gmail.com];
+	 R_MISSING_CHARSET(2.50)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-0.989];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_ENVFROM(0.00)[gmail.com];
+	 BAYES_HAM(-3.00)[100.00%];
+	 TAGGED_FROM(0.00)[];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 R_DKIM_NA(2.20)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[gmail.com,suse.de,cisco.com,suse.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Score: 2.39
+X-Rspamd-Queue-Id: D283A1F821
+X-Spam-Flag: NO
 
-On Fri, Feb 09, 2024 at 04:55:36PM +0530, Dibakar Singh wrote:
-> Expose an API qcom_scm_assign_table to allow client drivers to batch
-> multiple memory regions in a single hyp assign call.
-> 
-> In the existing situation, if our goal is to process an sg_table and
-> transfer its ownership from the current VM to a different VM, we have a
-> couple of strategies. The first strategy involves processing the entire
-> sg_table at once and then transferring the ownership. However, this
-> method may have an adverse impact on the system because during an SMC
-> call, the NS interrupts are disabled, and this delay could be
-> significant when dealing with large sg_tables. To address this issue, we
-> can adopt a second strategy, which involves processing each sg_list in
-> the sg_table individually and reassigning memory ownership. Although
-> this method is slower and potentially impacts performance, it will not
-> keep the NS interrupts disabled for an extended period.
-> 
-> A more efficient strategy is to process the sg_table in batches. This
-> approach addresses both scenarios by involving memory processing in
-> batches, thus avoiding prolonged NS interrupt disablement for longer
-> duration when dealing with large sg_tables. Moreover, since we process
-> in batches, this method is faster compared to processing each item
-> individually. The observations on testing both the approaches for
-> performance is as follows:
-> 
-> Allocation Size/            256MB            512MB            1024MB
-> Algorithm Used           ===========      ===========      ============
-> 
-> Processing each sg_list   73708(us)        149289(us)       266964(us)
-> in sg_table one by one
-> 
-> Processing sg_table in    46925(us)         92691(us)       176893(us)
-> batches
-> 
-> This implementation serves as a wrapper around the helper function
-> __qcom_scm_assign_mem, which takes an sg_list and processes it in
-> batches. We’ve set the limit to a minimum of 32 sg_list in a batch or a
-> total batch size of 512 pages. The selection of these numbers is
-> heuristic, based on the test runs conducted. Opting for a smaller number
-> would compromise performance, while a larger number would result in
-> non-secure interrupts being disabled for an extended duration.
->
-> Co-developed-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
-> Signed-off-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
-> Signed-off-by: Dibakar Singh <quic_dibasing@quicinc.com>
-> ---
->  drivers/firmware/qcom/qcom_scm.c       | 211 +++++++++++++++++++++++++
->  include/linux/firmware/qcom/qcom_scm.h |   7 +
->  2 files changed, 218 insertions(+)
-> 
-> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-> index 520de9b5633a..038b96503d65 100644
-> --- a/drivers/firmware/qcom/qcom_scm.c
-> +++ b/drivers/firmware/qcom/qcom_scm.c
-> @@ -21,6 +21,8 @@
->  #include <linux/platform_device.h>
->  #include <linux/reset-controller.h>
->  #include <linux/types.h>
-> +#include <linux/scatterlist.h>
-> +#include <linux/slab.h>
->  
->  #include "qcom_scm.h"
->  
-> @@ -1048,6 +1050,215 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
->  }
->  EXPORT_SYMBOL_GPL(qcom_scm_assign_mem);
->  
-> +/**
-> + * qcom_scm_assign_mem_batch() - Make a secure call to reassign memory
-> + *				   ownership of several memory regions
-> + * @mem_regions:    A buffer describing the set of memory regions that need to
-> + *		    be reassigned
-> + * @nr_mem_regions: The number of memory regions that need to be reassigned
-> + * @srcvms:	    A buffer populated with he vmid(s) for the current set of
-> + *		    owners
-> + * @src_sz:	    The size of the srcvms buffer (in bytes)
-> + * @destvms:	    A buffer populated with the new owners and corresponding
-> + *		    permission flags.
-> + * @dest_sz:	    The size of the destvms buffer (in bytes)
-> + *
-> + * Return negative errno on failure, 0 on success.
-> + */
-> +static int qcom_scm_assign_mem_batch(struct qcom_scm_mem_map_info *mem_regions,
-> +				     size_t nr_mem_regions, u32 *srcvms,
-> +				     size_t src_sz,
-> +				     struct qcom_scm_current_perm_info *destvms,
-> +				     size_t dest_sz)
-> +{
-> +	dma_addr_t mem_dma_addr;
-> +	size_t mem_regions_sz;
-> +	int ret = 0, i;
-> +
-> +	for (i = 0; i < nr_mem_regions; i++) {
-> +		mem_regions[i].mem_addr = cpu_to_le64(mem_regions[i].mem_addr);
-> +		mem_regions[i].mem_size = cpu_to_le64(mem_regions[i].mem_size);
-> +	}
-> +
-> +	mem_regions_sz = nr_mem_regions * sizeof(*mem_regions);
-> +	mem_dma_addr = dma_map_single(__scm->dev, mem_regions, mem_regions_sz,
-> +				      DMA_TO_DEVICE);
-> +	if (dma_mapping_error(__scm->dev, mem_dma_addr)) {
-> +		dev_err(__scm->dev, "mem_dma_addr mapping failed\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	ret = __qcom_scm_assign_mem(__scm->dev, virt_to_phys(mem_regions),
-> +				    mem_regions_sz, virt_to_phys(srcvms), src_sz,
-> +				    virt_to_phys(destvms), dest_sz);
-> +
-> +	dma_unmap_single(__scm->dev, mem_dma_addr, mem_regions_sz, DMA_TO_DEVICE);
-> +	return ret;
-> +}
-> +
-> +/**
-> + * qcom_scm_prepare_mem_batch() - Prepare batches of memory regions
-> + * @sg_table:       A scatter list whose memory needs to be reassigned
-> + * @srcvms:	    A buffer populated with he vmid(s) for the current set of
-> + *		    owners
-> + * @nr_src:	    The number of the src_vms buffer
-> + * @destvms:	    A buffer populated with he vmid(s) for the new owners
-> + * @destvms_perms:  A buffer populated with the permission flags of new owners
-> + * @nr_dest:	    The number of the destvms
-> + * @last_sgl:	    Denotes to the last scatter list element. Used in case of rollback
-> + * @roll_back:	    Identifies whether we are executing rollback in case of failure
-> + *
-> + * Return negative errno on failure, 0 on success.
-> + */
-> +static int qcom_scm_prepare_mem_batch(struct sg_table *table,
-> +				      u32 *srcvms, int nr_src,
-> +				      int *destvms, int *destvms_perms,
-> +				      int nr_dest,
-> +				      struct scatterlist *last_sgl, bool roll_back)
-> +{
-> +	struct qcom_scm_current_perm_info *destvms_cp;
-> +	struct qcom_scm_mem_map_info *mem_regions_buf;
-> +	struct scatterlist *curr_sgl = table->sgl;
-> +	dma_addr_t source_dma_addr, dest_dma_addr;
-> +	size_t batch_iterator;
-> +	size_t batch_start = 0;
-> +	size_t destvms_cp_sz;
-> +	size_t srcvms_cp_sz;
-> +	size_t batch_size;
-> +	u32 *srcvms_cp;
-> +	int ret = 0;
-> +	int i;
-> +
-> +	if (!table || !table->sgl || !srcvms || !nr_src ||
-> +	    !destvms || !destvms_perms || !nr_dest || !table->nents)
-> +		return -EINVAL;
-> +
-> +	srcvms_cp_sz = sizeof(*srcvms_cp) * nr_src;
-> +	srcvms_cp = kmemdup(srcvms, srcvms_cp_sz, GFP_KERNEL);
-> +	if (!srcvms_cp)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < nr_src; i++)
-> +		srcvms_cp[i] = cpu_to_le32(srcvms_cp[i]);
-> +
-> +	source_dma_addr = dma_map_single(__scm->dev, srcvms_cp,
-> +					 srcvms_cp_sz, DMA_TO_DEVICE);
+From: Lee Duncan <lduncan@suse.com>
 
-Please use the new tzmem allocator:
+Commit 1a1975551943 "scsi: fcoe: Fix potential deadlock on &fip->ctlr_lock"
+changed locking for fnic/FCoE, but it did so by disabling interrupts
+where they weren't disabled before, and this caused FCoE targets
+to go offline. Reverting that patch fixed the issue.
 
-https://lore.kernel.org/all/20240205182810.58382-1-brgl@bgdev.pl/
+But to handle the problem originally addressed by the commit,
+instead of modifying the locking, move the work to be done
+into a work queue.
 
-> +
-> +	if (dma_mapping_error(__scm->dev, source_dma_addr)) {
-> +		ret = -ENOMEM;
-> +		goto out_free_source;
-> +	}
-> +
-> +	destvms_cp_sz = sizeof(*destvms_cp) * nr_dest;
-> +	destvms_cp = kzalloc(destvms_cp_sz, GFP_KERNEL);
-> +
-> +	if (!destvms_cp) {
-> +		ret = -ENOMEM;
-> +		goto out_unmap_source;
-> +	}
-> +
-> +	for (i = 0; i < nr_dest; i++) {
-> +		destvms_cp[i].vmid = cpu_to_le32(destvms[i]);
-> +		destvms_cp[i].perm = cpu_to_le32(destvms_perms[i]);
-> +		destvms_cp[i].ctx = 0;
-> +		destvms_cp[i].ctx_size = 0;
-> +	}
-> +
-> +	dest_dma_addr = dma_map_single(__scm->dev, destvms_cp,
-> +				       destvms_cp_sz, DMA_TO_DEVICE);
-> +	if (dma_mapping_error(__scm->dev, dest_dma_addr)) {
-> +		ret = -ENOMEM;
-> +		goto out_free_dest;
-> +	}
-> +
-> +	mem_regions_buf = kcalloc(QCOM_SCM_MAX_BATCH_SECTION, sizeof(*mem_regions_buf),
-> +				  GFP_KERNEL);
-> +	if (!mem_regions_buf)
-> +		return -ENOMEM;
-> +
-> +	while (batch_start < table->nents) {
-> +		batch_size = 0;
-> +		batch_iterator = 0;
-> +
-> +		do {
-> +			mem_regions_buf[batch_iterator].mem_addr = page_to_phys(sg_page(curr_sgl));
-> +			mem_regions_buf[batch_iterator].mem_size = curr_sgl->length;
-> +			batch_size += curr_sgl->length;
-> +			batch_iterator++;
-> +			if (roll_back && curr_sgl == last_sgl)
-> +				break;
-> +			curr_sgl = sg_next(curr_sgl);
-> +		} while (curr_sgl && batch_iterator < QCOM_SCM_MAX_BATCH_SECTION &&
-> +				curr_sgl->length + batch_size < QCOM_SCM_MAX_BATCH_SIZE);
-> +
-> +		batch_start += batch_iterator;
-> +
-> +		ret = qcom_scm_assign_mem_batch(mem_regions_buf, batch_iterator,
-> +						srcvms_cp, srcvms_cp_sz, destvms_cp, destvms_cp_sz);
-> +
-> +		if (ret) {
-> +			dev_info(__scm->dev, "Failed to assign memory protection, ret = %d\n", ret);
-> +			last_sgl = curr_sgl;
-> +			ret = -EADDRNOTAVAIL;
+Differences in v4:
+  - Corrected "Fixes" attributes in both patches
+  - Added identifier name in fnic_flush_tx() prototype, for checkpatch
 
-Probably should not be changing the ret value.
+Differences in v3:
+  - Added "fixes" clause to the fnic patch, as requested by Hannes
 
-What happens to the memory that has been assigned so far? How do we
-reclaim that?
+Differences in V2:
+  - Fix kerneldoc comments in fnic_flush_tx()
 
-> +			break;
-> +		}
-> +		if (roll_back && curr_sgl == last_sgl)
-> +			break;
-> +	}
-> +	kfree(mem_regions_buf);
-> +
-> +	dma_unmap_single(__scm->dev, dest_dma_addr,
-> +			 destvms_cp_sz, DMA_TO_DEVICE);
-> +
-> +out_free_dest:
-> +	kfree(destvms_cp);
-> +out_unmap_source:
-> +	dma_unmap_single(__scm->dev, source_dma_addr,
-> +			 srcvms_cp_sz, DMA_TO_DEVICE);
-> +out_free_source:
-> +	kfree(srcvms_cp);
-> +	return ret;
-> +}
-> +
-> +/**
-> + * qcom_scm_assign_table() - Make a call to prepare batches of memory regions
-> + *			     and reassign memory ownership of several memory regions at once
-> + * @sg_table:       A scatter list whose memory needs to be reassigned
-> + * @srcvms:	    A buffer populated with he vmid(s) for the current set of
-> + *		    owners
-> + * @nr_src:	    The number of the src_vms buffer
-> + * @destvms:	    A buffer populated with he vmid(s) for the new owners
-> + * @destvms_perms:  A buffer populated with the permission flags of new owners
-> + * @nr_dest:	    The number of the destvms
-> + *
-> + * Return negative errno on failure, 0 on success.
-> + */
-> +int qcom_scm_assign_table(struct sg_table *table,
-> +			  u32 *srcvms, int nr_src,
-> +			  int *destvms, int *destvms_perms,
-> +			  int nr_dest)
-> +{
-> +	struct scatterlist *last_sgl = NULL;
-> +	int rb_ret = 0;
-> +	u32 new_dests;
-> +	int new_perms;
-> +	int ret = 0;
-> +
-> +	ret = qcom_scm_prepare_mem_batch(table, srcvms, nr_src,
-> +					 destvms, destvms_perms, nr_dest, last_sgl, false);
-> +
-> +	if (!ret)
-> +		goto out;
-> +	new_dests = QCOM_SCM_VMID_HLOS;
+Lee Duncan (1):
+  Revert "scsi: fcoe: Fix potential deadlock on &fip->ctlr_lock"
 
-We have the original srcvms. Will it always be HLOS? If so, then do we
-need to pass srcvms at all?
+Hannes Reinecke (1):
+  fnic: move fnic_fnic_flush_tx() to a work queue
 
-> +	new_perms = QCOM_SCM_PERM_EXEC | QCOM_SCM_PERM_WRITE | QCOM_SCM_PERM_READ;
-> +	rb_ret = qcom_scm_prepare_mem_batch(table, destvms, nr_dest, &new_dests,
-> +					    &new_perms, nr_src, last_sgl, true);
-> +	WARN_ON_ONCE(rb_ret);
-> +out:
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(qcom_scm_assign_table);
+ drivers/scsi/fcoe/fcoe_ctlr.c | 20 ++++++++------------
+ drivers/scsi/fnic/fnic.h      |  3 ++-
+ drivers/scsi/fnic/fnic_fcs.c  |  5 +++--
+ drivers/scsi/fnic/fnic_main.c |  1 +
+ drivers/scsi/fnic/fnic_scsi.c |  4 ++--
+ 5 files changed, 16 insertions(+), 17 deletions(-)
 
-Who uses this function?
+-- 
+2.35.3
 
-> +
->  /**
->   * qcom_scm_ocmem_lock_available() - is OCMEM lock/unlock interface available
->   */
-> diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
-> index ccaf28846054..abd675c7ef49 100644
-> --- a/include/linux/firmware/qcom/qcom_scm.h
-> +++ b/include/linux/firmware/qcom/qcom_scm.h
-> @@ -8,6 +8,7 @@
->  #include <linux/err.h>
->  #include <linux/types.h>
->  #include <linux/cpumask.h>
-> +#include <linux/scatterlist.h>
->  
->  #include <dt-bindings/firmware/qcom,scm.h>
->  
-> @@ -15,6 +16,8 @@
->  #define QCOM_SCM_CPU_PWR_DOWN_L2_ON	0x0
->  #define QCOM_SCM_CPU_PWR_DOWN_L2_OFF	0x1
->  #define QCOM_SCM_HDCP_MAX_REQ_CNT	5
-> +#define QCOM_SCM_MAX_BATCH_SECTION	32
-> +#define QCOM_SCM_MAX_BATCH_SIZE		SZ_2M
->  
->  struct qcom_scm_hdcp_req {
->  	u32 addr;
-> @@ -93,6 +96,10 @@ int qcom_scm_mem_protect_video_var(u32 cp_start, u32 cp_size,
->  int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz, u64 *src,
->  			const struct qcom_scm_vmperm *newvm,
->  			unsigned int dest_cnt);
-> +int qcom_scm_assign_table(struct sg_table *table,
-> +			  u32 *srcvms, int nr_src,
-> +			  int *destvms, int *destvms_perms,
-> +			  int nr_dest);
->  
->  bool qcom_scm_ocmem_lock_available(void);
->  int qcom_scm_ocmem_lock(enum qcom_scm_ocmem_client id, u32 offset, u32 size,
-> -- 
-> 2.34.1
-> 
 
