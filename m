@@ -1,108 +1,122 @@
-Return-Path: <linux-kernel+bounces-59223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF76D84F36D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE1A584F370
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:31:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DFFA1C22633
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:30:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F00E1C23FA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:31:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503E31CD2E;
-	Fri,  9 Feb 2024 10:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A94F1CF91;
+	Fri,  9 Feb 2024 10:30:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aRdr605U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="ttWrx5vm"
+Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926FA3FEC;
-	Fri,  9 Feb 2024 10:30:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E776214274;
+	Fri,  9 Feb 2024 10:30:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707474631; cv=none; b=aQgsoH+kySuRE4SBuxOrDhx+5E5CCXEKp0vrk6fpVsicxvVKElJrbp41mwZ7D5dXx5HJ20BuYCSAdiZ5ZZpJQSN2cBDQOwHV1QFnojby0bi6gXpZqY7QAFNcW1+QRApGcBTrPAbY0G9m+ChIWI5yjDtw8z/D8VFsoIxQs5EK7nM=
+	t=1707474651; cv=none; b=a8XM/E6ueCsSCIKqMMvPFAFW+7f3ZpEeK2bm+v9o0y8BHL0BBovpKyYHk/G7eYo6NF1IUcB4s3wIcvfmzScngiLZzs0GWn/bY6NDc3Bqfo6fANm6ojhZu0t8i60z3N7mErqH0DvG7hevJy8fW2DdPWpNO01Jnqi20BQKB+obO5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707474631; c=relaxed/simple;
-	bh=/XwFJi0uafiU4ftdmEiDaktNHhjpeW1zE9XAas5IOKk=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=LzvxEJKt9n5bMsZ7fXKcDuvnTKY/o/QV9weCJGPN8/Abhc8PM5WlHP/icY7cGPDwlAzdMb8WcqDmKhHWDwok8settgFcBTmEjcx0anT6Yh0ukvUb69LUfjhwAiTiS4II9uqu3jfrqPzSwjBwwr1eQUzodAYGF+xuaFvKkYZVbuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aRdr605U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 61F82C43390;
-	Fri,  9 Feb 2024 10:30:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707474630;
-	bh=/XwFJi0uafiU4ftdmEiDaktNHhjpeW1zE9XAas5IOKk=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=aRdr605UI7cEn7UbE4arY3Y9L3jbN5TMojbFwuRo/iiJQt4iEt8ySa+EHKWgLOp9b
-	 4ganBiL9V4mLyTTaEbRHMeMFYN3VSrg84qlNgPQwJsiAe9+NEMOFDQMW78FWPn0phL
-	 7x2lEWd/rFPfYPWHPunKN7dro+hnGqLJc0IFOD1PGUKzqAO91AHnoLdUmiIZqlIsYx
-	 zc0IWDT0c1eFFxudoLOcfTbsvJ03jZ9PnvPf7PlCR1O0UHwFf/uHjBvenTxVaQdYWS
-	 WNxPLLZYy5LWtuvZ/oPgllzOoL/d8l8M38UeLDMfMNL1op7KUD5xngGFB8dyQ8PETW
-	 5+cGXihHNUSiw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 49E7CC41677;
-	Fri,  9 Feb 2024 10:30:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1707474651; c=relaxed/simple;
+	bh=S90tsiNBuQei67BU/w+VivZ9gITZ6HcfQO6PwypOXow=;
+	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=BwWg9xNZ8X1Rg+PMVQZROri2hsRe1gYtOPK0vss/BqvLNw4LLWShk3q085AWtFYTEhxxdWG+h/3xtnI39F6kUEvyxz4VtTXPWXAY1xkQH8kHZ8xjhX1UCc0uCoSY5+tvsUXPFkNnwyGCABJ5Ev39l8/4pEztU2qJ38jNB1fM6Es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=ttWrx5vm; arc=none smtp.client-ip=52.119.213.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1707474651; x=1739010651;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=8cmbdcMBJ5Ld8b8nyy4kSbgPecC+AcRoULRs7ZzT0pM=;
+  b=ttWrx5vmjZrPe2Bpm9Q3heWlHq6ja7Frh+iFFuZKo2OdHAaj6c28SkVN
+   v6OanHqEQIjnfu5uu3Kz3Iuj+Ck71Xp6yIEde+l8XmKTRVFwXuEx2qp4X
+   iK2qdWTpjJqqEHlLys/94tm3KhcsfyUVedKSc3IbnG7kVmia9RDb9TCu6
+   8=;
+X-IronPort-AV: E=Sophos;i="6.05,256,1701129600"; 
+   d="scan'208";a="636863554"
+Subject: Re: [PATCH] selftests/mqueue: Set timeout to 100 seconds
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 10:30:47 +0000
+Received: from EX19MTAEUC002.ant.amazon.com [10.0.17.79:32464]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.19.116:2525] with esmtp (Farcaster)
+ id b6386548-311a-4f21-b695-73bf0bfaed3a; Fri, 9 Feb 2024 10:30:45 +0000 (UTC)
+X-Farcaster-Flow-ID: b6386548-311a-4f21-b695-73bf0bfaed3a
+Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
+ EX19MTAEUC002.ant.amazon.com (10.252.51.245) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 9 Feb 2024 10:30:45 +0000
+Received: from [192.168.8.114] (10.106.83.14) by EX19D018EUA004.ant.amazon.com
+ (10.252.50.85) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 9 Feb
+ 2024 10:30:42 +0000
+Message-ID: <4c17a7bb-c32c-4314-bd29-6d74b2413d54@amazon.com>
+Date: Fri, 9 Feb 2024 10:30:38 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3 0/8] netconsole: Add userdata append support
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170747463029.16032.4812565371511263051.git-patchwork-notify@kernel.org>
-Date: Fri, 09 Feb 2024 10:30:30 +0000
-References: <20240204232744.91315-1-thepacketgeek@gmail.com>
-In-Reply-To: <20240204232744.91315-1-thepacketgeek@gmail.com>
-To: Matthew Wood <thepacketgeek@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- leitao@debian.org
+User-Agent: Mozilla Thunderbird
+To: SeongJae Park <sj@kernel.org>, <shuah@kernel.org>
+CC: <keescook@chromium.org>, <linux-kselftest@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+	<Vijaikumar_Kanagarajan@mentor.com>
+References: <20240208212925.68286-1-sj@kernel.org>
+Content-Language: en-US
+From: "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com>
+In-Reply-To: <20240208212925.68286-1-sj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D043UWA004.ant.amazon.com (10.13.139.41) To
+ EX19D018EUA004.ant.amazon.com (10.252.50.85)
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Sun,  4 Feb 2024 15:27:31 -0800 you wrote:
-> Add the ability to add custom userdata to every outbound netconsole message
-> as a collection of key/value pairs, allowing users to add metadata to every
-> netconsole message which can be used for  for tagging, filtering, and
-> aggregating log messages.
+On 08/02/2024 21:29, SeongJae Park wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
 > 
-> In a previous patch series the ability to prepend the uname release was
-> added towards the goals above. This patch series builds on that
-> idea to allow any userdata, keyed by a user provided name, to be
-> included in netconsole messages.
 > 
-> [...]
+> 
+> While mq_perf_tests runs with the default kselftest timeout limit, which
+> is 45 seconds, the test takes about 60 seconds to complete on i3.metal
+> AWS instances.  Hence, the test always times out.  Increase the timeout
+> to 100 seconds.
+> 
+> Fixes: 852c8cbf34d3 ("selftests/kselftest/runner.sh: Add 45 second timeout per test")
+> Cc: <stable@vger.kernel.org> # 5.4.x
+> Signed-off-by: SeongJae Park <sj@kernel.org>
+> ---
+>   tools/testing/selftests/mqueue/setting | 1 +
+>   1 file changed, 1 insertion(+)
+>   create mode 100644 tools/testing/selftests/mqueue/setting
+> 
+> diff --git a/tools/testing/selftests/mqueue/setting b/tools/testing/selftests/mqueue/setting
+> new file mode 100644
+> index 000000000000..54dc12287839
+> --- /dev/null
+> +++ b/tools/testing/selftests/mqueue/setting
+> @@ -0,0 +1 @@
+> +timeout=100
+> --
+> 2.39.2
+> 
+>
 
-Here is the summary with links:
-  - [net-next,v3,1/8] net: netconsole: cleanup formatting lints
-    https://git.kernel.org/netdev/net-next/c/602ad3b4dd57
-  - [net-next,v3,2/8] net: netconsole: move netconsole_target config_item to config_group
-    https://git.kernel.org/netdev/net-next/c/bd9c69a36efd
-  - [net-next,v3,3/8] net: netconsole: move newline trimming to function
-    https://git.kernel.org/netdev/net-next/c/ae001dc67907
-  - [net-next,v3,4/8] net: netconsole: add docs for appending netconsole user data
-    https://git.kernel.org/netdev/net-next/c/aa7b608d69ea
-  - [net-next,v3,5/8] net: netconsole: add a userdata config_group member to netconsole_target
-    https://git.kernel.org/netdev/net-next/c/8a6d5fec6c7f
-  - [net-next,v3,6/8] net: netconsole: cache userdata formatted string in netconsole_target
-    https://git.kernel.org/netdev/net-next/c/df03f830d099
-  - [net-next,v3,7/8] net: netconsole: append userdata to netconsole messages
-    https://git.kernel.org/netdev/net-next/c/b4ab4f2c0ff5
-  - [net-next,v3,8/8] net: netconsole: append userdata to fragmented netconsole messages
-    https://git.kernel.org/netdev/net-next/c/1ec9daf95093
+Added Vijai Kumar to CC
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+This looks similar to [PATCH] kselftest: mqueue: increase timeout 
+https://lore.kernel.org/lkml/20220622085911.2292509-1-Vijaikumar_Kanagarajan@mentor.com/T/#r12820aede6bba015b70ae33323e29ae27d5b69c7 
+which was increasing the timeout to 180 however it's not clear why this 
+hasn't been merged yet. I have seen the same issue on v5.15.y so it's 
+very likely that we will need to apply this on all LTS branches not just 
+5.4 as mentioned in Cc: <stable@vger.kernel.org> # 5.4.x
 
-
+Hazem
 
