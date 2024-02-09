@@ -1,147 +1,161 @@
-Return-Path: <linux-kernel+bounces-60067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74C7984FF73
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:10:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72B2B84FF75
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:11:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 013C3B218F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:10:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 007FF1F23308
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9613B210FA;
-	Fri,  9 Feb 2024 22:10:34 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6FA1B7E9;
+	Fri,  9 Feb 2024 22:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="t7/5usPD"
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F00107AA
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:10:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07AB723B1
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707516634; cv=none; b=O3XcZYjI4ygpvgrp5mg+oc/gI3y2whMUsQlzovQvpOV1C9gvFGom8hZ7ilP2WM9bL0lRe6c8VG27GWxtjr2m9QEzPbJ8I2usAhAxovAug5RqFMUhJFXVKeiBBQxqTrvP9rYA43gY63WQ+jVNm0hXlNtFATQWfrMbDCsEO4hxJ5A=
+	t=1707516654; cv=none; b=p/U8hriIVWFqqLe4HH8vtUg4Qg3X1sdwYWpIeBytyvCdDXmO6F6NjXfVQvsgki/qZzlBTSuMOeuCSsBhv1sGCUhl5NDKyMwqNBfX+R78KieJVJWUmRcrSFXpLVsA15uPEysULzXAjb43jjHVK/0+4JSYtUIHSrPqjA7x6DEQmLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707516634; c=relaxed/simple;
-	bh=FbPrgaVYVx/Y2b65Tnm0kYD6DQGnYXAIo43/KnRZdXA=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mdNSPFYQ1p2bR4N2PFIaGZp/Ku5Jgl+ojHzV4g7i2+5b3NWCsNTnsK++UWseevaxnx73Vjamgv7Dy+8auOnYWfD5Ed+lcM5dewwTCAlzNBXoAhd64HPn1UpgP9cmoJCiiFY71kVQkxWrmJpj9SlmT+Cys6kbYdFGnKY23V2RpjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3610073a306so11595085ab.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:10:32 -0800 (PST)
+	s=arc-20240116; t=1707516654; c=relaxed/simple;
+	bh=n2ZCswoigTORXv5QKqqqOOgLyFjY4RM6hrHLeJlO/aU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MdV0SqjQ00Bw6Xoe9gn7l0xWV0xEhqcUFhyQQABrTeM5II2YdhRznfXdA1YeS0bVAIplqC+9T/IRgP0T+KVlBQ9NwYoAOhsZJBf4cZ4DEU46mPDaonnMEvwebHH4NjlP30PQQh478HZx+urhPQxP0T0rF1qKkNd+pZ02/oW2R1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=t7/5usPD; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2970f940b7cso525579a91.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:10:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707516652; x=1708121452; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3268oKGsBgJrtUhQbj/DpUrS5yqVV5gSrp5rNb8j/5Y=;
+        b=t7/5usPDkNBzwAodiU06QFo+HRs9U0eFkVkDpG8NVXLL5ejSGPZJCokAwiLNangV1V
+         gI9EnETFnDeIHz0N3JnlvKFm8sHjWX3/YiNo8HyXn7mPNarYdd2NMw1/4jZ5h4n1tE9H
+         Ghray1p4GYC29hxV/k+SjO9JQICNbRg1CLGg+x7T55j2AAgj+pTuRzGNSpYeWLICoGTR
+         vOEV8M/h6fJtAnB2rFYuNwaUNnEoEnNxUNec+hTJ0yVybfR3wXmbH+8W96mexvNb9XnT
+         EW4gC2NG/SMJ5OTDP5Jc/bxkFCHlaObjyoarHqTEIvG4C+MA9wI/PpHVAJ4UuJrn0Yhj
+         cYPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707516632; x=1708121432;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kYMKdXEgEYoOzbuN4s8Mp96TJ3NrCTFqEoQiv1HCOb0=;
-        b=bZcchag/KZF+MBztEjbZ5+xc8UpdSpas87suZwXxLFaqf8Tff9IxtWwJOWmqyyRNq7
-         o4Ntvnpc3LE/sgKkntxavqOAcmvlWT5iS0nf7PJs5TKQ+pKeIpv3mbJTxx01Kyjshxje
-         7yMasQkpaveqaBCsMNM0Zr/t5Uw0qpfjPlhWTt/E2HTb9dtkGp0GxWyL7GMbQkaiqhYT
-         g3IZvaeCt1u8kM5KiuLezQjkAH+i9/vGdhoQDKpSBaQ8mrphvG54vdedDxl7/VazLn8q
-         jGqlm/vYa05xuVTa7paMdybKtMUo0R7rUcn/l9E9I5nz8wNhsd/8nlbNWJ/7TaSpxBg6
-         Ul8g==
-X-Gm-Message-State: AOJu0YwgK3SDiQn7pASGt3cXBmenz7wCfs/6dViFp38gAVo0d41Zdfpx
-	myQKB5TSOLp72RVrrvtG3ffNra2X5uaBW47hswSS6LRBHDOtoE8M1QzyuK6V2UDuFIcxAdRkri8
-	oEJi3cj3NnIgkioFp3G7uwfzD0xN9ejXgf1tsRSIxyFXN6XcjMBwWDU4=
-X-Google-Smtp-Source: AGHT+IEwoDlrwJtfpvZJDJ+cxkRbuTG9pkve1xAHBaqzCAa+6mIDt9nNVnbKQiHG5ZVW0pcL14OEXsM34+5Pc6wxxnQEh/S8HCtU
+        d=1e100.net; s=20230601; t=1707516652; x=1708121452;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3268oKGsBgJrtUhQbj/DpUrS5yqVV5gSrp5rNb8j/5Y=;
+        b=guCOU1kZqtKke02ojIiw4etHnSBruwjm/R7eQxvQoJQehMwNbI2ai9gyJvpBD1mEuT
+         tul4taBmFM+1Z1o/oGTx7nVrm6ZeYCBChuBmY5ZnNxPEiEL6N6mXLX6FUxswm/uRSGN3
+         p2/p7aboCsaqmWhfu5JtwEM4U3Omn7c5JT2hibX7Ko5AyAWpnTePl8U+n3ssTT4lkEcP
+         K7HYRiD0rK2eYBB1EEODxdO291rJ9redtvL7HKcWU2eCm0LyQY7JJTe8pAF2qwXA9vz7
+         LIqbU3uvKtmNtbB0bwLsfvZUO47J5/W3VIXjA+JFi5nxxhIMlxOWxOrUH1L5bAZ2OCJ+
+         JUTg==
+X-Forwarded-Encrypted: i=1; AJvYcCXsCa8Nkhcqh17QwV5gauNKgnZ22dcnB24WuxicDFRKK46NFMhLxb9xl/EME2Ke6yh1HHdACNSdIybiu272uK254owNUNjnJQdbKpZM
+X-Gm-Message-State: AOJu0Yz61vRm9lFLjeAwB4x3/C1TXLfo920kHB4VIE3cNXxCS7BuBIm6
+	6W2B0bHmFstjsEhESiuez26Sme1EbRj7iL6hA4CxX23XIo1quVEyPj6trmAxeVPLjVpmWXJgs9/
+	YnMxWj/kIgWr6tKaxO7G8TeHs6BolvLT2NU0zvw==
+X-Google-Smtp-Source: AGHT+IG7fHVeQvinopxX4gN8uI6+vc/oAgzWdEDMX8r117G8fvLodu3rqNc3Rj8Ey72Q/XNzfvtAvUxaA19iw7Ea/fM=
+X-Received: by 2002:a17:90a:d498:b0:297:410:4b54 with SMTP id
+ s24-20020a17090ad49800b0029704104b54mr316720pju.45.1707516652316; Fri, 09 Feb
+ 2024 14:10:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c24a:0:b0:363:c576:d6c5 with SMTP id
- k10-20020a92c24a000000b00363c576d6c5mr27774ilo.3.1707516631914; Fri, 09 Feb
- 2024 14:10:31 -0800 (PST)
-Date: Fri, 09 Feb 2024 14:10:31 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004b1fa70610fa3230@google.com>
-Subject: [syzbot] [io-uring?] KMSAN: uninit-value in io_rw_fail (2)
-From: syzbot <syzbot+0198afa90d8c29ef9557@syzkaller.appspotmail.com>
-To: asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <002f01da5ba0$49cbf810$dd63e830$@telus.net>
+In-Reply-To: <002f01da5ba0$49cbf810$dd63e830$@telus.net>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Fri, 9 Feb 2024 23:10:40 +0100
+Message-ID: <CAKfTPtA-jizig0sh_shmkAMudAxDPYHP0SdanZe=Gc57jVKouQ@mail.gmail.com>
+Subject: Re: sched/cpufreq: Rework schedutil governor performance estimation -
+ Regression bisected
+To: Doug Smythies <dsmythies@telus.net>
+Cc: Ingo Molnar <mingo@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+On Fri, 9 Feb 2024 at 22:38, Doug Smythies <dsmythies@telus.net> wrote:
+>
+> Hi,
+>
+> I noticed a regression in the 6.8rc series kernels. Bisecting the kernel pointed to:
+>
+> # first bad commit: [9c0b4bb7f6303c9c4e2e34984c46f5a86478f84d]
+> sched/cpufreq: Rework schedutil governor performance estimation
+>
+> There was previous bisection and suggestion of reversion,
+> but I guess it wasn't done in the end. [1]
 
-syzbot found the following issue on:
+This has been fixed with
+https://lore.kernel.org/all/170539970061.398.16662091173685476681.tip-bot2@tip-bot2/
 
-HEAD commit:    9f8413c4a66f Merge tag 'cgroup-for-6.8' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1743d3e4180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
-dashboard link: https://syzkaller.appspot.com/bug?extid=0198afa90d8c29ef9557
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+>
+> The regression: reduced maximum CPU frequency is ignored.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+This seems to be something new.
+schedutil doesn't impact the max_freq and it's up to cpufreq driver
+select the final freq which should stay within the limits
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/79d9f2f4b065/disk-9f8413c4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/cbc68430d9c6/vmlinux-9f8413c4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9740ad9fc172/bzImage-9f8413c4.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0198afa90d8c29ef9557@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in io_fixup_rw_res io_uring/rw.c:311 [inline]
-BUG: KMSAN: uninit-value in io_rw_fail+0x1a7/0x1b0 io_uring/rw.c:1099
- io_fixup_rw_res io_uring/rw.c:311 [inline]
- io_rw_fail+0x1a7/0x1b0 io_uring/rw.c:1099
- io_req_defer_failed+0x217/0x3e0 io_uring/io_uring.c:1065
- io_queue_sqe_fallback+0x1f4/0x260 io_uring/io_uring.c:2100
- io_submit_state_end io_uring/io_uring.c:2345 [inline]
- io_submit_sqes+0x2b85/0x2ff0 io_uring/io_uring.c:2463
- __do_sys_io_uring_enter io_uring/io_uring.c:3712 [inline]
- __se_sys_io_uring_enter+0x40c/0x42d0 io_uring/io_uring.c:3647
- __x64_sys_io_uring_enter+0x11b/0x1a0 io_uring/io_uring.c:3647
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Uninit was created at:
- slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
- slab_alloc_node mm/slub.c:3478 [inline]
- __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1006 [inline]
- __kmalloc+0x121/0x3c0 mm/slab_common.c:1020
- kmalloc include/linux/slab.h:604 [inline]
- io_alloc_async_data io_uring/io_uring.c:1780 [inline]
- io_req_prep_async+0x384/0x5a0 io_uring/io_uring.c:1801
- io_queue_sqe_fallback+0x95/0x260 io_uring/io_uring.c:2097
- io_submit_state_end io_uring/io_uring.c:2345 [inline]
- io_submit_sqes+0x2b85/0x2ff0 io_uring/io_uring.c:2463
- __do_sys_io_uring_enter io_uring/io_uring.c:3712 [inline]
- __se_sys_io_uring_enter+0x40c/0x42d0 io_uring/io_uring.c:3647
- __x64_sys_io_uring_enter+0x11b/0x1a0 io_uring/io_uring.c:3647
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-CPU: 0 PID: 5401 Comm: syz-executor.4 Not tainted 6.7.0-syzkaller-00562-g9f8413c4a66f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+>
+> Conditions:
+> CPU frequency scaling driver: intel_cpufreq (a.k.a intel_pstate in passive mode)
+> CPU frequency scaling governor: schedutil
+> HWP (HardWare Pstate) control (a.k.a. Intel_speedshift): Enabled
+> Processor: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
+>
+> I did not check any other conditions, i.e. HWP disabled or the acpi-cpufreq driver.
+>
+> Example: A 100% load on CPU 5.
+>
+> sudo turbostat --quiet --Summary --show Busy%,Bzy_MHz,IRQ,PkgWatt,PkgTmp,RAMWatt,GFXWatt,CorWatt --interval 15
+> Busy%   Bzy_MHz IRQ     PkgTmp  PkgWatt CorWatt GFXWatt RAMWatt
+> 8.42    4636    21823   67      28.40   27.56   0.00    2.59
+> 8.40    4577    17724   66      27.57   26.73   0.00    2.59
+> 8.35    4637    19535   66      28.65   27.81   0.00    2.60
+> 8.41    4578    20723   66      27.73   26.89   0.00    2.59
+> 8.40    4558    19156   67      27.39   26.55   0.00    2.58
+> 8.34    4502    18127   67      26.79   25.96   0.00    2.57
+>
+> grep . /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq
+> /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq:2400000
+> /sys/devices/system/cpu/cpu10/cpufreq/scaling_max_freq:2400000
+> /sys/devices/system/cpu/cpu11/cpufreq/scaling_max_freq:2400000
+> /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq:2400000
+> /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq:2400000
+> /sys/devices/system/cpu/cpu3/cpufreq/scaling_max_freq:2400000
+> /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq:2400000
+> /sys/devices/system/cpu/cpu5/cpufreq/scaling_max_freq:2400000
+> /sys/devices/system/cpu/cpu6/cpufreq/scaling_max_freq:2400000
+> /sys/devices/system/cpu/cpu7/cpufreq/scaling_max_freq:2400000
+> /sys/devices/system/cpu/cpu8/cpufreq/scaling_max_freq:2400000
+> /sys/devices/system/cpu/cpu9/cpufreq/scaling_max_freq:2400000
+>
+> grep . /sys/devices/system/cpu/cpu5/cpufreq/*
+> /sys/devices/system/cpu/cpu5/cpufreq/affected_cpus:5
+> /sys/devices/system/cpu/cpu5/cpufreq/base_frequency:4100000
+> /sys/devices/system/cpu/cpu5/cpufreq/cpuinfo_max_freq:4800000
+> /sys/devices/system/cpu/cpu5/cpufreq/cpuinfo_min_freq:800000
+> /sys/devices/system/cpu/cpu5/cpufreq/cpuinfo_transition_latency:20000
+> /sys/devices/system/cpu/cpu5/cpufreq/energy_performance_available_preferences:default performance balance_performance balance_power
+> power
+> /sys/devices/system/cpu/cpu5/cpufreq/energy_performance_preference:balance_performance
+> /sys/devices/system/cpu/cpu5/cpufreq/related_cpus:5
+> /sys/devices/system/cpu/cpu5/cpufreq/scaling_available_governors:conservative ondemand userspace powersave performance schedutil
+> /sys/devices/system/cpu/cpu5/cpufreq/scaling_cur_freq:4799998
+> /sys/devices/system/cpu/cpu5/cpufreq/scaling_driver:intel_cpufreq
+> /sys/devices/system/cpu/cpu5/cpufreq/scaling_governor:schedutil
+> /sys/devices/system/cpu/cpu5/cpufreq/scaling_max_freq:2400000
+> /sys/devices/system/cpu/cpu5/cpufreq/scaling_min_freq:800000
+> /sys/devices/system/cpu/cpu5/cpufreq/scaling_setspeed:<unsupported>
+>
+> [1] https://lore.kernel.org/all/CAKfTPtDCQuJjpi6=zjeWPcLeP+ZY5Dw7XDrZ-LpXqEAAUbXLhA@mail.gmail.com/
+>
+>
 
