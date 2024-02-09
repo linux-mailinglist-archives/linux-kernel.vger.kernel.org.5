@@ -1,50 +1,73 @@
-Return-Path: <linux-kernel+bounces-59221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFA7484F366
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:28:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7B5684F369
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:29:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F4B3B29D6D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:28:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB2601C212DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:29:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1052969949;
-	Fri,  9 Feb 2024 10:28:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5647669950;
+	Fri,  9 Feb 2024 10:29:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="k+bUiP7H"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ws005v4F"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590D1692F3
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 10:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265F569941
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 10:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707474479; cv=none; b=iOX8j6oNbsGbyJbgpfVNd6HHkaZ9FsI44MsjcIjWS90r0M6h7KxQSPF2tOzSYoTy+LvwrTS/bXD58tcVBHNnWrKQsSGwafQd7BwV9/XNij2mP5yn4JoPm2jK/xQHMroAyoE2tkvh09/3GTuPRcZEsnLQyoOEDvJIv4IYDtHTBnw=
+	t=1707474584; cv=none; b=GFKu3eWrMt24EP/35Fbnm/X7CioCDgJ0xQjYq6UZ2xgFkoQMQhzl0ZqnSvniKab796aitFB/kKlh9/yQVLUTSmAZ2p+UwaDWRH+J5AkEQN+AfkFKCAPu3ZF0Neh721FlOraMSooQV2DlFAqV7M1dL2y3sN3Iep3aLChigFoRwfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707474479; c=relaxed/simple;
-	bh=NlVQDdTOWwrDfzKJppZPuesKWrZtqMTgmzG/wN9cAQQ=;
+	s=arc-20240116; t=1707474584; c=relaxed/simple;
+	bh=HHUvxWEQeOWIogeQUKI+8xGetAxWcmQWvB4EKQ6xgDY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IiQ3ZwKOrN9b4uE5VhRKhtdb4TH/00vpkOJ9lWpXVm91PHIRrA/FWGToqAAQHjBnF/2/UDu6yJsqLUQBmCPIIoUyFUx/UdISfGaIPyLyWpQxkFH3LYSEBJP82liUxxgl6dRLj5Xvws/fYOzefy2n8yfF3KVbd39qgDRmzxEovp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=k+bUiP7H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A607C433F1;
-	Fri,  9 Feb 2024 10:27:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707474478;
-	bh=NlVQDdTOWwrDfzKJppZPuesKWrZtqMTgmzG/wN9cAQQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=k+bUiP7HvAjooPbaqPVagxYSceYRe40xQolaIKhIE+lN7CvEIJPLfvlrTk73C1qe3
-	 IYZuQbr27GVqLrs7wvme1qH+Od59N+Y8oZ1OjQ1CGB3qovX4NGZKMdyZFJvJ4fK4Nn
-	 ARk3heHJmAawVwWjJ0i+dDvKc0uIcsMAjcf8f+pg=
-Date: Fri, 9 Feb 2024 10:27:56 +0000
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Rohan Kollambalath <rohankollambalath@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Rohan Kollambalath <rkollamb@digi.com>
-Subject: Re: [PATCH] sysfs:Addresses null pointer dereference in
- sysfs_merge_group and sysfs_unmerge_group.
-Message-ID: <2024020946-reexamine-unwitting-6277@gregkh>
-References: <20240208233626.657587-1-rohankollambalath@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bJ2PRbVdGwZbNArKTbJPI6bCeNaM9sSe7/TFVnWnAatdY11HgAgzTyTHB68kGvnSVbok3xBGNR3XAqAOuD3l06A4exuyVwbmqpt2+MpiBUzbn3rjUAUDRLxrc5rGATIIxBzJk4lsvbfDQYVd/kn7FUzIjdPICAL6ZFoiUBAPXu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ws005v4F; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707474581;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HHUvxWEQeOWIogeQUKI+8xGetAxWcmQWvB4EKQ6xgDY=;
+	b=Ws005v4FCME7kK0Q9VpFg5YJaMxfb8u56SlUKy/5oBOVV41aLqAHBhjfpyBfbTsXc8/1QW
+	BsaJSsUMnfquZ00xMp36VPmYLyTK4Z1RQRIvDZ4aKQb8I45mKW5C64JMxewopYGW2PMHCq
+	hG3WoeRXKHM6t53m0MtvGcAj+5NVPRc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-41-EERUOpjmM0WcW_tGN8tCrg-1; Fri, 09 Feb 2024 05:29:36 -0500
+X-MC-Unique: EERUOpjmM0WcW_tGN8tCrg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0F5E5185A781;
+	Fri,  9 Feb 2024 10:29:36 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.84])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 509E82026D06;
+	Fri,  9 Feb 2024 10:29:34 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Fri,  9 Feb 2024 11:28:19 +0100 (CET)
+Date: Fri, 9 Feb 2024 11:28:17 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pidfd: change pidfd_send_signal() to respect PIDFD_THREAD
+Message-ID: <20240209102816.GA3282@redhat.com>
+References: <20240207114549.GA12697@redhat.com>
+ <20240208-fragt-prospekt-7866333b15f0@brauner>
+ <20240208135344.GD19801@redhat.com>
+ <20240208143407.GF19801@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,85 +76,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240208233626.657587-1-rohankollambalath@gmail.com>
+In-Reply-To: <20240208143407.GF19801@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Fri, Feb 09, 2024 at 09:36:26AM +1000, Rohan Kollambalath wrote:
-> From: Rohan Kollambalath <rkollamb@digi.com>
-> 
-> These functions take a struct attribute_group as an input which has an
-> optional .name field. These functions rely on the .name field being
-> populated and do not check if its null. They pass this name into other
-> functions, eventually leading to a null pointer dereference.
+On 02/08, Oleg Nesterov wrote:
+>
+> Is prepare_kill_siginfo() correct when we send a signal to the child
+> pid namespace? si_pid = task_tgid_vnr(current) doesn't look right
 
-What in-kernel drivers cause this to trigger?  Why not fix them up
-instead?
+Yes, but iiuc send_signal_locked() should fixup si_pid/si_uid, so it
+is not buggy.
 
-> This change adds a simple check that returns an error if the .name field
-> is null and clarifies this requirement in the comments.
-> 
-> Signed-off-by: Rohan Kollambalath <rkollamb@digi.com>
-> ---
->  fs/sysfs/group.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/sysfs/group.c b/fs/sysfs/group.c
-> index 138676463336..a221de8c95a2 100644
-> --- a/fs/sysfs/group.c
-> +++ b/fs/sysfs/group.c
-> @@ -318,12 +318,12 @@ void sysfs_remove_groups(struct kobject *kobj,
->  EXPORT_SYMBOL_GPL(sysfs_remove_groups);
->  
->  /**
-> - * sysfs_merge_group - merge files into a pre-existing attribute group.
-> + * sysfs_merge_group - merge files into a pre-existing named attribute group.
->   * @kobj:	The kobject containing the group.
->   * @grp:	The files to create and the attribute group they belong to.
->   *
-> - * This function returns an error if the group doesn't exist or any of the
-> - * files already exist in that group, in which case none of the new files
-> + * This function returns an error if the group doesn't exist, the .name field is NULL or
-> + * any of the files already exist in that group, in which case none of the new files
+> And why do we need it at all? Can't sys_kill() and pidfd_send_signal()
+> just use SEND_SIG_NOINFO?
 
-Please properly wrap comments at the correct column.
+Probably yes. And even do_tkill() can use SEND_SIG_NOINFO if we change
+__send_signal_locked() to check the type before ".si_code = SI_USER".
+but then TP_STORE_SIGINFO() needs some changes...
 
->   * are created.
->   */
->  int sysfs_merge_group(struct kobject *kobj,
-> @@ -336,6 +336,9 @@ int sysfs_merge_group(struct kobject *kobj,
->  	struct attribute *const *attr;
->  	int i;
->  
-> +	if (!grp->name)
-> +		return -ENOENT;
+I'll try to do this later, I do not want to mix this change with the
+PIDFD_THREAD changes.
 
-Why that error value?
+Oleg.
 
-
-> +
->  	parent = kernfs_find_and_get(kobj->sd, grp->name);
->  	if (!parent)
->  		return -ENOENT;
-> @@ -356,7 +359,7 @@ int sysfs_merge_group(struct kobject *kobj,
->  EXPORT_SYMBOL_GPL(sysfs_merge_group);
->  
->  /**
-> - * sysfs_unmerge_group - remove files from a pre-existing attribute group.
-> + * sysfs_unmerge_group - remove files from a pre-existing named attribute group.
->   * @kobj:	The kobject containing the group.
->   * @grp:	The files to remove and the attribute group they belong to.
->   */
-> @@ -366,6 +369,9 @@ void sysfs_unmerge_group(struct kobject *kobj,
->  	struct kernfs_node *parent;
->  	struct attribute *const *attr;
->  
-> +	if (!grp->name)
-> +		return -ENOENT;
-
-Again, why that value?
-
-And again, why not fix up the callers?
-
-thanks,
-
-greg k-h
 
