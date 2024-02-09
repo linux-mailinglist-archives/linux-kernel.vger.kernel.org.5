@@ -1,135 +1,137 @@
-Return-Path: <linux-kernel+bounces-59027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40F2D84F00D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:59:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0171B84F010
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:02:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBDC72846B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 05:59:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 324AE1C21180
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6393E57306;
-	Fri,  9 Feb 2024 05:59:48 +0000 (UTC)
-Received: from irl.hu (irl.hu [95.85.9.111])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E0B15730A;
+	Fri,  9 Feb 2024 06:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kydLbQda"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2970957305;
-	Fri,  9 Feb 2024 05:59:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08FEA56B9C;
+	Fri,  9 Feb 2024 06:02:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707458388; cv=none; b=MQNlGm6wHlFuV6Wei/wFbxGOS+A4M532KmxzEUAWUqL3CmD8iWCD5jdLBN460Y6S/91MAugQDYjb613mjFURUxty2OTBS0VMwyCIKoGKYxSXPjftyES8oM2B/w670HEBiSvrMvXklePSpmI2MpDH/WneeasPoC+FsC9trhYzkCQ=
+	t=1707458563; cv=none; b=bArhUpLOVLjA1QJEOJ/8HiX21v4kIRGJWZmdr8ogxqNy69DVJAhDNrWmT/e3ySwHovH22odnoxId07w/tjUuRJcI8jC3mQz27h3tr86WQjRTi0W13qyMB0+UUOeRzngwF+hvQXtp8a2Jan+TPSqvPYlyS9C7gQIamTpOqYVwiB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707458388; c=relaxed/simple;
-	bh=fI6cNqUhngSVtPXix0fMo3wRWmm06WucGdKiFh3SYuw=;
-	h=From:To:Cc:Subject:Date:Message-ID:Mime-Version:Content-Type; b=HVMKHPwsIEC/IGojQEgBxGzccPr76eYPwSNus+ejeV2Oyi0qliWELfm9mPQoarZQcUYp96PklyhAGJ45o7wpI0n+MKK/iPXnYM20ahENwYFbVHRpxDpCwsvGjm7kyAbR5NJRQt2sa6LvTOAhGSX+qZEcQfm6c7LRIxq66ytaNUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
-Received: from fedori.lan (51b69e54.dsl.pool.telekom.hu [::ffff:81.182.158.84])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 0000000000071F9D.0000000065C5BF49.001B3A7F; Fri, 09 Feb 2024 06:59:37 +0100
-From: Gergo Koteles <soyer@irl.hu>
-To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-  Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
-  Mark Brown <broonie@kernel.org>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-  alsa-devel@alsa-project.org, Gergo Koteles <soyer@irl.hu>
-Subject: [PATCH v4] ASoC: tas2781: remove unused acpi_subysystem_id
-Date: Fri,  9 Feb 2024 06:59:34 +0100
-Message-ID: <454639336be28d2b50343e9c8366a56b0975e31d.1707456753.git.soyer@irl.hu>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707458563; c=relaxed/simple;
+	bh=szX8eFJAacIfaBOgqdKvm7cxElN3CLEnmLKKfivmq2A=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ksAlPlfKWyy8yMHriKvKWcPrJFUKzFVV/v/DF6nnWBg0bd+dNDOxc7Il7hK8zks9PP3ZBAwLY6dUHkcXhe1D0g3QcW0mPleD0qpgJVAYBofwBNa9ceyDhMScg0WwtKPkfY7s/Zp+XMKYjYZ8kO+oBgDNWPL4L59SGoAM9876x8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=kydLbQda; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41962QTd091223;
+	Fri, 9 Feb 2024 00:02:26 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707458546;
+	bh=DnAyyWcmIIDan51Z+JSMzQK6srTSZ0Y/OtGsY8wjLnk=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=kydLbQdaMj0qOPsmf/1FvQkLyMISJgE16x65CZ68KGHiANF/s1pHILFRMyuab4e4z
+	 aWFCWopjl/0YHNZ7ZvlqRvXHoWSgbzSKt8L3hWnyzt1ZCTaaDnq2cXFc5ahTes+aoa
+	 oZje9VuMW4z/TETF/XrLwGgnG2a7QX7b2+ujJfLY=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41962Qvk079242
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 9 Feb 2024 00:02:26 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 9
+ Feb 2024 00:02:25 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 9 Feb 2024 00:02:25 -0600
+Received: from localhost (jluthra.dhcp.ti.com [172.24.227.217])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41962ObR085567;
+	Fri, 9 Feb 2024 00:02:25 -0600
+Date: Fri, 9 Feb 2024 11:32:24 +0530
+From: Jai Luthra <j-luthra@ti.com>
+To: Vaishnav Achath <vaishnav.a@ti.com>
+CC: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <kernel@pengutronix.de>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <u-kumar1@ti.com>, <j-choudhary@ti.com>, <afd@ti.com>
+Subject: Re: [PATCH v3 6/9] arm64: dts: ti: k3-j721e-main: Add CSI2RX capture
+ nodes
+Message-ID: <5ajmkzqje7vdpmzduyjnjdcqoux2fcs3aonfkf5424h3ickzkr@gdvs64lsqtxm>
+References: <20240208123233.391115-1-vaishnav.a@ti.com>
+ <20240208123233.391115-7-vaishnav.a@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="zqmqrxodl4hoilzg"
+Content-Disposition: inline
+In-Reply-To: <20240208123233.391115-7-vaishnav.a@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-The acpi_subysystem_id is only written and freed, not read, so
-unnecessary.
+--zqmqrxodl4hoilzg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Gergo Koteles <soyer@irl.hu>
----
-Changes since v3:
-- remove Fixes and CC tags from commit message
-- remove In-Reply-To from header
-- rebase onto for-next
-- link to v3: https://lore.kernel.org/lkml/7f056a4148fec176812ff6cc490860bf565b161c.1707255917.git.soyer@irl.hu/
-Changes since v2: remove sub from tas2781_read_acpi
-Changes since v1: remove physdev from tas2781_read_acpi
----
- include/sound/tas2781.h           |  1 -
- sound/pci/hda/tas2781_hda_i2c.c   | 12 ------------
- sound/soc/codecs/tas2781-comlib.c |  1 -
- 3 files changed, 14 deletions(-)
+On Feb 08, 2024 at 18:02:30 +0530, Vaishnav Achath wrote:
+> J721E has two CSI2RX capture subsystem featuring Cadence CSI2RX,
+> DPHY and TI's pixel grabbing wrapper. Add nodes for the same and
+> keep them disabled by default.
+>=20
+> J721E TRM (Section 12.7 Camera Subsystem):
+> 	https://www.ti.com/lit/zip/spruil1
+>=20
+> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
 
-diff --git a/include/sound/tas2781.h b/include/sound/tas2781.h
-index 9aff384941de..99ca3e401fd1 100644
---- a/include/sound/tas2781.h
-+++ b/include/sound/tas2781.h
-@@ -103,7 +103,6 @@ struct tasdevice_priv {
- 	struct tm tm;
- 
- 	enum device_catlog_id catlog_id;
--	const char *acpi_subsystem_id;
- 	unsigned char cal_binaryname[TASDEVICE_MAX_CHANNELS][64];
- 	unsigned char crc8_lkp_tbl[CRC8_TABLE_SIZE];
- 	unsigned char coef_binaryname[64];
-diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index 1bfb00102a77..4c9a788c3501 100644
---- a/sound/pci/hda/tas2781_hda_i2c.c
-+++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -111,9 +111,7 @@ static int tas2781_get_i2c_res(struct acpi_resource *ares, void *data)
- static int tas2781_read_acpi(struct tasdevice_priv *p, const char *hid)
- {
- 	struct acpi_device *adev;
--	struct device *physdev;
- 	LIST_HEAD(resources);
--	const char *sub;
- 	int ret;
- 
- 	adev = acpi_dev_get_first_match_dev(hid, NULL, -1);
-@@ -129,18 +127,8 @@ static int tas2781_read_acpi(struct tasdevice_priv *p, const char *hid)
- 
- 	acpi_dev_free_resource_list(&resources);
- 	strscpy(p->dev_name, hid, sizeof(p->dev_name));
--	physdev = get_device(acpi_get_first_physical_node(adev));
- 	acpi_dev_put(adev);
- 
--	/* No side-effect to the playback even if subsystem_id is NULL*/
--	sub = acpi_get_subsystem_id(ACPI_HANDLE(physdev));
--	if (IS_ERR(sub))
--		sub = NULL;
--
--	p->acpi_subsystem_id = sub;
--
--	put_device(physdev);
--
- 	return 0;
- 
- err:
-diff --git a/sound/soc/codecs/tas2781-comlib.c b/sound/soc/codecs/tas2781-comlib.c
-index 5d0e5348b361..3aa81514dad7 100644
---- a/sound/soc/codecs/tas2781-comlib.c
-+++ b/sound/soc/codecs/tas2781-comlib.c
-@@ -408,7 +408,6 @@ void tasdevice_remove(struct tasdevice_priv *tas_priv)
- {
- 	if (gpio_is_valid(tas_priv->irq_info.irq_gpio))
- 		gpio_free(tas_priv->irq_info.irq_gpio);
--	kfree(tas_priv->acpi_subsystem_id);
- 	mutex_destroy(&tas_priv->codec_lock);
- }
- EXPORT_SYMBOL_GPL(tasdevice_remove);
+Reviewed-By: Jai Luthra <j-luthra@ti.com>
 
-base-commit: aa0dc84513e94a6ee2df360cf5e3b207abf734e0
--- 
-2.43.0
+> ---
+>=20
+> V2->V3: Fix order of properties as per dts coding style.
+> V1->V2: Update commit message with TRM.
+>=20
+>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 122 ++++++++++++++++++++++
+>  1 file changed, 122 insertions(+)
+>=20
+> [...]
 
+--=20
+Thanks,
+Jai
+
+GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
+
+--zqmqrxodl4hoilzg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmXFv+sACgkQQ96R+SSa
+cUXI3w//SrC0kOxrTV2kQUhOVKGhjPgqbnf6/pvn8mK3162oszfS8eMy6fxttiGd
+MTHqhh5xbp08HmqqTueAE3MGjeJHzCuWfmImxq4yszVtdVtb7uEseVOjVdeHk7Bk
+lgHFVbOn3kkfvTKJQHxix8L9BFuOUPyooAtOGAFoaAAxJ9F0AD2nSGVskq76H0ng
+O3X4aIZov+PufuUtITr4vQ6LNPgHggjgD2UbnxHrayFdF/LThi+IFbwBKV1V+SHl
+dB1hgg49A22CEF8Uylc3V+2QyH5Qw2QnFSRd3+U2mG88ndAWt0swJdnciIrPtAVQ
+sDHEhmANFLrSKWtB6FW4dQ6HEVI0KAuDHtG7Z1cm60qYwU62BDWYIVG0ktnnk3AA
+SB0w2K0coe0x2cNoTfWMZb00wBXpzzHVKqUc38B3DSz/dXFTKcgByLaPfdoONprH
+rLpGyQRglMrGgvB+0p22OkW/rPVr1ZKu9eSTvAUYU3RUAeD45owGroo1TJ5s/a2F
+37FjE23a/H9eKP8+TCJ9HEH5qVQHn/pft8vSe3/Jxu0DkM5LjZd2Rrthpwc2Z0yI
+rOkoX3jjnZTmwwNFmz2CowaBcaUC2eG2efUxMfRUZhSnaRlH/vL8FR2ju9sS1yDA
+WsnxhxHcc4bqheL2kHd2IpZCUjiKQ/2smh8ZtMYXav0b5QrTMR4=
+=X44F
+-----END PGP SIGNATURE-----
+
+--zqmqrxodl4hoilzg--
 
