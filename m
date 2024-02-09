@@ -1,188 +1,149 @@
-Return-Path: <linux-kernel+bounces-59711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D08A684FACA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 15DEE84FACF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:14:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3481BB28F81
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:14:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EB5DB23F09
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:14:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D3F67BB08;
-	Fri,  9 Feb 2024 17:14:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="OSv3A09B"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2045.outbound.protection.outlook.com [40.107.92.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A897E77F;
+	Fri,  9 Feb 2024 17:14:17 +0000 (UTC)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0719A4D112;
-	Fri,  9 Feb 2024 17:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707498844; cv=fail; b=BlSDeokEd6RfMw7q3N6Gwn3LzFTdNCtAJvkA2kPUd0rmWzc3c8ehUc7Y5poSrIH3LeCBrutVi28gkUZRPa7g/MwqaAvSYbShCRqPOl9LOmtBW4sqfKE2zQMntJI/lHrTU0gYMUqiaE3JRH/zhtiJBKn0PoTu/puzHFH3ucvBVFU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707498844; c=relaxed/simple;
-	bh=lQOz2iAw+efV36+AUTcaXEMSxuwy/mrTHEcyRyybcao=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=WIPOsPDYoUzoUN2HMCX6BkzXBgNnS7yvbsBLtcFO98CUXJS/5JTwmVvl6YJoI0Rkly5KBiaM00fL8fjCGOERoj7xMaNZw6rCcqXGNf1ZV+HDtUWmh2HjNRij5hoVnjkLbZw+P6Y801BFOiLW72LbjE8NPwvQKz+09tu6fDZQLCM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=OSv3A09B; arc=fail smtp.client-ip=40.107.92.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cc7UEfciQTi6ab5sF/taxVJr0pvQQfldtFDiLJdEy0LAdu90N+4GN9vDazdtkhCnUfvEsPhnB04jANlfM70bAP5aD5tIiOrNbsDrbujmyJoLPP8xm9EwZUySQKxz4jpKpfnwmrg+Dre7HdhrTxvxragKcQB4MVagxtPe9HO2wCUsi+QVBwAj3siG49kX4sQGbxlWgHAVqxYNZa8Oxr+kIh801/MPzQN7XIeLOZuRF66Vc+hOwc3Eo/25O9FOo3HvohnGgTUv5Ijipxo+jtuUwoNulW9m4VZwAjATnMoTJU8CwgV1BKV1FdBoxOhdAcYSmQKk0kJqJbhZZ8KXaJY0fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5fZfpNmnYqsBEgqG6S1f6m03KETsWTuFdF+wftAHeOU=;
- b=jgfqxoST24lUC7pBUVTRJR8Q7ROfqggIDsFb+osAPzjzqrze6R2eXJx34OJn4j8AYRt53H6VYFP9lCPxicHp2txIICOjETJP5LS3USlo9/Owlnw2FyIv4aJlETcvHv/Y5AfX+hCsl5pGFF5sUtc3bcGQC9OwJjqgN3K1bTbFwQ1FGTtMLrdnqqTzmKtCDg4lM8S+IByT++vE1XTiqAsHmYgMScduuIE7H/FdSXqycGLnbE+ugKwh8uPdJpl1ZJKPNl/xZmj5wIFjNYIhFT4koQu5OhZy4L+5VCpEqcbqODxdKEbVp7TGmmvXuFP2sYw/iL8xwCQzYnwgNtX1VQxe+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5fZfpNmnYqsBEgqG6S1f6m03KETsWTuFdF+wftAHeOU=;
- b=OSv3A09BB0qPYhUMeAfj7enJ83NE1iekW0+ZK7DvaaEsSKQu0rpbPOF3jMa/MBW3ZlKGMSLQGQwNzAprgU5rREuf9HDrbFsGZU/zgCzBmOT9NuGvxTg3D4VaZep7Pkrqng371KbgrXSQg7P2xN8avtXARAx03xGuvBf7xltcFFA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
- BL1PR12MB5285.namprd12.prod.outlook.com (2603:10b6:208:31f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.17; Fri, 9 Feb
- 2024 17:13:58 +0000
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::3301:dfb9:528a:1fa5]) by DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::3301:dfb9:528a:1fa5%7]) with mapi id 15.20.7292.013; Fri, 9 Feb 2024
- 17:13:58 +0000
-Message-ID: <e627dbef-5d0a-4e22-8aec-2a51d860ba1c@amd.com>
-Date: Fri, 9 Feb 2024 12:13:55 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amd/display: Fix && vs || typos
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Cc: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
- Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
- Anthony Koo <Anthony.Koo@amd.com>, Josip Pavic <Josip.Pavic@amd.com>,
- Leon Huang <Leon.Huang1@amd.com>, Mounika Adhuri <moadhuri@amd.com>,
- Lewis Huang <lewis.huang@amd.com>, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-References: <7482be2a-aca1-41dd-bb6e-d547571b9507@moroto.mountain>
-Content-Language: en-US
-From: Hamza Mahfooz <hamza.mahfooz@amd.com>
-In-Reply-To: <7482be2a-aca1-41dd-bb6e-d547571b9507@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQBPR01CA0031.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01::39)
- To DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B48D4D112;
+	Fri,  9 Feb 2024 17:14:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707498857; cv=none; b=aSwWNbxNtnEcWvZtZqS9rYjEXihF2+bpm7PS6D77HjcdUq1z9XToqBKUqsNsz6raGXSEMfF9vMoIcSP+e5ph7X22ggfmAFcrEiceQwOmeeAEHuG9sZwuXFqiu6LsdlKaSuTrlS+Ogcfx6HDeCB+WtNXFHiolT4gORYuzoU4Gfzg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707498857; c=relaxed/simple;
+	bh=+DTDGzLknxo/ZOoEm1bGhlARIpKxl17yogEhWgOhX6A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y3gCJ2pJxE4wsChnS0oay2jgQjwhvwfdP8MaMnRhC+Ao4bVCjOqyMuydHgWj/H4AxTEgOAr+qGPkpwQlHwexqj5Fwcu65ySb6ARCNCLFZ/g/FvqtRLO4WyBs3M0DXfxoQV05seMAht0BjRJoWnasGaq8LcLEiF0RhqsIGUf6utw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-603fd31f5c2so19581917b3.0;
+        Fri, 09 Feb 2024 09:14:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707498853; x=1708103653;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EdDdMzA8rqlb5+lk3BPGGmoUh4tuhQ6PGFVYwnqwvAU=;
+        b=JOZH8vAEgHp1WFUVMx2TFSxXLRI1EIgfA5/MOXO6kA8G+OuuHhi99V1emexGMOMr/g
+         qmE9kpHQaTQJObv8xECwdifLB9uhzWEuE6juHKBuuuhc4QN2WmFhk9nTr//GAXv/P3ej
+         HBGsoW3N9cGnII5Xy2nWkVyGGMFS1bWKRZ3G1JUsIzhekeii+AlPigBAC+F5hZZc0WCj
+         RFwzxZ+CkE74H+ZUWVO/GEWgK6Q0OFKAnem6mc4EQ6Mg2TZtYzQ2e6Z/Kze5OVWdIZoC
+         VggYxQBSbKgUfpL1LnQK535kCuXXlndeFVXq16IBEY+pFylHl+uyjMuQZYAhrT6kH9vy
+         Pwyw==
+X-Gm-Message-State: AOJu0YyZsv2Eoui3OgR83zG2CerH/+unHd3HyYbwIJHCAOjDZGXWYXXe
+	1oHGrj4okkcFv+aeJRUSY+jAXSyJo8FpRUFccFqJhmALZUk188VAGo1FxgilDWw=
+X-Google-Smtp-Source: AGHT+IE6B/Co1YRt+cE8VwwHGwCVN5zGEsDVSd3ykEiszvLfBtuxiEZUk4RX8vwPy8vNh26LxxXfzA==
+X-Received: by 2002:a0d:db42:0:b0:604:95db:c4c5 with SMTP id d63-20020a0ddb42000000b0060495dbc4c5mr1167605ywe.25.1707498853060;
+        Fri, 09 Feb 2024 09:14:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX4wJgA301Dmptw9GlKGEcLXqi5f8g0qDjEHS7FhZ3ukwjlNAvLwk/9Xl5KGGUnaj3no8/EhsklyDzXII+NPJbSJ/V2pwbTq7KovJwkKUcKPM5vIh+CdMOGecbI5ZNP+J1y47MTzjJFmeT06cW4OW1uL+xaey61f3UJkQ+GJKe+TFWPptEpISQO0R2WsKr0cYG+qWqo9+QF6nsabD7IDmgzS1S6B9lYWccHW01XB7DW4Qtn5hpUXUNJ1j6sw8HM0efgwCDnvy+Yuqw=
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
+        by smtp.gmail.com with ESMTPSA id u13-20020a81a50d000000b006047567a828sm384273ywg.96.2024.02.09.09.14.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Feb 2024 09:14:12 -0800 (PST)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6049b115630so15899537b3.1;
+        Fri, 09 Feb 2024 09:14:12 -0800 (PST)
+X-Received: by 2002:a81:4956:0:b0:604:48a9:44a3 with SMTP id
+ w83-20020a814956000000b0060448a944a3mr1528272ywa.16.1707498851842; Fri, 09
+ Feb 2024 09:14:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|BL1PR12MB5285:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9a5cd965-b442-43fa-f4d0-08dc299280cf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	33VLglecGxooU6qZPSoz23fhJ3Ax+VCTK2dYj40fqx56MDEDi/CiiU2JHJKI2rQQkijQuq7lvXgS+nB6VRLtK6/sv+ClJvyblyphupnDJoatMm8LyCqdyDYRP/VP4rggrXoWrn0ZvL6L1TaLFZ02JcqXMmQyOHC449aKLKtsFTNdyz/uHYJ/8wFwt92U1nWaoBv3QHS5b+JTYaVNkINASxBwxR4ivjB33tqOaQayRGP5R6QrhB8zO+j+nBlzAj4rEchAUSrbKaEnEsogxXF2V4ue38GiuAxncOgeaZoHftPoBMAndnG/Bw3YJvPVuEm42K51F1omdo1QPueJbbgMk7DyqmZgvEiB4shjNqhRWseMAJQf5MEx/GA/PzJ1k3iZXUnnk6kB7it6joPzRiTMTMsI5pSxUtbdq3pbyAoccR+nZnL1UdOiwRdWAI1vNnExj1rPYTkEyJd0VT3d5lL5sMILNMCOKI1XVfzQ+2dSW2zya2sJBXy0WleCcNTLgStmMlSLLahPxGHyoNwdkxCH5BaRBmuW8ia/Iu2/Jxd/qG4RAfGNmuwAow7j1O88KlE3
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(376002)(39860400002)(396003)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(6666004)(478600001)(31696002)(6512007)(2616005)(86362001)(53546011)(31686004)(6486002)(38100700002)(26005)(6506007)(8936002)(8676002)(54906003)(66556008)(6636002)(44832011)(2906002)(83380400001)(5660300002)(4326008)(316002)(41300700001)(66476007)(36756003)(110136005)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?T0tPbWg5d1g0dldScWptTEd3NmltRUV4NVZBVTRjcG82ZzVSTEZEYjB1NHZT?=
- =?utf-8?B?YTI1Ry8zd2x5OTE1c0V1ZnF2WmJ6TEgyYnR6M1hhaHRRNkNrcTdTT0VwS0RG?=
- =?utf-8?B?Q1RzUURnOUFhZUdQRlhuS0prelpXOGx5N0VFVHBIQ2ZLdU9ZUjM1d1pMNHFO?=
- =?utf-8?B?Y1U3UDhhYk40RURlMnJVSWZUSFJBRW1tS3VxbUpIYjBPZ1JUUDA0NFlBUm9F?=
- =?utf-8?B?d243STRVb0xRYVl0TUlTcDdKSm1rRTN2dzRPcHF1UWl3S1Q2cmJIdjljTjdS?=
- =?utf-8?B?dGhRQ2g1YTZDZ2JQOXJ5eGJaM1l0V2VzY0tKa0VKQkpOa0dZcDZVTkNUK3lt?=
- =?utf-8?B?dE92N1VjN21FWEhrdHVVb1ZvNGlIdXN6R24rV3VFdnFKc0tWNzlIdk5YaTJK?=
- =?utf-8?B?RWRQWGhwcFFlbnNjM0tTemhOaXNMdlFUNXh5bXNTWlZ4VisyMGFWbE0yMTBN?=
- =?utf-8?B?M3JhbFVNdWJ4c0xIZENHeWhCWURtR0ZpT2VBbVY0ZEFTMHVKbVN3QUpubytT?=
- =?utf-8?B?cmRIZ1ZrVmE1MGkzRTA1N3l0ZXc2NElIancwc1ZxZDMxQXVPQW1TMGVJTGxZ?=
- =?utf-8?B?M3VxamttM2tLdDRhVFRhTExsRVczeS9XOEJlQy95NE1MTGhaRkU1QU1BRXND?=
- =?utf-8?B?ZDVxcmFtc25xVFJKWFpsK0M1aXV6Y0tQQ3I1QXNkaC9OWXlTYVg0SmQ2UVA4?=
- =?utf-8?B?ZHFiVmZ6ZGdTU0Q2cjl0aDRDK2dqK2ZzUHQ2dHdBR0NCeE81Wk5OU3ZpUXd3?=
- =?utf-8?B?TGwva3poTTdxTTQzOG1qdG1mYXdReU1tNnhOemlBZEU2Y0lFeDF3azhCbHZX?=
- =?utf-8?B?REdRWUgwN1NxOGRuQlV6UFBiZVVMWFZiSjhHV1F4N0xvOCt3bXFFLy84UURj?=
- =?utf-8?B?cUR4OUdjV20yWHVSOW5HQmZPQldpblZ0RnhoUTZqb2hVSnhBYXozRVNvWDhM?=
- =?utf-8?B?emZLM2N0cmt6NFFqUWJmNFlYRzJiZUwxcE5WQW5naFF0ZXZmODVBbUttaDNi?=
- =?utf-8?B?RXRTUlg5RVhoZWQyVjVLTlVDakpPY2s3SlNIQlBqQjNhbEZtNGZ5bzd1dEE3?=
- =?utf-8?B?eUZNSTRzcERlMHgrQjFPN3h5UDJUMmczMjh0RW1uandEc1dGa2JQSEhuaEJB?=
- =?utf-8?B?YURxZE5CcmFWM0w3ekpGVTk4cUR1Z1JCNVBxWVMwZGR4aFBVdjdJYlFnODVK?=
- =?utf-8?B?ZlVlWkdBMnJqOXRLUXlLUHl1UDg0dFJtQ0pJSjh4VUQ5dVNIQk1aTTBpalJL?=
- =?utf-8?B?UGV0NndScTMxYldkWFgzVHQxR21oQjZCcCt4WG55SWw0Q21oOG5aYXpiNWk0?=
- =?utf-8?B?QnQ4OHcrWWtBYUE3V1hZZ05GU2VBdzFwOE5HejZjQ085RFRpdkRBb0QzaEdq?=
- =?utf-8?B?bnFaaTA2VjdkUEw3YjRYQVRuTnBpcHRUd1RVZ2VnZDVFV1FDYWNYOWxuWmU2?=
- =?utf-8?B?MkVOK0hiazFSUXNWZlU5TzhYNERsV3JrSmhNQXpLVVRpZ0Q3UG0zRDJtR1Ru?=
- =?utf-8?B?dnBNQzBmalFkQ3lhcXRHNzgrSlErTzkzSkhXTmhUTy9NZGpJTjhPc1U0dU1h?=
- =?utf-8?B?d1RhS3VYeWhLcjZvK2hxOE11YWxNaVZycWg5VEdSNDFCQ1QzYTc3b1prVVZW?=
- =?utf-8?B?MVdLeXJaZy96K1lnVjRsaURUM3dVdGkzVGR5R0F0SkNQZmU5RXMzM3hQQWxC?=
- =?utf-8?B?YWF6ckNyWlIxZ3prM2QrY3E5TFhZRXFDNUNEQlJNQVBIdTZLNnNTTFV4WGJz?=
- =?utf-8?B?VU5FanNPbUZwOXNOL245WjJIcGJoaVYvNTlvVmF3M1lOTTYwSlUrMml1eFpy?=
- =?utf-8?B?cE9qWUxycHJkS2QvN0FHYUdQWHBQdG54akJ5Z3ROZnlpcmxCbWZsV3NwZmUr?=
- =?utf-8?B?Z1hUMVpERTlra2FNSVlnclZSMWVRcmYxRnh2aGFYbXdsUzZBVWxXckg1anM2?=
- =?utf-8?B?cnR6WjRjVXlpRmdqcm1oM0ZYdnJ4WDBLSkdRVDlaYWl5Q0g2eGtHZVZFK2FJ?=
- =?utf-8?B?RmZ2SHJqRmZOcU9KejNlVE5BcExlZEtPK1NGa2lSZkE4MWtaT0hnSU8yaDJy?=
- =?utf-8?B?TmRQWWorNXJ4QTJPN2NNOUR4OVNJOWM0UDlOeitKdTliNnlQa0JwYnlYSjlT?=
- =?utf-8?Q?L6HF6+40cI1bqUvjLxQWQRJ6d?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a5cd965-b442-43fa-f4d0-08dc299280cf
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 17:13:58.4704
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kIiJ4TV7SYNGlBpGuvw87ZfiD51TzYZ+KiFZB5zOwPpPTDVUDMAK2dW9d2V2YvtY6vX6t6udMf72vmKNdNDgyw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5285
+References: <20240208135045.3728927-1-tudor.ambarus@linaro.org> <20240208135045.3728927-2-tudor.ambarus@linaro.org>
+In-Reply-To: <20240208135045.3728927-2-tudor.ambarus@linaro.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 9 Feb 2024 18:13:59 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU_Hx9PLmHf2Xm1KKTy_OF-TeCv7SzmA5CZWz+PLkbAGA@mail.gmail.com>
+Message-ID: <CAMuHMdU_Hx9PLmHf2Xm1KKTy_OF-TeCv7SzmA5CZWz+PLkbAGA@mail.gmail.com>
+Subject: Re: [PATCH 01/12] spi: dt-bindings: introduce the ``fifo-depth`` property
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: broonie@kernel.org, robh@kernel.org, andi.shyti@kernel.org, 
+	semen.protsenko@linaro.org, krzysztof.kozlowski@linaro.org, 
+	alim.akhtar@samsung.com, linux-spi@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, andre.draszik@linaro.org, 
+	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com, 
+	conor+dt@kernel.org, devicetree@vger.kernel.org, arnd@arndb.de, 
+	Linux-Renesas <linux-renesas-soc@vger.kernel.org>, 
+	Wolfram Sang <wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/9/24 08:02, Dan Carpenter wrote:
-> These ANDs should be ORs or it will lead to a NULL dereference.
-> 
-> Fixes: fb5a3d037082 ("drm/amd/display: Add NULL test for 'timing generator' in 'dcn21_set_pipe()'")
-> Fixes: 886571d217d7 ("drm/amd/display: Fix 'panel_cntl' could be null in 'dcn21_set_backlight_level()'")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Hi Tudor,
 
-Applied, thanks!
+On Thu, Feb 8, 2024 at 2:51=E2=80=AFPM Tudor Ambarus <tudor.ambarus@linaro.=
+org> wrote:
+> There are instances of the same IP that are configured by the integrator
+> with different FIFO depths. Introduce the fifo-depth property to allow
+> such nodes to specify their FIFO depth.
+>
+> We haven't seen SPI IPs with different FIFO depths for RX and TX, thus
+> introduce a single property.
 
-> ---
->   drivers/gpu/drm/amd/display/dc/hwss/dcn21/dcn21_hwseq.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn21/dcn21_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn21/dcn21_hwseq.c
-> index 5c7f380a84f9..7252f5f781f0 100644
-> --- a/drivers/gpu/drm/amd/display/dc/hwss/dcn21/dcn21_hwseq.c
-> +++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn21/dcn21_hwseq.c
-> @@ -211,7 +211,7 @@ void dcn21_set_pipe(struct pipe_ctx *pipe_ctx)
->   	struct dmcu *dmcu = pipe_ctx->stream->ctx->dc->res_pool->dmcu;
->   	uint32_t otg_inst;
->   
-> -	if (!abm && !tg && !panel_cntl)
-> +	if (!abm || !tg || !panel_cntl)
->   		return;
->   
->   	otg_inst = tg->inst;
-> @@ -245,7 +245,7 @@ bool dcn21_set_backlight_level(struct pipe_ctx *pipe_ctx,
->   	struct panel_cntl *panel_cntl = pipe_ctx->stream->link->panel_cntl;
->   	uint32_t otg_inst;
->   
-> -	if (!abm && !tg && !panel_cntl)
-> +	if (!abm || !tg || !panel_cntl)
->   		return false;
->   
->   	otg_inst = tg->inst;
--- 
-Hamza
+Ha...
 
+Current documentation for the Clock-Synchronized Serial Interface with
+FIFO (MSIOF) on e.g. R-Car Gen2 and later states:
+
+    FIFO capacity: 32 bits =C3=97 64 stages for transmission and 32 bits =
+=C3=97
+256 stages for reception
+
+Initially (many years ago), there was some doubt about the validity
+of these values (older variants on SH supported 64/64), hence
+drivers/spi/spi-sh-msiof.c still has
+
+    .tx_fifo_size =3D 64,
+    .rx_fifo_size =3D 64,
+
+Probably we should test and revisit this...
+
+> --- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> +++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> @@ -69,6 +69,11 @@ properties:
+>           Should be generally avoided and be replaced by
+>           spi-cs-high + ACTIVE_HIGH.
+>
+> +  fifo-depth:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Size of the data FIFO in bytes.
+
+I think it is prudent to consider the asymmetric case, too.
+Whether that should be just two properties ("rx-fifo-depth" and
+"tx-fifo-depth"), or also a third "fifo-depth", I defer to the DT
+maintainers...
+
+> +
+>    num-cs:
+>      $ref: /schemas/types.yaml#/definitions/uint32
+>      description:
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
