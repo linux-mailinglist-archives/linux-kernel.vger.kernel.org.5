@@ -1,315 +1,190 @@
-Return-Path: <linux-kernel+bounces-59735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D27F84FB0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:32:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3B2E84FB0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:31:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1C67285212
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:32:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 709D4B21EB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:31:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A157EEE7;
-	Fri,  9 Feb 2024 17:32:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA0A07CF37;
+	Fri,  9 Feb 2024 17:31:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ELaZ8Thm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="a2CkqWfI"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="e6JLmdhx"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 063247CF37;
-	Fri,  9 Feb 2024 17:32:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707499924; cv=fail; b=XIO+NC7SDE1+ptQayeiWy02ScfU4bJyQ4/TcGZwTHJfjsen4c2fYmqU7hS/PuRpjczzvTs/An87vxB8oqFmCCDH5JuLQoxEmeEqs1/eGnnv4LGu3Luhc5SNki2pA4eA6U+e84h7ax6jnoDeFb/ZtOoYXfM0TJbEzr3tqrKWju4g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707499924; c=relaxed/simple;
-	bh=MJe0uKSBb4mtMjXyR+4/Oa83XNEL2ijlh+dv8urP9w8=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=BfKGtruxiOCb6pmJWvLkGQdj3JsexCrjhhn/F2SwbFQn8XqwtrgySm7o5k+IxD+zkVgRfApEEBdR2Odrgm6btXLGb5r6oLKY87XWA9efwo5al+6MoB/PvhMY1Nuj4Op/siJ62QIEyttGhjD/4icCJZJishLJN7WZmfq/NWk7cWs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ELaZ8Thm; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=a2CkqWfI; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 419H49Ji014997;
-	Fri, 9 Feb 2024 17:31:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=QOUj8fYRUY2PeDi0I1Gi5duzpN7/bIPocCR37+YS7Jc=;
- b=ELaZ8ThmkXOShgDaB6uQmGNzoj+GX8gRddUJDf6im58+5RkGaYdz6vnklAvWRKwNHpG2
- RLczORWzT5klezJ36LWMTucd1CbygPLBLDpyd5Q1PTidN8TwLXO2141CT5+HlPuy6UG1
- wzkf5A1i+lVnj8IV0Q80rwvQqVwKQkwB7ULly8gLoQts6UR+RoKJ0wVN2vZy2h194agH
- 4sonG7fN+NOM57CT70XwQgWIdYgN/qLYJs+q1Bcf1jt7bB/DqGJkUTfT04S2JYrCZoEX
- EFFR1PGr3Rvlum+iZfVWuAdkaHpngG30SFIQNU9MmfNgOXog6faHk5JOnQQz9Vff6v4d vQ== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w1c9482qy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 09 Feb 2024 17:31:46 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 419H6vxe019687;
-	Fri, 9 Feb 2024 17:31:46 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3w1bxjrv3e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 09 Feb 2024 17:31:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mx8UP0TwR/bnQMShRD1DeZ4nfPfFCHuRrmPAzLYYMAKe9CgHDDTP3/BcPISS3LIfQymhPykALgt61eyI4WILVaNi5/3GmF47zkQbkdjqQB77azbVOFMC20un0DkKnkyUNfFbgDnaXfws5h744Ludeh797f5oDiXlF4R9W8T3+kvUFPWRfn35YZJQuvKJTsJKi87T9Nxo8nFjcWFMWMq3Amfq3umR0l87t6lXO0QAtI79EKfMZUoxg9FhPBjfLLkyeMAZnQR4zkmGOa8MXXxn0Uke6dZkPXaWW1QVHtqlcguAIm/ZuJLZHgyohl7rqLaYv5ZyHgFDWGTx2mH/Vlkzkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QOUj8fYRUY2PeDi0I1Gi5duzpN7/bIPocCR37+YS7Jc=;
- b=TrSOpNTjrqJXn4tXHxcqGURIJcHJW1cETXiFwIXgGowdjFAUO9ir0Y1nvzLlVPYb/JvDuhrtqTIuNcEvZNw1aUSAHMMOeNZKGHOg0VN1flwGM8ZajGhv5i5eoA91a4PYM29kuo631sf6jVz1xSKTnP2Hr4qWI6OFb0wxfTuOmVebkN21cElG9BEo3D6EkittmI9gcjat8AMpY6SPPrJjOgzOQ12D4G5D+CU4QLxqAeBi6TgWqL7FLFQ20jWPvElZx4yAFqRVnxVQtUKZ4bSzhkUcwRNOGJVTPWIf1mh8HpsijrVGMo6ajsRQ8G6pwyZLJaPUNYzHrKHKPZwMDa34ng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QOUj8fYRUY2PeDi0I1Gi5duzpN7/bIPocCR37+YS7Jc=;
- b=a2CkqWfIWfCgw4Od/CrkdBsSuQevFAQUBh0HJ4Vu/Vx3/rr6Z2a3AK2bdHAlbhkOerpYRTUw1r9WCR9G0zfRSIT7W7T9bWocsycPtYLJ51XKLEtP2p4C1GrtoM+KRAUqUUq2B4vqlhydC3dNZULTq5qekXX9OiyptvTuLbaHYZs=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by CY5PR10MB6069.namprd10.prod.outlook.com (2603:10b6:930:3b::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.45; Fri, 9 Feb
- 2024 17:30:56 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::56f9:2210:db18:61c4]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::56f9:2210:db18:61c4%4]) with mapi id 15.20.7270.025; Fri, 9 Feb 2024
- 17:30:54 +0000
-Message-ID: <36437378-de35-48dc-8b1e-b5c1370e38b0@oracle.com>
-Date: Fri, 9 Feb 2024 17:30:50 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/6] fs: xfs: Support atomic write for statx
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: hch@lst.de, djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
-        martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, jbongio@google.com
-References: <20240124142645.9334-1-john.g.garry@oracle.com>
- <20240124142645.9334-5-john.g.garry@oracle.com>
- <ZcXNidyoaVJMFKYW@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-Content-Language: en-US
-From: John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <ZcXNidyoaVJMFKYW@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P265CA0233.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:b::29) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEBAA1E486
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:31:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707499889; cv=none; b=C0JwO74e9ob5X5W+tMojgUAYYHQAYnv8sndq6jZIrIuWYVqSoDXkLu7pgPSBj+M0FWINaPzh46ZsSEhQW/ckIURho31I4leXd3s2kdcPuTX3R35NRfdObw6jur3Smvid0e5i5gGIBUVeu+9N4FzxMa1tm1L8SWbHNOsvKyaFQzE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707499889; c=relaxed/simple;
+	bh=ueF/3l/pdEkS8nmlN1GCOrqczipbSy+MacJ/+GVMuHw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dKWpqdfQiZkQ1mMILhKi/+0tHjdxJBPE1IbBHy5/t5zZcYdmuYvTOPM4FbCG+WKmSmAtRSBbAWntmXtQTop28g/OngSbLalMAygMCa6iowNABH07eE1MhZpohmWD5mkH6NJn+umkfhPj9MT4Svit/MHXb8klfRAH0tdh+YgOXaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=e6JLmdhx; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5AF5B40E00B2;
+	Fri,  9 Feb 2024 17:31:25 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id DjG77o1yKKfM; Fri,  9 Feb 2024 17:31:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707499882; bh=QJ8IvXe5L7kQUA05kg6s4Kuht0GQjKo92ZVIchIlagU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e6JLmdhxkDsBxZfc0bpyjqv1otCTSJtzz7kRKCl/QqUcQK9B7lyn12IvY2J0ibb4j
+	 fdiaL8iPnN0nkBu1ImUi/KuedEG5kutYQutKlYK5icev6GoVn+gTGhvyLCx97lBA2p
+	 DlYH1aF5ifJOwtOsk2NEF6xj/M8yLSPjuZvpQDBx6SzoSRgakGzbCXsSUW7x5d9afG
+	 ATiNBtCuLbM6AXRXuoaEMaQvcZoLP5GAqHwiCJ9oQLNl41aUloVR2ySHrY4sHkGMID
+	 vnsCL8vAc/STm9fbP8UtfWSiWoPighc4mfP1z7F9T90jiyEb8AegXhX1UHdieUNUTT
+	 2/sun38XtEgq3u+PTVAi469WFKFluvOg92ziZylkgrIjqKEXtg6EBC3bPMDQuoq5YK
+	 AWIwDG9zNn0jwnGf8xf6fhPl1LICBaFIWCU4HM/y2EDwGFnBb9R/ipziFkEd2aa4ta
+	 SqZ8omV22A+fhgipCGPzvwVkMwZ5bxEVLusdhKp9GktPiZGnK9KLnKRPqav0UA3tNV
+	 j/Nx6uJo13HpZT3TLbXgpfvS6GiBb8SvBqPZJpp4Lb9Ns3Rx095TwMBSpQ8ZhTSuv8
+	 SK1PtiEqQ4RbT4L5Tp56ub52qYxRATRxzIeDSLEh+fR1UoxtXFbphiOdeeDVRB/gQu
+	 ooiyBVxd+sOCMtbYn20KCN58=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 331EF40E0192;
+	Fri,  9 Feb 2024 17:31:03 +0000 (UTC)
+Date: Fri, 9 Feb 2024 18:31:02 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Dr. Greg" <greg@enjellic.com>
+Cc: "Daniel P. Berrang??" <berrange@redhat.com>,
+	"Reshetova, Elena" <elena.reshetova@intel.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	"Hansen, Dave" <dave.hansen@intel.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	"Nakajima, Jun" <jun.nakajima@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] x86/random: Issue a warning if RDRAND or RDSEED fails
+Message-ID: <20240209173102.GBZcZhVuFJZ8JOKTjG@fat_crate.local>
+References: <DM8PR11MB57507611D651E6D7CBC2A2F3E77D2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <88a72370-e300-4bbc-8077-acd1cc831fe7@intel.com>
+ <CAHmME9oSQbd3V8+qR0e9oPb7ppO=E7GrCW-a2RN8QNdY_ARbSQ@mail.gmail.com>
+ <Zbk6h0ogqeInLa_1@redhat.com>
+ <DM8PR11MB575052B985CA97B29A443F9AE77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <20240206011247.GA29224@wind.enjellic.com>
+ <ZcHoKUElwXGPzrWb@redhat.com>
+ <20240206120445.GA1247@wind.enjellic.com>
+ <20240206153529.GHZcJRwTdDkWXuopOQ@fat_crate.local>
+ <20240208114444.GA23164@wind.enjellic.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|CY5PR10MB6069:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0ddb000c-9db7-4088-c16a-08dc2994de90
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	7xHJVccpV13hqJc6RneY2TAB+xXUYPRoHcQZfQDJyv/4sE4O11+ULQ85orp17meqewwvwb16bx9ENzkvKFnfiLYRQo7gaBTPTF1uhkdT+a4igAZUjFywEccHtMCqukJw4zNE1QgxiP9udj9FWTln6BZyFSDqa0J84DUoYwGptOVLRc2f4vsOymbl7dsX9eWIoSyjNDjrpZpNqmrAAcpjYFHQIEbIE2hTVXz1pw5+RBFCDqhWKFF/KJphETmsBDZP71h1dEE9zaIESZN6x5d1B7qQDUS4KtV2U4ItuYV1QxL7TEwjs2zvpoFNXmmufKMtdqPYKlEBkWiqqDzm4VCdReZ7+1brBktnDfqFSrLMDctygnT3BH+zdkkLldbBw+gqIykmxH7G/0YJvugRiDEpCvLzRZhXYG8+AS6+9E2lLdQJulPkyerfWeutLDj5LZsEkfKe7qv/PR+WT9pFJ6Fskb2fmDw1Wg0W1YNg65ihYvCVkiZ5+imDX+C+b2eebsrdAvMkdxxyu1/e9Wqqs4TpFhB6WVX9SwpvuGvqrUkZkmtEyc7sCNOm7j1O/LbgndY/
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(346002)(136003)(376002)(396003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(6512007)(478600001)(6486002)(31686004)(41300700001)(66899024)(5660300002)(8936002)(7416002)(4326008)(8676002)(2906002)(66476007)(6666004)(36916002)(316002)(66946007)(66556008)(6506007)(2616005)(83380400001)(6916009)(31696002)(86362001)(38100700002)(26005)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?c3c2NWt0ZmR5REJjU25MTlNmSGtDc2cxaWxWL3o5U2l4cFFaWVFSR0hEbFNI?=
- =?utf-8?B?dGs2NGVjVjJOcHpJaUNqUk56OERoT1NuaGoxSGFoMnA2K0U3ZmJQd2lCdW1M?=
- =?utf-8?B?NlBveGoyaWpadTZ5RW5IR08zckZIbFRCR0lTVlRBVlVQWUdxQ0pUQnBZS1pC?=
- =?utf-8?B?QVdTcXM0OW4yNFBDQ3dhME5sSDEzTklUNU9BQXJaT2l5dy9VSWw5a2ZOWHhE?=
- =?utf-8?B?VDVoblJYNFFJazFJQjRWWVJHMW00VjI5VmxUZDIrbDIvdEFqVW8wSEMwQk1h?=
- =?utf-8?B?NjJXcnRtUmNIQWJqWGpWdHdJeHUrSjRQeE90cjNHeVVnWVgrUFhCaFVCdUtC?=
- =?utf-8?B?enMzR0xVejQrRUhsQm43OCtzcGdZTTFyaU9XME9sak5naVJBK01LK1BaUkU3?=
- =?utf-8?B?T29BR2o0Z3Q2RGtSSmc3dFRyNk1CTnF2Y3F0MHhHNG1MVGlqMHQ1T1FlUnJJ?=
- =?utf-8?B?cDM1T2ZQMCttNkpYcmlCTmZ4TWYwZElaWFd2amc4T245VnZUbzQvVm5GT25w?=
- =?utf-8?B?dmczVVJBeHM4QWY4dDI1NVllZnoyUWwzTFpHNk5qMjNWekd2R1IybVpvRmRr?=
- =?utf-8?B?SjdiTFNwZ0lCWDJsakdsNWp5OVJTOStrR0RpajJ5amluZE1QcFBvekJJUURS?=
- =?utf-8?B?YW8zT2RFUFdXWitYL0tXdGZoMk1LODUwM2RSeGxjVVJLL1R0V2MvT0VOOStB?=
- =?utf-8?B?WThGWm1JQlE2bHB4Y3V5RVAvRDUvQm80OHU3eTAvbG9Bd05XcjJnb3RuL201?=
- =?utf-8?B?NzhEdE0yMkllQ1Z1a2RySFVrWnM5dG1XOEJXN3dYcEdHTVVaZ2pBQnpGYlVu?=
- =?utf-8?B?SCsrUlhWWGxzQ2ZsL01DcWYzc0RyZjdMWVRjeUhETmtNY3I4SWhnbTV5WUx6?=
- =?utf-8?B?emlzRGgxWXdOcDRLUHR1SENzWHlHUUJMcUttKzhTMDBsNEVsNkIwdzM2Qis1?=
- =?utf-8?B?QlhDanYvTHQwOWoxd2Z2Z3JEeVdEOGhqT3NHbnNJYUIzdURxaFlhS09HS0lw?=
- =?utf-8?B?SVhnRVhFTXFHUHhnVmlLMU92aTk0eDVVQ3FjbyswVFFZLzI0dnhaWlhUWTFN?=
- =?utf-8?B?aUR1SjVOdmxOaUhZMVlKcEZqNVdDcnFuNnRnT2xXeVRpUHJLRysra0lQVnhl?=
- =?utf-8?B?dCtKVzVIT2tLMTZ4M2UzelFGVFR4OWpUdGVzNUtMc3JoY1FKYkFQelZZOHIz?=
- =?utf-8?B?VFBqdzRUY0ZHRHFuNTY1UFBQMWQwQlhRNHZXampTTmZ6cGdHZ1BhWW4zckNM?=
- =?utf-8?B?by8rcHBIY0hLU2UwZ1g5VTVmUGhUMWdpeU1OL0dpVVR2YStyUVJBU1l4ZWpz?=
- =?utf-8?B?aFJudml6RHg0R0VjamorQ3ZQWnU4b0ZNdFhvVHFvYlFLR3pVdUVHR0U5VWF1?=
- =?utf-8?B?bnA0MUp0Ni9iZlU3VVJ0Z0J4dUwyU2pNalhWaVBWZVNBbUM2NnQ5TWZuS3h0?=
- =?utf-8?B?Wi85dkUvbzN4L1lUL3RnUlZyVmJZZUFqU1o4Q0d2WnBkbUt4NlB0cFp3S0o2?=
- =?utf-8?B?R2RsS1FOT3pZMWF3M1I5NXBLQnlYNkR0a0kxWldNSmh6bjdCRFE2Uk9nbXV3?=
- =?utf-8?B?MURwZlJyRVJQMVFPV0FqWk83TVJLWU10QkpwT01UalhTR0FKSGZoY3k3TGpX?=
- =?utf-8?B?ZzJPNlJjVzRYS3k5OVJsWHEwc2NaQU4rL1lETjFGS1ZuZ0cwRy9YY2xHcDVt?=
- =?utf-8?B?b05DOC9mWEFXNk1KRDJyN1FmWFZ3dEFUWlE1V1gvWFhHY2ZhTW5MSUlvQkZk?=
- =?utf-8?B?bzlybXRMdWlaNmJOTHowUmtLMTF2akNXYWlrQzllYXNnaHM4NnhESDBnZkh4?=
- =?utf-8?B?dlRNYzE3c1ZYZ1pLbGNnVmMzOThOdWlSV2Z0ektKcmZIWGxDUkxVNDJ6RTdt?=
- =?utf-8?B?Ly9WMC9FOE5Wc1ZOQW9PbC9CNkF4VjlOSklwN3FLQVVKWm1QanZ2WmFVeW11?=
- =?utf-8?B?bU8yamZyVXdHdldVLzA1ODAwQ2hqVGFWcEsvOFBRMFdMaHJmOGRDcVJDbWRC?=
- =?utf-8?B?UzRQMkVFRFViUHpYS3RvVnNKRDh1cGt2MWJ1d0FIdUtHVHlCV2V6RmhRcWxt?=
- =?utf-8?B?Y2oxUjBJMi96dkphZXF5Sm9EbWM3Zm9tT1Y1WFBXNXRKd3oxRm42dFdxMmpW?=
- =?utf-8?B?di9pWjEvZFI3OFIyU0NyZWtUWFFBUkV3UW5pYWdEbzVYNkxnYVVpcDJsUmFU?=
- =?utf-8?B?UEE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	R4ykQ5G4WywLgc/x5CbDf7vf7TRaUo4mqbmUGhbcLfHqJ8IKgYJFXqQ7mrEZIjecuFNporRipYMMabI6YnN4DHb+sxkArfxfjjS3eerO8DF0u0o/i8ba5oRTK/3vCxFFwBj6zHpqccbXvRC6KECBH9P9hJQbtvbpVR7hMvQ5UwGM9K41Li6x42KKI6tF4NVpSi4gB+B2KYxdt0MsDeQ6tFwLe67UGVU3ZMbBvC2QmqNQOhc0TECp4b19UxmXIR2oNKuHwJbCns9D2G6T8VSVb9YDE789dJpPqq8C8xu2XGdRJM52pQQ9GCwE0DEarJ94irvnyphcW1AR6miHTI75XE0KwmCwnxTl+6QieJ0Wy93cdbFni1+AQsc1uyFqDQilqOlssuun9vE3AWSyWZAftrQi6zVFAtvTZ6TaCCGTe1/5Q7Q4gr23lPXRNDup2adehs7XTB4qmSabOFWTB3BgrbGgO26xKfM52aEb+llSgNnwvMU1ppP7Pt1s/T25o3QoWFaaDMBxuo8Dl7+UkM+aC3Et7xiXVaMRQwXE7qZkG6cClkG5U0ykUhEYtxsAz+kA+ukRlrOWiio0xIEpdfEQebvisBb+Do6jUJLrT7yKFJE=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ddb000c-9db7-4088-c16a-08dc2994de90
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 17:30:54.8010
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: N9inySIzxZnWg1Z/OB9z5rG4qpvurRc378suNPrzSZqST3vBSwIWg6271DLdAtlQ7iIkk/mkVialRb2gpvJATA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR10MB6069
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-09_15,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 mlxscore=0
- adultscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402090126
-X-Proofpoint-ORIG-GUID: ta7eDbqBZwonRBI9aVv5lTZEGpux3bb7
-X-Proofpoint-GUID: ta7eDbqBZwonRBI9aVv5lTZEGpux3bb7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240208114444.GA23164@wind.enjellic.com>
 
+On Thu, Feb 08, 2024 at 05:44:44AM -0600, Dr. Greg wrote:
+> I guess a useful starting point would be if AMD would like to offer
+> any type of quantification for 'astronomically small' when it comes to
+> the probability of failure over 10 RDRAND attempts... :-)
 
->> +void xfs_get_atomic_write_attr(
->> +	struct xfs_inode *ip,
->> +	unsigned int *unit_min,
->> +	unsigned int *unit_max)
->> +{
->> +	xfs_extlen_t		extsz = xfs_get_extsz(ip);
->> +	struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
->> +	struct block_device	*bdev = target->bt_bdev;
->> +	unsigned int		awu_min, awu_max, align;
->> +	struct request_queue	*q = bdev->bd_queue;
->> +	struct xfs_mount	*mp = ip->i_mount;
->> +
->> +	/*
->> +	 * Convert to multiples of the BLOCKSIZE (as we support a minimum
->> +	 * atomic write unit of BLOCKSIZE).
->> +	 */
->> +	awu_min = queue_atomic_write_unit_min_bytes(q);
->> +	awu_max = queue_atomic_write_unit_max_bytes(q);
->> +
->> +	awu_min &= ~mp->m_blockmask;
->> +	awu_max &= ~mp->m_blockmask;
-> 
-> I don't understand why we try to round down the awu_max to blocks size
-> here and not just have an explicit check of (awu_max < blocksize).
-We have later check for !awu_max:
+Right, let's establish the common ground first: please have a look at
+this, albeit a bit outdated whitepaper:
 
-if (!awu_max || !xfs_inode_atomicwrites(ip) || !align ||
-..
+https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/white-papers/amd-random-number-generator.pdf
 
-So what we are doing is ensuring that the awu_max which the device 
-reports is at least FS block size. If it is not, then we cannot support 
-atomic writes.
+in case you haven't seen it yet.
 
-Indeed, my NVMe drive reports awu_max  = 4K. So for XFS configured for 
-64K block size, we will say that we don't support atomic writes.
+Now, considering that this is a finite resource, you can imagine that
+there can be scenarios where that source can be depleted.
 
-> 
-> I think the issue with changing the awu_max is that we are using awu_max
-> to also indirectly reflect the alignment so as to ensure we don't cross
-> atomic boundaries set by the hw (eg we check uint_max % atomic alignment
-> == 0 in scsi). So once we change the awu_max, there's a chance that even
-> if an atomic write aligns to the new awu_max it still doesn't have the
-> right alignment and fails.
+And newer Zen generations perform significantly better. So much so that
+on Zen3 and later 10 retries should never observe a failure unless it
+is bad hardware. Also, I agree with hpa's note that any and all retries
+should be time based.
 
-All these values should be powers-of-2, so rounding down should not 
-affect whether we would not cross an atomic write boundary.
+> Secondly, given our test findings and those of RedHat, would it be
+> safe to assume that EPYC has engineering that prevents RDSEED failures
+> that Ryzen does not?
 
-> 
-> It works right now since eveything is power of 2 but it should cause
-> issues incase we decide to remove that limitation. 
+Well, roughly speaking, client is a less beefier and less performant
+version of server. You can extrapolate that to the topic at hand.
 
-Sure, but that is a fundamental principle of this atomic write support. 
-Not having powers-of-2 requirement for atomic writes will affect many 
-things.
+But at least on AMD, any potential DoSing of RDRAND on client doesn't
+matter for CoCo because client doesn't enable SEV*.
 
-> Anyways, I think
-> this implicit behavior of things working since eveything is a power of 2
-> should atleast be documented in a comment, so these things are
-> immediately clear.
-> 
->> +
->> +	align = XFS_FSB_TO_B(mp, extsz);
->> +
->> +	if (!awu_max || !xfs_inode_atomicwrites(ip) || !align ||
->> +	    !is_power_of_2(align)) {
-> 
-> Correct me if I'm wrong but here as well, the is_power_of_2(align) is
-> esentially checking if the align % uinit_max == 0 (or vice versa if
-> unit_max is greater) 
+> Both AMD and Intel designs start with a hardware based entropy source.
+> Intel samples thermal/quantum junction noise, AMD samples execution
+> jitter over a bank of inverter based oscillators.
 
-yes
+See above paper for the AMD side.
 
->so that an allocation of extsize will always align
-> nicely as needed by the device.
->
+> An assumption of constant clocked sampling implies a maximum
+> randomness bandwidth limit.
 
-I'm trying to keep things simple now.
+You said it.
 
-In theory we could allow, say, align == 12 FSB, and then could say 
-awu_max = 4.
+> None of this implies that randomness is a finite resource
 
-The same goes for atomic write boundary in NVMe. Currently we say that 
-it needs to be a power-of-2. However, it really just needs to be a 
-multiple of awu_max. So if some HW did report a !power-of-2 atomic write 
-boundary, we could reduce awu_max reported until to fits the power-of-2 
-rule and also is cleanly divisible into atomic write boundary. But that 
-is just not what HW will report (I expect). We live in a power-of-2 data 
-granularity world.
+Huh? This contradicts with what you just said in the above sentence.
 
-> So maybe we should use the % expression explicitly so that the intention
-> is immediately clear.
+Or maybe I'm reading this wrong...
 
-As mentioned, I wanted to keep it simple. In addition, it's a bit of a 
-mess for the FS block allocator to work with odd sizes, like 12. And it 
-does not suit RAID stripe alignment, which works in powers-of-2.
+> So this leaves the fundamental question of what does an RDRAND or
+> RDSEED failure return actually imply?
 
-> 
->> +		*unit_min = 0;
->> +		*unit_max = 0;
->> +	} else {
->> +		if (awu_min)
->> +			*unit_min = min(awu_min, align);
-> 
-> How will the min() here work? If awu_min is the minumum set by the
-> device, how can statx be allowed to advertise something smaller than
-> that?
-The idea is that is that if the awu_min reported by the device is less 
-than the FS block size, then we report awu_min = FS block size. We 
-already know that awu_max => FS block size, since we got this far, so 
-saying that awu_min = FS block size is ok.
+Simple: if no random data is ready at the time the insn executes, it
+says "invalid". Because the generator is a finite resource as you said
+above, if the software tries to pull random data faster than it can
+generate, this is the main case for CF=0.
 
-Otherwise it is the minimum of alignment and awu_min. I suppose that 
-does not make much sense, and we should just always require awu_min = FS 
-block size.
+> Silicon is a expensive resource, which would imply a queue depth
+> limitation for access to the socket common RNG infastructure.  If the
+> queue is full when an instruction issues, it would be a logical
+> response to signal an instruction failure quickly and let software try
+> again.
 
-> 
-> If I understand correctly, right now the way we set awu_min in scsi and
-> nvme, the follwoing should usually be true for a sane device:
-> 
->   awu_min <= blocks size of fs <= align
-> 
->   so the min() anyways becomes redundant, but if we do assume that there
->   might be some weird devices with awu_min absurdly large (SCSI with
->   high atomic granularity) we still can't actually advertise a min
->   smaller than that of the device, or am I missing something here?
+That's actually in the APM documenting RDRAND:
 
-As above, I might just ensure that we can do awu_min = FS block size and 
-not deal with crazy devices.
+"If the returned value is invalid, software must execute the instruction
+again."
 
-Thanks,
-John
+> Given the time and engineering invested in the engineering behind both
+> TDX and SEV-SNP, it would seem unlikely that really smart engineers at
+> both Intel and AMD didn't anticipate this issue and its proper
+> resolution for CoCo environments.
 
+You can probably imagine that no one can do a fully secure system in one
+single attempt but rather needs to do an iterative process.
+
+And I don't know how much you've followed those technologies but they
+*are* the perfect example for such an iterative improvement process.
+
+I hope this answers at least some of your questions.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
