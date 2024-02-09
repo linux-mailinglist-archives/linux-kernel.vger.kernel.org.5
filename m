@@ -1,161 +1,134 @@
-Return-Path: <linux-kernel+bounces-59663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9828284FA0F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:51:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45ABE84FA10
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:51:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1929B2790B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:51:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77EF21C27387
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 071CC1272D7;
-	Fri,  9 Feb 2024 16:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81DC6127B78;
+	Fri,  9 Feb 2024 16:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="z2L+VNsn"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S+xR5KrN"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18959126F12
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 16:47:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51E0C7B3DA
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 16:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707497261; cv=none; b=R40RD2PClBDqp2RmeRwlN7eK7e3b+U9dn23eubGpevcE/4oPgfbNDJWtMqrQnc1MuiGI/99bJW3i138A4qQB6AFoh5hEsexGvGufvetw35otK4M2cizavUnm2uD8JooQLobdiCjYvAZIzLzRQtPuxDqPp1WXvMrJ/fckJku1jzs=
+	t=1707497315; cv=none; b=jnrCiRAcoeKn6emCOfuADQs9bh2HSu9mxP5KgUns77wxuP578FDoLfl6fyLxzA8gyjiavSyplLqfGSHtERJeTEySZuq0HSXPuYk2rYwo9NxRiM/QipCxcoY+efCw2yLPbIcTBa/V0CASqhFNwIC4HHP4r7wQX3wkuGsIIfA1OxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707497261; c=relaxed/simple;
-	bh=EHXtj1I/ftcXpEO8P5eZSzW0ZOjuoTciVti/3T08k9Q=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=jh5HHW3VvjQ94FHZliB0DKg9YN2Q3Q/Ca66XNmO5ac8tomIqv2Xl/dnEWerWapYSrRMdSNqbdxmLx7XQQEXT0xHDGMx3l+1DSdn0unWlKPb4sXUegqJqF98/LPEr73TR5wqmHlON/bclM5Mdp7d/JUnjdflIdsxIi4zMEBT1y2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=z2L+VNsn; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55790581457so1890513a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 08:47:37 -0800 (PST)
+	s=arc-20240116; t=1707497315; c=relaxed/simple;
+	bh=FPNyBmY5ytlw890hHmQ2+MhpPZ9PzuiywFzMAas7OFg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jt95m817QnHz9Ur1A0HnlE9ISR5a7aEde2Nv2n/gF+nlXepCSysK5DwDlxFZ9z4P8ledLiqUsFzVDLJ+oIx90Vj/HdzbTO0HnZWRpR0JPTGpEO++QOMDuuFC76fsEz3gWREWYa8rkt58BFt2VtQbUhECNqB29E+kV+3ph389GVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S+xR5KrN; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-604ac794c01so9729637b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 08:48:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1707497256; x=1708102056; darn=vger.kernel.org;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YS2EbtbXUftbNC7P72t+SNTFrO2JWyL4uRnQqEk6u2o=;
-        b=z2L+VNsnhCeOiZ+z2OF44qlosMZ50231zmorUxoMm1Tyj+orcgf+eF/KmcltCkBCHz
-         kNihexsswhZfEVZ0AwuAeOIg27AB4hz2dm0+cZX2QOFoG7CoGPdJzeEa2pX0CR5AAK2s
-         nqJTJTFN0s4klM+8jPU71ydHy1irxWDXcnpFjDQATtNm6Y2TlGDnSDetjfmAV7DLTNOu
-         +Ymo6cLTwzQJ6GqhlZHYWowbowRyHR2g/fQp8jYo7MO4JNgEqp+LY+Gz0Ychz+GSx//d
-         EFpjun++7KzQs7sRZQXFUkSY/BHcOnxjShUGnW4wHLfO21vUBjrQ/MqSU0GpF0LkomiZ
-         I0ZA==
+        d=gmail.com; s=20230601; t=1707497313; x=1708102113; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BDoPqGVOIDy3+wcfjHtZEb4REQzExwRWYroEz4tWuME=;
+        b=S+xR5KrNxGZA5E0/gF0mF5HmRRhQjTDg4rehzs2DcWpUpXNaE8M87TfFkkh9n1jvHj
+         Z9y++iJeLV8shxT6duVXZUJ9CAAO5on+NM8HrvB5RzY5/QO5Y7AwPE32zfzCw6vRpuO/
+         5PwMH2vdTJ8Oluyj/P1F7Rg8mOkoH6JV9GiqlPT2CTh4lgBF4McNQTIOPgYTL/hE4YfN
+         SlE/kVAXiadQkCPPQjcCYwkeOgD4V8x8cK4LyuIb20P32xJftwjgLbC0bAi0mkOzG8kq
+         GrjAVY5m0Bj89O2vJKesYOJvT8vdKqnt0wJsqPAoSIWcZpcf9XyIl2VGWA4PU3KxJXnB
+         2Hzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707497256; x=1708102056;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=YS2EbtbXUftbNC7P72t+SNTFrO2JWyL4uRnQqEk6u2o=;
-        b=AYQkNS+foFTYvvxvssQdmQGORe6JaBi87ouGmN9LaiqCNIjOmu824gRwoytfkdFODk
-         aOwTuwNSaMUaY0OBJCncluGb99S4s3rMTc9KrFRD901iQOxYtpWIgYeMV+jPpVNgUitH
-         aceXz627FJy8p3GpNjoKYc+QEaEqqRHW2pSpTw71xu5WhXpn+1+6bT81BROM89AtwvuL
-         5KEQ3ElIMkkTnkpF1asDhmiukVmDExeKdgnW4xGgtnJ6mQ01cuXuXu2WKeNetM5xILgy
-         kKpuS6xBVB0Smj9HIoBuVH8ISEcWiXJ0mrwwKlLjnX4/4/Dj0RrjmbrRhvQ+WyGQejaQ
-         WVfw==
-X-Forwarded-Encrypted: i=1; AJvYcCUEptmJ50RHpz59yeJ2KUlkRrXdqYqXQVegpyqNpG5kllWB2TAstc94yqDZMZAQpnmPg+Wq54C5TMJbWtu+/PgGwin1AMPh3HbyRlnJ
-X-Gm-Message-State: AOJu0YyG5soVQfmQZmFzmz66hQJv5xZuFTrqlc0m4I1Y65n6n04j9gVg
-	03cc0UQ6irq/HZthDeUaSZCAgCW1zeRy/WZ102ru+tcojWF5B5VwMbKaTQhmK88=
-X-Google-Smtp-Source: AGHT+IFdPmgOHCT/0MFCqCZlYRKA93K1cTA0cR1BinAm0OJqzNzuL19dDB38K/uyJqgnTY5HzgZVnA==
-X-Received: by 2002:a17:906:eb4b:b0:a38:1e9c:8268 with SMTP id mc11-20020a170906eb4b00b00a381e9c8268mr1717317ejb.32.1707497256373;
-        Fri, 09 Feb 2024 08:47:36 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW9vtWbpCadcgc7v/uKttpKKPq1Ka3kDrbFVVV1WQ1nUVJebKCAovVxij4CT7oUg06reXmf+oAd1oVn88kvImGMoMz4MjHMQ6scR0v0z4TFh5mwRBWEAGDzPv6s4EuZqDw8wT0GYFdEt+bsflAkU6ZqUU81YQyLuePkblA0jKw4Q7tkt6hHk5MSndlcU430mAB0YZMwQ5OQ3jj/l8ppgsVpZuYL1JOwVggeBvrP/s1XzrVh2mecs+IbTfN+eWWyjgU0ABhVrE0fWxrK24w9VCY5Fqs+cQewKjn+hc1c5fb/RAKSuu4OGuacOWDwXuhwUZsszmSj5n1TH/eSNWd/jM5isRMwdUjVaUdg0uSADCepWPEU98T0QV8=
-Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id vo5-20020a170907a80500b00a3be3b27d0bsm859880ejc.49.2024.02.09.08.47.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Feb 2024 08:47:36 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707497313; x=1708102113;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BDoPqGVOIDy3+wcfjHtZEb4REQzExwRWYroEz4tWuME=;
+        b=aLHfuhfWIeU9Qz9MuhsSbMps4UjsrUw/g4c0Knwpf+8rVIROTzGg41nbP5bayK0K+g
+         y27gLogVQNqB+mnRidLmU2J5KJXXTs3HAuJWoN6+5hlbXcVhXAPhrnm4zFP7h3OpdwJ2
+         dGKAD6rqgi4jBipRyLTitzqK3eXtnptXdOMKSJjWzif7bcAoqgnhljojvEpo7BH3TEFc
+         CiKPeuh9DGxZ9ATiuu8Y2FbTlpds1dNbPF2YXLG/hF+BK+9SP4iiX7Ps7qCv6LY8KAIH
+         HDKvlZPalJESXJf2xOcfMVpBZzuTUkB79l6d04EDkZHii7Gi9TW3wW/lJvAnunE0LEdq
+         iXHQ==
+X-Gm-Message-State: AOJu0YwnQUvmkKpkZcbmb0b/nDYVWtIxYT5JT79t6BRqalWbSeZ3mOdO
+	i2ThQkzGooA7nE3Zvg1k0Gn2uLw285QfgFjxUSNUeQwRDJx1gD1r
+X-Google-Smtp-Source: AGHT+IGHAnv5j3jjPmcR0JvcThZ6kL5WrGr+U2/FCDlRiQcke87L3mDwYTKNqb9aPzjJNAz1t/g7uw==
+X-Received: by 2002:a25:8686:0:b0:dc6:e622:f52 with SMTP id z6-20020a258686000000b00dc6e6220f52mr1943504ybk.31.1707497313092;
+        Fri, 09 Feb 2024 08:48:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW1a/+E+9DbNMri1t+AZUcIPf+wUz5mu1p6q31+fZg7aHGQ+BTynXWQVqxWa3/iQqp4U4MVW5MrWnWSm0WmQ19DldbgQ2tEZz0/3YNdMdDlGtqViDcAmRH0VWc4bxs6hnQkMMNvvq0rm+gf7lWdpRehASNNnUAzTj6o6TglEqnf1ukaIx5e0mn0UwNjf9xuEOzBnRYhMW86aYSk8C0HYiIx2RyurvnbhgYV3SDQcBKaIghNqJcXnKTZGkIMNNe2eUf/lA73dsI65yIvzp2tnUCZ
+Received: from localhost ([2601:344:8301:57f0:be3a:6fd4:1110:3284])
+        by smtp.gmail.com with ESMTPSA id l12-20020a5b0b8c000000b00dc74ac54f5fsm217643ybq.63.2024.02.09.08.48.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 08:48:32 -0800 (PST)
+Date: Fri, 9 Feb 2024 08:48:31 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Lucas De Marchi <lucas.demarchi@intel.com>
+Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	intel-xe@lists.freedesktop.org, intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH 2/3] bits: Introduce fixed-type BIT
+Message-ID: <ZcZXXzEBxvyH470g@yury-ThinkPad>
+References: <20240124050205.3646390-1-lucas.demarchi@intel.com>
+ <20240124050205.3646390-3-lucas.demarchi@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 09 Feb 2024 17:47:35 +0100
-Message-Id: <CZ0P9E67Q6AQ.TU3Q2Y8VTWUK@fairphone.com>
-To: "Bjorn Andersson" <quic_bjorande@quicinc.com>, "Bjorn Andersson"
- <andersson@kernel.org>, "Konrad Dybcio" <konrad.dybcio@linaro.org>, "Rob
- Herring" <robh@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Taniya Das" <quic_tdas@quicinc.com>
-Cc: "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>,
- <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: qcom: qcs6490-rb3gen2: Declare GCC clocks
- protected
-From: "Luca Weiss" <luca.weiss@fairphone.com>
-X-Mailer: aerc 0.15.2
-References: <20240209-qcm6490-gcc-protected-clocks-v1-1-bd3487b2e7b1@quicinc.com>
-In-Reply-To: <20240209-qcm6490-gcc-protected-clocks-v1-1-bd3487b2e7b1@quicinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124050205.3646390-3-lucas.demarchi@intel.com>
 
-On Fri Feb 9, 2024 at 5:21 PM CET, Bjorn Andersson wrote:
-> The SC7180 GCC binding describes clocks which, due to the difference in
+On Tue, Jan 23, 2024 at 09:02:04PM -0800, Lucas De Marchi wrote:
+> Implement fixed-type BIT() to help drivers add stricter checks, like was
+> done for GENMASK.
+> 
+> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
 
-SC7180 -> SC7280?
+Reviewed-by: Yury Norov <yury.norov@gmail.com>
 
-With that fixed:
-
-Reviewed-by: Luca Weiss <luca.weiss@fairphone.com>
-
-> security model, are not accessible on the RB3gen2 - in the same way seen
-> on QCM6490.
->
-> Mark these clocks as protected, to allow the board to boot.
-
-So the board never was able to boot before this patch?
-
->
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 > ---
-> I did notice Taniya's patch [1] after writing this patch. I'd prefer to
-> merge this minimal set asap, to make the board boot, unless there's a
-> strong argument for including those other clocks in the protected list.
->
-> [1] https://lore.kernel.org/linux-arm-msm/20240208062836.19767-6-quic_tda=
-s@quicinc.com/
-> ---
->  arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/bo=
-ot/dts/qcom/qcs6490-rb3gen2.dts
-> index 8bb7d13d85f6..97b1586f9f19 100644
-> --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> @@ -413,6 +413,24 @@ vreg_bob_3p296: bob {
->  	};
->  };
-> =20
-> +&gcc {
-> +	protected-clocks =3D <GCC_CFG_NOC_LPASS_CLK>,
-> +			   <GCC_EDP_CLKREF_EN>,
-> +			   <GCC_MSS_CFG_AHB_CLK>,
-> +			   <GCC_MSS_GPLL0_MAIN_DIV_CLK_SRC>,
-> +			   <GCC_MSS_OFFLINE_AXI_CLK>,
-> +			   <GCC_MSS_Q6SS_BOOT_CLK_SRC>,
-> +			   <GCC_MSS_Q6_MEMNOC_AXI_CLK>,
-> +			   <GCC_MSS_SNOC_AXI_CLK>,
-> +			   <GCC_QSPI_CNOC_PERIPH_AHB_CLK>,
-> +			   <GCC_QSPI_CORE_CLK>,
-> +			   <GCC_QSPI_CORE_CLK_SRC>,
-> +			   <GCC_SEC_CTRL_CLK_SRC>,
-> +			   <GCC_WPSS_AHB_BDG_MST_CLK>,
-> +			   <GCC_WPSS_AHB_CLK>,
-> +			   <GCC_WPSS_RSCP_CLK>;
-> +};
+>  include/linux/bits.h | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/include/linux/bits.h b/include/linux/bits.h
+> index cb94128171b2..5754a1251078 100644
+> --- a/include/linux/bits.h
+> +++ b/include/linux/bits.h
+> @@ -24,12 +24,16 @@
+>  #define GENMASK_INPUT_CHECK(h, l) \
+>  	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+>  		__is_constexpr((l) > (h)), (l) > (h), 0)))
+> +#define BIT_INPUT_CHECK(type, b) \
+> +	((BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+> +		__is_constexpr(b), (b) >= BITS_PER_TYPE(type), 0))))
+>  #else
+>  /*
+>   * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
+>   * disable the input check if that is the case.
+>   */
+>  #define GENMASK_INPUT_CHECK(h, l) 0
+> +#define BIT_INPUT_CHECK(type, b) 0
+>  #endif
+>  
+>  #define __GENMASK(t, h, l) \
+> @@ -44,4 +48,9 @@
+>  #define GENMASK_U32(h, l)	__GENMASK(u32, h, l)
+>  #define GENMASK_U64(h, l)	__GENMASK(u64, h, l)
+>  
+> +#define BIT_U8(b)		((u8)(BIT_INPUT_CHECK(u8, b) + BIT(b)))
+> +#define BIT_U16(b)		((u16)(BIT_INPUT_CHECK(u16, b) + BIT(b)))
+> +#define BIT_U32(b)		((u32)(BIT_INPUT_CHECK(u32, b) + BIT(b)))
+> +#define BIT_U64(b)		((u64)(BIT_INPUT_CHECK(u64, b) + BIT(b)))
 > +
->  &qupv3_id_0 {
->  	status =3D "okay";
->  };
->
-> ---
-> base-commit: b1d3a0e70c3881d2f8cf6692ccf7c2a4fb2d030d
-> change-id: 20240209-qcm6490-gcc-protected-clocks-ee5fafdb76b3
->
-> Best regards,
-
+>  #endif	/* __LINUX_BITS_H */
+> -- 
+> 2.43.0
 
