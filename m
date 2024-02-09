@@ -1,142 +1,226 @@
-Return-Path: <linux-kernel+bounces-59484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AE9E84F7BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:41:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A87484F7BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:42:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69AA51C23069
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:41:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C16362812A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA9DA69966;
-	Fri,  9 Feb 2024 14:41:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AD7F6BFBF;
+	Fri,  9 Feb 2024 14:41:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="S3/XM1R9";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="v6EPGKHY"
-Received: from wfout5-smtp.messagingengine.com (wfout5-smtp.messagingengine.com [64.147.123.148])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PZP+vmwU"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D56E44C83;
-	Fri,  9 Feb 2024 14:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DD793D3AC
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:41:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707489704; cv=none; b=s4tsOZxZIKR+ddrXroVeYgnox46VeCMnSR5yUqrIRCbHdg3oSXOZIdpRcm9PqfinCvKnlPm4ubi3N8jkfSB4RKDZNoIkvKLrd3Hyx8irkjPrlIXBfpMl1neuIDhzrBRVG4EDv76sOePsWbiuQ8DNtAYqLHeizhsneD15LlkXg+I=
+	t=1707489711; cv=none; b=WwM6jcnxUH7YfOAIzkUvd1c03wOGifjxzGY2R2cC2HU+XfxcxUe86K9X4v1NQH8nU/DzyX+FE3Cy+UIcabM/+GEOwP0G7RKKgAgedCGKrk3Uw89QNHgp0SMSqE7/Lt/dv21Po3B8DBl6//ovAOXpsPZh2njWOignsTFD834ZcWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707489704; c=relaxed/simple;
-	bh=MdgKh1QKbxz534VY+pTpXg0oSXnXmtnExQPKXVZLegg=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=Y1sOVDPlnfHLNN3nh0pBwGEhBQkQZ7DJB/CEXm6RAQuTAtyImmfo8PA/bKDp+inl9v8Sbnzq5mmeVXhPsQ8Ebm78qIjyUObvlzj2SKps1BkrFK+htjGmJh1WgGKLEMvxHRoymjAl5ygca1VzekTeu6hIVTS47BJcjfrvYYmH1ZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=S3/XM1R9; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=v6EPGKHY; arc=none smtp.client-ip=64.147.123.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id D10021C00085;
-	Fri,  9 Feb 2024 09:41:29 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 09 Feb 2024 09:41:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1707489689; x=1707576089; bh=RfpXrOgPMB
-	uIAQYXOAV94jbrpi1e3bUYrcbdSK52a14=; b=S3/XM1R937Zow+EapKrmWrZWju
-	diAdGAnkld0Pkg5Y3H5ta2KRc32i3bs6UHmWXjJ6NtqaG15M4eO8F4QEPDxa1/8j
-	Fg27pEJJzRJrhNVYwlb+ieC8wA82ig5CA1unleV78rWuBtffnAikF3WENDrb3Atc
-	yn2eqXaKNOMugVWSp6mfMKMgo4gm/ACus56pQocWfQRro/Y+Rhi1q6HiIGeW4AZ+
-	81jJr1mUz4oAT7010oseOisWz03m2xn60LRs/V2xsPFsqq9eyO8BAQdJYA+TiDz4
-	+42zSDXqWF5sRpegf4i5/Yz5gZ2UHbX/sgxgn5vSHTRN+oI8RzfMnXzKAHHQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707489689; x=1707576089; bh=RfpXrOgPMBuIAQYXOAV94jbrpi1e
-	3bUYrcbdSK52a14=; b=v6EPGKHY+rqQ4ZeZt2i1OZF5oPBc/x3vybijI4oM5RGT
-	eTIzOUUchqL6HX1MilRT/Z1ZRvlucEMX9ZiRND8XMsbyXrFC4mEgz+QlrE2fjVj2
-	MTS/Se9MuD73i4derA5n9T+lXGZraTa8/5j6fZkqNZd4BBJGyapd/M/bwJ42N4IN
-	8e84WiKF95alnZae1PsL+Qs+O1HM36k2J1pHpa/Ta4qyNYpPP5ch1yBpCavfC1Vp
-	FlpSKlPWoHcIqmdG3tL263GTmEV1D7qejeHkNRO3xsjQt2G2ZM5zr31ea4BeAa7R
-	XOS3lhVxVZAx5+1IUOgq6oeEtIs28FI9qZjiStrxww==
-X-ME-Sender: <xms:mDnGZZycIJ_u9fGEWzfYdWfbUtAAEqg9I6YPD7f6NWY8n2yAMU70wA>
-    <xme:mDnGZZTyXP19Jbxt2Z_1QNldMFudbWss85x1h9WWxUVK-YXYnssnchPSQJlCM6zGp
-    woykBg3N1AiBPpu2pY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtdeigdeiiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:mDnGZTWZVFKny5MPZ0tPuhRY-XkAfEByWCI4ovjcT4eZPIQRpXkq1A>
-    <xmx:mDnGZbhFaocVMS__xRXFvrUpK8cqxuzWFj3TF0rVaLF2oHt4SzZ-tg>
-    <xmx:mDnGZbDDxjRwr39Be1fcb32WjXAtB8gX4F0lgBvh-rT9L2Xl-qh5NQ>
-    <xmx:mTnGZYy8kk7UouiAYf1aEHgnl6GVc1Z4BxsUFlmPxxG_3UJOZWy9oU9gxwA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 88BFEB6008D; Fri,  9 Feb 2024 09:41:28 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1707489711; c=relaxed/simple;
+	bh=O3fPupjybPNP/dAIj6BFB3nob2bLvZX2H43dvr8aJ7A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Rdi3xKrOsuSlZBV1kIdDgUcC7Hz7o3eMsieTLbfAgYdC8byZMe0vZBkrY/0q5ZeSog3a9fHfo7X/d28k0ifMU+YH2AAf6yhCoryeTsolKXz0pSW2glG0AndZSqZ3EyMrx0DdUSK1/YlYL8uKLkcEBNcR7KbaUHBC1+FpUZbZzQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PZP+vmwU; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3916c1f9b0so141468166b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 06:41:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707489707; x=1708094507; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=sHcakeR8gPCEeI7V8ObSzY3NEW4IWCujMtndFKNvu38=;
+        b=PZP+vmwUkhlIFZxJlGrnn4bnIvEUblcfumX2OVdD8j4SR07btrcQzatqBkz4aToFZF
+         v8CVTxb08j7VRoTpHb6LxNv8I4TsAPIj1rUjwbg8yUVO7RkhuqweVhodLNu5LFZ/6mS8
+         IhCt53XXzlhf2RbcqnkEEacFrGz3nKojtwYR8EePfH7KJEYdkAVbT9Fou1cUuWcCn3Tc
+         Iv8rYbeOlJRp8QhY+dZcIBtGYjNMnlwqUWQy5SJnhCD31iL7d8iJblE1puiBjUNHWd9D
+         GL9wQMO9XSQDMTInlQ9/FU+ndGJslGz+VQLvp/P8Ybiuc6NoiQYDVEtIw6rjHOFWtX8T
+         73ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707489707; x=1708094507;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sHcakeR8gPCEeI7V8ObSzY3NEW4IWCujMtndFKNvu38=;
+        b=u+haZCyQKQIhALyAaPvoXPdNyHeUAO35rvw6Ndg95vDgFwCv61s5rICM4yr+dd0xgH
+         irHxdYNhOd+7zglxi1W15M1pTLEmc1VBxEctJvxU+wbg+fwM3vPrwpsyJaxk1Zu3v8Oa
+         /pB079lVRe2eIKNKw3SCa8kP0bYHk5E8+b4a8UcvPQZN01en495KXmPgbcSl64uCLg+Z
+         ox3Tgx1yS3WoOCCI2OS1VZeArb0Wk31KcAlacla9HEvdd73Wo6OWTz1FXgZci6XUiDci
+         +8BMRxJW7Gw+lmcgvCWXsNTkPIq92vwgaroHw8gdPVeLy0Oo3IyDq9H+YGNiuq/cHNvb
+         ehaQ==
+X-Gm-Message-State: AOJu0YysXUfI9Bwqp1PVrvVtem0EhDQoAWx/CrAfTRtW2bgbf0O53xOq
+	HYrIQAASOfsR4yUXax+wPosz9g0ocV6v6KNwmA9B1VkroGbrHi08cQkmEvCohgQ=
+X-Google-Smtp-Source: AGHT+IFPSqvMuQ7qRahNz276ExL9mkaHwlnaG19hlPXL0sWl9KvvkSgcsTGOPjwNhiOcDbbFCba3ZQ==
+X-Received: by 2002:a17:906:fa14:b0:a3b:ea1e:c395 with SMTP id lo20-20020a170906fa1400b00a3bea1ec395mr1215338ejb.28.1707489707353;
+        Fri, 09 Feb 2024 06:41:47 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU/JYp/TUOFfArAHs9PgPg3ZetUV3f8hxfFPsKUwP/60xcfd5NQoc9u0sZq+2USXNgXmpA5X/AtCHcSoKyN2a1Ql92xg1/XFmkm+OIYTklYuHZmdRxL0BAah9qJdFnBPsTzAK6NagPzY7mN+jFCsm4rv/mU5kUZFwVxTCiyC1f43/faHtLQ4C/KJXsEO6SgXfrivgi84qJJb9oiyTZU1mvFcZL6AUPK9HU8wndvpBn6vJ7KYjQZLhHY73mstEnBI1/xohoiYEvudhJVq+7iwDB8DSLXP7wAfZXLK4lXWdYO0idIBSQ7rK7RPiw570KbS+7NImLKIJSdSjJ5UskJyE3z3gAK+RU+VG2NxAjIOnTNUtAjTgAkYwJmRJCjxvNjiy1IbASHsltaMYQ++fUwmzo0+scsksaPoporqnAEaJ9sbRzEng/B5DY54zKdzBJSMwD0gdLfVnVtkAE=
+Received: from [192.168.192.207] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
+        by smtp.gmail.com with ESMTPSA id g19-20020a170906521300b00a3bb098ffcbsm827300ejm.89.2024.02.09.06.41.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Feb 2024 06:41:46 -0800 (PST)
+Message-ID: <aa7a28a7-59c6-4783-a6de-9a46721a8bf6@linaro.org>
+Date: Fri, 9 Feb 2024 15:41:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <6eeba3ce-d66c-45e2-8c34-ad0109ec2ef0@app.fastmail.com>
-In-Reply-To: <20240208225608.11987-1-kernel@valentinobst.de>
-References: <20240208-alice-mm-v2-2-d821250204a6@google.com>
- <20240208225608.11987-1-kernel@valentinobst.de>
-Date: Fri, 09 Feb 2024 15:41:08 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Valentin Obst" <kernel@valentinobst.de>,
- "Alice Ryhl" <aliceryhl@google.com>
-Cc: "Andreas Hindborg" <a.hindborg@samsung.com>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Alex Gaynor" <alex.gaynor@gmail.com>,
- =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
- "Benno Lossin" <benno.lossin@proton.me>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- "Boqun Feng" <boqun.feng@gmail.com>,
- "Christian Brauner" <brauner@kernel.org>,
- "Carlos Llamas" <cmllamas@google.com>, "Gary Guo" <gary@garyguo.net>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Joel Fernandes" <joel@joelfernandes.org>,
- "Kees Cook" <keescook@chromium.org>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, "Martijn Coenen" <maco@android.com>,
- "Miguel Ojeda" <ojeda@kernel.org>, rust-for-linux@vger.kernel.org,
- "Suren Baghdasaryan" <surenb@google.com>, "Todd Kjos" <tkjos@android.com>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Wedson Almeida Filho" <wedsonaf@gmail.com>
-Subject: Re: [PATCH v2 2/4] uaccess: always export _copy_[from|to]_user with
- CONFIG_RUST
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [V3] i2c: i2c-qcom-geni: Correct I2C TRE sequence
+To: Andi Shyti <andi.shyti@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Viken Dadhaniya <quic_vdadhani@quicinc.com>, andersson@kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-kernel@vger.kernel.org, vkoul@kernel.org, quic_bjorande@quicinc.com,
+ manivannan.sadhasivam@linaro.org, bryan.odonoghue@linaro.org,
+ quic_msavaliy@quicinc.com, quic_vtanuku@quicinc.com
+References: <20240201101323.13676-1-quic_vdadhani@quicinc.com>
+ <CAA8EJpqQtHDRK2pex+5F-fMRTosJuFCx59e89MWhnie1O3dHKA@mail.gmail.com>
+ <60b5e755-352b-476d-8c6e-2170594ae80d@quicinc.com>
+ <uswznu3h53gcefpdc4vxozz32ecdcjvzmr7admwc4h54o27bfy@qqoevrl3dcyt>
+ <CAA8EJpqzdp4xYSp+JCExP+Oeu9KhLpsXNUbDxfZ0g+C07xR6dg@mail.gmail.com>
+ <cvzyvgb6vahlmrhaijsuyaosdl2p4q5cxhipmu4tujnkpjlbpm@6yu3sbpqha4m>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <cvzyvgb6vahlmrhaijsuyaosdl2p4q5cxhipmu4tujnkpjlbpm@6yu3sbpqha4m>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 8, 2024, at 23:56, Valentin Obst wrote:
->> -#else
->>  extern __must_check unsigned long
->>  _copy_from_user(void *, const void __user *, unsigned long);
->> -#endif
->
-> This function is now unconditionally declared, but only defined if
-> `!defined(INLINE_COPY_FROM_USER) || defined(CONFIG_RUST)`, i.e., in the
-> common case where it is inlined and Rust is disabled this can lead to
-> link-time problems if someone decides to use it.
+On 8.02.2024 12:59, Andi Shyti wrote:
+> Hi Dmitry,
+> 
+> On Thu, Feb 08, 2024 at 01:04:14PM +0200, Dmitry Baryshkov wrote:
+>> On Thu, 8 Feb 2024 at 12:02, Andi Shyti <andi.shyti@kernel.org> wrote:
+>>>
+>>> Hi Viken, Dmitry,
+>>>
+>>> On Fri, Feb 02, 2024 at 04:13:06PM +0530, Viken Dadhaniya wrote:
+>>>>
+>>>> On 2/1/2024 5:24 PM, Dmitry Baryshkov wrote:
+>>>>> On Thu, 1 Feb 2024 at 12:13, Viken Dadhaniya <quic_vdadhani@quicinc.com> wrote:
+>>>>>>
+>>>>>> For i2c read operation in GSI mode, we are getting timeout
+>>>>>> due to malformed TRE basically incorrect TRE sequence
+>>>>>> in gpi(drivers/dma/qcom/gpi.c) driver.
+>>>>>>
+>>>>>> TRE stands for Transfer Ring Element - which is basically an element with
+>>>>>> size of 4 words. It contains all information like slave address,
+>>>>>> clk divider, dma address value data size etc).
+>>>>>>
+>>>>>> Mainly we have 3 TREs(Config, GO and DMA tre).
+>>>>>> - CONFIG TRE : consists of internal register configuration which is
+>>>>>>                 required before start of the transfer.
+>>>>>> - DMA TRE :    contains DDR/Memory address, called as DMA descriptor.
+>>>>>> - GO TRE :     contains Transfer directions, slave ID, Delay flags, Length
+>>>>>>                 of the transfer.
+>>>>>>
+>>>>>> Driver calls GPI driver API to config each TRE depending on the protocol.
+>>>>>> If we see GPI driver, for RX operation we are configuring DMA tre and
+>>>>>> for TX operation we are configuring GO tre.
+>>>>>>
+>>>>>> For read operation tre sequence will be as below which is not aligned
+>>>>>> to hardware programming guide.
+>>>>>>
+>>>>>> - CONFIG tre
+>>>>>> - DMA tre
+>>>>>> - GO tre
+>>>>>>
+>>>>>> As per Qualcomm's internal Hardware Programming Guide, we should configure
+>>>>>> TREs in below sequence for any RX only transfer.
+>>>>>>
+>>>>>> - CONFIG tre
+>>>>>> - GO tre
+>>>>>> - DMA tre
+>>>>>>
+>>>>>> In summary, for RX only transfers, we are reordering DMA and GO TREs.
+>>>>>> Tested covering i2c read/write transfer on QCM6490 RB3 board.
+>>>>>
+>>>>> This hasn't improved. You must describe what is the connection between
+>>>>> TRE types and the geni_i2c_gpi calls.
+>>>>> It is not obvious until somebody looks into the GPI DMA driver.
+>>>>>
+>>>>> Another point, for some reason you are still using just the patch
+>>>>> version in email subject. Please fix your setup so that the email
+>>>>> subject also includes the `[PATCH` part in the subject, which is there
+>>>>> by default.
+>>>>> Hint: git format-patch -1 -v4 will do that for you without a need to
+>>>>> correct anything afterwards.
+>>>>>
+>>>>
+>>>> At high level, let me explain the I2C to GPI driver flow in general.
+>>>>
+>>>> I2C driver calls GPI driver exposed functions which will prepare all the
+>>>> TREs as per programming guide and
+>>>> queues to the GPI DMA engine for execution. Upon completion of the Transfer,
+>>>> GPI DMA engine will generate an
+>>>> interrupt which will be handled inside the GPIO driver. Then GPI driver will
+>>>> call DMA framework registered callback by i2c.
+>>>> Upon receiving this callback, i2c driver marks the transfer completion.
+>>>
+>>> Any news about this? Dmitry do you still have concerns? We can
+>>> add this last description in the commit log, as well, if needed.
+>>
+>> I was looking for pretty simple addition to the commit message, that
+>> links existing commit message to the actual source code change: that
+>> geni_i2c_gpi(I2C_WRITE) results in the GO TRE and
+>> geni_i2c_gpi(I2C_READ) generates DMA TRE. But I haven't seen anything
+>> sensible up to now. So far we have a nice description of required
+>> programming sequence in terms of CONFIG, GO, DMA TREs and then source
+>> code change that seems completely unrelated to the commit message,
+>> unless one actually goes deep into the corresponding GPI DMA driver.
+> 
+> Agree. I can't take this patch until the commit message has a
+> proper description and until Dmitry doesn't have any concerns
+> pending.
 
-Yes, that is intentional.
+And please, please, include the word PATCH in the square brackets in
+the subject, it's landing in the wrong email folders for a number of
+folks..
 
-If someone tries to use it when the declaration is not there,
-they just get a compile-time error, which is not all that
-different from a link-time error in practice.
-
-It's unlikely to make a difference here, but enclosing
-declarations in an #ifdef is annoying when you want to
-reference it from somewhere that is parsed by the compiler
-but not called without the respective options.
-
-The if(IS_ENABLED()) and PTR_IF() constructs in particular
-only work when the unused functions are still declared.
-
-       Arnd
+Konrad
 
