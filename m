@@ -1,181 +1,204 @@
-Return-Path: <linux-kernel+bounces-59035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9766384F025
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:17:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68BF284F034
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:23:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 447BD28B02B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:17:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2EDA1F25128
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:23:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D7575731A;
-	Fri,  9 Feb 2024 06:17:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34D35788A;
+	Fri,  9 Feb 2024 06:23:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GApjCz+E"
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AhDQVfRd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5EFC57314
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 06:17:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC2BF57305;
+	Fri,  9 Feb 2024 06:23:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707459427; cv=none; b=Ir+VxJ2OTeeDreSw0xKn0rHUWnulmHwdLbx6KIS0o9oBWQFscAldqBgg+sxzX6BehGIhJBWXpn6OXM8MafNKUN1Tip47F4EQ9vK3RQ43SMr5MDqc8qjFKNfDDWb7xzsqjkSD/u9c3iCqBIheQI0OBa6HjmrD3+vUO44IZZD35xA=
+	t=1707459796; cv=none; b=tua/dDSWtPplY3RJworWOEE0Qg6xiSAYu/On2KEDnhdRHtjt+R12ijSSw0qnZRAL848R8LzDvJ0CQaBMbsFrB2dnWek/DEL6UMpCMZi67Nm/kRDVTHxu7SyUuinhxs5ZN7VBVhqeXgW5zuWSN/BCbMFDHcVvqPvRO2LXtfb7jUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707459427; c=relaxed/simple;
-	bh=RRziseC30oVWspl2b2b+/iYUDLMnmxd2RSAQXJ/yuT0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Q7+iRCbakI4K6s5LZxh2z2Jjijso5G9KHxFZ6INx1oRaz5QpM+aA0SuliseZznXi/T24dwOCfKifT6NyHEXwovOB5/jcMRX2PWY2KGUD5+hwKyLDWd0Bq/zlLLgGi4yrDmOKdPgTK7T4KUHYvZHP0nDjClpxfrQqfRnv3qeM2fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GApjCz+E; arc=none smtp.client-ip=209.85.210.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e12f8506ccso279922a34.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 22:17:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707459425; x=1708064225; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=mECq5c3qme0rKQWiGm3svRPPGMQfkIOTZJf8yAIPlZ4=;
-        b=GApjCz+EVvLi0PjmYKdhVA9Bs0jET3AU7YYW2eJb17PXHOPHp1JvPshNvnwPI5CWb+
-         91n0RF/kjCFr7kw+Ny+Nba2UITyjA7bW7rROzJHethEk+fHwoS3fBruJuej8HcCj51EV
-         EDh3bFrBOue+aLp5QrzAHlVon4UBMNH5sIZvKuRZMdy3apRUzQCxAD5keFeAjxinulbP
-         8/fPXW7kx9TR0luP1h4dQaBawbQVQvTS6qUfQxHIE35J8Via5cfY667h//E+f6VDnk2u
-         ng9GVUwNVjMdwezVlaW0TMa10JB7ScaeTyTSOnGB1yT/rVjUH7zx5OtgVd1dx3lyCcdB
-         cX5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707459425; x=1708064225;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mECq5c3qme0rKQWiGm3svRPPGMQfkIOTZJf8yAIPlZ4=;
-        b=QnClOhB+Y6Ucc7WLK/kymV9VMKdJNMuGJwvffZbWkg6zma9moTR2humh2EhbxIwE4I
-         2Mn+ZsFHt1sZ6nlkqaiVhgCKHdUNTqNmeoSmpDU9WVvefeRZaLWRRiqCSWjnBbzJLiOL
-         RHXc4/uurdw8/op/KdOLPaX6VzBbrPGkCjzaQAWRVhDUvCmkte9GdKt/ddCIx1re03xg
-         lotEbb3Z9TMH9l00amfZVwS2gkxeZ5jdzGlVA3OeljuuAQS0KZJmVRr2tFZ7OVaJycuq
-         bnswKk8k/hhyrneqGPjw9IO0Zjibg+xR7G9bmZIggEAtQb1QUbMYEqL2VCM4gd/YTowZ
-         lpoA==
-X-Gm-Message-State: AOJu0Yx3jCc4ieQD2qCSfW3JM6CSPJBY2j5DMcZZ2L8fffq4meO8NHxk
-	/6qgxGsCWBK74ZUn6EblCG1xFNLspMuzQnHCSE7vJhtLno6kEyE+gcvmifg/
-X-Google-Smtp-Source: AGHT+IFZIjMwa0zInTQY5XdzpGtkjG0Gu0+r8ncB3llL31KJpWBCEskA+3zEc/gljauKPYBaIs2TiQ==
-X-Received: by 2002:a9d:4e95:0:b0:6dd:db5a:d924 with SMTP id v21-20020a9d4e95000000b006dddb5ad924mr593295otk.1.1707459424876;
-        Thu, 08 Feb 2024 22:17:04 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 23-20020a631357000000b005dc4829d0e1sm907328pgt.85.2024.02.08.22.17.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 22:17:03 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <91218892-d8df-47f1-99a0-6c4564c7bebe@roeck-us.net>
-Date: Thu, 8 Feb 2024 22:17:02 -0800
+	s=arc-20240116; t=1707459796; c=relaxed/simple;
+	bh=J4f3TyvsxnSOkgjExvpc7kBzlh95/CH4/HIPYUavxPw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=R7E22LNapsr8GTHkTINnKCkwJCv+gR5T8zD7U7PlMu+vISNqEWx1iDoxLEV3GXnxu7NLa1EEggVjKS95UWuqvtYzxxJNQ8mekR7WH6kJ+n/iGnpP9WPRAoY+Cs0Eqy3g7/PNtueU/QsiZSV3ph7omvXjLWUVI8PL9cnCe2xh4FI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AhDQVfRd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 193DDC433C7;
+	Fri,  9 Feb 2024 06:23:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707459796;
+	bh=J4f3TyvsxnSOkgjExvpc7kBzlh95/CH4/HIPYUavxPw=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=AhDQVfRdsrwSl/1hlb0WH0jduy7/R5tMx3Y471HGYk7YQnl2zAlLtXrYUxu+V+qmY
+	 3N/oJ3tk/dj9mA4SOlHFiS5ymICZgifS8Kqs4ihHzQ0an4K3oxitmvfzD0uQkR5A/5
+	 HS9kIMMHGnH3aHi8eIzfF5VO5/V4H0Y3/lzHGmwmKWs4hJeceQPX3Xx7TLTZ4WQpKP
+	 +oKz7ml+ElSiWRNY+q/ANjFjzjQWzqt1cbuFrK7d031ZeMg8tf9VmFHyv4IIwiubPC
+	 OAV+N9jK5HivNgJK8Ryj0fSiobUfRpy+E1q6d20qWSvsoFl8iXCPkIpv523Zsf8PxH
+	 e2XORI6yTLkdA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0918C48297;
+	Fri,  9 Feb 2024 06:23:15 +0000 (UTC)
+From: Christoph Winklhofer via B4 Relay
+ <devnull+cj.winklhofer.gmail.com@kernel.org>
+Subject: [PATCH v6 0/3] w1: add UART w1 bus driver
+Date: Fri, 09 Feb 2024 07:22:36 +0100
+Message-Id: <20240209-w1-uart-v6-0-3e753c149196@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Sporadic regmap unit test failure in raw_sync
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-References: <dc5e573d-0979-4d7e-ab4a-de18a4711385@roeck-us.net>
- <ZcVRcH/D945GKWjG@finisterre.sirena.org.uk>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <ZcVRcH/D945GKWjG@finisterre.sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKzExWUC/12OzW7CMBAGXwX5zEbr3xhOvEfVg5OsiQuJkZOGV
+ ijvXgeJ1uphD5+0M5oHmygFmthx92CJljCFOOZh9jvW9m48E4QubyZQKOSo4M7h06UZiKyx2nH
+ tNLL8fUvkw9fT9Paet09xgLlP5F685CIfokJbKYXaAIf2o7qH8XLto6d0Og8uXKs2DpuwD9Mc0
+ /ezbJGb9hWhfyMWCQi5o8aDbATVplBsEYsqOfPHqczVnrisrbONpP+cLjhRcDpzvLOi8V0rHB1
+ Kbl3XHwVGuq5PAQAA
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+ Christoph Winklhofer <cj.winklhofer@gmail.com>, 
+ Rob Herring <robh@kernel.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Jiri Slaby <jirislaby@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Jonathan Corbet <corbet@lwn.net>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-serial@vger.kernel.org, linux-doc@vger.kernel.org
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707459793; l=5105;
+ i=cj.winklhofer@gmail.com; s=20240104; h=from:subject:message-id;
+ bh=J4f3TyvsxnSOkgjExvpc7kBzlh95/CH4/HIPYUavxPw=;
+ b=JwwE1pqxWGJywhS7eAGACb23QEqy8Ww7tLs8uqHowXQou9kATMor83zCc+uP3q4b4O98IHF0y
+ dIA/3x0dnqICWtwN4pEgjd+YJafc8+1rkMUWdDVJZqPMSoa/vz85FJ6
+X-Developer-Key: i=cj.winklhofer@gmail.com; a=ed25519;
+ pk=lgjGjOt7hFKJT9UXhgUyrdthxvZ7DJ5F1U/7d9qdAsk=
+X-Endpoint-Received:
+ by B4 Relay for cj.winklhofer@gmail.com/20240104 with auth_id=111
+X-Original-From: Christoph Winklhofer <cj.winklhofer@gmail.com>
+Reply-To: <cj.winklhofer@gmail.com>
 
-On 2/8/24 14:10, Mark Brown wrote:
-> On Thu, Feb 08, 2024 at 01:45:13PM -0800, Guenter Roeck wrote:
-> 
->>      # raw_sync: EXPECTATION FAILED at drivers/base/regmap/regmap-kunit.c:1305
->>      Expected &hw_buf[6] != val, but
->>          &hw_buf[6] ==
->>           57  30
->>          val ==
->>           57  30
->>          not ok 4 rbtree-big
->>          ok 5 maple-little
->>          ok 6 maple-big
->>      # raw_sync: pass:5 fail:1 skip:0 total:6
->>      not ok 25 raw_sync
-> 
->> This is with regmap: 'kunit: fix raw noinc write test wrapping'
->> applied on top of the upstream kernel (v6.8-rc3-47-g047371968ffc).
->> So far I have seen it only once, with the x86_64:q35 emulation in qemu.
-> 
-> I guess it's possible that we randomly generated the same value for the
-> initial and modified values here?
+Hello!
 
+This patch contains a driver for a 1-Wire bus over UART. The driver
+utilizes the UART interface via the Serial Device Bus to create the
+1-Wire timing patterns.
 
-I think the diffs below should fix the problem. Would that do, or do you
-have a better idea ?
+Changes in v6:
+- change order of patches for dt-binding
+- remove unnecessary lock in remove
+- delay for 1-Wire cycle without mutex lock 
+- fix comment style and add some more comments
+- Link to v5: https://lore.kernel.org/r/20240126-w1-uart-v5-0-1d82bfdc2ae9@gmail.com
+Thanks Krzysztof and Rob for the review.
+
+Changes in v5:
+- dt-binding: allow child object for onewire and use prefix -bps for
+  baud rate configuration.
+- use type u8 for a byte, instead of unsigned char
+- use constants (NSEC_PER_SEC, BITS_PER_BYTE)
+- make delay computation from packet time more coherent
+- Link to v4: https://lore.kernel.org/r/20240106-w1-uart-v4-0-7fe1378a8b3e@gmail.com
+Thanks Jiri, Krzysztof and Rob for the review.
+
+Changes in v4:
+- rework baud-rate configuration: also check max bit-time, support higher
+  baud-rates by adding a delay to complete 1-Wire cycle.
+- dt-binding w1-uart: specify baud-rates for 1-Wire operations
+- Link to v3: https://lore.kernel.org/r/20240105-w1-uart-v3-0-8687093b2e76@gmail.com
+
+Changes in v3:
+- improve baud-rate configuration: use specific limits for 1-Wire
+  reset, touch-0 and touch-1 operation, compute in nanoseconds.
+- remove unused header atomic.h
+- use function instead of macro to compute bit-time from baud-rate
+- switch to b4 util to publish patch: missing recipients
+- Link to v2: https://lore.kernel.org/lkml/20231223100408.44056-1-cj.winklhofer@gmail.com
+
+Changes in v2:
+- add documentation for dt-binding
+- allow onewire as serial child node
+- support different baud-rates: The driver requests a baud-rate (9600
+  for reset and 115200 for write/read) and tries to adapt the
+  transmitted byte according to the actual baud-rate returned from
+  serdev.
+- fix locking problem for serdev-receive and w1-master reset/touch: The
+  received byte is now protected with a mutex - instead of the atomic,
+  which was used before due to the concurrent store and load.
+- explicit error in serdev-receive: Receiving more than one byte results
+  in an error, since the w1-uart driver is the only writer, it writes a
+  single-byte and should receive a single byte.
+- fix variable names, errno-returns, wrong define CONFIG_OF
+- fix log flooding
+- fix driver remove (error-path for rxtx-function)
+- Link to v1: https://lore.kernel.org/all/20231217122004.42795-1-cj.winklhofer@gmail.com
+Krzysztof, thank your very much for your feedback!
+
+It was tested on a "Raspberry Pi 3 Model B+" with a DS18B20 and on a
+"Variscite DART-6UL" with a DS18S20 temperature sensor.
+
+Content:
+- Patch 1: device tree binding 1-Wire
+- Patch 2: allow onewire as serial child node
+- Patch 3: driver and documentation
+
+The patch was created against the w1 subsytem tree (branch w1-next):
+  Link: https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-w1.git/
+
+The checkpatch.pl script reported the following error - which I am not
+sure how to fix:
+  WARNING: added, moved or deleted file(s), does MAINTAINERS need
+  updating?
+
+The technical details for 1-Wire over UART are in the document:
+  Link: https://www.analog.com/en/technical-articles/using-a-uart-to-implement-a-1wire-bus-master.html
+
+  In short, the UART peripheral must support full-duplex and operate in
+open-drain mode. The timing patterns are generated by a specific
+combination of baud-rate and transmitted byte, which corresponds to a
+1-Wire read bit, write bit or reset pulse.
+
+For instance the timing pattern for a 1-Wire reset and presence detect
+uses the baud-rate 9600, i.e. 104.2 us per bit. The transmitted byte
+0xf0 over UART (least significant bit first, start-bit low) sets the
+reset low time for 1-Wire to 521 us. A present 1-Wire device changes the
+received byte by pulling the line low, which is used by the driver to
+evaluate the result of the 1-Wire operation.
+
+Similar for a 1-Wire read bit or write bit, which uses the baud-rate
+115200, i.e. 8.7 us per bit. The transmitted byte 0x00 is used for a
+Write-0 operation and the byte 0xff for Read-0, Read-1 and Write-1.
+
+Hope the driver is helpful.
 
 Thanks,
-Guenter
+Christoph
 
 ---
-diff --git a/drivers/base/regmap/regmap-kunit.c b/drivers/base/regmap/regmap-kunit.c
-index 4eb18f5d3265..666ece18726f 100644
---- a/drivers/base/regmap/regmap-kunit.c
-+++ b/drivers/base/regmap/regmap-kunit.c
-@@ -1266,7 +1266,11 @@ static void raw_sync(struct kunit *test)
+Christoph Winklhofer (3):
+      dt-bindings: serial: allow onewire as child node
+      dt-bindings: w1: UART 1-Wire bus
+      w1: add UART w1 bus driver
 
-         hw_buf = (u16 *)data->vals;
+ .../devicetree/bindings/serial/serial.yaml         |   2 +-
+ Documentation/devicetree/bindings/w1/w1-uart.yaml  |  60 +++
+ Documentation/w1/masters/index.rst                 |   1 +
+ Documentation/w1/masters/w1-uart.rst               |  54 +++
+ drivers/w1/masters/Kconfig                         |  10 +
+ drivers/w1/masters/Makefile                        |   1 +
+ drivers/w1/masters/w1-uart.c                       | 417 +++++++++++++++++++++
+ 7 files changed, 544 insertions(+), 1 deletion(-)
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240104-w1-uart-ee8685a15a50
 
--       get_random_bytes(&val, sizeof(val));
-+       /* values in val[] must be different from those in hw_buf[] */
-+       val[0] = ~hw_buf[2];
-+       if (val[0] == hw_buf[6])
-+               val[0]++
-+       val[1] = ~hw_buf[3];
-
-         /* Do a regular write and a raw write in cache only mode */
-         regcache_cache_only(map, true);
+Best regards,
+-- 
+Christoph Winklhofer <cj.winklhofer@gmail.com>
 
 
