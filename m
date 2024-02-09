@@ -1,218 +1,183 @@
-Return-Path: <linux-kernel+bounces-59510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7485B84F831
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:09:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6704B84F83D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:10:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDD4E1F26585
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:09:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A65C1C243A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:10:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB3E171B52;
-	Fri,  9 Feb 2024 15:08:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A9B6E2C1;
+	Fri,  9 Feb 2024 15:10:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LAF+rme/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="u3hVr4aS"
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E426DD12;
-	Fri,  9 Feb 2024 15:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDB95692FC
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 15:10:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707491325; cv=none; b=HMA82Fpas5JHizyEEL7tgBqiZmDXE4cFg2ZdAviL0uxhmyA1Mr7mktUw/549Fxuu2G4m78BYIEX4iTCrzReMDQEBAzs9KbyQ0spLcLhYUu+YVaJedK16PeB0Ced7l0vcd9e3T1emZNDk9cC+mmMdoiu2YSKu5UN1T2pb7O1a/8g=
+	t=1707491423; cv=none; b=tcz/arkDr3KpXd/hbOutDhaYIUOcFitEjf8+goiPgbqMC6px9UiOFcxc6q7dh+cpBcf4DyUhWIZtUN77mD3gI8yY2JCbpxgrtCIrrnPfmbsRj7L+M1TAbzNpggQj8kPCf20kN6PGl48Sjkw7Egqmaz5a5G0hEw9j4RzMoFah9dU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707491325; c=relaxed/simple;
-	bh=1G6lfwF6elBdKH2SRgXlpt4rPawQ+hptmTGr1wbGV88=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F3pn+HTGaoogyuniH+DYKAdzjZ9AI+toutn8xWIFt6hHxrd4C3HnThYzg6p2h/v3v6u6GHZzwH8E59FmcgO/ra77LixSQyTQTb6uZGtu3eZrD7H4HZpCzRMjSqn8RfvG5AFTlbauE6bIIgzTdLSpX9NxADqBFff9PttzWR9gelE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LAF+rme/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A516C43394;
-	Fri,  9 Feb 2024 15:08:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707491325;
-	bh=1G6lfwF6elBdKH2SRgXlpt4rPawQ+hptmTGr1wbGV88=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LAF+rme/gQucFL5nQCZyST8snsvZiXfO3Zf7cr+dwL3H5pzhrbJnUIvZISN9jf7gf
-	 fwiCFNi3Y3BVOWxHA+UpmXcpI+HtR077eWWZBL8Jl6szsLOl2cCXc9UYmhpPyUXF0I
-	 2XxrD2GtYkqPDF2M2yOulvr8GAmVmc8SXWcoC25aNKm8uLz6pWRcg3eLBeTENKIGHW
-	 EhF+3070vNhOAf+JNrklBlbnjMVVp8632Km2Snnaf8+4GHPfNKGdNRoi9bHRDhgbFe
-	 /o14uOQP10lYwJFpC/7hKbwi6mPa3dX77baht/6RMkJLcNQjv0U1mzp7R1jLJnaOlY
-	 diT2lyoDtXJhA==
-Date: Fri, 9 Feb 2024 08:08:42 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Heiko Carstens <hca@linux.ibm.com>
-Cc: gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
-	svens@linux.ibm.com, maskray@google.com, ndesaulniers@google.com,
-	linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, patches@lists.linux.dev
-Subject: Re: [PATCH 00/11] s390: Support linking with ld.lld
-Message-ID: <20240209150842.GA666821@dev-arch.thelio-3990X>
-References: <20240207-s390-lld-and-orphan-warn-v1-0-8a665b3346ab@kernel.org>
- <20240209112046.13241-C-hca@linux.ibm.com>
+	s=arc-20240116; t=1707491423; c=relaxed/simple;
+	bh=qtUK2RUPjq9zDcyg4Ds+2K42jq2xEZ+Gn6WwDqcikrs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nS10Jb1QRC3/kGmvSCCRYyZcyZXjn0/r3auGCOngxb4rwbtX8QUXZwGVLCylJEY3OMapxzuK4qQHj5dgFUuxToq2rGiCvnCiFqAJbwxKlax4mzYE6rl036+i+h0WAt4f1rshKHgCP4rWwGK3RcCa/FXCyWO35eNjYU1ooe6Eyxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=u3hVr4aS; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-785738e94b9so46622385a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 07:10:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1707491420; x=1708096220; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=5jZoYn0SqLJVfeFn7JEaR0g9woQE+L+0Od2YAlUn5xo=;
+        b=u3hVr4aSeiXDVV7KEL5xBT7b+XrKLOH6eKjBD2ik/2BnKFAMhbFVVK6/zy/XrD2ix6
+         /oLrNPGsxbP3CrJX6SqJOUqosP8+Cuk2gBS+Iu2ypZ1Z2uxflChDm0FqmqkAE4IK2OMr
+         UPSTcsEY/07o90eWGpHKXPe2BJVZBm/j9jaAAs6GZ2ozeKmxWW+ADp6JgNAluj6MCKkU
+         v0RRVrEeW/Xh9gb8WNI+2gPom795eFxHPIYYnNXVHYf6weXIYaizYhHxYR8eWwB8Tl24
+         tyVvnS1TaNPfH9IcjljlbxaJwCYi4a8OeceEifZLAzUosHVp9l1m8mFA1mE3EWWc9mru
+         fygg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707491420; x=1708096220;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5jZoYn0SqLJVfeFn7JEaR0g9woQE+L+0Od2YAlUn5xo=;
+        b=qLyLYWRVK5dZOjtSk5uV8pONgaFOR0NBQL9Rri6opJkI1ZWkSYUhhiZ1C3Zz3LvCjp
+         Wc/+gh8/4z1OuTPYFvvbRJ1XhjU6xRyyEGkujsglulyYWzHuB/EcMCx/stACFGCIxh6X
+         MCMIQMAdfKYGQDgV4CiDWLKAe2ClBSvyhYvWkhdg9rKOyasOukBWTNS3hlOdfTfHNuF5
+         gthvP7dnhZmoBadvprs4eyxkx66kMZiJ+CTzhOpnrtky6egrdUDhVVe+9AoNJM0VF1hy
+         Ehc/no/a3A2g14HIJpmForNkCw0DyFIUVAwozX62DfHmjdjo178x1EFYwL4pkDIiUzJi
+         IjOA==
+X-Gm-Message-State: AOJu0YzpsuqT9n0mEVQku6GorrIfegnuw1bvyQgWcXhRpMFpgq5I1072
+	6AQ+ICsF/wf28on6JNXVlV5jYOXNIi9jnuU10sxjV9lp0yzYLYP3r0gInyUaM4E=
+X-Google-Smtp-Source: AGHT+IGJujCOaBUh3+oOR5ApSS6lvEa3a0jxNEBbqxn0JlqDSpYkF/buTzCRYwtvZMYQKa3lmxc9mw==
+X-Received: by 2002:a05:620a:268b:b0:785:9516:e18e with SMTP id c11-20020a05620a268b00b007859516e18emr2146194qkp.74.1707491419707;
+        Fri, 09 Feb 2024 07:10:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVvDdCfhFiryxWiYoJ2gBpV2oU/ctUCfE12dXwi2MCN5uEKO+MzA6EyjHUcEdauLIMu/Dhu39NM91HuTSdFlFqTQs1uigFEsJ6VdHtifb1WG2boHZV++LMH5/2PlduQGZ3Xfo1GPPUtLjAu5SuBx104V6/YlQ1W90oJH4QK0wlM9/zB6kMw2p03qMVMgU5F06FYfv1e9g96JfriQzsgfAYpSyHC9t7+4u5JN4JhhSTVJ+LGFW3tye2eH8mqomknTNbUylun83aBCPrvRImIZojgO2ICF6CFEp7FGQODOLSI1Q8RY6oFzQXAhAniujYJyIhgxQcCMdtuFQeTgIyos4CO0NJ9Vvs/zc9BjxzWtjWcHlG1bOs/uFri+QsOP8IBcRsNtBnBLoLTAVb0eu97DUt80Vcr
+Received: from nicolas-tpx395.localdomain ([2606:6d00:11:3354::7a9])
+        by smtp.gmail.com with ESMTPSA id c6-20020a05620a0ce600b0078565ed2bc6sm790938qkj.124.2024.02.09.07.10.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 07:10:18 -0800 (PST)
+Message-ID: <7322a22591ab18a664c9b6fa07957a163fceaa2d.camel@ndufresne.ca>
+Subject: Re: [PATCH v2 1/2] media: v4l2-ctrls: add encoder maximum bitrate
+ control
+From: Nicolas Dufresne <nicolas@ndufresne.ca>
+To: Sachin Kumar Garg <quic_sachinku@quicinc.com>, hverkuil-cisco@xs4all.nl,
+  Mauro Carvalho Chehab <mchehab@kernel.org>, Stanimir Varbanov
+ <stanimir.k.varbanov@gmail.com>,  Vikash Garodia
+ <quic_vgarodia@quicinc.com>, Andy Gross <agross@kernel.org>, Bjorn
+ Andersson <andersson@kernel.org>,  Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org
+Date: Fri, 09 Feb 2024 10:10:17 -0500
+In-Reply-To: <20240130112400.2636143-2-quic_sachinku@quicinc.com>
+References: <20240130112400.2636143-1-quic_sachinku@quicinc.com>
+	 <20240130112400.2636143-2-quic_sachinku@quicinc.com>
+Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240209112046.13241-C-hca@linux.ibm.com>
 
-Hi Heiko,
+Hi Scahin,
 
-On Fri, Feb 09, 2024 at 12:20:46PM +0100, Heiko Carstens wrote:
-> > This series allows the s390 kernel to be linked with ld.lld (support for
-> > s390 is under review at [1]). This implicitly depends on [2], which was
-> > created and sent before it was realized that this series was necessary.
-> ...
-> > There is one outstanding issue due to something that ld.lld does not
-> > support that the kernel relies on:
-> > 
-> >   ld.lld: error: drivers/nvme/host/fc.o:(__bug_table): writable SHF_MERGE section is not supported
-> > 
-> > This was changed in the kernel in commit e21f8baf8d9a ("s390/bug: add
-> > entry size to the __bug_table section"). Is this change truly necessary?
-> > I selectively applied a revert on top of current mainline and I did not
-> > observe any issues with either Clang or GCC.
-> 
-> No it is not necessary. As the original patch stated this was a pre-req
-> patch for objtool, for which we still don't have support. This (or
-> something different) might be needed. But for now this can easily be
-> reverted.
-> 
-> > Then build the kernel with 'LD=ld.lld' in addition to whatever command
-> > line you use (I tested both Clang and GCC). I can boot an ld.lld linked
-> > kernel built with both compilers in QEMU with this series.
-> > 
-> > [    1.386970] Linux version 6.8.0-rc3-00043-g05761ede85d6-dirty (nathan@dev-fedora.aadp) (s390-linux-gcc (GCC) 13.2.0, ClangBuiltLinux LLD 19.0.0) #1 SMP Wed Feb  7 16:51:12 MST 2024
-> > 
-> > [    0.871923] Linux version 6.8.0-rc3-00043-g05761ede85d6-dirty (nathan@dev-fedora.aadp) (ClangBuiltLinux clang version 19.0.0git (https://github.com/llvm/llvm-project 417075e56aeba5a5b20301c7bfeba9c2a800982b), ClangBuiltLinux LLD 19.0.0) #1 SMP Wed Feb  7 17:01:22 MST 2024
-> 
-> Tested, and works for me. Thanks a lot for your work. This is highly
-> appreciated!
-> 
-> I applied this series internally to get some CI runs over the weekend, and
-> push it to our external repository beginning of next week. As suggested by
-
-Excellent, please let me know if anything comes up from that!
-
-> you I reverted the commit you mentioned above, and also removed ENTRY from
-> our vdso linker scripts, similar to what you did already for powerpc (see
-> patches below).
-
-Ah thanks for spotting that, I was so focused on the errors I forgot to
-clean up the warning too.
-
-> Please feel free to send patches for both of the issues, and I'll replace
-> my patches with your patches.
-
-Honestly, I am not sure that I will write much better commit messages
-than the ones you already have and those solutions seem acceptable to
-me. Consider them:
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-But if you would prefer patches from myself though, I can send them next
-week.
-
-Cheers,
-Nathan
-
-> From 30a0a88d0e6c4802b748a942bb3f6f1b223f53ba Mon Sep 17 00:00:00 2001
-> From: Heiko Carstens <hca@linux.ibm.com>
-> Date: Fri, 9 Feb 2024 11:48:25 +0100
-> Subject: [PATCH 1/2] s390/bug: remove entry size from __bug_table section
-> 
-> Commit e21f8baf8d9a ("s390/bug: add entry size to the __bug_table section")
-> changed the __EMIT_BUG() inline assembly to emit mergeable __bug_table
-> entries. This is at least currently not needed, but causes problems with
-> the upcoming s390 ld.lld support:
-> 
->   ld.lld: error: drivers/nvme/host/fc.o:(__bug_table): writable SHF_MERGE section is not supported
-> 
-> Therefore revert the change for now.
-> 
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Closes: https://lore.kernel.org/all/20240207-s390-lld-and-orphan-warn-v1-0-8a665b3346ab@kernel.org/
-> Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Le mardi 30 janvier 2024 =C3=A0 16:53 +0530, Sachin Kumar Garg a =C3=A9crit=
+=C2=A0:
+> Introduce V4L2_MPEG_VIDEO_BITRATE_MODE_MBR rate control to
+> limit the frame level maximum bit rate.
+> Encoder will choose appropriate quantization parameter and
+> do the smart bit allocation to set the frame maximum bitrate
+> level as per the Bitrate value configured.
+>=20
+> Signed-off-by: Sachin Kumar Garg <quic_sachinku@quicinc.com>
 > ---
->  arch/s390/include/asm/bug.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/bug.h b/arch/s390/include/asm/bug.h
-> index aebe1e22c7be..c500d45fb465 100644
-> --- a/arch/s390/include/asm/bug.h
-> +++ b/arch/s390/include/asm/bug.h
-> @@ -14,7 +14,7 @@
->  		".section .rodata.str,\"aMS\",@progbits,1\n"	\
->  		"1:	.asciz	\""__FILE__"\"\n"		\
->  		".previous\n"					\
-> -		".section __bug_table,\"awM\",@progbits,%2\n"	\
-> +		".section __bug_table,\"aw\"\n"			\
->  		"2:	.long	0b-.\n"				\
->  		"	.long	1b-.\n"				\
->  		"	.short	%0,%1\n"			\
-> @@ -30,7 +30,7 @@
->  #define __EMIT_BUG(x) do {					\
->  	asm_inline volatile(					\
->  		"0:	mc	0,0\n"				\
-> -		".section __bug_table,\"awM\",@progbits,%1\n"	\
-> +		".section __bug_table,\"aw\"\n"			\
->  		"1:	.long	0b-.\n"				\
->  		"	.short	%0\n"				\
->  		"	.org	1b+%1\n"			\
-> -- 
-> 2.40.1
-> 
-> From bdca9b8dcf3f0884341f491d54502d4cbe660446 Mon Sep 17 00:00:00 2001
-> From: Heiko Carstens <hca@linux.ibm.com>
-> Date: Fri, 9 Feb 2024 11:54:01 +0100
-> Subject: [PATCH 2/2] s390/vdso: remove unused ENTRY in linker scripts
-> 
-> When linking vdso64.so.dbg with ld.lld, there is a warning about not
-> finding _start for the starting address:
-> 
->   ld.lld: warning: cannot find entry symbol _start; not setting start address
-> 
-> Fix this be removing the unused ENTRY in both vdso linker scripts. See
-> commit e247172854a5 ("powerpc/vdso: Remove unused ENTRY in linker
-> scripts"), which solved the same problem for powerpc, for further details.
-> 
-> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-> ---
->  arch/s390/kernel/vdso32/vdso32.lds.S | 1 -
->  arch/s390/kernel/vdso64/vdso64.lds.S | 1 -
->  2 files changed, 2 deletions(-)
-> 
-> diff --git a/arch/s390/kernel/vdso32/vdso32.lds.S b/arch/s390/kernel/vdso32/vdso32.lds.S
-> index edf5ff1debe1..65b9513a5a0e 100644
-> --- a/arch/s390/kernel/vdso32/vdso32.lds.S
-> +++ b/arch/s390/kernel/vdso32/vdso32.lds.S
-> @@ -9,7 +9,6 @@
->  
->  OUTPUT_FORMAT("elf32-s390", "elf32-s390", "elf32-s390")
->  OUTPUT_ARCH(s390:31-bit)
-> -ENTRY(_start)
->  
->  SECTIONS
->  {
-> diff --git a/arch/s390/kernel/vdso64/vdso64.lds.S b/arch/s390/kernel/vdso64/vdso64.lds.S
-> index 4461ea151e49..37e2a505e81d 100644
-> --- a/arch/s390/kernel/vdso64/vdso64.lds.S
-> +++ b/arch/s390/kernel/vdso64/vdso64.lds.S
-> @@ -9,7 +9,6 @@
->  
->  OUTPUT_FORMAT("elf64-s390", "elf64-s390", "elf64-s390")
->  OUTPUT_ARCH(s390:64-bit)
-> -ENTRY(_start)
->  
->  SECTIONS
->  {
-> -- 
-> 2.40.1
-> 
+>  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 2 ++
+>  drivers/media/v4l2-core/v4l2-ctrls-defs.c                 | 1 +
+>  include/uapi/linux/v4l2-controls.h                        | 1 +
+>  3 files changed, 4 insertions(+)
+>=20
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/=
+Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index 2a165ae063fb..05ef4a70e3f5 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -576,6 +576,8 @@ enum v4l2_mpeg_video_bitrate_mode -
+>        - Constant bitrate
+>      * - ``V4L2_MPEG_VIDEO_BITRATE_MODE_CQ``
+>        - Constant quality
+> +    * - ``V4L2_MPEG_VIDEO_BITRATE_MODE_MBR``
+> +      - Maximum bitrate
+
+I'm afraid for this one your documentation is too short. I believe your com=
+mit
+message helps, but this is not what our uAPI users will read.
+
+My understanding is that this feature is a form of constant quality (smart =
+bit
+allocation) but with a maximum rate guaranty. Using a specific mode (rather=
+ then
+a constraint on top of a constant quality mode) is a Qualcomm specific desi=
+gn. I
+think presets are generally easier to use, so I kind of like it. What is mi=
+ssing
+(arguably all these modes documentation are also missing it) is the rate
+observation window. Would be nice to check if there is a way to specify tha=
+t (or
+even configure it, if so add a cross reference).
+
+So I'd like to see some proper documentation for this one, remember that V4=
+L2
+documentation is also a specification and will serve to ensure drivers conf=
+orms
+to the preset expectations.
+
+regards,
+Nicolas
+
+> =20
+> =20
+> =20
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4=
+l2-core/v4l2-ctrls-defs.c
+> index 8696eb1cdd61..e0597b61ffb9 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> @@ -154,6 +154,7 @@ const char * const *v4l2_ctrl_get_menu(u32 id)
+>  		"Variable Bitrate",
+>  		"Constant Bitrate",
+>  		"Constant Quality",
+> +		"Maximum Bitrate",
+>  		NULL
+>  	};
+>  	static const char * const mpeg_stream_type[] =3D {
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2=
+-controls.h
+> index 99c3f5e99da7..7c74d6c417d1 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -393,6 +393,7 @@ enum v4l2_mpeg_video_bitrate_mode {
+>  	V4L2_MPEG_VIDEO_BITRATE_MODE_VBR =3D 0,
+>  	V4L2_MPEG_VIDEO_BITRATE_MODE_CBR =3D 1,
+>  	V4L2_MPEG_VIDEO_BITRATE_MODE_CQ  =3D 2,
+> +	V4L2_MPEG_VIDEO_BITRATE_MODE_MBR =3D 3,
+>  };
+>  #define V4L2_CID_MPEG_VIDEO_BITRATE		(V4L2_CID_CODEC_BASE+207)
+>  #define V4L2_CID_MPEG_VIDEO_BITRATE_PEAK	(V4L2_CID_CODEC_BASE+208)
+
 
