@@ -1,344 +1,403 @@
-Return-Path: <linux-kernel+bounces-59289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E83E84F48D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:24:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D83C484F491
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:26:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8841EB25A88
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:24:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08C2E1C25634
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:26:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7366A2C6A7;
-	Fri,  9 Feb 2024 11:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2AA28E39;
+	Fri,  9 Feb 2024 11:26:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="i4tXsv0F"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2048.outbound.protection.outlook.com [40.107.220.48])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BDHl/Oor"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D19520334;
-	Fri,  9 Feb 2024 11:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707477831; cv=fail; b=cVe6Stdwm3WHnamS1ENBx68sX6KE0AEV8r4PVlwf9jthZI2mB2CJxJKPXqD4K6SA2M1+EZ67mvV8CbayJ9W5yZy5qRsJaD11vJOkmHL9ZohGY924YBIeDEPswAZf2/Eaf8nZ1Lyw70GfGpNFcisSRetBVbqJ0YnhOB/LqOscN/k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707477831; c=relaxed/simple;
-	bh=U+iRoPookFEAoSxdyiW9DPYY3fZlhtcUlvHvm1Y7hS8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Y/sPlUoudKOUxkWJOygFtF6RbK5oARqvNXNQfvedDsP/hWpY/CT9vyvRuIyhCUizac6iePxQmm+EQ8swtdoqKr8lwyJ/mVnheOb5r7YGOYN3JJcD12t9tKwFC8OST1OgnG/Wrsr0p4/ZfzUK3nARrMPjXQ7vriqujo7u3jQxY2k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=i4tXsv0F; arc=fail smtp.client-ip=40.107.220.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dqVtgExxJn9igPCjFW7XP5JOmGs4p/OiD39HmvuXHIlH4G6L0x/oq3aLY003z6VaPqeZ/L/8rpeCFBkIXjeQQzgooNISc5dPwja7mXkFqf5tWXD8ZghoHzS3XU3UcLzhdmU5dvOxu4EuBO1FQ5KALLCByml5vZwubVi73pXd7d6wzS3yFvYRWgwRNeR0zfVmt0GpTePJhmVOIO9TmGsf0GD8Mk4oZUVCXSyDijCUEVgSjCvPGbm9a4uUjD9WRRu3vSN+7p0pg5zKpR+PogzurxkGKF2HBmwkRT2+ODHZ9sXsFJizBt+yIo0Y33F4tSGwavWG8SXW2rmVvtRvAgOVaQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=r84iCx8MvRbHms2azQFvn+Jc4ckLegaflOZJyiQvXtU=;
- b=SdWOx1vQLjHV/tUJXBfEL/HDQLgoibNL2s9PTxX6QSn6EBtSNAJuNPxsLI6ooxHP8geJaec/goR0NFox2EboVdaHBGAXu9Lx5grNmqZ/ehgqAemlIQl82RxOWBCupd80+cMFNymQ9K12NFQraxE1C0bS1FnbHwph+kZ3MjhGjwUytBAvhuzq+kfQZZjG+1sMhbTaAY24PJymOmgHoKIPbMHLl7QrRqjQRGy5lZgLF0AuSk7rxYxxa9ZB9ZtjJfNB1Ih443VojOnKQ4IWzpdoknt3h8IoUWYeoKLKcHTLJJuRD5OBtoKEuCmyDs3HZBm5nOW6Tc1+gk9S6WMwUC8pGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r84iCx8MvRbHms2azQFvn+Jc4ckLegaflOZJyiQvXtU=;
- b=i4tXsv0FRq43c4W/3z+Qwi6qgNfDxkHnDGY3lPyI+zIByk2cRYj6qfYo7pN3jBtfzFvbIvk5ykE4bBTwr850al8vXpTrdUelmJWJiL1oVoCDKWrgkBzqJbCEbX8MlS/v7tbuufgqjbGy4C5PfggJtXZ+VYVaBNPP40+MRjPWHow=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CYYPR12MB8750.namprd12.prod.outlook.com (2603:10b6:930:be::18)
- by DS0PR12MB7771.namprd12.prod.outlook.com (2603:10b6:8:138::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.14; Fri, 9 Feb
- 2024 11:23:45 +0000
-Received: from CYYPR12MB8750.namprd12.prod.outlook.com
- ([fe80::fe6d:7a67:3692:7d49]) by CYYPR12MB8750.namprd12.prod.outlook.com
- ([fe80::fe6d:7a67:3692:7d49%6]) with mapi id 15.20.7270.015; Fri, 9 Feb 2024
- 11:23:45 +0000
-Date: Fri, 9 Feb 2024 12:23:39 +0100
-From: Robert Richter <rrichter@amd.com>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Ira Weiny <ira.weiny@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] lib/firmware_table: Provide buffer length
- argument to cdat_table_parse()
-Message-ID: <ZcYLOzd0KUX9ckYo@rric.localdomain>
-References: <20240108114833.241710-1-rrichter@amd.com>
- <20240108114833.241710-4-rrichter@amd.com>
- <20240126164603.000040fd@Huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240126164603.000040fd@Huawei.com>
-X-ClientProxiedBy: FR3P281CA0017.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:1d::20) To CYYPR12MB8750.namprd12.prod.outlook.com
- (2603:10b6:930:be::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 041F91DA59;
+	Fri,  9 Feb 2024 11:26:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707477969; cv=none; b=mDhItS+Mz2b9XFKTt4TCAHul/RVNCqmya41ZqlKxWeiP6uV7T8TJRlFCumL4hNFHrf3N+9vq+7PZTHeFJvXxlXSc6rNLg/XkSQeBKU9B0vks8XIv3vrGK9KlJ1WuDrZalZ1uy32mV1KVvXKJfPU2OffIK56sPZZcMOs/MPDfVRk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707477969; c=relaxed/simple;
+	bh=uSYX65UzMcsl+YYHYhtdHjd8X0eQTmD2Vf3q/KjHV5Y=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cVYZ2Qs3RwFpvJBX+aUDRD3MEfmMvlynvFoMWAxt8euTOtEvMO0j9w0+mQDs0JYFoG4fkDLQP1w0u+mx8t8SFpd1O6zIuszFy4dkAyHI5pQ0xCpFDj/URn+ZuS4Q9+SvZ4vT8o2nlBDHxQ8rE7r9U4JFZAjRD+9OMJhuDuqn9r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=BDHl/Oor; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 419AsWI5017756;
+	Fri, 9 Feb 2024 11:26:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding; s=qcppdkim1; bh=qVeAVV9DTkxCsIQk9SUB
+	LEJouLnhvIeEOqm2FDVtAUA=; b=BDHl/OorVowMxAXS1GG6c8jCEvkkPJjisjnv
+	GnJrZcJy1izqLR6vac9lySh6+EEWAoJ1hBp3W4TP+9iv/ctxTmuj+E9DrmKj7hVi
+	V8M7o6zxIr8KFeK1K6+7iQKOsTS2JfpWCH0x5g4XKSXYnYScdkpUCpZegbAnzTvb
+	gwL8MMtb173ur34l6s+Ce9dZlK5r9/x/HavbpTndn630RXi1+ZSzwppdmizJF+Iz
+	WkntkSiDvjd4MplBGYv9ICX0uhbDDslk2fU/5tRX88WWopx5WpJd7DVUsL4zd7CY
+	JimZp63JYiCZtQPjNv+XDibC6CqaJoQEv5DAqwtFI2T1dEaWVA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w5ef1rqd0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 11:26:00 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 419BQ0dN023912
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 9 Feb 2024 11:26:00 GMT
+Received: from hu-dibasing-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 9 Feb 2024 03:25:55 -0800
+From: Dibakar Singh <quic_dibasing@quicinc.com>
+To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <krzysztof.kozlowski@linaro.org>, <luzmaximilian@gmail.com>,
+        <bartosz.golaszewski@linaro.org>, <quic_eberman@quicinc.com>,
+        <quic_gurus@quicinc.com>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_guptap@quicinc.com>, <quic_pkondeti@quicinc.com>,
+        <quic_pheragu@quicinc.com>, <quic_dibasing@quicinc.com>
+Subject: [PATCH] firmware: qcom_scm: Introduce batching of hyp assign calls
+Date: Fri, 9 Feb 2024 16:55:36 +0530
+Message-ID: <20240209112536.2262967-1-quic_dibasing@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CYYPR12MB8750:EE_|DS0PR12MB7771:EE_
-X-MS-Office365-Filtering-Correlation-Id: e1e0d2d4-a536-48af-3b80-08dc29619421
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Cy63pJU2V/qh1SokEVK4JH3s81CY0wZnuhFQz804a4FTBCxVYyrZa584vxksvYK+0RokuEUyknu6tQDnMYfdtX4p0NIT9NMsQeAS7wXsaatTa4yf+pHyuRt9QZnKrTvQ+zn93WY1IIH2xLap/JVHOSfcfN8sCnHt9pftrd4m/l5lKxC5lxQn6kc/1VpVkS/gpEmJ3KexLzOoSbXXfoWN+VNOz2eESAxPET3UzY9bmCg/nGHMiDdWi3fzT9B+O0U7zcV8BojyW4Noglf0Y4joomeyvbsKFArjbkRrEpwuHwNvPEySiuqMNQ/eom8Y1aMzJUetbZOH84f/8A3feAPQ113OmZJi42+w+7OWNa8J/WKB5TISOjjfXgE/MiiaR3aybCiSoHBTlEwhdl1Sv7dsJv4z+0/kyAQcZH077xj2zxwK+RgQ2aB8CIdq2eamscErFifN9wh3ZpQ5UIHEoRMn9nMUbwmss95Y0+yyOA5yt2F78Qiy3yQO6tazjQm7lgVtb62NooTTUg5U43UvO4MYVHtNQvttE9IELnkyAHbPSeUlDN3HkaE8LqvLQL6lMFds
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYYPR12MB8750.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(376002)(366004)(39860400002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(6916009)(83380400001)(6506007)(66556008)(478600001)(6512007)(26005)(38100700002)(316002)(6666004)(6486002)(8936002)(7416002)(8676002)(66476007)(54906003)(4326008)(5660300002)(2906002)(66946007)(41300700001)(53546011)(9686003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?/77eTQ0ITETxcjXwZO196nqURPKOfFNd/93kn8Ig0ISlR2+sUUTzF55ZVvlJ?=
- =?us-ascii?Q?p9/O9RbMG2lbRb6x+6trL+6kVBbQCtVckJDA05bqIWoWNn58UUlZtl45vczf?=
- =?us-ascii?Q?mb1nmi/2Vkz20C2n6zQR8woorakXjoeSGmqyXOdVYUQWXijFzskvISlurZxq?=
- =?us-ascii?Q?SwvR5NDV/3EsdMbmPHBD9CiuuBQiNNifYrvTLPheGoGuTJJmMdCy9jUlBswo?=
- =?us-ascii?Q?gFvcJshh3cg/u6bBMpQNYeZmD5AP17BxSlqR8Z3dV5JNn8X7+nzNfue22//E?=
- =?us-ascii?Q?e+N3ebiYw0LTMwSu0b4JYzbMK6DG6e0IrVZtEeyxpgERG5ALJJr9YkRfgWUF?=
- =?us-ascii?Q?AdVeux32pshRRkWpQvAqodIK0pDXZrM4ylWNPqWCBiQ271DnpejQALLJVaSE?=
- =?us-ascii?Q?nogoz4r0h6nAWeB9QtQUcPhQ/Tz3H/nOe++CbW2Tnp9kUyM9vrIB/AsD67XQ?=
- =?us-ascii?Q?YjcnEd9Pl04bKt5A/IQnUAB6Z1X/VrwYI45NHsD92BiqVsWFPFy9TcNypWPe?=
- =?us-ascii?Q?T7smMwldIZiwN5elKPWK2c18K7an5kXGGSV6uyj2SnuXC6A44X6qrlHHN/lw?=
- =?us-ascii?Q?Oecrw5+lgFb7OGAe3iVLq+9kyATHY6V7Ea9V0TNDhyrcymZ7TRhMD9YU4OGV?=
- =?us-ascii?Q?btPjHgexCBAkKvSQQs91XuQg0zqP+sH+jUl1bXdYz/g5ENeHRq12OpEChha1?=
- =?us-ascii?Q?xL3k6QGR8ew6tBWyGokLdrvzQ6S6cb2iN0KFK/g1InCUP8oz+xm4h/YnE0zi?=
- =?us-ascii?Q?Uh7Dw/fmBJELuzirnR/Y38VmDNjsnFgJlP5Q0ko2tIi/D6ihfSxz0Gp6y1PH?=
- =?us-ascii?Q?1lFBfD8kmQ/kp83dO/BYzVNWlAFyt6ylQc/p/NMcRX6brvnW9l1THbRyrfBW?=
- =?us-ascii?Q?2kJjoAdEfe+Oqd7PXFDhqjmTfdOh5+kn+pcKKo72Yo887v/i0Df5WeMcSAZo?=
- =?us-ascii?Q?w58asO3bZHu0SFOsPmESws6AHgWTwYt1bCXLOWssNQVP5Esi0ZOQIWlX88Kj?=
- =?us-ascii?Q?VJuhH4N1UDKHp0A2ekRy4Rc+p7WrldgZHC7cl/sm15SzIlhTMW7cFyuF2Am0?=
- =?us-ascii?Q?+ZjwmgM/3OSg+qX6wZUBHYvB1T3OI5WFOXLsG5IXPp8+k1Kpa5jzjH3xXpP8?=
- =?us-ascii?Q?yDIkwIn9fODWnRuipW+OJLtps92cjof/tSdCTCIwl4StvObuWH2rQbid+jMN?=
- =?us-ascii?Q?ND1pCbZyrXK7ZE0Gkbh//CmdyN/H3P4pl8jTgM+7uaPsGpS0KenggrYjbwTl?=
- =?us-ascii?Q?SYG2lfonl3KlM8Sf2B5cpYMBfsvO3DwL4RBEk5CCTqYFrygsf++TwyL4IfNp?=
- =?us-ascii?Q?HBcVsDK814F55LOye1hqMRbXtwV/ZWbdZ4WEsr++gOxDIkUnZmxWZe5FovVj?=
- =?us-ascii?Q?XiTpKx5x+AJrx/SBtewX9J5Qo2FqKg4taUIav8INU+46wKcTepBi1rvrj/78?=
- =?us-ascii?Q?aozbRVxVrtAKdOCLcpEykGPo8hpMRuqSvbX5b8yM+bVng1sMKWHgeaXr8aUd?=
- =?us-ascii?Q?PaRwVZ3JPOmMUJsKxXw/ejB+nqq/iRk2ORK6QUiiQmpgeAwFExitnKM62dLk?=
- =?us-ascii?Q?mwD5Q8MD21y14lBuXHy91xwXJ/BdZg9/v4wQYeI1?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e1e0d2d4-a536-48af-3b80-08dc29619421
-X-MS-Exchange-CrossTenant-AuthSource: CYYPR12MB8750.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 11:23:45.6432
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QOZnUWhb1ItWBrdnCbzCI9Bk02jkhWp/zsPFnLVFN7fZB1LvTMiN/hzyMuhyDMag11Em9C2HHZGBGcX2QHRgHA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7771
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 4tSiCFBVw6Dq3GgJJOzzAG6IaJMfsLLx
+X-Proofpoint-ORIG-GUID: 4tSiCFBVw6Dq3GgJJOzzAG6IaJMfsLLx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-09_08,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 clxscore=1011 bulkscore=0 mlxlogscore=999
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402090082
 
-On 26.01.24 16:46:03, Jonathan Cameron wrote:
-> On Mon, 8 Jan 2024 12:48:33 +0100
-> Robert Richter <rrichter@amd.com> wrote:
-> 
-> > The last entry in the CDAT table may not mark the end of the CDAT
-> > table buffer specified by the length field in the CDAT header. It can
-> > be shorter with trailing unused (zero'ed) data. The actual table
-> > length is determined when reading all CDAT entries of the table with
-> > DOE.
-> 
-> Can you give some reasons why this would occur?
+Expose an API qcom_scm_assign_table to allow client drivers to batch
+multiple memory regions in a single hyp assign call.
 
-I have seen card implementations where the CDAT table is some sort of
-fix buffer, but with entries filled in that do not fill the whole
-table length size. Which means that the last DOE ends earlier than the
-table end that then contains padding bytes. Spec is not entierly clear
-here. It could be interpreted as a spec violation, but DOE is the card
-vendor's firmware there is not much that can be done to fix that
-there...
+In the existing situation, if our goal is to process an sg_table and
+transfer its ownership from the current VM to a different VM, we have a
+couple of strategies. The first strategy involves processing the entire
+sg_table at once and then transferring the ownership. However, this
+method may have an adverse impact on the system because during an SMC
+call, the NS interrupts are disabled, and this delay could be
+significant when dealing with large sg_tables. To address this issue, we
+can adopt a second strategy, which involves processing each sg_list in
+the sg_table individually and reassigning memory ownership. Although
+this method is slower and potentially impacts performance, it will not
+keep the NS interrupts disabled for an extended period.
 
-> 
-> Need to be clear if this is:
-> 1) Hardening against device returning borked table.
+A more efficient strategy is to process the sg_table in batches. This
+approach addresses both scenarios by involving memory processing in
+batches, thus avoiding prolonged NS interrupt disablement for longer
+duration when dealing with large sg_tables. Moreover, since we process
+in batches, this method is faster compared to processing each item
+individually. The observations on testing both the approaches for
+performance is as follows:
 
-So this was the main motivation. It will be likely there are more
-cards with that issue.
+Allocation Size/            256MB            512MB            1024MB
+Algorithm Used           ===========      ===========      ============
 
-> 2) Hardening against in flight update of CDAT racing with the readout
->    (not sure table can change size, but maybe.. I haven't checked).
+Processing each sg_list   73708(us)        149289(us)       266964(us)
+in sg_table one by one
 
-That is a side effect I realized while implementing this patch. To
-prevent an out of bound buffer access, either the buffer needs a
-length argument or the length field in the header needs to be checked.
-The earlier is more reasonable and natural to me as no buffer insight
-is needed for that.
+Processing sg_table in    46925(us)         92691(us)       176893(us)
+batches
 
-> 3) DW read back vs packed structures?
+This implementation serves as a wrapper around the helper function
+__qcom_scm_assign_mem, which takes an sg_list and processes it in
+batches. We’ve set the limit to a minimum of 32 sg_list in a batch or a
+total batch size of 512 pages. The selection of these numbers is
+heuristic, based on the test runs conducted. Opting for a smaller number
+would compromise performance, while a larger number would result in
+non-secure interrupts being disabled for an extended duration.
 
-Good point. But that was not the reason. IIR the PCI DOE code
-correctly, there is a DW access but only the missing bytes are written
-to the buffer. The CDAT structures are all DW aligned, but the DOE
-header isn't.
+Co-developed-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
+Signed-off-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
+Signed-off-by: Dibakar Singh <quic_dibasing@quicinc.com>
+---
+ drivers/firmware/qcom/qcom_scm.c       | 211 +++++++++++++++++++++++++
+ include/linux/firmware/qcom/qcom_scm.h |   7 +
+ 2 files changed, 218 insertions(+)
 
-> 
-> Patch seems reasonable to me, I'd just like a clear statement of why
-> it happens!
+diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+index 520de9b5633a..038b96503d65 100644
+--- a/drivers/firmware/qcom/qcom_scm.c
++++ b/drivers/firmware/qcom/qcom_scm.c
+@@ -21,6 +21,8 @@
+ #include <linux/platform_device.h>
+ #include <linux/reset-controller.h>
+ #include <linux/types.h>
++#include <linux/scatterlist.h>
++#include <linux/slab.h>
+ 
+ #include "qcom_scm.h"
+ 
+@@ -1048,6 +1050,215 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+ }
+ EXPORT_SYMBOL_GPL(qcom_scm_assign_mem);
+ 
++/**
++ * qcom_scm_assign_mem_batch() - Make a secure call to reassign memory
++ *				   ownership of several memory regions
++ * @mem_regions:    A buffer describing the set of memory regions that need to
++ *		    be reassigned
++ * @nr_mem_regions: The number of memory regions that need to be reassigned
++ * @srcvms:	    A buffer populated with he vmid(s) for the current set of
++ *		    owners
++ * @src_sz:	    The size of the srcvms buffer (in bytes)
++ * @destvms:	    A buffer populated with the new owners and corresponding
++ *		    permission flags.
++ * @dest_sz:	    The size of the destvms buffer (in bytes)
++ *
++ * Return negative errno on failure, 0 on success.
++ */
++static int qcom_scm_assign_mem_batch(struct qcom_scm_mem_map_info *mem_regions,
++				     size_t nr_mem_regions, u32 *srcvms,
++				     size_t src_sz,
++				     struct qcom_scm_current_perm_info *destvms,
++				     size_t dest_sz)
++{
++	dma_addr_t mem_dma_addr;
++	size_t mem_regions_sz;
++	int ret = 0, i;
++
++	for (i = 0; i < nr_mem_regions; i++) {
++		mem_regions[i].mem_addr = cpu_to_le64(mem_regions[i].mem_addr);
++		mem_regions[i].mem_size = cpu_to_le64(mem_regions[i].mem_size);
++	}
++
++	mem_regions_sz = nr_mem_regions * sizeof(*mem_regions);
++	mem_dma_addr = dma_map_single(__scm->dev, mem_regions, mem_regions_sz,
++				      DMA_TO_DEVICE);
++	if (dma_mapping_error(__scm->dev, mem_dma_addr)) {
++		dev_err(__scm->dev, "mem_dma_addr mapping failed\n");
++		return -ENOMEM;
++	}
++
++	ret = __qcom_scm_assign_mem(__scm->dev, virt_to_phys(mem_regions),
++				    mem_regions_sz, virt_to_phys(srcvms), src_sz,
++				    virt_to_phys(destvms), dest_sz);
++
++	dma_unmap_single(__scm->dev, mem_dma_addr, mem_regions_sz, DMA_TO_DEVICE);
++	return ret;
++}
++
++/**
++ * qcom_scm_prepare_mem_batch() - Prepare batches of memory regions
++ * @sg_table:       A scatter list whose memory needs to be reassigned
++ * @srcvms:	    A buffer populated with he vmid(s) for the current set of
++ *		    owners
++ * @nr_src:	    The number of the src_vms buffer
++ * @destvms:	    A buffer populated with he vmid(s) for the new owners
++ * @destvms_perms:  A buffer populated with the permission flags of new owners
++ * @nr_dest:	    The number of the destvms
++ * @last_sgl:	    Denotes to the last scatter list element. Used in case of rollback
++ * @roll_back:	    Identifies whether we are executing rollback in case of failure
++ *
++ * Return negative errno on failure, 0 on success.
++ */
++static int qcom_scm_prepare_mem_batch(struct sg_table *table,
++				      u32 *srcvms, int nr_src,
++				      int *destvms, int *destvms_perms,
++				      int nr_dest,
++				      struct scatterlist *last_sgl, bool roll_back)
++{
++	struct qcom_scm_current_perm_info *destvms_cp;
++	struct qcom_scm_mem_map_info *mem_regions_buf;
++	struct scatterlist *curr_sgl = table->sgl;
++	dma_addr_t source_dma_addr, dest_dma_addr;
++	size_t batch_iterator;
++	size_t batch_start = 0;
++	size_t destvms_cp_sz;
++	size_t srcvms_cp_sz;
++	size_t batch_size;
++	u32 *srcvms_cp;
++	int ret = 0;
++	int i;
++
++	if (!table || !table->sgl || !srcvms || !nr_src ||
++	    !destvms || !destvms_perms || !nr_dest || !table->nents)
++		return -EINVAL;
++
++	srcvms_cp_sz = sizeof(*srcvms_cp) * nr_src;
++	srcvms_cp = kmemdup(srcvms, srcvms_cp_sz, GFP_KERNEL);
++	if (!srcvms_cp)
++		return -ENOMEM;
++
++	for (i = 0; i < nr_src; i++)
++		srcvms_cp[i] = cpu_to_le32(srcvms_cp[i]);
++
++	source_dma_addr = dma_map_single(__scm->dev, srcvms_cp,
++					 srcvms_cp_sz, DMA_TO_DEVICE);
++
++	if (dma_mapping_error(__scm->dev, source_dma_addr)) {
++		ret = -ENOMEM;
++		goto out_free_source;
++	}
++
++	destvms_cp_sz = sizeof(*destvms_cp) * nr_dest;
++	destvms_cp = kzalloc(destvms_cp_sz, GFP_KERNEL);
++
++	if (!destvms_cp) {
++		ret = -ENOMEM;
++		goto out_unmap_source;
++	}
++
++	for (i = 0; i < nr_dest; i++) {
++		destvms_cp[i].vmid = cpu_to_le32(destvms[i]);
++		destvms_cp[i].perm = cpu_to_le32(destvms_perms[i]);
++		destvms_cp[i].ctx = 0;
++		destvms_cp[i].ctx_size = 0;
++	}
++
++	dest_dma_addr = dma_map_single(__scm->dev, destvms_cp,
++				       destvms_cp_sz, DMA_TO_DEVICE);
++	if (dma_mapping_error(__scm->dev, dest_dma_addr)) {
++		ret = -ENOMEM;
++		goto out_free_dest;
++	}
++
++	mem_regions_buf = kcalloc(QCOM_SCM_MAX_BATCH_SECTION, sizeof(*mem_regions_buf),
++				  GFP_KERNEL);
++	if (!mem_regions_buf)
++		return -ENOMEM;
++
++	while (batch_start < table->nents) {
++		batch_size = 0;
++		batch_iterator = 0;
++
++		do {
++			mem_regions_buf[batch_iterator].mem_addr = page_to_phys(sg_page(curr_sgl));
++			mem_regions_buf[batch_iterator].mem_size = curr_sgl->length;
++			batch_size += curr_sgl->length;
++			batch_iterator++;
++			if (roll_back && curr_sgl == last_sgl)
++				break;
++			curr_sgl = sg_next(curr_sgl);
++		} while (curr_sgl && batch_iterator < QCOM_SCM_MAX_BATCH_SECTION &&
++				curr_sgl->length + batch_size < QCOM_SCM_MAX_BATCH_SIZE);
++
++		batch_start += batch_iterator;
++
++		ret = qcom_scm_assign_mem_batch(mem_regions_buf, batch_iterator,
++						srcvms_cp, srcvms_cp_sz, destvms_cp, destvms_cp_sz);
++
++		if (ret) {
++			dev_info(__scm->dev, "Failed to assign memory protection, ret = %d\n", ret);
++			last_sgl = curr_sgl;
++			ret = -EADDRNOTAVAIL;
++			break;
++		}
++		if (roll_back && curr_sgl == last_sgl)
++			break;
++	}
++	kfree(mem_regions_buf);
++
++	dma_unmap_single(__scm->dev, dest_dma_addr,
++			 destvms_cp_sz, DMA_TO_DEVICE);
++
++out_free_dest:
++	kfree(destvms_cp);
++out_unmap_source:
++	dma_unmap_single(__scm->dev, source_dma_addr,
++			 srcvms_cp_sz, DMA_TO_DEVICE);
++out_free_source:
++	kfree(srcvms_cp);
++	return ret;
++}
++
++/**
++ * qcom_scm_assign_table() - Make a call to prepare batches of memory regions
++ *			     and reassign memory ownership of several memory regions at once
++ * @sg_table:       A scatter list whose memory needs to be reassigned
++ * @srcvms:	    A buffer populated with he vmid(s) for the current set of
++ *		    owners
++ * @nr_src:	    The number of the src_vms buffer
++ * @destvms:	    A buffer populated with he vmid(s) for the new owners
++ * @destvms_perms:  A buffer populated with the permission flags of new owners
++ * @nr_dest:	    The number of the destvms
++ *
++ * Return negative errno on failure, 0 on success.
++ */
++int qcom_scm_assign_table(struct sg_table *table,
++			  u32 *srcvms, int nr_src,
++			  int *destvms, int *destvms_perms,
++			  int nr_dest)
++{
++	struct scatterlist *last_sgl = NULL;
++	int rb_ret = 0;
++	u32 new_dests;
++	int new_perms;
++	int ret = 0;
++
++	ret = qcom_scm_prepare_mem_batch(table, srcvms, nr_src,
++					 destvms, destvms_perms, nr_dest, last_sgl, false);
++
++	if (!ret)
++		goto out;
++	new_dests = QCOM_SCM_VMID_HLOS;
++	new_perms = QCOM_SCM_PERM_EXEC | QCOM_SCM_PERM_WRITE | QCOM_SCM_PERM_READ;
++	rb_ret = qcom_scm_prepare_mem_batch(table, destvms, nr_dest, &new_dests,
++					    &new_perms, nr_src, last_sgl, true);
++	WARN_ON_ONCE(rb_ret);
++out:
++	return ret;
++}
++EXPORT_SYMBOL_GPL(qcom_scm_assign_table);
++
+ /**
+  * qcom_scm_ocmem_lock_available() - is OCMEM lock/unlock interface available
+  */
+diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
+index ccaf28846054..abd675c7ef49 100644
+--- a/include/linux/firmware/qcom/qcom_scm.h
++++ b/include/linux/firmware/qcom/qcom_scm.h
+@@ -8,6 +8,7 @@
+ #include <linux/err.h>
+ #include <linux/types.h>
+ #include <linux/cpumask.h>
++#include <linux/scatterlist.h>
+ 
+ #include <dt-bindings/firmware/qcom,scm.h>
+ 
+@@ -15,6 +16,8 @@
+ #define QCOM_SCM_CPU_PWR_DOWN_L2_ON	0x0
+ #define QCOM_SCM_CPU_PWR_DOWN_L2_OFF	0x1
+ #define QCOM_SCM_HDCP_MAX_REQ_CNT	5
++#define QCOM_SCM_MAX_BATCH_SECTION	32
++#define QCOM_SCM_MAX_BATCH_SIZE		SZ_2M
+ 
+ struct qcom_scm_hdcp_req {
+ 	u32 addr;
+@@ -93,6 +96,10 @@ int qcom_scm_mem_protect_video_var(u32 cp_start, u32 cp_size,
+ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz, u64 *src,
+ 			const struct qcom_scm_vmperm *newvm,
+ 			unsigned int dest_cnt);
++int qcom_scm_assign_table(struct sg_table *table,
++			  u32 *srcvms, int nr_src,
++			  int *destvms, int *destvms_perms,
++			  int nr_dest);
+ 
+ bool qcom_scm_ocmem_lock_available(void);
+ int qcom_scm_ocmem_lock(enum qcom_scm_ocmem_client id, u32 offset, u32 size,
+-- 
+2.34.1
 
-So regardless of padding bytes or not, a length check is required in
-any case, one or the other way.
-
-Will update the patch description.
-
-Thanks,
-
--Robert
-
-> 
-> Jonathan
-> 
-> > 
-> > If the table is greater than expected (containing zero'ed trailing
-> > data), the CDAT parser fails with:
-> > 
-> >  [   48.691717] Malformed DSMAS table length: (24:0)
-> >  [   48.702084] [CDAT:0x00] Invalid zero length
-> >  [   48.711460] cxl_port endpoint1: Failed to parse CDAT: -22
-> > 
-> > In addition, the table buffer size can be different from the size
-> > specified in the length field. This may cause out-of-bound access then
-> > parsing the CDAT table.
-> > 
-> > Fix that by providing an optonal buffer length argument to
-> > acpi_parse_entries_array() that can be used by cdat_table_parse() to
-> > propagate the buffer size down to its users.
-> > 
-> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > Cc: Len Brown <lenb@kernel.org>
-> > Signed-off-by: Robert Richter <rrichter@amd.com>
-> > ---
-> >  drivers/acpi/tables.c    |  2 +-
-> >  drivers/cxl/core/cdat.c  |  6 +++---
-> >  include/linux/fw_table.h |  4 +++-
-> >  lib/fw_table.c           | 15 ++++++++++-----
-> >  4 files changed, 17 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
-> > index b07f7d091d13..b976e5fc3fbc 100644
-> > --- a/drivers/acpi/tables.c
-> > +++ b/drivers/acpi/tables.c
-> > @@ -253,7 +253,7 @@ int __init_or_acpilib acpi_table_parse_entries_array(
-> >  
-> >  	count = acpi_parse_entries_array(id, table_size,
-> >  					 (union fw_table_header *)table_header,
-> > -					 proc, proc_num, max_entries);
-> > +					 0, proc, proc_num, max_entries);
-> >  
-> >  	acpi_put_table(table_header);
-> >  	return count;
-> > diff --git a/drivers/cxl/core/cdat.c b/drivers/cxl/core/cdat.c
-> > index 6fe11546889f..012d8f2a7945 100644
-> > --- a/drivers/cxl/core/cdat.c
-> > +++ b/drivers/cxl/core/cdat.c
-> > @@ -149,13 +149,13 @@ static int cxl_cdat_endpoint_process(struct cxl_port *port,
-> >  	int rc;
-> >  
-> >  	rc = cdat_table_parse(ACPI_CDAT_TYPE_DSMAS, cdat_dsmas_handler,
-> > -			      dsmas_xa, port->cdat.table);
-> > +			      dsmas_xa, port->cdat.table, port->cdat.length);
-> >  	rc = cdat_table_parse_output(rc);
-> >  	if (rc)
-> >  		return rc;
-> >  
-> >  	rc = cdat_table_parse(ACPI_CDAT_TYPE_DSLBIS, cdat_dslbis_handler,
-> > -			      dsmas_xa, port->cdat.table);
-> > +			      dsmas_xa, port->cdat.table, port->cdat.length);
-> >  	return cdat_table_parse_output(rc);
-> >  }
-> >  
-> > @@ -511,7 +511,7 @@ void cxl_switch_parse_cdat(struct cxl_port *port)
-> >  		return;
-> >  
-> >  	rc = cdat_table_parse(ACPI_CDAT_TYPE_SSLBIS, cdat_sslbis_handler,
-> > -			      port, port->cdat.table);
-> > +			      port, port->cdat.table, port->cdat.length);
-> >  	rc = cdat_table_parse_output(rc);
-> >  	if (rc)
-> >  		dev_dbg(&port->dev, "Failed to parse SSLBIS: %d\n", rc);
-> > diff --git a/include/linux/fw_table.h b/include/linux/fw_table.h
-> > index 95421860397a..3ff4c277296f 100644
-> > --- a/include/linux/fw_table.h
-> > +++ b/include/linux/fw_table.h
-> > @@ -40,12 +40,14 @@ union acpi_subtable_headers {
-> >  
-> >  int acpi_parse_entries_array(char *id, unsigned long table_size,
-> >  			     union fw_table_header *table_header,
-> > +			     unsigned long max_length,
-> >  			     struct acpi_subtable_proc *proc,
-> >  			     int proc_num, unsigned int max_entries);
-> >  
-> >  int cdat_table_parse(enum acpi_cdat_type type,
-> >  		     acpi_tbl_entry_handler_arg handler_arg, void *arg,
-> > -		     struct acpi_table_cdat *table_header);
-> > +		     struct acpi_table_cdat *table_header,
-> > +		     unsigned long length);
-> >  
-> >  /* CXL is the only non-ACPI consumer of the FIRMWARE_TABLE library */
-> >  #if IS_ENABLED(CONFIG_ACPI) && !IS_ENABLED(CONFIG_CXL_BUS)
-> > diff --git a/lib/fw_table.c b/lib/fw_table.c
-> > index 1e5e0b2f7012..ddb67853b7ac 100644
-> > --- a/lib/fw_table.c
-> > +++ b/lib/fw_table.c
-> > @@ -132,6 +132,7 @@ static __init_or_fwtbl_lib int call_handler(struct acpi_subtable_proc *proc,
-> >   *
-> >   * @id: table id (for debugging purposes)
-> >   * @table_size: size of the root table
-> > + * @max_length: maximum size of the table (ignore if 0)
-> >   * @table_header: where does the table start?
-> >   * @proc: array of acpi_subtable_proc struct containing entry id
-> >   *        and associated handler with it
-> > @@ -153,10 +154,11 @@ static __init_or_fwtbl_lib int call_handler(struct acpi_subtable_proc *proc,
-> >  int __init_or_fwtbl_lib
-> >  acpi_parse_entries_array(char *id, unsigned long table_size,
-> >  			 union fw_table_header *table_header,
-> > +			 unsigned long max_length,
-> >  			 struct acpi_subtable_proc *proc,
-> >  			 int proc_num, unsigned int max_entries)
-> >  {
-> > -	unsigned long table_end, subtable_len, entry_len;
-> > +	unsigned long table_len, table_end, subtable_len, entry_len;
-> >  	struct acpi_subtable_entry entry;
-> >  	enum acpi_subtable_type type;
-> >  	int count = 0;
-> > @@ -164,8 +166,10 @@ acpi_parse_entries_array(char *id, unsigned long table_size,
-> >  	int i;
-> >  
-> >  	type = acpi_get_subtable_type(id);
-> > -	table_end = (unsigned long)table_header +
-> > -		    acpi_table_get_length(type, table_header);
-> > +	table_len = acpi_table_get_length(type, table_header);
-> > +	if (max_length && max_length < table_len)
-> > +		table_len = max_length;
-> > +	table_end = (unsigned long)table_header + table_len;
-> >  
-> >  	/* Parse all entries looking for a match. */
-> >  
-> > @@ -220,7 +224,8 @@ int __init_or_fwtbl_lib
-> >  cdat_table_parse(enum acpi_cdat_type type,
-> >  		 acpi_tbl_entry_handler_arg handler_arg,
-> >  		 void *arg,
-> > -		 struct acpi_table_cdat *table_header)
-> > +		 struct acpi_table_cdat *table_header,
-> > +		 unsigned long length)
-> >  {
-> >  	struct acpi_subtable_proc proc = {
-> >  		.id		= type,
-> > @@ -234,6 +239,6 @@ cdat_table_parse(enum acpi_cdat_type type,
-> >  	return acpi_parse_entries_array(ACPI_SIG_CDAT,
-> >  					sizeof(struct acpi_table_cdat),
-> >  					(union fw_table_header *)table_header,
-> > -					&proc, 1, 0);
-> > +					length, &proc, 1, 0);
-> >  }
-> >  EXPORT_SYMBOL_FWTBL_LIB(cdat_table_parse);
-> 
 
