@@ -1,177 +1,193 @@
-Return-Path: <linux-kernel+bounces-60036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 013AD84FEF1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:33:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 024B584FEF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:34:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9B541F24CAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:33:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 278291C22C0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8D018623;
-	Fri,  9 Feb 2024 21:33:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D527920DE8;
+	Fri,  9 Feb 2024 21:34:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TmngzNo5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HtN11k7B"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6A9F17570
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 21:33:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50E3214F6C;
+	Fri,  9 Feb 2024 21:34:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707514425; cv=none; b=caDmXuC+4/EzRfqzfS3NMUSGPrPCL7ZHUC5hyWqR6XQ3z4Roaslen3JBTeSHs3piUW+rIHduzXBQ6I+hGykF3klW0GXyjVAvNl7J6yy8dzA8fG+hAsSCOGkJkmJUBaf9McjhWE0bWZ+ztdKGXJtbt6gV81o5dpy5xTGmYl5UCCE=
+	t=1707514472; cv=none; b=Y88d23n6zzotOmznkrHhCy2Eyg25S8AZbiAVnMTBbvwC6AriW/pVed2rysXA2NE2Z7vWdEDBh/nSGWaykl2SEqDi5lLDnA1HT+6VmiA13z1vOI3pS6gweo7bEv8jAYFHeo12ddGHK46s2omrzWsYidEQAvxoMuwCGhB+lBFVkIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707514425; c=relaxed/simple;
-	bh=NlXZqaKkhXz9tvOQze70I37khCbmxb0wOBoeUVbkFGg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=jzR1ifCoNfag4iZ6rdic/4tP7kaP4yUQbZixz6Gff+2pPRTIwXTBpXkDtxYDTw4fs4cxQtmCwcTAjBDnN9IPK8DiXB0FjbhB6AqGjvO9qR4BASq9uoyAyoY0j1VzRsCo86obuQ+hefPwZ+UYUzGwcWZcLWIuPugtP455YHE0do0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TmngzNo5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6305EC433F1;
-	Fri,  9 Feb 2024 21:33:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707514425;
-	bh=NlXZqaKkhXz9tvOQze70I37khCbmxb0wOBoeUVbkFGg=;
-	h=From:Date:Subject:To:Cc:From;
-	b=TmngzNo5wZ0QZDN0n0nxZJxYGyzo/jKf5h8tldRMwbGfxdmkSC9X+xQUKX6pZ/Hrb
-	 /ftlLUDFasxuXWh2bGRnoylXNChFGQW4uAobEry6p89vZhzVTlXEpEIqQriKsf/lAn
-	 Uphv+vDe3v9mmuzZ4pqqrjjnqqwm6nyKze1dKAkJR3ZnjY7jNp6rZCBqotXWus52Fo
-	 h2+Q9YJIw/I8eflcAHUxxiKZbvXCEwU/jq73+beJ27soc/RYKSvhTRtxY2WwMzyIJg
-	 HRqYlELVoEU+gwVEgzYD2Co/H9oht+zRx+Kwr797+8lPHK1cgulM35l12OvkfMHinp
-	 AbH9rR6PEx5yQ==
-From: Mark Brown <broonie@kernel.org>
-Date: Fri, 09 Feb 2024 21:33:32 +0000
-Subject: [PATCH v2] regmap: kunit: Ensure that changed bytes are actually
- different
+	s=arc-20240116; t=1707514472; c=relaxed/simple;
+	bh=3RS6nTB/bSq16p1MiQ52S5A/vunTmwlUSRNhqUphYNY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=RLaxJ7ubnK31kfJT9+GgXNrPRuG4TNvIiVwC6H2C3rWKs71398AaZER33UNoijug0RgewEKsJLxf9t6zamfo6DMD517aP9PYxuMBYdYx8N8Hf9tbPVvTNTn6ZByoGQ9CDB0D55BfOiK+Dh3afF+TGqY7G8W/1x2lVyDRMaQMfic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HtN11k7B; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 419L0VMx029556;
+	Fri, 9 Feb 2024 21:34:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=LsuqDkQrOLRCvVF/GOV2mZSSM5+gzqlLGeKCqtykZkE=; b=Ht
+	N11k7BIDH563l5K6m0TvWmOoCzJ9WlBPrjosmpkbEfTpkS5uzfrhCOts23PW5DYQ
+	020Z898NKaMJQ4YECfYRKe7rTTvZeILPHY/kjgFjd2GLVLe+11t22hYgyamUWI+/
+	sMrKP5gdFiHJ+XvegII76kblc15PDj7ZCcoJjvJ3t/0fmruFdyyjzcrcQbHv33S1
+	G/LjaRS8Q5wvxi+bApwZUtvK4oSEoTV4RP9JkE06ga7AMkBFsfbpNM9mES5AHV96
+	GfJ+1IprjL/dgiyyW/YiBsw5vLG9jAUPXhgCms3JWtmw9KtEIJF6CbCcUfzdof8n
+	VQquLDHlBgZycZhptyNw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w4rk853xq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 21:34:09 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 419LY7lv012787
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 9 Feb 2024 21:34:07 GMT
+Received: from [10.110.93.252] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 9 Feb
+ 2024 13:34:06 -0800
+Message-ID: <cb3b7857-dc6c-80db-4fa7-6772a856f328@quicinc.com>
+Date: Fri, 9 Feb 2024 13:34:05 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v14 32/53] ALSA: usb-audio: Check for support for
+ requested audio format
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>
+References: <20240208231406.27397-1-quic_wcheng@quicinc.com>
+ <20240208231406.27397-33-quic_wcheng@quicinc.com>
+ <87v86x2a27.wl-tiwai@suse.de>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <87v86x2a27.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240209-regmap-kunit-random-change-v2-1-be0a447c2891@kernel.org>
-X-B4-Tracking: v=1; b=H4sIACuaxmUC/42NQQ6CMBBFr0Jm7RhaxYIr72FYFDvCBGnJFImGc
- Hcr8QAu38vP+wtEEqYI52wBoZkjB59A7zK4dda3hOwSg871Mdd5hULtYEfsn54nFOtdGPC3VKZ
- snKqaSjUFpMAodOfXFr/WiTuOU5D39jWrr/0rOytUaJ125mQKU5SHS0/i6bEP0kK9rusHxJhiY
- cUAAAA=
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3554; i=broonie@kernel.org;
- h=from:subject:message-id; bh=NlXZqaKkhXz9tvOQze70I37khCbmxb0wOBoeUVbkFGg=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlxpo37uV6HyHhh/cFp4ovSyuJmtbJ47ESPT3PZ
- mP6lnnd7dmJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZcaaNwAKCRAk1otyXVSH
- 0O9OB/9TOf/Dgma/o0au9mrFdZIIhmRl0Pqjand++JcpqWRMlbfDVHKAGP2oT2vHxpGsBuYImAn
- HTI+w/qLT8UBYJOeIqBqtcG+Ic3Mr3gwAdWXdb2e9y7iQAxbTyAo1v/RpcbpvyS8b7R/mmut+b5
- PeiZ+lNeMW9dFv9AirjdFZB0g62Hg61SD/dOHRzIJzJypUsyRPnOUTjbGCmlRR3BIdWIVNp+45B
- CRarnTD6tyF5eTneNnw2NxjcqjzLJHSZ7WHzlLcXP30tH6N92im759xtXbmTsL3NVwm+CMsAlFI
- 5ONAr2g8LaIIlxaio98PqNtTn5T4bZTKK0DrSpTwHUJFcqGT
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: VBvEnHykC4dfcREjqKdafvl0xJaIJlIe
+X-Proofpoint-ORIG-GUID: VBvEnHykC4dfcREjqKdafvl0xJaIJlIe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-09_18,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ phishscore=0 priorityscore=1501 adultscore=0 bulkscore=0 suspectscore=0
+ spamscore=0 impostorscore=0 mlxlogscore=899 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402090156
 
-During the cache sync test we verify that values we expect to have been
-written only to the cache do not appear in the hardware. This works most
-of the time but since we randomly generate both the original and new values
-there is a low probability that these values may actually be the same.
-Wrap get_random_bytes() to ensure that the values are different, it is
-likely we will want a similar pattern for other tests in the future.
+Hi Takashi,
 
-We use random generation to try to avoid data dependencies in the tests.
+On 2/9/2024 2:42 AM, Takashi Iwai wrote:
+> On Fri, 09 Feb 2024 00:13:45 +0100,
+> Wesley Cheng wrote:
+>>
+>> Allow for checks on a specific USB audio device to see if a requested PCM
+>> format is supported.  This is needed for support when playback is
+>> initiated by the ASoC USB backend path.
+>>
+>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+>> ---
+>>   sound/usb/card.c | 31 +++++++++++++++++++++++++++++++
+>>   sound/usb/card.h | 11 +++++++++++
+>>   2 files changed, 42 insertions(+)
+>>
+>> diff --git a/sound/usb/card.c b/sound/usb/card.c
+>> index 7dc8007ba839..1ad99a462038 100644
+>> --- a/sound/usb/card.c
+>> +++ b/sound/usb/card.c
+>> @@ -155,6 +155,37 @@ int snd_usb_unregister_platform_ops(void)
+>>   }
+>>   EXPORT_SYMBOL_GPL(snd_usb_unregister_platform_ops);
+>>   
+>> +/*
+>> + * Checks to see if requested audio profile, i.e sample rate, # of
+>> + * channels, etc... is supported by the substream associated to the
+>> + * USB audio device.
+>> + */
+>> +struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+>> +			struct snd_pcm_hw_params *params, int direction)
+>> +{
+>> +	struct snd_usb_audio *chip;
+>> +	struct snd_usb_substream *subs;
+>> +	struct snd_usb_stream *as;
+>> +
+>> +	/*
+>> +	 * Register mutex is held when populating and clearing usb_chip
+>> +	 * array.
+>> +	 */
+>> +	guard(mutex)(&register_mutex);
+>> +	chip = usb_chip[card_idx];
+>> +
+>> +	if (chip && enable[card_idx]) {
+>> +		list_for_each_entry(as, &chip->pcm_list, list) {
+>> +			subs = &as->substream[direction];
+>> +			if (snd_usb_find_substream_format(subs, params))
+>> +				return as;
+>> +		}
+>> +	}
+>> +
+>> +	return NULL;
+>> +}
+>> +EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
+>> +
+>>   /*
+>>    * disconnect streams
+>>    * called from usb_audio_disconnect()
+>> diff --git a/sound/usb/card.h b/sound/usb/card.h
+>> index 02e4ea898db5..ed4a664e24e5 100644
+>> --- a/sound/usb/card.h
+>> +++ b/sound/usb/card.h
+>> @@ -217,4 +217,15 @@ struct snd_usb_platform_ops {
+>>   
+>>   int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops);
+>>   int snd_usb_unregister_platform_ops(void);
+>> +
+>> +#if IS_ENABLED(CONFIG_SND_USB_AUDIO)
+>> +struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+>> +			struct snd_pcm_hw_params *params, int direction);
+>> +#else
+>> +static struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+>> +			struct snd_pcm_hw_params *params, int direction)
+>> +{
+>> +	return NULL;
+>> +}
+>> +#endif /* IS_ENABLED(CONFIG_SND_USB_AUDIO) */
+> 
+> The usefulness of ifdef guard here is doubtful, IMO.  This header is
+> only for USB-audio driver enablement, and not seen as generic
+> helpers.  So, just add the new function declarations without dummy
+> definitions.
+> 
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
-Changes in v2:
-- Check the whole change in.
-- Link to v1: https://lore.kernel.org/r/20240209-regmap-kunit-random-change-v1-1-ad2d76757583@kernel.org
----
- drivers/base/regmap/regmap-kunit.c | 29 +++++++++++++++++++++++------
- 1 file changed, 23 insertions(+), 6 deletions(-)
+Got it, will remove it.  We also have a dependency in place for the 
+qc_audio_offload driver and SND USB AUDIO in the Kconfig.
 
-diff --git a/drivers/base/regmap/regmap-kunit.c b/drivers/base/regmap/regmap-kunit.c
-index 026bdcb45127..e149b12d0d4a 100644
---- a/drivers/base/regmap/regmap-kunit.c
-+++ b/drivers/base/regmap/regmap-kunit.c
-@@ -9,6 +9,23 @@
- 
- #define BLOCK_TEST_SIZE 12
- 
-+static void get_changed_bytes(void *orig, void *new, size_t size)
-+{
-+	char *o = orig;
-+	char *n = new;
-+	int i;
-+
-+	get_random_bytes(new, size);
-+
-+	/*
-+	 * This could be nicer and more efficient but we shouldn't
-+	 * super care.
-+	 */
-+	for (i = 0; i < size; i++)
-+		while (n[i] == o[i])
-+			get_random_bytes(&n[i], 1);
-+}
-+
- static const struct regmap_config test_regmap_config = {
- 	.max_register = BLOCK_TEST_SIZE,
- 	.reg_stride = 1,
-@@ -1265,16 +1282,16 @@ static void raw_sync(struct kunit *test)
- 
- 	hw_buf = (u16 *)data->vals;
- 
--	get_random_bytes(&val, sizeof(val));
-+	get_changed_bytes(&hw_buf[6], &val[0], sizeof(val));
- 
- 	/* Do a regular write and a raw write in cache only mode */
- 	regcache_cache_only(map, true);
- 	KUNIT_EXPECT_EQ(test, 0, regmap_raw_write(map, 2, val, sizeof(val)));
- 	if (config.val_format_endian == REGMAP_ENDIAN_BIG)
--		KUNIT_EXPECT_EQ(test, 0, regmap_write(map, 6,
-+		KUNIT_EXPECT_EQ(test, 0, regmap_write(map, 4,
- 						      be16_to_cpu(val[0])));
- 	else
--		KUNIT_EXPECT_EQ(test, 0, regmap_write(map, 6,
-+		KUNIT_EXPECT_EQ(test, 0, regmap_write(map, 4,
- 						      le16_to_cpu(val[0])));
- 
- 	/* We should read back the new values, and defaults for the rest */
-@@ -1284,7 +1301,7 @@ static void raw_sync(struct kunit *test)
- 		switch (i) {
- 		case 2:
- 		case 3:
--		case 6:
-+		case 4:
- 			if (config.val_format_endian == REGMAP_ENDIAN_BIG) {
- 				KUNIT_EXPECT_EQ(test, rval,
- 						be16_to_cpu(val[i % 2]));
-@@ -1301,7 +1318,7 @@ static void raw_sync(struct kunit *test)
- 	
- 	/* The values should not appear in the "hardware" */
- 	KUNIT_EXPECT_MEMNEQ(test, &hw_buf[2], val, sizeof(val));
--	KUNIT_EXPECT_MEMNEQ(test, &hw_buf[6], val, sizeof(u16));
-+	KUNIT_EXPECT_MEMNEQ(test, &hw_buf[4], val, sizeof(u16));
- 
- 	for (i = 0; i < config.max_register + 1; i++)
- 		data->written[i] = false;
-@@ -1313,7 +1330,7 @@ static void raw_sync(struct kunit *test)
- 
- 	/* The values should now appear in the "hardware" */
- 	KUNIT_EXPECT_MEMEQ(test, &hw_buf[2], val, sizeof(val));
--	KUNIT_EXPECT_MEMEQ(test, &hw_buf[6], val, sizeof(u16));
-+	KUNIT_EXPECT_MEMEQ(test, &hw_buf[4], val, sizeof(u16));
- 
- 	regmap_exit(map);
- }
-
----
-base-commit: 3b201c9af7c0cad2e8311d96c0c1b399606c70fa
-change-id: 20240209-regmap-kunit-random-change-178bd19b91b5
-
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
-
+Thanks
+Wesley Cheng
 
