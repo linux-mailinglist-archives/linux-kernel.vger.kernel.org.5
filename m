@@ -1,94 +1,170 @@
-Return-Path: <linux-kernel+bounces-59202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FFD484F32B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:18:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43C3784F32C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:18:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30AABB29DA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:18:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76F211C21336
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9522769951;
-	Fri,  9 Feb 2024 10:17:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CDB69319;
+	Fri,  9 Feb 2024 10:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J7+9KYG2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ckrXRMd/"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAABA67E87;
-	Fri,  9 Feb 2024 10:17:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53132692E4;
+	Fri,  9 Feb 2024 10:18:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707473870; cv=none; b=LDHY51G3nnsZWZ6cGw8X5O5omVkvtl4AG569M5GsWymxyEJ+yJjqgiIi48WZQ8W9o6dRwUuqhGfuZbximQD5UZp3XgRrVS3zC5qkyC3SKlRFjn+32LU0jxSBtwfai793Gz5GV7VsmMI4aYMazR6lFQBIJzOc0Cr4CEHKrY3looo=
+	t=1707473889; cv=none; b=tNylZqXHjFw3iV3M7F6ahAkeZ+IFiKKGxLBqRCOrDiC844IIV3FBcvFyvTL/z86IgyVnDydD65yb4JmO0B/8nMV6M3LT5gDHNno6iayRjmqCV3S6++CIOWCDPlDAE+vnXLrKuLAjxtIwjnZ7nfZR5ne8DNwNzo5iDmAfcElNDO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707473870; c=relaxed/simple;
-	bh=xY37lD56+9JdYRX3k7Qva8TqE72lSWPSgLic4EbY6Gk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iVNUiaoVcc76x/Ddld+38yVnT+lSaKxE02ritY7gCoxgenRow8bg9PyXe8yz1ScOFfwwHzX9PXeU0NUMB4qI33hSCwDRLfZXBQ4H0T1BcCmvEWOaeu6L4YHkq8AY1FSEgf4bhti6SABVlRA9A/88XgKRWXbfQ1Uha6Gv+hFFcyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J7+9KYG2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 566D0C433F1;
-	Fri,  9 Feb 2024 10:17:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707473870;
-	bh=xY37lD56+9JdYRX3k7Qva8TqE72lSWPSgLic4EbY6Gk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J7+9KYG2oEfjQnmP30cpC5yh0acAX9F50LyOGTNhwTALt1myVzitm747OHn8ca0Sf
-	 WQKhLGgoLiRUNX9tx76W8sT1atqe7+hxTeQiYI5VKIC4o8KtJQqDvktjZLC4vAyQP2
-	 rSBBlzvtspncVURhGkmbuxoA491aDu69wwXDJ5v4MBZmMDgPXIBLq53AFyBq23GltP
-	 B7xkn9hA8pGKPLiEXed5s9+4IY2UR4XgyhI6O4SLwL1vC2M12XEDOp+H+sVWnrcbdr
-	 f/TE0/RCZuxMnphI4Wuws36bdcrpO/V9KTLSY4l0vUMUd61iWe8oRRGB+jIHEtzXuK
-	 mdXdXITQeS73A==
-Date: Fri, 9 Feb 2024 11:17:40 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: viro@zeniv.linux.org.uk, chuck.lever@oracle.com, jlayton@kernel.org, 
-	neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com, 
-	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
-	dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org, 
-	stephen.smalley.work@gmail.com, eparis@parisplace.org, casey@schaufler-ca.com, shuah@kernel.org, 
-	mic@digikod.net, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-integrity@vger.kernel.org, keyrings@vger.kernel.org, selinux@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>, 
-	Stefan Berger <stefanb@linux.ibm.com>
-Subject: Re: [PATCH v9 10/25] security: Introduce inode_post_setattr hook
-Message-ID: <20240209-warnhinweis-randvoll-dbcdc9d16c1d@brauner>
-References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
- <20240115181809.885385-11-roberto.sassu@huaweicloud.com>
+	s=arc-20240116; t=1707473889; c=relaxed/simple;
+	bh=NjjX68tO0V1IURReN/W7nTc2ejz/EacjGDy8WTWa2Gs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=C8dN9tHm4FtfPf99TagU6T0iwb/iKQa1nP7N7aeT5LTJOY+ZHXAnCvyxt2ehZb4ruDmcRQepVuYkcmEua7sAPMr29ifXpN/Uxptkk7Y89JbzFEPzkHVkQCyZk7uPPuLVAZIvAtdnDiUqGHAvFSysY/DX3jslBNB4Rj+xV5pAML8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ckrXRMd/; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc754853524so264908276.3;
+        Fri, 09 Feb 2024 02:18:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707473887; x=1708078687; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fdwZ4hDuHZxE64kMWieuR4a6X7g5THqN75f1Ypjn7HU=;
+        b=ckrXRMd/fqCwcI3tJuAVG89PYSh4N7DQ3gOiJ1D5+30bX2S/32vQlD8ABkL1ddbB3k
+         sei4iWPPagGp3YabBGoFfymFeWWKxQ0KJB3GdHisYeEF3cXG0cVwyiUOXVz/W/qnhiyU
+         q6rCK7wh+WA2ZmXczlKhVYDdgj/ArGCxwotnLmMtRru2XYRM5/g+4VpnGfvrR2CQuTD+
+         L2fS6i0mplyqCH/OtBVXRxYsTvU5byFSp/eKb8+FUfEWhicdbEhPE/CvnZJXfw/osvM5
+         wcKzFSRpqKO5VYyIoMRYbhhVEstE+T4YnEJOWa+24cZI1ynbw2SDYN8s52v7jI86Td/Z
+         dHAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707473887; x=1708078687;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fdwZ4hDuHZxE64kMWieuR4a6X7g5THqN75f1Ypjn7HU=;
+        b=UFKxHV1zKYj5zjWMq1RkRQcXGSAAgOcblKg5sD+2rr/QqM2MFcfl7a/LvFpATmwJ6y
+         vnnPiGWKzWNMuHldTDBzKKSapSydKYnQzEp3+YlQXX39rp0AUXvA1GZW5xxGC7YznjQ2
+         jwqJ3pl3BG52unv6XK8AqQuk3XZTKUU85poavxRQAlYxW5O2KgtH4sRyjpH1xIi3o857
+         CwfnLxAbW4ICFwVLj6TQCydlExfnaxSYNcKJmEq7U59gleWbFzStpQz6xfQIUoqMuAq0
+         dKT3080dE2LVx5vGfQY98dEBbXiLIgbbjBzSXCCDcmLt9f28ZJgVrFjygTzSp8j7B0g2
+         fpDw==
+X-Gm-Message-State: AOJu0YyFsueBHCTtZTgNbooBMQdMVF4AqGuvpo1fLSf5YvghYZYXMiqi
+	0oPFQ/nUD7fOyV1/huWWfrhZXqOJftcBbpYxvzp1IE4WSqDnXat4HnnrxZVDzIObpfsZPKEERNu
+	SsZHzKU3KOLgEUGJBRYenxrVAkBs=
+X-Google-Smtp-Source: AGHT+IElOcO3JE5rxCQhOVkS9Z7x30k6PXeBK3RYOi6o8jV6AWVztj/Lwq5jE4YBTxXAgKP96XkNxJZwJx3GUrxxjGI=
+X-Received: by 2002:a25:ab0c:0:b0:dc2:5553:ca12 with SMTP id
+ u12-20020a25ab0c000000b00dc25553ca12mr1072170ybi.14.1707473887077; Fri, 09
+ Feb 2024 02:18:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240115181809.885385-11-roberto.sassu@huaweicloud.com>
+References: <20240124113446.2977003-1-foxywang@tencent.com> <02fe988e-2b42-9610-6ab5-bd17b0d9fb80@oracle.com>
+In-Reply-To: <02fe988e-2b42-9610-6ab5-bd17b0d9fb80@oracle.com>
+From: Yi Wang <up2wing@gmail.com>
+Date: Fri, 9 Feb 2024 18:17:56 +0800
+Message-ID: <CAN35MuSanFT1JxM16usksSDjrLLsAAWs-kosJEd20sKckvwJfg@mail.gmail.com>
+Subject: Re: [v3 0/3] KVM: irqchip: synchronize srcu only if needed
+To: Dongli Zhang <dongli.zhang@oracle.com>
+Cc: x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	foxywang@tencent.com, seanjc@google.com, pbonzini@redhat.com, 
+	mingo@redhat.com, tglx@linutronix.de, dave.hansen@linux.intel.com, 
+	hpa@zytor.com, bp@alien8.de, wanpengli@tencent.com, oliver.upton@linux.dev, 
+	anup@brainfault.org, frankja@linux.ibm.com, imbrenda@linux.ibm.com, 
+	maz@kernel.org, atishp@atishpatra.org, borntraeger@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 15, 2024 at 07:17:54PM +0100, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
-> 
-> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> the inode_post_setattr hook.
-> 
-> At inode_setattr hook, EVM verifies the file's existing HMAC value. At
-> inode_post_setattr, EVM re-calculates the file's HMAC based on the modified
-> file attributes and other file metadata.
-> 
-> Other LSMs could similarly take some action after successful file attribute
-> change.
-> 
-> The new hook cannot return an error and cannot cause the operation to be
-> reverted.
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-> ---
->  fs/attr.c                     |  1 +
+Hi Dongli,
 
-Acked-by: Christian Brauner <brauner@kernel.org>
+Thanks for the reply and Happy Spring Festival to all :)
+
+On Fri, Feb 9, 2024 at 5:00=E2=80=AFPM Dongli Zhang <dongli.zhang@oracle.co=
+m> wrote:
+>
+> Hi Yi,
+>
+> On 1/24/24 03:34, Yi Wang wrote:
+> > From: Yi Wang <foxywang@tencent.com>
+> >
+> > We found that it may cost more than 20 milliseconds very accidentally
+> > to enable cap of KVM_CAP_SPLIT_IRQCHIP on a host which has many vms
+> > already.
+>
+> Would you mind explaining the reason that the *number of VMs* matters, as
+> KVM_CAP_SPLIT_IRQCHIP is a per-VM cap?
+>
+> Or it meant it is more likely to have some VM workload impacted by the
+> synchronize_srcu_expedited() as in prior discussion?
+>
+> https://lore.kernel.org/kvm/CAN35MuSkQf0XmBZ5ZXGhcpUCGD-kKoyTv9G7ya4QVD1x=
+iqOxLg@mail.gmail.com/
+>
+
+The actual reason is might_sleep() and the kworker in
+synchronize_srcu_expedited(),
+which may cause some delay when there are pretty many threads in the host, =
+so
+"number of VMs" is just one of  the situations which can trigger the issue =
+:)
+
+> Thank you very much!
+>
+> Dongli Zhang
+>
+> >
+> > The reason is that when vmm(qemu/CloudHypervisor) invokes
+> > KVM_CAP_SPLIT_IRQCHIP kvm will call synchronize_srcu_expedited() and
+> > might_sleep and kworker of srcu may cost some delay during this period.
+> > One way makes sence is setup empty irq routing when creating vm and
+> > so that x86/s390 don't need to setup empty/dummy irq routing.
+> >
+> > Note: I have no s390 machine so the s390 patch has not been tested.
+> >
+> > Changelog:
+> > ----------
+> > v3:
+> >   - squash setup empty routing function and use of that into one commit
+> >   - drop the comment in s390 part
+> >
+> > v2:
+> >   - setup empty irq routing in kvm_create_vm
+> >   - don't setup irq routing in x86 KVM_CAP_SPLIT_IRQCHIP
+> >   - don't setup irq routing in s390 KVM_CREATE_IRQCHIP
+> >
+> > v1: https://urldefense.com/v3/__https://lore.kernel.org/kvm/20240112091=
+128.3868059-1-foxywang@tencent.com/__;!!ACWV5N9M2RV99hQ!LjwKfBaGVl3u1l9YQSs=
+kg_1RU6278h2-fYnYLsoihF9i43aq73eIDqolGzOmeRvO8UlPreQHLqXEL1bAuw$
+> >
+> > Yi Wang (3):
+> >   KVM: setup empty irq routing when create vm
+> >   KVM: x86: don't setup empty irq routing when KVM_CAP_SPLIT_IRQCHIP
+> >   KVM: s390: don't setup dummy routing when KVM_CREATE_IRQCHIP
+> >
+> >  arch/s390/kvm/kvm-s390.c |  9 +--------
+> >  arch/x86/kvm/irq.h       |  1 -
+> >  arch/x86/kvm/irq_comm.c  |  5 -----
+> >  arch/x86/kvm/x86.c       |  3 ---
+> >  include/linux/kvm_host.h |  1 +
+> >  virt/kvm/irqchip.c       | 19 +++++++++++++++++++
+> >  virt/kvm/kvm_main.c      |  4 ++++
+> >  7 files changed, 25 insertions(+), 17 deletions(-)
+> >
+
+
+
+--=20
+---
+Best wishes
+Yi Wang
 
