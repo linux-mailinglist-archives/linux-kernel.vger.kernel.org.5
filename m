@@ -1,73 +1,74 @@
-Return-Path: <linux-kernel+bounces-60024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 862F484FEC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:25:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D65ED84FEC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:26:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B16931C24361
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:25:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8139DB269F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:26:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D8A717BD3;
-	Fri,  9 Feb 2024 21:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F3E2135C;
+	Fri,  9 Feb 2024 21:25:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vkWOkY3G"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bYj4WjuE"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07BBA538A
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 21:25:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17C2E21344
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 21:25:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707513933; cv=none; b=dQXLlzAc0QYenZrdYhCZeB4V2ZZcE/Sec41jebLjzoDdbSjfZcoTUODSf+6GGemIvxEQJtEUH7YyfsDJQLohYZurzI0E4cpOFoYZJM3/WJxGFYWJRZHY4K/vxzK3rn08bRd2vxX8x+cHX+3lzeoYIlEWMetoYIGt+yUcZ5OnJkg=
+	t=1707513941; cv=none; b=NXFlRKROmE2Vyu+r9VTkXrmJtCRJWuGJct6XRFx5clCbR3AaN8wsoidrNNXUGUdL9n7U+DAHFk+Vrapr+NSyrfKJkn5qHvqzMjqZtBkgamG9i8QFZSJW3hpHrhzwutvzIER71BJGi1dpmIXtlE4t2QgkL1FxiVko1E37uZjR7r8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707513933; c=relaxed/simple;
-	bh=w/XvmRgPtCBZGUAUHtdPmQu1TYOe0gjuO1Vk0hsbLdw=;
+	s=arc-20240116; t=1707513941; c=relaxed/simple;
+	bh=shpPP4H1LqEniF63b/p6ULTcARrDvaW1Ry7LGtBSNUU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZS567EHFvBlJW/fbclYScaCnxQTMDyPpTobhtTYfIt5meBq7faaleOUhk1lWN47q8MqooQGEbxOzNU6IKinLbJw0CY6RP7WJrR2klXurSDuQ79XxDyJ0Mu8bXRpyJyWEDUMMKw3IB7pHbvmEyy2r89e4RxTdlOtGUkCsI8S5y2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vkWOkY3G; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a383016f428so156121966b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 13:25:30 -0800 (PST)
+	 In-Reply-To:Content-Type; b=SevKuY1PIZkMGl8BfWcDKo5Iv6RNiVFXmZsE9oy34K82i+ecXVRTAKPlf+acJ/40KkldJ2nQbLpAxkgkoMaqdgoEqeI2YeDE5nVeadX79dVqQ3MbSNNoJybTiM99PPn2OtUpt9pbUZusfvCeEWisAtBBiVnnAIFdFQwkhaaeMtA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bYj4WjuE; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e08c16715fso658428b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 13:25:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707513929; x=1708118729; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707513939; x=1708118739; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ei3V7Q0ZCMeJfeAnJqw+KwLQeCtW7bgtZ2iOxUJPJYI=;
-        b=vkWOkY3G3u8rCZ9aOUtrkS204d1Z5H7gc3URwhzZdHvK0ku4ig1Xbmj8dUXHBuVwQ+
-         oMUs9JJkTjCrXIbXOMVwv8LW/yYRUkOKppXDKkrcUemLh2mAU8SD9r/sn8qrJeIsn69R
-         R6wefhFRh2L9egtqdEW1IVqNExEHEbI3KhqKmV5fzGYFvqec6tBVphPeA6ZaI1nkG9bR
-         nhloM1LXplHEgJhGeei32w4fkSAXNwHXOCmA+n/ac/CKF9AbY8/yGl+zDfxD+wRd+j0G
-         ZIGl9tZVDrTcRNx4P15CX5yCFRGRKAroWcYo0Ro4IEKaulZRDDlhj7t2jzzR+H9OzCX1
-         ttWg==
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=wH8JuFgY7Lb4/rW5r6a9o7mYn9SHt8MrowNVTWs9laU=;
+        b=bYj4WjuEryGsYIzi2tLDgHnqosqP3ft7szL2BUempgbkk0MgQifitk52XuYaivu84C
+         9aF+3OxjGMMwWBTbPJdKI3u7948ZgKaOvtmWdvw8jqiCAuyxjP0ftsN+efZDhtA134qY
+         YXOjTq+CufYJouhZXiLpmqzNiIQh2644HS1zgobNqloX7NJee+9xpcseCTOEaGJPlNXv
+         Lr9U6tMfqMkL6JgYCZ2Q5NAfjIUnsFZXHHKOtbuktNfo3GD3toZhvYKnYZ5fI5mndBDu
+         DUMufmWn44ZKPM9qhdUZmCYCgPvZHRjDTH3t7STM2I+mtfSSSE//GjL7YTgxHgGqdSup
+         pRKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707513929; x=1708118729;
+        d=1e100.net; s=20230601; t=1707513939; x=1708118739;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ei3V7Q0ZCMeJfeAnJqw+KwLQeCtW7bgtZ2iOxUJPJYI=;
-        b=suLDfIi+ZSFY/su9ySWxpdTfYvo/0k4IoX6OllZ1NYWYbID+BoFV6a4Bcgr/S5fd0a
-         bS5GGua1SC/SzhquMfWV91NJ+WC8jyJ1fo8fa7HFLdSAIGF1CCK+01BAQNDkfCVWwCP3
-         QHTh+yOWt1THyEVmdexBmgFv/CEGHi8dnlYwlhtFHjZFs/yQg5O+SDIqyFQ5zTnYiNdV
-         GnDbeei8pr6oICDog6ajIcyntbP4QjkzCaE87W/GXXq6fwaIU46arMmTL852RC7rW1HL
-         cvl6EVTz8inVUeL2u5mKrgDX6aMvWMF3AE2Lm2jaPuni6LgK8jAi4IL48c5YjWS5/dxo
-         HQzg==
-X-Gm-Message-State: AOJu0Yx7rSPIfWO33b6F+8CfYToRp9EVZ6otHO0wgkn3KrcuDJYv0yg8
-	fWRJ2DuLBB4F+K6k69qLm4t42TkAaAiTM23a/yWDbXANjLWRxr/xqdQOqEXo9b8=
-X-Google-Smtp-Source: AGHT+IEKA6PrmiVZORVYW2K6LDkg3oCWd/p5AJJwFFTHm5If66qb1QAnJE+E2KX7Ns3pQH1MJC0RQw==
-X-Received: by 2002:a17:906:68e:b0:a37:17f9:42ad with SMTP id u14-20020a170906068e00b00a3717f942admr251259ejb.5.1707513929195;
-        Fri, 09 Feb 2024 13:25:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWPkh8uhaRYmF4N5rOjc0mz4EagteC5TOgQxsfx4EbiOmYy0eO7LMbTDyrn1JqOsflP9ic9KmFhx6rWTwMp+ikcJMtmfZcy1cIj7i6mfxPQfHrXeZwnSXxhHarTxYUOIyF10GdXRQoIRdFsHNfB5N/z1/aVMqUSIkOeOoSW2/D2cBHSriQDslczh/7+nJjVXzZ9C9STfX3G+E+LIvgNYEQ92jG4feHg0nCdv7eAIk0ufJp0f+M2z5eojnBkcpByi04uPHpJl+7EeQZJIScIPZHwD96tEHysN+gYHKAsk9lWYzuXKKGiLEr6QSLbSybog9oXiPvIhYZGuQMqt68ufIDBsUPkI2RFCbknQ//ZEH4jiNg7K44DpCiLeyousYOTwAm121hxKOtFusySckWREz+7mFtphQYS53ixQOV66qoWUIqNQFqBHF15WTmG9JprRdMZEBKWos63QoCCOMqiQiYQTHN+nfJsRq6y77zjpk8dc3FfTLHJd8B1FgNpqwOowkdB8eB8eun7Tryr0RO8puWODCDtIdjd1SV2P9HvnCmTYEXe8JGtCMY/aI6QHjQD
-Received: from [192.168.192.207] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
-        by smtp.gmail.com with ESMTPSA id n25-20020a1709061d1900b00a3c1e8ecc09sm132677ejh.152.2024.02.09.13.25.26
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wH8JuFgY7Lb4/rW5r6a9o7mYn9SHt8MrowNVTWs9laU=;
+        b=BnfJ2e2bp5jXRdiY7MMImTShSsOdMxEjUT+q1DYmXm/KQKogWnOOxNk5uJ4370DMYK
+         bjo5bg9RFNK8coW8HcXC24x4wapSXBvVmiL9MVzQKeSKjwcyaHWHA/ER9Ve3xxwr3ipE
+         8RBVLIiWQ6jlP8oNYJcbo+bmED5I+u0Uv3HA8hZq9e6+Fj1YjUcPo2tQcXb0SjJ8ke5d
+         cf8+dkhv7s3lQEczQ0DDLtZvzO3Jokyo3ufq9bstTJ67c35slvOC4RL3LmQ/06tPzhQh
+         CNyUAUzamdJBSez3KX6VjzGEVmQjJmF103xBg/Dx+aHK8qhq7UxO6+nSQlWP8iXMkG1Y
+         qKvQ==
+X-Gm-Message-State: AOJu0YySE3xqnY9qrizkMHV7W0mosXPLjR3M20+5OlJEB24p699+2m57
+	69rpukaqIVrev5EUeogAubAupbPbNdHOdkaM7eejrGr+Af98P6FabWudiP86
+X-Google-Smtp-Source: AGHT+IEbq6NJiMAlF2DsotTurlptSor9yP/xN9HnRdWFRRb+HeY/ZKaXbR1M00OboodD8+wa/9PH9Q==
+X-Received: by 2002:a05:6a20:30d4:b0:19e:9cc9:1bef with SMTP id 20-20020a056a2030d400b0019e9cc91befmr308376pzo.22.1707513939135;
+        Fri, 09 Feb 2024 13:25:39 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a16-20020aa780d0000000b006e0825acbc3sm997932pfn.77.2024.02.09.13.25.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Feb 2024 13:25:28 -0800 (PST)
-Message-ID: <6fe9f7aa-d0ef-4b8d-953f-c8051f0a1694@linaro.org>
-Date: Fri, 9 Feb 2024 22:25:26 +0100
+        Fri, 09 Feb 2024 13:25:38 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <2c8c5fa4-b0f7-4ca5-b003-4b37cc036664@roeck-us.net>
+Date: Fri, 9 Feb 2024 13:25:36 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,72 +76,108 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 6/6] arm64: dts: qcom: qrb4210-rb2: enable USB-C port
- handling
+Subject: Re: [PATCH] regmap: kunit: Ensure that changed bytes are actually
+ different
 Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Guenter Roeck <linux@roeck-us.net>,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
- Luca Weiss <luca.weiss@fairphone.com>
-References: <20240130-pmi632-typec-v3-0-b05fe44f0a51@linaro.org>
- <20240130-pmi632-typec-v3-6-b05fe44f0a51@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240130-pmi632-typec-v3-6-b05fe44f0a51@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+References: <20240209-regmap-kunit-random-change-v1-1-ad2d76757583@kernel.org>
+ <ZcaFmYGClhpj82Xo@finisterre.sirena.org.uk>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <ZcaFmYGClhpj82Xo@finisterre.sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 30.01.2024 20:32, Dmitry Baryshkov wrote:
-> Plug in USB-C related bits and pieces to enable USB role switching and
-> USB-C orientation handling for the Qualcomm RB2 board.
+Hi Mark,
+
+On 2/9/24 12:05, Mark Brown wrote:
+> On Fri, Feb 09, 2024 at 08:02:27PM +0000, Mark Brown wrote:
+>> During the cache sync test we verify that values we expect to have been
+>> written only to the cache do not appear in the hardware. This works most
+>> of the time but since we randomly generate both the original and new values
+>> there is a low probability that these values may actually be the same.
+>> Wrap get_random_bytes() to ensure that the values are different, it is
+>> likely we will want a similar pattern for other tests in the future.
 > 
-> Tested-by: Luca Weiss <luca.weiss@fairphone.com> # sdm632-fairphone-fp3
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
+> Sorry, works better if you actally check stuff in.  v2 coming.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Konrad
+I don't know how v2 looks like (I think some of the hw_buf index values are
+wrong), but have a look at the diff below.
+
+Guenter
+
+---
+diff --git a/drivers/base/regmap/regmap-kunit.c b/drivers/base/regmap/regmap-kunit.c
+index 6fe259a2a73f..e73bdf01f118 100644
+--- a/drivers/base/regmap/regmap-kunit.c
++++ b/drivers/base/regmap/regmap-kunit.c
+@@ -1283,7 +1283,13 @@ static void raw_sync(struct kunit *test)
+
+         hw_buf = (u16 *)data->vals;
+
+-       get_changed_bytes(&hw_buf[6], &val[0], sizeof(val));
++       get_changed_bytes(&hw_buf[4], &val[0], sizeof(val));
++       // Let's cheat.
++       // Remember, the above code doesn't look into hw_buf[2..3],
++       // so anything might be in there, including the values from
++       // the val[] array.
++       hw_buf[2] = val[0];
++       hw_buf[3] = val[1];
+
+         /* Do a regular write and a raw write in cache only mode */
+         regcache_cache_only(map, true);
+@@ -1331,7 +1337,7 @@ static void raw_sync(struct kunit *test)
+
+         /* The values should now appear in the "hardware" */
+         KUNIT_EXPECT_MEMEQ(test, &hw_buf[2], val, sizeof(val));
+-       KUNIT_EXPECT_MEMEQ(test, &hw_buf[6], val, sizeof(u16));
++       KUNIT_EXPECT_MEMEQ(test, &hw_buf[4], val, sizeof(u16));
+
+         regmap_exit(map);
+  }
+
 
