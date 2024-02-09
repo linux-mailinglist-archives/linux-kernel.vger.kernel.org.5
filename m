@@ -1,305 +1,182 @@
-Return-Path: <linux-kernel+bounces-59699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41FE684FA98
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:07:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFB4A84FA85
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65DD21C26B30
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:07:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E6A428404C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A08328613F;
-	Fri,  9 Feb 2024 17:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B2BE7BAFE;
+	Fri,  9 Feb 2024 17:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="RGEh8TJ9"
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MolCB3u5"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A977282867
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBEE56DD18
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:05:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707498316; cv=none; b=ckSmbTm9jg+3TKNmMy4+qIo19mAh3/kK7my7Y/CIQzAADyrgACjlBCI1ndByzOAXtOEOmce8N9VVecS1r0LzjTo4VnggdJ/fGNtp/26jUu8Ihc2x5ToYUxsG7dEsfohgwoPh2WvTNLD762xykIZof/+1hVFlwWdqU1vuxX6yahA=
+	t=1707498307; cv=none; b=bircHRMCgxoX2kDrmFgnDtn/IjW79Y5DmRW5A0KX4WJCZ3I4WnfLQC3zacrmoQzSidXEyXKZQ4jAd+bEpsWjwVyXXiW/T6PPHXk5VsZ4GlLkebB1ETVKjFx9pr1044Z3dGTzD5uIeJCfxjoDueeo/szQ7dGcLXl4Zb81BkGYkkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707498316; c=relaxed/simple;
-	bh=aJyW6klkiCEWCaN1kbMLvNn/LlK4LBkX7wlr068Ea4o=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Qk4NU8YcPDNUfPhuu90FVIcUsddmSHDwBIKZNdgd5ioSflbd+nwU6fDjjX5shaJCtC7dbLdv2+gwgGfbGsjnTKx8qiR3CNhhWZLASfJw7eqv2vdKGDe5fe9goVsHSivkHnmZNQavEdWITgHauFXOFga0Z1E+LQR9V4Z3Q6LYAi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=RGEh8TJ9; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-337cc8e72f5so800040f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 09:05:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1707498313; x=1708103113; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MqzOcrxXkmN2Q8OVFhHyTRPrKazqUHrRQjUC+mJFZvQ=;
-        b=RGEh8TJ9P41fDWbgg8mMzyM48VALVnzIwSvQ9jE3B+JHDfNuC8RMn4HoL1x4Xk/Vxz
-         UK13PS0Cnet/r3bs+KaZIC4g+Cw9vJPkZ5ot3DjosbkbbEyYzSq76xdnUhQ4l4PooM7/
-         rWTbcCloSS33zP4teeEu2l5me+gJPVXFKDIqFAcNGh7BMvB87fT5Xe45hXU3DCf7Rwfy
-         Pqrxs+oZZ7pluO33yyKJR/yHVmp+YsRvUBxSXla1xwFu6Lb1DZjijNmVa14sKGA9T0do
-         PPeKiGb03Q3hlKYf7zjL4aCCqwwe939sEV75PSDnBGLf7Yv5m6p1yh6texPSTYJmPQXC
-         GvRg==
+	s=arc-20240116; t=1707498307; c=relaxed/simple;
+	bh=xwZzEC5N9Tk3OxSnesPK34/6ccpOLSW0y1TDD6td8Xw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=FyU2EcbL2WgkUnk3hkxMYvkQxaOmsze6209Wcys9pDOrWZFmm0HcA+TNgIr1HZQfd4Acn7K5EzgYkhlo0oWaX1LdMH3r+rbfT76q3GV+IGP56gbDhK4oxIdukKGwUR40ZrN/vPQtGwEwDnnL6brp0Mmt4lMhQwtBhymattO3WYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MolCB3u5; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707498305;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xwZzEC5N9Tk3OxSnesPK34/6ccpOLSW0y1TDD6td8Xw=;
+	b=MolCB3u5n3esnUxXIp5joKwlBCnoCGPa00qFc+0Hcx7CKRORULMQzH+y4xZWXAx+CJsH0K
+	A52KNONQ+m//szDwxbEa5TzjD1/xdtK6B47JaJGyaQSsSi/dZ+kB5MAXHcahlQPQPooFIj
+	FcAeUCu/XE5WpU5KPga8Yw8OifMNC5I=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-674-26uNdTjhPyK-d7WEkV5CyQ-1; Fri, 09 Feb 2024 12:05:03 -0500
+X-MC-Unique: 26uNdTjhPyK-d7WEkV5CyQ-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a383b9555d3so53781066b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 09:05:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707498313; x=1708103113;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707498302; x=1708103102;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MqzOcrxXkmN2Q8OVFhHyTRPrKazqUHrRQjUC+mJFZvQ=;
-        b=LRTaFg31QgFiCt+qXjn1IKlllIHOs6R2bfNlKapDpqwReL/v+nne7V3b8gIq4RGJdS
-         8yKwT2sjzLiHdoC2GO82H+WvXhme9Ljn84QgAJaeT6norR/EeKyCeEQmrDnRPCaW/Lr6
-         eHI1RS+reS7JuGWwawSh9ax005+S1bBZ7pLlC64OyY72tEBZm5StPyWDTYR99RQCTZzv
-         Tieg15oQTxID/Zg8ocrerWjz2k98wErxpSVI1Cz9QgZZZnWQhscRbsNeIND/3XThKmMB
-         9pk0V2bnmHaBoBZtp28Z/DGWOKijvo8PkYCwCdid3dkE3I2Ls4WWIZHV/3qmnADP/Ofp
-         yCOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVR6rTm2o/Kw6CGNDsQo5HT9A7dU8AcKrcN6CwLI38tpg+TLSk/RuFK3PV/p0K/6Xb2FfZfHkDYzBNDfW5pWr8QlS508SIMuR96JGvB
-X-Gm-Message-State: AOJu0YxAh9b1WKdLmjuoW6ZOl0xvwfxRAMJ2iCZQfwDG4sa/KvIJBVtO
-	A/ks6UKu3qoMQs3GZRm/gaV8p/t23KhQk1NSoUTEJfOu7odhpqBZPTixuc1KZXA=
-X-Google-Smtp-Source: AGHT+IFxLo+CiICYpnYHw6k+gNZW5Zk0PUqPuUfJPLlH2Wr89LM0zZi9p0YCjDX9UvUIpD6pI6Nl8g==
-X-Received: by 2002:adf:b192:0:b0:33b:4f08:ac9c with SMTP id q18-20020adfb192000000b0033b4f08ac9cmr1629190wra.33.1707498313034;
-        Fri, 09 Feb 2024 09:05:13 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU8Rwost7tjJg6H1HzwrY78TwXxkunRNolTYR9oJ4fG7D3nXXseL7stbAf9T6SFH0QGRTfODwm+agRk/BYFce57fErHFoVBgoPkQ0jj0q6Kadw4aCCyu09k1CzpvrcZXo4AC9UldBwunIc6SrriDUoBeD5Zqf/q2LgKlmNczgl3bp0oirUtBRkOnat2ztVWG7deSi0mfMtqmthieTmNRCMoXGVnX2Ua5X889aRGMlf1mg9Vug7O46MJUiIrEtdckFytwSstSCPlZKUypyIcI24qU8364+pVtm5jgTbxJkCw/5RC0K5cn0+fI9s7wLG2Oiu9WNWJNVLWXq8=
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.20])
-        by smtp.gmail.com with ESMTPSA id j18-20020a056000125200b0033afe816977sm2254998wrx.66.2024.02.09.09.05.11
+        bh=xwZzEC5N9Tk3OxSnesPK34/6ccpOLSW0y1TDD6td8Xw=;
+        b=ShlSJVM6K8KjZtyCjrqyArpP7Fm2U01Dta/8X7uMOyNnnKnr2qvFByNeEXcEgDmKev
+         b6Sh6vRJtD3cr4Y5PTioFuSC4vMP+Upy/Yszvm3KiuYXL8iBbPQmFuzNsiyTpIi/HxTu
+         LqEJ7Zcn2gBkJbLe/SFxOP8Q2Y1OVfFsHm3MB2SFUmGdYACckDMaBArzAaIX/yX9EZ4B
+         ke13PBRMe7y4bUzNilcX+ib7kLWrChmO5rK3k/l27SEXDwDJfug1L4T87fg9roDxdOJM
+         kJuGyjR8TeCN5UTvKz9Ep86WOddU3k2D6nFIk96+VW3dQoz1LhYPL/VX+Wzq7uRQRE4+
+         x4mQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXNjZ6zto26EGg1ZZAoVBQOLSZlm+liLiSh1Hu1eqbRWo3gK7GaLy1hscYYUupO/pVcqufv5MTx/wxluE85zYPaZgrq2sv3gKn6LYWd
+X-Gm-Message-State: AOJu0YyU6EvGd5+6PjxkAF8YjyuOGpNPItBhKuxGPh3OGtqFVPfOAklg
+	ZBPN2kX4bsZdkLyuHsAYpMOMZjKB9V+V/FHCkYHFw9ZPrJdM9m07eSE2A8GjobxghJnEqXlDh1G
+	nyC3CC9ACl1hgqsTsHwfgdb6egOTBMLbNGYhGA99MO4wq3qn+vcInlSmq+SskSQ==
+X-Received: by 2002:a17:906:3b44:b0:a38:7d12:60dc with SMTP id h4-20020a1709063b4400b00a387d1260dcmr1702930ejf.57.1707498302249;
+        Fri, 09 Feb 2024 09:05:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHZ6rIYmVrGR5l4WhAPhCgw3RoLKnYaDvF16VXRcjzzYpHk7cis3fYExxbimqXtPAUIZR9Fsg==
+X-Received: by 2002:a17:906:3b44:b0:a38:7d12:60dc with SMTP id h4-20020a1709063b4400b00a387d1260dcmr1702892ejf.57.1707498301861;
+        Fri, 09 Feb 2024 09:05:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUOtGsAvv6QdC70PwwyWekW7wdIJz0/cucB80WRTV4+ZgCv+AHZZmjEVwpXyjm9muc1IGcLJofTiSKgLMhO+71pOKkmCHsmgprSc6gN44WovL+T+IE3bc31WnJs6BAjOkBj4fQEAqfoT5ow/rXzVpCO/hSbbIE9Dt4jY1ZtqDzVyLDh0yytbtbpjtq/2OTIBFeqi5ROaH5lUSSx6/9LLUYqZe+E2PsXzaiMfcWn3yl7hphwOsEc/KeyIU99E32NsaDh9nBHJX1xYe5bl8KpmdXQKFfqP3z4NxkokPbuLxWfXkaKaFg4rWPmr7ishQsxF+qk+gUk9Rc3CidaDhDZ0HTXQk7el6HF07YCDWrNrjl6KLwJ08E84AeGFf4j2+0hb1Ft7f4NMXox3PxUIoCZmWlwurPz52zAfk138lNe/A7QbAo4EA3HBNgKtzd9N3YdxKpRH070aztcW8JVA7X0mxtWrbj18Oqdld4FSaPOYRdezUN/WtCnlNzEECMqavl/BdctSzTUWCNVpo6P24VEL6BwNlixXKvrR5Oy2KQk95EwhI/K4R8//D0GdaRHBjI4pPYQxMhfJ8x4GiQAocuisPJTkppbOi7bBkyy76dlXs96ysVgn+e8LeW2+/4Xjrw=
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id fj7-20020a1709069c8700b00a3875804883sm925259ejc.124.2024.02.09.09.05.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 09:05:12 -0800 (PST)
-From: Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To: s.shtylyov@omp.ru,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	claudiu.beznea@tuxon.dev,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH net-next v2 5/5] net: ravb: Add runtime PM support
-Date: Fri,  9 Feb 2024 19:04:59 +0200
-Message-Id: <20240209170459.4143861-6-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240209170459.4143861-1-claudiu.beznea.uj@bp.renesas.com>
-References: <20240209170459.4143861-1-claudiu.beznea.uj@bp.renesas.com>
+        Fri, 09 Feb 2024 09:05:01 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 23A0810F505E; Fri,  9 Feb 2024 18:05:01 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+ <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jiri Kosina
+ <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan
+ <shuah@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
+In-Reply-To: <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
+References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org>
+ <87bk8pve2z.fsf@toke.dk>
+ <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Fri, 09 Feb 2024 18:05:01 +0100
+Message-ID: <875xyxva9u.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
 
-Add runtime PM support for the ravb driver. As the driver is used by
-different IP variants, with different behaviors, to be able to have the
-runtime PM support available for all devices, the preparatory commits
-moved all the resources parsing and allocations in the driver's probe
-function and kept the settings for ravb_open(). This is due to the fact
-that on some IP variants-platforms tuples disabling/enabling the clocks
-will switch the IP to the reset operation mode where registers' content is
-lost and reconfiguration needs to be done. For this the rabv_open()
-function enables the clocks, switches the IP to configuration mode, applies
-all the registers settings and switches the IP to the operational mode. At
-the end of ravb_open() IP is ready to send/receive data.
+> On Fri, Feb 9, 2024 at 4:42=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen <=
+toke@redhat.com> wrote:
+>>
+>> Benjamin Tissoires <bentiss@kernel.org> writes:
+>>
+>> > [Putting this as a RFC because I'm pretty sure I'm not doing the things
+>> > correctly at the BPF level.]
+>> > [Also using bpf-next as the base tree as there will be conflicting
+>> > changes otherwise]
+>> >
+>> > Ideally I'd like to have something similar to bpf_timers, but not
+>> > in soft IRQ context. So I'm emulating this with a sleepable
+>> > bpf_tail_call() (see "HID: bpf: allow to defer work in a delayed
+>> > workqueue").
+>>
+>> Why implement a new mechanism? Sounds like what you need is essentially
+>> the bpf_timer functionality, just running in a different context, right?
+>
+> Heh, that's exactly why I put in a RFC :)
+>
+> So yes, the bpf_timer approach is cleaner, but I need it in a
+> workqueue, as a hrtimer in a softIRQ would prevent me to kzalloc and
+> wait for the device.
 
-In ravb_close() necessary reverts are done (compared with ravb_open()), the
-IP is switched to reset mode and clocks are disabled.
+Right, makes sense.
 
-The ethtool APIs or IOCTLs that might execute while the interface is down
-are either cached (and applied in ravb_open()) or rejected (as at that time
-the IP is in reset mode). Keeping the IP in the reset mode also increases
-the power saved (according to the hardware manual).
+>> So why not just add a flag to the timer setup that controls the callback
+>> context? I've been toying with something similar for restarting XDP TX
+>> for my queueing patch series (though I'm not sure if this will actually
+>> end up being needed in the end):
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/toke/linux.git/commit/?h=
+=3Dxdp-queueing-08&id=3D54bc201a358d1ac6ebfe900099315bbd0a76e862
+>>
+>
+> Oh, nice. Good idea. But would it be OK to have a "timer-like" where
+> it actually defers the job in a workqueue instead of using an hrtimer?
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
----
+That's conceptually still a timer, though, isn't it? I.e., it's a
+mechanism whereby you specify a callback and a delay, and bpf_timer
+ensures that your callback is called after that delay. IMO it's totally
+congruent with that API to be able to specify a different execution
+context as part of the timer setup.
 
-Changes in v2:
-- none
+As for how to implement it, I suspect the easiest may be something
+similar to what the patch I linked above does: keep the hrtimer, and
+just have a different (kernel) callback function when the timer fires
+which does an immediate schedule_work() (without the _delayed) and then
+runs the BPF callback in that workqueue. I.e., keep the delay handling
+the way the existing bpf_timer implementation does it, and just add an
+indirection to start the workqueue in the kernel dispatch code.
 
-Changes since [2]:
-- none
-- didn't returned directly the ret code of pm_runtime_put_autosuspend()
-  as, in theory, it might return 1 in case device is suspended through
-  this calltrace:
-  pm_runtime_put_autosuspend() ->
-    __pm_runtime_suspend() ->
-      rpm_suspend() ->
-        rpm_check_suspend_allowed()
+> I thought I would have to rewrite the entire bpf_timer approach
+> without the softIRQ, but if I can just add a new flag, that will make
+> things way simpler for me.
 
-Changes in v3 of [2]:
-- this was patch 21/21 in v2
-- collected tags
-- fixed typos in patch description
+IMO that would be fine. You may want to wait for the maintainers to
+chime in before going down this route, though :)
 
-Changes in v2 of [2]:
-- keep RPM support for all platforms
+> This however raises another issue if I were to use the bpf_timers: now
+> the HID-BPF kfuncs will not be available as they are only available to
+> tracing prog types. And when I tried to call them from a bpf_timer (in
+> softIRQ) they were not available.
 
-[2] https://lore.kernel.org/all/20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com/
+IIUC, the bpf_timer callback is just a function (subprog) from the
+verifier PoV, so it is verified as whatever program type is creating the
+timer. So in other words, as long as you setup the timer from inside a
+tracing prog type, you should have access to all the same kfuncs, I
+think?
 
- drivers/net/ethernet/renesas/ravb_main.c | 54 ++++++++++++++++++++++--
- 1 file changed, 50 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index f4be08f0198d..5bbfdfeef8a9 100644
---- a/drivers/net/ethernet/renesas/ravb_main.c
-+++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -1939,16 +1939,21 @@ static int ravb_open(struct net_device *ndev)
- {
- 	struct ravb_private *priv = netdev_priv(ndev);
- 	const struct ravb_hw_info *info = priv->info;
-+	struct device *dev = &priv->pdev->dev;
- 	int error;
- 
- 	napi_enable(&priv->napi[RAVB_BE]);
- 	if (info->nc_queues)
- 		napi_enable(&priv->napi[RAVB_NC]);
- 
-+	error = pm_runtime_resume_and_get(dev);
-+	if (error < 0)
-+		goto out_napi_off;
-+
- 	/* Set AVB config mode */
- 	error = ravb_set_config_mode(ndev);
- 	if (error)
--		goto out_napi_off;
-+		goto out_rpm_put;
- 
- 	ravb_set_delay_mode(ndev);
- 	ravb_write(ndev, priv->desc_bat_dma, DBAT);
-@@ -1982,6 +1987,9 @@ static int ravb_open(struct net_device *ndev)
- 	ravb_stop_dma(ndev);
- out_set_reset:
- 	ravb_set_opmode(ndev, CCC_OPC_RESET);
-+out_rpm_put:
-+	pm_runtime_mark_last_busy(dev);
-+	pm_runtime_put_autosuspend(dev);
- out_napi_off:
- 	if (info->nc_queues)
- 		napi_disable(&priv->napi[RAVB_NC]);
-@@ -2322,6 +2330,8 @@ static int ravb_close(struct net_device *ndev)
- 	struct ravb_private *priv = netdev_priv(ndev);
- 	const struct ravb_hw_info *info = priv->info;
- 	struct ravb_tstamp_skb *ts_skb, *ts_skb2;
-+	struct device *dev = &priv->pdev->dev;
-+	int error;
- 
- 	netif_tx_stop_all_queues(ndev);
- 
-@@ -2371,7 +2381,14 @@ static int ravb_close(struct net_device *ndev)
- 	ravb_get_stats(ndev);
- 
- 	/* Set reset mode. */
--	return ravb_set_opmode(ndev, CCC_OPC_RESET);
-+	error = ravb_set_opmode(ndev, CCC_OPC_RESET);
-+	if (error)
-+		return error;
-+
-+	pm_runtime_mark_last_busy(dev);
-+	pm_runtime_put_autosuspend(dev);
-+
-+	return 0;
- }
- 
- static int ravb_hwtstamp_get(struct net_device *ndev, struct ifreq *req)
-@@ -2931,6 +2948,8 @@ static int ravb_probe(struct platform_device *pdev)
- 	clk_prepare(priv->refclk);
- 
- 	platform_set_drvdata(pdev, ndev);
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, 100);
-+	pm_runtime_use_autosuspend(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
- 	error = pm_runtime_resume_and_get(&pdev->dev);
- 	if (error < 0)
-@@ -3036,6 +3055,9 @@ static int ravb_probe(struct platform_device *pdev)
- 	netdev_info(ndev, "Base address at %#x, %pM, IRQ %d.\n",
- 		    (u32)ndev->base_addr, ndev->dev_addr, ndev->irq);
- 
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_put_autosuspend(&pdev->dev);
-+
- 	return 0;
- 
- out_napi_del:
-@@ -3053,6 +3075,7 @@ static int ravb_probe(struct platform_device *pdev)
- 	pm_runtime_put(&pdev->dev);
- out_rpm_disable:
- 	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_dont_use_autosuspend(&pdev->dev);
- 	clk_unprepare(priv->refclk);
- out_reset_assert:
- 	reset_control_assert(rstc);
-@@ -3066,6 +3089,12 @@ static void ravb_remove(struct platform_device *pdev)
- 	struct net_device *ndev = platform_get_drvdata(pdev);
- 	struct ravb_private *priv = netdev_priv(ndev);
- 	const struct ravb_hw_info *info = priv->info;
-+	struct device *dev = &priv->pdev->dev;
-+	int error;
-+
-+	error = pm_runtime_resume_and_get(dev);
-+	if (error < 0)
-+		return;
- 
- 	unregister_netdev(ndev);
- 	if (info->nc_queues)
-@@ -3077,8 +3106,9 @@ static void ravb_remove(struct platform_device *pdev)
- 	dma_free_coherent(ndev->dev.parent, priv->desc_bat_size, priv->desc_bat,
- 			  priv->desc_bat_dma);
- 
--	pm_runtime_put_sync(&pdev->dev);
-+	pm_runtime_put_sync_suspend(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_dont_use_autosuspend(dev);
- 	clk_unprepare(priv->refclk);
- 	reset_control_assert(priv->rstc);
- 	free_netdev(ndev);
-@@ -3160,6 +3190,10 @@ static int ravb_suspend(struct device *dev)
- 	if (ret)
- 		return ret;
- 
-+	ret = pm_runtime_force_suspend(&priv->pdev->dev);
-+	if (ret)
-+		return ret;
-+
- reset_assert:
- 	return reset_control_assert(priv->rstc);
- }
-@@ -3182,16 +3216,28 @@ static int ravb_resume(struct device *dev)
- 		ret = ravb_wol_restore(ndev);
- 		if (ret)
- 			return ret;
-+	} else {
-+		ret = pm_runtime_force_resume(dev);
-+		if (ret)
-+			return ret;
- 	}
- 
- 	/* Reopening the interface will restore the device to the working state. */
- 	ret = ravb_open(ndev);
- 	if (ret < 0)
--		return ret;
-+		goto out_rpm_put;
- 
- 	ravb_set_rx_mode(ndev);
- 	netif_device_attach(ndev);
- 
-+	return 0;
-+
-+out_rpm_put:
-+	if (!priv->wol_enabled) {
-+		pm_runtime_mark_last_busy(dev);
-+		pm_runtime_put_autosuspend(dev);
-+	}
-+
- 	return ret;
- }
- 
--- 
-2.39.2
+-Toke
 
 
