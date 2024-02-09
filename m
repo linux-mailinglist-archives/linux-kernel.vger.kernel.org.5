@@ -1,398 +1,198 @@
-Return-Path: <linux-kernel+bounces-59437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3818284F71E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:20:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E89084F68E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:08:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48866B228B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:20:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62BBB1C22DD1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:08:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F6D7B3CA;
-	Fri,  9 Feb 2024 14:14:52 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 571186775E;
+	Fri,  9 Feb 2024 14:08:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RX4upDDb"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E026A76030;
-	Fri,  9 Feb 2024 14:14:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707488091; cv=none; b=iIc9OP4zGRWic6WH6vgulM8m7ww6KOMjPzFtslPg62oOLfg3zDLCkq34UqNmseWBF4OfLdA/xug2ibPRx3TIL9HKC4Q1Iqqr0rCfDwYT2mu7w4AhjXrZEgaVcRkQW+8CSCGfZ1p/x5OeQ4C6P/vLMcp93KKUwNYSoQu7G+qh6YE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707488091; c=relaxed/simple;
-	bh=+KbFPLKFarXbzcGKuv+nofQctSKPrpZXPXB6iN4Pydk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tLl/hZ7dFrEj2lsiN/D2Wwp3JuawQWnMormPc5eBGx1wzHEYfoCkLG4g5LTdcTUus7fO8t06vpE5JD1CgaEGqvZWglcAOgyb5P1ANrWRUrsrAZTD7JVW89lv+gjR+cTn1GQInDWrej33WFebNZawaNLnY7x0l0ztjmWwnidQj8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 84c3107030d7e6c7; Fri, 9 Feb 2024 15:14:45 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 39131669C4D;
-	Fri,  9 Feb 2024 15:14:45 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: Lukasz Luba <lukasz.luba@arm.com>, LKML <linux-kernel@vger.kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Zhang Rui <rui.zhang@intel.com>, netdev@vger.kernel.org,
- Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
- Miri Korenblit <miriam.rachel.korenblit@intel.com>,
- linux-wireless@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-Subject:
- [PATCH v1 4/9] thermal: intel: Set THERMAL_TRIP_WRITABLE_TEMP directly
-Date: Fri, 09 Feb 2024 15:07:48 +0100
-Message-ID: <2619930.Lt9SDvczpP@kreacher>
-In-Reply-To: <3232442.5fSG56mABF@kreacher>
-References: <3232442.5fSG56mABF@kreacher>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD48765BC6
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707487716; cv=fail; b=KWA8F4ewYovaVfC+RC/Qw6v7mGv8k1Pz8MtPiYG2eYbsBqtRHxqmbl51pZLjl+o9eDDFKjRFB1gQgeKxTmAIOxqfhIdb4NJ+i0rlBJcvcKmmARAOk6BKRlVsI2U2Gm5xwOw66ZHHYyf95oM9KGeDqVeT0mbaco+dt7ZoDTMlSDk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707487716; c=relaxed/simple;
+	bh=zXekn73AeqhUKvpHC4Vl6vRPBq0O3p/BafQFOQQO63Y=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=lgRR5T+87wwzEaaezQpPK/Zz3Hy1DzAfmbG2RfPtT4zX+ck5H4K+Klj48txMbuGajz98vPIzL5QDPtotqe8FB8hRwT1fpoL/Y3ZdyhEnAV62ozv5hTkL+Ybc7SD/Oi5BWv/rlL8cF8dgrksfGkR+9Guy1PEXD/7cJWKDn49C6Nw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RX4upDDb; arc=fail smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707487715; x=1739023715;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=zXekn73AeqhUKvpHC4Vl6vRPBq0O3p/BafQFOQQO63Y=;
+  b=RX4upDDbj/XDdmOstIpRt1BhCRrkQVmucpbcQ9dC/j1gySd2gQDk2wSj
+   V7Q2sgz8x0tOu/vVqPqvdKVwvqp5I+ORYIiuyVCKGJXrh59Tiqw2rfN6C
+   PxeTGQetWWHK/Bi6GaVOCqgZE54wmDbogFsC8mQoXiLQ5R3PHZX89kYPK
+   R7HP8E/xDVfYb6k+ILMbAb4xM9UfFisIO8mTtgfxPHA2vGgVCN3lwkCFH
+   wzjWlqq7XxoA1sKtAvAa03Jcc7QVrkzwRW6D+XZvdiQYBCsn4+e8+8jHT
+   eauhHH7NzGay4W9Y7Hb2ekrdv4BArjbGbf7WXsyMA8ZWlt03ggwhkU72B
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="12081230"
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="12081230"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 06:08:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="934432885"
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="934432885"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Feb 2024 06:08:33 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 9 Feb 2024 06:08:33 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 9 Feb 2024 06:08:32 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 9 Feb 2024 06:08:32 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 9 Feb 2024 06:08:32 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FNBAfoem0YqlTdfSLmkLOPkIh2MFM5H8IlfBrDzWMVW6DK7IlL/W5PBpoOEwqXzUit3sH0LBT/RRLxhK31Ehu6HcU42hnFLRzyX+rM973Tr86stV0IbcsbICLP7iqjvQloEQGe6I3p//DKjX6CIfq84EH5qZ4J3Re6HHB/8eOQmE0Opo6BxRZ2VkczvBiQ+vcT4Q9DmVnvwwur5q2102kJij9XKgPHhvvAZKom5tBFeoMSEkpnf90qS/2rgUeU6hWpHX6bVNeJSbDgnnbdTJmAT3lC5KCSCczCAwZs0RooV0aNkyaaHxh5MA4ItOaBoyfOmoSznudd4gA+f3/tW2Sg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PVh54wBMadB8xQHnD4RxZN2DI5bFjDm8tzv9WMEWmOU=;
+ b=DokJv6VyPelyXXdpOkuwMsk8z0i8Y+3+gVaKUZoEdbB+vkKaV1LV5Umq6UgOUXwqHJ1CeDnMLiW1hBVQfdEVHEYl85UL5Av+G35FqBu6uT+CWDSOSEHlUOs2sLpcy0w2N9iuy5FQ+EXgdg+iYVd1ZNOCRSLNCwTfAHoJ9n3Dp8r+/hIis2HDuA36esZ8a31ubvJmUs1+k1RGCFvGQV6+RKvgMQ3tU4NeyoanVstUBCmzoBM/WvM7mUrrw1a2HQ/+bE+IMcoc3uEbbSS9Zxn4RyPKbK3rPNzz9uQDZvnVd3u9wYe6aOSVFD7sEyorCHMC8LT7BITGzUJ4YVN93mUjSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB5373.namprd11.prod.outlook.com (2603:10b6:5:394::7) by
+ DM3PR11MB8669.namprd11.prod.outlook.com (2603:10b6:0:14::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7249.38; Fri, 9 Feb 2024 14:08:30 +0000
+Received: from DM4PR11MB5373.namprd11.prod.outlook.com
+ ([fe80::a818:a5e:b1b1:511]) by DM4PR11MB5373.namprd11.prod.outlook.com
+ ([fe80::a818:a5e:b1b1:511%4]) with mapi id 15.20.7270.024; Fri, 9 Feb 2024
+ 14:08:29 +0000
+From: =?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
+To: <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Jani Nikula
+	<jani.nikula@intel.com>, Luca Coelho <luciano.coelho@intel.com>,
+	=?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
+Subject: [PATCH] drm/tests: mm: Convert to drm_dbg_printer
+Date: Fri, 9 Feb 2024 15:08:18 +0100
+Message-ID: <20240209140818.106685-1-michal.winiarski@intel.com>
+X-Mailer: git-send-email 2.43.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR2P281CA0146.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:98::7) To DM4PR11MB5373.namprd11.prod.outlook.com
+ (2603:10b6:5:394::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrtdeigdeitdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeduiedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehsthgr
- nhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=16 Fuz1=16 Fuz2=16
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB5373:EE_|DM3PR11MB8669:EE_
+X-MS-Office365-Filtering-Correlation-Id: c26bd27b-9afe-470c-3114-08dc297897b5
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8Snb9XqjRQDgo67Jfk3lYU3+ZQkyzhU0WCVCBqzJBq6snm27IcW4rRaeJcgXTLOIdP5mJVVkrQIaoQ3htvwQDbe/SVgGknTDwh4BIWVc/MnkEfrtpLEmtMghDVOYtsIpshf5aAYYTY7D5xxX5pMDFhH4PRIddr6ChvIk6gTFWqaHVj/X72OUzhuXF00ThxQmI7TN1UT4qddIcmqChYzf2hPrnWbPz07h3XnPNBddj0vA1JhyeCOaZwmzaHanJyMO072Iv8l55AEKm23H0MgFkP49GUbzrHlAQG+IZaoNx7CrINwNq+R9pViESb23UX6Y7+KIDIEfD1bFAJGiu9hQklsgcIWbbFosFOtyuNP1JOVutqKVNm78VtSJCOyD8iLcnhT2ldWNvOIg9T+gZWdpxmnKkzGf4jFvdr5zncraEvKgVyMKpz23rG9Jqx/ozgU/GS+iig61R+73Ipy9O6NapD08O+OQmOZpmDAxgr+g8Epv/8LBiPbc1H5GGKRrJlowoE5ZGMni/kjvI1sKnxaiTx6gVi77tMtweZpCDqzfDzM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(396003)(346002)(39850400004)(136003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(41300700001)(6512007)(66476007)(36756003)(6486002)(54906003)(6506007)(478600001)(6666004)(316002)(4326008)(8676002)(38100700002)(66946007)(8936002)(66556008)(82960400001)(1076003)(26005)(86362001)(83380400001)(2616005)(4744005)(5660300002)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Umx2STludGRkVFVMQy85TS9hNU9Rd0VXMkZKSXlUeUlXV041ajJEVnZoTklD?=
+ =?utf-8?B?UzkwVDZzeTNEbkExVmxNL2dSMHg1K2xScVFIdk1pUnJkZ1dJTW0yTWY5dGhn?=
+ =?utf-8?B?eFlmUURNd0tiRFZpWFNHbVNoME8ySzl3Vk5jclBQRDlnbWRDNWNzSjRkT2RQ?=
+ =?utf-8?B?YkI5VnJtaHZyRkVPekJISjYzTXNHU1cvNWNHcStEMzZsZEpnZXlIalFHMGgv?=
+ =?utf-8?B?amNISi83Y0NrT3ZzME0vaGNlODNKZUI0cGVBMlBscmdNTGE5bUVaWkJwcUp1?=
+ =?utf-8?B?bkVXMGhYWjVKdGt1QVcxNlRtTE9VL2svSzdTTkRVK3pGSjRla3ZRMng5UVNG?=
+ =?utf-8?B?a2xValNhVHdGc1h5aG9Ia20wdzhkbk9VbmtmNDg2L25xdWk2dmFKa3RpdGIw?=
+ =?utf-8?B?SXFJMlQraUVhZ3p3YmRaNWMweDdSbW85d3hPOHBHUFppamtDWFJDTTNiV3pR?=
+ =?utf-8?B?dlcrR09PTE9WUWQrZXJIOGdsL21GSStMYjNmcEZTcEZMUEZOOWdWelVpdnd6?=
+ =?utf-8?B?SGl6VWZiQWMrVVc2YWpRZUJzcTdWOVNuR0ZFRjZEancvVFFTUWltVk5abVBX?=
+ =?utf-8?B?N1NOVmt6VUh5UVRYV1ZjcG16ZWVheGtjaDZWcDE5WWdYT2RzN2VXZVZhV0gx?=
+ =?utf-8?B?VStYWnV1anlmMGhvMkQvdjZyTElHQVpaYjc1NGJhaEMxcWF2dXhOYjVxY3Z4?=
+ =?utf-8?B?T2NQSFBnTzQxSWNaWWxLVzJHVlhKTGl0cnVCSElzMno2eUgvY1gxWG9tb0Vs?=
+ =?utf-8?B?SVl0MWRuWDkxSEJOa0lOYkRTbFZCaG8vZVgxNHgxdEFnQnNkRWYvMWpTbFJJ?=
+ =?utf-8?B?MWhVSVVTVHplTUxnZG03SUFhNmxJK3pnVFNtSkE0WFZXR1ZnSkc4eXV0RXFO?=
+ =?utf-8?B?ajBtOHRUYmZwTUI0Y0Q4bWJ3cVpmbHBSN1E5T2wrZWp6R0t6dXpiWlYvSWl0?=
+ =?utf-8?B?UVBXM3d5TWliejE1M0EwTlhSMlVSQi9EYTloTVBDOE5ZYStabXN2YUlPUEFl?=
+ =?utf-8?B?Y1ZlVlJSNGtIYkdSTHVucW56dUpsTGE3NDB0SE5Ddmh3R3NuTUYyZCtxQkRv?=
+ =?utf-8?B?NVA3VTQwSzdWY245dUF5V3dxZjU5N3ZOdFFsejRwVmRQSGRyNVVWcVFBeVA2?=
+ =?utf-8?B?cXZsbzJhbitkVG5QMXBzamc2a3dKRHF5bTAyUkVXd3JIRHRCd3l2a2t1U1RG?=
+ =?utf-8?B?dnJ1VkVUb3BWSlk4U0tMdmttTnRCYjhTMlVQVWgvcm8xemxwZUw4SkMvZXl2?=
+ =?utf-8?B?S21abDVpYldqRUl3TXozMzZqZlBLelpWVFZaTnBmaHRzTDZqeDkwejU2aGR2?=
+ =?utf-8?B?dG5BM1dBZmNoTERFenQyMlRMT2EvWTdBN3FJSGZGNkI5dExSOXpOdjJLQWo2?=
+ =?utf-8?B?QXdnUGJiS01PbFFqemtCNWorcGtpT1B4cWJacFhOaWdsRWdBZTZBVU1rU0Vp?=
+ =?utf-8?B?SEx4V3A1MGR4a2R0WUpIU1JleE54WWJ3SU1ZSXpFanVMbVUyV0VFUGN2SVh5?=
+ =?utf-8?B?QVM1enpHYys2VEhiNjFtdkFvYzVtQVViczcxY0doSUwvY0pzOVNTdENsb2xY?=
+ =?utf-8?B?bmw0RUp1L0dkWFJUVjZHYUxUTGRFQ05LRFRXVzBNSlZpZGJWVFhhTlVXazUy?=
+ =?utf-8?B?Q1lOaU5VWDBkTUlia2poRUkyNWRrZkdUWGV1amFVeFNsRGIrVDZWR29od21k?=
+ =?utf-8?B?U1JTd3N3YkZPUmg5L3lZMjBleDBJdElDV3JEakdsanowemVjeHdhSDMvNFVL?=
+ =?utf-8?B?QzJSVG8vWFFpQ2t3QUlCdGlrbWh5dkQ1V0gvQVZ3WE9oR0RhVDBSQmJ4RWhS?=
+ =?utf-8?B?OER1WEcwUHZ6RWtWWTJvemNzck1yL3pUZjVpLzhiK0E3T2lBU0RCd3dzUng1?=
+ =?utf-8?B?ZDBUc1lNR2MwL1BJa0ZNdzlRQTl5ZUowRzgvdUtLR3VtYm1JVGt5MUZZYjAw?=
+ =?utf-8?B?TWs3VFY5OW85a3BPaEJHVXdaZG1EWk9PMC83UkdUbDc1VnM1V09FQkYvWkly?=
+ =?utf-8?B?eUdGdkFwSDdXVktZaGZVMk9zZURjMWxtN3hnRmRIdjJLbzRDRGlud2V6b3RN?=
+ =?utf-8?B?WTlnV2VFRUlURldpcld3VWk3SktQNytPbTNsUWM3L1BxVHNEVEtJYzNEYURL?=
+ =?utf-8?B?SWJCNm1Bb0g0VGM3dHhYei9rSjFqbVcxL081ZE9iSUVDV2ZHOThFeGNKenFC?=
+ =?utf-8?B?Mnc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c26bd27b-9afe-470c-3114-08dc297897b5
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5373.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 14:08:29.9275
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QgkX1B2hbBCCsUCWJhLM6WyLOJ8ynCDB0t29P0/Ka1kTH+AdwkonleCC5iNuc5AxLUjD1/1/UTg4WXHHan4fIXT02kuZcBrEcySCeMoPYuU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR11MB8669
+X-OriginatorOrg: intel.com
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fix one of the tests in drm_mm that was not converted prior to
+drm_debug_printer removal, causing tests build failure.
 
-Some Intel thermal drivers need/want the temperature of their trip
-points to be set by user space via sysfs and so they pass nonzero
-writable trip masks during thermal zone registration for this purpose.
-
-It is now possible to achieve the same result by setting the
-THERMAL_TRIP_WRITABLE_TEMP trip flag directly, so modify the drivers
-in question to do that instead of using a nonzero writable trips mask.
-
-No intentional functional impact.
-
-Note that this change is requisite for dropping the mask argument from
-thermal_zone_device_register_with_trips() going forward.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: e154c4fc7bf2d ("drm: remove drm_debug_printer in favor of drm_dbg_printer")
+Signed-off-by: Michał Winiarski <michal.winiarski@intel.com>
 ---
- drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c         |    8 -
- drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c |    3 
- drivers/thermal/intel/intel_quark_dts_thermal.c                      |   20 --
- drivers/thermal/intel/intel_soc_dts_iosf.c                           |   73 ++++------
- drivers/thermal/intel/intel_soc_dts_iosf.h                           |    1 
- drivers/thermal/intel/x86_pkg_temp_thermal.c                         |    4 
- 6 files changed, 43 insertions(+), 66 deletions(-)
+ drivers/gpu/drm/tests/drm_mm_test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Index: linux-pm/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-===================================================================
---- linux-pm.orig/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-+++ linux-pm/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-@@ -130,7 +130,6 @@ struct int34x_thermal_zone *int340x_ther
- 	struct thermal_trip *zone_trips;
- 	unsigned long long trip_cnt = 0;
- 	unsigned long long hyst;
--	int trip_mask = 0;
- 	acpi_status status;
- 	int i, ret;
+diff --git a/drivers/gpu/drm/tests/drm_mm_test.c b/drivers/gpu/drm/tests/drm_mm_test.c
+index 1eb0c304f9607..3488d930e3a38 100644
+--- a/drivers/gpu/drm/tests/drm_mm_test.c
++++ b/drivers/gpu/drm/tests/drm_mm_test.c
+@@ -188,7 +188,7 @@ static void drm_test_mm_init(struct kunit *test)
  
-@@ -151,10 +150,8 @@ struct int34x_thermal_zone *int340x_ther
- 		int34x_zone->ops->get_temp = get_temp;
- 
- 	status = acpi_evaluate_integer(adev->handle, "PATC", NULL, &trip_cnt);
--	if (ACPI_SUCCESS(status)) {
-+	if (ACPI_SUCCESS(status))
- 		int34x_zone->aux_trip_nr = trip_cnt;
--		trip_mask = BIT(trip_cnt) - 1;
--	}
- 
- 	zone_trips = kzalloc(sizeof(*zone_trips) * (trip_cnt + INT340X_THERMAL_MAX_TRIP_COUNT),
- 			     GFP_KERNEL);
-@@ -166,6 +163,7 @@ struct int34x_thermal_zone *int340x_ther
- 	for (i = 0; i < trip_cnt; i++) {
- 		zone_trips[i].type = THERMAL_TRIP_PASSIVE;
- 		zone_trips[i].temperature = THERMAL_TEMP_INVALID;
-+		zone_trips[i].flags |= THERMAL_TRIP_WRITABLE_TEMP;
- 	}
- 
- 	trip_cnt = int340x_thermal_read_trips(adev, zone_trips, trip_cnt);
-@@ -186,7 +184,7 @@ struct int34x_thermal_zone *int340x_ther
- 	int34x_zone->zone = thermal_zone_device_register_with_trips(
- 							acpi_device_bid(adev),
- 							zone_trips, trip_cnt,
--							trip_mask, int34x_zone,
-+							0, int34x_zone,
- 							int34x_zone->ops,
- 							&int340x_thermal_params,
- 							0, 0);
-Index: linux-pm/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
-===================================================================
---- linux-pm.orig/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
-+++ linux-pm/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
-@@ -235,6 +235,7 @@ static int get_trip_temp(struct proc_the
- 
- static struct thermal_trip psv_trip = {
- 	.type = THERMAL_TRIP_PASSIVE,
-+	.flags = THERMAL_TRIP_WRITABLE_TEMP,
- };
- 
- static struct thermal_zone_device_ops tzone_ops = {
-@@ -290,7 +291,7 @@ static int proc_thermal_pci_probe(struct
- 	psv_trip.temperature = get_trip_temp(pci_info);
- 
- 	pci_info->tzone = thermal_zone_device_register_with_trips("TCPU_PCI", &psv_trip,
--							1, 1, pci_info,
-+							1, 0, pci_info,
- 							&tzone_ops,
- 							&tzone_params, 0, 0);
- 	if (IS_ERR(pci_info->tzone)) {
-Index: linux-pm/drivers/thermal/intel/intel_quark_dts_thermal.c
-===================================================================
---- linux-pm.orig/drivers/thermal/intel/intel_quark_dts_thermal.c
-+++ linux-pm/drivers/thermal/intel/intel_quark_dts_thermal.c
-@@ -93,10 +93,6 @@
- 
- /* Quark DTS has 2 trip points: hot & catastrophic */
- #define QRK_MAX_DTS_TRIPS	2
--/* If DTS not locked, all trip points are configurable */
--#define QRK_DTS_WR_MASK_SET	0x3
--/* If DTS locked, all trip points are not configurable */
--#define QRK_DTS_WR_MASK_CLR	0
- 
- #define DEFAULT_POLL_DELAY	2000
- 
-@@ -323,7 +319,6 @@ static struct soc_sensor_entry *alloc_so
- 	struct soc_sensor_entry *aux_entry;
- 	int err;
- 	u32 out;
--	int wr_mask;
- 
- 	aux_entry = kzalloc(sizeof(*aux_entry), GFP_KERNEL);
- 	if (!aux_entry) {
-@@ -337,13 +332,7 @@ static struct soc_sensor_entry *alloc_so
- 	if (err)
- 		goto err_ret;
- 
--	if (out & QRK_DTS_LOCK_BIT) {
--		aux_entry->locked = true;
--		wr_mask = QRK_DTS_WR_MASK_CLR;
--	} else {
--		aux_entry->locked = false;
--		wr_mask = QRK_DTS_WR_MASK_SET;
--	}
-+	aux_entry->locked = !!(out & QRK_DTS_LOCK_BIT);
- 
- 	/* Store DTS default state if DTS registers are not locked */
- 	if (!aux_entry->locked) {
-@@ -360,6 +349,9 @@ static struct soc_sensor_entry *alloc_so
- 				    &aux_entry->store_ptps);
- 		if (err)
- 			goto err_ret;
-+
-+		trips[QRK_DTS_ID_TP_CRITICAL].flags |= THERMAL_TRIP_WRITABLE_TEMP;
-+		trips[QRK_DTS_ID_TP_HOT].flags |= THERMAL_TRIP_WRITABLE_TEMP;
- 	}
- 
- 	aux_entry->trips[QRK_DTS_ID_TP_CRITICAL].temperature = get_trip_temp(QRK_DTS_ID_TP_CRITICAL);
-@@ -371,8 +363,8 @@ static struct soc_sensor_entry *alloc_so
- 	aux_entry->tzone = thermal_zone_device_register_with_trips("quark_dts",
- 								   aux_entry->trips,
- 								   QRK_MAX_DTS_TRIPS,
--								   wr_mask,
--								   aux_entry, &tzone_ops,
-+								   0, aux_entry,
-+								   &tzone_ops,
- 								   NULL, 0, polling_delay);
- 	if (IS_ERR(aux_entry->tzone)) {
- 		err = PTR_ERR(aux_entry->tzone);
-Index: linux-pm/drivers/thermal/intel/intel_soc_dts_iosf.c
-===================================================================
---- linux-pm.orig/drivers/thermal/intel/intel_soc_dts_iosf.c
-+++ linux-pm/drivers/thermal/intel/intel_soc_dts_iosf.c
-@@ -129,22 +129,6 @@ err_restore_ptps:
- 	return status;
- }
- 
--static int configure_trip(struct intel_soc_dts_sensor_entry *dts,
--			  int thres_index, enum thermal_trip_type trip_type,
--			  int temp)
--{
--	int ret;
--
--	ret = update_trip_temp(dts->sensors, thres_index, temp);
--	if (ret)
--		return ret;
--
--	dts->trips[thres_index].temperature = temp;
--	dts->trips[thres_index].type = trip_type;
--
--	return 0;
--}
--
- static int sys_set_trip_temp(struct thermal_zone_device *tzd, int trip,
- 			     int temp)
+ static void drm_test_mm_debug(struct kunit *test)
  {
-@@ -217,16 +201,10 @@ static void remove_dts_thermal_zone(stru
- 	thermal_zone_device_unregister(dts->tzone);
- }
+-	struct drm_printer p = drm_debug_printer(test->name);
++	struct drm_printer p = drm_dbg_printer(NULL, DRM_UT_CORE, test->name);
+ 	struct drm_mm mm;
+ 	struct drm_mm_node nodes[2];
  
--static int add_dts_thermal_zone(int id, struct intel_soc_dts_sensor_entry *dts,
--				bool critical_trip)
-+static int add_dts_thermal_zone(int id, struct intel_soc_dts_sensor_entry *dts)
- {
--	int writable_trip_cnt = SOC_MAX_DTS_TRIPS;
- 	char name[10];
--	unsigned long trip;
--	int trip_mask;
--	unsigned long ptps;
- 	u32 store_ptps;
--	unsigned long i;
- 	int ret;
- 
- 	/* Store status to restor on exit */
-@@ -237,27 +215,21 @@ static int add_dts_thermal_zone(int id,
- 
- 	dts->id = id;
- 
--	if (critical_trip)
--		writable_trip_cnt--;
--
--	trip_mask = GENMASK(writable_trip_cnt - 1, 0);
--
- 	/* Check if the writable trip we provide is not used by BIOS */
- 	ret = iosf_mbi_read(BT_MBI_UNIT_PMC, MBI_REG_READ,
- 			    SOC_DTS_OFFSET_PTPS, &store_ptps);
--	if (ret)
--		trip_mask = 0;
--	else {
--		ptps = store_ptps;
--		for_each_set_clump8(i, trip, &ptps, writable_trip_cnt * 8)
--			trip_mask &= ~BIT(i / 8);
-+	if (!ret) {
-+		int i;
-+
-+		for (i = 0; i <= 1; i++) {
-+			if (store_ptps & (0xFFU << i * 8))
-+				dts->trips[i].flags &= ~THERMAL_TRIP_WRITABLE_TEMP;
-+		}
- 	}
--	dts->trip_mask = trip_mask;
- 	snprintf(name, sizeof(name), "soc_dts%d", id);
- 	dts->tzone = thermal_zone_device_register_with_trips(name, dts->trips,
- 							     SOC_MAX_DTS_TRIPS,
--							     trip_mask,
--							     dts, &tzone_ops,
-+							     0, dts, &tzone_ops,
- 							     NULL, 0, 0);
- 	if (IS_ERR(dts->tzone)) {
- 		ret = PTR_ERR(dts->tzone);
-@@ -315,8 +287,16 @@ EXPORT_SYMBOL_GPL(intel_soc_dts_iosf_int
- 
- static void dts_trips_reset(struct intel_soc_dts_sensors *sensors, int dts_index)
- {
--	configure_trip(&sensors->soc_dts[dts_index], 0, 0, 0);
--	configure_trip(&sensors->soc_dts[dts_index], 1, 0, 0);
-+	update_trip_temp(sensors, 0, 0);
-+	update_trip_temp(sensors, 1, 0);
-+}
-+
-+static void set_trip(struct thermal_trip *trip, enum thermal_trip_type type,
-+		     u8 flags, int temp)
-+{
-+	trip->type = type;
-+	trip->flags = flags;
-+	trip->temperature = temp;
- }
- 
- struct intel_soc_dts_sensors *
-@@ -346,29 +326,36 @@ intel_soc_dts_iosf_init(enum intel_soc_d
- 
- 	for (i = 0; i < SOC_MAX_DTS_SENSORS; ++i) {
- 		enum thermal_trip_type trip_type;
-+		u8 trip_flags;
- 		int temp;
- 
- 		sensors->soc_dts[i].sensors = sensors;
- 
--		ret = configure_trip(&sensors->soc_dts[i], 0,
--				     THERMAL_TRIP_PASSIVE, 0);
-+		ret = update_trip_temp(sensors, 0, 0);
- 		if (ret)
- 			goto err_reset_trips;
- 
-+		set_trip(&sensors->soc_dts[i].trips[0], THERMAL_TRIP_PASSIVE,
-+			 THERMAL_TRIP_WRITABLE_TEMP, 0);
-+
- 		if (critical_trip) {
- 			trip_type = THERMAL_TRIP_CRITICAL;
-+			trip_flags = 0;
- 			temp = sensors->tj_max - crit_offset;
- 		} else {
- 			trip_type = THERMAL_TRIP_PASSIVE;
-+			trip_flags = THERMAL_TRIP_WRITABLE_TEMP;
- 			temp = 0;
- 		}
--		ret = configure_trip(&sensors->soc_dts[i], 1, trip_type, temp);
-+		ret = update_trip_temp(sensors, 1, temp);
- 		if (ret)
- 			goto err_reset_trips;
-+
-+		set_trip(&sensors->soc_dts[i].trips[1], trip_type, trip_flags, temp);
- 	}
- 
- 	for (i = 0; i < SOC_MAX_DTS_SENSORS; ++i) {
--		ret = add_dts_thermal_zone(i, &sensors->soc_dts[i], critical_trip);
-+		ret = add_dts_thermal_zone(i, &sensors->soc_dts[i]);
- 		if (ret)
- 			goto err_remove_zone;
- 	}
-Index: linux-pm/drivers/thermal/intel/intel_soc_dts_iosf.h
-===================================================================
---- linux-pm.orig/drivers/thermal/intel/intel_soc_dts_iosf.h
-+++ linux-pm/drivers/thermal/intel/intel_soc_dts_iosf.h
-@@ -28,7 +28,6 @@ struct intel_soc_dts_sensors;
- struct intel_soc_dts_sensor_entry {
- 	int id;
- 	u32 store_status;
--	u32 trip_mask;
- 	struct thermal_trip trips[SOC_MAX_DTS_TRIPS];
- 	struct thermal_zone_device *tzone;
- 	struct intel_soc_dts_sensors *sensors;
-Index: linux-pm/drivers/thermal/intel/x86_pkg_temp_thermal.c
-===================================================================
---- linux-pm.orig/drivers/thermal/intel/x86_pkg_temp_thermal.c
-+++ linux-pm/drivers/thermal/intel/x86_pkg_temp_thermal.c
-@@ -302,6 +302,7 @@ static struct thermal_trip *pkg_temp_the
- 			tj_max - thres_reg_value * 1000 : THERMAL_TEMP_INVALID;
- 
- 		trips[i].type = THERMAL_TRIP_PASSIVE;
-+		trips[i].flags |= THERMAL_TRIP_WRITABLE_TEMP;
- 
- 		pr_debug("%s: cpu=%d, trip=%d, temp=%d\n",
- 			 __func__, cpu, i, trips[i].temperature);
-@@ -345,8 +346,7 @@ static int pkg_temp_thermal_device_add(u
- 	INIT_DELAYED_WORK(&zonedev->work, pkg_temp_thermal_threshold_work_fn);
- 	zonedev->cpu = cpu;
- 	zonedev->tzone = thermal_zone_device_register_with_trips("x86_pkg_temp",
--			zonedev->trips, thres_count,
--			(thres_count == MAX_NUMBER_OF_TRIPS) ? 0x03 : 0x01,
-+			zonedev->trips, thres_count, 0,
- 			zonedev, &tzone_ops, &pkg_temp_tz_params, 0, 0);
- 	if (IS_ERR(zonedev->tzone)) {
- 		err = PTR_ERR(zonedev->tzone);
-
-
+-- 
+2.43.0
 
 
