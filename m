@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-59044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E33C184F04D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CED684F04F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:41:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 259B6B25030
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:41:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 533C7B25347
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:41:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC08657D3;
-	Fri,  9 Feb 2024 06:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23B33651B0;
+	Fri,  9 Feb 2024 06:41:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b="DD7z9m3Q"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b="mJ65RxN3"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74386657AE
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 06:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B55657AA
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 06:41:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707460861; cv=none; b=UDSbHzROW/t0NDHWwMcmx0GImciK1rMgtiuHVDke+Gt97jqs2q3LKePPe789GL8ICWjeBDYAuMobuv48qpMc7MfxSMT5PuFyMEw3Iag+CTweQc6GgUeMJTXitEqsrMllxuBLXf771pfSgfZuLneDesFeGG3QkDnOZdSZQm/opgA=
+	t=1707460862; cv=none; b=Z96Yg6e8Im6DYVBEYXL20O7QG9eL7o1jbHMVHQW0LjZ3eqWfbs3H/PUZqsl1QI34MPLtxnWb/YPz9TpgYATYORJgFXo4oZdsS1h1PZ2qjULR4QicKuvwIO4AYmVOFRzzDeip4yOA3fq1MZfETld00rqHFoNvs5+OX/jDHBInAkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707460861; c=relaxed/simple;
-	bh=ri22eEmjayNxuhuBG8fBzJMN00sxq5Jxvs3GiYc76e4=;
+	s=arc-20240116; t=1707460862; c=relaxed/simple;
+	bh=ifyOm/Jff2D4hC+7lPpykba0FTTiyuZ30Z/Vma6f/bw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oik51iE2yg0IQzeUPhPZ4WxZZP0rwFW4PwDC61/UnPvl0pcWDNn0Es1qODG2jl4dhGUzNtyp92LL6hJ8QP/Uappru11NPjgllDX2yKH2ONObWkmGSIAaNB9Ju21VWu/O5uy+iJu7ntCs0AQSM/tgf6q/ga4sGvWs0AVHQTcYeCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vrull.eu; spf=pass smtp.mailfrom=vrull.eu; dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b=DD7z9m3Q; arc=none smtp.client-ip=209.85.167.43
+	 MIME-Version:Content-Type; b=ahopSIar1Lw65ZytlM7f3/5XY5jEEWPkymkGgNHn/GGhDr/oZM46JbvmJpt4H//STUBrpEcMAwYUR+FXDm+E+WIv5isXuNBAKS7WtD3GHh8W3g/vdG6y3IQO3O55BnmDsBVC1HU5jTby/SqRRFFwM/jAZL/4JMdxpotUYu0MNs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vrull.eu; spf=pass smtp.mailfrom=vrull.eu; dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b=mJ65RxN3; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vrull.eu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vrull.eu
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5114cd44f6aso792863e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 22:40:59 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a293f2280c7so78991766b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 22:41:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vrull.eu; s=google; t=1707460857; x=1708065657; darn=vger.kernel.org;
+        d=vrull.eu; s=google; t=1707460859; x=1708065659; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DNljdwCtgXX7yfrlqeBRJqsYJccdvVcfZVPFTIAjXvY=;
-        b=DD7z9m3Q0h2VUiY43CHhnTD3CaYZgZt/8DwAvRHPtGT4XoqqSgU1M+C8/ITsCo5IWA
-         7OiPAj7QVW2D7oQFlcbihIMBUKjgKTj8nDEi/0Dd0iJfmx/3qcu/fRcTfH/AYeeFbVdB
-         19imOVuQ8fia5NAUrC6hXebXRjx3GUT3vNo56lNYUlHjinSmI0yE6ncMTRhSUpPcyx6h
-         cjZbe4K+xK+zzMQ/kozwvKUbBspPB6fwGIwMGBsr5YLkA5Ptx/UYv9cPjc/CwWABa5Qg
-         hThzzqbU9I+MH3Enq5z4+d+MxWFixXbtgUy1Zzaospyhu+Er1DpRZDVlB1nXwrc/+XDf
-         8PYg==
+        bh=ka0BwVIa89CrbsNMJkPh2Vgcr3mcWFHipPKQFS87pYA=;
+        b=mJ65RxN3sYP77x4R1N9FyTwmjQpcX+8J6BJ1K55yW+ueU5YyUCggc205fy85RFGi9q
+         JsgndWapcHw/TGlhWzG2IQwE7CzhYhViPGJFqfUfuS+BkQq1cOYvUIFzzy5Q7K9adp+W
+         bhTMbuBQjrO4qlw8PmgSDEPBrYBdqL/YSArDFgh/ZYxyRNfjYgUMxZXxOy6ZJJovH7mT
+         dIHzWyH90VmBlRK+S60LMPy+knjP7Rp2TQxZKfIIdPV8lkgcC90+C5dfaCUExvlcwgP8
+         3oKVQxfe0Q6Me5hwkOTHeIotrvSF2YdAp3shyxkF8EmLIXxdFS6VXgGj97NPzbc37ajF
+         g6YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707460857; x=1708065657;
+        d=1e100.net; s=20230601; t=1707460859; x=1708065659;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DNljdwCtgXX7yfrlqeBRJqsYJccdvVcfZVPFTIAjXvY=;
-        b=iDCJFIDM8878CqECjWBeax3aEmpsvzdIqPe2cbtTgQwWIMgZr7qGrJSlQuIk4Vo//y
-         kjc7BEfPJ+2ZdU/aOBdnwF4XvIIS2BMkRKxJbAmthl+7J4us9AJRA6Rq3NQHN3eQGVfH
-         vileyhO6Jfydh1PRpQFHS3uMNunw/1JwOY3UBcAIeuT1ff4BpfjKoGKgsoSiwxbkJB1q
-         6nxUeaFdYocZJs+3IWHQoYg9/wuzs5LRkazZMqxnLaca+alOFNmKJKRGHcszUWIHzlmE
-         Cw7ZMLuL3lt2fsWuZmFX6ijUj+Ub0k2BGyWLzWch6JzKbKDEYgj7Gjjc1F6tiXDNqGJX
-         qEfQ==
-X-Gm-Message-State: AOJu0Yy7NBmEG231hX7Z0mRHWNnJad3pkoYqt1yGlArWDuHfLFQ0zZQ3
-	lRldMp0vcta6lw2ON3NjzqpPQVf4QjD2AMJYs+2sFEeleRTmOxE+XWG9BrQfRFU=
-X-Google-Smtp-Source: AGHT+IEDhflFCI5m8yckBlcrHhcrQQ3ldJE+rE+09x08ZsDb/7emc/oMoKtCCmmPX+z/DuDjiayT1g==
-X-Received: by 2002:a05:6512:3e6:b0:511:6f2e:d23f with SMTP id n6-20020a05651203e600b005116f2ed23fmr303429lfq.43.1707460856741;
-        Thu, 08 Feb 2024 22:40:56 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUaL+yEba5wm8i34ZSQJNQMvgW6J8dd/cBl9IdEWc4gJ7MotgFZlcF2vvfMBwq4KUmx959cSuSlRe3Qlxhu4KfyqJb2tOoRm5+/3LKr8WMyPrWXCd0f7xaUwI4heMRaEmdtkB03hUfP5VdCbRxXOVGwsR0+FM1Q1eZoT/7ZQi1h75nUQBGOq452eMVDPqEQ8vJwybjkXHa2P2956nsp4ell4ZmZvfFkG8AKEkC5PDV4EWdVxBuTYDqOJNmx1zA9X/5CFXLdE444VW797AcovWMNx1QCzp6cwWLS/G62gqSwdVZ7fcJQ43MAnuGCwwog6JYyd6M9ml084zVece5wtDbgMfpl4Sv8asE365tfO4DEl6+vtRyJF4xLh/1HFvY125EiYDehiYJ38vOgbELtcCFGs1wHqol92ZvncDJ8YfqeD45mSFdS2XDr27wJOT5rd7XW3hSmOGw68GuLvIa3T/ZLkytmvs8fxKFIPSkDmohuOir+dLdnL5vTzPWCnggEtTBV8+3Up3TAwJMviLwjRq8UIczfXtPNcmhJcCpHztwzbuA+uoNBNHblC7eiGpy4q6IiD5jrEguUynT7b6FxUPuJSZP2dHgF7k3mj4f4LPHzEr2SG3i88ssWGkRqdrNHQ1ZI5rCrEBFNLjuxg5HalTNGp3XqhWOgEjQbRp0tTDcJBB+XKMkl+LYW0RvJXS3pvfghirr/1o+ONtKmvg7GmB48p+6rxDPAoGvj1ZFLP/6Akd+iMWgHO2//OKQD3DXKwQbHq347V96eRJyHRponH2izjQ8kzxgOZfAdrZFvAV4u8iMvFhUbNVQzAWmHSpTX+SbxrqrlkuyDYJfZ5RTU9vYpeWj1ZGKimEXlKvhwx0IsnA==
+        bh=ka0BwVIa89CrbsNMJkPh2Vgcr3mcWFHipPKQFS87pYA=;
+        b=ItkX1ubg7RvqMXG8VBw13xgcgINYrr1EC4MMMbBkruarLXyLRYNYJeBUGj/91b1HbG
+         Sc2zAybRTpj4A1f5jbfcVmlrTdb5Ri+5PtDOIaxPXHFWV1eoI8sfJ4lDAlyFX9BpJJ0P
+         4i3ytrXVSBCDdeFn5chaA7vIJ/UC9Eo8U67giRb7L+7I7USysEHtki9u95S9JQESPbAg
+         qAIhFkIjWOIvJ/9ZPQIxwvvuyTn+K/fIabBo6I3B1oPc9wC8Cp3quztK7RaXDiCCeHTu
+         eza5tM35jfrajlDjMlWVCLkEppl1ubACKkeVzf60M+jP3y9LKHtcDGdHH+Q3lpSWt4Ji
+         wAIQ==
+X-Gm-Message-State: AOJu0YxKV494AbVNe4ZOGlXZZiKRifjMKzNr6jKFEG40vyOWN8m41bY0
+	V9Wknz6V59747zkgpM6UixN3D7JmEeANj85dR2beifmWbOK1Nv59aow6C/jI42M=
+X-Google-Smtp-Source: AGHT+IFEN03if+6niuHDJ7y6KQ3qH470BeXh3gKz+Sb465eM/2K3LAMO8sCRGXg+1jKiB4FL7oHnjw==
+X-Received: by 2002:a17:906:2e91:b0:a37:7b4:9538 with SMTP id o17-20020a1709062e9100b00a3707b49538mr530857eji.33.1707460858580;
+        Thu, 08 Feb 2024 22:40:58 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUGzRsAZwmfQ3VpSld4acgsFVB8Z2BpFxm5NYoupbUP/wDHZUcHWD0xshhR8SzfywjNN/6uiHCGHWB3luBB7eAro95MsHdnxJbi/UsaoOWSi/QX7Yt3BGzNKdp5rZMZI4ZCaJrcG3SSADnGciJhN51oKuauuTPK+/oaFDQEq9fFxnkTdCcgWwxBRc2/qEVCRnTSSXWdN9Dhwxos973APpZ8ybYob1XLGih9Ej/b67MnvWZBSQzE/otQIR76P/XvNjg/eVczYytDfWZXVLUrGDTLltumZbxt+67DG9vbcnDKew0X/chAbTQfYrTYpkLRlj0kwsodyv04SaDJ1gad2bOJTPEQtGLPKz2/YsnmOLREsvkoageVxwSbJhiDF30C7qkgV++HU2WIkmb+wOIuU3Ck3GzZIMla0sFstAz8dXyRNm+yDeUoEflVK0q1lKALfz8tkUBEGc6omFxBsljE/KqQwVHtBdygQ8fNqUfMEWoT03c74tkohgGFw1IsWg7MdAVF9WedboaLk5CYiTXW9RAWxMEBDsDVChXyTdHCz2NF7PPk1QYS+zBnkZyypbUI02tKIE7oorhJtzbg0Vkuslqhe7u5XzLFZLe8WE7GD35XxR1jGkVb1zdSYPBxCzO/3LmeKOWXN12YDTlnDMFgGmKCvKNAs5IipyIg22VgBDA/GW0iNeAax58E0aap/Swu9mxIkfNzrAZOSnJRYq6ZR6wASlI8grPksL2Sabilobn98XkAJ1WuIQ5fOHUl+iRQMsuItpiI724RZwSPd/uKOZnbK/M+PBA+0pYuXqXUK9gz+7NrViKr8a+JhLSAFif+ZnT4CZaNekMrga7Hjfyh9xRRxpJzHHYAXrXnPSDDbJWFZw==
 Received: from beast.fritz.box (62-178-148-172.cable.dynamic.surfer.at. [62.178.148.172])
-        by smtp.gmail.com with ESMTPSA id vb9-20020a170907d04900b00a370a76d3a0sm441180ejc.123.2024.02.08.22.40.55
+        by smtp.gmail.com with ESMTPSA id vb9-20020a170907d04900b00a370a76d3a0sm441180ejc.123.2024.02.08.22.40.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 22:40:56 -0800 (PST)
+        Thu, 08 Feb 2024 22:40:58 -0800 (PST)
 From: =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>
 To: linux-riscv@lists.infradead.org,
 	linux-kselftest@vger.kernel.org,
@@ -95,9 +95,9 @@ To: linux-riscv@lists.infradead.org,
 	Andrea Parri <parri.andrea@gmail.com>,
 	Hans Boehm <hboehm@google.com>
 Cc: =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>
-Subject: [RFC PATCH v2 1/6] mm: Add dynamic memory consistency model switching
-Date: Fri,  9 Feb 2024 07:40:45 +0100
-Message-ID: <20240209064050.2746540-2-christoph.muellner@vrull.eu>
+Subject: [RFC PATCH v2 2/6] uapi: prctl: Add new prctl call to set/get the memory consistency model
+Date: Fri,  9 Feb 2024 07:40:46 +0100
+Message-ID: <20240209064050.2746540-3-christoph.muellner@vrull.eu>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240209064050.2746540-1-christoph.muellner@vrull.eu>
 References: <20240209064050.2746540-1-christoph.muellner@vrull.eu>
@@ -110,131 +110,96 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Some architectures have support to change the memory consistency model
-at run time. This patch adds a new field 'active_memory_consistency_model'
-to task_struct that allows architecture code to store the active model
-as a per-process property.
+This patch defines a prctl uAPI for switching the active memory
+consistency model of user-space processes.
 
-To avoid useless overhead, the mechanism needs to be explicitly
-enabled in the architecture's Kconfig.
+The implementation follows the way other prctl calls are implemented by
+disabling them unless arch-specific code provides the relevant macros.
 
 Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
 ---
- .../mm/dynamic-memory-consistency-model.rst   | 49 +++++++++++++++++++
- Documentation/mm/index.rst                    |  1 +
- arch/Kconfig                                  | 14 ++++++
- include/linux/sched.h                         |  5 ++
- 4 files changed, 69 insertions(+)
- create mode 100644 Documentation/mm/dynamic-memory-consistency-model.rst
+ .../mm/dynamic-memory-consistency-model.rst   | 27 +++++++++++++++++++
+ include/uapi/linux/prctl.h                    |  3 +++
+ kernel/sys.c                                  | 12 +++++++++
+ 3 files changed, 42 insertions(+)
 
 diff --git a/Documentation/mm/dynamic-memory-consistency-model.rst b/Documentation/mm/dynamic-memory-consistency-model.rst
-new file mode 100644
-index 000000000000..3117c3d82b2b
---- /dev/null
+index 3117c3d82b2b..1fce855a1fad 100644
+--- a/Documentation/mm/dynamic-memory-consistency-model.rst
 +++ b/Documentation/mm/dynamic-memory-consistency-model.rst
-@@ -0,0 +1,49 @@
-+.. SPDX-License-Identifier: GPL-2.0
+@@ -47,3 +47,30 @@ at run-time:
+ * Only switching from a weaker to a stronger model is safe.
+ * The stronger memory model affects all threads of a process, when running in user mode.
+ * Forked processes derive their active memory model from their parents.
 +
-+==========================================
-+Dynamic memory consistency model switching
-+==========================================
++User API via prctl
++==================
 +
-+:Author: Christoph Müllner <christoph.muellner@vrull.eu>
-+:Date: 1 Feb 2024
++Two prctl calls are defined to get/set the active memory consistency model:
 +
-+This document gives an overview about dynamic memory consistency model
-+switching for user mode at run-time.
++* prctl(PR_GET_MEMORY_CONSISTENCY_MODEL)
 +
-+Memory consistency models
-+=========================
++    Returns the active memory consistency model for the calling process/thread.
++    If the architecture does not support dynamic memory consistency models,
++    then -1 is returned, and errno is set to EINVAL.
 +
-+A memory consistency model is a set of guarantees a CPU architecture
-+provides about (re-)ordering memory accesses. Each architecture defines
-+its own model and set of rules within that, which are carefully specified.
-+The provided guarantees have consequences for the microarchitectures (e.g.,
-+some memory consistency models allow reordering stores after loads) and
-+the software executed within this model (memory consistency models that
-+allow reordering memory accesses provide memory barrier instructions
-+to enforce additional guarantees when needed explicitly).
++* prctl(PR_SET_MEMORY_CONSISTENCY_MODEL, unsigned long new_model)
 +
-+Details about the architecture-independent memory consistency model abstraction
-+in the Linux kernel and the use of the different types of memory barriers
-+can be found here:
++    Switches the memory consistency model for the calling process/thread
++    to the given model. If the architecture does not support dynamic
++    memory consistency models, or does not support the provided model, or
++    does not allow to switch to the proveided model then -1 is returned,
++    and errno is set to EINVAL.
 +
-+	Documentation/memory-barriers.txt
++Supported memory consistency models
++===================================
 +
-+Two models can be in a weaker/stronger relation. I.e., a consistency
-+model A is weaker/stronger than another model B if A provides a subset/superset
-+of the constraints that B provides.
++This section defines the memory consistency models which are supported
++by the prctl interface.
 +
-+Some architectures define more than one memory consistency model.
-+On such architectures, switching the memory consistency model at run-time
-+to a stronger one is possible because software written for the weaker model is
-+compatible with the constraints of the stronger model.
-+
-+If two models are not in a weaker/stronger relation, switching between
-+them will violate the consistency assumptions that the software was
-+written under (i.e., causing subtle bugs that are very hard to debug).
-+
-+The following restrictions apply for switching the memory consistency model
-+at run-time:
-+
-+* Only switching from a weaker to a stronger model is safe.
-+* The stronger memory model affects all threads of a process, when running in user mode.
-+* Forked processes derive their active memory model from their parents.
-diff --git a/Documentation/mm/index.rst b/Documentation/mm/index.rst
-index 31d2ac306438..36d40502b421 100644
---- a/Documentation/mm/index.rst
-+++ b/Documentation/mm/index.rst
-@@ -43,6 +43,7 @@ above structured documentation, or deleted if it has served its purpose.
-    arch_pgtable_helpers
-    balance
-    damon/index
-+   dynamic-memory-consistency-model
-    free_page_reporting
-    hmm
-    hwpoison
-diff --git a/arch/Kconfig b/arch/Kconfig
-index a5af0edd3eb8..89d4e27f9b80 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1479,6 +1479,20 @@ config ARCH_HAS_NONLEAF_PMD_YOUNG
- 	  address translations. Page table walkers that clear the accessed bit
- 	  may use this capability to reduce their search space.
++<none>
+diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+index 370ed14b1ae0..579662731eaa 100644
+--- a/include/uapi/linux/prctl.h
++++ b/include/uapi/linux/prctl.h
+@@ -306,4 +306,7 @@ struct prctl_mm_map {
+ # define PR_RISCV_V_VSTATE_CTRL_NEXT_MASK	0xc
+ # define PR_RISCV_V_VSTATE_CTRL_MASK		0x1f
  
-+config ARCH_HAS_DYNAMIC_MEMORY_CONSISTENCY_MODEL
-+	bool
-+	help
-+	  An arch should select this symbol if it supports switching
-+	  the memory consistency model at run-time.
++#define PR_SET_MEMORY_CONSISTENCY_MODEL		71
++#define PR_GET_MEMORY_CONSISTENCY_MODEL		72
 +
-+config DYNAMIC_MEMORY_CONSISTENCY_MODEL
-+	bool "Dynamic memory consistency model support"
-+	depends on ARCH_HAS_DYNAMIC_MEMORY_CONSISTENCY_MODEL
-+	default y
-+	help
-+	  This option turns on the support to switch the memory consistency
-+	  model at runtime on a per-process-base.
-+
- source "kernel/gcov/Kconfig"
- 
- source "scripts/gcc-plugins/Kconfig"
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index ffe8f618ab86..5cbd3a3b80ab 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -979,6 +979,11 @@ struct task_struct {
- 	/* Canary value for the -fstack-protector GCC feature: */
- 	unsigned long			stack_canary;
+ #endif /* _LINUX_PRCTL_H */
+diff --git a/kernel/sys.c b/kernel/sys.c
+index e219fcfa112d..a1b92a38f889 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -146,6 +146,12 @@
+ #ifndef RISCV_V_GET_CONTROL
+ # define RISCV_V_GET_CONTROL()		(-EINVAL)
  #endif
-+
-+#ifdef CONFIG_DYNAMIC_MEMORY_CONSISTENCY_MODEL
-+	unsigned long			memory_consistency_model;
++#ifndef SET_MEMORY_CONSISTENCY_MODEL
++# define SET_MEMORY_CONSISTENCY_MODEL(a)	(-EINVAL)
 +#endif
-+
- 	/*
- 	 * Pointers to the (original) parent process, youngest child, younger sibling,
- 	 * older sibling, respectively.  (p->father can be replaced with
++#ifndef GET_MEMORY_CONSISTENCY_MODEL
++# define GET_MEMORY_CONSISTENCY_MODEL()		(-EINVAL)
++#endif
+ 
+ /*
+  * this is where the system-wide overflow UID and GID are defined, for
+@@ -2743,6 +2749,12 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+ 	case PR_RISCV_V_GET_CONTROL:
+ 		error = RISCV_V_GET_CONTROL();
+ 		break;
++	case PR_SET_MEMORY_CONSISTENCY_MODEL:
++		error = SET_MEMORY_CONSISTENCY_MODEL(arg2);
++		break;
++	case PR_GET_MEMORY_CONSISTENCY_MODEL:
++		error = GET_MEMORY_CONSISTENCY_MODEL();
++		break;
+ 	default:
+ 		error = -EINVAL;
+ 		break;
 -- 
 2.43.0
 
