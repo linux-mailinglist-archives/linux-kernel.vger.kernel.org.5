@@ -1,143 +1,236 @@
-Return-Path: <linux-kernel+bounces-59236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CDB884F39D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:40:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9515584F3A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:42:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E08C1C240C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:40:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D87A281A5F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:42:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36A8720300;
-	Fri,  9 Feb 2024 10:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9A522075;
+	Fri,  9 Feb 2024 10:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="28TKxQUE"
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="orGtqKTJ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="FrJirbGZ";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="JyrDe80N";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ArZdDtex"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 161E312E4C
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 10:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BE531D549;
+	Fri,  9 Feb 2024 10:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707475237; cv=none; b=s8v6BW76lr4dl7jWhZLxIp8VCG/c+0q0LqIfyAJk0SHbshjh6iCUl+1McqZYuQ6q+hiON+IRQ2k3p5OPbs91GcLaIjH73V616TErLcthIxufftTDRuXr224Usvvh5C+OWNya1XVnku9itl1FHvRaIyb2rUS4xo+1Z+0atwXavXY=
+	t=1707475350; cv=none; b=Flgb1pXCymlfZhA/PPwhoZC7UICd3bOu2awne9yIj3bhl0qhecwXtuiTJRYZeoZIGIuoDYxk5G/IuTUk1FKL6Sp20NMIVVzmAunIo1PuX0t3f4xgCbJNzhjLuyt0Z5cIqZD6SGPRiUGY/oMi1imYzijvylb6DHp3Zply3QYZmCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707475237; c=relaxed/simple;
-	bh=JChLw94N2LlI4c15ZWLrWrA258+plXDoIYh1ywZgYrE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g1alzma1F+GwqEUYbjHZDrlZCRVdKQJYS+Zpkwwx1pKI/3Qj/nBiwmpOoioQcKGeUo6aVTdLjSyqBvAOUVSjsNdYy9eMs2xDBf6uce7Itn3RehOweGQuSrmahnUJONxqZhYEtctK3Vmuiwu0W/noGq0uYjzOK08TnWhbhUlQvkg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=28TKxQUE; arc=none smtp.client-ip=209.85.222.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-7d5c514944fso866806241.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 02:40:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707475235; x=1708080035; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lsvt0WN0Q+3QLUT9l3zysLscG0T2/IlzfGAIXHSNZh0=;
-        b=28TKxQUEnoUSeX7Ww33jAHw9odiX64rKR43c4F+xgBZfcIlrq9LlCjmK4oZ7xTTWpB
-         GSX+MU/OuwQDjRqj8W8SEa5OX149kVKONu9G1WyibS3s4xXlxEnfR8+NaEzY5LE5uXqz
-         /yOFslBandEMXL6Fhf3WCKlqoJX9shIrW9dLBp2YAmk1FifHSJtpBMA/786Owz7hyEKe
-         gA0QogTtSF+S/gOceU0Km3L++FAHKA5WIzMMcE+KliJPuAKLfB0JkKHvkxlc71glN2/D
-         e6vjAa6bJhK9cdB9/h0Lljy8MmVmg+BdhUMYWCj2avhhPZolOqZWJY58x88TrtTKaX3r
-         ENsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707475235; x=1708080035;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lsvt0WN0Q+3QLUT9l3zysLscG0T2/IlzfGAIXHSNZh0=;
-        b=SDqhes4beL26+asxPSeuBVdM7pTd8uhl65EBllIfiBl4P1OigNy5xs9S7BgfwTpyUx
-         vB2wnVqEcJDVS7EGQ4IOersVS3RSg7tZ4LZlHLBpRz3Vl5ZHZrU9szW3Xy04wlLCIOy9
-         sfS1OORxnL2o39YmtW7VKjATaRD0m0P8Ovho7d8uRAUEHRsFoFYKvw76p5GrkOa47LM+
-         Pta+aeyXvCd00E5kXnHpD0Ciwh5RqsiiklgYMtHj0vO+GyujznTDsk9t45e/VSUy5I2V
-         otL+4O/PZHOS85lLXlE0pWAhjFmqNQrWOVfHmRpOhUcFgwLmf1ukZVoBuRJFPr4MOlKk
-         UKdQ==
-X-Gm-Message-State: AOJu0Yyb91As5i3bgkgPLYcmC+QGeNOIZcPbLfxT+gpfW3yG9XmmVS1F
-	xUZ4DILz8sQQaqSmNhtzLrpqP+nXBbWr2O/zTQJSX6coy/uBMQrU2Bf7CkcK9wlZOKIG3uiIh4Z
-	nxOpz8T1E/MsFu4ZgXPaBl30rreb3mHlRSXq/
-X-Google-Smtp-Source: AGHT+IGyJbE/oLWsC/siVXihK5czgIws1GI9FUcGNwzlxH+9vubxFLpJLPXCPZ83/8Qz0TPgrUwZqpCMEUYcw4ZCYrc=
-X-Received: by 2002:a05:6102:21c2:b0:46c:f91f:b03b with SMTP id
- r2-20020a05610221c200b0046cf91fb03bmr214596vsg.13.1707475234844; Fri, 09 Feb
- 2024 02:40:34 -0800 (PST)
+	s=arc-20240116; t=1707475350; c=relaxed/simple;
+	bh=u3LjFcDXcTxz+p0kDEWc5CRRjqLePcSSXEO5/NjrY/8=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qk5Wje5cqVkKt/Cpbmvr8NgWU5d2Z6br6WAMZ+dVph2o8gkCUMUrHDTy+TSgq4+LeboM4WTsTTZ8vfsUjOgcNMMQVubZh2KGnZ3XFcp4YzPhgSob0FId2cwbFB4n4FvSl4utai1E9QsDzPCIKKacc1a//jnDuHnICeQBlPvUOno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=orGtqKTJ; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=FrJirbGZ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=JyrDe80N; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ArZdDtex; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 82D6E1F7F9;
+	Fri,  9 Feb 2024 10:42:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707475347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QMSOHc/inGGyuv3x57KLOxL8WKaH1QEOP7FHD0HM1vI=;
+	b=orGtqKTJd1jaVvNWKMbksSoQK4TVID+vUSzByBerljLsn4UXdwyrPEsjmhBij8d4XOjBfp
+	F4u3JGLse7PDvStVIAOcoqPF+4fI6JFumMU2WN9HbM5Fyd2griah252GmaFAvYZ7FifrYY
+	q8y6lJyvAc4ZRyfSWaQyPEBctnSEMDI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707475347;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QMSOHc/inGGyuv3x57KLOxL8WKaH1QEOP7FHD0HM1vI=;
+	b=FrJirbGZCWLNvdKUUAj2lGVuNRz+UZcQfJto3XvNQq664Bm4gy3851vULxhkljZTgemwjz
+	XXLfybBrCa4ddxAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707475345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QMSOHc/inGGyuv3x57KLOxL8WKaH1QEOP7FHD0HM1vI=;
+	b=JyrDe80NI7rgysm3IrJd5xzv9lo9q2OtkD8k3vEvoQXj5WXu2xxNmuH/2GApGob5w7pXbv
+	f5/FnG1pw9TyzOFTGv7m/JDc368K4Vn2Z8OdE+mgStOGtepX0XlQGZvBhf7JGd+t41BYBu
+	zLWnTYWtrGETkLH7KYPgE4TFokiFd98=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707475345;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QMSOHc/inGGyuv3x57KLOxL8WKaH1QEOP7FHD0HM1vI=;
+	b=ArZdDtexB7hw8ujutiuUqYqDnWN1oG0jdrHK9vDtQz8iGL2sxP4f9OzW57/TP1wgaQT8sh
+	KKLv5H1nnCFXmrAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D0B761326D;
+	Fri,  9 Feb 2024 10:42:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id UY1tMZABxmUVKQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 09 Feb 2024 10:42:24 +0000
+Date: Fri, 09 Feb 2024 11:42:24 +0100
+Message-ID: <87v86x2a27.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Wesley Cheng <quic_wcheng@quicinc.com>
+Cc: <srinivas.kandagatla@linaro.org>,
+	<mathias.nyman@intel.com>,
+	<perex@perex.cz>,
+	<conor+dt@kernel.org>,
+	<corbet@lwn.net>,
+	<lgirdwood@gmail.com>,
+	<andersson@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>,
+	<gregkh@linuxfoundation.org>,
+	<Thinh.Nguyen@synopsys.com>,
+	<broonie@kernel.org>,
+	<bgoswami@quicinc.com>,
+	<tiwai@suse.com>,
+	<robh+dt@kernel.org>,
+	<konrad.dybcio@linaro.org>,
+	<linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>,
+	<linux-sound@vger.kernel.org>,
+	<linux-usb@vger.kernel.org>,
+	<linux-arm-msm@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v14 32/53] ALSA: usb-audio: Check for support for requested audio format
+In-Reply-To: <20240208231406.27397-33-quic_wcheng@quicinc.com>
+References: <20240208231406.27397-1-quic_wcheng@quicinc.com>
+	<20240208231406.27397-33-quic_wcheng@quicinc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240208-alice-mm-v2-3-d821250204a6@google.com> <20240208225748.12031-1-kernel@valentinobst.de>
-In-Reply-To: <20240208225748.12031-1-kernel@valentinobst.de>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Fri, 9 Feb 2024 11:40:24 +0100
-Message-ID: <CAH5fLgg3C79DHz0FJ1LOhvetv4THHNAnu6XPx0vycFCb_txkfg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] rust: uaccess: add typed accessors for userspace pointers
-To: Valentin Obst <kernel@valentinobst.de>
-Cc: a.hindborg@samsung.com, akpm@linux-foundation.org, alex.gaynor@gmail.com, 
-	arnd@arndb.de, arve@android.com, benno.lossin@proton.me, 
-	bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org, 
-	cmllamas@google.com, gary@garyguo.net, gregkh@linuxfoundation.org, 
-	joel@joelfernandes.org, keescook@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, maco@android.com, ojeda@kernel.org, 
-	rust-for-linux@vger.kernel.org, surenb@google.com, tkjos@android.com, 
-	viro@zeniv.linux.org.uk, wedsonaf@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: *
+X-Spam-Score: 1.20
+X-Spamd-Result: default: False [1.20 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.00)[18.54%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[dt];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 R_RATELIMIT(0.00)[to_ip_from(RLjs3ec4aura4kmsd6wxjjm4hg)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[23];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[quicinc.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linaro.org,intel.com,perex.cz,kernel.org,lwn.net,gmail.com,linuxfoundation.org,synopsys.com,quicinc.com,suse.com,vger.kernel.org,alsa-project.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-On Thu, Feb 8, 2024 at 11:57=E2=80=AFPM Valentin Obst <kernel@valentinobst.=
-de> wrote:
->
-> > +/// If a struct implements this trait, then it is okay to copy it byte=
--for-byte
-> > +/// to userspace. This means that it should not have any padding, as p=
-adding
-> > +/// bytes are uninitialized. Reading uninitialized memory is not just =
-undefined
-> > +/// behavior, it may even lead to leaking sensitive information on the=
- stack to
-> > +/// userspace.
->
-> This feels a bit too restrictive to me. Isn't it okay to copy types with
-> padding if it is ensured that the padding is always initialized?
->
-> I recall that in C one occasionally does a `memset` for structs that are
-> copied to user space. I imagine that one could have a Rust
-> abstraction/macro that makes it easy to define custom types that can
-> always guarantee that all padding bytes are initialized. Such types
-> would then qualify for being copied to user space if all field do so as
-> well.
->
-> This could be a significant quality-of-life improvement for drivers
-> as it can be tedious to define struct without padding.
+On Fri, 09 Feb 2024 00:13:45 +0100,
+Wesley Cheng wrote:
+> 
+> Allow for checks on a specific USB audio device to see if a requested PCM
+> format is supported.  This is needed for support when playback is
+> initiated by the ASoC USB backend path.
+> 
+> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> ---
+>  sound/usb/card.c | 31 +++++++++++++++++++++++++++++++
+>  sound/usb/card.h | 11 +++++++++++
+>  2 files changed, 42 insertions(+)
+> 
+> diff --git a/sound/usb/card.c b/sound/usb/card.c
+> index 7dc8007ba839..1ad99a462038 100644
+> --- a/sound/usb/card.c
+> +++ b/sound/usb/card.c
+> @@ -155,6 +155,37 @@ int snd_usb_unregister_platform_ops(void)
+>  }
+>  EXPORT_SYMBOL_GPL(snd_usb_unregister_platform_ops);
+>  
+> +/*
+> + * Checks to see if requested audio profile, i.e sample rate, # of
+> + * channels, etc... is supported by the substream associated to the
+> + * USB audio device.
+> + */
+> +struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+> +			struct snd_pcm_hw_params *params, int direction)
+> +{
+> +	struct snd_usb_audio *chip;
+> +	struct snd_usb_substream *subs;
+> +	struct snd_usb_stream *as;
+> +
+> +	/*
+> +	 * Register mutex is held when populating and clearing usb_chip
+> +	 * array.
+> +	 */
+> +	guard(mutex)(&register_mutex);
+> +	chip = usb_chip[card_idx];
+> +
+> +	if (chip && enable[card_idx]) {
+> +		list_for_each_entry(as, &chip->pcm_list, list) {
+> +			subs = &as->substream[direction];
+> +			if (snd_usb_find_substream_format(subs, params))
+> +				return as;
+> +		}
+> +	}
+> +
+> +	return NULL;
+> +}
+> +EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
+> +
+>  /*
+>   * disconnect streams
+>   * called from usb_audio_disconnect()
+> diff --git a/sound/usb/card.h b/sound/usb/card.h
+> index 02e4ea898db5..ed4a664e24e5 100644
+> --- a/sound/usb/card.h
+> +++ b/sound/usb/card.h
+> @@ -217,4 +217,15 @@ struct snd_usb_platform_ops {
+>  
+>  int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops);
+>  int snd_usb_unregister_platform_ops(void);
+> +
+> +#if IS_ENABLED(CONFIG_SND_USB_AUDIO)
+> +struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+> +			struct snd_pcm_hw_params *params, int direction);
+> +#else
+> +static struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+> +			struct snd_pcm_hw_params *params, int direction)
+> +{
+> +	return NULL;
+> +}
+> +#endif /* IS_ENABLED(CONFIG_SND_USB_AUDIO) */
 
-I don't think we should go that route. For example:
+The usefulness of ifdef guard here is doubtful, IMO.  This header is
+only for USB-audio driver enablement, and not seen as generic
+helpers.  So, just add the new function declarations without dummy
+definitions.
 
-let struct_1 =3D ..;
-memset(&mut struct_1, 0);
-let struct_2 =3D struct_1;
 
-Even though struct_1 has its padding zeroed here, that is not the case
-for struct_2. When Rust performs a typed copy/move, the padding is not
-copied.
+thanks,
 
-Anyway, there is a work-around. Define your struct with MaybeUninit:
-
-// INVARIANT: All bytes always initialized.
-struct MyWrapper(MaybeUninit<bindings::c_struct>);
-
-impl Default for MyWrapper {
-    fn default() -> Self {
-        MyWrapper(MaybeUninit::zeroed())
-    }
-}
-
-Unlike the bare struct, things wrapped in MaybeUninit always have
-their padding preserved. Then, you can implement the trait for this
-wrapper, since its padding is always initialized even if that is not
-true for the wrapped struct.
-
-Alice
+Takashi
 
