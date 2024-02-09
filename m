@@ -1,94 +1,56 @@
-Return-Path: <linux-kernel+bounces-58920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C873884EEA1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:40:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83A1084EEA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:43:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED0841C24FDF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 01:40:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4055E28B00F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 01:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2206B1C2E;
-	Fri,  9 Feb 2024 01:40:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64FAB136A;
+	Fri,  9 Feb 2024 01:43:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="Nv8nG8e1"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bAoMP/K/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B76B1139E
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 01:40:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9479A15AF;
+	Fri,  9 Feb 2024 01:43:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707442815; cv=none; b=lcKezMAEJUQgsw7z9WOLKri7UG5cZemmHjSmjGZ9toc47XwHt5CZk5zgd8pDGmkPVdbmPSRyPAZA+s1K6cWpAj+cb+wnCcHTuM64NVf0GpueWwCEWotWd1CvpJOybtxbTeMEqWNvTLksMeZaIIXtATl+9VVO+HSy/y3QAlsRsDw=
+	t=1707443004; cv=none; b=I6Egle0IRsrLM35t+5xwUT5buVJKLIBUEnmqjXvOXPDjTIhHx/DMLuUWINXc5bzhwDviZbrPTONPI4krAhPMb2UR/XAWUsPwZKUb4/QWBQKKXrtgf7KsVfYtrEgKVXnG3kvE0SNL4k7+TYa9nm1f/eSsBRGdwFouXIpltbRZoz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707442815; c=relaxed/simple;
-	bh=lm//VwYwRjqyNE764SqUVVls5Zsr10k2fgl4c3eXYfA=;
+	s=arc-20240116; t=1707443004; c=relaxed/simple;
+	bh=+Scx3UIv24JIkpDEkG9RgRFZouxyNm778JhYqy4VoiU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Uq5wEyar2vs94S+BBHnMlF+mKJP0R1a5AyDREiQ8OFExEKON5Yx0iFVuAuehYDkJDolrNVT2j8BrdK9SOoDKqF+QiNOffmy1zpYAh45K63Ka/oDkt4zGcb6K3eJd/8vLGyFvvOmK0EKDIb+BWw058pAlqI9cz7Iy7OYvXqamVHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=Nv8nG8e1; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d7354ba334so3801585ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 17:40:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707442813; x=1708047613; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OOgSKlvPh938fpIZ7UAfRSwxBNEWIv5wO1l6EVWJz/w=;
-        b=Nv8nG8e1HgoWeiRI6sPnGeLwODW40epBXVSTBZW4vfUxAFfgngcJGA4JaKWU9ieQdg
-         Jb6bGZ5dcrRkkYIBvyKoaF+EP46ZPUdp8lrtLm+3yM58eOSuXKTgv4aP/4wJjQtKPfRJ
-         aXydI+pi6fkGT8LE/T55RsJIaycDS4W4IGxWo+b6DgAORBnUW3aJqaRKuRuHElhVDfZf
-         nbxF5n7vy+WJDJUmKWfAA3LWsEp+obHR7r/LVYNmg0UYjOdGxsp4O7EJ3rxH+tfS9jwB
-         h25w3nBOQpooJJz994EbpJU50rH0i/ep7vCx6TawMDmlVS+luDJRqMTXpm+UvdHKGA7l
-         3dMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707442813; x=1708047613;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OOgSKlvPh938fpIZ7UAfRSwxBNEWIv5wO1l6EVWJz/w=;
-        b=e06GCtfsPrmW2Y8KWIkCL0h2hHMvAaMXYE1fPWbikwpFPNLWZTxo2wW+XOpUXJuuX3
-         vT+1cLnqRhlc2z5u+J9X+qLg41Lsru+WMWAcxMAaKrSXiaap6vSzXrF48O1RK23qf9jj
-         uBpBwkQlklb7Rcr/xOfRuPMMNe99x8NLnPzYkQgMlU7ePrIDLe6xp3Zg81eDFA+/Secq
-         Tj3ya/ncSyp0ODwH79NSLAGcw1yu5FpOH1RhUQzSX5yVYWta9NYapIcK8YN31igM1kx1
-         sQZ/CFUjRntuAeCmHH5lrA+lTxSNsc3jx5PeRNCdA5gKqV4+qD9moQfCgmSXf7nwMF5D
-         uYyg==
-X-Forwarded-Encrypted: i=1; AJvYcCU5tLMtTJcEYCKoar3KEPbSWhFsc7FF84MmNbf4FETMVEhwosnFhj9R0BMYJ1jYU1zOpNIgbxjotU88Mox5qct3/MnZYjl8YhaDRFno
-X-Gm-Message-State: AOJu0YwrTuW/z5CHxBmUb3mpAqUr5mYULobYSxWWiKs4E166FNIv4pUX
-	0hj8AauS3GjnOe/NWlW026Rp7tp2JMhVtn3R4bQsv5OueB9Q2ZgKEURGOO8YZo0=
-X-Google-Smtp-Source: AGHT+IGg9NA8d+I/Wzzoa9MOZDkBOWfl1sYuGWzLa522CrKsR77xXrR/LHpK21b2Nf3AXyZeTQkJog==
-X-Received: by 2002:a17:902:cec1:b0:1d9:87b6:e09e with SMTP id d1-20020a170902cec100b001d987b6e09emr185356plg.21.1707442812922;
-        Thu, 08 Feb 2024 17:40:12 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUhjqcibcf3unE1M99GgJ3OgUFZ8k+Iu4ZyYPfpygse/rmD5woK3OslI5s0YQynXij5zjcS/FtwTpxORJnEej447Y5tfjR0jfBRG4c6kZdhQ9/pLLDATD4CCQhNIShm+EfjXw0L6UXjacBtrOlE83YTsN0YqgwWgWCpp255NMEklSxVnn6F6XTVeBvxuuIl7IE/L1VgJhcVfGZZhezZC2QY7zK7gWFPMxYsOZPAYyZCP8ijCxUo+agiNgT0sD9RVIy8iZ+SFfaQwEAYp/nHg/fffY/espJ/48KyCFc6xWdXWPVTwBesbXxkEoJYRoZetWFDZUlG6zUZ1e683N5ZqQFfwPUdK5UVByHAhhO3kfZBC2L1+5w2LH9hWfIsgfXhXu+QMfd4XD4vgg87BBN2eiz1u3C0+lcJ9xXRoDq3/e3shj2iBMk3XHVIiHy8Gf75zToe
-Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
-        by smtp.gmail.com with ESMTPSA id jx4-20020a170903138400b001d942f744f6sm405853plb.157.2024.02.08.17.40.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 17:40:12 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rYFs9-003xtJ-1w;
-	Fri, 09 Feb 2024 12:40:09 +1100
-Date: Fri, 9 Feb 2024 12:40:09 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: John Garry <john.g.garry@oracle.com>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, hch@lst.de,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, chandan.babu@oracle.com, martin.petersen@oracle.com,
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	ojaswin@linux.ibm.com
-Subject: Re: [PATCH RFC 5/6] fs: xfs: iomap atomic write support
-Message-ID: <ZcWCeU0n7zKEPHk5@dread.disaster.area>
-References: <20240124142645.9334-1-john.g.garry@oracle.com>
- <20240124142645.9334-6-john.g.garry@oracle.com>
- <20240202184758.GA6226@frogsfrogsfrogs>
- <e61cf382-66bd-4091-b49c-afbb5ce67d8f@oracle.com>
- <ZcGIPlNCkL6EDx3Z@dread.disaster.area>
- <434c570e-39b2-4f1c-9b49-ac5241d310ca@oracle.com>
- <ZcLJgVu9A3MsWBI0@dread.disaster.area>
- <a20b3c07-605e-44c2-b562-e98269d37558@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EqYjJfen5miXcu3OwxMOZJn6l1/udYlRzyFDM2geh5rVzIcXNashPA/FWJDCrN9gk8JhG6poKXRONf1rJJ93J4csJb0ocuxdSmJ2T8AsI7m1CqBFhgUNBdAVgDUCqN/JMM2lur9/4lu7dLzdJfkmU22rawtqUG5lexRkD1qw3zA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bAoMP/K/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF16FC433C7;
+	Fri,  9 Feb 2024 01:43:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707443004;
+	bh=+Scx3UIv24JIkpDEkG9RgRFZouxyNm778JhYqy4VoiU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bAoMP/K/I3VxVfD2GXsxK1hFI/4VvgHfHiQsLd3XLhXggHMXPswk8VgvrbI3ajtbS
+	 dGSSKnO6XpFCWTQJ0cyaTQYkRyZUu064I/mZ+XP9rdlR1Lnnmgu3oPnlZlPoRI0mxt
+	 ErbaK05dHqmJblJw7HK7JueUVuQstwQ9cm+18Bfv9OuL49ibEWhgrvI0RJqxdBklu1
+	 s4DMAW+tg74R3wkuoNWHipOEKA5vEevUrLmjVIxsdnWEnS/oHatwccrEZZWjCZVB6H
+	 hho0gCSxlvI1zRsPA0jTys4wBikv3sPv+6+YKWTw230NyDXZ2RF2nPOt8XPDq5SCvD
+	 PM2zZT8xFKftQ==
+Date: Thu, 8 Feb 2024 17:43:22 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Salvatore Bonaccorso <carnil@debian.org>
+Cc: Dhya <dhya@picorealm.net>, 1063422@bugs.debian.org,
+	Chao Yu <chao@kernel.org>, linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	regressions@lists.linux.dev
+Subject: Re: [regression 6.1.y] f2fs: invalid zstd compress level: 6
+Message-ID: <ZcWDOjKEnPDxZ0Or@google.com>
+References: <170736382774.1975.1861975122613668970.reportbug@tsuga.picorealm.net>
+ <ZcU3VCrt9VOpuFUq@eldamar.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,328 +59,65 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a20b3c07-605e-44c2-b562-e98269d37558@oracle.com>
+In-Reply-To: <ZcU3VCrt9VOpuFUq@eldamar.lan>
 
-On Wed, Feb 07, 2024 at 02:13:23PM +0000, John Garry wrote:
-> On 07/02/2024 00:06, Dave Chinner wrote:
-> > > > We really, really don't want to be doing this during allocation
-> > > > unless we can avoid it. If the filesystem block size is 64kB, we
-> > > > could be allocating up to 96GB per extent, and that becomes an
-> > > > uninterruptable write stream inside a transaction context that holds
-> > > > inode metadata locked.
-> > > Where does that 96GB figure come from?
-> > My inability to do math. The actual number is 128GB.
-> > 
-> > Max extent size = XFS_MAX_BMBT_EXTLEN * fs block size.
-> > 	        = 2^21  * fs block size.
-> > 
-> > So for a 4kB block size filesystem, that's 8GB max extent length,
-> > and that's the most we will allocate in a single transaction (i.e.
-> > one new BMBT record).
-> > 
-> > For 64kB block size, we can get 128GB of space allocated in a single
-> > transaction.
+Hi,
+
+Let me check this soon.
+
+Thanks,
+
+On 02/08, Salvatore Bonaccorso wrote:
+> Hi Jaegeuk Kim, Chao Yu,
 > 
-> atomic write unit max theoretical upper limit is rounddown_power_of_2(2^32 -
-> 1) = 2GB
+> In Debian the following regression was reported after a Dhya updated
+> to 6.1.76:
 > 
-> So this would be what is expected to be the largest extent size requested
-> for atomic writes. I am not saying that 2GB is small, but certainly much
-> smaller than 128GB.
-
-*cough*
-
-Extent size hints.
-
-I'm a little disappointed that after all these discussions about how
-we decouple extent allocation size and alignment from the user IO
-size and alignment with things like extent size hints, force align,
-etc that you are still thinking that user IO size and alignment
-directly drives extent allocation size and alignment....
-
-
-> > > > > > Why do we want to write zeroes to the disk if we're allocating space
-> > > > > > even if we're not sending an atomic write?
-> > > > > > 
-> > > > > > (This might want an explanation for why we're doing this at all -- it's
-> > > > > > to avoid unwritten extent conversion, which defeats hardware untorn
-> > > > > > writes.)
-> > > > > It's to handle the scenario where we have a partially written extent, and
-> > > > > then try to issue an atomic write which covers the complete extent.
-> > > > When/how would that ever happen with the forcealign bits being set
-> > > > preventing unaligned allocation and writes?
-> > > Consider this scenario:
-> > > 
-> > > # mkfs.xfs -r rtdev=/dev/sdb,extsize=64K -d rtinherit=1 /dev/sda
-> > > # mount /dev/sda mnt -o rtdev=/dev/sdb
-> > > # touch  mnt/file
-> > > # /test-pwritev2 -a -d -l 4096 -p 0 /root/mnt/file # direct IO, atomic
-> > > write, 4096B at pos 0
-> > Please don't write one-off custom test programs to issue IO - please
-> > use and enhance xfs_io so the test cases can then be put straight
-> > into fstests without adding yet another "do some minor IO variant"
-> > test program. This also means you don't need a random assortment of
-> > other tools.
+> On Wed, Feb 07, 2024 at 10:43:47PM -0500, Dhya wrote:
+> > Package: src:linux
+> > Version: 6.1.76-1
+> > Severity: critical
+> > Justification: breaks the whole system
 > > 
-> > i.e.
+> > Dear Maintainer,
 > > 
-> > # xfs_io -dc "pwrite -VA 0 4096" /root/mnt/file
+> > After upgrade to linux-image-6.1.0-18-amd64 6.1.76-1 F2FS filesystem
+> > fails to mount rw.  Message in the boot journal:
 > > 
-> > Should do an RWF_ATOMIC IO, and
+> >   kernel: F2FS-fs (nvme0n1p6): invalid zstd compress level: 6
 > > 
-> > # xfs_io -dc "pwrite -VAD 0 4096" /root/mnt/file
+> > There was recently an f2fs patch to the 6.1 kernel tree which might be
+> > related: https://www.spinics.net/lists/stable-commits/msg329957.html
 > > 
-> > should do an RWF_ATOMIC|RWF_DSYNC IO...
+> > Was able to recover the system by doing:
 > > 
+> > sudo mount -o remount,rw,relatime,lazytime,background_gc=on,discard,no_heap,user_xattr,inline_xattr,acl,inline_data,inline_dentry,extent_cache,mode=adaptive,active_logs=6,alloc_mode=default,checkpoint_merge,fsync_mode=posix,compress_algorithm=lz4,compress_log_size=2,compress_mode=fs,atgc,discard_unit=block,memory=normal /dev/nvme0n1p6 /
 > > 
-> > > # filefrag -v mnt/file
-> > xfs_io -c "fiemap" mnt/file
+> > under the running bad 6.1.0-18-amd64 kernel, then editing
+> > /etc/default/grub:
+> > 
+> >   GRUB_DEFAULT="Advanced options for Debian GNU/Linux>Debian GNU/Linux, with Linux 6.1.0-17-amd64"
+> > 
+> > and running 'update-grub' and rebooting to boot the 6.1.0-17-amd64
+> > kernel.
 > 
-> Fine, but I like using something generic for accessing block devices and
-> also other FSes. I didn't think that xfs_io can do that.
-
-Yes, it can. We use it extensively in fstests because it works
-for any filesystem, not just XFS.
-
-> Anyway, we can look to add atomic write support to xfs_io and any other
-> xfs-progs
-
-Please do, then the support is there for developers, users and
-fstests without needing to write their own custom test programs.
-
-> > > Filesystem type is: 58465342
-> > > File size of mnt/file is 4096 (1 block of 4096 bytes)
-> > >    ext:     logical_offset:        physical_offset: length:   expected:
-> > > flags:
-> > >      0:        0..       0:         24..        24:      1:
-> > > last,eof
-> > > mnt/file: 1 extent found
-> > > # /test-pwritev2 -a -d -l 16384 -p 0 /root/mnt/file
-> > > wrote -1 bytes at pos 0 write_size=16384
-> > > #
-> > Whole test as one repeatable command:
-> > 
-> > # xfs_io -d -c "truncate 0" -c "chattr +r" \
-> > 	-c "pwrite -VAD 0 4096" \
-> > 	-c "fiemap" \
-> > 	-c "pwrite -VAD 0 16384" \
-> > 	/mnt/root/file
-> > > For the 2nd write, which would cover a 16KB extent, the iomap code will iter
-> > > twice and produce 2x BIOs, which we don't want - that's why it errors there.
-> > Yes, but I think that's a feature.  You've optimised the filesystem
-> > layout for IO that is 64kB sized and aligned IO, but your test case
-> > is mixing 4kB and 16KB IO. The filesystem should be telling you that
-> > you're doing something that is sub-optimal for it's configuration,
-> > and refusing to do weird overlapping sub-rtextsize atomic IO is a
-> > pretty good sign that you've got something wrong.
+> The issue is easily reproducible by:
 > 
-> Then we really end up with a strange behavior for the user. I mean, the user
-> may ask - "why did this 16KB atomic write pass and this one fail? I'm
-> following all the rules", and then "No one said not to mix write sizes or
-> not mix atomic and non-atomic writes, so should be ok. Indeed, that earlier
-> 4K write for the same region passed".
+> # dd if=/dev/zero of=test.img count=100 bs=1M
+> # mkfs.f2fs -f -O compression,extra_attr ./test.img
+> # mount -t f2fs -o compress_algorithm=zstd:6,compress_chksum,atgc,gc_merge,lazytime ./test.img /mnt
 > 
-> Playing devil's advocate here, at least this behavior should be documented.
-
-That's what man pages are for, yes?
-
-Are you expecting your deployments to be run on highly suboptimal
-configurations and so the code needs to be optimised for this
-behaviour, or are you expecting them to be run on correctly
-configured systems which would never see these issues?
-
-
-> > The whole reason for rtextsize existing is to optimise the rtextent
-> > allocation to the typical minimum IO size done to that volume. If
-> > all your IO is sub-rtextsize size and alignment, then all that has
-> > been done is forcing the entire rt device IO into a corner it was
-> > never really intended nor optimised for.
+> resulting in
 > 
-> Sure, but just because we are optimized for a certain IO write size should
-> not mean that other writes are disallowed or quite problematic.
-
-Atomic writes are just "other writes". They are writes that are
-*expected to fail* if they cannot be done atomically.
-
-Application writers will quickly learn how to do sane, fast,
-reliable atomic write IO if we reject anything that is going to
-requires some complex, sub-optimal workaround in the kernel to make
-it work. The simplest solution is to -fail the write-, because
-userspace *must* be prepared for *any* atomic write to fail.
-
-> > Why should we jump through crazy hoops to try to make filesystems
-> > optimised for large IOs with mismatched, overlapping small atomic
-> > writes?
+> [   60.789982] F2FS-fs (loop0): invalid zstd compress level: 6
 > 
-> As mentioned, typically the atomic writes will be the same size, but we may
-> have other writes of smaller size.
-
-Then we need the tiny write to allocate and zero according to the
-maximum sized atomic write bounds. Then we just don't care about
-large atomic IO overlapping small IO, because the extent on disk
-aligned to the large atomic IO is then always guaranteed to be the
-correct size and shape.
-
-
-> > > With the change in this patch, instead we have something like this after the
-> > > first write:
-> > > 
-> > > # /test-pwritev2 -a -d -l 4096 -p 0 /root/mnt/file
-> > > wrote 4096 bytes at pos 0 write_size=4096
-> > > # filefrag -v mnt/file
-> > > Filesystem type is: 58465342
-> > > File size of mnt/file is 4096 (1 block of 4096 bytes)
-> > >    ext:     logical_offset:        physical_offset: length:   expected:
-> > > flags:
-> > >      0:        0..       3:         24..        27:      4:
-> > > last,eof
-> > > mnt/file: 1 extent found
-> > > #
-> > > 
-> > > So the 16KB extent is in written state and the 2nd 16KB write would iter
-> > > once, producing a single BIO.
-> > Sure, I know how it works. My point is that it's a terrible way to
-> > go about allowing that second atomic write to succeed.
-> I think 'terrible' is a bit too strong a word here.
-
-Doing it anything in a way that a user can DOS the entire filesystem
-is *terrible*. No ifs, buts or otherwise.
-
-> Indeed, you suggest to
-> manually zero the file to solve this problem, below, while this code change
-> does the same thing automatically.
-
-Yes, but I also outlined a way that it can be done automatically
-without being terrible. There are multiple options here, I outlined
-two different approaches that are acceptible.
-
-> > > > > In this
-> > > > > scenario, the iomap code will issue 2x IOs, which is unacceptable. So we
-> > > > > ensure that the extent is completely written whenever we allocate it. At
-> > > > > least that is my idea.
-> > > > So return an unaligned extent, and then the IOMAP_ATOMIC checks you
-> > > > add below say "no" and then the application has to do things the
-> > > > slow, safe way....
-> > > We have been porting atomic write support to some database apps and they
-> > > (database developers) have had to do something like manually zero the
-> > > complete file to get around this issue, but that's not a good user
-> > > experience.
-> > Better the application zeros the file when it is being initialised
-> > and doesn't have performance constraints rather than forcing the
-> > filesystem to do it in the IO fast path when IO performance and
-> > latency actually matters to the application.
+> A bugzilla report has been submitted in
+> https://bugzilla.kernel.org/show_bug.cgi?id=218471
 > 
-> Can't we do both? I mean, the well-informed user can still pre-zero the file
-> just to ensure we aren't doing this zero'ing with the extent allocation.
-
-I never said we can't do zeroing. I just said that it's normally
-better when the application controls zeroing directly.
-
-> > And therein lies the problem.
-> > 
-> > If you are doing sub-rtextent IO at all, then you are forcing the
-> > filesystem down the path of explicitly using unwritten extents and
-> > requiring O_DSYNC direct IO to do journal flushes in IO completion
-> > context and then performance just goes down hill from them.
-> > 
-> > The requirement for unwritten extents to track sub-rtextsize written
-> > regions is what you're trying to work around with XFS_BMAPI_ZERO so
-> > that atomic writes will always see "atomic write aligned" allocated
-> > regions.
-> > 
-> > Do you see the problem here? You've explicitly told the filesystem
-> > that allocation is aligned to 64kB chunks, then because the
-> > filesystem block size is 4kB, it's allowed to track unwritten
-> > regions at 4kB boundaries. Then you do 4kB aligned file IO, which
-> > then changes unwritten extents at 4kB boundaries. Then you do a
-> > overlapping 16kB IO that*requires*  16kB allocation alignment, and
-> > things go BOOM.
-> > 
-> > Yes, they should go BOOM.
-> > 
-> > This is a horrible configuration - it is incomaptible with 16kB
-> > aligned and sized atomic IO.
+> #regzbot introduced: v6.1.69..v6.1.76
+> #regzbot link: https://bugs.debian.org/1063422
+> #regzbot link: https://bugzilla.kernel.org/show_bug.cgi?id=218471
 > 
-> Just because the DB may do 16KB atomic writes most of the time should not
-> disallow it from any other form of writes.
-
-That's not what I said. I said the using sub-rtextsize atomic writes
-with single FSB unwritten extent tracking is horrible and
-incompatible with doing 16kB atomic writes.
-
-This setup will not work at all well with your patches and should go
-BOOM. Using XFS_BMAPI_ZERO is hacking around the fact that the setup
-has uncoordinated extent allocation and unwritten conversion
-granularity.
-
-That's the fundamental design problem with your approach - it allows
-unwritten conversion at *minimum IO sizes* and that does not work
-with atomic IOs with larger alignment requirements.
-
-The fundamental design principle is this: for maximally sized atomic
-writes to always succeed we require every allocation, zeroing and
-unwritten conversion operation to use alignments and sizes that are
-compatible with the maximum atomic write sizes being used.
-
-i.e. atomic writes need to use max write size granularity for all IO
-operations, not filesystem block granularity.
-
-And that also means things like rtextsize and extsize hints need to
-match these atomic write requirements, too....
-
-> > Allocation is aligned to 64kB, written
-> > region tracking is aligned to 4kB, and there's nothing to tell the
-> > filesystem that it should be maintaining 16kB "written alignment" so
-> > that 16kB atomic writes can always be issued atomically.
-> > 
-> > i.e. if we are going to do 16kB aligned atomic IO, then all the
-> > allocation and unwritten tracking needs to be done in 16kB aligned
-> > chunks, not 4kB. That means a 4KB write into an unwritten region or
-> > a hole actually needs to zero the rest of the 16KB range it sits
-> > within.
-> > 
-> > The direct IO code can do this, but it needs extension of the
-> > unaligned IO serialisation in XFS (the alignment checks in
-> > xfs_file_dio_write()) and the the sub-block zeroing in
-> > iomap_dio_bio_iter() (the need_zeroing padding has to span the fs
-> > allocation size, not the fsblock size) to do this safely.
-> > 
-> > Regardless of how we do it, all IO concurrency on this file is shot
-> > if we have sub-rtextent sized IOs being done. That is true even with
-> > this patch set - XFS_BMAPI_ZERO is done whilst holding the
-> > XFS_ILOCK_EXCL, and so no other DIO can map extents whilst the
-> > zeroing is being done.
-> > 
-> > IOWs, anything to do with sub-rtextent IO really has to be treated
-> > like sub-fsblock DIO - i.e. exclusive inode access until the
-> > sub-rtextent zeroing has been completed.
-> 
-> I do understand that this is not perfect that we may have mixed block sizes
-> being written, but I don't think that we should disallow it and throw an
-> error.
-
-Ummmm, did you read what you quoted?
-
-The above is an outline of the IO path modifications that will allow
-mixed IO sizes to be used with atomic writes without requiring the
-XFS_BMAPI_ZERO hack. It pushes the sub-atomic write alignment
-zeroing out to the existing DIO sub-block zeroing, hence ensuring
-that we only ever convert unwritten extents on max sized atomic
-write boundaries for atomic write enabled inodes.
-
-At no point have I said "no mixed writes". I've said no to the
-XFS_BMAPI_ZERO hack, but then I've explained the fundamental issue
-that it works around and given you a decent amount of detail on how
-to sanely implementing mixed write support that will work (slowly)
-with those configurations and IO patterns.
-
-So it's your choice - you can continue to beleive I don't mixed
-writes to work at all, or you can go back and try to understand the
-IO path changes I've suggested that will allow mixed atomic writes
-to work as well as they possibly can....
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> Regards,
+> Salvatore
 
