@@ -1,140 +1,185 @@
-Return-Path: <linux-kernel+bounces-59042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3EFE84F045
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:39:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 621A684F049
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:41:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 094651C21CAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:39:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7EB51F2471F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:41:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 477B4657AA;
-	Fri,  9 Feb 2024 06:38:55 +0000 (UTC)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 056AC657B8;
+	Fri,  9 Feb 2024 06:41:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b="jftvQyyn"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E248651AE;
-	Fri,  9 Feb 2024 06:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1786651BA
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 06:40:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707460734; cv=none; b=S/iDshhsszqaVH7JG12HAoA9pqYNOb0VU/ejRy5VlNJcbgA1HlkiEPImHkoJPjVc1RZ+XcJZdv9zf1qC9r54vdIKiX1/iMsZpIIwCQWDi7GDCZPg0RbPnmOIwu65NMm8xpkHNpA7fjdrrIsBpiyrDf9nZ6AAxWyzPb5s/LK8Mxc=
+	t=1707460859; cv=none; b=qFYFYusIMVVyoC4p8BtWUqru6Sj9UnE2OB3IYAlAAA0tcYGNqWmhPegBpq7YGXM4MHPoGpMIHOsGkrvGUdMF48geSzyy5+DN5nc+RQ01Ti8xfsoaBpRtKlpb88j8NkS51oBIrWRgZ6wXun+nKpXb8Z66frDSxtxrYearwMnbDmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707460734; c=relaxed/simple;
-	bh=Yo2XvlkHE+onMuqhDZZAzlPBwMEJDxRnvPE5rwHB7fI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YKngUWGhU230CX/ioeTaM0br5u0368zSykD9VVlMOyjsYnG9zeyGYp/Cs8wsmSoauzMa4NC6zbgXcNfT3HP5P7JkH2BIgbxPky1AMlv2OgouCaJ9j0qYRx5xsTtgXYR0aFmOjNYhu/xH5MG3DwwA2u/Fym1Wp67IC/IRQM+PkOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-511234430a4so1130428e87.3;
-        Thu, 08 Feb 2024 22:38:52 -0800 (PST)
+	s=arc-20240116; t=1707460859; c=relaxed/simple;
+	bh=ttzGZt8Xqfj1jyMzn/IlnS9IW32N05ugyiqia/LyfNI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ebwKdmRyxhRhupX2URcQe8X2SEeWPtkptVko3n4YtkrC8OVQ3zWWC/f75WCX7MtbDv4JGmJvb8eRG7ioMI1Sq1Ebmg423eh15JL5sP9qAwguteLlysDt/rr91yJTGjOhmwy8LKWl87qMVXxw3hZM/3nk2qb3sZbzQyqMO178gYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vrull.eu; spf=pass smtp.mailfrom=vrull.eu; dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b=jftvQyyn; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vrull.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vrull.eu
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55cca88b6a5so801041a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 22:40:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vrull.eu; s=google; t=1707460855; x=1708065655; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kvtDAF5lfbY4yUhZUUJ7CosOcOxm/24HARcc6AfCtK4=;
+        b=jftvQyynacKK+2bqkhX2ctKOCT7Bp3TmFdEiiZVV0LwvP6ezb4fD65WvPoE5D/DonQ
+         MHbVW/h+oUugxQfPHGg/2a/LKPnVGX0L6EsGZ8rnBiTfnpPDYk12dRi/ejBNmP/6DGOf
+         jJC4pkQ8jR4rJ/oleJkE29qBzocm0ccxehFibTMzXZUvRAPDdJTyv5eVCDoBfB6LVNDG
+         4hOFEnJ4gTYXk4iPlOVYHED22tgsz7kACjSdCVND+jKFCU1xKOO1aEy6tWlpuap8xBf/
+         7hkxxmEKnzJrgKxALUdG/WHlUBPOTI7r0NXQMDFOF5vNNuObaqUQrVrRS6gtHbv8c4cq
+         Natw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707460731; x=1708065531;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LtnVDf5IDtyw/KlLL2GLn1KnxThuWHL4m6/SjcU6D18=;
-        b=eyVb+sOOCuZaSwmb/eukLQePZJmpokkVNY/wHUD4AY6j3hLcp+1ziSSUMAW44oxov6
-         uowkKnOlTUwpG4ux5bexLvJiay7bEeT5OQLZtuAAHjiGGbq6TSPoDhMdScobQ4DwufqC
-         BEhVOJUCPGd60b8U33nzQk3V59GPm3nL2pKmf6ZaybmJz+E7WrSKtrMyQbi+u0hyjEGF
-         nO3Azu7u2bMUNywyPl+vgJUJL9MwL8D7mJimP+xoDCVDc+bN4Tly6C2Nklv12fZz0uTR
-         XukINq5DH5q1MgaLuDdgVZBc47LXFjXfj3GS0rYjI5Bp8LyJgpBbHPvHNNCSL6jGgRaa
-         CHOw==
-X-Forwarded-Encrypted: i=1; AJvYcCVQpwwqbv2kNDNUGzlNpaDEvAq3LlNqkyewzIF/RZfytSS8seOh8f2ItiXSTAcPGgF87OBxg4yUW5NWBTU8zutMVPVhkh4nCIwaLwtu4O0CBCxNQcxdMQ1R8Npz2aoO8X692KO5AEm1oryL
-X-Gm-Message-State: AOJu0YwMCxhmQVBzBu7NExmiE3YOmZX3YZcPxI11bHE4mU4Phuq+9B/R
-	uT5BAFR4OdKHRpDZqJnFGzR/DaJhQMC1RFS3MUeMwVTh+9mvpyI+
-X-Google-Smtp-Source: AGHT+IGbVC19cYAy/9L0jrbhJhS6UU0hd96vrFrQjeIip/nS9EPYd3i2LdDnxl78oL0XM1FfqWsRiA==
-X-Received: by 2002:a19:8c13:0:b0:511:5314:1762 with SMTP id o19-20020a198c13000000b0051153141762mr318917lfd.44.1707460730848;
-        Thu, 08 Feb 2024 22:38:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX9wZsjnK6opyhd9b0Z0968sFYKeAxSPe976YWlV7PM3WbYf+37umq1KTrYk77Bwa13SlzMySwEHA92RQ71CwSa5g0yq9hKgWAgEGxtFxiYtopZ049lm1SV+y8CXDrNL8FvwrJ37ut92VPbjlUYh3kSul257c7bD2cIiW6rt2JMPGCkHRTidx2isLe3yU8J3orWvtg8dtBD7xuJozljUwK3ke1mesgOP+8iBz/GtKCbxMiR1rrixkueVc61Pzc7a4XSb2DItsl2OQ2LKmGSU0rEMA==
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id d19-20020a1709063ed300b00a3bb5bc4705sm449916ejj.92.2024.02.08.22.38.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 22:38:50 -0800 (PST)
-Message-ID: <0c1e8d38-4b00-4738-bd05-7e36ce736681@kernel.org>
-Date: Fri, 9 Feb 2024 07:38:49 +0100
+        d=1e100.net; s=20230601; t=1707460855; x=1708065655;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kvtDAF5lfbY4yUhZUUJ7CosOcOxm/24HARcc6AfCtK4=;
+        b=nMP7kFwo5YTB8lBZc++qN6OnabDVaQFDUYHDjXs6NMjtzjvZ9XErba/Cr+D0iNxzSd
+         tPGuieIV3GzyhbwEg/3rPoSAvgrBR+yZiED7ZIrhs4ljcBnNYphCFUEcRjZwv8cZeHID
+         Dxh3xiZsWUQp+jryLhIBOajGDJG+rtyAXWNibYfRjYegJQL69nrowx0/MFhFKj/ZKA41
+         Ev7YkBmTgQOHDpNtKutuCD35KI750Tvk2aYX+ovKSk4rUWZPy0I899+GtMMxfYFfEYMz
+         XyukBW+ZHDHNW3iWOUPkr6vSjEsOYtTXzV4WTQl/FTj+k0DgGp6ClXNLhGqiW7S2Av7C
+         mYcQ==
+X-Gm-Message-State: AOJu0YzoBIeQT71JfojXEYwqN+lVDB5bdev8SUCUJpk2lNE3jY+lW5nG
+	CX/9l6J0tPaGhldoIX1v4xXJ9kQbmWG5ScZZfs9er3r1WDVgmN0NHQJg+ha5Q9o=
+X-Google-Smtp-Source: AGHT+IHpIKkOgxjK+OQ+Z52aahdSsMDEuAEAMDQo+EQ8mKVlTca/L55YC6piRGYTQoHdHcL4KlFQuA==
+X-Received: by 2002:a17:907:7673:b0:a3b:f72d:9c2a with SMTP id kk19-20020a170907767300b00a3bf72d9c2amr190059ejc.62.1707460854816;
+        Thu, 08 Feb 2024 22:40:54 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWAlu54lRX16jytgJW8roJL2H0QKMI9bHlcj3TnXGSlYBIoBk1ttjdrTZzNzmVirHFnXFID3upTy4H1ASA/tzipHETgZkmgNtT+1sIwmU0GhKj3EYBRncTJaqvOv7y+mqhZEKbuQbD5nVdE67KR3Vie9bp57bSJ0X/SfGEHPifA05xGWJ5yNomEWstB8tmS7GLuOG2OKK1emxDCGGDQILzS5/CoaVrwlvN5S0JIzHLCqSqFInP5MruknJDOMS9QBs5gvY1r9lp4a859m45AERXSfEKyEAr4GfeWJYc47vGbCOZ2QDeL/6I4cycDMcAl5vG7BID+v8/SxhulWhKkd3XIVvrTO9d1GKsCl6l+2uByZ1/IgXiJQ4iQwA0Qzodf53LBcoPOv99eWt/9zg8TjkDXy/GyYY3WSVgEbhjm5/o8MVTmxzr8vmfHaLOF9dYK6uqsahEbm4xyi2IWAVfs5eTpYHA6+lJOYXQpak9GUsfyWOp1z2cvJP/0MYJkWii8qqNUkdL8nJOlA8dOVvAjrgveq9g463WU+mKshPGavZylY+KSSLvr1zr0hkxpdcnYMRsV/VPkvLKBJylM1JWpUq7IHO+PeNGJC1OC9lCWA2Xrn8Qp+d0uXNdiebytIebrZVauV3FGf/oD/dQ9cNHb5LmPViq2yncp2V5fvI98v4ySLt2bcglj4dyHs2Ch2Z1YuGhTqcSSanM0d41wzHCHZZRvj1BpzO/LNtgMpWu6HOjLwTztDQ2Kk2tzDwtpi2jlaLFxH/w+mOMZzU1uHKzlAKbZbJd9hST1aqKBG/MooIXznVMGfUueWTBogXnPkAD/qQ4ZQMwzTDr27AVyQdRx7d7Wi0c6FvJowfnExEtugC6H9g==
+Received: from beast.fritz.box (62-178-148-172.cable.dynamic.surfer.at. [62.178.148.172])
+        by smtp.gmail.com with ESMTPSA id vb9-20020a170907d04900b00a370a76d3a0sm441180ejc.123.2024.02.08.22.40.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 22:40:54 -0800 (PST)
+From: =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>
+To: linux-riscv@lists.infradead.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Anup Patel <apatel@ventanamicro.com>,
+	Philipp Tomsich <philipp.tomsich@vrull.eu>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Guo Ren <guoren@kernel.org>,
+	Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Will Deacon <will@kernel.org>,
+	Daniel Lustig <dlustig@nvidia.com>,
+	Brendan Sweeney <turtwig@utexas.edu>,
+	Andrew Waterman <andrew@sifive.com>,
+	Brendan Sweeney <brs@berkeley.edu>,
+	Andrea Parri <parri.andrea@gmail.com>,
+	Hans Boehm <hboehm@google.com>
+Cc: =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>
+Subject: [RFC PATCH v2 0/6] RISC-V: Add dynamic TSO support
+Date: Fri,  9 Feb 2024 07:40:44 +0100
+Message-ID: <20240209064050.2746540-1-christoph.muellner@vrull.eu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 tty] 8250: microchip: pci1xxxx: Add Burst mode
- transmission support in uart driver for reading from FIFO
-Content-Language: en-US
-To: Rengarajan.S@microchip.com, linux-serial@vger.kernel.org,
- gregkh@linuxfoundation.org, Kumaravel.Thiagarajan@microchip.com,
- linux-kernel@vger.kernel.org, Tharunkumar.Pasumarthi@microchip.com
-Cc: UNGLinuxDriver@microchip.com
-References: <20240125100006.153342-1-rengarajan.s@microchip.com>
- <b8325c3f-bf5b-4c55-8dce-ef395edce251@kernel.org>
- <e7f29dd64829b597f3881abcf4da653156c1fe59.camel@microchip.com>
- <fa17f083805e46079bfb4ed89b83d372cfe7e77c.camel@microchip.com>
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <fa17f083805e46079bfb4ed89b83d372cfe7e77c.camel@microchip.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 09. 02. 24, 5:52, Rengarajan.S@microchip.com wrote:
-> Hi Jiri Slaby,
-> 
-> The patch has been accepted and added in the tty-git tree and will be
-> merged during the next merged window. Should the changes be given as a
-> seperate incremental patch or should we re-submit this patch again.
+The upcoming RISC-V Ssdtso specification introduces a bit in the senvcfg
+CSR to switch the memory consistency model of user mode at run-time from
+RVWMO to TSO. The active consistency model can therefore be switched on a
+per-hart base and managed by the kernel on a per-process base.
 
-Hi,
+This patchset implements basic Ssdtso support and adds a prctl API on top
+so that user-space processes can switch to a stronger memory consistency
+model (than the kernel was written for) at run-time.
+The patchset also comes with a short documentation of the prctl API.
 
-as you write, you cannot change the patch as it is already queued. 
-PLease submit changes on top.
+This series is based on the third draft of the Ssdtso specification
+which can be found here:
+  https://github.com/riscv/riscv-ssdtso/releases/tag/v1.0-draft3
+Note, that the Ssdtso specification is in development state
+(i.e., not frozen or even ratified) which is also the reason
+why this series is marked as RFC.
 
-thanks,
+This series saw the following changes since v1:
+* Reordered/restructured patches
+* Fixed build issues
+* Addressed typos
+* Removed ability to switch TSO->WMO
+* Moved the state from per-thread to per-process
+* Reschedule all CPUs after switching
+* Some cleanups in the documentation
+* Adding compatibility with Ztso (spec change in draft 3)
+
+This patchset can also be found in this GitHub branch:
+  https://github.com/cmuellner/linux/tree/ssdtso-v2
+
+A QEMU implementation of DTSO can be found in this GitHub branch:
+  https://github.com/cmuellner/qemu/tree/ssdtso-v2
+
+Christoph Müllner (6):
+  mm: Add dynamic memory consistency model switching
+  uapi: prctl: Add new prctl call to set/get the memory consistency
+    model
+  RISC-V: Enable dynamic memory consistency model support with Ssdtso
+  RISC-V: Implement prctl call to set/get the memory consistency model
+  RISC-V: Expose Ssdtso via hwprobe API
+  RISC-V: selftests: Add DTSO tests
+
+ Documentation/arch/riscv/hwprobe.rst          |  3 +
+ .../mm/dynamic-memory-consistency-model.rst   | 86 ++++++++++++++++
+ Documentation/mm/index.rst                    |  1 +
+ arch/Kconfig                                  | 14 +++
+ arch/riscv/Kconfig                            | 11 +++
+ arch/riscv/include/asm/csr.h                  |  1 +
+ arch/riscv/include/asm/dtso.h                 | 97 +++++++++++++++++++
+ arch/riscv/include/asm/hwcap.h                |  1 +
+ arch/riscv/include/asm/processor.h            |  7 ++
+ arch/riscv/include/asm/switch_to.h            |  3 +
+ arch/riscv/include/uapi/asm/hwprobe.h         |  1 +
+ arch/riscv/kernel/Makefile                    |  1 +
+ arch/riscv/kernel/asm-offsets.c               |  3 +
+ arch/riscv/kernel/cpufeature.c                |  1 +
+ arch/riscv/kernel/dtso.c                      | 67 +++++++++++++
+ arch/riscv/kernel/sys_hwprobe.c               |  2 +
+ include/linux/sched.h                         |  5 +
+ include/uapi/linux/prctl.h                    |  5 +
+ kernel/sys.c                                  | 12 +++
+ tools/testing/selftests/riscv/Makefile        |  2 +-
+ tools/testing/selftests/riscv/dtso/.gitignore |  1 +
+ tools/testing/selftests/riscv/dtso/Makefile   | 11 +++
+ tools/testing/selftests/riscv/dtso/dtso.c     | 82 ++++++++++++++++
+ 23 files changed, 416 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/mm/dynamic-memory-consistency-model.rst
+ create mode 100644 arch/riscv/include/asm/dtso.h
+ create mode 100644 arch/riscv/kernel/dtso.c
+ create mode 100644 tools/testing/selftests/riscv/dtso/.gitignore
+ create mode 100644 tools/testing/selftests/riscv/dtso/Makefile
+ create mode 100644 tools/testing/selftests/riscv/dtso/dtso.c
+
 -- 
-js
-suse labs
+2.43.0
 
 
