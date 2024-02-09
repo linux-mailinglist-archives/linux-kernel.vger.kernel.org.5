@@ -1,257 +1,191 @@
-Return-Path: <linux-kernel+bounces-59950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A33BB84FDC9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:43:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5E5184FDCB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:44:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C590A1C20A20
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:43:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 692841F2313B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:44:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F9C6AB7;
-	Fri,  9 Feb 2024 20:43:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC57568A;
+	Fri,  9 Feb 2024 20:43:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IJdjc6ff";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZqzsBhrL";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IJdjc6ff";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZqzsBhrL"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hBCLSj6+"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60DA4568A
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 20:43:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289C16AB6
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 20:43:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707511385; cv=none; b=V1b6ZGoehSorUTMwpO/oNkJjlSqwSUXf+7s3g0xqmgvbaUNRzpDgWWVxMFNIJAD4Pa2TV4OHhB2/xIQM77+OZ26hjXEdgB4qASruYxz7N48CKJTT2GHDcg10UMGZ/EkHQ1HxGCaDpmk4GOZVvKA5/kvwkeDH0F8hqQNf1a2Os/U=
+	t=1707511432; cv=none; b=B8xyng0HE7W0O+rEfFz9gjNP7lsSpsANHVzkWhrfoi3Dl2J2M/ccpMvu+ebtD494QeiM3iw0kotq5nGjKTV+nMtG8HdnlMUPGDK83IoVut7QjHD+9HL7xw+0Ee5o+XUtb9D9fLUkjKJM03g3GdZswr8mRbyd4VMoyql1ri6hyTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707511385; c=relaxed/simple;
-	bh=9kK6lZlGKhnm6G6FnouL8d9pH6VBbfAI8mP/vOOqTC4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=m9bSEv5FOFGP8nWYKxmVN1v/C7moMuFDlBqngvRBqiuie2cJhDNcQcjXDbwccgpTtNDwk9DdIRjUAT2XFGQDZLFDeaKcKO8wOnJJsj39KG6Dy9AW+kd+0WjIrHVgPEAs7Qlc6f3/tYISWowgzFm3fdu6XfXx07Ph+LV+0NT5cco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IJdjc6ff; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZqzsBhrL; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IJdjc6ff; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZqzsBhrL; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7F91A21DDD;
-	Fri,  9 Feb 2024 20:43:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707511381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MPJrFIpcUFp3ljkSzw+njm70TJFkUJE5UKVeap+Smwo=;
-	b=IJdjc6ffE2sXRMPORezrFCcH10QAAgA6YrcZWCY/Gpi8ipg/ndAuyj8vrDB8K3UnfpkJOQ
-	nvX7C9QSrT91VTlORvYAzVoRUZMg4Jk8neNNqB4Xa8ovt6GB81bdo1Qsx5RkVcoXCHVoz8
-	AMP4coUX4PU/f5FLnm85eCSqD0c3dWE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707511381;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MPJrFIpcUFp3ljkSzw+njm70TJFkUJE5UKVeap+Smwo=;
-	b=ZqzsBhrLrsaCWRnCo7gqEKFB/Qv6oOstLfTzhCMK9Ypp3KEMVTtf/xtAfy3C0cyYSQ0vHU
-	f7IR/9p5IyrzY1Bw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707511381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MPJrFIpcUFp3ljkSzw+njm70TJFkUJE5UKVeap+Smwo=;
-	b=IJdjc6ffE2sXRMPORezrFCcH10QAAgA6YrcZWCY/Gpi8ipg/ndAuyj8vrDB8K3UnfpkJOQ
-	nvX7C9QSrT91VTlORvYAzVoRUZMg4Jk8neNNqB4Xa8ovt6GB81bdo1Qsx5RkVcoXCHVoz8
-	AMP4coUX4PU/f5FLnm85eCSqD0c3dWE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707511381;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MPJrFIpcUFp3ljkSzw+njm70TJFkUJE5UKVeap+Smwo=;
-	b=ZqzsBhrLrsaCWRnCo7gqEKFB/Qv6oOstLfTzhCMK9Ypp3KEMVTtf/xtAfy3C0cyYSQ0vHU
-	f7IR/9p5IyrzY1Bw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4DD7F13353;
-	Fri,  9 Feb 2024 20:43:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id MLGzElWOxmVyXAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 09 Feb 2024 20:43:01 +0000
-Message-ID: <b1db01bc-e0a3-42d3-8193-6e4bfd7c9f86@suse.cz>
-Date: Fri, 9 Feb 2024 21:43:01 +0100
+	s=arc-20240116; t=1707511432; c=relaxed/simple;
+	bh=qPNWxsczTO7GV0dPUZcGSpqspC6V0iFjVzyRpKvq3X4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QDZYASvUlKqWRUlE/gd6PPf5hRnftAmXS9y9pKkvL9octRX7J0CGaM4YsItc+KIPbwGZFh6/6XaiyC+plAojC622zEq9PMTn0ZLICfXYFAN9ibZbrLws70hGTYw9LMX1uIq91JD8QaSvIHfOGSxmtfndnVE6gvQqVhgM2H8aLXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hBCLSj6+; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e06bc288d2so976952b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 12:43:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707511430; x=1708116230; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TPuCellk6eYqVa9MX4sdjQ9QAgJeGQ/IRRQj+Cyjbi4=;
+        b=hBCLSj6+KkCwY6z4Bem+NZf8NX7cLp7odVe+/pn50irSaIJBADd9zXwnSimt+S0fpG
+         pEeUt3vO6tvxHVTA1KZiJzfnnCwxt6BCX3xF7t+hVnKsnpp7ymtUmtV7N6vovPr8ZJqM
+         ux8vAAPDpSL2Vi2fyTbgFy4T8R0Q+Iarh9PUjSVFzs4AAwfXA9kfyyEam0LDxnEQnBb2
+         5w+IVcJ+uFyZiKGeJo4KzwBWSvPRNfSl+gw+r+7RXRAOOqCGtRECDrhCnyHynKXNVO6x
+         bUTm2RmZDMtbvsDufxQsL57ixM8Ps8weq8G8Qrm18Pwtvi9Wul1ZGPsozeI1S2TlfUIG
+         Rktg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707511430; x=1708116230;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TPuCellk6eYqVa9MX4sdjQ9QAgJeGQ/IRRQj+Cyjbi4=;
+        b=h4ZCnm8W8R2WH6M3sSqaho4DVFqUMV4FxYXz/3RLKoTAAM9LfLbdSmmhqdaHAMG83R
+         efCsCX3izDUOYYo552ngQEu/wuulgg2IhuHcvUI78LRMy9JMyLdNqhVan4NxXIh7CtYW
+         YcrMKGVbyQ5AJSg+2FyG8S9lhQ/wQn+C+tbjwX7/5suHiNaRGDHJKsHZGg60vKvLAroB
+         0fHQjJLyKKCOHiRCATZbG/cTRiN+US4HzOiUHpyeGMblJ6yJs8eohhriURbCrOCQdDX4
+         Seyir3w/2X0Rxx4n70GE1I9x0G5OHc4q/Wk8vE4PgW9uhelctHDCsh/JESsWrhLaCiX2
+         vERA==
+X-Gm-Message-State: AOJu0Yy5Lt3bqt179sKsNhQRpUtF+vE8y7eQW0CzVdvWeLI2+Kdw02gb
+	KAKC3KUC6PMsKwG6Xqm4TnuVMQepN7K2q0HbyXO15SPL6jbWKEnHrBPfp4Z3GGF7CXKlB1VaqOl
+	i+ZFHL1kzxdzmmjJpGStjcdbpSvoLEjvQzRaX/w==
+X-Google-Smtp-Source: AGHT+IHxT2vJWHBnr83Rt4mszpZUd9Y5Ux1o49kC7wAXkigzdHXT6Hl72EkvyTIEPZvAAUlI5pSHbZleyvFADVLIDDc=
+X-Received: by 2002:a05:6a21:3a41:b0:19e:bc68:3c72 with SMTP id
+ zu1-20020a056a213a4100b0019ebc683c72mr289248pzb.28.1707511430323; Fri, 09 Feb
+ 2024 12:43:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] mm/compaction: enable compacting >0 order folios.
-Content-Language: en-US
-To: Zi Yan <ziy@nvidia.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- "Huang, Ying" <ying.huang@intel.com>, Ryan Roberts <ryan.roberts@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- David Hildenbrand <david@redhat.com>, "Yin, Fengwei"
- <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- Kemeng Shi <shikemeng@huaweicloud.com>,
- Mel Gorman <mgorman@techsingularity.net>, Rohan Puri
- <rohan.puri15@gmail.com>, Mcgrof Chamberlain <mcgrof@kernel.org>,
- Adam Manzanares <a.manzanares@samsung.com>,
- "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-References: <20240202161554.565023-1-zi.yan@sent.com>
- <20240202161554.565023-2-zi.yan@sent.com>
- <c42a6c9f-7d45-428c-95b9-98367ddba9d3@suse.cz>
- <24D4AA55-42F5-4E9B-822D-2BE61D0FA51F@nvidia.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <24D4AA55-42F5-4E9B-822D-2BE61D0FA51F@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-1.59 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLqwhhqik4qyk5i1fk54co8f1o)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCPT_COUNT_TWELVE(0.00)[19];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[kvack.org,vger.kernel.org,intel.com,arm.com,linux-foundation.org,infradead.org,redhat.com,google.com,linux.intel.com,cmpxchg.org,linux.alibaba.com,huaweicloud.com,techsingularity.net,gmail.com,kernel.org,samsung.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.59
+References: <20240208161700.268570-1-peter.griffin@linaro.org> <20240208161700.268570-3-peter.griffin@linaro.org>
+In-Reply-To: <20240208161700.268570-3-peter.griffin@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Fri, 9 Feb 2024 14:43:39 -0600
+Message-ID: <CAPLW+4n6e2SQSMSAQ66U09JhYRc7gqkwBqU2LOg_=Z2Aqdd4cw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] watchdog: s3c2410_wdt: use exynos_get_pmu_regmap_by_phandle()
+ for PMU regs
+To: Peter Griffin <peter.griffin@linaro.org>
+Cc: arnd@arndb.de, krzysztof.kozlowski@linaro.org, linux@roeck-us.net, 
+	wim@linux-watchdog.org, alim.akhtar@samsung.com, jaewon02.kim@samsung.com, 
+	alexey.klimov@linaro.org, kernel-team@android.com, tudor.ambarus@linaro.org, 
+	andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com, 
+	linux-fsd@tesla.com, linux-watchdog@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/9/24 20:25, Zi Yan wrote:
-> On 9 Feb 2024, at 9:32, Vlastimil Babka wrote:
-> 
->> On 2/2/24 17:15, Zi Yan wrote:
->>> From: Zi Yan <ziy@nvidia.com>
->>>
->>> migrate_pages() supports >0 order folio migration and during compaction,
->>> even if compaction_alloc() cannot provide >0 order free pages,
->>> migrate_pages() can split the source page and try to migrate the base pages
->>> from the split. It can be a baseline and start point for adding support for
->>> compacting >0 order folios.
->>>
->>> Suggested-by: Huang Ying <ying.huang@intel.com>
->>> Signed-off-by: Zi Yan <ziy@nvidia.com>
->>> ---
->>>  mm/compaction.c | 43 +++++++++++++++++++++++++++++++++++--------
->>>  1 file changed, 35 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/mm/compaction.c b/mm/compaction.c
->>> index 4add68d40e8d..e43e898d2c77 100644
->>> --- a/mm/compaction.c
->>> +++ b/mm/compaction.c
->>> @@ -816,6 +816,21 @@ static bool too_many_isolated(struct compact_control *cc)
->>>  	return too_many;
->>>  }
->>>
->>> +/*
->>> + * 1. if the page order is larger than or equal to target_order (i.e.,
->>> + * cc->order and when it is not -1 for global compaction), skip it since
->>> + * target_order already indicates no free page with larger than target_order
->>> + * exists and later migrating it will most likely fail;
->>> + *
->>> + * 2. compacting > pageblock_order pages does not improve memory fragmentation,
->>> + * skip them;
->>> + */
->>> +static bool skip_isolation_on_order(int order, int target_order)
->>> +{
->>> +	return (target_order != -1 && order >= target_order) ||
->>> +		order >= pageblock_order;
->>> +}
->>> +
->>>  /**
->>>   * isolate_migratepages_block() - isolate all migrate-able pages within
->>>   *				  a single pageblock
->>> @@ -1010,7 +1025,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
->>>  		/*
->>>  		 * Regardless of being on LRU, compound pages such as THP and
->>>  		 * hugetlbfs are not to be compacted unless we are attempting
->>> -		 * an allocation much larger than the huge page size (eg CMA).
->>> +		 * an allocation larger than the compound page size.
->>>  		 * We can potentially save a lot of iterations if we skip them
->>>  		 * at once. The check is racy, but we can consider only valid
->>>  		 * values and the only danger is skipping too much.
->>> @@ -1018,11 +1033,18 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
->>>  		if (PageCompound(page) && !cc->alloc_contig) {
->>>  			const unsigned int order = compound_order(page);
->>>
->>> -			if (likely(order <= MAX_PAGE_ORDER)) {
->>> -				low_pfn += (1UL << order) - 1;
->>> -				nr_scanned += (1UL << order) - 1;
->>> +			/*
->>> +			 * Skip based on page order and compaction target order
->>> +			 * and skip hugetlbfs pages.
->>> +			 */
->>> +			if (skip_isolation_on_order(order, cc->order) ||
->>> +			    PageHuge(page)) {
->>
->> Hm I'd try to avoid a new PageHuge() test here.
->>
->> Earlier we have a block that does
->>                 if (PageHuge(page) && cc->alloc_contig) {
->> 			...
->>
->> think I'd rather rewrite it to handle the PageHuge() case completely and
->> just make it skip the 1UL << order pages there for !cc->alloc_config. Even
->> if it means duplicating a bit of the low_pfn and nr_scanned bumping code.
->>
->> Which reminds me the PageHuge() check there is probably still broken ATM:
->>
->> https://lore.kernel.org/all/8fa1c95c-4749-33dd-42ba-243e492ab109@suse.cz/
->>
->> Even better reason not to add another one.
->> If the huge page materialized since the first check, we should bail out when
->> testing PageLRU later anyway.
-> 
-> 
-> OK, so basically something like:
-> 
-> if (PageHuge(page)) {
->     if (cc->alloc_contig) {
+On Thu, Feb 8, 2024 at 10:21=E2=80=AFAM Peter Griffin <peter.griffin@linaro=
+org> wrote:
+>
+> Obtain the PMU regmap using the new API added to exynos-pmu driver rather
+> than syscon_regmap_lookup_by_phandle(). As this driver no longer depends
+> on mfd syscon remove that header and Kconfig dependency.
+>
+> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+> ---
 
-Yeah but I'd handle the !cc->alloc_contig first as that ends with a goto,
-and then the rest doesn't need to be "} else { ... }" with extra identation
+Tested-by: Sam Protsenko <semen.protsenko@linaro.org>
 
->         // existing code for PageHuge(page) && cc->allc_contig
->     } else {
->         const unsigned int order = compound_order(page);
-> 
->         if (order <= MAX_PAGE_ORDER) {
->             low_pfn += (1UL << order) - 1;
->             nr_scanned += (1UL << order) - 1;
+Tested on my E850-96 board (Exynos850 chip) with Debian rootfs. Test proced=
+ure:
+
+1. Added this to /chosen node in dts:
+
+    bootargs =3D "s3c2410_wdt.tmr_atboot=3D1 s3c2410_wdt.nowayout=3D1
+s3c2410_wdt.soft_noboot=3D0";
+
+2. Check if watchdogs are active:
+
+    # dmesg | grep watchdog
+    [    1.488149] s3c2410-wdt 10050000.watchdog: starting watchdog timer
+    [    1.489003] s3c2410-wdt 10050000.watchdog: watchdog active,
+reset enabled, irq disabled
+    [    1.496928] s3c2410-wdt 10060000.watchdog: starting watchdog timer
+    [    1.502984] s3c2410-wdt 10060000.watchdog: watchdog active,
+reset enabled, irq disabled
+
+3. Generate a panic to cause wdt reset:
+
+    #  echo c > /proc/sysrq-trigger
+
+In 15 seconds (wdt timeout) reboot happens, and bootloader shows this
+message for the reboot reason:
+
+    Watchdog or Warm Reset Detected
+
+That proves regmap works fine with this patch. Otherwise reboot wouldn't ha=
+ppen.
+
+>  drivers/watchdog/Kconfig       | 1 -
+>  drivers/watchdog/s3c2410_wdt.c | 8 ++++----
+>  2 files changed, 4 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 7d22051b15a2..d78fe7137799 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -512,7 +512,6 @@ config S3C2410_WATCHDOG
+>         tristate "S3C6410/S5Pv210/Exynos Watchdog"
+>         depends on ARCH_S3C64XX || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE=
+_TEST
+>         select WATCHDOG_CORE
+> -       select MFD_SYSCON if ARCH_EXYNOS
+>         help
+>           Watchdog timer block in the Samsung S3C64xx, S5Pv210 and Exynos
+>           SoCs. This will reboot the system when the timer expires with
+> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wd=
+t.c
+> index 349d30462c8c..686cf544d0ae 100644
+> --- a/drivers/watchdog/s3c2410_wdt.c
+> +++ b/drivers/watchdog/s3c2410_wdt.c
+> @@ -24,9 +24,9 @@
+>  #include <linux/slab.h>
+>  #include <linux/err.h>
+>  #include <linux/of.h>
+> -#include <linux/mfd/syscon.h>
+>  #include <linux/regmap.h>
+>  #include <linux/delay.h>
+> +#include <linux/soc/samsung/exynos-pmu.h>
+>
+>  #define S3C2410_WTCON          0x00
+>  #define S3C2410_WTDAT          0x04
+> @@ -699,11 +699,11 @@ static int s3c2410wdt_probe(struct platform_device =
+*pdev)
+>                 return ret;
+>
+>         if (wdt->drv_data->quirks & QUIRKS_HAVE_PMUREG) {
+> -               wdt->pmureg =3D syscon_regmap_lookup_by_phandle(dev->of_n=
+ode,
+> -                                               "samsung,syscon-phandle")=
+;
+> +               wdt->pmureg =3D exynos_get_pmu_regmap_by_phandle(dev->of_=
+node,
+> +                                                "samsung,syscon-phandle"=
+);
+>                 if (IS_ERR(wdt->pmureg))
+>                         return dev_err_probe(dev, PTR_ERR(wdt->pmureg),
+> -                                            "syscon regmap lookup failed=
+\n");
+> +                                            "PMU regmap lookup failed.\n=
+");
 >         }
->         goto isolate_fail;
->     }
-> }
-
+>
+>         wdt_irq =3D platform_get_irq(pdev, 0);
+> --
+> 2.43.0.594.gd9cf4e227d-goog
+>
 
