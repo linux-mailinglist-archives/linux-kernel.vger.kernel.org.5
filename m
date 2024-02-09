@@ -1,119 +1,166 @@
-Return-Path: <linux-kernel+bounces-59879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C9C384FCD5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:29:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5570484FCDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:30:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB1FBB28B7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:29:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11D1128F15F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:30:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4680128378;
-	Fri,  9 Feb 2024 19:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4834B83CAF;
+	Fri,  9 Feb 2024 19:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iSNy5xom"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="LI87siHd"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B063982D7D;
-	Fri,  9 Feb 2024 19:27:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF6F82867
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 19:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707506866; cv=none; b=n6OGtqS5/17A+wDeS5BMxS4HxUcbir8nsdsKNV2auBYKhxCNpcvJ2Jr7QkOGH1jjtbACsDFnf3kb/WfXlMN3xRz7IImGNam8m/+dRB+iaDksh9qqjz/vsPwmECYT5KUVzBCkvNMfnni/mBL+MDToNyjhc9reHPMfwvp2SUyok/Q=
+	t=1707507017; cv=none; b=Ba30CUZYpAOU+8BoAf8AVBdcpFIMC8J22iaxlPQr9cvNQTJTvWSLUhzR6dgQhgPqYhxbFqLaP6+wWIgw29wQa6vCYpC+N/jHs+Y/TUO12aHST8LL/mKDbA86eG8wG4VLzK7BT8I9JU27DM/v2tUt0Y5a3v8gGVq08GX3oGyzh7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707506866; c=relaxed/simple;
-	bh=jDbzF6VScX3QUjdWze8ERiOzUBhPy/DsoADy5/uvQtM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WKQE26dZV8nfWMOaOvWaFl6Xl9UKnry3OBN5x560F4NDcat6PDgLVewHq948+mU2/7YcLWDpVreP60kaqLqinffuVvJLw1gL/gX8uGzODimTAvA5f79oDQWU6w5ODEpPiZ80jAQfAOK7dtBcJD1cFuPyr+e3wIsuOfwCkmqWLTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iSNy5xom; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d934c8f8f7so11344185ad.2;
-        Fri, 09 Feb 2024 11:27:44 -0800 (PST)
+	s=arc-20240116; t=1707507017; c=relaxed/simple;
+	bh=iFes5GRh2skRFj9697U1IQcZuCTwNj4lR6607L6O8G4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=em9lWXxzcsbD7kPCjVGVwLzvZWY/gNUPmhqdCZ9KZC/QKRV+mJntBbG7JuPxmEofiHXqQg2znlE9+A8fpKzDNB3ovhbC92BJuFwPJk+iexf+Qwp0FE55xqun9hyEC9jI/Z2Wo/gUHjY9mlbh4t6rrdlmMMSFaMSVHeAruV4BVS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LI87siHd; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40f00adacfeso3465e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 11:30:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707506864; x=1708111664; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=df/riqJTurTOuR2yinSUCFr965WEtGNwDF4ukmNTmMk=;
-        b=iSNy5xomJSsvvzYgh/CXxJ0nNOhPGZsxON4bJiFmhs6XBzcJvwdX6zoDOONXdHvPaM
-         k9RiBDe+xJEuP3lS68hWaz6sEbTc459nbT/ZXdKZcEnb2WgEdwPlRMeoirBE07LpJ1U1
-         aEpOGjvNfUpQUuRJqJQdNy9VTUyYq1SltMBF0+i2WG6bPMsDBwJ6q6g0wqQ8gniU9jMo
-         R2l1l0OelESiVfcGHrUJXK9u5Uia+wTdTB42cCjtl+hWfMaFfRlNUrUyGf7Q0+/cT0rX
-         yvIf0W9tT8mZoTWxwLJK1zQ4n1xrSv5+ndXbjU3Mfev93hKQWfdseVi6pLWyOEMSJQiz
-         auow==
+        d=google.com; s=20230601; t=1707507014; x=1708111814; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u8m6ZQ/7fN/zyza1TL+nlZ4zBwwXXrryZUn9xvH88MM=;
+        b=LI87siHd1uRVyQ68PCo1p/pGdTEeiFNAjX7OgSFHHi7qdIg0IvEoXEm6TZdIpXSlnu
+         TzNRsPXOPBYQpTCpraquh46mAQjYAq23sikjry1w5aRm7buOh1co8ULqf2wOXNhWeQ83
+         Eo6lw8juUeILbJrBNckvozQ6JhxrTJIt2oIiymYs10XI4GTZ5v5ZdyaI60rqSB2mViLm
+         qZV4Z+rjaRQaVa+wahMhBg+wCRYoM/Xa0ryj+mDCfEhE7mbuBqpTTG/W5P/QMc6FY+YL
+         PSVySmLisKT8uPLTin9K267xlLcb7vuviUAwNq8qrYVigmzZK64atkORGWnkrMlq9RfF
+         bEsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707506864; x=1708111664;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=df/riqJTurTOuR2yinSUCFr965WEtGNwDF4ukmNTmMk=;
-        b=W6fIaFBbDN0yCREJFT4K2eVX+P2hoWRjKMih3wDVMqVFALV4SRYQaUBUYcnfwILwRp
-         EFfMbutzliYr0HxqhXycP2bWEejllyncKTXAVpvGrFN+tXPQJO7TTwWYq8dGHE+sWFx6
-         tRWjrbhGcK2fX18HKj1FzXgQ/lDERHH5Qch+DrPym8A7xyiVAtczS0tvJX2rg0z22PLc
-         q7uBP5f48MlT2GgcLwsN2rleZsUDnWoCVcdh337HL8ivUAwhtPO8c1d4D4hXlLohBhQE
-         hnl717pUnbD1ndgd+s2ZWT2fhaRyKrLh3fyF8GDEuPutXcc36APZgzuKpI/i5YlWd/Dl
-         E1mw==
-X-Gm-Message-State: AOJu0YyA93Tic3q9kI3+OBHc8UQKG3qfTJxorH0Zm/I0PCDXs4taLxFE
-	QRB4R+VqX+6Icg0EdJD6NBMlnSwx7VTIDA3blsmU8/+Wih0ZZrI/2Xm2Ng7o
-X-Google-Smtp-Source: AGHT+IHKo1JdiJyvK5M5ppYyDpZaWRQUWvwp3Fufr1nQ0FlyI+yVi2LRdYQCOqgQgn34mtIpveRN1A==
-X-Received: by 2002:a17:902:e746:b0:1d9:4d3f:cbf8 with SMTP id p6-20020a170902e74600b001d94d3fcbf8mr203653plf.22.1707506863600;
-        Fri, 09 Feb 2024 11:27:43 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXqcRVFQEdvxv3X2dx8Uc/6n9SUnjIbHxIPCu2Pp22tL5YM1YE//Sxapr/FUXwJ/mpEw3GTwTOlYpN0VacpW1jwlEnrTaZITmynvoKDwgCyL6Aa3WWRh+6FrD7K3+F7LqtkIdxa9I8fUi80g3/4e+gio/6IUq9RJrLwAG2U4zQVPHmINcSmzm/wgLBmSsKRkpqhVtX30o+VT6H4vhk61AUYMyqjaIxpGXhtI0wGo4tY+bNGRi3tiFTMyNIH92sjd3q7Qy0t+ErhhNvnExp9cggbT4Axw+9PHyoYh9dU+6t0GCogpf7yVUwbNngukSFqh8Q7gexQFuGCtqu4zJMf/NSleMwovOiIVZKAMH7aNYf6Qew=
-Received: from [192.168.54.105] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id kz7-20020a170902f9c700b001d9557f6c04sm1843104plb.267.2024.02.09.11.27.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Feb 2024 11:27:43 -0800 (PST)
-Message-ID: <45395395-9bbe-4ee8-9a4f-f1890cd85752@gmail.com>
-Date: Fri, 9 Feb 2024 16:27:38 -0300
+        d=1e100.net; s=20230601; t=1707507014; x=1708111814;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u8m6ZQ/7fN/zyza1TL+nlZ4zBwwXXrryZUn9xvH88MM=;
+        b=leA3k31l1IDTl0976yaO9lOs09SQPQEJwDaFlMl7uzMaWNNgLJSEfJu18bGrjzJHTQ
+         CGMRXOgGQIkA4IeKQKrFBv0HvUoaKPwcaOntuC0tmMzMvrEgKI+LLjYzxEVeacxI5f7j
+         lowmGtv2okNWH76fH+bkRSjzc5oTHSFYdJiwNgdi/u2lLI4kmcHiAZhnfMlfcxZ/7Ehp
+         GVjQXTzSE615bgOPI/LAjwuGzeiwImL31aj6MnwY0Y3RgnxB9qHk745COMT9RgB9LOFq
+         Jm+Rv6Fbzj71vKRObOxWPbZd204qtV5MWq4um3SC/gWEtr/sHzlGXEWRcpv/28FrNTf3
+         740A==
+X-Gm-Message-State: AOJu0Yy2H2sldc5ohefjCXplMcV+sse9zUy6ETrJXT8OQCJ5JN4Dd9PM
+	b+tkJUbycaDF5+QqkDQc9gZCrHPDT2SBKNlGNKjzNIqWRt8MyOPbPC02oQ7AjV+6LsK00i42KCD
+	VnrcCBy3cnsTPcOp+8PMgZ0SCh1rVs68/C1xrEYtYP1k3/pBvMbI=
+X-Google-Smtp-Source: AGHT+IHkPdscTIisSRL+FGFFUE72uGSGVVkt+Xq/MByEp/zSKOlkw/UljjoLXr7sbQlvX0NHvwYUJg+DRgdIS9w//4s=
+X-Received: by 2002:a05:600c:5190:b0:410:86f1:27bb with SMTP id
+ fa16-20020a05600c519000b0041086f127bbmr46908wmb.3.1707507013823; Fri, 09 Feb
+ 2024 11:30:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rust: locks: Add `get_mut` method to `Lock`
-To: Mathys Gasnier <mathys35.gasnier@gmail.com>,
- Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
- Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
- <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- Benno Lossin <benno.lossin@proton.me>,
- Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240209-rust-locks-get-mut-v1-1-ce351fc3de47@gmail.com>
-Content-Language: en-US
-From: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20240209-rust-locks-get-mut-v1-1-ce351fc3de47@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240208195622.758765-1-pranavpp@google.com> <20240208195622.758765-3-pranavpp@google.com>
+In-Reply-To: <20240208195622.758765-3-pranavpp@google.com>
+From: John Stultz <jstultz@google.com>
+Date: Fri, 9 Feb 2024 11:30:01 -0800
+Message-ID: <CANDhNCoNuAXSn7-M1SY6q+RZoPjEa1_dHzpdG20et2Sbm5AoDw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] alarmtimer: Modify alarmtimer suspend callback to
+ check for imminent alarm using PM notifier
+To: Pranav Prasad <pranavpp@google.com>
+Cc: tglx@linutronix.de, sboyd@kernel.org, linux-kernel@vger.kernel.org, 
+	krossmo@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/9/24 13:22, Mathys-Gasnier wrote:
-> From: Mathys-Gasnier <mathys35.gasnier@gmail.com>
-> 
-> Having a mutable reference guarantees that no other threads have
-> access to the lock, so we can take advantage of that to grant callers
-> access to the protected data without the the cost of acquiring and
-> releasing the locks. Since the lifetime of the data is tied to the
-> mutable reference, the borrow checker guarantees that the usage is safe.
-> 
-> Signed-off-by: Mathys-Gasnier <mathys35.gasnier@gmail.com>
-> ---
-> [...]
-> +    /// Gets the data contained in the lock
+On Thu, Feb 8, 2024 at 11:56=E2=80=AFAM Pranav Prasad <pranavpp@google.com>=
+ wrote:
+>
+> The alarmtimer driver currently fails suspend attempts when there is an
+> alarm pending within the next suspend_check_duration_ns nanoseconds, sinc=
+e
+> the system is expected to wake up soon anyway. The entire suspend process
+> is initiated even though the system will immediately awaken. This process
+> includes substantial work before the suspend fails and additional work
+> afterwards to undo the failed suspend that was attempted. Therefore on
+> battery-powered devices that initiate suspend attempts from userspace, it
+> may be advantageous to be able to fail the suspend earlier in the suspend
+> flow to avoid power consumption instead of unnecessarily doing extra work=
+.
+> As one data point, an analysis of a subset of Android devices showed that
+> imminent alarms account for roughly 40% of all suspend failures on averag=
+e
+> leading to unnecessary power wastage.
+>
+> To facilitate this, register a PM notifier in the alarmtimer subsystem
+> that checks if an alarm is imminent during the prepare stage of kernel
+> suspend denoted by the event PM_SUSPEND_PREPARE. If an alarm is imminent,
+> it returns the errno code ETIME instead of EBUSY to userspace in order to
+> make it easily diagnosable.
 
-I wish that this doc comment mentioned what you've said about having a
-mutable reference avoids locking, much like the documentation on
-`std::sync::Mutex::get_mut`. If you do so then you can add my reviewed.
+Thanks for continuing to iterate on this!
 
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+One concern below...
 
-> +    pub fn get_mut(&mut self) -> &mut T {
-> +        self.data.get_mut()
-> +    }
->   }
-> [...]
+> +static int alarmtimer_pm_callback(struct notifier_block *nb,
+> +                           unsigned long mode, void *_unused)
+> +{
+> +       ktime_t min, expires;
+> +       struct rtc_device *rtc =3D NULL;
+> +       int type;
+> +
+> +       switch (mode) {
+> +       case PM_SUSPEND_PREPARE:
+> +               /* Find the soonest timer to expire */
+> +               if (!alarmtimer_get_soonest(rtc, &min, &expires, &type))
+> +                       return NOTIFY_DONE;
+> +
+> +               if (ktime_to_ns(min) <
+> +                       suspend_check_duration_ms * NSEC_PER_MSEC) {
+> +                       pr_warn("[%s] Suspend abort due to imminent alarm=
+\n", __func__);
+> +                       pm_wakeup_event(&rtc->dev, suspend_check_duration=
+_ms);
+> +                       return notifier_from_errno(-ETIME);
+> +               }
+> +       }
+> +
+> +       return NOTIFY_DONE;
+> +}
+> +
+
+So the alarmtimer_pm_callback provides an earlier warning that we have
+an imminent alarm, looks ok to me.
+
+
+> @@ -296,49 +379,14 @@ EXPORT_SYMBOL_GPL(alarm_expires_remaining);
+>  static int alarmtimer_suspend(struct device *dev)
+>  {
+..
+> +       /* Find the soonest timer to expire */
+> +       if (!alarmtimer_get_soonest(rtc, &min, &expires, &type))
+>                 return 0;
+>
+> -       if (ktime_to_ns(min) < suspend_check_duration_ms * NSEC_PER_MSEC)=
+ {
+> -               pm_wakeup_event(dev, suspend_check_duration_ms);
+> -               return -EBUSY;
+> -       }
+
+It seems like we'd want to preserve the check in alarmtimer_suspend()
+as well, no? As the various suspend calls might take awhile and in
+that time, the next timer may have slipped into the window of being
+imminent.
+
+thanks
+-john
 
