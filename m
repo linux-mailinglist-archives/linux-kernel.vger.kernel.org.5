@@ -1,77 +1,128 @@
-Return-Path: <linux-kernel+bounces-59243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 596D084F3B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ED0784F3BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A44A1F2A2D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:47:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C46C71F2A243
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:50:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5D328DB3;
-	Fri,  9 Feb 2024 10:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D932561A;
+	Fri,  9 Feb 2024 10:50:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="M3P4CcDY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nsm8t898"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B7D28DA7;
-	Fri,  9 Feb 2024 10:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2271A23769
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 10:50:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707475637; cv=none; b=SmET74jywskQiETcF4bv/Za+PABrczMz+AUsdNfWbfyWp9XMS1fD0Evy3mq3GHLLG+yfr74zBoRTdp6VE5TasYs9te0492fKacITjEOxTvRsz2v6TQGv7Kf92Zzb6gN0Hhi/acD8U72JPx6sgNx+GsjXfQgjXxtBhQKbMW8DN08=
+	t=1707475815; cv=none; b=QfCgUlhK5aNd4V0Vcd3/9S8GmZS1kfBjr1aGgBve/set/YNZ3DRH5EBpDFgXc8F0PlZohIeBTdvbJVv+BhJHgoLohdM1jhr2teAhtmOEd3q7lh3wAu8IWKSk2u4LwY7YF7iwqakPDeqNDU9OAsKoLcEYrUqulhsQiiVl+zl6dDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707475637; c=relaxed/simple;
-	bh=rzOHTWzV5bEENtegQ2v+SGNGr6b2yUduNdh+QR5S9i8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qQ5fcdiS3zEdjx2qJDI6c4ipMs6kwnSyB4fuW7dFDIzyJg3uM5YnO0mULK3lgac+yylyylSrsYdpDyabps0Obra2gh/J6rvhn/r+J7FSCR3h5TlCBX3AoP08UecehPjMb4RwKkBRdDUzgWEnaGLZSelNyGui1mlwccb03iRSoHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=M3P4CcDY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 963DCC433C7;
-	Fri,  9 Feb 2024 10:47:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707475637;
-	bh=rzOHTWzV5bEENtegQ2v+SGNGr6b2yUduNdh+QR5S9i8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M3P4CcDYZxsJT7hk8aUYQCEc/HbKIdOVSoMw/3SNsfLd8CUjoKMR6HExhrGsVW761
-	 szYpLdaAkkdxkyhG/p171UnFetcypKSwpPFrl3hVM3BomFU7Ui3djK+tLDeekXfadS
-	 XC+84MXWgEnaJ/ZEv2dgfqpcmSRJ0ReSt1p/B2LE=
-Date: Fri, 9 Feb 2024 10:47:14 +0000
-From: Greg KH <gregkh@linuxfoundation.org>
-To: niko.mauno@vaisala.com
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-	vesa.jaaskelainen@vaisala.com, geert@linux-m68k.org
-Subject: Re: [PATCH v3 1/2] usb: core: Amend initial authorized_default value
-Message-ID: <2024020903-october-placidly-20cc@gregkh>
-References: <20240209094651.5379-1-niko.mauno@vaisala.com>
+	s=arc-20240116; t=1707475815; c=relaxed/simple;
+	bh=6iTZ3L1x+uoh1UT8BZM96Kcc36zdm9shl9bdfb9ciug=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LyWbCPGH7cZENd0Gct6aH1IqoOEpBjLe9Qu51Rs+epg+Z5RTDi/6ycPRC07PJYFkeUyafQTfokDAVCKbuiolBGNyvr3vFe2CPd9zucOQegZVwOmdbcSRGEJqYuXV9aTSg5GsAtVwbR2EFKvYAYxolU+c+h/M3ZtRpJgoPSoPYTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nsm8t898; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc6da01f092so746651276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 02:50:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707475813; x=1708080613; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6iTZ3L1x+uoh1UT8BZM96Kcc36zdm9shl9bdfb9ciug=;
+        b=nsm8t898w1F57MybizoZf7LLprLyb2IjPSaiyee6Ye5FCuDIzdjcIHKRx3K4ShQhup
+         +WOMm6OXsYmXUC7Fv63R3+XedfAGJn/SAsmFpTWHX1AMt1wrFiX/Gr5u8HRUaN/VsAsd
+         peJfwnugCU8VEtTDFY3UXGhMzksTrtvOErk/CjYO0h5LlCuTb2V3dWVFa0mWo66WLqAh
+         hnwUkfrGKRodOCGjqjn7wMKjFst+xAZFowJG5G0HGuQmbvq9pr+oIngGzoKA6VcAjtvr
+         PjSHMe1IFcG3n8MyyjZVBodCxBN529NClo+oy4QrpZU7qjt+0tPdUAArhdRvGRj3xcWx
+         wOxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707475813; x=1708080613;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6iTZ3L1x+uoh1UT8BZM96Kcc36zdm9shl9bdfb9ciug=;
+        b=sfysUAC8tuJIHeSDqo5YsbD1kHrUn5CAXSkPAefbDBA/HdEypb4pBXzFg79+1Xs143
+         xtetSuUIGUiMu3y6Sp/U+9+9St+gbr0tuRClxq1ylBL4W3HsCJJvbsFnoEf/TLsp2E+z
+         KV16huOcidBbHS7ZQB1ASS9Xhh1LgModf157mp2r7uIlp3GbLHHUO8mD8ewmTpVnSSs2
+         AzYFeovcL3bOSkvU5UrEIBXc64tqg5yRWMIsIfSsMSd10mv2Jj0zJ/6B55cYy/jcrRZa
+         MoP4kjyQv9+fgWrTXgZVLOmBs4hw0MXTjgJj5jcsn5F0IPYjFFJjLr8jWOmi3R1gnNSt
+         cEUQ==
+X-Gm-Message-State: AOJu0Yxo3mhHWQdF5VjBmfcnmYebMJI+o/6ukJJfHNUyDmZCjls4TUXX
+	E3pAKBF1sdgCIBOfGl8A6aO++Ls8Fo5z0Abn6yk6FK8XeJg6lIzb47pt1/K2isPixnDXxDw6X0v
+	ELnldkqKMdGJjdli0YtyQCjFZH1VzwgOiBGE+xQ==
+X-Google-Smtp-Source: AGHT+IGLvOd9/MBitQXhfAzlH+623tzVUG7WaQ7stY8iXEbXC38uzHJ96hKdcn9vmVOBj+lQYRfk9XfqcIwuAYfUmAs=
+X-Received: by 2002:a25:d804:0:b0:dc6:7937:53da with SMTP id
+ p4-20020a25d804000000b00dc6793753damr939249ybg.39.1707475812934; Fri, 09 Feb
+ 2024 02:50:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240209094651.5379-1-niko.mauno@vaisala.com>
+References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com>
+ <20240102-j7200-pcie-s2r-v1-1-84e55da52400@bootlin.com> <20240116074333.GO5185@atomide.com>
+ <31c42f08-7d5e-4b91-87e9-bfc7e2cfdefe@bootlin.com> <CACRpkdYUVbFoDq91uLbUy8twtG_AiD+CY2+nqzCyHV7ZyBC3sA@mail.gmail.com>
+ <95032042-787e-494a-bad9-81b62653de52@bootlin.com> <CACRpkdY2wiw1zH8FsEv7S1FW044PBSXpLPqanF5yyH1R4oteEA@mail.gmail.com>
+ <68d4a1bb-5b40-47fe-a117-647d77009b43@bootlin.com>
+In-Reply-To: <68d4a1bb-5b40-47fe-a117-647d77009b43@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Fri, 9 Feb 2024 11:50:01 +0100
+Message-ID: <CACRpkdZOhZu8OjgFHtqjeuujav3-N4dQFEqB2yvM+5QKNP37QA@mail.gmail.com>
+Subject: Re: [PATCH 01/14] gpio: pca953x: move suspend/resume to suspend_noirq/resume_noirq
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Tony Lindgren <tony@atomide.com>, Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
+	Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
+	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
+	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
+	thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 09, 2024 at 11:46:50AM +0200, niko.mauno@vaisala.com wrote:
-> From: Niko Mauno <niko.mauno@vaisala.com>
-> 
-> Since the wireless USB implementation has been removed and since the
-> behavior with authorized_default values -1 and 1 is now effectively
-> same, change the initial value to latter in order to stop using the
-> leftover value. The former value can still be passed as a module
-> parameter to retain backwards compatibility.
-> 
-> Signed-off-by: Niko Mauno <niko.mauno@vaisala.com>
-> ---
->  drivers/usb/core/hcd.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+On Fri, Feb 9, 2024 at 8:44=E2=80=AFAM Thomas Richard
+<thomas.richard@bootlin.com> wrote:
 
-Isn't this series already in my tree?
+> > *FIRST* we should check if putting the callbacks to noirq is fine with
+> > other systems too, and I don't see why not. Perhaps we need to even
+> > merge it if we don't get any test results.
+> >
+> > If it doesn't work we can think of other options.
+>
+> I think all systems using a i2c controller which uses autosuspend should
+> be impacted.
+> I guess a patch (like I did in this series for i2c-omap [1]) should be
+> applied for all i2c controller which use autosuspend.
+>
+> [1]
+> https://lore.kernel.org/all/hqnxyffdsiqz5t43bexcqrwmynpjubxbzjchjaagxecso=
+75dc7@y7lznovxg3go/
 
-confused,
+I think this is the right thing to do.
 
-greg k-h
+Maybe we should just go over all of them? (Also SPI controllers?)
+
+We will soon merge a patch to move the pinctrl-single PM to noirq, and
+that actually affects more than just OMAP, it also has effect on e.g.
+HiSilicon so we can expect a bit of shakeout unless we take a global
+approach to this.
+
+Yours,
+Linus Walleij
 
