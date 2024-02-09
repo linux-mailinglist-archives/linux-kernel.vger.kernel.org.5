@@ -1,170 +1,83 @@
-Return-Path: <linux-kernel+bounces-59203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43C3784F32C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:18:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 217B884F32F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:18:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76F211C21336
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:18:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE9DFB2A26E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CDB69319;
-	Fri,  9 Feb 2024 10:18:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5226994F;
+	Fri,  9 Feb 2024 10:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ckrXRMd/"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bdVkSWTT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53132692E4;
-	Fri,  9 Feb 2024 10:18:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22DA69940;
+	Fri,  9 Feb 2024 10:18:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707473889; cv=none; b=tNylZqXHjFw3iV3M7F6ahAkeZ+IFiKKGxLBqRCOrDiC844IIV3FBcvFyvTL/z86IgyVnDydD65yb4JmO0B/8nMV6M3LT5gDHNno6iayRjmqCV3S6++CIOWCDPlDAE+vnXLrKuLAjxtIwjnZ7nfZR5ne8DNwNzo5iDmAfcElNDO0=
+	t=1707473923; cv=none; b=pVBRimPbuHp6Zco12m1IPf9K4dAjm7fVc7Dx6mZMySEssaSlQlVsWEGU2EUoqnqfllTQsflPRPFxNaYlrN0BWnxp5MCPXMwCpuy5CD1r6lia2l4jZlHjzX9R18rdwm0ckvQjZojztHyKvskZ3CxFLKTbZgrD0z20bD1Z8sn9uVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707473889; c=relaxed/simple;
-	bh=NjjX68tO0V1IURReN/W7nTc2ejz/EacjGDy8WTWa2Gs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C8dN9tHm4FtfPf99TagU6T0iwb/iKQa1nP7N7aeT5LTJOY+ZHXAnCvyxt2ehZb4ruDmcRQepVuYkcmEua7sAPMr29ifXpN/Uxptkk7Y89JbzFEPzkHVkQCyZk7uPPuLVAZIvAtdnDiUqGHAvFSysY/DX3jslBNB4Rj+xV5pAML8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ckrXRMd/; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc754853524so264908276.3;
-        Fri, 09 Feb 2024 02:18:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707473887; x=1708078687; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fdwZ4hDuHZxE64kMWieuR4a6X7g5THqN75f1Ypjn7HU=;
-        b=ckrXRMd/fqCwcI3tJuAVG89PYSh4N7DQ3gOiJ1D5+30bX2S/32vQlD8ABkL1ddbB3k
-         sei4iWPPagGp3YabBGoFfymFeWWKxQ0KJB3GdHisYeEF3cXG0cVwyiUOXVz/W/qnhiyU
-         q6rCK7wh+WA2ZmXczlKhVYDdgj/ArGCxwotnLmMtRru2XYRM5/g+4VpnGfvrR2CQuTD+
-         L2fS6i0mplyqCH/OtBVXRxYsTvU5byFSp/eKb8+FUfEWhicdbEhPE/CvnZJXfw/osvM5
-         wcKzFSRpqKO5VYyIoMRYbhhVEstE+T4YnEJOWa+24cZI1ynbw2SDYN8s52v7jI86Td/Z
-         dHAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707473887; x=1708078687;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fdwZ4hDuHZxE64kMWieuR4a6X7g5THqN75f1Ypjn7HU=;
-        b=UFKxHV1zKYj5zjWMq1RkRQcXGSAAgOcblKg5sD+2rr/QqM2MFcfl7a/LvFpATmwJ6y
-         vnnPiGWKzWNMuHldTDBzKKSapSydKYnQzEp3+YlQXX39rp0AUXvA1GZW5xxGC7YznjQ2
-         jwqJ3pl3BG52unv6XK8AqQuk3XZTKUU85poavxRQAlYxW5O2KgtH4sRyjpH1xIi3o857
-         CwfnLxAbW4ICFwVLj6TQCydlExfnaxSYNcKJmEq7U59gleWbFzStpQz6xfQIUoqMuAq0
-         dKT3080dE2LVx5vGfQY98dEBbXiLIgbbjBzSXCCDcmLt9f28ZJgVrFjygTzSp8j7B0g2
-         fpDw==
-X-Gm-Message-State: AOJu0YyFsueBHCTtZTgNbooBMQdMVF4AqGuvpo1fLSf5YvghYZYXMiqi
-	0oPFQ/nUD7fOyV1/huWWfrhZXqOJftcBbpYxvzp1IE4WSqDnXat4HnnrxZVDzIObpfsZPKEERNu
-	SsZHzKU3KOLgEUGJBRYenxrVAkBs=
-X-Google-Smtp-Source: AGHT+IElOcO3JE5rxCQhOVkS9Z7x30k6PXeBK3RYOi6o8jV6AWVztj/Lwq5jE4YBTxXAgKP96XkNxJZwJx3GUrxxjGI=
-X-Received: by 2002:a25:ab0c:0:b0:dc2:5553:ca12 with SMTP id
- u12-20020a25ab0c000000b00dc25553ca12mr1072170ybi.14.1707473887077; Fri, 09
- Feb 2024 02:18:07 -0800 (PST)
+	s=arc-20240116; t=1707473923; c=relaxed/simple;
+	bh=9/lwSuAm2fFdzrC5XkKYo4LL/EvpSjXS9OJF5310rJY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UvPPVvKZmWUCzWt9kODGgMdrtkTebBRDw7tUF3vpwlReTvyA5y589GCMfrjPIozID8AkxjIY1JBEL8N1K0Vz53/n1ygE3IR07fsQi8a8hn6y2+zeHGnLivGJrNSourHvipH6ChGkC1N8yo9qElaSS1IT4sxOBE5kRc6mIvX5084=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bdVkSWTT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF0F0C433F1;
+	Fri,  9 Feb 2024 10:18:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707473922;
+	bh=9/lwSuAm2fFdzrC5XkKYo4LL/EvpSjXS9OJF5310rJY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bdVkSWTTJr0e84YjnFyaFyP0EiUoLupLdiM2h+FIQHrIut7HwHklAoSLqLEh7ecUO
+	 cAeHyqVkya4kgs+4CITgaCwnDzGRoU9dvs24d2wq3pt6qXK+QQNueII14KqDQ0LM4k
+	 o2xxWzapK19fS1GhUrshESzn7O2jF7gJjXmwPSAUhomep4bPZBf/jBZZelzLwAPi1h
+	 OoTLScLGrTOHF4S9TotNLMSmS26O27dlylvlezRtURavuVrGaTDqbP1F6UoCxy64Cy
+	 /28e5QsmuJpkGhi72WctNkve43hdBlWKDROfWi0jhRzi8F8lH81zkF8c218kFV3l7N
+	 0fmrZlE6JSCyg==
+Date: Fri, 9 Feb 2024 11:18:37 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: wenyang.linux@foxmail.com, Jens Axboe <axboe@kernel.dk>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, David Woodhouse <dwmw@amazon.co.uk>, 
+	Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] eventfd: strictly check the count parameter of
+ eventfd_write to avoid inputting illegal strings
+Message-ID: <20240209-milchglas-aufzuarbeiten-f34f1491be02@brauner>
+References: <tencent_10AAA44731FFFA493F9F5501521F07DD4D0A@qq.com>
+ <20240208043354.GA85799@sol.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124113446.2977003-1-foxywang@tencent.com> <02fe988e-2b42-9610-6ab5-bd17b0d9fb80@oracle.com>
-In-Reply-To: <02fe988e-2b42-9610-6ab5-bd17b0d9fb80@oracle.com>
-From: Yi Wang <up2wing@gmail.com>
-Date: Fri, 9 Feb 2024 18:17:56 +0800
-Message-ID: <CAN35MuSanFT1JxM16usksSDjrLLsAAWs-kosJEd20sKckvwJfg@mail.gmail.com>
-Subject: Re: [v3 0/3] KVM: irqchip: synchronize srcu only if needed
-To: Dongli Zhang <dongli.zhang@oracle.com>
-Cc: x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	foxywang@tencent.com, seanjc@google.com, pbonzini@redhat.com, 
-	mingo@redhat.com, tglx@linutronix.de, dave.hansen@linux.intel.com, 
-	hpa@zytor.com, bp@alien8.de, wanpengli@tencent.com, oliver.upton@linux.dev, 
-	anup@brainfault.org, frankja@linux.ibm.com, imbrenda@linux.ibm.com, 
-	maz@kernel.org, atishp@atishpatra.org, borntraeger@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240208043354.GA85799@sol.localdomain>
 
-Hi Dongli,
+On Wed, Feb 07, 2024 at 08:33:54PM -0800, Eric Biggers wrote:
+> On Wed, Feb 07, 2024 at 12:35:18AM +0800, wenyang.linux@foxmail.com wrote:
+> > By checking whether count is equal to sizeof(ucnt), such errors
+> > could be detected. It also follows the requirements of the manual.
+> 
+> Does it?  This is what the eventfd manual page says:
+> 
+>      A write(2) fails with the error EINVAL if the size of the supplied buffer
+>      is less than 8 bytes, or if an attempt is made to write the value
+>      0xffffffffffffffff.
+> 
+> So, *technically* it doesn't mention the behavior if the size is greater than 8
+> bytes.  But one might assume that such writes are accepted, since otherwise it
+> would have been mentioned that they're rejected, just like writes < 8 bytes.
+> 
+> If the validation is indeed going to be made more strict, the manual page will
+> need to be fixed alongside it.
 
-Thanks for the reply and Happy Spring Festival to all :)
-
-On Fri, Feb 9, 2024 at 5:00=E2=80=AFPM Dongli Zhang <dongli.zhang@oracle.co=
-m> wrote:
->
-> Hi Yi,
->
-> On 1/24/24 03:34, Yi Wang wrote:
-> > From: Yi Wang <foxywang@tencent.com>
-> >
-> > We found that it may cost more than 20 milliseconds very accidentally
-> > to enable cap of KVM_CAP_SPLIT_IRQCHIP on a host which has many vms
-> > already.
->
-> Would you mind explaining the reason that the *number of VMs* matters, as
-> KVM_CAP_SPLIT_IRQCHIP is a per-VM cap?
->
-> Or it meant it is more likely to have some VM workload impacted by the
-> synchronize_srcu_expedited() as in prior discussion?
->
-> https://lore.kernel.org/kvm/CAN35MuSkQf0XmBZ5ZXGhcpUCGD-kKoyTv9G7ya4QVD1x=
-iqOxLg@mail.gmail.com/
->
-
-The actual reason is might_sleep() and the kworker in
-synchronize_srcu_expedited(),
-which may cause some delay when there are pretty many threads in the host, =
-so
-"number of VMs" is just one of  the situations which can trigger the issue =
-:)
-
-> Thank you very much!
->
-> Dongli Zhang
->
-> >
-> > The reason is that when vmm(qemu/CloudHypervisor) invokes
-> > KVM_CAP_SPLIT_IRQCHIP kvm will call synchronize_srcu_expedited() and
-> > might_sleep and kworker of srcu may cost some delay during this period.
-> > One way makes sence is setup empty irq routing when creating vm and
-> > so that x86/s390 don't need to setup empty/dummy irq routing.
-> >
-> > Note: I have no s390 machine so the s390 patch has not been tested.
-> >
-> > Changelog:
-> > ----------
-> > v3:
-> >   - squash setup empty routing function and use of that into one commit
-> >   - drop the comment in s390 part
-> >
-> > v2:
-> >   - setup empty irq routing in kvm_create_vm
-> >   - don't setup irq routing in x86 KVM_CAP_SPLIT_IRQCHIP
-> >   - don't setup irq routing in s390 KVM_CREATE_IRQCHIP
-> >
-> > v1: https://urldefense.com/v3/__https://lore.kernel.org/kvm/20240112091=
-128.3868059-1-foxywang@tencent.com/__;!!ACWV5N9M2RV99hQ!LjwKfBaGVl3u1l9YQSs=
-kg_1RU6278h2-fYnYLsoihF9i43aq73eIDqolGzOmeRvO8UlPreQHLqXEL1bAuw$
-> >
-> > Yi Wang (3):
-> >   KVM: setup empty irq routing when create vm
-> >   KVM: x86: don't setup empty irq routing when KVM_CAP_SPLIT_IRQCHIP
-> >   KVM: s390: don't setup dummy routing when KVM_CREATE_IRQCHIP
-> >
-> >  arch/s390/kvm/kvm-s390.c |  9 +--------
-> >  arch/x86/kvm/irq.h       |  1 -
-> >  arch/x86/kvm/irq_comm.c  |  5 -----
-> >  arch/x86/kvm/x86.c       |  3 ---
-> >  include/linux/kvm_host.h |  1 +
-> >  virt/kvm/irqchip.c       | 19 +++++++++++++++++++
-> >  virt/kvm/kvm_main.c      |  4 ++++
-> >  7 files changed, 25 insertions(+), 17 deletions(-)
-> >
-
-
-
---=20
----
-Best wishes
-Yi Wang
+Do you prefer we drop this patch?
 
