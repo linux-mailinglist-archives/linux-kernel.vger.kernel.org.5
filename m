@@ -1,128 +1,177 @@
-Return-Path: <linux-kernel+bounces-59082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D057184F0F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:45:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1235484F0FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:45:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB0591C2176E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:45:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8880D2840DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:45:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2529865BA7;
-	Fri,  9 Feb 2024 07:44:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E9D65BA4;
+	Fri,  9 Feb 2024 07:45:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="HL/3DDgq"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="evfNTXsM"
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A578464AB0;
-	Fri,  9 Feb 2024 07:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA22657CA
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 07:45:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707464696; cv=none; b=qqRWTKV++JMM/PqbGIcwP+Oj5BpDTEmsA3QsKF1/H4RdOjuTxqhHm4i4maJzXLr9ST/vLvDlcJN6gs4DAdfZT94pUe56h67WGky6PdOq1u4Dq/Un3oKZje9lbIj5O5X1vKYOV1isSoc4/xH6G9dtqR9zLOUS6ivu9a4j1kssLvo=
+	t=1707464739; cv=none; b=UbjHeu6IknntQUuw7lzbjIbFrT8Za2L+HbNDOKzYtFX/oc8NTDGYtQRU+qlMJk5q0CbCiLC92N8FuwDAjlotzP4nQNpxNSSZ6mzepAiteSJ2oP7ooqnTUZYzc4yx5XVcbxkmCYCAwCczipv6PFwZF4cFYK9qoem2AzdkYZ9eKtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707464696; c=relaxed/simple;
-	bh=6/pY/D/QQEUjxYA0ri1gHUZDiS7C10pDYQcPTYirTgg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i3QMaLpbkORPvp6+bPwo8qOjzZNAJwRMj7Ej3AoxO4bwy1M/imL7PHuTN4anqhfOPsiLZKITtCWrQEh7iu98rcEWRjz/Iji8PjT6EV6q+PLHpYTAGvrvj5M8AabCFPifYq1/72Bh/tuPjlRtjBi272YCuVmkSRuSacISAUkYkf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=HL/3DDgq; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7E24360005;
-	Fri,  9 Feb 2024 07:44:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707464684;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G/yGVB4S9XN8g+AahJ4UZsgKIptGOzEicK0dEzXmeqk=;
-	b=HL/3DDgqSUW2klhjMqzXqFo7d0LD8T34GKYdq81YEKyfDizBqYpkX52LFNRh01hZJS8Fsf
-	lR8gcJtio9GhiFtcV/qaUaiK3gTh7xmD0LzKhHKE/kt58Qj7GXSD5YUzVwkOIGNBT7QfLH
-	MipYb28nCPctAC/gwP31mBynW2l4eSaIJz1xOhAeEzQN2H0wP9h4BbnGs0vvVFgbAnNkjQ
-	5wEBdtxtaKZ1DDo7jr8AuQ9ogx7G1jLcMQCHkbTi+rRT7cYsoghyxBaUeaOx+R6YL4oUto
-	/8h9N1v0LXUuYd2cUb1TCZeJ0iVAFiXXqCNVau0M5jAJm1QI/geiGugZ6mnnoA==
-Message-ID: <68d4a1bb-5b40-47fe-a117-647d77009b43@bootlin.com>
-Date: Fri, 9 Feb 2024 08:44:39 +0100
+	s=arc-20240116; t=1707464739; c=relaxed/simple;
+	bh=LXIhGDJdpN24GA1EQPDtSZXl8Z1b0LQ0pvmd24qKkgI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qiokLKirOe/cVBUefulq9MEx73znlGMTrUL62vvTCGBiZezm1MD8RTcT7jhHD9ek97Wuq54DiDD7o7xbFDnwqHoCc2IeAFJObHw7Z8tKZ0K+R+XO+qg0tzPk4KAz766tT0fOSHJXjAnJKliMmnlzkKUcoTgdL0rT9JuT44QJI00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=evfNTXsM; arc=none smtp.client-ip=209.85.222.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7d5c40f874aso285775241.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 23:45:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707464736; x=1708069536; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0ySHx2nX99jANk38wSw2X6YUAqeLte8C5K6rXWwBJss=;
+        b=evfNTXsMaMmloCZZMNaac6RVmYkWO9NNB7v3KhQg11COQ0fB3sjLLwpn1tS0a3prS8
+         AI0IxdNqvUBxzSoVi2KzBXe07+n2mHYPTHDfuR2ligNeaalvSPDqMXn/TfDPJsgLJPos
+         bvwq/cEPyCfV0MUbBsJHM6Vgibtr89hT9iyrDv/FRN7hlR8FF/qvCreIUKnE7sCo0Vdr
+         rFJfdoEyL8VpNaVzyfxemb+gB4lXjF5Ksges4kIZOL6tHKGTFnp33/FpB3pc+c73aUTI
+         fENSZW8owfM/XqEoiPCgml6p3g2I7NJmxCdvGM7k8MYHCrMYDCQV1/Gn26wq/XO5BuqO
+         c67g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707464736; x=1708069536;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0ySHx2nX99jANk38wSw2X6YUAqeLte8C5K6rXWwBJss=;
+        b=p3qbSfVEO/aWgvtntXiS7qZIufO/EyvAvIyNPBeCbACcrAJbym9vSErjxLTWVMgnwn
+         +lc56pxGkskL6CEyu1Ss8tpOM1Aiyy42HurWX3Ugelw3K7hESmMIr3r1PFSawTWplMyO
+         P5Yf1RPY5XYMKK2eYdyXheNU9wHjFz4xWmfl64EVFfvRyLUOopJ/kiivQxX9ExjCZX3x
+         UMZ23OzrLv3yMATPXm+QDUdYuxZAc+quEdXauFj9Dn6+qvFcOH4aX6f2PEdqWrgRiZK3
+         RfbAWwg+PS3xXmEZvuDQXFhZbWEwx3dPe/qzFc76334eXqC6bVKs0Y1CU6XGQOny33Uy
+         Ow3g==
+X-Forwarded-Encrypted: i=1; AJvYcCW9kqxVdHdXSaw/iIkluWd4ALZu5N79liuphWVxPD9LhKJpcKOQzY/WxTtDoQDcFqe3cbjN6C3V5PH9kQxlEfUA9VqytL2Ve+hsHCUX
+X-Gm-Message-State: AOJu0YxlXNylHSTFaMnZDe3+QvTOOEg0T2uGK4qF9ndY7JkIgXXzzVE0
+	2pBlMlTNNopWtGzAgRTs4E2pU6sJsyHGDLeApBSdSexRQyvPkElWEQ1FtDhtqXNIAi3AsrxNcR8
+	SFy5admxgrEQNkrMc9ocmO5Vv7wIKkxenaRsh
+X-Google-Smtp-Source: AGHT+IE/bOWjTKOfxopm+i5SliWnQ844cTtmltS+m8uqJnBwiElhddYM8CtAG6EvXsaEYiZQi+AbzxJ6cwp1cdw7ehc=
+X-Received: by 2002:a05:6102:5590:b0:46d:2121:6939 with SMTP id
+ dc16-20020a056102559000b0046d21216939mr780588vsb.23.1707464736329; Thu, 08
+ Feb 2024 23:45:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/14] gpio: pca953x: move suspend/resume to
- suspend_noirq/resume_noirq
-Content-Language: en-US
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Tony Lindgren <tony@atomide.com>, Bartosz Golaszewski <brgl@bgdev.pl>,
- Andy Shevchenko <andy@kernel.org>, Haojian Zhuang
- <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
- <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, Tom Joseph <tjoseph@cadence.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com>
- <20240102-j7200-pcie-s2r-v1-1-84e55da52400@bootlin.com>
- <20240116074333.GO5185@atomide.com>
- <31c42f08-7d5e-4b91-87e9-bfc7e2cfdefe@bootlin.com>
- <CACRpkdYUVbFoDq91uLbUy8twtG_AiD+CY2+nqzCyHV7ZyBC3sA@mail.gmail.com>
- <95032042-787e-494a-bad9-81b62653de52@bootlin.com>
- <CACRpkdY2wiw1zH8FsEv7S1FW044PBSXpLPqanF5yyH1R4oteEA@mail.gmail.com>
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <CACRpkdY2wiw1zH8FsEv7S1FW044PBSXpLPqanF5yyH1R4oteEA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: thomas.richard@bootlin.com
+References: <20240208234539.19113-1-osalvador@suse.de> <20240208234539.19113-3-osalvador@suse.de>
+In-Reply-To: <20240208234539.19113-3-osalvador@suse.de>
+From: Marco Elver <elver@google.com>
+Date: Fri, 9 Feb 2024 08:45:00 +0100
+Message-ID: <CANpmjNOoYC93dt5hNmWsC2N8-7GuSp2L6Lb7mNOKxTGhreceUg@mail.gmail.com>
+Subject: Re: [PATCH v7 2/4] mm,page_owner: Implement the tracking of the
+ stacks count
+To: Oscar Salvador <osalvador@suse.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>, 
+	Andrey Konovalov <andreyknvl@gmail.com>, Alexander Potapenko <glider@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/8/24 22:29, Linus Walleij wrote:
-> On Thu, Feb 8, 2024 at 5:19 PM Thomas Richard
-> <thomas.richard@bootlin.com> wrote:
->> On 1/28/24 01:12, Linus Walleij wrote:
-> 
->>> I guess you could define both pca953x_suspend() and
->>> pca953x_suspend_noirq() and selectively bail out on one
->>> path on some systems?
->>
->> Yes.
->>
->> What do you think if I use a property like for example "ti,pm-noirq" to
->> select the right path ?
->> Is a property relevant for this use case ?
-> 
-> That's a Linux-specific property and that's useless for other operating
-> systems and not normally allowed. PM noirq is just some Linux thing.
-> 
-> *FIRST* we should check if putting the callbacks to noirq is fine with
-> other systems too, and I don't see why not. Perhaps we need to even
-> merge it if we don't get any test results.
-> 
-> If it doesn't work we can think of other options.
+On Fri, 9 Feb 2024 at 00:45, Oscar Salvador <osalvador@suse.de> wrote:
+>
+> page_owner needs to increment a stack_record refcount when a new allocation
+> occurs, and decrement it on a free operation.
+> In order to do that, we need to have a way to get a stack_record from a
+> handle.
+> Implement stack_depot_get_stack() which just does that, and make it public
+> so page_owner can use it.
+>
+> Also implement {inc,dec}_stack_record_count() which increments
+> or decrements on respective allocation and free operations, via
+> __reset_page_owner() (free operation) and __set_page_owner() (alloc
+> operation).
+>
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> ---
+>  include/linux/stackdepot.h |  8 ++++++++
+>  lib/stackdepot.c           |  8 ++++++++
+>  mm/page_owner.c            | 30 ++++++++++++++++++++++++++++++
+>  3 files changed, 46 insertions(+)
+>
+> diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
+> index d0dcf4aebfb4..ac62de4d4999 100644
+> --- a/include/linux/stackdepot.h
+> +++ b/include/linux/stackdepot.h
+> @@ -175,6 +175,14 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
+>  depot_stack_handle_t stack_depot_save(unsigned long *entries,
+>                                       unsigned int nr_entries, gfp_t gfp_flags);
+>
+> +/**
+> + * stack_depo_get_stack - Get a pointer to a stack struct
 
-I think all systems using a i2c controller which uses autosuspend should
-be impacted.
-I guess a patch (like I did in this series for i2c-omap [1]) should be
-applied for all i2c controller which use autosuspend.
+Typo: "depo" -> depot
 
-[1]
-https://lore.kernel.org/all/hqnxyffdsiqz5t43bexcqrwmynpjubxbzjchjaagxecso75dc7@y7lznovxg3go/
+I would also write "stack_record struct", because "stack struct" does not exist.
 
-Regards,
+> + * @handle: Stack depot handle
+> + *
+> + * Return: Returns a pointer to a stack struct
+> + */
+> +struct stack_record *stack_depot_get_stack(depot_stack_handle_t handle);
 
--- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+I don't know what other usecases there are for this, but I'd want to
+make make sure we give users a big hint to avoid unnecessary uses of
+this function.
 
+Perhaps we also want to mark it as somewhat internal, e.g. by
+prefixing it with __. So I'd call it __stack_depot_get_stack_record().
+
+>  /**
+>   * stack_depot_fetch - Fetch a stack trace from stack depot
+>   *
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index 16c8a1bf0008..197c355601f9 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -681,6 +681,14 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
+>  }
+>  EXPORT_SYMBOL_GPL(stack_depot_save);
+>
+> +struct stack_record *stack_depot_get_stack(depot_stack_handle_t handle)
+> +{
+> +       if (!handle)
+> +               return NULL;
+> +
+> +       return depot_fetch_stack(handle);
+> +}
+> +
+>  unsigned int stack_depot_fetch(depot_stack_handle_t handle,
+>                                unsigned long **entries)
+>  {
+> diff --git a/mm/page_owner.c b/mm/page_owner.c
+> index 5634e5d890f8..0adf41702b9d 100644
+> --- a/mm/page_owner.c
+> +++ b/mm/page_owner.c
+> @@ -61,6 +61,22 @@ static __init bool need_page_owner(void)
+>         return page_owner_enabled;
+>  }
+>
+> +static void inc_stack_record_count(depot_stack_handle_t handle)
+> +{
+> +       struct stack_record *stack = stack_depot_get_stack(handle);
+> +
+> +       if (stack)
+> +               refcount_inc(&stack->count);
+> +}
+
+In the latest stackdepot version in -next, the count is initialized to
+REFCOUNT_SATURATED to warn if a non-refcounted entry is suddenly used
+as a refcounted one. In your case this is intentional and there is no
+risk that the entry will be evicted, so that's ok. But you need to set
+the refcount to 1 somewhere here on the initial stack_depot_save().
 
