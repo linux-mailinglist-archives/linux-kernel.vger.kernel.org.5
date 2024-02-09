@@ -1,213 +1,161 @@
-Return-Path: <linux-kernel+bounces-59818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 999A984FC19
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 92DAE84FC1E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:42:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE18C1C23673
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:41:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C51BA1C20BA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:42:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF85612AAC7;
-	Fri,  9 Feb 2024 18:37:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B001580C16;
+	Fri,  9 Feb 2024 18:38:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ib2rzC6z"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="G5aYQz3d"
+Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB9DB83CAA
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 18:37:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E5279DC0
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 18:38:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707503874; cv=none; b=VP2pUQDU/EQ/K6NO3voYVUI7o2A2Zqr/mclyH59JV1MwO4xRrWwzC/GvD7IdOWNkOvEWH8w7zff+/nN60sNJCrXCHZ2/iiAiKyedyITFUPJecuS69jvDYIIrM7+zzFOql8VJ6WgQcSOWwPtcJWo0g6whBSQnYgtMNxZ3glW25hs=
+	t=1707503913; cv=none; b=iVnq1Oh8AblW85EH+AuTswMPuFl6sm8THgVKTFAfb++Ct8DJe+sLsB9wHY877ybB87CVIuA22kb2DtZz0yuWYSva87LVCHkexVYxJ8aeYFYCB8qKL2/O9TAqku9yz37zGy/ByrnoKrnEVJlxWVy2/uFurV+Y5zUjTYpWnCtdH4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707503874; c=relaxed/simple;
-	bh=uQGym0uY8E+sVE8krP9c0q2ErXtRcLOKpg09TRNB1ds=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pwCaD8Nms3ukh20Zo88SB5/aCfPJSn0Gjo1GdN0rPFWFvLOxQBeXogiEED/5X+tB1x1nD2NRQWCt58YGOnTiBSnmv0PzqLofchOdUP2qDWsHvw2ALCCJ9a3HMOHGutSsBRQtb5gggSLTLa6/uV51BF42T8TPJcSR43lknymcE7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ib2rzC6z; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707503870;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WKAk4/TG7DQbNymtLCqGi+ahWWWkN+eb/YBYVWviCeg=;
-	b=Ib2rzC6zQa4kavX47pXX8Q9MGi/HvVvb66Op8g8iO+K4kGuLrBe4J/Y2CImG81x5cM0K9v
-	2tmdi2fpraOd5G8rxaFJstSmUWEP3BeG/04+XZzq0Y6wZP+NazEGjsD2mrmPLOkiZfcMVW
-	fyc/aeigrEH7+PZsMHVeyOdsOs/W0f4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-622-SQsfi3rrPhWvZ2SsnRDvbA-1; Fri,
- 09 Feb 2024 13:37:47 -0500
-X-MC-Unique: SQsfi3rrPhWvZ2SsnRDvbA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7041B1C068ED;
-	Fri,  9 Feb 2024 18:37:46 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 41B8B2166B33;
-	Fri,  9 Feb 2024 18:37:46 +0000 (UTC)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Cc: seanjc@google.com,
-	michael.roth@amd.com,
-	aik@amd.com,
-	isaku.yamahata@intel.com
-Subject: [PATCH 11/10] selftests: kvm: switch sev_migrate_tests to KVM_SEV_INIT2
-Date: Fri,  9 Feb 2024 13:37:43 -0500
-Message-Id: <20240209183743.22030-12-pbonzini@redhat.com>
-In-Reply-To: <20240209183743.22030-1-pbonzini@redhat.com>
-References: <20240209183743.22030-1-pbonzini@redhat.com>
+	s=arc-20240116; t=1707503913; c=relaxed/simple;
+	bh=c+rwiItIstRSnL0bCsBeIfiiFeNHQerOKUZIMk9xT0E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Mrg56+RlNacntTBVTUdamssxdYLTH5TrlkHExQ++lF8MGgSKtNMkTDdCJZ7dWQqvdDmbT9j6j1hBvGOdnLH8vB3jJ6SLDaf+duspfETuDfWsDVrQ2lzH4YG8jYoZfXGGs9gZXw5AuVo1qgzKwNG4OFAA5PHQ7KpJ6MLcetPxkfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=G5aYQz3d; arc=none smtp.client-ip=44.202.169.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6002a.ext.cloudfilter.net ([10.0.30.222])
+	by cmsmtp with ESMTPS
+	id YJI8rLnq99gG6YVlZr3fN3; Fri, 09 Feb 2024 18:38:25 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id YVlYrYaSqR0A5YVlYrGS7I; Fri, 09 Feb 2024 18:38:24 +0000
+X-Authority-Analysis: v=2.4 cv=Ita9c6/g c=1 sm=1 tr=0 ts=65c67120
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
+ a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=NEAV23lmAAAA:8 a=7YfXLusrAAAA:8 a=2-LqU1-JSYPvSRI2HFEA:9 a=QEXdDO2ut3YA:10
+ a=1F1461vogZIA:10 a=5kKzt1m56AEA:10 a=AjGcO6oz07-iQ99wixmX:22
+ a=SLz71HocmBbuEhFRYD3r:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=ubhs5TTJlmjrNVcQ8/d8FvdbYjky0tqln9Hz+0mS83c=; b=G5aYQz3dT7H6nvvIE7oHOiEsj5
+	/NWS2+D1C2tHb+hSTOo1Up1YHqlQE4Wt/XzChjeBGvGZdZLXlBrgqYmG2uTmAs8EVX67FCbAUJCST
+	FpCEHoHQg1GipLjC3EmProNpo09ShJDCkV8o7ZMbhsSNkE+hJYhIoSHV62yhp+MNWS7n4SchyWzqR
+	uuYSfGJkyFEGuJPErIBj8Ksq/lyUqys/fHWcmX+fsexcgLVJngIml623AeNrBtGSRGDYuzzrdtNwA
+	5EEAFbrXH9RUvgo4R+FjdZM/W3qDKb22chTmFN3vB++ljI5GxxPK6d5nUcMSSoxn7sWfsanU4qTib
+	tTlZhVJQ==;
+Received: from [201.172.172.225] (port=33262 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rYVlX-004CdG-2a;
+	Fri, 09 Feb 2024 12:38:23 -0600
+Message-ID: <3ef9dfc9-3d0f-434d-9836-066265975728@embeddedor.com>
+Date: Fri, 9 Feb 2024 12:38:18 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] irqchip/bcm-6345-l1: Prefer struct_size over open coded
+ arithmetic
+To: Erick Archer <erick.archer@gmx.com>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, linux-hardening@vger.kernel.org
+References: <20240209181600.9472-1-erick.archer@gmx.com>
+Content-Language: en-US
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240209181600.9472-1-erick.archer@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.172.225
+X-Source-L: No
+X-Exim-ID: 1rYVlX-004CdG-2a
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:33262
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfELFz3wgoWBc/RFP1y6YQ9ogB0cNGIQAXkJSDbTJkvQ9CsMMFKJDCH6ajbe/b1ciFuw7xZAaDm2q/D9RM+Jl+mgySIPTY6hHRz4bUmXDqQdI9IvT4kZ0
+ ytYWmJPRGa8mZPSZe0xZkYLHdi5hTQqak25xTfjlaypu+A/P/Tso4xuRHUqqYj1nL3DFQ3n6USXJPPQZI9lw1kP4f6O7uDezDg5ICHbiif1Whxz6dXzowmfb
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- .../selftests/kvm/x86_64/sev_migrate_tests.c  | 45 ++++++++++---------
- 1 file changed, 23 insertions(+), 22 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c b/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
-index c7ef97561038..301f7083cad0 100644
---- a/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
-+++ b/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
-@@ -50,11 +50,12 @@ static void sev_ioctl(int vm_fd, int cmd_id, void *data)
- static struct kvm_vm *sev_vm_create(bool es)
- {
- 	struct kvm_vm *vm;
-+	struct kvm_sev_init init = { 0 };
- 	struct kvm_sev_launch_start start = { 0 };
- 	int i;
- 
--	vm = vm_create_barebones();
--	sev_ioctl(vm->fd, es ? KVM_SEV_ES_INIT : KVM_SEV_INIT, NULL);
-+	vm = vm_create_barebones_type(es ? KVM_X86_SEV_ES_VM : KVM_X86_SEV_VM);
-+	sev_ioctl(vm->fd, KVM_SEV_INIT2, &init);
- 	for (i = 0; i < NR_MIGRATE_TEST_VCPUS; ++i)
- 		__vm_vcpu_add(vm, i);
- 	if (es)
-@@ -65,12 +66,12 @@ static struct kvm_vm *sev_vm_create(bool es)
- 	return vm;
- }
- 
--static struct kvm_vm *aux_vm_create(bool with_vcpus)
-+static struct kvm_vm *aux_vm_create(bool es, bool with_vcpus)
- {
- 	struct kvm_vm *vm;
- 	int i;
- 
--	vm = vm_create_barebones();
-+	vm = vm_create_barebones_type(es ? KVM_X86_SEV_ES_VM : KVM_X86_SEV_VM);
- 	if (!with_vcpus)
- 		return vm;
- 
-@@ -102,7 +103,7 @@ static void test_sev_migrate_from(bool es)
- 
- 	src_vm = sev_vm_create(es);
- 	for (i = 0; i < NR_MIGRATE_TEST_VMS; ++i)
--		dst_vms[i] = aux_vm_create(true);
-+		dst_vms[i] = aux_vm_create(es, true);
- 
- 	/* Initial migration from the src to the first dst. */
- 	sev_migrate_from(dst_vms[0], src_vm);
-@@ -164,16 +165,17 @@ static void test_sev_migrate_locking(void)
- 
- static void test_sev_migrate_parameters(void)
- {
--	struct kvm_vm *sev_vm, *sev_es_vm, *vm_no_vcpu, *vm_no_sev,
-+	struct kvm_vm *sev_vm, *sev_es_vm, *vm_no_vcpu,
- 		*sev_es_vm_no_vmsa;
- 	int ret;
- 
- 	vm_no_vcpu = vm_create_barebones();
--	vm_no_sev = aux_vm_create(true);
--	ret = __sev_migrate_from(vm_no_vcpu, vm_no_sev);
-+	sev_vm = aux_vm_create(false, true);
-+	ret = __sev_migrate_from(vm_no_vcpu, sev_vm);
- 	TEST_ASSERT(ret == -1 && errno == EINVAL,
- 		    "Migrations require SEV enabled. ret %d, errno: %d\n", ret,
- 		    errno);
-+	kvm_vm_free(sev_vm);
- 
- 	if (!have_sev_es)
- 		goto out;
-@@ -213,7 +215,6 @@ static void test_sev_migrate_parameters(void)
- 	kvm_vm_free(sev_es_vm_no_vmsa);
- out:
- 	kvm_vm_free(vm_no_vcpu);
--	kvm_vm_free(vm_no_sev);
- }
- 
- static int __sev_mirror_create(struct kvm_vm *dst, struct kvm_vm *src)
-@@ -272,7 +273,7 @@ static void test_sev_mirror(bool es)
- 	int i;
- 
- 	src_vm = sev_vm_create(es);
--	dst_vm = aux_vm_create(false);
-+	dst_vm = aux_vm_create(es, false);
- 
- 	sev_mirror_create(dst_vm, src_vm);
- 
-@@ -295,8 +296,8 @@ static void test_sev_mirror_parameters(void)
- 	int ret;
- 
- 	sev_vm = sev_vm_create(/* es= */ false);
--	vm_with_vcpu = aux_vm_create(true);
--	vm_no_vcpu = aux_vm_create(false);
-+	vm_with_vcpu = aux_vm_create(false, true);
-+	vm_no_vcpu = aux_vm_create(false, false);
- 
- 	ret = __sev_mirror_create(sev_vm, sev_vm);
- 	TEST_ASSERT(
-@@ -345,13 +346,13 @@ static void test_sev_move_copy(void)
- 		      *dst_mirror_vm, *dst2_mirror_vm, *dst3_mirror_vm;
- 
- 	sev_vm = sev_vm_create(/* es= */ false);
--	dst_vm = aux_vm_create(true);
--	dst2_vm = aux_vm_create(true);
--	dst3_vm = aux_vm_create(true);
--	mirror_vm = aux_vm_create(false);
--	dst_mirror_vm = aux_vm_create(false);
--	dst2_mirror_vm = aux_vm_create(false);
--	dst3_mirror_vm = aux_vm_create(false);
-+	dst_vm = aux_vm_create(false, true);
-+	dst2_vm = aux_vm_create(false, true);
-+	dst3_vm = aux_vm_create(false, true);
-+	mirror_vm = aux_vm_create(false, false);
-+	dst_mirror_vm = aux_vm_create(false, false);
-+	dst2_mirror_vm = aux_vm_create(false, false);
-+	dst3_mirror_vm = aux_vm_create(false, false);
- 
- 	sev_mirror_create(mirror_vm, sev_vm);
- 
-@@ -378,9 +379,9 @@ static void test_sev_move_copy(void)
- 	 * destruction is done safely.
- 	 */
- 	sev_vm = sev_vm_create(/* es= */ false);
--	dst_vm = aux_vm_create(true);
--	mirror_vm = aux_vm_create(false);
--	dst_mirror_vm = aux_vm_create(false);
-+	dst_vm = aux_vm_create(false, true);
-+	mirror_vm = aux_vm_create(false, false);
-+	dst_mirror_vm = aux_vm_create(false, false);
- 
- 	sev_mirror_create(mirror_vm, sev_vm);
- 
+
+On 2/9/24 12:16, Erick Archer wrote:
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1].
+> 
+> As the cpu variable is a pointer to "struct bcm6345_l1_cpu" and this
+> structure ends in a flexible array:
+> 
+> struct bcm6345_l1_cpu {
+> 	[...]
+> 	u32	enable_cache[];
+> };
+> 
+> the preferred way in the kernel is to use the struct_size() helper to
+> do the arithmetic instead of the argument "size + count * size" in the
+> kzalloc() function.
+> 
+> This way, the code is more readable and more safer.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/162 [2]
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+
+LGTM:
+
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
 -- 
-2.39.0
+Gustavo
 
+> ---
+>   drivers/irqchip/irq-bcm6345-l1.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-bcm6345-l1.c b/drivers/irqchip/irq-bcm6345-l1.c
+> index 9745a119d0e6..eb02d203c963 100644
+> --- a/drivers/irqchip/irq-bcm6345-l1.c
+> +++ b/drivers/irqchip/irq-bcm6345-l1.c
+> @@ -242,7 +242,7 @@ static int __init bcm6345_l1_init_one(struct device_node *dn,
+>   	else if (intc->n_words != n_words)
+>   		return -EINVAL;
+> 
+> -	cpu = intc->cpus[idx] = kzalloc(sizeof(*cpu) + n_words * sizeof(u32),
+> +	cpu = intc->cpus[idx] = kzalloc(struct_size(cpu, enable_cache, n_words),
+>   					GFP_KERNEL);
+>   	if (!cpu)
+>   		return -ENOMEM;
+> --
+> 2.25.1
+> 
+> 
 
