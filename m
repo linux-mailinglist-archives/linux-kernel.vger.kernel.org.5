@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-59024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9758284F003
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE06384F00B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:55:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5425A283516
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 05:48:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A722286D35
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 05:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62B55730A;
-	Fri,  9 Feb 2024 05:48:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59AD5730A;
+	Fri,  9 Feb 2024 05:54:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Xmlafq33"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="cy/0XMGb"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C764056B86
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 05:48:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393CB56B91
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 05:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707457727; cv=none; b=BuL4iboBAo8kXN1mhkJxve0iQOJPpkbj9nAnDWmWf4EkWv2jXkbZvO7JORPgSiXIOGZJhnMd+u4Ph9ZiDDwHqE4CktIq536iFtoAjq58X4KOJBr/di7J9UN6PiZ6Zu8acegdWc//t0DAxdacPzV/lZUcZPFwz0NK28A8Kf9D8Mk=
+	t=1707458097; cv=none; b=aAIlm3PjpHYWQ579dQwi4RM7XTrEvfW9efPEhcz9Otu7LhFZcfeL0BymGlh6JkdZ7JGkmoJA243iAiY4JJzRS8HaCvvKE2ecwHgYdV9y8DGfGk4fSb4FtkJh87IkaYcKTTvUjEcQYEUQndkZg87Hi2tG6rD4MS1QcHr2MHzs5Qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707457727; c=relaxed/simple;
-	bh=nmD3BwatGhYAlv4NhN2ZIYh92q6PNgmm207o5l1juhI=;
+	s=arc-20240116; t=1707458097; c=relaxed/simple;
+	bh=6O8nnoLFzLnwrH6TEG7OKKLM/CWovHK2pvgd9GTlM+o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y7u+YH2lx7fm3rV5BkSq/QrqVWZwBiFNYlqOBQWP025Pp8SSWLpmLc8zl0AoG56Oe+xh7gpvQtf6LjlL6+vf9Rphqb0wMEX1Dfpt1KPWqdptrBVoGi8pzo8g0+RoaW3S+wZGDDAZHPq5ad0uuakeuMfmkNfDqPRW5c27RjcYpGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=Xmlafq33; arc=none smtp.client-ip=209.85.128.49
+	 In-Reply-To:Content-Type; b=kBnKaOrAG2UqCHLJwCat5FUNBiCMTx0EYS+4k+4PIBhRho7PJi2McHpK+PkHZ1bYWGEMtwl7+0vYC1kfiNy/3HXIHcXMsW38gJ16UtQdGoopDzJoPpSmwoneVYZ4L8YQC3QqM5QXPw4nP/HZ7/WJMKhoXvqe2cMUZokmdGxkmI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=cy/0XMGb; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41068e36cbbso1809875e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 21:48:43 -0800 (PST)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33b189ae5e8so186412f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 21:54:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1707457722; x=1708062522; darn=vger.kernel.org;
+        d=tuxon.dev; s=google; t=1707458092; x=1708062892; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=NxSyZICm/I5GO8I9p/NPQ1lnFZnR704Xte4TLK0i60g=;
-        b=Xmlafq33YUb/YT8weqfjltgBZZVULw3HqtsvvVxDC5j4JVPoqC1q4GS7o/Oqy8v0Yd
-         uxy9cpPpllAnun8rx9Rb32+54pfGSQJVMWiDpvtXSqXQb2VgmBEog4JCmrFHPGVsE4DN
-         RRKBIO3o0AvNuDQ7o3LYFZYHtLWnRaQpYGiEVUF0r77P2zF/XpXW1mxNBrTPFQL+PilE
-         eY03O5Dxuq/o7VT+IaywEEYwlkSef8Y+C2GqqwQSbVsUNwVgc+adV1LCtjeXEDrsI7Xp
-         1upIy+uRi7idAmNU97alSBh/gLpeM3D0YkWDumwiv1+BxdtOowcVoYOJByxlXWUGXyfW
-         94Bg==
+        bh=NHy3VGid497O23zJdu4K5s/J5uKQU2yHP46MdF54AZI=;
+        b=cy/0XMGbR1xqhphlo5YTxJ73BcLObnVTw5shjcV1fGZnCWhWfO+Mbjjw0mDXld/aHY
+         SkpekrfFD7Zr0U0nfZohZC7cIwYd43lDZrZ849xIS2q7Nd1oWdgXpuhdZC8U9wJtC2mb
+         mFmr9tI6NZtykrZ0sUEka+HLRvO1UI90e3KJ8UTdTbJU37QlVXbI9jFKOXYC5daGmk3P
+         dWZRN7LO9P4hekAc5FvJ5ASCzeaIzOZJ5umesvFVQ4amsgnZgZfh3HvRXMBcodlsHDH4
+         sfk3U++xCFe97PE3XswrHjaFEvEF0WUfp853eFx6BQ+/owSLTX1h2OpK7ZJlO78dXeqy
+         7iSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707457722; x=1708062522;
+        d=1e100.net; s=20230601; t=1707458092; x=1708062892;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NxSyZICm/I5GO8I9p/NPQ1lnFZnR704Xte4TLK0i60g=;
-        b=O31ojRnG/NqWrv4iOarCBntCGaISBD1OdBuF0+NTzNT16lqBSsoOSAlHK8PnHS3fJM
-         8EN1X/gn/bTkSKhPcDSUPyyT2AQ+1/s/J5wFx7vb55/kI/pObbG3t/PhJXjUIgjCqg7n
-         trWB8ZEoIBVKXkU/4bm5Cj8pRT1x6AUkR3DbE8sAVPZKJThJnO49ePU+RY2nCXz3kp7+
-         hH1pspuaAQiDH4UHCM/lowxZDAcWc3Xgh6Gl5sGGF3sL2MZSdXHxFkRbj1zBxWoZt+OR
-         chS6TQavYyUxao6p/hCYg2wl3aQx2+pgNYRBM17xqgttFX5xylkoOxIYJpNaZfjyA6VZ
-         Yy8g==
-X-Gm-Message-State: AOJu0YzhnMFCwa6n8yGTYtiNQpnNHuxwk4+15VMTZFI5gmUv1rpllF7u
-	s53hJCtAs1uacogIaRBmFf/MVXyZ2VydfSEkj0UIbB6FUXBVHKyUkiV2dpz5CwY=
-X-Google-Smtp-Source: AGHT+IGYS5H+2CjG8e6jjJum1vd6pG6x4LD1FMRK/cR4j9shs0jwQvPBVgwlnij9m2MjjRWGrY3K7A==
-X-Received: by 2002:a05:600c:3d07:b0:40f:d34d:d4ea with SMTP id bh7-20020a05600c3d0700b0040fd34dd4eamr478127wmb.31.1707457721860;
-        Thu, 08 Feb 2024 21:48:41 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXtIS/aziom1k321wH/A41qtyDt1Byh9r1PFigPhj3XzdDU7dowCNjNpPCmR25NYAhwJ+Sm4r03jsSWazNajD2LKuS1irGUEHOyUyLJC7pQ/xsJ6L6vQPzHGAFAhhxQf0aLBUqLMEFQ4TyT9chaghAnfe5iCKfN5hwhQArRmd6m3ezITg6w/sfnUY5KVANbVbxLB8WV060t5cVs4mHL7D6xTCpF1m0fYDoKTxvfI2IWMK7Ud17waxvZ2NHArYpT71edj/gCUcBbvmwEbRs0/DH5YOhdPQhFu9K96fbdN5QxdP0pm0iYlSqJ6rHarUp02GbOuCNx0ad7Nfg=
+        bh=NHy3VGid497O23zJdu4K5s/J5uKQU2yHP46MdF54AZI=;
+        b=cWRqpNt+QwLzagJkGzHjc6+XJG2uO1h+gZMbbkdxwLdEDTt0Jzo8orvA93mk99HbdX
+         6eoLGnM2FKY9f9hBNXiZXbiyj1m5Rzz8soP1E36RNluu6VphowYojAbtAP10gRi55l+y
+         u2evIAsf5TK7y7zos6JOX6tr3TnRYQgxAJokAc4s2lkQx6B57augz/QT+O4h1RzIpeZ4
+         84XAaF988wBPGplL8pSwetDup5TRjRYpOh6dWPd9BCmyD+5hs0zKQhbtL7Hs0xvumSnX
+         2n/PmcTRW3R6XM7KdzLxJnEs/4gTvromkVcd3WS45FzaVPOay4m7hFqbjkyysDq22HV9
+         8oYg==
+X-Gm-Message-State: AOJu0Yw/weOIzEcwpJtHhg2xnzp/V7Ru9ThS214RT+sKvbAJ5e5F98Ih
+	qhFpk8sMSdgLEQqXL/MOsOG/Vtq7iO3ejohBvmauFjE/ueYpK16w/D8LPE01RIs=
+X-Google-Smtp-Source: AGHT+IEuUxs9lAPfJ/sLN4UiG4fjRtUUI244mYYOE5/0j1dk6EM85cWi7PJgaar6+vsAy8WACWYalA==
+X-Received: by 2002:a5d:610e:0:b0:33b:6073:335 with SMTP id v14-20020a5d610e000000b0033b60730335mr308406wrt.55.1707458092359;
+        Thu, 08 Feb 2024 21:54:52 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX1LTGYuUHSatTm8Me5EcYa9WUXtVNfzARxigi860VQ5Rq7gIsMBnx0vA+gwoeJNxbCkKIxdaGe+FscX6cDei8pfhGg7XfsgCIywQVrSdywbTCUMDb2xrxHYGGLzCMRAzUg1LIIqcfEAlw4XSWGsOOr+w0R69BTgdEIymGST8Y23aGlmGpqevfwINrzDxfUTaqepBaglGKG2wBO5Z52fgsiVfghIrsb4OewvS19Hw3QqhzB3tGlu7Uw8jbL7F8zBPM5oW3iYhDp9PD6uCSvddmB2gOpNEi/KZdixLLOAAcsKdg3A47oYlXExfiV8z03wsUNQZsYy/2vLJn5pMgpLNUjIGeIDY9NPC5GXjc5Pwy8pPiE3Kj2ijYLa46VzwO+DccNT791McPS9Bwo5XrnpI/QJCExCGFDYmPGmA==
 Received: from [192.168.50.4] ([82.78.167.124])
-        by smtp.gmail.com with ESMTPSA id bh6-20020a05600c3d0600b004103400259fsm1425125wmb.29.2024.02.08.21.48.40
+        by smtp.gmail.com with ESMTPSA id bv28-20020a0560001f1c00b0033b4335dce5sm921517wrb.85.2024.02.08.21.54.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 21:48:41 -0800 (PST)
-Message-ID: <13956279-3ab1-4eb8-b361-a0c79135cb56@tuxon.dev>
-Date: Fri, 9 Feb 2024 07:48:38 +0200
+        Thu, 08 Feb 2024 21:54:52 -0800 (PST)
+Message-ID: <b16a15fb-bf7b-42db-a54b-795caac8a3f1@tuxon.dev>
+Date: Fri, 9 Feb 2024 07:54:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,80 +75,85 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/5] net: ravb: Get rid of the temporary variable
- irq
+Subject: Re: [PATCH 1/2] pinctrl: renesas: rzg2l: Add suspend/resume support
 Content-Language: en-US
-To: Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org,
+To: geert+renesas@glider.be, magnus.damm@gmail.com, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linus.walleij@linaro.org
+Cc: linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
  Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240207120733.1746920-1-claudiu.beznea.uj@bp.renesas.com>
- <20240207120733.1746920-2-claudiu.beznea.uj@bp.renesas.com>
- <c284aab3-faf0-969c-7256-5bc72afe7e3e@omp.ru>
+References: <20240208135629.2840932-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240208135629.2840932-2-claudiu.beznea.uj@bp.renesas.com>
 From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <c284aab3-faf0-969c-7256-5bc72afe7e3e@omp.ru>
+In-Reply-To: <20240208135629.2840932-2-claudiu.beznea.uj@bp.renesas.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 
 
-On 08.02.2024 22:43, Sergey Shtylyov wrote:
-> On 2/7/24 3:07 PM, Claudiu wrote:
+On 08.02.2024 15:56, Claudiu wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> The 4th argument of ravb_setup_irq() is used to save the IRQ number that
->> will be further used by the driver code. Not all ravb_setup_irqs() calls
->> need to save the IRQ number. The previous code used to pass a dummy
->> variable as the 4th argument in case the IRQ is not needed for further
->> usage. That is not necessary as the code from ravb_setup_irq() can detect
->> by itself if the IRQ needs to be saved. Thus, get rid of the code that is
->> not needed.
->>
->> Reported-by: Sergey Shtylyov <s.shtylyov@omp.ru>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> [...]
+> pinctrl-rzg2l driver is used on RZ/G3S which support deep sleep states
+> where power to most of the SoC components is turned off.
 > 
->> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->> index 9521cd054274..e235342e0827 100644
->> --- a/drivers/net/ethernet/renesas/ravb_main.c
->> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->> @@ -2611,17 +2611,20 @@ static int ravb_setup_irq(struct ravb_private *priv, const char *irq_name,
->>  		if (!dev_name)
->>  			return -ENOMEM;
->>  
->> -		*irq = platform_get_irq_byname(pdev, irq_name);
->> +		error = platform_get_irq_byname(pdev, irq_name);
->>  		flags = 0;
->>  	} else {
->>  		dev_name = ndev->name;
->> -		*irq = platform_get_irq(pdev, 0);
->> +		error = platform_get_irq(pdev, 0);
->>  		flags = IRQF_SHARED;
->>  	}
->> -	if (*irq < 0)
->> -		return *irq;
->> +	if (error < 0)
->> +		return error;
->>  
->> -	error = devm_request_irq(dev, *irq, handler, flags, dev_name, ndev);
->> +	if (irq)
->> +		*irq = error;
->> +
->> +	error = devm_request_irq(dev, error, handler, flags, dev_name, ndev);
->>  	if (error)
->>  		netdev_err(ndev, "cannot request IRQ %s\n", dev_name);
->>  
+> For this add suspend/resume support. This involves saving and restoring
+> configured registers along with disabling clock in case there is no pin
+> configured as wakeup sources.
 > 
->    Thanks for addressing my IRC comment! Tho the naming seems awful. :-)
->    I'd suggest to add a local variable (named e.g, irq_num) and use it to
+> To save/restore registers 2 caches were allocated: one for GPIO pins and
+> one for dedicated pins.
+> 
+> On suspend path the pin controller registers are saved and if none of the
+> pins are configured as wakeup sources the pinctrl clock is disabled.
+> Otherwise it remains on.
+> 
+> On resume path the configuration is done as follows:
+> 1/ setup PFCs by writing to registers on pin based accesses
+> 2/ setup GPIOs by writing to registers on port based accesses and
+>    following configuration steps specified in hardware manual
+> 3/ setup dedicated pins by writing to registers on port based accesses
+> 4/ setup interrupts.
+> 
+> Because interrupt signals are routed to IA55 interrupt controller and
+> IA55 interrupt controller resumes before pin controller, patch restores
+> also the configured interrupts just after pin settings are restored to
+> avoid invalid interrupts while resuming.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+[ ... ]
 
-I tried to avoid that...
+>  
+> +/**
+> + * struct rzg2l_pinctrl_reg_cache - register cache structure (to be used in suspend/resume)
+> + * @p: P registers cache
+> + * @pm: PM registers cache
+> + * @pmc: PMC registers cache
+> + * @pfc: PFC registers cache
+> + * @iolh: IOLH registers cache
+> + * @ien: IEN registers cache
+> + * @sd_ch: SD_CH registers cache
+> + * @eth_poc: ET_POC registers cache
+> + * @eth_mode: ETH_MODE register cache
+> + * @qspi: QSPI registers cache
+> + */
+> +struct rzg2l_pinctrl_reg_cache {
+> +	u8	*p;
+> +	u16	*pm;
+> +	u8	*pmc;
+> +	u32	*pfc;
+> +	u32	*iolh[2];
+> +	u32	*ien[2];
 
-> store the result of platform_get_irq[_byname]().
-> 
-> [...]
-> 
-> MBR, Sergey
+
+> +	u32	sd_ch[2];
+> +	u32	eth_poc[2];
+> +	u32	eth_mode;
+> +	u32	qspi;
+
+I missed it, u8 should be enough for these.
+
+[ ... ]
 
