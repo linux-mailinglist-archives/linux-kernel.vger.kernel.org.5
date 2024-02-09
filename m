@@ -1,77 +1,152 @@
-Return-Path: <linux-kernel+bounces-59718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D344A84FAE2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:19:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C61C84FAE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:20:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9594A285133
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:19:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B21F1C243E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:20:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 705F57EF12;
-	Fri,  9 Feb 2024 17:19:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52EBE80BFA;
+	Fri,  9 Feb 2024 17:19:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="LHznyKEG"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a66ebNfQ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4457BB02;
-	Fri,  9 Feb 2024 17:19:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D70C37F493;
+	Fri,  9 Feb 2024 17:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707499159; cv=none; b=bKuWRekmQVJ4pAlVMpNE5kbvuQoTUMblm/Fbx1SEjFjgeIWPMrxA7GJOtS48flIBqpVg4ONvAHYAQM8odYntbTFU7EI1sUavJueMSBWCM96HYCMSr/k+K5WLDgauoA8eJB8e407FtgAyArOUcW66+tqFPpqirGKfNTzJuq14hKg=
+	t=1707499163; cv=none; b=qveY3wRcdXwNW3jS702MdfvGpxRgFlj4qHeN536iVmIRSEQEhrIXAZPcLnLuYl3BL4JLFLWofwqnJUYJYWI1jv88nRjl1P3FCM6ZmoDIntCDWdoDdc4qXq5UYi5tZlitP9YHrpWYCTJxfRrKeyhRemGMrkD0zUQZE9ea2Iijfao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707499159; c=relaxed/simple;
-	bh=5chEcUoZy69N+Njxway//+D9Qq97cnHEhm7OTKP1+z4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VZRwM9QXziM55KyrVvGaxtBb3Pl3yfnYJcWt1AYTWc5WFxlXDGBbUw2uPNYj0W2yIkRqnLgIGuati1b3yPQWMX7Q446lc1vvFueuJYSdFlmJpIcmgOSLy5EnigIOZFyaoU+8SVHWh+YRoz1Y1nGxHMOXwO6cQuKc3lhH2msIuw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=LHznyKEG; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=mCTkf7Uhk05htdUngOFotI43lknoNa0E5lP/jBopk84=; b=LHznyKEGKRt7UxP+B/ChINmYVD
-	fZWLUuYEyPS5FhCXMRw/ImIQBWn503zlvLefjzwSgOG+QwOlAnW06F8p38bPX+ksKWjDOi9ORuN+3
-	LWP4qJOtgpJ10JjchxgOVW4PEHkw4jZY/a4xnYq7ss0K3AJ62uOBJUjcntUZYILHyJaA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rYUWo-007P7U-3P; Fri, 09 Feb 2024 18:19:06 +0100
-Date: Fri, 9 Feb 2024 18:19:06 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Jon Maxwell <jmaxwell37@gmail.com>
-Cc: jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next v2] intel: make module parameters readable in sys
- filesystem
-Message-ID: <135d4123-29f5-46dd-b06e-d5a66bd7f598@lunn.ch>
-References: <20240208221802.131087-1-jmaxwell37@gmail.com>
+	s=arc-20240116; t=1707499163; c=relaxed/simple;
+	bh=VRJlINL6pxzWElhznPgpcMFZwr/R2ULvU04lgrJbPs0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=plkJAbt+UvgHgs5ENf+cZU//k10bLSWv7W2DPFdrdvFDrGvdWMskatY5D9EFeJmkwZ70ixTJ1K+zuheA9dbzUsJ1nzRngtyMAVF4RkE8caTjUke6kJcETRU8Vwbjk50GoQEGsCd7nxgXvpMcMdUV31l9lQOTnaKyBd4mc0171PA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a66ebNfQ; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707499162; x=1739035162;
+  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=VRJlINL6pxzWElhznPgpcMFZwr/R2ULvU04lgrJbPs0=;
+  b=a66ebNfQvxSXrWpBTnuyWd0uR9akmuokHSqgPntVDkc0RH37VeVoQawk
+   VD+ZAL+K3GCvx3h05X2ldiqJkw6JXDPp+XcH9EcLMxpKQav2yxpRFBZ0p
+   EDfG/t5Z3dA/U79rBWOpTgxDVg7NfSiKXKodtFva0QZW9g1gr2Ca8yI9e
+   af/ahpV64InNzP2tL0vWVo6lZG6z4eR2M7clRA5tXN3C2kXVqXFuD143C
+   GTQ7ZkdovgxzLY9BctroSUaflGLn5aSNVHEwc79tI0sXjrIHafxyzRmM8
+   PtHNkaE7EB2KZX92XBWIRr86NziLqeF3PUBMGERU9n5NdVJBK8HrxxF8D
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1326078"
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="1326078"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 09:19:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="2195068"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmviesa008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 09:19:20 -0800
+Received: from spboulos-mobl1.amr.corp.intel.com (spboulos-mobl1.amr.corp.intel.com [10.209.44.214])
+	by linux.intel.com (Postfix) with ESMTP id C48635804FA;
+	Fri,  9 Feb 2024 09:19:19 -0800 (PST)
+Message-ID: <ecb40fbc2dc50cc2ebe7cc5393c2b0d6da58e4f3.camel@linux.intel.com>
+Subject: Re: [PATCH v2 1/2] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
+From: "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To: Daniel Drake <drake@endlessos.org>
+Cc: Bjorn Helgaas <helgaas@kernel.org>, tglx@linutronix.de,
+ mingo@redhat.com,  bp@alien8.de, dave.hansen@linux.intel.com,
+ x86@kernel.org, hpa@zytor.com,  linux-pci@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bhelgaas@google.com, 
+ mario.limonciello@amd.com, rafael@kernel.org, lenb@kernel.org, 
+ linux-acpi@vger.kernel.org, linux@endlessos.org
+Date: Fri, 09 Feb 2024 09:19:19 -0800
+In-Reply-To: <CAD8Lp44tO_pz_HZmPOKUQ-LEQT=c856eH52xWL9nBtAtJwjL1g@mail.gmail.com>
+References: <20240207084452.9597-1-drake@endlessos.org>
+	 <20240207200538.GA912749@bhelgaas>
+	 <CAD8Lp47DjuAAxqwt+yKD22UNMyvqE00x0u+JeM74KO2OC+Otrg@mail.gmail.com>
+	 <CAD8Lp44-8WhPyOrd2dCWyG3rRuCqzJ-aZCH6b1r0kyhfcXJ8xg@mail.gmail.com>
+	 <9654146ac849bb00faf2fe963d3da94ad65003b8.camel@linux.intel.com>
+	 <CAD8Lp44tO_pz_HZmPOKUQ-LEQT=c856eH52xWL9nBtAtJwjL1g@mail.gmail.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240208221802.131087-1-jmaxwell37@gmail.com>
 
-On Fri, Feb 09, 2024 at 09:18:02AM +1100, Jon Maxwell wrote:
-> v2: Remove the "debug" module parameter as per Andrew Lunns suggestion.
->     It's not really needed as ethtool msglvl can control that.
+On Fri, 2024-02-09 at 09:36 +0100, Daniel Drake wrote:
+> On Thu, Feb 8, 2024 at 5:57=E2=80=AFPM David E. Box <david.e.box@linux.in=
+tel.com>
+> wrote:
+> > This does look like a firmware bug. We've had reports of D3cold support
+> > missing
+> > when running in non-VMD mode on systems that were designed with VMD for
+> > Windows.
+> > These issues have been caught and addressed by OEMs during enabling of =
+Linux
+> > systems. Does D3cold work in VMD mode?
+>=20
+> On Windows for the VMD=3Don case, we only tested this on a BIOS with
+> StorageD3Enable=3D0. The NVMe device and parent bridge stayed in D0 over
+> suspend, but that's exactly what the BIOS asked for, so it doesn't
+> really answer your question.
+>=20
+> On Linux with VMD=3Don and StorageD3Enable=3D1, the NVMe storage device
+> and the VMD parent bridge are staying in D0 over suspend. I don't know
+> why this is, I would have expected at least D3hot.
 
-It is normal to places comments like the above under the ---. In its
-current place, it will be part of the commit message. Under the --- it
-gets dropped when the patch is applied.
+Yeah something is missing here. When StorageD3Enable is set, the nvme drive=
+r
+prints the following message during boot:
 
-    Andrew
+	"platform quirk: setting simple suspend"
 
----
-pw-bot: cr
+If you don't see this, then the driver never saw StorageD3Enable=3D1. Possi=
+ble
+reasons are:
+
+	- The property doesn't exist
+	- The property isn't set under the ACPI companion device
+	- There is no associated ACPI companion device
+	- The "nvme=3Dnoacpi" parameter was passed on the kernel cmdline
+	- The nvme driver was quirked to not use D3 with
+	   NVME_QUIRK_FORCE_NO_SIMPLE_SUSPEND.
+
+How was the D-state status confirmed? You can use the following to see the =
+D
+state of PCI devices during suspend in the kernel log:
+
+echo -n "file pci-driver.c +p" > /sys/kernel/debug/dynamic_debug/control
+
+David
+
+> =C2=A0 However, given
+> that the NVMe device has no firmware_node under the VMD=3Don setup, I
+> believe there is no way it would enter D3cold because there's no
+> linkage to an ACPI device, so no available _PS3 or _PR0 or whatever is
+> the precise definition of D3cold.
+>=20
+> I also realise I may have made a bad assumption in my previous mail
+> when looking at the Dell device: I was assuming that a parent PCI
+> bridge cannot go into D3cold if its child devices only got as far as
+> D3hot, but I now realise I'm not sure if that constraint actually
+> exists.
+>=20
+> Not sure if these questions are relevant for the consideration of this
+> patch, but I'll try to find some time to answer them next week.
+>=20
+> Daniel
+
 
