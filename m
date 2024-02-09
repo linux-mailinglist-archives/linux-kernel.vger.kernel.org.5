@@ -1,181 +1,208 @@
-Return-Path: <linux-kernel+bounces-59921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4773984FD58
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:15:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC2EB84FD5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:16:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABB131F2668A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:15:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B2F21F21BC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:16:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 745A186ADE;
-	Fri,  9 Feb 2024 20:15:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1A8F86AF7;
+	Fri,  9 Feb 2024 20:16:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RKSE3fZD"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fFm3U6/N"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A62B381C4;
-	Fri,  9 Feb 2024 20:15:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707509707; cv=none; b=oOAH66PQGFhG+lLH14gPQ3AusUH8VqCXbBsOTHBTpuAuoQlmd1tibUIqVvAUk43STjewItsAgBFVF65HHIoWohd1S7ABJKZ6V2zT9+gJAlMIrflT6w/jEXmN/tlm1qGUAaqCoJRvj5QlPcKAG5u1fZ/1lwEnWyHpOxbnl1kNTb0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707509707; c=relaxed/simple;
-	bh=Klt83azgzb4MR4rLWuVynXLbx0G5sUEp3fYXnQAd2N0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iCP1dY7xWKfjImOowgbrQc55ZqVT+2DaIR/bI6c7zwLqjtxGbSUACYnerF9NgkdyAzFmxZcpPLB/uYnpyQt4R2wCPrFwyx/8DKAmWPQu8JLldQWEj+3NvDK52dkTsGjfE618qxl2eIE1JTTvu96ihqyH31LYorz8oFTnRm47GyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RKSE3fZD; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E95054F86;
+	Fri,  9 Feb 2024 20:16:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707509768; cv=fail; b=Qnp6Gg57PoYENIjkCOGNQFQVXegE/C1VOr2lbh3yqy0crKHMbiR4BBg87b6vlY3DEWlXHebrQRE7sCD8Kdm/itOhWDCiCGC+Wp21t+R2tQWfY7lCTsBZZrTcmD1PcUTW6JU0rXFEqU/81NX7c02CMz+GDgcp/vX6bLqH8MpDowg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707509768; c=relaxed/simple;
+	bh=uestZLoknpTJ+kBuDvq7xr2Asa0G0gM4JmwcmzoJZh4=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=HvshWp9paZL9lFDiinIBMH7tNhv8BBY20DRar9/7fWBot1qdx4mzjRGaAjRjjmEWXEeXC86jyWWcwm7sroSDvlbbQ7syOD+hhNBYE2edrtqZOPwv+C3KTWElnyNRH4xxmcJwAggP1J6+xFxPQTC4rYWXiXLuUpg3QxWVpSZ1C0Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fFm3U6/N; arc=fail smtp.client-ip=192.198.163.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707509706; x=1739045706;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Klt83azgzb4MR4rLWuVynXLbx0G5sUEp3fYXnQAd2N0=;
-  b=RKSE3fZDUF9CJ8gIOzMwhBpHjMWbYoVSBKuUq8a6Njp+ANHnRRNNo+/y
-   +SnidzNDNHwq31YJt/oJJ4XVf1tmvS1+moO5ROu3SKaoOsbrGnUJor8ga
-   E/PpHlybEw6jqQzHhfOFSuPUlA54IgrmDO4R/vI8QpPh8ISfkLCdY7gaK
-   35bh4p+TH/tL6pjJZtNJtbWKSwfSHt0s9X2vRsGNIELze+YYs7P+Zei5d
-   tFceesXmSb7IhMCZGM+pqHoNmjc0jzL70oa+fOaetBQ5r87QzgGgHn6oI
-   NTHfKQsqtkv5nc82DfiCl3yzZg33UwABdh3/Moa3iL3Ti5SUbS4lqpRsB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="12063600"
+  t=1707509767; x=1739045767;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=uestZLoknpTJ+kBuDvq7xr2Asa0G0gM4JmwcmzoJZh4=;
+  b=fFm3U6/N4+M5jLRx3lPmOUm6ul12lbLbMsknvTv+oYiPwG3GyMAb6CJa
+   WLYh73lq7PCRFCRIqQx00az5mFYdG9Kotvc866zXWL5Ke3xRCXI3sHiZY
+   bJZUmrk4aSP8zWMgHxwZBOkJfkqDzj4Ht8lqNvZhaU0WXWHMI9eSlGPMX
+   StjDG8Ae5/BXhYJ4jh5Cu/ImCdRxqnyHOWUaFbKhPhNNFIFlkIkhNDQkk
+   uz8UK19Jylv0/RPl7Jqc0sRiRsRK1hp7G95eDr+XUvP2gjs+oLzxiw8I0
+   jycMvqF22T8MDZ3XorvmzHc6rIZavbew+2r6SmykjZ2N1mma84XzDbJNF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1646870"
 X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="12063600"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 12:15:05 -0800
+   d="scan'208";a="1646870"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 12:16:05 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="25255049"
-Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.246.112.114]) ([10.246.112.114])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 12:15:03 -0800
-Message-ID: <fc967332-c5c7-47c1-be81-15e6045a3004@intel.com>
-Date: Fri, 9 Feb 2024 13:15:02 -0700
+   d="scan'208";a="6771050"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Feb 2024 12:16:02 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 9 Feb 2024 12:16:02 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 9 Feb 2024 12:16:02 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 9 Feb 2024 12:16:02 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 9 Feb 2024 12:16:02 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gHyByF9IMJlvUiG04bZZiS1HvZXN/pDOSa9PcJRcwQUQnBsWtklPHNOx3K7vyUiu9VdjKgqkACmgLB1ijUA/c4DwCyz3GO2uzZfg4SB0Z3e8zLNjQVFiyqaeB9OZeJiHHGET8EbSTtaJTvYaZTJeAiZaQK8MajOngo/SYv/ZR3DlcbwqpSnem/LfJs1Mj2oWshr0XMeUXGzKch2TgklCcH4EWdzB2dFV11dJbHJWm/03uM8BMvdfsKyqdZrn1QtWkDg0oG5E2NydSKKveiNgdE6Z0dVbOzAD9o73MmWqswgoHfQHAH7FCD6yo64M/8PWtYR3zIT97OtcLzhnwzvKpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=61QiYqomGsSL3JBP7uRCf3tlSTso6pAvFsQd5u3CfYU=;
+ b=RSjJNkcaRWABAF3nSWipavO67ZkCcKpHzoETxWX95kkHishFMdQBlbEKcQ8r/vjeqV6GdGGtEzfp3njL91SQgiT96Zm7+KRHLRlaY1qmFTu+FcCssLmyMN5k90aOUVHI5WfhXolkGdzyotXyithRhr0BfzAo15v+2Wgf+Q9xy00mBZx9jaYVpqd5S9zkZCYNvFyjmAlLDtBXVY1icyY2F/k358HcDhNHD5OlxiCwBE2nYps+Cmcx8tDlCR4E/VcGklE1wqPbnPJgq9/vlT8tiLy8NN9C80udJdqyyexqXLHRMUkburDVi8nZAlwAzE75aojONYXHjrU+Xprz0r4Veg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by SJ2PR11MB7620.namprd11.prod.outlook.com (2603:10b6:a03:4d1::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.27; Fri, 9 Feb
+ 2024 20:15:59 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6257:f90:c7dd:f0b2]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6257:f90:c7dd:f0b2%4]) with mapi id 15.20.7270.024; Fri, 9 Feb 2024
+ 20:15:59 +0000
+Date: Fri, 9 Feb 2024 12:15:57 -0800
+From: Dan Williams <dan.j.williams@intel.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams
+	<dan.j.williams@intel.com>
+CC: linux-kernel <linux-kernel@vger.kernel.org>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <linux-cxl@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang
+	<dave.jiang@intel.com>, rostedt <rostedt@goodmis.org>, "Masami Hiramatsu
+ (Google)" <mhiramat@kernel.org>
+Subject: RE: CPU data cache across reboot/kexec for pmem/dax devices
+Message-ID: <65c687fd30cf2_afa4294bc@dwillia2-xfh.jf.intel.com.notmuch>
+References: <bc925b57-4814-4788-b369-cd2d135a7381@efficios.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <bc925b57-4814-4788-b369-cd2d135a7381@efficios.com>
+X-ClientProxiedBy: MW4PR04CA0390.namprd04.prod.outlook.com
+ (2603:10b6:303:81::35) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dmaengine: idxd: Ensure safe user copy of completion
- record
-Content-Language: en-US
-To: Fenghua Yu <fenghua.yu@intel.com>, Vinod Koul <vkoul@kernel.org>
-Cc: dmaengine@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>,
- Tony Zhu <tony.zhu@intel.com>
-References: <20240209191412.1050270-1-fenghua.yu@intel.com>
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240209191412.1050270-1-fenghua.yu@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SJ2PR11MB7620:EE_
+X-MS-Office365-Filtering-Correlation-Id: af6dfbf2-6bf4-49fc-672f-08dc29abee1b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Gt6XLjPp0Q3T287E2VR2hivbvZPZlnM3yK0SJF9us5RDHsAFNyq5nVSxJQ8Dcw/LMcQC6KenV5X4KOkADrLSzmbqtiU+V3Fh6wXOZqkEk4pn64wlYr7Du4J6VZTmBIc7JHWuMAQDIF/B3n66pAfsE0JW9KCJTIUQlMbnnQZt4xwMv50pB8oHDkAhuugcttzwOUozfuR+HP2/Stxj9+cy/lC4grHbYyHbNRGuFHsXvsPH/o2rq0HY0/dGTFXxUjsXMMYFWOT0xBMidlDRwpR03z4n6kJOisktAroyFfEbDL/YKnxyuh48K9J3IPvkDex0BoVtPyDGTgoW24MG7djEi9wUZ/bHKu9qF2Ahi9HlgRZbnpWd/ILJned5zBpiOgTbDHhfM68J2xnczX27JqDvFciGRK5IOPK/la1aFR9d7OjM3P/Yo1FEALZu5/Jo9Aj6FqYN5JOHY4IpKmxqeA3rhp+Pw4RaUzYg4R3HR5aj6oyjXmaJWb3vNCNa63cq+xP8XpqcVhheKV3NBbSrqFEEN9ySRKuLPW2wHLkEnS3/TmdnZ6uY6JyrVgnzGxT8JezV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(136003)(376002)(346002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(110136005)(316002)(54906003)(66476007)(6486002)(66556008)(66946007)(4326008)(8936002)(8676002)(38100700002)(83380400001)(26005)(9686003)(86362001)(478600001)(6512007)(6506007)(82960400001)(5660300002)(41300700001)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YZFW3Uu9/vUJYc+Ar089ivsESEGY3rGvoWenlpR42QiKViVJI0GUJ7vdEjOH?=
+ =?us-ascii?Q?cxX/I2jWbVC2/PQu2NehtnKPorHFwKRlmV9YJwaxO/yP3c90Y1571QpsvKQB?=
+ =?us-ascii?Q?yqBDu7W5BWWsz83lcuPSYZYHRdbGoXxuGzXX70LFVV8LSbLGbnx8gO3OeJya?=
+ =?us-ascii?Q?rFrnEok4t78OflKLcXDdSdN9vTHNfMBL9BmDJCplw6GcgQijGNjoVxgZ0fhH?=
+ =?us-ascii?Q?mzZIP7uSJC/ppD17kbDFcyIsNnQZI+2rmSA5Zxm8HTV98BjcL0nPnYIe10Gu?=
+ =?us-ascii?Q?ZXkWpciZGjIgVERVb//JlleNcmdoLnLMmTIpVbcdgTNNV/vbGgKsxBmSL85f?=
+ =?us-ascii?Q?A8p4T/wK/gL+txURzkxJFbvUuYLXMdXPnK2m5d4vw8AJeBWbAfIKexH/U/Uq?=
+ =?us-ascii?Q?+B99zTYSSEy+slcBd+uHSSSVONg3xaDS9pGx8kKNcwdJwg50N2YzMkftbB0b?=
+ =?us-ascii?Q?c+/MJtf3qv/7HTwiPEgPlUDZaOLkORMSWhE/yYZJo7XiUr9DLA/EQ21qHabA?=
+ =?us-ascii?Q?ojJU9LzdM5FhITPClQa/MprghTaFHobQlLKApxdmAzNpJZm6tNZtRjMfpc+b?=
+ =?us-ascii?Q?1hZPRbn/UGlp4yw3z7AiSA0zq/NZVkXfdFbZJQqOosbQqCCtQe9HNA/zsZoh?=
+ =?us-ascii?Q?NyYVGk5JiuKkHEJcHj/Jd2deOWkGEeaHWhNpRQENG+fBZU3N/SnePrigo2ms?=
+ =?us-ascii?Q?vi2Kapwl/d5rr+sYOQtGfTRYrZUBGoLg7kZeP5D1eHGTjRyxA2Z3jLXR2Ibq?=
+ =?us-ascii?Q?fmLrkWto6sUtcvwj2a+hkX2yHg+/rfQi+tRH6gK+BZkBnL2D3S4U2WpzIsvv?=
+ =?us-ascii?Q?9i72GlEt6VCCBQZdRslLYjgXmxLEm9/3MlCqFZu1S9V4D45vETSToDkPfAM5?=
+ =?us-ascii?Q?cwYvynSrM991uxhJp/Ef9bYSNTlkuksE7WnN0U3Q05ZldiFpaohhyoYdF4ZQ?=
+ =?us-ascii?Q?rzukfEt7+c9Bt5UPsA0ihP/fjf3Zsi7V3Ql3nteRIrb3NAs8baX9Xx3nzafU?=
+ =?us-ascii?Q?seFzdK0F42srPphmyL+lkfhcPbwRosijsaSTjEx4/VberZ6O5HIJzoio6Ej4?=
+ =?us-ascii?Q?xZOBp/d3tuhbvkTiXbaq5gv3VQAI9kD4+JP+wqbwoecz2q6ta3ov3OpOUPIY?=
+ =?us-ascii?Q?4Cuaf/MdIBLTdDtKe64Ci3sTSSXJdFcuFs0mlE0sFNXlkkEabD7ucNkbhq/J?=
+ =?us-ascii?Q?ocwhUaQ/h1sag683+OUTAbQlpRSLBMRL4MMKY9Mz16OIJWFahLBtEVjkEZrV?=
+ =?us-ascii?Q?yEzX5mmF2WpYuLxEzUDsh93GFLi1Bb6+Hmy+zsCyx1b4HzI5A+zVRP9+TqDp?=
+ =?us-ascii?Q?Iqse7CfKj/ASHspEdqIVucNK+LQ5DbmrD+0WoCwEq0XwtVUl1KRCVPtBo6bL?=
+ =?us-ascii?Q?Ym3xgAYY2pBhZkd724bR7x2NIaUXHp6MPxRsWaw9VyZjuWatRZWV5H3ACwxY?=
+ =?us-ascii?Q?qpx0JXi25CBFPq/tamcVElvKMOM6GCWYLQXVJwGY3raj5F+myr1WjA22FwBD?=
+ =?us-ascii?Q?U47OeaobyFO9yDY+QUuxgHILDrN7m6CA3NP1B2iaUu6juO4zpK7LXoZ3mUuU?=
+ =?us-ascii?Q?ht7R6qd6xMoHUriIL8M0ly7g2S3sI8XvFWOp+qqrE7O18GosIw7qpIgj58wJ?=
+ =?us-ascii?Q?gg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: af6dfbf2-6bf4-49fc-672f-08dc29abee1b
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 20:15:59.1862
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XsSxVIbHg9bUqkgn+R0dnuFBlprkRTNfmyHSbKJkw8DnW+zI43AckTp9vYeTTBR5lWwIUJQQ7Ofv+URin54iojJ0zL7j3IpU1z9cfs1uJtE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7620
+X-OriginatorOrg: intel.com
 
+Mathieu Desnoyers wrote:
+> Hi Dan,
+> 
+> In the context of extracting user-space trace data when the kernel crashes,
+> the LTTng user-space tracer recommends using nvdimm/pmem to reserve an area
+> of physical (volatile) RAM at boot (memmap=nn[KMG]!ss[KMG]), and use the
+> resulting device to create/mount a dax-enabled fs (e.g. ext4).
+> 
+> We then use this filesystem to mmap() the shared memory files for the tracer.
+> 
+> I want to make sure that the very last events from the userspace tracer written
+> to the memory mapped buffers (mmap()) by userspace are present after a
+> warm-reboot (or kexec/kdump).
+> 
+> Note that the LTTng user-space tracer (LTTng-UST) does *not* issue any clflush
+> (or equivalent pmem_persist() from libpmem) for performance reasons: ring buffer
+> data is usually overwritten many times before the system actually crashes, and
+> the only thing we really need to make sure is that the cache lines are not
+> invalidated without write back.
+> 
+> So I understand that the main use-case for pmem is nvdimm, and that in order to
+> guarantee persistence of the data on power off an explicit pmem_persist() is
+> needed after each "transaction", but for the needs of tracing, is there some
+> kind of architectural guarantee that the data present in the cpu data cache
+> is not invalidated prior to write back in each of those scenarios ?
+>
+> - reboot with bios explicitly not clearing memory,
 
+This one gives me pause, because a trip through the BIOS typically means
+lots of resets and other low level magic, so this would likely require
+pushing dirty data out of CPU caches prior to entering the BIOS code
+paths.
 
-On 2/9/24 12:14 PM, Fenghua Yu wrote:
-> If CONFIG_HARDENED_USERCOPY is enabled, copying completion record from
-> event log cache to user triggers a kernel bug.
-> 
-> [ 1987.159822] usercopy: Kernel memory exposure attempt detected from SLUB object 'dsa0' (offset 74, size 31)!
-> [ 1987.170845] ------------[ cut here ]------------
-> [ 1987.176086] kernel BUG at mm/usercopy.c:102!
-> [ 1987.180946] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
-> [ 1987.186866] CPU: 17 PID: 528 Comm: kworker/17:1 Not tainted 6.8.0-rc2+ #5
-> [ 1987.194537] Hardware name: Intel Corporation AvenueCity/AvenueCity, BIOS BHSDCRB1.86B.2492.D03.2307181620 07/18/2023
-> [ 1987.206405] Workqueue: wq0.0 idxd_evl_fault_work [idxd]
-> [ 1987.212338] RIP: 0010:usercopy_abort+0x72/0x90
-> [ 1987.217381] Code: 58 65 9c 50 48 c7 c2 17 85 61 9c 57 48 c7 c7 98 fd 6b 9c 48 0f 44 d6 48 c7 c6 b3 08 62 9c 4c 89 d1 49 0f 44 f3 e8 1e 2e d5 ff <0f> 0b 49 c7 c1 9e 42 61 9c 4c 89 cf 4d 89 c8 eb a9 66 66 2e 0f 1f
-> [ 1987.238505] RSP: 0018:ff62f5cf20607d60 EFLAGS: 00010246
-> [ 1987.244423] RAX: 000000000000005f RBX: 000000000000001f RCX: 0000000000000000
-> [ 1987.252480] RDX: 0000000000000000 RSI: ffffffff9c61429e RDI: 00000000ffffffff
-> [ 1987.260538] RBP: ff62f5cf20607d78 R08: ff2a6a89ef3fffe8 R09: 00000000fffeffff
-> [ 1987.268595] R10: ff2a6a89eed00000 R11: 0000000000000003 R12: ff2a66934849c89a
-> [ 1987.276652] R13: 0000000000000001 R14: ff2a66934849c8b9 R15: ff2a66934849c899
-> [ 1987.284710] FS:  0000000000000000(0000) GS:ff2a66b22fe40000(0000) knlGS:0000000000000000
-> [ 1987.293850] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 1987.300355] CR2: 00007fe291a37000 CR3: 000000010fbd4005 CR4: 0000000000f71ef0
-> [ 1987.308413] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [ 1987.316470] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
-> [ 1987.324527] PKRU: 55555554
-> [ 1987.327622] Call Trace:
-> [ 1987.330424]  <TASK>
-> [ 1987.332826]  ? show_regs+0x6e/0x80
-> [ 1987.336703]  ? die+0x3c/0xa0
-> [ 1987.339988]  ? do_trap+0xd4/0xf0
-> [ 1987.343662]  ? do_error_trap+0x75/0xa0
-> [ 1987.347922]  ? usercopy_abort+0x72/0x90
-> [ 1987.352277]  ? exc_invalid_op+0x57/0x80
-> [ 1987.356634]  ? usercopy_abort+0x72/0x90
-> [ 1987.360988]  ? asm_exc_invalid_op+0x1f/0x30
-> [ 1987.365734]  ? usercopy_abort+0x72/0x90
-> [ 1987.370088]  __check_heap_object+0xb7/0xd0
-> [ 1987.374739]  __check_object_size+0x175/0x2d0
-> [ 1987.379588]  idxd_copy_cr+0xa9/0x130 [idxd]
-> [ 1987.384341]  idxd_evl_fault_work+0x127/0x390 [idxd]
-> [ 1987.389878]  process_one_work+0x13e/0x300
-> [ 1987.394435]  ? __pfx_worker_thread+0x10/0x10
-> [ 1987.399284]  worker_thread+0x2f7/0x420
-> [ 1987.403544]  ? _raw_spin_unlock_irqrestore+0x2b/0x50
-> [ 1987.409171]  ? __pfx_worker_thread+0x10/0x10
-> [ 1987.414019]  kthread+0x107/0x140
-> [ 1987.417693]  ? __pfx_kthread+0x10/0x10
-> [ 1987.421954]  ret_from_fork+0x3d/0x60
-> [ 1987.426019]  ? __pfx_kthread+0x10/0x10
-> [ 1987.430281]  ret_from_fork_asm+0x1b/0x30
-> [ 1987.434744]  </TASK>
-> 
-> The issue arises because event log cache is created using
-> kmem_cache_create() which is not suitable for user copy.
-> 
-> Fix the issue by creating event log cache with
-> kmem_cache_create_usercopy(), ensuring safe user copy.
-> 
-> Fixes: c2f156bf168f ("dmaengine: idxd: create kmem cache for event log fault items")
-> Reported-by: Tony Zhu <tony.zhu@intel.com>
-> Tested-by: Tony Zhu <tony.zhu@intel.com>
-> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+So this either needs explicit cache flushing or mapping the memory with
+write-through semantics. That latter one is not supported in the stack
+today.
 
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-> ---
->  drivers/dma/idxd/init.c | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
-> index 14df1f1347a8..4954adc6bb60 100644
-> --- a/drivers/dma/idxd/init.c
-> +++ b/drivers/dma/idxd/init.c
-> @@ -343,7 +343,9 @@ static void idxd_cleanup_internals(struct idxd_device *idxd)
->  static int idxd_init_evl(struct idxd_device *idxd)
->  {
->  	struct device *dev = &idxd->pdev->dev;
-> +	unsigned int evl_cache_size;
->  	struct idxd_evl *evl;
-> +	const char *idxd_name;
->  
->  	if (idxd->hw.gen_cap.evl_support == 0)
->  		return 0;
-> @@ -355,9 +357,16 @@ static int idxd_init_evl(struct idxd_device *idxd)
->  	spin_lock_init(&evl->lock);
->  	evl->size = IDXD_EVL_SIZE_MIN;
->  
-> -	idxd->evl_cache = kmem_cache_create(dev_name(idxd_confdev(idxd)),
-> -					    sizeof(struct idxd_evl_fault) + evl_ent_size(idxd),
-> -					    0, 0, NULL);
-> +	idxd_name = dev_name(idxd_confdev(idxd));
-> +	evl_cache_size = sizeof(struct idxd_evl_fault) + evl_ent_size(idxd);
-> +	/*
-> +	 * Since completion record in evl_cache will be copied to user
-> +	 * when handling completion record page fault, need to create
-> +	 * the cache suitable for user copy.
-> +	 */
-> +	idxd->evl_cache = kmem_cache_create_usercopy(idxd_name, evl_cache_size,
-> +						     0, 0, 0, evl_cache_size,
-> +						     NULL);
->  	if (!idxd->evl_cache) {
->  		kfree(evl);
->  		return -ENOMEM;
+> - kexec/kdump.
+
+This should maintain the state of CPU caches. As far as the CPU is
+concerned it is just long jumping into a new kernel in memory without
+resetting any CPU cache state.
 
