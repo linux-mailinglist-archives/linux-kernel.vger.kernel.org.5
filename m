@@ -1,131 +1,117 @@
-Return-Path: <linux-kernel+bounces-59389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7E8C84F637
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:55:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 514C984F63A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:56:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C8501F23C14
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:55:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 847951C216A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:56:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6303F4D12D;
-	Fri,  9 Feb 2024 13:55:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B43EE4D59B;
+	Fri,  9 Feb 2024 13:56:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ps+CwaIk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="NKfMpnno"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A44F0286AF;
-	Fri,  9 Feb 2024 13:55:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D09D94D11B;
+	Fri,  9 Feb 2024 13:56:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707486916; cv=none; b=fDKHH8QVgYILUYgkp/VYRCT1eJ7RGi/Cfyvc5j1qDT+eDVmIiaOaiJHUgx1M435iRXfUeI+/hzutKjbN5GMRZu7V2WYEbG6DuszQqT8lWNQxgNcpiT3xZXISuSVX6tloAUYdXQUQvgZd19OqGb60/SNxDbWt2jfTNwqxcZvFBgM=
+	t=1707486974; cv=none; b=F7LiEy5bo+Ku+gCAptKSgfEK/8FWpW8ysDnB+ho+MirX7XGwPuEC42FpEjx8sQK/v5x3gyOJzAk5Y/zqgoyLdyePbp4CIW3cVCTvXt4XT9EfTMP0OJyY6TXttsLRo5H+XIqww/NPInKJv7F7+r4uEO7K985dBA+bO4YPhqiHb3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707486916; c=relaxed/simple;
-	bh=N3GCSyWzae8ipltTZtYlaSxhj9Xw2wBHa2FcwP8g7/o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N4rmUOmEf5dnFvvDbVjU+xt0SAx/FUpsCFMdoAOXqPFMzIaKgU3XAT+0Y5zJrd3s38oFWzep9kxgFppacNOf3F57uzUN6N5MGLZJrESnxd8eP3+2noHittVbiMsDAJ6ERs14EvbX6qjoAFom750H09XzDrxa7Bga1Txkp6nM6u4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ps+CwaIk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EB33C433F1;
-	Fri,  9 Feb 2024 13:55:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707486916;
-	bh=N3GCSyWzae8ipltTZtYlaSxhj9Xw2wBHa2FcwP8g7/o=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Ps+CwaIkHu8An+k1+IwBgTtQ/zOdHfUZKQqvM3AMg8hSYTf5GPy0ogxEaPowK5cEB
-	 x22/c7eWYdqQIXU3M/TOLL6llcXIEGjseYQ4zON0ar6IOG1+iGFSz4YgD3Fy6fNY0s
-	 AIaHOqBota5Ag8Wgrgk9YBsJKPqHN5R6zSNezrNhV/fJdLrvhG5H9IAxVMlfQls3Lq
-	 mkUVAPsnVb/CJ7CKCdBJIJJPwhKejCiLUlF6iGfEanShrol8prX8x6nV3rjat49VJo
-	 qTqqG2JMM/JO0Krv2lYhi3TqTdKMiBokeMON6uyY9lCclX9Tz1WtNmce3eSwhlcTBi
-	 a5SUmdSgGIg/w==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d0e2adfeefso417881fa.2;
-        Fri, 09 Feb 2024 05:55:16 -0800 (PST)
-X-Gm-Message-State: AOJu0Yxjziyoqw7Lo/IH3/z7F87mRTiFdT+0+MIEQf8uHC0j86ARkNeM
-	rsUb/2BmeCJd2+87ybkZ4CFg4p5NZ+ZMOuOSRCwzU6lRRDXnaZty63breq7JvHmsOJr2BA/XLnP
-	6A/7HLXVz/CdTxbtVTRXl+CZiCEo=
-X-Google-Smtp-Source: AGHT+IFzfYCUMVeJAdR5KbdODBHTfaJGN1S3G1HPU2EUPy206ZpoIQDXAotPe3HHWpVqkMhFeZeYhE7k9yL+FNm1FXY=
-X-Received: by 2002:a2e:9909:0:b0:2d0:cb36:2be0 with SMTP id
- v9-20020a2e9909000000b002d0cb362be0mr1410808lji.9.1707486914397; Fri, 09 Feb
- 2024 05:55:14 -0800 (PST)
+	s=arc-20240116; t=1707486974; c=relaxed/simple;
+	bh=q3WWcXRBxiS9POf55jZdpXHtSVHQ32Mz7FXZ97im8JA=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=kFOwjsLxqEXE3bEBNbDOLxFZ4YsF/LLV3UJ8e8FbHN2t76quvR4Urk8WRhOZbcAseBDFA06E0AI+FMvPyMEFzYEuXGJwu7Mn/b4by6t4HB72HJ/B+LwSL8S0A3leFhwEdrtZEHfAlLyA+sBqmpBWEVKfLsMSt8LsAwBMFiEWvzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=NKfMpnno; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5C6E81BF20B;
+	Fri,  9 Feb 2024 13:56:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707486964;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=K2Ajf63ac1ZCRPlzKX21YZIuRaT9NuCc0/Fe29HC9tg=;
+	b=NKfMpnnoA/QCpuq7yKAIHS3NYgtyYrD9NnLHNd9gspZ9/2bPpoxYyaLosqrFrtcclu6Lco
+	7zSpMFlXjRx68rPOXporfOgMil5Dy8X/0OHfxL22GEXSZN3BLXAWvEkGvxZhyCc2csGodN
+	/c/G0MnotPeDF/UjSjQUBWM0nsTHnFOpklM3KpEzsJi1cvEGvg9d+4yzGqNVRoR3FQ5OEM
+	UNZBL75+0AIiRjW+2lwtro1ISQUqBS2aTBX4snMRfXC58k168DFQxIw8occBFuVme39anj
+	CN6ZyCvtqVWDcAeqhot+f20pkoFrED8iQFYaDY/NdIc2rWqzqmX6kZlsJWI3Gw==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: [PATCH v3 0/4] spi: cadence-qspi: Fix runtime PM and system-wide
+ suspend
+Date: Fri, 09 Feb 2024 14:55:49 +0100
+Message-Id: <20240209-cdns-qspi-pm-fix-v3-0-540ac222f26b@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129180502.4069817-21-ardb+git@google.com>
- <20240129180502.4069817-27-ardb+git@google.com> <20240207132922.GSZcOFspSGaVluJo92@fat_crate.local>
-In-Reply-To: <20240207132922.GSZcOFspSGaVluJo92@fat_crate.local>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 9 Feb 2024 13:55:02 +0000
-X-Gmail-Original-Message-ID: <CAMj1kXF+mHCYs08q58QFGuzZ4nzGd2sDr1gp2ydkOHHQ2LK5tQ@mail.gmail.com>
-Message-ID: <CAMj1kXF+mHCYs08q58QFGuzZ4nzGd2sDr1gp2ydkOHHQ2LK5tQ@mail.gmail.com>
-Subject: Re: [PATCH v3 06/19] x86/startup_64: Drop global variables keeping
- track of LA57 state
-To: Borislav Petkov <bp@alien8.de>
-Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
-	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAOUuxmUC/33NywrCMBAF0F8pWTuSTmtfK/9DXDQvO2CTmpSgl
+ P67aVcK4mbgXrhnFha0Jx1Yly3M60iBnE2hOGRMDr29aSCVMkOOJU8HpLIBHmEimEYw9ARsK86
+ lrFQtDEuzyetU7+TlmvJAYXb+tX+I+db+wWIOORSyMVqgMEo1Z+HcfCd7lG5kGxfxkzj9IBA4o
+ K6F6FXZ9mX1Tazr+gbD6lmN9QAAAA==
+To: Mark Brown <broonie@kernel.org>, Apurva Nandan <a-nandan@ti.com>, 
+ Dhruva Gole <d-gole@ti.com>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Wed, 7 Feb 2024 at 13:29, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Mon, Jan 29, 2024 at 07:05:09PM +0100, Ard Biesheuvel wrote:
-> >  static inline bool pgtable_l5_enabled(void)
-> >  {
-> >       return __pgtable_l5_enabled;
-> >  }
-> >  #else
-> > -#define pgtable_l5_enabled() cpu_feature_enabled(X86_FEATURE_LA57)
-> > +#define pgtable_l5_enabled() !!(native_read_cr4() & X86_CR4_LA57)
-> >  #endif /* USE_EARLY_PGTABLE_L5 */
->
-> Can we drop this ifdeffery and simply have __pgtable_l5_enabled always
-> present and contain the correct value?
->
+Hi,
 
-I was trying to get rid of global variable assignments and accesses
-from the 1:1 mapping, but since we cannot get rid of those entirely,
-we might just keep __pgtable_l5_enabled but use RIP_REL_REF() in the
-accessors, and move the assignment to the asm startup code.
+This fixes runtime PM and system-wide suspend for the cadence-qspi
+driver. Seeing how runtime PM and autosuspend are enabled by default, I
+believe this affects all users of the driver.
 
-> So that we don't have an expensive CR4 read hidden in
-> pgtable_l5_enabled()?
->
+This series has been tested on both Mobileye EyeQ5 hardware and the TI
+J7200 EVM board, under s2idle.
 
-Yeah, I didn't realize it was expensive. Alternatively, we might do
-something like
+Thanks all,
+Théo
 
-static __always_inline bool pgtable_l5_enabled(void)
-{
-   unsigned long r;
-   bool ret;
+[0]: https://lore.kernel.org/lkml/20240118155252.397947-1-gregory.clement@bootlin.com/
 
-   asm(ALTERNATIVE_TERNARY(
-       "movq %%cr4, %[reg] \n\t btl %[la57], %k[reg]" CC_SET(c),
-       %P[feat], "stc", "clc")
-       : [reg] "=r" (r), CC_OUT(c) (ret)
-       : [feat] "i" (X86_FEATURE_LA57),
-         [la57] "i" (X86_CR4_LA57_BIT)
-       : "cc");
-   return ret;
-}
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+Changes in v3:
+- Move both bugfix patches to the start of the series.
+- Remove Fixes: trailer from the function renaming patch.
+- Link to v2: https://lore.kernel.org/r/20240205-cdns-qspi-pm-fix-v2-0-2e7bbad49a46@bootlin.com
 
-but we'd still have two versions in that case.
+Changes in v2:
+- Split the initial change into three separate commits, to make intents
+  clearer.
+- Mark controller as suspended during the system-wide suspend.
+- Link to v1: https://lore.kernel.org/r/20240202-cdns-qspi-pm-fix-v1-1-3c8feb2bfdd8@bootlin.com
 
-> For the sake of simplicity, pgtable_l5_enabled() can be defined outside
-> of CONFIG_X86_5LEVEL and since both vendors support 5level now, might as
-> well start dropping the CONFIG ifdeffery slowly...
->
-> Other than that - a nice cleanup!
->
+---
+Théo Lebrun (4):
+      spi: cadence-qspi: fix pointer reference in runtime PM hooks
+      spi: cadence-qspi: remove system-wide suspend helper calls from runtime PM hooks
+      spi: cadence-qspi: put runtime in runtime PM hooks names
+      spi: cadence-qspi: add system-wide suspend and resume callbacks
 
-Thanks.
+ drivers/spi/spi-cadence-quadspi.c | 33 +++++++++++++++++++++------------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
+---
+base-commit: 13acce918af915278e49980a3038df31845dbf39
+change-id: 20240202-cdns-qspi-pm-fix-29600cc6d7bf
+
+Best regards,
+-- 
+Théo Lebrun <theo.lebrun@bootlin.com>
+
 
