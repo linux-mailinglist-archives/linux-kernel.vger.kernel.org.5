@@ -1,165 +1,197 @@
-Return-Path: <linux-kernel+bounces-59521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3E4684F84F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:14:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFE8484F854
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:15:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBDAD2841CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:14:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDD7E1C25040
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:15:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAEF773186;
-	Fri,  9 Feb 2024 15:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8676F525;
+	Fri,  9 Feb 2024 15:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HVcbMb1l"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J1tyFmwb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D7926E2C6
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 15:14:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A5946EB65;
+	Fri,  9 Feb 2024 15:15:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707491666; cv=none; b=FOzzkXk2z9X46WXLy7dwB3obEl3FRmNd0IixqbW5VyTkpuEMZtw+gnXfuYz6zE00nXy4mSPT5HwMTxZ8YJ17urHMgUbpMhsqrtWo7nzHEBBFUdQaTdA0bgzCo2b00d1V2JEaiRhPudje2MUDkK2sgC1prwAQXm0Z1wuf8AYwyRs=
+	t=1707491724; cv=none; b=FqmqiwFRNN29rEq2Bampqlbovekp+aiZWuiAH165auv+aJ4UwIlT4DmdLAnkdsWpv3uq50sbY8wGJnr73sdAuY1Y/1ilde4yj0L+EpIgfj2hQ+AKoAGR3Utq48ziE++l7bYHone1x1wAKQKEPBCxoEFCo8tpM/8Im8R39XGqReo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707491666; c=relaxed/simple;
-	bh=RYhCME+7iVjYelcpTNzvPbov152f+rjOM+U60A6Yk8o=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=n/18IMUa5cPK8OwqDgW/LPUNtUbDcTEDuN3nfRpJqjgCLi78Ji/uLuAdaOTg6+sI9WnnjnAbPpPymy8eDuI2tQjWmW7L2vvnw5YGUP3WQEBMIqANYkA0NDCGHQLcYjKHzzENyaV9eUlek4cNPpss/zcn2vEZLhZLh788ys5dblw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HVcbMb1l; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-560037b6975so1257549a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 07:14:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707491663; x=1708096463; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YL2IJfHkdntdjIp9PYI1/IffOpvqAPpkYMNUKb07Z4U=;
-        b=HVcbMb1lwUOaZ6kWqCcTunQ1FDBeOTsY6nH+LmMDzdMA0R73FTPSuuCkDfNKtOe2km
-         AKxsN59x8t7+oWN9kFfLj9aY/BTHQgGZiXkjwbaDOOKWNtOC920TX6Wtd44c4BkKTKzA
-         cHStzoag7PropSWsz/4PUQ9gIJ3pRH8ApxS6w9FzuqRf/UwJhq8uP5vEBNcVaW1yWuf9
-         gEhzupRnQkjoxv3wsm2BJPw0wxPNUGNbllHcxY0qeYP2wUH2WNfU6kyVeC5fpyrefbVL
-         1PhCNGmeUM+bBs1KSBPHLY9SNKyyUKCRXhfxUm4pTPFfBcrWw6mWtu6tmAJT0N+lyyBG
-         XTnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707491663; x=1708096463;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YL2IJfHkdntdjIp9PYI1/IffOpvqAPpkYMNUKb07Z4U=;
-        b=MiIQpGCHl7kfSABSVYR1D4HUosBivvH+io+tjTrgrAyxniT5mi1Yo2vDZxS4Vm+cwl
-         kgzmEFGIfkn1rRdQwpDCadz/I/sxMvWq7WrjQX7+2nhRREuEeUl42U1kxo/UxMu5r6oL
-         tSNoITie1lotuH+pP4yri+kMsMiVWisLGeL4DcfQCE750tdxTFNFcjm101FfG8PzGQ89
-         eK1oNWbOE73V6Dg69xHuYhLeW+zHvdvP7USBLO3/QMpWK5D0TJ+V/3lyh9/+HAUzSJeN
-         Zso+pbdgCD0fAczBMjDzQ2HArJR7w8lK0HNLfXckNVqzykeiXHF2g/uPyGzpNcf6qTir
-         JVnA==
-X-Forwarded-Encrypted: i=1; AJvYcCXBAS0G6texaFoRYpNcPO2DZ9eb8kCS+EP9Mi9gY4WzXRl3hSNq2pxSn0TqntNUPyI5GxiI8Ye4qJLRGjEAOZmvbZf/qBUEyDaHXF83
-X-Gm-Message-State: AOJu0YzaJZcus+6L5sum5mPaHNqUlNg06s2axnEEZzE15JYR6HZVuCki
-	z8ED54zFxsqU1+vZJWSioGPhqOjmiby07kj1rCUuovMfPRuxLhk5TUcpv0npwpc=
-X-Google-Smtp-Source: AGHT+IFRnx3V8Lzh5GMxDQ/foYrd+zTVGfXFf11WO/GMjuFCE6jG49bIpV5DOcpyzhWSeA4HDREdEw==
-X-Received: by 2002:a05:6402:3083:b0:561:55d1:370d with SMTP id de3-20020a056402308300b0056155d1370dmr212344edb.36.1707491662805;
-        Fri, 09 Feb 2024 07:14:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWdWmparoLbnMsHzLIEVr6Tg1bWuhKB0XjpXYQ21w93vf1+nynSS63ESpSPCxvFjDdVh28CVql3iOTnq0ih4AaOAR+VT7Lo1KbY4XKHZIrxFn3VzPJ3o+3fK1M47vxURvTtKezS6GGd2Wr3je8m1pKooeqt/Ltp1gFBVPKlkPjWvsciyPOm+zVcfvQF/USozA0SE/FUZrHKd5WDjSgibR3SW//XLppRO6YUTWPZn9L0dVTHILmrmPNBCr5TYeTwqxMfQWs0CBCxf1w3HwAN7E5hC0aMZxpUmmsJHZmc96Yjos4i/G75Lmp9AO82Qu0sbLzKVQDI5nqmAcx7jKL/PiAB3RJq0D/bak+2Rz+cfi82p2X4dBLSQzS7n44vINLijJLaYsmH9w==
-Received: from [127.0.1.1] ([62.231.97.49])
-        by smtp.gmail.com with ESMTPSA id k6-20020a05640212c600b0055ef56f4575sm860240edx.39.2024.02.09.07.14.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 07:14:22 -0800 (PST)
-From: Abel Vesa <abel.vesa@linaro.org>
-Date: Fri, 09 Feb 2024 17:14:10 +0200
-Subject: [PATCH 2/2] phy: qualcomm: phy-qcom-eusb2-repeater: Add support
- for SMB2360
+	s=arc-20240116; t=1707491724; c=relaxed/simple;
+	bh=vhoLSSlL/5ddek+ZFOhIOvsQoTmINNqk4DydXbkdtGc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aANSQgUeG9xQzCRAYkFtXegv2ESt3JeSvw2gcSu72OniYoLBVNY0ASU+b9rp7yr53NLkf+TlSO7AH3et+qvbMqJ+w9j8sy8KwT8F9r3QuV2Sc+uQj4Y/R33f9Rj8BJCzlN77Lr+MvYommIcacTDOfaJzFcz6ifceJitAO+BFZHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J1tyFmwb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52316C433F1;
+	Fri,  9 Feb 2024 15:15:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707491723;
+	bh=vhoLSSlL/5ddek+ZFOhIOvsQoTmINNqk4DydXbkdtGc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=J1tyFmwbVm6zKZ64DuT5j6bfXPbNK68FHowfNrIFTprDYA7b/2CUkMM5BJcQgv12E
+	 /s0lEnSuQlBHkCaoQxCoGv9MAdujszFLhG8a8DQT+KlZ0fFvr5YPOyWQtazx/aul3H
+	 VGo5T5dLkXXBiu8aPR8pZGbAV6cfbDdz8f2PplVXSX6yfTFu9yjZDdOYy5jGqL9TTO
+	 4GD5npkOL3Upa98GAmQLj9LQlwexMtzi2MvxzEj04IR7hRB+G1CwDpxw8JZDxQVPYC
+	 8PO130wg0RJf7r0b/fnUEdCXw/WTA7akiYT+VADlg86aNKNUmOWZV3gWiaPrKYU1TQ
+	 ZqUxFoHs6AbHw==
+Date: Fri, 9 Feb 2024 16:15:18 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Andy Lutomirski <luto@amacapital.net>, 
+	"Eric W. Biederman" <ebiederm@xmission.com>, Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] pidfd: change pidfd_send_signal() to respect
+ PIDFD_THREAD
+Message-ID: <20240209-stangen-feuerzeug-17c8662854c9@brauner>
+References: <20240209130620.GA8039@redhat.com>
+ <20240209130650.GA8048@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240209-phy-qualcomm-eusb2-repeater-smb2360-v1-2-af2ca4d95a67@linaro.org>
-References: <20240209-phy-qualcomm-eusb2-repeater-smb2360-v1-0-af2ca4d95a67@linaro.org>
-In-Reply-To: <20240209-phy-qualcomm-eusb2-repeater-smb2360-v1-0-af2ca4d95a67@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1759; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=RYhCME+7iVjYelcpTNzvPbov152f+rjOM+U60A6Yk8o=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlxkFKvd37nKXPlXZ+BGqyJesFi49ujExMfhLIo
- Ej3PV1DZz2JAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZcZBSgAKCRAbX0TJAJUV
- ViLOEACaWnWsPpm3ynGsiy0HJIrunVq1hVKVG0Eq/OMOGBxMZkoAbll56aLUGkBdxmq2xG8V5Vm
- gF1gwEPDAb8zLJVFUtNXWkDrB/Xuulg4POxIF2Oayv5O7F9F2rO+xgF1+bktr4v4b+4Mk1SP9ZQ
- uyVs5r0dpXD+bgj9bcE/NPp4KmHu8J69QLjcytVIpEN7e5FAJnL8f+FREgayTfdOiwY/JsZN5Y2
- j1KRe1gpcbu3B2SOrB7Nma+zWJ4DBlxX7LTUuMkm1SHLNBVZ4ECAdH9nFc2Irb38DSaV8t7Mrlg
- cIxv3EpT+31aK8bMg6nAWi+NZtSqhjbeupE4MV2PIWlA7R6PGSdZjhAVp3zjNO1QaCaVir4q06K
- kJUp6qWersCfFzyoj+y+anUDJCryll4ebqb4gQh4C+n5WihvG2lE7e0RmdEiw4a5zU9YeNYnxJi
- IIkqB+4H+Bqk4dgJzYAPD3eai0Rmk0hp2YloptNC4K8FpHMXQe1QVFMDetCGVBtILrmC86oWGkH
- UAvuQsSTsT/4PpTPMY9VPY1mwzxS8fUBzsv6dR8uE1ONRSRp2R5FWhDJevv83LPuPLWNyP0Yf5c
- 8u5pZjfZBDk/oPOu5fK/5vGrc3Sdc6NDQx95QtWQB5EzZRmVY6kEqKbyz7C0mkqQX0L8Q77/ulz
- sY1t+vi9R5sS+Hw==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240209130650.GA8048@redhat.com>
 
-The SMB2360 PMICs contain the same eUSB2 repeater as the PM8550B,
-so add dedicated compatible for SMB82360.
+On Fri, Feb 09, 2024 at 02:06:50PM +0100, Oleg Nesterov wrote:
+> Turn kill_pid_info() into kill_pid_info_type(), this allows to pass any
+> pid_type to group_send_sig_info(), despite its name it should work fine
+> even if type = PIDTYPE_PID.
+> 
+> Change pidfd_send_signal() to use PIDTYPE_PID or PIDTYPE_TGID depending
+> on PIDFD_THREAD.
+> 
+> While at it kill another TODO comment in pidfd_show_fdinfo(). As Christian
+> expains fdinfo reports f_flags, userspace can already detect PIDFD_THREAD.
+> 
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
 
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+How do you feel about the following (untested...) addition?
+I've played with PIDFD_SIGNAL_PROCESS_GROUP as well but that code is
+fairly new to me so I would need some more time.
+
+From a473512ed8de2e864961f7009e2f20ce4e7a0778 Mon Sep 17 00:00:00 2001
+From: Christian Brauner <brauner@kernel.org>
+Date: Fri, 9 Feb 2024 15:49:45 +0100
+Subject: [PATCH] [RFC] pidfd: allow to override signal scope in
+ pidfd_send_signal()
+
+Right now we determine the scope of the signal based on the type of
+pidfd. There are use-cases where it's useful to override the scope of
+the signal. For example in [1]. Add flags to determine the scope of the
+signal:
+
+(1) PIDFD_SIGNAL_THREAD: send signal to specific thread
+(2) PIDFD_SIGNAL_THREAD_GROUP: send signal to thread-group
+
+I've put off PIDFD_SIGNAL_PROCESS_GROUP for now since I need to stare at
+the code a bit longer how this would work.
+
+Link: https://github.com/systemd/systemd/issues/31093 [1]
+Signed-off-by: Christian Brauner <brauner@kernel.org>
 ---
- drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ include/uapi/linux/pidfd.h |  4 ++++
+ kernel/signal.c            | 35 ++++++++++++++++++++++++++++-------
+ 2 files changed, 32 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
-index a43e20abb10d..68cc8e24f383 100644
---- a/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
-+++ b/drivers/phy/qualcomm/phy-qcom-eusb2-repeater.c
-@@ -88,6 +88,12 @@ static const u32 pm8550b_init_tbl[NUM_TUNE_FIELDS] = {
- 	[TUNE_USB2_PREEM] = 0x5,
- };
+diff --git a/include/uapi/linux/pidfd.h b/include/uapi/linux/pidfd.h
+index 2e6461459877..757ed5a668c6 100644
+--- a/include/uapi/linux/pidfd.h
++++ b/include/uapi/linux/pidfd.h
+@@ -10,4 +10,8 @@
+ #define PIDFD_NONBLOCK	O_NONBLOCK
+ #define PIDFD_THREAD	O_EXCL
  
-+static const u32 smb2360_init_tbl[NUM_TUNE_FIELDS] = {
-+	[TUNE_IUSB2] = 0x5,
-+	[TUNE_SQUELCH_U] = 0x3,
-+	[TUNE_USB2_PREEM] = 0x2,
-+};
++/* Flags for pidfd_send_signal(). */
++#define PIDFD_SIGNAL_THREAD		(1UL << 0)
++#define PIDFD_SIGNAL_THREAD_GROUP	(1UL << 1)
 +
- static const struct eusb2_repeater_cfg pm8550b_eusb2_cfg = {
- 	.init_tbl	= pm8550b_init_tbl,
- 	.init_tbl_num	= ARRAY_SIZE(pm8550b_init_tbl),
-@@ -95,6 +101,13 @@ static const struct eusb2_repeater_cfg pm8550b_eusb2_cfg = {
- 	.num_vregs	= ARRAY_SIZE(pm8550b_vreg_l),
- };
+ #endif /* _UAPI_LINUX_PIDFD_H */
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 9578ce17d85d..1d6586964099 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -3872,6 +3872,9 @@ static struct pid *pidfd_to_pid(const struct file *file)
+ 	return tgid_pidfd_to_pid(file);
+ }
  
-+static const struct eusb2_repeater_cfg smb2360_eusb2_cfg = {
-+	.init_tbl	= smb2360_init_tbl,
-+	.init_tbl_num	= ARRAY_SIZE(smb2360_init_tbl),
-+	.vreg_list	= pm8550b_vreg_l,
-+	.num_vregs	= ARRAY_SIZE(pm8550b_vreg_l),
-+};
++#define PIDFD_SEND_SIGNAL_FLAGS \
++	(PIDFD_SIGNAL_THREAD | PIDFD_SIGNAL_THREAD_GROUP)
 +
- static int eusb2_repeater_init_vregs(struct eusb2_repeater *rptr)
+ /**
+  * sys_pidfd_send_signal - Signal a process through a pidfd
+  * @pidfd:  file descriptor of the process
+@@ -3889,14 +3892,19 @@ static struct pid *pidfd_to_pid(const struct file *file)
+ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
+ 		siginfo_t __user *, info, unsigned int, flags)
  {
- 	int num = rptr->cfg->num_vregs;
-@@ -271,6 +284,10 @@ static const struct of_device_id eusb2_repeater_of_match_table[] = {
- 		.compatible = "qcom,pm8550b-eusb2-repeater",
- 		.data = &pm8550b_eusb2_cfg,
- 	},
-+	{
-+		.compatible = "qcom,smb2360-eusb2-repeater",
-+		.data = &smb2360_eusb2_cfg,
-+	},
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, eusb2_repeater_of_match_table);
-
+-	int ret;
++	int ret, si_code;
+ 	struct fd f;
+ 	struct pid *pid;
+ 	kernel_siginfo_t kinfo;
+ 	bool thread;
++	enum pid_type si_scope;
+ 
+ 	/* Enforce flags be set to 0 until we add an extension. */
+-	if (flags)
++	if (flags & ~PIDFD_SEND_SIGNAL_FLAGS)
++		return -EINVAL;
++
++	/* Ensure that only a single signal scope determining flag is set. */
++	if (hweight32(flags & PIDFD_SEND_SIGNAL_FLAGS) > 1)
+ 		return -EINVAL;
+ 
+ 	f = fdget(pidfd);
+@@ -3914,7 +3922,22 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
+ 	if (!access_pidfd_pidns(pid))
+ 		goto err;
+ 
+-	thread = f.file->f_flags & PIDFD_THREAD;
++	switch (flags) {
++	case 0:
++		/* Infer scope from the type of pidfd. */
++		thread = (f.file->f_flags & PIDFD_THREAD);
++		si_scope = thread ? PIDTYPE_PID : PIDTYPE_TGID;
++		si_code = thread ? SI_TKILL : SI_USER;
++		break;
++	case PIDFD_SIGNAL_THREAD:
++		si_scope = PIDTYPE_PID;
++		si_code = SI_TKILL;
++		break;
++	case PIDFD_SIGNAL_THREAD_GROUP:
++		si_scope = PIDTYPE_TGID;
++		si_code = SI_USER;
++		break;
++	}
+ 
+ 	if (info) {
+ 		ret = copy_siginfo_from_user_any(&kinfo, info);
+@@ -3931,12 +3954,10 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
+ 		    (kinfo.si_code >= 0 || kinfo.si_code == SI_TKILL))
+ 			goto err;
+ 	} else {
+-		prepare_kill_siginfo(sig, &kinfo,
+-				     thread ? SI_TKILL : SI_USER);
++		prepare_kill_siginfo(sig, &kinfo, si_code);
+ 	}
+ 
+-	ret = kill_pid_info_type(sig, &kinfo, pid,
+-				 thread ? PIDTYPE_PID : PIDTYPE_TGID);
++	ret = kill_pid_info_type(sig, &kinfo, pid, si_scope);
+ err:
+ 	fdput(f);
+ 	return ret;
 -- 
-2.34.1
+2.43.0
 
 
