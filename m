@@ -1,243 +1,202 @@
-Return-Path: <linux-kernel+bounces-59930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2941384FD7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:22:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E82DD84FD80
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:23:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97BF71F21CB7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:22:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 546E7B22766
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F2E4126F3F;
-	Fri,  9 Feb 2024 20:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECAD6126F12;
+	Fri,  9 Feb 2024 20:23:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="my1J7/tX"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="k/nFKFRo"
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D321A54F86;
-	Fri,  9 Feb 2024 20:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707510129; cv=fail; b=iyAV8hPEm5++ghR0KwnovHR81KX5xpHKIWG5/ojukuz6zRHRbmTScE5F3cqH12djFn1nF61EMOZ3K5IF5OSV1abyRbO2nsBL7nwFORWbwWPJmKgnwO8fm55Gb60r5oq1d3LiUcrtB1a4brXgzogK0uJrT3I03uuiBUmYh62yjGQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707510129; c=relaxed/simple;
-	bh=+Ln4pguBBGinrzpyOepn/9lILY09k6IApdCMt1qRs84=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=W2mS4FEs4zfJAyXT2WbDY22AORqKLdVAv/T1/ba/suJdCDPwDIdXkMwmXvpnzA3pfR0m+ILQ/i5FNLCtQ1LUBCc7eA4vsxp/+DihNGtEzV1VQ4j2FGpQaMExpQ+ZZLW8xw2F1qQZ8XhXnPYdoC7SdfmMmtU+CyfflC9Afj4IyTs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=my1J7/tX; arc=fail smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707510128; x=1739046128;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=+Ln4pguBBGinrzpyOepn/9lILY09k6IApdCMt1qRs84=;
-  b=my1J7/tXE7Y6JxV7hqoPhAAAgbl+/brVEUhTkpyHf3x9owktlf+mr8xX
-   KA7R5K4rPqN9FO73W0kIWQiWomn5so79zno4MF0LI9i9+idME7t7sUdSw
-   YsdoJZS7/FFbYJUWdIs0btlWdnT5iO+cCBEVhfrMimOF1e+TYmyBJFiwG
-   +mIEb3aZdDCEinqZh0yP1zYvTGf+qOomhS4SWrcbL4FODI+Wy494abF1m
-   1J8kTJrrm43agewI/8Bz5CKjhkxgnMvD78C60wnMgAwKgPVo/2MiWFCyQ
-   qfdIzo39k9hSdLFgARvYotU0tA1Ez/BDgMSMCd9DzSmTgzHhh4DuISkU/
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1811561"
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="1811561"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 12:22:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="6678286"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Feb 2024 12:22:06 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 9 Feb 2024 12:22:06 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 9 Feb 2024 12:22:06 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 9 Feb 2024 12:22:06 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 9 Feb 2024 12:22:05 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PynB453Gfybe2Fn3QoCH07Ky046iqYo8lH4cmavCOg0DMlDaZnahsypqx+ahWhoJX+aQDa0kDfyoxsl9osVqbzS7ezQjwfW+iXXhjaEVadphiDKisBNVIXfNSKl50BwoikemgWVIBfheM/lqQs6pyNmXESFHfPlBvAhiQ4ztq2GFuwHfqDm1WsdsHncwKachyXJQwG8prtUX/CTog//AnGHvNcYWkeh2SBYnmRaxxM2QYRbXAFB+t1Lpz9sT2PqI3HV1nkiFYCUjDMbaQ06C3KRpm97707L3X/oTz+AHu17Lka1Pi4lQj27YHEkRvbEfni8WZZS4sIGhNYNZNNR6Ag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UIfzzwWEQyQDUDjdoBDJY4zoiI7bGSuOV1eZ4zxJAzc=;
- b=JVwjryF8tANvSIqSJ9ecpnlmG79tHPrI48yecS9cG2BB+y3cQ6SKw0Ait9Cj+nwK4lHDv5T/Q14vF5gxxWLcqZnGERFy7WIbk9pjhxFE2jVwuPsAwamFPX9B3iDRc6PJeTflHExcST5089VP0XZrAJGsqyHQBhTU2xeojiUyX3g+pFZmbbndgYx7Y4bFCBkkGMTfQkRrS61b24DV0bwhQNyIBEGFwrxRT4oKrrPgvz80PQz08dJxvUf2fnRNLbX1YEU3Fly1Zi0L0dFpyTh947L28zLfydE3HXxJZt3cyvlDpCcvGVHn1nykh6loPRQzP9fKEfz6AkeU86PposjQuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by SJ0PR11MB5600.namprd11.prod.outlook.com (2603:10b6:a03:3ab::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.39; Fri, 9 Feb
- 2024 20:22:04 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6257:f90:c7dd:f0b2]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6257:f90:c7dd:f0b2%4]) with mapi id 15.20.7270.024; Fri, 9 Feb 2024
- 20:22:04 +0000
-Date: Fri, 9 Feb 2024 12:22:01 -0800
-From: Dan Williams <dan.j.williams@intel.com>
-To: Robert Richter <rrichter@amd.com>, Davidlohr Bueso <dave@stgolabs.net>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>, Dave Jiang
-	<dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>, Vishal
- Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, Dan
- Williams <dan.j.williams@intel.com>
-CC: Robert Richter <rrichter@amd.com>, Jonathan Cameron
-	<Jonathan.Cameron@huawei.com>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] cxl/pci: Fix disabling CXL memory for zero-based
- addressing
-Message-ID: <65c68969903b1_afa429460@dwillia2-xfh.jf.intel.com.notmuch>
-References: <20240209193451.163564-1-rrichter@amd.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240209193451.163564-1-rrichter@amd.com>
-X-ClientProxiedBy: MW4PR03CA0140.namprd03.prod.outlook.com
- (2603:10b6:303:8c::25) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E26C126F09
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 20:23:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707510201; cv=none; b=M80G9pXi4BHaeb72QO+LbWZDBZVDBaGcLSbTVGVKxF7LFHnIpCrsmBKX7tfjJ9ybpOS1QQI0DnnT/VpGtmvZQcdS07uLMhyeCNcTH6fGrM10dBcp48Qif8UNhGIE0jz8pjMCjcgqmV4tU+mQKCCgVLJ66qWFkVpj3414VSkOT3k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707510201; c=relaxed/simple;
+	bh=Qa7WBTIDQpNbeS/hiyhWQzSVHICDNi2Lqssf/YFEgRQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PIYu2RyrZhfDKgc4p8vD6JSzJM4mmzl67N6X4pkUFZ6W9ioW32XKb7SuaP+u/XV5oqUMZuWR1VPDCeSdILatPsSNLn73xWRqTLGYZDMZaATEcbAYmSe2m9pH59RavvKtzQCHrY9DymCrz2qzd5r6DefLjxUmlOv51bYEznpEp/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=k/nFKFRo; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-599fc25071bso879389eaf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 12:23:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1707510198; x=1708114998; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rDZ3Jmq4/nSFOD85T2yiUnizUyC/JrtpL4z0B/Jmq+Q=;
+        b=k/nFKFRoIeO5UyIXezOjU30+kbylY8X0rdH7lU4D4U22GLlP9xx/qMLNRMw9s1q/FM
+         Y++AG17tiVa3nnrR2QkltW4NqiQThgQstzq7+7bDLlDz3+9Om3ShVOlg0nC1QZVZrmnj
+         eMnmfmlf3uypwlMNZr0CbUzRHtjH1HSkfX4Qs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707510198; x=1708114998;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rDZ3Jmq4/nSFOD85T2yiUnizUyC/JrtpL4z0B/Jmq+Q=;
+        b=EmT71DAZPRot8CNyv2o8u10t7fuimhBSspTbyqblQNGfAR0U89QDCs1OPKjOCd5Q3v
+         uFB9JAZalcNxWpENs2SgY/Pe5nqKS8gqu7rllAh2V+lPiYlsxx0AdEyF5EEcfCIk9geP
+         v3KBr0sWlsXNt1p18lXAxHKA/2OAhJjkc2mZWxCwXjWtd87XuBgBoDGBhX8ZUFFHv/nd
+         26CC1x0j63jcpXebSjNZWsUFRjhSugLUtgIsNOQ3jcJQKBwRFxq9a8L7C2rAbEaFfaHz
+         OY/RYGXNUj6MxcofXH22NzclwIpNxVEiL1za7fRSvOGrxuuUhA4Fy+RVxNHKGCvmpoir
+         r0QA==
+X-Gm-Message-State: AOJu0YwAC9S082ZzOojAKh9BRX+kUYaWUKl3nv/37tuPoxBUn36rRjZS
+	2I7bg//OoOrHAsl7GonpboDcjyJy4K2I34gj4EbyiXsjEn440T7lPW4CrHx5kbB4dK8X8PFXKIM
+	Bov0d6xBKlX/dIXTsp25h8Evh5OnHf1aFu6ElUm+Jg3U0Ik3OGbHamA3UEndc0zUF7511tsmwud
+	2z5AyowLfWOgmxMJyjgIubNHWXyQ+igtpStR9AcoWJDeo=
+X-Google-Smtp-Source: AGHT+IG/BuQR5ro/SbMkt/wRVmSLRrb8pcixKb+A/Usu4R6NRLr71H1G3HJsj0W0HfRlB7IyDnKkBA==
+X-Received: by 2002:a05:6358:1212:b0:178:8ec9:a2f with SMTP id h18-20020a056358121200b001788ec90a2fmr602645rwi.5.1707510198038;
+        Fri, 09 Feb 2024 12:23:18 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV9gYyDVJ/FTepbkZQWu3Aexv8qHVS0hrlr6yspf74pQaoAyp4jb/aaAEShwx8G0I0JF64bQF9DRoyw+vjK2VOuOd/N+ZjwRQnKTZ/0/RENVtV5Q9qXujjeJo+UJWx3Ku7z+XPP57RCd2F/wJDbaOZmySQTKUyv62JIUVVoj+Xo1xyLufeMnuDWwPxHpTkgJHDd8CTYykBE/gZ0LTgqmJ+kY1/t2ATggIS/IE9CnVm7C8wNXntCa6X94WvNdAakwC0eU8cZncggC3/Xqzdcso5l40SRE9WGdecCHd/8S+jbsfyfkokOvelVGw8otO96Ktlui4zilWlJjvOSNbGLTsrCQnY+nw+Mlh+jj8e95ovv6zuenZ7CrKyJjq5j8zy/4CCbU370DH0/vTnAWfqFZX7d2bwg9uulY0r3efo7usGizAXonVLf
+Received: from localhost.localdomain ([2620:11a:c018:0:ea8:be91:8d1:f59b])
+        by smtp.gmail.com with ESMTPSA id e25-20020a62aa19000000b006ddc71607a7sm933742pff.191.2024.02.09.12.23.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 12:23:17 -0800 (PST)
+From: Joe Damato <jdamato@fastly.com>
+To: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: tariqt@nvidia.com,
+	rrameshbabu@nvidia.com,
+	Joe Damato <jdamato@fastly.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Gal Pressman <gal@nvidia.com>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	linux-rdma@vger.kernel.org (open list:MELLANOX MLX5 core VPI driver)
+Subject: [PATCH net-next v4] net/mlx5e: link NAPI instances to queues and IRQs
+Date: Fri,  9 Feb 2024 20:23:08 +0000
+Message-Id: <20240209202312.30181-1-jdamato@fastly.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SJ0PR11MB5600:EE_
-X-MS-Office365-Filtering-Correlation-Id: 06270a1e-3162-4c6f-916a-08dc29acc780
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m+SBuSpRVNO2ywvzQWxjVWguLnxI2O1W4VY6fauvszsUamNpJLcDAAFg6j3LeMfAQx4PkZHX0qWTJQ8PSRbByTku6BwhE4EO2q1wnUSysym2G44hbyq5EeF6Q8I1u1FFTBDnFoTVdB8HWHpH/OgitAdpEnikrpZ1254SUH5M+OhiEDujXNDS5UCSn7TDGl7MDsjx8MvaNeVfAEAv8ZeewwC3t3m6IFfJnJOlr2xRNdGEQQwWebCpGOgDlj0qBlN6TqOVzYpVZK7B8+l9GUumqfgcEde6jwS1jj7laIiihIlbOQ36frgy+n0Kb3YzK8OvtWPiETYpXfLaHePFBMBmWHztn5GXlZB4UX8NRs78loKJmHMa3qyonNGg1KgCCmgIaDzLkL6ooRYDIJC2TEThkuRTXb9pVn/sy1OrmH1+kUiJTR/Epzct/oz3d9jHCSJhpZPaUy/UD7AQIOSw2kq/o2v3W/uJIq0obOQS6p2muOIf+SXRXRBxkxbxxVKwUZILbT2wLG/Rfd46iYWlT7lSUAskuuFAyj835M+ro0AsRUcwYwy5M8idLaJFsl3lRpIz
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(39860400002)(376002)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(83380400001)(82960400001)(86362001)(6486002)(316002)(110136005)(66476007)(66556008)(26005)(38100700002)(6506007)(54906003)(6666004)(478600001)(9686003)(66946007)(6512007)(5660300002)(4326008)(8936002)(8676002)(41300700001)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mCFNDGBnrL0rGHXmKnxzknwZJZB9MpME5Szst9x3ePNYlkyvyBXh66/h8xUn?=
- =?us-ascii?Q?CpPEmzB9qDraMFx5F5HzDcvnSjLm+havGRQ/eDQCfFEl+NtrN+8JYuErezg5?=
- =?us-ascii?Q?eASCSXPtY2NYsKznX1Aa3p6LS2eNWEoEm9Tx72JRQWWvUzM0OG+hnj1i6mj0?=
- =?us-ascii?Q?l9VbkMkmpQSCkXkm0yd3lc602ClW+OCBipdkyx+4/6o06NOUYowxwecayu9C?=
- =?us-ascii?Q?9dpImRpInYLa4GgEy40tTo7Dn5KQe5f9YOtD1I+Bj5iY7crolcvZYhIq+OFo?=
- =?us-ascii?Q?KVL93S9hiD1MPfiA7boIdAnwKfGlS8B1cLPBwF4FxGwS1J7rpHp/VvzRnUOA?=
- =?us-ascii?Q?yWPXewzfuskfs9cOPb4kzYCCFFgaGmld327NUWNqA5PQ+AwJuvHn+gLxRub5?=
- =?us-ascii?Q?Swj8OMBiKQT/UufgO7smzi4tc+UtaZ9gq0XvYcgfHCTrSWkqkH4yNx13FY2I?=
- =?us-ascii?Q?3o0F7WqZFIEd62OcU5nv+BnFqJ19wYmKjU5b23vEAqsSMb5GPn2/DnH9VZib?=
- =?us-ascii?Q?0fpYUEOU9/gNx/zvxYqFaBYr+2AVO252GNinXZkjwR2bamjVga3i1gvE0vkW?=
- =?us-ascii?Q?RUzp7ofZZzx0Z+jdHAs3q+wTRMwKDOm7FaTUhaCrfCxuY0ALbkhDUy+HSZYy?=
- =?us-ascii?Q?0a3a69BXF+n5BNJBqZIVzAuvw385vbMvF/AqI7uecawUn7wkWzfdun6y5kDy?=
- =?us-ascii?Q?hp2LtV/+KZaLIqOr4RZFVPs9fMMJLUUpnun81ApSTySCczPqbmND8hAzY+Ce?=
- =?us-ascii?Q?3/zRM/4epfp+MgTYkN7JNXDU3cTPW+tCUxwxq2/E9ySsgQVhIk0BsmG3q9yZ?=
- =?us-ascii?Q?ei6Hg9+S/4e0GU1M3hp9pN4o6rcYRAGNxG+WWiDEx+KNUCh0hFCODByr58z9?=
- =?us-ascii?Q?ng6Cs5KJh38jF37fMPOQ5zdcBzJqpxVQWDUneRVVa2X436x05EP1ZDXrIAbK?=
- =?us-ascii?Q?hXSEEHu8jt6mTEScZC5GeFTrfLUSNIeGCA2tRCuADZadGWOCx8v0a8yDutxH?=
- =?us-ascii?Q?3LFvP2C8wmNwZBxEotxhDp2HZhrKtmIHFwttmoPRaPwbKqYKeGQ1X6Xe7f3X?=
- =?us-ascii?Q?xuzQlzNK+CIUYXJijeQtmfm/Oc2FfCS6+Lkx/c+SKVbMdC9SO8MiwkT+PzY9?=
- =?us-ascii?Q?DtjGitQ17gTSj+NZef7OD8+D/yTk257gBL69WFpT9v2b7qaAVz/KobUdYpAt?=
- =?us-ascii?Q?mtopD+ca9wBpKwBrXfEdsePrmdsGea/HfMl3Mec9ls/uSjXFsrnIZpH0Ez4z?=
- =?us-ascii?Q?U0KT6RjVSde42bbmVT9DXx7mXyLih/JhhrJfXDrIy8dAs9AETroqVxGwSKa0?=
- =?us-ascii?Q?/T0cj7XnHm/JzaGYxzJE5XwTbzbC74To0o5POTffqree7/SILMtQ5izFEiMn?=
- =?us-ascii?Q?xRrmkG+ycEJURmN5kze3pbjFv9R8dOnGBv3TvoVWEZrJIvElHMOPoy/XZfta?=
- =?us-ascii?Q?ScL+Ef05paRrmorqa3eXiqs2AhzMV/OPIxYt6h5m3UiDNPcsIeE7MyvKraVi?=
- =?us-ascii?Q?uHRIQlTvJzeSd7kvtVt++S7ZqF+psnQQvxaezmKKFoJRgrcddOUJRvshgpRf?=
- =?us-ascii?Q?4ajInFSVLfMw1Ojfn3n4Isdz2CfOgW932uc58jZQGRWf3Ufta6VE6JH0iiD9?=
- =?us-ascii?Q?/Q=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 06270a1e-3162-4c6f-916a-08dc29acc780
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 20:22:03.9095
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s+3f+7acq8hD/6pKE812SMu2v1ynxgZ1Px3iFNeo7ECeU23QQJBy8i/6DsFswmyWWKNCDQdS08mo3qVVr61+LPdclI85woyC1AwOIPYDE50=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5600
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 
-Robert Richter wrote:
-> Based on CPU implementation and architecture, the CXL memory address
-> decode per memory channel can be implemented as zero based address for
-> addressing the CXL attached memory. In such case, the CXL host
-> physical address may not match the system address. The CFMWS contains
-> CXL ranges that are based on the system address range for the host
-> physical address and may not match with the CXL decoders.
-> 
-> During HDM decoder setup, the DVSEC CXL range registers (cxl-3.1,
-> 8.1.3.8) are checked if the memory is enabled and the CXL range is in
-> an HPA window that is described in a CFMWS structure of the CXL host
-> bridge (cxl-3.1, 9.18.1.3).
-> 
-> Now, if the range registers are programmed with zero-based addresses,
-> the ranges do not match the CFMWS windows and the CXL memory range
-> will be disabled. The HDM decoder stops working then which causes
-> system memory being disabled and further a kernel hang during HDM
-> decoder initialization, typically when a CXL enabled kernel boots.
-> 
-> If the decoder is programmed with a zero-based hardware address and
-> the range is enabled, the CXL memory range is then in use by the
-> system.
-> 
-> Fix a kernel hang due to disabling of CXL memory during HDM decoder
-> initialization by adding a check for zero-based address ranges, mark
-> such ranges as used which prevents the CXL memory from being disabled.
-> 
-> Note this patch only fixes HDM initialization for zero-based address
-> ranges and a kernel hang this may cause. Decoder setup still does not
-> enable the HPA ranges for zero-based address ranges, the HDM decoder
-> cannot be added then and the kernel shows a message like the
-> following:
-> 
->  cxl decoder1.0: failed to add to region: 0x0-0x3ffffffff
-> 
-> However, support for this can be added in a later series.
-> 
-> Fix for stable, please add stable tag.
-> 
-> Fixes: 9de321e93c3b ("cxl/pci: Refactor cxl_hdm_decode_init()")
-> Fixes: 34e37b4c432c ("cxl/port: Enable HDM Capability after validating DVSEC Ranges")
-> Signed-off-by: Robert Richter <rrichter@amd.com>
-> ---
->  drivers/cxl/core/pci.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
-> index 569354a5536f..3a36a2f0c94f 100644
-> --- a/drivers/cxl/core/pci.c
-> +++ b/drivers/cxl/core/pci.c
-> @@ -466,6 +466,18 @@ int cxl_hdm_decode_init(struct cxl_dev_state *cxlds, struct cxl_hdm *cxlhdm,
->  	for (i = 0, allowed = 0; info->mem_enabled && i < info->ranges; i++) {
->  		struct device *cxld_dev;
->  
-> +		/*
-> +		 * Handle zero-based hardware addresses
-> +		 */
-> +		if (!info->dvsec_range[i].start &&
-> +		    info->dvsec_range[i].end != CXL_RESOURCE_NONE &&
-> +		    info->dvsec_range[i].end) {
-> +			dev_dbg(dev, "Zero-based hardware range found [%#llx - %#llx]\n",
-> +				info->dvsec_range[i].start, info->dvsec_range[i].end);
-> +			allowed++;
-> +			continue;
-> +		}
-> +
+Make mlx5 compatible with the newly added netlink queue GET APIs.
 
-I am not comfortable with this. It should be checking a platform
-specific quirk, or similar for the possibility of HPA != SPA. The
-entirety of the Linux CXL subsystem is built on the assumption that HPA
-== SPA, and if a platform wants to inject an offset between those Linux
-needs some way to enumerate that it is running in that new world. Yes,
-nothing in the CXL specification precludes HPA != SPA, but Linux has
-long since shipped the opposite assumption.
+Signed-off-by: Joe Damato <jdamato@fastly.com>
+---
+v3 -> v4:
+  - Use sq->netdev and sq->cq.napi to get the netdev and NAPI structures in
+    mlx5e_activate_txqsq and mlx5e_deactivate_txqsq as requested by Tariq
+    Toukan [1]
+  - Only set or unset NETDEV_QUEUE_TYPE_RX when the MLX5E_PTP_STATE_RX bit
+    is on in mlx5e_ptp_activate_channel and mlx5e_ptp_deactivate_channel as
+    requested by Rahul Rameshbabu [2]
+
+v2 -> v3:
+  - Fix commit message subject
+  - call netif_queue_set_napi in mlx5e_ptp_activate_channel and
+    mlx5e_ptp_deactivate_channel to enable/disable NETDEV_QUEUE_TYPE_RX for
+    the PTP channel.
+  - Modify mlx5e_activate_txqsq and mlx5e_deactivate_txqsq to set
+    NETDEV_QUEUE_TYPE_TX which should take care of all TX queues including
+    QoS/HTB and PTP.
+  - Rearrange mlx5e_activate_channel and mlx5e_deactivate_channel for
+    better ordering when setting and unsetting NETDEV_QUEUE_TYPE_RX NAPI
+    structs
+
+v1 -> v2:
+  - Move netlink NULL code to mlx5e_deactivate_channel
+  - Move netif_napi_set_irq to mlx5e_open_channel and avoid storing the
+    irq, after netif_napi_add which itself sets the IRQ to -1
+
+[1]: https://lore.kernel.org/all/8c083e6d-5fcd-4557-88dd-0f95acdbc747@gmail.com/
+[2]: https://lore.kernel.org/all/871q9mz1a0.fsf@nvidia.com/
+
+ drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c  | 5 ++++-
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 7 +++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+index 078f56a3cbb2..fd4ef6431142 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+@@ -935,6 +935,7 @@ void mlx5e_ptp_activate_channel(struct mlx5e_ptp *c)
+ 	if (test_bit(MLX5E_PTP_STATE_RX, c->state)) {
+ 		mlx5e_ptp_rx_set_fs(c->priv);
+ 		mlx5e_activate_rq(&c->rq);
++		netif_queue_set_napi(c->netdev, c->rq.ix, NETDEV_QUEUE_TYPE_RX, &c->napi);
+ 	}
+ 	mlx5e_trigger_napi_sched(&c->napi);
+ }
+@@ -943,8 +944,10 @@ void mlx5e_ptp_deactivate_channel(struct mlx5e_ptp *c)
+ {
+ 	int tc;
+ 
+-	if (test_bit(MLX5E_PTP_STATE_RX, c->state))
++	if (test_bit(MLX5E_PTP_STATE_RX, c->state)) {
++		netif_queue_set_napi(c->netdev, c->rq.ix, NETDEV_QUEUE_TYPE_RX, NULL);
+ 		mlx5e_deactivate_rq(&c->rq);
++	}
+ 
+ 	if (test_bit(MLX5E_PTP_STATE_TX, c->state)) {
+ 		for (tc = 0; tc < c->num_tc; tc++)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index c8e8f512803e..be809556b2e1 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -1806,6 +1806,7 @@ void mlx5e_activate_txqsq(struct mlx5e_txqsq *sq)
+ 	set_bit(MLX5E_SQ_STATE_ENABLED, &sq->state);
+ 	netdev_tx_reset_queue(sq->txq);
+ 	netif_tx_start_queue(sq->txq);
++	netif_queue_set_napi(sq->netdev, sq->txq_ix, NETDEV_QUEUE_TYPE_TX, sq->cq.napi);
+ }
+ 
+ void mlx5e_tx_disable_queue(struct netdev_queue *txq)
+@@ -1819,6 +1820,7 @@ void mlx5e_deactivate_txqsq(struct mlx5e_txqsq *sq)
+ {
+ 	struct mlx5_wq_cyc *wq = &sq->wq;
+ 
++	netif_queue_set_napi(sq->netdev, sq->txq_ix, NETDEV_QUEUE_TYPE_TX, NULL);
+ 	clear_bit(MLX5E_SQ_STATE_ENABLED, &sq->state);
+ 	synchronize_net(); /* Sync with NAPI to prevent netif_tx_wake_queue. */
+ 
+@@ -2560,6 +2562,7 @@ static int mlx5e_open_channel(struct mlx5e_priv *priv, int ix,
+ 	c->lag_port = mlx5e_enumerate_lag_port(priv->mdev, ix);
+ 
+ 	netif_napi_add(netdev, &c->napi, mlx5e_napi_poll);
++	netif_napi_set_irq(&c->napi, irq);
+ 
+ 	err = mlx5e_open_queues(c, params, cparam);
+ 	if (unlikely(err))
+@@ -2602,12 +2605,16 @@ static void mlx5e_activate_channel(struct mlx5e_channel *c)
+ 		mlx5e_activate_xsk(c);
+ 	else
+ 		mlx5e_activate_rq(&c->rq);
++
++	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, &c->napi);
+ }
+ 
+ static void mlx5e_deactivate_channel(struct mlx5e_channel *c)
+ {
+ 	int tc;
+ 
++	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, NULL);
++
+ 	if (test_bit(MLX5E_CHANNEL_STATE_XSK, c->state))
+ 		mlx5e_deactivate_xsk(c);
+ 	else
+-- 
+2.25.1
+
 
