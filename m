@@ -1,245 +1,144 @@
-Return-Path: <linux-kernel+bounces-59823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C13E084FC29
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:43:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DD7084FC47
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:50:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83B91282800
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:43:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79554B25F7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:44:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7640069959;
-	Fri,  9 Feb 2024 18:43:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D8688287A;
+	Fri,  9 Feb 2024 18:43:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oDksP+4a";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ql57Be3l";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oDksP+4a";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ql57Be3l"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TQN7rdaX"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C12E57339
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 18:43:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3493A80C01
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 18:43:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707504208; cv=none; b=uiBeCKVjhFF4P3301IFHVwPQZ4ipf/S87vWkL1bsifo1ikS11EIUTKAjJgK/6Eiyw/gPWDvMC8E2x3xu88JoozDi2N82cElumZT30F9gfASr9xgEQdFBuvsUm0NWkXv3MbIT4UZv+ushsZmquPPN8z0ub7ul/AZhRtBWHTvDfj0=
+	t=1707504228; cv=none; b=DX027Q2xPIYNiNjC3SG8CijleY6AjbbSmWkHRVOZYAktsSiaaeKnSUanADEEuwamTjUHjYDuTrS3QChx9GgajlM93q5Fo3RwX0LOr0Ljt22KzK2SzzF2F/F9gKYatHF4YKZuj6uR2R8E8PBxrVBZE3R9+zTCRkDjUUqPtNfy3mI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707504208; c=relaxed/simple;
-	bh=8BNu6pIGu7uFfufiBUNIOSzn6hHb44tdCsXSjKBi27Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OfOcUB4Qcq8+7svIhoyifsH4KMnFymjt4T8/iM7XQ/0YtiIxWiepCO4Lyh9awTbESLBwCIs5l56wWBqjjyZZuINRPYEeLhB5LGd+Hq6TIUvVHQyhn3Qs5l4kqjlOy7UKYRJ2tqsbbQsQAbuANo8xtAH/VZy1D0UkcpIIkB9DZ44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oDksP+4a; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ql57Be3l; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oDksP+4a; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ql57Be3l; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6C2F71F823;
-	Fri,  9 Feb 2024 18:43:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707504204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lEYLn4TkDj+5w5M8frhbdwGFmGUrN6QrUzMzWCOgpfU=;
-	b=oDksP+4a6mK9R7SbcISBVXnlhEr2HRVuI2SVyCZk/mRa/n1u9RW17Na6EZvLNBrO7H8lWu
-	AJHZQSu9Mhpp873ZBYCALox9V2a1AELbDJZV/OqaEcSpKxpgEq0OmOMm2VqdrnfQLKKIom
-	njvOZNL0xhjBnLamyalffZlYF4R2rXI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707504204;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lEYLn4TkDj+5w5M8frhbdwGFmGUrN6QrUzMzWCOgpfU=;
-	b=ql57Be3lwdHXayCYGQVnolMO/pvNZRDF3YscjV9kIumUUvtynQXIiX0la1ikcpJJyplzY/
-	zsb6o0nIN3j+7gAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707504204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lEYLn4TkDj+5w5M8frhbdwGFmGUrN6QrUzMzWCOgpfU=;
-	b=oDksP+4a6mK9R7SbcISBVXnlhEr2HRVuI2SVyCZk/mRa/n1u9RW17Na6EZvLNBrO7H8lWu
-	AJHZQSu9Mhpp873ZBYCALox9V2a1AELbDJZV/OqaEcSpKxpgEq0OmOMm2VqdrnfQLKKIom
-	njvOZNL0xhjBnLamyalffZlYF4R2rXI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707504204;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lEYLn4TkDj+5w5M8frhbdwGFmGUrN6QrUzMzWCOgpfU=;
-	b=ql57Be3lwdHXayCYGQVnolMO/pvNZRDF3YscjV9kIumUUvtynQXIiX0la1ikcpJJyplzY/
-	zsb6o0nIN3j+7gAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3C85013353;
-	Fri,  9 Feb 2024 18:43:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id A5voDUxyxmVfPwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 09 Feb 2024 18:43:24 +0000
-Message-ID: <84dfedc4-a0a2-4e02-9be4-2cffc6e9fd06@suse.cz>
-Date: Fri, 9 Feb 2024 19:43:23 +0100
+	s=arc-20240116; t=1707504228; c=relaxed/simple;
+	bh=8f8p/4a7/2aRl6Xq3Fz9FLEi1kviN9smwP5Pb7REtWM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=oxW1kWeqhtuYQS0h6+jJaw67m/ly5yjibtyweDd96ovpB83TvC9qclqC6j6kcq2KRfa5TJzGPneTmOUxm2dmo8EGNFGfwX5QwEyEIWHZ7VfADVYa6HmQrHLztFgVZPH2Z7N+PgqE9UIVX1UqVeAEWR3THttHz8WaC+BeCdzgo5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TQN7rdaX; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e0519304b2so1328595b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 10:43:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707504226; x=1708109026; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ufX7CAN2cDiflmlLv7odBke7PHHs4jGzCMX4P5h7RHE=;
+        b=TQN7rdaXIUdlqBLlemPe/7Hhzp13EmSBtbVNCmGhr2Ki1mu/DdIxwUH3O1CvhRhgOg
+         lPgOzlTFWLXtVFJOai+BVFuuQLAJEUV4oVUqDSR9KbUfNLheBQ6yXHxES7rndLfa3G5i
+         MC6rW98KNkGmIsNOhlrxy03+5r3LiwlANURWSTgDN2RT8oyEp1WO+yFtEdQKWB/mjB54
+         uVJUWXGcW3dLnAIT623gzYJB1tOmS+2ManFVku/5fLtb6Zq0YFKTUup/pkq8LnW+Y+Rn
+         i8uMi60cwfTvz9HWf5eTB+2ECKZCq3JfCGO8R+VFgAn0rD5njIUSs7DnYnuUBAL/c/Rz
+         qs9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707504226; x=1708109026;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ufX7CAN2cDiflmlLv7odBke7PHHs4jGzCMX4P5h7RHE=;
+        b=NvEWP5TTI8RjyWHSyFX3mCRS+SKZfOhA4slVcMqNRuiBSknQx8fMg7K3bEMoRmfzVJ
+         7flLBzcaz/zhnunRI+DcAPcYOobZpbirp9vvbnG3ziKC9s3reO126J2GcKV2f18H5585
+         dnAjiWdIFcpUYMxsBoEFinnkS0LxX9w6nVawy/8WfAYEl17gnYMZSIReb5f4XPGcI9zU
+         Xs7fA6ClRPNX4PtAMW8MApu8PgcFbk6lXqwUAW39b4yWz5RZKKRuoyWoAED21nbYWGHK
+         VAUKxco1AtE6eExzLNYZO7eSxRszEpzTRDTUH7D2WjOS8IJRQm1+cDWHpj1Shud8NwiI
+         RzGA==
+X-Forwarded-Encrypted: i=1; AJvYcCXWsn64XUKrbTU55mGVUuDPcFecnMzl3PnjkbQuGJ91s4nmu7ucMQsoxxpYYz6quCirbIQ9RhR+sxSVIBkYvWuU8EMRaGshA8jQNLLI
+X-Gm-Message-State: AOJu0Yx9xYaX5/hHV0lEdcw55Y2G+3CZ0lxmOL2qWNJSQS2sK4e3Dyv0
+	XS9vDHqPiWbI7O7g/gbX5QaqkXE9QFJsjpFOJwwmlZqXwh4MW825ZSSRXX7ksmXIpt8Tuc8Gbr+
+	xaQ==
+X-Google-Smtp-Source: AGHT+IG0MOn0HaITlgCYjNEXj8a8UrT4z56YsyeBOMLYCb0WjQj45vzVFkaMlYS4lzhGv7NviTO75JYfAGU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1a91:b0:6e0:3211:657 with SMTP id
+ e17-20020a056a001a9100b006e032110657mr2539pfv.0.1707504226316; Fri, 09 Feb
+ 2024 10:43:46 -0800 (PST)
+Date: Fri, 9 Feb 2024 10:43:38 -0800
+In-Reply-To: <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/3] mm/compaction: optimize >0 order folio compaction
- with free page split.
-Content-Language: en-US
-To: Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc: "Huang, Ying" <ying.huang@intel.com>, Ryan Roberts
- <ryan.roberts@arm.com>, Andrew Morton <akpm@linux-foundation.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- David Hildenbrand <david@redhat.com>, "Yin, Fengwei"
- <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- Kemeng Shi <shikemeng@huaweicloud.com>,
- Mel Gorman <mgorman@techsingularity.net>, Rohan Puri
- <rohan.puri15@gmail.com>, Mcgrof Chamberlain <mcgrof@kernel.org>,
- Adam Manzanares <a.manzanares@samsung.com>,
- "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-References: <20240202161554.565023-1-zi.yan@sent.com>
- <20240202161554.565023-4-zi.yan@sent.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240202161554.565023-4-zi.yan@sent.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=oDksP+4a;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ql57Be3l
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.00 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLfsxmn1qwoupcjwdqfx65548p)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[99.99%];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[19];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[intel.com,arm.com,linux-foundation.org,infradead.org,redhat.com,google.com,linux.intel.com,cmpxchg.org,linux.alibaba.com,huaweicloud.com,techsingularity.net,gmail.com,kernel.org,samsung.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -3.00
-X-Rspamd-Queue-Id: 6C2F71F823
-X-Spam-Flag: NO
+Mime-Version: 1.0
+References: <20240208220604.140859-1-seanjc@google.com> <CAKwvOdk_obRUkD6WQHhS9uoFVe3HrgqH5h+FpqsNNgmj4cmvCQ@mail.gmail.com>
+ <DM6PR02MB40587AD6ABBF1814E9CCFA7CB84B2@DM6PR02MB4058.namprd02.prod.outlook.com>
+ <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com>
+Message-ID: <ZcZyWrawr1NUCiQZ@google.com>
+Subject: Re: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on gcc-11
+ (and earlier)
+From: Sean Christopherson <seanjc@google.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "Andrew Pinski (QUIC)" <quic_apinski@quicinc.com>, Nick Desaulniers <ndesaulniers@google.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 
-On 2/2/24 17:15, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
+On Fri, Feb 09, 2024, Linus Torvalds wrote:
+> On Fri, 9 Feb 2024 at 09:14, Andrew Pinski (QUIC)
+> <quic_apinski@quicinc.com> wrote:
+> >
+> > So the exact versions of GCC where this is/was fixed are:
+> > 12.4.0 (not released yet)
+> > 13.2.0
+> > 14.1.0 (not released yet)
 > 
-> During migration in a memory compaction, free pages are placed in an array
-> of page lists based on their order. But the desired free page order (i.e.,
-> the order of a source page) might not be always present, thus leading to
-> migration failures and premature compaction termination. Split a high
-> order free pages when source migration page has a lower order to increase
-> migration successful rate.
+> Looking at the patch that the bugzilla says is the fix, it *looks*
+> like it's just the "mark volatile" that is missing.
 > 
-> Note: merging free pages when a migration fails and a lower order free
-> page is returned via compaction_free() is possible, but there is too much
-> work. Since the free pages are not buddy pages, it is hard to identify
-> these free pages using existing PFN-based page merging algorithm.
+> But Sean says that  even if we mark "asm goto" as volatile manually,
+> it still fails.
 > 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->  mm/compaction.c | 37 ++++++++++++++++++++++++++++++++++++-
->  1 file changed, 36 insertions(+), 1 deletion(-)
+> So there seems to be something else going on in addition to just the volatile.
+
+Aha!  Yeah, there's a second bug that set things up so that the "not implicitly
+volatile" bug could rear its head.  (And now I feel less bad for not suspecting
+the compiler sooner, because it didn't occur to me that gcc could possibly think
+the asm blob had no used outputs).
+
+With "volatile" forced, gcc generates code for the asm blob, but doesn't actually
+consume the output of the VMREAD.  As a result, the optimization pass sees the
+unused output and throws it away because the blob isn't treated as volatile.
+
+   vmread %rax,%rax       <= output register is unused
+   jbe    0xffffffff8109994a <sync_vmcs02_to_vmcs12+1898>
+   xor    %r12d,%r12d     <= one of the "return 0" statements
+   mov    %r12,0xf0(%rbx) <= store the output
+
+> Side note: the reason we have that "asm_volatile_goto()" define in the
+> kernel is that we *used* to have a _different_ workaround for a gcc
+> bug in this area:
 > 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 58a4e3fb72ec..fa9993c8a389 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1832,9 +1832,43 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
->  	struct compact_control *cc = (struct compact_control *)data;
->  	struct folio *dst;
->  	int order = folio_order(src);
-> +	bool has_isolated_pages = false;
->  
-> +again:
->  	if (!cc->freepages[order].nr_pages) {
-> -		isolate_freepages(cc);
-> +		int i;
-> +
-> +		for (i = order + 1; i < NR_PAGE_ORDERS; i++) {
+>  /*
+>   * GCC 'asm goto' miscompiles certain code sequences:
+>   *
+>   *   http://gcc.gnu.org/bugzilla/show_bug.cgi?id=58670
+>   *
+>   * Work it around via a compiler barrier quirk suggested by Jakub Jelinek.
+>   *
+>   * (asm goto is automatically volatile - the naming reflects this.)
+>   */
+>  #define asm_volatile_goto(x...) do { asm goto(x); asm (""); } while (0)
+> 
+> and looking at that (old) bugzilla there seems to be a lot of "seems
+> to be fixed", but it's not entirely clear.
+> 
+> We've removed that workaround in commit 43c249ea0b1e ("compiler-gcc.h:
+> remove ancient workaround for gcc PR 58670"), I'm wondering if maybe
+> that removal was a bit optimistic.
 
-You could probably just start with a loop that finds the start_order (and do
-the isolate_freepages() attempt if there's none) and then handle the rest
-outside of the loop. No need to separately handle the case where you have
-the exact order available?
+FWIW, reverting that does restore correct behavior on gcc-11.
 
-
-> +			if (cc->freepages[i].nr_pages) {
-> +				struct page *freepage =
-> +					list_first_entry(&cc->freepages[i].pages,
-> +							 struct page, lru);
-> +
-> +				int start_order = i;
-> +				unsigned long size = 1 << start_order;
-> +
-> +				list_del(&freepage->lru);
-> +				cc->freepages[i].nr_pages--;
-> +
-> +				while (start_order > order) {
-
-With exact order available this while loop will just be skipped and that's
-all the difference to it?
-
-> +					start_order--;
-> +					size >>= 1;
-> +
-> +					list_add(&freepage[size].lru,
-> +						&cc->freepages[start_order].pages);
-> +					cc->freepages[start_order].nr_pages++;
-> +					set_page_private(&freepage[size], start_order);
-> +				}
-> +				dst = (struct folio *)freepage;
-> +				goto done;
-> +			}
-> +		}
-> +		if (!has_isolated_pages) {
-> +			isolate_freepages(cc);
-> +			has_isolated_pages = true;
-> +			goto again;
-> +		}
-> +
->  		if (!cc->freepages[order].nr_pages)
->  			return NULL;
->  	}
-> @@ -1842,6 +1876,7 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
->  	dst = list_first_entry(&cc->freepages[order].pages, struct folio, lru);
->  	cc->freepages[order].nr_pages--;
->  	list_del(&dst->lru);
-> +done:
->  	post_alloc_hook(&dst->page, order, __GFP_MOVABLE);
->  	if (order)
->  		prep_compound_page(&dst->page, order);
-
+Note, this is 100% reproducible across multiple systems, though AFAICT it's
+somewhat dependent on the .config.  Holler if anyone wants the .config.
 
