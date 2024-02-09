@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-58981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FAFE84EF5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 04:19:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA58084EF58
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 04:18:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEB941C23BA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 03:19:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E3EF1F2156C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 03:18:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E072439840;
-	Fri,  9 Feb 2024 03:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A5438DD1;
+	Fri,  9 Feb 2024 03:15:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R9BoWN15"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JohPDLCg"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9961DA32;
-	Fri,  9 Feb 2024 03:14:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD97117BC8;
+	Fri,  9 Feb 2024 03:14:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707448502; cv=none; b=IWMzUzqgihIKCZ+kytDKyTg9UExLVdx7a+BqX8KqiYmAjVU+6YHga8TiDm+h0xoMxtLV8kP5fm8oREF6eAsyo+ww//a//v7sps0/XWA7X1JqX9dIRXlc88n+sdf5O/Pz2qBp7hQc9CEY5fcG4N0nUbWfPqN1mip+AVEH7eUpHTo=
+	t=1707448500; cv=none; b=YzdRlW44EiA7EqkxrSv9D1fqoa13lhsrECxNsgpvWMRCe7Vz14vZO+a3ZUe2GRmF59W2gxW9+ySeJ+I7dwcYMfwce3kLa1elNsOOY/OMqbWm6OaxN7ZjyeUk3HTgF2bzgAd4tWGn3uXrKZ9u9Zbo4jIY4w3lZAg41PAU+Qyg6oM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707448502; c=relaxed/simple;
-	bh=nObyFR7ak2CI9RBnkdMxnonoYCxryMBB96Dff9fIYBo=;
+	s=arc-20240116; t=1707448500; c=relaxed/simple;
+	bh=vOPR8LxQn3WFF9Ql8k9wlrgDI26EFBXQsZ+EoLn19bY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dI65umDV6RloJtiyvk97h3nO8xhGXSd1vpz/sp7KlFJri9BnY8arp5cCwBkHEZiVy0YZSdm8XcQln6ZIejv3qPqYLBQuTQ2S96jF/TtY71wAvDCxbCqt6u1q932zEBNXrcitGMvktG6yKdxJgnPcb5TLh2kWoH+fnDA2+zDYnwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R9BoWN15; arc=none smtp.client-ip=192.198.163.19
+	 MIME-Version; b=LBKoshao74JjdfzhATgzKZFmFnbZTZ+crjNgxtc7BQnfysXtx+OufoXv1sjFiH7K4UvcG5dtttxTPfxry5Zgka+sZapfJrsVeDHhjVloi8mgQhVHsk4YKvsQZAjLhRDzA2GSm5Br6RgX/10lbLfhrKqmkXHHn2h6U+HDAI/yd34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JohPDLCg; arc=none smtp.client-ip=192.198.163.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707448497; x=1738984497;
+  t=1707448499; x=1738984499;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=nObyFR7ak2CI9RBnkdMxnonoYCxryMBB96Dff9fIYBo=;
-  b=R9BoWN15C1kFRuH9fFbqY8GqeTunEeBspXuHep/iCV7ksZiGA5J9gem8
-   R3NMF7gRGmDlHThj1k49PQRoPA08YAEPwFV6t3ZFp1ZCVuplyJ6tKsyQG
-   4LIVdOs4kwJdrZcpX+WHOKviu0oFex1N2+pv4+HFrk+AVnryt9IjOSvFK
-   PcYyMuuYhbZ8gvk7sDrtljhvszGu3Qso2O6EN9TR5mzmF7OvvO7wVkZpY
-   qWpNydTUM1vCbydkdd7UtUt7/pPyx37jtPjUucRgtkilmk5j0EkJgGHnN
-   NTrJ4MLbV3Nz5lSL5Y2/CHiTcW99V4qKKxk5Dm3eovLp4heSqrPb6KNMj
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="1257948"
+  bh=vOPR8LxQn3WFF9Ql8k9wlrgDI26EFBXQsZ+EoLn19bY=;
+  b=JohPDLCgpzm4TsCU0oLQP7vwSbhqTbKm3ZVSGIJI1LCnhba8Ef+PsI1c
+   OgG/J9KXdTYKPtdV5prmSettj8rjbEabGiIN1+JQj26hShThU1FTPwW/C
+   a3QnQVeoeJd3hgre6h8nDWcFk8YM/boNAEUF+0r+w8Xyz/ef49O67XViV
+   q47XO5grPHSJINMrZUdOUVEIHaui0irK9jGJzjK9N2IYYl0sBD5K9FHJo
+   N4rJ7GOwPGacSex6/SLMCtso/Kakoz4aeQiMVfhteqVH1YYlIloAB84n3
+   560VYjipKK1omzGRb5jqZgCNwCIQ5TsEDOyc3SGOtwSdeeuBex8rUG3vY
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="1257952"
 X-IronPort-AV: E=Sophos;i="6.05,255,1701158400"; 
-   d="scan'208";a="1257948"
+   d="scan'208";a="1257952"
 Received: from orviesa002.jf.intel.com ([10.64.159.142])
   by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 19:14:49 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,255,1701158400"; 
-   d="scan'208";a="32631457"
+   d="scan'208";a="32631461"
 Received: from b49691a74b80.jf.intel.com ([10.165.54.183])
   by orviesa002.jf.intel.com with ESMTP; 08 Feb 2024 19:14:48 -0800
 From: weilin.wang@intel.com
@@ -70,9 +70,9 @@ Cc: linux-perf-users@vger.kernel.org,
 	Samantha Alt <samantha.alt@intel.com>,
 	Caleb Biggers <caleb.biggers@intel.com>,
 	Mark Rutland <mark.rutland@arm.com>
-Subject: [RFC PATCH v4 13/15] perf stat: Code refactoring in hardware-grouping
-Date: Thu,  8 Feb 2024 19:14:39 -0800
-Message-ID: <20240209031441.943012-14-weilin.wang@intel.com>
+Subject: [RFC PATCH v4 14/15] perf stat: Add tool events support in hardware-grouping
+Date: Thu,  8 Feb 2024 19:14:40 -0800
+Message-ID: <20240209031441.943012-15-weilin.wang@intel.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20240209031441.943012-1-weilin.wang@intel.com>
 References: <20240209031441.943012-1-weilin.wang@intel.com>
@@ -86,139 +86,137 @@ Content-Transfer-Encoding: 8bit
 
 From: Weilin Wang <weilin.wang@intel.com>
 
-Decouple the step to generate final grouping strings out from the
-build_grouping step so that we could do single metric grouping and then
-merge groups if needed later.
+Add tool events into default_core grouping strings if find tool events so
+that metrics use tool events could be correctly calculated. Need this step
+to support TopdownL4-L5.
 
 Signed-off-by: Weilin Wang <weilin.wang@intel.com>
 ---
- tools/perf/util/metricgroup.c | 50 +++++++++++++++++------------------
- 1 file changed, 25 insertions(+), 25 deletions(-)
+ tools/perf/util/metricgroup.c | 49 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 48 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index f1eb73957765..cfdbb5f7fb77 100644
+index cfdbb5f7fb77..e5b8456d0405 100644
 --- a/tools/perf/util/metricgroup.c
 +++ b/tools/perf/util/metricgroup.c
-@@ -1896,9 +1896,10 @@ static int find_and_set_counters(struct metricgroup__event_info *e,
- {
- 	int ret;
- 	unsigned long find_bit = 0;
--
--	if (e->taken_alone && current_group->taken_alone)
-+	if (e->taken_alone && current_group->taken_alone) {
-+		pr_debug("current group with taken alone event already\n");
- 		return -ENOSPC;
-+	}
- 	if (e->free_counter)
- 		return 0;
- 	if (e->fixed_counter) {
-@@ -2017,7 +2018,8 @@ static int assign_event_grouping(struct metricgroup__event_info *e,
- 
- 	list_for_each_entry(g, groups, nd) {
- 		if (!strcasecmp(g->pmu_name, e->pmu_name)) {
--			pr_debug("found group for event %s in pmu %s\n", e->name, g->pmu_name);
-+			pr_debug("found group header for event %s in pmu %s\n",
-+				e->name, g->pmu_name);
- 			pmu_group_head = g;
- 			break;
- 		}
-@@ -2146,26 +2148,22 @@ static int hw_aware_metricgroup__build_event_string(struct list_head *group_strs
-  */
- static int create_grouping(struct list_head *pmu_info_list,
- 			  struct list_head *event_info_list,
--			  struct list_head *groupings,
--			  const char *modifier)
-+			  struct list_head *grouping)
- {
- 	int ret = 0;
- 	struct metricgroup__event_info *e;
--	LIST_HEAD(groups);
- 	char *bit_buf = malloc(NR_COUNTERS);
- 
--	//TODO: for each new core group, we should consider to add events that uses fixed counters
-+	//TODO: for each new core group, we could consider to add events that
-+	//uses fixed counters
- 	list_for_each_entry(e, event_info_list, nd) {
- 		bitmap_scnprintf(e->counters, NR_COUNTERS, bit_buf, NR_COUNTERS);
- 		pr_debug("Event name %s, [pmu]=%s, [counters]=%s, [taken_alone]=%d\n",
- 			e->name, e->pmu_name, bit_buf, e->taken_alone);
--		ret = assign_event_grouping(e, pmu_info_list, &groups);
-+		ret = assign_event_grouping(e, pmu_info_list, grouping);
- 		if (ret)
--			goto out;
-+			return ret;
+@@ -1486,6 +1486,35 @@ static void find_tool_events(const struct list_head *metric_list,
  	}
--	ret = hw_aware_metricgroup__build_event_string(groupings, modifier, &groups);
--out:
--	metricgroup__free_group_list(&groups);
- 	return ret;
- };
+ }
  
-@@ -2186,9 +2184,8 @@ static bool is_special_event(const char *id)
-  * @groupings: header to the list of final event grouping.
-  * @modifier: any modifiers added to the events.
-  */
--static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
--				  struct list_head *groupings __maybe_unused,
--				  const char *modifier __maybe_unused)
-+static int hw_aware_build_grouping(struct expr_parse_ctx *ctx,
-+				   struct list_head *grouping)
++/**
++ * get_tool_event_str - Generate and return a string with all the used tool
++ * event names.
++ */
++static int get_tool_event_str(struct strbuf *events,
++			      const bool tool_events[PERF_TOOL_MAX],
++			      bool *has_tool_event)
++{
++	int i = 0;
++	int ret;
++
++	perf_tool_event__for_each_event(i) {
++		if (tool_events[i]) {
++			const char *tmp = strdup(perf_tool_event__to_str(i));
++
++			if (!tmp)
++				return -ENOMEM;
++			*has_tool_event = true;
++			ret = strbuf_addstr(events, ",");
++			if (ret)
++				return ret;
++			ret = strbuf_addstr(events, tmp);
++			if (ret)
++				return ret;
++		}
++	}
++	return 0;
++}
++
+ /**
+  * build_combined_expr_ctx - Make an expr_parse_ctx with all !group_events
+  *                           metric IDs, as the IDs are held in a set,
+@@ -2049,6 +2078,7 @@ static int assign_event_grouping(struct metricgroup__event_info *e,
+ 
+ static int hw_aware_metricgroup__build_event_string(struct list_head *group_strs,
+ 					   const char *modifier,
++					   const bool tool_events[PERF_TOOL_MAX],
+ 					   struct list_head *groups)
  {
+ 	struct metricgroup__pmu_group_list *p;
+@@ -2056,8 +2086,12 @@ static int hw_aware_metricgroup__build_event_string(struct list_head *group_strs
+ 	struct metricgroup__group_events *ge;
+ 	bool no_group = true;
  	int ret = 0;
- 	struct hashmap_entry *cur;
-@@ -2220,8 +2217,7 @@ static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
++	struct strbuf tool_event_str = STRBUF_INIT;
++	bool has_tool_event = false;
+ 
+ #define RETURN_IF_NON_ZERO(x) do { if (x) return x; } while (0)
++	ret = get_tool_event_str(&tool_event_str, tool_events, &has_tool_event);
++	RETURN_IF_NON_ZERO(ret);
+ 
+ 	list_for_each_entry(p, groups, nd) {
+ 		list_for_each_entry(g, &p->group_head, nd) {
+@@ -2129,6 +2163,12 @@ static int hw_aware_metricgroup__build_event_string(struct list_head *group_strs
+ 			}
+ 			ret = strbuf_addf(events, "}:W");
+ 			RETURN_IF_NON_ZERO(ret);
++
++			if (!strcmp(p->pmu_name, "default_core") && has_tool_event) {
++				ret = strbuf_addstr(events, tool_event_str.buf);
++				RETURN_IF_NON_ZERO(ret);
++			}
++
+ 			pr_debug("events-buf: %s\n", events->buf);
+ 			list_add_tail(&new_group_str->nd, group_strs);
+ 		}
+@@ -2214,6 +2254,7 @@ static int hw_aware_build_grouping(struct expr_parse_ctx *ctx,
+ 		if (ret)
+ 			goto err_out;
+ 	}
++
  	ret = get_pmu_counter_layouts(&pmu_info_list, ltable);
  	if (ret)
  		goto err_out;
--	ret = create_grouping(&pmu_info_list, &event_info_list, groupings,
--			     modifier);
-+	ret = create_grouping(&pmu_info_list, &event_info_list, grouping);
- 
- err_out:
- 	metricgroup__free_event_info(&event_info_list);
-@@ -2267,23 +2263,25 @@ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
+@@ -2259,6 +2300,7 @@ static void metricgroup__free_grouping_strs(struct list_head
+  */
+ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
+ 			     struct expr_parse_ctx *ids, const char *modifier,
++			     const bool tool_events[PERF_TOOL_MAX],
+ 			     struct evlist **out_evlist)
  {
  	struct parse_events_error parse_error;
- 	struct evlist *parsed_evlist;
--	LIST_HEAD(groupings);
-+	LIST_HEAD(grouping_str);
-+	LIST_HEAD(grouping);
- 	struct metricgroup__group_strs *group;
+@@ -2272,7 +2314,8 @@ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
+ 	ret = hw_aware_build_grouping(ids, &grouping);
+ 	if (ret)
+ 		goto out;
+-	ret = hw_aware_metricgroup__build_event_string(&grouping_str, modifier, &grouping);
++	ret = hw_aware_metricgroup__build_event_string(&grouping_str, modifier,
++						      tool_events, &grouping);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -2407,6 +2450,7 @@ static int hw_aware_parse_groups(struct evlist *perf_evlist,
+ 	struct evlist *combined_evlist = NULL;
+ 	LIST_HEAD(metric_list);
+ 	struct metric *m;
++	bool tool_events[PERF_TOOL_MAX] = {false};
  	int ret;
+ 	bool metric_no_group = false;
+ 	bool metric_no_merge = false;
+@@ -2425,11 +2469,14 @@ static int hw_aware_parse_groups(struct evlist *perf_evlist,
+ 	if (!metric_no_merge) {
+ 		struct expr_parse_ctx *combined = NULL;
  
- 	*out_evlist = NULL;
--	ret = hw_aware_build_grouping(ids, &groupings, modifier);
--	if (ret) {
--		metricgroup__free_grouping_strs(&groupings);
--		return ret;
--	}
-+	ret = hw_aware_build_grouping(ids, &grouping);
-+	if (ret)
-+		goto out;
-+	ret = hw_aware_metricgroup__build_event_string(&grouping_str, modifier, &grouping);
-+	if (ret)
-+		goto out;
++		find_tool_events(&metric_list, tool_events);
++
+ 		ret = hw_aware_build_combined_expr_ctx(&metric_list, &combined);
  
- 	parsed_evlist = evlist__new();
- 	if (!parsed_evlist) {
- 		ret = -ENOMEM;
- 		goto err_out;
- 	}
--	list_for_each_entry(group, &groupings, nd) {
-+	list_for_each_entry(group, &grouping_str, nd) {
- 		struct strbuf *events = &group->grouping_str;
- 
- 		pr_debug("Parsing metric events '%s'\n", events->buf);
-@@ -2303,7 +2301,9 @@ static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
- err_out:
- 	parse_events_error__exit(&parse_error);
- 	evlist__delete(parsed_evlist);
--	metricgroup__free_grouping_strs(&groupings);
-+out:
-+	metricgroup__free_group_list(&grouping);
-+	metricgroup__free_grouping_strs(&grouping_str);
- 	return ret;
- }
+ 		if (!ret && combined && hashmap__size(combined->ids)) {
+ 			ret = hw_aware_parse_ids(fake_pmu, combined,
+ 						/*modifier=*/NULL,
++						tool_events,
+ 						&combined_evlist);
+ 		}
  
 -- 
 2.42.0
