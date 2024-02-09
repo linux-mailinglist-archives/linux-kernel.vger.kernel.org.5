@@ -1,107 +1,129 @@
-Return-Path: <linux-kernel+bounces-59333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A0C184F58A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:03:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F68784F58C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:03:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56D57288346
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:03:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDF14B26471
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:03:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75BB237700;
-	Fri,  9 Feb 2024 13:02:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB25381B0;
+	Fri,  9 Feb 2024 13:02:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="B6qovwkH"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JLf3eBWv"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551BB374FB
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 13:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B9893C466
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 13:02:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707483757; cv=none; b=aYSQJScq/AMxrQjyk1rYKbeYvqB09iivneDqVsGEO+7dBqq5p+g5F/B4vM+zqxvJW1N1bVwS2iHtYf5U0FU9QagJgH0AYjeGk+Svo9SbQm68cl0gYq7B1KOHtlWagdRDB9u4r2pQpy7+itvhPAi1od2K4C59JELfd19Ncbu77Dw=
+	t=1707483769; cv=none; b=p3GcXXP0/xYW/4B3t55uMuwuzIphK+kWRMl+uUXqijVVd0DDnCpzdLd23o954wz8s0j4bcn51yWimit5umzZDFtVwECrmFS9Szzcf8bFIzHQnVmh+zWbFsdf2FVJpvx6GN0DcH9jseAWyKJdIjaufgZ0TvKpD8dAD/6Lp/5uuR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707483757; c=relaxed/simple;
-	bh=yfjOm9OlKOJe/SxbVFHkHIrM3sEjiI1quLMBsdxIywk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q8sY5cCH4ppIntBo+riUI3sN7LTLaFKZZcTa1cc1GxcL9qG0vKmddHueFMILiRGfZVelT9FuPATtFPUvCbSV+zpECCU1KS12+PWpysJU7QBmNUGzpzK7uVDcj9M89dseosBF5iOj8GtHA8h66eGyE6Zq9ra7jmFI/J/p9OQCWLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=B6qovwkH; arc=none smtp.client-ip=209.85.128.181
+	s=arc-20240116; t=1707483769; c=relaxed/simple;
+	bh=12Q2gl1DveHT/3s9+knSL+sGOcxvkbiCnBtuOCrdZzw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Nqwe3GYZNJLtMubtWCYLwTHRFaOmLnZylXxuTadHeCfUVkQ4lEBUNYY/IP25VPUL6BmTyi0HeHxlvpxXI5TIcnPIymQG7L8OhFXfrOq7s1iZTqWmWf6hhz1u5NOdExATwJyxEP9IHhyDU6wc5mNJnJV0j5+7uDth9H13s+m/Mfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JLf3eBWv; arc=none smtp.client-ip=209.85.208.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-604c16ffa80so3909137b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 05:02:36 -0800 (PST)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55cca88b6a5so1264740a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 05:02:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707483755; x=1708088555; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yfjOm9OlKOJe/SxbVFHkHIrM3sEjiI1quLMBsdxIywk=;
-        b=B6qovwkHP18f5G0xx+vVahkomcGVvCjRRE+JYPoBEJYfipj2rVIGOAZIbpX2I99EBY
-         VbnHCJERHqFKjhCJ7JxwukMvwwdGktTDyyWRxNsVETJ916Wt711gGSqnufEsnLypnTxj
-         LxgxKkisE13CiVRPo1N2TMJKmR8it2gaO8IcDpDn8ETA0Mra4t1Bft7dPYATMU/mhw5c
-         FB7m/E5U8OxgQ2N3PSkavD54Tgv6LFb4OhOJ+ypsWbTndG+LymFjsqflunIBrriLJfka
-         ALHalvgT1xDhfzjJ7GfUHLl0h5VdB8tJjd7NO7IwFfUXZaMiQ5rRwBuwY1UhiNemY5Q6
-         hPIA==
+        d=linaro.org; s=google; t=1707483766; x=1708088566; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=30ltjS2465HeE6RDkcYZ7gz3HAH/FfBk4VubamB9xlg=;
+        b=JLf3eBWvL06pnpnbXI2CF1RXZrdQAf/PtERyfIKQgE68yAjwD42M1+ZQNAM8PvAwG7
+         wL8rQXCY5BxrOV3gkn/ISaxAw/SUc7XfaORXh3FrdyM7P1c70vOWTKrNerFqY3P3UcAy
+         dNeF2yWpvftR9a0OPUsVIak2YjtW61YNd90lMWnBB7GU9TJo9rQvH8e9bFGNfhAelS/r
+         H8QIJLFpmZ3miDdTvsCp36FYqbdhe7FUQfNbMRw8M61atlmjumkl1Z/9jfDjOR7BxJfj
+         JWHMru0KVeB8K3szTc8xaMQ46iZuUd+xAzXKJehQdLFAeC/diOeRm/oijdorCDPdAuL9
+         PZ9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707483755; x=1708088555;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yfjOm9OlKOJe/SxbVFHkHIrM3sEjiI1quLMBsdxIywk=;
-        b=YT5mn0tDO6y56jHvZ0jg3bYCSL8N04bmXQcK3Yh7Q/0mTYP5rmGskNRuMZaadH45s5
-         42Lx9hIc0FuHzCcUmkltxDd1PghmJXMjmuCkxvOwwH3sTbIFqqgAeijlZgmbL5IBZRoE
-         zfYnaHDkqHcZp6qwoUlA11iCbQo85iyB8wa7dU2MrrRzAGVE1sYpplk6aNBsiBkuy9Ns
-         w9PRINadkBEqAxPdRJQamlMQZ4+PBGR6HX0N9v6GFlm6doyjvf0iOhQ1Mxi+JcWevlP0
-         1H4wPZ94/u4javURzIb6BsW1FqwzYtumugrqkO2uSebOtvm3Dm4+vkOppTbUbEe690DQ
-         XdkA==
-X-Forwarded-Encrypted: i=1; AJvYcCXJI+6dSvNA6pElP4g7q2B23X+kiw/evkxvhIARDW8rTOC4sKGQE3vRmAY3jIDdH5Vy7ACs5Frn927ryxXMnQv2lLX5AD6FlSw8P0bD
-X-Gm-Message-State: AOJu0YzxdkVKQctAU4JQsZEBVLx6hMOLCApsS4JkJNH7W3tG0ogTR4Et
-	EXveInRSA2PTrrkodibhvLzP3gyyhxGlfvliSBNLawBPv455oWWJXVIhsvcmVJiTj/cY00291mK
-	rLuC0w8NHuDLZr01Bj7N7c3IQ1cIT6nxVVke2UQ==
-X-Google-Smtp-Source: AGHT+IE25o/8XJMpfAt8Wi9d3bxn8cnefB0R/bCv6TnDzwqcKort8OCzDemDlavAEuxfd87kMd2CsQMIfvIQnHbxoBg=
-X-Received: by 2002:a0d:eb4d:0:b0:604:a856:3b99 with SMTP id
- u74-20020a0deb4d000000b00604a8563b99mr1474583ywe.17.1707483755149; Fri, 09
- Feb 2024 05:02:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707483766; x=1708088566;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=30ltjS2465HeE6RDkcYZ7gz3HAH/FfBk4VubamB9xlg=;
+        b=KKBBV4pLA7eMF9KXtI739tT7LtwZJkpE3IKh3phdqn1Np75O6MUaNd3OWBT+kFHAtB
+         QP9X1RoGG+h308+vK5UkVfgUw90yJXC5mtkbZ9AeWKUCwnx9Dny6RuDDoIBv3Xo6QNv/
+         DrY4pq3R6GnanlvVcVV7J+2SPgb7TDBfIPmOuwo+kGaOJQLnwfduh9TIzixhqIgCNFJs
+         FwMyd8t+5sdFga0lyc72PUk5UjyyY0BXI2ljUsdwZPsBfQvA5k1pLkeXyUVHKr7ePKqq
+         bpmn++TaDO6sdDOvQiD46Qqppaz/r2RsErRUEQ4zgh8ZXgG/a18RmaNzX99M0DlEz+lU
+         MGNA==
+X-Gm-Message-State: AOJu0YyEr0qObQQbqwSY3o/YuOoNgNH3yiFoZ7CgOKbHkhrCyNnSTW2a
+	VtIgGCxjcoCKM9+dJxcJMjWygSGGTu3I2jDfkZEyJ7HFUx0+T7XnE50n7ptrMFI=
+X-Google-Smtp-Source: AGHT+IGk3Uy6387987t9ObpRRvhmYrzvpBWmjEfnryXbGtmf7Y8JaQxsRglpq2IGmZTRgLgs84PSXQ==
+X-Received: by 2002:a05:6402:12d3:b0:560:8010:b678 with SMTP id k19-20020a05640212d300b005608010b678mr1245938edx.30.1707483765418;
+        Fri, 09 Feb 2024 05:02:45 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXJazRu4iYiKzzQwF/gSh1UE3tl7gDgkJUAgPuN+fxfAMMbbBSuIoh8EztuiqybU5H3TAvB3rAuRntIXddfciGZ+rUYMgNDlht9JOhm2NA+3CFgl2l9oxy4aIY8wvySUkAZeB9P9FAb/HBbbnjQHmztNz3OxAMLak+cio07d1ZC0PQZO0p5LMzPTkdxzIC2ziwdv2ps4BuZTsCm45Ww8aaSimOUhpz3Yhjb73sQrezTbTmLmsAJjWKNUK7vMxAx4jBdiodphI7gxv7h0At4mxCCQFDu3SLht/9EraI+2b3syXQgPXRVCeM1G5bJFCuPcox3Hzw7YhI8e9wu2pIILG6FT2wzXkY27tOtIgiREW/Mgu8TQck8rQg/vZ/gjsBR1CMyS0/VHMMfxc4wrT221jhtRJrR+4EgafsOOI4wMwOhpqov18mn1YUtZmU14hCdb+EjYzT858gki30kdpNXnjAuoQ7bffAM7bdxxv23usQGjZjRntEaufxyQmHtkjCLFWi5khB6Lb+TdKRGy9Y2iNpNBzaUsBqPBpEDpNkuPGcbfHwAiUxYTET57A63nO6NKWJcMxQYtMXZt/zX4Xa0Iqs8DAssfIuTgiSVhLmB9O/5+8A6fL8jqM11vm7DPfpqWru2IuB3XA==
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id e16-20020a50d4d0000000b005605716e755sm806635edj.52.2024.02.09.05.02.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 05:02:45 -0800 (PST)
+Date: Fri, 9 Feb 2024 16:02:42 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Cc: Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+	Anthony Koo <Anthony.Koo@amd.com>,
+	Josip Pavic <Josip.Pavic@amd.com>, Leon Huang <Leon.Huang1@amd.com>,
+	Mounika Adhuri <moadhuri@amd.com>,
+	Lewis Huang <lewis.huang@amd.com>, amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH] drm/amd/display: Fix && vs || typos
+Message-ID: <7482be2a-aca1-41dd-bb6e-d547571b9507@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209112807.1345164-2-ole.orhagen@northern.tech>
-In-Reply-To: <20240209112807.1345164-2-ole.orhagen@northern.tech>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 9 Feb 2024 14:02:23 +0100
-Message-ID: <CACRpkda=b-uZmSfqRLkkC6Lp-JbSoi+YZpwhVn9-RMOPxiXszA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ARM: dts: vexpress: Set stdout-path to serial0 in the
- chosen node
-To: "Ole P. Orhagen" <ole.orhagen@northern.tech>
-Cc: linux-arm-kernel@lists.infradead.org, ole@orhagen.no, 
-	kristian.amlie@northern.tech, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Liviu Dudau <liviu.dudau@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Andre Przywara <andre.przywara@arm.com>, 
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>, Shawn Guo <shawnguo@kernel.org>, 
-	Peter Rosin <peda@axentia.se>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-On Fri, Feb 9, 2024 at 12:29=E2=80=AFPM Ole P. Orhagen
-<ole.orhagen@northern.tech> wrote:
+These ANDs should be ORs or it will lead to a NULL dereference.
 
-> Specify v2m_serial0 as the device for boot console output through the
-> stdout-path in the chosen node.
->
-> Signed-off-by: Ole P. Orhagen <ole.orhagen@northern.tech>
+Fixes: fb5a3d037082 ("drm/amd/display: Add NULL test for 'timing generator' in 'dcn21_set_pipe()'")
+Fixes: 886571d217d7 ("drm/amd/display: Fix 'panel_cntl' could be null in 'dcn21_set_backlight_level()'")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ drivers/gpu/drm/amd/display/dc/hwss/dcn21/dcn21_hwseq.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-It's also the right way to do it.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn21/dcn21_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn21/dcn21_hwseq.c
+index 5c7f380a84f9..7252f5f781f0 100644
+--- a/drivers/gpu/drm/amd/display/dc/hwss/dcn21/dcn21_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn21/dcn21_hwseq.c
+@@ -211,7 +211,7 @@ void dcn21_set_pipe(struct pipe_ctx *pipe_ctx)
+ 	struct dmcu *dmcu = pipe_ctx->stream->ctx->dc->res_pool->dmcu;
+ 	uint32_t otg_inst;
+ 
+-	if (!abm && !tg && !panel_cntl)
++	if (!abm || !tg || !panel_cntl)
+ 		return;
+ 
+ 	otg_inst = tg->inst;
+@@ -245,7 +245,7 @@ bool dcn21_set_backlight_level(struct pipe_ctx *pipe_ctx,
+ 	struct panel_cntl *panel_cntl = pipe_ctx->stream->link->panel_cntl;
+ 	uint32_t otg_inst;
+ 
+-	if (!abm && !tg && !panel_cntl)
++	if (!abm || !tg || !panel_cntl)
+ 		return false;
+ 
+ 	otg_inst = tg->inst;
+-- 
+2.43.0
 
-Sudeep: are you queueing Vexpress DTS changes or do you want me
-to handle it with other Versatile-ish ARM DTS stuff?
-
-Yours,
-Linus Walleij
 
