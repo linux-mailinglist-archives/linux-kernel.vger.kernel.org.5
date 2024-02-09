@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-59085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BB6284F104
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:49:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3148C84F108
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:50:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4C56284DBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:49:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB75E284989
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE4A65BAD;
-	Fri,  9 Feb 2024 07:49:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9746665BB6;
+	Fri,  9 Feb 2024 07:49:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xR1Bx6DH"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="n90XcOCd"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1B07657DC
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 07:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BF3B65BA4
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 07:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707464946; cv=none; b=HPrqxvFxn6MU13b/mAnVV6VLVeSZalp1f76reI3qfhApGZMOIV/slJlVlRuteS5Ct7ijTRsFvsTuA6efQqsGunK2sT37LJ4ENLtyHDTY9TSpps3siYYI3Ptt5QH5JffD4lFQVzFzxuM7akmyjYzIsHIv/5rPjIP7+yqvCuBIoCE=
+	t=1707464993; cv=none; b=KH1FveeXaDSMKwScGiBd6Zy4Rr7Sqs+kJtLHQJCR/IUcvxSSfbwndNko3qcs+HwG6/pgfn/dmqRHY80BPCKbdJBOKDbx/PE7jpsCojmTM2KerPCkeve1ZAvf8eseYTqBFeJ8+7Qg70hEY4+YEzQBZIbjLgNKb7ES3nWo94/qBlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707464946; c=relaxed/simple;
-	bh=jK3YIdGz/lKXmBAb1/2WwgYirgeH7LFcrui+HXv+eok=;
+	s=arc-20240116; t=1707464993; c=relaxed/simple;
+	bh=jMP/qNQnqMmEuydVe53QF5kwoFIOimQG802akh+pa7w=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ALZaaLuc1FRgWSu9vMcz7+Xbl38MIykfKw3W4KQSvHMh7aAPaDpTEkpOkb1+2CgloFrB80rUXkhF6/M8f9ZSbyErG8dN26QGwq2kpEk2xtQ/xsqdzuWzSRUWCwDSUVvwIxwyPKKfTx7eWy3J9h6tvrdYdstZW6VjE5CkuaJCsls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xR1Bx6DH; arc=none smtp.client-ip=209.85.167.44
+	 In-Reply-To:Content-Type; b=MXPKUz3Px9HMkQr1+ghas3vQrc85Luyh1+aC7zxnwDMqYFzqmMtlgEd3jaP0CpKLOdWcIJGGKh8ZtsCziiUZOL9SBfdz0hAoMVHCWuZjRPLFTS8d9vCIKulC4YAysK0QI+9nmhEyn3DkI3wfCNp7Qb8mvpyXWNPktlpvyh2WMiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=n90XcOCd; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51178bbb5d9so231879e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 23:49:04 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40fe59b22dbso5092255e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 23:49:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707464943; x=1708069743; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707464990; x=1708069790; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=jRpl9jyLQF82ivCaa0/+aYsVthoMcMA2pqnI8tbHSig=;
-        b=xR1Bx6DH5J2xF4PT1olOWuD7Y7zb2IEJjMoUc3FJendhjptbiWYi66AsBAR2TkICKl
-         cdoJUx+OJbRvn9umDupGmy8aYjeDs32SLoaHKaThLVGIK2zxmpGS5lq+xFcyEklv5qdO
-         iFlyv1ut2m5AnI1wQHG816n3UVYIyWC1Jc2pVtUNZ6fa7RTczKW8r7RJoJfyFDTR1fS6
-         M3F2hkrO0nHeGsb1IehehfO5bQ96kwnf7DVq3fZ6egiCShSll9el/VyIjXc3p/jMdxWf
-         75+osVuDaQmsebTdxqwRX7UKxAjRw0I5IRnz6/hVHry3cDreG5hDScqFoYUEhjDP1wAr
-         5Eow==
+        bh=RyfZaplS0CdOEyobkvBYVRoP/ZBGSD0HLa8+e8oH5HE=;
+        b=n90XcOCd1ZNVmdnGzPIFadKYPLwMROCSRGGVBn0sctuvat91srXLseK4SunJVgyapy
+         k7rpb8AQ28eihvD1Q9GE3M8o/suSHuZgTdiDzsVoQy7VTE2EuUXTOaSj7TdfkENbPLbC
+         EEPzcCDlb+cidDIU68EGgozea+sZuTesZhVQLmgiVZU72cloV3f5VXtu/fyv2XOuvW3H
+         IY6Gcn4Zi6YTsGL/bFGRQj0s6kxOII/Bxqqtp6VTCUhdweg+bxUVw78w2SovRGdCVE2W
+         zRGaNRZ2LoTb63lIRRTku4XwPgIrkBSzCIAYH8e1sjwrZ+CfXEuEtatq4/Va2NJF3uDt
+         1tJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707464943; x=1708069743;
+        d=1e100.net; s=20230601; t=1707464990; x=1708069790;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jRpl9jyLQF82ivCaa0/+aYsVthoMcMA2pqnI8tbHSig=;
-        b=dz7OHm8ar2nz3+nHJNW8mvtyADg7py89/rPEzUtKwwUxfXrLF7+1RZ+ExYEUnN0ir4
-         EUq/XV/uXYzEZ2gieFYCFW7dTyZlIhysYXrpxa8ZOfi3tiQv8L1NaM5ZDXp8hOJyhz0p
-         /Yv9jR9LAg5JjyT5NObPe5IjHk0t/b8ihKNOqZJNvtpFzbFB8ASDGL3MuRKsZ2/upsA0
-         PNUJ1DvUZ1lmmUwi+EkP8UurPxUHo6qAv8MWlN4iKZVmQCV47MjJMuXIQygg4RgL7heV
-         3RQV/AKhN100wMOx+aZcEGu00NooCrsTPb59faocSyZc6IWH1R028DWpN5DupOrEOyOG
-         CBNQ==
-X-Gm-Message-State: AOJu0YxSiB265AQRkExMnypihdNAZO2tbjIchupiUfM+U8+XIDccqEUs
-	I2BBAAeOhW58EqW/F7CradSe2iMnqjrbepxpY5yZbVbhB/Nva1NUqDF5tH+wkFw=
-X-Google-Smtp-Source: AGHT+IECQKy9XnrwpN7leCDwCO/JCDd7qqmVsNEXxLxjQxSuV4dlQc/IrNnGlgmCxN6mWVBb3pU/2Q==
-X-Received: by 2002:a05:6512:23a5:b0:511:680c:94c3 with SMTP id c37-20020a05651223a500b00511680c94c3mr553587lfv.11.1707464942711;
-        Thu, 08 Feb 2024 23:49:02 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU45Y1G3ksATvgrrzWfWvs7N5ndlnoXMNCa5PRC5IPXHJBSFI0YDvyPLIRunsdq3DT+tR7mnuY1GayeCaJJ9Qeut8ScspuZ4N0xFSGxUP8JPiJ9O+xE+VVUSPvnHdribVgkvpoinyYpOv6wAJiHKylpDwJ2C5wZe6e/ON5OqFwu9dlu/mWnzB/oJUBQrv7bQ6pU4DDOqrX/QPlUEgOGYf0lC9J6b9xXJC4sJi7t9PQSU3JFnNt5u2n85pR7ellN1tp1iwrG/+TBdnCNFoRkstSmvXJZq00BMWIFrze6G2RGVu4ZUiTqQFg6REP88M1jGUaHrL2+LVwvC1Rt0T64kv6foWzE4Ya4btcackThZgttRMqQ4HmgbAcH+sQuP2RL+Jbj8xCYt1YPxp57z/qGM0CNTyaJp0AU383RO7kmmda8xw1orMqFdShDgbnxYVe9aVyUeT1FzuCG8n7ZDa+lC0QZnQ3ub1zQTQHJfnQk4hnXW6ysrngBZxCgW9T7PxN5y1WnqwZxpAUPQ62EoAS/B1GZwECWgsHwOlub3w==
+        bh=RyfZaplS0CdOEyobkvBYVRoP/ZBGSD0HLa8+e8oH5HE=;
+        b=WhvPBb6T6LJ7D78ePL3jh1uN8o6nEDBGPG5GpYW8ccsxZtDoT2vLmcHNQmrj9GxROI
+         +WdXaHSo78QcWov5fSbdSC1eQ/83Y5BVesRzvAupi1T9FWcVnOm7Q5VwYeR4zDkGdKIf
+         BMKPenMkxYBXFJUKDkNXLmKSUU4noLq/pKmjatiOwJj0O1bUGV06skgqQ6dOumyhG3T+
+         MxrdFMrxVg1q5z2tf4hXVAHqH0C8poCer+brtm4zGC1WVAGor37EESaHLTzBFf+/UoUO
+         PQjRdK39NDnSGwIxT/vwoNEkdlel8gGo1xzrHoTYbn7sjoQrKQRdRcqL5Iw+uOb9QzAX
+         bm7g==
+X-Gm-Message-State: AOJu0YyHIqNSK7D43VVtexg+DU1qYf4zFzVzM+zMIs8hNuKTcFLvtBFH
+	kfWYX4EAMpO2R6V2J72+9drxfMEDJkSVLTXltdubfsHNFiJ9mRhrH7yJbB/c3Xg=
+X-Google-Smtp-Source: AGHT+IGsyf1YALZ5O3J2fnTeN/5YSH2v14+rxSX1FZuqmIPS+TfvysFQyLSJTphiSxM5NdgJTkU56g==
+X-Received: by 2002:a05:600c:4510:b0:40f:dd91:2d06 with SMTP id t16-20020a05600c451000b0040fdd912d06mr535847wmo.32.1707464990670;
+        Thu, 08 Feb 2024 23:49:50 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUrgfUvvyDK1Xy52Un7DfaMmY/R8LwtFsG4oTxZ+0LZNx80Ybj8xJNsgtrQzgR0zPrFrsQlbHu+avYyrc4RuabYhkAn8tEo7LdSHgofs4z7COyXW/sGsE5bfSEC2YbQN5YPvIpYuQZ5hZxepUTSAgsNpNhJKDU+F1L0L93qgf1HC4S2Giwe2ypAyOjGRZB+Vt2BpbFdXAxSohIuB/eiakXoZztqFGCWfu5kYXdtf0WGlN3+FwQDtbHrrnQZBK1K8/rqeWl2HScjp4u7KE8orByXGH3Eic3GFLPSE0bi3EHei7zpTtAMphmiAV7T8MELPxN8n6q7xQd2cpkMxaUmwfsoxsAG6WySAqVxHY7bTgZ9JM5DT7Z7jqQv1p12ph8yeVf9ABhmIcp/ahi9e5XfuuxdiWDo6LYLHK5u/w+TUuC7rUgtGqyVduRdw/LzMBrZzO6wHldIVVM3yzHPzK10BIPMYA8Hh9QnFtpqo+GO3jNk+M3v13JhF8Spwh5xkvPyddEXRP/t1iPtR4hVcJ3syHV53IOPAVK2hW267A==
 Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id ay2-20020a05600c1e0200b0040fdc7f4fcdsm1791764wmb.4.2024.02.08.23.49.00
+        by smtp.gmail.com with ESMTPSA id ay2-20020a05600c1e0200b0040fdc7f4fcdsm1791764wmb.4.2024.02.08.23.49.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 23:49:02 -0800 (PST)
-Message-ID: <7311143a-ea03-4619-99a5-05307704a561@linaro.org>
-Date: Fri, 9 Feb 2024 08:49:00 +0100
+        Thu, 08 Feb 2024 23:49:50 -0800 (PST)
+Message-ID: <40d5bb84-a65a-4ac3-a17c-062ad4b8ea4a@linaro.org>
+Date: Fri, 9 Feb 2024 08:49:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,7 +75,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 1/3] dt-bindings: arm: mediatek: convert hifsys to the
+Subject: Re: [PATCH V2 2/3] dt-bindings: arm: mediatek: convert PCIESYS to the
  json-schema clock
 Content-Language: en-US
 To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
@@ -91,7 +91,7 @@ Cc: Matthias Brugger <matthias.bgg@gmail.com>,
  linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
  <rafal@milecki.pl>
 References: <20240208215926.10085-1-zajec5@gmail.com>
- <20240208215926.10085-2-zajec5@gmail.com>
+ <20240208215926.10085-3-zajec5@gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -137,7 +137,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240208215926.10085-2-zajec5@gmail.com>
+In-Reply-To: <20240208215926.10085-3-zajec5@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
@@ -146,82 +146,12 @@ On 08/02/2024 22:59, Rafał Miłecki wrote:
 > 
 > This helps validating DTS files. Introduced changes:
 > 1. Documented "reg" property
-> 2. Documented "#reset-cells" property
-> 3. Dropped "syscon" as it was incorrectly used
-> 4. Adjusted "compatible" and "reg" in example
+> 2. Dropped "syscon" as it was incorrectly used
+> 3. Adjusted nodename, "compatible" and "reg" in example
 > 
 > Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
->  .../bindings/arm/mediatek/mediatek,hifsys.txt | 26 ----------
->  .../clock/mediatek,mt2701-hifsys.yaml         | 51 +++++++++++++++++++
->  2 files changed, 51 insertions(+), 26 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt
->  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt b/Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt
-> deleted file mode 100644
-> index 323905af82c3..000000000000
-> --- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt
-> +++ /dev/null
-> @@ -1,26 +0,0 @@
-> -Mediatek hifsys controller
-> -============================
-> -
-> -The Mediatek hifsys controller provides various clocks and reset
-> -outputs to the system.
-> -
-> -Required Properties:
-> -
-> -- compatible: Should be:
-> -	- "mediatek,mt2701-hifsys", "syscon"
-> -	- "mediatek,mt7622-hifsys", "syscon"
-> -	- "mediatek,mt7623-hifsys", "mediatek,mt2701-hifsys", "syscon"
-> -- #clock-cells: Must be 1
-> -
-> -The hifsys controller uses the common clk binding from
-> -Documentation/devicetree/bindings/clock/clock-bindings.txt
-> -The available clocks are defined in dt-bindings/clock/mt*-clk.h.
-> -
-> -Example:
-> -
-> -hifsys: clock-controller@1a000000 {
-> -	compatible = "mediatek,mt2701-hifsys", "syscon";
-> -	reg = <0 0x1a000000 0 0x1000>;
-> -	#clock-cells = <1>;
-> -	#reset-cells = <1>;
-> -};
-> diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml
-> new file mode 100644
-> index 000000000000..eb429337cdf4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml
-> @@ -0,0 +1,51 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/mediatek,mt2701-hifsys.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek hifsys controller
-> +
-> +description:
-> +  The Mediatek hifsys controller provides various clocks and reset outputs to
-> +  the system.
-> +
-> +maintainers:
-> +  - Matthias Brugger <matthias.bgg@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-
-If there is going to be resend, drop items here, it's just an enum.
-
-Anyway:
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
 
 Best regards,
 Krzysztof
