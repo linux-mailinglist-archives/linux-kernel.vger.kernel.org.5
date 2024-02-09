@@ -1,98 +1,119 @@
-Return-Path: <linux-kernel+bounces-59144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5E7484F1F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:10:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC0FD84F1FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:11:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38458B25758
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:10:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87D87286E99
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E523664CA;
-	Fri,  9 Feb 2024 09:09:59 +0000 (UTC)
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345AB664CC;
+	Fri,  9 Feb 2024 09:10:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PLSM+ZLV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9BF922092;
-	Fri,  9 Feb 2024 09:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A8165BB8;
+	Fri,  9 Feb 2024 09:10:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707469798; cv=none; b=kqJt1hC42sGj/QGSvK9Vo678aP6JqrPO3kJ13H5ed4qAAx5SBt7vruq9uAohw/B/DQv/EYxNj9KL96rCoDohwiwil8Ez1c7yjpYpEDus/rdvjlbIj39N1S5S2OIJYL3Q6UBZGd8/MZ3sroxoKYKXkmrkQw810r7UTtGlrG8P0xk=
+	t=1707469857; cv=none; b=k6FFAXV+jb7x0j1PkPqKjQN8w+0hJely3kd9/c+ve1TUHdyhO3o2S7h4gTT9R0TNmRNBUbjvAOKlMkkkGNshxuOpdRfxdlqfAY3DVlEcT8eQxjLDNSHmowfWIbXiOf4sgp7CEbJuHa4AnQFQhJYOPGRCOC/xt+Rv+m6j0IrhKD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707469798; c=relaxed/simple;
-	bh=eZ3ZS6aFeDJIgLODjm0i+7CNAI7CgMeLhDSvct5oorM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UcTT81V4mHE2r5OOZ3i8YGuHK1poAVbq6A7lMdykR0uFy/yLPKFcSANk/m7OWmba4TfLxAUSDZoUnnYpe35jw33DaasZivjSZx5CSOmhlqTK5t96BxqcdBQ5rrdUxPGlmSDxXgdJ5vKcgjQDu6VOYLzsgS/m8yRISTPklCXc3Dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rYMtN-0007qn-4W; Fri, 09 Feb 2024 10:09:53 +0100
-Message-ID: <e9a72160-2d39-4090-8822-ca68477f429f@leemhuis.info>
-Date: Fri, 9 Feb 2024 10:09:45 +0100
+	s=arc-20240116; t=1707469857; c=relaxed/simple;
+	bh=2tfCumvAfLhiJke71zLdarIyZlLzb2v67s1JNdNfYE4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NWp7T5iKORndx2kfyzk+Ux57aKmSxnD+azmEw6ILOaqL+jTrD8DFSwho0yo0EyQ4BC4/E30ZHY+ktNJNHoAuk0lEUSHbDZcptiws7dwz250Gj0dtFbZnrqRMP6rJqqGw++0PfiPlmHvbGo7sgr7jpt+hfzKchBuIZJl/lbz/D/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PLSM+ZLV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83956C433F1;
+	Fri,  9 Feb 2024 09:10:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707469857;
+	bh=2tfCumvAfLhiJke71zLdarIyZlLzb2v67s1JNdNfYE4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PLSM+ZLVyO9cMRYFDiAXMkTAvP6/CL+7LzNxqAN0LmSar3WdPn7Rth/JKcWdnPZY1
+	 T4bLq5EQEqo9Iaa4V4poyneLudYfaZ5ljHUqDo14YP3ydLBrglPBd7L1cwWLgWUDiR
+	 OzRTdVZklEw02xm3NxQtWI4nKxXzgKE6UJTv0TpRNs/x4vAD4RD7UfpI5aqBkioL1E
+	 gsY6WJlsfxwl5X/gejxswxihXzamvLlwGavAO2ycJzw2oFy1vfrGCS2jaLNEGP4PjF
+	 3OEBg0tfglEKEXX/Qt9RCE1bWeLt1YvMGv3PV8I2JXTJBjeAUWDLiKsHd/lRPqtaiL
+	 zgJ9Mpx71oNnw==
+Date: Fri, 9 Feb 2024 09:10:54 +0000
+From: Rob Herring <robh@kernel.org>
+To: Dharma.B@microchip.com
+Cc: conor@kernel.org, alexandre.belloni@bootlin.com, conor+dt@kernel.org,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de,
+	Nicolas.Ferre@microchip.com, linux-arm-kernel@lists.infradead.org,
+	claudiu.beznea@tuxon.dev, devicetree@vger.kernel.org,
+	krzysztof.kozlowski+dt@linaro.org
+Subject: Re: [PATCH] dt-bindings: interrupt-controller: Convert Atmel AIC to
+ json-schema
+Message-ID: <20240209091054.GA3291998-robh@kernel.org>
+References: <20240208092015.263210-1-dharma.b@microchip.com>
+ <170740748922.3230402.17318224112819715619.robh@kernel.org>
+ <20240208-acuteness-visible-b60cd37c2b32@spud>
+ <8dcae60c-1aba-4e76-99cd-de78c2c4ba6a@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] nvmem: include bit index in cell sysfs file name
-Content-Language: en-US, de-DE
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Arnd Bergmann <arnd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, regressions@lists.linux.dev,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- Chen-Yu Tsai <wenst@chromium.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, asahi@lists.linux.dev,
- Sven Peter <sven@svenpeter.dev>, Michael Walle <michael@walle.cc>,
- linux-kernel@vger.kernel.org
-References: <20240122153442.7250-1-arnd@kernel.org>
- <170594251756.17335.7078970144473561827.b4-ty@linaro.org>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <170594251756.17335.7078970144473561827.b4-ty@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1707469797;a976a931;
-X-HE-SMSGID: 1rYMtN-0007qn-4W
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8dcae60c-1aba-4e76-99cd-de78c2c4ba6a@microchip.com>
 
-On 22.01.24 17:55, Srinivas Kandagatla wrote:
-> On Mon, 22 Jan 2024 16:34:10 +0100, Arnd Bergmann wrote:
->> Creating sysfs files for all Cells caused a boot failure for linux-6.8-rc1 on
->> Apple M1, which (in downstream dts files) has multiple nvmem cells that use the
->> same byte address. This causes the device probe to fail with
->>
->> [    0.605336] sysfs: cannot create duplicate filename '/devices/platform/soc@200000000/2922bc000.efuse/apple_efuses_nvmem0/cells/efuse@a10'
->> [    0.605347] CPU: 7 PID: 1 Comm: swapper/0 Tainted: G S                 6.8.0-rc1-arnd-5+ #133
->> [    0.605355] Hardware name: Apple Mac Studio (M1 Ultra, 2022) (DT)
->> [    0.605362] Call trace:
->> [...]
+On Fri, Feb 09, 2024 at 06:31:15AM +0000, Dharma.B@microchip.com wrote:
+> Hi Conor,
 > 
-> Applied, thanks!
+> On 09/02/24 12:19 am, Conor Dooley wrote:
+> > Hey Dharma,
+> > 
+> > On Thu, Feb 08, 2024 at 03:51:31PM +0000, Rob Herring wrote:
+> >> On Thu, 08 Feb 2024 14:50:15 +0530, Dharma Balasubiramani wrote:
+> >>> Convert the Atmel AIC binding document to DT schema format using
+> >>> json-schema.
+> >>>
+> >>> Signed-off-by: Dharma Balasubiramani<dharma.b@microchip.com>
+> >>> ---
+> >>> Note: I get the following warnings on latest kernel but not in 6.7.
+> >>> Should I be worried?
+> >>> usage: yamllint [-h] [-] [-c CONFIG_FILE | -d CONFIG_DATA] [--list-files] [-f {parsable,standard,colored,github,auto}] [-s] [--no-warnings] [-v] [FILE_OR_DIR [FILE_OR_DIR ...]]
+> >>> yamllint: error: one of the arguments FILE_OR_DIR - is required
+> > Hard to say, how were you envoking the command? There were some issues
+> > recently with dt_binding_check, but I thought those had been fixed.
 > 
-> [1/1] nvmem: include bit index in cell sysfs file name
->       commit: b40fed13870045731e374e6bb48800cde0feb4e2
+> I use this command to validate
+> 
+> make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- dt_binding_check 
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/interrupt-controller/atmel,aic.yaml
 
-The problem description from Arnd to an outsider like me sounded like
-this is something that should be fixed rather sooner than later in
-mainline. Am I wrong with that? If not: will this be heading to Linus
-soon? Just wondering, as the fix seems to be a in "for-next" branch[1]
-of the nvmem repo and not in a "fixes" branch.
+Humm, not sure. Will have to investigate.
 
-Or am I missing something here?
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> and also dtbs_check.
+> 
+> version = yamllint 1.32.0
+> > 
+> >> dtschema/dtc warnings/errors:
+> >> Documentation/devicetree/bindings/interrupt-controller/atmel,aic.example.dtb: /example-1/dma-controller@ffffec00: failed to match any schema with compatible: ['atmel,at91sam9g45-dma']
+> > But you didn't see this warning?
+> 
+> No I didn't see this warning when applied on tag:6.7. Don't know why.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/srini/nvmem.git
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+That's because it just got enabled by default.
 
-#regzbot poke
+> 
+> > I think you can resolve it by just dropping the "user" example from the
+> > binding entirely. I don't think it adds anything at all.
+> 
+> I intentionally checked the generated example dts file and found that 
+> both the examples look correct.
+
+Maybe so, but how do we know with no schema? Your choices are drop from 
+the example or add a schema for the DMA controller.
+
+Rob
 
