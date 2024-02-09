@@ -1,123 +1,118 @@
-Return-Path: <linux-kernel+bounces-59060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32DDB84F0AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:15:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5B4684F0D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:33:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E264A28697E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:15:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 795381F2444F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:33:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74A00657CA;
-	Fri,  9 Feb 2024 07:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 387DE657D0;
+	Fri,  9 Feb 2024 07:33:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="FPJtZ90m"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (1024-bit key) header.d=siemens.com header.i=jan.kiszka@siemens.com header.b="OFk6vg/b"
+Received: from mta-64-228.siemens.flowmailer.net (mta-64-228.siemens.flowmailer.net [185.136.64.228])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 135B5657B6;
-	Fri,  9 Feb 2024 07:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E27C765BA4
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 07:33:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.64.228
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707462921; cv=none; b=mutJmeIhn6JiaJUDc1HYH10fuJtsH/8muVpZjPTx4zGFvAE18fCfZeOzfg7vmmRYdKkOACH+AS6Akob4iAUeHCASAPVcouQ27hiRp2V1pqr45nQZak9yOKB8IsPpfW+7rva0Y86LE2rxMz5CgPfrqDhJA8/ot2U9/b33tWOdCH8=
+	t=1707464016; cv=none; b=E8ism8TRZ6XmjmrdYHkX2dj9PUGjYu5XY2Lms/XUMhEQKG2RhoQr1CgAURNjubPe06eJJHVjI05oFyBraLfjNNw+qHOMb1oTo8TmLxG/yk9NXfZ+SUN2OvrnGzPxzwSwIW7mBdmWETEYOflXl2/bzAR1Hl4d1KKSLwVFkow+7Go=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707462921; c=relaxed/simple;
-	bh=SsACAYr0WLs84wyRPCGBPmrdamG2JsarkOqlVOkUGPs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zgp+D/4v6/rGOJP9Rd2N3A7xnOpeGNdKVk2Pp2eoT9iCOr4q0oHnIiMtWXt6FlWW8ncirA2qM2o78zRC8cPiXqrRQTn5/h9ZzHPDfE6cHTMHV650tZdyO5Sk5ssEjPKaf+x4snrVfKqc1a1qLZDhYfoKYj3aHdp797Qul+rPDtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=FPJtZ90m; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41972Lf1014051;
-	Fri, 9 Feb 2024 07:15:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=6uEUkSqsBPdEejGxM3M5CA/XkPf07LNpr+fq0kqwRvQ=;
- b=FPJtZ90mLXop9YsX2qdwEvrGfveCuQnhyshF2ZvDnlbl6CD2/1hNdG0mMoM6k1YnXrN0
- dTIQoEnljd1ZB4azzVgBwOXHZ+M5KtZmqwf7og4SiR5/VunuEYsIi2Jcz0YYYrKDf9CL
- NqoPgv/O7NPyJ0iQTgW6/YyeGieg23ewN2BgPeSW0nKc9zWQ7iUwWaLQ2ncWhX/LOrz0
- PL4OL4XOKLFq8s/lb2zP+QLm1e6EeL1NBv4DRFkPllPmoIx2UV0WqTctaoOzcyWszxta
- BvcA8iUTQ6HiKGSNOg5eRrqT6Qc/h12SgUcgKXZumYDCAQS8eC5Dodg32P/a3N5KGUCA hw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w5fabga8v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Feb 2024 07:15:08 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 419746BD020459;
-	Fri, 9 Feb 2024 07:15:08 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w5fabga8c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Feb 2024 07:15:08 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4196LUrO008818;
-	Fri, 9 Feb 2024 07:15:07 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w20701u4g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Feb 2024 07:15:06 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4197F4dh18023094
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 9 Feb 2024 07:15:05 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D9F2920043;
-	Fri,  9 Feb 2024 07:15:04 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0A4C020040;
-	Fri,  9 Feb 2024 07:15:02 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.98.150])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri,  9 Feb 2024 07:15:01 +0000 (GMT)
-Date: Fri, 9 Feb 2024 12:44:59 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: John Garry <john.g.garry@oracle.com>
-Cc: hch@lst.de, djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
-        martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, jbongio@google.com
-Subject: Re: [PATCH 0/6] block atomic writes for XFS
-Message-ID: <ZcXQ879zXGFOfDaL@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20240124142645.9334-1-john.g.garry@oracle.com>
+	s=arc-20240116; t=1707464016; c=relaxed/simple;
+	bh=LZnhRecmWjEEyuhkw2UEePxVcIJYubz4dwo2XU9EvnQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hG79MIMtsyC+BR/AcPavpFGJXkOKtquE8Yqr8NSD7JzjDLcUFRIeFbgakWWPHsQpmQ9oZ18qzGAY4/z6Y/kI+9UnrJaHaMj6FQ9rDRxevJpnf1OejiNfCVbGc0h0babWXyLZRKvg3N95Y5wW4DChH5VlD/4N0e9fBUgk6ABiNY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (1024-bit key) header.d=siemens.com header.i=jan.kiszka@siemens.com header.b=OFk6vg/b; arc=none smtp.client-ip=185.136.64.228
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
+Received: by mta-64-228.siemens.flowmailer.net with ESMTPSA id 20240209072322590697df6873cbd98b
+        for <linux-kernel@vger.kernel.org>;
+        Fri, 09 Feb 2024 08:23:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
+ d=siemens.com; i=jan.kiszka@siemens.com;
+ h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc;
+ bh=swzmFknxPpbMNSXu2CcioHwcS14EtTfEqDfVF30rdzY=;
+ b=OFk6vg/bc9luc1S2UXUwaNO/cADhXKSo5B6lqEzAtLKFtf/jR/FLOKmgrMc+GYxDBgurPu
+ TMiIdq2BxZcBgX8pl9bY1MzByySMApC8ZH7IThjmjb5R9nFmP9+9GOZfrbaJ8OoZ2qv73+DJ
+ UCBp9hxTDWEzsdnQUIfrvY/Z0UmDk=;
+From: Jan Kiszka <jan.kiszka@siemens.com>
+To: Nishanth Menon <nm@ti.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tero Kristo <kristo@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Bao Cheng Su <baocheng.su@siemens.com>
+Subject: [PATCH v3 0/7] arm64: dts: iot2050: Add support for new SM variant
+Date: Fri,  9 Feb 2024 08:23:14 +0100
+Message-Id: <cover.1707463401.git.jan.kiszka@siemens.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124142645.9334-1-john.g.garry@oracle.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 9Z0CLsJy3gXKMWD_95NZWXTjFBXM7XXW
-X-Proofpoint-GUID: f6P1CVQwjDT3E8wBLngat6hatCdQFL3G
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-09_04,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 malwarescore=0 spamscore=0 clxscore=1015 impostorscore=0
- mlxscore=0 adultscore=0 priorityscore=1501 phishscore=0 bulkscore=0
- mlxlogscore=929 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402090050
+Content-Transfer-Encoding: 8bit
+X-Flowmailer-Platform: Siemens
+Feedback-ID: 519:519-294854:519-21489:flowmailer
 
-On Wed, Jan 24, 2024 at 02:26:39PM +0000, John Garry wrote:
-> This series expands atomic write support to filesystems, specifically
-> XFS. Since XFS rtvol supports extent alignment already, support will
-> initially be added there. When XFS forcealign feature is merged, then we
-> can similarly support atomic writes for a non-rtvol filesystem.
+Changes in v3:
+ - rebased
 
-Hi John,
+Changes in v2:
+ - LED improvements
+ - factor out DP and USB3 dtsi files
+ - fix subject of last patch
 
-Along with rtvol check, we can also have a simple check to see if the 
-FS blocksize itself is big enough to satisfy the atomic requirements.
-For eg on machines with 64K page, we can have say 16k or 64k block sizes
-which should be able to provide required allocation behavior for atomic
-writes. In such cases we don't need rtvol.
+This bring support for yet another IOT2050 device variant, see last
+patch for details. The rest is binding and refactoring to make that
+happen. Plus, LED nodes are improved by adding function and color
+properties.
 
-Regards,
-ojaswin
+Jan
+
+Baocheng Su (2):
+  arm64: dts: ti: iot2050: Disable R5 lockstep for all PG2 boards
+  arm64: dts: ti: iot2050: Support IOT2050-SM variant
+
+Jan Kiszka (4):
+  arm64: dts: ti: iot2050: Factor out arduino connector bits
+  arm64: dts: ti: iot2050: Factor out enabling of USB3 support
+  arm64: dts: ti: iot2050: Factor out DP related bits
+  arm64: dts: ti: iot2050: Annotate LED nodes
+
+Su Bao Cheng (1):
+  dt-bindings: arm: ti: Add binding for Siemens IOT2050 SM variant
+
+ .../devicetree/bindings/arm/ti/k3.yaml        |   1 +
+ arch/arm64/boot/dts/ti/Makefile               |   1 +
+ .../ti/k3-am65-iot2050-arduino-connector.dtsi | 768 +++++++++++++++
+ .../dts/ti/k3-am65-iot2050-common-pg1.dtsi    |   5 +-
+ .../dts/ti/k3-am65-iot2050-common-pg2.dtsi    |  25 +-
+ .../boot/dts/ti/k3-am65-iot2050-common.dtsi   | 871 +-----------------
+ .../arm64/boot/dts/ti/k3-am65-iot2050-dp.dtsi |  98 ++
+ .../boot/dts/ti/k3-am65-iot2050-usb3.dtsi     |  27 +
+ .../ti/k3-am6528-iot2050-basic-common.dtsi    |   6 +-
+ .../dts/ti/k3-am6528-iot2050-basic-pg2.dts    |   2 +
+ .../boot/dts/ti/k3-am6528-iot2050-basic.dts   |   5 +
+ .../dts/ti/k3-am6548-iot2050-advanced-m2.dts  |  20 +-
+ .../dts/ti/k3-am6548-iot2050-advanced-pg2.dts |  10 +-
+ .../dts/ti/k3-am6548-iot2050-advanced-sm.dts  | 189 ++++
+ .../dts/ti/k3-am6548-iot2050-advanced.dts     |   1 +
+ 15 files changed, 1132 insertions(+), 897 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-arduino-connector.dtsi
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-dp.dtsi
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-usb3.dtsi
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-sm.dts
+
+-- 
+2.35.3
+
 
