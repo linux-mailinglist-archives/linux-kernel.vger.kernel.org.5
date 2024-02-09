@@ -1,79 +1,94 @@
-Return-Path: <linux-kernel+bounces-59859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F87984FCA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:06:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2689084FCA5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:09:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E7E71F28E00
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:06:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB8412830E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:09:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E5A486AC5;
-	Fri,  9 Feb 2024 19:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228298287F;
+	Fri,  9 Feb 2024 19:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Dou+h7Xa"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="w+ucZjAL";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="V6VQs3pY"
+Received: from fhigh6-smtp.messagingengine.com (fhigh6-smtp.messagingengine.com [103.168.172.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1960384A3F;
-	Fri,  9 Feb 2024 19:06:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA1702E3F7;
+	Fri,  9 Feb 2024 19:08:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707505569; cv=none; b=jqsBduOePoAbT1HQt/+kFB822UhG4OkDEb9uRikrGWF8MMRxQ9g5kG1XgqLlkLVrpgG+/ulXzqhOaQfNEgTrNRLmh5c5sFpEtToF94vyCZZiUVb/rqtBW/bLSkc50ebEIVX9QZqS+3KoHrKpPI7jvapPn47eIq8Wq/g6yG3Ak7U=
+	t=1707505741; cv=none; b=HxX8c0RSK+riKQclbt8qYASElnYAR+GRL1yeI1d/QCl0SgHDaUqDtotG7bOszJGD10DgLV4K9mErNZb3fRmV3RfwowYDuu5Q+hPgHsysK6z50bBZabNBh68G2bbPRiBQEUHcHHw7YtNFITzLk+4LPqRiPbB5ZrT/29HJ16K4KIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707505569; c=relaxed/simple;
-	bh=bIcHkUcTe01Z5+BZ75l+ELTY5lq3c2PvPuqRwnGgQCE=;
+	s=arc-20240116; t=1707505741; c=relaxed/simple;
+	bh=+Az18EmozWnGENlBFvdl2uyGh3hA8/mru7NNCHcuS7s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OVa3vadgQZ4mXrioGhm/4R88GeaAOLSg19DYuGkWgN1Xm9nwh6nwzoPv0rWmoNv5OtpY5bs9iwyj3xVF/ho090gqNkFciqssBN4FgwxpMVfO0HNXWBSIW7PucV85J2lUbfB70u08U4zPSTjoT091JrBXwmKKvNW/ezwQfk1puFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Dou+h7Xa; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707505567; x=1739041567;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bIcHkUcTe01Z5+BZ75l+ELTY5lq3c2PvPuqRwnGgQCE=;
-  b=Dou+h7XaUfVq85I8jvsINrBxFTjTtn3dBxHZ9UtmYu6ZUODOvXgiK5Ag
-   7845lbCm/pJTuq9l5RUQZuP/34xICs9d5QmE1zk6wjSQ+fvB0rcdDNy1k
-   EvgSealaP9zhE7DYvD7UwqCnOa4RyjK/IwRIyXCLIuwfzcHm5F8sMYfbJ
-   oZy4kJmXc9G02teg0r1gNwPQEXc/PKaYbOikzQ6PjwmwpmsrRZsbmoiA8
-   7ypyMCrXxkCIXx21b0CrYnxwKQVZjDyaq2cVx8v9uHIyzJPNRs3Cg7dA4
-   Se+xWq+bcqA1rR5UfdrXeVVsx9jT4ThW59khtcZGIGnzbuN1OY1USAy2y
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1392489"
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="1392489"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 11:06:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="6661661"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 11:06:05 -0800
-Date: Fri, 9 Feb 2024 11:06:05 -0800
-From: Tony Luck <tony.luck@intel.com>
-To: "Moger, Babu" <babu.moger@amd.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Peter Newman <peternewman@google.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-	Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-	James Morse <james.morse@arm.com>,
-	Jamie Iles <quic_jiles@quicinc.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Drew Fustini <dfustini@baylibre.com>, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, patches@lists.linux.dev
-Subject: Re: [PATCH v15-RFC 4/8] x86/resctrl: Add helper function to look up
- domain_id from scope
-Message-ID: <ZcZ3nVgWPpPBi1QA@agluck-desk3>
-References: <20240126223837.21835-1-tony.luck@intel.com>
- <20240130222034.37181-1-tony.luck@intel.com>
- <20240130222034.37181-5-tony.luck@intel.com>
- <ef4b6a21-a477-42f0-950c-246b5cc48f47@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DiiuFsFh42zLhUm8aewgobpv8Qs3aCwvzW0tjApo1c40fbcxTQ/nUVSV58WBBMU/uERGhG7scGhtIpk8na2+o2lVpOllguO+shiyq5CbWt+Hf7ru8K2TvbLv/r1JYa71tZAhULjCGGvG3TkjLcHooOIZq4UbAA9fq5XcfV1o6bo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=w+ucZjAL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=V6VQs3pY; arc=none smtp.client-ip=103.168.172.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id B3B9D1140085;
+	Fri,  9 Feb 2024 14:08:57 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 09 Feb 2024 14:08:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1707505737; x=1707592137; bh=SAe6fmg2iu
+	kgmMmSnSkobKVPLF6RTasrBQRLnrKYkHY=; b=w+ucZjAL8FE7GIe1p0B8EkVpU1
+	4SdP99jEVmNljXi4FCxlWrmD1p5kbEIiLMQ4/vKN3hYg5t49CmC/EerE4T4Vw4gm
+	iishwdjp9Vg6JMm4NgCnkh5EFV7hQcQTvWPecri3Xp25jIDe2gD4/2bk3D/IM0hw
+	ysDWKiHgi6ybo5WqvPCBUypBCJx1LtRFuEt+C+pvBtBd7S/tfkZ4rRQCFSyIWWTS
+	GuvCJx+NW25EDfDBTRK1fYEnEuuJ86FDZYToBWeq3HKQoFZnCzxn2M2Lc1wGVfdk
+	ozD0mIQNzG8HXkrIy5qKuS6sg+3FORHwsRg/ZwGtLqx0BB9pIvukjlY6NPeQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707505737; x=1707592137; bh=SAe6fmg2iukgmMmSnSkobKVPLF6R
+	TasrBQRLnrKYkHY=; b=V6VQs3pYr5cojBStLX+VeoMBgTE/9rLlTrQc9WQLSZnc
+	37UKHkca/lIdAst33VWfPlVkVpxJJugkEHJ+LM5l/PyajfzFHaQN79j36QAk44BI
+	p7TIKLNk+y/YjlCxCZhA/fjHSPWfacQMr2sygo3+5FWnl70K7Oe9WnFnY7G6E9c5
+	q7Q6QetzdjKsbjPNc4SU2W8DoZj1jCgeuSAym2mVUxl/7YHVs+weBaTDBDTmaN6e
+	NKaX+HhKIy8S3CT9qXqL1ekuszyFjhqDzSE/xjVAQ1zAJX3R6c4AwC4q9RdF/yje
+	bzMZPYjf4ViM9G+Jyn8sRocn1uf/b1lAw70h1MVESA==
+X-ME-Sender: <xms:SXjGZaZCdBOwZzuUkjF3XqpnoFqqK0GHeQ7RuBpOKb1692JGLsjM5Q>
+    <xme:SXjGZdagX2mitSwCDJ3hEBMFlrM5xdKXMgnBljjIt5-fOe8Y6YZUdOI__zMcjRdmV
+    YT-vpHsqMlPmMYEVi0>
+X-ME-Received: <xmr:SXjGZU8X4JjyVvRd1DpwxtJvmHL-f-Nn5RrMF_OKAHIMkcOSYCVdM6gh4hA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtdeigdduudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghh
+    ohcutehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrf
+    grthhtvghrnhepueettdetgfejfeffheffffekjeeuveeifeduleegjedutdefffetkeel
+    hfelleetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epthihtghhohesthihtghhohdrphhiiiiirg
+X-ME-Proxy: <xmx:SXjGZcpSErAKQZW5jmNLTmZPB6PaV4AwvnMhLdflfcfnFaDj4CPQMA>
+    <xmx:SXjGZVqAqiiVH41rgQDlqJWKUwdAonEFWPWEu_fWSTYkPTIu_224oA>
+    <xmx:SXjGZaQeyF9JVBFAV5DZ47crlYiOoX5zcXrIfweH2ZLXSf3QK0g-Zw>
+    <xmx:SXjGZWedr_cUI5nKQBGgR3AmgkdwWWKxX5hJ8W39eRZd_BbqFqay7A>
+Feedback-ID: i21f147d5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 9 Feb 2024 14:08:56 -0500 (EST)
+Date: Fri, 9 Feb 2024 12:08:54 -0700
+From: Tycho Andersen <tycho@tycho.pizza>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Andy Lutomirski <luto@amacapital.net>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] pidfd: change pidfd_send_signal() to respect
+ PIDFD_THREAD
+Message-ID: <ZcZ4RuaiAINGH/rD@tycho.pizza>
+References: <20240209130620.GA8039@redhat.com>
+ <20240209130650.GA8048@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,28 +97,20 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ef4b6a21-a477-42f0-950c-246b5cc48f47@amd.com>
+In-Reply-To: <20240209130650.GA8048@redhat.com>
 
-On Fri, Feb 09, 2024 at 09:28:52AM -0600, Moger, Babu wrote:
-> > +	if (id < 0) {
-> > +		pr_warn_once("Can't find domain id for CPU:%d scope:%d for resource %s\n",
-> > +			     cpu, r->scope, r->name);
+On Fri, Feb 09, 2024 at 02:06:50PM +0100, Oleg Nesterov wrote:
+> Turn kill_pid_info() into kill_pid_info_type(), this allows to pass any
+> pid_type to group_send_sig_info(), despite its name it should work fine
+> even if type = PIDTYPE_PID.
 > 
-> Will it be good to move pr_warn_once inside get_domain_id_from_scope
-> instead of repeating during every call?
-
-Yes. Will move from here to get_domain_id_from_scope().
-
-> > +	if (id < 0) {
-> > +		pr_warn_once("Can't find domain id for CPU:%d scope:%d for resource %s\n",
-> > +			     cpu, r->scope, r->name);
+> Change pidfd_send_signal() to use PIDTYPE_PID or PIDTYPE_TGID depending
+> on PIDFD_THREAD.
 > 
-> Same comment as above. Will it be good to move pr_warn_once inside
-> get_domain_id_from_scope ?
+> While at it kill another TODO comment in pidfd_show_fdinfo(). As Christian
+> expains fdinfo reports f_flags, userspace can already detect PIDFD_THREAD.
+> 
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 
-Moved this one too.
-
-Thanks
-
--Tony
+Reviewed-by: Tycho Andersen <tandersen@netflix.com>
 
