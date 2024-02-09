@@ -1,140 +1,147 @@
-Return-Path: <linux-kernel+bounces-59400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F70584F65D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:01:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6C6A84F594
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:04:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEF741F284D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:01:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 626501F26F54
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C249C51C5F;
-	Fri,  9 Feb 2024 14:00:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D1137700;
+	Fri,  9 Feb 2024 13:04:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=internet.ru header.i=@internet.ru header.b="ZXIGRKoH";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=internet.ru header.i=@internet.ru header.b="LVfb6aQ0"
-Received: from fallback23.i.mail.ru (fallback23.i.mail.ru [79.137.243.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Yifm7DTn"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C39B4EB3E;
-	Fri,  9 Feb 2024 14:00:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F157033CC2
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 13:04:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707487249; cv=none; b=eYUPLL3YxF+R03ZIIrx22Sj3y3c9c7D5DFdoRFuzx4gcWA6XRnRCrtgtIOYdvfZf8QG6VKrP38tpsPZTPikcxcXvvhYPLzYSvuUvpVxnBhbgThI23hV2SrBGaRNcKNICjgUQLiF5O5OOhAxvXtz8d2NjJvQNTFW33MHByS3/a7o=
+	t=1707483872; cv=none; b=g52HH/8Gxr6GrFSQXSqGu3Uft31qcsHeqGCkdXydVATgm63V8M/+oESYxn5MHQKIMpBez/Fyz5tsan/VhzTYMAz+8621Esg0PbH3dCsMXPwy0fk5BacdCjctvWBeQnlEioPlPYHI6+yPtPJM00FE9zYjns4QJUdhSWhByaRZ1YI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707487249; c=relaxed/simple;
-	bh=9R8XflEy1GvVWnHgELQlGqriNJI//CyLvhuzWUd/JI0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eX+BU++JOP/DHksAEaXbdXP0BX6tWfXtbsSL9zKa61VE0iQc4oBrpn4nC/2slSogr9nnLgjAmfQhgcCC1Kdd/GuK0PL+11Iixs4/yjP2gTs25wvF15cqZHelVytWeLMOHia+1eXIg9Rs/ICH3EVl9od6TAZpgNMr7URI+FPj3mE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=internet.ru; spf=pass smtp.mailfrom=internet.ru; dkim=pass (2048-bit key) header.d=internet.ru header.i=@internet.ru header.b=ZXIGRKoH; dkim=pass (2048-bit key) header.d=internet.ru header.i=@internet.ru header.b=LVfb6aQ0; arc=none smtp.client-ip=79.137.243.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=internet.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=internet.ru
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=internet.ru; s=mail4;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=VxkXegGgaEAXtRmwoqDWMb2Vd2sr4lAgDIoUzVu5F9U=;
-	t=1707487245;x=1707577245; 
-	b=ZXIGRKoHR8VK5GnNmBNiUAWGAiAdKTWKg/C9rGYCMOsQpg16DrMiFo8IP0V8h6hAUKmKsfmZHW8u+nw9Wg5/DqmsnUsuDDAi6RHFCHbR3EM3BVtc3TsHSQ506ey4timmtq/ibADsLLk4otfq0fmbKYw6rq0bMG+yZlE4Md7djVaF2sk+94eLpJjFZgSw6w5+EiFLyxZo7CAikiN8Bc3hYwWaxWYc7+MSZPz9+zvFqLWDaYmr0tkUw8UUpq1UBe52lboSVwFrtU0b4dOVZ72rg1Z4+WpIwX32JnSZFhsK+wJZBieQwfrtgd3kxk8OLlJO0ewRFFltrMZmSGadVUtrUw==;
-Received: from [10.12.4.29] (port=34066 helo=smtp51.i.mail.ru)
-	by fallback23.i.mail.ru with esmtp (envelope-from <max@internet.ru>)
-	id 1rYQM7-00Bji8-Gq; Fri, 09 Feb 2024 15:51:47 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=internet.ru
-	; s=mail4; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Sender:Reply-To:To
-	:Cc:Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
-	List-Archive:X-Cloud-Ids:Disposition-Notification-To;
-	bh=VxkXegGgaEAXtRmwoqDWMb2Vd2sr4lAgDIoUzVu5F9U=; t=1707483107; x=1707573107; 
-	b=LVfb6aQ0X6xJEu+/s/xF/UMwhubC5iKrVDUu1p4LpOfV5OXLKK8CSNzxehGyAWioZr+HFF7FAss
-	zLzkaDBeh00Ngd8pWEcI78FFHl3UNFtDxVGBR779wa03JrJvl8eKmC+vg0yURbAPqEUFT8150TouN
-	S3Eu+mVVp0+55zLce53Jn9s8Zg9BMWdhH7I66NZhDI2pvI9y3H65vqvlAZUgfjbPyIxBW21XmEjmt
-	xYQ00/bsG7obuBecTLYdGDU6i8gXpk9GBaN4NnbLYB+d938IHuFThQIPQFVoRJtOe28gseEECtBaI
-	6QxuPlu1QbcFNlWDUDc6AATe4OaZs+7QHpZg==;
-Received: by smtp51.i.mail.ru with esmtpa (envelope-from <max@internet.ru>)
-	id 1rYQLr-00000002uy9-0HxX; Fri, 09 Feb 2024 15:51:31 +0300
-Message-ID: <4cab7f95-b4b7-4435-ac70-706ee7a9f7af@internet.ru>
-Date: Fri, 9 Feb 2024 15:51:30 +0300
+	s=arc-20240116; t=1707483872; c=relaxed/simple;
+	bh=0Rdy9TOamec05pHu6p+gQ/++fRDx1JB9FW/7My45fbg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ART7hUHcwA5QGC+ImpXHxz3K70Y+gI3kQHHAKFpsN4h4tpKt0zFjqz8lvGqJEShdx1dQyBwSI79iVecOk7fsgYAN0giMJHJ6G44Sh0C7aHVpAwG57+10VAgBLdL5uw4NvW0H8XAKOQDjcb1mlH69O0mxKVFgViEj8aiXw+6Lf3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Yifm7DTn; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5f0fd486b9aso16031817b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 05:04:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707483870; x=1708088670; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=insYPbe2LWIxwJ7By9R9UOr7vJ7uLjEBVu84zB6ipQ8=;
+        b=Yifm7DTnagXdwgLqfrsGAj78OVsC7ItsUWKq68n9MjWaX+NG6NNnLBBElL7dkbsnRk
+         aisXwN3gOJ589jtkW8bSCqyoQZTNaBYs0G0iUPGT8MMHI6A82i73hVIYbDsHQ6swG2e5
+         iBg5R5WAEtlfgJd22Zx471ibNrb2T10B4MqMcz9GGDKMxYZfnsYxxiv1zTb0eckfgKnM
+         W/7lj+qfmDuVGMOIOry4bIrY0SusoZ+xMV6I6q9C1sXkQiJ8O1XHXRVBebMrXdY/WlGF
+         oqx+vPuu+505bxQMrwJ28FtSulfaZmsIFpvYEz2OuYKx0yWmtU/pmBdb22k4HePybc2t
+         XAhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707483870; x=1708088670;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=insYPbe2LWIxwJ7By9R9UOr7vJ7uLjEBVu84zB6ipQ8=;
+        b=fpabUb5U9Q/Go78jf+O3SIMzFdhb1ZWFJYK6qnutbNEwM5Z+PLXNXz3yN6sMI4bfqA
+         oLewX/VFETdFjg7Cgb24HWAhhcF9PD81xi2keACKXAx/5yjQwsj31TjP9UfVdW5fJnkl
+         Cg2LsNeNh1Gi9IutcJi6gDQW8ZLu/AvUtBM+lN2Hl6cV5r+xShz6Whvl+Y1q4QK25AAf
+         +NPQFxM2n0sePHjm1gjr+SWRFPGzaMgGZkCyLHg5roHyuLbD6ex8e1pw5WXGwtyRO99A
+         AjI9SjjvhX/sExMAUVtBOMzgNbrM9rSFDIZEDHJXNqCIHoAqt2tbjDQyvwKXxivOWtXR
+         4wjA==
+X-Forwarded-Encrypted: i=1; AJvYcCUl69GDcvX5AxYm/ycu2MwjYfBbRgbvRePh87CWauljZ9JeUxYW9KWn5nNI0pUNW3HvAiIWGZjgXEOKZXd2BaIdeffVTIGZP7cL/SdB
+X-Gm-Message-State: AOJu0YwxxcU+uWhJ3pyRNUHotMLTyTiZmtlNgjJPLnHuAs3ux8pCGjwx
+	PMDGZWucBPL/dcirvGaIz0qrghzuOam3bHkU4r/ff3F9KKssR66QGPXYO8uhYhhOmm5lyUqnzhJ
+	SncXMvxkAxp1oDg==
+X-Google-Smtp-Source: AGHT+IEppdw1Za5zeZOND5rjDh9jVmoIbkOr1Ng4ciXyJrTBAjx/lSHwBXtrOJheycOWEzUqBlgzI09j1f3i2kw=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a81:8491:0:b0:604:9b73:ee86 with SMTP id
+ u139-20020a818491000000b006049b73ee86mr180790ywf.4.1707483870075; Fri, 09 Feb
+ 2024 05:04:30 -0800 (PST)
+Date: Fri,  9 Feb 2024 13:04:26 +0000
+In-Reply-To: <20240205-b4-rbtree-v1-2-995e3eee38c0@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: selftests: net: ip_local_port_range.c:152:17: error: use of
- undeclared identifier 'IPPROTO_MPTCP'
-Content-Language: en-US
-To: Naresh Kamboju <naresh.kamboju@linaro.org>,
- open list <linux-kernel@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
- lkft-triage@lists.linaro.org,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Mat Martineau <martineau@kernel.org>, Matthieu Baerts <matttbe@kernel.org>,
- Dan Carpenter <dan.carpenter@linaro.org>
-References: <CA+G9fYvGO5q4o_Td_kyQgYieXWKw6ktMa-Q0sBu6S-0y3w2aEQ@mail.gmail.com>
-From: Maxim Galaganov <max@internet.ru>
-In-Reply-To: <CA+G9fYvGO5q4o_Td_kyQgYieXWKw6ktMa-Q0sBu6S-0y3w2aEQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailru-Src: smtp
-X-7564579A: B8F34718100C35BD
-X-77F55803: 4F1203BC0FB41BD91FEFD63CE1B099160922320F7AC456A94DC8673006C014C500894C459B0CD1B9D7F94F945D188441059F388C0C08629F620704A47C80C09DD29AACF440A121D5F82D89A8CF7DB8F5
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE789066434B85BF7C7EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637645995A778B1BFFAEA1F7E6F0F101C6723150C8DA25C47586E58E00D9D99D84E1BDDB23E98D2D38B73AB1701401CD871DC445240DEB7C3F79CBAE9706FE160F0C5DCEB904BEA41701DF9E95F17B0083B26EA987F6312C9EC1E561CDFBCA1751FBDFBBEFFF4125B51D2E47CDBA5A96583C09775C1D3CA48CFCAFEF312542AECBE117882F4460429724CE54428C33FAD30A8DF7F3B2552694AC26CFBAC0749D213D2E47CDBA5A9658378DA827A17800CE7ECC8AC47CD0EDEFF8941B15DA834481F9449624AB7ADAF37BA3038C0950A5D3613377AFFFEAFD269176DF2183F8FC7C0CFA063A519E5965DD8FC6C240DEA76429C9F4D5AE37F343AA9539A8B242431040A6AB1C7CE11FEE3F254576263B31EA9BA3038C0950A5D36B5C8C57E37DE458B330BD67F2E7D9AF16D1867E19FE14079C09775C1D3CA48CFED8438A78DFE0A9E1DD303D21008E298D5E8D9A59859A8B6B372FE9A2E580EFC725E5C173C3A84C3F8A0C55DE5E8D0B235872C767BF85DA2F004C90652538430E4A6367B16DE6309
-X-C1DE0DAB: 0D63561A33F958A5D021C19C85C1B7EF5002B1117B3ED696E694C31D5CFF9A30886DC9BC01168B20823CB91A9FED034534781492E4B8EEAD4DBC88E915B2EE6EBDAD6C7F3747799A
-X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF198EE22E71AE2DD9C28E956DD66364A3224249DB96821071B4A889DB714A187017C141E43CE0FC0B766A7423F6D95CBE36CF67735E85545AA1D5625B4B3E74DB77A5FBCDC18C9D73034D55ECCE8C67C6913E6812662D5F2AF819E4E9E0B743E60C42D9497D1EF92B37E69C174A41D00C
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojt6itc0777ZpNqpeiGAWfCQ==
-X-Mailru-Sender: 4A46F6E6BB1A04662A3B81E17F92FA49D7F94F945D188441059F388C0C08629F9266CF7AFE747003AF8E75F3432433F792BBD60AF8093D9D3DDE9B364B0DF289325BD006FD28D9A0A3EAC56F6A374A440D4ABDE8C577C2ED
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B46EA299E95BC82A782CFFFEF9892CBE786A78F94A7442A9D4049FFFDB7839CE9E2038077D049FFA754221AC94B40854C65393021305979B0746BAECE0B58432E6
-X-7FA49CB5: 0D63561A33F958A581FCDB0A302B95CAE84D297273A148AC13D0DE3AC07C5D27CACD7DF95DA8FC8BD5E8D9A59859A8B64071617579528AACCC7F00164DA146DAFE8445B8C89999728AA50765F79006370A2DD59B67EFEE27389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8D56D36E97F3F038CF6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA775ECD9A6C639B01B78DA827A17800CE73DAC09F78A8B01BF731C566533BA786AA5CC5B56E945C8DA
-X-87b9d050: 1
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojt6itc0777ZpPkZY9rHCfFw==
-X-Mailru-MI: 8000000000000800
-X-Mras: Ok
+Mime-Version: 1.0
+References: <20240205-b4-rbtree-v1-2-995e3eee38c0@google.com>
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
+Message-ID: <20240209130426.1791631-1-aliceryhl@google.com>
+Subject: Re: [PATCH 2/6] rust: rbtree: add red-black tree implementation
+ backed by the C version
+From: Alice Ryhl <aliceryhl@google.com>
+To: mattgilbride@google.com
+Cc: a.hindborg@samsung.com, alex.gaynor@gmail.com, aliceryhl@google.com, 
+	arve@android.com, benno.lossin@proton.me, bjorn3_gh@protonmail.com, 
+	boqun.feng@gmail.com, brauner@kernel.org, cmllamas@google.com, 
+	dave@stgolabs.net, gary@garyguo.net, gregkh@linuxfoundation.org, 
+	joel@joelfernandes.org, linux-kernel@vger.kernel.org, maco@android.com, 
+	michel@lespinasse.org, ojeda@kernel.org, rob@landley.net, 
+	rust-for-linux@vger.kernel.org, surenb@google.com, tkjos@android.com, 
+	wedsonaf@gmail.com
+Content-Type: text/plain; charset="utf-8"
 
-On 09.02.2024 13:55, Naresh Kamboju wrote:
-> I encountered the following build errors while compiling the selftests net
-> test cases on Linux next-20240208 tag with clang toolchain.
+> From: Wedson Almeida Filho <wedsonaf@gmail.com>
 > 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> The rust rbtree exposes a map-like interface over keys and values,
+> backed by the kernel red-black tree implementation. Values can be
+> inserted, deleted, and retrieved from a `RBTree` by key.
 > 
-> selftests/net/ip_local_port_range
-> ip_local_port_range.c:152:17: error: use of undeclared identifier
-> 'IPPROTO_MPTCP'
->    152 |         .so_protocol    = IPPROTO_MPTCP,
->        |                           ^
-> ip_local_port_range.c:176:17: error: use of undeclared identifier
-> 'IPPROTO_MPTCP'
->    176 |         .so_protocol    = IPPROTO_MPTCP,
->        |                           ^
-> 2 errors generated.
+> This base abstraction is used by binder to store key/value
+> pairs and perform lookups, for example the patch
+> "[PATCH RFC 03/20] rust_binder: add threading support"
+> in the binder RFC [1].
 > 
-> Build link,
->   - https://storage.tuxsuite.com/public/linaro/lkft/builds/2c4LtUoRSYhdGbErOY8hqHxc6Tu/
+> Link: https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-3-08ba9197f637@google.com/ [1]
+> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
+> Signed-off-by: Matt Gilbride <mattgilbride@google.com>
 
-The glibc netinet/in.h header in the test container does not have 
-IPPROTO_MPTCP definition. It is included first through netinet/ip.h and 
-then __UAPI_DEF_IN_IPPROTO is set in linux/libc-compat.h -- so no 
-definition comes from include/uapi/linux/in.h either.
+I have looked at these bindings many times over the past year. They
+look good to me, modulo a few nits included in this email.
 
-# ldd --version
-ldd (Debian GLIBC 2.31-13+deb11u7) 2.31
-..
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 
-# grep -q IPPROTO_MPTCP /usr/include/netinet/in.h ; echo $?
-1
+These abstractions have been very heavily exercised by the Rust Binder
+driver.
 
-I'll send an ifndef/define/endif IPPROTO_MPTCP patch to netdev once it's 
-build tested. Thank you for the report.
+Tested-by: Alice Ryhl <aliceryhl@google.com>
 
-Broken by commit 122db5e3634b ("selftests/net: add MPTCP coverage for 
-IP_LOCAL_PORT_RANGE")
+> +//! Red-black trees.
+> +//!
+> +//! C header: [`include/linux/rbtree.h`](../../../../include/linux/rbtree.h)
+> +//!
+> +//! Reference: <https://www.kernel.org/doc/html/latest/core-api/rbtree.html>
 
-> 
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+We changed these links, so it should say this instead:
 
+[`include/linux/rbtree.h`](srctree/include/linux/rbtree.h)
+
+> +    /// Allocates memory for a node to be eventually initialised and inserted into the tree via a
+> +    /// call to [`RBTree::insert`].
+> +    pub fn try_reserve_node() -> Result<RBTreeNodeReservation<K, V>> {
+> +        Ok(RBTreeNodeReservation {
+> +            node: Box::try_new(MaybeUninit::uninit())?,
+> +        })
+> +    }
+
+This can be:
+
+	use crate::prelude::*;
+	use core::convert::Infallible;
+	
+	Ok(RBTreeNodeReservation {
+	    node: Box::init::<Infallible>(crate::init::uninit())?,
+	})
+
+It might be slightly more verbose, but guarantees that we don't allocate
+space for the value on the stack.
+
+Alice
 
