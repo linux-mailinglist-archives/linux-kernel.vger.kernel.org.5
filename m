@@ -1,119 +1,278 @@
-Return-Path: <linux-kernel+bounces-59067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7246684F0BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:25:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BA2384F0BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:28:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3F781C250C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:25:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6F9A290012
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:28:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A36D657D3;
-	Fri,  9 Feb 2024 07:25:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5E6057312;
+	Fri,  9 Feb 2024 07:28:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YIsvn0/P"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="D0TY7ONo"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A70F4657B7;
-	Fri,  9 Feb 2024 07:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F22CD657B1;
+	Fri,  9 Feb 2024 07:28:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707463502; cv=none; b=Qr0WIhq+6SVJshfdsdrfzk48QmSnrRhYERcWKSFfuoCDBjX6ZLvbPxs+TrpXnerOh7flN7MlcEItLjmBXKlQXuDCIzlzuIb3JTOx/Hcnav9s4RVrS9O4DHmXOmrYwnwm0etDAHhy2lKMPVfn2lplnILJGG9ecp4eyv3Tnib7s3I=
+	t=1707463711; cv=none; b=j3rPL6Irpt2FoVH4N2oXHYc1t0avOv0bfPytLh9FcgD4mcs8rDuFSNYxfcWSfWCT27YzpDWr/kVc0VwpI+iGlQDOjvzsHvaLp7Y7N1AdhkzHynamj2ds4iYav23YIbr9SgBUR7mC7zJb9blWQPP0Z9AWR4J50hanwkFfx5fgUso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707463502; c=relaxed/simple;
-	bh=rsmnzsz5GNmHcSYK3iHXVA/WXaZ8lTmW8zulPyJVVGI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=o2drAx3tAG6ByZJ7Ws0y9B+NpAGDXxBkCsxyDgH3YcryoZgrsjfh3v7+X116X5LdDDrJT9e0AWFiXvYG+K2JhnGqPf/SyNFzGDksrbelmK7b5zN5QXWBoYv5QiRbOfOCv90usHuZzMyMNcSSditCL5oFcoS5OLlPpHC8ccVcoBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YIsvn0/P; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5116b540163so1014546e87.1;
-        Thu, 08 Feb 2024 23:25:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707463498; x=1708068298; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pdG3hSNGGNzr2pOTIyIMpLiclcO5pq5s1cnkvilc9io=;
-        b=YIsvn0/PyPivVoKOpLN3vPf+532I11c3ka3S8BXtkAGHQ4/rGysDTBHjI4L/p3rPyb
-         e1wjHHX/7c+G/q+oMsuUq/8TbSv3MXGbFZpf0G8ujCMowcFgon+GUzb2PywvVBz7wAOp
-         DrMxTJlTUH2775e5/WtSHjceR99vus/OOLrzR4RTBr0OUOcscDMWur9g+2tG3I6Dl4kK
-         ukoQe+8tbStfq++Q7UzsLTbtkyxfque/hduCjvlHafl9Ldc/QtA6E8FjdA8N8FWKw3Rq
-         QqGtYP1Wp7dH+ozWqobxyjt7Pr5KoZKyYPRBvZKY+l9EETmo42+IivcI77pQho0GXaw3
-         3dJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707463498; x=1708068298;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pdG3hSNGGNzr2pOTIyIMpLiclcO5pq5s1cnkvilc9io=;
-        b=hfQ3SzBU2+aphW1S/6im6IkplwOj9HAc71kclbdbJEMkcoR5vxJKVlkHjMg66T8zz3
-         LVIdrHlllI8YbJ4/ze+1ZquF8NFArneL47ZUbi0zWZ4/cqZ6q9lokl3VIrgxFkREFmev
-         jVyM62BHY2TZfRAwLmTaxFV1PKC+ummtyWce7nhy39KxmyQEfNp30q9Qd+/6mXhh/lD3
-         on6sJujLZPT5vDHCVSNLYfJn9vDBVSEuv7+I+z509FSokAIBsemfkRbnSdIXBqDfY74N
-         uK9NQYnGt6OO9isoz7xCrQPoBILgRJjTWX40OJI5M4umG+sT2aU2wWwYvJsi/mCzPUYj
-         VxMA==
-X-Gm-Message-State: AOJu0Yx6RESia4VRi1pIXapAxF3Hp0jH1SHKbBPhSTvVeM92ZFMjXf8E
-	xw4sFoTu6sJ0Wrt/5oofrLnQsOLOElXy2bZtQuic/QZGv9TPN1m9
-X-Google-Smtp-Source: AGHT+IFb0xkO87iajvnu/RbrVAPg0isliEel8BvJnRkKJGUPpTxcrJm/nJ0DjzFAmMTSwgwn4ZHkXw==
-X-Received: by 2002:ac2:5382:0:b0:511:4e6a:52fd with SMTP id g2-20020ac25382000000b005114e6a52fdmr423108lfh.3.1707463498323;
-        Thu, 08 Feb 2024 23:24:58 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVmi3o04Mdh3bqS+nHOZJmxKHpty+1hF0QEis1iuO4IqPlOp4kP98t7IUFwkPEa7qgTROukdKO5UVrwk0cWNyAqh6wShS8HW9ZFd+T8IlacrnFkWPK8ttTuvwUIzCeaNiCvS3qHXJ5jXwv5MUFKF+LGXlQhWaTswrb4P50bqtWeagCAu/IbDeY29Ey7f2fz9d9BP5Ko26GY5Oq3kn/DeSqNV7YLRzjzlVN8M5ESVphOl9V0FUmx1YTsZhbiMVcQt4F9aTcjfUv5h0K3rqhDIrs4trxuWjVyE9eCxg/LydWXan7RDD1MSCHc6RObeAKMkCNEWVwhLrMt0nQ11aLpAicm9R28EqPeoHNBe5+xRKnQxyy7bpG5po1SkpNLXoyIDtE8lr4MQDt6Of+0wPAnrX1F5tUNnuKSiidhBp3grKSIKHcEDTJwyutHhtMrhDADr3GCvxKJVS3v++U=
-Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.googlemail.com with ESMTPSA id z13-20020a170906714d00b00a370e130fc0sm478163ejj.59.2024.02.08.23.24.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Feb 2024 23:24:57 -0800 (PST)
-Message-ID: <6012ec99-4246-41b6-adb2-1bcd4dd159ac@gmail.com>
-Date: Fri, 9 Feb 2024 08:24:56 +0100
+	s=arc-20240116; t=1707463711; c=relaxed/simple;
+	bh=P1xJ8sKPXwvCAM9GQOzqx5nOqlNR4AJfnRDwSoBHvqI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=PnjFCqcvh94FM2hRqVMxfurbVbOa2OzBPPJnRVWUoJ7PRi0MVR1Nls9ji9mOnsiZPMY2+EPb7yoGFORozZG68TBxXavIzKM+LJEJpv7G3izcdKrls+b3ETXENQE7mY4sHI96beIKvBHLn/SRqIiR71nRVTU48+H1GZnmybnIRLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=D0TY7ONo; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4194PvMJ023980;
+	Fri, 9 Feb 2024 07:28:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=v4t0e8PHCfrAGxEvMThUV11S+56I7Pcp7j/QBbTNNzg=; b=D0
+	TY7ONo3So7UhI+Rs4SursYKISCY1d/WFdnmx63ontDxklDJqRROm4I4y4qCb4fgx
+	YQdhnUJBgk1h3DfB0oW1em22CLjJM3EzUUgU5H3PX6pdLiR+RfZyYoJ+GXqbY+By
+	gk6cUdCa6qyXuSGgZrDW+toQAPcs+++ywHCq02NX9djxsITrbB5pTBuV6PyHa2ot
+	UORmysnI0je5SvNJRsILz07n03ezG7tszczgpqoDlJSVa073szGGdAvoKwW59h+m
+	j4XqYN6f0AiE03EKloCVtrOObaV7D1fnnjKlD/gPG8/iro04g2UCnFCT9WdT7HHl
+	yAmTdZHGA10tx8hxFp0g==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w4rk83ap9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 07:28:25 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4197SOKk016252
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 9 Feb 2024 07:28:24 GMT
+Received: from [10.216.50.187] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 8 Feb
+ 2024 23:28:18 -0800
+Message-ID: <c8be2bbf-a51c-a38f-6e6f-a88801f953d5@quicinc.com>
+Date: Fri, 9 Feb 2024 12:58:15 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: media: convert Mediatek consumer IR to the
- json-schema
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240124095230.25704-1-zajec5@gmail.com>
- <62fca33c-eb1a-42ad-b7f7-31b14f0aa446@collabora.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH] arm64: dts: qcom: qcs6490-rb3gen2: Add PCIe nodes
 Content-Language: en-US
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-In-Reply-To: <62fca33c-eb1a-42ad-b7f7-31b14f0aa446@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_parass@quicinc.com>
+References: <20240207-enable_pcie-v1-1-b684afa6371c@quicinc.com>
+ <CAA8EJpqjm_2aE+7BtMkFUdet11q7v_jyHbUEpiDHSBSnzhndYA@mail.gmail.com>
+ <dec2976e-6e1e-6121-e175-210377ff6925@quicinc.com>
+ <CAA8EJprsm5Tw=vFpmfEKL8fxS-S+aW+YR0byfyL=v78k75TGEw@mail.gmail.com>
+ <3ad77846-b4a8-80ee-e9e1-d5cbf4add6d8@quicinc.com>
+ <CAA8EJprRF0tVFZK9c=MT8bSRcBdRvcugBaeEzpX5-wfRyNgc3Q@mail.gmail.com>
+From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <CAA8EJprRF0tVFZK9c=MT8bSRcBdRvcugBaeEzpX5-wfRyNgc3Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: vy5LU8xy0StRrkh2EaO_UQTzZXxc-45Q
+X-Proofpoint-ORIG-GUID: vy5LU8xy0StRrkh2EaO_UQTzZXxc-45Q
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-09_04,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ phishscore=0 priorityscore=1501 adultscore=0 bulkscore=0 suspectscore=0
+ spamscore=0 impostorscore=0 mlxlogscore=999 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402090052
 
-On 24.01.2024 13:33, AngeloGioacchino Del Regno wrote:
-> The driver says:
+
+
+On 2/8/2024 8:49 PM, Dmitry Baryshkov wrote:
+> On Thu, 8 Feb 2024 at 16:58, Krishna Chaitanya Chundru
+> <quic_krichai@quicinc.com> wrote:
+>> On 2/8/2024 12:21 PM, Dmitry Baryshkov wrote:
+>>> On Thu, 8 Feb 2024 at 08:14, Krishna Chaitanya Chundru
+>>> <quic_krichai@quicinc.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 2/7/2024 5:17 PM, Dmitry Baryshkov wrote:
+>>>>> On Wed, 7 Feb 2024 at 12:42, Krishna chaitanya chundru
+>>>>> <quic_krichai@quicinc.com> wrote:
+>>>>>>
+>>>>>> Enable PCIe1 controller and its corresponding PHY nodes on
+>>>>>> qcs6490-rb3g2 platform.
+>>>>>>
+>>>>>> PCIe switch is connected to PCIe1, PCIe switch has multiple endpoints
+>>>>>> connected. For each endpoint a unique BDF will be assigned and should
+>>>>>> assign unique smmu id. So for each BDF add smmu id.
+>>>>>>
+>>>>>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>>>>>> ---
+>>>>>>     arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 42 ++++++++++++++++++++++++++++
+>>>>>>     1 file changed, 42 insertions(+)
+>>>>>>
+>>>>>> diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+>>>>>> index 8bb7d13d85f6..0082a3399453 100644
+>>>>>> --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+>>>>>> +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+>>>>>> @@ -413,6 +413,32 @@ vreg_bob_3p296: bob {
+>>>>>>            };
+>>>>>>     };
+>>>>>>
+>>>>>> +&pcie1 {
+>>>>>> +       perst-gpios = <&tlmm 2 GPIO_ACTIVE_LOW>;
+>>>>>> +
+>>>>>> +       pinctrl-0 = <&pcie1_reset_n>, <&pcie1_wake_n>;
+>>>>>> +       pinctrl-names = "default";
+>>>>>> +
+>>>>>> +       iommu-map = <0x0 &apps_smmu 0x1c80 0x1>,
+>>>>>> +                   <0x100 &apps_smmu 0x1c81 0x1>,
+>>>>>> +                   <0x208 &apps_smmu 0x1c84 0x1>,
+>>>>>> +                   <0x210 &apps_smmu 0x1c85 0x1>,
+>>>>>> +                   <0x218 &apps_smmu 0x1c86 0x1>,
+>>>>>> +                   <0x300 &apps_smmu 0x1c87 0x1>,
+>>>>>> +                   <0x400 &apps_smmu 0x1c88 0x1>,
+>>>>>> +                   <0x500 &apps_smmu 0x1c89 0x1>,
+>>>>>> +                   <0x501 &apps_smmu 0x1c90 0x1>;
+>>>>>
+>>>>> Is the iommu-map really board specific?
+>>>>>
+>>>> The iommu-map for PCIe varies if PCIe switch is connected.
+>>>> For this platform a PCIe switch is connected and for that reason
+>>>> we need to define additional smmu ID's for each BDF.
+>>>>
+>>>> For that reason we defined here as these ID's are applicable only
+>>>> for this board.
+>>>
+>>> So, these IDs are the same for all boards, just being unused on
+>>> devices which have no bridges / switches connected to this PCIe host.
+>>> If this is correct, please move them to sc7280.dtsi.
+>>>
+>> Yes ID's will be same for all boards. we can move them sc7280.dtsi
+>> but the BDF to smmu mapping will be specific to this board only.
+>> if there is some other PCIe switch with different configuration is
+>> connected to different board of same variant in future again these
+>> mapping needs to updated.
 > 
->      ir->bus = devm_clk_get(dev, "bus");
->      if (IS_ERR(ir->bus)) {
->          /*
->           * For compatibility with older device trees try unnamed
->           * ir->bus uses the same clock as ir->clock.
->           */
->          ir->bus = ir->clk;
->      }
+> Could you possibly clarify this? Are they assigned one at a time
+> manually? Or is it somehow handled by the board's TZ code, which
+> assigns them sequentially to the known endpoints? And is it done via
+> probing the link or via some static configuration?
+
+There is no assignment of SID's in TZ for PCIe.
+PCIe controller has BDF to SID mapping table which we need to
+program with the iommu map table.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/dwc/pcie-qcom.c?h=v6.8-rc3#n997
+
+Based upon switch the BDF to SID table will change for example I had two 
+switches with one switch has 2 PCIe ports and other has 3 ports one
+embedded port which supports multiple functions.
+
+For the first switch the BDF's are
+	- 0x000(root complex),
+	- 0x100(USP),
+	- 0x208(DSP 0),
+	- 0x210(DSP 1),
+	- 0x300(endpoint connected to DSP 0),
+	- 0x400( endpoint connected to DSP 1).
+
+For 2nd switch the BDF's are
+	- 0x000(root complex),
+	- 0x100(USP),
+	- 0x208(embeeded DSP 0),
+	- 0x210(DSP 1),
+	- 0x218 (DSP 2),
+	- 0x300(embedded endpoint function 0),
+	- 0x301 (embedded endpoint function 1)
+	- 0x400( endpoint connected to DSP 1)
+	- 0x500(endpoint connected to DSP2).
+
+For these two switches we need different BDF to SID table so for that
+reason we are keeping iommu map here as this is specific to this board.
+
+- Krishna Chaitanya.
+
+>>
+>> For that reason I tried to add it here.
+>>
+>> - Krishna Chaitanya.
+>>>>
+>>>> - Krishna Chaitanya.
+>>>>>> +
+>>>>>> +       status = "okay";
+>>>>>> +};
+>>>>>> +
+>>>>>> +&pcie1_phy {
+>>>>>> +       vdda-phy-supply = <&vreg_l10c_0p88>;
+>>>>>> +       vdda-pll-supply = <&vreg_l6b_1p2>;
+>>>>>> +
+>>>>>> +       status = "okay";
+>>>>>> +};
+>>>>>> +
+>>>>>>     &qupv3_id_0 {
+>>>>>>            status = "okay";
+>>>>>>     };
+>>>>>> @@ -420,6 +446,22 @@ &qupv3_id_0 {
+>>>>>>     &tlmm {
+>>>>>>            gpio-reserved-ranges = <32 2>, /* ADSP */
+>>>>>>                                   <48 4>; /* NFC */
+>>>>>> +
+>>>>>> +       pcie1_reset_n: pcie1-reset-n-state {
+>>>>>> +               pins = "gpio2";
+>>>>>> +               function = "gpio";
+>>>>>> +               drive-strength = <16>;
+>>>>>> +               output-low;
+>>>>>> +               bias-disable;
+>>>>>> +       };
+>>>>>> +
+>>>>>> +       pcie1_wake_n: pcie1-wake-n-state {
+>>>>>> +               pins = "gpio3";
+>>>>>> +               function = "gpio";
+>>>>>> +               drive-strength = <2>;
+>>>>>> +               bias-pull-up;
+>>>>>> +       };
+>>>>>> +
+>>>>>>     };
+>>>>>>
+>>>>>>     &uart5 {
+>>>>>>
+>>>>>> ---
+>>>>>> base-commit: 70d201a40823acba23899342d62bc2644051ad2e
+>>>>>> change-id: 20240207-enable_pcie-95b1d6612b27
+>>>>>>
+>>>>>> Best regards,
+>>>>>> --
+>>>>>> Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>>>>>>
+>>>>>>
+>>>>>
+>>>>>
+>>>
+>>>
+>>>
 > 
-> This makes me think that requiring *one* clock on MT7623 would be a mistake
-> and the devicetree should use clk, bus - CLK_INFRA_IRRX_PD, CLK_TOP_F10M_REF_SEL.
-
-Looking at mt2701-clk.h I can see CLK_INFRA_IRRX (which I guess you
-meant above).
-
-I can't find CLK_TOP_F10M_REF_SEL however. This seems to be available on
-MT7622 and MT7629 only.
-Could you take another look at it, please? Can you somehow verify what
-clock should be used by IR on MT7623?
+> 
+> 
 
