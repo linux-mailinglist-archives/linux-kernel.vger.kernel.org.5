@@ -1,164 +1,184 @@
-Return-Path: <linux-kernel+bounces-59596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE7A84F984
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:21:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 956A784FA73
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:01:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABFE81C21474
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:21:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 248891F2434E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:01:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4EF7AE5A;
-	Fri,  9 Feb 2024 16:21:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="jVz/5lvq"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03CA80BF7;
+	Fri,  9 Feb 2024 17:00:02 +0000 (UTC)
+Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D1438DFC;
-	Fri,  9 Feb 2024 16:21:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A081E486;
+	Fri,  9 Feb 2024 17:00:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.70.13.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707495708; cv=none; b=MRspJXZzAgyRkMQwS2ITevM+sVOLxT4G2B5EaniNTz5DT0bfM4S7GBSHdea4az1/1Rj8FjduDnzpfYNQY+JcEGOSdq+sJRppfi/qejs52QjCYIhevPCTvgCkkDaZah1HN/B5iK60CkzUbp/RvMcCfVhBU3tGeNKtduwLc0JYPRg=
+	t=1707498002; cv=none; b=kgAZ3ddtTo7sDepk8twSWyPK+mswb99tW4a64SxXMzd18Xm4PSVB7u6/wCbwtbh0vf13JfBC/mAgVvtl4Q6Lbap6sN+1ubKkJd1SBrVqzaXTIDRGO2PzcApMlsnlqNgBWCNkCiALlG1565vTXzPPU02qpO4/Up3KJv7dlffrQ24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707495708; c=relaxed/simple;
-	bh=hqjchC5NtI3mMK21Kso1MhP15+mHLJImbn68cgBfHxg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=C8xjewykjHvltUV4KTQj+BfUZuSKCXSPDLPd5H0AJQ6US9W7w3Bx3e0L4QA6vNNJd7dFzr3FV9Ou6JAzwhkj1AGMFVvt95lCB02skZcXUS2zFyPunDdA1q34fA7d1ZpNHa6zjnjETGeeU4ESVyS/35BYlpCn19CR3j57vw/LO2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=jVz/5lvq; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 419FF4lK011811;
-	Fri, 9 Feb 2024 16:21:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=YmX
-	eaovgq9gr9BjuRmCIS4CvTnAi9h5R7HzHHoe65jY=; b=jVz/5lvq1lBvZmtnDKy
-	BTiIuMSF4/mlderWUWevyvP7TQsVRmZafCuu3ZrcghInLT/UlLzykaqPmb5zY0Yz
-	5IT7UHnibny4jawMHNCCqxJc2vVfXr5CYq3P2VL5PCbyZQJx6+uIod/OmXWd/rXQ
-	OgCoH4twjo9WdiPTk9Hm6qWt3hc9U7LobSuuoYsTlhuQBqN4+KkVdbeRoW9Yrcjv
-	zKmuPQGKcLlY7PLitqxC65/CfZygkcgxrQNNkffTG6etuORODgy5E86UhlM7P50V
-	bU3fqoyM/PqKMFpBPPubOs0fp5/jOBl+MgFKN4TZCfvjSptWtnSkD2NzpmHBHFTc
-	Nzg==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w5pgpr4uv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Feb 2024 16:21:43 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 419GLg4t008928
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 9 Feb 2024 16:21:42 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 9 Feb
- 2024 08:21:42 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-Date: Fri, 9 Feb 2024 08:21:39 -0800
-Subject: [PATCH] arm64: dts: qcom: qcs6490-rb3gen2: Declare GCC clocks
- protected
+	s=arc-20240116; t=1707498002; c=relaxed/simple;
+	bh=4TJPfYzFEccNa7N8cEXWG2mJo2lv8XbuNRQ6Vf/x234=;
+	h=From:To:Cc:References:Date:In-Reply-To:Message-ID:MIME-Version:
+	 Content-Type:Subject; b=iwofnef2h5UyvJV88587HiyOk6lO7iXa0Xv9EVjKPT6Qe6ajivmMt6I1b32tjKBTYQaHHIeBAKYbIgyFBZQ/iJ0u3AH7dttFpGOQApx7Ag9QpAPYVU14ZbtxOff+9Ol5hj43OPpblg97IxS4/Z91S3UsYvXb8UetbEvPj7InlDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com; spf=pass smtp.mailfrom=xmission.com; arc=none smtp.client-ip=166.70.13.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xmission.com
+Received: from in01.mta.xmission.com ([166.70.13.51]:49702)
+	by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1rYTfF-00Dlh8-Hx; Fri, 09 Feb 2024 09:23:45 -0700
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:54500 helo=email.froward.int.ebiederm.org.xmission.com)
+	by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1rYTfE-00FRwV-G9; Fri, 09 Feb 2024 09:23:45 -0700
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>,  Andy Lutomirski
+ <luto@amacapital.net>,  Tycho Andersen <tycho@tycho.pizza>,
+  linux-api@vger.kernel.org,  linux-kernel@vger.kernel.org
+References: <20240209130620.GA8039@redhat.com>
+Date: Fri, 09 Feb 2024 10:22:23 -0600
+In-Reply-To: <20240209130620.GA8039@redhat.com> (Oleg Nesterov's message of
+	"Fri, 9 Feb 2024 14:06:20 +0100")
+Message-ID: <87sf21zjy8.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240209-qcm6490-gcc-protected-clocks-v1-1-bd3487b2e7b1@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIABJRxmUC/x3MQQqDMBAF0KvIrDsQo7XYqxQXOvmxQ63RREQQ7
- 97Q5du8kxKiItGzOCli16RhzihvBcm7n0ewumyyxtbGmpZX+TZ1a3gU4SWGDbLBsUxBPomBu++
- 9Gx7NUFEulgivx79/ddf1A7U5t31uAAAA
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Taniya Das <quic_tdas@quicinc.com>
-CC: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707495702; l=1787;
- i=quic_bjorande@quicinc.com; s=20230915; h=from:subject:message-id;
- bh=hqjchC5NtI3mMK21Kso1MhP15+mHLJImbn68cgBfHxg=;
- b=SHuHi8dxsOvDQAo1kJxth8iidY/egijXsIEMMy0DvVv7YNKEAADAoHc9DFLjIRYGO8jzmlC4k
- sEOukJY6+KyCDqTdUwJAWddRLrbIMtNYCQUYAlXsmYtyHpzaZ77WeZU
-X-Developer-Key: i=quic_bjorande@quicinc.com; a=ed25519;
- pk=VkhObtljigy9k0ZUIE1Mvr0Y+E1dgBEH9WoLQnUtbIM=
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: NBGohk0F4lz-O5S7VrtAiNq1WvGz2koP
-X-Proofpoint-GUID: NBGohk0F4lz-O5S7VrtAiNq1WvGz2koP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-09_14,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 phishscore=0 clxscore=1011 impostorscore=0 mlxscore=0
- priorityscore=1501 suspectscore=0 mlxlogscore=496 bulkscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402090120
+Content-Type: text/plain
+X-XM-SPF: eid=1rYTfE-00FRwV-G9;;;mid=<87sf21zjy8.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX19qPeXB4WCLv5Q6VcPpQcx938PWGTS/HWw=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	*  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+	*      [score: 0.4952]
+	*  0.7 XMSubLong Long Subject
+	*  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+	* -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+	*      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+	*  0.0 T_TooManySym_03 6+ unique symbols in subject
+	*  0.0 T_TooManySym_01 4+ unique symbols in subject
+	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
+	*  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Oleg Nesterov <oleg@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 453 ms - load_scoreonly_sql: 0.04 (0.0%),
+	signal_user_changed: 11 (2.4%), b_tie_ro: 10 (2.1%), parse: 0.90
+	(0.2%), extract_message_metadata: 3.8 (0.8%), get_uri_detail_list:
+	1.86 (0.4%), tests_pri_-2000: 3.2 (0.7%), tests_pri_-1000: 2.3 (0.5%),
+	tests_pri_-950: 1.19 (0.3%), tests_pri_-900: 0.97 (0.2%),
+	tests_pri_-90: 113 (24.9%), check_bayes: 111 (24.6%), b_tokenize: 8
+	(1.8%), b_tok_get_all: 9 (1.9%), b_comp_prob: 2.4 (0.5%),
+	b_tok_touch_all: 89 (19.6%), b_finish: 0.86 (0.2%), tests_pri_0: 299
+	(66.0%), check_dkim_signature: 0.52 (0.1%), check_dkim_adsp: 2.5
+	(0.5%), poll_dns_idle: 0.67 (0.1%), tests_pri_10: 2.1 (0.5%),
+	tests_pri_500: 7 (1.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 1/2] signal: add the "int si_code" arg to
+ prepare_kill_siginfo()
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 
-The SC7180 GCC binding describes clocks which, due to the difference in
-security model, are not accessible on the RB3gen2 - in the same way seen
-on QCM6490.
+Oleg Nesterov <oleg@redhat.com> writes:
 
-Mark these clocks as protected, to allow the board to boot.
+> So that do_tkill() can use this helper too. This also simplifies
+> the next patch.
+>
+> TODO: perhaps we can kill prepare_kill_siginfo() and change the
+> callers to use SEND_SIG_NOINFO,  but this needs some changes in
+> __send_signal_locked() and TP_STORE_SIGINFO().
 
-Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
----
-I did notice Taniya's patch [1] after writing this patch. I'd prefer to
-merge this minimal set asap, to make the board boot, unless there's a
-strong argument for including those other clocks in the protected list.
+Could you can pass in the destination type instead of the si_code?
+Something like I have shown below?
 
-[1] https://lore.kernel.org/linux-arm-msm/20240208062836.19767-6-quic_tdas@quicinc.com/
----
- arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+That allows the knowledge of the siginfo details to be isolated to
+prepare_kill_siginfo, making it easy to verify that a the union members
+match the union decode for the signal/si_code combination?
 
-diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-index 8bb7d13d85f6..97b1586f9f19 100644
---- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-+++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-@@ -413,6 +413,24 @@ vreg_bob_3p296: bob {
- 	};
- };
- 
-+&gcc {
-+	protected-clocks = <GCC_CFG_NOC_LPASS_CLK>,
-+			   <GCC_EDP_CLKREF_EN>,
-+			   <GCC_MSS_CFG_AHB_CLK>,
-+			   <GCC_MSS_GPLL0_MAIN_DIV_CLK_SRC>,
-+			   <GCC_MSS_OFFLINE_AXI_CLK>,
-+			   <GCC_MSS_Q6SS_BOOT_CLK_SRC>,
-+			   <GCC_MSS_Q6_MEMNOC_AXI_CLK>,
-+			   <GCC_MSS_SNOC_AXI_CLK>,
-+			   <GCC_QSPI_CNOC_PERIPH_AHB_CLK>,
-+			   <GCC_QSPI_CORE_CLK>,
-+			   <GCC_QSPI_CORE_CLK_SRC>,
-+			   <GCC_SEC_CTRL_CLK_SRC>,
-+			   <GCC_WPSS_AHB_BDG_MST_CLK>,
-+			   <GCC_WPSS_AHB_CLK>,
-+			   <GCC_WPSS_RSCP_CLK>;
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
+It is all too easy to fill in siginfo improperly.
 
----
-base-commit: b1d3a0e70c3881d2f8cf6692ccf7c2a4fb2d030d
-change-id: 20240209-qcm6490-gcc-protected-clocks-ee5fafdb76b3
+Looking at siginfo_layout() SI_USER paired with any signal results in
+SIL_KILL whereas SI_TKILL paired with any signal results in SIL_RT.  A
+superset of the fields of SIL_KILL.
 
-Best regards,
--- 
-Bjorn Andersson <quic_bjorande@quicinc.com>
+We use clear_siginfo() so si_sigval is set to 0 for SI_TKILL which seems
+correct.  But we do allow userspace if it specifies SI_TKILL to provide
+si_sigval.  So the current do_tkill code is very close to being wrong.
 
+Likewise you are filling in the details to match what the existing
+code is doing, so you are fine.  Still it is a loaded footgun
+to allow passing in an arbitrary si_code.
+
+Eric
+
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>  kernel/signal.c | 15 +++++----------
+>  1 file changed, 5 insertions(+), 10 deletions(-)
+>
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index c3fac06937e2..a8199fda0d61 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -3793,12 +3793,12 @@ COMPAT_SYSCALL_DEFINE4(rt_sigtimedwait_time32, compat_sigset_t __user *, uthese,
+>  #endif
+>  #endif
+>  
+> -static inline void prepare_kill_siginfo(int sig, struct kernel_siginfo *info)
+> +static void prepare_kill_siginfo(int sig, struct kernel_siginfo *info, int si_code)
+>  {
+>  	clear_siginfo(info);
+>  	info->si_signo = sig;
+>  	info->si_errno = 0;
+> -	info->si_code = SI_USER;
+> +	info->si_code = si_code;
+	info->si_code = (type == PIDTYPE_PID) ? SI_TKILL : SI_USER;
+>  	info->si_pid = task_tgid_vnr(current);
+>  	info->si_uid = from_kuid_munged(current_user_ns(), current_uid());
+>  }
+> @@ -3812,7 +3812,7 @@ SYSCALL_DEFINE2(kill, pid_t, pid, int, sig)
+>  {
+>  	struct kernel_siginfo info;
+>  
+> -	prepare_kill_siginfo(sig, &info);
+> +	prepare_kill_siginfo(sig, &info, SI_USER);
+>  
+>  	return kill_something_info(sig, &info, pid);
+>  }
+> @@ -3925,7 +3925,7 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
+>  		    (kinfo.si_code >= 0 || kinfo.si_code == SI_TKILL))
+>  			goto err;
+>  	} else {
+> -		prepare_kill_siginfo(sig, &kinfo);
+> +		prepare_kill_siginfo(sig, &kinfo, SI_USER);
+>  	}
+>  
+>  	/* TODO: respect PIDFD_THREAD */
+> @@ -3970,12 +3970,7 @@ static int do_tkill(pid_t tgid, pid_t pid, int sig)
+>  {
+>  	struct kernel_siginfo info;
+>  
+> -	clear_siginfo(&info);
+> -	info.si_signo = sig;
+> -	info.si_errno = 0;
+> -	info.si_code = SI_TKILL;
+> -	info.si_pid = task_tgid_vnr(current);
+> -	info.si_uid = from_kuid_munged(current_user_ns(), current_uid());
+> +	prepare_kill_siginfo(sig, &info, SI_TKILL);
+>  
+>  	return do_send_specific(tgid, pid, sig, &info);
+>  }
 
