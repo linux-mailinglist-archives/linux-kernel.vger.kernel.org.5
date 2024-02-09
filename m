@@ -1,185 +1,129 @@
-Return-Path: <linux-kernel+bounces-59565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B381684F8FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:57:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 331F384F8D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:45:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C14928F2FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:57:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 661331C22B43
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A37976046;
-	Fri,  9 Feb 2024 15:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33B0174E39;
+	Fri,  9 Feb 2024 15:45:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y1EpISaC"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="RUr5eR+4";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iAiJv2Fm"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B94E16BFD6;
-	Fri,  9 Feb 2024 15:56:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B77D96BB5F;
+	Fri,  9 Feb 2024 15:45:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707494221; cv=none; b=DjdWUUDUzl8ss03MgKRpLJZk/KMCDuq9IbcqfqyujMc8uIHuf3n685KrvyDheU/W755HepGIns3YPNggGRu4M9aub4la68Gyz99VwBFsZxXV9/4MO999jp3AwjIyYDLmfezpbNwkaKukYB+VeXsT/kFKwtWXw+diiEDeXeSLMEM=
+	t=1707493550; cv=none; b=Ek5MPG3IzfbNM3Nyv32x55Y3OlSB+uRfKIgAOF1nj5Sme20DgY9J5c9J45tYwQAaqqdBUJb8z7C5L/ApQJTU+9Pmq7qBleJb87SmuwuGiDdYYRxzXOpscR2r4462o88NWnvzhmn9rMDTGJ4IoYer9uR+NmqXGHw+Wmy8eW+kDG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707494221; c=relaxed/simple;
-	bh=1Py4UFKVG/mP2yurJX7hEGwtHJpXMmiQ6Q1WRDmX8xc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lSTPzruh8WXMlEvY7xQHK99a3QN+oY+ziIgN6pKY4SPgmHaCh6h17Qy1jciEKNiJxEYq6RKkIiNsyuzX9kpLutfD3uyXtFMW1z+ZfKpWy/XPvCrCbKZp6TLgYSIccw806q22BAdVJ+GrGwUU//yNMUIQgetfpIja/osGy7fT4zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y1EpISaC; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707494220; x=1739030220;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=1Py4UFKVG/mP2yurJX7hEGwtHJpXMmiQ6Q1WRDmX8xc=;
-  b=Y1EpISaCrQrk6iXtsa8lnM6Hd0aUxwyGY43YlK2gCVB2fpd8gAtUH3qk
-   44Un1m4TRKGVYIWGELuJj+rJYzY0oCU3Sfihl4qglVOTVh2irolrDmfI2
-   5lkYXDrTYBYdpJb+xCfQaFJW9ndU57gpFZIgZukHoBtCNN2We22hkmYG2
-   llaIQ4Vn7sfjOeInHnW1rz2yW9fZaGeTXoebPaFRI3JVZYbpfdFsTq2t3
-   qDfw20V5CdEJddC+Heaqo0KgXyQob819r70bL51owP/1o7NPqvTFZSKUo
-   j9px1I2KBPovPmAZokVVJRVM1f8MMKpatJ9xr2F5hZ7/p7GCdRKKKQYpT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="12823531"
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="12823531"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 07:56:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="1956636"
-Received: from csromei-mobl1.amr.corp.intel.com (HELO [10.212.93.94]) ([10.212.93.94])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 07:56:56 -0800
-Message-ID: <d65cf9f4-1617-2962-2786-bcaf7907dd67@linux.intel.com>
-Date: Fri, 9 Feb 2024 09:44:25 -0600
+	s=arc-20240116; t=1707493550; c=relaxed/simple;
+	bh=XGHTamODldsKIajh+HkJlfAS60GDYUJtSZqaTXI3otw=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=BAiycn+JbnMpvAGe3XLsLERGtqB7EzrYfLLylpni3y0zejf3mnq6yirLiSP2nTg2QB3h3Z2C0mdH8dPMCnRjkhvbPNdoc+cGy+f4RJWspD5GO7mPrX0UwH82D0x5z8RPzdBBnAWOD0jNMfbjU5SUVCQZKAnndhJYCmga2bOnUkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=RUr5eR+4; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iAiJv2Fm; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 09 Feb 2024 15:45:39 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707493540;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x8s4ETIGvFJpPoRfIpoZJ/N42G7JkajvXf5vnPmcKnA=;
+	b=RUr5eR+4jpliQ7SpZjPk8WV+Dk+C9Zd/U/0FebCiXeZzE0afJPCoM3VWNcG924iAyqLhTi
+	tIDXGb3kXzOJkn1qk9srw9aeFjNFqrOojjvRT2csK3mwdJRPok19UaqmwxdtG4TWQ7us5L
+	npKS0eJQRiwN4+8/7kXrai9yGIM0TLBfNdoM6lw003zKKcPXjzkdglDKEn28cqvKxASPDs
+	c+e6sBqHwU6oXVRQ77Gt84yfoWqTk0SVOx2BPZ263lr62zaojfi53n1bd/0jyI5LN8Li+R
+	JsIDg2stPzGjDj4o3dtoUAAm7e8Rvqmfsoesf6gMSTS1I2RibexAgOKmE4Mg+Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707493540;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x8s4ETIGvFJpPoRfIpoZJ/N42G7JkajvXf5vnPmcKnA=;
+	b=iAiJv2FmgtYnI0ILGld7utjlCgMNmKhRYjU+3SpaEtlEuTh9QAkcaWYJ56LeJNy9pk33LE
+	zBhT+MVjwoSthNAA==
+From: "tip-bot2 for Aleksander Mazur" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/urgent] x86/Kconfig: Transmeta Crusoe is CPU family 5, not 6
+Cc: Aleksander Mazur <deweloper@wp.pl>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ "H. Peter Anvin" <hpa@zytor.com>,  <stable@kernel.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240123134309.1117782-1-deweloper@wp.pl>
+References: <20240123134309.1117782-1-deweloper@wp.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH v4 1/4] ASoc: PCM6240: Create PCM6240 Family driver code
-To: "Ding, Shenghao" <shenghao-ding@ti.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
- "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
- "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "Lu, Kevin" <kevin-lu@ti.com>, "Xu, Baojun" <baojun.xu@ti.com>,
- "P O, Vijeth" <v-po@ti.com>, "Navada Kanyana, Mukund" <navada@ti.com>,
- "perex@perex.cz" <perex@perex.cz>, "McPherson, Jeff" <j-mcpherson@ti.com>,
- "13916275206@139.com" <13916275206@139.com>,
- "Chawla, Mohit" <mohit.chawla@ti.com>, "soyer@irl.hu" <soyer@irl.hu>,
- "Huang, Jonathan" <jkhuang3@ti.com>, "tiwai@suse.de" <tiwai@suse.de>,
- "Djuandi, Peter" <pdjuandi@ti.com>, "Agrawal, Manisha"
- <manisha.agrawal@ti.com>, "Hari, Raj" <s-hari@ti.com>,
- "Yashar, Avi" <aviel@ti.com>, "Nagalla, Hari" <hnagalla@ti.com>,
- "Bajjuri, Praneeth" <praneeth@ti.com>
-References: <20240208095255.1508-1-shenghao-ding@ti.com>
- <160173b0-098e-493f-93b1-8b831838e0a0@linux.intel.com>
- <0ac563b32399400897b8f3adce6195c3@ti.com>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <0ac563b32399400897b8f3adce6195c3@ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <170749353913.398.14031938627894513083.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
+The following commit has been merged into the x86/urgent branch of tip:
 
->>> +static const char *const pcmdev_ctrl_name[] = {
->>> +	"%s-i2c-%d-dev%d-ch%d-ana-gain",
->>> +	"%s-i2c-%d-dev%d-ch%d-digi-gain",
->>> +	"%s-i2c-%d-dev%d-ch%d-fine-gain",
->>> +};
->>
->> Controls are exposed to user-space, and it helps if it's easy to identify which
->> device is which.
->>
->> But below you are using the I2C address, is this 'stable' enough so that
->> userspace can still identify the controls and set them accordingly with amixer
->> or UCM?
->>
-> So far, I have no good way to handle the devices with multiple pcmdevices sitting in different i2c buses.
-> As you know, the gain value highly depends on both the mic-phone position and the mic-phone's own
->   characters. All these controls have to be open to the product developer or manufacturer. They might
-> rename them per their products if they want.
-> As to the stable, my customers and I had developed many productors on arm-based paltforms. At least,
-> the i2c number is same as the one defined in dts.
+Commit-ID:     f6a1892585cd19e63c4ef2334e26cd536d5b678d
+Gitweb:        https://git.kernel.org/tip/f6a1892585cd19e63c4ef2334e26cd536d5b678d
+Author:        Aleksander Mazur <deweloper@wp.pl>
+AuthorDate:    Tue, 23 Jan 2024 14:43:00 +01:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Fri, 09 Feb 2024 16:28:19 +01:00
 
-IIRC there is a codec prefix that can be used to uniquify controls, 
-that's what we used when we have identical amplifier devices in the same 
-system. Using this prefix would avoid this sort of hard-coding of the 
-control names proper, in other words let the ASoC framework add a prefix 
-if needed.
+x86/Kconfig: Transmeta Crusoe is CPU family 5, not 6
 
->>> +static int pcmdevice_codec_probe(struct snd_soc_component *codec) {
->>> +	struct pcmdevice_priv *pcm_dev =
->> snd_soc_component_get_drvdata(codec);
->>> +	struct i2c_adapter *adap = pcm_dev->client->adapter;
->>> +	int ret, i, j;
->>> +
->>> +	mutex_lock(&pcm_dev->codec_lock);
->>> +	pcm_dev->component = codec;
->>> +	pcm_dev->fw_state = PCMDEVICE_FW_LOAD_OK;
->>> +
->>> +	for (i = 0; i < pcm_dev->ndev; i++) {
->>> +		for (j = 0; j < 2; j++) {
->>> +			ret = pcmdev_gain_ctrl_add(pcm_dev, i, j);
->>> +			if (ret < 0)
->>> +				goto out;
->>> +		}
->>> +	}
->>> +
->>> +	/* device-name[defined in pcmdevice_i2c_id]-i2c-bus_id[0,1,...,N]-
->>> +	 * sum[1,2,...,4]dev-reg.bin stores the firmware including register
->>> +	 * setting and params for different filters inside chips, it must be
->>> +	 * copied into firmware folder. The same types of pcmdevices sitting
->>> +	 * on the same i2c bus will be aggregated as one single codec,
->>> +	 * all of them share the same bin file.
->>> +	 */
->>> +	scnprintf(pcm_dev->regbin_name,
->> PCMDEVICE_REGBIN_FILENAME_LEN,
->>> +		"%s-i2c-%d-%udev-reg.bin", pcm_dev->dev_name, adap->nr,
->>> +		pcm_dev->ndev);
->>> +
->>> +	ret = request_firmware_nowait(THIS_MODULE,
->> FW_ACTION_UEVENT,
->>> +		pcm_dev->regbin_name, pcm_dev->dev, GFP_KERNEL,
->> pcm_dev,
->>> +		pcmdev_regbin_ready);
->>
->> I already had a question early on whether these addresses are 'stable', but
->> here the device address is used to fetch firmware, and there is no prefix or
->> directory to identify platform-specific settings.
->>
->> I don't know how this might work for a distribution. There needs to be a way
->> to detect what system this is at run-time, and make sure we don't use
->> settings for platform XYZ on platform ABC.
->>
-> In PC, hwid, subsysid and vendorid can help to identify the platform.
->   But it seemed difficult to get platform id on non-PC system. More often,
-> different productors from different customers might use the same platform.
-> In my view, the products developer or manufacturer might rename the firmware
->   per their products if they want, not limited to the platform.
+The kernel built with MCRUSOE is unbootable on Transmeta Crusoe.  It shows
+the following error message:
 
-It's not "might rename", it's "are required to rename".
+  This kernel requires an i686 CPU, but only detected an i586 CPU.
+  Unable to boot - please use a kernel appropriate for your CPU.
 
-Your solution works if everything is build and configured for ONE board. 
-That's pretty limiting, even for your own CI and tests.
+Remove MCRUSOE from the condition introduced in commit in Fixes, effectively
+changing X86_MINIMUM_CPU_FAMILY back to 5 on that machine, which matches the
+CPU family given by CPUID.
 
-Could we not add a prefix for the firmware path that either either set 
-with a subsys_id or vendor_id, and if it doesn't exist with a kernel 
-parameter or a quirk?
+  [ bp: Massage commit message. ]
 
-Renaming firmware files is a never-ending source of problems IMHO.
+Fixes: 25d76ac88821 ("x86/Kconfig: Explicitly enumerate i686-class CPUs in Kconfig")
+Signed-off-by: Aleksander Mazur <deweloper@wp.pl>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Acked-by: H. Peter Anvin <hpa@zytor.com>
+Cc: <stable@kernel.org>
+Link: https://lore.kernel.org/r/20240123134309.1117782-1-deweloper@wp.pl
+---
+ arch/x86/Kconfig.cpu | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/x86/Kconfig.cpu b/arch/x86/Kconfig.cpu
+index b9224cf..2a7279d 100644
+--- a/arch/x86/Kconfig.cpu
++++ b/arch/x86/Kconfig.cpu
+@@ -379,7 +379,7 @@ config X86_CMOV
+ config X86_MINIMUM_CPU_FAMILY
+ 	int
+ 	default "64" if X86_64
+-	default "6" if X86_32 && (MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || MVIAC3_2 || MVIAC7 || MEFFICEON || MATOM || MCRUSOE || MCORE2 || MK7 || MK8)
++	default "6" if X86_32 && (MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || MVIAC3_2 || MVIAC7 || MEFFICEON || MATOM || MCORE2 || MK7 || MK8)
+ 	default "5" if X86_32 && X86_CMPXCHG64
+ 	default "4"
+ 
 
