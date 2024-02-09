@@ -1,125 +1,346 @@
-Return-Path: <linux-kernel+bounces-59504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 955B984F81D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:04:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8818F84F842
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:12:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1132D282C48
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:04:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2D77B21CAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:12:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9A96DCEB;
-	Fri,  9 Feb 2024 15:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A98B86E2A0;
+	Fri,  9 Feb 2024 15:12:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QsUZrFYs"
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="O8cDoeeF"
+Received: from mail-qt1-f201.google.com (mail-qt1-f201.google.com [209.85.160.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A267736B17;
-	Fri,  9 Feb 2024 15:04:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1B269E07
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 15:12:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707491067; cv=none; b=h7Ki8t956V0hk0WBks3exkahRDEdEW6MsXvUx2oGgC9VfYjCOVN0Ybo0wB0fnd1GgWkZ2fijqGH2vtbw5h+1CwZwduYMtMnqiFyhZf8b4bi5SYBCRSQTB2TTp5gGb1yjN8A8eSA5yukMKemWD4UH4hLiddgcPLBckkChHXDx4EU=
+	t=1707491567; cv=none; b=Svv1v9Y7fs7HCkKf76NOwXOrIfsIT+3AHPBrkeQi36r/QAI3kCrSVXTkdINwl94KySEVNCPia+w5Czo8EMdJkCWk2Uoe14lRCBYdp6Myk6cDXtGSyOH7lz9brXSliRTC3M5Fmemm9ypprn2NYjfGO4XxaH0nHIAZYhUYKQWyyh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707491067; c=relaxed/simple;
-	bh=ZRSisilKJc76i9g2Gk5VSIp9IkLwfEK0p1NI0di/5FY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ISzQHr5UVdyKYy1Hjc8MCuog+imZPE75tUSE9wQYBfjKj7nDAkFzqfCpNG5GS/weTgk4YxeBdpj+uPa0KVG/FxZTLTBThLhxDkrTFILZy+UlAiamIef7bo95mTzW4Fm3YtsJxJ6YFounScpryS0YxrEw8vBcVqtlZMOKWZAvloA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QsUZrFYs; arc=none smtp.client-ip=209.85.161.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-59a58ef4a04so372832eaf.2;
-        Fri, 09 Feb 2024 07:04:25 -0800 (PST)
+	s=arc-20240116; t=1707491567; c=relaxed/simple;
+	bh=RH+NuY+D6aHD+wcrZU8Dadzd1nSEDNtwzxcILsjJCaQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=VZt5ftPLkvArQllk+yyE/q23Vs7t1r2fGDyKJc5wf/M43ySF35vtLElrGYrn3emM26A2x7++/FA90mm0Z/3Q4ke+yCLW7rSwzQ3Cz4YSJYnr0CfU1zRXXMk+lfON6gJo1SXATPn2L69Arcv8bREQBXfvq/ksjYkXuVtBWWo111o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=O8cDoeeF; arc=none smtp.client-ip=209.85.160.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-qt1-f201.google.com with SMTP id d75a77b69052e-42c2f0266c9so39827481cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 07:12:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707491064; x=1708095864; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=oEEKiyCy3uksk7VJQy89Cmz4Lyoddeyzzlh6/wRqFSk=;
-        b=QsUZrFYsywdckeQjAV9sLT0y6VY3ahayABd1yCVZKiL71aO3fWwfUy+Q76fDDqDvaN
-         1wq3JqElFIYJzB3fBw1x0H3bQxK09ZKZGlCJjy85YdAN4tOWKjFfRQotHn20aQgk0hHP
-         2J3WP/3+x1W07vOZy2UFWTp9ZLTCeu1JYfWXShrS7lYXcGzewUhp5kJsq2rj0qaeiZX2
-         ObAB07bQEvyWuOI/EB+tyCYkmbFfZgGG+C2OcWkwylcPe7dzIbhyyL9glTPWdeCzbJXq
-         Bb4WWe5DJQq6ayQGASyNqKZLlyb27QzBrHxrzQqI6BFs3g/19vxvgESBj9WI6czsyRZy
-         ikxg==
+        d=google.com; s=20230601; t=1707491565; x=1708096365; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=be0Sgf7TyAr8aMe2h7QxmV6L47RdFNqX/VIAvjQGSD4=;
+        b=O8cDoeeFViWjOpJrM1+IpNNI9DNHCfLMrXhm65VkusIG0Ih+Cwm2pE2+oCVClfhSdZ
+         NHU3tFKdM4EjRar1ZaRN7im0COktjylQ+VdAtaEVYHITdt3egSbpfpf9WU1ArdvwRGnA
+         U7jOWX60JY1sYUu4e/BUslDbJW9JVEd342zNlghquBoMsfhBPsy7UgfRU5kAf0KRB0lv
+         9jzDF2FLxR5v95QICiwIw/QCjN+3sRNddALeq7cq1teO6zgujO2ZJBTiyA+2MxbeH3th
+         np49MKI/BjFAztOZizgR5YUhBmaqrtw0Ezjuq7/1qcLnHZn1iUhvOie12getFOKZkODg
+         9kaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707491064; x=1708095864;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oEEKiyCy3uksk7VJQy89Cmz4Lyoddeyzzlh6/wRqFSk=;
-        b=RweZkNR+E2duDspESX+8/hrXygzGerjQiG9TTDuFItWl/V8dZSnXRnVKSTLPHSXdLG
-         8/AM9Wjexs/fKTCaoVOVVK7tff0qQ7KKPFg/kbtcoOdHDszdFtfOjqWFAI36BEgmNAui
-         q3+WATFdDy3A58jOH15N5NjBYcjYyciuG76GimqowJMQ8fTT50wPFLpDwnaIeK6YOOEK
-         fpPQme7jQ/IyTHFM7esQxmJRVc/ankr4a14WYmVsENBJgeOGFQKTO52/BYiKhAcVmZOy
-         njGlbbjg8r9Bhko/Fgz8U+axpkajgEBdyI4SVgBfzOOPsAjcS4++KxjjJ5q4+4oO3A1S
-         GSoA==
-X-Gm-Message-State: AOJu0YwKze/7/NGCgyAtYi6wCtQMWXx1evC+gm5CjwD2YhyVoTeLVb/B
-	51JWSFyqGsWyfD6gB4ysts2RLS0BH+u5TiaR7ksultx/fxNOD/04DcB7s7wL
-X-Google-Smtp-Source: AGHT+IGzCxP5fmYlns2HciQeCc2tm9zi+LPxyPoweh3ez2FzylL6+vFnQDZWwgORltCMjdQzjprv5Q==
-X-Received: by 2002:a05:6359:100b:b0:176:7f72:36af with SMTP id ib11-20020a056359100b00b001767f7236afmr2284406rwb.23.1707491064543;
-        Fri, 09 Feb 2024 07:04:24 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUee3PEp0CsiUAvk4mmRwQmE92SnZt/BbnBKOmciFzc1NoSg5yMCHKKk4yj1SXTkMRVQD+nGjsvYHgagMn44ua1+67P3V2+jevwTMcw
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l5-20020a632505000000b005b458aa0541sm1839622pgl.15.2024.02.09.07.04.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 07:04:24 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] hwmon fixes for v6.8-rc4
-Date: Fri,  9 Feb 2024 07:04:23 -0800
-Message-Id: <20240209150423.1339290-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20230601; t=1707491565; x=1708096365;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=be0Sgf7TyAr8aMe2h7QxmV6L47RdFNqX/VIAvjQGSD4=;
+        b=fEwIP6JVcKxk+8o65ft9IlhFbbwLmY58ZRHWNxHZiDq8m8BxemC4KfleTtzTwlFblw
+         W8ZF8EHQ2orj0iSlG1x0HATsJTeUPVoLksAyEyhavWoS2njYd+eJql4EvhLiv4UQ+NYy
+         rzAdQC1GKv/njrICAZkuHCeHsgTp26GtSbkSHqjpYrTcuL/JEIwRCsTVopEQq56Mw7Ij
+         e4ieRYTqW3VVjTtqE8UnpUM1v4t+D9hsd2R1tN8QN8SlJRlbNvtquOp2+fpl3Bs8sysv
+         xVfY+2dPdlsGJNp/3RgscGICi0hISwVyQOaCrL8zhqRhIbNz3NGUNg/Z56yM4/Iw70Ld
+         v/uQ==
+X-Gm-Message-State: AOJu0Yx+JH/+n+g5+V5PG5EdS9Tv/ia9tJVCpNB6+3m6Eltu32mhPDVK
+	FHdLf+UnAOSsZKzHgA4cy60SI1/9Fpb7wgMZqpw7spgmzRQX+RAaP64lnm1mXZPQ2MU2wZbobSE
+	yYQ==
+X-Google-Smtp-Source: AGHT+IEp0zYmZOYMN1hp14T5hBMvMTHWqCOz/d1f2OAn/8Se/MwK1MovKkUjd+34jVqVXgYnUJUU1MpMmm0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:ea07:0:b0:5ff:6e82:ea31 with SMTP id
+ t7-20020a0dea07000000b005ff6e82ea31mr206587ywe.3.1707491099217; Fri, 09 Feb
+ 2024 07:04:59 -0800 (PST)
+Date: Fri, 9 Feb 2024 07:04:57 -0800
+In-Reply-To: <CABgObfYa5eKj_8qyRfimqG7DXpbxe-eSM6pCwR6Hq97eZEtX6A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240123001555.4168188-1-michal.wilczynski@intel.com>
+ <20240125005710.GA8443@yjiang5-mobl.amr.corp.intel.com> <CABgObfYaUHXyRmsmg8UjRomnpQ0Jnaog9-L2gMjsjkqChjDYUQ@mail.gmail.com>
+ <42d31df4-2dbf-44db-a511-a2d65324fded@intel.com> <CABgObfYa5eKj_8qyRfimqG7DXpbxe-eSM6pCwR6Hq97eZEtX6A@mail.gmail.com>
+Message-ID: <ZcY_GbqcFXH2pR5E@google.com>
+Subject: Re: [PATCH v2] KVM: x86: nSVM/nVMX: Fix handling triple fault on RSM instruction
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Michal Wilczynski <michal.wilczynski@intel.com>, 
+	Yunhong Jiang <yunhong.jiang@linux.intel.com>, mlevitsk@redhat.com, tglx@linutronix.de, 
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, 
+	hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	dedekind1@gmail.com, yuan.yao@intel.com, Zheyu Ma <zheyuma97@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Thu, Feb 08, 2024, Paolo Bonzini wrote:
+> On Thu, Feb 8, 2024 at 2:18=E2=80=AFPM Wilczynski, Michal
+> <michal.wilczynski@intel.com> wrote:
+> > Hi, I've tested the patch and it seems to work, both on Intel and AMD.
+> > There was a problem with applying this chunk though:
+> >
+> > diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/=
+kvm-x86-ops.h
+> > index ac8b7614e79d..3d18fa7db353 100644
+> > --- a/arch/x86/include/asm/kvm-x86-ops.h
+> > +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> > @@ -119,7 +119,8 @@ KVM_X86_OP(setup_mce)
+> >  #ifdef CONFIG_KVM_SMM
+> >  KVM_X86_OP(smi_allowed)
+> >  KVM_X86_OP()                 // <- This shouldn't be there I guess ?
+> > -KVM_X86_OP(leave_smm)
+> > +KVM_X86_OP(leave_smm_prepare)
+> > +KVM_X86_OP(leave_smm_commit)
+> >  KVM_X86_OP(enable_smi_window)
+> >  #endif
+> >  KVM_X86_OP_OPTIONAL(dev_get_attr)
+> >
+> > Anyway I was a bit averse to this approach as I noticed in the git log
+> > that callbacks like e.g post_leave_smm() used to exist, but they were l=
+ater
+> > removed, so I though the maintainers don't like introducing extra
+> > callbacks.
+>=20
+> If they are needed, it's fine. In my opinion a new callback is easier
+> to handle and understand than new state.
 
-Please pull hwmon fixes for Linux v6.8-rc4 from signed tag:
+Yeah, we ripped out post_leave_smm() because its sole usage at the time was=
+ buggy,
+and having a callback without a purpose would just be dead code.
 
-    git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v6.8-rc4
+> > > 2) otherwise, if the problem is that we have not gone through the
+> > > vmenter yet, then KVM needs to do that and _then_ inject the triple
+> > > fault. The fix is to merge the .triple_fault and .check_nested_events
+> > > callbacks, with something like the second attached patch - which
+> > > probably has so many problems that I haven't even tried to compile it=
+.
+> >
+> > Well, in this case if we know that RSM will fail it doesn't seem to me
+> > like it make sense to run vmenter just do kill the VM anyway, this woul=
+d
+> > be more confusing.
+>=20
+> Note that the triple fault must not kill the VM, it's just causing a
+> nested vmexit from L2 to L1. KVM's algorithm to inject a
+> vmexit-causing event is always to first ensure that the VMCS02 (VMCB02
+> for AMD) is consistent, and only then trigger the vmexit. So if patch
+> 2 or something like it works, that would be even better.
+>=20
+> > I've made the fix this way based on our discussion with Sean in v1, and
+> > tried to mark the RSM instruction with a flag, as a one that needs
+> > actual HW VMenter to complete succesfully, and based on that informatio=
+n
+> > manipulate nested_run_pending.
 
-Thanks,
-Guenter
-------
+Heh, you misunderstood my suggestion.
 
-The following changes since commit 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478:
+ : But due to nested_run_pending being (unnecessarily) buried in vendor str=
+ucts, it
+ : might actually be easier to do a cleaner fix.  E.g. add yet another flag=
+ to track
+ : that a hardware VM-Enter needs to be completed in order to complete inst=
+ruction
+ : emulation.
 
-  Linux 6.8-rc3 (2024-02-04 12:20:36 +0000)
+I didn't mean add a flag to the emulator to muck with nested_run_pending, I=
+ meant
+add a flag to kvm_vcpu_arch to be a superset of nested_run_pending.  E.g. a=
+s a
+first step, something like the below.  And then as follow up, see if it's d=
+oable
+to propagate nested_run_pending =3D> insn_emulation_needs_vmenter so that t=
+he
+nested_run_pending checks in {svm,vmx}_{interrupt,nmi,smi}_allowed() can be
+dropped.
 
-are available in the Git repository at:
+---
+ arch/x86/include/asm/kvm_host.h |  8 ++++++
+ arch/x86/kvm/smm.c              | 10 ++++++--
+ arch/x86/kvm/x86.c              | 44 +++++++++++++++++++++++++--------
+ 3 files changed, 50 insertions(+), 12 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git tags/hwmon-for-v6.8-rc4
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_hos=
+t.h
+index d271ba20a0b2..bb4250551619 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -769,6 +769,14 @@ struct kvm_vcpu_arch {
+ 	u64 ia32_misc_enable_msr;
+ 	u64 smbase;
+ 	u64 smi_count;
++
++	/*
++	 * Tracks if a successful VM-Enter is needed to complete emulation of
++	 * an instruction, e.g. to ensure emulation of RSM or nested VM-Enter,
++	 * which can directly inject events, completes before KVM attempts to
++	 * inject new events.
++	 */
++	bool insn_emulation_needs_vmenter;
+ 	bool at_instruction_boundary;
+ 	bool tpr_access_reporting;
+ 	bool xfd_no_write_intercept;
+diff --git a/arch/x86/kvm/smm.c b/arch/x86/kvm/smm.c
+index dc3d95fdca7d..c6e597b8c794 100644
+--- a/arch/x86/kvm/smm.c
++++ b/arch/x86/kvm/smm.c
+@@ -640,8 +640,14 @@ int emulator_leave_smm(struct x86_emulate_ctxt *ctxt)
+=20
+ #ifdef CONFIG_X86_64
+ 	if (guest_cpuid_has(vcpu, X86_FEATURE_LM))
+-		return rsm_load_state_64(ctxt, &smram.smram64);
++		ret =3D rsm_load_state_64(ctxt, &smram.smram64);
+ 	else
+ #endif
+-		return rsm_load_state_32(ctxt, &smram.smram32);
++		ret =3D rsm_load_state_32(ctxt, &smram.smram32);
++
++	if (ret !=3D X86EMUL_CONTINUE)
++		return ret;
++
++	vcpu->arch.insn_emulation_needs_vmenter =3D true;
++	return X86EMUL_CONTINUE;
+ }
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index bf10a9073a09..21a7183bbf69 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -10195,6 +10195,30 @@ int kvm_check_nested_events(struct kvm_vcpu *vcpu)
+ 	return kvm_x86_ops.nested_ops->check_events(vcpu);
+ }
+=20
++static int kvm_interrupt_allowed(struct kvm_vcpu *vcpu, bool for_injection=
+)
++{
++	if (vcpu->arch.insn_emulation_needs_vmenter)
++		return -EBUSY;
++
++	return static_call(kvm_x86_interrupt_allowed)(vcpu, for_injection);
++}
++
++static int kvm_smi_allowed(struct kvm_vcpu *vcpu, bool for_injection)
++{
++	if (vcpu->arch.insn_emulation_needs_vmenter)
++		return -EBUSY;
++
++	return static_call(kvm_x86_smi_allowed)(vcpu, for_injection)
++}
++
++static int kvm_nmi_allowed(struct kvm_vcpu *vcpu, bool for_injection)
++{
++	if (vcpu->arch.insn_emulation_needs_vmenter)
++		return -EBUSY;
++
++	return x86_nmi_static_call(kvm_x86_nmi_allowed)(vcpu, for_injection);
++}
++
+ static void kvm_inject_exception(struct kvm_vcpu *vcpu)
+ {
+ 	/*
+@@ -10384,7 +10408,7 @@ static int kvm_check_and_inject_events(struct kvm_v=
+cpu *vcpu,
+ 	 */
+ #ifdef CONFIG_KVM_SMM
+ 	if (vcpu->arch.smi_pending) {
+-		r =3D can_inject ? static_call(kvm_x86_smi_allowed)(vcpu, true) : -EBUSY=
+;
++		r =3D can_inject ? kvm_smi_allowed(vcpu, true) : -EBUSY;
+ 		if (r < 0)
+ 			goto out;
+ 		if (r) {
+@@ -10398,7 +10422,7 @@ static int kvm_check_and_inject_events(struct kvm_v=
+cpu *vcpu,
+ #endif
+=20
+ 	if (vcpu->arch.nmi_pending) {
+-		r =3D can_inject ? static_call(kvm_x86_nmi_allowed)(vcpu, true) : -EBUSY=
+;
++		r =3D can_inject ? kvm_nmi_allowed(vcpu, true) : -EBUSY;
+ 		if (r < 0)
+ 			goto out;
+ 		if (r) {
+@@ -10406,14 +10430,14 @@ static int kvm_check_and_inject_events(struct kvm=
+_vcpu *vcpu,
+ 			vcpu->arch.nmi_injected =3D true;
+ 			static_call(kvm_x86_inject_nmi)(vcpu);
+ 			can_inject =3D false;
+-			WARN_ON(static_call(kvm_x86_nmi_allowed)(vcpu, true) < 0);
++			WARN_ON_ONCE(kvm_nmi_allowed() < 0);
+ 		}
+ 		if (vcpu->arch.nmi_pending)
+ 			static_call(kvm_x86_enable_nmi_window)(vcpu);
+ 	}
+=20
+ 	if (kvm_cpu_has_injectable_intr(vcpu)) {
+-		r =3D can_inject ? static_call(kvm_x86_interrupt_allowed)(vcpu, true) : =
+-EBUSY;
++		r =3D can_inject ? kvm_interrupt_allowed(vcpu, true) : -EBUSY;
+ 		if (r < 0)
+ 			goto out;
+ 		if (r) {
+@@ -10422,7 +10446,7 @@ static int kvm_check_and_inject_events(struct kvm_v=
+cpu *vcpu,
+ 			if (!WARN_ON_ONCE(irq =3D=3D -1)) {
+ 				kvm_queue_interrupt(vcpu, irq, false);
+ 				static_call(kvm_x86_inject_irq)(vcpu, false);
+-				WARN_ON(static_call(kvm_x86_interrupt_allowed)(vcpu, true) < 0);
++				WARN_ON(kvm_interrupt_allowed(vcpu, true) < 0);
+ 			}
+ 		}
+ 		if (kvm_cpu_has_injectable_intr(vcpu))
+@@ -10969,6 +10993,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 		WARN_ON_ONCE((kvm_vcpu_apicv_activated(vcpu) !=3D kvm_vcpu_apicv_active(=
+vcpu)) &&
+ 			     (kvm_get_apic_mode(vcpu) !=3D LAPIC_MODE_DISABLED));
+=20
++		vcpu->arch.insn_emulation_needs_vmenter =3D false;
++
+ 		exit_fastpath =3D static_call(kvm_x86_vcpu_run)(vcpu);
+ 		if (likely(exit_fastpath !=3D EXIT_FASTPATH_REENTER_GUEST))
+ 			break;
+@@ -13051,14 +13077,12 @@ static inline bool kvm_vcpu_has_events(struct kvm=
+_vcpu *vcpu)
+ 		return true;
+=20
+ 	if (kvm_test_request(KVM_REQ_NMI, vcpu) ||
+-	    (vcpu->arch.nmi_pending &&
+-	     static_call(kvm_x86_nmi_allowed)(vcpu, false)))
++	    (vcpu->arch.nmi_pending && kvm_nmi_allowed(vcpu, false)))
+ 		return true;
+=20
+ #ifdef CONFIG_KVM_SMM
+ 	if (kvm_test_request(KVM_REQ_SMI, vcpu) ||
+-	    (vcpu->arch.smi_pending &&
+-	     static_call(kvm_x86_smi_allowed)(vcpu, false)))
++	    (vcpu->arch.smi_pending && kvm_smi_allowed(vcpu, false)))
+ 		return true;
+ #endif
+=20
+@@ -13136,7 +13160,7 @@ int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu=
+)
+=20
+ int kvm_arch_interrupt_allowed(struct kvm_vcpu *vcpu)
+ {
+-	return static_call(kvm_x86_interrupt_allowed)(vcpu, false);
++	return kvm_interrupt_allowed(vcpu, false);
+ }
+=20
+ unsigned long kvm_get_linear_rip(struct kvm_vcpu *vcpu)
 
-for you to fetch changes up to 34cf8c657cf0365791cdc658ddbca9cc907726ce:
+base-commit: f8fe663bc413d2a14ab9a452638a99b975011a9d
+--=20
 
-  hwmon: (coretemp) Enlarge per package core count limit (2024-02-04 06:43:45 -0800)
-
-----------------------------------------------------------------
-hwmon fixes for v6.8-rc4
-
-- coretemp: Various fixes, and increase number of supported CPU cores
-
-- aspeed-pwm-tacho: Add missing mutex protection
-
-----------------------------------------------------------------
-Loic Prylli (1):
-      hwmon: (aspeed-pwm-tacho) mutex for tach reading
-
-Zhang Rui (3):
-      hwmon: (coretemp) Fix out-of-bounds memory access
-      hwmon: (coretemp) Fix bogus core_id to attr name mapping
-      hwmon: (coretemp) Enlarge per package core count limit
-
- drivers/hwmon/aspeed-pwm-tacho.c |  7 +++++++
- drivers/hwmon/coretemp.c         | 42 +++++++++++++++++++++-------------------
- 2 files changed, 29 insertions(+), 20 deletions(-)
 
