@@ -1,159 +1,145 @@
-Return-Path: <linux-kernel+bounces-59912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 249EE84FD46
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:01:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5061884FD47
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:01:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE9E71F22624
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:01:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11E8B28BABF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:01:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08FA78564E;
-	Fri,  9 Feb 2024 20:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF47084A5D;
+	Fri,  9 Feb 2024 20:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="wZncPceV"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Elj3WDB/"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4474E8287F;
-	Fri,  9 Feb 2024 20:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A34C7FBBC
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 20:01:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707508880; cv=none; b=sAk65YsO7dzRoR+lqSX3halzb2/kcCidKZobrZji9nrnotoLDFX1Eh+6gsBWULzDXKJoMNLkzBMvCrVFwDMZaZNTp/R3/JFIXv0zqAB7hAZ+7Wz2idz33o4JjwdoTPzbATa2s930N7bbfvIc0x1ayIoDcSYZxeW+iaQf5DTAJ+I=
+	t=1707508887; cv=none; b=jZumTUcypKW/u1H3oT5tT15MCS5/0cYMyGREMXrY2ahqP/8BTZMCGwUBKwcfTg6LnA/VdFHpuL/ZpW2rWdbOVs0TPVqcV0nFKZfRHqk1nPXYja+v4uLRGufZf9IL+C706oTLPXlENyMojSITHsEvzUpNqmwQ/CyIN3L1uB6kWlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707508880; c=relaxed/simple;
-	bh=o/8wndvIYXCDVyptq7fP01DqP1w9rrvG4uBd7m7U/L8=;
-	h=From:To:CC:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ERyRGBG4UOvUls0qshlkYWcDCxd2cnkLeFu8NHSsUJUEv7byhoDZywrj579mPZQDEn7+flQkEPp1ce+Yb8CIu85JNwyB0sylFPRK9Aw++jNzs573kxWo4A73LYxVT8FrL2BODEhFKnwgEW2CTk6EMTL9NF5qLClIJMD+2Sku448=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=wZncPceV; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 419K1BPA115191;
-	Fri, 9 Feb 2024 14:01:11 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707508871;
-	bh=SVASYROGxveF2vwE6Vi8wJxsEEn0nCoTyOo/LpiBJmI=;
-	h=From:To:CC:Subject:In-Reply-To:References:Date;
-	b=wZncPceVNlpS3o/yQVaWIttf3hJWUdzMgqX4+OC+Aft8+zd5pb6dv6oiFEn7GpoNc
-	 je6dJwwkj0juPx7G+8JeOjjJR4DXg0E4+LXAkDNA06JSxwrCYLCbSETk4gnuBkLLg9
-	 t/M4Scwv/OJ7jmWpV8sIW2IpAoMf0LVKy6Tsq7vs=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 419K1Bnf041601
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 9 Feb 2024 14:01:11 -0600
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 9
- Feb 2024 14:01:10 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 9 Feb 2024 14:01:10 -0600
-Received: from localhost (kamlesh.dhcp.ti.com [172.24.227.123])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 419K1AJx003931;
-	Fri, 9 Feb 2024 14:01:10 -0600
-From: Kamlesh Gurudasani <kamlesh@ti.com>
-To: Nishanth Menon <nm@ti.com>
-CC: "Kumar, Udit" <u-kumar1@ti.com>, <kristo@kernel.org>,
-        <ssantosh@kernel.org>, <chandru@ti.com>, <rishabh@ti.com>,
-        <vigneshr@ti.com>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH v3] clk: keystone: sci-clk: Adding support for non
- contiguous clocks
-In-Reply-To: <20240209190227.lboi6n5s2oy7kxgc@pristine>
-References: <20240207091100.4001428-1-u-kumar1@ti.com>
- <20240207125410.r2q3jcplvif7dvt2@tumbling>
- <3a7c4a18-5463-414f-82df-39aaed861148@ti.com>
- <20240209172555.fxlxijhhbgrkyibo@agreeing>
- <87y1btlb66.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
- <20240209190227.lboi6n5s2oy7kxgc@pristine>
-Date: Sat, 10 Feb 2024 01:31:09 +0530
-Message-ID: <87v86xl856.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
+	s=arc-20240116; t=1707508887; c=relaxed/simple;
+	bh=5I7BpgixLa5faa6xc3mh89nbOLW/xnTlcqzhbXqlJeg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g2HYq/6/Io70148YR1A/IkOcEk0N4Ew/Ss2BPN7xg/wVxG2NKDcbJswXBhLMj5W8dsFi4mtDTm4q558oKYyAuM4HEI/h86YFeRe/kaJhWiQfKreJwQi1TzTOiIAoTyFFTa5Xlv4O3w3Zl1RmLeAxZIEUwWBfJCXXI9hL3t339GE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Elj3WDB/; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40f00adacfeso5495e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 12:01:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707508884; x=1708113684; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j/UIg69uZRSDx+2JUC17BVpi9Ay6+IMre1Ut9Rszi/0=;
+        b=Elj3WDB/E7Ii13t0ZhrMTaXPoH4eoh6qZBjLZW9cAl8OOS7dwoqWWOxyxZdB+qc3Gb
+         /UYE/Itgq0othdFoUi8uV2Xk5f8QQrgePIW6u1N6OMxz4RtV1qMPOwasgkok2BP403o+
+         HzE9tjXefgFfSQLVaCDEi2XsIU4K+e0cYxAiOTPpELHDWC1aOCkW/agwwckgGbTQ9U1P
+         8jzAsyfHrD/KWTjoPpKjlsbuy4PK2tgFUcp1eAGZT+DkYEstHFiTTl6yMykMS/8sIO8t
+         SSt1MkRybUN6/eG9pANWe5m540juN6AeVcb2WNpP0EAv9pFMGpyvqADHca8yh1llgFBs
+         IxvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707508884; x=1708113684;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j/UIg69uZRSDx+2JUC17BVpi9Ay6+IMre1Ut9Rszi/0=;
+        b=RSdXsqY1Z2eJ24YQ/j7DhfE8l1vIQf87q+R7i2bOf569W6gzbhjEewlXUDKuEZLNTa
+         xXpH7IrXHahmwHfDswVUNvupVXZgbTQ9G78VgfPDwn7ti+bVbT411Wvv8KvqKqe+wBCV
+         rwCXbzyQP743MV16IbwmXriUbrfKpkmkzTnExQPm0ECqE/DDwLClYd2DbzH/XY2+fTyY
+         XZKL9IXY/iD72A53g1O+HgN1Sdo88pfrWyCkLMgnWAdZzsMgAgqbzwPVGVZUVz/Qop7T
+         D3BMkN6XqRfyNpCFgv4Gr5cU8sFHBHN1kg/pi273RPWlmI4NoMa4+x+2domNv/y1S01Y
+         2QDg==
+X-Forwarded-Encrypted: i=1; AJvYcCW/76V76QeO8qYLBhXXXFnBQbWQExSGvIQ6U8AfN/rGSMh7PMRg8kTn3ERGjfyRZ7NbNrDQQCoqD4RdBXLVINtCtVmymhjkneZKGjcS
+X-Gm-Message-State: AOJu0YzsdYnE+SjeyBxRI4yKer/zGOj32k3ZuVGMzMqhDfn3foVe6yqp
+	FY7s2YrryYHw8qqtQX/cVZDE0V98R4OABi8HSxBmfnl5VKWQcb6vNjaZgJZaf6r3oLZJwr69hdj
+	5R67OKZYoaO2Dzc3YRvlHB2dcmjzG9iRqUME=
+X-Google-Smtp-Source: AGHT+IGHZg7lYJ8/6PYkgwHzUIocJAQzcnCe362rAeI00bmROEof/r+DL+mStcwOxp1GXBWpFKblNmcZkghlileV2zY=
+X-Received: by 2002:a05:600c:a39c:b0:410:3e15:3586 with SMTP id
+ hn28-20020a05600ca39c00b004103e153586mr173017wmb.5.1707508883649; Fri, 09 Feb
+ 2024 12:01:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240208195622.758765-1-pranavpp@google.com> <20240208195622.758765-2-pranavpp@google.com>
+In-Reply-To: <20240208195622.758765-2-pranavpp@google.com>
+From: John Stultz <jstultz@google.com>
+Date: Fri, 9 Feb 2024 12:01:10 -0800
+Message-ID: <CANDhNCovFCekU3wKYNMZWNgcr1=yyDnKNoehXe-x3Ep6-c58eg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] alarmtimer: Create alarmtimer sysfs to make
+ duration of kernel suspend check configurable
+To: Pranav Prasad <pranavpp@google.com>
+Cc: tglx@linutronix.de, sboyd@kernel.org, linux-kernel@vger.kernel.org, 
+	krossmo@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Nishanth Menon <nm@ti.com> writes:
-
-> On 00:25-20240210, Kamlesh Gurudasani wrote:
->> >> > > 
->> >> > > diff --git a/drivers/clk/keystone/sci-clk.c b/drivers/clk/keystone/sci-clk.c
->> >> > > index 35fe197dd303..31b7df05d7bb 100644
->> >> > > --- a/drivers/clk/keystone/sci-clk.c
->> >> > > +++ b/drivers/clk/keystone/sci-clk.c
->> >> > > @@ -516,6 +516,7 @@ static int ti_sci_scan_clocks_from_dt(struct sci_clk_provider *provider)
->> >> > >   	struct sci_clk *sci_clk, *prev;
->> >> > >   	int num_clks = 0;
->> >> > >   	int num_parents;
->> >> > > [..]					/* Check if this clock id is valid */
->> >> > > +					ret = provider->ops->is_auto(provider->sci,
->> >> > > +						sci_clk->dev_id, ++clk_id, &state);
->> >> > A bit too nice coding ;) => I had been confused momentarily by clk_id = args.args[1]
->> >> > change just above till I saw that you are pre-incrementing
->> >> > clk_id - Is there a harm in leaving the original clk_id increment logic
->> >> > alone (it was much simpler to read up)?
->> >> 
->> >> No warm in using original code but want to avoid, two statement for
->> >> increment in case of failure and success.
->> >> 
->> >> Let me know, if i need to add few comments around this
->> >> 
->> >> or if you think, code is confusing I can move to original one
->> >
->> > Yes, please drop the un-necessary changes. In this case, original
->> > increment code should work just fine.
->> I wouldn't call it unnecessary, If I have to track increment/addition at
->> 3 different places just to understand the loop, it is hard. On other
->> hand, pre-increment code is solving the problem by having increment at
->> only one place(easier to track). On the plus side, every clk_id belonging to
->> parent is handled completely inside the loop.
->> 
->> For a new person looking at this code, pre-increment code would be
->> actually easier to undertsand.
->> 
->> Also, Udit feels the same.
->> 
->> Would you please explain why do you think the original increment code
->> make more sense? It's not simple to understand or track, that's for sure.
+On Thu, Feb 8, 2024 at 11:56=E2=80=AFAM Pranav Prasad <pranavpp@google.com>=
+ wrote:
 >
-> the context of the fix is the is_auto call to know what parent options
-> are valid or not. Do the absolutely what is necessary in the change. if
-> you want to beautify etc, move it to some other patch and debate about
-> it. So, this is un-necessary change in this patch.
-The context of the fix i.e. handling non contiguous parents is making
-the loop logic complex. Before this patch, i.e. contiguous clock
-handling was simple.
-
-In this fix, we are solving the problem as well as keeping the loop
-simple. clk_id is basically the part of the same loop and it's affecting
-nothing but the loop count. 
-
-This is not just beautification, this is also simplifying the logic and
-improving the readibility. 
-
-If the patch can provide the solution and avoid the complexity, then I don't
-understand why we need a patch that introduce the complexity and another
-patch to solve the complexity.
-
-My original question below is still not answered so I guess there is no
-debate here actually.
-"Would you please explain why do you think the original increment code
- make more sense? It's not simple to understand or track, that's for
- sure."
-
-Kamlesh
+> Currently, the alarmtimer_suspend does not allow the kernel
+> to suspend if the next alarm is within 2 seconds.
+> Create alarmtimer sysfs to make the value of 2 seconds configurable.
+> This allows flexibility to provide a different value based on the
+> type of device running the Linux kernel. As a data point, about 40% of
+> kernel suspend failures in a subset of Android devices were due to
+> this check. A differently configured value can avoid these suspend
+> failures which performs a lot of additional work affecting the
+> power consumption of these Android devices.
 >
-> -- 
-> Regards,
-> Nishanth Menon
-> Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+> Signed-off-by: Pranav Prasad <pranavpp@google.com>
+
+I might suggest flipping the order of these two patches, as I'm more
+wary of UABI changes, so I don't want to hold up the second patch on
+interface bike shedding.
+
+> ---
+>  kernel/time/alarmtimer.c | 61 ++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 58 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
+> index 4657cb8e8b1f..e4b88c8dc0e1 100644
+> --- a/kernel/time/alarmtimer.c
+> +++ b/kernel/time/alarmtimer.c
+> @@ -33,6 +33,8 @@
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/alarmtimer.h>
+>
+> +static const char alarmtimer_group_name[] =3D "alarmtimer";
+> +
+>  /**
+>   * struct alarm_base - Alarm timer bases
+>   * @lock:              Lock for syncrhonized access to the base
+> @@ -63,6 +65,56 @@ static struct rtc_timer              rtctimer;
+>  static struct rtc_device       *rtcdev;
+>  static DEFINE_SPINLOCK(rtcdev_lock);
+>
+> +/* Duration to check for soonest alarm during kernel suspend */
+> +static unsigned long suspend_check_duration_ms =3D 2 * MSEC_PER_SEC;
+
+Naming is hard, but "suspend_check_duration" feels particularly opaque
+for a tunable knob.
+I can't say I've got a better suggestion off the top of my head, but
+this might be something worth thinking a bit more on.
+
+"imminent_alarm_window" maybe? Though that's not obvious it is
+connected to suspend, and maybe sounds more urgent than it should.
+"suspend_alarm_pending_window"?
+
+It might also be nice to provide some more details in the commit
+message about why this should be configurable, and how a user of the
+interface might choose a proper value to use (including the downsides
+of going too far in either direction?).
+
+thanks
+-john
 
