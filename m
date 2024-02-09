@@ -1,119 +1,145 @@
-Return-Path: <linux-kernel+bounces-59338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59342-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A97184F599
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:06:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3602384F59F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:08:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC2261F27BB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:06:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAE12B266D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:08:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B3B38394;
-	Fri,  9 Feb 2024 13:06:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5032F376F7;
+	Fri,  9 Feb 2024 13:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WwTeX2LR"
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CtEB4PyE"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34650381B1
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 13:06:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23A443C463
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 13:07:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707483979; cv=none; b=WoHpTCJLCP3t65wXMcEtA6UtE2uuaYlHEXs9wIX1P3zAwPIZudRSKPv3uaMJEXR05y6H9mspHk2XReV8mj45w5EbwXNDKvlNdK+nvhJ6X51VKhi9FThAtGxeCnbz5qzTjFH/wv0pipVmlAYp7XXkry9rS1cdp1SdYRqYzcJjuHI=
+	t=1707484065; cv=none; b=JptyN25OANcvvvzwBtSRw6EUXnsQ8mw3gXH0BvIDFtvnwp/MOaf40E3Nqect1by7BtRdA3CQezBtgknhKkZDTArkW7Mgxn4Q2t/vQ4Vi2nUZlqBj2xsZ/6BYPm2KVwAo2Pmltf1Y8WJIcYDbzWndPoba8Tt9PaYOJE4UcGNWjo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707483979; c=relaxed/simple;
-	bh=AEDphcx1FQNsF9qiJV4SSq7U2Kx5za3ZeN44KAWA2FE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oipHgVfRkmjXFaXXILmLhLnCQdKRaPHxhGM5/1lZJNEmbuwVNaOZ+E/WZS2qdFaqLgIiH9sXzBv6v1Q5ZX9+Z+VfVqmPhcGf2zCY/EY+wpMmKaAwxUF5Pa0/AfTnzjBCP6cx6bD65Xzu2e9T2/d4DxbN4UDM5SiwWWW2JDy3BL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WwTeX2LR; arc=none smtp.client-ip=209.85.167.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3bbbc6e51d0so508242b6e.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 05:06:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707483977; x=1708088777; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xXQlm8wYk42FKH3UwHT+zuLEtFefXsoBAX29Ffp/+rM=;
-        b=WwTeX2LRlGkAll4d92KQdo6om0ZG1QnnW35qmWGLT5l8SkaRCjReuEmQD0Yir0csNh
-         9O2u1XWyGCQbLwHKSIVJjkfVLvz+TCJiq48t2E/yuL8EPifFItx7qTGiiOiLb3WCOACe
-         m/cpk236SOUUY962yS6bx+jRf/hXjNEBqPxFTfjU9sdG4Av2i/E60wXDnpsz9KzkRgkr
-         eRoKKmUDoyTpMAG1gKNIzB24rtoiQzM3H0RX0X9RZGPVS6UzY/a5JOMkLsIe5S0Quf/R
-         uLYtAwiftINrihMpICQ0Mcu+LrDHq9ZXedsaW08oFMuJ7lkBc+UGuvfvtewBHxty0jX5
-         OqaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707483977; x=1708088777;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xXQlm8wYk42FKH3UwHT+zuLEtFefXsoBAX29Ffp/+rM=;
-        b=OZPi8UDrSDT777JUZGgkE2G7SlaOdoauCjyZZLuleCpv/UMjjZa4fdaiRUJM/2SuZV
-         Ul+q8mUzWn/y6jz06ojvh4/GcaVbyEnDCyO5SnZ2S2VVs7YnrrskepTayUwTQ0vMo7R7
-         IKgufcOuvrZmxwbQrWU8kPUvU1y+ujvV56LzkKGRaTzPWlxhTlWLxxOzegvTXCqGrfK0
-         HzuU/wAuXClJma2RlSHaxpJV78PIhGQxc1L+REtLwNaZvceNCgZnOz5L/s+1zActtC3C
-         b01Wk5HYGpnb9HYVcqFou11MhfmzQirh9mq+fqZGc1nduX4remCUgLujgWnOVRm6eLMQ
-         J/KQ==
-X-Gm-Message-State: AOJu0YwTPkKkGjpA13owW4y497ZmBoSLb7Z9mpk9iCC8nx1K6VoSc9cg
-	FkXlV4K2mIqPQIIlwILJrp2UUutUy/t1BCQ8vv1emDNHIs8Ju/I69djIhKwR/W4785RZ8xeBInj
-	xXz8JUOFjHWsQgLvySsDAnhRMG2q2N+iXk04P
-X-Google-Smtp-Source: AGHT+IHBGxtcRS1vlCmy/DgZiXUssK0zz/bFjoE872mOIvHoPK85pPVC+hWEMgfrO4ToUrj9QAK2sQhOuAm86hlvwP4=
-X-Received: by 2002:a05:6808:1b06:b0:3bf:c8cd:460d with SMTP id
- bx6-20020a0568081b0600b003bfc8cd460dmr1728600oib.1.1707483977082; Fri, 09 Feb
- 2024 05:06:17 -0800 (PST)
+	s=arc-20240116; t=1707484065; c=relaxed/simple;
+	bh=m8jassYfZl6tuikeSEiIX+a4C49CIDjBm1/1K7ahF9Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=CRhk/+EOvcYVoOpJf6yDCOGG30A2Cjv8g6oWdiY3cHn8exElfAwueZr5e4srFgdonsJuLp9gEMTDdGK0A/vuHLoWCzVB3ZEkQqRzsCetfci8qJK4tjiXV70i7ErkSgfM5ah+A1mOOTqX+C0hNfRKJMhMKFPljadndVEyPzrT5uc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CtEB4PyE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707484063;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=+eBS2N7zPOjGNh6UoPh24dMf610glEZ74qIH328t8qY=;
+	b=CtEB4PyEATliCUUSZlP4pTrlIlA50CtwTlYl8OiGdaYS3QjzaeSw36f1gNVtDaI2e4xr/C
+	3LYrB08NHfXytgPEHrUIkjXZJujWgbrLyk1dVj4404MIamR4f4G8cBc16y/4RshJCBoSF+
+	L9QpCEUpl8uTaPCGA+2S5O3wizWKmQ0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-470-WBcllOQQNVe5MNt3f9wJEA-1; Fri, 09 Feb 2024 08:07:39 -0500
+X-MC-Unique: WBcllOQQNVe5MNt3f9wJEA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6F54D83B7E5;
+	Fri,  9 Feb 2024 13:07:39 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.84])
+	by smtp.corp.redhat.com (Postfix) with SMTP id AE141111FF;
+	Fri,  9 Feb 2024 13:07:37 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Fri,  9 Feb 2024 14:06:23 +0100 (CET)
+Date: Fri, 9 Feb 2024 14:06:20 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] signal: add the "int si_code" arg to
+ prepare_kill_siginfo()
+Message-ID: <20240209130620.GA8039@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205-b4-rbtree-v1-0-995e3eee38c0@google.com> <20240205-b4-rbtree-v1-3-995e3eee38c0@google.com>
-In-Reply-To: <20240205-b4-rbtree-v1-3-995e3eee38c0@google.com>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Fri, 9 Feb 2024 14:06:05 +0100
-Message-ID: <CAH5fLgj8eZRbiuG7MgRaDbZHkUVUfSXuUdEqUB4foysds2vk1Q@mail.gmail.com>
-Subject: Re: [PATCH 3/6] rust: rbtree: add `RBTreeIterator`
-To: mattgilbride@google.com
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Christian Brauner <brauner@kernel.org>, Rob Landley <rob@landley.net>, 
-	Davidlohr Bueso <dave@stgolabs.net>, Michel Lespinasse <michel@lespinasse.org>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Mon, Feb 5, 2024 at 4:50=E2=80=AFPM <mattgilbride@google.com> wrote:
->
-> From: Wedson Almeida Filho <wedsonaf@gmail.com>
->
-> - Add Iterator implementation (`RBTreeIterator`) for `RBTree`, allowing
->   iteration over (key, value) pairs in key order.
-> - Add individual `keys()` and `values()` functions to iterate over keys
->   or values alone.
-> - Update doctests to use iteration instead of explicitly getting items.
->
-> Iteration is needed by the binder driver to enumerate all values in a
-> tree for oneway spam detection [1].
->
-> Link: https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-17-0=
-8ba9197f637@google.com/ [1]
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
-> Signed-off-by: Matt Gilbride <mattgilbride@google.com>
+So that do_tkill() can use this helper too. This also simplifies
+the next patch.
 
-I have looked at these bindings many times over the past year. They
-look good to me.
+TODO: perhaps we can kill prepare_kill_siginfo() and change the
+callers to use SEND_SIG_NOINFO,  but this needs some changes in
+__send_signal_locked() and TP_STORE_SIGINFO().
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/signal.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-These abstractions have been very heavily exercised by the Rust Binder
-driver.
+diff --git a/kernel/signal.c b/kernel/signal.c
+index c3fac06937e2..a8199fda0d61 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -3793,12 +3793,12 @@ COMPAT_SYSCALL_DEFINE4(rt_sigtimedwait_time32, compat_sigset_t __user *, uthese,
+ #endif
+ #endif
+ 
+-static inline void prepare_kill_siginfo(int sig, struct kernel_siginfo *info)
++static void prepare_kill_siginfo(int sig, struct kernel_siginfo *info, int si_code)
+ {
+ 	clear_siginfo(info);
+ 	info->si_signo = sig;
+ 	info->si_errno = 0;
+-	info->si_code = SI_USER;
++	info->si_code = si_code;
+ 	info->si_pid = task_tgid_vnr(current);
+ 	info->si_uid = from_kuid_munged(current_user_ns(), current_uid());
+ }
+@@ -3812,7 +3812,7 @@ SYSCALL_DEFINE2(kill, pid_t, pid, int, sig)
+ {
+ 	struct kernel_siginfo info;
+ 
+-	prepare_kill_siginfo(sig, &info);
++	prepare_kill_siginfo(sig, &info, SI_USER);
+ 
+ 	return kill_something_info(sig, &info, pid);
+ }
+@@ -3925,7 +3925,7 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
+ 		    (kinfo.si_code >= 0 || kinfo.si_code == SI_TKILL))
+ 			goto err;
+ 	} else {
+-		prepare_kill_siginfo(sig, &kinfo);
++		prepare_kill_siginfo(sig, &kinfo, SI_USER);
+ 	}
+ 
+ 	/* TODO: respect PIDFD_THREAD */
+@@ -3970,12 +3970,7 @@ static int do_tkill(pid_t tgid, pid_t pid, int sig)
+ {
+ 	struct kernel_siginfo info;
+ 
+-	clear_siginfo(&info);
+-	info.si_signo = sig;
+-	info.si_errno = 0;
+-	info.si_code = SI_TKILL;
+-	info.si_pid = task_tgid_vnr(current);
+-	info.si_uid = from_kuid_munged(current_user_ns(), current_uid());
++	prepare_kill_siginfo(sig, &info, SI_TKILL);
+ 
+ 	return do_send_specific(tgid, pid, sig, &info);
+ }
+-- 
+2.25.1.362.g51ebf55
 
-Tested-by: Alice Ryhl <aliceryhl@google.com>
+
 
