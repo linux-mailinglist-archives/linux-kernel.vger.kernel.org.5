@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-59678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D03CE84FA47
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:56:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EBD084FA4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:56:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D0B628F3FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:56:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3BDC1C26783
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1D3212BF1D;
-	Fri,  9 Feb 2024 16:50:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C539912C526;
+	Fri,  9 Feb 2024 16:50:54 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88EB512BE9C;
-	Fri,  9 Feb 2024 16:50:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD5D12BF21;
+	Fri,  9 Feb 2024 16:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707497450; cv=none; b=Ak7unO8aoFM5mVwSfkom2m3Cc8F8ojPM1cT7SL5QfYmzhm1vTKEC0NXlqWjgvQPbxCu66kKgPUMEe7p08BymaCUfHig2VaVY96acn0+f/bHeEFodaqGVfnmNo00kAXGD8U6p/m/qn74O1U+y+2VEXVLwQ1y6SuQOHbARfKfus5U=
+	t=1707497454; cv=none; b=C/+vgVkbMU8uYbKugGzFJdJTgSXmUJZ0Pme04Z18Sr6Kv7E5vM/PktFwE4fUc5EjeazpQ/35avx6+5TBkfjIAFW64onpqug5kE9lYxPn86R2KBJEK1LvkzQnkKO1Kry9TywbmYH9BMZJKmCIbfSdk2Wj5pE5AmTo26sykue/7Uw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707497450; c=relaxed/simple;
-	bh=BjqBw3BXFHDla5pW2JiQZ7jV29wfW+1kwBA6lu0tHGU=;
+	s=arc-20240116; t=1707497454; c=relaxed/simple;
+	bh=BAgEyvhJwFjzB0KC6eWxcuhNCR9bxn/5R48JQV3EcQw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=N/NMCOtmcrNJ+hhUsBtFuSqiEFEi+ZQjMdWco+XXQDAvxHTl5Vb8yHsLc6VAgzwlwE8HXkpwlDkj8A2BQ4IQVIHE0QHR62rBFsPRiM2BgK7IZSHW7sAcoWZVroMa7OXKNdfDirFRpVYaagBRLxW6uHhavXKMjOI0SVhLLiZXpaA=
+	 MIME-Version; b=GAv5gKzI5uEcTP3whGK0zJzgVIQfc/FuL9y9fRy7oWc56d5kiKjZOMEZLRKOIy6CQettHSloZDsszakCe83H+IJhJg4J6SQgCYHICMdoOCJejrmOWoXi4iQb5hcZDzOo6v3C+WwzyuxskncDQDdsoHn9w0GglX21TOmC8gi/4pY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0515BDA7;
-	Fri,  9 Feb 2024 08:51:29 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 24B7FFEC;
+	Fri,  9 Feb 2024 08:51:33 -0800 (PST)
 Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 495793F64C;
-	Fri,  9 Feb 2024 08:50:43 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 363293F64C;
+	Fri,  9 Feb 2024 08:50:47 -0800 (PST)
 From: Robin Murphy <robin.murphy@arm.com>
 To: 
 Cc: Vineet Gupta <vgupta@kernel.org>,
@@ -66,10 +66,12 @@ Cc: Vineet Gupta <vgupta@kernel.org>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-acpi@vger.kernel.org,
 	iommu@lists.linux.dev,
-	devicetree@vger.kernel.org
-Subject: [PATCH v3 6/7] iommu/dma: Centralise iommu_setup_dma_ops()
-Date: Fri,  9 Feb 2024 16:50:03 +0000
-Message-Id: <202fcca3269201bc9c4a8198253f195433d0c4ff.1707493264.git.robin.murphy@arm.com>
+	devicetree@vger.kernel.org,
+	Rob Herring <robh@kernel.org>,
+	Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v3 7/7] dma-mapping: Simplify arch_setup_dma_ops()
+Date: Fri,  9 Feb 2024 16:50:04 +0000
+Message-Id: <f0ea76846c89a65dfe42933d78d770004bb3de01.1707493264.git.robin.murphy@arm.com>
 X-Mailer: git-send-email 2.39.2.101.g768bb238c484.dirty
 In-Reply-To: <cover.1707493264.git.robin.murphy@arm.com>
 References: <cover.1707493264.git.robin.murphy@arm.com>
@@ -81,318 +83,231 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It's somewhat hard to see, but arm64's arch_setup_dma_ops() should only
-ever call iommu_setup_dma_ops() after a successful iommu_probe_device(),
-which means there should be no harm in achieving the same order of
-operations by running it off the back of iommu_probe_device() itself.
-This then puts it in line with the x86 and s390 .probe_finalize bodges,
-letting us pull it all into the main flow properly. As a bonus this lets
-us fold in and de-scope the PCI workaround setup as well.
+The dma_base, size and iommu arguments are only used by ARM, and can
+now easily be deduced from the device itself, so there's no need to pass
+them through the callchain as well.
 
-At this point we can also then pull the call up inside the group mutex,
-and avoid having to think about whether iommu_group_store_type() could
-theoretically race and free the domain if iommu_setup_dma_ops() ran just
-*before* iommu_device_use_default_domain() claims it... Furthermore we
-replace one .probe_finalize call completely, since the only remaining
-implementations are now one which only needs to run once for the initial
-boot-time probe, and two which themselves render that path unreachable.
-
-This leaves us a big step closer to realistically being able to unpick
-the variety of different things that iommu_setup_dma_ops() has been
-muddling together, and further streamline iommu-dma into core API flows
-in future.
-
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 ---
-v2: Shuffle around to make sure the iommu_group_do_probe_finalize() case
-    is covered as well, with bonus side-effects as above.
-v3: *Really* do that, remembering the other two probe_finalize sites too.
+v2: Make sure the ARM changes actually build (oops...)
 ---
- arch/arm64/mm/dma-mapping.c  |  2 --
- drivers/iommu/amd/iommu.c    |  8 --------
- drivers/iommu/dma-iommu.c    | 18 ++++++------------
- drivers/iommu/dma-iommu.h    | 14 ++++++--------
- drivers/iommu/intel/iommu.c  |  7 -------
- drivers/iommu/iommu.c        | 20 +++++++-------------
- drivers/iommu/s390-iommu.c   |  6 ------
- drivers/iommu/virtio-iommu.c | 10 ----------
- include/linux/iommu.h        |  7 -------
- 9 files changed, 19 insertions(+), 73 deletions(-)
+ arch/arc/mm/dma.c               |  3 +--
+ arch/arm/mm/dma-mapping-nommu.c |  3 +--
+ arch/arm/mm/dma-mapping.c       | 16 +++++++++-------
+ arch/arm64/mm/dma-mapping.c     |  3 +--
+ arch/mips/mm/dma-noncoherent.c  |  3 +--
+ arch/riscv/mm/dma-noncoherent.c |  3 +--
+ drivers/acpi/scan.c             |  7 +------
+ drivers/hv/hv_common.c          |  6 +-----
+ drivers/of/device.c             |  4 +---
+ include/linux/dma-map-ops.h     |  6 ++----
+ 10 files changed, 19 insertions(+), 35 deletions(-)
 
-diff --git a/arch/arm64/mm/dma-mapping.c b/arch/arm64/mm/dma-mapping.c
-index 61886e43e3a1..313d8938a2f0 100644
---- a/arch/arm64/mm/dma-mapping.c
-+++ b/arch/arm64/mm/dma-mapping.c
-@@ -58,8 +58,6 @@ void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
- 		   ARCH_DMA_MINALIGN, cls);
+diff --git a/arch/arc/mm/dma.c b/arch/arc/mm/dma.c
+index 197707bc7658..6b85e94f3275 100644
+--- a/arch/arc/mm/dma.c
++++ b/arch/arc/mm/dma.c
+@@ -90,8 +90,7 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
+ /*
+  * Plug in direct dma map ops.
+  */
+-void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+-			bool coherent)
++void arch_setup_dma_ops(struct device *dev, bool coherent)
+ {
+ 	/*
+ 	 * IOC hardware snoops all DMA traffic keeping the caches consistent
+diff --git a/arch/arm/mm/dma-mapping-nommu.c b/arch/arm/mm/dma-mapping-nommu.c
+index b94850b57995..97db5397c320 100644
+--- a/arch/arm/mm/dma-mapping-nommu.c
++++ b/arch/arm/mm/dma-mapping-nommu.c
+@@ -33,8 +33,7 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
+ 	}
+ }
  
- 	dev->dma_coherent = coherent;
--	if (device_iommu_mapped(dev))
--		iommu_setup_dma_ops(dev, dma_base, dma_base + size - 1);
+-void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+-			bool coherent)
++void arch_setup_dma_ops(struct device *dev, bool coherent)
+ {
+ 	if (IS_ENABLED(CONFIG_CPU_V7M)) {
+ 		/*
+diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+index f68db05eba29..5adf1769eee4 100644
+--- a/arch/arm/mm/dma-mapping.c
++++ b/arch/arm/mm/dma-mapping.c
+@@ -1709,11 +1709,15 @@ void arm_iommu_detach_device(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(arm_iommu_detach_device);
+ 
+-static void arm_setup_iommu_dma_ops(struct device *dev, u64 dma_base, u64 size,
+-				    bool coherent)
++static void arm_setup_iommu_dma_ops(struct device *dev)
+ {
+ 	struct dma_iommu_mapping *mapping;
++	u64 dma_base = 0, size = 1ULL << 32;
+ 
++	if (dev->dma_range_map) {
++		dma_base = dma_range_map_min(dev->dma_range_map);
++		size = dma_range_map_max(dev->dma_range_map) - dma_base;
++	}
+ 	mapping = arm_iommu_create_mapping(dev->bus, dma_base, size);
+ 	if (IS_ERR(mapping)) {
+ 		pr_warn("Failed to create %llu-byte IOMMU mapping for device %s\n",
+@@ -1744,8 +1748,7 @@ static void arm_teardown_iommu_dma_ops(struct device *dev)
+ 
+ #else
+ 
+-static void arm_setup_iommu_dma_ops(struct device *dev, u64 dma_base, u64 size,
+-				    bool coherent)
++static void arm_setup_iommu_dma_ops(struct device *dev)
+ {
+ }
+ 
+@@ -1753,8 +1756,7 @@ static void arm_teardown_iommu_dma_ops(struct device *dev) { }
+ 
+ #endif	/* CONFIG_ARM_DMA_USE_IOMMU */
+ 
+-void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+-			bool coherent)
++void arch_setup_dma_ops(struct device *dev, bool coherent)
+ {
+ 	/*
+ 	 * Due to legacy code that sets the ->dma_coherent flag from a bus
+@@ -1774,7 +1776,7 @@ void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+ 		return;
+ 
+ 	if (device_iommu_mapped(dev))
+-		arm_setup_iommu_dma_ops(dev, dma_base, size, coherent);
++		arm_setup_iommu_dma_ops(dev);
  
  	xen_setup_dma_ops(dev);
+ 	dev->archdata.dma_ops_setup = true;
+diff --git a/arch/arm64/mm/dma-mapping.c b/arch/arm64/mm/dma-mapping.c
+index 313d8938a2f0..0b320a25a471 100644
+--- a/arch/arm64/mm/dma-mapping.c
++++ b/arch/arm64/mm/dma-mapping.c
+@@ -46,8 +46,7 @@ void arch_teardown_dma_ops(struct device *dev)
  }
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 4283dd8191f0..00c0d5de1225 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -1968,13 +1968,6 @@ static struct iommu_device *amd_iommu_probe_device(struct device *dev)
- 	return iommu_dev;
+ #endif
+ 
+-void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+-			bool coherent)
++void arch_setup_dma_ops(struct device *dev, bool coherent)
+ {
+ 	int cls = cache_line_size_of_cpu();
+ 
+diff --git a/arch/mips/mm/dma-noncoherent.c b/arch/mips/mm/dma-noncoherent.c
+index 0f3cec663a12..ab4f2a75a7d0 100644
+--- a/arch/mips/mm/dma-noncoherent.c
++++ b/arch/mips/mm/dma-noncoherent.c
+@@ -137,8 +137,7 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
+ #endif
+ 
+ #ifdef CONFIG_ARCH_HAS_SETUP_DMA_OPS
+-void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+-		bool coherent)
++void arch_setup_dma_ops(struct device *dev, bool coherent)
+ {
+ 	dev->dma_coherent = coherent;
+ }
+diff --git a/arch/riscv/mm/dma-noncoherent.c b/arch/riscv/mm/dma-noncoherent.c
+index 843107f834b2..cb89d7e0ba88 100644
+--- a/arch/riscv/mm/dma-noncoherent.c
++++ b/arch/riscv/mm/dma-noncoherent.c
+@@ -128,8 +128,7 @@ void arch_dma_prep_coherent(struct page *page, size_t size)
+ 	ALT_CMO_OP(FLUSH, flush_addr, size, riscv_cbom_block_size);
  }
  
--static void amd_iommu_probe_finalize(struct device *dev)
--{
--	/* Domains are initialized for this device - have a look what we ended up with */
--	set_dma_ops(dev, NULL);
--	iommu_setup_dma_ops(dev, 0, U64_MAX);
--}
--
- static void amd_iommu_release_device(struct device *dev)
+-void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+-			bool coherent)
++void arch_setup_dma_ops(struct device *dev, bool coherent)
  {
- 	struct amd_iommu *iommu;
-@@ -2626,7 +2619,6 @@ const struct iommu_ops amd_iommu_ops = {
- 	.domain_alloc_user = amd_iommu_domain_alloc_user,
- 	.probe_device = amd_iommu_probe_device,
- 	.release_device = amd_iommu_release_device,
--	.probe_finalize = amd_iommu_probe_finalize,
- 	.device_group = amd_iommu_device_group,
- 	.get_resv_regions = amd_iommu_get_resv_regions,
- 	.is_attach_deferred = amd_iommu_is_attach_deferred,
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 52126f73f690..fa1cdca39da6 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -1727,25 +1727,20 @@ static const struct dma_map_ops iommu_dma_ops = {
- 	.opt_mapping_size	= iommu_dma_opt_mapping_size,
- };
- 
--/*
-- * The IOMMU core code allocates the default DMA domain, which the underlying
-- * IOMMU driver needs to support via the dma-iommu layer.
-- */
--void iommu_setup_dma_ops(struct device *dev, u64 dma_base, u64 dma_limit)
-+void iommu_setup_dma_ops(struct device *dev)
- {
- 	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
- 
--	if (!domain)
--		goto out_err;
-+	if (dev_is_pci(dev))
-+		dev->iommu->pci_32bit_workaround = !iommu_dma_forcedac;
+ 	WARN_TAINT(!coherent && riscv_cbom_block_size > ARCH_DMA_MINALIGN,
+ 		   TAINT_CPU_OUT_OF_SPEC,
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index e6ed1ba91e5c..f5df17d11717 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -1640,12 +1640,7 @@ int acpi_dma_configure_id(struct device *dev, enum dev_dma_attr attr,
+ 	if (ret == -EPROBE_DEFER)
+ 		return -EPROBE_DEFER;
  
 -	/*
--	 * The IOMMU core code allocates the default DMA domain, which the
--	 * underlying IOMMU driver needs to support via the dma-iommu layer.
+-	 * Historically this routine doesn't fail driver probing due to errors
+-	 * in acpi_iommu_configure_id()
 -	 */
- 	if (iommu_is_dma_domain(domain)) {
- 		if (iommu_dma_init_domain(domain, dev))
- 			goto out_err;
- 		dev->dma_ops = &iommu_dma_ops;
-+	} else if (dev->dma_ops == &iommu_dma_ops) {
-+		/* Clean up if we've switched *from* a DMA domain */
-+		dev->dma_ops = NULL;
- 	}
- 
- 	return;
-@@ -1753,7 +1748,6 @@ void iommu_setup_dma_ops(struct device *dev, u64 dma_base, u64 dma_limit)
- 	 pr_warn("Failed to set up IOMMU for device %s; retaining platform DMA ops\n",
- 		 dev_name(dev));
- }
--EXPORT_SYMBOL_GPL(iommu_setup_dma_ops);
- 
- static struct iommu_dma_msi_page *iommu_dma_get_msi_page(struct device *dev,
- 		phys_addr_t msi_addr, struct iommu_domain *domain)
-diff --git a/drivers/iommu/dma-iommu.h b/drivers/iommu/dma-iommu.h
-index c829f1f82a99..c12d63457c76 100644
---- a/drivers/iommu/dma-iommu.h
-+++ b/drivers/iommu/dma-iommu.h
-@@ -9,6 +9,8 @@
- 
- #ifdef CONFIG_IOMMU_DMA
- 
-+void iommu_setup_dma_ops(struct device *dev);
-+
- int iommu_get_dma_cookie(struct iommu_domain *domain);
- void iommu_put_dma_cookie(struct iommu_domain *domain);
- 
-@@ -17,13 +19,13 @@ int iommu_dma_init_fq(struct iommu_domain *domain);
- void iommu_dma_get_resv_regions(struct device *dev, struct list_head *list);
- 
- extern bool iommu_dma_forcedac;
--static inline void iommu_dma_set_pci_32bit_workaround(struct device *dev)
--{
--	dev->iommu->pci_32bit_workaround = !iommu_dma_forcedac;
--}
- 
- #else /* CONFIG_IOMMU_DMA */
- 
-+static inline void iommu_setup_dma_ops(struct device *dev)
-+{
-+}
-+
- static inline int iommu_dma_init_fq(struct iommu_domain *domain)
- {
- 	return -EINVAL;
-@@ -42,9 +44,5 @@ static inline void iommu_dma_get_resv_regions(struct device *dev, struct list_he
- {
- }
- 
--static inline void iommu_dma_set_pci_32bit_workaround(struct device *dev)
--{
--}
 -
- #endif	/* CONFIG_IOMMU_DMA */
- #endif	/* __DMA_IOMMU_H */
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 6fb5f6fceea1..f1c599429408 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -4291,12 +4291,6 @@ static void intel_iommu_release_device(struct device *dev)
- 	set_dma_ops(dev, NULL);
- }
- 
--static void intel_iommu_probe_finalize(struct device *dev)
--{
--	set_dma_ops(dev, NULL);
--	iommu_setup_dma_ops(dev, 0, U64_MAX);
--}
--
- static void intel_iommu_get_resv_regions(struct device *device,
- 					 struct list_head *head)
- {
-@@ -4748,7 +4742,6 @@ const struct iommu_ops intel_iommu_ops = {
- 	.domain_alloc		= intel_iommu_domain_alloc,
- 	.domain_alloc_user	= intel_iommu_domain_alloc_user,
- 	.probe_device		= intel_iommu_probe_device,
--	.probe_finalize		= intel_iommu_probe_finalize,
- 	.release_device		= intel_iommu_release_device,
- 	.get_resv_regions	= intel_iommu_get_resv_regions,
- 	.device_group		= intel_iommu_device_group,
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index d14413916f93..e793b2f4bdc8 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -571,10 +571,11 @@ static int __iommu_probe_device(struct device *dev, struct list_head *group_list
- 		if (list_empty(&group->entry))
- 			list_add_tail(&group->entry, group_list);
- 	}
--	mutex_unlock(&group->mutex);
- 
--	if (dev_is_pci(dev))
--		iommu_dma_set_pci_32bit_workaround(dev);
-+	if (group->default_domain)
-+		iommu_setup_dma_ops(dev);
-+
-+	mutex_unlock(&group->mutex);
+-	arch_setup_dma_ops(dev, 0, U64_MAX, attr == DEV_DMA_COHERENT);
++	arch_setup_dma_ops(dev, attr == DEV_DMA_COHERENT);
  
  	return 0;
+ }
+diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
+index 0285a74363b3..0e2decd1167a 100644
+--- a/drivers/hv/hv_common.c
++++ b/drivers/hv/hv_common.c
+@@ -484,11 +484,7 @@ EXPORT_SYMBOL_GPL(hv_query_ext_cap);
  
-@@ -2010,6 +2011,8 @@ int bus_iommu_probe(const struct bus_type *bus)
- 			mutex_unlock(&group->mutex);
- 			return ret;
- 		}
-+		for_each_group_device(group, gdev)
-+			iommu_setup_dma_ops(gdev->dev);
- 		mutex_unlock(&group->mutex);
- 
- 		/*
-@@ -3248,18 +3251,9 @@ static ssize_t iommu_group_store_type(struct iommu_group *group,
- 	if (ret)
- 		goto out_unlock;
- 
+ void hv_setup_dma_ops(struct device *dev, bool coherent)
+ {
 -	/*
--	 * Release the mutex here because ops->probe_finalize() call-back of
--	 * some vendor IOMMU drivers calls arm_iommu_attach_device() which
--	 * in-turn might call back into IOMMU core code, where it tries to take
--	 * group->mutex, resulting in a deadlock.
+-	 * Hyper-V does not offer a vIOMMU in the guest
+-	 * VM, so pass 0/NULL for the IOMMU settings
 -	 */
--	mutex_unlock(&group->mutex);
--
- 	/* Make sure dma_ops is appropriatley set */
- 	for_each_group_device(group, gdev)
--		iommu_group_do_probe_finalize(gdev->dev);
--	return count;
-+		iommu_setup_dma_ops(gdev->dev);
- 
- out_unlock:
- 	mutex_unlock(&group->mutex);
-diff --git a/drivers/iommu/s390-iommu.c b/drivers/iommu/s390-iommu.c
-index 9a5196f523de..d8eaa7ea380b 100644
---- a/drivers/iommu/s390-iommu.c
-+++ b/drivers/iommu/s390-iommu.c
-@@ -695,11 +695,6 @@ static size_t s390_iommu_unmap_pages(struct iommu_domain *domain,
- 	return size;
+-	arch_setup_dma_ops(dev, 0, 0, coherent);
++	arch_setup_dma_ops(dev, coherent);
  }
+ EXPORT_SYMBOL_GPL(hv_setup_dma_ops);
  
--static void s390_iommu_probe_finalize(struct device *dev)
--{
--	iommu_setup_dma_ops(dev, 0, U64_MAX);
--}
--
- struct zpci_iommu_ctrs *zpci_get_iommu_ctrs(struct zpci_dev *zdev)
+diff --git a/drivers/of/device.c b/drivers/of/device.c
+index 9e7963972fa7..312c63361211 100644
+--- a/drivers/of/device.c
++++ b/drivers/of/device.c
+@@ -95,7 +95,6 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
  {
- 	if (!zdev || !zdev->s390_domain)
-@@ -785,7 +780,6 @@ static const struct iommu_ops s390_iommu_ops = {
- 	.capable = s390_iommu_capable,
- 	.domain_alloc_paging = s390_domain_alloc_paging,
- 	.probe_device = s390_iommu_probe_device,
--	.probe_finalize = s390_iommu_probe_finalize,
- 	.release_device = s390_iommu_release_device,
- 	.device_group = generic_device_group,
- 	.pgsize_bitmap = SZ_4K,
-diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
-index 34db37fd9675..ec7640127125 100644
---- a/drivers/iommu/virtio-iommu.c
-+++ b/drivers/iommu/virtio-iommu.c
-@@ -1025,15 +1025,6 @@ static struct iommu_device *viommu_probe_device(struct device *dev)
- 	return ERR_PTR(ret);
+ 	const struct bus_dma_region *map = NULL;
+ 	struct device_node *bus_np;
+-	u64 dma_start = 0;
+ 	u64 mask, end = 0;
+ 	bool coherent;
+ 	int iommu_ret;
+@@ -118,7 +117,6 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+ 			return ret == -ENODEV ? 0 : ret;
+ 	} else {
+ 		/* Determine the overall bounds of all DMA regions */
+-		dma_start = dma_range_map_min(map);
+ 		end = dma_range_map_max(map);
+ 	}
+ 
+@@ -175,7 +173,7 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+ 	} else
+ 		dev_dbg(dev, "device is behind an iommu\n");
+ 
+-	arch_setup_dma_ops(dev, dma_start, end - dma_start + 1, coherent);
++	arch_setup_dma_ops(dev, coherent);
+ 
+ 	if (iommu_ret)
+ 		of_dma_set_restricted_buffer(dev, np);
+diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
+index 4abc60f04209..ed89e1ce0114 100644
+--- a/include/linux/dma-map-ops.h
++++ b/include/linux/dma-map-ops.h
+@@ -426,11 +426,9 @@ bool arch_dma_unmap_sg_direct(struct device *dev, struct scatterlist *sg,
+ #endif
+ 
+ #ifdef CONFIG_ARCH_HAS_SETUP_DMA_OPS
+-void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+-		bool coherent);
++void arch_setup_dma_ops(struct device *dev, bool coherent);
+ #else
+-static inline void arch_setup_dma_ops(struct device *dev, u64 dma_base,
+-		u64 size, bool coherent)
++static inline void arch_setup_dma_ops(struct device *dev, bool coherent)
+ {
  }
- 
--static void viommu_probe_finalize(struct device *dev)
--{
--#ifndef CONFIG_ARCH_HAS_SETUP_DMA_OPS
--	/* First clear the DMA ops in case we're switching from a DMA domain */
--	set_dma_ops(dev, NULL);
--	iommu_setup_dma_ops(dev, 0, U64_MAX);
--#endif
--}
--
- static void viommu_release_device(struct device *dev)
- {
- 	struct viommu_endpoint *vdev = dev_iommu_priv_get(dev);
-@@ -1072,7 +1063,6 @@ static struct iommu_ops viommu_ops = {
- 	.capable		= viommu_capable,
- 	.domain_alloc		= viommu_domain_alloc,
- 	.probe_device		= viommu_probe_device,
--	.probe_finalize		= viommu_probe_finalize,
- 	.release_device		= viommu_release_device,
- 	.device_group		= viommu_device_group,
- 	.get_resv_regions	= viommu_get_resv_regions,
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 79c3dac8be75..509add6699c8 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -1367,9 +1367,6 @@ static inline void iommu_debugfs_setup(void) {}
- #ifdef CONFIG_IOMMU_DMA
- #include <linux/msi.h>
- 
--/* Setup call for arch DMA mapping code */
--void iommu_setup_dma_ops(struct device *dev, u64 dma_base, u64 dma_limit);
--
- int iommu_get_msi_cookie(struct iommu_domain *domain, dma_addr_t base);
- 
- int iommu_dma_prepare_msi(struct msi_desc *desc, phys_addr_t msi_addr);
-@@ -1380,10 +1377,6 @@ void iommu_dma_compose_msi_msg(struct msi_desc *desc, struct msi_msg *msg);
- struct msi_desc;
- struct msi_msg;
- 
--static inline void iommu_setup_dma_ops(struct device *dev, u64 dma_base, u64 dma_limit)
--{
--}
--
- static inline int iommu_get_msi_cookie(struct iommu_domain *domain, dma_addr_t base)
- {
- 	return -ENODEV;
+ #endif /* CONFIG_ARCH_HAS_SETUP_DMA_OPS */
 -- 
 2.39.2.101.g768bb238c484.dirty
 
