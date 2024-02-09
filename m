@@ -1,114 +1,93 @@
-Return-Path: <linux-kernel+bounces-59185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A242984F2CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DBAF784F2D7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:57:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D532287151
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:56:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97555289F46
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A05B67E72;
-	Fri,  9 Feb 2024 09:56:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A9A069964;
+	Fri,  9 Feb 2024 09:56:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S5B/5p2Z"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cUdAj7Ia"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C2A67E61
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 09:56:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 339A067E90;
+	Fri,  9 Feb 2024 09:56:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707472566; cv=none; b=qiCK0mSrStPWGCI3R4o/Ag48+x/v3HNkve+WKhfqzuJWevet5a+WPmpffrEoOj2LOAyQnPN1Stu2gU5CORUcJ28hhx6Ht4HssK8b+DPy5zB0zrxh7KwADoI4II+2W5ECMjikewH+OULD7ukGhC28iGqgesXA+FUXvGcSQKoMnT4=
+	t=1707472593; cv=none; b=t611BDA94CX8yahimZc2+zPSzky7YLPFM+vdrsM/qjyOrAsNE2rzhQ6eDiDGOx/Q8enug1jDXMwdQefhyMp892kyViQ43gRLA9PF4bhZvjHu1srg/pe0ZjoF1lMwgwAZxlmtUZJrz6Xj7F+qksPTuzDU6NNAD7FiyVzEA5PIHcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707472566; c=relaxed/simple;
-	bh=KfsHmDe3ZLFgrnm+SKa5mnKBmWNtSbWGSugWsXTB7lw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=UiQO+w4XuB0poW00TDXekpUXA3AXQjfB3+vYztfyePo8a6hhZlaEBabOmWhlY3gqckWe3bW16+2CBQjcLpSzm1xGMyJMoKiVNLafm27lvIg7DOSYvbPFV8AlElrnRbI/4O6hF/0RIMAcZVLCW/fTgTMtSephmWAH12xf3Ov/cN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S5B/5p2Z; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707472565; x=1739008565;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=KfsHmDe3ZLFgrnm+SKa5mnKBmWNtSbWGSugWsXTB7lw=;
-  b=S5B/5p2ZzJS7GxzfuqPbGpwYZpDoxy9RsxT2bYJKZLlg3kcRiU4+INEp
-   zBxuv2QfA5+IqTs3WGKsWwKaQRFUcQRDz9SqhxJFFyqFDCJnqIHd4FEXw
-   c6AkmvvV86nB1lMzktP9aSEhJ6lBCS3RmWe0UY1rKI1puRSzx1mEmDHXb
-   /p0K7L+N/WKS9C6x12HOD0SlK35vWaeY0XGgvUwZJxmX/EBLJ8+eGySKy
-   nWCkb4I5jFtH/qs2jPpr8Qsx4Eq55jhpN5cIlCwcvagTYgpRy9QZ1MRLf
-   kckYUIzQsLBHitHKqgEmAFKTuzGkQnYi4vxy44P3SdiA4HQxUJtTtd1UZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="5194091"
-X-IronPort-AV: E=Sophos;i="6.05,256,1701158400"; 
-   d="scan'208";a="5194091"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 01:56:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,256,1701158400"; 
-   d="scan'208";a="6535901"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.38.190])
-  by orviesa005.jf.intel.com with ESMTP; 09 Feb 2024 01:56:03 -0800
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-	id 9D2E8301B21; Fri,  9 Feb 2024 01:56:03 -0800 (PST)
-From: Andi Kleen <ak@linux.intel.com>
-To: Chunsheng Luo <luochunsheng@ustc.edu>
-Cc: gregkh@linuxfoundation.org,  rafael@kernel.org,
-  akpm@linux-foundation.org,  linux-kernel@vger.kernel.org,
-  linux-mm@kvack.org
-Subject: Re: [PATCH] meminfo: provide estimated per-node's available memory
-In-Reply-To: <20240204083414.107799-1-luochunsheng@ustc.edu> (Chunsheng Luo's
-	message of "Sun, 4 Feb 2024 03:34:14 -0500")
-References: <20240204083414.107799-1-luochunsheng@ustc.edu>
-Date: Fri, 09 Feb 2024 01:56:03 -0800
-Message-ID: <87fry2t0zw.fsf@linux.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1707472593; c=relaxed/simple;
+	bh=xYEtR0Wr2t6KUJov/TRaojVdpD4mNvA5x9mBkXjvx6E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GiPi4iYe17xnGDCDydJU6/4IOlrxJfUGuKTZSN6Ze3Uc0oLuZS3kAZVg7tfU2zWrynPlqPASNZdVSIEK7PcT3KMbFBAnorMByGSxBq2e2rM7prEfCt9CffAIHQ/SVNgYLqIPVoNFrWlP5727fhY7kVqNBE+fGnHuRB9xV+4zxOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cUdAj7Ia; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A79E2C433C7;
+	Fri,  9 Feb 2024 09:56:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707472592;
+	bh=xYEtR0Wr2t6KUJov/TRaojVdpD4mNvA5x9mBkXjvx6E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cUdAj7Iahkgr5Q6NWtXGxYvOl/rJpHVTWnfo3glfNrjL6pHaZeHwmQUiJbcul2RRJ
+	 UKGYtLqvOd/+KQtfM26Qa65dJ3KoQyZmI1LikiWgXt3Py+DnyYEDL+YNpo+OQ6gWua
+	 ggGnviTBDn0dC1nfu7gVRTK5rKX/3n5Q9iJyzVa8NnRRMn81ctyAL7q7UNx/XrGP/P
+	 Ho0E7gPdZWV6/TdJOSDVNDGEYINEXsnHb9JyPwpR3RPYbD2578wQTxlhwJ3o2wtxJE
+	 e2RfrMoZW65K8reAXsEORo85jV/5kAUZmyE/Um8j6z8S6XQoExierkC/Cu3DrbB+LD
+	 1qBf/njye9Kxw==
+Date: Fri, 9 Feb 2024 10:56:23 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc: viro@zeniv.linux.org.uk, chuck.lever@oracle.com, jlayton@kernel.org, 
+	neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com, 
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
+	dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org, 
+	stephen.smalley.work@gmail.com, eparis@parisplace.org, casey@schaufler-ca.com, shuah@kernel.org, 
+	mic@digikod.net, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-integrity@vger.kernel.org, keyrings@vger.kernel.org, selinux@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>, 
+	Stefan Berger <stefanb@linux.ibm.com>
+Subject: Re: [PATCH v9 12/25] security: Introduce file_post_open hook
+Message-ID: <20240209-wertlos-opern-45e9bce87014@brauner>
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+ <20240115181809.885385-13-roberto.sassu@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240115181809.885385-13-roberto.sassu@huaweicloud.com>
 
-Chunsheng Luo <luochunsheng@ustc.edu> writes:
+On Mon, Jan 15, 2024 at 07:17:56PM +0100, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> In preparation to move IMA and EVM to the LSM infrastructure, introduce the
+> file_post_open hook. Also, export security_file_post_open() for NFS.
+> 
+> Based on policy, IMA calculates the digest of the file content and
+> extends the TPM with the digest, verifies the file's integrity based on
+> the digest, and/or includes the file digest in the audit log.
+> 
+> LSMs could similarly take action depending on the file content and the
+> access mask requested with open().
+> 
+> The new hook returns a value and can cause the open to be aborted.
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+> Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> ---
+>  fs/namei.c                    |  2 ++
 
-> +	available = sum_zone_node_page_state(nid, NR_FREE_PAGES) - pgdat->totalreserve_pages;
-> +
-> +	/*
-> +	 * Not all the page cache can be freed, otherwise the system will
-> +	 * start swapping or thrashing. Assume at least half of the page
-> +	 * cache, or the low watermark worth of cache, needs to stay.
-> +	 */
-> +	pagecache = node_page_state(pgdat, NR_ACTIVE_FILE) +
-> +		node_page_state(pgdat, NR_INACTIVE_FILE);
-> +	pagecache -= min(pagecache / 2, wmark_low);
-
-
-The magic number 2 should be a define (or maybe even a tunable). Similar
-below. It seems quite arbitrary, but I don't have a better solution
-either. Maybe could handle dirty differently, but nothing stands out here
-
-
-> +		node_page_state(pgdat, NR_KERNEL_MISC_RECLAIMABLE);
-> +	reclaimable -= min(reclaimable / 2, wmark_low);
-> +	available += reclaimable;
-> +
-> +	if (available < 0)
-> +		available = 0;
-
-That would be a bug? Perhaps add a WARN_ON
-
-
-With those changes:
-
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-
-
-
--Andi
+Acked-by: Christian Brauner <brauner@kernel.org>
 
