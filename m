@@ -1,99 +1,122 @@
-Return-Path: <linux-kernel+bounces-59248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17DD084F3CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:51:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D14884F3D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:53:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4812F1C21331
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:51:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FBD61C2132B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3093231A81;
-	Fri,  9 Feb 2024 10:50:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190BA25630;
+	Fri,  9 Feb 2024 10:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="DXIjdvdY"
-Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EF5F2D61B;
-	Fri,  9 Feb 2024 10:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707475822; cv=none; b=bx8BeZ9D1fmgYrH7AQppLfyhXPUCBoQ8Hqsxy6kb2tn0X0X3vD0+FJ99PTq+Q1D1Mw8KQbOEbBhAeqUWR7CWFB87T1cBiiCMsCTAZe+WQeM6NdORBh0a0scZfEbi7PclvH7SlZIDZP7ib/WLHwXplVykXL72OE9NYJIqP2QuWrM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707475822; c=relaxed/simple;
-	bh=1l4xiU706H2waXh/SIkgEpJmrgL3FO4YrpToTkMtbVw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nGg1Qui0d0SdnzwCu6SOUS0NDIDC2SLVzKTlDy//CuHRMj4OjSPj5HCJfRBb0bF/ZwAwnNV1N1Yayd+jP7rww2s97kzFC3HprQ30tNujYYg3q40X5W8qa8GaQUwtaayFg8J/1biAiqIuoowIWvNrSvbOuFpnJnMir3zGf8c/jIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b=DXIjdvdY; arc=none smtp.client-ip=85.214.250.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
-Received: from 8bytes.org (p4ffe0c3c.dip0.t-ipconnect.de [79.254.12.60])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EXECrLG1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id 23B431C1D36;
-	Fri,  9 Feb 2024 11:50:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-	s=default; t=1707475819;
-	bh=1l4xiU706H2waXh/SIkgEpJmrgL3FO4YrpToTkMtbVw=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AC821D549;
+	Fri,  9 Feb 2024 10:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707475977; cv=none; b=J5YPNI3bx9MS38G3utwuWxWXyG5jZLSlt0jA7DmthshpPj43fR7gBVNIrNql//Iw79MzfPCOEHLkS2U1U+ZuNrr7ZuV5uoCGG2y9KzYjsVOzjiY3BfYRQ4ImnfQnxZ2ngzeJmZnnGzSb3CnirHDdoDag0iYsPfZEeep+MUwZx7k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707475977; c=relaxed/simple;
+	bh=6dwnkyROxGZ2SBXY1Zy0Ne8yjBZ4UXuUgvnfXsanGsQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ea3AmzFlrWIIab7lg3H0RTvHqgiMaa38Jw6UJZFsEK+ODsEH2PFvpJ41MfUfw6YwVU2f8UZBkklhKlCVeHdyDHCJvyuY/rCFphHx6KJxDVLHXwitZQUuYAv+nBgL67eBPE0mBMYldtFah7gz9isHjKHDG2RzFnHLHCEmjpnWino=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EXECrLG1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 639B6C433C7;
+	Fri,  9 Feb 2024 10:52:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707475976;
+	bh=6dwnkyROxGZ2SBXY1Zy0Ne8yjBZ4UXuUgvnfXsanGsQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DXIjdvdYGrzwWVWMVI6Remj5A1/1opy6lpRHzFIYTZLWyMVxAS0GqiHt0QzLsiugc
-	 tvvxaVIiLYwWjLDketPdgB6IjeIzuRQjf0VXRq4uzWaUxF47AnNB7oFkRdbiNpNUbW
-	 HDmrYJbED+uweFULqbi7wy+SndFRaeBkGeZFChggfx9o340PcIvRurtq71ONFv2o7f
-	 s27ei5GDzj0AfGwrq5wl8tU5tEoNGwWKu9P94P6KWZA0kBrbD2nsaeccZF+eyuQp8t
-	 +eQxQXTJDI6ZkcdJbl70Peccoydsny5tIoOXDqlQ72EccI2IjbeNb/kQ6vb3dy6xwO
-	 XwUbAf264qglA==
-Date: Fri, 9 Feb 2024 11:50:17 +0100
-From: Joerg Roedel <joro@8bytes.org>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com,
-	alyssa@rosenzweig.io, asahi@lists.linux.dev,
-	baolu.lu@linux.intel.com, bhelgaas@google.com,
-	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de,
-	iommu@lists.linux.dev, jernej.skrabec@gmail.com,
-	jonathanh@nvidia.com, krzysztof.kozlowski@linaro.org,
-	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-	marcan@marcan.st, mhiramat@kernel.org, m.szyprowski@samsung.com,
-	paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
-	samuel@sholland.org, suravee.suthikulpanit@amd.com,
-	sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
-	tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org,
-	will@kernel.org, yu-cheng.yu@intel.com, rientjes@google.com,
-	bagasdotme@gmail.com, mkoutny@suse.com
-Subject: Re: [PATCH v4 00/10] IOMMU memory observability
-Message-ID: <ZcYDaTRhQLaBAZ5H@8bytes.org>
-References: <20240207174102.1486130-1-pasha.tatashin@soleen.com>
+	b=EXECrLG1KqQf6D1VRtpPf0wmtjc9PzW9ElAmQMSqXLAzHQKbzULSUnUOE3Bby2xlp
+	 GK7ieqInVtLdUUSYzlGAcRaW0rv6cfSTNYvOmKWKkk3lXyh8IF6+7uNzHyUdUcPj6t
+	 NrxJJnPLsb66NeenDW6S2qSV0Klh/g4oECelQu6sXppSXmP8rS9g/2ErRO/+8IPFzF
+	 LQCMwdSk4qJx/skt/SzOs/nexEbRBThp96JwWg4DAbDaf57O4lNB2Ryg1HNYrcKzAL
+	 3P/2VVnO4+ivMyhapwruu/QIZR7iTGesCy5u4DjniEHH5m5l9yRYlgdoTr+0aCv7oF
+	 AiBrIDrSfsCPQ==
+Date: Fri, 9 Feb 2024 10:52:51 +0000
+From: Simon Horman <horms@kernel.org>
+To: David Howells <dhowells@redhat.com>
+Cc: Steve French <smfrench@gmail.com>, Jeff Layton <jlayton@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Christian Brauner <christian@brauner.io>, netfs@lists.linux.dev,
+	linux-cifs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Steve French <sfrench@samba.org>,
+	Shyam Prasad N <nspmangalore@gmail.com>,
+	Rohith Surabattula <rohiths.msft@gmail.com>
+Subject: Re: [PATCH v5 09/12] cifs: Cut over to using netfslib
+Message-ID: <20240209105251.GE1516992@kernel.org>
+References: <20240205225726.3104808-1-dhowells@redhat.com>
+ <20240205225726.3104808-10-dhowells@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240207174102.1486130-1-pasha.tatashin@soleen.com>
+In-Reply-To: <20240205225726.3104808-10-dhowells@redhat.com>
 
-Hi Pasha,
+On Mon, Feb 05, 2024 at 10:57:21PM +0000, David Howells wrote:
 
-On Wed, Feb 07, 2024 at 05:40:52PM +0000, Pasha Tatashin wrote:
-> v4:
-> - Synced with v6.8-rc3 
-> - Updated commit log for "iommu: account IOMMU allocated memory" as
->   suggested by Michal Koutný
-> - Added more Acked-bys David Rientjes and Thierry Reding
-> - Added Tested-by Bagas Sanjaya.
+..
 
-Thanks for these changes! To merge them I need more reviews and/or acks
-from the actual iommu driver maintainers.
+> diff --git a/fs/smb/client/smb2pdu.c b/fs/smb/client/smb2pdu.c
+> index 84e3675eb41e..b58fdee40755 100644
+> --- a/fs/smb/client/smb2pdu.c
+> +++ b/fs/smb/client/smb2pdu.c
+> @@ -4386,10 +4386,12 @@ smb2_new_read_req(void **buf, unsigned int *total_len,
+>  	req->Length = cpu_to_le32(io_parms->length);
+>  	req->Offset = cpu_to_le64(io_parms->offset);
+>  
+> -	trace_smb3_read_enter(0 /* xid */,
+> -			io_parms->persistent_fid,
+> -			io_parms->tcon->tid, io_parms->tcon->ses->Suid,
+> -			io_parms->offset, io_parms->length);
+> +	trace_smb3_read_enter(rdata ? rdata->rreq->debug_id : 0,
+> +			      rdata ? rdata->subreq.debug_index : 0,
+> +			      rdata ? rdata->xid : 0,
+> +			      io_parms->persistent_fid,
+> +			      io_parms->tcon->tid, io_parms->tcon->ses->Suid,
+> +			      io_parms->offset, io_parms->length);
+>  #ifdef CONFIG_CIFS_SMB_DIRECT
 
-Thanks,
+Hi David,
 
-	Joerg
+above some care is taken to handle the case where rdata might be NULL.
+
+However, the code below this hunk, other than being guarded by
+smb3_use_rdma_offload(io_parms), uses rdata unconditionally.
+
+Perhaps the guard makes this ok. But Smatch flags this inconsistency.
+And I thought I should bring it to your attention.
+
+For reference the code I am referring to looks like this:
+
+#ifdef CONFIG_CIFS_SMB_DIRECT
+	/*
+	 * If we want to do a RDMA write, fill in and append
+	 * smbd_buffer_descriptor_v1 to the end of read request
+	 */
+	if (smb3_use_rdma_offload(io_parms)) {
+		struct smbd_buffer_descriptor_v1 *v1;
+		bool need_invalidate = server->dialect == SMB30_PROT_ID;
+
+		rdata->mr = smbd_register_mr(server->smbd_conn, &rdata->subreq.io_iter,
+					     true, need_invalidate);
+		if (!rdata->mr)
+			return -EAGAIN;
+
+
+..
 
