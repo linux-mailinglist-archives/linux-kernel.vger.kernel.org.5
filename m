@@ -1,143 +1,112 @@
-Return-Path: <linux-kernel+bounces-59161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 727EB84F25E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:39:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DD8184F260
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:39:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EDCB1F235D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:39:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50AA61F235BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:39:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C891467E7C;
-	Fri,  9 Feb 2024 09:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kFUPVvsm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7B967E98;
+	Fri,  9 Feb 2024 09:38:50 +0000 (UTC)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E61D6651AC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9CB76773D;
 	Fri,  9 Feb 2024 09:38:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707471529; cv=none; b=TpySMzWNRVF42yeoUTGZUj3s5dgMVZejb531S+I4FvQQXNIvQOkSlosR9gqvQEEJnwqhnlrQdtNs5rwKVbabAyDBEs/7AwtN+vIPa79nOOTuSP9IBaSCFgjtP6iM6QDOsAImo3du1JrJtRM6F+eAroGjCnA678rgw6fAUO/3S0Y=
+	t=1707471530; cv=none; b=l+ZM3bEvefvHAhbJU6PrXy1TzQSdyd5X1jCuTa+oJhj4Ud0t89PiGk5tLUJ5WpUmxmDMwbj+xNy0mVeRif0XI0U8qP64qumOuMG5DoFPQo9OSJzT3o3Gp01cQsoqFoRX9RaXn/j+0eDStbFr51qvTAylnSWBkxaIajQokHnzOWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707471529; c=relaxed/simple;
-	bh=dEK5MLKQfiIZqixssJklw9y0fREaNMf3USH5yVCloyY=;
+	s=arc-20240116; t=1707471530; c=relaxed/simple;
+	bh=4m6a5876SQA1NUief4+jK7LVq+KiWq9Z84xoR9gABks=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pn7jlkuMaVbHm44E7NCqHQ+sseJ3gteq8h/m2LvcG8/F/LKE+0R0erUI/szsBQSZCEPsk31vnQpfrsq1Brroi2KLkl2bwMjHDO4KOwrJ5heU4czVOfLMfnZaVqH/5GntIZlrEqN4UP8qMcojOLioiSJKc7IKQLj6m75hcu0cKeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kFUPVvsm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FDDFC433F1;
-	Fri,  9 Feb 2024 09:38:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707471528;
-	bh=dEK5MLKQfiIZqixssJklw9y0fREaNMf3USH5yVCloyY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kFUPVvsm4u+vUOmBCXw5BnRhkLeBE5z9K6h8L0PipM2YCflMoenBpR0saxwhZCtXa
-	 w9hAeAYNhvKCQu7iJWiN0s1koYNTnDJLiwTZaprON+6yzuT38qBsQ+EwvjAaoHx0Bs
-	 sUvTwxSTuJpqonB3bEYTOg7XGfWpbURipBESlWmvRbzspALw4oXGB372jFyo3yXmt3
-	 q/3ZSpuYGwLIVREGHXh4deNEwaN1CSVClJmzJY6JQvuStu6Q6mfawZYV4akceFpaSr
-	 2yy2icRGSS58AdAALAJOkULCDL0GtZHL5ppLIBMK+pXvaYkxdfuGjufoRZNlI9w8r2
-	 McrlusVnmwsHA==
-Date: Fri, 9 Feb 2024 15:08:39 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arnd Bergmann <arnd@arndb.de>, Abel Vesa <abel.vesa@linaro.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: Re: [RFC 8/9] PCI/pwrctl: add PCI power control core code
-Message-ID: <20240209093839.GH12035@thinkpad>
-References: <20240201155532.49707-1-brgl@bgdev.pl>
- <20240201155532.49707-9-brgl@bgdev.pl>
- <7tbhdkqpl4iuaxmc73pje2nbbkarxxpgmabc7j4q26d2rhzrv5@ltu6niel5eb4>
- <CAMRc=Md1oTrVMjZRH+Ux3JJKYeficKMYh+8V7ZA=Xz_X1hNd1g@mail.gmail.com>
- <2q5vwm7tgmpgbrm4dxfhypbs5pdggprxouvzfcherqeevpjhrj@6wtkv4za2gg5>
- <CAMRc=MfsdsD4f3sC-BnR_sqvaHNEKWCZ+Xe+-ZhLU8vFYA06=w@mail.gmail.com>
- <20240209090433.GA18651@wunner.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VTufNZhYH+CDdzzxVN2PacSQ7Ze8pzsjyZySIpy2/LcDV4F06ZShE9ISiwrs7bilNkKANJrIvFpctf/XUU+mSiVVSIPr7vWuEayj0nWHolKYHsUEYKHm2NHTalfw8k7fxycCmum2U/IX9tZn4VlpBvo1zs2fzszyFlfbLJMDREE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so86659566b.1;
+        Fri, 09 Feb 2024 01:38:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707471527; x=1708076327;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QFK69TN15uEx6nooZheXSTnCffm62/HtBc6JubI+FHk=;
+        b=Ofm8gr6ER0rm+YjiLKGkMt/Cknp6I69q2J9NIvUZ9OnI0t6RtvDPYtmT7BpRpbZwvx
+         EnsQZtvs5gWxGZGde0wIPEl59bQrlhHK4HB0x83piNAGddBkv65GTB7U9OQBxuefaQlT
+         Kns19n053wsIsOEWggJ3xZNPAdcNzQXJEWMTlbSTpM8T/4FpNujoDd8RNrpXkmSNQfDW
+         JOrgeTMjElc6r+MI6nVRfQbFqV31qN5gybiqN+NGvS+kxv13GyLpkKUuCGnY6dZH2/cO
+         XKP6nRF9YliOWp/NMqXy3YILC/7tK4s6kAh2F06jb1CFjd4TcHiuROq+oyo6kPDvnKHh
+         A4vw==
+X-Forwarded-Encrypted: i=1; AJvYcCWiZIKXLmACJ96vHKGTRv9ZqK5yHE9ZppXoUDsPe7S7baM9YYoEyckq1GXTCUEz11beRbJQWP7adC4ZnpveMldAedViBPbsHC2JHr78qwo+H+23PyV+51DtcLTaNLzP/M67DL+KXhrh
+X-Gm-Message-State: AOJu0YydpxEsmyAAvTzrwYU1CBzMZgXDewl+oOOt5/AQi4Iw+9xiMt/3
+	iHi5xzi6VFLZzvn8Z1veXz9Y8gHiVJNIFaRKCmR5foj4YNDyl/EX
+X-Google-Smtp-Source: AGHT+IGQpexiA41S9wrLVOCjQw3Q9x4yhvKyTawb3dBy9ugqpL32UraSTrCIfnWl0hbGFdXvxWVVKA==
+X-Received: by 2002:a17:906:bcd6:b0:a37:e33b:816a with SMTP id lw22-20020a170906bcd600b00a37e33b816amr716548ejb.26.1707471526764;
+        Fri, 09 Feb 2024 01:38:46 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXanI7PzSQum0+qpq9wGAXLqvuzuAxdZRTHKJMS6PgP6TGHXJHaYCoD8DkwvvNMo+/okvjg6Gium1BaTCw2pm9hN8mYnwBnnFiFzvz6N5Y/oWJYHI7W/SwoZE70Dbhim1fXEY1wWV36OH+BTdtFBF39mWaDYkQ1pBCCsjxMBTxq4cM=
+Received: from gmail.com (fwdproxy-lla-119.fbsv.net. [2a03:2880:30ff:77::face:b00c])
+        by smtp.gmail.com with ESMTPSA id kq22-20020a170906abd600b00a35de0619dbsm570280ejb.200.2024.02.09.01.38.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 01:38:46 -0800 (PST)
+Date: Fri, 9 Feb 2024 01:38:44 -0800
+From: Breno Leitao <leitao@debian.org>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: Thorsten Blum <thorsten.blum@toblux.com>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Vegard Nossum <vegard.nossum@oracle.com>
+Subject: Re: [PATCH] docs: Makefile: Fix make cleandocs by deleting generated
+ .rst files
+Message-ID: <ZcXypIwlSZnH/kTf@gmail.com>
+References: <20240208145001.61769-1-thorsten.blum@toblux.com>
+ <87a5oafu1z.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240209090433.GA18651@wunner.de>
+In-Reply-To: <87a5oafu1z.fsf@meer.lwn.net>
 
-On Fri, Feb 09, 2024 at 10:04:33AM +0100, Lukas Wunner wrote:
-> On Wed, Feb 07, 2024 at 05:26:16PM +0100, Bartosz Golaszewski wrote:
-> > On Fri, Feb 2, 2024 at 5:52???PM Bjorn Andersson <andersson@kernel.org> wrote:
-> > > On Fri, Feb 02, 2024 at 10:11:42AM +0100, Bartosz Golaszewski wrote:
-> > > > I was also thinking about pci_pwrctl_device_ready() or
-> > > > pci_pwrctl_device_prepared().
-> > >
-> > > I like both of these.
-> > >
-> > > I guess the bigger question is how the flow would look like in the event
-> > > that we need to power-cycle the attached PCIe device, e.g. because
-> > > firmware has gotten into a really bad state.
-> > >
-> > > Will we need an operation that removes the device first, and then cut
-> > > the power, or do we cut the power and then call unprepared()?
-> > 
-> > How would the core be notified about this power-cycle from the PCI
-> > subsystem? I honestly don't know. Is there a notifier we could
-> > subscribe to? Is the device unbound and rebound in such case?
+On Thu, Feb 08, 2024 at 03:52:08PM -0700, Jonathan Corbet wrote:
+> Thorsten Blum <thorsten.blum@toblux.com> writes:
 > 
-> To power-manage the PCI device for runtime PM (suspend to D3cold)
-> or system sleep, you need to amend:
-> 
->   platform_pci_power_manageable()
->   platform_pci_set_power_state()
->   platform_pci_get_power_state()
->   platform_pci_refresh_power_state()
->   platform_pci_choose_state()
-> 
-> E.g. platform_pci_power_manageable() would check for presence of a
-> regulator in the DT and platform_pci_set_power_state() would disable
-> or enable the regulator.
-> 
+> > The script tools/net/ynl/ynl-gen-rst.py (YNL_TOOL) generates several .rst
+> > files (YNL_INDEX, YNL_RST_FILES) in Documentation/networking/netlink_spec
+> > (YNL_RST_DIR) which are not deleted by make cleandocs.
+> >
+> > Fix make cleandocs by deleting the generated .rst files.
+> >
+> > Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+> > ---
+> >  Documentation/Makefile | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/Documentation/Makefile b/Documentation/Makefile
+> > index 3885bbe260eb..4479910166fc 100644
+> > --- a/Documentation/Makefile
+> > +++ b/Documentation/Makefile
+> > @@ -176,6 +176,7 @@ refcheckdocs:
+> >  	$(Q)cd $(srctree);scripts/documentation-file-ref-check
+> >  
+> >  cleandocs:
+> > +	$(Q)rm -f $(YNL_INDEX) $(YNL_RST_FILES)
 
-This will work if the sole control of the resources lies in these platform_*()
-APIs. But in reality, the controller drivers are the ones controlling the power
-supply to the devices  and with this series, the control would be shifted partly
-to pwrctl driver.
+I haven't check but I _think_ that just deleting $(YNL_INDEX) is enough
+here, since $(YNL_INDEX) depends on $(YNL_RST_FILES).
 
-I think what we need is to call in the callbacks of the drivers in a hierarchial
-order.
-
-- Mani
-
-> To reset the device by power cycling it, amend pci_reset_fn_methods[]
-> to provide a reset method which disables and re-enables the regulator.
-> Then you can choose that reset method via sysfs and power-cycle the
-> device.  The PCI core will also automatically use that reset method
-> if there's nothing else available (e.g. if no Secondary Bus Reset
-> is available because the device has siblings or children, or if FLR
-> is not supported).
+> >  	$(Q)rm -rf $(BUILDDIR)
+> >  	$(Q)$(MAKE) BUILDDIR=$(abspath $(BUILDDIR)) $(build)=Documentation/userspace-api/media clean
 > 
-> Thanks,
-> 
-> Lukas
+> So this seems worth doing ... except that there has been talk about not
+> depositing those files into the source tree in the first place.  Adding
+> Vegard and Breno to see if they have any thoughts on the matter...
 
--- 
-மணிவண்ணன் சதாசிவம்
+Agree. This is definitely worth doing.
 
