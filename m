@@ -1,196 +1,106 @@
-Return-Path: <linux-kernel+bounces-59546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCB4084F8BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:42:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A81E584F8C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:44:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33E1B1F2575C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:42:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4CE31C239F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:44:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5941274E19;
-	Fri,  9 Feb 2024 15:41:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17CD074E36;
+	Fri,  9 Feb 2024 15:44:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VsIgGSvh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="AaE9aeqK"
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B17169971
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 15:41:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC5671B3A;
+	Fri,  9 Feb 2024 15:44:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707493317; cv=none; b=OnXQMRSWo+jHEp4GC1TW4ZSWLrotN0YdtmDkEAYaEU9CQ9eMHixLiQo86bgfG7XGDhCjWmr7rz+Ffu99Fnqn54nrRkztj4xlzut+NGDfD1VEEe4iO9ejiQQm13S4vpEu/wOL5cQM73uDwRA+gl7ZyfR44XphYAnMf4WiJamtvRc=
+	t=1707493446; cv=none; b=J3mmZf7WgDtIwCJjIPxdXjhukJuBLAWQ1RitvmQN3l7SQSAzwM41/+3uqu3PePo4zeKLu030prbBkNaTJ5x1HdvtmWaqc40JTODPoYZ8r0Ob+wb+p9pocjpDwQ1R/xEsyLtklYSBaA6ib05DxEWnfRDsnIq8tarNQAL3gqivq8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707493317; c=relaxed/simple;
-	bh=BYQAgrM0iCoWkiPwDJhO3sbjPQzqGgLvX5Ho5qTAbYE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rrrx1R8cMlVkY4ub7h1xoKRtOKcie+aQiRLEVT4ngprYJbqMFUbIRbED0gM2vR3KqotIzNb+wmAvVUuWd2OlFfinreYcBfStaQROzXAev6iXuPhoMf5TQAPuBdcimBIj/IWRG3H8iW5pKYwWNab+R6A2PCkx0nclVUlp7Au9ArM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VsIgGSvh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B72EAC433C7;
-	Fri,  9 Feb 2024 15:41:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707493317;
-	bh=BYQAgrM0iCoWkiPwDJhO3sbjPQzqGgLvX5Ho5qTAbYE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VsIgGSvhtfchQukDvq4H3WhSTrq7UyqASJZ9pVsLHoPtd2T+vyRlwbP33lWXVmt5+
-	 iOkAny1mSRsmzVzfPfCnILsSG0E5SZiXgEz8SJx5RkRCy/Q88kLhOezAl4YpsKSRhn
-	 x8pls9kKl3kDWafXSrSJhIP+alK94F+qoAVx/u7jaVriV1B5VlFrMRrL7orK7aVQMr
-	 3rotfhTB0Ztty+mi1VNypLZYFkMoF8/bPi7Q5gthONJtCJJth/N+fcq3d7yMgZx7Ys
-	 TJ77P1XNTj/0lelVDgaXfWbBdfiVnsvFPtVOlADeglEZpdXYTuu0u8KcUB4yu6boUj
-	 492zsufl2215A==
-Date: Fri, 9 Feb 2024 16:41:54 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: "Klymenko, Anatoliy" <Anatoliy.Klymenko@amd.com>, 
-	"maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>, "tzimmermann@suse.de" <tzimmermann@suse.de>, 
-	"airlied@gmail.com" <airlied@gmail.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>, 
-	"Simek, Michal" <michal.simek@amd.com>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Re: RE: Re: [PATCH 0/4] Fixing live video input in ZynqMP DPSUB
-Message-ID: <casqzvlydzfckbn2glxn2n2ywtiqzuam2hyn3qpbroaykp5drv@ygeuniecym4w>
-References: <20240112234222.913138-1-anatoliy.klymenko@amd.com>
- <6jhwss2wego6yoo5mwmphwawhsj5bbj62gwrzcpapoixwkrkli@g4fbxdooopby>
- <20240117142343.GD17920@pendragon.ideasonboard.com>
- <u5mngxudtdgy3vqkfbpgqng6tdahijnet2jtj345hrowbt47ce@t3e7hul45mr3>
- <MW4PR12MB7165D35189BEECA8769552AFE6792@MW4PR12MB7165.namprd12.prod.outlook.com>
- <2ytxhpti53e743b5pca3oa5jmscffi4vpsyeh727bcoh4v6cuw@zkz5pqkcv7v2>
- <20240204095618.GJ3094@pendragon.ideasonboard.com>
+	s=arc-20240116; t=1707493446; c=relaxed/simple;
+	bh=O4/YM668cDKSHelku3SxggCbwo1G68KwNgmDfW7ur/s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=fvW1Pp6bj0/ZTYU1N8ZbmuiAN/BKCLkFhSQ7WHEg3vHMthz/S9XVJtvGo3tMotaFmnRhVrHmUb/1kCLyFYk/LbQ1rpk/2CVA7GHL2e5TdbQWqXRVL4aY105NlfTrzmxZmr2ATYVO07jYp1XoCv1YPyoqxZKEsy09DtSaE637nBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=AaE9aeqK; arc=none smtp.client-ip=80.241.56.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4TWdSH5lyhz9t4t;
+	Fri,  9 Feb 2024 16:43:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1707493439;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H8PypmVbsnCrC9vOiFkAsVoG/5dR314vcsbeC6i7o88=;
+	b=AaE9aeqK97OIAPqXITM/NCWrmdwiH365Skq0RD5OcfcCktcP1M/IOXjHDTIqFQvBdVnrOO
+	S0wK0iC1MOogj/Kr6nIPoQKmwpBftXxMjooU4nTMYAk5ZfIT1OSocG9ScUBbbFwj0hJgYo
+	+TJnJFaKu9YgrrE7zgiY5LHaF/mWOgdY39PGseDwJzP96caKY6OgaFNB1W8SRjew0N/7/z
+	t6kkzgwP4YSu+hS9X6YkcyPuaFGPq/AA2jZJHXB3z2/Jz0klkA54QNDC8jnokYSE6rxYOD
+	S7QZA8l6XWicO0+qnR265H8Dle6IVq+3VBwVN06OzQ9ZqlCMSPkJJr4QmaFlug==
+From: Tor Vic <torvic9@mailbox.org>
+To: Perry.Yuan@amd.com,
+	ray.huang@amd.com,
+	gautham.shenoy@amd.com,
+	mario.limonciello@amd.com,
+	rafael.j.wysocki@intel.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Oleksandr Natalenko <oleksandr@natalenko.name>
+Subject: [PATCH v3] cpufreq: amd-pstate: Fix min_perf assignment in amd_pstate_adjust_perf()
+Date: Fri,  9 Feb 2024 16:42:26 +0100
+Message-ID: <20240209154336.7788-1-torvic9@mailbox.org>
+In-Reply-To: <8eefeeb7-f8e8-49f4-b83c-e67a9e728f41@mailbox.org>
+References: <8eefeeb7-f8e8-49f4-b83c-e67a9e728f41@mailbox.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="aaihxypctcsxwq6q"
-Content-Disposition: inline
-In-Reply-To: <20240204095618.GJ3094@pendragon.ideasonboard.com>
+Content-Transfer-Encoding: 8bit
+X-MBO-RS-META: gz74hbj39br16tma89hs5oeudf64gmsk
+X-MBO-RS-ID: 5d468f1bf389e51a998
 
+In the function amd_pstate_adjust_perf(), the 'min_perf' variable is set
+to 'highest_perf' instead of 'lowest_perf'.
 
---aaihxypctcsxwq6q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Cc: <stable@vger.kernel.org> # 6.1+
+Fixes: 1d215f0319c2 ("cpufreq: amd-pstate: Add fast switch function for AMD P-State")
+Reported-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+Reviewed-by: Perry Yuan <Perry.Yuan@amd.com>
+Signed-off-by: Tor Vic <torvic9@mailbox.org>
+---
+v2->v3: Resend with git, misconfigured mail client borked v2
+v1->v2: Add Perry's 'Reviewed-by' and 'Cc: stable' tag
+---
+ drivers/cpufreq/amd-pstate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Sun, Feb 04, 2024 at 11:56:18AM +0200, Laurent Pinchart wrote:
-> On Thu, Feb 01, 2024 at 06:01:01PM +0100, Maxime Ripard wrote:
-> > On Fri, Jan 26, 2024 at 11:18:30PM +0000, Klymenko, Anatoliy wrote:
-> > > On Friday, January 26, 2024 4:26 AM, Maxime Ripard wrote:
-> > > > On Wed, Jan 17, 2024 at 04:23:43PM +0200, Laurent Pinchart wrote:
-> > > > > On Mon, Jan 15, 2024 at 09:28:39AM +0100, Maxime Ripard wrote:
-> > > > > > On Fri, Jan 12, 2024 at 03:42:18PM -0800, Anatoliy Klymenko wro=
-te:
-> > > > > > > Patches 1/4,2/4,3/4 are minor fixes.
-> > > > > > >
-> > > > > > > DPSUB requires input live video format to be configured.
-> > > > > > > Patch 4/4: The DP Subsystem requires the input live video for=
-mat to be
-> > > > > > > configured. In this patch we are assuming that the CRTC's bus=
- format is fixed
-> > > > > > > and comes from the device tree. This is a proposed solution, =
-as there are no api
-> > > > > > > to query CRTC output bus format.
-> > > > > > >
-> > > > > > > Is this a good approach to go with?
-> > > > > >
-> > > > > > I guess you would need to expand a bit on what "live video inpu=
-t" is? Is
-> > > > > > it some kind of mechanism to bypass memory and take your pixels=
- straight
-> > > > > > from a FIFO from another device, or something else?
-> > > > >
-> > > > > Yes and no.
-> > > > >
-> > > > > The DPSUB integrates DMA engines, a blending engine (two planes),=
- and a
-> > > > > DP encoder. The dpsub driver supports all of this, and creates a =
-DRM
-> > > > > device. The DP encoder hardware always takes its input data from =
-the
-> > > > > output of the blending engine.
-> > > > >
-> > > > > The blending engine can optionally take input data from a bus con=
-nected
-> > > > > to the FPGA fabric, instead of taking it from the DPSUB internal =
-DMA
-> > > > > engines. When operating in that mode, the dpsub driver exposes th=
-e DP
-> > > > > encoder as a bridge, and internally programs the blending engine =
-to
-> > > > > disable blending. Typically, the FPGA fabric will then contain a =
-CRTC of
-> > > > > some sort, with a driver that will acquire the DP encoder bridge =
-as
-> > > > > usually done.
-> > > > >
-> > > > > In this mode of operation, it is typical for the IP cores in FPGA=
- fabric
-> > > > > to be synthesized with a fixed format (as that saves resources), =
-while
-> > > > > the DPSUB supports multiple input formats.
-> > > >=20
-> > > > Where is that CRTC driver? It's not clear to me why the format would
-> > > > need to be in the device tree at all. Format negociation between the
-> > > > CRTC and whatever comes next is already done in a number of drivers=
- so
-> > > > it would be useful to have that kind of API outside of the bridge
-> > > > support.
-> > >
-> > > One example of such CRTC driver:
-> > > https://github.com/Xilinx/linux-xlnx/blob/master/drivers/gpu/drm/xlnx=
-/xlnx_mixer.c It's not
-> > > upstreamed yet. Bus format negotiations here are handled by utilizing=
- Xilinx-specific bridge
-> > > framework. Ideally, it would be nice to rework this to comply with th=
-e upstream DRM bridge
-> > > framework.
-> > >
-> > > > > Bridge drivers in the upstream kernel work the other way around, =
-with
-> > > > > the bridge hardware supporting a limited set of formats, and the =
-CRTC
-> > > > > then being programmed with whatever the bridges chain needs. Here=
-, the
-> > > > > negotiation needs to go the other way around, as the CRTC is the
-> > > > > limiting factor, not the bridge.
-> > > >=20
-> > > > Sounds like there's something to rework in the API then?
-> > > >=20
-> > > Adding an optional CRTC callback imposing CRTC specific bus format re=
-strictions, which may be
-> > > called from here https://github.com/torvalds/linux/blob/master/driver=
-s/gpu/drm/drm_bridge.c#L935
-> > > would solve the problem.
-> >=20
-> > CRTCs and bridges are orthogonal. If anything, I'd expect that callback
-> > to be set at the CRTC, encoder and connector levels and filled by the
-> > drm_bridge code if relevant.
->=20
-> I'm thinking about a new CRTC operation that would be called by the
-> bridge chain format negotiation helper
-> drm_atomic_bridge_chain_select_bus_fmts() (or one of the functions it
-> calls), to filter the list of formats supported by the chain based on
-> what the CRTC supports, or possibly to pick a format in that list. This
-> needs to be prototyped
+diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+index 08e112444c27..aa5e57e27d2b 100644
+--- a/drivers/cpufreq/amd-pstate.c
++++ b/drivers/cpufreq/amd-pstate.c
+@@ -577,7 +577,7 @@ static void amd_pstate_adjust_perf(unsigned int cpu,
+ 	if (target_perf < capacity)
+ 		des_perf = DIV_ROUND_UP(cap_perf * target_perf, capacity);
+ 
+-	min_perf = READ_ONCE(cpudata->highest_perf);
++	min_perf = READ_ONCE(cpudata->lowest_perf);
+ 	if (_min_perf < capacity)
+ 		min_perf = DIV_ROUND_UP(cap_perf * _min_perf, capacity);
+ 
+-- 
+2.43.0
 
-As long as we come up with something that works for regular encoders,
-I'm fine with that.
-
-Maxime
-
---aaihxypctcsxwq6q
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZcZHwgAKCRDj7w1vZxhR
-xR4xAQCnQ6B6KaRCdTBxvteV+SMevGOo6sSoUF43CpxDsbz/sgEA63pm3o5vZJBw
-Gkm3OaFel/wkTknuEVjJc+X59sDpagA=
-=H5zw
------END PGP SIGNATURE-----
-
---aaihxypctcsxwq6q--
 
