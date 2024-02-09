@@ -1,115 +1,152 @@
-Return-Path: <linux-kernel+bounces-59305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CBE384F4F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:01:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A9D184F4FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:03:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 250FEB21D66
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:01:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CAC31C25E21
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:03:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE2C3219F;
-	Fri,  9 Feb 2024 12:00:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wR6BtmIv"
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D10E632C6C;
+	Fri,  9 Feb 2024 12:03:31 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5293F20311
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 12:00:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3812E630;
+	Fri,  9 Feb 2024 12:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707480051; cv=none; b=VC+UzzpePF4FtojxCJilu07tM2sIZxkKMbW6IxxdgootLIE/MyOz7wkX5yPeE4aV+5Bk273sUKQriQPt3/v0qjJCZGk2zbgRYCaNZ4XP1NeV39cx6njlxeJO6VYizrYsTP7/jDmsTz1zn4luGtKeosTI15aeZsf4e4msahap7+A=
+	t=1707480211; cv=none; b=CXrAZ42b1z5HqaoB0Sn778zf1t4xyZH0kN+ddfOQDYZrizn9Ba5xTCs9G0FIy3lXwGHKF0pGAnB2dRarUL8M2CUJyjwdcYwWseTJW0MWA0JrgNXMAVuRo+8Gmgwuu5w8yIgfi0EuM3lay/YwVkCTV5rYQEeDtWamWrM6y/ZuiaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707480051; c=relaxed/simple;
-	bh=KEBYIrTh33UwK7TabHpZdff+4ImJ7WjKDWafJZ2lFVU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qKgjBCvrKt7ZkU+nheUQHexUr8nckZtqlIkRuEh7KajL54BQkRR+JqgAS/3OcfVYHcdKAh4GG0QHw754wODjpL6QZ5nDF0lsUXuY/4cJfFVp1HOmYMv2zxulqmr9Hx24yrBYoXf36qfJZ7eDzQv6kIUZjthZBxmcpPhoxMS/R0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wR6BtmIv; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707480043;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H8vjJet6cEqjnm/AF8gtjZ0cWAGZljlA0TlT1cQYzHE=;
-	b=wR6BtmIvXYaNDb25zKYBYPeL0CPBfaQZ6v/7Gr9UKiDDQsSWzzxx4NdEmrRZKajRv9ME6N
-	YsugFwG1wpt+u3qF0D4YGlMz3v4TtSyRVvNUgXu4jBEGgLtudbwWMSYJdnGOcP8klAr4e6
-	uQsskjmJ2Pdx40q3SmNvSRxSqYIGhG8=
-From: chengming.zhou@linux.dev
-To: willy@infradead.org,
-	hannes@cmpxchg.org,
-	yosryahmed@google.com,
-	nphamcs@gmail.com,
-	akpm@linux-foundation.org
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	chengming.zhou@linux.dev,
-	Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [PATCH RFC 1/1] mm/swap: queue reclaimable folio to local rotate batch when !folio_test_lru()
-Date: Fri,  9 Feb 2024 11:59:50 +0000
-Message-Id: <20240209115950.3885183-2-chengming.zhou@linux.dev>
-In-Reply-To: <20240209115950.3885183-1-chengming.zhou@linux.dev>
-References: <20240209115950.3885183-1-chengming.zhou@linux.dev>
+	s=arc-20240116; t=1707480211; c=relaxed/simple;
+	bh=BhA/UikenM4m0IyfeHs3E+dkP69p7UWIJfw5VFHgk24=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=brJx/cQC5LWOZnAB7EiCvcPfLjwyigMZaHefHf1hZyqHCwZh4ThybmE52nP5ARE0e50TmXZEEBD+TO+mV2w5BbAQASuTVnKtgyjHUnzHnKZ7S7wckaYJgH0+F0KRz43oVDuKke+K6FfAHDqNY1l7ILNKjUEDXUfvd4JtboShyn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TWXDB6LM8z9xvhR;
+	Fri,  9 Feb 2024 19:48:10 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id DB61B14086B;
+	Fri,  9 Feb 2024 20:03:09 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwAXBChtFMZlv1EoAg--.21619S2;
+	Fri, 09 Feb 2024 13:03:09 +0100 (CET)
+Message-ID: <f61cb90858d866ed3eb7a2b607152c4aa2a52f5d.camel@huaweicloud.com>
+Subject: Re: [PATCH v9 12/25] security: Introduce file_post_open hook
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: viro@zeniv.linux.org.uk, chuck.lever@oracle.com, jlayton@kernel.org, 
+ neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com, 
+ paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+ zohar@linux.ibm.com,  dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com,
+ dhowells@redhat.com,  jarkko@kernel.org, stephen.smalley.work@gmail.com,
+ eparis@parisplace.org,  casey@schaufler-ca.com, shuah@kernel.org,
+ mic@digikod.net,  linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org,  linux-nfs@vger.kernel.org,
+ linux-security-module@vger.kernel.org,  linux-integrity@vger.kernel.org,
+ keyrings@vger.kernel.org,  selinux@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+ Stefan Berger <stefanb@linux.ibm.com>
+Date: Fri, 09 Feb 2024 13:02:49 +0100
+In-Reply-To: <20240209-giert-erlenholz-b131fa85ee36@brauner>
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+	 <20240115181809.885385-13-roberto.sassu@huaweicloud.com>
+	 <20240209-luftleer-jobangebote-6d6ab29b7191@brauner>
+	 <86ab971f45c2ff11dcbdeab78b4b050f07495f55.camel@huaweicloud.com>
+	 <20240209-giert-erlenholz-b131fa85ee36@brauner>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:GxC2BwAXBChtFMZlv1EoAg--.21619S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr4UAr1ftFWDuF4xKF17KFg_yoW8Kw4rpa
+	y5J3Z8GF4kGry7Cr9IvF90qFnYg392qFyUXrZxX34UArnFqrnI9F47Cr15uFyqqr1xGr10
+	vr429r9xWr1UArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
+	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAIBF1jj5Y3PwAAsh
 
-From: Chengming Zhou <zhouchengming@bytedance.com>
+On Fri, 2024-02-09 at 12:34 +0100, Christian Brauner wrote:
+> On Fri, Feb 09, 2024 at 11:46:16AM +0100, Roberto Sassu wrote:
+> > On Fri, 2024-02-09 at 11:12 +0100, Christian Brauner wrote:
+> > > On Mon, Jan 15, 2024 at 07:17:56PM +0100, Roberto Sassu wrote:
+> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > >=20
+> > > > In preparation to move IMA and EVM to the LSM infrastructure, intro=
+duce the
+> > > > file_post_open hook. Also, export security_file_post_open() for NFS=
+.
+> > > >=20
+> > > > Based on policy, IMA calculates the digest of the file content and
+> > > > extends the TPM with the digest, verifies the file's integrity base=
+d on
+> > > > the digest, and/or includes the file digest in the audit log.
+> > > >=20
+> > > > LSMs could similarly take action depending on the file content and =
+the
+> > > > access mask requested with open().
+> > > >=20
+> > > > The new hook returns a value and can cause the open to be aborted.
+> > > >=20
+> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+> > > > Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+> > > > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> > > > ---
+> > > >  fs/namei.c                    |  2 ++
+> > > >  fs/nfsd/vfs.c                 |  6 ++++++
+> > > >  include/linux/lsm_hook_defs.h |  1 +
+> > > >  include/linux/security.h      |  6 ++++++
+> > > >  security/security.c           | 17 +++++++++++++++++
+> > > >  5 files changed, 32 insertions(+)
+> > > >=20
+> > > > diff --git a/fs/namei.c b/fs/namei.c
+> > > > index 71c13b2990b4..fb93d3e13df6 100644
+> > > > --- a/fs/namei.c
+> > > > +++ b/fs/namei.c
+> > > > @@ -3620,6 +3620,8 @@ static int do_open(struct nameidata *nd,
+> > > >  	error =3D may_open(idmap, &nd->path, acc_mode, open_flag);
+> > > >  	if (!error && !(file->f_mode & FMODE_OPENED))
+> > > >  		error =3D vfs_open(&nd->path, file);
+> > > > +	if (!error)
+> > > > +		error =3D security_file_post_open(file, op->acc_mode);
+> > >=20
+> > > What does it do for O_CREAT? IOW, we managed to create that thing and=
+ we
+> > > managed to open that thing. Can security_file_post_open() and
+> > > ima_file_check() fail afterwards even for newly created files?
+> >=20
+> > $ strace touch test-file
+> > ...
+> > openat(AT_FDCWD, "test-file", O_WRONLY|O_CREAT|O_NOCTTY|O_NONBLOCK, 066=
+6) =3D -1 EPERM (Operation not permitted)
+>=20
+> Ah, meh. I was hoping IMA just wouldn't care about this case.
 
-All LRU move interfaces have a problem that it has no effect if the
-folio is isolated from LRU (in cpu batch or isolated by shrinker).
-Since it can't move/change folio LRU status when it's isolated, mostly
-just clear the folio flag and do nothing in this case.
+Actually it doesn't. I added code to artifically create the situation
+(to see what happens if a new LSM does that).
 
-In our case, a written back and reclaimable folio won't be rotated to
-the tail of inactive list, since it's still in cpu lru_add batch. It
-may cause the delayed reclaim of this folio and evict other folios.
-
-This patch changes to queue the reclaimable folio to cpu rotate batch
-even when !folio_test_lru(), hoping it will likely be handled after
-the lru_add batch which will put folio on the LRU list first, so
-will be rotated to the tail successfully when handle rotate batch.
-
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- mm/swap.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/mm/swap.c b/mm/swap.c
-index cd8f0150ba3a..d304731e47cf 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -236,7 +236,8 @@ static void folio_batch_add_and_move(struct folio_batch *fbatch,
- 
- static void lru_move_tail_fn(struct lruvec *lruvec, struct folio *folio)
- {
--	if (!folio_test_unevictable(folio)) {
-+	if (!folio_test_locked(folio) && !folio_test_dirty(folio) &&
-+	    !folio_test_unevictable(folio) && !folio_test_active(folio)) {
- 		lruvec_del_folio(lruvec, folio);
- 		folio_clear_active(folio);
- 		lruvec_add_folio_tail(lruvec, folio);
-@@ -254,7 +255,7 @@ static void lru_move_tail_fn(struct lruvec *lruvec, struct folio *folio)
- void folio_rotate_reclaimable(struct folio *folio)
- {
- 	if (!folio_test_locked(folio) && !folio_test_dirty(folio) &&
--	    !folio_test_unevictable(folio) && folio_test_lru(folio)) {
-+	    !folio_test_unevictable(folio) && !folio_test_active(folio)) {
- 		struct folio_batch *fbatch;
- 		unsigned long flags;
- 
--- 
-2.40.1
+Roberto
 
 
