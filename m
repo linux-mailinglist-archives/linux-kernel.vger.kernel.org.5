@@ -1,212 +1,207 @@
-Return-Path: <linux-kernel+bounces-59933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D6B184FD82
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1E8084FD86
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:24:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71D651C21E69
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:24:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 127F41C21F7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:24:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2B211272A4;
-	Fri,  9 Feb 2024 20:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A3B1272BB;
+	Fri,  9 Feb 2024 20:24:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xOQiJ839";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="h8ivNr7Z";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="O56OvfeW";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="3iMP0oPR"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GT8cwWtd"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1117B2E632;
-	Fri,  9 Feb 2024 20:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707510256; cv=none; b=tMsTbd8V3BelL9tG3N7N0fyP1wocif2ZS1Rj22cxvEKTKaI/yNp92fiqmu7LHg4k7pWOV2PoZ4w7m69pF3YnxXdJt7pXawW538bhF+d9NGwwLpwCSwtl/0GE3gKVZW7bGmXV3FGS8IrCQ1J4BYWfsC+mBVIO1Nrm0xt2q+Z/ePM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707510256; c=relaxed/simple;
-	bh=cwZwxNKzRG9xbdcLf08Ui0qeLmTsHZ+4K6jGY+KbmTU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dFYaQaJgRkU21TnCeFwEUTeSS9KZ1kCzQZyOoaz9gma0a/X9w2/47GbWYEOXPOKKHkJDpiEbbm8DgVO1z4xUtmT2AKbEggFyorTP9N8SW2eO8oMzyb9qZ3HCkXGTKzaBkUFk1aQxKubU11XaDx9UUJRByCUj+evzrunSJjhk3k4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=xOQiJ839; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=h8ivNr7Z; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=O56OvfeW; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=3iMP0oPR; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2A9C91F82D;
-	Fri,  9 Feb 2024 20:24:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707510253; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=zQToUzkILW+4W9P7O1nAk21RTzRP9zevwKA9EqPyth8=;
-	b=xOQiJ839u/jesxP8nQcxj9+c03uoIGAKQ7vB+ribAlyJTdGoUxni1eZfXaPdmjbKNdfj80
-	A0kGFuRwDWV65IHM+iZfHU2wWegB1hYJXBuifohdjZ3UG//AFD7uqSqnprWylcBwZ2K8Hp
-	XeCX9t/SfrOHpzh5dmjc6MpjM8a7Azk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707510253;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=zQToUzkILW+4W9P7O1nAk21RTzRP9zevwKA9EqPyth8=;
-	b=h8ivNr7ZNpwNrdSQ69YQv12VWC8FmWOn0coRfIlmdQ8gb6vw8K5nmSaVjbYFa2kYzMB3wt
-	P9t03yitaj/4Z2Bg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707510252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=zQToUzkILW+4W9P7O1nAk21RTzRP9zevwKA9EqPyth8=;
-	b=O56OvfeW4HeEro8+Tymoe1UuaUVZ37KZ4HH5bZ8fW6wOooeXkpXNkpOxiX1HsYtCxf1kkh
-	6I1u3VgxKxnrY4aSRsXsyVLHk4MQe0jFdXJ4U30VYGKVHqoU3IsN2lu3pHTMrKrnh5POYq
-	eKgBGU1aLuehhBe11TzXZd3TTejFjsI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707510252;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=zQToUzkILW+4W9P7O1nAk21RTzRP9zevwKA9EqPyth8=;
-	b=3iMP0oPRPtCKptMfgc/iqaqMyMBN0Ekurg626k/UC9HEqeS19PM5TeR7vECjKNMYKPpkgh
-	kCDYXo/4QWifpSBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D1249139E7;
-	Fri,  9 Feb 2024 20:24:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id haeHMeuJxmUUWAAAD6G6ig
-	(envelope-from <tzimmermann@suse.de>); Fri, 09 Feb 2024 20:24:11 +0000
-Message-ID: <43ed64aa-17b0-4d04-a1f3-a6e13f59a743@suse.de>
-Date: Fri, 9 Feb 2024 21:24:11 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77AFF2E632;
+	Fri,  9 Feb 2024 20:24:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707510272; cv=fail; b=lZGHYJ+bJT/TWTbP2MqO7d+iqeSDaxdyAVu6Kk6K5p7zzt/+yTy5j0cI45i+3YRT9tfLpFgFoxTbhBgQrNTIlykxWgu0qacWPjAinPizHZPacmMljl5hrosRRpfi6uJCqyj9EvZZy03apjIlkpJkVug/dSWpPVdXGeFrOf5MQs0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707510272; c=relaxed/simple;
+	bh=/gIwVoC1OYpF2zgfOJImpdFtnQvFu7vbdPzfohaxb+8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=IB8l58fLJ+2S/0zzoWyKmvvgj3mLGUand4yfeU1O+Mfb52m8cd4McYFGMexEuyNtN6UNBtxKs83xAPmtxm/M0OKLTagL/mv3bfI1lzbZwytYXF/hH13lqNm7uDy0eO20VHbt9Wp72ObuMElhPaGTskR4SeaamroQrjV48dmMQAE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GT8cwWtd; arc=fail smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707510270; x=1739046270;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=/gIwVoC1OYpF2zgfOJImpdFtnQvFu7vbdPzfohaxb+8=;
+  b=GT8cwWtdeGc3XeZftoUuu4PTl68hZYaYBErrfn+m/qrpgDX2tyS6YiG7
+   uscZB4kxlxAXp+la0OoCP54el3AA4VVl0DGTAnXo/7Vctp/aoUwX2kGZA
+   XeozIUhfTkkGinVboSuhph78g/saoODO2SSjwukjWl1Dbd36bh7hab5ey
+   Y36PVLMa3hjKguyviSl5pdXriKwf19N1jqDNYdwREOQ4FH7JS4VisB4ee
+   ffv19XgWy7PqtxMsc217SVxaumMajGnW49Y+A1FQKDTGM9tapJxCnJ91r
+   RPNg/yAChE501yXlUqQSDgoZLlNjQtperoLBaSKglsIuDDxIJXEC1MGnp
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="18909556"
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="18909556"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 12:24:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="6669687"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Feb 2024 12:24:29 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 9 Feb 2024 12:24:27 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 9 Feb 2024 12:24:27 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 9 Feb 2024 12:24:26 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PE3f3G5XSpAiM8hkAix9ew9ZnJ27DdCiJQZphP7U4yQ5YOwf35gp3MzqUMEsiG1mgycCwOaMe0b5n2LYwV5eHs+lQx3lRu/ydkwCJCGPFgSkkBhyqZjL35xO3YSkNZ+g5lNaavSnZR95Exc9A5zWAw3iJcYj6xhA5QQkBW7edMgWM+ebO+SCzZdffrSytLmy3x3s4oINkn6kIhLJumcnE56HKjlshKwzOR1VXxCoNDKBo3ECInSr0m1kyLBhEq1cqzPjAUPBxTN8cX1eXOrFAWqt8r3C1Rxu81do4u4IDWlAzG/U1npFiUPJ+90ee6sXIe6BFhVbDRrhedS9pTndgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/gIwVoC1OYpF2zgfOJImpdFtnQvFu7vbdPzfohaxb+8=;
+ b=lIxi0kX7uwFZWZRCIkQOTH6H10Qid84IN+wyAJNlEIPo996wswJazWPscZOOOrVFNujCogsC6KhmIY0BODok63fsL18+zrswbBT1N2fpHE/0IQyDtPDNYglGcbhrLw0Grsl0aQ+8R3zcB/tPk5FIbfiHq/r8xLeI5wyp9VQAqeqJLBBlqGf/FhiUjosKdv2m9KwhDbCobpoaOYF6AvD/cCNNHIWbHNIncT+F0qWeWbfCbQL+VPXb3Sul0reCgSm4SK49q6q3LsYSheeDWWMxKVk90ofyda7WoWzxQR+7q/xwTpH23aWAQwuBLX8laBKj045RA7pWCLhhgmrFSge7ag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
+ by DS0PR11MB7902.namprd11.prod.outlook.com (2603:10b6:8:f6::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7249.38; Fri, 9 Feb 2024 20:24:24 +0000
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::5d40:83fd:94ac:d409]) by MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::5d40:83fd:94ac:d409%7]) with mapi id 15.20.7249.035; Fri, 9 Feb 2024
+ 20:24:24 +0000
+From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To: "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+	"broonie@kernel.org" <broonie@kernel.org>, "Szabolcs.Nagy@arm.com"
+	<Szabolcs.Nagy@arm.com>, "brauner@kernel.org" <brauner@kernel.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>, "mgorman@suse.de"
+	<mgorman@suse.de>, "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+	"fweimer@redhat.com" <fweimer@redhat.com>, "mingo@redhat.com"
+	<mingo@redhat.com>, "rostedt@goodmis.org" <rostedt@goodmis.org>,
+	"hjl.tools@gmail.com" <hjl.tools@gmail.com>, "tglx@linutronix.de"
+	<tglx@linutronix.de>, "vschneid@redhat.com" <vschneid@redhat.com>,
+	"shuah@kernel.org" <shuah@kernel.org>, "bristot@redhat.com"
+	<bristot@redhat.com>, "hpa@zytor.com" <hpa@zytor.com>, "peterz@infradead.org"
+	<peterz@infradead.org>, "bp@alien8.de" <bp@alien8.de>, "bsegall@google.com"
+	<bsegall@google.com>, "x86@kernel.org" <x86@kernel.org>,
+	"juri.lelli@redhat.com" <juri.lelli@redhat.com>
+CC: "keescook@chromium.org" <keescook@chromium.org>, "jannh@google.com"
+	<jannh@google.com>, "linux-kselftest@vger.kernel.org"
+	<linux-kselftest@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "catalin.marinas@arm.com"
+	<catalin.marinas@arm.com>, "linux-api@vger.kernel.org"
+	<linux-api@vger.kernel.org>, "will@kernel.org" <will@kernel.org>
+Subject: Re: [PATCH RFT v5 2/7] selftests: Provide helper header for shadow
+ stack testing
+Thread-Topic: [PATCH RFT v5 2/7] selftests: Provide helper header for shadow
+ stack testing
+Thread-Index: AQHaVjTEBewNg3PEREGR4RKuiF+gmLECf4aA
+Date: Fri, 9 Feb 2024 20:24:24 +0000
+Message-ID: <3de40b3a2a79abfb7b64696c9dc69e59bc42541e.camel@intel.com>
+References: <20240203-clone3-shadow-stack-v5-0-322c69598e4b@kernel.org>
+	 <20240203-clone3-shadow-stack-v5-2-322c69598e4b@kernel.org>
+In-Reply-To: <20240203-clone3-shadow-stack-v5-2-322c69598e4b@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.44.4-0ubuntu2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|DS0PR11MB7902:EE_
+x-ms-office365-filtering-correlation-id: 052ab7e5-75b4-47c4-51ad-08dc29ad1b86
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AlXPjfE2qpVVRkvjVsyCFr8WzaMLj3dx+YLbWBLYRMY5h0aZ2uccX1sXvGxHo1A4WGQpZEum/tUGb+XJGQMTir3JHzC2OtQ7tFFYwHs1UqpbW5R0GE7IlcQNPiSoOJ9kj0+XCwLTMord3G4TW6pbf8P5ljh/RECEh6e0JTX6aqJfneBT8oZ6T9nOCb04Fx92FI2/2tscuivvoLPtWneBYxqpZ079tTXlpNpdI1xrcUy0qJ8A9ZRSzuyojeEnm1WiT6Ibra6bR63e9QnUytGjhEjE1cUAO9wXzgmHW47lnL6WPjOyCamv2zVgGCFf9hUeEoXUCSw+s+5YU7dw7lZdxbvzYDRtbrACNc9pFE3XeIk3ilZy5PuiARQaI/CmLljBCLNUKCbyvnILroI5j0TKH0XBynxfHQpepAGBuxVaDQrkp0j3MF7fnFgAhxZzhqGbgGaheQLZlHE4j5fhx3voQ3sJypx2u5ENnmFUL2/Uw5ADhVm4BsXBCEcwBEu15+IugQIVip9vfrk/KGhtJy17jDaAEeW4+sIq71RdvatcUsqoHsPXMJjPZl58HXkKj4wuS74gBV1CxazEQP6xRY5L+2SeNM6X0RZDfzQVELq2DKr6bMmZebp8HL1pPE2ukoQh
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(39860400002)(346002)(366004)(136003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(5660300002)(921011)(7416002)(2906002)(4744005)(41300700001)(38100700002)(86362001)(26005)(2616005)(82960400001)(122000001)(54906003)(76116006)(66476007)(66446008)(64756008)(71200400001)(6506007)(478600001)(6486002)(66556008)(36756003)(110136005)(8676002)(4326008)(6512007)(66946007)(316002)(38070700009)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?REJaaXd0emdFdW5ZRXdpZUFXU21wa0wrUUowMHZ6WmhFS0YwY3FpV1Z3bG1o?=
+ =?utf-8?B?TDY1TVhvMjdTMktxemdBU2syQjk0NEJTcUhCWkd5TFVjRGZkWDVWVXNRMzRY?=
+ =?utf-8?B?eGhPaDFjczEzejhYbXVtdHN6L1VlcytNQmRnV2dRbzVhQ1lZZTdXMFFuYzEx?=
+ =?utf-8?B?ZGhMOXk3ZmZjQXQ3NU4xbThYUUlueUJoV2JaQTFTSXRzRDQ3WE9zR1dUcVNV?=
+ =?utf-8?B?WGt5NVNDVDBBNU5FWDJ6MVZBakpPakRsSW0zNWsxUnRmdXZuYmordExwRTZI?=
+ =?utf-8?B?VmNtQ1RGN0pXM2ttWnVDaHZZNVVUOTFhaWVVOTBydDNDRUViZWNqcHhNWlUy?=
+ =?utf-8?B?WDRIMzlXUllwRXJNeTFnakgzaS9CTERtdkV0ZjVTZWcvYWp5UURvTjEwTDFi?=
+ =?utf-8?B?akV6cHk0aHQ1Tll5Uk1HY01yZjFpSDZXVTMyVTBraXhMRVQ5ZmZ4VkFkQXZn?=
+ =?utf-8?B?L1pqUkl1ZStjVjBjaVlua1RHNUtlcC9EbFFRRnNlYVdlZVUvL2h2RHI1MGZC?=
+ =?utf-8?B?b1ZWNHRtaCtGM1ZpWmhFUGVmcVQ1d3VJWCtNT0QvdHhnbFlGYmhMRXhUcjE1?=
+ =?utf-8?B?STg5cSs0ZjhTclM4RDBmUFJ3YkJOMGhLaVBsZVJEeVNaY3JPSEpIa1V3VjVB?=
+ =?utf-8?B?L2ZERXEyOS9pcGMwQ1BvcytlWHEzWStjWkhLdEsycUNUdnNhbWI2MXVQMTJF?=
+ =?utf-8?B?UVl4WjhFak9TQzNPVkRtYWVtcDRqQng0K3R6M0NodTdpYlNIQW1wenJ5Ull4?=
+ =?utf-8?B?V3hGR0F1RWF6eXhnVHZlS3pRelJPRkR5bGtCbHJSMlZTY3hKL2N0UFhLR0Zl?=
+ =?utf-8?B?YTlObW1rcmpRZmpUZVJvaVdoc2JtOXc1WmFqTkhkaStxWFliNSs4SkxWa0RT?=
+ =?utf-8?B?VHNqSmw0RDFlME9xbUR4SWl5cDg1dENRVGtoUVE1L1E0dlUzNnA4TDdWUk1p?=
+ =?utf-8?B?bGJ4czJ0R1R5c29uY1N4UDR3UHpXbGFPaWg0WWJkUTBxMjZnTzhFTXVrN0Zj?=
+ =?utf-8?B?cU9YOFNMaEZXVk0yUDArRVQ0NmxlWVlQK25QU1dSS1MvTWJRVDNQUzhvSktX?=
+ =?utf-8?B?Mk12RVRWUkloUFVVMFFkejlFcHpYMVdOMjZ5cUlwZFg0akVlcmpSRGhIb0d2?=
+ =?utf-8?B?YUdMem5OQTU5dldEVFVHd25sWVZzNEJ0cEZnNUwza0ZJdzJnbTdrblBsYkdM?=
+ =?utf-8?B?ZjFuSC9NKzdoU3MxdFRZOU5FaUoxYnVUOVJZaGp6a0x3YWJlczVncEhJK2N2?=
+ =?utf-8?B?WFhOaU1XeVNQZE9NZVUrVlBQY1llS3ozSjhGVkdIZVJrSzBZNGxZYU5vVFNQ?=
+ =?utf-8?B?NmtkSERxbjR5c0pKNWFhZVplSzNqWlZEc0tPTi9qODh1RWc0VEJUbVVNcFJa?=
+ =?utf-8?B?ZGg5SmtCZW80ams0MVVoNU5MdmRsSlYwS3VvYUF6VTRtZjBNeW9vZ2FXcisr?=
+ =?utf-8?B?b0FlMzk0TkFrMVFIUVBNbDlXa1VXbWRlMVFYSHBTNVBEeFJkcWRVTks2eGJn?=
+ =?utf-8?B?YjVnRjhjbUh6NzZRUHA4Vy9udW03MnMybXpYNjVMSC9NcUFpNTdvYkFuV0pi?=
+ =?utf-8?B?NUttZGU5NVYvaEtROFA2Sllvc3luSTFQZGhXMTd1Q2RTeUx3YzdjeGJhaWR2?=
+ =?utf-8?B?bGpiaVc3NEVGSktBSXFGbW45enRpeEgrRDZmckw2NHZnbGFzcS8rTms4WDNW?=
+ =?utf-8?B?U0dtNjROSllsWW9yRmxHcFFuL3RCZTRJUzQvNVhOYjJMeGtDM2l1NVRGNmwz?=
+ =?utf-8?B?VEgvVE90TjZad3VxTEdiWXpjTDgrQnlyaW1LQ3lNVW1SRXV2QVZRdHhQMUE2?=
+ =?utf-8?B?aytIaHg2Ui9zQ3ZlQWRQN1pSK2IzeWF4OFM3THVFNUpJVFpyR3lSWndYVGVr?=
+ =?utf-8?B?dnNUQ2ZPY080QXVzVFMwMHRYT0laNUtuQVN4TFpwaXJlQ0xpRGd0cU1ZaURM?=
+ =?utf-8?B?VFJDKzUxNjdTc29rNU5Tb3NMOVhLcnRVdlIya1lwQ09NMUdsUjM4cWZNZjNF?=
+ =?utf-8?B?TjhLb0puUlYyeFZ5QWJYeFBZZEI5ZURvdVlFMzc0RHhmUStUWG45bVM0SjlT?=
+ =?utf-8?B?OGxGTWN5NzhnMVNTQ3diT1lPWWptV2tjaEZRZFM5SjNOYWVZWTRVV2NLZC9r?=
+ =?utf-8?B?b1hweWlGTDQ2TDFNRnp1bEJ5RWFFL29ucWxnK3pDNG9QZ2praGdBUTN2ZXdw?=
+ =?utf-8?B?YUE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4C2541EF82D480409C094DE981B1A47A@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drivers/ps3: select VIDEO to provide cmdline functions
-To: Michael Ellerman <mpe@ellerman.id.au>,
- Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc: Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
- "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
- linuxppc-dev@lists.ozlabs.org, Geoff Levand <geoff@infradead.org>,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20240207161322.8073-1-rdunlap@infradead.org>
- <e0893d21-606e-429e-a554-c9ee60fd0ae4@suse.de> <8734u28bh8.fsf@mail.lhotse>
-Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <8734u28bh8.fsf@mail.lhotse>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -8.29
-X-Spamd-Result: default: False [-8.29 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLY(-4.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:email,ellerman.id.au:email,csgroup.eu:email,suse.de:email,lists.freedesktop.org:email,ozlabs.org:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[gmail.com,csgroup.eu,kernel.org,linux.ibm.com,lists.ozlabs.org,infradead.org,vger.kernel.org,lists.freedesktop.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Flag: NO
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 052ab7e5-75b4-47c4-51ad-08dc29ad1b86
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2024 20:24:24.7219
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 77TXbxL36A7CgnRS39aA+4FMw0pEhqTBES3K+/jozhtdUfGN/xsJInTD5dJZmSqGA0ddBt3s6zgEKLzr7LOZDAtx3NurS4565jA6vlC4EGc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7902
+X-OriginatorOrg: intel.com
 
-Hi
-
-Am 09.02.24 um 06:15 schrieb Michael Ellerman:
-> Thomas Zimmermann <tzimmermann@suse.de> writes:
->> Am 07.02.24 um 17:13 schrieb Randy Dunlap:
->>> When VIDEO is not set, there is a build error. Fix that by selecting
->>> VIDEO for PS3_PS3AV.
->>>
->>> ERROR: modpost: ".video_get_options" [drivers/ps3/ps3av_mod.ko] undefined!
->>>
->>> Fixes: dae7fbf43fd0 ("driver/ps3: Include <video/cmdline.h> for mode parsing")
->>> Fixes: a3b6792e990d ("video/cmdline: Introduce CONFIG_VIDEO for video= parameter")
->>> Cc: Michael Ellerman <mpe@ellerman.id.au>
->>> Cc: Nicholas Piggin <npiggin@gmail.com>
->>> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
->>> Cc: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
->>> Cc: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
->>> Cc: linuxppc-dev@lists.ozlabs.org
->>> Cc: Thomas Zimmermann <tzimmermann@suse.de>
->>> Cc: Geoff Levand <geoff@infradead.org>
->>> Acked-by: Geoff Levand <geoff@infradead.org>
->>> Cc: linux-fbdev@vger.kernel.org
->>> Cc: dri-devel@lists.freedesktop.org
->>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Can you take it via whatever tree the CONFIG_VIDEO patch is in?
-
-The patch is now in drm-misc-next.
-
-Best regards
-Thomas
-
->
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au>
->
-> cheers
-
--- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
-
+T24gU2F0LCAyMDI0LTAyLTAzIGF0IDAwOjA0ICswMDAwLCBNYXJrIEJyb3duIHdyb3RlOg0KPiBX
+aGlsZSBhbG1vc3QgYWxsIHVzZXJzIG9mIHNoYWRvdyBzdGFja3Mgc2hvdWxkIGJlIHJlbHlpbmcg
+b24gdGhlDQo+IGR5bmFtaWMNCj4gbGlua2VyIGFuZCBsaWJjIHRvIGVuYWJsZSB0aGUgZmVhdHVy
+ZSB0aGVyZSBhcmUgc2V2ZXJhbCBsb3cgbGV2ZWwNCj4gdGVzdA0KPiBwcm9ncmFtcyB3aGVyZSBp
+dCBpcyB1c2VmdWwgdG8gZW5hYmxlIHdpdGhvdXQgYW55IGxpYmMgc3VwcG9ydCwNCj4gYWxsb3dp
+bmcNCj4gdGVzdGluZyB3aXRob3V0IGZ1bGwgc3lzdGVtIGVuYWJsZW1lbnQuIFRoaXMgbG93IGxl
+dmVsIHRlc3RpbmcgaXMNCj4gaGVscGZ1bA0KPiBkdXJpbmcgYnJpbmd1cCBvZiB0aGUgc3VwcG9y
+dCBpdHNlbGYsIGFuZCBhbHNvIGluIGVuYWJsaW5nIGNvdmVyYWdlDQo+IGJ5DQo+IGF1dG9tYXRl
+ZCB0ZXN0aW5nIHdpdGhvdXQgbmVlZGluZyBhbGwgc3lzdGVtIGNvbXBvbmVudHMgaW4gdGhlIHRh
+cmdldA0KPiByb290DQo+IGZpbGVzeXN0ZW1zIHRvIGhhdmUgZW5hYmxlbWVudC4NCj4gDQo+IFBy
+b3ZpZGUgYSBoZWFkZXIgd2l0aCBoZWxwZXJzIGZvciB0aGlzIHB1cnBvc2UsIGludGVuZGVkIGZv
+ciB1c2Ugb25seQ0KPiBieQ0KPiB0ZXN0IHByb2dyYW1zIGRpcmVjdGx5IGV4ZXJjaXNpbmcgc2hh
+ZG93IHN0YWNrIGludGVyZmFjZXMuDQoNClRoYW5rcy4NCg0KUmV2aWV3ZWQtYnk6IFJpY2sgRWRn
+ZWNvbWJlIDxyaWNrLnAuZWRnZWNvbWJlQGludGVsLmNvbT4NCg==
 
