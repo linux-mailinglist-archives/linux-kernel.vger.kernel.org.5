@@ -1,100 +1,76 @@
-Return-Path: <linux-kernel+bounces-60136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A79B85009C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 00:13:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A967D85009F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Feb 2024 00:14:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E519A28488F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:13:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6087F1F26358
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:14:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 951F6374DE;
-	Fri,  9 Feb 2024 23:13:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF122374FA;
+	Fri,  9 Feb 2024 23:14:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Pd0xpMVC";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="VvSX5hPA";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="UtV1+l5i";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="YfD8xwCX"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E2SynAlz"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBEA8219E4
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 23:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF15F37149
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 23:14:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707520390; cv=none; b=l3XgZ2QvaKI6d58QvoMAGik9D6WXIfJP0inwnoyBOlH85oE3lP7V4TkTJNZatmuPQnEwrRaFgI3IlI0zfE+fEJ6WSmVgc0oZ4GP9fewfWl6qjMWzUycz0BrxMB2gbGpdpu8JLWr257sTtcFeLEVkNE+xV8rFM4dW6AcANj2y3+I=
+	t=1707520491; cv=none; b=iWsqh4Mh6FNy/5bwkgd0WxVSSQgJxQ2cIK3D1FdJLpTs0CfJdF+y6E/Yi7W3ZWABL98W0mEuJU+e+YbugCVIVVpNofNkpjVtLVBk0kTZuSXef2110qyWal2lPv6kms7owGdMAXxCcfutah1auduSfLdKVvEajwxgrRlI+/5cPX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707520390; c=relaxed/simple;
-	bh=cto60T5aKoSgdnFHbOH1BU81mCjxPNLXa/UWaNi1BKg=;
+	s=arc-20240116; t=1707520491; c=relaxed/simple;
+	bh=jdcg4DWF8JQDI25uT7aDRCN2nQorXmzFpgA+OiAtN/c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ebo7JHQwmUrsHA8JvJ5e4Qm3iSXXL7ogXRUCdM4/GKfW3LckRf14yCxw2tCiUqPLLVwG/a3McgbheYhDug2kzF1sBPwk7EgWj5j9k03ZWTW+miWr6fGnJmbjVegzr/SkBrR+7NfjG/ya6FdzBwWwM331VTgtaLh7j+115QJfOqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Pd0xpMVC; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=VvSX5hPA; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=UtV1+l5i; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=YfD8xwCX; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C59FE1F836;
-	Fri,  9 Feb 2024 23:13:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707520387; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S9lpcBV9vzvFNtzllF8vaGWpSfSHINn8hx6gz8lR9do=;
-	b=Pd0xpMVCWk8lLJEwQIwXH9UVn5/spsULRig1/vCnyKM+gdyWu8qf7TV1TMWVRPYEt2YpNj
-	5o2hsBoU3qlcqwiA+ydpRRoFdcvn8fzlbm+XClOGjDHoNPen9ZydU66ZHa8ZmnjxfncEW0
-	FDNFgaIjXU4txDcbpQUnHP+ICFObajk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707520387;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S9lpcBV9vzvFNtzllF8vaGWpSfSHINn8hx6gz8lR9do=;
-	b=VvSX5hPABaCgbXERSDBgxqWrEGkLFEvlaLRpTTGYlQnBYHwa/j/YvFEZPXTLiGxD/Ith4T
-	32PXNvM0j+3KbfCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707520386; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S9lpcBV9vzvFNtzllF8vaGWpSfSHINn8hx6gz8lR9do=;
-	b=UtV1+l5iQa1XiClMk8rQKdiMwA+cUmzLzaThRsKzj+Rvw9veDnV4BUEr0seDDT48d1k1QM
-	Sj5yD6FyEYlvIJPLgUs/4hqjnKlE7RxcqOgR8HL2VyKtNv+R/rnHOZOddcEixosunJMKwj
-	vtSfBGFFD/LlXuvuHO7/F50NJnIZ/xw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707520386;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S9lpcBV9vzvFNtzllF8vaGWpSfSHINn8hx6gz8lR9do=;
-	b=YfD8xwCXfxRTiyKLP33cUiRHKI4NdUAugrEAqxccd/IWuhcAn74QwKOPuS8MuBIFjuPrR0
-	jm6W1nFU5QpkCoCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4758613353;
-	Fri,  9 Feb 2024 23:13:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id JZl0DoKxxmVKfwAAD6G6ig
-	(envelope-from <osalvador@suse.de>); Fri, 09 Feb 2024 23:13:06 +0000
-Date: Sat, 10 Feb 2024 00:14:13 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Marco Elver <elver@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=IO46pdQac86pq5PDo9EuPj1YhSaDSdgWysU7UASMaj0r1ZkEPwkIJEvmcAmAbwxYFBetqw4wF8vpYsy8ckG54+r9kGeng4+eehIYm04l1WF33d8dblR6d4aSjIb21Q36SXqPN9C66L5gFizZd4UnqNawwDiZwFBixOHUmDgo1tE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E2SynAlz; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707520489; x=1739056489;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jdcg4DWF8JQDI25uT7aDRCN2nQorXmzFpgA+OiAtN/c=;
+  b=E2SynAlzwSbKbl5zLo2wy0XsszUhgt0CFvlHJOPGvopWjmgQwBu0CaXM
+   pJTx3Ns/sJY1h9zp3jJX3FUDUMGAobNTGMt6sKTPOUAaCVxfBGOV55DCi
+   J8YABBCdnSvvQAYXqjLdV5BZ9R0E3fJxzPESomVAhpNfj6viPU5CxOAkZ
+   FH4veFAUDUNHN5lfVzNSKxpzUPrsODHNHIXTeE6mDnCqMBJyLxAjEsFBS
+   D17iHxLm7UkcKrTOxAfBOXxI0iBXNlFlAdPybfmNpjfsPsRl/PsKIrbYr
+   fm34CS4D9CDaY35o5cZW1XSr0wat6jKhRL4YYDn96AkMPgD/lU6lWpQR9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="4495780"
+X-IronPort-AV: E=Sophos;i="6.05,258,1701158400"; 
+   d="scan'208";a="4495780"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 15:14:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,258,1701158400"; 
+   d="scan'208";a="2355567"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 09 Feb 2024 15:14:45 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rYa4w-0005C2-35;
+	Fri, 09 Feb 2024 23:14:42 +0000
+Date: Sat, 10 Feb 2024 07:14:27 +0800
+From: kernel test robot <lkp@intel.com>
+To: Oscar Salvador <osalvador@suse.de>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
+	Vlastimil Babka <vbabka@suse.cz>, Marco Elver <elver@google.com>,
 	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>
+	Alexander Potapenko <glider@google.com>,
+	Oscar Salvador <osalvador@suse.de>
 Subject: Re: [PATCH v7 3/4] mm,page_owner: Display all stacks and their count
-Message-ID: <ZcaxxQE1PkepEWwf@localhost.localdomain>
-References: <20240208234539.19113-1-osalvador@suse.de>
- <20240208234539.19113-4-osalvador@suse.de>
- <CANpmjNNcPr=pPco_HN9nXBabubtfo02SAH=taZGNCvYDq42YUQ@mail.gmail.com>
- <ZcaesCP4mY-94ciJ@localhost.localdomain>
+Message-ID: <202402100636.5lFPAlbB-lkp@intel.com>
+References: <20240208234539.19113-4-osalvador@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -103,72 +79,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZcaesCP4mY-94ciJ@localhost.localdomain>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=UtV1+l5i;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=YfD8xwCX
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.22 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.04)[-0.181];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,vger.kernel.org,kvack.org,suse.com,suse.cz,gmail.com,google.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.87)[94.27%]
-X-Spam-Score: -3.22
-X-Rspamd-Queue-Id: C59FE1F836
-X-Spam-Flag: NO
+In-Reply-To: <20240208234539.19113-4-osalvador@suse.de>
 
-On Fri, Feb 09, 2024 at 10:52:48PM +0100, Oscar Salvador wrote:
-> Thinking about it some more, I think I made a mistake:
-> 
-> I am walking all buckets, and within those buckets there are not only
-> page_owner stack_records, which means that I could return a stack_record
-> from e.g: KASAN (which I think can evict stack_records) and then
-> everything goes off the rails.
-> Which means I cannot walk the buckets like that.
-> 
-> Actually, I think that having something like the following
-> 
->  struct list_stack_records {
->       struct stack_record *stack;
->       struct list_stack_records *next;
->  }
+Hi Oscar,
 
-Or, I could use the extra_bits field from handle_parts to flag that
-when a depot_stack_handle_t is used by page_owner.
+kernel test robot noticed the following build warnings:
 
-Then __stack_depot_get_next_stack_record() would check whether
-a stack_record->handle.extra_bits has the page_owner bit, and only
-return those stacks that have such bit.
-This would solve the problem of returning a potentially evictable stack
-, only by returning page_owner's stack_records, and I would not have
-to maintain my own list.
- 
-I yet have to see how that would look like, but sounds promising.
-Do you think that is feasible Marco?
+[auto build test WARNING on akpm-mm/mm-nonmm-unstable]
+[also build test WARNING on linus/master v6.8-rc3]
+[cannot apply to akpm-mm/mm-everything next-20240209]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks
+url:    https://github.com/intel-lab-lkp/linux/commits/Oscar-Salvador/lib-stackdepot-Move-stack_record-struct-definition-into-the-header/20240209-074611
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-nonmm-unstable
+patch link:    https://lore.kernel.org/r/20240208234539.19113-4-osalvador%40suse.de
+patch subject: [PATCH v7 3/4] mm,page_owner: Display all stacks and their count
+config: x86_64-randconfig-121-20240209 (https://download.01.org/0day-ci/archive/20240210/202402100636.5lFPAlbB-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240210/202402100636.5lFPAlbB-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402100636.5lFPAlbB-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> mm/page_owner.c:828:30: sparse: sparse: symbol 'page_owner_stack_operations' was not declared. Should it be static?
+   mm/page_owner.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
+   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
+
+vim +/page_owner_stack_operations +828 mm/page_owner.c
+
+   827	
+ > 828	const struct file_operations page_owner_stack_operations = {
+   829		.open		= page_owner_stack_open,
+   830		.read		= seq_read,
+   831		.llseek		= seq_lseek,
+   832		.release	= seq_release,
+   833	};
+   834	
 
 -- 
-Oscar Salvador
-SUSE Labs
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
