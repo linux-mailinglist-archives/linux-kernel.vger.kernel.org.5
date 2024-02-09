@@ -1,256 +1,258 @@
-Return-Path: <linux-kernel+bounces-59049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 178E284F05F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BB0684F062
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:43:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D1591C25E12
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:42:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C11DA1C26645
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:43:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961B466B4B;
-	Fri,  9 Feb 2024 06:41:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4EC5657B8;
+	Fri,  9 Feb 2024 06:43:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b="lWmyg9Wo"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="PiQhf/tH";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="e2f2Mr57"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD10E664A9
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 06:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707460869; cv=none; b=ssfC+B2BEinO4vWrRF5212jV97FY7h8rcAYq/8PNpUdLvBsCfxE+3SyTeqXcLeRdwLakZBQmOCS2t4nQ8Aq7bvJYWBpYUVUfBWyXqKvS/uPoysxs08v3RAFByAFhrT/kvvn0BRTzthHJ/bjRkoraTcnQlS9hHpu7pgAqeC/RXHA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707460869; c=relaxed/simple;
-	bh=0z8i23JotdZYCWzu9gU2r1/A2xmE1LIuItfOUsSYf1M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MkuwlMXE0VKayehf0K2IHKk4TZwtuupMbhoTazaczsDSaIGFF3G4a+FkjEgBdBQrSSQ2rs/ZBiPep4i1WkreIKHpHFZU0LEz3+ykWIyy9824ECZaxkJAB5SnZoR89teu2QtfA4QXHp4m/BI/GRybCnPQ9eb2vm1H6T2YA5PgFjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vrull.eu; spf=pass smtp.mailfrom=vrull.eu; dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b=lWmyg9Wo; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vrull.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vrull.eu
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3850ce741bso54228866b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 22:41:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A164A657AB
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 06:43:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707460993; cv=fail; b=HQ1gRZqpwJAh8Q/nwS0xfGz600VRNSlgkTHbLAexi+ZPRExKBa3dWIkZgCQPuw221lq0z1f66saeAoHnMghBnhCDLQI2N8Qef5Hmw43VaPSIC50EWVcniYLm4ZyFrVV2/tN3nJDtt3aEaDd4pq491ukpdf1e+goO0Q97JXlGcEo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707460993; c=relaxed/simple;
+	bh=5HiU7XPGBxb7QjuVxBDBz/aSvubf111/vM0QA3AtW1Y=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=at4Fdn91NrBXDkB7oqIKTkmD7MRZNIvl/xDokqR+YDBZxsBBj7Fy55AQp2COZ/okmFh7YE62LbrY4kfdVh+UOnu067NbTn2JWC0Wlb/Ha1iJYNscyUbDAUpBEcZOFJxHkS2WDGtUQD+tI1IREIjVUomSmUKl/RsyfUwj0VElEt0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=PiQhf/tH; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=e2f2Mr57; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4194wjht031897;
+	Fri, 9 Feb 2024 06:41:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=JFrTmGH6izMHm8hF5fVab+OC90BWP/wiE/sG3HL8oZE=;
+ b=PiQhf/tH+jHkBbGjRKLT5zh7OG2xYdzVrbfu8tHL55VP/xWd6GNzJRGameSHwM+VeTEc
+ OaKYb4xNkpf68HsKqzFSaMAgmzuhfcGHleXcAjunv9FpFXQgxugc/XPiVVdXD5GqpfCb
+ +dkrr2hTk8geD1fzousZvVBPWbAMsgoMjdvBtTLSRJ69LRQq5tHb6Xe/Qvg8zyx630WB
+ u5HCfrlAgU7nf9fJjgnXzMIEmkQWxoyCimQBC0EGwglGdL1xcPyrEcwGHPPIgdNPZkLZ
+ 1GGbsJ4ofbWkFEC/gETa0uxujb15JcWZl/9hcg9QQunO0sZpi1sau+YTWfxIV7L0M50w Pg== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w1dhdpsac-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 09 Feb 2024 06:41:32 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 4195UbQQ038296;
+	Fri, 9 Feb 2024 06:41:31 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w1bxbqy5g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 09 Feb 2024 06:41:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kq19z0Ate0AeefytD3pEthwO4vU7D258Fkw5bsk/Ma9U71osrWjHbSjjb5nskmIN74KpP5x6St8IvczX+NShRe6XubOqesymPiRBpxLc+DPaGSqLVWsiNY3HOqscFpRMJQI1aKYwDejgeHT1Cq6SkuvAhBlfDFPvpJbmsyMcVGEHvwjhU2iq3UfV1aiRBXzC5OzcwHA1C+dL/m6x+5n9OoAOiOEWQ7AMGnr3ZatwhFm7x0dul4TjDsIbS43nFdqcX8tIERHFKp+zReDdZOu1LG9JbVnxXst5qjCcOihq7J+C7VLGpTJjBlS1Wco3zDa+dhM9yOCg6JRmKPjGyI2ApQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JFrTmGH6izMHm8hF5fVab+OC90BWP/wiE/sG3HL8oZE=;
+ b=bWfR/32U1xr8c1Cq32yU9612MiFVYNQJzUDSIuTHDVOnKMgYI0rbD4cyWcQVTuXnekUMyPodmYwE3PKCTsJGERHDwPtvJBZseOsIoGsTaDSN6K3UfwxgF5lpMc2rqBz312/k1mnb5HUZNjx2cv5MakiIBPe+JMwEyVcTBjKoUKVMkMUlKm4ooqsJZ6cfxgqNn2bn/E98jkQ8AcmGcBjU5GOWS1VzDRXbj9xYpgtWEviChdzprJSHrWclpDFrZcXRX8AHQMgkmZs5lK3Lw2JkiWHjabiM6PryrpgmnH4mjyfZ8IAnmsrTSCgg4CAKMnTF4kR61eyyZcmCdIilwaEI4w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vrull.eu; s=google; t=1707460866; x=1708065666; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L/ygjtZTVjHU12+LM3KMSNgL31cpnfsr1+pYQSNIAAg=;
-        b=lWmyg9WoWXcsAgqfvPWUUnRpzf5J9jo9E6tcCxhSiOuwpUvR0Or8wDC2EFjck5xAcB
-         Kd4T1hSsEcGkmbppJ4r7wx2vumYwliOhoZA9uX7GpKZWuFoXcFEKP70KpISAnA2zI5O9
-         k5kiNEj1pSDafxuwQ5WWlmKiK5eqFLPtwC20btGhQ8RmWE+sBFxhnRJUUUrsjgiIz8EA
-         25A4DxVh7kDhZtKTq3ZrgCTVEcnIoqpJwnmh7G89VH6AmCuZ10AiH6hRwGqnbnROjG6k
-         3t6WkWZP2/WCtSxiiU8v40bfX/hXPxAmIcalX7NJA2ZoE0QjHWBOH1Mk5nCpRn+0bom9
-         YONA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707460866; x=1708065666;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L/ygjtZTVjHU12+LM3KMSNgL31cpnfsr1+pYQSNIAAg=;
-        b=sZG+1bVYtAk9BMx/Y/rUdYeCLj17j8wrujB/zpd85ru8emKrpSYIwsXnNzGV82/g0E
-         H2Yr4WNmcOfMw6VxEaRQjFKYX2J2lAOD73/5Yrb2JxYd+D+netIN1J22RySMtHNOhPb/
-         tvXs4t9xM/QVNmBQQzRmfVj/qOD+6+I94UOpBe+uKoeLwII3RHldbYFrMjguy7vZN8Ze
-         whiAcVdulXczi/vF28O/KoSFQjYxrhqbTzMn/UM4yYtG7h4UwC8Ia5lI4D2E9pEQWnaf
-         F0y9pTAVE9Hluopp2BaT0RMP/OlH8IQKzq4JkmmonVfRpr1DCWEElFUvoAvd+rZgdiG3
-         pWPw==
-X-Gm-Message-State: AOJu0YyQTyf6FIs0i0R8pMxpe67cnP295CEgefAz0XNSl+HKEOv4VVE2
-	GQZWqZZXQP1FmaV0PN6Fe2UDwl+1PG4gx87oWnoKG+5I0UXDA8vmxzXqY+qI3uk=
-X-Google-Smtp-Source: AGHT+IEIwRiGBGnLEqNZprft3iYD6FyLivJVlJ5DvcYSMjlUi+u/u4Zmw+cdsozGJ8bDIbGbqO9viw==
-X-Received: by 2002:a17:907:363:b0:a3b:e115:7b69 with SMTP id rs3-20020a170907036300b00a3be1157b69mr404470ejb.69.1707460866164;
-        Thu, 08 Feb 2024 22:41:06 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWVssZFqFbfzrmw5N+m8jAa5zM7KTVmwqDhtj5haZxxQzg6uOIC2be48nkwLf0iu0niHguJ551L7u5EteLMF9srBcTAPbhPmlhN9lnjkUU2tTUIeTzif6I3w0++uwCEmChFy3wD+RbH1zBIgET/4eJv8GvYZpGHrClhravWVN/9G12TzOT6pSxV2Hf5e3nv7flcEKay3n/VtUfCFZG3bPN9ruH01WA4pLxi6TRTHdY1GWH33+HGoG4MpOKRjax3mVebVc09T8VWGX+znRRJccUOB6llHqPneJV3KtYH+dT4o/DHN4NIJfia2h3/sHl4L3kSb/tSovFkIYLWSDk7SfUqW4Chj3MUJXUmE0sf9MQYAdtfAN6/1fja+8Igov9hgoncDu7N6JrTf1HelAqwly0GYbt9mqEuV8OdU8VwuMxP9M/G6jFA4wa/KHnI64loSqYdktUMjvLgZ7rx2qlfJXN6Zd3aOJyvy7H5eCPyX4h6MwZ4bSZg8NP1kggYVgQlsNU1N6PAwAccqf+KBuVmusiVRDgI+H0kqOURQEVwFR6RGGBHW+HSr7CQwAxFTrLx054movAmNnanQ2a79ApvJwsN3r/dgbUoFqDGx06ftfb/L8PW2DBt5m8p9uCyAVppafDCV6fPkCjNoRaVSmiVJ3sH76fTIAlBb876kIN/CSV8gNL/Ffh4rtqvRfEz6leUCCjBpy0vXgkAx4sCA7iptzDDd8TasbVhCvk8WJkPDXMHVafgfSo/lKt24X5klr1yI0qYMQawiJ5TkcuJOiLbzBMsWBu8vz6ANKnF7FSpPfnOyRduMkg26SjeQOmb1c/q857B+B6Y2Rw1lUEIifHLy+pGHEaQaYYnqCNjq+3DZmZd6g==
-Received: from beast.fritz.box (62-178-148-172.cable.dynamic.surfer.at. [62.178.148.172])
-        by smtp.gmail.com with ESMTPSA id vb9-20020a170907d04900b00a370a76d3a0sm441180ejc.123.2024.02.08.22.41.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 22:41:05 -0800 (PST)
-From: =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>
-To: linux-riscv@lists.infradead.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Philipp Tomsich <philipp.tomsich@vrull.eu>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Guo Ren <guoren@kernel.org>,
-	Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Will Deacon <will@kernel.org>,
-	Daniel Lustig <dlustig@nvidia.com>,
-	Brendan Sweeney <turtwig@utexas.edu>,
-	Andrew Waterman <andrew@sifive.com>,
-	Brendan Sweeney <brs@berkeley.edu>,
-	Andrea Parri <parri.andrea@gmail.com>,
-	Hans Boehm <hboehm@google.com>
-Cc: =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>
-Subject: [RFC PATCH v2 6/6] RISC-V: selftests: Add DTSO tests
-Date: Fri,  9 Feb 2024 07:40:50 +0100
-Message-ID: <20240209064050.2746540-7-christoph.muellner@vrull.eu>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240209064050.2746540-1-christoph.muellner@vrull.eu>
-References: <20240209064050.2746540-1-christoph.muellner@vrull.eu>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JFrTmGH6izMHm8hF5fVab+OC90BWP/wiE/sG3HL8oZE=;
+ b=e2f2Mr57E4I0wBoxpYmqrMyCo/6GjlZz232bqR+o8tbiravm9e0kUSEXfI9/aVbYM3N47VPBUUVtNV+6QuTeZaPG8dFnKuRXrke70lBfBrhDdPLmIvMqpZdtCGfe9uJ2Cz60g2nuqs4xlK3S9VKQWtNf1oZB7bEkLuH21yZ+YME=
+Received: from SJ0PR10MB4429.namprd10.prod.outlook.com (2603:10b6:a03:2d1::14)
+ by MN2PR10MB4207.namprd10.prod.outlook.com (2603:10b6:208:198::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.25; Fri, 9 Feb
+ 2024 06:41:28 +0000
+Received: from SJ0PR10MB4429.namprd10.prod.outlook.com
+ ([fe80::210e:eea7:3142:6088]) by SJ0PR10MB4429.namprd10.prod.outlook.com
+ ([fe80::210e:eea7:3142:6088%5]) with mapi id 15.20.7249.038; Fri, 9 Feb 2024
+ 06:41:28 +0000
+Message-ID: <75803311-29fc-42ab-9c39-0b18cf875347@oracle.com>
+Date: Thu, 8 Feb 2024 22:41:23 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/hugetlb: Move page order check inside
+ hugetlb_cma_reserve()
+Content-Language: en-US
+To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <20240209054221.1403364-1-anshuman.khandual@arm.com>
+From: Jane Chu <jane.chu@oracle.com>
+In-Reply-To: <20240209054221.1403364-1-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BLAPR05CA0034.namprd05.prod.outlook.com
+ (2603:10b6:208:335::15) To SJ0PR10MB4429.namprd10.prod.outlook.com
+ (2603:10b6:a03:2d1::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4429:EE_|MN2PR10MB4207:EE_
+X-MS-Office365-Filtering-Correlation-Id: f76c8ca8-f50b-49f6-7543-08dc293a24ef
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	z9nJBodygirMDUrLMtquhzcT1MLLLaaBwca7goJRbWv7Y5hACuG/eKNQ1jwbIbeU7NuaDFoVKGFMBVgNXbg8gF9/FAU1AQk74DulSy2fJdpCCBab3bKe0tL0MgEW7tyTrSvB6HseBesvYgDHORSB3i8P7nUabgx8q8K/27I49A2fXNmkMLqrTqnKEG12pczRetoctffF51hfpZeKHIQVbW/sJRcR8ZyY4UHMSLwgznyUy22BExhn4x6Xb2C1Q8fjabtJgJbIcA5kdBLhEgZZvVnj5Kx08vG5uSLKdc20Z9XMlJhWdA4tgcEbIB5Rvk2S4FmNc17tpGhdmXK3pzJpQ8FCJ43dnd+Jt420y1DxFcEpknX7GxqR9k5ZD+kEXoYWhXhXK8/rv2jodDRefvdJ+iYdVc+aN+L2nVj3qeHAAOBSGObj0KUKN9O7wNr5giCYX69zIeg34XIseZBUfhBlbaFBWYux2jGA5siQ2/1vAyPyoC+V9P964AsZilZkupQCjQ7VHh0FqQ+88OLUed82aXdisJlTAJSiJED9TuCGtSQ62CAbk8Pv+BEln/0YYgaD
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4429.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(376002)(136003)(39860400002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(83380400001)(31696002)(86362001)(54906003)(6486002)(478600001)(6666004)(316002)(53546011)(66476007)(66946007)(26005)(2616005)(66556008)(38100700002)(6506007)(6512007)(36756003)(44832011)(41300700001)(8936002)(8676002)(4326008)(5660300002)(31686004)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?bERBRjhaWGgzbEFVSVhBTHdTSFlaYjFMREZMN0k3dTRQREczMjhDU29YUnov?=
+ =?utf-8?B?ZWpNSkxNc21tVGJvT1RsdVVSd0ovMjZZdWZCSjhGd3JmZlhKdUxhLzByK3FH?=
+ =?utf-8?B?MmhWUzB6K0hZSUdHeTRUcXFlc0l0TnVMMkpaZFlIRHBqTmhRbm1hcW83aFFW?=
+ =?utf-8?B?WWVoUHJ3MVFram9UREhxUXhoeVlNdzlsbGR3akpvRlNCeVdmcWM3MFJOakhw?=
+ =?utf-8?B?ZWt3TGF1Q1RYaUp5dkNlS1VPSitLeDJBcytlSkpwclBCMmgzbkpiZE5VM28x?=
+ =?utf-8?B?TjNyalpDNUVkbC9YOEp4Z2pKbGFqdHZ4RisybGh0RXF3TnlCWEFvbkJOVVBU?=
+ =?utf-8?B?c2hQcDl0M2lRTkNjbFptRFpoN2RSMXVjVXFFMTkxZzFiemtlZGN6ZTdPUzhq?=
+ =?utf-8?B?QlF6SXZoMkxrS1RhTDE5cERINnFBRFZxZG8xUjdYK1BJZ3A1cXRpNmpZdEl1?=
+ =?utf-8?B?dEFkRTRLUFppUE9BVjZtNGlUZ3JWaXNiblJ6QksrV2k3SkwwUUlYM05MUDNz?=
+ =?utf-8?B?NTI5SzJaTXFMbGw2UGh4NmE5bTVRUEh6ZmNFMTVFRk92ZnZLZDZIMm12V09o?=
+ =?utf-8?B?SGFFWHlGT21YWjZITkdsWXVGWm8wLzliYm41cUpTMmRDMHdyWHdSaEkzbTJy?=
+ =?utf-8?B?WUdJbUF1SnpJQ0VENzRwZFJ3SGh1NjlsbkpmaVhHYU5ScVliekNvWm9xQzFv?=
+ =?utf-8?B?U2NCMDV2L0pVYXN3UGVrU0MyOENRRWxQcHNhV0dibm5CSnVLT2dUckh3Vnl6?=
+ =?utf-8?B?VlZoSWFiSm82ZVRVaVNHZjN6bHVmMkp0cWlpbUhodllqTURwUklCamNrcVVK?=
+ =?utf-8?B?SlBHaVVLbUY2VHpiTmVhd3RKajFxc1VBdzV6VXRSMkduRzJOMm9saXdJcURl?=
+ =?utf-8?B?YVE2UjUyalhTNHJ1MDRCeDZZTWJYL0lJc2FFWjMxYVBBWlZLTEUxYVhjM3lv?=
+ =?utf-8?B?T3kwUm9rWHQ5akZ4YitsbTBnekRUcDJ2WVZPSUsveExPZFR4ZDNUenArSzhS?=
+ =?utf-8?B?c2o2dTVSd0p5UXEwaE1qUVJ5cDVuR01mSUZRQUt5ZG50dGhUcnFnV3VyYzBK?=
+ =?utf-8?B?K0VmOElrUldZOEtTZzNJYVlvTXU5K3EvMkRheVI1NmRIMUR1VkxJVTNkdCtM?=
+ =?utf-8?B?Mno3NmtZdVFkWlV4a2haK3FrbmVLNEdWK0VrUUhYQkhHcklOa293MGVNWFZZ?=
+ =?utf-8?B?ZTZFZnlVVmwyQTdsZWZnV3VqV3VGemFFUFo2WkYrY01QaVZoUGRBblhITUpL?=
+ =?utf-8?B?OENFUFMyVnhxTVFhYytuWUl5eEd4RWlXUWhJRFg5TnRENER0bWFTcHBHSzJG?=
+ =?utf-8?B?eG5uV3ZzN1Q2ZlVhK1hJdkxDejdpUlZ2RkV2cjNSNnRiMFVRbUI1VDFCT0VK?=
+ =?utf-8?B?VmN0bHdqNndvM0haT2FSaTVmMm5nTVFNZGRUY3UrZFU3aTdsMnpXd3hxUGRy?=
+ =?utf-8?B?TnlIL0xoWTRxSkFGM0dESkJpRUtoTkg0dHhiMlhTVTk3WDlheVlibFg0TGl3?=
+ =?utf-8?B?R2ptZHh0azVwRmRMM2pBSHd3eWJHSFVqN1dSN0dKWEUrekZtQVdPZXlxd2lI?=
+ =?utf-8?B?b1VIa3pMSXJqMk5OZW1LaGh0a0dzUjdrL2VRRUdDcm1GVVkzeTFEWUF6QmRz?=
+ =?utf-8?B?cGFEc3ZxUEI2M29xajVMNHBJcVF6VW5rdUgzUmVTU0pjelEyRXB4VWhrcW9k?=
+ =?utf-8?B?QU1jbTBqTVlUS1ppQ0pIcWJ2S2Y4ekZXMmZuM3dOUU1TcXUwbkF3U2Q0WnZv?=
+ =?utf-8?B?NVlTOGh4V1F2bEFBcGpsSjdGTVpCR3pwY24xQjZTWlVoV2V4dnR6bENvV0R5?=
+ =?utf-8?B?alhZMWpFRURsbGx1TlAzcnBMbkJ2b3A5cDh1Q3FxaXgyZXl6L3lkNEluN1dF?=
+ =?utf-8?B?dy9YQ0N0RUJDeGtEa3luanVOWDF6NzFOTmxsVXcvMm4zNDE3TUphclV5WDJm?=
+ =?utf-8?B?U2V6KzAycXl6S1ZZN2dmZk9mS0tRakdyRWIyZm1tZ21pVGc4YkhaRUtnTFFL?=
+ =?utf-8?B?TlE4VHFrb3A4dTBhdWhSbEJud0F6L2JmVnhDQ2FiSm14WHBQQnQwdXNHb0Fv?=
+ =?utf-8?B?SDZxYTZJaXdtWnNIUDNkNXNnKzhQNlpsRDkxOS8rV3NCaHdvZUxub0NGNFBE?=
+ =?utf-8?Q?3DO/cljtPO9mpzzSa0tOxfZro?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	2p8gB8VFNMY94u1vVu0m0sgVvct0ybNBom5jqgk9gN/wZ95b3EmFb4Pxn0Xb8CM6jD/vvrNHCA2KlW1RCmIWt7qa+utWdBef5w88HW9HcjF0IskPT6rkq/u54epQP9ZYR4paf0p5a2+m55nXH5qVj0qYAbFYtsOzDXmn2w0DFVIRPCB8xFYSlTiVGhZtP5rdCSxJhrK1W6/ZjkspoWIMSyq06aELGSz2kO+p9hLhHvLho8v2ysBnYp9iAd7jpFmD4pmcJsm9AxSzDFpYlTwPLgFfB/mvZy4iGFs78Jcaj1zWxYvC9N9kFQVEASOsha/iddsfXmk0fdfASOH9tfNlrIosw5YsQF/jmoqkSEg6PWHBFZw06hz9O8+AjZT4uGXfe/Y1iweo706UcTdobjfSZHRnuja2XgqaEsQ65dgQfWLg1ziYLYcXuXqguFMXwCCR6rWvTig/cVjhFHgEeuLYCS3M1h25To5yYFEg7YK4LwNb06DlrhRfYSLkmRC1n8Rd4J0ZjmICArKt9wbTsZz9dRyo0dWnVPzWlV4jA+uG0wD25/lGLGoGqknocYjgDsF8k4wi94WchNAkTxgAL2bncEfNjXhK0Pf7VykF1DslZSI=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f76c8ca8-f50b-49f6-7543-08dc293a24ef
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4429.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 06:41:28.6198
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aBmzcVYYzm4FsJkoWaCGc776tV9AtSJ01/kazn9xBn7bKyVzgr1yZeBlmzeN1NREgxgAf65LuiAELTuBXR3JSA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4207
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-09_04,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 mlxscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402090047
+X-Proofpoint-GUID: DDglHVInCtT8l6KGbMnxd5GL-L408zmD
+X-Proofpoint-ORIG-GUID: DDglHVInCtT8l6KGbMnxd5GL-L408zmD
 
-This patch tests the dynamic memory consistency model prctl() behaviour
-on RISC-V. It does not depend on CONFIG_RISCV_ISA_SSDTSO or the availability
-of Ssdtso, but will test other aspects if these are not given.
+On 2/8/2024 9:42 PM, Anshuman Khandual wrote:
 
-Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
----
- tools/testing/selftests/riscv/Makefile        |  2 +-
- tools/testing/selftests/riscv/dtso/.gitignore |  1 +
- tools/testing/selftests/riscv/dtso/Makefile   | 11 +++
- tools/testing/selftests/riscv/dtso/dtso.c     | 82 +++++++++++++++++++
- 4 files changed, 95 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/riscv/dtso/.gitignore
- create mode 100644 tools/testing/selftests/riscv/dtso/Makefile
- create mode 100644 tools/testing/selftests/riscv/dtso/dtso.c
+> All platforms could benefit from page order check against MAX_PAGE_ORDER
+> before allocating a CMA area for gigantic hugetlb pages. Let's move this
+> check from individual platforms to generic hugetlb.
+>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> This applies on v6.8-rc3
+>   
+>   arch/arm64/mm/hugetlbpage.c   | 7 -------
+>   arch/powerpc/mm/hugetlbpage.c | 4 +---
+>   mm/hugetlb.c                  | 7 +++++++
+>   3 files changed, 8 insertions(+), 10 deletions(-)
+>
+> diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+> index 8116ac599f80..6720ec8d50e7 100644
+> --- a/arch/arm64/mm/hugetlbpage.c
+> +++ b/arch/arm64/mm/hugetlbpage.c
+> @@ -45,13 +45,6 @@ void __init arm64_hugetlb_cma_reserve(void)
+>   	else
+>   		order = CONT_PMD_SHIFT - PAGE_SHIFT;
+>   
+> -	/*
+> -	 * HugeTLB CMA reservation is required for gigantic
+> -	 * huge pages which could not be allocated via the
+> -	 * page allocator. Just warn if there is any change
+> -	 * breaking this assumption.
+> -	 */
+> -	WARN_ON(order <= MAX_PAGE_ORDER);
+>   	hugetlb_cma_reserve(order);
+>   }
+>   #endif /* CONFIG_CMA */
+> diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
+> index 0a540b37aab6..16557d008eef 100644
+> --- a/arch/powerpc/mm/hugetlbpage.c
+> +++ b/arch/powerpc/mm/hugetlbpage.c
+> @@ -614,8 +614,6 @@ void __init gigantic_hugetlb_cma_reserve(void)
+>   		 */
+>   		order = mmu_psize_to_shift(MMU_PAGE_16G) - PAGE_SHIFT;
+>   
+> -	if (order) {
+> -		VM_WARN_ON(order <= MAX_PAGE_ORDER);
+> +	if (order)
+>   		hugetlb_cma_reserve(order);
+> -	}
+>   }
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index cf9c9b2906ea..345b3524df35 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -7699,6 +7699,13 @@ void __init hugetlb_cma_reserve(int order)
+>   	bool node_specific_cma_alloc = false;
+>   	int nid;
+>   
+> +	/*
+> +	 * HugeTLB CMA reservation is required for gigantic
+> +	 * huge pages which could not be allocated via the
+> +	 * page allocator. Just warn if there is any change
+> +	 * breaking this assumption.
+> +	 */
+> +	VM_WARN_ON(order <= MAX_PAGE_ORDER);
+>   	cma_reserve_called = true;
+>   
+>   	if (!hugetlb_cma_size)
 
-diff --git a/tools/testing/selftests/riscv/Makefile b/tools/testing/selftests/riscv/Makefile
-index 4a9ff515a3a0..1421c21841f9 100644
---- a/tools/testing/selftests/riscv/Makefile
-+++ b/tools/testing/selftests/riscv/Makefile
-@@ -5,7 +5,7 @@
- ARCH ?= $(shell uname -m 2>/dev/null || echo not)
- 
- ifneq (,$(filter $(ARCH),riscv))
--RISCV_SUBTARGETS ?= hwprobe vector mm
-+RISCV_SUBTARGETS ?= dtso hwprobe vector mm
- else
- RISCV_SUBTARGETS :=
- endif
-diff --git a/tools/testing/selftests/riscv/dtso/.gitignore b/tools/testing/selftests/riscv/dtso/.gitignore
-new file mode 100644
-index 000000000000..217d01679115
---- /dev/null
-+++ b/tools/testing/selftests/riscv/dtso/.gitignore
-@@ -0,0 +1 @@
-+dtso
-diff --git a/tools/testing/selftests/riscv/dtso/Makefile b/tools/testing/selftests/riscv/dtso/Makefile
-new file mode 100644
-index 000000000000..a1ffbdd3da85
---- /dev/null
-+++ b/tools/testing/selftests/riscv/dtso/Makefile
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2023 VRULL
-+
-+CFLAGS += -I$(top_srcdir)/tools/include
-+
-+TEST_GEN_PROGS := dtso
-+
-+include ../../lib.mk
-+
-+$(OUTPUT)/dtso: dtso.c ../hwprobe/sys_hwprobe.S
-+	$(CC) -static -o$@ $(CFLAGS) $(LDFLAGS) $^
-diff --git a/tools/testing/selftests/riscv/dtso/dtso.c b/tools/testing/selftests/riscv/dtso/dtso.c
-new file mode 100644
-index 000000000000..c8a7b25adefd
---- /dev/null
-+++ b/tools/testing/selftests/riscv/dtso/dtso.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* dtso - used for functional tests of memory consistency model switching
-+ * at run-time.
-+ *
-+ * Copyright (c) 2023 Christoph Muellner <christoph.muellner@vrull.eu>
-+ */
-+
-+#include <sys/prctl.h>
-+#include <unistd.h>
-+#include <errno.h>
-+
-+#include "../hwprobe/hwprobe.h"
-+#include "../../kselftest_harness.h"
-+
-+/*
-+ * We have the following cases:
-+ * 1) DTSO support disabed in the kernel config:
-+ *    - Ssdtso is not detected
-+ *    - {G,S}ET_MEMORY_CONSISTENCY_MODEL fails with EINVAL
-+ * 2) DTSO support enabled and Ssdtso not available:
-+ *    - Ssdtso is not detected
-+ *    - {G,S}ET_MEMORY_CONSISTENCY_MODEL works for WMO and fails for TSO with EINVAL:
-+ * 3) DTSO support enabled and Ssdtso available
-+ *    - Ssdtso is detected
-+ *    - {G,S}ET_MEMORY_CONSISTENCY_MODEL works for WMO and TSO
-+ */
-+
-+TEST(dtso)
-+{
-+	struct riscv_hwprobe pair;
-+	int ret;
-+	bool ssdtso_configured;
-+	bool ssdtso_available;
-+
-+	ret = prctl(PR_GET_MEMORY_CONSISTENCY_MODEL);
-+	if (ret < 0) {
-+		ASSERT_EQ(errno, EINVAL);
-+		ssdtso_configured = false;
-+	} else {
-+		ASSERT_TRUE(ret == PR_MEMORY_CONSISTENCY_MODEL_RISCV_WMO ||
-+			    ret == PR_MEMORY_CONSISTENCY_MODEL_RISCV_TSO);
-+		ssdtso_configured = true;
-+	}
-+
-+	pair.key = RISCV_HWPROBE_KEY_IMA_EXT_0;
-+	ret = riscv_hwprobe(&pair, 1, 0, NULL, 0);
-+	ASSERT_GE(ret, 0);
-+	ASSERT_EQ(pair.key, RISCV_HWPROBE_KEY_IMA_EXT_0);
-+	ssdtso_available = !!(pair.value & RISCV_HWPROBE_EXT_SSDTSO);
-+
-+	if (ssdtso_configured) {
-+		/* Read out current model. */
-+		ret = prctl(PR_GET_MEMORY_CONSISTENCY_MODEL);
-+		ASSERT_TRUE(ret == PR_MEMORY_CONSISTENCY_MODEL_RISCV_WMO ||
-+			    ret == PR_MEMORY_CONSISTENCY_MODEL_RISCV_TSO);
-+
-+		if (ssdtso_available) {
-+			/* Switch to TSO. */
-+			ret = prctl(PR_SET_MEMORY_CONSISTENCY_MODEL,
-+				    PR_MEMORY_CONSISTENCY_MODEL_RISCV_TSO);
-+			ASSERT_EQ(ret, 0);
-+			ret = prctl(PR_GET_MEMORY_CONSISTENCY_MODEL);
-+			ASSERT_TRUE(ret == PR_MEMORY_CONSISTENCY_MODEL_RISCV_TSO);
-+
-+			/* Try switching back to WMO (must fail). */
-+			ret = prctl(PR_SET_MEMORY_CONSISTENCY_MODEL,
-+				    PR_MEMORY_CONSISTENCY_MODEL_RISCV_WMO);
-+			ASSERT_LT(ret, 0);
-+			ret = prctl(PR_GET_MEMORY_CONSISTENCY_MODEL);
-+			ASSERT_TRUE(ret == PR_MEMORY_CONSISTENCY_MODEL_RISCV_TSO);
-+		} else {
-+			/* Set the same model, that's currently active. */
-+			ret = prctl(PR_SET_MEMORY_CONSISTENCY_MODEL, ret);
-+			ASSERT_EQ(ret, 0);
-+		}
-+	} else {
-+		ASSERT_EQ(ssdtso_available, false);
-+		ksft_test_result_skip("Ssdtso not configured\n");
-+	}
-+}
-+
-+TEST_HARNESS_MAIN
--- 
-2.43.0
+Looks straight forward to me.
+
+Reviewed-by: Jane Chu <jane.chu@oracle.com>
+
 
 
