@@ -1,116 +1,102 @@
-Return-Path: <linux-kernel+bounces-58941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 360B184EEEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 03:41:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BC3A84EEF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 03:41:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E858528C856
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:41:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 124901F2884C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:41:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89FA1C27;
-	Fri,  9 Feb 2024 02:41:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8261865;
+	Fri,  9 Feb 2024 02:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eJsMYPF0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="owD9rfwg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E671879;
-	Fri,  9 Feb 2024 02:41:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D5D5240;
+	Fri,  9 Feb 2024 02:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707446464; cv=none; b=XXkrJSoDza3MU0rzdZNl326K6wy+x4onZBQ+4nIQGbpkBRxqzJ8vwkbWrWdxNUqJ0gXw44KhgeXi4iNnEG9ItSNODGFhhSDc2J5GeHtu7MM74tbyBGduX3vhyp18dVnRMD1I4ti3CUDLvezpoirrDbAXMex5l/YWtx0EZmej6zo=
+	t=1707446492; cv=none; b=XJwXJbkKmbuv5U558CBIxFkmc8Ed87mL89dwCe8k6IatuBt/ht9AdA3rGHl42ruPqNHCnci4JCamsnY5q4J+4I81h8OV+T7tyjXvZH1Fby3xb0sbeUaxZu7Go/CQu3D/bdNblRYXeWGtaRz4YRpA/0XAkN1Ne8sbDscwmbmH58o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707446464; c=relaxed/simple;
-	bh=PJTFbv2YtGVGwc0ykmP+GYm3N/49nZRz55vdsHWeQuk=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=C3SqCH5BkwbdRIjkaji8Pvicx6cA+j1JBSKI8SXLdABZ62UnzmGiEu6Jl1wb+B2EuYtAZMxtPmwROZz0RVyvhpNp2Fkjf0BnqKaD4P1W0rjoaBilIr0rt99DOg8jpE2yip6h2EY+MCIqYxiIhr5PpTJ7CXEc8r+M8CwjQy+VIIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eJsMYPF0; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707446463; x=1738982463;
-  h=message-id:date:mime-version:from:subject:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=PJTFbv2YtGVGwc0ykmP+GYm3N/49nZRz55vdsHWeQuk=;
-  b=eJsMYPF0o/zLJRl4EZJRhGzVCWUXVBYYh8SRmpmCL7XPue+cs0n17WDW
-   Lq1BKen7dORQNp+d4d14B+kOBmfBE+aRgasXTe+k8xDMzB23Omt7Y2zHM
-   dpnagPiEuRQPzBEhwT112Yi+MlKsiiUCcXfmUk2Td/bvjcm1O24SymWIw
-   AHImQPJBpTGn3k2hmEDE7Hs/YCLGN3gxgurxkGiKvLs1ITAzZJk2dtnJc
-   GsPFJgvO6BBel4rKwdycIJcE/4jXZunXOefn2pTxVVgJK3EmYVruKwcEt
-   WTu7bBF0SFBccQFJ1q0T273mogwJCi14eJLBddZNRX48q+YWVWrO591Fo
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="436494806"
-X-IronPort-AV: E=Sophos;i="6.05,255,1701158400"; 
-   d="scan'208";a="436494806"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 18:41:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,255,1701158400"; 
-   d="scan'208";a="6488708"
-Received: from lshui-mobl1.ccr.corp.intel.com (HELO [10.249.170.42]) ([10.249.170.42])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2024 18:40:58 -0800
-Message-ID: <7d5f761b-2e26-4d09-a285-7840487d5d83@linux.intel.com>
-Date: Fri, 9 Feb 2024 10:40:57 +0800
+	s=arc-20240116; t=1707446492; c=relaxed/simple;
+	bh=KduIljUwZruXs5Atd9wNqwJ+XlIM/aqqIrk3ACjew9U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nMscjdt5vCI1fS7q2mk3FaNawXn42DkLA6qK4ZjnVkS7WBF+TJlFZTmBQlAjDWNvCuYEZuE28BYj0P6R61VKsOEitZjcwDDQnRJwkGsJVtn/9jJkoaA/qcyqkeB5l1SVpTG+e/mT2W3JhAEYMh1PPdXx5HaAGpFZPg5280Q6RVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=owD9rfwg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4EC9C433F1;
+	Fri,  9 Feb 2024 02:41:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707446491;
+	bh=KduIljUwZruXs5Atd9wNqwJ+XlIM/aqqIrk3ACjew9U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=owD9rfwgk1qz70BVKbn4z4t0epilxumg8tgN5yrDwER2s7KU9H3XazUdy2JWaJeDY
+	 mzQij3z1xNC453CqKVhm18mbi8UFTWmeWn1B6kErNjkGHlaOHAo6BG3Mvoc5gQ4Xve
+	 OrQcvT7rNhCvG4iH74INxb6Vv/RVBDr8Yv3H8N3kxkZbTyNvQFWSUBnSYVj7UncgIq
+	 H4bXWSTgIq/lQbStAnZKCLwpylJF+EeEU+YmB0zTp9Ti3503KackegoIooxqjvhxzd
+	 mNvd2lnTyWRSjQRHGUpVdu5RTACuzLAH3/RA9/KlvhEHCv+XKXo1VyYF98R3w4UW8e
+	 WZPGXXkKfnYUg==
+Date: Thu, 8 Feb 2024 20:41:28 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, quic_ppratap@quicinc.com, 
+	quic_jackp@quicinc.com
+Subject: Re: Re: [PATCH 2/3] arm64: dts: qcom: sa8295p: Enable tertiary
+ controller and its 4 USB ports
+Message-ID: <ofunpypiiyyhbn5dtrotaluyf3bq7rfj5gwbrku4ibw2dqh4dt@6sxsks33yw5b>
+References: <20240206114745.1388491-1-quic_kriskura@quicinc.com>
+ <20240206114745.1388491-3-quic_kriskura@quicinc.com>
+ <CAA8EJpoed-hu4hPXAcwQxmJAaNRwJ2y5q9qybWaPP8bdMnz_oA@mail.gmail.com>
+ <0470a930-d629-4467-b619-58d3e76f59a7@quicinc.com>
+ <CAA8EJppJAdHXoVs_2VqQf=_Wk_LoEcNMY2H-Xzqu8KzeaN8i0g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Baolu Lu <baolu.lu@linux.intel.com>
-Subject: Re: [PATCH rc 7/8] iommu/vt-d: Wrap the dirty tracking loop to be a
- helper
-To: Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org, jgg@nvidia.com,
- kevin.tian@intel.com
-Cc: baolu.lu@linux.intel.com, alex.williamson@redhat.com,
- robin.murphy@arm.com, eric.auger@redhat.com, nicolinc@nvidia.com,
- kvm@vger.kernel.org, chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
- iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, zhenzhong.duan@intel.com,
- joao.m.martins@oracle.com
-References: <20240208082307.15759-1-yi.l.liu@intel.com>
- <20240208082307.15759-8-yi.l.liu@intel.com>
-Content-Language: en-US
-In-Reply-To: <20240208082307.15759-8-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJppJAdHXoVs_2VqQf=_Wk_LoEcNMY2H-Xzqu8KzeaN8i0g@mail.gmail.com>
 
-On 2024/2/8 16:23, Yi Liu wrote:
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -4730,23 +4730,35 @@ static void *intel_iommu_hw_info(struct device *dev, u32 *length, u32 *type)
->   	return vtd;
->   }
->   
-> +static int
-> +device_set_dirty_tracking(struct list_head *devices, bool enable)
-> +{
-> +	struct device_domain_info *info;
-> +	int ret = 0;
-> +
-> +	list_for_each_entry(info, devices, link) {
-> +		ret = intel_pasid_setup_dirty_tracking(info->iommu, info->dev,
-> +						       IOMMU_NO_PASID, enable);
-> +		if (ret)
-> +			break;
-> +	}
-> +
-> +	return ret;
-> +}
+On Tue, Feb 06, 2024 at 03:24:45PM +0200, Dmitry Baryshkov wrote:
+> On Tue, 6 Feb 2024 at 14:28, Krishna Kurapati PSSNV
+> <quic_kriskura@quicinc.com> wrote:
+> >
+> >
+> >
+> > On 2/6/2024 5:43 PM, Dmitry Baryshkov wrote:
+> > > On Tue, 6 Feb 2024 at 14:03, Krishna Kurapati <quic_kriskura@quicinc.com> wrote:
+> > >>
+> > >> Enable tertiary controller for SA8295P (based on SC8280XP).
+> > >> Add pinctrl support for usb ports to provide VBUS to connected peripherals.
+> > >
+> > > These are not just pinctrl entries. They hide VBUS regulators. Please
+> > > implement them properly as corresponding vbus regulators.
+> > >
+> >
+> > Hi Dmitry. Apologies, can you elaborate on your comment. I thought this
+> > implementation was fine as Konrad reviewed it in v13 [1]. I removed his
+> > RB tag as I made one change of dropping "_state" in labels.
+> 
+> My comment is pretty simple: if I'm not mistaken, your DT doesn't
+> reflect your hardware design.
+> You have actual VBUS regulators driven by these GPIO pins. Is this correct?
+> If so, you should describe them properly in the device tree rather
+> than describing them just as USB host's pinctrl state.
+> 
 
-Let's make this helper specific. Something like below.
+This is correct, these gpios are wired to the enable-pin of a set of
+regulators providing the VBUS voltage. Please, Krishna, represent them
+as always-on fixed-regulators instead.
 
-/*
-  * Set dirty tracking for the device list of a domain. The caller must
-  * hold the domain->lock when calling it.
-  */
-static int device_list_set_dirty_tracking(...)
-
-Best regards,
-baolu
+Regards,
+Bjorn
 
