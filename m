@@ -1,223 +1,139 @@
-Return-Path: <linux-kernel+bounces-58922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98E1284EEA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:52:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1C6284EEAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:55:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88D081C24258
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 01:52:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F12E1F277B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 01:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AE7C17FF;
-	Fri,  9 Feb 2024 01:52:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7514115AF;
+	Fri,  9 Feb 2024 01:55:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="vc2ZM0uO"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="PewTwzEb"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C7B139B;
-	Fri,  9 Feb 2024 01:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707443557; cv=fail; b=Z1iAM0Hx/F1GzoAZIKXREU5oXRqFwb0JVopvKxDqaVCU0AN27aUa0QN7PpHlSlTbWKzw1a8JAf9RIDBH71rwr4yqEJBOpgeIfN9Eu7Rno+hQHkqM8qkEYdTcBItv1I+OPqKs8PxAt17cK9hw2bxc/Z5xlbZ5kRNxf/U8heCnhUk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707443557; c=relaxed/simple;
-	bh=rr7ch+BB5rbmLRxe2vw8svA9wa6jHBJegCOaz9teuxY=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZYcU6sj6Puu2+ULUHD7B28QSEgKZ5mShnnsOzuNUJqaQwIOWPowyi1Z5GZjJ0SSD5RQbQeTRtMpYDoM1n58jDu21XTT47Jhxo2ZlPghhBARaHGV50AhYk2MAlwrY6mhQfxEy4sNgU/IHpbZTStCouY4nwROkpGiaTct1F+4Nyi4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=vc2ZM0uO; arc=fail smtp.client-ip=40.107.236.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eSfRpxSib2XslGPPtpqUwtzvDRlIM17eRLW1pr/60HQwdcFaNADaMy+Om4KxMyN/GVsj1oLnr1g5itudAKFS5z87VaKDWJ/Gg0qWwolq5gQSuZHh7IZTjjmEy0AHbObqWytqM7rpTnH+IwMvbhuofS8eU65KNDBXGvjrpoT8MjvK6gDgKkoN0nu88Nsv+7Ta72NjU1oK9HIHfzElxca4wXQw7r8RFbJhF42ljpH4XUiENGUYi2vFkOSPVfvZUQUyk0pf/C7vhaQPNnSc6lML1/BcZPF2GDvrXg4RAz16ZiBDlPFKoS4YscmDcoyMl1sBogAPqspSIKcLTO3KwO0afw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UxuYHw6h45Qj/UCXjWNQNek+lV/wpatv3BONnJE2QpA=;
- b=lxABmzCcwSN58TldKCeeWGXMfSLIfi3Hg9RhCACxQ6Z6/+GoH7GBLhelPjpM/ARfrjweGahJGYh2DSb9gya/DkvmJNNaRQlOiV4/AZKqkqBS7HVnQ1eUP3FAcBSwyUEA8JWKTh9RsUiYcy6fb7Eky2OUWzUMOBoPPlU3HzaUD/R20u0lmRDV3p10jxfl8sPW6s2TmeOs21qLT2okkITbEYDRsWpYtyhaDv/A+bMhx8cdi18LXG2noQhDe8gb4EHc0O7M04D/vqE248TCKCVvSFd3sVbnbZrr8MB80lgzuS0PpbS1+1mqKginvRynM0rvuvzhaF4Vc+Jk0o9wzAhbsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UxuYHw6h45Qj/UCXjWNQNek+lV/wpatv3BONnJE2QpA=;
- b=vc2ZM0uOXKRf0IUgJkuA4lxG7+JxTPkIY3lSL6/POxyRSw+dl0O+4Y/sYiknXjRHU5QY6Qgc9ZFCoXFnunjVMphCRy2YxIfPUq773L/5zVYUnroUAYZ0C7EnDaHZfVZnSm/HTKZwgg+wA26i6KAYxj7JVK4QGs4toiyquRqWuJc=
-Received: from MN2PR04CA0011.namprd04.prod.outlook.com (2603:10b6:208:d4::24)
- by CY8PR12MB7266.namprd12.prod.outlook.com (2603:10b6:930:56::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.16; Fri, 9 Feb
- 2024 01:52:31 +0000
-Received: from BL6PEPF0001AB52.namprd02.prod.outlook.com
- (2603:10b6:208:d4:cafe::65) by MN2PR04CA0011.outlook.office365.com
- (2603:10b6:208:d4::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36 via Frontend
- Transport; Fri, 9 Feb 2024 01:52:31 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB52.mail.protection.outlook.com (10.167.241.4) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.14 via Frontend Transport; Fri, 9 Feb 2024 01:52:31 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Thu, 8 Feb
- 2024 19:52:30 -0600
-Date: Thu, 8 Feb 2024 19:52:05 -0600
-From: Michael Roth <michael.roth@amd.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-CC: Sean Christopherson <seanjc@google.com>, <kvm@vger.kernel.org>,
-	<linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <vkuznets@redhat.com>, <jmattson@google.com>,
-	<luto@kernel.org>, <dave.hansen@linux.intel.com>, <slp@redhat.com>,
-	<pgonda@google.com>, <peterz@infradead.org>,
-	<srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-	<dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>, <vbabka@suse.cz>,
-	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>,
-	Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v11 18/35] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_UPDATE command
-Message-ID: <20240209015205.xv66udh6hqz7a6t7@amd.com>
-References: <20231230172351.574091-1-michael.roth@amd.com>
- <20231230172351.574091-19-michael.roth@amd.com>
- <ZZ67oJwzAsSvui5U@google.com>
- <20240116041457.wver7acnwthjaflr@amd.com>
- <Zb1yv67h6gkYqqv9@google.com>
- <CABgObfa_PbxXdj9v7=2ZXfqQ_tJgdQTrO9NHKOQ691TSKQDY2A@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50659A5F
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 01:55:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707443721; cv=none; b=MT8NMxBhQDDITZ4/oMYGQYUtScX3nY/eBs9lyxi2VJaDq0U348QOEvhRukyeBIpqTpVBaNq6q3OK3EW7hmJt3X8R1OT+BJKfz5ZXwC/GjGgrM9sLqqFcwcON7lokmJvHaegWIMRQSfqhtIqKFvyPu5f+yfYJkZME7TY39PzXszg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707443721; c=relaxed/simple;
+	bh=km8RfSoIhq4OlQItyglFP30YRBjC2JQ86CUek4SLJFM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tlgHCEvWGTIfiBWoaqrzcdG3Cl+uO6bMtUDm0htIK+k7L6/NlnGj0es7sP+ouK0RMarTCp5leUHirKcqX7KkpBh+dhD7WGqxElvVV4zZb36dRqQ9FwnV8uFw3ZrEyBQXyzs1q3+b0PR5vysUZaMKoOZ+dcejscxRddh+vEz2xYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=PewTwzEb; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d91397bd22so4084885ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 17:55:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707443719; x=1708048519; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FPcxmfF1K+emjGX7/juChDlmt4cDFHRmhTmTnNlE/Ts=;
+        b=PewTwzEbHpz1Myll3pCkxUeLClRcyX0uqOX91Bmk8gPFOSn3PDOzb64LZrg2ruLpYC
+         MbPWWJNF0GS2r/r4BJXOsBJLOi7e+SC6j8L4JHOsSTyWV69oQUE4mR/OHm0DLaRhrubG
+         BY+QJorXARzhLIbdGVeHl2ogW0DLJaFZQVmK+J0pJBe+idBNh9QzYYh7AC09aRQkpgxK
+         KrVnM7OtFR/UK8+uT+IHkqRSqn4JV3qPvmiJvQfsOfakQZQ+c9dN1SDdhhMepO/dM8uk
+         DYfBcDlpNr7CPCMp0FluTD0d+gUJa6ErwYu4wHYrol7XikMtYQhMffkAJPNf1VCa2gVT
+         hbOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707443719; x=1708048519;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FPcxmfF1K+emjGX7/juChDlmt4cDFHRmhTmTnNlE/Ts=;
+        b=IJlhB5AuSD+E97bq4D4IFCveDfsvUB1v6CGst3pg36eVpiVOpwxmkvGfe1dQzUtKHl
+         t1jeHGkXeyniZHQPhZzihk9cNVihhe2k5HHQJao+8Kzg7WAnTAinpEtJ2AzkotdVoGs3
+         srFwpGSFwm/AESsVfa+xqLz660pyWYXvvztnhxk33iuHt9yUbnqzBczl2bdwEjnLPgQt
+         P037+77Z1GrDYCDuEvvE8GIYyAq5Q0mLiKuA63Gyiwh+mR0lTWWm3mIeRbmqyL1VSqmF
+         RYeUcgDtkb2fQ1mURCxxyiZWSrlcLenBNeMmaMtbhgvle2d7FNZsEw2rnCiUEwnYLWhE
+         DfSA==
+X-Forwarded-Encrypted: i=1; AJvYcCWc5/+c3sV/g5HxaIkQxiDRkoumGcQsLSmnz7uoQ+lACSbWLzJxeh3ErMECH44nDSl42VXXnP8ISdmsZ6ApfwVvqIzBYheoVBeTELqs
+X-Gm-Message-State: AOJu0YwJnFHdjnKf1n97UZihd1UySZ74SsW2uw3Lmx8pnFea4x8m1Bvr
+	NVy7vmQwLaL29gs085NQ3t6ZEhKOzKIAwwMDu76tcn0prhvV1BZhmvji4HrabyRISk/7iwQvVo8
+	v
+X-Google-Smtp-Source: AGHT+IGGQ//i5yw3BV9iZEZHf7YAhLEeHJnu7fbFVOuv6QJ6Q3i2u60pix7ahaQAHDgvGPyN99ChrQ==
+X-Received: by 2002:a17:903:40c7:b0:1d7:3067:aab5 with SMTP id t7-20020a17090340c700b001d73067aab5mr197967pld.57.1707443719552;
+        Thu, 08 Feb 2024 17:55:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU1PvnZbiSzchAIBR5d5DntiI+g6t6bp6Qdq9z31jaP4L/jxarBoPRNW5d+fcFZ0eWMk6rfe7NF1+jTu9kD9QccvyK0vfbpjx5xzZWHll0K3V17nWt87wHGkPe28UmC4RaTINg7WPROmJY3pRQCn69HstkGwG5hwU2pBTgBDhu3I3fMGyRWCfREIfZ0ZVdF
+Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
+        by smtp.gmail.com with ESMTPSA id kj11-20020a17090306cb00b001d8edfec673sm423161plb.214.2024.02.08.17.55.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Feb 2024 17:55:19 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rYG6m-003y41-2g;
+	Fri, 09 Feb 2024 12:55:16 +1100
+Date: Fri, 9 Feb 2024 12:55:16 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Miklos Szeredi <miklos@szeredi.hu>,
+	lsf-pc <lsf-pc@lists.linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [LSF/MM/BPF TOPIC] tracing the source of errors
+Message-ID: <ZcWGBLGYzNWZC+ze@dread.disaster.area>
+References: <CAJfpegtw0-88qLjy0QDLyYFZEM7PJCG3R-mBMa9s8TNSVZmJTA@mail.gmail.com>
+ <ZcP4GewZ9jPw5NbA@dread.disaster.area>
+ <ZcT5540Bv7U8qoUa@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgObfa_PbxXdj9v7=2ZXfqQ_tJgdQTrO9NHKOQ691TSKQDY2A@mail.gmail.com>
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB52:EE_|CY8PR12MB7266:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0bc132a9-4cf1-4242-be94-08dc2911c720
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Rp4KlCA6h9GSEFM4xw3CHc36Ockr2TWiLUpM6af5/38SK97bGJwtGNqAoZALe0x341TrKAOcBb1u6jCN6ioWufngeVoQBMlfUbhSIyWMT8vqllrTcu2sf21j6J8wZLJtbXfVAwEDZP+2XkXz/nz7N5f/cM1CcHdJUqKXL8f6tvM/wY2eojtp3UcFunjJYlFR1csxA1wla1uBetex583xlfRsS2194VoL5R6m32EFXPavzWRiv2hpj0UEngTlucpa2VavepWhWL3JFMNgpAtV3RpIn49VckeoPo980OsvUtHbc41fiDxZrDRauTh3hexDTT1H31DC59sDMWGd5+pW1luLJQyNQ1ZHCj7ny0IWGpT6rdivMO3hh4XeqdaXAwIboUdFExgAKrxyOoDiQRI10xqursc8jhsiZJyRnzXlBYGXm8tklfHYrmG7P4ZodKkB/JflzygJVBFgR2iNakxXZ/tgVAuqgCn+VtYbTmMJibNShzHEp8IhAKS+/WFAk882clBD+SqoWQsVvcWc41W9sQNbXGPxPpzNP+0b4vo5BGwfhzP7xvFfzUVFm4qfX5TRZRlngl8+Pw0kt56E5W+8DXWwW+oA+ez+1qEDCVZZ9HY=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(376002)(39860400002)(136003)(230922051799003)(82310400011)(64100799003)(186009)(1800799012)(451199024)(40470700004)(36840700001)(46966006)(2616005)(26005)(426003)(336012)(16526019)(83380400001)(1076003)(478600001)(53546011)(86362001)(70586007)(316002)(6916009)(8676002)(54906003)(4326008)(70206006)(8936002)(81166007)(6666004)(356005)(82740400003)(44832011)(36756003)(41300700001)(2906002)(7406005)(7416002)(5660300002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 01:52:31.0981
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0bc132a9-4cf1-4242-be94-08dc2911c720
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF0001AB52.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7266
+In-Reply-To: <ZcT5540Bv7U8qoUa@casper.infradead.org>
 
-On Wed, Feb 07, 2024 at 12:43:02AM +0100, Paolo Bonzini wrote:
-> On Fri, Feb 2, 2024 at 11:55 PM Sean Christopherson <seanjc@google.com> wrote:
-> > > > > +        struct kvm_sev_snp_launch_update {
-> > > > > +                __u64 start_gfn;        /* Guest page number to start from. */
-> > > > > +                __u64 uaddr;            /* userspace address need to be encrypted */
-> > > >
-> > > > Huh?  Why is KVM taking a userspace address?  IIUC, the address unconditionally
-> > > > gets translated into a gfn, so why not pass a gfn?
-> > > >
-> > > > And speaking of gfns, AFAICT start_gfn is never used.
-> > >
-> > > I think having both the uaddr and start_gfn parameters makes sense. I
-> > > think it's only awkward because how I'm using the memslot to translate
-> > > the uaddr to a GFN in the current implementation,
-> >
-> > Yes.
-> >
-> > > > Oof, reading more of the code, this *requires* an effective in-place copy-and-convert
-> > > > of guest memory.
-> > >
-> > > So that's how it's done here, KVM_SNP_LAUNCH_UPDATE copies the pages into
-> > > gmem, then passes those pages on to firmware for encryption. Then the
-> > > VMM is expected to mark the GFN range as private via
-> > > KVM_SET_MEMORY_ATTRIBUTES, since the VMM understands what constitutes
-> > > initial private/encrypted payload. I should document that better in
-> > > KVM_SNP_LAUNCH_UPDATE docs however.
-> >
-> > That's fine.  As above, my complaints are that the unencrypted source *must* be
-> > covered by a memslot.  That's beyond ugly.
+On Thu, Feb 08, 2024 at 03:57:27PM +0000, Matthew Wilcox wrote:
+> On Thu, Feb 08, 2024 at 08:37:29AM +1100, Dave Chinner wrote:
+> > ftrace using the function_graph tracer will emit the return values
+> > of the functions if you use it with the 'funcgraph-retval' option.
 > 
-> Yes, if there's one field that has to go it's uaddr, and then you'll
-> have a non-in-place encrypt (any copy performed by KVM it is hidden).
+> OK, but that may not be fine grained enough.  Why is mmap() returning
+> -ENOMEM?
 > 
-> > > > > +         kvaddr = pfn_to_kaddr(pfns[i]);
-> > > > > +         if (!virt_addr_valid(kvaddr)) {
-> > > >
-> > > > I really, really don't like that this assume guest_memfd is backed by struct page.
-> > >
-> > > There are similar enforcements in the SEV/SEV-ES code. There was some
-> > > initial discussion about relaxing this for SNP so we could support
-> > > things like /dev/mem-mapped guest memory, but then guest_memfd came
-> > > along and made that to be an unlikely use-case in the near-term given
-> > > that it relies on alloc_pages() currently and explicitly guards against
-> > > mmap()'ing pages in userspace.
-> > >
-> > > I think it makes to keep the current tightened restrictions in-place
-> > > until such a use-case comes along, since otherwise we are relaxing a
-> > > bunch of currently-useful sanity checks that span all throughout the code
+> unsigned long do_mmap(struct file *file, unsigned long addr,
+> ...
+>        /* Careful about overflows.. */
+>         len = PAGE_ALIGN(len);
+>         if (!len)
+>                 return -ENOMEM;
+> ...
+>         /* Too many mappings? */
+>         if (mm->map_count > sysctl_max_map_count)
+>                 return -ENOMEM;
 > 
-> What sanity is being checked for, in other words why are they useful?
-> If all you get for breaking the promise is a KVM_BUG_ON, for example,
-> that's par for the course. If instead you get an oops, then we have a
-> problem.
-> 
-> I may be a bit less draconian than Sean, but the assumptions need to
-> be documented and explained because they _are_ going to go away.
+> So it can distinguish between mmap() returning ENOMEM because
+> get_unmapped_area() returned ENOMEM and do_mmap() returning ENOMEM of
+> its own accord (right?),
 
-Maybe in this case sanity-check isn't the right word, but for instance
-the occurance Sean objected to:
+The call stack trace should tell you which function the error
+originated from, yes?
 
-  kvaddr = pfn_to_kaddr(pfns[i]);
-  if (!virt_addr_valid(kvaddr)) {
-    ...
-    ret = -EINVAL;
+> but it can't tell you which of the above two
+> cases you hit.  Or can it?
 
-where there are pfn_valid() checks underneath the covers that provide
-some assurance this is normal struct-page-backed/kernel-tracked memory
-that has a mapping in the directmap we can use here. Dropping that
-assumption means we need to create temporary mappings to access the PFN,
-which complicates the code for a potential use-case that doesn't yet
-exist. But if the maintainers are telling me this will change then I
-have no objection to making those changes :) That was just my thinking
-at the time.
+Never used it, but it might be able to - the "sym-offset" option
+will display exact offsets of the function in the trace. If you then
+add "funcgraph-tail" it will emit the function being returned from.
+If the return location is generated with an offset indicating the
+actual return, then it might tell you the exact location.
 
-And yes, if we move more of this sort of functionality closer to gmem
-then those assumptions become reality and we can keep the code more
-closely in sync will how memory is actually allocated.
+If it doesn't, then this would seem like a reasonable thing to add
+to ftrace - function return tracing with a filter to grab the return
+location when the return value is less than 0 seems exactly the sort
+of thing ftrace was intended to be used for...
 
-I'll rework this to something closer to what Sean mentioned during the
-PUCK call: a gmem interface that can be called to handle populating
-initial gmem pages, and drop remaining any assumptions about
-struct-backed/directmapped in PFNs in the code that remains afterward.
-
-I'm hoping if we do move to a unified KVM API that a similar approach
-will work in that case too. It may be a bit tricky with how TDX does
-a lot of this through KVM MMU / SecureEPT hooks, this may complicate
-locking expectations and not necessarily fit nicely into the same flow
-as SNP, but we'll see how it goes.
-
--Mike
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
