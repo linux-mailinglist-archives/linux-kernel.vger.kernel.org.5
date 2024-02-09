@@ -1,79 +1,88 @@
-Return-Path: <linux-kernel+bounces-59868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8729984FCC2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F30E84FCC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:24:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0AD71C22D1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:23:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83E1F1C23C59
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E430282866;
-	Fri,  9 Feb 2024 19:23:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B2984A37;
+	Fri,  9 Feb 2024 19:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZbcER6GM"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="B+O98h7b"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FBB07F48F;
-	Fri,  9 Feb 2024 19:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF187F48F
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 19:24:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707506628; cv=none; b=VQ1b4r8Cso1NXgOXu2hl+b8WOKbPeI6VcETqujGYZbnWH/+0LbzHBzjdUqGxE9yaRku/aQ/PD/CzD+pRJveZMpPV4gCqRb4p1SjFJUZ+s1ki+i4/xnek4/STFcpBVKKwhkpFotXwovkgXukYzTEdh+vF8vzjFHtpVgsiOb8PXKU=
+	t=1707506650; cv=none; b=XSja5rZ/LvGx9WBVvYfZznU/WMhLHX/JHags4Gqxy5VYKEIlLZfJKU8ikqHBDf6kEQbSZJiEnfBfmbhLh7GCdxw6kBZq72Pni7cjjZu+rjmlLYPcMuSnB039Vw0idqCVub0uurd11+nHI2+P2c5fjOoR889fmEY7P/yP9oU3I2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707506628; c=relaxed/simple;
-	bh=WC9tRxWrrOmUk1nUbdcPHKUUN+d2WwGkjgKMha0qJoc=;
+	s=arc-20240116; t=1707506650; c=relaxed/simple;
+	bh=XDWJ7zlGSbHyR3vWBwX7TVZzvb4Qt2UymPvTujseJRE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G53OOqAcvYiS4lr8EBxgU+yvUWLLTRtbVTvUUMKTrNin9fiTgJZAnNWPZwcgUOpQaV9niszv9hpeWHZhFMHQ1bzoXG4kxheA8p2MEagPtNHMUAfski5ABxIhcD0dtM1ncQXmEVYEIFFCNaX+j83m0xykldCYw5BswZKuabBcv/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZbcER6GM; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707506627; x=1739042627;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WC9tRxWrrOmUk1nUbdcPHKUUN+d2WwGkjgKMha0qJoc=;
-  b=ZbcER6GMB12IJCFECEDP+DhN/nfiRdaaVJQX2YYIErrhjiaoDfeJ7xhc
-   3MioLNIrUx/MwHL+qK2gut8YGs9a4DgPCadutjG3OQGypuriLh8NoVnmv
-   vrXGnJRfxt3+JRlA5BEOuggfIzqV0hEcr3d5wr3GtN8KaId58qDQNFluy
-   pCMSIyspRDPwyBTCIp1g/kIpYN1/urAD9Q+xD7mWZLHF1c3oXsmYczMGL
-   BoqXVfPfIVD/2JJh38l4Fs8EbrbGaIRdZN6e07Mr4mx3789J5cS0tACLE
-   AoEtOYXNxiuxx8EeamleGwuZR1r84lnmk0XPEwX+P7JLuTFPZ09+I6/bm
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1395672"
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="1395672"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 11:23:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="39452963"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 11:23:46 -0800
-Date: Fri, 9 Feb 2024 11:23:44 -0800
-From: Tony Luck <tony.luck@intel.com>
-To: "Moger, Babu" <babu.moger@amd.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Peter Newman <peternewman@google.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-	Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-	James Morse <james.morse@arm.com>,
-	Jamie Iles <quic_jiles@quicinc.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Drew Fustini <dfustini@baylibre.com>, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, patches@lists.linux.dev
-Subject: Re: [PATCH v15-RFC 5/8] x86/resctrl: Add "NODE" as an option for
- resource scope
-Message-ID: <ZcZ7wEUzESxUhs-y@agluck-desk3>
-References: <20240126223837.21835-1-tony.luck@intel.com>
- <20240130222034.37181-1-tony.luck@intel.com>
- <20240130222034.37181-6-tony.luck@intel.com>
- <6628954f-c7e9-4040-9f03-7b5b6a6d082d@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gZZIm+1qGBWiYrYFWZdzR0gw2MnMdkIBvBDZ9kPZ8fxryfyhmQBZBRojcC+PorjPISVN+Y1n7Iz9g50BzYyfEMDzxG3FA3amlycy6yT2EfSiSpX8i+Zh1mJiW7UZ71g27W+Bbi8tiuPX4mn4Txeg04oAoFwPcFFjAbPS7wpMdmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=B+O98h7b; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d9bd8fa49eso10694715ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 11:24:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1707506648; x=1708111448; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oa3yaecqWcDS0nQPRzTvq9Xt2QupxAe2r3Evwal7rsI=;
+        b=B+O98h7bDEJ4b2kasuJkniRtZO2+c4dYW3pNstqlVbYovIxtwIXkwp2zd2Dv62fkcT
+         iY2a79Czd/AYOr5VCcoDE0dlQCcxSmlapkR/PP+n6D/CjxZGpYaNPnN/fB9tGCHUwjeY
+         YkYwp7X4PuexYv3fK0j6H5DJhIQdr0SRjKQ+U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707506648; x=1708111448;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oa3yaecqWcDS0nQPRzTvq9Xt2QupxAe2r3Evwal7rsI=;
+        b=uyrN8o3OF4rf70v0XOAWIJQxCeuPmb64LHXXAoYj8Hm1Hs8uGbMDu2uYQp3Q+difpP
+         A3mkwCks6esRhg/jEbaYaivN88ASTxXo5cSbfWFqfO6bUD3eT+yE7KAcv+8vaZfb/Aku
+         EfLIa3TYz4NTmMDS5i+Fn5ve0ozz1y14Kbor4ICJSwQujsmkNjgFbAEXn1VAGphOcvaa
+         pCUKA7/kr2/WMSZto6G+bx23GKxTsgjhOPR8OtuVgFZlpr9Us+ZY32baIH2qcruP2hvi
+         dV3wke58FEusfVAf8A9ucHOUzMkB1tTDJy0pjdFoYNV7+0EEqmBp3H86yqIodytIxUne
+         Uiqw==
+X-Gm-Message-State: AOJu0YxHOukFO1bOtwJ9dgS7LnLML2o56OS4sy6dWvM1Ife/nL3Bx4sM
+	Ju/lUI5tpdQ679C8mFgXk3khvgZ9MQrvFi9hLKxhjsbdi53UYblqxLPLZ6fHG0k=
+X-Google-Smtp-Source: AGHT+IETt+laqxIWkGhnn4IEgN+m2eiILtgAK4qzJMSC+2t9kM3vEuKv8536iYjqTDQWwx6U1Sl+DA==
+X-Received: by 2002:a17:902:f7c5:b0:1d9:7782:316f with SMTP id h5-20020a170902f7c500b001d97782316fmr147752plw.39.1707506647689;
+        Fri, 09 Feb 2024 11:24:07 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVjuW/OVHa/n5JJWQov17ahY/P9qQoxJ4ONVBEmIOg42rg+awmO1B+ew5n75XpNz0BslTm7PBARSFvWqsC+MLFJ3h5Ac0od2+/+5szXbvM0ow8FcWUeWIxa1AtkrHidSyrunYyJoQ66j7Lh9BroOrgEi8YcCUhd1yxmGL9BtxatIcB1Ht4vr2XL0+hqzw33mAP3yAVTyZc36Xk6pzr7OrfVB0ZCCxXGRqEbzGielbIgUFuRfZCJyCb7C7c3joL+a+t+bpToY/wlGvYuT5LGXtMYmVPuWWtxPrvRjvOmZ9x71+St5FLofPTxiMoS4Rri/2uGp+Daf7obh7ZJ3IsTHXG1TrgjufbrCEq/ISYS0QrCptV02HQb+oUAb+J+VrxK2SinGNBwAdS4C+TQw7c2ylOn5lzC+ToeMoR58O1UmuamVljbwn4TcnjxOVw=
+Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id h9-20020a170902f2c900b001d921bcc621sm1827205plc.243.2024.02.09.11.24.06
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 09 Feb 2024 11:24:07 -0800 (PST)
+Date: Fri, 9 Feb 2024 11:24:04 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Cc: Tariq Toukan <ttoukan.linux@gmail.com>, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, tariqt@nvidia.com,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Gal Pressman <gal@nvidia.com>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH net-next v3] net/mlx5e: link NAPI instances to queues and
+ IRQs
+Message-ID: <20240209192404.GA1430@fastly.com>
+References: <20240208030702.27296-1-jdamato@fastly.com>
+ <8c083e6d-5fcd-4557-88dd-0f95acdbc747@gmail.com>
+ <871q9mz1a0.fsf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,24 +91,136 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6628954f-c7e9-4040-9f03-7b5b6a6d082d@amd.com>
+In-Reply-To: <871q9mz1a0.fsf@nvidia.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 
-On Fri, Feb 09, 2024 at 09:29:03AM -0600, Moger, Babu wrote:
-> Hi Tony,
+On Thu, Feb 08, 2024 at 08:43:57PM -0800, Rahul Rameshbabu wrote:
+> On Thu, 08 Feb, 2024 21:13:25 +0200 Tariq Toukan <ttoukan.linux@gmail.com> wrote:
+> > On 08/02/2024 5:07, Joe Damato wrote:
+> >> Make mlx5 compatible with the newly added netlink queue GET APIs.
+> >> Signed-off-by: Joe Damato <jdamato@fastly.com>
+> >> ---
 > 
-> This patch probably needs to be merged with with patch 7.
+> Just came back from testing this code. Let me make one cosmetic point
+> here. I noticed this patch has a line that is past 90 characters. Would
+> be nice to get it wrapped in the next version. We use 90 instead of 80
+> characters for the line wrap in the mlx5 driver because of firmware
+> command interface related code would lead to very hard to read lines if
+> wrapped at 80.
+> 
+>   https://patchwork.kernel.org/project/netdevbpf/patch/20240208030702.27296-1-jdamato@fastly.com/
 
-If it just added RESCTRL_NODE to the enum and the switch() I'd
-agree (as patch 7 is where RESCTRL_NODE first used). But this
-patch also adds the sanity checks on scope where it has to be
-a cache level.
+OK, I had wrapped them in the next version I was going to send to 80, but
+I'll adjust that to 90.
 
-Patch 7 is already on the big side (119 lines added to core.c).
+> >> v2 -> v3:
+> >>    - Fix commit message subject
+> >>    - call netif_queue_set_napi in mlx5e_ptp_activate_channel and
+> >>      mlx5e_ptp_deactivate_channel to enable/disable NETDEV_QUEUE_TYPE_RX for
+> >>      the PTP channel.
+> >>    - Modify mlx5e_activate_txqsq and mlx5e_deactivate_txqsq to set
+> >>      NETDEV_QUEUE_TYPE_TX which should take care of all TX queues including
+> >>      QoS/HTB and PTP.
+> >>    - Rearrange mlx5e_activate_channel and mlx5e_deactivate_channel for
+> >>      better ordering when setting and unsetting NETDEV_QUEUE_TYPE_RX NAPI
+> >>      structs
+> >> v1 -> v2:
+> >>    - Move netlink NULL code to mlx5e_deactivate_channel
+> >>    - Move netif_napi_set_irq to mlx5e_open_channel and avoid storing the
+> >>      irq, after netif_napi_add which itself sets the IRQ to -1
+> >>   drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c  | 3 +++
+> >>   drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 7 +++++++
+> >>   2 files changed, 10 insertions(+)
+> >> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+> >> b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+> >> index 078f56a3cbb2..fbbc287d924d 100644
+> >> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+> >> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c
+> >> @@ -927,6 +927,8 @@ void mlx5e_ptp_activate_channel(struct mlx5e_ptp *c)
+> >>   	int tc;
+> >>     	napi_enable(&c->napi);
+> >> +	netif_queue_set_napi(c->netdev, c->rq.ix, NETDEV_QUEUE_TYPE_RX,
+> >> +			     &c->napi);
+> 
+> This should only be set if MLX5E_PTP_STATE_RX is set. Otherwise, the rq
+> is not initialized. The following callgraph should help illustrate this.
+> 
+>    mlx5e_ptp_open
+>     |_ mlx5e_ptp_open_queues
+>        |_ mlx5e_ptp_open_rq
+>           |_ mlx5e_open_rq
 
-If you really think this series needs to cut back the
-number of patches, I could move the sanity check pieces
-from here to patch 3 (where the enum is introduced) and
-just the RESCTRL_NODE bits to patch 7.
+I had made the change that Tariq had suggested in the previous message of
+using sq->netdev and sq->cq.napi, but I can also tie that into
+MLX5E_PTP_STATE_RX.
 
--Tony
+I'll add this change as well, test locally again and resend shortly.
+
+> >>     	if (test_bit(MLX5E_PTP_STATE_TX, c->state)) {
+> >>   		for (tc = 0; tc < c->num_tc; tc++)
+> >> @@ -951,6 +953,7 @@ void mlx5e_ptp_deactivate_channel(struct mlx5e_ptp *c)
+> >>   			mlx5e_deactivate_txqsq(&c->ptpsq[tc].txqsq);
+> >>   	}
+> >>   +	netif_queue_set_napi(c->netdev, c->rq.ix, NETDEV_QUEUE_TYPE_RX, NULL);
+> 
+> I believe it would be best to tie this to whether MLX5E_PTP_STATE_RX is
+> set or not.
+> 
+> >>   	napi_disable(&c->napi);
+> >>   }
+> >>   diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> >> b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> >> index c8e8f512803e..2f1792854dd5 100644
+> >> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> >> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> >> @@ -1806,6 +1806,7 @@ void mlx5e_activate_txqsq(struct mlx5e_txqsq *sq)
+> >>   	set_bit(MLX5E_SQ_STATE_ENABLED, &sq->state);
+> >>   	netdev_tx_reset_queue(sq->txq);
+> >>   	netif_tx_start_queue(sq->txq);
+> >> +	netif_queue_set_napi(sq->channel->netdev, sq->txq_ix, NETDEV_QUEUE_TYPE_TX, &sq->channel->napi);
+> >
+> > Might be called with channel==NULL.
+> > For example for PTP.
+> >
+> > Prefer sq->netdev and sq->cq.napi.
+> >
+> >>   }
+> >>     void mlx5e_tx_disable_queue(struct netdev_queue *txq)
+> >> @@ -1819,6 +1820,7 @@ void mlx5e_deactivate_txqsq(struct mlx5e_txqsq *sq)
+> >>   {
+> >>   	struct mlx5_wq_cyc *wq = &sq->wq;
+> >>   +	netif_queue_set_napi(sq->channel->netdev, sq->txq_ix,
+> >> NETDEV_QUEUE_TYPE_TX, NULL);
+> >
+> > Same here.
+> >
+> >>   	clear_bit(MLX5E_SQ_STATE_ENABLED, &sq->state);
+> >>   	synchronize_net(); /* Sync with NAPI to prevent netif_tx_wake_queue. */
+> >>   @@ -2560,6 +2562,7 @@ static int mlx5e_open_channel(struct mlx5e_priv *priv,
+> >> int ix,
+> >>   	c->lag_port = mlx5e_enumerate_lag_port(priv->mdev, ix);
+> >>     	netif_napi_add(netdev, &c->napi, mlx5e_napi_poll);
+> >> +	netif_napi_set_irq(&c->napi, irq);
+> >>     	err = mlx5e_open_queues(c, params, cparam);
+> >>   	if (unlikely(err))
+> >> @@ -2602,12 +2605,16 @@ static void mlx5e_activate_channel(struct mlx5e_channel *c)
+> >>   		mlx5e_activate_xsk(c);
+> >>   	else
+> >>   		mlx5e_activate_rq(&c->rq);
+> >> +
+> >> +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, &c->napi);
+> >>   }
+> >>     static void mlx5e_deactivate_channel(struct mlx5e_channel *c)
+> >>   {
+> >>   	int tc;
+> >>   +	netif_queue_set_napi(c->netdev, c->ix, NETDEV_QUEUE_TYPE_RX, NULL);
+> >> +
+> >>   	if (test_bit(MLX5E_CHANNEL_STATE_XSK, c->state))
+> >>   		mlx5e_deactivate_xsk(c);
+> >>   	else
+> 
+> --
+> Thanks,
+> 
+> Rahul Rameshbabu
 
