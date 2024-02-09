@@ -1,77 +1,75 @@
-Return-Path: <linux-kernel+bounces-60008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D146E84FE7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:17:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EF7E84FE7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:17:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40A2F1F22313
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:17:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3286D1C2252B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:17:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 444014F214;
-	Fri,  9 Feb 2024 21:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F80B4642A;
+	Fri,  9 Feb 2024 21:10:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QikG+afM"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zaLCgF10"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB11C44384
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 21:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 764724D134
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 21:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707513022; cv=none; b=jKSp1EKw8wI2mxGb23qOoV0zuHaRTQHJI7a7gRZNrXLLJ/cOmJPJSxcRSsMW1vyR7a0AQNUO3OK/sWVGDYQXIR+bCDln8PrFv66140a1ztTRIBhSgjPyJrCAzKDbADJ0YCKBqZVEhPaunHk5Yhz9o5VU9HG7xBMR2OwhvmSIibk=
+	t=1707513023; cv=none; b=LOsi3WkkERL1ZHbGAB38FGa45eCf+Yzg96JqexlyuB7nsKC/UGmLkKjMbo+jPgXy+I1sop4sxgiY/NXIAf2j+34UQiqvNE2RpbD6JJNdrUuj+u/Bc872LDkQRvXMLFo7CRTyb117v6P7yqA6y1AaIgevq8gm44BdOtTvMribM+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707513022; c=relaxed/simple;
-	bh=MLv2EGPhgvWgejpl7fbRFyjPDkfZHFECDfabJtkG8Ts=;
+	s=arc-20240116; t=1707513023; c=relaxed/simple;
+	bh=j6RqB7qhdLQ/4O4liND2yJpb9uwEoUR3RICjb3kPkBU=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=WptnesCsfuWYYtIVN9/b1f6J2TEbWAs51b2SjDkei9c48bsth1DWd+83rel3ctKTAbrJDx5bzw53qn2ESRN3E8WXeeDQwsYormyrbet6y2EXuFPZzRDqZEyg+MpzGjzJQXiYEX4IhZzGjqSg2r7K2C5vwFO/iCunja4XCqxh+v0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QikG+afM; arc=none smtp.client-ip=209.85.208.175
+	 In-Reply-To:To:Cc; b=ndDfOCWqcsqYZUTuMBZr3hJKGTc/UGj6kHyZMdBPXTWiJckm16hVmjIPaDgNeOfJML5OyBFvECmNc3YcGxRQwiwZbYm8FNJSiaPpxkHnkMpVOaAJC7fFiybcZPKpySBts//3YL9XPTCNc9oVRh7SaBrf9eHtLifXk2vsHb6mt4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zaLCgF10; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d0d7985dfdso19087191fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 13:10:19 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3864258438so248632966b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 13:10:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707513018; x=1708117818; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707513020; x=1708117820; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=AlA4ayOmstDeitRRZ2W2c5UllMpUVoGUwWdDkp9v1as=;
-        b=QikG+afMnsM1kIM/Nzem4BffRaN2JoYMSspKt/5ZFkD4LBq8mEIg5ArRpYZCjyLS2m
-         K4Nyr0q6AczPm6A3PYrol7Y9+el4d3dCsMdRYuEwyJI4mfmfbfie2dV/u0BxLGDd3Ev8
-         VhVcET9DcD4HCBR/d8122dlICEbLTRofa1vWifljz63CP7jo6xxnvzrA53rl8MdZHFmO
-         IoErZn0/F9b8/XffsEeTyNoxh3iKlzKSfsky2FqqFMt49ZVDIUwnEp670e18JVDA/NGL
-         iYzJm1ypLGQIfkVxWMmxynf0fQfUi16b/SOEgR74TdhS3vdpG3CiZtL8FHkTuYhhE/Sp
-         n+NA==
+        bh=js2pEuzAV2nN8L7KReaasWsLTFytDhFcrYh7TQGAyMk=;
+        b=zaLCgF10SoUcJpVrjbPlsxr2BftQgi9Kl0FsRFzKFb9Qt0xgAeTi6XZ0A1Vm/FWrku
+         f6b2RLKzeiPIppiySgWamvlNt2r+YTWIgMNpsO0RlbmIswK3e78hGwE/L64rdkYxb5wH
+         3LtnAvKzymyln1b0N183fqjsdaLfdOPI9RRrdW3sRIgxX9hF2zCng0TGREqz0HuqQD2O
+         F0zfkLvf4Cr/rTu6G0BPgWwK2TiHwgoC9gkCT8h77eXm1BZ4TKOFfp91wNy5IiX49tEz
+         WXyofReHQA+/7LX9YyCzZtzCfAoCUduwZtHM2xYNeSq2JIxuCNg2dvBjjFvqnp3izf90
+         kV0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707513018; x=1708117818;
+        d=1e100.net; s=20230601; t=1707513020; x=1708117820;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AlA4ayOmstDeitRRZ2W2c5UllMpUVoGUwWdDkp9v1as=;
-        b=aI7aoXGKy34E0T0otFCnKoc1UPn7vYDECoiaLo1Xj/L6uegbkP/vI6nC2LmqFDrhmz
-         hef8bn9WPKlkb9FXTZiPgOvpp1pUT/Q/gajKQkMrnufSBy3EkDgDG0K7XZANsYqEtXut
-         wQoZKJJVKzdJ2WJp6JqhIbHDve8+InrQOhBsSzeS5D6PtXCpVYTAcrNPgThdh0qwAJgG
-         1Y0OjJFK8h3Y3BUUeORMjMb6FGLoUE76OnC56/LjGfa49xPKhvpmhkB8b7WilURmyxLK
-         iddBuSEP+v6JbposPRmQlR9hCXGnGmtE6Ou23LajaeCLO9BZzSD2geMGAoCs5XPR5jX5
-         Z4fQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXcbx6gg0brMTR594JTz8nlfPNrCMwIABUCDWv6SudpEPBKJo6SPpyxXJkBhd4AEZq9u9TBKmEI9hmRaraOzzXR8GviErKp8ie8LcY5
-X-Gm-Message-State: AOJu0YxZc10uq3bcGH8yL/pA2K2eJbxxdQsb7/Tm3BerQpdleukbHwyg
-	wRvVGF5TTeybHWREcXtzvGGzOkGf5zoviXy7S3wXimhSm4b7pqGM/MuBxwX+W5shDeF2a2fUnn5
-	P
-X-Google-Smtp-Source: AGHT+IFzzZN5KL4cYG0hicyLZubpRFb4oezMjYE5cyxLTyWE7sgQ6y2pJ7SpOmZIS/sM1SfYlpEBjw==
-X-Received: by 2002:ac2:41ca:0:b0:511:1ed7:61b8 with SMTP id d10-20020ac241ca000000b005111ed761b8mr138919lfi.30.1707513017891;
-        Fri, 09 Feb 2024 13:10:17 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV2vSXOWP0zPTdPzgr2OB7mO2zO/BBUb6MycDmMBo7iyCA2zGdMN08BEZkTi3oXHkq73Gyr6mJnMewJbhfCN0g3QgXHZE83t99O5gMpRiQ+ubauJZ069Kj4IH0j8fil17TwydvqiE7EyqiHHrOb/UA6FKnEiZJNKUHfSjovojWbyHOaHpYLii5mg5HTYW7nYf+rwGwyLwvqeDf1RQg7qpkrwja72n3pUtqIarC6ZjSKd4ffjkRFoiuj56ZKnjT/NP/f/8Z7Cz/WRodOnc1SJRsNEluaneAid6a1yoUhjvPYmgC+F+JBPRVdYbOgsHiruBK3bZQAhNDQYK785jNLXe5rGkMh/BRIzhzLhpTZGDUElUAvyrdhRYyVi3ScwZqKb7xeDiYH8VQyF09qpIx7yzzyWVUUyyS2pC1mZeifVQSKzHq/GzWUaMD5FLcw6vXU4ZCR86UO3Q19vs4Ql+yePMEtaF0N1jyReWzrh5HwS6usTMkP9XL6XtgESVKeiroCgPHkCQ==
+        bh=js2pEuzAV2nN8L7KReaasWsLTFytDhFcrYh7TQGAyMk=;
+        b=B08vzMGHDmAIKNtPVifSzbGmaWZq/xO3OXQOln149GfgVotQ1gQicjBnLFF0jd3cxp
+         Io6h0jWZIanlXVYRRydOF3gy+fNH5RDtgnTd8V8X7EOSyCoNNdOeNycYgrtJgZlu/afW
+         9woWsedCZbDQ2CbjHfGbaLp+gX6CHuZUgNYCy8Danmdc+ufTtFdgfPWFBNfNhhDyUK61
+         Ygo92IZjm3yrYEST0BXDRpgiZBQEJHYpTjbvXBxKuOtpBysSzIkPumXQ3jLII+ccrT/e
+         dF/YImhixSbJ1fLUM6QtrA/zVJK1YuEWhc/M6gl15oBED99+xJHBR0X17++dFNEz6dZ9
+         QxOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUXvjtFXDv4W+sA8sDk99qPCMjgSQtM8iLMS5OBbWxu7lPuh0FTzh1vnmPlhclPV2aYhccbzpVmKbnY++RrcBgZSqZTmJxsYquCmxCS
+X-Gm-Message-State: AOJu0YxGBdm9Ev2no2yp04sAml8EsRzkBsJ08ZgpADmH7fTmnod363fp
+	gQIdhvJcMUO2RNMtgkaZ/mo5dwpjSwJto6o8Csqtf/DwvbMBVB5LLoiX5lOpNII=
+X-Google-Smtp-Source: AGHT+IEbaYD180/1YWnZfYBOu4acFr+aUCsPsCkXwJANGBmdc0kktppCzoGX0W+52rZk5nA8+pjDHQ==
+X-Received: by 2002:a17:907:9872:b0:a3b:dde8:6a57 with SMTP id ko18-20020a170907987200b00a3bdde86a57mr258546ejc.23.1707513019779;
+        Fri, 09 Feb 2024 13:10:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVPsj3/JL+m49YumWioOb6hwJ4PZyfKAxV5EBoHXLB5kuDoUHAT21d6q3TbKuDtpnSbNT5eti0yu8inmkuW8ZKWsGOB8MZnb0uZL4O6bOK42VPeszj8Nx5eLHUJApnynyPhSFx3aJG4J68M1X5JYcn+dXtmof8GcRQi+ChJXdlun1vgU4aYYnKuDlKD37dv9i4Y2Vftyt4A0iUX7A1jqGiSim/FhnEUO+udGIqK9Mjd/AXQ4jmpHvN+w56tUf1E2atIi75D/S2ck/2wk2B+tBTcLzYHANjLba98Gc/LhF6MMcHl25dPW0YZ8JEfgeYKXAm/mErnuwJE6zWDOY9XzWQEett5QI5qI2Wbizos8SeA3BWakMc1rdWozZKoUkK01Ue+y2zZkQzx4hhyMqBKBdxuCrqZvwyzw+aejGPstn0ukY4CN5GI/O/jSPo1FN0MjF60xxpaQzpKzn4sFOrFRxPRs5LbTapiszolVbeQPov7cy6+vRDV2+HPS/lnpOXCNuXLFg==
 Received: from [10.167.154.1] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
-        by smtp.gmail.com with ESMTPSA id vo5-20020a170907a80500b00a3be3b27d0bsm1056517ejc.49.2024.02.09.13.10.16
+        by smtp.gmail.com with ESMTPSA id vo5-20020a170907a80500b00a3be3b27d0bsm1056517ejc.49.2024.02.09.13.10.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 13:10:17 -0800 (PST)
+        Fri, 09 Feb 2024 13:10:19 -0800 (PST)
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Fri, 09 Feb 2024 22:10:01 +0100
-Subject: [PATCH v2 17/20] media: venus: pm_helpers: Commonize getting
- clocks and GenPDs
+Date: Fri, 09 Feb 2024 22:10:02 +0100
+Subject: [PATCH v2 18/20] media: venus: pm_helpers: Commonize vdec_get()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230911-topic-mars-v2-17-3dac84b88c4b@linaro.org>
+Message-Id: <20230911-topic-mars-v2-18-3dac84b88c4b@linaro.org>
 References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
 In-Reply-To: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
 To: Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, 
@@ -96,105 +94,132 @@ Cc: Marijn Suijten <marijn.suijten@somainline.org>,
  linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
  linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707512986; l=3311;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707512986; l=4126;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=MLv2EGPhgvWgejpl7fbRFyjPDkfZHFECDfabJtkG8Ts=;
- b=nU5akJ8S6NPlZWhfphKzyqepTvPetn6PGSgT5P4fuPWJfhCa9tlFcNZQek5SuRx1S+ZmHp2PL
- 7G4hT8ZVxMODhmSzX/S3H5V0Bz6ZahTDetAMN4Kw5+Ry9JuFZHzA73m
+ bh=j6RqB7qhdLQ/4O4liND2yJpb9uwEoUR3RICjb3kPkBU=;
+ b=9Y5pQbsbW/NkpOZZSBVKI4DPo8gIzWCYvTPJUpWCb0ma63WrBhZU1JhFW+k4Zm4FDhDj7S0kp
+ Y0A4IGdL18fBYS2FcvBw1mtqr/tI+ssfAfheQykKMGtFBr2FBMYgYYh
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-As has been the story with the past few commits, much of the resource
-acquisition logic is totally identical between different generations
-and there's no good reason to invent a new function for each one.
-
-Commonize core_get() and rename it to venus_get_resources() to be more
-meaningful.
+This function can be very easily commonized between the supported gens.
+Do so!
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- drivers/media/platform/qcom/venus/core.c       | 8 +++-----
- drivers/media/platform/qcom/venus/pm_helpers.c | 5 +----
- drivers/media/platform/qcom/venus/pm_helpers.h | 3 +--
- 3 files changed, 5 insertions(+), 11 deletions(-)
+ drivers/media/platform/qcom/venus/pm_helpers.c | 22 ++--------------------
+ drivers/media/platform/qcom/venus/pm_helpers.h |  2 +-
+ drivers/media/platform/qcom/venus/vdec.c       |  9 +++++++--
+ 3 files changed, 10 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index 680674dd0d68..873affe17537 100644
---- a/drivers/media/platform/qcom/venus/core.c
-+++ b/drivers/media/platform/qcom/venus/core.c
-@@ -334,11 +334,9 @@ static int venus_probe(struct platform_device *pdev)
- 			return PTR_ERR(core->resets[i]);
- 	}
- 
--	if (core->pm_ops->core_get) {
--		ret = core->pm_ops->core_get(core);
--		if (ret)
--			return ret;
--	}
-+	ret = venus_get_resources(core);
-+	if (ret)
-+		return ret;
- 
- 	ret = dma_set_mask_and_coherent(dev, res->dma_mask);
- 	if (ret)
 diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-index a292c788ffba..1cbcffbc29af 100644
+index 1cbcffbc29af..cf0794acf5d0 100644
 --- a/drivers/media/platform/qcom/venus/pm_helpers.c
 +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-@@ -326,7 +326,6 @@ static int load_scale_v1(struct venus_inst *inst)
+@@ -125,7 +125,7 @@ static int core_clks_set_rate(struct venus_core *core, unsigned long freq)
+ 	return 0;
  }
  
- static const struct venus_pm_ops pm_ops_v1 = {
--	.core_get = venus_clks_get,
- 	.load_scale = load_scale_v1,
- };
+-static int vcodec_clks_get(struct venus_core *core, struct device *dev, u8 id)
++int vcodec_clks_get(struct venus_core *core, struct device *dev, u8 id)
+ {
+ 	char buf[13] = { 0 }; /* vcodecX_core\0 */
  
-@@ -395,7 +394,6 @@ static int venc_power_v3(struct device *dev, int on)
+@@ -158,6 +158,7 @@ static int vcodec_clks_get(struct venus_core *core, struct device *dev, u8 id)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(vcodec_clks_get);
+ 
+ static int vcodec_clks_enable(struct venus_core *core, u8 id)
+ {
+@@ -345,13 +346,6 @@ vcodec_control_v3(struct venus_core *core, u32 session_type, bool enable)
+ 		writel(1, ctrl);
+ }
+ 
+-static int vdec_get_v3(struct device *dev)
+-{
+-	struct venus_core *core = dev_get_drvdata(dev);
+-
+-	return vcodec_clks_get(core, dev, 0);
+-}
+-
+ static int vdec_power_v3(struct device *dev, int on)
+ {
+ 	struct venus_core *core = dev_get_drvdata(dev);
+@@ -394,7 +388,6 @@ static int venc_power_v3(struct device *dev, int on)
  }
  
  static const struct venus_pm_ops pm_ops_v3 = {
--	.core_get = venus_clks_get,
- 	.vdec_get = vdec_get_v3,
+-	.vdec_get = vdec_get_v3,
  	.vdec_power = vdec_power_v3,
  	.venc_get = venc_get_v3,
-@@ -920,7 +918,7 @@ static int core_resets_reset(struct venus_core *core)
+ 	.venc_power = venc_power_v3,
+@@ -759,16 +752,6 @@ static int coreid_power_v4(struct venus_inst *inst, int on)
  	return ret;
  }
  
--static int core_get_v4(struct venus_core *core)
-+int venus_get_resources(struct venus_core *core)
+-static int vdec_get_v4(struct device *dev)
+-{
+-	struct venus_core *core = dev_get_drvdata(dev);
+-
+-	if (!legacy_binding)
+-		return 0;
+-
+-	return vcodec_clks_get(core, dev, 0);
+-}
+-
+ static void vdec_put_v4(struct device *dev)
  {
- 	struct device *dev = core->dev;
- 	const struct venus_resources *res = core->res;
-@@ -1109,7 +1107,6 @@ static int load_scale_v4(struct venus_inst *inst)
+ 	struct venus_core *core = dev_get_drvdata(dev);
+@@ -1107,7 +1090,6 @@ static int load_scale_v4(struct venus_inst *inst)
  }
  
  static const struct venus_pm_ops pm_ops_v4 = {
--	.core_get = core_get_v4,
- 	.vdec_get = vdec_get_v4,
+-	.vdec_get = vdec_get_v4,
  	.vdec_put = vdec_put_v4,
  	.vdec_power = vdec_power_v4,
+ 	.venc_get = venc_get_v4,
 diff --git a/drivers/media/platform/qcom/venus/pm_helpers.h b/drivers/media/platform/qcom/venus/pm_helpers.h
-index 3014b39aa6e3..7a55a55029f3 100644
+index 7a55a55029f3..4afc57dac865 100644
 --- a/drivers/media/platform/qcom/venus/pm_helpers.h
 +++ b/drivers/media/platform/qcom/venus/pm_helpers.h
-@@ -10,8 +10,6 @@ struct venus_core;
+@@ -10,7 +10,6 @@ struct venus_core;
  #define POWER_OFF	0
  
  struct venus_pm_ops {
--	int (*core_get)(struct venus_core *core);
--
- 	int (*vdec_get)(struct device *dev);
+-	int (*vdec_get)(struct device *dev);
  	void (*vdec_put)(struct device *dev);
  	int (*vdec_power)(struct device *dev, int on);
-@@ -28,6 +26,7 @@ struct venus_pm_ops {
- const struct venus_pm_ops *venus_pm_get(enum hfi_version version);
+ 
+@@ -27,6 +26,7 @@ const struct venus_pm_ops *venus_pm_get(enum hfi_version version);
  int venus_core_power(struct venus_core *core, int on);
  void vcodec_domains_put(struct venus_core *core);
-+int venus_get_resources(struct venus_core *core);
+ int venus_get_resources(struct venus_core *core);
++int vcodec_clks_get(struct venus_core *core, struct device *dev, u8 id);
  
  static inline int venus_pm_load_scale(struct venus_inst *inst)
  {
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index 29130a9441e7..d127311100cd 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -1788,8 +1788,13 @@ static int vdec_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, core);
+ 
+-	if (core->pm_ops->vdec_get) {
+-		ret = core->pm_ops->vdec_get(dev);
++	/*
++	 * If the vcodec core clock is missing by now, it either doesn't exist
++	 * (8916) or deprecated bindings with pre-assigned core functions and
++	 * resources under the decoder node are in use.
++	 */
++	if (!core->vcodec_core_clks[0]) {
++		ret = vcodec_clks_get(core, dev, 0);
+ 		if (ret)
+ 			return ret;
+ 	}
 
 -- 
 2.43.0
