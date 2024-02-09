@@ -1,54 +1,39 @@
-Return-Path: <linux-kernel+bounces-59133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CF3B84F1BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:53:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9FA84F1C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:54:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0EDDB29369
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:53:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1B2C1C23F6B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:54:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB4C66B5A;
-	Fri,  9 Feb 2024 08:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="og1eab/P"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C54664AF;
-	Fri,  9 Feb 2024 08:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2574664B7;
+	Fri,  9 Feb 2024 08:54:44 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A503B804
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 08:54:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707468802; cv=none; b=p9VgpCmI+emJ7SLHXs9MTTEHbW+WvTYvTSu4Vm+ngRStIVU5N/j1IOYztHsx6xC42+GR1fqHin9BDQK3THSj33N90eBofc+Y3IJBVkANPOx/JTOX6+dOCSqmcxC+Q8PmOJq7iyL0vdQ8RokiWzltPireKdi7ybXfVhOSEAvhqmU=
+	t=1707468884; cv=none; b=Ik0gIaYhDSgY03SR5Mw5M5UAOL/PcoNUwc7P/zVUReVHJB1Dz3WrjqC3kaeDnaN6ZxM5jIvAn+wm8hAZ/sXMhfR60vjvsWFP6HdxkanFj4jnEGZxv6V1MR39RszwR/mSRtJHzctR+35rpk865WJgPqzYkF/Ovo7P/fIjdx1b6Hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707468802; c=relaxed/simple;
-	bh=30icvp5V3/sN88X5yZ5Qu/GuxcwktWzuh4T4oylBLLM=;
+	s=arc-20240116; t=1707468884; c=relaxed/simple;
+	bh=RfbvJW3bVSCTDbolic6/qdFK1ddPZ5mzAShGpX98YPE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SnhIzKEHAHG1GFAIFPPmzWvJvw1m+dDM5gLQgw9Y/+aWMjn98ojZcSoOZKeSD90zKBdn6vdzb0Ur4P1TL047iuqEydt4Iwu4FocSfEp/pc/7Ax8jQc2hHY0pA0USemcsGuY7JjwhCGfnj2fJl1tct3xNt/CsRDa1cWgC1U6c/VI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=og1eab/P; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707468799;
-	bh=30icvp5V3/sN88X5yZ5Qu/GuxcwktWzuh4T4oylBLLM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=og1eab/P3zYG4XIff5Tzr59qJhbZSaeeoG4aGvVSriIqow5keEhjlYxUdPUGkr1Bb
-	 dinNWGwZ367ad6BycXdiHtXo+Ba2DwIazn8S9beJLq5yEmxb0maXqc1TBzmOtRORot
-	 i3YIjpXLZe74qPqvXooQdhr51SuWNb03mYd6VQodEtpD05ZiAk1qPi82WOieRhOhwz
-	 mXCbgiYVO5KNP6yjtM0xws4+cJrQktkCJxtUalRP1gGNWR/qdERPI0HOdLlTtOyNHq
-	 wmxwHxseaT0NfCc78o2mwk0L3ijI9aVMPVrURWeHZ3v52YnRn+R+Hc0uOMgFdTEZsc
-	 piYoRWqubbWqg==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2E9533782069;
-	Fri,  9 Feb 2024 08:53:18 +0000 (UTC)
-Message-ID: <d4a4a468-4a81-413e-9de6-060c2ba9e0b6@collabora.com>
-Date: Fri, 9 Feb 2024 09:53:18 +0100
+	 In-Reply-To:Content-Type; b=ofnSrf4lDCAnpqRoeepDQT+6iggO/1JvM/Scdtjid5eAHYjVkXHbZmnQj2JzRKjRThtP7sRXpuSHlvKTOnvDvCOD8oMiAOeqrdTycfviaRNV3vyF6aSeVWLBk3kDi9chcugJ4zIzvIeMexvAhCfDTt2HpcS9mIlozDIjXdwNS6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D4E6DA7;
+	Fri,  9 Feb 2024 00:55:22 -0800 (PST)
+Received: from [10.57.65.115] (unknown [10.57.65.115])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6688A3F762;
+	Fri,  9 Feb 2024 00:54:36 -0800 (PST)
+Message-ID: <3ba54c94-8e44-4dd6-9a25-2cf81b07336f@arm.com>
+Date: Fri, 9 Feb 2024 08:54:34 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,101 +41,103 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 1/3] dt-bindings: arm: mediatek: convert hifsys to the
- json-schema clock
-Content-Language: en-US
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Russell King <linux@armlinux.org.uk>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>, devicetree@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20240208215926.10085-1-zajec5@gmail.com>
- <20240208215926.10085-2-zajec5@gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240208215926.10085-2-zajec5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v5 00/25] Transparent Contiguous PTEs for User Mappings
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+ James Morse <james.morse@arm.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, David Hildenbrand <david@redhat.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
+ <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+ Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
+ Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, linux-arm-kernel@lists.infradead.org,
+ x86@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240202080756.1453939-1-ryan.roberts@arm.com>
+ <ZcUQqfg39zCS2BAv@FVFF77S0Q05N.cambridge.arm.com>
+Content-Language: en-GB
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZcUQqfg39zCS2BAv@FVFF77S0Q05N.cambridge.arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Il 08/02/24 22:59, Rafał Miłecki ha scritto:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On 08/02/2024 17:34, Mark Rutland wrote:
+> On Fri, Feb 02, 2024 at 08:07:31AM +0000, Ryan Roberts wrote:
+>> Hi All,
 > 
-> This helps validating DTS files. Introduced changes:
-> 1. Documented "reg" property
-> 2. Documented "#reset-cells" property
-> 3. Dropped "syscon" as it was incorrectly used
-> 4. Adjusted "compatible" and "reg" in example
+> Hi Ryan,
 > 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
->   .../bindings/arm/mediatek/mediatek,hifsys.txt | 26 ----------
->   .../clock/mediatek,mt2701-hifsys.yaml         | 51 +++++++++++++++++++
->   2 files changed, 51 insertions(+), 26 deletions(-)
->   delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt
->   create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml
+> I assume this is the same as your 'features/granule_perf/contpte-lkml_v' branch
+> on https://gitlab.arm.com/linux-arm/linux-rr/
+
+Yep - great detective work! features/granule_perf/contpte-lkml_v5 corresponds
+exactly to what I posted with all the dependencies in place.
+
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt b/Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt
-> deleted file mode 100644
-> index 323905af82c3..000000000000
-> --- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,hifsys.txt
-> +++ /dev/null
-> @@ -1,26 +0,0 @@
-> -Mediatek hifsys controller
-> -============================
-> -
-> -The Mediatek hifsys controller provides various clocks and reset
-> -outputs to the system.
-> -
-> -Required Properties:
-> -
-> -- compatible: Should be:
-> -	- "mediatek,mt2701-hifsys", "syscon"
-> -	- "mediatek,mt7622-hifsys", "syscon"
-> -	- "mediatek,mt7623-hifsys", "mediatek,mt2701-hifsys", "syscon"
-> -- #clock-cells: Must be 1
-> -
-> -The hifsys controller uses the common clk binding from
-> -Documentation/devicetree/bindings/clock/clock-bindings.txt
-> -The available clocks are defined in dt-bindings/clock/mt*-clk.h.
-> -
-> -Example:
-> -
-> -hifsys: clock-controller@1a000000 {
-> -	compatible = "mediatek,mt2701-hifsys", "syscon";
-> -	reg = <0 0x1a000000 0 0x1000>;
-> -	#clock-cells = <1>;
-> -	#reset-cells = <1>;
-> -};
-> diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml
-> new file mode 100644
-> index 000000000000..eb429337cdf4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/mediatek,mt2701-hifsys.yaml
-> @@ -0,0 +1,51 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/mediatek,mt2701-hifsys.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek hifsys controller
+> I've taken a quick look, and I have a few initial/superficial comments before
+> digging into the detail on the important changes.
 
-Please, "MediaTek HIFSYS controller"
+Thanks for doing this!
 
-> +
-> +description:
-> +  The Mediatek hifsys controller provides various clocks and reset outputs to
-> +  the system.
+> 
+>> Patch Layout
+>> ============
+>>
+>> In this version, I've split the patches to better show each optimization:
+>>
+>>   - 1-2:    mm prep: misc code and docs cleanups
+> 
+> I'm not confident enough to comment on patch 2, but these look reasonable to
+> me.
 
-Same here, "The MediaTek HIFSYS controller..."
+Thanks. David has acked patch 2 already so I think we are good there.
 
-Anyway, apart from that
+> 
+>>   - 3-8:    mm,arm,arm64,powerpc,x86 prep: Replace pte_next_pfn() with more
+>>             general pte_advance_pfn()
+> 
+> These look fine to me.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Thanks!
 
-Cheers!
+> 
+>>   - 9-18:   arm64 prep: Refactor ptep helpers into new layer
+> 
+> The result of patches 9-17 looks good to me, but the intermediate stages where
+> some functions are converted is a bit odd, and it's a bit painful for review
+> since you need to skip ahead a few patches to see the end result to tell that
+> the conversions are consistent and complete.
+> 
+> IMO it'd be easier for review if that were three patches:
+> 
+> 1) Convert READ_ONCE() -> ptep_get()
+> 2) Convert set_pte_at() -> set_ptes()
+> 3) All the "New layer" renames and addition of the trivial wrappers
+
+Yep that makes sense. I'll start prepping that today. I'll hold off reposting
+until I have your comments on 19-25. I'm also hoping that David will repost the
+zap series today so that it can get into mm-unstable by mid-next week. Then I'll
+repost on top of that, hopefully by end of next week, folding in all your
+comments. This should give planty of time to soak in linux-next.
+
+Thanks,
+Ryan
+
+> 
+> Patch 18 looks fine to me.
+> 
+>>   - 19:     functional contpte implementation
+>>   - 20-25:  various optimizations on top of the contpte implementation
+> 
+> I'll try to dig into these over the next few days.
+> 
+> Mark.
+
 
