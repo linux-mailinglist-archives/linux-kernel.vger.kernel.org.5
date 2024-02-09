@@ -1,79 +1,128 @@
-Return-Path: <linux-kernel+bounces-59109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54D3684F152
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:24:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C8C684F158
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:28:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10BE8284D95
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:24:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B05B61F24BA7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759E165BC4;
-	Fri,  9 Feb 2024 08:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE98165BC6;
+	Fri,  9 Feb 2024 08:28:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="2chkslmh"
-Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E78657C1
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 08:24:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707467066; cv=none; b=Acq7+esbVUY91aOkbfOCFxiUJfQ8KL20IurAiy2NDxw0wuZm4TRiq40L91KFPkdhh0nb3Km60rRJzTO7zS2/SRZujcbuCKuT43MtpRYFYF6vzjL45mmAHYWJbVhxkHuGBb3m/gJLagBQAQlXDBVwkRBT8U8OV3tx0l51Q/CK75g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707467066; c=relaxed/simple;
-	bh=xtdmOYF0bU9RGJxwGiKy4e1B8mhXINzdurimXYBIN+Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VR7Ue1tA0xmHrBfNttD8ucJwSkTLjw7uvGJj6PtBsXeEW5oC4gfIWd2SMNoimY0z4m4hvun4QYp3uD1lJLdr6O//3rNXIpSlc6SNwuMqQ3ikeWerOcca0resUe970//oX6qFIW8iiy5eAYD0WKMx6HdLmHwT9D2PzIzDdpA4nUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b=2chkslmh; arc=none smtp.client-ip=85.214.250.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
-Received: from 8bytes.org (p4ffe0c3c.dip0.t-ipconnect.de [79.254.12.60])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="smibZTC1"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id 1BADF1C1888;
-	Fri,  9 Feb 2024 09:24:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-	s=default; t=1707467058;
-	bh=xtdmOYF0bU9RGJxwGiKy4e1B8mhXINzdurimXYBIN+Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=2chkslmhKuM9mMT7WCQzUWaQ/3n6LF6jIGM8K05goCYfEYJhdPIJGtmQzD1nwLXHk
-	 drHbIjJwshbBP+PwV2/YJ5n6vUb1pCaCcXrCbNCIgyV1f2E98YVXm6yCxn4B+2gxXp
-	 GCn5ff3V+CPEr3B0ujFksLArGL6JTCmcF01uNBrkeg9g6mPlvvgJL2JwowjdzcKOh4
-	 PQLKtdySkMWAwRzD1LwqlCTeAgJGNwUCWB8YKct373kJlLKQFndin7zSPCBeKJWPe3
-	 7DzPvDaXrOO5mEYrqe97dduwM8eKOkWhGFpnUOC7O/bp0tRXnLWLHpXkpoNhRdhMow
-	 3mDl9PDR74maw==
-Date: Fri, 9 Feb 2024 09:24:16 +0100
-From: Joerg Roedel <joro@8bytes.org>
-To: Mario Limonciello <mario.limonciello@amd.com>
-Cc: suravee.suthikulpanit@amd.com, Vasant.Hegde@amd.com, will@kernel.org,
-	robin.murphy@arm.com, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/amd: Mark interrupt as managed
-Message-ID: <ZcXhMNZDOHstOP5k@8bytes.org>
-References: <20240122233400.1802-1-mario.limonciello@amd.com>
- <de66890b-a42c-4d8b-8079-fcfff0007aeb@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA7B8493;
+	Fri,  9 Feb 2024 08:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707467303; cv=none; b=sqb2BCr8ZMabhFX11PIwu5uFSNsxZnqDeYSDlMZCxVOw4W4dsns5UkVAv2Xm449YmnokP0ds4uNyN8OgGRm4S8qQd55q24DFQ568FG7qOnbyQ0yXi+MxK76k6/zv3ym2ZNdsdn+OW1QE3bIrX2pBAfujpjyDGdbcixIKp18NWaY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707467303; c=relaxed/simple;
+	bh=+QH+553GL+SWjO0XkO+qLFoo/G4FjOEM6rMs8ZmIinI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=VRUBazyUcL53v/94qDo8+CyUgYCGDKbX+WJPRRjBdeK0Rr74gum3ginOdli4iBx3wgn73RhT1W0JCI34iu6I2OlXt0iO+Grm3cFdhuyLjlRwcSQ4dGemfBJtfYP0bb39Kenr3cKnclstEBzj4Gd9CFrSV8A0vJBZkgjhD4YcQh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=smibZTC1; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4198SBBa119876;
+	Fri, 9 Feb 2024 02:28:11 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707467291;
+	bh=i+ZqXAvXX2eRIpqy23tFyQ2Wt1ZQp9tSOqqUg7PIwAw=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=smibZTC1NbIzgz3XEZ/CUyQZgyXIZOwznhwpFmAgt7xGmhrFtLk5Bam0rGqg/9P57
+	 d3WamESEtTuXIRhjP8XsRYPR0G5bnQY7HF0bUHGEdMwHtGnpHq8UsF1J81XqwTelX4
+	 HUyTbp2op6fcjcJNJwP1vI1LGjFx1GRairiVmq54=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4198SAWg023122
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 9 Feb 2024 02:28:10 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 9
+ Feb 2024 02:28:10 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 9 Feb 2024 02:28:10 -0600
+Received: from [10.249.128.244] ([10.249.128.244])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4198Rkh6056265;
+	Fri, 9 Feb 2024 02:27:49 -0600
+Message-ID: <f3548adc-4256-4b05-b072-631133bda4da@ti.com>
+Date: Fri, 9 Feb 2024 13:57:43 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <de66890b-a42c-4d8b-8079-fcfff0007aeb@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] arm64: dts: ti: am65x: Fix dtbs_install for
+ Rocktech OLDI overlay
+To: Roger Quadros <rogerq@kernel.org>, Nishanth Menon <nm@ti.com>,
+        "Vignesh
+ Raghavendra" <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>, Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: Andrew Davis <afd@ti.com>,
+        Tomi Valkeinen
+	<tomi.valkeinen@ideasonboard.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>
+References: <20240208-for-v6-9-am65-overlays-2-0-v2-0-70bae3e91597@kernel.org>
+ <20240208-for-v6-9-am65-overlays-2-0-v2-1-70bae3e91597@kernel.org>
+Content-Language: en-US
+From: Aradhya Bhatia <a-bhatia1@ti.com>
+In-Reply-To: <20240208-for-v6-9-am65-overlays-2-0-v2-1-70bae3e91597@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Mario,
 
-On Mon, Feb 05, 2024 at 10:31:47AM -0600, Mario Limonciello wrote:
-> Friendly ping on reviewing this patch.
 
-Thanks for the patch. Since this is a fix the patch should contain a
-Fixes: tag. Also a review from Suravee and/or Vasant would be great.
+On 08-Feb-24 19:21, Roger Quadros wrote:
+> Add the overlay dtbo file to a Makefile target so it can be
+> picked by the dtbs_install command.
+> 
+> Fixes: b8690ed3d1d1 ("arm64: dts: ti: am65x: Add Rocktech OLDI panel DT overlay")
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
 
-Thanks,
+Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
 
-	Joerg
+Regards
+Aradhya
 
+> ---
+> Changelog:
+> 
+> v2: no change
+> v1: https://lore.kernel.org/all/20240126114530.40913-2-rogerq@kernel.org/
+> ---
+>  arch/arm64/boot/dts/ti/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+> index 4a570dffb638..bfcc86ff8e24 100644
+> --- a/arch/arm64/boot/dts/ti/Makefile
+> +++ b/arch/arm64/boot/dts/ti/Makefile
+> @@ -57,6 +57,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am654-gp-evm.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am654-evm.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am654-idk.dtb
+> +dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board-rocktech-rk101-panel.dtbo
+>  
+>  # Boards with J7200 SoC
+>  k3-j7200-evm-dtbs := k3-j7200-common-proc-board.dtb k3-j7200-evm-quad-port-eth-exp.dtbo
+> 
 
