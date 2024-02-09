@@ -1,76 +1,80 @@
-Return-Path: <linux-kernel+bounces-59588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F4E384F960
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:10:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D7FE84F962
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:10:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B48B288DB3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:10:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6A97B28188
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA59B76046;
-	Fri,  9 Feb 2024 16:10:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E9A762C9;
+	Fri,  9 Feb 2024 16:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y9LAbv+7"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OKrm65Bv"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D23D476047
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 16:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B28762EB
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 16:10:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707495011; cv=none; b=aTT7NOuxpbVvn6zXwGR7t9pQEY/bU4R81zGPlIQRJp0wej3MFhG+HlI5KMN6jDzlNsEyNtEDQLzqhhFE/eNqK2Cm6AXm+jdtTV4D0zYdFvzI+1g8r8hK03VkMXG7zKmJbkcyo0Szd3ZaICfr1j2MZ6qbIXggKi8CqLepBFXCEnY=
+	t=1707495028; cv=none; b=UAQ2xWx49AoisQv+f3Kfp7tW8jAskz6yqPgS8uL9lYt6zWM+K7fvubMzJXOLBonTqnmZnOsg3tUN8/Z1iTub3p33kheMdP8Y1l/AqBn28T0fvzpMWiperG48PuiY+ICKRP0Y72ww4WPIKFrc9hs6/DCbb28QGQke39ScmGW+Si4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707495011; c=relaxed/simple;
-	bh=Ts7AFrJt3NWDHiWoNm5U/p7wsQD+7jfd8rRxodZLxDM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qdm9QKN+tuSn7SaCxzF3CA5dp2kQoTb6tPytfj8hG3nXfVGFsUl9cmU6APMsLGJptbE8YNFI/Q+j02qJgWLbGTRkj4GNMhayvAwzoIJ0jhd+I8vtHISs8CPZAX4XvWru67v4wUoGkeXB3Oen0ia7wZ0pbS8wrluxjRRq+aZT6c0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=y9LAbv+7; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a34c5ca2537so144213066b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 08:10:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707495008; x=1708099808; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZJOFI+BzNTmf5tqcKxpx9jKda2QN1EeN5ylZk90PmiA=;
-        b=y9LAbv+7/AXcUUxT8UgXKKg+NP9pHh1dKCWN5Dkzbq3XjDMBOlKwJWkzt0QgsI+OiG
-         S82RiPAis9eJ9xgbWmlLdayEzl+IpCpjScayUOopV3VmjJ5DbErkILQByj5rptlJ96Be
-         daIKAYAQaNK6FjahnQqw7/pnLfe84NVNHdmzIDRHVxzQb9NwlOG92GIxQs0v/FknxLeu
-         fOg20pVXiS7hNUo6Z94EWcqHe7TCve9TgZU8xAaOBmRwYw4PD8bh8k0e0VyWa+M5aWvD
-         uATE7Z6b27MJRdZjNGIaT/sG5gNhqGVPpIvTpJ4MIveoifjkDl9BjYy8nz2a38lEFrVF
-         C9Wg==
+	s=arc-20240116; t=1707495028; c=relaxed/simple;
+	bh=faT4XIojwpXGfXx4hR/oBGsw+axJKde5TA9F28fGKto=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=mMJsXdLRaIq89mDSX9Jb7Il/Qf9UMs2hETcolDz3hN5yc1XTWRfqgrgmh1ghlEcFFh5SOoN+p3sKrziMgSgnbwt08zBiZcE8loYUzphSjPZP6ek62i8toFnKsuHs1+2yuXJ3iMHXjbIJ47iINU+zjc5mIcJCROIivl7QdS+csfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OKrm65Bv; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707495025;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sJH3SGrElNeqB1nIzBoZ2CKo3lO1D/YJdtcJ4jClzNk=;
+	b=OKrm65BvniIFywD6yyFwYEC31Z1j1EV7ygHGzMGrvM/dniQ3VY2n5Q/cK4XkLQU/9GiAjb
+	Y0wb6SmA7sf8sqvi0jFrpNOVCHoa2RQ8oseQxHwjx5nXkzkOaLLRmjnyDDdMH6juwPtVy6
+	JR/RxS4qRZQJ1uiD+Q2XXjbAiU9Hckc=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-578-SFmvp50sM0mDjp8SEM-LZA-1; Fri, 09 Feb 2024 11:10:24 -0500
+X-MC-Unique: SFmvp50sM0mDjp8SEM-LZA-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-781720619f9so138539585a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 08:10:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707495008; x=1708099808;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZJOFI+BzNTmf5tqcKxpx9jKda2QN1EeN5ylZk90PmiA=;
-        b=XpxhSH193p7UFVMjSujW1E5ov4Ldcs0HZ4HqjawXf94KsQXgJRzDP3EvynLoDsCpS4
-         iN20Z1YlNPgBu0O3Gzob9Tfqq7aJKOzlInYHIBI6SXtrZdUVagjJnB259o7rsWzmxRJV
-         v4XLkoMVxfE+j81ec2HBlAJvqhZgljMlmm/e2no22Sf9YT+hvkuK9wSc7hIOZ9Da9jPC
-         G6KWnmgnaoNOxQBJ11agTB2kXxP/WyzvDzY8Ubfb/F5Eoth4SnTjT0Mhnz8IrkuKSPTK
-         CSRcBwzXgtgo9oqn8/34O9AXYwrW7BKnud4Q9SbRdyv2QYv053Hu/ObgMCIhrSbjn7I3
-         FDtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWrW3wACYu4v5n3213MPc1MovAPEQZ4JV3sYUi4CTHzuOgZ/Fc1rkmRJ3gzK+A/vMgLt644a3UULbIXjpaaNNENQZ/SSTPYHYhCPSq7
-X-Gm-Message-State: AOJu0YyDsLOXipMQ8bMkJ7KvOSOavLaWLb5nlkIPtlUvKcWlbUEDiHN1
-	TpoIRSAzmLtcHbLmciEjI8LzGbFYgF5U7LR/qzuiUKuT56c8PJycB0JtIOgLUPg=
-X-Google-Smtp-Source: AGHT+IHOq9XQWmOVYveYDOoOnlAyT0U8zBOfOqX+6QRXoU20fZD/1k2Gv03R0mgIzQENU/3hzLVkJQ==
-X-Received: by 2002:a17:906:6953:b0:a38:a476:f91d with SMTP id c19-20020a170906695300b00a38a476f91dmr1285099ejs.68.1707495008050;
-        Fri, 09 Feb 2024 08:10:08 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWn4b0ynRMJYDsfmMdHh35qptYsQ135nDpNYt6ht3t4pOMvUlND4QX5AeKpMn9+rYyoD39QYTf3LbQlOho0C+3xpTaWAhyBNZBtNChSoM2hIuL7pdfqoAN8myNfGu/wC8MwZ+BdkGGrlaodUN6tpoTb/NlCHrYRffh9GVVjMxap+4x/bASvRy8G7a0AIiPV5A9jwD+yd1xEx2TWWWZKCTeEEkYk+E0B/R5jHxqZ2EIO9Jhp9XGDgwSXNGi2QQhCAmce/hWsOUfML9GyOBO0z1zQyfsN+fLB75MnS4Jp4bsxo8OxMfCPRHFEuWI9b8c0Lmxq3xnLw2aqKI/w6ApIpEejv04PtsGDIeQg8ou6oCUqud/kcEfo1HBIpqRemo66YwBhgYLZCZi5h6JIvW0cXCAy7Ug6q3GTT+MC0C1jRr6olOuVqrO0Qc0zDrfHeYg5076D8m/GpFz93pPSDM9JD4lHEVUbYWsvgdi4PFSUDQLLukI8edl4zPUhNXOTTIo2OvoMeCLzelEl/Jgr0/U578S+S5BSqz9C19VAXeftGYahJ27+E4uWOAPxWA9n/ikc7SoE7TRWpIML5NM5xrmAOwoTbSVf+M+DrUvxfuMzBBvFY8OMAvj6XbRzZ9IoNQPPnNl7hHr2P1o+dFnShGCrx/B2CfyJhuEat+IOIx11yRiG2p/U9rZysbFjAS5xUScdl7r8+GUqFlgzYCU0DhS0BDSxxjeWaCC9nAI9FD2BgkUfpYM9dBwS9dma1tNZlK1UPL2f2bRccmJqBb0D6EzTgUaNDd9MvrFAYlnx/IhzqS3pOVao9N4O+BTQjcKn7HCVxjVc+JwXgrJduDynPCWGxvqNOj8bpf23v/+R0dO1k+McWbbofY0NcrgYI5YSlQQRY5kAnq1dgPGDyw+rdfY9ew2EfT1mxXX7Mhg9oqmdc0nYhxn/M9GyntWgyV2e4MUCSOxhnH
- TJAg1mmSmk16+TmhHw5TqMN1ol+MwmSZ3mkdowbFeTd1OGrxiOPGPMN0I=
-Received: from [192.168.1.20] ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id vh2-20020a170907d38200b00a3bef32a510sm651049ejc.2.2024.02.09.08.10.05
+        d=1e100.net; s=20230601; t=1707495024; x=1708099824;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sJH3SGrElNeqB1nIzBoZ2CKo3lO1D/YJdtcJ4jClzNk=;
+        b=R6Yeo62aDTRKQxv49pQZQgwI7qH/c0eo1YJ3uVJewTG3UKNYXJLQyYroC+pkdkJGMX
+         qXynm/GYFfDpIgYc4ByZqpZuIcU0mzC6I/iAIo3imd0HP8X18Mt/p5DuOLjTMUwJVNlj
+         /r/lAJjzhyluZQMF1Qo9mDOXT6RnhQR4pUBKCOGeaC0uK2j3nm1wXpI+GsCfVgT0rh1v
+         6tzkXHTHsRBctZgAcEyGKUkzgPyKFd9iLxDdLXDEFojUhVZ2dUFQzBlWVWoSXQUeCynV
+         PWc3buZBueXEC8mdnXQVDnCBaAob3uoXBXY8FeP1hfBTQiDTbgLSXytEnEQSsYLlMtiA
+         uHtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXrbiyzWUFSCnwLusVPb8avqGxnfkFEubglO/9/DN5Cl00rCDbNJpzAbGASzwN/3owSgROtAutMr4+p6AJOTi7xeo8JI7sbloZ5bvHR
+X-Gm-Message-State: AOJu0Yxy0eNyU5OOnrEuR6LGxqF+BcbmopT5yz8r8/31ckJcja0nLvJj
+	By6UPDiEx0yTy2Fq5slwuuVR2AxUY7oQRjzU7+iXwJxPLAJntQcR57tz/xisBjxVBYGITbrbsJU
+	CYl0E3yN4OhMxGDnIhbmT9zXIcCuwGkbeC6o7lVEY/RPSUOR2R9nq3OXQqczNAw==
+X-Received: by 2002:a05:620a:2009:b0:783:81f3:3a8d with SMTP id c9-20020a05620a200900b0078381f33a8dmr2332317qka.44.1707495023646;
+        Fri, 09 Feb 2024 08:10:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEWwAgZwRN7lwiIr25TvDq4332vfRco7nZG1JYlwPJ8mIsVmi9NA9QYBQlkQzBe/tiBkZsGHg==
+X-Received: by 2002:a05:620a:2009:b0:783:81f3:3a8d with SMTP id c9-20020a05620a200900b0078381f33a8dmr2332302qka.44.1707495023375;
+        Fri, 09 Feb 2024 08:10:23 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWL3IdXDZMoF5P7sfyAcWsXbBniJo7JL6JFqd/rTs4HsobK0FRZ6mYB/EdWs+kzoXVnse1ZOWoYhFpXf52QC3uTCyuWduv/a9oyb/igknk+U+1PnI4uwIzmna0oh1oCMdMPuTUWEveHH2GRH+wmBsU5P7QGo8Zl3XpVI8NUJkJSNnaY6G7mqsrg+GmdkQ5SQMHhPOPoj3P4oCmAKg5xpGe93ddVeipBMlyMWncRdRhsciACAhlldPQ=
+Received: from [192.168.1.165] (cpc76484-cwma10-2-0-cust967.7-3.cable.virginm.net. [82.31.203.200])
+        by smtp.gmail.com with ESMTPSA id i24-20020a05620a0a1800b007856bff53d3sm820386qka.54.2024.02.09.08.10.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Feb 2024 08:10:07 -0800 (PST)
-Message-ID: <45aa6b3e-5e76-457e-b091-084adf324385@linaro.org>
-Date: Fri, 9 Feb 2024 17:10:04 +0100
+        Fri, 09 Feb 2024 08:10:22 -0800 (PST)
+Message-ID: <affa6134-de19-4b73-9925-f42d3c7c9b8b@redhat.com>
+Date: Fri, 9 Feb 2024 16:10:19 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,143 +82,138 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] dt-bindings: display: bridge: add sam9x75-lvds
- compatible
-To: Dharma.B@microchip.com, krzk@kernel.org, andrzej.hajda@intel.com,
- neil.armstrong@linaro.org, rfoss@kernel.org,
- Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
- jernej.skrabec@gmail.com, maarten.lankhorst@linux.intel.com,
- mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- Manikandan.M@microchip.com, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux@armlinux.org.uk,
- Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
- claudiu.beznea@tuxon.dev, geert+renesas@glider.be, arnd@arndb.de,
- palmer@rivosinc.com, akpm@linux-foundation.org, gerg@linux-m68k.org,
- rdunlap@infradead.org, vbabka@suse.cz, linux-arm-kernel@lists.infradead.org
-Cc: robh@kernel.org
-References: <20240207102802.200220-1-dharma.b@microchip.com>
- <20240207102802.200220-2-dharma.b@microchip.com>
- <2219df60-7235-4c37-b79c-25e7225cb7a9@kernel.org>
- <b314e446-e79c-4fa0-9b86-c58fa96133bc@microchip.com>
- <c82a3843-1b58-46ea-994a-8350544aa30d@microchip.com>
- <e2e1490b-0e07-43ae-ab67-2efd6f21987e@linaro.org>
+Subject: Re: [syzbot] [gfs2?] general protection fault in gfs2_rindex_update
+To: syzbot <syzbot+74edb1a3ea8f1c65a086@syzkaller.appspotmail.com>,
+ agruenba@redhat.com, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000c091060610dbd67b@google.com>
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <e2e1490b-0e07-43ae-ab67-2efd6f21987e@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+From: Andrew Price <anprice@redhat.com>
+In-Reply-To: <000000000000c091060610dbd67b@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 09/02/2024 17:05, Krzysztof Kozlowski wrote:
-> On 09/02/2024 16:02, Dharma.B@microchip.com wrote:
->> On 09/02/24 7:50 pm, Dharma B wrote:
->>> On 08/02/24 2:31 pm, Krzysztof Kozlowski wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
->>>> the content is safe
->>>>
->>>> On 07/02/2024 11:27, Dharma Balasubiramani wrote:
->>>>> Add the 'sam9x75-lvds' compatible binding, which describes the Low 
->>>>> Voltage
->>>>> Differential Signaling (LVDS) Controller found on some Microchip's 
->>>>> sam9x7
->>>>> series System-on-Chip (SoC) devices. This binding will be used to define
->>>>> the properties and configuration for the LVDS Controller in DT.
->>>>>
->>>>> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
->>>>
->>>> Not tested...
->>>>
->>>> Please use scripts/get_maintainers.pl to get a list of necessary people
->>>> and lists to CC. It might happen, that command when run on an older
->>>> kernel, gives you outdated entries. Therefore please be sure you base
->>>> your patches on recent Linux kernel.
->>>>
->>>> Tools like b4 or scripts/get_maintainer.pl provide you proper list of
->>>> people, so fix your workflow. Tools might also fail if you work on some
->>>> ancient tree (don't, instead use mainline), work on fork of kernel
->>>> (don't, instead use mainline) or you ignore some maintainers (really
->>>> don't). Just use b4 and everything should be fine, although remember
->>>> about `b4 prep --auto-to-cc` if you added new patches to the patchset.
->>>>
->>>> You missed at least devicetree list (maybe more), so this won't be
->>>> tested by automated tooling. Performing review on untested code might be
->>>> a waste of time.
->>>
->>> Apologies for the oversight, somehow it got missed.
->>
->> The get_maintainer.pl seems to be inconsistent with the results.
->>
->> linux$ ./scripts/get_maintainer.pl *patch | wc -l
->> ./scripts/get_maintainer.pl: file '0000-cover-letter.patch' doesn't 
->> appear to be a patch.  Add -f to options?
->> 31
->> linux$ ./scripts/get_maintainer.pl *patch | wc -l
->> ./scripts/get_maintainer.pl: file '0000-cover-letter.patch' doesn't 
->> appear to be a patch.  Add -f to options?
->> 29
->> linux$ ./scripts/get_maintainer.pl *patch | wc -l
->> ./scripts/get_maintainer.pl: file '0000-cover-letter.patch' doesn't 
->> appear to be a patch.  Add -f to options?
->> 30
->> linux$ ./scripts/get_maintainer.pl *patch | wc -l
->> ./scripts/get_maintainer.pl: file '0000-cover-letter.patch' doesn't 
->> appear to be a patch.  Add -f to options?
->> 30
+On 08/02/2024 09:57, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
 > 
-> Why would you add 30 addresses, including many unrelated people, to the
-> cc-list? You must add only maintainers (so also reviewers) and mailing
-> lists.
+> HEAD commit:    547ab8fc4cb0 Merge tag 'loongarch-fixes-6.8-2' of git://gi..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=150285d4180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=89a5d896b14c4565
+> dashboard link: https://syzkaller.appspot.com/bug?extid=74edb1a3ea8f1c65a086
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11395147e80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=126ff68fe80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/a8d318be4c39/disk-547ab8fc.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/8178462cbfb5/vmlinux-547ab8fc.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/62939e7c5fbb/bzImage-547ab8fc.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/93eefe621564/mount_0.gz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+74edb1a3ea8f1c65a086@syzkaller.appspotmail.com
+> 
+> loop0: detected capacity change from 0 to 32768
+> gfs2: fsid=syz:syz: Trying to join cluster "lock_nolock", "syz:syz"
+> gfs2: fsid=syz:syz: Now mounting FS (format 1801)...
+> gfs2: fsid=syz:syz.0: journal 0 mapped with 20 extents in 0ms
+> general protection fault, probably for non-canonical address 0xdffffc0000000097: 0000 [#1] PREEMPT SMP KASAN PTI
+> KASAN: null-ptr-deref in range [0x00000000000004b8-0x00000000000004bf]
+> CPU: 0 PID: 5058 Comm: syz-executor337 Not tainted 6.8.0-rc3-syzkaller-00041-g547ab8fc4cb0 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+> RIP: 0010:gfs2_rindex_update+0xbc/0x3d0 fs/gfs2/rgrp.c:1037
+> Code: e8 f9 65 1d fe 4c 8d 74 24 60 48 8b 03 48 89 44 24 38 48 8d 98 b8 04 00 00 48 89 d8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c 08 00 74 08 48 89 df e8 c6 65 1d fe 48 8b 03 48 89 44 24 20
+> RSP: 0018:ffffc900040671a0 EFLAGS: 00010202
+> RAX: 0000000000000097 RBX: 00000000000004b8 RCX: dffffc0000000000
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88807f558000
+> RBP: ffffc900040672b0 R08: ffffffff83cb50d7 R09: 1ffff1100f02e2f8
+> R10: dffffc0000000000 R11: ffffed100f02e2f9 R12: 1ffff9200080ce3c
+> R13: ffff88807f558000 R14: ffffc90004067200 R15: 0000000000000001
+> FS:  0000555555a0f380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000056427a53bb08 CR3: 0000000022d54000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   <TASK>
+>   punch_hole+0xe7b/0x3a30 fs/gfs2/bmap.c:1809
+>   gfs2_truncatei_resume+0x3c/0x70 fs/gfs2/bmap.c:2159
 
-Really, why do you Cc MM folks on this patch? Just read what
-get_maintainer.pl tells you, e.g. when it says that someone made one
-commit to maintainers file, shall this person be Cc-ed? No, it should be
-obvious...
+The fuzzer is setting GFS2_DIF_TRUNC_IN_PROG on the 
+per_node/statfs_change0 'system' inode (it's setting all of the di_flags 
+bits but that is the relevant one) which sends us down this resume 
+truncation path in inode_go_held(), before the rindex has been 
+initialised in init_inodes().
 
-Best regards,
-Krzysztof
+Is there a better solution than returning an error on the 
+(sdp->sd_rindex == NULL) case in gfs2_rindex_update()?
+
+Andy
+
+>   gfs2_glock_holder_ready fs/gfs2/glock.c:1336 [inline]
+>   gfs2_glock_wait+0x1df/0x2b0 fs/gfs2/glock.c:1356
+>   gfs2_glock_nq_init fs/gfs2/glock.h:238 [inline]
+>   init_statfs fs/gfs2/ops_fstype.c:694 [inline]
+>   init_journal+0x1680/0x23f0 fs/gfs2/ops_fstype.c:816
+>   init_inodes+0xdc/0x320 fs/gfs2/ops_fstype.c:884
+>   gfs2_fill_super+0x1edb/0x26c0 fs/gfs2/ops_fstype.c:1263
+>   get_tree_bdev+0x3f7/0x570 fs/super.c:1619
+>   gfs2_get_tree+0x54/0x220 fs/gfs2/ops_fstype.c:1341
+>   vfs_get_tree+0x90/0x2a0 fs/super.c:1784
+>   do_new_mount+0x2be/0xb40 fs/namespace.c:3352
+>   do_mount fs/namespace.c:3692 [inline]
+>   __do_sys_mount fs/namespace.c:3898 [inline]
+>   __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
+>   do_syscall_64+0xf9/0x240
+>   entry_SYSCALL_64_after_hwframe+0x6f/0x77
+> RIP: 0033:0x7fe98b1e18ba
+> Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffe3b0f9eb8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+> RAX: ffffffffffffffda RBX: 00007ffe3b0f9ec0 RCX: 00007fe98b1e18ba
+> RDX: 0000000020000040 RSI: 0000000020000100 RDI: 00007ffe3b0f9ec0
+> RBP: 0000000000000004 R08: 00007ffe3b0f9f00 R09: 0000000000012783
+> R10: 0000000000008c1b R11: 0000000000000282 R12: 00007ffe3b0f9f00
+> R13: 0000000000000003 R14: 0000000001000000 R15: 0000000000000001
+>   </TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:gfs2_rindex_update+0xbc/0x3d0 fs/gfs2/rgrp.c:1037
+> Code: e8 f9 65 1d fe 4c 8d 74 24 60 48 8b 03 48 89 44 24 38 48 8d 98 b8 04 00 00 48 89 d8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c 08 00 74 08 48 89 df e8 c6 65 1d fe 48 8b 03 48 89 44 24 20
+> RSP: 0018:ffffc900040671a0 EFLAGS: 00010202
+> RAX: 0000000000000097 RBX: 00000000000004b8 RCX: dffffc0000000000
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88807f558000
+> RBP: ffffc900040672b0 R08: ffffffff83cb50d7 R09: 1ffff1100f02e2f8
+> R10: dffffc0000000000 R11: ffffed100f02e2f9 R12: 1ffff9200080ce3c
+> R13: ffff88807f558000 R14: ffffc90004067200 R15: 0000000000000001
+> FS:  0000555555a0f380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000056427a53bb08 CR3: 0000000022d54000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> ----------------
+> Code disassembly (best guess):
+>     0:	e8 f9 65 1d fe       	call   0xfe1d65fe
+>     5:	4c 8d 74 24 60       	lea    0x60(%rsp),%r14
+>     a:	48 8b 03             	mov    (%rbx),%rax
+>     d:	48 89 44 24 38       	mov    %rax,0x38(%rsp)
+>    12:	48 8d 98 b8 04 00 00 	lea    0x4b8(%rax),%rbx
+>    19:	48 89 d8             	mov    %rbx,%rax
+>    1c:	48 c1 e8 03          	shr    $0x3,%rax
+>    20:	48 b9 00 00 00 00 00 	movabs $0xdffffc0000000000,%rcx
+>    27:	fc ff df
+> * 2a:	80 3c 08 00          	cmpb   $0x0,(%rax,%rcx,1) <-- trapping instruction
+>    2e:	74 08                	je     0x38
+>    30:	48 89 df             	mov    %rbx,%rdi
+>    33:	e8 c6 65 1d fe       	call   0xfe1d65fe
+>    38:	48 8b 03             	mov    (%rbx),%rax
+>    3b:	48 89 44 24 20       	mov    %rax,0x20(%rsp)
+> 
+> 
+> ---
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
 
 
