@@ -1,199 +1,167 @@
-Return-Path: <linux-kernel+bounces-59259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75A7E84F407
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:00:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 060E784F414
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:02:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD54CB23E9C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:00:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5B8728A20F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:02:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28A7D288B6;
-	Fri,  9 Feb 2024 11:00:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0923128DC9;
+	Fri,  9 Feb 2024 11:02:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="eD5Qn1Je"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="V/9zbXJ9";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="W/CSpT8S";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="V/9zbXJ9";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="W/CSpT8S"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB3C25601
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 11:00:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5D5320332;
+	Fri,  9 Feb 2024 11:02:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707476418; cv=none; b=PUR8Quh0oLdqAUbTJMwxJwboZY3UlEmg74xrJzJwOBzrZHb1hWLzZSBOf3SmZUM8cZ62xMYvVEPFGrpfo+LAK3F5alMGunDsIB+aWDSfEzionHbsdlkpH3M6TSUtJLA4zU3Aj+GhZ3iT0xT0E787sTjGp5fEFgKV+exRKMDoDrI=
+	t=1707476555; cv=none; b=ESL/pqXXCrVA3NHAPjL9YpIbFlVAAV/zKZebRL0IIRndYpDsLU8HZwK8mt7v3L8K61RSRHmn5aq0X9q7eCaPOj9y4B/6LrxXjzHk4dn0QA1Iqu6rypKB7BV4mcYtBPql3p0FBvB2ZroKXW/Bgp4iPtVve7b4L2djVJHrRBGgpo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707476418; c=relaxed/simple;
-	bh=pwBkLYkQSQRMvnuL/v4/cC2vr8Anp13gRP0ObxcX4Jg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A2KmZe+ynFTUJd/Kr4XgRVRzaQhHBefUWnXLxoPCxp4enX9LJqqomhVNmpQlfHPsj9KsjVOOPs7/E25LeC23tktXaAndpu0m3pAoeT1u8kFpTLGJ3QyjbMKd96/gNzbvwIXNGEDQrS1ohwYLAW5vFopHtOkCUyUXYkZOCq2KDlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=eD5Qn1Je; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40fb5f5fd84so1885025e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 03:00:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1707476415; x=1708081215; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ErqXxs7zcmxaorvJLxeIL8QoDb90GRIEAGPObd8dqj0=;
-        b=eD5Qn1Jec+9Qqe660r3AWRgMFg6HfwTbHUYltaAJKhJriZ0uBTxqs5l/hzZ5RPl/2+
-         2N+/TYvmhNPfP2SDtt2dBCLJtZtZGUTb3dbYAo4/GH5mgLsPs4x1p2OGIlfITLeSIoKl
-         LiBVKTZxAcP6BS8iM8f26y0qgxI8MVjnQASmU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707476415; x=1708081215;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ErqXxs7zcmxaorvJLxeIL8QoDb90GRIEAGPObd8dqj0=;
-        b=FoM3Qk/mKJVQYpkoHqefBvMbTGNHWO13JmhDhnNyg29Lnl/up0HbNcgPvdlRIOYA27
-         gqvGlgsjDF7g4LJt5mayr7WAMCljWpGzU4LzwqdH/v08pnx/z7ceT5pjYsn7ZrZEnCkD
-         EIfTPofCpUYKUCqPKO3eVsxy6xVk0+tWGlojAjJb8URgyZogNe7YaoWV0emH3scyy/4u
-         wrtgf6Y95gDN1oVa4ELTt9blwtWkNV48YeNimqcETWxO6CVIDZXijs5pkKx6McP5G3Yv
-         IMePAZgD3HiE0hn3Hw9Mgk+ZhS3yk3hSe9Cx9UMxEaVzbPB5JDe0wwJ+5b+JCzBu6nVQ
-         yyaA==
-X-Forwarded-Encrypted: i=1; AJvYcCXpHYxoTR02FttLAzy9MYLX5VxoqT8R0v0os7rEEP93Ay0BpUStsUMVZwoYE6cK9ZfuRVPswibYa9j0ewVXRTjmXg0PDgM1hKX26YTF
-X-Gm-Message-State: AOJu0YwZtWNqV2V2DOpUAWKXUXQNgM4myylfxYDi0Bt/zMNtHqp7bdX7
-	zJzAk7v1WBTBjpqj43dtdwvGnFd6bydW6kBM7lnkyQSaLUfGrv6Bl2s4JCiDzWw=
-X-Google-Smtp-Source: AGHT+IEuXfaY9KBR9zsA3duPazyDD+I8pvQvlxqK/2eTeHa8KAeZqhfP1yN0TAPaRflSJwHnbU0Iwg==
-X-Received: by 2002:a05:6000:38c:b0:33b:5197:7136 with SMTP id u12-20020a056000038c00b0033b51977136mr1111009wrf.2.1707476414599;
-        Fri, 09 Feb 2024 03:00:14 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUHGQW0GPUdhcR5AQwoTXl3BpkEMSBlqTfxVZFRu6MUe/O4/U+wRxF2qh19k0ClVYO9HHv3DcGLj95tj+GEy1wl+GQYzYSDdQdrlmUJYsMGa9GCyEiDTVoR3IIdBCrNnwRPjjX4g5WNs/vjIl8rAwct71x9ljvYkwzDBeAPDUMXoB1WV9f6JdwiVCnAltzf4i5NRW0DFKIgEHGeGrIylNiJfLeAtFQ1xHxdWuu8NkpGcbvvBm+mJU7Jcw5ifIJzxPdUnREub1HyASwUYtHwh2XgdvkmOod4PYpaExV3YgSrOnEWp5FwrfXoguzfqq8tu+A3mIguzsNS5t1an91pbE+xBjHtFIhj/7pT0CasiePDGV90FU3siIuK19VW0l6vi+A7WNmsARlda2Yhimcb9Ms2zTnCeHXULMJR3cZVGntLwt/lDg7urP5JL2woihym04otl25pjKTW+fLEr0m6vdtl0rhGGK6VqPdFHY3nQtaZt07+oGqdqzwgxCZtDaaKkfLgowpYUvwsC+InwyJ5fzaoyM94w5MLAyVr+d4W0gjGFlHL2iKrw68m+uuIQm0L3Y5v0wJ+K0rayxexGUr10RqQll0skTdOdXz/aXgfF3lBQhZuZ5mOUd0UkNkLedTaCSFLAE7KqyULbLNvacc53qateKluJnQsnxccYcjIWx0rp2paiFWYJMLhk8Wi0L/8NTnox6cztAm2oTG4bF2vGhT3N59mo7afNf16OXpVURJ0KtVGm584unuadqm22xLec9oP6oAlHkZMwPlXWns=
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id j18-20020adff012000000b0033b44b4da56sm1494073wro.111.2024.02.09.03.00.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 03:00:14 -0800 (PST)
-Date: Fri, 9 Feb 2024 12:00:11 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Hamza Mahfooz <hamza.mahfooz@amd.com>, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
-	David Airlie <airlied@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Lijo Lazar <lijo.lazar@amd.com>,
-	Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Le Ma <le.ma@amd.com>,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	James Zhu <James.Zhu@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	Alex Shi <alexs@kernel.org>, Jerry Snitselaar <jsnitsel@redhat.com>,
-	Wei Liu <wei.liu@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-pci@vger.kernel.org
-Subject: Re: [PATCH 3/3] drm/amdgpu: wire up the can_remove() callback
-Message-ID: <ZcYFu65EOaiZsSnC@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Hamza Mahfooz <hamza.mahfooz@amd.com>, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
-	David Airlie <airlied@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Lijo Lazar <lijo.lazar@amd.com>,
-	Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Le Ma <le.ma@amd.com>,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	James Zhu <James.Zhu@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	Alex Shi <alexs@kernel.org>, Jerry Snitselaar <jsnitsel@redhat.com>,
-	Wei Liu <wei.liu@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-pci@vger.kernel.org
-References: <20240202222603.141240-1-hamza.mahfooz@amd.com>
- <20240202222603.141240-3-hamza.mahfooz@amd.com>
- <2024020225-faceless-even-e3f8@gregkh>
- <ZcJCLkNoV-pVU8oy@phenom.ffwll.local>
- <051a3088-048e-4613-9f22-8ea17f1b9736@gmail.com>
+	s=arc-20240116; t=1707476555; c=relaxed/simple;
+	bh=DYL2Vo7wXZo44LWPSiZJxteFaz2Bsb/d2g1o9IIqOik=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MMap17bd87HEIksxXYmjohUrkYjcpL2u8zmR/O8e3S/tPxhYIsDUoFac5v5DIBi1kk5RzvQbWjy64FndA7+56wSwYWdfUZzp0vrXyELCnip3X8l3pC2bRRe2xmpx3YRE95GU8TKt6aCZPIm5w0ZAW7FGRCi+akaaKve8uJPzZjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=V/9zbXJ9; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=W/CSpT8S; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=V/9zbXJ9; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=W/CSpT8S; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CD71C1FD32;
+	Fri,  9 Feb 2024 11:02:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707476551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5zQwm5kPigELiJNBBb9hvLn79vg8BzIewehmXpsozFI=;
+	b=V/9zbXJ9ahmqdhj3d/guoVKUJNMAwhxR5fBRCqxWSwO+m9z1l5126BwbhI0x4jy3GjWggO
+	4xCcSrHi8rOLslSG4tR3Af2xPqspGT/oyWLALcgTUcSC5XCi32CuYVM4cDgjaj/LgYuRd1
+	Fo1U0kTOJD5d1gHtOkrwVliwrSLeet4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707476551;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5zQwm5kPigELiJNBBb9hvLn79vg8BzIewehmXpsozFI=;
+	b=W/CSpT8SMhOtfjNq/AoNqGM6+Is88NEcwU2+ottuiG4PdFTjaF8A234VY0NaFfEZZ2D/Fi
+	EP1eGUP2PYwE50BA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707476551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5zQwm5kPigELiJNBBb9hvLn79vg8BzIewehmXpsozFI=;
+	b=V/9zbXJ9ahmqdhj3d/guoVKUJNMAwhxR5fBRCqxWSwO+m9z1l5126BwbhI0x4jy3GjWggO
+	4xCcSrHi8rOLslSG4tR3Af2xPqspGT/oyWLALcgTUcSC5XCi32CuYVM4cDgjaj/LgYuRd1
+	Fo1U0kTOJD5d1gHtOkrwVliwrSLeet4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707476551;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5zQwm5kPigELiJNBBb9hvLn79vg8BzIewehmXpsozFI=;
+	b=W/CSpT8SMhOtfjNq/AoNqGM6+Is88NEcwU2+ottuiG4PdFTjaF8A234VY0NaFfEZZ2D/Fi
+	EP1eGUP2PYwE50BA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2F6361326D;
+	Fri,  9 Feb 2024 11:02:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 1iklCkcGxmVoLwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 09 Feb 2024 11:02:31 +0000
+Date: Fri, 09 Feb 2024 12:02:30 +0100
+Message-ID: <87plx5294p.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Wesley Cheng <quic_wcheng@quicinc.com>
+Cc: <srinivas.kandagatla@linaro.org>,
+	<mathias.nyman@intel.com>,
+	<perex@perex.cz>,
+	<conor+dt@kernel.org>,
+	<corbet@lwn.net>,
+	<lgirdwood@gmail.com>,
+	<andersson@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>,
+	<gregkh@linuxfoundation.org>,
+	<Thinh.Nguyen@synopsys.com>,
+	<broonie@kernel.org>,
+	<bgoswami@quicinc.com>,
+	<tiwai@suse.com>,
+	<robh+dt@kernel.org>,
+	<konrad.dybcio@linaro.org>,
+	<linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>,
+	<linux-sound@vger.kernel.org>,
+	<linux-usb@vger.kernel.org>,
+	<linux-arm-msm@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v14 45/53] ASoC: usb: Create SOC USB SND jack kcontrol
+In-Reply-To: <20240208231406.27397-46-quic_wcheng@quicinc.com>
+References: <20240208231406.27397-1-quic_wcheng@quicinc.com>
+	<20240208231406.27397-46-quic_wcheng@quicinc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <051a3088-048e-4613-9f22-8ea17f1b9736@gmail.com>
-X-Operating-System: Linux phenom 6.6.11-amd64 
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.16
+X-Spamd-Result: default: False [-0.16 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-1.36)[90.57%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[dt];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 R_RATELIMIT(0.00)[to_ip_from(RLjs3ec4aura4kmsd6wxjjm4hg)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[23];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linaro.org,intel.com,perex.cz,kernel.org,lwn.net,gmail.com,linuxfoundation.org,synopsys.com,quicinc.com,suse.com,vger.kernel.org,alsa-project.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-On Tue, Feb 06, 2024 at 07:42:49PM +0100, Christian König wrote:
-> Am 06.02.24 um 15:29 schrieb Daniel Vetter:
-> > On Fri, Feb 02, 2024 at 03:40:03PM -0800, Greg Kroah-Hartman wrote:
-> > > On Fri, Feb 02, 2024 at 05:25:56PM -0500, Hamza Mahfooz wrote:
-> > > > Removing an amdgpu device that still has user space references allocated
-> > > > to it causes undefined behaviour.
-> > > Then fix that please.  There should not be anything special about your
-> > > hardware that all of the tens of thousands of other devices can't handle
-> > > today.
-> > > 
-> > > What happens when I yank your device out of a system with a pci hotplug
-> > > bus?  You can't prevent that either, so this should not be any different
-> > > at all.
-> > > 
-> > > sorry, but please, just fix your driver.
-> > fwiw Christian König from amd already rejected this too, I have no idea
-> > why this was submitted
+On Fri, 09 Feb 2024 00:13:58 +0100,
+Wesley Cheng wrote:
 > 
-> Well that was my fault.
+> Expose API for creation of a jack control for notifying of available
+> devices that are plugged in/discovered, and that support offloading.  This
+> allows for control names to be standardized across implementations of USB
+> audio offloading.
 > 
-> I commented on an internal bug tracker that when sysfs bind/undbind is a
-> different code path from PCI remove/re-scan we could try to reject it.
-> 
-> Turned out it isn't a different code path.
+> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 
-Yeah it's exactly the same code, and removing the sysfs stuff means we
-cant test hotunplug without physical hotunplugging stuff anymore. So
-really not great - if one is buggy so is the other, and sysfs allows us to
-control the timing a lot better to hit specific issues.
--Sima
+Again, use a more intuitive control element name.
 
-> >   since the very elaborate plan I developed with a
-> > bunch of amd folks was to fix the various lifetime lolz we still have in
-> > drm. We unfortunately export the world of internal objects to userspace as
-> > uabi objects with dma_buf, dma_fence and everything else, but it's all
-> > fixable and we have the plan even documented:
-> > 
-> > https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#device-hot-unplug
-> > 
-> > So yeah anything that isn't that plan of record is very much no-go for drm
-> > drivers. Unless we change that plan of course, but that needs a
-> > documentation patch first and a big discussion.
-> > 
-> > Aside from an absolute massive pile of kernel-internal refcounting bugs
-> > the really big one we agreed on after a lot of discussion is that SIGBUS
-> > on dma-buf mmaps is no-go for drm drivers, because it would break way too
-> > much userspace in ways which are simply not fixable (since sig handlers
-> > are shared in a process, which means the gl/vk driver cannot use it).
-> > 
-> > Otherwise it's bog standard "fix the kernel bugs" work, just a lot of it.
-> 
-> Ignoring a few memory leaks because of messed up refcounting we actually got
-> that working quite nicely.
-> 
-> At least hot unplug / hot add seems to be working rather reliable in our
-> internal testing.
-> 
-> So it can't be that messed up.
-> 
-> Regards,
-> Christian.
-> 
-> > 
-> > Cheers, Sima
-> 
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+thanks,
+
+Takashi
 
