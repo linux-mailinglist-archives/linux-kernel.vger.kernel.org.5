@@ -1,161 +1,147 @@
-Return-Path: <linux-kernel+bounces-60066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E85684FF6D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:08:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74C7984FF73
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:10:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BAE81C2160A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:08:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 013C3B218F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:10:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D1A383BD;
-	Fri,  9 Feb 2024 22:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="i7wj8mpT"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9613B210FA;
+	Fri,  9 Feb 2024 22:10:34 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E25FD374F1
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:07:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F00107AA
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:10:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707516480; cv=none; b=uz5RyuK9XquBZ75ykfR/hyOp+hf2nzFqJG/k7Ad62l+40xzoLrDUb24cASuzS7XWtFUFOcepXt35fxVdxJdHjbIsjYsrv6BZw5r1n4tlNlByJsczna6HTVEERZungBXmtQdx1zOaTNX37vLLokMpjPfKWOjS+rAQPeJzJMilGOQ=
+	t=1707516634; cv=none; b=O3XcZYjI4ygpvgrp5mg+oc/gI3y2whMUsQlzovQvpOV1C9gvFGom8hZ7ilP2WM9bL0lRe6c8VG27GWxtjr2m9QEzPbJ8I2usAhAxovAug5RqFMUhJFXVKeiBBQxqTrvP9rYA43gY63WQ+jVNm0hXlNtFATQWfrMbDCsEO4hxJ5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707516480; c=relaxed/simple;
-	bh=G8yYb549bHS0dm420NgpCxsXl+WFxhziVrxJ57VN10A=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=eoCW/FZvy0GdxNycAbzI066bSNwHPpBfNW3kFyFQMRZixKhzI01pwMT25shXHj/nmzz7xoVcVN/hC7v1CplgrAywXkQYaJEHSOo8hHaySDyyCgWNTSbrmfSvgmn1iT3szJ595TqElULEuMjKAsLXz4aivkhYYXWuwStm3cg5WGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=i7wj8mpT; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc3645a6790so2659196276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:07:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707516478; x=1708121278; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=CiNmwT6G4ZjT0uaWThby9fO5R8PDoaUWp6GHwG0vlXE=;
-        b=i7wj8mpT2zu8prxr0fg8qTWPuPGzcSLsfevxIA4G/j/GW1uT+DgC7iDbKEJRsJDUWg
-         Ze3zk3Smrhr2K4gI8a+GJcqWFYWhirb2JRM3StOeI/WhXRcEuYGlEuknN6YJFHcQAGx1
-         0MKHYuA+RuBlXRQev3GiCgaZKPownxAt199ZKw62NmBAZ7iLTYdEuo/MRHfBtycreJQy
-         bJUJskw22D7APpQQb82n1UyGN2NPUFMP026cf+yu9mgM2qio7qQEhVkgq1AovB8Rwqc/
-         kAxMCbfCZvWemxJPp+5Yk3TF4+OlYfKKn1jGP3Ndj3aBB7c4mL8VJqJ7iHU9LEGGGQju
-         tzBQ==
+	s=arc-20240116; t=1707516634; c=relaxed/simple;
+	bh=FbPrgaVYVx/Y2b65Tnm0kYD6DQGnYXAIo43/KnRZdXA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mdNSPFYQ1p2bR4N2PFIaGZp/Ku5Jgl+ojHzV4g7i2+5b3NWCsNTnsK++UWseevaxnx73Vjamgv7Dy+8auOnYWfD5Ed+lcM5dewwTCAlzNBXoAhd64HPn1UpgP9cmoJCiiFY71kVQkxWrmJpj9SlmT+Cys6kbYdFGnKY23V2RpjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3610073a306so11595085ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:10:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707516478; x=1708121278;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CiNmwT6G4ZjT0uaWThby9fO5R8PDoaUWp6GHwG0vlXE=;
-        b=jDko3zWCnkOX9HBqNJ0mDHiaRgu2FzOwDtio2w+oFdJ2HRDnm33zsrkz+yrakbbL4H
-         jVaLm/OCp7HsYDCAYtXUaTata0MZ9eBfGyQGEGKFWZiIbQELoN2b+QgLny7XmFpyiDID
-         SLhuFsYnM79iVQNoO5mvsPXW7X/dQ/PSBabSRs7Gw5qj02yHwUnMdQhOzp2Ai7NL4nsT
-         cPgIgIqo6jq1/LH1SSh9WNSzI9I/acHwm4h1JweRWQpMFy7v/OJoQamWLC5ZSj4MFsVv
-         ML011ml1LXdmljeK60+/RqI/dThob4wNal+SXAX8cg4Ea+d1isO9tzwHAmyEDvMQzERg
-         ldFw==
-X-Gm-Message-State: AOJu0Ywxnf2ZZyo/iPDkBjJi0Um8l/GxiySlYU0GWYvARP6e1EKA11od
-	/puxeWVaYXVna/ytGnLE6iKo2Ojzm11uwfFesJYaWEuwNx3yhXIDJR27jO8Yjpq83V8qOYHnPvC
-	yMg==
-X-Google-Smtp-Source: AGHT+IHtfM9LTc4d2GpYZt5fisFL8uhOLCh2hC0auqTcKJbjQu/fK8j5e8AkLzG6VyiPL+ddqdUewMn6buY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:18d2:b0:dc6:d233:ffdd with SMTP id
- ck18-20020a05690218d200b00dc6d233ffddmr112509ybb.0.1707516477995; Fri, 09 Feb
- 2024 14:07:57 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri,  9 Feb 2024 14:07:52 -0800
-In-Reply-To: <20240209220752.388160-1-seanjc@google.com>
+        d=1e100.net; s=20230601; t=1707516632; x=1708121432;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kYMKdXEgEYoOzbuN4s8Mp96TJ3NrCTFqEoQiv1HCOb0=;
+        b=bZcchag/KZF+MBztEjbZ5+xc8UpdSpas87suZwXxLFaqf8Tff9IxtWwJOWmqyyRNq7
+         o4Ntvnpc3LE/sgKkntxavqOAcmvlWT5iS0nf7PJs5TKQ+pKeIpv3mbJTxx01Kyjshxje
+         7yMasQkpaveqaBCsMNM0Zr/t5Uw0qpfjPlhWTt/E2HTb9dtkGp0GxWyL7GMbQkaiqhYT
+         g3IZvaeCt1u8kM5KiuLezQjkAH+i9/vGdhoQDKpSBaQ8mrphvG54vdedDxl7/VazLn8q
+         jGqlm/vYa05xuVTa7paMdybKtMUo0R7rUcn/l9E9I5nz8wNhsd/8nlbNWJ/7TaSpxBg6
+         Ul8g==
+X-Gm-Message-State: AOJu0YwgK3SDiQn7pASGt3cXBmenz7wCfs/6dViFp38gAVo0d41Zdfpx
+	myQKB5TSOLp72RVrrvtG3ffNra2X5uaBW47hswSS6LRBHDOtoE8M1QzyuK6V2UDuFIcxAdRkri8
+	oEJi3cj3NnIgkioFp3G7uwfzD0xN9ejXgf1tsRSIxyFXN6XcjMBwWDU4=
+X-Google-Smtp-Source: AGHT+IEwoDlrwJtfpvZJDJ+cxkRbuTG9pkve1xAHBaqzCAa+6mIDt9nNVnbKQiHG5ZVW0pcL14OEXsM34+5Pc6wxxnQEh/S8HCtU
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240209220752.388160-1-seanjc@google.com>
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240209220752.388160-3-seanjc@google.com>
-Subject: [PATCH 2/2] KVM: x86: Open code all direct reads to guest DR6 and DR7
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Mathias Krause <minipli@grsecurity.net>
+MIME-Version: 1.0
+X-Received: by 2002:a92:c24a:0:b0:363:c576:d6c5 with SMTP id
+ k10-20020a92c24a000000b00363c576d6c5mr27774ilo.3.1707516631914; Fri, 09 Feb
+ 2024 14:10:31 -0800 (PST)
+Date: Fri, 09 Feb 2024 14:10:31 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004b1fa70610fa3230@google.com>
+Subject: [syzbot] [io-uring?] KMSAN: uninit-value in io_rw_fail (2)
+From: syzbot <syzbot+0198afa90d8c29ef9557@syzkaller.appspotmail.com>
+To: asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-Bite the bullet, and open code all direct reads of DR6 and DR7.  KVM
-currently has a mix of open coded accesses and calls to kvm_get_dr(),
-which is confusing and ugly because there's no rhyme or reason as to why
-any particular chunk of code uses kvm_get_dr().
+Hello,
 
-The obvious alternative is to force all accesses through kvm_get_dr(),
-but it's not at all clear that doing so would be a net positive, e.g. even
-if KVM ends up wanting/needing to force all reads through a common helper,
-e.g. to play caching games, the cost of reverting this change is likely
-lower than the ongoing cost of maintaining weird, arbitrary code.
+syzbot found the following issue on:
 
-No functional change intended.
+HEAD commit:    9f8413c4a66f Merge tag 'cgroup-for-6.8' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1743d3e4180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
+dashboard link: https://syzkaller.appspot.com/bug?extid=0198afa90d8c29ef9557
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Cc: Mathias Krause <minipli@grsecurity.net>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/79d9f2f4b065/disk-9f8413c4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/cbc68430d9c6/vmlinux-9f8413c4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9740ad9fc172/bzImage-9f8413c4.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0198afa90d8c29ef9557@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in io_fixup_rw_res io_uring/rw.c:311 [inline]
+BUG: KMSAN: uninit-value in io_rw_fail+0x1a7/0x1b0 io_uring/rw.c:1099
+ io_fixup_rw_res io_uring/rw.c:311 [inline]
+ io_rw_fail+0x1a7/0x1b0 io_uring/rw.c:1099
+ io_req_defer_failed+0x217/0x3e0 io_uring/io_uring.c:1065
+ io_queue_sqe_fallback+0x1f4/0x260 io_uring/io_uring.c:2100
+ io_submit_state_end io_uring/io_uring.c:2345 [inline]
+ io_submit_sqes+0x2b85/0x2ff0 io_uring/io_uring.c:2463
+ __do_sys_io_uring_enter io_uring/io_uring.c:3712 [inline]
+ __se_sys_io_uring_enter+0x40c/0x42d0 io_uring/io_uring.c:3647
+ __x64_sys_io_uring_enter+0x11b/0x1a0 io_uring/io_uring.c:3647
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Uninit was created at:
+ slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
+ slab_alloc_node mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc+0x121/0x3c0 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ io_alloc_async_data io_uring/io_uring.c:1780 [inline]
+ io_req_prep_async+0x384/0x5a0 io_uring/io_uring.c:1801
+ io_queue_sqe_fallback+0x95/0x260 io_uring/io_uring.c:2097
+ io_submit_state_end io_uring/io_uring.c:2345 [inline]
+ io_submit_sqes+0x2b85/0x2ff0 io_uring/io_uring.c:2463
+ __do_sys_io_uring_enter io_uring/io_uring.c:3712 [inline]
+ __se_sys_io_uring_enter+0x40c/0x42d0 io_uring/io_uring.c:3647
+ __x64_sys_io_uring_enter+0x11b/0x1a0 io_uring/io_uring.c:3647
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+CPU: 0 PID: 5401 Comm: syz-executor.4 Not tainted 6.7.0-syzkaller-00562-g9f8413c4a66f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+=====================================================
+
+
 ---
- arch/x86/kvm/smm.c        | 8 ++++----
- arch/x86/kvm/vmx/nested.c | 2 +-
- arch/x86/kvm/x86.c        | 2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/x86/kvm/smm.c b/arch/x86/kvm/smm.c
-index 19a7a0a31953..d06d43d8d2aa 100644
---- a/arch/x86/kvm/smm.c
-+++ b/arch/x86/kvm/smm.c
-@@ -194,8 +194,8 @@ static void enter_smm_save_state_32(struct kvm_vcpu *vcpu,
- 	for (i = 0; i < 8; i++)
- 		smram->gprs[i] = kvm_register_read_raw(vcpu, i);
- 
--	smram->dr6     = (u32)kvm_get_dr(vcpu, 6);
--	smram->dr7     = (u32)kvm_get_dr(vcpu, 7);
-+	smram->dr6     = (u32)vcpu->arch.dr6;
-+	smram->dr7     = (u32)vcpu->arch.dr7;
- 
- 	enter_smm_save_seg_32(vcpu, &smram->tr, &smram->tr_sel, VCPU_SREG_TR);
- 	enter_smm_save_seg_32(vcpu, &smram->ldtr, &smram->ldtr_sel, VCPU_SREG_LDTR);
-@@ -236,8 +236,8 @@ static void enter_smm_save_state_64(struct kvm_vcpu *vcpu,
- 	smram->rip    = kvm_rip_read(vcpu);
- 	smram->rflags = kvm_get_rflags(vcpu);
- 
--	smram->dr6 = kvm_get_dr(vcpu, 6);
--	smram->dr7 = kvm_get_dr(vcpu, 7);
-+	smram->dr6 = vcpu->arch.dr6;
-+	smram->dr7 = vcpu->arch.dr7;
- 
- 	smram->cr0 = kvm_read_cr0(vcpu);
- 	smram->cr3 = kvm_read_cr3(vcpu);
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 28d1088a1770..d05ddf751491 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -4433,7 +4433,7 @@ static void sync_vmcs02_to_vmcs12(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12)
- 		(vm_entry_controls_get(to_vmx(vcpu)) & VM_ENTRY_IA32E_MODE);
- 
- 	if (vmcs12->vm_exit_controls & VM_EXIT_SAVE_DEBUG_CONTROLS)
--		vmcs12->guest_dr7 = kvm_get_dr(vcpu, 7);
-+		vmcs12->guest_dr7 = vcpu->arch.dr7;
- 
- 	if (vmcs12->vm_exit_controls & VM_EXIT_SAVE_IA32_EFER)
- 		vmcs12->guest_ia32_efer = vcpu->arch.efer;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index bfffc13f91e6..5a08d895bde6 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -5510,7 +5510,7 @@ static void kvm_vcpu_ioctl_x86_get_debugregs(struct kvm_vcpu *vcpu,
- 	for (i = 0; i < ARRAY_SIZE(vcpu->arch.db); i++)
- 		dbgregs->db[i] = vcpu->arch.db[i];
- 
--	dbgregs->dr6 = kvm_get_dr(vcpu, 6);
-+	dbgregs->dr6 = vcpu->arch.dr6;
- 	dbgregs->dr7 = vcpu->arch.dr7;
- }
- 
--- 
-2.43.0.687.g38aa6559b0-goog
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
