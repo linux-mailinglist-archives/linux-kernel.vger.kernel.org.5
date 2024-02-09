@@ -1,83 +1,85 @@
-Return-Path: <linux-kernel+bounces-60123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB670850024
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:39:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B31F8850026
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:39:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE8301C233C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:39:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 437531F23600
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:39:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D73C838FA9;
-	Fri,  9 Feb 2024 22:38:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5BD539AD6;
+	Fri,  9 Feb 2024 22:38:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lto0lsIf"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="inmdu0UY"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 605AF2AD39
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:38:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60BB536AE3
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:38:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707518310; cv=none; b=EU43PWo+uCJPL1t2cOaemukEqpuZfry0GPrkujMJjAnzLIb6xYhyRd5iDcsEkalEfj4tYorAvvhadVI5GBl74D6AFucvESLjo1qov1eLZQWOLWCU37z9yppi6Q+F0whrOhPudhFsx6rn5WXTQVbvBweFo6/Zk5s6HqCjBS5z2kk=
+	t=1707518310; cv=none; b=sQ4I35NA8MzW3cpZiw2MtjHP51W1cOqdwKqsa+0Q2cjVQGGkwNYpTJ7EZU2wSgG7j8wlN6+cOpMwcvpxv49YyxYozIMseTIfYfogmg0PfkqOdH11F4q+2PDTycvesthYInn50lfYll6VFXO/VaOclhS6Hz7inBti4jPh982aHH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707518310; c=relaxed/simple;
-	bh=Cc9hBfVDEI9Fq6JPOFe/l1+gX3OamRL9BW5+Efsqr2c=;
+	bh=DzKLDci93ApF7vfkyDoGWiESzva00+zLX2rytI+hW08=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=e0I4VkJRWA/9D21bwpLoacSTbo/IUiEU1I6Rq8Bu+M5R04fg3sBPSaPXQo0cxI9W4y3bHVHrahj1fzSpji5x46rghTjjSpKuA4cghprW6FKU/Q9MpBi6BfY+MynbJJTnigBy43hFUQh6OYVo+Pj/0cfc6vrkGTqqJw8mu9ifsNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lto0lsIf; arc=none smtp.client-ip=209.85.214.175
+	 MIME-Version; b=XQY530bgw9+9shpDsFvLtmln/+WLOP3F2R9a2/v7MZ+Nv4a7HoiN7fEM6W77T59L+A89LDeOCqJeU/eg4A5OHX6KTvk++Mmz8MVDeHEek6UzJxv/B251TVp9WpJxRKRD71ty87VRGK3loYF2M57OvCck8M3YDFesSesqsUPnRTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=inmdu0UY; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d76671e5a4so12102375ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:38:28 -0800 (PST)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e08c16715fso686961b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:38:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google; t=1707518308; x=1708123108; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=V6t8uVjqfKj+e3cGps0LaAFzQjViggK8EPU4tBP7N9o=;
-        b=lto0lsIf//GA22D8769iFnDeGCnOzmprRL1OWUuO4vsUmTT1gdS96Xq0CzEhwRosS8
-         ewsHzq2hlevgJ6hwVcF8S3nG2Vq5WUoiFw0aeN4GiMNLrUaLotfGHfhwG36w8lVUSGBP
-         38qxsRGdVvs+rU7dyh27jiSZXUlKu4PuQVyjk=
+        bh=qBapnpxnnvVPFmrxNQOjLuxZFVASUjEQpu3IWq7x3K8=;
+        b=inmdu0UYc2xhgSdtkb+SZ4gGIjT19U9GfZe4aplGwj39RljB4+Bau45a+cKvAkPsoZ
+         dtDGJllBU6i+Fm2EdH8V3Y2n3L1rbX1IqtZ2Y4l8oFL/vJvEd9hTg50ee9kmdA7BpP/L
+         Crya4Mt/pVUrFmjwNoxHopv3mFy6q0QdEQ1Kk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1707518308; x=1708123108;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V6t8uVjqfKj+e3cGps0LaAFzQjViggK8EPU4tBP7N9o=;
-        b=V13TM1hrOMXxAnBI1HMSJhRugN04ACHZvwNaVuIV8p8hKKvTGsp0ilysAOgTwE9W6S
-         6AJp2PI2aHuXS5sD1wRTEY5YAQm7ZCRwYTyGuZBKm7Xn51qzY126MUSLQHd1fg6UZU/j
-         LHxXN1639devqHqaaGLaTpt9FHJMEq8UuKyhUazVVRlPAHf8fAYkdJq17JfHfBUqAhi5
-         7C5DS0Gl39S7ABKRMzuTi0+bvyVSD/8nr8TpZKpd0cnJdji3BPNq4CUDfwKtjNxVMbFX
-         82+50G7l2/olHTPdjDqQBtxx1jt9hL7lVM8i14IJViBVA7nubLYEklemSqtAoAMZDRb4
-         JXig==
-X-Forwarded-Encrypted: i=1; AJvYcCUqIFRmtXSH3KFtX4A32Urs5Xg1W6+zfYWNmkgSjvwmqOZecANoaiF3sVh3oepS3PeCJWGwn5BHF1w+vyzk0OenuTXN/yTOLPp1Y/P0
-X-Gm-Message-State: AOJu0YzIZm8KiYv1xgPu648Pb4195asEjpB+VYWC3u9a5CPOf7m9L8kl
-	FO1ER10t9/uV2XEgjVZv9ERODX8RMJ58xfNlB6H1EXEPpNPNBEDDM+XXd0759g==
-X-Google-Smtp-Source: AGHT+IEf//UhEtjPmIrfZyWSzsZOgYN4OBY74daLptH7w7pxhwxszMYJQ2/w+0GFx12aZrxBx8nNRw==
-X-Received: by 2002:a17:902:fc50:b0:1d7:7edb:e9b9 with SMTP id me16-20020a170902fc5000b001d77edbe9b9mr737372plb.37.1707518307760;
-        Fri, 09 Feb 2024 14:38:27 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXXkAyYIf/gyptbxo35GZBi2zFh6q5MA2hBk8+tFFeMl6Ynu0eX3gNs43873+gh09D2GTJqakgvMCSVvIJpb2wpNLdV/MbVWlkZWckABc+q/SkSkWyUNhXGsZwaJYSg8AtCQi1THbkaAV0G+ErCQPo4Yvd09wzir0JbwCwuUEfFnE68QMxVqhspVjUIMmodycitHvl+T2dJhqDGcot1+/51ba3Herr3M7JTKueaKHAYcmHcUdWnEpDGIc1NXnCtf8OyuZiFPB+oho0cZaotNupuQIg72vy7qmjPaF/GVkYBlbDBJcZEzwhgiuvPeOctdxdzflbKVo4DTCF/luDodCjqEn2rWYmb
+        bh=qBapnpxnnvVPFmrxNQOjLuxZFVASUjEQpu3IWq7x3K8=;
+        b=pFhqTVCdg8ksoNj/Fj3Fg4YskANoA4/IdAAzeOQsO9OYEwo6cujTi8A8rDVurLEG4d
+         P/1ySXu4fAgnaEzs+J8IXZ2mlOuhocHp/BDbHaTzh4izF+Wy+nRNKkiuPEpufzjhDcQh
+         wa6hF4wI7kQ2IGcLfXEyNDssLmKgM3Hl8hRUh2EoUNAOYl/0tzEvgJKS2quGuKy2Gomq
+         C/95tHlrgeY1civPi8+QX2IDvAS5xjGbzgM7LBlt18U4W9cvqDVvh4oHwRIpQi3JC4Hs
+         AOt9XdJTF6PP9CtvROsCDDhomPmxsTcQWnXvnY1oHkIovvtxJZ9JkyO40sFIElKbAZKB
+         b5EA==
+X-Forwarded-Encrypted: i=1; AJvYcCWZlZFpQYvbo9xnpo6DZMtoMP8KPCJxMHKc9kvjSqBnqTzTlm5YANF9sBiWsoqjOF0ktp0vfyecBMq4JqSmuI5ZByWLPO9fyj89Hl53
+X-Gm-Message-State: AOJu0Yxwo1PXvN5RdsmO5o30qX8YZlK0Rhci2IINM8EM26XL8gVL6NNh
+	SglcFAhKZQEVPqWxut3w3VynnyvNB1y7u7Z3cxz3q+e4s/bi4f1POetqIPocYQ==
+X-Google-Smtp-Source: AGHT+IEvUme/lI0pNUHdBSEMYzL+Fi6hlOie5vF+RNSfaYzvZI1P1XoQ0x1souIpQLH0NdS7e3Potw==
+X-Received: by 2002:a05:6a00:26ec:b0:6e0:4697:a8f1 with SMTP id p44-20020a056a0026ec00b006e04697a8f1mr712031pfw.11.1707518308710;
+        Fri, 09 Feb 2024 14:38:28 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVp9Dz1zelnFPdV/3pwulYB9UFPGcc96Gc4BNeYpmdH5uHNF11FIH76+41mlIstjpF26M0Kpx//LQPmVs+9d2RXfydqmdpVJOTPTqwsIuMcrlur6AMbmbEUubjEozx/1VfPV6VnTTO57vCdqjkGtbYQFYYodVPE1SX3PeivEsb5dQ5e8ABs7ILsvNw/Aluql5hKw/3f3aWDGdVAF2VIWgvrdHDA0rzOymduuRtBvPqTFt4gCv4puP1SiFsNjz2qwFIZpTQ8vN9BZULIv6G0C7nVW/B9vhdlWYmhLmyh87YhE1qaZzFLxdHu/OjaSapHaad1Gf70nLofL8tZVZHNac08uMglP2N41eHlVfeGfTroRA2Lh+3DpF8uE1g7eyuLm024wXU+0g==
 Received: from localhost (209.148.168.34.bc.googleusercontent.com. [34.168.148.209])
-        by smtp.gmail.com with UTF8SMTPSA id v2-20020a170903238200b001d54b763995sm1976154plh.129.2024.02.09.14.38.27
+        by smtp.gmail.com with UTF8SMTPSA id z3-20020a62d103000000b006e03a64000esm1092546pfg.150.2024.02.09.14.38.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Feb 2024 14:38:27 -0800 (PST)
+        Fri, 09 Feb 2024 14:38:28 -0800 (PST)
 From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
 To: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
 	linux-usb@vger.kernel.org
 Cc: pmalani@chromium.org,
 	jthies@google.com,
 	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	"Christian A. Ehrhardt" <lk@c--e.de>,
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Rajaram Regupathy <rajaram.regupathy@intel.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
 	Saranya Gopal <saranya.gopal@intel.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/3] usb: typec: ucsi: Update connector cap and status
-Date: Fri,  9 Feb 2024 14:37:31 -0800
-Message-ID: <20240209143723.v5.2.I3d909e3c9a200621e3034686f068a3307945fd87@changeid>
+Subject: [PATCH v5 3/3] usb: typec: ucsi: Get PD revision for partner
+Date: Fri,  9 Feb 2024 14:37:32 -0800
+Message-ID: <20240209143723.v5.3.Idf7d373c3cbb54058403cb951d644f1f09973d15@changeid>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
 In-Reply-To: <20240209223824.622869-1-abhishekpandit@chromium.org>
 References: <20240209223824.622869-1-abhishekpandit@chromium.org>
@@ -89,121 +91,77 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Update the data structures for ucsi_connector_capability and
-ucsi_connector_status to UCSIv3.
+PD major revision for the port partner is described in
+GET_CONNECTOR_CAPABILITY and is only valid on UCSI 2.0 and newer. Update
+the pd_revision on the partner if the UCSI version is 2.0 or newer.
 
-Reviewed-by: Prashant Malani <pmalani@chromium.org>
 Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Reviewed-by: Prashant Malani <pmalani@chromium.org>
 Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
 ---
+$ cat /sys/class/typec/port2-partner/usb_power_delivery_revision
+3.0
 
 (no changes since v4)
 
 Changes in v4:
-  - Fix BCD translation of PD Major Rev
+  - Replace IS_MIN_VERSION macro and just compare version directly.
 
-Changes in v3:
-  - Change include to asm/unaligned.h and reorder include.
+Changes in v2:
+  - Formatting changes and update macro to use brackets.
+  - Fix incorrect guard condition when checking connector capability.
 
- drivers/usb/typec/ucsi/ucsi.h | 56 ++++++++++++++++++++++++++++++++---
- 1 file changed, 52 insertions(+), 4 deletions(-)
+ drivers/usb/typec/ucsi/ucsi.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-index bec920fa6b8a..7e35ffbe0a6f 100644
---- a/drivers/usb/typec/ucsi/ucsi.h
-+++ b/drivers/usb/typec/ucsi/ucsi.h
-@@ -10,6 +10,7 @@
- #include <linux/usb/typec.h>
- #include <linux/usb/pd.h>
- #include <linux/usb/role.h>
-+#include <asm/unaligned.h>
+diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+index 7c5cecdd93d6..ae105383e69e 100644
+--- a/drivers/usb/typec/ucsi/ucsi.c
++++ b/drivers/usb/typec/ucsi/ucsi.c
+@@ -782,6 +782,7 @@ static int ucsi_register_partner(struct ucsi_connector *con)
+ 	}
  
- /* -------------------------------------------------------------------------- */
+ 	desc.usb_pd = pwr_opmode == UCSI_CONSTAT_PWR_OPMODE_PD;
++	desc.pd_revision = UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV_AS_BCD(con->cap.flags);
  
-@@ -35,6 +36,12 @@ struct dentry;
- #define UCSI_BCD_GET_MINOR(_v_)		(((_v_) >> 4) & 0x0F)
- #define UCSI_BCD_GET_SUBMINOR(_v_)	((_v_) & 0x0F)
+ 	partner = typec_register_partner(con->port, &desc);
+ 	if (IS_ERR(partner)) {
+@@ -856,6 +857,27 @@ static void ucsi_partner_change(struct ucsi_connector *con)
+ 			con->num, u_role);
+ }
  
-+/*
-+ * Per USB PD 3.2, Section 6.2.1.1.5, the spec revision is represented by 2 bits
-+ * 0b00 = 1.0, 0b01 = 2.0, 0b10 = 3.0, 0b11 = Reserved, Shall NOT be used.
-+ */
-+#define UCSI_SPEC_REVISION_TO_BCD(_v_)  (((_v_) + 1) << 8)
++static int ucsi_check_connector_capability(struct ucsi_connector *con)
++{
++	u64 command;
++	int ret;
 +
- /* Command Status and Connector Change Indication (CCI) bits */
- #define UCSI_CCI_CONNECTOR(_c_)		(((_c_) & GENMASK(7, 1)) >> 1)
- #define UCSI_CCI_LENGTH(_c_)		(((_c_) & GENMASK(15, 8)) >> 8)
-@@ -214,9 +221,29 @@ struct ucsi_connector_capability {
- #define UCSI_CONCAP_OPMODE_USB2			BIT(5)
- #define UCSI_CONCAP_OPMODE_USB3			BIT(6)
- #define UCSI_CONCAP_OPMODE_ALT_MODE		BIT(7)
--	u8 flags;
-+	u32 flags;
- #define UCSI_CONCAP_FLAG_PROVIDER		BIT(0)
- #define UCSI_CONCAP_FLAG_CONSUMER		BIT(1)
-+#define UCSI_CONCAP_FLAG_SWAP_TO_DFP		BIT(2)
-+#define UCSI_CONCAP_FLAG_SWAP_TO_UFP		BIT(3)
-+#define UCSI_CONCAP_FLAG_SWAP_TO_SRC		BIT(4)
-+#define UCSI_CONCAP_FLAG_SWAP_TO_SINK		BIT(5)
-+#define UCSI_CONCAP_FLAG_EX_OP_MODE(_f_) \
-+	(((_f_) & GENMASK(13, 6)) >> 6)
-+#define   UCSI_CONCAP_EX_OP_MODE_USB4_GEN2	BIT(0)
-+#define   UCSI_CONCAP_EX_OP_MODE_EPR_SRC	BIT(1)
-+#define   UCSI_CONCAP_EX_OP_MODE_EPR_SINK	BIT(2)
-+#define   UCSI_CONCAP_EX_OP_MODE_USB4_GEN3	BIT(3)
-+#define   UCSI_CONCAP_EX_OP_MODE_USB4_GEN4	BIT(4)
-+#define UCSI_CONCAP_FLAG_MISC_CAPS(_f_) \
-+	(((_f_) & GENMASK(17, 14)) >> 14)
-+#define   UCSI_CONCAP_MISC_CAP_FW_UPDATE	BIT(0)
-+#define   UCSI_CONCAP_MISC_CAP_SECURITY		BIT(1)
-+#define UCSI_CONCAP_FLAG_REV_CURR_PROT_SUPPORT	BIT(18)
-+#define UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV(_f_) \
-+	(((_f_) & GENMASK(20, 19)) >> 19)
-+#define UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV_AS_BCD(_f_) \
-+	UCSI_SPEC_REVISION_TO_BCD(UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV(_f_))
- } __packed;
- 
- struct ucsi_altmode {
-@@ -276,15 +303,36 @@ struct ucsi_connector_status {
- #define   UCSI_CONSTAT_PARTNER_TYPE_DEBUG	5
- #define   UCSI_CONSTAT_PARTNER_TYPE_AUDIO	6
- 	u32 request_data_obj;
--	u8 pwr_status;
--#define UCSI_CONSTAT_BC_STATUS(_p_)		((_p_) & GENMASK(2, 0))
++	if (!con->partner || con->ucsi->version < UCSI_VERSION_2_0)
++		return 0;
 +
-+	u8 pwr_status[3];
-+#define UCSI_CONSTAT_BC_STATUS(_p_)		((_p_[0]) & GENMASK(1, 0))
- #define   UCSI_CONSTAT_BC_NOT_CHARGING		0
- #define   UCSI_CONSTAT_BC_NOMINAL_CHARGING	1
- #define   UCSI_CONSTAT_BC_SLOW_CHARGING		2
- #define   UCSI_CONSTAT_BC_TRICKLE_CHARGING	3
--#define UCSI_CONSTAT_PROVIDER_CAP_LIMIT(_p_)	(((_p_) & GENMASK(6, 3)) >> 3)
-+#define UCSI_CONSTAT_PROVIDER_CAP_LIMIT(_p_)	(((_p_[0]) & GENMASK(5, 2)) >> 2)
- #define   UCSI_CONSTAT_CAP_PWR_LOWERED		0
- #define   UCSI_CONSTAT_CAP_PWR_BUDGET_LIMIT	1
-+#define UCSI_CONSTAT_PROVIDER_PD_VERSION_OPER_MODE(_p_)	\
-+	((get_unaligned_le32(_p_) & GENMASK(21, 6)) >> 6)
-+#define UCSI_CONSTAT_ORIENTATION(_p_)		(((_p_[2]) & GENMASK(6, 6)) >> 6)
-+#define   UCSI_CONSTAT_ORIENTATION_DIRECT	0
-+#define   UCSI_CONSTAT_ORIENTATION_FLIPPED	1
-+#define UCSI_CONSTAT_SINK_PATH_STATUS(_p_)	(((_p_[2]) & GENMASK(7, 7)) >> 7)
-+#define   UCSI_CONSTAT_SINK_PATH_DISABLED	0
-+#define   UCSI_CONSTAT_SINK_PATH_ENABLED	1
-+	u8 pwr_readings[9];
-+#define UCSI_CONSTAT_REV_CURR_PROT_STATUS(_p_)	((_p_[0]) & 0x1)
-+#define UCSI_CONSTAT_PWR_READING_VALID(_p_)	(((_p_[0]) & GENMASK(1, 1)) >> 1)
-+#define UCSI_CONSTAT_CURRENT_SCALE(_p_)		(((_p_[0]) & GENMASK(4, 2)) >> 2)
-+#define UCSI_CONSTAT_PEAK_CURRENT(_p_) \
-+	((get_unaligned_le32(_p_) & GENMASK(20, 5)) >> 5)
-+#define UCSI_CONSTAT_AVG_CURRENT(_p_) \
-+	((get_unaligned_le32(&(_p_)[2]) & GENMASK(20, 5)) >> 5)
-+#define UCSI_CONSTAT_VOLTAGE_SCALE(_p_) \
-+	((get_unaligned_le16(&(_p_)[4]) & GENMASK(8, 5)) >> 5)
-+#define UCSI_CONSTAT_VOLTAGE_READING(_p_) \
-+	((get_unaligned_le32(&(_p_)[5]) & GENMASK(16, 1)) >> 1)
- } __packed;
++	command = UCSI_GET_CONNECTOR_CAPABILITY | UCSI_CONNECTOR_NUMBER(con->num);
++	ret = ucsi_send_command(con->ucsi, command, &con->cap, sizeof(con->cap));
++	if (ret < 0) {
++		dev_err(con->ucsi->dev, "GET_CONNECTOR_CAPABILITY failed (%d)\n", ret);
++		return ret;
++	}
++
++	typec_partner_set_pd_revision(con->partner,
++		UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV_AS_BCD(con->cap.flags));
++
++	return ret;
++}
++
+ static int ucsi_check_connection(struct ucsi_connector *con)
+ {
+ 	u8 prev_flags = con->status.flags;
+@@ -925,6 +947,7 @@ static void ucsi_handle_connector_change(struct work_struct *work)
+ 		if (con->status.flags & UCSI_CONSTAT_CONNECTED) {
+ 			ucsi_register_partner(con);
+ 			ucsi_partner_task(con, ucsi_check_connection, 1, HZ);
++			ucsi_partner_task(con, ucsi_check_connector_capability, 1, HZ);
  
- /* -------------------------------------------------------------------------- */
+ 			if (UCSI_CONSTAT_PWR_OPMODE(con->status.flags) ==
+ 			    UCSI_CONSTAT_PWR_OPMODE_PD)
 -- 
 2.43.0.687.g38aa6559b0-goog
 
