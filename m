@@ -1,398 +1,198 @@
-Return-Path: <linux-kernel+bounces-59616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EA5984F9B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:37:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CDE584F9AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:35:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7DCCB28DEA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:36:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66629B255CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD3E82871;
-	Fri,  9 Feb 2024 16:35:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39E927BB03;
+	Fri,  9 Feb 2024 16:35:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pTKvZpHs"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Mg1kKON6"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B285B80C02
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 16:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599F86996B
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 16:34:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707496513; cv=none; b=P9oz+BuxkEQzMwsKpcGPAJ6PMFdSocIbbjJzC7bjZPEguWEwDTQGbQCI/4/goZe30qfCjr4E9RZKe5IiOw8PaaNhu/zuixzsoQ0uKm69wOSVEmsMoCdwGuNu97fMuVjY6eiJ4dBpPqPrRobMWq9RMKhyPinDVhCYiWZpv0F+qaA=
+	t=1707496501; cv=none; b=p/ZmS2DZvrK+kpRhH2ZvfZBdI6y4cETmGy7FBE3NGm6m4zhploH9A5wsyJlImq86cJkvUQx412HeLYaYaH7OPjxsu4fMWXtj/QBmZDHz70/Xz1z0zOKAYqt8AuKmONtraA9cido7en+pQCvDlN7wWsAFPu9j5nZ71y0rNNX/fy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707496513; c=relaxed/simple;
-	bh=yF4snXCigsdD2V4iu9JXl93VeJuVdieGXDlgLcIwa4g=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=iNrjaosERN4z1EefiZ+7bwmjIG//4EOZbDqwUibjxGeHX5UCIqUOnpZJnEg+Qhi2+PlgLpj8iGkefp936hvBjo2uqcfyv7hmPJUSZbfyuXMOdS7fDth1jkGvg1fZQnbyZlFhdALKNpIKmNiyNhZGikBpIamgSahQB0TJPC0NfUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pTKvZpHs; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5ee22efe5eeso22946207b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 08:35:11 -0800 (PST)
+	s=arc-20240116; t=1707496501; c=relaxed/simple;
+	bh=GT3d5XGcWkiMb3Qfy3MdLpMBKnEs3nWCkb7dD+ADAI4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=pcLRuJ+N/iRydr1Y7sT4lOahZXd/wM1pT3YP2sQWYw77p94DCsgA7bwPO72x/Pcbuk4NmEv3Ubb318mkgA7NNPzVxHkBdK++YFPOX7X3LNoxnntKxtyu0+v3CuX473wFYzRR0P4wJaioWskmXJehYhvQItXTxyzqUGs083IA0NQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Mg1kKON6; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a381df83113so124030066b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 08:34:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707496510; x=1708101310; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gMbQC9Qrfc/CHbT/uyUQA9ufo0litTV7XPwdOdKcRAI=;
-        b=pTKvZpHsEcx0X1kiTj54vR/o94Zgp1Q3WwdrXEqK6CYRAJnMpchoHmvAnoFfpgdio/
-         tTDIQtHG+X87bYpgh7wsJ/Zvdkzsd4KtO+WmxZSUO+HN5vyyvUL0bmVkCbhRGUvhVvIR
-         fhRc95FpS2tNjm1fKhHvg11XAQUR/ONPJJuDUc7WEBayCAyfWyJX57B8Eng8PTX9HFK3
-         Ffgs9YFJ9788SrmEX08YdnN0ibsofACvNzSUxYI66AWwAJjXRkfvd2Fmyi9aRVg1NUUj
-         3f9OXPcpPbehl/PmLPBkobHqT5fksOHGa0pq2V9sk9J2VNJwk1uVIlSuejW+WZ6LtPFm
-         h7EQ==
+        d=linaro.org; s=google; t=1707496497; x=1708101297; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2hcO1Laq6zZPmAfJxAD7/PlDw25+j7/RrLike+pBwtg=;
+        b=Mg1kKON6uW6sNkmtFN59zRg9d177CBFN/mA5zl3W0tHsPuLy/8KKeBgFYkacr9BGPe
+         2r9/XmNrazAKpHCzqGAZjcTzxPNIEmvXMrY8Y9yt7FdLZ33asAHBj8/20SSiaHb/04Uf
+         hVEjFDcJ4kPcL/NpgWyOZ62ZJ2TXlxYsklEAkWntQoQMacFTSA8y/IDP3he9PpHEk2yI
+         j33kBnt+Phhm3n+yd6v6COEcw11AOi99aSBdtEmNvhqmZglrAaySLfx4p4A1DPGuQVnX
+         I5dtgPbBBsua7zSwUy8blAQ8sHqBRo8j3k+GwTqELu6npv5HSzs8Ww/xiBcHeVuJJt8/
+         G3/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707496510; x=1708101310;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gMbQC9Qrfc/CHbT/uyUQA9ufo0litTV7XPwdOdKcRAI=;
-        b=sCmHNvAT497PSWwPVYjyHB7bhRFsiMz+olqXss0lrwx0PR1F8UsgSxTW1nTwOTTVPG
-         ZVXejk2WSWpLCutsj0ueP20J0qkQMcRoU1b2rynmMkj+t5NpsDwWuxlF4g8KIHLKzgL8
-         Y0OETQrX/o1Te/1WTFqYrC4aM4aDbcB5C+Ig8jJW/VQxo412JldM3dkWyAm+8p3K2OUF
-         dRlLJHcrUARjpKP5ERbe0A9U0g/q5v9DXTzBsOtHsV77jypqUgUYsqwb9WJFY4ZrJEgE
-         67Ya8AP7upbWCNO2e2f8Aytq1Uu3ppUNcck1FypKc5mBfsJHAYqvQIwPromsEQRgNDLo
-         6jZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX4p7xUCQkGXiryQJ4E8tZzNNpUzpfGk+wUOZYUzUdafHplxxTLbd1vC1C8ZRlOl1H72qlewhHeJMXcLvT5WHMlCCWZiRSun6a1cOqW
-X-Gm-Message-State: AOJu0Ywd5iWh3ZoCPzyQi/SU+b4CT1Yp7fJjeHjx4BWQJE1hJ5bvp7Z2
-	OwMZo6uhrXU1llDRWUbRoe83u/g5YnyqxmQRRMdWO/ekUWkAfPCSH2Q5Ne8tDF7g59o7QHhb57f
-	00XL/jcSv/lZYkCs1kA==
-X-Google-Smtp-Source: AGHT+IF96eh3thbWmXPsFEotE/nIuZhaMMePQq+bRya4JHK69BpL1vobDQ9qaVEC2kAu862eeFtyD7uV3tGcqPa5
-X-Received: from vdonnefort.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2eea])
- (user=vdonnefort job=sendgmr) by 2002:a25:c586:0:b0:dc6:a6e3:ca93 with SMTP
- id v128-20020a25c586000000b00dc6a6e3ca93mr46762ybe.10.1707496510734; Fri, 09
- Feb 2024 08:35:10 -0800 (PST)
-Date: Fri,  9 Feb 2024 16:34:48 +0000
-In-Reply-To: <20240209163448.944970-1-vdonnefort@google.com>
+        d=1e100.net; s=20230601; t=1707496497; x=1708101297;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2hcO1Laq6zZPmAfJxAD7/PlDw25+j7/RrLike+pBwtg=;
+        b=bCinYccjH18TU/ZHKNgVJlv2BrfQ5OVYiJoCHqfeq4+V6iH2BLw6Rex7PDn7ZD3Akn
+         G2Wq4JBCTvH1PAw7rX16E4EOeoMHHxtqfX/CVC2cM+TgB+UmSVdUQigzTuZxtoZekfY9
+         0MNKtYjBT0fONjC8uV504FMqIGITYIC1lee4XUw1B8Z9xh+zSsjRS9x9ehKvybUYzyAg
+         RCuCL5X4kjzzU1WAfybHN9VKfQbNbJbg+EBzMtPRegLMbpJP3JNYh8jn2AOSDPYwa0Km
+         ckCqcWauAQoFchTzxfnrc0KGMa19SRTT/PnOqgPMzVG6Yv5j6eST/wgO/csC61xaLZM/
+         aHpw==
+X-Gm-Message-State: AOJu0Ywv+JNB4ydfR7pS8DM/66HDt4SadQVa02+RhnwWAm5QyFrWHBw+
+	k47RRVgv3oTURi8JVLdU6D9w49rQpLGk8tvE+oHt8aNVKaklMWg2/Y1G+8wRqss=
+X-Google-Smtp-Source: AGHT+IEuzGvqOx+CJn8+ngQ6wq+yNcOQ5SwMgj65i/w5xebwMp/JUWhvk16to16y5nw6Ab/qtlNpZw==
+X-Received: by 2002:a17:906:a846:b0:a3c:6ef:70d5 with SMTP id dx6-20020a170906a84600b00a3c06ef70d5mr815662ejb.7.1707496497544;
+        Fri, 09 Feb 2024 08:34:57 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWNR1Wu0AH7TwRM1cyf+4y6hmwU09apaGNrtSLxqPAf+cLkcsVRhyWgIvi4vpxxzu0QNlNPayZ3VTfMG6RCijGEgQCB0rkEJgIpnfkDiGFqbdjd0nZUm6vTVgy8I5CnzW7STTAANw1qbybuLddOv2wgh+6/VwxRZ+zfU5kO/MmoNrk+NLyu+BhD33XPcH0cQM4rke24hmm4e+yAryncn6neGe/PYayf/AmCLbPv28rqdL5w3Lcf8hfNEJBDaA5p604pPETmyMsbv0kBPgOdFKOPdaif1nLenjXfrMRdmCLxlWJ1j7yJcg==
+Received: from localhost.localdomain ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id wt11-20020a170906ee8b00b00a389d911606sm911203ejb.88.2024.02.09.08.34.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 08:34:56 -0800 (PST)
+From: srinivas.kandagatla@linaro.org
+To: gregkh@linuxfoundation.org
+Cc: linux-kernel@vger.kernel.org,
+	Arnd Bergmann <arnd@arndb.de>,
+	regressions@lists.linux.dev,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Chen-Yu Tsai <wenst@chromium.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	asahi@lists.linux.dev,
+	Sven Peter <sven@svenpeter.dev>
+Subject: [PATCH] nvmem: include bit index in cell sysfs file name
+Date: Fri,  9 Feb 2024 16:34:54 +0000
+Message-Id: <20240209163454.98051-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240209163448.944970-1-vdonnefort@google.com>
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240209163448.944970-7-vdonnefort@google.com>
-Subject: [PATCH v16 6/6] ring-buffer/selftest: Add ring-buffer mapping test
-From: Vincent Donnefort <vdonnefort@google.com>
-To: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Cc: mathieu.desnoyers@efficios.com, kernel-team@android.com, 
-	Vincent Donnefort <vdonnefort@google.com>, Shuah Khan <shuah@kernel.org>, 
-	Shuah Khan <skhan@linuxfoundation.org>, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4621; i=srinivas.kandagatla@linaro.org; h=from:subject; bh=f5Yj5EdsIahQdYEwLhKw5sXoADI6Fd5YUQv5rR1Hhoc=; b=owEBbQGS/pANAwAKAXqh/VnHNFU3AcsmYgBlxlQuDY7GMTl1T49CKqNQ63pn3xdIimhBS5Od0 aKoOl/PBMWJATMEAAEKAB0WIQQi509axvzi9vce3Y16of1ZxzRVNwUCZcZULgAKCRB6of1ZxzRV N97HCACSwnmn4enb2qu29UKONCkfhIhpIoD9WfAgFcjle9dvo+P0ecCCcnljzrVOcA/CXT8OoXz +lXNUhjaTsvy3io6HKTj7GvnBrb6aYhnRHcYGOXp7o/SQaagtSQt02RBwCHiR82N+lZ7F58t1LB pS9iwEGhmRs+tAbpTMKuufERPmX+XaFJgU6tfLfRCPrQhV8Z/RbRy6dIcJkOev5oq1ZK7XUSy8V LBsib3t6ayY2R8y68JLfI62/VsFrr+jMQNj5KyX8EHudTjxNzXAbU6+iqEE6bTWT0HeHyVikcOX FbjG/ghUU0zcdYEE1LHKyAvYAqqIkE4yRz3HOaE6J+ysfaQH
+X-Developer-Key: i=srinivas.kandagatla@linaro.org; a=openpgp; fpr=ED6472765AB36EC43B3EF97AD77E3FC0562560D6
+Content-Transfer-Encoding: 8bit
 
-This test maps a ring-buffer and validate the meta-page after reset and
-after emitting few events.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
+Creating sysfs files for all Cells caused a boot failure for linux-6.8-rc1 on
+Apple M1, which (in downstream dts files) has multiple nvmem cells that use the
+same byte address. This causes the device probe to fail with
 
-diff --git a/tools/testing/selftests/ring-buffer/Makefile b/tools/testing/selftests/ring-buffer/Makefile
-new file mode 100644
-index 000000000000..627c5fa6d1ab
---- /dev/null
-+++ b/tools/testing/selftests/ring-buffer/Makefile
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0
-+CFLAGS += -Wl,-no-as-needed -Wall
-+CFLAGS += $(KHDR_INCLUDES)
-+CFLAGS += -D_GNU_SOURCE
-+
-+TEST_GEN_PROGS = map_test
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/ring-buffer/config b/tools/testing/selftests/ring-buffer/config
-new file mode 100644
-index 000000000000..d936f8f00e78
---- /dev/null
-+++ b/tools/testing/selftests/ring-buffer/config
-@@ -0,0 +1,2 @@
-+CONFIG_FTRACE=y
-+CONFIG_TRACER_SNAPSHOT=y
-diff --git a/tools/testing/selftests/ring-buffer/map_test.c b/tools/testing/selftests/ring-buffer/map_test.c
-new file mode 100644
-index 000000000000..56c44b29d998
---- /dev/null
-+++ b/tools/testing/selftests/ring-buffer/map_test.c
-@@ -0,0 +1,273 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Ring-buffer memory mapping tests
-+ *
-+ * Copyright (c) 2024 Vincent Donnefort <vdonnefort@google.com>
-+ */
-+#include <fcntl.h>
-+#include <sched.h>
-+#include <stdbool.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+
-+#include <linux/trace_mmap.h>
-+
-+#include <sys/mman.h>
-+#include <sys/ioctl.h>
-+
-+#include "../user_events/user_events_selftests.h" /* share tracefs setup */
-+#include "../kselftest_harness.h"
-+
-+#define TRACEFS_ROOT "/sys/kernel/tracing"
-+
-+static int __tracefs_write(const char *path, const char *value)
-+{
-+	int fd, ret;
-+
-+	fd = open(path, O_WRONLY | O_TRUNC);
-+	if (fd < 0)
-+		return fd;
-+
-+	ret = write(fd, value, strlen(value));
-+
-+	close(fd);
-+
-+	return ret == -1 ? -errno : 0;
-+}
-+
-+static int __tracefs_write_int(const char *path, int value)
-+{
-+	char *str;
-+	int ret;
-+
-+	if (asprintf(&str, "%d", value) < 0)
-+		return -1;
-+
-+	ret = __tracefs_write(path, str);
-+
-+	free(str);
-+
-+	return ret;
-+}
-+
-+#define tracefs_write_int(path, value) \
-+	ASSERT_EQ(__tracefs_write_int((path), (value)), 0)
-+
-+#define tracefs_write(path, value) \
-+	ASSERT_EQ(__tracefs_write((path), (value)), 0)
-+
-+static int tracefs_reset(void)
-+{
-+	if (__tracefs_write_int(TRACEFS_ROOT"/tracing_on", 0))
-+		return -1;
-+	if (__tracefs_write(TRACEFS_ROOT"/trace", ""))
-+		return -1;
-+	if (__tracefs_write(TRACEFS_ROOT"/set_event", ""))
-+		return -1;
-+	if (__tracefs_write(TRACEFS_ROOT"/current_tracer", "nop"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+struct tracefs_cpu_map_desc {
-+	struct trace_buffer_meta	*meta;
-+	void				*data;
-+	int				cpu_fd;
-+};
-+
-+int tracefs_cpu_map(struct tracefs_cpu_map_desc *desc, int cpu)
-+{
-+	unsigned long meta_len, data_len;
-+	int page_size = getpagesize();
-+	char *cpu_path;
-+	void *map;
-+
-+	if (asprintf(&cpu_path,
-+		     TRACEFS_ROOT"/per_cpu/cpu%d/trace_pipe_raw",
-+		     cpu) < 0)
-+		return -ENOMEM;
-+
-+	desc->cpu_fd = open(cpu_path, O_RDONLY | O_NONBLOCK);
-+	free(cpu_path);
-+	if (desc->cpu_fd < 0)
-+		return -ENODEV;
-+
-+	map = mmap(NULL, page_size, PROT_READ, MAP_SHARED, desc->cpu_fd, 0);
-+	if (map == MAP_FAILED)
-+		return -errno;
-+
-+	desc->meta = (struct trace_buffer_meta *)map;
-+
-+	meta_len = desc->meta->meta_page_size;
-+	data_len = desc->meta->subbuf_size * desc->meta->nr_subbufs;
-+
-+	map = mmap(NULL, data_len, PROT_READ, MAP_SHARED, desc->cpu_fd, meta_len);
-+	if (map == MAP_FAILED) {
-+		munmap(desc->meta, desc->meta->meta_page_size);
-+		return -EINVAL;
-+	}
-+
-+	desc->data = map;
-+
-+	return 0;
-+}
-+
-+void tracefs_cpu_unmap(struct tracefs_cpu_map_desc *desc)
-+{
-+	munmap(desc->data, desc->meta->subbuf_size * desc->meta->nr_subbufs);
-+	munmap(desc->meta, desc->meta->meta_page_size);
-+	close(desc->cpu_fd);
-+}
-+
-+FIXTURE(map) {
-+	struct tracefs_cpu_map_desc	map_desc;
-+	bool				umount;
-+};
-+
-+FIXTURE_VARIANT(map) {
-+	int	subbuf_size;
-+};
-+
-+FIXTURE_VARIANT_ADD(map, subbuf_size_4k) {
-+	.subbuf_size = 4,
-+};
-+
-+FIXTURE_VARIANT_ADD(map, subbuf_size_8k) {
-+	.subbuf_size = 8,
-+};
-+
-+FIXTURE_SETUP(map)
-+{
-+	int cpu = sched_getcpu();
-+	cpu_set_t cpu_mask;
-+	bool fail, umount;
-+	char *message;
-+
-+	if (!tracefs_enabled(&message, &fail, &umount)) {
-+		if (fail) {
-+			TH_LOG("Tracefs setup failed: %s", message);
-+			ASSERT_FALSE(fail);
-+		}
-+		SKIP(return, "Skipping: %s", message);
-+	}
-+
-+	self->umount = umount;
-+
-+	ASSERT_GE(cpu, 0);
-+
-+	ASSERT_EQ(tracefs_reset(), 0);
-+
-+	tracefs_write_int(TRACEFS_ROOT"/buffer_subbuf_size_kb", variant->subbuf_size);
-+
-+	ASSERT_EQ(tracefs_cpu_map(&self->map_desc, cpu), 0);
-+
-+	/*
-+	 * Ensure generated events will be found on this very same ring-buffer.
-+	 */
-+	CPU_ZERO(&cpu_mask);
-+	CPU_SET(cpu, &cpu_mask);
-+	ASSERT_EQ(sched_setaffinity(0, sizeof(cpu_mask), &cpu_mask), 0);
-+}
-+
-+FIXTURE_TEARDOWN(map)
-+{
-+	tracefs_reset();
-+
-+	if (self->umount)
-+		tracefs_unmount();
-+
-+	tracefs_cpu_unmap(&self->map_desc);
-+}
-+
-+TEST_F(map, meta_page_check)
-+{
-+	struct tracefs_cpu_map_desc *desc = &self->map_desc;
-+	int cnt = 0;
-+
-+	ASSERT_EQ(desc->meta->entries, 0);
-+	ASSERT_EQ(desc->meta->overrun, 0);
-+	ASSERT_EQ(desc->meta->read, 0);
-+
-+	ASSERT_EQ(desc->meta->reader.id, 0);
-+	ASSERT_EQ(desc->meta->reader.read, 0);
-+
-+	ASSERT_EQ(ioctl(desc->cpu_fd, TRACE_MMAP_IOCTL_GET_READER), 0);
-+	ASSERT_EQ(desc->meta->reader.id, 0);
-+
-+	tracefs_write_int(TRACEFS_ROOT"/tracing_on", 1);
-+	for (int i = 0; i < 16; i++)
-+		tracefs_write_int(TRACEFS_ROOT"/trace_marker", i);
-+again:
-+	ASSERT_EQ(ioctl(desc->cpu_fd, TRACE_MMAP_IOCTL_GET_READER), 0);
-+
-+	ASSERT_EQ(desc->meta->entries, 16);
-+	ASSERT_EQ(desc->meta->overrun, 0);
-+	ASSERT_EQ(desc->meta->read, 16);
-+
-+	ASSERT_EQ(desc->meta->reader.id, 1);
-+
-+	if (!(cnt++))
-+		goto again;
-+}
-+
-+FIXTURE(snapshot) {
-+	bool	umount;
-+};
-+
-+FIXTURE_SETUP(snapshot)
-+{
-+	bool fail, umount;
-+	struct stat sb;
-+	char *message;
-+
-+	if (stat(TRACEFS_ROOT"/snapshot", &sb))
-+		SKIP(return, "Skipping: %s", "snapshot not available");
-+
-+	if (!tracefs_enabled(&message, &fail, &umount)) {
-+		if (fail) {
-+			TH_LOG("Tracefs setup failed: %s", message);
-+			ASSERT_FALSE(fail);
-+		}
-+		SKIP(return, "Skipping: %s", message);
-+	}
-+
-+	self->umount = umount;
-+}
-+
-+FIXTURE_TEARDOWN(snapshot)
-+{
-+	__tracefs_write(TRACEFS_ROOT"/events/sched/sched_switch/trigger",
-+			"!snapshot");
-+	tracefs_reset();
-+
-+	if (self->umount)
-+		tracefs_unmount();
-+}
-+
-+TEST_F(snapshot, excludes_map)
-+{
-+	struct tracefs_cpu_map_desc map_desc;
-+	int cpu = sched_getcpu();
-+
-+	ASSERT_GE(cpu, 0);
-+	tracefs_write(TRACEFS_ROOT"/events/sched/sched_switch/trigger",
-+		      "snapshot");
-+	ASSERT_EQ(tracefs_cpu_map(&map_desc, cpu), -EBUSY);
-+}
-+
-+TEST_F(snapshot, excluded_by_map)
-+{
-+	struct tracefs_cpu_map_desc map_desc;
-+	int cpu = sched_getcpu();
-+
-+	ASSERT_EQ(tracefs_cpu_map(&map_desc, cpu), 0);
-+
-+	ASSERT_EQ(__tracefs_write(TRACEFS_ROOT"/events/sched/sched_switch/trigger",
-+				  "snapshot"), -EBUSY);
-+	ASSERT_EQ(__tracefs_write(TRACEFS_ROOT"/snapshot",
-+				  "1"), -EBUSY);
-+}
-+
-+TEST_HARNESS_MAIN
+[    0.605336] sysfs: cannot create duplicate filename '/devices/platform/soc@200000000/2922bc000.efuse/apple_efuses_nvmem0/cells/efuse@a10'
+[    0.605347] CPU: 7 PID: 1 Comm: swapper/0 Tainted: G S                 6.8.0-rc1-arnd-5+ #133
+[    0.605355] Hardware name: Apple Mac Studio (M1 Ultra, 2022) (DT)
+[    0.605362] Call trace:
+[    0.605365]  show_stack+0x18/0x2c
+[    0.605374]  dump_stack_lvl+0x60/0x80
+[    0.605383]  dump_stack+0x18/0x24
+[    0.605388]  sysfs_warn_dup+0x64/0x80
+[    0.605395]  sysfs_add_bin_file_mode_ns+0xb0/0xd4
+[    0.605402]  internal_create_group+0x268/0x404
+[    0.605409]  sysfs_create_groups+0x38/0x94
+[    0.605415]  devm_device_add_groups+0x50/0x94
+[    0.605572]  nvmem_populate_sysfs_cells+0x180/0x1b0
+[    0.605682]  nvmem_register+0x38c/0x470
+[    0.605789]  devm_nvmem_register+0x1c/0x6c
+[    0.605895]  apple_efuses_probe+0xe4/0x120
+[    0.606000]  platform_probe+0xa8/0xd0
+
+As far as I can tell, this is a problem for any device with multiple cells on
+different bits of the same address. Avoid the issue by changing the file name
+to include the first bit number.
+
+Fixes: 0331c611949f ("nvmem: core: Expose cells through sysfs")
+Link: https://github.com/AsahiLinux/linux/blob/bd0a1a7d4/arch/arm64/boot/dts/apple/t600x-dieX.dtsi#L156
+Cc: regressions@lists.linux.dev
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Rafał Miłecki <rafal@milecki.pl>
+Cc: Chen-Yu Tsai <wenst@chromium.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: asahi@lists.linux.dev
+Cc: Sven Peter <sven@svenpeter.dev>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+Hi Greg, 
+
+Here is a fix in nvmem for 6.8, could you queue these for next possible rc.
+
+Did not cc Stable as this is only targeted for 6.8 and no backporting is
+required.
+
+Thanks,
+Srini
+
+ Documentation/ABI/testing/sysfs-nvmem-cells | 16 ++++++++--------
+ drivers/nvmem/core.c                        |  5 +++--
+ 2 files changed, 11 insertions(+), 10 deletions(-)
+
+diff --git a/Documentation/ABI/testing/sysfs-nvmem-cells b/Documentation/ABI/testing/sysfs-nvmem-cells
+index 7af70adf3690..c7c9444f92a8 100644
+--- a/Documentation/ABI/testing/sysfs-nvmem-cells
++++ b/Documentation/ABI/testing/sysfs-nvmem-cells
+@@ -4,18 +4,18 @@ KernelVersion:	6.5
+ Contact:	Miquel Raynal <miquel.raynal@bootlin.com>
+ Description:
+ 		The "cells" folder contains one file per cell exposed by the
+-		NVMEM device. The name of the file is: <name>@<where>, with
+-		<name> being the cell name and <where> its location in the NVMEM
+-		device, in hexadecimal (without the '0x' prefix, to mimic device
+-		tree node names). The length of the file is the size of the cell
+-		(when known). The content of the file is the binary content of
+-		the cell (may sometimes be ASCII, likely without trailing
+-		character).
++		NVMEM device. The name of the file is: "<name>@<byte>,<bit>",
++		with <name> being the cell name and <where> its location in
++		the NVMEM device, in hexadecimal bytes and bits (without the
++		'0x' prefix, to mimic device tree node names). The length of
++		the file is the size of the cell (when known). The content of
++		the file is the binary content of the cell (may sometimes be
++		ASCII, likely without trailing character).
+ 		Note: This file is only present if CONFIG_NVMEM_SYSFS
+ 		is enabled.
+ 
+ 		Example::
+ 
+-		  hexdump -C /sys/bus/nvmem/devices/1-00563/cells/product-name@d
++		  hexdump -C /sys/bus/nvmem/devices/1-00563/cells/product-name@d,0
+ 		  00000000  54 4e 34 38 4d 2d 50 2d  44 4e         |TN48M-P-DN|
+ 		  0000000a
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index 980123fb4dde..eb357ac2e54a 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -460,8 +460,9 @@ static int nvmem_populate_sysfs_cells(struct nvmem_device *nvmem)
+ 	list_for_each_entry(entry, &nvmem->cells, node) {
+ 		sysfs_bin_attr_init(&attrs[i]);
+ 		attrs[i].attr.name = devm_kasprintf(&nvmem->dev, GFP_KERNEL,
+-						    "%s@%x", entry->name,
+-						    entry->offset);
++						    "%s@%x,%x", entry->name,
++						    entry->offset,
++						    entry->bit_offset);
+ 		attrs[i].attr.mode = 0444;
+ 		attrs[i].size = entry->bytes;
+ 		attrs[i].read = &nvmem_cell_attr_read;
 -- 
-2.43.0.687.g38aa6559b0-goog
+2.25.1
 
 
