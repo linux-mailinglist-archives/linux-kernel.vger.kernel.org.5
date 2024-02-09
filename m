@@ -1,58 +1,59 @@
-Return-Path: <linux-kernel+bounces-58926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D46084EEB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:59:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D108984EEB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:59:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E5AA1C24560
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E0FC1F26E61
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 01:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6DE5C96;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A31B75C89;
 	Fri,  9 Feb 2024 01:58:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="c3DSh6zr"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="Jd8arB0i"
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2854C8B
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 01:58:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59CF34C98
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 01:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707443937; cv=none; b=nRxC1vl7ASihYKLLD3QSifQ7RZQnR9xxlHdDuUGt0UJ1ZcmneDT7j1opp+kj7Eo/ZrSR2wGP5rgR6gLjKPlMnkgNnc77cS+uRVoxyt7H0HqjjsE85R4RDSiY9ms7X+OD/FabOr1N8Sxk8khRw0AQE5sG3A0H/7+z9DY+OCDFgzI=
+	t=1707443936; cv=none; b=u/EaKnthXqCj5wSl7e6LtafLXkmXk3haacbcp66/UYfHRXjewj2tPTdLvOLmgPjVnJ8IBq15GkIF3vCn4zH4ETsoMNpUi0S1b6oDKIQBLs1qzfvocf0ILk8WPmBXO8/xfXvY/fH/qsgLLTzY+zcPHCtQncp/qL2wLC02hS2/cF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707443937; c=relaxed/simple;
-	bh=SPMEhHXZ2gMON2Fdo5+psoDe8TKEgrIzCRXmLgoZkEo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ihuFTJt2EXgIcR+zI8US4hI4SK/rJ1fInKpQg13YfbBQwGqlq5maIh5pduOfRqqAfiqkoIqyELDsiJTXZWJKF+yoBPP/3pL4QKFuNe1AzWguc3YntaWeFzLlk6nMK3Ju9j7845vs1ilpd9DAbrKLBFGfhcBElFR5uPPkdve+YAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=c3DSh6zr; arc=none smtp.client-ip=194.117.254.33
+	s=arc-20240116; t=1707443936; c=relaxed/simple;
+	bh=9K4qlpEjpmKzBQgUkXVOyjVzOou7v33BoUG8m6CCbGg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Nfzgjyto8YJ5DciCs88kurPr0h1e5vgs4+cPgqQ7+stMq6XK2WNVrtXxThnTgxqwCTHhGeExiaIffgInEzkuQT5fDZyC3VlhIrGPxcWzv2Yucwg93LT8eIuxz5Lzz1UtJMkQvh/mPVZoyj/cTCl/88fQcB6JghCAGYaz9hkRn6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=Jd8arB0i; arc=none smtp.client-ip=194.117.254.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
-	:mime-version:content-transfer-encoding; s=k1; bh=JkJiI1zdweLmw5
-	Brm11cP7jfynZIq7IJZmwIfkRRQnI=; b=c3DSh6zrTbJpNGfC2mXlrduQsNlpSf
-	C1KH2X+l+7gzNtMC69FHqTeiQkGUoW2BimDdKRoGWn+J/50DvhojlV4OW1yMFWOC
-	O6BpRoGF+YftBK/l2LtBIPnXT1gUz8HJ86GkvTIkwC8by9mJMEXemQaYkoq3CbdS
-	UcQ60GfRSQa4gzucpuljhoNjaw/7F7Wvf0TVDPWdmPWTPoL0Vi7i0UM/E0THMRhp
-	xWKNFy+phsoHzC/LutXtrUtwsn3JkiCB4srGwV6/vGK069TYqHQf9VLILaOzhBJJ
-	vW6BrmdEbO/2FD5ISHMbpyoSq0tmelNsJxjVPTgNqbxADpe3G8SlyDhQ==
-Received: (qmail 2792257 invoked from network); 9 Feb 2024 02:58:43 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 9 Feb 2024 02:58:43 +0100
-X-UD-Smtp-Session: l3s3148p1@sBmIROkQMuMujnsZ
+	:in-reply-to:references:mime-version:content-transfer-encoding;
+	 s=k1; bh=hIePBzSeO/3D5e76oY9PllApDN+OlYoSau4JtfpyyAk=; b=Jd8arB
+	0i5IIIb0whlyKCAitOeYKO1e7xb+GvxxzHcNJ5DKkhmkybovHTeuPK7r9ojaZ2aU
+	CpnWUxAFKB1/6PCrDrnbQ2kQc0vcNH2wEn0rFZ5CrA5bmBMt/7Pn66V8puLBNg9h
+	BdL9loFJI/xBSBM3m+R8V1RH7g1s4VgBvLLzWSkGe+DuVrj+rzhXsYNpQtxMGTWu
+	w/VMNozjtDk0iVULKmdrXMCUq6UboeoP8VuRkWi701M0A3Lva9cQiq+44+C3dSCh
+	FzPAvuzvJxNkgr2na5+7VqJi98JBaCDacvKeHm3g8p3vrXgRZ8jp2fOdehLdU/Gc
+	rU2drZp6BMsFEaLQ==
+Received: (qmail 2792299 invoked from network); 9 Feb 2024 02:58:45 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 9 Feb 2024 02:58:45 +0100
+X-UD-Smtp-Session: l3s3148p1@TGKaROkQdLMujnsZ
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-renesas-soc@vger.kernel.org
 Cc: Lee Jones <lee@kernel.org>,
 	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-mmc@vger.kernel.org,
-	linux-sh@vger.kernel.org
-Subject: [PATCH 0/6] mfd: tmio: simplify header and move to platform_data
-Date: Fri,  9 Feb 2024 02:58:15 +0100
-Message-ID: <20240209015817.14627-8-wsa+renesas@sang-engineering.com>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/6] mfd: tmio: remove obsolete platform_data
+Date: Fri,  9 Feb 2024 02:58:16 +0100
+Message-ID: <20240209015817.14627-9-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240209015817.14627-8-wsa+renesas@sang-engineering.com>
+References: <20240209015817.14627-8-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,49 +62,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The MFD parts of the TMIO have been removed by Arnd, so that only the
-SD/MMC related functionality is left. Remove the outdated remains in the
-public header file and then move it to platform_data as the data is now
-specific for the SD/MMC part.
+With commit 8971bb812e3c ("mfd: remove toshiba tmio drivers"), all users
+of platform data for NAND and framebuffers are gone. So, remove
+definitions from the header, too.
 
-Based on 6.8-rc3, build bot is happy. Branch is here:
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
+ include/linux/mfd/tmio.h | 27 ---------------------------
+ 1 file changed, 27 deletions(-)
 
-git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git renesas/sdhi/tmio-simplification
-
-I'd suggest this goes via the MFD tree, so the series would need acks
-from the MMC and SH maintainers. Is that okay with everyone?
-
-All the best!
-
-   Wolfram
-
-
-Wolfram Sang (6):
-  mfd: tmio: remove obsolete platform_data
-  mfd: tmio: remove obsolete io accessors
-  mmc: tmio/sdhi: fix includes
-  mfd: tmio: update include files
-  mfd: tmio: sanitize comments
-  mfd: tmio: move header to platform_data
-
- MAINTAINERS                                   |   2 +-
- arch/sh/boards/board-sh7757lcr.c              |   2 +-
- arch/sh/boards/mach-ap325rxa/setup.c          |   2 +-
- arch/sh/boards/mach-ecovec24/setup.c          |   2 +-
- arch/sh/boards/mach-kfr2r09/setup.c           |   2 +-
- arch/sh/boards/mach-migor/setup.c             |   2 +-
- arch/sh/boards/mach-se/7724/setup.c           |   2 +-
- drivers/mmc/host/renesas_sdhi_core.c          |   2 +-
- drivers/mmc/host/renesas_sdhi_internal_dmac.c |   5 +-
- drivers/mmc/host/renesas_sdhi_sys_dmac.c      |   5 +-
- drivers/mmc/host/tmio_mmc_core.c              |   3 +-
- drivers/mmc/host/uniphier-sd.c                |   2 +-
- include/linux/mfd/tmio.h                      | 133 ------------------
- include/linux/platform_data/tmio.h            |  64 +++++++++
- 14 files changed, 81 insertions(+), 147 deletions(-)
- delete mode 100644 include/linux/mfd/tmio.h
- create mode 100644 include/linux/platform_data/tmio.h
-
+diff --git a/include/linux/mfd/tmio.h b/include/linux/mfd/tmio.h
+index eace8ea6cda0..bc53323293a3 100644
+--- a/include/linux/mfd/tmio.h
++++ b/include/linux/mfd/tmio.h
+@@ -103,31 +103,4 @@ struct tmio_mmc_data {
+ 	void (*set_pwr)(struct platform_device *host, int state);
+ 	void (*set_clk_div)(struct platform_device *host, int state);
+ };
+-
+-/*
+- * data for the NAND controller
+- */
+-struct tmio_nand_data {
+-	struct nand_bbt_descr	*badblock_pattern;
+-	struct mtd_partition	*partition;
+-	unsigned int		num_partitions;
+-	const char *const	*part_parsers;
+-};
+-
+-#define FBIO_TMIO_ACC_WRITE	0x7C639300
+-#define FBIO_TMIO_ACC_SYNC	0x7C639301
+-
+-struct tmio_fb_data {
+-	int			(*lcd_set_power)(struct platform_device *fb_dev,
+-						 bool on);
+-	int			(*lcd_mode)(struct platform_device *fb_dev,
+-					    const struct fb_videomode *mode);
+-	int			num_modes;
+-	struct fb_videomode	*modes;
+-
+-	/* in mm: size of screen */
+-	int			height;
+-	int			width;
+-};
+-
+ #endif
 -- 
 2.43.0
 
