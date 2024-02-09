@@ -1,311 +1,119 @@
-Return-Path: <linux-kernel+bounces-59066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D80584F0B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:24:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7246684F0BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:25:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B2F71F250EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:24:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3F781C250C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E5C66B4F;
-	Fri,  9 Feb 2024 07:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A36D657D3;
+	Fri,  9 Feb 2024 07:25:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=siemens.com header.i=jan.kiszka@siemens.com header.b="amoRMDmm"
-Received: from mta-65-226.siemens.flowmailer.net (mta-65-226.siemens.flowmailer.net [185.136.65.226])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YIsvn0/P"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3337657BD
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 07:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.65.226
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A70F4657B7;
+	Fri,  9 Feb 2024 07:25:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707463415; cv=none; b=qxt3HDHBXSby5Nxb1K7xEX+NwZD/UaRUBjyX4vjU760WOeONY/N8TFfdjU/0WeWDVWnZUbXyC6jiXnQdUagoYrYxxWsOv5JlXQ1eEzxbn8cJjJoz3h4DuoEsKBhUkFSO78MHDxP9v/QoVi4oh1QAhoBXhNoLN010EaSBvVF/fQI=
+	t=1707463502; cv=none; b=Qr0WIhq+6SVJshfdsdrfzk48QmSnrRhYERcWKSFfuoCDBjX6ZLvbPxs+TrpXnerOh7flN7MlcEItLjmBXKlQXuDCIzlzuIb3JTOx/Hcnav9s4RVrS9O4DHmXOmrYwnwm0etDAHhy2lKMPVfn2lplnILJGG9ecp4eyv3Tnib7s3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707463415; c=relaxed/simple;
-	bh=EK1dV/tGQeNnhKQCCrJYbKWe9D9QottrRB/hz9H5prA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Q8J1H2z9q9B86rWvYaZ4yLmxN21SL1eR7N823nEx+8+h+F1SzO1yJ/G9hEHa8SIzTleTqmerQR/Stco00MWmdgp7B/3B6XIzZ0NcO1BArT2K8skGbM33N0LNjpf9a+aJT2loqBEDFhGZXdx3+C+y6WNSCZm/um907cpBs6+aJdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (1024-bit key) header.d=siemens.com header.i=jan.kiszka@siemens.com header.b=amoRMDmm; arc=none smtp.client-ip=185.136.65.226
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
-Received: by mta-65-226.siemens.flowmailer.net with ESMTPSA id 20240209072325c8b9f5611926f4760e
-        for <linux-kernel@vger.kernel.org>;
-        Fri, 09 Feb 2024 08:23:25 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=jan.kiszka@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
- bh=2fphVzn5TClGAXrWyABRrXyXn1PWVjhfFBB6PlBwdso=;
- b=amoRMDmmz8QmqBi+BVVZV3iuvsuKWhlITiHpJbQg2A8aEdmS5r57j91AoRbSnH9zzyLELS
- NT+Um/3oxmk9bVquWwzwQD+Uq78NAnvBWmJYCF6Gomqp0MqsUmoQpVcxu9paz2qKcVtjUvZQ
- kowr6VmB3KlRyP+4r+oDxrRCDWLPM=;
-From: Jan Kiszka <jan.kiszka@siemens.com>
-To: Nishanth Menon <nm@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	Bao Cheng Su <baocheng.su@siemens.com>,
-	Chao Zeng <chao.zeng@siemens.com>,
-	Li Hua Qian <huaqian.li@siemens.com>
-Subject: [PATCH v3 7/7] arm64: dts: ti: iot2050: Support IOT2050-SM variant
-Date: Fri,  9 Feb 2024 08:23:21 +0100
-Message-Id: <d24e920547986499f6e8e39c833e414679b12ab4.1707463401.git.jan.kiszka@siemens.com>
-In-Reply-To: <cover.1707463401.git.jan.kiszka@siemens.com>
-References: <cover.1707463401.git.jan.kiszka@siemens.com>
+	s=arc-20240116; t=1707463502; c=relaxed/simple;
+	bh=rsmnzsz5GNmHcSYK3iHXVA/WXaZ8lTmW8zulPyJVVGI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o2drAx3tAG6ByZJ7Ws0y9B+NpAGDXxBkCsxyDgH3YcryoZgrsjfh3v7+X116X5LdDDrJT9e0AWFiXvYG+K2JhnGqPf/SyNFzGDksrbelmK7b5zN5QXWBoYv5QiRbOfOCv90usHuZzMyMNcSSditCL5oFcoS5OLlPpHC8ccVcoBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YIsvn0/P; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5116b540163so1014546e87.1;
+        Thu, 08 Feb 2024 23:25:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707463498; x=1708068298; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pdG3hSNGGNzr2pOTIyIMpLiclcO5pq5s1cnkvilc9io=;
+        b=YIsvn0/PyPivVoKOpLN3vPf+532I11c3ka3S8BXtkAGHQ4/rGysDTBHjI4L/p3rPyb
+         e1wjHHX/7c+G/q+oMsuUq/8TbSv3MXGbFZpf0G8ujCMowcFgon+GUzb2PywvVBz7wAOp
+         DrMxTJlTUH2775e5/WtSHjceR99vus/OOLrzR4RTBr0OUOcscDMWur9g+2tG3I6Dl4kK
+         ukoQe+8tbStfq++Q7UzsLTbtkyxfque/hduCjvlHafl9Ldc/QtA6E8FjdA8N8FWKw3Rq
+         QqGtYP1Wp7dH+ozWqobxyjt7Pr5KoZKyYPRBvZKY+l9EETmo42+IivcI77pQho0GXaw3
+         3dJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707463498; x=1708068298;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pdG3hSNGGNzr2pOTIyIMpLiclcO5pq5s1cnkvilc9io=;
+        b=hfQ3SzBU2+aphW1S/6im6IkplwOj9HAc71kclbdbJEMkcoR5vxJKVlkHjMg66T8zz3
+         LVIdrHlllI8YbJ4/ze+1ZquF8NFArneL47ZUbi0zWZ4/cqZ6q9lokl3VIrgxFkREFmev
+         jVyM62BHY2TZfRAwLmTaxFV1PKC+ummtyWce7nhy39KxmyQEfNp30q9Qd+/6mXhh/lD3
+         on6sJujLZPT5vDHCVSNLYfJn9vDBVSEuv7+I+z509FSokAIBsemfkRbnSdIXBqDfY74N
+         uK9NQYnGt6OO9isoz7xCrQPoBILgRJjTWX40OJI5M4umG+sT2aU2wWwYvJsi/mCzPUYj
+         VxMA==
+X-Gm-Message-State: AOJu0Yx6RESia4VRi1pIXapAxF3Hp0jH1SHKbBPhSTvVeM92ZFMjXf8E
+	xw4sFoTu6sJ0Wrt/5oofrLnQsOLOElXy2bZtQuic/QZGv9TPN1m9
+X-Google-Smtp-Source: AGHT+IFb0xkO87iajvnu/RbrVAPg0isliEel8BvJnRkKJGUPpTxcrJm/nJ0DjzFAmMTSwgwn4ZHkXw==
+X-Received: by 2002:ac2:5382:0:b0:511:4e6a:52fd with SMTP id g2-20020ac25382000000b005114e6a52fdmr423108lfh.3.1707463498323;
+        Thu, 08 Feb 2024 23:24:58 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVmi3o04Mdh3bqS+nHOZJmxKHpty+1hF0QEis1iuO4IqPlOp4kP98t7IUFwkPEa7qgTROukdKO5UVrwk0cWNyAqh6wShS8HW9ZFd+T8IlacrnFkWPK8ttTuvwUIzCeaNiCvS3qHXJ5jXwv5MUFKF+LGXlQhWaTswrb4P50bqtWeagCAu/IbDeY29Ey7f2fz9d9BP5Ko26GY5Oq3kn/DeSqNV7YLRzjzlVN8M5ESVphOl9V0FUmx1YTsZhbiMVcQt4F9aTcjfUv5h0K3rqhDIrs4trxuWjVyE9eCxg/LydWXan7RDD1MSCHc6RObeAKMkCNEWVwhLrMt0nQ11aLpAicm9R28EqPeoHNBe5+xRKnQxyy7bpG5po1SkpNLXoyIDtE8lr4MQDt6Of+0wPAnrX1F5tUNnuKSiidhBp3grKSIKHcEDTJwyutHhtMrhDADr3GCvxKJVS3v++U=
+Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.googlemail.com with ESMTPSA id z13-20020a170906714d00b00a370e130fc0sm478163ejj.59.2024.02.08.23.24.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Feb 2024 23:24:57 -0800 (PST)
+Message-ID: <6012ec99-4246-41b6-adb2-1bcd4dd159ac@gmail.com>
+Date: Fri, 9 Feb 2024 08:24:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: media: convert Mediatek consumer IR to the
+ json-schema
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240124095230.25704-1-zajec5@gmail.com>
+ <62fca33c-eb1a-42ad-b7f7-31b14f0aa446@collabora.com>
+Content-Language: en-US
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+In-Reply-To: <62fca33c-eb1a-42ad-b7f7-31b14f0aa446@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-294854:519-21489:flowmailer
 
-From: Baocheng Su <baocheng.su@siemens.com>
+On 24.01.2024 13:33, AngeloGioacchino Del Regno wrote:
+> The driver says:
+> 
+>      ir->bus = devm_clk_get(dev, "bus");
+>      if (IS_ERR(ir->bus)) {
+>          /*
+>           * For compatibility with older device trees try unnamed
+>           * ir->bus uses the same clock as ir->clock.
+>           */
+>          ir->bus = ir->clk;
+>      }
+> 
+> This makes me think that requiring *one* clock on MT7623 would be a mistake
+> and the devicetree should use clk, bus - CLK_INFRA_IRRX_PD, CLK_TOP_F10M_REF_SEL.
 
-Main differences between the new variant and Advanced PG2:
+Looking at mt2701-clk.h I can see CLK_INFRA_IRRX (which I guess you
+meant above).
 
-1. Arduino interface is removed. Instead, an new ASIC is added for
-   communicating with PLC 1200 signal modules.
-2. USB 3.0 type A connector is removed, only USB 2.0 type A connector is
-   available.
-3. DP interface is removed. Instead, to communicate with PLC 1200 signal
-   modules, a USB 3.0 type B connector is added but the signals are
-   actually not USB.
-4. DDR size is increased to 4 GB.
-5. Two sensors are added, one tilt sensor and one light sensor.
-
-The light sensor it not yet added to the DT at this stage as it depends
-on to-be-added bindings.
-
-Co-developed-by: Chao Zeng <chao.zeng@siemens.com>
-Signed-off-by: Chao Zeng <chao.zeng@siemens.com>
-Co-developed-by: Li Hua Qian <huaqian.li@siemens.com>
-Signed-off-by: Li Hua Qian <huaqian.li@siemens.com>
-Signed-off-by: Baocheng Su <baocheng.su@siemens.com>
-[Jan: rebase over dtsi refactorings, split-out light sensor, improve LEDs]
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
----
- arch/arm64/boot/dts/ti/Makefile               |   1 +
- .../dts/ti/k3-am6548-iot2050-advanced-sm.dts  | 189 ++++++++++++++++++
- 2 files changed, 190 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-sm.dts
-
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 52c1dc910308..cd7f3a429778 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -53,6 +53,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic-pg2.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-m2.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-sm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-gp-evm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-evm.dtb
-diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-sm.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-sm.dts
-new file mode 100644
-index 000000000000..338834fda566
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-sm.dts
-@@ -0,0 +1,189 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) Siemens AG, 2023
-+ *
-+ * Authors:
-+ *   Baocheng Su <baocheng.su@siemens.com>
-+ *   Chao Zeng <chao.zeng@siemens.com>
-+ *   Huaqian Li <huaqian.li@siemens.com>
-+ *
-+ * AM6548-based (quad-core) IOT2050 SM variant, Product Generation 2
-+ * 4 GB RAM, 16 GB eMMC, USB-serial converter on connector X30
-+ *
-+ * Product homepage:
-+ * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-+ */
-+
-+/dts-v1/;
-+
-+#include "k3-am6548-iot2050-advanced-common.dtsi"
-+#include "k3-am65-iot2050-common-pg2.dtsi"
-+
-+/ {
-+	compatible = "siemens,iot2050-advanced-sm", "ti,am654";
-+	model = "SIMATIC IOT2050 Advanced SM";
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		/* 4G RAM */
-+		reg = <0x00000000 0x80000000 0x00000000 0x80000000>,
-+		      <0x00000008 0x80000000 0x00000000 0x80000000>;
-+	};
-+
-+	aliases {
-+		spi1 = &main_spi0;
-+	};
-+
-+	leds {
-+		pinctrl-0 = <&leds_pins_default>, <&user1_led_pins>;
-+
-+		led-2 {
-+			gpios = <&wkup_gpio0 52 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		led-3 {
-+			gpios = <&wkup_gpio0 53 GPIO_ACTIVE_HIGH>;
-+		};
-+	};
-+};
-+
-+&main_pmx0 {
-+	main_pcie_enable_pins_default: main-pcie-enable-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x01d8, PIN_OUTPUT, 7)  /* (AH12) GPIO1_22 */
-+		>;
-+	};
-+
-+	main_spi0_pins: main-spi0-default-pins  {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x01c4, PIN_INPUT, 0) /* (AH13) SPI0_CLK */
-+			AM65X_IOPAD(0x01c8, PIN_INPUT, 0) /* (AE13) SPI0_D0 */
-+			AM65X_IOPAD(0x01cc, PIN_INPUT, 0) /* (AD13) SPI0_D1 */
-+			AM65X_IOPAD(0x01bc, PIN_OUTPUT, 0) /* (AG13) SPI0_CS0 */
-+		>;
-+	};
-+};
-+
-+&main_pmx1 {
-+	asic_spi_mux_ctrl_pin: asic-spi-mux-ctrl-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x0010, PIN_OUTPUT, 7)  /* (D21) GPIO1_86 */
-+		>;
-+	};
-+};
-+
-+&wkup_pmx0 {
-+	user1_led_pins: user1-led-default-pins {
-+		pinctrl-single,pins = <
-+			/* (AB1) WKUP_UART0_RXD:WKUP_GPIO0_52, as USER 1 led red */
-+			AM65X_WKUP_IOPAD(0x00a0, PIN_OUTPUT, 7)
-+			/* (AB5) WKUP_UART0_TXD:WKUP_GPIO0_53, as USER 1 led green */
-+			AM65X_WKUP_IOPAD(0x00a4, PIN_OUTPUT, 7)
-+		>;
-+	};
-+
-+	soc_asic_pins: soc-asic-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_WKUP_IOPAD(0x0044, PIN_INPUT, 7)  /* (P4) WKUP_GPIO0_29 */
-+			AM65X_WKUP_IOPAD(0x0048, PIN_INPUT, 7)  /* (P5) WKUP_GPIO0_30 */
-+			AM65X_WKUP_IOPAD(0x004c, PIN_INPUT, 7)  /* (P1) WKUP_GPIO0_31 */
-+		>;
-+	};
-+};
-+
-+&main_gpio0 {
-+	gpio-line-names = "main_gpio0-base";
-+};
-+
-+&main_gpio1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 =
-+		<&cp2102n_reset_pin_default>,
-+		<&main_pcie_enable_pins_default>,
-+		<&asic_spi_mux_ctrl_pin>;
-+	gpio-line-names =
-+		/* 0..9 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 10..19 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 20..29 */
-+		"", "", "", "", "CP2102N-RESET", "", "", "", "", "",
-+		/* 30..39 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 40..49 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 50..59 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 60..69 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 70..79 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 80..86 */
-+		"", "", "", "", "", "", "ASIC-spi-mux-ctrl";
-+};
-+
-+&wkup_gpio0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 =
-+		<&push_button_pins_default>,
-+		<&db9_com_mode_pins_default>,
-+		<&soc_asic_pins>;
-+	gpio-line-names =
-+		/* 0..9 */
-+		"wkup_gpio0-base", "", "", "", "UART0-mode1", "UART0-mode0",
-+		"UART0-enable", "UART0-terminate", "", "WIFI-disable",
-+		/* 10..19 */
-+		"", "", "", "", "", "", "", "", "", "",
-+		/* 20..29 */
-+		"", "", "", "", "", "USER-button", "", "", "","ASIC-gpio-0",
-+		/* 30..31 */
-+		"ASIC-gpio-1", "ASIC-gpio-2";
-+};
-+
-+&main_spi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_spi0_pins>;
-+
-+	#address-cells = <1>;
-+	#size-cells= <0>;
-+};
-+
-+&mcu_spi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mcu_spi0_pins_default>;
-+};
-+
-+&main_i2c3 {
-+	accelerometer: lsm6dso@6a {
-+		compatible = "st,lsm6dso";
-+		reg = <0x6a>;
-+	};
-+};
-+
-+&dss {
-+	status = "disabled";
-+};
-+
-+&serdes0 {
-+	assigned-clocks = <&k3_clks 153 4>, <&serdes0 AM654_SERDES_CMU_REFCLK>;
-+	assigned-clock-parents = <&k3_clks 153 8>, <&k3_clks 153 4>;
-+};
-+
-+&serdes1 {
-+	status = "disabled";
-+};
-+
-+&pcie0_rc {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&minipcie_pins_default>;
-+
-+	num-lanes = <1>;
-+	phys = <&serdes0 PHY_TYPE_PCIE 1>;
-+	phy-names = "pcie-phy0";
-+	reset-gpios = <&wkup_gpio0 27 GPIO_ACTIVE_HIGH>;
-+	status = "okay";
-+};
-+
-+&pcie1_rc {
-+	status = "disabled";
-+};
--- 
-2.35.3
-
+I can't find CLK_TOP_F10M_REF_SEL however. This seems to be available on
+MT7622 and MT7629 only.
+Could you take another look at it, please? Can you somehow verify what
+clock should be used by IR on MT7623?
 
