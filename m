@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-59043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 621A684F049
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:41:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E33C184F04D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:41:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7EB51F2471F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:41:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 259B6B25030
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:41:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 056AC657B8;
-	Fri,  9 Feb 2024 06:41:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC08657D3;
+	Fri,  9 Feb 2024 06:41:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b="jftvQyyn"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b="DD7z9m3Q"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1786651BA
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 06:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74386657AE
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 06:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707460859; cv=none; b=qFYFYusIMVVyoC4p8BtWUqru6Sj9UnE2OB3IYAlAAA0tcYGNqWmhPegBpq7YGXM4MHPoGpMIHOsGkrvGUdMF48geSzyy5+DN5nc+RQ01Ti8xfsoaBpRtKlpb88j8NkS51oBIrWRgZ6wXun+nKpXb8Z66frDSxtxrYearwMnbDmY=
+	t=1707460861; cv=none; b=UDSbHzROW/t0NDHWwMcmx0GImciK1rMgtiuHVDke+Gt97jqs2q3LKePPe789GL8ICWjeBDYAuMobuv48qpMc7MfxSMT5PuFyMEw3Iag+CTweQc6GgUeMJTXitEqsrMllxuBLXf771pfSgfZuLneDesFeGG3QkDnOZdSZQm/opgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707460859; c=relaxed/simple;
-	bh=ttzGZt8Xqfj1jyMzn/IlnS9IW32N05ugyiqia/LyfNI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ebwKdmRyxhRhupX2URcQe8X2SEeWPtkptVko3n4YtkrC8OVQ3zWWC/f75WCX7MtbDv4JGmJvb8eRG7ioMI1Sq1Ebmg423eh15JL5sP9qAwguteLlysDt/rr91yJTGjOhmwy8LKWl87qMVXxw3hZM/3nk2qb3sZbzQyqMO178gYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vrull.eu; spf=pass smtp.mailfrom=vrull.eu; dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b=jftvQyyn; arc=none smtp.client-ip=209.85.208.49
+	s=arc-20240116; t=1707460861; c=relaxed/simple;
+	bh=ri22eEmjayNxuhuBG8fBzJMN00sxq5Jxvs3GiYc76e4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oik51iE2yg0IQzeUPhPZ4WxZZP0rwFW4PwDC61/UnPvl0pcWDNn0Es1qODG2jl4dhGUzNtyp92LL6hJ8QP/Uappru11NPjgllDX2yKH2ONObWkmGSIAaNB9Ju21VWu/O5uy+iJu7ntCs0AQSM/tgf6q/ga4sGvWs0AVHQTcYeCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vrull.eu; spf=pass smtp.mailfrom=vrull.eu; dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b=DD7z9m3Q; arc=none smtp.client-ip=209.85.167.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vrull.eu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vrull.eu
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55cca88b6a5so801041a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 22:40:56 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5114cd44f6aso792863e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 22:40:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vrull.eu; s=google; t=1707460855; x=1708065655; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kvtDAF5lfbY4yUhZUUJ7CosOcOxm/24HARcc6AfCtK4=;
-        b=jftvQyynacKK+2bqkhX2ctKOCT7Bp3TmFdEiiZVV0LwvP6ezb4fD65WvPoE5D/DonQ
-         MHbVW/h+oUugxQfPHGg/2a/LKPnVGX0L6EsGZ8rnBiTfnpPDYk12dRi/ejBNmP/6DGOf
-         jJC4pkQ8jR4rJ/oleJkE29qBzocm0ccxehFibTMzXZUvRAPDdJTyv5eVCDoBfB6LVNDG
-         4hOFEnJ4gTYXk4iPlOVYHED22tgsz7kACjSdCVND+jKFCU1xKOO1aEy6tWlpuap8xBf/
-         7hkxxmEKnzJrgKxALUdG/WHlUBPOTI7r0NXQMDFOF5vNNuObaqUQrVrRS6gtHbv8c4cq
-         Natw==
+        d=vrull.eu; s=google; t=1707460857; x=1708065657; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DNljdwCtgXX7yfrlqeBRJqsYJccdvVcfZVPFTIAjXvY=;
+        b=DD7z9m3Q0h2VUiY43CHhnTD3CaYZgZt/8DwAvRHPtGT4XoqqSgU1M+C8/ITsCo5IWA
+         7OiPAj7QVW2D7oQFlcbihIMBUKjgKTj8nDEi/0Dd0iJfmx/3qcu/fRcTfH/AYeeFbVdB
+         19imOVuQ8fia5NAUrC6hXebXRjx3GUT3vNo56lNYUlHjinSmI0yE6ncMTRhSUpPcyx6h
+         cjZbe4K+xK+zzMQ/kozwvKUbBspPB6fwGIwMGBsr5YLkA5Ptx/UYv9cPjc/CwWABa5Qg
+         hThzzqbU9I+MH3Enq5z4+d+MxWFixXbtgUy1Zzaospyhu+Er1DpRZDVlB1nXwrc/+XDf
+         8PYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707460855; x=1708065655;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kvtDAF5lfbY4yUhZUUJ7CosOcOxm/24HARcc6AfCtK4=;
-        b=nMP7kFwo5YTB8lBZc++qN6OnabDVaQFDUYHDjXs6NMjtzjvZ9XErba/Cr+D0iNxzSd
-         tPGuieIV3GzyhbwEg/3rPoSAvgrBR+yZiED7ZIrhs4ljcBnNYphCFUEcRjZwv8cZeHID
-         Dxh3xiZsWUQp+jryLhIBOajGDJG+rtyAXWNibYfRjYegJQL69nrowx0/MFhFKj/ZKA41
-         Ev7YkBmTgQOHDpNtKutuCD35KI750Tvk2aYX+ovKSk4rUWZPy0I899+GtMMxfYFfEYMz
-         XyukBW+ZHDHNW3iWOUPkr6vSjEsOYtTXzV4WTQl/FTj+k0DgGp6ClXNLhGqiW7S2Av7C
-         mYcQ==
-X-Gm-Message-State: AOJu0YzoBIeQT71JfojXEYwqN+lVDB5bdev8SUCUJpk2lNE3jY+lW5nG
-	CX/9l6J0tPaGhldoIX1v4xXJ9kQbmWG5ScZZfs9er3r1WDVgmN0NHQJg+ha5Q9o=
-X-Google-Smtp-Source: AGHT+IHpIKkOgxjK+OQ+Z52aahdSsMDEuAEAMDQo+EQ8mKVlTca/L55YC6piRGYTQoHdHcL4KlFQuA==
-X-Received: by 2002:a17:907:7673:b0:a3b:f72d:9c2a with SMTP id kk19-20020a170907767300b00a3bf72d9c2amr190059ejc.62.1707460854816;
-        Thu, 08 Feb 2024 22:40:54 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWAlu54lRX16jytgJW8roJL2H0QKMI9bHlcj3TnXGSlYBIoBk1ttjdrTZzNzmVirHFnXFID3upTy4H1ASA/tzipHETgZkmgNtT+1sIwmU0GhKj3EYBRncTJaqvOv7y+mqhZEKbuQbD5nVdE67KR3Vie9bp57bSJ0X/SfGEHPifA05xGWJ5yNomEWstB8tmS7GLuOG2OKK1emxDCGGDQILzS5/CoaVrwlvN5S0JIzHLCqSqFInP5MruknJDOMS9QBs5gvY1r9lp4a859m45AERXSfEKyEAr4GfeWJYc47vGbCOZ2QDeL/6I4cycDMcAl5vG7BID+v8/SxhulWhKkd3XIVvrTO9d1GKsCl6l+2uByZ1/IgXiJQ4iQwA0Qzodf53LBcoPOv99eWt/9zg8TjkDXy/GyYY3WSVgEbhjm5/o8MVTmxzr8vmfHaLOF9dYK6uqsahEbm4xyi2IWAVfs5eTpYHA6+lJOYXQpak9GUsfyWOp1z2cvJP/0MYJkWii8qqNUkdL8nJOlA8dOVvAjrgveq9g463WU+mKshPGavZylY+KSSLvr1zr0hkxpdcnYMRsV/VPkvLKBJylM1JWpUq7IHO+PeNGJC1OC9lCWA2Xrn8Qp+d0uXNdiebytIebrZVauV3FGf/oD/dQ9cNHb5LmPViq2yncp2V5fvI98v4ySLt2bcglj4dyHs2Ch2Z1YuGhTqcSSanM0d41wzHCHZZRvj1BpzO/LNtgMpWu6HOjLwTztDQ2Kk2tzDwtpi2jlaLFxH/w+mOMZzU1uHKzlAKbZbJd9hST1aqKBG/MooIXznVMGfUueWTBogXnPkAD/qQ4ZQMwzTDr27AVyQdRx7d7Wi0c6FvJowfnExEtugC6H9g==
+        d=1e100.net; s=20230601; t=1707460857; x=1708065657;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DNljdwCtgXX7yfrlqeBRJqsYJccdvVcfZVPFTIAjXvY=;
+        b=iDCJFIDM8878CqECjWBeax3aEmpsvzdIqPe2cbtTgQwWIMgZr7qGrJSlQuIk4Vo//y
+         kjc7BEfPJ+2ZdU/aOBdnwF4XvIIS2BMkRKxJbAmthl+7J4us9AJRA6Rq3NQHN3eQGVfH
+         vileyhO6Jfydh1PRpQFHS3uMNunw/1JwOY3UBcAIeuT1ff4BpfjKoGKgsoSiwxbkJB1q
+         6nxUeaFdYocZJs+3IWHQoYg9/wuzs5LRkazZMqxnLaca+alOFNmKJKRGHcszUWIHzlmE
+         Cw7ZMLuL3lt2fsWuZmFX6ijUj+Ub0k2BGyWLzWch6JzKbKDEYgj7Gjjc1F6tiXDNqGJX
+         qEfQ==
+X-Gm-Message-State: AOJu0Yy7NBmEG231hX7Z0mRHWNnJad3pkoYqt1yGlArWDuHfLFQ0zZQ3
+	lRldMp0vcta6lw2ON3NjzqpPQVf4QjD2AMJYs+2sFEeleRTmOxE+XWG9BrQfRFU=
+X-Google-Smtp-Source: AGHT+IEDhflFCI5m8yckBlcrHhcrQQ3ldJE+rE+09x08ZsDb/7emc/oMoKtCCmmPX+z/DuDjiayT1g==
+X-Received: by 2002:a05:6512:3e6:b0:511:6f2e:d23f with SMTP id n6-20020a05651203e600b005116f2ed23fmr303429lfq.43.1707460856741;
+        Thu, 08 Feb 2024 22:40:56 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUaL+yEba5wm8i34ZSQJNQMvgW6J8dd/cBl9IdEWc4gJ7MotgFZlcF2vvfMBwq4KUmx959cSuSlRe3Qlxhu4KfyqJb2tOoRm5+/3LKr8WMyPrWXCd0f7xaUwI4heMRaEmdtkB03hUfP5VdCbRxXOVGwsR0+FM1Q1eZoT/7ZQi1h75nUQBGOq452eMVDPqEQ8vJwybjkXHa2P2956nsp4ell4ZmZvfFkG8AKEkC5PDV4EWdVxBuTYDqOJNmx1zA9X/5CFXLdE444VW797AcovWMNx1QCzp6cwWLS/G62gqSwdVZ7fcJQ43MAnuGCwwog6JYyd6M9ml084zVece5wtDbgMfpl4Sv8asE365tfO4DEl6+vtRyJF4xLh/1HFvY125EiYDehiYJ38vOgbELtcCFGs1wHqol92ZvncDJ8YfqeD45mSFdS2XDr27wJOT5rd7XW3hSmOGw68GuLvIa3T/ZLkytmvs8fxKFIPSkDmohuOir+dLdnL5vTzPWCnggEtTBV8+3Up3TAwJMviLwjRq8UIczfXtPNcmhJcCpHztwzbuA+uoNBNHblC7eiGpy4q6IiD5jrEguUynT7b6FxUPuJSZP2dHgF7k3mj4f4LPHzEr2SG3i88ssWGkRqdrNHQ1ZI5rCrEBFNLjuxg5HalTNGp3XqhWOgEjQbRp0tTDcJBB+XKMkl+LYW0RvJXS3pvfghirr/1o+ONtKmvg7GmB48p+6rxDPAoGvj1ZFLP/6Akd+iMWgHO2//OKQD3DXKwQbHq347V96eRJyHRponH2izjQ8kzxgOZfAdrZFvAV4u8iMvFhUbNVQzAWmHSpTX+SbxrqrlkuyDYJfZ5RTU9vYpeWj1ZGKimEXlKvhwx0IsnA==
 Received: from beast.fritz.box (62-178-148-172.cable.dynamic.surfer.at. [62.178.148.172])
-        by smtp.gmail.com with ESMTPSA id vb9-20020a170907d04900b00a370a76d3a0sm441180ejc.123.2024.02.08.22.40.53
+        by smtp.gmail.com with ESMTPSA id vb9-20020a170907d04900b00a370a76d3a0sm441180ejc.123.2024.02.08.22.40.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 22:40:54 -0800 (PST)
+        Thu, 08 Feb 2024 22:40:56 -0800 (PST)
 From: =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>
 To: linux-riscv@lists.infradead.org,
 	linux-kselftest@vger.kernel.org,
@@ -93,10 +95,12 @@ To: linux-riscv@lists.infradead.org,
 	Andrea Parri <parri.andrea@gmail.com>,
 	Hans Boehm <hboehm@google.com>
 Cc: =?UTF-8?q?Christoph=20M=C3=BCllner?= <christoph.muellner@vrull.eu>
-Subject: [RFC PATCH v2 0/6] RISC-V: Add dynamic TSO support
-Date: Fri,  9 Feb 2024 07:40:44 +0100
-Message-ID: <20240209064050.2746540-1-christoph.muellner@vrull.eu>
+Subject: [RFC PATCH v2 1/6] mm: Add dynamic memory consistency model switching
+Date: Fri,  9 Feb 2024 07:40:45 +0100
+Message-ID: <20240209064050.2746540-2-christoph.muellner@vrull.eu>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240209064050.2746540-1-christoph.muellner@vrull.eu>
+References: <20240209064050.2746540-1-christoph.muellner@vrull.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -106,79 +110,131 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The upcoming RISC-V Ssdtso specification introduces a bit in the senvcfg
-CSR to switch the memory consistency model of user mode at run-time from
-RVWMO to TSO. The active consistency model can therefore be switched on a
-per-hart base and managed by the kernel on a per-process base.
+Some architectures have support to change the memory consistency model
+at run time. This patch adds a new field 'active_memory_consistency_model'
+to task_struct that allows architecture code to store the active model
+as a per-process property.
 
-This patchset implements basic Ssdtso support and adds a prctl API on top
-so that user-space processes can switch to a stronger memory consistency
-model (than the kernel was written for) at run-time.
-The patchset also comes with a short documentation of the prctl API.
+To avoid useless overhead, the mechanism needs to be explicitly
+enabled in the architecture's Kconfig.
 
-This series is based on the third draft of the Ssdtso specification
-which can be found here:
-  https://github.com/riscv/riscv-ssdtso/releases/tag/v1.0-draft3
-Note, that the Ssdtso specification is in development state
-(i.e., not frozen or even ratified) which is also the reason
-why this series is marked as RFC.
-
-This series saw the following changes since v1:
-* Reordered/restructured patches
-* Fixed build issues
-* Addressed typos
-* Removed ability to switch TSO->WMO
-* Moved the state from per-thread to per-process
-* Reschedule all CPUs after switching
-* Some cleanups in the documentation
-* Adding compatibility with Ztso (spec change in draft 3)
-
-This patchset can also be found in this GitHub branch:
-  https://github.com/cmuellner/linux/tree/ssdtso-v2
-
-A QEMU implementation of DTSO can be found in this GitHub branch:
-  https://github.com/cmuellner/qemu/tree/ssdtso-v2
-
-Christoph Müllner (6):
-  mm: Add dynamic memory consistency model switching
-  uapi: prctl: Add new prctl call to set/get the memory consistency
-    model
-  RISC-V: Enable dynamic memory consistency model support with Ssdtso
-  RISC-V: Implement prctl call to set/get the memory consistency model
-  RISC-V: Expose Ssdtso via hwprobe API
-  RISC-V: selftests: Add DTSO tests
-
- Documentation/arch/riscv/hwprobe.rst          |  3 +
- .../mm/dynamic-memory-consistency-model.rst   | 86 ++++++++++++++++
+Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
+---
+ .../mm/dynamic-memory-consistency-model.rst   | 49 +++++++++++++++++++
  Documentation/mm/index.rst                    |  1 +
- arch/Kconfig                                  | 14 +++
- arch/riscv/Kconfig                            | 11 +++
- arch/riscv/include/asm/csr.h                  |  1 +
- arch/riscv/include/asm/dtso.h                 | 97 +++++++++++++++++++
- arch/riscv/include/asm/hwcap.h                |  1 +
- arch/riscv/include/asm/processor.h            |  7 ++
- arch/riscv/include/asm/switch_to.h            |  3 +
- arch/riscv/include/uapi/asm/hwprobe.h         |  1 +
- arch/riscv/kernel/Makefile                    |  1 +
- arch/riscv/kernel/asm-offsets.c               |  3 +
- arch/riscv/kernel/cpufeature.c                |  1 +
- arch/riscv/kernel/dtso.c                      | 67 +++++++++++++
- arch/riscv/kernel/sys_hwprobe.c               |  2 +
- include/linux/sched.h                         |  5 +
- include/uapi/linux/prctl.h                    |  5 +
- kernel/sys.c                                  | 12 +++
- tools/testing/selftests/riscv/Makefile        |  2 +-
- tools/testing/selftests/riscv/dtso/.gitignore |  1 +
- tools/testing/selftests/riscv/dtso/Makefile   | 11 +++
- tools/testing/selftests/riscv/dtso/dtso.c     | 82 ++++++++++++++++
- 23 files changed, 416 insertions(+), 1 deletion(-)
+ arch/Kconfig                                  | 14 ++++++
+ include/linux/sched.h                         |  5 ++
+ 4 files changed, 69 insertions(+)
  create mode 100644 Documentation/mm/dynamic-memory-consistency-model.rst
- create mode 100644 arch/riscv/include/asm/dtso.h
- create mode 100644 arch/riscv/kernel/dtso.c
- create mode 100644 tools/testing/selftests/riscv/dtso/.gitignore
- create mode 100644 tools/testing/selftests/riscv/dtso/Makefile
- create mode 100644 tools/testing/selftests/riscv/dtso/dtso.c
 
+diff --git a/Documentation/mm/dynamic-memory-consistency-model.rst b/Documentation/mm/dynamic-memory-consistency-model.rst
+new file mode 100644
+index 000000000000..3117c3d82b2b
+--- /dev/null
++++ b/Documentation/mm/dynamic-memory-consistency-model.rst
+@@ -0,0 +1,49 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++==========================================
++Dynamic memory consistency model switching
++==========================================
++
++:Author: Christoph Müllner <christoph.muellner@vrull.eu>
++:Date: 1 Feb 2024
++
++This document gives an overview about dynamic memory consistency model
++switching for user mode at run-time.
++
++Memory consistency models
++=========================
++
++A memory consistency model is a set of guarantees a CPU architecture
++provides about (re-)ordering memory accesses. Each architecture defines
++its own model and set of rules within that, which are carefully specified.
++The provided guarantees have consequences for the microarchitectures (e.g.,
++some memory consistency models allow reordering stores after loads) and
++the software executed within this model (memory consistency models that
++allow reordering memory accesses provide memory barrier instructions
++to enforce additional guarantees when needed explicitly).
++
++Details about the architecture-independent memory consistency model abstraction
++in the Linux kernel and the use of the different types of memory barriers
++can be found here:
++
++	Documentation/memory-barriers.txt
++
++Two models can be in a weaker/stronger relation. I.e., a consistency
++model A is weaker/stronger than another model B if A provides a subset/superset
++of the constraints that B provides.
++
++Some architectures define more than one memory consistency model.
++On such architectures, switching the memory consistency model at run-time
++to a stronger one is possible because software written for the weaker model is
++compatible with the constraints of the stronger model.
++
++If two models are not in a weaker/stronger relation, switching between
++them will violate the consistency assumptions that the software was
++written under (i.e., causing subtle bugs that are very hard to debug).
++
++The following restrictions apply for switching the memory consistency model
++at run-time:
++
++* Only switching from a weaker to a stronger model is safe.
++* The stronger memory model affects all threads of a process, when running in user mode.
++* Forked processes derive their active memory model from their parents.
+diff --git a/Documentation/mm/index.rst b/Documentation/mm/index.rst
+index 31d2ac306438..36d40502b421 100644
+--- a/Documentation/mm/index.rst
++++ b/Documentation/mm/index.rst
+@@ -43,6 +43,7 @@ above structured documentation, or deleted if it has served its purpose.
+    arch_pgtable_helpers
+    balance
+    damon/index
++   dynamic-memory-consistency-model
+    free_page_reporting
+    hmm
+    hwpoison
+diff --git a/arch/Kconfig b/arch/Kconfig
+index a5af0edd3eb8..89d4e27f9b80 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -1479,6 +1479,20 @@ config ARCH_HAS_NONLEAF_PMD_YOUNG
+ 	  address translations. Page table walkers that clear the accessed bit
+ 	  may use this capability to reduce their search space.
+ 
++config ARCH_HAS_DYNAMIC_MEMORY_CONSISTENCY_MODEL
++	bool
++	help
++	  An arch should select this symbol if it supports switching
++	  the memory consistency model at run-time.
++
++config DYNAMIC_MEMORY_CONSISTENCY_MODEL
++	bool "Dynamic memory consistency model support"
++	depends on ARCH_HAS_DYNAMIC_MEMORY_CONSISTENCY_MODEL
++	default y
++	help
++	  This option turns on the support to switch the memory consistency
++	  model at runtime on a per-process-base.
++
+ source "kernel/gcov/Kconfig"
+ 
+ source "scripts/gcc-plugins/Kconfig"
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index ffe8f618ab86..5cbd3a3b80ab 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -979,6 +979,11 @@ struct task_struct {
+ 	/* Canary value for the -fstack-protector GCC feature: */
+ 	unsigned long			stack_canary;
+ #endif
++
++#ifdef CONFIG_DYNAMIC_MEMORY_CONSISTENCY_MODEL
++	unsigned long			memory_consistency_model;
++#endif
++
+ 	/*
+ 	 * Pointers to the (original) parent process, youngest child, younger sibling,
+ 	 * older sibling, respectively.  (p->father can be replaced with
 -- 
 2.43.0
 
