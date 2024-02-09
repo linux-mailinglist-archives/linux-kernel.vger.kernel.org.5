@@ -1,254 +1,284 @@
-Return-Path: <linux-kernel+bounces-60052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD1BF84FF41
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CD1784FF48
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:53:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8ECBE28D1C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:51:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6A4D28D1B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:53:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7601B942;
-	Fri,  9 Feb 2024 21:51:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D2D92134B;
+	Fri,  9 Feb 2024 21:53:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="o3Aqh1my";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="IGctspPZ";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="o3Aqh1my";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="IGctspPZ"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I2ogn8E3"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F98363B8
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 21:51:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707515506; cv=none; b=VASdcRhuJEbSLGOIvyL6hkaKBuBQPxZyj/RVl2B2AB2+t1XlMnafALSky9ol7kABTQ76yI1iPEmOT/66pu6avv7BllqA+42yHb7BBjlxYWnbrricAW7h6HipaJDVnMQ9JmrSLB0t263mfuYblNN2X56xyFN7r2+9pcaa65eao48=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707515506; c=relaxed/simple;
-	bh=Pr9D+fptCBeC23igqt5i7qdv9JbM3rvuP78jW1t7QzM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FzNYMdlJ/xyKfQPDQJI4T8qcGfp9zJkWATZzZBOY52JFiyFg8UXLMFFG2mVQSF9oetcnNrYkqu6ehW+U5j+VywXLPlZq3zKK+DJqtjk7TtvWj+ZdXGOzpoteXeeeJUI4bfePb3meaNd7mJSgCSsUcKIS4i3wU8uRgvX+XawNr44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=o3Aqh1my; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=IGctspPZ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=o3Aqh1my; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=IGctspPZ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6C96D1F834;
-	Fri,  9 Feb 2024 21:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707515502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DefqWIsK/Bt8MttPzkKY/ykhXHgBYzfo86LWXkmEtbQ=;
-	b=o3Aqh1myufMoF8LFhNC8pbhmUZ6BoHteOhIaZvTfnOnDx9Kwc6i59X07xJvJbCpx180mhD
-	jPhlNvAnXzGUB80ZDX1kQpxt8NvORzZxihZPxzpbxaExyJCUELY3aH1dedqOXUsGTqMrNC
-	BZ/WCd4IhmWoP7olQl5TP6Iz7A4SPFE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707515502;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DefqWIsK/Bt8MttPzkKY/ykhXHgBYzfo86LWXkmEtbQ=;
-	b=IGctspPZ9dIM6Jy3X942CzbhvGx+EjT+YsV2l4EVuvA5BlcYiuOMGvEKfVItBOJ4TtYRTc
-	+9+hawEQW3nboXBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707515502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DefqWIsK/Bt8MttPzkKY/ykhXHgBYzfo86LWXkmEtbQ=;
-	b=o3Aqh1myufMoF8LFhNC8pbhmUZ6BoHteOhIaZvTfnOnDx9Kwc6i59X07xJvJbCpx180mhD
-	jPhlNvAnXzGUB80ZDX1kQpxt8NvORzZxihZPxzpbxaExyJCUELY3aH1dedqOXUsGTqMrNC
-	BZ/WCd4IhmWoP7olQl5TP6Iz7A4SPFE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707515502;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DefqWIsK/Bt8MttPzkKY/ykhXHgBYzfo86LWXkmEtbQ=;
-	b=IGctspPZ9dIM6Jy3X942CzbhvGx+EjT+YsV2l4EVuvA5BlcYiuOMGvEKfVItBOJ4TtYRTc
-	+9+hawEQW3nboXBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E6024139E7;
-	Fri,  9 Feb 2024 21:51:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id CfAHNG2exmWybAAAD6G6ig
-	(envelope-from <osalvador@suse.de>); Fri, 09 Feb 2024 21:51:41 +0000
-Date: Fri, 9 Feb 2024 22:52:48 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Marco Elver <elver@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>
-Subject: Re: [PATCH v7 3/4] mm,page_owner: Display all stacks and their count
-Message-ID: <ZcaesCP4mY-94ciJ@localhost.localdomain>
-References: <20240208234539.19113-1-osalvador@suse.de>
- <20240208234539.19113-4-osalvador@suse.de>
- <CANpmjNNcPr=pPco_HN9nXBabubtfo02SAH=taZGNCvYDq42YUQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88CB107AA;
+	Fri,  9 Feb 2024 21:53:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707515620; cv=fail; b=UfxuE5O+uXdRXjDwXvJZKsPXiKLxJammvQtcjoxH5tZrxN+6BH8nxc5GBKD2RfpG9PSvEgLQo+Dmz528BCLHuyt/9AxCxM23a7QsCzcd/H28WKtFgbeCfubgafrAzee/IBYpD4NG36NsFuhhKCnAfSKAnba0W9IhL/I1F66j4mA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707515620; c=relaxed/simple;
+	bh=AJyHNTuv9fUGAJGxhwSnE3Zsnasg6R3k69xFXVeUSNQ=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Y8D2R7fNIsJDwHuFz1IjfdB4LI9i8BB/Flyfdvhwi0gswCCwi8p95mcSOohZVEU/J79oI0zOqej+pId2gFgrjAscJf1a3cd9Z5pObNT5AAb9Hvz52LOxl54lVayl9hxVP4qcqpsAie7fFjm1EEx00P8Q//EHbBIKZLkKr5e6c1k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I2ogn8E3; arc=fail smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707515617; x=1739051617;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=AJyHNTuv9fUGAJGxhwSnE3Zsnasg6R3k69xFXVeUSNQ=;
+  b=I2ogn8E3n2er44PPXZ9HLtNhsTlcaalZMfoz4pBvU+H+k6LVjD2XTk/Z
+   4PtC5+O10jyMmHceetaea2TPgRVoG2vANyEa10LumfAlJwrmJ9q2EgiiR
+   YknCE+zudRUhTCKZ0Wv+0YU10Gddkpc1MxIcNnR9/XDJs8/F07izKEBJE
+   TFiD9n/WVpczIZjsHHiti2bvXLYXV2sepAM+Ogdt9fkgp2DpYql3Rf9Iz
+   uT0jOB6q4TegQdYAIAColykqfRv42u68QO/jxVI34Z7ZH7s8Oy6fbEV7u
+   blqlYDgekuvWu3uO9Hr5v7NQKbPfanCxmOkDs/AQfxiD7LlKD3KOL3jDL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1641200"
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="1641200"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 13:53:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="2032849"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Feb 2024 13:53:37 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 9 Feb 2024 13:53:36 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 9 Feb 2024 13:53:36 -0800
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 9 Feb 2024 13:53:36 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YZgalDi42LZAveUjGUoYnoIpMoy9Aut2ZJtGrCSXl6HElYRVb/OJlMiuJ3+Bzu51qu5ZSJXYHDK/CIBHOSrGPuPPZXsfyo1KLFhv1+wmhijNWB0tKBxhcxqiP2btbqrm5PwS9cvfs9R9H1vvFuF32FBC7ndJ1Y+wZeEftnmHXTh5ppwOe4Qy9gMYdZ2Kq0ZwD3NDxSaWwj+QgL6JEP3T1AwO8V96YLO8QPnGgLVshW+cX1UMSRtHzrgdxbxMrusJbMdrGUgcDRCtL8ftLIl4t0Da+LnyzdEYjmN2rh+h0QK2XGju0xw534BR3n3XytmRSDMa7K+H089P/6rxk17x4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=B3Knffrzvyy0sXhp4AyPQac3rmSSFYpp4E2XDbK8Olg=;
+ b=Ox9c0AssnYE21zMmsxSpPFQNsZiEDN456tWGTiJbimSomx3zTeqD7+atfOAw/AcBQIMWgnXyir93nFbYwOcOm3bReUaPwFtYZctwDTi1OHhagPLfcegNDoYGWJlaNCnbXPm3dA/htq8PFyGkeODv8DDIQBI/+DD/GlwrTgB5fYDaMiUnnKng50KRoI8sDVdsjkaNODZS/88P2dtzoATrZsI+tH7sitJKcj3q/oIkKLhvex8KRwSp1EdP2vBkz/MRDmAf1t23hAJbReVLgoJ13kxnaJcxDkVTTGe3VKK9n7J4wL1f8FrCGR5NUhf4WeY94BwXnEB7zMALMa7YQBOfkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB7141.namprd11.prod.outlook.com (2603:10b6:510:22f::14)
+ by PH7PR11MB6796.namprd11.prod.outlook.com (2603:10b6:510:1ba::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.39; Fri, 9 Feb
+ 2024 21:53:34 +0000
+Received: from PH8PR11MB7141.namprd11.prod.outlook.com
+ ([fe80::be6e:94e9:76f7:5c3a]) by PH8PR11MB7141.namprd11.prod.outlook.com
+ ([fe80::be6e:94e9:76f7:5c3a%4]) with mapi id 15.20.7270.024; Fri, 9 Feb 2024
+ 21:53:34 +0000
+Message-ID: <4237a933-0f61-417f-bbb6-ce5954b304d4@intel.com>
+Date: Sat, 10 Feb 2024 05:53:25 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dmaengine: idxd: Ensure safe user copy of completion
+ record
+Content-Language: en-US
+To: Fenghua Yu <fenghua.yu@intel.com>, Vinod Koul <vkoul@kernel.org>, "Dave
+ Jiang" <dave.jiang@intel.com>
+CC: <dmaengine@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>,
+	Tony Zhu <tony.zhu@intel.com>
+References: <20240209191412.1050270-1-fenghua.yu@intel.com>
+From: Lijun Pan <lijun.pan@intel.com>
+In-Reply-To: <20240209191412.1050270-1-fenghua.yu@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR01CA0053.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:193::7) To PH8PR11MB7141.namprd11.prod.outlook.com
+ (2603:10b6:510:22f::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNNcPr=pPco_HN9nXBabubtfo02SAH=taZGNCvYDq42YUQ@mail.gmail.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -4.30
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,vger.kernel.org,kvack.org,suse.com,suse.cz,gmail.com,google.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB7141:EE_|PH7PR11MB6796:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0f53155d-057e-4d93-6cf2-08dc29b98fee
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EPppxMrwxpomdbvGnwzt8xEwI+XWhG8BfpiWzBR83aZUvvs256fUlmbQRMpYN7hLFbwBMbECW8WYWFlfFW3wRYKkMJ6BXuNXORpd/D10+Xo+vYbOC1gpyZsmkytl0VyNufZ3q/LIZmt6BUUvYAyWB77h9wMO1AeKC6YJsHMDIj4OPuA9lNZt94CvCRChpLKJp/i+uWatvSH17ToXvWjK25cSWwH8sXGks7NbouW4wOmslW3lTdc/YRYn38Sgi4bGWbuqTRLsw5WWd6wQFZb4UduXpZ0J0Mj9ehzjLS8xKgtibzuqH/q1g0pElF9jYy9E/oWPPE3VSFdRXuIlUbb5Y035lFEeQDVeXFpq4AQFn58/aWQj2BY+3pn6vtnFR3sdxefUx/MoEvqLVygBDfqM9mtUIGL9pz3bklQGr65tzRxRxVdP8yBzrk6NrPZnLnoMcTJ2048rE7ymGo7X1T6kotkltBvGmrUbl3FqJNnQ2t+uMQJ7pPkVN694qxEGD+NwvRuZFEOjOsn7sibhexBrFka8YORzPNZc4/7qDrUQHFuIj/WuJDDwcO2TbS++Inie
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB7141.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(376002)(136003)(39860400002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(83380400001)(82960400001)(86362001)(31696002)(2616005)(316002)(107886003)(6486002)(6636002)(53546011)(110136005)(66556008)(66476007)(26005)(6506007)(38100700002)(54906003)(478600001)(6666004)(66946007)(6512007)(36756003)(5660300002)(44832011)(4326008)(8936002)(8676002)(31686004)(41300700001)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T3FsUXNvTkU1K1hEamVQOCtZTU9Ec3pSZjAyNmM2RzFvaHgwTzhSK0dqeDla?=
+ =?utf-8?B?c0VuU2wwN1dqdjZ5d21Xb3QwQ3BUbFkrbEtmZ0h1RnJ4RDRWZldHNDNuMHBE?=
+ =?utf-8?B?QVFqWkFOZWdtWklJZndoejROUVcyajA2RjB6bjRaM3A1UUZFOXlGS0JQM1I4?=
+ =?utf-8?B?SUdsK05yM2ZVYWFyUFZ4RGc5YXJmK3NHMXhtNzZGM2J1dm5WWWxNT3hScVg0?=
+ =?utf-8?B?alRqaWc2NmVpdzh6YW5sR3lXYldKcWwvZTFrbXNDWHppQm5ZQkZhSEg0Zmcx?=
+ =?utf-8?B?UldHTjg3c3YwOXVsVVIxTG1OcWMyRFFFYkZOaDd0L1MrWk1FTEJLbkVsakEx?=
+ =?utf-8?B?QkQ3QlBmNEVMWjlkTjBRYW5QekhWZWVrb1EwU0pwSlk5M1Z3UFh2YmErUHdH?=
+ =?utf-8?B?VEVaWGlWalAxdmRlVnd3bmM4Uk5yR0kzQkFuZnUzcGo5QUhDSGZLVnpjR0lP?=
+ =?utf-8?B?NjBjNUpWODlhZ011Vy95a2ZuMi9pWlBYZkQySVRxZ1hkL29hK0RjWlVuNi9Y?=
+ =?utf-8?B?YjRtN2VTTU9LaFJaZXNaaWNZRkNQcHFpRWdNQ2I2VGljMHpCd0I1QzRrR0N0?=
+ =?utf-8?B?WVdLK291QlRUMk1iazNnZ1ByT1FvRVY5aWR3MTRMMmVpcDJUWXltaFBWcnI4?=
+ =?utf-8?B?L0tTclpBTFpGMnlodDluWjlkOHlqMElzRXlkZ1R1ZFhKMVQvQkVOTEU0eWNI?=
+ =?utf-8?B?ZWt4NDRoTEcxKzBHUW1hUm9sZUtpTHB4Sy9YVW13Tm1QcFJ4VFF4bWh3WDV5?=
+ =?utf-8?B?RUpCSFBXOGRoQ09IbUM5RWY0WWdCNmZsV2wrdjNpR3dFa0Y5UVZFZG1yMHI1?=
+ =?utf-8?B?MVlTL0VpOVdueGF5b1VVTlBLWExpQlR5c3hsWGZKSTViTm9CTlBjdWZ2UEFv?=
+ =?utf-8?B?VDZGcFMyTm9GNnBHZTl0VTZHWDJLcUtZLytNcENiMnhQU21OZTVsYzVPOXY1?=
+ =?utf-8?B?K1BHQkRSVHJqTXF0U0RZdmJKTWNuR3AvU1U3RDdCR0RGeUJNNVdsa2xzempV?=
+ =?utf-8?B?aHFodnhqZVAvQXFzMk5xb1o3WUU3dlovd0ZXUm9QLzFZbjdzbEg2UnFRdTJQ?=
+ =?utf-8?B?RTJVbmdic0NLNUpKeWtRUDNTS1BZOXIzc1JlRUIwRmZOaG0xT3pHdmVrVTNv?=
+ =?utf-8?B?RXB0YzIyMndvMVpITGZZRUFreWdCU3dsbm5KMU0rTnNSU0NDU1k5MSs1YzM2?=
+ =?utf-8?B?MERKa2dkUkJ5RkxaRDhQenAvOXppb0M0L3N3elRLOEEvT2FKVHdDSXJDaEdk?=
+ =?utf-8?B?c1dicGZCTXYwSTBEUng3RlJyUHVaUW1uSDJxclRyMjdPeVIwUU4wN2xLdVJm?=
+ =?utf-8?B?MW1PQm5xd3ZnWTU2bFRWakl6cEMrVzFIb0V1TjR2ZGJoMFZRUVZUaGpuRU5x?=
+ =?utf-8?B?Z21hZlRhZDZrMFBkTVpRU0ZGTEFBTXR5V1kyc0FsSlhhbTI2REc3Zy9LbW9a?=
+ =?utf-8?B?Y21oaUI4Y3ZVWXRJQkVHblVVbmpyTHZBTUF5WSszUU00aHhoWVl1cTkydzY5?=
+ =?utf-8?B?MjNBYkZzeTNzZC9tQk8yWVJjZHhnc3V0Y25YeHNTdllPbHRzcjR5dUI3bmtX?=
+ =?utf-8?B?VDNocVlkNWg0R1JnU1ovMnJtbmNGaHpQemFvYk9VODZ2N2RBZi9KSTEvQndp?=
+ =?utf-8?B?SWhUVGtNb3pkVW0wVnZJV0k4QnZTK3RqbHh0ZWc3R1g2WnlPNE9KQThscmNB?=
+ =?utf-8?B?UFY4TVo3ZnVWOHl1UWZOS3ByZisvbDVkcXh5TkxiZFhncm0rV29MVmFuREJj?=
+ =?utf-8?B?VDFyU3ljbFp5eXI2UVZyTmN0MXBhNThZeE5vMFRyZ3NueHVKZm4yeTF5ZkhK?=
+ =?utf-8?B?cEcrL1cxR290RUlmc2hwcm1oNk5yb1RXVFlueDRjNlNIcGlreWpFVTlaVC8y?=
+ =?utf-8?B?YVovVFk5NXpvc1l1WWFQb3pjUnlIM2x0bU9ZRFF3SFJTWW84RzBLNFoxRjhW?=
+ =?utf-8?B?S21icTFGd3RwVEdsVllnUW5kUHNvSEV6TUEzZTVQL2FjVEM0M0NRSHN5WldM?=
+ =?utf-8?B?dzlUSkhDREJJMjNNZ2htWVVhSXZ6amkwZGRyb0JlN3RvaHJld2dIT1NSZ0hE?=
+ =?utf-8?B?V0xVWjkxSzROajlMM0tod0xPWnU5RW5kZk1jRlR1cDlyNEFSUkh5L3VONTRh?=
+ =?utf-8?Q?xZV2aQqYrrn7KPlXGTJLjLAXD?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f53155d-057e-4d93-6cf2-08dc29b98fee
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB7141.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 21:53:34.3611
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cIsu+S53HsYRtPYP0NOmD878PP2r/rViiAUUNVtrU12edu9LM05jGbdR3CbKIV96/Aog46+HOZHqRG4IaBHFrg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6796
+X-OriginatorOrg: intel.com
 
-On Fri, Feb 09, 2024 at 09:00:40AM +0100, Marco Elver wrote:
-> > +/**
-> > + * stack_depot_get_next_stack - Returns all stacks, one at a time
+
+
+On 2/10/2024 3:14 AM, Fenghua Yu wrote:
+> If CONFIG_HARDENED_USERCOPY is enabled, copying completion record from
+> event log cache to user triggers a kernel bug.
 > 
-> "Returns all stack_records" to be clear that this is returning the struct.
+> [ 1987.159822] usercopy: Kernel memory exposure attempt detected from SLUB object 'dsa0' (offset 74, size 31)!
+> [ 1987.170845] ------------[ cut here ]------------
+> [ 1987.176086] kernel BUG at mm/usercopy.c:102!
+> [ 1987.180946] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+> [ 1987.186866] CPU: 17 PID: 528 Comm: kworker/17:1 Not tainted 6.8.0-rc2+ #5
+> [ 1987.194537] Hardware name: Intel Corporation AvenueCity/AvenueCity, BIOS BHSDCRB1.86B.2492.D03.2307181620 07/18/2023
+> [ 1987.206405] Workqueue: wq0.0 idxd_evl_fault_work [idxd]
+> [ 1987.212338] RIP: 0010:usercopy_abort+0x72/0x90
+> [ 1987.217381] Code: 58 65 9c 50 48 c7 c2 17 85 61 9c 57 48 c7 c7 98 fd 6b 9c 48 0f 44 d6 48 c7 c6 b3 08 62 9c 4c 89 d1 49 0f 44 f3 e8 1e 2e d5 ff <0f> 0b 49 c7 c1 9e 42 61 9c 4c 89 cf 4d 89 c8 eb a9 66 66 2e 0f 1f
+> [ 1987.238505] RSP: 0018:ff62f5cf20607d60 EFLAGS: 00010246
+> [ 1987.244423] RAX: 000000000000005f RBX: 000000000000001f RCX: 0000000000000000
+> [ 1987.252480] RDX: 0000000000000000 RSI: ffffffff9c61429e RDI: 00000000ffffffff
+> [ 1987.260538] RBP: ff62f5cf20607d78 R08: ff2a6a89ef3fffe8 R09: 00000000fffeffff
+> [ 1987.268595] R10: ff2a6a89eed00000 R11: 0000000000000003 R12: ff2a66934849c89a
+> [ 1987.276652] R13: 0000000000000001 R14: ff2a66934849c8b9 R15: ff2a66934849c899
+> [ 1987.284710] FS:  0000000000000000(0000) GS:ff2a66b22fe40000(0000) knlGS:0000000000000000
+> [ 1987.293850] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 1987.300355] CR2: 00007fe291a37000 CR3: 000000010fbd4005 CR4: 0000000000f71ef0
+> [ 1987.308413] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [ 1987.316470] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+> [ 1987.324527] PKRU: 55555554
+> [ 1987.327622] Call Trace:
+> [ 1987.330424]  <TASK>
+> [ 1987.332826]  ? show_regs+0x6e/0x80
+> [ 1987.336703]  ? die+0x3c/0xa0
+> [ 1987.339988]  ? do_trap+0xd4/0xf0
+> [ 1987.343662]  ? do_error_trap+0x75/0xa0
+> [ 1987.347922]  ? usercopy_abort+0x72/0x90
+> [ 1987.352277]  ? exc_invalid_op+0x57/0x80
+> [ 1987.356634]  ? usercopy_abort+0x72/0x90
+> [ 1987.360988]  ? asm_exc_invalid_op+0x1f/0x30
+> [ 1987.365734]  ? usercopy_abort+0x72/0x90
+> [ 1987.370088]  __check_heap_object+0xb7/0xd0
+> [ 1987.374739]  __check_object_size+0x175/0x2d0
+> [ 1987.379588]  idxd_copy_cr+0xa9/0x130 [idxd]
+> [ 1987.384341]  idxd_evl_fault_work+0x127/0x390 [idxd]
+> [ 1987.389878]  process_one_work+0x13e/0x300
+> [ 1987.394435]  ? __pfx_worker_thread+0x10/0x10
+> [ 1987.399284]  worker_thread+0x2f7/0x420
+> [ 1987.403544]  ? _raw_spin_unlock_irqrestore+0x2b/0x50
+> [ 1987.409171]  ? __pfx_worker_thread+0x10/0x10
+> [ 1987.414019]  kthread+0x107/0x140
+> [ 1987.417693]  ? __pfx_kthread+0x10/0x10
+> [ 1987.421954]  ret_from_fork+0x3d/0x60
+> [ 1987.426019]  ? __pfx_kthread+0x10/0x10
+> [ 1987.430281]  ret_from_fork_asm+0x1b/0x30
+> [ 1987.434744]  </TASK>
+> 
+> The issue arises because event log cache is created using
+> kmem_cache_create() which is not suitable for user copy.
+> 
+> Fix the issue by creating event log cache with
+> kmem_cache_create_usercopy(), ensuring safe user copy.
+s/, ensuring/ to ensure
 
-Fixed.
 
 
 > 
-> > + *
-> > + * @table:     Current table we are checking
-> > + * @bucket:    Current bucket we are checking
-> > + * @last_found:        Last stack that was found
-> > + *
-> > + * This function finds first a non-empty bucket and returns the first stack
-> > + * stored in it. On consequent calls, it walks the bucket to see whether
-> > + * it contains more stacks.
-> > + * Once we have walked all the stacks in a bucket, we check
-> > + * the next one, and we repeat the same steps until we have checked all of them
+> Fixes: c2f156bf168f ("dmaengine: idxd: create kmem cache for event log fault items")
+> Reported-by: Tony Zhu <tony.zhu@intel.com>
+> Tested-by: Tony Zhu <tony.zhu@intel.com>
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+
+Reviewed-by: Lijun Pan <lijun.pan@intel.com>
+
+> ---
+>   drivers/dma/idxd/init.c | 15 ++++++++++++---
+>   1 file changed, 12 insertions(+), 3 deletions(-)
 > 
-> I think for this function it's important to say that no entry returned
-> from this function can be evicted.
-> 
-> I.e. the easiest way to ensure this is that the caller makes sure the
-> entries returned are never passed to stack_depot_put() - which is
-> certainly the case for your usecase because you do not use
-> stack_depot_put().
-> 
-> > + * Return: A pointer a to stack_record struct, or NULL when we have walked all
-> > + * buckets.
-> > + */
-> > +struct stack_record *stack_depot_get_next_stack(unsigned long *table,
-> 
-> To keep consistent, I'd also call this
-> __stack_depot_get_next_stack_record(), so that we're clear this is
-> more of an internal function not for general usage.
-> 
-> > +                                               struct list_head **bucket,
-> > +                                               struct stack_record **last_found);
-> > +
-> >  /**
-> >   * stack_depot_fetch - Fetch a stack trace from stack depot
-> >   *
-> > diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-> > index 197c355601f9..107bd0174cd6 100644
-> > --- a/lib/stackdepot.c
-> > +++ b/lib/stackdepot.c
-> > @@ -782,6 +782,52 @@ unsigned int stack_depot_get_extra_bits(depot_stack_handle_t handle)
-> >  }
-> >  EXPORT_SYMBOL(stack_depot_get_extra_bits);
-> >
-> > +struct stack_record *stack_depot_get_next_stack(unsigned long *table,
-> > +                                               struct list_head **curr_bucket,
-> > +                                               struct stack_record **last_found)
-> > +{
-> > +       struct list_head *bucket = *curr_bucket;
-> > +       unsigned long nr_table = *table;
-> > +       struct stack_record *found = NULL;
-> > +       unsigned long stack_table_entries = stack_hash_mask + 1;
-> > +
-> > +       rcu_read_lock_sched_notrace();
-> 
-> We are returning pointers to stack_records out of the RCU-read
-> critical section, which are then later used to continue the iteration.
-> list_for_each_entry_continue_rcu() says this is fine if "... you held
-> some sort of non-RCU reference (such as a reference count) ...".
-> Updating the function's documentation to say none of these entries can
-> be evicted via a stack_depot_put() is required.
+> diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
+> index 14df1f1347a8..4954adc6bb60 100644
+> --- a/drivers/dma/idxd/init.c
+> +++ b/drivers/dma/idxd/init.c
+> @@ -343,7 +343,9 @@ static void idxd_cleanup_internals(struct idxd_device *idxd)
+>   static int idxd_init_evl(struct idxd_device *idxd)
+>   {
+>   	struct device *dev = &idxd->pdev->dev;
+> +	unsigned int evl_cache_size;
+>   	struct idxd_evl *evl;
+> +	const char *idxd_name;
+>   
+>   	if (idxd->hw.gen_cap.evl_support == 0)
+>   		return 0;
+> @@ -355,9 +357,16 @@ static int idxd_init_evl(struct idxd_device *idxd)
+>   	spin_lock_init(&evl->lock);
+>   	evl->size = IDXD_EVL_SIZE_MIN;
+>   
+> -	idxd->evl_cache = kmem_cache_create(dev_name(idxd_confdev(idxd)),
+> -					    sizeof(struct idxd_evl_fault) + evl_ent_size(idxd),
+> -					    0, 0, NULL);
+> +	idxd_name = dev_name(idxd_confdev(idxd));
+> +	evl_cache_size = sizeof(struct idxd_evl_fault) + evl_ent_size(idxd);
+> +	/*
+> +	 * Since completion record in evl_cache will be copied to user
+> +	 * when handling completion record page fault, need to create
+> +	 * the cache suitable for user copy.
+> +	 */
 
-Thinking about it some more, I think I made a mistake:
+Maybe briefly compare kmem_cache_create() with 
+kmem_cache_create_usercopy() and add up to the above comments. If you 
+think it too verbose, then forget about it.
 
-I am walking all buckets, and within those buckets there are not only
-page_owner stack_records, which means that I could return a stack_record
-from e.g: KASAN (which I think can evict stack_records) and then
-everything goes off the rails.
-Which means I cannot walk the buckets like that.
-
-Actually, I think that having something like the following
-
- struct list_stack_records {
-      struct stack_record *stack;
-      struct list_stack_records *next;
- }
-
-in page_owner would make sense.
-Then the only thing I would have to do is to add a new record on every
-new stack_record, and then I could just walk the list like a linked
-list.
-
-Which means that the function stack_depot_get_next_stack() could be
-killed because everything would happen in page_owner code.
-
-e.g:
-
- static void inc_stack_record_count(depot_stack_handle_t handle)
- {
-         struct stack_record *stack = __stack_depot_get_stack_record(handle);
- 
-         if (stack) {
-                 /*
-                  * New stack_record's that do not use STACK_DEPOT_FLAG_GET start
-                  * with REFCOUNT_SATURATED to catch spurious increments of their
-                  * refcount.
-                  * Since we do not use STACK_DEPOT_FLAG_{GET,PUT} API, let us
-                  * set a refcount of 1 ourselves.
-                  */
-                 if (refcount_read(&stack->count) == REFCOUNT_SATURATED) {
-                         refcount_set(&stack->count, 1);
-			 add_new_stack_record_into_the_list(stack)
-		 }
-                 refcount_inc(&stack->count);
-         }
- }
-
-and then just walk the list_stack_records list whenever we want to
-show the stacktraces and their counting.
-
-I think that overall this approach is cleaner and safer.
-
--- 
-Oscar Salvador
-SUSE Labs
+> +	idxd->evl_cache = kmem_cache_create_usercopy(idxd_name, evl_cache_size,
+> +						     0, 0, 0, evl_cache_size,
+> +						     NULL);
+>   	if (!idxd->evl_cache) {
+>   		kfree(evl);
+>   		return -ENOMEM;
 
