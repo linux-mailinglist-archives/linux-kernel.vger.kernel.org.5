@@ -1,88 +1,118 @@
-Return-Path: <linux-kernel+bounces-59585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B27284F959
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:09:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A947D84FA65
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:59:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A87C7284410
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:09:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 451A81F21894
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:59:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12FA07AE73;
-	Fri,  9 Feb 2024 16:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B51E86AD3;
+	Fri,  9 Feb 2024 16:56:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uP9XrTny"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OST7RopP"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 502CD76905
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 16:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E4276414;
+	Fri,  9 Feb 2024 16:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707494952; cv=none; b=JunsvH1zTiPXSL5f6WQiBYo8uoDWUvp/71dgrsW9+X8dPnde4uHaF7Zq2kQ8qvGqGy8xAk/KAaXL2TLaUrGATnvLMCZGOka4BSaiaQAmY6XoLya83icKPlUvQqBdEN9vnh52EN36P7lm+xrlGOZTCO7fccyWZplwVhwiLcP1he4=
+	t=1707497796; cv=none; b=e+57wdxRRYLMJczKIsx8A9FarLMu6LhhOdQ209Kq342OxlEHripL279OTRRkgnSamgVDot/CgdcKaWBW9p+H+G8J2dJuKRRBSxDPGzTR0Y0nQyos2gg2xtK2QA3xWXds2M1XF/pLXnOPkq4k1PV6U+Ai8Rr/IBownE2PDPaBhV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707494952; c=relaxed/simple;
-	bh=IIeM8mUDJ3PXlV91DXOkNDk6nOrCsTSkdnpyBI3x1Wk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fmSDh7P5KJOOaB9PO/aMOrOx9Hz7mA7OWT7509u6aX4TXmyz6c5+lmNxgZNDYmxsdtnbD6hNEguaG+ZDeSLHpbfb01Mcftu8iYHYUmaBVpPbzeI3xSoIoSpG86t38oh9J1J/JOPaOKUpKRQuARIsPSouvSCL0d1ebGnD/seWzOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uP9XrTny; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 606B3C43394;
-	Fri,  9 Feb 2024 16:09:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707494950;
-	bh=IIeM8mUDJ3PXlV91DXOkNDk6nOrCsTSkdnpyBI3x1Wk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uP9XrTnyr9qUDII1Mg3xLEN2Oj5dAMy7n5EQjxWepL0lf7fp7+cflG4Lr5+OTLBHX
-	 j7m3sd6nVmHFx2gTbgvllQfhXDKkpmMENr2gHzNj1mLWwlpRIDVG7CfnUbnlxllgkF
-	 2Z3P/oe0gAKOh4usYMxJPXmLNspwMTxaxIP/aCHV7e6cGRLgL+hhvY8St+tnWOnO8C
-	 /I9Xe8QfELQKiz9c8xpBfqNEWPRK+n3J5D7+eJkMfHwDhxZC9hrB28mlHTThzr+j7i
-	 iZZp/fDrKW/Ov44NOi6dv7xRKlGPBb3t8fIVwbrBPN73PVgORrT0tkvsw55sWghEhL
-	 O7ftIXFjyq/0g==
-Date: Fri, 9 Feb 2024 16:09:06 +0000
-From: Will Deacon <will@kernel.org>
-To: "JiaLong.Yang" <jialong.yang@shingroup.cn>
-Cc: Mark Rutland <mark.rutland@arm.com>, shenghui.qu@shingroup.cn,
-	ke.zhao@shingroup.cn, zhijie.ren@shingroup.cn,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf/arm_smmuv3: Omit the two judgements which done in
- framework
-Message-ID: <20240209160905.GA24565@willie-the-truck>
-References: <20231221093802.20612-1-jialong.yang@shingroup.cn>
+	s=arc-20240116; t=1707497796; c=relaxed/simple;
+	bh=J/MfZTMY7vJ/FmpWNtX0rTMAuzY/Rbc8mm8OmM8h5jc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=gypr9OSV2QTGzlfy2SJ3ZGLA0g2fCceCJN0TvsfyaxbY4EBCXmgN937UsOKsHcAvXd+GZ3aKhY92tqVaek9xUgISltV6Vu7c4OkuZVU0A5hdUMd55LNXnx4twoCPw5oK7dCnzgxGTfq3m3U5I9qU1IZwERVxdg3Ic3EGZQGRozs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OST7RopP; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 419COmGT027518;
+	Fri, 9 Feb 2024 16:09:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=c2ziwPPJ87pqspr3WW8ns7hCbOA/kOJcRJXPUxtM2LU=; b=OS
+	T7RopPKnRrAnS6trbo7n7HJdy6ojZ8g46+4pMzhPWVIQIrehb7yIvH4qzUFrO9uJ
+	z2HLmmpN4S/i3lo2qWPY26fAIWdoCcDRNh1DvBAIlQzLDVrO/MF6rxpFPI2LbUaB
+	aVeRLKxsYHv7pdzeuZJElAwRDvMC4goElV3zAf8u+AVE78jwm+VIcZcZOXMpU0hm
+	aR4ZqY1RlkuWjtC7NI9N38RZgi3QIYOasBDUh8OU8d3Aditdg77VJXNa/tVAE/P+
+	ZZspIsJ3463jHwbun1t9y3DhHtHlldn3xiF2s6t67fqF7K6Iq9fLezsHskA1dNg1
+	A3SZd6281Ov4q/eogC2A==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w5m158f2m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 16:09:31 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 419G9Uxn019459
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 9 Feb 2024 16:09:30 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 9 Feb
+ 2024 08:09:29 -0800
+Message-ID: <c175684d-01e2-8603-d9c6-d9354b001143@quicinc.com>
+Date: Fri, 9 Feb 2024 09:09:28 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221093802.20612-1-jialong.yang@shingroup.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH] MAINTAINERS: Update bouncing @codeaurora addresses
+Content-Language: en-US
+To: Ritesh Harjani <ritesh.list@gmail.com>, <adrian.hunter@intel.com>,
+        <quic_asutoshd@quicinc.com>, <quic_bjorande@quicinc.com>
+CC: <linux-mmc@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <87il33mn3n.fsf@doe.com>
+From: Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <87il33mn3n.fsf@doe.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 34i71qS6LTjMNEERIwtULtBvVG8oNTDG
+X-Proofpoint-ORIG-GUID: 34i71qS6LTjMNEERIwtULtBvVG8oNTDG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-09_13,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ bulkscore=0 mlxlogscore=516 lowpriorityscore=0 clxscore=1015 spamscore=0
+ priorityscore=1501 adultscore=0 malwarescore=0 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402090119
 
-On Thu, Dec 21, 2023 at 05:38:01PM +0800, JiaLong.Yang wrote:
-> 'event->attr.type != event->pmu->type' has been done in
-> core.c::perf_init_event() ,core.c::perf_event_modify_attr(), etc.
->
-> This PMU is an uncore one. The core framework has disallowed
-> uncore-task events. So the judgement to event->cpu < 0 is no mean.
-
-It would be great to refer to the changes which added those checks to
-the perf core code. From reading the code myself, I can't convince myself
-that perf_try_init_event() won't call into the driver.
-
+On 2/4/2024 11:39 PM, Ritesh Harjani wrote:
+> Jeffrey Hugo <quic_jhugo@quicinc.com> writes:
 > 
-> The two judgements have been done in kernel/events/core.c
+>> The @codeaurora email domain's servers have been decommissioned for a
+>> long while now, and any emails addressed there will bounce.
+>>
+>> Asutosh has an entry in .mailmap pointing to a new address, but
+>> MAINTAINERS still lists an old @codeaurora address.  Update MAINTAINERS
+>> to match .mailmap for anyone reading the file directly.
+>>
+>> Ritesh appears to have changed jobs, but looks to be still active in the
+>> community.  Update Ritesh's address to the one used in recient community
+>> postings.
+>>
 > 
-> Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
-> ---
->  drivers/perf/arm_smmuv3_pmu.c | 8 --------
->  1 file changed, 8 deletions(-)
+> Thanks Jeffrey for the cc. Since I am not really active in linux-mmc
+> anymore, I would like to propose to have a Reviewer entry (R:) for
+> myself which I can try to help with.
+> 
+> Is that ok?
 
-It looks like _many_ perf drivers have these checks, so if they really
-aren't needed, we can clean this up bveyond SMMU. However, as I said
-above, I'm not quite convinced we can drop them.
+I see no problem with that.  Will send a v2
 
-Will
+-Jeff
 
