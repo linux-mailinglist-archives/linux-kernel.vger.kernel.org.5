@@ -1,152 +1,350 @@
-Return-Path: <linux-kernel+bounces-59231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B347D84F383
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:35:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9970384F389
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:36:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7033D283617
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:35:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A37F1F255B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B7581DDD5;
-	Fri,  9 Feb 2024 10:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374D51EB51;
+	Fri,  9 Feb 2024 10:36:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Yy4r/7GI"
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lPS4896Q";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4yE7nRz7";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lPS4896Q";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4yE7nRz7"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BB01D697
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 10:35:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6935120311;
+	Fri,  9 Feb 2024 10:36:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707474949; cv=none; b=WnnrgEFQQSBCZab+23P9n2KBbc5LZkJdCLCmzVy6PB1POiiZC4AL/SkGH2u6iaYQeORegk0CcGbrKLCA6sr0mcM2b+B22GDqIu1FSJWTRuuOWGXoEbpDpH2J3zGpL9chl0M9srs+wQLX8yXdmWqDHwf27XILL1Hgrm3UhGt/gSY=
+	t=1707474980; cv=none; b=e8ku8MyoHijUvQFQFxviRrxcuOPTa/ircra9KPfbWyzLps6S7vKySgwqV66EwUc0W6c/iH4Fquo71vzu76PhK0wUmyvWgmHOr3otdLMLB0qNHJAAQuq+yHPbID0G/PDtAKV+sHn95q0R83iWhQDdfq7SfremHT4Dghb7uBIEOcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707474949; c=relaxed/simple;
-	bh=Mh1E9PeJjOSqtWbFh8Fz3144DuBxk5lGa2WIC0FhKC4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TZ3W0dOTzuhWjSGBwiGXFZJsjfbDhwbFR1tqZmwaG7PY3EEBM0vWziShmcEUWEryyu+5D1RiiQ4TaEyMlQtJjCVR73IFguS/fHTm49HTnZEY68klv3gLl0/21RNBr6bhynDTAX8QBbrG5Gexvrz89gf5D2RqncH5VdzNOKVdUFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Yy4r/7GI; arc=none smtp.client-ip=209.85.217.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-4676a37e2c4so262567137.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 02:35:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707474946; x=1708079746; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=C0AaPX0aZcuXGu3S0z1IdEkLhaMcgiZgBjdGD9S23tA=;
-        b=Yy4r/7GIDScXh0YKhQ+K+7/UDlksVqIZSC/3XkNdbh0jR2n0ivk7AHz/vCdahltYA4
-         nCl5kpQR628ANHMInbKrsuUNAJ0IeRJhHTWGJ5lRptaPLZBUY3CDpsUQ4IBW13yKlghC
-         hNGOXAv11z/5BFoYVWKG3kVtOfzPudNQVxcZWOijsha4n7r8k1HkKZhoFeQvHZ98vKGA
-         Ljoue7aHfqoGt+FUtm4ATV3Lwdhp0g6zRni9txWfXP6i/xF+PKdCA7wJthN4FGZmFy+0
-         Rap9p7qieMK1M2hts5nf8R2IDie/DRgbKdySYqJRcpLoBPd6RTwaZ4rgDLi45DeqACou
-         ZW4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707474946; x=1708079746;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C0AaPX0aZcuXGu3S0z1IdEkLhaMcgiZgBjdGD9S23tA=;
-        b=RtyfT4raKYRaDnZzeeB/Qra6WwOVhZCHMQUL8mtYi2QsTKbkfYeq51VKrt4RwlbZNm
-         2HWfgrIqOiuPVuZGdWAzFMPyNTtAhqV734c3WvOaZhRHso4MOujCrboI922gRslh2nb+
-         c9FJ4LYdWlUPZKpriUEuDncElOj2dy1ifE1l2X09cfxY9tR3vHGv3uwmvDMqfBsPxeuJ
-         V6aHIiUoYnnHNfcCRbZZML0G5PwIjGq30OeXfYvPx7qnL4KzYgfVEO0GexbrE98cbO7A
-         K3GzY3AG+koC1a3jgHn82SQ0FaWbtbe2uSFi7Ym7OwKmOs28Ve2e9ibi4GeeSo75DfQ7
-         5WsA==
-X-Gm-Message-State: AOJu0YzMfIbkft8QNdkUzd+uGU1t5tDUpoAfcOcIaPOo6jaQPl4TI3Hi
-	BHx1Ep17imGqju6H8bElNK12yEWwwruLOxDBI/Z1K5+6YwevHJxlKAtlWiPhZsLJwJbhVuv6J4f
-	yPdGSJPYB1+N5Hm43/0Nq72SMlVP/ApI0Ymohwg==
-X-Google-Smtp-Source: AGHT+IFp9wZFp7PGu0RcR1uD2IpDXLMQRWQla3gRj8qRezXJyFyxHkmQv5rHnuraGHJB+dMlsRycHuckgzpTuB99yYs=
-X-Received: by 2002:a05:6102:ccb:b0:46c:fb37:393b with SMTP id
- g11-20020a0561020ccb00b0046cfb37393bmr1104868vst.11.1707474946599; Fri, 09
- Feb 2024 02:35:46 -0800 (PST)
+	s=arc-20240116; t=1707474980; c=relaxed/simple;
+	bh=nvztNhp7X0S6Y2yxrs+3c0zWNvdowtA6+SOHFeM8a8w=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DoeTglnP4ZMdK5MvXIsN/hT0BpmuiC5Zxu3Ui5OXRYnk7WAoEH80Gv2V4EfV35/BMR6aoxnYCeEVcar3cHuCK6DzyPA5Qw8osf39/j/6ffV0huDVxE8VouUFzviO+vNQ1tet0bt/XuTax4ZxM5eM8jT3Th9WyjjyW2+bqKZSNI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lPS4896Q; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4yE7nRz7; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lPS4896Q; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4yE7nRz7; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7334D1F7F9;
+	Fri,  9 Feb 2024 10:36:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707474976; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xSm7XsOm/8PdNpZJ4ZKFj5+Aa8A+E6krzaBF3pYG804=;
+	b=lPS4896QkRWG2ro/r12OJVDVX8cfQjF1aPwm9OZv2LIRozc+IK8FBhG5cnvAQwnl1V49Ay
+	KvEAdRjJs7RP2/89Jt1Ne18NP/LMkzcqa4VQ6uOJcq8tXpLUe+UOe4HyzY5ASK0Guz06yN
+	TAr9dXI7nH9Zf55hGwOLcPV2eOKfzCc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707474976;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xSm7XsOm/8PdNpZJ4ZKFj5+Aa8A+E6krzaBF3pYG804=;
+	b=4yE7nRz7uvV57v+FhhNr302GQ+ly7ThKYX2jbc72HpnR0v/Wn3kjRuGpsCURnC4hVX+vFU
+	8SI42tlkhFD9FjCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707474976; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xSm7XsOm/8PdNpZJ4ZKFj5+Aa8A+E6krzaBF3pYG804=;
+	b=lPS4896QkRWG2ro/r12OJVDVX8cfQjF1aPwm9OZv2LIRozc+IK8FBhG5cnvAQwnl1V49Ay
+	KvEAdRjJs7RP2/89Jt1Ne18NP/LMkzcqa4VQ6uOJcq8tXpLUe+UOe4HyzY5ASK0Guz06yN
+	TAr9dXI7nH9Zf55hGwOLcPV2eOKfzCc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707474976;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xSm7XsOm/8PdNpZJ4ZKFj5+Aa8A+E6krzaBF3pYG804=;
+	b=4yE7nRz7uvV57v+FhhNr302GQ+ly7ThKYX2jbc72HpnR0v/Wn3kjRuGpsCURnC4hVX+vFU
+	8SI42tlkhFD9FjCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E372B1326D;
+	Fri,  9 Feb 2024 10:36:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ot5lNh8AxmVHJwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 09 Feb 2024 10:36:15 +0000
+Date: Fri, 09 Feb 2024 11:36:15 +0100
+Message-ID: <87y1bt2acg.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Wesley Cheng <quic_wcheng@quicinc.com>
+Cc: <srinivas.kandagatla@linaro.org>,
+	<mathias.nyman@intel.com>,
+	<perex@perex.cz>,
+	<conor+dt@kernel.org>,
+	<corbet@lwn.net>,
+	<lgirdwood@gmail.com>,
+	<andersson@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>,
+	<gregkh@linuxfoundation.org>,
+	<Thinh.Nguyen@synopsys.com>,
+	<broonie@kernel.org>,
+	<bgoswami@quicinc.com>,
+	<tiwai@suse.com>,
+	<robh+dt@kernel.org>,
+	<konrad.dybcio@linaro.org>,
+	<linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>,
+	<linux-sound@vger.kernel.org>,
+	<linux-usb@vger.kernel.org>,
+	<linux-arm-msm@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v14 48/53] ALSA: usb-audio: mixer: Add USB offloading mixer control
+In-Reply-To: <20240208231406.27397-49-quic_wcheng@quicinc.com>
+References: <20240208231406.27397-1-quic_wcheng@quicinc.com>
+	<20240208231406.27397-49-quic_wcheng@quicinc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240208161700.268570-1-peter.griffin@linaro.org> <20240208161700.268570-3-peter.griffin@linaro.org>
-In-Reply-To: <20240208161700.268570-3-peter.griffin@linaro.org>
-From: Alexey Klimov <alexey.klimov@linaro.org>
-Date: Fri, 9 Feb 2024 10:35:35 +0000
-Message-ID: <CANgGJDoaxDLxPBxc=2kFO+omF8FcTf_3et1=J3h1BF8X27XbaQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] watchdog: s3c2410_wdt: use exynos_get_pmu_regmap_by_phandle()
- for PMU regs
-To: Peter Griffin <peter.griffin@linaro.org>
-Cc: arnd@arndb.de, krzysztof.kozlowski@linaro.org, linux@roeck-us.net, 
-	wim@linux-watchdog.org, alim.akhtar@samsung.com, jaewon02.kim@samsung.com, 
-	semen.protsenko@linaro.org, kernel-team@android.com, tudor.ambarus@linaro.org, 
-	andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com, 
-	linux-fsd@tesla.com, linux-watchdog@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=lPS4896Q;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=4yE7nRz7
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.01 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLe67txhfobum3fqdb5xx8e3au)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[dt];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[23];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,quicinc.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[linaro.org,intel.com,perex.cz,kernel.org,lwn.net,gmail.com,linuxfoundation.org,synopsys.com,quicinc.com,suse.com,vger.kernel.org,alsa-project.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -2.01
+X-Rspamd-Queue-Id: 7334D1F7F9
+X-Spam-Flag: NO
 
-On Thu, 8 Feb 2024 at 16:21, Peter Griffin <peter.griffin@linaro.org> wrote:
->
-> Obtain the PMU regmap using the new API added to exynos-pmu driver rather
-> than syscon_regmap_lookup_by_phandle(). As this driver no longer depends
-> on mfd syscon remove that header and Kconfig dependency.
->
-> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+On Fri, 09 Feb 2024 00:14:01 +0100,
+Wesley Cheng wrote:
+> 
+> In order to allow userspace/applications know about USB offloading status,
+> expose a sound kcontrol that fetches information about which sound card
+> index is associated with the ASoC platform card supporting offloading.  In
+> the USB audio offloading framework, the ASoC BE DAI link is the entity
+> responsible for registering to the SOC USB layer.  SOC USB will expose more
+> details about the current offloading status, which includes the USB sound
+> card and USB PCM device indexes currently being used.
+> 
+> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 
-Tested-by: Alexey Klimov <alexey.klimov@linaro.org>
+Now looking at this again, I noticed that this will bring the
+hard-dependency on ASoC stuff to USB-audio driver, since it adds the
+call of snd_soc_usb_device_offload_available().
 
-Tested on odroid xu3 (exynos5422). Watchdog works as expected and can
-reset the system.
+Maybe we can let the add-on platform adding/removing the control
+element on the fly instead?
+
+
+thanks,
+
+Takashi
 
 > ---
->  drivers/watchdog/Kconfig       | 1 -
->  drivers/watchdog/s3c2410_wdt.c | 8 ++++----
->  2 files changed, 4 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> index 7d22051b15a2..d78fe7137799 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -512,7 +512,6 @@ config S3C2410_WATCHDOG
->         tristate "S3C6410/S5Pv210/Exynos Watchdog"
->         depends on ARCH_S3C64XX || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
->         select WATCHDOG_CORE
-> -       select MFD_SYSCON if ARCH_EXYNOS
->         help
->           Watchdog timer block in the Samsung S3C64xx, S5Pv210 and Exynos
->           SoCs. This will reboot the system when the timer expires with
-> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> index 349d30462c8c..686cf544d0ae 100644
-> --- a/drivers/watchdog/s3c2410_wdt.c
-> +++ b/drivers/watchdog/s3c2410_wdt.c
-> @@ -24,9 +24,9 @@
->  #include <linux/slab.h>
->  #include <linux/err.h>
->  #include <linux/of.h>
-> -#include <linux/mfd/syscon.h>
->  #include <linux/regmap.h>
->  #include <linux/delay.h>
-> +#include <linux/soc/samsung/exynos-pmu.h>
->
->  #define S3C2410_WTCON          0x00
->  #define S3C2410_WTDAT          0x04
-> @@ -699,11 +699,11 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
->                 return ret;
->
->         if (wdt->drv_data->quirks & QUIRKS_HAVE_PMUREG) {
-> -               wdt->pmureg = syscon_regmap_lookup_by_phandle(dev->of_node,
-> -                                               "samsung,syscon-phandle");
-> +               wdt->pmureg = exynos_get_pmu_regmap_by_phandle(dev->of_node,
-> +                                                "samsung,syscon-phandle");
->                 if (IS_ERR(wdt->pmureg))
->                         return dev_err_probe(dev, PTR_ERR(wdt->pmureg),
-> -                                            "syscon regmap lookup failed.\n");
-> +                                            "PMU regmap lookup failed.\n");
->         }
->
->         wdt_irq = platform_get_irq(pdev, 0);
-> --
-> 2.43.0.594.gd9cf4e227d-goog
->
+>  sound/usb/Kconfig             |  4 ++
+>  sound/usb/Makefile            |  1 +
+>  sound/usb/mixer.c             |  5 +++
+>  sound/usb/mixer_usb_offload.c | 72 +++++++++++++++++++++++++++++++++++
+>  sound/usb/mixer_usb_offload.h | 17 +++++++++
+>  5 files changed, 99 insertions(+)
+>  create mode 100644 sound/usb/mixer_usb_offload.c
+>  create mode 100644 sound/usb/mixer_usb_offload.h
+> 
+> diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
+> index 4c842fbe6365..3e7be258d0e3 100644
+> --- a/sound/usb/Kconfig
+> +++ b/sound/usb/Kconfig
+> @@ -176,10 +176,14 @@ config SND_BCD2000
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called snd-bcd2000.
+>  
+> +config SND_USB_OFFLOAD_MIXER
+> +	bool
+> +
+>  config SND_USB_AUDIO_QMI
+>  	tristate "Qualcomm Audio Offload driver"
+>  	depends on QCOM_QMI_HELPERS && SND_USB_AUDIO && USB_XHCI_SIDEBAND
+>  	select SND_PCM
+> +	select SND_USB_OFFLOAD_MIXER
+>  	help
+>  	  Say Y here to enable the Qualcomm USB audio offloading feature.
+>  
+> diff --git a/sound/usb/Makefile b/sound/usb/Makefile
+> index 246788268ddd..8c54660a11b0 100644
+> --- a/sound/usb/Makefile
+> +++ b/sound/usb/Makefile
+> @@ -22,6 +22,7 @@ snd-usb-audio-objs := 	card.o \
+>  			stream.o \
+>  			validate.o
+>  
+> +snd-usb-audio-$(CONFIG_SND_USB_OFFLOAD_MIXER) += mixer_usb_offload.o
+>  snd-usb-audio-$(CONFIG_SND_USB_AUDIO_MIDI_V2) += midi2.o
+>  snd-usb-audio-$(CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER) += media.o
+>  
+> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+> index 409fc1164694..09229e623469 100644
+> --- a/sound/usb/mixer.c
+> +++ b/sound/usb/mixer.c
+> @@ -48,6 +48,7 @@
+>  #include "mixer.h"
+>  #include "helper.h"
+>  #include "mixer_quirks.h"
+> +#include "mixer_usb_offload.h"
+>  #include "power.h"
+>  
+>  #define MAX_ID_ELEMS	256
+> @@ -3609,6 +3610,10 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif)
+>  	if (err < 0)
+>  		goto _error;
+>  
+> +	err = snd_usb_offload_init_mixer(mixer);
+> +	if (err < 0)
+> +		goto _error;
+> +
+>  	err = snd_device_new(chip->card, SNDRV_DEV_CODEC, mixer, &dev_ops);
+>  	if (err < 0)
+>  		goto _error;
+> diff --git a/sound/usb/mixer_usb_offload.c b/sound/usb/mixer_usb_offload.c
+> new file mode 100644
+> index 000000000000..61b17359b987
+> --- /dev/null
+> +++ b/sound/usb/mixer_usb_offload.c
+> @@ -0,0 +1,72 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#include <linux/usb.h>
+> +
+> +#include <sound/core.h>
+> +#include <sound/control.h>
+> +#include <sound/soc-usb.h>
+> +
+> +#include "card.h"
+> +#include "mixer.h"
+> +#include "mixer_usb_offload.h"
+> +#include "usbaudio.h"
+> +
+> +static int
+> +snd_usb_offload_create_mixer(struct usb_mixer_interface *mixer,
+> +		       const struct snd_kcontrol_new *new_kctl)
+> +{
+> +	struct snd_usb_audio *chip = mixer->chip;
+> +	struct usb_device *udev = chip->dev;
+> +
+> +	return snd_ctl_add(chip->card,
+> +			   snd_ctl_new1(new_kctl, udev->bus->sysdev));
+> +}
+> +
+> +static int
+> +snd_usb_offload_available_get(struct snd_kcontrol *kcontrol,
+> +		      struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct device *sysdev = snd_kcontrol_chip(kcontrol);
+> +	int ret;
+> +
+> +	ret = snd_soc_usb_device_offload_available(sysdev);
+> +	ucontrol->value.integer.value[0] = ret < 0 ? -1 : ret;
+> +
+> +	return ret < 0 ? ret : 0;
+> +}
+> +
+> +static int snd_usb_offload_available_info(struct snd_kcontrol *kcontrol,
+> +			      struct snd_ctl_elem_info *uinfo)
+> +{
+> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+> +	uinfo->count = 1;
+> +	uinfo->value.integer.min = -1;
+> +	uinfo->value.integer.max = SNDRV_CARDS;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct snd_kcontrol_new snd_usb_offload_available_ctl = {
+> +	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
+> +	.access = SNDRV_CTL_ELEM_ACCESS_READ,
+> +	.name = "USB Offload Playback Capable Card",
+> +	.info = snd_usb_offload_available_info,
+> +	.get = snd_usb_offload_available_get,
+> +};
+> +
+> +/**
+> + * snd_usb_offload_init_mixer() - Add USB offload bounded mixer
+> + * @mixer - USB mixer
+> + *
+> + * Creates a sound control for a USB audio device, so that applications can
+> + * query for if there is an available USB audio offload path, and which
+> + * card is managing it.
+> + */
+> +int snd_usb_offload_init_mixer(struct usb_mixer_interface *mixer)
+> +{
+> +	return snd_usb_offload_create_mixer(mixer, &snd_usb_offload_available_ctl);
+> +}
+> +EXPORT_SYMBOL_GPL(snd_usb_offload_init_mixer);
+> diff --git a/sound/usb/mixer_usb_offload.h b/sound/usb/mixer_usb_offload.h
+> new file mode 100644
+> index 000000000000..fb88e872d8fa
+> --- /dev/null
+> +++ b/sound/usb/mixer_usb_offload.h
+> @@ -0,0 +1,17 @@
+> +/* SPDX-License-Identifier: GPL-2.0
+> + *
+> + * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#ifndef __USB_OFFLOAD_MIXER_H
+> +#define __USB_OFFLOAD_MIXER_H
+> +
+> +#if IS_ENABLED(CONFIG_SND_USB_OFFLOAD_MIXER)
+> +int snd_usb_offload_init_mixer(struct usb_mixer_interface *mixer);
+> +#else
+> +static int snd_usb_offload_init_mixer(struct usb_mixer_interface *mixer)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +#endif /* __USB_OFFLOAD_MIXER_H */
 
