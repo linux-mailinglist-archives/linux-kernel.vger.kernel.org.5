@@ -1,105 +1,91 @@
-Return-Path: <linux-kernel+bounces-59166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6428084F26D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:41:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E81084F272
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:42:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96C7E1C22862
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:41:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5CCCB26121
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:42:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8409F67C6C;
-	Fri,  9 Feb 2024 09:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lzd2xvZZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E753167E8B;
+	Fri,  9 Feb 2024 09:42:05 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C990D679E2;
-	Fri,  9 Feb 2024 09:41:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B5A679FE
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 09:42:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707471690; cv=none; b=AMppaNsWsRM8l+AsbqBAz6eIsmCvas7BZQDl0AcMZtfOJ9FNT6nuM6PshR8xOzcGZPJjmQGZ6b0q2ypXr6X7/pT2DC5ymQU7wbNXLp6LH1T0BgYu0zTVX1KciBCZ9pjJxQwAxAp0IvcOdzbL0nQhLpeJFuWUnljdwnIxYrM2UBg=
+	t=1707471725; cv=none; b=DzHjxmMOx5FirLm2tcDTgBccS5XX3wxBHmMQd6Nj6dB0KgFglT6JN2L6mpUbT52PuQrSZNMkZv9fPRMXkYsRCc8XVa/v/HIrSG7flyIrcfpguZiWjXr+mF9u7CdpASLfOXQtRvr8M2FeWVFXrDR60juEdal5o8t2Pab5bSsw1OI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707471690; c=relaxed/simple;
-	bh=BEszwlutbx0qxg3vANAhIWjSGJaJS3pDHYYZUUm2WQs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AWHJxfqVBkByYC2oX2iIk2tusF2vKngAJHbZM6vSmZNtqjUeqW2MkBT/Jyz7Ioi9UW+XksJ0oTiqLonHmmTXYrH+HA/l2XJVdSSIFremvocfayvEFb6doMu6aoWwWxnirEdBaf4eVYfll22tFMpBWVGH1XQotjGOner+DV3HZHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lzd2xvZZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11E4DC433F1;
-	Fri,  9 Feb 2024 09:41:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707471690;
-	bh=BEszwlutbx0qxg3vANAhIWjSGJaJS3pDHYYZUUm2WQs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lzd2xvZZZP5SASu6ATZPmjqgMI2HfMroShU4nHQLy4ZqMd+6JcYpmR54OrNS69JtB
-	 x+f/5oqlVaKZgPm5VT/9Kx6XPB02rxO7GLxhxxL8FPyYWaC/uD2XltiYzJTITE/U7g
-	 Z+fe72yIVa3Ojc8UsgKn50HEsFpYtylpsncZ+3qIkg3e6vsNYEG/rTCsnbsEh+dLIJ
-	 xLNXwxb3fa+0u4MtRwdyLMHzH0u7RC+I98Mk1nNTycztbr7pXi75wDvjAlG3IQU9cQ
-	 R7nWYqW+bzgrJalfFyguxRW78Q4KLJaKEAfNc5Bw9sREZiCGVND0C7V7HZLzU/6bin
-	 chFVSps7xSPhg==
-Date: Fri, 9 Feb 2024 09:41:25 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Dharma Balasubiramani <dharma.b@microchip.com>
-Cc: tglx@linutronix.de, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: interrupt-controller: Convert Atmel AIC to
- json-schema
-Message-ID: <20240209-scrambled-prankish-77032c31ec62@spud>
-References: <20240208092015.263210-1-dharma.b@microchip.com>
- <20240208-daintily-craftsman-c7f514d49c0f@spud>
+	s=arc-20240116; t=1707471725; c=relaxed/simple;
+	bh=HBblHBVK+T/pHGkEyVDd8ntNpVOP52/53m6DEgx70f8=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=T0VUOQmkaawOIl55+939/MKfd+OZxS59piVizk2ODZzMGi1GKpil72hkC0RpexsCfQor8Q6pVO2pirDjGHGIaQZuKgOQzepjD3HtMxRTVSOLW1TGD9GguacHXw0sO99lj+RLu3fwMw4+h/CQ3W2rxKefpz7hMfJ9EVN1VVbPCZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bedddd00d5so66446939f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 01:42:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707471723; x=1708076523;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hkWlHeW+Ii/nHAjy7BeA1S7Bb1G242rO9yBCBU7fW6w=;
+        b=UEaIRDUVkHorUa2O31eDksZol3bEJo0qPVJBAD/CbjFG95RS9//eGjuPDnt4DfadBV
+         NVlAxdXOZz0PeA+BbrOGo79Mrga0P/HWy6P94xkXQaJjuBuupBrSMYBL9z6UHVLm2z9t
+         IaTP3vMHXYeKxP05whOcDWbfSgP9lighrgt8+5ULYU5fDsLp34sIb8s+8FVspsYrylNp
+         9YbSWAOVAG4HLDnwiupVCm0TY7GMZ6K8xQO3xAXEiol0XbJIeBBMPU+kJGyAqty7Chwc
+         8TNR8+nbhffpJvZI6HVhMYUz5NI4FelAdxL7oK5+qUWyMSgmiRP/Hgbbh4jWNmrJA9Nk
+         CLGw==
+X-Forwarded-Encrypted: i=1; AJvYcCU2HrH08/N1fPWNvpmEc2J8mQzXIegveh7D18p4KWmKsrUbY3pMF70H1agBY3tQDUPvPhDaCDWxfd/gLMiI9tFcB+pS6huKMbDLF3+O
+X-Gm-Message-State: AOJu0Yy2JO0glackk6ObmW17UYTG+YYv5VGN5nuTfRIICf2md+PYOB82
+	w+NpsN2jkXozw7O7bPbbHYrhUaPBxkqE/yVZ+xa3mgtyLCDQjVRHegzoM1Q0fl1eYIqKTBbzhsI
+	6GX2dAGHhanVLKPPA+kj/g7Ki07NDT5KcXkY489P0Q1/oQz1X4stjnkI=
+X-Google-Smtp-Source: AGHT+IHPX85UTLCU5j1b0GQA9sPLwiT+M3atEFtbQzJofqSpI8Q0b3O6bOG9fHOfNkzfkIJ16bAKD32qqwCZip7LGiHzeUZ2whCU
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="WpMqNRNAiaWqsI35"
-Content-Disposition: inline
-In-Reply-To: <20240208-daintily-craftsman-c7f514d49c0f@spud>
+X-Received: by 2002:a05:6602:6427:b0:7c3:b6:ebb5 with SMTP id
+ gn39-20020a056602642700b007c300b6ebb5mr33233iob.2.1707471723280; Fri, 09 Feb
+ 2024 01:42:03 -0800 (PST)
+Date: Fri, 09 Feb 2024 01:42:03 -0800
+In-Reply-To: <00000000000075136e05fbf73d67@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000087bf8a0610efbdcc@google.com>
+Subject: Re: [syzbot] [hfs?] KASAN: slab-use-after-free Read in hfsplus_read_wrapper
+From: syzbot <syzbot+4b52080e97cde107939d@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+syzbot suspects this issue was fixed by commit:
 
---WpMqNRNAiaWqsI35
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-On Thu, Feb 08, 2024 at 11:10:32PM +0000, Conor Dooley wrote:
-> On Thu, Feb 08, 2024 at 02:50:15PM +0530, Dharma Balasubiramani wrote:
-> > +  "#interrupt-cells":
-> > +    const: 3
-> > +    description: |
-> > +      The 1st cell is the IRQ number (Peripheral IDentifier on datashe=
-et).
-> > +      The 2nd cell specifies flags:
-> > +        bits[3:0] trigger type and level flags:
-> > +          1 =3D low-to-high edge triggered.
-> > +          2 =3D high-to-low edge triggered.
-> > +          4 =3D active high level-sensitive.
-> > +          8 =3D active low level-sensitive.
-> > +        Valid combinations: 1, 2, 3, 4, 8.
->=20
-> Shame that these are not aligned with the IRQ_TYPE defines :(
+    fs: Block writes to mounted block devices
 
-Dharma pointed out to me that these are the same and I just looked at
-the wrong header file.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15065d50180000
+start commit:   88035e5694a8 Merge tag 'hid-for-linus-2023121201' of git:/..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=be2bd0a72b52d4da
+dashboard link: https://syzkaller.appspot.com/bug?extid=4b52080e97cde107939d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148fa88ae80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15067cc6e80000
 
---WpMqNRNAiaWqsI35
-Content-Type: application/pgp-signature; name="signature.asc"
+If the result looks correct, please mark the issue as fixed by replying with:
 
------BEGIN PGP SIGNATURE-----
+#syz fix: fs: Block writes to mounted block devices
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcXzGAAKCRB4tDGHoIJi
-0j2XAP9hCao1O+BKFrkbwjtB7N9o1ioS94d90/QcqouAC/MopAD/XVF45cFeE3OG
-RRtLqJSmfqxmGWgaHIj4Mx60Xn/EOwk=
-=DCZo
------END PGP SIGNATURE-----
-
---WpMqNRNAiaWqsI35--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
