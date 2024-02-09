@@ -1,169 +1,113 @@
-Return-Path: <linux-kernel+bounces-59732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A52C84FB04
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D905E84FB07
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:30:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CF4C1C21E4D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:29:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1651B1C219A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:30:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ACE07E574;
-	Fri,  9 Feb 2024 17:29:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 096E37E116;
+	Fri,  9 Feb 2024 17:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="UwPkD79u"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="WdVJRaxl"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFC5053398;
-	Fri,  9 Feb 2024 17:29:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42AFB7BAF3
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:30:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707499763; cv=none; b=Dc32LrXK2MXeBuWdATpPl1Ja9xXXC+cPw3GJCwqqI8IiTGnYPdLJ6eQn3IGXPcu6gi5R6g0vcIUuwLRZeLxruLB32WY3UXCcTWMML1fYnZ93g+hoQWM/y+C49ZZlEUJ0CMxY3UaRBpjm5VexI6npfVuVC7xq+oFIXNCjpOKI6dg=
+	t=1707499813; cv=none; b=FxyyyBhqvVx2NC9Ez862gtQAtymDktwrcQ559gjDivwmEpv4QeRGLITnBOw0Mv1xBYmJ6wn2fGr4kyuMTnnXFF9po9B8s69jkn0f3cj2jibNOgZPn7Hwptr9Pj8hCO7T4zXYsA9CxTCayS1SJ86zr6HUZHpqPdEHR0FqjWuvAA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707499763; c=relaxed/simple;
-	bh=EkSrADbaed32E6a2US7Oxs/9b3BCmWx75oCYAcCz+8Q=;
+	s=arc-20240116; t=1707499813; c=relaxed/simple;
+	bh=vFwOGmGfP+oLKLyesAjgqn7JKbXU3kmJU7zTY1MjMjA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RhXZgCwZvNyUi8PgcJx8G3x6mJHSSKM4ANVAhTVdUQKc5j+E/4xYyQcwS4iY9TqLCFkWfmnYk8Mf/o6PKxIPzXsYUH1NGWBCV186RPid3UbeeBOK4pCEtSH/gak2mKy8ONGEZQrd4l7+XL2+MOdyfWkTT3AOrEBVV+6Cpw97TtI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=UwPkD79u; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A4DA040E0192;
-	Fri,  9 Feb 2024 17:29:16 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id qdR596g8WX8w; Fri,  9 Feb 2024 17:29:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707499754; bh=Nhpf7nFX+VKx5DMtuC+3xgYTTGAyZzaetOFhzVHC8Nc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UwPkD79uaru0szKr6LQup8rGQC0VLRA/G/HDHxKu11YMBHKC2jaiLhqUpwQoSIO9p
-	 DRsQSpe/jxN3Enz/X09DGOQiQBjewfZ1xnKHausobJ+gR0sBoupHZJKm4f5OmoKDgB
-	 W38NtSDJZ3BRM607eMJLifVaz6VdVPqtEi1QENlY5FyG2kdYO4T6b81pX4wRb0tTjw
-	 TxyiGnC56cVzvu4k9ma31gI+bDKoVKqjpx06jLwV+OvFyzwq/5ddaN5tey4b+HXytM
-	 Ip9vi0qekSL4KiF5gPN1b9kbmN47QBqZ83fXMXhfMvphOY4l6KGNHPrstgcOsnrx+s
-	 Dc4J1Na4gAe16xnha/Jq8JabC4UE37ci5R/pbA0RMIpN/DMLBnn9apLa5J6sZA69TY
-	 8CDs8yR5SOELuhpnId/yRtbt9PlWYRrdxfQJZFGYNMimcztCfp//t2a16QRss+WbaQ
-	 B9KexYWD+UeBtqy5Rd7ehvcddc+KOWn05uogF9HLdRzMbEYblWWuWCW254eaogFM6F
-	 0fTuWLQHK4YVyi8FlmBKWV6vvxuvinjWk95cmCADnGDrpztkVUKXBCJBdQX/eX7J/V
-	 fiNSSnwcucFzD/dcwUs1/673SbH+A3dk0TiqvWRGCAEBSONNvp4qgaP089LKnPDVH1
-	 sHNzieMnPfmaQc4voF98lHf4=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DE2CA40E00B2;
-	Fri,  9 Feb 2024 17:28:48 +0000 (UTC)
-Date: Fri, 9 Feb 2024 18:28:43 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Andy Lutomirski <luto@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-	ak@linux.intel.com, tim.c.chen@linux.intel.com,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org,
-	Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	antonio.gomez.iglesias@linux.intel.com,
-	Alyssa Milburn <alyssa.milburn@intel.com>, stable@kernel.org
-Subject: Re: [PATCH  v7 1/6] x86/bugs: Add asm helpers for executing VERW
-Message-ID: <20240209172843.GUZcZgy7EktXgKZQoc@fat_crate.local>
-References: <20240204-delay-verw-v7-0-59be2d704cb2@linux.intel.com>
- <20240204-delay-verw-v7-1-59be2d704cb2@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AX9YVs1W1OB6NJjwHN+K0fygFBPGTRa5Bbzpu3pK5OLRLrH5c/qN7S0QyVvNRbH39kCS+E8MmBwEn6fNjakYycoteieDhjMmiDzr7ABFIyFLiQA/EZCe5NSEaA4/UZMHAQrs8EZMN+oj0X+i2mmA9p/A7ZA3ktYROo7xxu1iMZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=WdVJRaxl; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=vFwO
+	GmGfP+oLKLyesAjgqn7JKbXU3kmJU7zTY1MjMjA=; b=WdVJRaxlztYjZ5d2tlr2
+	4cIjNvwn8luhERoOdeDHrqYBwiO96LKYDBqTt2+xLo0+rU27QVghxDt2saMd2ppm
+	dlFxmgPl2XbSY5iMjC+uAfMEG0htzt8Zi+Swah5kJELOb9/yT9YYClvJXdKFm16+
+	ijCUKWH8bUEaRbalruBfOE9p3MSh9qIxu8uDemfltzevjZ1eHB6buo5aYr2HDJnW
+	dqAXsbl9kca0Vc6B4vlBU1BD5lq3C3K1j7NETTr0RxzBmP9AoTBGzXbPvyQKjHMe
+	a+ZZDxu02C3YxHFYI9rz77L2pQ4J5/QAgKfi4JLltLmx0gctet8XnNiFhNg8Ta0d
+	LQ==
+Received: (qmail 3183088 invoked from network); 9 Feb 2024 18:30:06 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 9 Feb 2024 18:30:06 +0100
+X-UD-Smtp-Session: l3s3148p1@jAdkR/YQVMoujnsZ
+Date: Fri, 9 Feb 2024 18:30:05 +0100
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: linux-renesas-soc@vger.kernel.org
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: renesas: ulcb-kf: add regulators for PCIe ch1
+Message-ID: <ZcZhHWn3QrouRigo@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	linux-renesas-soc@vger.kernel.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+References: <20240129135840.28988-1-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="CTWzMMyP9QGxJqqF"
 Content-Disposition: inline
-In-Reply-To: <20240204-delay-verw-v7-1-59be2d704cb2@linux.intel.com>
+In-Reply-To: <20240129135840.28988-1-wsa+renesas@sang-engineering.com>
 
-On Sun, Feb 04, 2024 at 11:18:59PM -0800, Pawan Gupta wrote:
->  .popsection
-> +
-> +/*
-> + * Defines the VERW operand that is disguised as entry code so that
 
-"Define..."
+--CTWzMMyP9QGxJqqF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> + * it can be referenced with KPTI enabled. This ensures VERW can be
+On Mon, Jan 29, 2024 at 02:58:40PM +0100, Wolfram Sang wrote:
+> Without them, no power, so cards do not get recognized.
+>=20
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-"Ensure..."
+Can we have this one in 6.9, please?
 
-But committer can fix those.
 
-> + * used late in exit-to-user path after page tables are switched.
-> + */
-> +.pushsection .entry.text, "ax"
-> +
-> +.align L1_CACHE_BYTES, 0xcc
-> +SYM_CODE_START_NOALIGN(mds_verw_sel)
-> +	UNWIND_HINT_UNDEFINED
-> +	ANNOTATE_NOENDBR
-> +	.word __KERNEL_DS
-> +.align L1_CACHE_BYTES, 0xcc
-> +SYM_CODE_END(mds_verw_sel);
-> +/* For KVM */
-> +EXPORT_SYMBOL_GPL(mds_verw_sel);
-> +
-> +.popsection
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index fdf723b6f6d0..2b62cdd8dd12 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -95,7 +95,7 @@
->  #define X86_FEATURE_SYSENTER32		( 3*32+15) /* "" sysenter in IA32 userspace */
->  #define X86_FEATURE_REP_GOOD		( 3*32+16) /* REP microcode works well */
->  #define X86_FEATURE_AMD_LBR_V2		( 3*32+17) /* AMD Last Branch Record Extension Version 2 */
-> -/* FREE, was #define X86_FEATURE_LFENCE_RDTSC		( 3*32+18) "" LFENCE synchronizes RDTSC */
-> +#define X86_FEATURE_CLEAR_CPU_BUF	( 3*32+18) /* "" Clear CPU buffers using VERW */
->  #define X86_FEATURE_ACC_POWER		( 3*32+19) /* AMD Accumulated Power Mechanism */
->  #define X86_FEATURE_NOPL		( 3*32+20) /* The NOPL (0F 1F) instructions */
->  #define X86_FEATURE_ALWAYS		( 3*32+21) /* "" Always-present feature */
-> diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-> index 262e65539f83..ec85dfe67123 100644
-> --- a/arch/x86/include/asm/nospec-branch.h
-> +++ b/arch/x86/include/asm/nospec-branch.h
-> @@ -315,6 +315,21 @@
->  #endif
->  .endm
->  
-> +/*
-> + * Macros to execute VERW instruction that mitigate transient data sampling
-> + * attacks such as MDS. On affected systems a microcode update overloaded VERW
-> + * instruction to also clear the CPU buffers. VERW clobbers CFLAGS.ZF.
-> + *
-> + * Note: Only the memory operand variant of VERW clears the CPU buffers.
-> + */
-> +.macro EXEC_VERW
+--CTWzMMyP9QGxJqqF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I think I asked this already:
+-----BEGIN PGP SIGNATURE-----
 
-Why isn't this called simply "VERW"?
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXGYRkACgkQFA3kzBSg
+KbbGgg//RaN8OTsoqRl+WzXV2jiQ7IvmaKQtwKiaYjn8HzuBle6xFxcebBmke3F3
+BUE2gAfF50gn78kg2WblShQYVB5h/0T0bv/+Kpkq3UsWsbMNOgQnvsOnhq3VodQ0
+hzmr4AbyRN4EmpXThC7/Mn8SL8nPof06wSUFz3gZkVIpn1Soa4fkpdUNyJxDKPZh
+Fz5GTanEomeOEo4PodgjVOa+3kQXK3OCqLKoWvT0s4sIkP1HEc0gOF25bFVe5Eag
+aww1/5CCl4Kw1ncpW5sT0FV14YBvo4kQYI1y+DS4onOqFekFTh2UO5bxOcjrBOhu
+n/R57Bs4tBI2LW4jVhabIrhJDP6l6S5PbnsLe+qo+6BAGX9kwhWTmKS5GhDIva9/
+huv8fHxgcOMSSdV+MMbBByfB+51QScw59/CK1earFIolDDspasCX7R7Y5KFwjDwg
+GexSpR362Snu1DnpXtc4xOBsWzVXqtL9W90agBfy570DvLR4AkXLMS0XXf5u2xkn
+EmuoreBJWGMlUduoZWI6wWLdI3h9sjc6qrDaaH/IYyF6bAtf37cjVuF7lZwugCEp
+k3vCEJAC3/SV6c+6z/4+FpmykDM96ndtH08mHrRLjRm4kV5KjT87RhH9QB+QcY/M
+CV5E0qeaLJEkPwhTEDnG0bOVpioS1EA1pYJnjyWdBiiiHDB5mTU=
+=kCrc
+-----END PGP SIGNATURE-----
 
-There's no better name as this is basically the insn itself...
-
-> +	verw _ASM_RIP(mds_verw_sel)
-> +.endm
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--CTWzMMyP9QGxJqqF--
 
