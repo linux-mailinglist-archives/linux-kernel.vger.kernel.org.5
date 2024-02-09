@@ -1,144 +1,109 @@
-Return-Path: <linux-kernel+bounces-59966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B55184FDF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:51:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5466184FDFC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:52:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DF6A1C21F3B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:51:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F73F28B5AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:52:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E37112B79;
-	Fri,  9 Feb 2024 20:51:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9C7107B3;
+	Fri,  9 Feb 2024 20:51:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lHLHprVU"
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Ey7Qu9Sw"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F24DF4F
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 20:51:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5034D11CA1;
+	Fri,  9 Feb 2024 20:51:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707511862; cv=none; b=GIVw4ba9pXGYWf9F8N8xH8ONW6nnPcRS7tX680mE6gfLJO531ZIn5rZrrPvj21HTLT+PRwIW40eRFu1s/rtMOo1guYAZulwG4gaMYHvx0C0rD1QAaQyeNuAeGCpukY6XhiVvGo7Jiy6AHmMiNNHarswYy6I2h8Ep1bijXpYxPfM=
+	t=1707511893; cv=none; b=gQxU0LTafZfX9TGgy32o3zLWpR7MumwYlNf8sjopCGbeWmwCKXXu4h40O+w/+pNJH6OYirByzLWdgZzQzY5VZRB7kqRSt2NFeoJa15Q/1q2/ZdkQIqBQSjIXKWXzlQ5gSyN/28Ct75Va2dOKZivPOsw0MBVgFRjZphfj9SREjJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707511862; c=relaxed/simple;
-	bh=ZoVRZmhMTEbMqPzzv5w5CFJWujcFIccMaB2SyuC1d9I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HKaODsWyuspDHltQHeH8A4LJ9A3h+mBXubAbt4aJntNfDNRbZh3Gn6q5prrZXONybZi3q7la1eNWWrswZTMxZiVkFpqFS3DTx8fGYfAhDmHiKtccfHUjSYD9LbaANw1xgxe7hrENVmEbkqKVhJzNHeymr0cV/X95Axdo0Vktf0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lHLHprVU; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-296cca9169bso1012751a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 12:51:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707511860; x=1708116660; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=my+1LiAYuNXeB9+Zdk0Nb8kG6dgw7OKctVsm44J9maw=;
-        b=lHLHprVUze2KRZ0BQeg8Pt4u+q9yDqapFmmlBP2LYeMaTwFvrRpyIRNPAugGFD//z3
-         KHvvdCKBxgg9pwUbryIaNy3yjzpNed6TybsPvjqILPk2gdoGoSa7C3dA38fdyPHBDpbW
-         qstd/4A/QKx3sZz6yEvzhN3LZEy0/WABzOzn4+mO+QOavdIEZo9ac4EHA7WlyUQhC8Up
-         Sufsq3L8MfsZRyHLI5WZB7Hoe7Qfu+fzwfvUHxH7F3eCFVsfLldrWyTruZ8lA9kOVqka
-         OOy5f0Qu9BjcButG2eKoOqNCoBPu86mTkiE77VFFJANP0Qmv/vQFlJuTvvOxxcrqm4n6
-         41Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707511860; x=1708116660;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=my+1LiAYuNXeB9+Zdk0Nb8kG6dgw7OKctVsm44J9maw=;
-        b=c4mN1rIp0e+Tpj/AdJHZeEQMmxZzG/W+WHcnXFSaAj3RfTFFo6/VtMXNSucPz35ZDl
-         3H5yHxFNCw8JB87PoY9RSU6PIJyxKOCJfbOBsZ/nOX8zv9Y5bX82kxXFwtaURvVCyd96
-         JM9cygGxfArq81715F4urfvgoQAXRW02XliYArvCdt1Gy/z6otjEAnDfnLyeb5Gj+2HL
-         tIm17X3hfOxQBfIW58Rf4lwrjjI88GMijWT1nHCeft8iNMlVUkiEar0QJ2/ya+/n38jS
-         mNXb8DKeKIrUsFO5OXLN+XoPI6fDHfvfNWEgEwy0UZNrehH0iFKYqPDS//t9VNmHvQzH
-         szNw==
-X-Gm-Message-State: AOJu0YxrIudu4wYAUHHxBZ91NIvP6lP4PUl8hAfjmUW3OZhcKrG9KC1D
-	PIXOEf+0SLGiGHcNMySlMri4G2iKGQi7UBvceT4QYDrTmPzWrlaO5yGVjkKz1H3VXS00ZnVOG6h
-	59fVzr3R/LRI4+lCqkLs2Cv4WLCm5RMFJdK7gWw==
-X-Google-Smtp-Source: AGHT+IFhT7u2HipNxPOduULsp5SKmt129Rb/+f33f0/AgE9qOw2rPWraconpAvwa5TKV0Tld7kJKRX3Ty64BDxysfe8=
-X-Received: by 2002:a17:90b:368a:b0:296:1ac3:c573 with SMTP id
- mj10-20020a17090b368a00b002961ac3c573mr172571pjb.15.1707511860131; Fri, 09
- Feb 2024 12:51:00 -0800 (PST)
+	s=arc-20240116; t=1707511893; c=relaxed/simple;
+	bh=aUO2tQWoagVu38p7XEo447RN2Jh0AqQIhLQmEataQvE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qHbJ5sJ0GYSaI4SDbbZkVCdo/M0HZrMQ/7VvixHq8lmo9t1addwGAViNyk1iKNWCEgNi/Gix3MyrYSmQ3b4379gl3AIQbPLhKAORjNvvpdbgsAQTlHI/XGOu6I9P4xcgQc8Lzoh4i0TX7Zh8FIo38bhrJ0PwvJ1Si42AMS3uWtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Ey7Qu9Sw; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3B1B840E01F7;
+	Fri,  9 Feb 2024 20:51:28 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id yfERvYSsb0NL; Fri,  9 Feb 2024 20:51:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707511885; bh=WoEsY6Grt89Wavd7goGgdeie8Ypipy2F5o0F+eDkAQ4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ey7Qu9SwEkjFDyZOwM3kcE9LvtCRKvouzYIvRLyFuG5zhySHvvZ5aZFI6zwwIy+B3
+	 BDt4/3GyUBnUCxDdX+QzFkO8V5qVv3O7cxeZeo4GFsePH/PnmoJYZp3bpVxBNQh2fb
+	 soT2cu7+WdkW9lsyywnbU1NSsgcyo3rY9lKBufjZbQo9vuvWtstDp9xRf1JSvOEnV6
+	 wEcxb9y0hqyuzBQ9pQNM5NVCwO8bXgswy0DEcRJBGn8jrjOuSHHQXImhg5F6VnuhzW
+	 nkGL4zkFc1Qb6PxQy5RWVxCzXDVvmGM1u3NbU//gS5/7yBB8T6bUPIEzMEe/Y3XPtK
+	 3lG9dznE4N2UOZKwU9WzWVNrCRIQeLBVYTDsLDoJbX7ldjkhx0XjQBSI0XiMLmY5AZ
+	 HKiEiTP1hKRn6nbbau5Sf2DPmnGOZwMaTAIFBR3/i4CXvwqSGoHZppTSdRHyLu6YY4
+	 n55+erAW9RoBCkMOiFMxBRZJ5ikKuOO2t7I6oXoYZ9XAz5U7iKU3WffKBmiICo7Y8/
+	 +2FbODMaE+yoq+XEQcTx8Ga/50RnDtikp+fL9mLQ+J5KlAvX18/5K1H8+HAFINKYu9
+	 uIi+WK057N+nZCJB+Jon2x6N96ajkFr2ARRWY57k/7A1KfTsLbBh4LRss6Rla5Nntz
+	 Naefn8fCy94bEMq1UTHeXXs4=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BBE9040E00B2;
+	Fri,  9 Feb 2024 20:51:17 +0000 (UTC)
+Date: Fri, 9 Feb 2024 21:51:11 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Naik, Avadhut" <avadnaik@amd.com>
+Cc: Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org,
+	linux-edac@vger.kernel.org, tony.luck@intel.com,
+	linux-kernel@vger.kernel.org, yazen.ghannam@amd.com,
+	Avadhut Naik <avadhut.naik@amd.com>
+Subject: Re: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
+ Records pool
+Message-ID: <20240209205111.GGZcaQP1gb6C9m0WZB@fat_crate.local>
+References: <20240207225632.159276-1-avadhut.naik@amd.com>
+ <20240207225632.159276-3-avadhut.naik@amd.com>
+ <8b4f8ec2-7534-4f77-b44f-6728c699ff64@intel.com>
+ <51255499-0b5d-45c6-9c72-f353bae83c0d@amd.com>
+ <20240209200920.GFZcaGcOr757W9O3IG@fat_crate.local>
+ <7a4945b0-322a-444e-a0ca-860a062a49c3@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208161700.268570-1-peter.griffin@linaro.org> <20240208161700.268570-2-peter.griffin@linaro.org>
-In-Reply-To: <20240208161700.268570-2-peter.griffin@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Fri, 9 Feb 2024 14:50:48 -0600
-Message-ID: <CAPLW+4mSyqnkzz5N1seFoaDAR1pd_jQEO3ThkGf3U_ozfwedyA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] soc: samsung: exynos-pmu: Add regmap support for
- SoCs that protect PMU regs
-To: Peter Griffin <peter.griffin@linaro.org>
-Cc: arnd@arndb.de, krzysztof.kozlowski@linaro.org, linux@roeck-us.net, 
-	wim@linux-watchdog.org, alim.akhtar@samsung.com, jaewon02.kim@samsung.com, 
-	alexey.klimov@linaro.org, kernel-team@android.com, tudor.ambarus@linaro.org, 
-	andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com, 
-	linux-fsd@tesla.com, linux-watchdog@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7a4945b0-322a-444e-a0ca-860a062a49c3@amd.com>
 
-On Thu, Feb 8, 2024 at 10:21=E2=80=AFAM Peter Griffin <peter.griffin@linaro=
-org> wrote:
->
-> Some Exynos based SoCs like Tensor gs101 protect the PMU registers for
-> security hardening reasons so that they are only write accessible in el3
-> via an SMC call.
->
-> As most Exynos drivers that need to write PMU registers currently obtain =
-a
-> regmap via syscon (phys, pinctrl, watchdog). Support for the above usecas=
-e
-> is implemented in this driver using a custom regmap similar to syscon to
-> handle the SMC call. Platforms that don't secure PMU registers, get a mmi=
-o
-> regmap like before. As regmaps abstract out the underlying register acces=
-s
-> changes to the leaf drivers are minimal.
->
-> A new API exynos_get_pmu_regmap_by_phandle() is provided for leaf drivers
-> that currently use syscon_regmap_lookup_by_phandle(). This also handles
-> deferred probing.
->
-> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-> ---
-> Changes since v3:
->  - Fix PMUALIVE_MASK
->  - Add TENSOR_ prefix
->  - clear SET_BITS bits on each loop iteration
->  - change set_bit to set_bits in func name
->  - Fix some alignment
->  - Add missing return on dev_err_probe
->  - Reduce indentation in loop
->
-> Changes since v2
->  - Add select REGMAP to Kconfig
->  - Add constant for SET/CLEAR bits
->  - Replace kerneldoc with one line comment
->  - Fix kerneldoc for EXPORT_SYMBOL_GPL funcs
->  - remove superfluous extern keyword
->  - dev_err_probe() on probe error
->  - shorten regmcfg name
->  - no compatibles inside probe, use match data
->  - don't mix declarations with/without initializations
->  - tensor_sec_reg_read() use mmio to avoid access restrictions
->  - Collect up Reviewed-by
->  - const for regmap_config structs
-> ---
+On Fri, Feb 09, 2024 at 02:35:12PM -0600, Naik, Avadhut wrote:
+> IIUC, this is exactly what the first patch in this series is trying to
+> accomplish.  Please correct me if I understood wrong.
 
-Tested-by: Sam Protsenko <semen.protsenko@linaro.org>
+Yes, you did.
 
-Tested on my E850-96. All modules that use PMU are still functional
-with this patch (watchdog, USB host and Ethernet). No regressions.
+I don't mean to extend it - I mean to allocate it from the very
+beginning to
 
-[snip]
+	min(4*PAGE_SIZE, num_possible_cpus() * PAGE_SIZE);
+
+There's a sane minimum and one page pro logical CPU should be fine on
+pretty much every configuration...
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
