@@ -1,112 +1,86 @@
-Return-Path: <linux-kernel+bounces-59324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE0D584F56B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:48:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0187A84F56D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3813928581B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:48:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 265E11C21D53
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:50:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE135374FE;
-	Fri,  9 Feb 2024 12:48:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A80374EC;
+	Fri,  9 Feb 2024 12:50:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="R7en5hYn";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="pM/Pmhv4"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Xoy7M7lB"
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2061.outbound.protection.outlook.com [40.107.95.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0DB22E62E;
-	Fri,  9 Feb 2024 12:47:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 758672EB19;
+	Fri,  9 Feb 2024 12:50:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.61
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707482882; cv=fail; b=QnNKlVllbOggGczsvFSVGwUawvJgyrRoNAXGh7LD2S4TQeBhpW0EUEqCPNh91nfpHKLMD1ew6T2hQhxmHCDbg+F3ZPBLcCUqUMZ5T7eeKmSHK+AqoB3Sbg24KG7mwVZgWwRhJDG64pSYDvlb8/vr7nukbeRY8iiHGYEcCyYm6L8=
+	t=1707483010; cv=fail; b=Y9hMXvBnMgDNu37vexQUzINhTow+TwcfBrCAlbCRz91/gGlcQx/C8tVZocp1JyrX7W9/gHp1zKWG687LX09G1U2sSDf42q0f5NP0Y0wvEjTKxt8U+6V4UZGXStoujDHA52hj8InnPYWWz3Ddfu2VeHGM0fK2X+pVa9WpKmYZsUo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707482882; c=relaxed/simple;
-	bh=UCTrJD4Paw0QmDyGjsN2H5e7D1hhBCJ992IKEFHhDfs=;
+	s=arc-20240116; t=1707483010; c=relaxed/simple;
+	bh=qa0ey2O8HFuREB0IXVp/zP8MAiHg/c/k89q1LVM/kK8=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=FBGbu2r+EtSsxmdpPLCnBN9VgaIUuMVN5K2sIwah8OtIgBAFxBTjPVJa2qSKNHZk6YjGdlZ6ri4FK/nO3V4YsRBbmhLPbzCI2Y2TZ74ZEA3FdIVsCZnNPGOkL365N8ZRxmq19bTrAnDGSeWKXBnYneJBnzHX44ATjzk8Rnw9BsI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=R7en5hYn; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=pM/Pmhv4; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4194xZMp001407;
-	Fri, 9 Feb 2024 12:47:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=W3iaXT3qJIttlp2NSbNDvyx8LaIOhpnbLrDuuGDV6b4=;
- b=R7en5hYnUJ+bgd6rFIh+E3cjKGI+IWd0pEEdlbBWKsjZ32FHFoJkZ8rVLloZ3pnvqPcE
- isS1KvM+G+0O9SpJtwoMbCI1jHf8lPp59hTgx0yKRCSl2uyArKKHV6z8cXc8os5vOm51
- 2p76nFxxmq9oUP75coLuvE4cpDhZJoN87FVwfqan4KscqCRX8VCCddUNycYl81Aa4arz
- kEDv9HEm69Ur+a6dzijhmyZ5yEW2+VFnpFgHyJIXRvrpZgxZwayyZSLpHFmni/IHVkxa
- JJoOwqVAxCXRV1DvZ/oYON2zuC60xAwvjPVlO7Wbq1lH8qUJ39uiWt+gvEb6u8IDWPhk fw== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w1dhdqedc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 09 Feb 2024 12:47:44 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 419Baqt0019657;
-	Fri, 9 Feb 2024 12:47:44 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3w1bxjddg9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 09 Feb 2024 12:47:44 +0000
+	 Content-Type:MIME-Version; b=DHiQa7RT3RdEyrr/1uWYzbt3lBVQ48MWTzPSwyiycqAi61a8CvGHKrDJggozMWkMyOmY0p1bw/FTRcM9iFMnjlJ68H5dlPuYbaFcChGg/ziTaOk9LEST5TeOOQkwdCpYpkzldRs6alDjWCD/lI2qEkMbuDdayzHqoXZqdKd5xEc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Xoy7M7lB; arc=fail smtp.client-ip=40.107.95.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M8LTf7qqXT1UaD1SWjqhrVNlJjKJk5cQ409lqrrVOi82cMLx+G5i1IERlsKxoWiwPhRF6hBm4165H0CyB2nPeZLt9PSY3/NDIWdwN4GULtIByFAxDs5rLNSt1A+BEfDRQ0c5I1I7aNr6zBByVZNzAVY2x6M1om8jdfoyenFW62wDXEUsuKB9Q03iL3N4LACo17fFtqTLsAhfGZFQLXgIWHPXbyiD0bYR2bbY2pykfJhXBRV0AbPfAmIv9rvJ5h1szsX97Sf4cgOgVOHm/MBpyDSjIOHhEwhSD+BTE+Vf1BMvzUytymhSsM9F1/pO+HZH0StaQvxpou9FxjZoBCXF1Q==
+ b=cq8R7ZSv8GqUINvlFGt8C4LUawHAifZiuuIk1WPJ6f8CYMxwpPAC1oU9K78u5h9Pe7Q5YTvIhPyth5yUDN7URcAuxEuhokhE9qoLalwgidOLBxxzS+QA/H96SC+VVe3Q8/pZdTure/lvm9R1o/9ytBbXInBk1Hh3sUuraAxvlf8myCvLsrrbKs5xym1yPj/Pp0NQAqvwel9cUZh5qP+KfH65GdcokNjrb1ZgT06BR7qtHuNUCBoW5cdSjeWXm3bFqo1Vq8hoDkGm4/Z/4hKunaRVcvCm/4vDItEo/6negvwNoo0GNtoq9s5YtnlDqhcHMpf2cuwJ0JOLceeCDzh2fQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W3iaXT3qJIttlp2NSbNDvyx8LaIOhpnbLrDuuGDV6b4=;
- b=AyWlqVPWobtVsA5QzISYP5U5dBZio2zxGVVwioHCIpfCzpqbQUsDNXrHcaj7RvD7dzU4LxwZpQQ5vvhWGIZ161IpJ7ZfRrcg1CiCSQ7DXCcBBuuCaUrF6a2Y5e9gkHzIT1BqJ/VEBriUU3pclMAk5/RrOKX75s8zuTdSBdW5ZG1FHIdErMNzdn4kBFZ+5TG2PMLWCitrOp0lYUvtMZOwnfBv5RWSy+PQWTGX5CNZE95iPGNPiVyapDVrkxMQWbUoz2KAUL6ZlurY0ahgJukksIzX+YpnuZ7f0aHJCtl9ZPmwm9/Dob0rXIjfM/Crf2fR7aN6PKG4ItmQkPnwsqDsxw==
+ bh=Jd4vNPN0cn+mVQt1c6+Tckit9EqI4x1KQRIZOxGa1Sc=;
+ b=NF9GfesJAwv1yYpVvpSQAwYsAf4sn/oxAABN0HNqGL7adI5vvHimnrz4dLmELiGeSLMltGW/Ro2HLN6RdrVLWDAvb1a8yNgx2o1cjtNuvvlYyTYeT+ttmjFcKSNIrZ08qiaTryBJofW8EZeurN4eK8bZxsSBtfT1Y0B+zsWdh1AEVnENs8fwXiZmxazvbopNp4N/9TiqS4Pmjm9FE2q83HAFSRMAfPSZrVHaYLU5mVDBWRx/uY11snSaQWsREkZsFSUKEfB78+sKS5WojSKfKhHuida0VroypfpmuC4TPF1rOxw+fc/ktXiSVBob6jdYnS+P/7Y2SQ0Ons7fOhMg7A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W3iaXT3qJIttlp2NSbNDvyx8LaIOhpnbLrDuuGDV6b4=;
- b=pM/Pmhv4wnS56wiXvxWaQ+KqR5U1/81rkHgg3qVVC64IHWWI79L07Gpmxg+eDJrlJCg2uAI5Xz9+tfaOcmcxdzp8OzkUAvGBj82CbD47lQ97p3MuDPKdD4QA20B3FSn+Lnd0HTH1psm70msnmCDSbU6J4SKGpmCVftFDcIx8RN8=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by DS7PR10MB5022.namprd10.prod.outlook.com (2603:10b6:5:3a3::10) with
+ bh=Jd4vNPN0cn+mVQt1c6+Tckit9EqI4x1KQRIZOxGa1Sc=;
+ b=Xoy7M7lBS4iw49OB/hGqeraA1G9giXuAWtnHIYrCukHEScZlmcMoTdTNESYo00tDIK30XspvTIY4arl/9pOG1nIJKI0JtrMKrPcV8iJESjyksRitcalJXDWIEp1pJWLqxwpd/TL3cirN7UJPpeKc5abjNqCuiXvjPmdylG1iiL8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5951.namprd12.prod.outlook.com (2603:10b6:510:1da::16)
+ by CY8PR12MB7243.namprd12.prod.outlook.com (2603:10b6:930:58::6) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.27; Fri, 9 Feb
- 2024 12:47:42 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::56f9:2210:db18:61c4]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::56f9:2210:db18:61c4%4]) with mapi id 15.20.7270.025; Fri, 9 Feb 2024
- 12:47:42 +0000
-Message-ID: <20836bd6-7b17-4432-a2b9-085e27014384@oracle.com>
-Date: Fri, 9 Feb 2024 12:47:38 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.16; Fri, 9 Feb
+ 2024 12:50:04 +0000
+Received: from PH7PR12MB5951.namprd12.prod.outlook.com
+ ([fe80::2104:c308:eaa5:b978]) by PH7PR12MB5951.namprd12.prod.outlook.com
+ ([fe80::2104:c308:eaa5:b978%4]) with mapi id 15.20.7270.015; Fri, 9 Feb 2024
+ 12:50:04 +0000
+Message-ID: <f4b87510-4f55-4364-960f-5870c4d86874@amd.com>
+Date: Fri, 9 Feb 2024 18:19:55 +0530
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 5/6] fs: xfs: iomap atomic write support
-To: Dave Chinner <david@fromorbit.com>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, hch@lst.de, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
-        chandan.babu@oracle.com, martin.petersen@oracle.com,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        ojaswin@linux.ibm.com
-References: <20240124142645.9334-1-john.g.garry@oracle.com>
- <20240124142645.9334-6-john.g.garry@oracle.com>
- <20240202184758.GA6226@frogsfrogsfrogs>
- <e61cf382-66bd-4091-b49c-afbb5ce67d8f@oracle.com>
- <ZcGIPlNCkL6EDx3Z@dread.disaster.area>
- <434c570e-39b2-4f1c-9b49-ac5241d310ca@oracle.com>
- <ZcLJgVu9A3MsWBI0@dread.disaster.area>
- <a20b3c07-605e-44c2-b562-e98269d37558@oracle.com>
- <ZcWCeU0n7zKEPHk5@dread.disaster.area>
+Subject: Re: [PATCH] ASoC: SOF: amd: Skip IRAM/DRAM size modification for
+ Steam Deck OLED
 Content-Language: en-US
-From: John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <ZcWCeU0n7zKEPHk5@dread.disaster.area>
+To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>
+Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20240209122810.2258042-1-cristian.ciocaltea@collabora.com>
+From: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+In-Reply-To: <20240209122810.2258042-1-cristian.ciocaltea@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P265CA0014.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:62::26) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+X-ClientProxiedBy: PN2PR01CA0237.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:eb::19) To PH7PR12MB5951.namprd12.prod.outlook.com
+ (2603:10b6:510:1da::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -114,365 +88,131 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|DS7PR10MB5022:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3861449f-6bd0-44d4-a82a-08dc296d4e3d
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5951:EE_|CY8PR12MB7243:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6020ef0c-7f34-4c95-b732-08dc296da2fc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	dJhFsLjBXeFYhTJSV5efcbvstgibQOIdz7kaYDMISMTwAklm+fGYTvBuD9hIrXKW7BZpI0YFLta2+cD7GmgwRwqoaEE4jatW6aD2IKSIk6YOUH5te5PhPkqZElzjUuNe179MqWe9unCQVzRgR3ia/Smor8OVM4tMu+41R9YrgexhN3227SsOgqsQ8s+1FGoss7y13r9Qtm3nSsp72XIhRAEhskAysAaIeDsyykV28isnULFO0DhYCIlrpJNx/YjhuHQTYWmN0L+JwqpEgda3bMGbrYf/M6324px7mEyLqLwPaOi3wzqP2POC9TMF5cAqZnjqB+EJkcJEvkTJiU8N54seZC6TKWAeKP+VEltARJprGmfUec+PylrZQ15q1cAHR42R/hc2DPGEyQl3SWEMmYMWUbYeBVXHExlZ+19T4haFWPJv32xOqItx4iYQ8J0Evkm+NNWrCBCJbNrxodpmfnOPedhyU6hA6op+MnvV8ZcSgKDeIkJgtwTOjwdbpia7LQ2IzbJ3HAi8YBIhUZHjl4pCqs6U79qMakpT0fB/mvRcQk6ZNL4XcUSVmrhCOb4U
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(39860400002)(366004)(346002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(38100700002)(31686004)(41300700001)(6486002)(2616005)(6512007)(26005)(2906002)(6666004)(6916009)(478600001)(66946007)(66556008)(66476007)(316002)(6506007)(36916002)(83380400001)(66899024)(31696002)(86362001)(36756003)(5660300002)(30864003)(8676002)(4326008)(8936002)(7416002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info:
+	oj+KJC1HogETbAeIP3bWSzGOHn7LhY5l4i+i+VeT8Hq+KCqJrBJvwVjdGfMOpxBVONKheU0Zym022X3qEhc8lSaHiznVm4FOLdB8L6JLaZiwHsGNwXUyYSOZEqb3RWrTCCuOMd6YmOTq6GWfO8/xyR9td9Sy0fKBY6vpkiqDwahg1KnHHxII3JGxYZGaYmZYx21BvFOcVY6pJFws3WAJkDAaknNsAYR9FaB5midvSYFOvUcG5t3KhIWz0jZRpzkCLYK0flrCeZaqrpt45m9Fpmn1uZ01gkg0vSCPrtnRS/clpicfwiQHJA0bZyfx9im31wWCD4emPJe0AObDatU7CyLeYWMCTuFI5KxmwyhtGJ4zMP3zxYBYfJy4UZMVWcfprZU67lBjZwgh11maLigD41xwlcToqWCSWxbN7JkMrJ7izbh4i6sWmshgx/6rVYuQf6TRm/AEWmRF1bg/EnuN+uSA49QgmqgUMeHjrZAx8u/sW6DbiKuF82ZLlZQtLcj4pGuU5EoIuY6VjdtqSu/WZT/Az3+wdGcmMytCIxgRC9KBiSFTpt80zwT1g5MHL9TOkUxarTYwIFX9F4SPbhtU5hPv4x+fgaXJgbz0mOAdT0I=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5951.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(396003)(376002)(136003)(346002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(31686004)(41300700001)(921011)(86362001)(6512007)(316002)(478600001)(6486002)(53546011)(110136005)(36756003)(66556008)(31696002)(2616005)(2906002)(6636002)(26005)(83380400001)(4326008)(66946007)(6666004)(8676002)(66476007)(38100700002)(5660300002)(7416002)(6506007)(8936002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?QTdYeGZDZ0JGeVRRd1Rib3FYUXprQkJsRGpRWG9WMXN1eG5FNHZxTTR3S1Z3?=
- =?utf-8?B?Zzl4R0JkUDhadEYvZW5qWHpRRUZVNlNwbmpuKzM5MG1vY3NmSlU5KzdqTFVV?=
- =?utf-8?B?dSsvanNkS3d2eEQvcEhxVkFYVFpncTFmaUlnOW1Xb2F2dFJRUUxoSFFtMk9U?=
- =?utf-8?B?K1lYQ0k3Wlp0THpNeXB2bGp0TkhJd2ZhTzFzOEpZSVQ2ODQ0cmV6YWVwV2d3?=
- =?utf-8?B?cGFHd3EzcW9jdzBHU2QvQ3M2amxCZEhPUDJpSG5EdVgwQXZjSWRJMDV0RHJ1?=
- =?utf-8?B?S1h4WGJBMzlDL3lNTkkwNVI0TmdGOGtjZGJacTBHSEhRRXVta2YvVEJacjRF?=
- =?utf-8?B?SUJySVgxa3dRMnR3MXlRV0txTnlPdDNNU3c4U3ZOSDczS1BNUjdvQkdsMmV1?=
- =?utf-8?B?YTY2aGN4T1VEZTk1M3U4dUd5UHJDVVFhUjRnTnNjVHpjb2hRRXRpTld2ekgz?=
- =?utf-8?B?dE9PMUZqRDVDclJ5eFBFS3BzbkthZUJ1enYxSTZ3UWpwN3BMcUVkbjRJUGJI?=
- =?utf-8?B?MkpVU1d5emI3ZXBOanpXM0QzbnBvWXBDMElTOUZlTE80QmQ1MzM1N3plZUFp?=
- =?utf-8?B?bk91T2kzVm81RWFuRDVBenUyL3F5NjdBalJXcmc5Vlc0eDN5SFdMd2RpWk9m?=
- =?utf-8?B?aW80SktkeVFXZDJ4cjcyRUJNam43STRJazZrY2FzbWhLYVFOU3JnZGVIUGxD?=
- =?utf-8?B?bE5uUmFKWnhLQ0FZWVYra2lJSFBHNlpxRmRacFJESy95Ky9HcHVCajNEeVk1?=
- =?utf-8?B?Z3VOVmJyeXZ0ZDNhbTVyYkQzN0I0dVByazR4MnlMT2VNVUV2QmY5VVNGVnVC?=
- =?utf-8?B?RDl5aE4wZEplWFVBT0g1WEpXZUlnSmtzL2t3QUFHeUV5a3A2SlZ6NjBuZUli?=
- =?utf-8?B?dTNhS1hRK0RCQmxxalIwK2sxVUpBaHdsYXBxSC9pMi9XeGVHU1YxaktSU1No?=
- =?utf-8?B?YnpOUWs3aTN4Tmlzanp2allGMGVaTWtnVXlHYi9EdGZ6djVSSzZFbUQ1QkFN?=
- =?utf-8?B?TjdBR0RhU2tlbFJCL3UrbUh0QlgzMStqSXZjalZzQmpZUkVVZDZ2YkswS3hJ?=
- =?utf-8?B?QnVVV1ZhTklQZFJoTFlDQ0lRcFJlcXVNbHBzQ3lPQkp1VS9pNkRNWlBvOUVO?=
- =?utf-8?B?QmV0YVI2NHJDaWNkK2h4M0tBSzdxRkxzY1Q5V29VK0x2L0JsTW9qcVhaNVFz?=
- =?utf-8?B?V3ZsVjRtakZvN3hOTE5CY2IxVTVZeG9wOEIrZllHK1laRjBndzIrSEJvOGZL?=
- =?utf-8?B?TnROUWlwMko5OTJiR0lkSHhDUk9PYjlTaXVYVkRRZzVsUE1UOStmZTVxWXpD?=
- =?utf-8?B?bHBYZXJhYUpPVksxdjhrajZ5SXo4bVlzam5MdzVPVGhYd2ZubWNmYVBYc2lv?=
- =?utf-8?B?L3N0OFBXTS9taUovMDAwWDdTN09LY2o2bkhPWG5sWEE2QVA1VGU1NDJHWW54?=
- =?utf-8?B?NTFVQlI2YmdWY2lsbHBvbVZIRFh0YUlBNWxNRFFkVERmSm40cEJMY0g4QmRE?=
- =?utf-8?B?U2Q4RTA4bGs5VnZsNWY2aDBMNFR2Y0VsOFdqOXIzblZFcEcyc2drT0FndEVr?=
- =?utf-8?B?TS9ZdUVLNGtmdXNneEFLRXdkT1d6YnRzaTVndFNrN1ZpS0E4aURkNmY4UHht?=
- =?utf-8?B?b1l4NzdMS2pGWTJpakxndCtCem90NlhpNnZPMUR4QU9xYzJkRDVXcWVmN1FP?=
- =?utf-8?B?V0IwUHRRcVlPQW1SL1VjZDVWckdmaUs5WVdOQ3EyU1ExRHMzWG9Fa3FMbEFZ?=
- =?utf-8?B?Ymg0dllzYUVKaFBPaU00SW93NSs5K0kzc0lCL1RTMlFJaGpBMG16SEM5Y3p0?=
- =?utf-8?B?VnAzVlNHWHd4SzRCNFNKTmxTWGNldW5WcFZsQnpESExWQlJhZFFBbjNXbkZi?=
- =?utf-8?B?Zml6bGp2WFdSZGh2cHJ0RXR2N1FRTnJ6V2RVSVFoV08wREt6dzBGZnUxSmZY?=
- =?utf-8?B?ZDk2WXY4alhLRnJYRUhsYXljR0cweVdxcFpIUDNRQnMrY1hyTjZhVFFtckZJ?=
- =?utf-8?B?eHkrTWdtMkJDSjJ4V1BWZkNPRkdYS0V3a3BNMkFEYjA1TGJBVU5OblB5YTVL?=
- =?utf-8?B?Vm9sRnVHZDVWTmJuWTZjbCtGM1paZXM1VkJjQ0s5N2ZZTDYzZndGc1JINHZI?=
- =?utf-8?B?WW5Md1ZsNDRtRWZQVndCYVd4UTAvSkJkd2NPWmpoZ2hmS1QvOXdRMllhZkEr?=
- =?utf-8?B?cVE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	mq+s0GfxKXFJ8TL7ZhTnfzIsgcslZQLLCxt3n9QSpxHCkBbn/G2qeiIIPMdGJqeF2t32Q7oeK80RciKDetNqsk6afzGzhHV0liBkitVM1RuH6pLFonhNy2GK+KD2mIXxC1MeSmVEJP0zB3D5/5+R8qL2IiQoGXyoeLjHdXqvE9TGn+GGZz3aZcj2HABb8mp1ySKMLLIyROESc4gVAzh0hNuNjYLaGU2oDtjOspfNKa7hrI9TzqS6DHTNktjuT8XKYAzvoYLYhCtBApn6qai9/5w/H3xN+8KU1kRJUpuV0ZKYMRNrcAQti6Q4+TEm40DubY+HVmAQ9gHYWb6PETB2g4gUgMD26UGkkNH0G8oWl4pxWNr/QDd0sxhSSIe4aV438e9xbDHuXjs6g0jHYdf8beWANmW15zifmDtTFf+GX0CL41F+Cfu79XLrgRGAD7CRC18c4dJw/E5kRXsrqdgo5bbUwGwy/FIZ86E/zaxzvQ5oKARF5HiFhy7nuoRxjHUzOiHrlndfbTOIaS6eGilfuF+dBp1o4RntyyZHdFlrr/cF7iEXP0Mq3nbCfhxlcrJfzmD3HG46j0GVmk95CJ3OHMKplQfwKWPS+p3mmm1zWqI=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3861449f-6bd0-44d4-a82a-08dc296d4e3d
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ODA3eDZFMGRFMjRCM0pWVzd6WXhCUVJnbDBQMk5rdDI0SXVvTmZaNHVKQW40?=
+ =?utf-8?B?TmIxYzRGeXRuSTl4UGliNWRSVjJVdnFXbk81a1JnZCtzTDdsMUxqcnZoYkxB?=
+ =?utf-8?B?cGFpZm00TDFuWVZqdnB6eUhEVWlWN1I3cFJzMEFPeExuVWlvK3NwTlFIYjE0?=
+ =?utf-8?B?WWNkenpTSFNuVkpuQzRVcGluSjNOL014dVpQdEswREs3K1k2VlBwTlRuaThD?=
+ =?utf-8?B?NS9uYmRjSkVTbnlqN1IrT1JrRkJuZEVOdDJIOGQycVQwL0FlTHcyT3U2RUht?=
+ =?utf-8?B?ZUhqUmt1Z25nUnNYMU9aWWRYUE1Rb3BYQkJMWnVqRDJ5YlVkSEdjVExMaHM0?=
+ =?utf-8?B?bHNKSzVteDdJVXdXdTVzckg5YlNMcFpqU2hGanRaWlZueWtqUnY4eU10Vlhn?=
+ =?utf-8?B?RXJISWxjUzJVb04vbU9Kcko1aEVwWUM1NStseHB4UjFKWEVYSWlwdzRjUVB5?=
+ =?utf-8?B?Z0F4Q1U4UWcvcDFiV0dnUWhQUUNJU2NlTHVLVDZHbTAxM296OTR5em1yRGtB?=
+ =?utf-8?B?c2dSVVZQTnJyNzJsMVFVWDUrWHlGM1lobit4Y0Rwa0wvMG43UGhGc0xuOE9Y?=
+ =?utf-8?B?TmNkc3JlODBRb1VhN3NpVE9TS3JFMGQ0c2MyS0pTUWR4SnhCWmFjS0FEQWFU?=
+ =?utf-8?B?eHVpem9HbExwZmRFTG0rTW9SNDcrL21wTm9VYzB2V25yZUtzMUhOOXowYWhv?=
+ =?utf-8?B?RlZicVNDSVFVRE9QL09Vc0JZTSs2UXZYcjRmck11T3I0WlRJenN0U1ZLVXJr?=
+ =?utf-8?B?bUphdjZlOTlKMDRWRXNsaHRqMGZDTTFDa1d0cFNaa3N3TFo4a00zRVdzVkZx?=
+ =?utf-8?B?aWlFc3o0RWpkSWVDUEhBVXRuN1VybzEza0pES1N5eWVqSW4rclF4ZTVydzJK?=
+ =?utf-8?B?SFc0S1BoNEM2ak1vSXk5ZGxqeVBGdkpsM1QyMmp5d1pPTzBRMCtWaitwdktk?=
+ =?utf-8?B?SzBUb2ovWE9ucFRxdmZkNGM0T3RlM24xK096OEpMMExEU1FkTGFOSi9QSEMw?=
+ =?utf-8?B?UFJNd1B4Mkp6a3owc2JwdnhkcG1FZ01uSTJYaFo4eFhXaDdpN2tUTjd5eDRn?=
+ =?utf-8?B?aytTV3pmNjlFYktKOHNta09sYnNiMjFIdUliNHNUdjh6RXYrL1dySmN2S1Vr?=
+ =?utf-8?B?L3Z2TDV0clJBNFNmUFJVVHVSdHlCeTljRHhVM1BxMERUYzdJT3VSOHRkWVhH?=
+ =?utf-8?B?VDJJREFUaVRXMmt4bW02d3QxS2RBb2gxOEFUUnNSOEJSZFhxYzJEeDZQZS9l?=
+ =?utf-8?B?SEdhWkM5RnArZnhrQ3U5eHMzTFVDcHlxMXg1NFd6bVp6amxsNmI5TklDZGhm?=
+ =?utf-8?B?VWlTdXNBRXE4ZmxpOHNOREpvMFEzSHUvNnFuNW9Ca2NoOThvZkdpZ0pqdTVK?=
+ =?utf-8?B?VHI4SGxOMThIeGIydlF0Q0JsYThjeE1aU1RNZ1AxbzF0TzlYL3pBamRYUU04?=
+ =?utf-8?B?NHNUY0txZkNtcE80bk83TkZNd2w4NUFQb093cERHTjVwanFWbDJwQlR2cWls?=
+ =?utf-8?B?Ymhsb2ZpWnByV3o2NW9ySVQ1SzFBVUVNUUQybjlCbHhESUJaU0QxNjdjWGNU?=
+ =?utf-8?B?NVpHai9iYlhaUTczZDZTYU1zOFM4dlpPUmNMZ0l4N1VHTnBhUDJYTnNhWWZ0?=
+ =?utf-8?B?b0luckdjc0dMNHpWeGt3ZzF4NEtLTDBSWGhxNzd5R3lhUGRSL3JkdkRmUTF2?=
+ =?utf-8?B?cTdvdlhiTTJ5dGNpNURlQURGeVg4cmkwNG1EdnhGdXErODdyNzRUQWE0LzQ0?=
+ =?utf-8?B?UGN2bHFDVkIyajd2SXlGRWVWQUxIRFhKOEovL3VXa1AyeG1Wc0RBdnVuNVdS?=
+ =?utf-8?B?MUdBQm1STmhJR0ZoSENjVWhPVjFXK1h6SjBwUXhtTjQ4RXZqMTIxMFRxc1hw?=
+ =?utf-8?B?ZjZ4R0pOTHkvcGhVcnJaaGlGejhwNFVjQWZ3MERqREFpcFJkeTl5R3ZmSFRl?=
+ =?utf-8?B?UUxSSDB3cCt1bjMzN3lFZnNTV3dwT3FtRnRKdzdWMThGQm0xNkRCWTdRUVNa?=
+ =?utf-8?B?N3FVL1ZUcUJlTWxqRjJncjUxcmkvakQ4M3FIVVRGRFJjeVBMdlNzLzd0UWM5?=
+ =?utf-8?B?UFFmVlhlaWlRdVpKVG1sb2RKZUVRaVdxdzhTYS94TnE3ZmIrWXdZbmFHMVlj?=
+ =?utf-8?Q?NFKbb+DW8nCQTLnPKWMItniVk?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6020ef0c-7f34-4c95-b732-08dc296da2fc
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5951.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 12:47:42.2686
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 12:50:04.6004
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xVHPl2h7zK3Yq6oVaoKNwaH8WWY7jSkalRrPVoWaqM/xz8jlYKuQ0b17TE8IE0Op7yP2XV2ugxc0MXyi8WaSqw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5022
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-09_10,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 mlxscore=0
- adultscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402090093
-X-Proofpoint-GUID: Mj3OPKjXzTrDTOT5R_7YXteXCDM0JYXj
-X-Proofpoint-ORIG-GUID: Mj3OPKjXzTrDTOT5R_7YXteXCDM0JYXj
-
->>
->> Playing devil's advocate here, at least this behavior should be documented.
-> 
-> That's what man pages are for, yes?
-> 
-> Are you expecting your deployments to be run on highly suboptimal
-> configurations and so the code needs to be optimised for this
-> behaviour, or are you expecting them to be run on correctly
-> configured systems which would never see these issues?
-
-The latter hopefully
-
-> 
-> 
->>> The whole reason for rtextsize existing is to optimise the rtextent
->>> allocation to the typical minimum IO size done to that volume. If
->>> all your IO is sub-rtextsize size and alignment, then all that has
->>> been done is forcing the entire rt device IO into a corner it was
->>> never really intended nor optimised for.
->>
->> Sure, but just because we are optimized for a certain IO write size should
->> not mean that other writes are disallowed or quite problematic.
-> 
-> Atomic writes are just "other writes". They are writes that are
-> *expected to fail* if they cannot be done atomically.
-
-Agreed
-
-> 
-> Application writers will quickly learn how to do sane, fast,
-> reliable atomic write IO if we reject anything that is going to
-> requires some complex, sub-optimal workaround in the kernel to make
-> it work. The simplest solution is to -fail the write-, because
-> userspace *must* be prepared for *any* atomic write to fail.
-
-Sure, but it needs to be such that the application writer at least knows 
-why it failed, which so far had not been documented.
-
-> 
->>> Why should we jump through crazy hoops to try to make filesystems
->>> optimised for large IOs with mismatched, overlapping small atomic
->>> writes?
->>
->> As mentioned, typically the atomic writes will be the same size, but we may
->> have other writes of smaller size.
-> 
-> Then we need the tiny write to allocate and zero according to the
-> maximum sized atomic write bounds. Then we just don't care about
-> large atomic IO overlapping small IO, because the extent on disk
-> aligned to the large atomic IO is then always guaranteed to be the
-> correct size and shape.
-
-I think it's worth mentioning that there is currently a separation 
-between how we configure the FS extent size for atomic writes and what 
-the bdev can actually support in terms of atomic writes.
-
-Setting the rtvol extsize at mkfs time or enabling atomic writes 
-FS_XFLAG_ATOMICWRITES doesn't check for what the underlying bdev can do 
-in terms of atomic writes.
-
-This check is not done as it is not fixed what the bdev can do in terms 
-of atomic writes - or, more specifically, what they request_queue 
-reports is not be fixed. There are things which can change this. For 
-example, a FW update could change all the atomic write capabilities of a 
-disk. Or even if we swapped a SCSI disk into another host the atomic 
-write limits may change, as the atomic write unit max depends on the 
-SCSI HBA DMA limits. Changing BIO_MAX_VECS - which could come from a 
-kernel update - could also change what we report as atomic write limit 
-in the request queue.
-
-> 
-> 
->>>> With the change in this patch, instead we have something like this after the
->>>> first write:
->>>>
->>>> # /test-pwritev2 -a -d -l 4096 -p 0 /root/mnt/file
->>>> wrote 4096 bytes at pos 0 write_size=4096
->>>> # filefrag -v mnt/file
->>>> Filesystem type is: 58465342
->>>> File size of mnt/file is 4096 (1 block of 4096 bytes)
->>>>     ext:     logical_offset:        physical_offset: length:   expected:
->>>> flags:
->>>>       0:        0..       3:         24..        27:      4:
->>>> last,eof
->>>> mnt/file: 1 extent found
->>>> #
->>>>
->>>> So the 16KB extent is in written state and the 2nd 16KB write would iter
->>>> once, producing a single BIO.
->>> Sure, I know how it works. My point is that it's a terrible way to
->>> go about allowing that second atomic write to succeed.
->> I think 'terrible' is a bit too strong a word here.
-> 
-> Doing it anything in a way that a user can DOS the entire filesystem
-> is *terrible*. No ifs, buts or otherwise.
-
-Understood
-
-> 
->> Indeed, you suggest to
->> manually zero the file to solve this problem, below, while this code change
->> does the same thing automatically.
-> 
-> Yes, but I also outlined a way that it can be done automatically
-> without being terrible. There are multiple options here, I outlined
-> two different approaches that are acceptible.
-
-I think that I need to check these alternate solutions in more detail. 
-More below.
-
-> 
->>>>>> In this
->>>>>> scenario, the iomap code will issue 2x IOs, which is unacceptable. So we
->>>>>> ensure that the extent is completely written whenever we allocate it. At
->>>>>> least that is my idea.
->>>>> So return an unaligned extent, and then the IOMAP_ATOMIC checks you
->>>>> add below say "no" and then the application has to do things the
->>>>> slow, safe way....
->>>> We have been porting atomic write support to some database apps and they
->>>> (database developers) have had to do something like manually zero the
->>>> complete file to get around this issue, but that's not a good user
->>>> experience.
->>> Better the application zeros the file when it is being initialised
->>> and doesn't have performance constraints rather than forcing the
->>> filesystem to do it in the IO fast path when IO performance and
->>> latency actually matters to the application.
->>
->> Can't we do both? I mean, the well-informed user can still pre-zero the file
->> just to ensure we aren't doing this zero'ing with the extent allocation.
-> 
-> I never said we can't do zeroing. I just said that it's normally
-> better when the application controls zeroing directly.
-
-ok
-
-> 
->>> And therein lies the problem.
->>>
->>> If you are doing sub-rtextent IO at all, then you are forcing the
->>> filesystem down the path of explicitly using unwritten extents and
->>> requiring O_DSYNC direct IO to do journal flushes in IO completion
->>> context and then performance just goes down hill from them.
->>>
->>> The requirement for unwritten extents to track sub-rtextsize written
->>> regions is what you're trying to work around with XFS_BMAPI_ZERO so
->>> that atomic writes will always see "atomic write aligned" allocated
->>> regions.
->>>
->>> Do you see the problem here? You've explicitly told the filesystem
->>> that allocation is aligned to 64kB chunks, then because the
->>> filesystem block size is 4kB, it's allowed to track unwritten
->>> regions at 4kB boundaries. Then you do 4kB aligned file IO, which
->>> then changes unwritten extents at 4kB boundaries. Then you do a
->>> overlapping 16kB IO that*requires*  16kB allocation alignment, and
->>> things go BOOM.
->>>
->>> Yes, they should go BOOM.
->>>
->>> This is a horrible configuration - it is incomaptible with 16kB
->>> aligned and sized atomic IO.
->>
->> Just because the DB may do 16KB atomic writes most of the time should not
->> disallow it from any other form of writes.
-> 
-> That's not what I said. I said the using sub-rtextsize atomic writes
-> with single FSB unwritten extent tracking is horrible and
-> incompatible with doing 16kB atomic writes.
-> 
-> This setup will not work at all well with your patches and should go
-> BOOM. Using XFS_BMAPI_ZERO is hacking around the fact that the setup
-> has uncoordinated extent allocation and unwritten conversion
-> granularity.
-> 
-> That's the fundamental design problem with your approach - it allows
-> unwritten conversion at *minimum IO sizes* and that does not work
-> with atomic IOs with larger alignment requirements.
-> 
-> The fundamental design principle is this: for maximally sized atomic
-> writes to always succeed we require every allocation, zeroing and
-> unwritten conversion operation to use alignments and sizes that are
-> compatible with the maximum atomic write sizes being used.
-> 
-
-That sounds fine.
-
-My question then is how we determine this max atomic write size granularity.
-
-We don't explicitly tell the FS what atomic write size we want for a 
-file. Rather we mkfs with some extsize value which should match our 
-atomic write maximal value and then tell the FS we want to do atomic 
-writes on a file, and if this is accepted then we can query the atomic 
-write min and max unit size, and this would be [FS block size, min(bdev 
-atomic write limit, rtexsize)].
-
-If rtextsize is 16KB, then we have a good idea that we want 16KB atomic 
-writes support. So then we could use rtextsize as this max atomic write 
-size. But I am not 100% sure that it your idea (apologies if I am wrong 
-- I am sincerely trying to follow your idea), but rather it would be 
-min(rtextsize, bdev atomic write limit), e.g. if rtextsize was 1MB and 
-bdev atomic write limit is 16KB, then there is no much point in dealing 
-in 1MB blocks for this unwritten extent conversion alignment. If so, 
-then my concern is that the bdev atomic write upper limit is not fixed. 
-This can solved, but I would still like to be clear on this max atomic 
-write size.
-
- > i.e. atomic writes need to use max write size granularity for all IO
- > operations, not filesystem block granularity.
-> 
-> And that also means things like rtextsize and extsize hints need to
-> match these atomic write requirements, too....
-> 
-
-As above, I am not 100% sure if you mean these to be the atomic write 
-maximal value.
-
->>> Allocation is aligned to 64kB, written
->>> region tracking is aligned to 4kB, and there's nothing to tell the
->>> filesystem that it should be maintaining 16kB "written alignment" so
->>> that 16kB atomic writes can always be issued atomically.
-
-Please note that in my previous example the mkfs rtextsize arg should 
-really have been 16KB, and that the intention would have been to enable 
-16KB atomic writes. I used 64KB casually as I thought it should be 
-possible to support sub-rtextsize atomic writes. The point which I was 
-trying to make was that the 16KB atomic write and 4KB regular write 
-intermixing was problematic.
-
->>>
->>> i.e. if we are going to do 16kB aligned atomic IO, then all the
->>> allocation and unwritten tracking needs to be done in 16kB aligned
->>> chunks, not 4kB. That means a 4KB write into an unwritten region or
->>> a hole actually needs to zero the rest of the 16KB range it sits
->>> within.
->>>
->>> The direct IO code can do this, but it needs extension of the
->>> unaligned IO serialisation in XFS (the alignment checks in
->>> xfs_file_dio_write()) and the the sub-block zeroing in
->>> iomap_dio_bio_iter() (the need_zeroing padding has to span the fs
->>> allocation size, not the fsblock size) to do this safely.
->>>
->>> Regardless of how we do it, all IO concurrency on this file is shot
->>> if we have sub-rtextent sized IOs being done. That is true even with
->>> this patch set - XFS_BMAPI_ZERO is done whilst holding the
->>> XFS_ILOCK_EXCL, and so no other DIO can map extents whilst the
->>> zeroing is being done.
->>>
->>> IOWs, anything to do with sub-rtextent IO really has to be treated
->>> like sub-fsblock DIO - i.e. exclusive inode access until the
->>> sub-rtextent zeroing has been completed.
->>
->> I do understand that this is not perfect that we may have mixed block sizes
->> being written, but I don't think that we should disallow it and throw an
->> error.
-> 
-> Ummmm, did you read what you quoted?
-> 
-> The above is an outline of the IO path modifications that will allow
-> mixed IO sizes to be used with atomic writes without requiring the
-> XFS_BMAPI_ZERO hack. It pushes the sub-atomic write alignment
-> zeroing out to the existing DIO sub-block zeroing, hence ensuring
-> that we only ever convert unwritten extents on max sized atomic
-> write boundaries for atomic write enabled inodes.
-
-ok, I get this idea. And, indeed, it does sound better than the 
-XFS_BMAPI_ZERO proposal.
-
-> 
-> At no point have I said "no mixed writes".
-
-For sure
-
-> I've said no to the
-> XFS_BMAPI_ZERO hack, but then I've explained the fundamental issue
-> that it works around and given you a decent amount of detail on how
-> to sanely implementing mixed write support that will work (slowly)
-> with those configurations and IO patterns.
-> 
-> So it's your choice - you can continue to beleive I don't mixed
-> writes to work at all, or you can go back and try to understand the
-> IO path changes I've suggested that will allow mixed atomic writes
-> to work as well as they possibly can....
-> 
-
-Ack
-
-Much appreciated,
-John
+X-MS-Exchange-CrossTenant-UserPrincipalName: zcgZd/OtaEfOlSTKRsgM0NoU7r6NfeEmDt7VrmzP/6VEQ2HLNsTbcYrMnTOXqvJboivAg+gLAz/onjv1tFKMkQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7243
 
 
+On 2/9/24 17:58, Cristian Ciocaltea wrote:
+> The recent introduction of the ACP/PSP communication for IRAM/DRAM fence
+> register modification breaks the audio support on Valve's Steam Deck
+> OLED device.
+>
+> It causes IPC timeout errors when trying to load DSP topology during
+> probing:
+>
+> 1707255557.688176 kernel: snd_sof_amd_vangogh 0000:04:00.5: ipc tx timed out for 0x30100000 (msg/reply size: 48/0)
+> 1707255557.689035 kernel: snd_sof_amd_vangogh 0000:04:00.5: ------------[ IPC dump start ]------------
+> 1707255557.689421 kernel: snd_sof_amd_vangogh 0000:04:00.5: dsp_msg = 0x0 dsp_ack = 0x91d14f6f host_msg = 0x1 host_ack = 0xead0f1a4 irq_stat >
+> 1707255557.689730 kernel: snd_sof_amd_vangogh 0000:04:00.5: ------------[ IPC dump end ]------------
+> 1707255557.690074 kernel: snd_sof_amd_vangogh 0000:04:00.5: ------------[ DSP dump start ]------------
+> 1707255557.690376 kernel: snd_sof_amd_vangogh 0000:04:00.5: IPC timeout
+> 1707255557.690744 kernel: snd_sof_amd_vangogh 0000:04:00.5: fw_state: SOF_FW_BOOT_COMPLETE (7)
+> 1707255557.691037 kernel: snd_sof_amd_vangogh 0000:04:00.5: invalid header size 0xdb43fe7. FW oops is bogus
+> 1707255557.694824 kernel: snd_sof_amd_vangogh 0000:04:00.5: unexpected fault 0x6942d3b3 trace 0x6942d3b3
+> 1707255557.695392 kernel: snd_sof_amd_vangogh 0000:04:00.5: ------------[ DSP dump end ]------------
+> 1707255557.695755 kernel: snd_sof_amd_vangogh 0000:04:00.5: Failed to setup widget PIPELINE.6.ACPHS1.IN
+> 1707255557.696069 kernel: snd_sof_amd_vangogh 0000:04:00.5: error: tplg component load failed -110
+> 1707255557.696374 kernel: snd_sof_amd_vangogh 0000:04:00.5: error: failed to load DSP topology -22
+> 1707255557.697904 kernel: snd_sof_amd_vangogh 0000:04:00.5: ASoC: error at snd_soc_component_probe on 0000:04:00.5: -22
+> 1707255557.698405 kernel: sof_mach nau8821-max: ASoC: failed to instantiate card -22
+> 1707255557.701061 kernel: sof_mach nau8821-max: error -EINVAL: Failed to register card(sof-nau8821-max)
+> 1707255557.701624 kernel: sof_mach: probe of nau8821-max failed with error -22
+>
+> It's worth noting this is the only Vangogh compatible device for which
+> signed firmware support has been enabled in AMD ACP SOF driver via
+> acp_sof_quirk_table.
+>
+> Hence, use this information and skip IRAM/DRAM size modification for Vangogh
+> platforms having the signed_fw_image field set.
+>
+> Fixes: 55d7bbe43346 ("ASoC: SOF: amd: Add acp-psp mailbox interface for iram-dram fence register modification")
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+> ---
+>   sound/soc/sof/amd/acp.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
+> index 9b3c26210db3..71689d2a5b56 100644
+> --- a/sound/soc/sof/amd/acp.c
+> +++ b/sound/soc/sof/amd/acp.c
+> @@ -278,7 +278,14 @@ int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
+>   	}
+>   
+>   	/* psp_send_cmd only required for vangogh platform (rev - 5) */
+> -	if (desc->rev == 5) {
+> +	/*
+> +	 * FIXME: This causes IPC timeout when trying to load DSP topology
+> +	 * on the Steam Deck OLED device matching acp_sof_quirk_table above.
+> +	 * The quirk enables signed firmware support on this particular
+> +	 * Vangogh compatible device, hence skip IRAM/DRAM size modification
+> +	 * when signed_fw_image is set.
+> +	 */
+> +	if (desc->rev == 5 && !adata->signed_fw_image) {
+
+Programming ACP_IRAM_DRAM_FENCE register to modify the size of IRAM and 
+DRAM and it's noting related to signed or unsigned fw_image.
+
+This ACP_IRAM_DRAM_FENCE register writing need to do before starting sha 
+dma.
+
+
+>   		/* Modify IRAM and DRAM size */
+>   		ret = psp_send_cmd(adata, MBOX_ACP_IRAM_DRAM_FENCE_COMMAND | IRAM_DRAM_FENCE_2);
+>   		if (ret)
 
