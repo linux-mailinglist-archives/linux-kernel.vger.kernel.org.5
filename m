@@ -1,227 +1,143 @@
-Return-Path: <linux-kernel+bounces-59943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AAA184FDA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:34:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D316384FDBD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:36:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FCA51C220D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:34:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 740441F2A4A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:36:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DFF96112;
-	Fri,  9 Feb 2024 20:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44CBB1EB34;
+	Fri,  9 Feb 2024 20:35:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FKT/vGg/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MVTQxeHc"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A682A53A9
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 20:34:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74461CF9C;
+	Fri,  9 Feb 2024 20:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707510884; cv=none; b=pH9SOF1B+EHv2wV05RtMaCmQrVMaLirM4Wh4CymnIqTnGGg5s6LZT8gfxOdPXeerCZpX/qKPDwrAtdOfNfHbZM1tcv6BcAf/ql59XOyuIGnzJt+qVeDuPhLbhJJlPWZ1ZoGxW82kdIWbi5qQpD+r3oOJpquISH+mQGJIxxzvzcw=
+	t=1707510920; cv=none; b=oY36ySTe+07+eGu4bdrlARzmKqvZAjv7zs0vmVFIgfhJmMwBOV9Ud+lD6eF/pN9aYMh1Ew/Sr2/rTg5wO2VU5veAbEUPD6ltVPw0YOFr7Aa9Gj5SsAZGOp4/SY2G7Tx+d4iQkMGvIznznU41XyBwafeKVxKtCBO1BanjpI+sz6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707510884; c=relaxed/simple;
-	bh=T/OOwcQ1xR9qJ8cy0QMkAgwIKFttYq+EPHy71IqMHDM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U1ZkYIuqBWLg2lckJqATF/LKRD351M04eyundhv/oTQhiJNPGY3iMz0nKICCeuwgqZ6KMqnL4Pz/kxPjapftEDkPHlUCMkySSprCff7pQBNBP58iMlWpCmbNcamDbclH2UkSpEvKSKHrUC8QqniNK/jpDMi71zCPrZC2uT18iP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FKT/vGg/; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707510881;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j2wWnG4c9flOTNWJ6O8wnfxhMZrHV7GwnwMrXW3f8A8=;
-	b=FKT/vGg/rvac8YEYuzlRNfhZpY13eRxUHpVNDCyxQOwx6qI1Vei2KcWDxY/xZaPyK0OMie
-	EJ8SPGTRS7na6AwdR8zIzoy5bQ9Blyl4VVRIHcgG0+/7/nfptPKqtbwbNUdBDGZ6RRDPSS
-	D2vQIQpf7mGauLZwX2dH/n11PUQthZU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-39-p7a1Lf3MPKmhfWu9HjkrVg-1; Fri, 09 Feb 2024 15:34:39 -0500
-X-MC-Unique: p7a1Lf3MPKmhfWu9HjkrVg-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4107802453dso4637175e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 12:34:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707510878; x=1708115678;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j2wWnG4c9flOTNWJ6O8wnfxhMZrHV7GwnwMrXW3f8A8=;
-        b=wIxfeI7+qqg5333ysg5KVakS9Pp6trhOZzeMbOveQmGzkVSHdj6fgqPFmDDd/l0YI4
-         0pRzfu7Nl2siRiQEZUgjzY3gbPzYv2yEvduqQ2WX0z/QWlYDWMtu0YUNyVVYxpUIb67u
-         +AW4a2pDVWVD6LFsyYTzKaxT1/lwQiamjlm6Bua/NccF9kAA9hlWvQTl/EGc/jDXZUnr
-         OhunXEqP8jzrboEPShc/CFJjEmIksZCFFkKGwvsGg/X9z3RIp87b1cbQ1GkzDLQQ8muB
-         h2yg9wgmzCrL1lNFO4Nem3MqGQGgO+BK25/dF7f76c5ndKkKZoAMQ8CykC2vQoV6MMPl
-         kIwg==
-X-Forwarded-Encrypted: i=1; AJvYcCXaqyIxYtGq+f47NsLKWAZRsFvE1XUfT1yHNt7QJgWM+WsJq7L6zy9yMBjqDiu9JHFphLjyUCckvhIrx5+DiQyaivJAWqUCXr4WBenV
-X-Gm-Message-State: AOJu0YyN6Dyuf0PvxkjefLq7WnuZOWYp1x9VifzgRbKMNotQeO6x+nc2
-	xcsl0q9gHcRhsJ7bYuEzQ5zZacRIpuTP00MumQt4XtmKy9R3vbPH7BupXO14mksGCuskPFVar8g
-	zLmDyRix6aJNXzLv0khJXt0Gtly11MoKxCCrWkqdGmQow1wTjSMPOuBvaUyB3/w==
-X-Received: by 2002:a05:600c:1da0:b0:410:67c7:4aec with SMTP id p32-20020a05600c1da000b0041067c74aecmr360330wms.2.1707510878045;
-        Fri, 09 Feb 2024 12:34:38 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF13pfF52uklm5dhWcBcvNdikZJOPXaH04X4IAFneBMKzMG8gczhKEBhOer9kGWxz4bpMboiA==
-X-Received: by 2002:a05:600c:1da0:b0:410:67c7:4aec with SMTP id p32-20020a05600c1da000b0041067c74aecmr360309wms.2.1707510877712;
-        Fri, 09 Feb 2024 12:34:37 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUTFIpsyOPGLuOIRqyqojYZLXShV7fMVG8lKMKh8RWmrfILG4wVCf8gLUYnmxYZ6GojncTWgKEfP5koXhwu+L8mW7OdvkwtZN0qrjcaqiHaZqA7TU3roMpuu6JlMFFn+4qCBNlcejLlIfxt7yTqAQw44eq+2Gt3YvBKnODhx8UY004UIxjjJmMD1qB8k6iA5fh1kaHrSuUy+P8HziuYc5LiaFqmAu6pVpkvLeEb2evFtiqUaryp00KXCh/C+JzQZfr8YsNSQzKLSVIflmMGGpSXjhNZz7cEqPFNSPjqXXehfees138vEzAxsGDxWT/4m4Kb+BvL/VwHZf7h55cfdzPilGIWTQfjIlqsRLmTFjyNer9tvYV+fHP5NIvBrWkMuwK4zw081lC9wBo9G6v4Lqk9xFPzRi8ziXvrhzNkJGbvi8TR/Z2Bgw/uoru6FUJCpZZJRqb7Ak7PPwX2n1rGOXJPLjAI40lx4ryIIzK0+gPD5GtLOxedGKUhcKBzmmJYY3EPUoCscwHprrNUxAOqFjsFt9Dfx9HtZzehHYRn9fzQ/33OGqc6nEBUZ8In8El5X3dvcPBxG9zUrq9xbcPP0dphQoN8skR0FjYoQt0mIrjjraq/ahk149YTxa6askU6srquoL4TIMYWmij5nI37tV9iVNaet/SQt/58ZLbUrl60mQ==
-Received: from toolbox ([2001:9e8:898e:7200:1f00:29c:19b0:2997])
-        by smtp.gmail.com with ESMTPSA id r2-20020a056000014200b0033b4acb999dsm115375wrx.98.2024.02.09.12.34.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 12:34:37 -0800 (PST)
-Date: Fri, 9 Feb 2024 21:34:35 +0100
-From: Sebastian Wick <sebastian.wick@redhat.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>,
-	Sandy Huang <hjc@rock-chips.com>,
-	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: Re: Re: Re: [PATCH v5 08/44] drm/connector: hdmi: Add Broadcast
- RGB property
-Message-ID: <20240209203435.GB996172@toolbox>
-References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org>
- <20231207-kms-hdmi-connector-state-v5-8-6538e19d634d@kernel.org>
- <20240115143308.GA159345@toolbox>
- <20240115143720.GA160656@toolbox>
- <73peztbeeikb3fg6coxu3punxllgtyrmgco34tnxkojtsjbr3s@26bud3sjbcez>
- <Zb0M_2093UwPXK8y@intel.com>
- <hez2m57ogqx3yyqk45tzdkvxvhrbdepgm244i4m2aty2xhf5b5@acqgvmxhmmvr>
- <Zb0aYAapkxQ2kopt@intel.com>
- <zml6j27skvjmbrfyz7agy5waxajv4p4asbemeexelm3wuv4o7j@xkd2wvnxhbuc>
+	s=arc-20240116; t=1707510920; c=relaxed/simple;
+	bh=AcZcr3f09+rD5Y7GuUWLp4tl4KPCmu+ts7Zq4Po7zKQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=MyoDzxpRIHvOl0NQCq/hk3el6c3bFrm7U+rdkGGf1elUAUcrMPyZYAxwkeaUWlvoIVJIUACwpe9n2SjifhNPabnxR2I+E+2WHxtZ85IVKUPLq28Qzr7aT+1JGofkky7mggWs7UXoauX8884eL9WuY+Bk519s39hwtfjN0ehPSnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=MVTQxeHc; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 419KVEgL025374;
+	Fri, 9 Feb 2024 20:34:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=EcK6pRWGITTYQwRJIMt0XeWCySM/dPmPOKmlZyQFeLY=; b=MV
+	TQxeHcKaUtkHSWaQIIKu4WTKh1B/4yD31xiBpsW+MLQSz2A8bG8zbdkSLGK3gJl3
+	dH04youaGU1LSR5J0cPMJekgoGPdlM6xjnO3NMQxfDHshXyoszvcJvzMmZ/BDGuz
+	+cYZR3hKhB6WF/sARfFcvddU6Q4enlUtNI12dkO/C/H8XQZoNXE2DKh8QKVpjNRW
+	Y/lG6MuVt17x+pS/ZPD5qzKYdp//gmaNK8BXClHWhYfw9a1StmwlP50NkeBL2l36
+	8IPXpPSEoEcJYyAL/fPVhbLudpovNQiPNCSog3ioquzLIMjYyb45Dvq0t1Fog1P3
+	gMpRbi/HpO4CcG8lQoBA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w5u4br0c9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 20:34:42 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 419KYfxF021392
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 9 Feb 2024 20:34:41 GMT
+Received: from [10.110.93.252] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 9 Feb
+ 2024 12:34:40 -0800
+Message-ID: <b007a78c-b8fb-83bc-3be6-963708182cee@quicinc.com>
+Date: Fri, 9 Feb 2024 12:34:39 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <zml6j27skvjmbrfyz7agy5waxajv4p4asbemeexelm3wuv4o7j@xkd2wvnxhbuc>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v14 20/53] ASoC: Add SOC USB APIs for adding an USB
+ backend
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>
+References: <20240208231406.27397-1-quic_wcheng@quicinc.com>
+ <20240208231406.27397-21-quic_wcheng@quicinc.com>
+ <87r0hl29ha.wl-tiwai@suse.de>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <87r0hl29ha.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: PRnU2u4QXt78XkFphwTc7NkRjdlhcKXl
+X-Proofpoint-GUID: PRnU2u4QXt78XkFphwTc7NkRjdlhcKXl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-09_18,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 mlxscore=0 mlxlogscore=884
+ lowpriorityscore=0 impostorscore=0 phishscore=0 adultscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
+ definitions=main-2402090150
 
-On Mon, Feb 05, 2024 at 10:39:38AM +0100, Maxime Ripard wrote:
-> On Fri, Feb 02, 2024 at 06:37:52PM +0200, Ville Syrjälä wrote:
-> > On Fri, Feb 02, 2024 at 04:59:30PM +0100, Maxime Ripard wrote:
-> > > On Fri, Feb 02, 2024 at 05:40:47PM +0200, Ville Syrjälä wrote:
-> > > > On Fri, Feb 02, 2024 at 02:01:39PM +0100, Maxime Ripard wrote:
-> > > > > Hi,
-> > > > > 
-> > > > > On Mon, Jan 15, 2024 at 03:37:20PM +0100, Sebastian Wick wrote:
-> > > > > > > >  /**
-> > > > > > > >   * DOC: HDMI connector properties
-> > > > > > > >   *
-> > > > > > > > + * Broadcast RGB
-> > > > > > > > + *      Indicates the RGB Quantization Range (Full vs Limited) used.
-> > > > > > > > + *      Infoframes will be generated according to that value.
-> > > > > > > > + *
-> > > > > > > > + *      The value of this property can be one of the following:
-> > > > > > > > + *
-> > > > > > > > + *      Automatic:
-> > > > > > > > + *              RGB Range is selected automatically based on the mode
-> > > > > > > > + *              according to the HDMI specifications.
-> > > > > > > > + *
-> > > > > > > > + *      Full:
-> > > > > > > > + *              Full RGB Range is forced.
-> > > > > > > > + *
-> > > > > > > > + *      Limited 16:235:
-> > > > > > > > + *              Limited RGB Range is forced. Unlike the name suggests,
-> > > > > > > > + *              this works for any number of bits-per-component.
-> > > > > > > > + *
-> > > > > > > > + *      Drivers can set up this property by calling
-> > > > > > > > + *      drm_connector_attach_broadcast_rgb_property().
-> > > > > > > > + *
-> > > > > > > 
-> > > > > > > This is a good time to document this in more detail. There might be two
-> > > > > > > different things being affected:
-> > > > > > > 
-> > > > > > > 1. The signalling (InfoFrame/SDP/...)
-> > > > > > > 2. The color pipeline processing
-> > > > > > > 
-> > > > > > > All values of Broadcast RGB always affect the color pipeline processing
-> > > > > > > such that a full-range input to the CRTC is converted to either full- or
-> > > > > > > limited-range, depending on what the monitor is supposed to accept.
-> > > > > > > 
-> > > > > > > When automatic is selected, does that mean that there is no signalling,
-> > > > > > > or that the signalling matches what the monitor is supposed to accept
-> > > > > > > according to the spec? Also, is this really HDMI specific?
-> > > > > > > 
-> > > > > > > When full or limited is selected and the monitor doesn't support the
-> > > > > > > signalling, what happens?
-> > > > > > 
-> > > > > > Forgot to mention: user-space still has no control over RGB vs YCbCr on
-> > > > > > the cable, so is this only affecting RGB? If not, how does it affect
-> > > > > > YCbCr?
-> > > > > 
-> > > > > So I dug a bit into both the i915 and vc4 drivers, and it looks like if
-> > > > > we're using a YCbCr format, i915 will always use a limited range while
-> > > > > vc4 will follow the value of the property.
-> > > > 
-> > > > The property is literally called "Broadcast *RGB*".
-> > > > That should explain why it's only affecting RGB.
-> > > 
-> > > Right. And the limited range option is called "Limited 16:235" despite
-> > > being usable on bpc > 8 bits. Naming errors occurs, and history happens
-> > > to make names inconsistent too, that's fine and not an argument in
-> > > itself.
-> > > 
-> > > > Full range YCbCr is a much rarer beast so we've never bothered
-> > > > to enable it.
-> > > 
-> > > vc4 supports it.
-> > 
-> > Someone implemented it incorrectly then.
+Hi Takashi,
+
+On 2/9/2024 2:54 AM, Takashi Iwai wrote:
+> On Fri, 09 Feb 2024 00:13:33 +0100,
+> Wesley Cheng wrote:
+>>
+>> Some platforms may have support for offloading USB audio devices to a
+>> dedicated audio DSP.  Introduce a set of APIs that allow for management of
+>> USB sound card and PCM devices enumerated by the USB SND class driver.
+>> This allows for the ASoC components to be aware of what USB devices are
+>> available for offloading.
+>>
+>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> (snip)
+>> --- a/sound/soc/Makefile
+>> +++ b/sound/soc/Makefile
+>> @@ -1,5 +1,5 @@
+>>   # SPDX-License-Identifier: GPL-2.0
+>> -snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-utils.o soc-dai.o soc-component.o
+>> +snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-usb.o soc-utils.o soc-dai.o soc-component.o
+>>   snd-soc-core-objs += soc-pcm.o soc-devres.o soc-ops.o soc-link.o soc-card.o
+>>   snd-soc-core-$(CONFIG_SND_SOC_COMPRESS) += soc-compress.o
 > 
-> Incorrectly according to what documentation / specification? I'm sorry,
-> but I find it super ironic that i915 gets to do its own thing, not
-> document any of it, and when people try to clean things up they get told
-> that we got it all wrong.
-
-FWIW, this was an i915 property and if another driver uses the same
-property name it must have the same behavior. Yes, it isn't standardized
-and yes, it's not documented (hence this effort here) but it's still on
-vc4 to make the property compatible.
-
-Trying to make the property handle YCbCr is very much in the "let's try
-to fix the property" territory that I want to avoid, so I'm in favor of
-adjusting vc4.
-
-> > > > Eg. with DP it only became possible with the introduction of the VSC
-> > > > SDP (and I don't recall if there's additional capability checks that
-> > > > are also required). With DP MSA signalling full range YCbCr is not
-> > > > possible at all.
-> > > 
-> > > This is for HDMI only.
-> > > 
-> > > > I don't recall right now what the HDMI requirements are.
-> > > 
-> > > HDMI has supported it for a while, and it's defined (for example) in the
-> > > HDMI 1.4 spec in Section 6.6 - Video Quantization Ranges. It supports
-> > > limited and full range on both RGB and YCbCr, as long as the EDIDs state
-> > > so and the Infoframes signal it.
-> > 
-> > I think a good reason for not using a simple boolean like this 
-> > YCbCr is that it doesn't cover the color encoding part at all,
-> > which is probably more important than the quantization range.
-> > So we need a new property anyway.
+> Do we really want to build this into ASoC core unconditionally?
+> This is very specific to Qualcomm USB-offload stuff, so it's better to
+> factor out.
 > 
-> This isn't what is being discussed here, and as I've shown you, is
-> completely orthogonal as far as HDMI is concerned.
-> 
-> Maxime
 
+Ideally, the SOC USB part shouldn't be Qualcomm specific.  Since I don't 
+have access or insight into how other vendors are achieving the same 
+thing, I can only base the soc-usb layer to work with the information 
+that is required to get the audio stream up and running on the QC 
+platforms.  In its simplest form, its basically just a SW entity that 
+notifies ASoC components about changes occurring from USB SND, and I 
+think all vendors that have an ASoC based platform card handling the 
+offload will need this notification.
 
+Thanks
+Wesley Cheng
 
