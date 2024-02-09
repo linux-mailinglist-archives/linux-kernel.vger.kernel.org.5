@@ -1,98 +1,136 @@
-Return-Path: <linux-kernel+bounces-59268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DED1C84F44B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:09:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95B6D84F452
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:11:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BD0628F60F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:09:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C64C11C2531F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D118E28DBC;
-	Fri,  9 Feb 2024 11:09:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FphucTcS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245E428699
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 11:09:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF9D28DBC;
+	Fri,  9 Feb 2024 11:11:22 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A6C0288D9
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 11:11:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707476962; cv=none; b=N1NXnn4s3rV+7qAev9TajMl0W8Qsia78Sl/X0fpbMbKBbl0p4bdLqkfwZ4sQoeJ09VypsM7b0gZ1gwenftmDJaT/K9XEpkJCMhUAzz/CPGJ9V/LqfhTRahcbEBB+4Vlxb61dz4zLHxAtfIveus04cjNLnGtVYg7qj7z49lQ19eY=
+	t=1707477081; cv=none; b=ljdjD63aT0QcFo1hqUXhH4nQopj4EdKAZ46kMZcD8fzSmip7XqLqWX0Hqbgon923oGXZMgFiYoYLBrG+CySQ9tiZsc6DpZMjs+u0RI0fRs06CniLImSWy6MUPf97ibhYe/98jYHB3orsRPIDZ6GAA1bGZkM5GDCvpq9rT3+Ob6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707476962; c=relaxed/simple;
-	bh=vYGSasQPQ+waLNUKIyeyV6A0z7rQTFbg/b3dnkeB2y8=;
-	h=Date:From:To:Cc:Subject:Message-Id:Mime-Version:Content-Type; b=rIG6I2XothFONI4YjtYUEtr2DzH1NwjUwwvnojtnwUQIPAX02NXmz2TqwqiGelNGRETyUAtL+q6cDoOCtiK3VhuDgWm7MmxzPqDyFTlNjsRvNCLxG3T+e02GFtCVabY2Mnxm3DkQTgkG3au+1yKyCrDGGK54vwh53hv7802+3go=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FphucTcS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9D71C433C7;
-	Fri,  9 Feb 2024 11:09:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707476960;
-	bh=vYGSasQPQ+waLNUKIyeyV6A0z7rQTFbg/b3dnkeB2y8=;
-	h=Date:From:To:Cc:Subject:From;
-	b=FphucTcSWR3MECQSlUPt8tsubTMDRjPOHv30eBXxPw97v9aIdJCO+tyBVcPZ19hGA
-	 DULGj+sVJ6PvXTszNwbBmybjnp2I+O2kQuSRiVkOo7ZYBOP0FiGaVvmO3EKPLDNerk
-	 fkXp4533T7oW2rTgI+5hTtgUI5aBBOLy+dYDIppFhbH4TbVscblZOoGtX+BmU2iJNi
-	 vs7wortEDjF4WwV9os9Q7QsvaikmkmrGSnIcxoj/jRx10TpJo66KRvEXSwx1txyx8a
-	 WPDXM49kTck8S4nSoNHKW2JA/fJnV4bBLaXbXnTSfO5pUb/QHGujeA4nbIGQpxO8wT
-	 xqKcoUOJCVp7w==
-Date: Fri, 9 Feb 2024 20:09:16 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Li zeming <zeming@nfschina.com>, Masami Hiramatsu (Google)
- <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Masami
- Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] probes: fixes for v6.8-rc3
-Message-Id: <20240209200916.e1607c9688a39971feb43867@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707477081; c=relaxed/simple;
+	bh=YOqOwkuAEGeXh3W/ozSHwWeZ88PIMKCEKNwcOky05P0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fod3g8iwjx2ViNEjMdTmlsIdUyyxCpv8008/yC6JmHBFWZuzd5Hsgv6ZJMEa3u/uuwRRDvEnc+aGf1Q9d5QjvDgWER5QqE7QGHK79mxGu2hcu1zbmZTteXQ835Pt405XHpxEVCx6W1QkM3XI8Srv0QG+BNpycVFuV8whgx+QQK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A393DA7;
+	Fri,  9 Feb 2024 03:12:01 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.31.163])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8332B3F762;
+	Fri,  9 Feb 2024 03:11:17 -0800 (PST)
+Date: Fri, 9 Feb 2024 11:11:05 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Fangrui Song <maskray@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Dave Martin <Dave.Martin@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+	Peter Smith <peter.smith@arm.com>, llvm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: jump_label: use constraints "Si" instead of "i"
+Message-ID: <ZcYIOZdYMyvFQH5u@FVFF77S0Q05N.cambridge.arm.com>
+References: <20240206074552.541154-1-maskray@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240206074552.541154-1-maskray@google.com>
 
-Hi Linus,
+On Mon, Feb 05, 2024 at 11:45:52PM -0800, Fangrui Song wrote:
+> The generic constraint "i" seems to be copied from x86 or arm (and with
+> a redundant generic operand modifier "c"). It works with -fno-PIE but
+> not with -fPIE/-fPIC in GCC's aarch64 port.
+> 
+> The machine constraint "S", which denotes a symbol or label reference
+> with a constant offset, supports PIC and has been available in GCC since
+> 2012 and in Clang since 7.0. However, Clang before 19 does not support
+> "S" on a symbol with a constant offset [1] (e.g.
+> `static_key_false(&nf_hooks_needed[pf][hook])` in
+> include/linux/netfilter.h), so we use "i" as a fallback.
+> 
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Fangrui Song <maskray@google.com>
+> Link: https://github.com/llvm/llvm-project/pull/80255 [1]
 
-Probes fixes for v6.8-rc3:
+This looks reasonable to me, and works with the toolchains I've tried, so:
 
- - kprobes: Remove unnecessary initial values of local variables.
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
- - tracing/probe-events: Fixing parser bugs.
-   . Fix to calculate the argument size and format string after setting
-     type information from BTF, because BTF can change the size and format
-     string.
-   . Fix to show $comm parse error correctly instead of failing silently.
+Mark.
 
-
-Please pull the latest probes-fixes-v6.8-rc3 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-probes-fixes-v6.8-rc3
-
-Tag SHA1: bdad2be231fd9d040e3d5552f35e1e329df5aa9f
-Head SHA1: 9efd24ec5599ed485b7c4d9aeb731141f6285167
-
-
-Li zeming (1):
-      kprobes: Remove unnecessary initial values of variables
-
-Masami Hiramatsu (Google) (2):
-      tracing/probes: Fix to show a parse error for bad type for $comm
-      tracing/probes: Fix to set arg size and fmt after setting type from BTF
-
-----
- kernel/kprobes.c           |  4 ++--
- kernel/trace/trace_probe.c | 32 ++++++++++++++++++--------------
- kernel/trace/trace_probe.h |  3 ++-
- 3 files changed, 22 insertions(+), 17 deletions(-)
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+> Changes from
+> arm64: jump_label: use constraint "S" instead of "i" (https://lore.kernel.org/all/20240131065322.1126831-1-maskray@google.com/)
+> 
+> * Use "Si" as Ard suggested to support Clang<19
+> * Make branch a separate operand
+> 
+> Changes from v1:
+> 
+> * Use asmSymbolicName for readability
+> ---
+>  arch/arm64/include/asm/jump_label.h | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/jump_label.h b/arch/arm64/include/asm/jump_label.h
+> index 48ddc0f45d22..b7716b215f91 100644
+> --- a/arch/arm64/include/asm/jump_label.h
+> +++ b/arch/arm64/include/asm/jump_label.h
+> @@ -15,6 +15,10 @@
+>  
+>  #define JUMP_LABEL_NOP_SIZE		AARCH64_INSN_SIZE
+>  
+> +/*
+> + * Prefer the constraint "S" to support PIC with GCC. Clang before 19 does not
+> + * support "S" on a symbol with a constant offset, so we use "i" as a fallback.
+> + */
+>  static __always_inline bool arch_static_branch(struct static_key * const key,
+>  					       const bool branch)
+>  {
+> @@ -23,9 +27,9 @@ static __always_inline bool arch_static_branch(struct static_key * const key,
+>  		 "	.pushsection	__jump_table, \"aw\"	\n\t"
+>  		 "	.align		3			\n\t"
+>  		 "	.long		1b - ., %l[l_yes] - .	\n\t"
+> -		 "	.quad		%c0 - .			\n\t"
+> +		 "	.quad		(%[key] - .) + %[bit0]  \n\t"
+>  		 "	.popsection				\n\t"
+> -		 :  :  "i"(&((char *)key)[branch]) :  : l_yes);
+> +		 :  :  [key]"Si"(key), [bit0]"i"(branch) :  : l_yes);
+>  
+>  	return false;
+>  l_yes:
+> @@ -40,9 +44,9 @@ static __always_inline bool arch_static_branch_jump(struct static_key * const ke
+>  		 "	.pushsection	__jump_table, \"aw\"	\n\t"
+>  		 "	.align		3			\n\t"
+>  		 "	.long		1b - ., %l[l_yes] - .	\n\t"
+> -		 "	.quad		%c0 - .			\n\t"
+> +		 "	.quad		(%[key] - .) + %[bit0]  \n\t"
+>  		 "	.popsection				\n\t"
+> -		 :  :  "i"(&((char *)key)[branch]) :  : l_yes);
+> +		 :  :  [key]"Si"(key), [bit0]"i"(branch) :  : l_yes);
+>  
+>  	return false;
+>  l_yes:
+> -- 
+> 2.43.0.594.gd9cf4e227d-goog
+> 
+> 
 
