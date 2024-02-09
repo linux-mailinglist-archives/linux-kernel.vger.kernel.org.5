@@ -1,139 +1,102 @@
-Return-Path: <linux-kernel+bounces-59957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D87D84FDE7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EC6C84FDE8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:49:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D1D0281568
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:48:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDD19281DE0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:48:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41A8DF63;
-	Fri,  9 Feb 2024 20:48:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6059D294;
+	Fri,  9 Feb 2024 20:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="Id9rrK+Q"
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p+BnZhMk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A050610D;
-	Fri,  9 Feb 2024 20:48:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23CE563B3;
+	Fri,  9 Feb 2024 20:48:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707511685; cv=none; b=ilDJMJe4Z8Muamy5jjdd8kyrQgmXxqdDNto61iJL0kfp2pIyAjSh8Y0e+R1gp4CVejoZUUcpZhyzDO90rh8/k+1PxdrbZSnVjgJKny2x9piuHRQpNebW8Bp4TMQl6qadkhbFBjWIMsbxdxfGA8MMKSAfTfgItxzMOoKeLfbY0b8=
+	t=1707511733; cv=none; b=RZpktjhxKhRwhRr6NFno2KjfHS973Y7dIBSgO2VZWhBxiVZ8Q4mJJsyee25LnILiJxS4YXgsD+ZdSOIN41pfDYTtEfqk3/hSas7qkgZO5ozhsQigJpy6LanRFaUC4OEJksvvw68GVj8xq2f6GH6xykkY6YnSuBq0lAJTQhUovEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707511685; c=relaxed/simple;
-	bh=v7x2cv3cLaefXsKv1oCZw7imDpO7JPajJ8J0xnTg1mI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fHfu1I20ROiQ+Z1NcCrkK0j59i0+wN/XTgxEngxGYJsipL4m9NSTpMBUF/BNm/WRo8iVqGdY6tj4/phj0Kw9uZ4zVB9yX2bjtDK9YgNa+G7iHwxOUb14t8rq4wPE12t4moHHPf4zBLq6VZVOtYvCrtG7zpbqIUONX86HznW1Vaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=Id9rrK+Q; arc=none smtp.client-ip=72.21.196.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1707511683; x=1739047683;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=FrTFehTP/3NIYoM1mVpt+q0WoGuz/xdkAlWXzO6iBNM=;
-  b=Id9rrK+QUmBRuFlNlL+FNhjcOEeFuM3nC9iB6QlDyXx4ImpzTRKcGYJx
-   ZyGB690uGTG9UptphJpQgJZF9BL16E09c0fDyR2mPoMF5iWwdb297w+ur
-   9ezYgt71CFq2MGWtk99/iHAaD+tEjKEOeR0Nr2drNqup/HpKiMiLbOiAf
-   4=;
-X-IronPort-AV: E=Sophos;i="6.05,257,1701129600"; 
-   d="scan'208";a="380190350"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 20:47:58 +0000
-Received: from EX19MTAUWC001.ant.amazon.com [10.0.21.151:55540]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.25.244:2525] with esmtp (Farcaster)
- id 03dd3009-5fc6-4bd9-9784-e08ba959e9d0; Fri, 9 Feb 2024 20:47:57 +0000 (UTC)
-X-Farcaster-Flow-ID: 03dd3009-5fc6-4bd9-9784-e08ba959e9d0
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 9 Feb 2024 20:47:57 +0000
-Received: from 88665a182662.ant.amazon.com (10.106.101.39) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 9 Feb 2024 20:47:54 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <syzbot+4fa4a2d1f5a5ee06f006@syzkaller.appspotmail.com>
-CC: <asml.silence@gmail.com>, <axboe@kernel.dk>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <kuniyu@amazon.com>,
-	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<pabeni@redhat.com>, <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] [net?] INFO: task hung in unix_dgram_sendmsg
-Date: Fri, 9 Feb 2024 12:47:45 -0800
-Message-ID: <20240209204745.89949-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <00000000000067de160610f791be@google.com>
-References: <00000000000067de160610f791be@google.com>
+	s=arc-20240116; t=1707511733; c=relaxed/simple;
+	bh=kNYvhk7i0JhSWiEEGVEhYUrUfkcIqOwz6wex6co/WgQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=FVaXUutGu7jvlDkiHc9h1EmhRnT5gHT0hsKUU7PjV2uTHNghgIdkD3qv15L1fD2OZHy5hwRw6ZFGccClsosh9X6A+Ry1pIbk3hf/lHaAfVKdFigKHi7ZZ0JRn2m0mF7Uu2U/SD1hLDT+wa3oNeiPPllt+GCt/tl9QiU7I/m93ks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p+BnZhMk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72246C433F1;
+	Fri,  9 Feb 2024 20:48:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707511732;
+	bh=kNYvhk7i0JhSWiEEGVEhYUrUfkcIqOwz6wex6co/WgQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=p+BnZhMkShGU4OjQhUHSxnll3ajog1zrbSQXGWsEIDjTdNAPmQV6lQPd1FheOiheC
+	 lM4sIR9NkK8yfVdGIPTn4R96bQkX96CphVgquGXgPZ01rhpy4eSn+KWHoL/gPzzUhL
+	 sRGlWD6SBhzW5s/AI3BfrthEyvglHSr3jeVqXb7OEjqBWFFxwsqkX/6IlrBjUkotqI
+	 Bfl0JVHG5Xhylo9jbo96AyiMWGWImW4VQCf5g07wgo2CzX7H4SQAUZbcFJ7a4X1fNb
+	 IQM6bIrtuuO9emiQ56kKROqtk2zSpoZJYSK3oG3LkCiVwI9oAj5x5m0SBKi7WmBICC
+	 30wYoR58vow7Q==
+From: Mark Brown <broonie@kernel.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+In-Reply-To: <20240209145700.1555950-1-rf@opensource.cirrus.com>
+References: <20240209145700.1555950-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs35l56: Remove default from IRQ1_CFG register
+Message-Id: <170751173117.2414457.382973415866845999.b4-ty@kernel.org>
+Date: Fri, 09 Feb 2024 20:48:51 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D046UWB004.ant.amazon.com (10.13.139.164) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
 
-From: syzbot <syzbot+4fa4a2d1f5a5ee06f006@syzkaller.appspotmail.com>
-Date: Fri, 09 Feb 2024 11:02:22 -0800
-> Hello,
+On Fri, 09 Feb 2024 14:57:00 +0000, Richard Fitzgerald wrote:
+> The driver never uses the IRQ1_CFG register so there's no need to provide
+> a default value. It's set as a readable register only for debugging
+> through the regmap registers file.
 > 
-> syzbot found the following issue on:
+> A system-specific firmware could overwrite this register with a non-default
+> value. Therefore the driver can't hardcode what the initial value actually
+> is. As the register is only for debugging the value can be left unknown
+> until someone wants to read it through debugfs.
 > 
-> HEAD commit:    1f719a2f3fa6 Merge tag 'net-6.8-rc4' of git://git.kernel.o..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=16a21d04180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=53985487b59d9442
-> dashboard link: https://syzkaller.appspot.com/bug?extid=4fa4a2d1f5a5ee06f006
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1636f042180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=141c0cec180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/b8bd7b1c1c4d/disk-1f719a2f.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/58ee6966cdfc/vmlinux-1f719a2f.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/3de15662a476/bzImage-1f719a2f.xz
-> 
-> The issue was bisected to:
-> 
-> commit 1279f9d9dec2d7462823a18c29ad61359e0a007d
-> Author: Kuniyuki Iwashima <kuniyu@amazon.com>
-> Date:   Sat Feb 3 18:31:49 2024 +0000
-> 
->     af_unix: Call kfree_skb() for dead unix_(sk)->oob_skb in GC.
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17e71d7c180000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=14171d7c180000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10171d7c180000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+4fa4a2d1f5a5ee06f006@syzkaller.appspotmail.com
-> Fixes: 1279f9d9dec2 ("af_unix: Call kfree_skb() for dead unix_(sk)->oob_skb in GC.")
+> [...]
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 1279f9d9dec2d7462823a18c29ad61359e0a007d
+Applied to
 
-diff --git a/net/unix/garbage.c b/net/unix/garbage.c
-index 3e4b986de94b..51acf795f096 100644
---- a/net/unix/garbage.c
-+++ b/net/unix/garbage.c
-@@ -340,10 +340,11 @@ static void __unix_gc(struct work_struct *work)
- 	__skb_queue_purge(&hitlist);
- 
- #if IS_ENABLED(CONFIG_AF_UNIX_OOB)
--	list_for_each_entry_safe(u, next, &gc_candidates, link) {
--		struct sk_buff *skb = u->oob_skb;
-+	while (!list_empty(&gc_candidates)) {
-+		u = list_entry(gc_candidates.next, struct unix_sock, link);
-+		if (u->oob_skb) {
-+			struct sk_buff *skb = u->oob_skb;
- 
--		if (skb) {
- 			u->oob_skb = NULL;
- 			kfree_skb(skb);
- 		}
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: cs35l56: Remove default from IRQ1_CFG register
+      commit: 727b943263dc98a7aca355cc0302158218f71543
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
