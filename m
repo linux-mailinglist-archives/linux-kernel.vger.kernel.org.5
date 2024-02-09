@@ -1,133 +1,105 @@
-Return-Path: <linux-kernel+bounces-59500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41BB084F80C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:00:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02ED184F810
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:01:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AD6B1C212D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:00:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87560B23948
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:01:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B246D1CB;
-	Fri,  9 Feb 2024 15:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F7CE6D1CC;
+	Fri,  9 Feb 2024 15:01:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Emqn5i7E"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fRrW5yS2"
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A56374CC;
-	Fri,  9 Feb 2024 15:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 402EB374CC;
+	Fri,  9 Feb 2024 15:01:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707490808; cv=none; b=f3LTZaAHtIkPdPlvmQVnBzIsf316QTi95uypFMp0DBnjdb65T4KY96nQ12p5v3ZhdvruOXZK2eRC7o6z6TU4wKU3eWuvQ0j+o0WscdIUliK0pS7ZZSNPsJvDVQe/GtSmcUS+aBTukUShmcnI+PxemkKD8gcIfssE3ZLfRpxSPcg=
+	t=1707490902; cv=none; b=hFNsi/Ao2W+huE+UbjRpN49DLiLgmJdYRUZU6AQ2H3o8KfCtMTfXY6o1sBnPufiPB5gc7FXqhYCuXZAMBqi4PmvC/kwbvNrMx4LwfiVkM3NO7regOA+WIMg8h48LLVVSRWxb8EyDmEFiGr72MwVWeEkv/bi7FM4KgQNKQbGBqo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707490808; c=relaxed/simple;
-	bh=TKruBJIwFASA/sqJRVaYjjQ7bhehm8QNQf9+1Z6gp7w=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=gLF1/Nvc7HXITYgCoxwiNzx0mZOFW54xsAuglgW+bvqarevS72jXA/LB7dm+UeRzQYi2XEp6jup227cHOC+iaik4jjQKna41nckofD8Avmiauag/VbAmQzTVP2Lm+z68iBkEd5c2yo0FZQlkFu5LuJFrGAiQcxBa1Dm3JxJ3BXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Emqn5i7E; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707490807; x=1739026807;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=TKruBJIwFASA/sqJRVaYjjQ7bhehm8QNQf9+1Z6gp7w=;
-  b=Emqn5i7EojHuTvdwdB/Add9+Llx5nFqK2mlyJhWZi3rVcuX7RegdTftf
-   WI6IM/YP49y3l8Ehln3AOZBq9p9DV/2DzSKFI9itZHXKkpJnj8/aqx/Tg
-   dKu9d8ZeV8dse6U4gZgXsx7dfZUYu/1oT69vjJoAyB7vGw6zFry+n/fSY
-   2nCsbSZWK269aDth7/GETsxKscrNxailK6rgOHiA+PE1JiUxKQdaY7OXi
-   48wv9rIKTh82HMpZEEMw2Oot6BNQWtDGk+EefqFNFx7U9agRD18LxSUWn
-   LUdYH4NIXoL7hrjhaT4QEUqhQM7etB/q7vSR2JxYG/jBSHr2znbwVpGVy
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1574488"
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="1574488"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 07:00:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="1991493"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.33.226])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 07:00:04 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 9 Feb 2024 16:59:59 +0200 (EET)
-To: Shravan Kumar Ramani <shravankr@nvidia.com>
-cc: Hans de Goede <hdegoede@redhat.com>, Vadim Pasternak <vadimp@nvidia.com>, 
-    David Thompson <davthompson@nvidia.com>, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/4] platform/mellanox: mlxbf-pmc: Replace uintN_t
- with kernel-style types
-In-Reply-To: <73cd5e838695f8e20b022a523dcade108685350b.1707466888.git.shravankr@nvidia.com>
-Message-ID: <6905cf50-3314-2b3c-9bbf-eeb8000f0b54@linux.intel.com>
-References: <cover.1707466888.git.shravankr@nvidia.com> <73cd5e838695f8e20b022a523dcade108685350b.1707466888.git.shravankr@nvidia.com>
+	s=arc-20240116; t=1707490902; c=relaxed/simple;
+	bh=1O4u+GhlkOZiDsbASWskmjf2LYR3/pZHwDLQbk9WsJY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ir2lJBrLqK9t3nPEnJ71nreVFPYf2IsqKsoRbN64rE5xyZxYxJVHzJpYgZrWveHyzArcyx01wP8dIX1TeYZIBLF9xOnT0zoXExsAyCCnVG7LXCKnk78viwQr/jpojyy8lFXIe9uxNzTn3Ufr6RU1nl77PGyPnp0Ds47ijSA3IUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fRrW5yS2; arc=none smtp.client-ip=209.85.210.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e12d0af927so649283a34.0;
+        Fri, 09 Feb 2024 07:01:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707490900; x=1708095700; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sl0iYs91RSXEkh+s6/Oc0FnKucVhPk4Z5V9OL1byHYI=;
+        b=fRrW5yS2SO3y/3M/JRzq9sRMQczuGI6G5doCr/YKraG7QJ25auSdTEqg+wQ6SCv2XG
+         pwpaSlqhaNO5D0sudeWc36qC6v199cFHfOS2v0SYCP1Z+cxPB1GWVCSlZf/qAjiVLRZE
+         SqQjvTd5pswjAzrZyKHfcaZWLvjScfUhrLCFbJPkZUgEUAj+Jty0sJM9j3UIVrqPjCST
+         t/pDk1c5WOw8vGrZRYnSpABIZg02l9mjPIT70O8mR0euGr94X0Gft1j/2frpHuikCbBT
+         ycVBDolEoDkSTptUXmuI7iFpOh6kOhBzfXxGNDb57E0CITfDBWlBxGGI9SsctG+r59Wx
+         +5Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707490900; x=1708095700;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sl0iYs91RSXEkh+s6/Oc0FnKucVhPk4Z5V9OL1byHYI=;
+        b=MHqNzN9oAkh2RJ3JfNIxmnF6xMOQKFozd9wnxdZlxfSl1m2wdumnTEenBxitr1mwgt
+         lhGvT2+453mdy1ssZDobdy2oz6JK5vXXuuyI9iEDqir0/N1AVZeLpVfE1xIcUv0Lzrii
+         61/ywGZr5jcRavd3G+g4HySjsdslN/hONxSMFUW6w3HG9l6I7+yh0B9XHhiwsa8fcKiK
+         PgghuCCCyoq1uj9airSUj9GNs0/VBD7+SSvY76QVkaLi2wWRrpcieSAGSsNEouKbC2ei
+         8OoWLvdnN7JHVI91SYNwU9i0w8kYhdzUun2+9GiikYdZqNn5ZLDfMAHDPuuZe286xy5V
+         SkXQ==
+X-Gm-Message-State: AOJu0Yw03WeSWvkKixyLbnKeIbqrsEvrQWh1rMGs980oTfyYavfwYBlE
+	7zRh1tQ5BCAIq7T/lw2YDwXk8gZhYjVJhWCdCESfNF1dRboA7rwK
+X-Google-Smtp-Source: AGHT+IFBlvksWx3flEKu0PAeGVCxJokKw3Inl6JFeIQI9RaHK0Y/0Ao70cA2LGvwKmjoyDWi50WIsg==
+X-Received: by 2002:a05:6358:d38e:b0:179:272:6c5a with SMTP id mp14-20020a056358d38e00b0017902726c5amr2065308rwb.19.1707490900052;
+        Fri, 09 Feb 2024 07:01:40 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW8fxySuPlUu4r/neWiR79OUQXDPca6Cy29IS1V/YrE2oYEHPmAsunhfNSVgFzsU1u9zxrhVjgpo0Zpevg7EnOcMOdi2pFyonEltR4G8+T/ZOrT0pQUDVV0q6M0CuR6XrSTKXFc8II9Ky54+YseOmiKD2fYZ4wxEs8Nb7mcAr+NzZv++GqDbfeHsFv3Ui28B0lfRzTZIBse
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v16-20020aa78510000000b006d98505dacasm593735pfn.132.2024.02.09.07.01.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 07:01:38 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Fri, 9 Feb 2024 07:01:37 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Sebastian Kranz <tklightforce@googlemail.com>
+Cc: samsagax@gmail.com, derekjohn.clark@gmail.com, jdelvare@suse.com,
+	linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] hwmon: (oxp-sensors) Add support for Ayaneo Air Plus
+ 7320u.
+Message-ID: <41928b42-4272-49a7-8c10-e63059fba72c@roeck-us.net>
+References: <2a6ab115-9775-447b-adf5-d63043548c74@roeck-us.net>
+ <20240209090157.3232-1-tklightforce@googlemail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240209090157.3232-1-tklightforce@googlemail.com>
 
-On Fri, 9 Feb 2024, Shravan Kumar Ramani wrote:
-
-Hi,
-
-You need to provice commit description here too. The shortlog on subject 
-line is not enough.
-
-> Signed-off-by: Shravan Kumar Ramani <shravankr@nvidia.com>
-> ---
->  drivers/platform/mellanox/mlxbf-pmc.c | 121 +++++++++++++-------------
->  1 file changed, 59 insertions(+), 62 deletions(-)
+On Fri, Feb 09, 2024 at 10:01:23AM +0100, Sebastian Kranz wrote:
+> Add support for handheld AYANEO AIR Plus with the same EC registers to add proper fan control.
 > 
-> diff --git a/drivers/platform/mellanox/mlxbf-pmc.c b/drivers/platform/mellanox/mlxbf-pmc.c
-> index b1995ac268d7..71d919832e2a 100644
-> --- a/drivers/platform/mellanox/mlxbf-pmc.c
-> +++ b/drivers/platform/mellanox/mlxbf-pmc.c
-> @@ -149,17 +149,17 @@ struct mlxbf_pmc_block_info {
->   */
->  struct mlxbf_pmc_context {
->  	struct platform_device *pdev;
-> -	uint32_t total_blocks;
-> -	uint32_t tile_count;
-> -	uint8_t llt_enable;
-> -	uint8_t mss_enable;
-> -	uint32_t group_num;
-> +	u32 total_blocks;
-> +	u32 tile_count;
-> +	u8 llt_enable;
-> +	u8 mss_enable;
-> +	u32 group_num;
->  	struct device *hwmon_dev;
->  	const char *block_name[MLXBF_PMC_MAX_BLOCKS];
->  	struct mlxbf_pmc_block_info block[MLXBF_PMC_MAX_BLOCKS];
->  	const struct attribute_group *groups[MLXBF_PMC_MAX_BLOCKS];
->  	bool svc_sreg_support;
-> -	uint32_t sreg_tbl_perf;
-> +	u32 sreg_tbl_perf;
->  	unsigned int event_set;
->  };
->  
-> @@ -865,8 +865,8 @@ static struct mlxbf_pmc_context *pmc;
->  static const char *mlxbf_pmc_svc_uuid_str = "89c036b4-e7d7-11e6-8797-001aca00bfc4";
->  
->  /* Calls an SMC to access a performance register */
-> -static int mlxbf_pmc_secure_read(void __iomem *addr, uint32_t command,
-> -				 uint64_t *result)
-> +static int mlxbf_pmc_secure_read(void __iomem *addr, u32 command,
-> +				 u64 *result)
 
-Please remove unnecessary newlines too such as this one from the function 
-arguments.
+checkpatch:
 
-Other than those two things, this one looked fine. Thanks for doing this.
+WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit description?)
 
+Also, there is no change log.
 
--- 
- i.
+I fixed up the commit message when applying the patch, so there is no need
+to resend, but please keep that in mind for future submissions.
 
+Thanks,
+Guenter
 
