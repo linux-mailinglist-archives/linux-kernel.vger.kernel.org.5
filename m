@@ -1,199 +1,176 @@
-Return-Path: <linux-kernel+bounces-59457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 738D484F757
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A3FB84F75B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:32:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D729B1F25BDB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:31:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9087B1F22B9E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:32:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E799971B55;
-	Fri,  9 Feb 2024 14:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9154969DFF;
+	Fri,  9 Feb 2024 14:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="RBme5bg9"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	dkim=pass (2048-bit key) header.d=vaisala.com header.i=@vaisala.com header.b="U/xEDka5"
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2137.outbound.protection.outlook.com [40.107.247.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905AE69D3C
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707488952; cv=none; b=Q6eNJ2Cj4ek5Xji0bcU/SUlsIXhJ0h/3MkahE8YbYL5D9+jveuHnsTmYaglAeLkQ3H+05KIoIA/0hDbsgHG9y+GRX1KDWLy8YyAdlbuZmVmKaxGH0Mf6R6H5192kPIaVgCHLl6PECTk8lQWy3rsBIqUwarCkpegdPPI7c2D/1v8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707488952; c=relaxed/simple;
-	bh=oTRfFe+/EH7DLR5K66X2qKeSonuT+RMKMk6eYxbGvf4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:Content-Type:
-	 MIME-Version:References; b=cLKVBUVXQsNYOHRm/Ju3wMsRXIhhThWb0RqiV7d5ScgmIThczkchC45CyBO9GSKnLS1IeMrettVwLhUWCjO0Gbf8b3Wxn+FNG9TJrzJK8pk90mA9VIm9l5gDXTU/HSC7wC9trLp3NMv4ViIeavMa3XfpsESQJZRzdKPI40NlTjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=RBme5bg9; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240209142907euoutp02a2b6a259c6689919044722ce24c21d11~yOCa8sUYT2144221442euoutp02j
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:29:07 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240209142907euoutp02a2b6a259c6689919044722ce24c21d11~yOCa8sUYT2144221442euoutp02j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1707488947;
-	bh=2ukBs3XODipZcH9UMRwa+Bu+eJvhDnac4gizoogX/Is=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-	b=RBme5bg9CdOVU1oMxV4Ybb5Xo1Nj93LPn/TZtYuGuDM8JoXqabMx1IU3QdKo7ub71
-	 br84AeHS1lrt3ijAYBC6HuMLYGxyp0VVNLhcqZ+bvQl9HOZFq7OxWRJ+FKG5t7UoD+
-	 ozfa6KR1lEkjdqiPt4HA+LzBQOIeV3uqHiwc+BsA=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240209142907eucas1p22dc004862a93d76c2817fc28c5432e48~yOCapm-8m0060200602eucas1p2G;
-	Fri,  9 Feb 2024 14:29:07 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges3new.samsung.com (EUCPMTA) with SMTP id 9D.2E.09552.3B636C56; Fri,  9
-	Feb 2024 14:29:07 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240209142907eucas1p2024d2809a150c6e58082de0937596290~yOCaQYIdi0486804868eucas1p2E;
-	Fri,  9 Feb 2024 14:29:07 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240209142906eusmtrp1ee69ff838c2b80b9dc3c11119a3a418b~yOCaPfpUX0528405284eusmtrp1C;
-	Fri,  9 Feb 2024 14:29:06 +0000 (GMT)
-X-AuditID: cbfec7f5-0bd9da8000002550-a1-65c636b3a878
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id 04.B3.10702.2B636C56; Fri,  9
-	Feb 2024 14:29:06 +0000 (GMT)
-Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240209142906eusmtip2e2024a73a312042137f498874cbdbfe6~yOCaHDNtj0196001960eusmtip2P;
-	Fri,  9 Feb 2024 14:29:06 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) by
-	CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) with Microsoft SMTP
-	Server (TLS) id 15.0.1497.2; Fri, 9 Feb 2024 14:29:06 +0000
-Received: from CAMSVWEXC02.scsc.local ([::1]) by CAMSVWEXC02.scsc.local
-	([fe80::3c08:6c51:fa0a:6384%13]) with mapi id 15.00.1497.012; Fri, 9 Feb
-	2024 14:29:06 +0000
-From: Daniel Gomez <da.gomez@samsung.com>
-To: "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-	"brauner@kernel.org" <brauner@kernel.org>, "jack@suse.cz" <jack@suse.cz>,
-	"hughd@google.com" <hughd@google.com>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>
-CC: "dagmcr@gmail.com" <dagmcr@gmail.com>, "linux-fsdevel@vger.kernel.org"
-	<linux-fsdevel@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"willy@infradead.org" <willy@infradead.org>, "hch@infradead.org"
-	<hch@infradead.org>, "mcgrof@kernel.org" <mcgrof@kernel.org>, Pankaj Raghav
-	<p.raghav@samsung.com>, "gost.dev@samsung.com" <gost.dev@samsung.com>,
-	"Daniel Gomez" <da.gomez@samsung.com>
-Subject: [RFC PATCH 7/9] shmem: check if a block is uptodate before splice
- into pipe
-Thread-Topic: [RFC PATCH 7/9] shmem: check if a block is uptodate before
-	splice into pipe
-Thread-Index: AQHaW2RVHDRO8t3PIUKSo0ZMZU2cLg==
-Date: Fri, 9 Feb 2024 14:29:04 +0000
-Message-ID: <20240209142901.126894-8-da.gomez@samsung.com>
-In-Reply-To: <20240209142901.126894-1-da.gomez@samsung.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0500969D34;
+	Fri,  9 Feb 2024 14:30:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.247.137
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707489033; cv=fail; b=fiE8Y0O/ZptZ/4ZvGFR0bjR6ZBoGbWU+gvkHZiQRXYaFZMT0BuwhzzGlPCRqDISLRxVDz4vavwzLmM+mg1PwOQMVgcU4QIcqBunGt/TLL0Y8kPpzDaOW1mXF7KmuXunlWFPcfrBswKIqfGqaNck1kc3aZq5Fneg8X8a2DTaBvcw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707489033; c=relaxed/simple;
+	bh=U2phM+abfp8+ubwzCaZiw6vNdkIDVJLH5OsBGMcwwrI=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=aWmQLoz+9Yu58NyBQmOWxDi4F4aioTzRkwiI0Na+kHpeOL1nNguk5jODLw8HnLQfUrEqICp9bAIhKdv8qxqbRRwKr3+e+wPqAhcocI9ju6tq3qd5ROYYydXdebhe14Vp6LSh8HnYavlDD0s44S8wkow9gjsH+Q5PK+7zZB+KtTM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vaisala.com; spf=pass smtp.mailfrom=vaisala.com; dkim=pass (2048-bit key) header.d=vaisala.com header.i=@vaisala.com header.b=U/xEDka5; arc=fail smtp.client-ip=40.107.247.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vaisala.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vaisala.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F0PoBC5gFVScg5jwVmirrKGHf50owOk167ewxiMWjDQYVA6mY9AGG0no7sDcs79/iuNPq6mZLOY3QGrjxdEKbredoxa2mY+0xwQarrvc0xIP3VZ4PgFpN7PELu2YpZHxwUwChk7E8KlwlahrxnQZluvHjiVWzv//IeDlBx7NYHTHvQQeyzBkCYqnJKc5uNjj7T/bA36s+36MoVv9uK2VsPDeSsynQbo6EqizYR8cburE+ABhBaXXxgcEccGafYtdAmLHi2LbfHSJfRkQggzzNKgOKxJA4GzekWJEiSzbNXWaQVG/cPSyeKP//QJ8rEVlyx2acPtsYf7zAynVVVcE0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kfJVkj8byHgGgoRSZY/a/EQ+ehk+0NqskUsJfzop2vg=;
+ b=CM6g71ndSLYqO1QEMF2XCsm5zyi+Hz6nm7GLMT+5oG9R6sBfOEfDsXyuKFhb7fZT938Okyr6ubcG7RB68FXtUDrLa4MLHJxJTUZTtuKZ79wlIiSPorEsIEaz1cW/yDhMyh7ct1QyQiLRKHEHRDhseUb506XOxf8m87s0AXb67T48t7BY+9gpYTTYOPRZSEs0t0p5c3N2qopY3Bv3f2x9x2pJqHUgK5f+tLH5iDsORk5QO4uUwmEyw46diRq5hCB/pjaeIlGWMg38Cm3BqKgDIjBNSC4m7W2XLXXdDmfsVlmuJlU9cXm5h6bGXW67nTjDKctk2z1MVP9FB7CHaERkZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vaisala.com; dmarc=pass action=none header.from=vaisala.com;
+ dkim=pass header.d=vaisala.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vaisala.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kfJVkj8byHgGgoRSZY/a/EQ+ehk+0NqskUsJfzop2vg=;
+ b=U/xEDka5As+T9VhtlQXyL+C+4aQ6oefvuQQpwxIKJbBMLLqS7If5oiS1IV9QGhW1it/GQg4xYiNSIgzz1JNfBXaYVqZmT8XXzNiLh05smp6eQXYR6egbzhptdLG9m6xHS3atG+QZf39PWCcBQnWy4kr/XIxJDInUBcFBGSumMYwuAW1jg0UWyGoZyPwjzkCJeGY23eLQuuSt9bM4D9DJLY0a3HtiRSgNdB6x8akzmRqFCfTqC/xGyARFxDbcIkcExHXGAjpLHBgJbG4sPt9zZgrmj7O5qSX0k8QrMKd0VJa2QI6Tdo8rk6GrR4o/leZN1YKi+djjrTQBspI0DtqlWg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vaisala.com;
+Received: from AS4PR06MB8447.eurprd06.prod.outlook.com (2603:10a6:20b:4e2::11)
+ by DB9PR06MB7386.eurprd06.prod.outlook.com (2603:10a6:10:252::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.24; Fri, 9 Feb
+ 2024 14:30:25 +0000
+Received: from AS4PR06MB8447.eurprd06.prod.outlook.com
+ ([fe80::b5ae:8355:acaf:29e0]) by AS4PR06MB8447.eurprd06.prod.outlook.com
+ ([fe80::b5ae:8355:acaf:29e0%4]) with mapi id 15.20.7270.025; Fri, 9 Feb 2024
+ 14:30:24 +0000
+From: niko.mauno@vaisala.com
+To: gregkh@linuxfoundation.org
+Cc: linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	vesa.jaaskelainen@vaisala.com,
+	geert@linux-m68k.org,
+	Niko Mauno <niko.mauno@vaisala.com>
+Subject: [PATCH] usb: core: Kconfig: Improve USB authorization mode help
+Date: Fri,  9 Feb 2024 16:29:51 +0200
+Message-Id: <20240209142951.27195-1-niko.mauno@vaisala.com>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR06CA0117.eurprd06.prod.outlook.com
+ (2603:10a6:208:ab::22) To AS4PR06MB8447.eurprd06.prod.outlook.com
+ (2603:10a6:20b:4e2::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHKsWRmVeSWpSXmKPExsWy7djPc7qbzY6lGhzsEbeYs34Nm8Xrw58Y
-	Lc72/WazOD1hEZPF0099LBazpzczWezZe5LF4vKuOWwW99b8Z7W4MeEpo8X5v8dZLX7/mMPm
-	wOOxc9Zddo8Fm0o9Nq/Q8ti0qpPNY9OnSeweJ2b8ZvE4s+AIu8fnTXIem568ZQrgjOKySUnN
-	ySxLLdK3S+DK2Nt1ibXgMW/F1u2fGRsY73N1MXJySAiYSDT3bWbtYuTiEBJYwSixdU8vlPOF
-	UeLjpW1MEM5nRolHX84wwbSsnzCDBSKxnFHi6ckvjHBVy/a+Z4dwTjNK3AK6G6QFbPKuqeog
-	NpuApsS+k5vAikQEnjNKtO7+COYwC9xmlpjTPosRpEpYIEyi8eVldhBbRCBaYsLHZUwQtp7E
-	06m/2UBsFgEViTU7ToDV8wpYSdz8uhOsnlPAWmLeo/VgNYwCshKPVv4CizMLiEvcejIf6glB
-	iUWz9zBD2GIS/3Y9ZIOwdSTOXn/CCGEbSGxduo8FwlaU6Dh2kw1ijp7EjalToGxtiWULXzND
-	3CAocXLmE3DASAi0cUn8WXoRaBAHkOMi8eEPH8QcYYlXx7ewQ9gyEqcn97BMYNSeheS8WUhW
-	zEKyYhaSFQsYWVYxiqeWFuempxYb56WW6xUn5haX5qXrJefnbmIEJrnT/45/3cG44tVHvUOM
-	TByMhxglOJiVRHhDlhxJFeJNSaysSi3Kjy8qzUktPsQozcGiJM6rmiKfKiSQnliSmp2aWpBa
-	BJNl4uCUamDKYLG9pbXYZZHxnJr3PgpWXVsVTfffPWH6oailKUAkdN6zxGBey78dFW49TjfO
-	6i5cEnZY+NmKWaHSkwNMsr4+Y3RyTXVMe3zx4ZzH/3dqGn52/v1ad/WyOwu/yL1ZydL31+iU
-	4JFyw1qxVL4MnvrjbuxOO2XMm9MO+CyLOLenpWbBkX2Pp3wVaHg7i1Pi9RyBOa9t71/cVFg9
-	b8mJVTbrrkRXiKRkHOoMae2fqvhnk1rzQ7tZJRd/1bWYvTa5tM9OKSvk0Y2ZG6aplO3K8rNP
-	mch+dfWkqIl9oX/PrMiN2i/BP/m+6FOVBZeXqpxQEH5wR+tRpW/Bs0oV00enWF4/eCL6m+P3
-	6cu6FsfWnTvMp8RSnJFoqMVcVJwIAIAP0zThAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNKsWRmVeSWpSXmKPExsVy+t/xe7qbzI6lGqw/bGkxZ/0aNovXhz8x
-	Wpzt+81mcXrCIiaLp5/6WCxmT29mstiz9ySLxeVdc9gs7q35z2pxY8JTRovzf4+zWvz+MYfN
-	gcdj56y77B4LNpV6bF6h5bFpVSebx6ZPk9g9Tsz4zeJxZsERdo/Pm+Q8Nj15yxTAGaVnU5Rf
-	WpKqkJFfXGKrFG1oYaRnaGmhZ2RiqWdobB5rZWSqpG9nk5Kak1mWWqRvl6CXsbfrEmvBY96K
-	rds/MzYw3ufqYuTkkBAwkVg/YQZLFyMXh5DAUkaJaweuMEMkZCQ2frnKCmELS/y51sUGUfSR
-	UeL/q5tQzmlGiZ4JO5kgnBWMEsc+dLOBtLAJaErsO7mJHSQhIvCUUWL670NgS5gFbjNLzGmf
-	xQhSJSwQJtH48jI7iC0iEC1x/dsnZghbT+Lp1N9gk1gEVCTW7DgBVs8rYCVx8+tOsHohIHva
-	9tNgNZwC1hLzHq0HsxkFZCUerfwFVsMsIC5x68l8JognBCSW7DkP9ZyoxMvH/6Ce05E4e/0J
-	I4RtILF16T4WCFtRouPYTTaIOXoSN6ZOgbK1JZYtfM0McY+gxMmZT1gmMErPQrJuFpKWWUha
-	ZiFpWcDIsopRJLW0ODc9t9hIrzgxt7g0L10vOT93EyMwVW079nPLDsaVrz7qHWJk4mA8xCjB
-	wawkwhuy5EiqEG9KYmVValF+fFFpTmrxIUZTYBhNZJYSTc4HJsu8knhDMwNTQxMzSwNTSzNj
-	JXFez4KORCGB9MSS1OzU1ILUIpg+Jg5OqQamHrZNE+tE/n5ST+rf8t4pdfe+hpfaF18a/mAJ
-	6jJc6ar0y0CNY9qfh0ff+sstOslotzB9xZUnC8v93RibZiT2Piy/a9Ib6s7W52euIN84+aGC
-	rH+dW3pxo/Zyc/NnAifeWU/o2XHtTUv8u1U3w4qUZKSeaH2+3PrCW1ws1k5h4YFynSlCG1nu
-	zL0YLv9FRPeBx4eNS1qXp+7MexN0Tn65XkkdZ99bz+zQtGuPg+xfp/MpbHrY7LFx1rc79rNV
-	lWL9Wbr0L9blVHez8rG/frrul67L7au7T3JE/Vvn/aC8qNrY44fPshtbanV7ei8s5YjdIu1b
-	ZDsxXHvJjXU3CounL41h5OsTfW7yu7htIpMSS3FGoqEWc1FxIgA4VgMl3gMAAA==
-X-CMS-MailID: 20240209142907eucas1p2024d2809a150c6e58082de0937596290
-X-Msg-Generator: CA
-X-RootMTR: 20240209142907eucas1p2024d2809a150c6e58082de0937596290
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240209142907eucas1p2024d2809a150c6e58082de0937596290
-References: <20240209142901.126894-1-da.gomez@samsung.com>
-	<CGME20240209142907eucas1p2024d2809a150c6e58082de0937596290@eucas1p2.samsung.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS4PR06MB8447:EE_|DB9PR06MB7386:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7e2ba728-1159-4062-b979-08dc297ba700
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	7sIc96Fwm0sDiieXbZdCAg2jmaTTG/CCk+qdu5ebnt4HyJunTQ3s6hoSqbl7R6KiBeRWsyr6Tz6gzLm2QbozkfcksT1vrF49taoD7PvnlXMjqmiS7NAkF3Dh/lNK7YgT4ZCiE2BtbXcPq7fuMMbLPbdnqhvtmEx19wIasbfcMsKF4ZnftHunq/blG06eu98Rbhpf6C5I0bocpNTOKh2C0+50hcqlSIwsx1CeACwrq7G04e+zlAuH49UVQHICWutB6hOg7HVmdq8fibcsCypsIoRxLuKPFOYEYb5ACO7GZqqZzepp2cuwMiTfO8j8ioRx4MrytB83PGoN20JbIPcXjpQ/tcOFqnPnn0E22c2ZFHJLLgj5xFq1Mm/Rc1OTZTy9F7ASWFV4NXpipZPl5yZoWDu9kG2VoLDAZE8MTTS7IEsst15MPjrzA2Y91dzGxR7j8Dou9drun66ZDMPHlXHZnVpkTzisQjbyLFRnBBOPa/NJwdYy6TlAP6dCrTkoJKj3Es3gTgpSeSSWgvo5lUhK5To9PQafL4MrjpEt9nc1hhP0KvsakZo4XNpffnCLkEm/NeX+11ONhXJazMpbBFipG01HcsQGe/28TX5JxUj25Q5nq+bA9ZqseSHkUCRNIC2W
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR06MB8447.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(136003)(366004)(39850400004)(230922051799003)(230273577357003)(64100799003)(1800799012)(186009)(451199024)(6666004)(52116002)(2906002)(5660300002)(316002)(41300700001)(38350700005)(8676002)(66476007)(66946007)(478600001)(6506007)(6512007)(6486002)(9686003)(66556008)(4326008)(8936002)(6916009)(107886003)(2616005)(83380400001)(38100700002)(36756003)(86362001)(1076003)(26005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?gyTmNr9hZs/OSSr1RXsFaVmiyAWeWPlmOkMihQfaHzzkmqTZ6e++HfyPKzCd?=
+ =?us-ascii?Q?a+ajbNTNTr7WxP4ycvZGHJlNvYQ157JY0EuKCVgxpClJlWAIJnlwrN+t+CFS?=
+ =?us-ascii?Q?a6/ftDOrekV7Zi5JLXkNXIGib2RmoWKrVuotGvVzoaK2bGZzLCi8hIHWyVvO?=
+ =?us-ascii?Q?bn40neYgRPLpx4o/r/X6vzxBvtOGu5QC8yW/UN5t6Cb70lmNVsNT5SxI8ogF?=
+ =?us-ascii?Q?QMSskyqrmLjHd+yJpteK5fzMwnx8HiVdAhqfMEV0MP8/skA43t5ns7Q7unbX?=
+ =?us-ascii?Q?JAkeXtHu9sGwJErATaA7yg1Rkljv1A74ltfzVdw2XP4LJiS4QbCO5Iaa2pn7?=
+ =?us-ascii?Q?XXtIlFF8A1bFo02Sxm0B/IP0Br3dm6duqd4vVvDZ3xiVb99aGWytibhuPZJV?=
+ =?us-ascii?Q?JKFHQynDIzSMHrDFMpeqLHyRcPMfJVPIrY7+Xv5YDJPFi08ZPZUJZcZ2Aszl?=
+ =?us-ascii?Q?XJIHumYTCl+cbNXRtJUwBl0Z5qvwnOLGY3lsR9fvSMPVLww6svSsnIl3aBYK?=
+ =?us-ascii?Q?RTe1SWuXPyznhjYIvZFC8o0DZh7DA7N3vn/bJalHKJVw2JcXjaAaIc8gOLSR?=
+ =?us-ascii?Q?ixsjAKRyOpx2E580/Q/bb5mZ0bKWzs80YHtaQlip3XPqyvdG5Go6x5ZQZMvI?=
+ =?us-ascii?Q?3OStHjKnV9Wwa58Jwi9WgFZGZUbtEOEEZpEWjtVcFlYVK2FB+AwdaoVJrn3J?=
+ =?us-ascii?Q?YLC0sXYLbd+n+++qfrPf+n8Ww2M9BTtZAQpkySW8xY8bOZ74LF0GMSCvQ+RV?=
+ =?us-ascii?Q?wLxJd2xnCjhaR29osxAEzeyzOzvmJIzVcm3FP7ZK0GFVyQu4KF/PhtV34Dw6?=
+ =?us-ascii?Q?7TXQ+7l8Y51TgkeRksk5jsr5vP+CgabMcOgcbW6XVA8fg+Tufs6P2BDSMF1m?=
+ =?us-ascii?Q?YsC7/bazV2GQzXpXYUJvJ2ZzHT0VtPp18KXVAZHfW78I5OiYR5q4NGc9SdJO?=
+ =?us-ascii?Q?uMJkiDiyYzNIhJSgJl4HzP1k/fbRgDQAzApTnLKQj/z8E3VB3Ux/+AnkE75w?=
+ =?us-ascii?Q?3buE+Vq2Ym3zZyuYpebxlUCSfRO0fRKzntqePpkI4Ky0VoTC2ZDocTQUHB7Y?=
+ =?us-ascii?Q?gxq4vlYoJDVOHJ24S2/gxq2bW6vEv9QSRvPGA4yd7Wxa5hB+NPwmwiRNv5iK?=
+ =?us-ascii?Q?y52pOtXEcVSrS+hK+NHEu3aCzdYEcmVzCRhtexRcBoID8A4UKlPRsVJOJAcW?=
+ =?us-ascii?Q?eFwcWUuSZO5lFO8XKfsqCkzR741egY0BrCeWhqHHMPRNEyVYWSx0kDaeLrbf?=
+ =?us-ascii?Q?Me5NCnfd5GKgfgJP8xuLScWfv97OHhk7zn6+RDHlD6ApP2KC9F0WexKhd8hx?=
+ =?us-ascii?Q?Ng/3e1ljebo9kir8+DMjs8KHVFHoCN5H/PSwE3aNWLCfFP5Wg7nBKzkGcqNM?=
+ =?us-ascii?Q?sC6yjQi+kF4srhfqHI5MQF90rZM7Usa6f5+y3hyYD+dWms6otVHO1k7bTrq/?=
+ =?us-ascii?Q?vfAo0IoOuxXzbE04n2waBvXhPCTX2OIx7UAPj+s2q23w/a9y+NvvBYziyA/u?=
+ =?us-ascii?Q?CuhVL0NwgnssvRalCs2WcIfIJk8+7ZV/JYMiN98I0s7bWjip19qj5h1NSBqU?=
+ =?us-ascii?Q?KJawtA6apgpxhHY2fVpWgv+UTe733uTNAH3mW6BlkDRbAXvYOShr9Wf6bRaG?=
+ =?us-ascii?Q?QQ=3D=3D?=
+X-OriginatorOrg: vaisala.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e2ba728-1159-4062-b979-08dc297ba700
+X-MS-Exchange-CrossTenant-AuthSource: AS4PR06MB8447.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 14:30:24.0631
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 6d7393e0-41f5-4c2e-9b12-4c2be5da5c57
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: V40cMP6LwAmjmKLj9AY6axx1E4lGnTekyFRh0/PTFzsd/ir+BDVctNt518AMeg2im4QDOcp8DNN3zYpyE6cgjA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR06MB7386
 
-The splice_read() path assumes folios are always uptodate. Make sure
-all blocks in the given range are uptodate or else, splice zeropage into
-the pipe. Maximize the number of blocks that can be spliced into pipe at
-once by increasing the 'part' to the latest uptodate block found.
+From: Niko Mauno <niko.mauno@vaisala.com>
 
-Signed-off-by: Daniel Gomez <da.gomez@samsung.com>
+Update the default USB device authorization mode help text so that the
+meaning of the option and it's available values are described more
+accurately.
+
+Signed-off-by: Niko Mauno <niko.mauno@vaisala.com>
 ---
- mm/shmem.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ drivers/usb/core/Kconfig | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 9fa86cb82da9..2d2eeb40f19b 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -3196,8 +3196,30 @@ static ssize_t shmem_file_splice_read(struct file *i=
-n, loff_t *ppos,
- 		if (unlikely(*ppos >=3D isize))
- 			break;
- 		part =3D min_t(loff_t, isize - *ppos, len);
-+		if (folio && folio_test_large(folio) &&
-+		    folio_test_private(folio)) {
-+			unsigned long from =3D offset_in_folio(folio, *ppos);
-+			unsigned int bfirst =3D from >> inode->i_blkbits;
-+			unsigned int blast, blast_upd;
+diff --git a/drivers/usb/core/Kconfig b/drivers/usb/core/Kconfig
+index f337aaea7604..4665df550d36 100644
+--- a/drivers/usb/core/Kconfig
++++ b/drivers/usb/core/Kconfig
+@@ -126,10 +126,21 @@ config USB_DEFAULT_AUTHORIZATION_MODE
+ 	  Select the default USB device authorization mode. Can be overridden
+ 	  with usbcore.authorized_default command line or module parameter.
+ 
+-	  The available values have the following meanings:
+-		0 is unauthorized for all devices
+-		1 is authorized for all devices (default)
+-		2 is authorized for internal devices
++	  This option allows you to choose whether USB devices that are
++	  connected to the system can be used by default, or if they are
++	  locked down.
 +
-+			len =3D min(folio_size(folio) - from, len);
-+			blast =3D (from + len - 1) >> inode->i_blkbits;
++	  With value 0 all connected USB devices with the exception of root
++	  hub require user space authorization before they can be used.
 +
-+			blast_upd =3D sfs_get_last_block_uptodate(folio, bfirst,
-+								blast);
-+			if (blast_upd <=3D blast) {
-+				unsigned int bsize =3D 1 << inode->i_blkbits;
-+				unsigned int blks =3D blast_upd - bfirst + 1;
-+				unsigned int bbytes =3D blks << inode->i_blkbits;
-+				unsigned int boff =3D (*ppos % bsize);
++	  With value 1 (default) no user space authorization is required to
++	  use connected USB devices.
 +
-+				part =3D min_t(loff_t, bbytes - boff, len);
-+			}
-+		}
-=20
--		if (folio) {
-+		if (folio && shmem_is_block_uptodate(
-+				     folio, offset_in_folio(folio, *ppos) >>
-+						    inode->i_blkbits)) {
- 			/*
- 			 * If users can be writing to this page using arbitrary
- 			 * virtual addresses, take care about potential aliasing
---=20
-2.43.0
++	  With value 2 all connected USB devices with exception of internal
++	  USB devices require user space authorization before they can be
++	  used. Note that in this mode the differentiation between internal
++	  and external USB devices relies on ACPI, and on systems without
++	  ACPI selecting value 2 is analogous to selecting value 0.
+ 
+ 	  If the default value is too permissive but you are unsure which mode
+ 	  to use, say 2.
+-- 
+2.39.2
+
 
