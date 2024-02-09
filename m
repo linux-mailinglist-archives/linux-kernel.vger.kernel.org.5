@@ -1,182 +1,120 @@
-Return-Path: <linux-kernel+bounces-59693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFB4A84FA85
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:05:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3250A84FAAD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:08:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E6A428404C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:05:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 326F11C281C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:08:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B2BE7BAFE;
-	Fri,  9 Feb 2024 17:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 341D580C02;
+	Fri,  9 Feb 2024 17:07:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MolCB3u5"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O24YBxP6"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBEE56DD18
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:05:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1197276414
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:07:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707498307; cv=none; b=bircHRMCgxoX2kDrmFgnDtn/IjW79Y5DmRW5A0KX4WJCZ3I4WnfLQC3zacrmoQzSidXEyXKZQ4jAd+bEpsWjwVyXXiW/T6PPHXk5VsZ4GlLkebB1ETVKjFx9pr1044Z3dGTzD5uIeJCfxjoDueeo/szQ7dGcLXl4Zb81BkGYkkc=
+	t=1707498448; cv=none; b=XTGn3ywKc7yPG416cgC4YtBf0NzzOJr/xenzAR673E+TN7SZ2Yf+UCJpuQLb6vDOo6RKisEr+lDmvsd9kmLrhi3HOKy1SVsXCWN0tmi7i/BOn7mOS2p2txO/Jd/nXsgXAE+LQH5VyT/La/jJVFbxo9MafBmoc6SkyKhDZOUiaiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707498307; c=relaxed/simple;
-	bh=xwZzEC5N9Tk3OxSnesPK34/6ccpOLSW0y1TDD6td8Xw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FyU2EcbL2WgkUnk3hkxMYvkQxaOmsze6209Wcys9pDOrWZFmm0HcA+TNgIr1HZQfd4Acn7K5EzgYkhlo0oWaX1LdMH3r+rbfT76q3GV+IGP56gbDhK4oxIdukKGwUR40ZrN/vPQtGwEwDnnL6brp0Mmt4lMhQwtBhymattO3WYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MolCB3u5; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1707498448; c=relaxed/simple;
+	bh=lXj0p83miCCs1eZl068ESAgPJXD6oMzDd+cA3SQSAZA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HBgdH2iXPyToyKwTozq5E2MsJnTZcb/fKxbZ9ArOExWXWeK5ZXOH/YKAuWtQ+NEz7b5Gc4nf4sZAY/GXcvvxAWPmg21++lxHMtG3wTYgeSinz5Ri/SoFt6fuQXyBbLcN3GbRE+7kCQI/E4GSPbChacujMUTYKQVs/e7nmqwsbCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O24YBxP6; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707498305;
+	s=mimecast20190719; t=1707498446;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xwZzEC5N9Tk3OxSnesPK34/6ccpOLSW0y1TDD6td8Xw=;
-	b=MolCB3u5n3esnUxXIp5joKwlBCnoCGPa00qFc+0Hcx7CKRORULMQzH+y4xZWXAx+CJsH0K
-	A52KNONQ+m//szDwxbEa5TzjD1/xdtK6B47JaJGyaQSsSi/dZ+kB5MAXHcahlQPQPooFIj
-	FcAeUCu/XE5WpU5KPga8Yw8OifMNC5I=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-674-26uNdTjhPyK-d7WEkV5CyQ-1; Fri, 09 Feb 2024 12:05:03 -0500
-X-MC-Unique: 26uNdTjhPyK-d7WEkV5CyQ-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a383b9555d3so53781066b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 09:05:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707498302; x=1708103102;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xwZzEC5N9Tk3OxSnesPK34/6ccpOLSW0y1TDD6td8Xw=;
-        b=ShlSJVM6K8KjZtyCjrqyArpP7Fm2U01Dta/8X7uMOyNnnKnr2qvFByNeEXcEgDmKev
-         b6Sh6vRJtD3cr4Y5PTioFuSC4vMP+Upy/Yszvm3KiuYXL8iBbPQmFuzNsiyTpIi/HxTu
-         LqEJ7Zcn2gBkJbLe/SFxOP8Q2Y1OVfFsHm3MB2SFUmGdYACckDMaBArzAaIX/yX9EZ4B
-         ke13PBRMe7y4bUzNilcX+ib7kLWrChmO5rK3k/l27SEXDwDJfug1L4T87fg9roDxdOJM
-         kJuGyjR8TeCN5UTvKz9Ep86WOddU3k2D6nFIk96+VW3dQoz1LhYPL/VX+Wzq7uRQRE4+
-         x4mQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXNjZ6zto26EGg1ZZAoVBQOLSZlm+liLiSh1Hu1eqbRWo3gK7GaLy1hscYYUupO/pVcqufv5MTx/wxluE85zYPaZgrq2sv3gKn6LYWd
-X-Gm-Message-State: AOJu0YyU6EvGd5+6PjxkAF8YjyuOGpNPItBhKuxGPh3OGtqFVPfOAklg
-	ZBPN2kX4bsZdkLyuHsAYpMOMZjKB9V+V/FHCkYHFw9ZPrJdM9m07eSE2A8GjobxghJnEqXlDh1G
-	nyC3CC9ACl1hgqsTsHwfgdb6egOTBMLbNGYhGA99MO4wq3qn+vcInlSmq+SskSQ==
-X-Received: by 2002:a17:906:3b44:b0:a38:7d12:60dc with SMTP id h4-20020a1709063b4400b00a387d1260dcmr1702930ejf.57.1707498302249;
-        Fri, 09 Feb 2024 09:05:02 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHZ6rIYmVrGR5l4WhAPhCgw3RoLKnYaDvF16VXRcjzzYpHk7cis3fYExxbimqXtPAUIZR9Fsg==
-X-Received: by 2002:a17:906:3b44:b0:a38:7d12:60dc with SMTP id h4-20020a1709063b4400b00a387d1260dcmr1702892ejf.57.1707498301861;
-        Fri, 09 Feb 2024 09:05:01 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUOtGsAvv6QdC70PwwyWekW7wdIJz0/cucB80WRTV4+ZgCv+AHZZmjEVwpXyjm9muc1IGcLJofTiSKgLMhO+71pOKkmCHsmgprSc6gN44WovL+T+IE3bc31WnJs6BAjOkBj4fQEAqfoT5ow/rXzVpCO/hSbbIE9Dt4jY1ZtqDzVyLDh0yytbtbpjtq/2OTIBFeqi5ROaH5lUSSx6/9LLUYqZe+E2PsXzaiMfcWn3yl7hphwOsEc/KeyIU99E32NsaDh9nBHJX1xYe5bl8KpmdXQKFfqP3z4NxkokPbuLxWfXkaKaFg4rWPmr7ishQsxF+qk+gUk9Rc3CidaDhDZ0HTXQk7el6HF07YCDWrNrjl6KLwJ08E84AeGFf4j2+0hb1Ft7f4NMXox3PxUIoCZmWlwurPz52zAfk138lNe/A7QbAo4EA3HBNgKtzd9N3YdxKpRH070aztcW8JVA7X0mxtWrbj18Oqdld4FSaPOYRdezUN/WtCnlNzEECMqavl/BdctSzTUWCNVpo6P24VEL6BwNlixXKvrR5Oy2KQk95EwhI/K4R8//D0GdaRHBjI4pPYQxMhfJ8x4GiQAocuisPJTkppbOi7bBkyy76dlXs96ysVgn+e8LeW2+/4Xjrw=
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id fj7-20020a1709069c8700b00a3875804883sm925259ejc.124.2024.02.09.09.05.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 09:05:01 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 23A0810F505E; Fri,  9 Feb 2024 18:05:01 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jiri Kosina
- <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan
- <shuah@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
-In-Reply-To: <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
-References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org>
- <87bk8pve2z.fsf@toke.dk>
- <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Fri, 09 Feb 2024 18:05:01 +0100
-Message-ID: <875xyxva9u.fsf@toke.dk>
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=inghrfI9q8SDCIbQ6QauyZqdtpQq5fNv91h6apsRIK8=;
+	b=O24YBxP6sTbKZJYmiIgT6umes38e4l92+9D2kARqgsKZQ4WhFLiFVvK2i41dlpSlHdKFsl
+	9MnJIXBsnS1vNWcviD4wZ4I9LhoiBwdG1OlkjZvvMokaxLOPjPVU1boECidjR/tLDrV/df
+	JeOxT9wPpNHd31gXrjKsW2R2G1x6dnQ=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-336-R2s17w-7NhGuSLaZ_skc6Q-1; Fri,
+ 09 Feb 2024 12:07:20 -0500
+X-MC-Unique: R2s17w-7NhGuSLaZ_skc6Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 08BFF1C05AEE;
+	Fri,  9 Feb 2024 17:07:19 +0000 (UTC)
+Received: from llong.com (unknown [10.22.17.112])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id B119C2026D06;
+	Fri,  9 Feb 2024 17:07:18 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>
+Cc: linux-kernel@vger.kernel.org,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH v2] workqueue: Fix kernel-doc comment of unplug_oldest_pwq()
+Date: Fri,  9 Feb 2024 12:06:11 -0500
+Message-Id: <20240209170611.1166299-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
+Fix the kernel-doc comment of the unplug_oldest_pwq() function to enable
+proper processing and formatting of the embedded ASCII diagram.
 
-> On Fri, Feb 9, 2024 at 4:42=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen <=
-toke@redhat.com> wrote:
->>
->> Benjamin Tissoires <bentiss@kernel.org> writes:
->>
->> > [Putting this as a RFC because I'm pretty sure I'm not doing the things
->> > correctly at the BPF level.]
->> > [Also using bpf-next as the base tree as there will be conflicting
->> > changes otherwise]
->> >
->> > Ideally I'd like to have something similar to bpf_timers, but not
->> > in soft IRQ context. So I'm emulating this with a sleepable
->> > bpf_tail_call() (see "HID: bpf: allow to defer work in a delayed
->> > workqueue").
->>
->> Why implement a new mechanism? Sounds like what you need is essentially
->> the bpf_timer functionality, just running in a different context, right?
->
-> Heh, that's exactly why I put in a RFC :)
->
-> So yes, the bpf_timer approach is cleaner, but I need it in a
-> workqueue, as a hrtimer in a softIRQ would prevent me to kzalloc and
-> wait for the device.
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ kernel/workqueue.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-Right, makes sense.
-
->> So why not just add a flag to the timer setup that controls the callback
->> context? I've been toying with something similar for restarting XDP TX
->> for my queueing patch series (though I'm not sure if this will actually
->> end up being needed in the end):
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/toke/linux.git/commit/?h=
-=3Dxdp-queueing-08&id=3D54bc201a358d1ac6ebfe900099315bbd0a76e862
->>
->
-> Oh, nice. Good idea. But would it be OK to have a "timer-like" where
-> it actually defers the job in a workqueue instead of using an hrtimer?
-
-That's conceptually still a timer, though, isn't it? I.e., it's a
-mechanism whereby you specify a callback and a delay, and bpf_timer
-ensures that your callback is called after that delay. IMO it's totally
-congruent with that API to be able to specify a different execution
-context as part of the timer setup.
-
-As for how to implement it, I suspect the easiest may be something
-similar to what the patch I linked above does: keep the hrtimer, and
-just have a different (kernel) callback function when the timer fires
-which does an immediate schedule_work() (without the _delayed) and then
-runs the BPF callback in that workqueue. I.e., keep the delay handling
-the way the existing bpf_timer implementation does it, and just add an
-indirection to start the workqueue in the kernel dispatch code.
-
-> I thought I would have to rewrite the entire bpf_timer approach
-> without the softIRQ, but if I can just add a new flag, that will make
-> things way simpler for me.
-
-IMO that would be fine. You may want to wait for the maintainers to
-chime in before going down this route, though :)
-
-> This however raises another issue if I were to use the bpf_timers: now
-> the HID-BPF kfuncs will not be available as they are only available to
-> tracing prog types. And when I tried to call them from a bpf_timer (in
-> softIRQ) they were not available.
-
-IIUC, the bpf_timer callback is just a function (subprog) from the
-verifier PoV, so it is verified as whatever program type is creating the
-timer. So in other words, as long as you setup the timer from inside a
-tracing prog type, you should have access to all the same kfuncs, I
-think?
-
--Toke
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index cd2c6edc5c66..ddcdeb7b9f26 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1787,14 +1787,12 @@ static bool pwq_activate_first_inactive(struct pool_workqueue *pwq, bool fill)
+ }
+ 
+ /**
+- * unplug_oldest_pwq - restart an oldest plugged pool_workqueue
+- * @wq: workqueue_struct to be restarted
++ * unplug_oldest_pwq - unplug the oldest pool_workqueue
++ * @wq: workqueue_struct where its oldest pwq is to be unplugged
+  *
+- * pwq's are linked into wq->pwqs with the oldest first. For ordered
+- * workqueues, only the oldest pwq is unplugged, the others are plugged to
+- * suspend execution until the oldest one is drained. When this happens, the
+- * next oldest one (first plugged pwq in iteration) will be unplugged to
+- * restart work item execution to ensure proper work item ordering.
++ * This function should only be called for ordered workqueues where only the
++ * oldest pwq is unplugged, the others are plugged to suspend execution to
++ * ensure proper work item ordering::
+  *
+  *    dfl_pwq --------------+     [P] - plugged
+  *                          |
+@@ -1804,6 +1802,11 @@ static bool pwq_activate_first_inactive(struct pool_workqueue *pwq, bool fill)
+  *            1    3        5
+  *            |    |        |
+  *            2    4        6
++ *
++ * When the oldest pwq is drained and removed, this function should be called
++ * to unplug the next oldest one to start its work item execution. Note that
++ * pwq's are linked into wq->pwqs with the oldest first, so the first one in
++ * the list is the oldest.
+  */
+ static void unplug_oldest_pwq(struct workqueue_struct *wq)
+ {
+-- 
+2.39.3
 
 
