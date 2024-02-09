@@ -1,295 +1,223 @@
-Return-Path: <linux-kernel+bounces-59287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2340884F482
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:23:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C34984F476
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46B3A1C25568
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:23:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E62621F21D92
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7534B3F9ED;
-	Fri,  9 Feb 2024 11:19:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E522D602;
+	Fri,  9 Feb 2024 11:19:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vP8IHFo3"
-Received: from mail-lf1-f74.google.com (mail-lf1-f74.google.com [209.85.167.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="fBymMNbP"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FF23C087
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 11:19:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CCD37163;
+	Fri,  9 Feb 2024 11:19:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707477559; cv=none; b=bWGmgmwbY45ftO/OWTuhWcBix0SUiWPhAfRu9zqIeaN+uPjSRfX7fU0+7v2ph25iiynqTABxJ4uqhgkKXapmz70cuL+vxaRebrD8TUt0l9rmt536RlIUKJL4VsK7uPAvTALPByRJHPIpKRqD7DMYZwdvxZ0IuS/yZqvfi2Fuhro=
+	t=1707477543; cv=none; b=QlCd7lp64tDyqp+I87dvhIL9pzyXGG+XkpwNF3iiS5+mQZdWK5CG+1d4ycrjP9HvNlBJDZvOQfDjhOnIALZTGUgKBMKWBCEX7mSTUaHhjxrkPkHmt0RFcE3Y3XDG2jZ6g0q/KbXAvdz28arLgMUq1cBkUQYWOmI5KJFKKXBBy5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707477559; c=relaxed/simple;
-	bh=1xxnjqk+SAwAyAAQTy8XinjcAaTXBrnKqLlMXwl2Prs=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Mr+3trN6Pm1qofxFs+m2D+6E9DlalB3NXO5zQ/QKLh5BoS/OWB+arTQJKZXBEsV2FByED31ra5zKvIUF81E7FUNuL1We/2h2baXxDQ8WZqIjUKljW6zGG0gywORwzKAfuzG8tPwPWI05TaegmKGxjnsJlZMl5Omeqhd8z3zD/3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vP8IHFo3; arc=none smtp.client-ip=209.85.167.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-lf1-f74.google.com with SMTP id 2adb3069b0e04-50e55470b49so936213e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 03:19:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707477555; x=1708082355; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=i/eEjy8EjBs/e5Jj34VUfUT2QjrL+J3wcm7XuKGrkuc=;
-        b=vP8IHFo3fQea4cDR67Le8r9eqGLeLALz9ujrZDTivKBkx/22xGFdCPYBSZfv1NZA9b
-         zUSeyTavWND1VX1W2mh1xCxVBWibp5No908fbEzQ4Lekg4lvcjl9jhwIIbEMHV1ey6CN
-         LnnUxqLb1Aj2puBe0OYWxyUMpEIFtP7KK1Z6CP5cdz+pV6d9CRG2LKf/0s5hJRCdErnp
-         8lTtBOAcvaxvtY1KaWEgHQq0Sjc6bK8+fl2lNR+mL6XcHoaN8E7r+wJPKcicfVAjgLim
-         d8H7K0StyLoUfBkqRDB1+heL6CYuXlq++c8KtkTzNxAC/N4sspELuN4TpiYdsZIXd6E2
-         fZpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707477555; x=1708082355;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i/eEjy8EjBs/e5Jj34VUfUT2QjrL+J3wcm7XuKGrkuc=;
-        b=YPZOiOBavfSigcd3ikoh77K8EXFZbZMW2FyyqbqlYaRwOagZCIa9zqlgZx3uTuUlT+
-         KaB27vqwTKE69cDGDC1wOfIVEzYDsZz/cmsV7p+aoUyu99SDDvyjXMD7xwJuKNuoZ1Dw
-         2GiR0Rfa0uuseWYM//aOkXOWKdRaeQehym98R3e1hgMl6rBtBHFc9yL1dUdYA169J9w5
-         kXAJcgzvCKDindyyLfS5t0RsEaKyVOK+vfuFeHz4O15wOjiNZ07MQidxfqKrnX9wy0GW
-         Oz2eUr75VBVE0efszGjYCNzrjEsKLr5VCg9hjd2tbbgTCkqg1EEIekSFyoyoDUAsdqFW
-         HJWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWla/IHxa+z178My99s+hdfdIVC6J3CmD2YZFQoS8TBLBWj4KxInFyoPMz+qAJ8WKn89FiNI+YBMX3qCZPxxv1epmSFe1SXMJLjvoAT
-X-Gm-Message-State: AOJu0YxFnbrgHqTKcHYYMKFMBiwMagN6SYcQMJouI+t9/5P1XCWJ8la4
-	rodslD476x1smPLUPxQZFH8avP3mYEzvp5uWag6gYJLqqv4Zl5b0Ank8CQsFtYwsqADlLaDYKxw
-	j+bcgHQFuny/TGg==
-X-Google-Smtp-Source: AGHT+IGHe/7C6DC2nnibhEVSAtdSRtwXd3JHmLm1o6reeDCXpvPBw0DwRiDCoAKjn8WNP71vdK39mxG+PyciC1A=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:ac2:58e9:0:b0:511:6aed:81b0 with SMTP id
- v9-20020ac258e9000000b005116aed81b0mr1053lfo.1.1707477554973; Fri, 09 Feb
- 2024 03:19:14 -0800 (PST)
-Date: Fri, 09 Feb 2024 11:18:22 +0000
-In-Reply-To: <20240209-alice-file-v5-0-a37886783025@google.com>
+	s=arc-20240116; t=1707477543; c=relaxed/simple;
+	bh=2QCTzPWA/DkT9N/CK7WxD3DS5kay/KOm54BbjT+1Owg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uPd2xVbY3Ys7U5cenYPS88vuCOdXxCWe4Hea+be21oJvT61s+WMlMQ4vZMcopr/AaL2M+4+My+v8AMbXFEQmCt6k8ejg5AG1+9MNVaO00b0MdE/TnOcffK1iTXpjJ0VQjq3pk8kjJQdfDoIvXzfvieKGMO74xPSjGAB5nMs2zEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=fBymMNbP; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4198U6AO001304;
+	Fri, 9 Feb 2024 05:18:53 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=B
+	y/TgVzKI6B9xuMXwgwHXxQ8DBbq/f8zckfTpi+B+/M=; b=fBymMNbPRHed0uZv2
+	iT1vbBFsdfi64rJHFJ/kPt3VV8pqVEWzHFGFThwWgtteVLX5JrUcXIfwW30XO0g0
+	wkN7ilG2sV7mt8BXK7qTKr552qVTF8irV66KZ+rDBVa0al9h41GCEAzDWFMaHeJ/
+	3NfXiJ3c+S07CigfD7RC/c+SRH86uVwCLAZNunpgKvpvG+DIRCwK4aBLe8qlyBW9
+	OP6Pd0Q24FX7WKU453KySynVljxoKcHBJvsVr3iZglG9Wglva2OghjHFVu2yX8IO
+	CB5m4zwISPRWy/PeamnEep9+dBhHF3haF02eXrZ2G4x5OjpYjrQvBHFEcjnkcUyd
+	HcdRg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3w46p7b0he-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 05:18:53 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 9 Feb
+ 2024 11:18:40 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Fri, 9 Feb 2024 11:18:40 +0000
+Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 72610820243;
+	Fri,  9 Feb 2024 11:18:40 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>
+CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Richard
+ Fitzgerald" <rf@opensource.cirrus.com>
+Subject: [PATCH] ASoC: cs35l56: Workaround for ACPI with broken spk-id-gpios property
+Date: Fri, 9 Feb 2024 11:18:40 +0000
+Message-ID: <20240209111840.1543630-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240209-alice-file-v5-0-a37886783025@google.com>
-X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7156; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=1xxnjqk+SAwAyAAQTy8XinjcAaTXBrnKqLlMXwl2Prs=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlxgoVLbAi+A07gA4PEN5j4TTZreWWkynfVzDED
- d+aosnS5liJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZcYKFQAKCRAEWL7uWMY5
- Rlt1EACSq7MgWC8Sbje5LSLlyb7hz89g6mUiwRJSmz5SRDBQYWSN8Tcr9Mf3f16t2orPZ9zXYk/
- ORVplPxsXG5fsDrzGXyze3TFzvYpgEbVnGIA8LSv1YU6vYZ5PVp7JsNLi4tgzgeMi2oP4yUcikn
- 3xl7gbwD0P55oMysz0e01XanDYmbQYqcsDEskMdNkOeecytfOm9pvtfy9fU6yHfvcC/ncrJuzxM
- H58q3ymrF5dgJ1s8kPdk4gmsgIiPiLDBa322oab9d0vaxOu1MMxH/aA0pcGv4z9FgBhGYyTqUnT
- UayLsGa0B9ewQxGECeBmNnJ0CrRfkrG8DLSJbwlSLOd6yaepCz1frLpWtgcDngnzjQUe8KAv0lZ
- m7lOnjHtUM5EQTjDUT0IhDytoQMQvYpIfmryunDDs0Vdem2WC3WQ/cEYP6tv3VcvNGLzHlClLsf
- 1mR4QYwWuVDVqr2V4bPZV13oaq5gn4rToNontwgVv0tCUfOUdTnQpcTXVvBX0+/MMoRu8r7Z6s1
- SwKALcMr3yk+jbTY5mynOhRqPpiT/RapVX7vZfF2xoUYwnxY8RGTAwdbAyio5sTpcGPRq2fvqLP
- DvDwq9+JR3C0P4+2JoDI9PPDE2BZy2jXcCMV6+u7rnPIVwZx/TZEbHAHVUGssn/7L0CRWCuvI5P pO9K71qEwt8invQ==
-X-Mailer: b4 0.13-dev-26615
-Message-ID: <20240209-alice-file-v5-9-a37886783025@google.com>
-Subject: [PATCH v5 9/9] rust: file: add abstraction for `poll_table`
-From: Alice Ryhl <aliceryhl@google.com>
-To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	"=?utf-8?q?Bj=C3=B6rn_Roy_Baron?=" <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"=?utf-8?q?Arve_Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>
-Cc: Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, 
-	Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, 
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, Alice Ryhl <aliceryhl@google.com>, 
-	Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 8t-zjLHLUIdE2Aoj5UtkS0trOnV8Bbcd
+X-Proofpoint-GUID: 8t-zjLHLUIdE2Aoj5UtkS0trOnV8Bbcd
+X-Proofpoint-Spam-Reason: safe
 
-The existing `CondVar` abstraction is a wrapper around
-`wait_queue_head`, but it does not support all use-cases of the C
-`wait_queue_head` type. To be specific, a `CondVar` cannot be registered
-with a `struct poll_table`. This limitation has the advantage that you
-do not need to call `synchronize_rcu` when destroying a `CondVar`.
+The ACPI in some SoundWire laptops has a spk-id-gpios property but
+it points to the wrong Device node. This patch adds a workaround to
+try to get the GPIO directly from the correct Device node.
 
-However, we need the ability to register a `poll_table` with a
-`wait_queue_head` in Rust Binder. To enable this, introduce a type
-called `PollCondVar`, which is like `CondVar` except that you can
-register a `poll_table`. We also introduce `PollTable`, which is a safe
-wrapper around `poll_table` that is intended to be used with
-`PollCondVar`.
+If the attempt to get the GPIOs from the property fails, the workaround
+looks for the SDCA node "AF01", which is where the GpioIo resource is
+defined. If this exists, a spk-id-gpios mapping is added to that node
+and then the GPIO is got from that node using the property.
 
-The destructor of `PollCondVar` unconditionally calls `synchronize_rcu`
-to ensure that the removal of epoll waiters has fully completed before
-the `wait_queue_head` is destroyed.
-
-That said, `synchronize_rcu` is rather expensive and is not needed in
-all cases: If we have never registered a `poll_table` with the
-`wait_queue_head`, then we don't need to call `synchronize_rcu`. (And
-this is a common case in Binder - not all processes use Binder with
-epoll.) The current implementation does not account for this, but if we
-find that it is necessary to improve this, a future patch could store a
-boolean next to the `wait_queue_head` to keep track of whether a
-`poll_table` has ever been registered.
-
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- rust/bindings/bindings_helper.h |   1 +
- rust/kernel/sync.rs             |   1 +
- rust/kernel/sync/poll.rs        | 117 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 119 insertions(+)
+ sound/soc/codecs/cs35l56.c | 93 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 93 insertions(+)
 
-diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index f4d9d04333c0..c651d38e5dd6 100644
---- a/rust/bindings/bindings_helper.h
-+++ b/rust/bindings/bindings_helper.h
-@@ -17,6 +17,7 @@
- #include <linux/mdio.h>
- #include <linux/phy.h>
- #include <linux/pid_namespace.h>
-+#include <linux/poll.h>
- #include <linux/security.h>
- #include <linux/slab.h>
- #include <linux/refcount.h>
-diff --git a/rust/kernel/sync.rs b/rust/kernel/sync.rs
-index c1fb10fc64f4..84b69e337a55 100644
---- a/rust/kernel/sync.rs
-+++ b/rust/kernel/sync.rs
-@@ -11,6 +11,7 @@
- mod condvar;
- pub mod lock;
- mod locked_by;
-+pub mod poll;
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index 98d3957c66e7..2c1313e34cce 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -5,6 +5,7 @@
+ // Copyright (C) 2023 Cirrus Logic, Inc. and
+ //                    Cirrus Logic International Semiconductor Ltd.
  
- pub use arc::{Arc, ArcBorrow, UniqueArc};
- pub use condvar::{CondVar, CondVarTimeoutResult};
-diff --git a/rust/kernel/sync/poll.rs b/rust/kernel/sync/poll.rs
-new file mode 100644
-index 000000000000..a0e4f3de109a
---- /dev/null
-+++ b/rust/kernel/sync/poll.rs
-@@ -0,0 +1,117 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+//! Utilities for working with `struct poll_table`.
-+
-+use crate::{
-+    bindings,
-+    file::File,
-+    prelude::*,
-+    sync::{CondVar, LockClassKey},
-+    types::Opaque,
++#include <linux/acpi.h>
+ #include <linux/completion.h>
+ #include <linux/debugfs.h>
+ #include <linux/delay.h>
+@@ -15,6 +16,7 @@
+ #include <linux/module.h>
+ #include <linux/pm.h>
+ #include <linux/pm_runtime.h>
++#include <linux/property.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
+@@ -1260,6 +1262,94 @@ static int cs35l56_get_firmware_uid(struct cs35l56_private *cs35l56)
+ 	return 0;
+ }
+ 
++/*
++ * Some SoundWire laptops have a spk-id-gpios property but it points to
++ * the wrong ACPI Device node so can't be used to get the GPIO. Try to
++ * find the SDCA node containing the GpioIo resource and add a GPIO
++ * mapping to it.
++ */
++static const struct acpi_gpio_params cs35l56_af01_first_gpio = { 0, 0, false };
++static const struct acpi_gpio_mapping cs35l56_af01_spkid_gpios_mapping[] = {
++	{ "spk-id-gpios", &cs35l56_af01_first_gpio, 1 },
++	{ }
 +};
-+use core::ops::Deref;
 +
-+/// Creates a [`PollCondVar`] initialiser with the given name and a newly-created lock class.
-+#[macro_export]
-+macro_rules! new_poll_condvar {
-+    ($($name:literal)?) => {
-+        $crate::sync::poll::PollCondVar::new($crate::optional_name!($($name)?), $crate::static_lock_class!())
-+    };
++static void cs35l56_acpi_dev_release_driver_gpios(void *adev)
++{
++	acpi_dev_remove_driver_gpios(adev);
 +}
 +
-+/// Wraps the kernel's `struct poll_table`.
-+///
-+/// # Invariants
-+///
-+/// This struct contains a valid `struct poll_table`.
-+///
-+/// For a `struct poll_table` to be valid, its `_qproc` function must follow the safety
-+/// requirements of `_qproc` functions:
-+///
-+/// * The `_qproc` function is given permission to enqueue a waiter to the provided `poll_table`
-+///   during the call. Once the waiter is removed and an rcu grace period has passed, it must no
-+///   longer access the `wait_queue_head`.
-+#[repr(transparent)]
-+pub struct PollTable(Opaque<bindings::poll_table>);
++static int cs35l56_try_get_broken_sdca_spkid_gpio(struct cs35l56_private *cs35l56)
++{
++	struct fwnode_handle *af01_fwnode;
++	const union acpi_object *obj;
++	struct gpio_desc *desc;
++	int ret;
 +
-+impl PollTable {
-+    /// Creates a reference to a [`PollTable`] from a valid pointer.
-+    ///
-+    /// # Safety
-+    ///
-+    /// The caller must ensure that for the duration of 'a, the pointer will point at a valid poll
-+    /// table (as defined in the type invariants).
-+    ///
-+    /// The caller must also ensure that the `poll_table` is only accessed via the returned
-+    /// reference for the duration of 'a.
-+    pub unsafe fn from_ptr<'a>(ptr: *mut bindings::poll_table) -> &'a mut PollTable {
-+        // SAFETY: The safety requirements guarantee the validity of the dereference, while the
-+        // `PollTable` type being transparent makes the cast ok.
-+        unsafe { &mut *ptr.cast() }
-+    }
++	/* Find the SDCA node containing the GpioIo */
++	af01_fwnode = device_get_named_child_node(cs35l56->base.dev, "AF01");
++	if (!af01_fwnode) {
++		dev_dbg(cs35l56->base.dev, "No AF01 node\n");
++		return -ENOENT;
++	}
 +
-+    fn get_qproc(&self) -> bindings::poll_queue_proc {
-+        let ptr = self.0.get();
-+        // SAFETY: The `ptr` is valid because it originates from a reference, and the `_qproc`
-+        // field is not modified concurrently with this call since we have an immutable reference.
-+        unsafe { (*ptr)._qproc }
-+    }
++	ret = acpi_dev_get_property(ACPI_COMPANION(cs35l56->base.dev),
++				    "spk-id-gpios", ACPI_TYPE_PACKAGE, &obj);
++	if (ret) {
++		dev_dbg(cs35l56->base.dev, "Could not get spk-id-gpios package: %d\n", ret);
++		return -ENOENT;
++	}
 +
-+    /// Register this [`PollTable`] with the provided [`PollCondVar`], so that it can be notified
-+    /// using the condition variable.
-+    pub fn register_wait(&mut self, file: &File, cv: &PollCondVar) {
-+        if let Some(qproc) = self.get_qproc() {
-+            // SAFETY: The pointers to `file` and `self` need to be valid for the duration of this
-+            // call to `qproc`, which they are because they are references.
-+            //
-+            // The `cv.wait_queue_head` pointer must be valid until an rcu grace period after the
-+            // waiter is removed. The `PollCondVar` is pinned, so before `cv.wait_queue_head` can
-+            // be destroyed, the destructor must run. That destructor first removes all waiters,
-+            // and then waits for an rcu grace period. Therefore, `cv.wait_queue_head` is valid for
-+            // long enough.
-+            unsafe { qproc(file.as_ptr() as _, cv.wait_queue_head.get(), self.0.get()) };
-+        }
-+    }
++	/* The broken properties we can handle are a 4-element package (one GPIO) */
++	if (obj->package.count != 4) {
++		dev_warn(cs35l56->base.dev, "Unexpected spk-id element count %d\n",
++			 obj->package.count);
++		return -ENOENT;
++	}
++
++	/* Add a GPIO mapping if it doesn't already have one */
++	if (!fwnode_property_present(af01_fwnode, "spk-id-gpios")) {
++		struct acpi_device *adev = to_acpi_device_node(af01_fwnode);
++
++		/*
++		 * Can't use devm_acpi_dev_add_driver_gpios() because the
++		 * mapping isn't being added to the node pointed to by
++		 * ACPI_COMPANION().
++		 */
++		ret = acpi_dev_add_driver_gpios(adev, cs35l56_af01_spkid_gpios_mapping);
++		if (ret) {
++			return dev_err_probe(cs35l56->base.dev, ret,
++					     "Failed to add gpio mapping to AF01\n");
++		}
++
++		ret = devm_add_action_or_reset(cs35l56->base.dev,
++					       cs35l56_acpi_dev_release_driver_gpios,
++					       adev);
++		if (ret)
++			return ret;
++
++		dev_dbg(cs35l56->base.dev, "Added spk-id-gpios mapping to AF01\n");
++	}
++
++	desc = fwnode_gpiod_get_index(af01_fwnode, "spk-id", 0, GPIOD_IN, NULL);
++	if (IS_ERR(desc)) {
++		ret = PTR_ERR(desc);
++		return dev_err_probe(cs35l56->base.dev, ret, "Get GPIO from AF01 failed\n");
++	}
++
++	ret = gpiod_get_value_cansleep(desc);
++	gpiod_put(desc);
++
++	if (ret < 0) {
++		dev_err_probe(cs35l56->base.dev, ret, "Error reading spk-id GPIO\n");
++		return ret;
++		}
++
++	dev_info(cs35l56->base.dev, "Got spk-id from AF01\n");
++
++	return ret;
 +}
 +
-+/// A wrapper around [`CondVar`] that makes it usable with [`PollTable`].
-+///
-+/// [`CondVar`]: crate::sync::CondVar
-+#[pin_data(PinnedDrop)]
-+pub struct PollCondVar {
-+    #[pin]
-+    inner: CondVar,
-+}
+ int cs35l56_common_probe(struct cs35l56_private *cs35l56)
+ {
+ 	int ret;
+@@ -1304,6 +1394,9 @@ int cs35l56_common_probe(struct cs35l56_private *cs35l56)
+ 	}
+ 
+ 	ret = cs35l56_get_speaker_id(&cs35l56->base);
++	if (ACPI_COMPANION(cs35l56->base.dev) && cs35l56->sdw_peripheral && (ret == -ENOENT))
++		ret = cs35l56_try_get_broken_sdca_spkid_gpio(cs35l56);
 +
-+impl PollCondVar {
-+    /// Constructs a new condvar initialiser.
-+    pub fn new(name: &'static CStr, key: &'static LockClassKey) -> impl PinInit<Self> {
-+        pin_init!(Self {
-+            inner <- CondVar::new(name, key),
-+        })
-+    }
-+}
-+
-+// Make the `CondVar` methods callable on `PollCondVar`.
-+impl Deref for PollCondVar {
-+    type Target = CondVar;
-+
-+    fn deref(&self) -> &CondVar {
-+        &self.inner
-+    }
-+}
-+
-+#[pinned_drop]
-+impl PinnedDrop for PollCondVar {
-+    fn drop(self: Pin<&mut Self>) {
-+        // Clear anything registered using `register_wait`.
-+        //
-+        // SAFETY: The pointer points at a valid `wait_queue_head`.
-+        unsafe { bindings::__wake_up_pollfree(self.inner.wait_queue_head.get()) };
-+
-+        // Wait for epoll items to be properly removed.
-+        //
-+        // SAFETY: Just an FFI call.
-+        unsafe { bindings::synchronize_rcu() };
-+    }
-+}
-
+ 	if ((ret < 0) && (ret != -ENOENT))
+ 		goto err;
+ 
 -- 
-2.43.0.687.g38aa6559b0-goog
+2.30.2
 
 
