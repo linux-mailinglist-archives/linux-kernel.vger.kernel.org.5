@@ -1,156 +1,336 @@
-Return-Path: <linux-kernel+bounces-59742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B37AC84FB21
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:37:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC3A984FB4B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:56:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7149628209C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:37:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA0F51C2519A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 887A37EF00;
-	Fri,  9 Feb 2024 17:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5070E7F482;
+	Fri,  9 Feb 2024 17:55:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FvLE7B9r"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Zo15Dvmb"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BAE87BB02;
-	Fri,  9 Feb 2024 17:37:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FCAB69E16
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:55:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707500264; cv=none; b=fdaEBZEMxmbdVn0J1xLpL7HGZcJ9EAfyw14WyamllSLD31XIyIbELLTOyBjb6+reQ1dXgUGjoS+HBNSJm0tImt6IAI5/x9+BEN1fyL8CcEl1t6QSIWTUTYVORkc21U9vfik3ZHx8hTJId++9xwr6o/C/I+76+VZgzSmkeIfsDq8=
+	t=1707501352; cv=none; b=uHBQ34pu9Ca8fRPqYqI/Jr41ORMWxUx3sdIJf4M2rrLBlKcxTlUgtkNl64UDbg/DBZ+RemlZyE+/i7sPGcbpsVh4G+v3Y2bFIsxAPeSMKeSOcBpeqGhF/HUP8x4prK6vQWx8o5Uny/NJKHyGWR7zmLGo+aLmwZXmRg9a8Wdpzpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707500264; c=relaxed/simple;
-	bh=BdMU0oTnFjGtXUkF18CMrDZ2Abb+uhhOf90zFBp26sI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nIBN6KllF7tSDL+vMY9cD+tnoRFzeBrX65oM3+CB6gpzQ9Yt/HetiDZL3OI4mAMYqHrDrht15p4nGBNIuuo/6NsceTKV5iz1+GbXDg+PBdnqEJ4ePvdGUscrr+rWCP2bTcYonVL8XyJ6GbcFzpKO8/Bg1/OY52zNTLwneIz9A6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FvLE7B9r; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707500263; x=1739036263;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=BdMU0oTnFjGtXUkF18CMrDZ2Abb+uhhOf90zFBp26sI=;
-  b=FvLE7B9r64Cf5HwFrVqxSUlkc8EgCPio+r1ihw6WDqJ6Ctpz7LEXvcO0
-   GS6tpViQR7ZPFAeFXxmGRwHiwtbQt/4Z1Ug7IAK1Vl5Fpt7FsB7y0gNlx
-   s7d+/e5emBRaJcFkymWr1qq4VSULi547U6V22z+2SuAFd9jnaTcPmj1wc
-   AnarZdv25nhIhwonBZpIlxKICPpvaqC8ksDOI/s7ZKIe11hOAaIRNkwHi
-   lYqilQtEeCxF62mnx7yfl3R/66Va4Vq15c/N+NIJO7QZNpoJUIPtdUT5U
-   1xgceavC1CpbkXU015a2zQK/dD+QpIjXzOU9elegemGwoMfgplVzpTkC2
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="436609814"
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="436609814"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 09:37:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="6744517"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.24.100.114])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 09:37:41 -0800
-Date: Fri, 9 Feb 2024 09:43:07 -0800
-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, Thomas Gleixner
- <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
- kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>, Joerg Roedel
- <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov
- <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, Paul Luse
- <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>, Raj Ashok
- <ashok.raj@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
- maz@kernel.org, seanjc@google.com, Robin Murphy <robin.murphy@arm.com>,
- jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH 00/15] Coalesced Interrupt Delivery with posted MSI
-Message-ID: <20240209094307.4e7eacd0@jacob-builder>
-In-Reply-To: <051cf099-9ecf-4f5a-a3ac-ee2d63a62fa6@kernel.dk>
-References: <20240126234237.547278-1-jacob.jun.pan@linux.intel.com>
-	<051cf099-9ecf-4f5a-a3ac-ee2d63a62fa6@kernel.dk>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707501352; c=relaxed/simple;
+	bh=RBWJR1Eh8vuN0h9bGi/ckIjItfaKvIijP5GV8KpjA6g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LlyZ5YEtCJiXKZ0BPDby16n8iXC2FJKuDvaB6PfRkgBa9oYOF8SYs5eTL0hHV6Fx7DAg+xMsvmakTd/SPM8/ar85byURSZQijMPkhOOSWQyqD3rFYc8ZejtmRe5d81BWssSy+L/r9Lzq6eKDqAD/myxjdjEVlt7rFW65G+vVc/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Zo15Dvmb; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707500883;
+	bh=RBWJR1Eh8vuN0h9bGi/ckIjItfaKvIijP5GV8KpjA6g=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Zo15DvmbhKiWZ3g8bViki4F8JhXeNxInsld4DiG5mZ0IqCItf+wHi/EIXVzsUat8N
+	 UwinPaIi/47rIjEz206GtBO2+FIV0+yztwGFp+NI251s+yIXXOTJH8WcaxRLRD2NLb
+	 5GqXvOHgN5yE9JzyU5Qhs7qrsEMK1Pzwf9KShPl/yKlA3RV1UHN7UGh2vbKwDkCUWJ
+	 3PHBtbTpY4hTt5BMUOLV3zome9GKFPsMeJvg1HmAHlug32EsGCbPpQf42OLJ6vudSC
+	 FUz54tiv6WZwAph5yi7v7Qzsw/akbPxnSDpr1WwL9lvuenH6d0lY+1Uex/l9Z2iO1t
+	 1UazI/8BYvrOA==
+Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: koike)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 50EEA37813B6;
+	Fri,  9 Feb 2024 17:47:59 +0000 (UTC)
+Message-ID: <ae4e612a-47d2-4190-8547-2c8dc13b2cd6@collabora.com>
+Date: Fri, 9 Feb 2024 14:47:56 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] drm/ci: add tests on vkms
+To: Vignesh Raman <vignesh.raman@collabora.com>,
+ dri-devel@lists.freedesktop.org
+Cc: hamohammed.sa@gmail.com, daniels@collabora.com,
+ rodrigosiqueiramelo@gmail.com, david.heidelberg@collabora.com,
+ guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+ linux-kernel@vger.kernel.org, melissa.srw@gmail.com, mairacanal@riseup.net,
+ daniel@ffwll.ch
+References: <20240201065346.801038-1-vignesh.raman@collabora.com>
+Content-Language: en-US
+From: Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <20240201065346.801038-1-vignesh.raman@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi Jens,
 
-On Thu, 8 Feb 2024 08:34:55 -0700, Jens Axboe <axboe@kernel.dk> wrote:
 
-> Hi Jacob,
+On 01/02/2024 03:53, Vignesh Raman wrote:
+> Add job that runs igt on top of vkms.
 > 
-> I gave this a quick spin, using 4 gen2 optane drives. Basic test, just
-> IOPS bound on the drive, and using 1 thread per drive for IO. Random
-> reads, using io_uring.
+> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+> Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+> Tested-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+> Acked-by: Maxime Ripard <mripard@kernel.org>
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> ---
 > 
-> For reference, using polled IO:
+> v2:
+> - do not mv modules to /lib/modules in the job definition, leave it to
+>    crosvm-runner.sh
 > 
-> IOPS=20.36M, BW=9.94GiB/s, IOS/call=31/31
-> IOPS=20.36M, BW=9.94GiB/s, IOS/call=31/31
-> IOPS=20.37M, BW=9.95GiB/s, IOS/call=31/31
+> v3:
+> - Enable CONFIG_DRM_VKMS in x86_64.config and update xfails
 > 
-> which is abount 5.1M/drive, which is what they can deliver.
+> v3:
+> - Build vkms as module and test with latest IGT.
+>    This patch depends on https://lore.kernel.org/dri-devel/20240130150340.687871-1-vignesh.raman@collabora.com/
 > 
-> Before your patches, I see:
-> 
-> IOPS=14.37M, BW=7.02GiB/s, IOS/call=32/32
-> IOPS=14.38M, BW=7.02GiB/s, IOS/call=32/31
-> IOPS=14.38M, BW=7.02GiB/s, IOS/call=32/31
-> IOPS=14.37M, BW=7.02GiB/s, IOS/call=32/32
-> 
-> at 2.82M ints/sec. With the patches, I see:
-> 
-> IOPS=14.73M, BW=7.19GiB/s, IOS/call=32/31
-> IOPS=14.90M, BW=7.27GiB/s, IOS/call=32/31
-> IOPS=14.90M, BW=7.27GiB/s, IOS/call=31/32
-> 
-> at 2.34M ints/sec. So a nice reduction in interrupt rate, though not
-> quite at the extent I expected. Booted with 'posted_msi' and I do see
-> posted interrupts increasing in the PMN in /proc/interrupts, 
-> 
-The ints/sec reduction is not as high as I expected either, especially
-at this high rate. Which means not enough coalescing going on to get the
-performance benefits.
 
-The opportunity of IRQ coalescing is also dependent on how long the
-driver's hardirq handler executes. In the posted MSI demux loop, it does
-not wait for more MSIs to come before existing the pending IRQ polling
-loop. So if the hardirq handler finishes very quickly, it may not coalesce
-as much. Perhaps, we need to find more "useful" work to do to maximize the
-window for coalescing.
+Do you have a link of a pipeline with this job passing?
 
-I am not familiar with optane driver, need to look into how its hardirq
-handler work. I have only tested NVMe gen5 in terms of storage IO, i saw
-30-50% ints/sec reduction at even lower IRQ rate (200k/sec).
+Thanks
+Helen
 
-> Probably want to fold this one in:
->  
-> diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
-> index 8e09d40ea928..a289282f1cf9 100644
-> --- a/arch/x86/kernel/irq.c
-> +++ b/arch/x86/kernel/irq.c
-> @@ -393,7 +393,7 @@ void intel_posted_msi_init(void)
->   * instead of:
->   *		read, xchg, read, xchg, read, xchg, read, xchg
->   */
-> -static __always_inline inline bool handle_pending_pir(u64 *pir, struct
-> pt_regs *regs) +static __always_inline bool handle_pending_pir(u64 *pir,
-> struct pt_regs *regs) {
->  	int i, vec = FIRST_EXTERNAL_VECTOR;
->  	unsigned long pir_copy[4];
+> ---
+>   MAINTAINERS                                   |  1 +
+>   drivers/gpu/drm/ci/build.sh                   |  1 -
+>   drivers/gpu/drm/ci/gitlab-ci.yml              |  2 +-
+>   drivers/gpu/drm/ci/igt_runner.sh              |  6 ++--
+>   drivers/gpu/drm/ci/image-tags.yml             |  2 +-
+>   drivers/gpu/drm/ci/test.yml                   | 24 +++++++++++++-
+>   drivers/gpu/drm/ci/x86_64.config              |  1 +
+>   .../drm/ci/xfails/virtio_gpu-none-fails.txt   |  1 -
+>   drivers/gpu/drm/ci/xfails/vkms-none-fails.txt | 32 +++++++++++++++++++
+>   .../gpu/drm/ci/xfails/vkms-none-flakes.txt    | 19 +++++++++++
+>   drivers/gpu/drm/ci/xfails/vkms-none-skips.txt | 16 ++++++++++
+>   11 files changed, 97 insertions(+), 8 deletions(-)
+>   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+>   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+>   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
 > 
-Good catch! will do.
-
-Thanks,
-
-Jacob
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index bcdc17d1aa26..09310a6f4b5f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6923,6 +6923,7 @@ L:	dri-devel@lists.freedesktop.org
+>   S:	Maintained
+>   T:	git git://anongit.freedesktop.org/drm/drm-misc
+>   F:	Documentation/gpu/vkms.rst
+> +F:	drivers/gpu/drm/ci/xfails/vkms*
+>   F:	drivers/gpu/drm/vkms/
+>   
+>   DRM DRIVER FOR VIRTUALBOX VIRTUAL GPU
+> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
+> index 331a61e0d25a..2e089e03f061 100644
+> --- a/drivers/gpu/drm/ci/build.sh
+> +++ b/drivers/gpu/drm/ci/build.sh
+> @@ -152,7 +152,6 @@ fi
+>   
+>   mkdir -p artifacts/install/lib
+>   mv install/* artifacts/install/.
+> -rm -rf artifacts/install/modules
+>   ln -s common artifacts/install/ci-common
+>   cp .config artifacts/${CI_JOB_NAME}_config
+>   
+> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
+> index e2b021616a8e..c69fb6af4cf8 100644
+> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
+> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+> @@ -107,7 +107,7 @@ stages:
+>     - meson
+>     - msm
+>     - rockchip
+> -  - virtio-gpu
+> +  - software-driver
+>   
+>   # YAML anchors for rule conditions
+>   # --------------------------------
+> diff --git a/drivers/gpu/drm/ci/igt_runner.sh b/drivers/gpu/drm/ci/igt_runner.sh
+> index 2fd09b9b7cf6..3c7f000805e5 100755
+> --- a/drivers/gpu/drm/ci/igt_runner.sh
+> +++ b/drivers/gpu/drm/ci/igt_runner.sh
+> @@ -20,10 +20,10 @@ cat /sys/kernel/debug/dri/*/state
+>   set -e
+>   
+>   case "$DRIVER_NAME" in
+> -    amdgpu)
+> +    amdgpu|vkms)
+>           # Cannot use HWCI_KERNEL_MODULES as at that point we don't have the module in /lib
+> -        mv /install/modules/lib/modules/* /lib/modules/.
+> -        modprobe amdgpu
+> +        mv /install/modules/lib/modules/* /lib/modules/. || true
+> +        modprobe --first-time $DRIVER_NAME
+>           ;;
+>   esac
+>   
+> diff --git a/drivers/gpu/drm/ci/image-tags.yml b/drivers/gpu/drm/ci/image-tags.yml
+> index cf07c3e09b8c..bf861ab8b9c2 100644
+> --- a/drivers/gpu/drm/ci/image-tags.yml
+> +++ b/drivers/gpu/drm/ci/image-tags.yml
+> @@ -4,7 +4,7 @@ variables:
+>      DEBIAN_BASE_TAG: "${CONTAINER_TAG}"
+>   
+>      DEBIAN_X86_64_BUILD_IMAGE_PATH: "debian/x86_64_build"
+> -   DEBIAN_BUILD_TAG: "2023-10-08-config"
+> +   DEBIAN_BUILD_TAG: "2024-01-29-vkms"
+>   
+>      KERNEL_ROOTFS_TAG: "2023-10-06-amd"
+>      PKG_REPO_REV: "67f2c46b"
+> diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
+> index 8ab8a8f56d6a..58c3cf4b18e0 100644
+> --- a/drivers/gpu/drm/ci/test.yml
+> +++ b/drivers/gpu/drm/ci/test.yml
+> @@ -399,7 +399,7 @@ meson:g12b-display:
+>       DRIVER_NAME: meson
+>   
+>   virtio_gpu:none:
+> -  stage: virtio-gpu
+> +  stage: software-driver
+>     variables:
+>       CROSVM_GALLIUM_DRIVER: llvmpipe
+>       DRIVER_NAME: virtio_gpu
+> @@ -419,3 +419,25 @@ virtio_gpu:none:
+>       - debian/x86_64_test-gl
+>       - testing:x86_64
+>       - igt:x86_64
+> +
+> +vkms:none:
+> +  stage: software-driver
+> +  variables:
+> +    DRIVER_NAME: vkms
+> +    GPU_VERSION: vkms-none
+> +  extends:
+> +    - .test-gl
+> +    - .test-rules
+> +  tags:
+> +    - kvm
+> +  script:
+> +    - ln -sf $CI_PROJECT_DIR/install /install
+> +    - mv install/bzImage /lava-files/bzImage
+> +    - mkdir -p /lib/modules
+> +    - mkdir -p $CI_PROJECT_DIR/results
+> +    - ln -sf $CI_PROJECT_DIR/results /results
+> +    - ./install/crosvm-runner.sh ./install/igt_runner.sh
+> +  needs:
+> +    - debian/x86_64_test-gl
+> +    - testing:x86_64
+> +    - igt:x86_64
+> diff --git a/drivers/gpu/drm/ci/x86_64.config b/drivers/gpu/drm/ci/x86_64.config
+> index 1cbd49a5b23a..8eaba388b141 100644
+> --- a/drivers/gpu/drm/ci/x86_64.config
+> +++ b/drivers/gpu/drm/ci/x86_64.config
+> @@ -24,6 +24,7 @@ CONFIG_DRM=y
+>   CONFIG_DRM_PANEL_SIMPLE=y
+>   CONFIG_PWM_CROS_EC=y
+>   CONFIG_BACKLIGHT_PWM=y
+> +CONFIG_DRM_VKMS=m
+>   
+>   # Strip out some stuff we don't need for graphics testing, to reduce
+>   # the build.
+> diff --git a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+> index 007f21e56d89..f82d437909b5 100644
+> --- a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+> +++ b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+> @@ -41,7 +41,6 @@ kms_flip@flip-vs-absolute-wf_vblank,Fail
+>   kms_flip@flip-vs-absolute-wf_vblank-interruptible,Fail
+>   kms_flip@flip-vs-blocking-wf-vblank,Fail
+>   kms_flip@flip-vs-expired-vblank,Fail
+> -kms_flip@flip-vs-expired-vblank-interruptible,Fail
+>   kms_flip@flip-vs-modeset-vs-hang,Fail
+>   kms_flip@flip-vs-panning-vs-hang,Fail
+>   kms_flip@flip-vs-wf_vblank-interruptible,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+> new file mode 100644
+> index 000000000000..a8b9d79d9a16
+> --- /dev/null
+> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+> @@ -0,0 +1,32 @@
+> +kms_cursor_crc@cursor-rapid-movement-128x128,Fail
+> +kms_cursor_crc@cursor-rapid-movement-128x42,Fail
+> +kms_cursor_crc@cursor-rapid-movement-256x256,Fail
+> +kms_cursor_crc@cursor-rapid-movement-256x85,Fail
+> +kms_cursor_crc@cursor-rapid-movement-32x10,Fail
+> +kms_cursor_crc@cursor-rapid-movement-32x32,Fail
+> +kms_cursor_crc@cursor-rapid-movement-512x170,Fail
+> +kms_cursor_crc@cursor-rapid-movement-512x512,Fail
+> +kms_cursor_crc@cursor-rapid-movement-64x21,Fail
+> +kms_cursor_crc@cursor-rapid-movement-64x64,Fail
+> +kms_cursor_legacy@basic-flip-before-cursor-atomic,Fail
+> +kms_cursor_legacy@basic-flip-before-cursor-legacy,Fail
+> +kms_cursor_legacy@cursor-vs-flip-atomic,Fail
+> +kms_cursor_legacy@cursor-vs-flip-legacy,Fail
+> +kms_cursor_legacy@cursor-vs-flip-toggle,Fail
+> +kms_cursor_legacy@cursor-vs-flip-varying-size,Fail
+> +kms_cursor_legacy@flip-vs-cursor-atomic,Fail
+> +kms_cursor_legacy@flip-vs-cursor-crc-atomic,Fail
+> +kms_cursor_legacy@flip-vs-cursor-crc-legacy,Fail
+> +kms_cursor_legacy@flip-vs-cursor-legacy,Fail
+> +kms_flip@flip-vs-modeset-vs-hang,Fail
+> +kms_flip@flip-vs-panning-vs-hang,Fail
+> +kms_pipe_crc_basic@nonblocking-crc,Fail
+> +kms_pipe_crc_basic@nonblocking-crc-frame-sequence,Fail
+> +kms_pipe_crc_basic@suspend-read-crc,Fail
+> +kms_plane@plane-panning-bottom-right-suspend,Fail
+> +kms_universal_plane@universal-plane-pipe-A-sanity,Fail
+> +kms_vblank@pipe-A-ts-continuation-dpms-suspend,Fail
+> +kms_writeback@writeback-check-output,Fail
+> +kms_writeback@writeback-fb-id,Fail
+> +kms_writeback@writeback-invalid-parameters,Fail
+> +kms_writeback@writeback-pixel-formats,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+> new file mode 100644
+> index 000000000000..18afbfcc1c52
+> --- /dev/null
+> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+> @@ -0,0 +1,19 @@
+> +# Board Name: vkms
+> +# Bug Report: https://lore.kernel.org/dri-devel/005da8f1-8050-bffd-653c-2a87ae6376f7@collabora.com/T/#u
+> +# IGT Version: 1.28-gb0cc8160e
+> +# Linux Version: 6.7.0-rc3
+> +# Failure Rate: 50
+> +
+> +# Reported by deqp-runner
+> +kms_cursor_legacy@cursorA-vs-flipA-legacy
+> +kms_cursor_legacy@cursorA-vs-flipA-varying-size
+> +kms_flip@flip-vs-expired-vblank-interruptible
+> +kms_flip@flip-vs-expired-vblank
+> +kms_flip@plain-flip-fb-recreate
+> +kms_flip@plain-flip-fb-recreate-interruptible
+> +kms_flip@plain-flip-ts-check-interruptible
+> +
+> +# The below test shows inconsistency across multiple runs,
+> +# giving results of Pass and Fail alternately.
+> +kms_cursor_legacy@cursorA-vs-flipA-toggle
+> +kms_pipe_crc_basic@nonblocking-crc
+> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+> new file mode 100644
+> index 000000000000..524e7972c75a
+> --- /dev/null
+> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+> @@ -0,0 +1,16 @@
+> +# Hits:
+> +# rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+> +# rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P749/1:b..l
+> +kms_prop_blob@invalid-get-prop
+> +
+> +# keeps printing vkms_vblank_simulate: vblank timer overrun and never ends
+> +kms_invalid_mode@int-max-clock
+> +
+> +# Suspend seems to be broken
+> +.*suspend.*
+> +
+> +# Hangs machine and timeout occurs
+> +kms_flip@flip-vs-absolute-wf_vblank-interruptible
+> +kms_invalid_mode@zero-hdisplay
+> +kms_invalid_mode@bad-vtotal
+> +kms_cursor_crc.*
 
