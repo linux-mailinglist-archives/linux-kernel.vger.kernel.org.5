@@ -1,138 +1,129 @@
-Return-Path: <linux-kernel+bounces-59893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 522BC84FD02
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 321E684FD03
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:40:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C2932867A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:40:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7D7C287E4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:40:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ECCF84A42;
-	Fri,  9 Feb 2024 19:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8705084A47;
+	Fri,  9 Feb 2024 19:40:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jIx2O0BX"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YpTFkfk9"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB5097F496;
-	Fri,  9 Feb 2024 19:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6275382866
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 19:40:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707507598; cv=none; b=ERXZp+jqKoMJArZrpyX3fwPL5tRTqmg7aA3LP3+ECVewxThGI5XVNSMTXKpPlwDfgpGEzzvhsKCiblx0xeTHmk3paFJpqPYc9EkchHvvQC7KTj0yWgPGoYz/FVbJ8VNG41MSOqZyZga7SNtVrCzUDCav+EmpvZ65URjaRVO//IQ=
+	t=1707507615; cv=none; b=l0386nLFj9YXzBshHKl+rwaTiLmd8FYro3q4nGNvrQYY0a9EY98eDVDVXSKs7fXR5QR3rdGTj7GSQVJL95SmwPiScfP25111GGoferrGMNBSiTVOvGTEHM/VU+2doK2PBMgEgA8smYcwgwVN56WsHofAOWjGpcvsF8laW5RRbdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707507598; c=relaxed/simple;
-	bh=p50ceEzr8fqyzxu4AYepp96pYziEc9mrmHTAdFEP5TY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R8z00J/wvi7qpH9CVdou6oRoVJvEzpSWsq/ztCoxqBpbH/TqDr/9vYQtyTbbLJPH0RpQyLebtIB/IN+wnMQzm4D0U475iyEePCJ5cekvJ9p8pmU4NMb4j8kl3GtwJR1E39jIs4Gg7b6Gz6tr1tjT25VRGpGC3TKq0Z8t7yOgOwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jIx2O0BX; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707507596; x=1739043596;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=p50ceEzr8fqyzxu4AYepp96pYziEc9mrmHTAdFEP5TY=;
-  b=jIx2O0BXNkciG2GxUjN8SgYF2iMv5eaJIAXYe/t25cEIjfu1iCUXeuqB
-   nJPrc00/BYpIG0HhMt4vOvAVTzjCvkgdtQ9wh+iYJ/7bLn5gZjPvrG4F+
-   qqo6d2cAjQEh9h9v/ztJ6G8yCY6tfpj/K2jrmGtaJY4barXuZUdxZgbgF
-   3L/Viw3MxR5MWKAX67NoWEWnJtdNrDUsw4P+UkQfq9XsvwWK6YkL5t7TA
-   3uSvxsuW7aFO3Logj18aJRnLTHX0GrsmT+D1vt0FMw75oCDYpDxDZBxkc
-   FX6Z4EO8udvTo1u+HdVzUgGmTkKAzaYla2hwOqC5igs02My0PJcvmScBy
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="5341077"
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="5341077"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 11:39:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="910802533"
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="910802533"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 11:39:52 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rYWiz-00000003GSs-2G2A;
-	Fri, 09 Feb 2024 21:39:49 +0200
-Date: Fri, 9 Feb 2024 21:39:49 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	linux-usb@vger.kernel.org, jthies@google.com, pmalani@chromium.org,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Rajaram Regupathy <rajaram.regupathy@intel.com>,
-	Saranya Gopal <saranya.gopal@intel.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] usb: typec: ucsi: Limit read size on v1.2
-Message-ID: <ZcZ_he1jYx8w57mK@smile.fi.intel.com>
-References: <20240209060353.6613-1-abhishekpandit@chromium.org>
- <20240208220230.v4.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid>
- <ZcY2kVlUn7SJ5pW8@smile.fi.intel.com>
- <CANFp7mW0F_zyaKJg0LusT6Cp4h0_8Z4jq+R1GUGtpyZrv99iVw@mail.gmail.com>
+	s=arc-20240116; t=1707507615; c=relaxed/simple;
+	bh=6PPQOnkkIeCfd/CHcSpaIXnSwRon/6R8zai/0r9L2sA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=qTJNL7PJre4DxJG956Y4n/mG4FJxeefP7i0Ur8ilf/GDRHODcT6k8L82eNAYa/OM2Bjd8wFw7c2ujJJX6ORtxdsj+KfMFvB65EkkhIbK9HDs3FyicbTZ8PinnC+3fU3+em9eebzOXqvMGkzgob1rJT2+lG3S9M36UETLAYcxce4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YpTFkfk9; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5cf2714e392so1308211a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 11:40:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707507613; x=1708112413; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=17oyzkB4xEUSVt+DktGPEZwkZ62rQj4myNkqahQjvb0=;
+        b=YpTFkfk9LE7LjXC30X+m/dcf4SKqGoSU+mC6LyKn1tjdv+XBKoYvYjgpoKb4vV6p+j
+         CAS6wv2BB5TK61nxl/bL6QeqUIrLgTZiR+fA+v7FOHln4NSm7i57XlbT//4IGFMF2Cs7
+         q+y83+WhAgqeCRN81P/7DUSoZtod1uDmoQgLuH5+/0igKR6cUc8kVXrLWOKlodhRcpPs
+         CESUlWlbqxp0qye6JpI/RfHjx/7Cz1SE3bg2fHvqdH/nZrTMITgOUkJPdTYomMLXrym7
+         IDnGRPR14om7MR0asbiMnJZba9Lv+a3rVvYG9UQDI7IVVRMXEbiqxPPRw7C7G/A840HM
+         LC+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707507613; x=1708112413;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=17oyzkB4xEUSVt+DktGPEZwkZ62rQj4myNkqahQjvb0=;
+        b=sJuY7ZKwJr+C6Q3QH4/fq2YdEgjmntJIVuS/0Cuy48zwOR+Clytee5PhB1NAprz12T
+         uAtyPSa6d+H59goq6niNCCRFVJsk/7GYYECQznL+D8JuyO9d+Cp0JO53LYLyYWXVi0OX
+         6jjMZh04GNyfRM4E6YCRktkUwjqCSx0hE4bMkwelZLsQEHy1hmitJ7VK/fcw1C3IFHvT
+         jRnmYwaWhqstprOLuOBlFnORS+ikcHTzSZ0AL0ivKdiFC5iykAO1jcE+0Z9AgishXB1R
+         7I7W0BsHZqF3XJ1bNO+Lm5ickZuiGTGcMaF20v7frUkSNZyvZYMPqjOPX1DYIAmL82g7
+         q57A==
+X-Gm-Message-State: AOJu0Yzx/xpKLAwdJVOS/uHkDlHdsLDsi5fvAcElFxUpsOdBBu9Qgskt
+	laKEqnQwwgBunVhUa7O+0bWMz5CbjxqyHbChJ7tyi53dQw6GXopjjRgYeSh1lDVo4/hole2GkzS
+	gyg==
+X-Google-Smtp-Source: AGHT+IEYqMT0SNTbGkgjXf0EJatqk8P6yv7iLn+6PgeWuWGZqraP/01ea/W8koFFPXxmnm6TihXTMgnPpMY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a02:305:b0:5dc:19c9:d794 with SMTP id
+ bn5-20020a056a02030500b005dc19c9d794mr1603pgb.0.1707507613300; Fri, 09 Feb
+ 2024 11:40:13 -0800 (PST)
+Date: Fri, 9 Feb 2024 11:40:11 -0800
+In-Reply-To: <20240209183743.22030-1-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANFp7mW0F_zyaKJg0LusT6Cp4h0_8Z4jq+R1GUGtpyZrv99iVw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Mime-Version: 1.0
+References: <20240209183743.22030-1-pbonzini@redhat.com>
+Message-ID: <ZcZ_m5By49jsKNXn@google.com>
+Subject: Re: [PATCH 00/10] KVM: SEV: allow customizing VMSA features
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
+	aik@amd.com, isaku.yamahata@intel.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Fri, Feb 09, 2024 at 10:01:07AM -0800, Abhishek Pandit-Subedi wrote:
-> On Fri, Feb 9, 2024 at 6:28 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Thu, Feb 08, 2024 at 10:02:38PM -0800, Abhishek Pandit-Subedi wrote:
+On Fri, Feb 09, 2024, Paolo Bonzini wrote:
+> The idea that no parameter would ever be necessary when enabling SEV or
+> SEV-ES for a VM was decidedly optimistic.
 
-..
+That implies there was a conscious decision regarding the uAPI.  AFAICT, all of
+the SEV uAPIs are direct reflections of the PSP invocations.  Which is why I'm
+being so draconian about the SNP uAPIs; this time around, we need to actually
+design something.
 
-> > > +     if (ucsi->version <= UCSI_VERSION_1_2)
-> > > +             buf_size = min_t(size_t, 16, buf_size);
-> >
-> > Please, avoid using min_t(). Here the clamp() can be used.
-> I think this is likely the 4th time I've been tripped up by an
-> undocumented practice in this patch series. <linux/minmax.h> says
-> nothing about avoiding min_t -- why prefer clamp()?
+> The first source of variability that was encountered is the desired set of
+> VMSA features, as that affects the measurement of the VM's initial state and
+> cannot be changed arbitrarily by the hypervisor.
+> 
+> This series adds all the APIs that are needed to customize the features,
+> with room for future enhancements:
+> 
+> - a new /dev/kvm device attribute to retrieve the set of supported
+>   features (right now, only debug swap)
+> 
+> - a new sub-operation for KVM_MEM_ENCRYPT_OP that can take a struct,
+>   replacing the existing KVM_SEV_INIT and KVM_SEV_ES_INIT
+> 
+> It then puts the new op to work by including the VMSA features as a field
+> of the The existing KVM_SEV_INIT and KVM_SEV_ES_INIT use the full set of
+> supported VMSA features for backwards compatibility; but I am considering
+> also making them use zero as the feature mask, and will gladly adjust the
+> patches if so requested.
 
-While in this case it will work correctly, the size_t is unsigned type and 16
-is signed, while buf_size is unknown in this context. It means if buf_size is
-signed, the min_t gives wrong result. clamp() is better choice.
+Rather than add a new KVM_MEMORY_ENCRYPT_OP, I think we should go for broke and
+start building the generic set of "protected VM" APIs.  E.g. TDX wants to add
+KVM_TDX_INIT_VM, and I'm guessing ARM needs similar functionality.  And AFAIK,
+every technology follows an INIT => ADD (MEASURE) * N => FINALIZE type sequence.
 
-See also, e.g., https://lore.kernel.org/all/20231004064220.31452-1-biju.das.jz@bp.renesas.com/.
+If need be, I would rather have a massive union, a la kvm_run, to hold the vendor
+specific bits than end up with sub-sub-ioctls and every vendor implementation
+reinventing the wheel.
 
-> Please add the
-> recommendation here
-> (https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/minmax.h#n10)
-> and I am more than happy to change it after.
+If it's sane and feasible for userspace, maybe even KVM_CREATE_VM2?
 
-It's not my recommendation :-)
+> In order to avoid creating *two* new KVM_MEM_ENCRYPT_OPs, I decided that
+> I could as well make SEV and SEV-ES use VM types.  And then, why not make
+> a SEV-ES VM, when created with the new VM type instead of KVM_SEV_ES_INIT,
+> reject KVM_GET_REGS/KVM_SET_REGS and friends on the vCPU file descriptor
+> once the VMSA has been encrypted...  Which is how the API should have
+> always behaved.
 
-https://lore.kernel.org/all/CAHk-=whwEAc22wm8h9FESPB5X+P4bLDgv0erBQMa1buTNQW7tA@mail.gmail.com/
-
-Feel free to submit a patch.
-
-..
-
-> > Shouldn't magic number be defined?
-> The comment right above this line documents the number.
-> As this is the only use right now, I don't see a need to make it a
-> macro/constant yet.
-
-OK.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
++1000
 
