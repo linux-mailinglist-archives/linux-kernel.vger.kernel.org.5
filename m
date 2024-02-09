@@ -1,114 +1,139 @@
-Return-Path: <linux-kernel+bounces-59745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAC5284FB2A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:40:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E92284FB35
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:42:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FFDB1F272C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:40:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30AE728EDA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:42:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5B47EF06;
-	Fri,  9 Feb 2024 17:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1711F80BFA;
+	Fri,  9 Feb 2024 17:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g9caa+Vk"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="A8nl5JmG"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8EFA53398;
-	Fri,  9 Feb 2024 17:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 910727BB15;
+	Fri,  9 Feb 2024 17:42:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707500424; cv=none; b=Co+96Vv8Tg0Vm9C0XMyMIaDKOnkmyDc9E90kWgXFzu1NcAYsd9Qw5P+oSNgk9VV1VT7lM+ZgYHBUVU6jsNq8Pp0okvphIwEu+jwREUiBHEHRNQKLjgUWMEBHE4H5XJEd4knE2AqObCPDctFZL8DprZ+98IciGpjJZC0i+XWIc8s=
+	t=1707500528; cv=none; b=Ei0O8MmIQyothlc06ibHEWPwolvSSvhUhbywISxruj22+Drg1MiagB+Amq5CSVKIJBPGqTnS3SuQWVvudOy4xzYl/ZVd8FbYM6g6MzDiNTJig/xSBPpIb/AtWVNleg4NCdo3SUgeRGrRPwNSbzxbn8wFPQvv21Q5vEojUSOihKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707500424; c=relaxed/simple;
-	bh=ROnGNfaeD0/YKxBAw8frEflS/rFpbSY/kGI+18buZUA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=rMh/8MuuRENQIGf5ccMu3BBtHj1x9/14U7UWfz6Th3AY5Y7/Fp5nMkwdlk/gvektMarOE79+L6oU40JsKWtGod5zqHyULXNI8Pvq1/L7tZ9iJ8xIX/+QpgA+sGqFkx1TReEsaIdvg/AIOLLq1gBAjoIM2VukakMmZTq22On7VSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g9caa+Vk; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40fe03cd1caso11209275e9.0;
-        Fri, 09 Feb 2024 09:40:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707500421; x=1708105221; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=B7o1axzx5/29BUOyumXHlsexf5uphP2TrHuxCCp3IKM=;
-        b=g9caa+VkzUtV/blEzeUhbU2Isp5UIdt0cOrbUVX649ofK/y+qf+qsGcoOHKF/uT+Kf
-         ipr7iuvSmrkHZ0B0mpO2h0Kc1y/UxquSThJRo3SJTrleYNlYpTNeIA/5lRAXxgiBAjbV
-         WH7fGu1WA+SvIYRqI5dRf2lgTKejbsH2TL7Bsb5fktrYBK39WgQev+ZKRTtPZkbJNeIk
-         InXm0ThB7HtBv0XZZfO3GcN4UbXIr/NYDkzLfSKixU7+N2SouQ94pIhz+UUNmu/Esf9Q
-         LbLwQfZSg3Vy4bDKoe3+hNvt3XN+NTbP68XlZj1koiLl/9NChp7B0opWcYCwXEemYXFF
-         RfWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707500421; x=1708105221;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=B7o1axzx5/29BUOyumXHlsexf5uphP2TrHuxCCp3IKM=;
-        b=Z/EOx+WT7CruBsp12ez1eodlexGQQSwoallefaa87OayyWRf1ZYt1Qp+NSxWex9mKB
-         9QLaZ1WJUN1Ft5s++Yg6y0mMSEIRkA4MLOMBW9cBpIhimBMSjhTdF41SyM5TTjyuZXvg
-         dPKLCV7YuLxOMTm4dJPAcQbbS3ayWNdUfTIDFiBOhv2P7rLGkqQJFp+swSvgMfYZYOtw
-         i0XZw+mPYAPUn7YGIaipB1zQCdreIFPM2S5Mc3ISdG52YMCigpKPr9dCUf4S5ORkb26g
-         ji0rflReOiuJhCVKdCDNFDAbAUopH0G26PD9mWzByvgnCLu3hc2ylVGS6cMlueWy/ICN
-         IRvw==
-X-Gm-Message-State: AOJu0YyJ0H7Z56PpzGpuilFb7UguR2jnsJxv+IrDiZoVE3p/Jkj+tjH5
-	ssqO0Y53gXOSoBxkVJWFkwvw9YBBgSE2YXjkr6+Zv7S59DiZUqwa
-X-Google-Smtp-Source: AGHT+IEtokBxjIdNhOmh8A68nah3DLmTE+sLMrL/Kgdxjz5r5d23ErT2ogib9AgEzsuBcTF7twxrIg==
-X-Received: by 2002:a05:600c:3b8a:b0:410:773e:c3d8 with SMTP id n10-20020a05600c3b8a00b00410773ec3d8mr15510wms.8.1707500420990;
-        Fri, 09 Feb 2024 09:40:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUIOqXUw3d1nTfvZcV0yzAkoNyy6hvU6EFjAQHC7E+mtCEA8QlFw80vRI/ONVOrcSeEIHvM9xzcGZjkwDDakAlLwxa2xgDiscZVc118DfVJP82HTimJQ8v1itETxplvM8Z82vn6xRYC30F1iuKBbUyOpFv9kT6fe3pkCt1zS4G/HdoBg0hCjvwyC+dNJ97P3+rlHPbY+0P84ttQ8x3fZQqc5m1b2Q==
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id fs20-20020a05600c3f9400b00410232ffb2csm1249064wmb.25.2024.02.09.09.40.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 09:40:20 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] mtd: rawnand: remove redundant assignment to variable bbtblocks
-Date: Fri,  9 Feb 2024 17:40:19 +0000
-Message-Id: <20240209174019.3933233-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707500528; c=relaxed/simple;
+	bh=5m/3eJmfothhnhgxKnpNtpJvugtTYUTPVjgm3HJHwlc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MJsDDEcKvH4f7Ig+TWjowV/jXA7eC7Hki3Rh4+55fnMrK1AcA6BOfg4iyAnBW4pITTQUkRyBqy6G287SJGvB4s/Xml4iNRngAxrLZJaHgMOoal9k96p8W8atDO+z/nwZQeOBrz3dSJSTDidA3cOHlwgvXRtYc0l5uT2gxMDHbwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=A8nl5JmG; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7AE1940E01A9;
+	Fri,  9 Feb 2024 17:42:04 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id vPlwjzkI-XUz; Fri,  9 Feb 2024 17:42:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707500522; bh=mGQ5M66FN/MWid9y/3BfbjpRXrDFgbqHu66GLoKJcCw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=A8nl5JmGx+0NzvVn8k1oO9VMbOBGpj+aJqmmPBQPk7BfdUfsA9Miy9VEK2oPYoB2j
+	 PUe9qNw7ol4OeV6BvW8BQF9kB31kIb7a/KbZutP14jzTKHp7z0j/cgvMWD8+drbycz
+	 x2lm2ElA2I1kNUzhUG53HTnhZF1/E+zGIZLKRZhYMje227mgkik8ZwWGpqStv7Y9RC
+	 NMsBPT+57ol3i/7Io1ZmB4QdhpUpxsi4M+HkbJ8SONmbHWHyu0aTn8j/makSGDN3kg
+	 3h8bbIZAQNeAgYN6O7nDCr8C0GcBFGo+phVjCjFuu3OaCiqc6RK8XSeYQs/YvpBRnw
+	 m72jFT4oy8WcHqv+9pTlCNJNS1p1entpUFbGmJDw1IcNrJuWMT9rFo8q3YZdX6CEBA
+	 eoQhmE5W+y4clMJIvLZNx6VZFyDECO+DLNrLHnGDdvd68x3GJJSaQmPqsrzUBSBlaU
+	 RCGSp4t9R9yded72vFxjeYWyxnv/1cYY+tR1INMy7k5O6ah+MlzVdg8mNrcsN4cw0s
+	 rqsHVU31kpuEdpiSVHtp3uo21J6PKOEpj+mutxpsdQ7jWkxAVhn3Y3FvQEMIR5Xk7u
+	 QjAD4SMngUVfHI/occoKlDYVbnszhDmaxqP2iKi+OjyzzUWTaiyyQCsf2AX3EifzrL
+	 5NNPjy/7UJz6Z9+CEUZQxRTo=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4B02F40E0192;
+	Fri,  9 Feb 2024 17:41:50 +0000 (UTC)
+Date: Fri, 9 Feb 2024 18:41:45 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc: "Yuan, Perry" <Perry.Yuan@amd.com>,
+	"rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
+	"Limonciello, Mario" <Mario.Limonciello@amd.com>,
+	"viresh.kumar@linaro.org" <viresh.kumar@linaro.org>,
+	"Huang, Ray" <Ray.Huang@amd.com>,
+	"Shenoy, Gautham Ranjal" <gautham.shenoy@amd.com>,
+	"Huang, Shimmer" <Shimmer.Huang@amd.com>,
+	"Du, Xiaojian" <Xiaojian.Du@amd.com>,
+	"Meng, Li (Jassmine)" <Li.Meng@amd.com>,
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 0/6] AMD Pstate Fixes And Enhancements
+Message-ID: <20240209174145.GCZcZj2XKVsWSIefuz@fat_crate.local>
+References: <cover.1707363758.git.perry.yuan@amd.com>
+ <20240208102122.GAZcSrIkbPJfIExdF6@fat_crate.local>
+ <BL1PR12MB514409256AE93E5D13556F90F7442@BL1PR12MB5144.namprd12.prod.outlook.com>
+ <20240209155119.GAZcZJ92bTnwwO8l6Z@fat_crate.local>
+ <BL1PR12MB514496D92AE89A52D767192DF74B2@BL1PR12MB5144.namprd12.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <BL1PR12MB514496D92AE89A52D767192DF74B2@BL1PR12MB5144.namprd12.prod.outlook.com>
 
-The variable bbtblocks is being assigned a value that is never
-read. The assignment is redundant and can be removed.
+On Fri, Feb 09, 2024 at 05:33:35PM +0000, Deucher, Alexander wrote:
+> My reading of the rules is that you should wait before resending or
+> pinging if you have not received feedback. 
 
-Cleans up clang scan build warning:
-drivers/mtd/nand/raw/nand_bbt.c:579:3: warning: Value stored to
-'bbtblocks' is never read [deadcode.DeadStores]
+But the feedback you've received is not the whole feedback. Someone
+might want to review them but not have the time right now. So at the
+time we did agree that a week is kinda ok to let people have a look.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/mtd/nand/raw/nand_bbt.c | 1 -
- 1 file changed, 1 deletion(-)
+And from experience reviewers tend to ignore patchsets which get resent
+rapidly.
 
-diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-index e4664fa6fd9e..a8fba5f39f59 100644
---- a/drivers/mtd/nand/raw/nand_bbt.c
-+++ b/drivers/mtd/nand/raw/nand_bbt.c
-@@ -576,7 +576,6 @@ static int search_bbt(struct nand_chip *this, uint8_t *buf,
- 		startblock &= bbtblocks - 1;
- 	} else {
- 		chips = 1;
--		bbtblocks = mtd->size >> this->bbt_erase_shift;
- 	}
- 
- 	for (i = 0; i < chips; i++) {
+> If you are actively receiving feedback, to me, it makes sense to
+> rapidly iterate.  If a patch is reviewed and comments are addressed,
+> it can land rather than waiting an extra week or two.
+
+There's the other problem - if you keep dealing with only a single
+patchset, all the others who are waiting get starved. I, for example,
+try to have at least some fairness when it comes to looking at people's
+submissions and round-robin between them as much as I can.
+
+> It also adds extra latency.  With my maintainer hat on, I'd like to
+> have new revisions rapidly.  I guess it comes down to personal
+> preference, but I don't do well with task switching.
+
+I know *exactly* what you mean. I usually read my replies to the
+previous submissions in order to swap in everything I was pointing at
+the last time...
+
+Can you review it all? Definitely not. :-\
+
+> When a patch set is fresh in my mind, I'd rather see it finished off
+> and committed sooner rather than lingering and then a week or two
+> later, I'd need to page the whole discussion back into my head to make
+> sure everything was addressed and all the tags were collected.
+
+Yeah, I definitely see your point. But there are also those other
+things I mentioned. I think one could find a good balance between the
+two...
+
+Thx.
+
 -- 
-2.39.2
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
