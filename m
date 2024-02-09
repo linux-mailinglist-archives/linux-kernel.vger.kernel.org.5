@@ -1,161 +1,103 @@
-Return-Path: <linux-kernel+bounces-60068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72B2B84FF75
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:11:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C05F84FF78
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:12:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 007FF1F23308
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:11:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4331F283603
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6FA1B7E9;
-	Fri,  9 Feb 2024 22:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D877225748;
+	Fri,  9 Feb 2024 22:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="t7/5usPD"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Iy5YZcwt"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07AB723B1
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3B618AE4;
+	Fri,  9 Feb 2024 22:12:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707516654; cv=none; b=p/U8hriIVWFqqLe4HH8vtUg4Qg3X1sdwYWpIeBytyvCdDXmO6F6NjXfVQvsgki/qZzlBTSuMOeuCSsBhv1sGCUhl5NDKyMwqNBfX+R78KieJVJWUmRcrSFXpLVsA15uPEysULzXAjb43jjHVK/0+4JSYtUIHSrPqjA7x6DEQmLw=
+	t=1707516732; cv=none; b=suu6MgnvYD9Z3Q0stSP7oFwkNAiVNrwTZC8zcP3mIzjOOijk6y+PIU7o2RtwIGucnBLTuyOo8H5BP1mNjzT6j8f97HKq13sW1UHKbAz1DtQw39yWvKEkoEYEQh3jlOWGmCj8zwxXWbnaP8oA7TAaXIQJ4jbD7pwjjngSfLoP6C8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707516654; c=relaxed/simple;
-	bh=n2ZCswoigTORXv5QKqqqOOgLyFjY4RM6hrHLeJlO/aU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MdV0SqjQ00Bw6Xoe9gn7l0xWV0xEhqcUFhyQQABrTeM5II2YdhRznfXdA1YeS0bVAIplqC+9T/IRgP0T+KVlBQ9NwYoAOhsZJBf4cZ4DEU46mPDaonnMEvwebHH4NjlP30PQQh478HZx+urhPQxP0T0rF1qKkNd+pZ02/oW2R1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=t7/5usPD; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2970f940b7cso525579a91.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:10:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707516652; x=1708121452; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3268oKGsBgJrtUhQbj/DpUrS5yqVV5gSrp5rNb8j/5Y=;
-        b=t7/5usPDkNBzwAodiU06QFo+HRs9U0eFkVkDpG8NVXLL5ejSGPZJCokAwiLNangV1V
-         gI9EnETFnDeIHz0N3JnlvKFm8sHjWX3/YiNo8HyXn7mPNarYdd2NMw1/4jZ5h4n1tE9H
-         Ghray1p4GYC29hxV/k+SjO9JQICNbRg1CLGg+x7T55j2AAgj+pTuRzGNSpYeWLICoGTR
-         vOEV8M/h6fJtAnB2rFYuNwaUNnEoEnNxUNec+hTJ0yVybfR3wXmbH+8W96mexvNb9XnT
-         EW4gC2NG/SMJ5OTDP5Jc/bxkFCHlaObjyoarHqTEIvG4C+MA9wI/PpHVAJ4UuJrn0Yhj
-         cYPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707516652; x=1708121452;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3268oKGsBgJrtUhQbj/DpUrS5yqVV5gSrp5rNb8j/5Y=;
-        b=guCOU1kZqtKke02ojIiw4etHnSBruwjm/R7eQxvQoJQehMwNbI2ai9gyJvpBD1mEuT
-         tul4taBmFM+1Z1o/oGTx7nVrm6ZeYCBChuBmY5ZnNxPEiEL6N6mXLX6FUxswm/uRSGN3
-         p2/p7aboCsaqmWhfu5JtwEM4U3Omn7c5JT2hibX7Ko5AyAWpnTePl8U+n3ssTT4lkEcP
-         K7HYRiD0rK2eYBB1EEODxdO291rJ9redtvL7HKcWU2eCm0LyQY7JJTe8pAF2qwXA9vz7
-         LIqbU3uvKtmNtbB0bwLsfvZUO47J5/W3VIXjA+JFi5nxxhIMlxOWxOrUH1L5bAZ2OCJ+
-         JUTg==
-X-Forwarded-Encrypted: i=1; AJvYcCXsCa8Nkhcqh17QwV5gauNKgnZ22dcnB24WuxicDFRKK46NFMhLxb9xl/EME2Ke6yh1HHdACNSdIybiu272uK254owNUNjnJQdbKpZM
-X-Gm-Message-State: AOJu0Yz61vRm9lFLjeAwB4x3/C1TXLfo920kHB4VIE3cNXxCS7BuBIm6
-	6W2B0bHmFstjsEhESiuez26Sme1EbRj7iL6hA4CxX23XIo1quVEyPj6trmAxeVPLjVpmWXJgs9/
-	YnMxWj/kIgWr6tKaxO7G8TeHs6BolvLT2NU0zvw==
-X-Google-Smtp-Source: AGHT+IG7fHVeQvinopxX4gN8uI6+vc/oAgzWdEDMX8r117G8fvLodu3rqNc3Rj8Ey72Q/XNzfvtAvUxaA19iw7Ea/fM=
-X-Received: by 2002:a17:90a:d498:b0:297:410:4b54 with SMTP id
- s24-20020a17090ad49800b0029704104b54mr316720pju.45.1707516652316; Fri, 09 Feb
- 2024 14:10:52 -0800 (PST)
+	s=arc-20240116; t=1707516732; c=relaxed/simple;
+	bh=6oi2fMAr5Pa/CcrOzzWHwIc25Cj/SWFT1BQ4zQmQJ6k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i8WG24D9QPL+1wMiZdXjX8rKSByKCRLiEudkjDTQGWz5hIfvRGRG0CyBkbwykE5R9TtELhvgmD0WNlk3sRMZMvZaUOKcmR1/ldD+x0aP/SSxaedkCpnZy1hZJzjxnualb4fotK1rms/OUu0CzpvVOVar6svEJ/E4q6OZkr/tF1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Iy5YZcwt; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=Li/m2CO1iH9ZTlT4q9LrLguLOr9rrO94b5DkDf2WAJI=; b=Iy5YZcwtloEbmqNWDFuCkS/ag3
+	xF98DSUvYa6MMxUjuw+qRsat09Hkk+BqMQ7UnKaGDEeqzbrhUui6P9SkgZL2CrojlhmTaRrpzC9GV
+	8LqEpO/pTvbnlW/Yby63W7squg0yKMNgfMi8lpinDgd0algbRTmMvP0/g8CDYj2TwTGQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rYZ69-007Q99-PG; Fri, 09 Feb 2024 23:11:53 +0100
+Date: Fri, 9 Feb 2024 23:11:53 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: David Ventura <david@davidv.dev>, Jonathan Corbet <corbet@lwn.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Xiongwei Song <xiongwei.song@windriver.com>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:NETWORKING [IPv4/IPv6]" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] net: make driver settling time configurable
+Message-ID: <7485f0b2-93fe-4c82-95e8-5b0e10f9fa7a@lunn.ch>
+References: <20240208093722.246930-1-david@davidv.dev>
+ <20240208095358.251381-1-david@davidv.dev>
+ <20240209135944.265953be@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <002f01da5ba0$49cbf810$dd63e830$@telus.net>
-In-Reply-To: <002f01da5ba0$49cbf810$dd63e830$@telus.net>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Fri, 9 Feb 2024 23:10:40 +0100
-Message-ID: <CAKfTPtA-jizig0sh_shmkAMudAxDPYHP0SdanZe=Gc57jVKouQ@mail.gmail.com>
-Subject: Re: sched/cpufreq: Rework schedutil governor performance estimation -
- Regression bisected
-To: Doug Smythies <dsmythies@telus.net>
-Cc: Ingo Molnar <mingo@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240209135944.265953be@kernel.org>
 
-On Fri, 9 Feb 2024 at 22:38, Doug Smythies <dsmythies@telus.net> wrote:
->
-> Hi,
->
-> I noticed a regression in the 6.8rc series kernels. Bisecting the kernel pointed to:
->
-> # first bad commit: [9c0b4bb7f6303c9c4e2e34984c46f5a86478f84d]
-> sched/cpufreq: Rework schedutil governor performance estimation
->
-> There was previous bisection and suggestion of reversion,
-> but I guess it wasn't done in the end. [1]
+On Fri, Feb 09, 2024 at 01:59:44PM -0800, Jakub Kicinski wrote:
+> On Thu,  8 Feb 2024 10:52:29 +0100 David Ventura wrote:
+> > During IP auto configuration, some drivers apparently need to wait a
+> > certain length of time to settle; as this is not true for all drivers,
+> > make this length of time configurable.
+> 
+> Please CC folks who gave you feedback, Andrew's is missing.
+> 
+> Andrew, what do you think about just removing the wait?
+> Or decreasing it to 1ms?
+> It feels a little wasteful to be adding uAPI for something
+> which as you said is likely papering over ancient bugs. We'll 
+> fix the bugs which are still around and the uAPI will stay 
+> forever :(
 
-This has been fixed with
-https://lore.kernel.org/all/170539970061.398.16662091173685476681.tip-bot2@tip-bot2/
+My guess is, the broken drivers are doing setup stuff after they call
+netdev_register().
 
->
-> The regression: reduced maximum CPU frequency is ignored.
+Reducing it to 1ms will probably continue to hide such bugs. So we
+could just go with that, and probably not see any regressions. Or we
+can decide we really do want to know about broken drivers, and just
+remove the delay.
 
-This seems to be something new.
-schedutil doesn't impact the max_freq and it's up to cpufreq driver
-select the final freq which should stay within the limits
+Either way, we don't need a new uAPI.
 
->
-> Conditions:
-> CPU frequency scaling driver: intel_cpufreq (a.k.a intel_pstate in passive mode)
-> CPU frequency scaling governor: schedutil
-> HWP (HardWare Pstate) control (a.k.a. Intel_speedshift): Enabled
-> Processor: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
->
-> I did not check any other conditions, i.e. HWP disabled or the acpi-cpufreq driver.
->
-> Example: A 100% load on CPU 5.
->
-> sudo turbostat --quiet --Summary --show Busy%,Bzy_MHz,IRQ,PkgWatt,PkgTmp,RAMWatt,GFXWatt,CorWatt --interval 15
-> Busy%   Bzy_MHz IRQ     PkgTmp  PkgWatt CorWatt GFXWatt RAMWatt
-> 8.42    4636    21823   67      28.40   27.56   0.00    2.59
-> 8.40    4577    17724   66      27.57   26.73   0.00    2.59
-> 8.35    4637    19535   66      28.65   27.81   0.00    2.60
-> 8.41    4578    20723   66      27.73   26.89   0.00    2.59
-> 8.40    4558    19156   67      27.39   26.55   0.00    2.58
-> 8.34    4502    18127   67      26.79   25.96   0.00    2.57
->
-> grep . /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq
-> /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq:2400000
-> /sys/devices/system/cpu/cpu10/cpufreq/scaling_max_freq:2400000
-> /sys/devices/system/cpu/cpu11/cpufreq/scaling_max_freq:2400000
-> /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq:2400000
-> /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq:2400000
-> /sys/devices/system/cpu/cpu3/cpufreq/scaling_max_freq:2400000
-> /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq:2400000
-> /sys/devices/system/cpu/cpu5/cpufreq/scaling_max_freq:2400000
-> /sys/devices/system/cpu/cpu6/cpufreq/scaling_max_freq:2400000
-> /sys/devices/system/cpu/cpu7/cpufreq/scaling_max_freq:2400000
-> /sys/devices/system/cpu/cpu8/cpufreq/scaling_max_freq:2400000
-> /sys/devices/system/cpu/cpu9/cpufreq/scaling_max_freq:2400000
->
-> grep . /sys/devices/system/cpu/cpu5/cpufreq/*
-> /sys/devices/system/cpu/cpu5/cpufreq/affected_cpus:5
-> /sys/devices/system/cpu/cpu5/cpufreq/base_frequency:4100000
-> /sys/devices/system/cpu/cpu5/cpufreq/cpuinfo_max_freq:4800000
-> /sys/devices/system/cpu/cpu5/cpufreq/cpuinfo_min_freq:800000
-> /sys/devices/system/cpu/cpu5/cpufreq/cpuinfo_transition_latency:20000
-> /sys/devices/system/cpu/cpu5/cpufreq/energy_performance_available_preferences:default performance balance_performance balance_power
-> power
-> /sys/devices/system/cpu/cpu5/cpufreq/energy_performance_preference:balance_performance
-> /sys/devices/system/cpu/cpu5/cpufreq/related_cpus:5
-> /sys/devices/system/cpu/cpu5/cpufreq/scaling_available_governors:conservative ondemand userspace powersave performance schedutil
-> /sys/devices/system/cpu/cpu5/cpufreq/scaling_cur_freq:4799998
-> /sys/devices/system/cpu/cpu5/cpufreq/scaling_driver:intel_cpufreq
-> /sys/devices/system/cpu/cpu5/cpufreq/scaling_governor:schedutil
-> /sys/devices/system/cpu/cpu5/cpufreq/scaling_max_freq:2400000
-> /sys/devices/system/cpu/cpu5/cpufreq/scaling_min_freq:800000
-> /sys/devices/system/cpu/cpu5/cpufreq/scaling_setspeed:<unsupported>
->
-> [1] https://lore.kernel.org/all/CAKfTPtDCQuJjpi6=zjeWPcLeP+ZY5Dw7XDrZ-LpXqEAAUbXLhA@mail.gmail.com/
->
->
+David, is 1ms too long for you? If we do take the delay out, you are
+going to receive some of the flack from regression reports.
+
+      Andrew
+
 
