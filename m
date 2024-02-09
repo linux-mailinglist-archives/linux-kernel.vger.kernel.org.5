@@ -1,200 +1,383 @@
-Return-Path: <linux-kernel+bounces-59923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35ECB84FD5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7E9B84FD62
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:16:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51ED21C21886
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:16:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 952DD1C21B16
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:16:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A147E86ADE;
-	Fri,  9 Feb 2024 20:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE1091272B5;
+	Fri,  9 Feb 2024 20:16:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XsE3qc8w"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z38MwJEg"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2A554F86;
-	Fri,  9 Feb 2024 20:16:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707509777; cv=fail; b=L0wMCErG/+hEI3UFkB0IhM15ty4zjvjh9u7af7h4RXne2nCvOK0msjtm7y/Q5YJOt7uxQowKH/KXSfqIvt5kZfiYvHD1FcrYa6kmckEOvuloXVJETC27+Ql9EG+lsYFvx3zTu2N0ONglyUOPNlohfAoy1clnAwXKWqGLL7hC09M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707509777; c=relaxed/simple;
-	bh=25BkjeQGTzBbD3Q29DP7pqWDglgAMa7hl/TZUcCL7W8=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SEQZA5BU2+KZ0b8EFl7Xkb/VkGMMq7JaBrTXPdDnibbmUX+7oEXMQrq045dnwY9hj9Uys+mZNjdK/FPQCANCEealkgKSYxI5SXY82b2HwnKUvSKfg7s1sIMTC+OdRvJ/k6oDmtHrKqrUs4X5bs171GVrul1imJ6X/IiZyPZfCSg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XsE3qc8w; arc=fail smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707509776; x=1739045776;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=25BkjeQGTzBbD3Q29DP7pqWDglgAMa7hl/TZUcCL7W8=;
-  b=XsE3qc8wPybox0VBDXTgbWxF4kJ1OCAqqGTgNqOr15IMh1d24JdkNAZZ
-   SDwkAbqWVLNncWa+4BPDSjXlaTyFsn6pl2Ce7T/yQyN+kX999U4Ong0Aw
-   kx9ucm5y9G1ukvsJfLQj6oX0cIEMKb6wZp1swsjm8jmhQfg1g68FQSyTA
-   yS4QqKXZst4TMypFDQteEn91+iki/LPlPIhUb4P2GaE14aqZqsbpY76Q4
-   k4T/avIuD6kW6EK0RU97iiZNw/zvTa73Wfv5N18TN2cYyFAtT8Agb8lgy
-   A+F/EwIGF4+lNOD0RNM5HnZmfZqFyzb5tLApX8Tq10/c9rC3BoHapNf6e
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1373913"
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="1373913"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 12:16:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="33108997"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Feb 2024 12:16:15 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 9 Feb 2024 12:16:15 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 9 Feb 2024 12:16:15 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 9 Feb 2024 12:16:15 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZqXt23Bb0WEDcRHMFBpQIMUkP2IgismhSaAPxuF6/pdVRu0ulRSkikn7t1k3I8GLCFJi6jETTvbmidsJtPiLRvHQOhHkvJJXDYDG0dTlFmTX6awe3ihBAuR2Jz4A1P8vJN8u33loyS6mAfPI6Gszc7tlgOgQDnmNKPjMjSV+RI4VFw2MNcU+FuEvURz1V5RxJLgRCHDpP180jChLW1MSCX6h39110luchUitrSkrfu9Qfz43kqFyR2PhkHNyTrCRIAbVCF/Gw7og0NsikLnCEhuj+vDBdcRjRVrOyRzcRkphDmgVYDPwnAqvj2DVsDEDe5KtCKo1HA6mIWh4sZr09Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=d97wNCoR1ifq5j9xDw5+NjasW1+mZ+diT4y6Qr+6fnk=;
- b=W/Q+brtfsg8hgLjnhyGq9MEO+0uB+OCyAUozPgxHPNPaCBUR6vvPNnOachfmmoBDc0GbKs7+WeEK8uu/DajNlxybV4t9grjkpuiYLo19vnLZChkbAr/g25LYYom2nIL3pyXgXvsfkxXR5Zf1ddMwFCaCntWZMxKKAZSHDNeW7EMpyYQ4dlhoV2SCF7xFBKzuwVMfM/KoHeXwoLaGKviVkvL46XZ8RImxl3mHgiJW16qWT211r+EqfyUxEEs8AWJ2+PX67iLn5yQSCokwhvH5FIHtjvKYDG7se6qPqbZuxOAh0jVuVe7jD5IdGOLcNmIAobthbEOabJDRRyEepTwRBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
- by MW3PR11MB4731.namprd11.prod.outlook.com (2603:10b6:303:2f::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.27; Fri, 9 Feb
- 2024 20:16:13 +0000
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::c3aa:f75e:c0ed:e15f]) by BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::c3aa:f75e:c0ed:e15f%3]) with mapi id 15.20.7249.038; Fri, 9 Feb 2024
- 20:16:13 +0000
-Message-ID: <ad674def-f129-4470-b07d-b1ed809da4eb@intel.com>
-Date: Fri, 9 Feb 2024 12:16:11 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
- Records pool
-To: "Naik, Avadhut" <avadnaik@amd.com>, <x86@kernel.org>,
-	<linux-edac@vger.kernel.org>
-CC: <bp@alien8.de>, <tony.luck@intel.com>, <linux-kernel@vger.kernel.org>,
-	<yazen.ghannam@amd.com>, Avadhut Naik <avadhut.naik@amd.com>
-References: <20240207225632.159276-1-avadhut.naik@amd.com>
- <20240207225632.159276-3-avadhut.naik@amd.com>
- <8b4f8ec2-7534-4f77-b44f-6728c699ff64@intel.com>
- <51255499-0b5d-45c6-9c72-f353bae83c0d@amd.com>
-Content-Language: en-US
-From: Sohil Mehta <sohil.mehta@intel.com>
-In-Reply-To: <51255499-0b5d-45c6-9c72-f353bae83c0d@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR11CA0064.namprd11.prod.outlook.com
- (2603:10b6:a03:80::41) To BYAPR11MB3320.namprd11.prod.outlook.com
- (2603:10b6:a03:18::25)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A788612C
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 20:16:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707509800; cv=none; b=CJPs/51dz8LLLrbgcNMBf9E8impzIbYi+wCujtW1xQlobb0Z0Igmxx1V15RC6uyW8HKgnoRC/xzNS5khQT9eEcWqJLimRIlw2S8xSUNoXWo2WRe2++0up2yxxfMb+596g7e9upoBn7WeyW/TrRaE0CMJWgjma3f+Cw9XCmJk9NU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707509800; c=relaxed/simple;
+	bh=kVX4vQ4ByZEK9lh6nk6RWEYTTVXDqlDXFXWRV0Lw+c0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fJRuhvMUyCbbO7KU7jJJgCXOodI60doXLPl+4x3/Udc+xsjzHz5710BXSpdWYtZX7HY5sR5+x9+zyJkdbBiHMoF8GPhU/cNCROvGSigWY/jE/Nieqcky8/C58/6I/ceGCFlmiyD93CiQQ4rWhA4jS29frJdDBSvM1ap2cij2pn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z38MwJEg; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6049e8a54b5so13811317b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 12:16:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707509797; x=1708114597; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NMpzWA/NvlGypXxAfQsKW8uPREZkDEVfe5vKTEeu3qY=;
+        b=Z38MwJEgcdyxWz/PmALdJeJAAZaPV+jrfLr9MEchPVwKGzdhtAPYqleMjBwcl7MIpj
+         F3XbuA3Jt8ZK9B6G2kzEhLDT5J6ji1NWKrfVFEhG2J6b0phODukicK3mqqanw/nfLopU
+         RDzpcN1jCB180SNTXQrSS3rT7BigGROdY2n4LyqObfHFLKp7UPBkI1c4LwVLwm36zZcR
+         pJkE+dZQOSkeLCRMO56GWXMCCp+jH8ZPJllSanxEkgSfVZCTfLwXuNKh2qRg+NHuCHDh
+         HxhNHQBnU6qFGpPiQmmy/8k+mqHxWfpCQDCZLGnynE4vI7oyT0FBWQbxZB337lERq4ep
+         YHPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707509797; x=1708114597;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NMpzWA/NvlGypXxAfQsKW8uPREZkDEVfe5vKTEeu3qY=;
+        b=i0IlnlceLuWVZKVL9GcK14HxUpaGn1eM5pD8ryHyDm9fqWLswd51caR60oHXhxFApv
+         VkxzEZXL9tdrreTP8lGe35J1jhC4osD9Um29impOaYKcTM+5KF+FvC5kd/LrWqulh1bG
+         bqp+7xpKQTcAH95AwtzSn+2VappBOU1c+hgW95ltCoh5ZCDKlFOdfqCWWasPrzi4yt3E
+         s1krauB/YwdcXtFIr/EzTMzdFAOxY23dULG7AMg/gRu5HdgWuSJdCYH/HuyoLzngTK2H
+         1VNS7zo7yvbmwsHlXZX/A8T5a57/53m0BGm0nOw7sc7xfW1T5+9fGqqeX3hpAtljbzo4
+         3+tA==
+X-Gm-Message-State: AOJu0YxjQpFSoFxpE7cP5Y8jHni//xhG6RzF8dTVUNMl1lG5CuAtZH+R
+	bOLBjam3SQ+mTmxNJrJSAhpEXh9IPbavW8ViedlvvFMtexpY+Wiihcgg5Zn7Plz4PDyFIffDgaM
+	bBRjvoDOg9S2HxXWCChyO4HOtoZvbehYt5LAi4g==
+X-Google-Smtp-Source: AGHT+IEKs6QoPthIdR1JNmTIvNwWvSxQEoXZqRSu0xxDwQDoaITRfhzg8TinZ7IIkOZB6XA8OusWVQbCSnmA58n4RFk=
+X-Received: by 2002:a81:8354:0:b0:5ff:42f2:ef75 with SMTP id
+ t81-20020a818354000000b005ff42f2ef75mr364164ywf.16.1707509796998; Fri, 09 Feb
+ 2024 12:16:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3320:EE_|MW3PR11MB4731:EE_
-X-MS-Office365-Filtering-Correlation-Id: e4620b3a-4546-49a3-f9e2-08dc29abf68c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QQuLllPEcjvWHf4X6dwFOiij00TajcLP4bgiMXYi8913opEeIm60Ul6BvJl9yWywMNdRRyDJv2ks4v6E2w9U37bo7vROzONIvxdd2zlj4YhkevEdwGn9nXgcrtcq19qCYj5XXAW4uruammqTtrjQQlUmG49jyTJ95h1grcHRq7G7NF3L7phgw+p9KDttf9Hi1cBOlRkvgJ1fQ4r1bMz0qqAoXYhkDyJXazSTWqM9OwhCK82FUoBhFYEKbSka1AFXdHU97Vg1N0O7Ud8CEMQpwVAh+Je1BIcz3UoL3SOloc6OD0Vg2qbyPTqsm8atbEV7f5MVeAbZCfnBBYPilj3RnUxAsMoSd76FkvHxaT+rwcu34srh69cgDIodz+sm6DuMsNjcn1hPqmYr/L0ZwkUa/xaSTXKSYVcdp6Bihdbw7oyvNxu03DHDy0ameuMQ7cnEZYrag4eZyebOw+QczO8HGt9yLhYExJqslNm3LzpoF/asBtyEbXUsip2tUQyFWDeXSDRMgDdgKNau0vR8qUs/dBSS9fox5KOxL1qsvXk9lcpFzs1kB+F92qQa4hkMV0HK
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(39860400002)(396003)(346002)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(6512007)(6506007)(478600001)(53546011)(6486002)(2616005)(26005)(5660300002)(4744005)(44832011)(2906002)(66476007)(8676002)(66556008)(316002)(66946007)(8936002)(4326008)(36756003)(82960400001)(38100700002)(31696002)(86362001)(41300700001)(31686004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WXIzZDlNb05rK3ZCNkdDN3ZML0RMZGtlam1JMXNrT3ZCU1pzbTlsL3hCOEUv?=
- =?utf-8?B?aERaMFl1WEY2akhVTnJhNFJHZms0YUtXVUFsdTRtTkt5TExMTndsNUdNWnJp?=
- =?utf-8?B?TE4vWGhYQ1Z3WmZ3eHoraUdMUGJ2VGRsNVNycHZJSjkrTExNeDkrZHp5aHc0?=
- =?utf-8?B?anU5QjkvQXR6amp5WC9DVnZBdnArcXB2NXh2N0w1amNjS3hCd1AxdzBZMDBt?=
- =?utf-8?B?b3FoeDRFeGhmNmdPd25ITVhiK1ZobHFaWmpDZWxQNGY3Z0wvc0xpMmFkMzZO?=
- =?utf-8?B?VWV0TjZoQnRsbXNiQXFOYWZ0Qk9QbjNJU24yL1BVbXRsVzNiSXU1VmUrYjhn?=
- =?utf-8?B?UlN2L0FiaUVNYkFSb2krZjlwZXR0a0FyTytRUm1zaXE5Y041K3g5bUZCQml4?=
- =?utf-8?B?L2NKZUs1TXpvcS9ZeStqTWJzV01WN1VlUkFUL2hHNUFlcTBzN3Ruam1FSCtq?=
- =?utf-8?B?eEhmN1VmU3lYQUlGbUhKdGR1S1cweDErUURjV3p0N1ZkdXhCNHJ1UCtjbFNp?=
- =?utf-8?B?bEdvYm5IMnJ2TTh4ODJITWcyV1o0K3ZmMzd2NE1tanZYNkxLNVhyN2JRU09L?=
- =?utf-8?B?ZnorWm15enh5VHdnYWJjV2pVaU1lOFZseXFxMk9XRVd3cVJQQTlob0xnK1R6?=
- =?utf-8?B?ZFlkUzVwWDdmU1I2Q0dpSWQ5UmI0ckNhN3lUYStKUld2R291WWprTjV2eGgx?=
- =?utf-8?B?M0ZhV3hEL0ZiV2VHWlVwZ3Bmdy9GTk5teGpCdHhFN0plSWw2bkxxV2VwcUxB?=
- =?utf-8?B?NUdCTFpTTnBnUngzei9PZC9kTVVoZ0JJczRSMm8zK2J3SUVqNmp2NE9xRkZ5?=
- =?utf-8?B?WW1LNXRiN0hzZTM1cWlCdDBEc21tanlUdlJrOVJTMys3bStvaWlZVStoZ3c1?=
- =?utf-8?B?U2hKWW9lSm5JWlpEb0VJRDgxOWhNdTE4b3l5b3FvOVF0V2Vud1NCMWFnWTRi?=
- =?utf-8?B?S2FhSkNNYXl2dWpXQnl2bzQ2a3R1aFg1VTBlcFRuTGF0d2orYnloc0lDSy94?=
- =?utf-8?B?ZFhyUlM5dmd0eDZMQjdmckROMy8xWERaRzRGam54d1RNN0ozSFB0YTdIbERO?=
- =?utf-8?B?c1BJcTRIOFozaFUxNmR5OGZYN3pIVGZjYTcwZm9VZmFUcnlTai9UR29ORXdJ?=
- =?utf-8?B?OFRvdlIxYnlGc2dTNEcxSkJqditTTkJpbjF5M0Z1UjJacnVZNWRncXJSNEFm?=
- =?utf-8?B?S0VCb0RKRitSKy9RZE9EMnJ1dXpkOUVFRndrUVY5OTREK1MxQiszRE1HWG5p?=
- =?utf-8?B?dy9sWEQ4ZXVPdHZOZExzTDdQeWFhOWVVU0k4aE44SjF3dSsxWTdnNThmYlRx?=
- =?utf-8?B?RG1EeXdlU2d1UDlqWm1iWUFrWlQwRGo4aXMwVExwVmxrM0o4UVd3Y0tVZjFR?=
- =?utf-8?B?TGk5WTJ6ZmkwWWpWVGo3ckJmRm9JQ3JBNTBhbFNvdWpqcHhVU1lYL3NScDIx?=
- =?utf-8?B?WVdHWU9nY1Z5UHA2NXJURFJsa0J5OWhLMWxEeExYb2xGZ2J0TmI5M2dEb1N1?=
- =?utf-8?B?aTFQbThHT0Y2c1UvYmRlUDcwYXpRMS9VQ3JxWHgyUkJPOUZkOUk5RWZoRzc4?=
- =?utf-8?B?aXZDVkYwdklHakZISnRPdXdQU3pnRGNJNjVDZ0Zuc2t3SVU3V2hFRHVOZ2h4?=
- =?utf-8?B?SGRzZGxVaFVEQjZmUkFQU1Y0cnlmZzJHSDUrMThOWlVPcHhOSjV3Q2VKZkFv?=
- =?utf-8?B?SWhzRk9zN3dnZGlnV01CSFZ0eWwwTVNHbFIzTlIyTVVBSjZzcEgxd3Z5S1pm?=
- =?utf-8?B?eHNRQ0NBY3pacTQzR21lRmU4Zi93dG96dWFhVUh3YjZ4UEsweG9xRFI1TFNY?=
- =?utf-8?B?SFBoRjJqa2RyQWttM3p6NHlqMkpzd2hwbzlqRzc4UzB5K1R3Slh3eGw0MXBr?=
- =?utf-8?B?TGRsS1kza1R3QVJkaU1rMlEwOVU4WDZtVzV2ZlluRUxrektQRGpMWHBOVTlN?=
- =?utf-8?B?YXdwdzJJeFRFR0UwTVIvV0xCVEZ6bWIzYkxPb09OaVVmY2x4QzBPTGRWcXZW?=
- =?utf-8?B?NHlKT2I3b053ckcrenRnSjZuR2cwdkZpUFo4dGRCUUVubDdTY2U4Q2xNY2U4?=
- =?utf-8?B?RTJlaXFFemNKcnJMN05GTk5HQ3Y0eU1uUDl2REFnYW5teWEwWUZ2UGRvRzBY?=
- =?utf-8?Q?LXnpEjG2VIXNno6jz/wjQSnmN?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4620b3a-4546-49a3-f9e2-08dc29abf68c
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 20:16:13.3432
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WyuSR7Sd7A9J2lwAl7ks8cjV2aFQBdiBAAjHXup/x7h5LhVzjEJx5xauVufNMYQI5A8ibDy0JjCGdZ8K8DAZGA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4731
-X-OriginatorOrg: intel.com
+References: <20240129-ufs-core-reset-fix-v1-0-7ac628aa735f@linaro.org>
+ <20240129-ufs-core-reset-fix-v1-3-7ac628aa735f@linaro.org>
+ <CAA8EJpphzwoCaetGfnM8dE478ic1-BMqXKA3XVLeC9j5BBu3SA@mail.gmail.com> <20240130065550.GF32821@thinkpad>
+In-Reply-To: <20240130065550.GF32821@thinkpad>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 9 Feb 2024 22:16:25 +0200
+Message-ID: <CAA8EJpqZYp0C8rT8E=LoVo9fispLNhBn8CEgx1-iMqN_2MQXfg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: msm8996: Add missing UFS host
+ controller reset
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Alim Akhtar <alim.akhtar@samsung.com>, Avri Altman <avri.altman@wdc.com>, 
+	Bart Van Assche <bvanassche@acm.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Andy Gross <agross@kernel.org>, Andy Gross <andy.gross@linaro.org>, 
+	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
+	linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/9/2024 12:02 PM, Naik, Avadhut wrote:
+On Tue, 30 Jan 2024 at 08:55, Manivannan Sadhasivam
+<manivannan.sadhasivam@linaro.org> wrote:
+>
+> On Mon, Jan 29, 2024 at 11:44:15AM +0200, Dmitry Baryshkov wrote:
+> > On Mon, 29 Jan 2024 at 09:55, Manivannan Sadhasivam
+> > <manivannan.sadhasivam@linaro.org> wrote:
+> > >
+> > > UFS host controller reset is required for the drivers to properly reset the
+> > > controller. Hence, add it.
+> > >
+> > > Fixes: 57fc67ef0d35 ("arm64: dts: qcom: msm8996: Add ufs related nodes")
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> >
+> > I think I had issues previously when I attempted to reset the
+> > controller, but it might be because of the incomplete clocks
+> > programming. Let met check whether it works first.
+> >
+>
+> Sure. Please let me know.
 
-> Is it safe to assume that users will always want to increase the size of the
-> pool and not decrease it?
-> 
-> IMO, the command-line option provides flexibility for users to choose the size of
-> MCE Records pool in case, they don't agree with the CPU count logic. Just added it
-> to ensure that we are not enforcing this increased memory footprint across the board.
-> 
-> Would you agree?
-> 
-
-Not really. Providing this level of configuration seems excessive and
-unnecessary.
-
-To me, it seems that we are over-compensating with the calculations in
-the previous patch and then providing a mechanism to correct it here and
-putting this burden on the user.
-
-How about being more conservative with the allocations in the previous
-patch so that we don't need to introduce this additional mechanism right
-now? Later, if there is really a need for some specific usage, the patch
-can be re-submitted then with the supporting data.
-
-Sohil
+With the clocking fixes in place (I'll send them in a few minutes) and
+with this patch the UFS breaks in the following way:
 
 
+[    4.397919] scsi host0: ufshcd
+[    4.413964] qcom-qmp-ufs-phy 627000.phy: phy initialization timed-out
+[    4.415776] phy phy-627000.phy.3: phy poweron failed --> -110
+[    4.419511] ufshcd-qcom 624000.ufshc: ufs_qcom_power_up_sequence:
+phy power on failed, ret = -110
+[    4.431297] mmc0: SDHCI controller on 74a4900.mmc [74a4900.mmc]
+using ADMA 64-bit
+[    4.484677] ufshcd-qcom 624000.ufshc: Controller enable failed
+[    4.499710] qcom-qmp-ufs-phy 627000.phy: phy initialization timed-out
+[    4.501507] phy phy-627000.phy.3: phy poweron failed --> -110
+[    4.505219] ufshcd-qcom 624000.ufshc: ufs_qcom_power_up_sequence:
+phy power on failed, ret = -110
+[    4.570505] ufshcd-qcom 624000.ufshc: Controller enable failed
+[    4.585232] qcom-qmp-ufs-phy 627000.phy: phy initialization timed-out
+[    4.587296] phy phy-627000.phy.3: phy poweron failed --> -110
+[    4.590733] ufshcd-qcom 624000.ufshc: ufs_qcom_power_up_sequence:
+phy power on failed, ret = -110
+[    4.598942] mmc0: new ultra high speed SDR104 SDHC card at address 5048
+[    4.606103] mmcblk0: mmc0:5048 SD32G 28.8 GiB
+[    4.615871]  mmcblk0: p1
+[    4.656006] ufshcd-qcom 624000.ufshc: Controller enable failed
+[    4.670985] qcom-qmp-ufs-phy 627000.phy: phy initialization timed-out
+[    4.672795] phy phy-627000.phy.3: phy poweron failed --> -110
+[    4.676493] ufshcd-qcom 624000.ufshc: ufs_qcom_power_up_sequence:
+phy power on failed, ret = -110
+[    4.741859] ufshcd-qcom 624000.ufshc: Controller enable failed
+[    4.741942] ufshcd-qcom 624000.ufshc: Host controller enable failed
+[    4.746717] host_regs: 00000000: 0107001f 00000000 00010100 00000000
+[    4.752822] host_regs: 00000010: 01000000 00010217 00000000 00000000
+[    4.759424] host_regs: 00000020: 00000000 00000000 00000000 00000000
+[    4.765751] host_regs: 00000030: 00000000 00000000 00000000 00000000
+[    4.772090] host_regs: 00000040: 00000000 00000000 00000000 00000000
+[    4.778438] host_regs: 00000050: 00000000 00000000 00000000 00000000
+[    4.784758] host_regs: 00000060: 00000000 00000000 00000000 00000000
+[    4.791096] host_regs: 00000070: 00000000 00000000 00000000 00000000
+[    4.797434] host_regs: 00000080: 00000000 00000000 00000000 00000000
+[    4.803789] host_regs: 00000090: 00000000 00000001 00000000 00000000
+[    4.810109] ufshcd-qcom 624000.ufshc: No record of pa_err
+[    4.816439] ufshcd-qcom 624000.ufshc: No record of dl_err
+[    4.821732] ufshcd-qcom 624000.ufshc: No record of nl_err
+[    4.827112] ufshcd-qcom 624000.ufshc: No record of tl_err
+[    4.832497] ufshcd-qcom 624000.ufshc: No record of dme_err
+[    4.837879] ufshcd-qcom 624000.ufshc: No record of auto_hibern8_err
+[    4.843263] ufshcd-qcom 624000.ufshc: No record of fatal_err
+[    4.849424] ufshcd-qcom 624000.ufshc: No record of link_startup_fail
+[    4.855332] ufshcd-qcom 624000.ufshc: No record of resume_fail
+[    4.861670] ufshcd-qcom 624000.ufshc: No record of suspend_fail
+[    4.867351] ufshcd-qcom 624000.ufshc: No record of wlun resume_fail
+[    4.873132] ufshcd-qcom 624000.ufshc: No record of wlun suspend_fail
+[    4.879375] ufshcd-qcom 624000.ufshc: No record of dev_reset
+[    4.885971] ufshcd-qcom 624000.ufshc: No record of host_reset
+[    4.891617] ufshcd-qcom 624000.ufshc: No record of task_abort
+[    4.897273] HCI Vendor Specific Registers 00000000: 000000c8
+00000000 00000000 00000000
+[    4.903001] HCI Vendor Specific Registers 00000010: 00000000
+00000000 00000000 1c00052e
+[    4.910870] HCI Vendor Specific Registers 00000020: 3f011300
+20020000 00000000 00000000
+[    4.918823] HCI Vendor Specific Registers 00000030: 00000000
+00000000 00000000 00000000
+[    4.926831] UFS_UFS_DBG_RD_REG_OCSC 00000000: 00000000 00000000
+00000000 00000000
+[    4.934769] UFS_UFS_DBG_RD_REG_OCSC 00000010: 00000000 00000000
+00000000 00000000
+[    4.942430] UFS_UFS_DBG_RD_REG_OCSC 00000020: 00000000 00000000
+00000000 00000000
+[    4.949876] UFS_UFS_DBG_RD_REG_OCSC 00000030: 00000000 00000000
+00000000 00000000
+[    4.957338] UFS_UFS_DBG_RD_REG_OCSC 00000040: 00000000 00000000
+00000000 00000000
+[    4.964800] UFS_UFS_DBG_RD_REG_OCSC 00000050: 00000000 00000000
+00000000 00000000
+[    4.972270] UFS_UFS_DBG_RD_REG_OCSC 00000060: 00000000 00000000
+00000000 00000000
+[    4.979733] UFS_UFS_DBG_RD_REG_OCSC 00000070: 00000000 00000000
+00000000 00000000
+[    4.987215] UFS_UFS_DBG_RD_REG_OCSC 00000080: 00000000 00000000
+00000000 00000000
+[    4.994675] UFS_UFS_DBG_RD_REG_OCSC 00000090: 00000000 00000000
+00000000 00000000
+[    5.002128] UFS_UFS_DBG_RD_REG_OCSC 000000a0: 00000000 00000000
+00000000 00000000
+[    5.009615] UFS_UFS_DBG_RD_EDTL_RAM 00000000: 00000000 a4491248
+fcf4caf8 44ff663f
+[    5.017059] UFS_UFS_DBG_RD_EDTL_RAM 00000010: 3495a3e2 7be93e99
+2334e629 a9f5c77a
+[    5.024530] UFS_UFS_DBG_RD_EDTL_RAM 00000020: e0edb246 e451c5b7
+d020df23 c84d85e6
+[    5.032019] UFS_UFS_DBG_RD_EDTL_RAM 00000030: 59e307b2 3685dda2
+3d4484ee 33b4d9d9
+[    5.039460] UFS_UFS_DBG_RD_EDTL_RAM 00000040: 4de322b3 5ba15f50
+18e13d42 ca9f93e5
+[    5.046936] UFS_UFS_DBG_RD_EDTL_RAM 00000050: 4ce04e39 954c996e
+0645064b e235d257
+[    5.054385] UFS_UFS_DBG_RD_EDTL_RAM 00000060: b92c1acb 281dc88f
+56ff1877 3307091a
+[    5.061851] UFS_UFS_DBG_RD_EDTL_RAM 00000070: fc19350a 222e4061
+d2cc6217 1fa596f9
+[    5.069381] UFS_UFS_DBG_RD_DESC_RAM 00000000: 00000fff 000245b9
+40000fff 000245d7
+[    5.076783] UFS_UFS_DBG_RD_DESC_RAM 00000010: ed10dc68 0036fe67
+353c512f 0038a521
+[    5.084250] UFS_UFS_DBG_RD_DESC_RAM 00000020: 8c4f244a 003677cc
+c67731d1 00145113
+[    5.091712] UFS_UFS_DBG_RD_DESC_RAM 00000030: fc33c5b6 00357243
+fce1d206 002dc715
+[    5.099178] UFS_UFS_DBG_RD_DESC_RAM 00000040: c54267f1 0039fc1e
+e7e564f7 001d3070
+[    5.106659] UFS_UFS_DBG_RD_DESC_RAM 00000050: a0c0bff6 002a0367
+4a31b6ca 0021a267
+[    5.114108] UFS_UFS_DBG_RD_DESC_RAM 00000060: 085b1f23 002c64ef
+73830a12 0010ff39
+[    5.121586] UFS_UFS_DBG_RD_DESC_RAM 00000070: f902904f 001b0514
+714edb47 002ef768
+[    5.129041] UFS_UFS_DBG_RD_DESC_RAM 00000080: 369035fc 0010e7fe
+17d94504 003895c4
+[    5.136508] UFS_UFS_DBG_RD_DESC_RAM 00000090: 26dd0675 001c14dc
+7503fb3d 00040c95
+[    5.143996] UFS_UFS_DBG_RD_DESC_RAM 000000a0: 945456e2 003932f0
+bf4a51ed 002c0765
+[    5.151444] UFS_UFS_DBG_RD_DESC_RAM 000000b0: c15810a5 001a4fc3
+f9137305 0020c227
+[    5.158902] UFS_UFS_DBG_RD_DESC_RAM 000000c0: 65b22d16 003b9a18
+63d89770 000ab592
+[    5.166365] UFS_UFS_DBG_RD_DESC_RAM 000000d0: d6257375 0016de4d
+1e047776 000ec615
+[    5.173849] UFS_UFS_DBG_RD_DESC_RAM 000000e0: 23184caa 001c5498
+14cd841d 000a2d46
+[    5.181299] UFS_UFS_DBG_RD_DESC_RAM 000000f0: 9a229d09 00041b11
+d2249690 000e4e1b
+[    5.188761] UFS_UFS_DBG_RD_DESC_RAM 00000100: 1a4f6c46 000202d1
+07159e46 0011276c
+[    5.196227] UFS_UFS_DBG_RD_DESC_RAM 00000110: be679f01 00042f38
+1da6fd6c 000c3556
+[    5.203694] UFS_UFS_DBG_RD_DESC_RAM 00000120: 1641cfe1 000996fd
+7c902c15 0005bd54
+[    5.211158] UFS_UFS_DBG_RD_DESC_RAM 00000130: 1ff37280 002c4c5d
+3bb1d9f0 00286f65
+[    5.218624] UFS_UFS_DBG_RD_DESC_RAM 00000140: 9bbc09e5 0028c6e7
+5f5d9dc6 0035d8dd
+[    5.226089] UFS_UFS_DBG_RD_DESC_RAM 00000150: 4a1d5167 00036152
+da64f552 001ac503
+[    5.233572] UFS_UFS_DBG_RD_DESC_RAM 00000160: 8d429104 003cdc65
+cb6eb64b 0031356b
+[    5.241021] UFS_UFS_DBG_RD_DESC_RAM 00000170: 4438c55a 003dc021
+7859ed93 003748ff
+[    5.248497] UFS_UFS_DBG_RD_DESC_RAM 00000180: 581e7129 00249e0f
+1119282b 002eea5e
+[    5.255973] UFS_UFS_DBG_RD_DESC_RAM 00000190: 36c4e1ff 003696c5
+3d26c8d6 00341834
+[    5.263423] UFS_UFS_DBG_RD_DESC_RAM 000001a0: 9569e755 0038c181
+44a04716 00113eee
+[    5.270880] UFS_UFS_DBG_RD_DESC_RAM 000001b0: 2b8126c4 00070e4e
+3c00b95f 003efa6c
+[    5.278349] UFS_UFS_DBG_RD_DESC_RAM 000001c0: fdac7bc9 002bbd97
+0d1b10d7 00279d0e
+[    5.285814] UFS_UFS_DBG_RD_DESC_RAM 000001d0: fd26970f 003ea7dd
+7cfa0dd9 001abe65
+[    5.293300] UFS_UFS_DBG_RD_DESC_RAM 000001e0: 462260e8 00088e88
+6664d825 0025aedb
+[    5.300740] UFS_UFS_DBG_RD_DESC_RAM 000001f0: e6e33f2d 0010a59d
+646f03d7 00042b16
+[    5.308241] UFS_UFS_DBG_RD_PRDT_RAM 00000000: b6500000 0000916c
+c5801d67 000a3550
+[    5.315674] UFS_UFS_DBG_RD_PRDT_RAM 00000010: 7437814c 0005a357
+e44607eb 00093259
+[    5.323140] UFS_UFS_DBG_RD_PRDT_RAM 00000020: 08ff015c 00082c54
+09070e95 000c2704
+[    5.330602] UFS_UFS_DBG_RD_PRDT_RAM 00000030: 3663d4c0 000c5d89
+fb34130e 0009e7ee
+[    5.338069] UFS_UFS_DBG_RD_PRDT_RAM 00000040: c6c207f0 0002a5d5
+50e088ab 0004be17
+[    5.345534] UFS_UFS_DBG_RD_PRDT_RAM 00000050: e0754a0b 000c5ceb
+c99e1281 000549b2
+[    5.353015] UFS_UFS_DBG_RD_PRDT_RAM 00000060: 3bcb7410 0004cd30
+71149cd2 000fc80b
+[    5.360465] UFS_UFS_DBG_RD_PRDT_RAM 00000070: 4012a0d8 000e04a1
+6dc3ae4d 00080c54
+[    5.367951] UFS_UFS_DBG_RD_PRDT_RAM 00000080: 00000040 00000004
+e910c009 0001a567
+[    5.375408] UFS_UFS_DBG_RD_PRDT_RAM 00000090: 0050cd49 0004eaa0
+813bf322 000dd259
+[    5.382856] UFS_UFS_DBG_RD_PRDT_RAM 000000a0: c920cae2 000a55a1
+41816101 000f8065
+[    5.390323] UFS_UFS_DBG_RD_PRDT_RAM 000000b0: e819a0b7 00050746
+f1310132 000ada10
+[    5.397787] UFS_UFS_DBG_RD_PRDT_RAM 000000c0: 2e4801ec 000a3517
+f5544b9f 00008308
+[    5.405253] UFS_UFS_DBG_RD_PRDT_RAM 000000d0: f345c26d 00041935
+b001d7cf 0004a2ff
+[    5.412737] UFS_UFS_DBG_RD_PRDT_RAM 000000e0: 48140248 0005010e
+6039f044 0008131e
+[    5.420185] UFS_UFS_DBG_RD_PRDT_RAM 000000f0: 0c418401 00000000
+70518e69 00053a4c
+[    5.427657] UFS_DBG_RD_REG_UAWM 00000000: 00000000 00000000 00000000 0001fec0
+[    5.435117] UFS_DBG_RD_REG_UARM 00000000: 00000000 00000000 00000001 00000001
+[    5.442255] UFS_DBG_RD_REG_TXUC 00000000: 00000000 00000000 00000000 00000000
+[    5.449349] UFS_DBG_RD_REG_TXUC 00000010: 00000000 00000000 00000000 00000000
+[    5.456467] UFS_DBG_RD_REG_TXUC 00000020: 00000000 00000000 00000000 00000000
+[    5.463585] UFS_DBG_RD_REG_TXUC 00000030: 00000000 00000000 00000000 00000000
+[    5.470719] UFS_DBG_RD_REG_TXUC 00000040: 00000000 00000000 00000000 00000000
+[    5.477825] UFS_DBG_RD_REG_TXUC 00000050: 00000000 00000000 00000000 00000000
+[    5.484963] UFS_DBG_RD_REG_TXUC 00000060: 00000000 00000000 00000000 00000000
+[    5.492076] UFS_DBG_RD_REG_TXUC 00000070: 00000000 00000000 00000000 00000000
+[    5.499189] UFS_DBG_RD_REG_TXUC 00000080: 00000000 00000000 00000000 00000000
+[    5.506294] UFS_DBG_RD_REG_TXUC 00000090: 00000000 00000000 00000000 00000000
+[    5.513413] UFS_DBG_RD_REG_TXUC 000000a0: 00000000 00000000 00000000 00000000
+[    5.520532] UFS_DBG_RD_REG_TXUC 000000b0: 00000001 00000040 00000000 00000004
+[    5.527665] UFS_DBG_RD_REG_RXUC 00000000: 00000000 00000000 00000000 00000004
+[    5.534781] UFS_DBG_RD_REG_RXUC 00000010: 00000000 00000000 00000000 00000000
+[    5.541883] UFS_DBG_RD_REG_RXUC 00000020: 00000000 00000000 00000000 00000000
+[    5.549005] UFS_DBG_RD_REG_RXUC 00000030: 00000000 00000000 00000000 00000000
+[    5.556121] UFS_DBG_RD_REG_RXUC 00000040: 00000000 00000000 00000000 00000000
+[    5.563239] UFS_DBG_RD_REG_RXUC 00000050: 00000000 00000000 00000000 00000001
+[    5.570357] UFS_DBG_RD_REG_RXUC 00000060: 00000040 00000000 00000004
+[    5.577481] UFS_DBG_RD_REG_DFC 00000000: 00000000 00000000 00000000 00000000
+[    5.583897] UFS_DBG_RD_REG_DFC 00000010: 00000000 00000000 00000000 00000000
+[    5.590931] UFS_DBG_RD_REG_DFC 00000020: 00000000 00000000 00000000 00000000
+[    5.597999] UFS_DBG_RD_REG_DFC 00000030: 00000000 00000000 00000000 00000000
+[    5.604998] UFS_DBG_RD_REG_DFC 00000040: ffffffff 00000000 00000000
+[    5.612039] UFS_DBG_RD_REG_TRLUT 00000000: 00000000 00000000
+00000000 00000000
+[    5.618013] UFS_DBG_RD_REG_TRLUT 00000010: 00000000 00000000
+00000000 00000000
+[    5.625318] UFS_DBG_RD_REG_TRLUT 00000020: 00000000 00000000
+00000000 00000000
+[    5.632510] UFS_DBG_RD_REG_TRLUT 00000030: 00000000 00000000
+00000000 00000000
+[    5.639715] UFS_DBG_RD_REG_TRLUT 00000040: 00000000 00000000
+00000000 00000000
+[    5.646918] UFS_DBG_RD_REG_TRLUT 00000050: 00000000 00000000
+00000000 00000000
+[    5.654126] UFS_DBG_RD_REG_TRLUT 00000060: 00000000 00000000
+00000000 00000000
+[    5.661349] UFS_DBG_RD_REG_TRLUT 00000070: 00000000 00000000
+00000000 00000000
+[    5.668536] UFS_DBG_RD_REG_TRLUT 00000080: 00000000 00000000
+[    5.675741] UFS_DBG_RD_REG_TMRLUT 00000000: 00000000 00000000
+00000000 00000000
+[    5.681552] UFS_DBG_RD_REG_TMRLUT 00000010: 00000000 00000000
+00000000 00000000
+[    5.688585] UFS_DBG_RD_REG_TMRLUT 00000020: 00000000
+[    5.695866] ufshcd-qcom 624000.ufshc: UFS Host state=0
+[    5.701079] ufshcd-qcom 624000.ufshc: outstanding reqs=0x0 tasks=0x0
+[    5.706047] ufshcd-qcom 624000.ufshc: saved_err=0x0, saved_uic_err=0x0
+[    5.712550] ufshcd-qcom 624000.ufshc: Device power mode=0, UIC link state=0
+[    5.718895] ufshcd-qcom 624000.ufshc: PM in progress=0, sys. suspended=0
+[    5.725734] ufshcd-qcom 624000.ufshc: Auto BKOPS=0, Host self-block=0
+[    5.732677] ufshcd-qcom 624000.ufshc: Clk gate=1
+[    5.739003] ufshcd-qcom 624000.ufshc: last_hibern8_exit_tstamp at 0
+us, hibern8_exit_cnt=0
+[    5.743712] ufshcd-qcom 624000.ufshc: last intr at 0 us, last intr status=0x0
+[    5.751790] ufshcd-qcom 624000.ufshc: error handling flags=0x0,
+req. abort count=0
+[    5.758985] ufshcd-qcom 624000.ufshc: hba->ufs_version=0x200, Host
+capabilities=0x107001f, caps=0x12cf
+[    5.766477] ufshcd-qcom 624000.ufshc: quirks=0x20, dev. quirks=0x0
+[    5.775729] ufshcd-qcom 624000.ufshc: clk: core_clk, rate: 200000000
+[    5.781911] ufshcd-qcom 624000.ufshc: clk: core_clk_unipro, rate: 150000000
+[    5.788408] ufshcd-qcom 624000.ufshc: clk: core_clk_ice, rate: 300000000
+[    5.799734] ufshcd-qcom 624000.ufshc: error -EIO: Initialization
+failed with error -5
+[    5.823482] ufshcd-qcom 624000.ufshc: error -EIO: ufshcd_pltfrm_init() failed
+[    5.823655] ufshcd-qcom: probe of 624000.ufshc failed with error -5
+
+-- 
+With best wishes
+Dmitry
 
