@@ -1,223 +1,242 @@
-Return-Path: <linux-kernel+bounces-59281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C34984F476
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:20:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BC7784F484
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:23:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E62621F21D92
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:20:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 337E3280E5D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:23:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E522D602;
-	Fri,  9 Feb 2024 11:19:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22E82C1B1;
+	Fri,  9 Feb 2024 11:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="fBymMNbP"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WPOo5mjY"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CCD37163;
-	Fri,  9 Feb 2024 11:19:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B6628DC1;
+	Fri,  9 Feb 2024 11:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707477543; cv=none; b=QlCd7lp64tDyqp+I87dvhIL9pzyXGG+XkpwNF3iiS5+mQZdWK5CG+1d4ycrjP9HvNlBJDZvOQfDjhOnIALZTGUgKBMKWBCEX7mSTUaHhjxrkPkHmt0RFcE3Y3XDG2jZ6g0q/KbXAvdz28arLgMUq1cBkUQYWOmI5KJFKKXBBy5Q=
+	t=1707477659; cv=none; b=uOM745a24MjUgqBNMyaiuRcn3O5j/YvPs44c+wr20iexDTc8Iu8Qi2tIxpyBRFmH4LBuM9mrahxeZW6cA+9hU9TnMhA6CxTLxsdIKN1odMSIRRhL5/kiDvcHVyvdeMtL0cCtZaZisX7QzdstkGDmntFkF0YoNlfqx0lpSJtjMow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707477543; c=relaxed/simple;
-	bh=2QCTzPWA/DkT9N/CK7WxD3DS5kay/KOm54BbjT+1Owg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uPd2xVbY3Ys7U5cenYPS88vuCOdXxCWe4Hea+be21oJvT61s+WMlMQ4vZMcopr/AaL2M+4+My+v8AMbXFEQmCt6k8ejg5AG1+9MNVaO00b0MdE/TnOcffK1iTXpjJ0VQjq3pk8kjJQdfDoIvXzfvieKGMO74xPSjGAB5nMs2zEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=fBymMNbP; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4198U6AO001304;
-	Fri, 9 Feb 2024 05:18:53 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=B
-	y/TgVzKI6B9xuMXwgwHXxQ8DBbq/f8zckfTpi+B+/M=; b=fBymMNbPRHed0uZv2
-	iT1vbBFsdfi64rJHFJ/kPt3VV8pqVEWzHFGFThwWgtteVLX5JrUcXIfwW30XO0g0
-	wkN7ilG2sV7mt8BXK7qTKr552qVTF8irV66KZ+rDBVa0al9h41GCEAzDWFMaHeJ/
-	3NfXiJ3c+S07CigfD7RC/c+SRH86uVwCLAZNunpgKvpvG+DIRCwK4aBLe8qlyBW9
-	OP6Pd0Q24FX7WKU453KySynVljxoKcHBJvsVr3iZglG9Wglva2OghjHFVu2yX8IO
-	CB5m4zwISPRWy/PeamnEep9+dBhHF3haF02eXrZ2G4x5OjpYjrQvBHFEcjnkcUyd
-	HcdRg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3w46p7b0he-1
+	s=arc-20240116; t=1707477659; c=relaxed/simple;
+	bh=EQDhFl9ifLuO0cWW60pqujcWcLUCCDzUvFz8nDzjWEA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=qoJz6xEXOSImLM/r4QPRz7GreB8Q+f0TLmEsad1EKdTRvdEGVm00d4WJZRd2M/97YiR59gYSdVwEZBk82HgESrRN7OkMwcqMolqHHFiEhRpQXbXz6uJn1v2HCDSSizx7QbAGuMetVp8x/7pOk4rdDsCpgkPJb6KDYWYtTnGZ1tM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WPOo5mjY; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 419B7smf017740;
+	Fri, 9 Feb 2024 11:20:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=AFRBt1FCWwZFCacHJwy/3XlOLZrPPJkYg4TH+/NMzCY=;
+ b=WPOo5mjYBYH2IErMw43bckQqh1/4kYc59Mlb1elBZP72pBgJxps+ciUAG95KQzIPdcV8
+ Y3sXAcMbSEuAlbdkku+NXUmybtws7qQ8VFXngPu+HKrUFg+6pJ42vQN2IDvnmeYPYWfW
+ nxN1pg0g4nlr7yKgldgcC9NL05Jpl1HXjZhxifysJ84z2+/p3qI2saNvZ3POkTa4Kgub
+ lZJE5TjAINvFm/HtsjAP+tI1ZJ/FOg2Kjv+QsZmc7ixiZvUwXH/JnIcmjNac30ktCsP5
+ UThMof80NLOpl5D3fiGJ03iLhEFbe1G9Ybwp83dBhrG0aLFvHpXIZY9uOtgA+XGoVqr3 eg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w5gkbc4pe-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Feb 2024 05:18:53 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 9 Feb
- 2024 11:18:40 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Fri, 9 Feb 2024 11:18:40 +0000
-Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 72610820243;
-	Fri,  9 Feb 2024 11:18:40 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Richard
- Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH] ASoC: cs35l56: Workaround for ACPI with broken spk-id-gpios property
-Date: Fri, 9 Feb 2024 11:18:40 +0000
-Message-ID: <20240209111840.1543630-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+	Fri, 09 Feb 2024 11:20:52 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 419BJ0Zi005843;
+	Fri, 9 Feb 2024 11:20:52 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w5gkbc4p3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 11:20:52 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4199OWPH008770;
+	Fri, 9 Feb 2024 11:20:51 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w20702x02-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 11:20:51 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 419BKmWQ65864186
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 9 Feb 2024 11:20:48 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5E23A20043;
+	Fri,  9 Feb 2024 11:20:48 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E0D3020040;
+	Fri,  9 Feb 2024 11:20:47 +0000 (GMT)
+Received: from osiris (unknown [9.179.1.234])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri,  9 Feb 2024 11:20:47 +0000 (GMT)
+Date: Fri, 9 Feb 2024 12:20:46 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+        svens@linux.ibm.com, maskray@google.com, ndesaulniers@google.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, patches@lists.linux.dev
+Subject: Re: [PATCH 00/11] s390: Support linking with ld.lld
+Message-ID: <20240209112046.13241-C-hca@linux.ibm.com>
+References: <20240207-s390-lld-and-orphan-warn-v1-0-8a665b3346ab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240207-s390-lld-and-orphan-warn-v1-0-8a665b3346ab@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: SGrVWr2aETRlna7KZhmAL39hFcON2Vc3
+X-Proofpoint-ORIG-GUID: Fb5LnhK3ZSaXbrsL69WJpWi9iLmMuwBX
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 8t-zjLHLUIdE2Aoj5UtkS0trOnV8Bbcd
-X-Proofpoint-GUID: 8t-zjLHLUIdE2Aoj5UtkS0trOnV8Bbcd
-X-Proofpoint-Spam-Reason: safe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-09_08,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ adultscore=0 suspectscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999
+ impostorscore=0 bulkscore=0 phishscore=0 malwarescore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402090082
 
-The ACPI in some SoundWire laptops has a spk-id-gpios property but
-it points to the wrong Device node. This patch adds a workaround to
-try to get the GPIO directly from the correct Device node.
+Hi Nathan,
 
-If the attempt to get the GPIOs from the property fails, the workaround
-looks for the SDCA node "AF01", which is where the GpioIo resource is
-defined. If this exists, a spk-id-gpios mapping is added to that node
-and then the GPIO is got from that node using the property.
+> This series allows the s390 kernel to be linked with ld.lld (support for
+> s390 is under review at [1]). This implicitly depends on [2], which was
+> created and sent before it was realized that this series was necessary.
+..
+> There is one outstanding issue due to something that ld.lld does not
+> support that the kernel relies on:
+> 
+>   ld.lld: error: drivers/nvme/host/fc.o:(__bug_table): writable SHF_MERGE section is not supported
+> 
+> This was changed in the kernel in commit e21f8baf8d9a ("s390/bug: add
+> entry size to the __bug_table section"). Is this change truly necessary?
+> I selectively applied a revert on top of current mainline and I did not
+> observe any issues with either Clang or GCC.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+No it is not necessary. As the original patch stated this was a pre-req
+patch for objtool, for which we still don't have support. This (or
+something different) might be needed. But for now this can easily be
+reverted.
+
+> Then build the kernel with 'LD=ld.lld' in addition to whatever command
+> line you use (I tested both Clang and GCC). I can boot an ld.lld linked
+> kernel built with both compilers in QEMU with this series.
+> 
+> [    1.386970] Linux version 6.8.0-rc3-00043-g05761ede85d6-dirty (nathan@dev-fedora.aadp) (s390-linux-gcc (GCC) 13.2.0, ClangBuiltLinux LLD 19.0.0) #1 SMP Wed Feb  7 16:51:12 MST 2024
+> 
+> [    0.871923] Linux version 6.8.0-rc3-00043-g05761ede85d6-dirty (nathan@dev-fedora.aadp) (ClangBuiltLinux clang version 19.0.0git (https://github.com/llvm/llvm-project 417075e56aeba5a5b20301c7bfeba9c2a800982b), ClangBuiltLinux LLD 19.0.0) #1 SMP Wed Feb  7 17:01:22 MST 2024
+
+Tested, and works for me. Thanks a lot for your work. This is highly
+appreciated!
+
+I applied this series internally to get some CI runs over the weekend, and
+push it to our external repository beginning of next week. As suggested by
+you I reverted the commit you mentioned above, and also removed ENTRY from
+our vdso linker scripts, similar to what you did already for powerpc (see
+patches below).
+
+Please feel free to send patches for both of the issues, and I'll replace
+my patches with your patches.
+
+From 30a0a88d0e6c4802b748a942bb3f6f1b223f53ba Mon Sep 17 00:00:00 2001
+From: Heiko Carstens <hca@linux.ibm.com>
+Date: Fri, 9 Feb 2024 11:48:25 +0100
+Subject: [PATCH 1/2] s390/bug: remove entry size from __bug_table section
+
+Commit e21f8baf8d9a ("s390/bug: add entry size to the __bug_table section")
+changed the __EMIT_BUG() inline assembly to emit mergeable __bug_table
+entries. This is at least currently not needed, but causes problems with
+the upcoming s390 ld.lld support:
+
+  ld.lld: error: drivers/nvme/host/fc.o:(__bug_table): writable SHF_MERGE section is not supported
+
+Therefore revert the change for now.
+
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Closes: https://lore.kernel.org/all/20240207-s390-lld-and-orphan-warn-v1-0-8a665b3346ab@kernel.org/
+Suggested-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 ---
- sound/soc/codecs/cs35l56.c | 93 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 93 insertions(+)
+ arch/s390/include/asm/bug.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index 98d3957c66e7..2c1313e34cce 100644
---- a/sound/soc/codecs/cs35l56.c
-+++ b/sound/soc/codecs/cs35l56.c
-@@ -5,6 +5,7 @@
- // Copyright (C) 2023 Cirrus Logic, Inc. and
- //                    Cirrus Logic International Semiconductor Ltd.
- 
-+#include <linux/acpi.h>
- #include <linux/completion.h>
- #include <linux/debugfs.h>
- #include <linux/delay.h>
-@@ -15,6 +16,7 @@
- #include <linux/module.h>
- #include <linux/pm.h>
- #include <linux/pm_runtime.h>
-+#include <linux/property.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- #include <linux/slab.h>
-@@ -1260,6 +1262,94 @@ static int cs35l56_get_firmware_uid(struct cs35l56_private *cs35l56)
- 	return 0;
- }
- 
-+/*
-+ * Some SoundWire laptops have a spk-id-gpios property but it points to
-+ * the wrong ACPI Device node so can't be used to get the GPIO. Try to
-+ * find the SDCA node containing the GpioIo resource and add a GPIO
-+ * mapping to it.
-+ */
-+static const struct acpi_gpio_params cs35l56_af01_first_gpio = { 0, 0, false };
-+static const struct acpi_gpio_mapping cs35l56_af01_spkid_gpios_mapping[] = {
-+	{ "spk-id-gpios", &cs35l56_af01_first_gpio, 1 },
-+	{ }
-+};
-+
-+static void cs35l56_acpi_dev_release_driver_gpios(void *adev)
-+{
-+	acpi_dev_remove_driver_gpios(adev);
-+}
-+
-+static int cs35l56_try_get_broken_sdca_spkid_gpio(struct cs35l56_private *cs35l56)
-+{
-+	struct fwnode_handle *af01_fwnode;
-+	const union acpi_object *obj;
-+	struct gpio_desc *desc;
-+	int ret;
-+
-+	/* Find the SDCA node containing the GpioIo */
-+	af01_fwnode = device_get_named_child_node(cs35l56->base.dev, "AF01");
-+	if (!af01_fwnode) {
-+		dev_dbg(cs35l56->base.dev, "No AF01 node\n");
-+		return -ENOENT;
-+	}
-+
-+	ret = acpi_dev_get_property(ACPI_COMPANION(cs35l56->base.dev),
-+				    "spk-id-gpios", ACPI_TYPE_PACKAGE, &obj);
-+	if (ret) {
-+		dev_dbg(cs35l56->base.dev, "Could not get spk-id-gpios package: %d\n", ret);
-+		return -ENOENT;
-+	}
-+
-+	/* The broken properties we can handle are a 4-element package (one GPIO) */
-+	if (obj->package.count != 4) {
-+		dev_warn(cs35l56->base.dev, "Unexpected spk-id element count %d\n",
-+			 obj->package.count);
-+		return -ENOENT;
-+	}
-+
-+	/* Add a GPIO mapping if it doesn't already have one */
-+	if (!fwnode_property_present(af01_fwnode, "spk-id-gpios")) {
-+		struct acpi_device *adev = to_acpi_device_node(af01_fwnode);
-+
-+		/*
-+		 * Can't use devm_acpi_dev_add_driver_gpios() because the
-+		 * mapping isn't being added to the node pointed to by
-+		 * ACPI_COMPANION().
-+		 */
-+		ret = acpi_dev_add_driver_gpios(adev, cs35l56_af01_spkid_gpios_mapping);
-+		if (ret) {
-+			return dev_err_probe(cs35l56->base.dev, ret,
-+					     "Failed to add gpio mapping to AF01\n");
-+		}
-+
-+		ret = devm_add_action_or_reset(cs35l56->base.dev,
-+					       cs35l56_acpi_dev_release_driver_gpios,
-+					       adev);
-+		if (ret)
-+			return ret;
-+
-+		dev_dbg(cs35l56->base.dev, "Added spk-id-gpios mapping to AF01\n");
-+	}
-+
-+	desc = fwnode_gpiod_get_index(af01_fwnode, "spk-id", 0, GPIOD_IN, NULL);
-+	if (IS_ERR(desc)) {
-+		ret = PTR_ERR(desc);
-+		return dev_err_probe(cs35l56->base.dev, ret, "Get GPIO from AF01 failed\n");
-+	}
-+
-+	ret = gpiod_get_value_cansleep(desc);
-+	gpiod_put(desc);
-+
-+	if (ret < 0) {
-+		dev_err_probe(cs35l56->base.dev, ret, "Error reading spk-id GPIO\n");
-+		return ret;
-+		}
-+
-+	dev_info(cs35l56->base.dev, "Got spk-id from AF01\n");
-+
-+	return ret;
-+}
-+
- int cs35l56_common_probe(struct cs35l56_private *cs35l56)
- {
- 	int ret;
-@@ -1304,6 +1394,9 @@ int cs35l56_common_probe(struct cs35l56_private *cs35l56)
- 	}
- 
- 	ret = cs35l56_get_speaker_id(&cs35l56->base);
-+	if (ACPI_COMPANION(cs35l56->base.dev) && cs35l56->sdw_peripheral && (ret == -ENOENT))
-+		ret = cs35l56_try_get_broken_sdca_spkid_gpio(cs35l56);
-+
- 	if ((ret < 0) && (ret != -ENOENT))
- 		goto err;
- 
+diff --git a/arch/s390/include/asm/bug.h b/arch/s390/include/asm/bug.h
+index aebe1e22c7be..c500d45fb465 100644
+--- a/arch/s390/include/asm/bug.h
++++ b/arch/s390/include/asm/bug.h
+@@ -14,7 +14,7 @@
+ 		".section .rodata.str,\"aMS\",@progbits,1\n"	\
+ 		"1:	.asciz	\""__FILE__"\"\n"		\
+ 		".previous\n"					\
+-		".section __bug_table,\"awM\",@progbits,%2\n"	\
++		".section __bug_table,\"aw\"\n"			\
+ 		"2:	.long	0b-.\n"				\
+ 		"	.long	1b-.\n"				\
+ 		"	.short	%0,%1\n"			\
+@@ -30,7 +30,7 @@
+ #define __EMIT_BUG(x) do {					\
+ 	asm_inline volatile(					\
+ 		"0:	mc	0,0\n"				\
+-		".section __bug_table,\"awM\",@progbits,%1\n"	\
++		".section __bug_table,\"aw\"\n"			\
+ 		"1:	.long	0b-.\n"				\
+ 		"	.short	%0\n"				\
+ 		"	.org	1b+%1\n"			\
 -- 
-2.30.2
+2.40.1
+
+From bdca9b8dcf3f0884341f491d54502d4cbe660446 Mon Sep 17 00:00:00 2001
+From: Heiko Carstens <hca@linux.ibm.com>
+Date: Fri, 9 Feb 2024 11:54:01 +0100
+Subject: [PATCH 2/2] s390/vdso: remove unused ENTRY in linker scripts
+
+When linking vdso64.so.dbg with ld.lld, there is a warning about not
+finding _start for the starting address:
+
+  ld.lld: warning: cannot find entry symbol _start; not setting start address
+
+Fix this be removing the unused ENTRY in both vdso linker scripts. See
+commit e247172854a5 ("powerpc/vdso: Remove unused ENTRY in linker
+scripts"), which solved the same problem for powerpc, for further details.
+
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+---
+ arch/s390/kernel/vdso32/vdso32.lds.S | 1 -
+ arch/s390/kernel/vdso64/vdso64.lds.S | 1 -
+ 2 files changed, 2 deletions(-)
+
+diff --git a/arch/s390/kernel/vdso32/vdso32.lds.S b/arch/s390/kernel/vdso32/vdso32.lds.S
+index edf5ff1debe1..65b9513a5a0e 100644
+--- a/arch/s390/kernel/vdso32/vdso32.lds.S
++++ b/arch/s390/kernel/vdso32/vdso32.lds.S
+@@ -9,7 +9,6 @@
+ 
+ OUTPUT_FORMAT("elf32-s390", "elf32-s390", "elf32-s390")
+ OUTPUT_ARCH(s390:31-bit)
+-ENTRY(_start)
+ 
+ SECTIONS
+ {
+diff --git a/arch/s390/kernel/vdso64/vdso64.lds.S b/arch/s390/kernel/vdso64/vdso64.lds.S
+index 4461ea151e49..37e2a505e81d 100644
+--- a/arch/s390/kernel/vdso64/vdso64.lds.S
++++ b/arch/s390/kernel/vdso64/vdso64.lds.S
+@@ -9,7 +9,6 @@
+ 
+ OUTPUT_FORMAT("elf64-s390", "elf64-s390", "elf64-s390")
+ OUTPUT_ARCH(s390:64-bit)
+-ENTRY(_start)
+ 
+ SECTIONS
+ {
+-- 
+2.40.1
 
 
