@@ -1,219 +1,125 @@
-Return-Path: <linux-kernel+bounces-59586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0904884F95B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:09:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 955B984F81D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:04:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E7D31F219F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:09:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1132D282C48
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:04:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85797BAF1;
-	Fri,  9 Feb 2024 16:09:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9A96DCEB;
+	Fri,  9 Feb 2024 15:04:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UVhP4BDn"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QsUZrFYs"
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A1C7B3F3
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 16:09:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A267736B17;
+	Fri,  9 Feb 2024 15:04:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707494956; cv=none; b=m6bGgjev6e9iJJcrR/zRhpamcgP1CPdBm6IBvehQTEmkv840qvUttBmsA4CHTRVcwsPcC7jcYsYopq0jt/kCljjY2c3+dPbs8fcm4RigiIIVKkYV7JxdX12yeQo2I8PQxk1//Pwot75FKLi3webI/WbvPESB7Ru6lRjT3I05V6Q=
+	t=1707491067; cv=none; b=h7Ki8t956V0hk0WBks3exkahRDEdEW6MsXvUx2oGgC9VfYjCOVN0Ybo0wB0fnd1GgWkZ2fijqGH2vtbw5h+1CwZwduYMtMnqiFyhZf8b4bi5SYBCRSQTB2TTp5gGb1yjN8A8eSA5yukMKemWD4UH4hLiddgcPLBckkChHXDx4EU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707494956; c=relaxed/simple;
-	bh=q6wyummIqcmZDUbzboQvNIEztcMivzauItQGnEHzm+k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NzwoHLWdPWm9IiF7VTxmLVO8MMVEZihnfVznAlNmQfD7/usvS+rhJLvVsw8wjGf+XArPe0k3chAMvRY7+DtAk3oQgo2LrjP8yKkTPnah8P/NdNvnmPWifOs7UPEfWoW9LP7B23I4Kr7cc85DQ6u1UPAK1eldSHEY6kvp3wGZVmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UVhP4BDn; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707494953;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0KdzfFxuaAxTQegBPNRDPqdrZtFIwl4Nb3u77kWuWvE=;
-	b=UVhP4BDnr4TT3xxFiZIz5/YxuZZf5Tz9rPbinnpcRH2GiWX/krO9wdpO2s2LcoXe5Q2sVt
-	gXsVA6pvVDkRCVws/IMjGAK8Uvhc5aeHtnTLnBD6VGJterMRaKDc6larDMjW3NoTfVbk0V
-	gusCk7sWNf2ZnEMNrIxlPY90rgSN4jk=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-494-58nEO-BdNnKrOcjPFr-AOQ-1; Fri,
- 09 Feb 2024 11:09:06 -0500
-X-MC-Unique: 58nEO-BdNnKrOcjPFr-AOQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8651D38116E7;
-	Fri,  9 Feb 2024 16:09:04 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.4])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 6D61840C9444;
-	Fri,  9 Feb 2024 16:09:03 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id 81307400E52ED; Wed,  7 Feb 2024 11:59:21 -0300 (-03)
-Date: Wed, 7 Feb 2024 11:59:21 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
-	Ryan Phillips <rphillips@redhat.com>,
-	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
-	Paul Gortmaker <paul.gortmaker@windriver.com>,
-	Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Costa Shulyupin <cshulyup@redhat.com>
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
-Message-ID: <ZcOaybEOJrpLsU/2@tpad>
-References: <20240117163511.88173-1-longman@redhat.com>
- <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
- <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
- <ZcIsd6fjgmsb2dxr@localhost.localdomain>
- <ZcKFRqrUh5tTbsaJ@tpad>
- <ZcOYEkHCoh75R-LA@localhost.localdomain>
+	s=arc-20240116; t=1707491067; c=relaxed/simple;
+	bh=ZRSisilKJc76i9g2Gk5VSIp9IkLwfEK0p1NI0di/5FY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ISzQHr5UVdyKYy1Hjc8MCuog+imZPE75tUSE9wQYBfjKj7nDAkFzqfCpNG5GS/weTgk4YxeBdpj+uPa0KVG/FxZTLTBThLhxDkrTFILZy+UlAiamIef7bo95mTzW4Fm3YtsJxJ6YFounScpryS0YxrEw8vBcVqtlZMOKWZAvloA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QsUZrFYs; arc=none smtp.client-ip=209.85.161.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-59a58ef4a04so372832eaf.2;
+        Fri, 09 Feb 2024 07:04:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707491064; x=1708095864; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=oEEKiyCy3uksk7VJQy89Cmz4Lyoddeyzzlh6/wRqFSk=;
+        b=QsUZrFYsywdckeQjAV9sLT0y6VY3ahayABd1yCVZKiL71aO3fWwfUy+Q76fDDqDvaN
+         1wq3JqElFIYJzB3fBw1x0H3bQxK09ZKZGlCJjy85YdAN4tOWKjFfRQotHn20aQgk0hHP
+         2J3WP/3+x1W07vOZy2UFWTp9ZLTCeu1JYfWXShrS7lYXcGzewUhp5kJsq2rj0qaeiZX2
+         ObAB07bQEvyWuOI/EB+tyCYkmbFfZgGG+C2OcWkwylcPe7dzIbhyyL9glTPWdeCzbJXq
+         Bb4WWe5DJQq6ayQGASyNqKZLlyb27QzBrHxrzQqI6BFs3g/19vxvgESBj9WI6czsyRZy
+         ikxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707491064; x=1708095864;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oEEKiyCy3uksk7VJQy89Cmz4Lyoddeyzzlh6/wRqFSk=;
+        b=RweZkNR+E2duDspESX+8/hrXygzGerjQiG9TTDuFItWl/V8dZSnXRnVKSTLPHSXdLG
+         8/AM9Wjexs/fKTCaoVOVVK7tff0qQ7KKPFg/kbtcoOdHDszdFtfOjqWFAI36BEgmNAui
+         q3+WATFdDy3A58jOH15N5NjBYcjYyciuG76GimqowJMQ8fTT50wPFLpDwnaIeK6YOOEK
+         fpPQme7jQ/IyTHFM7esQxmJRVc/ankr4a14WYmVsENBJgeOGFQKTO52/BYiKhAcVmZOy
+         njGlbbjg8r9Bhko/Fgz8U+axpkajgEBdyI4SVgBfzOOPsAjcS4++KxjjJ5q4+4oO3A1S
+         GSoA==
+X-Gm-Message-State: AOJu0YwKze/7/NGCgyAtYi6wCtQMWXx1evC+gm5CjwD2YhyVoTeLVb/B
+	51JWSFyqGsWyfD6gB4ysts2RLS0BH+u5TiaR7ksultx/fxNOD/04DcB7s7wL
+X-Google-Smtp-Source: AGHT+IGzCxP5fmYlns2HciQeCc2tm9zi+LPxyPoweh3ez2FzylL6+vFnQDZWwgORltCMjdQzjprv5Q==
+X-Received: by 2002:a05:6359:100b:b0:176:7f72:36af with SMTP id ib11-20020a056359100b00b001767f7236afmr2284406rwb.23.1707491064543;
+        Fri, 09 Feb 2024 07:04:24 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUee3PEp0CsiUAvk4mmRwQmE92SnZt/BbnBKOmciFzc1NoSg5yMCHKKk4yj1SXTkMRVQD+nGjsvYHgagMn44ua1+67P3V2+jevwTMcw
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l5-20020a632505000000b005b458aa0541sm1839622pgl.15.2024.02.09.07.04.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Feb 2024 07:04:24 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] hwmon fixes for v6.8-rc4
+Date: Fri,  9 Feb 2024 07:04:23 -0800
+Message-Id: <20240209150423.1339290-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZcOYEkHCoh75R-LA@localhost.localdomain>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Wed, Feb 07, 2024 at 03:47:46PM +0100, Frederic Weisbecker wrote:
-> Le Tue, Feb 06, 2024 at 04:15:18PM -0300, Marcelo Tosatti a écrit :
-> > On Tue, Feb 06, 2024 at 01:56:23PM +0100, Frederic Weisbecker wrote:
-> > > Le Wed, Jan 17, 2024 at 12:15:07PM -0500, Waiman Long a écrit :
-> > > > 
-> > > > On 1/17/24 12:07, Tejun Heo wrote:
-> > > > > Hello,
-> > > > > 
-> > > > > On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
-> > > > > > The first 2 patches are adopted from Federic with minor twists to fix
-> > > > > > merge conflicts and compilation issue. The rests are for implementing
-> > > > > > the new cpuset.cpus.isolation_full interface which is essentially a flag
-> > > > > > to globally enable or disable full CPU isolation on isolated partitions.
-> > > > > I think the interface is a bit premature. The cpuset partition feature is
-> > > > > already pretty restrictive and makes it really clear that it's to isolate
-> > > > > the CPUs. I think it'd be better to just enable all the isolation features
-> > > > > by default. If there are valid use cases which can't be served without
-> > > > > disabling some isolation features, we can worry about adding the interface
-> > > > > at that point.
-> > > > 
-> > > > My current thought is to make isolated partitions act like isolcpus=domain,
-> > > > additional CPU isolation capabilities are optional and can be turned on
-> > > > using isolation_full. However, I am fine with making all these turned on by
-> > > > default if it is the consensus.
-> > > 
-> > > Right it was the consensus last time I tried. Along with the fact that mutating
-> > > this isolation_full set has to be done on offline CPUs to simplify the whole
-> > > picture.
-> > > 
-> > > So lemme try to summarize what needs to be done:
-> > > 
-> > > 1) An all-isolation feature file (that is, all the HK_TYPE_* things) on/off for
-> > >   now. And if it ever proves needed, provide a way later for more finegrained
-> > >   tuning.
-> > > 
-> > > 2) This file must only apply to offline CPUs because it avoids migrations and
-> > >   stuff.
-> > > 
-> > > 3) I need to make RCU NOCB tunable only on offline CPUs, which isn't that much
-> > >    changes.
-> > > 
-> > > 4) HK_TYPE_TIMER:
-> > >    * Wrt. timers in general, not much needs to be done, the CPUs are
-> > >      offline. But:
-> > >    * arch/x86/kvm/x86.c does something weird
-> > >    * drivers/char/random.c might need some care
-> > >    * watchdog needs to be (de-)activated
-> > >    
-> > > 5) HK_TYPE_DOMAIN:
-> > >    * This one I fear is not mutable, this is isolcpus...
-> > 
-> > Except for HK_TYPE_DOMAIN, i have never seen anyone use any of this
-> > flags.
-> 
-> HK_TYPE_DOMAIN is used by isolcpus=domain,....
+Hi Linus,
 
-> HK_TYPE_MANAGED_IRQ is used by isolcpus=managed_irq,...
-> 
-> All the others (except HK_TYPE_SCHED) are used by nohz_full=
+Please pull hwmon fixes for Linux v6.8-rc4 from signed tag:
 
-I mean i've never seen any use of the individual flags being set.
+    git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v6.8-rc4
 
-You either want full isolation (nohz_full and all the flags together,
-except for HK_TYPE_DOMAIN which is sometimes enabled/disabled), or not.
+Thanks,
+Guenter
+------
 
-So why not group them all together ?
+The following changes since commit 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478:
 
-Do you know of any separate uses of these flags (except for
-HK_TYPE_DOMAIN).
+  Linux 6.8-rc3 (2024-02-04 12:20:36 +0000)
 
-> Thanks.
-> 
-> > 
-> > > 
-> > > 6) HK_TYPE_MANAGED_IRQ:
-> > >    * I prefer not to think about it :-)
-> > > 
-> > > 7) HK_TYPE_TICK:
-> > >    * Maybe some tiny ticks internals to revisit, I'll check that.
-> > >    * There is a remote tick to take into consideration, but again the
-> > >      CPUs are offline so it shouldn't be too complicated.
-> > > 
-> > > 8) HK_TYPE_WQ:
-> > >    * Fortunately we already have all the mutable interface in place.
-> > >      But we must make it live nicely with the sysfs workqueue affinity
-> > >      files.
-> > > 
-> > > 9) HK_FLAG_SCHED:
-> > >    * Oops, this one is ignored by nohz_full/isolcpus, isn't it?
-> > >    Should be removed?
-> > > 
-> > > 10) HK_TYPE_RCU:
-> > >     * That's point 3) and also some kthreads to affine, which leads us
-> > >      to the following in HK_TYPE_KTHREAD:
-> > > 
-> > > 11) HK_FLAG_KTHREAD:
-> > >     * I'm guessing it's fine as long as isolation_full is also an
-> > >       isolated partition. Then unbound kthreads shouldn't run there.
-> > > 
-> > > 12) HK_TYPE_MISC:
-> > >     * Should be fine as ILB isn't running on offline CPUs.
-> > > 
-> > > Thanks.
-> > > 
-> > > 
-> > 
-> 
-> 
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git tags/hwmon-for-v6.8-rc4
+
+for you to fetch changes up to 34cf8c657cf0365791cdc658ddbca9cc907726ce:
+
+  hwmon: (coretemp) Enlarge per package core count limit (2024-02-04 06:43:45 -0800)
+
+----------------------------------------------------------------
+hwmon fixes for v6.8-rc4
+
+- coretemp: Various fixes, and increase number of supported CPU cores
+
+- aspeed-pwm-tacho: Add missing mutex protection
+
+----------------------------------------------------------------
+Loic Prylli (1):
+      hwmon: (aspeed-pwm-tacho) mutex for tach reading
+
+Zhang Rui (3):
+      hwmon: (coretemp) Fix out-of-bounds memory access
+      hwmon: (coretemp) Fix bogus core_id to attr name mapping
+      hwmon: (coretemp) Enlarge per package core count limit
+
+ drivers/hwmon/aspeed-pwm-tacho.c |  7 +++++++
+ drivers/hwmon/coretemp.c         | 42 +++++++++++++++++++++-------------------
+ 2 files changed, 29 insertions(+), 20 deletions(-)
 
