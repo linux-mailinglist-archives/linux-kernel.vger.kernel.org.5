@@ -1,71 +1,70 @@
-Return-Path: <linux-kernel+bounces-60065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 246D484FF6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:08:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E85684FF6D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:08:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 916A41F2312D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:08:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BAE81C2160A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F7937712;
-	Fri,  9 Feb 2024 22:07:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D1A383BD;
+	Fri,  9 Feb 2024 22:08:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iV3pRkWz"
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="i7wj8mpT"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B02262E3E4
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:07:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E25FD374F1
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707516478; cv=none; b=Uur2DB61OHk3fbQFG4uwHCPoy2yLl8dBvmSQqhtCF0Fe6REg2atn7TsBfob/fLoMji8YyHrbMz1qbWt1bTtidA47YY8XxEzlkJ50jVaCEH9Cx8I+jVYIXlS364G/fuEIcHclk+ix0yzbPok6vtT/RuaPNx0CEWyGGDuuglKSsnw=
+	t=1707516480; cv=none; b=uz5RyuK9XquBZ75ykfR/hyOp+hf2nzFqJG/k7Ad62l+40xzoLrDUb24cASuzS7XWtFUFOcepXt35fxVdxJdHjbIsjYsrv6BZw5r1n4tlNlByJsczna6HTVEERZungBXmtQdx1zOaTNX37vLLokMpjPfKWOjS+rAQPeJzJMilGOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707516478; c=relaxed/simple;
-	bh=tE+i5lckoNKi5LZ+zGcYRN1t8CsZXHHGefdI5PfmogI=;
+	s=arc-20240116; t=1707516480; c=relaxed/simple;
+	bh=G8yYb549bHS0dm420NgpCxsXl+WFxhziVrxJ57VN10A=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=B+s79yuxjHuhOZwF9rfe2YKr2tQXKFC5Co7Y1xMAHjajZ9EHhRdIP2AF3XII8dRmGEVkvwZJXWOuk4VrgxvqpVWUXj30B995KJqNWSaxp3rjUNqXD0WQqBCk04XIeTgQTUjY0A9zYA15elRh5oVpzuGP9wBWqMcnYpkihDGM0bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iV3pRkWz; arc=none smtp.client-ip=209.85.210.202
+	 To:Cc:Content-Type; b=eoCW/FZvy0GdxNycAbzI066bSNwHPpBfNW3kFyFQMRZixKhzI01pwMT25shXHj/nmzz7xoVcVN/hC7v1CplgrAywXkQYaJEHSOo8hHaySDyyCgWNTSbrmfSvgmn1iT3szJ595TqElULEuMjKAsLXz4aivkhYYXWuwStm3cg5WGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=i7wj8mpT; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e0a1319564so259354b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:07:56 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc3645a6790so2659196276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:07:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707516476; x=1708121276; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707516478; x=1708121278; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q5iZonwpCcwElOpqVQkLRvEEz2rVwQoo1oJ2WukMR1A=;
-        b=iV3pRkWzjlWhe4rHpFOiBX0l03uV4aOOWm0UaKQHif4Nkdup2G8PLIKcwQhCk9AEdr
-         LaGG424y8o99rC3dr3vxhSOoR/peI4yeFeX1+s49V29JXxlifwHTNtW7mqYxukR/u9cR
-         ldhpY+WTIQQB1j0hq3K+yaAu54ckmO2EeegdjhgR5YTqj9nP/cSLNjL21LHx0qV4U/rv
-         uc4GaQDmD2hS9pqAIC1SbLs+g2T2YacGYNoyU7VZ2wodnaDKfFdSCZ9cpukBFQiwxORx
-         FquKcQb3fGyBMneR5BpQZSYdubjMd3tWrbtAD9x76Afrc+z4oL4mRuTgqU+mzTM1DqNn
-         q5mg==
+        bh=CiNmwT6G4ZjT0uaWThby9fO5R8PDoaUWp6GHwG0vlXE=;
+        b=i7wj8mpT2zu8prxr0fg8qTWPuPGzcSLsfevxIA4G/j/GW1uT+DgC7iDbKEJRsJDUWg
+         Ze3zk3Smrhr2K4gI8a+GJcqWFYWhirb2JRM3StOeI/WhXRcEuYGlEuknN6YJFHcQAGx1
+         0MKHYuA+RuBlXRQev3GiCgaZKPownxAt199ZKw62NmBAZ7iLTYdEuo/MRHfBtycreJQy
+         bJUJskw22D7APpQQb82n1UyGN2NPUFMP026cf+yu9mgM2qio7qQEhVkgq1AovB8Rwqc/
+         kAxMCbfCZvWemxJPp+5Yk3TF4+OlYfKKn1jGP3Ndj3aBB7c4mL8VJqJ7iHU9LEGGGQju
+         tzBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707516476; x=1708121276;
+        d=1e100.net; s=20230601; t=1707516478; x=1708121278;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Q5iZonwpCcwElOpqVQkLRvEEz2rVwQoo1oJ2WukMR1A=;
-        b=eHWLYrJ+bF5W7CSA+K6aLxAEA0KUrZkKgvDAxSkUoEBJlESMwGxY5iA6mbB/mbLv2d
-         2n0XVcMmLT49BJXoJf4qRSZpu/zVBEpIO7FckCrlu3+l0RQT2Rot/0gFl93PbyOZtnl4
-         7OFbWdlncBaNVio2P/jxsLRZaHfAOavRxRPv7jWvKj1lXRKZjdgnNuNDHHqysDJN287M
-         /bfEksQUQr0b1tIAfKVzX5eYKViOVEjs1dwq+zZoImOKuhNdVAin7SDaUP7az0lnCt95
-         apLEXesZIAswecl5NYvCxc0/UPQFr5FncEEo2auRNb/og8g10DmpbOo8tY0mWOS+Qs18
-         34Cg==
-X-Forwarded-Encrypted: i=1; AJvYcCVFRXOzVqD8tnRI3qAO+fkVKEWXxI147ty1J1fRghWEMs63uCbO52CiRG3LtRr5oyLLcpBIMLtdwmuLXLHaKbgdJUyLfwtWxr5fOOHu
-X-Gm-Message-State: AOJu0Yy0biBRiVbvthsqeFRbcSrPAqvGLzlEBigsfZaVuMUI6xR9N3Ie
-	RSI3CUHMQkUUV9rkuFvfs+MJfursFKeVHM1jqdTNo0RQDyZZWe/cyNID8QFkOB1PFozIYTctAHD
-	r3g==
-X-Google-Smtp-Source: AGHT+IGEgW+nTH2s535ufAqGd1V+CP08RNOpdVFrmQ5xwVg9mYOBqWc8ji4I09q+8NDBwLwA1FBJzHbTbYI=
+        bh=CiNmwT6G4ZjT0uaWThby9fO5R8PDoaUWp6GHwG0vlXE=;
+        b=jDko3zWCnkOX9HBqNJ0mDHiaRgu2FzOwDtio2w+oFdJ2HRDnm33zsrkz+yrakbbL4H
+         jVaLm/OCp7HsYDCAYtXUaTata0MZ9eBfGyQGEGKFWZiIbQELoN2b+QgLny7XmFpyiDID
+         SLhuFsYnM79iVQNoO5mvsPXW7X/dQ/PSBabSRs7Gw5qj02yHwUnMdQhOzp2Ai7NL4nsT
+         cPgIgIqo6jq1/LH1SSh9WNSzI9I/acHwm4h1JweRWQpMFy7v/OJoQamWLC5ZSj4MFsVv
+         ML011ml1LXdmljeK60+/RqI/dThob4wNal+SXAX8cg4Ea+d1isO9tzwHAmyEDvMQzERg
+         ldFw==
+X-Gm-Message-State: AOJu0Ywxnf2ZZyo/iPDkBjJi0Um8l/GxiySlYU0GWYvARP6e1EKA11od
+	/puxeWVaYXVna/ytGnLE6iKo2Ojzm11uwfFesJYaWEuwNx3yhXIDJR27jO8Yjpq83V8qOYHnPvC
+	yMg==
+X-Google-Smtp-Source: AGHT+IHtfM9LTc4d2GpYZt5fisFL8uhOLCh2hC0auqTcKJbjQu/fK8j5e8AkLzG6VyiPL+ddqdUewMn6buY=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:928b:b0:6e0:2d2c:d2ec with SMTP id
- jw11-20020a056a00928b00b006e02d2cd2ecmr21618pfb.0.1707516476036; Fri, 09 Feb
- 2024 14:07:56 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6902:18d2:b0:dc6:d233:ffdd with SMTP id
+ ck18-20020a05690218d200b00dc6d233ffddmr112509ybb.0.1707516477995; Fri, 09 Feb
+ 2024 14:07:57 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri,  9 Feb 2024 14:07:51 -0800
+Date: Fri,  9 Feb 2024 14:07:52 -0800
 In-Reply-To: <20240209220752.388160-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,274 +74,87 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240209220752.388160-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240209220752.388160-2-seanjc@google.com>
-Subject: [PATCH 1/2] KVM: x86: Make kvm_get_dr() return a value, not use an
- out parameter
+Message-ID: <20240209220752.388160-3-seanjc@google.com>
+Subject: [PATCH 2/2] KVM: x86: Open code all direct reads to guest DR6 and DR7
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Mathias Krause <minipli@grsecurity.net>
 Content-Type: text/plain; charset="UTF-8"
 
-Convert kvm_get_dr()'s output parameter to a return value, and clean up
-most of the mess that was created by forcing callers to provide a pointer.
+Bite the bullet, and open code all direct reads of DR6 and DR7.  KVM
+currently has a mix of open coded accesses and calls to kvm_get_dr(),
+which is confusing and ugly because there's no rhyme or reason as to why
+any particular chunk of code uses kvm_get_dr().
+
+The obvious alternative is to force all accesses through kvm_get_dr(),
+but it's not at all clear that doing so would be a net positive, e.g. even
+if KVM ends up wanting/needing to force all reads through a common helper,
+e.g. to play caching games, the cost of reverting this change is likely
+lower than the ongoing cost of maintaining weird, arbitrary code.
 
 No functional change intended.
 
-Acked-by: Mathias Krause <minipli@grsecurity.net>
+Cc: Mathias Krause <minipli@grsecurity.net>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/include/asm/kvm_host.h |  2 +-
- arch/x86/kvm/emulate.c          | 17 ++++-------------
- arch/x86/kvm/kvm_emulate.h      |  2 +-
- arch/x86/kvm/smm.c              | 15 ++++-----------
- arch/x86/kvm/svm/svm.c          |  7 ++-----
- arch/x86/kvm/vmx/nested.c       |  2 +-
- arch/x86/kvm/vmx/vmx.c          |  5 +----
- arch/x86/kvm/x86.c              | 20 +++++++-------------
- 8 files changed, 21 insertions(+), 49 deletions(-)
+ arch/x86/kvm/smm.c        | 8 ++++----
+ arch/x86/kvm/vmx/nested.c | 2 +-
+ arch/x86/kvm/x86.c        | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index ad5319a503f0..464fa2197748 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -2046,7 +2046,7 @@ int kvm_set_cr3(struct kvm_vcpu *vcpu, unsigned long cr3);
- int kvm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4);
- int kvm_set_cr8(struct kvm_vcpu *vcpu, unsigned long cr8);
- int kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val);
--void kvm_get_dr(struct kvm_vcpu *vcpu, int dr, unsigned long *val);
-+unsigned long kvm_get_dr(struct kvm_vcpu *vcpu, int dr);
- unsigned long kvm_get_cr8(struct kvm_vcpu *vcpu);
- void kvm_lmsw(struct kvm_vcpu *vcpu, unsigned long msw);
- int kvm_emulate_xsetbv(struct kvm_vcpu *vcpu);
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index 695ab5b6055c..33444627fcf4 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -3011,7 +3011,7 @@ static int emulator_do_task_switch(struct x86_emulate_ctxt *ctxt,
- 		ret = em_push(ctxt);
- 	}
- 
--	ops->get_dr(ctxt, 7, &dr7);
-+	dr7 = ops->get_dr(ctxt, 7);
- 	ops->set_dr(ctxt, 7, dr7 & ~(DR_LOCAL_ENABLE_MASK | DR_LOCAL_SLOWDOWN));
- 
- 	return ret;
-@@ -3866,15 +3866,6 @@ static int check_cr_access(struct x86_emulate_ctxt *ctxt)
- 	return X86EMUL_CONTINUE;
- }
- 
--static int check_dr7_gd(struct x86_emulate_ctxt *ctxt)
--{
--	unsigned long dr7;
--
--	ctxt->ops->get_dr(ctxt, 7, &dr7);
--
--	return dr7 & DR7_GD;
--}
--
- static int check_dr_read(struct x86_emulate_ctxt *ctxt)
- {
- 	int dr = ctxt->modrm_reg;
-@@ -3887,10 +3878,10 @@ static int check_dr_read(struct x86_emulate_ctxt *ctxt)
- 	if ((cr4 & X86_CR4_DE) && (dr == 4 || dr == 5))
- 		return emulate_ud(ctxt);
- 
--	if (check_dr7_gd(ctxt)) {
-+	if (ctxt->ops->get_dr(ctxt, 7) & DR7_GD) {
- 		ulong dr6;
- 
--		ctxt->ops->get_dr(ctxt, 6, &dr6);
-+		dr6 = ctxt->ops->get_dr(ctxt, 6);
- 		dr6 &= ~DR_TRAP_BITS;
- 		dr6 |= DR6_BD | DR6_ACTIVE_LOW;
- 		ctxt->ops->set_dr(ctxt, 6, dr6);
-@@ -5449,7 +5440,7 @@ int x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
- 		ctxt->dst.val = ops->get_cr(ctxt, ctxt->modrm_reg);
- 		break;
- 	case 0x21: /* mov from dr to reg */
--		ops->get_dr(ctxt, ctxt->modrm_reg, &ctxt->dst.val);
-+		ctxt->dst.val = ops->get_dr(ctxt, ctxt->modrm_reg);
- 		break;
- 	case 0x40 ... 0x4f:	/* cmov */
- 		if (test_cc(ctxt->b, ctxt->eflags))
-diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
-index 4351149484fb..5382646162a3 100644
---- a/arch/x86/kvm/kvm_emulate.h
-+++ b/arch/x86/kvm/kvm_emulate.h
-@@ -203,7 +203,7 @@ struct x86_emulate_ops {
- 	ulong (*get_cr)(struct x86_emulate_ctxt *ctxt, int cr);
- 	int (*set_cr)(struct x86_emulate_ctxt *ctxt, int cr, ulong val);
- 	int (*cpl)(struct x86_emulate_ctxt *ctxt);
--	void (*get_dr)(struct x86_emulate_ctxt *ctxt, int dr, ulong *dest);
-+	ulong (*get_dr)(struct x86_emulate_ctxt *ctxt, int dr);
- 	int (*set_dr)(struct x86_emulate_ctxt *ctxt, int dr, ulong value);
- 	int (*set_msr_with_filter)(struct x86_emulate_ctxt *ctxt, u32 msr_index, u64 data);
- 	int (*get_msr_with_filter)(struct x86_emulate_ctxt *ctxt, u32 msr_index, u64 *pdata);
 diff --git a/arch/x86/kvm/smm.c b/arch/x86/kvm/smm.c
-index dc3d95fdca7d..19a7a0a31953 100644
+index 19a7a0a31953..d06d43d8d2aa 100644
 --- a/arch/x86/kvm/smm.c
 +++ b/arch/x86/kvm/smm.c
-@@ -184,7 +184,6 @@ static void enter_smm_save_state_32(struct kvm_vcpu *vcpu,
- 				    struct kvm_smram_state_32 *smram)
- {
- 	struct desc_ptr dt;
--	unsigned long val;
- 	int i;
- 
- 	smram->cr0     = kvm_read_cr0(vcpu);
-@@ -195,10 +194,8 @@ static void enter_smm_save_state_32(struct kvm_vcpu *vcpu,
+@@ -194,8 +194,8 @@ static void enter_smm_save_state_32(struct kvm_vcpu *vcpu,
  	for (i = 0; i < 8; i++)
  		smram->gprs[i] = kvm_register_read_raw(vcpu, i);
  
--	kvm_get_dr(vcpu, 6, &val);
--	smram->dr6     = (u32)val;
--	kvm_get_dr(vcpu, 7, &val);
--	smram->dr7     = (u32)val;
-+	smram->dr6     = (u32)kvm_get_dr(vcpu, 6);
-+	smram->dr7     = (u32)kvm_get_dr(vcpu, 7);
+-	smram->dr6     = (u32)kvm_get_dr(vcpu, 6);
+-	smram->dr7     = (u32)kvm_get_dr(vcpu, 7);
++	smram->dr6     = (u32)vcpu->arch.dr6;
++	smram->dr7     = (u32)vcpu->arch.dr7;
  
  	enter_smm_save_seg_32(vcpu, &smram->tr, &smram->tr_sel, VCPU_SREG_TR);
  	enter_smm_save_seg_32(vcpu, &smram->ldtr, &smram->ldtr_sel, VCPU_SREG_LDTR);
-@@ -231,7 +228,6 @@ static void enter_smm_save_state_64(struct kvm_vcpu *vcpu,
- 				    struct kvm_smram_state_64 *smram)
- {
- 	struct desc_ptr dt;
--	unsigned long val;
- 	int i;
- 
- 	for (i = 0; i < 16; i++)
-@@ -240,11 +236,8 @@ static void enter_smm_save_state_64(struct kvm_vcpu *vcpu,
+@@ -236,8 +236,8 @@ static void enter_smm_save_state_64(struct kvm_vcpu *vcpu,
  	smram->rip    = kvm_rip_read(vcpu);
  	smram->rflags = kvm_get_rflags(vcpu);
  
--
--	kvm_get_dr(vcpu, 6, &val);
--	smram->dr6 = val;
--	kvm_get_dr(vcpu, 7, &val);
--	smram->dr7 = val;
-+	smram->dr6 = kvm_get_dr(vcpu, 6);
-+	smram->dr7 = kvm_get_dr(vcpu, 7);
+-	smram->dr6 = kvm_get_dr(vcpu, 6);
+-	smram->dr7 = kvm_get_dr(vcpu, 7);
++	smram->dr6 = vcpu->arch.dr6;
++	smram->dr7 = vcpu->arch.dr7;
  
  	smram->cr0 = kvm_read_cr0(vcpu);
  	smram->cr3 = kvm_read_cr3(vcpu);
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index e90b429c84f1..dda91f7cd71b 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -2735,7 +2735,6 @@ static int dr_interception(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	int reg, dr;
--	unsigned long val;
- 	int err = 0;
- 
- 	/*
-@@ -2763,11 +2762,9 @@ static int dr_interception(struct kvm_vcpu *vcpu)
- 	dr = svm->vmcb->control.exit_code - SVM_EXIT_READ_DR0;
- 	if (dr >= 16) { /* mov to DRn  */
- 		dr -= 16;
--		val = kvm_register_read(vcpu, reg);
--		err = kvm_set_dr(vcpu, dr, val);
-+		err = kvm_set_dr(vcpu, dr, kvm_register_read(vcpu, reg));
- 	} else {
--		kvm_get_dr(vcpu, dr, &val);
--		kvm_register_write(vcpu, reg, val);
-+		kvm_register_write(vcpu, reg, kvm_get_dr(vcpu, dr));
- 	}
- 
- 	return kvm_complete_insn_gp(vcpu, err);
 diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 994e014f8a50..28d1088a1770 100644
+index 28d1088a1770..d05ddf751491 100644
 --- a/arch/x86/kvm/vmx/nested.c
 +++ b/arch/x86/kvm/vmx/nested.c
 @@ -4433,7 +4433,7 @@ static void sync_vmcs02_to_vmcs12(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12)
  		(vm_entry_controls_get(to_vmx(vcpu)) & VM_ENTRY_IA32E_MODE);
  
  	if (vmcs12->vm_exit_controls & VM_EXIT_SAVE_DEBUG_CONTROLS)
--		kvm_get_dr(vcpu, 7, (unsigned long *)&vmcs12->guest_dr7);
-+		vmcs12->guest_dr7 = kvm_get_dr(vcpu, 7);
+-		vmcs12->guest_dr7 = kvm_get_dr(vcpu, 7);
++		vmcs12->guest_dr7 = vcpu->arch.dr7;
  
  	if (vmcs12->vm_exit_controls & VM_EXIT_SAVE_IA32_EFER)
  		vmcs12->guest_ia32_efer = vcpu->arch.efer;
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index e262bc2ba4e5..aa47433d0c9b 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5566,10 +5566,7 @@ static int handle_dr(struct kvm_vcpu *vcpu)
- 
- 	reg = DEBUG_REG_ACCESS_REG(exit_qualification);
- 	if (exit_qualification & TYPE_MOV_FROM_DR) {
--		unsigned long val;
--
--		kvm_get_dr(vcpu, dr, &val);
--		kvm_register_write(vcpu, reg, val);
-+		kvm_register_write(vcpu, reg, kvm_get_dr(vcpu, dr));
- 		err = 0;
- 	} else {
- 		err = kvm_set_dr(vcpu, dr, kvm_register_read(vcpu, reg));
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b66c45e7f6f8..bfffc13f91e6 100644
+index bfffc13f91e6..5a08d895bde6 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -1399,22 +1399,19 @@ int kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
- }
- EXPORT_SYMBOL_GPL(kvm_set_dr);
- 
--void kvm_get_dr(struct kvm_vcpu *vcpu, int dr, unsigned long *val)
-+unsigned long kvm_get_dr(struct kvm_vcpu *vcpu, int dr)
- {
- 	size_t size = ARRAY_SIZE(vcpu->arch.db);
- 
- 	switch (dr) {
- 	case 0 ... 3:
--		*val = vcpu->arch.db[array_index_nospec(dr, size)];
--		break;
-+		return vcpu->arch.db[array_index_nospec(dr, size)];
- 	case 4:
- 	case 6:
--		*val = vcpu->arch.dr6;
--		break;
-+		return vcpu->arch.dr6;
- 	case 5:
- 	default: /* 7 */
--		*val = vcpu->arch.dr7;
--		break;
-+		return vcpu->arch.dr7;
- 	}
- }
- EXPORT_SYMBOL_GPL(kvm_get_dr);
-@@ -5505,7 +5502,6 @@ static int kvm_vcpu_ioctl_x86_set_vcpu_events(struct kvm_vcpu *vcpu,
- static void kvm_vcpu_ioctl_x86_get_debugregs(struct kvm_vcpu *vcpu,
- 					     struct kvm_debugregs *dbgregs)
- {
--	unsigned long val;
- 	unsigned int i;
- 
- 	memset(dbgregs, 0, sizeof(*dbgregs));
-@@ -5514,8 +5510,7 @@ static void kvm_vcpu_ioctl_x86_get_debugregs(struct kvm_vcpu *vcpu,
+@@ -5510,7 +5510,7 @@ static void kvm_vcpu_ioctl_x86_get_debugregs(struct kvm_vcpu *vcpu,
  	for (i = 0; i < ARRAY_SIZE(vcpu->arch.db); i++)
  		dbgregs->db[i] = vcpu->arch.db[i];
  
--	kvm_get_dr(vcpu, 6, &val);
--	dbgregs->dr6 = val;
-+	dbgregs->dr6 = kvm_get_dr(vcpu, 6);
+-	dbgregs->dr6 = kvm_get_dr(vcpu, 6);
++	dbgregs->dr6 = vcpu->arch.dr6;
  	dbgregs->dr7 = vcpu->arch.dr7;
  }
  
-@@ -8169,10 +8164,9 @@ static void emulator_wbinvd(struct x86_emulate_ctxt *ctxt)
- 	kvm_emulate_wbinvd_noskip(emul_to_vcpu(ctxt));
- }
- 
--static void emulator_get_dr(struct x86_emulate_ctxt *ctxt, int dr,
--			    unsigned long *dest)
-+static unsigned long emulator_get_dr(struct x86_emulate_ctxt *ctxt, int dr)
- {
--	kvm_get_dr(emul_to_vcpu(ctxt), dr, dest);
-+	return kvm_get_dr(emul_to_vcpu(ctxt), dr);
- }
- 
- static int emulator_set_dr(struct x86_emulate_ctxt *ctxt, int dr,
 -- 
 2.43.0.687.g38aa6559b0-goog
 
