@@ -1,67 +1,57 @@
-Return-Path: <linux-kernel+bounces-60044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E3EA84FF0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:41:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4FBC84FF11
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:41:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F6A11F242C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:41:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6E021C22A21
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5766520DED;
-	Fri,  9 Feb 2024 21:41:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18187210EE;
+	Fri,  9 Feb 2024 21:41:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q+2KEg6G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dfYPjTW2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7EF149DFA;
-	Fri,  9 Feb 2024 21:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BE418623;
+	Fri,  9 Feb 2024 21:41:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707514874; cv=none; b=R8rEgcOyxEbDRnHYcZeFcr2lLqODvGO3zs+rMQLzHjn3LjHhNAw+8pi1VpaNkf0jnMQlk+W+TnaSW6GVnBeS9Vbzj8+DyNgeHUwqTztlgXL01K+rwlTlYBSXCZqDrPdCrA7eEWAme1Eyl38U+7uiRtYn0gmZtX7exVFmf9SdzZ4=
+	t=1707514899; cv=none; b=AnsQR5fcpDAeDxCr6toTiNq7KTqMQYXXDipnbcLKcEuvJv8/mqxjsDCk1ARnFzFcT73nKuD4VjZoRF8I5cGQyPxESO5nCgGHgyd5l8H9RDsK690FARb9cYjHJ4wbYB63HmcemHASabO3N1mgySzE98PWMOj3sxVZCLxkdCe1J0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707514874; c=relaxed/simple;
-	bh=tZosFHr8PqySTr1vT1GdQmj3Mjs87KTJSyGNLrRgLVk=;
+	s=arc-20240116; t=1707514899; c=relaxed/simple;
+	bh=OMXjOqcj0vyMRFHFb4/8FrDLB9tXXJa22mR0yzx/u/g=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NECZWS9HoBuaft07CVPD9AhcOFMVzkyxGX+WXWfxhFkS4gcIHT5ZW47U9pJVlV8vpfOmx7y4zNvhjJ7GZCtDOX/J2Z68ZGcKZr0i6J1RX4gW7Knzyn4oxs/NH+sKppaFlg6Pv4dDGAZdEWTBwoqI+sScvHWWe0JGLQ3BAHi+c0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q+2KEg6G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A29ABC433C7;
-	Fri,  9 Feb 2024 21:41:13 +0000 (UTC)
+	 MIME-Version:Content-Type; b=QOL3zarEykag+kdSi8Ab/e4IvPs1PoK7yJlVYt4Zr8uxh3HKCT9wjCjO8z54kjs85OxqfclQBxLx9pDopJsv9J5UnqSon72uuLkiTO9YRhTcOfUR93ctPNVC82Y5oZyZ93Y0iW2iOZsj36bPaef8/dhQlxfKaVKsVOjeR3CZj3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dfYPjTW2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EC33C433C7;
+	Fri,  9 Feb 2024 21:41:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707514874;
-	bh=tZosFHr8PqySTr1vT1GdQmj3Mjs87KTJSyGNLrRgLVk=;
+	s=k20201202; t=1707514898;
+	bh=OMXjOqcj0vyMRFHFb4/8FrDLB9tXXJa22mR0yzx/u/g=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Q+2KEg6Gv8Azh+UWCEMd0oRMkG+S1rsEZelQvAtkkhRzbqXTAhWJdfrPtGsHejdEx
-	 8FK3BDV5d+am8zpHfjdQDByOrgsmZ3puXFK9/8UpoL2NLBkup3GHKyeq5Ak2YsBduF
-	 VGBe5fDrkMbx3E/fF6tIBxR5MDrxMi83CpH+QMSYiNQ2OcRT7YUWEwLDeiePX6S6rF
-	 vZ5SOAJ33G01z/d8qkEiE6jD7BXELoY4E2FCYFqUGfDcH2iam4Sk3KtgiFD8AaprXh
-	 P+eAnthBzMVMrCltUvYZlVefEYmNmHKw0kwyi4O6gT43TRBcAgkUpK/6TaKAnDmilU
-	 0sRs1CxmjSe8w==
-Date: Fri, 9 Feb 2024 13:41:12 -0800
+	b=dfYPjTW2FTFs2HsPleKyYUo/LLjuxnWefYySlI7JTawuxGy3k/jqvZ9h+PQAHodKy
+	 R0z5pufwWvBVO0otzT0KkqnCGwitFOQ8bNn0jqm1E+0cpMUslRkFgD78wst2kcWMCq
+	 pFsdGbzbbXEhLM1XoOIn2fRXePtupfL5J42Xh02HFWvvPF1kZpjWmq7JbzG4eyMUu1
+	 gYFPI/vmudr9CsKEb9F0n0Pv4gMo6wntMKU2XPa+zyJYc9y2DmjnjLBfTzXf5D2457
+	 EX+Nuj+Tmu3SwBpwmFRXB4U1b8GoKcHPjH/oUOCJsJRIWpAHzhS6hsBKpfHrsySxyJ
+	 Els8UlIXbucuQ==
+Date: Fri, 9 Feb 2024 13:41:37 -0800
 From: Jakub Kicinski <kuba@kernel.org>
-To: Stephen Hemminger <stephen@networkplumber.org>
-Cc: netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jamal Hadi Salim
- <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko
- <jiri@resnulli.us>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org
- (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
- linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH net-next v2] net/sched: actions report errors with
- extack
-Message-ID: <20240209134112.4795eb19@kernel.org>
-In-Reply-To: <20240209131119.6399c91b@hermes.local>
-References: <20240205185537.216873-1-stephen@networkplumber.org>
-	<20240208182731.682985dd@kernel.org>
-	<20240209131119.6399c91b@hermes.local>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?=
+ <u.kleine-koenig@pengutronix.de>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ethernet: wiznet: Use
+ devm_platform_get_and_ioremap_resource() in w5300_hw_probe()
+Message-ID: <20240209134137.429a0c44@kernel.org>
+In-Reply-To: <46f64db3-3f8f-4c6c-8d70-38daeefccac1@web.de>
+References: <46f64db3-3f8f-4c6c-8d70-38daeefccac1@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,21 +61,14 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Fri, 9 Feb 2024 13:11:19 -0800 Stephen Hemminger wrote:
-> On Thu, 8 Feb 2024 18:27:31 -0800
-> Jakub Kicinski <kuba@kernel.org> wrote:
+On Mon, 5 Feb 2024 14:28:17 +0100 Markus Elfring wrote:
+> A wrapper function is available since the commit 890cc39a879906b63912482dfc41944579df2dc6
+> ("drivers: provide devm_platform_get_and_ioremap_resource()").
+> Thus reuse existing functionality instead of keeping duplicate source code.
 > 
-> > > -	if (!tb[TCA_ACT_BPF_PARMS])
-> > > +	if (NL_REQ_ATTR_CHECK(extack, nla, tb, TCA_ACT_BPF_PARMS)) {
-> > > +		NL_SET_ERR_MSG(extack, "Missing required attribute");    
-> > 
-> > Please fix the userspace to support missing attr parsing instead.  
+> This issue was detected by using the Coccinelle software.
 > 
-> I was just addressing the error handling. This keeps the same impact as
-> before, i.e no userspace API change.
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
-I mean that NL_REQ_ATTR_CHECK() should be more than enough by itself.
-We have full TC specs in YAML now, we can hack up a script to generate
-reverse parsing tables for iproute2 even if you don't want to go full
-YNL.
+Applied thanks!
 
