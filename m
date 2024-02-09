@@ -1,187 +1,142 @@
-Return-Path: <linux-kernel+bounces-59239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A60D84F3A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:45:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBDF084F3B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:47:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D3431C20AFB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:45:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BC23B21D9E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 10:47:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA8A8200DC;
-	Fri,  9 Feb 2024 10:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sytJY/KP"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C073828691;
+	Fri,  9 Feb 2024 10:46:43 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62BDC1F952
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 10:44:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1684B25618;
+	Fri,  9 Feb 2024 10:46:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707475498; cv=none; b=tgtyhzSjyUlMOD+iGa7l4D2wKc0YlXRg9u4IhOTPGICtja/c1HC6UgqwNrNmgVskyq1MQAwOf6LjUXDJmMk36eVvQXEDQFqXLJ2yw1KVUpFxllwv5ag/1MxtIqJUtZrk+8ZeDMKoFkGvSzdtpSxGZw/XoE2tMTEQiC/yGReVyYc=
+	t=1707475603; cv=none; b=UGgeBToaZxlxG8rB1hU5oGPaHNpLlpg8qMzPR2Dzm5bSPBCq8TMI03DscHg4yilYPQFXKBllyxKUinIxKR08TpJqS47UxverQEmDB2NVZmzH/d+23NYumB0nmskfz8GpS7AXVveUWPj3pU9OQf56BCVnNuEE8yt2xUBHgvw1Ua0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707475498; c=relaxed/simple;
-	bh=0qyI/gAu4ZJlfLwIOWsskUoL5PfJkS1ylp4Ng0x+uIE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=tkeUrtnpNZ2HsQuSxKEcnaDg+dD9ia9DliKaxeoruiAAWm72CJhIer7V2bG5pVmScvvAWTzNCAlTR5SMzN52+ksqyodi1iv8AqLUUnz6TtkzjtOUQy2P1PwnWJddYCaM8Oa9XGBmr1UJCFANI56VM4SRCYMTZA5Dd6LNuPuD9vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sytJY/KP; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a30f7c9574eso90471466b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 02:44:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707475494; x=1708080294; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ufiK/AwoGBnph0IZzYo7gGHR9qgDp2zpSqPlnrqsLUg=;
-        b=sytJY/KPswOY/tulG5ho2eTfeInnevGiWO1aNXArSJdTDi2RlBOv9uuimV8HN8MYG5
-         qR6UlJQpD/OX2NQiUf7Vzlh8htKSDRePgqw42DMTzRWKZjkXK6z7hD0DEWOts2SkC77/
-         82K6IFQLYVJc+/Cpvz8u+/EjK8ykhPnAffQla9Ucmggtg2ZStlCIvM8PwMJAlNA4aJ45
-         OwqR2B0QZegfHp9SU+xJTniWqsMcfMfLcxaZx2zI0eQV9JtrrW3wRjbdv+80UDYktC4Y
-         6S2RzBSHfNI+qVTx0/Ze/WwXvPbsRYUaMFHCCnxI44MXX0+sPhuQWgRPwO0rlKmKcki0
-         oVtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707475494; x=1708080294;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ufiK/AwoGBnph0IZzYo7gGHR9qgDp2zpSqPlnrqsLUg=;
-        b=XVRX7Kx9kZBC0u7eAkM95J80WVT/lHcCwqD3vNXaC4JCcKhZV+Y+9PGX2l1HMpk7gI
-         Uvl9jNrOSKGukfYfpdctbWgz821KNJZmqdmqsgLSspdI1QKJxtXxFMMZC8o8PuJK73iF
-         VFzUXB1afui+JolN2UwaEx29raKFOxU/oL5mchMhcN39QGhK6Z3fZIDRKvJPLwx1uNz4
-         fWu4jpE+a+ZxYz+N4BMaa2Yj7xychvB5rQogXLlzFZZRpbVv5SVS/j6lQa0nMLKZPUHv
-         AucjbocQGb7Za+HepseA2/ADCwedRqzD068TP5BYqXMukJaQ6f1T5ydJYyOeoA1i/eEp
-         3pBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVbuSPUqYmWA5/MOSNlqMXc3fynVGEUxXFRQ2BmjtH8J0M4NxRgPrcXdg2+8w9uaotd7tf+ahCkb5PX6yMF5VhsgWlsFhS6Mt/f7WoE
-X-Gm-Message-State: AOJu0YzOvL93lGEBdybPkIFAXxzy9t/W7A1NOGnI2y5LlBgJFV/5Q9Wc
-	qaVUkJQ0MtZEL0oyNqjexnXWJ5GGN7TsQOHx351pSbNy4/BKQ71NK/3XU3Y1ySM=
-X-Google-Smtp-Source: AGHT+IHpwhLDqRapIlu66G2J3dMTMPNIHznYNeglqdg8ydW1switl8iLg14HH6Hb8NK/lWJs9J3NEw==
-X-Received: by 2002:a17:906:ce32:b0:a38:9ff:571c with SMTP id sd18-20020a170906ce3200b00a3809ff571cmr826572ejb.9.1707475493711;
-        Fri, 09 Feb 2024 02:44:53 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXxmx2xbvCtX9cdjQK7LWMARKC4KfxZaOTLJ1aOxw/b6X1nBR3D0/gcULbBz+tTFmUrigGigD57yCCNn8t1CB3Zo2TmGsUZp7iFsHHdnetrKztQCb6bVe4ZI4OE5KMmsJl7J7hXaqSx5lJlHQ5UJUJbSmo0ISFXrWjVJiAH6BKmOH0LAVC7j32IPan/0tlKpBJaiXQrrIT50QISg+8snRtDeNvo3pA8fSG09Lxp/tIb7K109IVl89ef0NZ0HBg2J5ZsmCi0nzWllNArK1NSMayVDmDmeFSIoErSKRjrDoOx3Kk5gtQlprjhtaScnRSYWJiw+ppsfEFZHLUwvf92hQAwNHF8RrmrHBzqUcOE+mRxM6aFEiSiONVg4ytuPhqaRfOP0g6YFuvbnwOMT4MxBkthE0sGZN+icCQb18k89kXNUOLCTxGJpf3WYG3ILO4sucvkKA9SCCI++4muNlMklW9oZSfd5+wc139jAy0qpa1MHhiBobBpx9zn/XeK7H83pfaHyW6JF3mguM6ZUjyiOOdUNfdxUNuYqMg1rtKoJsUpnTJANEX1bjI+Omu1vK/0cPkH+DgcC1qAIfN11K2Bq54pIIM6XY3Crcxs8SArFssDN9Bc8dvnfgFgNB4NqnWQP0ZKiNfJYfOuNdlG9M8w3L8=
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id gr1-20020a170906e2c100b00a311ab95fbdsm638306ejb.63.2024.02.09.02.44.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 02:44:53 -0800 (PST)
-Date: Fri, 9 Feb 2024 13:44:49 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, Jagadeesh Kona <quic_jkona@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-	Taniya Das <quic_tdas@quicinc.com>, linux-arm-msm@vger.kernel.org,
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Imran Shaik <quic_imrashai@quicinc.com>,
-	Ajit Pandey <quic_ajipan@quicinc.com>,
-	Jagadeesh Kona <quic_jkona@quicinc.com>
-Subject: Re: [PATCH 2/5] clk: qcom: videocc-sm8550: Add support for SM8650
- videocc
-Message-ID: <63a0302d-8f36-4675-b390-75f546261c6e@moroto.mountain>
+	s=arc-20240116; t=1707475603; c=relaxed/simple;
+	bh=jOw1k4dV5z+KBAtTbBBTRdl9sL0hz8/ouWgae+bS6oo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GgJR5AQVFKm4FQbXJetV/Brdk+zFLkGm54auFU4e59IeA8YFb7G9o1lNWvmKBBMqP2GnzAc7kPb+uFY7APkfudcrnt3Q2Dqdh/hCZpfNfsAOt8Q/EbQCIBE5PBZX9ckZ/SlvR8b7A7LY3iKk57gMfQsW1Hkb7Er5TbD5xqcVSpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TWVWf27KTzB043C;
+	Fri,  9 Feb 2024 18:31:26 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 7784A1406BE;
+	Fri,  9 Feb 2024 18:46:36 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwD37xh8AsZlACksAg--.15226S2;
+	Fri, 09 Feb 2024 11:46:35 +0100 (CET)
+Message-ID: <86ab971f45c2ff11dcbdeab78b4b050f07495f55.camel@huaweicloud.com>
+Subject: Re: [PATCH v9 12/25] security: Introduce file_post_open hook
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: viro@zeniv.linux.org.uk, chuck.lever@oracle.com, jlayton@kernel.org, 
+ neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com, 
+ paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+ zohar@linux.ibm.com,  dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com,
+ dhowells@redhat.com,  jarkko@kernel.org, stephen.smalley.work@gmail.com,
+ eparis@parisplace.org,  casey@schaufler-ca.com, shuah@kernel.org,
+ mic@digikod.net,  linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org,  linux-nfs@vger.kernel.org,
+ linux-security-module@vger.kernel.org,  linux-integrity@vger.kernel.org,
+ keyrings@vger.kernel.org,  selinux@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+ Stefan Berger <stefanb@linux.ibm.com>
+Date: Fri, 09 Feb 2024 11:46:16 +0100
+In-Reply-To: <20240209-luftleer-jobangebote-6d6ab29b7191@brauner>
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+	 <20240115181809.885385-13-roberto.sassu@huaweicloud.com>
+	 <20240209-luftleer-jobangebote-6d6ab29b7191@brauner>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240206113145.31096-3-quic_jkona@quicinc.com>
+X-CM-TRANSID:LxC2BwD37xh8AsZlACksAg--.15226S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr15Xr1UuryUJF47uw13CFg_yoW8ury8pa
+	y5G3Z8GFykGFy7CF93ZFZ8Za4F9392qFWUXrZ3X34UAF9FqrnI9F42krn5WFn8Kr1xKr1I
+	vw429r9xu34UArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAIBF1jj5o2JQAAs1
 
-Hi Jagadeesh,
+On Fri, 2024-02-09 at 11:12 +0100, Christian Brauner wrote:
+> On Mon, Jan 15, 2024 at 07:17:56PM +0100, Roberto Sassu wrote:
+> > From: Roberto Sassu <roberto.sassu@huawei.com>
+> >=20
+> > In preparation to move IMA and EVM to the LSM infrastructure, introduce=
+ the
+> > file_post_open hook. Also, export security_file_post_open() for NFS.
+> >=20
+> > Based on policy, IMA calculates the digest of the file content and
+> > extends the TPM with the digest, verifies the file's integrity based on
+> > the digest, and/or includes the file digest in the audit log.
+> >=20
+> > LSMs could similarly take action depending on the file content and the
+> > access mask requested with open().
+> >=20
+> > The new hook returns a value and can cause the open to be aborted.
+> >=20
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+> > Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+> > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> > ---
+> >  fs/namei.c                    |  2 ++
+> >  fs/nfsd/vfs.c                 |  6 ++++++
+> >  include/linux/lsm_hook_defs.h |  1 +
+> >  include/linux/security.h      |  6 ++++++
+> >  security/security.c           | 17 +++++++++++++++++
+> >  5 files changed, 32 insertions(+)
+> >=20
+> > diff --git a/fs/namei.c b/fs/namei.c
+> > index 71c13b2990b4..fb93d3e13df6 100644
+> > --- a/fs/namei.c
+> > +++ b/fs/namei.c
+> > @@ -3620,6 +3620,8 @@ static int do_open(struct nameidata *nd,
+> >  	error =3D may_open(idmap, &nd->path, acc_mode, open_flag);
+> >  	if (!error && !(file->f_mode & FMODE_OPENED))
+> >  		error =3D vfs_open(&nd->path, file);
+> > +	if (!error)
+> > +		error =3D security_file_post_open(file, op->acc_mode);
+>=20
+> What does it do for O_CREAT? IOW, we managed to create that thing and we
+> managed to open that thing. Can security_file_post_open() and
+> ima_file_check() fail afterwards even for newly created files?
 
-kernel test robot noticed the following build warnings:
+$ strace touch test-file
+..
+openat(AT_FDCWD, "test-file", O_WRONLY|O_CREAT|O_NOCTTY|O_NONBLOCK, 0666) =
+=3D -1 EPERM (Operation not permitted)
 
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The open fails, but the file is there. I didn't see warnings/errors in
+the kernel log.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jagadeesh-Kona/dt-bindings-clock-qcom-Add-video-clock-bindings-for-SM8650/20240206-194148
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git clk-next
-patch link:    https://lore.kernel.org/r/20240206113145.31096-3-quic_jkona%40quicinc.com
-patch subject: [PATCH 2/5] clk: qcom: videocc-sm8550: Add support for SM8650 videocc
-config: arm64-randconfig-r071-20240207 (https://download.01.org/0day-ci/archive/20240209/202402091804.SdrSLt10-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202402091804.SdrSLt10-lkp@intel.com/
-
-smatch warnings:
-drivers/clk/qcom/videocc-sm8550.c:590 video_cc_sm8550_probe() error: uninitialized symbol 'offset'.
-
-vim +/offset +590 drivers/clk/qcom/videocc-sm8550.c
-
-f53153a37969c1 Jagadeesh Kona   2023-05-24  543  static int video_cc_sm8550_probe(struct platform_device *pdev)
-f53153a37969c1 Jagadeesh Kona   2023-05-24  544  {
-f53153a37969c1 Jagadeesh Kona   2023-05-24  545  	struct regmap *regmap;
-f53153a37969c1 Jagadeesh Kona   2023-05-24  546  	int ret;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  547  	u32 offset;
-f53153a37969c1 Jagadeesh Kona   2023-05-24  548  
-f53153a37969c1 Jagadeesh Kona   2023-05-24  549  	ret = devm_pm_runtime_enable(&pdev->dev);
-f53153a37969c1 Jagadeesh Kona   2023-05-24  550  	if (ret)
-f53153a37969c1 Jagadeesh Kona   2023-05-24  551  		return ret;
-f53153a37969c1 Jagadeesh Kona   2023-05-24  552  
-f53153a37969c1 Jagadeesh Kona   2023-05-24  553  	ret = pm_runtime_resume_and_get(&pdev->dev);
-f53153a37969c1 Jagadeesh Kona   2023-05-24  554  	if (ret)
-f53153a37969c1 Jagadeesh Kona   2023-05-24  555  		return ret;
-f53153a37969c1 Jagadeesh Kona   2023-05-24  556  
-f53153a37969c1 Jagadeesh Kona   2023-05-24  557  	regmap = qcom_cc_map(pdev, &video_cc_sm8550_desc);
-f53153a37969c1 Jagadeesh Kona   2023-05-24  558  	if (IS_ERR(regmap)) {
-f53153a37969c1 Jagadeesh Kona   2023-05-24  559  		pm_runtime_put(&pdev->dev);
-f53153a37969c1 Jagadeesh Kona   2023-05-24  560  		return PTR_ERR(regmap);
-f53153a37969c1 Jagadeesh Kona   2023-05-24  561  	}
-f53153a37969c1 Jagadeesh Kona   2023-05-24  562  
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  563  	if (of_device_is_compatible(pdev->dev.of_node, "qcom,sm8550-videocc")) {
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  564  		video_cc_sm8550_clocks[VIDEO_CC_MVS0_SHIFT_CLK] = NULL;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  565  		video_cc_sm8550_clocks[VIDEO_CC_MVS0C_SHIFT_CLK] = NULL;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  566  		video_cc_sm8550_clocks[VIDEO_CC_MVS1_SHIFT_CLK] = NULL;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  567  		video_cc_sm8550_clocks[VIDEO_CC_MVS1C_SHIFT_CLK] = NULL;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  568  		video_cc_sm8550_clocks[VIDEO_CC_XO_CLK_SRC] = NULL;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  569  		offset = 0x8140;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  570  	} else  if (of_device_is_compatible(pdev->dev.of_node, "qcom,sm8650-videocc")) {
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  571  		video_cc_pll0_config.l = 0x1e;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  572  		video_cc_pll0_config.alpha = 0xa000;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  573  		video_cc_pll1_config.l = 0x2b;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  574  		video_cc_pll1_config.alpha = 0xc000;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  575  		video_cc_mvs0_clk_src.freq_tbl = ftbl_video_cc_mvs0_clk_src_sm8650;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  576  		video_cc_mvs1_clk_src.freq_tbl = ftbl_video_cc_mvs1_clk_src_sm8650;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  577  		offset = 0x8150;
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  578  	}
-
-no else statement.
-
-5ab3df7257a04f Jagadeesh Kona   2024-02-06  579  
-a2620539ae2529 Dmitry Baryshkov 2023-10-16  580  	clk_lucid_ole_pll_configure(&video_cc_pll0, regmap, &video_cc_pll0_config);
-a2620539ae2529 Dmitry Baryshkov 2023-10-16  581  	clk_lucid_ole_pll_configure(&video_cc_pll1, regmap, &video_cc_pll1_config);
-f53153a37969c1 Jagadeesh Kona   2023-05-24  582  
-f53153a37969c1 Jagadeesh Kona   2023-05-24  583  	/*
-f53153a37969c1 Jagadeesh Kona   2023-05-24  584  	 * Keep clocks always enabled:
-f53153a37969c1 Jagadeesh Kona   2023-05-24  585  	 *	video_cc_ahb_clk
-f53153a37969c1 Jagadeesh Kona   2023-05-24  586  	 *	video_cc_sleep_clk
-f53153a37969c1 Jagadeesh Kona   2023-05-24  587  	 *	video_cc_xo_clk
-f53153a37969c1 Jagadeesh Kona   2023-05-24  588  	 */
-f53153a37969c1 Jagadeesh Kona   2023-05-24  589  	regmap_update_bits(regmap, 0x80f4, BIT(0), BIT(0));
-5ab3df7257a04f Jagadeesh Kona   2024-02-06 @590  	regmap_update_bits(regmap, offset, BIT(0), BIT(0));
-f53153a37969c1 Jagadeesh Kona   2023-05-24  591  	regmap_update_bits(regmap, 0x8124, BIT(0), BIT(0));
-f53153a37969c1 Jagadeesh Kona   2023-05-24  592  
-f53153a37969c1 Jagadeesh Kona   2023-05-24  593  	ret = qcom_cc_really_probe(pdev, &video_cc_sm8550_desc, regmap);
-f53153a37969c1 Jagadeesh Kona   2023-05-24  594  
-f53153a37969c1 Jagadeesh Kona   2023-05-24  595  	pm_runtime_put(&pdev->dev);
-f53153a37969c1 Jagadeesh Kona   2023-05-24  596  
-f53153a37969c1 Jagadeesh Kona   2023-05-24  597  	return ret;
-f53153a37969c1 Jagadeesh Kona   2023-05-24  598  }
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Roberto
 
 
