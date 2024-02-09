@@ -1,226 +1,178 @@
-Return-Path: <linux-kernel+bounces-59485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A87484F7BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:42:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA9084F7C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:42:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C16362812A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:42:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 184D1B2329D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AD7F6BFBF;
-	Fri,  9 Feb 2024 14:41:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD6D69DF9;
+	Fri,  9 Feb 2024 14:41:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PZP+vmwU"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XMEOghU7"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DD793D3AC
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F42C6DD1E;
+	Fri,  9 Feb 2024 14:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707489711; cv=none; b=WwM6jcnxUH7YfOAIzkUvd1c03wOGifjxzGY2R2cC2HU+XfxcxUe86K9X4v1NQH8nU/DzyX+FE3Cy+UIcabM/+GEOwP0G7RKKgAgedCGKrk3Uw89QNHgp0SMSqE7/Lt/dv21Po3B8DBl6//ovAOXpsPZh2njWOignsTFD834ZcWo=
+	t=1707489716; cv=none; b=j8brSjdbbWJgsdFztTXW9RoNm/rk9Ywevylbqrfz0+LJwlxw3IcdJuK5F3PG0p3zoPBeCob8QmGS6k6rCB2r/y8SOMogU9uE6IRzG6mBJB6hCdJXjEi+umbIJbi4h5JaG3qoJ0jkAGtqmzfNwTPvcQ5mOgKeai0PFGCXKhkaMdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707489711; c=relaxed/simple;
-	bh=O3fPupjybPNP/dAIj6BFB3nob2bLvZX2H43dvr8aJ7A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Rdi3xKrOsuSlZBV1kIdDgUcC7Hz7o3eMsieTLbfAgYdC8byZMe0vZBkrY/0q5ZeSog3a9fHfo7X/d28k0ifMU+YH2AAf6yhCoryeTsolKXz0pSW2glG0AndZSqZ3EyMrx0DdUSK1/YlYL8uKLkcEBNcR7KbaUHBC1+FpUZbZzQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PZP+vmwU; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3916c1f9b0so141468166b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 06:41:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707489707; x=1708094507; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=sHcakeR8gPCEeI7V8ObSzY3NEW4IWCujMtndFKNvu38=;
-        b=PZP+vmwUkhlIFZxJlGrnn4bnIvEUblcfumX2OVdD8j4SR07btrcQzatqBkz4aToFZF
-         v8CVTxb08j7VRoTpHb6LxNv8I4TsAPIj1rUjwbg8yUVO7RkhuqweVhodLNu5LFZ/6mS8
-         IhCt53XXzlhf2RbcqnkEEacFrGz3nKojtwYR8EePfH7KJEYdkAVbT9Fou1cUuWcCn3Tc
-         Iv8rYbeOlJRp8QhY+dZcIBtGYjNMnlwqUWQy5SJnhCD31iL7d8iJblE1puiBjUNHWd9D
-         GL9wQMO9XSQDMTInlQ9/FU+ndGJslGz+VQLvp/P8Ybiuc6NoiQYDVEtIw6rjHOFWtX8T
-         73ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707489707; x=1708094507;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sHcakeR8gPCEeI7V8ObSzY3NEW4IWCujMtndFKNvu38=;
-        b=u+haZCyQKQIhALyAaPvoXPdNyHeUAO35rvw6Ndg95vDgFwCv61s5rICM4yr+dd0xgH
-         irHxdYNhOd+7zglxi1W15M1pTLEmc1VBxEctJvxU+wbg+fwM3vPrwpsyJaxk1Zu3v8Oa
-         /pB079lVRe2eIKNKw3SCa8kP0bYHk5E8+b4a8UcvPQZN01en495KXmPgbcSl64uCLg+Z
-         ox3Tgx1yS3WoOCCI2OS1VZeArb0Wk31KcAlacla9HEvdd73Wo6OWTz1FXgZci6XUiDci
-         +8BMRxJW7Gw+lmcgvCWXsNTkPIq92vwgaroHw8gdPVeLy0Oo3IyDq9H+YGNiuq/cHNvb
-         ehaQ==
-X-Gm-Message-State: AOJu0YysXUfI9Bwqp1PVrvVtem0EhDQoAWx/CrAfTRtW2bgbf0O53xOq
-	HYrIQAASOfsR4yUXax+wPosz9g0ocV6v6KNwmA9B1VkroGbrHi08cQkmEvCohgQ=
-X-Google-Smtp-Source: AGHT+IFPSqvMuQ7qRahNz276ExL9mkaHwlnaG19hlPXL0sWl9KvvkSgcsTGOPjwNhiOcDbbFCba3ZQ==
-X-Received: by 2002:a17:906:fa14:b0:a3b:ea1e:c395 with SMTP id lo20-20020a170906fa1400b00a3bea1ec395mr1215338ejb.28.1707489707353;
-        Fri, 09 Feb 2024 06:41:47 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU/JYp/TUOFfArAHs9PgPg3ZetUV3f8hxfFPsKUwP/60xcfd5NQoc9u0sZq+2USXNgXmpA5X/AtCHcSoKyN2a1Ql92xg1/XFmkm+OIYTklYuHZmdRxL0BAah9qJdFnBPsTzAK6NagPzY7mN+jFCsm4rv/mU5kUZFwVxTCiyC1f43/faHtLQ4C/KJXsEO6SgXfrivgi84qJJb9oiyTZU1mvFcZL6AUPK9HU8wndvpBn6vJ7KYjQZLhHY73mstEnBI1/xohoiYEvudhJVq+7iwDB8DSLXP7wAfZXLK4lXWdYO0idIBSQ7rK7RPiw570KbS+7NImLKIJSdSjJ5UskJyE3z3gAK+RU+VG2NxAjIOnTNUtAjTgAkYwJmRJCjxvNjiy1IbASHsltaMYQ++fUwmzo0+scsksaPoporqnAEaJ9sbRzEng/B5DY54zKdzBJSMwD0gdLfVnVtkAE=
-Received: from [192.168.192.207] (037008245233.garwolin.vectranet.pl. [37.8.245.233])
-        by smtp.gmail.com with ESMTPSA id g19-20020a170906521300b00a3bb098ffcbsm827300ejm.89.2024.02.09.06.41.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Feb 2024 06:41:46 -0800 (PST)
-Message-ID: <aa7a28a7-59c6-4783-a6de-9a46721a8bf6@linaro.org>
-Date: Fri, 9 Feb 2024 15:41:43 +0100
+	s=arc-20240116; t=1707489716; c=relaxed/simple;
+	bh=j68vyMhx+KOvb0NoTod5BOmz14iYjHTu4xiog85c8js=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=EVoz/8ZqlGyUcISeympND+eVzJ2QVUIXzTncTmbDR+5u6QWvVfQdInWo5SXDWKO6ih2G/VNSEFVmhfPdT5x3CPvlIMqTbiGEfYWflbKPiJuD/nAQ+ZKAejMGICz2PQ8ThBJcacDWmNUUFv1cDheW+yAvxV4MlSZkCK9eadg/VwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XMEOghU7; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707489716; x=1739025716;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=j68vyMhx+KOvb0NoTod5BOmz14iYjHTu4xiog85c8js=;
+  b=XMEOghU7y0Q+2Fh+ncGBomORRy6DWfraSkRGs4RkI0Q8oAcA2XE92Cze
+   o4kdQah3IRrbYbkFzDMDcTRiofc4xE00mVL03sWaqMFEMMTdGi5WRCzYk
+   9PJONwxt1/qfv3zM0SUM4E3rhOpMMapN6igAhAHtxod9P7czrff/1ZjhN
+   81WKMhGp53MOAARkJoND8fv3VRRLKoryan7L3lUK9AGCrFnsMnnQy0Rni
+   uGulGpGm4eIhngKig3wueqpJuy5Bzfd/mjq/hT7LRXazlT7jxMRpg2ng/
+   ci9jxUf2WFIBbqJg+8aJGPzV+55RiklLwcT78T1TQ2Jb7vo1BcZcvEQEy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1591700"
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="1591700"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 06:41:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="1939708"
+Received: from spandruv-desk.jf.intel.com (HELO spandruv-desk.amr.corp.intel.com) ([10.54.75.14])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 06:41:54 -0800
+Message-ID: <64ee580b9969335d60966e23e9bd859e8f075953.camel@linux.intel.com>
+Subject: Re: [PATCH] HID: Intel-ish-hid: Ishtp: Fix sensor reads after ACPI
+ S3 suspend
+From: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To: Even Xu <even.xu@intel.com>, jikos@kernel.org, 
+	benjamin.tissoires@redhat.com, linux-input@vger.kernel.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date: Fri, 09 Feb 2024 06:41:53 -0800
+In-Reply-To: <20240209065232.15486-1-even.xu@intel.com>
+References: <20240209065232.15486-1-even.xu@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-3.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [V3] i2c: i2c-qcom-geni: Correct I2C TRE sequence
-To: Andi Shyti <andi.shyti@kernel.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Viken Dadhaniya <quic_vdadhani@quicinc.com>, andersson@kernel.org,
- linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-kernel@vger.kernel.org, vkoul@kernel.org, quic_bjorande@quicinc.com,
- manivannan.sadhasivam@linaro.org, bryan.odonoghue@linaro.org,
- quic_msavaliy@quicinc.com, quic_vtanuku@quicinc.com
-References: <20240201101323.13676-1-quic_vdadhani@quicinc.com>
- <CAA8EJpqQtHDRK2pex+5F-fMRTosJuFCx59e89MWhnie1O3dHKA@mail.gmail.com>
- <60b5e755-352b-476d-8c6e-2170594ae80d@quicinc.com>
- <uswznu3h53gcefpdc4vxozz32ecdcjvzmr7admwc4h54o27bfy@qqoevrl3dcyt>
- <CAA8EJpqzdp4xYSp+JCExP+Oeu9KhLpsXNUbDxfZ0g+C07xR6dg@mail.gmail.com>
- <cvzyvgb6vahlmrhaijsuyaosdl2p4q5cxhipmu4tujnkpjlbpm@6yu3sbpqha4m>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
- BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
- HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
- TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
- zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
- MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
- t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
- UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
- aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
- kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
- Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
- R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
- BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
- yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
- xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
- 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
- GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
- mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
- x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
- BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
- mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
- Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
- xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
- AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
- 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
- jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
- cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
- jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
- cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
- bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
- YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
- bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
- nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
- izWDgYvmBE8=
-In-Reply-To: <cvzyvgb6vahlmrhaijsuyaosdl2p4q5cxhipmu4tujnkpjlbpm@6yu3sbpqha4m>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 8.02.2024 12:59, Andi Shyti wrote:
-> Hi Dmitry,
-> 
-> On Thu, Feb 08, 2024 at 01:04:14PM +0200, Dmitry Baryshkov wrote:
->> On Thu, 8 Feb 2024 at 12:02, Andi Shyti <andi.shyti@kernel.org> wrote:
->>>
->>> Hi Viken, Dmitry,
->>>
->>> On Fri, Feb 02, 2024 at 04:13:06PM +0530, Viken Dadhaniya wrote:
->>>>
->>>> On 2/1/2024 5:24 PM, Dmitry Baryshkov wrote:
->>>>> On Thu, 1 Feb 2024 at 12:13, Viken Dadhaniya <quic_vdadhani@quicinc.com> wrote:
->>>>>>
->>>>>> For i2c read operation in GSI mode, we are getting timeout
->>>>>> due to malformed TRE basically incorrect TRE sequence
->>>>>> in gpi(drivers/dma/qcom/gpi.c) driver.
->>>>>>
->>>>>> TRE stands for Transfer Ring Element - which is basically an element with
->>>>>> size of 4 words. It contains all information like slave address,
->>>>>> clk divider, dma address value data size etc).
->>>>>>
->>>>>> Mainly we have 3 TREs(Config, GO and DMA tre).
->>>>>> - CONFIG TRE : consists of internal register configuration which is
->>>>>>                 required before start of the transfer.
->>>>>> - DMA TRE :    contains DDR/Memory address, called as DMA descriptor.
->>>>>> - GO TRE :     contains Transfer directions, slave ID, Delay flags, Length
->>>>>>                 of the transfer.
->>>>>>
->>>>>> Driver calls GPI driver API to config each TRE depending on the protocol.
->>>>>> If we see GPI driver, for RX operation we are configuring DMA tre and
->>>>>> for TX operation we are configuring GO tre.
->>>>>>
->>>>>> For read operation tre sequence will be as below which is not aligned
->>>>>> to hardware programming guide.
->>>>>>
->>>>>> - CONFIG tre
->>>>>> - DMA tre
->>>>>> - GO tre
->>>>>>
->>>>>> As per Qualcomm's internal Hardware Programming Guide, we should configure
->>>>>> TREs in below sequence for any RX only transfer.
->>>>>>
->>>>>> - CONFIG tre
->>>>>> - GO tre
->>>>>> - DMA tre
->>>>>>
->>>>>> In summary, for RX only transfers, we are reordering DMA and GO TREs.
->>>>>> Tested covering i2c read/write transfer on QCM6490 RB3 board.
->>>>>
->>>>> This hasn't improved. You must describe what is the connection between
->>>>> TRE types and the geni_i2c_gpi calls.
->>>>> It is not obvious until somebody looks into the GPI DMA driver.
->>>>>
->>>>> Another point, for some reason you are still using just the patch
->>>>> version in email subject. Please fix your setup so that the email
->>>>> subject also includes the `[PATCH` part in the subject, which is there
->>>>> by default.
->>>>> Hint: git format-patch -1 -v4 will do that for you without a need to
->>>>> correct anything afterwards.
->>>>>
->>>>
->>>> At high level, let me explain the I2C to GPI driver flow in general.
->>>>
->>>> I2C driver calls GPI driver exposed functions which will prepare all the
->>>> TREs as per programming guide and
->>>> queues to the GPI DMA engine for execution. Upon completion of the Transfer,
->>>> GPI DMA engine will generate an
->>>> interrupt which will be handled inside the GPIO driver. Then GPI driver will
->>>> call DMA framework registered callback by i2c.
->>>> Upon receiving this callback, i2c driver marks the transfer completion.
->>>
->>> Any news about this? Dmitry do you still have concerns? We can
->>> add this last description in the commit log, as well, if needed.
->>
->> I was looking for pretty simple addition to the commit message, that
->> links existing commit message to the actual source code change: that
->> geni_i2c_gpi(I2C_WRITE) results in the GO TRE and
->> geni_i2c_gpi(I2C_READ) generates DMA TRE. But I haven't seen anything
->> sensible up to now. So far we have a nice description of required
->> programming sequence in terms of CONFIG, GO, DMA TREs and then source
->> code change that seems completely unrelated to the commit message,
->> unless one actually goes deep into the corresponding GPI DMA driver.
-> 
-> Agree. I can't take this patch until the commit message has a
-> proper description and until Dmitry doesn't have any concerns
-> pending.
+On Fri, 2024-02-09 at 14:52 +0800, Even Xu wrote:
+> After legacy suspend/resume via ACPI S3, sensor read operation fails
+> with timeout. Also, it will cause delay in resume operation as there
+> will be retries on failure.
+>=20
+> This is caused by commit f645a90e8ff7 ("HID: intel-ish-hid:
+> ishtp-hid-client: use helper functions for connection"), which used
+> helper functions to simplify connect, reset and disconnect process.
+> Also avoid freeing and allocating client buffers again during
+> reconnect
+> process.
+>=20
+> But there is a case, when ISH firmware resets after ACPI S3 suspend,
+> ishtp bus driver frees client buffers. Since there is no realloc
+> again
+> during reconnect, there are no client buffers available to send
+> connection
+> requests to the firmware. Without successful connection to the
+> firmware,
+> subsequent sensor reads will timeout.
+>=20
+> To address this issue, ishtp bus driver does not free client buffers
+> on
+> warm reset after S3 resume. Simply add the buffers from the read list
+> to free list of buffers.
+>=20
+> Fixes: f645a90e8ff7 ("HID: intel-ish-hid: ishtp-hid-client: use
+> helper functions for connection")
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D218442
+> Signed-off-by: Even Xu <even.xu@intel.com>
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-And please, please, include the word PATCH in the square brackets in
-the subject, it's landing in the wrong email folders for a number of
-folks..
+Hi Jiri,
 
-Konrad
+This regression is introduced with 6.8-rc1, so need a pull request for
+this rc cycle.
+
+Thanks,
+Srinivas
+
+> ---
+> =C2=A0drivers/hid/intel-ish-hid/ishtp/bus.c=C2=A0=C2=A0=C2=A0 | 2 ++
+> =C2=A0drivers/hid/intel-ish-hid/ishtp/client.c | 4 +++-
+> =C2=A02 files changed, 5 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/hid/intel-ish-hid/ishtp/bus.c
+> b/drivers/hid/intel-ish-hid/ishtp/bus.c
+> index aa6cb033bb06..03d5601ce807 100644
+> --- a/drivers/hid/intel-ish-hid/ishtp/bus.c
+> +++ b/drivers/hid/intel-ish-hid/ishtp/bus.c
+> @@ -722,6 +722,8 @@ void ishtp_bus_remove_all_clients(struct
+> ishtp_device *ishtp_dev,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0spin_lock_irqsave(&ishtp_=
+dev->cl_list_lock, flags);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0list_for_each_entry(cl, &=
+ishtp_dev->cl_list, link) {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0cl->state =3D ISHTP_CL_DISCONNECTED;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0if (warm_reset && cl->device->reference_count)
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0continue;
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0/*
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 * Wake any pending process. The waiter would check
+> dev->state
+> diff --git a/drivers/hid/intel-ish-hid/ishtp/client.c
+> b/drivers/hid/intel-ish-hid/ishtp/client.c
+> index 82c907f01bd3..8a7f2f6a4f86 100644
+> --- a/drivers/hid/intel-ish-hid/ishtp/client.c
+> +++ b/drivers/hid/intel-ish-hid/ishtp/client.c
+> @@ -49,7 +49,9 @@ static void ishtp_read_list_flush(struct ishtp_cl
+> *cl)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0list_for_each_entry_safe(=
+rb, next, &cl->dev->read_list.list,
+> list)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0if (rb->cl && ishtp_cl_cmp_id(cl, rb->cl)) {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0lis=
+t_del(&rb->list);
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ishtp_io_=
+rb_free(rb);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0spin_lock=
+(&cl->free_list_spinlock);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0list_add_=
+tail(&rb->list, &cl-
+> >free_rb_list.list);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0spin_unlo=
+ck(&cl->free_list_spinlock);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0}
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0spin_unlock_irqrestore(&c=
+l->dev->read_list_spinlock, flags);
+> =C2=A0}
+
 
