@@ -1,70 +1,71 @@
-Return-Path: <linux-kernel+bounces-60097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-60098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5717684FFC8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:22:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4FA884FFC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 23:23:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB7851F256F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:22:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C9A81F222FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 22:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F162D39FE2;
-	Fri,  9 Feb 2024 22:20:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B8CD3A26E;
+	Fri,  9 Feb 2024 22:20:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u4HpbLX8"
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D+pL60lA"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABA5E38FBC
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:20:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14E1339FE7
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 22:20:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707517253; cv=none; b=qVnca6QLWURBxZhC6jxK68rSCIDLWMqRwRhr0f2Pf2hXRibSJtzZDavcF1lxyy4CXRs4AteEFJF2pCraduAUxRIwGpnOO6fcM4e/H+Z6wbMJX6dT3s27h2ZcuJhxgcXApPFkNp6KPVMso0uiOKLYJvBZ7y5DmLJPZD0BBF3ul4E=
+	t=1707517255; cv=none; b=uWb8uyfHz3C/hBqv+x2ZJSRWVORNZmevn5LRI+DOmgwAwQsa1/yvd8o16z0x4BQABl8nh3oYTNOQh+k+OEK2tHtC0gXvUrPp8p3owuczN3dbUV/G5DLkb/CG5u034paqMN1xyNqDXATQHcipkoQBGv8stMeMCcwyOm89MyMTySc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707517253; c=relaxed/simple;
-	bh=sq7lyUPuX+bZmIv/3kU7sl8tk0+vliGbARyV9b8Pmfs=;
+	s=arc-20240116; t=1707517255; c=relaxed/simple;
+	bh=/+AACNUK3NWSn3jwhGJqpuGxVWUQ3Hc2IPGl9YwdYHM=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=QzxINe0mH2UX6f8CzUAvejo1rww1xkgFSy90ULO6sP8yfLhUex1NKhy/8Il8S3GiqLOqhnpv48rPndP3Z6syWpCLLsgmVm9fn2K9zmFW67sJ2pP28J8Ch2I4ccsvA4Mjqewi4kfjOe13id+3jIGx6WN9W9BVLyFlFFbrIHfi678=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u4HpbLX8; arc=none smtp.client-ip=209.85.210.202
+	 To:Cc:Content-Type; b=euwwCffSNNNCmqjTrmhjzXjCq7qD/y9WMMg1RPBDH7gN4cqSfzpdt82R42lB8p3sCRLY/y6IPniNtDWjDy58buspuYPUZZxX3j+OBtR1FmLoub+pZqRgfmT6TjK2Zx9C0EN0LTqeG5vtBYKfzR/I6T3DHpcgyECo2CYiqxbivl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D+pL60lA; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e05118feabso1492033b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:20:51 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6047a047f4cso38330007b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 14:20:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707517251; x=1708122051; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707517253; x=1708122053; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=GVXvcn6uB6wIRuqNemacA52ZGVu0PaYsVKCrJlCzyuw=;
-        b=u4HpbLX8JcO2nzTE6Xwc/uN7LHKkA+XudR3D+P9yNVWhkEnbq5hAfi3MCT0pczRSDH
-         NBsgCRU6Fd00qyWQ5TiNbyY53YyhgbqB3tFfgUmmtb3Iat9iWXYI7UAeLMyuZW7UUccR
-         Jak9y8UHYlm0tc9ZKrtwWoecNae0UgIoi+TOcBfF2S0BbjgLSAo2R5YmY4yv1DfE8KWa
-         bb4YlpeT8wSjGHMSdeVIz4x8Bs2SeezxlP5JJ5FRlUJ7a8Q8obO+zRaZFVMLQFwHFh2A
-         JySZVod1PdxWGNxUkhaTOatV5wPq9dhUuZZUB+uuSYUcBuv65bylf5CDSjvx00aDTg/O
-         Fz/g==
+        bh=yi4hHgzRm66Wj0icAfm6O+EqUFwwNEbxzptOYQ9az9o=;
+        b=D+pL60lAu5xXZzNy+stnlcNJnCE6Zb3CCbUt0wwSpMRelviatTlIpMNEEHe1LHRzbG
+         aITq67Fi6LG70I7szCTSxgMY6Qqj4niqXeG43t9HYWXmgBsKhTO8xpDZk95ORvQ0sfIz
+         mDiYV0fo8EGjL0Ab6TRxhQbDzsCim9u6alLtcfvXgFVM0AiEqWsDhy8d+1XKhN/gVtV8
+         lr0+2ws91rw1QRy+HSBt7ACK2KSJhtGRGT05ldHFs5YQ1gTwgOIBcV7dURA2Estwq8vp
+         ql4ZM8FXoAfSh9aKdfgA4CyydCaWcvRPENWoszCBGip+LRIP0vk+KHAr9H2GHOp+NRBC
+         TskA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707517251; x=1708122051;
+        d=1e100.net; s=20230601; t=1707517253; x=1708122053;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GVXvcn6uB6wIRuqNemacA52ZGVu0PaYsVKCrJlCzyuw=;
-        b=V8x3EgZv7dIZ65o34AIXQwOjNHWXJx7qRg6/ENWWSNiE4g0RKWA3wdc9aeRAXwBzWl
-         wpPXcpOSRcRkeVqc32G8ut0G//tgQbfOpCzcCKadlZJ8Tgk9lZr1Vjr9nNwMBNiKTAVn
-         L4qbn3VDuapTHKQRvxQvPBBAdnpgbhNLq7Lif7UibVSRZNADhjxg0CI11OvqhPejIHoe
-         13oNs1ubq+vBRdIMIc48oeOLOTOFBN5uQiSRrOHAXJMKhcoUEkPtJptVZ55iDzl0XYzz
-         0nIuP/vzYXjjoQ9fq44/KzyRENE2rF2gFWvF1nvYoOletHMGH1rndgX7kGRf75uFdvxC
-         +/Gg==
-X-Gm-Message-State: AOJu0YwzdbtqdcF7oUVjC9NXk2VukiTI/3LkXACJKvWiOVXW/fbo4SMA
-	UqYErRzcRA6Gbd5z1ReIJ9wFBdvYKUEPEE21B88uTGIMPFfodqNFdF+ulSnybwFWMbTJKo3REIw
-	ilg==
-X-Google-Smtp-Source: AGHT+IFPV5uyb68fUIJPtq8a4CaQ4lPPx4Tq8WYJiSe1vUbvkkeusQZiLXsza1gwmEtbSVCZ93DHoumhets=
+        bh=yi4hHgzRm66Wj0icAfm6O+EqUFwwNEbxzptOYQ9az9o=;
+        b=QNqm8YW4787nbySAPYklEYgE+oaoxmNuK6C8svmDb88BvAUWYmzLtO36/83Bh/Xmco
+         A4SIHHX4anV1ex39/KVKcGQiKtUKAnpKGBiuQJ/JQ0p7awl7SPOgv6Jrn1ln5VMZuYJ4
+         KpM0fye6Eg+x8k4KqHmHmgQqwxK082369Y/NviqQhe+8VFOsRKAL/NGVGAdo/0onZ4Ov
+         xhF5r0qx/2RTZFKSsLePd+u2BtcT+Dx1vRbcsm+AnqpaluCUk8AiZ2OQl+ABzGXrRwu1
+         fbU2/ciRaD736K3tmCIM3oVJmXeebIpmjCvBvunqAB+FRLc8aW4Rx+XatJC47X0jKzPL
+         ZLSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW5gTSNBOwts/zVqi3vBDKPk2xvoy04NzYbGeaSOcSO9chUqou3QgOMSIFeAlb3D3YO86g9G+Hkz+xv81KwdKate2jvZENTEWKbl/9Z
+X-Gm-Message-State: AOJu0Yxf/tMn5cWsG7/lKG75qcejpNFiIfYA1Q8vXfoysYuEk/p8gUNm
+	fXI59b0X4khuY6f7JLOGUd25C4IjSH/xliJIVNkCwxRRc4L0MlBxiG4ivoJcAzd+XAsnq7X93Zc
+	p/A==
+X-Google-Smtp-Source: AGHT+IEWGzKIt62JQrZlWShnfuhbbuyWmez5l2djLuVbJUzqXxVsrI6ck7bnEYXYkiyxPfSQN31DhiehvFs=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:2d94:b0:6e0:351e:cea7 with SMTP id
- fb20-20020a056a002d9400b006e0351ecea7mr21807pfb.2.1707517250995; Fri, 09 Feb
- 2024 14:20:50 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a0d:d513:0:b0:604:103:567d with SMTP id
+ x19-20020a0dd513000000b006040103567dmr152824ywd.0.1707517253085; Fri, 09 Feb
+ 2024 14:20:53 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri,  9 Feb 2024 14:20:46 -0800
+Date: Fri,  9 Feb 2024 14:20:47 -0800
 In-Reply-To: <20240209222047.394389-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,147 +75,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240209222047.394389-1-seanjc@google.com>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240209222047.394389-2-seanjc@google.com>
-Subject: [PATCH 1/2] KVM: x86: Move "KVM no-APIC vCPU" key management into
- local APIC code
+Message-ID: <20240209222047.394389-3-seanjc@google.com>
+Subject: [PATCH 2/2] KVM: x86: Sanity check that kvm_has_noapic_vcpu is zero
+ at module_exit()
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Li RongQing <lirongqing@baidu.com>, Maxim Levitsky <mlevitsk@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Move incrementing and decrementing of kvm_has_noapic_vcpu into
-kvm_create_lapic() and kvm_free_lapic() respectively to fix a benign bug
-bug where KVM fails to decrement the count if vCPU creation ultimately
-fails, e.g. due to a memory allocation failing.
+WARN if kvm.ko is unloaded with an elevated kvm_has_noapic_vcpu to guard
+against incorrect management of the key, e.g. to detect if KVM fails to
+decrement the key in error paths.  Because kvm_has_noapic_vcpu is purely
+an optimization, in all likelihood KVM could completely botch handling of
+kvm_has_noapic_vcpu and no one would notice (which is a good argument for
+deleting the key entirely, but that's a problem for another day).
 
-Note, the bug is benign as kvm_has_noapic_vcpu is used purely to optimize
-lapic_in_kernel() checks, and that optimization is quite dubious.  That,
-and practically speaking no setup that cares at all about performance runs
-with a userspace local APIC.
+Note, ideally the sanity check would be performance when kvm_usage_count
+goes to zero, but adding an arch callback just for this sanity check isn't
+at all worth doing.
 
-Reported-by: Li RongQing <lirongqing@baidu.com>
-Cc: Maxim Levitsky <mlevitsk@redhat.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/lapic.c | 27 ++++++++++++++++++++++++++-
- arch/x86/kvm/x86.c   | 29 +++--------------------------
- 2 files changed, 29 insertions(+), 27 deletions(-)
+ arch/x86/kvm/x86.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 3242f3da2457..681f6d82d015 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -124,6 +124,9 @@ static inline int __apic_test_and_clear_vector(int vec, void *bitmap)
- 	return __test_and_clear_bit(VEC_POS(vec), (bitmap) + REG_POS(vec));
- }
- 
-+__read_mostly DEFINE_STATIC_KEY_FALSE(kvm_has_noapic_vcpu);
-+EXPORT_SYMBOL_GPL(kvm_has_noapic_vcpu);
-+
- __read_mostly DEFINE_STATIC_KEY_DEFERRED_FALSE(apic_hw_disabled, HZ);
- __read_mostly DEFINE_STATIC_KEY_DEFERRED_FALSE(apic_sw_disabled, HZ);
- 
-@@ -2466,8 +2469,10 @@ void kvm_free_lapic(struct kvm_vcpu *vcpu)
- {
- 	struct kvm_lapic *apic = vcpu->arch.apic;
- 
--	if (!vcpu->arch.apic)
-+	if (!vcpu->arch.apic) {
-+		static_branch_dec(&kvm_has_noapic_vcpu);
- 		return;
-+	}
- 
- 	hrtimer_cancel(&apic->lapic_timer.timer);
- 
-@@ -2809,6 +2814,11 @@ int kvm_create_lapic(struct kvm_vcpu *vcpu, int timer_advance_ns)
- 
- 	ASSERT(vcpu != NULL);
- 
-+	if (!irqchip_in_kernel(vcpu->kvm)) {
-+		static_branch_inc(&kvm_has_noapic_vcpu);
-+		return 0;
-+	}
-+
- 	apic = kzalloc(sizeof(*apic), GFP_KERNEL_ACCOUNT);
- 	if (!apic)
- 		goto nomem;
-@@ -2844,6 +2854,21 @@ int kvm_create_lapic(struct kvm_vcpu *vcpu, int timer_advance_ns)
- 	static_branch_inc(&apic_sw_disabled.key); /* sw disabled at reset */
- 	kvm_iodevice_init(&apic->dev, &apic_mmio_ops);
- 
-+	/*
-+	 * Defer evaluating inhibits until the vCPU is first run, as this vCPU
-+	 * will not get notified of any changes until this vCPU is visible to
-+	 * other vCPUs (marked online and added to the set of vCPUs).
-+	 *
-+	 * Opportunistically mark APICv active as VMX in particularly is highly
-+	 * unlikely to have inhibits.  Ignore the current per-VM APICv state so
-+	 * that vCPU creation is guaranteed to run with a deterministic value,
-+	 * the request will ensure the vCPU gets the correct state before VM-Entry.
-+	 */
-+	if (enable_apicv) {
-+		apic->apicv_active = true;
-+		kvm_make_request(KVM_REQ_APICV_UPDATE, vcpu);
-+	}
-+
- 	return 0;
- nomem_free_apic:
- 	kfree(apic);
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b66c45e7f6f8..59119157bd20 100644
+index 59119157bd20..779a5b32a5bf 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -12053,27 +12053,9 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 	if (r < 0)
- 		return r;
+@@ -13878,9 +13878,6 @@ module_init(kvm_x86_init);
  
--	if (irqchip_in_kernel(vcpu->kvm)) {
--		r = kvm_create_lapic(vcpu, lapic_timer_advance_ns);
--		if (r < 0)
--			goto fail_mmu_destroy;
--
--		/*
--		 * Defer evaluating inhibits until the vCPU is first run, as
--		 * this vCPU will not get notified of any changes until this
--		 * vCPU is visible to other vCPUs (marked online and added to
--		 * the set of vCPUs).  Opportunistically mark APICv active as
--		 * VMX in particularly is highly unlikely to have inhibits.
--		 * Ignore the current per-VM APICv state so that vCPU creation
--		 * is guaranteed to run with a deterministic value, the request
--		 * will ensure the vCPU gets the correct state before VM-Entry.
--		 */
--		if (enable_apicv) {
--			vcpu->arch.apic->apicv_active = true;
--			kvm_make_request(KVM_REQ_APICV_UPDATE, vcpu);
--		}
--	} else
--		static_branch_inc(&kvm_has_noapic_vcpu);
-+	r = kvm_create_lapic(vcpu, lapic_timer_advance_ns);
-+	if (r < 0)
-+		goto fail_mmu_destroy;
- 
- 	r = -ENOMEM;
- 
-@@ -12194,8 +12176,6 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
- 	srcu_read_unlock(&vcpu->kvm->srcu, idx);
- 	free_page((unsigned long)vcpu->arch.pio_data);
- 	kvfree(vcpu->arch.cpuid_entries);
--	if (!lapic_in_kernel(vcpu))
--		static_branch_dec(&kvm_has_noapic_vcpu);
- }
- 
- void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
-@@ -12472,9 +12452,6 @@ bool kvm_vcpu_is_bsp(struct kvm_vcpu *vcpu)
- 	return (vcpu->arch.apic_base & MSR_IA32_APICBASE_BSP) != 0;
- }
- 
--__read_mostly DEFINE_STATIC_KEY_FALSE(kvm_has_noapic_vcpu);
--EXPORT_SYMBOL_GPL(kvm_has_noapic_vcpu);
--
- void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu)
+ static void __exit kvm_x86_exit(void)
  {
- 	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+-	/*
+-	 * If module_init() is implemented, module_exit() must also be
+-	 * implemented to allow module unload.
+-	 */
++	WARN_ON_ONCE(static_branch_unlikely(&kvm_has_noapic_vcpu));
+ }
+ module_exit(kvm_x86_exit);
 -- 
 2.43.0.687.g38aa6559b0-goog
 
