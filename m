@@ -1,120 +1,94 @@
-Return-Path: <linux-kernel+bounces-59918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CABB84FD51
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:05:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22B0584FD53
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:05:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2466128688F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:05:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6EDEB25A97
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D237686126;
-	Fri,  9 Feb 2024 20:05:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A295F85C58;
+	Fri,  9 Feb 2024 20:05:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="rrT5F68j"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vPT/xaDL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9713E7FBBC;
-	Fri,  9 Feb 2024 20:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E591283CA6
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 20:05:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707509110; cv=none; b=WAh3Ry6Tv9s1CxUIYZ25Sjt3RpB7eq32bHuzw9KfFDT3QLeMBPONsRGfT11GdQy6j5lGp9ZZfYLXj5I6oTgBaBkv06LO96q8WY0ic8ApfG7vLvDM7No7LALMhCCgfakXlKbJJBE53jR3JoWV3ndaXroXRXuyrcGK/rOLB/oC6AA=
+	t=1707509149; cv=none; b=OBNrIC4m6b9dFT+mmsOtDIfrAYrjYrSyk8VrGNXKsChkpmUcZqI5IbxbsUE2iJTBeMH4Be0IeMaWI2fh9X8wojjjJ3p2hYlpG+Xx84hRqUq1YHF8OZeGSfBXYLIIsRzLt80hcTPhdPuKH/KTwnbeH61r55whfqKeCfcTKdcBw+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707509110; c=relaxed/simple;
-	bh=PdP7RDXlYkTsPbDHl2LkBqe7dqJfRcj2pQrAYr7vqTw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MPFpCkPPMLOxESyme6Z8SoJZVFJsJ37RLmxTi8eA84aoAo/zMJpX/kWvPOqxJggZ10Lghegxu/O6uQYcWOr0iLcRdhemmQMB5KyFDZLEa5aT5gmGajazMLocXUma5RVRY1awm0Yi6IoyPZUETB2WNS92A4A14Frn54wXWN10CPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=rrT5F68j; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707509101;
-	bh=PdP7RDXlYkTsPbDHl2LkBqe7dqJfRcj2pQrAYr7vqTw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rrT5F68j04JiYo4o7NeGlwhfkcOQWxDNCNbJvnZ0+8MoC0Y9hlsVQm5w+/tX7ZaIT
-	 +xAwx03LNBnJDQLFLTyS5/qYKRu1Gg/rKyXCdmlX2Z1ExxweiG3MweFNRasHZsXH8G
-	 r6E3JHNAhxxZi9zO7oLCKqam/GVqzMIE+13lpfy/SQqMEPyPmyTsm+beDgjH3NNzc7
-	 EaoxWT4/4ZxBq4YYEV4aCrRBTwTwXMgHjCqHfZ7txEElunB8Cxhz7n4j+zMLbohCHI
-	 3BnZ16L01J8MuXL6zDqM0BXHZY3lo48CgH7NRA/zXymzoofFx5y2a2c+T/i6wvd/YV
-	 xQ50M2W3finDw==
-Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 79DCF37813FD;
-	Fri,  9 Feb 2024 20:05:00 +0000 (UTC)
-Message-ID: <d9e6ba68-180d-4ac7-9aa9-b9972e1e9f71@collabora.com>
-Date: Fri, 9 Feb 2024 22:04:59 +0200
+	s=arc-20240116; t=1707509149; c=relaxed/simple;
+	bh=h8vMaK0XmFrUac9t64uAU7bBk89wrRc7eBHqG+ClLZc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IlGpCrBzqPEiiEr4unw6jXS8GBRx/xiZ/Um6ILxPYvMHf8wc+6mr57ByWBfWWrOz+k7bsYBiU8J3VuixylP4kwES73fLpg7FSnRKFMpdL4YZtFGbFbh6wZChmu+eWW8hWrVSdXdmRimsr6Gq98UchoxrmV0bCtYHbu9gDWX5JRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vPT/xaDL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E191EC433C7;
+	Fri,  9 Feb 2024 20:05:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707509148;
+	bh=h8vMaK0XmFrUac9t64uAU7bBk89wrRc7eBHqG+ClLZc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vPT/xaDLXKvrzNbLoIhXl1A88RQABWXztDolIEj66i6t3WOOelzjqhZCsEhiWURSa
+	 Z8bDm2cnrCyT6CLAcS1aGNTBS0QDUqX0Q3RTy9aYkNXaA7KMaRz/DNSJn06NzoImfX
+	 fRmaRG7Tr+7f4yGoIbPkqzhWyU99rpBUIc5l28XQh2UZzzBpsgkE3qzi57oa6IVMfg
+	 5xVP2VWctqh/Va3evEpcVlenNysKcxe3w7SHYYap+hGcetZtozkXz80WeXmvMcP8gC
+	 yXDRlgWPW0Wer6aWowRX3UdcDIQgtyOAtYvBlKFCQhY9iIo0MUbAyaaAeO4G1ernMi
+	 iPK/htcgFz8yQ==
+Date: Fri, 9 Feb 2024 20:05:45 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regmap: kunit: Ensure that changed bytes are actually
+ different
+Message-ID: <ZcaFmYGClhpj82Xo@finisterre.sirena.org.uk>
+References: <20240209-regmap-kunit-random-change-v1-1-ad2d76757583@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: SOF: amd: Skip IRAM/DRAM size modification for
- Steam Deck OLED
-Content-Language: en-US
-To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>
-Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20240209122810.2258042-1-cristian.ciocaltea@collabora.com>
- <f4b87510-4f55-4364-960f-5870c4d86874@amd.com>
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-In-Reply-To: <f4b87510-4f55-4364-960f-5870c4d86874@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="MPLZbVRzcCcKrRpc"
+Content-Disposition: inline
+In-Reply-To: <20240209-regmap-kunit-random-change-v1-1-ad2d76757583@kernel.org>
+X-Cookie: You might have mail.
 
-On 2/9/24 14:49, Venkata Prasad Potturu wrote:
-> 
-> On 2/9/24 17:58, Cristian Ciocaltea wrote:
->> The recent introduction of the ACP/PSP communication for IRAM/DRAM fence
->> register modification breaks the audio support on Valve's Steam Deck
->> OLED device.
->>
->> It causes IPC timeout errors when trying to load DSP topology during
->> probing:
 
-[...]
+--MPLZbVRzcCcKrRpc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Programming ACP_IRAM_DRAM_FENCE register to modify the size of IRAM and
-> DRAM and it's noting related to signed or unsigned fw_image.
-> 
-> This ACP_IRAM_DRAM_FENCE register writing need to do before starting sha
-> dma. 
+On Fri, Feb 09, 2024 at 08:02:27PM +0000, Mark Brown wrote:
+> During the cache sync test we verify that values we expect to have been
+> written only to the cache do not appear in the hardware. This works most
+> of the time but since we randomly generate both the original and new values
+> there is a low probability that these values may actually be the same.
+> Wrap get_random_bytes() to ensure that the values are different, it is
+> likely we will want a similar pattern for other tests in the future.
 
-Unfortunately it doesn't fix the issue - I tested with the psp_send_cmd()
-calls moved to various positions before the line
+Sorry, works better if you actally check stuff in.  v2 coming.
 
-  snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SHA_DMA_CMD, ACP_SHA_RUN);
+--MPLZbVRzcCcKrRpc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-and I keep getting the IPC timeouts.
+-----BEGIN PGP SIGNATURE-----
 
-However, if I simply comment out the second psp_send_cmd() line
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXGhZgACgkQJNaLcl1U
+h9DqRgf9H0t80XKzFa/Ni4fG45mZdju+7l5m0P+V55E4q1pk4S2c0+dZ747WTYqC
+vwVvWktGMgrvWwOR9bjtFkblPNZthl1PggMKegFtEeYC1YRVjqwREGoS0qwscRst
+pPwYgND5caSEeZOHg7hHicMGI3rdUL3aUbrzCdzFQ80/WbTuTNRYqC6chPgT9f/o
+UJ/jBoInKjnC7qH8VEaQqC7+vViIga9SLV9tVcnrGGgxTaecrhShd9D5mob+UlvT
+fzg7f4zV4n2ECg4SD9gnax4yDN841bkISmlhj/mag1pX2zG0uDWcz03h27/f43EO
+PtMA0znmMOsNPHsblYUkZfN5cFsScA==
+=1VR1
+-----END PGP SIGNATURE-----
 
-  psp_send_cmd(adata, MBOX_ACP_IRAM_DRAM_FENCE_COMMAND | MBOX_ISREADY_FLAG);
-
-the problem is solved, even when the first psp_send_cmd() is kept in the
-original position.
-
-Anything else worth trying?
-
-Otherwise I would rework the patch to add a dedicated quirk for getting
-this ACP_IRAM_DRAM_FENCE processing skipped for Steam Deck OLED.
-
-Thanks,
-Cristian
+--MPLZbVRzcCcKrRpc--
 
