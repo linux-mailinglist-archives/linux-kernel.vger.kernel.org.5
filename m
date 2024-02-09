@@ -1,100 +1,121 @@
-Return-Path: <linux-kernel+bounces-58989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0DCF84EF76
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 04:41:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF03C84EF78
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 04:46:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87DE92886C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 03:41:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 682652887A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 03:46:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A03B568A;
-	Fri,  9 Feb 2024 03:41:21 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1325953A9;
+	Fri,  9 Feb 2024 03:45:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Md4fTCu/"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 379B0522A
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 03:41:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75785221
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 03:45:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707450080; cv=none; b=uOfrFNg9CDqRPXCMRpZF9FPxGH9H4qmXURE3S7NB3/ZP5+dsS5t7mpNwULYDw4gjBs4HCuX8zKNtxnz/N3eFv3XlhxFMzRKhdWjukJIC+25RvH+RRXStAq2LqQ14jgyc3YwekNODP+lY2wZR14vaSxivAX3r7nM1m43paASSXTI=
+	t=1707450353; cv=none; b=M8FaZiBBwrfhpsvX7eZqMTxHicpsb6wdb4X12BRIb6sf+u1kjzqUQuYOrq+v6NNKjSwOzM4lQRUuq/ileF4O4KetnxhCdVYDUdSLUnQstj3Qv0An9Poyp+NKv2ujcQ/gFU/jTwl0KUrYLkOvY1Podw2RZWkg82TOZKLnBnRLHvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707450080; c=relaxed/simple;
-	bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Zo8RXL7mF5eNtdQ09a6uwIckYJPEcytiaAfAFJXKKPKZmDLTZD3J8FGppIQXbrQ3hJHbj++Ef9qF+h2qEY2QtuUlfXa0fNJfYAXKjCqcchpgZDf62jgV4lhsrYDVmdSg0em7EXi945qUcVDUghU6VnOUWCAOi0QhGTSAy/Kbo4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c3e3ac59b3so46529639f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 19:41:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707450078; x=1708054878;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-        b=tw4w+y28i+Q1+CpoyekLlj92R+7NhJG6pD0dIEJW5DsST6h0xOE4/9UO1EvJLqOd0j
-         6uUUwnfwCAaAGK32kz1D6co7zN27HNwAZ+RaiqtpjoOU7idCgD2fFzVKI5DXbgO8jIJB
-         dEGAaGf/KDbJIPl6tGbahvKu8ysnMgVqwj6XTBT18sR6BxcVl+UzjOW0KAC/bMQDGsOq
-         INKYWo2MBN5YtkmRU++rotO372QlVQJ4HkVuIMSLVcmzBDrIAC4F+k+h70CzqCR86rgX
-         hgM81LB5Rp80O8g+xhc5Z4/9cDGyCRfLzDQKMcmqiG66Eu9gE9zvTn1warhIrLT30pL+
-         eUJg==
-X-Gm-Message-State: AOJu0YzE8l6uv9EMEjj1ZExBgSCPqzgthLbtRpqgAhR8Pkzds3FtZy99
-	if88XT2zVxLLAnJW7ZRaF5XbNf333TzCTzp1crQhu7iRRUnNBLKuZbEjuuKUWPvE40CwtqMp8EZ
-	Uz+wrRVxlVYOY1jitottVXmmaUNmLAXIJtIIgd66uO3ls0z0A/OdG578=
-X-Google-Smtp-Source: AGHT+IEGITcXVjcVGileirP4Yke73RZOhQlFl7lZp06ObTOHCMoSuoh2VVmuIwAwVRDEWZjfhGP38xIZYgwoo9EPbVH6doLpu8aU
+	s=arc-20240116; t=1707450353; c=relaxed/simple;
+	bh=KYXq3vsFg9agxeweIpZT8Hkb1gjVOc3XU0BDt7CEye4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NUWNgfMQ9kA+6/LQnGV4WVjaB0zV3uS7N6U6YtQP6zPn3FrWMSuFHlCMtqywOmo4pQZUtxmojuZgBKQDYfzIe5xlSx6qclxl6VVtGZXfPvOSee7v38bysCIwid8XL+Q8Lnc3YO7XzxBlJA2xwvKpt1h4SDqcaFrQJag/CeJLN6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Md4fTCu/; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707450350;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=en4CRu6uro7HIccHAz5xaJYPbyqAmpdG3f5ewbgFR/4=;
+	b=Md4fTCu/mG9B+DOm7UQarC8OZS/5aaL9miDIJouvdr05ejwqVDzIzYhsQQvuomVBPl1KYs
+	t1mCRaEgacfeDkU1juPUIZLAlKX9RsMTnTUw+w2ORl2S7KOCJdpj8MuSm0pCDmJyaJcGlJ
+	t/ezigbRFb1BteRsmmEg5+MUvXE0Pcc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-541-zfXdj_9sNpWk3gvZOpAftQ-1; Thu, 08 Feb 2024 22:45:46 -0500
+X-MC-Unique: zfXdj_9sNpWk3gvZOpAftQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1FD7785A58C;
+	Fri,  9 Feb 2024 03:45:46 +0000 (UTC)
+Received: from [10.22.8.4] (unknown [10.22.8.4])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id DACF32166B32;
+	Fri,  9 Feb 2024 03:45:45 +0000 (UTC)
+Message-ID: <45d11189-3ca2-422f-89dc-d33f6ee33f7d@redhat.com>
+Date: Thu, 8 Feb 2024 22:45:45 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:480a:b0:470:fa4e:18f with SMTP id
- cp10-20020a056638480a00b00470fa4e018fmr5640jab.3.1707450078481; Thu, 08 Feb
- 2024 19:41:18 -0800 (PST)
-Date: Thu, 08 Feb 2024 19:41:18 -0800
-In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006654780610eab315@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
-From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: build warning after merge of the workqueues tree
+Content-Language: en-US
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Tejun Heo <tj@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20240209142432.05acc1b2@canb.auug.org.au>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240209142432.05acc1b2@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+On 2/8/24 22:24, Stephen Rothwell wrote:
+> Hi all,
+>
+> After merging the workqueues tree, today's linux-next build (htmldocs)
+> produced this warning:
+>
+> Documentation/core-api/workqueue:778: kernel/workqueue.c:1801: WARNING: Line block ends without a blank line.
+> Documentation/core-api/workqueue:778: kernel/workqueue.c:1804: WARNING: Line block ends without a blank line.
+>
+> Introduced by commit
+>
+>    4c065dbce1e8 ("workqueue: Enable unbound cpumask update on ordered workqueues")
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+That warning is likely by the following function comment:
 
-#syz fix: exact-commit-title
+/**
+  * unplug_oldest_pwq - restart an oldest plugged pool_workqueue
+  * @wq: workqueue_struct to be restarted
+  *
+  * pwq's are linked into wq->pwqs with the oldest first. For ordered
+  * workqueues, only the oldest pwq is unplugged, the others are plugged to
+  * suspend execution until the oldest one is drained. When this 
+happens, the
+  * next oldest one (first plugged pwq in iteration) will be unplugged to
+  * restart work item execution to ensure proper work item ordering.
+  *
+  *    dfl_pwq --------------+     [P] - plugged
+  *                          |
+  *                          v
+  *    pwqs -> A -> B [P] -> C [P] (newest)
+  *            |    |        |
+  *            1    3        5
+  *            |    |        |
+  *            2    4        6
+  */
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+One possible solution is to take out one '*' of the leading "/**" so 
+that it is not regarded as an inline documentation block. Any other 
+suggestion is welcome.
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
+Cheers,
+Longman
 
----
-[1] I expect the commit to be present in:
-
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
 
