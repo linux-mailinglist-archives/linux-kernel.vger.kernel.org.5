@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-59809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DE0A84FC04
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:38:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D85884FBFE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:38:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4681B286730
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:38:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBE6A1F29164
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:38:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC24483CAF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F3F82866;
 	Fri,  9 Feb 2024 18:37:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FQSb8+NF"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ANLFcA20"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B1C54F85
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55ADF54650
 	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 18:37:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707503870; cv=none; b=GBTgvddao0NZ051nJPIamtyy1wfQDEA73yxGfvF10NJOwIrQLu2sXsswayzmWo32y6iticz6U2aIuX1tKzt1ln5NMh53t2j0cBG+SxQ2wq864UliLA3YlRURqTwnSbu6AU5XBJWm7Ie6yxJXR4dHBpyH3oawfgE4mORW04ZDeRA=
+	t=1707503870; cv=none; b=opK1a8BB8LfKSbq4QzCJOQLI7Ie1Ok4tiIS3SBIkLtKWkc1s3MIzzBtqYtP9lpp8E4Y7IDKUtxzCvHCHoIXhpQFCBPoYksuvUDWtx+QIEh39NCrHyA93q6CrY2mHeJgdVAxaMU+1VprfXwc4Zux10jQ09VvJcLPDmIE2biEbNJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707503870; c=relaxed/simple;
-	bh=BvMhzkPpXyN/8Xg8FgcD8uHqCkKA5AQucMS5tazD45A=;
+	bh=kvrgNkerakLij+Q7sGJMeCwb0heYoet1/gUQhvFFwXA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XvZ22I0+Jsy2VGBkDtA5UMHqDpO/3aVJ9e0qn79Lk5sUrF+cpi3oaGcj9uEDTRF2mTnybLvD71U4PrqLig/RVaYayCN8euUTabbOmL01BHQCTKmY10/wa1C0g0qxfCVG2TPg+ZWsaV/IlOYqtmlf27t1S5q0Uqlh+nYXIWCfZYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FQSb8+NF; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type; b=TyDnxDfMKg+IlfzoEDXii2kmhnx8JM0Pu3ZUqmj4QqCF9eqe4a8dY9scShTNUVzTedDM52/nQSQ31dO5qKkpmOQEesFOTQFtFh2Q3LIiRMT+5euQFFtfdlf/7p8vk7c26faCHIx7UKUF2Ha0jhKmu6bY17NU1nuaM84i3oaAjVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ANLFcA20; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
@@ -36,23 +36,23 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=L3czntmlcoRsVRz6SFtGmKcsuMBNfmrtK0/P8XAq0oA=;
-	b=FQSb8+NFQtDAx+7L2Yzvx9CiOCmtWAfr8wGeYG/HbH10pN3XaZy2gAXYB+Ym+6s7vys6jr
-	n4Ut4jSizGysCcc7FhTX2KJ9+jcIXUS462zdsqbMPWLJSkRaRzRN+/EVpGsxYSLauopB5C
-	62lJCa3lWalLSwqSY6Wr690u1t0lzbA=
+	bh=2Yb42C16zvNs4Qe81/RZYCFLU8QdYJlCRgHBvvhE+xE=;
+	b=ANLFcA20+i1HyDMFRew/A50RgLOkyeD8QOxY2IZ1gwzW+t7VP5yQZgCs0tsdCKEhHnVZ2o
+	aW/OqqPMtZQf9T6wdhzukfWUKYD8LOlBN0xyGBo0oFGnwDsbzJ15Fl0B5CMR1EY98DZwyR
+	jWi4ATlJrP9IPjmB86B3eO2fCLZsTVo=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-556-3kp2yV7lMcSzFNhPv71xaw-1; Fri, 09 Feb 2024 13:37:45 -0500
-X-MC-Unique: 3kp2yV7lMcSzFNhPv71xaw-1
+ us-mta-556-Bp9guLUdMMq6yTAZrhDNKA-1; Fri, 09 Feb 2024 13:37:46 -0500
+X-MC-Unique: Bp9guLUdMMq6yTAZrhDNKA-1
 Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3CDC985A58B;
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7205B835381;
 	Fri,  9 Feb 2024 18:37:45 +0000 (UTC)
 Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 0FC46492BC6;
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 44DCD492BC6;
 	Fri,  9 Feb 2024 18:37:45 +0000 (UTC)
 From: Paolo Bonzini <pbonzini@redhat.com>
 To: linux-kernel@vger.kernel.org,
@@ -61,9 +61,9 @@ Cc: seanjc@google.com,
 	michael.roth@amd.com,
 	aik@amd.com,
 	isaku.yamahata@intel.com
-Subject: [PATCH 06/10] KVM: x86: define standard behavior for bits 0/1 of VM type
-Date: Fri,  9 Feb 2024 13:37:38 -0500
-Message-Id: <20240209183743.22030-7-pbonzini@redhat.com>
+Subject: [PATCH 07/10] KVM: x86: Add is_vm_type_supported callback
+Date: Fri,  9 Feb 2024 13:37:39 -0500
+Message-Id: <20240209183743.22030-8-pbonzini@redhat.com>
 In-Reply-To: <20240209183743.22030-1-pbonzini@redhat.com>
 References: <20240209183743.22030-1-pbonzini@redhat.com>
 Precedence: bulk
@@ -76,293 +76,82 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-Some VM types have characteristics in common; in fact, the only use
-of VM types right now is kvm_arch_has_private_mem and it assumes that
-_all_ VM types have private memory.
+From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-So, let the low bits specify the characteristics of the VM type.  As
-of we have two special things: whether memory is private, and whether
-guest state is protected.  The latter is similar to
-kvm->arch.guest_state_protected, but the latter is only set on a fully
-initialized VM.  If both are set, ioctls to set registers will cause
-an error---SEV-ES did not do so, which is a problematic API.
+Allow the backend to specify which VM types are supported.
+
+Based on a patch by Isaku Yamahata <isaku.yamahata@intel.com>.
 
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
-	The plan is to reserve VM type 19 for TDX (16 for Intel,
-	+1 for private memory, +2 for encrypted state).
+ arch/x86/include/asm/kvm-x86-ops.h | 1 +
+ arch/x86/include/asm/kvm_host.h    | 1 +
+ arch/x86/kvm/x86.c                 | 9 ++++++++-
+ arch/x86/kvm/x86.h                 | 2 ++
+ 4 files changed, 12 insertions(+), 1 deletion(-)
 
- arch/x86/include/asm/kvm_host.h |  2 +-
- arch/x86/include/uapi/asm/kvm.h |  6 ++-
- arch/x86/kvm/x86.c              | 93 +++++++++++++++++++++++++++------
- 3 files changed, 83 insertions(+), 18 deletions(-)
-
+diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+index ac8b7614e79d..8694a6e3d012 100644
+--- a/arch/x86/include/asm/kvm-x86-ops.h
++++ b/arch/x86/include/asm/kvm-x86-ops.h
+@@ -20,6 +20,7 @@ KVM_X86_OP(hardware_disable)
+ KVM_X86_OP(hardware_unsetup)
+ KVM_X86_OP(has_emulated_msr)
+ KVM_X86_OP(vcpu_after_set_cpuid)
++KVM_X86_OP_OPTIONAL_RET0(is_vm_type_supported)
+ KVM_X86_OP(vm_init)
+ KVM_X86_OP_OPTIONAL(vm_destroy)
+ KVM_X86_OP_OPTIONAL_RET0(vcpu_precreate)
 diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 0bcd9ae16097..b7d33205d49d 100644
+index b7d33205d49d..9636a43ccdc4 100644
 --- a/arch/x86/include/asm/kvm_host.h
 +++ b/arch/x86/include/asm/kvm_host.h
-@@ -2136,7 +2136,7 @@ void kvm_configure_mmu(bool enable_tdp, int tdp_forced_root_level,
- 		       int tdp_max_root_level, int tdp_huge_page_level);
+@@ -1601,6 +1601,7 @@ struct kvm_x86_ops {
+ 	bool (*has_emulated_msr)(struct kvm *kvm, u32 index);
+ 	void (*vcpu_after_set_cpuid)(struct kvm_vcpu *vcpu);
  
- #ifdef CONFIG_KVM_PRIVATE_MEM
--#define kvm_arch_has_private_mem(kvm) ((kvm)->arch.vm_type != KVM_X86_DEFAULT_VM)
-+#define kvm_arch_has_private_mem(kvm) ((kvm)->arch.vm_type & __KVM_X86_PRIVATE_MEM_TYPE)
- #else
- #define kvm_arch_has_private_mem(kvm) false
- #endif
-diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-index cccaa5ff6d01..6c74db23257e 100644
---- a/arch/x86/include/uapi/asm/kvm.h
-+++ b/arch/x86/include/uapi/asm/kvm.h
-@@ -848,7 +848,11 @@ struct kvm_hyperv_eventfd {
- /* x86-specific KVM_EXIT_HYPERCALL flags. */
- #define KVM_EXIT_HYPERCALL_LONG_MODE	_BITULL(0)
- 
-+/* Low bits of VM types provide confidential computing capabilities.  */
-+#define __KVM_X86_PRIVATE_MEM_TYPE	1
-+#define __KVM_X86_PROTECTED_STATE_TYPE	2
-+
- #define KVM_X86_DEFAULT_VM	0
--#define KVM_X86_SW_PROTECTED_VM	1
-+#define KVM_X86_SW_PROTECTED_VM	(KVM_X86_DEFAULT_VM | __KVM_X86_PRIVATE_MEM_TYPE)
- 
- #endif /* _ASM_X86_KVM_H */
++	bool (*is_vm_type_supported)(unsigned long vm_type);
+ 	unsigned int vm_size;
+ 	int (*vm_init)(struct kvm *kvm);
+ 	void (*vm_destroy)(struct kvm *kvm);
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 8746530930d5..e634e5b67516 100644
+index e634e5b67516..c89ddaa1e09f 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -5526,21 +5526,30 @@ static int kvm_vcpu_ioctl_x86_set_vcpu_events(struct kvm_vcpu *vcpu,
- 	return 0;
+@@ -4581,12 +4581,19 @@ static int kvm_ioctl_get_supported_hv_cpuid(struct kvm_vcpu *vcpu,
  }
- 
--static void kvm_vcpu_ioctl_x86_get_debugregs(struct kvm_vcpu *vcpu,
--					     struct kvm_debugregs *dbgregs)
-+static int kvm_vcpu_ioctl_x86_get_debugregs(struct kvm_vcpu *vcpu,
-+					    struct kvm_debugregs *dbgregs)
- {
- 	unsigned long val;
- 
-+	if ((vcpu->kvm->arch.vm_type & __KVM_X86_PROTECTED_STATE_TYPE) &&
-+	    vcpu->arch.guest_state_protected)
-+		return -EINVAL;
-+
- 	memset(dbgregs, 0, sizeof(*dbgregs));
- 	memcpy(dbgregs->db, vcpu->arch.db, sizeof(vcpu->arch.db));
- 	kvm_get_dr(vcpu, 6, &val);
- 	dbgregs->dr6 = val;
- 	dbgregs->dr7 = vcpu->arch.dr7;
-+	return 0;
- }
- 
- static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
- 					    struct kvm_debugregs *dbgregs)
- {
-+	if ((vcpu->kvm->arch.vm_type & __KVM_X86_PROTECTED_STATE_TYPE) &&
-+	    vcpu->arch.guest_state_protected)
-+		return -EINVAL;
-+
- 	if (dbgregs->flags)
- 		return -EINVAL;
- 
-@@ -5559,9 +5568,13 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
- }
- 
- 
--static void kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
--					  u8 *state, unsigned int size)
-+static int kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
-+					 u8 *state, unsigned int size)
- {
-+	if ((vcpu->kvm->arch.vm_type & __KVM_X86_PROTECTED_STATE_TYPE) &&
-+	    fpstate_is_confidential(&vcpu->arch.guest_fpu))
-+		return -EINVAL;
-+
- 	/*
- 	 * Only copy state for features that are enabled for the guest.  The
- 	 * state itself isn't problematic, but setting bits in the header for
-@@ -5578,22 +5591,27 @@ static void kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
- 			     XFEATURE_MASK_FPSSE;
- 
- 	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
--		return;
-+		return 0;
- 
- 	fpu_copy_guest_fpstate_to_uabi(&vcpu->arch.guest_fpu, state, size,
- 				       supported_xcr0, vcpu->arch.pkru);
-+	return 0;
- }
- 
--static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
--					 struct kvm_xsave *guest_xsave)
-+static int kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
-+					struct kvm_xsave *guest_xsave)
- {
--	kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
--				      sizeof(guest_xsave->region));
-+	return kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
-+					     sizeof(guest_xsave->region));
- }
- 
- static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
- 					struct kvm_xsave *guest_xsave)
- {
-+	if ((vcpu->kvm->arch.vm_type & __KVM_X86_PROTECTED_STATE_TYPE) &&
-+	    fpstate_is_confidential(&vcpu->arch.guest_fpu))
-+		return -EINVAL;
-+
- 	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
- 		return 0;
- 
-@@ -5603,18 +5621,23 @@ static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
- 					      &vcpu->arch.pkru);
- }
- 
--static void kvm_vcpu_ioctl_x86_get_xcrs(struct kvm_vcpu *vcpu,
--					struct kvm_xcrs *guest_xcrs)
-+static int kvm_vcpu_ioctl_x86_get_xcrs(struct kvm_vcpu *vcpu,
-+				       struct kvm_xcrs *guest_xcrs)
- {
-+	if ((vcpu->kvm->arch.vm_type & __KVM_X86_PROTECTED_STATE_TYPE) &&
-+	    vcpu->arch.guest_state_protected)
-+		return -EINVAL;
-+
- 	if (!boot_cpu_has(X86_FEATURE_XSAVE)) {
- 		guest_xcrs->nr_xcrs = 0;
--		return;
-+		return 0;
- 	}
- 
- 	guest_xcrs->nr_xcrs = 1;
- 	guest_xcrs->flags = 0;
- 	guest_xcrs->xcrs[0].xcr = XCR_XFEATURE_ENABLED_MASK;
- 	guest_xcrs->xcrs[0].value = vcpu->arch.xcr0;
-+	return 0;
- }
- 
- static int kvm_vcpu_ioctl_x86_set_xcrs(struct kvm_vcpu *vcpu,
-@@ -5622,6 +5645,10 @@ static int kvm_vcpu_ioctl_x86_set_xcrs(struct kvm_vcpu *vcpu,
- {
- 	int i, r = 0;
- 
-+	if ((vcpu->kvm->arch.vm_type & __KVM_X86_PROTECTED_STATE_TYPE) &&
-+	    vcpu->arch.guest_state_protected)
-+		return -EINVAL;
-+
- 	if (!boot_cpu_has(X86_FEATURE_XSAVE))
- 		return -EINVAL;
- 
-@@ -6010,7 +6037,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 	case KVM_GET_DEBUGREGS: {
- 		struct kvm_debugregs dbgregs;
- 
--		kvm_vcpu_ioctl_x86_get_debugregs(vcpu, &dbgregs);
-+		r = kvm_vcpu_ioctl_x86_get_debugregs(vcpu, &dbgregs);
-+		if (r < 0)
-+			break;
- 
- 		r = -EFAULT;
- 		if (copy_to_user(argp, &dbgregs,
-@@ -6040,7 +6069,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 		if (!u.xsave)
- 			break;
- 
--		kvm_vcpu_ioctl_x86_get_xsave(vcpu, u.xsave);
-+		r = kvm_vcpu_ioctl_x86_get_xsave(vcpu, u.xsave);
-+		if (r < 0)
-+			break;
- 
- 		r = -EFAULT;
- 		if (copy_to_user(argp, u.xsave, sizeof(struct kvm_xsave)))
-@@ -6069,7 +6100,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 		if (!u.xsave)
- 			break;
- 
--		kvm_vcpu_ioctl_x86_get_xsave2(vcpu, u.buffer, size);
-+		r = kvm_vcpu_ioctl_x86_get_xsave2(vcpu, u.buffer, size);
-+		if (r < 0)
-+			break;
- 
- 		r = -EFAULT;
- 		if (copy_to_user(argp, u.xsave, size))
-@@ -6085,7 +6118,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 		if (!u.xcrs)
- 			break;
- 
--		kvm_vcpu_ioctl_x86_get_xcrs(vcpu, u.xcrs);
-+		r = kvm_vcpu_ioctl_x86_get_xcrs(vcpu, u.xcrs);
-+		if (r < 0)
-+			break;
- 
- 		r = -EFAULT;
- 		if (copy_to_user(argp, u.xcrs,
-@@ -6229,6 +6264,11 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 	}
  #endif
- 	case KVM_GET_SREGS2: {
-+		r = -EINVAL;
-+		if ((vcpu->kvm->arch.vm_type & __KVM_X86_PROTECTED_STATE_TYPE) &&
-+		    vcpu->arch.guest_state_protected)
-+			goto out;
-+
- 		u.sregs2 = kzalloc(sizeof(struct kvm_sregs2), GFP_KERNEL);
- 		r = -ENOMEM;
- 		if (!u.sregs2)
-@@ -6241,6 +6281,11 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 		break;
- 	}
- 	case KVM_SET_SREGS2: {
-+		r = -EINVAL;
-+		if ((vcpu->kvm->arch.vm_type & __KVM_X86_PROTECTED_STATE_TYPE) &&
-+		    vcpu->arch.guest_state_protected)
-+			goto out;
-+
- 		u.sregs2 = memdup_user(argp, sizeof(struct kvm_sregs2));
- 		if (IS_ERR(u.sregs2)) {
- 			r = PTR_ERR(u.sregs2);
-@@ -11466,6 +11511,10 @@ static void __get_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
  
- int kvm_arch_vcpu_ioctl_get_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
+-static bool kvm_is_vm_type_supported(unsigned long type)
++bool __kvm_is_vm_type_supported(unsigned long type)
  {
-+	if ((vcpu->kvm->arch.vm_type & __KVM_X86_PROTECTED_STATE_TYPE) &&
-+	    vcpu->arch.guest_state_protected)
-+		return -EINVAL;
+ 	return type == KVM_X86_DEFAULT_VM ||
+ 	       (type == KVM_X86_SW_PROTECTED_VM &&
+ 		IS_ENABLED(CONFIG_KVM_SW_PROTECTED_VM) && tdp_enabled);
+ }
++EXPORT_SYMBOL_GPL(__kvm_is_vm_type_supported);
 +
- 	vcpu_load(vcpu);
- 	__get_regs(vcpu, regs);
- 	vcpu_put(vcpu);
-@@ -11507,6 +11556,10 @@ static void __set_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
++static bool kvm_is_vm_type_supported(unsigned long type)
++{
++	return __kvm_is_vm_type_supported(type) ||
++	       static_call(kvm_x86_is_vm_type_supported)(type);
++}
  
- int kvm_arch_vcpu_ioctl_set_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
+ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
  {
-+	if ((vcpu->kvm->arch.vm_type & __KVM_X86_PROTECTED_STATE_TYPE) &&
-+	    vcpu->arch.guest_state_protected)
-+		return -EINVAL;
-+
- 	vcpu_load(vcpu);
- 	__set_regs(vcpu, regs);
- 	vcpu_put(vcpu);
-@@ -11579,6 +11632,10 @@ static void __get_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2)
- int kvm_arch_vcpu_ioctl_get_sregs(struct kvm_vcpu *vcpu,
- 				  struct kvm_sregs *sregs)
- {
-+	if ((vcpu->kvm->arch.vm_type & __KVM_X86_PROTECTED_STATE_TYPE) &&
-+	    vcpu->arch.guest_state_protected)
-+		return -EINVAL;
-+
- 	vcpu_load(vcpu);
- 	__get_sregs(vcpu, sregs);
- 	vcpu_put(vcpu);
-@@ -11846,6 +11903,10 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu *vcpu,
- {
- 	int ret;
+diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+index 2f7e19166658..4e40c23d66ed 100644
+--- a/arch/x86/kvm/x86.h
++++ b/arch/x86/kvm/x86.h
+@@ -9,6 +9,8 @@
+ #include "kvm_cache_regs.h"
+ #include "kvm_emulate.h"
  
-+	if ((vcpu->kvm->arch.vm_type & __KVM_X86_PROTECTED_STATE_TYPE) &&
-+	    vcpu->arch.guest_state_protected)
-+		return -EINVAL;
++bool __kvm_is_vm_type_supported(unsigned long type);
 +
- 	vcpu_load(vcpu);
- 	ret = __set_sregs(vcpu, sregs);
- 	vcpu_put(vcpu);
+ struct kvm_caps {
+ 	/* control of guest tsc rate supported? */
+ 	bool has_tsc_control;
 -- 
 2.39.0
 
