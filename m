@@ -1,105 +1,143 @@
-Return-Path: <linux-kernel+bounces-59296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BADEE84F4AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:34:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9F6A84F4B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:34:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 560D11F24014
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:34:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66089282A21
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:34:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B82E2DF7D;
-	Fri,  9 Feb 2024 11:34:03 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 182CE2E3F1
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 11:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A58B2E64E;
+	Fri,  9 Feb 2024 11:34:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uxazuhoc"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF34F2E40F
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 11:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707478442; cv=none; b=cNHdwWskCmqSc6QzWiux2krqc74NXZ/uIXY1p2PeT5tieCq57US4VwGBSmT9CtUgz6CcaP1EWd4Y1Vc8eS/D7cn/2+RNyfRZDXaW5WFKBAwBcjLHnQ0Oz2SiU16WSkEPs+RZoM16VZBwCmxJckcyq722HRYnBzvwNmmI1aD04Ho=
+	t=1707478484; cv=none; b=RemsOWriPy0riudcSIx62SrRxcqm0jpIZ8fgwi+9Kn5lnFXiUfUPEed2eV6SvEmyEwywuZdU0hFxRq2qps+hvTglolEfkBRZy6OZPiJUFkMWQMOZXaMVtUlDvOwEubSoCBMJmWOETBPxe9h5CgAzDTv9HnhF9w5T7rUSr/YBAkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707478442; c=relaxed/simple;
-	bh=PSKKtV965YJulHFsXWn3UaKzi2QezX4LHDe2jIKgaig=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DDqjI7Khl7NH1qRZga5leM4BGbduZmfrVzmlaLQHfUzXcA3wi1Y9GiUb3Sm0remm/PhtTr1n3JKEOozNTrN7pY8T4vEaWV/+ui5CqaC5+0c0XIn5vd8OOErE7ZgvdxboNJVrocsRF86tsehjWlUkJiRlq9tSwIY327UVuDXmqzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B3494DA7;
-	Fri,  9 Feb 2024 03:34:38 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.31.163])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F42F3F762;
-	Fri,  9 Feb 2024 03:33:54 -0800 (PST)
-Date: Fri, 9 Feb 2024 11:33:51 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Rob Herring <robh@kernel.org>, Fuad Tabba <tabba@google.com>,
-	Joey Gouly <joey.gouly@arm.com>,
-	Kristina Martsenko <kristina.martsenko@arm.com>,
-	"moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" <linux-arm-kernel@lists.infradead.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" <kvmarm@lists.linux.dev>
-Subject: Re: [RFC PATCH] KVM: arm64: Override Microsoft Azure Cobalt 100 MIDR
- value with ARM Neoverse N2
-Message-ID: <ZcYNn5LDmH1g2dDB@FVFF77S0Q05N.cambridge.arm.com>
-References: <20240206195819.1146693-1-eahariha@linux.microsoft.com>
- <ZcNSI089xqia6lho@FVFF77S0Q05N.cambridge.arm.com>
- <ed6c25dc-d5c7-4f15-8fdc-f2adf209e638@linux.microsoft.com>
+	s=arc-20240116; t=1707478484; c=relaxed/simple;
+	bh=anM8H8ekDk70qUU/OU5ybbHEy2oQ0LfezROCfuiZVm4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HAHWcUmWsV5m6uDMYinNU/K0viednTVeNAo9qT6zEMrjYcl0Q94aJeRpWb6S8qlHPLzrFm5mvQnOV4a7Y6jy10aJ2bNeSvJAXUhYMc3uV7Ibzx2v+lrL4RsTPc9qSqOuUgtM+EtFYQvNuJvIsTXmm5tMkfi8nzyiph75Su3ERV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uxazuhoc; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-604aab67616so9539237b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 03:34:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707478480; x=1708083280; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dBuwXRSy38eT9mIupMpf6DOe+SA9Yv7KcoKl+Fk1z1w=;
+        b=uxazuhoc5uWFLOPXQstRh7i7TMILxb7KQLd79FeEnRQWnCAz7gUweFLK26wHUdopYK
+         26ifxU8SgCKwGR2Hj+4FiVznEbjplgoq/7PgmURYXf+qZ62yfg2OaNaWoceeSDIrfOlE
+         94qz85gozU+VEDju3L2I7Ckl8y6hvHLzaYE05QqDRPoH+Ld5SmhDETsPybThUjhqqMey
+         QxFEA5mniywuq3fuvLiDCgvuLfg6+fEastre1fUkMGQoQ7yojaLoOvcj+bCQkhBJmgAR
+         mGnZsfm5QIeY0FoUzwzEw7xXK5wsHL0sk50cIXrFOsdnIqkPDjXUjcLCD/mG9IMuzyep
+         5Fgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707478480; x=1708083280;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dBuwXRSy38eT9mIupMpf6DOe+SA9Yv7KcoKl+Fk1z1w=;
+        b=vcpHrUhX2bk9HVLJFw+S2smYjgIbckgo8YA3ZN9UpLYgPdAEPmc27DXgU/lTDtbPqU
+         IvmNBTie2DLestRwA3axlLwZfJ8RFIVVHHr2xyl1itdOPJfjdidfeVbIPlVLd3YgvM/h
+         nao0rufGskYYR4J94BDcUNJzdqfMc5o1TT76iv8lrsJsNBRSuHj39z5anSxFPW3h+DEp
+         sbq2uzmijdt1S2I+hRb1OauveYNQgCHnwy7SwRr5LORDilUv/LJP3817F+7lK0SLBL1i
+         eWiL8TNhTxFzjX3nx2ToqIvdF8X7OBboAlYBwempjCnxhFEN6lUpzyzXgxqYNHepTznU
+         p79Q==
+X-Gm-Message-State: AOJu0Yz17nlB8buOeP3FhPBQUVu6SBvFFSmYG1tIsObFj+ILVLeg5uAf
+	mwWXul2QEcosLdyx+eyNgx6zvOMIcvxIG+4hgsdkiJYys75s0zjvNDyqRAEbbQLdYV4KQ9Plx0h
+	I2uzqib5A4F8FtczbHDRG9hY2VliaaO5MdzXQ6A==
+X-Google-Smtp-Source: AGHT+IE9nt+KDrV3up84BrX2E/jgb9xngNDUdWzC55v9koHut4sFHX5k1nC+RJ4VY79vZNasOaRbYrMXtbObIbwTvA8=
+X-Received: by 2002:a81:8457:0:b0:604:a477:6024 with SMTP id
+ u84-20020a818457000000b00604a4776024mr1179768ywf.2.1707478480688; Fri, 09 Feb
+ 2024 03:34:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ed6c25dc-d5c7-4f15-8fdc-f2adf209e638@linux.microsoft.com>
+References: <20240209015817.14627-8-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20240209015817.14627-8-wsa+renesas@sang-engineering.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Fri, 9 Feb 2024 12:34:05 +0100
+Message-ID: <CAPDyKFpmfgwJ5dJFmORhg1tBewzhB_jrWikpX=b23r-joN91SA@mail.gmail.com>
+Subject: Re: [PATCH 0/6] mfd: tmio: simplify header and move to platform_data
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-renesas-soc@vger.kernel.org, Lee Jones <lee@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-mmc@vger.kernel.org, linux-sh@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Feb 08, 2024 at 11:16:10AM -0800, Easwar Hariharan wrote:
-> On 2/7/2024 1:49 AM, Mark Rutland wrote:
-> > On Tue, Feb 06, 2024 at 07:58:16PM +0000, Easwar Hariharan wrote:
-> > Further, if Azure Cobalt 100 is based on ARM Neoverse N2, you presumably suffer
-> > from the same errata; can you comment on that at all? e.g. are there any
-> > changes in this part that *might* lead to differences in errata and/or
-> > workarounds? How do the MIDR_EL1.{Variant,Revision} values compare to that of
-> > Neoverse N2?
-> 
-> Yes, Azure Cobalt 100 suffers from the same errata as Neoverse N2. We had changes
-> in the implementation, but according to our hardware folks, the Neoverse N2 errata
-> we are affected by so far aren't affected by the changes made for Azure Cobalt 100.
+On Fri, 9 Feb 2024 at 02:59, Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+>
+> The MFD parts of the TMIO have been removed by Arnd, so that only the
+> SD/MMC related functionality is left. Remove the outdated remains in the
+> public header file and then move it to platform_data as the data is now
+> specific for the SD/MMC part.
+>
+> Based on 6.8-rc3, build bot is happy. Branch is here:
+>
+> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git renesas/sdhi/tmio-simplification
+>
+> I'd suggest this goes via the MFD tree, so the series would need acks
+> from the MMC and SH maintainers. Is that okay with everyone?
 
-Ok, so of the currently-known-and-mitigated errata, you'll be affected by:
+Wouldn't it be better to funnel this via the mmc tree? In that way, we
+can easily avoid conflicts with additional renesas-mmc driver changes
+that we have in pipe.
 
-	ARM64_ERRATUM_2139208
-	ARM64_ERRATUM_2067961
-	ARM64_ERRATUM_2253138
+Or perhaps there are other changes that make the mfd tree preferred?
 
-.. and we'll need to extend the midr_range lists for those errata to cover
-Azure Cobalt 100.
+Kind regards
+Uffe
 
-From your patch, it looks like the Azure Cobalt 100 MIDR value (0x6D0FD490) is
-the same as the Arm Neoverse-N2 r0p0 MIDR value (0x410FD490), except the
-'Implementer' field is 0x6D ('m' in ASCII) rather than 0x41 ('A' in ASCII).
-
-Are you happy to send a patch extending arch/arm64/include/asm/cputype.h with
-the relevant ARM_CPU_IMP_* and CPU_PART_* definitions, and use those to extend
-the midr_range lists for those errata?
-
-As above, if you could make any comment on how the MIDR_EL1.{Variant,Revision}
-fields map to that of Arm Neoverse-N2, it would be very helpful. It's not clear
-to me whether those fields correspond directly (and so this part is based on
-r0p0), or whether you have a different scheme for revision numbers. That'll
-matter for correctly matching any future errata and/or future revisions of
-Azure Cobalt 100.
-
-Mark.
+>
+> All the best!
+>
+>    Wolfram
+>
+>
+> Wolfram Sang (6):
+>   mfd: tmio: remove obsolete platform_data
+>   mfd: tmio: remove obsolete io accessors
+>   mmc: tmio/sdhi: fix includes
+>   mfd: tmio: update include files
+>   mfd: tmio: sanitize comments
+>   mfd: tmio: move header to platform_data
+>
+>  MAINTAINERS                                   |   2 +-
+>  arch/sh/boards/board-sh7757lcr.c              |   2 +-
+>  arch/sh/boards/mach-ap325rxa/setup.c          |   2 +-
+>  arch/sh/boards/mach-ecovec24/setup.c          |   2 +-
+>  arch/sh/boards/mach-kfr2r09/setup.c           |   2 +-
+>  arch/sh/boards/mach-migor/setup.c             |   2 +-
+>  arch/sh/boards/mach-se/7724/setup.c           |   2 +-
+>  drivers/mmc/host/renesas_sdhi_core.c          |   2 +-
+>  drivers/mmc/host/renesas_sdhi_internal_dmac.c |   5 +-
+>  drivers/mmc/host/renesas_sdhi_sys_dmac.c      |   5 +-
+>  drivers/mmc/host/tmio_mmc_core.c              |   3 +-
+>  drivers/mmc/host/uniphier-sd.c                |   2 +-
+>  include/linux/mfd/tmio.h                      | 133 ------------------
+>  include/linux/platform_data/tmio.h            |  64 +++++++++
+>  14 files changed, 81 insertions(+), 147 deletions(-)
+>  delete mode 100644 include/linux/mfd/tmio.h
+>  create mode 100644 include/linux/platform_data/tmio.h
+>
+> --
+> 2.43.0
+>
+>
 
