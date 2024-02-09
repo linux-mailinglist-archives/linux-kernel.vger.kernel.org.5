@@ -1,105 +1,98 @@
-Return-Path: <linux-kernel+bounces-59741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AD9884FB1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:35:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2655784FB26
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:38:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0D3328770C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:35:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61A671C24E6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:38:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1E8C7EF09;
-	Fri,  9 Feb 2024 17:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 887747EF03;
+	Fri,  9 Feb 2024 17:38:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="A+TGZY+V"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kerfjuN5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4232853398;
-	Fri,  9 Feb 2024 17:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C740D7B3D2;
+	Fri,  9 Feb 2024 17:38:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707500135; cv=none; b=rF/lJQXP8zRD03MFkpBBJ02GXdGWDo7mSj1bwqLjdSL/OVSWKnefqygoTHaTvvBrVIy3eUsR2Op2RKPC57eFrAofBn/SVWwyn4odXeIL4c6SNay5jAXBohCx4rwkHwNGSn7aHeYRfk1kYdBWowsGQ3z7OW3OMILGRlK/SX0ahOU=
+	t=1707500324; cv=none; b=gtcfygO0BQZ0Ezic7s7e/8JvzTbb/bdM/0B71N0Co01KquC1BaZ8UhXSiOwMHqPgsbGFWAPO7JHomuKAzE3iCzs18Dy04QAymPKgPPIEj65S8AHshX9kuWz1T9doos3q7kLnNSDVg7awW4dQhl58SF7xslZ1SqrrsSCOGTMnSKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707500135; c=relaxed/simple;
-	bh=L7LVF0xgSx/tkSIKccTfmZ8enVLgMwrvXD7JYedesak=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LSGzCtGT33ZA8aO+8E2B77Wu1l95sAOQQGbvqiIU/RkYwaPOUEb3+TNdLCi4IZb9LhZe+Yg3bsvMxsJbUSB8raXwdrZ+boRmT8iqeN2ftof70J2nGkgG5oUOdL+Cin0ph+lxkYXUGQHXcwkEmgL1Ev0yK2mI/pPEyhs3ScArPIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=A+TGZY+V; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 419HZI1Z110129;
-	Fri, 9 Feb 2024 11:35:18 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707500118;
-	bh=u1wp8/LboIEGg7Ak8EZDY4zBL+bnAzpumV/bqdbzzrc=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=A+TGZY+V93KJK+E+iweZnKfY4drbX/7o2P35KJmiSVbg6Z7ktF6bvCyd66ZW6SHoW
-	 9+TEQ8cDbVic2UxSWAaz6WK0SgyDWzb7BXPiok+Lx4rDjVtQT5t45IE7h3nf7B+OvC
-	 ajH55OpUOu2aFsugWwn/fy9AghFy/+eIy0ciBzec=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 419HZIcC010482
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 9 Feb 2024 11:35:18 -0600
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 9
- Feb 2024 11:35:17 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 9 Feb 2024 11:35:17 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 419HZHa6069048;
-	Fri, 9 Feb 2024 11:35:17 -0600
-Date: Fri, 9 Feb 2024 11:35:17 -0600
-From: Nishanth Menon <nm@ti.com>
-To: Bhargav Raviprakash <bhargav.r@ltts.com>
-CC: <linux-kernel@vger.kernel.org>, <m.nirmaladevi@ltts.com>, <lee@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <jpanis@baylibre.com>,
-        <devicetree@vger.kernel.org>, <arnd@arndb.de>,
-        <gregkh@linuxfoundation.org>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <linus.walleij@linaro.org>,
-        <linux-gpio@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <vigneshr@ti.com>, <kristo@kernel.org>
-Subject: Re: [RESEND PATCH v1 01/13] mfd: tps6594: Add register definitions
- for TI TPS65224 PMIC
-Message-ID: <20240209173517.i67qttasxjum7oek@strum>
-References: <20240208105343.1212902-1-bhargav.r@ltts.com>
- <20240208105343.1212902-2-bhargav.r@ltts.com>
+	s=arc-20240116; t=1707500324; c=relaxed/simple;
+	bh=HravDwgHEdCMpMGa6CrqloF7sVySm2L8D8y1O2Do7lc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=isypjgPHSO8Y0caClEw5igS72KgWuDk5TVS3oa+U1X9ykvbXrpxQOmrDbtss3IvU97g885Eu2pnv8YOiBlE2Y2xPtdnV7SjfxcmOc9TurQSKt4cHQ/dpLas0uhk/IG67+0X7v5FoUTHn800nIqn9Tqh3VmG7hiH9MLb9VQKxz70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kerfjuN5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 712F2C433F1;
+	Fri,  9 Feb 2024 17:38:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707500324;
+	bh=HravDwgHEdCMpMGa6CrqloF7sVySm2L8D8y1O2Do7lc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kerfjuN5jyjh7Iq+1DOcDabahKbMAmoRDLrtb30fs4WS1zuswq4yoePYrSk7sLA5B
+	 ABE3qeI81FOY0b3nQF3bBfYoTzpxXpxvOvvVZZY+tKW3Iqcb8FEurBWf8UOkQqkpsF
+	 hvUcYu6Al9JHWShocndQW1QrIOYHqdhJ22jeSiZKaw/3hvAnljZJVrgVBd8SX6K6YD
+	 RK+e0HrHMlpB1/dNfmnLLHbm2mKCcjaj1xBakrPbywxz1VQO0UTm+ZTBgtrKnSvQR2
+	 Jv/pTzO/mhp5gmKijD4th/XDi81p8TaNWTeXTLjRptBuYqz0jb0yTQWdwi80RAKVH4
+	 4AnarJn9OZzbg==
+Date: Fri, 9 Feb 2024 17:38:38 +0000
+From: Simon Horman <horms@kernel.org>
+To: Takeru Hayasaka <hayatake396@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>, intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, mailhol.vincent@wanadoo.fr,
+	vladimir.oltean@nxp.com, laforge@gnumonks.org
+Subject: Re: [PATCH net-next v6] ethtool: ice: Support for RSS settings to
+ GTP from ethtool
+Message-ID: <20240209173838.GH1533412@kernel.org>
+References: <20240131134621.1017530-1-hayatake396@gmail.com>
+ <20240131131258.47c05b7e@kernel.org>
+ <CADFiAc+y_SXGtVqZkLoiWw-YBArMovMkuWw3X596QDwEtdBJ2g@mail.gmail.com>
+ <CADFiAcK_XjLNjzZuF+OZDWjZA4tFB8VgeYXVJHR8+N3XryGxwA@mail.gmail.com>
+ <20240208072351.3a806dda@kernel.org>
+ <CADFiAc+i9i29SL0PM8gzmDG6o=ARS6fSrTPKNyqh9RLmWWB78A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240208105343.1212902-2-bhargav.r@ltts.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CADFiAc+i9i29SL0PM8gzmDG6o=ARS6fSrTPKNyqh9RLmWWB78A@mail.gmail.com>
 
-On 16:23-20240208, Bhargav Raviprakash wrote:
-> From: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
+On Fri, Feb 09, 2024 at 02:25:50AM +0900, Takeru Hayasaka wrote:
+> Hi Jakub-san
 > 
-> Extend TPS6594 PMIC register and field definitions to support TPS65224
-> power management IC.
+> Thank you for your reply.
 > 
-> TPS65224 is software compatible to TPS6594 and can re-use many of the
-> same definitions, new definitions are added to support additional
-> controls available on TPS65224.
+> > We're expecting a v7 with the patch split into two.
 > 
-> Signed-off-by: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
+> I see, I had not informed you that we have released v7. My apologies.
+> The split patch for v7 has already been submitted. Could you please
+> check this link?
+> https://patchwork.kernel.org/project/netdevbpf/patch/20240201033310.1028154-1-hayatake396@gmail.com/
+> https://patchwork.kernel.org/project/netdevbpf/patch/20240201033310.1028154-2-hayatake396@gmail.com/
 
-You've got to Sign-off as part of recommendations read [1]
+Hi Hayasaka-san,
 
+It appears that the series at the link above has been marked as
+"Changes Requested" in patchwork. Although I am unsure why.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst#n451
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+I would suggest reposting it, say with the tags supplied by Marcin Szycik
+as [PATCH net-next v8].
+
+Also, please don't top-post on the Kernel MLs [1]
+
+[1] https://www.kernel.org/doc/html/latest/process/submitting-patches.html#use-trimmed-interleaved-replies-in-email-discussions
 
