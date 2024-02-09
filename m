@@ -1,124 +1,126 @@
-Return-Path: <linux-kernel+bounces-59840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 590D984FC62
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0586C84FC66
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:57:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E441D1F21533
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:56:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AC101F215D7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2713980C1C;
-	Fri,  9 Feb 2024 18:56:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AFCF8564E;
+	Fri,  9 Feb 2024 18:56:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kwtDETOR"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="XB/Pu4Vn"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3707F57339;
-	Fri,  9 Feb 2024 18:56:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F36857339
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 18:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707504976; cv=none; b=GqlqHyjkt12yZtaKi1zL0HZPr18JsI8pOxAYjVtRHb0nvZTzKdgG5wrsUyU157mbFdbggWfmiAb4Mi7S6mqbUH83GV4rGNh9HVKoEgea5bnExAM3/Am/jIRoNDbj5auBZRbGl63nA0LTSEnG8mVC/1b6e6I+de8KO1FtYKnhzeY=
+	t=1707504993; cv=none; b=Dif0hZSpOsqF9Y+Kh0UXU6fJ3EbfsSl+hHLVwGN7V/8ke3+amW/87+uhyVWKtW8/GNB6k3A48nJ3oAfurEQs4/M2TWp9WueV7qOWAHtgJP5SHesse841UfAC8trSltaIth2CdaLP9cn3zTKXCXKX7RMQuSlnyuw74S/C6kQ7iiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707504976; c=relaxed/simple;
-	bh=C9S2oNwOOfhw1Ocskog3nsge/HD81Vm1NImbMpSpgYY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FQZvggnW/tNJ0o5wTvHps0TZ7SkTjL1iANhg65Np1Xayao1YSmr2kvAaQu36/o97KaFPypm4IAzTloXPxW+TC7tp209eL0fyHQQQwJ2ml4RPMJzoKbxuw/Lia3H+St8YIeWufNYncyc+EWUjgFjadWApg023FPbYODIRJY2fTDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kwtDETOR; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d944e8f367so10694845ad.0;
-        Fri, 09 Feb 2024 10:56:14 -0800 (PST)
+	s=arc-20240116; t=1707504993; c=relaxed/simple;
+	bh=jyq3Ou2zoIChrt4YF00OKCr8nhre49VBm+9l9qv0SqI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lELzyKzyTMbP1wj6wx8rHM9dn3JBdb0qTQLxPEhVvCnUaZrYVJGRBFzhDUkFkE3JKKaD45YHylnptO3ZGnLqmQSN+3m9ekviA0h7pyT3DU2Tp9z0PEpD8NEcmA3wyS9pwJiH5PKnsS+QJu0KN9KHH9KiWdgur+1C5sZlls+MCxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=XB/Pu4Vn; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-557dcb0f870so1855065a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 10:56:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707504974; x=1708109774; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=56hgMqr3mswCnWTmMb87WQwpoLmhLltp/8RI39azy0Q=;
-        b=kwtDETORaeIZyJ5GswVr2CPfFgdFKIhkh/HlZhwqphJGaZhMSEXEDVgRm/rItcetBq
-         4jOvmh+oCVkVboXWIwdCro15yk1YUTDZN/+SIxz3ruaSCDbN3t2pUp/BaYC9cjlu6siD
-         85SwZH+4jlTCDluHpPyqg7p/Jrf6AXyyyDF71nktLhyiMxofNPg7n99l1+4tMz8tEQzE
-         11kMbCf49BKcFAiL+yjT42iyfBcvoJTY1DtEEAiZarEWA85RV9gnuqxVrgntVv1evoxL
-         ESQpFHAgzQNmq5NSBUs7m1EWAa5SNjODQZAn63BcpbcwBRHG4wL1vkTZ1cR9RDQxLaPM
-         dh6g==
+        d=linux-foundation.org; s=google; t=1707504988; x=1708109788; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tAuVk7SJcg0Z9C1D9VIVQQXO8KJNkpgkmG6crijy/Y8=;
+        b=XB/Pu4Vngv+/JFGRfr8J+55vfjciRym7m5SmLAoM/3U68VIRoI/r4OyWAz1IA0MesN
+         xE6dedJdFW2rTj6JnZc7lAy/gcl5q5EjSqzDL/9wG+YTGifRzJob3rGGMGloiHNYaL5+
+         rRPts5BG0b8L5XS461g5my7n45/wnnqaMYl6M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707504974; x=1708109774;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=56hgMqr3mswCnWTmMb87WQwpoLmhLltp/8RI39azy0Q=;
-        b=qtIL1cVPRhopNidwNHS2Q2vxbOxln7qP4kIX+vsPNyUXtCx1wkFNhyLbfG+FsaeTG5
-         DjE8Lj6nUbXjnbQn9sxEMAKHf/tspMZUnMT7zx7kmnqQlU6jOQc1oh0Cmx9ql8a8fr+r
-         2F1kkAnnJOuSlzKfVLdUZFU6Pdi6B8gCyIJtatbtHKZWUXf8i7evkNKQRcKGl7Cs39BH
-         4EgO/YQbXM8rX0PkTNm3Tuoruibn+PkCdCDClqZagIFgaB0e0BUre3t/gu+/65Pq0gSi
-         1LW2hygi1PjQgV9x8PM/LixDPBAEWwrhbrMMo1vuE38I226drTtkQMvHPRi3/E1klBuP
-         CPgQ==
-X-Gm-Message-State: AOJu0YyStg0jbn8cjl8uunSxYyIolhvQHFpgDWE/4VSRUU77dYfnIhvE
-	f6RxVG4O3hFigJCD+IAGJvK/SA1Dvsq2CVmFeTAHCWVXFxj4nPEZ
-X-Google-Smtp-Source: AGHT+IEfTKQr1tJLEw0FhCX2wQeGeOD8/LznWPv9wkv7W5WtuaR7MMqHEGB5GTH/HFZP71SmkqHDFQ==
-X-Received: by 2002:a17:902:9f87:b0:1d9:657c:2769 with SMTP id g7-20020a1709029f8700b001d9657c2769mr119939plq.19.1707504974268;
-        Fri, 09 Feb 2024 10:56:14 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWYlk1nnzdg273wMBD0TlhR6Ex1Db4qqsAlWzgp9N2xrKjlR4Z3Ll4QNQmgN1UgNggrDZ2kvKKro10zHppccIWiEj8o/FJjRXuwADw5+rKMOsUplakT4BPh613rrk2Rw31w9nr8i+Z4fbrev7ADEXGvqqrqq00BGkKS95jNo4R4VOa/Xt+wW5YKr4jTIvET9SN/kqULLfb9YmFgr5LzxQoGscyAGHdLfVxpikYJP7P3LUeVpKvuVreBQONCZcj2XCGLlAjPwyLJ0s3rG1yg5hqJ227QE0/293fthgV0KxI969k8fDWhMWebhI9LX7MH+sT/eTXnCoKXiv2qCk6AJmrnyPblLouVywWif/iu7EDuh5SGOLv3r2eWC7oUSh59iMMV5w81eWwa/IFBZS+H84FCL//AQoG8tzkM5GRxlLt2Tl0KpwrNrut/7rvABggTmdJi2eZBnZo0cZEX8Hr3
-Received: from google.com ([2620:15c:9d:2:9ec:8b78:c8c:fc9])
-        by smtp.gmail.com with ESMTPSA id jh21-20020a170903329500b001d9609f2e30sm1843385plb.1.2024.02.09.10.56.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 10:56:13 -0800 (PST)
-Date: Fri, 9 Feb 2024 10:56:10 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Brenton Simpson <appsforartists@google.com>
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Cameron Gutman <aicommander@gmail.com>,
-	Erica Taylor <rickytaylor26@gmail.com>,
-	Ismael Ferreras Morezuelas <swyterzone@gmail.com>,
-	Jonathan Frederick <doublej472@gmail.com>,
-	Matthias Benkmann <matthias.benkmann@gmail.com>,
-	Matthias Berndt <matthias_berndt@gmx.de>, nate@yocom.org,
-	Sam Lantinga <slouken@libsdl.org>, Vicki Pfau <vi@endrift.com>,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-	trivial@kernel.org
-Subject: Re: [PATCH] Input: xpad - sort xpad_device by vendor and product ID
-Message-ID: <ZcZ1Sn_iPwlgfI3s@google.com>
-References: <Zbl49VAMZx2qrz-p@google.com>
- <20240130231903.293265-1-appsforartists@google.com>
+        d=1e100.net; s=20230601; t=1707504988; x=1708109788;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tAuVk7SJcg0Z9C1D9VIVQQXO8KJNkpgkmG6crijy/Y8=;
+        b=WkIqjg9OjXQVhRTltSXlmGm15dKvUh06erl2tLKGIl6OVk7a0pr2AQ5+NdnINLBsyY
+         NYiA5nq6n/rdhT+Yl9WFOAIgXA3Ul+26A91Z1kynViUbgMRY2yaMhx0bEAArYnuZR3gR
+         OvAwtrYx+DcqrzNCrSM2guRVd0SEQTMGcQn83/jJ23eTwUJc1iugBK6lNxKyzRhYBZdp
+         nJ7uObrCUwfQAKTZN1LGi7zE6RJeE+TQa/Ow1ksQZyNqtW/rUYHAykB3NLQN6Q2luMoS
+         OJB9JM5MHnuWPbr6P5OARKauiTes5ifIfLsyxEXuivEnIDVa65La/5YcbqjGJ3bbpmi4
+         2eKA==
+X-Forwarded-Encrypted: i=1; AJvYcCWkxL6la2MEySTDmbl9h6NpsDJfTZ0wsUD0eeAv3qIW2h2c+o+z2IZYOPVaa2s6dcfkq0Hr7Gkg8h/NfIC1YNm3kp9xh5qocqHnsXIT
+X-Gm-Message-State: AOJu0Yww18zBZECs/FlEBlu4LX6ldxNiQGhNye3gLV4mUX3Xhx9DnlBq
+	9eoW9lpMNVjtQRkYMGNIW0XbUgfATGWyjPeYQ6wiy9/CWGI/iLZb5aFh8XNLCMfX2neOlGp3TZp
+	tYEU=
+X-Google-Smtp-Source: AGHT+IFR6oABj3yt8fZrmywM+tJQMkCKbd2FEPmALZ/3IiltFvQ4Ki2CSLHe1vt7TJzfnituPnZXQA==
+X-Received: by 2002:a17:906:c298:b0:a36:5e34:3a34 with SMTP id r24-20020a170906c29800b00a365e343a34mr2186776ejz.69.1707504988603;
+        Fri, 09 Feb 2024 10:56:28 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUzSPuxsPeXebINNqmnowZb7ZDSEHc21I5uKkbTR4B/IWqa/3O8IWqxObtDIahSyFM/tr2YssGKFa8mKHf8bBF246kCggH1zvBTen5f
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
+        by smtp.gmail.com with ESMTPSA id wp2-20020a170907060200b00a3702ab71f6sm1019761ejb.206.2024.02.09.10.56.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Feb 2024 10:56:28 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so1799632a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 10:56:27 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU58JshA4ZiywW/L9GjyvWUpDFB6OgD/a4JRWM4jx3hP/I8sr/FOFnoOB/BrsgNvhOo7g69ITCCFuztLF9RPK0JzEbWE0W1jUKguSJb
+X-Received: by 2002:aa7:c6d8:0:b0:560:bbcf:1f45 with SMTP id
+ b24-20020aa7c6d8000000b00560bbcf1f45mr2004566eds.5.1707504987581; Fri, 09 Feb
+ 2024 10:56:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240130231903.293265-1-appsforartists@google.com>
+References: <20240208220604.140859-1-seanjc@google.com> <CAKwvOdk_obRUkD6WQHhS9uoFVe3HrgqH5h+FpqsNNgmj4cmvCQ@mail.gmail.com>
+ <DM6PR02MB40587AD6ABBF1814E9CCFA7CB84B2@DM6PR02MB4058.namprd02.prod.outlook.com>
+ <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com> <ZcZyWrawr1NUCiQZ@google.com>
+In-Reply-To: <ZcZyWrawr1NUCiQZ@google.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 9 Feb 2024 10:56:10 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whGn5j-1whM66VWJ=tVmpMFO8Q91uuFAJUXa5hG-PWdxA@mail.gmail.com>
+Message-ID: <CAHk-=whGn5j-1whM66VWJ=tVmpMFO8Q91uuFAJUXa5hG-PWdxA@mail.gmail.com>
+Subject: Re: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on gcc-11
+ (and earlier)
+To: Sean Christopherson <seanjc@google.com>
+Cc: "Andrew Pinski (QUIC)" <quic_apinski@quicinc.com>, Nick Desaulniers <ndesaulniers@google.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Brenton,
+On Fri, 9 Feb 2024 at 10:43, Sean Christopherson <seanjc@google.com> wrote:
+>
+> > We've removed that workaround in commit 43c249ea0b1e ("compiler-gcc.h:
+> > remove ancient workaround for gcc PR 58670"), I'm wondering if maybe
+> > that removal was a bit optimistic.
+>
+> FWIW, reverting that does restore correct behavior on gcc-11.
 
-On Tue, Jan 30, 2024 at 11:19:03PM +0000, Brenton Simpson wrote:
-> Signed-off-by: Brenton Simpson <appsforartists@google.com>
+Hmm. I suspect we'll just have to revert that commit then - although
+probably in some form where it only affects the "this has outputs"
+case.
 
-Empty patch descriptions are frowned upon. You should be able to add at
-least a single sentence why the change is being made.
+Which is much less common than the non-output "asm goto" case.
 
-..
+It does cause gcc to generate fairly horrific code (as noted in the
+commit), but it's almost certainly still better code than what the
+non-asm-goto case results in.
 
->  
->  static const struct usb_device_id xpad_table[] = {
-> +	/* Please keep this list sorted by vendor ID.  Because the lines use different
-> +	 * macros, you may need to sort it by hand.
-> +	 */
+We have very few uses of CC_HAS_ASM_GOTO_OUTPUT (and the related
+CC_HAS_ASM_GOTO_TIED_OUTPUT), but unsafe_get_user() in particular
+generates horrid code without it.
 
-Kernel style of multi-line comments is:
+But it would be really good to understand *what* that secondary bug
+is, and the fix for it. Just to make sure that gcc is really fixed,
+and there isn't some pending bug that we just keep hiding with that
+extra empty volatile asm.
 
-	/*
-	 * line 1
-	 * line 2.
-	 */
+Andrew?
 
-I adjusted and applied, thank you.
-
-Thanks.
-
--- 
-Dmitry
+                   Linus
 
