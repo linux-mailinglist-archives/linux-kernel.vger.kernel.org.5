@@ -1,403 +1,216 @@
-Return-Path: <linux-kernel+bounces-59290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D83C484F491
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:26:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 205E484F497
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:26:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08C2E1C25634
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:26:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BC24B29B59
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2AA28E39;
-	Fri,  9 Feb 2024 11:26:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122D52E652;
+	Fri,  9 Feb 2024 11:26:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BDHl/Oor"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="YdAD4LbV"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 041F91DA59;
-	Fri,  9 Feb 2024 11:26:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE1802E40F;
+	Fri,  9 Feb 2024 11:26:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707477969; cv=none; b=mDhItS+Mz2b9XFKTt4TCAHul/RVNCqmya41ZqlKxWeiP6uV7T8TJRlFCumL4hNFHrf3N+9vq+7PZTHeFJvXxlXSc6rNLg/XkSQeBKU9B0vks8XIv3vrGK9KlJ1WuDrZalZ1uy32mV1KVvXKJfPU2OffIK56sPZZcMOs/MPDfVRk=
+	t=1707477977; cv=none; b=i+NDVbfCBz525g1w60zjBlA2Joz25lHyKkTZBbuZ8sX6awNVnwGt272wOm0qBEfpOYk7FwG1j8HUPy1oxKdbEnzE3k3oXl23R8ssLTQOvuZMNY9xaRNrnQZrV4v+/YzeXUoMsqhqo7yONY2kpcQo5VH5EKI9XmH6RI0p8KnkW6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707477969; c=relaxed/simple;
-	bh=uSYX65UzMcsl+YYHYhtdHjd8X0eQTmD2Vf3q/KjHV5Y=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cVYZ2Qs3RwFpvJBX+aUDRD3MEfmMvlynvFoMWAxt8euTOtEvMO0j9w0+mQDs0JYFoG4fkDLQP1w0u+mx8t8SFpd1O6zIuszFy4dkAyHI5pQ0xCpFDj/URn+ZuS4Q9+SvZ4vT8o2nlBDHxQ8rE7r9U4JFZAjRD+9OMJhuDuqn9r4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=BDHl/Oor; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 419AsWI5017756;
-	Fri, 9 Feb 2024 11:26:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type
-	:content-transfer-encoding; s=qcppdkim1; bh=qVeAVV9DTkxCsIQk9SUB
-	LEJouLnhvIeEOqm2FDVtAUA=; b=BDHl/OorVowMxAXS1GG6c8jCEvkkPJjisjnv
-	GnJrZcJy1izqLR6vac9lySh6+EEWAoJ1hBp3W4TP+9iv/ctxTmuj+E9DrmKj7hVi
-	V8M7o6zxIr8KFeK1K6+7iQKOsTS2JfpWCH0x5g4XKSXYnYScdkpUCpZegbAnzTvb
-	gwL8MMtb173ur34l6s+Ce9dZlK5r9/x/HavbpTndn630RXi1+ZSzwppdmizJF+Iz
-	WkntkSiDvjd4MplBGYv9ICX0uhbDDslk2fU/5tRX88WWopx5WpJd7DVUsL4zd7CY
-	JimZp63JYiCZtQPjNv+XDibC6CqaJoQEv5DAqwtFI2T1dEaWVA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w5ef1rqd0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 09 Feb 2024 11:26:00 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 419BQ0dN023912
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 9 Feb 2024 11:26:00 GMT
-Received: from hu-dibasing-hyd.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 9 Feb 2024 03:25:55 -0800
-From: Dibakar Singh <quic_dibasing@quicinc.com>
-To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <krzysztof.kozlowski@linaro.org>, <luzmaximilian@gmail.com>,
-        <bartosz.golaszewski@linaro.org>, <quic_eberman@quicinc.com>,
-        <quic_gurus@quicinc.com>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_guptap@quicinc.com>, <quic_pkondeti@quicinc.com>,
-        <quic_pheragu@quicinc.com>, <quic_dibasing@quicinc.com>
-Subject: [PATCH] firmware: qcom_scm: Introduce batching of hyp assign calls
-Date: Fri, 9 Feb 2024 16:55:36 +0530
-Message-ID: <20240209112536.2262967-1-quic_dibasing@quicinc.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707477977; c=relaxed/simple;
+	bh=LlFG5OHsURXc51nizpCRAFTTa0l9BgimKbifcwMflh0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:In-Reply-To:
+	 Content-Type:References; b=PfwZqoxO4B+7n2ExPl9S/FCpVxSwwbU5rK6MYdn5WV9VOImOTbfkextumi2Pi9OS3skOmoz/3dx5ceZttOo8YI1EV1sCfbs+nxNQB0y3B2nSLS4KAj/Ryq8G8yjBs/fSOBfMhVCWiQxc4VHtAHqMww4bwv8oaWCtNbQx9lEaXV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=YdAD4LbV; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240209112612euoutp02e7afcd652788447d16f24e353ee6eec4~yLitwV40s1148511485euoutp02k;
+	Fri,  9 Feb 2024 11:26:12 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240209112612euoutp02e7afcd652788447d16f24e353ee6eec4~yLitwV40s1148511485euoutp02k
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1707477972;
+	bh=5LC74cW+Fbdz3s4xIgDv8lYzBx2xOsdxE4BOP4kFzgE=;
+	h=Date:Subject:To:From:In-Reply-To:References:From;
+	b=YdAD4LbVjFg8tZee0Q+ZGs7/X816uHjBEb2EBoMWE5MsD1ptbrdSiVrLX7p+bxYTM
+	 +ZKYmvhY6flz7/CqS5GZfF0XTXM+n2+VO1W7ks7Eeo9kiolXDvci0TC/9tTZ1EDld6
+	 Fbos9VIMlHfc+QH8/vC9Eam5S8D4OXc3N2q6HFEY=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240209112612eucas1p189aa0d19a71218f7119cb52436b8269d~yLiti3I1-3086330863eucas1p15;
+	Fri,  9 Feb 2024 11:26:12 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges3new.samsung.com (EUCPMTA) with SMTP id BD.46.09552.4DB06C56; Fri,  9
+	Feb 2024 11:26:12 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240209112612eucas1p27996a26c0866043ae96f9240ed7680b9~yLitBvhuf2354223542eucas1p2M;
+	Fri,  9 Feb 2024 11:26:12 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240209112612eusmtrp2b90f15aeb3ffdcd96ed8c0eb14f7a289~yLitAmzRP1526215262eusmtrp2R;
+	Fri,  9 Feb 2024 11:26:12 +0000 (GMT)
+X-AuditID: cbfec7f5-853ff70000002550-60-65c60bd47bdb
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms1.samsung.com (EUCPMTA) with SMTP id F8.71.09146.3DB06C56; Fri,  9
+	Feb 2024 11:26:11 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240209112609eusmtip1be13c5e6f826b7e71540651fd316dc7a~yLirDTnKD2008820088eusmtip1p;
+	Fri,  9 Feb 2024 11:26:09 +0000 (GMT)
+Message-ID: <a1c452f9-c265-4934-82c2-8c9278d087ec@samsung.com>
+Date: Fri, 9 Feb 2024 12:26:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 4tSiCFBVw6Dq3GgJJOzzAG6IaJMfsLLx
-X-Proofpoint-ORIG-GUID: 4tSiCFBVw6Dq3GgJJOzzAG6IaJMfsLLx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-09_08,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0 priorityscore=1501
- malwarescore=0 suspectscore=0 clxscore=1011 bulkscore=0 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402090082
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 05/10] iommu/exynos: use page allocation function
+ provided by iommu-pages.h
+Content-Language: en-US
+To: Pasha Tatashin <pasha.tatashin@soleen.com>, akpm@linux-foundation.org,
+	alim.akhtar@samsung.com, alyssa@rosenzweig.io, asahi@lists.linux.dev,
+	baolu.lu@linux.intel.com, bhelgaas@google.com, cgroups@vger.kernel.org,
+	corbet@lwn.net, david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
+	heiko@sntech.de, iommu@lists.linux.dev, jernej.skrabec@gmail.com,
+	jonathanh@nvidia.com, joro@8bytes.org, krzysztof.kozlowski@linaro.org,
+	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+	lizefan.x@bytedance.com, marcan@marcan.st, mhiramat@kernel.org,
+	paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
+	samuel@sholland.org, suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
+	thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
+	vdumpa@nvidia.com, wens@csie.org, will@kernel.org, yu-cheng.yu@intel.com,
+	rientjes@google.com, bagasdotme@gmail.com, mkoutny@suse.com
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <20240207174102.1486130-6-pasha.tatashin@soleen.com>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHc3pvb28xZZeK4YxpUIZEkYdOl5yNjagj46pjzoVBXDZHQ++A
+	yGstuLFs2k2gtnGE1wQrFMQqoOX9JsDkJXS8FKEqFCVIZJV1PIRJC8pWLm789/n+zu97ft/f
+	SQ6JCc/xHMnwqFhGEiWKcCZs8Jpb5n6PwQ23mN2mti0ou1RLoDF1DYGqupMBMg/Zol9/Aqgy
+	tZpAmp/D0P2CLBxN3JQDtFBqwVBqUTqGblT4o5XxKS6yzCM0mVsCUIIqH0eKS2U81DRVzUOX
+	kzQ4amzS4ehuQzaBHmpXuGhubAVDWf3NHJTR3EAgxbyKQF1T7QTq1ufx0JUCV5Sj+g1Hv5t/
+	QHOav3FkMmTiKElTzkEtMxNcNDmuIFDqYh5AyyMrHGRuUOPIUtABkKJsDkfJTZ8ic2s/ByUY
+	3kZFskXufg96okXNoRMHXhC0Vq0F9MsuLUG3/TmN0WXjN7h0vWqUR+dVxNGVhW70lUYjh664
+	riDoirk0Hm3QNxJ0V9YSTqt1x+hKzZlPtnxu856YiQg/xUi8fIJtwsrrHhAxauF3urJiIANn
+	X1MCPgmpffCv1Ce4EtiQQqoQwIznOTxWzAOovzbAZcUzAFvri7ivLGOLw2uWAgAvTD/GWDEL
+	4NWsbqAEJCmgfOBtvYvVgFMuMLHu/KpZQNlB3cUJ3MqbKCf4aDiLZ+WNlBg+zr/LsTJGOcDh
+	iVyO9U57SkfC2ocFq00EtQcqTUrCynzqAKypH10zOMFaU/ZqCEhlbIAL1XKCjeoLMxoHeSxv
+	hE87q9Z4M1ypZydASg5g3tKjNZECoGxyGLBd3tDQZyGs62DUTlja4MWWD0D1UPtqGVK28L7J
+	jg1hC9NqMjG2LIDnkoRstytUdZb8N7bl9gDGMg2TFy5yU8A21bp3Ua3bX7VuNdX/GfIAfh04
+	MHHSyFBGujeK+dZTKoqUxkWFeoZER1aAfz9L98vOhTpQ+HTWsxVwSNAKIIk52wsCNO2MUCAW
+	xX/PSKK/ksRFMNJW8AaJOzsItoudGCEVKoplTjJMDCN5dcoh+Y4yzv5Qy9Fru5d28ne59HUE
+	F/keH0/3u5rjJ1xyO9FoDmqPSWgLyum1VSxnnjYG/tFzb6+ksmu75utj3r0iY6VxNNkj7sNN
+	hpD8EzLHEsFxr4+KtaKwQ4fje2zGtvK/dO06wj/iNjYj2BcwY5frmzh48I4woDh9K/nsrGPz
+	4PNg+cB0dH/2jDLjM4cf/V1lKQPy19O2nabD+3flGl3KqaXpkKovePodsydjLxj8vjHmJPvP
+	6mpv8j8wGehfvLx9U94M7tCfsncP9+k72tFQPOL+5Pxm3/ffDXQPHGo2hMe/dbivqUd4Z8Sd
+	vndQvCPycqm4VE55lHy8XDL7Tm8kE3QGhFx68MLfGZeGifa4YRKp6B+gJCk3mwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0xTdxTH/d3e/npBkEuBcCVTSEVjIBTKo55OxnRh7rIpEecjczHYyRWI
+	vNKHwz0iaEVomA6feKkFoQsioDwGQgc6kSEFM+YYhCEggSbEAWES3CgDOx5bwn+f5Hw/55yc
+	HEog/gZ7UYkpGk6VokySYEey882TwYDutW1c0HSrHAz3KjAMG+sxfN95AYGtZx1czURQm1eH
+	wXQmAfpK80mw/ngewet7cwLIK7ssgPKaPWAfGRfC3AzAWOFdBDq+mIScgioRNI/XieBWlomE
+	pmYLCd1mA4ahCrsQpoftAsjvekDAlQdmDDkzPIb28VYMnb1FIigp3QI3+YckdNi+gmnTXyRM
+	DlwnIctUTcCjP61CGBvJwZA3W4Rg/rmdAJvZSMJc6U8IcqqmSbjQvA9sLV0E6AbCoCxjVrgj
+	gLU+MhLsuV8XMFthrEDsm/YKzD6emBKwVSPlQraRHxSxRTVatva2H1vS9JJga+7kYLZm+pKI
+	Hehtwmx7/j8ka7TEsLWm03s3HJaGq1K1Gs4nIVWteUfyqQyCpTIFSINDFVJZyLYjbweHSQIj
+	wuO4pMSTnCow4qg0obrhd5xmFKdbqipRBjrrokcOFEOHMsOz/aQeOVJi+jvEXOkqwiuFtxjL
+	tQzhCrsx8716vBKaQsyNqYxFg6Kc6Qjml17fpQxJ+zLnGnKX8860K2O5YSWX2IP2Zl7054uW
+	2I2OY0aLu4klFtCeTL+1cJndaQvF8AZqpX8nYoZbetBSAdMyRj+pX17Igd7J1DcO/ifLGX2d
+	Hq2wN3N/0iD4Frnyq2bzq2bwqxR+lVKEyDvIndOqk+OT1TKpWpms1qbES4+lJtegxb+sb7PV
+	NiDjH6+kLYigUAtiKIHE3Xm/qZUTO8cpT33BqVJjVdokTt2CwhYPkCfw8jiWuvjYKZpYmTwo
+	TBYqVwSFKeQhEk/nqLRspZiOV2q4ExyXxqn+9wjKwSuDyA4XV9skW7cf7DM/9bQ6FRMv321c
+	KO/w2H3APXq/+8ZBtdIrpDBa5BJzdELkreCfjZ0orT0V2yHyfWYuKGvatSHkS9Zf23Z+UBoT
+	jeebeq6PIr/d9WJ586XbWzb5FAS8uhYVO5Lww4utfSFOCyZ7dFrknlu8DvVbAyvXbWaiInde
+	PR7ve8RzR9ahzvdtyo90B+cqXeOi7k85pQdmvi4246HDDu+Nftz+8yefb9oVvC9729qvP3R7
+	LBxaM3M68WG6f67huCLafPFyhyEe567XTK154lK+Pt30WehG3Qfzz31+o4vvRh7y13meuVli
+	PTDR6rBAKxy9x+0nh7YvKMqfZsLf9rMSUp2glPkJVGrlvy4KzuQgBAAA
+X-CMS-MailID: 20240209112612eucas1p27996a26c0866043ae96f9240ed7680b9
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20240207174117eucas1p237865b0a39f3a6d1a6650150efe22e83
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240207174117eucas1p237865b0a39f3a6d1a6650150efe22e83
+References: <20240207174102.1486130-1-pasha.tatashin@soleen.com>
+	<CGME20240207174117eucas1p237865b0a39f3a6d1a6650150efe22e83@eucas1p2.samsung.com>
+	<20240207174102.1486130-6-pasha.tatashin@soleen.com>
 
-Expose an API qcom_scm_assign_table to allow client drivers to batch
-multiple memory regions in a single hyp assign call.
+On 07.02.2024 18:40, Pasha Tatashin wrote:
+> Convert iommu/exynos-iommu.c to use the new page allocation functions
+> provided in iommu-pages.h.
+>
+> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> Acked-by: David Rientjes <rientjes@google.com>
+> Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>   drivers/iommu/exynos-iommu.c | 14 ++++++++------
+>   1 file changed, 8 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/iommu/exynos-iommu.c b/drivers/iommu/exynos-iommu.c
+> index 2c6e9094f1e9..3eab0ae65a4f 100644
+> --- a/drivers/iommu/exynos-iommu.c
+> +++ b/drivers/iommu/exynos-iommu.c
+> @@ -22,6 +22,8 @@
+>   #include <linux/pm_runtime.h>
+>   #include <linux/slab.h>
+>   
+> +#include "iommu-pages.h"
+> +
+>   typedef u32 sysmmu_iova_t;
+>   typedef u32 sysmmu_pte_t;
+>   static struct iommu_domain exynos_identity_domain;
+> @@ -900,11 +902,11 @@ static struct iommu_domain *exynos_iommu_domain_alloc_paging(struct device *dev)
+>   	if (!domain)
+>   		return NULL;
+>   
+> -	domain->pgtable = (sysmmu_pte_t *)__get_free_pages(GFP_KERNEL, 2);
+> +	domain->pgtable = iommu_alloc_pages(GFP_KERNEL, 2);
+>   	if (!domain->pgtable)
+>   		goto err_pgtable;
+>   
+> -	domain->lv2entcnt = (short *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 1);
+> +	domain->lv2entcnt = iommu_alloc_pages(GFP_KERNEL, 1);
+>   	if (!domain->lv2entcnt)
+>   		goto err_counter;
+>   
+> @@ -930,9 +932,9 @@ static struct iommu_domain *exynos_iommu_domain_alloc_paging(struct device *dev)
+>   	return &domain->domain;
+>   
+>   err_lv2ent:
+> -	free_pages((unsigned long)domain->lv2entcnt, 1);
+> +	iommu_free_pages(domain->lv2entcnt, 1);
+>   err_counter:
+> -	free_pages((unsigned long)domain->pgtable, 2);
+> +	iommu_free_pages(domain->pgtable, 2);
+>   err_pgtable:
+>   	kfree(domain);
+>   	return NULL;
+> @@ -973,8 +975,8 @@ static void exynos_iommu_domain_free(struct iommu_domain *iommu_domain)
+>   					phys_to_virt(base));
+>   		}
+>   
+> -	free_pages((unsigned long)domain->pgtable, 2);
+> -	free_pages((unsigned long)domain->lv2entcnt, 1);
+> +	iommu_free_pages(domain->pgtable, 2);
+> +	iommu_free_pages(domain->lv2entcnt, 1);
+>   	kfree(domain);
+>   }
+>   
 
-In the existing situation, if our goal is to process an sg_table and
-transfer its ownership from the current VM to a different VM, we have a
-couple of strategies. The first strategy involves processing the entire
-sg_table at once and then transferring the ownership. However, this
-method may have an adverse impact on the system because during an SMC
-call, the NS interrupts are disabled, and this delay could be
-significant when dealing with large sg_tables. To address this issue, we
-can adopt a second strategy, which involves processing each sg_list in
-the sg_table individually and reassigning memory ownership. Although
-this method is slower and potentially impacts performance, it will not
-keep the NS interrupts disabled for an extended period.
-
-A more efficient strategy is to process the sg_table in batches. This
-approach addresses both scenarios by involving memory processing in
-batches, thus avoiding prolonged NS interrupt disablement for longer
-duration when dealing with large sg_tables. Moreover, since we process
-in batches, this method is faster compared to processing each item
-individually. The observations on testing both the approaches for
-performance is as follows:
-
-Allocation Size/            256MB            512MB            1024MB
-Algorithm Used           ===========      ===========      ============
-
-Processing each sg_list   73708(us)        149289(us)       266964(us)
-in sg_table one by one
-
-Processing sg_table in    46925(us)         92691(us)       176893(us)
-batches
-
-This implementation serves as a wrapper around the helper function
-__qcom_scm_assign_mem, which takes an sg_list and processes it in
-batches. We’ve set the limit to a minimum of 32 sg_list in a batch or a
-total batch size of 512 pages. The selection of these numbers is
-heuristic, based on the test runs conducted. Opting for a smaller number
-would compromise performance, while a larger number would result in
-non-secure interrupts being disabled for an extended duration.
-
-Co-developed-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
-Signed-off-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
-Signed-off-by: Dibakar Singh <quic_dibasing@quicinc.com>
----
- drivers/firmware/qcom/qcom_scm.c       | 211 +++++++++++++++++++++++++
- include/linux/firmware/qcom/qcom_scm.h |   7 +
- 2 files changed, 218 insertions(+)
-
-diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index 520de9b5633a..038b96503d65 100644
---- a/drivers/firmware/qcom/qcom_scm.c
-+++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -21,6 +21,8 @@
- #include <linux/platform_device.h>
- #include <linux/reset-controller.h>
- #include <linux/types.h>
-+#include <linux/scatterlist.h>
-+#include <linux/slab.h>
- 
- #include "qcom_scm.h"
- 
-@@ -1048,6 +1050,215 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
- }
- EXPORT_SYMBOL_GPL(qcom_scm_assign_mem);
- 
-+/**
-+ * qcom_scm_assign_mem_batch() - Make a secure call to reassign memory
-+ *				   ownership of several memory regions
-+ * @mem_regions:    A buffer describing the set of memory regions that need to
-+ *		    be reassigned
-+ * @nr_mem_regions: The number of memory regions that need to be reassigned
-+ * @srcvms:	    A buffer populated with he vmid(s) for the current set of
-+ *		    owners
-+ * @src_sz:	    The size of the srcvms buffer (in bytes)
-+ * @destvms:	    A buffer populated with the new owners and corresponding
-+ *		    permission flags.
-+ * @dest_sz:	    The size of the destvms buffer (in bytes)
-+ *
-+ * Return negative errno on failure, 0 on success.
-+ */
-+static int qcom_scm_assign_mem_batch(struct qcom_scm_mem_map_info *mem_regions,
-+				     size_t nr_mem_regions, u32 *srcvms,
-+				     size_t src_sz,
-+				     struct qcom_scm_current_perm_info *destvms,
-+				     size_t dest_sz)
-+{
-+	dma_addr_t mem_dma_addr;
-+	size_t mem_regions_sz;
-+	int ret = 0, i;
-+
-+	for (i = 0; i < nr_mem_regions; i++) {
-+		mem_regions[i].mem_addr = cpu_to_le64(mem_regions[i].mem_addr);
-+		mem_regions[i].mem_size = cpu_to_le64(mem_regions[i].mem_size);
-+	}
-+
-+	mem_regions_sz = nr_mem_regions * sizeof(*mem_regions);
-+	mem_dma_addr = dma_map_single(__scm->dev, mem_regions, mem_regions_sz,
-+				      DMA_TO_DEVICE);
-+	if (dma_mapping_error(__scm->dev, mem_dma_addr)) {
-+		dev_err(__scm->dev, "mem_dma_addr mapping failed\n");
-+		return -ENOMEM;
-+	}
-+
-+	ret = __qcom_scm_assign_mem(__scm->dev, virt_to_phys(mem_regions),
-+				    mem_regions_sz, virt_to_phys(srcvms), src_sz,
-+				    virt_to_phys(destvms), dest_sz);
-+
-+	dma_unmap_single(__scm->dev, mem_dma_addr, mem_regions_sz, DMA_TO_DEVICE);
-+	return ret;
-+}
-+
-+/**
-+ * qcom_scm_prepare_mem_batch() - Prepare batches of memory regions
-+ * @sg_table:       A scatter list whose memory needs to be reassigned
-+ * @srcvms:	    A buffer populated with he vmid(s) for the current set of
-+ *		    owners
-+ * @nr_src:	    The number of the src_vms buffer
-+ * @destvms:	    A buffer populated with he vmid(s) for the new owners
-+ * @destvms_perms:  A buffer populated with the permission flags of new owners
-+ * @nr_dest:	    The number of the destvms
-+ * @last_sgl:	    Denotes to the last scatter list element. Used in case of rollback
-+ * @roll_back:	    Identifies whether we are executing rollback in case of failure
-+ *
-+ * Return negative errno on failure, 0 on success.
-+ */
-+static int qcom_scm_prepare_mem_batch(struct sg_table *table,
-+				      u32 *srcvms, int nr_src,
-+				      int *destvms, int *destvms_perms,
-+				      int nr_dest,
-+				      struct scatterlist *last_sgl, bool roll_back)
-+{
-+	struct qcom_scm_current_perm_info *destvms_cp;
-+	struct qcom_scm_mem_map_info *mem_regions_buf;
-+	struct scatterlist *curr_sgl = table->sgl;
-+	dma_addr_t source_dma_addr, dest_dma_addr;
-+	size_t batch_iterator;
-+	size_t batch_start = 0;
-+	size_t destvms_cp_sz;
-+	size_t srcvms_cp_sz;
-+	size_t batch_size;
-+	u32 *srcvms_cp;
-+	int ret = 0;
-+	int i;
-+
-+	if (!table || !table->sgl || !srcvms || !nr_src ||
-+	    !destvms || !destvms_perms || !nr_dest || !table->nents)
-+		return -EINVAL;
-+
-+	srcvms_cp_sz = sizeof(*srcvms_cp) * nr_src;
-+	srcvms_cp = kmemdup(srcvms, srcvms_cp_sz, GFP_KERNEL);
-+	if (!srcvms_cp)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < nr_src; i++)
-+		srcvms_cp[i] = cpu_to_le32(srcvms_cp[i]);
-+
-+	source_dma_addr = dma_map_single(__scm->dev, srcvms_cp,
-+					 srcvms_cp_sz, DMA_TO_DEVICE);
-+
-+	if (dma_mapping_error(__scm->dev, source_dma_addr)) {
-+		ret = -ENOMEM;
-+		goto out_free_source;
-+	}
-+
-+	destvms_cp_sz = sizeof(*destvms_cp) * nr_dest;
-+	destvms_cp = kzalloc(destvms_cp_sz, GFP_KERNEL);
-+
-+	if (!destvms_cp) {
-+		ret = -ENOMEM;
-+		goto out_unmap_source;
-+	}
-+
-+	for (i = 0; i < nr_dest; i++) {
-+		destvms_cp[i].vmid = cpu_to_le32(destvms[i]);
-+		destvms_cp[i].perm = cpu_to_le32(destvms_perms[i]);
-+		destvms_cp[i].ctx = 0;
-+		destvms_cp[i].ctx_size = 0;
-+	}
-+
-+	dest_dma_addr = dma_map_single(__scm->dev, destvms_cp,
-+				       destvms_cp_sz, DMA_TO_DEVICE);
-+	if (dma_mapping_error(__scm->dev, dest_dma_addr)) {
-+		ret = -ENOMEM;
-+		goto out_free_dest;
-+	}
-+
-+	mem_regions_buf = kcalloc(QCOM_SCM_MAX_BATCH_SECTION, sizeof(*mem_regions_buf),
-+				  GFP_KERNEL);
-+	if (!mem_regions_buf)
-+		return -ENOMEM;
-+
-+	while (batch_start < table->nents) {
-+		batch_size = 0;
-+		batch_iterator = 0;
-+
-+		do {
-+			mem_regions_buf[batch_iterator].mem_addr = page_to_phys(sg_page(curr_sgl));
-+			mem_regions_buf[batch_iterator].mem_size = curr_sgl->length;
-+			batch_size += curr_sgl->length;
-+			batch_iterator++;
-+			if (roll_back && curr_sgl == last_sgl)
-+				break;
-+			curr_sgl = sg_next(curr_sgl);
-+		} while (curr_sgl && batch_iterator < QCOM_SCM_MAX_BATCH_SECTION &&
-+				curr_sgl->length + batch_size < QCOM_SCM_MAX_BATCH_SIZE);
-+
-+		batch_start += batch_iterator;
-+
-+		ret = qcom_scm_assign_mem_batch(mem_regions_buf, batch_iterator,
-+						srcvms_cp, srcvms_cp_sz, destvms_cp, destvms_cp_sz);
-+
-+		if (ret) {
-+			dev_info(__scm->dev, "Failed to assign memory protection, ret = %d\n", ret);
-+			last_sgl = curr_sgl;
-+			ret = -EADDRNOTAVAIL;
-+			break;
-+		}
-+		if (roll_back && curr_sgl == last_sgl)
-+			break;
-+	}
-+	kfree(mem_regions_buf);
-+
-+	dma_unmap_single(__scm->dev, dest_dma_addr,
-+			 destvms_cp_sz, DMA_TO_DEVICE);
-+
-+out_free_dest:
-+	kfree(destvms_cp);
-+out_unmap_source:
-+	dma_unmap_single(__scm->dev, source_dma_addr,
-+			 srcvms_cp_sz, DMA_TO_DEVICE);
-+out_free_source:
-+	kfree(srcvms_cp);
-+	return ret;
-+}
-+
-+/**
-+ * qcom_scm_assign_table() - Make a call to prepare batches of memory regions
-+ *			     and reassign memory ownership of several memory regions at once
-+ * @sg_table:       A scatter list whose memory needs to be reassigned
-+ * @srcvms:	    A buffer populated with he vmid(s) for the current set of
-+ *		    owners
-+ * @nr_src:	    The number of the src_vms buffer
-+ * @destvms:	    A buffer populated with he vmid(s) for the new owners
-+ * @destvms_perms:  A buffer populated with the permission flags of new owners
-+ * @nr_dest:	    The number of the destvms
-+ *
-+ * Return negative errno on failure, 0 on success.
-+ */
-+int qcom_scm_assign_table(struct sg_table *table,
-+			  u32 *srcvms, int nr_src,
-+			  int *destvms, int *destvms_perms,
-+			  int nr_dest)
-+{
-+	struct scatterlist *last_sgl = NULL;
-+	int rb_ret = 0;
-+	u32 new_dests;
-+	int new_perms;
-+	int ret = 0;
-+
-+	ret = qcom_scm_prepare_mem_batch(table, srcvms, nr_src,
-+					 destvms, destvms_perms, nr_dest, last_sgl, false);
-+
-+	if (!ret)
-+		goto out;
-+	new_dests = QCOM_SCM_VMID_HLOS;
-+	new_perms = QCOM_SCM_PERM_EXEC | QCOM_SCM_PERM_WRITE | QCOM_SCM_PERM_READ;
-+	rb_ret = qcom_scm_prepare_mem_batch(table, destvms, nr_dest, &new_dests,
-+					    &new_perms, nr_src, last_sgl, true);
-+	WARN_ON_ONCE(rb_ret);
-+out:
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(qcom_scm_assign_table);
-+
- /**
-  * qcom_scm_ocmem_lock_available() - is OCMEM lock/unlock interface available
-  */
-diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
-index ccaf28846054..abd675c7ef49 100644
---- a/include/linux/firmware/qcom/qcom_scm.h
-+++ b/include/linux/firmware/qcom/qcom_scm.h
-@@ -8,6 +8,7 @@
- #include <linux/err.h>
- #include <linux/types.h>
- #include <linux/cpumask.h>
-+#include <linux/scatterlist.h>
- 
- #include <dt-bindings/firmware/qcom,scm.h>
- 
-@@ -15,6 +16,8 @@
- #define QCOM_SCM_CPU_PWR_DOWN_L2_ON	0x0
- #define QCOM_SCM_CPU_PWR_DOWN_L2_OFF	0x1
- #define QCOM_SCM_HDCP_MAX_REQ_CNT	5
-+#define QCOM_SCM_MAX_BATCH_SECTION	32
-+#define QCOM_SCM_MAX_BATCH_SIZE		SZ_2M
- 
- struct qcom_scm_hdcp_req {
- 	u32 addr;
-@@ -93,6 +96,10 @@ int qcom_scm_mem_protect_video_var(u32 cp_start, u32 cp_size,
- int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz, u64 *src,
- 			const struct qcom_scm_vmperm *newvm,
- 			unsigned int dest_cnt);
-+int qcom_scm_assign_table(struct sg_table *table,
-+			  u32 *srcvms, int nr_src,
-+			  int *destvms, int *destvms_perms,
-+			  int nr_dest);
- 
- bool qcom_scm_ocmem_lock_available(void);
- int qcom_scm_ocmem_lock(enum qcom_scm_ocmem_client id, u32 offset, u32 size,
+Best regards
 -- 
-2.34.1
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
 
