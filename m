@@ -1,109 +1,111 @@
-Return-Path: <linux-kernel+bounces-59968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5466184FDFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD79184FE05
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:58:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F73F28B5AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:52:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B098283F97
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:58:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9C7107B3;
-	Fri,  9 Feb 2024 20:51:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Ey7Qu9Sw"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795AF18634;
+	Fri,  9 Feb 2024 20:57:27 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5034D11CA1;
-	Fri,  9 Feb 2024 20:51:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F91DF55
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 20:57:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707511893; cv=none; b=gQxU0LTafZfX9TGgy32o3zLWpR7MumwYlNf8sjopCGbeWmwCKXXu4h40O+w/+pNJH6OYirByzLWdgZzQzY5VZRB7kqRSt2NFeoJa15Q/1q2/ZdkQIqBQSjIXKWXzlQ5gSyN/28Ct75Va2dOKZivPOsw0MBVgFRjZphfj9SREjJM=
+	t=1707512247; cv=none; b=K9dWqBrgsWXpnOUCNUY1UY3ZiEMn6rAFrWd7hRam4pVyK+gF0ToFQBLeQI+CYZ93OR4m1DYrSaUJQQSWDLxW/DWNNo6qOMUl2OkWdIZXLIk6xslrgQBIvHurUWeZq+TafNBzco62sTbZnjW3FR4O/5SrQH75+1/WmKcTKWFOjg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707511893; c=relaxed/simple;
-	bh=aUO2tQWoagVu38p7XEo447RN2Jh0AqQIhLQmEataQvE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qHbJ5sJ0GYSaI4SDbbZkVCdo/M0HZrMQ/7VvixHq8lmo9t1addwGAViNyk1iKNWCEgNi/Gix3MyrYSmQ3b4379gl3AIQbPLhKAORjNvvpdbgsAQTlHI/XGOu6I9P4xcgQc8Lzoh4i0TX7Zh8FIo38bhrJ0PwvJ1Si42AMS3uWtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Ey7Qu9Sw; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3B1B840E01F7;
-	Fri,  9 Feb 2024 20:51:28 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id yfERvYSsb0NL; Fri,  9 Feb 2024 20:51:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707511885; bh=WoEsY6Grt89Wavd7goGgdeie8Ypipy2F5o0F+eDkAQ4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ey7Qu9SwEkjFDyZOwM3kcE9LvtCRKvouzYIvRLyFuG5zhySHvvZ5aZFI6zwwIy+B3
-	 BDt4/3GyUBnUCxDdX+QzFkO8V5qVv3O7cxeZeo4GFsePH/PnmoJYZp3bpVxBNQh2fb
-	 soT2cu7+WdkW9lsyywnbU1NSsgcyo3rY9lKBufjZbQo9vuvWtstDp9xRf1JSvOEnV6
-	 wEcxb9y0hqyuzBQ9pQNM5NVCwO8bXgswy0DEcRJBGn8jrjOuSHHQXImhg5F6VnuhzW
-	 nkGL4zkFc1Qb6PxQy5RWVxCzXDVvmGM1u3NbU//gS5/7yBB8T6bUPIEzMEe/Y3XPtK
-	 3lG9dznE4N2UOZKwU9WzWVNrCRIQeLBVYTDsLDoJbX7ldjkhx0XjQBSI0XiMLmY5AZ
-	 HKiEiTP1hKRn6nbbau5Sf2DPmnGOZwMaTAIFBR3/i4CXvwqSGoHZppTSdRHyLu6YY4
-	 n55+erAW9RoBCkMOiFMxBRZJ5ikKuOO2t7I6oXoYZ9XAz5U7iKU3WffKBmiICo7Y8/
-	 +2FbODMaE+yoq+XEQcTx8Ga/50RnDtikp+fL9mLQ+J5KlAvX18/5K1H8+HAFINKYu9
-	 uIi+WK057N+nZCJB+Jon2x6N96ajkFr2ARRWY57k/7A1KfTsLbBh4LRss6Rla5Nntz
-	 Naefn8fCy94bEMq1UTHeXXs4=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BBE9040E00B2;
-	Fri,  9 Feb 2024 20:51:17 +0000 (UTC)
-Date: Fri, 9 Feb 2024 21:51:11 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Naik, Avadhut" <avadnaik@amd.com>
-Cc: Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org,
-	linux-edac@vger.kernel.org, tony.luck@intel.com,
-	linux-kernel@vger.kernel.org, yazen.ghannam@amd.com,
-	Avadhut Naik <avadhut.naik@amd.com>
-Subject: Re: [PATCH 2/2] x86/MCE: Add command line option to extend MCE
- Records pool
-Message-ID: <20240209205111.GGZcaQP1gb6C9m0WZB@fat_crate.local>
-References: <20240207225632.159276-1-avadhut.naik@amd.com>
- <20240207225632.159276-3-avadhut.naik@amd.com>
- <8b4f8ec2-7534-4f77-b44f-6728c699ff64@intel.com>
- <51255499-0b5d-45c6-9c72-f353bae83c0d@amd.com>
- <20240209200920.GFZcaGcOr757W9O3IG@fat_crate.local>
- <7a4945b0-322a-444e-a0ca-860a062a49c3@amd.com>
+	s=arc-20240116; t=1707512247; c=relaxed/simple;
+	bh=+dMAMw2dcfKDAd2+MvSLxA08RleTfIVCrxnfRUmLKyY=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=L0ZyNUsI/z34ebdPWHjgwQrkHOwbXQ0/7gb6EIGSfbU0/gzrzVUAHV0hLz5K1PRP2TjH/qHuJlWpD5MBQNdqKFQDe32JXMs7d9pM6OQjFtxUjAWbCDA8prOWSrXqPruPK/7HYDlAb+qwRQ3K8g2k+Vi4lFrBUT2U4wo9QVrdEmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363dab8a83aso10915385ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 12:57:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707512244; x=1708117044;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nFTg0K7lXY4y3frjmYpGnm3YS05WUyZS/wLOJo/jHGs=;
+        b=kJ03hmtrkuFJPkaWbWX2y6AsIVIut7VaQlFqaglFnzxOogv7mnIu+Ov9LQWoULUe8p
+         krQatHg6TL3HBwotrPxwH+YRZ0CokC1bb/P1e//b1DbAkIuPl1Kv/83io23JgyneN9jy
+         4IPMLc7t/pXFju6lazNwU/pV+GEx+lBVHy0oRyhiTNARrxSotPE82pz1tsI6xUlIJbF6
+         zgbPCALZDSKCWyDJDyc28VRvqT/DpUaxUIgwCSt8er/5soNn7c97P0W1cwTOw37FeMJY
+         YnR3HzKiAYrCtPiJpak+GPO/JYdOceay0/Q4KNceAr3jbaueMprBeiwJB+mQ0Mzg5rmU
+         ST3Q==
+X-Gm-Message-State: AOJu0YxDZxS0DNo+jwPbz4nBNok3XoF27n2ORsAitiEeah5qZ1n2kYZq
+	ybwzc0wRyJx+VtTnB0oL44mGaQCSzShMchyEPLp2vmP6b0gm15J5qroAT0iXYVZQei0YbQjZiCA
+	JI2PGsM9inyyszhsy/5XXdXNWk6LEIoqtaBhQJ2Ov61k+fjVumpbxo/A=
+X-Google-Smtp-Source: AGHT+IGdLeGONIs7F845XOWHNTzI5KK9bNltWIUcbWbeIyhjIScRgujk4YF77nhFrcYY3T/XezYbRVoQw/mLnV1uEiSZUwN6cKez
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <7a4945b0-322a-444e-a0ca-860a062a49c3@amd.com>
+X-Received: by 2002:a05:6e02:1521:b0:363:8f06:80b7 with SMTP id
+ i1-20020a056e02152100b003638f0680b7mr24487ilu.2.1707512244450; Fri, 09 Feb
+ 2024 12:57:24 -0800 (PST)
+Date: Fri, 09 Feb 2024 12:57:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c7be4b0610f92ce9@google.com>
+Subject: [syzbot] Monthly ext4 report (Feb 2024)
+From: syzbot <syzbot+listd3850c3d2bbdc5fbcb45@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Feb 09, 2024 at 02:35:12PM -0600, Naik, Avadhut wrote:
-> IIUC, this is exactly what the first patch in this series is trying to
-> accomplish.  Please correct me if I understood wrong.
+Hello ext4 maintainers/developers,
 
-Yes, you did.
+This is a 31-day syzbot report for the ext4 subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/ext4
 
-I don't mean to extend it - I mean to allocate it from the very
-beginning to
+During the period, 4 new issues were detected and 0 were fixed.
+In total, 32 issues are still open and 122 have been fixed so far.
+There is also 1 low-priority issue.
 
-	min(4*PAGE_SIZE, num_possible_cpus() * PAGE_SIZE);
+Some of the still happening issues:
 
-There's a sane minimum and one page pro logical CPU should be fine on
-pretty much every configuration...
+Ref Crashes Repro Title
+<1> 7985    Yes   WARNING: locking bug in ext4_move_extents
+                  https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
+<2> 664     Yes   WARNING: locking bug in __ext4_ioctl
+                  https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
+<3> 346     Yes   WARNING: locking bug in ext4_ioctl
+                  https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
+<4> 166     No    possible deadlock in evict (3)
+                  https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
+<5> 148     Yes   INFO: task hung in sync_inodes_sb (5)
+                  https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
+<6> 69      No    WARNING in ext4_write_inode (2)
+                  https://syzkaller.appspot.com/bug?extid=748cc361874fca7d33cc
+<7> 19      No    possible deadlock in start_this_handle (4)
+                  https://syzkaller.appspot.com/bug?extid=cf0b4280f19be4031cf2
+<8> 18      No    possible deadlock in ext4_da_get_block_prep
+                  https://syzkaller.appspot.com/bug?extid=a86b193140e10df1aff2
+<9> 1       Yes   kernel BUG in set_blocksize
+                  https://syzkaller.appspot.com/bug?extid=4bfc572b93963675a662
 
-Thx.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
--- 
-Regards/Gruss,
-    Boris.
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-https://people.kernel.org/tglx/notes-about-netiquette
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
