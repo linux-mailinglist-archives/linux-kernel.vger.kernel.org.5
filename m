@@ -1,110 +1,191 @@
-Return-Path: <linux-kernel+bounces-59446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D0FD84F73A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:25:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CD9A84F741
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:28:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58D4F288262
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:25:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0420FB2151F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753EF692E1;
-	Fri,  9 Feb 2024 14:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64A6A69979;
+	Fri,  9 Feb 2024 14:28:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PeBUrsdZ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZXpPNRmQ"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 132854F1F6
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:25:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C3D67E86
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707488730; cv=none; b=i6vUMo9t41qo1NUe02ylpJtb01CVdXiJDv5JGlXdVDOIk/1bssftuuwjG6Wap+hLquUt+jDO82pzSPEFBkx6GrfY30G4ls46t6V+FhdDTYi8TbXJ7RYKWg1YLGffAfDy9APzV90wJ15oXhUwnI4VzbsgEOhargP9Hpu/MOh24WU=
+	t=1707488888; cv=none; b=A/TXNGEgqmeeaBQkSB7XFu2WUtLGxdTdt6kYwltmSUQkGG3Uxv3cuipeQk+UK+vfp9IvjfcJ1Ys9nl6VyAizhjKAwqVsgbYpw8Lsx8bCq1KfuZM+0hwxWCzhmJAZu831+U4wVLjVaIJ6WtruSNU7DOHLLi1UlXTPPS1P1cnW0hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707488730; c=relaxed/simple;
-	bh=SrZf75A1fwGhAa0JIttbmp/PWGFSXiErzRNHTtR/VCo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NVnTwjKSS3W2WT1W7Vf1rT6iBYtthh76qYJByfD1cjiKsqrLjJt6xWaauomMdsVuckggfjrsL7nbBY6LI9P6BLLBTX9hZhvLJcuO6+06CkG0Lqy60tczq2Riqg5QPjL/Oc4w5nZdbSbKGoZv0SbgqhRg2fBJ6zMruyvup57WGpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PeBUrsdZ; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707488729; x=1739024729;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=SrZf75A1fwGhAa0JIttbmp/PWGFSXiErzRNHTtR/VCo=;
-  b=PeBUrsdZBHnxooQck+dN9MtkxECFJaAzH3opS6JYALSiYvqa4kdiIgCd
-   yDCJbIvJlnCOiFr+Qbz2+bulUauvyLQTvxIM3lqcy9HxGhk+79OT3RHju
-   GYvFQ17cO2CpAN4WHlQUMRPhe+YHFGCr9zoqganBa0GljBl5BnxhPTkPR
-   USbk+gHxJ5gLYdEkj6FK5lfWGcOmMkl2QFNKU96YVY04NcwxMcqQRC+Lr
-   eEQ6CqDUgioK3e7MkIKaom7/hWw+KTabT5RWiEb0+03vEZrRRsrS/kabP
-   y904KlHxTWxz6iECyFl9O2lUbF1SPxr/kD3yU47jo+bc0sEzFJNYxUzwt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1581320"
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="1581320"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 06:25:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
-   d="scan'208";a="1980765"
-Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orviesa010.jf.intel.com with ESMTP; 09 Feb 2024 06:25:25 -0800
-Received: from [10.249.138.141] (mwajdecz-MOBL.ger.corp.intel.com [10.249.138.141])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id B791727BB4;
-	Fri,  9 Feb 2024 14:25:23 +0000 (GMT)
-Message-ID: <b00baf72-7ef5-4a10-97c0-a9b7eb5a86f3@intel.com>
-Date: Fri, 9 Feb 2024 15:25:21 +0100
+	s=arc-20240116; t=1707488888; c=relaxed/simple;
+	bh=HUx7t17vxGA5IaYOV8ff1kr8+jU/9ANSxbnT6H9GSco=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=iMM/CC84efDH2bSK48N/93r1uYZxKmAGM+JDOlZwiyKZjGNItJwpUPAIyRdMFk28RVemjYeXlOTnFxIg9LZADlip0irCAWzSRPzOiZLPYrkzss/g7huvhFeS4s4zkaHWiXlu8T/MdIyUiGGUtc8x5Sb6QxqkELvn8s+sNtvej14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZXpPNRmQ; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5ee22efe5eeso20360707b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 06:28:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707488886; x=1708093686; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uCfsv6GrpUFnVCwcL3J5Wem8yNPUxVMsIIYMkBzD0b0=;
+        b=ZXpPNRmQeW+Sm8OzwxON1DpjmSlXeodKp3uxsBZq1Cg5uqJA8J7OR0zmKyk1akz2Yy
+         5EywEk/vM6zchQkTO/MSC9+Yucn6xjqlLJXS5II+SRuUGG5D3/myvb/anp4h/lhMlUIG
+         ZcZcRAnBDNFUNDeH/AEX9RhWOJlV1M6SbJDFo/Eax51+lByy3q3Dg7L8HJx5FRfGnOhl
+         sabcrTwvk8718sVD0CAGGXFZLyzHPoNW6pzR4LcloHCjJlb0MDm2i6LNBXTuYHY0+3L1
+         YbngJFU/xjyYwKCM/BH9Ajz03VQupmY8A4LEcC1lUozX9lXFnBzk7XDTJUskDv3PBTXF
+         fhHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707488886; x=1708093686;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uCfsv6GrpUFnVCwcL3J5Wem8yNPUxVMsIIYMkBzD0b0=;
+        b=sZwBev7PeSJpl+c+Th712KYLvGFLvXk6Xts5hqPTquUa+cVnqCcks0JUXv12yuM8kC
+         cCQW+l2HG8vtKoE0n3T0fyr/D1frx5yc4s/V/YDN+FJa8EmyW6LOmwaLYax9sKx80J/E
+         s3MA6N0LtW81KOevCs7hcKwzHqfoObk53MKuEdcUBNApmx/xvdqobZrh2GG6znJnClJZ
+         Lo3SEaooi4SIxAe2O91QKmPd9jvCt3UtdB842ohfj8HwUPAS/zKc2CcbvP4SeDD0WB4X
+         vJEKa3A97fG4cT+sh1xz1mOVJefq0WuuB1+OrrNoDM3K4g1O5THZmT0c4Pb+ql11M0KR
+         g2Qg==
+X-Gm-Message-State: AOJu0YzmuHBT8NSLrwVjDiVUEdKN6WdGk0VXZtoMlGJS+7hf4REpyZuA
+	cDz2XP0NuPEOXOEp0++BlaWv0i/zoicP3+j9YWeROm1e5/BFLtKKWvFbIvjOEc79tqkIC+Gen2E
+	pDQ==
+X-Google-Smtp-Source: AGHT+IHy+djrwH9lBwMcfClT+8pK1QZMj2IcA9F/oSlT9qX98kneABwsfBtcWfL+f67hdIOBZn1ACZ3Dunw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:6d82:0:b0:5ff:a885:65b with SMTP id
+ i124-20020a816d82000000b005ffa885065bmr252030ywc.10.1707488885935; Fri, 09
+ Feb 2024 06:28:05 -0800 (PST)
+Date: Fri, 9 Feb 2024 06:28:04 -0800
+In-Reply-To: <e7125fcb-52b1-4942-9ae7-c85049e92e5c@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/tests: mm: Convert to drm_dbg_printer
-To: =?UTF-8?Q?Micha=C5=82_Winiarski?= <michal.winiarski@intel.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Jani Nikula <jani.nikula@intel.com>, Luca Coelho <luciano.coelho@intel.com>
-References: <20240209140818.106685-1-michal.winiarski@intel.com>
-Content-Language: en-US
-From: Michal Wajdeczko <michal.wajdeczko@intel.com>
-In-Reply-To: <20240209140818.106685-1-michal.winiarski@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20231016115028.996656-1-michael.roth@amd.com> <20231016115028.996656-5-michael.roth@amd.com>
+ <e7125fcb-52b1-4942-9ae7-c85049e92e5c@arm.com>
+Message-ID: <ZcY2VRsRd03UQdF7@google.com>
+Subject: Re: [PATCH RFC gmem v1 4/8] KVM: x86: Add gmem hook for invalidating memory
+From: Sean Christopherson <seanjc@google.com>
+To: Steven Price <steven.price@arm.com>
+Cc: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, "tabba@google.com" <tabba@google.com>, linux-coco@lists.linux.dev, 
+	linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	pbonzini@redhat.com, isaku.yamahata@intel.com, ackerleytng@google.com, 
+	vbabka@suse.cz, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	jroedel@suse.de, pankaj.gupta@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-
-
-On 09.02.2024 15:08, Michał Winiarski wrote:
-> Fix one of the tests in drm_mm that was not converted prior to
-> drm_debug_printer removal, causing tests build failure.
+On Fri, Feb 09, 2024, Steven Price wrote:
+> On 16/10/2023 12:50, Michael Roth wrote:
+> > In some cases, like with SEV-SNP, guest memory needs to be updated in a
+> > platform-specific manner before it can be safely freed back to the host.
+> > Wire up arch-defined hooks to the .free_folio kvm_gmem_aops callback to
+> > allow for special handling of this sort when freeing memory in response
+> > to FALLOC_FL_PUNCH_HOLE operations and when releasing the inode, and go
+> > ahead and define an arch-specific hook for x86 since it will be needed
+> > for handling memory used for SEV-SNP guests.
 > 
-> Fixes: e154c4fc7bf2d ("drm: remove drm_debug_printer in favor of drm_dbg_printer")
-> Signed-off-by: Michał Winiarski <michal.winiarski@intel.com>
-
-Reviewed-by: Michal Wajdeczko <michal.wajdeczko@intel.com>
-
-> ---
->  drivers/gpu/drm/tests/drm_mm_test.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Hi all,
 > 
-> diff --git a/drivers/gpu/drm/tests/drm_mm_test.c b/drivers/gpu/drm/tests/drm_mm_test.c
-> index 1eb0c304f9607..3488d930e3a38 100644
-> --- a/drivers/gpu/drm/tests/drm_mm_test.c
-> +++ b/drivers/gpu/drm/tests/drm_mm_test.c
-> @@ -188,7 +188,7 @@ static void drm_test_mm_init(struct kunit *test)
->  
->  static void drm_test_mm_debug(struct kunit *test)
->  {
-> -	struct drm_printer p = drm_debug_printer(test->name);
-> +	struct drm_printer p = drm_dbg_printer(NULL, DRM_UT_CORE, test->name);
->  	struct drm_mm mm;
->  	struct drm_mm_node nodes[2];
->  
+> Arm CCA has a similar need to prepare/unprepare memory (granule
+> delegate/undelegate using our terminology) before it is used for
+> protected memory.
+> 
+> However I see a problem with the current gmem implementation that the
+> "invalidations" are not precise enough for our RMI API. When punching a
+> hole in the memfd the code currently hits the same path (ending in
+> kvm_unmap_gfn_range()) as if a VMA is modified in the same range (for
+> the shared version).
+>
+> The Arm CCA architecture doesn't allow the protected memory to be removed and
+> refaulted without the permission of the guest (the memory contents would be
+> wiped in this case).
+
+TDX behaves almost exactly like CCA.  Well, that's not technically true, strictly
+speaking, as there are TDX APIs that do allow for *temporarily* marking mappings
+!PRESENT, but those aren't in play for invalidation events like this.
+
+SNP does allow zapping page table mappings, but fully removing a page, as PUNCH_HOLE
+would do, is destructive, so SNP also behaves the same way for all intents and
+purposes.
+
+> One option that I've considered is to implement a seperate CCA ioctl to
+> notify KVM whether the memory should be mapped protected.
+
+That's what KVM_SET_MEMORY_ATTRIBUTES+KVM_MEMORY_ATTRIBUTE_PRIVATE is for, no?
+
+> The invalidations would then be ignored on ranges that are currently
+> protected for this guest.
+
+That's backwards.  Invalidations on a guest_memfd should affect only *protected*
+mappings.  And for that, the plan/proposal is to plumb only_{shared,private} flags
+into "struct kvm_gfn_range"[1] so that guest_memfd invalidations don't zap shared
+mappings, and mmu_notifier invalidation don't zap private mappings.  Sample usage
+in the TDX context[2] (disclaimer, I'm pretty sure I didn't write most of that
+patch despite, I only provided a rough sketch).
+
+[1] https://lore.kernel.org/all/20231027182217.3615211-13-seanjc@google.com
+[2] https://lore.kernel.org/all/0b308fb6dd52bafe7153086c7f54bfad03da74b1.1705965635.git.isaku.yamahata@intel.com
+
+> This 'solves' the problem nicely except for the case where the VMM
+> deliberately punches holes in memory which the guest is using.
+
+I don't see what problem there is to solve in this case.  PUNCH_HOLE is destructive,
+so don't do that.
+
+> The issue in this case is that there's no way of failing the punch hole
+> operation - we can detect that the memory is in use and shouldn't be
+> freed, but this callback doesn't give the opportunity to actually block
+> the freeing of the memory.
+
+Why is this KVM's problem?  E.g. the same exact thing happens without guest_memfd
+if userspace munmap()s memory the guest is using.
+
+> Sadly there's no easy way to map from a physical page in a gmem back to
+> which VM (and where in the VM) the page is mapped. So actually ripping
+> the page out of the appropriate VM isn't really possible in this case.
+
+I don't follow.  guest_memfd has a 1:1 binding with a VM *and* a gfn, how can you
+not know what exactly needs to be invalidated?
+
+> How is this situation handled on x86? Is it possible to invalidate and
+> then refault a protected page without affecting the memory contents? My
+> guess is yes and that is a CCA specific problem - is my understanding
+> correct?
+> 
+> My current thoughts for CCA are one of three options:
+> 
+> 1. Represent shared and protected memory as two separate memslots. This
+> matches the underlying architecture more closely (the top address bit is
+> repurposed as a 'shared' flag), but I don't like it because it's a
+> deviation from other CoCo architectures (notably pKVM).
+> 
+> 2. Allow punch-hole to fail on CCA if the memory is mapped into the
+> guest's protected space. Again, this is CCA being different and also
+> creates nasty corner cases where the gmem descriptor could have to
+> outlive the VMM - so looks like a potential source of memory leaks.
+> 
+> 3. 'Fix' the invalidation to provide more precise semantics. I haven't
+> yet prototyped it but it might be possible to simply provide a flag from
+> kvm_gmem_invalidate_begin specifying that the invalidation is for the
+> protected memory. KVM would then only unmap the protected memory when
+> this flag is set (avoiding issues with VMA updates causing spurious unmaps).
+> 
+> Fairly obviously (3) is my preferred option, but it relies on the
+> guarantees that the "invalidation" is actually a precise set of
+> addresses where the memory is actually being freed.
+
+#3 is what we are planning for x86, and except for the only_{shared,private} flags,
+the requisite functionality should already be in Linus' tree, though it does need
+to be wired up for ARM.
 
