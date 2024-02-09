@@ -1,860 +1,328 @@
-Return-Path: <linux-kernel+bounces-59905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FA7C84FD31
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:52:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8123384FD33
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:52:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C39391C217B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:52:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1168A1F25ABC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:52:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2108612C;
-	Fri,  9 Feb 2024 19:52:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 996EA84A56;
+	Fri,  9 Feb 2024 19:52:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="JMUrxCMs"
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="axI61JW/"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2059.outbound.protection.outlook.com [40.107.243.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19B6B8287F;
-	Fri,  9 Feb 2024 19:51:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707508324; cv=none; b=NTc0IRSwuc2kwiyQBcqQU+HTYP+UjBn1mqwli9dfRzULD3AEtMuyLE+Hrt4DqKe2HU8ngebZjIgtRagOg9FRcR9NjJp9/mn1JA9AiyewArM3ACHrlz2kowMijTuNUOnumW9JIUTZIfOh7CqJEl7PjkI3JP2FcFjduRAU6P8RU9w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707508324; c=relaxed/simple;
-	bh=unvBtpLHUheErnIKuC5CMeD69T0uQbVY/SGTBdB+g0U=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=UEikkKRMctjDQjyw3QyCKI3p9YReFoiJUb0Yi62U2hSmgsSynk7ZIDIz0H+TUcyGaCtMCGgzz2V5zT8K0I248glN41mpvOSnJPQrvSrCIOrtUGNCTiS9BBfzXZnfda6glKU9OvWYLptFsIEpJbljLnGjnhqpQVCJ+1dIs/8MoEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=JMUrxCMs; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 011EF1C007B; Fri,  9 Feb 2024 20:51:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-	t=1707508318;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=Ny+g2e13pmZv7Yo5SjMa3WZIQ31wU3t+J1RaxEjrmqM=;
-	b=JMUrxCMsV2ApsnaGENG9H45CYl4pppFwlzdtHgCYMtbqbHZxErktHfdvVHNUMjZdyyXMk4
-	xU1XdKr0dMFjHtkIsqBiJEsiVNyE8zbAJTy8n1W34gVc8wuZYAPzt+GeAjoPrYKMU5X61m
-	H1r+1MixruzO+x6Re7jxUice9taqy7U=
-Date: Fri, 9 Feb 2024 20:51:57 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: phone-devel@vger.kernel.org, kernel list <linux-kernel@vger.kernel.org>,
-	fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org,
-	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
-	linux-usb@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
-	megi@xff.cz
-Subject: [PATCH] dt-bindings: usb: typec: anx7688: start a binding document
-Message-ID: <ZcaCXYOf6o4VNneu@duo.ucw.cz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8AC584A45;
+	Fri,  9 Feb 2024 19:52:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707508348; cv=fail; b=CndbioaXd3KNx0XUZWxAaxVB5t98FZj7LQa/7ZXcZLpma7faILRQSjj6tstIAwDKl9dZk2I4fyOpbN7sIEBfv8gPA3DLa5cHAlz9qiXTP/ifVW2UIpzHHddyW+0QU0E+3ZRIqhArF6yy8GKn6NSdGK+UI25QtjFHuTJduf0Rt1c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707508348; c=relaxed/simple;
+	bh=NXYbZwCzr9tZU1DQjoeF47+ter3IrrQP/GRNvZa7btY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=CguogAqwogAi8i0f8r8+HwR+BgisujWh8jgM43zO9b7bGFkVTQ52Sz0Me/P0F654x6AlwaUJQ2Uxvtw/tEcU3qmj45Q5pfxEh0lVjZCW2P5nu+B6b9Tu8ra4YUFrYeWvfVfHYbaq9rQGL2YppzcI9CuGcwB/l7pJXEcVFfhXm3c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=axI61JW/; arc=fail smtp.client-ip=40.107.243.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PVtERBwmslsBh05xQJf253ttDQeUPM3Wz0v10gzeUe0n+KyjrWR9sr5CwopzeeFPD4Et90GX3wNQUqA9WIxdcIXlovOF5jhoQmoqO/lCqUlShUZ6nGQxEfra6CJERQl5DSE3eV2R4bV1VQBASEnvR9se23gR+EpX1W4IXeBq5x8GBC6/shbIkdJrwIWMdB3a0Uhu9etFMN4Kw23TYrwYp0IGy0lYbnpWgaza65xYqqa8zbfPoy1DkjvJKu+ltFfQ09lMXOatLo1VPq420npACKEm+UqxrLqgVFwFhZeP/Sa8Oy2AgZQriWjBpr/isea+wZfOJss5JpV5k59NQ+JKTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=M3GEzTS9rpRVM1c7n3l2KIpmQQ9nJGqmxq9igy9wU6A=;
+ b=g6xFL6gPri/aKL/D4+cy/mPWZ0qJzzagCwBu9Nbz7J1HYCb5y3ZfIExVfOQYwkCvhOhvJXwqNLqZQiY0ruYGycce+MLfY26dcK4rPI1lTN5AazQk7zS8jpxSAVyBRkSpJUnuOtfavSHgWrq6YaldRPZ1gboILKwVdN1+4NM+pXW3Yk3rOwWDV3sc9km/Bb4U2TYMW8jqXOOTEqGgTE9Q/AMRXmFnPAdD59DvnG76cw8EQ5bzhiG7BQw3UhRVc+6DOkS4jfHS224VVmySc8E/7b6aEINBjo/SM5u391CgMWAp2GkdMgreZmB3iEJpSmUAv5kaotcdOyq2xA6cqRei8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M3GEzTS9rpRVM1c7n3l2KIpmQQ9nJGqmxq9igy9wU6A=;
+ b=axI61JW/gZC1GNoe9IVAy4Ws0oH2B3td8bK5LuunOzjGAI00U4ptqlyy41JNgEZd18VhKqIeI2q7QECBAnYFP/mGGFakWG4gsCCEnoT+w8+30WrFZ398m4R7LO9gD+qes2FhKxuW2Lr6n/GBENzA42aZYGWEOrL3DaPyy81L/yo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CH3PR12MB8403.namprd12.prod.outlook.com (2603:10b6:610:133::14)
+ by LV8PR12MB9449.namprd12.prod.outlook.com (2603:10b6:408:204::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.12; Fri, 9 Feb
+ 2024 19:52:23 +0000
+Received: from CH3PR12MB8403.namprd12.prod.outlook.com
+ ([fe80::ea0e:199a:3686:40d4]) by CH3PR12MB8403.namprd12.prod.outlook.com
+ ([fe80::ea0e:199a:3686:40d4%4]) with mapi id 15.20.7270.016; Fri, 9 Feb 2024
+ 19:52:23 +0000
+Message-ID: <17b1747a-8487-44d2-b79c-0da03b09c990@amd.com>
+Date: Fri, 9 Feb 2024 13:52:21 -0600
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH 1/2] x86/MCE: Extend size of the MCE Records pool
+To: Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org,
+ linux-edac@vger.kernel.org
+Cc: bp@alien8.de, tony.luck@intel.com, linux-kernel@vger.kernel.org,
+ yazen.ghannam@amd.com, Avadhut Naik <avadhut.naik@amd.com>
+References: <20240207225632.159276-1-avadhut.naik@amd.com>
+ <20240207225632.159276-2-avadhut.naik@amd.com>
+ <75f48901-fbfa-4ef4-99b9-312800d20896@intel.com>
+Content-Language: en-US
+From: "Naik, Avadhut" <avadnaik@amd.com>
+In-Reply-To: <75f48901-fbfa-4ef4-99b9-312800d20896@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9PR13CA0120.namprd13.prod.outlook.com
+ (2603:10b6:806:24::35) To CH3PR12MB8403.namprd12.prod.outlook.com
+ (2603:10b6:610:133::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="f/OLU4NS4fD0/sqi"
-Content-Disposition: inline
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8403:EE_|LV8PR12MB9449:EE_
+X-MS-Office365-Filtering-Correlation-Id: 549ac24a-e4d0-4a4d-719f-08dc29a8a267
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	P2WSEGTIMk3OmoCDa9kLCgXdJKxYYmVNibMEhCb3TVhefuf+4zmt/+l01V9NFXhRcJN1FXomRS4JTHT0C73848yOiNedpsRMSGlEcwiBFn7gGvhiHrAu3EpBkF+I9B1RpX3d8DYK9NaOJlbAhgSu3OXlt2PctyOoIF+CHEBLKMUvHzYF6rzDShilvbJM18TNTZtU/eLlApz+ZF28qeF5rNU+6PoVWRKv6z7GE7mEealf0UMzHm0R1+M9e9HPc0Lq3+xuPojiWRGYyPUUj0LCxd64pdVa98vMMP+xBh5cM77+f05vE1DrbWm6lMWvSesFAZHoWlOdbFvJ+5297fziwgfazh6p/Z8u/ll3/GCXNr/qY4NgSHGkUcQr7GnGmUBo0/aQaIloRxiFP6kF58w7v5OZgqjC5et9BB0sjrU5JKFvuv5CvXJxxOIGPH52hiLogi5jHVW7JIG6uD2FkxtgB5N6FMdvySd0Q2oZb9sSMcn1x9ZmW7FZqXQUFGNEB3Y5HF+v/0KcVbLc8kmhHeU2yV5azmY01knf96ADVtF+yYT3vc5gUoY1NWveUAYJkG4Q
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8403.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(39860400002)(366004)(346002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(478600001)(6486002)(66476007)(66946007)(66556008)(316002)(36756003)(83380400001)(38100700002)(26005)(31696002)(6506007)(53546011)(2616005)(6512007)(2906002)(4326008)(8936002)(8676002)(31686004)(41300700001)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?OVlreTJhbmNSV3Evb0tEVzdKWVlmM3dWaWtTYUFuQjZLakRjZjRUaFUyTFVs?=
+ =?utf-8?B?MGFPK3VKZUtpSjlwOG5wNmJYcmU5KzRlNEtvWDFya0ZkWlpNTnVLa2RUcHdm?=
+ =?utf-8?B?MmtmQW9oWWwrMmFlb3d4MndpNTJKZnBlRjlrM3lweEUwWFo2dkpoWi9SR0h1?=
+ =?utf-8?B?Q2VNUi96QklEWTI0a0s2MWhHN3Y2OEh4VjZXZVh1MTl1YzJ2TFNLK0lDWmxS?=
+ =?utf-8?B?MDdwdHNxaUpmZG02azB6VjZVUHlrRUFmdm9xUnp4ektSdDR4RWtoWjVrendP?=
+ =?utf-8?B?MTgvZlF4ZUVUck10WFRxdy9KZmNrak9TY1IySDZvbHBFazRHdmN4RFN5UGlq?=
+ =?utf-8?B?QmN2VDcwTFVFdUVKeTh0TGtPOGM4LzUxL0loeVFuWEE2ek1QajVYN3czNW9z?=
+ =?utf-8?B?Qjk1UDZsSXk4VWYrYmY4ajRWZXl6K1BHNWtSRU1uM2JQeWlaY1FCWTd3SmlJ?=
+ =?utf-8?B?aUs4dnZKamdmTXY5SWhLU3RXT0ppY28rcy9KSzY5Unk4bTZzSGtmWXc3Uy9y?=
+ =?utf-8?B?aUFYWGxGS2R1bmJTWlhaelArem9ZK2thQ1dTSTgzY21FWC83cTFCNnR1QXlV?=
+ =?utf-8?B?bm5HUnFHT2tHK0dJelhPTDRuSzI1cEZ4YmhuTlI1aFVwTTFsbkNLbDdZWGJi?=
+ =?utf-8?B?WWYrd09PajN1SWpjWjhKSTlGSjViSWJNTmsxNGczSGl6bW0yR0VSdVZnSFR2?=
+ =?utf-8?B?SEZoQnRXbWhWUzhnVFlFc0NsS2dFd2ZNaVBlZkxCUHdDYjlUMG1TQ012TUp4?=
+ =?utf-8?B?KzhzdFlnNW9KajIvODJBYVZocVhGWG5CYU1iNlUyNmR4VnIxT0pUd2dveGh1?=
+ =?utf-8?B?TGtvTE5oTkRkUGt3SEYvV1hjNDlCNHo4ZEZyWVlWVkF6d2R1TTRqNTNpNlB4?=
+ =?utf-8?B?ZFgvYlpnU2c4Y20wS3RFU1hzRnkxc05hQVRTcmRhU1Zpcll3Z0tuQWd6cDZa?=
+ =?utf-8?B?amdVSzdseXlTQzhVb2p6OUdSVURmOXNsdndqRmYrL1hFWllEWlJpZmFmOUVO?=
+ =?utf-8?B?WGxYcHRpZ3NXbEM1WDBkUXhMamVFWjY2bm01YVV3aWRpQVRnQ0ZkK3lYbDVv?=
+ =?utf-8?B?bmhlM3JSNlQ1a3owRWJWejYwWFN4YTczbTVieEV2R2RYTHFMQkJqMjRhRXA5?=
+ =?utf-8?B?WnFSR2h3UXQ0eGRUcGs0QnVpdzZDbmdpNGpUbXRJYkVwNEh0RkU2Q05GZUUr?=
+ =?utf-8?B?VDQzakU1dHUyb0h3YTBjQnMreU8yakJ0Y1pHUEFLU1NmbWNOdVlIc1phSjZK?=
+ =?utf-8?B?Z0lVUmRLbFV5Ky9yQllGZHpYMGxLelNhcWg1TkxFRzZzekxuZkdMUUlUREFC?=
+ =?utf-8?B?M3k2Qlo3NjdybkVNd0tCWitiK0lNL1djdE5ZMnFzMHBQSm10TExoRzQzUkRI?=
+ =?utf-8?B?UjIzeWdPOXdydVFPOE5vd3E0VE12RC92ZGZ1dDhPZGQ2ZXp6eTZuRWNMZHdz?=
+ =?utf-8?B?cDRoT2VBaGpraVJoaGNFaC9yaVJ5SjZrcm9wRFNNQzNQQTZ0NWk0T2pZNkRB?=
+ =?utf-8?B?bUNWZ0hPdS9zalBMT2VQcVg4ZElkektoL0VyY2FVZ3FNOVJMdGZKYlJPODNF?=
+ =?utf-8?B?VHJiSnZHUXdJeUEyT0l4WFZXWXprUmV6UHpLWllHRG44bW05dXRZdEhUdDVv?=
+ =?utf-8?B?aHJSSFV2WjR6cXBxUTlRc01TY3o3eDRwSlZxSFYvZ3FzVjBuVjZkMkhKelpr?=
+ =?utf-8?B?SzJTa0VTUWdueFkzd2twVHlEbkZDc3o4WVVoeUszWFlxd1k2bDloNm9oalJi?=
+ =?utf-8?B?UXdFdkM2c1p6czkrRDhsQjNXdzMwa0x4Nkx1WFBUSm94VFhDcVdVTUx0WmVL?=
+ =?utf-8?B?QTYwczlWRjJ6akFkK2RtMFpEbCtQRjJZZ293eHNORkhuVkJ4dTJjc3l2M0JZ?=
+ =?utf-8?B?YSt2Vm9qSFFTbGVvQkhhd2llQ1E5eDVodHpQVWJ5QXpiMmYzcVNRNVFGd0Iw?=
+ =?utf-8?B?Y1RpMHFlMWVoZ1BPZHlzOTA3b21NcFRKbjZmR25uaFpCeG9PcXphSnYxYkJm?=
+ =?utf-8?B?dTU2VDltcWZoZExvUnVDKzRkVzZJQUJ5aCtCSENteXZZdURuNEJyK2gzS0E4?=
+ =?utf-8?B?YWV2N2FldUU4aGpMQUpJdzRNbWtqRHNiRDc4cm5CcmVObUxEdVNNM09HQTUz?=
+ =?utf-8?Q?MLsUw47Bt0J/oFIsDBJt6os+B?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 549ac24a-e4d0-4a4d-719f-08dc29a8a267
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8403.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 19:52:23.7204
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XzyannCTFHOvXZH8+rGT0YKrdChMCgCFFTh4+MqWaZ536Y2N0CED4fOpWPmG6lqmqC+NWeL0hQa/AoxWG2zz3Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9449
+
+Hi,
+
+On 2/8/2024 15:09, Sohil Mehta wrote:
+> On 2/7/2024 2:56 PM, Avadhut Naik wrote:
+> 
+>> Extend the size of MCE Records pool to better serve modern systems. The
+>> increase in size depends on the CPU count of the system. Currently, since
+>> size of struct mce is 124 bytes, each logical CPU of the system will have
+>> space for at least 2 MCE records available in the pool. To get around the
+>> allocation woes during early boot time, the same is undertaken using
+>> late_initcall().
+>>
+> 
+> I guess making this proportional to the number of CPUs is probably fine
+> assuming CPUs and memory capacity *would* generally increase in sync.
+> 
+> But, is there some logic to having 2 MCE records per logical cpu or it
+> is just a heuristic approach? In practice, the pool is shared amongst
+> all MCE sources and can be filled by anyone, right?
+> 
+Yes, the pool is shared among all MCE sources but the logic for 256 is
+that the genpool was set to 2 pages i.e. 8192 bytes in 2015.
+Around that time, AFAIK, the max number of logical CPUs on a system was
+32.
+So, in the maximum case, each CPU will have around 256 bytes (8192/32) in
+the pool. It equates to approximately 2 MCE records since sizeof(struct mce)
+back then was 88 bytes.
+>> Signed-off-by: Avadhut Naik <avadhut.naik@amd.com>
+>> ---
+>>  arch/x86/kernel/cpu/mce/core.c     |  3 +++
+>>  arch/x86/kernel/cpu/mce/genpool.c  | 22 ++++++++++++++++++++++
+>>  arch/x86/kernel/cpu/mce/internal.h |  1 +
+>>  3 files changed, 26 insertions(+)
+>>
+>> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+>> index b5cc557cfc37..5d6d7994d549 100644
+>> --- a/arch/x86/kernel/cpu/mce/core.c
+>> +++ b/arch/x86/kernel/cpu/mce/core.c
+>> @@ -2901,6 +2901,9 @@ static int __init mcheck_late_init(void)
+>>  	if (mca_cfg.recovery)
+>>  		enable_copy_mc_fragile();
+>>  
+>> +	if (mce_gen_pool_extend())
+>> +		pr_info("Couldn't extend MCE records pool!\n");
+>> +
+> 
+> Why do this unconditionally? For a vast majority of low core-count, low
+> memory systems the default 2 pages would be good enough.
+> 
+> Should there be a threshold beyond which the extension becomes active?
+> Let's say, for example, a check for num_present_cpus() > 32 (Roughly
+> based on 8Kb memory and 124b*2 estimate per logical CPU).
+> 
+> Whatever you choose, a comment above the code would be helpful
+> describing when the extension is expected to be useful.
+> 
+Put it in unconditionally because IMO the increase in memory even for
+low-core systems didn't seem to be substantial. Just an additional page
+for systems with less than 16 CPUs.
+
+But I do get your point. Will add a check in mcheck_late_init() for CPUs
+present. Something like below:
+
+@@ -2901,7 +2901,7 @@ static int __init mcheck_late_init(void)
+    if (mca_cfg.recovery)
+        enable_copy_mc_fragile();
+
+-   if (mce_gen_pool_extend())
++   if ((num_present_cpus() > 32) && mce_gen_pool_extend())
+        pr_info("Couldn't extend MCE records pool!\n");
+
+Does this look good? The genpool extension will then be undertaken only for
+systems with more than 32 CPUs. Will explain the same in a comment.
+
+>>  	mcheck_debugfs_init();
+>>  
+>>  	/*
+>> diff --git a/arch/x86/kernel/cpu/mce/genpool.c b/arch/x86/kernel/cpu/mce/genpool.c
+>> index fbe8b61c3413..aed01612d342 100644
+>> --- a/arch/x86/kernel/cpu/mce/genpool.c
+>> +++ b/arch/x86/kernel/cpu/mce/genpool.c
+>> @@ -20,6 +20,7 @@
+>>   * 2 pages to save MCE events for now (~80 MCE records at most).
+>>   */
+>>  #define MCE_POOLSZ	(2 * PAGE_SIZE)
+>> +#define CPU_GEN_MEMSZ	256
+>>  
+> 
+> The comment above MCE_POOLSZ probably needs a complete re-write. Right
+> now, it reads as follows:
+> 
+> * This memory pool is only to be used to save MCE records in MCE context.
+> * MCE events are rare, so a fixed size memory pool should be enough. Use
+> * 2 pages to save MCE events for now (~80 MCE records at most).
+> 
+> Apart from the numbers being incorrect since sizeof(struct mce) has
+> increased, this patch is based on the assumption that the current MCE
+> memory pool is no longer enough in certain cases.
+> 
+Yes, will change the comment to something like below:
+
+ * This memory pool is only to be used to save MCE records in MCE context.
+ * Though MCE events are rare, their frequency typically depends on the
+ * system's memory and CPU count.
+ * Allocate 2 pages to the MCE Records pool during early boot with the
+ * option to extend the pool, as needed, through command line, for systems
+ * with CPU count of more than 32.
+ * By default, each logical CPU can have around 2 MCE records in the pool
+ * at the same time. 
+
+Sounds good?
+
+>>  static struct gen_pool *mce_evt_pool;
+>>  static LLIST_HEAD(mce_event_llist);
+>> @@ -116,6 +117,27 @@ int mce_gen_pool_add(struct mce *mce)
+>>  	return 0;
+>>  }
+>>  
+>> +int mce_gen_pool_extend(void)
+>> +{
+>> +	unsigned long addr, len;
+> 
+> s/len/size/
+> 
+Noted.
+>> +	int ret = -ENOMEM;
+>> +	u32 num_threads;
+>> +
+>> +	num_threads = num_present_cpus();
+>> +	len = PAGE_ALIGN(num_threads * CPU_GEN_MEMSZ);
+> 
+> Nit: Can the use of the num_threads variable be avoided?
+> How about:
+> 
+> 	size = PAGE_ALIGN(num_present_cpus() * CPU_GEN_MEMSZ);
+> 
+Will do.
+> 
+> 
+>> +	addr = (unsigned long)kzalloc(len, GFP_KERNEL);
+> 
+> Also, shouldn't the new allocation be incremental to the 2 pages already
+> present?
+> 
+> Let's say, for example, that you have a 40-cpu system and the calculated
+> size in this case comes out to 40 * 2 * 128b = 9920bytes  i.e. 3 pages.
+> You only need to allocate 1 additional page to add to mce_evt_pool
+> instead of the 3 pages that the current code does.
+> 
+Will make it incremental when genpool extension is being undertaken through
+the default means. Something like below:
+
+@@ -129,6 +134,7 @@ int mce_gen_pool_extend(void)
+    } else {
+        num_threads = num_present_cpus();
+        len = PAGE_ALIGN(num_threads * CPU_GEN_MEMSZ);
++       len -= MCE_POOLSZ;
+
+Does this sound good?
+
+-- 
+Thanks,
+Avadhut Naik
+
+> Sohil
+> 
+>> +
+>> +	if (!addr)
+>> +		goto out;
+>> +
+>> +	ret = gen_pool_add(mce_evt_pool, addr, len, -1);
+>> +	if (ret)
+>> +		kfree((void *)addr);
+>> +
+>> +out:
+>> +	return ret;
+>> +}
+>> +
+>>  static int mce_gen_pool_create(void)
+>>  {
+>>  	struct gen_pool *tmpp;
+> 
+> 
 
 
---f/OLU4NS4fD0/sqi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Add binding for anx7688 usb type-c bridge. I don't have a datasheet,
-but I did best I could.
-
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
-
-diff --git a/Documentation/devicetree/bindings/usb/analogix,anx7688.yaml b/=
-Documentation/devicetree/bindings/usb/analogix,anx7688.yaml
-new file mode 100644
-index 000000000000..b9d60586937f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/analogix,anx7688.yaml
-@@ -0,0 +1,140 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/analogix,anx7688.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analogix ANX7688 Type-C controller
-+
-+maintainers:
-+  - Pavel Machek <pavel@ucw.cz>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - analogix,anx7688
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  reset-gpios:
-+    maxItems: 1
-+  enable-gpios:
-+    maxItems: 1
-+  cabledet-gpios:
-+    maxItems: 1
-+
-+  avdd10-supply:
-+    description:
-+      1.0V power supply
-+  dvdd10-supply:
-+    description:
-+      1.0V power supply
-+  avdd18-supply:
-+    description:
-+      1.8V power supply
-+  dvdd18-supply:
-+    description:
-+      1.8V power supply
-+  avdd33-supply:
-+    description:
-+      3.3V power supply
-+  i2c-supply:
-+    description:
-+      Power supply
-+  vconn-supply:
-+    description:
-+      Power supply
-+  hdmi_vt-supply:
-+    description:
-+      Power supply
-+
-+  vbus-supply:
-+    description:
-+      Power supply
-+  vbus_in-supply:
-+    description:
-+      Power supply
-+
-+  connector:
-+    type: object
-+    $ref: ../connector/usb-connector.yaml
-+    unevaluatedProperties: false
-+
-+    description:
-+      Properties for usb c connector.
-+
-+    properties:
-+      compatible:
-+        const: usb-c-connector
-+
-+      power-role: true
-+
-+      data-role: true
-+
-+      try-power-role: true
-+
-+    required:
-+      - compatible
-+
-+required:
-+  - compatible
-+  - reg
-+  - connector
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c {
-+        #address-cells =3D <1>;
-+        #size-cells =3D <0>;
-+
-+        typec@2c {
-+            compatible =3D "analogix,anx7688";
-+            reg =3D <0x2c>;
-+            interrupts =3D <8 IRQ_TYPE_EDGE_FALLING>;
-+            interrupt-parent =3D <&gpio0>;
-+
-+            enable-gpios =3D <&pio 3 10 GPIO_ACTIVE_LOW>; /* PD10 */
-+            reset-gpios =3D <&pio 3 6 GPIO_ACTIVE_HIGH>; /* PD6 */
-+            cabledet-gpios =3D <&r_pio 0 8 GPIO_ACTIVE_HIGH>; /* PL8 */
-+
-+            avdd10-supply =3D <&reg_anx1v0>;
-+            dvdd10-supply =3D <&reg_anx1v0>;
-+            avdd18-supply =3D <&reg_ldo_io1>;
-+            dvdd18-supply =3D <&reg_ldo_io1>;
-+            avdd33-supply =3D <&reg_dcdc1>;
-+            i2c-supply =3D <&reg_ldo_io0>;
-+            vconn-supply =3D <&reg_vconn5v0>;
-+            hdmi_vt-supply =3D <&reg_dldo1>;
-+
-+            vbus-supply =3D <&reg_usb_5v>;
-+            vbus_in-supply =3D <&usb_power_supply>;
-+
-+            typec_con: connector {
-+                compatible =3D "usb-c-connector";
-+                power-role =3D "dual";
-+                data-role =3D "dual";
-+                try-power-role =3D "source";
-+
-+                ports {
-+                    #address-cells =3D <1>;
-+                    #size-cells =3D <0>;
-+                    port@0 {
-+                        reg =3D <0>;
-+                        typec_con_ep: endpoint {
-+                            remote-endpoint =3D <&usbotg_hs_ep>;
-+                        };
-+                    };
-+                };
-+            };
-+        };
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/usb/generic-xhci.yaml b/Docu=
-mentation/devicetree/bindings/usb/generic-xhci.yaml
-index 594ebb3ee432..6ceafa4af292 100644
---- a/Documentation/devicetree/bindings/usb/generic-xhci.yaml
-+++ b/Documentation/devicetree/bindings/usb/generic-xhci.yaml
-@@ -9,9 +9,6 @@ title: USB xHCI Controller
- maintainers:
-   - Mathias Nyman <mathias.nyman@intel.com>
-=20
--allOf:
--  - $ref: usb-xhci.yaml#
--
- properties:
-   compatible:
-     oneOf:
-@@ -25,6 +22,11 @@ properties:
-               - marvell,armada-380-xhci
-               - marvell,armada-8k-xhci
-           - const: generic-xhci
-+      - description: Broadcom SoCs with power domains
-+        items:
-+          - enum:
-+              - brcm,bcm2711-xhci
-+          - const: brcm,xhci-brcm-v2
-       - description: Broadcom STB SoCs with xHCI
-         enum:
-           - brcm,xhci-brcm-v2
-@@ -49,6 +51,9 @@ properties:
-       - const: core
-       - const: reg
-=20
-+  power-domains:
-+    maxItems: 1
-+
- unevaluatedProperties: false
-=20
- required:
-@@ -56,6 +61,20 @@ required:
-   - reg
-   - interrupts
-=20
-+allOf:
-+  - $ref: usb-xhci.yaml#
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: brcm,bcm2711-xhci
-+    then:
-+      required:
-+        - power-domains
-+    else:
-+      properties:
-+        power-domains: false
-+
- examples:
-   - |
-     usb@f0931000 {
-diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml b/Do=
-cumentation/devicetree/bindings/usb/genesys,gl850g.yaml
-index ee08b9c3721f..37cf5249e526 100644
---- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-+++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-@@ -29,6 +29,11 @@ properties:
-     description:
-       the regulator that provides 3.3V core power to the hub.
-=20
-+  peer-hub:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      phandle to the peer hub on the controller.
-+
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml b=
-/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
-index e9644e333d78..924fd3d748a8 100644
---- a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
-+++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
-@@ -124,6 +124,17 @@ properties:
-       defined in the xHCI spec on MTK's controller.
-     default: 5000
-=20
-+  rx-fifo-depth:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      It is a quirk used to work around Gen1 isoc-in endpoint transfer iss=
-ue
-+      that still send out unexpected ACK after device finishes the burst
-+      transfer with a short packet and cause an exception, specially on a =
-4K
-+      camera device, it happens on controller before about IPM v1.6.0;
-+      the side-effect is that it may cause performance drop about 10%,
-+      including bulk transfer, prefer to use 3k here. The size is in bytes.
-+    enum: [1024, 2048, 3072, 4096]
-+
-   # the following properties are only used for case 1
-   wakeup-source:
-     description: enable USB remote wakeup, see power/wakeup-source.txt
-diff --git a/Documentation/devicetree/bindings/usb/nxp,ptn5110.yaml b/Docum=
-entation/devicetree/bindings/usb/nxp,ptn5110.yaml
-index 28eb25ecba74..eaedb4cc6b6c 100644
---- a/Documentation/devicetree/bindings/usb/nxp,ptn5110.yaml
-+++ b/Documentation/devicetree/bindings/usb/nxp,ptn5110.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/usb/nxp,ptn5110.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
-=20
--title: NXP PTN5110 Typec Port Cotroller
-+title: NXP PTN5110 Type-C Port Controller
-=20
- maintainers:
-   - Li Jun <jun.li@nxp.com>
-diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documen=
-tation/devicetree/bindings/usb/qcom,dwc3.yaml
-index 915c8205623b..63d150b216c5 100644
---- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-@@ -46,6 +46,8 @@ properties:
-           - qcom,sm8350-dwc3
-           - qcom,sm8450-dwc3
-           - qcom,sm8550-dwc3
-+          - qcom,sm8650-dwc3
-+          - qcom,x1e80100-dwc3
-       - const: qcom,dwc3
-=20
-   reg:
-@@ -97,12 +99,29 @@ properties:
-       - const: apps-usb
-=20
-   interrupts:
--    minItems: 1
--    maxItems: 4
-+    description: |
-+      Different types of interrupts are used based on HS PHY used on targe=
-t:
-+        - pwr_event: Used for wakeup based on other power events.
-+        - hs_phY_irq: Apart from DP/DM/QUSB2 PHY interrupts, there is
-+                       hs_phy_irq which is not triggered by default and its
-+                       functionality is mutually exclusive to that of
-+                       {dp/dm}_hs_phy_irq and qusb2_phy_irq.
-+        - qusb2_phy: SoCs with QUSB2 PHY do not have separate DP/DM IRQs a=
-nd
-+                      expose only a single IRQ whose behavior can be modif=
-ied
-+                      by the QUSB2PHY_INTR_CTRL register. The required DPS=
-E/
-+                      DMSE configuration is done in QUSB2PHY_INTR_CTRL reg=
-ister
-+                      of PHY address space.
-+        - {dp/dm}_hs_phy_irq: These IRQ's directly reflect changes on the =
-DP/
-+                               DM pads of the SoC. These are used for wake=
-up
-+                               only on SoCs with non-QUSB2 targets with
-+                               exception of SDM670/SDM845/SM6350.
-+        - ss_phy_irq: Used for remote wakeup in Super Speed mode of operat=
-ion.
-+    minItems: 2
-+    maxItems: 5
-=20
-   interrupt-names:
--    minItems: 1
--    maxItems: 4
-+    minItems: 2
-+    maxItems: 5
-=20
-   qcom,select-utmi-as-pipe-clk:
-     description:
-@@ -263,6 +282,7 @@ allOf:
-           contains:
-             enum:
-               - qcom,sc8280xp-dwc3
-+              - qcom,x1e80100-dwc3
-     then:
-       properties:
-         clocks:
-@@ -288,8 +308,8 @@ allOf:
-     then:
-       properties:
-         clocks:
--          minItems: 5
--          maxItems: 6
-+          minItems: 4
-+          maxItems: 5
-         clock-names:
-           oneOf:
-             - items:
-@@ -298,13 +318,11 @@ allOf:
-                 - const: iface
-                 - const: sleep
-                 - const: mock_utmi
--                - const: bus
-             - items:
-                 - const: cfg_noc
-                 - const: core
-                 - const: sleep
-                 - const: mock_utmi
--                - const: bus
-=20
-   - if:
-       properties:
-@@ -318,6 +336,7 @@ allOf:
-               - qcom,sm8250-dwc3
-               - qcom,sm8450-dwc3
-               - qcom,sm8550-dwc3
-+              - qcom,sm8650-dwc3
-     then:
-       properties:
-         clocks:
-@@ -357,131 +376,96 @@ allOf:
-         compatible:
-           contains:
-             enum:
--              - qcom,ipq4019-dwc3
-+              - qcom,ipq5018-dwc3
-               - qcom,ipq6018-dwc3
--              - qcom,ipq8064-dwc3
-               - qcom,ipq8074-dwc3
--              - qcom,msm8994-dwc3
-+              - qcom,msm8953-dwc3
-+              - qcom,msm8998-dwc3
-+    then:
-+      properties:
-+        interrupts:
-+          minItems: 2
-+          maxItems: 3
-+        interrupt-names:
-+          items:
-+            - const: pwr_event
-+            - const: qusb2_phy
-+            - const: ss_phy_irq
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,msm8996-dwc3
-               - qcom,qcs404-dwc3
-+              - qcom,sdm660-dwc3
-+              - qcom,sm6115-dwc3
-+              - qcom,sm6125-dwc3
-+    then:
-+      properties:
-+        interrupts:
-+          minItems: 3
-+          maxItems: 4
-+        interrupt-names:
-+          items:
-+            - const: pwr_event
-+            - const: qusb2_phy
-+            - const: hs_phy_irq
-+            - const: ss_phy_irq
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,ipq5332-dwc3
-+              - qcom,x1e80100-dwc3
-+    then:
-+      properties:
-+        interrupts:
-+          maxItems: 4
-+        interrupt-names:
-+          items:
-+            - const: pwr_event
-+            - const: dp_hs_phy_irq
-+            - const: dm_hs_phy_irq
-+            - const: ss_phy_irq
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,ipq4019-dwc3
-+              - qcom,ipq8064-dwc3
-+              - qcom,msm8994-dwc3
-+              - qcom,sa8775p-dwc3
-               - qcom,sc7180-dwc3
-+              - qcom,sc7280-dwc3
-+              - qcom,sc8280xp-dwc3
-               - qcom,sdm670-dwc3
-               - qcom,sdm845-dwc3
-               - qcom,sdx55-dwc3
-               - qcom,sdx65-dwc3
-               - qcom,sdx75-dwc3
-               - qcom,sm4250-dwc3
--              - qcom,sm6125-dwc3
-               - qcom,sm6350-dwc3
-               - qcom,sm8150-dwc3
-               - qcom,sm8250-dwc3
-               - qcom,sm8350-dwc3
-               - qcom,sm8450-dwc3
-               - qcom,sm8550-dwc3
-+              - qcom,sm8650-dwc3
-     then:
-       properties:
-         interrupts:
--          items:
--            - description: The interrupt that is asserted
--                when a wakeup event is received on USB2 bus.
--            - description: The interrupt that is asserted
--                when a wakeup event is received on USB3 bus.
--            - description: Wakeup event on DM line.
--            - description: Wakeup event on DP line.
--        interrupt-names:
--          items:
--            - const: hs_phy_irq
--            - const: ss_phy_irq
--            - const: dm_hs_phy_irq
--            - const: dp_hs_phy_irq
--
--  - if:
--      properties:
--        compatible:
--          contains:
--            enum:
--              - qcom,msm8953-dwc3
--              - qcom,msm8996-dwc3
--              - qcom,msm8998-dwc3
--              - qcom,sm6115-dwc3
--    then:
--      properties:
--        interrupts:
--          maxItems: 2
--        interrupt-names:
--          items:
--            - const: hs_phy_irq
--            - const: ss_phy_irq
--
--  - if:
--      properties:
--        compatible:
--          contains:
--            enum:
--              - qcom,ipq5018-dwc3
--              - qcom,ipq5332-dwc3
--              - qcom,sdm660-dwc3
--    then:
--      properties:
--        interrupts:
--          minItems: 1
--          maxItems: 2
--        interrupt-names:
--          minItems: 1
--          items:
--            - const: hs_phy_irq
--            - const: ss_phy_irq
--
--  - if:
--      properties:
--        compatible:
--          contains:
--            enum:
--              - qcom,sc7280-dwc3
--    then:
--      properties:
--        interrupts:
--          minItems: 3
--          maxItems: 4
--        interrupt-names:
--          minItems: 3
--          items:
--            - const: hs_phy_irq
--            - const: dp_hs_phy_irq
--            - const: dm_hs_phy_irq
--            - const: ss_phy_irq
--
--  - if:
--      properties:
--        compatible:
--          contains:
--            enum:
--              - qcom,sc8280xp-dwc3
--    then:
--      properties:
--        interrupts:
--          maxItems: 4
-+          minItems: 4
-+          maxItems: 5
-         interrupt-names:
-           items:
-             - const: pwr_event
--            - const: dp_hs_phy_irq
--            - const: dm_hs_phy_irq
--            - const: ss_phy_irq
--
--  - if:
--      properties:
--        compatible:
--          contains:
--            enum:
--              - qcom,sa8775p-dwc3
--    then:
--      properties:
--        interrupts:
--          minItems: 3
--          maxItems: 4
--        interrupt-names:
--          minItems: 3
--          items:
--            - const: pwr_event
-+            - const: hs_phy_irq
-             - const: dp_hs_phy_irq
-             - const: dm_hs_phy_irq
-             - const: ss_phy_irq
-@@ -519,12 +503,13 @@ examples:
-                           <&gcc GCC_USB30_PRIM_MASTER_CLK>;
-             assigned-clock-rates =3D <19200000>, <150000000>;
-=20
--            interrupts =3D <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
--                         <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>,
-+            interrupts =3D <GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 489 IRQ_TYPE_EDGE_BOTH>,
-                          <GIC_SPI 488 IRQ_TYPE_EDGE_BOTH>,
--                         <GIC_SPI 489 IRQ_TYPE_EDGE_BOTH>;
--            interrupt-names =3D "hs_phy_irq", "ss_phy_irq",
--                          "dm_hs_phy_irq", "dp_hs_phy_irq";
-+                         <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>;
-+            interrupt-names =3D "pwr_event", "hs_phy_irq",
-+                          "dp_hs_phy_irq", "dm_hs_phy_irq", "ss_phy_irq";
-=20
-             power-domains =3D <&gcc USB30_PRIM_GDSC>;
-=20
-diff --git a/Documentation/devicetree/bindings/usb/qcom,wcd939x-usbss.yaml =
-b/Documentation/devicetree/bindings/usb/qcom,wcd939x-usbss.yaml
-new file mode 100644
-index 000000000000..7ddfd3313a18
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/qcom,wcd939x-usbss.yaml
-@@ -0,0 +1,102 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/qcom,wcd939x-usbss.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm WCD9380/WCD9385 USB SubSystem Altmode/Analog Audio Switch
-+
-+maintainers:
-+  - Neil Armstrong <neil.armstrong@linaro.org>
-+
-+description:
-+  Qualcomm WCD9390/WCD9395 is a standalone Hi-Fi audio codec IC with a
-+  functionally separate USB SubSystem for Altmode/Analog Audio Switch
-+  accessible over an I2C interface.
-+  The Audio Headphone and Microphone data path between the Codec and the
-+  USB-C Mux subsystems are external to the IC, thus requiring DT port-endp=
-oint
-+  graph description to handle USB-C altmode & orientation switching for Au=
-dio
-+  Accessory Mode.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: qcom,wcd9390-usbss
-+      - items:
-+          - const: qcom,wcd9395-usbss
-+          - const: qcom,wcd9390-usbss
-+
-+  reg:
-+    maxItems: 1
-+
-+  reset-gpios:
-+    maxItems: 1
-+
-+  vdd-supply:
-+    description: USBSS VDD power supply
-+
-+  mode-switch:
-+    description: Flag the port as possible handle of altmode switching
-+    type: boolean
-+
-+  orientation-switch:
-+    description: Flag the port as possible handler of orientation switching
-+    type: boolean
-+
-+  ports:
-+    $ref: /schemas/graph.yaml#/properties/ports
-+    properties:
-+      port@0:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description:
-+          A port node to link the WCD939x USB SubSystem to a TypeC control=
-ler for the
-+          purpose of handling altmode muxing and orientation switching.
-+
-+      port@1:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description:
-+          A port node to link the WCD939x USB SubSystem to the Codec SubSy=
-stem for the
-+          purpose of handling USB-C Audio Accessory Mode muxing and orient=
-ation switching.
-+
-+required:
-+  - compatible
-+  - reg
-+  - ports
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells =3D <1>;
-+        #size-cells =3D <0>;
-+
-+        typec-mux@42 {
-+            compatible =3D "qcom,wcd9390-usbss";
-+            reg =3D <0x42>;
-+
-+            vdd-supply =3D <&vreg_bob>;
-+
-+            mode-switch;
-+            orientation-switch;
-+
-+            ports {
-+                #address-cells =3D <1>;
-+                #size-cells =3D <0>;
-+
-+                port@0 {
-+                    reg =3D <0>;
-+                    wcd9390_usbss_sbu: endpoint {
-+                        remote-endpoint =3D <&typec_sbu>;
-+                    };
-+                };
-+                port@1 {
-+                    reg =3D <1>;
-+                    wcd9390_usbss_codec: endpoint {
-+                        remote-endpoint =3D <&wcd9390_codec_usbss>;
-+                    };
-+                };
-+            };
-+        };
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml b/Doc=
-umentation/devicetree/bindings/usb/renesas,usbhs.yaml
-index bad55dfb2fa0..40ada78f2328 100644
---- a/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
-+++ b/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
-@@ -19,7 +19,7 @@ properties:
-       - items:
-           - enum:
-               - renesas,usbhs-r7s9210   # RZ/A2
--              - renesas,usbhs-r9a07g043 # RZ/G2UL
-+              - renesas,usbhs-r9a07g043 # RZ/G2UL and RZ/Five
-               - renesas,usbhs-r9a07g044 # RZ/G2{L,LC}
-               - renesas,usbhs-r9a07g054 # RZ/V2L
-           - const: renesas,rza2-usbhs
-diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documen=
-tation/devicetree/bindings/usb/snps,dwc3.yaml
-index ee5af4b381b1..203a1eb66691 100644
---- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-@@ -432,6 +432,10 @@ properties:
-     items:
-       enum: [1, 4, 8, 16, 32, 64, 128, 256]
-=20
-+  num-hc-interrupters:
-+    maximum: 8
-+    default: 1
-+
-   port:
-     $ref: /schemas/graph.yaml#/properties/port
-     description:
-diff --git a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml b/Docum=
-entation/devicetree/bindings/usb/ti,tps6598x.yaml
-index 323d664ae06a..1745e28b3110 100644
---- a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
-+++ b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
-@@ -38,6 +38,10 @@ properties:
-       - const: main
-       - const: patch-address
-=20
-+  reset-gpios:
-+    description: GPIO used for the HRESET pin.
-+    maxItems: 1
-+
-   wakeup-source: true
-=20
-   interrupts:
-@@ -90,6 +94,7 @@ additionalProperties: false
-=20
- examples:
-   - |
-+    #include <dt-bindings/gpio/gpio.h>
-     #include <dt-bindings/interrupt-controller/irq.h>
-     i2c {
-         #address-cells =3D <1>;
-@@ -106,6 +111,7 @@ examples:
-=20
-             pinctrl-names =3D "default";
-             pinctrl-0 =3D <&typec_pins>;
-+            reset-gpios =3D <&gpio1 6 GPIO_ACTIVE_HIGH>;
-=20
-             typec_con: connector {
-                 compatible =3D "usb-c-connector";
-diff --git a/Documentation/devicetree/bindings/usb/usb-xhci.yaml b/Document=
-ation/devicetree/bindings/usb/usb-xhci.yaml
-index 180a261c3e8f..4238ae896ef6 100644
---- a/Documentation/devicetree/bindings/usb/usb-xhci.yaml
-+++ b/Documentation/devicetree/bindings/usb/usb-xhci.yaml
-@@ -29,6 +29,12 @@ properties:
-     description: Interrupt moderation interval
-     default: 5000
-=20
-+  num-hc-interrupters:
-+    description: Maximum number of interrupters to allocate
-+    $ref: /schemas/types.yaml#/definitions/uint16
-+    minimum: 1
-+    maximum: 1024
-+
- additionalProperties: true
-=20
- examples:
-
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
-
---f/OLU4NS4fD0/sqi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZcaCXQAKCRAw5/Bqldv6
-8gV0AJ9sw7Qr6VGeMmiXsTjX2ocLa0QdrwCfeH4n6zRcBaRknkOlvpX9oiuK9D0=
-=1VDK
------END PGP SIGNATURE-----
-
---f/OLU4NS4fD0/sqi--
 
