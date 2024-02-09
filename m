@@ -1,139 +1,274 @@
-Return-Path: <linux-kernel+bounces-59707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D51784FABD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:12:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 021F584FAC2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:13:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F69F1C21812
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:12:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58C611F29103
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A43E97EEEF;
-	Fri,  9 Feb 2024 17:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2AAC7BB18;
+	Fri,  9 Feb 2024 17:12:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b="z0og/ach"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="ciyt+FEz"
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2055.outbound.protection.outlook.com [40.107.114.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD957BAE4
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 17:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707498713; cv=none; b=SNFYzfc1JETHbHmSqyQY30A0D9vQlumK3Fr7DhUqSxaBbgE6qR8npjJq7h+gI1wXplcLJ3lbqciBkIu2wiKjJiAb/cbi0iZMotHyCL0JBGrGLIWmyKVsWMEb2ksROjAW0scvmKBBkHfuC8W5WAXW948UEooI6jrxs++i1LAvGGw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707498713; c=relaxed/simple;
-	bh=pU444VR2MwBF7EKORvFSL5kRdlp16m+GcFlxgCwXC3o=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q2x9Plm3ys9ySEVoGcj0rs1kRoKfqhLEjAQ/+YWJgNQRqU961Kn5WXdK2jwiFoA+HOLyu6b6QUBF+fLbEdkIMwLGn2bcVEUJhxMEJp1AJg2WJdN6IpS4lor6zXKTN3d6PAEYdglxS+A2y1mTuOGQ4TfrQB/gReYQxsJ0KNH3fWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr; spf=pass smtp.mailfrom=smile.fr; dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b=z0og/ach; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smile.fr
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4101565d20bso10775805e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 09:11:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1707498710; x=1708103510; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+dMezPy7Z8IlkSblQ1TNf+lGFLcC7KJPcuNV88kKu60=;
-        b=z0og/achpH6L6DdWgxLTQV9yUh7BAb8TrkgNloNtOogjBReubWe5lGvQnj/3aUxNSk
-         iQdj0oWvKIYasUXBKezOUn2eE1FgF/0UsRbL5sQk4fxPjOXmnGblnWiiC6suDRcj0pq2
-         itMlvjXDfQr15abeWT1anza/QtRxQsjYCcEt9UYNma9BOIVIP+aTygvEev6lxvTkFXOo
-         EhqTZOwWVmDoMF5yJW1AAnUcXBIFZYVnHdq7uMiAAGCXhYMqpGO79lclcIGNuSNLZjmi
-         x5LC4KM7CoYB0joVKmA4YpOoOnc4oHFxdm/quu8BK/qepfs4rD75J95ayWkGK8sUf4fF
-         ZGEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707498710; x=1708103510;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+dMezPy7Z8IlkSblQ1TNf+lGFLcC7KJPcuNV88kKu60=;
-        b=mjZ2N4S/GJa1/gfJ48VQA+UzE3UM07oyGB5AJAP8K44G1eiM8cw1VtCfiLqWa5xFOR
-         d7Es6dkffRt8Hn7GwsjAktjVBmo3KaFLyCIYanFYr2Rj3eM9buOr6JsHzFZkgLzKnNCu
-         2USs6Xdo7RfnyJ68Bs33sFZiwZpc/x5l4LOxmfFrmOTrF0jRbwTbhQrS538thu6Fne9o
-         P/b36QbAjREOdcMoB4H48Qe8ad+xUL3xRajhKjMxfHjE5p4TGQeP1Ib4IozWRwzlXjD3
-         VSCd9iPFkA5uWqN7rRpBMcc4EbtGx85PgA71RRI0U+CTeJtf8bcFCpq8AfvWaDWxZ6rk
-         mYWQ==
-X-Gm-Message-State: AOJu0YzgL+7mtXmET9Chl1ZDSuflmU0wpE/arFKJ504DtQskcRmTK07a
-	48p4Byav/VZXbhiWn9mSJx+YDFY3WeGtWgj9P5+o/77GLtFU/ugwg0LiaY56gEas625OyeqQW4q
-	P
-X-Google-Smtp-Source: AGHT+IEynWPshXsRwRlkf4uRadX5FfqUMljHK7RezRibLJLz3N8KjLbFaJz1AGuMHemYdr4hQyVyAw==
-X-Received: by 2002:a05:600c:4511:b0:40f:d280:612f with SMTP id t17-20020a05600c451100b0040fd280612fmr1641979wmo.30.1707498710188;
-        Fri, 09 Feb 2024 09:11:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX3JjG5yMWZfol2W5d7LuIwSoIC008nDdNGToBntF1qg8FMA/ghJ1fUdfVD8KRYhUo5xZ7NMMGYI4hRsO+beylB2CHemQVYHglpb19g2bLNmUdInSZyKKV1OSluU7KqVcduv4zP9fjALlLCXRsxam9Gd81CP9Yd5Ht4rIduDmvzXWyhvSh6QJ8TevAU0Lsqq88X/ZFoWQtaS2/Ry96/PMznCmHcowoGLNxNoZWtovrP1WulYcjKi8nUDeHHMUdDR7vs7leA8fNZWEqrQcAVaLcsIxVgahkks2tvVqsTvVjpMH9phZobCRURxSliYfrnAYEdMX2wRyZ9voMpq5L+
-Received: from P-NTS-Evian.home (2a01cb05945b7e009bdc688723a24f31.ipv6.abo.wanadoo.fr. [2a01:cb05:945b:7e00:9bdc:6887:23a2:4f31])
-        by smtp.gmail.com with ESMTPSA id a20-20020a05600c225400b004104ecb39d1sm1154711wmm.32.2024.02.09.09.11.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Feb 2024 09:11:49 -0800 (PST)
-From: Romain Naour <romain.naour@smile.fr>
-To: linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	conor+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	robh+dt@kernel.org,
-	kristo@kernel.org,
-	vigneshr@ti.com,
-	nm@ti.com
-Cc: Romain Naour <romain.naour@smile.fr>,
-	Neha Malcom Francis <n-francis@ti.com>
-Subject: [PATCH v2 2/2] arm64: dts: ti: k3-j721e-sk: fix PMIC interrupt number
-Date: Fri,  9 Feb 2024 18:11:46 +0100
-Message-ID: <20240209171146.307465-2-romain.naour@smile.fr>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240209171146.307465-1-romain.naour@smile.fr>
-References: <20240209171146.307465-1-romain.naour@smile.fr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A503174E33;
+	Fri,  9 Feb 2024 17:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.114.55
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707498724; cv=fail; b=q2Kw7I4HEYx7nGEPSrgwyksUUo1qV+wG/plLU2L0+GqA+Yhk4k+Lxlql3w3bvMEFGaK6Van06JzqvAyhI8F4g/t43cirom8TvZ4wdvpDa7ALjQroMvaAX5Y1HOaJ2Chf2o0XM61A4SOwx+S2+N32C3gttOysvByANA16BVsnh2k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707498724; c=relaxed/simple;
+	bh=tE0Y1unHfKa4OrOVlvFrTKh+ornweyeHgGmZQ8xH+is=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=OAYZNsBeSBAb2a/XUI+DsPfL+yaX8v/VVyhM38B823Hm/MJFkRrCAJZJA0GbHR4g8RTtMDu78Ld9BU4dbSCXd/I+NFdqHJOg2b3XEFpkOMJvKdvO1CqbzZXwuokW1YpMvQoxOfS0/x62eMYKMDCGstVITqNh5SjD0vtP+F+EWhA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=ciyt+FEz; arc=fail smtp.client-ip=40.107.114.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e7HtSmHuSJZQHTyEBR0RaE7gHNmHKbiHsRvas3X2Ofn9FciSRiOm/HDqiNQGtHsR9wIIPoNDl+z4lFDW34J7G2Po7VjBHxMwjKBBQ0vnuS6UilaCXQMJWX6yVcF019RFANJzRGIdZ8iQOJUHc2ZkGKbu9QnEjDasuvE3utgefSrCXjVk5oaWW0shHO2U+AhZi6HJrxrhIBxbMe2ukXRIJyRr9kyJ6FA0k1xmVTKn5TyRaYS1WlqM0zXujNQRAoi/R+/ptaf9Ebb+WPq0bmtKC0/W/G6NzLI79c6+9sMgqDhTuHs3hG1xumi9Ty5aqQ9dgtWErvNCfx3UUDcfybCMtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=h+DcnDl2ITo2L4lRFeRI+IZUfCrsq0iWg9E7xLcZYCw=;
+ b=dkg8ISm0qkZnofHI5kRrYO3k+m/QerQ5jP5jdhIxQUP0shcWjt2yYSIs0QZTvvvB72jK+GL2SZCvXkOAhfjpZ4cnSB6ZQr/rIl1NPGTI1VQKSGzdp5HHxmJQtgRxaKoqmZcusIAgfTtlyHyZJh/f61k2gCWvyFZ3sktfN0pYZXMUTgtvyllQQOctVX5+BLegnkKbt2xlzsr07LMQG3SoWtys76FlEIHXr8qS6z9qVkpw1xImWe88y7XB2z5gWMti2EUtoes9JvVy9SviFR0sRF8EgncfskmETbM/ZE4ADcwIJEocdL3xPt9pX/TlaY4iFuz5Jno7LAGpcEljPsT6FA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h+DcnDl2ITo2L4lRFeRI+IZUfCrsq0iWg9E7xLcZYCw=;
+ b=ciyt+FEzWtOnoDzY277uGDlJe+sEZM+usXCBBASTAiIGtZA74OwKo/2Nw+mdEvz4bnth2C9gP35g4Yo5KDuvgrhn83684NQXnolFfVqMV6uT98vhCAQaK8kdkOHX8e8WoxzVi9GTRM2r5xRd7jy+wciATmBqiPMdvGcIxxmbEB4=
+Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
+ (2603:1096:400:3c0::10) by TY3PR01MB10598.jpnprd01.prod.outlook.com
+ (2603:1096:400:313::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.14; Fri, 9 Feb
+ 2024 17:11:55 +0000
+Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
+ ([fe80::6719:535a:7217:9f0]) by TYCPR01MB11269.jpnprd01.prod.outlook.com
+ ([fe80::6719:535a:7217:9f0%3]) with mapi id 15.20.7270.028; Fri, 9 Feb 2024
+ 17:11:55 +0000
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Claudiu.Beznea <claudiu.beznea@tuxon.dev>, "s.shtylyov@omp.ru"
+	<s.shtylyov@omp.ru>, "davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
+	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Claudiu.Beznea
+	<claudiu.beznea@tuxon.dev>, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: RE: [PATCH net-next v2 4/5] net: ravb: Do not apply RX checksum
+ settings to hardware if the interface is down
+Thread-Topic: [PATCH net-next v2 4/5] net: ravb: Do not apply RX checksum
+ settings to hardware if the interface is down
+Thread-Index: AQHaW3pX9CB/Daj1+EissME+82JRZbECPfNg
+Date: Fri, 9 Feb 2024 17:11:54 +0000
+Message-ID:
+ <TYCPR01MB1126949DF3F7C498956AAB629864B2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+References: <20240209170459.4143861-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240209170459.4143861-5-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240209170459.4143861-5-claudiu.beznea.uj@bp.renesas.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYCPR01MB11269:EE_|TY3PR01MB10598:EE_
+x-ms-office365-filtering-correlation-id: a991c6b7-6440-4c49-6e47-08dc29923752
+x-ld-processed: 53d82571-da19-47e4-9cb4-625a166a4a2a,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ sodAIYjTKVEQTMMcRiGGencxSD8ybcNv3dspFa18MRbSL9E6dAzhhXepAi7tJjrGta65roF6YOIY11kkDvZdn2KfneWhhyZdyCaP0EWAo2O52HEAqgvkazDjxgx3X9QLwqxO8XLw5rgbnyYnS14O9DIvMzkfODkN24YxlGufyU5HG+9g6c8EMZhrcfY66YPw1uLulOC3TLtjsdJO16f30hvkbaT5Wg8MkdW6ipsKPaZdgO7iMWmS2f7HoMWKyBeIpwW6bZfTwOc1ORyVY78UgfnfQZt4uZ7i1CfNIKEAORzS45kOF+PNRU+Tlupk6uf2OeNwt0NmiRPKJOXW4SpfhR32S/1ZUvJIKZjqtMyLknoULXBwCaEp151ZX7g39Sm+Wf8u6cTPL+WfiUW/Nn3E3V+B9Y7fGjIHf7BWsQuyAlRMG+dAarIVCCkYDs9UrCwLEaEWnTXwOZQJCM0lr6xvkyNhrXXpEZSGvAR54LRbwi2Nn84EZjZ53no1N2FagMr2W0SmLX9+Mp8dv5viPsoLpKyObwXoS+BTqVlP+Wax1Yeet+O8SWXFRXJuZs/xY+/716rZSKXlxhqNxrh8YDLAkur++wb7Qpm0/Wag99vgNzaqP+CpRCwcDQ45k8RCzskU
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB11269.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(39860400002)(366004)(136003)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(86362001)(316002)(478600001)(64756008)(66446008)(107886003)(66946007)(7696005)(66556008)(76116006)(83380400001)(8936002)(8676002)(110136005)(53546011)(71200400001)(9686003)(26005)(66476007)(6506007)(33656002)(38070700009)(38100700002)(54906003)(41300700001)(2906002)(122000001)(5660300002)(55016003)(52536014)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?qvYWf12eBV8VZ20bmvWb41PjRfZfNNIhTfV69ycJ26lzlSGftq0G8xukx41E?=
+ =?us-ascii?Q?UXIDNWOolCTQF2dmfgLKr7Qu65VxjVRba1EMs7OrUjKFQ5MoztbZR2tGwctK?=
+ =?us-ascii?Q?OnwQDEsFgCaAxSX24YOmCxPfvza3SFfJEa7jDzzVwuwbP/MS0NoH6KBQW7VB?=
+ =?us-ascii?Q?EE7YFFZ6uFgWfDncksHjAk1RtWHnqWmMnzDrb5L2YARG9Nlnmxu5IJQJ+ml6?=
+ =?us-ascii?Q?DyQ4qa6edO0A4PBE9Nq0xeMVabVd4/sW0QETM9Ht4BiaQbHOEnRgRa1BKKC4?=
+ =?us-ascii?Q?Xghz49NHjAe0ZFtZsP6v6hf2vKmJmfVkJTsTP/7GHXlZRfjIKjOmYLdjmrWX?=
+ =?us-ascii?Q?gOGu8SIkwK/ZqlE1+A7XVqkRbrf9TYNN2KxiT7wNYP6lFE4B5gwSCFeXsU0k?=
+ =?us-ascii?Q?nYzJ+e2355i/4SzR2PBRvfATTKLJQupITb09/2H+jfKy9oo/IhwvwtifiJOj?=
+ =?us-ascii?Q?9A1o9PmWAlNHSZRr//U1OReekmmxkHWiTjFG2KRQq8z06764Dh9wMGJE7jeD?=
+ =?us-ascii?Q?VkkbEeWtFz6LzrL5lJQMrf+8OQr66vzPGnFPH6kdF+v5es3nihhep/5W+0sc?=
+ =?us-ascii?Q?4fVUo4c7kCgM8NJmcXu0H1XGZhKjIOHDVqoMKnZm1HSPhEVoYb7fR4ljstqa?=
+ =?us-ascii?Q?uG/lEUZksPbvMd2R9w2y8Y/d7hAT4wch/Hguy8m2iPCHTHYkqoXbYTTQ165I?=
+ =?us-ascii?Q?bFp3TzIi94bWSZx861sdH7mz593ZhBRTS9Lw5OVgoR0ePkDUwkxOyJPlnZbB?=
+ =?us-ascii?Q?/D9MiHQRdTNYLSDxHOAoMOwlguML0+1t+pvD2Lj0VoMZWrlW0jYah71WmmiY?=
+ =?us-ascii?Q?3URu/Pb+PS63dfk2OiZDmErqwhczdSRUHN5fmxUzqZzej4mCmcFqUK2MQEXt?=
+ =?us-ascii?Q?iD9zrDC8N8koConUmpRhYtkI13DipMdUTKqcEx/cv3Rsdn+B5Hb75cAxnp4x?=
+ =?us-ascii?Q?fw4moJOQRpbg2jtAfpa/TAE+raNt25reyiYW6DM4tZeZAqo+lnpdtsjMUX/f?=
+ =?us-ascii?Q?4Rd+snYSoTK+W++JVXXe6lqVA4bAy3UhLNASuA3yeJmvTl7Cz6vVFWSBqCWN?=
+ =?us-ascii?Q?5CCKkZMcJwLuj7kEp7BM//GKZG+wCT4ttUAj63Fu1m6I4FSwOdAokZa3+KoH?=
+ =?us-ascii?Q?bTZHAZezs8Tt7wNVa4Km7mQA6vGu95cQyqOnCfWss1KnNm5Ov4Apwj3W6tBB?=
+ =?us-ascii?Q?R6f30oYcaxCxNoNsC8lfxYjAeD0gQqSrDA8U6gJ9lQqdeB7XZrPZf8jaYSDN?=
+ =?us-ascii?Q?KieJlqI8JdsB+qiC/gWBsmw5iRoBwpmm0w4cDfFhYeW67Pm9m6fBNAbRF0rN?=
+ =?us-ascii?Q?6vrdWdIJMf+d//j/RsdkFZ8ewJs3a4tYjJzJXkfWE2zRzDaz6WhM8IbognjO?=
+ =?us-ascii?Q?9SVsFBuBvfKtrd2M0vZdWivCTGoCwbX7VRug1pwm/6TfH1DTb7kUgZr9c+Ol?=
+ =?us-ascii?Q?pUoBTRjn1QAkDrGd5SIWOhQTEDv++ylFofvmS3GyPEdyiYusi7X3Py2My3z5?=
+ =?us-ascii?Q?A4dOAvR4LCoExqzMJySPLC9nBAYAZ47wUd/nPvoppGaDb7eAfHGDAk9HHHBd?=
+ =?us-ascii?Q?wN7ucdDI5grq4/r6vo8EK8Dd567T5YxVNdN478PvD98PsQw61AWO+j0scPAS?=
+ =?us-ascii?Q?GA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB11269.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a991c6b7-6440-4c49-6e47-08dc29923752
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2024 17:11:54.9729
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HjupWeFC6bYVH/1JHkpQXaa42KEem1Bril2lMrOJb0qHJC6Nmw03AdRFYUCCCTmeo24GcrlhKxmMwrf7e2P1fzNLEcOzgp604k4h/u+0WAw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB10598
 
-The tps659413 and tps659411 nodes set WKUP_GPIO0_7 (G28) pin as input
-to be used as PMIC interrupt but uses 9 (WKUP_GPIO0_9) as
-"interrupts" property.
+Hi Claudiu Beznea,
 
-Replace 9 by 7 for both tps659413 and tps659411 after checking in the
-board schematic [1].
+> -----Original Message-----
+> From: Claudiu <claudiu.beznea@tuxon.dev>
+> Sent: Friday, February 9, 2024 5:05 PM
+> Subject: [PATCH net-next v2 4/5] net: ravb: Do not apply RX checksum
+> settings to hardware if the interface is down
+>=20
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>=20
+> Do not apply the RX checksum settings to hardware if the interface is
+> down.
+> In case runtime PM is enabled, and while the interface is down, the IP
+> will be in reset mode (as for some platforms disabling the clocks will
+> switch the IP to reset mode, which will lead to losing register contents)
+> and applying settings in reset mode is not an option. Instead, cache the
+> RX checksum settings and apply them in ravb_open() through
+> ravb_emac_init().
+> This has been solved by introducing pm_runtime_active() check. The device
+> runtime PM usage counter has been incremented to avoid disabling the
+> device clocks while the check is in progress (if any).
+>=20
+> Commit prepares for the addition of runtime PM.
+>=20
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+>=20
+> Changes in v2:
+> - fixed typo in patch description
+> - adjusted ravb_set_features_gbeth(); didn't collect the Sergey's Rb
+>   tag due to this
+>=20
+> Changes since [2]:
+> - use pm_runtime_get_noresume() and pm_runtime_active() and updated the
+>   commit message to describe that
+> - fixed typos
+> - s/CSUM/checksum in patch title and description
+>=20
+> Changes in v3 of [2]:
+> - this was patch 20/21 in v2
+> - fixed typos in patch description
+> - removed code from ravb_open()
+> - use ndev->flags & IFF_UP checks instead of netif_running()
+>=20
+> Changes in v2 of [2]:
+> - none; this patch is new
+>=20
+> [2]
+>=20
+>  drivers/net/ethernet/renesas/ravb_main.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c
+> b/drivers/net/ethernet/renesas/ravb_main.c
+> index 7a7f743a1fef..f4be08f0198d 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -2478,8 +2478,14 @@ static int ravb_change_mtu(struct net_device *ndev=
+,
+> int new_mtu)  static void ravb_set_rx_csum(struct net_device *ndev, bool
+> enable)  {
+>  	struct ravb_private *priv =3D netdev_priv(ndev);
+> +	struct device *dev =3D &priv->pdev->dev;
+>  	unsigned long flags;
+>=20
+> +	pm_runtime_get_noresume(dev);
+> +
+> +	if (!pm_runtime_active(dev))
+> +		goto out_rpm_put;
 
-[1] https://www.ti.com/tool/SK-TDA4VM
 
-Fixes: b808cef0be46 ("arm64: dts: ti: k3-j721e-sk: Add TPS6594 family PMICs")
-Cc: Neha Malcom Francis <n-francis@ti.com>
-Signed-off-by: Romain Naour <romain.naour@smile.fr>
----
-v2: update tps659411 interrupts parameter too.
----
- arch/arm64/boot/dts/ti/k3-j721e-sk.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks for the patch,
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-index 188dfe291a32..658764f7d544 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-@@ -574,7 +574,7 @@ tps659413: pmic@48 {
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pmic_irq_pins_default>;
- 		interrupt-parent = <&wkup_gpio0>;
--		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
-+		interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
- 		gpio-controller;
- 		#gpio-cells = <2>;
- 		ti,primary-pmic;
-@@ -651,7 +651,7 @@ tps659411: pmic@4c {
- 		reg = <0x4c>;
- 		system-power-controller;
- 		interrupt-parent = <&wkup_gpio0>;
--		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
-+		interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
- 		gpio-controller;
- 		#gpio-cells = <2>;
- 		buck1234-supply = <&vsys_3v3>;
--- 
-2.43.0
+Why can't this be handled in ravb_set_features() to avoid code
+duplication??
+
+Cheers,
+Biju
+
+> +
+>  	spin_lock_irqsave(&priv->lock, flags);
+>=20
+>  	/* Disable TX and RX */
+> @@ -2492,6 +2498,9 @@ static void ravb_set_rx_csum(struct net_device
+> *ndev, bool enable)
+>  	ravb_rcv_snd_enable(ndev);
+>=20
+>  	spin_unlock_irqrestore(&priv->lock, flags);
+> +
+> +out_rpm_put:
+> +	pm_runtime_put_noidle(dev);
+>  }
+>=20
+>  static int ravb_endisable_csum_gbeth(struct net_device *ndev, enum
+> ravb_reg reg, @@ -2515,10 +2524,16 @@ static int
+> ravb_set_features_gbeth(struct net_device *ndev,  {
+>  	netdev_features_t changed =3D ndev->features ^ features;
+>  	struct ravb_private *priv =3D netdev_priv(ndev);
+> +	struct device *dev =3D &priv->pdev->dev;
+>  	unsigned long flags;
+>  	int ret =3D 0;
+>  	u32 val;
+>=20
+> +	pm_runtime_get_noresume(dev);
+> +
+> +	if (!pm_runtime_active(dev))
+> +		goto out_rpm_put;
+> +
+>  	spin_lock_irqsave(&priv->lock, flags);
+>  	if (changed & NETIF_F_RXCSUM) {
+>  		if (features & NETIF_F_RXCSUM)
+> @@ -2542,9 +2557,12 @@ static int ravb_set_features_gbeth(struct
+> net_device *ndev,
+>  			goto done;
+>  	}
+>=20
+> -	ndev->features =3D features;
+>  done:
+>  	spin_unlock_irqrestore(&priv->lock, flags);
+> +out_rpm_put:
+> +	pm_runtime_put_noidle(dev);
+> +	if (!ret)
+> +		ndev->features =3D features;
+>=20
+>  	return ret;
+>  }
+> --
+> 2.39.2
+>=20
 
 
