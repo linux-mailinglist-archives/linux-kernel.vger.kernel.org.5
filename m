@@ -1,119 +1,130 @@
-Return-Path: <linux-kernel+bounces-59847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A5D084FC76
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:58:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8700584FC78
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 19:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5838289E5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:58:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9C0E1C25990
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 18:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F4C83CAA;
-	Fri,  9 Feb 2024 18:58:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E9A80C18;
+	Fri,  9 Feb 2024 18:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Uf/pj6DS"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1110883CA2
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 18:58:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="LMsKF6Xg"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFE66BB22
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 18:58:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707505102; cv=none; b=Ha3PAP2qmoJUspmp0EBEJPGyIbyriReHe2nMJ2O7b/im8ZQktBEMCOi0RRw68MBzLY9kWFpNuqXeuUYUI9bTViJU2/2M1rWEtVNJhbP3t+CSktO6oL9bgQ7iHo8+uQeiKL/jqh8l+SsKhfQoggtiofDF3847fYubY1n16GTwNmM=
+	t=1707505120; cv=none; b=Tr5bA9WsMA+BdmUfnnOJsxIjOxxlpxHAkXwmvYCC35jYjxDnN10Kx0r1NeLpqLXB1exhx4PFS+amNfq1V7eNJXbHvxV0F5eXsPtlhlbHw7DyFuCWqi7EQ8r7tT3GjjbDDjohSTL5mMxdTmt4aam+40BlrkG2nTa9O0h1E/TpD5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707505102; c=relaxed/simple;
-	bh=Lk3JaFxs2CfEJ8pA6iMQU8xmMZxQ9mIMQ/A1Nh5p8qI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=brlMzFUU/jDh//6PlgAJ+ma+NxUBhmy1AY7s7e9X4wuDN6fIE3kZ4Qz3riwWyWsZq8PkQ3zF/wzwC2iwMXtPbVp0R90hTef8/90q3blfWmai7u3il9JZ5hUx2i3737KcQF4iHGN5KawquZJ2srgDTW+th0Nex8m+nFv2DtJiOe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Uf/pj6DS; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc755afdecfso825395276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 10:58:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707505100; x=1708109900; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=awo/BCeLbFkRz9Dlg6VrbH43FXLlqcjUWJcmSLZJJiM=;
-        b=Uf/pj6DSatD2Id+EVE6mRscNrKXJagoikiBImmxxLtD4cWI8i7vooq9yzYIbSqFwc0
-         reLmFsS/cDczuSTZ21mvInTDlq4RbrWvCjgJyqyJvB1SacCc0Kv8iKzpF6YGRmtKMz3h
-         IuX+HQXrSOqkByHbJUenGjhYR/evVd2qNVpJv5Dbgt7u3/f6URUJDsgeUH7zWdZV2os8
-         qK922fWZ2z+sOHNabf5kta12SxCdRLXqF90POtuJ7e8SRVW4IlhPNjsbbw9KdYCz00mt
-         GPV28j9Ure3FQfW2QmZLs615krQ3TKynsMAMHbA1OlpD6ixEI7g7yXPM9+OaVsNM8qzq
-         DKKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707505100; x=1708109900;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=awo/BCeLbFkRz9Dlg6VrbH43FXLlqcjUWJcmSLZJJiM=;
-        b=AUcOiEqRJYNaKQ1+0cvccJEFq0oibu1HT4w6WfDqETNAQ8q4FKvwdXD8w/aRKaZ06a
-         WT4iKW0MCOwJIdjaKchFEczCsF1PavbnOIn1QzotWvZcO74WK0KUfm5j7m1sfhy9G7Y8
-         nb/njO/vpLsmR4eE0xhpy8c11oyryaQfhkh2JUVYbhnW90NWxnvqvSgTTgw4xGkGhHBT
-         e73cCVUQ4oV7fVp5pYNvY7xUZmvcZUT1FGwZMsHe/ayfZa52OkfuZfn0WdpGpFaCSsOT
-         lVYPWJvN8dZSAs4oTd6RpEOp219HsGVsBSgWEnoN1MUS5GL4enImyxkMom5+ZNK8nGEt
-         pMwg==
-X-Gm-Message-State: AOJu0YzJZTMNfoCGV1AwyZEGvsb8Hss7t9cFMUP/lfcHRHswwpwIGWdY
-	S3M3A0afaNy6P/rXhfFoGJyhhdMktTSbh1cJEoZobeFCIWJTsfTPWnujOW7HEgr+NfbMfe+HnP4
-	5BEMpeOvX0LODdayJCNTkIvgS52n054YXOtMINA==
-X-Google-Smtp-Source: AGHT+IEb9542YJRhGlr5tTb655Bco/sIqzumPYkKYYv3shLKDvBLR/Rw+lw7ROAYYvzXuW7vbjo071txTmkH+A3fY7k=
-X-Received: by 2002:a25:6645:0:b0:dc7:492b:aad with SMTP id
- z5-20020a256645000000b00dc7492b0aadmr49982ybm.2.1707505099966; Fri, 09 Feb
- 2024 10:58:19 -0800 (PST)
+	s=arc-20240116; t=1707505120; c=relaxed/simple;
+	bh=5uTKkg6MIbxxiUTeAtoiPotgK0/CeWUJqQ48BeNPQrQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N/iA/p0PINxs2MnUpMezQyMjLYoMyUYgECWRO1Xc8vkFo7MJdwtd/ZAgUzsETCvmur/MnZXMJMRQi2AscDmdPVeZeN99o1nQHPDjg4q1yWI28q3t+EsjZHCtdhG0hjf30pFK7HEOAOyaJGU00p5u0d23VYyjvzBL5FfiOzUe2Pg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=LMsKF6Xg; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.64.200.159] (unknown [20.29.225.195])
+	by linux.microsoft.com (Postfix) with ESMTPSA id CFD3120B2000;
+	Fri,  9 Feb 2024 10:58:37 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CFD3120B2000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1707505118;
+	bh=CrUcm3Z/FRbdc3NNdp4+dNbyUDn4m5ZmrpvJXh/X+7I=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=LMsKF6Xg4IguZ6h/+LUCdvTxe+8L5lh3t0xuDRZLKvtC0AP7N1wxM4ptXb4DI/XuP
+	 aiV6j60Ssdr3XgW8medIOPGkp3cyUAS394lMmfjlCfXQ5UOhcVOEfcQkClfP2gTUuJ
+	 1cSFPJJ9aaUrvpZ7zJYWu72PyDBf/fwyc8gG8bMQ=
+Message-ID: <542e7f15-3898-4396-a8ff-7972d3308132@linux.microsoft.com>
+Date: Fri, 9 Feb 2024 10:58:36 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208-fd-migrate-mdp5-v4-0-945d08ef3fa8@linaro.org>
- <20240208-fd-migrate-mdp5-v4-2-945d08ef3fa8@linaro.org> <9a4bf513-4390-3e36-f3b7-f9fef1c296fd@quicinc.com>
-In-Reply-To: <9a4bf513-4390-3e36-f3b7-f9fef1c296fd@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 9 Feb 2024 20:58:08 +0200
-Message-ID: <CAA8EJpoVivjg2KKVgf725C2cwMCOk=JK6hz65ewTheBAb8t_vQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/4] drm/msm/dpu: support binding to the mdp5 devices
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>, 
-	Marijn Suijten <marijn.suijten@somainline.org>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] KVM: arm64: Override Microsoft Azure Cobalt 100 MIDR
+ value with ARM Neoverse N2
+Content-Language: en-US
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>,
+ James Morse <james.morse@arm.com>, Suzuki K Poulose
+ <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>,
+ Andre Przywara <andre.przywara@arm.com>, Rob Herring <robh@kernel.org>,
+ Fuad Tabba <tabba@google.com>, Joey Gouly <joey.gouly@arm.com>,
+ Kristina Martsenko <kristina.martsenko@arm.com>,
+ "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)"
+ <linux-arm-kernel@lists.infradead.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)"
+ <kvmarm@lists.linux.dev>
+References: <20240206195819.1146693-1-eahariha@linux.microsoft.com>
+ <ZcNSI089xqia6lho@FVFF77S0Q05N.cambridge.arm.com>
+ <ed6c25dc-d5c7-4f15-8fdc-f2adf209e638@linux.microsoft.com>
+ <ZcYNn5LDmH1g2dDB@FVFF77S0Q05N.cambridge.arm.com>
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+In-Reply-To: <ZcYNn5LDmH1g2dDB@FVFF77S0Q05N.cambridge.arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, 9 Feb 2024 at 20:44, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
->
->
-> On 2/8/2024 7:01 AM, Dmitry Baryshkov wrote:
-> > Existing MDP5 devices have slightly different bindings. The main
-> > register region is called `mdp_phys' instead of `mdp'. Also vbif
-> > register regions are a part of the parent, MDSS device. Add support for
-> > handling this binding differences.
-> >
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > ---
-> >   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c | 98 ++++++++++++++++++++++++++-------
-> >   drivers/gpu/drm/msm/msm_drv.h           |  3 +
-> >   drivers/gpu/drm/msm/msm_io_utils.c      | 13 +++++
-> >   3 files changed, 93 insertions(+), 21 deletions(-)
-> >
->
-> I thought we had agreed on a quite version of msm_ioremap_mdss for
-> vbif_nrt_phys?
->
-> Anyway, its not something to block this change. Hence,
+On 2/9/2024 3:33 AM, Mark Rutland wrote:
+> On Thu, Feb 08, 2024 at 11:16:10AM -0800, Easwar Hariharan wrote:
+>> On 2/7/2024 1:49 AM, Mark Rutland wrote:
+>>> On Tue, Feb 06, 2024 at 07:58:16PM +0000, Easwar Hariharan wrote:
+>>> Further, if Azure Cobalt 100 is based on ARM Neoverse N2, you presumably suffer
+>>> from the same errata; can you comment on that at all? e.g. are there any
+>>> changes in this part that *might* lead to differences in errata and/or
+>>> workarounds? How do the MIDR_EL1.{Variant,Revision} values compare to that of
+>>> Neoverse N2?
+>>
+>> Yes, Azure Cobalt 100 suffers from the same errata as Neoverse N2. We had changes
+>> in the implementation, but according to our hardware folks, the Neoverse N2 errata
+>> we are affected by so far aren't affected by the changes made for Azure Cobalt 100.
+> 
+> Ok, so of the currently-known-and-mitigated errata, you'll be affected by:
+> 
+> 	ARM64_ERRATUM_2139208
+> 	ARM64_ERRATUM_2067961
+> 	ARM64_ERRATUM_2253138
+> 
+> ... and we'll need to extend the midr_range lists for those errata to cover
+> Azure Cobalt 100.
+> 
+>>From your patch, it looks like the Azure Cobalt 100 MIDR value (0x6D0FD490) is
+> the same as the Arm Neoverse-N2 r0p0 MIDR value (0x410FD490), except the
+> 'Implementer' field is 0x6D ('m' in ASCII) rather than 0x41 ('A' in ASCII).
+> 
+> Are you happy to send a patch extending arch/arm64/include/asm/cputype.h with
+> the relevant ARM_CPU_IMP_* and CPU_PART_* definitions, and use those to extend
+> the midr_range lists for those errata?
 
-Excuse me, I'll fix it when applying, if I don't forget.
+Yes.
 
->
-> Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> 
+> As above, if you could make any comment on how the MIDR_EL1.{Variant,Revision}
+> fields map to that of Arm Neoverse-N2, it would be very helpful. It's not clear
+> to me whether those fields correspond directly (and so this part is based on
+> r0p0), or whether you have a different scheme for revision numbers. That'll
+> matter for correctly matching any future errata and/or future revisions of
+> Azure Cobalt 100.
+> 
+
+Thanks for the clarifying detail on your question. Azure Cobalt 100 is indeed based
+on r0p0 of the Neoverse N-2 and we have not used a different scheme than Neoverse N2
+for the Variant and Revision fields.
 
 
+> Mark.
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
--- 
-With best wishes
-Dmitry
 
