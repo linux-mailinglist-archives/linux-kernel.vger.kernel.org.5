@@ -1,190 +1,269 @@
-Return-Path: <linux-kernel+bounces-59471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66ADF84F793
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:36:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0040684F7AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:38:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D062E1F2342B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:36:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EE472819B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:38:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFEC582873;
-	Fri,  9 Feb 2024 14:32:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52ACE128372;
+	Fri,  9 Feb 2024 14:32:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vaisala.com header.i=@vaisala.com header.b="XTwFX7yD"
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2126.outbound.protection.outlook.com [40.107.247.126])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dPwpkAYp";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IoBEP9Rv";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dPwpkAYp";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IoBEP9Rv"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B11BF7E59F;
-	Fri,  9 Feb 2024 14:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.247.126
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707489125; cv=fail; b=ImFIHSvy5F/EXm1XiXBy6zMcunL4BBPJdd3u9KTSvNnvl4q7SS01MEiTkB+68/IQpsvlUWkrs1Zh/ac1WW8U0TNjUiC76hP9mYfiftelnKBHe9b35wfHTQRhtJcWuvMZWzKpLLrXSejSjO63o30FKP5/2bi8uz1v/oVGfnyPDXI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707489125; c=relaxed/simple;
-	bh=2RfuI0gT+WrZwWllS0se9f6Ko0XdfY2zkuChAV3iLmE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=jTVuZ03psCOCtS6/gnvyAOkQHXUS7xjZ/MalM2mlXdlV0+po70lnZyFe0AKjr0elk2mVwPWM9xqGM0TIvVMAoGn1UhPnfvOY2QdmYEvimj/fRrLBmkNNZxJhmptlYlkpuryO4PExDv50clsnAg0Lk9ntjkaSMyQ3mF3SNTgYAYA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vaisala.com; spf=pass smtp.mailfrom=vaisala.com; dkim=pass (2048-bit key) header.d=vaisala.com header.i=@vaisala.com header.b=XTwFX7yD; arc=fail smtp.client-ip=40.107.247.126
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vaisala.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vaisala.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UQogNXXcP3V3KGFI9ecfc4MIauOOC4EBJN4gFQ69Bzu8q7/rz30BSdKhaP5kWfUkboGlcmm/8uxIUrdeGN5FKWKHGHNNJiJ5Y/I1EHS0P2SUMzDvCPX4C2lGzl9ric+lCG5b1HesBfKgT0KBNlKZ5iIU6E9FF8yh5opa9XSlK+itZdrfS7KU5TUZ7iAgoCyjmsxhEe5747frf16HjPph52ceqI+xIEvnUlCeaMLPAGLDzg+56gRDTZdd4HTrD3fYHG2yHkCp9u4kRbsEyV3wYiY+kOa9iqoacf5yNAbsxBOLRfhelw0uoYytzZQYVIh+koQTSb3HuQyCafOJe7Wb2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VxbIO+xqmybHM2P/ZB+LGOKIq/CII1amV09Ublk62ew=;
- b=NDm21F8cBCcE11BVP2IpfRs8SPUH6nz5MKvHu0ZFo/Nj18dddluvEgCe6V7g3XEdlyaP4TnLL22HdJI8bh4CUHd4uZdX+dDJUWtIhr1NiYAF1bFhMkBbVtp3tU3uxJGx9siQyg9sIwIrzMvO/k9mI6fNCZo/TLZ6yzakjjnLYzmz+VvGcdB88HQziLl/aqEGtxx01su3it5vrVD6zHVTg0FfxKjYDUTc/RtfWA+mxgGCDofjXDjVMzM6dSitXZtE7OoiovcYnD80LjBogk4Om5kcmSI3hrcbrsuNJA2JYnw/0ATdeT8rsYGPUMZ55oRP377ZCaqePb+2JEY9VjaqDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vaisala.com; dmarc=pass action=none header.from=vaisala.com;
- dkim=pass header.d=vaisala.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vaisala.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VxbIO+xqmybHM2P/ZB+LGOKIq/CII1amV09Ublk62ew=;
- b=XTwFX7yD10NlhPYHcataPRh5LglUP2bVlXLIR3yx+Je6WKbrUpxgGT3sHnDMkiyfAAvxjSI3wdoFyv0D2dl2IAgZV3Tj5vgWpQrYsDYbc/T7NEeSWyeXbgM+nC/ZJan4E4ocwEoz/21wSqMkvBgLwPXivEthUa9NH5AVT9VfFKsGflo+zvfbNN4ks/3akfwVwa1YvdRkpukgsDsLfF8arXVf1vlELk0MNHFgQHhvymSeRnOsuFiukB5aGu/P2OH8ffeOIdcy1tgep6QUMh9l8/PxfA3FSqWWpzpMdO91368bxoAesfIo08GSi2ClRAO/i52ebWXdqebWVUFkiWIOdg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vaisala.com;
-Received: from AS4PR06MB8447.eurprd06.prod.outlook.com (2603:10a6:20b:4e2::11)
- by DB9PR06MB7386.eurprd06.prod.outlook.com (2603:10a6:10:252::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.24; Fri, 9 Feb
- 2024 14:31:58 +0000
-Received: from AS4PR06MB8447.eurprd06.prod.outlook.com
- ([fe80::b5ae:8355:acaf:29e0]) by AS4PR06MB8447.eurprd06.prod.outlook.com
- ([fe80::b5ae:8355:acaf:29e0%4]) with mapi id 15.20.7270.025; Fri, 9 Feb 2024
- 14:31:58 +0000
-Message-ID: <465b2b4d-3c6e-4a64-b3be-f146cb237bda@vaisala.com>
-Date: Fri, 9 Feb 2024 16:31:56 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] usb: core: Amend initial authorized_default value
-Content-Language: en-US
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
- vesa.jaaskelainen@vaisala.com, geert@linux-m68k.org
-References: <20240209094651.5379-1-niko.mauno@vaisala.com>
- <2024020903-october-placidly-20cc@gregkh>
- <65582610-72ba-4644-9032-91c09f50a6bf@vaisala.com>
- <2024020911-utilize-etching-595a@gregkh>
-From: Niko Mauno <niko.mauno@vaisala.com>
-In-Reply-To: <2024020911-utilize-etching-595a@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: GV3P280CA0119.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:150:8::20) To AS4PR06MB8447.eurprd06.prod.outlook.com
- (2603:10a6:20b:4e2::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555CC12837A
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:32:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707489157; cv=none; b=X5cF0QftdAIdPlJA8M4A1EGtbfw3FLDnGyOH5b32vpgqLghVrDPK210wL15Wo3YVXDCQoamxBplHtg+YEty+mx0OdSGFZHKl42Cy3DjD3jF+lYhsVhTQOlGnCgx9Z3xP7qTY3vQR0D2c2SdDr8E/VeKLOVGk7kWlSt3+dNScAek=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707489157; c=relaxed/simple;
+	bh=IWAG3iZ8Dh5jMmT/GjEjH4OublYbEsUlHsgaDAc6kqw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Aq98yCBNeNgOtmygyzoWxdB9S1f2IK174lLoDQqgZE6kmtRsYV0lVzldYoFwfzdqdHuU5vcRdUDhMx4cdmVJ4Udh8TE8Xv5AU2y3J7R8wOFgdrxfCgzlSIDvwUZtxY6WhtX28+d0ViOqM71XA6Qw3d7seU/6wl3J9DPIPwhLb70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dPwpkAYp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IoBEP9Rv; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dPwpkAYp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IoBEP9Rv; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 56884220BC;
+	Fri,  9 Feb 2024 14:32:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707489153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NvaR8GHga17EqoSaRiIPdrwK05K74U/GowrqG7dNIBI=;
+	b=dPwpkAYphKOr4kYrjwLDzqi7lhq8dEV2JhcAFDwlgXdwnwvQ48j7cfoplMxNFCWKw2EaGF
+	scDk1jiMNx3qnN9yC7Euf06dZRvd7x5/qEN/dK2icgDH84Hd2LY22O4QsO91peplhYwq7x
+	5yVazHrHUR7L6muAAVT+UTiCVE8voJ8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707489153;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NvaR8GHga17EqoSaRiIPdrwK05K74U/GowrqG7dNIBI=;
+	b=IoBEP9RvwoX4kInT8LpmC5UBEx68qAqNXtmZjNcVuszPUOel6y+/FwtViVNkTN7C20Fm47
+	fMCweZhsaiPw36AQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707489153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NvaR8GHga17EqoSaRiIPdrwK05K74U/GowrqG7dNIBI=;
+	b=dPwpkAYphKOr4kYrjwLDzqi7lhq8dEV2JhcAFDwlgXdwnwvQ48j7cfoplMxNFCWKw2EaGF
+	scDk1jiMNx3qnN9yC7Euf06dZRvd7x5/qEN/dK2icgDH84Hd2LY22O4QsO91peplhYwq7x
+	5yVazHrHUR7L6muAAVT+UTiCVE8voJ8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707489153;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NvaR8GHga17EqoSaRiIPdrwK05K74U/GowrqG7dNIBI=;
+	b=IoBEP9RvwoX4kInT8LpmC5UBEx68qAqNXtmZjNcVuszPUOel6y+/FwtViVNkTN7C20Fm47
+	fMCweZhsaiPw36AQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2C97D1326D;
+	Fri,  9 Feb 2024 14:32:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id PRmNCoE3xmVncwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 09 Feb 2024 14:32:33 +0000
+Message-ID: <c42a6c9f-7d45-428c-95b9-98367ddba9d3@suse.cz>
+Date: Fri, 9 Feb 2024 15:32:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS4PR06MB8447:EE_|DB9PR06MB7386:EE_
-X-MS-Office365-Filtering-Correlation-Id: 67fcd46b-d539-43bd-7e4b-08dc297bdf11
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	l9SBVbXb+fi/765JwuSEpgRd03/R004Ci4IXzQi3NcPhV44hjnKyGuAMac1o3VrTZv9l5IRfcoy43uhq4EOlE/ZjBjp6Xn6/PIwfjH4oejCGiy1n91m1p5HRI2aI6zvLLI+9Ao616hC7hBlPN+a2tpgMWkmXnyBR1ZZdUZX6XkBC5v6O5x3D3L1vaw5ojhPIhEFW0ATVox3Jx5+XvNZIiYBRp5b5RNM1YKfhDzd9Q9xCiJj20HUbxopLAfHGjCHxzQxdwvzbL/HqS4ZWHNLMyrIbwVi8shjExP5zjZOTqc+CmVkGLwYDue7Je/+YrU9a1M7kO7L0SmInjJV/srFESNvVUWE8IkGglm6srQhl+r9VpY/pE2LPsZ2Rva1ZZbQfPFJGCjFRN1rPaZEdDtXP8H34iPeAmJ0iUTqO979K3c3za5vYoC6kpQS4e9Yr/tH18AIeA6pzdp5SNMMUjHQcrjeVeMvChrg6xW5pXLyjZym+3SAn1HxXP+Dii/V4lb8IBhkMtLZcD/stuMiZBTqm651RMQ23ALIOfzaosHrhh8I=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR06MB8447.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(136003)(366004)(39850400004)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(966005)(31686004)(2906002)(44832011)(5660300002)(316002)(41300700001)(8676002)(66476007)(66946007)(478600001)(6506007)(6512007)(6486002)(66556008)(4326008)(8936002)(6916009)(2616005)(83380400001)(38100700002)(31696002)(36756003)(86362001)(26005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?YVhnUGFRV3V5M0JDVE0zQTZ2U1NGVlMxU0N4YzJvQ21SbkloOEVmVEk4T0NQ?=
- =?utf-8?B?SEgwMi95eG9YYmdRRS9XNkkzaVpqTnN0ay9PYjVwNTEzK1krbzBYNXQ0Tm5q?=
- =?utf-8?B?UDVtaEtxbStjK0VMSlRFWDdnZ0ttc1dHVG1mQVp4b2hrUitaNmN1RjNxQllM?=
- =?utf-8?B?RnRiaFNHTDZWSGpkQ21iTkVRd2Y2N25zdkJmV3hLVXVUTVFwdTdRN1BWaGpo?=
- =?utf-8?B?MktpYTJwblRnTVBBcitROGJxOGQ3MzBZck9HUExrUXk2VnA1aldUQ0V0OTNW?=
- =?utf-8?B?d0JzVmZGN0VXTUFtaTZzRVVvcEF4YlhSOUVDNDBETXlHZUx2ZDA0MFJScG0z?=
- =?utf-8?B?d2RDU1hQNS9HcllockY0dG05RTJlZ2lrUWNxUEhaU2szaWEyd2xYUG96dFJF?=
- =?utf-8?B?MzR0czIzcm5UU1V6QmptRkl2NTB5OWV6RTcvRFI3R0ZIMmF3NjJzVVkzMW1Q?=
- =?utf-8?B?a0dUZHlOYTBsT1lscGwzZnpmbEtPdm51M291ZHIxSDgyZUVoMEozcXI0UVgv?=
- =?utf-8?B?MUpJUkh0L3JUU2dQejh1MXNVNm9wd3ppaTY1ckJzNXV6TGhjc21yQksxaElW?=
- =?utf-8?B?YUlodW5vSGEyaWxYZ1FkcUpjbnZFck41c1RJQ1BXbGk0U0xkU3RkemF2VEVQ?=
- =?utf-8?B?UDhRMnl2UERyMjhYWXJXVU1RcUZ1dXRmdGJ3WTRYM3JsaVVzbDhuMTVYNDlx?=
- =?utf-8?B?Q09PRGRWN3JPMFNFME4vUExmcE5TR0ZXVWdEMzd3RXZrT25PbDFPK21NeFV3?=
- =?utf-8?B?NTRMcjMyUlRSZklya3RPRjhLWVh3SXZDSStRMWxrbEpSK3F6L1NHZ3oyZS9l?=
- =?utf-8?B?UHprYUdOYUV2dmplVWlMM0pXRU14RnVDU2hoRlI2MUZDbmNXaXNocW00aDZW?=
- =?utf-8?B?cjBnZ1ppWHUrQ2dPdWlrVy9OUjBoOWsyRC9mOUdmcjZjSG0zNDZJQVRJcjh3?=
- =?utf-8?B?N04xd2ZEdlRzalVuMlFTZStDS1V5MVpHQTlrV3VLeXFrWEhVVDhka3gyMlFZ?=
- =?utf-8?B?Y0xYa0ladlBWekV4TWMxc2l6bjU4Y2VkNW0wSVRJalNxSTdqdVI2NmlaaVdX?=
- =?utf-8?B?dHZyNDhSSVkxWG5GWnVZZ1ZjR0p4UjZ4aU83bkpBR01kSXBqelVpWFVLRWxz?=
- =?utf-8?B?clBwdkNXMU4zY3kxRlh0QmhpR204aXZCQ2o5VkVONXFVN2szcjFYemMvcDRY?=
- =?utf-8?B?OTZLYzRRcFZpV1EyeHU2czRhTnBqQ2pSWG5QTVVlb3dYWGhJM1E0am00OEpu?=
- =?utf-8?B?dERKRFdaY0pkZGtsTXRJRWd6OXh2UGFHdEl2VjlVdU9FOEMvdDcrWjVqNGJp?=
- =?utf-8?B?ZzgwbElsUFN2MnkyUm1FV2RGWTZSbTBXeFdVQmU0a2NGdTlIaTFCM2llVUtC?=
- =?utf-8?B?Nk9aazlMazFSQjk5YWEvSG9FRkd0TlZKQzByMkJzSHJESzhlOVdIUUFYNHRa?=
- =?utf-8?B?UlJpbnl6UzlaYzdaUzNUbjBUZ0VYR0hMaGxDNlhiWTVWVEZMaGJuRVBIODVR?=
- =?utf-8?B?Uy9qWlRoK2E2ai9lN01ta3NZN09Yd2VYYjdMNUdidnA5MGR2NG40SzlXZ0l6?=
- =?utf-8?B?VlVRd05OOFppc0tqTWN1T2JhUThlUm1CbW1aOXFEYVMzVUd2ZStkc2FuTS9v?=
- =?utf-8?B?VTdUUFN1YU02SjJwamw4VWd0TkJWemxsS0p3d3NHSXdsUXdCQU9aVjZTTnVj?=
- =?utf-8?B?YWpIVjgvNXNuOWFxWW44NXU0UmpQZ0NuUGtNN1NhS3ZHNUw0YkwrY1dnOU04?=
- =?utf-8?B?NnYvTHl5TGZCOHZSclVXWXE0cWNWN01USEZSRU1xY1ZnQWp5MDBIa1o5a3lQ?=
- =?utf-8?B?SkY2bm9ObEZFWlp6OThzNCtoNzAwR2I5MGVCYVJYUTNFRjhYbEUyNldKVmV1?=
- =?utf-8?B?dmgrbEdtNVhRMHlVVkFCbnZraUNIeG1VK0xRR2JJdUVvUXY5YnRLZHlZOGFI?=
- =?utf-8?B?OTlKVEZwTGZDOE1vVWdrcVlhczdhWkl2Yk82bGhXdVRCRjdjODNMTzIzdDNz?=
- =?utf-8?B?QnNyMFVDbDBFdGVDSFhIMEtPZWlaaDdESXRmQlpGVUhZNDlkRW9uMnVqOHBL?=
- =?utf-8?B?bHBKUHFGVTREeUxPRFJvT3JjU05SYWhjQW9KbldLS09rMk5PR2Vpa3JhVU9r?=
- =?utf-8?B?dHhjeE9PZTJnd3UzZUNCeWF2ZzlCZWZHdmFJYUJxRU5YQ2k5ZFdyUG9tN2sz?=
- =?utf-8?B?WUE9PQ==?=
-X-OriginatorOrg: vaisala.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67fcd46b-d539-43bd-7e4b-08dc297bdf11
-X-MS-Exchange-CrossTenant-AuthSource: AS4PR06MB8447.eurprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 14:31:58.1069
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 6d7393e0-41f5-4c2e-9b12-4c2be5da5c57
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xiSftkqz0VTSJaL46cA6nX+7c9niyYRx8dK8WDDJ3KvPxk7vjmynzGkJBS87PUCm/iBu4eA+KKv1d9R98gKsEg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR06MB7386
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/3] mm/compaction: enable compacting >0 order folios.
+Content-Language: en-US
+To: Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: "Huang, Ying" <ying.huang@intel.com>, Ryan Roberts
+ <ryan.roberts@arm.com>, Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ David Hildenbrand <david@redhat.com>, "Yin, Fengwei"
+ <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Kemeng Shi <shikemeng@huaweicloud.com>,
+ Mel Gorman <mgorman@techsingularity.net>, Rohan Puri
+ <rohan.puri15@gmail.com>, Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Adam Manzanares <a.manzanares@samsung.com>,
+ "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+References: <20240202161554.565023-1-zi.yan@sent.com>
+ <20240202161554.565023-2-zi.yan@sent.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240202161554.565023-2-zi.yan@sent.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.79
+X-Spamd-Result: default: False [-2.79 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLqwhhqik4qyk5i1fk54co8f1o)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RCPT_COUNT_TWELVE(0.00)[19];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,intel.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[intel.com,arm.com,linux-foundation.org,infradead.org,redhat.com,google.com,linux.intel.com,cmpxchg.org,linux.alibaba.com,huaweicloud.com,techsingularity.net,gmail.com,kernel.org,samsung.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-On 9.2.2024 15.34, Greg KH wrote:
-> On Fri, Feb 09, 2024 at 02:39:01PM +0200, Niko Mauno wrote:
->> On 9.2.2024 12.47, Greg KH wrote:
->>> On Fri, Feb 09, 2024 at 11:46:50AM +0200, niko.mauno@vaisala.com wrote:
->>>> From: Niko Mauno <niko.mauno@vaisala.com>
->>>>
->>>> Since the wireless USB implementation has been removed and since the
->>>> behavior with authorized_default values -1 and 1 is now effectively
->>>> same, change the initial value to latter in order to stop using the
->>>> leftover value. The former value can still be passed as a module
->>>> parameter to retain backwards compatibility.
->>>>
->>>> Signed-off-by: Niko Mauno <niko.mauno@vaisala.com>
->>>> ---
->>>>    drivers/usb/core/hcd.c | 6 ++----
->>>>    1 file changed, 2 insertions(+), 4 deletions(-)
->>>
->>> Isn't this series already in my tree?
->>>
->>> confused,
->>>
->>> greg k-h
->>
->> Hi Greg, apologies for any confusion I may have caused,
->>
->> Geert requested some further clarification in the new Kconfig help section,
->> please see:
->> https://marc.info/?l=linux-usb&m=170747246528305&w=2
+On 2/2/24 17:15, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
 > 
-> Great, but I can't take patches that are already in my tree, right?
+> migrate_pages() supports >0 order folio migration and during compaction,
+> even if compaction_alloc() cannot provide >0 order free pages,
+> migrate_pages() can split the source page and try to migrate the base pages
+> from the split. It can be a baseline and start point for adding support for
+> compacting >0 order folios.
 > 
-> Please submit a new one on top of what I currently have.
+> Suggested-by: Huang Ying <ying.huang@intel.com>
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> ---
+>  mm/compaction.c | 43 +++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 35 insertions(+), 8 deletions(-)
 > 
->> (There shouldn't be any functional change introduced between v2 and v3)
-> 
-> That always needs to be listed, as my bot says, otherwise we have no
-> idea what is going on here.  Remember, some of us get 1000+ emails a day
-> to do something with (review, apply, delete, ignore...)
-> 
-> thanks,
-> 
-> greg k-h
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 4add68d40e8d..e43e898d2c77 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -816,6 +816,21 @@ static bool too_many_isolated(struct compact_control *cc)
+>  	return too_many;
+>  }
+>  
+> +/*
+> + * 1. if the page order is larger than or equal to target_order (i.e.,
+> + * cc->order and when it is not -1 for global compaction), skip it since
+> + * target_order already indicates no free page with larger than target_order
+> + * exists and later migrating it will most likely fail;
+> + *
+> + * 2. compacting > pageblock_order pages does not improve memory fragmentation,
+> + * skip them;
+> + */
+> +static bool skip_isolation_on_order(int order, int target_order)
+> +{
+> +	return (target_order != -1 && order >= target_order) ||
+> +		order >= pageblock_order;
+> +}
+> +
+>  /**
+>   * isolate_migratepages_block() - isolate all migrate-able pages within
+>   *				  a single pageblock
+> @@ -1010,7 +1025,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>  		/*
+>  		 * Regardless of being on LRU, compound pages such as THP and
+>  		 * hugetlbfs are not to be compacted unless we are attempting
+> -		 * an allocation much larger than the huge page size (eg CMA).
+> +		 * an allocation larger than the compound page size.
+>  		 * We can potentially save a lot of iterations if we skip them
+>  		 * at once. The check is racy, but we can consider only valid
+>  		 * values and the only danger is skipping too much.
+> @@ -1018,11 +1033,18 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>  		if (PageCompound(page) && !cc->alloc_contig) {
+>  			const unsigned int order = compound_order(page);
+>  
+> -			if (likely(order <= MAX_PAGE_ORDER)) {
+> -				low_pfn += (1UL << order) - 1;
+> -				nr_scanned += (1UL << order) - 1;
+> +			/*
+> +			 * Skip based on page order and compaction target order
+> +			 * and skip hugetlbfs pages.
+> +			 */
+> +			if (skip_isolation_on_order(order, cc->order) ||
+> +			    PageHuge(page)) {
 
-Thanks, submitted as new patch against usb-next.
--Niko
+Hm I'd try to avoid a new PageHuge() test here.
+
+Earlier we have a block that does
+                if (PageHuge(page) && cc->alloc_contig) {
+			...
+
+think I'd rather rewrite it to handle the PageHuge() case completely and
+just make it skip the 1UL << order pages there for !cc->alloc_config. Even
+if it means duplicating a bit of the low_pfn and nr_scanned bumping code.
+
+Which reminds me the PageHuge() check there is probably still broken ATM:
+
+https://lore.kernel.org/all/8fa1c95c-4749-33dd-42ba-243e492ab109@suse.cz/
+
+Even better reason not to add another one.
+If the huge page materialized since the first check, we should bail out when
+testing PageLRU later anyway.
+
+> +				if (order <= MAX_PAGE_ORDER) {
+> +					low_pfn += (1UL << order) - 1;
+> +					nr_scanned += (1UL << order) - 1;
+> +				}
+> +				goto isolate_fail;
+>  			}
+> -			goto isolate_fail;
+>  		}
+>  
+>  		/*
+> @@ -1165,10 +1187,11 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>  			}
+>  
+>  			/*
+> -			 * folio become large since the non-locked check,
+> -			 * and it's on LRU.
+> +			 * Check LRU folio order under the lock
+>  			 */
+> -			if (unlikely(folio_test_large(folio) && !cc->alloc_contig)) {
+> +			if (unlikely(skip_isolation_on_order(folio_order(folio),
+> +							     cc->order) &&
+> +				     !cc->alloc_contig)) {
+>  				low_pfn += folio_nr_pages(folio) - 1;
+>  				nr_scanned += folio_nr_pages(folio) - 1;
+>  				folio_set_lru(folio);
+> @@ -1786,6 +1809,10 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
+>  	struct compact_control *cc = (struct compact_control *)data;
+>  	struct folio *dst;
+>  
+> +	/* this makes migrate_pages() split the source page and retry */
+> +	if (folio_test_large(src) > 0)
+> +		return NULL;
+> +
+>  	if (list_empty(&cc->freepages)) {
+>  		isolate_freepages(cc);
+>  
+
 
