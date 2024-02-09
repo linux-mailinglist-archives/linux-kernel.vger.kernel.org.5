@@ -1,73 +1,119 @@
-Return-Path: <linux-kernel+bounces-58887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D50384EE24
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 01:00:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1E5F84EE2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 01:03:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC32D288303
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 00:00:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 297D81C21453
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 00:03:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E4784A2D;
-	Fri,  9 Feb 2024 00:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E85567A;
+	Fri,  9 Feb 2024 00:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UZHjRzVX"
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KUCVSNlY"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AD646B8E
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 00:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE6F4C98;
+	Fri,  9 Feb 2024 00:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707436809; cv=none; b=Kn1r/NzhLQEwCZtnpnRZj7puONNUJwWr9oUBqGkdhwpSX0niYG648e/lYDlMjtBrFO5fxNxCyajAKJLRDH78d42WrJhCwYlHXpZPWdsLd8wvK3dgNxSPrjZxGNYSKFPV5FaElVg+dEB13i8Yjn8PRpQ/tTAEmaq0q1W3RALf83U=
+	t=1707436966; cv=none; b=AoJ8qbQPVcMWzuV3WDxasyCImuueLL0CzC6fsZWZqOdFRRpbwKrET4LY1DLs/be880unAwK8R4Qh/mK0sBsGdodJOlbxPuc7f2UmA1/WkMtV55HDWvOMDID74Dz+bpFtHAKdi1cdY6ufJBX0Ix+H1UGoS/bM++048jbUP/x3rA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707436809; c=relaxed/simple;
-	bh=JxMfeZjaML7SdYJ1E4A0DGEf/Kj9v2i0W7aFGWzHIWM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NaVhKgXPwrUPQmnBbE/B1ZM2D0OfbSYnIOn6FP6OIhvjmZ57Rzbd5Xv89miiOWXYAj2gNvWKRKhAF9ksXpdxfoJ2yjmIGO6qOuMft5pojQnxlHxgRufM4Ji7BOmz8tqPvu+/8wh97hCvEGpjwbmN4PiI/jswJzCUgIGZoFi1nH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UZHjRzVX; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 8 Feb 2024 18:59:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707436805;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zWJhXqv1t7z5bjOKHqSFLqTyKM1+d6jY2IACUfrBfW0=;
-	b=UZHjRzVX5Zd8JvQ7b5lVaW/l9B06Z7JWKZ42cqku20j/C+wMUuMDDBKJtBhvHPoOQH4foz
-	VfZitGJV//8WwgUF0prhU1ZEAFOnYLQwMEHmlPF/tb5u5Zp5xlKQIkCLl4iG3Mv1DbM6Go
-	a/TNgDDC8NSyXc8igmXjQltFpgtxsoU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>, "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: linux-next: build failure after merge of the bcachefs tree
-Message-ID: <cxqtdu5d55vwnngvkah7wy5ts4wximmqvra5rmcwtvv4vw3zqi@mwwh2ygbwh6c>
-References: <20240207115755.338828db@canb.auug.org.au>
- <20240209094615.5acd86fc@canb.auug.org.au>
+	s=arc-20240116; t=1707436966; c=relaxed/simple;
+	bh=LkOLHY+o+udSpmGULxHUmPKRpvZuIshUcc2fP9oCCrI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=bt2TlGyzk5h0i01mHYn/DireCVpTnOqKo97xUjUiI+zuV4mQAuDkeqUZoMo7taJq7OfjeX6jVXDITwREpk8gPd0tLIYgbr0VCEeVm8W95wAD3jwMfZTbnmySBrO90upqms/CtSWZgZbNdqxFHqIhf0QzQrb6457rR4bs8J5PO+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KUCVSNlY; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 418NFdp3020989;
+	Fri, 9 Feb 2024 00:02:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=MqLMn6LQbwP7IL1EM9H4WRHLW1o/0KkA3yYJBHsfiIo=; b=KU
+	CVSNlYom3Nz0XELJoV8z9RWY9g3yr4zZJW+UZ3LBN6hACc5UjgJknXBCZRypR/Jk
+	U+3IAhayB4gShwjXRN6U3ga1A5yBeNT+hEcd2b/niB0lfYpe2WXQ987Y+PSIF8Ca
+	XdE7cOhHsCmmzCPpzAic7Bg/1zNv4Mqsp/DO5ts5t0Neq17rD2RTwfDHQhIR4jCT
+	kOrQdIJRKHN5wd/2Tv5mloznH8Zzk6DFvIJ7xuvmr1nJ5ca7MfHxoCITVI4iheeQ
+	KLqWuwY2lWcBKF0No+uk6qYtLvOjeoYW62EmKCp/hV5S3Qco0KKPCB2Ibxs7pSVn
+	jSsEyA8qOZij3mnUbt2w==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w4sudjda5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 00:02:26 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41902P8J012556
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 9 Feb 2024 00:02:25 GMT
+Received: from [10.110.97.178] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 8 Feb
+ 2024 16:02:21 -0800
+Message-ID: <79ae310b-5536-49a3-b3f7-3e4cd2328632@quicinc.com>
+Date: Thu, 8 Feb 2024 16:02:21 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240209094615.5acd86fc@canb.auug.org.au>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4] net: stmmac: dwmac-qcom-ethqos: Enable TBS on
+ all queues but 0
+Content-Language: en-US
+To: Abhishek Chauhan <quic_abchauha@quicinc.com>,
+        Alexandre Torgue
+	<alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S.
+ Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jakub
+ Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin
+	<mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Halaney <ahalaney@redhat.com>
+CC: <kernel@quicinc.com>
+References: <20240208231145.2732931-1-quic_abchauha@quicinc.com>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240208231145.2732931-1-quic_abchauha@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: iGEwXLVeaYe23bKPdYAeNiPm84VMjsqR
+X-Proofpoint-ORIG-GUID: iGEwXLVeaYe23bKPdYAeNiPm84VMjsqR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-08_12,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 spamscore=0 mlxscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=504 clxscore=1015 priorityscore=1501 adultscore=0
+ malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2401310000 definitions=main-2402080138
 
-On Fri, Feb 09, 2024 at 09:46:15AM +1100, Stephen Rothwell wrote:
-> > Caused by commit
-> > 
-> >   cfca113ae06c ("mean_and_variance: put struct mean_and_variance_weighted on a diet")
-> > 
-> > I have used the bcachefs tree from next-20240206 for today.
+On 2/8/2024 3:11 PM, Abhishek Chauhan wrote:
+> TSO and TBS cannot co-exist. TBS requires special descriptor to be
+> allocated at bootup. Initialising Tx queues at probe to support
+> TSO and TBS can help in allocating those resources at bootup.
 > 
-> I am still getting this failure.
+> TX queues with TBS can support etf qdisc hw offload.
+> 
+> This is similar to the patch raised by NXP
+> commit 3b12ec8f618e ("net: stmmac: dwmac-imx: set TSO/TBS TX queues default settings")
+> 
+> Tested-by: Andrew Halaney <ahalaney@redhat.com> # sa8775p-ride
+> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-Apologies - should be fixed now
 
