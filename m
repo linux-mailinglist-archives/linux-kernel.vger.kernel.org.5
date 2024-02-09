@@ -1,124 +1,224 @@
-Return-Path: <linux-kernel+bounces-59340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 871E384F59C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5162B84F5A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:08:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB4101C2221E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:07:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75BD31C221BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 13:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A66D0383B6;
-	Fri,  9 Feb 2024 13:07:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A152376F9;
+	Fri,  9 Feb 2024 13:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pH8/63oQ"
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cPNmz+cV"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F93381C4
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 13:06:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA961374F8
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 13:08:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707484022; cv=none; b=oxW3fiEV3V9sCnNFIsyxNYWV3IvnTlvOSArAzGJGnH8BGsBpk6CeILiKNa5qZkpXbvGvj9mct4C2cr8fpMWFynRYy7mz1vTW+KXOJMYmcPrH+pyUwbEp9ui20/IWbYeAW8plSOWIkj/KH/3asTiB3e80ap2k4nm0WNm/WBVgJFs=
+	t=1707484098; cv=none; b=K826lT7injzBnU3opkif1UECPUAN2LYEllS7qD/d/mAOL8wHU8FeOKOEC3FTpJVwQ4cHRXQEOCGvuL2SUNZTCRNF/IOFeqM4GReZz+7+y/arStJZ0jBV0J0tr1Y0zdOoB9tFJNzSBjCpGkjdelaPSp5QnYbI3ifOVDaAeJGqL84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707484022; c=relaxed/simple;
-	bh=Osx1MwrfwvLxJy9upXGkHqimngBod33AzJBkO19MTUo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ENY7iEgcGeRZw9fA0J4edBPZx4BudcI04P3tkLPCyAhvSolCZnrwLlE5W+skT8O2IA6jUZv+FMwLUanfet+H+fVBx2YiUVuVTSsQhvoUVuMSXZewInxysLgHTswlcxwRRZIn+hyrbk8L9yZA1joW4koRJAnYuWCH+mXymzsQpBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pH8/63oQ; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-68cc84a23b1so4114076d6.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 05:06:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707484018; x=1708088818; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5Cdz5dVZvDPVC+BewWJMsgYajolCToKYQ11a6wmFWQw=;
-        b=pH8/63oQAOuf0bQOVF4TiePSzwkCQxlIoZ6SJKbtkOMV6VDt4x13pbcmoMTo1qugir
-         hiXUn36rs5RlD+LPAMfshLqKXA4MC4wuAgQdM334eAakdnY0wdiCIo80c8UAQqQeAg+q
-         keApu+PvPYHRVoJzrxrSiPpqqsd4OqGWSEzKnfgDe5YNZ8Pj8E9bzApwFYD68xEhn6es
-         JqmmfULTyMIRrdFIrU5Gde6yiyuXamhx71wkhIcH57dg5xHOFM/r/yGk48aO1qwuzuOM
-         oPixXwWjYadQDfOhc1NQooVRbRjrN1KN5853jadffNbjUXBn6Yzw+9EdKp6BeG2x0t8X
-         mV/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707484018; x=1708088818;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5Cdz5dVZvDPVC+BewWJMsgYajolCToKYQ11a6wmFWQw=;
-        b=YxVbC/lRszWDcmNrAQUNI2Ezg80BDLBKRH6+Co4LGONEraX4ndc6QYPttfNd3KQwtG
-         OlHwBO+09tU6J8Afg4paxbKhFtj83u8M55ZEVHOBULWZGgBjukf2bUzKjtPOX+ZUFPwI
-         SanI+xnNpYwX5SsGUoXjE14EobSrGSoflSFEQXdTnYx3cU1l1Nol8HxtJGXpMXK1D+3w
-         2PND+ktsoTNdriSMJTdSHJ3e4JVmPaJkj8vcUnx0X4slHDIlu1YRB7di60h+fShV6jv0
-         0k1PcvDHNSPKDUGTPrNC9wOjx8KDFVg9fsb3X4UvcMTX5kHVxSQRlHGrcqKoE+DHiFdn
-         hkgQ==
-X-Gm-Message-State: AOJu0YzjQAoSTpTnD38SnjQGyy8s44Lt5A3ImAl6Adjm6S8JqVaBDvO5
-	uQRbanPGvbBK61Jy9DD4b4grfmgw4VI7Jug6S0vXHdPuE+dzun9jkeIJJmzrookJTQ7Rjjx+5Aj
-	H+d5AxNcDCXuhvRFQpSjKaTuw3KjCWqmgZ9oS
-X-Google-Smtp-Source: AGHT+IEQu9dTK0CI14m6+DU5OUbcWbY4tpyQL+7mbuO6ImeovHURd2mrTNbrTKdI9lXOvlKtapUMxXVQ21CWT1is9z0=
-X-Received: by 2002:a0c:cc06:0:b0:68c:ab0e:718f with SMTP id
- r6-20020a0ccc06000000b0068cab0e718fmr1475668qvk.48.1707484018052; Fri, 09 Feb
- 2024 05:06:58 -0800 (PST)
+	s=arc-20240116; t=1707484098; c=relaxed/simple;
+	bh=mHSlaxGCUJKdSq3oGHFsskIaS1mOF+ZiEDyOYY36WmA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QySY0bIo0/nsRnMQPT7a6J5b2PruAzGsp75hv9hY3Hg2fCwn+koDpctXqYBjwFMfFp7xrAs5nE0cb9t5SkvcgdS/miP3oO/7aty6Wncyi3KiiMwYoV7jmveWNhjEvM75YjQp5GlkEc3iMNyA++U3iOcDZjG5+ZrHVDKLiFh20TA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cPNmz+cV; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707484095;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ETbj5B8vI9mqFeC8WBwO1d2T9IgzINe0mXcd/+60DO0=;
+	b=cPNmz+cVNXbCN+J+sKjqhhmayyD2HIPrvdmHbDe4nWLmUJ2y1aJDS9uLNP6hY793ZQOvu7
+	Av4z6dUTaE76GWc8ne4B5LJ9KeShjwLIbsbHH78l4xX9yxk5qA6UsETwjmX62QBiyWHaB6
+	f8SuVNHGT02JqMhArFc3/vNRqg8Sag8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-197-WKn6s1c9Mxu6tyxh85JWuQ-1; Fri, 09 Feb 2024 08:08:10 -0500
+X-MC-Unique: WKn6s1c9Mxu6tyxh85JWuQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A223D83B7E6;
+	Fri,  9 Feb 2024 13:08:09 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.84])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 025AC8BCC;
+	Fri,  9 Feb 2024 13:08:07 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Fri,  9 Feb 2024 14:06:53 +0100 (CET)
+Date: Fri, 9 Feb 2024 14:06:50 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/2] pidfd: change pidfd_send_signal() to respect
+ PIDFD_THREAD
+Message-ID: <20240209130650.GA8048@redhat.com>
+References: <20240209130620.GA8039@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205-b4-rbtree-v1-0-995e3eee38c0@google.com> <20240205-b4-rbtree-v1-5-995e3eee38c0@google.com>
-In-Reply-To: <20240205-b4-rbtree-v1-5-995e3eee38c0@google.com>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Fri, 9 Feb 2024 14:06:47 +0100
-Message-ID: <CAH5fLgiRTYmVaGRVU97C+ZHqBxRxp7kmkdRyHT97w4HtWgiZ=g@mail.gmail.com>
-Subject: Re: [PATCH 5/6] rust: rbtree: add `RBTreeCursor`
-To: mattgilbride@google.com
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Christian Brauner <brauner@kernel.org>, Rob Landley <rob@landley.net>, 
-	Davidlohr Bueso <dave@stgolabs.net>, Michel Lespinasse <michel@lespinasse.org>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240209130620.GA8039@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-On Mon, Feb 5, 2024 at 4:50=E2=80=AFPM <mattgilbride@google.com> wrote:
->
-> Add a cursor interface to `RBTree`, supporting the following use cases:
-> - Inspect the current node pointed to by the cursor, inspect/move to
->   it's neighbors in sort order (bidirectionally).
-> - Mutate the tree itself by removing the current node pointed to by the
->   cursor, or one of its neighbors.
->
-> Add functions to obtain a cursor to the tree by key:
-> - The node with the smallest key
-> - The node with the largest key
-> - The node matching the given key, or the one with the next larger key
->
-> The cursor abstraction is needed by the binder driver to efficiently
-> search for nodes and (conditionally) modify them, as well as their
-> neighbors [1].
->
-> Link: https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-6-08=
-ba9197f637@google.com/ [1]
-> Co-developed-by: Alice Ryhl <aliceryhl@google.com>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> Signed-off-by: Matt Gilbride <mattgilbride@google.com>
+Turn kill_pid_info() into kill_pid_info_type(), this allows to pass any
+pid_type to group_send_sig_info(), despite its name it should work fine
+even if type = PIDTYPE_PID.
 
-I have looked at these bindings many times over the past year. They
-look good to me.
+Change pidfd_send_signal() to use PIDTYPE_PID or PIDTYPE_TGID depending
+on PIDFD_THREAD.
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+While at it kill another TODO comment in pidfd_show_fdinfo(). As Christian
+expains fdinfo reports f_flags, userspace can already detect PIDFD_THREAD.
 
-These abstractions have been very heavily exercised by the Rust Binder
-driver.
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/fork.c   |  2 --
+ kernel/signal.c | 38 ++++++++++++++++++++++----------------
+ 2 files changed, 22 insertions(+), 18 deletions(-)
 
-Tested-by: Alice Ryhl <aliceryhl@google.com>
+diff --git a/kernel/fork.c b/kernel/fork.c
+index cd61ca87d0e6..47b565598063 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2051,8 +2051,6 @@ static void pidfd_show_fdinfo(struct seq_file *m, struct file *f)
+ 
+ 	seq_put_decimal_ll(m, "Pid:\t", nr);
+ 
+-	/* TODO: report PIDFD_THREAD */
+-
+ #ifdef CONFIG_PID_NS
+ 	seq_put_decimal_ll(m, "\nNSpid:\t", nr);
+ 	if (nr > 0) {
+diff --git a/kernel/signal.c b/kernel/signal.c
+index a8199fda0d61..9578ce17d85d 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -47,6 +47,7 @@
+ #include <linux/cgroup.h>
+ #include <linux/audit.h>
+ #include <linux/sysctl.h>
++#include <uapi/linux/pidfd.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/signal.h>
+@@ -1436,7 +1437,8 @@ void lockdep_assert_task_sighand_held(struct task_struct *task)
+ #endif
+ 
+ /*
+- * send signal info to all the members of a group
++ * send signal info to all the members of a thread group or to the
++ * individual thread if type == PIDTYPE_PID.
+  */
+ int group_send_sig_info(int sig, struct kernel_siginfo *info,
+ 			struct task_struct *p, enum pid_type type)
+@@ -1478,7 +1480,8 @@ int __kill_pgrp_info(int sig, struct kernel_siginfo *info, struct pid *pgrp)
+ 	return ret;
+ }
+ 
+-int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
++static int kill_pid_info_type(int sig, struct kernel_siginfo *info,
++				struct pid *pid, enum pid_type type)
+ {
+ 	int error = -ESRCH;
+ 	struct task_struct *p;
+@@ -1487,11 +1490,10 @@ int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
+ 		rcu_read_lock();
+ 		p = pid_task(pid, PIDTYPE_PID);
+ 		if (p)
+-			error = group_send_sig_info(sig, info, p, PIDTYPE_TGID);
++			error = group_send_sig_info(sig, info, p, type);
+ 		rcu_read_unlock();
+ 		if (likely(!p || error != -ESRCH))
+ 			return error;
+-
+ 		/*
+ 		 * The task was unhashed in between, try again.  If it
+ 		 * is dead, pid_task() will return NULL, if we race with
+@@ -1500,6 +1502,11 @@ int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
+ 	}
+ }
+ 
++int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
++{
++	return kill_pid_info_type(sig, info, pid, PIDTYPE_TGID);
++}
++
+ static int kill_proc_info(int sig, struct kernel_siginfo *info, pid_t pid)
+ {
+ 	int error;
+@@ -3872,14 +3879,10 @@ static struct pid *pidfd_to_pid(const struct file *file)
+  * @info:   signal info
+  * @flags:  future flags
+  *
+- * The syscall currently only signals via PIDTYPE_PID which covers
+- * kill(<positive-pid>, <signal>. It does not signal threads or process
+- * groups.
+- * In order to extend the syscall to threads and process groups the @flags
+- * argument should be used. In essence, the @flags argument will determine
+- * what is signaled and not the file descriptor itself. Put in other words,
+- * grouping is a property of the flags argument not a property of the file
+- * descriptor.
++ * Send the signal to the thread group or to the individual thread depending
++ * on PIDFD_THREAD.
++ * In the future extension to @flags may be used to override the default scope
++ * of @pidfd.
+  *
+  * Return: 0 on success, negative errno on failure
+  */
+@@ -3890,6 +3893,7 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
+ 	struct fd f;
+ 	struct pid *pid;
+ 	kernel_siginfo_t kinfo;
++	bool thread;
+ 
+ 	/* Enforce flags be set to 0 until we add an extension. */
+ 	if (flags)
+@@ -3910,6 +3914,8 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
+ 	if (!access_pidfd_pidns(pid))
+ 		goto err;
+ 
++	thread = f.file->f_flags & PIDFD_THREAD;
++
+ 	if (info) {
+ 		ret = copy_siginfo_from_user_any(&kinfo, info);
+ 		if (unlikely(ret))
+@@ -3925,12 +3931,12 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
+ 		    (kinfo.si_code >= 0 || kinfo.si_code == SI_TKILL))
+ 			goto err;
+ 	} else {
+-		prepare_kill_siginfo(sig, &kinfo, SI_USER);
++		prepare_kill_siginfo(sig, &kinfo,
++				     thread ? SI_TKILL : SI_USER);
+ 	}
+ 
+-	/* TODO: respect PIDFD_THREAD */
+-	ret = kill_pid_info(sig, &kinfo, pid);
+-
++	ret = kill_pid_info_type(sig, &kinfo, pid,
++				 thread ? PIDTYPE_PID : PIDTYPE_TGID);
+ err:
+ 	fdput(f);
+ 	return ret;
+-- 
+2.25.1.362.g51ebf55
+
+
 
