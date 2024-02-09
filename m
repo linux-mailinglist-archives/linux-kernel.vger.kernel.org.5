@@ -1,191 +1,108 @@
-Return-Path: <linux-kernel+bounces-59448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CD9A84F741
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:28:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 554AB84F743
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:28:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0420FB2151F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:28:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 073DD1F21D67
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64A6A69979;
-	Fri,  9 Feb 2024 14:28:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D09A69966;
+	Fri,  9 Feb 2024 14:28:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZXpPNRmQ"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LsAzeNAI"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C3D67E86
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A8A364D6;
+	Fri,  9 Feb 2024 14:28:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707488888; cv=none; b=A/TXNGEgqmeeaBQkSB7XFu2WUtLGxdTdt6kYwltmSUQkGG3Uxv3cuipeQk+UK+vfp9IvjfcJ1Ys9nl6VyAizhjKAwqVsgbYpw8Lsx8bCq1KfuZM+0hwxWCzhmJAZu831+U4wVLjVaIJ6WtruSNU7DOHLLi1UlXTPPS1P1cnW0hg=
+	t=1707488922; cv=none; b=oN6vQEsbqu0wTsMN2u0tB0fgw8/FRRi3+FW/dOYv8+lKxcY/yOK6Pe6CUm2x7Bk8Jd6jRJNw2Mvb9jvGCgUMyX+bybIPOZ4g/DEeptoyrcPCI4ah4yab4r9nQVcuSuGhQ+AYqjuTd0G2mnhcf54dvnue+n1CDoutwmFf/mOJpu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707488888; c=relaxed/simple;
-	bh=HUx7t17vxGA5IaYOV8ff1kr8+jU/9ANSxbnT6H9GSco=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=iMM/CC84efDH2bSK48N/93r1uYZxKmAGM+JDOlZwiyKZjGNItJwpUPAIyRdMFk28RVemjYeXlOTnFxIg9LZADlip0irCAWzSRPzOiZLPYrkzss/g7huvhFeS4s4zkaHWiXlu8T/MdIyUiGGUtc8x5Sb6QxqkELvn8s+sNtvej14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZXpPNRmQ; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5ee22efe5eeso20360707b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 06:28:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707488886; x=1708093686; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uCfsv6GrpUFnVCwcL3J5Wem8yNPUxVMsIIYMkBzD0b0=;
-        b=ZXpPNRmQeW+Sm8OzwxON1DpjmSlXeodKp3uxsBZq1Cg5uqJA8J7OR0zmKyk1akz2Yy
-         5EywEk/vM6zchQkTO/MSC9+Yucn6xjqlLJXS5II+SRuUGG5D3/myvb/anp4h/lhMlUIG
-         ZcZcRAnBDNFUNDeH/AEX9RhWOJlV1M6SbJDFo/Eax51+lByy3q3Dg7L8HJx5FRfGnOhl
-         sabcrTwvk8718sVD0CAGGXFZLyzHPoNW6pzR4LcloHCjJlb0MDm2i6LNBXTuYHY0+3L1
-         YbngJFU/xjyYwKCM/BH9Ajz03VQupmY8A4LEcC1lUozX9lXFnBzk7XDTJUskDv3PBTXF
-         fhHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707488886; x=1708093686;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uCfsv6GrpUFnVCwcL3J5Wem8yNPUxVMsIIYMkBzD0b0=;
-        b=sZwBev7PeSJpl+c+Th712KYLvGFLvXk6Xts5hqPTquUa+cVnqCcks0JUXv12yuM8kC
-         cCQW+l2HG8vtKoE0n3T0fyr/D1frx5yc4s/V/YDN+FJa8EmyW6LOmwaLYax9sKx80J/E
-         s3MA6N0LtW81KOevCs7hcKwzHqfoObk53MKuEdcUBNApmx/xvdqobZrh2GG6znJnClJZ
-         Lo3SEaooi4SIxAe2O91QKmPd9jvCt3UtdB842ohfj8HwUPAS/zKc2CcbvP4SeDD0WB4X
-         vJEKa3A97fG4cT+sh1xz1mOVJefq0WuuB1+OrrNoDM3K4g1O5THZmT0c4Pb+ql11M0KR
-         g2Qg==
-X-Gm-Message-State: AOJu0YzmuHBT8NSLrwVjDiVUEdKN6WdGk0VXZtoMlGJS+7hf4REpyZuA
-	cDz2XP0NuPEOXOEp0++BlaWv0i/zoicP3+j9YWeROm1e5/BFLtKKWvFbIvjOEc79tqkIC+Gen2E
-	pDQ==
-X-Google-Smtp-Source: AGHT+IHy+djrwH9lBwMcfClT+8pK1QZMj2IcA9F/oSlT9qX98kneABwsfBtcWfL+f67hdIOBZn1ACZ3Dunw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:6d82:0:b0:5ff:a885:65b with SMTP id
- i124-20020a816d82000000b005ffa885065bmr252030ywc.10.1707488885935; Fri, 09
- Feb 2024 06:28:05 -0800 (PST)
-Date: Fri, 9 Feb 2024 06:28:04 -0800
-In-Reply-To: <e7125fcb-52b1-4942-9ae7-c85049e92e5c@arm.com>
+	s=arc-20240116; t=1707488922; c=relaxed/simple;
+	bh=MV+1wvgJoYMaUdrs8Los4PA1gEmATP0tanOe8YKLDG0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qGpuIGKnppRtzKwXd7of2J88iosA1ZV5o/g3Oeu6EYqemtMblmqNb4fgFWPY9oltl2d+w/CsqtSQBShJH7W2FBJc9ibFiI0XF18whEdG6k3b2d5JIBBz2RcmncNi1vt3mCCYEQ56rU4UIlPS46Zfx5Zhi70EBeAqREvQM4ySv3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LsAzeNAI; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707488921; x=1739024921;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MV+1wvgJoYMaUdrs8Los4PA1gEmATP0tanOe8YKLDG0=;
+  b=LsAzeNAI+nCi7J2XAQLOPUVqW5HR48sfvJAWMciQ0sZqv1tgjsK+auAg
+   5a2Zlv+eymLnnsd9l/nmGJqLXog4jQIZMx/waX4Z7ieu2jowJcc/JcbKk
+   8PmhTPzHJEm9d9aUUALM1MBTmHx9zj3EGNy3z5Yp1pdzbgGxxm9VSZwq7
+   /4FRGtg6DDEKJroGdZzZx355IjTAO3KMqtij7fxc3JrEz86+y/TSYCTtt
+   aQWoZK3TXlTt5DdpbUFazCTc0eWqA3qRmVbAXgwoBsF9VENy4w+6V0n+Q
+   Cuv9w2dLYT0AgOm9Ly7A7Qxl5mXkdsBHHiCNBGc8azYq5C9DVlmz9thtu
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1295384"
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="1295384"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 06:28:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="934437689"
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="934437689"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 06:28:36 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rYRrl-00000003AfQ-2i2i;
+	Fri, 09 Feb 2024 16:28:33 +0200
+Date: Fri, 9 Feb 2024 16:28:33 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	linux-usb@vger.kernel.org, jthies@google.com, pmalani@chromium.org,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Rajaram Regupathy <rajaram.regupathy@intel.com>,
+	Saranya Gopal <saranya.gopal@intel.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] usb: typec: ucsi: Limit read size on v1.2
+Message-ID: <ZcY2kVlUn7SJ5pW8@smile.fi.intel.com>
+References: <20240209060353.6613-1-abhishekpandit@chromium.org>
+ <20240208220230.v4.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231016115028.996656-1-michael.roth@amd.com> <20231016115028.996656-5-michael.roth@amd.com>
- <e7125fcb-52b1-4942-9ae7-c85049e92e5c@arm.com>
-Message-ID: <ZcY2VRsRd03UQdF7@google.com>
-Subject: Re: [PATCH RFC gmem v1 4/8] KVM: x86: Add gmem hook for invalidating memory
-From: Sean Christopherson <seanjc@google.com>
-To: Steven Price <steven.price@arm.com>
-Cc: Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org, 
-	Suzuki K Poulose <suzuki.poulose@arm.com>, "tabba@google.com" <tabba@google.com>, linux-coco@lists.linux.dev, 
-	linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	pbonzini@redhat.com, isaku.yamahata@intel.com, ackerleytng@google.com, 
-	vbabka@suse.cz, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
-	jroedel@suse.de, pankaj.gupta@amd.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240208220230.v4.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Fri, Feb 09, 2024, Steven Price wrote:
-> On 16/10/2023 12:50, Michael Roth wrote:
-> > In some cases, like with SEV-SNP, guest memory needs to be updated in a
-> > platform-specific manner before it can be safely freed back to the host.
-> > Wire up arch-defined hooks to the .free_folio kvm_gmem_aops callback to
-> > allow for special handling of this sort when freeing memory in response
-> > to FALLOC_FL_PUNCH_HOLE operations and when releasing the inode, and go
-> > ahead and define an arch-specific hook for x86 since it will be needed
-> > for handling memory used for SEV-SNP guests.
-> 
-> Hi all,
-> 
-> Arm CCA has a similar need to prepare/unprepare memory (granule
-> delegate/undelegate using our terminology) before it is used for
-> protected memory.
-> 
-> However I see a problem with the current gmem implementation that the
-> "invalidations" are not precise enough for our RMI API. When punching a
-> hole in the memfd the code currently hits the same path (ending in
-> kvm_unmap_gfn_range()) as if a VMA is modified in the same range (for
-> the shared version).
->
-> The Arm CCA architecture doesn't allow the protected memory to be removed and
-> refaulted without the permission of the guest (the memory contents would be
-> wiped in this case).
+On Thu, Feb 08, 2024 at 10:02:38PM -0800, Abhishek Pandit-Subedi wrote:
+> Between UCSI 1.2 and UCSI 2.0, the size of the MESSAGE_IN region was
+> increased from 16 to 256. In order to avoid overflowing reads for older
+> systems, add a mechanism to use the read UCSI version to truncate read
+> sizes on UCSI v1.2.
 
-TDX behaves almost exactly like CCA.  Well, that's not technically true, strictly
-speaking, as there are TDX APIs that do allow for *temporarily* marking mappings
-!PRESENT, but those aren't in play for invalidation events like this.
+..
 
-SNP does allow zapping page table mappings, but fully removing a page, as PUNCH_HOLE
-would do, is destructive, so SNP also behaves the same way for all intents and
-purposes.
+> +	if (ucsi->version <= UCSI_VERSION_1_2)
+> +		buf_size = min_t(size_t, 16, buf_size);
 
-> One option that I've considered is to implement a seperate CCA ioctl to
-> notify KVM whether the memory should be mapped protected.
+Please, avoid using min_t(). Here the clamp() can be used.
+Shouldn't magic number be defined?
 
-That's what KVM_SET_MEMORY_ATTRIBUTES+KVM_MEMORY_ATTRIBUTE_PRIVATE is for, no?
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> The invalidations would then be ignored on ranges that are currently
-> protected for this guest.
 
-That's backwards.  Invalidations on a guest_memfd should affect only *protected*
-mappings.  And for that, the plan/proposal is to plumb only_{shared,private} flags
-into "struct kvm_gfn_range"[1] so that guest_memfd invalidations don't zap shared
-mappings, and mmu_notifier invalidation don't zap private mappings.  Sample usage
-in the TDX context[2] (disclaimer, I'm pretty sure I didn't write most of that
-patch despite, I only provided a rough sketch).
-
-[1] https://lore.kernel.org/all/20231027182217.3615211-13-seanjc@google.com
-[2] https://lore.kernel.org/all/0b308fb6dd52bafe7153086c7f54bfad03da74b1.1705965635.git.isaku.yamahata@intel.com
-
-> This 'solves' the problem nicely except for the case where the VMM
-> deliberately punches holes in memory which the guest is using.
-
-I don't see what problem there is to solve in this case.  PUNCH_HOLE is destructive,
-so don't do that.
-
-> The issue in this case is that there's no way of failing the punch hole
-> operation - we can detect that the memory is in use and shouldn't be
-> freed, but this callback doesn't give the opportunity to actually block
-> the freeing of the memory.
-
-Why is this KVM's problem?  E.g. the same exact thing happens without guest_memfd
-if userspace munmap()s memory the guest is using.
-
-> Sadly there's no easy way to map from a physical page in a gmem back to
-> which VM (and where in the VM) the page is mapped. So actually ripping
-> the page out of the appropriate VM isn't really possible in this case.
-
-I don't follow.  guest_memfd has a 1:1 binding with a VM *and* a gfn, how can you
-not know what exactly needs to be invalidated?
-
-> How is this situation handled on x86? Is it possible to invalidate and
-> then refault a protected page without affecting the memory contents? My
-> guess is yes and that is a CCA specific problem - is my understanding
-> correct?
-> 
-> My current thoughts for CCA are one of three options:
-> 
-> 1. Represent shared and protected memory as two separate memslots. This
-> matches the underlying architecture more closely (the top address bit is
-> repurposed as a 'shared' flag), but I don't like it because it's a
-> deviation from other CoCo architectures (notably pKVM).
-> 
-> 2. Allow punch-hole to fail on CCA if the memory is mapped into the
-> guest's protected space. Again, this is CCA being different and also
-> creates nasty corner cases where the gmem descriptor could have to
-> outlive the VMM - so looks like a potential source of memory leaks.
-> 
-> 3. 'Fix' the invalidation to provide more precise semantics. I haven't
-> yet prototyped it but it might be possible to simply provide a flag from
-> kvm_gmem_invalidate_begin specifying that the invalidation is for the
-> protected memory. KVM would then only unmap the protected memory when
-> this flag is set (avoiding issues with VMA updates causing spurious unmaps).
-> 
-> Fairly obviously (3) is my preferred option, but it relies on the
-> guarantees that the "invalidation" is actually a precise set of
-> addresses where the memory is actually being freed.
-
-#3 is what we are planning for x86, and except for the only_{shared,private} flags,
-the requisite functionality should already be in Linus' tree, though it does need
-to be wired up for ARM.
 
