@@ -1,75 +1,92 @@
-Return-Path: <linux-kernel+bounces-59130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE24C84F1B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:52:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF97384F1B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 09:53:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB19D2895D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:52:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EEB91F22846
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:53:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05485664B3;
-	Fri,  9 Feb 2024 08:52:29 +0000 (UTC)
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E88E2664B7;
+	Fri,  9 Feb 2024 08:53:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="KLC64FXN"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCE8664A2;
-	Fri,  9 Feb 2024 08:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD397664A9;
+	Fri,  9 Feb 2024 08:53:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707468748; cv=none; b=PrYnnhnDhZh5jwrKGaL/JrfO9LKp6zKK/NMlVE2ppTjpsHRzd8cCG+eFiJSbnLBzgcFapGZTVzkRqU5FxKiS2tV84kWxt9NgsQdTT31I0vZwE/A+M2fDfxOiVtWRSE67KQRSfQuDK7+kWOSfUdOHgUiRwtVvZSUJUKx5jQs8ZQU=
+	t=1707468791; cv=none; b=vFsx6I5RMh251By77yzknCwt13EuMI87VFkJ7069j1vTkFl1q6j7pBMEuRoTn2U6IaDf5gH2uqzc8ShvZL2q2Ofi5jns82gwiRIbR5gQHhcSXXblYCEliKM7hH0AN/6mJrOBv/jSVqXWsG74nsG2lZtWQH9ahuGUlFN0gjorLbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707468748; c=relaxed/simple;
-	bh=Y0rlItVWJKIx4vyKWXfeBbXUAJzehrbMX1mvGaK04fQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hs55Z1adyD7UIPuMc+6rVs+ofsF7Yeg17y8ldSmUxr82AHLNTPYZeczpwBJ2gn5K3ppgKh/57yHehu7GK7y6J/N4w6vSVcoSeV3ID4a4gukXCDgf4JpxQD6Raya0sijdy74nCBbXUVVDhCJ41VIIrei4CXzT7OFb8oOTvwd6sHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 807EF2800B6E4;
-	Fri,  9 Feb 2024 09:52:16 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 765B7DEFB; Fri,  9 Feb 2024 09:52:16 +0100 (CET)
-Date: Fri, 9 Feb 2024 09:52:16 +0100
-From: Lukas Wunner <lukas@wunner.de>
-To: Alexey Kardashevskiy <aik@amd.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>
-Subject: Re: [PATCH kernel 1/4] pci/doe: Define protocol types and make those
- public
-Message-ID: <20240209085216.GA15263@wunner.de>
-References: <20240201060228.3070928-1-aik@amd.com>
- <20240201060228.3070928-2-aik@amd.com>
- <20240201065040.GA31925@wunner.de>
- <895b31de-f7f8-425c-870b-1524be21c688@amd.com>
+	s=arc-20240116; t=1707468791; c=relaxed/simple;
+	bh=SCFizRO1mkhWZ9UsKwKydQaTwmYcQyyC5mBYpD3gCl8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ov0EM50PYGDtpdtwJ1P84KJ3ol632kONH+s3j2IIMDuMLPCjMD4oJTcOMtITOM9IhFNiB/otlKqv+ywhkiOVeLPGI5K5hwnYtN4LrVaPHn7MrV2YpOxUdGRAKL7QsJH0zuqopGRKT5kaVcDQL1FtQH16nsDwxh6ya8s9vJUwx4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=KLC64FXN; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707468787;
+	bh=SCFizRO1mkhWZ9UsKwKydQaTwmYcQyyC5mBYpD3gCl8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=KLC64FXNcnXhqbqrahhj6777lmtbhvlfuM4/EKSP6B82iRqUiIQUeiQPP+pPa8STa
+	 GxqhhyMKeoxxPAc45FVZsRlqrT1Y7S+W/YsbxJf6GN7E+4c95jIog0Js8Ath1Lhsab
+	 cDUMblADW+ABZgm9xawK8jEGaBVhRqZmk/Zm89bqB35oKMrqKE5TsYGjQ7A3QcHtQx
+	 jJR2d8kp0gVslhKCnILaBUsz0D5TDCkyMveeerAURziLY/ietnD6NqB2clQX/QYEi1
+	 h5tVm7IrsiYr+WG5A4ddgmnVO7u27Rix4vCfDQwRA74oSyXASYdotOT/mNvTX1PNpU
+	 80hTWErraMQ3A==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1628B37809D0;
+	Fri,  9 Feb 2024 08:53:07 +0000 (UTC)
+Message-ID: <258f93ce-c927-451f-b9f0-7170c140eccb@collabora.com>
+Date: Fri, 9 Feb 2024 09:53:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <895b31de-f7f8-425c-870b-1524be21c688@amd.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 3/3] dt-bindings: arm: mediatek: convert SSUSBSYS to
+ the json-schema clock
+Content-Language: en-US
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Russell King <linux@armlinux.org.uk>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>, devicetree@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+References: <20240208215926.10085-1-zajec5@gmail.com>
+ <20240208215926.10085-4-zajec5@gmail.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240208215926.10085-4-zajec5@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 01, 2024 at 09:16:37PM +1100, Alexey Kardashevskiy wrote:
-> Or the plan is to add pci_doe_secure_transport() to cma.c and force everyone
-> use that?
+Il 08/02/24 22:59, Rafał Miłecki ha scritto:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> This helps validating DTS files. Introduced changes:
+> 1. Documented "reg" property
+> 2. Dropped "syscon" as it was incorrectly used
+> 3. Adjusted nodename, "compatible" and "reg" in example
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 
-Right, the plan is to pass an additional callback to spdm_create()
-which performs a secure transmission.  And cma.c would define that
-to use the separate DOE type.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Thanks,
 
-Lukas
 
