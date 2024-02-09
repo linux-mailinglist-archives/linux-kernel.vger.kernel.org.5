@@ -1,146 +1,169 @@
-Return-Path: <linux-kernel+bounces-59602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E2EB84F996
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:27:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0C8984F99A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 17:28:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CD93B25E32
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:26:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5273D1F249D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 16:28:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EED47AE7A;
-	Fri,  9 Feb 2024 16:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A3D27B3D0;
+	Fri,  9 Feb 2024 16:27:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E02FXSbW"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OgLiL6t/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64D427317B
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 16:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9457AE50;
+	Fri,  9 Feb 2024 16:27:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707496007; cv=none; b=b/C7bjmuEBy6z6qOUv+D7N53iBA5VWfHJKpbJ236LFTsE+zNHI03UTBAn14PuVb7ygEauw9qRU+TP/qDiz5Pe/87nUo9rjYqnygngAvDkvs1rrekI/ZLCumCzFp7j4qgPyc+jXZyAN68l8ySr7JPk/gjrZRxaxYqUSDRUWKUOTs=
+	t=1707496067; cv=none; b=ibUazD6fmwwuW8DSnzL5GUM3ncA/0r380aom4JCkH+XiM6ouejsoz7cF98FDJGegGs5oVKbHDDrdsnA3RDB/fSEfyu5hdyZBP8MfYOmzwrzr/+1+wuCuTKO9up/kzD6CVrjgrSSO+kkhFLA+p8OOaYDhqVIfjX2SHyLWNglxUKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707496007; c=relaxed/simple;
-	bh=xSVANJ9Sul+6tG8IyWGYziNKbkjPAgWV/TLqpKmQNq8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CJt536Nxf5DHjcSgzVtOIrtFQjyc2zwiCwbO/vQ2u6eZkxcTxceR5zA2QdDvpJtH4izAAsSxIM9WGqdXch4NSPCV9cxTN8MYQRTXBvocQ50yNis7c9Bge0o1eNPU+Qw8VPo5b8pWV01Ui9/c3QDgucVNuk5z8Z3Q3nF+AJ9WHgI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=E02FXSbW; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707496005;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xSVANJ9Sul+6tG8IyWGYziNKbkjPAgWV/TLqpKmQNq8=;
-	b=E02FXSbWkgj/FU+H2H20U117SYUoDWUlPwMDK9awyBr4bwiwliJZyOEH/fdxNgRho8kc04
-	n8N6kCl0rMk9C5mpPGEtDmW4A7BUZxvg3fVLJgVqB08PiHKqQ4+rarXg67dzUpeG3s1ash
-	oIsCyEVZvWVnW6OFHq+qLJjXweRvdgI=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-608-s2_DfHDEPf-HQO1u7QexFA-1; Fri, 09 Feb 2024 11:26:41 -0500
-X-MC-Unique: s2_DfHDEPf-HQO1u7QexFA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a2c653c7b35so80373866b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 08:26:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707496000; x=1708100800;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xSVANJ9Sul+6tG8IyWGYziNKbkjPAgWV/TLqpKmQNq8=;
-        b=an3S+9E5catGgFZvT7poD9sS7zYX6u9SbY9iryRqHVileTw24AMyCrugkExBeMrkk3
-         GAQaQ9uWs+gxs3THhSiEpKAXOqsCTNgYphFKcLNqSH0I8E5LGWZO2C1rWprtydAGP275
-         465HJxddx0ycsDmD3NnTawMGRV+Em9/V9DGS1A/veMBNWghGiGFBRA4PB9qvXSE9joj9
-         jf6pfsvYuAi6f4bOcjOpSvJXgbTtGGaLqvvsEe65ZmHJf/wnzqgADf8xR9VsZhs89PdV
-         rGzYheH9SBKH6EAKbPzRiSBsJuXzA4ec4HELyTfuT9061uZmJKgf+/gJ3T+z5GaSxL+V
-         WY/w==
-X-Gm-Message-State: AOJu0Yxb9dRYzSVXF2Ql+mB2FZyb+bOuVj+yIye8e1O8MYCgLRngRCPX
-	rgzB5l60aO6dinGSa4nwWaTaJw0payDxMDCiNjOX42jDjmnyhzzCY7FEDp+FYEi6T2h4p4jCBt+
-	WuprJL9uYjg/9w6vR3meYnfHptb84jGuIqgzUnNS1Tgo9GA7VoJE4Tf7XoE3vWCpYGNouHM0QT+
-	IE4JLBnwSWhQyBaIrYlUap5056zZkGUBLH2IAX
-X-Received: by 2002:a17:906:a3d6:b0:a37:e35b:9a3e with SMTP id ca22-20020a170906a3d600b00a37e35b9a3emr1642617ejb.40.1707496000225;
-        Fri, 09 Feb 2024 08:26:40 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHy61pDxReOPip14CkIUEYp+eoqOxBTFmJqAoTo/34APibzrj1ifuHurTTUgT36YYc88gUAGfXaSJOT9jT1nF8=
-X-Received: by 2002:a17:906:a3d6:b0:a37:e35b:9a3e with SMTP id
- ca22-20020a170906a3d600b00a37e35b9a3emr1642604ejb.40.1707495999966; Fri, 09
- Feb 2024 08:26:39 -0800 (PST)
+	s=arc-20240116; t=1707496067; c=relaxed/simple;
+	bh=4DH6uSiz75VZ5wu8uWaWlKg6/VzeFejpqv+LEayXYbQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NQtTQBUFD+o2lIScuwEdoE6z37YuHtrIEiUshFpJeaMPsFmh8sz4k9X+Qy4ctvgbp+hBo+8oNXIzoDWIc3CYCGe+YgEGQ7zMA8L/peaZuDK2gvFr+VOyk/uV2MBWPRowDEtY74fBfK2r67Wne1JKJbXi7b8i2EzE7bGyAsr7MEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OgLiL6t/; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707496065; x=1739032065;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=4DH6uSiz75VZ5wu8uWaWlKg6/VzeFejpqv+LEayXYbQ=;
+  b=OgLiL6t/H2gFoHq3PfA4AWaOs2CfJdNFCl+eChhIv6H27ZynJgATZorL
+   Xa8WLR1QoAwkiTyX4SsS7A94ftRPhM6sWJx9ppRNSfB4rfSFX4aGWghHw
+   UqulWKCEuNgset/FrXIQwXErSYIWvO81ub5DtM1qehUXWVQ1GqUYFP+lD
+   HQQ4am44KGQsTenY0eZCzDXipWkPXit/go7XgSUiTzC5KJqxE0WGONTUg
+   7SrGz3XipsQFQdq0fu3ZukTyjJBHXPF6Sb0hwmxiT4FW0l5mYgfk8V9nR
+   O1l1/8OPOelg8XXQ+I5FvLItImRM+LWRiDGfCnFKVSEZbWTZvbmObj9Ub
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="1355034"
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="1355034"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 08:27:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10979"; a="825178698"
+X-IronPort-AV: E=Sophos;i="6.05,257,1701158400"; 
+   d="scan'208";a="825178698"
+Received: from sgruszka-mobl.ger.corp.intel.com (HELO localhost) ([10.252.43.96])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 08:27:40 -0800
+Date: Fri, 9 Feb 2024 17:27:37 +0100
+From: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+	Linux PM <linux-pm@vger.kernel.org>,
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+	Zhang Rui <rui.zhang@intel.com>, netdev@vger.kernel.org,
+	Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
+	linux-wireless@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
+Subject: Re: [PATCH v1 6/9] iwlwifi: mvm: Set THERMAL_TRIP_WRITABLE_TEMP
+ directly
+Message-ID: <ZcZSeVjuYuL4mGCT@linux.intel.com>
+References: <3232442.5fSG56mABF@kreacher>
+ <3757041.MHq7AAxBmi@kreacher>
+ <ZcY7jyyFJq1yfOCj@linux.intel.com>
+ <CAJZ5v0gZ1tpNmdkvRLA6-ydnhKPKgsM_FCwrW+q1=5ZiD=vbWA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org> <87bk8pve2z.fsf@toke.dk>
-In-Reply-To: <87bk8pve2z.fsf@toke.dk>
-From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date: Fri, 9 Feb 2024 17:26:27 +0100
-Message-ID: <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0gZ1tpNmdkvRLA6-ydnhKPKgsM_FCwrW+q1=5ZiD=vbWA@mail.gmail.com>
 
-On Fri, Feb 9, 2024 at 4:42=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen <to=
-ke@redhat.com> wrote:
->
-> Benjamin Tissoires <bentiss@kernel.org> writes:
->
-> > [Putting this as a RFC because I'm pretty sure I'm not doing the things
-> > correctly at the BPF level.]
-> > [Also using bpf-next as the base tree as there will be conflicting
-> > changes otherwise]
+On Fri, Feb 09, 2024 at 05:15:41PM +0100, Rafael J. Wysocki wrote:
+> On Fri, Feb 9, 2024 at 3:50 PM Stanislaw Gruszka
+> <stanislaw.gruszka@linux.intel.com> wrote:
 > >
-> > Ideally I'd like to have something similar to bpf_timers, but not
-> > in soft IRQ context. So I'm emulating this with a sleepable
-> > bpf_tail_call() (see "HID: bpf: allow to defer work in a delayed
-> > workqueue").
->
-> Why implement a new mechanism? Sounds like what you need is essentially
-> the bpf_timer functionality, just running in a different context, right?
+> > On Fri, Feb 09, 2024 at 03:10:24PM +0100, Rafael J. Wysocki wrote:
+> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >
+> > > It is now possible to flag trip points with THERMAL_TRIP_WRITABLE_TEMP
+> > > to allow their temperature to be set from user space via sysfs instead
+> > > of using a nonzero writable trips mask during thermal zone registration,
+> > > so make the iwlwifi code do that.
+> > >
+> > > No intentional functional impact.
+> > >
+> > > Note that this change is requisite for dropping the mask argument from
+> > > thermal_zone_device_register_with_trips() going forward.
+> > >
+> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > ---
+> > >
+> > > This patch obviously depends on
+> > >
+> > > https://patchwork.kernel.org/project/linux-pm/patch/8346768.T7Z3S40VBb@kreacher/
+> > >
+> > > which has been queued up for 6.9 already.
+> > >
+> > > ---
+> > >  drivers/net/wireless/intel/iwlwifi/mvm/tt.c |    6 ++----
+> > >  1 file changed, 2 insertions(+), 4 deletions(-)
+> > >
+> > > Index: linux-pm/drivers/net/wireless/intel/iwlwifi/mvm/tt.c
+> > > ===================================================================
+> > > --- linux-pm.orig/drivers/net/wireless/intel/iwlwifi/mvm/tt.c
+> > > +++ linux-pm/drivers/net/wireless/intel/iwlwifi/mvm/tt.c
+> > > @@ -667,9 +667,6 @@ static  struct thermal_zone_device_ops t
+> > >       .set_trip_temp = iwl_mvm_tzone_set_trip_temp,
+> > >  };
+> > >
+> > > -/* make all trips writable */
+> > > -#define IWL_WRITABLE_TRIPS_MSK (BIT(IWL_MAX_DTS_TRIPS) - 1)
+> > > -
+> > >  static void iwl_mvm_thermal_zone_register(struct iwl_mvm *mvm)
+> > >  {
+> > >       int i, ret;
+> > > @@ -692,11 +689,12 @@ static void iwl_mvm_thermal_zone_registe
+> > >       for (i = 0 ; i < IWL_MAX_DTS_TRIPS; i++) {
+> > >               mvm->tz_device.trips[i].temperature = THERMAL_TEMP_INVALID;
+> > >               mvm->tz_device.trips[i].type = THERMAL_TRIP_PASSIVE;
+> > > +             mvm->tz_device.trips[i].type = THERMAL_TRIP_WRITABLE_TEMP;
+> >
+> >                 mvm->tz_device.trips[i].flags = THERMAL_TRIP_WRITABLE_TEMP;
+> >
+> > Consider using diffrent prefix for constants to diffrenciate flags and types.
+> 
+> Well, I can use THERMAL_TRIP_FLAG_RW_TEMP or similar, but is it really
+> so confusing?
 
-Heh, that's exactly why I put in a RFC :)
+It's not, it was just suggestion, if you don't want to, don't do it.
 
-So yes, the bpf_timer approach is cleaner, but I need it in a
-workqueue, as a hrtimer in a softIRQ would prevent me to kzalloc and
-wait for the device.
+Regards
+Stanislaw
 
-> So why not just add a flag to the timer setup that controls the callback
-> context? I've been toying with something similar for restarting XDP TX
-> for my queueing patch series (though I'm not sure if this will actually
-> end up being needed in the end):
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/toke/linux.git/commit/?h=
-=3Dxdp-queueing-08&id=3D54bc201a358d1ac6ebfe900099315bbd0a76e862
->
-
-Oh, nice. Good idea. But would it be OK to have a "timer-like" where
-it actually defers the job in a workqueue instead of using an hrtimer?
-
-I thought I would have to rewrite the entire bpf_timer approach
-without the softIRQ, but if I can just add a new flag, that will make
-things way simpler for me.
-
-This however raises another issue if I were to use the bpf_timers: now
-the HID-BPF kfuncs will not be available as they are only available to
-tracing prog types. And when I tried to call them from a bpf_timer (in
-softIRQ) they were not available.
-
-Cheers,
-Benjamin
-
+> I'm wondering what others think.
+> 
+> > >       }
+> > >       mvm->tz_device.tzone = thermal_zone_device_register_with_trips(name,
+> > >                                                       mvm->tz_device.trips,
+> > >                                                       IWL_MAX_DTS_TRIPS,
+> > > -                                                     IWL_WRITABLE_TRIPS_MSK,
+> > > +                                                     0,
+> > >                                                       mvm, &tzone_ops,
+> > >                                                       NULL, 0, 0);
+> > >       if (IS_ERR(mvm->tz_device.tzone)) {
+> > >
+> > >
+> > >
+> >
+> 
 
