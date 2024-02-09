@@ -1,59 +1,56 @@
-Return-Path: <linux-kernel+bounces-58928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD04984EEB8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:59:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E3FF84EEB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 02:59:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FB0828B633
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 01:59:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0851728B66D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 01:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B98D262;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF50D52D;
 	Fri,  9 Feb 2024 01:58:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="aRDeMm8c"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="PyAYN5U3"
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46D54C90
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 01:58:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E495221
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 01:58:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707443937; cv=none; b=M2HBE3aUoBuSdwWr4x2Q1alyP3Ek96YPEVRylWTBjN0hkBAeYolVfGKkkqR/0oKSR8U0OZnIzbDLdFIfxeJPGh/DycXvOvBUB1+FCDKQj2ZZPo/sgZcIKD37RSquEW9uitF4idUMOeAQ9WbSrLzceTfmk2tq8xW9hXearcBwacE=
+	t=1707443938; cv=none; b=plJDYrWGdyHVH6Rj3EqiJjeWejJuo8E7G5ndcrGFQBOzI5EzJbV1y2SlOykYe+xAPL6SiBiAD4k29GRr8pU8s4eNJJCig7W05YBntACEu3ca1SWBkTuSZ8hgDIsRwBMowVU8+Z0qEfSKmNiTsgsMhQh3zq3BpIhT9x+BbwSx/eQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707443937; c=relaxed/simple;
-	bh=eSZ0UF6f5wQGVbK3MfAk9QDVqW9e5WhVYigroBv8fqI=;
+	s=arc-20240116; t=1707443938; c=relaxed/simple;
+	bh=5q5yd0uOzVxkeI+Nq9RNmm4/GaFC28QWASMAQnWNh2g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EJEZV6pCZdgLxDUJ4pWM3YXbuyqxd9Pca8MS/rtxNpjjge2bUvN1KosMAKPcvK+9BlHFTIstEy/ypJUXounp2sOS4yWJRFNW8TeYzhSlcVZ6cJd0FiWZKWsb8sJG8ARaiESubB0X0LBpzQpQJ6zDi70XCx22E+YJzzJ/ABUWgYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=aRDeMm8c; arc=none smtp.client-ip=194.117.254.33
+	 MIME-Version; b=Y8rCFT38jY9si9STyv6n16LGgbBQVo3JP6lZl/zpAjVcQha4cerrZaDSFVShsHIslvVwM4fLpD8w7A2EJHc/NcB784Lu24XDtfR3cuXPysoDOZ6j/s+Z9M/p9Ijsx9VDqH9tlQyVuoQ4imvA0PfOfMUroqrlSEHDq/8Mi3I0dII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=PyAYN5U3; arc=none smtp.client-ip=194.117.254.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
 	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=CIb4fU6aD0u2MIHraJnpW3RoUetuKj7I8/j6aS5bid0=; b=aRDeMm
-	8ckmE3LrbwdHQVF8R4F1jFHuz5IRDxgnWhnXMqBpjOCB0kRZTup//rVr8rWNHMA9
-	bBALwyWYF/ICF9XYrPM4YPNYyVtIu+dZl9ZmVVjH4psT3Gaa+nAcVGDw9DZl8KDX
-	NYGuntN7nJ3J/wPRzn6nW3bMfbxHPMNx3lBm9aMTW/gVgoCcmpn+Lhcc0Sfg9yXs
-	w9WVSY0gznAr7ru5iQA5s43oXZgDmvSoQByRQllkBBt8OvlZTAAskN+FWdStE8hm
-	fruHuYxSCGMr0BPFzBmX1UL5r6UQCvGDC6goizkzCUUe/6V3SJorfVH78C6Yg6KF
-	E6gea8JBxNcHg3oQ==
-Received: (qmail 2792359 invoked from network); 9 Feb 2024 02:58:47 +0100
+	 s=k1; bh=zEZx/yqiZ/Xq8ZRCg9io5VCbk6EfjKXq2ELvwxjA4iA=; b=PyAYN5
+	U37seEOUaME4GyephpapNYQLQOE/26KcINTRci+ysjZP5cC6uPGTdzLWL66xSywE
+	RAz0rb9p4ROA/vO5e+0zrzUnKj0I8EMe3GmJkEJpmyFt4ynDXlsg23fwtIOcSkXm
+	3VZiJ14PeesQ/rcHos+xy69pKbgss7MIUNK0KDkbA88SGuHuJI4w34WRcyGEOXFS
+	7oLAMdkdJ+ORyVRQrtUqTFd+PSzVCUREyrZ5Yg5lH5cFWKJ6nX0NMUYOIaB53NFH
+	RCIKd4xuOFOnfS2XSzzUjd8usPauzsxqnvmcMSwd8m9j42kmmu/QVYWpKUaZtThr
+	C7VAgrWztdj+dlog==
+Received: (qmail 2792400 invoked from network); 9 Feb 2024 02:58:47 +0100
 Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 9 Feb 2024 02:58:47 +0100
-X-UD-Smtp-Session: l3s3148p1@I++6ROkQlLMujnsZ
+X-UD-Smtp-Session: l3s3148p1@RRvHROkQmLMujnsZ
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-renesas-soc@vger.kernel.org
 Cc: Lee Jones <lee@kernel.org>,
 	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	kernel test robot <lkp@intel.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	linux-mmc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/6] mmc: tmio/sdhi: fix includes
-Date: Fri,  9 Feb 2024 02:58:18 +0100
-Message-ID: <20240209015817.14627-11-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 4/6] mfd: tmio: update include files
+Date: Fri,  9 Feb 2024 02:58:19 +0100
+Message-ID: <20240209015817.14627-12-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240209015817.14627-8-wsa+renesas@sang-engineering.com>
 References: <20240209015817.14627-8-wsa+renesas@sang-engineering.com>
@@ -65,61 +62,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-TMIO uses an of_* function, and SDHI uses pm_runtime functions. Add the
-includes directly, so we can clean up another header properly. Sort the
-pagemap include while we are here.
+Remove meanwhile unneeded includes, only add types.h for dma_addr_t.
+Also, remove an obsolete forward declaration while here.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202402070323.JpYfFtkQ-lkp@intel.com/
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- drivers/mmc/host/renesas_sdhi_internal_dmac.c | 3 ++-
- drivers/mmc/host/renesas_sdhi_sys_dmac.c      | 3 ++-
- drivers/mmc/host/tmio_mmc_core.c              | 1 +
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ include/linux/mfd/tmio.h | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/drivers/mmc/host/renesas_sdhi_internal_dmac.c b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-index 53d34c3eddce..24e1c17908d7 100644
---- a/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-+++ b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-@@ -16,8 +16,9 @@
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/platform_device.h>
- #include <linux/pagemap.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/scatterlist.h>
- #include <linux/sys_soc.h>
+diff --git a/include/linux/mfd/tmio.h b/include/linux/mfd/tmio.h
+index 4223315d2b2a..f71d4e507dcb 100644
+--- a/include/linux/mfd/tmio.h
++++ b/include/linux/mfd/tmio.h
+@@ -2,13 +2,8 @@
+ #ifndef MFD_TMIO_H
+ #define MFD_TMIO_H
  
-diff --git a/drivers/mmc/host/renesas_sdhi_sys_dmac.c b/drivers/mmc/host/renesas_sdhi_sys_dmac.c
-index 9cf7f9feab72..c18581897f8a 100644
---- a/drivers/mmc/host/renesas_sdhi_sys_dmac.c
-+++ b/drivers/mmc/host/renesas_sdhi_sys_dmac.c
-@@ -16,8 +16,9 @@
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/platform_device.h>
- #include <linux/pagemap.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/scatterlist.h>
- #include <linux/sys_soc.h>
- 
-diff --git a/drivers/mmc/host/tmio_mmc_core.c b/drivers/mmc/host/tmio_mmc_core.c
-index be7f18fd4836..c39141a5bd23 100644
---- a/drivers/mmc/host/tmio_mmc_core.c
-+++ b/drivers/mmc/host/tmio_mmc_core.c
-@@ -37,6 +37,7 @@
- #include <linux/mmc/mmc.h>
- #include <linux/mmc/slot-gpio.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/pagemap.h>
+-#include <linux/device.h>
+-#include <linux/fb.h>
+-#include <linux/io.h>
+-#include <linux/jiffies.h>
+-#include <linux/mmc/card.h>
  #include <linux/platform_device.h>
- #include <linux/pm_qos.h>
+-#include <linux/pm_runtime.h>
++#include <linux/types.h>
+ 
+ /* tmio MMC platform flags */
+ /*
+@@ -59,8 +54,6 @@
+ /* Some controllers have a CBSY bit */
+ #define TMIO_MMC_HAVE_CBSY		BIT(11)
+ 
+-struct dma_chan;
+-
+ /*
+  * data for the MMC controller
+  */
 -- 
 2.43.0
 
