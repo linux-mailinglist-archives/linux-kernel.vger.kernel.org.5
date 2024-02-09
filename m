@@ -1,200 +1,113 @@
-Return-Path: <linux-kernel+bounces-59274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9983884F467
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:18:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C06084F468
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:18:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBBE51C25112
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:18:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEEB11C22250
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 706302D61B;
-	Fri,  9 Feb 2024 11:17:55 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC0128DC6;
-	Fri,  9 Feb 2024 11:17:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F4E82C1B8;
+	Fri,  9 Feb 2024 11:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="JX8PFc+H"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC9C28DC9;
+	Fri,  9 Feb 2024 11:18:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707477475; cv=none; b=NeooBxxh5MdnuU97jGRyX04USDZqNnPhhme0DpWNtbHTLTcGX2MzGqa8JCQAxUp1xx9zTI4j99EQcUeHlpVGP524LqgfLl4Ir0nbQErdSRdBgjfBuV33qBKZJpUqOirsqLUBDok8qBz7IW8JKqX1pqR1GGAWBjFdHPypgumk4QQ=
+	t=1707477510; cv=none; b=rcd0tnzTioyPUQJTj9tkzSUb0xHrmLbDBBmOcNpzc8eg/efGL1TqW5EKCIBimAZPQ1e0hNMLKAiQNooUfZzdzN69Kpp8LSlQuv+DgzpTr1q6DFeTMwTwAOlzzO3SQVkUyNYz5Ps/wf6lSK/zVEAkUG+nNjXQRZ02pGdY5YY1B90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707477475; c=relaxed/simple;
-	bh=ipCQjai9yG3oH1YUXbxAwsASbwaksNk6MmJVjld8Mzg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=oVP5xEjVhsXRS+CnZUpSXSY9htri/eX8iJHdaW42u/yph/R3g3dQl7zUdoKS9onVFivHoMuwhDzZWg3SEphb6CYzYfKuVswHAuGfyKsAJ14dJvxwKhAntvtGzOJc2z8n59zdSycpDghshxUelx6QSFk7Wc77sKLjDhcJue9jTv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF7CFDA7;
-	Fri,  9 Feb 2024 03:18:33 -0800 (PST)
-Received: from [10.57.47.119] (unknown [10.57.47.119])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7511A3F762;
-	Fri,  9 Feb 2024 03:17:45 -0800 (PST)
-Message-ID: <14e55a48-4439-47c7-a74f-126eaa998968@arm.com>
-Date: Fri, 9 Feb 2024 11:17:44 +0000
+	s=arc-20240116; t=1707477510; c=relaxed/simple;
+	bh=MntDz3frSWPLI1b8XC6BskO076LR1R1lCkWAh6YNv0Q=;
+	h=From:To:CC:References:In-Reply-To:Subject:Date:Message-ID:
+	 MIME-Version:Content-Type; b=jcL13NV5pd8U96ykXRQsji3ax/5gXs2f6DbLGuL4IACTzLG/EoI1axeUySPEKQdPm5rF6uAkaIDcHD/cQBJRroxMBuvppunHCS9p/lhXfYyGaJi1l5mlU3ZwFUBtMpOPDnTMSUq1hQxRohyAmpl1LWG+jhM9FUd4LyH+emN9RME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=JX8PFc+H; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4198UKwV014537;
+	Fri, 9 Feb 2024 05:18:10 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:references:in-reply-to:subject:date:message-id
+	:mime-version:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=coVRnRrQs3z5qP4mCx2uQbZTGohzfwN2TLzDPTaxh8M=; b=
+	JX8PFc+HFV4adL6eiQsxtlZhMNnqtpYnpgdNhTK4MGVkwoU2UoJTpLR5JkWQrJMa
+	r9TLc8B4eK81Mk+NZ3/CYK4hLf8z0PvcIEQ15tY7W6X8ZUzfsJve9SHDiYmQ8IK6
+	adyoLf9U6LLTaQ9nXbVfJBriSCIdG5jeR4UYquwJIqX/FBrieu/GC2S9Q9sMTxru
+	RCZ1+vckdXA+DgUP2I0aXa0kBXbIfpmSndYDqMCGN+p3ve/EooRHKa9gKFHAxlkP
+	6cFlyj2w16zrE/fO0WWORcM/np8kUTieMlB/DJajqEwmr+mo6Q+YM46p2u72bC4K
+	/vp/d4bYey9Vpfm+VJ91Jw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3w1ks2ftsy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 05:18:10 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 9 Feb
+ 2024 11:18:08 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40 via Frontend Transport; Fri, 9 Feb 2024 11:18:08 +0000
+Received: from EDIN6ZZ2FY3 (EDIN6ZZ2FY3.ad.cirrus.com [198.61.64.128])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id CA2E3820243;
+	Fri,  9 Feb 2024 11:18:07 +0000 (UTC)
+From: Simon Trimmer <simont@opensource.cirrus.com>
+To: 'Lukas Bulwahn' <lukas.bulwahn@gmail.com>,
+        'Jaroslav Kysela'
+	<perex@perex.cz>, 'Takashi Iwai' <tiwai@suse.com>,
+        'Richard Fitzgerald'
+	<rf@opensource.cirrus.com>,
+        <linux-sound@vger.kernel.org>
+CC: <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240209082044.3981-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20240209082044.3981-1-lukas.bulwahn@gmail.com>
+Subject: RE: [PATCH] ALSA: hda/cs35l56: select intended config FW_CS_DSP
+Date: Fri, 9 Feb 2024 11:18:07 +0000
+Message-ID: <001801da5b49$a89be460$f9d3ad20$@opensource.cirrus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 09/10] iommu: observability of the IOMMU allocations
-Content-Language: en-GB
-To: Pasha Tatashin <pasha.tatashin@soleen.com>, akpm@linux-foundation.org,
- alim.akhtar@samsung.com, alyssa@rosenzweig.io, asahi@lists.linux.dev,
- baolu.lu@linux.intel.com, bhelgaas@google.com, cgroups@vger.kernel.org,
- corbet@lwn.net, david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
- heiko@sntech.de, iommu@lists.linux.dev, jernej.skrabec@gmail.com,
- jonathanh@nvidia.com, joro@8bytes.org, krzysztof.kozlowski@linaro.org,
- linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
- lizefan.x@bytedance.com, marcan@marcan.st, mhiramat@kernel.org,
- m.szyprowski@samsung.com, paulmck@kernel.org, rdunlap@infradead.org,
- samuel@sholland.org, suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
- thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
- vdumpa@nvidia.com, wens@csie.org, will@kernel.org, yu-cheng.yu@intel.com,
- rientjes@google.com, bagasdotme@gmail.com, mkoutny@suse.com
-References: <20240207174102.1486130-1-pasha.tatashin@soleen.com>
- <20240207174102.1486130-10-pasha.tatashin@soleen.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240207174102.1486130-10-pasha.tatashin@soleen.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-gb
+Thread-Index: AQIj8QOMXSB51XGLfZZGXWCY5rrZsLBusJ+A
+X-Proofpoint-GUID: o36hZYTiQqh1B2u0fp3WbmugxjGk6opz
+X-Proofpoint-ORIG-GUID: o36hZYTiQqh1B2u0fp3WbmugxjGk6opz
+X-Proofpoint-Spam-Reason: safe
 
-On 2024-02-07 5:41 pm, Pasha Tatashin wrote:
-> Add NR_IOMMU_PAGES into node_stat_item that counts number of pages
-> that are allocated by the IOMMU subsystem.
+> -----Original Message-----
+> From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 > 
-> The allocations can be view per-node via:
-> /sys/devices/system/node/nodeN/vmstat.
+> Commit 73cfbfa9caea ("ALSA: hda/cs35l56: Add driver for Cirrus Logic
+> CS35L56 amplifier") adds configs SND_HDA_SCODEC_CS35L56_{I2C,SPI},
+> which selects the non-existing config CS_DSP. Note the renaming in
+> commit d7cfdf17cb9d ("firmware: cs_dsp: Rename KConfig symbol CS_DSP ->
+> FW_CS_DSP"), though.
 > 
-> For example:
+> Select the intended config FW_CS_DSP.
 > 
-> $ grep iommu /sys/devices/system/node/node*/vmstat
-> /sys/devices/system/node/node0/vmstat:nr_iommu_pages 106025
-> /sys/devices/system/node/node1/vmstat:nr_iommu_pages 3464
+> This broken select command probably was not noticed as the configs also
+> select SND_HDA_CS_DSP_CONTROLS and this then selects FW_CS_DSP. So,
+> the
+> select FW_CS_DSP could actually be dropped, but we will keep this
+> redundancy in place as the author originally also intended to have this
+> redundancy of selects in place.
 > 
-> The value is in page-count, therefore, in the above example
-> the iommu allocations amount to ~428M.
-> 
-> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> Acked-by: David Rientjes <rientjes@google.com>
-> Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
-> ---
->   drivers/iommu/iommu-pages.h | 30 ++++++++++++++++++++++++++++++
->   include/linux/mmzone.h      |  3 +++
->   mm/vmstat.c                 |  3 +++
->   3 files changed, 36 insertions(+)
-> 
-> diff --git a/drivers/iommu/iommu-pages.h b/drivers/iommu/iommu-pages.h
-> index c412d0aaa399..7336f976b641 100644
-> --- a/drivers/iommu/iommu-pages.h
-> +++ b/drivers/iommu/iommu-pages.h
-> @@ -17,6 +17,30 @@
->    * state can be rather large, i.e. multiple gigabytes in size.
->    */
->   
-> +/**
-> + * __iommu_alloc_account - account for newly allocated page.
-> + * @page: head struct page of the page.
-> + * @order: order of the page
-> + */
-> +static inline void __iommu_alloc_account(struct page *page, int order)
-> +{
-> +	const long pgcnt = 1l << order;
-> +
-> +	mod_node_page_state(page_pgdat(page), NR_IOMMU_PAGES, pgcnt);
-> +}
-> +
-> +/**
-> + * __iommu_free_account - account a page that is about to be freed.
-> + * @page: head struct page of the page.
-> + * @order: order of the page
-> + */
-> +static inline void __iommu_free_account(struct page *page, int order)
-> +{
-> +	const long pgcnt = 1l << order;
-> +
-> +	mod_node_page_state(page_pgdat(page), NR_IOMMU_PAGES, -pgcnt);
-> +}
-> +
->   /**
->    * __iommu_alloc_pages_node - allocate a zeroed page of a given order from
->    * specific NUMA node.
-> @@ -35,6 +59,8 @@ static inline struct page *__iommu_alloc_pages_node(int nid, gfp_t gfp,
->   	if (unlikely(!page))
->   		return NULL;
->   
-> +	__iommu_alloc_account(page, order);
-> +
->   	return page;
->   }
->   
-> @@ -53,6 +79,8 @@ static inline struct page *__iommu_alloc_pages(gfp_t gfp, int order)
->   	if (unlikely(!page))
->   		return NULL;
->   
-> +	__iommu_alloc_account(page, order);
-> +
->   	return page;
->   }
->   
-> @@ -89,6 +117,7 @@ static inline void __iommu_free_pages(struct page *page, int order)
->   	if (!page)
->   		return;
->   
-> +	__iommu_free_account(page, order);
->   	__free_pages(page, order);
->   }
->   
-> @@ -197,6 +226,7 @@ static inline void iommu_free_pages_list(struct list_head *page)
->   		struct page *p = list_entry(page->prev, struct page, lru);
->   
->   		list_del(&p->lru);
-> +		__iommu_free_account(p, 0);
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-I'm keen to revive my patches to hook up freelist support in 
-io-pgtable-arm, which would then mean a chance of higher-order GFP_COMP 
-allocations coming back though this path - do you have any pointers for 
-what I'd have to do here to make it work properly?
+Thanks!
 
-Thanks,
-Robin.
+Reviewed-by: Simon Trimmer <simont@opensource.cirrus.com>
 
->   		put_page(p);
->   	}
->   }
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index a497f189d988..bb6bc504915a 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -203,6 +203,9 @@ enum node_stat_item {
->   #endif
->   	NR_PAGETABLE,		/* used for pagetables */
->   	NR_SECONDARY_PAGETABLE, /* secondary pagetables, e.g. KVM pagetables */
-> +#ifdef CONFIG_IOMMU_SUPPORT
-> +	NR_IOMMU_PAGES,		/* # of pages allocated by IOMMU */
-> +#endif
->   #ifdef CONFIG_SWAP
->   	NR_SWAPCACHE,
->   #endif
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index db79935e4a54..8507c497218b 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1242,6 +1242,9 @@ const char * const vmstat_text[] = {
->   #endif
->   	"nr_page_table_pages",
->   	"nr_sec_page_table_pages",
-> +#ifdef CONFIG_IOMMU_SUPPORT
-> +	"nr_iommu_pages",
-> +#endif
->   #ifdef CONFIG_SWAP
->   	"nr_swapcached",
->   #endif
 
