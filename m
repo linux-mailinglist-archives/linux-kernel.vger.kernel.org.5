@@ -1,91 +1,89 @@
-Return-Path: <linux-kernel+bounces-59053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AF8584F079
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:55:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F30084F07E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 08:01:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A55EC28120C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 06:55:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7590AB23AC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 07:01:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7087B41AB8;
-	Fri,  9 Feb 2024 06:55:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 238C856B88;
+	Fri,  9 Feb 2024 07:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="eqGvwdxR"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="E3VmzKT/"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85E1456B71
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 06:55:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44893651B4;
+	Fri,  9 Feb 2024 07:01:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707461732; cv=none; b=KAqDYwxIdIqb5945eI18Wlh0PneRz6iAhAEsLHJSGx4JNLMinUfvuSLm/sY6d3A6h0ZSwf1j6n77QwRgcSHS2W+No3AaDQcwoQ6S1SUAAClD18H9TRKzwrIHxbDxb5O1sjMylHaA6kyY14s4O10dFyXVib3gFWyJjTn580lolOU=
+	t=1707462087; cv=none; b=V++KNyoE2/sDxKwzM/Pe9uNWS3kNPgL/DKavNw0UExn/GhQ4/17ehY4pl5uX6MEnANPsYVbO/r2n20w3Q60ayrODmYV29W9YpCvoLALk2tW7vXnfpOGeeAmpvPAEs5aDH6MG/EROHq/XNobi0TOm72Eruz9794kT2XYFuf9vGEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707461732; c=relaxed/simple;
-	bh=711cHkfsOgZL9MPEIGbLJw6rxtGeCrt5XH4lwE/BkYQ=;
+	s=arc-20240116; t=1707462087; c=relaxed/simple;
+	bh=FbvfLimCRTIizgrKaU2lF8zyXFZz6p1xNTqV1ED8pWU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PpFaFoGUb5/0z+0OAs25kiBi7qfhz8JXHiWyOyiMTslIZpReaCXWTdO6xEl1nw+eAAvt4UMfn92hoiuW4SgDzqazBDzHtQ0gRbm0OjGLucTB/L7V1vj+WgIKCa9STsFNlu4QZeJJv49WCQaOpKsj0cnaY0LRu2Vyha/IQHFpIcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=eqGvwdxR; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4102f273c46so5598385e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Feb 2024 22:55:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1707461728; x=1708066528; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cdmhTFAG6NaVssbeznKI3+O6lsTy9x8b3RBjAgRQHbg=;
-        b=eqGvwdxRp44etQhRBblUs8VkRGXVUfA2vnANJVH8uElAkHKHFfXhULxGOyvf7xVnZ4
-         kImY/S4awjzl76fCWYqB9BRHnsGwOMcCVvyjTAuaCd8td5ZMwyo1YhxyGyR9z1PcJPD1
-         FDbO1Njk/o5S84xg14Zh8Hw06B50ZLaVH698037NfMisAbYfBM2cxFdiBsYz9RE2Y9iy
-         N5K1CAls9q594WUBOgL4HNhzand6c/kmhto2J/SiMfayedlVBKMl8cZwBLCQeELdNJhT
-         vOJiuV/cOdAS1qKK6dk9tChNb6QBJCv4bEwds/Q0oUIBFh250gnBWWENXEuLXVYLKopB
-         sGjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707461728; x=1708066528;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cdmhTFAG6NaVssbeznKI3+O6lsTy9x8b3RBjAgRQHbg=;
-        b=l4qEJXIifEdHtYVthia2QqQRyGHGNrOhMQmZV4VGpAKTVf5ax1Q+UuzdvThJf0qlSi
-         N9JDSLOCb0htBu78OO6sF8j52XghBwpNHFv+dghH4ezRAUzi1kaYdwuQpm5MrBClAtrN
-         4zDLfoQHO6m+kLTh9FnWGYTRzab8KJlCopImr9NIWPT7oJP3vmE7Fn1C9JYK/egWCla/
-         sQygXJjFGX81KBSBZd34hLTM44PzNMRgxM1MIMQS35kBNGnHE2xSqA7StgeBh8IZU5+I
-         Z7YpQ3LPExpijnWK/XtO/oTWd/OO4CAclw4MYfo2tjbonae/LtP/7fsDFzqf/NPY2SKp
-         iwpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXxVqH82wS1eDQqNuoHS+zLQThin0jCeRTG4/w1GcZvNwDu2AbZC/3Vel5+taMQAjkTftnFLNb5xMk1wgjT0ajBQe3gCBoPx8lD0krQ
-X-Gm-Message-State: AOJu0YytvyCyD9PPsyeL0lhpC2MAYKDYmDtyuiEtkDoRgigmmkNJfrkL
-	8KmlYqpg0ukdE6Nze8y5Y0itmcbjy/6daKdkBomaiTvw4INqfcwe6RSgpE5Pf84=
-X-Google-Smtp-Source: AGHT+IEPu2RWDQ+KqY+GeGeneEFcPV5/5TrF68Jrl3lB0+Rbgxl+MQ17fkELizSi9cWf1HBBZPTqjw==
-X-Received: by 2002:a05:600c:3110:b0:410:6d90:8efa with SMTP id g16-20020a05600c311000b004106d908efamr409350wmo.6.1707461728520;
-        Thu, 08 Feb 2024 22:55:28 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV3ZYsENv9ILXsLxYLkoe9NLe2w6+ikhpacM+wGjUX7q/ipaDRsKFVQUfi8xwGVEX85vmWtSyZGq4MkyiRNupbk43NCFAklZdneKzTX63V4ytF7/CP+KrZZgVrOQ6lDQ7Wo637qOJObgAr8t4UzqL2yaYrfY9FdDQ21B/Q6fM5sa8DtEwQG+SA9ngQXvM66WX09fWUMN6Sg7Ipjybk0OxUaQ7GK7r0i/xJXG2USZCMMRweXdtbT+83e3BZzKqbecMmCLdgsNI7Nu8BnPf5laPCuQkUk7Rk0NH0CZF1ps4+DETnbzq53zPTGHYe+Pqmpx3Knv7r4XaJ7btzUlgjBYOUV6/sKc8VrxKxZSG7NQfli0wp59duqk+a/XbCSExbdQnBNU0d+Ds9Z1kf0aL3aMIFNJAHdJqXvMSZyxjGAu+91R6WEFFYfeKG5/MGSYGlR7p+HaXr+/rHEBucD3Ag36XSbQ3C35xNnG253bmGfdYJSTho=
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id bx23-20020a5d5b17000000b0033b4b4a216asm1037210wrb.14.2024.02.08.22.55.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 22:55:27 -0800 (PST)
-Date: Fri, 9 Feb 2024 07:55:26 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	Jason Gunthorpe <jgg@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-	Leonid Bloch <lbloch@nvidia.com>, Itay Avraham <itayavr@nvidia.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	David Ahern <dsahern@kernel.org>,
-	Aron Silverton <aron.silverton@oracle.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	andrew.gospodarek@broadcom.com, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Message-ID: <ZcXMXhQs2n7c4LkQ@nanopsycho>
-References: <20240207072435.14182-1-saeed@kernel.org>
- <20240207070342.21ad3e51@kernel.org>
- <ZcRgp76yWcDfEbMy@x130>
- <20240208181555.22d35b61@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iGgXLRCCeyp3Bglku9MB/iRyGPjEW1hXWZnGP3LPaBJyCoA1BCEKKqHUPtQxqKbZ1jnM00d0otsAEcLsVGBQjl9HadktAAM5+BGcQe2b0qur3b1kjwG/zMGGpjx/qfoTHnRTYYcBOeVEisqfcJv5JvET0Ios0KqgG7WEFttJ9lU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=E3VmzKT/; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4196TnCX007002;
+	Fri, 9 Feb 2024 07:01:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=SU+RhwOCJyXKUQy8eP7qCl/A4QdJg+opYZJ7tZXEN1I=;
+ b=E3VmzKT/wdQxJHYFux42SZt3KUOjuOzpv2OWqdpyMb6FfU+tNPVF5m0msMviZsBNMDdR
+ ql1BD2XaemQcBe1H8s8A2j2WJmRcm4O0ja5MS8rEfb6wILJkOVdlBZA3IYJJW6VphZ08
+ KH8Qbn4Wvd3dOXYnJ7bEVZvSwzZKrKqlSCRG4+/hrCDbjibx91Wxu5oQIm72pxGEPrab
+ LT+AkZuz7JF9Q5ZeMqyGxvPRDnJc36fQRJlfBfhZNkSf44OqT6Dk8s2FDTFMUgcvQ59X
+ cQ2N05mPyt73a3dT1Y2ILC+hWKM4iaK7PfcrWAEqK4mvM+XQw9FLJvnjUhxFKbMgrWlG AA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w5a6dxcd6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 07:01:05 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4196rnw5026969;
+	Fri, 9 Feb 2024 07:01:05 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w5a6dxcc2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 07:01:05 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4194GSMg008539;
+	Fri, 9 Feb 2024 07:01:04 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w221kh8kv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 09 Feb 2024 07:01:04 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 419712a842074864
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 9 Feb 2024 07:01:02 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 431092004F;
+	Fri,  9 Feb 2024 07:01:02 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0AC8220040;
+	Fri,  9 Feb 2024 07:00:59 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.98.150])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri,  9 Feb 2024 07:00:58 +0000 (GMT)
+Date: Fri, 9 Feb 2024 12:30:56 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: hch@lst.de, djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
+        martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, jbongio@google.com
+Subject: Re: [PATCH 4/6] fs: xfs: Support atomic write for statx
+Message-ID: <ZcXNidyoaVJMFKYW@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20240124142645.9334-1-john.g.garry@oracle.com>
+ <20240124142645.9334-5-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,52 +92,127 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240208181555.22d35b61@kernel.org>
+In-Reply-To: <20240124142645.9334-5-john.g.garry@oracle.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Or_oZ37MC-AVzjU37NrZ8eyd8WXaqE_I
+X-Proofpoint-ORIG-GUID: AgQW3RwfUqVAr-JFgQp5bQTIRPYOtQ_Y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-09_04,2024-02-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ malwarescore=0 priorityscore=1501 suspectscore=0 clxscore=1015 spamscore=0
+ impostorscore=0 mlxlogscore=999 adultscore=0 lowpriorityscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402090048
 
-Fri, Feb 09, 2024 at 03:15:55AM CET, kuba@kernel.org wrote:
->On Wed, 7 Feb 2024 21:03:35 -0800 Saeed Mahameed wrote:
->> On 07 Feb 07:03, Jakub Kicinski wrote:
->> >On Tue,  6 Feb 2024 23:24:30 -0800 Saeed Mahameed wrote:  
->> >> From: Saeed Mahameed <saeedm@nvidia.com>
+Hi John,
 
-[...]
+Thanks for the patch, I've added some review comments and questions
+below.
 
->
->> Ok you don't like DPLL,
->
->I didn't say I dislike DPLL. I think it's a very odd example for
->you to pick for nVidia's contribution. My recollection is:
->
-> - Maciej from Intel started developing upstream API for SyncE support
-> - I asked him to generalize it to DPLL, he started working on it
-> - nVidia expressed interest in creating a common interface, we thought
->   it'd be great to align vendors
-> - nVidia hired Maciej from Intel, shutting down Intel's progress for a while
-> - nVidia went AWoL, long response times, we held meetings to nudge
->   you along, no commitments
-> - then after months and months Jiri started helping Arkadiusz and Vadim
->
->I remember thinking at the time that it must have been a terrible
->experience for Intel, definitely not how cooperation upstream should
->look :|
+On Wed, Jan 24, 2024 at 02:26:43PM +0000, John Garry wrote:
+> Support providing info on atomic write unit min and max for an inode.
+> 
+> For simplicity, currently we limit the min at the FS block size, but a
+> lower limit could be supported in future.
+> 
+> The atomic write unit min and max is limited by the guaranteed extent
+> alignment for the inode.
+> 
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
+> ---
+>  fs/xfs/xfs_iops.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
+>  fs/xfs/xfs_iops.h |  4 ++++
+>  2 files changed, 49 insertions(+)
+> 
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index a0d77f5f512e..0890d2f70f4d 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -546,6 +546,44 @@ xfs_stat_blksize(
+>  	return PAGE_SIZE;
+>  }
+>  
+> +void xfs_get_atomic_write_attr(
+> +	struct xfs_inode *ip,
+> +	unsigned int *unit_min,
+> +	unsigned int *unit_max)
+> +{
+> +	xfs_extlen_t		extsz = xfs_get_extsz(ip);
+> +	struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
+> +	struct block_device	*bdev = target->bt_bdev;
+> +	unsigned int		awu_min, awu_max, align;
+> +	struct request_queue	*q = bdev->bd_queue;
+> +	struct xfs_mount	*mp = ip->i_mount;
+> +
+> +	/*
+> +	 * Convert to multiples of the BLOCKSIZE (as we support a minimum
+> +	 * atomic write unit of BLOCKSIZE).
+> +	 */
+> +	awu_min = queue_atomic_write_unit_min_bytes(q);
+> +	awu_max = queue_atomic_write_unit_max_bytes(q);
+> +
+> +	awu_min &= ~mp->m_blockmask;
+> +	awu_max &= ~mp->m_blockmask;
 
-For the record, I spent huge amount of time reviewing the patchset and
-ended up with redesigning significant chunks of it, steering Arkadiusz
-and Vadim the way I felt is the correct one. Oftentimes I said to myself
-it would be much quicker to take the patchset over and do it myself :)
+I don't understand why we try to round down the awu_max to blocks size
+here and not just have an explicit check of (awu_max < blocksize).
 
-Anyway, at the end, I think that the result is very good. Solid and well
-defined uapi, nice kernel implementation, 3 drivers implementing it,
-each with slightly different usecase, all clicks. If this is not
-good example of upstream cooperation, I'm not sure what else is...
+I think the issue with changing the awu_max is that we are using awu_max
+to also indirectly reflect the alignment so as to ensure we don't cross
+atomic boundaries set by the hw (eg we check uint_max % atomic alignment
+== 0 in scsi). So once we change the awu_max, there's a chance that even
+if an atomic write aligns to the new awu_max it still doesn't have the
+right alignment and fails. 
 
-But, I don't think this is related to the misc driver discussion, I just
-wanted to express my pov on dpll process, when I see people talking
-about it :)
+It works right now since eveything is power of 2 but it should cause
+issues incase we decide to remove that limitation.  Anyways, I think
+this implicit behavior of things working since eveything is a power of 2
+should atleast be documented in a comment, so these things are
+immediately clear. 
 
->
->IDK how disconnected from upstream netdev you have to be to put that on
->your banner.
+> +
+> +	align = XFS_FSB_TO_B(mp, extsz);
+> +
+> +	if (!awu_max || !xfs_inode_atomicwrites(ip) || !align ||
+> +	    !is_power_of_2(align)) {
 
-[...]
+Correct me if I'm wrong but here as well, the is_power_of_2(align) is
+esentially checking if the align % uinit_max == 0 (or vice versa if
+unit_max is greater) so that an allocation of extsize will always align
+nicely as needed by the device. 
+
+So maybe we should use the % expression explicitly so that the intention
+is immediately clear.
+
+> +		*unit_min = 0;
+> +		*unit_max = 0;
+> +	} else {
+> +		if (awu_min)
+> +			*unit_min = min(awu_min, align);
+
+How will the min() here work? If awu_min is the minumum set by the
+device, how can statx be allowed to advertise something smaller than
+that?
+
+If I understand correctly, right now the way we set awu_min in scsi and
+nvme, the follwoing should usually be true for a sane device:
+
+ awu_min <= blocks size of fs <= align
+
+ so the min() anyways becomes redundant, but if we do assume that there
+ might be some weird devices with awu_min absurdly large (SCSI with
+ high atomic granularity) we still can't actually advertise a min
+ smaller than that of the device, or am I missing something here?
+
+> +		else
+> +			*unit_min = mp->m_sb.sb_blocksize;
+> +
+> +		*unit_max = min(awu_max, align);
+> +	}
+> +}
+> +
+
+Regards,
+ojaswin
 
