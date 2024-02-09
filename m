@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-59285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7A2A84F47E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:22:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 127C184F47F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 12:22:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3986A1F29C37
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:22:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDF6328122E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 11:22:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FFC928DDF;
-	Fri,  9 Feb 2024 11:19:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB695374F8;
+	Fri,  9 Feb 2024 11:19:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="U1/hEMt+"
-Received: from mail-lf1-f73.google.com (mail-lf1-f73.google.com [209.85.167.73])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zLu/xjEv"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E35A83C47A
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 11:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C3283D552
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 11:19:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707477552; cv=none; b=kolS5y+lwVTb8uAD3imvKwqOVDQ8nAf8QW5UAJJwrXO8SWVzhz7sxjyS9uQNpSGjJZSE2zo5CkF56uqJ2Nf0A7wf2cMeas0fW9KDDsnTKjBp0SoBHybNqwiX/TIn3NCPR6S1IfjzagLWkCATqPjqlrMbPL7TM33SUGEWA9OyCWQ=
+	t=1707477555; cv=none; b=k7pOCxIfp614qOB4sR6xXw6xjZ//7cr/qdLnxY94Fm8wM8PTqdkBjf7qmvo0/wvtTVO0jmsJ2mfbK7d8LuShS8Znyw6JanYOEsejU0VR04iDgt42uoOFd06bGEmIU+OfLbpJM6N4jkNUPCphbamCctg0QtBqxJoBrC8ORRdALRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707477552; c=relaxed/simple;
-	bh=E1buk0zzZWt+ClaaZ+b63yUoP42+YT0Qbdk1d5cyqEs=;
+	s=arc-20240116; t=1707477555; c=relaxed/simple;
+	bh=QXbqLmgDd7EsSTUpIcWNfbiRX0vIgR+IoYx0H4gKGSw=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=T//yZYfavh+ICl0xRXYHqWz3K+h+pSFVcF5qUvAK1G2gd/yMsQOpIjLBHdOcsElLEMiTueLallDOGfBAmEmUcPxfk9NbVmJnvk9TOOl+HRnJDPrPe8v3NiqVcIHd//Zp3wKD99Od4UZTA3lVlCAsXB77fz71Dn5TVTGHXK11VhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=U1/hEMt+; arc=none smtp.client-ip=209.85.167.73
+	 To:Cc:Content-Type; b=Q3cKqYoJHPboRmsbxRc6jj6k5Z9LNeIWEK/6qPUAjd6gL/qvw/I01I7EXA2qKCw7A0CT1Vc/CbPZmmfOciFoXrkrIM8BeiJS9rk5ixw/58WVWg19DEK+j+qu66kKiN6/TYe/TevWv8oKRd0BHLSe/ZioUWLt5sOL6/KyqT+QreA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zLu/xjEv; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-lf1-f73.google.com with SMTP id 2adb3069b0e04-5113b77ff80so643117e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 03:19:10 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc743cc50a6so1141395276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Feb 2024 03:19:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707477549; x=1708082349; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707477552; x=1708082352; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VdMtlvXSdpyuBlQLT4isky8KfbOQu099bwECdJmsAI8=;
-        b=U1/hEMt+fyH24R0QU6b92lYfSv5xUPhKdUi+t65OwFvAY6xkoeHQ5n2+MpqmqEC45/
-         ieDXnSqjH4x4iscsAQuabLs9seVQWmebMUw8NCiuoYe2sqJSZphd3qUSM1JXoytbuOBV
-         ecsP+zbi6Qce8vL8YVkZmC+mnEuqwchmE7zW8g5bWFhW3HPRs0UYys1hzRFUsGPXAmr8
-         YlwIMcImeSyD7UcXxwo6MHrfeNa2rA03V3WUwwJHsG8WMZwBV5g8/GdB85xzqmWKgSme
-         7aniK5cmsa8vMNfdAUQe6HlRa80bM4HKUlXCLDRaJGuNBCcVKOUrXwfwNnh7vw0MhjPr
-         zRBQ==
+        bh=5J2ATY8bukI5yS7lbmM4YWFCKuUjtHfxnPFLlFPpxZs=;
+        b=zLu/xjEvSaS58k37KZj0wf9TKNo/Qw3aXXO7IrxVSfQ/Ef5InVS5bZapJMj2SWSgL/
+         Pqb0pNZtg0Yz0f5K/jIQgLaMZxyhEBtgdlWV/qiYligekfbZRx9S1rmKr/t28ip89CIw
+         SH6W64SfW8mTcCdPVsY58UwMPiXQ+dFbqAfiiw2KDoB4estadgOdLqfXybMaPCl287/A
+         3d5OlIKLYcw4qyUvMbybwJkIkrcB+ep0VsvMwLeU+gwmsqggq3pl+4B8k6RbwfDamRRz
+         dc4va2D0Uo7BEeDcdwaUoxp5A38gMHjhyzZCi2ZoDo7XOVT0giDpea8XbTRhn9vZkg7T
+         B3Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707477549; x=1708082349;
+        d=1e100.net; s=20230601; t=1707477552; x=1708082352;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VdMtlvXSdpyuBlQLT4isky8KfbOQu099bwECdJmsAI8=;
-        b=aU3g8v+hzUem1fIVvNPqN8NbvuZFA1HTKHco8DAIekVsKBs3nL32SM7TovHernaNjH
-         J012EuSYk7OoevSNS/rEtniHbZEnmsbyjxucbOKAdLt59C1KlFny/as/YFn0jDJqciuX
-         41gOobdxbMN4QMEvmTWl/ildnghMz3ghz6z8Wn7/LiltDLlxFIBxAeISk3hTEda/UZO+
-         Uy4pN9sEarJbUTKXHB2iEzNDOp35tw7oprItXGZnZAtPFQeUtEDFoTU6bHgLCa9F4wLb
-         XJwuXQYsRRardA+GRdHXiLfOyT/grdTzHgp7bWI87rPe+JLmimPZZpW5llPVCPVYbCIA
-         FfgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXKKT7P16djg32EPuh5kY/Ew7SNu4n1niOENUxzsgr50dMarg+Jt5IuaBiCIjopJE7eee65N+zc+SCK08MIK0z0Zi9IR1u51RYsdpP7
-X-Gm-Message-State: AOJu0YxyDOLwebZrIi3bn4JqPt3zaUYG74ZXiAs8gWj84S7bVIqsI4BF
-	1WYjRNe7cDokjlVQO64jj+dKt/gHeIrFl9K+bk9GFxnmI2j21gmMnMaYQx8m4cKhqUgO5ptdpAk
-	MBrYboeupO+vzaQ==
-X-Google-Smtp-Source: AGHT+IHnRYPAoWbAMC+WZ+vqhhPrrFWco1EiFwfv2Uqa0rqOjoQ0lVzPQCeD2STSoOOKqJtmb40+YrokVd1rkC0=
+        bh=5J2ATY8bukI5yS7lbmM4YWFCKuUjtHfxnPFLlFPpxZs=;
+        b=Z7jBco3brjM9NJnz32clgINlwggKhIXMDCo2tQ8F8TIAdHE4TNFhZZqivmVGcYfESg
+         FQpLLpbUcbGdm586tldxGuZWcMfcxRXHJWYtmKls0aVS6MUpgY8Kz6+2qSIzkxHIhfV+
+         ocTgUSByfOL5/JKc0moWcbi6NrBu5tusuL10NAe3BHEHruGh+Ekna7hCMnWk8J/tYpih
+         vCYrCzIISurauMCobaPTmUKazdqYpPRlJ+aOoXO3rLbltqYbw1N29z3uKGEugJwzyb68
+         qFKtMsxOQJUdd+2aSzJSERdVC+UZDvEIGbUWhCw0xqacr/BgY/EId/mu+tq3Pp4vUbuo
+         ms1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUOoCCKZ+KFAxJ7h6XLV+lupJ7h8HUlIE2T+VxUr9Qn0GeCqOZjC1WwIowWvjwrgYg3xsEkbdbDlwApxrN8HUfuTItNwuHGNmXEJTzj
+X-Gm-Message-State: AOJu0YyJYs40AB7xcUH2D5aFR+OJ8nJ+E+Ed4iDwOFcJnK79Nm4W6UFw
+	/aLnd0RhF10din1oy1LIijMkYiIXQWPWw2jRcXLW0LthV+UOKPAs/s7j400edA6S4vgMqloEqPp
+	5CQVPnyzepEYtmg==
+X-Google-Smtp-Source: AGHT+IGL0Y5W88f/+QPiD9I9CD3FxozvvFhcju/TcRENgjijgcPxiXJtG92eSZdp0oCwETfj04VvkSP7HSJER3w=
 X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6512:36c1:b0:511:7c00:fb36 with SMTP
- id e1-20020a05651236c100b005117c00fb36mr111lfs.10.1707477548849; Fri, 09 Feb
- 2024 03:19:08 -0800 (PST)
-Date: Fri, 09 Feb 2024 11:18:20 +0000
+ (user=aliceryhl job=sendgmr) by 2002:a05:6902:70c:b0:dc2:5273:53f9 with SMTP
+ id k12-20020a056902070c00b00dc2527353f9mr26727ybt.1.1707477552214; Fri, 09
+ Feb 2024 03:19:12 -0800 (PST)
+Date: Fri, 09 Feb 2024 11:18:21 +0000
 In-Reply-To: <20240209-alice-file-v5-0-a37886783025@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,22 +73,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240209-alice-file-v5-0-a37886783025@google.com>
 X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7824; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=E1buk0zzZWt+ClaaZ+b63yUoP42+YT0Qbdk1d5cyqEs=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlxgoTxQ7fOeQVqeJHhvMo3R4TWUWv4Zre9VHmv
- 1n6+dozzJiJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZcYKEwAKCRAEWL7uWMY5
- RoTID/9DrBtrSeP6a7LrW8zdrFLqeLQwwj3lFqnnNrTM5QW+TdfhVwnLMnRTGE0+zgC05ke+Gja
- CZmAOET4+/vTYR24qksd1KZsRj8jCgg5xlc+Mq1/t2A/x/CUP4+oArC9rX4YZK3777fVV1m1Ac0
- bLuMffDV9reg3o85hMLAjyxk3PBDGqN+OWHnjwdNYy0gsWHUMN170+74qr5xgJUfIcIJVTItP0M
- QG1JsSs6EbrwR+OBo/TchCNF6VLu5O0ZjC0yKqDQZdJfbs0aeqHGGi4tiyhxJX3FR2QYcH+MUGq
- vbGN4vPIy6dgVwHaClly3eBpi4vuCZiYXKEDbT9baigwQbZC/ZA1dwVMTVM5i2mikL1wg9HuSf6
- xo+/zXyqysdcRlK7WmTGOQQm9xL6VLcUMtw7cql35bKXsA/UoTOFVoHUum2oYiLy0KnXwcn+Vhh
- q9Xc99KnXgEqroKeTSbFbO0f27sGvLDgIVVKrputudqRtzI4RwOeY3z9BhcpPP+G0ubccGV8FO6
- nAcUENW/W3vAANq8eWdUGyMY7axO8w3ayfurOy2qNbMDmXUzIfjiq5G8xZ/K8IkzMkWbGjrlrWA
- xwzn1rpRENlTrg+ej6ywS506rraGmNyYseWQhal7cvOX72nz2GHsEu68IQqnlM5Lm6gl7lVeyFT D5PnyAJZebOT5YA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=14200; i=aliceryhl@google.com;
+ h=from:subject:message-id; bh=QXbqLmgDd7EsSTUpIcWNfbiRX0vIgR+IoYx0H4gKGSw=;
+ b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlxgoUJDoDGV2XYijN3ZAjluEEyVP3dFd7yKN8i
+ RJH1bhEabmJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZcYKFAAKCRAEWL7uWMY5
+ RtgtEACOlFkxgEuF95gttJJXUVkL+y3AqSMiNe9XgvJTy2d8sYLEqQWbvnsyojucCOUkYtUp3e1
+ pSZiym3YT582eDSEndRo9m6W/FaLCsP6Quqgz3kQ48AnFT7QNNgvBaTX60nP9y5TbW7VuwJutwX
+ vd4BSQAUVp1120h40XUWBZwr7MnT9jtkJ10dDlQwdYA1z2F87I8W5AZsH5ici95CuJe8zZSVWIL
+ La/r9cAb0UbiFKHaeGkLaVcy4zzRx+GR6MpOpvESWRdEnOvl5f7wERoaeM+L0AEfp2Z3gdxi5PT
+ 5vORnezMcXPeQGWqJzh25fOOb9vktQBepBTojH77YyLY1ciLxPPd7u4Hpga40UHQo/HwzoWoSti
+ 3xtxgAftQ6iWFbW5F+UlqaL+NoDXXRAeDNMcAsaO/n/dYUjPqVR1u5Qf+/C34oDc7B6ifSOKDF6
+ LC81v/mXbwENI7IpGoMf8nOLXSFsmT1dSdQFjB8w5MuTDpDsIvsIgpBnZ53pn+MrncrOmriRN4n
+ /5zHe34CyN0hWniSfY/0oah5dPZxNK8x1DOsCsJwUDFMZVozXclM4t+B9qMoH6U/+kIkIi7qlHu
+ ibsJDQhxbSJdL10myE/kE8Jw5y+/2EBtTWpmuklECZILfj0mN040EvLjGi7l06PahGRl8CoZMUw E00EPBQK0lO8J0A==
 X-Mailer: b4 0.13-dev-26615
-Message-ID: <20240209-alice-file-v5-7-a37886783025@google.com>
-Subject: [PATCH v5 7/9] rust: file: add `Kuid` wrapper
+Message-ID: <20240209-alice-file-v5-8-a37886783025@google.com>
+Subject: [PATCH v5 8/9] rust: file: add `DeferredFdCloser`
 From: Alice Ryhl <aliceryhl@google.com>
 To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
 	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
@@ -106,241 +106,324 @@ Cc: Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>,
 	Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 Content-Type: text/plain; charset="utf-8"
 
-Adds a wrapper around `kuid_t` called `Kuid`. This allows us to define
-various operations on kuids such as equality and current_euid. It also
-lets us provide conversions from kuid into userspace values.
+To close an fd from kernel space, we could call `ksys_close`. However,
+if we do this to an fd that is held using `fdget`, then we may trigger a
+use-after-free. Introduce a helper that can be used to close an fd even
+if the fd is currently held with `fdget`. This is done by grabbing an
+extra refcount to the file and dropping it in a task work once we return
+to userspace.
 
-Rust Binder needs these operations because it needs to compare kuids for
-equality, and it needs to tell userspace about the pid and uid of
-incoming transactions.
+This is necessary for Rust Binder because otherwise the user might try
+to have Binder close its fd for /dev/binder, which would cause problems
+as this happens inside an ioctl on /dev/binder, and ioctls hold the fd
+using `fdget`.
 
-To read kuids from a `struct task_struct`, you must currently use
-various #defines that perform the appropriate field access under an RCU
-read lock. Currently, we do not have a Rust wrapper for rcu_read_lock,
-which means that for this patch, there are two ways forward:
+Additional motivation can be found in commit 80cd795630d6 ("binder: fix
+use-after-free due to ksys_close() during fdget()") and in the comments
+on `binder_do_fd_close`.
 
- 1. Inline the methods into Rust code, and use __rcu_read_lock directly
-    rather than the rcu_read_lock wrapper. This gives up lockdep for
-    these usages of RCU.
+If there is some way to detect whether an fd is currently held with
+`fdget`, then this could be optimized to skip the allocation and task
+work when this is not the case. Another possible optimization would be
+to combine several fds into a single task work, since this is used with
+fd arrays that might hold several fds.
 
- 2. Wrap the various #defines in helpers and call the helpers from Rust.
+That said, it might not be necessary to optimize it, because Rust Binder
+has two ways to send fds: BINDER_TYPE_FD and BINDER_TYPE_FDA. With
+BINDER_TYPE_FD, it is userspace's responsibility to close the fd, so
+this mechanism is used only by BINDER_TYPE_FDA, but fd arrays are used
+rarely these days.
 
-This patch uses the second option. One possible disadvantage of the
-second option is the possible introduction of speculation gadgets, but
-as discussed in [1], the risk appears to be acceptable.
-
-Of course, once a wrapper for rcu_read_lock is available, it is
-preferable to use that over either of the two above approaches.
-
-Link: https://lore.kernel.org/all/202312080947.674CD2DC7@keescook/ [1]
 Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 ---
- rust/bindings/bindings_helper.h |  1 +
- rust/helpers.c                  | 45 ++++++++++++++++++++++++++++
- rust/kernel/cred.rs             |  5 ++--
- rust/kernel/task.rs             | 66 +++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 115 insertions(+), 2 deletions(-)
+ rust/bindings/bindings_helper.h |   2 +
+ rust/helpers.c                  |   8 ++
+ rust/kernel/file.rs             | 184 +++++++++++++++++++++++++++++++++++++++-
+ rust/kernel/task.rs             |  14 +++
+ 4 files changed, 207 insertions(+), 1 deletion(-)
 
 diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index 5ca497d786f0..4194b057ef6b 100644
+index 4194b057ef6b..f4d9d04333c0 100644
 --- a/rust/bindings/bindings_helper.h
 +++ b/rust/bindings/bindings_helper.h
-@@ -15,6 +15,7 @@
+@@ -10,6 +10,7 @@
+ #include <linux/cred.h>
+ #include <linux/errname.h>
+ #include <linux/ethtool.h>
++#include <linux/fdtable.h>
+ #include <linux/file.h>
+ #include <linux/fs.h>
  #include <linux/jiffies.h>
- #include <linux/mdio.h>
- #include <linux/phy.h>
-+#include <linux/pid_namespace.h>
- #include <linux/security.h>
- #include <linux/slab.h>
+@@ -21,6 +22,7 @@
  #include <linux/refcount.h>
+ #include <linux/wait.h>
+ #include <linux/sched.h>
++#include <linux/task_work.h>
+ #include <linux/workqueue.h>
+ 
+ /* `bindgen` gets confused at certain things. */
 diff --git a/rust/helpers.c b/rust/helpers.c
-index fd633d9db79a..58e3a9dff349 100644
+index 58e3a9dff349..d146bbf25aec 100644
 --- a/rust/helpers.c
 +++ b/rust/helpers.c
-@@ -142,6 +142,51 @@ void rust_helper_put_task_struct(struct task_struct *t)
- }
- EXPORT_SYMBOL_GPL(rust_helper_put_task_struct);
+@@ -32,6 +32,7 @@
+ #include <linux/sched/signal.h>
+ #include <linux/security.h>
+ #include <linux/spinlock.h>
++#include <linux/task_work.h>
+ #include <linux/wait.h>
+ #include <linux/workqueue.h>
  
-+kuid_t rust_helper_task_uid(struct task_struct *task)
-+{
-+	return task_uid(task);
-+}
-+EXPORT_SYMBOL_GPL(rust_helper_task_uid);
-+
-+kuid_t rust_helper_task_euid(struct task_struct *task)
-+{
-+	return task_euid(task);
-+}
-+EXPORT_SYMBOL_GPL(rust_helper_task_euid);
-+
-+#ifndef CONFIG_USER_NS
-+uid_t rust_helper_from_kuid(struct user_namespace *to, kuid_t uid)
-+{
-+	return from_kuid(to, uid);
-+}
-+EXPORT_SYMBOL_GPL(rust_helper_from_kuid);
-+#endif /* CONFIG_USER_NS */
-+
-+bool rust_helper_uid_eq(kuid_t left, kuid_t right)
-+{
-+	return uid_eq(left, right);
-+}
-+EXPORT_SYMBOL_GPL(rust_helper_uid_eq);
-+
-+kuid_t rust_helper_current_euid(void)
-+{
-+	return current_euid();
-+}
-+EXPORT_SYMBOL_GPL(rust_helper_current_euid);
-+
-+struct user_namespace *rust_helper_current_user_ns(void)
-+{
-+	return current_user_ns();
-+}
-+EXPORT_SYMBOL_GPL(rust_helper_current_user_ns);
-+
-+pid_t rust_helper_task_tgid_nr_ns(struct task_struct *tsk,
-+				  struct pid_namespace *ns)
-+{
-+	return task_tgid_nr_ns(tsk, ns);
-+}
-+EXPORT_SYMBOL_GPL(rust_helper_task_tgid_nr_ns);
-+
- struct kunit *rust_helper_kunit_get_current_test(void)
- {
- 	return kunit_get_current_test();
-diff --git a/rust/kernel/cred.rs b/rust/kernel/cred.rs
-index fdd899040098..961e94b6a657 100644
---- a/rust/kernel/cred.rs
-+++ b/rust/kernel/cred.rs
-@@ -8,6 +8,7 @@
+@@ -243,6 +244,13 @@ void rust_helper_security_release_secctx(char *secdata, u32 seclen)
+ EXPORT_SYMBOL_GPL(rust_helper_security_release_secctx);
+ #endif
  
- use crate::{
-     bindings,
-+    task::Kuid,
-     types::{AlwaysRefCounted, Opaque},
++void rust_helper_init_task_work(struct callback_head *twork,
++				task_work_func_t func)
++{
++	init_task_work(twork, func);
++}
++EXPORT_SYMBOL_GPL(rust_helper_init_task_work);
++
+ /*
+  * `bindgen` binds the C `size_t` type as the Rust `usize` type, so we can
+  * use it in contexts where Rust expects a `usize` like slice (array) indices.
+diff --git a/rust/kernel/file.rs b/rust/kernel/file.rs
+index fb903b7f23fe..8902f490ccc8 100644
+--- a/rust/kernel/file.rs
++++ b/rust/kernel/file.rs
+@@ -11,7 +11,8 @@
+     error::{code::*, Error, Result},
+     types::{ARef, AlwaysRefCounted, NotThreadSafe, Opaque},
  };
+-use core::ptr;
++use alloc::boxed::Box;
++use core::{alloc::AllocError, mem, ptr};
  
-@@ -59,11 +60,11 @@ pub fn get_secid(&self) -> u32 {
-     }
- 
-     /// Returns the effective UID of the given credential.
--    pub fn euid(&self) -> bindings::kuid_t {
-+    pub fn euid(&self) -> Kuid {
-         // SAFETY: By the type invariant, we know that `self.0` is valid. Furthermore, the `euid`
-         // field of a credential is never changed after initialization, so there is no potential
-         // for data races.
--        unsafe { (*self.0.get()).euid }
-+        Kuid::from_raw(unsafe { (*self.0.get()).euid })
+ /// Flags associated with a [`File`].
+ pub mod flags {
+@@ -318,6 +319,187 @@ fn drop(&mut self) {
      }
  }
  
++/// Helper used for closing file descriptors in a way that is safe even if the file is currently
++/// held using `fdget`.
++///
++/// Additional motivation can be found in commit 80cd795630d6 ("binder: fix use-after-free due to
++/// ksys_close() during fdget()") and in the comments on `binder_do_fd_close`.
++pub struct DeferredFdCloser {
++    inner: Box<DeferredFdCloserInner>,
++}
++
++/// SAFETY: This just holds an allocation with no real content, so there's no safety issue with
++/// moving it across threads.
++unsafe impl Send for DeferredFdCloser {}
++unsafe impl Sync for DeferredFdCloser {}
++
++/// # Invariants
++///
++/// If the `file` pointer is non-null, then it points at a `struct file` and owns a refcount to
++/// that file.
++#[repr(C)]
++struct DeferredFdCloserInner {
++    twork: mem::MaybeUninit<bindings::callback_head>,
++    file: *mut bindings::file,
++}
++
++impl DeferredFdCloser {
++    /// Create a new [`DeferredFdCloser`].
++    pub fn new() -> Result<Self, AllocError> {
++        Ok(Self {
++            // INVARIANT: The `file` pointer is null, so the type invariant does not apply.
++            inner: Box::try_new(DeferredFdCloserInner {
++                twork: mem::MaybeUninit::uninit(),
++                file: core::ptr::null_mut(),
++            })?,
++        })
++    }
++
++    /// Schedule a task work that closes the file descriptor when this task returns to userspace.
++    ///
++    /// Fails if this is called from a context where we cannot run work when returning to
++    /// userspace. (E.g., from a kthread.)
++    pub fn close_fd(self, fd: u32) -> Result<(), DeferredFdCloseError> {
++        use bindings::task_work_notify_mode_TWA_RESUME as TWA_RESUME;
++
++        // In this method, we schedule the task work before closing the file. This is because
++        // scheduling a task work is fallible, and we need to know whether it will fail before we
++        // attempt to close the file.
++
++        // Task works are not available on kthreads.
++        let current = crate::current!();
++        if current.is_kthread() {
++            return Err(DeferredFdCloseError::TaskWorkUnavailable);
++        }
++
++        // Transfer ownership of the box's allocation to a raw pointer. This disables the
++        // destructor, so we must manually convert it back to a Box to drop it.
++        //
++        // Until we convert it back to a `Box`, there are no aliasing requirements on this
++        // pointer.
++        let inner = Box::into_raw(self.inner);
++
++        // The `callback_head` field is first in the struct, so this cast correctly gives us a
++        // pointer to the field.
++        let callback_head = inner.cast::<bindings::callback_head>();
++        // SAFETY: This pointer offset operation does not go out-of-bounds.
++        let file_field = unsafe { core::ptr::addr_of_mut!((*inner).file) };
++
++        let current = current.as_raw();
++
++        // SAFETY: This function currently has exclusive access to the `DeferredFdCloserInner`, so
++        // it is okay for us to perform unsynchronized writes to its `callback_head` field.
++        unsafe { bindings::init_task_work(callback_head, Some(Self::do_close_fd)) };
++
++        // SAFETY: This inserts the `DeferredFdCloserInner` into the task workqueue for the current
++        // task. If this operation is successful, then this transfers exclusive ownership of the
++        // `callback_head` field to the C side until it calls `do_close_fd`, and we don't touch or
++        // invalidate the field during that time.
++        //
++        // When the C side calls `do_close_fd`, the safety requirements of that method are
++        // satisfied because when a task work is executed, the callback is given ownership of the
++        // pointer.
++        //
++        // The file pointer is currently null. If it is changed to be non-null before `do_close_fd`
++        // is called, then that change happens due to the write at the end of this function, and
++        // that write has a safety comment that explains why the refcount can be dropped when
++        // `do_close_fd` runs.
++        let res = unsafe { bindings::task_work_add(current, callback_head, TWA_RESUME) };
++
++        if res != 0 {
++            // SAFETY: Scheduling the task work failed, so we still have ownership of the box, so
++            // we may destroy it.
++            unsafe { drop(Box::from_raw(inner)) };
++
++            return Err(DeferredFdCloseError::TaskWorkUnavailable);
++        }
++
++        // This removes the fd from the fd table in `current`. The file is not fully closed until
++        // `filp_close` is called. We are given ownership of one refcount to the file.
++        //
++        // SAFETY: This is safe no matter what `fd` is. If the `fd` is valid (that is, if the
++        // pointer is non-null), then we call `filp_close` on the returned pointer as required by
++        // `file_close_fd`.
++        let file = unsafe { bindings::file_close_fd(fd) };
++        if file.is_null() {
++            // We don't clean up the task work since that might be expensive if the task work queue
++            // is long. Just let it execute and let it clean up for itself.
++            return Err(DeferredFdCloseError::BadFd);
++        }
++
++        // Acquire a second refcount to the file.
++        //
++        // SAFETY: The `file` pointer points at a file with a non-zero refcount.
++        unsafe { bindings::get_file(file) };
++
++        // This method closes the fd, consuming one of our two refcounts. There could be active
++        // light refcounts created from that fd, so we must ensure that the file has a positive
++        // refcount for the duration of those active light refcounts. We do that by holding on to
++        // the second refcount until the current task returns to userspace.
++        //
++        // SAFETY: The `file` pointer is valid. Passing `current->files` as the file table to close
++        // it in is correct, since we just got the `fd` from `file_close_fd` which also uses
++        // `current->files`.
++        //
++        // Note: fl_owner_t is currently a void pointer.
++        unsafe { bindings::filp_close(file, (*current).files as bindings::fl_owner_t) };
++
++        // We update the file pointer that the task work is supposed to fput. This transfers
++        // ownership of our last refcount.
++        //
++        // INVARIANT: This changes the `file` field of a `DeferredFdCloserInner` from null to
++        // non-null. This doesn't break the type invariant for `DeferredFdCloserInner` because we
++        // still own a refcount to the file, so we can pass ownership of that refcount to the
++        // `DeferredFdCloserInner`.
++        //
++        // When `do_close_fd` runs, it must be safe for it to `fput` the refcount. However, this is
++        // the case because all light refcounts that are associated with the fd we closed
++        // previously must be dropped when `do_close_fd`, since light refcounts must be dropped
++        // before returning to userspace.
++        //
++        // SAFETY: Task works are executed on the current thread right before we return to
++        // userspace, so this write is guaranteed to happen before `do_close_fd` is called, which
++        // means that a race is not possible here.
++        unsafe { *file_field = file };
++
++        Ok(())
++    }
++
++    /// # Safety
++    ///
++    /// The provided pointer must point at the `twork` field of a `DeferredFdCloserInner` stored in
++    /// a `Box`, and the caller must pass exclusive ownership of that `Box`. Furthermore, if the
++    /// file pointer is non-null, then it must be okay to release the refcount by calling `fput`.
++    unsafe extern "C" fn do_close_fd(inner: *mut bindings::callback_head) {
++        // SAFETY: The caller just passed us ownership of this box.
++        let inner = unsafe { Box::from_raw(inner.cast::<DeferredFdCloserInner>()) };
++        if !inner.file.is_null() {
++            // SAFETY: By the type invariants, we own a refcount to this file, and the caller
++            // guarantees that dropping the refcount now is okay.
++            unsafe { bindings::fput(inner.file) };
++        }
++        // The allocation is freed when `inner` goes out of scope.
++    }
++}
++
++/// Represents a failure to close an fd in a deferred manner.
++#[derive(Copy, Clone, Debug, Eq, PartialEq)]
++pub enum DeferredFdCloseError {
++    /// Closing the fd failed because we were unable to schedule a task work.
++    TaskWorkUnavailable,
++    /// Closing the fd failed because the fd does not exist.
++    BadFd,
++}
++
++impl From<DeferredFdCloseError> for Error {
++    fn from(err: DeferredFdCloseError) -> Error {
++        match err {
++            DeferredFdCloseError::TaskWorkUnavailable => ESRCH,
++            DeferredFdCloseError::BadFd => EBADF,
++        }
++    }
++}
++
+ /// Represents the `EBADF` error code.
+ ///
+ /// Used for methods that can only fail with `EBADF`.
 diff --git a/rust/kernel/task.rs b/rust/kernel/task.rs
-index b579367fb923..f46ea3ba9e8e 100644
+index f46ea3ba9e8e..6adcd8ffcfde 100644
 --- a/rust/kernel/task.rs
 +++ b/rust/kernel/task.rs
-@@ -9,6 +9,7 @@
-     types::{NotThreadSafe, Opaque},
- };
- use core::{
-+    cmp::{Eq, PartialEq},
-     ffi::{c_int, c_long, c_uint},
-     ops::Deref,
-     ptr,
-@@ -96,6 +97,12 @@ unsafe impl Sync for Task {}
- /// The type of process identifiers (PIDs).
- type Pid = bindings::pid_t;
- 
-+/// The type of user identifiers (UIDs).
-+#[derive(Copy, Clone)]
-+pub struct Kuid {
-+    kuid: bindings::kuid_t,
-+}
-+
- impl Task {
-     /// Returns a raw pointer to the current task.
-     ///
-@@ -157,12 +164,31 @@ pub fn pid(&self) -> Pid {
-         unsafe { *ptr::addr_of!((*self.0.get()).pid) }
+@@ -145,6 +145,12 @@ fn deref(&self) -> &Self::Target {
+         }
      }
  
-+    /// Returns the UID of the given task.
-+    pub fn uid(&self) -> Kuid {
-+        // SAFETY: By the type invariant, we know that `self.0` is valid.
-+        Kuid::from_raw(unsafe { bindings::task_uid(self.0.get()) })
++    /// Returns a raw pointer to the task.
++    #[inline]
++    pub fn as_raw(&self) -> *mut bindings::task_struct {
++        self.0.get()
 +    }
 +
-+    /// Returns the effective UID of the given task.
-+    pub fn euid(&self) -> Kuid {
-+        // SAFETY: By the type invariant, we know that `self.0` is valid.
-+        Kuid::from_raw(unsafe { bindings::task_euid(self.0.get()) })
-+    }
-+
-     /// Determines whether the given task has pending signals.
-     pub fn signal_pending(&self) -> bool {
-         // SAFETY: By the type invariant, we know that `self.0` is valid.
-         unsafe { bindings::signal_pending(self.0.get()) != 0 }
+     /// Returns the group leader of the given task.
+     pub fn group_leader(&self) -> &Task {
+         // SAFETY: By the type invariant, we know that `self.0` is a valid task. Valid tasks always
+@@ -189,6 +195,14 @@ pub fn pid_in_current_ns(&self) -> Pid {
+         unsafe { bindings::task_tgid_nr_ns(self.0.get(), ptr::null_mut()) }
      }
  
-+    /// Returns the given task's pid in the current pid namespace.
-+    pub fn pid_in_current_ns(&self) -> Pid {
-+        // SAFETY: We know that `self.0.get()` is valid by the type invariant, and passing a null
-+        // pointer as the namespace is correct for using the current namespace.
-+        unsafe { bindings::task_tgid_nr_ns(self.0.get(), ptr::null_mut()) }
++    /// Returns whether this task corresponds to a kernel thread.
++    pub fn is_kthread(&self) -> bool {
++        // SAFETY: By the type invariant, we know that `self.0.get()` is non-null and valid. There
++        // are no further requirements to read the task's flags.
++        let flags = unsafe { (*self.0.get()).flags };
++        (flags & bindings::PF_KTHREAD) != 0
 +    }
 +
      /// Wakes up the task.
      pub fn wake_up(&self) {
          // SAFETY: By the type invariant, we know that `self.0.get()` is non-null and valid.
-@@ -172,6 +198,46 @@ pub fn wake_up(&self) {
-     }
- }
- 
-+impl Kuid {
-+    /// Get the current euid.
-+    #[inline]
-+    pub fn current_euid() -> Kuid {
-+        // SAFETY: Just an FFI call.
-+        Self::from_raw(unsafe { bindings::current_euid() })
-+    }
-+
-+    /// Create a `Kuid` given the raw C type.
-+    #[inline]
-+    pub fn from_raw(kuid: bindings::kuid_t) -> Self {
-+        Self { kuid }
-+    }
-+
-+    /// Turn this kuid into the raw C type.
-+    #[inline]
-+    pub fn into_raw(self) -> bindings::kuid_t {
-+        self.kuid
-+    }
-+
-+    /// Converts this kernel UID into a userspace UID.
-+    ///
-+    /// Uses the namespace of the current task.
-+    #[inline]
-+    pub fn into_uid_in_current_ns(self) -> bindings::uid_t {
-+        // SAFETY: Just an FFI call.
-+        unsafe { bindings::from_kuid(bindings::current_user_ns(), self.kuid) }
-+    }
-+}
-+
-+impl PartialEq for Kuid {
-+    #[inline]
-+    fn eq(&self, other: &Kuid) -> bool {
-+        // SAFETY: Just an FFI call.
-+        unsafe { bindings::uid_eq(self.kuid, other.kuid) }
-+    }
-+}
-+
-+impl Eq for Kuid {}
-+
- // SAFETY: The type invariants guarantee that `Task` is always ref-counted.
- unsafe impl crate::types::AlwaysRefCounted for Task {
-     fn inc_ref(&self) {
 
 -- 
 2.43.0.687.g38aa6559b0-goog
