@@ -1,229 +1,139 @@
-Return-Path: <linux-kernel+bounces-59956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15B1584FDE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:47:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D87D84FDE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 21:48:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 839AA1F29791
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:47:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D1D0281568
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 20:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F788F78;
-	Fri,  9 Feb 2024 20:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41A8DF63;
+	Fri,  9 Feb 2024 20:48:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ZK6bZdWd"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2079.outbound.protection.outlook.com [40.107.220.79])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="Id9rrK+Q"
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1D17610C
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 20:47:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707511661; cv=fail; b=TUeVdqS18Dcz1us18mP+tE1PULMUE0dFtC7tKqtoL/2SuxeXqWrGzZqqD17zhIm4cfZxfK1q8M9pauFHXjr30EhtKel+X1jzknQsuDwHny/MesOJ/TIHtw+C8h8pBRgh7wcnSZNV1QQ81vcKdJ0aJ+zc9zrpISkwhBWqzNlDPu0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707511661; c=relaxed/simple;
-	bh=cNMpqRWtNcY8HLrNPzWp1qy2QgClWFVPqqLA0d6NNFI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=tD7Kq2ddljlxLPkRzhTJbpHq1lHLqZ8WjXzxk8QcLMxn0UdtSKoWiUTOCqXFemkmJiA47IMXryIPGy2wzVuL62F2EwNIK/9UZSQEFxbNbqi5gbrJ2ESivk+JeJYX4XtOn5W0H4brZO/Foz6nmEzrCm921I1cyDxlfie0CY2ZrrM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ZK6bZdWd; arc=fail smtp.client-ip=40.107.220.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hf8xDmerDStZ3nyebrozPYaNr1d9WzwgmQBie7GJU0RbYARddxbH30iDVinIroiR6W1bFORvnIiIdf1E0zYlQM7TdIWz7xD7KPNJnMKOHCFVF7Tr+D0SqLfF4PyhgTnjy7VrCawSBsgZzdJOSG8VvH3y0e+OZMVnCxxwPkZg5+TIX//lt09vNxzRtLmc4PHZsenDSrJbugTKx8oDIznjFVMIiefUjhSaM2vUDnNv34aNQhcCxP8sKr58UkN45Ev+ErtM2W4rVBlJZqDrkLS1e89HGvTZYDQbP69vWOfGn9/bdpqLd1a2p1BUiRUK15qkOBaD1Up59TIHS4m8XTucWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tMn0so+mgTBIcpA3kDRBCWBcZpD6yqUsG/hggDFbuhM=;
- b=kc7JlSdG4xfIhKLwgHhVcjE+Y0aeUtgt0am3X8WuZIyECqwCq198mubdUT4ZTWsIk7J7/VCNMMPZPoFn6y4FyAcIa95pweH5CG9AQdoWdMTku8UNmsx89zsdAGyTIxgnML0z0It3srvFqGEru5Ibcz78q6nrQ79e3xrqK1RnzVukZ+6K/IMFw7dYVnjjPHBgTAQPFh9MEMzCMTvaos8AsAEkG2toKA26O4+BmV3nnPrDF+zVLlaswWpsMx6KnlsBIO7WI7m03S6qlEXO4J1d5jPRNjGD5DFS/aZDcIzWdIEEmkwDuWngGLpE93yM7hlR0J8EYzxuTORVuIyuKlqJIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tMn0so+mgTBIcpA3kDRBCWBcZpD6yqUsG/hggDFbuhM=;
- b=ZK6bZdWdxI0xozij7lzKKH7Irx+ywMhnVS8MOeiujIB1AFXdBBjMVpj8Um2NTBgJG/ThuQoHgd/Uzz/FV7IQGAlP/OsjX1vxYZTFI3+Hz0NwtQupJgdNiaxFQQx81ThF5ROwbt1qkSgk7/wi13t1wpe1JoqhkceHmxw6K+DVK8ViX1/199UCFj8PdnBybE5gQcUBN58wrFWUkhpDGFBZ/AJYqOOMdd/J/mUcxcAqwVnX9kia/hwB6sWAvdcBGaMXO9V35KLHZVn9YaR2l0R4YyEFd9u5CUm6Dn3Y3TPOh6pNP16y+EJilAHusy9z3lfq2kcQOmO+cjIMJkTT/vLh2w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- DS0PR12MB7970.namprd12.prod.outlook.com (2603:10b6:8:149::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7270.15; Fri, 9 Feb 2024 20:47:35 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::db3e:28df:adc1:9c15]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::db3e:28df:adc1:9c15%5]) with mapi id 15.20.7292.013; Fri, 9 Feb 2024
- 20:47:35 +0000
-From: Zi Yan <ziy@nvidia.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- "\"Huang, Ying\"" <ying.huang@intel.com>,
- Ryan Roberts <ryan.roberts@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>,
- David Hildenbrand <david@redhat.com>,
- "\"Yin, Fengwei\"" <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
- "\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- Kemeng Shi <shikemeng@huaweicloud.com>,
- Mel Gorman <mgorman@techsingularity.net>,
- Rohan Puri <rohan.puri15@gmail.com>, Mcgrof Chamberlain <mcgrof@kernel.org>,
- Adam Manzanares <a.manzanares@samsung.com>,
- "\"Vishal Moola (Oracle)\"" <vishal.moola@gmail.com>
-Subject: Re: [PATCH v3 2/3] mm/compaction: add support for >0 order folio
- memory compaction.
-Date: Fri, 09 Feb 2024 15:47:32 -0500
-X-Mailer: MailMate (1.14r6018)
-Message-ID: <4E833B0D-668E-4CDD-9E7C-5D01185B3D12@nvidia.com>
-In-Reply-To: <28c47a9f-5ee4-425e-bd8d-bd251634534c@suse.cz>
-References: <20240202161554.565023-1-zi.yan@sent.com>
- <20240202161554.565023-3-zi.yan@sent.com>
- <025b7e7c-b17f-47c7-8677-ee36fc6dbc52@suse.cz>
- <5F394663-0AFE-4C12-827C-3A0723863395@nvidia.com>
- <193E0D43-0084-48AA-91F5-8316A130ADC3@nvidia.com>
- <28c47a9f-5ee4-425e-bd8d-bd251634534c@suse.cz>
-Content-Type: multipart/signed;
- boundary="=_MailMate_40B1309B-C45A-48CC-9A08-24B5DC789F4F_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: MN2PR05CA0060.namprd05.prod.outlook.com
- (2603:10b6:208:236::29) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A050610D;
+	Fri,  9 Feb 2024 20:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707511685; cv=none; b=ilDJMJe4Z8Muamy5jjdd8kyrQgmXxqdDNto61iJL0kfp2pIyAjSh8Y0e+R1gp4CVejoZUUcpZhyzDO90rh8/k+1PxdrbZSnVjgJKny2x9piuHRQpNebW8Bp4TMQl6qadkhbFBjWIMsbxdxfGA8MMKSAfTfgItxzMOoKeLfbY0b8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707511685; c=relaxed/simple;
+	bh=v7x2cv3cLaefXsKv1oCZw7imDpO7JPajJ8J0xnTg1mI=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fHfu1I20ROiQ+Z1NcCrkK0j59i0+wN/XTgxEngxGYJsipL4m9NSTpMBUF/BNm/WRo8iVqGdY6tj4/phj0Kw9uZ4zVB9yX2bjtDK9YgNa+G7iHwxOUb14t8rq4wPE12t4moHHPf4zBLq6VZVOtYvCrtG7zpbqIUONX86HznW1Vaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=Id9rrK+Q; arc=none smtp.client-ip=72.21.196.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1707511683; x=1739047683;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=FrTFehTP/3NIYoM1mVpt+q0WoGuz/xdkAlWXzO6iBNM=;
+  b=Id9rrK+QUmBRuFlNlL+FNhjcOEeFuM3nC9iB6QlDyXx4ImpzTRKcGYJx
+   ZyGB690uGTG9UptphJpQgJZF9BL16E09c0fDyR2mPoMF5iWwdb297w+ur
+   9ezYgt71CFq2MGWtk99/iHAaD+tEjKEOeR0Nr2drNqup/HpKiMiLbOiAf
+   4=;
+X-IronPort-AV: E=Sophos;i="6.05,257,1701129600"; 
+   d="scan'208";a="380190350"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2024 20:47:58 +0000
+Received: from EX19MTAUWC001.ant.amazon.com [10.0.21.151:55540]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.25.244:2525] with esmtp (Farcaster)
+ id 03dd3009-5fc6-4bd9-9784-e08ba959e9d0; Fri, 9 Feb 2024 20:47:57 +0000 (UTC)
+X-Farcaster-Flow-ID: 03dd3009-5fc6-4bd9-9784-e08ba959e9d0
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 9 Feb 2024 20:47:57 +0000
+Received: from 88665a182662.ant.amazon.com (10.106.101.39) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 9 Feb 2024 20:47:54 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <syzbot+4fa4a2d1f5a5ee06f006@syzkaller.appspotmail.com>
+CC: <asml.silence@gmail.com>, <axboe@kernel.dk>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<pabeni@redhat.com>, <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] [net?] INFO: task hung in unix_dgram_sendmsg
+Date: Fri, 9 Feb 2024 12:47:45 -0800
+Message-ID: <20240209204745.89949-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <00000000000067de160610f791be@google.com>
+References: <00000000000067de160610f791be@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|DS0PR12MB7970:EE_
-X-MS-Office365-Filtering-Correlation-Id: 234c2559-0775-48db-c717-08dc29b0582b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	exfvCfMZITFS7H/gVg5Q0IauC2YqgKUeykzdP+q4InmwSkOVvPXBGwZKYipT4guTfIAKx3CE54bNzwDaW0qYIkiI5UpJ8DHu+E2IUAFoAo7L220i1rCcaRipDfIjOORpRXIjoBILeWuQAbu2ctx6oaQ+0qyTZHopWl/3ipVt2hyBertNia4L7GaAPV1MR6YM32+5jbN+z1U5NcW16Uejsae9OqfADg/7iaCVlsvF5TbSscZTGQa2eA1vhCg+t5af4CT3IBwh8CFEAVoXtdbn5ei/8vC8O4LCzcj4WMijlau/ifuWu29L8P8m/fdaHHjKXZhKFeJCkB6W9fop7JyA5M3Bzwl3NCGLqt0MXMej/6wA/5U+3mtGW7dLhEmqUk0ygMIa9a5IgW6dB9ANh7/bvF2jEXxAwJiGNPttbAHvXV77HZiXcixssYzIIFsfy0KZr8vLnkXtGVxvIy6lpD5qhPZyh3zgz16ENb71r9Z3w2lxvgLyvnhToxupQND1ONEVQ7xgdVcxn/LSVyhx/u0QX6voKZ0JXW/YXds/JQv/I/LtK4uOCpSb6gRTgmB1mZPq
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(136003)(366004)(396003)(346002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(33656002)(41300700001)(478600001)(53546011)(6512007)(36756003)(66556008)(86362001)(6486002)(8936002)(26005)(8676002)(54906003)(66476007)(6916009)(7416002)(6506007)(6666004)(66946007)(235185007)(5660300002)(316002)(83380400001)(38100700002)(2616005)(2906002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?MDjsKQLxAfidOaLqvmHkyznHAOkjfLfPXzJt4S93xGEqBZ2LEDYuZkiwUA5/?=
- =?us-ascii?Q?rWQkkx/NE1pX82rSO/NBYCzpsD+uVLPKOtW3Fi9SVUrBuBg9pDNr03caC6wH?=
- =?us-ascii?Q?K8A0Px82BY/4Izh+dpLLiblaH0KBeeuDjfrxpYF9CGA572cWjs3ndtZZSW3V?=
- =?us-ascii?Q?Yj10yuhQSK2lpC5lzNjpiPJlnCgoC+eG4AcsqQN9kSH1vpj6fb7e8XUF/XFA?=
- =?us-ascii?Q?WJxdIDhXRWdIxlP/zgmcCXN5d75k3RSw1P1GRvV5qXVt70SZ/cftFbyk7anS?=
- =?us-ascii?Q?SKG8zWjpG5CGkfyHrZzWzZXThWfhnH7ZDdoxxsC26YZp8cKID/BFW1/Vg/yy?=
- =?us-ascii?Q?J3hSqqVLAkqKY6u5Kn1wAUd9AwczDn5nLrg/Xhs6aPbLsISYjsCsjCA/UGCA?=
- =?us-ascii?Q?9QXIpmQLze+K3vu/gHUIAnQ81ZUTu/sBX8Q1/JlDwUALUPxyVaHrxIzWLWuv?=
- =?us-ascii?Q?tgo9Ay4Ywa/wR9FOHp1v+qI+RP/EIoPTPqRZBzSyin5WWxzM2YJrKjjc4cA5?=
- =?us-ascii?Q?dn6pASdFYtj3EXdkxxcPU6db06wjufCm/p5wZXpcJHJNIkDcT5bSBBhWO0ep?=
- =?us-ascii?Q?sKNUUkBd0W2aIbIO1QqQsOqPsv/UUJ1C8kZl1Qon0j1XjASWQ7HDAjtYUGq+?=
- =?us-ascii?Q?UOdjQot7K98Z7ieXSMfq2Z0q1yHtYdBZ9o2UWeatQSBfxZAxYEZ2fTEz2Aho?=
- =?us-ascii?Q?SCm4LGyVjOhfq4ssrS0V3xX9xYvU2PJ/oFsC1dHQwzwv4+zrdUxzYaLKKARH?=
- =?us-ascii?Q?rbg9sygxR6I6Hxh1XOyD4sHANtiVER7HHyVjyrRX+9gNWfa//+pvYdHg1cVD?=
- =?us-ascii?Q?yWGJwG4PRTkwzaXaWkuvxDJ6StgXJ1WfWKbQ1GzDGAXbsKxzHq6NzaMOvsPy?=
- =?us-ascii?Q?yPfPKd5BY2vitvA0XzLszGUj1udG3Ky5SHrBvQJ5k0iUXQaUNMDoJBZGgd9l?=
- =?us-ascii?Q?rHKAakQJy9+iDlxGX3TGBP7rjkPl9oeOeJ/u52jZeARF+pfC6NTDVYnhrgUp?=
- =?us-ascii?Q?YYgWfDx7R30nnD/AM1iHDayQ/U3telLac5VoasF5+gt3TLYdgPm+NnJOr48C?=
- =?us-ascii?Q?ayo2kFeqCzlYnbQavN1FjVMN5oI2ei9sXMMBoeiAWlLgJA/5EXB4q/6Ougni?=
- =?us-ascii?Q?vzrL5+egBna3A9NvWN0RF8xPSW5hO9+sy4cPs18nO3hJ9im3YWxjXMVV7v3N?=
- =?us-ascii?Q?WsIVpXQQ34eNy6ypKdmGas53xKVwH7zEzo854LmJI+S33RlEssBfY5iTAbYT?=
- =?us-ascii?Q?CiY1lBH+SuYxfZJajY6tFFNtu2DXYvceL6ST2eFkTlTrElb2U2FUZNAw1eyE?=
- =?us-ascii?Q?qQJDN2YcLRF7UmxjAeDbRAsjW64ryW7aRtPMioaYfAle/OI15/iw/r6N7fXU?=
- =?us-ascii?Q?HqMUN8jHsTU/Za0+i0fAw05HbJl1rmzB5EGl+qHguf2SpqC405GxJz76bSKE?=
- =?us-ascii?Q?8zN1q2iiolNhy5w4QoY72Ih0IN+cce6XnBOlfje6CW8nAOPWhSGCarmRs1Gv?=
- =?us-ascii?Q?Lo3Ss5RYjaosDkRszs2APR0Pq6+qZsdF9C2/J8eRhuqH3TP4LwWMMgxHcxbY?=
- =?us-ascii?Q?pj4EV0miiMCOJLXcplZ01KGNsqLVui+KMPEwP+8Q?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 234c2559-0775-48db-c717-08dc29b0582b
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2024 20:47:35.1076
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z2q6sOgK3VueXEobAt5Ze7VfDGjPWghDkrAzwL/XXoy87BAznL2QQIMcfUGgabX7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7970
-
---=_MailMate_40B1309B-C45A-48CC-9A08-24B5DC789F4F_=
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: EX19D046UWB004.ant.amazon.com (10.13.139.164) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-On 9 Feb 2024, at 15:46, Vlastimil Babka wrote:
+From: syzbot <syzbot+4fa4a2d1f5a5ee06f006@syzkaller.appspotmail.com>
+Date: Fri, 09 Feb 2024 11:02:22 -0800
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    1f719a2f3fa6 Merge tag 'net-6.8-rc4' of git://git.kernel.o..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=16a21d04180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=53985487b59d9442
+> dashboard link: https://syzkaller.appspot.com/bug?extid=4fa4a2d1f5a5ee06f006
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1636f042180000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=141c0cec180000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/b8bd7b1c1c4d/disk-1f719a2f.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/58ee6966cdfc/vmlinux-1f719a2f.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/3de15662a476/bzImage-1f719a2f.xz
+> 
+> The issue was bisected to:
+> 
+> commit 1279f9d9dec2d7462823a18c29ad61359e0a007d
+> Author: Kuniyuki Iwashima <kuniyu@amazon.com>
+> Date:   Sat Feb 3 18:31:49 2024 +0000
+> 
+>     af_unix: Call kfree_skb() for dead unix_(sk)->oob_skb in GC.
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17e71d7c180000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=14171d7c180000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10171d7c180000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+4fa4a2d1f5a5ee06f006@syzkaller.appspotmail.com
+> Fixes: 1279f9d9dec2 ("af_unix: Call kfree_skb() for dead unix_(sk)->oob_skb in GC.")
 
-> On 2/9/24 20:40, Zi Yan wrote:
->> On 9 Feb 2024, at 14:36, Zi Yan wrote:
->>
->>> On 9 Feb 2024, at 11:37, Vlastimil Babka wrote:
->>>
->>>> On 2/2/24 17:15, Zi Yan wrote:
->>>>
->>>> ...
->>>>
->>>>>  /*
->>>>> @@ -1835,9 +1857,17 @@ static struct folio *compaction_alloc(struct=
- folio *src, unsigned long data)
->>>>>  static void compaction_free(struct folio *dst, unsigned long data)=
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 1279f9d9dec2d7462823a18c29ad61359e0a007d
 
->>>>>  {
->>>>>  	struct compact_control *cc =3D (struct compact_control *)data;
->>>>> +	int order =3D folio_order(dst);
->>>>> +	struct page *page =3D &dst->page;
->>>>> +
->>>>> +	folio_set_count(dst, 0);
->>>>
->>>> We can't change refcount to 0 like this, after it was already set to=
- 1 and
->>>> somebody else might have done get_page_unless_zero(). You need to ei=
-ther
->>>> put_page_testzero() and if it's false, consider the page lost, or le=
-ave it
->>>> refcounted and adjust the code to handle both refcounted and non-ref=
-counted
->>>> pages on the lists (the first option is simpler and shouldn't be too=
- bad).
->>> Got it. Will fix it with the first option. Thanks.
->>
->> Do you think we should have a WARN or WARN_ONCE if we lose a page here=
-?
->
-> No, no WARN, it all happens legitimately. It's only our compaction losi=
-ng
-> the page - whoever would do the get_page_unless_zero() to inspect that =
-page
-> would then have to put_page() which will free it back to page allocator=
-=2E
-
-Got it. Thanks for the explanation.
-
---
-Best Regards,
-Yan, Zi
-
---=_MailMate_40B1309B-C45A-48CC-9A08-24B5DC789F4F_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmXGj2QPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhU55YP/3bCxavjUh0cBZ5rgFbgSEQNJi7vabDHlKeS
-XPuEfd4NDZiGU3313jG5aZAeB03y2p4Cv+K+xr0fv0vI8Ut+E4QXzApmLE/85T5i
-B5L0qAMbRWjYx5CVwpyWkoMs6k87Iz4KEXwp9wFbvpiEvpQl+nb6md1PdSBZEcp1
-f4ukNapBscfditJounJttNJDtlpxgFX/JOael2ajib0I7fU+7mIeAoZtp3iUQyCp
-PaCFWrj65wuBq/dcykyJD6zZmHUe1EsFj41EGj1rje2sy60ad/4XIjv3De9ilObY
-Szuq3AfnpJYj5pTtIAm1csbhOosT3J/N54vtiDWG4zsmlM+0LvFwSrytbC271MdZ
-UvjNu41GAzn1jGt0rNUaAUYIZVnH3ejtkbFIaZr8kWXbkX5pYTBB9lujl7Hiags+
-hBP6xICbzE2dpX0eHWcgJbzAc2mR9aTQ8vPU6xlI7fqaOffC7DY42kHuRIh1lku4
-a93Ynh15yTdDMxfeNecL2k2i34n0hIc/i9P1mk4T7O+8y0p1qSavkSxx/v3+ax/S
-M5PAdlIkRnbEHFlCqT7uQiwMjp3/lE7PPD9QiPa8qCkJs21s5uxpF51HWp5mtZjF
-qB+SD5rhledDnYsecdhWMXvAZnma2mV6fHe7V3dQSkncMbhlXaQ01i2YBpuD7V8/
-ZmQHL2yX
-=OxvX
------END PGP SIGNATURE-----
-
---=_MailMate_40B1309B-C45A-48CC-9A08-24B5DC789F4F_=--
+diff --git a/net/unix/garbage.c b/net/unix/garbage.c
+index 3e4b986de94b..51acf795f096 100644
+--- a/net/unix/garbage.c
++++ b/net/unix/garbage.c
+@@ -340,10 +340,11 @@ static void __unix_gc(struct work_struct *work)
+ 	__skb_queue_purge(&hitlist);
+ 
+ #if IS_ENABLED(CONFIG_AF_UNIX_OOB)
+-	list_for_each_entry_safe(u, next, &gc_candidates, link) {
+-		struct sk_buff *skb = u->oob_skb;
++	while (!list_empty(&gc_candidates)) {
++		u = list_entry(gc_candidates.next, struct unix_sock, link);
++		if (u->oob_skb) {
++			struct sk_buff *skb = u->oob_skb;
+ 
+-		if (skb) {
+ 			u->oob_skb = NULL;
+ 			kfree_skb(skb);
+ 		}
 
