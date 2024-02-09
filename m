@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-59455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-59459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79EF684F754
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:31:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E6BC84F758
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 15:31:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6BD31C2265F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:31:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA0AEB269AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Feb 2024 14:31:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB23B6E2C0;
-	Fri,  9 Feb 2024 14:29:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4820E7317D;
+	Fri,  9 Feb 2024 14:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="h1JyNx4K"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="tjFYJKAe"
 Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA3A69D26
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0BB69DFF
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:29:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707488952; cv=none; b=EsO0T6AzCCAus2f8WnO9Us/4za87ItGPi15+hi8dqicNVYwy6sU/5wx34DhYV6uMEEohPnEORFYIJQ5+nKhChtkwQpRecn3HLhNoSDN3CH90721r7p9XF451OESHEWdWI9GXq2BWaf0RSCeKeoD6Khh/DPF3l2UpHAqZ3cOcbWE=
+	t=1707488953; cv=none; b=Ssd2KTZoa3UHA/jg8ORIXL7z1Z5G3eMxY9MYWCkMygromumSliZqw/nihQB7q2Rl1RfERuaf+GAz1okE/cQ6vkY/JsogDGAh32bBoFYG3q4/d8VfsFITjZ/p3DeGZEFmzFOTesnu6sELFectAY/e9dRBtYIb2N92RmN2L41+Z6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707488952; c=relaxed/simple;
-	bh=CPKJ6tUdoDF6Ha2IQ+4O/WOu+/5VM901pX9Tu0quqfk=;
+	s=arc-20240116; t=1707488953; c=relaxed/simple;
+	bh=8CpVZl2bJx8NP6Riuz2Y+yedCiDF5mfz2vl6gbJDV5I=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:Content-Type:
-	 MIME-Version:References; b=ZGHspLpMxrSlFReQa+ygpkn+AGufDeUf1TPHnWXCPJkgEZmQ1FAxuA7JnUAFprVR3sh9HC9Y/D3BPQ+3hmgOuZwVgN5snhoyQjJqdsHzR8iDPZ73DoaWJoNNq/8feH8a7JMmznroTGij8heb8YRjlsEU9OOWlVHVrzDvp5WXx3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=h1JyNx4K; arc=none smtp.client-ip=210.118.77.11
+	 MIME-Version:References; b=EBe7BGpfHX13qAhW2CiWd4vqco8dKA2m0c0kYoEVFyB+2n7rWBNWGq2VWpxvgSUfUMGpzExMbk2wZRjs7R+buovM6Mg9O1XaxzzQNgdAAHEwSk9JyJbvtqPqp9K7BBSuAxQY+XeBK+OP/IY8F+BW1G6H/0VN7CsY60w4jPkdqp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=tjFYJKAe; arc=none smtp.client-ip=210.118.77.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240209142906euoutp017389e53649f75be9c6da7e5fe213ad9e~yOCZ_oe3d2559825598euoutp01S
-	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:29:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240209142906euoutp017389e53649f75be9c6da7e5fe213ad9e~yOCZ_oe3d2559825598euoutp01S
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240209142908euoutp017d8614aa37188ed7b24f3fafa37562f2~yOCbnh6ME2778527785euoutp01j
+	for <linux-kernel@vger.kernel.org>; Fri,  9 Feb 2024 14:29:08 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240209142908euoutp017d8614aa37188ed7b24f3fafa37562f2~yOCbnh6ME2778527785euoutp01j
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1707488946;
-	bh=FCbzId5tUUljaKo+tPW5dyPNAxWuqwZJmK4aFsnXX4M=;
+	s=mail20170921; t=1707488948;
+	bh=a88W1Bbg0jxB2ngLMkFDtFwflxkCFGav4/gOzgelMLM=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-	b=h1JyNx4KMrteOAQd2xuXTYL0v8bGy8abrDejKZj6MfmF7XkTeUYjJO/0mlcML6jxY
-	 LVoThPtZVowwXE1i4ym/GrWCFWwXiJyUXv4z+NRkk11J5mp12q17wL1A1sDkfrNlA3
-	 SQ5JHpmxkcLYKefpwei3RORrbhDJGjstMZeYyjgw=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240209142906eucas1p2e47a246a10373a76799a079725583da1~yOCZtNsY_2329623296eucas1p2e;
-	Fri,  9 Feb 2024 14:29:06 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges2new.samsung.com (EUCPMTA) with SMTP id FC.F5.09814.2B636C56; Fri,  9
-	Feb 2024 14:29:06 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240209142905eucas1p14498619591475e416a8163dbc96c90e4~yOCZTs0l-0937309373eucas1p16;
-	Fri,  9 Feb 2024 14:29:05 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240209142905eusmtrp2a5418fa28a2ffb3a4fc54948ca8a399d~yOCZTFUmN2110121101eusmtrp2b;
-	Fri,  9 Feb 2024 14:29:05 +0000 (GMT)
-X-AuditID: cbfec7f4-711ff70000002656-40-65c636b2e6b8
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id 59.6F.09146.1B636C56; Fri,  9
-	Feb 2024 14:29:05 +0000 (GMT)
-Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240209142905eusmtip2236828047c1df8be3fea7df7e76daca2~yOCZK_AE42332823328eusmtip2R;
-	Fri,  9 Feb 2024 14:29:05 +0000 (GMT)
+	b=tjFYJKAebkiJIwpM50vhlXOLbPn0zREBKWRH/LD5cD5jan0ZiYFAg0HXrgf2WLmT+
+	 4J0RCX0UfX9sCyYkie2JirnYLxF74XihbO/qQ6de9Qxb5XZ4yxE+zw+c0hn6j4HAxs
+	 ASETTTjD5AfGyHF8E0CxWzVIEW020EKZorD5gM1E=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240209142908eucas1p16a6b31632e8d9865f952e959c973c8e5~yOCbPMlkz0281802818eucas1p1s;
+	Fri,  9 Feb 2024 14:29:08 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+	eusmges1new.samsung.com (EUCPMTA) with SMTP id B6.0E.09539.3B636C56; Fri,  9
+	Feb 2024 14:29:07 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240209142907eucas1p2c61ae37b2a1ca2caeccc48b2169226f2~yOCatdJaJ2253522535eucas1p2p;
+	Fri,  9 Feb 2024 14:29:07 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240209142907eusmtrp11d733555d1468f5959c30cb5a5a11e05~yOCasoSCp0528405284eusmtrp1H;
+	Fri,  9 Feb 2024 14:29:07 +0000 (GMT)
+X-AuditID: cbfec7f2-52bff70000002543-1c-65c636b3da7b
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id F5.B3.10702.3B636C56; Fri,  9
+	Feb 2024 14:29:07 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240209142907eusmtip1170d8fecd9e85f89a441b27f26df0489~yOCaisoha0140701407eusmtip1F;
+	Fri,  9 Feb 2024 14:29:07 +0000 (GMT)
 Received: from CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) by
-	CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) with Microsoft SMTP
-	Server (TLS) id 15.0.1497.2; Fri, 9 Feb 2024 14:29:05 +0000
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) with Microsoft SMTP
+	Server (TLS) id 15.0.1497.2; Fri, 9 Feb 2024 14:29:06 +0000
 Received: from CAMSVWEXC02.scsc.local ([::1]) by CAMSVWEXC02.scsc.local
 	([fe80::3c08:6c51:fa0a:6384%13]) with mapi id 15.00.1497.012; Fri, 9 Feb
-	2024 14:29:05 +0000
+	2024 14:29:06 +0000
 From: Daniel Gomez <da.gomez@samsung.com>
 To: "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
 	"brauner@kernel.org" <brauner@kernel.org>, "jack@suse.cz" <jack@suse.cz>,
@@ -81,13 +81,12 @@ CC: "dagmcr@gmail.com" <dagmcr@gmail.com>, "linux-fsdevel@vger.kernel.org"
 	"willy@infradead.org" <willy@infradead.org>, "hch@infradead.org"
 	<hch@infradead.org>, "mcgrof@kernel.org" <mcgrof@kernel.org>, Pankaj Raghav
 	<p.raghav@samsung.com>, "gost.dev@samsung.com" <gost.dev@samsung.com>,
-	"Daniel Gomez" <da.gomez@samsung.com>
-Subject: [RFC PATCH 5/9] shmem: clear_highpage() if block is not uptodate
-Thread-Topic: [RFC PATCH 5/9] shmem: clear_highpage() if block is not
-	uptodate
-Thread-Index: AQHaW2RUm+AjPQwetUKmMMbff0NR9g==
-Date: Fri, 9 Feb 2024 14:29:03 +0000
-Message-ID: <20240209142901.126894-6-da.gomez@samsung.com>
+	Daniel Gomez <da.gomez@samsung.com>
+Subject: [RFC PATCH 8/9] shmem: clear uptodate blocks after PUNCH_HOLE
+Thread-Topic: [RFC PATCH 8/9] shmem: clear uptodate blocks after PUNCH_HOLE
+Thread-Index: AQHaW2RVqhumUoqlFUi8PRO0fiHHFQ==
+Date: Fri, 9 Feb 2024 14:29:04 +0000
+Message-ID: <20240209142901.126894-9-da.gomez@samsung.com>
 In-Reply-To: <20240209142901.126894-1-da.gomez@samsung.com>
 Accept-Language: en-US, en-GB
 Content-Language: en-US
@@ -103,73 +102,206 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPKsWRmVeSWpSXmKPExsWy7djP87qbzI6lGnz7JWYxZ/0aNovXhz8x
-	Wpzt+81mcXrCIiaLp5/6WCxmT29mstiz9ySLxeVdc9gs7q35z2pxY8JTRovzf4+zWvz+MYfN
-	gcdj56y77B4LNpV6bF6h5bFpVSebx6ZPk9g9Tsz4zeJxZsERdo/Pm+Q8Nj15yxTAGcVlk5Ka
-	k1mWWqRvl8CVsfnoYcaCrWwVn2evZ2tgXMDaxcjJISFgInGt5S9TFyMXh5DACkaJH59XM0M4
-	XxglXnyZwwLhfGaUuL1yLTNMy7fPr6FaljNKXPr8iQ0kAVY14TovROI0o8TNg9dZ4QafW9fI
-	CFLFJqApse/kJnaQhIjAc0aJ1t0fwRxmgdvMEnPaZ4FVCQt4SizqegN2o4hAgMTTM3uYIWw9
-	iR3L/oHVsAioSMybspIFxOYVsJJY9fI3E4jNKWAtMe/RerCbGAVkJR6t/MUOYjMLiEvcejKf
-	CeIJQYlFs/dAPSQm8W/XQzYIW0fi7PUnjBC2gcTWpftYIGxFiY5jN9kg5uhJ3Jg6BcrWlli2
-	8DUzxA2CEidnPgGHmIRAG5fEm2nboRa4SHw7vARqsbDEq+Nb2CFsGYn/O+czTWDUnoXkvllI
-	dsxCsmMWkh0LGFlWMYqnlhbnpqcWG+WllusVJ+YWl+al6yXn525iBKa50/+Of9nBuPzVR71D
-	jEwcjIcYJTiYlUR4Q5YcSRXiTUmsrEotyo8vKs1JLT7EKM3BoiTOq5oinyokkJ5YkpqdmlqQ
-	WgSTZeLglGpg2t5TWf4iSZh9092XzwPKirbc858nMGv3Bq84hrhUHXueczUiH/8KhifxflTZ
-	8XHP1qz//Oa50Te7BHP+XqjWkXt0tc/yr5aV2fJgf88dhcp7PgWktv/Jf3p/2/Mmya8ti7O8
-	L34zDvtSpN/A4vTqcalFA8vCnA87Wpn7uKdl3JozKYO5zCXh95tLCyU5Hi9cyqAbUXx+y+Na
-	zZXLpYMmBy46UvFOfOIeldmfHormvO4LFa6a/ECjvIIlfq//Yec5G29eV5hhmMI3tXIr8/PP
-	asrXGrdtDnDzsLCdx3rP9N/JmVdtgl4uOiqrkLNYauPqub3bN4T9k3l99ei07mUOp+qXTjgZ
-	bHKW5bbC9kTmCUosxRmJhlrMRcWJALwbYEziAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNKsWRmVeSWpSXmKPExsVy+t/xe7obzY6lGqx6bGExZ/0aNovXhz8x
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJKsWRmVeSWpSXmKPExsWy7djPc7qbzY6lGnhYzFm/hs3i9eFPjBZn
+	+36zWZyesIjJ4umnPhaL2dObmSz27D3JYnF51xw2i3tr/rNa3JjwlNHi/N/jrBa/f8xhc+Dx
+	2DnrLrvHgk2lHptXaHlsWtXJ5rHp0yR2jxMzfrN4nFlwhN3j8yY5j01P3jIFcEZx2aSk5mSW
+	pRbp2yVwZZz/spat4Kh6RcOu1cwNjB/kuxg5OSQETCS+Ld3NAmILCaxglLjXkdrFyAVkf2GU
+	uHp7LROE85lRYs/XJrYuRg6wjt+3MiAaljNKfPuTDlezousYI4RzmlFi2eaNjHBjd01VB7HZ
+	BDQl9p3cxA5SJCLwnFGidfdHMIdZ4CazxLWr59lAqoQF3CQ+vt4AdpSIgLfEgcN/oWw9ibtb
+	3jKB2CwCKhJrdpxgBDmJV8BK4vkkP5Awp4C1xLxH68HGMArISjxa+YsdxGYWEJe49WQ+E8TP
+	ghKLZu9hhrDFJP7tesgGYetInL3+hBHCNpDYunQfC4StKNFx7CYbxBw9iRtTp0DZ2hLLFr4G
+	m8MLNPPkzCcsIL9ICDRxSTyf1c0O0ewisbN3ItQyYYlXx7dAxWUkTk/uYZnAqD0LyX2zkOyY
+	hWTHLCQ7FjCyrGIUTy0tzk1PLTbMSy3XK07MLS7NS9dLzs/dxAhMbaf/Hf+0g3Huq496hxiZ
+	OBgPMUpwMCuJ8IYsOZIqxJuSWFmVWpQfX1Sak1p8iFGag0VJnFc1RT5VSCA9sSQ1OzW1ILUI
+	JsvEwSnVwFTMosD6fcXKB0qMJq97jYyXtCwWZ0iznmP0Qu/bH+3IPXGqqx2kdzQUzNB98UZE
+	6R7vhUX/5nE0O7rvN/ovr9msH7NsRkrzDVmDth9d7/9e4VeR7pDvlfd++TRIddPBGfN9sjK5
+	XgpY/yt4/KFJcbfJA9VO9y3X/V8vt522Wjj2OZ9qY5bLtHbGE2uVwvznH3wYwfnLOY+3ZFfN
+	hpV7GfcEfqn/2hHNr9w/T+f4ok/3da1PTbwS3fI76fKV5PBtxw071ay/P4p+7eYh837ere8P
+	Fqn/Vrr6uXGFhGbb44vXC+edWNrw+umB5R088RW3j3x2b2qZ/mKOyjzdZeYn2Dy33ObO2ntS
+	Qv7jrsOP2DmUWIozEg21mIuKEwFdoFWY3AMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGKsWRmVeSWpSXmKPExsVy+t/xu7qbzY6lGtyfJ2UxZ/0aNovXhz8x
 	Wpzt+81mcXrCIiaLp5/6WCxmT29mstiz9ySLxeVdc9gs7q35z2pxY8JTRovzf4+zWvz+MYfN
 	gcdj56y77B4LNpV6bF6h5bFpVSebx6ZPk9g9Tsz4zeJxZsERdo/Pm+Q8Nj15yxTAGaVnU5Rf
-	WpKqkJFfXGKrFG1oYaRnaGmhZ2RiqWdobB5rZWSqpG9nk5Kak1mWWqRvl6CXsfnoYcaCrWwV
-	n2evZ2tgXMDaxcjJISFgIvHt82umLkYuDiGBpYwSP67sYYFIyEhs/HIVqkhY4s+1LjaIoo+M
-	Ej3z10I5pxklnjy+zw7hrGCUOPP+N1gLm4CmxL6Tm8ASIgJPGSWm/z7EAuIwC9xmlpjTPosR
-	pEpYwFNiUdcbsA4RAT+J/3u3s0DYehI7lv0Dq2ERUJGYN2UlWJxXwEpi1cvfTCC2EJA9bftp
-	NhCbU8BaYt6j9WA2o4CsxKOVv9hBbGYBcYlbT+YzQTwhILFkz3lmCFtU4uXjf1DP6Uicvf6E
-	EcI2kNi6dB80ABQlOo7dZIOYoydxY+oUKFtbYtnC18wQ9whKnJz5hGUCo/QsJOtmIWmZhaRl
-	FpKWBYwsqxhFUkuLc9Nziw31ihNzi0vz0vWS83M3MQJT1bZjPzfvYJz36qPeIUYmDsZDjBIc
-	zEoivCFLjqQK8aYkVlalFuXHF5XmpBYfYjQFhtFEZinR5HxgsswriTc0MzA1NDGzNDC1NDNW
-	Euf1LOhIFBJITyxJzU5NLUgtgulj4uCUamDqlV++q2Ov5rY+4XmZ6z8EnFx4pn3Gs+PLT91Z
-	wZ7cMFFqgQ63sErWhyMsi/bPWiHE5su7aZ93p6fto1IbgaoPh6rOSC4TuT7Bjr3v7hKToyqv
-	fvzmnXvU5oZg9/alcesN96txxYeEq+//4W8X81v15vdLX39EdQoXXjZavcs64DGTYa7njvI/
-	frq9vB8OR98yWiBWKpc5m/froW83QzusZu3/JDUreqv51QSF7+Xi84Pljm2493lqyJKbbPPa
-	lhf66uzaySRnd1Rrl8SFnRofzpZ/qHAJrYroF3igEDzJpNvzQJvnRPcJroVOj9b2cFf8320z
-	J2ORsxp/mdMZbg8LP76fGUKJnwPLH11v+SWrxFKckWioxVxUnAgAorJ4Z94DAAA=
-X-CMS-MailID: 20240209142905eucas1p14498619591475e416a8163dbc96c90e4
+	WpKqkJFfXGKrFG1oYaRnaGmhZ2RiqWdobB5rZWSqpG9nk5Kak1mWWqRvl6CXcf7LWraCo+oV
+	DbtWMzcwfpDvYuTgkBAwkfh9K6OLkYtDSGApo8TJ+X/Yuhg5geIyEhu/XGWFsIUl/lzrAosL
+	CXxklHj6owTCPs0o8WRuEETzCkaJYx+6wYrYBDQl9p3cxA6SEBF4yigx/fchFpAEs8BNZokv
+	b8RAbGEBN4mPrzeAxUUEvCUOHP4LZetJ3N3ylgnEZhFQkViz4wQjyKW8AlYSzyf5QSy2kpi2
+	/TTYLk4Ba4l5j9aD2YwCshKPVv5ih1glLnHryXwmiAcEJJbsOc8MYYtKvHz8D+oxHYmz158w
+	QtgGEluX7mOBsBUlOo7dZIOYoydxY+oUKFtbYtnC12BzeAUEJU7OfMIygVF6FpJ1s5C0zELS
+	MgtJywJGllWMIqmlxbnpucVGesWJucWleel6yfm5mxiBCWrbsZ9bdjCufPVR7xAjEwfjIUYJ
+	DmYlEd6QJUdShXhTEiurUovy44tKc1KLDzGaAoNoIrOUaHI+MEXmlcQbmhmYGpqYWRqYWpoZ
+	K4nzehZ0JAoJpCeWpGanphakFsH0MXFwSjUwaQVlVb6a+1XoycnNbsv8ipIy9Kwc/F2+Xuuv
+	2PbTb46RUtKNvelfIuf9P2mbYep98O66x1wVb+42sGg0380ueqExp/L/dR42+xNaz48p7inV
+	rjU0MLt1Y/lXo54k01bdrNOTPVn5d7vULH2iueFYvY3kpllct1bnGc5Yy3/Pr/J+a0q0UmZN
+	mVlup7lcl+bDGX6Mu51lGPmWzwyNjSirMAwJCbnx0bQkqnfFhojaG1m6713P9mlG+zd4/NXg
+	/6N2041D88lc9zundxQ+D/WztCxycZp0foKrkvoNTocNx7fWHliclC0pk2rrKpyeISS57mXR
+	iX0xRy7dUrsq0Cq02mSuejtbv6tLf++laUosxRmJhlrMRcWJABo8BnvZAwAA
+X-CMS-MailID: 20240209142907eucas1p2c61ae37b2a1ca2caeccc48b2169226f2
 X-Msg-Generator: CA
-X-RootMTR: 20240209142905eucas1p14498619591475e416a8163dbc96c90e4
+X-RootMTR: 20240209142907eucas1p2c61ae37b2a1ca2caeccc48b2169226f2
 X-EPHeader: CA
 CMS-TYPE: 201P
-X-CMS-RootMailID: 20240209142905eucas1p14498619591475e416a8163dbc96c90e4
+X-CMS-RootMailID: 20240209142907eucas1p2c61ae37b2a1ca2caeccc48b2169226f2
 References: <20240209142901.126894-1-da.gomez@samsung.com>
-	<CGME20240209142905eucas1p14498619591475e416a8163dbc96c90e4@eucas1p1.samsung.com>
+	<CGME20240209142907eucas1p2c61ae37b2a1ca2caeccc48b2169226f2@eucas1p2.samsung.com>
 
-clear_highpage() is called for all the subpages (blocks) in a large
-folio when the folio is not uptodate. Do clear the subpages only when
-they are not uptodate.
+In the fallocate path with PUNCH_HOLE mode flag enabled, clear the
+uptodate flag for those blocks covered by the punch. Skip all partial
+blocks as they may still contain data.
 
 Signed-off-by: Daniel Gomez <da.gomez@samsung.com>
 ---
- mm/shmem.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ mm/shmem.c | 78 +++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 72 insertions(+), 6 deletions(-)
 
 diff --git a/mm/shmem.c b/mm/shmem.c
-index 614cda767298..b6f9a60b179b 100644
+index 2d2eeb40f19b..2157a87b2e4b 100644
 --- a/mm/shmem.c
 +++ b/mm/shmem.c
-@@ -2253,7 +2253,8 @@ static int shmem_get_folio_gfp(struct inode *inode, p=
-goff_t index,
- 		long i, n =3D folio_nr_pages(folio);
+@@ -209,6 +209,28 @@ static void sfs_set_range_uptodate(struct folio *folio=
+,
+ 	spin_unlock_irqrestore(&sfs->state_lock, flags);
+ }
 =20
- 		for (i =3D 0; i < n; i++)
--			clear_highpage(folio_page(folio, i));
-+			if (!shmem_is_block_uptodate(folio, i))
-+				clear_highpage(folio_page(folio, i));
- 		flush_dcache_folio(folio);
- 		shmem_set_range_uptodate(folio, 0, folio_size(folio));
- 	}
++static void sfs_clear_range_uptodate(struct folio *folio,
++				     struct shmem_folio_state *sfs, size_t off,
++				     size_t len)
++{
++	struct inode *inode =3D folio->mapping->host;
++	unsigned int first_blk, last_blk;
++	unsigned long flags;
++
++	first_blk =3D DIV_ROUND_UP_ULL(off, 1 << inode->i_blkbits);
++	last_blk =3D DIV_ROUND_DOWN_ULL(off + len, 1 << inode->i_blkbits) - 1;
++	if (last_blk =3D=3D UINT_MAX)
++		return;
++
++	if (first_blk > last_blk)
++		return;
++
++	spin_lock_irqsave(&sfs->state_lock, flags);
++	bitmap_clear(sfs->state, first_blk, last_blk - first_blk + 1);
++	folio_clear_uptodate(folio);
++	spin_unlock_irqrestore(&sfs->state_lock, flags);
++}
++
+ static struct shmem_folio_state *sfs_alloc(struct inode *inode,
+ 					   struct folio *folio)
+ {
+@@ -276,6 +298,19 @@ static void shmem_set_range_uptodate(struct folio *fol=
+io, size_t off,
+ 	else
+ 		folio_mark_uptodate(folio);
+ }
++
++static void shmem_clear_range_uptodate(struct folio *folio, size_t off,
++				     size_t len)
++{
++	struct shmem_folio_state *sfs =3D folio->private;
++
++	if (sfs)
++		sfs_clear_range_uptodate(folio, sfs, off, len);
++	else
++		folio_clear_uptodate(folio);
++
++}
++
+ #ifdef CONFIG_TMPFS
+ static unsigned long shmem_default_max_blocks(void)
+ {
+@@ -1103,12 +1138,33 @@ static struct folio *shmem_get_partial_folio(struct=
+ inode *inode, pgoff_t index)
+ 	return folio;
+ }
+=20
++static void shmem_clear(struct folio *folio, loff_t start, loff_t end, int=
+ mode)
++{
++	loff_t pos =3D folio_pos(folio);
++	unsigned int offset, length;
++
++	if (!(mode & FALLOC_FL_PUNCH_HOLE) || !(folio_test_large(folio)))
++		return;
++
++	if (pos < start)
++		offset =3D start - pos;
++	else
++		offset =3D 0;
++	length =3D folio_size(folio);
++	if (pos + length <=3D (u64)end)
++		length =3D length - offset;
++	else
++		length =3D end + 1 - pos - offset;
++
++	shmem_clear_range_uptodate(folio, offset, length);
++}
++
+ /*
+  * Remove range of pages and swap entries from page cache, and free them.
+  * If !unfalloc, truncate or punch hole; if unfalloc, undo failed fallocat=
+e.
+  */
+ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t le=
+nd,
+-								 bool unfalloc)
++			     bool unfalloc, int mode)
+ {
+ 	struct address_space *mapping =3D inode->i_mapping;
+ 	struct shmem_inode_info *info =3D SHMEM_I(inode);
+@@ -1166,6 +1222,7 @@ static void shmem_undo_range(struct inode *inode, lof=
+f_t lstart, loff_t lend,
+ 	if (folio) {
+ 		same_folio =3D lend < folio_pos(folio) + folio_size(folio);
+ 		folio_mark_dirty(folio);
++		shmem_clear(folio, lstart, lend, mode);
+ 		if (!truncate_inode_partial_folio(folio, lstart, lend)) {
+ 			start =3D folio_next_index(folio);
+ 			if (same_folio)
+@@ -1255,9 +1312,17 @@ static void shmem_undo_range(struct inode *inode, lo=
+ff_t lstart, loff_t lend,
+ 	shmem_recalc_inode(inode, 0, -nr_swaps_freed);
+ }
+=20
++static void shmem_truncate_range_mode(struct inode *inode, loff_t lstart,
++				      loff_t lend, int mode)
++{
++	shmem_undo_range(inode, lstart, lend, false, mode);
++	inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
++	inode_inc_iversion(inode);
++}
++
+ void shmem_truncate_range(struct inode *inode, loff_t lstart, loff_t lend)
+ {
+-	shmem_undo_range(inode, lstart, lend, false);
++	shmem_undo_range(inode, lstart, lend, false, 0);
+ 	inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
+ 	inode_inc_iversion(inode);
+ }
+@@ -3315,7 +3380,7 @@ static long shmem_fallocate(struct file *file, int mo=
+de, loff_t offset,
+ 		if ((u64)unmap_end > (u64)unmap_start)
+ 			unmap_mapping_range(mapping, unmap_start,
+ 					    1 + unmap_end - unmap_start, 0);
+-		shmem_truncate_range(inode, offset, offset + len - 1);
++		shmem_truncate_range_mode(inode, offset, offset + len - 1, mode);
+ 		/* No need to unmap again: hole-punching leaves COWed pages */
+=20
+ 		spin_lock(&inode->i_lock);
+@@ -3381,9 +3446,10 @@ static long shmem_fallocate(struct file *file, int m=
+ode, loff_t offset,
+ 			info->fallocend =3D undo_fallocend;
+ 			/* Remove the !uptodate folios we added */
+ 			if (index > start) {
+-				shmem_undo_range(inode,
+-				    (loff_t)start << PAGE_SHIFT,
+-				    ((loff_t)index << PAGE_SHIFT) - 1, true);
++				shmem_undo_range(
++					inode, (loff_t)start << PAGE_SHIFT,
++					((loff_t)index << PAGE_SHIFT) - 1, true,
++					0);
+ 			}
+ 			goto undone;
+ 		}
 --=20
 2.43.0
 
